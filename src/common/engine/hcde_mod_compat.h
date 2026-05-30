@@ -25,6 +25,6 @@ enum EHCDEModCompatFlags : unsigned int
 	HCDE_MODCOMPAT_MAPINFO_SKY_SPEED_NO_COMMA = 1u << 3,
 };
 
-void HCDE_ModCompat_AppendFiles(std::vector<FileSys::ResourceName>& pwads, FConfigFile* config);
+void HCDE_ModCompat_AppendFiles(std::vector<FileSys::ResourceName>& pwads, FConfigFile* config, const std::vector<FileSys::ResourceName>* iwads = nullptr);
 bool HCDE_ModCompat_IsActive(unsigned int flags);
 const char* HCDE_ModCompat_ResolveStartupMapOverride(const char* requestedMap);

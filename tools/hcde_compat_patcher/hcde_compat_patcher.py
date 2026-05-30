@@ -633,7 +633,7 @@ def read_archive(path: Path) -> tuple[str, list[ArchiveEntry], dict[str, bytes],
         return "directory", entries, texts, warnings
 
     suffix = path.suffix.lower()
-    if suffix in (".pk3", ".zip"):
+    if suffix in (".pk3", ".zip", ".ipk3"):
         entries, texts, warnings = read_zip_archive(path)
         return "zip", entries, texts, warnings
     if suffix == ".wad":
@@ -2340,7 +2340,7 @@ def read_payload_for_auto_attempt(path: Path) -> tuple[dict[str, bytes], str]:
                 continue
         return payload, "directory"
 
-    if suffix in {".pk3", ".zip", ".pkz"}:
+    if suffix in {".pk3", ".zip", ".pkz", ".ipk3"}:
         with zipfile.ZipFile(path, "r") as archive:
             for info in archive.infolist():
                 if info.is_dir():
@@ -2372,7 +2372,7 @@ def write_auto_patch_attempt(result: ScanResult, source_path: Path, out_dir: Pat
     handled_check_ids: set[str] = set()
     payload, payload_kind = read_payload_for_auto_attempt(source_path)
     if payload_kind == "unsupported":
-        notes.append("Auto attempt skipped: only directory/.pk3/.zip inputs are supported.")
+        notes.append("Auto attempt skipped: only directory/.pk3/.ipk3/.zip inputs are supported.")
         return notes, handled_check_ids
     if not payload:
         notes.append("Auto attempt skipped: no readable payload entries were found.")
@@ -3204,7 +3204,7 @@ def parse_args(argv: list[str]) -> argparse.Namespace:
     parser = argparse.ArgumentParser(
         description="Scan local Doom mods and generate reviewable HCDE compat-mod patch candidates."
     )
-    parser.add_argument("mods", nargs="+", type=Path, help="Mod archives or unpacked folders to scan (.wad, .pk3, .zip, directory).")
+    parser.add_argument("mods", nargs="+", type=Path, help="Mod archives or unpacked folders to scan (.wad, .pk3, .ipk3, .zip, directory).")
     parser.add_argument(
         "--out",
         type=Path,

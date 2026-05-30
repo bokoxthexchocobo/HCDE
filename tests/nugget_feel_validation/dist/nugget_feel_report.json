@@ -1,0 +1,78 @@
+{
+  "generated_at": "2026-05-29T23:06:40+00:00",
+  "static_checks": [
+    {
+      "id": "cvar-smooth-curve-default-off",
+      "status": "passed",
+      "path": "src\\i_input_feel.cpp",
+      "needle": "CUSTOM_CVAR(Int, m_smooth_curve, 0,",
+      "notes": "default-off no-op preserved"
+    },
+    {
+      "id": "cvar-crosshair-recoil-default-off",
+      "status": "passed",
+      "path": "src\\i_input_feel.cpp",
+      "needle": "CVAR(Bool, r_crosshair_recoil, false,",
+      "notes": "render-only widget defaults off"
+    },
+    {
+      "id": "cvar-killfeed-default-off",
+      "status": "passed",
+      "path": "src\\i_input_feel.cpp",
+      "needle": "CVAR(Bool, r_killfeed, false,",
+      "notes": "killfeed widget defaults off"
+    },
+    {
+      "id": "cvar-footstep-surface-default-off",
+      "status": "passed",
+      "path": "src\\i_input_feel.cpp",
+      "needle": "CVAR(Bool, snd_footsteps_surface, false,",
+      "notes": "footstep surface alias defaults off"
+    },
+    {
+      "id": "status-ccmd-present",
+      "status": "passed",
+      "path": "src\\i_input_feel.cpp",
+      "needle": "CCMD(m_input_status)",
+      "notes": "diagnostic CCMD wired"
+    },
+    {
+      "id": "smooth-curve-mouse-gate",
+      "status": "passed",
+      "path": "src\\g_game.cpp",
+      "needle": "m_smooth_curve",
+      "notes": "smoothing applied in input scaling, not playsim"
+    },
+    {
+      "id": "killfeed-hud-only",
+      "status": "passed",
+      "path": "src\\hcde_killfeed.cpp",
+      "needle": "killfeed",
+      "notes": "killfeed C++ surface present"
+    },
+    {
+      "id": "doc-audit-present",
+      "status": "passed",
+      "path": "docs\\HCDE_NUGGET_FEEL_AUDIT.md",
+      "needle": "Phase 6",
+      "notes": "audit doc present and references soak phase"
+    }
+  ],
+  "soak_rows": [
+    {
+      "id": "usercmd-byte-default",
+      "status": "pending-runtime-launch",
+      "goal": "Record a 30-second demo with all #9 CVARs at default; replay and confirm usercmd bytes are bit-identical to a baseline recorded before the scaffold landed."
+    },
+    {
+      "id": "usercmd-byte-feel-on",
+      "status": "pending-runtime-launch",
+      "goal": "Record a demo with m_smooth_curve=1 and the others on; replay and confirm authoritative state hashes match a parallel run."
+    },
+    {
+      "id": "multiplayer-mismatch",
+      "status": "pending-runtime-launch",
+      "goal": "Two clients with opposite feel-CVAR settings stay in sync over a 60s session."
+    }
+  ]
+}

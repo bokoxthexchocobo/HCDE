@@ -912,7 +912,12 @@ static const FServerQuerySnapshot& GetCachedServerQuerySnapshot()
 static bool SendLauncherInfo(const sockaddr_in& to, const uint8_t* request, int msgSize)
 {
 	FQueryWriter writer = {};
-	const FServerQuerySnapshot& snapshot = GetCachedServerQuerySnapshot();
+	// Take a value copy of the cached snapshot. GetCachedServerQuerySnapshot()
+	// releases its internal mutex when it returns, so holding a reference to
+	// the static cache while we encode would race with any other thread that
+	// triggers a refresh (the cache strings are FString members that get
+	// re-assigned). The copy is cheap and side-steps the lifetime question.
+	const FServerQuerySnapshot snapshot = GetCachedServerQuerySnapshot();
 
 	if (!writer.WriteLong(uint32_t(MSG_CHALLENGE)) ||
 	    !writer.WriteLong(uint32_t(I_msTime() & 0xffffffffu)))

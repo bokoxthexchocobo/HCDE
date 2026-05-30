@@ -12,6 +12,7 @@
 #include "c_dispatch.h"
 #include "common/engine/i_net.h"
 #include "doomstat.h"
+#include "i_system.h"
 #include "m_argv.h"
 #include "printf.h"
 #include "version.h"
@@ -214,6 +215,21 @@ uint32_t HCDERconHash(const char* text)
 		hash *= 16777619u;
 	}
 	return hash;
+}
+
+uint32_t HCDERconBuildNonceBits(const sockaddr_in& addr)
+{
+	// This is not a replacement for the future HMAC/password-verifier work,
+	// but the server nonce itself should still be non-predictable. Use the
+	// platform entropy helper, then mix in per-connection metadata so fallback
+	// seed sources cannot repeat trivially across back-to-back accepts.
+	uint32_t nonce = I_MakeRNGSeed();
+	nonce ^= (I_MakeRNGSeed() << 1) | (I_MakeRNGSeed() >> 31);
+	nonce ^= uint32_t(ntohl(addr.sin_addr.s_addr));
+	nonce ^= uint32_t(ntohs(addr.sin_port)) << 16;
+	nonce ^= uint32_t(RconTransport.ConnectionCount * 0x9e3779b9u);
+	nonce ^= uint32_t(gametic);
+	return nonce;
 }
 
 FString HCDERconBuildVerifier(const FString& nonce)
@@ -451,7 +467,7 @@ int HCDERconDrainIngress()
 		slot->Socket = accepted;
 		slot->Authenticated = false;
 		slot->BufferUsed = 0;
-		slot->Nonce.Format("%08x", HCDERconHash(GAMENAME) ^ uint32_t(RconTransport.ConnectionCount + gametic));
+		slot->Nonce.Format("%08x", HCDERconBuildNonceBits(addr));
 		++RconTransport.ConnectionCount;
 		FString hello;
 		hello.Format("nonce %s", slot->Nonce.GetChars());

@@ -117,6 +117,34 @@ CCMD (iddqd)
 	Net_WriteInt8 (CHT_IDDQD);
 }
 
+CCMD (idkfa)
+{
+	if (CheckCheatmode ())
+		return;
+
+	Net_WriteInt8 (DEM_GENERICCHEAT);
+	Net_WriteInt8 (CHT_IDKFA);
+}
+
+// Common transposition of the classic IDKFA cheat.
+CCMD (idfka)
+{
+	if (CheckCheatmode ())
+		return;
+
+	Net_WriteInt8 (DEM_GENERICCHEAT);
+	Net_WriteInt8 (CHT_IDKFA);
+}
+
+CCMD (idfa)
+{
+	if (CheckCheatmode ())
+		return;
+
+	Net_WriteInt8 (DEM_GENERICCHEAT);
+	Net_WriteInt8 (CHT_IDFA);
+}
+
 CCMD (buddha)
 {
 	if (CheckCheatmode())

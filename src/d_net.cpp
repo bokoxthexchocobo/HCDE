@@ -813,30 +813,29 @@ static uint64_t LastHCDELiveSnapshotRejectReportMS = 0u;
 struct FInvasionMonsterProfile
 {
 	const char* ClassName; // Doom actor class name (e.g. "DoomImp").
-	int Cost;             // Spawn cost (unused in Stage 10 director).
 	int MinWave;          // Earliest wave this monster can appear in pool-based spawning.
 };
 
 static const FInvasionMonsterProfile InvasionMonsterProfiles[] =
 {
-	{ "ZombieMan", 1, 1 },
-	{ "ShotgunGuy", 2, 1 },
-	{ "DoomImp", 2, 1 },
-	{ "ChaingunGuy", 3, 2 },
-	{ "Demon", 4, 1 },
-	{ "Spectre", 4, 1 },
-	{ "LostSoul", 2, 1 },
-	{ "Cacodemon", 10, 2 },
-	{ "HellKnight", 15, 3 },
-	{ "Revenant", 15, 3 },
-	{ "Arachnotron", 18, 4 },
-	{ "Fatso", 20, 4 },
-	{ "PainElemental", 25, 4 },
-	{ "BaronOfHell", 40, 5 },
-	{ "Archvile", 60, 6 },
-	{ "WolfensteinSS", 5, 2 },
-	{ "Cyberdemon", 200, 8 },
-	{ "SpiderMastermind", 180, 8 }
+	{ "ZombieMan", 1 },
+	{ "ShotgunGuy", 1 },
+	{ "DoomImp", 1 },
+	{ "ChaingunGuy", 2 },
+	{ "Demon", 1 },
+	{ "Spectre", 1 },
+	{ "LostSoul", 1 },
+	{ "Cacodemon", 2 },
+	{ "HellKnight", 3 },
+	{ "Revenant", 3 },
+	{ "Arachnotron", 4 },
+	{ "Fatso", 4 },
+	{ "PainElemental", 4 },
+	{ "BaronOfHell", 5 },
+	{ "Archvile", 6 },
+	{ "WolfensteinSS", 2 },
+	{ "Cyberdemon", 8 },
+	{ "SpiderMastermind", 8 }
 };
 
 static int CutsceneCountdown = 0;	// If enough people are ready, count down the timer. This won't reset between unreadies, only on intermission entrance.
@@ -845,7 +844,7 @@ static int CutsceneReadyLastToggle[MAXPLAYERS] = {};
 static EInvasionState InvasionState = INVS_DISABLED; // Authoritative game phase.
 static int InvasionStateTics = 0;                  // Time remaining in current phase (if applicable).
 static int InvasionPendingWave = 0;                // Wave queued during countdown; committed on wave start.
-static int InvasionNoParticipantTics = 0;          // Grace window for dedicated server reconnects with no participants.
+static int InvasionNoParticipantTics = 0;          // Grace window for authority transitions/reconnects with no participants.
 static EInvasionState InvasionAnnouncementState = INVS_DISABLED; // Local last-seen state for HUD/console announcement dedupe.
 static int InvasionAnnouncementWave = 0;              // Local last-seen wave for announcement transitions.
 static int InvasionAnnouncementLastCountdownSecond = -1; // Last second announced for "Prepare for invasion".
@@ -5596,7 +5595,7 @@ void NetUpdate(int tics)
 	}
 
 	bool netGood = Net_UpdateStatus();
-	const int startTic = ClientTic;
+	const int commandStartTic = ClientTic;
 	tics = min<int>(tics, MAXSENDTICS * TicDup);
 	// Hard ceiling on how many commands the client may generate ahead of the
 	// server gametic. The world-tic cap further down is the active lead
@@ -5609,9 +5608,9 @@ void NetUpdate(int tics)
 	// legacy BACKUPTICS/2 ceiling so the safety net only fires for actually
 	// pathological lead growth.
 	const int commandLeadLimit = BACKUPTICS / 2;
-	if ((startTic + tics - gametic) / TicDup > commandLeadLimit)
+	if ((commandStartTic + tics - gametic) / TicDup > commandLeadLimit)
 	{
-		tics = (gametic + commandLeadLimit * TicDup) - startTic;
+		tics = (gametic + commandLeadLimit * TicDup) - commandStartTic;
 		if (tics <= 0)
 		{
 			// Legacy escape hatch: still enter the loop once so I_StartTic /
@@ -5744,7 +5743,7 @@ void NetUpdate(int tics)
 
 	constexpr int MaxPlayersPerPacket = 16;
 
-	int startSequence = startTic / TicDup;
+	int startSequence = commandStartTic / TicDup;
 	int endSequence = newestTic;
 	int quitters = 0;
 	int quitNums[MAXPLAYERS];

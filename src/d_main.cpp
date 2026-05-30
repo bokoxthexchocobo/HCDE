@@ -4527,7 +4527,7 @@ static int D_DoomMain_Internal (void)
 		// For now these need to remain verifiable over the network.
 		GetCmdLineFiles(pwads, true);
 		DebugTrace::Mark("startup", "third GetCmdLineFiles done");
-		HCDE_ModCompat_AppendFiles(pwads, GameConfig);
+		HCDE_ModCompat_AppendFiles(pwads, GameConfig, &allwads);
 		DebugTrace::Mark("startup", "HCDE_ModCompat_AppendFiles done");
 
 		if (!iwad_info) return 0;	// user exited the selection popup via cancel button.

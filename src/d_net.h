@@ -81,6 +81,18 @@ public:
 	FDynamicBuffer();
 	~FDynamicBuffer();
 
+	// FDynamicBuffer owns a heap allocation and frees it in the destructor.
+	// Without these, a default-generated copy/move would alias the same
+	// `m_Data` pointer across two instances and the second destructor would
+	// double-free. None of the FNetTic / FClientNetState plumbing actually
+	// copies these (everything lives in the global `ClientStates[]` array),
+	// but explicitly deleting the copy/move operations turns a future
+	// accidental copy into a compile-time error instead of a runtime crash.
+	FDynamicBuffer(const FDynamicBuffer&) = delete;
+	FDynamicBuffer& operator=(const FDynamicBuffer&) = delete;
+	FDynamicBuffer(FDynamicBuffer&&) = delete;
+	FDynamicBuffer& operator=(FDynamicBuffer&&) = delete;
+
 	void SetData(const uint8_t* data, int len);
 	uint8_t* GetData(int* len = nullptr);
 	TArrayView<uint8_t> GetTArrayView();

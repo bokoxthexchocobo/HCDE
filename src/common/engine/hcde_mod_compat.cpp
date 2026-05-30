@@ -399,21 +399,31 @@ static void HCDE_ModCompat_NormalizeAliensEradicationOrder(std::vector<FileSys::
 	}
 }
 
-void HCDE_ModCompat_AppendFiles(std::vector<FileSys::ResourceName>& pwads, FConfigFile* config)
+void HCDE_ModCompat_AppendFiles(std::vector<FileSys::ResourceName>& pwads, FConfigFile* config, const std::vector<FileSys::ResourceName>* iwads)
 {
 	ActiveCompatFlags = 0u;
 	ActiveStartupMapOverride = nullptr;
 
-	if (pwads.empty())
+	if (pwads.empty() && (iwads == nullptr || iwads->empty()))
 	{
 		return;
 	}
 
 	HCDE_ModCompat_NormalizeAliensEradicationOrder(pwads);
 
+	// Most compat resources are keyed by files passed through -file, but some
+	// total conversions (notably Blade of Agony) can be selected as the IWAD.
+	// Include the chosen IWADs in detection while still appending compat PK3s
+	// to the normal PWAD list so load order remains explicit and late.
+	std::vector<FileSys::ResourceName> matchWads = pwads;
+	if (iwads != nullptr)
+	{
+		matchWads.insert(matchWads.end(), iwads->begin(), iwads->end());
+	}
+
 	for (const auto& entry : ModCompatEntries)
 	{
-		if (!HCDE_ModCompat_EntryMatches(pwads, entry))
+		if (!HCDE_ModCompat_EntryMatches(matchWads, entry))
 		{
 			continue;
 		}

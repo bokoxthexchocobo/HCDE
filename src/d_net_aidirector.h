@@ -23,11 +23,11 @@ struct FHCDEAIDirectorState
 {
 	bool   AuthorityActive = false;
 	int    TicksSinceStart = 0;
-	int    LastTickWallclockMs = 0;     // diagnostic only
+	int64_t LastTickWallclockMs = 0;    // diagnostic only
 	int    LastSweepTic = 0;
 	int    SweepCount = 0;
-	int    LastSweepWallclockMs = 0;
-	int    MaxSweepWallclockMs = 0;
+	int64_t LastSweepWallclockMs = 0;
+	int64_t MaxSweepWallclockMs = 0;
 	int    MonsterCountObserved = 0;
 	int    AliveMonsterCountObserved = 0;
 	int    DormantMonsterCountObserved = 0;

@@ -22,6 +22,16 @@ namespace
 {
 FHCDEAIDirectorState DirectorState;
 
+// All raw AActor pointers in the director are owned by primaryLevel and may
+// be destroyed at any time during the playsim tick that follows a sweep.
+// We never DEREFERENCE these pointers between sweeps -- comparisons with a
+// freshly-supplied callsite pointer are still safe because the callsite is
+// passing a live actor it already owns, and a freed pointer can only match
+// if the heap reused that exact address. Per-sweep we Clear() these arrays
+// and re-discover monsters from the level iterator, so a stale entry can
+// never survive longer than a single sweep window. Any future code that
+// wants to read `entry.Actor->something` MUST first re-validate via the
+// thinker iterator, or this turns into a use-after-free.
 struct FHCDEAIObservedMonster
 {
 	const AActor* Actor = nullptr;
@@ -123,7 +133,7 @@ bool HCDEAIDirectorConsumeRegroupTarget(const AActor* actor, double* outX, doubl
 
 static void HCDEAIDirectorObserveMonsters()
 {
-	const int sweepStartMs = I_msTime();
+	const uint64_t sweepStartMs = I_msTime();
 	DirectorState.LastSweepTic = primaryLevel != nullptr ? primaryLevel->time : 0;
 	++DirectorState.SweepCount;
 	DirectorState.MonsterCountObserved = 0;
@@ -207,7 +217,7 @@ static void HCDEAIDirectorObserveMonsters()
 		DirectorState.HintsIssuedTotal += DirectorState.HintsIssuedThisTic;
 	}
 
-	DirectorState.LastSweepWallclockMs = int(I_msTime() - sweepStartMs);
+	DirectorState.LastSweepWallclockMs = int64_t(I_msTime() - sweepStartMs);
 	if (DirectorState.LastSweepWallclockMs > DirectorState.MaxSweepWallclockMs)
 	{
 		DirectorState.MaxSweepWallclockMs = DirectorState.LastSweepWallclockMs;
@@ -225,7 +235,7 @@ void HCDEAIDirectorTick()
 
 	DirectorState.AuthorityActive = true;
 	DirectorState.TicksSinceStart++;
-	DirectorState.LastTickWallclockMs = I_msTime();
+	DirectorState.LastTickWallclockMs = int64_t(I_msTime());
 
 	if (DirectorState.TicksSinceStart == 1 || (DirectorState.TicksSinceStart % *sv_aidirector_sweep_tics) == 0)
 	{
@@ -253,8 +263,8 @@ CCMD(ai_status)
 	Printf(PRINT_HIGH, "  ticks-since-start         = %d\n", state.TicksSinceStart);
 	Printf(PRINT_HIGH, "  last-sweep-tic            = %d\n", state.LastSweepTic);
 	Printf(PRINT_HIGH, "  sweep-count               = %d\n", state.SweepCount);
-	Printf(PRINT_HIGH, "  last-sweep-wallclock-ms   = %d (diagnostic only)\n", state.LastSweepWallclockMs);
-	Printf(PRINT_HIGH, "  max-sweep-wallclock-ms    = %d (diagnostic only)\n", state.MaxSweepWallclockMs);
+	Printf(PRINT_HIGH, "  last-sweep-wallclock-ms   = %lld (diagnostic only)\n", static_cast<long long>(state.LastSweepWallclockMs));
+	Printf(PRINT_HIGH, "  max-sweep-wallclock-ms    = %lld (diagnostic only)\n", static_cast<long long>(state.MaxSweepWallclockMs));
 	Printf(PRINT_HIGH, "  monsters-observed         = %d\n", state.MonsterCountObserved);
 	Printf(PRINT_HIGH, "  monsters-alive            = %d\n", state.AliveMonsterCountObserved);
 	Printf(PRINT_HIGH, "  monsters-dormant          = %d\n", state.DormantMonsterCountObserved);
@@ -267,7 +277,7 @@ CCMD(ai_status)
 	Printf(PRINT_HIGH, "  hints-issued-this-tic     = %d\n", state.HintsIssuedThisTic);
 	Printf(PRINT_HIGH, "  hints-issued-total        = %d\n", state.HintsIssuedTotal);
 	Printf(PRINT_HIGH, "  hints-consumed-total      = %d (regroup direction biases applied)\n", state.HintsConsumedTotal);
-	Printf(PRINT_HIGH, "  last-tick-wallclock-ms    = %d (diagnostic only)\n", state.LastTickWallclockMs);
+	Printf(PRINT_HIGH, "  last-tick-wallclock-ms    = %lld (diagnostic only)\n", static_cast<long long>(state.LastTickWallclockMs));
 	Printf(PRINT_HIGH, "  phase                     = Phase 3: deterministic regroup chase-direction bias; no replication.\n");
 	Printf(PRINT_HIGH, "  see docs/HCDE_AIDIRECTOR_AUDIT.md for boundaries.\n");
 	Printf(PRINT_HIGH, "========================\n");

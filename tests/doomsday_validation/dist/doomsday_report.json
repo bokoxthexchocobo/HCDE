@@ -1,0 +1,106 @@
+{
+  "generated_at": "2026-05-30T17:54:40+00:00",
+  "static_checks": [
+    {
+      "id": "fakeradio-cvar",
+      "status": "passed",
+      "path": "src\\r_doomsday_features.cpp",
+      "needle": "CVAR(Bool, r_fakeradio",
+      "notes": "needle found"
+    },
+    {
+      "id": "fakeradio-strength",
+      "status": "passed",
+      "path": "src\\r_doomsday_features.cpp",
+      "needle": "r_fakeradio_strength",
+      "notes": "needle found"
+    },
+    {
+      "id": "geom-ao-cvar",
+      "status": "passed",
+      "path": "src\\r_doomsday_features.cpp",
+      "needle": "CVAR(Bool, r_geom_ao",
+      "notes": "needle found"
+    },
+    {
+      "id": "geom-ao-strength",
+      "status": "passed",
+      "path": "src\\r_doomsday_features.cpp",
+      "needle": "r_geom_ao_strength",
+      "notes": "needle found"
+    },
+    {
+      "id": "reverb-cvar",
+      "status": "passed",
+      "path": "src\\r_doomsday_features.cpp",
+      "needle": "CVAR(Bool, snd_env_reverb",
+      "notes": "needle found"
+    },
+    {
+      "id": "status-ccmd",
+      "status": "passed",
+      "path": "src\\r_doomsday_features.cpp",
+      "needle": "CCMD(r_doomsday_status)",
+      "notes": "needle found"
+    },
+    {
+      "id": "render-blend-hook",
+      "status": "passed",
+      "path": "src\\rendering\\2d\\v_blend.cpp",
+      "needle": "HCDE #6 Doomsday-style presentation hook",
+      "notes": "needle found"
+    },
+    {
+      "id": "render-fakeradio-read",
+      "status": "passed",
+      "path": "src\\rendering\\2d\\v_blend.cpp",
+      "needle": "r_fakeradio_strength",
+      "notes": "needle found"
+    },
+    {
+      "id": "render-geom-ao-read",
+      "status": "passed",
+      "path": "src\\rendering\\2d\\v_blend.cpp",
+      "needle": "r_geom_ao_strength",
+      "notes": "needle found"
+    },
+    {
+      "id": "reverb-openal-gate",
+      "status": "passed",
+      "path": "src\\common\\audio\\sound\\oalsound.cpp",
+      "needle": "snd_env_reverb gates environmental reverb",
+      "notes": "needle found"
+    },
+    {
+      "id": "reverb-openal-efx",
+      "status": "passed",
+      "path": "src\\common\\audio\\sound\\oalsound.cpp",
+      "needle": "LoadReverb(env",
+      "notes": "needle found"
+    },
+    {
+      "id": "audit-doc",
+      "status": "passed",
+      "path": "docs\\HCDE_DOOMSDAY_AUDIT.md",
+      "needle": "first render-path fallback",
+      "notes": "needle found"
+    }
+  ],
+  "soak_rows": [
+    {
+      "id": "render-default-off",
+      "status": "pending-runtime-launch",
+      "goal": "Launch MAP01 with all #6 CVARs default off and compare a screenshot hash to baseline."
+    },
+    {
+      "id": "render-fallback-on",
+      "status": "pending-runtime-launch",
+      "goal": "Launch with r_fakeradio=1 and r_geom_ao=1; verify only local view-blend output changes."
+    },
+    {
+      "id": "reverb-backend",
+      "status": "pending-runtime-launch",
+      "goal": "Launch with snd_backend=openal, snd_efx=1, snd_env_reverb toggled on/off; verify EFX reverb changes and dry fallback."
+    }
+  ]
+}

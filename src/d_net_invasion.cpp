@@ -2159,12 +2159,14 @@ static void Net_TickInvasionState()
 		return;
 	}
 
-	// Dedicated servers can temporarily have no active participants between
-	// probe joins and real players. Keep the current invasion wave metadata
-	// stable for a short reconnect window before forcing a safe reset.
-	if (I_IsDedicatedServerMode()
-		&& Net_IsInvasionRoundActiveState(InvasionState)
-		&& Net_CountInvasionParticipants() <= 0)
+	// Any authority mode can briefly report zero participants while a slot,
+	// pawn, or late-join handoff is settling. Keep wave metadata stable for a
+	// short reconnect/transition window instead of immediately tearing down
+	// the active invasion state.
+	const bool noActiveInvasionParticipants =
+		Net_IsInvasionRoundActiveState(InvasionState)
+		&& Net_CountInvasionParticipants() <= 0;
+	if (noActiveInvasionParticipants)
 	{
 		InvasionWipeGraceTics = 0;
 		if (InvasionNoParticipantTics <= 0)
@@ -2193,8 +2195,8 @@ static void Net_TickInvasionState()
 		const int participants = Net_CountInvasionParticipants();
 		if (participants <= 0)
 		{
-			// No active participants remain; reset any active wave state.
-			Net_ResetInvasionState("no-participants");
+			// The grace gate above owns no-participant teardown. Let the state
+			// tick continue idling until the timeout expires or a player returns.
 			return;
 		}
 
