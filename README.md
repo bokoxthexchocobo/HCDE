@@ -53,7 +53,10 @@ See [Building](https://github.com/bokoxthexchocobo/HCDE/wiki/Building) for requi
 
 ## Recent updates
 
-- Single-player Invasion (`sv_gametype 4`) starts cleanly, including from external launchers that pass `+set sv_gametype 4` (Doom Connector, etc.).
+- Windows desktop OpenGL backend is auto-routed to OpenGL ES at startup so a stale `vid_preferbackend 0` config no longer black-screens after the splash. Vulkan stays the default Windows backend; tracked in [#31](https://github.com/bokoxthexchocobo/HCDE/issues/31).
+- Single-player startup now shows a real "HCDE is loading..." window during ZDL command-line resolution, IWAD/mod scanning, compat patching, and archive mounting, so the window can't appear, vanish, then reappear minutes later.
+- NanoBSP loader (`hcde_nanobsp_loader`, `r_nanobsp_status`) and the Eternity spatial-audio facade (`snd_backend eternity`, `snd_eternity_status`) shipped — board items [#4](https://github.com/bokoxthexchocobo/HCDE/issues/4) and [#3](https://github.com/bokoxthexchocobo/HCDE/issues/3).
+- Single-player Invasion (`sv_gametype 4`) starts cleanly, including from external launchers that pass `+set sv_gametype 4` (Doom Connector, ZDL, etc.). Invasion announcements are HCDE-styled ("Prepare for Invasion! Wave 1 starting in 5,4,3,2,1.. BEGIN!" / "Wave N complete!").
 - `hcde_lag_hud` and `hcde_hud_debug` are decoupled — the perf/lag overlay is opt-in (`hcde_lag_hud 1`) instead of being forced on by the diagnostic-logging gate.
 - Music lookup prioritizes mod-nested `music/` folders so OGG-only mods (e.g. `D2Re.pk3`) play correctly when `sndfile.dll` is staged.
 - Single-player death/respawn is robust to autosave failures; respawn input is buffered through the death delay.
