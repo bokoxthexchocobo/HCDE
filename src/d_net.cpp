@@ -1229,20 +1229,10 @@ static void Net_TickInvasionAnnouncements()
 			FString msg;
 			const int pendingWave = max(InvasionPendingWave, 0);
 			const int maxWaves = max(InvasionWaveDirector.MaxWaves, 0);
-			// If a specific pending wave is known, announce the wave number instead
-			// of the generic "Prepare for invasion" text so players see "Wave N in: X".
-			if (pendingWave > 0)
-			{
-				if (pendingWave == maxWaves)
-					msg.Format("Final wave in: %d", seconds);
-				else
-					msg.Format("Wave %d in: %d", pendingWave, seconds);
-			}
+			if (pendingWave > 0 && pendingWave == maxWaves)
+				msg.Format("Final wave in: %d", seconds);
 			else
-			{
-				// Fallback for countdowns that are not tied to a specific pending wave.
 				msg.Format("Prepare for invasion: %d", seconds);
-			}
 			Net_ShowInvasionStatusMessage(msg.GetChars());
 			InvasionAnnouncementLastCountdownSecond = seconds;
 		}
@@ -1253,13 +1243,7 @@ static void Net_TickInvasionAnnouncements()
 		if (seconds > 0 && seconds != InvasionAnnouncementLastCountdownSecond)
 		{
 			FString msg;
-			// Announce the upcoming wave number explicitly during intermission.
-			const int nextWave = max(InvasionWaveDirector.Wave + 1, 1);
-			const int maxWaves = max(InvasionWaveDirector.MaxWaves, 0);
-			if (nextWave > 0 && nextWave == maxWaves)
-				msg.Format("Final wave in: %d", seconds);
-			else
-				msg.Format("Wave %d in: %d", nextWave, seconds);
+			msg.Format("Next wave in: %d", seconds);
 			Net_ShowInvasionStatusMessage(msg.GetChars());
 			InvasionAnnouncementLastCountdownSecond = seconds;
 		}
