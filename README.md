@@ -29,7 +29,7 @@ How-to guides and reference docs live on the [HCDE Wiki](https://github.com/boko
 | --- | --- |
 | `hcde` | Client / game executable |
 | `hcdeserv` | Dedicated server |
-| `hcdemaster` | Standalone public-server registry (master server) |
+| `hcdercon` | Local RCON utility for dedicated-server admin commands |
 
 Master protocol constants live in `protocol/` so engine, launcher, and master stay separate (`protocol/hcde_master_protocol.json`, `protocol/hcde_master_protocol.h`).
 

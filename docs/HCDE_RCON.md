@@ -11,42 +11,32 @@ gameplay extension; it must not borrow the gameplay packet stream and it
 must not influence the authoritative simulation except through the same
 console commands a local operator would run.
 
-## Current state (2026-05-28)
+## Current state (2026-05-31)
 
-The configuration surface and transport-only state machine have landed. See
-`src/d_net_rcon.{cpp,h}`:
+The local TCP listener, nonce/password handshake, diagnostic command surface,
+and standalone client have landed. See `src/d_net_rcon.{cpp,h}` and
+`tools/hcdercon/`:
 
 - `sv_rcon_enable` (Bool, default `0`, `CVAR_ARCHIVE | CVAR_SERVERINFO`)
 - `sv_rcon_password` (String, default empty, `CVAR_ARCHIVE | CVAR_SERVERINFO`)
+- `sv_rcon_port` (Int, default `0`; listener disabled until non-zero)
 - `rcon_status` console command for visibility
-- `HCDERconShouldAcceptCommands()` predicate for future gating
+- `HCDERconShouldAcceptCommands()` predicate for listener gating
 - `HCDERconStartListener()`, `HCDERconStopListener()`, and
-  `HCDERconPollListener()` transport-state scaffold
+  `HCDERconPollListener()` transport lifecycle
+- `hcdercon --port <port> --password <password> [--host 127.0.0.1] <command>`
 
-There is **no socket, no authentication, and no command dispatcher**. Setting
-`sv_rcon_enable 1` does not open a port today. The state machine can report
-`disabled`, `blocked`, or `listening-scaffold` so status output is ready for the
-real TCP loop.
+The listener binds only to loopback (`127.0.0.1`) and only when RCON is enabled,
+a password is configured, a non-zero port is set, and the process is the local
+HCDE service authority. Frames are length-prefixed with a 4096-byte ceiling.
 
-### Transport-phase TODO ledger (2026-05-28)
-
-`sv_rcon_port` exists in the current scaffold and listener lifecycle functions
-now maintain status. The remaining Phase 1 work is the actual socket loop:
-
-- Bind only when `HCDERconShouldAcceptCommands()` is true, `sv_rcon_port > 0`,
-  and the process is the local HCDE service authority.
-- Accept length-prefixed frames with a hard ceiling of 4096 bytes.
-- Drop clients that send oversized, partial-stalled, or malformed frames.
-- Return only fixed diagnostic replies during Phase 1 (`HELLO`, `ERR auth not
-  implemented`, `ERR dispatch not implemented`). Do not execute commands yet.
-- Extend `rcon_status` to report listener state, bound port, connection count,
-  dropped frames, and auth/dispatch phase (`transport-only` until Phase 2/3).
-- Keep all sockets out of the gameplay packet lanes. No `NCMD_*`, no
-  `DEM_*`, no native snapshot traffic.
+The command dispatcher is intentionally narrow for now: `ping`, `status`, and
+`rcon_status` are accepted after authentication. Wider admin commands still
+belong behind an explicit allowlist.
 
 ## Planned phases
 
-### Phase 1 -- Transport scaffold (next)
+### Phase 1 -- Transport scaffold (landed)
 
 - Dedicated TCP listener on a configurable port (`sv_rcon_port`, default
   off / 0 = disabled).
@@ -57,19 +47,19 @@ now maintain status. The remaining Phase 1 work is the actual socket loop:
 - All transport state lives in `d_net_rcon.cpp`; the gameplay packet pump
   in `i_net.cpp` is untouched.
 
-### Phase 2 -- Authentication
+### Phase 2 -- Authentication (minimal version landed)
 
 - Server emits a fresh nonce per connection.
-- Client sends `HMAC(sv_rcon_password, nonce)` as the auth response.
-- Constant-time comparison; on failure, drop the connection and rate-limit
-  the source address (e.g. exponential backoff up to N attempts/min).
+- Client sends a nonce/password verifier as the auth response. The current
+  implementation uses the same lightweight verifier on both server and
+  `hcdercon`; HMAC/rate limiting remain hardening work.
 - Plaintext passwords never travel on the wire; the CVAR is only used to
   derive the local HMAC key.
 - A future hardening pass can swap the CVAR for a key-derivation source
   (e.g. libsodium argon2 verifier loaded from a separate file) without
   changing the wire protocol.
 
-### Phase 3 -- Command dispatch
+### Phase 3 -- Command dispatch (diagnostics only today)
 
 - Strict allowlist of commands. First-class candidates:
   - `say`, `kick`, `kickban`, `addipban`, `removeipban`
@@ -85,10 +75,8 @@ now maintain status. The remaining Phase 1 work is the actual socket loop:
 
 ### Phase 4 -- Tooling
 
-- Provide a tiny standalone client (`hcdercon`) that handles handshake,
-  prompt, and command piping. Can live in `tools/hcdercon/` or under
-  `tests/` as a Python helper -- whichever fits the existing tooling
-  conventions.
+- `hcdercon` lives in `tools/hcdercon/` and is included in Windows runtime
+  packages.
 - `gh` / CI integration for automated soak runs that need to flip server
   state mid-test.
 
@@ -122,6 +110,6 @@ now maintain status. The remaining Phase 1 work is the actual socket loop:
 | Concern | File |
 | --- | --- |
 | CVAR + status today | `src/d_net_rcon.{cpp,h}` |
-| Future transport | TBD; same file is fine for the listener loop |
+| Transport | `src/d_net_rcon.cpp` |
 | Future dispatch / allowlist | TBD; new file `src/d_net_rcon_dispatch.{cpp,h}` |
-| Future tooling | TBD; under `tools/` or `tests/` per existing conventions |
+| Tooling | `tools/hcdercon/` |

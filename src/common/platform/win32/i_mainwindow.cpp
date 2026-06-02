@@ -244,7 +244,7 @@ static const ServerGuiSettingDefinition ServerGuiAdvancedSettings[] =
 	{ L"Invasion Budget Step", "sv_invasionbudgetstep", ServerGuiSettingKind::Integer, L"8", 0, 4096, false, 4 },
 	{ L"Invasion Per Player", "sv_invasionperplayer", ServerGuiSettingKind::Integer, L"6", 0, 4096, false, 4 },
 	{ L"Invasion Spawn Interval", "sv_invasionspawninterval", ServerGuiSettingKind::Decimal, L"0.35", 0.01, 60, false, 8 },
-	{ L"Invasion Spawn Burst", "sv_invasionspawnburst", ServerGuiSettingKind::Integer, L"3", 1, 128, false, 3 },
+	{ L"Invasion Spawn Burst", "sv_invasionspawnburst", ServerGuiSettingKind::Integer, L"1", 1, 128, false, 3 },
 	{ L"Invasion Boss Every", "sv_invasionbosswaveevery", ServerGuiSettingKind::Integer, L"5", 0, 255, false, 3 },
 	{ L"Invasion Boss Bonus", "sv_invasionbossbonus", ServerGuiSettingKind::Integer, L"20", 0, 4096, false, 4 },
 	{ L"Invasion Tagged Spots", "sv_invasionspotusemaptags", ServerGuiSettingKind::Choice, L"0", 0, 1, false, 1, ServerGuiBoolChoices, SERVER_GUI_ARRAY_COUNT(ServerGuiBoolChoices) },
@@ -362,7 +362,7 @@ static const char* const ServerGuiPresetInvasion[] =
 	"sv_invasionbudgetstep 8",
 	"sv_invasionperplayer 6",
 	"sv_invasionspawninterval 0.35",
-	"sv_invasionspawnburst 3",
+	"sv_invasionspawnburst 1",
 	"sv_invasionbosswaveevery 5",
 	"sv_invasionbossbonus 20",
 	"sv_invasionspotusemaptags 0",
@@ -1146,8 +1146,78 @@ LRESULT MainWindow::LConProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 		PostQuitMessage(0);
 		return 0;
 	}
+#else
+	switch (msg)
+	{
+	case WM_PAINT:
+	{
+		PAINTSTRUCT ps;
+		HDC hdc = BeginPaint(hWnd, &ps);
+		RECT rect = {};
+		GetClientRect(hWnd, &rect);
+		HBRUSH brush = CreateSolidBrush(RGB(8, 10, 12));
+		FillRect(hdc, &rect, brush);
+		DeleteObject(brush);
+
+		SetBkMode(hdc, TRANSPARENT);
+		SetTextColor(hdc, RGB(226, 223, 219));
+
+		FString message = "HCDE is loading...\n\n";
+		if (mainwindow.StartupStatusText.IsNotEmpty())
+		{
+			message += mainwindow.StartupStatusText;
+			message += "\n\n";
+		}
+		message += "Large ZDL mod stacks can take a few minutes while archives are scanned.";
+
+		RECT textRect = rect;
+		textRect.left += 24;
+		textRect.right -= 24;
+		DrawTextA(hdc, message.GetChars(), -1, &textRect,
+			DT_CENTER | DT_VCENTER | DT_WORDBREAK | DT_NOPREFIX);
+		EndPaint(hWnd, &ps);
+		return 0;
+	}
+
+	case WM_ERASEBKGND:
+		return 1;
+
+	case WM_CLOSE:
+		// During the pre-video loading phase this window is only a status
+		// surface. Ignore close requests so external launchers or accidental
+		// clicks do not abort startup while large files are still scanning.
+		if (mainwindow.StartupStatusVisible)
+			return 0;
+		break;
+	}
 #endif
 	return DefWindowProc(hWnd, msg, wParam, lParam);
+}
+
+void MainWindow::ShowStartupStatus(const char* status)
+{
+	StartupStatusText = status != nullptr ? status : "";
+	StartupStatusVisible = true;
+	if (Window == NULL)
+	{
+		return;
+	}
+
+	SetWindowTextA(Window, "HCDE - Loading");
+	ShowWindow(Window, SW_SHOWNORMAL);
+	UpdateWindow(Window);
+	InvalidateRect(Window, NULL, FALSE);
+	RedrawWindow(Window, NULL, NULL, RDW_INVALIDATE | RDW_UPDATENOW | RDW_NOERASE);
+}
+
+void MainWindow::ClearStartupStatus()
+{
+	StartupStatusText = "";
+	StartupStatusVisible = false;
+	if (Window != NULL)
+	{
+		InvalidateRect(Window, NULL, FALSE);
+	}
 }
 
 void MainWindow::PrintStr(const char* cp)

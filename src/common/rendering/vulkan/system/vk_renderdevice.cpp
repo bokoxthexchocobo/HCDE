@@ -54,6 +54,11 @@
 #include "vulkan/textures/vk_samplers.h"
 #include "vulkan/textures/vk_texture.h"
 
+// Forward declared here to avoid pulling platform-specific i_system.h
+// into common Vulkan code. Implemented in i_system.cpp on Windows
+// (real DWM kick) and as a no-op on POSIX.
+void I_PresentKickStartup();
+
 FString JitCaptureStackTrace(int framesToSkip, bool includeNativeFrames, int maxFrames = -1);
 
 EXTERN_CVAR(Int, gl_tonemap)
@@ -217,6 +222,12 @@ void VulkanRenderDevice::Update()
 
 	mCommands->WaitForCommands(true);
 	mCommands->UpdateGpuStats();
+
+	// Workaround for Windows 11 DWM compositor failing to pick up our
+	// just-presented swapchain image until external input wakes the
+	// window up. See I_PresentKickStartup() for full details. Self-
+	// disables after the startup grace window; no-op on non-Windows.
+	I_PresentKickStartup();
 
 	Super::Update();
 }

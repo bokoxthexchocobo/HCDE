@@ -1,0 +1,147 @@
+/*
+Boko's Skulltag Announcer Sndinfo file
+*/
+
+//	Medals
+
+announcer/Bok/accuracy						boaccu
+announcer/Bok/assist						boassist
+announcer/Bok/yourskillisnotenough			bonoteno	
+announcer/Bok/youfailit						boyoufai
+announcer/Bok/totaldomination				botdom
+announcer/Bok/spam						bospam
+announcer/Bok/capture						bocaptur
+announcer/Bok/defense						bodefens
+announcer/Bok/domination					bodomn
+announcer/Bok/excellent						boexcl
+announcer/Bok/firstfrag						boffrag
+announcer/Bok/fisting						bofistng
+announcer/Bok/llama							bollam
+announcer/Bok/impressive					boimpr
+announcer/Bok/incredible					boincr
+announcer/Bok/mostimpressive				bomimp
+announcer/Bok/perfect						boperfct
+announcer/Bok/precision						boprec
+
+//	Blue Team Sounds
+
+announcer/Bok/blueflagdropped				bobfldrp
+announcer/Bok/blueflagreturned				bobflrtn
+
+announcer/Bok/blueflagtaken					bobfltkn
+
+announcer/Bok/blueleads						boblueld
+announcer/Bok/bluescores					bobscore
+announcer/Bok/blueskulldropped				bobskdrp
+announcer/Bok/blueskullreturned				bobskrtn
+
+announcer/Bok/blueskulltaken				bobsktkn
+
+//	Red Team Sounds
+
+announcer/Bok/redflagdropped				borfldrp
+announcer/Bok/redflagreturned				borflrtn
+
+announcer/Bok/redflagtaken					borfltkn
+
+announcer/Bok/redleads						boredld
+announcer/Bok/redredskull					borrskul
+announcer/Bok/redscores						borscore
+announcer/Bok/redskulldropped				borskdrp
+announcer/Bok/redskullreturned				borskrtn
+
+announcer/Bok/redskulltaken					borsktkn
+
+//	Gold Team Sounds
+
+announcer/Bok/goldflagtaken					bogfltkn
+announcer/Bok/goldflagdropped				bogfldrp
+announcer/Bok/goldflagreturned				bogflrtn
+
+announcer/Bok/goldscores					bogscore
+
+announcer/Bok/goldskulltaken				bogsktkn
+announcer/Bok/goldskullreturned				bogskrtn
+announcer/Bok/goldskulldropped				atgskdrp
+
+//	Green Team Sounds
+
+announcer/Bok/greenflagtaken				bonfltkn
+announcer/Bok/greenflagdropped				bonfldrp
+announcer/Bok/greenflagreturned				bonflrtn
+
+announcer/Bok/greenscores					bonscore
+
+announcer/Bok/greenskulltaken				bonsktkn
+announcer/Bok/greenskullreturned			bonskrtn
+announcer/Bok/greenskulldropped				botnskdrp
+
+//	White Flag
+
+announcer/Bok/whiteflagreturned				bowflrtn
+
+//	Time Warnings
+
+announcer/Bok/oneminutewarning				boonmwrn
+announcer/Bok/fiveminutewarning				bofmnwrn
+
+//	Player Notifications
+
+announcer/Bok/nextroundin					bonxtrnd
+announcer/Bok/one							boone
+announcer/Bok/onefragleft					boonefrg
+announcer/Bok/preparetofight				boprepar
+announcer/Bok/teamsaretied					boteamtd
+announcer/Bok/youaretiedforthelead			botiedld
+announcer/Bok/youhavetheflag				bouhavfl
+announcer/Bok/yourteamhastheflag			botmhsfl
+announcer/Bok/youvelostthelead				bolostld
+announcer/Bok/youvetakenthelead				botaknld
+announcer/Bok/youwin						bowin
+announcer/Bok/two							botwo
+announcer/Bok/twofragsleft					botwofrg
+announcer/Bok/victory						bovictor
+announcer/Bok/theenemyhastheflag			boenhsfl
+announcer/Bok/three							bothree
+announcer/Bok/threefragsleft				bothrfrg
+announcer/Bok/fight							bofight
+
+
+//	Runes/Powerups
+
+announcer/Bok/doomsphere					bodmsphr
+announcer/Bok/drain							bodrain
+announcer/Bok/guardsphere					boguard
+announcer/Bok/haste							bohaste
+announcer/Bok/highjump						bohijump
+announcer/Bok/invisibility					boinvs
+announcer/Bok/invulnerability				boinvul
+announcer/Bok/megasphere					bomega
+announcer/Bok/partialinvisibility			bopinvs
+announcer/Bok/possessionartifactdropped		boposdrp
+announcer/Bok/possessionartifactpickedup	bopospck
+announcer/Bok/prosperity					boprosp
+announcer/Bok/rage							borage
+announcer/Bok/reflection					borefl
+announcer/Bok/regeneration					boregen
+announcer/Bok/resistance					boresis
+announcer/Bok/soulsphere					bosoul
+announcer/Bok/spread						bospread
+announcer/Bok/strength						bostr
+announcer/Bok/timefreeze					botimfr
+announcer/Bok/turbosphere					boturbo
+
+//	Game Sounds
+
+announcer/Bok/tag							botag
+announcer/Bok/termination					boterm2
+announcer/Bok/terminator					boterm
+announcer/Bok/welcometoctf					bowelctf
+announcer/Bok/welcometooneflagctf			bowloctf
+announcer/Bok/welcometost					bowelst
+
+//	Vote Sounds
+
+announcer/Bok/votefailed					bovfail
+announcer/Bok/votenow						bovnow
+announcer/Bok/votepassed					bovpass

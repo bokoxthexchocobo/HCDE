@@ -113,4 +113,8 @@ void SystemGLFrameBuffer::SetVSync (bool vsync)
 void SystemGLFrameBuffer::SwapBuffers()
 {
 	::SwapBuffers(static_cast<Win32GLVideo *>(Video)->m_hDC);
+	// Force the Win11 DWM compositor to pick up the swap during the first
+	// few seconds of process lifetime. See I_PresentKickStartup() for the
+	// full explanation; this is a no-op once the grace window is over.
+	I_PresentKickStartup();
 }

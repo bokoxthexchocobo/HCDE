@@ -99,11 +99,17 @@ DFrameBuffer *Win32GLVideo::CreateFrameBuffer()
 	SystemGLFrameBuffer *fb;
 
 #ifdef HAVE_GLES2
-	if (vid_preferbackend != BACKEND_OPENGL)
-		fb = new OpenGLESRenderer::OpenGLFrameBuffer(m_hMonitor, vid_fullscreen);
-	else
+	if (vid_preferbackend == BACKEND_OPENGL)
+	{
+		// Desktop OpenGL is currently known to black-screen during startup on
+		// Windows, while the GLES renderer on the same WGL surface works. Use
+		// GLES as the compatibility path even if a stale config requested GL.
+		Printf("Desktop OpenGL renderer requested; using OpenGLES 2.0 compatibility renderer instead.\n");
+	}
+	fb = new OpenGLESRenderer::OpenGLFrameBuffer(m_hMonitor, vid_fullscreen);
+#else
+	fb = new OpenGLRenderer::OpenGLFrameBuffer(m_hMonitor, vid_fullscreen);
 #endif
-		fb = new OpenGLRenderer::OpenGLFrameBuffer(m_hMonitor, vid_fullscreen);
 
 	return fb;
 }

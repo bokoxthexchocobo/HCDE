@@ -50,6 +50,8 @@ public:
 	void GetLog(std::function<bool(const void* data, uint32_t size, uint32_t& written)> writeFile);
 
 	void SetWindowTitle(const char* caption);
+	void ShowStartupStatus(const char* status);
+	void ClearStartupStatus();
 
 	HWND GetHandle() { return Window; }
 
@@ -61,6 +63,9 @@ public:
 
 private:
 	static LRESULT CALLBACK LConProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
+
+	FString StartupStatusText;
+	bool StartupStatusVisible = false;
 
 #ifdef HCDE_DEDICATED_SERVER
 	void CreateServerConsoleControls();

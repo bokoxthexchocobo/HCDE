@@ -634,24 +634,6 @@ static PClassActor* Net_SelectInvasionMonsterForSpot(const FInvasionSpawnSpotRec
 	return Net_SelectInvasionMonsterFromPool(weakPool, countof(weakPool), InvasionWaveDirector.Wave);
 }
 
-static DVector3 Net_GetInvasionSpawnCandidate(const DVector3& basePos, double xOffset, double yOffset)
-{
-	DVector3 candidate = basePos + DVector3(xOffset, yOffset, 0.0);
-	if (primaryLevel == nullptr)
-		return candidate;
-
-	double zOffset = 0.0;
-	if (sector_t* baseSector = primaryLevel->PointInSector(basePos); baseSector != nullptr)
-	{
-		zOffset = basePos.Z - baseSector->floorplane.ZatPoint(basePos);
-	}
-	if (sector_t* candidateSector = primaryLevel->PointInSector(candidate); candidateSector != nullptr)
-	{
-		candidate.Z = candidateSector->floorplane.ZatPoint(candidate) + zOffset;
-	}
-	return candidate;
-}
-
 static AActor* Net_SelectInvasionCombatTarget(AActor* actor)
 {
 	AActor* best = nullptr;
@@ -779,20 +761,15 @@ static bool Net_SpawnInvasionMonster(FInvasionSpawnSpotRecord& spot, const char*
 			return nullptr;
 		}
 
-		// Perform a final location validation. Briefly allow actor overlap to mimic
-		// standard Doom spawner behavior.
+		// Zandronum-style invasion behavior: the monster appears exactly where the
+		// mapper placed the spot. We intentionally do NOT reject or relocate when
+		// the start footprint overlaps level geometry or other actors, and we do
+		// NOT search nearby tiles. P_TestMobjLocation is consulted only to allow
+		// brief actor overlap (MF2_PASSMOBJ) and for diagnostics; a "blocked"
+		// result no longer destroys the monster, so waves always populate.
 		const ActorFlags2 oldFlags2 = spawned->flags2;
 		spawned->flags2 |= MF2_PASSMOBJ;
-		if (!P_TestMobjLocation(spawned))
-		{
-			spawned->flags2 = oldFlags2;
-			spawned->ClearCounters();
-			spawned->Destroy();
-			if (reason != nullptr)
-				*reason = "blocked-location";
-			return nullptr;
-		}
-
+		(void)P_TestMobjLocation(spawned);
 		spawned->flags2 = oldFlags2;
 		spawned->Angles.Yaw = spot.Yaw;
 		return spawned;
@@ -800,24 +777,8 @@ static bool Net_SpawnInvasionMonster(FInvasionSpawnSpotRecord& spot, const char*
 
 	const char* lastReason = nullptr;
 	AActor* spawned = trySpawnAt(spot.Pos, &lastReason);
-	if (spawned == nullptr && lastReason != nullptr && stricmp(lastReason, "blocked-location") == 0)
-	{
-		static const double radii[] = { 16.0, 32.0, 48.0, 64.0, 96.0 };
-		for (double radius : radii)
-		{
-			for (int step = 0; step < 8 && spawned == nullptr; ++step)
-			{
-				const DAngle angle = DAngle::fromDeg(step * 45.0);
-				const DVector3 candidate = Net_GetInvasionSpawnCandidate(spot.Pos, angle.Cos() * radius, angle.Sin() * radius);
-				spawned = trySpawnAt(candidate, &lastReason);
-			}
-			if (spawned != nullptr)
-				break;
-		}
-	}
-
 	if (spawned == nullptr)
-		return fail(lastReason != nullptr ? lastReason : "blocked-location");
+		return fail(lastReason != nullptr ? lastReason : "spawn-returned-null");
 
 	// Track the monster for wave-cleared calculations.
 	Net_ApplyInvasionMonsterSkillTuning(spawned);
@@ -1356,6 +1317,10 @@ static void Net_BuildFallbackInvasionSpots(FLevelLocals* level)
 		{
 			FInvasionSpawnSpotRecord record;
 			record.Pos = start.pos;
+			// Start Z is a floor-relative offset; resolve it to a world height so
+			// fallback monsters land on the floor instead of clipping into geometry.
+			if (sector_t* sector = level->PointInSector(record.Pos); sector != nullptr)
+				record.Pos.Z = sector->floorplane.ZatPoint(record.Pos) + start.pos.Z;
 			record.Yaw = DAngle::fromDeg(start.angle);
 			record.Source = INVSPAWN_DEATHMATCH;
 			record.PlannedSpawnCount = 0;
@@ -1376,6 +1341,10 @@ static void Net_BuildFallbackInvasionSpots(FLevelLocals* level)
 		{
 			FInvasionSpawnSpotRecord record;
 			record.Pos = start.pos;
+			// Start Z is a floor-relative offset; resolve it to a world height so
+			// fallback monsters land on the floor instead of clipping into geometry.
+			if (sector_t* sector = level->PointInSector(record.Pos); sector != nullptr)
+				record.Pos.Z = sector->floorplane.ZatPoint(record.Pos) + start.pos.Z;
 			record.Yaw = DAngle::fromDeg(start.angle);
 			record.Source = INVSPAWN_PLAYERSTART;
 			record.PlannedSpawnCount = 0;
@@ -2086,6 +2055,139 @@ static void Net_AdvanceInvasionAfterWaveClear(const char* reason)
 	}
 }
 
+// ---------------------------------------------------------------------------
+// Invasion item/weapon spot respawn tracking.
+// Skulltag-style CustomPickupInvasionSpot / CustomWeaponInvasionSpot mapthings
+// place a pickup at their own coordinates and, once that pickup is taken, respawn
+// it after a per-spot delay (mapthing args[1], in seconds). Authority-only.
+// ---------------------------------------------------------------------------
+struct FInvasionItemSpot
+{
+	DVector3 Pos = { 0.0, 0.0, 0.0 };
+	PClassActor* ItemClass = nullptr;
+	int SpawnDelayTics = 0;        // delay between pickup and respawn
+	int RespawnAtTic = 0;          // gametic to (re)spawn at while AwaitingRespawn
+	bool AwaitingRespawn = true;   // true until the spot holds a live pickup again
+	TObjPtr<AActor*> LiveItem = MakeObjPtr<AActor*>(nullptr);
+};
+
+static TArray<FInvasionItemSpot> InvasionItemSpots;
+
+// Resolve a Skulltag-style pickup/weapon invasion spot to the concrete item it
+// stands in for. The shims follow the "<ItemName>Spot" convention (ShotgunSpot ->
+// Shotgun, StimpackSpot -> Stimpack), so the "Spot" suffix is stripped and the
+// item looked up. On success spotClass is rewritten to the item class and true is
+// returned, letting the normal spawn path place the pickup at the spot's
+// coordinates instead of the monster registrar swallowing it. Returns false for
+// monster spots and for shims whose item cannot be resolved (e.g. the generic
+// Custom* bases or Skulltag-only items absent from this build).
+bool Net_TryReplaceInvasionPickupSpot(PClassActor*& spotClass)
+{
+	if (spotClass == nullptr)
+		return false;
+
+	static bool resolvedBases = false;
+	static PClassActor* pickupBase = nullptr;
+	static PClassActor* weaponBase = nullptr;
+	if (!resolvedBases)
+	{
+		pickupBase = PClass::FindActor("BasePickupInvasionSpot");
+		weaponBase = PClass::FindActor("BaseWeaponInvasionSpot");
+		resolvedBases = true;
+	}
+
+	const bool isPickupSpot =
+		(pickupBase != nullptr && spotClass->IsDescendantOf(pickupBase))
+		|| (weaponBase != nullptr && spotClass->IsDescendantOf(weaponBase));
+	if (!isPickupSpot)
+		return false;
+
+	const char* className = spotClass->TypeName.GetChars();
+	const size_t classLen = (className != nullptr) ? strlen(className) : 0;
+	if (classLen <= 4 || stricmp(className + classLen - 4, "Spot") != 0)
+		return false;
+
+	const FString itemName(className, classLen - 4);
+	PClassActor* itemClass = PClass::FindActor(itemName.GetChars());
+	if (itemClass == nullptr)
+		return false;
+
+	// Never resolve to another spot shim, which would respawn invisible markers.
+	const PClassActor* monsterBase = Net_GetInvasionSpotBaseClass();
+	if (monsterBase != nullptr && itemClass->IsDescendantOf(monsterBase))
+		return false;
+
+	spotClass = itemClass;
+	return true;
+}
+
+// Drop all tracked spots. Called on level reset so stale coordinates/classes
+// from the previous map are never reused.
+void Net_ClearInvasionItemSpots()
+{
+	InvasionItemSpots.Clear();
+}
+
+// Registered while spawning mapthings (see P_SpawnMapThing). delayTics already
+// accounts for args[1]; a non-positive value falls back to 30 seconds.
+void Net_RecordInvasionItemSpot(const DVector3& pos, PClassActor* itemClass, int delayTics)
+{
+	if (itemClass == nullptr)
+		return;
+
+	FInvasionItemSpot rec;
+	rec.Pos = pos;
+	rec.ItemClass = itemClass;
+	rec.SpawnDelayTics = (delayTics > 0) ? delayTics : (TICRATE * 30);
+	rec.RespawnAtTic = gametic;   // place the first copy as soon as the spot ticks
+	rec.AwaitingRespawn = true;
+	InvasionItemSpots.Push(rec);
+}
+
+// Authority tick: (re)spawn pickups whose live copy has been taken and whose
+// respawn delay has elapsed. The TObjPtr read barrier reports a destroyed
+// (picked-up) actor as null, so no explicit pickup callback is required.
+void Net_ProcessInvasionItemRespawns()
+{
+	if (!Net_IsInvasionModeEnabled() || InvasionItemSpots.Size() == 0)
+		return;
+
+	for (auto& spot : InvasionItemSpots)
+	{
+		AActor* live = spot.LiveItem;
+		const bool present = live != nullptr && (live->ObjectFlags & OF_EuthanizeMe) == 0;
+		if (present)
+			continue;
+
+		if (!spot.AwaitingRespawn)
+		{
+			// The live pickup was just taken/destroyed: start the respawn timer.
+			spot.LiveItem = MakeObjPtr<AActor*>(nullptr);
+			spot.AwaitingRespawn = true;
+			spot.RespawnAtTic = gametic + spot.SpawnDelayTics;
+			continue;
+		}
+
+		if (gametic < spot.RespawnAtTic)
+			continue;
+
+		AActor* item = Spawn(primaryLevel, spot.ItemClass, spot.Pos, ALLOW_REPLACE);
+		if (item != nullptr)
+		{
+			spot.LiveItem = MakeObjPtr<AActor*>(item);
+			spot.AwaitingRespawn = false;
+			if (Net_InvasionDebugEnabled(3))
+				DebugTrace::Markf("invasion", "item-respawn class=%s pos=(%.1f,%.1f,%.1f) delay=%d",
+					spot.ItemClass->TypeName.GetChars(), spot.Pos.X, spot.Pos.Y, spot.Pos.Z, spot.SpawnDelayTics);
+		}
+		else
+		{
+			// Spot momentarily blocked (e.g. an actor on top); retry shortly.
+			spot.RespawnAtTic = gametic + TICRATE * 2;
+		}
+	}
+}
+
 // Main authoritative tick for the invasion state machine.
 // Only runs on the network authority (server/host).
 static void Net_TickInvasionState()
@@ -2313,13 +2415,16 @@ static void Net_TickInvasionState()
 		break;
 
 	case INVS_VICTORY:
-	case INVS_FAILURE:
-		// Victory behaves like a finished map: keep the result visible for the
-		// configured duration, then advance to the map's normal exit target.
+		// Successful campaign / map. If the engine can exit the map right now,
+		// MAPINFO/CMPGNINF picks the next map and wave 1 starts there fresh.
+		// If exit is gated (sv_invasionexitonvictory off, or a level transition
+		// is already in flight), keep the result on screen and re-check next
+		// second. Falling through to Net_ResetInvasionState here would zero
+		// InvasionWaveDirector.Wave and the WAITING auto-start would loop
+		// wave 1 on the same map forever (regression observed in 0.4.x).
 		if (InvasionStateTics <= 0)
 		{
-			if (InvasionState == INVS_VICTORY
-				&& sv_invasionexitonvictory
+			if (sv_invasionexitonvictory
 				&& primaryLevel != nullptr
 				&& gameaction == ga_nothing)
 			{
@@ -2333,7 +2438,34 @@ static void Net_TickInvasionState()
 				primaryLevel->ExitLevel(0, false);
 				break;
 			}
-			Net_ResetInvasionState("result-finished");
+			InvasionStateTics = TICRATE;
+		}
+		break;
+
+	case INVS_FAILURE:
+		// Skulltag/Zandronum behavior: when the team wipes mid-wave, restart
+		// the failed wave on the same map. The dead participants auto-respawn
+		// during the countdown (gametype 4 enables multiplayer-style respawn
+		// in g_game.cpp). The previous code called Net_ResetInvasionState here,
+		// which zeroed InvasionWaveDirector.Wave and trapped the round in a
+		// wave-1 loop instead of letting the team retry the failed wave.
+		if (InvasionStateTics <= 0)
+		{
+			const int failedWave = max(InvasionWaveDirector.Wave, 1);
+			DebugTrace::Markf("invasion", "failure restart wave=%d/%d map=%s gametic=%d",
+				failedWave, InvasionWaveDirector.MaxWaves,
+				primaryLevel != nullptr ? primaryLevel->MapName.GetChars() : "<none>",
+				gametic);
+			if (Net_InvasionDebugEnabled(1))
+				Printf(PRINT_HIGH, "HCDE invasion: restarting failed wave %d/%d.\n",
+					failedWave, max(InvasionWaveDirector.MaxWaves, failedWave));
+
+			// Net_StartInvasionCountdownForNextWave reads pendingWave = Wave + 1,
+			// so rewind Wave by one so the countdown lands on the failed wave.
+			InvasionWaveDirector.Wave = max(failedWave - 1, 0);
+			InvasionWipeGraceTics = 0;
+			InvasionNoParticipantTics = 0;
+			Net_StartInvasionCountdownForNextWave("failure-restart-wave");
 		}
 		break;
 

@@ -47,6 +47,16 @@ unsigned int I_MakeRNGSeed();
 
 void I_StartFrame (void);
 void I_StartTic (void);
+void I_ForceWindowFocus();
+void I_ShowStartupStatus(const char* status);
+void I_ClearStartupStatus();
+// Called once per frame after the framebuffer presents during the first
+// few seconds of process lifetime. On Windows this works around a Windows
+// 11 DWM compositor bug where the very first frames after the splash
+// screen are not picked up for desktop composition until the window
+// receives external input (mouse move, key press, etc.). No-op outside
+// the startup grace window and on non-Windows platforms.
+void I_PresentKickStartup();
 
 // Set the mouse cursor. The texture must be 32x32.
 class FGameTexture;

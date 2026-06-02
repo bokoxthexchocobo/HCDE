@@ -371,6 +371,7 @@ $symbolsZip = Join-Path $releaseRoot "$packageName-symbols.zip"
 if ($Build) {
     cmake --build $buildRoot --config $Configuration --target zdoom --parallel 1
     cmake --build $buildRoot --config $Configuration --target hcdeserv --parallel 1
+    cmake --build $buildRoot --config $Configuration --target hcdercon --parallel 1
 }
 
 $buildConfigDir = Resolve-RequiredPath $buildConfigDir
@@ -399,6 +400,7 @@ $compatFiles = Get-ModCompatRuntimeFiles -BuildRoot $buildRoot -BuildConfigDir $
 $runtimeFiles = @(
     "hcde.exe",
     "hcdeserv.exe",
+    "hcdercon.exe",
     "hcde.pk3",
     "game_support.pk3",
     "brightmaps.pk3",
@@ -435,11 +437,12 @@ Copy-Item -LiteralPath $sndFile.License -Destination (Join-Path $stageDir "SNDFI
 @"
 HCDE $Version
 
-This package contains the Windows x64 HCDE client and dedicated server.
+This package contains the Windows x64 HCDE client, dedicated server, and RCON utility.
 
 Included:
 - hcde.exe
 - hcdeserv.exe
+- hcdercon.exe
 - HCDE runtime PK3 files
 - FM bank and soundfont assets
 - OpenAL Soft runtime for client audio

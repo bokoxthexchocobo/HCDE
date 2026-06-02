@@ -8,5 +8,3 @@ set_target_properties( hcdemaster PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${HCDE_OUT
 if( WIN32 )
 	target_link_libraries( hcdemaster ws2_32 )
 endif()
-
-install( TARGETS hcdemaster RUNTIME DESTINATION "." )

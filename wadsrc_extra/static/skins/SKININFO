@@ -1,0 +1,11 @@
+{
+name = "Boko the Chocobo"
+sprite = BOKO
+dstaunt = dswark
+}
+
+{
+name = "Chobi the Chocobo"
+sprite = CHOB
+dstaunt = dswark
+}

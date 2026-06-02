@@ -1128,7 +1128,6 @@ static void DrawHCDELagHUD()
 
 	auto drawLine = [&](const char* text, int col)
 	{
-		ClearRect(twod, 0, y * textScale, screen->GetWidth(), lineH * textScale, GPalette.BlackIndex, 0);
 		DrawText(twod, NewConsoleFont, col, 0, y, text,
 			DTA_VirtualWidth, screen->GetWidth() / textScale,
 			DTA_VirtualHeight, screen->GetHeight() / textScale,
@@ -1202,9 +1201,104 @@ void D_Display ()
 	if (nodrawers || screen == NULL || HCDE_ServerMode_IsDedicatedServer() || I_IsDedicatedServerMode())
 		return; 				// for comparative timing / profiling and dedicated servers
 
-	if (!AppActive && !setmodeneeded && !vid_activeinbackground)
+	static bool firstFrameFocus = true;
+	static int startupRenderTraceFrame = 0;
+	const bool startupTraceWindow = startupRenderTraceFrame < TICRATE * 10;
+	if (startupTraceWindow && (startupRenderTraceFrame % 5) == 0)
 	{
+		DebugTrace::Infof("startup.render",
+			"frame=%d pre-gate appactive=%d gamestate=%d viewactive=%d gametic=%d setmode=%d usergame=%d screen=%p size=%dx%d",
+			startupRenderTraceFrame,
+			AppActive ? 1 : 0,
+			int(gamestate),
+			viewactive ? 1 : 0,
+			gametic,
+			setmodeneeded ? 1 : 0,
+			usergame ? 1 : 0,
+			screen,
+			screen != nullptr ? screen->GetWidth() : -1,
+			screen != nullptr ? screen->GetHeight() : -1);
+	}
+
+	if (firstFrameFocus)
+	{
+		firstFrameFocus = false;
+		I_ForceWindowFocus();
+		if (startupTraceWindow)
+		{
+			DebugTrace::Info("startup.render", "first-frame focus requested");
+		}
+	}
+
+	static bool sawAppActive = false;
+	if (!sawAppActive && !AppActive)
+	{
+		// Some launch paths never deliver WM_ACTIVATEAPP until the first user
+		// input event. Keep startup rendering alive by forcing focus and
+		// promoting AppActive until the first real activation is observed.
+		I_ForceWindowFocus();
+		AppActive = true;
+		if (startupTraceWindow)
+		{
+			DebugTrace::Warning("startup.render", "forced AppActive=true while waiting for activation");
+		}
+	}
+
+	if (AppActive)
+	{
+		sawAppActive = true;
+	}
+
+	if (!sawAppActive && startupRenderTraceFrame < TICRATE * 6)
+	{
+		if ((startupRenderTraceFrame % 10) == 0)
+		{
+			DebugTrace::Infof("startup.render",
+				"frame=%d waiting-activation appactive=%d gamestate=%d viewactive=%d gametic=%d setmode=%d usergame=%d",
+				startupRenderTraceFrame,
+				AppActive ? 1 : 0,
+				int(gamestate),
+				viewactive ? 1 : 0,
+				gametic,
+				setmodeneeded ? 1 : 0,
+				usergame ? 1 : 0);
+		}
+		startupRenderTraceFrame++;
+	}
+	else if (startupTraceWindow)
+	{
+		startupRenderTraceFrame++;
+	}
+
+	const bool waitingForFirstActivation = !sawAppActive;
+	if (!AppActive && !setmodeneeded && !vid_activeinbackground && usergame && gamestate != GS_STARTUP && gamestate != GS_TITLELEVEL && gamestate != GS_DEMOSCREEN && !waitingForFirstActivation)
+	{
+		static int blockedInactiveTraceCount = 0;
+		if (blockedInactiveTraceCount < 12)
+		{
+			DebugTrace::Warningf("startup.render",
+				"blocked-inactive appactive=%d gamestate=%d viewactive=%d gametic=%d setmode=%d usergame=%d",
+				AppActive ? 1 : 0,
+				int(gamestate),
+				viewactive ? 1 : 0,
+				gametic,
+				setmodeneeded ? 1 : 0,
+				usergame ? 1 : 0);
+			blockedInactiveTraceCount++;
+		}
 		return;
+	}
+
+	if (startupTraceWindow && (startupRenderTraceFrame % 5) == 0)
+	{
+		DebugTrace::Infof("startup.render",
+			"frame=%d passed-gate appactive=%d waitingActivation=%d gamestate=%d viewactive=%d gametic=%d",
+			startupRenderTraceFrame,
+			AppActive ? 1 : 0,
+			waitingForFirstActivation ? 1 : 0,
+			int(gamestate),
+			viewactive ? 1 : 0,
+			gametic);
 	}
 
 	cycle_t cycles;
@@ -1302,6 +1396,18 @@ void D_Display ()
 	twod->ClearClipRect();
 	if ((gamestate == GS_LEVEL || gamestate == GS_TITLELEVEL) && gametic != 0)
 	{
+		if (startupTraceWindow && (startupRenderTraceFrame % 10) == 0)
+		{
+			DebugTrace::Infof("startup.render",
+				"world-branch frame=%d gamestate=%d gametic=%d camera=%p mo=%p consoleplayer=%d",
+				startupRenderTraceFrame,
+				int(gamestate),
+				gametic,
+				players[consoleplayer].camera,
+				players[consoleplayer].mo,
+				consoleplayer);
+		}
+
 		// [ZZ] execute event hook that we just started the frame
 		//E_RenderFrame();
 		//
@@ -1310,6 +1416,15 @@ void D_Display ()
 		{
 			viewsec = RenderView(&players[consoleplayer]);
 		}, true);
+		if (startupTraceWindow && (startupRenderTraceFrame % 10) == 0)
+		{
+			DebugTrace::Infof("startup.render",
+				"post-renderview frame=%d viewsec=%p hud_toggled=%d automap=%d",
+				startupRenderTraceFrame,
+				viewsec,
+				hud_toggled ? 1 : 0,
+				automapactive ? 1 : 0);
+		}
 
 		twod->Begin(screen->GetWidth(), screen->GetHeight());
 		if (!hud_toggled)
@@ -1470,10 +1585,24 @@ void D_Display ()
 		wipestart = nullptr;
 		DrawOverlays();
 		End2DAndUpdate ();
+		if (startupTraceWindow && (startupRenderTraceFrame % 10) == 0)
+		{
+			DebugTrace::Infof("startup.render",
+				"frame-presented frame=%d branch=direct-update gametic=%d",
+				startupRenderTraceFrame,
+				gametic);
+		}
 	}
 	else
 	{
 		PerformWipe(wipestart, screen->WipeEndScreen(), wipe_type, false, DrawOverlays);
+		if (startupTraceWindow && (startupRenderTraceFrame % 10) == 0)
+		{
+			DebugTrace::Infof("startup.render",
+				"frame-presented frame=%d branch=wipe-update gametic=%d",
+				startupRenderTraceFrame,
+				gametic);
+		}
 	}
 	cycles.Unclock();
 	FrameCycles = cycles;
@@ -2681,6 +2810,20 @@ static void StartupStatusLine(const char *text, int colors = 0x3f, bool center =
 	}
 }
 
+static void StartupPreVideoStatus(const char* text)
+{
+	if (!batchrun && !HCDE_ServerMode_IsDedicatedServer())
+	{
+		I_ShowStartupStatus(text);
+	}
+	DebugTrace::Markf("startup.prevideo", "%s", text != nullptr ? text : "");
+}
+
+static void StartupClearPreVideoStatus()
+{
+	I_ClearStartupStatus();
+}
+
 void D_StartupProgress(int advance)
 {
 	if (advance <= 0)
@@ -3772,6 +3915,7 @@ static int D_InitGame(const FIWADInfo* iwad_info, std::vector<FileSys::ResourceN
 	}
 
 	if (!batchrun) Printf ("W_Init: Init WADfiles.\n");
+	StartupPreVideoStatus("Scanning and mounting WAD/PK3 archives...");
 
 	LumpFilterInfo lfi;
 
@@ -3817,6 +3961,7 @@ static int D_InitGame(const FIWADInfo* iwad_info, std::vector<FileSys::ResourceN
 	{
 		I_FatalError("FileSystem: no files found");
 	}
+	StartupPreVideoStatus("Parsing loaded game resources...");
 	allwads.clear();
 	allwads.shrink_to_fit();
 	SetMapxxFlag();
@@ -3935,6 +4080,7 @@ static int D_InitGame(const FIWADInfo* iwad_info, std::vector<FileSys::ResourceN
 		// HCDE shows the visible loader before resource-heavy startup so
 		// progress, ETA, and early mod failures are visible to the user.
 		HCDE_ServerMode_GuardClientSubsystem("startup video loader");
+		StartupClearPreVideoStatus();
 		V_Init2();
 		videoInitialized = true;
 		screen->CompileNextShader();
@@ -4476,6 +4622,7 @@ static int D_DoomMain_Internal (void)
 	// Now that we have the IWADINFO, initialize the autoload ini sections.
 	GameConfig->DoAutoloadSetup(iwad_man);
 	DebugTrace::Mark("startup", "autoload setup done");
+	StartupPreVideoStatus("Preparing launcher files and autoload configuration...");
 
 	bool should_debug = vm_debug;
 	const char * debug_port_arg = Args->CheckValue(FArg_debug);
@@ -4508,6 +4655,7 @@ static int D_DoomMain_Internal (void)
 		// the IWAD is known.
 
 		std::vector<FileSys::ResourceName> pwads;
+		StartupPreVideoStatus("Reading ZDL command-line files...");
 		GetCmdLineFiles(pwads, false);
 		DebugTrace::Markf("startup", "first GetCmdLineFiles: %zu files", pwads.size());
 		FString iwad = CheckGameInfo(pwads);
@@ -4522,11 +4670,13 @@ static int D_DoomMain_Internal (void)
 		const FIWADInfo *iwad_info = iwad_man->FindIWAD(allwads, iwad.GetChars(), basewad.GetChars(), optionalwad.GetChars());
 		DebugTrace::Markf("startup", "FindIWAD returned %s", iwad_info ? "iwad-info" : "null");
 
+		StartupPreVideoStatus("Resolving selected IWAD and mod files...");
 		GetCmdLineFiles(pwads, false); // [RL0] Update with files passed on the launcher extra args
 		DebugTrace::Mark("startup", "second GetCmdLineFiles done");
 		// For now these need to remain verifiable over the network.
 		GetCmdLineFiles(pwads, true);
 		DebugTrace::Mark("startup", "third GetCmdLineFiles done");
+		StartupPreVideoStatus("Applying HCDE compatibility patches...");
 		HCDE_ModCompat_AppendFiles(pwads, GameConfig, &allwads);
 		DebugTrace::Mark("startup", "HCDE_ModCompat_AppendFiles done");
 
@@ -4575,6 +4725,7 @@ static int D_DoomMain_Internal (void)
 				GameStartupInfo.SteamAppId = "";
 		}
 
+		StartupPreVideoStatus("Opening WAD/PK3 archives and preparing the game...");
 		DebugTrace::Markf("startup", "calling D_InitGame: %zu wads, %zu pwads", allwads.size(), pwads.size());
 		int ret = D_InitGame(iwad_info, allwads, pwads);
 		DebugTrace::Markf("startup", "D_InitGame returned %d", ret);

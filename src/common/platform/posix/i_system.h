@@ -57,6 +57,14 @@ unsigned int I_MakeRNGSeed();
 void I_StartFrame (void);
 
 void I_StartTic (void);
+void I_ForceWindowFocus();
+void I_ShowStartupStatus(const char* status);
+void I_ClearStartupStatus();
+// Called once per frame after the framebuffer presents during the first
+// few seconds of process lifetime. Implemented as a no-op on non-Windows
+// platforms; mirrors the declaration in the win32 i_system.h so common
+// code can call it without #ifdefs.
+void I_PresentKickStartup();
 
 // Print a console string
 void I_PrintStr (const char *str);

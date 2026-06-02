@@ -55,6 +55,7 @@
 #include "vm.h"
 #include "widgets/errorwindow.h"
 #include "widgets/launcherwindow.h"
+#include <zwidget/window/window.h>
 
 #if defined(__APPLE__)
 int I_PickIWad_Cocoa (WadStuff *wads, int numwads, bool showwin, int defaultiwad);
@@ -334,9 +335,28 @@ bool HoldingQueryKey(const char* key)
 	return state;
 }
 
+void I_ForceWindowFocus()
+{
+}
+
+void I_ShowStartupStatus(const char* status)
+{
+	(void)status;
+}
+
+void I_ClearStartupStatus()
+{
+}
+
+// No-op on POSIX/SDL. The Windows implementation works around a DWM
+// compositor bug specific to Windows 11; other platforms do not need it.
+void I_PresentKickStartup()
+{
+}
+
 bool I_PickIWad (bool showwin, FStartupSelectionInfo& info)
 {
-	if (!showwin)
+	if (!showwin || DisplayBackend::Get() == nullptr)
 	{
 		return true;
 	}

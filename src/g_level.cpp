@@ -1630,6 +1630,8 @@ DEFINE_ACTION_FUNCTION(FLevelLocals, WorldDone)
 void G_DoMapWarp()
 {
 	G_TraceSetGameAction(ga_nothing, "g_level");
+	gamestate = GS_LEVEL;
+	viewactive = true;
 	Net_ResetCommands(true);
 	Net_SetWaiting();
 }

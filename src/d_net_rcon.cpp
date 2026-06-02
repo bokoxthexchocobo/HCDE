@@ -1,10 +1,7 @@
-// HCDE RCON scaffold -- see d_net_rcon.h.
+// HCDE RCON -- see d_net_rcon.h.
 //
-// This file deliberately implements only the configuration surface and a
-// status CCMD. There is no transport, no auth check, and no command
-// dispatcher. Anything that "feels like" it could accept a remote command
-// belongs in the next change, alongside an explicit allowlist and a
-// verifier-style password check.
+// The listener is intentionally loopback-only and command dispatch stays narrow
+// until wider admin commands can be exposed behind an explicit allowlist.
 
 #include "d_net_rcon.h"
 
@@ -299,22 +296,21 @@ void HCDERconSetBlocked(const char* reason)
 }
 }
 
-// Master switch. Default off; even with a password configured the future
-// transport refuses to bind unless this is on. Server-only -- no point on a
-// listen host since the local console already has unrestricted access.
+// Master switch. Default off; even with a password configured the listener
+// refuses to bind unless this is on. Server-only -- no point on a listen host
+// since the local console already has unrestricted access.
 CVAR(Bool, sv_rcon_enable, false, CVAR_ARCHIVE | CVAR_SERVERINFO | CVAR_NOSAVE)
 
 // Operator-configured password. The string itself never travels on the wire:
-// the future transport hashes a server-issued nonce together with this value
-// and only compares the resulting verifier. Stored here as a plain CVAR for
-// configuration ergonomics; treat the config file as a secret.
+// the client hashes a server-issued nonce together with this value and only
+// sends the resulting verifier. Stored here as a plain CVAR for configuration
+// ergonomics; treat the config file as a secret.
 CVAR(String, sv_rcon_password, "", CVAR_ARCHIVE | CVAR_SERVERINFO | CVAR_NOSAVE)
 
 // TCP port for the RCON listener. 0 = disabled (default). When non-zero and
 // `sv_rcon_enable` is true and a password is set, the authority binds a
-// dedicated TCP listener (Phase 1 scaffold). Clients connect, send
-// length-prefixed frames (max 4 KiB), and receive responses. Auth and
-// command dispatch are Phase 2/3 work.
+// dedicated TCP listener. Clients connect, send length-prefixed frames
+// (max 4 KiB), and receive diagnostic responses after authentication.
 CUSTOM_CVAR(Int, sv_rcon_port, 0, CVAR_ARCHIVE | CVAR_SERVERINFO | CVAR_NOSAVE)
 {
 	if (self < 0) self = 0;

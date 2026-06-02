@@ -61,6 +61,7 @@
 #include "printf.h"
 #include "c_buttons.h"
 #include "cmdlib.h"
+#include "debugtrace.h"
 #include "hcde_servermode.h"
 #include "i_mainwindow.h"
 #include "m_haptics.h"
@@ -404,10 +405,16 @@ LRESULT CALLBACK WndProc (HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 	case WM_KILLFOCUS:
 		I_CheckNativeMouse (true, false);	// Make sure mouse gets released right away
+		DebugTrace::Infof("win32.focus", "WM_KILLFOCUS wParam=%llu lParam=%llu",
+			static_cast<unsigned long long>(wParam),
+			static_cast<unsigned long long>(lParam));
 		break;
 
 	case WM_SETFOCUS:
 		I_CheckNativeMouse (false, EventHandlerResultForNativeMouse);	// This cannot call the event handler. Doing it from here is unsafe.
+		DebugTrace::Infof("win32.focus", "WM_SETFOCUS wParam=%llu lParam=%llu",
+			static_cast<unsigned long long>(wParam),
+			static_cast<unsigned long long>(lParam));
 		break;
 
 	case WM_SETCURSOR:
@@ -474,6 +481,10 @@ LRESULT CALLBACK WndProc (HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	case WM_ACTIVATEAPP:
 		AppActive = (wParam == TRUE);
 		S_SetSoundPaused (wParam);
+		DebugTrace::Infof("win32.focus", "WM_ACTIVATEAPP active=%d wParam=%llu lParam=%llu",
+			AppActive ? 1 : 0,
+			static_cast<unsigned long long>(wParam),
+			static_cast<unsigned long long>(lParam));
 		break;
 
 	case WM_ERASEBKGND:

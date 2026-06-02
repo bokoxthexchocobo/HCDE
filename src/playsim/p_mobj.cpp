@@ -6777,6 +6777,26 @@ AActor *FLevelLocals::SpawnMapThing (FMapThing *mthing, int position)
 		// Handle decorate replacements explicitly here
 		// to check for missing frames in the replacement object.
 	i = mentry->Type->GetReplacement(this);
+	// Skulltag-style invasion pickup/weapon spots inherit from the same base
+	// class as monster spots. Resolve them to the actual item class first so
+	// the regular spawn flow places the pickup at the spot's coordinates,
+	// instead of letting the monster registrar swallow them and replace the
+	// item with a random Doom monster at wave start.
+	// Record invasion pickup/weapon spots so they can respawn after being taken.
+	// This must happen before the registration attempt, which deliberately rejects
+	// pickup spots so they don't get treated as monster spawners.
+		if (Net_TryReplaceInvasionPickupSpot(i))
+	{
+		DVector3 itemPos = mthing->pos;
+		if (sector_t* sector = PointInSector(itemPos); sector != nullptr)
+		{
+			itemPos.Z = sector->floorplane.ZatPoint(itemPos) + mthing->pos.Z;
+		}
+		const int delaySeconds = max<int>(mthing->args[1], 10);
+		const int delayTics = static_cast<int>(ceil(delaySeconds * TICRATE));
+		Net_RecordInvasionItemSpot(itemPos, i, delayTics);
+	}
+
 	if (Net_RegisterInvasionSpawnSpotFromMapThing(this, mthing, i))
 	{
 		// Skulltag-style invasion spots are spawn metadata. Keeping them as

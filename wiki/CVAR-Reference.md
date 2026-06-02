@@ -268,7 +268,7 @@ These are the high-value controls for invasion, net diagnostics, compatibility, 
 ### `sv_invasionspawnburst`
 
 - Description: Maximum monsters spawned per spawn tick burst.
-- Source default: `3`
+- Source default: `1`
 - Valid range/shape: `>= 1`
 - Source: `src/d_net_invasion.cpp:143`
 - Present in runtime snapshot: No (not in this runtime snapshot)
@@ -10584,7 +10584,7 @@ This section is generated from CVAR, CUSTOM_CVAR, CVARD, CUSTOM_CVARD, and named
 
 - Description: Maximum monsters spawned per spawn tick burst.
 - Type: `Int`
-- Source default: `3`
+- Source default: `1`
 - Source flags: `CVAR_SERVERINFO | CVAR_NOSAVE`
 - Macro: `CUSTOM_CVAR`
 - Ref symbol: `same as cvar name`

@@ -64,20 +64,18 @@ void I_ShutdownGraphics ()
 
 void I_InitGraphics ()
 {
-	// If the focus window is destroyed, it doesn't go back to the active window.
-	// (e.g. because the net pane was up, and a button on it had focus)
-	if (GetFocus() == NULL && GetActiveWindow() == mainwindow.GetHandle())
+	// [HCDE] Ensure the window is focused and in the foreground on startup.
+	// Some systems or launchers might leave the window backgrounded, which
+	// can cause a black screen if the engine's AppActive logic is too strict.
+	if (GetFocus() == NULL)
 	{
-		// Make sure it's in the foreground and focused. (It probably is
-		// already foregrounded but may not be focused.)
 		SetForegroundWindow(mainwindow.GetHandle());
 		SetFocus(mainwindow.GetHandle());
-		// Note that when I start a 2-player game on the same machine, the
-		// window for the game that isn't focused, active, or foregrounded
-		// still receives a WM_ACTIVATEAPP message telling it that it's the
-		// active window. The window that is really the active window does
-		// not receive a WM_ACTIVATEAPP message, so both games think they
-		// are the active app. Huh?
+	}
+	else if (GetActiveWindow() == mainwindow.GetHandle())
+	{
+		SetForegroundWindow(mainwindow.GetHandle());
+		SetFocus(mainwindow.GetHandle());
 	}
 
 #ifdef HAVE_VULKAN

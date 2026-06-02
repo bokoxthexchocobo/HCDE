@@ -93,6 +93,18 @@ CUSTOM_CVAR(Int, vid_preferbackend, BACKEND_DEFAULT, CVAR_ARCHIVE | CVAR_GLOBALC
 	static_assert(0 <= BACKEND_DEFAULT && BACKEND_DEFAULT < NUM_BACKEND, "default back-end out of range");
 	const bool dedicatedserver = HCDE_ServerMode_IsDedicatedServer();
 
+#if defined(_WIN32) && defined(HAVE_GLES2)
+	if (self == BACKEND_OPENGL && !dedicatedserver)
+	{
+		// Desktop OpenGL currently presents a black startup frame on some
+		// Windows systems while Vulkan and OpenGL ES both work correctly.
+		// Treat explicit OpenGL requests as OpenGL ES so stale configs do not
+		// put users back on the broken renderer path.
+		Printf("Desktop OpenGL is disabled on Windows for now; using OpenGLES 2.0 backend...\n");
+		self = BACKEND_OPENGLES;
+	}
+#endif
+
 	switch(self)
 	{
 	default:

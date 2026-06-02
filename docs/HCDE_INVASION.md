@@ -34,7 +34,7 @@ All of these are `CVAR_SERVERINFO | CVAR_NOSAVE` unless noted.
 | --- | --- | --- |
 | `sv_invasioncountdowntime` | 30 s | Seconds before a wave starts (countdown phase). |
 | `sv_invasionspawntime` | 8 s | Fallback window used to compute spawn pacing when `sv_invasionspawnburst` is active. |
-| `sv_invasionspawnburst` | 3 | How many monsters to spawn per spawn tick during the burst phase. |
+| `sv_invasionspawnburst` | 1 | How many monsters to spawn per spawn tick during the burst phase. Default of 1 trickles monsters in like Zandronum; raise for denser waves. |
 | `sv_invasionmaxactive` | 0 (unlimited) | Hard cap on simultaneously alive invasion monsters. |
 | `sv_invasionbudgetbase` | 40 | Base monster budget for wave 1. |
 | `sv_invasionbudgetstep` | 8 | Additional budget per wave after the first. |

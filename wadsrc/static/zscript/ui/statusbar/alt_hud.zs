@@ -188,7 +188,11 @@ class AltHud ui
 					: String.Format("%i/%i ", Level.found_items, Level.total_items));
 			}
 
-			if (hud_showmonsters)
+			if (InvasionGetState() > 0)
+			{
+				DrawStatLine(x, y, "Monsters left:", String.Format("%d", InvasionGetWaveBudget() - InvasionGetWaveCleared()));
+			}
+			else if (hud_showmonsters)
 			{
 				DrawStatLine(x, y, "K:", multiplayer
 					? String.Format("%i/%i/%i ", CPlayer.killcount, Level.killed_monsters, Level.total_monsters)

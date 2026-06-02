@@ -43,6 +43,7 @@
 #include <richedit.h>
 #include <wincrypt.h>
 #include <shlwapi.h>
+#include <dwmapi.h>
 
 #include <shellapi.h>
 
@@ -66,8 +67,12 @@
 #include "i_interface.h"
 #include "i_mainwindow.h"
 #include "stringtable.h"
+#include "debugtrace.h"
+
+#pragma comment(lib, "dwmapi.lib")
 
 #include "widgets/launcherwindow.h"
+#include <zwidget/window/window.h>
 
 // MACROS ------------------------------------------------------------------
 
@@ -356,9 +361,128 @@ bool HoldingQueryKey(const char* key)
 //
 //==========================================================================
 
+void I_ForceWindowFocus()
+{
+#ifndef HCDE_DEDICATED_SERVER
+	if (mainwindow.GetHandle() != NULL)
+	{
+		HWND hwnd = mainwindow.GetHandle();
+		ShowWindow(hwnd, SW_SHOW);
+		BringWindowToTop(hwnd);
+		SetActiveWindow(hwnd);
+		SetForegroundWindow(hwnd);
+		SetFocus(hwnd);
+		UpdateWindow(hwnd);
+		RedrawWindow(hwnd, NULL, NULL, RDW_INVALIDATE | RDW_UPDATENOW | RDW_ALLCHILDREN);
+
+		// Pump a frame-changed pass so DWM sees the window state change
+		// even when no real activation message was delivered by the OS.
+		SetWindowPos(hwnd, NULL, 0, 0, 0, 0,
+			SWP_NOMOVE | SWP_NOSIZE | SWP_NOZORDER | SWP_NOACTIVATE | SWP_FRAMECHANGED);
+
+		// On Windows 11 some launch paths never deliver WM_ACTIVATEAPP
+		// until the user provides any input. Without that activation the
+		// DWM compositor leaves the OpenGL surface stuck on a black frame
+		// even though SwapBuffers is being called. Synthesise a single
+		// no-op mouse movement to mimic what the user does to "wake up"
+		// the window. Only run this once per process so it cannot poke
+		// the cursor or steal focus during normal gameplay.
+		static bool synthesisedInputOnce = false;
+		if (!synthesisedInputOnce)
+		{
+			synthesisedInputOnce = true;
+			INPUT input = {};
+			input.type = INPUT_MOUSE;
+			input.mi.dx = 0;
+			input.mi.dy = 0;
+			input.mi.dwFlags = MOUSEEVENTF_MOVE;
+			SendInput(1, &input, sizeof(INPUT));
+		}
+	}
+#endif
+}
+
+void I_ShowStartupStatus(const char* status)
+{
+#ifndef HCDE_DEDICATED_SERVER
+	mainwindow.ShowStartupStatus(status);
+#else
+	(void)status;
+#endif
+}
+
+void I_ClearStartupStatus()
+{
+#ifndef HCDE_DEDICATED_SERVER
+	mainwindow.ClearStartupStatus();
+#endif
+}
+
+//==========================================================================
+//
+// I_PresentKickStartup
+//
+// Workaround for a Windows 11 DWM/OpenGL/Vulkan compositor bug: after the
+// startup splash, the very first rendered frames never make it to the
+// desktop until the window receives an external OS message (mouse move,
+// key press, focus change). Without this kick the screen stays black
+// until the user touches the mouse or keyboard. We invalidate, repaint,
+// frame-change, and DwmFlush the window for the first ~5 seconds of
+// process lifetime to force the compositor to pick up our swaps.
+//
+// Called from the OpenGL SwapBuffers and the Vulkan present path.
+//
+//==========================================================================
+
+void I_PresentKickStartup()
+{
+#ifndef HCDE_DEDICATED_SERVER
+	static int kickFrames = 0;
+	// ~5 seconds at any reasonable refresh rate. The work per call is
+	// trivial; we self-disable once the grace window is exhausted.
+	static const int kKickMaxFrames = 350;
+	if (kickFrames >= kKickMaxFrames)
+		return;
+
+	HWND hwnd = mainwindow.GetHandle();
+	if (hwnd == NULL)
+		return;
+
+	// Mark the entire window dirty without erasing - GDI must not paint
+	// over our GPU surface, but DWM still needs to see the window
+	// invalidated to recomposite.
+	InvalidateRect(hwnd, NULL, FALSE);
+
+	// Drive any deferred WM_PAINT immediately. RDW_NOERASE keeps GDI off
+	// our render target.
+	RedrawWindow(hwnd, NULL, NULL, RDW_INVALIDATE | RDW_UPDATENOW | RDW_NOERASE);
+
+	// SWP_FRAMECHANGED nudges the non-client area; this is the canonical
+	// workaround for the Win11 "first-frames stuck black" presentation
+	// bug. SWP_NOACTIVATE prevents focus stealing.
+	SetWindowPos(hwnd, NULL, 0, 0, 0, 0,
+		SWP_NOMOVE | SWP_NOSIZE | SWP_NOZORDER | SWP_NOACTIVATE | SWP_FRAMECHANGED);
+
+	// Block until DWM finishes a composition pass. This is the single
+	// most reliable way to guarantee our just-presented buffer is
+	// actually scanned out. Costs at most one vblank.
+	DwmFlush();
+
+	if (kickFrames == 0)
+	{
+		DebugTrace::Info("startup.render", "DWM present-kick workaround engaged for first frames");
+	}
+	else if (kickFrames == kKickMaxFrames - 1)
+	{
+		DebugTrace::Info("startup.render", "DWM present-kick workaround grace period ended");
+	}
+	kickFrames++;
+#endif
+}
+
 bool I_PickIWad(bool showwin, FStartupSelectionInfo& info)
 {
-	if (showwin)
+	if (showwin && DisplayBackend::Get() != nullptr)
 	{
 		return LauncherWindow::ExecModal(info);
 	}

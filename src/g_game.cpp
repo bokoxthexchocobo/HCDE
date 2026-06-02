@@ -2055,7 +2055,7 @@ void FLevelLocals::QueueBody (AActor *body)
 //
 void FLevelLocals::DoReborn (int playernum, bool force)
 {
-	if (!multiplayer && !(flags2 & LEVEL2_ALLOWRESPAWN) && !sv_singleplayerrespawn &&
+	if (!multiplayer && sv_gametype != 4 && !(flags2 & LEVEL2_ALLOWRESPAWN) && !sv_singleplayerrespawn &&
 		!G_SkillProperty(SKILLP_PlayerRespawn))
 	{
 		if (!(cl_restartondeath) && (BackupSaveName.Len() > 0 && FileExists (BackupSaveName)))

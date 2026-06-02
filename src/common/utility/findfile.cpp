@@ -118,6 +118,15 @@ bool D_AddFile(std::vector<FileSys::ResourceName>& wadfiles, const char* file, b
 
 	std::string f = file;
 	for (auto& c : f) if (c == '\\') c = '/';
+	for (const auto& existing : wadfiles)
+	{
+		// Autoload sections can overlap (Global + game-specific, or repeated
+		// wildcard entries). Avoid opening and parsing the same archive twice.
+		if (stricmp(existing.Name.c_str(), f.c_str()) == 0)
+		{
+			return true;
+		}
+	}
 	if (position == -1) wadfiles.push_back({ f, optional });
 	else wadfiles.insert(wadfiles.begin() + position, { f, optional });
 	return true;
@@ -128,6 +137,31 @@ bool D_AddFile(std::vector<FileSys::ResourceName>& wadfiles, const char* file, b
 // D_AddWildFile
 //
 //==========================================================================
+
+static FString D_ApplyWildcardExtensionFilter(FString name, const char* extension)
+{
+	if (extension == nullptr || extension[0] == '\0' || name.IsEmpty())
+	{
+		return name;
+	}
+
+	// Config autoload sections pass an extension filter (usually "*.wad").
+	// Keep explicit patterns like "*.pk3", but make broad patterns such as
+	// "*" or "mod_*" obey the filter instead of scanning every file type in
+	// large mod folders.
+	if (strcmp(name.GetChars(), "*") == 0 || strcmp(name.GetChars(), "*.*") == 0)
+	{
+		return FString(extension);
+	}
+	if (name.IndexOf('.') < 0)
+	{
+		FString filtered = name;
+		const char* dot = strchr(extension, '.');
+		filtered += dot != nullptr ? dot : extension;
+		return filtered;
+	}
+	return name;
+}
 
 void D_AddWildFile(std::vector<FileSys::ResourceName>& wadfiles, const char* value, const char *extension, FConfigFile* config, bool optional)
 {
@@ -148,6 +182,7 @@ void D_AddWildFile(std::vector<FileSys::ResourceName>& wadfiles, const char* val
 	FileSys::FileList list;
 	auto path = ExtractFilePath(value);
 	auto name = ExtractFileBase(value, true);
+	name = D_ApplyWildcardExtensionFilter(name, extension);
 	if (path.IsEmpty()) path = ".";
 
 	bool found = false;

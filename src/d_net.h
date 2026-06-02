@@ -233,6 +233,15 @@ int Net_GetCompatDuelLimit();
 int Net_ControlInvasion(int action, const char* reason = nullptr);
 void Net_BeginInvasionSpawnRegistration(FLevelLocals* level);
 bool Net_RegisterInvasionSpawnSpotFromMapThing(FLevelLocals* level, const FMapThing* mapThing, PClassActor* spotClass);
+// If `spotClass` is an invasion pickup/weapon spot, replace it with the actual
+// item class so the regular map-thing spawn path drops the item at the spot.
+// Returns true when a substitution was made. Must be called before
+// Net_RegisterInvasionSpawnSpotFromMapThing so item spots aren't swallowed by
+// the monster registrar.
+bool Net_TryReplaceInvasionPickupSpot(PClassActor*& spotClass);
+void Net_RecordInvasionItemSpot(const DVector3& pos, PClassActor* itemClass, int delayTics);
+void Net_ProcessInvasionItemRespawns();
+void Net_ClearInvasionItemSpots();
 void Net_ResetCommands(bool midTic);
 void Net_SetWaiting();
 bool Net_LocalCanControlSettings();

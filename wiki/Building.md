@@ -20,7 +20,7 @@ Typical outputs:
 
 - `C:\path\to\HCDE\build\Release\hcde.exe`
 - `C:\path\to\HCDE\build\Release\hcdeserv.exe`
-- `C:\path\to\HCDE\build\Release\hcdemaster.exe`
+- `C:\path\to\HCDE\build\Release\hcdercon.exe`
 
 ### Linux quick build
 

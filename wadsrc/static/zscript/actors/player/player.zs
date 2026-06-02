@@ -827,7 +827,9 @@ class PlayerPawn : Actor
 			{
 				self.special2 = 0; // Clear the buffer
 				player.cls = NULL;		// Force a new class if the player is using a random class
-				player.playerstate = (multiplayer || level.AllowRespawn || sv_singleplayerrespawn || G_SkillPropertyInt(SKILLP_PlayerRespawn)) ? PST_REBORN : PST_ENTER;
+				let gt = CVar.FindCVar("sv_gametype");
+				let invasionMode = gt != null && gt.GetInt() == 4;
+				player.playerstate = (multiplayer || invasionMode || level.AllowRespawn || sv_singleplayerrespawn || G_SkillPropertyInt(SKILLP_PlayerRespawn)) ? PST_REBORN : PST_ENTER;
 				if (special1 > 2)
 				{
 					special1 = 0;

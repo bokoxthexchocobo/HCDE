@@ -1,0 +1,149 @@
+/* 
+Boko's Announcer for Skulltag
+*/
+{
+name = "Boko AnnouncerV3"
+
+//	Medals
+accuracy = announcer/Bok/accuracy
+assist = announcer/Bok/assist
+yourskillisnotenough = announcer/Bok/yourskillisnotenough
+youfailit = announcer/Bok/youfailit
+totaldomination = announcer/Bok/totaldomination
+spam = announcer/Bok/spam
+capture = announcer/Bok/capture
+defense = announcer/Bok/defense
+domination = announcer/Bok/domination
+excellent = announcer/Bok/excellent
+fight = announcer/Bok/fight
+firstfrag = announcer/Bok/firstfrag
+fisting = announcer/Bok/fisting
+llama = announcer/Bok/llama
+impressive = announcer/Bok/impressive
+incredible = announcer/Bok/incredible
+mostimpressive = announcer/Bok/mostimpressive
+perfect = announcer/Bok/perfect
+precision = announcer/Bok/precision
+
+//	Blue Team Sounds
+blueflagdropped = announcer/Bok/blueflagdropped
+blueflagreturned = announcer/Bok/blueflagreturned
+
+blueflagtaken = announcer/Bok/blueflagtaken
+
+blueleads = announcer/Bok/blueleads
+bluescores = announcer/Bok/bluescores
+blueskulldropped = announcer/Bok/blueskulldropped
+blueskullreturned = announcer/Bok/blueskullreturned
+
+blueskulltaken = announcer/Bok/blueskulltaken
+
+//	Red Team Sounds
+
+redflagdropped = announcer/Bok/redflagdropped
+redflagreturned = announcer/Bok/redflagreturned
+
+redflagtaken = announcer/Bok/redflagtaken
+
+redleads = announcer/Bok/redleads
+redredskull = announcer/Bok/redredskull
+redscores = announcer/Bok/redscores
+redskulldropped = announcer/Bok/redskulldropped
+redskullreturned = announcer/Bok/redskullreturned
+
+redskulltaken = announcer/Bok/redskulltaken
+
+//	Gold Team Sounds
+goldflagtaken = announcer/Bok/goldflagtaken
+goldflagdropped = announcer/Bok/goldflagdropped
+goldflagreturned = announcer/Bok/goldflagreturned
+
+goldscores = announcer/Bok/goldscores
+
+goldskulltaken = announcer/Bok/goldskulltaken
+goldskulldropped = announcer/Bok/goldskulldropped
+goldskullreturned = announcer/Bok/goldskullreturned
+
+
+//	Green Team Sounds
+
+greenflagtaken = announcer/Bok/greenflagtaken
+greenflagdropped = announcer/Bok/greenflagdropped
+greenflagreturned = announcer/Bok/greenflagreturned
+
+greenscores = announcer/Bok/greenscores
+
+greenskulltaken = announcer/Bok/greenskulltaken
+greenskulldropped = announcer/Bok/greenskulldropped
+greenskullreturned = announcer/Bok/greenskullreturned
+
+//	White Flag
+whiteflagreturned = announcer/Bok/whiteflagreturned
+
+//	Time Warnings
+
+oneminutewarning = announcer/Bok/oneminutewarning
+fiveminutewarning = announcer/Bok/fiveminutewarning
+
+//	Player Notifications
+
+nextroundin = announcer/Bok/nextroundin
+three = announcer/Bok/three
+two = announcer/Bok/two
+one = announcer/Bok/one
+onefragleft = announcer/Bok/onefragleft
+preparetofight = announcer/Bok/preparetofight
+teamsaretied = announcer/Bok/teamsaretied
+theenemyhastheflag = announcer/Bok/theenemyhastheflag
+three = announcer/Bok/three
+threefragsleft = announcer/Bok/threefragsleft
+twofragsleft = announcer/Bok/twofragsleft
+victory = announcer/Bok/victory
+youaretiedforthelead = announcer/Bok/youaretiedforthelead
+youhavetheflag = announcer/Bok/youhavetheflag
+yourteamhastheflag = announcer/Bok/yourteamhastheflag
+youvelostthelead = announcer/Bok/youvelostthelead
+youvetakenthelead = announcer/Bok/youvetakenthelead
+youwin = announcer/Bok/youwin
+five = announcer/Bok/five
+four = announcer/Bok/four
+
+//	Runes/Powerups
+
+guardsphere = announcer/Bok/guardsphere
+haste = announcer/Bok/haste
+highjump = announcer/Bok/highjump
+partialinvisibility = announcer/Bok/partialinvisibility
+possessionartifactdropped = announcer/Bok/possessionartifactdropped
+possessionartifactpickedup = announcer/Bok/possessionartifactpickedup
+prosperity = announcer/Bok/prosperity
+rage = announcer/Bok/rage
+reflection = announcer/Bok/reflection
+regeneration = announcer/Bok/regeneration
+resistance = announcer/Bok/resistance
+spread = announcer/Bok/spread
+strength = announcer/Bok/strength
+timefreeze = announcer/Bok/timefreeze
+turbosphere = announcer/Bok/turbosphere
+doomsphere = announcer/Bok/doomsphere
+drain = announcer/Bok/drain
+
+invisibility = announcer/Bok/invisibility
+invulnerability = announcer/Bok/invulnerability
+megasphere = announcer/Bok/megasphere
+soulsphere = announcer/Bok/soulsphere
+
+//	Gamemode Sounds
+tag = announcer/Bok/tag
+termination = announcer/Bok/termination
+terminator = announcer/Bok/terminator
+welcometoctf = announcer/Bok/welcometoctf
+welcometooneflagctf = announcer/Bok/welcometooneflagctf
+welcometost = announcer/Bok/welcometost
+
+//	Vote Sounds
+votefailed = announcer/Bok/votefailed
+votenow = announcer/Bok/votenow
+votepassed = announcer/Bok/votepassed
+
+}

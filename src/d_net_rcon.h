@@ -6,30 +6,21 @@
 // channel that an operator (or external launcher) can use to drive a
 // dedicated server: kick clients, toggle map, dump diagnostics, etc.
 //
-// Scope of THIS scaffold (Phase 0 / surface only):
+// Current scope:
 //
-//   - Define `sv_rcon_enable` and `sv_rcon_password` CVARs so an operator
-//     can configure an authority instance ahead of the actual transport
-//     landing.
-//   - Provide a `rcon_status` CCMD that prints whether RCON would be
-//     accepting connections, whether a password is set, and reminds the
-//     operator that the transport is not yet wired.
-//   - Hold a single `HCDERconShouldAcceptCommands()` predicate so future
-//     packet/transport code has a clear gating point.
+//   - Define `sv_rcon_enable`, `sv_rcon_password`, and `sv_rcon_port`.
+//   - Bind a loopback-only TCP listener on dedicated/local authority builds
+//     when RCON is enabled, a password is configured, and a non-zero port is set.
+//   - Accept length-prefixed frames (4096-byte ceiling), perform the current
+//     nonce/password verifier handshake, and answer diagnostic commands.
+//   - Provide `rcon_status` for listener visibility.
 //
-// What is intentionally NOT here yet:
+// What is intentionally narrow:
 //
-//   - No packet lane. RCON must NOT borrow the gameplay packet stream;
-//     command/auth flow is a separate concern from snapshot/world
-//     authority. A future change adds a dedicated packet ID (or a
-//     side-channel TCP/UNIX socket) and a small command dispatcher.
-//   - No password verification. Storing a verifier (HMAC of a server
-//     nonce, or libsodium-style password hash) is part of the transport
-//     change. This scaffold only knows whether a password is set, never
-//     whether one matches.
-//   - No allow/deny list of commands. The first transport patch must
-//     ship with an explicit allowlist (no `exec`, no `dir`, no demo
-//     manipulation, etc.) before exposing a real socket.
+//   - RCON does not borrow the gameplay packet stream.
+//   - The dispatcher currently allows only `ping`, `status`, and
+//     `rcon_status`. Wider admin commands must land behind an explicit
+//     allowlist (no `exec`, no filesystem-touching commands, etc.).
 //
 // See `docs/HCDE_RCON.md` for the full design.
 

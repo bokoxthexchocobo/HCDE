@@ -2463,6 +2463,21 @@ void A_DoChase (AActor *actor, bool fastchase, FState *meleestate, FState *missi
 	if (actor->target && actor->target != actor->goal && (actor->target->health <= 0 || actor->IsFriend(actor->target)))
 		actor->target = nullptr;
 
+	// [HCDE] If the target is a player who has the notarget cheat enabled,
+	// drop them so the monster behaves like it never saw the player. Vanilla
+	// ZDoom only honors CF_NOTARGET while *acquiring* targets, which leaves
+	// monsters that locked on before the cheat was toggled still chasing.
+	// Re-checking here makes notarget feel like an actual panic button.
+	if (actor->target != nullptr && actor->target != actor->goal &&
+		actor->target->player != nullptr &&
+		(actor->target->player->cheats & CF_NOTARGET) != 0)
+	{
+		actor->target = nullptr;
+		actor->lastenemy = nullptr;
+		actor->LastHeard = nullptr;
+		actor->threshold = 0;
+	}
+
 	// [RH] Friendly monsters will consider chasing whoever hurts a player if they
 	// don't already have a target.
 	if (actor->flags & MF_FRIENDLY && actor->target == NULL)
