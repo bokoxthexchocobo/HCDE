@@ -451,6 +451,8 @@ struct FPredictionData
 	int LastPredictedTic = 0;
 
 	TArray<TObjPtr<DObject*>> RollbackObjectRefs = {};	// Try and reuse existing Objects when deserializing.
+	// Holds ONLY non-AActor DObjects (see P_RollbackObject): they need recreate-
+	// on-miss handling but not the actor flag/relink contract FActorBackup adds.
 	TArray<FObjectBackup> RollbackObjects = {};			// If these Objects no longer exist, they must be recreated instead of left as a null pointer.
 	TArray<FActorBackup> RollbackActors = {};
 	TArray<size_t> RollbackPlayers = {};				// Store by index instead of pointer so it'll never be invalid when deserializing.
@@ -1817,6 +1819,13 @@ static void P_RollbackObject(DObject* obj, FSerializer& arc)
 	}
 	else
 	{
+		// INVARIANT: only non-AActor DObjects reach this branch (the dyn_cast
+		// above peels every actor into RollbackActors). That is why these get
+		// the bare FObjectBackup with no PostBackup/PreRollback/PostRollback:
+		// the actor-only contract (volatile MF_PICKUP/MF2_PUSHWALL save-restore
+		// and world relink) is meaningless for non-actors. If a future change
+		// ever routes an AActor through here it MUST be promoted to an
+		// FActorBackup or rollback determinism will silently regress.
 		PredictionData.RollbackObjects.Push({ *obj });
 	}
 }
@@ -1956,7 +1965,12 @@ void P_PredictClient()
 		if (i == rubberbandTic)
 		{
 			DVector3 diff = player->mo->Pos() - PredictionData.LastPos.Pos;
-			diff += player->mo->Level->Displacements.getOffset(player->mo->Sector->PortalGroup, PredictionData.LastPos.PortalGroup);
+			// Sector can be null for a single tic after a teleport/level change
+			// before P_PlayerThink relinks the pawn; every other reconcile path
+			// guards this, so mirror that here instead of dereferencing a null
+			// Sector for the portal-group displacement lookup.
+			if (player->mo->Sector != nullptr)
+				diff += player->mo->Level->Displacements.getOffset(player->mo->Sector->PortalGroup, PredictionData.LastPos.PortalGroup);
 			double dist = diff.LengthSquared();
 			if (dist >= EQUAL_EPSILON * EQUAL_EPSILON && dist > rubberbandThreshold * rubberbandThreshold)
 			{

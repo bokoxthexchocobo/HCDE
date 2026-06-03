@@ -218,6 +218,7 @@ int Net_GetInvasionWaveBudget();
 int Net_GetInvasionWaveSpawned();
 int Net_GetInvasionWaveCleared();
 int Net_GetInvasionActiveMonsterCount();
+int Net_GetInvasionArchvileCount();
 bool Net_IsInvasionBossWave();
 int Net_GetInvasionSpawnSpotCount();
 int Net_GetInvasionActiveSpawnSpotCount();

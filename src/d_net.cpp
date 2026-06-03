@@ -205,7 +205,10 @@ CVAR(Bool, hcde_lag_hud, false, CVAR_ARCHIVE | CVAR_GLOBALCONFIG);
 //   1 = CSV sample every `net_predict_debug_interval` tics to hcde_predict_metrics.csv
 //   2 = + soft-warning lines to hcde_prediction_softwarn.log when a threshold trips
 //   3 = + full DebugTrace snapshot dumped at most once per 5s when a warning trips
-CUSTOM_CVAR(Int, net_predict_debug, 3, CVAR_ARCHIVE | CVAR_GLOBALCONFIG)
+// Default 0: shipping builds must not write hcde_predict_metrics.csv / softwarn
+// logs every session (disk churn + perf). Diagnostics are opt-in via the launcher
+// args or the console; raise this only while actively debugging prediction.
+CUSTOM_CVAR(Int, net_predict_debug, 0, CVAR_ARCHIVE | CVAR_GLOBALCONFIG)
 {
 	if (self < 0)
 		self = 0;
@@ -250,9 +253,11 @@ CUSTOM_CVAR(Int, net_self_test_run_client, 0, CVAR_ARCHIVE | CVAR_GLOBALCONFIG)
 // unconfirmed commands to replay on top of the latest authoritative pose.
 // Without a lead (lead == 0) ClientTic and gametic march in lockstep on a
 // healthy connection and the local view only updates after each full server
-// round-trip, which feels like input lag. 2 ~= 57ms at 35Hz and matches the
-// jitter window we already plan for. 0 disables and restores legacy lockstep.
-CUSTOM_CVAR(Int, cl_net_prediction_lead, 2, CVAR_ARCHIVE | CVAR_GLOBALCONFIG)
+// round-trip, which feels like input lag. 1 ~= 29ms at 35Hz; adaptive lead can
+// raise this on jittery links, while healthy localhost/LAN avoids overshooting
+// the baseline drift allowance during high-acceleration forward movement.
+// 0 disables and restores legacy lockstep.
+CUSTOM_CVAR(Int, cl_net_prediction_lead, 1, CVAR_ARCHIVE | CVAR_GLOBALCONFIG)
 {
 	if (self < 0)
 		self = 0;
@@ -1174,6 +1179,26 @@ static void Net_ShowInvasionStatusMessage(const char* text)
 	}
 }
 
+static FString Net_GetOrdinal(int number)
+{
+	FString res;
+	int rem100 = number % 100;
+	if (rem100 >= 11 && rem100 <= 13)
+	{
+		res.Format("%dth", number);
+		return res;
+	}
+	
+	switch (number % 10)
+	{
+		case 1:  res.Format("%dst", number); break;
+		case 2:  res.Format("%dnd", number); break;
+		case 3:  res.Format("%drd", number); break;
+		default: res.Format("%dth", number); break;
+	}
+	return res;
+}
+
 static void Net_TickInvasionAnnouncements()
 {
 	if (demoplayback || !Net_IsInvasionModeEnabled())
@@ -1197,20 +1222,17 @@ static void Net_TickInvasionAnnouncements()
 			&& prevState != INVS_COUNTDOWN)
 		{
 			FString msg;
-			msg.Format("Wave %d completed", wave);
+			msg.Format(TEXTCOLOR_RED "Wave %d Complete!", wave);
 			Net_ShowInvasionStatusMessage(msg.GetChars());
 		}
 
+		// Emit a "Begin!" callout when a wave actually starts spawning, regardless
+		// of which wave number it is. This is the post-countdown go-signal.
 		if (state == INVS_SPAWNING
 			&& wave > 0
 			&& prevState != INVS_SPAWNING)
 		{
-			FString msg;
-			if (wave == 1)
-				msg = "FIGHT";
-			else
-				msg.Format("Wave %d begins", wave);
-			Net_ShowInvasionStatusMessage(msg.GetChars());
+			Net_ShowInvasionStatusMessage(TEXTCOLOR_RED "Begin!");
 		}
 
 		if (state != INVS_COUNTDOWN)
@@ -1227,22 +1249,8 @@ static void Net_TickInvasionAnnouncements()
 		if (seconds > 0 && seconds != InvasionAnnouncementLastCountdownSecond)
 		{
 			FString msg;
-			const int pendingWave = max(InvasionPendingWave, 0);
-			const int maxWaves = max(InvasionWaveDirector.MaxWaves, 0);
-			// If a specific pending wave is known, announce the wave number instead
-			// of the generic "Prepare for invasion" text so players see "Wave N in: X".
-			if (pendingWave > 0)
-			{
-				if (pendingWave == maxWaves)
-					msg.Format("Final wave in: %d", seconds);
-				else
-					msg.Format("Wave %d in: %d", pendingWave, seconds);
-			}
-			else
-			{
-				// Fallback for countdowns that are not tied to a specific pending wave.
-				msg.Format("Prepare for invasion: %d", seconds);
-			}
+			int nextWave = max(InvasionPendingWave, 1);
+			msg.Format(TEXTCOLOR_RED "Prepare for Invasion!\n" TEXTCOLOR_RED "%s wave starting in: %d", Net_GetOrdinal(nextWave).GetChars(), seconds);
 			Net_ShowInvasionStatusMessage(msg.GetChars());
 			InvasionAnnouncementLastCountdownSecond = seconds;
 		}
@@ -1253,13 +1261,8 @@ static void Net_TickInvasionAnnouncements()
 		if (seconds > 0 && seconds != InvasionAnnouncementLastCountdownSecond)
 		{
 			FString msg;
-			// Announce the upcoming wave number explicitly during intermission.
-			const int nextWave = max(InvasionWaveDirector.Wave + 1, 1);
-			const int maxWaves = max(InvasionWaveDirector.MaxWaves, 0);
-			if (nextWave > 0 && nextWave == maxWaves)
-				msg.Format("Final wave in: %d", seconds);
-			else
-				msg.Format("Wave %d in: %d", nextWave, seconds);
+			int nextWave = max(InvasionWaveDirector.Wave + 1, 1);
+			msg.Format(TEXTCOLOR_RED "Prepare for Invasion!\n" TEXTCOLOR_RED "%s wave starting in: %d", Net_GetOrdinal(nextWave).GetChars(), seconds);
 			Net_ShowInvasionStatusMessage(msg.GetChars());
 			InvasionAnnouncementLastCountdownSecond = seconds;
 		}
@@ -1281,7 +1284,10 @@ static void Net_SetLevelStartStatus(ELevelStartStatus status, const char* reason
 		primaryLevel != nullptr ? primaryLevel->MapName.GetChars() : "<none>");
 	LevelStartStatus = status;
 	if (status == LST_READY && netgame)
+	{
+		HCDEMovementResetJitter();
 		Net_DiagSessionNetReady();
+	}
 }
 
 static uint64_t	LevelStartAck = 0u; // Used by the host to determine if everyone has loaded in.
@@ -2607,7 +2613,12 @@ static bool HCDEReadUserCmdFields(const uint8_t* data, size_t dataSize, size_t& 
 	command.yaw = int16_t(HCDELiveReadBE16(&data[cursor]));
 	cursor += 2u;
 	command.roll = int16_t(HCDELiveReadBE16(&data[cursor]));
-#include "d_net_snapshot_part1.cpp"
+// NOTE: d_net.cpp is too large for one editor buffer so its body is physically
+// split into textual continuation fragments (.inl). These are NOT separate
+// translation units (they are not in CMakeLists) and each one literally resumes
+// the statement/function this #include sits inside. Renamed from .cpp to .inl so
+// the "included source" intent is obvious and no build glob ever compiles them.
+#include "d_net_snapshot_part1.inl"
 static bool HCDEAppendInvasionSnapshot(int clientNum, uint8_t* output, size_t outputCapacity, size_t& cursor)
 {
 	if (!HCDEIsValidLiveClient(clientNum))
@@ -3587,8 +3598,10 @@ static bool HCDEAppendLegacyEventPayload(uint8_t eventType, const uint8_t* data,
 		}
 
 	case DEM_ADDSLOT:
-#include "d_net_snapshot_part2.cpp"
-#include "d_net_invasion.cpp"
+// Textual continuation fragments (see the note at the part1 include above): these
+// .inl files resume this switch case / function body inline. They are not TUs.
+#include "d_net_snapshot_part2.inl"
+#include "d_net_invasion.inl"
 		if (*hcde_hud_debug && HCDELiveProfile.MirrorVisualPasses % 35u == 0u)
 		{
 			const double avgMS = HCDELiveProfile.MirrorVisualPasses > 0u
@@ -6329,19 +6342,18 @@ void TryRunTics()
 	}
 
 	int availableTics;
-	if (I_IsLocalHCDEServiceAuthority() && netgame && !singletics && !demoplayback)
+	const bool authorityWallClockScheduler = I_IsLocalHCDEServiceAuthority() && netgame && !singletics && !demoplayback;
+	if (authorityWallClockScheduler)
 	{
 		// Authoritative scheduler: the server advances from the wall clock and
 		// never waits for the slowest client command sequence. Client command
 		// gaps are handled per-client through missing-sequence replay instead
 		// of freezing the whole world.
-		// Authority path: drive the world from wall-clock tics. `totalTics`
-		// is `EnterTic - LastEnterTic`, i.e. the number of TICRATE-clock
-		// tics elapsed since the last frame. The +1 lookahead keeps the
-		// stability/runTics math identical to the legacy formula's behavior
-		// on a healthy connection, where (lowestSequence - gametic) usually
-		// equaled totalTics + 0..1.
-		availableTics = totalTics + 1;
+		// Authority path: drive the world from wall-clock tics only. The
+		// generic stability catch-up code below is for client/lockstep gating;
+		// if the server advertises a +1 lookahead there it can run two world
+		// tics per real tic and make every client rubberband behind authority.
+		availableTics = totalTics;
 	}
 	else
 	{
@@ -6387,7 +6399,7 @@ void TryRunTics()
 	if (netgame && !demoplayback && LevelStartStatus != LST_READY && LevelStartDelay <= 0)
 		runTics = 0;
 
-	if (!singletics && totalTics > 0)
+	if (!singletics && totalTics > 0 && !authorityWallClockScheduler)
 	{
 		CalculateNetStabilityBuffer(availableTics - totalTics);
 		if (totalTics < availableTics - StabilityBuffer)
@@ -6450,6 +6462,25 @@ void TryRunTics()
 				predictionLeadHeldWorld = true;
 			}
 		}
+	}
+
+	// HCDE diag: expose the scheduler quantities that govern the persistent
+	// ClientTic-gametic offset (the same value Net_GetLatency reports as the
+	// inflated "ping"). This shows whether availableTics pins the world loop so
+	// the startup command burst can never drain, which would surface as constant
+	// tic-aligned reconcile drift and forward/back snap-back during movement.
+	if (*net_predict_debug >= 1
+		&& netgame && !demoplayback && !I_IsLocalHCDEServiceAuthority() && gamestate == GS_LEVEL)
+	{
+		const int schedConsole = (consoleplayer >= 0 && consoleplayer < MAXPLAYERS) ? consoleplayer : 0;
+		DebugTrace::Markf("net.sched",
+			"HCDE cli sched gametic=%d clienttic=%d lowestSeq=%d avail=%d total=%d run=%d "
+			"lead(client-gametic)=%d buffer(clienttic-ack)=%d desired=%d held=%d",
+			gametic, ClientTic, lowestSequence, availableTics, totalTics, runTics,
+			ClientTic / TicDup - gametic / TicDup,
+			ClientTic / TicDup - ClientStates[schedConsole].SequenceAck,
+			HCDEMovementGetAdaptiveDesiredLead(int(*cl_net_prediction_lead)),
+			predictionLeadHeldWorld ? 1 : 0);
 	}
 
 	const int worldTimer = primaryLevel->LocalWorldTimer;
@@ -8322,6 +8353,30 @@ int Net_GetInvasionActiveMonsterCount()
 	return max(int(InvasionWaveDirector.ActiveMonsters.Size()), 0);
 }
 
+static int InvasionReplicatedArchvileCount = 0; // populated during snapshot apply for clients (placeholder until full replication)
+
+int Net_GetInvasionArchvileCount()
+{
+	if (!Net_IsLocalInvasionAuthority())
+		return max(InvasionReplicatedArchvileCount, 0);
+
+	static PClassActor* archvileClass = nullptr;
+	if (!archvileClass)
+		archvileClass = PClass::FindActor("Archvile");
+
+	int count = 0;
+	for (auto& ref : InvasionWaveDirector.ActiveMonsters)
+	{
+		AActor* mo = ref.Get();
+		if (mo && mo->health > 0 && (mo->ObjectFlags & OF_EuthanizeMe) == 0)
+		{
+			if (archvileClass && mo->IsKindOf(archvileClass))
+				++count;
+		}
+	}
+	return count;
+}
+
 bool Net_IsInvasionBossWave()
 {
 	return (InvasionWaveDirector.WaveFlags & INV_WAVEF_BOSS) != 0u;
@@ -8524,6 +8579,17 @@ DEFINE_ACTION_FUNCTION_NATIVE(DObject, InvasionGetActiveMonsterCount, InvasionGe
 {
 	PARAM_PROLOGUE;
 	ACTION_RETURN_INT(InvasionGetActiveMonsterCount());
+}
+
+static int InvasionGetArchvileCount()
+{
+	return Net_GetInvasionArchvileCount();
+}
+
+DEFINE_ACTION_FUNCTION_NATIVE(DObject, InvasionGetArchvileCount, InvasionGetArchvileCount)
+{
+	PARAM_PROLOGUE;
+	ACTION_RETURN_INT(InvasionGetArchvileCount());
 }
 
 static int InvasionIsBossWave()

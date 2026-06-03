@@ -224,6 +224,7 @@ extend class Object
 	native static int InvasionGetWaveSpawned();
 	native static int InvasionGetWaveCleared();
 	native static int InvasionGetActiveMonsterCount();
+	native static int InvasionGetArchvileCount();
 	native static bool InvasionIsBossWave();
 	native static int InvasionGetSpawnSpotCount();
 	native static int InvasionGetActiveSpawnSpotCount();

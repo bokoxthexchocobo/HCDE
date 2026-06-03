@@ -311,6 +311,7 @@ version "4.15.1"
 #include "zscript/ui/statusbar/hexen_sbar.zs"
 #include "zscript/ui/statusbar/sbarinfowrapper.zs"
 #include "zscript/ui/statusbar/statusbar.zs"
+#include "zscript/ui/invasion_hud.zs"
 #include "zscript/ui/statusbar/strife_sbar.zs"
 #include "zscript/ui/statusbar/scoreboard.zs"
 

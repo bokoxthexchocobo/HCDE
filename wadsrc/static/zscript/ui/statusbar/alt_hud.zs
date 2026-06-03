@@ -190,7 +190,20 @@ class AltHud ui
 
 			if (InvasionGetState() > 0)
 			{
-				DrawStatLine(x, y, "Monsters left:", String.Format("%d", InvasionGetWaveBudget() - InvasionGetWaveCleared()));
+				int wave = InvasionGetWave();
+				int maxWaves = InvasionGetMaxWaves();
+				int remaining = InvasionGetActiveMonsterCount();
+				int archviles = InvasionGetArchvileCount();
+
+				if (maxWaves > 0)
+					DrawStatLine(x, y, "Wave:", String.Format("%d/%d", wave, maxWaves));
+				else
+					DrawStatLine(x, y, "Wave:", String.Format("%d", wave));
+
+				DrawStatLine(x, y, "Monsters:", String.Format("%d", remaining));
+
+				if (archviles > 0)
+					DrawStatLine(x, y, "Archviles:", String.Format("%d", archviles));
 			}
 			else if (hud_showmonsters)
 			{

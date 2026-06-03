@@ -1574,6 +1574,23 @@ void G_Ticker ()
 		else
 			memcpy(cmd, nextCmd, sizeof(usercmd_t));
 
+		// HCDE diag: confirm the server feeds the correct command slot to the
+		// authoritative think. Logs the gametic-derived slot vs the latest
+		// sequence we have stored for this client, the yaw/move we are about to
+		// apply, and the pawn's pre-think movement yaw (which reflects whether
+		// last tic's cmd.yaw actually advanced the angle). Compare cmd-yaw here
+		// against the client-side reconcile-heading yaw drift.
+		if (netgame && players[client].mo != nullptr)
+		{
+			DebugTrace::Markf("net.cmdslot",
+				"HCDE srv cmdslot client=%d gametic=%d curtic=%d slot=%d curseq=%d ack=%d "
+				"applied(yaw=%d fwd=%d side=%d btn=0x%08x) preThinkYaw=%.2f",
+				client, gametic, curTic, int(curTic % BACKUPTICS),
+				ClientStates[client].CurrentSequence, ClientStates[client].SequenceAck,
+				int(cmd->yaw), int(cmd->forwardmove), int(cmd->sidemove), unsigned(cmd->buttons),
+				players[client].mo->Angles.Yaw.Degrees());
+		}
+
 		// check for turbo cheats
 		if (multiplayer && turbo > 100.f && cmd->forwardmove > TURBOTHRESHOLD &&
 			!(gametic & 31) && ((gametic >> 5) & (MAXPLAYERS-1)) == client)

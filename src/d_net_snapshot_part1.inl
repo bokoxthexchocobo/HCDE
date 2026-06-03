@@ -311,15 +311,20 @@ static void HCDEApplyLocalPoseRepair(player_t& player, const DVector3& serverPos
 	// clobbered. The current behavior IS a snap (no smear across the map),
 	// and that is what teleport / hard-drift reconciliation requires.
 	const DVector3 oldPos = mo->Pos();
+	const DAngle oldYaw = mo->Angles.Yaw;
 	mo->SetOrigin(serverPos, false);
 	mo->Vel = serverVel;
-	// Baseline drift repair snaps XY/Z to the authority pawn but must not
-	// overwrite the local mouse-look vector: server snapshots carry the
-	// authoritative movement-facing angle, which lags usercmd pitch on the
-	// client by the prediction lead and was yanking the view (often down).
-	if (!preserveViewAngles)
+	const DAngle serverYaw = DAngle::fromBam(yawBam);
+	if (preserveViewAngles)
 	{
-		mo->SetAngle(DAngle::fromBam(yawBam), 0);
+		// Keep the rendered look direction while repairing the movement-facing
+		// angle. Leaving Angles.Yaw predicted here poisons the next replay.
+		mo->SetViewAngle((mo->ViewAngles.Yaw + deltaangle(serverYaw, oldYaw)).Normalized180(), 0);
+		mo->SetAngle(serverYaw, 0);
+	}
+	else
+	{
+		mo->SetAngle(serverYaw, 0);
 		mo->SetPitch(DAngle::fromBam(pitchBam), 0);
 	}
 	player.onground = onGround;
@@ -623,15 +628,42 @@ static bool HCDEValidateServerWorldDeltas(int clientNum, const uint8_t* body, si
 			// player even when no repair is needed. Tier indicates the most
 			// severe repair required; 0 means the snapshot was within
 			// prediction tolerance.
+			const int repairTier = localNeedsRespawnRepair ? 3
+				: localNeedsDeathRepair ? 4
+				: localNeedsHardPoseRepair ? 2
+				: localNeedsBaselinePoseRepair ? 1
+				: 0;
 			{
-				const int repairTier = localNeedsRespawnRepair ? 3
-					: localNeedsDeathRepair ? 4
-					: localNeedsHardPoseRepair ? 2
-					: localNeedsBaselinePoseRepair ? 1
-					: 0;
 				const double velDeltaUnits = (mo->Vel - serverVel).Length();
 				HCDEMovementOnReconcile(serverTic, sqrt(drift), velDeltaUnits,
 					serverHealth, player.health, repairTier);
+			}
+
+			// HCDE diag: confirm whether baseline drift is a heading (turn-lead)
+			// artifact. If the authoritative server heading and the client's
+			// predicted heading disagree while moving, identical forward input
+			// projects onto different axes and the position drifts along the
+			// turn direction even though both sides ran the same usercmd. Logs
+			// every snapshot for the local player (repair or not) so we can see
+			// drift accumulate. Gated behind net_reconcile_debug to stay silent
+			// in normal play.
+			if (*net_reconcile_debug >= 1)
+			{
+				const double serverYawDeg = DAngle::fromBam(yaw).Degrees();
+				const double clientYawDeg = mo->Angles.Yaw.Degrees();
+				const double yawDeltaDeg = deltaangle(DAngle::fromBam(yaw), mo->Angles.Yaw).Degrees();
+				const bool serverMoving = serverVel.XY().LengthSquared() > 0.25;
+				const bool clientMoving = mo->Vel.XY().LengthSquared() > 0.25;
+				const double serverVelHdg = serverMoving ? serverVel.Angle().Degrees() : -999.0;
+				const double clientVelHdg = clientMoving ? mo->Vel.Angle().Degrees() : -999.0;
+				DebugTrace::Markf("net",
+					"HCDE reconcile-heading tic=%u drift=%.2f tier=%d yaw(srv=%.1f cli=%.1f d=%.1f) "
+					"velhdg(srv=%.1f cli=%.1f) spd(srv=%.1f cli=%.1f) local=(%.1f,%.1f) server=(%.1f,%.1f)",
+					unsigned(serverTic), sqrt(drift), repairTier,
+					serverYawDeg, clientYawDeg, yawDeltaDeg,
+					serverVelHdg, clientVelHdg,
+					serverVel.XY().Length(), mo->Vel.XY().Length(),
+					mo->X(), mo->Y(), serverPos.X, serverPos.Y);
 			}
 
 			if (!needsLocalStateRepair)
@@ -1302,6 +1334,10 @@ static void Net_SetInvasionMirrorVisualOnly(uint32_t id, AActor* actor)
 	actor->lastenemy = nullptr;
 	actor->goal = nullptr;
 
+	// Non-projectile mirrors are pose-driven from server snapshots (MF5_NOINTERACTION
+	// + MF4_STANDSTILL above), so any local velocity would be double-integrated by
+	// the client and drift the mirror off its replicated position. Zero it.
+	// Projectile mirrors keep their velocity for short-horizon visual extrapolation.
 	if (!projectileMirror)
 		actor->Vel = DVector3(0, 0, 0);
 
@@ -1468,10 +1504,13 @@ static void Net_TickInvasionMirrorVisualActors(unsigned& updated, unsigned& skip
 				actor->SetOrigin(nextPos, false);
 				actor->Prev = oldRenderPos;
 				actor->PrevPortalGroup = oldPortalGroup;
+				// We just hand-placed this frame's pose via SetOrigin; clear Vel so
+				// the engine's interpolation/physics does not also advance the mirror.
 				actor->Vel = DVector3(0, 0, 0);
 			}
 			else
 			{
+				// Already at the replicated pose (sub-0.01 unit delta): hold still.
 				actor->Vel = DVector3(0, 0, 0);
 			}
 		}
@@ -2125,6 +2164,8 @@ static void Net_PrepareInvasionMirrorCorpsePhysics(AActor* actor, bool snapToFlo
 			actor->Prev.Z = actor->Z();
 		}
 	}
+	// Corpse just settled onto the floor from a replicated pose; start it at rest
+	// so leftover death-throw velocity does not slide the corpse after handoff.
 	actor->Vel = DVector3(0, 0, 0);
 	actor->ClearInterpolation();
 }

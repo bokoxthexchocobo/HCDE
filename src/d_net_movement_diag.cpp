@@ -75,6 +75,7 @@ namespace
 constexpr int kPeerCount = 64;
 constexpr int kFrameRingSize = 64;
 constexpr int kInputBucketCount = 8;	// track up to 8 distinct button bits
+constexpr uint8_t kAdaptiveWarmupIntervals = 8u;
 
 struct FJitterState
 {
@@ -85,6 +86,10 @@ struct FJitterState
 	double IntervalMaxMS = 0.0;
 	double IntervalMinMS = 0.0;
 	uint64_t LongStretches = 0u;	// inter-arrival > 100ms (3.5+ tics)
+	uint8_t AdaptiveWarmupIntervals = kAdaptiveWarmupIntervals;
+	uint64_t AdaptiveSamples = 0u;
+	double AdaptiveIntervalAvgMS = 0.0;
+	double AdaptiveIntervalM2 = 0.0;
 };
 
 struct FFrameRing
@@ -227,16 +232,23 @@ double JitterStdevMS(const FJitterState* jit)
 	return sqrt(jit->IntervalM2 / double(jit->Samples - 1u));
 }
 
+double AdaptiveJitterStdevMS(const FJitterState* jit)
+{
+	if (jit == nullptr || jit->AdaptiveSamples <= 1u)
+		return 0.0;
+	return sqrt(jit->AdaptiveIntervalM2 / double(jit->AdaptiveSamples - 1u));
+}
+
 int ComputeAdaptiveDesiredLead(int configuredLead, const FJitterState* jit)
 {
 	const int configured = clamp<int>(configuredLead, 0, 8);
-	if (!*net_adaptive_lead || jit == nullptr || jit->Samples < 4u)
+	if (!*net_adaptive_lead || jit == nullptr || jit->AdaptiveSamples < 8u)
 		return configured;
 
 	const double idealSnapshotMS = 1000.0 / double(TICRATE);
-	const double stdevMS = JitterStdevMS(jit);
-	const double excessIntervalMS = jit->IntervalAvgMS > idealSnapshotMS
-		? jit->IntervalAvgMS - idealSnapshotMS
+	const double stdevMS = AdaptiveJitterStdevMS(jit);
+	const double excessIntervalMS = jit->AdaptiveIntervalAvgMS > idealSnapshotMS
+		? jit->AdaptiveIntervalAvgMS - idealSnapshotMS
 		: 0.0;
 	const double safetyMS = excessIntervalMS + stdevMS * 2.0;
 	const int jitterLead = int(ceil(safetyMS / idealSnapshotMS));
@@ -304,6 +316,26 @@ void HCDEMovementOnSnapshotRx(int clientNum, uint64_t nowMS)
 		s.IntervalMinMS = interval;
 	if (interval > 100.0)
 		++s.LongStretches;
+
+	if (s.AdaptiveWarmupIntervals > 0u)
+	{
+		--s.AdaptiveWarmupIntervals;
+		return;
+	}
+
+	const double idealSnapshotMS = 1000.0 / double(TICRATE);
+	// Adaptive lead should describe steady gameplay cadence, not startup
+	// coalescing or map-load stalls. Keep the raw diagnostic stats above, but
+	// exclude bursty same-frame delivery and long hitches from the control loop
+	// so one localhost startup spike cannot pin prediction lead for the match.
+	if (interval >= 1.0 && interval <= idealSnapshotMS * 2.5)
+	{
+		++s.AdaptiveSamples;
+		const double adaptiveDelta = interval - s.AdaptiveIntervalAvgMS;
+		s.AdaptiveIntervalAvgMS += adaptiveDelta / double(s.AdaptiveSamples);
+		const double adaptiveDelta2 = interval - s.AdaptiveIntervalAvgMS;
+		s.AdaptiveIntervalM2 += adaptiveDelta * adaptiveDelta2;
+	}
 
 	if (*net_movement_debug >= 2 && interval > 100.0)
 	{
@@ -440,9 +472,9 @@ void HCDEMovementGetAdaptiveLeadDebug(int& desiredLead, int& commandLimit,
 	const FJitterState* jit = AuthorityJitter();
 	desiredLead = HCDEMovementGetAdaptiveDesiredLead(int(*cl_net_prediction_lead));
 	commandLimit = HCDEMovementGetAdaptiveCommandLeadLimit(desiredLead, desiredLead + clamp<int>(*net_adaptive_lead_guard, 1, 16));
-	jitterAvgMS = jit != nullptr ? jit->IntervalAvgMS : 0.0;
-	jitterStdevMS = JitterStdevMS(jit);
-	samples = jit != nullptr ? jit->Samples : 0u;
+	jitterAvgMS = jit != nullptr ? jit->AdaptiveIntervalAvgMS : 0.0;
+	jitterStdevMS = AdaptiveJitterStdevMS(jit);
+	samples = jit != nullptr ? jit->AdaptiveSamples : 0u;
 }
 
 FString HCDEMovementOneLineSummary()

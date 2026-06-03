@@ -217,7 +217,11 @@ CVAR(Bool, net_desyncdebug, true, CVAR_ARCHIVE | CVAR_GLOBALCONFIG)
 static struct NetEventData
 {
 	struct FStream {
-		uint8_t* Stream;
+		// Must be null before the constructor's first Grow(): Grow() feeds this
+		// pointer straight into M_Realloc, so an indeterminate value would be
+		// undefined behaviour. Today only BSS zero-init of the enclosing static
+		// masks it; initialize explicitly so any non-static use stays safe.
+		uint8_t* Stream = nullptr;
 		size_t Used = 0;
 
 		FStream()
@@ -1621,6 +1625,9 @@ static void Net_LogInvasionSpawnDiagnostic(const char* event, const FInvasionSpa
 		pos.X,
 		pos.Y,
 		pos.Z);
+
+	if (!Net_InvasionDebugEnabled(2))
+		return;
 
 	if (consoleCount >= 8 && gametic - lastConsoleTic < TICRATE * 5)
 		return;
