@@ -296,8 +296,73 @@ static void HCDEApplyLocalHealthFields(player_t& player, int serverHealth, bool 
 	}
 }
 
+// Tier 1: Smooth reconciliation error decay infrastructure (Step 1)
+// Per-local-player render-space error smoother. Captures the delta between
+// predicted pose and authoritative pose at reconcile time, then decays it
+// toward zero so the correction is applied gradually to the view rather than
+// as a hard snap. Simulation stays authoritative; this is purely cosmetic.
+struct HCDEViewErrorSmoother
+{
+	DVector3 PosError = { 0.0, 0.0, 0.0 };  // World-space offset (predicted - auth)
+	DAngle   YawError = nullAngle;          // Signed yaw delta
+	DAngle   PitchError = nullAngle;        // Signed pitch delta
+	bool     Active = false;                // Whether any error is currently held
+
+	void Accumulate(const DVector3& predictedPos, const DVector3& authPos)
+	{
+		PosError += predictedPos - authPos;
+		// Keep yaw/pitch out of render-space smoothing. The movement predictor and
+		// mouse input both own view angles at tic granularity; accumulating delayed
+		// authoritative angle deltas here made the camera continue turning after
+		// input stopped. Position smoothing is enough to hide soft pose repairs.
+		YawError = nullAngle;
+		PitchError = nullAngle;
+		Active = true;
+	}
+
+	void Decay(float factor)
+	{
+		PosError *= factor;
+		YawError *= factor;
+		PitchError *= factor;
+		if (PosError.LengthSquared() < 0.01 && fabs(YawError.Degrees()) < 0.01 && fabs(PitchError.Degrees()) < 0.01)
+		{
+			PosError = { 0.0, 0.0, 0.0 };
+			YawError = nullAngle;
+			PitchError = nullAngle;
+			Active = false;
+		}
+	}
+
+	void ClampToMax(double maxPos, double maxYawDeg)
+	{
+		const double len = PosError.Length();
+		if (len > maxPos && len > 0.0)
+			PosError *= (maxPos / len);
+		YawError = DAngle::fromDeg(clamp<double>(YawError.Degrees(), -maxYawDeg, maxYawDeg));
+		PitchError = DAngle::fromDeg(clamp<double>(PitchError.Degrees(), -maxYawDeg, maxYawDeg));
+	}
+
+	void Zero()
+	{
+		PosError = { 0.0, 0.0, 0.0 };
+		YawError = nullAngle;
+		PitchError = nullAngle;
+		Active = false;
+	}
+};
+
+// Global instance for the local console player. Only valid when consoleplayer >= 0.
+extern HCDEViewErrorSmoother g_hcdeViewErrorSmoother;
+
+// Tier 1 smooth reconcile cvars (defined in d_net.cpp)
+EXTERN_CVAR(Bool, cl_smooth_reconcile)
+EXTERN_CVAR(Float, cl_smooth_decay)
+EXTERN_CVAR(Float, cl_smooth_maxdist)
+
 static void HCDEApplyLocalPoseRepair(player_t& player, const DVector3& serverPos, const DVector3& serverVel,
-	uint32_t yawBam, uint32_t pitchBam, bool onGround, bool clearPrediction, bool preserveViewAngles = false)
+	uint32_t yawBam, uint32_t pitchBam, bool onGround, bool clearPrediction, bool preserveViewAngles = false,
+	bool preservePitch = false, bool smooth = false)
 {
 	AActor* mo = player.mo;
 	if (mo == nullptr)
@@ -312,9 +377,75 @@ static void HCDEApplyLocalPoseRepair(player_t& player, const DVector3& serverPos
 	// and that is what teleport / hard-drift reconciliation requires.
 	const DVector3 oldPos = mo->Pos();
 	const DAngle oldYaw = mo->Angles.Yaw;
+	const DAngle oldPitch = mo->Angles.Pitch;
+	const DAngle serverYaw = DAngle::fromBam(yawBam);
+	const DAngle serverPitch = DAngle::fromBam(pitchBam);
+
+	// Tier 1: Smooth reconcile error accumulation.
+	// When smoothing is enabled for this repair, accumulate the delta between
+	// predicted pose and authoritative pose into a render-space error that will
+	// be decayed gradually rather than applied instantly. This makes corrections
+	// invisible while keeping the simulation authoritative.
+	if (smooth && *cl_smooth_reconcile && consoleplayer >= 0 && consoleplayer < MAXPLAYERS
+		&& &player == &players[consoleplayer])
+	{
+		// Clamp accumulated error to safety limits before adding more.
+		// If error is already beyond maxdist, this is likely a genuine teleport
+		// misclassified as smooth; force a hard snap by zeroing and not smoothing.
+		//
+		// IMPORTANT: the smoothing cap is deliberately NOT floored to
+		// HCDELocalBaselineSnapFloor (176). That floor governs how much prediction
+		// LEAD we tolerate before snapping; it must stay large. The smoothing cap
+		// governs how big a correction we are willing to HIDE by gliding the camera
+		// over many tics - and a 176u glide is itself the bug. The 6/4 6:28 trace
+		// showed every pose repair feeding the smoother a 176u offset (len=176.0),
+		// so the viewpoint slid 176u on its own after each genuine desync repair -
+		// the "client does whatever it wants / I fight it" drift. Real desyncs
+		// (vertical, >211u horizontal, near-hard) must SNAP instantly: a single-frame
+		// pop is far less disorienting than a half-second camera slide the player
+		// counter-steers. Smoothing is only worth doing for sub-cap residuals, so use
+		// the raw cvar (default 32u) here. Errors above it fall through to the hard
+		// snap below.
+		//
+		// Hard ceiling: cl_smooth_maxdist is CVAR_ARCHIVE, so a value saved by an
+		// earlier build (the 6/4 sessions ran it at 176) could persist and silently
+		// resurrect the camera-slide bug. Clamp to 48u in code so no stored cvar can
+		// raise the smoothing distance back into the drift-inducing range; the cvar
+		// can still LOWER it.
+		const double maxPos = min<double>(*cl_smooth_maxdist, 48.0);
+		const double maxYawDeg = 45.0; // degrees
+		if (g_hcdeViewErrorSmoother.PosError.LengthSquared() > maxPos * maxPos
+			|| fabs(g_hcdeViewErrorSmoother.YawError.Degrees()) > maxYawDeg)
+		{
+			// Safety: error too large, treat as hard snap
+			g_hcdeViewErrorSmoother.Zero();
+			if (*net_reconcile_debug >= 2)
+			{
+				DebugTrace::Markf("net", "HCDE smooth reconcile CLAMPED to hard snap "
+					"(error pos=%.1f yaw=%.1f exceeds safety limits)",
+					g_hcdeViewErrorSmoother.PosError.Length(),
+					g_hcdeViewErrorSmoother.YawError.Degrees());
+			}
+		}
+		else
+		{
+			g_hcdeViewErrorSmoother.Accumulate(
+				oldPos, serverPos);
+			g_hcdeViewErrorSmoother.ClampToMax(maxPos, maxYawDeg);
+			if (*net_reconcile_debug >= 2)
+			{
+				DebugTrace::Markf("net", "HCDE smooth reconcile ACCUMULATE "
+					"posErr=(%.1f,%.1f,%.1f) len=%.1f yawErr=%.1f pitchErr=%.1f",
+					g_hcdeViewErrorSmoother.PosError.X, g_hcdeViewErrorSmoother.PosError.Y,
+					g_hcdeViewErrorSmoother.PosError.Z, g_hcdeViewErrorSmoother.PosError.Length(),
+					g_hcdeViewErrorSmoother.YawError.Degrees(),
+					g_hcdeViewErrorSmoother.PitchError.Degrees());
+			}
+		}
+	}
+
 	mo->SetOrigin(serverPos, false);
 	mo->Vel = serverVel;
-	const DAngle serverYaw = DAngle::fromBam(yawBam);
 	if (preserveViewAngles)
 	{
 		// Keep the rendered look direction while repairing the movement-facing
@@ -325,7 +456,9 @@ static void HCDEApplyLocalPoseRepair(player_t& player, const DVector3& serverPos
 	else
 	{
 		mo->SetAngle(serverYaw, 0);
-		mo->SetPitch(DAngle::fromBam(pitchBam), 0);
+		mo->SetViewAngle(serverYaw, 0);
+		if (!preservePitch)
+			mo->SetPitch(serverPitch, 0);
 	}
 	player.onground = onGround;
 	if (player.viewheight > 0.0)
@@ -343,6 +476,46 @@ static DVector3 HCDELocalReconcileReferenceVelocity(const AActor& mo, const DVec
 	return serverVel.LengthSquared() > mo.Vel.LengthSquared() ? serverVel : mo.Vel;
 }
 
+static int HCDELocalInputAckLeadTics()
+{
+	if (!netgame || I_IsLocalHCDEServiceAuthority())
+		return 0;
+
+	const int authoritySlot = I_GetHCDEServiceAuthoritySlot();
+	if (authoritySlot < 0 || authoritySlot >= MAXPLAYERS)
+		return 0;
+
+	const FClientNetState& authorityState = ClientStates[authoritySlot];
+	if (authorityState.SequenceAck < 0)
+		return 0;
+
+	// SequenceAck is a command tic sequence acknowledged by the authority, not
+	// a packet counter. Compare it to the latest locally generated command
+	// sequence so the prediction allowance covers real in-flight usercmds.
+	const int ticDup = max<int>(TicDup, 1);
+	const int newestLocalSequence = max<int>((ClientTic - 1) / ticDup, 0);
+	return clamp<int>(newestLocalSequence - authorityState.SequenceAck, 0, 8);
+}
+
+static bool HCDELocalHeadingRepairInputQuiet()
+{
+	if (!netgame || I_IsLocalHCDEServiceAuthority())
+		return true;
+
+	const int ticDup = max<int>(TicDup, 1);
+	const int scanStart = max<int>(ClientTic - 8 * ticDup, 0);
+	for (int tic = scanStart; tic < ClientTic; ++tic)
+	{
+		const usercmd_t& cmd = LocalCmds[tic % LOCALCMDTICS];
+		if (cmd.yaw != 0 || cmd.pitch != 0 || cmd.roll != 0
+			|| cmd.forwardmove != 0 || cmd.sidemove != 0 || cmd.upmove != 0)
+		{
+			return false;
+		}
+	}
+	return true;
+}
+
 // Allowance covering normal client prediction lead vs authoritative pose:
 //   gap_tics = (gametic - serverTic) [snapshot age] + (ClientTic - gametic) [render lead]
 // Prediction is allowed to place the pawn that many tics worth of movement
@@ -355,7 +528,8 @@ static double HCDEComputeExpectedPredictionDriftAllowance(const DVector3& veloci
 	const int snapshotAgeTics = max<int>((gametic - int(serverTic)) / ticDup, 0);
 	const int renderLeadTics = max<int>((ClientTic - gametic) / ticDup, 0);
 	const int configuredLeadTics = clamp<int>(*cl_net_prediction_lead, 0, 8);
-	const int leadTics = max(snapshotAgeTics + renderLeadTics, configuredLeadTics);
+	const int inputAckLeadTics = HCDELocalInputAckLeadTics();
+	const int leadTics = max(snapshotAgeTics + renderLeadTics + inputAckLeadTics, configuredLeadTics);
 	const double speed = max(velocity.Length(), 0.0);
 	// Steady-state speed * leadTics is the geometric mid-line. Real movement
 	// also accelerates / decelerates / strafes within the lead window, so
@@ -383,10 +557,51 @@ static double HCDELocalPlayerDriftSqVsServer(const player_t& player, const DVect
 	return delta.LengthSquared();
 }
 
+// Hysteresis applied on top of the computed allowance before a baseline (soft)
+// pose snap is allowed to fire. Without it the trigger is a bare
+// `driftSq > allowance^2`, so an overshoot of a fraction of a unit past the
+// allowance (logged drifts like 62.75 vs allowance 62.68) forces a full
+// authoritative snap-back - a visible jerk for an imperceptible error. On a
+// clean link the steady-state prediction drift naturally sits within ~10-15%
+// of the allowance (it is RTT-bounded, not growing), so requiring the drift to
+// exceed the allowance by this factor absorbs that normal noise while still
+// snapping on a genuine desync. The separate hard-distance check
+// (HCDEServerReconcileHardDistance) still catches large teleport-scale drift,
+// so loosening the soft trigger cannot let the pawn run away unbounded.
+static constexpr double HCDEBaselineReconcileHysteresis = 1.15;
+
 static bool HCDELocalDriftExceedsPredictionAllowance(double driftSq, const DVector3& velocity, uint32_t serverTic)
 {
-	const double allowance = HCDEComputeExpectedPredictionDriftAllowance(velocity, serverTic);
-	return driftSq > allowance * allowance;
+	// Effective baseline-snap threshold = the larger of the speed-scaled
+	// prediction allowance (x hysteresis) and an absolute floor. The floor is
+	// what stops legitimate, BOUNDED prediction lead from hard-snapping. On a
+	// healthy link the client's predicted pose leads the authoritative snapshot
+	// by the snapshot+render pipeline latency (~6 tics, ~90u at run speed) even
+	// when the command timeline is fully acked (observed: drift 77-100u vs an
+	// allowance of ~74 because the formula's dynamic lead terms read ~0 on a
+	// clock-synced link and floor at cl_net_prediction_lead). That lead is
+	// correct - it is where the player will be - so snapping it back is exactly
+	// the residual "lag"/micro-jerk the player feels while moving. A genuine
+	// desync (collision/teleport/divergent sim) grows without bound and still
+	// crosses this floor promptly, and the separate hard-distance check
+	// (HCDEServerReconcileHardDistance, 384) still catches large drift. The floor
+	// reuses HCDEServerBaselineRepairDistance (128), the value the engine already
+	// treats as "a baseline repair is warranted at this distance" (its debug
+	// trace suppresses logging below it), so we are aligning the trigger with the
+	// constant's stated meaning rather than firing well under it.
+	const double allowance = HCDEComputeExpectedPredictionDriftAllowance(velocity, serverTic)
+		* HCDEBaselineReconcileHysteresis;
+	// Floor uses the local-player lead floor (176), not HCDEServerBaselineRepairDistance
+	// (128). The 128 constant is the "a baseline repair is warranted here" marker the
+	// debug trace uses; but the engine's steady-state prediction lead on a clean link
+	// sits at ~130-145u (snapshot position is ~10 tics stale while command acks keep
+	// up, so the allowance formula's tic terms read ~0 and undersize it to ~70). At a
+	// 128 floor that legitimate lead trips a hard snap every 1-3s - the periodic
+	// "moves on its own" rubber-band. The 176 floor clears the observed lead band so
+	// correct prediction is left alone, while the hard-distance check (384) still
+	// snaps teleport-scale divergence. See HCDELocalBaselineSnapFloor in d_net.cpp.
+	const double threshold = max(allowance, HCDELocalBaselineSnapFloor);
+	return driftSq > threshold * threshold;
 }
 
 static void HCDELocalReconcileDebugTrace(uint32_t serverTic, double drift, const DVector3& velocity,
@@ -403,10 +618,11 @@ static void HCDELocalReconcileDebugTrace(uint32_t serverTic, double drift, const
 		const int ticDup = max<int>(TicDup, 1);
 		const int snapshotAgeTics = max<int>((gametic - int(serverTic)) / ticDup, 0);
 		const int renderLeadTics = max<int>((ClientTic - gametic) / ticDup, 0);
+		const int inputAckLeadTics = HCDELocalInputAckLeadTics();
 		DebugTrace::Markf("net",
-			"HCDE reconcile %s drift=%.2f allowance=%.2f speed=%.2f lead=(snap=%d render=%d cfg=%d) serverTic=%u gametic=%d clienttic=%d pose=%d",
+			"HCDE reconcile %s drift=%.2f allowance=%.2f speed=%.2f lead=(snap=%d render=%d input=%d cfg=%d) serverTic=%u gametic=%d clienttic=%d pose=%d",
 			reason, drift, allowance, velocity.Length(),
-			snapshotAgeTics, renderLeadTics, int(*cl_net_prediction_lead),
+			snapshotAgeTics, renderLeadTics, inputAckLeadTics, int(*cl_net_prediction_lead),
 			unsigned(serverTic), gametic, ClientTic, applyPose ? 1 : 0);
 	}
 }
@@ -420,14 +636,18 @@ static bool HCDELocalPlayerNeedsPoseRepair(const player_t& player, int serverHea
 	if (driftSq > HCDEServerReconcileHardDistance * HCDEServerReconcileHardDistance)
 		return true;
 
-	const DVector3 refVel = HCDELocalReconcileReferenceVelocity(*player.mo, serverVel);
-	// Compare against predicted render pose with a lead-aware allowance that
-	// fully covers (snapshot age + render lead) tics of movement plus
-	// acceleration slack. Repairing for ordinary lead caused snap-back loops.
-	if (HCDELocalDriftExceedsPredictionAllowance(driftSq, refVel, serverTic))
-	{
-		return true;
-	}
+	// NOTE: soft baseline prediction-lead drift deliberately does NOT request a
+	// pose repair here anymore. The server-sim trace proved the authority applies
+	// movement correctly; the 150-190u gaps are the local predicted head leading
+	// the authoritative snapshot by the pipeline depth. Previously this function
+	// returned true on HCDELocalDriftExceedsPredictionAllowance, which let the
+	// health-repair-queue path (entered every snapshot via an onground/health
+	// delta) reseat the local pawn to the lagged server pose mid-movement - the
+	// "I move, it delays, then it happens" symptom. Direct snapshot handling still
+	// escalates vertical or near-hard divergence; this helper only adds damage-
+	// driven pose repair below.
+	(void)serverTic;
+	(void)serverVel;
 
 	const int previousHealth = max<int>(player.health, player.mo->health);
 	if (serverHealth >= previousHealth)
@@ -472,7 +692,7 @@ static void HCDEQueuePredictedLocalHealthRepair(uint32_t serverTic, int serverHe
 			const double driftSq = (player.mo->Pos() - *serverPos).LengthSquared();
 			const bool hardRepair = driftSq > HCDEServerReconcileHardDistance * HCDEServerReconcileHardDistance;
 			HCDEApplyLocalPoseRepair(player, *serverPos, *serverVel, yawBam, pitchBam, onGround,
-				hardRepair, !hardRepair);
+				hardRepair, !hardRepair, false, !hardRepair);
 		}
 		HCDEApplyLocalHealthFields(player, serverHealth, onGround);
 	}
@@ -498,7 +718,7 @@ static void HCDEApplyPendingLocalHealthRepair()
 				PendingLocalHealthRepair.Yaw,
 				PendingLocalHealthRepair.Pitch,
 				PendingLocalHealthRepair.OnGround,
-				hardRepair, !hardRepair);
+				hardRepair, !hardRepair, false, !hardRepair);
 		}
 		HCDEApplyLocalHealthFields(player,
 			PendingLocalHealthRepair.Health,
@@ -614,7 +834,59 @@ static bool HCDEValidateServerWorldDeltas(int clientNum, const uint8_t* body, si
 			// beyond prediction-lead allowance catches real movement desync.
 			const DVector3 refVel = HCDELocalReconcileReferenceVelocity(*mo, serverVel);
 			const bool localNeedsHardPoseRepair = drift > HCDEServerReconcileHardDistance * HCDEServerReconcileHardDistance;
-			const bool localNeedsBaselinePoseRepair = HCDELocalDriftExceedsPredictionAllowance(drift, refVel, serverTic);
+			const bool localBaselineDriftExceedsAllowance = HCDELocalDriftExceedsPredictionAllowance(drift, refVel, serverTic);
+			const bool localVerticalDivergence = fabs(mo->Z() - serverPos.Z) > 24.0;
+			const bool localNearHardDivergence = drift > (HCDEServerReconcileHardDistance * 0.85)
+				* (HCDEServerReconcileHardDistance * 0.85);
+			// Sustained FLAT-GROUND horizontal divergence is a genuine desync, not
+			// prediction lead, and must escalate on its own. The (vertical || near-
+			// hard) gate alone left a hole: a same-floor XY gap that parks just under
+			// the near-hard cutoff (0.85*384 = 326u) hits neither condition and was
+			// ignored every snapshot. The 6/4 trace caught this exactly - tics
+			// 1312-1318 logged a stable ~312-323u X-offset (client X=6..14 vs server
+			// X=318..337, identical Y=1648 and Z=56) "soft baseline drift ignored"
+			// for seven straight tics, then crossed 326 at tic 1319 and snapped 326u
+			// in a single frame: the big visible jerk. Real steady-state prediction
+			// lead in this build measures ~40u (and tops out well under 100u even in
+			// fast strafe-turns), so a horizontal gap past HCDEServerBaselineRepairDistance
+			// (128) is not lead. We use ~211u (0.55 * hard) to stay clear of any
+			// plausible lead burst while still catching the desync ~115u earlier than
+			// the near-hard path did, which keeps the correction small and prevents
+			// the offset from compounding across many tics before it is repaired.
+			const double localHorizontalDriftSq =
+				(mo->X() - serverPos.X) * (mo->X() - serverPos.X)
+				+ (mo->Y() - serverPos.Y) * (mo->Y() - serverPos.Y);
+			constexpr double HCDELocalHorizontalDivergence = HCDEServerReconcileHardDistance * 0.55;
+			// A large flat XY offset is only a genuine positional desync when the
+			// two sides ALSO agree on heading. During a fast turn-while-moving the
+			// client heading leads the lagged snapshot, so the same forward input
+			// projects onto different axes and the positions diverge hundreds of
+			// units purely from that lead (the 7:01 trace swept the yaw gap to
+			// 178deg with position drift tracking it). Escalating that case snaps
+			// movement yaw to the stale server value and flips the movement axis
+			// ~180deg from the view - the reported "forward becomes reverse / left
+			// becomes right / shots miss." Require the headings to be aligned so
+			// this path only catches true relocations on a steady heading; turn-lead
+			// XY gaps are left for prediction replay to absorb, and genuine large
+			// desyncs still escalate through the near-hard / hard / vertical paths
+			// which do not depend on heading.
+			const double localHeadingDriftDeg =
+				fabs(deltaangle(DAngle::fromBam(yaw), mo->Angles.Yaw).Degrees());
+			const bool localHeadingAlignedForHorizontalRepair =
+				localHeadingDriftDeg <= HCDELocalHorizontalDivergenceMaxHeadingDeg;
+			const bool localHorizontalDivergence =
+				localHorizontalDriftSq > HCDELocalHorizontalDivergence * HCDELocalHorizontalDivergence
+				&& localHeadingAlignedForHorizontalRepair;
+			// Soft baseline drift alone is not allowed to mutate the local predicted
+			// pawn: those sub-100u gaps are ordinary prediction head using newer
+			// turn/move input than the authoritative snapshot has confirmed. But if
+			// the same drift includes floor/Z divergence, a sustained large flat
+			// horizontal offset, or grows close to the hard teleport cutoff, it is no
+			// longer harmless lead. In the 6:12 trace the server fell from Z=56 to
+			// Z=8 while the client stayed on the old floor; ignoring that made
+			// movement look erratic. Escalate those cases.
+			const bool localNeedsBaselinePoseRepair = localBaselineDriftExceedsAllowance
+				&& (localVerticalDivergence || localHorizontalDivergence || localNearHardDivergence);
 			const bool serverHealthMatchesLocal = mo->health == serverHealth && player.health == serverHealth;
 			const bool serverOnGroundMatchesLocal = player.onground == serverReportsOnGround;
 			const bool needsLocalStateRepair = localNeedsRespawnRepair
@@ -631,7 +903,7 @@ static bool HCDEValidateServerWorldDeltas(int clientNum, const uint8_t* body, si
 			const int repairTier = localNeedsRespawnRepair ? 3
 				: localNeedsDeathRepair ? 4
 				: localNeedsHardPoseRepair ? 2
-				: localNeedsBaselinePoseRepair ? 1
+				: localBaselineDriftExceedsAllowance ? 1
 				: 0;
 			{
 				const double velDeltaUnits = (mo->Vel - serverVel).Length();
@@ -664,6 +936,73 @@ static bool HCDEValidateServerWorldDeltas(int clientNum, const uint8_t* body, si
 					serverVelHdg, clientVelHdg,
 					serverVel.XY().Length(), mo->Vel.XY().Length(),
 					mo->X(), mo->Y(), serverPos.X, serverPos.Y);
+			}
+			if (localBaselineDriftExceedsAllowance && !localNeedsBaselinePoseRepair
+				&& !localNeedsHardPoseRepair && *net_reconcile_debug >= 1)
+			{
+				DebugTrace::Markf("net",
+					"HCDE client soft baseline drift ignored player=%u drift=%.2f allowance=%.2f "
+					"local=(%.1f,%.1f,%.1f) server=(%.1f,%.1f,%.1f) tic=%u",
+					unsigned(playerNum), sqrt(drift),
+					HCDEComputeExpectedPredictionDriftAllowance(refVel, serverTic),
+					mo->X(), mo->Y(), mo->Z(),
+					serverPos.X, serverPos.Y, serverPos.Z,
+					unsigned(serverTic));
+			}
+
+			// Heading-only reconcile. Position/health/onground all match (no
+			// needsLocalStateRepair), but the movement-facing yaw can still be
+			// permanently rotated from the authority - most commonly because the
+			// client spawned the local pawn at the map's PlayerStart angle while
+			// the server placed it at a different spawn angle. Equal turn deltas
+			// never cancel that offset, and since the position never drifts while
+			// standing still no pose repair ever corrects it; the first time the
+			// player moves, forward input heads off-axis. Re-seat the heading to
+			// the authority once the gap is real (beyond any in-flight turn) and
+			// the player is holding a steady angle (so we are not yanking a live
+			// mouse turn the server has simply not acked yet).
+			if (!needsLocalStateRepair && canMutatePlaysim)
+			{
+				const double headingDriftDeg = fabs(deltaangle(DAngle::fromBam(yaw), mo->Angles.Yaw).Degrees());
+				const bool clientMovingXY = mo->Vel.XY().LengthSquared() > 0.25;
+				const bool serverMovingXY = serverVel.XY().LengthSquared() > 0.25;
+				static DAngle sLastLocalHeading = nullAngle;
+				static bool sHasLastLocalHeading = false;
+				const double clientHeadingStepDeg = sHasLastLocalHeading
+					? fabs(deltaangle(sLastLocalHeading, mo->Angles.Yaw).Degrees())
+					: 360.0;
+				sLastLocalHeading = mo->Angles.Yaw;
+				sHasLastLocalHeading = true;
+				const bool clientHeadingStable = clientHeadingStepDeg <= HCDEServerReconcileHeadingStableDegrees;
+				const bool inputQuiet = HCDELocalHeadingRepairInputQuiet();
+				if (!clientMovingXY && !serverMovingXY && inputQuiet
+					&& clientHeadingStable && headingDriftDeg > HCDEServerReconcileHeadingDegrees)
+				{
+					const DVector3 headingRepairPos = mo->Pos();
+					const DVector3 headingRepairVel = mo->Vel;
+					const bool headingRepairOnGround = player.onground;
+					if (NetworkEntityManager::IsPredicting())
+					{
+						P_UnPredictClient();
+						mo = player.mo;
+						if (mo == nullptr)
+							continue;
+						PendingLocalHealthRepair.Valid = false;
+					}
+					// Re-seat movement yaw and view yaw to the authority, but keep the
+					// local predicted position/velocity. This path is explicitly
+					// heading-only; using serverPos here turns a yaw fix into a hidden
+					// position snap whenever ordinary prediction lead is present.
+					HCDEApplyLocalPoseRepair(player, headingRepairPos, headingRepairVel, yaw, pitch, headingRepairOnGround,
+						true, false, true, false);
+					HCDELocalReconcileDebugTrace(serverTic, sqrt(drift), refVel, true, "apply-heading");
+					++peer.Reconciliations;
+					DebugTrace::Markf("net",
+						"HCDE client local heading repair from=%d player=%u headingDrift=%.1f srvYaw=%.1f tic=%u",
+						clientNum, unsigned(playerNum), headingDriftDeg,
+						DAngle::fromBam(yaw).Degrees(), unsigned(serverTic));
+					continue;
+				}
 			}
 
 			if (!needsLocalStateRepair)
@@ -727,9 +1066,9 @@ static bool HCDEValidateServerWorldDeltas(int clientNum, const uint8_t* body, si
 					mo = player.mo;
 					if (mo == nullptr)
 						continue;
-					PendingLocalHealthRepair.Valid = false;
-					HCDEApplyLocalPoseRepair(player, serverPos, serverVel, yaw, pitch, serverReportsOnGround, true,
-						!localNeedsHardPoseRepair);
+				PendingLocalHealthRepair.Valid = false;
+				HCDEApplyLocalPoseRepair(player, serverPos, serverVel, yaw, pitch, serverReportsOnGround, true,
+					!localNeedsHardPoseRepair, false, !localNeedsHardPoseRepair);
 					HCDEApplyLocalHealthFields(player, serverHealth, serverReportsOnGround);
 					HCDELocalReconcileDebugTrace(serverTic, sqrt(drift), refVel, true, "apply-predict-pose");
 					++HCDELiveProfile.PredictionLocalStateRepairs;
@@ -943,7 +1282,7 @@ static bool HCDEValidateServerWorldDeltas(int clientNum, const uint8_t* body, si
 			if (localNeedsDeathRepair)
 			{
 				const int previousHealth = max<int>(player.health, mo->health);
-				HCDEApplyLocalPoseRepair(player, serverPos, serverVel, yaw, pitch, serverReportsOnGround, true);
+				HCDEApplyLocalPoseRepair(player, serverPos, serverVel, yaw, pitch, serverReportsOnGround, true, false, false, false);
 				mo = player.mo;
 				if (mo == nullptr)
 					continue;
@@ -1007,7 +1346,7 @@ static bool HCDEValidateServerWorldDeltas(int clientNum, const uint8_t* body, si
 			{
 				const bool hardRepair = localNeedsHardPoseRepair;
 				HCDEApplyLocalPoseRepair(player, serverPos, serverVel, yaw, pitch, serverReportsOnGround,
-					hardRepair, !hardRepair);
+					hardRepair, !hardRepair, false, !hardRepair);
 			}
 			HCDEApplyLocalHealthFields(player, serverHealth, serverReportsOnGround);
 			PendingLocalHealthRepair.Valid = false;
@@ -1470,7 +1809,7 @@ static void Net_TickInvasionMirrorVisualActors(unsigned& updated, unsigned& skip
 				actor->ClearInterpolation();
 
 				// HCDE roadmap #15 audit (item 5): level-2 trace for high-ping
-				// mirror convergence spot-check. Large snaps indicate the 8–12
+				// mirror convergence spot-check. Large snaps indicate the 8-12
 				// unit/step + 1.10x multiplier is being exercised.
 				if (Net_InvasionDebugEnabled(2))
 				{

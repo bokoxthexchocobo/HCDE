@@ -311,6 +311,23 @@ CUSTOM_CVAR(Int, net_predict_softwarn_passive_storm, 5, CVAR_ARCHIVE | CVAR_GLOB
 // but live gameplay must use HCDE `HCIN`/`HCSN` once the session is in netgame.
 CVAR(Bool, net_hcde_native_only, true, CVAR_SERVERINFO | CVAR_NOSAVE);
 
+// Tier 1: Smooth reconciliation error decay cvars
+// Master switch for smooth reconcile. When enabled, pose repairs accumulate
+// into a render-space error that decays gradually instead of snapping instantly.
+CVAR(Bool, cl_smooth_reconcile, true, CVAR_ARCHIVE | CVAR_GLOBALCONFIG);
+// Per-tic decay factor for the smooth error. 0.85 = ~95% gone in 6 tics (~170ms).
+// Higher = slower/floatier, lower = faster/snappier but more visible.
+CVAR(Float, cl_smooth_decay, 0.85f, CVAR_ARCHIVE | CVAR_GLOBALCONFIG);
+// Maximum correction distance (map units) that smoothing will HIDE by gliding the
+// camera. Kept intentionally small: this is NOT the prediction-lead tolerance
+// (that is HCDELocalBaselineSnapFloor, 176u, used to decide snap-vs-ignore). A
+// correction larger than this snaps in a single frame instead, because a multi-tic
+// glide over a large distance reads as the camera drifting on its own - the 6/4
+// 6:28 logs showed 176u glides after every desync repair, which the player had to
+// counter-steer. 32u hides the tiny steady-state reconciles without a visible
+// slide; everything bigger pops instantly.
+CVAR(Float, cl_smooth_maxdist, 32.0f, CVAR_ARCHIVE | CVAR_GLOBALCONFIG);
+
 static bool Net_InvasionDebugEnabled(int level = 1)
 {
 	return *hcde_hud_debug || *sv_invasiondebug >= level;
@@ -579,6 +596,25 @@ constexpr double HCDEInvasionMirrorVisualSnapDistance = 384.0;
 constexpr int HCDEInvasionProjectileMirrorMaxAgeTics = TICRATE * 3;
 constexpr int HCDEInvasionMaxWavesLimit = 3000;
 constexpr double HCDEServerBaselineRepairDistance = 128.0;
+// Soft-snap floor for the LOCAL player's predicted pose. This is intentionally
+// larger than HCDEServerBaselineRepairDistance because the value that gates a
+// hard authoritative snap-back must clear the engine's normal steady-state
+// prediction lead, and that lead is much deeper than the reconcile tic counters
+// admit. Observed on a clean localhost link: command acks keep up (input-ack
+// lead reads ~0) yet the client's predicted head sits a consistent ~130-145u
+// ahead of the authoritative POSITION snapshot, because the snapshot is ~10
+// tics stale in position terms even though its serverTic stamp is clock-synced
+// to gametic (so the allowance formula reads leadTics~1 and sizes the allowance
+// at ~70). That lead is correct - it is where the held inputs are taking the
+// player and the server confirms it ~10 tics later - so snapping it back is
+// precisely the periodic "drifts/moves on its own" rubber-band the player
+// feels. This floor (176) clears the observed lead band with headroom while
+// staying well under HCDEServerReconcileHardDistance (384), which still catches
+// teleport-scale divergence, and below the slow-divergence range a genuine
+// desync grows into. Lead is invisible to the local player (prediction is their
+// view); only the snap-back is visible, so tolerating the bounded lead removes
+// the felt drift without making the simulation any less authoritative.
+constexpr double HCDELocalBaselineSnapFloor = 176.0;
 constexpr int HCDEPassiveClientResendSequenceSlack = 4;
 // Minimum number of tics an ack must remain at the same value before the
 // passive-resend gate considers it actually stuck. On a healthy connection an
@@ -592,6 +628,41 @@ constexpr int HCDEPassiveResendAckStaleTics = TICRATE / 4;
 constexpr int HCDEPassiveResendRetryTics = TICRATE / 4;
 constexpr double HCDEServerReconcileDistance = 20.0;
 constexpr double HCDEServerReconcileHardDistance = 384.0;
+// Heading reconcile: yaw/pitch are dead-reckoned from per-tic cmd deltas and
+// are only re-seated to the authority during a *position* repair. The client
+// spawns the local pawn from the map's PlayerStart angle, but the
+// authoritative server can place a (re)joining player at a different spawn
+// spot/angle; identical turn deltas afterward never cancel that initial offset
+// so the predicted heading stays permanently rotated from the server's. While
+// the player stands still no position drift accrues, so no repair fires - until
+// they move and identical forward input projects onto a different axis on each
+// side, which is felt as "forward goes sideways / backwards, then snaps." Snap
+// the heading to the authority once the divergence is real (beyond any
+// in-flight turn) and the player is holding a steady angle, which targets the
+// locked-in spawn offset without fighting live mouse turns. Degrees.
+constexpr double HCDEServerReconcileHeadingDegrees = 6.0;
+// Largest per-snapshot client yaw change still treated as "not actively
+// turning" - above this the gap is plausibly legitimate in-flight input that
+// the next server ack will confirm, so we leave it alone. Degrees.
+constexpr double HCDEServerReconcileHeadingStableDegrees = 2.0;
+// Maximum client-vs-server heading gap (degrees) under which a large flat
+// horizontal position offset is treated as a GENUINE positional desync that
+// must escalate to a pose repair. Above this gap the XY offset is dominated by
+// turn-lead: during a fast turn-while-moving the client's heading legitimately
+// leads the lagged server snapshot, so identical forward input projects onto
+// different axes and the positions diverge hundreds of units as a pure
+// geometric consequence of the heading lead - NOT a real desync. The 6/4
+// 7:01 trace proved this: while standing still client/server yaw matched to
+// 0.0deg, but during spins the gap swept to 178deg with position drift tracking
+// it. Escalating those snaps movement yaw (mo->SetAngle) to the stale server
+// yaw, which is exactly the reported "forward becomes reverse / left becomes
+// right / shots never hit" - the pawn's movement axis flips ~180deg from the
+// view while prediction replay rebuilds the lead. Genuine relocations
+// (teleport, line portal, ACS warp, getting stuck) still escalate via the
+// near-hard (326u), hard (384u), and vertical-divergence paths, which do not
+// depend on heading. 25deg comfortably covers real prediction lead (a few
+// degrees) plus snapshot-age jitter without admitting turn-lead.
+constexpr double HCDELocalHorizontalDivergenceMaxHeadingDeg = 25.0;
 // Pose repair on damage only kicks in once drift exceeds this squared distance.
 // Keeps imp chip damage from constantly snapping the local pawn while still
 // correcting meaningful melee desync.
@@ -1152,13 +1223,13 @@ static void Net_ResetInvasionAnnouncements()
 
 // HCDE roadmap #15 audit verification (items 3 + 8):
 // All 6 EInvasionState values have a human-readable announcement path:
-//   DISABLED   – no announcement (idle)
-//   WAITING    – implicit via state transition message
-//   COUNTDOWN  – "Prepare for invasion: N" (per-second, deduped by LastCountdownSecond)
-//   SPAWNING   – state transition message
-//   CLEANUP    – state transition message
-//   INTERMISSION – "Next wave in: N" (per-second, deduped)
-//   VICTORY    – state transition + exit message
+//   DISABLED   - no announcement (idle)
+//   WAITING    - implicit via state transition message
+//   COUNTDOWN  - "Prepare for invasion: N" (per-second, deduped by LastCountdownSecond)
+//   SPAWNING   - state transition message
+//   CLEANUP    - state transition message
+//   INTERMISSION - "Next wave in: N" (per-second, deduped)
+//   VICTORY    - state transition + exit message
 // The `LastCountdownSecond` guard prevents duplicate per-second spam for both
 // countdown and intermission phases. Localisation strings are the plain English
 // messages above; a future i18n pass can wrap them via GStrings if needed.
@@ -2619,6 +2690,33 @@ static bool HCDEReadUserCmdFields(const uint8_t* data, size_t dataSize, size_t& 
 // the statement/function this #include sits inside. Renamed from .cpp to .inl so
 // the "included source" intent is obvious and no build glob ever compiles them.
 #include "d_net_snapshot_part1.inl"
+
+// Tier 1: Global smooth reconcile error smoother for the local player.
+// Instantiated here (struct defined in the .inl) to persist across tics.
+HCDEViewErrorSmoother g_hcdeViewErrorSmoother;
+
+// Helper called from G_Ticker to decay the smooth reconcile error.
+// Defined as a plain function so g_game.cpp can call it without needing
+// the full HCDEViewErrorSmoother type definition (just a forward decl).
+void HCDE_ViewErrorSmootherDecay()
+{
+	if (*cl_smooth_reconcile)
+		g_hcdeViewErrorSmoother.Decay(*cl_smooth_decay);
+}
+
+// Tier 1: Accessor for the renderer to get smooth error offsets without
+// needing the full HCDEViewErrorSmoother struct definition.
+// Returns true if smoothing is active and populates the output parameters.
+bool HCDE_GetViewErrorSmoothOffset(DVector3& outPosError, DAngle& outYawError, DAngle& outPitchError)
+{
+	if (!*cl_smooth_reconcile || !g_hcdeViewErrorSmoother.Active)
+		return false;
+	outPosError = g_hcdeViewErrorSmoother.PosError;
+	outYawError = g_hcdeViewErrorSmoother.YawError;
+	outPitchError = g_hcdeViewErrorSmoother.PitchError;
+	return true;
+}
+
 static bool HCDEAppendInvasionSnapshot(int clientNum, uint8_t* output, size_t outputCapacity, size_t& cursor)
 {
 	if (!HCDEIsValidLiveClient(clientNum))
@@ -3651,6 +3749,7 @@ void Net_ClearBuffers()
 		state.ResendID = state.StabilityBuffer = 0u;
 		state.CurrentNetConsistency = state.LastVerifiedConsistency = state.ConsistencyAck = state.ResendConsistencyFrom = -1;
 		state.CurrentSequence = state.SequenceAck = state.ResendSequenceFrom = -1;
+		state.AppliedSequence = -1;
 		state.Flags = 0;
 
 		for (int j = 0; j < BACKUPTICS; ++j)
@@ -4110,6 +4209,9 @@ void Net_ResetCommands(bool midTic)
 		// its first post-reset command.
 		state.CurrentSequence = tic;
 		state.SequenceAck = tic;
+		// Re-align the authority command cursor to the new map's sequence anchor
+		// so it does not try to "catch up" across the reset by replaying slots.
+		state.AppliedSequence = tic;
 		// Any in-flight resend window targeted the previous map's sequence
 		// space. Carrying it across the room reset would either re-send stale
 		// pre-reset commands (which the peer treats as duplicates and ignores)
@@ -4425,6 +4527,7 @@ void Net_ResetClientState(int clientNum)
 	state.ResendSequenceFrom = -1;
 	state.SequenceAck = -1;
 	state.CurrentSequence = -1;
+	state.AppliedSequence = -1;
 	state.ResendConsistencyFrom = -1;
 	state.ConsistencyAck = -1;
 	state.LastVerifiedConsistency = -1;

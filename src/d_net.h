@@ -145,6 +145,7 @@ struct FClientNetState
 	int				ResendSequenceFrom = -1; // If >= 0, send from this sequence up to the most recent one, capped to MAXSENDTICS.
 	int				SequenceAck = -1;		// The last sequence the client reported from us.
 	int 			CurrentSequence = -1;	// The last sequence we've gotten from this client.
+	int 			AppliedSequence = -1;	// Authority cursor: the last command sequence actually fed to the think. The wall-clock authority can reach a gametic before that tic's command has arrived, so consumption is decoupled from gametic - this advances by at most one per tic toward CurrentSequence so every received command runs exactly once (no blank-command stalls, no dropped late commands).
 
 	// Every packet includes consistencies for tics that client ran. When
 	// a world tic is ran, the local client will store all the consistencies

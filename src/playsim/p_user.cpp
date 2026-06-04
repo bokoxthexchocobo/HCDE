@@ -38,6 +38,7 @@
 #include "d_main.h"
 #include "d_net.h"
 #include "d_net_diagnostics.h"
+#include "debugtrace.h"
 #include "playsim/playerstate_trace.h"
 #include "d_net_diagnostics.h"
 #include "d_player.h"
@@ -133,6 +134,7 @@ CUSTOM_CVAR(Int, cl_predict_max, 24, CVAR_ARCHIVE | CVAR_GLOBALCONFIG)
 }
 
 EXTERN_CVAR (Int, cl_debugprediction)
+EXTERN_CVAR (Int, net_movement_debug)
 
 ColorSetList ColorSets;
 PainFlashList PainFlashes;
@@ -1798,6 +1800,18 @@ void P_ClearPredictionData()
 	PredictionData.ClearBackup();
 	PredictionData.bResetPrediction = false;
 	PredictionData.LastPredictedTic = 0;
+	// Tearing prediction down here (e.g. during a reconcile pose/heading/death
+	// repair) does NOT rollback player_t the way P_UnPredictClient does, so the
+	// CF_PREDICTING compat flag set in P_PredictClient would survive. If it
+	// lingers, the next authoritative G_Ticker pass still sees the local pawn as
+	// "predicting" and skips TickPSprites (PlayerThink gates psprite ticking on
+	// !CF_PREDICTING). That strands the weapon psprite in its raise frame
+	// forever: the gun never finishes coming up (stays below the screen, "no gun
+	// in hand"), never reaches its Ready state, and WeaponState stays 0 so it
+	// can't fire/switch. Clear it explicitly to keep the flag in lockstep with
+	// the prediction state.
+	if (consoleplayer >= 0 && consoleplayer < MAXPLAYERS)
+		players[consoleplayer].cheats &= ~CF_PREDICTING;
 }
 
 static void P_RollbackObject(DObject* obj, FSerializer& arc)
@@ -1957,6 +1971,18 @@ void P_PredictClient()
 	// keep prediction bookkeeping consistent, but there is no point running
 	// the heavy think/tick path for every paused tic. Cmd advancement happens
 	// just below; the body skips when paused.
+	// HCDE diag: capture the predicted-yaw spin source. The 6/4 traces proved the
+	// server received cmd.yaw=0 for many tics (player walking straight) while the
+	// client's predicted yaw spun ~160deg, so the spin must come from the commands
+	// this loop replays. Record the base yaw, the replay window, and the sum of the
+	// cmd.yaw deltas actually read from LocalCmds so a single run shows whether the
+	// predictor is consuming stale ring slots / a misaligned window.
+	const bool hcdePredictDiag = netgame && *net_movement_debug > 0;
+	const double hcdePreReplayYaw = player->mo->Angles.Yaw.Degrees();
+	long long hcdeReplayedYawBam = 0;
+	int hcdeFirstReplayYaw = 0;
+	int hcdeLastReplayYaw = 0;
+
 	for (int i = predictStart; i < ClientTic; ++i)
 	{
 		// Got snagged on something. Start correcting towards the player's final predicted position. We're
@@ -1982,6 +2008,13 @@ void P_PredictClient()
 
 		player->oldbuttons = player->cmd.buttons;
 		player->cmd = LocalCmds[i % LOCALCMDTICS];
+		if (hcdePredictDiag)
+		{
+			if (i == predictStart)
+				hcdeFirstReplayYaw = player->cmd.yaw;
+			hcdeLastReplayYaw = player->cmd.yaw;
+			hcdeReplayedYawBam += player->cmd.yaw;
+		}
 		if (paused)
 			continue;
 
@@ -2022,6 +2055,33 @@ void P_PredictClient()
 		r_NoInterpolate = true;
 	}
 
+	if (hcdePredictDiag)
+	{
+		const double hcdePostReplayYaw = player->mo->Angles.Yaw.Degrees();
+		double hcdeYawChange = hcdePostReplayYaw - hcdePreReplayYaw;
+		while (hcdeYawChange > 180.0) hcdeYawChange -= 360.0;
+		while (hcdeYawChange < -180.0) hcdeYawChange += 360.0;
+		// Phantom turn = the pawn rotated more than the replayed cmd.yaw input asked
+		// for. cmd.yaw is BAM (65536 = 360deg); convert the summed replay input to
+		// degrees and compare. A large mismatch is the spin we are hunting.
+		const double hcdeReplayInputDeg = double(hcdeReplayedYawBam) * (360.0 / 65536.0);
+		double hcdePhantomDeg = hcdeYawChange - hcdeReplayInputDeg;
+		while (hcdePhantomDeg > 180.0) hcdePhantomDeg -= 360.0;
+		while (hcdePhantomDeg < -180.0) hcdePhantomDeg += 360.0;
+		if (fabs(hcdeYawChange) > 3.0 || fabs(hcdePhantomDeg) > 1.0)
+		{
+			DebugTrace::Markf("net.predict",
+				"HCDE predict-yaw gametic=%d clienttic=%d predictStart=%d window=%d reset=%d "
+				"preYaw=%.2f postYaw=%.2f yawChange=%.2f replayInputDeg=%.2f phantomDeg=%.2f "
+				"firstSlotYaw=%d lastSlotYaw=%d firstIdx=%d lastIdx=%d",
+				gametic, ClientTic, predictStart, ClientTic - predictStart,
+				PredictionData.bResetPrediction ? 1 : 0,
+				hcdePreReplayYaw, hcdePostReplayYaw, hcdeYawChange, hcdeReplayInputDeg, hcdePhantomDeg,
+				hcdeFirstReplayYaw, hcdeLastReplayYaw,
+				predictStart % LOCALCMDTICS, (ClientTic - 1) % LOCALCMDTICS);
+		}
+	}
+
 	PredictionData.LastPredictedTic = ClientTic;
 	PredictionData.bResetPrediction = false;
 
@@ -2035,7 +2095,17 @@ void P_PredictClient()
 void P_UnPredictClient()
 {
 	if (!NetworkEntityManager::IsPredicting())
+	{
+		// Prediction is already disabled (commonly because it was torn down via
+		// P_ClearPredictionData mid-reconcile). The rollback below won't run, so
+		// make sure the local player's CF_PREDICTING flag isn't left set - a
+		// stranded flag permanently suppresses the authoritative TickPSprites
+		// pass and freezes the weapon psprite in its raise frame (no gun in
+		// hand, WeaponState stuck at 0).
+		if (consoleplayer >= 0 && consoleplayer < MAXPLAYERS)
+			players[consoleplayer].cheats &= ~CF_PREDICTING;
 		return;
+	}
 
 	NetworkEntityManager::DisablePrediction();
 
@@ -2068,6 +2138,18 @@ void P_UnPredictClient()
 	}
 
 	PredictionData.ClearBackup();
+
+	// The rollback above restores player_t::cheats from the pre-prediction
+	// backup, which normally clears CF_PREDICTING. Force it clear regardless so
+	// a backup that was ever captured with the flag already set (any future
+	// reordering of the predict/repair paths) can't permanently strand the local
+	// player in "predicting" mode. This is the post-condition callers rely on:
+	// the very next authoritative G_Ticker pass (which runs P_PlayerThink for
+	// the local player) must see CF_PREDICTING clear so TickPSprites advances the
+	// weapon psprite out of its raise frame, brings the gun fully up to Ready,
+	// and lets WeaponState/pickups settle on the authoritative tick.
+	if (consoleplayer >= 0 && consoleplayer < MAXPLAYERS)
+		players[consoleplayer].cheats &= ~CF_PREDICTING;
 }
 
 void player_t::Serialize(FSerializer &arc)

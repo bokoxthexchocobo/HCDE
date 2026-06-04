@@ -54,6 +54,11 @@
 #include "vm.h"
 #include "a_dynlight.h"
 
+// Tier 1: Forward declaration for smooth reconcile accessor.
+// The full implementation is in d_net.cpp; this function returns the current
+// smooth error offset if smoothing is enabled and active.
+bool HCDE_GetViewErrorSmoothOffset(DVector3& outPosError, DAngle& outYawError, DAngle& outPitchError);
+
 const float MY_SQRT2    = float(1.41421356237309504880); // sqrt(2)
 // EXTERNAL DATA DECLARATIONS ----------------------------------------------
 
@@ -644,6 +649,22 @@ void R_InterpolateView(FRenderViewpoint& viewPoint, const player_t* const player
 		viewPoint.Angles.Pitch = iView->Old.Angles.Pitch + deltaangle(iView->Old.Angles.Pitch, iView->New.Angles.Pitch) * ticFrac;
 		viewPoint.Angles.Yaw = prevYaw + deltaangle(prevYaw, curYaw) * ticFrac;
 		viewPoint.Angles.Roll = iView->Old.Angles.Roll + deltaangle(iView->Old.Angles.Roll, iView->New.Angles.Roll) * ticFrac;
+	}
+
+	// Tier 1: Apply smooth reconcile error offset to the view.
+	// This makes pose corrections glide gradually to authoritative rather than
+	// snapping instantly. The simulation stays correct (already snapped in the
+	// playsim); this is purely a cosmetic render-space offset.
+	if (player != nullptr && player - players == consoleplayer)
+	{
+		DVector3 posError;
+		DAngle yawError, pitchError;
+		if (HCDE_GetViewErrorSmoothOffset(posError, yawError, pitchError))
+		{
+			viewPoint.Pos += posError;
+			viewPoint.Angles.Yaw = (viewPoint.Angles.Yaw + yawError).Normalized180();
+			viewPoint.Angles.Pitch = (viewPoint.Angles.Pitch + pitchError).Normalized180();
+		}
 	}
 
 	// Now that the base position and angles are set, add offsets.

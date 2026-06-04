@@ -402,6 +402,7 @@ EXTERN_CVAR (Bool, freelook)
 EXTERN_CVAR (Float, m_pitch)
 EXTERN_CVAR (Float, m_yaw)
 EXTERN_CVAR (Bool, lookstrafe)
+EXTERN_CVAR (Int, net_movement_debug)
 EXTERN_CVAR (Int, screenblocks)
 EXTERN_CVAR (Bool, sv_cheats)
 EXTERN_CVAR (Bool, sv_unlimited_pickup)
@@ -3392,15 +3393,31 @@ static bool System_DispatchEvent(event_t* ev)
 
 	if (ev->type == EV_Mouse && menuactive == MENU_Off && ConsoleState != c_down && ConsoleState != c_falling && !primaryLevel->localEventManager->Responder(ev) && !paused)
 	{
+		const int hcdeRawMouseX = ev->x;
+		const int hcdeRawMouseY = ev->y;
 		if (buttonMap.ButtonDown(Button_Mlook) || freelook)
 		{
 			int look = int(ev->y * m_pitch * 16.0);
+			if (netgame && *net_movement_debug > 0 && look != 0)
+			{
+				DebugTrace::Markf("net.input",
+					"HCDE direct-mouse pitch gametic=%d clienttic=%d raw=(%d,%d) look=%d m_pitch=%.4f freelook=%d mlook=%d",
+					gametic, ClientTic, hcdeRawMouseX, hcdeRawMouseY, look, double(*m_pitch),
+					freelook ? 1 : 0, buttonMap.ButtonDown(Button_Mlook) ? 1 : 0);
+			}
 			G_AddViewPitch(look, true);
 			ev->y = 0;
 		}
 		if (!buttonMap.ButtonDown(Button_Strafe) && !lookstrafe)
 		{
 			int turn = int(ev->x * m_yaw * 16.0);
+			if (netgame && *net_movement_debug > 0 && turn != 0)
+			{
+				DebugTrace::Markf("net.input",
+					"HCDE direct-mouse yaw gametic=%d clienttic=%d raw=(%d,%d) turn=%d m_yaw=%.4f strafe=%d lookstrafe=%d",
+					gametic, ClientTic, hcdeRawMouseX, hcdeRawMouseY, turn, double(*m_yaw),
+					buttonMap.ButtonDown(Button_Strafe) ? 1 : 0, lookstrafe ? 1 : 0);
+			}
 			G_AddViewAngle(turn, true);
 			ev->x = 0;
 		}

@@ -146,27 +146,44 @@ void PackUserCmd(const usercmd_t& cmd, const usercmd_t* basis, TArrayView<uint8_
 			}
 		}
 	}
-	if (cmd.pitch != basis->pitch)
+	// Look axes (pitch/yaw) and movement axes are all transmitted as absolute
+	// whenever they are nonzero, NOT purely delta-vs-previous-tic. Pure delta
+	// compression silently breaks for HELD/STEADY input: a smooth continuous
+	// turn produces a near-constant per-tic cmd.yaw (e.g. -32,-32,-32...), so
+	// cmd.yaw == basis->yaw on every tic after the first and the value is never
+	// re-sent. The receiver reconstructs it by copying the previous tic's slot,
+	// so a single missing/reordered/ring-recycled command strands yaw at its
+	// last decoded value - typically 0 - for the ENTIRE remainder of the turn.
+	// The client meanwhile keeps predicting the real turn rate, so the server
+	// heading falls progressively behind during the whole turn and only re-syncs
+	// when the player STOPS turning (yaw returns to 0, which IS a change and gets
+	// sent). That is the "straight is fine, turning goes crazy / forward becomes
+	// reverse / shots miss" desync: identical-rate turns are exactly the inputs
+	// delta compression drops. Re-sending nonzero look/move every tic makes each
+	// axis self-healing - any packet carrying the tic decodes the correct
+	// absolute value regardless of basis continuity. Zero-and-was-zero stays
+	// unsent (the common idle/straight case), so idle bandwidth is unchanged.
+	if (cmd.pitch != basis->pitch || cmd.pitch != 0)
 	{
 		flags |= UCMDF_PITCH;
 		WriteInt16(cmd.pitch, stream);
 	}
-	if (cmd.yaw != basis->yaw)
+	if (cmd.yaw != basis->yaw || cmd.yaw != 0)
 	{
 		flags |= UCMDF_YAW;
 		WriteInt16 (cmd.yaw, stream);
 	}
-	if (cmd.forwardmove != basis->forwardmove)
+	if (cmd.forwardmove != basis->forwardmove || cmd.forwardmove != 0)
 	{
 		flags |= UCMDF_FORWARDMOVE;
 		WriteInt16 (cmd.forwardmove, stream);
 	}
-	if (cmd.sidemove != basis->sidemove)
+	if (cmd.sidemove != basis->sidemove || cmd.sidemove != 0)
 	{
 		flags |= UCMDF_SIDEMOVE;
 		WriteInt16(cmd.sidemove, stream);
 	}
-	if (cmd.upmove != basis->upmove)
+	if (cmd.upmove != basis->upmove || cmd.upmove != 0)
 	{
 		flags |= UCMDF_UPMOVE;
 		WriteInt16(cmd.upmove, stream);
@@ -194,9 +211,20 @@ void WriteUserCmdMessage(const usercmd_t& cmd, const usercmd_t* basis, TArrayVie
 			return;
 		}
 	}
+	// Emit a full command when anything changed OR when any look/movement axis
+	// is nonzero. The nonzero clause is what keeps held input alive: without it
+	// a steady forward/strafe hold OR a steady-rate turn (unchanged vs the
+	// previous tic) would serialize as DEM_EMPTYUSERCMD and never re-transmit
+	// the value, so a single basis-chain break would freeze that axis - movement
+	// stops translating, or the server heading falls behind for the whole turn.
+	// The nonzero-yaw/pitch terms must mirror PackUserCmd's nonzero re-send, or
+	// PackUserCmd would never even be reached during a constant-rate turn. See
+	// PackUserCmd above.
 	else if (cmd.buttons != basis->buttons
 			|| cmd.yaw != basis->yaw || cmd.pitch != basis->pitch || cmd.roll != basis->roll
-			|| cmd.forwardmove != basis->forwardmove || cmd.sidemove != basis->sidemove || cmd.upmove != basis->upmove)
+			|| cmd.forwardmove != basis->forwardmove || cmd.sidemove != basis->sidemove || cmd.upmove != basis->upmove
+			|| cmd.yaw != 0 || cmd.pitch != 0
+			|| cmd.forwardmove != 0 || cmd.sidemove != 0 || cmd.upmove != 0)
 	{
 		WriteInt8(DEM_USERCMD, stream);
 		PackUserCmd(cmd, basis, stream);
