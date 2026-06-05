@@ -1,0 +1,197 @@
+{
+  "version": 1,
+  "categories": [
+    {
+      "id": "hcde-invasion",
+      "title": "HCDE Invasion & Server",
+      "description": "Wave timing, budgets, spawn rules, and Skulltag compatibility overrides for invasion game modes.",
+      "order": 10
+    },
+    {
+      "id": "hcde-netcode",
+      "title": "HCDE Netcode & Diagnostics",
+      "description": "Prediction, replication, lag HUD, checksums, blackbox, and HCDE-native networking controls.",
+      "order": 20
+    },
+    {
+      "id": "hcde-rendering",
+      "title": "HCDE Rendering",
+      "description": "Shadow auto-budget, NanoBSP loader, and other HCDE-specific rendering extensions.",
+      "order": 30
+    },
+    {
+      "id": "server",
+      "title": "Server & Multiplayer",
+      "description": "Server rules, dmflags, corpse cleanup, and general multiplayer session settings.",
+      "order": 40
+    },
+    {
+      "id": "client",
+      "title": "Client",
+      "description": "Client-side behavior, prediction, and local session preferences.",
+      "order": 50
+    },
+    {
+      "id": "audio",
+      "title": "Audio",
+      "description": "Sound backend selection, volume, spatial audio, and environmental reverb.",
+      "order": 60
+    },
+    {
+      "id": "music",
+      "title": "Music",
+      "description": "MIDI, module, and streaming music playback configuration.",
+      "order": 70
+    },
+    {
+      "id": "rendering",
+      "title": "Renderer",
+      "description": "Hardware and software renderer options, lighting, sprites, and draw quality.",
+      "order": 80
+    },
+    {
+      "id": "postprocess",
+      "title": "Post-Processing",
+      "description": "Bloom, tonemap, SSAO, and other screen-space effects.",
+      "order": 90
+    },
+    {
+      "id": "video",
+      "title": "Video & Display",
+      "description": "Resolution, scaling, fullscreen, vsync, and framebuffer settings.",
+      "order": 100
+    },
+    {
+      "id": "gameplay",
+      "title": "Gameplay",
+      "description": "Movement, weapons, monsters, compatibility, and general play simulation.",
+      "order": 110
+    },
+    {
+      "id": "hud",
+      "title": "HUD & Status Bar",
+      "description": "Heads-up display, crosshair, messages, and status bar layout.",
+      "order": 120
+    },
+    {
+      "id": "automap",
+      "title": "Automap",
+      "description": "Automap colors, rotation, overlay, and navigation aids.",
+      "order": 130
+    },
+    {
+      "id": "input",
+      "title": "Input",
+      "description": "Keyboard, mouse, gamepad, and gyro controls.",
+      "order": 140
+    },
+    {
+      "id": "menu",
+      "title": "Menu & UI",
+      "description": "Menu appearance, save-game UI, and interface preferences.",
+      "order": 150
+    },
+    {
+      "id": "debug",
+      "title": "Debug & Development",
+      "description": "Developer diagnostics, tracing, profiling, and cheat toggles.",
+      "order": 160
+    },
+    {
+      "id": "misc",
+      "title": "Other",
+      "description": "CVARs that do not match a more specific category rule.",
+      "order": 999
+    }
+  ],
+  "rules": [
+    {
+      "category": "hcde-invasion",
+      "prefixes": ["sv_invasion"],
+      "exact": ["wavelimit", "duellimit"]
+    },
+    {
+      "category": "hcde-netcode",
+      "prefixes": [
+        "hcde_lag",
+        "hcde_hud",
+        "net_hcde",
+        "net_predict",
+        "net_checksum",
+        "net_actor",
+        "net_blackbox",
+        "net_rewind",
+        "net_rcon",
+        "net_aidirector",
+        "net_movement",
+        "cl_hcde"
+      ],
+      "exact": ["hcde_startup_profile"]
+    },
+    {
+      "category": "hcde-rendering",
+      "prefixes": [
+        "hcde_shadow",
+        "hcde_k8vavoom",
+        "hcde_nanobsp"
+      ]
+    },
+    {
+      "category": "server",
+      "prefixes": ["sv_"]
+    },
+    {
+      "category": "client",
+      "prefixes": ["cl_"]
+    },
+    {
+      "category": "audio",
+      "prefixes": ["snd_"]
+    },
+    {
+      "category": "music",
+      "prefixes": ["mus_"]
+    },
+    {
+      "category": "postprocess",
+      "prefixes": ["pp_"]
+    },
+    {
+      "category": "video",
+      "prefixes": ["vid_"]
+    },
+    {
+      "category": "automap",
+      "prefixes": ["am_"]
+    },
+    {
+      "category": "input",
+      "prefixes": ["joy_", "in_", "i_mouse", "i_xinput", "i_dijoy", "i_rawps2", "i_gyro", "m_filter", "m_noprescale"]
+    },
+    {
+      "category": "menu",
+      "prefixes": ["m_", "menu_"]
+    },
+    {
+      "category": "hud",
+      "prefixes": ["hud_", "st_", "crosshair", "screenblocks", "save_", "msg_"]
+    },
+    {
+      "category": "debug",
+      "prefixes": ["debug", "vm_", "trace_", "profile_", "stat_"]
+    },
+    {
+      "category": "rendering",
+      "prefixes": ["gl_", "r_", "hw_", "sw_"]
+    },
+    {
+      "category": "gameplay",
+      "prefixes": ["g_", "compat", "co_", "deathmatch", "teamplay", "skill", "monsters", "weapon", "player"]
+    }
+  ],
+  "overrides": {},
+  "require_description": {
+    "prefixes": ["hcde_", "sv_invasion", "net_predict", "net_hcde", "cl_hcde"],
+    "exact": ["snd_backend", "hcde_lag_hud", "hcde_hud_debug", "net_hcde_native_only"]
+  }
+}

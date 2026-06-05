@@ -1,0 +1,1183 @@
+# HCDE CVAR Categories
+
+Generated: 2026-06-05 20:15:03 UTC
+
+Compact, category-first index of source-defined CVARs.
+
+Category rules live in [`tools/cvar-categories.json`](../tools/cvar-categories.json).
+The full reference with runtime audit data is in [`wiki/CVAR-Reference.md`](CVAR-Reference.md).
+
+## Category Summary
+
+| Category | CVARs |
+| --- | ---: |
+| HCDE Invasion & Server | 25 |
+| HCDE Netcode & Diagnostics | 20 |
+| HCDE Rendering | 11 |
+| Server & Multiplayer | 111 |
+| Client | 49 |
+| Audio | 26 |
+| Music | 3 |
+| Renderer | 169 |
+| Video & Display | 38 |
+| Gameplay | 62 |
+| HUD & Status Bar | 50 |
+| Automap | 83 |
+| Input | 12 |
+| Menu & UI | 26 |
+| Debug & Development | 15 |
+| Other | 373 |
+
+## HCDE Invasion & Server
+
+Wave timing, budgets, spawn rules, and Skulltag compatibility overrides for invasion game modes.
+
+- `duellimit` — Legacy Skulltag compatibility value for duel limit metadata.
+- `sv_invasionbasebudget` — Base monster budget each wave starts with.
+- `sv_invasionbossbonus` — Extra budget added during boss waves.
+- `sv_invasionbosswaveevery` — Boss wave cadence (e.g. 5 = every 5th wave, 0 = never).
+- `sv_invasionbudgetstep` — Budget increase applied per wave number.
+- `sv_invasioncleanuptime` — Seconds allowed for cleanup phase after spawning ends.
+- `sv_invasioncountdowntime` — Seconds before wave 1 starts ("Prepare for invasion" countdown).
+- `sv_invasiondebug` — Server setting: Invasion Debug
+- `sv_invasionexitonvictory` — Server setting: Invasion Exit Victory
+- `sv_invasionintermissiontime` — Seconds between completed waves before the next wave starts.
+- `sv_invasionmaxactive` — Optional cap for active invasion monsters. 0 disables the cap; positive values are clamped by the engine.
+- `sv_invasionperplayer` — Additional budget per extra active player.
+- `sv_invasionresulttime` — Seconds to keep the final victory/failure state visible.
+- `sv_invasionsimlod` — Enables server-side simulation LOD for invasion monsters so distant actors think less often under heavy load.
+- `sv_invasionsimloddormantinterval` — Think interval in tics for dormant distant invasion simulation.
+- `sv_invasionsimlodfullrange` — Distance within which invasion monsters keep full-rate simulation.
+- `sv_invasionsimlodreducedinterval` — Think interval in tics for reduced-rate invasion simulation.
+- `sv_invasionsimlodreducedrange` — Distance within which invasion monsters use reduced-rate simulation before becoming dormant.
+- `sv_invasionspawnburst` — Maximum monsters spawned per spawn tick burst.
+- `sv_invasionspawninterval` — Seconds between spawn ticks while wave spawning is active.
+- `sv_invasionspawntime` — Wave spawn window length in seconds before cleanup phase.
+- `sv_invasionspotfallback` — Fallback to generic spawning when tagged invasion spots cannot be used.
+- `sv_invasionspotusemaptags` — Restrict native invasion spots by map thing TID/tag. Keep disabled for Skulltag/Zandronum map compatibility; the spot arguments already control wave timing.
+- `sv_invasionwaves` — Maximum number of invasion waves in a run.
+- `wavelimit` — Legacy Skulltag compatibility override for invasion waves. 0 disables the override; 1..255 forces that wave count.
+
+## HCDE Netcode & Diagnostics
+
+Prediction, replication, lag HUD, checksums, blackbox, and HCDE-native networking controls.
+
+- `cl_hcde_predict_dedicated` — Enable client-side movement prediction when connected to a dedicated HCDE server.
+- `hcde_hud_debug` — Mirror net diagnostics to the HUD console for live operator visibility.
+- `hcde_lag_hud` — Persistent on-screen lag/invasion overlay (top-left). Also enable with `stat hcde_lag`.
+- `hcde_startup_profile` — Emit startup timing profile data for engine initialization diagnostics.
+- `net_blackbox_record` — Likely controls blackbox record behavior for network.
+- `net_blackbox_size_mb` — Likely controls blackbox size mb behavior for network.
+- `net_checksum` — Likely controls checksum behavior for network.
+- `net_checksum_categories` — Likely controls checksum categories behavior for network.
+- `net_checksum_interval` — Likely controls checksum interval behavior for network.
+- `net_hcde_native_only` — Requires HCDE-native networking/capability paths for multiplayer sessions.
+- `net_movement_debug` — Likely controls movement debug behavior for network.
+- `net_predict_debug` — Controls HCDE prediction diagnostics: off, CSV sampling, and/or on-screen/debug trace output depending on level.
+- `net_predict_debug_interval` — Tic interval used by prediction CSV/debug sampling.
+- `net_predict_softwarn_ack_lag` — Soft warning threshold for client ack lag during prediction diagnostics.
+- `net_predict_softwarn_mirror_delta` — Soft warning threshold for invasion mirror drift during prediction diagnostics.
+- `net_predict_softwarn_passive_storm` — Soft warning threshold for passive update storms during prediction diagnostics.
+- `net_rewind_depth` — Likely controls rewind depth behavior for network.
+- `net_rewind_enable` — Likely controls rewind enable behavior for network.
+- `net_rewind_interval` — Likely controls rewind interval behavior for network.
+- `net_rewind_max_mb` — Likely controls rewind max mb behavior for network.
+
+## HCDE Rendering
+
+Shadow auto-budget, NanoBSP loader, and other HCDE-specific rendering extensions.
+
+- `hcde_k8vavoom_lighting_profile` — Selects a composed K8vavoom lighting preset (0=off, 1+=profile id) and applies bundled renderer toggles.
+- `hcde_k8vavoom_raylight_probe` — Enable ray-light probing hooks used by K8vavoom-style lighting profile diagnostics.
+- `hcde_k8vavoom_shadow_boost` — Apply stronger shadow-map defaults when a K8vavoom lighting profile is active.
+- `hcde_nanobsp_loader` — Selects NanoBSP loader mode for map geometry ingestion (0=off, 1=on, 2=force).
+- `hcde_shadow_autobudget` — Adaptively reduce shadow-casting light count to stay near the target shadow-map frame budget.
+- `hcde_shadow_autobudget_minlights` — Minimum number of shadow-casting lights retained while auto-budget throttles the light count.
+- `hcde_shadow_autobudget_step` — Number of shadow-casting lights removed or restored per auto-budget adjustment step.
+- `hcde_shadow_autobudget_targetms` — Target milliseconds per frame allocated to shadow-map rendering when auto-budget is enabled.
+- `hcde_shadow_autofallback` — Automatically disable shadow maps when the renderer reports unsupported or failing shadow-map paths.
+- `hcde_shadow_forcealllights` — Force eligible dynamic lights onto the shadow-map path even when not explicitly marked shadowmapped.
+- `hcde_shadowprofile` — applies HCDE grouped shadow settings. 0 = manual, 1 = off, 2 = performance, 3 = balanced, 4 = enhanced, 5 = cinematic, 6 = quake-style, 7 = doom3-style
+
+## Server & Multiplayer
+
+Server rules, dmflags, corpse cleanup, and general multiplayer session settings.
+
+- `sv_aidirector_enable` — Likely controls aidirector enable behavior for server.
+- `sv_aidirector_regroup_hint` — Likely controls aidirector regroup hint behavior for server.
+- `sv_aidirector_sweep_tics` — Likely controls aidirector sweep tics behavior for server.
+- `sv_aircontrol` — Server setting: Air Control
+- `sv_allowallscripts` — Likely controls allowallscripts behavior for server.
+- `sv_allowcrouch` — Flag alias backed by dmflags.
+- `sv_allowfreelook` — Flag alias backed by dmflags.
+- `sv_allowjump` — Flag alias backed by dmflags.
+- `sv_alwaysspawnmulti` — Flag alias backed by dmflags2.
+- `sv_alwaystally` — Server setting: Tally Policy
+- `sv_ammofactor` — Likely controls ammofactor behavior for server.
+- `sv_autocompat` — Likely controls autocompat behavior for server.
+- `sv_barrelrespawn` — Flag alias backed by dmflags2.
+- `sv_chasecam` — Flag alias backed by dmflags2.
+- `sv_cheats` — Likely controls cheats behavior for server.
+- `sv_coophalveammo` — Flag alias backed by dmflags.
+- `sv_cooploseammo` — Flag alias backed by dmflags.
+- `sv_cooplosearmor` — Flag alias backed by dmflags.
+- `sv_cooploseinventory` — Flag alias backed by dmflags.
+- `sv_cooplosekeys` — Flag alias backed by dmflags.
+- `sv_cooplosepowerups` — Flag alias backed by dmflags.
+- `sv_cooploseweapons` — Flag alias backed by dmflags.
+- `sv_coopsharekeys` — Flag alias backed by dmflags3.
+- `sv_corpsefilter` — Selects which corpse queues sv_corpsequeuesize trims: 0 off, 1 monsters, 2 players, 3 both.
+- `sv_corpsequeuesize` — Maximum queued corpses retained by corpse cleanup; used with sv_corpsefilter.
+- `sv_crouch` — Likely controls crouch behavior for server.
+- `sv_damagefactorfriendly` — Likely controls damagefactorfriendly behavior for server.
+- `sv_damagefactormobj` — Likely controls damagefactormobj behavior for server.
+- `sv_damagefactorplayer` — Likely controls damagefactorplayer behavior for server.
+- `sv_dedicated_autostart` — Likely controls dedicated autostart behavior for server.
+- `sv_degeneration` — Flag alias backed by dmflags2.
+- `sv_disableautohealth` — Likely controls disableautohealth behavior for server.
+- `sv_disallowspying` — Flag alias backed by dmflags2.
+- `sv_disallowsuicide` — Flag alias backed by dmflags2.
+- `sv_dontcheckammo` — Flag alias backed by dmflags2.
+- `sv_doubleammo` — Flag alias backed by dmflags2.
+- `sv_dropstyle` — Server setting: Drop Style
+- `sv_falldamage` — Flag alias backed by dmflags.
+- `sv_fallingdamage` — Likely controls fallingdamage behavior for server.
+- `sv_fastmonsters` — Flag alias backed by dmflags.
+- `sv_fastweapons` — Server setting: Fast Weapons
+- `sv_forcerespawn` — Flag alias backed by dmflags.
+- `sv_freelook` — Likely controls freelook behavior for server.
+- `sv_gametype` — Server setting: Game Type
+- `sv_gravity` — Server setting: Gravity
+- `sv_hostname` — Server setting: Hostname
+- `sv_infiniteammo` — Flag alias backed by dmflags.
+- `sv_infiniteinventory` — Flag alias backed by dmflags2.
+- `sv_instantreaction` — Flag alias backed by dmflags.
+- `sv_itemrespawn` — Flag alias backed by dmflags.
+- `sv_jump` — Likely controls jump behavior for server.
+- `sv_keepfrags` — Flag alias backed by dmflags2.
+- `sv_killallmonsters` — Flag alias backed by dmflags2.
+- `sv_killbossmonst` — Flag alias backed by dmflags2.
+- `sv_lagcomp` — Likely controls lagcomp behavior for server.
+- `sv_lagcomp_max_age_tics` — Likely controls lagcomp max age tics behavior for server.
+- `sv_lateJoin` — Likely controls lateJoin behavior for server.
+- `sv_localitems` — Flag alias backed by dmflags3.
+- `sv_losefrag` — Flag alias backed by dmflags2.
+- `sv_maxplayers` — Server setting: Max Players
+- `sv_monsterrespawn` — Flag alias backed by dmflags.
+- `sv_motd` — Server setting: MOTD
+- `sv_natport` — Server setting: NAT Port
+- `sv_noarmor` — Flag alias backed by dmflags.
+- `sv_noautoaim` — Flag alias backed by dmflags2.
+- `sv_noautomap` — Flag alias backed by dmflags2.
+- `sv_noautomapallies` — Flag alias backed by dmflags2.
+- `sv_nobfgaim` — Flag alias backed by dmflags2.
+- `sv_nocoopitems` — Flag alias backed by dmflags3.
+- `sv_nocoopthings` — Flag alias backed by dmflags3.
+- `sv_nocountendmonst` — Flag alias backed by dmflags2.
+- `sv_nocrouch` — Flag alias backed by dmflags.
+- `sv_noexit` — Flag alias backed by dmflags.
+- `sv_noextraammo` — Flag alias backed by dmflags2.
+- `sv_nofov` — Flag alias backed by dmflags.
+- `sv_nofreelook` — Flag alias backed by dmflags.
+- `sv_nohealth` — Flag alias backed by dmflags.
+- `sv_noitems` — Flag alias backed by dmflags.
+- `sv_nojump` — Flag alias backed by dmflags.
+- `sv_nolocaldrops` — Flag alias backed by dmflags3.
+- `sv_nomonsters` — Flag alias backed by dmflags.
+- `sv_noplayerclip` — Flag alias backed by dmflags3.
+- `sv_norespawn` — Flag alias backed by dmflags2.
+- `sv_noteamswitch` — Flag alias backed by dmflags2.
+- `sv_nothingspawn` — Flag alias backed by dmflags2.
+- `sv_novertspread` — Flag alias backed by dmflags2.
+- `sv_noweaponspawn` — Flag alias backed by dmflags.
+- `sv_oldfalldamage` — Flag alias backed by dmflags.
+- `sv_pistolstart` — Flag alias backed by dmflags3.
+- `sv_predator_allow_cheats` — Likely controls predator allow cheats behavior for server.
+- `sv_predator_buy_seconds` — Likely controls predator buy seconds behavior for server.
+- `sv_predator_enable` — Likely controls predator enable behavior for server.
+- `sv_predator_round_seconds` — Likely controls predator round seconds behavior for server.
+- `sv_predator_starting_currency` — Likely controls predator starting currency behavior for server.
+- `sv_rcon_enable` — Likely controls rcon enable behavior for server.
+- `sv_rcon_password` — Likely controls rcon password behavior for server.
+- `sv_rcon_port` — Likely controls rcon port behavior for server.
+- `sv_rememberlastweapon` — Flag alias backed by dmflags3.
+- `sv_respawnprotect` — Flag alias backed by dmflags2.
+- `sv_respawnsuper` — Flag alias backed by dmflags2.
+- `sv_samelevel` — Flag alias backed by dmflags.
+- `sv_samespawnspot` — Flag alias backed by dmflags2.
+- `sv_singleplayerrespawn` — Likely controls singleplayerrespawn behavior for server.
+- `sv_smartaim` — Server setting: Smart Aim
+- `sv_spawnfarthest` — Flag alias backed by dmflags.
+- `sv_unlimited_pickup` — Likely controls unlimited pickup behavior for server.
+- `sv_upnp` — Likely controls upnp behavior for server.
+- `sv_usemapsettingswavelimit` — If enabled, map-defined invasion wavelimit metadata overrides sv_invasionwaves when present.
+- `sv_usemasters` — Likely controls usemasters behavior for server.
+- `sv_weapondrop` — Flag alias backed by dmflags2.
+- `sv_weaponstay` — Flag alias backed by dmflags.
+
+## Client
+
+Client-side behavior, prediction, and local session preferences.
+
+- `cl_analog_run` — Likely controls analog run behavior for client.
+- `cl_analog_sensitivity_pitch` — Likely controls analog sensitivity pitch behavior for client.
+- `cl_analog_sensitivity_yaw` — Likely controls analog sensitivity yaw behavior for client.
+- `cl_analog_straferun` — Likely controls analog straferun behavior for client.
+- `cl_bbannounce` — Likely controls bbannounce behavior for client.
+- `cl_blockcheats` — Likely controls blockcheats behavior for client.
+- `cl_bloodsplats` — Likely controls bloodsplats behavior for client.
+- `cl_bloodtype` — Likely controls bloodtype behavior for client.
+- `cl_capfps` — Likely controls capfps behavior for client.
+- `cl_custominvulmapcolor1` — Likely controls custominvulmapcolor1 behavior for client.
+- `cl_custominvulmapcolor2` — Likely controls custominvulmapcolor2 behavior for client.
+- `cl_customizeinvulmap` — Likely controls customizeinvulmap behavior for client.
+- `cl_debug_monster_proximity` — Likely controls debug monster proximity behavior for client.
+- `cl_debugprediction` — Likely controls debugprediction behavior for client.
+- `cl_defaultconfiguration` — Likely controls defaultconfiguration behavior for client.
+- `cl_doautoaim` — Likely controls doautoaim behavior for client.
+- `cl_doubleclickthreshold` — Likely controls doubleclickthreshold behavior for client.
+- `cl_gfxlocalization` — Likely controls gfxlocalization behavior for client.
+- `cl_maxdecals` — Likely controls maxdecals behavior for client.
+- `cl_missiledecals` — Likely controls missiledecals behavior for client.
+- `cl_net_prediction_lead` — Likely controls net prediction lead behavior for client.
+- `cl_noboldchat` — Likely controls noboldchat behavior for client.
+- `cl_nochatsound` — Likely controls nochatsound behavior for client.
+- `cl_nointros` — Likely controls nointros behavior for client.
+- `cl_noprediction` — Likely controls noprediction behavior for client.
+- `cl_oldfreelooklimit` — Likely controls oldfreelooklimit behavior for client.
+- `cl_predict_lerpscale` — Likely controls predict lerpscale behavior for client.
+- `cl_predict_lerpthreshold` — Likely controls predict lerpthreshold behavior for client.
+- `cl_predict_max` — Likely controls predict max behavior for client.
+- `cl_predict_specials` — Likely controls predict specials behavior for client.
+- `cl_pufftype` — Likely controls pufftype behavior for client.
+- `cl_restartondeath` — Likely controls restartondeath behavior for client.
+- `cl_rockettrails` — Likely controls rockettrails behavior for client.
+- `cl_rubberband_limit` — Likely controls rubberband limit behavior for client.
+- `cl_rubberband_minmove` — Likely controls rubberband minmove behavior for client.
+- `cl_rubberband_scale` — Likely controls rubberband scale behavior for client.
+- `cl_rubberband_threshold` — Likely controls rubberband threshold behavior for client.
+- `cl_run` — Likely controls run behavior for client.
+- `cl_scaleweaponfov` — Likely controls scaleweaponfov behavior for client.
+- `cl_showchat` — Likely controls showchat behavior for client.
+- `cl_showmultikills` — Likely controls showmultikills behavior for client.
+- `cl_showsecretmessage` — Likely controls showsecretmessage behavior for client.
+- `cl_showsprees` — Likely controls showsprees behavior for client.
+- `cl_smooth_decay` — Likely controls smooth decay behavior for client.
+- `cl_smooth_maxdist` — Likely controls smooth maxdist behavior for client.
+- `cl_smooth_reconcile` — Likely controls smooth reconcile behavior for client.
+- `cl_spreaddecals` — Likely controls spreaddecals behavior for client.
+- `cl_stannounce` — Likely controls stannounce behavior for client.
+- `cl_waitforsave` — Likely controls waitforsave behavior for client.
+
+## Audio
+
+Sound backend selection, volume, spatial audio, and environmental reverb.
+
+- `snd_aldevice` — Likely controls snd aldevice.
+- `snd_aldriver` — See alsoftrc.sample for details
+- `snd_alresampler` — Likely controls snd alresampler.
+- `snd_backend` — Audio backend selector: `openal` (default), `null` (silent), or `eternity` (spatial facade).
+- `snd_buffersize` — Likely controls snd buffersize.
+- `snd_channels` — Likely controls snd channels.
+- `snd_drawoutput` — Likely controls snd drawoutput.
+- `snd_efx` — Likely controls snd efx.
+- `snd_enabled` — enables/disables sound effects
+- `snd_env_reverb` — Likely controls snd env reverb.
+- `snd_environmentprofile` — Global reverb profile. 0=classic, 1=doomsday room, 2=doomsday cave, 3=doomsday cinematic.
+- `snd_footsteps_surface` — Likely controls snd footsteps surface.
+- `snd_footstepvolume` — Likely controls snd footstepvolume.
+- `snd_hrtf` — Likely controls snd hrtf.
+- `snd_mastervolume` — Likely controls snd mastervolume.
+- `snd_menuvolume` — Likely controls snd menuvolume.
+- `snd_mididevice` — Likely controls snd mididevice.
+- `snd_midiprecache` — Likely controls snd midiprecache.
+- `snd_musicmode` — Likely controls snd musicmode.
+- `snd_musicvolume` — controls music volume
+- `snd_pitched` — Likely controls snd pitched.
+- `snd_samplerate` — Likely controls snd samplerate.
+- `snd_sfxvolume` — Likely controls snd sfxvolume.
+- `snd_streambuffersize` — Likely controls snd streambuffersize.
+- `snd_superstereowidth` — Likely controls snd superstereowidth.
+- `snd_waterreverb` — Likely controls snd waterreverb.
+
+## Music
+
+MIDI, module, and streaming music playback configuration.
+
+- `mus_calcgain` — Likely controls mus calcgain.
+- `mus_enabled` — enables/disables music
+- `mus_usereplaygain` — Likely controls mus usereplaygain.
+
+## Renderer
+
+Hardware and software renderer options, lighting, sprites, and draw quality.
+
+- `gl_aalines` — Likely controls gl aalines.
+- `gl_bandedswlight` — Likely controls gl bandedswlight.
+- `gl_billboard_faces_camera` — Likely controls gl billboard faces camera.
+- `gl_billboard_mode` — Likely controls gl billboard mode.
+- `gl_billboard_particles` — Likely controls gl billboard particles.
+- `gl_bloom` — Likely controls gl bloom.
+- `gl_bloom_amount` — Likely controls gl bloom amount.
+- `gl_breaksec` — Likely controls gl breaksec.
+- `gl_brightfog` — Likely controls gl brightfog.
+- `gl_cachenodes` — Likely controls gl cachenodes.
+- `gl_cachetime` — Likely controls gl cachetime.
+- `gl_control_tear` — Likely controls gl control tear.
+- `gl_coronas` — Likely controls gl coronas.
+- `gl_custompost` — Likely controls gl custompost.
+- `gl_customshader` — Likely controls gl customshader.
+- `gl_debug` — Likely controls gl debug.
+- `gl_debug_breakpoint` — Likely controls gl debug breakpoint.
+- `gl_debug_level` — Likely controls gl debug level.
+- `gl_distfog` — Likely controls gl distfog.
+- `gl_dither_bpc` — Likely controls gl dither bpc.
+- `gl_enhanced_nightvision` — Likely controls gl enhanced nightvision.
+- `gl_enhanced_nv_stealth` — Likely controls gl enhanced nv stealth.
+- `gl_es` — Likely controls gl es.
+- `gl_exposure_base` — Likely controls gl exposure base.
+- `gl_exposure_min` — Likely controls gl exposure min.
+- `gl_exposure_scale` — Likely controls gl exposure scale.
+- `gl_exposure_speed` — Likely controls gl exposure speed.
+- `gl_finishbeforeswap` — Likely controls gl finishbeforeswap.
+- `gl_fogmode` — Likely controls gl fogmode.
+- `gl_fuzztype` — Likely controls gl fuzztype.
+- `gl_fxaa` — Likely controls gl fxaa.
+- `gl_interpolate_model_frames` — Likely controls gl interpolate model frames.
+- `gl_lens` — Likely controls gl lens.
+- `gl_lens_chromatic` — Likely controls gl lens chromatic.
+- `gl_lens_k` — Likely controls gl lens k.
+- `gl_lens_kcube` — Likely controls gl lens kcube.
+- `gl_light_models` — Likely controls gl light models.
+- `gl_light_particles` — Likely controls gl light particles.
+- `gl_light_shadowmap` — Likely controls gl light shadowmap.
+- `gl_light_sprites` — Likely controls gl light sprites.
+- `gl_lightadditivesurfaces` — Likely controls gl lightadditivesurfaces.
+- `gl_lightmode` — Select lighting mode. 2 is vanilla accurate, 1 is accurate to the ZDoom software renderer and 0 is a less demanding non-shader implementation
+- `gl_lights` — Likely controls gl lights.
+- `gl_maplightmode` — Likely controls gl maplightmode.
+- `gl_mask_sprite_threshold` — Likely controls gl mask sprite threshold.
+- `gl_mask_threshold` — Likely controls gl mask threshold.
+- `gl_menu_blur` — Likely controls gl menu blur.
+- `gl_mirror_envmap` — Likely controls gl mirror envmap.
+- `gl_mirrors` — Likely controls gl mirrors.
+- `gl_multisample` — Likely controls gl multisample.
+- `gl_multithread` — Likely controls gl multithread.
+- `gl_no_skyclear` — Likely controls gl no skyclear.
+- `gl_noskyboxes` — Likely controls gl noskyboxes.
+- `gl_notexturefill` — Likely controls gl notexturefill.
+- `gl_paltonemap_powtable` — Likely controls gl paltonemap powtable.
+- `gl_paltonemap_reverselookup` — Likely controls gl paltonemap reverselookup.
+- `gl_particles_style` — Likely controls gl particles style.
+- `gl_pipeline_depth` — Likely controls gl pipeline depth.
+- `gl_plane_reflection` — Likely controls gl plane reflection.
+- `gl_portals` — Likely controls gl portals.
+- `gl_precache` — Likely controls gl precache.
+- `gl_render_flats` — Likely controls gl render flats.
+- `gl_render_things` — Likely controls gl render things.
+- `gl_render_walls` — Likely controls gl render walls.
+- `gl_satformula` — Likely controls gl satformula.
+- `gl_scale_viewport` — Likely controls gl scale viewport.
+- `gl_sclipfactor` — Likely controls gl sclipfactor.
+- `gl_sclipthreshold` — Likely controls gl sclipthreshold.
+- `gl_seamless` — Likely controls gl seamless.
+- `gl_shadowmap_filter` — Likely controls gl shadowmap filter.
+- `gl_shadowmap_maxlights` — Likely controls gl shadowmap maxlights.
+- `gl_shadowmap_prioritize` — Likely controls gl shadowmap prioritize.
+- `gl_shadowmap_quality` — Likely controls gl shadowmap quality.
+- `gl_sort_textures` — Likely controls gl sort textures.
+- `gl_sprite_blend` — Likely controls gl sprite blend.
+- `gl_spriteclip` — Likely controls gl spriteclip.
+- `gl_ssao` — Likely controls gl ssao.
+- `gl_ssao_bias` — Likely controls gl ssao bias.
+- `gl_ssao_blur` — Likely controls gl ssao blur.
+- `gl_ssao_debug` — Likely controls gl ssao debug.
+- `gl_ssao_exponent` — Likely controls gl ssao exponent.
+- `gl_ssao_portals` — Likely controls gl ssao portals.
+- `gl_ssao_radius` — Likely controls gl ssao radius.
+- `gl_ssao_strength` — Likely controls gl ssao strength.
+- `gl_texture` — Likely controls gl texture.
+- `gl_texture_filter` — changes the texture filtering settings
+- `gl_texture_filter_anisotropic` — changes the OpenGL texture anisotropy setting
+- `gl_texture_hqresize_fonts` — Flag alias backed by gl_texture_hqresize_targets.
+- `gl_texture_hqresize_maxinputsize` — Likely controls gl texture hqresize maxinputsize.
+- `gl_texture_hqresize_mt_height` — Likely controls gl texture hqresize mt height.
+- `gl_texture_hqresize_mt_width` — Likely controls gl texture hqresize mt width.
+- `gl_texture_hqresize_multithread` — Likely controls gl texture hqresize multithread.
+- `gl_texture_hqresize_skins` — Flag alias backed by gl_texture_hqresize_targets.
+- `gl_texture_hqresize_sprites` — Flag alias backed by gl_texture_hqresize_targets.
+- `gl_texture_hqresize_targets` — Likely controls gl texture hqresize targets.
+- `gl_texture_hqresize_textures` — Flag alias backed by gl_texture_hqresize_targets.
+- `gl_texture_hqresizemode` — Likely controls gl texture hqresizemode.
+- `gl_texture_hqresizemult` — Likely controls gl texture hqresizemult.
+- `gl_tonemap` — Likely controls gl tonemap.
+- `gl_usecolorblending` — Likely controls gl usecolorblending.
+- `gl_weapon_purelightlevel` — Makes the lighting on weapon sprites (or models) purely match the sector's light level you're standing in
+- `gl_weaponlight` — Likely controls gl weaponlight.
+- `hw_2dmip` — Likely controls hw 2dmip.
+- `hw_force_cambbpref` — Likely controls hw force cambbpref.
+- `hw_npottest` — Likely controls hw npottest.
+- `r_3dfloors` — Likely controls r 3dfloors.
+- `r_actorspriteshadow` — render actor sprite shadows. 0 = off, 1 = default, 2 = always on
+- `r_actorspriteshadowalpha` — maximum sprite shadow opacity, only effective with hardware renderers (0.0 = fully transparent, 1.0 = opaque)
+- `r_actorspriteshadowdist` — how far sprite shadows should be rendered
+- `r_actorspriteshadowfadeheight` — distance over which sprite shadows should fade, only effective with hardware renderers (0 = infinite)
+- `r_actorspriteshadowstyle` — actor sprite shadow style. 0 = classic, 1 = quake-style, 2 = doom3-style
+- `r_blendmethod` — Likely controls r blendmethod.
+- `r_clearbuffer` — Likely controls r clearbuffer.
+- `r_crosshair_recoil` — Likely controls r crosshair recoil.
+- `r_deathcamera` — Likely controls r deathcamera.
+- `r_debug_disable_vis_filter` — Likely controls r debug disable vis filter.
+- `r_debug_draw` — Likely controls r debug draw.
+- `r_debug_nolimitanamorphoses` — Likely controls r debug nolimitanamorphoses.
+- `r_dithertransparency` — Use dithered-transparency shading for actor-occluding level geometry
+- `r_drawfuzz` — Likely controls r drawfuzz.
+- `r_drawmirrors` — Likely controls r drawmirrors.
+- `r_drawplayersprites` — Likely controls r drawplayersprites.
+- `r_drawtrans` — Likely controls r drawtrans.
+- `r_drawvoxels` — Likely controls r drawvoxels.
+- `r_dynlights` — Likely controls r dynlights.
+- `r_extralight` — Likely controls r extralight.
+- `r_fakecontrast` — Likely controls r fakecontrast.
+- `r_fakeradio` — Likely controls r fakeradio.
+- `r_fakeradio_strength` — Likely controls r fakeradio strength.
+- `r_fogboundary` — Likely controls r fogboundary.
+- `r_fullbright_overrides` — Likely controls r fullbright overrides.
+- `r_fullbrightignoresectorcolor` — Likely controls r fullbrightignoresectorcolor.
+- `r_fuzzscale` — Likely controls r fuzzscale.
+- `r_geom_ao` — Likely controls r geom ao.
+- `r_geom_ao_strength` — Likely controls r geom ao strength.
+- `r_highlight_portals` — Likely controls r highlight portals.
+- `r_killfeed` — Likely controls r killfeed.
+- `r_line_distance_cull` — Likely controls r line distance cull.
+- `r_linearsky` — Likely controls r linearsky.
+- `r_lod_bias` — Likely controls r lod bias.
+- `r_magfilter` — Likely controls r magfilter.
+- `r_maxparticles` — Likely controls r maxparticles.
+- `r_minfilter` — Likely controls r minfilter.
+- `r_mipmap` — Likely controls r mipmap.
+- `r_model_distance_cull` — Likely controls r model distance cull.
+- `r_models` — Likely controls r models.
+- `r_multithreaded` — Likely controls r multithreaded.
+- `r_noaccel` — Likely controls r noaccel.
+- `r_particles` — Likely controls r particles.
+- `r_portal_recursions` — Likely controls r portal recursions.
+- `r_quakeintensity` — Likely controls r quakeintensity.
+- `r_radarclipper` — Use the horizontal clipper from camera->tracer's perspective
+- `r_rail_smartspiral` — Likely controls r rail smartspiral.
+- `r_rail_spiralsparsity` — Likely controls r rail spiralsparsity.
+- `r_rail_trailsparsity` — Likely controls r rail trailsparsity.
+- `r_scene_multithreaded` — Likely controls r scene multithreaded.
+- `r_skipmats` — Likely controls r skipmats.
+- `r_skyboxes` — Likely controls r skyboxes.
+- `r_skymode` — Likely controls r skymode.
+- `r_sprite_distance_cull` — Likely controls r sprite distance cull.
+- `r_spriteadjust` — Likely controls r spriteadjust.
+- `r_spriteclipanamorphicminbias` — Likely controls r spriteclipanamorphicminbias.
+- `r_ticstability` — Likely controls r ticstability.
+- `r_vanillatrans` — Likely controls r vanillatrans.
+- `r_view_pain_smooth` — Likely controls r view pain smooth.
+- `r_view_pain_smooth_strength` — Likely controls r view pain smooth strength.
+- `r_viewsize` — Likely controls r viewsize.
+- `r_visibility` — Likely controls r visibility.
+- `r_weapon_bob_smooth` — Likely controls r weapon bob smooth.
+
+## Video & Display
+
+Resolution, scaling, fullscreen, vsync, and framebuffer settings.
+
+- `vid_activeinbackground` — Likely controls vid activeinbackground.
+- `vid_adapter` — Likely controls vid adapter.
+- `vid_allowtrueultrawide` — Likely controls vid allowtrueultrawide.
+- `vid_aspect` — Likely controls vid aspect.
+- `vid_blackpoint` — adjusts what the engine outputs as black
+- `vid_contrast` — adjusts contrast component of gamma ramp
+- `vid_cropaspect` — Likely controls vid cropaspect.
+- `vid_cursor` — Likely controls vid cursor.
+- `vid_defheight` — Likely controls vid defheight.
+- `vid_defwidth` — Likely controls vid defwidth.
+- `vid_dontdowait` — Likely controls vid dontdowait.
+- `vid_fixgamma` — adjusts gamma component of gamma ramp
+- `vid_fps` — Likely controls vid fps.
+- `vid_fsdwmhack` — Likely controls vid fsdwmhack.
+- `vid_fsdwmhackalpha` — Likely controls vid fsdwmhackalpha.
+- `vid_fullscreen` — Likely controls vid fullscreen.
+- `vid_gamma` — (internal) target output gamma
+- `vid_hdr` — Likely controls vid hdr.
+- `vid_i_blackpoint` — Likely controls vid i blackpoint.
+- `vid_i_whitepoint` — Likely controls vid i whitepoint.
+- `vid_lowerinbackground` — Likely controls vid lowerinbackground.
+- `vid_maxfps` — Likely controls vid maxfps.
+- `vid_nopalsubstitutions` — Likely controls vid nopalsubstitutions.
+- `vid_preferbackend` — Likely controls vid preferbackend.
+- `vid_renderer` — Likely controls vid renderer.
+- `vid_rendermode` — Likely controls vid rendermode.
+- `vid_saturation` — adjusts saturation component of gamma ramp
+- `vid_scale_customheight` — Likely controls vid scale customheight.
+- `vid_scale_custompixelaspect` — Likely controls vid scale custompixelaspect.
+- `vid_scale_customwidth` — Likely controls vid scale customwidth.
+- `vid_scale_linear` — Likely controls vid scale linear.
+- `vid_scalefactor` — Likely controls vid scalefactor.
+- `vid_scalemode` — Likely controls vid scalemode.
+- `vid_sdl_render_driver` — Likely controls vid sdl render driver.
+- `vid_shadersupport` — Likely controls vid shadersupport.
+- `vid_showpalette` — Likely controls vid showpalette.
+- `vid_vsync` — Likely controls vid vsync.
+- `vid_whitepoint` — adjusts what the engine outputs as white
+
+## Gameplay
+
+Movement, weapons, monsters, compatibility, and general play simulation.
+
+- `compat_anybossdeath` — Flag alias backed by compatflags.
+- `compat_avoidhazard` — Flag alias backed by compatflags2.
+- `compat_badangles` — Flag alias backed by compatflags2.
+- `compat_boomscroll` — Flag alias backed by compatflags.
+- `compat_checkswitchrange` — Flag alias backed by compatflags2.
+- `compat_crossdropoff` — Flag alias backed by compatflags.
+- `compat_dehhealth` — Flag alias backed by compatflags.
+- `compat_dr_crusher` — Flag alias backed by compatflags2.
+- `compat_dr_liquidfriction` — Flag alias backed by compatflags2.
+- `compat_dropoff` — Flag alias backed by compatflags.
+- `compat_emulatemikoportals` — Flag alias backed by compatflags2.
+- `compat_explode1` — Flag alias backed by compatflags2.
+- `compat_explode2` — Flag alias backed by compatflags2.
+- `compat_fdteleport` — Flag alias backed by compatflags2.
+- `compat_floormove` — Flag alias backed by compatflags2.
+- `compat_hitscan` — Flag alias backed by compatflags.
+- `compat_invisibility` — Flag alias backed by compatflags.
+- `compat_light` — Flag alias backed by compatflags.
+- `compat_limitpain` — Flag alias backed by compatflags.
+- `compat_maskedmidtex` — Flag alias backed by compatflags.
+- `compat_mbfmonstermove` — Flag alias backed by compatflags.
+- `compat_minotaur` — Flag alias backed by compatflags.
+- `compat_missileclip` — Flag alias backed by compatflags.
+- `compat_multiexit` — Flag alias backed by compatflags2.
+- `compat_mushroom` — Flag alias backed by compatflags.
+- `compat_noblockfriends` — Flag alias backed by compatflags.
+- `compat_nodoorlight` — Flag alias backed by compatflags.
+- `compat_nofriendlyspawn` — Flag alias backed by compatflags2.
+- `compat_noid24` — Flag alias backed by compatflags2.
+- `compat_nombf21` — Flag alias backed by compatflags2.
+- `compat_nopassover` — Flag alias backed by compatflags.
+- `compat_notossdrops` — Flag alias backed by compatflags.
+- `compat_novdolllockmsg` — Flag alias backed by compatflags2.
+- `compat_pointonline` — Flag alias backed by compatflags2.
+- `compat_polyobj` — Flag alias backed by compatflags.
+- `compat_pushwindow` — Flag alias backed by compatflags2.
+- `compat_railing` — Flag alias backed by compatflags2.
+- `compat_ravenscroll` — Flag alias backed by compatflags.
+- `compat_reservedlineflag` — Flag alias backed by compatflags2.
+- `compat_sectorsounds` — Flag alias backed by compatflags.
+- `compat_shortTex` — Flag alias backed by compatflags.
+- `compat_silentinstantfloors` — Flag alias backed by compatflags.
+- `compat_silentpickup` — Flag alias backed by compatflags.
+- `compat_soundcutoff` — Flag alias backed by compatflags2.
+- `compat_soundslots` — Flag alias backed by compatflags.
+- `compat_soundtarget` — Flag alias backed by compatflags.
+- `compat_spritesort` — Flag alias backed by compatflags.
+- `compat_stairs` — Flag alias backed by compatflags.
+- `compat_stayonlift` — Flag alias backed by compatflags2.
+- `compat_teleport` — Flag alias backed by compatflags2.
+- `compat_trace` — Flag alias backed by compatflags.
+- `compat_useblocking` — Flag alias backed by compatflags.
+- `compat_vileghosts` — Flag alias backed by compatflags.
+- `compat_voodoozombies` — Flag alias backed by compatflags2.
+- `compat_wallrun` — Flag alias backed by compatflags.
+- `compatflags` — Server setting: Raw Compat Flags
+- `compatflags2` — Server setting: Raw Compat Flags 2
+- `compatmode` — Server setting: Compat Mode
+- `deathmatch` — Likely controls deathmatch.
+- `playerclass` — Likely controls playerclass.
+- `skill` — sets the skill for the next newly started game
+- `teamplay` — Likely controls teamplay.
+
+## HUD & Status Bar
+
+Heads-up display, crosshair, messages, and status bar layout.
+
+- `crosshair` — Likely controls crosshair.
+- `crosshair_offset_x` — Likely controls crosshair offset x.
+- `crosshair_offset_y` — Likely controls crosshair offset y.
+- `crosshaircolor` — Likely controls crosshaircolor.
+- `crosshaircolorFull` — Likely controls crosshaircolorFull.
+- `crosshaircolorMax` — Likely controls crosshaircolorMax.
+- `crosshaircolors` — 0: basic, 1: show health, 2: show health bonus, 3: inverted
+- `crosshairforce` — Likely controls crosshairforce.
+- `crosshairgrow` — grow crosshair upon pickup
+- `crosshairhascolor` — Likely controls crosshairhascolor.
+- `crosshairon` — Likely controls crosshairon.
+- `crosshairscale` — changes the size of the crosshair
+- `crosshairshowshealth` — Likely controls crosshairshowshealth.
+- `hud_althud` — Likely controls hud althud.
+- `hud_althud_forceinternal` — Likely controls hud althud forceinternal.
+- `hud_althudscale` — Likely controls hud althudscale.
+- `hud_ammo_order` — Likely controls hud ammo order.
+- `hud_ammo_red` — Likely controls hud ammo red.
+- `hud_ammo_yellow` — Likely controls hud ammo yellow.
+- `hud_armor_green` — Likely controls hud armor green.
+- `hud_armor_red` — Likely controls hud armor red.
+- `hud_armor_yellow` — Likely controls hud armor yellow.
+- `hud_aspectscale` — enables aspect ratio correction for the status bar
+- `hud_berserk_health` — Likely controls hud berserk health.
+- `hud_health_green` — Likely controls hud health green.
+- `hud_health_red` — Likely controls hud health red.
+- `hud_health_yellow` — Likely controls hud health yellow.
+- `hud_oldscale` — Likely controls hud oldscale.
+- `hud_scale` — Likely controls hud scale.
+- `hud_scalefactor` — changes the hud scale
+- `hud_showammo` — Likely controls hud showammo.
+- `hud_showangles` — Likely controls hud showangles.
+- `hud_showitems` — Likely controls hud showitems.
+- `hud_showlag` — Likely controls hud showlag.
+- `hud_showmonsters` — Likely controls hud showmonsters.
+- `hud_showscore` — Likely controls hud showscore.
+- `hud_showsecrets` — Likely controls hud showsecrets.
+- `hud_showstats` — Likely controls hud showstats.
+- `hud_showtime` — Likely controls hud showtime.
+- `hud_showtimestat` — Likely controls hud showtimestat.
+- `hud_showweapons` — Likely controls hud showweapons.
+- `hud_swaphealtharmor` — Likely controls hud swaphealtharmor.
+- `hud_timecolor` — Likely controls hud timecolor.
+- `hud_toggled` — Likely controls hud toggled.
+- `save_dir` — Likely controls save dir.
+- `save_formatted` — Likely controls save formatted.
+- `save_sort_order` — Likely controls save sort order.
+- `screenblocks` — Likely controls screenblocks.
+- `st_oldouch` — Likely controls st oldouch.
+- `st_scale` — Likely controls st scale.
+
+## Automap
+
+Automap colors, rotation, overlay, and navigation aids.
+
+- `am_backcolor` — Likely controls am backcolor.
+- `am_cdwallcolor` — Likely controls am cdwallcolor.
+- `am_cheat` — Likely controls am cheat.
+- `am_colorset` — Likely controls am colorset.
+- `am_customcolors` — Likely controls am customcolors.
+- `am_drawmapback` — Likely controls am drawmapback.
+- `am_efwallcolor` — Likely controls am efwallcolor.
+- `am_emptyspacemargin` — Likely controls am emptyspacemargin.
+- `am_fdwallcolor` — Likely controls am fdwallcolor.
+- `am_followplayer` — Likely controls am followplayer.
+- `am_gridcolor` — Likely controls am gridcolor.
+- `am_interlevelcolor` — Likely controls am interlevelcolor.
+- `am_intralevelcolor` — Likely controls am intralevelcolor.
+- `am_linealpha` — Likely controls am linealpha.
+- `am_lineantialiasing` — Likely controls am lineantialiasing.
+- `am_linethickness` — Likely controls am linethickness.
+- `am_lockedcolor` — Likely controls am lockedcolor.
+- `am_map_secrets` — Likely controls am map secrets.
+- `am_markcolor` — Likely controls am markcolor.
+- `am_markfont` — Likely controls am markfont.
+- `am_notseencolor` — Likely controls am notseencolor.
+- `am_ovcdwallcolor` — Likely controls am ovcdwallcolor.
+- `am_ovefwallcolor` — Likely controls am ovefwallcolor.
+- `am_overlay` — Likely controls am overlay.
+- `am_ovfdwallcolor` — Likely controls am ovfdwallcolor.
+- `am_ovinterlevelcolor` — Likely controls am ovinterlevelcolor.
+- `am_ovlockedcolor` — Likely controls am ovlockedcolor.
+- `am_ovotherwallscolor` — Likely controls am ovotherwallscolor.
+- `am_ovportalcolor` — Likely controls am ovportalcolor.
+- `am_ovsecretsectorcolor` — Likely controls am ovsecretsectorcolor.
+- `am_ovsecretwallcolor` — Likely controls am ovsecretwallcolor.
+- `am_ovsectorfillalpha` — Likely controls am ovsectorfillalpha.
+- `am_ovsectorfillcolor` — Likely controls am ovsectorfillcolor.
+- `am_ovspecialwallcolor` — Likely controls am ovspecialwallcolor.
+- `am_ovtelecolor` — Likely controls am ovtelecolor.
+- `am_ovthingcolor` — Likely controls am ovthingcolor.
+- `am_ovthingcolor_citem` — Likely controls am ovthingcolor citem.
+- `am_ovthingcolor_friend` — Likely controls am ovthingcolor friend.
+- `am_ovthingcolor_item` — Likely controls am ovthingcolor item.
+- `am_ovthingcolor_monster` — Likely controls am ovthingcolor monster.
+- `am_ovthingcolor_ncmonster` — Likely controls am ovthingcolor ncmonster.
+- `am_ovunexploredsecretcolor` — Likely controls am ovunexploredsecretcolor.
+- `am_ovunseencolor` — Likely controls am ovunseencolor.
+- `am_ovwallcolor` — Likely controls am ovwallcolor.
+- `am_ovyourcolor` — Likely controls am ovyourcolor.
+- `am_portalcolor` — Likely controls am portalcolor.
+- `am_portaloverlay` — Likely controls am portaloverlay.
+- `am_rotate` — Likely controls am rotate.
+- `am_secretsectorcolor` — Likely controls am secretsectorcolor.
+- `am_secretwallcolor` — Likely controls am secretwallcolor.
+- `am_sectorfillalpha` — Likely controls am sectorfillalpha.
+- `am_sectorfillcolor` — Likely controls am sectorfillcolor.
+- `am_showalllines` — Likely controls am showalllines.
+- `am_showcluster` — Likely controls am showcluster.
+- `am_showepisode` — Likely controls am showepisode.
+- `am_showgrid` — Likely controls am showgrid.
+- `am_showitems` — Likely controls am showitems.
+- `am_showkeys` — Likely controls am showkeys.
+- `am_showkeys_always` — Likely controls am showkeys always.
+- `am_showlevelname` — Likely controls am showlevelname.
+- `am_showmaplabel` — Likely controls am showmaplabel.
+- `am_showmonsters` — Likely controls am showmonsters.
+- `am_showsecrets` — Likely controls am showsecrets.
+- `am_showsubsector` — Likely controls am showsubsector.
+- `am_showthingsprites` — Likely controls am showthingsprites.
+- `am_showtime` — Likely controls am showtime.
+- `am_showtotaltime` — Likely controls am showtotaltime.
+- `am_showtriggerlines` — Likely controls am showtriggerlines.
+- `am_specialwallcolor` — Likely controls am specialwallcolor.
+- `am_textured` — Likely controls am textured.
+- `am_thingcolor` — Likely controls am thingcolor.
+- `am_thingcolor_citem` — Likely controls am thingcolor citem.
+- `am_thingcolor_friend` — Likely controls am thingcolor friend.
+- `am_thingcolor_item` — Likely controls am thingcolor item.
+- `am_thingcolor_monster` — Likely controls am thingcolor monster.
+- `am_thingcolor_ncmonster` — Likely controls am thingcolor ncmonster.
+- `am_thingrenderstyles` — Likely controls am thingrenderstyles.
+- `am_tswallcolor` — Likely controls am tswallcolor.
+- `am_unexploredsecretcolor` — Likely controls am unexploredsecretcolor.
+- `am_wallcolor` — Likely controls am wallcolor.
+- `am_xhaircolor` — Likely controls am xhaircolor.
+- `am_yourcolor` — Likely controls am yourcolor.
+- `am_zoomdir` — Likely controls am zoomdir.
+
+## Input
+
+Keyboard, mouse, gamepad, and gyro controls.
+
+- `in_mouse` — Likely controls in mouse.
+- `joy_axespolling` — Likely controls joy axespolling.
+- `joy_dinput` — Likely controls joy dinput.
+- `joy_gyro_deadzone` — Likely controls joy gyro deadzone.
+- `joy_gyro_enable` — Likely controls joy gyro enable.
+- `joy_gyro_invertpitch` — Likely controls joy gyro invertpitch.
+- `joy_gyro_invertyaw` — Likely controls joy gyro invertyaw.
+- `joy_gyro_mode` — Likely controls joy gyro mode.
+- `joy_gyro_pitchscale` — Likely controls joy gyro pitchscale.
+- `joy_gyro_yawscale` — Likely controls joy gyro yawscale.
+- `joy_ps2raw` — Likely controls joy ps2raw.
+- `joy_xinput` — Likely controls joy xinput.
+
+## Menu & UI
+
+Menu appearance, save-game UI, and interface preferences.
+
+- `m_blockcontrollers` — Likely controls m blockcontrollers.
+- `m_cleanscale` — Likely controls m cleanscale.
+- `m_forward` — Likely controls m forward.
+- `m_hidepointer` — Likely controls m hidepointer.
+- `m_pitch` — Likely controls m pitch.
+- `m_quickexit` — Likely controls m quickexit.
+- `m_sensitivity_x` — Likely controls m sensitivity x.
+- `m_sensitivity_y` — Likely controls m sensitivity y.
+- `m_show_backbutton` — Likely controls m show backbutton.
+- `m_showinputgrid` — Likely controls m showinputgrid.
+- `m_side` — Likely controls m side.
+- `m_simpleoptions` — Likely controls m simpleoptions.
+- `m_simpleoptions_view` — Likely controls m simpleoptions view.
+- `m_smooth_curve` — Likely controls m smooth curve.
+- `m_swapbuttons` — Likely controls m swapbuttons.
+- `m_tooltip_alpha` — Likely controls m tooltip alpha.
+- `m_tooltip_capratio` — Likely controls m tooltip capratio.
+- `m_tooltip_delay` — Likely controls m tooltip delay.
+- `m_tooltip_lines` — Likely controls m tooltip lines.
+- `m_tooltip_small` — Likely controls m tooltip small.
+- `m_tooltip_speed` — Likely controls m tooltip speed.
+- `m_use_mouse` — Likely controls m use mouse.
+- `m_yaw` — Likely controls m yaw.
+- `menu_overscroll` — Number of lines you can scroll past the bottom of a menu
+- `menu_resolution_custom_height` — Likely controls menu resolution custom height.
+- `menu_resolution_custom_width` — Likely controls menu resolution custom width.
+
+## Debug & Development
+
+Developer diagnostics, tracing, profiling, and cheat toggles.
+
+- `debug_languages` — Likely controls debug languages.
+- `debuganimated` — Likely controls debuganimated.
+- `debugtrace_capacity` — Likely controls debugtrace capacity.
+- `debugtrace_enable` — Likely controls debugtrace enable.
+- `debugtrace_filter` — Likely controls debugtrace filter.
+- `debugtrace_minseverity` — Likely controls debugtrace minseverity.
+- `debugtrace_stats` — Likely controls debugtrace stats.
+- `debugtrace_stream` — Likely controls debugtrace stream.
+- `debugtrace_stream_rotate_count` — Likely controls debugtrace stream rotate count.
+- `debugtrace_stream_rotate_mb` — Likely controls debugtrace stream rotate mb.
+- `vm_debug` — Likely controls vm debug.
+- `vm_debug_port` — Likely controls vm debug port.
+- `vm_jit` — Likely controls vm jit.
+- `vm_jit_aot` — Likely controls vm jit aot.
+- `vm_warnthinkercreation` — Likely controls vm warnthinkercreation.
+
+## Other
+
+CVARs that do not match a more specific category rule.
+
+- `addrocketexplosion` — Likely controls addrocketexplosion.
+- `adl_auto_arpeggio` — Likely controls adl auto arpeggio.
+- `adl_bank` — Likely controls adl bank.
+- `adl_chan_alloc` — Likely controls adl chan alloc.
+- `adl_chips_count` — Likely controls adl chips count.
+- `adl_custom_bank` — Likely controls adl custom bank.
+- `adl_emulator_id` — Likely controls adl emulator id.
+- `adl_fullpan` — Likely controls adl fullpan.
+- `adl_gain` — Likely controls adl gain.
+- `adl_run_at_pcm_rate` — Likely controls adl run at pcm rate.
+- `adl_use_custom_bank` — Likely controls adl use custom bank.
+- `adl_use_genmidi` — Likely controls adl use genmidi.
+- `adl_volume_model` — Likely controls adl volume model.
+- `aimdebug` — Likely controls aimdebug.
+- `allcheats` — Likely controls allcheats.
+- `allowsingleplayerscripts` — Likely controls allowsingleplayerscripts.
+- `alwaysapplydmflags` — Server setting: Apply DM Flags Always
+- `anonstats_enabled411` — Likely controls anonstats enabled411.
+- `anonstats_host` — Likely controls anonstats host.
+- `anonstats_port` — Likely controls anonstats port.
+- `autoaim` — Likely controls autoaim.
+- `autoloadbrightmaps` — Likely controls autoloadbrightmaps.
+- `autoloadlights` — Likely controls autoloadlights.
+- `autoloadwidescreen` — Likely controls autoloadwidescreen.
+- `autosavecount` — Likely controls autosavecount.
+- `autosavenum` — Likely controls autosavenum.
+- `blood_fade_scalar` — Likely controls blood fade scalar.
+- `bot_allowspy` — Likely controls bot allowspy.
+- `bot_next_color` — Likely controls bot next color.
+- `bottomskew` — Likely controls bottomskew.
+- `chase_dist` — Likely controls chase dist.
+- `chase_height` — Likely controls chase height.
+- `chasedemo` — Likely controls chasedemo.
+- `chat_substitution` — Likely controls chat substitution.
+- `chatmacro0` — Likely controls chatmacro0.
+- `chatmacro1` — Likely controls chatmacro1.
+- `chatmacro2` — Likely controls chatmacro2.
+- `chatmacro3` — Likely controls chatmacro3.
+- `chatmacro4` — Likely controls chatmacro4.
+- `chatmacro5` — Likely controls chatmacro5.
+- `chatmacro6` — Likely controls chatmacro6.
+- `chatmacro7` — Likely controls chatmacro7.
+- `chatmacro8` — Likely controls chatmacro8.
+- `chatmacro9` — Likely controls chatmacro9.
+- `classic_scaling_factor` — Likely controls classic scaling factor.
+- `classic_scaling_pixelaspect` — Likely controls classic scaling pixelaspect.
+- `classicflight` — Likely controls classicflight.
+- `color` — Likely controls color.
+- `colorset` — Likely controls colorset.
+- `con_4bitansi` — Likely controls con 4bitansi.
+- `con_alpha` — Likely controls con alpha.
+- `con_buffersize` — Likely controls con buffersize.
+- `con_centernotify` — Likely controls con centernotify.
+- `con_ctrl_d` — Likely controls con ctrl d.
+- `con_debugoutput` — Likely controls con debugoutput.
+- `con_midtime` — Likely controls con midtime.
+- `con_notablist` — Likely controls con notablist.
+- `con_notifylines` — Likely controls con notifylines.
+- `con_notifytime` — Likely controls con notifytime.
+- `con_printansi` — Likely controls con printansi.
+- `con_pulsetext` — Likely controls con pulsetext.
+- `con_quick_home_end` — Use HOME/END keys to scroll when cursor is at start/end of line already
+- `con_scale` — Likely controls con scale.
+- `con_scaletext` — Likely controls con scaletext.
+- `con_stackident` — Likely controls con stackident.
+- `consoleendoom` — Likely controls consoleendoom.
+- `defaultaddonfiles` — Likely controls defaultaddonfiles.
+- `defaultargs` — Likely controls defaultargs.
+- `defaultiwad` — Likely controls defaultiwad.
+- `defaultnetaddress` — Likely controls defaultnetaddress.
+- `defaultnetaltdm` — Likely controls defaultnetaltdm.
+- `defaultnetargs` — Likely controls defaultnetargs.
+- `defaultnetextratic` — Likely controls defaultnetextratic.
+- `defaultnetgamemode` — Likely controls defaultnetgamemode.
+- `defaultnethostport` — Likely controls defaultnethostport.
+- `defaultnethostteam` — Likely controls defaultnethostteam.
+- `defaultnetiwad` — Likely controls defaultnetiwad.
+- `defaultnetjoinport` — Likely controls defaultnetjoinport.
+- `defaultnetjointeam` — Likely controls defaultnetjointeam.
+- `defaultnetpage` — Likely controls defaultnetpage.
+- `defaultnetplayers` — Likely controls defaultnetplayers.
+- `defaultnetsavefile` — Likely controls defaultnetsavefile.
+- `defaultnetticdup` — Likely controls defaultnetticdup.
+- `dehload` — Likely controls dehload.
+- `demo_compress` — Likely controls demo compress.
+- `developer` — Likely controls developer.
+- `dimamount` — Likely controls dimamount.
+- `dimcolor` — Likely controls dimcolor.
+- `disableautoload` — Likely controls disableautoload.
+- `disableautosave` — Likely controls disableautosave.
+- `disablecrashlog` — Likely controls disablecrashlog.
+- `displaynametags` — Likely controls displaynametags.
+- `dlg_musicvolume` — Likely controls dlg musicvolume.
+- `dlg_vgafont` — Likely controls dlg vgafont.
+- `dmflags` — Server setting: Raw DM Flags
+- `dmflags2` — Server setting: Raw DM Flags 2
+- `dmflags3` — Server setting: Raw DM Flags 3
+- `dumpspawnedthings` — Likely controls dumpspawnedthings.
+- `eaxedit_test` — Likely controls eaxedit test.
+- `enablescriptscreenshot` — Likely controls enablescriptscreenshot.
+- `fluid_chorus` — Likely controls fluid chorus.
+- `fluid_chorus_depth` — Likely controls fluid chorus depth.
+- `fluid_chorus_level` — Likely controls fluid chorus level.
+- `fluid_chorus_speed` — Likely controls fluid chorus speed.
+- `fluid_chorus_type` — Likely controls fluid chorus type.
+- `fluid_chorus_voices` — Likely controls fluid chorus voices.
+- `fluid_gain` — Likely controls fluid gain.
+- `fluid_interp` — Likely controls fluid interp.
+- `fluid_lib` — Likely controls fluid lib.
+- `fluid_patchset` — Likely controls fluid patchset.
+- `fluid_reverb` — Likely controls fluid reverb.
+- `fluid_reverb_damping` — Likely controls fluid reverb damping.
+- `fluid_reverb_level` — Likely controls fluid reverb level.
+- `fluid_reverb_roomsize` — Likely controls fluid reverb roomsize.
+- `fluid_reverb_width` — Likely controls fluid reverb width.
+- `fluid_samplerate` — Likely controls fluid samplerate.
+- `fluid_threads` — Likely controls fluid threads.
+- `fluid_voices` — Likely controls fluid voices.
+- `forcewater` — Likely controls forcewater.
+- `fov` — Likely controls fov.
+- `fraglimit` — Server setting: Frag Limit
+- `freelook` — Likely controls freelook.
+- `fviewbob` — Likely controls fviewbob.
+- `gamma` — Likely controls gamma.
+- `genblockmap` — Likely controls genblockmap.
+- `gender` — Likely controls gender.
+- `gennodes` — Likely controls gennodes.
+- `gles_force_glsl_v100` — Likely controls gles force glsl v100.
+- `gles_glsl_precision` — Likely controls gles glsl precision.
+- `gles_max_lights_per_surface` — Likely controls gles max lights per surface.
+- `gles_use_mapped_buffer` — Likely controls gles use mapped buffer.
+- `gme_stereodepth` — Likely controls gme stereodepth.
+- `gus_memsize` — Likely controls gus memsize.
+- `gus_patchdir` — Likely controls gus patchdir.
+- `haptics_compat` — haptic feedback compatibility level
+- `haptics_debug` — print diagnostics for haptic feedback
+- `haptics_do_action` — allow haptic feedback for player doing things
+- `haptics_do_damage` — allow haptic feedback for things hurting player
+- `haptics_do_menus` — allow haptic feedback for menus
+- `haptics_do_world` — allow haptic feedback for things acting on player
+- `haptics_strength` — Translate linear haptics to audio taper
+- `haptics_strength_hf` — high frequency motor fine-control
+- `haptics_strength_lf` — low frequency motor fine-control
+- `haptics_strength_lt` — left trigger motor fine-control
+- `haptics_strength_rt` — right trigger motor fine-control
+- `hudcolor_ltim` — Likely controls hudcolor ltim.
+- `hudcolor_statnames` — Likely controls hudcolor statnames.
+- `hudcolor_stats` — Likely controls hudcolor stats.
+- `hudcolor_time` — Likely controls hudcolor time.
+- `hudcolor_titl` — Likely controls hudcolor titl.
+- `hudcolor_ttim` — Likely controls hudcolor ttim.
+- `hudcolor_xyco` — Likely controls hudcolor xyco.
+- `i_discordrpc` — Likely controls i discordrpc.
+- `i_display_new_release` — Show changelog upon update
+- `i_exit_on_not_found` — Exits game if a specified file is not found
+- `I_FriendlyWindowTitle` — Likely controls I FriendlyWindowTitle.
+- `i_is_new_release` — Likely controls i is new release.
+- `i_loadsupportwad` — Load id24.wad
+- `i_pauseinbackground` — Likely controls i pauseinbackground.
+- `i_searchdistributors` — Search storefront intallations for IWADS
+- `i_soundinbackground` — Likely controls i soundinbackground.
+- `i_timescale` — Likely controls i timescale.
+- `idmypos` — Likely controls idmypos.
+- `infighting` — Likely controls infighting.
+- `inter_classic_scaling` — Likely controls inter classic scaling.
+- `inter_subtitles` — Likely controls inter subtitles.
+- `invertmouse` — Likely controls invertmouse.
+- `invertmousex` — Likely controls invertmousex.
+- `joykey_stop_conflict` — Detect joypad/keyboard conflicts, dropping events as needed. Useful for handheld PCs such as the SteamDeck. -1: auto-detect, 0: disabled, 1: detected, 2: forced
+- `k_allowfullscreentoggle` — Likely controls k allowfullscreentoggle.
+- `k_mergekeys` — Likely controls k mergekeys.
+- `language` — Likely controls language.
+- `language_debug_maxlen` — Likely controls language debug maxlen.
+- `log_vgafont` — Likely controls log vgafont.
+- `longsavemessages` — Likely controls longsavemessages.
+- `lookspring` — Likely controls lookspring.
+- `lookstrafe` — Likely controls lookstrafe.
+- `map_point_coordinates` — Likely controls map point coordinates.
+- `maxviewpitch` — Likely controls maxviewpitch.
+- `midi_config` — Likely controls midi config.
+- `midi_dmxgus` — Likely controls midi dmxgus.
+- `midi_voices` — Likely controls midi voices.
+- `midskew` — Likely controls midskew.
+- `mod_autochip` — Likely controls mod autochip.
+- `mod_autochip_scan_threshold` — Likely controls mod autochip scan threshold.
+- `mod_autochip_size_force` — Likely controls mod autochip size force.
+- `mod_autochip_size_scan` — Likely controls mod autochip size scan.
+- `mod_dumb_mastervolume` — Likely controls mod dumb mastervolume.
+- `mod_interp` — Likely controls mod interp.
+- `mod_preferred_player` — Likely controls mod preferred player.
+- `mod_samplerate` — Likely controls mod samplerate.
+- `mod_volramp` — Likely controls mod volramp.
+- `mouse_capturemode` — Likely controls mouse capturemode.
+- `movebob` — Likely controls movebob.
+- `msg` — Filters HUD message by importance
+- `msg0color` — Likely controls msg0color.
+- `msg1color` — Likely controls msg1color.
+- `msg2color` — Likely controls msg2color.
+- `msg3color` — Likely controls msg3color.
+- `msg4color` — Likely controls msg4color.
+- `msgmidcolor` — Likely controls msgmidcolor.
+- `msgmidcolor2` — Likely controls msgmidcolor2.
+- `name` — descr
+- `nametagcolor` — Likely controls nametagcolor.
+- `net_adaptive_lead` — Likely controls adaptive lead behavior for network.
+- `net_adaptive_lead_guard` — Likely controls adaptive lead guard behavior for network.
+- `net_adaptive_lead_max` — Likely controls adaptive lead max behavior for network.
+- `net_adaptive_lead_min` — Likely controls adaptive lead min behavior for network.
+- `net_chatslowmode` — Server setting: Chat Slowmode
+- `net_cutscenecountdown` — Server setting: Ready Time
+- `net_cutscenereadypercent` — Server setting: Ready Percent
+- `net_cutscenereadytype` — Server setting: Ready Mode
+- `net_desyncdebug` — Likely controls desyncdebug behavior for network.
+- `net_disablepause` — Server setting: Pause Policy
+- `net_echo_debug` — Likely controls echo debug behavior for network.
+- `net_event_debug` — Likely controls event debug behavior for network.
+- `net_extratic` — Likely controls extratic behavior for network.
+- `net_limitconversations` — Likely controls limitconversations behavior for network.
+- `net_limitsaves` — Likely controls limitsaves behavior for network.
+- `net_password` — Likely controls password behavior for network.
+- `net_reconcile_debug` — Likely controls reconcile debug behavior for network.
+- `net_repeatableactioncooldown` — Likely controls repeatableactioncooldown behavior for network.
+- `net_self_test_run_client` — Likely controls self test run client behavior for network.
+- `net_ticbalance` — Likely controls ticbalance behavior for network.
+- `neverswitchonpickup` — Likely controls neverswitchonpickup.
+- `nocheats` — Likely controls nocheats.
+- `nointerscrollabort` — Likely controls nointerscrollabort.
+- `nomonsterinterpolation` — Likely controls nomonsterinterpolation.
+- `opl_core` — Likely controls opl core.
+- `opl_fullpan` — Likely controls opl fullpan.
+- `opl_gain` — Likely controls opl gain.
+- `opl_numchips` — Likely controls opl numchips.
+- `opn_auto_arpeggio` — Likely controls opn auto arpeggio.
+- `opn_chan_alloc` — Likely controls opn chan alloc.
+- `opn_chips_count` — Likely controls opn chips count.
+- `opn_custom_bank` — Likely controls opn custom bank.
+- `opn_emulator_id` — Likely controls opn emulator id.
+- `opn_fullpan` — Likely controls opn fullpan.
+- `opn_gain` — Likely controls opn gain.
+- `opn_run_at_pcm_rate` — Likely controls opn run at pcm rate.
+- `opn_use_custom_bank` — Likely controls opn use custom bank.
+- `opn_volume_model` — Likely controls opn volume model.
+- `os_isanyof` — Likely controls os isanyof.
+- `paletteflash` — Likely controls paletteflash.
+- `pf_hazard` — Flag alias backed by paletteflash.
+- `pf_hexenweaps` — Flag alias backed by paletteflash.
+- `pf_ice` — Flag alias backed by paletteflash.
+- `pf_poison` — Flag alias backed by paletteflash.
+- `pickup_fade_scalar` — Likely controls pickup fade scalar.
+- `png_gamma` — Likely controls png gamma.
+- `png_level` — Likely controls png level.
+- `powerup_fade_scalar` — Likely controls powerup fade scalar.
+- `queryiwad` — Likely controls queryiwad.
+- `queryiwad_key` — Likely controls queryiwad key.
+- `quicksavenum` — Likely controls quicksavenum.
+- `quicksaverotation` — Likely controls quicksaverotation.
+- `quicksaverotationcount` — Likely controls quicksaverotationcount.
+- `reverbedit_id1` — Likely controls reverbedit id1.
+- `reverbedit_id2` — Likely controls reverbedit id2.
+- `reverbedit_name` — Likely controls reverbedit name.
+- `reverbsavename` — Likely controls reverbsavename.
+- `saveargs` — Likely controls saveargs.
+- `saved_drawplayersprite` — Likely controls saved drawplayersprite.
+- `saved_screenblocks` — Likely controls saved screenblocks.
+- `saved_showmessages` — Likely controls saved showmessages.
+- `saveloadconfirmation` — Likely controls saveloadconfirmation.
+- `savenetargs` — Likely controls savenetargs.
+- `savenetfile` — Likely controls savenetfile.
+- `savestatistics` — Likely controls savestatistics.
+- `sb_cooperative_enable` — Likely controls sb cooperative enable.
+- `sb_cooperative_headingcolor` — Likely controls sb cooperative headingcolor.
+- `sb_cooperative_otherplayercolor` — Likely controls sb cooperative otherplayercolor.
+- `sb_cooperative_yourplayercolor` — Likely controls sb cooperative yourplayercolor.
+- `sb_deathmatch_enable` — Likely controls sb deathmatch enable.
+- `sb_deathmatch_headingcolor` — Likely controls sb deathmatch headingcolor.
+- `sb_deathmatch_otherplayercolor` — Likely controls sb deathmatch otherplayercolor.
+- `sb_deathmatch_yourplayercolor` — Likely controls sb deathmatch yourplayercolor.
+- `sb_teamdeathmatch_enable` — Likely controls sb teamdeathmatch enable.
+- `sb_teamdeathmatch_headingcolor` — Likely controls sb teamdeathmatch headingcolor.
+- `screenshot_dir` — Likely controls screenshot dir.
+- `screenshot_quiet` — Likely controls screenshot quiet.
+- `screenshot_type` — Likely controls screenshot type.
+- `script_debug` — Likely controls script debug.
+- `sentstats_hwr_done` — Likely controls sentstats hwr done.
+- `setslotstrict` — Likely controls setslotstrict.
+- `show_messages` — enable/disable showing messages
+- `show_obituaries` — Likely controls show obituaries.
+- `showendoom` — Likely controls showendoom.
+- `showsecretsector` — Likely controls showsecretsector.
+- `silence_menu_hover` — Silences cursor movement when implicitly selecting with mouse
+- `silence_menu_scroll` — Silences cursor movement when using mouse wheel
+- `skin` — Likely controls skin.
+- `skyoffset` — Likely controls skyoffset.
+- `splashfactor` — Likely controls splashfactor.
+- `statfile` — Likely controls statfile.
+- `stillbob` — Likely controls stillbob.
+- `storesavepic` — Likely controls storesavepic.
+- `strictdecorate` — Likely controls strictdecorate.
+- `team` — Likely controls team.
+- `teamdamage` — Server setting: Team Damage
+- `telezoom` — Likely controls telezoom.
+- `tf` — Likely controls tf.
+- `ticker` — Likely controls ticker.
+- `tilt` — Likely controls tilt.
+- `timelimit` — Server setting: Time Limit
+- `timidity_channel_pressure` — Likely controls timidity channel pressure.
+- `timidity_chorus` — Likely controls timidity chorus.
+- `timidity_config` — Likely controls timidity config.
+- `timidity_drum_effect` — Likely controls timidity drum effect.
+- `timidity_drum_power` — Likely controls timidity drum power.
+- `timidity_key_adjust` — Likely controls timidity key adjust.
+- `timidity_lpf_def` — Likely controls timidity lpf def.
+- `timidity_min_sustain_time` — Likely controls timidity min sustain time.
+- `timidity_modulation_envelope` — Likely controls timidity modulation envelope.
+- `timidity_modulation_wheel` — Likely controls timidity modulation wheel.
+- `timidity_overlap_voice_allow` — Likely controls timidity overlap voice allow.
+- `timidity_pan_delay` — Likely controls timidity pan delay.
+- `timidity_portamento` — Likely controls timidity portamento.
+- `timidity_reverb` — Likely controls timidity reverb.
+- `timidity_reverb_level` — Likely controls timidity reverb level.
+- `timidity_surround_chorus` — Likely controls timidity surround chorus.
+- `timidity_temper_control` — Likely controls timidity temper control.
+- `timidity_tempo_adjust` — Likely controls timidity tempo adjust.
+- `topskew` — Likely controls topskew.
+- `transsouls` — Likely controls transsouls.
+- `turbo` — Likely controls turbo.
+- `turnspeedsprintfast` — Likely controls turnspeedsprintfast.
+- `turnspeedsprintslow` — Likely controls turnspeedsprintslow.
+- `turnspeedwalkfast` — Likely controls turnspeedwalkfast.
+- `turnspeedwalkslow` — Likely controls turnspeedwalkslow.
+- `ui_color_mix` — Likely controls ui color mix.
+- `ui_colors` — Likely controls ui colors.
+- `ui_generic` — Likely controls ui generic.
+- `ui_screenborder_classic_scaling` — Likely controls ui screenborder classic scaling.
+- `ui_theme` — launcher theme. 0: auto, 1: dark, 2: light
+- `uiscale` — Likely controls uiscale.
+- `underwater_fade_scalar` — Likely controls underwater fade scalar.
+- `use_joystick` — enables input from the joystick if it is present
+- `use_mouse` — Likely controls use mouse.
+- `var_friction` — Likely controls var friction.
+- `var_pushers` — Likely controls var pushers.
+- `vertspread` — Likely controls vertspread.
+- `vk_debug` — Likely controls vk debug.
+- `vk_debug_callstack` — Likely controls vk debug callstack.
+- `vk_device` — Likely controls vk device.
+- `vk_exclusivefullscreen` — Likely controls vk exclusivefullscreen.
+- `vk_hdr` — Likely controls vk hdr.
+- `vk_raytrace` — Likely controls vk raytrace.
+- `vk_submit_size` — Likely controls vk submit size.
+- `vr_enable_quadbuffered` — Likely controls vr enable quadbuffered.
+- `vr_hunits_per_meter` — Likely controls vr hunits per meter.
+- `vr_ipd` — Likely controls vr ipd.
+- `vr_mode` — Likely controls vr mode.
+- `vr_screendist` — Likely controls vr screendist.
+- `vr_swap_eyes` — Likely controls vr swap eyes.
+- `warningstoerrors` — Likely controls warningstoerrors.
+- `wbobfire` — Likely controls wbobfire.
+- `wbobspeed` — Likely controls wbobspeed.
+- `wi_autoadvance` — Likely controls wi autoadvance.
+- `wi_cleantextscale` — Likely controls wi cleantextscale.
+- `wi_noautostartmap` — Likely controls wi noautostartmap.
+- `wi_percents` — Likely controls wi percents.
+- `wi_showtotaltime` — Likely controls wi showtotaltime.
+- `wildmidi_config` — Likely controls wildmidi config.
+- `wildmidi_enhanced_resampling` — Likely controls wildmidi enhanced resampling.
+- `wildmidi_reverb` — Likely controls wildmidi reverb.
+- `win_h` — Likely controls win h.
+- `win_maximized` — Likely controls win maximized.
+- `win_w` — Likely controls win w.
+- `win_x` — Likely controls win x.
+- `win_y` — Likely controls win y.
+- `wipetype` — Likely controls wipetype.
+- `xbrz_colorformat` — Likely controls xbrz colorformat.
+
