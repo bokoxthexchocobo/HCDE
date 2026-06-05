@@ -51,7 +51,9 @@ and, where one exists, its detailed audit/design doc.
 
 These items are implemented and their issues are closed. Most ship default-off
 or presentation-only; "Done" means the agreed scope landed and is build-verified,
-not that every future phase is finished (remaining phases, where any, are noted).
+not that every future phase is finished. See **Completion status (verified against
+source 2026-06-05)** below for which of these are fully complete versus partial or
+scaffold-only.
 
 | Issue | Item | Notes |
 | --- | --- | --- |
@@ -96,6 +98,61 @@ not that every future phase is finished (remaining phases, where any, are noted)
 | [#30](https://github.com/bokoxthexchocobo/HCDE/issues/30) | CVAR for SP dmflags usage in campaign | Add a CVAR to control how single-player campaign honors dmflags. |
 | [#31](https://github.com/bokoxthexchocobo/HCDE/issues/31) | Windows desktop OpenGL startup black screen | Desktop GL auto-routes to GL ES at startup; tracking residual cases. |
 | [#32](https://github.com/bokoxthexchocobo/HCDE/issues/32) | Bots don't respawn | Bots should respawn and currently do not. |
+
+## Completion status (verified against source 2026-06-05)
+
+The board's "Done" column means *the agreed scope landed and the build is green* —
+it does **not** mean every item is a finished, production-grade feature. A
+code-level audit on 2026-06-05 (reading the actual source, not the audit docs'
+self-reported status) found the following. Use this as the real "how done is it"
+picture; the per-feature `docs/HCDE_*_AUDIT.md` files hold the detail.
+
+### Fully complete
+
+| Issue | Item | Note |
+| --- | --- | --- |
+| #1 | MBF21 compliance | Full DEH/ZScript surface + playsim gating + validation harness. |
+| #14 | Odamex netcode / server authority | HCDE-native authority foundation is complete and live (legacy lockstep removed). Not a literal Odamex source import; ongoing hardening tracked in `LEGACY_NETCODE_REMAINDER_AUDIT.md`. |
+| #22 | Actor-compaction guard pass | Defect/retired/live-baseline handling + duplicate-id detection fully implemented. |
+| #11 | International Doom (2 features) | `r_weapon_bob_smooth` + `r_fullbright_overrides` fully wired with real renderer consumers (default-off by design). |
+| #21 | Taunt sound | End-to-end: CCMD → `DEM_TAUNT` → plays `*taunt[-name]`. |
+| #23 | hcdeserv UI auto-apply | Win32 dedicated-server GUI auto-applies settings; this UI lives in-repo. |
+
+### Investigation/audit complete (closed as a study, no full feature by design)
+
+| Issue | Item | Note |
+| --- | --- | --- |
+| #10 | Crispy variable framerate | Audit concluded existing interpolation already covers it; no engine import. Only optional UI/menu polish remains. |
+| #18 | Check over the updater | Audit done: it is a changelog viewer (real libcurl fetch + fallback), not an auto-download/install updater. A true updater pipeline was explicitly out of scope. |
+| #19 | Console "getting stuck" bug | Closed bug-fix; no dedicated fix commit/test is independently identifiable in-repo. A regression test would make it verifiable. |
+
+### Shipped but partial (real code landed; phases/edges/platforms remain; mostly default-off)
+
+| Issue | Item | What's missing |
+| --- | --- | --- |
+| #2 | ID24 | Core (numbering, autoload, intermission anim, Nightmare respawn) landed. DEHEXTRA high-slots + ID24 extended flags not implemented; `compat_noid24` is inert; smoke tests only check load, not high-slot/flag behavior. |
+| #5 | DSDA rewind | Phases 1-2, 4-5 wired (default off). Phase 3 (client resync after restore) absent; projectiles/rails bypass lag comp; stale header comments. |
+| #15 | Invasion mode | Core mode complete and running on the live tic loop. Long high-actor LOD soak, mirror/projectile edge verification, and late-join replay test are open (the test references a missing CCMD). |
+| #24 | RCON | Real TCP sockets + nonce auth + `hcdercon` client ship. Command dispatch is limited to `ping`/`status`; admin commands (`kick`/`map`/`say`) from the design doc are not implemented; README overstates "admin commands". |
+| #17 | k8vavoom rendering | Phase-1 **default-off** preset that composes existing shadowmap/bloom/SSAO CVARs. No new renderer path; `hcde_k8vavoom_raylight_probe` is a placeholder. The issue's "as default with raytracing" goal is not met. |
+| #7 | Gyroscope input | Windows-only dynamic SDL2 sensor probe; Linux/macOS/mobile unplumbed; held/toggle bindings pending; default off. |
+| #9 | Nugget player feel | `r_crosshair_recoil`, `r_killfeed`, `snd_footsteps_surface` wired. `m_smooth_curve` applies to forward/strafe mouse but **not** the mouselook turn path. Default off. |
+| #8 | Doom Retro physics & feel | Only one playsim tweak (`compat_dr_crusher`) + presentation pain-flash smoothing landed. Liquid friction and the broader "physics & feel layer" remain (one-tweak-per-PR by design). |
+
+### Marked Done but effectively scaffold-only
+
+| Issue | Item | Reality |
+| --- | --- | --- |
+| #3 | Eternity spatial audio | **Silent facade.** `LoadSound`/`StartSound*`/`CreateStream` all return `nullptr`; produces no audio. Needs the Eternity mixer vendored to be a real feature. |
+| #13 | Monster/enemy AI | **Director scaffold + one narrow "regroup" hint**, both default-off; `pr_aidirector` never drawn; no replicated tactical state. Not a real AI system. The issue is closed but the feature is not built out — consider reopening or relabeling. |
+
+### Open (correctly not Done)
+
+| Issue | Item | State |
+| --- | --- | --- |
+| #6 | Doomsday three features | In progress. Reverb is wired to OpenAL EFX; FakeRadio/geometry-AO are a capped view-blend darkening fallback, not real renderer passes. Phase 4 soak pending. |
+| #12 | Predator Economy | Scaffold only: `HCDEPredatorTick()` is never called, snapshot V1 isn't wired into the wire format, bought items aren't granted, pawn is abstract. Not playable. |
+| #29-#32 | Maintenance bugs | Backlog; not started. |
 
 ## Roadmap grouping by subsystem
 
