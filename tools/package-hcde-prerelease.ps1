@@ -5,7 +5,6 @@ param(
     [string]$SndFileDll = "",
     [string]$SndFileLicense = "",
     [switch]$Build,
-    [switch]$IncludeSymbols,
     [switch]$Upload,
     [string]$Repo = "bokoxthexchocobo/HCDE",
     [string]$ReleaseTag = "",
@@ -366,7 +365,6 @@ $stageDir = Join-Path $releaseRoot $packageName
 $compatStageDir = Join-Path $releaseRoot $compatPackageName
 $packageZip = Join-Path $releaseRoot "$packageName.zip"
 $compatZip = Join-Path $releaseRoot "$compatPackageName.zip"
-$symbolsZip = Join-Path $releaseRoot "$packageName-symbols.zip"
 
 if ($Build) {
     cmake --build $buildRoot --config $Configuration --target zdoom --parallel 1
@@ -383,7 +381,6 @@ $stageDir = Assert-ChildPath -Parent $releaseRoot -Child $stageDir
 $compatStageDir = Assert-ChildPath -Parent $releaseRoot -Child $compatStageDir
 $packageZip = Assert-ChildPath -Parent $releaseRoot -Child $packageZip
 $compatZip = Assert-ChildPath -Parent $releaseRoot -Child $compatZip
-$symbolsZip = Assert-ChildPath -Parent $releaseRoot -Child $symbolsZip
 
 if (Test-Path -LiteralPath $stageDir) {
     Remove-Item -LiteralPath $stageDir -Recurse -Force
@@ -473,32 +470,12 @@ if (Test-Path -LiteralPath $compatZip) {
 }
 Compress-Archive -LiteralPath $compatStageDir -DestinationPath $compatZip -CompressionLevel Optimal
 
-if ($IncludeSymbols) {
-    $symbolsStage = Join-Path $releaseRoot "$packageName-symbols"
-    $symbolsStage = Assert-ChildPath -Parent $releaseRoot -Child $symbolsStage
-    if (Test-Path -LiteralPath $symbolsStage) {
-        Remove-Item -LiteralPath $symbolsStage -Recurse -Force
-    }
-    New-Item -Path $symbolsStage -ItemType Directory | Out-Null
-    Copy-Item -LiteralPath (Resolve-RequiredPath (Join-Path $buildConfigDir "hcde.pdb")) -Destination $symbolsStage
-    if (Test-Path -LiteralPath $symbolsZip) {
-        Remove-Item -LiteralPath $symbolsZip -Force
-    }
-    Compress-Archive -LiteralPath $symbolsStage -DestinationPath $symbolsZip -CompressionLevel Optimal
-}
-
 Write-Host "Runtime package: $packageZip"
 Write-Host "Compat package: $compatZip"
-if ($IncludeSymbols) {
-    Write-Host "Symbols package: $symbolsZip"
-}
 
 $checksumAssets = [System.Collections.Generic.List[string]]::new()
 $checksumAssets.Add($packageZip)
 $checksumAssets.Add($compatZip)
-if ($IncludeSymbols) {
-    $checksumAssets.Add($symbolsZip)
-}
 Write-ReleaseChecksums -OutputPath (Join-Path $releaseRoot "SHA256SUMS.txt") -Assets $checksumAssets.ToArray()
 
 if ($Upload) {
@@ -518,9 +495,6 @@ HCDE $Version
     $assets = [System.Collections.Generic.List[string]]::new()
     $assets.Add($packageZip)
     $assets.Add($compatZip)
-    if ($IncludeSymbols) {
-        $assets.Add($symbolsZip)
-    }
 
     Upload-ReleaseAssets `
         -GhCliPath $GhCli `
