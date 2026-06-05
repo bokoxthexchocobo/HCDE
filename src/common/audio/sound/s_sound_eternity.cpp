@@ -3,7 +3,7 @@
 // Roadmap board item: #3 ("Eternity's Spatial Audio Engine").
 //
 // Per the design in `docs/HCDE_FEATURE_IMPORTS.md` and
-// `docs/HCDE_ROADMAP_INTEGRATION_PLAN.md`:
+// `docs/HCDE_ROADMAP.md`:
 //
 //   - The Eternity audio engine is added as a *sibling backend* to the
 //     existing OpenAL / etc. backends under `common/audio/sound/`.

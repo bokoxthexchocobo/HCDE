@@ -1,10 +1,10 @@
 {
-  "generated_at": "2026-05-30T17:54:40+00:00",
+  "generated_at": "2026-06-05T16:16:30+00:00",
   "static_checks": [
     {
       "id": "facade-source-present",
       "status": "passed",
-      "path": "src\\common\\audio\\sound\\s_sound_eternity.cpp",
+      "path": "src/common/audio/sound/s_sound_eternity.cpp",
       "needle": "EternitySoundRenderer",
       "mode": "needle-must-be-present",
       "notes": "facade class registered"
@@ -12,7 +12,7 @@
     {
       "id": "facade-factory-export",
       "status": "passed",
-      "path": "src\\common\\audio\\sound\\s_sound_eternity.cpp",
+      "path": "src/common/audio/sound/s_sound_eternity.cpp",
       "needle": "I_CreateEternitySoundRenderer",
       "mode": "needle-must-be-present",
       "notes": "factory function exported"
@@ -20,7 +20,7 @@
     {
       "id": "facade-status-ccmd",
       "status": "passed",
-      "path": "src\\common\\audio\\sound\\s_sound_eternity.cpp",
+      "path": "src/common/audio/sound/s_sound_eternity.cpp",
       "needle": "CCMD(snd_eternity_status)",
       "mode": "needle-must-be-present",
       "notes": "diagnostic CCMD wired"
@@ -28,7 +28,7 @@
     {
       "id": "facade-probe-ccmd",
       "status": "passed",
-      "path": "src\\common\\audio\\sound\\s_sound_eternity.cpp",
+      "path": "src/common/audio/sound/s_sound_eternity.cpp",
       "needle": "CCMD(snd_eternity_probe)",
       "mode": "needle-must-be-present",
       "notes": "diagnostic probe CCMD wired"
@@ -36,7 +36,7 @@
     {
       "id": "facade-selector-routed",
       "status": "passed",
-      "path": "src\\common\\audio\\sound\\i_sound.cpp",
+      "path": "src/common/audio/sound/i_sound.cpp",
       "needle": "I_CreateEternitySoundRenderer",
       "mode": "needle-must-be-present",
       "notes": "selector routes snd_backend=eternity"
@@ -44,7 +44,7 @@
     {
       "id": "facade-spatial-tracking",
       "status": "passed",
-      "path": "src\\common\\audio\\sound\\s_sound_eternity.cpp",
+      "path": "src/common/audio/sound/s_sound_eternity.cpp",
       "needle": "FEternitySpatialSubmit",
       "mode": "needle-must-be-present",
       "notes": "facade records spatial submits"
@@ -52,7 +52,7 @@
     {
       "id": "facade-no-snapshot-include",
       "status": "passed",
-      "path": "src\\common\\audio\\sound\\s_sound_eternity.cpp",
+      "path": "src/common/audio/sound/s_sound_eternity.cpp",
       "needle": "d_net_snapshot",
       "mode": "needle-must-be-absent",
       "notes": "facade does NOT include net snapshot headers (boundary check)"
@@ -60,7 +60,7 @@
     {
       "id": "facade-no-save-include",
       "status": "passed",
-      "path": "src\\common\\audio\\sound\\s_sound_eternity.cpp",
+      "path": "src/common/audio/sound/s_sound_eternity.cpp",
       "needle": "p_saveg",
       "mode": "needle-must-be-absent",
       "notes": "facade does NOT include savegame headers (boundary check)"
@@ -68,7 +68,7 @@
     {
       "id": "facade-openal-reverb-note",
       "status": "passed",
-      "path": "src\\common\\audio\\sound\\s_sound_eternity.cpp",
+      "path": "src/common/audio/sound/s_sound_eternity.cpp",
       "needle": "use snd_backend=openal for full audio with snd_env_reverb support",
       "mode": "needle-must-be-present",
       "notes": "facade points reverb users at the OpenAL EFX path"
@@ -76,7 +76,7 @@
     {
       "id": "doc-boundary-contract",
       "status": "passed",
-      "path": "docs\\HCDE_FEATURE_IMPORTS.md",
+      "path": "docs/HCDE_FEATURE_IMPORTS.md",
       "needle": "Eternity Spatial Audio (facade boundary)",
       "mode": "needle-must-be-present",
       "notes": "audit doc references facade boundary"
@@ -84,7 +84,7 @@
     {
       "id": "plan-ready-status",
       "status": "passed",
-      "path": "docs\\HCDE_ROADMAP_INTEGRATION_PLAN.md",
+      "path": "docs/HCDE_ROADMAP.md",
       "needle": "snd_backend=eternity",
       "mode": "needle-must-be-present",
       "notes": "roadmap plan references the facade"

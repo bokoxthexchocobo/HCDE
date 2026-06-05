@@ -71,7 +71,7 @@ STATIC_CHECKS = [
      "Eternity Spatial Audio (facade boundary)",
      "audit doc references facade boundary"),
     ("plan-ready-status",
-     ROOT / "docs" / "HCDE_ROADMAP_INTEGRATION_PLAN.md",
+     ROOT / "docs" / "HCDE_ROADMAP.md",
      "snd_backend=eternity",
      "roadmap plan references the facade"),
 ]
