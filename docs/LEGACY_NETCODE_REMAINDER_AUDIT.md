@@ -12,7 +12,7 @@ every old name: some structures are still shared with demos, setup handshakes,
 console commands, compatibility importers, and single-player input flow.
 
 For the full Kanban-driven feature and maintenance plan, see
-`docs/HCDE_ROADMAP_INTEGRATION_PLAN.md`.
+`docs/HCDE_ROADMAP.md`.
 
 ## Current architecture boundary
 

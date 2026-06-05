@@ -61,7 +61,7 @@ added here before they consume an actual bit.
 ## Cross-references
 
 - `docs/HCDE_DOOM_RETRO_AUDIT.md` — the boundary doc and Phase plan.
-- `docs/HCDE_ROADMAP_INTEGRATION_PLAN.md` — board status.
+- `docs/HCDE_ROADMAP.md` — board status.
 - `src/g_level.h` — the eventual home of the `COMPATF2_DR_*` enum members
   (Phase 1 PR adds them here).
 - `src/d_protocol.h` — `DEMOGAMEVERSION`, which the Phase 1 PR may need
