@@ -13,7 +13,10 @@
 
 #include "cmdlib.h"
 #include "findfile.h"
+#include "fs_findfile.h"
 #include "printf.h"
+
+#include <vector>
 
 // Keep compatibility resources discoverable even when users install them from the
 // optional compat zip in separate folders, instead of the bundled base package.
@@ -122,6 +125,7 @@ static const char* const HCDEModCompatSearchFolders[] =
 	"compat",
 	"compat-mods",
 	"compatibility",
+	"Mod Compatibilities",
 	"mods",
 	"mod_compat",
 	nullptr
@@ -159,7 +163,111 @@ static FString HCDE_ModCompat_ParentDir(const FString& path)
 	return parent.Left(static_cast<size_t>(slash + 1));
 }
 
-static const char* HCDE_ModCompat_ResolveCompatFile(const char* resourceFile, FConfigFile* config)
+// True for a path that is a filesystem/drive root (e.g. "C:/", "C:", "/").
+// We must never launch a directory scan from such a location: a root contains
+// the whole drive, and walking it for a possibly-absent file is exactly the
+// multi-minute startup hang this resolver was rewritten to eliminate.
+static bool HCDE_ModCompat_IsFilesystemRoot(const FString& path)
+{
+	if (path.IsEmpty())
+	{
+		return true;
+	}
+
+	FString p = path;
+	FixPathSeperator(p);
+	while (p.Len() > 0 && p.Back() == '/')
+	{
+		p.DeleteLastCharacter();
+	}
+
+	if (p.IsEmpty())
+	{
+		// Was "/" - the POSIX filesystem root.
+		return true;
+	}
+
+	// "C:" (a Windows drive letter with nothing after it) is a drive root.
+	if (p.Len() == 2 && p[1] == ':')
+	{
+		return true;
+	}
+
+	return false;
+}
+
+// Directory portion (with trailing '/') of a file path, normalized to '/'.
+// Empty if the path has no directory component.
+static FString HCDE_ModCompat_FileDir(const char* filepath)
+{
+	if (filepath == nullptr || filepath[0] == '\0')
+	{
+		return FString();
+	}
+
+	FString p = filepath;
+	FixPathSeperator(p);
+	ptrdiff_t slash = p.LastIndexOfAny("/\\");
+	if (slash < 0)
+	{
+		return FString();
+	}
+	return p.Left(static_cast<size_t>(slash + 1));
+}
+
+// Look for `resourceFile` directly in `dir` and in each IMMEDIATE subdirectory
+// of `dir` - one level only, never a recursive descent. Returns the full path
+// or an empty string. This is the bounded replacement for the old whole-drive
+// crawl: it is only ever pointed at the specific folders that hold the user's
+// loaded mods, so the cost is a single directory listing per mod folder.
+static FString HCDE_ModCompat_ShallowFind(const FString& dir, const char* resourceFile)
+{
+	if (dir.IsEmpty() || HCDE_ModCompat_IsFilesystemRoot(dir))
+	{
+		return FString();
+	}
+
+	FString base = dir;
+	if (base.Back() != '/' && base.Back() != '\\')
+	{
+		base << '/';
+	}
+
+	FString direct = base;
+	direct << resourceFile;
+	if (DirEntryExists(direct.GetChars()))
+	{
+		return direct;
+	}
+
+	// nosubdir = true keeps this to the immediate children of `dir`.
+	FileSys::FileList list;
+	if (FileSys::ScanDirectory(list, dir.GetChars(), "*", true))
+	{
+		for (auto& entry : list)
+		{
+			if (entry.isDirectory && !entry.isHidden && !entry.isSystem)
+			{
+				FString candidate = entry.FilePath.c_str();
+				FixPathSeperator(candidate);
+				if (candidate.IsNotEmpty() && candidate.Back() != '/')
+				{
+					candidate << '/';
+				}
+				candidate << resourceFile;
+				if (FileExists(candidate))
+				{
+					return candidate;
+				}
+			}
+		}
+	}
+
+	return FString();
+}
+
+static const char* HCDE_ModCompat_ResolveCompatFile(const char* resourceFile, FConfigFile* config,
+	const std::vector<FileSys::ResourceName>& searchWads)
 {
 	if (resourceFile == nullptr || resourceFile[0] == '\0')
 	{
@@ -178,22 +286,51 @@ static const char* HCDE_ModCompat_ResolveCompatFile(const char* resourceFile, FC
 	const FString normalizedProgDir = HCDE_ModCompat_NormalizedProgDir();
 	const FString parentProgDir = HCDE_ModCompat_ParentDir(normalizedProgDir);
 
-	const char* const additionalRoots[] =
+	// Build the bounded set of root directories to probe. Compat PK3s are
+	// normally shipped alongside the mods they patch - e.g. the user's
+	// ".../Monstersandaddons/Mod Compatibilities/" folder, nowhere near
+	// hcde.exe - so the directories of the already-loaded WAD/PK3 files (which
+	// HCDE_ModCompat_AppendFiles hands us in searchWads) are the key roots.
+	// We also include the engine folder, its parent, and the working directory.
+	// Any root that resolves to a filesystem/drive root is dropped, because the
+	// old code's whole-drive crawl from "C:\" was the 5-minute launch hang.
+	std::vector<FString> roots;
+	auto addRoot = [&roots](FString candidate)
 	{
-		normalizedProgDir.GetChars(),
-		parentProgDir.GetChars(),
-		"",
-		nullptr
+		if (candidate.IsEmpty())
+		{
+			return;
+		}
+		FixPathSeperator(candidate);
+		while (candidate.Len() > 1 && candidate.Back() == '/')
+		{
+			candidate.DeleteLastCharacter();
+		}
+		if (candidate.IsEmpty() || HCDE_ModCompat_IsFilesystemRoot(candidate))
+		{
+			return;
+		}
+		for (const FString& existing : roots)
+		{
+			if (!stricmp(existing.GetChars(), candidate.GetChars()))
+			{
+				return;
+			}
+		}
+		roots.push_back(candidate);
 	};
 
-	for (size_t i = 0; additionalRoots[i] != nullptr; ++i)
+	addRoot(normalizedProgDir);
+	addRoot(parentProgDir);
+	for (const auto& wad : searchWads)
 	{
-		const char* root = additionalRoots[i];
-		if (root == nullptr)
-		{
-			continue;
-		}
+		addRoot(HCDE_ModCompat_FileDir(wad.Name.c_str()));
+	}
 
+	// Pass 1: cheap direct probes - each root combined with the known compat
+	// subfolder names. No directory enumeration, just one stat() per candidate.
+	for (const FString& root : roots)
+	{
 		for (size_t j = 0; HCDEModCompatSearchFolders[j] != nullptr; ++j)
 		{
 			FString basePath = root;
@@ -220,23 +357,25 @@ static const char* HCDE_ModCompat_ResolveCompatFile(const char* resourceFile, FC
 		}
 	}
 
-	if (!parentProgDir.IsEmpty())
+	// Pass 2: one-level scan of each root's immediate subdirectories. This
+	// catches arbitrarily-named drop folders (the working logs show users keep
+	// patches in a "Mod Compatibilities" folder) without crawling the whole
+	// tree. Filesystem roots were already excluded in addRoot(), so this can
+	// never walk an entire drive the way the old RecursiveFileExists() path did.
+	for (const FString& root : roots)
 	{
-		FString recursiveSearchRoot = parentProgDir;
-		if (recursiveSearchRoot.Back() == '/' || recursiveSearchRoot.Back() == '\\')
+		FString hit = HCDE_ModCompat_ShallowFind(root, resourceFile);
+		if (hit.IsNotEmpty())
 		{
-			recursiveSearchRoot.DeleteLastCharacter();
-		}
-
-		FString recursiveMatch = RecursiveFileExists(recursiveSearchRoot, resourceFile);
-		if (recursiveMatch.IsNotEmpty())
-		{
-			fallback = std::move(recursiveMatch);
-			Printf("HCDE: compatibility resource '%s' resolved from recursive search in '%s'.\n", resourceFile, fallback.GetChars());
+			fallback = std::move(hit);
+			Printf("HCDE: compatibility resource '%s' resolved from mod-folder scan '%s'.\n", resourceFile, fallback.GetChars());
 			return fallback.GetChars();
 		}
 	}
 
+	Printf("HCDE: compatibility resource '%s' not found near the engine or the loaded mods; "
+		"skipping (place it next to hcde.exe, in a 'compat' subfolder, or beside the mod it patches).\n",
+		resourceFile);
 	return nullptr;
 }
 
@@ -444,7 +583,7 @@ void HCDE_ModCompat_AppendFiles(std::vector<FileSys::ResourceName>& pwads, FConf
 			continue;
 		}
 
-		const char* compatFile = HCDE_ModCompat_ResolveCompatFile(entry.ResourceFile, config);
+		const char* compatFile = HCDE_ModCompat_ResolveCompatFile(entry.ResourceFile, config, matchWads);
 		if (compatFile == nullptr)
 		{
 			Printf("HCDE: mod compatibility '%s' matched, but '%s' was not found.\n", entry.Label, entry.ResourceFile);
