@@ -4146,6 +4146,13 @@ static void HCDEBeginActorBaselineRepair(int clientNum, const char* reason)
 		unsigned(HCDEAuthorityEventReplayNextId[clientNum]), reason != nullptr ? reason : "unknown");
 }
 
+static bool Net_ShouldRecordCoopMapSpawnIndex()
+{
+	return netgame && !deathmatch && sv_gametype != 4;
+}
+
+int Net_GetCoopMapSpawnIndex(const AActor* actor);
+
 static void Net_MigrateHCDEModeActor(AActor* actor, uint8_t category, uint8_t source, uint32_t& registered)
 {
 	if (actor == nullptr)
@@ -4154,11 +4161,26 @@ static void Net_MigrateHCDEModeActor(AActor* actor, uint8_t category, uint8_t so
 	if (auto existing = Net_FindHCDEReplicatedActorByActor(actor); existing != nullptr)
 	{
 		Net_RegisterHCDEReplicatedActor(existing->Id, actor, category, source);
-		++registered;
-		return;
+	}
+	else
+	{
+		Net_RegisterHCDEReplicatedActor(Net_AllocateHCDEModeActorId(), actor, category, source);
 	}
 
-	Net_RegisterHCDEReplicatedActor(Net_AllocateHCDEModeActorId(), actor, category, source);
+	if (source == HREP_SOURCE_COOP)
+	{
+		if (auto* ref = Net_FindHCDEReplicatedActorByActor(actor))
+		{
+			ref->CoopMapSpawnIndex = Net_GetCoopMapSpawnIndex(actor);
+			if (net_coop_id_debug)
+			{
+				Printf("[COOP MIGRATE] netid=%u spawn-index=%d class=%s\n",
+					unsigned(ref->Id), int(ref->CoopMapSpawnIndex),
+					actor->GetClass()->TypeName.GetChars());
+			}
+		}
+	}
+
 	++registered;
 }
 
@@ -4191,9 +4213,28 @@ static void Net_TickHCDEModeActorMigration()
 			++HCDEModeMigrationLastInvasion;
 		}
 	}
-	// Co-op/DM actor migration stays off while shared actor-delta-v2 send/apply
-	// remains invasion-only. Scanning every thinker here only fills
-	// HCDEReplicatedActors with baselines the client cannot reconcile.
+	else if (Net_ShouldRecordCoopMapSpawnIndex())
+	{
+		// Co-op map-monster authority registration. The client still simulates its
+		// own map spawns locally; these NetIDs and spawn-index hints are stored so
+		// increment 3 can transmit deltas and increment 5 can bind_local. Send/apply
+		// remain empty outside invasion until those increments land.
+		const bool dmMode = deathmatch != 0;
+		auto iterator = primaryLevel->GetThinkerIterator<AActor>();
+		while (AActor* actor = iterator.Next())
+		{
+			if (actor == nullptr || (actor->ObjectFlags & OF_EuthanizeMe) != 0)
+				continue;
+
+			uint8_t category = HREP_ACTOR_UNKNOWN;
+			if (!Net_ShouldMigrateHCDEModeActor(actor, dmMode, category))
+				continue;
+
+			++HCDEModeMigrationLastConsidered;
+			Net_MigrateHCDEModeActor(actor, category, HREP_SOURCE_COOP, HCDEModeMigrationLastRegistered);
+			++HCDEModeMigrationLastCoop;
+		}
+	}
 
 	HCDELiveProfile.ModeMigrationActorsConsidered += HCDEModeMigrationLastConsidered;
 	HCDELiveProfile.ModeMigrationActorsRegistered += HCDEModeMigrationLastRegistered;
@@ -5163,10 +5204,205 @@ static bool HCDEAppendSharedActorDeltasV2(int clientNum, uint8_t* output, size_t
 	if (!I_IsLocalHCDEServiceAuthority())
 		return true;
 
-	// Shared actor-delta-v2 for co-op/DM is disabled until the non-invasion mirror
-	// path owns client-side actor lifetimes. The client apply lane already rejects
-	// these baselines; sending them only bloats snapshots and wastes bandwidth.
-	return HCDEAppendEmptyActorDeltasV2(output, outputCapacity, cursor);
+	if (!Net_ShouldRecordCoopMapSpawnIndex())
+		return HCDEAppendEmptyActorDeltasV2(output, outputCapacity, cursor);
+
+	const size_t startCursor = cursor;
+	Net_CompactHCDEReplicatedActors();
+
+	TArray<size_t> coopIndices;
+	for (size_t i = 0u; i < HCDEReplicatedActors.Size(); ++i)
+	{
+		const FHCDEReplicatedActorRef& ref = HCDEReplicatedActors[i];
+		if (!ref.Active || ref.Retired || ref.Source != HREP_SOURCE_COOP)
+			continue;
+		AActor* actor = ref.Actor.Get();
+		if (actor == nullptr || (actor->ObjectFlags & OF_EuthanizeMe) != 0)
+			continue;
+		coopIndices.Push(i);
+	}
+
+	size_t& sendCursor = HCDEActorDeltaV2SendCursor[clientNum];
+	const int activeRefs = int(coopIndices.Size());
+	if (activeRefs <= 0)
+		sendCursor = 0u;
+	else if (sendCursor >= size_t(activeRefs))
+		sendCursor %= size_t(activeRefs);
+
+	const size_t headerCursor = cursor;
+	if (!HCDEAppendBytes(output, outputCapacity, cursor, HCDEActorDeltasMagic, sizeof(HCDEActorDeltasMagic))
+		|| !HCDEAppendByte(output, outputCapacity, cursor, HCDEActorDeltasProtocolVersion)
+		|| !HCDEAppendByte(output, outputCapacity, cursor, 0u)
+		|| !HCDEAppendByte(output, outputCapacity, cursor, 0u)
+		|| !HCDEAppendByte(output, outputCapacity, cursor, 0u))
+	{
+		return false;
+	}
+
+	uint8_t count = 0u;
+	size_t nextSendCursor = sendCursor;
+	uint64_t fullSent = 0u;
+	uint64_t partialSent = 0u;
+	uint64_t skippedUnchanged = 0u;
+	uint64_t deferredBudget = 0u;
+	const bool baselineRepair = HCDEActorBaselineRepairActive(clientNum);
+	for (size_t pass = 0u; pass < size_t(activeRefs) && count < UINT8_MAX; ++pass)
+	{
+		const size_t rotated = (sendCursor + pass) % size_t(activeRefs);
+		const size_t actorIndex = coopIndices[rotated];
+		FHCDEReplicatedActorRef& sharedRef = HCDEReplicatedActors[actorIndex];
+		AActor* actor = sharedRef.Actor.Get();
+		if (actor == nullptr)
+			continue;
+
+		auto& sent = sharedRef.ClientState[clientNum];
+		uint8_t actorFlags = 0u;
+		if (actor->health > 0 && (actor->ObjectFlags & OF_EuthanizeMe) == 0)
+			actorFlags |= HCDEActorDeltaFlagLive;
+		const uint8_t actionState = HCDEInvasionActorActionNone;
+		const int actorHealth = actor->health;
+		const DVector3 actorPos = actor->Pos();
+		const DVector3 actorVel = actor->Vel;
+		const uint32_t actorYaw = actor->Angles.Yaw.BAMs();
+		const uint32_t actorPitch = actor->Angles.Pitch.BAMs();
+		const int32_t spawnIndex = sharedRef.CoopMapSpawnIndex;
+		const bool forceFull = baselineRepair
+			|| !sent.BaselineValid
+			|| sent.ClassId != sharedRef.ClassId
+			|| sent.Category != sharedRef.Category
+			|| gametic - sent.LastBaselineTic >= TICRATE
+			|| (actorFlags & HCDEActorDeltaFlagLive) == 0u;
+
+		uint16_t fieldMask = 0u;
+		if (forceFull || sent.Category != sharedRef.Category)
+			fieldMask |= HCDEActorDeltaFieldCategory;
+		if (forceFull || sent.Flags != actorFlags)
+			fieldMask |= HCDEActorDeltaFieldFlags;
+		if (forceFull || sent.Health != actorHealth)
+			fieldMask |= HCDEActorDeltaFieldHealth;
+		if (forceFull || Net_InvasionDeltaVectorChanged(sent.Pos, actorPos, 1.0 / HCDEActorDeltaPosScale))
+			fieldMask |= HCDEActorDeltaFieldPos;
+		if (forceFull || Net_InvasionDeltaVectorChanged(sent.Vel, actorVel, 1.0 / HCDEActorDeltaVelScale))
+			fieldMask |= HCDEActorDeltaFieldVel;
+		if (forceFull || HCDECompactAngle(sent.Yaw) != HCDECompactAngle(actorYaw) || HCDECompactAngle(sent.Pitch) != HCDECompactAngle(actorPitch))
+			fieldMask |= HCDEActorDeltaFieldAngles;
+		if (forceFull || spawnIndex >= 0 && sent.CoopMapSpawnIndex != spawnIndex)
+			fieldMask |= HCDEActorDeltaFieldCoopSpawnIndex;
+		if (fieldMask == 0u)
+		{
+			++skippedUnchanged;
+			continue;
+		}
+
+		size_t recordBytes = 4u + 2u + 2u;
+		if (fieldMask & HCDEActorDeltaFieldCategory)
+			recordBytes += 1u;
+		if (fieldMask & HCDEActorDeltaFieldFlags)
+			recordBytes += 1u;
+		if (fieldMask & HCDEActorDeltaFieldHealth)
+			recordBytes += 2u;
+		if (fieldMask & HCDEActorDeltaFieldPos)
+			recordBytes += 3u * 4u;
+		if (fieldMask & HCDEActorDeltaFieldVel)
+			recordBytes += 3u * 2u;
+		if (fieldMask & HCDEActorDeltaFieldAngles)
+			recordBytes += 4u;
+		if (fieldMask & HCDEActorDeltaFieldCoopSpawnIndex)
+			recordBytes += 4u;
+		if (cursor > outputCapacity || outputCapacity - cursor < recordBytes)
+		{
+			++deferredBudget;
+			HCDELiveProfile.ActorQueueDeferredCandidates++;
+			HCDERecordLiveLaneDeferred(HLANE_ACTOR_DELTA, clientNum);
+			nextSendCursor = rotated;
+			break;
+		}
+
+		if (!HCDEAppendBE32(output, outputCapacity, cursor, sharedRef.Id)
+			|| !HCDEAppendBE16(output, outputCapacity, cursor, sharedRef.ClassId)
+			|| !HCDEAppendBE16(output, outputCapacity, cursor, fieldMask))
+		{
+			return false;
+		}
+		if ((fieldMask & HCDEActorDeltaFieldCategory)
+			&& !HCDEAppendByte(output, outputCapacity, cursor, sharedRef.Category))
+			return false;
+		if ((fieldMask & HCDEActorDeltaFieldFlags)
+			&& !HCDEAppendByte(output, outputCapacity, cursor, actorFlags))
+			return false;
+		if ((fieldMask & HCDEActorDeltaFieldHealth)
+			&& !HCDEAppendBE16(output, outputCapacity, cursor, uint16_t(clamp<int>(actorHealth, INT16_MIN, INT16_MAX))))
+			return false;
+		if ((fieldMask & HCDEActorDeltaFieldPos)
+			&& (!HCDEAppendQuantizedPos(output, outputCapacity, cursor, actorPos.X)
+				|| !HCDEAppendQuantizedPos(output, outputCapacity, cursor, actorPos.Y)
+				|| !HCDEAppendQuantizedPos(output, outputCapacity, cursor, actorPos.Z)))
+			return false;
+		if ((fieldMask & HCDEActorDeltaFieldVel)
+			&& (!HCDEAppendQuantizedVel(output, outputCapacity, cursor, actorVel.X)
+				|| !HCDEAppendQuantizedVel(output, outputCapacity, cursor, actorVel.Y)
+				|| !HCDEAppendQuantizedVel(output, outputCapacity, cursor, actorVel.Z)))
+			return false;
+		if ((fieldMask & HCDEActorDeltaFieldAngles)
+			&& (!HCDEAppendBE16(output, outputCapacity, cursor, HCDECompactAngle(actorYaw))
+				|| !HCDEAppendBE16(output, outputCapacity, cursor, HCDECompactAngle(actorPitch))))
+			return false;
+		if ((fieldMask & HCDEActorDeltaFieldCoopSpawnIndex)
+			&& !HCDEAppendBE32(output, outputCapacity, cursor, uint32_t(max(spawnIndex, 0))))
+			return false;
+
+		if (net_coop_id_debug && (fieldMask & HCDEActorDeltaFieldCoopSpawnIndex) != 0u)
+		{
+			Printf("[COOP DELTA SEND] client=%d netid=%u spawn-index=%d class=%s\n",
+				clientNum, unsigned(sharedRef.Id), int(spawnIndex),
+				actor->GetClass()->TypeName.GetChars());
+		}
+
+		sent.BaselineValid = true;
+		sent.LastSentTic = gametic;
+		sent.ClassId = sharedRef.ClassId;
+		sent.Category = sharedRef.Category;
+		sent.Flags = actorFlags;
+		sent.ActionState = actionState;
+		sent.Health = actorHealth;
+		sent.Pos = actorPos;
+		sent.Vel = actorVel;
+		sent.Yaw = actorYaw;
+		sent.Pitch = actorPitch;
+		sent.CoopMapSpawnIndex = spawnIndex;
+		if (forceFull)
+		{
+			sent.LastBaselineTic = gametic;
+			++fullSent;
+		}
+		else
+		{
+			++partialSent;
+		}
+		++count;
+		nextSendCursor = (rotated + 1u) % size_t(activeRefs);
+	}
+
+	sendCursor = activeRefs > 0 ? nextSendCursor : 0u;
+	const uint8_t flags = (activeRefs > 0 && count >= uint8_t(activeRefs)) ? HCDEActorDeltasFlagComplete : 0u;
+	output[headerCursor + HCDEActorDeltasFlagsOffset] = flags;
+	output[headerCursor + HCDEActorDeltasCountOffset] = count;
+	++HCDELiveProfile.ActorDeltaV2PacketsBuilt;
+	HCDELiveProfile.ActorDeltaV2BytesBuilt += cursor - startCursor;
+	HCDELiveProfile.ActorDeltaV2RecordsBuilt += count;
+	HCDELiveProfile.ActorDeltaV2FullRecordsBuilt += fullSent;
+	HCDELiveProfile.ActorDeltaV2PartialRecordsBuilt += partialSent;
+	HCDELiveProfile.ActorDeltaV2SkippedUnchanged += skippedUnchanged;
+	HCDELiveProfile.ActorDeltaV2DeferredBudget += deferredBudget;
+	HCDERecordLiveLaneTx(HLANE_ACTOR_DELTA, clientNum, cursor - startCursor);
+
+	DebugTrace::Markf("net", "HCDE coop actor delta v2 send client=%d count=%u active=%d full=%llu partial=%llu skipped=%llu deferred=%llu",
+		clientNum, unsigned(count), activeRefs,
+		static_cast<unsigned long long>(fullSent),
+		static_cast<unsigned long long>(partialSent),
+		static_cast<unsigned long long>(skippedUnchanged),
+		static_cast<unsigned long long>(deferredBudget));
+	return true;
 }
 
 static bool HCDEApplyActorDeltasV2(int clientNum, const uint8_t* body, size_t bodyBytes, size_t& bodyCursor)
@@ -5210,6 +5446,7 @@ static bool HCDEApplyActorDeltasV2(int clientNum, const uint8_t* body, size_t bo
 		double values[6] = {};
 		uint16_t yawCompact = 0u;
 		uint16_t pitchCompact = 0u;
+		int32_t coopSpawnIndex = -1;
 		if (!HCDEReadBE32Field(body, bodyBytes, cursor, id)
 			|| !HCDEReadBE16Field(body, bodyBytes, cursor, classId)
 			|| !HCDEReadBE16Field(body, bodyBytes, cursor, fieldMask)
@@ -5254,6 +5491,13 @@ static bool HCDEApplyActorDeltasV2(int clientNum, const uint8_t* body, size_t bo
 		{
 			return false;
 		}
+		if ((fieldMask & HCDEActorDeltaFieldCoopSpawnIndex) != 0u)
+		{
+			uint32_t rawSpawnIndex = 0u;
+			if (!HCDEReadBE32Field(body, bodyBytes, cursor, rawSpawnIndex))
+				return false;
+			coopSpawnIndex = int32_t(rawSpawnIndex);
+		}
 		if (category > HREP_ACTOR_VISUAL
 			|| (actorFlags & ~HCDEActorDeltaFlagLive) != 0u
 			|| actionState > HCDEInvasionActorActionMax)
@@ -5263,14 +5507,9 @@ static bool HCDEApplyActorDeltasV2(int clientNum, const uint8_t* body, size_t bo
 
 		auto* sharedRef = Net_FindHCDEReplicatedActor(id);
 		auto* invasionRef = invasionActorLane ? Net_FindInvasionReplicatedActor(id) : nullptr;
-		if (!invasionActorLane && sharedRef == nullptr)
+		if (!invasionActorLane && sharedRef == nullptr && Net_ShouldRecordCoopMapSpawnIndex())
 		{
-			// Non-invasion actor deltas are disabled on the send path above, but
-			// tolerate older peers by parsing and discarding their records. The
-			// old behavior registered baselines with no backing client actor, so
-			// a repeated full baseline stream grew HCDEReplicatedActors forever
-			// and polluted prediction diagnostics with thousands of missing refs.
-			sharedRef = nullptr;
+			sharedRef = Net_RegisterHCDEReplicatedActorBaseline(id, classId, category, HREP_SOURCE_COOP);
 		}
 		AActor* actor = invasionRef != nullptr ? invasionRef->Actor.Get()
 			: (sharedRef != nullptr ? sharedRef->Actor.Get() : nullptr);
@@ -5330,6 +5569,8 @@ static bool HCDEApplyActorDeltasV2(int clientNum, const uint8_t* body, size_t bo
 				pitchCompact = HCDECompactAngle(actor->Angles.Pitch.BAMs());
 			}
 		}
+		if ((fieldMask & HCDEActorDeltaFieldCoopSpawnIndex) == 0u)
+			coopSpawnIndex = hasBaseline ? state->CoopMapSpawnIndex : (sharedRef != nullptr ? sharedRef->CoopMapSpawnIndex : -1);
 
 		const int health = int(int16_t(healthBits));
 		const DVector3 pos(values[0], values[1], values[2]);
@@ -5376,6 +5617,10 @@ static bool HCDEApplyActorDeltasV2(int clientNum, const uint8_t* body, size_t bo
 			sharedRef->Category = category;
 			if (invasionActorLane)
 				sharedRef->Source = HREP_SOURCE_INVASION;
+			else if (sharedRef->Source == HREP_SOURCE_SHARED)
+				sharedRef->Source = HREP_SOURCE_COOP;
+			if ((fieldMask & HCDEActorDeltaFieldCoopSpawnIndex) != 0u)
+				sharedRef->CoopMapSpawnIndex = coopSpawnIndex;
 			sharedRef->LastTouchedTic = gametic;
 			state = &sharedRef->ClientState[clientNum];
 			state->BaselineValid = true;
@@ -5389,8 +5634,14 @@ static bool HCDEApplyActorDeltasV2(int clientNum, const uint8_t* body, size_t bo
 			state->Vel = vel;
 			state->Yaw = HCDEExpandCompactAngle(yawCompact);
 			state->Pitch = HCDEExpandCompactAngle(pitchCompact);
-			if ((fieldMask & (HCDEActorDeltaFieldCategory | HCDEActorDeltaFieldFlags | HCDEActorDeltaFieldHealth | HCDEActorDeltaFieldPos | HCDEActorDeltaFieldAngles)) != 0u)
+			state->CoopMapSpawnIndex = coopSpawnIndex;
+			if ((fieldMask & (HCDEActorDeltaFieldCategory | HCDEActorDeltaFieldFlags | HCDEActorDeltaFieldHealth | HCDEActorDeltaFieldPos | HCDEActorDeltaFieldAngles | HCDEActorDeltaFieldCoopSpawnIndex)) != 0u)
 				state->LastBaselineTic = gametic;
+			if (net_coop_id_debug && !invasionActorLane && (fieldMask & HCDEActorDeltaFieldCoopSpawnIndex) != 0u)
+			{
+				Printf("[COOP DELTA RECV] client=%d netid=%u spawn-index=%d category=%u\n",
+					clientNum, unsigned(sharedRef->Id), int(coopSpawnIndex), unsigned(category));
+			}
 		}
 
 		if (!invasionActorLane)
@@ -5469,4 +5720,56 @@ static bool HCDEApplyActorDeltasV2(int clientNum, const uint8_t* body, size_t bo
 		}
 	}
 	return true;
+}
+
+// Reset the per-map co-op spawn-index binding table. Called for index 0 of the
+// level's map-thing spawn loop (mirrors Net_BeginInvasionSpawnRegistration), so
+// the table only ever holds the current map's THINGS-order indices.
+void Net_BeginCoopMapSpawnRegistration(FLevelLocals* level)
+{
+	HCDECoopMapSpawnIndexLevel = level;
+	HCDECoopMapSpawnIndex.Clear();
+}
+
+// Record the deterministic THINGS-lump index for a map-spawned actor. Server and
+// client both call this from FLevelLocals::SpawnMapThing during level load. The
+// index becomes the binding hint a client uses to attach the server's authoritative
+// co-op NetID to this exact local actor. When net_coop_id_debug is on we log the
+// derivation on both sides so spawn-order determinism can be verified by diffing.
+void Net_NoteCoopMapSpawnIndex(AActor* actor, int index)
+{
+	if (!Net_ShouldRecordCoopMapSpawnIndex())
+		return;
+	if (actor == nullptr || index < 0)
+		return;
+
+	FLevelLocals* level = actor->Level;
+	if (level == nullptr)
+		return;
+	if (HCDECoopMapSpawnIndexLevel != level)
+		Net_BeginCoopMapSpawnRegistration(level);
+
+	HCDECoopMapSpawnIndex[actor] = index;
+
+	if (net_coop_id_debug)
+	{
+		const DVector3 pos = actor->Pos();
+		Printf("[COOP NETID] side=%s index=%d class=%s pos=(%.1f, %.1f, %.1f)\n",
+			I_IsLocalHCDEServiceAuthority() ? "server" : "client",
+			index,
+			actor->GetClass()->TypeName.GetChars(),
+			pos.X, pos.Y, pos.Z);
+	}
+}
+
+// Look up the deterministic map-spawn index previously recorded for an actor, or
+// -1 if it was not a map-spawned thing (e.g. dynamically spawned at runtime, which
+// uses an authority spawn event instead of the index binding hint).
+int Net_GetCoopMapSpawnIndex(const AActor* actor)
+{
+	if (actor == nullptr)
+		return -1;
+	if (const int32_t* found = HCDECoopMapSpawnIndex.CheckKey(actor))
+		return *found;
+	return -1;
 }

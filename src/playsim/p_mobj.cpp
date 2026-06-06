@@ -7078,9 +7078,14 @@ AActor *FLevelLocals::SpawnMapThing(int index, FMapThing *mt, int position)
 	if (index == 0)
 	{
 		Net_BeginInvasionSpawnRegistration(this);
+		Net_BeginCoopMapSpawnRegistration(this);
 	}
 
 	AActor *spawned = SpawnMapThing(mt, position);
+	if (spawned != nullptr)
+	{
+		Net_NoteCoopMapSpawnIndex(spawned, index);
+	}
 	if (dumpspawnedthings)
 	{
 		Printf("%5d: (%5f, %5f, %5f), doomednum = %5d, flags = %04x, type = %s\n",

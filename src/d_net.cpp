@@ -291,6 +291,9 @@ CUSTOM_CVAR(Int, cl_debug_monster_proximity, 768, CVAR_ARCHIVE | CVAR_GLOBALCONF
 	else if (self > 4096)
 		self = 4096;
 }
+
+CVAR(Bool, net_coop_id_debug, false, CVAR_ARCHIVE | CVAR_GLOBALCONFIG);
+
 // |blocking-mirror-count - server-active-monster-count| at which the soft-warn fires.
 CUSTOM_CVAR(Int, net_predict_softwarn_mirror_delta, 2, CVAR_ARCHIVE | CVAR_GLOBALCONFIG)
 {
@@ -564,6 +567,7 @@ constexpr uint16_t HCDEActorDeltaFieldHealth = 1u << 3;
 constexpr uint16_t HCDEActorDeltaFieldPos = 1u << 4;
 constexpr uint16_t HCDEActorDeltaFieldVel = 1u << 5;
 constexpr uint16_t HCDEActorDeltaFieldAngles = 1u << 6;
+constexpr uint16_t HCDEActorDeltaFieldCoopSpawnIndex = 1u << 7;
 constexpr uint16_t HCDEActorDeltaFieldAll =
 	HCDEActorDeltaFieldCategory
 	| HCDEActorDeltaFieldFlags
@@ -571,7 +575,8 @@ constexpr uint16_t HCDEActorDeltaFieldAll =
 	| HCDEActorDeltaFieldHealth
 	| HCDEActorDeltaFieldPos
 	| HCDEActorDeltaFieldVel
-	| HCDEActorDeltaFieldAngles;
+	| HCDEActorDeltaFieldAngles
+	| HCDEActorDeltaFieldCoopSpawnIndex;
 constexpr double HCDEActorDeltaPosScale = 16.0;
 constexpr double HCDEActorDeltaVelScale = 32.0;
 constexpr size_t HCDEInvasionSnapshotPayloadBudgetBytes = 1200u;
@@ -1095,6 +1100,7 @@ struct FHCDEReplicatedActorClientState
 	DVector3 Vel = {};
 	uint32_t Yaw = 0u;
 	uint32_t Pitch = 0u;
+	int32_t CoopMapSpawnIndex = -1;
 };
 
 struct FHCDEReplicatedActorRef
@@ -1110,6 +1116,7 @@ struct FHCDEReplicatedActorRef
 	int SpawnTic = 0;
 	int RetireTic = 0;
 	int LastTouchedTic = 0;
+	int32_t CoopMapSpawnIndex = -1;
 	FHCDEReplicatedActorClientState ClientState[MAXPLAYERS] = {};
 };
 
@@ -1131,6 +1138,8 @@ static FInvasionWaveDirector InvasionWaveDirector = {};
 static FInvasionSpawnDirectory InvasionSpawnDirectory = {};
 static TArray<FInvasionSpawnSpotRecord> InvasionRegisteredSpawnSpots = {};
 static FLevelLocals* InvasionRegisteredSpawnSpotLevel = nullptr;
+static TMap<const AActor*, int32_t> HCDECoopMapSpawnIndex = {};
+static FLevelLocals* HCDECoopMapSpawnIndexLevel = nullptr;
 // Retained HCAV facts are replayed to late joiners and repair windows; keep the log bounded.
 static TArray<FHCDEAuthorityEvent> HCDERecentAuthorityEvents = {};
 static TArray<FHCDEAuthorityEvent> InvasionPendingSpawnEvents = {};

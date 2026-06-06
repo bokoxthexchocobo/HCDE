@@ -234,6 +234,9 @@ void Net_RecordInvasionActorAttack(AActor* attacker, AActor* target);
 int Net_GetCompatDuelLimit();
 int Net_ControlInvasion(int action, const char* reason = nullptr);
 void Net_BeginInvasionSpawnRegistration(FLevelLocals* level);
+void Net_BeginCoopMapSpawnRegistration(FLevelLocals* level);
+void Net_NoteCoopMapSpawnIndex(AActor* actor, int index);
+int Net_GetCoopMapSpawnIndex(const AActor* actor);
 bool Net_RegisterInvasionSpawnSpotFromMapThing(FLevelLocals* level, const FMapThing* mapThing, PClassActor* spotClass);
 // If `spotClass` is an invasion pickup/weapon spot, replace it with the actual
 // item class so the regular map-thing spawn path drops the item at the spot.
