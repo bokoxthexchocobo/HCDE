@@ -3110,6 +3110,19 @@ static bool HCDEIsAllowedClientInputEventType(uint8_t type)
 	case DEM_READIED:
 	case DEM_WEAPSELECT:
 	case DEM_USEFLECHETTE:
+	// Player-initiated cheat/admin requests. These must reach the authoritative
+	// server to take effect; Net_DoCommand enforces the sv_cheats gate server-side,
+	// so admitting them onto the client-input wire keeps the server authoritative
+	// while letting console cheats work in live netgames (Zandronum-style co-op).
+	case DEM_GENERICCHEAT:
+	case DEM_GIVECHEAT:
+	case DEM_TAKECHEAT:
+	case DEM_SETINV:
+	case DEM_WARPCHEAT:
+	case DEM_SUMMON:
+	case DEM_SUMMONFRIEND:
+	case DEM_SUMMONFOE:
+	case DEM_MORPHEX:
 		return true;
 	default:
 		return false;
