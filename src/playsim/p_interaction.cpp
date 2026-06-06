@@ -1586,7 +1586,10 @@ static int DoDamageMobj(AActor *target, AActor *inflictor, AActor *source, int d
 	bool needevent = true;
 	int realdamage = DamageMobj(target, inflictor, source, damage, mod, flags, angle, needevent);
 	if (realdamage > 0)
+	{
 		Net_RecordInvasionActorAttack(source, target);
+		Net_RecordCoopActorAttack(source, target);
+	}
 	if (realdamage >= 0) //Keep this check separated. Mods relying upon negative numbers may break otherwise.
 		CallReactToDamage(target, inflictor, source, realdamage, mod, flags, damage);
 
@@ -1644,7 +1647,10 @@ int P_DamageMobj(AActor *target, AActor *inflictor, AActor *source, int damage, 
 		if (HCDERewind_LagCompActive() && !HCDERewind_LagCompReplaying())
 			HCDERewind_LagCompRecordDamage(target, inflictor, source, damage, mod.GetIndex(), flags, angle.Degrees());
 		if (source != nullptr && (!HCDERewind_LagCompActive() || HCDERewind_LagCompReplaying()))
+		{
 			Net_RecordInvasionActorAttack(source, target);
+			Net_RecordCoopActorAttack(source, target);
+		}
 	}
 
 	return retval;

@@ -330,6 +330,15 @@ CVAR(Float, cl_smooth_decay, 0.85f, CVAR_ARCHIVE | CVAR_GLOBALCONFIG);
 // counter-steer. 32u hides the tiny steady-state reconciles without a visible
 // slide; everything bigger pops instantly.
 CVAR(Float, cl_smooth_maxdist, 32.0f, CVAR_ARCHIVE | CVAR_GLOBALCONFIG);
+// Delay (seconds) before rendering received co-op authority poses on clients.
+// Roughly cl_interp * TICRATE tics of buffer; 0 disables interpolation smoothing.
+CUSTOM_CVAR(Float, cl_interp, 0.1f, CVAR_ARCHIVE | CVAR_GLOBALCONFIG)
+{
+	if (self < 0.f)
+		self = 0.f;
+	else if (self > 0.5f)
+		self = 0.5f;
+}
 
 static bool Net_InvasionDebugEnabled(int level = 1)
 {
@@ -1103,6 +1112,18 @@ struct FHCDEReplicatedActorClientState
 	int32_t CoopMapSpawnIndex = -1;
 };
 
+static constexpr int HCDECoopInterpRingSize = 16;
+
+struct FHCDECoopInterpSample
+{
+	int Tic = 0;
+	DVector3 Pos = {};
+	DVector3 Vel = {};
+	DAngle Yaw = nullAngle;
+	DAngle Pitch = nullAngle;
+	int Health = 0;
+};
+
 struct FHCDEReplicatedActorRef
 {
 	uint32_t Id = 0u;
@@ -1118,6 +1139,22 @@ struct FHCDEReplicatedActorRef
 	int LastTouchedTic = 0;
 	int32_t CoopMapSpawnIndex = -1;
 	bool CoopVisualArmed = false;
+	// Latest authoritative pose the client is smoothing toward (increment 5).
+	bool CoopHasVisualTarget = false;
+	DVector3 CoopVisualTargetPos = {};
+	DVector3 CoopVisualTargetVel = {};
+	DAngle CoopVisualTargetYaw = nullAngle;
+	DAngle CoopVisualTargetPitch = nullAngle;
+	int CoopVisualTargetHealth = 0;
+	int CoopVisualTargetTic = 0;
+	// Timestamped pose ring for cl_interp rendering (increment 7).
+	FHCDECoopInterpSample CoopInterpRing[HCDECoopInterpRingSize] = {};
+	uint8_t CoopInterpRingWrite = 0;
+	uint8_t CoopInterpRingCount = 0;
+	uint8_t CoopServerForcedActionState = HCDEInvasionActorActionNone;
+	int CoopServerForcedActionTic = 0;
+	uint8_t CoopVisualActionState = HCDEInvasionActorActionNone;
+	int CoopVisualActionTic = 0;
 	FHCDEReplicatedActorClientState ClientState[MAXPLAYERS] = {};
 };
 
@@ -1215,6 +1252,7 @@ static bool Net_ClassDefaultsSuggestProjectile(PClassActor* cls);
 static bool Net_IsInvasionActorCorpseLike(const AActor* actor);
 static void Net_SetInvasionMirrorVisualOnly(uint32_t id, AActor* actor);
 static void Net_TickInvasionMirrorVisualActors();
+static void Net_ClientTickInterpolation(unsigned& updated, unsigned& skipped);
 static void Net_LogInvasionMirrorVisualDiagnostic();
 static void Net_DetachInvasionMirrorCorpse(FInvasionReplicatedActorRef& ref);
 static void Net_RetireInvasionMirrorProjectile(FInvasionReplicatedActorRef& ref);
@@ -6915,6 +6953,16 @@ void TryRunTics()
 					Net_TickInvasionMirrorVisualFrame();
 					InvasionMirrorVisualTickBudget = 0;
 				}
+				if (netgame
+					&& totalTics > 0
+					&& !I_IsLocalHCDEServiceAuthority()
+					&& !deathmatch
+					&& sv_gametype != 4)
+				{
+					unsigned coopUpdated = 0u;
+					unsigned coopSkipped = 0u;
+					Net_ClientTickInterpolation(coopUpdated, coopSkipped);
+				}
 				P_PredictClient();
 			}
 		}
@@ -6994,6 +7042,17 @@ void TryRunTics()
 			: 1;
 		InvasionMirrorVisualTickBudget = 1;
 		Net_TickInvasionMirrorVisualFrame();
+	}
+	// Co-op monster visual smoothing runs once per rendered frame, mirroring the
+	// invasion mirror pass above but without sharing its tick-budget gate.
+	if (!I_IsLocalHCDEServiceAuthority()
+		&& netgame
+		&& !deathmatch
+		&& sv_gametype != 4)
+	{
+		unsigned coopUpdated = 0u;
+		unsigned coopSkipped = 0u;
+		Net_ClientTickInterpolation(coopUpdated, coopSkipped);
 	}
 	InvasionMirrorVisualTickBudget = 0;
 	InvasionMirrorVisualWorldSteps = 1;
