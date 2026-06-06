@@ -1117,6 +1117,7 @@ struct FHCDEReplicatedActorRef
 	int RetireTic = 0;
 	int LastTouchedTic = 0;
 	int32_t CoopMapSpawnIndex = -1;
+	bool CoopVisualArmed = false;
 	FHCDEReplicatedActorClientState ClientState[MAXPLAYERS] = {};
 };
 
@@ -1139,6 +1140,7 @@ static FInvasionSpawnDirectory InvasionSpawnDirectory = {};
 static TArray<FInvasionSpawnSpotRecord> InvasionRegisteredSpawnSpots = {};
 static FLevelLocals* InvasionRegisteredSpawnSpotLevel = nullptr;
 static TMap<const AActor*, int32_t> HCDECoopMapSpawnIndex = {};
+static TMap<int32_t, TObjPtr<AActor*>> HCDECoopMapSpawnActorByIndex = {};
 static FLevelLocals* HCDECoopMapSpawnIndexLevel = nullptr;
 // Retained HCAV facts are replayed to late joiners and repair windows; keep the log bounded.
 static TArray<FHCDEAuthorityEvent> HCDERecentAuthorityEvents = {};

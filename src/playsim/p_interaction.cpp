@@ -1574,7 +1574,10 @@ static int DoDamageMobj(AActor *target, AActor *inflictor, AActor *source, int d
 {
 	if (Net_IsInvasionClientMirrorActor(target)
 		|| Net_IsInvasionClientMirrorActor(inflictor)
-		|| Net_IsInvasionClientMirrorActor(source))
+		|| Net_IsInvasionClientMirrorActor(source)
+		|| Net_IsCoopAuthorityVisualActor(target)
+		|| Net_IsCoopAuthorityVisualActor(inflictor)
+		|| Net_IsCoopAuthorityVisualActor(source))
 	{
 		return 0;
 	}
@@ -1612,7 +1615,10 @@ int P_DamageMobj(AActor *target, AActor *inflictor, AActor *source, int damage, 
 {
 	if (Net_IsInvasionClientMirrorActor(target)
 		|| Net_IsInvasionClientMirrorActor(inflictor)
-		|| Net_IsInvasionClientMirrorActor(source))
+		|| Net_IsInvasionClientMirrorActor(source)
+		|| Net_IsCoopAuthorityVisualActor(target)
+		|| Net_IsCoopAuthorityVisualActor(inflictor)
+		|| Net_IsCoopAuthorityVisualActor(source))
 	{
 		return 0;
 	}
@@ -1649,7 +1655,10 @@ void P_PoisonMobj (AActor *target, AActor *inflictor, AActor *source, int damage
 {
 	if (Net_IsInvasionClientMirrorActor(target)
 		|| Net_IsInvasionClientMirrorActor(inflictor)
-		|| Net_IsInvasionClientMirrorActor(source))
+		|| Net_IsInvasionClientMirrorActor(source)
+		|| Net_IsCoopAuthorityVisualActor(target)
+		|| Net_IsCoopAuthorityVisualActor(inflictor)
+		|| Net_IsCoopAuthorityVisualActor(source))
 	{
 		return;
 	}

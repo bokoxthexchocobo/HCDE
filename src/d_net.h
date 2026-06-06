@@ -229,6 +229,8 @@ bool Net_IsInvasionSpawnUsingFallback();
 int Net_GetInvasionSpawnFallbackSource();
 bool Net_IsInvasionClientMirrorActor(const AActor* actor);
 bool Net_IsInvasionClientMirrorBlockingActor(const AActor* actor);
+bool Net_IsCoopAuthorityVisualActor(const AActor* actor);
+bool Net_IsCoopAuthorityVisualBlockingActor(const AActor* actor);
 void Net_RegisterInvasionReplicatedMissile(AActor* missile, const AActor* source);
 void Net_RecordInvasionActorAttack(AActor* attacker, AActor* target);
 int Net_GetCompatDuelLimit();

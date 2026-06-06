@@ -5405,6 +5405,10 @@ static bool HCDEAppendSharedActorDeltasV2(int clientNum, uint8_t* output, size_t
 	return true;
 }
 
+static AActor* Net_FindCoopMapSpawnActorByIndex(int32_t index);
+static void Net_SetCoopAuthorityVisualOnly(uint32_t id, AActor* actor);
+static void Net_TryApplyCoopAuthorityBind(FHCDEReplicatedActorRef* ref, int32_t spawnIndex);
+
 static bool HCDEApplyActorDeltasV2(int clientNum, const uint8_t* body, size_t bodyBytes, size_t& bodyCursor)
 {
 	if (!HCDEIsValidLiveClient(clientNum))
@@ -5642,6 +5646,8 @@ static bool HCDEApplyActorDeltasV2(int clientNum, const uint8_t* body, size_t bo
 				Printf("[COOP DELTA RECV] client=%d netid=%u spawn-index=%d category=%u\n",
 					clientNum, unsigned(sharedRef->Id), int(coopSpawnIndex), unsigned(category));
 			}
+			if (!invasionActorLane && (fieldMask & HCDEActorDeltaFieldCoopSpawnIndex) != 0u)
+				Net_TryApplyCoopAuthorityBind(sharedRef, coopSpawnIndex);
 		}
 
 		if (!invasionActorLane)
@@ -5729,6 +5735,7 @@ void Net_BeginCoopMapSpawnRegistration(FLevelLocals* level)
 {
 	HCDECoopMapSpawnIndexLevel = level;
 	HCDECoopMapSpawnIndex.Clear();
+	HCDECoopMapSpawnActorByIndex.Clear();
 }
 
 // Record the deterministic THINGS-lump index for a map-spawned actor. Server and
@@ -5750,6 +5757,7 @@ void Net_NoteCoopMapSpawnIndex(AActor* actor, int index)
 		Net_BeginCoopMapSpawnRegistration(level);
 
 	HCDECoopMapSpawnIndex[actor] = index;
+	HCDECoopMapSpawnActorByIndex.Insert(index, MakeObjPtr<AActor*>(actor));
 
 	if (net_coop_id_debug)
 	{
@@ -5772,4 +5780,116 @@ int Net_GetCoopMapSpawnIndex(const AActor* actor)
 	if (const int32_t* found = HCDECoopMapSpawnIndex.CheckKey(actor))
 		return *found;
 	return -1;
+}
+
+static AActor* Net_FindCoopMapSpawnActorByIndex(int32_t index)
+{
+	if (index < 0)
+		return nullptr;
+	if (const TObjPtr<AActor*>* found = HCDECoopMapSpawnActorByIndex.CheckKey(index))
+		return found->Get();
+	return nullptr;
+}
+
+static void Net_SetCoopAuthorityVisualOnly(uint32_t id, AActor* actor)
+{
+	if (I_IsLocalHCDEServiceAuthority()
+		|| actor == nullptr
+		|| (actor->ObjectFlags & OF_EuthanizeMe) != 0)
+	{
+		return;
+	}
+
+	FHCDEReplicatedActorRef* ref = Net_FindHCDEReplicatedActor(id);
+	if (ref != nullptr && ref->CoopVisualArmed)
+		return;
+
+	const bool wasThinking = actor->GetStatNum() >= STAT_FIRST_THINKING;
+	const bool needsWorldRelink = (actor->flags & MF_NOBLOCKMAP) == 0
+		|| (actor->flags & (MF_SOLID | MF_SHOOTABLE)) != 0;
+	if (needsWorldRelink)
+	{
+		FLinkContext ctx;
+		actor->UnlinkFromWorld(&ctx);
+		actor->flags |= MF_NOBLOCKMAP;
+		actor->flags &= ~(MF_SOLID | MF_SHOOTABLE);
+		actor->LinkToWorld(&ctx);
+	}
+	else
+	{
+		actor->flags &= ~(MF_SOLID | MF_SHOOTABLE);
+	}
+
+	actor->flags |= MF_NOCLIP;
+	actor->flags4 |= MF4_STANDSTILL;
+	actor->flags5 |= MF5_NOINTERACTION | MF5_NOINFIGHTING;
+	actor->flags7 &= ~MF7_INCHASE;
+	actor->target = nullptr;
+	actor->lastenemy = nullptr;
+	actor->goal = nullptr;
+	actor->Vel = DVector3(0, 0, 0);
+
+	if (actor->state == actor->SpawnState && actor->SeeState != nullptr)
+		actor->SetState(actor->SeeState, true);
+
+	if (wasThinking)
+		actor->ChangeStatNum(STAT_INFO);
+
+	if (ref != nullptr)
+	{
+		ref->CoopVisualArmed = true;
+		ref->CoopMapSpawnIndex = Net_GetCoopMapSpawnIndex(actor);
+	}
+
+	if (net_coop_id_debug)
+	{
+		Printf("[COOP VISUAL ARM] netid=%u spawn-index=%d class=%s\n",
+			unsigned(id), int(Net_GetCoopMapSpawnIndex(actor)),
+			actor->GetClass()->TypeName.GetChars());
+	}
+}
+
+static void Net_TryApplyCoopAuthorityBind(FHCDEReplicatedActorRef* ref, int32_t spawnIndex)
+{
+	if (I_IsLocalHCDEServiceAuthority() || ref == nullptr || spawnIndex < 0)
+		return;
+
+	AActor* localActor = Net_FindCoopMapSpawnActorByIndex(spawnIndex);
+	if (localActor == nullptr || (localActor->ObjectFlags & OF_EuthanizeMe) != 0)
+		return;
+
+	if (ref->Actor.Get() != localActor)
+	{
+		Net_RegisterHCDEReplicatedActor(ref->Id, localActor, ref->Category, HREP_SOURCE_COOP);
+		ref = Net_FindHCDEReplicatedActor(ref->Id);
+		if (ref == nullptr)
+			return;
+	}
+
+	ref->CoopMapSpawnIndex = spawnIndex;
+	Net_SetCoopAuthorityVisualOnly(ref->Id, localActor);
+}
+
+bool Net_IsCoopAuthorityVisualActor(const AActor* actor)
+{
+	if (actor == nullptr
+		|| I_IsLocalHCDEServiceAuthority()
+		|| !netgame
+		|| deathmatch
+		|| sv_gametype == 4)
+	{
+		return false;
+	}
+
+	const FHCDEReplicatedActorRef* ref = Net_FindHCDEReplicatedActorByActor(actor);
+	return ref != nullptr
+		&& ref->Active
+		&& ref->Source == HREP_SOURCE_COOP
+		&& ref->CoopVisualArmed;
+}
+
+bool Net_IsCoopAuthorityVisualBlockingActor(const AActor* actor)
+{
+	(void)actor;
+	return false;
 }
