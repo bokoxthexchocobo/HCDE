@@ -7078,9 +7078,14 @@ AActor *FLevelLocals::SpawnMapThing(int index, FMapThing *mt, int position)
 	if (index == 0)
 	{
 		Net_BeginInvasionSpawnRegistration(this);
+		Net_BeginCoopMapSpawnRegistration(this);
 	}
 
 	AActor *spawned = SpawnMapThing(mt, position);
+	if (spawned != nullptr)
+	{
+		Net_NoteCoopMapSpawnIndex(spawned, index);
+	}
 	if (dumpspawnedthings)
 	{
 		Printf("%5d: (%5f, %5f, %5f), doomednum = %5d, flags = %04x, type = %s\n",
@@ -7754,6 +7759,14 @@ DEFINE_ACTION_FUNCTION(AActor, HitFloor)
 //
 //---------------------------------------------------------------------------
 
+static void Net_RegisterMonsterReplicatedMissile(AActor* missile, const AActor* source)
+{
+	if (missile == nullptr || source == nullptr)
+		return;
+	Net_RegisterInvasionReplicatedMissile(missile, source);
+	Net_RegisterCoopReplicatedMissile(missile, source);
+}
+
 bool P_CheckMissileSpawn (AActor* th, double maxdist)
 {
 	// [RH] Don't decrement tics if they are already less than 1
@@ -7835,7 +7848,7 @@ bool P_CheckMissileSpawn (AActor* th, double maxdist)
 	}
 	th->flags2 = oldf2;
 	th->ClearInterpolation();
-	Net_RegisterInvasionReplicatedMissile(th, th->target);
+	Net_RegisterMonsterReplicatedMissile(th, th->target);
 	return true;
 }
 
@@ -7967,7 +7980,7 @@ AActor *P_SpawnMissileXYZ (DVector3 pos, AActor *source, AActor *dest, PClassAct
 
 	if (checkspawn && !P_CheckMissileSpawn(th, source->radius))
 		return NULL;
-	Net_RegisterInvasionReplicatedMissile(th, source);
+	Net_RegisterMonsterReplicatedMissile(th, source);
 	return th;
 }
 
@@ -8044,7 +8057,7 @@ AActor *P_OldSpawnMissile(AActor *source, AActor *owner, AActor *dest, PClassAct
 	}
 
 	P_CheckMissileSpawn(th, source->radius);
-	Net_RegisterInvasionReplicatedMissile(th, source);
+	Net_RegisterMonsterReplicatedMissile(th, source);
 	return th;
 }
 
@@ -8137,7 +8150,7 @@ AActor *P_SpawnMissileAngleZSpeed (AActor *source, double z,
 
 	if (checkspawn && !P_CheckMissileSpawn(mo, source->radius))
 		return NULL;
-	Net_RegisterInvasionReplicatedMissile(mo, source);
+	Net_RegisterMonsterReplicatedMissile(mo, source);
 	return mo;
 }
 
@@ -8183,7 +8196,7 @@ AActor *P_SpawnSubMissile(AActor *source, PClassActor *type, AActor *target)
 	{
 		DAngle pitch = P_AimLineAttack(source, source->Angles.Yaw, 1024.);
 		other->Vel.Z = -other->Speed * pitch.Sin();
-		Net_RegisterInvasionReplicatedMissile(other, source);
+		Net_RegisterMonsterReplicatedMissile(other, source);
 		return other;
 	}
 	return NULL;

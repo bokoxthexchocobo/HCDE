@@ -578,7 +578,7 @@ void DPSprite::SetState(FState *newstate, bool pending)
 					FState::StaticGetStateName(newstate).GetChars(), newstate->ActionFunc->PrintableName);
 				newstate->ActionFunc = nullptr;
 			}
-			if (newstate->CallAction(Owner->mo, Caller, &stp, &nextstate))
+			if (newstate->ActionFunc != nullptr && newstate->CallAction(Owner->mo, Caller, &stp, &nextstate))
 			{
 				// It's possible this call resulted in this very layer being replaced.
 				if (ObjectFlags & OF_EuthanizeMe)

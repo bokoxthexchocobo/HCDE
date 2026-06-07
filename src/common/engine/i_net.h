@@ -206,6 +206,11 @@ void I_DedicatedServerRequestStart();
 void I_DedicatedServerRequestAbort();
 // Dedicated sessions still reserve an internal arbitrator slot; these helpers
 // keep that slot out of public player counts and UI-facing client numbering.
+// Returns the reserved (non-player) server slot for this session, or -1 if the
+// session has no reserved server slot. HCDE's authority is always a dedicated
+// (non-player) server, so on a client the remote authority slot is reserved
+// even when the dedicated connect-ack flag was not negotiated.
+int I_GetReservedServerSlot();
 bool I_IsServerReservedSlot(int client);
 int I_GetFirstPlayableClientSlot();
 int I_GetVisibleMaxClients();

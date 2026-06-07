@@ -264,6 +264,26 @@ CUSTOM_CVAR(Int, cl_net_prediction_lead, 1, CVAR_ARCHIVE | CVAR_GLOBALCONFIG)
 	else if (self > 8)
 		self = 8;
 }
+// HCDE: Maximum number of EXTRA buffered client commands the authority will
+// simulate as their own movement tics in a single world tic while catching up
+// after a stall (on top of the one freshest command the normal P_Ticker pass
+// runs). This is the runtime knob for the Zandronum-style command drain in
+// G_Ticker. Higher values drain a backlog faster (less added input-to-authority
+// latency after a hitch) at the cost of more player thinks packed into one
+// frame; a very high value approximates "consume the whole backlog this tic"
+// (real-time, still lossless because every command is simulated). Lower values
+// spread the catch-up over more tics (smoother CPU, but the authority lags real
+// input longer after a burst). Default 2 mirrors Zandronum's "up to two
+// commands per tic" movement buffer. This is a diagnostic/tuning knob: it lets
+// us A/B test whether the post-hitch catch-up latency is what feels like delay
+// without recompiling.
+CUSTOM_CVAR(Int, net_authority_catchup, 2, CVAR_ARCHIVE | CVAR_GLOBALCONFIG)
+{
+	if (self < 1)
+		self = 1;
+	else if (self > 64)
+		self = 64;
+}
 // SequenceAck lag (newestTic - SequenceAck) at which the soft-warn fires.
 CUSTOM_CVAR(Int, net_predict_softwarn_ack_lag, 3, CVAR_ARCHIVE | CVAR_GLOBALCONFIG)
 {
@@ -291,6 +311,9 @@ CUSTOM_CVAR(Int, cl_debug_monster_proximity, 768, CVAR_ARCHIVE | CVAR_GLOBALCONF
 	else if (self > 4096)
 		self = 4096;
 }
+
+CVAR(Bool, net_coop_id_debug, false, CVAR_ARCHIVE | CVAR_GLOBALCONFIG);
+
 // |blocking-mirror-count - server-active-monster-count| at which the soft-warn fires.
 CUSTOM_CVAR(Int, net_predict_softwarn_mirror_delta, 2, CVAR_ARCHIVE | CVAR_GLOBALCONFIG)
 {
@@ -327,6 +350,17 @@ CVAR(Float, cl_smooth_decay, 0.85f, CVAR_ARCHIVE | CVAR_GLOBALCONFIG);
 // counter-steer. 32u hides the tiny steady-state reconciles without a visible
 // slide; everything bigger pops instantly.
 CVAR(Float, cl_smooth_maxdist, 32.0f, CVAR_ARCHIVE | CVAR_GLOBALCONFIG);
+EXTERN_CVAR(Int, net_event_debug)
+EXTERN_CVAR(Bool, sv_cheats)
+// Delay (seconds) before rendering received co-op authority poses on clients.
+// Roughly cl_interp * TICRATE tics of buffer; 0 disables interpolation smoothing.
+CUSTOM_CVAR(Float, cl_interp, 0.1f, CVAR_ARCHIVE | CVAR_GLOBALCONFIG)
+{
+	if (self < 0.f)
+		self = 0.f;
+	else if (self > 0.5f)
+		self = 0.5f;
+}
 
 static bool Net_InvasionDebugEnabled(int level = 1)
 {
@@ -432,6 +466,8 @@ constexpr size_t HCDEGameplayFlagsOffset = 7u;
 constexpr size_t HCDEGameplayTicOffset = 8u;
 constexpr size_t HCDEGameplayHeaderSize = 12u;
 constexpr uint8_t HCDEGameplayProtocolVersion = 1u;
+// Client->server: request a co-op actor baseline repair (forceFull HCDA + event replay).
+constexpr uint8_t HCDEGameplayFlagActorRepairRequest = 1u << 0;
 constexpr uint8_t HCDEGameplayMagic[4] = { 'H', 'G', 'P', 'L' };
 
 constexpr size_t HCDEClientInputMagicOffset = 0u;
@@ -564,6 +600,7 @@ constexpr uint16_t HCDEActorDeltaFieldHealth = 1u << 3;
 constexpr uint16_t HCDEActorDeltaFieldPos = 1u << 4;
 constexpr uint16_t HCDEActorDeltaFieldVel = 1u << 5;
 constexpr uint16_t HCDEActorDeltaFieldAngles = 1u << 6;
+constexpr uint16_t HCDEActorDeltaFieldCoopSpawnIndex = 1u << 7;
 constexpr uint16_t HCDEActorDeltaFieldAll =
 	HCDEActorDeltaFieldCategory
 	| HCDEActorDeltaFieldFlags
@@ -571,7 +608,8 @@ constexpr uint16_t HCDEActorDeltaFieldAll =
 	| HCDEActorDeltaFieldHealth
 	| HCDEActorDeltaFieldPos
 	| HCDEActorDeltaFieldVel
-	| HCDEActorDeltaFieldAngles;
+	| HCDEActorDeltaFieldAngles
+	| HCDEActorDeltaFieldCoopSpawnIndex;
 constexpr double HCDEActorDeltaPosScale = 16.0;
 constexpr double HCDEActorDeltaVelScale = 32.0;
 constexpr size_t HCDEInvasionSnapshotPayloadBudgetBytes = 1200u;
@@ -614,6 +652,15 @@ constexpr double HCDEServerBaselineRepairDistance = 128.0;
 // desync grows into. Lead is invisible to the local player (prediction is their
 // view); only the snap-back is visible, so tolerating the bounded lead removes
 // the felt drift without making the simulation any less authoritative.
+//
+// HCDE: restored to 176 (Zandronum-style lead tolerance). Zandronum never snaps
+// the local player's prediction lead back to the authoritative position; it
+// rebuilds the predicted pose every frame from the last server base plus a
+// replay of all unacked ticcmds, so the bounded lead is simply the legitimate
+// replay result and is never treated as an error. 176 clears the steady-state
+// running-lead band so legitimate lead is left alone; genuine desync still
+// corrects via the near-hard (326u), hard (384u), and vertical paths, which do
+// not depend on this floor.
 constexpr double HCDELocalBaselineSnapFloor = 176.0;
 constexpr int HCDEPassiveClientResendSequenceSlack = 4;
 // Minimum number of tics an ack must remain at the same value before the
@@ -880,6 +927,8 @@ static int HCDEPassiveResendLastRequestTic[MAXPLAYERS] = {};
 // passes; pure receivers need their own cadence or stale baseline-only refs
 // pile up indefinitely on actor-heavy maps.
 static int HCDEActorDeltaV2ReceiveCompactNextTic[MAXPLAYERS] = {};
+static uint8_t HCDEOutgoingGameplayFlags = 0u;
+static int HCDEPredictionEndCapTic = INT_MAX;
 static uint64_t	LastHCDELiveControlMS = 0u;
 static uint64_t LastHCDELiveSequenceRejectReportMS = 0u;
 static uint64_t LastHCDELiveSnapshotRejectReportMS = 0u;
@@ -1095,6 +1144,19 @@ struct FHCDEReplicatedActorClientState
 	DVector3 Vel = {};
 	uint32_t Yaw = 0u;
 	uint32_t Pitch = 0u;
+	int32_t CoopMapSpawnIndex = -1;
+};
+
+static constexpr int HCDECoopInterpRingSize = 16;
+
+struct FHCDECoopInterpSample
+{
+	int Tic = 0;
+	DVector3 Pos = {};
+	DVector3 Vel = {};
+	DAngle Yaw = nullAngle;
+	DAngle Pitch = nullAngle;
+	int Health = 0;
 };
 
 struct FHCDEReplicatedActorRef
@@ -1110,6 +1172,24 @@ struct FHCDEReplicatedActorRef
 	int SpawnTic = 0;
 	int RetireTic = 0;
 	int LastTouchedTic = 0;
+	int32_t CoopMapSpawnIndex = -1;
+	bool CoopVisualArmed = false;
+	// Latest authoritative pose the client is smoothing toward (increment 5).
+	bool CoopHasVisualTarget = false;
+	DVector3 CoopVisualTargetPos = {};
+	DVector3 CoopVisualTargetVel = {};
+	DAngle CoopVisualTargetYaw = nullAngle;
+	DAngle CoopVisualTargetPitch = nullAngle;
+	int CoopVisualTargetHealth = 0;
+	int CoopVisualTargetTic = 0;
+	// Timestamped pose ring for cl_interp rendering (increment 7).
+	FHCDECoopInterpSample CoopInterpRing[HCDECoopInterpRingSize] = {};
+	uint8_t CoopInterpRingWrite = 0;
+	uint8_t CoopInterpRingCount = 0;
+	uint8_t CoopServerForcedActionState = HCDEInvasionActorActionNone;
+	int CoopServerForcedActionTic = 0;
+	uint8_t CoopVisualActionState = HCDEInvasionActorActionNone;
+	int CoopVisualActionTic = 0;
 	FHCDEReplicatedActorClientState ClientState[MAXPLAYERS] = {};
 };
 
@@ -1131,6 +1211,9 @@ static FInvasionWaveDirector InvasionWaveDirector = {};
 static FInvasionSpawnDirectory InvasionSpawnDirectory = {};
 static TArray<FInvasionSpawnSpotRecord> InvasionRegisteredSpawnSpots = {};
 static FLevelLocals* InvasionRegisteredSpawnSpotLevel = nullptr;
+static TMap<const AActor*, int32_t> HCDECoopMapSpawnIndex = {};
+static TMap<int32_t, TObjPtr<AActor*>> HCDECoopMapSpawnActorByIndex = {};
+static FLevelLocals* HCDECoopMapSpawnIndexLevel = nullptr;
 // Retained HCAV facts are replayed to late joiners and repair windows; keep the log bounded.
 static TArray<FHCDEAuthorityEvent> HCDERecentAuthorityEvents = {};
 static TArray<FHCDEAuthorityEvent> InvasionPendingSpawnEvents = {};
@@ -1204,6 +1287,7 @@ static bool Net_ClassDefaultsSuggestProjectile(PClassActor* cls);
 static bool Net_IsInvasionActorCorpseLike(const AActor* actor);
 static void Net_SetInvasionMirrorVisualOnly(uint32_t id, AActor* actor);
 static void Net_TickInvasionMirrorVisualActors();
+static void Net_ClientTickInterpolation(unsigned& updated, unsigned& skipped);
 static void Net_LogInvasionMirrorVisualDiagnostic();
 static void Net_DetachInvasionMirrorCorpse(FInvasionReplicatedActorRef& ref);
 static void Net_RetireInvasionMirrorProjectile(FInvasionReplicatedActorRef& ref);
@@ -1344,6 +1428,8 @@ static int  LevelStartDebug = 0;
 static int	LevelStartDelay = 0; // While this is > 0, don't start generating packets yet.
 static ELevelStartStatus LevelStartStatus = LST_READY; // Listen for when to actually start making tics.
 
+static void HCDEResetLocalPlayerBaselineSync();
+
 static void Net_SetLevelStartStatus(ELevelStartStatus status, const char* reason)
 {
 	if (LevelStartStatus == status)
@@ -1354,6 +1440,8 @@ static void Net_SetLevelStartStatus(ELevelStartStatus status, const char* reason
 		reason != nullptr ? reason : "?", gametic, ClientTic, unsigned(CurrentRoomID),
 		primaryLevel != nullptr ? primaryLevel->MapName.GetChars() : "<none>");
 	LevelStartStatus = status;
+	if (status == LST_WAITING && netgame && !I_IsLocalHCDEServiceAuthority())
+		HCDEResetLocalPlayerBaselineSync();
 	if (status == LST_READY && netgame)
 	{
 		HCDEMovementResetJitter();
@@ -2235,7 +2323,8 @@ static void WriteHCDEGameplayEnvelope(uint8_t* data, EHCDEGameplayPayload kind)
 	data[HCDEGameplayVersionOffset] = HCDEGameplayProtocolVersion;
 	data[HCDEGameplayKindOffset] = uint8_t(kind);
 	data[HCDEGameplayRoomOffset] = CurrentRoomID;
-	data[HCDEGameplayFlagsOffset] = 0u;
+	data[HCDEGameplayFlagsOffset] = HCDEOutgoingGameplayFlags;
+	HCDEOutgoingGameplayFlags = 0u;
 	HCDELiveWriteBE32(&data[HCDEGameplayTicOffset], uint32_t(max<int>(gametic, 0)));
 }
 
@@ -2268,7 +2357,12 @@ static bool UnwrapHCDEGameplayEnvelope(int clientNum, size_t payloadSize, const 
 	const uint8_t room = envelope[HCDEGameplayRoomOffset];
 	const uint8_t flags = envelope[HCDEGameplayFlagsOffset];
 	remoteGameTic = HCDELiveReadBE32(&envelope[HCDEGameplayTicOffset]);
-	if (gameplayVersion != HCDEGameplayProtocolVersion || gameplayKind != uint8_t(expectedKind) || flags != 0u)
+	const uint8_t permittedEnvelopeFlags = (expectedKind == HGP_CLIENT_INPUTS)
+		? HCDEGameplayFlagActorRepairRequest
+		: 0u;
+	if (gameplayVersion != HCDEGameplayProtocolVersion
+		|| gameplayKind != uint8_t(expectedKind)
+		|| (flags & ~permittedEnvelopeFlags) != 0u)
 	{
 		++peer.UnsupportedReceived;
 		DebugTrace::Markf("net", "ignored HCDE live %s envelope from client=%d version=%u kind=%s flags=%u",
@@ -2326,7 +2420,7 @@ static bool UnwrapHCDEGameplayEnvelope(int clientNum, size_t payloadSize, const 
 		{
 			static uint64_t LastForceCutsceneEndMS = 0u;
 			const uint64_t nowMS = I_msTime();
-			if (LastForceCutsceneEndMS == 0u || nowMS - LastForceCutsceneEndMS >= 1000u)
+			if (LastForceCutsceneEndMS == 0u || nowMS - LastForceCutsceneEndMS >= 300u)
 			{
 				LastForceCutsceneEndMS = nowMS;
 				DebugTrace::Warningf("net",
@@ -2694,14 +2788,49 @@ static bool HCDEReadUserCmdFields(const uint8_t* data, size_t dataSize, size_t& 
 // Tier 1: Global smooth reconcile error smoother for the local player.
 // Instantiated here (struct defined in the .inl) to persist across tics.
 HCDEViewErrorSmoother g_hcdeViewErrorSmoother;
+FHCDELocalAuthoritativeBase HCDELocalAuthoritativeBase;
 
 // Helper called from G_Ticker to decay the smooth reconcile error.
 // Defined as a plain function so g_game.cpp can call it without needing
 // the full HCDEViewErrorSmoother type definition (just a forward decl).
 void HCDE_ViewErrorSmootherDecay()
 {
-	if (*cl_smooth_reconcile)
-		g_hcdeViewErrorSmoother.Decay(*cl_smooth_decay);
+	if (!*cl_smooth_reconcile)
+		return;
+
+	// World-space position error slides sideways when the player only turns
+	// look. Drop horizontal error while not translating so mouse-look does not
+	// fight a stale reconcile offset.
+	if (g_hcdeViewErrorSmoother.Active
+		&& consoleplayer >= 0 && consoleplayer < MAXPLAYERS)
+	{
+		const player_t& player = players[consoleplayer];
+		const AActor* mo = player.mo;
+		if (mo != nullptr)
+		{
+			const int ticDup = max<int>(TicDup, 1);
+			const int scanStart = max<int>(ClientTic - 4 * ticDup, 0);
+			bool recentTranslate = false;
+			for (int tic = scanStart; tic < ClientTic; ++tic)
+			{
+				const usercmd_t& cmd = LocalCmds[tic % LOCALCMDTICS];
+				if (cmd.forwardmove != 0 || cmd.sidemove != 0 || cmd.upmove != 0)
+				{
+					recentTranslate = true;
+					break;
+				}
+			}
+			if (!recentTranslate)
+			{
+				g_hcdeViewErrorSmoother.PosError.X = 0.0;
+				g_hcdeViewErrorSmoother.PosError.Y = 0.0;
+				if (mo->Vel.LengthSquared() < 0.01)
+					g_hcdeViewErrorSmoother.Zero();
+			}
+		}
+	}
+
+	g_hcdeViewErrorSmoother.Decay(*cl_smooth_decay);
 }
 
 // Tier 1: Accessor for the renderer to get smooth error offsets without
@@ -3061,6 +3190,19 @@ static bool HCDEIsAllowedClientInputEventType(uint8_t type)
 	case DEM_READIED:
 	case DEM_WEAPSELECT:
 	case DEM_USEFLECHETTE:
+	// Player-initiated cheat/admin requests. These must reach the authoritative
+	// server to take effect; Net_DoCommand enforces the sv_cheats gate server-side,
+	// so admitting them onto the client-input wire keeps the server authoritative
+	// while letting console cheats work in live netgames (Zandronum-style co-op).
+	case DEM_GENERICCHEAT:
+	case DEM_GIVECHEAT:
+	case DEM_TAKECHEAT:
+	case DEM_SETINV:
+	case DEM_WARPCHEAT:
+	case DEM_SUMMON:
+	case DEM_SUMMONFRIEND:
+	case DEM_SUMMONFOE:
+	case DEM_MORPHEX:
 		return true;
 	default:
 		return false;
@@ -3327,6 +3469,29 @@ static bool HCDEAppendCanonicalEventPayload(uint8_t eventType, uint8_t* output, 
 	}
 }
 
+static const char* HCDEDemCommandName(int cmd)
+{
+	switch (cmd)
+	{
+	case DEM_PAUSE: return "DEM_PAUSE";
+	case DEM_GENERICCHEAT: return "DEM_GENERICCHEAT";
+	case DEM_GIVECHEAT: return "DEM_GIVECHEAT";
+	case DEM_TAKECHEAT: return "DEM_TAKECHEAT";
+	case DEM_SETINV: return "DEM_SETINV";
+	case DEM_WARPCHEAT: return "DEM_WARPCHEAT";
+	case DEM_CENTERVIEW: return "DEM_CENTERVIEW";
+	case DEM_UINFCHANGED: return "DEM_UINFCHANGED";
+	case DEM_SINFCHANGED: return "DEM_SINFCHANGED";
+	case DEM_SINFCHANGEDXOR: return "DEM_SINFCHANGEDXOR";
+	case DEM_SETPITCHLIMIT: return "DEM_SETPITCHLIMIT";
+	case DEM_NETEVENT: return "DEM_NETEVENT";
+	case DEM_WEAPSELECT: return "DEM_WEAPSELECT";
+	case DEM_READIED: return "DEM_READIED";
+	case DEM_USEFLECHETTE: return "DEM_USEFLECHETTE";
+	default: return "DEM_UNKNOWN";
+	}
+}
+
 // Convert a raw NCMD-style DEM_* event stream into the canonical HCDE event-record
 // format. When `clientInput` is true, the narrower HCDEIsAllowedClientInputEventType
 // allow-list is enforced and disallowed events are silently dropped (parsed into a
@@ -3401,6 +3566,14 @@ static bool HCDEAppendEventRecords(uint8_t* output, size_t outputCapacity, size_
 		{
 			DebugTrace::Markf("net", "HCDE append event records failed: payloadBytes=%zu reason=payload_too_large", payloadBytes);
 			return false;
+		}
+		if (*net_event_debug >= 2)
+		{
+			DebugTrace::Markf("net.command",
+				"HCDE event pack source=%s type=%u name=%s payload=%zu inputOffset=%zu count=%u",
+				clientInput ? "client-input" : "snapshot",
+				unsigned(eventType), HCDEDemCommandName(eventType), payloadBytes,
+				inputCursor, unsigned(eventCount + 1u));
 		}
 
 		// Drop client-input events that fall outside the narrow allow-list: parsing
@@ -3798,6 +3971,10 @@ void Net_ClearBuffers()
 	// only need to clear Valid - the rest of the fields are write-then-read
 	// gated on it.
 	PendingLocalHealthRepair.Valid = false;
+	HCDEResetLocalPlayerBaselineSync();
+	HCDEOutgoingGameplayFlags = 0u;
+	HCDEPredictionEndCapTic = INT_MAX;
+	g_hcdeViewErrorSmoother.Zero();
 
 	LagState = LAG_NONE;
 	MutedClients = 0u;
@@ -3948,6 +4125,19 @@ bool Net_IsPlayerReady(int player)
 }
 
 // Check if every client is ready to move on from the current cutscene.
+static int Net_CountCutsceneReadyHumanParticipants()
+{
+	int humanClients = 0;
+	for (auto client : NetworkClients)
+	{
+		if (!Net_IsCutsceneReadyParticipant(client))
+			continue;
+		if (players[client].Bot == nullptr)
+			++humanClients;
+	}
+	return humanClients;
+}
+
 void Net_PlayerReadiedUp(int player)
 {
 	if (!netgame || demoplayback)
@@ -3963,16 +4153,63 @@ void Net_PlayerReadiedUp(int player)
 
 	CutsceneReadyLastToggle[player] = gametic;
 
-	// Allow unreadying in case a player needs to leave momentarily.
-	if (Net_IsPlayerReady(player))
+	const int humanParticipants = Net_CountCutsceneReadyHumanParticipants();
+	// Solo coop / single human on the tally screen: ready is a latch, not a toggle.
+	// Mashing skip keys toggled CutsceneReady off and, once the countdown was
+	// consumed without a successful advance, deadlocked the map transition forever.
+	if (humanParticipants <= 1)
+	{
+		CutsceneReady |= (uint64_t)1u << player;
+	}
+	else if (Net_IsPlayerReady(player))
+	{
+		// Allow unreadying in case a player needs to leave momentarily.
 		CutsceneReady &= ~((uint64_t)1u << player);
+	}
 	else
 		CutsceneReady |= (uint64_t)1u << player;
 
-	DebugTrace::Markf("net", "cutscene ready toggle player=%d ready=%d room=%u map=%s gametic=%d clienttic=%d mask=0x%llx",
-		player, Net_IsPlayerReady(player) ? 1 : 0, unsigned(CurrentRoomID),
+	DebugTrace::Markf("net", "cutscene ready toggle player=%d ready=%d humans=%d room=%u map=%s gametic=%d clienttic=%d levelStart=%s authority=%d mask=0x%llx",
+		player, Net_IsPlayerReady(player) ? 1 : 0, humanParticipants, unsigned(CurrentRoomID),
 		primaryLevel != nullptr ? primaryLevel->MapName.GetChars() : "<none>", gametic, ClientTic,
+		Net_LevelStartStatusName(LevelStartStatus),
+		I_IsLocalHCDEServiceAuthority() ? 1 : 0,
 		static_cast<unsigned long long>(CutsceneReady));
+}
+
+void Net_TickCutsceneClientRecovery()
+{
+	if (I_IsLocalHCDEServiceAuthority() || !netgame || demoplayback)
+		return;
+	if (gamestate != GS_CUTSCENE && gamestate != GS_INTRO)
+		return;
+	if (cutscene.runner == nullptr || consoleplayer < 0 || consoleplayer >= MAXPLAYERS)
+		return;
+	if (!Net_IsPlayerReady(consoleplayer))
+		return;
+	if (Net_CountCutsceneReadyHumanParticipants() > 1)
+		return;
+
+	static uint64_t LocalSoloCutsceneReadySinceMS = 0u;
+	const uint64_t nowMS = I_msTime();
+	if (LocalSoloCutsceneReadySinceMS == 0u)
+	{
+		LocalSoloCutsceneReadySinceMS = nowMS;
+		return;
+	}
+	// Give the authority a short window to issue DEM_ENDSCREENJOB through the
+	// normal ready vote / countdown path before forcing the local completion.
+	if (nowMS - LocalSoloCutsceneReadySinceMS < 1500u)
+		return;
+
+	DebugTrace::Warningf("net",
+		"cutscene solo client recovery: locally ready but ENDSCREENJOB delayed "
+		"room=%u gametic=%d clienttic=%d levelStart=%s mask=0x%llx -> forcing EndScreenJob",
+		unsigned(CurrentRoomID), gametic, ClientTic,
+		Net_LevelStartStatusName(LevelStartStatus),
+		static_cast<unsigned long long>(CutsceneReady));
+	EndScreenJob();
+	LocalSoloCutsceneReadySinceMS = 0u;
 }
 
 void Net_StartCutscene()
@@ -4083,9 +4320,11 @@ bool Net_CheckCutsceneReady()
 	if (humanClients <= 1)
 	{
 		const bool ready = humanReady >= humanClients;
-		DebugTrace::Markf("net", "cutscene human fast-path ready=%d/%d total=%d/%d room=%u map=%s",
-			humanReady, humanClients, totalReady, totalClients, unsigned(CurrentRoomID),
-			primaryLevel != nullptr ? primaryLevel->MapName.GetChars() : "<none>");
+		DebugTrace::Markf("net", "cutscene human fast-path ready=%d/%d total=%d/%d result=%d room=%u map=%s levelStart=%s authority=%d countdown=%d",
+			humanReady, humanClients, totalReady, totalClients, ready ? 1 : 0, unsigned(CurrentRoomID),
+			primaryLevel != nullptr ? primaryLevel->MapName.GetChars() : "<none>",
+			Net_LevelStartStatusName(LevelStartStatus),
+			I_IsLocalHCDEServiceAuthority() ? 1 : 0, CutsceneCountdown);
 		return ready;
 	}
 
@@ -4232,6 +4471,9 @@ void Net_ResetCommands(bool midTic)
 	Net_ResetInvasionState("reset-commands");
 	HCDEMovementResetJitter();
 	HCDERewind_Reset("reset-commands");
+	if (!I_IsLocalHCDEServiceAuthority())
+		HCDEResetLocalPlayerBaselineSync();
+	HCDEOutgoingGameplayFlags = 0u;
 }
 
 void Net_SetWaiting()
@@ -6340,6 +6582,11 @@ void NetUpdate(int tics)
 //
 // TryRunTics
 //
+int HCDEGetClientPredictionEndCapTic()
+{
+	return HCDEPredictionEndCapTic;
+}
+
 void TryRunTics()
 {
 	GC::CheckGC();
@@ -6494,6 +6741,19 @@ void TryRunTics()
 	// drift that does not cross the binary fault threshold.
 	Net_PredictionDebugTick(totalTics, availableTics, lowestSequence);
 
+	if (netgame && !demoplayback && I_UsesDedicatedServerSlot() && !I_IsLocalHCDEServiceAuthority()
+		&& consoleplayer >= 0 && consoleplayer < MAXPLAYERS)
+	{
+		const int ticDup = max<int>(TicDup, 1);
+		const int ack = ClientStates[consoleplayer].SequenceAck;
+		const int lead = HCDEMovementGetAdaptiveDesiredLead(int(*cl_net_prediction_lead));
+		HCDEPredictionEndCapTic = (max<int>(ack, 0) + lead + 2) * ticDup;
+	}
+	else
+	{
+		HCDEPredictionEndCapTic = INT_MAX;
+	}
+
 	// If the amount of tics to run is falling behind the amount of available tics,
 	// speed the playsim up a bit to help catch up.
 	int runTics = min<int>(totalTics, availableTics);
@@ -6543,7 +6803,24 @@ void TryRunTics()
 		&& gamestate == GS_LEVEL
 		&& LevelStartStatus == LST_READY)
 	{
-		const int desiredLead = HCDEMovementGetAdaptiveDesiredLead(int(*cl_net_prediction_lead));
+		// HELD gap = command latency floor. Every non-predicted local command
+		// (DEM_PAUSE, use, weapon switch, chat) round-trips to the authority and
+		// runs at the client `gametic`, so it cannot resolve faster than the
+		// `ClientTic - gametic` gap this cap maintains. Movement masks the gap with
+		// prediction; discrete commands do not, which is why an inflated hold shows
+		// up as "pause is delayed a few seconds after catch-up."
+		//
+		// Use the CONFIGURED lead for the held floor, NOT the adaptive lead.
+		// Adaptive lead grows from snapshot-cadence average (the dual-process
+		// pipeline pushes that above the 28.5ms ideal even on localhost), so feeding
+		// it here widened the held gap to 3-4 tics (~100ms) once its sample window
+		// filled - taxing every command for jitter that a clean link does not have.
+		// Adaptive lead still governs the command-generation limit and catch-up
+		// backlog elsewhere; it just no longer holds `gametic` back. On a genuinely
+		// jittery WAN the buffer that matters is snapshot arrival timing, not a wider
+		// local hold (a wider hold adds latency without preventing late-snapshot
+		// stutter), so pinning the floor to the configured lead is correct there too.
+		const int desiredLead = clamp<int>(int(*cl_net_prediction_lead), 0, 8);
 		if (desiredLead > 0)
 		{
 			// Both halves of `currentLead` are divided by TicDup to keep the
@@ -6885,7 +7162,9 @@ void TryRunTics()
 						static_cast<unsigned long long>(HCDELiveProfile.ActorDeltaV2RecordsMissing));
 				}
 			}
-			if (availableTics <= 0 && commandBacklog > TicDup * 4)
+			const int unpredictLead = HCDEMovementGetAdaptiveDesiredLead(int(*cl_net_prediction_lead));
+			if (availableTics <= 0
+				&& commandBacklog > (max<int>(unpredictLead, 0) + 2) * max<int>(TicDup, 1))
 			{
 				// Do not keep ghost-walking on predicted input when the authority has
 				// stopped advancing our confirmed sequence. Stay on the last authoritative
@@ -6903,6 +7182,16 @@ void TryRunTics()
 					InvasionMirrorVisualTickBudget = 1;
 					Net_TickInvasionMirrorVisualFrame();
 					InvasionMirrorVisualTickBudget = 0;
+				}
+				if (netgame
+					&& totalTics > 0
+					&& !I_IsLocalHCDEServiceAuthority()
+					&& !deathmatch
+					&& sv_gametype != 4)
+				{
+					unsigned coopUpdated = 0u;
+					unsigned coopSkipped = 0u;
+					Net_ClientTickInterpolation(coopUpdated, coopSkipped);
 				}
 				P_PredictClient();
 			}
@@ -6983,6 +7272,17 @@ void TryRunTics()
 			: 1;
 		InvasionMirrorVisualTickBudget = 1;
 		Net_TickInvasionMirrorVisualFrame();
+	}
+	// Co-op monster visual smoothing runs once per rendered frame, mirroring the
+	// invasion mirror pass above but without sharing its tick-budget gate.
+	if (!I_IsLocalHCDEServiceAuthority()
+		&& netgame
+		&& !deathmatch
+		&& sv_gametype != 4)
+	{
+		unsigned coopUpdated = 0u;
+		unsigned coopSkipped = 0u;
+		Net_ClientTickInterpolation(coopUpdated, coopSkipped);
 	}
 	InvasionMirrorVisualTickBudget = 0;
 	InvasionMirrorVisualWorldSteps = 1;
@@ -7262,6 +7562,13 @@ void Net_DoCommand(int cmd, TArrayView<uint8_t>& stream, int player)
 	uint8_t pos = 0;
 	const char* s = nullptr;
 	int i = 0;
+	if (*net_event_debug >= 2)
+	{
+		DebugTrace::Markf("net.command",
+			"HCDE event apply player=%d cmd=%d name=%s gametic=%d clienttic=%d remaining=%zu sv_cheats=%d netgame=%d",
+			player, cmd, HCDEDemCommandName(cmd), gametic, ClientTic,
+			stream.Size(), *sv_cheats ? 1 : 0, netgame ? 1 : 0);
+	}
 
 	switch (cmd)
 	{
@@ -7363,6 +7670,12 @@ void Net_DoCommand(int cmd, TArrayView<uint8_t>& stream, int player)
 		i = ReadInt32(stream);
 		if (!HCDEPredatorShouldRejectCheatOpcode(DEM_GIVECHEAT))
 		{
+			if (*net_event_debug >= 2)
+			{
+				DebugTrace::Markf("net.command",
+					"HCDE cheat execute player=%d opcode=%s item=%s amount=%d sv_cheats=%d",
+					player, HCDEDemCommandName(DEM_GIVECHEAT), s != nullptr ? s : "", i, *sv_cheats ? 1 : 0);
+			}
 			cht_Give(&players[player], s, i);
 			if (player != consoleplayer)
 			{
@@ -7370,6 +7683,12 @@ void Net_DoCommand(int cmd, TArrayView<uint8_t>& stream, int player)
 				message.Substitute("%s", players[player].userinfo.GetName());
 				Printf("%s: give %s\n", message.GetChars(), s);
 			}
+		}
+		else if (*net_event_debug >= 2)
+		{
+			DebugTrace::Markf("net.command",
+				"HCDE cheat rejected player=%d opcode=%s item=%s amount=%d sv_cheats=%d",
+				player, HCDEDemCommandName(DEM_GIVECHEAT), s != nullptr ? s : "", i, *sv_cheats ? 1 : 0);
 		}
 		break;
 
@@ -7411,7 +7730,19 @@ void Net_DoCommand(int cmd, TArrayView<uint8_t>& stream, int player)
 		i = ReadInt8(stream);
 		if (!HCDEPredatorShouldRejectCheatOpcode(DEM_GENERICCHEAT))
 		{
+			if (*net_event_debug >= 2)
+			{
+				DebugTrace::Markf("net.command",
+					"HCDE cheat execute player=%d opcode=%s cheat=%d sv_cheats=%d",
+					player, HCDEDemCommandName(DEM_GENERICCHEAT), i, *sv_cheats ? 1 : 0);
+			}
 			cht_DoCheat(&players[player], i);
+		}
+		else if (*net_event_debug >= 2)
+		{
+			DebugTrace::Markf("net.command",
+				"HCDE cheat rejected player=%d opcode=%s cheat=%d sv_cheats=%d",
+				player, HCDEDemCommandName(DEM_GENERICCHEAT), i, *sv_cheats ? 1 : 0);
 		}
 		break;
 
@@ -7593,6 +7924,7 @@ void Net_DoCommand(int cmd, TArrayView<uint8_t>& stream, int player)
 	case DEM_PAUSE:
 		if (gamestate == GS_LEVEL)
 		{
+			const int oldPaused = paused;
 			if (paused)
 			{
 				paused = 0;
@@ -7602,6 +7934,12 @@ void Net_DoCommand(int cmd, TArrayView<uint8_t>& stream, int player)
 			{
 				paused = player + 1;
 				S_PauseSound(false, false);
+			}
+			if (*net_event_debug >= 2)
+			{
+				DebugTrace::Markf("net.command",
+					"HCDE pause toggle player=%d old=%d new=%d gametic=%d clienttic=%d",
+					player, oldPaused, paused, gametic, ClientTic);
 			}
 		}
 		break;

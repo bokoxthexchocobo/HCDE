@@ -88,6 +88,7 @@
 EXTERN_CVAR(Int, sv_corpsequeuesize)
 EXTERN_CVAR(Int, sv_corpsefilter)
 EXTERN_CVAR(Int, net_movement_debug)
+EXTERN_CVAR(Int, net_authority_catchup)
 
 // MACROS ------------------------------------------------------------------
 
@@ -1433,6 +1434,9 @@ void G_TickStalledCutscene()
 	if (gamestate != GS_CUTSCENE && gamestate != GS_INTRO)
 		return;
 
+	if (netgame && !demoplayback)
+		Net_TickCutsceneClientRecovery();
+
 	if (netgame && !demoplayback && Net_CheckCutsceneReady())
 	{
 		Net_AdvanceCutscene();
@@ -1581,6 +1585,17 @@ void G_Ticker ()
 	// get commands
 	const int curTic = gametic / TicDup;
 
+	// HCDE (Zandronum-style command drain): maximum number of *extra* buffered
+	// commands the authority will simulate as real movement tics in a single
+	// world tic while catching up to a burst, on top of the one freshest command
+	// the normal P_Ticker pass runs. Runtime-tunable via net_authority_catchup so
+	// the post-hitch catch-up rate can be A/B tested live (see the cvar's
+	// declaration in d_net.cpp). A jittered burst is drained over a few tics with
+	// every command's translation integrated, instead of being collapsed into one
+	// tic (which silently dropped motion and caused the client-leads-then-snaps-
+	// back drift). Clamped >= 1 by the cvar so the loop always makes progress.
+	const int HCDEAuthorityCatchUpMicroTics = max<int>(1, *net_authority_catchup);
+
 	//Added by MC: For some of that bot stuff. The main bot function.
 	primaryLevel->BotInfo.Main (primaryLevel);
 
@@ -1625,23 +1640,28 @@ void G_Ticker ()
 			const int freshestSafe = min<int>(netState.CurrentSequence, curTic - 1);
 			if (applied < freshestSafe)
 			{
-				// Catch up to the freshest command that could have existed before
-				// this world tic. Holding strict FIFO here left the authority 2-4
-				// tics behind under normal delivery; that is barely noticeable for
-				// a long forward hold but makes strafing and quick direction
-				// releases feel like the player keeps sliding. Clients send up to
-				// MaxTicsPerPacket commands per packet, so CurrentSequence routinely
-				// jumps ahead by more than one and this branch skips the in-between
-				// command(s). Consuming ONLY the freshest slot silently discarded
-				// the forwardmove/sidemove/yaw in every skipped command, so the
-				// authority integrated a fraction of the player's real motion: its
-				// pawn fell behind the client's prediction (which replays every
-				// command) and its facing lagged by a fixed offset, felt as a
-				// constant drift + snap-back ("movement moves on its own, yaw/pitch
-				// especially"). Remember the skipped range so we can fold that
-				// motion into the applied command below instead of dropping it.
+				// Catch up toward the freshest command that could have existed
+				// before this world tic. Clients send several commands per packet,
+				// so CurrentSequence routinely jumps ahead by more than one and the
+				// cursor falls behind during jitter bursts. The OLD behavior leapt
+				// straight to freshestSafe and consumed only that slot, silently
+				// discarding the forwardmove/sidemove/yaw of every command in
+				// between: the authority integrated a fraction of the player's real
+				// motion, its pawn fell behind the client's prediction (which
+				// replays EVERY command), and the reconcile snapped the player back
+				// ("keeps moving / gets pulled back" drift).
+				//
+				// Zandronum-style drain instead: advance the cursor by at most one
+				// freshest command plus HCDEAuthorityCatchUpMicroTics catch-up
+				// commands per world tic. The catch-up commands are simulated as
+				// their own movement tics below (see the drain loop after the cmd
+				// memcpy), so none of their translation is lost and the rest of the
+				// burst stays buffered for the next tic. This matches Zandronum's
+				// rule that no received command is ever dropped or collapsed; it
+				// only consumes a bounded number per tic so a long hitch cannot
+				// become a single-frame physics spike.
 				combineFromSeq = prevApplied + 1;
-				applied = freshestSafe;
+				applied = min<int>(freshestSafe, applied + 1 + HCDEAuthorityCatchUpMicroTics);
 			}
 			else if (applied < netState.CurrentSequence)
 			{
@@ -1664,6 +1684,51 @@ void G_Ticker ()
 
 		usercmd_t* nextCmd = &ClientStates[client].Tics[cmdTic % BACKUPTICS].Command;
 
+		// HCDE (Zandronum-style command drain): when the cursor advanced past more
+		// than one sequence this tic (combineFromSeq >= 0), the commands in between
+		// [combineFromSeq, cmdTic - 1] are REAL inputs the client already simulated
+		// in its prediction replay. Rather than folding only their angular deltas
+		// and dropping their translation (the old behavior, which left the
+		// authority behind the client and triggered the snap-back drift), simulate
+		// each one here as its own movement tic - exactly like the client predictor
+		// (P_PredictClient) and like a Zandronum backtrace step. The freshest
+		// command (cmdTic) is deliberately NOT run here; it is consumed by the
+		// normal P_Ticker pass below so the rest of the world advances with it.
+		//
+		// This runs before the freshest command's RunPlayerCommands call so each
+		// command's event stream (weapon switch, use, etc.) fires exactly once and
+		// in sequence order. The per-tic count is bounded by the cursor advance
+		// above (<= HCDEAuthorityCatchUpMicroTics catch-up commands); the extra
+		// max() floor here is belt-and-suspenders for the rare case where the
+		// BACKUPTICS overflow clamp leapt the cursor on a long stall.
+		// Number of catch-up commands actually simulated this tic (diag only).
+		int drainedThisTic = 0;
+		if (!holdStarved && !demoplayback && combineFromSeq >= 0
+			&& players[client].mo != nullptr)
+		{
+			FClientNetState& drainState = ClientStates[client];
+			const int drainFrom = max<int>(combineFromSeq, cmdTic - HCDEAuthorityCatchUpMicroTics);
+			for (int s = drainFrom; s < cmdTic; ++s)
+			{
+				// Slot recycled by the ring: its contents are now a newer command,
+				// not the skipped one, so do not replay garbage.
+				if (drainState.CurrentSequence - s >= BACKUPTICS)
+					continue;
+				// Fire this command's queued events, then its movement, mirroring
+				// the freshest-command path (RunPlayerCommands + P_PlayerThink +
+				// actor Tick). oldbuttons is seeded from the previous command so
+				// button edge detection (attack/use) stays correct per tic.
+				RunPlayerCommands(client, s);
+				players[client].oldbuttons = players[client].cmd.buttons;
+				players[client].cmd = drainState.Tics[s % BACKUPTICS].Command;
+				P_PlayerThink(&players[client]);
+				if (players[client].mo == nullptr)
+					break;	// a teleport/death think can clear the pawn mid-drain
+				players[client].mo->CallTick();
+				++drainedThisTic;
+			}
+		}
+
 		// On a starved authority tic there is no new command/event payload to run;
 		// re-running the previous slot's events would double-fire weapon switches,
 		// use presses, etc. Movement is held below instead.
@@ -1677,59 +1742,25 @@ void G_Ticker ()
 			G_ReadDemoTiccmd(cmd, client);
 		else if (holdStarved)
 		{
-			// Keep forwardmove/sidemove/upmove/buttons from the previously applied
-			// command (those inputs are still held) but freeze the angular deltas.
+			// Keep buttons from the previously applied command (so weapons don't
+			// drop their spin-up if a packet drops) but freeze angular deltas.
+			// Movement is coasted from the previous cmd to avoid the "phantom step"
+			// where the server zeros movement but the client predicted it - causing
+			// a drift that triggers reconcile. This is bounded extrapolation,
+			// matching Zandronum's skip-correction: the authority guesses the
+			// player is still holding the keys until the next real command arrives.
 			cmd->yaw = 0;
 			cmd->pitch = 0;
 			cmd->roll = 0;
+			// forwardmove/sidemove/upmove intentionally preserved from prior cmd
 		}
 		else
 		{
+			// Apply the freshest command verbatim. Any skipped commands were
+			// already simulated as their own movement tics by the drain loop
+			// above, so there is nothing to fold in here - every command's motion
+			// is integrated exactly once.
 			memcpy(cmd, nextCmd, sizeof(usercmd_t));
-
-			// Fold the motion of any commands we skipped while catching up into
-			// this tic's command so the authority's integrated displacement and
-			// facing stay in lockstep with the client's prediction (which replays
-			// every command). forwardmove/sidemove/upmove summed over N tics and
-			// applied in one tic yields the same displacement those N tics would
-			// have produced; yaw/pitch/roll are additive per-tic deltas, so summing
-			// them reproduces the exact turn. Net events (weapon switch, use, etc.)
-			// are intentionally NOT re-folded - RunPlayerCommands above already ran
-			// only the freshest slot's events, so each fires exactly once.
-			if (combineFromSeq >= 0)
-			{
-				FClientNetState& foldState = ClientStates[client];
-				int foldFwd = cmd->forwardmove;
-				int foldSide = cmd->sidemove;
-				int foldUp = cmd->upmove;
-				int foldYaw = cmd->yaw;
-				int foldPitch = cmd->pitch;
-				int foldRoll = cmd->roll;
-				for (int s = combineFromSeq; s < cmdTic; ++s)
-				{
-					// Skip slots old enough that the ring has recycled them; their
-					// contents would be a future command, not the skipped one.
-					if (foldState.CurrentSequence - s >= BACKUPTICS)
-						continue;
-					const usercmd_t& extra = foldState.Tics[s % BACKUPTICS].Command;
-					foldFwd += extra.forwardmove;
-					foldSide += extra.sidemove;
-					foldUp += extra.upmove;
-					foldYaw += extra.yaw;
-					foldPitch += extra.pitch;
-					foldRoll += extra.roll;
-				}
-				// usercmd fields are 16-bit; clamp the accumulated motion so a rare
-				// large catch-up (e.g. after a hitch) can't wrap. Bursts are
-				// normally 1-2 tics, well within range, so this is exact in the
-				// common case and only mildly under-moves in pathological hitches.
-				cmd->forwardmove = (int16_t)clamp<int>(foldFwd, SHRT_MIN, SHRT_MAX);
-				cmd->sidemove = (int16_t)clamp<int>(foldSide, SHRT_MIN, SHRT_MAX);
-				cmd->upmove = (int16_t)clamp<int>(foldUp, SHRT_MIN, SHRT_MAX);
-				cmd->yaw = (int16_t)clamp<int>(foldYaw, SHRT_MIN, SHRT_MAX);
-				cmd->pitch = (int16_t)clamp<int>(foldPitch, SHRT_MIN, SHRT_MAX);
-				cmd->roll = (int16_t)clamp<int>(foldRoll, SHRT_MIN, SHRT_MAX);
-			}
 		}
 
 		// HCDE diag: confirm the server feeds the correct command slot to the
@@ -1740,13 +1771,24 @@ void G_Ticker ()
 		// against the client-side reconcile-heading yaw drift.
 		if (netgame && players[client].mo != nullptr)
 		{
+			// backlog = how many received-but-not-yet-applied commands sit in the
+			// buffer this tic (CurrentSequence - AppliedSequence). A backlog that
+			// stays > 0 and is being whittled down by `drained` across several tics
+			// is the signature of post-hitch catch-up latency (the suspected "new
+			// delay"): the authority is real-time behind the player by `backlog`
+			// tics until it drains. drained = catch-up commands simulated this tic.
+			const int authBacklog = ClientStates[client].CurrentSequence - ClientStates[client].AppliedSequence;
 			DebugTrace::Markf("net.cmdslot",
-				"HCDE srv cmdslot client=%d gametic=%d curtic=%d cmdtic=%d slot=%d curseq=%d applied=%d ack=%d hold=%d "
-				"applied(yaw=%d fwd=%d side=%d btn=0x%08x) preThinkYaw=%.2f",
+				"HCDE srv cmdslot client=%d gametic=%d curtic=%d cmdtic=%d slot=%d curseq=%d applied=%d ack=%d hold=%d backlog=%d drained=%d cap=%d combine=%d..%d "
+				"applied(yaw=%d fwd=%d side=%d up=%d btn=0x%08x) pre(pos=%.1f,%.1f vel=%.2f,%.2f yaw=%.2f)",
 				client, gametic, curTic, cmdTic, int(cmdTic % BACKUPTICS),
 				ClientStates[client].CurrentSequence, ClientStates[client].AppliedSequence,
 				ClientStates[client].SequenceAck, holdStarved ? 1 : 0,
-				int(cmd->yaw), int(cmd->forwardmove), int(cmd->sidemove), unsigned(cmd->buttons),
+				authBacklog, drainedThisTic, HCDEAuthorityCatchUpMicroTics,
+				combineFromSeq, combineFromSeq >= 0 ? cmdTic - 1 : -1,
+				int(cmd->yaw), int(cmd->forwardmove), int(cmd->sidemove), int(cmd->upmove), unsigned(cmd->buttons),
+				players[client].mo->Pos().X, players[client].mo->Pos().Y,
+				players[client].mo->Vel.X, players[client].mo->Vel.Y,
 				players[client].mo->Angles.Yaw.Degrees());
 		}
 
@@ -1811,27 +1853,34 @@ void G_Ticker ()
 	// what the pawn did immediately after the playsim consumed the command. Log
 	// the post-P_Ticker pose so a single tic can be followed as:
 	// cmdslot -> posttick sim -> snapshot truth -> client reconcile.
-	if (netgame && *net_movement_debug > 0)
+	// Offline single-player uses the same trace shape so netplay coast can be
+	// compared apples-to-apples when net_movement_debug is enabled.
+	if (*net_movement_debug > 0)
 	{
-		const char* role = I_IsLocalHCDEServiceAuthority() ? "authority" : "client";
+		const char* role = netgame
+			? (I_IsLocalHCDEServiceAuthority() ? "authority" : "client")
+			: "singleplayer";
 		for (int pnum = 0; pnum < MAXPLAYERS; ++pnum)
 		{
 			player_t& p = players[pnum];
 			if (!playeringame[pnum] || p.mo == nullptr)
 				continue;
 
-			const int applied = ClientStates[pnum].AppliedSequence;
-			const usercmd_t& lastCmd = ClientStates[pnum].Tics[max<int>(applied, 0) % BACKUPTICS].Command;
+			const int curseq = netgame ? ClientStates[pnum].CurrentSequence : gametic;
+			const int applied = netgame ? ClientStates[pnum].AppliedSequence : gametic;
+			const int ack = netgame ? ClientStates[pnum].SequenceAck : gametic;
+			const usercmd_t& liveCmd = p.cmd;
 			DebugTrace::Markf("net.sim",
-				"HCDE posttick sim role=%s player=%d gametic=%d clienttic=%d applied=%d ack=%d "
+				"HCDE posttick sim role=%s player=%d gametic=%d clienttic=%d curseq=%d applied=%d ack=%d "
 				"pos=(%.1f,%.1f,%.1f) vel=(%.2f,%.2f,%.2f) yaw=%.2f pitch=%.2f "
 				"cmd(yaw=%d pitch=%d fwd=%d side=%d up=%d btn=0x%08x)",
-				role, pnum, gametic, ClientTic, applied, ClientStates[pnum].SequenceAck,
+				role, pnum, gametic, ClientTic, curseq,
+				applied, ack,
 				p.mo->Pos().X, p.mo->Pos().Y, p.mo->Pos().Z,
 				p.mo->Vel.X, p.mo->Vel.Y, p.mo->Vel.Z,
 				p.mo->Angles.Yaw.Degrees(), p.mo->Angles.Pitch.Degrees(),
-				int(lastCmd.yaw), int(lastCmd.pitch), int(lastCmd.forwardmove),
-				int(lastCmd.sidemove), int(lastCmd.upmove), unsigned(lastCmd.buttons));
+				int(liveCmd.yaw), int(liveCmd.pitch), int(liveCmd.forwardmove),
+				int(liveCmd.sidemove), int(liveCmd.upmove), unsigned(liveCmd.buttons));
 		}
 	}
 }

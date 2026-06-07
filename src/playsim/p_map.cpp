@@ -6288,7 +6288,8 @@ int P_RadiusAttack(AActor *bombspot, AActor *bombsource, int bombdamage, double 
 		bombsource = bombspot;
 	}
 
-	if (Net_IsInvasionClientMirrorActor(bombspot) || Net_IsInvasionClientMirrorActor(bombsource))
+	if (Net_IsInvasionClientMirrorActor(bombspot) || Net_IsInvasionClientMirrorActor(bombsource)
+		|| Net_IsCoopAuthorityVisualActor(bombspot) || Net_IsCoopAuthorityVisualActor(bombsource))
 	{
 		return 0;
 	}
@@ -6300,7 +6301,7 @@ int P_RadiusAttack(AActor *bombspot, AActor *bombsource, int bombdamage, double 
 	while ((it.Next(&cres)))
 	{
 		AActor *thing = cres.thing;
-		if (Net_IsInvasionClientMirrorActor(thing))
+		if (Net_IsInvasionClientMirrorActor(thing) || Net_IsCoopAuthorityVisualActor(thing))
 			continue;
 
 		// Vulnerable actors can be damaged by radius attacks even if not shootable

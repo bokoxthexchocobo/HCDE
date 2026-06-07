@@ -360,6 +360,161 @@ EXTERN_CVAR(Bool, cl_smooth_reconcile)
 EXTERN_CVAR(Float, cl_smooth_decay)
 EXTERN_CVAR(Float, cl_smooth_maxdist)
 
+static int HCDEHeadingRepairGraceUntilGametic = 0;
+// First authoritative world-delta after join/map load must hard-sync the local
+// pawn. Without it the client keeps predicting from PlayerStart while the
+// dedicated server placed the player at a different spawn angle/spot.
+static bool HCDELocalPlayerBaselineEstablished = false;
+// Heading-only repair hysteresis (file scope so map/session resets can clear it).
+static DAngle HCDELocalHeadingRepairLastYaw = nullAngle;
+static bool HCDELocalHeadingRepairHasLastYaw = false;
+
+// Clear all dedicated-client local reconcile session state (map load, disconnect,
+// room change). Called from d_net.cpp on LST_WAITING / Net_ResetCommands /
+// Net_ClearBuffers so stale flags cannot leak across sessions.
+static void HCDEResetLocalPlayerBaselineSync()
+{
+	HCDELocalPlayerBaselineEstablished = false;
+	HCDEHeadingRepairGraceUntilGametic = 0;
+	HCDELocalHeadingRepairLastYaw = nullAngle;
+	HCDELocalHeadingRepairHasLastYaw = false;
+	g_hcdeViewErrorSmoother.Zero();
+	HCDELocalAuthoritativeBase.Valid = false;
+	HCDELocalAuthoritativeBase.BaseSequence = -1;
+}
+
+static DAngle HCDELocalRenderedYaw(const AActor& mo)
+{
+	if (mo.flags8 & MF8_ABSVIEWANGLES)
+		return mo.ViewAngles.Yaw;
+	return (mo.Angles.Yaw + mo.ViewAngles.Yaw).Normalized180();
+}
+
+// ViewAngles is an offset from Angles for normal pawns. Seat the body yaw and
+// the rendered look direction without doubling the facing angle.
+static void HCDESeatLocalViewYaw(AActor& mo, DAngle bodyYaw, DAngle renderedYaw)
+{
+	mo.SetAngle(bodyYaw, 0);
+	if (mo.flags8 & MF8_ABSVIEWANGLES)
+		mo.SetViewAngle(renderedYaw, 0);
+	else
+		mo.ViewAngles.Yaw = (renderedYaw - bodyYaw).Normalized180();
+}
+
+void HCDECaptureLocalAuthoritativeBase(const DVector3& pos, const DVector3& vel,
+	uint32_t yawBam, bool onGround, int baseSequence)
+{
+	HCDELocalAuthoritativeBase.Pos = pos;
+	HCDELocalAuthoritativeBase.Vel = vel;
+	HCDELocalAuthoritativeBase.YawBam = yawBam;
+	HCDELocalAuthoritativeBase.OnGround = onGround;
+	HCDELocalAuthoritativeBase.BaseSequence = baseSequence;
+	HCDELocalAuthoritativeBase.Valid = true;
+}
+
+// HCDE: Client-owned persistent look pitch.
+//
+// Why this exists: on a client the authoritative local-player tick is fed a
+// ZERO command (posttick traces show pitch=0.00 cmd(pitch=0) every tic), so the
+// simulation never integrates the player's look-up/down input. Yaw escapes this
+// because it is server-authoritative -- the seat below reseats Angles.Yaw to the
+// server value each frame and the predictor replays the unacked turn. Pitch was
+// declared "client-owned" (every reconcile path passes preservePitch=true and the
+// seat skipped pitch) but nothing ever MAINTAINED that client value, so Angles.Pitch
+// stayed frozen while the instant LocalViewPitch render offset made the view swing
+// and then snap back to the frozen base. That is the "stuck up/down, swings back"
+// bug.
+//
+// Fix: maintain the committed look pitch on the client ourselves. As commands are
+// acknowledged we fold their cmd.pitch into HCDELocalPitchDeg (mirroring the
+// CheckPitch integration in ZScript: Pitch -= cmd.pitch * 360/65536, clamped to the
+// player's Min/MaxPitch). The seat then reseats Angles.Pitch to this committed base
+// exactly like yaw, and P_PredictClient replays the unacked pitch deltas on top.
+// The value is purely client-side, so there is no server round-trip and no forced
+// camera snap.
+static double HCDELocalPitchDeg = 0.0;     // committed look pitch (degrees), after folding cmds up to HCDELocalPitchSeq
+static int    HCDELocalPitchSeq = -1;      // last command sequence folded into HCDELocalPitchDeg
+static bool   HCDELocalPitchValid = false; // false => reseed from the pawn's current pitch on next seat
+
+// Forget the committed pitch so the next seat reseeds it from the pawn. Call this
+// from any path that hard-sets the pawn's pitch (spawn / respawn / teleport).
+void HCDEInvalidateLocalPitch()
+{
+	HCDELocalPitchValid = false;
+}
+
+// Fold every command from (HCDELocalPitchSeq, ackSeq] into the committed pitch so it
+// tracks what the player has actually looked at by the acknowledged tic. Resyncs from
+// the live pawn pitch when invalid or when the ack window has outrun the LocalCmds ring.
+static void HCDEAdvanceLocalPitchToAck(player_t& player, int ackSeq)
+{
+	if (player.mo == nullptr || ackSeq < 0)
+		return;
+
+	const double minPitch = player.MinPitch.Degrees();
+	const double maxPitch = player.MaxPitch.Degrees();
+
+	// Reseed from the current pawn pitch if we have no valid base, if the sequence
+	// went backwards (level change / rewind), or if the gap is larger than the ring
+	// can hold (we would be folding stale/aliased commands otherwise).
+	if (!HCDELocalPitchValid
+		|| ackSeq < HCDELocalPitchSeq
+		|| (ackSeq - HCDELocalPitchSeq) >= LOCALCMDTICS)
+	{
+		HCDELocalPitchDeg = clamp<double>(player.mo->Angles.Pitch.Degrees(), minPitch, maxPitch);
+		HCDELocalPitchSeq = ackSeq;
+		HCDELocalPitchValid = true;
+		return;
+	}
+
+	for (int t = HCDELocalPitchSeq + 1; t <= ackSeq; ++t)
+	{
+		const int clook = LocalCmds[t % LOCALCMDTICS].pitch;
+		// clook == -32768 is the "center view" sentinel handled by the centering
+		// state machine, not a look delta; skip it here.
+		if (clook != 0 && clook != -32768)
+			HCDELocalPitchDeg = clamp<double>(HCDELocalPitchDeg - clook * (360.0 / 65536.0), minPitch, maxPitch);
+	}
+	HCDELocalPitchSeq = ackSeq;
+}
+
+bool HCDESeatLocalPlayerToAuthoritativeBase(player_t& player)
+{
+	if (!HCDELocalAuthoritativeBase.Valid || player.mo == nullptr)
+		return false;
+
+	AActor* mo = player.mo;
+	const DVector3& serverPos = HCDELocalAuthoritativeBase.Pos;
+	const DVector3& serverVel = HCDELocalAuthoritativeBase.Vel;
+	const DAngle serverYaw = DAngle::fromBam(HCDELocalAuthoritativeBase.YawBam);
+	const DVector3 oldPos = mo->Pos();
+
+	mo->SetOrigin(serverPos, false);
+	mo->Vel = serverVel;
+	// Body yaw is server-authoritative (movement-facing axis the server owns),
+	// so reseat it to the base; the replay below reconstructs the unacked turn.
+	HCDESeatLocalViewYaw(*mo, serverYaw, serverYaw);
+	// View pitch is client-owned. Advance the committed look pitch and reseat the
+	// pawn to it (the peer of the yaw reseat above). P_PredictClient replays the
+	// unacked cmd.pitch deltas on top from i == BaseSequence, and the server pose
+	// the replay starts from is the state BEFORE BaseSequence's command (BaseSequence
+	// is the first tic the loop re-applies). So the committed pitch base must be the
+	// pitch through BaseSequence-1; folding through BaseSequence would let the replay
+	// apply that tic's look delta a second time (a per-tic double that reads as view
+	// jitter / "bounce" while moving the mouse).
+	HCDEAdvanceLocalPitchToAck(player, HCDELocalAuthoritativeBase.BaseSequence - 1);
+	mo->SetPitch(DAngle::fromDeg(HCDELocalPitchDeg), 0);
+	if (mo->flags8 & MF8_ABSVIEWANGLES)
+		mo->ViewAngles.Pitch = DAngle::fromDeg(HCDELocalPitchDeg);
+	player.onground = HCDELocalAuthoritativeBase.OnGround;
+	if (player.viewheight > 0.0)
+		player.viewz = serverPos.Z + player.viewheight;
+	else
+		player.viewz = serverPos.Z + (player.viewz - oldPos.Z);
+	mo->ClearInterpolation();
+	return true;
+}
+
 static void HCDEApplyLocalPoseRepair(player_t& player, const DVector3& serverPos, const DVector3& serverVel,
 	uint32_t yawBam, uint32_t pitchBam, bool onGround, bool clearPrediction, bool preserveViewAngles = false,
 	bool preservePitch = false, bool smooth = false)
@@ -450,15 +605,24 @@ static void HCDEApplyLocalPoseRepair(player_t& player, const DVector3& serverPos
 	{
 		// Keep the rendered look direction while repairing the movement-facing
 		// angle. Leaving Angles.Yaw predicted here poisons the next replay.
-		mo->SetViewAngle((mo->ViewAngles.Yaw + deltaangle(serverYaw, oldYaw)).Normalized180(), 0);
-		mo->SetAngle(serverYaw, 0);
+		const DAngle oldRenderedYaw = HCDELocalRenderedYaw(*mo);
+		HCDESeatLocalViewYaw(*mo, serverYaw, oldRenderedYaw);
 	}
 	else
 	{
-		mo->SetAngle(serverYaw, 0);
-		mo->SetViewAngle(serverYaw, 0);
+		HCDESeatLocalViewYaw(*mo, serverYaw, serverYaw);
 		if (!preservePitch)
+		{
 			mo->SetPitch(serverPitch, 0);
+			if (mo->flags8 & MF8_ABSVIEWANGLES)
+				mo->ViewAngles.Pitch = serverPitch;
+			else
+				mo->ViewAngles.Pitch = nullAngle;
+			// Authoritative pitch snap: drop the committed client pitch so the next
+			// prediction seat reseeds from this server pitch instead of overriding it.
+			if (consoleplayer >= 0 && consoleplayer < MAXPLAYERS && &player == &players[consoleplayer])
+				HCDEInvalidateLocalPitch();
+		}
 	}
 	player.onground = onGround;
 	if (player.viewheight > 0.0)
@@ -469,6 +633,11 @@ static void HCDEApplyLocalPoseRepair(player_t& player, const DVector3& serverPos
 	mo->ClearInterpolation();
 	if (clearPrediction)
 		P_ClearPredictionData();
+	if (consoleplayer >= 0 && consoleplayer < MAXPLAYERS && &player == &players[consoleplayer])
+	{
+		HCDECaptureLocalAuthoritativeBase(serverPos, serverVel, yawBam, onGround,
+			ClientStates[consoleplayer].SequenceAck);
+	}
 }
 
 static DVector3 HCDELocalReconcileReferenceVelocity(const AActor& mo, const DVector3& serverVel)
@@ -514,6 +683,22 @@ static bool HCDELocalHeadingRepairInputQuiet()
 		}
 	}
 	return true;
+}
+
+static bool HCDELocalRecentTranslateInput()
+{
+	if (!netgame || I_IsLocalHCDEServiceAuthority())
+		return false;
+
+	const int ticDup = max<int>(TicDup, 1);
+	const int scanStart = max<int>(ClientTic - 8 * ticDup, 0);
+	for (int tic = scanStart; tic < ClientTic; ++tic)
+	{
+		const usercmd_t& cmd = LocalCmds[tic % LOCALCMDTICS];
+		if (cmd.forwardmove != 0 || cmd.sidemove != 0 || cmd.upmove != 0)
+			return true;
+	}
+	return false;
 }
 
 // Allowance covering normal client prediction lead vs authoritative pose:
@@ -691,8 +876,12 @@ static void HCDEQueuePredictedLocalHealthRepair(uint32_t serverTic, int serverHe
 		{
 			const double driftSq = (player.mo->Pos() - *serverPos).LengthSquared();
 			const bool hardRepair = driftSq > HCDEServerReconcileHardDistance * HCDEServerReconcileHardDistance;
+			// preservePitch=true: view pitch is a client-owned look axis. Pulling it
+			// to the round-trip-delayed authority value here makes the camera snap/
+			// jitter against live mouse input. The client integrates the same
+			// cmd.pitch the server does, so the axis stays in sync without reconcile.
 			HCDEApplyLocalPoseRepair(player, *serverPos, *serverVel, yawBam, pitchBam, onGround,
-				hardRepair, !hardRepair, false, !hardRepair);
+				hardRepair, !hardRepair, true, !hardRepair);
 		}
 		HCDEApplyLocalHealthFields(player, serverHealth, onGround);
 	}
@@ -712,13 +901,15 @@ static void HCDEApplyPendingLocalHealthRepair()
 				? (player.mo->Pos() - PendingLocalHealthRepair.Pos).LengthSquared()
 				: 0.0;
 			const bool hardRepair = driftSq > HCDEServerReconcileHardDistance * HCDEServerReconcileHardDistance;
+			// preservePitch=true: keep the client-owned look pitch (see note in
+			// HCDEQueuePredictedLocalHealthRepair); only position/health are authority.
 			HCDEApplyLocalPoseRepair(player,
 				PendingLocalHealthRepair.Pos,
 				PendingLocalHealthRepair.Vel,
 				PendingLocalHealthRepair.Yaw,
 				PendingLocalHealthRepair.Pitch,
 				PendingLocalHealthRepair.OnGround,
-				hardRepair, !hardRepair, false, !hardRepair);
+				hardRepair, !hardRepair, true, !hardRepair);
 		}
 		HCDEApplyLocalHealthFields(player,
 			PendingLocalHealthRepair.Health,
@@ -812,6 +1003,48 @@ static bool HCDEValidateServerWorldDeltas(int clientNum, const uint8_t* body, si
 			const bool serverReportsOnGround = (poseFlags & HCDEServerWorldDeltaPoseOnGround) != 0u;
 			const bool serverReportsLive = (poseFlags & HCDEServerWorldDeltaPoseLive) != 0u && serverHealth > 0;
 			const bool serverReportsDead = serverHealth <= 0;
+
+			// Zandronum-style prediction base: every snapshot carries the authoritative
+			// local pose and SequenceAck was updated from the same packet header before
+			// world deltas are applied, so store them together for P_PredictClient.
+			if (consoleplayer >= 0 && consoleplayer < MAXPLAYERS
+				&& (poseFlags & HCDEServerWorldDeltaPoseHasActor) != 0u)
+			{
+				HCDECaptureLocalAuthoritativeBase(serverPos, serverVel, yaw, serverReportsOnGround,
+					ClientStates[consoleplayer].SequenceAck);
+			}
+
+			// Join/map-load baseline: accept the server's pose before any prediction
+			// replay can walk the client onto a different axis than the authority.
+			if (!HCDELocalPlayerBaselineEstablished
+				&& serverReportsLive
+				&& player.playerstate == PST_LIVE
+				&& (mo->flags & MF_CORPSE) == 0
+				&& canMutatePlaysim)
+			{
+				if (NetworkEntityManager::IsPredicting())
+				{
+					P_UnPredictClient();
+					mo = player.mo;
+					if (mo == nullptr)
+						continue;
+					PendingLocalHealthRepair.Valid = false;
+				}
+				// clearPrediction=true inside ApplyLocalPoseRepair also clears backup.
+				HCDEApplyLocalPoseRepair(player, serverPos, serverVel, yaw, pitch, serverReportsOnGround,
+					true, false, false, false);
+				HCDEApplyLocalHealthFields(player, serverHealth, serverReportsOnGround);
+				HCDEHeadingRepairGraceUntilGametic = gametic + TICRATE / 4;
+				HCDELocalPlayerBaselineEstablished = true;
+				++peer.Reconciliations;
+				++HCDELiveProfile.PredictionLocalStateRepairs;
+				DebugTrace::Markf("net",
+					"HCDE client join baseline sync from=%d player=%u drift=%.2f srvYaw=%.1f cliYaw=%.1f tic=%u",
+					clientNum, unsigned(playerNum), sqrt(drift),
+					DAngle::fromBam(yaw).Degrees(), HCDELocalRenderedYaw(*mo).Degrees(),
+					unsigned(serverTic));
+				continue;
+			}
 			const bool localNeedsRespawnRepair = serverReportsLive
 				&& (player.playerstate != PST_LIVE
 					|| mo->health <= 0
@@ -848,15 +1081,16 @@ static bool HCDEValidateServerWorldDeltas(int clientNum, const uint8_t* body, si
 			// for seven straight tics, then crossed 326 at tic 1319 and snapped 326u
 			// in a single frame: the big visible jerk. Real steady-state prediction
 			// lead in this build measures ~40u (and tops out well under 100u even in
-			// fast strafe-turns), so a horizontal gap past HCDEServerBaselineRepairDistance
-			// (128) is not lead. We use ~211u (0.55 * hard) to stay clear of any
-			// plausible lead burst while still catching the desync ~115u earlier than
-			// the near-hard path did, which keeps the correction small and prevents
-			// the offset from compounding across many tics before it is repaired.
+			// fast strafe-turns), so a same-heading horizontal gap past
+			// HCDEServerBaselineRepairDistance (128) is not lead. The old 0.55*hard
+			// (~211u) gate left the 6/6 trace ignoring 132-176u same-heading gaps for
+			// dozens of tics, which felt like "barely moving and it keeps moving."
+			// Heading alignment below is the false-positive guard; the distance gate
+			// should be the repair distance, not a near-teleport distance.
 			const double localHorizontalDriftSq =
 				(mo->X() - serverPos.X) * (mo->X() - serverPos.X)
 				+ (mo->Y() - serverPos.Y) * (mo->Y() - serverPos.Y);
-			constexpr double HCDELocalHorizontalDivergence = HCDEServerReconcileHardDistance * 0.55;
+			constexpr double HCDELocalHorizontalDivergence = HCDEServerBaselineRepairDistance;
 			// A large flat XY offset is only a genuine positional desync when the
 			// two sides ALSO agree on heading. During a fast turn-while-moving the
 			// client heading leads the lagged snapshot, so the same forward input
@@ -871,22 +1105,37 @@ static bool HCDEValidateServerWorldDeltas(int clientNum, const uint8_t* body, si
 			// desyncs still escalate through the near-hard / hard / vertical paths
 			// which do not depend on heading.
 			const double localHeadingDriftDeg =
-				fabs(deltaangle(DAngle::fromBam(yaw), mo->Angles.Yaw).Degrees());
+				fabs(deltaangle(DAngle::fromBam(yaw), HCDELocalRenderedYaw(*mo)).Degrees());
 			const bool localHeadingAlignedForHorizontalRepair =
 				localHeadingDriftDeg <= HCDELocalHorizontalDivergenceMaxHeadingDeg;
 			const bool localHorizontalDivergence =
 				localHorizontalDriftSq > HCDELocalHorizontalDivergence * HCDELocalHorizontalDivergence
 				&& localHeadingAlignedForHorizontalRepair;
-			// Soft baseline drift alone is not allowed to mutate the local predicted
-			// pawn: those sub-100u gaps are ordinary prediction head using newer
-			// turn/move input than the authoritative snapshot has confirmed. But if
-			// the same drift includes floor/Z divergence, a sustained large flat
-			// horizontal offset, or grows close to the hard teleport cutoff, it is no
-			// longer harmless lead. In the 6:12 trace the server fell from Z=56 to
-			// Z=8 while the client stayed on the old floor; ignoring that made
-			// movement look erratic. Escalate those cases.
-			const bool localNeedsBaselinePoseRepair = localBaselineDriftExceedsAllowance
-				&& (localVerticalDivergence || localHorizontalDivergence || localNearHardDivergence);
+			// Server pose frozen while the client keeps walking is not prediction
+			// lead; it is the tic-gate stall pattern (availableTics pinned at 0).
+			const bool serverNearlyStationary = serverVel.LengthSquared() < 1.0;
+			const bool clientMovingXY = mo->Vel.XY().LengthSquared() > 1.0;
+			// Require recent WASD/strafe input, not just non-zero velocity. Mods
+			// like Brutal Doom can leave tiny bob/sway velocity on a standing pawn
+			// and falsely trip authority mismatch against a stationary server pose.
+			const bool movementAuthorityMismatch = serverNearlyStationary && clientMovingXY
+				&& HCDELocalRecentTranslateInput()
+				&& drift > HCDEServerBaselineRepairDistance * HCDEServerBaselineRepairDistance;
+			// Zandronum-style rebase: soft stationary/horizontal/baseline-allowance snaps
+			// are retired for the local player. Prediction rebuilds from the authoritative
+			// snapshot each frame; only vertical and near-hard baseline repairs remain
+			// here (hard/teleport, health, death, respawn are separate paths below).
+			const bool clientNearlyStationary = mo->Vel.XY().LengthSquared() < 1.0;
+			(void)clientNearlyStationary;
+			constexpr double HCDEStationaryAuthorityDesyncDistance = 48.0;
+			const bool stationaryAuthorityDesyncDiag = serverNearlyStationary && clientNearlyStationary
+				&& !HCDELocalRecentTranslateInput()
+				&& drift > HCDEStationaryAuthorityDesyncDistance * HCDEStationaryAuthorityDesyncDistance
+				&& localHeadingDriftDeg <= HCDELocalHorizontalDivergenceMaxHeadingDeg;
+			const bool stationaryAuthorityDesync = false;
+			(void)stationaryAuthorityDesyncDiag;
+			const bool releasedCoastAuthorityDesync = false;
+			const bool localNeedsBaselinePoseRepair = localVerticalDivergence || localNearHardDivergence;
 			const bool serverHealthMatchesLocal = mo->health == serverHealth && player.health == serverHealth;
 			const bool serverOnGroundMatchesLocal = player.onground == serverReportsOnGround;
 			const bool needsLocalStateRepair = localNeedsRespawnRepair
@@ -903,7 +1152,7 @@ static bool HCDEValidateServerWorldDeltas(int clientNum, const uint8_t* body, si
 			const int repairTier = localNeedsRespawnRepair ? 3
 				: localNeedsDeathRepair ? 4
 				: localNeedsHardPoseRepair ? 2
-				: localBaselineDriftExceedsAllowance ? 1
+				: localNeedsBaselinePoseRepair ? 1
 				: 0;
 			{
 				const double velDeltaUnits = (mo->Vel - serverVel).Length();
@@ -922,16 +1171,29 @@ static bool HCDEValidateServerWorldDeltas(int clientNum, const uint8_t* body, si
 			if (*net_reconcile_debug >= 1)
 			{
 				const double serverYawDeg = DAngle::fromBam(yaw).Degrees();
-				const double clientYawDeg = mo->Angles.Yaw.Degrees();
-				const double yawDeltaDeg = deltaangle(DAngle::fromBam(yaw), mo->Angles.Yaw).Degrees();
+				const double clientYawDeg = HCDELocalRenderedYaw(*mo).Degrees();
+				const double yawDeltaDeg = deltaangle(DAngle::fromBam(yaw), HCDELocalRenderedYaw(*mo)).Degrees();
 				const bool serverMoving = serverVel.XY().LengthSquared() > 0.25;
 				const bool clientMoving = mo->Vel.XY().LengthSquared() > 0.25;
 				const double serverVelHdg = serverMoving ? serverVel.Angle().Degrees() : -999.0;
 				const double clientVelHdg = clientMoving ? mo->Vel.Angle().Degrees() : -999.0;
 				DebugTrace::Markf("net",
-					"HCDE reconcile-heading tic=%u drift=%.2f tier=%d yaw(srv=%.1f cli=%.1f d=%.1f) "
-					"velhdg(srv=%.1f cli=%.1f) spd(srv=%.1f cli=%.1f) local=(%.1f,%.1f) server=(%.1f,%.1f)",
-					unsigned(serverTic), sqrt(drift), repairTier,
+					"HCDE reconcile-heading tic=%u gametic=%d clienttic=%d ack=%d current=%d drift=%.2f tier=%d "
+					"reasons(hard=%d baseline=%d horiz=%d nearhard=%d vertical=%d moveMismatch=%d stat=%d released=%d) "
+					"yaw(srv=%.1f cli=%.1f d=%.1f) velhdg(srv=%.1f cli=%.1f) spd(srv=%.1f cli=%.1f) "
+					"local=(%.1f,%.1f) server=(%.1f,%.1f)",
+					unsigned(serverTic), gametic, ClientTic,
+					consoleplayer >= 0 && consoleplayer < MAXPLAYERS ? ClientStates[consoleplayer].SequenceAck : -1,
+					consoleplayer >= 0 && consoleplayer < MAXPLAYERS ? ClientStates[consoleplayer].CurrentSequence : -1,
+					sqrt(drift), repairTier,
+					localNeedsHardPoseRepair ? 1 : 0,
+					localBaselineDriftExceedsAllowance ? 1 : 0,
+					localHorizontalDivergence ? 1 : 0,
+					localNearHardDivergence ? 1 : 0,
+					localVerticalDivergence ? 1 : 0,
+					movementAuthorityMismatch ? 1 : 0,
+					stationaryAuthorityDesync ? 1 : 0,
+					releasedCoastAuthorityDesync ? 1 : 0,
 					serverYawDeg, clientYawDeg, yawDeltaDeg,
 					serverVelHdg, clientVelHdg,
 					serverVel.XY().Length(), mo->Vel.XY().Length(),
@@ -961,21 +1223,24 @@ static bool HCDEValidateServerWorldDeltas(int clientNum, const uint8_t* body, si
 			// the authority once the gap is real (beyond any in-flight turn) and
 			// the player is holding a steady angle (so we are not yanking a live
 			// mouse turn the server has simply not acked yet).
-			if (!needsLocalStateRepair && canMutatePlaysim)
+			if (!needsLocalStateRepair && canMutatePlaysim
+				&& gametic >= HCDEHeadingRepairGraceUntilGametic)
 			{
-				const double headingDriftDeg = fabs(deltaangle(DAngle::fromBam(yaw), mo->Angles.Yaw).Degrees());
+				const DAngle serverYawAngle = DAngle::fromBam(yaw);
+				const double headingDriftDeg = fabs(deltaangle(serverYawAngle, HCDELocalRenderedYaw(*mo)).Degrees());
 				const bool clientMovingXY = mo->Vel.XY().LengthSquared() > 0.25;
 				const bool serverMovingXY = serverVel.XY().LengthSquared() > 0.25;
-				static DAngle sLastLocalHeading = nullAngle;
-				static bool sHasLastLocalHeading = false;
-				const double clientHeadingStepDeg = sHasLastLocalHeading
-					? fabs(deltaangle(sLastLocalHeading, mo->Angles.Yaw).Degrees())
+				const DAngle renderedYaw = HCDELocalRenderedYaw(*mo);
+				const double clientHeadingStepDeg = HCDELocalHeadingRepairHasLastYaw
+					? fabs(deltaangle(HCDELocalHeadingRepairLastYaw, renderedYaw).Degrees())
 					: 360.0;
-				sLastLocalHeading = mo->Angles.Yaw;
-				sHasLastLocalHeading = true;
+				HCDELocalHeadingRepairLastYaw = renderedYaw;
+				HCDELocalHeadingRepairHasLastYaw = true;
 				const bool clientHeadingStable = clientHeadingStepDeg <= HCDEServerReconcileHeadingStableDegrees;
-				const bool inputQuiet = HCDELocalHeadingRepairInputQuiet();
-				if (!clientMovingXY && !serverMovingXY && inputQuiet
+				const bool noTranslateInput = !HCDELocalRecentTranslateInput();
+				// Do not require full input quiet: mouse-look yaw cmds were blocking
+				// authority heading repair forever while the server-facing yaw drifted.
+				if (!clientMovingXY && !serverMovingXY && noTranslateInput
 					&& clientHeadingStable && headingDriftDeg > HCDEServerReconcileHeadingDegrees)
 				{
 					const DVector3 headingRepairPos = mo->Pos();
@@ -993,6 +1258,12 @@ static bool HCDEValidateServerWorldDeltas(int clientNum, const uint8_t* body, si
 					// local predicted position/velocity. This path is explicitly
 					// heading-only; using serverPos here turns a yaw fix into a hidden
 					// position snap whenever ordinary prediction lead is present.
+					g_hcdeViewErrorSmoother.Zero();
+					// Standing still: hard-sync the rendered view to authority. The old
+					// preserveViewAngles path doubled offsets (Angles + ViewAngles).
+					// preservePitch=true: heading repair fixes body/view YAW only; the
+					// look pitch is client-owned and must not be snapped to the delayed
+					// authority value or the camera jitters during free-look.
 					HCDEApplyLocalPoseRepair(player, headingRepairPos, headingRepairVel, yaw, pitch, headingRepairOnGround,
 						true, false, true, false);
 					HCDELocalReconcileDebugTrace(serverTic, sqrt(drift), refVel, true, "apply-heading");
@@ -1000,7 +1271,7 @@ static bool HCDEValidateServerWorldDeltas(int clientNum, const uint8_t* body, si
 					DebugTrace::Markf("net",
 						"HCDE client local heading repair from=%d player=%u headingDrift=%.1f srvYaw=%.1f tic=%u",
 						clientNum, unsigned(playerNum), headingDriftDeg,
-						DAngle::fromBam(yaw).Degrees(), unsigned(serverTic));
+						serverYawAngle.Degrees(), unsigned(serverTic));
 					continue;
 				}
 			}
@@ -1067,8 +1338,13 @@ static bool HCDEValidateServerWorldDeltas(int clientNum, const uint8_t* body, si
 					if (mo == nullptr)
 						continue;
 				PendingLocalHealthRepair.Valid = false;
+				// Full authoritative pose snap: server yaw/pitch are part of the
+				// truth. preserveViewAngles left the body at server XY while the
+				// look direction kept drifting on its own.
+				// preservePitch=true: snap position/yaw to authority on pose drift but
+				// leave the client-owned look pitch alone (avoids free-look jitter).
 				HCDEApplyLocalPoseRepair(player, serverPos, serverVel, yaw, pitch, serverReportsOnGround, true,
-					!localNeedsHardPoseRepair, false, !localNeedsHardPoseRepair);
+					false, true, false);
 					HCDEApplyLocalHealthFields(player, serverHealth, serverReportsOnGround);
 					HCDELocalReconcileDebugTrace(serverTic, sqrt(drift), refVel, true, "apply-predict-pose");
 					++HCDELiveProfile.PredictionLocalStateRepairs;
@@ -1126,8 +1402,22 @@ static bool HCDEValidateServerWorldDeltas(int clientNum, const uint8_t* body, si
 					mo->flags |= defaults->flags & (MF_SOLID | MF_SHOOTABLE);
 				mo->SetOrigin(serverPos, false);
 				mo->Vel = serverVel;
-				mo->SetAngle(DAngle::fromBam(yaw), 0);
-				mo->SetPitch(DAngle::fromBam(pitch), 0);
+				const DAngle spawnYaw = DAngle::fromBam(yaw);
+				const DAngle spawnPitch = DAngle::fromBam(pitch);
+				// ViewAngles is an offset from Angles; setting both to spawnYaw
+				// doubled the rendered facing angle (Angles + ViewAngles).
+				HCDESeatLocalViewYaw(*mo, spawnYaw, spawnYaw);
+				mo->SetPitch(spawnPitch, 0);
+				if (mo->flags8 & MF8_ABSVIEWANGLES)
+					mo->ViewAngles.Pitch = spawnPitch;
+				else
+					mo->ViewAngles.Pitch = nullAngle;
+				// Respawn hard-sets the look pitch; drop the committed client pitch so
+				// the next prediction seat reseeds from this fresh spawn pitch.
+				if (playerNum == consoleplayer)
+					HCDEInvalidateLocalPitch();
+				HCDEHeadingRepairGraceUntilGametic = gametic + TICRATE;
+				g_hcdeViewErrorSmoother.Zero();
 				mo->health = serverHealth;
 				player.health = serverHealth;
 				SET_PLAYER_STATE(&player, playerNum, PST_LIVE, "HCDE_ValidateServerWorldDeltas_respawn_repair");
@@ -1345,8 +1635,12 @@ static bool HCDEValidateServerWorldDeltas(int clientNum, const uint8_t* body, si
 			if (applyPose)
 			{
 				const bool hardRepair = localNeedsHardPoseRepair;
+				const bool authorityPoseRepair = hardRepair || localNeedsBaselinePoseRepair || movementAuthorityMismatch;
+				const bool smoothRepair = !authorityPoseRepair;
+				// preservePitch=true: live drift/state repair keeps the client-owned
+				// look pitch; respawn/death paths above still reset it via their own snaps.
 				HCDEApplyLocalPoseRepair(player, serverPos, serverVel, yaw, pitch, serverReportsOnGround,
-					hardRepair, !hardRepair, false, !hardRepair);
+					hardRepair || localNeedsBaselinePoseRepair, false, true, smoothRepair);
 			}
 			HCDEApplyLocalHealthFields(player, serverHealth, serverReportsOnGround);
 			PendingLocalHealthRepair.Valid = false;
@@ -3410,6 +3704,111 @@ bool Net_IsInvasionClientMirrorBlockingActor(const AActor* actor)
 	return false;
 }
 
+static bool Net_ShouldRecordCoopMapSpawnIndex();
+
+static uint8_t Net_GetCoopActorActionState(const AActor* actor, const FHCDEReplicatedActorRef& ref)
+{
+	if (actor == nullptr || actor->state == nullptr || ref.Category != HREP_ACTOR_MONSTER)
+		return HCDEInvasionActorActionNone;
+	if ((ref.CoopServerForcedActionState == HCDEInvasionActorActionMelee
+			|| ref.CoopServerForcedActionState == HCDEInvasionActorActionMissile
+			|| ref.CoopServerForcedActionState == HCDEInvasionActorActionPain)
+		&& gametic - ref.CoopServerForcedActionTic <= HCDEInvasionActorActionHoldTics)
+	{
+		return ref.CoopServerForcedActionState;
+	}
+	if (Net_InvasionStateSequenceContains(actor, actor->MeleeState, actor->state))
+		return HCDEInvasionActorActionMelee;
+	if (Net_InvasionStateSequenceContains(actor, actor->MissileState, actor->state))
+		return HCDEInvasionActorActionMissile;
+	if (Net_InvasionStateSequenceContains(actor, actor->FindState(NAME_Pain), actor->state))
+		return HCDEInvasionActorActionPain;
+	if (actor->SeeState != nullptr)
+		return HCDEInvasionActorActionSee;
+	if (actor->SpawnState != nullptr)
+		return HCDEInvasionActorActionSpawn;
+	return HCDEInvasionActorActionNone;
+}
+
+static void Net_ForceCoopActorAction(FHCDEReplicatedActorRef& ref, uint8_t actionState)
+{
+	if (actionState != HCDEInvasionActorActionMelee
+		&& actionState != HCDEInvasionActorActionMissile
+		&& actionState != HCDEInvasionActorActionPain)
+	{
+		return;
+	}
+
+	ref.CoopServerForcedActionState = actionState;
+	ref.CoopServerForcedActionTic = gametic;
+}
+
+static void Net_ApplyCoopAuthorityActionState(FHCDEReplicatedActorRef& ref, AActor* actor, uint8_t actionState)
+{
+	if (I_IsLocalHCDEServiceAuthority()
+		|| actor == nullptr
+		|| !ref.CoopVisualArmed
+		|| ref.Category != HREP_ACTOR_MONSTER
+		|| actionState == HCDEInvasionActorActionNone
+		|| actionState > HCDEInvasionActorActionMax)
+	{
+		return;
+	}
+
+	FState* targetState = Net_GetInvasionMirrorActionState(actor, actionState);
+	if (targetState == nullptr)
+		return;
+
+	const bool alreadyInActionSequence = Net_InvasionStateSequenceContains(actor, targetState, actor->state);
+	if (ref.CoopVisualActionState != actionState || actor->state == nullptr || !alreadyInActionSequence)
+	{
+		actor->SetState(targetState, true);
+		ref.CoopVisualActionState = actionState;
+		ref.CoopVisualActionTic = gametic;
+	}
+}
+
+void Net_RecordCoopActorAttack(AActor* attacker, AActor* target)
+{
+	if (!I_IsLocalHCDEServiceAuthority()
+		|| !Net_ShouldRecordCoopMapSpawnIndex()
+		|| gamestate != GS_LEVEL
+		|| attacker == nullptr
+		|| target == nullptr
+		|| attacker->health <= 0
+		|| (attacker->flags3 & MF3_ISMONSTER) == 0)
+	{
+		return;
+	}
+
+	auto* ref = Net_FindHCDEReplicatedActorByActor(attacker);
+	if (ref == nullptr
+		|| ref->Source != HREP_SOURCE_COOP
+		|| ref->Category != HREP_ACTOR_MONSTER)
+	{
+		return;
+	}
+
+	uint8_t actionState = Net_GetCoopActorActionState(attacker, *ref);
+	if (actionState != HCDEInvasionActorActionMelee && actionState != HCDEInvasionActorActionMissile)
+	{
+		const double meleeRange = max<double>(attacker->meleerange, 0.0)
+			+ attacker->radius
+			+ target->radius
+			+ 32.0;
+		const bool likelyMelee = attacker->MeleeState != nullptr
+			&& attacker->Distance3D(target) <= meleeRange;
+		if (likelyMelee)
+			actionState = HCDEInvasionActorActionMelee;
+		else if (attacker->MissileState != nullptr)
+			actionState = HCDEInvasionActorActionMissile;
+		else if (attacker->MeleeState != nullptr)
+			actionState = HCDEInvasionActorActionMelee;
+	}
+
+	Net_ForceCoopActorAction(*ref, actionState);
+}
+
 void Net_RecordInvasionActorAttack(AActor* attacker, AActor* target)
 {
 	if (!I_IsLocalHCDEServiceAuthority()
@@ -3779,11 +4178,19 @@ static FHCDEReplicatedActorRef* Net_FindHCDEReplicatedActorByActor(const AActor*
 	return nullptr;
 }
 
+static bool Net_ShouldRecordCoopMapSpawnIndex();
+static void Net_ForgetCoopMapSpawnActor(const AActor* actor);
+
 static void Net_SetHCDEReplicatedActorPtr(FHCDEReplicatedActorRef& ref, AActor* actor)
 {
 	const AActor* oldActor = ref.Actor.Get();
 	if (oldActor != nullptr)
+	{
 		HCDEReplicatedActorPtrIndex.Remove(oldActor);
+		// Re-registering the same actor must not drop its spawn-index binding.
+		if (actor != oldActor)
+			Net_ForgetCoopMapSpawnActor(oldActor);
+	}
 	ref.Actor = MakeObjPtr<AActor*>(actor);
 	if (actor != nullptr)
 	{
@@ -3917,10 +4324,21 @@ static FHCDEReplicatedActorRef* Net_RegisterHCDEReplicatedActorBaseline(uint32_t
 	return &HCDEReplicatedActors[HCDEReplicatedActors.Size() - 1u];
 }
 
+static bool Net_CoopIsProjectileRef(const FHCDEReplicatedActorRef& ref);
+static void Net_RecordCoopProjectileDespawnEvent(const FHCDEReplicatedActorRef& ref, AActor* actor, int serverHealth);
+
 static void Net_RetireHCDEReplicatedActor(uint32_t id)
 {
 	if (auto ref = Net_FindHCDEReplicatedActor(id); ref != nullptr)
 	{
+		AActor* actor = ref->Actor.Get();
+		if (I_IsLocalHCDEServiceAuthority()
+			&& actor != nullptr
+			&& Net_CoopIsProjectileRef(*ref)
+			&& !ref->Retired)
+		{
+			Net_RecordCoopProjectileDespawnEvent(*ref, actor, actor->health);
+		}
 		Net_SetHCDEReplicatedActorPtr(*ref, nullptr);
 		ref->Active = false;
 		ref->Retired = true;
@@ -4014,6 +4432,16 @@ static int Net_CompactHCDEReplicatedActors()
 		FHCDEReplicatedActorRef& ref = HCDEReplicatedActors[i];
 		AActor* actor = ref.Actor;
 		const bool staleActor = actor == nullptr || (actor->ObjectFlags & OF_EuthanizeMe) != 0;
+		if (staleActor && actor != nullptr)
+			Net_ForgetCoopMapSpawnActor(actor);
+		if (staleActor
+			&& actor != nullptr
+			&& I_IsLocalHCDEServiceAuthority()
+			&& Net_CoopIsProjectileRef(ref)
+			&& !ref.Retired)
+		{
+			Net_RecordCoopProjectileDespawnEvent(ref, actor, actor->health);
+		}
 		if (staleActor && Net_ShouldRecordHCDEPickupRetireEvent(ref, actor))
 		{
 			Net_RecordHCDEPickupRetireEvent(ref, actor);
@@ -4146,6 +4574,38 @@ static void HCDEBeginActorBaselineRepair(int clientNum, const char* reason)
 		unsigned(HCDEAuthorityEventReplayNextId[clientNum]), reason != nullptr ? reason : "unknown");
 }
 
+static bool Net_ShouldRecordCoopMapSpawnIndex()
+{
+	return netgame && !deathmatch && sv_gametype != 4;
+}
+
+// Co-op authority replication covers monsters and their spawned projectiles.
+// Pickups and map things keep local interactable simulation for now.
+static bool Net_CoopShouldUseAuthorityVisualReplication(uint8_t category)
+{
+	return category == HREP_ACTOR_MONSTER || category == HREP_ACTOR_PROJECTILE;
+}
+
+static bool Net_CoopIsProjectileRef(const FHCDEReplicatedActorRef& ref)
+{
+	return ref.Category == HREP_ACTOR_PROJECTILE;
+}
+
+static void Net_ForgetCoopMapSpawnActor(const AActor* actor)
+{
+	if (actor == nullptr || !Net_ShouldRecordCoopMapSpawnIndex())
+		return;
+
+	const int32_t* found = HCDECoopMapSpawnIndex.CheckKey(actor);
+	if (found == nullptr)
+		return;
+
+	HCDECoopMapSpawnActorByIndex.Remove(*found);
+	HCDECoopMapSpawnIndex.Remove(actor);
+}
+
+int Net_GetCoopMapSpawnIndex(const AActor* actor);
+
 static void Net_MigrateHCDEModeActor(AActor* actor, uint8_t category, uint8_t source, uint32_t& registered)
 {
 	if (actor == nullptr)
@@ -4154,11 +4614,27 @@ static void Net_MigrateHCDEModeActor(AActor* actor, uint8_t category, uint8_t so
 	if (auto existing = Net_FindHCDEReplicatedActorByActor(actor); existing != nullptr)
 	{
 		Net_RegisterHCDEReplicatedActor(existing->Id, actor, category, source);
-		++registered;
-		return;
+	}
+	else
+	{
+		Net_RegisterHCDEReplicatedActor(Net_AllocateHCDEModeActorId(), actor, category, source);
 	}
 
-	Net_RegisterHCDEReplicatedActor(Net_AllocateHCDEModeActorId(), actor, category, source);
+	if (source == HREP_SOURCE_COOP)
+	{
+		if (auto* ref = Net_FindHCDEReplicatedActorByActor(actor))
+		{
+			const int32_t previousIndex = ref->CoopMapSpawnIndex;
+			ref->CoopMapSpawnIndex = Net_GetCoopMapSpawnIndex(actor);
+			if (net_coop_id_debug && previousIndex < 0 && ref->CoopMapSpawnIndex >= 0)
+			{
+				Printf("[COOP MIGRATE] netid=%u spawn-index=%d class=%s\n",
+					unsigned(ref->Id), int(ref->CoopMapSpawnIndex),
+					actor->GetClass()->TypeName.GetChars());
+			}
+		}
+	}
+
 	++registered;
 }
 
@@ -4191,9 +4667,29 @@ static void Net_TickHCDEModeActorMigration()
 			++HCDEModeMigrationLastInvasion;
 		}
 	}
-	// Co-op/DM actor migration stays off while shared actor-delta-v2 send/apply
-	// remains invasion-only. Scanning every thinker here only fills
-	// HCDEReplicatedActors with baselines the client cannot reconcile.
+	else if (Net_ShouldRecordCoopMapSpawnIndex())
+	{
+		// Co-op map-monster authority registration. Clients still spawn map things
+		// locally; the server assigns stable NetIDs and spawn-index hints so clients
+		// can bind_local and follow authoritative pose deltas.
+		const bool dmMode = deathmatch != 0;
+		auto iterator = primaryLevel->GetThinkerIterator<AActor>();
+		while (AActor* actor = iterator.Next())
+		{
+			if (actor == nullptr || (actor->ObjectFlags & OF_EuthanizeMe) != 0)
+				continue;
+
+			uint8_t category = HREP_ACTOR_UNKNOWN;
+			if (!Net_ShouldMigrateHCDEModeActor(actor, dmMode, category))
+				continue;
+			if (!Net_CoopShouldUseAuthorityVisualReplication(category))
+				continue;
+
+			++HCDEModeMigrationLastConsidered;
+			Net_MigrateHCDEModeActor(actor, category, HREP_SOURCE_COOP, HCDEModeMigrationLastRegistered);
+			++HCDEModeMigrationLastCoop;
+		}
+	}
 
 	HCDELiveProfile.ModeMigrationActorsConsidered += HCDEModeMigrationLastConsidered;
 	HCDELiveProfile.ModeMigrationActorsRegistered += HCDEModeMigrationLastRegistered;
@@ -4613,6 +5109,10 @@ static bool Net_ApplyHCDEPickupSpawnEvent(uint32_t actorId, uint16_t classId, ui
 	return true;
 }
 
+static bool Net_ApplyCoopProjectileSpawnEvent(uint32_t id, uint16_t classId, const FString& className,
+	const DVector3& pos, const DVector3& vel, DAngle yaw, DAngle pitch, int health);
+static bool Net_RetireCoopAuthorityProjectile(uint32_t id, int health);
+
 static bool HCDEApplyAuthorityEvents(int clientNum, const uint8_t* body, size_t bodyBytes, size_t& bodyCursor)
 {
 	if (!HCDEIsValidLiveClient(clientNum))
@@ -4741,6 +5241,30 @@ static bool HCDEApplyAuthorityEvents(int clientNum, const uint8_t* body, size_t 
 		else if (eventType == HCDEAuthorityEventDamage && source == HREP_SOURCE_INVASION)
 		{
 			if (Net_ApplyInvasionDamageEvent(actorId, int(int16_t(healthBits))))
+				++applied;
+			else
+				++missing;
+		}
+		else if (eventType == HCDEAuthorityEventSpawn
+			&& source == HREP_SOURCE_COOP
+			&& category == HREP_ACTOR_PROJECTILE)
+		{
+			if (Net_ApplyCoopProjectileSpawnEvent(actorId, classId, className,
+				DVector3(x, y, z), DVector3(vx, vy, vz), DAngle::fromBam(yaw), DAngle::fromBam(pitch),
+				int(int16_t(healthBits))))
+			{
+				++applied;
+			}
+			else
+			{
+				++missing;
+			}
+		}
+		else if (eventType == HCDEAuthorityEventDespawn
+			&& source == HREP_SOURCE_COOP
+			&& category == HREP_ACTOR_PROJECTILE)
+		{
+			if (Net_RetireCoopAuthorityProjectile(actorId, int(int16_t(healthBits))))
 				++applied;
 			else
 				++missing;
@@ -4913,6 +5437,181 @@ void Net_RegisterInvasionReplicatedMissile(AActor* missile, const AActor* source
 		missile->Vel.X,
 		missile->Vel.Y,
 		missile->Vel.Z);
+}
+
+static void Net_RecordCoopProjectileSpawnEvent(uint32_t id, AActor* missile)
+{
+	if (missile == nullptr || missile->GetClass() == nullptr)
+		return;
+
+	FHCDEAuthorityEvent event;
+	event.EventType = HCDEAuthorityEventSpawn;
+	event.Source = HREP_SOURCE_COOP;
+	event.Category = HREP_ACTOR_PROJECTILE;
+	event.ActorFlags = HCDEActorDeltaFlagLive;
+	event.ClassId = Net_GetHCDEReplicatedActorClassId(missile->GetClass());
+	event.EventSeq = InvasionNextAuthorityEventSeq++;
+	if (InvasionNextAuthorityEventSeq == 0u)
+		InvasionNextAuthorityEventSeq = 1u;
+	event.Id = id;
+	event.Tic = gametic;
+	event.Wave = 0;
+	event.ClassName = missile->GetClass()->TypeName.GetChars();
+	event.Pos = missile->Pos();
+	event.Vel = missile->Vel;
+	event.Yaw = missile->Angles.Yaw;
+	event.Health = missile->health;
+	HCDEPushRecentAuthorityEvent(event);
+
+	if (net_coop_id_debug)
+	{
+		Printf("[COOP PROJECTILE SPAWN] netid=%u class=%s pos=(%.1f, %.1f, %.1f) vel=(%.1f, %.1f, %.1f)\n",
+			unsigned(id), event.ClassName.GetChars(),
+			event.Pos.X, event.Pos.Y, event.Pos.Z,
+			event.Vel.X, event.Vel.Y, event.Vel.Z);
+	}
+}
+
+static void Net_SetCoopAuthorityVisualOnly(uint32_t id, AActor* actor);
+static void Net_SetCoopAuthorityVisualTarget(FHCDEReplicatedActorRef& ref, const DVector3& pos,
+	const DVector3& vel, DAngle yaw, DAngle pitch, int health);
+static void Net_ApplyCoopAuthorityPoseFromDelta(FHCDEReplicatedActorRef& ref, AActor* actor,
+	const DVector3& pos, const DVector3& vel, DAngle yaw, DAngle pitch, int health, uint32_t fieldMask);
+
+static void Net_RecordCoopProjectileDespawnEvent(const FHCDEReplicatedActorRef& ref, AActor* actor, int serverHealth)
+{
+	if (!I_IsLocalHCDEServiceAuthority() || ref.Id == 0u || !Net_CoopIsProjectileRef(ref))
+		return;
+
+	FHCDEAuthorityEvent event;
+	event.EventType = HCDEAuthorityEventDespawn;
+	event.Source = HREP_SOURCE_COOP;
+	event.Category = HREP_ACTOR_PROJECTILE;
+	event.ActorFlags = 0u;
+	event.ClassId = actor != nullptr ? Net_GetHCDEReplicatedActorClassId(actor->GetClass()) : ref.ClassId;
+	event.EventSeq = InvasionNextAuthorityEventSeq++;
+	if (InvasionNextAuthorityEventSeq == 0u)
+		InvasionNextAuthorityEventSeq = 1u;
+	event.Id = ref.Id;
+	event.Tic = gametic;
+	event.Wave = 0;
+	if (actor != nullptr && actor->GetClass() != nullptr)
+		event.ClassName = actor->GetClass()->TypeName.GetChars();
+	event.Pos = actor != nullptr ? actor->Pos() : ref.CoopVisualTargetPos;
+	event.Vel = actor != nullptr ? actor->Vel : ref.CoopVisualTargetVel;
+	event.Yaw = actor != nullptr ? actor->Angles.Yaw : ref.CoopVisualTargetYaw;
+	event.Health = serverHealth;
+	HCDEPushRecentAuthorityEvent(event);
+}
+
+static bool Net_SpawnCoopAuthorityProjectile(uint32_t id, const FString& className, const DVector3& pos,
+	const DVector3& vel, DAngle yaw, DAngle pitch, int health)
+{
+	if (I_IsLocalHCDEServiceAuthority() || id == 0u || className.IsEmpty()
+		|| primaryLevel == nullptr || gamestate != GS_LEVEL || NetworkEntityManager::IsPredicting())
+	{
+		return false;
+	}
+
+	if (auto* existing = Net_FindHCDEReplicatedActor(id); existing != nullptr)
+	{
+		if (existing->Actor.Get() != nullptr)
+		{
+			Net_SetCoopAuthorityVisualTarget(*existing, pos, vel, yaw, pitch, health);
+			Net_ApplyCoopAuthorityPoseFromDelta(*existing, existing->Actor.Get(),
+				pos, vel, yaw, pitch, health,
+				HCDEActorDeltaFieldPos | HCDEActorDeltaFieldVel | HCDEActorDeltaFieldAngles | HCDEActorDeltaFieldHealth);
+			return true;
+		}
+	}
+
+	PClassActor* cls = PClass::FindActor(className.GetChars());
+	if (cls == nullptr)
+		return false;
+
+	AActor* actor = Spawn(primaryLevel, cls, pos, ALLOW_REPLACE);
+	if (actor == nullptr)
+		return false;
+
+	actor->Angles.Yaw = yaw;
+	actor->Angles.Pitch = pitch;
+	if (health > 0)
+		actor->health = health;
+	actor->ClearInterpolation();
+	Net_RegisterHCDEReplicatedActor(id, actor, HREP_ACTOR_PROJECTILE, HREP_SOURCE_COOP);
+	auto* ref = Net_FindHCDEReplicatedActor(id);
+	if (ref == nullptr)
+		return false;
+
+	Net_SetCoopAuthorityVisualOnly(ref->Id, actor);
+	Net_SetCoopAuthorityVisualTarget(*ref, pos, vel, yaw, pitch, health);
+	actor->Vel = vel;
+	Net_ApplyCoopAuthorityPoseFromDelta(*ref, actor, pos, vel, yaw, pitch, health,
+		HCDEActorDeltaFieldPos | HCDEActorDeltaFieldVel | HCDEActorDeltaFieldAngles | HCDEActorDeltaFieldHealth);
+	return true;
+}
+
+static bool Net_ApplyCoopProjectileSpawnEvent(uint32_t id, uint16_t classId, const FString& className,
+	const DVector3& pos, const DVector3& vel, DAngle yaw, DAngle pitch, int health)
+{
+	if (id == 0u)
+		return false;
+
+	if (auto* ref = Net_FindHCDEReplicatedActor(id); ref == nullptr)
+		Net_RegisterHCDEReplicatedActorBaseline(id, classId, HREP_ACTOR_PROJECTILE, HREP_SOURCE_COOP);
+
+	return Net_SpawnCoopAuthorityProjectile(id, className, pos, vel, yaw, pitch, health);
+}
+
+static bool Net_RetireCoopAuthorityProjectile(uint32_t id, int health)
+{
+	auto* ref = Net_FindHCDEReplicatedActor(id);
+	if (ref == nullptr || !Net_CoopIsProjectileRef(*ref))
+		return false;
+
+	AActor* actor = ref->Actor.Get();
+	if (actor != nullptr && (actor->ObjectFlags & OF_EuthanizeMe) == 0)
+	{
+		actor->health = min(actor->health, health);
+		actor->Destroy();
+	}
+
+	ref->CoopHasVisualTarget = false;
+	ref->CoopVisualArmed = false;
+	Net_RetireHCDEReplicatedActor(id);
+	return true;
+}
+
+void Net_RegisterCoopReplicatedMissile(AActor* missile, const AActor* source)
+{
+	if (!I_IsLocalHCDEServiceAuthority()
+		|| !Net_ShouldRecordCoopMapSpawnIndex()
+		|| Net_IsInvasionModeEnabled()
+		|| gamestate != GS_LEVEL
+		|| primaryLevel == nullptr
+		|| missile == nullptr
+		|| source == nullptr
+		|| (missile->ObjectFlags & OF_EuthanizeMe) != 0
+		|| !Net_IsInvasionReplicatedProjectile(missile)
+		|| Net_FindHCDEReplicatedActorByActor(missile) != nullptr)
+	{
+		return;
+	}
+
+	const FHCDEReplicatedActorRef* sourceRef = Net_FindHCDEReplicatedActorByActor(source);
+	if (sourceRef == nullptr
+		|| sourceRef->Source != HREP_SOURCE_COOP
+		|| sourceRef->Category != HREP_ACTOR_MONSTER)
+	{
+		return;
+	}
+
+	if (auto* sourceMutable = Net_FindHCDEReplicatedActorByActor(source); sourceMutable != nullptr)
+		Net_ForceCoopActorAction(*sourceMutable, HCDEInvasionActorActionMissile);
+
+	const uint32_t projectileId = Net_AllocateHCDEModeActorId();
+	Net_RegisterHCDEReplicatedActor(projectileId, missile, HREP_ACTOR_PROJECTILE, HREP_SOURCE_COOP);
+	Net_RecordCoopProjectileSpawnEvent(projectileId, missile);
 }
 
 static bool HCDEAppendEmptyActorDeltasV2(uint8_t* output, size_t outputCapacity, size_t& cursor)
@@ -5163,11 +5862,371 @@ static bool HCDEAppendSharedActorDeltasV2(int clientNum, uint8_t* output, size_t
 	if (!I_IsLocalHCDEServiceAuthority())
 		return true;
 
-	// Shared actor-delta-v2 for co-op/DM is disabled until the non-invasion mirror
-	// path owns client-side actor lifetimes. The client apply lane already rejects
-	// these baselines; sending them only bloats snapshots and wastes bandwidth.
-	return HCDEAppendEmptyActorDeltasV2(output, outputCapacity, cursor);
+	if (!Net_ShouldRecordCoopMapSpawnIndex())
+		return HCDEAppendEmptyActorDeltasV2(output, outputCapacity, cursor);
+
+	const size_t startCursor = cursor;
+	Net_CompactHCDEReplicatedActors();
+
+	TArray<size_t> coopIndices;
+	for (size_t i = 0u; i < HCDEReplicatedActors.Size(); ++i)
+	{
+		const FHCDEReplicatedActorRef& ref = HCDEReplicatedActors[i];
+		if (!ref.Active || ref.Retired || ref.Source != HREP_SOURCE_COOP)
+			continue;
+		if (!Net_CoopShouldUseAuthorityVisualReplication(ref.Category))
+			continue;
+		AActor* actor = ref.Actor.Get();
+		if (actor == nullptr || (actor->ObjectFlags & OF_EuthanizeMe) != 0)
+			continue;
+		coopIndices.Push(i);
+	}
+
+	size_t& sendCursor = HCDEActorDeltaV2SendCursor[clientNum];
+	const int activeRefs = int(coopIndices.Size());
+	if (activeRefs <= 0)
+		sendCursor = 0u;
+	else if (sendCursor >= size_t(activeRefs))
+		sendCursor %= size_t(activeRefs);
+
+	const size_t headerCursor = cursor;
+	if (!HCDEAppendBytes(output, outputCapacity, cursor, HCDEActorDeltasMagic, sizeof(HCDEActorDeltasMagic))
+		|| !HCDEAppendByte(output, outputCapacity, cursor, HCDEActorDeltasProtocolVersion)
+		|| !HCDEAppendByte(output, outputCapacity, cursor, 0u)
+		|| !HCDEAppendByte(output, outputCapacity, cursor, 0u)
+		|| !HCDEAppendByte(output, outputCapacity, cursor, 0u))
+	{
+		return false;
+	}
+
+	uint8_t count = 0u;
+	size_t nextSendCursor = sendCursor;
+	uint64_t fullSent = 0u;
+	uint64_t partialSent = 0u;
+	uint64_t skippedUnchanged = 0u;
+	uint64_t deferredBudget = 0u;
+	const bool baselineRepair = HCDEActorBaselineRepairActive(clientNum);
+	for (size_t pass = 0u; pass < size_t(activeRefs) && count < UINT8_MAX; ++pass)
+	{
+		const size_t rotated = (sendCursor + pass) % size_t(activeRefs);
+		const size_t actorIndex = coopIndices[rotated];
+		FHCDEReplicatedActorRef& sharedRef = HCDEReplicatedActors[actorIndex];
+		AActor* actor = sharedRef.Actor.Get();
+		if (actor == nullptr)
+			continue;
+
+		auto& sent = sharedRef.ClientState[clientNum];
+		uint8_t actorFlags = 0u;
+		if (actor->health > 0 && (actor->ObjectFlags & OF_EuthanizeMe) == 0)
+			actorFlags |= HCDEActorDeltaFlagLive;
+		const uint8_t actionState = sharedRef.Category == HREP_ACTOR_MONSTER
+			? Net_GetCoopActorActionState(actor, sharedRef)
+			: HCDEInvasionActorActionNone;
+		const int actorHealth = actor->health;
+		const DVector3 actorPos = actor->Pos();
+		const DVector3 actorVel = actor->Vel;
+		const uint32_t actorYaw = actor->Angles.Yaw.BAMs();
+		const uint32_t actorPitch = actor->Angles.Pitch.BAMs();
+		const int32_t spawnIndex = sharedRef.CoopMapSpawnIndex;
+		const bool forceFull = baselineRepair
+			|| !sent.BaselineValid
+			|| sent.ClassId != sharedRef.ClassId
+			|| sent.Category != sharedRef.Category
+			|| gametic - sent.LastBaselineTic >= TICRATE
+			|| (actorFlags & HCDEActorDeltaFlagLive) == 0u;
+
+		uint16_t fieldMask = 0u;
+		if (forceFull || sent.Category != sharedRef.Category)
+			fieldMask |= HCDEActorDeltaFieldCategory;
+		if (forceFull || sent.Flags != actorFlags)
+			fieldMask |= HCDEActorDeltaFieldFlags;
+		if (sharedRef.Category == HREP_ACTOR_MONSTER
+			&& (forceFull || sent.ActionState != actionState))
+			fieldMask |= HCDEActorDeltaFieldAction;
+		if (forceFull || sent.Health != actorHealth)
+			fieldMask |= HCDEActorDeltaFieldHealth;
+		if (forceFull || Net_InvasionDeltaVectorChanged(sent.Pos, actorPos, 1.0 / HCDEActorDeltaPosScale))
+			fieldMask |= HCDEActorDeltaFieldPos;
+		if (forceFull || Net_InvasionDeltaVectorChanged(sent.Vel, actorVel, 1.0 / HCDEActorDeltaVelScale))
+			fieldMask |= HCDEActorDeltaFieldVel;
+		if (forceFull || HCDECompactAngle(sent.Yaw) != HCDECompactAngle(actorYaw) || HCDECompactAngle(sent.Pitch) != HCDECompactAngle(actorPitch))
+			fieldMask |= HCDEActorDeltaFieldAngles;
+		if (forceFull || spawnIndex >= 0 && sent.CoopMapSpawnIndex != spawnIndex)
+			fieldMask |= HCDEActorDeltaFieldCoopSpawnIndex;
+		if (fieldMask == 0u)
+		{
+			++skippedUnchanged;
+			continue;
+		}
+
+		size_t recordBytes = 4u + 2u + 2u;
+		if (fieldMask & HCDEActorDeltaFieldCategory)
+			recordBytes += 1u;
+		if (fieldMask & HCDEActorDeltaFieldFlags)
+			recordBytes += 1u;
+		if (fieldMask & HCDEActorDeltaFieldAction)
+			recordBytes += 1u;
+		if (fieldMask & HCDEActorDeltaFieldHealth)
+			recordBytes += 2u;
+		if (fieldMask & HCDEActorDeltaFieldPos)
+			recordBytes += 3u * 4u;
+		if (fieldMask & HCDEActorDeltaFieldVel)
+			recordBytes += 3u * 2u;
+		if (fieldMask & HCDEActorDeltaFieldAngles)
+			recordBytes += 4u;
+		if (fieldMask & HCDEActorDeltaFieldCoopSpawnIndex)
+			recordBytes += 4u;
+		if (cursor > outputCapacity || outputCapacity - cursor < recordBytes)
+		{
+			++deferredBudget;
+			HCDELiveProfile.ActorQueueDeferredCandidates++;
+			HCDERecordLiveLaneDeferred(HLANE_ACTOR_DELTA, clientNum);
+			nextSendCursor = rotated;
+			break;
+		}
+
+		if (!HCDEAppendBE32(output, outputCapacity, cursor, sharedRef.Id)
+			|| !HCDEAppendBE16(output, outputCapacity, cursor, sharedRef.ClassId)
+			|| !HCDEAppendBE16(output, outputCapacity, cursor, fieldMask))
+		{
+			return false;
+		}
+		if ((fieldMask & HCDEActorDeltaFieldCategory)
+			&& !HCDEAppendByte(output, outputCapacity, cursor, sharedRef.Category))
+			return false;
+		if ((fieldMask & HCDEActorDeltaFieldFlags)
+			&& !HCDEAppendByte(output, outputCapacity, cursor, actorFlags))
+			return false;
+		if ((fieldMask & HCDEActorDeltaFieldAction)
+			&& !HCDEAppendByte(output, outputCapacity, cursor, actionState))
+			return false;
+		if ((fieldMask & HCDEActorDeltaFieldHealth)
+			&& !HCDEAppendBE16(output, outputCapacity, cursor, uint16_t(clamp<int>(actorHealth, INT16_MIN, INT16_MAX))))
+			return false;
+		if ((fieldMask & HCDEActorDeltaFieldPos)
+			&& (!HCDEAppendQuantizedPos(output, outputCapacity, cursor, actorPos.X)
+				|| !HCDEAppendQuantizedPos(output, outputCapacity, cursor, actorPos.Y)
+				|| !HCDEAppendQuantizedPos(output, outputCapacity, cursor, actorPos.Z)))
+			return false;
+		if ((fieldMask & HCDEActorDeltaFieldVel)
+			&& (!HCDEAppendQuantizedVel(output, outputCapacity, cursor, actorVel.X)
+				|| !HCDEAppendQuantizedVel(output, outputCapacity, cursor, actorVel.Y)
+				|| !HCDEAppendQuantizedVel(output, outputCapacity, cursor, actorVel.Z)))
+			return false;
+		if ((fieldMask & HCDEActorDeltaFieldAngles)
+			&& (!HCDEAppendBE16(output, outputCapacity, cursor, HCDECompactAngle(actorYaw))
+				|| !HCDEAppendBE16(output, outputCapacity, cursor, HCDECompactAngle(actorPitch))))
+			return false;
+		if ((fieldMask & HCDEActorDeltaFieldCoopSpawnIndex)
+			&& !HCDEAppendBE32(output, outputCapacity, cursor, uint32_t(max(spawnIndex, 0))))
+			return false;
+
+		if (net_coop_id_debug && (fieldMask & HCDEActorDeltaFieldCoopSpawnIndex) != 0u)
+		{
+			Printf("[COOP DELTA SEND] client=%d netid=%u spawn-index=%d class=%s\n",
+				clientNum, unsigned(sharedRef.Id), int(spawnIndex),
+				actor->GetClass()->TypeName.GetChars());
+		}
+
+		sent.BaselineValid = true;
+		sent.LastSentTic = gametic;
+		sent.ClassId = sharedRef.ClassId;
+		sent.Category = sharedRef.Category;
+		sent.Flags = actorFlags;
+		sent.ActionState = actionState;
+		sent.Health = actorHealth;
+		sent.Pos = actorPos;
+		sent.Vel = actorVel;
+		sent.Yaw = actorYaw;
+		sent.Pitch = actorPitch;
+		sent.CoopMapSpawnIndex = spawnIndex;
+		if (forceFull)
+		{
+			sent.LastBaselineTic = gametic;
+			++fullSent;
+		}
+		else
+		{
+			++partialSent;
+		}
+		++count;
+		nextSendCursor = (rotated + 1u) % size_t(activeRefs);
+	}
+
+	sendCursor = activeRefs > 0 ? nextSendCursor : 0u;
+	// Complete means this packet was not truncated by lane budget. Partial rotations
+	// across successive packets are normal and must not be treated as packet loss.
+	const uint8_t flags = deferredBudget == 0u ? HCDEActorDeltasFlagComplete : 0u;
+	output[headerCursor + HCDEActorDeltasFlagsOffset] = flags;
+	output[headerCursor + HCDEActorDeltasCountOffset] = count;
+	++HCDELiveProfile.ActorDeltaV2PacketsBuilt;
+	HCDELiveProfile.ActorDeltaV2BytesBuilt += cursor - startCursor;
+	HCDELiveProfile.ActorDeltaV2RecordsBuilt += count;
+	HCDELiveProfile.ActorDeltaV2FullRecordsBuilt += fullSent;
+	HCDELiveProfile.ActorDeltaV2PartialRecordsBuilt += partialSent;
+	HCDELiveProfile.ActorDeltaV2SkippedUnchanged += skippedUnchanged;
+	HCDELiveProfile.ActorDeltaV2DeferredBudget += deferredBudget;
+	HCDERecordLiveLaneTx(HLANE_ACTOR_DELTA, clientNum, cursor - startCursor);
+
+	DebugTrace::Markf("net", "HCDE coop actor delta v2 send client=%d count=%u active=%d full=%llu partial=%llu skipped=%llu deferred=%llu",
+		clientNum, unsigned(count), activeRefs,
+		static_cast<unsigned long long>(fullSent),
+		static_cast<unsigned long long>(partialSent),
+		static_cast<unsigned long long>(skippedUnchanged),
+		static_cast<unsigned long long>(deferredBudget));
+	return true;
 }
+
+static AActor* Net_FindCoopMapSpawnActorByIndex(int32_t index);
+static int HCDECoopActorRepairRequestNextTic = 0;
+static int HCDECoopServerActorRepairCooldownUntilTic[MAXPLAYERS] = {};
+
+static void Net_ClearCoopInterpState(FHCDEReplicatedActorRef& ref)
+{
+	ref.CoopInterpRingWrite = 0;
+	ref.CoopInterpRingCount = 0;
+}
+
+static void Net_ResetCoopClientReplicationBaseline(const char* reason)
+{
+	if (I_IsLocalHCDEServiceAuthority() || !Net_ShouldRecordCoopMapSpawnIndex())
+		return;
+
+	const int clientNum = consoleplayer;
+	if (clientNum < 0 || clientNum >= MAXPLAYERS)
+		return;
+
+	for (auto& ref : HCDEReplicatedActors)
+	{
+		ref.ClientState[clientNum] = {};
+		ref.CoopHasVisualTarget = false;
+		Net_ClearCoopInterpState(ref);
+	}
+	DebugTrace::Markf("net", "coop client replication baseline reset client=%d gametic=%d reason=%s",
+		clientNum, gametic, reason != nullptr ? reason : "unknown");
+}
+
+// Queue a client->server baseline repair. Clears local HCDA baselines/interp and
+// sets HCDEGameplayFlagActorRepairRequest on the next HCIN send (rate-limited).
+static void Net_QueueCoopActorBaselineRepairRequest(const char* reason)
+{
+	if (I_IsLocalHCDEServiceAuthority() || !Net_ShouldRecordCoopMapSpawnIndex())
+		return;
+	if (gametic < HCDECoopActorRepairRequestNextTic)
+		return;
+
+	HCDECoopActorRepairRequestNextTic = gametic + TICRATE;
+	Net_ResetCoopClientReplicationBaseline(reason);
+	HCDEOutgoingGameplayFlags |= HCDEGameplayFlagActorRepairRequest;
+	DebugTrace::Markf("net", "coop actor baseline repair requested gametic=%d reason=%s",
+		gametic, reason != nullptr ? reason : "unknown");
+	if (net_coop_id_debug)
+		Printf("[COOP REPAIR REQUEST] reason=%s\n", reason != nullptr ? reason : "unknown");
+}
+
+// Detect armed co-op visuals that stopped receiving authoritative samples.
+static void Net_MaybeQueueCoopActorBaselineRepairFromStaleness()
+{
+	if (I_IsLocalHCDEServiceAuthority() || !Net_ShouldRecordCoopMapSpawnIndex())
+		return;
+	if (gamestate != GS_LEVEL || primaryLevel == nullptr)
+		return;
+	if (gametic < HCDECoopActorRepairRequestNextTic)
+		return;
+	// Scan at most once per second; the interpolation pass already runs every frame.
+	if ((gametic % TICRATE) != 0)
+		return;
+
+	const int staleThreshold = TICRATE * 2;
+	for (const auto& ref : HCDEReplicatedActors)
+	{
+		if (!ref.Active || ref.Retired || ref.Source != HREP_SOURCE_COOP)
+			continue;
+		if (!ref.CoopVisualArmed || !ref.CoopHasVisualTarget)
+			continue;
+		if (ref.Actor.Get() == nullptr)
+			continue;
+		if (gametic - ref.CoopVisualTargetTic > staleThreshold)
+		{
+			Net_QueueCoopActorBaselineRepairRequest("stale-coop-visual-target");
+			return;
+		}
+	}
+}
+
+static void Net_DetachCoopAuthorityCorpse(FHCDEReplicatedActorRef& ref)
+{
+	AActor* actor = ref.Actor.Get();
+	if (actor != nullptr && (actor->ObjectFlags & OF_EuthanizeMe) == 0)
+		Net_PrepareInvasionMirrorCorpsePhysics(actor, true);
+	Net_SetHCDEReplicatedActorPtr(ref, nullptr);
+	ref.CoopVisualArmed = false;
+	ref.CoopHasVisualTarget = false;
+	Net_ClearCoopInterpState(ref);
+}
+
+// Client-side co-op authority retire: corpse detach or destroy (mirrors invasion).
+static void Net_RetireCoopAuthorityMonster(FHCDEReplicatedActorRef& ref, int serverHealth)
+{
+	AActor* actor = ref.Actor.Get();
+	if (actor == nullptr)
+	{
+		ref.CoopVisualArmed = false;
+		ref.CoopHasVisualTarget = false;
+		Net_ClearCoopInterpState(ref);
+		return;
+	}
+
+	if (Net_CoopIsProjectileRef(ref))
+	{
+		if ((actor->ObjectFlags & OF_EuthanizeMe) == 0)
+		{
+			actor->ClearCounters();
+			actor->Destroy();
+		}
+		Net_SetHCDEReplicatedActorPtr(ref, nullptr);
+		ref.CoopVisualArmed = false;
+		ref.CoopHasVisualTarget = false;
+		Net_ClearCoopInterpState(ref);
+		return;
+	}
+
+	const bool alreadyCorpse = Net_IsInvasionActorCorpseLike(actor);
+	if (!alreadyCorpse && serverHealth <= 0 && (actor->ObjectFlags & OF_EuthanizeMe) == 0)
+	{
+		actor->health = min<int>(actor->health, serverHealth);
+		Net_PrepareInvasionMirrorCorpsePhysics(actor, false);
+		if ((actor->flags & MF_CORPSE) == 0)
+			actor->CallDie(nullptr, nullptr);
+	}
+
+	if (Net_IsInvasionActorCorpseLike(actor) && (actor->ObjectFlags & OF_EuthanizeMe) == 0)
+	{
+		Net_DetachCoopAuthorityCorpse(ref);
+		return;
+	}
+
+	DebugTrace::Markf("net", "coop authority stale actor destroyed id=%u class=%s health=%d server-health=%d",
+		unsigned(ref.Id),
+		actor->GetClass() != nullptr ? actor->GetClass()->TypeName.GetChars() : "<unknown>",
+		actor->health,
+		serverHealth);
+	actor->ClearCounters();
+	actor->Destroy();
+	Net_SetHCDEReplicatedActorPtr(ref, nullptr);
+	ref.CoopVisualArmed = false;
+	ref.CoopHasVisualTarget = false;
+	Net_ClearCoopInterpState(ref);
+}
+
+static void Net_SetCoopAuthorityVisualOnly(uint32_t id, AActor* actor);
+static void Net_TryApplyCoopAuthorityBind(FHCDEReplicatedActorRef* ref, int32_t spawnIndex);
+static void Net_SetCoopAuthorityVisualTarget(FHCDEReplicatedActorRef& ref, const DVector3& pos,
+	const DVector3& vel, DAngle yaw, DAngle pitch, int health);
+static void Net_ApplyCoopAuthorityPoseFromDelta(FHCDEReplicatedActorRef& ref, AActor* actor,
+	const DVector3& pos, const DVector3& vel, DAngle yaw, DAngle pitch, int health, uint32_t fieldMask);
+static void Net_ApplyCoopAuthorityActionState(FHCDEReplicatedActorRef& ref, AActor* actor, uint8_t actionState);
+static void Net_ClientTickInterpolation(unsigned& updated, unsigned& skipped);
 
 static bool HCDEApplyActorDeltasV2(int clientNum, const uint8_t* body, size_t bodyBytes, size_t& bodyCursor)
 {
@@ -5210,6 +6269,7 @@ static bool HCDEApplyActorDeltasV2(int clientNum, const uint8_t* body, size_t bo
 		double values[6] = {};
 		uint16_t yawCompact = 0u;
 		uint16_t pitchCompact = 0u;
+		int32_t coopSpawnIndex = -1;
 		if (!HCDEReadBE32Field(body, bodyBytes, cursor, id)
 			|| !HCDEReadBE16Field(body, bodyBytes, cursor, classId)
 			|| !HCDEReadBE16Field(body, bodyBytes, cursor, fieldMask)
@@ -5254,6 +6314,13 @@ static bool HCDEApplyActorDeltasV2(int clientNum, const uint8_t* body, size_t bo
 		{
 			return false;
 		}
+		if ((fieldMask & HCDEActorDeltaFieldCoopSpawnIndex) != 0u)
+		{
+			uint32_t rawSpawnIndex = 0u;
+			if (!HCDEReadBE32Field(body, bodyBytes, cursor, rawSpawnIndex))
+				return false;
+			coopSpawnIndex = int32_t(rawSpawnIndex);
+		}
 		if (category > HREP_ACTOR_VISUAL
 			|| (actorFlags & ~HCDEActorDeltaFlagLive) != 0u
 			|| actionState > HCDEInvasionActorActionMax)
@@ -5263,14 +6330,10 @@ static bool HCDEApplyActorDeltasV2(int clientNum, const uint8_t* body, size_t bo
 
 		auto* sharedRef = Net_FindHCDEReplicatedActor(id);
 		auto* invasionRef = invasionActorLane ? Net_FindInvasionReplicatedActor(id) : nullptr;
-		if (!invasionActorLane && sharedRef == nullptr)
+		if (!invasionActorLane && sharedRef == nullptr && Net_ShouldRecordCoopMapSpawnIndex()
+			&& Net_CoopShouldUseAuthorityVisualReplication(category))
 		{
-			// Non-invasion actor deltas are disabled on the send path above, but
-			// tolerate older peers by parsing and discarding their records. The
-			// old behavior registered baselines with no backing client actor, so
-			// a repeated full baseline stream grew HCDEReplicatedActors forever
-			// and polluted prediction diagnostics with thousands of missing refs.
-			sharedRef = nullptr;
+			sharedRef = Net_RegisterHCDEReplicatedActorBaseline(id, classId, category, HREP_SOURCE_COOP);
 		}
 		AActor* actor = invasionRef != nullptr ? invasionRef->Actor.Get()
 			: (sharedRef != nullptr ? sharedRef->Actor.Get() : nullptr);
@@ -5330,14 +6393,16 @@ static bool HCDEApplyActorDeltasV2(int clientNum, const uint8_t* body, size_t bo
 				pitchCompact = HCDECompactAngle(actor->Angles.Pitch.BAMs());
 			}
 		}
+		if ((fieldMask & HCDEActorDeltaFieldCoopSpawnIndex) == 0u)
+			coopSpawnIndex = hasBaseline ? state->CoopMapSpawnIndex : (sharedRef != nullptr ? sharedRef->CoopMapSpawnIndex : -1);
 
 		const int health = int(int16_t(healthBits));
 		const DVector3 pos(values[0], values[1], values[2]);
 		const DVector3 vel(values[3], values[4], values[5]);
 		const DAngle targetYaw = DAngle::fromBam(HCDEExpandCompactAngle(yawCompact));
 		const DAngle targetPitch = DAngle::fromBam(HCDEExpandCompactAngle(pitchCompact));
-		// Non-invasion HCDA blocks establish shared baselines only. Actor birth,
-		// ownership, and destructive gameplay application stay on later authority work.
+		// Non-invasion HCDA blocks carry co-op monster baselines and pose samples.
+		// Pickups and other categories are ignored until dedicated replication work.
 		if (!invasionActorLane && sharedRef == nullptr)
 		{
 			++missing;
@@ -5376,6 +6441,10 @@ static bool HCDEApplyActorDeltasV2(int clientNum, const uint8_t* body, size_t bo
 			sharedRef->Category = category;
 			if (invasionActorLane)
 				sharedRef->Source = HREP_SOURCE_INVASION;
+			else if (sharedRef->Source == HREP_SOURCE_SHARED)
+				sharedRef->Source = HREP_SOURCE_COOP;
+			if ((fieldMask & HCDEActorDeltaFieldCoopSpawnIndex) != 0u)
+				sharedRef->CoopMapSpawnIndex = coopSpawnIndex;
 			sharedRef->LastTouchedTic = gametic;
 			state = &sharedRef->ClientState[clientNum];
 			state->BaselineValid = true;
@@ -5389,12 +6458,72 @@ static bool HCDEApplyActorDeltasV2(int clientNum, const uint8_t* body, size_t bo
 			state->Vel = vel;
 			state->Yaw = HCDEExpandCompactAngle(yawCompact);
 			state->Pitch = HCDEExpandCompactAngle(pitchCompact);
-			if ((fieldMask & (HCDEActorDeltaFieldCategory | HCDEActorDeltaFieldFlags | HCDEActorDeltaFieldHealth | HCDEActorDeltaFieldPos | HCDEActorDeltaFieldAngles)) != 0u)
+			state->CoopMapSpawnIndex = coopSpawnIndex;
+			if ((fieldMask & (HCDEActorDeltaFieldCategory | HCDEActorDeltaFieldFlags | HCDEActorDeltaFieldHealth | HCDEActorDeltaFieldPos | HCDEActorDeltaFieldAngles | HCDEActorDeltaFieldCoopSpawnIndex)) != 0u)
 				state->LastBaselineTic = gametic;
+			if (net_coop_id_debug && !invasionActorLane && (fieldMask & HCDEActorDeltaFieldCoopSpawnIndex) != 0u)
+			{
+				Printf("[COOP DELTA RECV] client=%d netid=%u spawn-index=%d category=%u\n",
+					clientNum, unsigned(sharedRef->Id), int(coopSpawnIndex), unsigned(category));
+			}
+			if (!invasionActorLane
+				&& (fieldMask & HCDEActorDeltaFieldCoopSpawnIndex) != 0u
+				&& Net_CoopShouldUseAuthorityVisualReplication(category))
+			{
+				Net_TryApplyCoopAuthorityBind(sharedRef, coopSpawnIndex);
+			}
 		}
 
 		if (!invasionActorLane)
 		{
+			// Retire only on explicit death fields so partial pose deltas cannot
+			// mis-fire from inherited baseline health/flags.
+			// When both flags and health are present in the same delta, require both
+			// to agree on death to avoid inconsistent states (e.g., flags say dead but
+			// health > 0, or health <= 0 but flags say alive).
+			if (sharedRef != nullptr)
+			{
+				const bool hasFlags = (fieldMask & HCDEActorDeltaFieldFlags) != 0u;
+				const bool hasHealth = (fieldMask & HCDEActorDeltaFieldHealth) != 0u;
+				const bool flagsIndicateDeath = hasFlags && (actorFlags & HCDEActorDeltaFlagLive) == 0u;
+				const bool healthIndicatesDeath = hasHealth && health <= 0;
+
+				// If both fields present, both must agree on death. If only one present,
+				// use that field's indication.
+				const bool shouldRetire = (hasFlags && hasHealth)
+					? (flagsIndicateDeath && healthIndicatesDeath)
+					: (flagsIndicateDeath || healthIndicatesDeath);
+
+				if (shouldRetire)
+				{
+					if (sharedRef->CoopVisualArmed && sharedRef->Actor.Get() != nullptr)
+						Net_RetireCoopAuthorityMonster(*sharedRef, health);
+					else
+					{
+						sharedRef->CoopVisualArmed = false;
+						sharedRef->CoopHasVisualTarget = false;
+						Net_ClearCoopInterpState(*sharedRef);
+					}
+					++applied;
+					continue;
+				}
+			}
+			if (sharedRef != nullptr
+				&& sharedRef->CoopVisualArmed
+				&& sharedRef->Actor.Get() != nullptr
+				&& (fieldMask & (HCDEActorDeltaFieldPos | HCDEActorDeltaFieldVel | HCDEActorDeltaFieldAngles | HCDEActorDeltaFieldHealth)) != 0u)
+			{
+				Net_ApplyCoopAuthorityPoseFromDelta(*sharedRef, sharedRef->Actor.Get(),
+					pos, vel, targetYaw, targetPitch, health, fieldMask);
+			}
+			if (sharedRef != nullptr
+				&& sharedRef->CoopVisualArmed
+				&& sharedRef->Category == HREP_ACTOR_MONSTER
+				&& sharedRef->Actor.Get() != nullptr
+				&& (fieldMask & HCDEActorDeltaFieldAction) != 0u)
+			{
+				Net_ApplyCoopAuthorityActionState(*sharedRef, sharedRef->Actor.Get(), actionState);
+			}
 			++applied;
 			continue;
 		}
@@ -5469,4 +6598,524 @@ static bool HCDEApplyActorDeltasV2(int clientNum, const uint8_t* body, size_t bo
 		}
 	}
 	return true;
+}
+
+// Reset the per-map co-op spawn-index binding table. Called for index 0 of the
+// level's map-thing spawn loop (mirrors Net_BeginInvasionSpawnRegistration), so
+// the table only ever holds the current map's THINGS-order indices.
+void Net_BeginCoopMapSpawnRegistration(FLevelLocals* level)
+{
+	HCDECoopMapSpawnIndexLevel = level;
+	HCDECoopMapSpawnIndex.Clear();
+	HCDECoopMapSpawnActorByIndex.Clear();
+	// Drop any prior-map co-op NetID tables so recycled actor pointers cannot
+	// inherit stale spawn-index bindings after a map change.
+	if (Net_ShouldRecordCoopMapSpawnIndex())
+	{
+		Net_ClearHCDEReplicatedActors();
+		HCDECoopActorRepairRequestNextTic = 0;
+		HCDEResetLocalPlayerBaselineSync();
+		HCDEOutgoingGameplayFlags = 0u;
+		memset(HCDECoopServerActorRepairCooldownUntilTic, 0, sizeof(HCDECoopServerActorRepairCooldownUntilTic));
+	}
+}
+
+// Record the deterministic THINGS-lump index for a map-spawned actor. Server and
+// client both call this from FLevelLocals::SpawnMapThing during level load. The
+// index becomes the binding hint a client uses to attach the server's authoritative
+// co-op NetID to this exact local actor. When net_coop_id_debug is on we log the
+// derivation on both sides so spawn-order determinism can be verified by diffing.
+void Net_NoteCoopMapSpawnIndex(AActor* actor, int index)
+{
+	if (!Net_ShouldRecordCoopMapSpawnIndex())
+		return;
+	if (actor == nullptr || index < 0)
+		return;
+
+	FLevelLocals* level = actor->Level;
+	if (level == nullptr)
+		return;
+	if (HCDECoopMapSpawnIndexLevel != level)
+		Net_BeginCoopMapSpawnRegistration(level);
+
+	HCDECoopMapSpawnIndex[actor] = index;
+	HCDECoopMapSpawnActorByIndex.Insert(index, MakeObjPtr<AActor*>(actor));
+
+	if (net_coop_id_debug)
+	{
+		const DVector3 pos = actor->Pos();
+		Printf("[COOP NETID] side=%s index=%d class=%s pos=(%.1f, %.1f, %.1f)\n",
+			I_IsLocalHCDEServiceAuthority() ? "server" : "client",
+			index,
+			actor->GetClass()->TypeName.GetChars(),
+			pos.X, pos.Y, pos.Z);
+	}
+}
+
+// Look up the deterministic map-spawn index previously recorded for an actor, or
+// -1 if it was not a map-spawned thing (e.g. dynamically spawned at runtime, which
+// uses an authority spawn event instead of the index binding hint).
+int Net_GetCoopMapSpawnIndex(const AActor* actor)
+{
+	if (actor == nullptr)
+		return -1;
+	if (const int32_t* found = HCDECoopMapSpawnIndex.CheckKey(actor))
+		return *found;
+	return -1;
+}
+
+static AActor* Net_FindCoopMapSpawnActorByIndex(int32_t index)
+{
+	if (index < 0)
+		return nullptr;
+	if (const TObjPtr<AActor*>* found = HCDECoopMapSpawnActorByIndex.CheckKey(index))
+		return found->Get();
+	return nullptr;
+}
+
+static void Net_SetCoopAuthorityVisualOnly(uint32_t id, AActor* actor)
+{
+	if (I_IsLocalHCDEServiceAuthority()
+		|| actor == nullptr
+		|| (actor->ObjectFlags & OF_EuthanizeMe) != 0)
+	{
+		return;
+	}
+
+	FHCDEReplicatedActorRef* ref = Net_FindHCDEReplicatedActor(id);
+	if (ref != nullptr && ref->CoopVisualArmed)
+		return;
+
+	const bool projectileVisual = ref != nullptr && Net_CoopIsProjectileRef(*ref);
+	const bool wasThinking = actor->GetStatNum() >= STAT_FIRST_THINKING;
+	const bool needsWorldRelink = (actor->flags & MF_NOBLOCKMAP) == 0
+		|| (actor->flags & (MF_SOLID | MF_SHOOTABLE)) != 0;
+	if (needsWorldRelink)
+	{
+		FLinkContext ctx;
+		actor->UnlinkFromWorld(&ctx);
+		actor->flags |= MF_NOBLOCKMAP;
+		actor->flags &= ~(MF_SOLID | MF_SHOOTABLE);
+		actor->LinkToWorld(&ctx);
+	}
+	else
+	{
+		actor->flags &= ~(MF_SOLID | MF_SHOOTABLE);
+	}
+	if (projectileVisual)
+		actor->renderflags |= RF_NOSPRITESHADOW;
+
+	actor->flags |= MF_NOCLIP;
+	actor->flags4 |= MF4_STANDSTILL;
+	actor->flags5 |= MF5_NOINTERACTION | MF5_NOINFIGHTING;
+	actor->flags7 &= ~MF7_INCHASE;
+	actor->target = nullptr;
+	actor->lastenemy = nullptr;
+	actor->goal = nullptr;
+	if (!projectileVisual)
+		actor->Vel = DVector3(0, 0, 0);
+
+	if (!projectileVisual && actor->state == actor->SpawnState && actor->SeeState != nullptr)
+		actor->SetState(actor->SeeState, true);
+
+	if (wasThinking)
+		actor->ChangeStatNum(STAT_INFO);
+
+	if (ref != nullptr)
+	{
+		ref->CoopVisualArmed = true;
+		if (!projectileVisual)
+			ref->CoopMapSpawnIndex = Net_GetCoopMapSpawnIndex(actor);
+	}
+
+	if (net_coop_id_debug)
+	{
+		Printf("[COOP VISUAL ARM] netid=%u spawn-index=%d class=%s projectile=%d\n",
+			unsigned(id), int(Net_GetCoopMapSpawnIndex(actor)),
+			actor->GetClass()->TypeName.GetChars(), projectileVisual ? 1 : 0);
+	}
+}
+
+static void Net_TryApplyCoopAuthorityBind(FHCDEReplicatedActorRef* ref, int32_t spawnIndex)
+{
+	if (I_IsLocalHCDEServiceAuthority() || ref == nullptr || spawnIndex < 0
+		|| ref->Category != HREP_ACTOR_MONSTER)
+	{
+		return;
+	}
+
+	AActor* localActor = Net_FindCoopMapSpawnActorByIndex(spawnIndex);
+	if (localActor == nullptr || (localActor->ObjectFlags & OF_EuthanizeMe) != 0)
+		return;
+
+	if (ref->Actor.Get() != localActor)
+	{
+		Net_RegisterHCDEReplicatedActor(ref->Id, localActor, ref->Category, HREP_SOURCE_COOP);
+		ref = Net_FindHCDEReplicatedActor(ref->Id);
+		if (ref == nullptr)
+			return;
+	}
+
+	ref->CoopMapSpawnIndex = spawnIndex;
+	Net_SetCoopAuthorityVisualOnly(ref->Id, localActor);
+}
+
+bool Net_IsCoopAuthorityVisualActor(const AActor* actor)
+{
+	if (actor == nullptr
+		|| I_IsLocalHCDEServiceAuthority()
+		|| !netgame
+		|| deathmatch
+		|| sv_gametype == 4)
+	{
+		return false;
+	}
+
+	const FHCDEReplicatedActorRef* ref = Net_FindHCDEReplicatedActorByActor(actor);
+	return ref != nullptr
+		&& ref->Active
+		&& ref->Source == HREP_SOURCE_COOP
+		&& Net_CoopShouldUseAuthorityVisualReplication(ref->Category)
+		&& ref->CoopVisualArmed;
+}
+
+bool Net_IsCoopAuthorityVisualBlockingActor(const AActor* actor)
+{
+	// Reserved for a future policy where visual-only monsters may still block
+	// movement without participating in damage. Currently always non-blocking.
+	(void)actor;
+	return false;
+}
+
+static bool Net_CoopInterpEnabled()
+{
+	return double(*cl_interp) * TICRATE > 0.001;
+}
+
+static void Net_PushCoopInterpSample(FHCDEReplicatedActorRef& ref, int tic,
+	const DVector3& pos, const DVector3& vel, DAngle yaw, DAngle pitch, int health)
+{
+	if (ref.CoopInterpRingCount > 0)
+	{
+		const uint8_t lastIdx = uint8_t((ref.CoopInterpRingWrite + HCDECoopInterpRingSize - 1) % HCDECoopInterpRingSize);
+		if (ref.CoopInterpRing[lastIdx].Tic == tic)
+		{
+			FHCDECoopInterpSample& sample = ref.CoopInterpRing[lastIdx];
+			sample.Pos = pos;
+			sample.Vel = vel;
+			sample.Yaw = yaw;
+			sample.Pitch = pitch;
+			sample.Health = health;
+			return;
+		}
+	}
+
+	FHCDECoopInterpSample& sample = ref.CoopInterpRing[ref.CoopInterpRingWrite];
+	sample.Tic = tic;
+	sample.Pos = pos;
+	sample.Vel = vel;
+	sample.Yaw = yaw;
+	sample.Pitch = pitch;
+	sample.Health = health;
+	ref.CoopInterpRingWrite = uint8_t((ref.CoopInterpRingWrite + 1) % HCDECoopInterpRingSize);
+	if (ref.CoopInterpRingCount < HCDECoopInterpRingSize)
+		++ref.CoopInterpRingCount;
+}
+
+static bool Net_GetCoopInterpBracket(const FHCDEReplicatedActorRef& ref, double renderTic,
+	const FHCDECoopInterpSample*& older, const FHCDECoopInterpSample*& newer, double& frac)
+{
+	older = nullptr;
+	newer = nullptr;
+	frac = 0.0;
+	if (ref.CoopInterpRingCount == 0)
+		return false;
+
+	int bestOlderTic = INT_MIN;
+	int bestNewerTic = INT_MAX;
+	for (uint8_t i = 0; i < ref.CoopInterpRingCount; ++i)
+	{
+		const uint8_t idx = uint8_t((ref.CoopInterpRingWrite + HCDECoopInterpRingSize - ref.CoopInterpRingCount + i) % HCDECoopInterpRingSize);
+		const FHCDECoopInterpSample& sample = ref.CoopInterpRing[idx];
+		if (sample.Tic <= renderTic && sample.Tic >= bestOlderTic)
+		{
+			bestOlderTic = sample.Tic;
+			older = &sample;
+		}
+		if (sample.Tic >= renderTic && sample.Tic <= bestNewerTic)
+		{
+			bestNewerTic = sample.Tic;
+			newer = &sample;
+		}
+	}
+
+	if (older == nullptr && newer == nullptr)
+		return false;
+	if (older == nullptr)
+	{
+		older = newer;
+		return true;
+	}
+	if (newer == nullptr || older == newer)
+		return true;
+
+	const double span = double(newer->Tic - older->Tic);
+	if (span > 0.0)
+		frac = clamp((renderTic - double(older->Tic)) / span, 0.0, 1.0);
+	return true;
+}
+
+static void Net_ApplyCoopInterpVisualPose(AActor* actor, const DVector3& pos, const DVector3& vel,
+	DAngle yaw, DAngle pitch, int health, bool projectileVisual, double snapDistanceSq)
+{
+	actor->health = health;
+	actor->Angles.Yaw = yaw;
+	actor->Angles.Pitch = pitch;
+
+	const DVector3 oldRenderPos = actor->Pos();
+	const DVector3 delta = pos - oldRenderPos;
+	const double distSq = delta.LengthSquared();
+	const int oldPortalGroup = actor->Sector != nullptr ? actor->Sector->PortalGroup : actor->PrevPortalGroup;
+	if (projectileVisual)
+	{
+		actor->SetOrigin(pos, false);
+		actor->Prev = oldRenderPos;
+		actor->PrevPortalGroup = oldPortalGroup;
+		actor->Vel = vel;
+		return;
+	}
+
+	if (distSq > snapDistanceSq)
+	{
+		actor->SetOrigin(pos, false);
+		actor->Prev = pos;
+		actor->PrevPortalGroup = actor->Sector != nullptr ? actor->Sector->PortalGroup : actor->PrevPortalGroup;
+		actor->ClearInterpolation();
+		actor->Vel = DVector3(0, 0, 0);
+		return;
+	}
+
+	actor->SetOrigin(pos, false);
+	actor->Prev = oldRenderPos;
+	actor->PrevPortalGroup = oldPortalGroup;
+	actor->Vel = DVector3(0, 0, 0);
+}
+
+// Store the latest authoritative pose sample for per-frame client smoothing.
+static void Net_SetCoopAuthorityVisualTarget(FHCDEReplicatedActorRef& ref, const DVector3& pos,
+	const DVector3& vel, DAngle yaw, DAngle pitch, int health)
+{
+	ref.CoopHasVisualTarget = true;
+	ref.CoopVisualTargetPos = pos;
+	ref.CoopVisualTargetVel = vel;
+	ref.CoopVisualTargetYaw = yaw;
+	ref.CoopVisualTargetPitch = pitch;
+	ref.CoopVisualTargetHealth = health;
+	ref.CoopVisualTargetTic = gametic;
+	if (Net_CoopInterpEnabled())
+		Net_PushCoopInterpSample(ref, gametic, pos, vel, yaw, pitch, health);
+}
+
+// Apply an incoming HCDA pose sample. With cl_interp enabled, samples are buffered
+// and Net_ClientTickInterpolation renders them at now - cl_interp.
+static void Net_ApplyCoopAuthorityPoseFromDelta(FHCDEReplicatedActorRef& ref, AActor* actor,
+	const DVector3& pos, const DVector3& vel, DAngle yaw, DAngle pitch, int health, uint32_t fieldMask)
+{
+	if (I_IsLocalHCDEServiceAuthority()
+		|| actor == nullptr
+		|| (actor->ObjectFlags & OF_EuthanizeMe) != 0
+		|| !ref.CoopVisualArmed)
+	{
+		return;
+	}
+
+	const bool projectileVisual = Net_CoopIsProjectileRef(ref);
+	const bool firstVisualTarget = !ref.CoopHasVisualTarget;
+	const bool useInterp = Net_CoopInterpEnabled();
+	Net_SetCoopAuthorityVisualTarget(ref, pos, vel, yaw, pitch, health);
+	if ((fieldMask & HCDEActorDeltaFieldHealth) != 0u)
+		actor->health = health;
+
+	const DVector3 oldPos = actor->Pos();
+	const double distSq = (pos - oldPos).LengthSquared();
+	const double snapDistanceSq = HCDEInvasionMirrorVisualSnapDistance * HCDEInvasionMirrorVisualSnapDistance;
+	const bool snapPose = firstVisualTarget || distSq > snapDistanceSq;
+
+	if (useInterp)
+	{
+		if (!snapPose)
+			return;
+	}
+	else if ((fieldMask & HCDEActorDeltaFieldAngles) != 0u)
+	{
+		actor->Angles.Yaw = yaw;
+		actor->Angles.Pitch = pitch;
+	}
+
+	if (projectileVisual && (fieldMask & (HCDEActorDeltaFieldPos | HCDEActorDeltaFieldVel)) != 0u)
+	{
+		const DVector3 oldRenderPos = actor->Pos();
+		const int oldPortalGroup = actor->Sector != nullptr ? actor->Sector->PortalGroup : actor->PrevPortalGroup;
+		actor->SetOrigin(pos, false);
+		actor->Prev = oldRenderPos;
+		actor->PrevPortalGroup = oldPortalGroup;
+		actor->ClearInterpolation();
+		actor->Vel = vel;
+	}
+	else if (snapPose)
+	{
+		actor->SetOrigin(pos, false);
+		actor->Prev = pos;
+		actor->PrevPortalGroup = actor->Sector != nullptr ? actor->Sector->PortalGroup : actor->PrevPortalGroup;
+		actor->ClearInterpolation();
+		if ((fieldMask & HCDEActorDeltaFieldPos) != 0u)
+			actor->Vel = DVector3(0, 0, 0);
+		if ((fieldMask & HCDEActorDeltaFieldAngles) != 0u)
+		{
+			actor->Angles.Yaw = yaw;
+			actor->Angles.Pitch = pitch;
+		}
+	}
+	else if (!useInterp && (fieldMask & HCDEActorDeltaFieldPos) != 0u && distSq > 0.01)
+	{
+		const DVector3 oldRenderPos = actor->Pos();
+		const int oldPortalGroup = actor->Sector != nullptr ? actor->Sector->PortalGroup : actor->PrevPortalGroup;
+		const double dist = sqrt(distSq);
+		const double step = min(dist, HCDEInvasionMirrorVisualMaxStepPerTic);
+		const DVector3 nextPos = oldRenderPos + (pos - oldRenderPos) * (step / dist);
+		actor->SetOrigin(nextPos, false);
+		actor->Prev = oldRenderPos;
+		actor->PrevPortalGroup = oldPortalGroup;
+		actor->Vel = DVector3(0, 0, 0);
+	}
+	if (net_coop_id_debug && (fieldMask & HCDEActorDeltaFieldPos) != 0u)
+	{
+		Printf("[COOP POSE APPLY] netid=%u spawn-index=%d pos=(%.1f, %.1f, %.1f) snap=%d interp=%d\n",
+			unsigned(ref.Id), int(ref.CoopMapSpawnIndex),
+			pos.X, pos.Y, pos.Z, snapPose ? 1 : 0, useInterp ? 1 : 0);
+	}
+}
+
+// Per-frame visual smoothing for authority-bound co-op actors on clients.
+static void Net_ClientTickInterpolation(unsigned& updated, unsigned& skipped)
+{
+	updated = 0u;
+	skipped = 0u;
+	if (I_IsLocalHCDEServiceAuthority()
+		|| !netgame
+		|| deathmatch
+		|| sv_gametype == 4)
+	{
+		return;
+	}
+
+	const bool useInterp = Net_CoopInterpEnabled();
+	const double interpTics = double(*cl_interp) * TICRATE;
+	const double nowTic = double(gametic) + I_GetTimeFrac();
+	const double renderTic = nowTic - interpTics;
+	const double snapDistanceSq = HCDEInvasionMirrorVisualSnapDistance * HCDEInvasionMirrorVisualSnapDistance;
+
+	for (auto& ref : HCDEReplicatedActors)
+	{
+		if (!ref.Active
+			|| ref.Source != HREP_SOURCE_COOP
+			|| !ref.CoopVisualArmed
+			|| !ref.CoopHasVisualTarget)
+		{
+			continue;
+		}
+
+		AActor* actor = ref.Actor.Get();
+		if (actor == nullptr || (actor->ObjectFlags & OF_EuthanizeMe) != 0)
+		{
+			++skipped;
+			continue;
+		}
+
+		const bool projectileVisual = Net_CoopIsProjectileRef(ref);
+		if (useInterp && ref.CoopInterpRingCount > 0)
+		{
+			const FHCDECoopInterpSample* older = nullptr;
+			const FHCDECoopInterpSample* newer = nullptr;
+			double frac = 0.0;
+			if (!Net_GetCoopInterpBracket(ref, renderTic, older, newer, frac) || older == nullptr)
+			{
+				++skipped;
+				continue;
+			}
+
+			DVector3 pos = older->Pos;
+			DVector3 vel = older->Vel;
+			DAngle yaw = older->Yaw;
+			DAngle pitch = older->Pitch;
+			int health = older->Health;
+			if (newer != nullptr && older != newer)
+			{
+				const double invFrac = 1.0 - frac;
+				pos = older->Pos * invFrac + newer->Pos * frac;
+				vel = older->Vel * invFrac + newer->Vel * frac;
+				yaw = older->Yaw + deltaangle(older->Yaw, newer->Yaw) * frac;
+				pitch = older->Pitch + deltaangle(older->Pitch, newer->Pitch) * frac;
+				health = int(older->Health * invFrac + newer->Health * frac + 0.5);
+			}
+			else if (renderTic > double(older->Tic))
+			{
+				const double ahead = renderTic - double(older->Tic);
+				if (ahead <= 2.0)
+				{
+					pos = older->Pos + older->Vel * ahead;
+					vel = older->Vel;
+				}
+			}
+
+			Net_ApplyCoopInterpVisualPose(actor, pos, vel, yaw, pitch, health, projectileVisual, snapDistanceSq);
+			++updated;
+			continue;
+		}
+
+		actor->health = ref.CoopVisualTargetHealth;
+		actor->Angles.Yaw = ref.CoopVisualTargetYaw;
+		actor->Angles.Pitch = ref.CoopVisualTargetPitch;
+
+		const DVector3 oldPos = actor->Pos();
+		const DVector3 delta = ref.CoopVisualTargetPos - oldPos;
+		const double distSq = delta.LengthSquared();
+		if (projectileVisual)
+		{
+			const DVector3 oldRenderPos = actor->Pos();
+			const int oldPortalGroup = actor->Sector != nullptr ? actor->Sector->PortalGroup : actor->PrevPortalGroup;
+			actor->SetOrigin(ref.CoopVisualTargetPos, false);
+			actor->Prev = oldRenderPos;
+			actor->PrevPortalGroup = oldPortalGroup;
+			actor->Vel = ref.CoopVisualTargetVel;
+		}
+		else if (distSq > snapDistanceSq)
+		{
+			actor->SetOrigin(ref.CoopVisualTargetPos, false);
+			actor->Prev = ref.CoopVisualTargetPos;
+			actor->PrevPortalGroup = actor->Sector != nullptr ? actor->Sector->PortalGroup : actor->PrevPortalGroup;
+			actor->ClearInterpolation();
+			actor->Vel = DVector3(0, 0, 0);
+		}
+		else if (distSq > 0.01)
+		{
+			const DVector3 oldRenderPos = actor->Pos();
+			const int oldPortalGroup = actor->Sector != nullptr ? actor->Sector->PortalGroup : actor->PrevPortalGroup;
+			const double dist = sqrt(distSq);
+			const double step = min(dist, HCDEInvasionMirrorVisualMaxStepPerTic);
+			const DVector3 nextPos = oldRenderPos + delta * (step / dist);
+			actor->SetOrigin(nextPos, false);
+			actor->Prev = oldRenderPos;
+			actor->PrevPortalGroup = oldPortalGroup;
+			actor->Vel = DVector3(0, 0, 0);
+		}
+		else
+		{
+			actor->Vel = DVector3(0, 0, 0);
+		}
+
+		++updated;
+	}
+
+	Net_MaybeQueueCoopActorBaselineRepairFromStaleness();
 }
