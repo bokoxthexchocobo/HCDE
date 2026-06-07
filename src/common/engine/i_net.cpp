@@ -3329,7 +3329,7 @@ static bool HostGame(int arg)
 	}
 
 	I_NetDone();
-	I_NetLog("Total players: %d", I_UsesDedicatedServerSlot() ? max(connectedPlayers - 1, 0) : connectedPlayers);
+	I_NetLog("Total players: %d", I_GetReservedServerSlot() >= 0 ? max(connectedPlayers - 1, 0) : connectedPlayers);
 
 	return true;
 }
@@ -4139,34 +4139,59 @@ bool I_UsesDedicatedServerSlot()
 	return DedicatedServerMode || DedicatedJoinMode;
 }
 
+int I_GetReservedServerSlot()
+{
+	const int authoritySlot = I_GetHCDEServiceAuthoritySlot();
+	if (authoritySlot < 0)
+		return -1;
+
+	// Dedicated server / dedicated late-join: the arbitrator slot is the
+	// transport-only server endpoint, never a player.
+	if (I_UsesDedicatedServerSlot())
+		return authoritySlot;
+
+	// Client view: HCDE's authority is always a dedicated (non-player) server,
+	// so when the authority is a separate remote process (not the local player)
+	// its slot is the server -- never a player -- even if the dedicated
+	// connect-ack flag was not negotiated on this client. Without this the
+	// client gives the server a real pawn at player start #1, counts it as a
+	// second player, and the intermission ready vote sees humanParticipants==2
+	// (the ready latch degrades into a toggle and the cutscene deadlocks).
+	if (I_IsRemoteHCDEServiceAuthority(authoritySlot))
+		return authoritySlot;
+
+	return -1;
+}
+
 bool I_IsServerReservedSlot(int client)
 {
-	return I_UsesDedicatedServerSlot() && client == I_GetHCDEServiceAuthoritySlot();
+	const int reservedSlot = I_GetReservedServerSlot();
+	return reservedSlot >= 0 && client == reservedSlot;
 }
 
 int I_GetFirstPlayableClientSlot()
 {
-	const int authoritySlot = I_GetHCDEServiceAuthoritySlot();
-	return I_UsesDedicatedServerSlot() ? authoritySlot + 1 : 0;
+	const int reservedSlot = I_GetReservedServerSlot();
+	return reservedSlot >= 0 ? reservedSlot + 1 : 0;
 }
 
 int I_GetVisibleMaxClients()
 {
-	return I_UsesDedicatedServerSlot() ? max(MaxClients - 1, 0) : MaxClients;
+	return I_GetReservedServerSlot() >= 0 ? max(MaxClients - 1, 0) : MaxClients;
 }
 
 int I_ToVisibleClientSlot(int client)
 {
-	const int authoritySlot = I_GetHCDEServiceAuthoritySlot();
-	if (I_UsesDedicatedServerSlot() && client > authoritySlot)
+	const int reservedSlot = I_GetReservedServerSlot();
+	if (reservedSlot >= 0 && client > reservedSlot)
 		return client - 1;
 	return client;
 }
 
 int I_ToInternalClientSlot(int visibleClient)
 {
-	const int authoritySlot = I_GetHCDEServiceAuthoritySlot();
-	if (I_UsesDedicatedServerSlot() && visibleClient >= authoritySlot)
+	const int reservedSlot = I_GetReservedServerSlot();
+	if (reservedSlot >= 0 && visibleClient >= reservedSlot)
 		return visibleClient + 1;
 	return visibleClient;
 }

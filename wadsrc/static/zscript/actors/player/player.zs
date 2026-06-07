@@ -1762,13 +1762,19 @@ class PlayerPawn : Actor
 
 		if (!(player.cheats & CF_PREDICTING))
 		{
+			// Weapon psprites stay authoritative. Advancing them during the
+			// prediction replay double-ticks the animation (the authoritative
+			// P_Ticker pass already ticks them and psprites are not in the
+			// rollback set), which makes the gun fire/animate in "turbo".
+			player.mo.TickPSprites();
 			CheckEnvironment();
 			// Note that after this point the PlayerPawn may have changed due to getting unmorphed or getting its skull popped so 'self' is no longer safe to use.
 			// This also must not read mo into a local variable because several functions in this block can change the attached PlayerPawn.
+			// Doors/use stay authoritative-only: P_UseLines mutates sector state that
+			// is not covered by the prediction rollback buffer (see cl_predict_specials
+			// which only predicts teleports in p_spec.cpp).
 			player.mo.CheckUse();
 			player.mo.CheckUndoMorph();
-			// Cycle psprites.
-			player.mo.TickPSprites();
 			// Other Counters
 			if (player.damagecount)	player.damagecount--;
 			if (player.bonuscount) player.bonuscount--;

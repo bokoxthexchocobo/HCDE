@@ -188,6 +188,8 @@ void D_QuitNetGame (const char* reason = nullptr);
 
 //? how many ticks to run?
 void TryRunTics (void);
+// Dedicated clients: upper bound on P_PredictClient replay (SequenceAck + lead).
+int HCDEGetClientPredictionEndCapTic();
 
 // [RH] Functions for making and using special "ticcmds"
 void Net_NewClientTic();
@@ -208,6 +210,7 @@ void Net_SkipCommand(int cmd, TArrayView<uint8_t>& stream);
 bool Net_CheckCutsceneReady();
 void Net_AdvanceCutscene();
 void Net_StartCutscene();
+void Net_TickCutsceneClientRecovery();
 void Net_PlayerReadiedUp(int player);
 EInvasionState Net_GetInvasionState();
 const char* Net_GetInvasionStateName();
@@ -310,13 +313,43 @@ void Net_GetLagHUDMetrics(FHCDELagHUDMetrics& out);
 bool Net_ShouldDrawLagHUD();
 void Net_DrawLagHUD(F2DDrawer* drawer);
 
+// Zandronum-style prediction base: latest authoritative local-player pose from
+// the server snapshot plus the command sequence the server had processed when
+// that pose was captured. P_PredictClient seats the pawn here and replays only
+// unacknowledged commands on top.
+struct FHCDELocalAuthoritativeBase
+{
+	DVector3 Pos = {};
+	DVector3 Vel = {};
+	// Body/movement-facing yaw the server owns. Reseated on prediction restart so
+	// the unacked turn is reconstructed by the replay (see the seat helper).
+	uint32_t YawBam = 0u;
+	bool OnGround = false;
+	// Server command sequence (SequenceAck) the captured pose was produced from.
+	// P_PredictClient uses it as the first replay tic so only unacked commands are
+	// re-simulated on top of the authoritative base.
+	int BaseSequence = -1;
+	bool Valid = false;
+	// NOTE: view pitch is intentionally NOT stored here. Pitch is a client-owned
+	// free-look axis that is never reseated to the server value (doing so forced
+	// the camera down); it stays driven by the local G_Ticker integration plus the
+	// unacked-tail replay in P_PredictClient. See HCDESeatLocalPlayerToAuthoritativeBase.
+};
+
+extern FHCDELocalAuthoritativeBase HCDELocalAuthoritativeBase;
+
+class player_t;
+
+void HCDECaptureLocalAuthoritativeBase(const DVector3& pos, const DVector3& vel,
+	uint32_t yawBam, bool onGround, int baseSequence);
+bool HCDESeatLocalPlayerToAuthoritativeBase(player_t& player);
+
 // Netgame stuff (buffers and pointers, i.e. indices).
 
 extern usercmd_t			LocalCmds[LOCALCMDTICS];
 extern int					ClientTic;
 extern FClientNetState		ClientStates[MAXPLAYERS];
 
-class player_t;
 class DObject;
 
 #endif

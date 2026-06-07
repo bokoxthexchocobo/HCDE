@@ -640,6 +640,17 @@ static bool UnwrapHCDELiveClientInputPayload(int clientNum, size_t payloadSize, 
 		return false;
 	}
 
+	const uint8_t* envelope = &NetBuffer[HCDELiveHeaderSize];
+	const uint8_t gameplayFlags = envelope[HCDEGameplayFlagsOffset];
+	if ((gameplayFlags & HCDEGameplayFlagActorRepairRequest) != 0u
+		&& I_IsLocalHCDEServiceAuthority()
+		&& Net_ShouldRecordCoopMapSpawnIndex()
+		&& gametic >= HCDECoopServerActorRepairCooldownUntilTic[clientNum])
+	{
+		HCDECoopServerActorRepairCooldownUntilTic[clientNum] = gametic + TICRATE;
+		HCDEBeginActorBaselineRepair(clientNum, "client-coop-repair");
+	}
+
 	if (inputPayloadSize < HCDEClientInputHeaderSize
 		|| memcmp(&payload[HCDEClientInputMagicOffset], HCDEClientInputMagic, sizeof(HCDEClientInputMagic)) != 0)
 	{

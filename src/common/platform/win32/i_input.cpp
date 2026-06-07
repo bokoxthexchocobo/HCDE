@@ -136,6 +136,19 @@ static void I_CheckGUICapture ()
 	}
 }
 
+static void I_ClearTransientInputState(const char* reason)
+{
+	// Losing focus can drop WM_KEYUP/RawInput releases. If a movement key stays
+	// latched in ButtonMap, G_BuildTiccmd keeps emitting fresh +forward commands
+	// for the network layer, which looks like "the client moves on its own."
+	// Clear both the low-level keyboard state and action buttons immediately;
+	// pending EV_KeyUp events from AllKeysUp are harmless after this reset.
+	if (Keyboard != NULL)
+		Keyboard->AllKeysUp();
+	buttonMap.ResetButtonStates();
+	DebugTrace::Infof("win32.focus", "cleared transient input state reason=%s", reason != nullptr ? reason : "unknown");
+}
+
 void I_SetMouseCapture()
 {
 	SetCapture(mainwindow.GetHandle());
@@ -161,6 +174,11 @@ bool GUIWndProcHook(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam, LRESU
 		if (message == WM_KEYUP || message == WM_SYSKEYUP)
 		{
 			ev.subtype = EV_GUI_KeyUp;
+			// HCDE: Clear transient input state on key release to prevent stuck
+			// movement keys from causing continuous movement commands. This addresses
+			// the aftermovement issue where a single keypress causes the character to
+			// continue moving after the key is released.
+			I_ClearTransientInputState("keyup");
 		}
 		else
 		{
@@ -405,6 +423,7 @@ LRESULT CALLBACK WndProc (HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 	case WM_KILLFOCUS:
 		I_CheckNativeMouse (true, false);	// Make sure mouse gets released right away
+		I_ClearTransientInputState("killfocus");
 		DebugTrace::Infof("win32.focus", "WM_KILLFOCUS wParam=%llu lParam=%llu",
 			static_cast<unsigned long long>(wParam),
 			static_cast<unsigned long long>(lParam));
@@ -481,6 +500,8 @@ LRESULT CALLBACK WndProc (HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	case WM_ACTIVATEAPP:
 		AppActive = (wParam == TRUE);
 		S_SetSoundPaused (wParam);
+		if (!AppActive)
+			I_ClearTransientInputState("activateapp-inactive");
 		DebugTrace::Infof("win32.focus", "WM_ACTIVATEAPP active=%d wParam=%llu lParam=%llu",
 			AppActive ? 1 : 0,
 			static_cast<unsigned long long>(wParam),

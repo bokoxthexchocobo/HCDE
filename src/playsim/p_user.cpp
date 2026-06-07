@@ -1005,6 +1005,19 @@ void player_t::SendPitchLimits() const
 		Net_WriteInt8(DEM_SETPITCHLIMIT);
 		Net_WriteInt8(uppitch);
 		Net_WriteInt8(downpitch);
+
+		// HCDE: in the dedicated client/server split a client-issued
+		// DEM_SETPITCHLIMIT travels client->server but is never executed back on
+		// the client (stock GZDoom relied on the local peer being its own server
+		// and self-applying the queued command). Without it the client's
+		// MinPitch/MaxPitch stay at their nullAngle default, so the view-pitch
+		// render clamp in R_SetupFrame pins the local camera to 0 degrees and the
+		// player cannot look up or down. Apply the same limits the server will
+		// receive directly to the local player. The int8 cast mirrors the wire
+		// round-trip (DEM_SETPITCHLIMIT is read back with ReadInt8) so client and
+		// authority resolve to identical limits and reconciliation does not fight.
+		players[consoleplayer].MinPitch = DAngle::fromDeg(-(double)(int8_t)uppitch);
+		players[consoleplayer].MaxPitch = DAngle::fromDeg((double)(int8_t)downpitch);
 	}
 }
 
@@ -1619,6 +1632,13 @@ DEFINE_ACTION_FUNCTION(APlayerPawn, CheckEnvironment)
 
 void P_CheckUse(player_t *player)
 {
+	// HCDE: door/switch use is not predicted during client replay. P_UseLines
+	// mutates sector/line state that is outside the prediction rollback buffer
+	// (cl_predict_specials only covers teleports in P_PredictLine). Weapon
+	// psprites are predicted separately in PlayerThink/TickPSprites.
+	if (player->cheats & CF_PREDICTING)
+		return;
+
 	// check for use
 	if (player->cmd.buttons & BT_USE)
 	{
@@ -1799,19 +1819,32 @@ void P_ClearPredictionData()
 	PredictionData.ResetPos();
 	PredictionData.ClearBackup();
 	PredictionData.bResetPrediction = false;
-	PredictionData.LastPredictedTic = 0;
-	// Tearing prediction down here (e.g. during a reconcile pose/heading/death
-	// repair) does NOT rollback player_t the way P_UnPredictClient does, so the
-	// CF_PREDICTING compat flag set in P_PredictClient would survive. If it
-	// lingers, the next authoritative G_Ticker pass still sees the local pawn as
-	// "predicting" and skips TickPSprites (PlayerThink gates psprite ticking on
-	// !CF_PREDICTING). That strands the weapon psprite in its raise frame
-	// forever: the gun never finishes coming up (stays below the screen, "no gun
-	// in hand"), never reaches its Ready state, and WeaponState stays 0 so it
-	// can't fire/switch. Clear it explicitly to keep the flag in lockstep with
-	// the prediction state.
+	// HCDE: After a reconcile repair, reset LastPredictedTic to the first
+	// unacknowledged command after the authoritative base (Zandronum-style) when
+	// the base is valid; otherwise fall back to gametic.
 	if (consoleplayer >= 0 && consoleplayer < MAXPLAYERS)
+	{
+		if (HCDELocalAuthoritativeBase.Valid)
+			PredictionData.LastPredictedTic = max(HCDELocalAuthoritativeBase.BaseSequence, 0);
+		else
+			PredictionData.LastPredictedTic = gametic;
+		if (*net_movement_debug > 0)
+		{
+			const int ack = ClientStates[consoleplayer].SequenceAck;
+			DebugTrace::Markf("net.predict",
+				"HCDE prediction-clear console=%d gametic=%d clienttic=%d ack=%d current=%d lastPredicted=%d ticdup=%d baseSeq=%d baseValid=%d",
+				consoleplayer, gametic, ClientTic, ack,
+				ClientStates[consoleplayer].CurrentSequence,
+				PredictionData.LastPredictedTic, TicDup,
+				HCDELocalAuthoritativeBase.BaseSequence,
+				HCDELocalAuthoritativeBase.Valid ? 1 : 0);
+		}
 		players[consoleplayer].cheats &= ~CF_PREDICTING;
+	}
+	else
+	{
+		PredictionData.LastPredictedTic = 0;
+	}
 }
 
 static void P_RollbackObject(DObject* obj, FSerializer& arc)
@@ -1896,7 +1929,35 @@ void P_PredictClient()
 	{
 		NetworkEntityManager::EnablePrediction();
 		PredictionData.bResetPrediction = true;
-		PredictionData.LastPredictedTic = gametic;
+		// HCDE (Zandronum-style): seat the local pawn on the latest authoritative
+		// snapshot pose, then replay only unacknowledged commands on top. G_Ticker
+		// still advances the local player for the rest of the world, but the
+		// displayed pose is rebuilt from the server base + unacked LocalCmds.
+		if (consoleplayer >= 0 && consoleplayer < MAXPLAYERS)
+		{
+			const int ack = ClientStates[consoleplayer].SequenceAck;
+			const bool seated = HCDESeatLocalPlayerToAuthoritativeBase(*player);
+			if (HCDELocalAuthoritativeBase.Valid)
+				PredictionData.LastPredictedTic = max(HCDELocalAuthoritativeBase.BaseSequence, 0);
+			else
+				PredictionData.LastPredictedTic = gametic;
+			if (*net_movement_debug > 0)
+			{
+				DebugTrace::Markf("net.predict",
+					"HCDE prediction-start console=%d gametic=%d clienttic=%d ack=%d current=%d lastPredicted=%d ticdup=%d reset=%d baseSeq=%d baseValid=%d seated=%d",
+					consoleplayer, gametic, ClientTic, ack,
+					ClientStates[consoleplayer].CurrentSequence,
+					PredictionData.LastPredictedTic, TicDup,
+					PredictionData.bResetPrediction ? 1 : 0,
+					HCDELocalAuthoritativeBase.BaseSequence,
+					HCDELocalAuthoritativeBase.Valid ? 1 : 0,
+					seated ? 1 : 0);
+			}
+		}
+		else
+		{
+			PredictionData.LastPredictedTic = gametic;
+		}
 
 		FDoomSerializer writer = { player->mo->Level };
 		if (writer.OpenWriter(false, true))
@@ -1942,12 +2003,18 @@ void P_PredictClient()
 	// replay window; the server's next authoritative snapshot will correct any
 	// remaining drift through the normal reconcile path.
 	int predictStart = PredictionData.LastPredictedTic;
-	const int predictWindow = ClientTic - predictStart;
+	int predictEnd = ClientTic;
+	const int predictionEndCap = HCDEGetClientPredictionEndCapTic();
+	if (predictionEndCap < predictEnd)
+		predictEnd = predictionEndCap;
+	if (predictEnd <= predictStart)
+		return;
+	const int predictWindow = predictEnd - predictStart;
 	const int predictMax = max<int>(1, *cl_predict_max);
 	bool predictionWindowClamped = false;
 	if (predictWindow > predictMax)
 	{
-		predictStart = ClientTic - predictMax;
+		predictStart = predictEnd - predictMax;
 		predictionWindowClamped = true;
 		DPrintf(DMSG_NOTIFY, "Prediction window clamped (%d -> %d tics) at gametic %d\n",
 			predictWindow, predictMax, gametic);
@@ -1961,7 +2028,7 @@ void P_PredictClient()
 		PredictionData.bResetPrediction
 		&& !predictionWindowClamped
 		&& PredictionData.LastPos.Tic >= predictStart
-		&& PredictionData.LastPos.Tic < ClientTic
+		&& PredictionData.LastPos.Tic < predictEnd
 		&& cl_rubberband_scale > 0.0f
 		&& cl_rubberband_scale < 1.0f;
 	const double rubberbandThreshold = max<float>(cl_rubberband_minmove, cl_rubberband_threshold);
@@ -1979,11 +2046,25 @@ void P_PredictClient()
 	// predictor is consuming stale ring slots / a misaligned window.
 	const bool hcdePredictDiag = netgame && *net_movement_debug > 0;
 	const double hcdePreReplayYaw = player->mo->Angles.Yaw.Degrees();
+	const DVector3 hcdePreReplayPos = player->mo->Pos();
+	const DVector3 hcdePreReplayVel = player->mo->Vel;
 	long long hcdeReplayedYawBam = 0;
+	long long hcdeReplayedForward = 0;
+	long long hcdeReplayedSide = 0;
+	long long hcdeReplayedUp = 0;
 	int hcdeFirstReplayYaw = 0;
 	int hcdeLastReplayYaw = 0;
+	int hcdeFirstReplayForward = 0;
+	int hcdeLastReplayForward = 0;
+	int hcdeFirstReplaySide = 0;
+	int hcdeLastReplaySide = 0;
+	int hcdeFirstReplayPitch = 0;
+	int hcdeLastReplayPitch = 0;
+	long long hcdeReplayedPitchSum = 0;
+	int hcdeReplayedPitchApplied = 0;
+	int hcdeReplayedPitchZeroed = 0;
 
-	for (int i = predictStart; i < ClientTic; ++i)
+	for (int i = predictStart; i < predictEnd; ++i)
 	{
 		// Got snagged on something. Start correcting towards the player's final predicted position. We're
 		// being intentionally generous here by not really caring how the player got to that position, only
@@ -2008,19 +2089,60 @@ void P_PredictClient()
 
 		player->oldbuttons = player->cmd.buttons;
 		player->cmd = LocalCmds[i % LOCALCMDTICS];
+		// HCDE: pitch is reconstructed exactly like yaw. The seat reseats the pawn
+		// to the committed client look pitch (folded through acknowledged commands by
+		// HCDEAdvanceLocalPitchToAck) before this loop runs, so replaying cmd.pitch
+		// here re-derives the unacknowledged look on top of a stable base. Do NOT zero
+		// it: zeroing froze Angles.Pitch and produced the swing-back bug.
+		const int replayPitchCmd = player->cmd.pitch;
 		if (hcdePredictDiag)
 		{
 			if (i == predictStart)
+			{
 				hcdeFirstReplayYaw = player->cmd.yaw;
+				hcdeFirstReplayForward = player->cmd.forwardmove;
+				hcdeFirstReplaySide = player->cmd.sidemove;
+				hcdeFirstReplayPitch = replayPitchCmd;
+			}
 			hcdeLastReplayYaw = player->cmd.yaw;
+			hcdeLastReplayForward = player->cmd.forwardmove;
+			hcdeLastReplaySide = player->cmd.sidemove;
+			hcdeLastReplayPitch = replayPitchCmd;
 			hcdeReplayedYawBam += player->cmd.yaw;
+			hcdeReplayedForward += player->cmd.forwardmove;
+			hcdeReplayedSide += player->cmd.sidemove;
+			hcdeReplayedUp += player->cmd.upmove;
+			if (player->cmd.pitch != 0)
+			{
+				++hcdeReplayedPitchApplied;
+				hcdeReplayedPitchSum += player->cmd.pitch;
+			}
+			else if (replayPitchCmd != 0)
+				++hcdeReplayedPitchZeroed;
 		}
 		if (paused)
 			continue;
 
 		player->mo->ClearInterpolation();
 		player->mo->ClearFOVInterpolation();
+		const DAngle hcdePreThinkPitch = player->mo->Angles.Pitch;
 		P_PlayerThink(player);
+		if (hcdePredictDiag && replayPitchCmd != 0)
+		{
+			const DAngle postPitch = player->mo->Angles.Pitch;
+			const bool hitMin = postPitch <= player->MinPitch;
+			const bool hitMax = postPitch >= player->MaxPitch;
+			if (hitMin || hitMax || fabs((postPitch - hcdePreThinkPitch).Degrees()) > 0.05)
+			{
+				DebugTrace::Markf("net.predict",
+					"HCDE predict-pitch gametic=%d clienttic=%d idx=%d replayPitch=%d appliedPitch=%d "
+					"prePitch=%.2f postPitch=%.2f clamp(min=%.1f max=%.1f hitMin=%d hitMax=%d)",
+					gametic, ClientTic, i, replayPitchCmd, int(player->cmd.pitch),
+					hcdePreThinkPitch.Degrees(), postPitch.Degrees(),
+					player->MinPitch.Degrees(), player->MaxPitch.Degrees(),
+					hitMin ? 1 : 0, hitMax ? 1 : 0);
+			}
+		}
 		player->mo->CallTick();
 	}
 
@@ -2058,6 +2180,9 @@ void P_PredictClient()
 	if (hcdePredictDiag)
 	{
 		const double hcdePostReplayYaw = player->mo->Angles.Yaw.Degrees();
+		const DVector3 hcdePostReplayPos = player->mo->Pos();
+		const DVector3 hcdePostReplayVel = player->mo->Vel;
+		const DVector3 hcdeReplayDelta = hcdePostReplayPos - hcdePreReplayPos;
 		double hcdeYawChange = hcdePostReplayYaw - hcdePreReplayYaw;
 		while (hcdeYawChange > 180.0) hcdeYawChange -= 360.0;
 		while (hcdeYawChange < -180.0) hcdeYawChange += 360.0;
@@ -2074,20 +2199,56 @@ void P_PredictClient()
 				"HCDE predict-yaw gametic=%d clienttic=%d predictStart=%d window=%d reset=%d "
 				"preYaw=%.2f postYaw=%.2f yawChange=%.2f replayInputDeg=%.2f phantomDeg=%.2f "
 				"firstSlotYaw=%d lastSlotYaw=%d firstIdx=%d lastIdx=%d",
-				gametic, ClientTic, predictStart, ClientTic - predictStart,
+				gametic, ClientTic, predictStart, predictEnd - predictStart,
 				PredictionData.bResetPrediction ? 1 : 0,
 				hcdePreReplayYaw, hcdePostReplayYaw, hcdeYawChange, hcdeReplayInputDeg, hcdePhantomDeg,
 				hcdeFirstReplayYaw, hcdeLastReplayYaw,
-				predictStart % LOCALCMDTICS, (ClientTic - 1) % LOCALCMDTICS);
+				predictStart % LOCALCMDTICS, (predictEnd - 1) % LOCALCMDTICS);
+		}
+		if (hcdeReplayDelta.XY().LengthSquared() > 0.01
+			|| hcdeReplayedForward != 0
+			|| hcdeReplayedSide != 0
+			|| hcdeReplayedUp != 0
+			|| predictionWindowClamped)
+		{
+			DebugTrace::Markf("net.predict",
+				"HCDE predict-move gametic=%d clienttic=%d ack=%d current=%d start=%d end=%d window=%d cap=%d clamped=%d reset=%d "
+				"sum(fwd=%lld side=%lld up=%lld yaw=%lld) first(fwd=%d side=%d yaw=%d idx=%d) last(fwd=%d side=%d yaw=%d idx=%d) "
+				"pos(%.1f,%.1f)->(%.1f,%.1f) delta=(%.1f,%.1f) vel(%.2f,%.2f)->(%.2f,%.2f)",
+				gametic, ClientTic,
+				consoleplayer >= 0 && consoleplayer < MAXPLAYERS ? ClientStates[consoleplayer].SequenceAck : -1,
+				consoleplayer >= 0 && consoleplayer < MAXPLAYERS ? ClientStates[consoleplayer].CurrentSequence : -1,
+				predictStart, predictEnd, predictEnd - predictStart, predictionEndCap,
+				predictionWindowClamped ? 1 : 0,
+				PredictionData.bResetPrediction ? 1 : 0,
+				hcdeReplayedForward, hcdeReplayedSide, hcdeReplayedUp, hcdeReplayedYawBam,
+				hcdeFirstReplayForward, hcdeFirstReplaySide, hcdeFirstReplayYaw, predictStart % LOCALCMDTICS,
+				hcdeLastReplayForward, hcdeLastReplaySide, hcdeLastReplayYaw, (predictEnd - 1) % LOCALCMDTICS,
+				hcdePreReplayPos.X, hcdePreReplayPos.Y,
+				hcdePostReplayPos.X, hcdePostReplayPos.Y,
+				hcdeReplayDelta.X, hcdeReplayDelta.Y,
+				hcdePreReplayVel.X, hcdePreReplayVel.Y,
+				hcdePostReplayVel.X, hcdePostReplayVel.Y);
+		}
+		if (hcdeReplayedPitchApplied != 0 || hcdeReplayedPitchZeroed != 0
+			|| hcdeFirstReplayPitch != 0 || hcdeLastReplayPitch != 0)
+		{
+			DebugTrace::Markf("net.predict",
+				"HCDE predict-pitch-summary gametic=%d clienttic=%d start=%d end=%d "
+				"firstPitch=%d lastPitch=%d applied=%d zeroed=%d pitchSum=%lld postPitch=%.2f",
+				gametic, ClientTic, predictStart, predictEnd,
+				hcdeFirstReplayPitch, hcdeLastReplayPitch,
+				hcdeReplayedPitchApplied, hcdeReplayedPitchZeroed, hcdeReplayedPitchSum,
+				player->mo->Angles.Pitch.Degrees());
 		}
 	}
 
-	PredictionData.LastPredictedTic = ClientTic;
+	PredictionData.LastPredictedTic = predictEnd;
 	PredictionData.bResetPrediction = false;
 
 	// This is intentionally done after rubberbanding starts since it'll automatically smooth itself towards
 	// the right spot until it reaches it.
-	PredictionData.LastPos.Tic = ClientTic;
+	PredictionData.LastPos.Tic = predictEnd;
 	PredictionData.LastPos.Pos = player->mo->Pos();
 	PredictionData.LastPos.PortalGroup = player->mo->Level->PointInSector(PredictionData.LastPos.Pos)->PortalGroup;
 }

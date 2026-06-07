@@ -360,6 +360,161 @@ EXTERN_CVAR(Bool, cl_smooth_reconcile)
 EXTERN_CVAR(Float, cl_smooth_decay)
 EXTERN_CVAR(Float, cl_smooth_maxdist)
 
+static int HCDEHeadingRepairGraceUntilGametic = 0;
+// First authoritative world-delta after join/map load must hard-sync the local
+// pawn. Without it the client keeps predicting from PlayerStart while the
+// dedicated server placed the player at a different spawn angle/spot.
+static bool HCDELocalPlayerBaselineEstablished = false;
+// Heading-only repair hysteresis (file scope so map/session resets can clear it).
+static DAngle HCDELocalHeadingRepairLastYaw = nullAngle;
+static bool HCDELocalHeadingRepairHasLastYaw = false;
+
+// Clear all dedicated-client local reconcile session state (map load, disconnect,
+// room change). Called from d_net.cpp on LST_WAITING / Net_ResetCommands /
+// Net_ClearBuffers so stale flags cannot leak across sessions.
+static void HCDEResetLocalPlayerBaselineSync()
+{
+	HCDELocalPlayerBaselineEstablished = false;
+	HCDEHeadingRepairGraceUntilGametic = 0;
+	HCDELocalHeadingRepairLastYaw = nullAngle;
+	HCDELocalHeadingRepairHasLastYaw = false;
+	g_hcdeViewErrorSmoother.Zero();
+	HCDELocalAuthoritativeBase.Valid = false;
+	HCDELocalAuthoritativeBase.BaseSequence = -1;
+}
+
+static DAngle HCDELocalRenderedYaw(const AActor& mo)
+{
+	if (mo.flags8 & MF8_ABSVIEWANGLES)
+		return mo.ViewAngles.Yaw;
+	return (mo.Angles.Yaw + mo.ViewAngles.Yaw).Normalized180();
+}
+
+// ViewAngles is an offset from Angles for normal pawns. Seat the body yaw and
+// the rendered look direction without doubling the facing angle.
+static void HCDESeatLocalViewYaw(AActor& mo, DAngle bodyYaw, DAngle renderedYaw)
+{
+	mo.SetAngle(bodyYaw, 0);
+	if (mo.flags8 & MF8_ABSVIEWANGLES)
+		mo.SetViewAngle(renderedYaw, 0);
+	else
+		mo.ViewAngles.Yaw = (renderedYaw - bodyYaw).Normalized180();
+}
+
+void HCDECaptureLocalAuthoritativeBase(const DVector3& pos, const DVector3& vel,
+	uint32_t yawBam, bool onGround, int baseSequence)
+{
+	HCDELocalAuthoritativeBase.Pos = pos;
+	HCDELocalAuthoritativeBase.Vel = vel;
+	HCDELocalAuthoritativeBase.YawBam = yawBam;
+	HCDELocalAuthoritativeBase.OnGround = onGround;
+	HCDELocalAuthoritativeBase.BaseSequence = baseSequence;
+	HCDELocalAuthoritativeBase.Valid = true;
+}
+
+// HCDE: Client-owned persistent look pitch.
+//
+// Why this exists: on a client the authoritative local-player tick is fed a
+// ZERO command (posttick traces show pitch=0.00 cmd(pitch=0) every tic), so the
+// simulation never integrates the player's look-up/down input. Yaw escapes this
+// because it is server-authoritative -- the seat below reseats Angles.Yaw to the
+// server value each frame and the predictor replays the unacked turn. Pitch was
+// declared "client-owned" (every reconcile path passes preservePitch=true and the
+// seat skipped pitch) but nothing ever MAINTAINED that client value, so Angles.Pitch
+// stayed frozen while the instant LocalViewPitch render offset made the view swing
+// and then snap back to the frozen base. That is the "stuck up/down, swings back"
+// bug.
+//
+// Fix: maintain the committed look pitch on the client ourselves. As commands are
+// acknowledged we fold their cmd.pitch into HCDELocalPitchDeg (mirroring the
+// CheckPitch integration in ZScript: Pitch -= cmd.pitch * 360/65536, clamped to the
+// player's Min/MaxPitch). The seat then reseats Angles.Pitch to this committed base
+// exactly like yaw, and P_PredictClient replays the unacked pitch deltas on top.
+// The value is purely client-side, so there is no server round-trip and no forced
+// camera snap.
+static double HCDELocalPitchDeg = 0.0;     // committed look pitch (degrees), after folding cmds up to HCDELocalPitchSeq
+static int    HCDELocalPitchSeq = -1;      // last command sequence folded into HCDELocalPitchDeg
+static bool   HCDELocalPitchValid = false; // false => reseed from the pawn's current pitch on next seat
+
+// Forget the committed pitch so the next seat reseeds it from the pawn. Call this
+// from any path that hard-sets the pawn's pitch (spawn / respawn / teleport).
+void HCDEInvalidateLocalPitch()
+{
+	HCDELocalPitchValid = false;
+}
+
+// Fold every command from (HCDELocalPitchSeq, ackSeq] into the committed pitch so it
+// tracks what the player has actually looked at by the acknowledged tic. Resyncs from
+// the live pawn pitch when invalid or when the ack window has outrun the LocalCmds ring.
+static void HCDEAdvanceLocalPitchToAck(player_t& player, int ackSeq)
+{
+	if (player.mo == nullptr || ackSeq < 0)
+		return;
+
+	const double minPitch = player.MinPitch.Degrees();
+	const double maxPitch = player.MaxPitch.Degrees();
+
+	// Reseed from the current pawn pitch if we have no valid base, if the sequence
+	// went backwards (level change / rewind), or if the gap is larger than the ring
+	// can hold (we would be folding stale/aliased commands otherwise).
+	if (!HCDELocalPitchValid
+		|| ackSeq < HCDELocalPitchSeq
+		|| (ackSeq - HCDELocalPitchSeq) >= LOCALCMDTICS)
+	{
+		HCDELocalPitchDeg = clamp<double>(player.mo->Angles.Pitch.Degrees(), minPitch, maxPitch);
+		HCDELocalPitchSeq = ackSeq;
+		HCDELocalPitchValid = true;
+		return;
+	}
+
+	for (int t = HCDELocalPitchSeq + 1; t <= ackSeq; ++t)
+	{
+		const int clook = LocalCmds[t % LOCALCMDTICS].pitch;
+		// clook == -32768 is the "center view" sentinel handled by the centering
+		// state machine, not a look delta; skip it here.
+		if (clook != 0 && clook != -32768)
+			HCDELocalPitchDeg = clamp<double>(HCDELocalPitchDeg - clook * (360.0 / 65536.0), minPitch, maxPitch);
+	}
+	HCDELocalPitchSeq = ackSeq;
+}
+
+bool HCDESeatLocalPlayerToAuthoritativeBase(player_t& player)
+{
+	if (!HCDELocalAuthoritativeBase.Valid || player.mo == nullptr)
+		return false;
+
+	AActor* mo = player.mo;
+	const DVector3& serverPos = HCDELocalAuthoritativeBase.Pos;
+	const DVector3& serverVel = HCDELocalAuthoritativeBase.Vel;
+	const DAngle serverYaw = DAngle::fromBam(HCDELocalAuthoritativeBase.YawBam);
+	const DVector3 oldPos = mo->Pos();
+
+	mo->SetOrigin(serverPos, false);
+	mo->Vel = serverVel;
+	// Body yaw is server-authoritative (movement-facing axis the server owns),
+	// so reseat it to the base; the replay below reconstructs the unacked turn.
+	HCDESeatLocalViewYaw(*mo, serverYaw, serverYaw);
+	// View pitch is client-owned. Advance the committed look pitch and reseat the
+	// pawn to it (the peer of the yaw reseat above). P_PredictClient replays the
+	// unacked cmd.pitch deltas on top from i == BaseSequence, and the server pose
+	// the replay starts from is the state BEFORE BaseSequence's command (BaseSequence
+	// is the first tic the loop re-applies). So the committed pitch base must be the
+	// pitch through BaseSequence-1; folding through BaseSequence would let the replay
+	// apply that tic's look delta a second time (a per-tic double that reads as view
+	// jitter / "bounce" while moving the mouse).
+	HCDEAdvanceLocalPitchToAck(player, HCDELocalAuthoritativeBase.BaseSequence - 1);
+	mo->SetPitch(DAngle::fromDeg(HCDELocalPitchDeg), 0);
+	if (mo->flags8 & MF8_ABSVIEWANGLES)
+		mo->ViewAngles.Pitch = DAngle::fromDeg(HCDELocalPitchDeg);
+	player.onground = HCDELocalAuthoritativeBase.OnGround;
+	if (player.viewheight > 0.0)
+		player.viewz = serverPos.Z + player.viewheight;
+	else
+		player.viewz = serverPos.Z + (player.viewz - oldPos.Z);
+	mo->ClearInterpolation();
+	return true;
+}
+
 static void HCDEApplyLocalPoseRepair(player_t& player, const DVector3& serverPos, const DVector3& serverVel,
 	uint32_t yawBam, uint32_t pitchBam, bool onGround, bool clearPrediction, bool preserveViewAngles = false,
 	bool preservePitch = false, bool smooth = false)
@@ -450,15 +605,24 @@ static void HCDEApplyLocalPoseRepair(player_t& player, const DVector3& serverPos
 	{
 		// Keep the rendered look direction while repairing the movement-facing
 		// angle. Leaving Angles.Yaw predicted here poisons the next replay.
-		mo->SetViewAngle((mo->ViewAngles.Yaw + deltaangle(serverYaw, oldYaw)).Normalized180(), 0);
-		mo->SetAngle(serverYaw, 0);
+		const DAngle oldRenderedYaw = HCDELocalRenderedYaw(*mo);
+		HCDESeatLocalViewYaw(*mo, serverYaw, oldRenderedYaw);
 	}
 	else
 	{
-		mo->SetAngle(serverYaw, 0);
-		mo->SetViewAngle(serverYaw, 0);
+		HCDESeatLocalViewYaw(*mo, serverYaw, serverYaw);
 		if (!preservePitch)
+		{
 			mo->SetPitch(serverPitch, 0);
+			if (mo->flags8 & MF8_ABSVIEWANGLES)
+				mo->ViewAngles.Pitch = serverPitch;
+			else
+				mo->ViewAngles.Pitch = nullAngle;
+			// Authoritative pitch snap: drop the committed client pitch so the next
+			// prediction seat reseeds from this server pitch instead of overriding it.
+			if (consoleplayer >= 0 && consoleplayer < MAXPLAYERS && &player == &players[consoleplayer])
+				HCDEInvalidateLocalPitch();
+		}
 	}
 	player.onground = onGround;
 	if (player.viewheight > 0.0)
@@ -469,6 +633,11 @@ static void HCDEApplyLocalPoseRepair(player_t& player, const DVector3& serverPos
 	mo->ClearInterpolation();
 	if (clearPrediction)
 		P_ClearPredictionData();
+	if (consoleplayer >= 0 && consoleplayer < MAXPLAYERS && &player == &players[consoleplayer])
+	{
+		HCDECaptureLocalAuthoritativeBase(serverPos, serverVel, yawBam, onGround,
+			ClientStates[consoleplayer].SequenceAck);
+	}
 }
 
 static DVector3 HCDELocalReconcileReferenceVelocity(const AActor& mo, const DVector3& serverVel)
@@ -514,6 +683,22 @@ static bool HCDELocalHeadingRepairInputQuiet()
 		}
 	}
 	return true;
+}
+
+static bool HCDELocalRecentTranslateInput()
+{
+	if (!netgame || I_IsLocalHCDEServiceAuthority())
+		return false;
+
+	const int ticDup = max<int>(TicDup, 1);
+	const int scanStart = max<int>(ClientTic - 8 * ticDup, 0);
+	for (int tic = scanStart; tic < ClientTic; ++tic)
+	{
+		const usercmd_t& cmd = LocalCmds[tic % LOCALCMDTICS];
+		if (cmd.forwardmove != 0 || cmd.sidemove != 0 || cmd.upmove != 0)
+			return true;
+	}
+	return false;
 }
 
 // Allowance covering normal client prediction lead vs authoritative pose:
@@ -691,8 +876,12 @@ static void HCDEQueuePredictedLocalHealthRepair(uint32_t serverTic, int serverHe
 		{
 			const double driftSq = (player.mo->Pos() - *serverPos).LengthSquared();
 			const bool hardRepair = driftSq > HCDEServerReconcileHardDistance * HCDEServerReconcileHardDistance;
+			// preservePitch=true: view pitch is a client-owned look axis. Pulling it
+			// to the round-trip-delayed authority value here makes the camera snap/
+			// jitter against live mouse input. The client integrates the same
+			// cmd.pitch the server does, so the axis stays in sync without reconcile.
 			HCDEApplyLocalPoseRepair(player, *serverPos, *serverVel, yawBam, pitchBam, onGround,
-				hardRepair, !hardRepair, false, !hardRepair);
+				hardRepair, !hardRepair, true, !hardRepair);
 		}
 		HCDEApplyLocalHealthFields(player, serverHealth, onGround);
 	}
@@ -712,13 +901,15 @@ static void HCDEApplyPendingLocalHealthRepair()
 				? (player.mo->Pos() - PendingLocalHealthRepair.Pos).LengthSquared()
 				: 0.0;
 			const bool hardRepair = driftSq > HCDEServerReconcileHardDistance * HCDEServerReconcileHardDistance;
+			// preservePitch=true: keep the client-owned look pitch (see note in
+			// HCDEQueuePredictedLocalHealthRepair); only position/health are authority.
 			HCDEApplyLocalPoseRepair(player,
 				PendingLocalHealthRepair.Pos,
 				PendingLocalHealthRepair.Vel,
 				PendingLocalHealthRepair.Yaw,
 				PendingLocalHealthRepair.Pitch,
 				PendingLocalHealthRepair.OnGround,
-				hardRepair, !hardRepair, false, !hardRepair);
+				hardRepair, !hardRepair, true, !hardRepair);
 		}
 		HCDEApplyLocalHealthFields(player,
 			PendingLocalHealthRepair.Health,
@@ -812,6 +1003,48 @@ static bool HCDEValidateServerWorldDeltas(int clientNum, const uint8_t* body, si
 			const bool serverReportsOnGround = (poseFlags & HCDEServerWorldDeltaPoseOnGround) != 0u;
 			const bool serverReportsLive = (poseFlags & HCDEServerWorldDeltaPoseLive) != 0u && serverHealth > 0;
 			const bool serverReportsDead = serverHealth <= 0;
+
+			// Zandronum-style prediction base: every snapshot carries the authoritative
+			// local pose and SequenceAck was updated from the same packet header before
+			// world deltas are applied, so store them together for P_PredictClient.
+			if (consoleplayer >= 0 && consoleplayer < MAXPLAYERS
+				&& (poseFlags & HCDEServerWorldDeltaPoseHasActor) != 0u)
+			{
+				HCDECaptureLocalAuthoritativeBase(serverPos, serverVel, yaw, serverReportsOnGround,
+					ClientStates[consoleplayer].SequenceAck);
+			}
+
+			// Join/map-load baseline: accept the server's pose before any prediction
+			// replay can walk the client onto a different axis than the authority.
+			if (!HCDELocalPlayerBaselineEstablished
+				&& serverReportsLive
+				&& player.playerstate == PST_LIVE
+				&& (mo->flags & MF_CORPSE) == 0
+				&& canMutatePlaysim)
+			{
+				if (NetworkEntityManager::IsPredicting())
+				{
+					P_UnPredictClient();
+					mo = player.mo;
+					if (mo == nullptr)
+						continue;
+					PendingLocalHealthRepair.Valid = false;
+				}
+				// clearPrediction=true inside ApplyLocalPoseRepair also clears backup.
+				HCDEApplyLocalPoseRepair(player, serverPos, serverVel, yaw, pitch, serverReportsOnGround,
+					true, false, false, false);
+				HCDEApplyLocalHealthFields(player, serverHealth, serverReportsOnGround);
+				HCDEHeadingRepairGraceUntilGametic = gametic + TICRATE / 4;
+				HCDELocalPlayerBaselineEstablished = true;
+				++peer.Reconciliations;
+				++HCDELiveProfile.PredictionLocalStateRepairs;
+				DebugTrace::Markf("net",
+					"HCDE client join baseline sync from=%d player=%u drift=%.2f srvYaw=%.1f cliYaw=%.1f tic=%u",
+					clientNum, unsigned(playerNum), sqrt(drift),
+					DAngle::fromBam(yaw).Degrees(), HCDELocalRenderedYaw(*mo).Degrees(),
+					unsigned(serverTic));
+				continue;
+			}
 			const bool localNeedsRespawnRepair = serverReportsLive
 				&& (player.playerstate != PST_LIVE
 					|| mo->health <= 0
@@ -848,15 +1081,16 @@ static bool HCDEValidateServerWorldDeltas(int clientNum, const uint8_t* body, si
 			// for seven straight tics, then crossed 326 at tic 1319 and snapped 326u
 			// in a single frame: the big visible jerk. Real steady-state prediction
 			// lead in this build measures ~40u (and tops out well under 100u even in
-			// fast strafe-turns), so a horizontal gap past HCDEServerBaselineRepairDistance
-			// (128) is not lead. We use ~211u (0.55 * hard) to stay clear of any
-			// plausible lead burst while still catching the desync ~115u earlier than
-			// the near-hard path did, which keeps the correction small and prevents
-			// the offset from compounding across many tics before it is repaired.
+			// fast strafe-turns), so a same-heading horizontal gap past
+			// HCDEServerBaselineRepairDistance (128) is not lead. The old 0.55*hard
+			// (~211u) gate left the 6/6 trace ignoring 132-176u same-heading gaps for
+			// dozens of tics, which felt like "barely moving and it keeps moving."
+			// Heading alignment below is the false-positive guard; the distance gate
+			// should be the repair distance, not a near-teleport distance.
 			const double localHorizontalDriftSq =
 				(mo->X() - serverPos.X) * (mo->X() - serverPos.X)
 				+ (mo->Y() - serverPos.Y) * (mo->Y() - serverPos.Y);
-			constexpr double HCDELocalHorizontalDivergence = HCDEServerReconcileHardDistance * 0.55;
+			constexpr double HCDELocalHorizontalDivergence = HCDEServerBaselineRepairDistance;
 			// A large flat XY offset is only a genuine positional desync when the
 			// two sides ALSO agree on heading. During a fast turn-while-moving the
 			// client heading leads the lagged snapshot, so the same forward input
@@ -871,22 +1105,37 @@ static bool HCDEValidateServerWorldDeltas(int clientNum, const uint8_t* body, si
 			// desyncs still escalate through the near-hard / hard / vertical paths
 			// which do not depend on heading.
 			const double localHeadingDriftDeg =
-				fabs(deltaangle(DAngle::fromBam(yaw), mo->Angles.Yaw).Degrees());
+				fabs(deltaangle(DAngle::fromBam(yaw), HCDELocalRenderedYaw(*mo)).Degrees());
 			const bool localHeadingAlignedForHorizontalRepair =
 				localHeadingDriftDeg <= HCDELocalHorizontalDivergenceMaxHeadingDeg;
 			const bool localHorizontalDivergence =
 				localHorizontalDriftSq > HCDELocalHorizontalDivergence * HCDELocalHorizontalDivergence
 				&& localHeadingAlignedForHorizontalRepair;
-			// Soft baseline drift alone is not allowed to mutate the local predicted
-			// pawn: those sub-100u gaps are ordinary prediction head using newer
-			// turn/move input than the authoritative snapshot has confirmed. But if
-			// the same drift includes floor/Z divergence, a sustained large flat
-			// horizontal offset, or grows close to the hard teleport cutoff, it is no
-			// longer harmless lead. In the 6:12 trace the server fell from Z=56 to
-			// Z=8 while the client stayed on the old floor; ignoring that made
-			// movement look erratic. Escalate those cases.
-			const bool localNeedsBaselinePoseRepair = localBaselineDriftExceedsAllowance
-				&& (localVerticalDivergence || localHorizontalDivergence || localNearHardDivergence);
+			// Server pose frozen while the client keeps walking is not prediction
+			// lead; it is the tic-gate stall pattern (availableTics pinned at 0).
+			const bool serverNearlyStationary = serverVel.LengthSquared() < 1.0;
+			const bool clientMovingXY = mo->Vel.XY().LengthSquared() > 1.0;
+			// Require recent WASD/strafe input, not just non-zero velocity. Mods
+			// like Brutal Doom can leave tiny bob/sway velocity on a standing pawn
+			// and falsely trip authority mismatch against a stationary server pose.
+			const bool movementAuthorityMismatch = serverNearlyStationary && clientMovingXY
+				&& HCDELocalRecentTranslateInput()
+				&& drift > HCDEServerBaselineRepairDistance * HCDEServerBaselineRepairDistance;
+			// Zandronum-style rebase: soft stationary/horizontal/baseline-allowance snaps
+			// are retired for the local player. Prediction rebuilds from the authoritative
+			// snapshot each frame; only vertical and near-hard baseline repairs remain
+			// here (hard/teleport, health, death, respawn are separate paths below).
+			const bool clientNearlyStationary = mo->Vel.XY().LengthSquared() < 1.0;
+			(void)clientNearlyStationary;
+			constexpr double HCDEStationaryAuthorityDesyncDistance = 48.0;
+			const bool stationaryAuthorityDesyncDiag = serverNearlyStationary && clientNearlyStationary
+				&& !HCDELocalRecentTranslateInput()
+				&& drift > HCDEStationaryAuthorityDesyncDistance * HCDEStationaryAuthorityDesyncDistance
+				&& localHeadingDriftDeg <= HCDELocalHorizontalDivergenceMaxHeadingDeg;
+			const bool stationaryAuthorityDesync = false;
+			(void)stationaryAuthorityDesyncDiag;
+			const bool releasedCoastAuthorityDesync = false;
+			const bool localNeedsBaselinePoseRepair = localVerticalDivergence || localNearHardDivergence;
 			const bool serverHealthMatchesLocal = mo->health == serverHealth && player.health == serverHealth;
 			const bool serverOnGroundMatchesLocal = player.onground == serverReportsOnGround;
 			const bool needsLocalStateRepair = localNeedsRespawnRepair
@@ -903,7 +1152,7 @@ static bool HCDEValidateServerWorldDeltas(int clientNum, const uint8_t* body, si
 			const int repairTier = localNeedsRespawnRepair ? 3
 				: localNeedsDeathRepair ? 4
 				: localNeedsHardPoseRepair ? 2
-				: localBaselineDriftExceedsAllowance ? 1
+				: localNeedsBaselinePoseRepair ? 1
 				: 0;
 			{
 				const double velDeltaUnits = (mo->Vel - serverVel).Length();
@@ -922,16 +1171,29 @@ static bool HCDEValidateServerWorldDeltas(int clientNum, const uint8_t* body, si
 			if (*net_reconcile_debug >= 1)
 			{
 				const double serverYawDeg = DAngle::fromBam(yaw).Degrees();
-				const double clientYawDeg = mo->Angles.Yaw.Degrees();
-				const double yawDeltaDeg = deltaangle(DAngle::fromBam(yaw), mo->Angles.Yaw).Degrees();
+				const double clientYawDeg = HCDELocalRenderedYaw(*mo).Degrees();
+				const double yawDeltaDeg = deltaangle(DAngle::fromBam(yaw), HCDELocalRenderedYaw(*mo)).Degrees();
 				const bool serverMoving = serverVel.XY().LengthSquared() > 0.25;
 				const bool clientMoving = mo->Vel.XY().LengthSquared() > 0.25;
 				const double serverVelHdg = serverMoving ? serverVel.Angle().Degrees() : -999.0;
 				const double clientVelHdg = clientMoving ? mo->Vel.Angle().Degrees() : -999.0;
 				DebugTrace::Markf("net",
-					"HCDE reconcile-heading tic=%u drift=%.2f tier=%d yaw(srv=%.1f cli=%.1f d=%.1f) "
-					"velhdg(srv=%.1f cli=%.1f) spd(srv=%.1f cli=%.1f) local=(%.1f,%.1f) server=(%.1f,%.1f)",
-					unsigned(serverTic), sqrt(drift), repairTier,
+					"HCDE reconcile-heading tic=%u gametic=%d clienttic=%d ack=%d current=%d drift=%.2f tier=%d "
+					"reasons(hard=%d baseline=%d horiz=%d nearhard=%d vertical=%d moveMismatch=%d stat=%d released=%d) "
+					"yaw(srv=%.1f cli=%.1f d=%.1f) velhdg(srv=%.1f cli=%.1f) spd(srv=%.1f cli=%.1f) "
+					"local=(%.1f,%.1f) server=(%.1f,%.1f)",
+					unsigned(serverTic), gametic, ClientTic,
+					consoleplayer >= 0 && consoleplayer < MAXPLAYERS ? ClientStates[consoleplayer].SequenceAck : -1,
+					consoleplayer >= 0 && consoleplayer < MAXPLAYERS ? ClientStates[consoleplayer].CurrentSequence : -1,
+					sqrt(drift), repairTier,
+					localNeedsHardPoseRepair ? 1 : 0,
+					localBaselineDriftExceedsAllowance ? 1 : 0,
+					localHorizontalDivergence ? 1 : 0,
+					localNearHardDivergence ? 1 : 0,
+					localVerticalDivergence ? 1 : 0,
+					movementAuthorityMismatch ? 1 : 0,
+					stationaryAuthorityDesync ? 1 : 0,
+					releasedCoastAuthorityDesync ? 1 : 0,
 					serverYawDeg, clientYawDeg, yawDeltaDeg,
 					serverVelHdg, clientVelHdg,
 					serverVel.XY().Length(), mo->Vel.XY().Length(),
@@ -961,21 +1223,24 @@ static bool HCDEValidateServerWorldDeltas(int clientNum, const uint8_t* body, si
 			// the authority once the gap is real (beyond any in-flight turn) and
 			// the player is holding a steady angle (so we are not yanking a live
 			// mouse turn the server has simply not acked yet).
-			if (!needsLocalStateRepair && canMutatePlaysim)
+			if (!needsLocalStateRepair && canMutatePlaysim
+				&& gametic >= HCDEHeadingRepairGraceUntilGametic)
 			{
-				const double headingDriftDeg = fabs(deltaangle(DAngle::fromBam(yaw), mo->Angles.Yaw).Degrees());
+				const DAngle serverYawAngle = DAngle::fromBam(yaw);
+				const double headingDriftDeg = fabs(deltaangle(serverYawAngle, HCDELocalRenderedYaw(*mo)).Degrees());
 				const bool clientMovingXY = mo->Vel.XY().LengthSquared() > 0.25;
 				const bool serverMovingXY = serverVel.XY().LengthSquared() > 0.25;
-				static DAngle sLastLocalHeading = nullAngle;
-				static bool sHasLastLocalHeading = false;
-				const double clientHeadingStepDeg = sHasLastLocalHeading
-					? fabs(deltaangle(sLastLocalHeading, mo->Angles.Yaw).Degrees())
+				const DAngle renderedYaw = HCDELocalRenderedYaw(*mo);
+				const double clientHeadingStepDeg = HCDELocalHeadingRepairHasLastYaw
+					? fabs(deltaangle(HCDELocalHeadingRepairLastYaw, renderedYaw).Degrees())
 					: 360.0;
-				sLastLocalHeading = mo->Angles.Yaw;
-				sHasLastLocalHeading = true;
+				HCDELocalHeadingRepairLastYaw = renderedYaw;
+				HCDELocalHeadingRepairHasLastYaw = true;
 				const bool clientHeadingStable = clientHeadingStepDeg <= HCDEServerReconcileHeadingStableDegrees;
-				const bool inputQuiet = HCDELocalHeadingRepairInputQuiet();
-				if (!clientMovingXY && !serverMovingXY && inputQuiet
+				const bool noTranslateInput = !HCDELocalRecentTranslateInput();
+				// Do not require full input quiet: mouse-look yaw cmds were blocking
+				// authority heading repair forever while the server-facing yaw drifted.
+				if (!clientMovingXY && !serverMovingXY && noTranslateInput
 					&& clientHeadingStable && headingDriftDeg > HCDEServerReconcileHeadingDegrees)
 				{
 					const DVector3 headingRepairPos = mo->Pos();
@@ -993,6 +1258,12 @@ static bool HCDEValidateServerWorldDeltas(int clientNum, const uint8_t* body, si
 					// local predicted position/velocity. This path is explicitly
 					// heading-only; using serverPos here turns a yaw fix into a hidden
 					// position snap whenever ordinary prediction lead is present.
+					g_hcdeViewErrorSmoother.Zero();
+					// Standing still: hard-sync the rendered view to authority. The old
+					// preserveViewAngles path doubled offsets (Angles + ViewAngles).
+					// preservePitch=true: heading repair fixes body/view YAW only; the
+					// look pitch is client-owned and must not be snapped to the delayed
+					// authority value or the camera jitters during free-look.
 					HCDEApplyLocalPoseRepair(player, headingRepairPos, headingRepairVel, yaw, pitch, headingRepairOnGround,
 						true, false, true, false);
 					HCDELocalReconcileDebugTrace(serverTic, sqrt(drift), refVel, true, "apply-heading");
@@ -1000,7 +1271,7 @@ static bool HCDEValidateServerWorldDeltas(int clientNum, const uint8_t* body, si
 					DebugTrace::Markf("net",
 						"HCDE client local heading repair from=%d player=%u headingDrift=%.1f srvYaw=%.1f tic=%u",
 						clientNum, unsigned(playerNum), headingDriftDeg,
-						DAngle::fromBam(yaw).Degrees(), unsigned(serverTic));
+						serverYawAngle.Degrees(), unsigned(serverTic));
 					continue;
 				}
 			}
@@ -1067,8 +1338,13 @@ static bool HCDEValidateServerWorldDeltas(int clientNum, const uint8_t* body, si
 					if (mo == nullptr)
 						continue;
 				PendingLocalHealthRepair.Valid = false;
+				// Full authoritative pose snap: server yaw/pitch are part of the
+				// truth. preserveViewAngles left the body at server XY while the
+				// look direction kept drifting on its own.
+				// preservePitch=true: snap position/yaw to authority on pose drift but
+				// leave the client-owned look pitch alone (avoids free-look jitter).
 				HCDEApplyLocalPoseRepair(player, serverPos, serverVel, yaw, pitch, serverReportsOnGround, true,
-					!localNeedsHardPoseRepair, false, !localNeedsHardPoseRepair);
+					false, true, false);
 					HCDEApplyLocalHealthFields(player, serverHealth, serverReportsOnGround);
 					HCDELocalReconcileDebugTrace(serverTic, sqrt(drift), refVel, true, "apply-predict-pose");
 					++HCDELiveProfile.PredictionLocalStateRepairs;
@@ -1126,8 +1402,22 @@ static bool HCDEValidateServerWorldDeltas(int clientNum, const uint8_t* body, si
 					mo->flags |= defaults->flags & (MF_SOLID | MF_SHOOTABLE);
 				mo->SetOrigin(serverPos, false);
 				mo->Vel = serverVel;
-				mo->SetAngle(DAngle::fromBam(yaw), 0);
-				mo->SetPitch(DAngle::fromBam(pitch), 0);
+				const DAngle spawnYaw = DAngle::fromBam(yaw);
+				const DAngle spawnPitch = DAngle::fromBam(pitch);
+				// ViewAngles is an offset from Angles; setting both to spawnYaw
+				// doubled the rendered facing angle (Angles + ViewAngles).
+				HCDESeatLocalViewYaw(*mo, spawnYaw, spawnYaw);
+				mo->SetPitch(spawnPitch, 0);
+				if (mo->flags8 & MF8_ABSVIEWANGLES)
+					mo->ViewAngles.Pitch = spawnPitch;
+				else
+					mo->ViewAngles.Pitch = nullAngle;
+				// Respawn hard-sets the look pitch; drop the committed client pitch so
+				// the next prediction seat reseeds from this fresh spawn pitch.
+				if (playerNum == consoleplayer)
+					HCDEInvalidateLocalPitch();
+				HCDEHeadingRepairGraceUntilGametic = gametic + TICRATE;
+				g_hcdeViewErrorSmoother.Zero();
 				mo->health = serverHealth;
 				player.health = serverHealth;
 				SET_PLAYER_STATE(&player, playerNum, PST_LIVE, "HCDE_ValidateServerWorldDeltas_respawn_repair");
@@ -1345,8 +1635,12 @@ static bool HCDEValidateServerWorldDeltas(int clientNum, const uint8_t* body, si
 			if (applyPose)
 			{
 				const bool hardRepair = localNeedsHardPoseRepair;
+				const bool authorityPoseRepair = hardRepair || localNeedsBaselinePoseRepair || movementAuthorityMismatch;
+				const bool smoothRepair = !authorityPoseRepair;
+				// preservePitch=true: live drift/state repair keeps the client-owned
+				// look pitch; respawn/death paths above still reset it via their own snaps.
 				HCDEApplyLocalPoseRepair(player, serverPos, serverVel, yaw, pitch, serverReportsOnGround,
-					hardRepair, !hardRepair, false, !hardRepair);
+					hardRepair || localNeedsBaselinePoseRepair, false, true, smoothRepair);
 			}
 			HCDEApplyLocalHealthFields(player, serverHealth, serverReportsOnGround);
 			PendingLocalHealthRepair.Valid = false;
@@ -5760,7 +6054,9 @@ static bool HCDEAppendSharedActorDeltasV2(int clientNum, uint8_t* output, size_t
 	}
 
 	sendCursor = activeRefs > 0 ? nextSendCursor : 0u;
-	const uint8_t flags = (activeRefs > 0 && count >= uint8_t(activeRefs)) ? HCDEActorDeltasFlagComplete : 0u;
+	// Complete means this packet was not truncated by lane budget. Partial rotations
+	// across successive packets are normal and must not be treated as packet loss.
+	const uint8_t flags = deferredBudget == 0u ? HCDEActorDeltasFlagComplete : 0u;
 	output[headerCursor + HCDEActorDeltasFlagsOffset] = flags;
 	output[headerCursor + HCDEActorDeltasCountOffset] = count;
 	++HCDELiveProfile.ActorDeltaV2PacketsBuilt;
@@ -5782,6 +6078,147 @@ static bool HCDEAppendSharedActorDeltasV2(int clientNum, uint8_t* output, size_t
 }
 
 static AActor* Net_FindCoopMapSpawnActorByIndex(int32_t index);
+static int HCDECoopActorRepairRequestNextTic = 0;
+static int HCDECoopServerActorRepairCooldownUntilTic[MAXPLAYERS] = {};
+
+static void Net_ClearCoopInterpState(FHCDEReplicatedActorRef& ref)
+{
+	ref.CoopInterpRingWrite = 0;
+	ref.CoopInterpRingCount = 0;
+}
+
+static void Net_ResetCoopClientReplicationBaseline(const char* reason)
+{
+	if (I_IsLocalHCDEServiceAuthority() || !Net_ShouldRecordCoopMapSpawnIndex())
+		return;
+
+	const int clientNum = consoleplayer;
+	if (clientNum < 0 || clientNum >= MAXPLAYERS)
+		return;
+
+	for (auto& ref : HCDEReplicatedActors)
+	{
+		ref.ClientState[clientNum] = {};
+		ref.CoopHasVisualTarget = false;
+		Net_ClearCoopInterpState(ref);
+	}
+	DebugTrace::Markf("net", "coop client replication baseline reset client=%d gametic=%d reason=%s",
+		clientNum, gametic, reason != nullptr ? reason : "unknown");
+}
+
+// Queue a client->server baseline repair. Clears local HCDA baselines/interp and
+// sets HCDEGameplayFlagActorRepairRequest on the next HCIN send (rate-limited).
+static void Net_QueueCoopActorBaselineRepairRequest(const char* reason)
+{
+	if (I_IsLocalHCDEServiceAuthority() || !Net_ShouldRecordCoopMapSpawnIndex())
+		return;
+	if (gametic < HCDECoopActorRepairRequestNextTic)
+		return;
+
+	HCDECoopActorRepairRequestNextTic = gametic + TICRATE;
+	Net_ResetCoopClientReplicationBaseline(reason);
+	HCDEOutgoingGameplayFlags |= HCDEGameplayFlagActorRepairRequest;
+	DebugTrace::Markf("net", "coop actor baseline repair requested gametic=%d reason=%s",
+		gametic, reason != nullptr ? reason : "unknown");
+	if (net_coop_id_debug)
+		Printf("[COOP REPAIR REQUEST] reason=%s\n", reason != nullptr ? reason : "unknown");
+}
+
+// Detect armed co-op visuals that stopped receiving authoritative samples.
+static void Net_MaybeQueueCoopActorBaselineRepairFromStaleness()
+{
+	if (I_IsLocalHCDEServiceAuthority() || !Net_ShouldRecordCoopMapSpawnIndex())
+		return;
+	if (gamestate != GS_LEVEL || primaryLevel == nullptr)
+		return;
+	if (gametic < HCDECoopActorRepairRequestNextTic)
+		return;
+	// Scan at most once per second; the interpolation pass already runs every frame.
+	if ((gametic % TICRATE) != 0)
+		return;
+
+	const int staleThreshold = TICRATE * 2;
+	for (const auto& ref : HCDEReplicatedActors)
+	{
+		if (!ref.Active || ref.Retired || ref.Source != HREP_SOURCE_COOP)
+			continue;
+		if (!ref.CoopVisualArmed || !ref.CoopHasVisualTarget)
+			continue;
+		if (ref.Actor.Get() == nullptr)
+			continue;
+		if (gametic - ref.CoopVisualTargetTic > staleThreshold)
+		{
+			Net_QueueCoopActorBaselineRepairRequest("stale-coop-visual-target");
+			return;
+		}
+	}
+}
+
+static void Net_DetachCoopAuthorityCorpse(FHCDEReplicatedActorRef& ref)
+{
+	AActor* actor = ref.Actor.Get();
+	if (actor != nullptr && (actor->ObjectFlags & OF_EuthanizeMe) == 0)
+		Net_PrepareInvasionMirrorCorpsePhysics(actor, true);
+	Net_SetHCDEReplicatedActorPtr(ref, nullptr);
+	ref.CoopVisualArmed = false;
+	ref.CoopHasVisualTarget = false;
+	Net_ClearCoopInterpState(ref);
+}
+
+// Client-side co-op authority retire: corpse detach or destroy (mirrors invasion).
+static void Net_RetireCoopAuthorityMonster(FHCDEReplicatedActorRef& ref, int serverHealth)
+{
+	AActor* actor = ref.Actor.Get();
+	if (actor == nullptr)
+	{
+		ref.CoopVisualArmed = false;
+		ref.CoopHasVisualTarget = false;
+		Net_ClearCoopInterpState(ref);
+		return;
+	}
+
+	if (Net_CoopIsProjectileRef(ref))
+	{
+		if ((actor->ObjectFlags & OF_EuthanizeMe) == 0)
+		{
+			actor->ClearCounters();
+			actor->Destroy();
+		}
+		Net_SetHCDEReplicatedActorPtr(ref, nullptr);
+		ref.CoopVisualArmed = false;
+		ref.CoopHasVisualTarget = false;
+		Net_ClearCoopInterpState(ref);
+		return;
+	}
+
+	const bool alreadyCorpse = Net_IsInvasionActorCorpseLike(actor);
+	if (!alreadyCorpse && serverHealth <= 0 && (actor->ObjectFlags & OF_EuthanizeMe) == 0)
+	{
+		actor->health = min<int>(actor->health, serverHealth);
+		Net_PrepareInvasionMirrorCorpsePhysics(actor, false);
+		if ((actor->flags & MF_CORPSE) == 0)
+			actor->CallDie(nullptr, nullptr);
+	}
+
+	if (Net_IsInvasionActorCorpseLike(actor) && (actor->ObjectFlags & OF_EuthanizeMe) == 0)
+	{
+		Net_DetachCoopAuthorityCorpse(ref);
+		return;
+	}
+
+	DebugTrace::Markf("net", "coop authority stale actor destroyed id=%u class=%s health=%d server-health=%d",
+		unsigned(ref.Id),
+		actor->GetClass() != nullptr ? actor->GetClass()->TypeName.GetChars() : "<unknown>",
+		actor->health,
+		serverHealth);
+	actor->ClearCounters();
+	actor->Destroy();
+	Net_SetHCDEReplicatedActorPtr(ref, nullptr);
+	ref.CoopVisualArmed = false;
+	ref.CoopHasVisualTarget = false;
+	Net_ClearCoopInterpState(ref);
+}
+
 static void Net_SetCoopAuthorityVisualOnly(uint32_t id, AActor* actor);
 static void Net_TryApplyCoopAuthorityBind(FHCDEReplicatedActorRef* ref, int32_t spawnIndex);
 static void Net_SetCoopAuthorityVisualTarget(FHCDEReplicatedActorRef& ref, const DVector3& pos,
@@ -6039,6 +6476,38 @@ static bool HCDEApplyActorDeltasV2(int clientNum, const uint8_t* body, size_t bo
 
 		if (!invasionActorLane)
 		{
+			// Retire only on explicit death fields so partial pose deltas cannot
+			// mis-fire from inherited baseline health/flags.
+			// When both flags and health are present in the same delta, require both
+			// to agree on death to avoid inconsistent states (e.g., flags say dead but
+			// health > 0, or health <= 0 but flags say alive).
+			if (sharedRef != nullptr)
+			{
+				const bool hasFlags = (fieldMask & HCDEActorDeltaFieldFlags) != 0u;
+				const bool hasHealth = (fieldMask & HCDEActorDeltaFieldHealth) != 0u;
+				const bool flagsIndicateDeath = hasFlags && (actorFlags & HCDEActorDeltaFlagLive) == 0u;
+				const bool healthIndicatesDeath = hasHealth && health <= 0;
+
+				// If both fields present, both must agree on death. If only one present,
+				// use that field's indication.
+				const bool shouldRetire = (hasFlags && hasHealth)
+					? (flagsIndicateDeath && healthIndicatesDeath)
+					: (flagsIndicateDeath || healthIndicatesDeath);
+
+				if (shouldRetire)
+				{
+					if (sharedRef->CoopVisualArmed && sharedRef->Actor.Get() != nullptr)
+						Net_RetireCoopAuthorityMonster(*sharedRef, health);
+					else
+					{
+						sharedRef->CoopVisualArmed = false;
+						sharedRef->CoopHasVisualTarget = false;
+						Net_ClearCoopInterpState(*sharedRef);
+					}
+					++applied;
+					continue;
+				}
+			}
 			if (sharedRef != nullptr
 				&& sharedRef->CoopVisualArmed
 				&& sharedRef->Actor.Get() != nullptr
@@ -6142,7 +6611,13 @@ void Net_BeginCoopMapSpawnRegistration(FLevelLocals* level)
 	// Drop any prior-map co-op NetID tables so recycled actor pointers cannot
 	// inherit stale spawn-index bindings after a map change.
 	if (Net_ShouldRecordCoopMapSpawnIndex())
+	{
 		Net_ClearHCDEReplicatedActors();
+		HCDECoopActorRepairRequestNextTic = 0;
+		HCDEResetLocalPlayerBaselineSync();
+		HCDEOutgoingGameplayFlags = 0u;
+		memset(HCDECoopServerActorRepairCooldownUntilTic, 0, sizeof(HCDECoopServerActorRepairCooldownUntilTic));
+	}
 }
 
 // Record the deterministic THINGS-lump index for a map-spawned actor. Server and
@@ -6469,14 +6944,7 @@ static void Net_ApplyCoopAuthorityPoseFromDelta(FHCDEReplicatedActorRef& ref, AA
 	if (useInterp)
 	{
 		if (!snapPose)
-		{
-			if (net_coop_id_debug && (fieldMask & HCDEActorDeltaFieldPos) != 0u)
-			{
-				Printf("[COOP POSE APPLY] netid=%u spawn-index=%d buffered tic=%d\n",
-					unsigned(ref.Id), int(ref.CoopMapSpawnIndex), gametic);
-			}
 			return;
-		}
 	}
 	else if ((fieldMask & HCDEActorDeltaFieldAngles) != 0u)
 	{
@@ -6648,4 +7116,6 @@ static void Net_ClientTickInterpolation(unsigned& updated, unsigned& skipped)
 
 		++updated;
 	}
+
+	Net_MaybeQueueCoopActorBaselineRepairFromStaleness();
 }
