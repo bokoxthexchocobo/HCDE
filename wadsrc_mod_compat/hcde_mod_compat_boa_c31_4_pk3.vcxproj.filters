@@ -1,0 +1,62 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="17.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <CustomBuild Include="C:\Users\user\DoomConnector6\HCDE\CMakeFiles\f2ccca16b11cd5feb0bebae6bf4ef910\hcde_mod_compat_boa_c31_4.pk3.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="C:\Users\user\DoomConnector6\HCDE\CMakeFiles\cf8b55309c9d6b8faaa99210ce15918b\hcde_mod_compat_boa_c31_4_pk3.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_mod_compat\CMakeLists.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_mod_compat\boa_c31_4\scripts\actors\playerfollowers.zs">
+      <Filter>Source Files\scripts\actors</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_mod_compat\boa_c31_4\scripts\actors\skyboxview.zs">
+      <Filter>Source Files\scripts\actors</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_mod_compat\boa_c31_4\scripts\eventhandlers\IWADChecker.zs">
+      <Filter>Source Files\scripts\eventhandlers</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_mod_compat\boa_c31_4\scripts\shaders\colorgrade.zs">
+      <Filter>Source Files\scripts\shaders</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_mod_compat\boa_c31_4\static\hcde_compat\non_asset\graphics\MapArrow.txt">
+      <Filter>Source Files\static\hcde_compat\non_asset\graphics</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_mod_compat\CMakeFiles\hcde_mod_compat_boa_c31_4_pk3" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="CMake Rules">
+      <UniqueIdentifier>{6B4C33DB-601C-3F66-91C4-B80AF0AEEFDD}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{7A34F880-AD99-3A93-806C-D6F4B030A349}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\scripts">
+      <UniqueIdentifier>{F4E321A3-902E-34BF-833A-0A4E9DA2B6D9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\scripts\actors">
+      <UniqueIdentifier>{D8C6FDF6-EC38-32D3-A6A3-BC5E09AE10A0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\scripts\eventhandlers">
+      <UniqueIdentifier>{DFE729CF-DC46-3286-98BB-E061400B55A6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\scripts\shaders">
+      <UniqueIdentifier>{821A901E-9913-3A5F-B26B-2AC575EC9376}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\static">
+      <UniqueIdentifier>{12659B56-E2A0-3D64-B873-EFEFFECD5F71}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\static\hcde_compat">
+      <UniqueIdentifier>{5007DA62-8A0F-3B96-A9BF-77709818794F}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\static\hcde_compat\non_asset">
+      <UniqueIdentifier>{0C9BF1CC-D27A-329A-85D2-A15CA67E8D44}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\static\hcde_compat\non_asset\graphics">
+      <UniqueIdentifier>{8799E475-961D-30D8-B39B-E497A5BAE0DB}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

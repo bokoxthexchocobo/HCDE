@@ -1,0 +1,1 @@
+C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\timidity\timidity.dir\Debug\timidity.lib

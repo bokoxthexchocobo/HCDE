@@ -1,0 +1,1 @@
+C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\src\fluidsynth.dir\Debug\fluidsynth.lib

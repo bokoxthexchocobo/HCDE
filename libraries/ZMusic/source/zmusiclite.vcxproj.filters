@@ -1,0 +1,1028 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="17.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\source\loader\i_module.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\source\mididevices\music_base_mididevice.cpp">
+      <Filter>MIDI Devices</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\source\mididevices\music_adlmidi_mididevice.cpp">
+      <Filter>MIDI Devices</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\source\mididevices\music_opl_mididevice.cpp">
+      <Filter>MIDI Devices</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\source\mididevices\music_opnmidi_mididevice.cpp">
+      <Filter>MIDI Devices</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\source\mididevices\music_timiditypp_mididevice.cpp">
+      <Filter>MIDI Devices</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\source\mididevices\music_fluidsynth_mididevice.cpp">
+      <Filter>MIDI Devices</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\source\mididevices\music_softsynth_mididevice.cpp">
+      <Filter>MIDI Devices</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\source\mididevices\music_timidity_mididevice.cpp">
+      <Filter>MIDI Devices</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\source\mididevices\music_wildmidi_mididevice.cpp">
+      <Filter>MIDI Devices</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\source\mididevices\music_wavewriter_mididevice.cpp">
+      <Filter>MIDI Devices</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\source\midisources\midisource.cpp">
+      <Filter>MIDI Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\source\midisources\midisource_mus.cpp">
+      <Filter>MIDI Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\source\midisources\midisource_smf.cpp">
+      <Filter>MIDI Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\source\midisources\midisource_hmi.cpp">
+      <Filter>MIDI Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\source\midisources\midisource_xmi.cpp">
+      <Filter>MIDI Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\source\midisources\midisource_mids.cpp">
+      <Filter>MIDI Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\source\streamsources\music_dumb.cpp">
+      <Filter>Stream Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\source\streamsources\music_gme.cpp">
+      <Filter>Stream Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\source\streamsources\music_libsndfile.cpp">
+      <Filter>Stream Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\source\streamsources\music_libxmp.cpp">
+      <Filter>Stream Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\source\streamsources\music_opl.cpp">
+      <Filter>Stream Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\source\streamsources\music_xa.cpp">
+      <Filter>Stream Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\source\musicformats\music_stream.cpp">
+      <Filter>Music Formats</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\source\musicformats\music_midi.cpp">
+      <Filter>Music Formats</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\source\musicformats\music_cd.cpp">
+      <Filter>Music Formats</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\source\decoder\sounddecoder.cpp">
+      <Filter>Sound Decoding</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\source\decoder\sndfile_decoder.cpp">
+      <Filter>Sound Decoding</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\source\decoder\mpg123_decoder.cpp">
+      <Filter>Sound Decoding</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\source\zmusic\configuration.cpp">
+      <Filter>ZMusic Core</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\source\zmusic\zmusic.cpp">
+      <Filter>ZMusic Core</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\source\zmusic\critsec.cpp">
+      <Filter>ZMusic Core</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\source\zmusic\file_zip.cpp">
+      <Filter>ZMusic Core</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\source\loader\test.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\source\mididevices\music_win_mididevice.cpp">
+      <Filter>MIDI Devices</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\source\musicformats\win32\i_cd.cpp">
+      <Filter>Music Formats\Win32</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\source\musicformats\win32\helperthread.cpp">
+      <Filter>Music Formats\Win32</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\include\zmusic.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\mpg123.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\sndfile.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\source\decoder\mpg123_decoder.h">
+      <Filter>Sound Decoding</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\source\decoder\mpgload.h">
+      <Filter>Sound Decoding</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\source\decoder\sndfile_decoder.h">
+      <Filter>Sound Decoding</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\source\decoder\sndload.h">
+      <Filter>Sound Decoding</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\source\loader\i_module.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\source\mididevices\mididevice.h">
+      <Filter>MIDI Devices</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\source\mididevices\music_alsa_state.h">
+      <Filter>MIDI Devices</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\source\midisources\midisource.h">
+      <Filter>MIDI Sources</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\source\musicformats\win32\helperthread.h">
+      <Filter>Music Formats\Win32</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\source\musicformats\win32\i_cd.h">
+      <Filter>Music Formats\Win32</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\source\streamsources\streamsource.h">
+      <Filter>Stream Sources</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\source\zmusic\critsec.h">
+      <Filter>ZMusic Core</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\source\zmusic\file_zip.h">
+      <Filter>ZMusic Core</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\source\zmusic\fileio.h">
+      <Filter>ZMusic Core</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\source\zmusic\m_swap.h">
+      <Filter>ZMusic Core</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\source\zmusic\midiconfig.h">
+      <Filter>ZMusic Core</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\source\zmusic\mididefs.h">
+      <Filter>ZMusic Core</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\source\zmusic\mus2midi.h">
+      <Filter>ZMusic Core</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\source\zmusic\musinfo.h">
+      <Filter>ZMusic Core</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\source\zmusic\sounddecoder.h">
+      <Filter>ZMusic Core</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\source\zmusic\w_zip.h">
+      <Filter>ZMusic Core</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\source\zmusic\zmusic_internal.h">
+      <Filter>ZMusic Core</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\source\CMakeLists.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Object Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\dumb\dumb.dir\$(Configuration)\unload.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\dumb\dumb.dir\$(Configuration)\rendsig.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\dumb\dumb.dir\$(Configuration)\rendduh.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\dumb\dumb.dir\$(Configuration)\register.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\dumb\dumb.dir\$(Configuration)\readduh.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\dumb\dumb.dir\$(Configuration)\rawsig.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\dumb\dumb.dir\$(Configuration)\makeduh.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\dumb\dumb.dir\$(Configuration)\loadduh.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\dumb\dumb.dir\$(Configuration)\dumbfile.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\dumb\dumb.dir\$(Configuration)\duhtag.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\dumb\dumb.dir\$(Configuration)\duhlen.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\dumb\dumb.dir\$(Configuration)\atexit.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\dumb\dumb.dir\$(Configuration)\stdfile.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\dumb\dumb.dir\$(Configuration)\silence.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\dumb\dumb.dir\$(Configuration)\sampbuf.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\dumb\dumb.dir\$(Configuration)\riff.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\dumb\dumb.dir\$(Configuration)\resample.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\dumb\dumb.dir\$(Configuration)\memfile.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\dumb\dumb.dir\$(Configuration)\clickrem.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\dumb\dumb.dir\$(Configuration)\barray.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\dumb\dumb.dir\$(Configuration)\xmeffect.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\dumb\dumb.dir\$(Configuration)\readxm2.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\dumb\dumb.dir\$(Configuration)\readxm.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\dumb\dumb.dir\$(Configuration)\readstm2.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\dumb\dumb.dir\$(Configuration)\readstm.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\dumb\dumb.dir\$(Configuration)\reads3m2.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\dumb\dumb.dir\$(Configuration)\reads3m.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\dumb\dumb.dir\$(Configuration)\readriff.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\dumb\dumb.dir\$(Configuration)\readptm.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\dumb\dumb.dir\$(Configuration)\readpsm.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\dumb\dumb.dir\$(Configuration)\readoldpsm.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\dumb\dumb.dir\$(Configuration)\readokt2.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\dumb\dumb.dir\$(Configuration)\readokt.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\dumb\dumb.dir\$(Configuration)\readmtm.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\dumb\dumb.dir\$(Configuration)\readmod2.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\dumb\dumb.dir\$(Configuration)\readmod.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\dumb\dumb.dir\$(Configuration)\readdsmf.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\dumb\dumb.dir\$(Configuration)\readasy.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\dumb\dumb.dir\$(Configuration)\readamf2.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\dumb\dumb.dir\$(Configuration)\readamf.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\dumb\dumb.dir\$(Configuration)\readam.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\dumb\dumb.dir\$(Configuration)\read6692.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\dumb\dumb.dir\$(Configuration)\read669.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\dumb\dumb.dir\$(Configuration)\ptmeffect.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\dumb\dumb.dir\$(Configuration)\loadxm2.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\dumb\dumb.dir\$(Configuration)\loadxm.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\dumb\dumb.dir\$(Configuration)\loadstm2.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\dumb\dumb.dir\$(Configuration)\loadstm.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\dumb\dumb.dir\$(Configuration)\loads3m2.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\dumb\dumb.dir\$(Configuration)\loads3m.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\dumb\dumb.dir\$(Configuration)\loadriff2.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\dumb\dumb.dir\$(Configuration)\loadriff.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\dumb\dumb.dir\$(Configuration)\loadptm2.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\dumb\dumb.dir\$(Configuration)\loadptm.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\dumb\dumb.dir\$(Configuration)\loadpsm2.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\dumb\dumb.dir\$(Configuration)\loadpsm.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\dumb\dumb.dir\$(Configuration)\loadoldpsm2.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\dumb\dumb.dir\$(Configuration)\loadoldpsm.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\dumb\dumb.dir\$(Configuration)\loadokt2.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\dumb\dumb.dir\$(Configuration)\loadokt.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\dumb\dumb.dir\$(Configuration)\loadmtm2.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\dumb\dumb.dir\$(Configuration)\loadmtm.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\dumb\dumb.dir\$(Configuration)\loadmod2.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\dumb\dumb.dir\$(Configuration)\loadmod.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\dumb\dumb.dir\$(Configuration)\loadasy2.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\dumb\dumb.dir\$(Configuration)\loadasy.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\dumb\dumb.dir\$(Configuration)\loadamf2.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\dumb\dumb.dir\$(Configuration)\loadamf.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\dumb\dumb.dir\$(Configuration)\load6692.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\dumb\dumb.dir\$(Configuration)\load669.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\dumb\dumb.dir\$(Configuration)\itunload.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\dumb\dumb.dir\$(Configuration)\itrender.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\dumb\dumb.dir\$(Configuration)\itread2.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\dumb\dumb.dir\$(Configuration)\itread.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\dumb\dumb.dir\$(Configuration)\itorder.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\dumb\dumb.dir\$(Configuration)\itmisc.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\dumb\dumb.dir\$(Configuration)\itload2.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\dumb\dumb.dir\$(Configuration)\itload.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\dumb\dumb.dir\$(Configuration)\readany.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\dumb\dumb.dir\$(Configuration)\loadany2.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\dumb\dumb.dir\$(Configuration)\loadany.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\dumb\dumb.dir\$(Configuration)\readany2.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\dumb\dumb.dir\$(Configuration)\resampler.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\dumb\dumb.dir\$(Configuration)\lpc.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\game-music-emu\gme\gme.dir\$(Configuration)\Blip_Buffer.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\game-music-emu\gme\gme.dir\$(Configuration)\Classic_Emu.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\game-music-emu\gme\gme.dir\$(Configuration)\Data_Reader.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\game-music-emu\gme\gme.dir\$(Configuration)\Dual_Resampler.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\game-music-emu\gme\gme.dir\$(Configuration)\Effects_Buffer.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\game-music-emu\gme\gme.dir\$(Configuration)\Fir_Resampler.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\game-music-emu\gme\gme.dir\$(Configuration)\gme.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\game-music-emu\gme\gme.dir\$(Configuration)\Gme_File.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\game-music-emu\gme\gme.dir\$(Configuration)\M3u_Playlist.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\game-music-emu\gme\gme.dir\$(Configuration)\Multi_Buffer.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\game-music-emu\gme\gme.dir\$(Configuration)\Music_Emu.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\game-music-emu\gme\gme.dir\$(Configuration)\Ay_Apu.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\game-music-emu\gme\gme.dir\$(Configuration)\Ym2612_Nuked.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\game-music-emu\gme\gme.dir\$(Configuration)\Sms_Apu.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\game-music-emu\gme\gme.dir\$(Configuration)\Ay_Cpu.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\game-music-emu\gme\gme.dir\$(Configuration)\Ay_Emu.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\game-music-emu\gme\gme.dir\$(Configuration)\Gb_Apu.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\game-music-emu\gme\gme.dir\$(Configuration)\Gb_Cpu.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\game-music-emu\gme\gme.dir\$(Configuration)\Gb_Oscs.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\game-music-emu\gme\gme.dir\$(Configuration)\Gbs_Emu.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\game-music-emu\gme\gme.dir\$(Configuration)\Gym_Emu.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\game-music-emu\gme\gme.dir\$(Configuration)\Hes_Apu.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\game-music-emu\gme\gme.dir\$(Configuration)\Hes_Cpu.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\game-music-emu\gme\gme.dir\$(Configuration)\Hes_Emu.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\game-music-emu\gme\gme.dir\$(Configuration)\Kss_Cpu.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\game-music-emu\gme\gme.dir\$(Configuration)\Kss_Emu.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\game-music-emu\gme\gme.dir\$(Configuration)\Kss_Scc_Apu.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\game-music-emu\gme\gme.dir\$(Configuration)\Nes_Apu.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\game-music-emu\gme\gme.dir\$(Configuration)\Nes_Cpu.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\game-music-emu\gme\gme.dir\$(Configuration)\Nes_Fme7_Apu.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\game-music-emu\gme\gme.dir\$(Configuration)\Nes_Namco_Apu.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\game-music-emu\gme\gme.dir\$(Configuration)\Nes_Oscs.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\game-music-emu\gme\gme.dir\$(Configuration)\Nes_Vrc6_Apu.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\game-music-emu\gme\gme.dir\$(Configuration)\Nes_Fds_Apu.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\game-music-emu\gme\gme.dir\$(Configuration)\Nes_Vrc7_Apu.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\game-music-emu\gme\gme.dir\$(Configuration)\emu2413.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\game-music-emu\gme\gme.dir\$(Configuration)\panning.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\game-music-emu\gme\gme.dir\$(Configuration)\Nsf_Emu.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\game-music-emu\gme\gme.dir\$(Configuration)\Nsfe_Emu.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\game-music-emu\gme\gme.dir\$(Configuration)\Sap_Apu.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\game-music-emu\gme\gme.dir\$(Configuration)\Sap_Cpu.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\game-music-emu\gme\gme.dir\$(Configuration)\Sap_Emu.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\game-music-emu\gme\gme.dir\$(Configuration)\Snes_Spc.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\game-music-emu\gme\gme.dir\$(Configuration)\Spc_Cpu.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\game-music-emu\gme\gme.dir\$(Configuration)\Spc_Dsp.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\game-music-emu\gme\gme.dir\$(Configuration)\Spc_Emu.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\game-music-emu\gme\gme.dir\$(Configuration)\Spc_Filter.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\game-music-emu\gme\gme.dir\$(Configuration)\Vgm_Emu.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\game-music-emu\gme\gme.dir\$(Configuration)\Vgm_Emu_Impl.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\game-music-emu\gme\gme.dir\$(Configuration)\Ym2413_Emu.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\libxmp\libxmp.dir\$(Configuration)\virtual.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\libxmp\libxmp.dir\$(Configuration)\format.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\libxmp\libxmp.dir\$(Configuration)\period.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\libxmp\libxmp.dir\$(Configuration)\player.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\libxmp\libxmp.dir\$(Configuration)\read_event.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\libxmp\libxmp.dir\$(Configuration)\dataio.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\libxmp\libxmp.dir\$(Configuration)\misc.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\libxmp\libxmp.dir\$(Configuration)\mkstemp.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\libxmp\libxmp.dir\$(Configuration)\md5.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\libxmp\libxmp.dir\$(Configuration)\lfo.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\libxmp\libxmp.dir\$(Configuration)\scan.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\libxmp\libxmp.dir\$(Configuration)\control.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\libxmp\libxmp.dir\$(Configuration)\far_extras.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\libxmp\libxmp.dir\$(Configuration)\med_extras.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\libxmp\libxmp.dir\$(Configuration)\filter.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\libxmp\libxmp.dir\$(Configuration)\effects.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\libxmp\libxmp.dir\$(Configuration)\mixer.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\libxmp\libxmp.dir\$(Configuration)\mix_all.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\libxmp\libxmp.dir\$(Configuration)\load_helpers.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\libxmp\libxmp.dir\$(Configuration)\load.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\libxmp\libxmp.dir\$(Configuration)\hio.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\libxmp\libxmp.dir\$(Configuration)\hmn_extras.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\libxmp\libxmp.dir\$(Configuration)\extras.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\libxmp\libxmp.dir\$(Configuration)\smix.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\libxmp\libxmp.dir\$(Configuration)\filetype.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\libxmp\libxmp.dir\$(Configuration)\memio.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\libxmp\libxmp.dir\$(Configuration)\tempfile.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\libxmp\libxmp.dir\$(Configuration)\mix_paula.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\libxmp\libxmp.dir\$(Configuration)\flow.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\libxmp\libxmp.dir\$(Configuration)\rng.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\libxmp\libxmp.dir\$(Configuration)\win32.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\libxmp\libxmp.dir\$(Configuration)\common.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\libxmp\libxmp.dir\$(Configuration)\iff.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\libxmp\libxmp.dir\$(Configuration)\itsex.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\libxmp\libxmp.dir\$(Configuration)\lzw.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\libxmp\libxmp.dir\$(Configuration)\voltable.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\libxmp\libxmp.dir\$(Configuration)\sample.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\libxmp\libxmp.dir\$(Configuration)\vorbis.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\libxmp\libxmp.dir\$(Configuration)\xm_load.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\libxmp\libxmp.dir\$(Configuration)\mod_load.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\libxmp\libxmp.dir\$(Configuration)\s3m_load.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\libxmp\libxmp.dir\$(Configuration)\stm_load.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\libxmp\libxmp.dir\$(Configuration)\669_load.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\libxmp\libxmp.dir\$(Configuration)\far_load.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\libxmp\libxmp.dir\$(Configuration)\mtm_load.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\libxmp\libxmp.dir\$(Configuration)\ptm_load.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\libxmp\libxmp.dir\$(Configuration)\okt_load.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\libxmp\libxmp.dir\$(Configuration)\ult_load.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\libxmp\libxmp.dir\$(Configuration)\mdl_load.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\libxmp\libxmp.dir\$(Configuration)\it_load.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\libxmp\libxmp.dir\$(Configuration)\stx_load.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\libxmp\libxmp.dir\$(Configuration)\pt3_load.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\libxmp\libxmp.dir\$(Configuration)\sfx_load.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\libxmp\libxmp.dir\$(Configuration)\flt_load.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\libxmp\libxmp.dir\$(Configuration)\st_load.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\libxmp\libxmp.dir\$(Configuration)\emod_load.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\libxmp\libxmp.dir\$(Configuration)\imf_load.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\libxmp\libxmp.dir\$(Configuration)\digi_load.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\libxmp\libxmp.dir\$(Configuration)\fnk_load.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\libxmp\libxmp.dir\$(Configuration)\ice_load.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\libxmp\libxmp.dir\$(Configuration)\liq_load.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\libxmp\libxmp.dir\$(Configuration)\ims_load.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\libxmp\libxmp.dir\$(Configuration)\masi_load.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\libxmp\libxmp.dir\$(Configuration)\masi16_load.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\libxmp\libxmp.dir\$(Configuration)\amf_load.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\libxmp\libxmp.dir\$(Configuration)\stim_load.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\libxmp\libxmp.dir\$(Configuration)\mmd_common.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\libxmp\libxmp.dir\$(Configuration)\mmd1_load.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\libxmp\libxmp.dir\$(Configuration)\mmd3_load.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\libxmp\libxmp.dir\$(Configuration)\rtm_load.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\libxmp\libxmp.dir\$(Configuration)\dt_load.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\libxmp\libxmp.dir\$(Configuration)\no_load.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\libxmp\libxmp.dir\$(Configuration)\arch_load.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\libxmp\libxmp.dir\$(Configuration)\sym_load.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\libxmp\libxmp.dir\$(Configuration)\med2_load.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\libxmp\libxmp.dir\$(Configuration)\med3_load.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\libxmp\libxmp.dir\$(Configuration)\med4_load.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\libxmp\libxmp.dir\$(Configuration)\dbm_load.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\libxmp\libxmp.dir\$(Configuration)\umx_load.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\libxmp\libxmp.dir\$(Configuration)\gdm_load.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\libxmp\libxmp.dir\$(Configuration)\pw_load.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\libxmp\libxmp.dir\$(Configuration)\gal5_load.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\libxmp\libxmp.dir\$(Configuration)\gal4_load.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\libxmp\libxmp.dir\$(Configuration)\mfp_load.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\libxmp\libxmp.dir\$(Configuration)\asylum_load.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\libxmp\libxmp.dir\$(Configuration)\muse_load.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\libxmp\libxmp.dir\$(Configuration)\hmn_load.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\libxmp\libxmp.dir\$(Configuration)\mgt_load.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\libxmp\libxmp.dir\$(Configuration)\chip_load.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\libxmp\libxmp.dir\$(Configuration)\abk_load.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\libxmp\libxmp.dir\$(Configuration)\coco_load.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\libxmp\libxmp.dir\$(Configuration)\xmf_load.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\miniz\miniz.dir\$(Configuration)\miniz.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\src\fluidsynth.dir\$(Configuration)\fluid_conv.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\src\fluidsynth.dir\$(Configuration)\fluid_hash.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\src\fluidsynth.dir\$(Configuration)\fluid_list.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\src\fluidsynth.dir\$(Configuration)\fluid_ringbuffer.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\src\fluidsynth.dir\$(Configuration)\fluid_settings.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\src\fluidsynth.dir\$(Configuration)\fluid_sys.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\src\fluidsynth.dir\$(Configuration)\fluid_defsfont.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\src\fluidsynth.dir\$(Configuration)\fluid_sfont.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\src\fluidsynth.dir\$(Configuration)\fluid_sffile.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\src\fluidsynth.dir\$(Configuration)\fluid_samplecache.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\src\fluidsynth.dir\$(Configuration)\fluid_adsr_env.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\src\fluidsynth.dir\$(Configuration)\fluid_chorus.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\src\fluidsynth.dir\$(Configuration)\fluid_iir_filter.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\src\fluidsynth.dir\$(Configuration)\fluid_iir_filter_impl.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\src\fluidsynth.dir\$(Configuration)\fluid_lfo.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\src\fluidsynth.dir\$(Configuration)\fluid_rvoice.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\src\fluidsynth.dir\$(Configuration)\fluid_rvoice_dsp.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\src\fluidsynth.dir\$(Configuration)\fluid_rvoice_event.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\src\fluidsynth.dir\$(Configuration)\fluid_rvoice_mixer.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\src\fluidsynth.dir\$(Configuration)\fluid_rev.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\src\fluidsynth.dir\$(Configuration)\fluid_chan.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\src\fluidsynth.dir\$(Configuration)\fluid_event.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\src\fluidsynth.dir\$(Configuration)\fluid_gen.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\src\fluidsynth.dir\$(Configuration)\fluid_mod.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\src\fluidsynth.dir\$(Configuration)\fluid_synth.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\src\fluidsynth.dir\$(Configuration)\fluid_synth_monopoly.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\src\fluidsynth.dir\$(Configuration)\fluid_tuning.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\src\fluidsynth.dir\$(Configuration)\fluid_voice.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\src\fluidsynth.dir\$(Configuration)\fluid_midi.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\src\fluidsynth.dir\$(Configuration)\fluid_midi_router.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\src\fluidsynth.dir\$(Configuration)\fluid_seqbind.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\src\fluidsynth.dir\$(Configuration)\fluid_seqbind_notes.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\src\fluidsynth.dir\$(Configuration)\fluid_seq.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\src\fluidsynth.dir\$(Configuration)\fluid_seq_queue.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\src\fluidsynth.dir\$(Configuration)\fluid_adriver.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\src\fluidsynth.dir\$(Configuration)\fluid_mdriver.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\src\fluidsynth.dir\$(Configuration)\fluid_filerenderer.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\src\fluidsynth.dir\$(Configuration)\fluid_ladspa.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+    <Object Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\src\fluidsynth.dir\$(Configuration)\win32_glibstubs.obj">
+      <Filter>Object Libraries</Filter>
+    </Object>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{F4031774-2530-34F6-A3E3-BFF9B8A0DB72}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="MIDI Devices">
+      <UniqueIdentifier>{0A5A96D6-F879-35E6-9FF8-E24998C6084D}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="MIDI Sources">
+      <UniqueIdentifier>{3B291A7A-B440-3C0C-AF5E-9A1D0924928D}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Music Formats">
+      <UniqueIdentifier>{F75A3212-9BA7-3D59-B080-B3C271955228}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Music Formats\Win32">
+      <UniqueIdentifier>{AB00FCE2-1DA1-3C03-BAAD-94B3FF85D986}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Object Libraries">
+      <UniqueIdentifier>{55A79C51-759F-37CD-9C18-04E023B7409D}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Sound Decoding">
+      <UniqueIdentifier>{6FF3D800-A3AE-32B1-B741-677F8BC788A7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{7A34F880-AD99-3A93-806C-D6F4B030A349}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Stream Sources">
+      <UniqueIdentifier>{0F55AD13-3520-3C0D-A8AC-3FC3388C74CF}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ZMusic Core">
+      <UniqueIdentifier>{5CE5C779-FAFF-34C2-8E06-E1AF91CE72E5}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

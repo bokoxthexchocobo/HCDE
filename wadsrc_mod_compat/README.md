@@ -11,6 +11,7 @@ Current organized patches:
 | `pink_valley_eng` | `hcde_mod_compat_pink_valley_eng.pk3` | Pink Valley map transition and event handler compatibility. |
 | `armageddon2_test` | `hcde_mod_compat_armageddon2_test.pk3` | Armageddon2 Skulltag invasion spot/resource compatibility. |
 | `boa_c31_4` | `hcde_mod_compat_boa_c31_4.pk3` | Blade of Agony ZScript compatibility fixes for dedicated-server parsing. |
+| `doomcenter` | `hcde_mod_compat_doomcenter.pk3` | DoomCenter FloatyIcon stub (Skulltag engine built-in); paired with skulltag_content preload + MAP55 hub startup override. |
 
 The release script packages these PK3s into the separate
 `HCDE-<version>-compat-mods.zip` asset and writes a generated `PATCHES.md`

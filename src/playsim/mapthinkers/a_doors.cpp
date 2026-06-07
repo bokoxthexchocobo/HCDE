@@ -152,6 +152,8 @@ void DDoor::Tick ()
 			{
 			case doorRaise:
 			case doorClose:
+				Net_DiagTraceDoorMove(m_Sector->sectornum, "finished-closed",
+					m_Sector->CenterCeiling(), m_Sector->CenterFloor());
 				m_Sector->ceilingdata = nullptr;	//jff 2/22/98
 				Destroy ();						// unlink and free
 				break;
@@ -203,6 +205,8 @@ void DDoor::Tick ()
 
 			case doorCloseWaitOpen:
 			case doorOpen:
+				Net_DiagTraceDoorMove(m_Sector->sectornum, "finished-open",
+					m_Sector->CenterCeiling(), m_Sector->CenterFloor());
 				m_Sector->ceilingdata = nullptr;	//jff 2/22/98
 				Destroy ();						// unlink and free
 				break;
@@ -419,6 +423,9 @@ void DDoor::Construct(sector_t *sec, EVlDoor type, double speed, int delay, int 
 		m_BotDist = sec->ceilingplane.PointToDist (m_BotSpot, height);
 	}
 	m_OldFloorDist = sec->floorplane.fD();
+
+	Net_DiagTraceDoorMove(sec->sectornum, "construct",
+		sec->CenterCeiling(), sec->CenterFloor());
 }
 
 //============================================================================
@@ -519,7 +526,14 @@ bool FLevelLocals::EV_DoDoor (DDoor::EVlDoor type, line_t *line, AActor *thing,
 
 	}
 	if (rtn)
-		Net_DiagTraceDoorEvent(tag, int(type), 0, speed);
+	{
+		const int activatorPlayer = (thing != nullptr && thing->player != nullptr)
+			? int(thing->player - players) : -1;
+		const double ceilZ = (sec != nullptr) ? sec->CenterCeiling() : 0.0;
+		const double floorZ = (sec != nullptr) ? sec->CenterFloor() : 0.0;
+		Net_DiagTraceDoorEvent(tag, int(type), 0, speed,
+			(sec != nullptr) ? sec->sectornum : -1, ceilZ, floorZ, activatorPlayer);
+	}
 	return rtn;
 }
 

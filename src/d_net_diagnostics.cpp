@@ -582,13 +582,30 @@ void Net_DiagTraceLineSpec(int playerNum, int lineIndex, int special, int tag, b
 // Trace a door movement start. Doors are a frequent source of "your client
 // thinks the door is open, mine doesn't" desync, so we capture the speed and
 // direction at activation time.
-void Net_DiagTraceDoorEvent(int tag, int type, int direction, double speed)
+void Net_DiagTraceDoorEvent(int tag, int type, int direction, double speed,
+	int sectorIndex, double ceilingZ, double floorZ, int activatorPlayer)
 {
 	if (*net_event_debug <= 0)
 		return;
+	// authority=1 means this process owns world truth (host/dedicated server);
+	// authority=0 is a dedicated client. Diffing the two logs answers the core
+	// question behind "I run through doors without opening them": does the door
+	// even activate on the client, and at what ceiling height?
+	const int authority = I_IsLocalHCDEServiceAuthority() ? 1 : 0;
 	DebugTrace::Markf("playsim.door",
-		"DOOR tag=%d type=%d dir=%d speed=%.2f gametic=%d",
-		tag, type, direction, speed, gametic);
+		"DOOR activate authority=%d tag=%d type=%d dir=%d speed=%.2f sector=%d ceilingz=%.1f floorz=%.1f activator=%d gametic=%d",
+		authority, tag, type, direction, speed, sectorIndex, ceilingZ, floorZ, activatorPlayer, gametic);
+}
+
+void Net_DiagTraceDoorMove(int sectorIndex, const char* phase, double ceilingZ, double floorZ)
+{
+	if (*net_event_debug <= 0)
+		return;
+	const int authority = I_IsLocalHCDEServiceAuthority() ? 1 : 0;
+	DebugTrace::Markf("playsim.door",
+		"DOOR move authority=%d sector=%d phase=%s ceilingz=%.1f floorz=%.1f gap=%.1f gametic=%d",
+		authority, sectorIndex, phase != nullptr ? phase : "?",
+		ceilingZ, floorZ, ceilingZ - floorZ, gametic);
 }
 
 // Trace a sector action trigger (TriggerSectorActions) success.

@@ -388,6 +388,9 @@ void FLevelLocals::ClearLevelData(bool fullgc)
 	VisualThinkerHead = nullptr;
 	ActorBehaviors.Clear();
 	ClientSideActorBehaviors.Clear();
+	// Clear any per-sector baseline arrays introduced for network replication.
+	SectorBaselineFloor.Clear();
+	SectorBaselineCeiling.Clear();
 	if (screen)
 		screen->SetAABBTree(nullptr);
 }

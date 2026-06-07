@@ -1,0 +1,20 @@
+^C:\USERS\USER\DOOMCONNECTOR6\HCDE\CMAKEFILES\191266D6A11DDA98BC08A989AFC37260\BRIGHTMAPS_PK3_COPY.RULE
+setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -E copy_if_different C:/Users/user/DoomConnector6/HCDE/brightmaps.pk3 C:/Users/user/DoomConnector6/HCDE/Debug/brightmaps.pk3
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd
+^C:\USERS\USER\DOOMCONNECTOR6\HCDE\WADSRC_BM\CMAKELISTS.TXT
+setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -SC:/Users/user/DoomConnector6/HCDE -BC:/Users/user/DoomConnector6/HCDE --check-stamp-file C:/Users/user/DoomConnector6/HCDE/wadsrc_bm/CMakeFiles/generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd

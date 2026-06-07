@@ -1,0 +1,464 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="17.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZVulkan\src\vulkanbuilders.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZVulkan\src\vulkandevice.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZVulkan\src\vulkaninstance.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZVulkan\src\vulkansurface.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZVulkan\src\vulkanswapchain.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZVulkan\src\vk_mem_alloc\vk_mem_alloc.cpp">
+      <Filter>src\vk_mem_alloc</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZVulkan\src\volk\volk.c">
+      <Filter>src\volk</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZVulkan\src\glslang\glslang\MachineIndependent\propagateNoContraction.cpp">
+      <Filter>src\glslang\glslang\MachineIndependent</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZVulkan\src\glslang\glslang\MachineIndependent\PoolAlloc.cpp">
+      <Filter>src\glslang\glslang\MachineIndependent</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZVulkan\src\glslang\glslang\MachineIndependent\Intermediate.cpp">
+      <Filter>src\glslang\glslang\MachineIndependent</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZVulkan\src\glslang\glslang\MachineIndependent\attribute.cpp">
+      <Filter>src\glslang\glslang\MachineIndependent</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZVulkan\src\glslang\glslang\MachineIndependent\Scan.cpp">
+      <Filter>src\glslang\glslang\MachineIndependent</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZVulkan\src\glslang\glslang\MachineIndependent\SymbolTable.cpp">
+      <Filter>src\glslang\glslang\MachineIndependent</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZVulkan\src\glslang\glslang\MachineIndependent\RemoveTree.cpp">
+      <Filter>src\glslang\glslang\MachineIndependent</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZVulkan\src\glslang\glslang\MachineIndependent\reflection.cpp">
+      <Filter>src\glslang\glslang\MachineIndependent</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZVulkan\src\glslang\glslang\MachineIndependent\iomapper.cpp">
+      <Filter>src\glslang\glslang\MachineIndependent</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZVulkan\src\glslang\glslang\MachineIndependent\intermOut.cpp">
+      <Filter>src\glslang\glslang\MachineIndependent</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZVulkan\src\glslang\glslang\MachineIndependent\Versions.cpp">
+      <Filter>src\glslang\glslang\MachineIndependent</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZVulkan\src\glslang\glslang\MachineIndependent\linkValidate.cpp">
+      <Filter>src\glslang\glslang\MachineIndependent</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZVulkan\src\glslang\glslang\MachineIndependent\InfoSink.cpp">
+      <Filter>src\glslang\glslang\MachineIndependent</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZVulkan\src\glslang\glslang\MachineIndependent\Constant.cpp">
+      <Filter>src\glslang\glslang\MachineIndependent</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZVulkan\src\glslang\glslang\MachineIndependent\IntermTraverse.cpp">
+      <Filter>src\glslang\glslang\MachineIndependent</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZVulkan\src\glslang\glslang\MachineIndependent\glslang_tab.cpp">
+      <Filter>src\glslang\glslang\MachineIndependent</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZVulkan\src\glslang\glslang\MachineIndependent\ShaderLang.cpp">
+      <Filter>src\glslang\glslang\MachineIndependent</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZVulkan\src\glslang\glslang\MachineIndependent\preprocessor\Pp.cpp">
+      <Filter>src\glslang\glslang\MachineIndependent\preprocessor</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZVulkan\src\glslang\glslang\MachineIndependent\preprocessor\PpAtom.cpp">
+      <Filter>src\glslang\glslang\MachineIndependent\preprocessor</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZVulkan\src\glslang\glslang\MachineIndependent\preprocessor\PpContext.cpp">
+      <Filter>src\glslang\glslang\MachineIndependent\preprocessor</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZVulkan\src\glslang\glslang\MachineIndependent\preprocessor\PpTokens.cpp">
+      <Filter>src\glslang\glslang\MachineIndependent\preprocessor</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZVulkan\src\glslang\glslang\MachineIndependent\preprocessor\PpScanner.cpp">
+      <Filter>src\glslang\glslang\MachineIndependent\preprocessor</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZVulkan\src\glslang\glslang\MachineIndependent\parseConst.cpp">
+      <Filter>src\glslang\glslang\MachineIndependent</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZVulkan\src\glslang\glslang\MachineIndependent\Initialize.cpp">
+      <Filter>src\glslang\glslang\MachineIndependent</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZVulkan\src\glslang\glslang\MachineIndependent\limits.cpp">
+      <Filter>src\glslang\glslang\MachineIndependent</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZVulkan\src\glslang\glslang\MachineIndependent\ParseContextBase.cpp">
+      <Filter>src\glslang\glslang\MachineIndependent</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZVulkan\src\glslang\glslang\MachineIndependent\ParseHelper.cpp">
+      <Filter>src\glslang\glslang\MachineIndependent</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZVulkan\src\glslang\glslang\MachineIndependent\SpirvIntrinsics.cpp">
+      <Filter>src\glslang\glslang\MachineIndependent</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZVulkan\src\glslang\glslang\GenericCodeGen\Link.cpp">
+      <Filter>src\glslang\glslang\GenericCodeGen</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZVulkan\src\glslang\glslang\GenericCodeGen\CodeGen.cpp">
+      <Filter>src\glslang\glslang\GenericCodeGen</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZVulkan\src\glslang\spirv\GlslangToSpv.cpp">
+      <Filter>src\glslang\spirv</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZVulkan\src\glslang\spirv\doc.cpp">
+      <Filter>src\glslang\spirv</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZVulkan\src\glslang\spirv\disassemble.cpp">
+      <Filter>src\glslang\spirv</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZVulkan\src\glslang\spirv\SpvPostProcess.cpp">
+      <Filter>src\glslang\spirv</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZVulkan\src\glslang\spirv\InReadableOrder.cpp">
+      <Filter>src\glslang\spirv</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZVulkan\src\glslang\spirv\SPVRemapper.cpp">
+      <Filter>src\glslang\spirv</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZVulkan\src\glslang\spirv\SpvBuilder.cpp">
+      <Filter>src\glslang\spirv</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZVulkan\src\glslang\spirv\SpvTools.cpp">
+      <Filter>src\glslang\spirv</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZVulkan\src\glslang\spirv\Logger.cpp">
+      <Filter>src\glslang\spirv</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZVulkan\src\glslang\OGLCompilersDLL\InitializeDll.cpp">
+      <Filter>src\glslang\OGLCompilersDLL</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZVulkan\src\glslang\glslang\OSDependent\Windows\ossource.cpp">
+      <Filter>src\glslang\glslang\OSDependent\Windows</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZVulkan\src\glslang\glslang\MachineIndependent\SymbolTable.h">
+      <Filter>src\glslang\glslang\MachineIndependent</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZVulkan\src\glslang\glslang\MachineIndependent\gl_types.h">
+      <Filter>src\glslang\glslang\MachineIndependent</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZVulkan\src\glslang\glslang\MachineIndependent\parseVersions.h">
+      <Filter>src\glslang\glslang\MachineIndependent</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZVulkan\src\glslang\glslang\MachineIndependent\iomapper.h">
+      <Filter>src\glslang\glslang\MachineIndependent</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZVulkan\src\glslang\glslang\MachineIndependent\ParseHelper.h">
+      <Filter>src\glslang\glslang\MachineIndependent</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZVulkan\src\glslang\glslang\MachineIndependent\glslang_tab.cpp.h">
+      <Filter>src\glslang\glslang\MachineIndependent</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZVulkan\src\glslang\glslang\MachineIndependent\Versions.h">
+      <Filter>src\glslang\glslang\MachineIndependent</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZVulkan\src\glslang\glslang\MachineIndependent\LiveTraverser.h">
+      <Filter>src\glslang\glslang\MachineIndependent</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZVulkan\src\glslang\glslang\MachineIndependent\Initialize.h">
+      <Filter>src\glslang\glslang\MachineIndependent</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZVulkan\src\glslang\glslang\MachineIndependent\propagateNoContraction.h">
+      <Filter>src\glslang\glslang\MachineIndependent</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZVulkan\src\glslang\glslang\MachineIndependent\preprocessor\PpTokens.h">
+      <Filter>src\glslang\glslang\MachineIndependent\preprocessor</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZVulkan\src\glslang\glslang\MachineIndependent\preprocessor\PpContext.h">
+      <Filter>src\glslang\glslang\MachineIndependent\preprocessor</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZVulkan\src\glslang\glslang\MachineIndependent\attribute.h">
+      <Filter>src\glslang\glslang\MachineIndependent</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZVulkan\src\glslang\glslang\MachineIndependent\localintermediate.h">
+      <Filter>src\glslang\glslang\MachineIndependent</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZVulkan\src\glslang\glslang\MachineIndependent\RemoveTree.h">
+      <Filter>src\glslang\glslang\MachineIndependent</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZVulkan\src\glslang\glslang\MachineIndependent\Scan.h">
+      <Filter>src\glslang\glslang\MachineIndependent</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZVulkan\src\glslang\glslang\MachineIndependent\reflection.h">
+      <Filter>src\glslang\glslang\MachineIndependent</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZVulkan\src\glslang\glslang\MachineIndependent\ScanContext.h">
+      <Filter>src\glslang\glslang\MachineIndependent</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZVulkan\src\glslang\glslang\OSDependent\osinclude.h">
+      <Filter>src\glslang\glslang\OSDependent</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZVulkan\src\glslang\glslang\Public\ShaderLang.h">
+      <Filter>src\glslang\glslang\Public</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZVulkan\src\glslang\glslang\Include\ConstantUnion.h">
+      <Filter>src\glslang\glslang\Include</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZVulkan\src\glslang\glslang\Include\InitializeGlobals.h">
+      <Filter>src\glslang\glslang\Include</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZVulkan\src\glslang\glslang\Include\Common.h">
+      <Filter>src\glslang\glslang\Include</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZVulkan\src\glslang\glslang\Include\PoolAlloc.h">
+      <Filter>src\glslang\glslang\Include</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZVulkan\src\glslang\glslang\Include\arrays.h">
+      <Filter>src\glslang\glslang\Include</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZVulkan\src\glslang\glslang\Include\ShHandle.h">
+      <Filter>src\glslang\glslang\Include</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZVulkan\src\glslang\glslang\Include\InfoSink.h">
+      <Filter>src\glslang\glslang\Include</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZVulkan\src\glslang\glslang\Include\ResourceLimits.h">
+      <Filter>src\glslang\glslang\Include</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZVulkan\src\glslang\glslang\Include\Types.h">
+      <Filter>src\glslang\glslang\Include</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZVulkan\src\glslang\glslang\Include\BaseTypes.h">
+      <Filter>src\glslang\glslang\Include</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZVulkan\src\glslang\glslang\Include\intermediate.h">
+      <Filter>src\glslang\glslang\Include</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZVulkan\src\glslang\glslang\Include\SpirvIntrinsics.h">
+      <Filter>src\glslang\glslang\Include</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZVulkan\src\glslang\glslang\Include\build_info.h">
+      <Filter>src\glslang\glslang\Include</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZVulkan\src\glslang\spirv\Logger.h">
+      <Filter>src\glslang\spirv</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZVulkan\src\glslang\spirv\SPVRemapper.h">
+      <Filter>src\glslang\spirv</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZVulkan\src\glslang\spirv\GLSL.ext.EXT.h">
+      <Filter>src\glslang\spirv</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZVulkan\src\glslang\spirv\hex_float.h">
+      <Filter>src\glslang\spirv</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZVulkan\src\glslang\spirv\bitutils.h">
+      <Filter>src\glslang\spirv</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZVulkan\src\glslang\spirv\GLSL.ext.AMD.h">
+      <Filter>src\glslang\spirv</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZVulkan\src\glslang\spirv\GLSL.ext.NV.h">
+      <Filter>src\glslang\spirv</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZVulkan\src\glslang\spirv\SpvBuilder.h">
+      <Filter>src\glslang\spirv</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZVulkan\src\glslang\spirv\GLSL.ext.KHR.h">
+      <Filter>src\glslang\spirv</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZVulkan\src\glslang\spirv\disassemble.h">
+      <Filter>src\glslang\spirv</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZVulkan\src\glslang\spirv\GlslangToSpv.h">
+      <Filter>src\glslang\spirv</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZVulkan\src\glslang\spirv\doc.h">
+      <Filter>src\glslang\spirv</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZVulkan\src\glslang\spirv\spvIR.h">
+      <Filter>src\glslang\spirv</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZVulkan\src\glslang\spirv\SpvTools.h">
+      <Filter>src\glslang\spirv</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZVulkan\src\glslang\spirv\GLSL.std.450.h">
+      <Filter>src\glslang\spirv</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZVulkan\src\glslang\spirv\NonSemanticDebugPrintf.h">
+      <Filter>src\glslang\spirv</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZVulkan\src\glslang\OGLCompilersDLL\InitializeDll.h">
+      <Filter>src\glslang\OGLCompilersDLL</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZVulkan\include\zvulkan\vulkanbuilders.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZVulkan\include\zvulkan\vulkancompatibledevice.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZVulkan\include\zvulkan\vulkandevice.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZVulkan\include\zvulkan\vulkaninstance.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZVulkan\include\zvulkan\vulkanobjects.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZVulkan\include\zvulkan\vulkansurface.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZVulkan\include\zvulkan\vulkanswapchain.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZVulkan\include\zvulkan\volk\volk.h">
+      <Filter>include\volk</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZVulkan\include\zvulkan\vk_mem_alloc\vk_mem_alloc.h">
+      <Filter>include\vk_mem_alloc</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZVulkan\include\vulkan\vk_enum_string_helper.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZVulkan\include\vulkan\vk_icd.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZVulkan\include\vulkan\vk_layer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZVulkan\include\vulkan\vk_layer_dispatch_table.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZVulkan\include\vulkan\vk_platform.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZVulkan\include\vulkan\vk_sdk_platform.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZVulkan\include\vulkan\vulkan.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZVulkan\include\vulkan\vulkan_android.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZVulkan\include\vulkan\vulkan_beta.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZVulkan\include\vulkan\vulkan_core.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZVulkan\include\vulkan\vulkan_directfb.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZVulkan\include\vulkan\vulkan_fuchsia.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZVulkan\include\vulkan\vulkan_ggp.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZVulkan\include\vulkan\vulkan_ios.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZVulkan\include\vulkan\vulkan_macos.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZVulkan\include\vulkan\vulkan_metal.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZVulkan\include\vulkan\vulkan_mir.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZVulkan\include\vulkan\vulkan_screen.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZVulkan\include\vulkan\vulkan_vi.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZVulkan\include\vulkan\vulkan_wayland.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZVulkan\include\vulkan\vulkan_win32.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZVulkan\include\vulkan\vulkan_xcb.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZVulkan\include\vulkan\vulkan_xlib.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZVulkan\include\vulkan\vulkan_xlib_xrandr.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZVulkan\CMakeLists.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Natvis Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZVulkan\src\vk_mem_alloc\vk_mem_alloc.natvis">
+      <Filter>src\vk_mem_alloc</Filter>
+    </Natvis>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{F4031774-2530-34F6-A3E3-BFF9B8A0DB72}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include">
+      <UniqueIdentifier>{238FEFB4-96AF-3194-B68E-B28DAA9376DD}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\vk_mem_alloc">
+      <UniqueIdentifier>{7F054722-1E7F-3E7E-A1DC-CED44E169B9E}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\volk">
+      <UniqueIdentifier>{9A1AF00D-8190-3105-A666-CAA490F29949}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src">
+      <UniqueIdentifier>{6B4202D8-23D5-3758-B96B-AEA4987BE7E4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\glslang">
+      <UniqueIdentifier>{22554049-5C0C-3162-94FE-D9CB02ED48D2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\glslang\OGLCompilersDLL">
+      <UniqueIdentifier>{00AC91AF-E59A-3FB7-BEF2-988DD5CA6065}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\glslang\glslang">
+      <UniqueIdentifier>{D75C424D-85F3-3870-B373-C6C4836D2CA0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\glslang\glslang\GenericCodeGen">
+      <UniqueIdentifier>{38A6D1E5-CF72-3B03-8FB9-827DDB0FCE57}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\glslang\glslang\Include">
+      <UniqueIdentifier>{DFB064E3-221C-318B-B59E-05B33D9BA609}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\glslang\glslang\MachineIndependent">
+      <UniqueIdentifier>{A9EBB796-B6EA-3603-B89A-97C9D342036E}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\glslang\glslang\MachineIndependent\preprocessor">
+      <UniqueIdentifier>{1CAFAF06-1CFA-3865-8421-8AF2C7D8B94A}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\glslang\glslang\OSDependent">
+      <UniqueIdentifier>{6AAB0C0A-A3A5-3239-958C-9BE6E35A45F4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\glslang\glslang\OSDependent\Windows">
+      <UniqueIdentifier>{79AA3D7E-A828-32F2-BA2E-9A3495680F50}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\glslang\glslang\Public">
+      <UniqueIdentifier>{7CC359F9-BC30-3360-A090-F0C5F05A6F46}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\glslang\spirv">
+      <UniqueIdentifier>{68630587-778F-3CD4-9588-CA30E1E7734E}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\vk_mem_alloc">
+      <UniqueIdentifier>{B8D55386-E37F-35B8-88AC-F3EDC68321C4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\volk">
+      <UniqueIdentifier>{9B0D3FA1-9690-37BE-9966-52E22BE555DB}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

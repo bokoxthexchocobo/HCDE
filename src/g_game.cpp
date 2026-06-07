@@ -1681,6 +1681,15 @@ void G_Ticker ()
 			netState.AppliedSequence = applied;
 			cmdTic = applied;
 		}
+		else if (netgame && !demoplayback
+			&& !I_IsLocalHCDEServiceAuthority()
+			&& client == consoleplayer)
+		{
+			// Dedicated clients consume commands at gametic, not through the
+			// authority cursor above. Mirror curTic into AppliedSequence so
+			// cmdslot backlog traces stay meaningful after a map transition.
+			ClientStates[client].AppliedSequence = curTic;
+		}
 
 		usercmd_t* nextCmd = &ClientStates[client].Tics[cmdTic % BACKUPTICS].Command;
 

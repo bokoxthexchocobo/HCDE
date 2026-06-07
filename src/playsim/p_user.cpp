@@ -463,6 +463,9 @@ struct FPredictionData
 	FWriterBuffer RollbackWriterBuffer;
 	char ParseBuffer[262144] = {};
 	FReaderAllocator RollbackReaderAllocator;
+	bool WeaponBobBackupValid = false;
+	int WeaponBobBackupPlayer = -1;
+	FPlayerBob WeaponBobBackup = {};
 
 	FPredictionData() : RollbackReaderAllocator(ParseBuffer, sizeof(ParseBuffer)) {}
 
@@ -480,12 +483,33 @@ struct FPredictionData
 
 	void ClearBackup()
 	{
+		RestoreWeaponBob();
 		RollbackObjectRefs.Clear();
 		RollbackObjects.Clear();
 		RollbackActors.Clear();
 		RollbackPlayers.Clear();
 		RollbackLevel = nullptr;
 		RollbackData = "";
+	}
+
+	void BackupWeaponBob(int player)
+	{
+		if (player < 0 || player >= MAXPLAYERS || WeaponBobBackupValid)
+			return;
+		WeaponBobBackup = PlayerBob[player];
+		WeaponBobBackupPlayer = player;
+		WeaponBobBackupValid = true;
+	}
+
+	void RestoreWeaponBob()
+	{
+		if (!WeaponBobBackupValid)
+			return;
+		if (WeaponBobBackupPlayer >= 0 && WeaponBobBackupPlayer < MAXPLAYERS)
+			PlayerBob[WeaponBobBackupPlayer] = WeaponBobBackup;
+		WeaponBobBackup = {};
+		WeaponBobBackupPlayer = -1;
+		WeaponBobBackupValid = false;
 	}
 
 	void Mark()
@@ -1773,6 +1797,11 @@ void P_PlayerThink (player_t *player)
 		VMCall(func, &param, 1, nullptr, 0);
 	}
 
+	// Weapon bob is presentation state stored in the global PlayerBob[] array.
+	// Prediction now backs up/restores that one local entry (see
+	// FPredictionData::BackupWeaponBob), so we can compute predicted bob for the
+	// rendered frame without letting replayed BobTimer values leak into the next
+	// authoritative tic.
 	if (BobType == PSPB_2D)
 		P_BobWeapon(player);
 	else if (BobType == PSPB_3D)
@@ -1929,6 +1958,7 @@ void P_PredictClient()
 	{
 		NetworkEntityManager::EnablePrediction();
 		PredictionData.bResetPrediction = true;
+		PredictionData.BackupWeaponBob(consoleplayer);
 		// HCDE (Zandronum-style): seat the local pawn on the latest authoritative
 		// snapshot pose, then replay only unacknowledged commands on top. G_Ticker
 		// still advances the local player for the rest of the world, but the

@@ -1,0 +1,441 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="17.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <PreferredToolArchitecture>x64</PreferredToolArchitecture>
+  </PropertyGroup>
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="MinSizeRel|x64">
+      <Configuration>MinSizeRel</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="RelWithDebInfo|x64">
+      <Configuration>RelWithDebInfo</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{EB7D4D16-086E-3142-87B7-FC34068DDA1A}</ProjectGuid>
+    <Keyword>Win32Proj</Keyword>
+    <WindowsTargetPlatformVersion>10.0.26100.0</WindowsTargetPlatformVersion>
+    <Platform>x64</Platform>
+    <ProjectName>fluidsynth</ProjectName>
+    <VCProjectUpgraderObjectName>NoUpgrade</VCProjectUpgraderObjectName>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>v143</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>v143</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>v143</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>v143</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>10.0.20506.1</_ProjectFileVersion>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">fluidsynth.dir\Debug\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">fluidsynth.dir\Debug\</IntDir>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">fluidsynth</TargetName>
+    <TargetExt Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">.lib</TargetExt>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">fluidsynth.dir\Release\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">fluidsynth.dir\Release\</IntDir>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">fluidsynth</TargetName>
+    <TargetExt Condition="'$(Configuration)|$(Platform)'=='Release|x64'">.lib</TargetExt>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">fluidsynth.dir\MinSizeRel\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">fluidsynth.dir\MinSizeRel\</IntDir>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">fluidsynth</TargetName>
+    <TargetExt Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">.lib</TargetExt>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">fluidsynth.dir\RelWithDebInfo\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">fluidsynth.dir\RelWithDebInfo\</IntDir>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">fluidsynth</TargetName>
+    <TargetExt Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">.lib</TargetExt>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\src;C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\src\drivers;C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\src\synth;C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\src\rvoice;C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\src\midi;C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\src\utils;C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\src\sfloader;C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\src\bindings;C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\src\..\include;C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\src\..\..;C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\src\..\..\..\source\decoder;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalOptions>%(AdditionalOptions) /utf-8</AdditionalOptions>
+      <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <BufferSecurityCheck>false</BufferSecurityCheck>
+      <CallingConvention></CallingConvention>
+      <ConformanceMode>true</ConformanceMode>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <DisableSpecificWarnings>4996</DisableSpecificWarnings>
+      <ExceptionHandling>Sync</ExceptionHandling>
+      <FloatingPointModel></FloatingPointModel>
+      <ForceConformanceInForLoopScope></ForceConformanceInForLoopScope>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <InlineFunctionExpansion>Disabled</InlineFunctionExpansion>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+      <MinimalRebuild></MinimalRebuild>
+      <OmitFramePointers>true</OmitFramePointers>
+      <Optimization>Disabled</Optimization>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <RemoveUnreferencedCodeData></RemoveUnreferencedCodeData>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+      <RuntimeTypeInfo>false</RuntimeTypeInfo>
+      <StringPooling>true</StringPooling>
+      <SupportJustMyCode></SupportJustMyCode>
+      <TreatWChar_tAsBuiltInType></TreatWChar_tAsBuiltInType>
+      <UseFullPaths>false</UseFullPaths>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_WINDOWS;HAVE_VULKAN;HAVE_GLES2;UNICODE;_UNICODE;_WIN32_WINNT=0x0600;_CRT_SECURE_NO_DEPRECATE;_CRT_SECURE_NO_WARNINGS;_CRT_NONSTDC_NO_WARNINGS;_CRTDBG_MAP_ALLOC;_DEBUG;CMAKE_INTDIR="Debug"</PreprocessorDefinitions>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+      <ScanSourceForModuleDependencies>false</ScanSourceForModuleDependencies>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_DEBUG;_WINDOWS;HAVE_VULKAN;HAVE_GLES2;UNICODE;_UNICODE;_WIN32_WINNT=0x0600;_CRT_SECURE_NO_DEPRECATE;_CRT_SECURE_NO_WARNINGS;_CRT_NONSTDC_NO_WARNINGS;_CRTDBG_MAP_ALLOC;CMAKE_INTDIR=\"Debug\"</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\src;C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\src\drivers;C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\src\synth;C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\src\rvoice;C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\src\midi;C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\src\utils;C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\src\sfloader;C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\src\bindings;C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\src\..\include;C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\src\..\..;C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\src\..\..\..\source\decoder;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Midl>
+      <AdditionalIncludeDirectories>C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\src;C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\src\drivers;C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\src\synth;C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\src\rvoice;C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\src\midi;C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\src\utils;C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\src\sfloader;C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\src\bindings;C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\src\..\include;C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\src\..\..;C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\src\..\..\..\source\decoder;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+    <Lib>
+      <AdditionalOptions>%(AdditionalOptions) /machine:x64</AdditionalOptions>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\src;C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\src\drivers;C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\src\synth;C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\src\rvoice;C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\src\midi;C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\src\utils;C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\src\sfloader;C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\src\bindings;C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\src\..\include;C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\src\..\..;C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\src\..\..\..\source\decoder;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalOptions>%(AdditionalOptions) /utf-8</AdditionalOptions>
+      <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
+      <BasicRuntimeChecks>Default</BasicRuntimeChecks>
+      <BufferSecurityCheck>false</BufferSecurityCheck>
+      <CallingConvention></CallingConvention>
+      <ConformanceMode>true</ConformanceMode>
+      <DisableSpecificWarnings>4996</DisableSpecificWarnings>
+      <ExceptionHandling>Sync</ExceptionHandling>
+      <FloatingPointModel></FloatingPointModel>
+      <ForceConformanceInForLoopScope></ForceConformanceInForLoopScope>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+      <MinimalRebuild></MinimalRebuild>
+      <OmitFramePointers>true</OmitFramePointers>
+      <Optimization>MaxSpeed</Optimization>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <RemoveUnreferencedCodeData></RemoveUnreferencedCodeData>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <RuntimeTypeInfo>false</RuntimeTypeInfo>
+      <StringPooling>true</StringPooling>
+      <SupportJustMyCode></SupportJustMyCode>
+      <TreatWChar_tAsBuiltInType></TreatWChar_tAsBuiltInType>
+      <UseFullPaths>false</UseFullPaths>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_WINDOWS;HAVE_VULKAN;HAVE_GLES2;UNICODE;_UNICODE;_WIN32_WINNT=0x0600;_CRT_SECURE_NO_DEPRECATE;_CRT_SECURE_NO_WARNINGS;_CRT_NONSTDC_NO_WARNINGS;NDEBUG;CMAKE_INTDIR="Release"</PreprocessorDefinitions>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+      <DebugInformationFormat>
+      </DebugInformationFormat>
+      <ScanSourceForModuleDependencies>false</ScanSourceForModuleDependencies>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_WINDOWS;HAVE_VULKAN;HAVE_GLES2;UNICODE;_UNICODE;_WIN32_WINNT=0x0600;_CRT_SECURE_NO_DEPRECATE;_CRT_SECURE_NO_WARNINGS;_CRT_NONSTDC_NO_WARNINGS;NDEBUG;CMAKE_INTDIR=\"Release\"</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\src;C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\src\drivers;C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\src\synth;C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\src\rvoice;C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\src\midi;C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\src\utils;C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\src\sfloader;C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\src\bindings;C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\src\..\include;C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\src\..\..;C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\src\..\..\..\source\decoder;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Midl>
+      <AdditionalIncludeDirectories>C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\src;C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\src\drivers;C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\src\synth;C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\src\rvoice;C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\src\midi;C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\src\utils;C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\src\sfloader;C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\src\bindings;C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\src\..\include;C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\src\..\..;C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\src\..\..\..\source\decoder;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+    <Lib>
+      <AdditionalOptions>%(AdditionalOptions) /machine:x64</AdditionalOptions>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\src;C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\src\drivers;C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\src\synth;C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\src\rvoice;C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\src\midi;C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\src\utils;C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\src\sfloader;C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\src\bindings;C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\src\..\include;C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\src\..\..;C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\src\..\..\..\source\decoder;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalOptions>%(AdditionalOptions) /utf-8</AdditionalOptions>
+      <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
+      <BasicRuntimeChecks>Default</BasicRuntimeChecks>
+      <BufferSecurityCheck>false</BufferSecurityCheck>
+      <CallingConvention></CallingConvention>
+      <ConformanceMode>true</ConformanceMode>
+      <DisableSpecificWarnings>4996</DisableSpecificWarnings>
+      <ExceptionHandling>Sync</ExceptionHandling>
+      <FloatingPointModel></FloatingPointModel>
+      <ForceConformanceInForLoopScope></ForceConformanceInForLoopScope>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+      <MinimalRebuild></MinimalRebuild>
+      <OmitFramePointers>true</OmitFramePointers>
+      <Optimization>MinSpace</Optimization>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <RemoveUnreferencedCodeData></RemoveUnreferencedCodeData>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <RuntimeTypeInfo>false</RuntimeTypeInfo>
+      <StringPooling>true</StringPooling>
+      <SupportJustMyCode></SupportJustMyCode>
+      <TreatWChar_tAsBuiltInType></TreatWChar_tAsBuiltInType>
+      <UseFullPaths>false</UseFullPaths>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_WINDOWS;HAVE_VULKAN;HAVE_GLES2;UNICODE;_UNICODE;_WIN32_WINNT=0x0600;_CRT_SECURE_NO_DEPRECATE;_CRT_SECURE_NO_WARNINGS;_CRT_NONSTDC_NO_WARNINGS;NDEBUG;CMAKE_INTDIR="MinSizeRel"</PreprocessorDefinitions>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+      <DebugInformationFormat>
+      </DebugInformationFormat>
+      <ScanSourceForModuleDependencies>false</ScanSourceForModuleDependencies>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_WINDOWS;HAVE_VULKAN;HAVE_GLES2;UNICODE;_UNICODE;_WIN32_WINNT=0x0600;_CRT_SECURE_NO_DEPRECATE;_CRT_SECURE_NO_WARNINGS;_CRT_NONSTDC_NO_WARNINGS;NDEBUG;CMAKE_INTDIR=\"MinSizeRel\"</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\src;C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\src\drivers;C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\src\synth;C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\src\rvoice;C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\src\midi;C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\src\utils;C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\src\sfloader;C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\src\bindings;C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\src\..\include;C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\src\..\..;C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\src\..\..\..\source\decoder;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Midl>
+      <AdditionalIncludeDirectories>C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\src;C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\src\drivers;C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\src\synth;C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\src\rvoice;C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\src\midi;C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\src\utils;C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\src\sfloader;C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\src\bindings;C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\src\..\include;C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\src\..\..;C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\src\..\..\..\source\decoder;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+    <Lib>
+      <AdditionalOptions>%(AdditionalOptions) /machine:x64</AdditionalOptions>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\src;C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\src\drivers;C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\src\synth;C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\src\rvoice;C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\src\midi;C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\src\utils;C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\src\sfloader;C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\src\bindings;C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\src\..\include;C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\src\..\..;C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\src\..\..\..\source\decoder;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalOptions>%(AdditionalOptions) /utf-8</AdditionalOptions>
+      <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
+      <BasicRuntimeChecks>Default</BasicRuntimeChecks>
+      <BufferSecurityCheck>false</BufferSecurityCheck>
+      <CallingConvention></CallingConvention>
+      <ConformanceMode>true</ConformanceMode>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <DisableSpecificWarnings>4996</DisableSpecificWarnings>
+      <ExceptionHandling>Sync</ExceptionHandling>
+      <FloatingPointModel></FloatingPointModel>
+      <ForceConformanceInForLoopScope></ForceConformanceInForLoopScope>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+      <MinimalRebuild></MinimalRebuild>
+      <OmitFramePointers>true</OmitFramePointers>
+      <Optimization>MaxSpeed</Optimization>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <RemoveUnreferencedCodeData></RemoveUnreferencedCodeData>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <RuntimeTypeInfo>false</RuntimeTypeInfo>
+      <StringPooling>true</StringPooling>
+      <SupportJustMyCode></SupportJustMyCode>
+      <TreatWChar_tAsBuiltInType></TreatWChar_tAsBuiltInType>
+      <UseFullPaths>false</UseFullPaths>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_WINDOWS;HAVE_VULKAN;HAVE_GLES2;UNICODE;_UNICODE;_WIN32_WINNT=0x0600;_CRT_SECURE_NO_DEPRECATE;_CRT_SECURE_NO_WARNINGS;_CRT_NONSTDC_NO_WARNINGS;NDEBUG;CMAKE_INTDIR="RelWithDebInfo"</PreprocessorDefinitions>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+      <ScanSourceForModuleDependencies>false</ScanSourceForModuleDependencies>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_WINDOWS;HAVE_VULKAN;HAVE_GLES2;UNICODE;_UNICODE;_WIN32_WINNT=0x0600;_CRT_SECURE_NO_DEPRECATE;_CRT_SECURE_NO_WARNINGS;_CRT_NONSTDC_NO_WARNINGS;NDEBUG;CMAKE_INTDIR=\"RelWithDebInfo\"</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\src;C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\src\drivers;C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\src\synth;C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\src\rvoice;C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\src\midi;C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\src\utils;C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\src\sfloader;C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\src\bindings;C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\src\..\include;C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\src\..\..;C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\src\..\..\..\source\decoder;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Midl>
+      <AdditionalIncludeDirectories>C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\src;C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\src\drivers;C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\src\synth;C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\src\rvoice;C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\src\midi;C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\src\utils;C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\src\sfloader;C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\src\bindings;C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\src\..\include;C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\src\..\..;C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\src\..\..\..\source\decoder;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+    <Lib>
+      <AdditionalOptions>%(AdditionalOptions) /machine:x64</AdditionalOptions>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <CustomBuild Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\src\CMakeLists.txt">
+      <UseUtf8Encoding>Always</UseUtf8Encoding>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Building Custom Rule C:/Users/user/DoomConnector6/HCDE/libraries/ZMusic/thirdparty/fluidsynth/src/CMakeLists.txt</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -SC:/Users/user/DoomConnector6/HCDE -BC:/Users/user/DoomConnector6/HCDE --check-stamp-file C:/Users/user/DoomConnector6/HCDE/libraries/ZMusic/thirdparty/fluidsynth/src/CMakeFiles/generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\src\CMakeFiles\generate.stamp</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</LinkObjects>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Building Custom Rule C:/Users/user/DoomConnector6/HCDE/libraries/ZMusic/thirdparty/fluidsynth/src/CMakeLists.txt</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -SC:/Users/user/DoomConnector6/HCDE -BC:/Users/user/DoomConnector6/HCDE --check-stamp-file C:/Users/user/DoomConnector6/HCDE/libraries/ZMusic/thirdparty/fluidsynth/src/CMakeFiles/generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\src\CMakeFiles\generate.stamp</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</LinkObjects>
+      <Message Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">Building Custom Rule C:/Users/user/DoomConnector6/HCDE/libraries/ZMusic/thirdparty/fluidsynth/src/CMakeLists.txt</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -SC:/Users/user/DoomConnector6/HCDE -BC:/Users/user/DoomConnector6/HCDE --check-stamp-file C:/Users/user/DoomConnector6/HCDE/libraries/ZMusic/thirdparty/fluidsynth/src/CMakeFiles/generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\src\CMakeFiles\generate.stamp</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">false</LinkObjects>
+      <Message Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">Building Custom Rule C:/Users/user/DoomConnector6/HCDE/libraries/ZMusic/thirdparty/fluidsynth/src/CMakeLists.txt</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -SC:/Users/user/DoomConnector6/HCDE -BC:/Users/user/DoomConnector6/HCDE --check-stamp-file C:/Users/user/DoomConnector6/HCDE/libraries/ZMusic/thirdparty/fluidsynth/src/CMakeFiles/generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\src\CMakeFiles\generate.stamp</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">false</LinkObjects>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\src\config.h" />
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\src\utils\fluid_conv.c" />
+    <ClInclude Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\src\utils\fluid_conv.h" />
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\src\utils\fluid_hash.c" />
+    <ClInclude Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\src\utils\fluid_hash.h" />
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\src\utils\fluid_list.c" />
+    <ClInclude Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\src\utils\fluid_list.h" />
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\src\utils\fluid_ringbuffer.c" />
+    <ClInclude Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\src\utils\fluid_ringbuffer.h" />
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\src\utils\fluid_settings.c" />
+    <ClInclude Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\src\utils\fluid_settings.h" />
+    <ClInclude Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\src\utils\fluidsynth_priv.h" />
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\src\utils\fluid_sys.c" />
+    <ClInclude Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\src\utils\fluid_sys.h" />
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\src\sfloader\fluid_defsfont.c" />
+    <ClInclude Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\src\sfloader\fluid_defsfont.h" />
+    <ClInclude Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\src\sfloader\fluid_sfont.h" />
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\src\sfloader\fluid_sfont.c" />
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\src\sfloader\fluid_sffile.c" />
+    <ClInclude Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\src\sfloader\fluid_sffile.h" />
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\src\sfloader\fluid_samplecache.c" />
+    <ClInclude Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\src\sfloader\fluid_samplecache.h" />
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\src\rvoice\fluid_adsr_env.c" />
+    <ClInclude Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\src\rvoice\fluid_adsr_env.h" />
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\src\rvoice\fluid_chorus.c" />
+    <ClInclude Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\src\rvoice\fluid_chorus.h" />
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\src\rvoice\fluid_iir_filter.c" />
+    <ClInclude Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\src\rvoice\fluid_iir_filter.h" />
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\src\rvoice\fluid_iir_filter_impl.cpp" />
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\src\rvoice\fluid_lfo.c" />
+    <ClInclude Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\src\rvoice\fluid_lfo.h" />
+    <ClInclude Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\src\rvoice\fluid_rvoice.h" />
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\src\rvoice\fluid_rvoice.c" />
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\src\rvoice\fluid_rvoice_dsp.cpp" />
+    <ClInclude Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\src\rvoice\fluid_rvoice_event.h" />
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\src\rvoice\fluid_rvoice_event.c" />
+    <ClInclude Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\src\rvoice\fluid_rvoice_mixer.h" />
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\src\rvoice\fluid_rvoice_mixer.c" />
+    <ClInclude Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\src\rvoice\fluid_phase.h" />
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\src\rvoice\fluid_rev.c" />
+    <ClInclude Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\src\rvoice\fluid_rev.h" />
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\src\synth\fluid_chan.c" />
+    <ClInclude Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\src\synth\fluid_chan.h" />
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\src\synth\fluid_event.c" />
+    <ClInclude Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\src\synth\fluid_event.h" />
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\src\synth\fluid_gen.c" />
+    <ClInclude Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\src\synth\fluid_gen.h" />
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\src\synth\fluid_mod.c" />
+    <ClInclude Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\src\synth\fluid_mod.h" />
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\src\synth\fluid_synth.c" />
+    <ClInclude Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\src\synth\fluid_synth.h" />
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\src\synth\fluid_synth_monopoly.c" />
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\src\synth\fluid_tuning.c" />
+    <ClInclude Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\src\synth\fluid_tuning.h" />
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\src\synth\fluid_voice.c" />
+    <ClInclude Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\src\synth\fluid_voice.h" />
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\src\midi\fluid_midi.c" />
+    <ClInclude Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\src\midi\fluid_midi.h" />
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\src\midi\fluid_midi_router.c" />
+    <ClInclude Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\src\midi\fluid_midi_router.h" />
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\src\midi\fluid_seqbind.c" />
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\src\midi\fluid_seqbind_notes.cpp" />
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\src\midi\fluid_seq.c" />
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\src\midi\fluid_seq_queue.cpp" />
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\src\drivers\fluid_adriver.c" />
+    <ClInclude Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\src\drivers\fluid_adriver.h" />
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\src\drivers\fluid_mdriver.c" />
+    <ClInclude Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\src\drivers\fluid_mdriver.h" />
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\src\bindings\fluid_filerenderer.c" />
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\src\bindings\fluid_ladspa.c" />
+    <ClInclude Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\src\bindings\fluid_ladspa.h" />
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\src\utils\win32_glibstubs.c" />
+    <ClInclude Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\src\utils\win32_glibstubs.h" />
+    <ClInclude Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\include\fluidsynth\audio.h" />
+    <ClInclude Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\include\fluidsynth\event.h" />
+    <ClInclude Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\include\fluidsynth\gen.h" />
+    <ClInclude Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\include\fluidsynth\ladspa.h" />
+    <ClInclude Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\include\fluidsynth\log.h" />
+    <ClInclude Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\include\fluidsynth\midi.h" />
+    <ClInclude Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\include\fluidsynth\misc.h" />
+    <ClInclude Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\include\fluidsynth\mod.h" />
+    <ClInclude Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\include\fluidsynth\seq.h" />
+    <ClInclude Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\include\fluidsynth\seqbind.h" />
+    <ClInclude Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\include\fluidsynth\settings.h" />
+    <ClInclude Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\include\fluidsynth\sfont.h" />
+    <ClInclude Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\include\fluidsynth\shell.h" />
+    <ClInclude Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\include\fluidsynth\synth.h" />
+    <ClInclude Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\include\fluidsynth\types.h" />
+    <ClInclude Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\include\fluidsynth\voice.h" />
+    <ClInclude Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\include\fluidsynth\version.h" />
+    <ClInclude Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\include\fluidsynth.h" />
+  </ItemGroup>
+  <ItemGroup />
+  <ItemGroup>
+    <ProjectReference Include="C:\Users\user\DoomConnector6\HCDE\ZERO_CHECK.vcxproj">
+      <Project>{E8197ADC-B231-3016-B201-AFCCCD85A09A}</Project>
+      <Name>ZERO_CHECK</Name>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

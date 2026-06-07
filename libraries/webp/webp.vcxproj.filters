@@ -1,0 +1,561 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="17.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\webp\src\dec\alpha_dec.c">
+      <Filter>src\dec</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\webp\src\dec\buffer_dec.c">
+      <Filter>src\dec</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\webp\src\dec\frame_dec.c">
+      <Filter>src\dec</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\webp\src\dec\idec_dec.c">
+      <Filter>src\dec</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\webp\src\dec\io_dec.c">
+      <Filter>src\dec</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\webp\src\dec\quant_dec.c">
+      <Filter>src\dec</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\webp\src\dec\tree_dec.c">
+      <Filter>src\dec</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\webp\src\dec\vp8l_dec.c">
+      <Filter>src\dec</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\webp\src\dec\vp8_dec.c">
+      <Filter>src\dec</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\webp\src\dec\webp_dec.c">
+      <Filter>src\dec</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\webp\src\demux\anim_decode.c">
+      <Filter>src\demux</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\webp\src\demux\demux.c">
+      <Filter>src\demux</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\webp\src\dsp\alpha_processing.c">
+      <Filter>src\dsp</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\webp\src\dsp\alpha_processing_mips_dsp_r2.c">
+      <Filter>src\dsp</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\webp\src\dsp\alpha_processing_neon.c">
+      <Filter>src\dsp</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\webp\src\dsp\alpha_processing_sse2.c">
+      <Filter>src\dsp</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\webp\src\dsp\alpha_processing_sse41.c">
+      <Filter>src\dsp</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\webp\src\dsp\cost.c">
+      <Filter>src\dsp</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\webp\src\dsp\cost_mips32.c">
+      <Filter>src\dsp</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\webp\src\dsp\cost_mips_dsp_r2.c">
+      <Filter>src\dsp</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\webp\src\dsp\cost_neon.c">
+      <Filter>src\dsp</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\webp\src\dsp\cost_sse2.c">
+      <Filter>src\dsp</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\webp\src\dsp\cpu.c">
+      <Filter>src\dsp</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\webp\src\dsp\dec.c">
+      <Filter>src\dsp</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\webp\src\dsp\dec_clip_tables.c">
+      <Filter>src\dsp</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\webp\src\dsp\dec_mips32.c">
+      <Filter>src\dsp</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\webp\src\dsp\dec_mips_dsp_r2.c">
+      <Filter>src\dsp</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\webp\src\dsp\dec_msa.c">
+      <Filter>src\dsp</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\webp\src\dsp\dec_neon.c">
+      <Filter>src\dsp</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\webp\src\dsp\dec_sse2.c">
+      <Filter>src\dsp</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\webp\src\dsp\dec_sse41.c">
+      <Filter>src\dsp</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\webp\src\dsp\enc.c">
+      <Filter>src\dsp</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\webp\src\dsp\enc_mips32.c">
+      <Filter>src\dsp</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\webp\src\dsp\enc_mips_dsp_r2.c">
+      <Filter>src\dsp</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\webp\src\dsp\enc_msa.c">
+      <Filter>src\dsp</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\webp\src\dsp\enc_neon.c">
+      <Filter>src\dsp</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\webp\src\dsp\enc_sse2.c">
+      <Filter>src\dsp</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\webp\src\dsp\enc_sse41.c">
+      <Filter>src\dsp</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\webp\src\dsp\filters.c">
+      <Filter>src\dsp</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\webp\src\dsp\filters_mips_dsp_r2.c">
+      <Filter>src\dsp</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\webp\src\dsp\filters_msa.c">
+      <Filter>src\dsp</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\webp\src\dsp\filters_neon.c">
+      <Filter>src\dsp</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\webp\src\dsp\filters_sse2.c">
+      <Filter>src\dsp</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\webp\src\dsp\lossless.c">
+      <Filter>src\dsp</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\webp\src\dsp\lossless_enc.c">
+      <Filter>src\dsp</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\webp\src\dsp\lossless_enc_mips32.c">
+      <Filter>src\dsp</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\webp\src\dsp\lossless_enc_mips_dsp_r2.c">
+      <Filter>src\dsp</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\webp\src\dsp\lossless_enc_msa.c">
+      <Filter>src\dsp</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\webp\src\dsp\lossless_enc_neon.c">
+      <Filter>src\dsp</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\webp\src\dsp\lossless_enc_sse2.c">
+      <Filter>src\dsp</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\webp\src\dsp\lossless_enc_sse41.c">
+      <Filter>src\dsp</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\webp\src\dsp\lossless_mips_dsp_r2.c">
+      <Filter>src\dsp</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\webp\src\dsp\lossless_msa.c">
+      <Filter>src\dsp</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\webp\src\dsp\lossless_neon.c">
+      <Filter>src\dsp</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\webp\src\dsp\lossless_sse2.c">
+      <Filter>src\dsp</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\webp\src\dsp\lossless_sse41.c">
+      <Filter>src\dsp</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\webp\src\dsp\rescaler.c">
+      <Filter>src\dsp</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\webp\src\dsp\rescaler_mips32.c">
+      <Filter>src\dsp</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\webp\src\dsp\rescaler_mips_dsp_r2.c">
+      <Filter>src\dsp</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\webp\src\dsp\rescaler_msa.c">
+      <Filter>src\dsp</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\webp\src\dsp\rescaler_neon.c">
+      <Filter>src\dsp</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\webp\src\dsp\rescaler_sse2.c">
+      <Filter>src\dsp</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\webp\src\dsp\ssim.c">
+      <Filter>src\dsp</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\webp\src\dsp\ssim_sse2.c">
+      <Filter>src\dsp</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\webp\src\dsp\upsampling.c">
+      <Filter>src\dsp</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\webp\src\dsp\upsampling_mips_dsp_r2.c">
+      <Filter>src\dsp</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\webp\src\dsp\upsampling_msa.c">
+      <Filter>src\dsp</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\webp\src\dsp\upsampling_neon.c">
+      <Filter>src\dsp</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\webp\src\dsp\upsampling_sse2.c">
+      <Filter>src\dsp</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\webp\src\dsp\upsampling_sse41.c">
+      <Filter>src\dsp</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\webp\src\dsp\yuv.c">
+      <Filter>src\dsp</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\webp\src\dsp\yuv_mips32.c">
+      <Filter>src\dsp</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\webp\src\dsp\yuv_mips_dsp_r2.c">
+      <Filter>src\dsp</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\webp\src\dsp\yuv_neon.c">
+      <Filter>src\dsp</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\webp\src\dsp\yuv_sse2.c">
+      <Filter>src\dsp</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\webp\src\dsp\yuv_sse41.c">
+      <Filter>src\dsp</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\webp\src\enc\alpha_enc.c">
+      <Filter>src\enc</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\webp\src\enc\analysis_enc.c">
+      <Filter>src\enc</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\webp\src\enc\backward_references_cost_enc.c">
+      <Filter>src\enc</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\webp\src\enc\backward_references_enc.c">
+      <Filter>src\enc</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\webp\src\enc\config_enc.c">
+      <Filter>src\enc</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\webp\src\enc\cost_enc.c">
+      <Filter>src\enc</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\webp\src\enc\filter_enc.c">
+      <Filter>src\enc</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\webp\src\enc\frame_enc.c">
+      <Filter>src\enc</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\webp\src\enc\histogram_enc.c">
+      <Filter>src\enc</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\webp\src\enc\iterator_enc.c">
+      <Filter>src\enc</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\webp\src\enc\near_lossless_enc.c">
+      <Filter>src\enc</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\webp\src\enc\picture_csp_enc.c">
+      <Filter>src\enc</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\webp\src\enc\picture_enc.c">
+      <Filter>src\enc</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\webp\src\enc\picture_psnr_enc.c">
+      <Filter>src\enc</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\webp\src\enc\picture_rescale_enc.c">
+      <Filter>src\enc</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\webp\src\enc\picture_tools_enc.c">
+      <Filter>src\enc</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\webp\src\enc\predictor_enc.c">
+      <Filter>src\enc</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\webp\src\enc\quant_enc.c">
+      <Filter>src\enc</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\webp\src\enc\syntax_enc.c">
+      <Filter>src\enc</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\webp\src\enc\token_enc.c">
+      <Filter>src\enc</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\webp\src\enc\tree_enc.c">
+      <Filter>src\enc</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\webp\src\enc\vp8l_enc.c">
+      <Filter>src\enc</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\webp\src\enc\webp_enc.c">
+      <Filter>src\enc</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\webp\src\mux\anim_encode.c">
+      <Filter>src\mux</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\webp\src\mux\muxedit.c">
+      <Filter>src\mux</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\webp\src\mux\muxinternal.c">
+      <Filter>src\mux</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\webp\src\mux\muxread.c">
+      <Filter>src\mux</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\webp\src\utils\bit_reader_utils.c">
+      <Filter>src\utils</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\webp\src\utils\bit_writer_utils.c">
+      <Filter>src\utils</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\webp\src\utils\color_cache_utils.c">
+      <Filter>src\utils</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\webp\src\utils\filters_utils.c">
+      <Filter>src\utils</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\webp\src\utils\huffman_encode_utils.c">
+      <Filter>src\utils</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\webp\src\utils\huffman_utils.c">
+      <Filter>src\utils</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\webp\src\utils\palette.c">
+      <Filter>src\utils</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\webp\src\utils\quant_levels_dec_utils.c">
+      <Filter>src\utils</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\webp\src\utils\quant_levels_utils.c">
+      <Filter>src\utils</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\webp\src\utils\random_utils.c">
+      <Filter>src\utils</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\webp\src\utils\rescaler_utils.c">
+      <Filter>src\utils</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\webp\src\utils\thread_utils.c">
+      <Filter>src\utils</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\webp\src\utils\utils.c">
+      <Filter>src\utils</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\webp\sharpyuv\sharpyuv.c">
+      <Filter>sharpyuv</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\webp\sharpyuv\sharpyuv_cpu.c">
+      <Filter>sharpyuv</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\webp\sharpyuv\sharpyuv_csp.c">
+      <Filter>sharpyuv</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\webp\sharpyuv\sharpyuv_dsp.c">
+      <Filter>sharpyuv</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\webp\sharpyuv\sharpyuv_gamma.c">
+      <Filter>sharpyuv</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\webp\sharpyuv\sharpyuv_neon.c">
+      <Filter>sharpyuv</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\webp\sharpyuv\sharpyuv_sse2.c">
+      <Filter>sharpyuv</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="C:\Users\user\DoomConnector6\HCDE\libraries\webp\src\dec\alphai_dec.h">
+      <Filter>src\dec</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\user\DoomConnector6\HCDE\libraries\webp\src\dec\common_dec.h">
+      <Filter>src\dec</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\user\DoomConnector6\HCDE\libraries\webp\src\dec\vp8i_dec.h">
+      <Filter>src\dec</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\user\DoomConnector6\HCDE\libraries\webp\src\dec\vp8li_dec.h">
+      <Filter>src\dec</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\user\DoomConnector6\HCDE\libraries\webp\src\dec\vp8_dec.h">
+      <Filter>src\dec</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\user\DoomConnector6\HCDE\libraries\webp\src\dec\webpi_dec.h">
+      <Filter>src\dec</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\user\DoomConnector6\HCDE\libraries\webp\src\dsp\common_sse2.h">
+      <Filter>src\dsp</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\user\DoomConnector6\HCDE\libraries\webp\src\dsp\common_sse41.h">
+      <Filter>src\dsp</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\user\DoomConnector6\HCDE\libraries\webp\src\dsp\cpu.h">
+      <Filter>src\dsp</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\user\DoomConnector6\HCDE\libraries\webp\src\dsp\dsp.h">
+      <Filter>src\dsp</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\user\DoomConnector6\HCDE\libraries\webp\src\dsp\lossless.h">
+      <Filter>src\dsp</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\user\DoomConnector6\HCDE\libraries\webp\src\dsp\lossless_common.h">
+      <Filter>src\dsp</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\user\DoomConnector6\HCDE\libraries\webp\src\dsp\mips_macro.h">
+      <Filter>src\dsp</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\user\DoomConnector6\HCDE\libraries\webp\src\dsp\msa_macro.h">
+      <Filter>src\dsp</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\user\DoomConnector6\HCDE\libraries\webp\src\dsp\neon.h">
+      <Filter>src\dsp</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\user\DoomConnector6\HCDE\libraries\webp\src\dsp\quant.h">
+      <Filter>src\dsp</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\user\DoomConnector6\HCDE\libraries\webp\src\dsp\yuv.h">
+      <Filter>src\dsp</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\user\DoomConnector6\HCDE\libraries\webp\src\enc\backward_references_enc.h">
+      <Filter>src\enc</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\user\DoomConnector6\HCDE\libraries\webp\src\enc\cost_enc.h">
+      <Filter>src\enc</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\user\DoomConnector6\HCDE\libraries\webp\src\enc\histogram_enc.h">
+      <Filter>src\enc</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\user\DoomConnector6\HCDE\libraries\webp\src\enc\vp8i_enc.h">
+      <Filter>src\enc</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\user\DoomConnector6\HCDE\libraries\webp\src\enc\vp8li_enc.h">
+      <Filter>src\enc</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\user\DoomConnector6\HCDE\libraries\webp\src\mux\animi.h">
+      <Filter>src\mux</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\user\DoomConnector6\HCDE\libraries\webp\src\mux\muxi.h">
+      <Filter>src\mux</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\user\DoomConnector6\HCDE\libraries\webp\src\utils\bit_reader_inl_utils.h">
+      <Filter>src\utils</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\user\DoomConnector6\HCDE\libraries\webp\src\utils\bit_reader_utils.h">
+      <Filter>src\utils</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\user\DoomConnector6\HCDE\libraries\webp\src\utils\bit_writer_utils.h">
+      <Filter>src\utils</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\user\DoomConnector6\HCDE\libraries\webp\src\utils\color_cache_utils.h">
+      <Filter>src\utils</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\user\DoomConnector6\HCDE\libraries\webp\src\utils\endian_inl_utils.h">
+      <Filter>src\utils</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\user\DoomConnector6\HCDE\libraries\webp\src\utils\filters_utils.h">
+      <Filter>src\utils</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\user\DoomConnector6\HCDE\libraries\webp\src\utils\huffman_encode_utils.h">
+      <Filter>src\utils</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\user\DoomConnector6\HCDE\libraries\webp\src\utils\huffman_utils.h">
+      <Filter>src\utils</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\user\DoomConnector6\HCDE\libraries\webp\src\utils\palette.h">
+      <Filter>src\utils</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\user\DoomConnector6\HCDE\libraries\webp\src\utils\quant_levels_dec_utils.h">
+      <Filter>src\utils</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\user\DoomConnector6\HCDE\libraries\webp\src\utils\quant_levels_utils.h">
+      <Filter>src\utils</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\user\DoomConnector6\HCDE\libraries\webp\src\utils\random_utils.h">
+      <Filter>src\utils</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\user\DoomConnector6\HCDE\libraries\webp\src\utils\rescaler_utils.h">
+      <Filter>src\utils</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\user\DoomConnector6\HCDE\libraries\webp\src\utils\thread_utils.h">
+      <Filter>src\utils</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\user\DoomConnector6\HCDE\libraries\webp\src\utils\utils.h">
+      <Filter>src\utils</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\user\DoomConnector6\HCDE\libraries\webp\sharpyuv\sharpyuv.h">
+      <Filter>sharpyuv</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\user\DoomConnector6\HCDE\libraries\webp\sharpyuv\sharpyuv_cpu.h">
+      <Filter>sharpyuv</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\user\DoomConnector6\HCDE\libraries\webp\sharpyuv\sharpyuv_csp.h">
+      <Filter>sharpyuv</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\user\DoomConnector6\HCDE\libraries\webp\sharpyuv\sharpyuv_dsp.h">
+      <Filter>sharpyuv</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\user\DoomConnector6\HCDE\libraries\webp\sharpyuv\sharpyuv_gamma.h">
+      <Filter>sharpyuv</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\user\DoomConnector6\HCDE\libraries\webp\include\webp\decode.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\user\DoomConnector6\HCDE\libraries\webp\include\webp\demux.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\user\DoomConnector6\HCDE\libraries\webp\include\webp\encode.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\user\DoomConnector6\HCDE\libraries\webp\include\webp\format_constants.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\user\DoomConnector6\HCDE\libraries\webp\include\webp\mux.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\user\DoomConnector6\HCDE\libraries\webp\include\webp\mux_types.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\user\DoomConnector6\HCDE\libraries\webp\include\webp\types.h">
+      <Filter>include</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="C:\Users\user\DoomConnector6\HCDE\libraries\webp\CMakeLists.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="include">
+      <UniqueIdentifier>{238FEFB4-96AF-3194-B68E-B28DAA9376DD}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="sharpyuv">
+      <UniqueIdentifier>{F2A73C81-1CF2-35E0-8B16-9D53FCD030DE}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src">
+      <UniqueIdentifier>{6B4202D8-23D5-3758-B96B-AEA4987BE7E4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\dec">
+      <UniqueIdentifier>{1BAA97F9-2164-3E03-9A13-59643B98A7FC}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\demux">
+      <UniqueIdentifier>{BBA9FBDC-C8C9-3CF2-8BF5-E53B88F209A3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\dsp">
+      <UniqueIdentifier>{4F32413A-4C1D-3AE7-B68D-76D6C46DA74C}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\enc">
+      <UniqueIdentifier>{49527876-9F59-3806-ABC3-26CC1568EAC2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\mux">
+      <UniqueIdentifier>{2529F24F-BD13-3362-9C14-1139E33BF2FE}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\utils">
+      <UniqueIdentifier>{3D1DB214-8F21-36C5-BB65-722CEE2D0CBF}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

@@ -1,0 +1,30 @@
+^C:\USERS\USER\DOOMCONNECTOR6\HCDE\CMAKEFILES\F2CCCA16B11CD5FEB0BEBAE6BF4EF910\HCDE_MOD_COMPAT_COMBINED.PK3.RULE
+setlocal
+..\tools\zipdir\Debug\zipdir.exe -udf C:/Users/user/DoomConnector6/HCDE/hcde_mod_compat_combined.pk3 C:/Users/user/DoomConnector6/HCDE/wadsrc_mod_compat/combined
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd
+^C:\USERS\USER\DOOMCONNECTOR6\HCDE\CMAKEFILES\CF8B55309C9D6B8FAAA99210CE15918B\HCDE_MOD_COMPAT_COMBINED_PK3.RULE
+setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -E touch C:/Users/user/DoomConnector6/HCDE/tools/zipdir/Debug/zipdir.exe
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd
+^C:\USERS\USER\DOOMCONNECTOR6\HCDE\WADSRC_MOD_COMPAT\CMAKELISTS.TXT
+setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -SC:/Users/user/DoomConnector6/HCDE -BC:/Users/user/DoomConnector6/HCDE --check-stamp-file C:/Users/user/DoomConnector6/HCDE/wadsrc_mod_compat/CMakeFiles/generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd

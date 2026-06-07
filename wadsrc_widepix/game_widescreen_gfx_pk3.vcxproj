@@ -1,0 +1,728 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="17.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <PreferredToolArchitecture>x64</PreferredToolArchitecture>
+  </PropertyGroup>
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="MinSizeRel|x64">
+      <Configuration>MinSizeRel</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="RelWithDebInfo|x64">
+      <Configuration>RelWithDebInfo</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{72BE18E5-D6B3-3EB9-81AB-CCDBB90863FA}</ProjectGuid>
+    <Keyword>Win32Proj</Keyword>
+    <WindowsTargetPlatformVersion>10.0.26100.0</WindowsTargetPlatformVersion>
+    <Platform>x64</Platform>
+    <ProjectName>game_widescreen_gfx_pk3</ProjectName>
+    <VCProjectUpgraderObjectName>NoUpgrade</VCProjectUpgraderObjectName>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>Utility</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v143</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>Utility</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v143</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'" Label="Configuration">
+    <ConfigurationType>Utility</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v143</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'" Label="Configuration">
+    <ConfigurationType>Utility</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v143</PlatformToolset>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>10.0.20506.1</_ProjectFileVersion>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(Platform)\$(Configuration)\$(ProjectName)\</IntDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(Platform)\$(Configuration)\$(ProjectName)\</IntDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">$(Platform)\$(Configuration)\$(ProjectName)\</IntDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">$(Platform)\$(Configuration)\$(ProjectName)\</IntDir>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Midl>
+      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Midl>
+      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">
+    <Midl>
+      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">
+    <Midl>
+      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <CustomBuild Include="C:\Users\user\DoomConnector6\HCDE\CMakeFiles\f2ccca16b11cd5feb0bebae6bf4ef910\game_widescreen_gfx.pk3.rule">
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Generating ../game_widescreen_gfx.pk3</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">setlocal
+..\tools\zipdir\Debug\zipdir.exe -udf C:/Users/user/DoomConnector6/HCDE/game_widescreen_gfx.pk3 C:/Users/user/DoomConnector6/HCDE/wadsrc_widepix/static
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:\Users\user\DoomConnector6\HCDE\tools\zipdir\Debug\zipdir.exe;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:\Users\user\DoomConnector6\HCDE\game_widescreen_gfx.pk3</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</LinkObjects>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Generating ../game_widescreen_gfx.pk3</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">setlocal
+..\tools\zipdir\Release\zipdir.exe -udf C:/Users/user/DoomConnector6/HCDE/game_widescreen_gfx.pk3 C:/Users/user/DoomConnector6/HCDE/wadsrc_widepix/static
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">C:\Users\user\DoomConnector6\HCDE\tools\zipdir\Release\zipdir.exe;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">C:\Users\user\DoomConnector6\HCDE\game_widescreen_gfx.pk3</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</LinkObjects>
+      <Message Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">Generating ../game_widescreen_gfx.pk3</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">setlocal
+..\tools\zipdir\MinSizeRel\zipdir.exe -udf C:/Users/user/DoomConnector6/HCDE/game_widescreen_gfx.pk3 C:/Users/user/DoomConnector6/HCDE/wadsrc_widepix/static
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">C:\Users\user\DoomConnector6\HCDE\tools\zipdir\MinSizeRel\zipdir.exe;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">C:\Users\user\DoomConnector6\HCDE\game_widescreen_gfx.pk3</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">false</LinkObjects>
+      <Message Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">Generating ../game_widescreen_gfx.pk3</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">setlocal
+..\tools\zipdir\RelWithDebInfo\zipdir.exe -udf C:/Users/user/DoomConnector6/HCDE/game_widescreen_gfx.pk3 C:/Users/user/DoomConnector6/HCDE/wadsrc_widepix/static
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">C:\Users\user\DoomConnector6\HCDE\tools\zipdir\RelWithDebInfo\zipdir.exe;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">C:\Users\user\DoomConnector6\HCDE\game_widescreen_gfx.pk3</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">false</LinkObjects>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="C:\Users\user\DoomConnector6\HCDE\CMakeFiles\d4ed490ff1632b66ac3ab0f35384ce2d\game_widescreen_gfx_pk3.rule">
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|x64'"></Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -E touch C:/Users/user/DoomConnector6/HCDE/tools/zipdir/Debug/zipdir.exe
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:\Users\user\DoomConnector6\HCDE\game_widescreen_gfx.pk3;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\CMakeFiles\game_widescreen_gfx_pk3</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</LinkObjects>
+      <VerifyInputsAndOutputsExist Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</VerifyInputsAndOutputsExist>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|x64'"></Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -E touch C:/Users/user/DoomConnector6/HCDE/tools/zipdir/Release/zipdir.exe
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">C:\Users\user\DoomConnector6\HCDE\game_widescreen_gfx.pk3;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\CMakeFiles\game_widescreen_gfx_pk3</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</LinkObjects>
+      <VerifyInputsAndOutputsExist Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</VerifyInputsAndOutputsExist>
+      <Message Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'"></Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -E touch C:/Users/user/DoomConnector6/HCDE/tools/zipdir/MinSizeRel/zipdir.exe
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">C:\Users\user\DoomConnector6\HCDE\game_widescreen_gfx.pk3;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\CMakeFiles\game_widescreen_gfx_pk3</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">false</LinkObjects>
+      <VerifyInputsAndOutputsExist Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">false</VerifyInputsAndOutputsExist>
+      <Message Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'"></Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -E touch C:/Users/user/DoomConnector6/HCDE/tools/zipdir/RelWithDebInfo/zipdir.exe
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">C:\Users\user\DoomConnector6\HCDE\game_widescreen_gfx.pk3;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\CMakeFiles\game_widescreen_gfx_pk3</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">false</LinkObjects>
+      <VerifyInputsAndOutputsExist Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">false</VerifyInputsAndOutputsExist>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\CMakeLists.txt">
+      <UseUtf8Encoding>Always</UseUtf8Encoding>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Building Custom Rule C:/Users/user/DoomConnector6/HCDE/wadsrc_widepix/CMakeLists.txt</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -SC:/Users/user/DoomConnector6/HCDE -BC:/Users/user/DoomConnector6/HCDE --check-stamp-file C:/Users/user/DoomConnector6/HCDE/wadsrc_widepix/CMakeFiles/generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\CMakeFiles\generate.stamp</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</LinkObjects>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Building Custom Rule C:/Users/user/DoomConnector6/HCDE/wadsrc_widepix/CMakeLists.txt</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -SC:/Users/user/DoomConnector6/HCDE -BC:/Users/user/DoomConnector6/HCDE --check-stamp-file C:/Users/user/DoomConnector6/HCDE/wadsrc_widepix/CMakeFiles/generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\CMakeFiles\generate.stamp</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</LinkObjects>
+      <Message Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">Building Custom Rule C:/Users/user/DoomConnector6/HCDE/wadsrc_widepix/CMakeLists.txt</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -SC:/Users/user/DoomConnector6/HCDE -BC:/Users/user/DoomConnector6/HCDE --check-stamp-file C:/Users/user/DoomConnector6/HCDE/wadsrc_widepix/CMakeFiles/generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\CMakeFiles\generate.stamp</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">false</LinkObjects>
+      <Message Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">Building Custom Rule C:/Users/user/DoomConnector6/HCDE/wadsrc_widepix/CMakeLists.txt</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -SC:/Users/user/DoomConnector6/HCDE -BC:/Users/user/DoomConnector6/HCDE --check-stamp-file C:/Users/user/DoomConnector6/HCDE/wadsrc_widepix/CMakeFiles/generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\CMakeFiles\generate.stamp</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">false</LinkObjects>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\credits.txt">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\chex.chex1\graphics\titlepic.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\chex.chex1\graphics\wimap0.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\chex.chex2\graphics\credit.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\chex.chex2\graphics\pfub1.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\chex.chex2\graphics\pfub2.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\chex.chex2\graphics\titlepic.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\chex.chex2\graphics\victory2.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\chex.chex3\graphics\endpic.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\chex.chex3\graphics\interpic.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\chex.chex3\graphics\pfub1.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\chex.chex3\graphics\pfub2.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\chex.chex3\graphics\titlepic.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\chex.chex3\graphics\victory2.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\chex.chex3\graphics\wimap0.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\chex.chex3\graphics\wimap1.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\chex.chex3\graphics\wimap2.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\chex\graphics\credit.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\chex\graphics\help1.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\doom.id.doom1.registered\graphics\titlepic.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\doom.id.doom1.shareware\graphics\titlepic.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\doom.id.doom1.ultimate\graphics\credit.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\doom.id.doom1.ultimate\graphics\titlepic.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\doom.id.doom1.ultimate\textures.txt">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\doom.id.doom1\graphics\credit.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\doom.id.doom1\graphics\help1.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\doom.id.doom1\graphics\help2.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\doom.id.doom2.plutonia\graphics\titlepic.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\doom.id.doom2.plutonia\textures.txt">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\doom.id.doom2.tnt\graphics\titlepic.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\doom.id.doom2.tnt\textures.txt">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\doom.id.doom2\graphics\credit.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\doom.id.doom2\graphics\help.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\doom.id.doom2\graphics\titlepic.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\doom.id.doom2\sprites\SHT2E0.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\doom.id.wadsmoosh\sprites\SHT2E0.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\doom.id\graphics\bossback.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\doom.id\graphics\credit.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\doom.id\graphics\endpic.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\doom.id\graphics\help.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\doom.id\graphics\inter_e4.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\doom.id\graphics\interpic.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\doom.id\graphics\pfub1.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\doom.id\graphics\pfub2.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\doom.id\graphics\pluboss.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\doom.id\graphics\pluinter.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\doom.id\graphics\tntboss.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\doom.id\graphics\tntinter.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\doom.id\graphics\victory2.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\doom.id\graphics\wia20000.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\doom.id\graphics\wia20001.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\doom.id\graphics\wia20002.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\doom.id\graphics\wia20400.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\doom.id\graphics\wia20401.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\doom.id\graphics\wia20402.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\doom.id\graphics\wia20500.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\doom.id\graphics\wia20501.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\doom.id\graphics\wia20502.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\doom.id\graphics\wimap0.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\doom.id\graphics\wimap1.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\doom.id\graphics\wimap2.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\hacx.hacx1\graphics\credit.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\hacx.hacx1\graphics\help.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\hacx.hacx1\graphics\interpic.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\hacx.hacx1\graphics\titlepic.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\hacx.hacx1\sprites\CRYGA0.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\hacx.hacx1\sprites\CRYGB0.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\hacx.hacx1\sprites\CRYGC0.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\hacx.hacx1\sprites\CRYGD0.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\hacx.hacx1\sprites\CRYGE0.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\hacx.hacx1\sprites\CRYGF0.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\hacx.hacx1\sprites\CRYGG0.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\hacx.hacx1\sprites\CRYGH0.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\hacx.hacx1\sprites\CRYGI0.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\hacx.hacx1\sprites\CRYGJ0.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\hacx.hacx1\sprites\MISFA0.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\hacx.hacx1\sprites\MISFB0.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\hacx.hacx1\sprites\MISFC0.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\hacx.hacx1\sprites\MISFD0.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\hacx.hacx1\sprites\MISGA0.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\hacx.hacx1\sprites\MISGB0.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\hacx.hacx1\sprites\PISGE0.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\hacx.hacx1\sprites\PLSGB0.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\hacx.hacx1\sprites\SHT2A0.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\hacx.hacx1\sprites\SHT2B0.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\hacx.hacx1\sprites\SHT2C0.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\hacx.hacx1\sprites\SHT2D0.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\hacx.hacx1\sprites\SHT2E0.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\hacx.hacx1\sprites\SHT2F0.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\hacx.hacx1\sprites\SHT2G0.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\hacx.hacx1\sprites\SHT2H0.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\hacx.hacx1\sprites\SHT2I0.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\hacx.hacx1\sprites\SHT2J0.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\harmony\graphics\bossback.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\harmony\graphics\credit.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\harmony\graphics\titlepic.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\heretic.shadow\graphics\title.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\heretic\graphics\barback.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\heretic\graphics\credit.lmp">
+    </None>
+    <Image Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\heretic\graphics\e2end.png">
+    </Image>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\heretic\graphics\final1.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\heretic\graphics\final2.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\heretic\graphics\help1.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\heretic\graphics\help2.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\heretic\graphics\ltfctop.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\heretic\graphics\mape1.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\heretic\graphics\mape2.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\heretic\graphics\mape3.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\heretic\graphics\rtfctop.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\heretic\graphics\title.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\heretic\sprites\CRBWA0.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\heretic\sprites\CRBWB0.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\heretic\sprites\CRBWC0.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\heretic\sprites\CRBWD0.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\heretic\sprites\CRBWE0.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\heretic\sprites\CRBWF0.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\heretic\sprites\CRBWG0.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\heretic\sprites\CRBWH0.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\heretic\sprites\HRODA0.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\heretic\sprites\HRODC0.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\heretic\sprites\HRODD0.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\heretic\sprites\HRODE0.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\heretic\sprites\HRODF0.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\heretic\sprites\PHNXA0.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\heretic\sprites\PHNXB0.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\heretic\sprites\STFFC0.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\heretic\sprites\STFFH0.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\hexen.deathkings\graphics\credit.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\hexen.deathkings\graphics\help1.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\hexen.deathkings\graphics\help2.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\hexen.deathkings\graphics\title.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\hexen\graphics\credit.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\hexen\graphics\finale1.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\hexen\graphics\finale2.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\hexen\graphics\finale3.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\hexen\graphics\h2bar.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\hexen\graphics\h2top.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\hexen\graphics\help1.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\hexen\graphics\help2.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\hexen\graphics\interpic.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\hexen\graphics\title.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\hexen\sprites\CFLME0.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\hexen\sprites\CFLMF0.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\hexen\sprites\CMCEB0.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\hexen\sprites\CMCEC0.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\hexen\sprites\CMCED0.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\hexen\sprites\CMCEE0.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\hexen\sprites\CONEA0.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\hexen\sprites\CONEB0.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\hexen\sprites\CONEC0.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\hexen\sprites\CONED0.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\hexen\sprites\CONEE0.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\hexen\sprites\CONEF0.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\hexen\sprites\CONEG0.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\hexen\sprites\FAXEB0.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\hexen\sprites\FAXEC0.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\hexen\sprites\FAXEN0.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\hexen\sprites\FAXEO0.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\hexen\sprites\FHMRB0.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\hexen\sprites\FHMRC0.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\hexen\sprites\FPCHB0.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\hexen\sprites\FPCHC0.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\hexen\sprites\FPCHD0.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\hexen\sprites\FPCHE0.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\hexen\sprites\FSRDD0.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\hexen\sprites\FSRDE0.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\hexen\sprites\FSRDH0.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\hexen\sprites\FSRDI0.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\hexen\sprites\MLNGG0.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\hexen\sprites\MLNGH0.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\hexen\sprites\MLNGI0.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\strife\graphics\credit.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\strife\graphics\help0.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\strife\graphics\help1.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\strife\graphics\help2.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\strife\graphics\help3.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\strife\graphics\invback.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\strife\graphics\invtop.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\strife\graphics\panel0.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\strife\graphics\panel1.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\strife\graphics\panel2.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\strife\graphics\panel3.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\strife\graphics\panel4.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\strife\graphics\panel5.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\strife\graphics\panel6.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\strife\graphics\panel7.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\strife\graphics\rgelogo.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\strife\graphics\ss2f1.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\strife\graphics\ss2f2.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\strife\graphics\ss2f3.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\strife\graphics\ss2f4.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\strife\graphics\ss3f1.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\strife\graphics\ss3f2.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\strife\graphics\ss3f3.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\strife\graphics\ss3f4.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\strife\graphics\ss4f1.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\strife\graphics\ss4f2.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\strife\graphics\ss4f3.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\strife\graphics\ss4f4.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\strife\graphics\ss5f1.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\strife\graphics\ss5f2.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\strife\graphics\ss5f3.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\strife\graphics\ss6f1.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\strife\graphics\ss6f2.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\strife\graphics\ss6f3.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\strife\graphics\titlepic.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\strife\graphics\vellogo.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\strife\sprites\PNCHB0.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\strife\sprites\PNCHC0.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\strife\sprites\WAVEA0.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\strife\sprites\WAVEB0.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\strife\sprites\WAVEC0.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\strife\sprites\WAVED0.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\license.md">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\CMakeFiles\game_widescreen_gfx_pk3">
+    </None>
+  </ItemGroup>
+  <ItemGroup />
+  <ItemGroup>
+    <ProjectReference Include="C:\Users\user\DoomConnector6\HCDE\ZERO_CHECK.vcxproj">
+      <Project>{E8197ADC-B231-3016-B201-AFCCCD85A09A}</Project>
+      <Name>ZERO_CHECK</Name>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </ProjectReference>
+    <ProjectReference Include="C:\Users\user\DoomConnector6\HCDE\tools\zipdir\zipdir.vcxproj">
+      <Project>{243F25B4-1FCD-389E-B889-7DF140F7794D}</Project>
+      <Name>zipdir</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

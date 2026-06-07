@@ -18,6 +18,151 @@
 
 EXTERN_CVAR(Int, net_echo_debug)
 
+// Length-prefixed (BE16 length + raw bytes) string helpers for the presentation
+// echo. Class TypeName FName *indices* are NOT portable between the client and
+// server processes - names are interned lazily in execution order, so the same
+// class gets different indices in each process (verified in the field: the
+// authority's "Pistol" index decoded as "Shell" on the client). Anything the
+// client must resolve back to a concrete class/state therefore has to travel as
+// the actual characters, exactly like the savegame serializer writes states as
+// (class-name string + offset). Capped at 255 chars; class names are short.
+static bool HCDEAppendEchoString(uint8_t* output, size_t outputCapacity, size_t& cursor, const char* str)
+{
+	const size_t len = (str != nullptr) ? strlen(str) : 0u;
+	const uint16_t clamped = uint16_t(min<size_t>(len, 255u));
+	if (!HCDEAppendBE16(output, outputCapacity, cursor, clamped))
+		return false;
+	if (clamped == 0u)
+		return true;
+	return HCDEAppendBytes(output, outputCapacity, cursor, reinterpret_cast<const uint8_t*>(str), clamped);
+}
+
+static bool HCDEReadEchoString(const uint8_t* data, size_t dataSize, size_t& cursor, FString& out)
+{
+	out = "";
+	uint16_t len = 0u;
+	if (!HCDEReadBE16Field(data, dataSize, cursor, len))
+		return false;
+	if (len == 0u)
+		return true;
+	if (cursor > dataSize || dataSize - cursor < len)
+		return false;
+	out = FString(reinterpret_cast<const char*>(&data[cursor]), len);
+	cursor += len;
+	return true;
+}
+
+// HCDE: when nonzero, dedicated clients seat their weapon psprite onto the
+// authority's state every snapshot (server-authoritative weapon). When zero the
+// client falls back to the legacy free-running local weapon state machine
+// (kept as an escape hatch in case a mod's weapon relies on client-local
+// timing). Defaults on; this is the fix for "gun sprites don't always fire
+// correctly", which was caused by the client and server running two
+// independent, drifting weapon state machines.
+CVAR(Bool, cl_follow_server_weapon, true, CVAR_ARCHIVE | CVAR_GLOBALCONFIG)
+
+// HCDE: seat the LOCAL view player's weapon psprite onto the authority's state.
+//
+// Weapon psprites are local-only (never replicated through the world delta), so
+// before echo v2 the dedicated client ran its own weapon state machine driven
+// by its leading command stream while the authority ran its own driven by the
+// drained command cursor. A ~1-tic phase offset plus the authority's per-tic
+// catch-up drain made the two diverge in both phase and shot count, so a fire
+// press could animate locally while the authority's weapon was mid-cycle (no
+// shot/ammo) or vice versa.
+//
+// The portable (owner class TypeName index + state offset) pair lets us rebuild
+// the exact FState* the authority is showing and snap the local psprite to it.
+// We assign State/Sprite/Frame/Tics directly rather than calling
+// DPSprite::SetState, because SetState re-runs the state's action function and
+// chains through zero-tic states - re-running A_FirePistol/A_ReFire on the
+// client is exactly what produced the earlier "turbo mode" double-fire. The
+// local weapon think keeps running between snapshots for smooth animation and
+// fire feedback; each snapshot re-seats it so drift can never accumulate.
+static void Net_FollowServerWeaponPSprite(int playerNum, const FString& readyWeapName,
+	const FString& ownerName, uint32_t stateOffset, int16_t tics, uint16_t weaponState)
+{
+	if (!cl_follow_server_weapon)
+		return;
+	// Only the local view player has a rendered weapon psprite to correct, and
+	// only on a dedicated client - the authority process IS the weapon's source
+	// of truth and must not snap itself.
+	if (playerNum != consoleplayer)
+		return;
+	if (playerNum < 0 || playerNum >= MAXPLAYERS)
+		return;
+	if (I_IsLocalHCDEServiceAuthority())
+		return;
+
+	player_t& player = players[playerNum];
+	if (player.mo == nullptr)
+		return;
+
+	// First align weapon SELECTION by class NAME. The previous version refused
+	// to follow the psprite if ReadyWeapon differed, which prevented
+	// Frankenstein states but left real selection mismatches visible (e.g.
+	// authority=Chaingun, client=Fist). Retarget the local ReadyWeapon pointer to
+	// the matching inventory actor without calling BringUpWeapon/OnSelect or any
+	// weapon actions; the state snap below will place the visible layer exactly
+	// where the authority already is.
+	if (readyWeapName.IsEmpty())
+		return;
+	const char* localReadyName = (player.ReadyWeapon != nullptr)
+		? player.ReadyWeapon->GetClass()->TypeName.GetChars() : "";
+	if (readyWeapName.Compare(localReadyName) != 0)
+	{
+		PClassActor* readyClass = PClass::FindActor(FName(readyWeapName.GetChars(), true));
+		AActor* readyActor = readyClass != nullptr ? player.mo->FindInventory(readyClass, true) : nullptr;
+		if (readyActor == nullptr)
+			return;
+		player.PendingWeapon = (AActor*)WP_NOCHANGE;
+		player.ReadyWeapon = readyActor;
+	}
+
+	player.WeaponState = weaponState;
+
+	DPSprite* sp = player.FindPSprite(PSP_WEAPON);
+	if (sp == nullptr)
+		return;
+
+	if (ownerName.IsEmpty())
+		return;	// authority had no weapon psprite state this snapshot
+
+	PClassActor* owner = PClass::FindActor(FName(ownerName.GetChars(), true));
+	if (owner == nullptr || stateOffset >= uint32_t(owner->GetStateCount()))
+		return;
+
+	FState* serverState = owner->GetStates() + stateOffset;
+	FState* localState = sp->GetState();
+	if (player.ReadyWeapon != nullptr)
+		sp->SetCaller(player.ReadyWeapon);
+
+	if (localState == serverState)
+	{
+		// Already on the authority's state. The remaining weapon complaints now
+		// show up as same-state, one-tic countdown skew (e.g. server BFG9000.3
+		// tics=19 vs local tics=18). Since weapon actions are not re-run here,
+		// exact countdown anchoring is safe and prevents "fires longer" visual
+		// tails from accumulating between snapshots.
+		if (sp->Tics != tics)
+			sp->Tics = tics;
+		return;
+	}
+
+	// Drifted onto a different state: snap the visible weapon to the authority's
+	// state without running its action function (see header comment above).
+	sp->State = serverState;
+	sp->Tics = tics;
+	if (serverState->sprite != SPR_FIXED)
+	{
+		if (!serverState->GetSameFrame())
+			sp->Frame = serverState->GetFrame();
+		if (serverState->sprite != SPR_NOCHANGE)
+			sp->Sprite = serverState->sprite;
+	}
+	sp->ResetInterpolation();
+}
+
 // Implement Net_LogPingSample
 void Net_LogPingSample(int clientNum, int leadTics, int leadMs, int rttMs, int ticDup, int extraTics, int delta)
 {
@@ -27,8 +172,8 @@ void Net_LogPingSample(int clientNum, int leadTics, int leadMs, int rttMs, int t
 
 // Implement Net_CompareEchoToLocal
 void Net_CompareEchoToLocal(int clientNum, uint32_t serverTic, int playerNum,
-	uint32_t readyWeapName, uint32_t pendingWeapName,
-	uint32_t pspriteStateName, int16_t pspriteTics,
+	const FString& readyWeapName, const FString& pspriteOwnerName,
+	uint32_t pspriteStateOffset, int16_t pspriteTics,
 	uint16_t weaponState, uint8_t playerState, int16_t viewHeight)
 {
 	if (playerNum < 0 || playerNum >= MAXPLAYERS)
@@ -36,18 +181,12 @@ void Net_CompareEchoToLocal(int clientNum, uint32_t serverTic, int playerNum,
 
 	const player_t& player = players[playerNum];
 
-	// Extract local values
-	uint32_t localReadyWeapName = 0;
-	if (player.ReadyWeapon != nullptr)
-		localReadyWeapName = player.ReadyWeapon->GetClass()->TypeName.GetIndex();
+	// Local ReadyWeapon by portable class name.
+	const char* localReadyName = (player.ReadyWeapon != nullptr)
+		? player.ReadyWeapon->GetClass()->TypeName.GetChars() : "";
 
-	uint32_t localPendingWeapName = 0;
-	if (player.PendingWeapon != nullptr && player.PendingWeapon != WP_NOCHANGE)
-		localPendingWeapName = player.PendingWeapon->GetClass()->TypeName.GetIndex();
-	else if (player.PendingWeapon == WP_NOCHANGE)
-		localPendingWeapName = 0xFFFFFFFF;
-
-	uint32_t localPspriteStateName = 0;
+	// Local weapon-layer psprite state + tics.
+	FState* localPspriteState = nullptr;
 	int16_t localPspriteTics = 0;
 	if (player.psprites != nullptr)
 	{
@@ -58,9 +197,20 @@ void Net_CompareEchoToLocal(int clientNum, uint32_t serverTic, int playerNum,
 		}
 		if (sp != nullptr && sp->GetState() != nullptr)
 		{
-			localPspriteStateName = FName(FState::StaticGetStateName(sp->GetState())).GetIndex();
+			localPspriteState = sp->GetState();
 			localPspriteTics = sp->Tics;
 		}
+	}
+
+	// Reconstruct the authority's psprite state from the portable owner-name +
+	// offset so the comparison reflects the actual states, not process-local
+	// FName indices.
+	FState* serverPspriteState = nullptr;
+	if (!pspriteOwnerName.IsEmpty())
+	{
+		PClassActor* owner = PClass::FindActor(FName(pspriteOwnerName.GetChars(), true));
+		if (owner != nullptr && pspriteStateOffset < uint32_t(owner->GetStateCount()))
+			serverPspriteState = owner->GetStates() + pspriteStateOffset;
 	}
 
 	uint16_t localWeaponState = player.WeaponState;
@@ -69,27 +219,21 @@ void Net_CompareEchoToLocal(int clientNum, uint32_t serverTic, int playerNum,
 
 	// Log desyncs
 	bool desync = false;
-	if (localReadyWeapName != readyWeapName)
+	if (readyWeapName.Compare(localReadyName) != 0)
 	{
 		desync = true;
-		const char* sName = FName(ENamedName(readyWeapName)).IsValidName() ? FName(ENamedName(readyWeapName)).GetChars() : "None";
-		const char* lName = FName(ENamedName(localReadyWeapName)).IsValidName() ? FName(ENamedName(localReadyWeapName)).GetChars() : "None";
 		DebugTrace::Warningf("net.desync", "[WEAPON DESYNC] player=%d server ReadyWeapon=%s local ReadyWeapon=%s tic=%u",
-			playerNum, sName, lName, serverTic);
+			playerNum, readyWeapName.IsEmpty() ? "None" : readyWeapName.GetChars(),
+			(localReadyName[0] != '\0') ? localReadyName : "None", serverTic);
 	}
-	if (localPendingWeapName != pendingWeapName)
+	if (localPspriteState != serverPspriteState
+		|| (serverPspriteState != nullptr && localPspriteTics != pspriteTics))
 	{
 		desync = true;
-		const char* sName = (pendingWeapName == 0xFFFFFFFF) ? "WP_NOCHANGE" : (FName(ENamedName(pendingWeapName)).IsValidName() ? FName(ENamedName(pendingWeapName)).GetChars() : "None");
-		const char* lName = (localPendingWeapName == 0xFFFFFFFF) ? "WP_NOCHANGE" : (FName(ENamedName(localPendingWeapName)).IsValidName() ? FName(ENamedName(localPendingWeapName)).GetChars() : "None");
-		DebugTrace::Warningf("net.desync", "[PENDING WEAPON DESYNC] player=%d server PendingWeapon=%s local PendingWeapon=%s tic=%u",
-			playerNum, sName, lName, serverTic);
-	}
-	if (localPspriteStateName != pspriteStateName || (pspriteStateName != 0 && localPspriteTics != pspriteTics))
-	{
-		desync = true;
-		const char* sName = FName(ENamedName(pspriteStateName)).IsValidName() ? FName(ENamedName(pspriteStateName)).GetChars() : "None";
-		const char* lName = FName(ENamedName(localPspriteStateName)).IsValidName() ? FName(ENamedName(localPspriteStateName)).GetChars() : "None";
+		const char* sName = serverPspriteState != nullptr
+			? FState::StaticGetStateName(serverPspriteState).GetChars() : "None";
+		const char* lName = localPspriteState != nullptr
+			? FState::StaticGetStateName(localPspriteState).GetChars() : "None";
 		DebugTrace::Warningf("net.desync", "[PSPRITE STATE DESYNC] player=%d server state=%s (tics=%d) local state=%s (tics=%d) tic=%u",
 			playerNum, sName, pspriteTics, lName, localPspriteTics, serverTic);
 	}
@@ -105,11 +249,79 @@ void Net_CompareEchoToLocal(int clientNum, uint32_t serverTic, int playerNum,
 		DebugTrace::Warningf("net.desync", "[PLAYER STATE DESYNC] player=%d server playerstate=%d local playerstate=%d tic=%u",
 			playerNum, playerState, localPlayerState, serverTic);
 	}
-	if (abs(localViewHeight - (viewHeight / 256.0)) > 1.0)
+	// Viewheight only drives the LOCAL first-person camera; remote players are
+	// drawn from their world actor, never through their eyes, so their view-bob
+	// curve legitimately differs and a mismatch there is invisible. Restrict the
+	// diagnostic to the local view player to avoid hundreds of false warnings
+	// (the remote player's landing/step bob spamming the desync log).
+	if (playerNum == consoleplayer && abs(localViewHeight - (viewHeight / 256.0)) > 1.0)
 	{
 		desync = true;
 		DebugTrace::Warningf("net.desync", "[VIEWHEIGHT DESYNC] player=%d server viewheight=%.2f local viewheight=%.2f tic=%u",
 			playerNum, viewHeight / 256.0, double(localViewHeight), serverTic);
+	}
+}
+
+// One replicated inventory entry (echo v4 local-inventory block).
+struct HCDEReplicatedInvItem
+{
+	FString ClassName;
+	uint32_t Amount = 0u;
+	bool IsWeapon = false;
+	bool IsArmor = false;
+};
+
+// Reconcile the local view player's Weapon/Ammo/Armor inventory to the
+// authority's, using the echo local-inventory block. This is the missing half of
+// server-authoritative weapons: the client can now OWN the weapons the server
+// gave it, so the weapon follow can retarget ReadyWeapon and the HUD shows the
+// correct ammo. The server stays authoritative for real ammo/damage; this only
+// makes the client mirror what the server already decided.
+//
+// We give (never silently skip) missing items and set every amount to the
+// authority's value. We deliberately do NOT remove client-side extras here:
+// the common failure is "client is MISSING a picked-up weapon", and aggressive
+// removal risks nuking inventory the client legitimately simulates between
+// snapshots. Removal can be a later, separately-tested step.
+static void Net_ReconcileLocalInventory(int invForPlayer, const TArray<HCDEReplicatedInvItem>& items)
+{
+	if (!cl_follow_server_weapon)
+		return;
+	// The authority IS the source of truth and must not rewrite its own pawn.
+	if (I_IsLocalHCDEServiceAuthority())
+		return;
+	// The block only ever carries the receiving client's own slot; on the client
+	// that is consoleplayer. Guard against a slot mismatch (stale/forged packet).
+	if (invForPlayer != consoleplayer || invForPlayer < 0 || invForPlayer >= MAXPLAYERS)
+		return;
+
+	player_t& player = players[invForPlayer];
+	if (player.mo == nullptr)
+		return;
+	AActor* mo = player.mo;
+
+	// Pass 1: ensure ownership. GiveInventoryType runs the standard pickup path
+	// (CallTryPickup) so weapons get their sister ammo + correct setup; we then
+	// override the amount in pass 2 so any pickup-default amount cannot drift the
+	// HUD away from the authority's count.
+	for (unsigned i = 0u; i < items.Size(); ++i)
+	{
+		PClassActor* cls = PClass::FindActor(FName(items[i].ClassName.GetChars(), true));
+		if (cls == nullptr)
+			continue;
+		if (mo->FindInventory(cls, true) == nullptr)
+			mo->GiveInventoryType(cls);
+	}
+
+	// Pass 2: pin every amount to the authority's value.
+	for (unsigned i = 0u; i < items.Size(); ++i)
+	{
+		PClassActor* cls = PClass::FindActor(FName(items[i].ClassName.GetChars(), true));
+		if (cls == nullptr)
+			continue;
+		AActor* inv = mo->FindInventory(cls, true);
+		if (inv != nullptr)
+			inv->IntVar(NAME_Amount) = int(items[i].Amount);
 	}
 }
 
@@ -122,6 +334,54 @@ bool HCDEAppendPresentationEcho(int client, uint8_t* output, size_t outputCapaci
 		|| !HCDEAppendByte(output, outputCapacity, cursor, uint8_t(playerCount)))
 	{
 		return false;
+	}
+
+	// Echo v4 local-inventory block for the receiving client's OWN player slot.
+	// HCDE does not replicate inventory through the world delta, so a dedicated
+	// client only ever owns its spawn-default loadout (Fist+Pistol) - a Shotgun
+	// picked up on the server never exists on the client, so FindInventory()
+	// fails and the weapon follow below cannot retarget ReadyWeapon. Mirror this
+	// player's Weapon and Ammo items (class NAME + amount) so the client can
+	// materialise + display them and show correct HUD ammo. Only the receiving
+	// client's own slot is sent; remote players' guns render from their world
+	// actor sprite, not a local psprite. Written first (before the per-player
+	// records) so the reader reconciles inventory before running the follow.
+	{
+		const bool localInvValid = client >= 0 && client < MAXPLAYERS
+			&& !I_IsServerReservedSlot(client) && players[client].mo != nullptr;
+		if (!HCDEAppendByte(output, outputCapacity, cursor, localInvValid ? uint8_t(client) : uint8_t(0xFFu)))
+			return false;
+		if (localInvValid)
+		{
+			AActor* invMo = players[client].mo;
+			// Count first so the wire carries an exact item count (the apply side
+			// pre-sizes its parse and we never have to backpatch the cursor).
+			uint16_t itemCount = 0u;
+			for (AActor* item = invMo->Inventory; item != nullptr && itemCount < 255u; item = item->Inventory)
+			{
+				if (item->IsKindOf(NAME_Weapon) || item->IsKindOf(NAME_Ammo) || item->IsKindOf(NAME_Armor))
+					++itemCount;
+			}
+			if (!HCDEAppendBE16(output, outputCapacity, cursor, itemCount))
+				return false;
+			uint16_t emitted = 0u;
+			for (AActor* item = invMo->Inventory; item != nullptr && emitted < itemCount; item = item->Inventory)
+			{
+				const bool isWeapon = item->IsKindOf(NAME_Weapon);
+				const bool isArmor = item->IsKindOf(NAME_Armor);
+				if (!isWeapon && !isArmor && !item->IsKindOf(NAME_Ammo))
+					continue;
+				const uint8_t flags = (isWeapon ? 0x01u : 0x00u) | (isArmor ? 0x02u : 0x00u);
+				const uint32_t amount = uint32_t(max<int>(0, item->IntVar(NAME_Amount)));
+				if (!HCDEAppendByte(output, outputCapacity, cursor, flags)
+					|| !HCDEAppendBE32(output, outputCapacity, cursor, amount)
+					|| !HCDEAppendEchoString(output, outputCapacity, cursor, item->GetClass()->TypeName.GetChars()))
+				{
+					return false;
+				}
+				++emitted;
+			}
+		}
 	}
 
 	for (size_t i = 0u; i < playerCount; ++i)
@@ -144,6 +404,12 @@ bool HCDEAppendPresentationEcho(int client, uint8_t* output, size_t outputCapaci
 
 		uint32_t pspriteStateNameIndex = 0;
 		int16_t pspriteTics = 0;
+		// Portable weapon-psprite state id (echo v3): owner-class NAME + state
+		// offset within that class's state table. The constructed state-name
+		// index above is process-local and kept only for the legacy diagnostic
+		// trace. Names travel as strings because FName indices are not portable.
+		const char* pspriteOwnerName = "";
+		uint32_t pspriteStateOffset = 0;
 		if (player.psprites != nullptr)
 		{
 			DPSprite* sp = const_cast<player_t&>(player).psprites;
@@ -153,10 +419,21 @@ bool HCDEAppendPresentationEcho(int client, uint8_t* output, size_t outputCapaci
 			}
 			if (sp != nullptr && sp->GetState() != nullptr)
 			{
-				pspriteStateNameIndex = FName(FState::StaticGetStateName(sp->GetState())).GetIndex();
+				FState* state = sp->GetState();
+				pspriteStateNameIndex = FName(FState::StaticGetStateName(state)).GetIndex();
 				pspriteTics = sp->Tics;
+
+				PClassActor* owner = FState::StaticFindStateOwner(state);
+				if (owner != nullptr)
+				{
+					pspriteOwnerName = owner->TypeName.GetChars();
+					pspriteStateOffset = uint32_t(state - owner->GetStates());
+				}
 			}
 		}
+
+		const char* readyWeapName = (player.ReadyWeapon != nullptr)
+			? player.ReadyWeapon->GetClass()->TypeName.GetChars() : "";
 
 		uint16_t weaponState = player.WeaponState;
 		uint8_t playerState = player.playerstate;
@@ -169,7 +446,10 @@ bool HCDEAppendPresentationEcho(int client, uint8_t* output, size_t outputCapaci
 			|| !HCDEAppendBE16(output, outputCapacity, cursor, uint16_t(pspriteTics))
 			|| !HCDEAppendBE16(output, outputCapacity, cursor, weaponState)
 			|| !HCDEAppendByte(output, outputCapacity, cursor, playerState)
-			|| !HCDEAppendBE16(output, outputCapacity, cursor, uint16_t(viewHeight)))
+			|| !HCDEAppendBE16(output, outputCapacity, cursor, uint16_t(viewHeight))
+			|| !HCDEAppendBE32(output, outputCapacity, cursor, pspriteStateOffset)
+			|| !HCDEAppendEchoString(output, outputCapacity, cursor, pspriteOwnerName)
+			|| !HCDEAppendEchoString(output, outputCapacity, cursor, readyWeapName))
 		{
 			return false;
 		}
@@ -197,11 +477,48 @@ bool HCDEReadPresentationEcho(int clientNum, const uint8_t* body, size_t bodyByt
 	if (version != HCDEPresentationEchoProtocolVersion)
 		return false;
 
+	// Echo v4 local-inventory block (read first, before the per-player follow
+	// loop, so the client owns the authority's weapons before the follow tries
+	// to retarget ReadyWeapon onto one of them).
+	if (cursor >= bodyBytes)
+		return false;
+	const uint8_t invForPlayer = body[cursor++];
+	if (invForPlayer != 0xFFu)
+	{
+		uint16_t itemCount = 0u;
+		if (!HCDEReadBE16Field(body, bodyBytes, cursor, itemCount))
+			return false;
+		TArray<HCDEReplicatedInvItem> invItems;
+		invItems.Reserve(itemCount);
+		for (uint16_t i = 0u; i < itemCount; ++i)
+		{
+			uint8_t flags = 0u;
+			uint32_t amount = 0u;
+			FString className;
+			if (!HCDEReadByteField(body, bodyBytes, cursor, flags)
+				|| !HCDEReadBE32Field(body, bodyBytes, cursor, amount)
+				|| !HCDEReadEchoString(body, bodyBytes, cursor, className))
+			{
+				return false;
+			}
+			HCDEReplicatedInvItem& it = invItems[i];
+			it.ClassName = className;
+			it.Amount = amount;
+			it.IsWeapon = (flags & 0x01u) != 0u;
+			it.IsArmor = (flags & 0x02u) != 0u;
+		}
+		Net_ReconcileLocalInventory(invForPlayer, invItems);
+	}
+
 	uint32_t serverTic = max<int>(gametic, 0); // fallback or reference tic
 
 	for (uint8_t i = 0u; i < playerCount; ++i)
 	{
-		if (cursor > bodyBytes || bodyBytes - cursor < 19)
+		// v3 per-player fixed prefix: playerNum(1) + readyWeap(4) +
+		// pendingWeap(4) + pspriteStateName(4) + pspriteTics(2) + weaponState(2)
+		// + playerState(1) + viewHeight(2) + pspriteStateOffset(4) = 24, then two
+		// length-prefixed strings (owner name, ready-weapon name).
+		if (cursor > bodyBytes || bodyBytes - cursor < 24)
 			return false;
 
 		uint8_t playerNum = body[cursor++];
@@ -212,6 +529,9 @@ bool HCDEReadPresentationEcho(int clientNum, const uint8_t* body, size_t bodyByt
 		uint16_t weaponState = 0;
 		uint8_t playerState = 0;
 		uint16_t viewHeightRaw = 0;
+		uint32_t pspriteStateOffset = 0;
+		FString pspriteOwnerName;
+		FString readyWeapName;
 
 		if (!HCDEReadBE32Field(body, bodyBytes, cursor, readyWeapNameIndex)
 			|| !HCDEReadBE32Field(body, bodyBytes, cursor, pendingWeapNameIndex)
@@ -219,7 +539,10 @@ bool HCDEReadPresentationEcho(int clientNum, const uint8_t* body, size_t bodyByt
 			|| !HCDEReadBE16Field(body, bodyBytes, cursor, pspriteTicsRaw)
 			|| !HCDEReadBE16Field(body, bodyBytes, cursor, weaponState)
 			|| !HCDEReadByteField(body, bodyBytes, cursor, playerState)
-			|| !HCDEReadBE16Field(body, bodyBytes, cursor, viewHeightRaw))
+			|| !HCDEReadBE16Field(body, bodyBytes, cursor, viewHeightRaw)
+			|| !HCDEReadBE32Field(body, bodyBytes, cursor, pspriteStateOffset)
+			|| !HCDEReadEchoString(body, bodyBytes, cursor, pspriteOwnerName)
+			|| !HCDEReadEchoString(body, bodyBytes, cursor, readyWeapName))
 		{
 			return false;
 		}
@@ -227,9 +550,15 @@ bool HCDEReadPresentationEcho(int clientNum, const uint8_t* body, size_t bodyByt
 		int16_t pspriteTics = int16_t(pspriteTicsRaw);
 		int16_t viewHeight = int16_t(viewHeightRaw);
 
+		// Seat the local view player's weapon psprite onto the authority's state
+		// (server-authoritative weapon). Uses portable class-name strings; the
+		// FName-index fields below feed only the legacy diagnostic. Diagnostics
+		// still run for every player.
+		Net_FollowServerWeaponPSprite(playerNum, readyWeapName,
+			pspriteOwnerName, pspriteStateOffset, pspriteTics, weaponState);
+
 		Net_CompareEchoToLocal(clientNum, serverTic, playerNum,
-			readyWeapNameIndex, pendingWeapNameIndex,
-			pspriteStateNameIndex, pspriteTics,
+			readyWeapName, pspriteOwnerName, pspriteStateOffset, pspriteTics,
 			weaponState, playerState, viewHeight);
 	}
 

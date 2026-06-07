@@ -10,6 +10,17 @@
 	return true;
 }
 
+static bool HCDEWorldDeltaSectorIsReplicated(const sector_t& sector)
+{
+	// Keep the first sector-authority pass narrow and deterministic: Doom-style
+	// doors/lifts are flat moving sectors. Slopes and static sectors can wait
+	// for a broader sector-state contract; the localhost door pass-through bug
+	// is caused by active flat ceiling movers diverging between client/server.
+	return (sector.floordata != nullptr || sector.ceilingdata != nullptr)
+		&& !sector.floorplane.isSlope()
+		&& !sector.ceilingplane.isSlope();
+}
+
 static bool HCDEAppendServerWorldDeltas(int client, uint8_t* output, size_t outputCapacity, size_t& cursor, const uint8_t* playerNums, size_t playerCount)
 {
 	if (playerCount > MAXPLAYERS || playerCount > UINT8_MAX)
@@ -70,6 +81,74 @@ static bool HCDEAppendServerWorldDeltas(int client, uint8_t* output, size_t outp
 		Net_DiagTraceServerPlayerTruth(client, uint32_t(gametic), int(playerNum),
 			pos.X, pos.Y, pos.Z, vel.X, vel.Y, vel.Z, health, (flags & HCDEServerWorldDeltaPoseOnGround) != 0u,
 			uint8_t(player.playerstate));
+	}
+
+	uint8_t sectorCount = 0u;
+	if (primaryLevel != nullptr)
+	{
+	for (unsigned int sectorIndex = 0u; sectorIndex < primaryLevel->sectors.Size() && sectorCount < 255u; ++sectorIndex)
+		{
+			const sector_t& sector = primaryLevel->sectors[sectorIndex];
+			// Replicate active flat movers (existing behaviour) OR any sector
+			// whose current center floor/ceiling differs from the map-load
+			// baseline. This ensures a sector that finished moving but landed
+			// at a different resting height will still be reconciled to the
+			// client instead of leaving a permanent checksum mismatch.
+			bool shouldReplicate = HCDEWorldDeltaSectorIsReplicated(sector);
+			if (!shouldReplicate && primaryLevel != nullptr
+				&& primaryLevel->SectorBaselineFloor.Size() == primaryLevel->sectors.Size()
+				&& primaryLevel->SectorBaselineCeiling.Size() == primaryLevel->sectors.Size())
+			{
+				const double baseFloor = primaryLevel->SectorBaselineFloor[sectorIndex];
+				const double baseCeil = primaryLevel->SectorBaselineCeiling[sectorIndex];
+				const double curFloor = sector.CenterFloor();
+				const double curCeil = sector.CenterCeiling();
+				const double eps = 0.01; // 1cm tolerance
+				if (fabs(curFloor - baseFloor) > eps || fabs(curCeil - baseCeil) > eps)
+					shouldReplicate = true;
+			}
+			if (shouldReplicate)
+				++sectorCount;
+		}
+	}
+	if (!HCDEAppendByte(output, outputCapacity, cursor, sectorCount))
+		return false;
+	if (primaryLevel != nullptr && sectorCount > 0u)
+	{
+		uint8_t emitted = 0u;
+		for (unsigned int sectorIndex = 0u; sectorIndex < primaryLevel->sectors.Size() && emitted < sectorCount; ++sectorIndex)
+		{
+			const sector_t& sector = primaryLevel->sectors[sectorIndex];
+			// Same replication predicate as above (active mover OR baseline drift).
+			bool shouldReplicate = HCDEWorldDeltaSectorIsReplicated(sector);
+			if (!shouldReplicate && primaryLevel != nullptr
+				&& primaryLevel->SectorBaselineFloor.Size() == primaryLevel->sectors.Size()
+				&& primaryLevel->SectorBaselineCeiling.Size() == primaryLevel->sectors.Size())
+			{
+				const double baseFloor = primaryLevel->SectorBaselineFloor[sectorIndex];
+				const double baseCeil = primaryLevel->SectorBaselineCeiling[sectorIndex];
+				const double curFloor = sector.CenterFloor();
+				const double curCeil = sector.CenterCeiling();
+				const double eps = 0.01;
+				if (fabs(curFloor - baseFloor) > eps || fabs(curCeil - baseCeil) > eps)
+					shouldReplicate = true;
+			}
+			if (!shouldReplicate)
+				continue;
+			uint8_t sectorFlags = 0u;
+			if (sector.floordata != nullptr)
+				sectorFlags |= HCDEServerWorldDeltaSectorHasFloor;
+			if (sector.ceilingdata != nullptr)
+				sectorFlags |= HCDEServerWorldDeltaSectorHasCeiling;
+			if (!HCDEAppendBE16(output, outputCapacity, cursor, uint16_t(sectorIndex))
+				|| !HCDEAppendByte(output, outputCapacity, cursor, sectorFlags)
+				|| !HCDEAppendFloat(output, outputCapacity, cursor, sector.CenterFloor())
+				|| !HCDEAppendFloat(output, outputCapacity, cursor, sector.CenterCeiling()))
+			{
+				return false;
+			}
+			++emitted;
+		}
 	}
 	++HCDELiveProfile.WorldDeltaPacketsBuilt;
 	HCDELiveProfile.WorldDeltaRecordsBuilt += playerCount;
@@ -923,6 +1002,67 @@ static void HCDEApplyPendingLocalHealthRepair()
 	PendingLocalHealthRepair.Valid = false;
 }
 
+static void HCDEApplyServerSectorPlane(sector_t& sector, int planeIndex, double serverZ)
+{
+	secplane_t& plane = planeIndex == sector_t::floor ? sector.floorplane : sector.ceilingplane;
+	const double localZ = planeIndex == sector_t::floor ? sector.CenterFloor() : sector.CenterCeiling();
+	const double deltaZ = serverZ - localZ;
+	if (fabs(deltaZ) <= 0.01)
+		return;
+	const double newD = plane.PointToDist(sector.centerspot, serverZ);
+	plane.setD(newD);
+	sector.ChangePlaneTexZ(planeIndex, deltaZ);
+}
+
+static bool HCDEApplyServerSectorDeltas(int clientNum, uint32_t serverTic, const uint8_t* body, size_t bodyBytes, size_t& cursor)
+{
+	uint8_t sectorCount = 0u;
+	if (!HCDEReadByteField(body, bodyBytes, cursor, sectorCount))
+		return false;
+	if (sectorCount == 0u)
+		return true;
+	if (primaryLevel == nullptr)
+		return false;
+	for (uint8_t i = 0u; i < sectorCount; ++i)
+	{
+		uint16_t sectorIndex = 0u;
+		uint8_t sectorFlags = 0u;
+		double floorZ = 0.0;
+		double ceilingZ = 0.0;
+		if (!HCDEReadBE16Field(body, bodyBytes, cursor, sectorIndex)
+			|| !HCDEReadByteField(body, bodyBytes, cursor, sectorFlags)
+			|| !HCDEReadFloatField(body, bodyBytes, cursor, floorZ)
+			|| !HCDEReadFloatField(body, bodyBytes, cursor, ceilingZ))
+		{
+			return false;
+		}
+		if ((sectorFlags & ~(HCDEServerWorldDeltaSectorHasFloor | HCDEServerWorldDeltaSectorHasCeiling)) != 0u
+			|| sectorIndex >= primaryLevel->sectors.Size())
+		{
+			return false;
+		}
+		sector_t& sector = primaryLevel->sectors[sectorIndex];
+		if (sector.floorplane.isSlope() || sector.ceilingplane.isSlope())
+			continue;
+		const double oldFloorZ = sector.CenterFloor();
+		const double oldCeilingZ = sector.CenterCeiling();
+		if ((sectorFlags & HCDEServerWorldDeltaSectorHasFloor) != 0u)
+			HCDEApplyServerSectorPlane(sector, sector_t::floor, floorZ);
+		if ((sectorFlags & HCDEServerWorldDeltaSectorHasCeiling) != 0u)
+			HCDEApplyServerSectorPlane(sector, sector_t::ceiling, ceilingZ);
+		const double newFloorZ = sector.CenterFloor();
+		const double newCeilingZ = sector.CenterCeiling();
+		if (fabs(newFloorZ - oldFloorZ) > 0.01 || fabs(newCeilingZ - oldCeilingZ) > 0.01)
+		{
+			DebugTrace::Markf("net.sector",
+				"HCDE sector plane apply client=%d tic=%u sector=%u flags=0x%x floor=%.1f->%.1f ceiling=%.1f->%.1f",
+				clientNum, unsigned(serverTic), unsigned(sectorIndex), unsigned(sectorFlags),
+				oldFloorZ, newFloorZ, oldCeilingZ, newCeilingZ);
+		}
+	}
+	return true;
+}
+
 static bool HCDEValidateServerWorldDeltas(int clientNum, const uint8_t* body, size_t bodyBytes, size_t& bodyCursor, uint8_t playerCount, uint64_t snapshotPlayers)
 {
 	if (bodyCursor > bodyBytes || bodyBytes - bodyCursor < HCDEServerWorldDeltaHeaderSize)
@@ -934,7 +1074,7 @@ static bool HCDEValidateServerWorldDeltas(int clientNum, const uint8_t* body, si
 	const uint8_t version = body[bodyCursor + HCDEServerWorldDeltaVersionOffset];
 	const uint8_t flags = body[bodyCursor + HCDEServerWorldDeltaFlagsOffset];
 	const uint8_t deltaCount = body[bodyCursor + HCDEServerWorldDeltaCountOffset];
-	if ((version != 1u && version != HCDEServerWorldDeltaProtocolVersion) || flags != 0u || playerCount > MAXPLAYERS || deltaCount > MAXPLAYERS)
+	if ((version != 1u && version != 2u && version != HCDEServerWorldDeltaProtocolVersion) || flags != 0u || playerCount > MAXPLAYERS || deltaCount > MAXPLAYERS)
 		return false;
 	const size_t deltaRecordSize = version >= 2u ? HCDEServerWorldDeltaRecordV2Size : HCDEServerWorldDeltaRecordV1Size;
 
@@ -1683,13 +1823,17 @@ static bool HCDEValidateServerWorldDeltas(int clientNum, const uint8_t* body, si
 		return false;
 	}
 
+	if (version >= 3u && !HCDEApplyServerSectorDeltas(clientNum, serverTic, body, bodyBytes, cursor))
+		return false;
+
+	const size_t consumedBytes = cursor - bodyCursor;
 	bodyCursor = cursor;
 	++HCDELiveProfile.WorldDeltaPacketsReceived;
 	HCDELiveProfile.WorldDeltaRecordsReceived += deltaCount;
-	HCDELiveProfile.WorldDeltaBytesReceived += size_t(deltaCount) * deltaRecordSize + HCDEServerWorldDeltaHeaderSize;
-	HCDERecordLiveLaneRx(HLANE_PLAYER_SNAPSHOT, clientNum, size_t(deltaCount) * deltaRecordSize + HCDEServerWorldDeltaHeaderSize);
+	HCDELiveProfile.WorldDeltaBytesReceived += consumedBytes;
+	HCDERecordLiveLaneRx(HLANE_PLAYER_SNAPSHOT, clientNum, consumedBytes);
 	DebugTrace::Markf("net", "HCDE server world delta recv tic=%u players=%u bytes=%zu",
-		serverTic, unsigned(deltaCount), size_t(deltaCount) * deltaRecordSize + HCDEServerWorldDeltaHeaderSize);
+		serverTic, unsigned(deltaCount), consumedBytes);
 	return true;
 }
 

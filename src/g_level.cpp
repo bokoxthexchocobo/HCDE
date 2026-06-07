@@ -1506,6 +1506,22 @@ void FLevelLocals::DoLoadLevel(const FString &nextmapname, int position, bool au
 
 	P_SetupLevel (this, position, newGame);
 
+	// Capture per-sector map-load baseline heights so the network layer can
+	// later detect sectors that have permanently diverged from their original
+	// resting heights (e.g. a door/lift that finished moving at a different
+	// height on client vs server). This allows the world-delta protocol to
+	// replicate such sectors even when they are not actively moving.
+	if (isPrimaryLevel())
+	{
+		SectorBaselineFloor.Resize(sectors.Size());
+		SectorBaselineCeiling.Resize(sectors.Size());
+		for (unsigned int si = 0; si < sectors.Size(); ++si)
+		{
+			SectorBaselineFloor[si] = sectors[si].CenterFloor();
+			SectorBaselineCeiling[si] = sectors[si].CenterCeiling();
+		}
+	}
+
 
 
 
