@@ -587,7 +587,13 @@ bool HCDERewind_TestLagCompBracket(int playerNum, const char* reason)
 		return false;
 	}
 
-	const int historicalIndex = FindNearestKeyframeIndex(viewTic);
+	// Use the at-or-before selector here, matching the comment on
+	// `FindNearestKeyframeAtOrBefore`: `FindNearestKeyframeIndex` is
+	// nearest-by-absolute-delta and can pick a frame *after* `viewTic` when
+	// capture intervals are sparse, which restores a future world for
+	// hitscan-style bracket tests. The two earlier hot-path callers were
+	// already migrated to the at-or-before helper for the same reason.
+	const int historicalIndex = FindNearestKeyframeAtOrBefore(viewTic);
 	if (historicalIndex < 0)
 	{
 		++gLagCompBracketFailures;

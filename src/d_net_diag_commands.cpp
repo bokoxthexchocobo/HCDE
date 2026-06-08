@@ -234,7 +234,13 @@ void Net_ReadMapLoadInfo(TArrayView<uint8_t>& stream)
 
 	if (ReadInt8(stream))
 	{
-		auto load = ReadString(stream);
+		// `ReadStringConst` returns a pointer into the stream buffer (no heap
+		// allocation). The previous `ReadString` path went through `copystring`
+		// (`new[]`) and the resulting raw pointer was leaked: `AppendRawArg`
+		// takes its `FString` argument by value (it copies the string), and
+		// the leak also fired on the early-out path where `-loadgame` was
+		// already present.
+		const char* const load = ReadStringConst(stream);
 		// Don't override the existing argument in case they need to use
 		// a custom savefile name.
 		if (!Args->CheckParm(FArg_loadgame))

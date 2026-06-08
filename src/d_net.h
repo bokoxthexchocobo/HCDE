@@ -348,7 +348,9 @@ bool HCDESeatLocalPlayerToAuthoritativeBase(player_t& player);
 
 extern usercmd_t			LocalCmds[LOCALCMDTICS];
 extern int					ClientTic;
-extern FClientNetState		ClientStates[MAXPLAYERS];
+// `ClientStates[]` is declared at the top of this header next to the
+// `FClientNetState` struct definition. The duplicate `extern` that lived
+// here was removed.
 
 class DObject;
 

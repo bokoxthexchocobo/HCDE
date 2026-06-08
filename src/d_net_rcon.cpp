@@ -177,10 +177,20 @@ bool HCDERconEnsureSocketRuntime()
 
 void HCDERconDisconnect(FHCDERconClient& client)
 {
+	// Only decrement when this slot was actually active. `HCDERconDisconnect`
+	// is also invoked over inactive slots during transport shutdown
+	// (`HCDERconStartListener` / `HCDERconStopListener` / `HCDERconSetBlocked`),
+	// where the surrounding code separately resets `ConnectionCount = 0`. The
+	// counter is incremented once per accepted client in
+	// `HCDERconPollListener`, so without this guard the per-disconnect path
+	// underflows and `rcon_status` reports a wildly inflated current count.
+	const bool wasActive = client.Socket != HCDE_RCON_INVALID_SOCKET;
 	HCDERconCloseSocket(client.Socket);
 	client.Authenticated = false;
 	client.Nonce = "";
 	client.BufferUsed = 0;
+	if (wasActive && RconTransport.ConnectionCount > 0)
+		--RconTransport.ConnectionCount;
 }
 
 bool HCDERconSendFrame(HCDERconSocket socket, const char* text)
