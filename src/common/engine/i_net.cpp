@@ -2114,8 +2114,13 @@ static bool TryProcessSetupConnectPacket(const sockaddr_in& from, bool hasPasswo
 	uint8_t* engineInfo = &NetBuffer[2];
 	if (NetBufferLength < 9u)
 	{
+		// Truncated PRE_CONNECT is a wire-protocol problem, not a credential
+		// failure. Reporting `PRE_WRONG_PASSWORD` here actively misleads
+		// operators trying to diagnose mismatched launchers / corrupted
+		// envelopes; switch to the protocol-error reason that the client
+		// surface ("HCDE service protocol negotiation") already covers.
 		DebugTrace::Markf("net", "malformed connect packet from %s (len=%zu)", inet_ntoa(from.sin_addr), NetBufferLength);
-		RejectConnection(from, PRE_WRONG_PASSWORD);
+		RejectConnection(from, PRE_PROTOCOL_ERROR);
 		return true;
 	}
 
@@ -2140,8 +2145,11 @@ static bool TryProcessSetupConnectPacket(const sockaddr_in& from, bool hasPasswo
 	}
 	if (2u + passwordOffset >= NetBufferLength)
 	{
+		// Out-of-range offset / unterminated password are wire-protocol
+		// failures, not credential mismatches; report them as such so the
+		// client UI surfaces the correct error.
 		DebugTrace::Markf("net", "malformed connect password from %s (offset=%zu len=%zu)", inet_ntoa(from.sin_addr), passwordOffset, NetBufferLength);
-		RejectConnection(from, PRE_WRONG_PASSWORD);
+		RejectConnection(from, PRE_PROTOCOL_ERROR);
 		return true;
 	}
 
@@ -2150,7 +2158,7 @@ static bool TryProcessSetupConnectPacket(const sockaddr_in& from, bool hasPasswo
 	if (!FindStringEnd(passwordStart, NetBufferLength, passwordEnd))
 	{
 		DebugTrace::Markf("net", "unterminated connect password from %s (offset=%zu len=%zu)", inet_ntoa(from.sin_addr), passwordOffset, NetBufferLength);
-		RejectConnection(from, PRE_WRONG_PASSWORD);
+		RejectConnection(from, PRE_PROTOCOL_ERROR);
 		return true;
 	}
 
