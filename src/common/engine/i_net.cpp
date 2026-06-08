@@ -3202,10 +3202,18 @@ static bool Host_CheckStartGameAcks(void* connected)
 static void SendAbort()
 {
 	NetBuffer[0] = NCMD_EXIT;
-	NetBufferLength = 1u;
 
 	if (consoleplayer == 0)
 	{
+		// Authority-side abort (host == authority pre-game). The receiver's
+		// `GetNetBufferSize()` returns `1 + I_IsHCDEServiceAuthoritySlot(sender)`
+		// for `NCMD_EXIT`, so an authority must always emit 2 bytes or the
+		// peer's `HGetPacket()` will treat the size as a mismatch and drop
+		// the packet -- leaving guests stuck waiting on a host that is
+		// actually tearing down. Mirror `D_QuitNetGame`'s authority path and
+		// include a (zero) next-authority placeholder.
+		NetBuffer[1] = 0u;
+		NetBufferLength = 2u;
 		for (int client = 1; client < MaxClients; ++client)
 		{
 			if (Connected[client].Status != CSTAT_NONE)
@@ -3214,6 +3222,8 @@ static void SendAbort()
 	}
 	else
 	{
+		// Guest abort: receiver is the authority, so it expects 1 byte.
+		NetBufferLength = 1u;
 		SendPacket(Connected[0].Address);
 	}
 }
