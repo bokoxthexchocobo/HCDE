@@ -370,6 +370,11 @@ static void HCDEPrintPregameProfile();
 
 static void HCDEPrintLiveLaneSummary()
 {
+	const EHCDEBandwidthMode active = HCDEResolveActiveBandwidthMode();
+	const char* configured = *sv_net_bandwidth;
+	Printf(PRINT_HIGH, "  bandwidth mode: configured=%s active=%s\n",
+		configured != nullptr && configured[0] != '\0' ? configured : "(empty)",
+		HCDEBandwidthModeName(active));
 	Printf(PRINT_HIGH, "  lanes:\n");
 	for (uint8_t lane = 0u; lane < HLANE_COUNT; ++lane)
 	{
@@ -674,10 +679,15 @@ static void HCDEPrintLiveProfile()
 	// HCDE roadmap #15: the `lod=%u/%u/%u` triplet (full/reduced/dormant) in this
 	// compact line, together with the multi-line "sim-lod" block below, makes a
 	// 200+ actor Simulation LOD soak observable via `net_stressreport`.
+	const EHCDEBandwidthMode activeBandwidthMode = HCDEResolveActiveBandwidthMode();
+	const char* configuredBandwidthMode = *sv_net_bandwidth;
 	DebugTrace::Infof("net",
-		"stress report mode=%s clients=%u world_avg_ms=%.3f world_max_ms=%.3f shared_active=%d invasion_active=%d player_snapshot_max=%llu player_snapshot_pressure=%llu local_repairs=%llu hard_repairs=%llu authority_records=%llu authority_deferred=%llu catchup_records=%llu baseline_repairs=%d delta_packets=%llu delta_records=%llu deferred=%llu queue_max=%llu projectile_eval=%llu projectile_skipped=%llu projectile_protected=%llu lod=%u/%u/%u pregame_packet_rx=%llu pregame_service_tx=%llu pregame_service_drops=%llu pregame_packet_errors=%llu",
+		"stress report mode=%s clients=%u bandwidth=%s active_bandwidth=%s actor_delta_budget=%zu world_avg_ms=%.3f world_max_ms=%.3f shared_active=%d invasion_active=%d player_snapshot_max=%llu player_snapshot_pressure=%llu local_repairs=%llu hard_repairs=%llu authority_records=%llu authority_deferred=%llu catchup_records=%llu baseline_repairs=%d delta_packets=%llu delta_records=%llu deferred=%llu queue_max=%llu projectile_eval=%llu projectile_skipped=%llu projectile_protected=%llu lod=%u/%u/%u pregame_packet_rx=%llu pregame_service_tx=%llu pregame_service_drops=%llu pregame_packet_errors=%llu",
 		Net_IsInvasionModeEnabled() ? "invasion" : (deathmatch ? "dm" : "coop"),
 		unsigned(NetworkClients.Size()),
+		configuredBandwidthMode != nullptr && configuredBandwidthMode[0] != '\0' ? configuredBandwidthMode : "(empty)",
+		HCDEBandwidthModeName(activeBandwidthMode),
+		HCDELiveLaneDefaultBudgetBytes(HLANE_ACTOR_DELTA),
 		avgWorldMS, maxWorldMS,
 		activeShared,
 		Net_GetInvasionActiveMonsterCount(),
@@ -1261,9 +1271,13 @@ CCMD(net_migration)
 
 CCMD(net_lanes)
 {
-	Printf(PRINT_HIGH, "HCDE live lanes: local role=%s room=%u gametic=%d\n",
+	const EHCDEBandwidthMode active = HCDEResolveActiveBandwidthMode();
+	const char* configured = *sv_net_bandwidth;
+	Printf(PRINT_HIGH, "HCDE live lanes: local role=%s room=%u gametic=%d bandwidth=%s active=%s\n",
 		I_IsLocalHCDEServiceAuthority() ? "authority" : "client",
-		unsigned(CurrentRoomID), gametic);
+		unsigned(CurrentRoomID), gametic,
+		configured != nullptr && configured[0] != '\0' ? configured : "(empty)",
+		HCDEBandwidthModeName(active));
 	HCDEPrintLiveLaneSummary();
 	for (auto pNum : NetworkClients)
 	{

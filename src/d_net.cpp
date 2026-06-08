@@ -334,6 +334,11 @@ CUSTOM_CVAR(Int, net_predict_softwarn_passive_storm, 5, CVAR_ARCHIVE | CVAR_GLOB
 // but live gameplay must use HCDE `HCIN`/`HCSN` once the session is in netgame.
 CVAR(Bool, net_hcde_native_only, true, CVAR_SERVERINFO | CVAR_NOSAVE);
 
+// `sv_net_bandwidth` and the bandwidth-mode helpers are defined together with
+// the lane-budget table later in the file (after the `EHCDEBandwidthMode`
+// enum and `HCDELaneBudgetTable[][]` are declared) so the cvar callback can
+// validate against the enum directly.
+
 // Tier 1: Smooth reconciliation error decay cvars
 // Master switch for smooth reconcile. When enabled, pose repairs accumulate
 // into a render-space error that decays gradually instead of snapping instantly.
@@ -613,13 +618,93 @@ constexpr uint16_t HCDEActorDeltaFieldAll =
 constexpr double HCDEActorDeltaPosScale = 16.0;
 constexpr double HCDEActorDeltaVelScale = 32.0;
 constexpr size_t HCDEInvasionSnapshotPayloadBudgetBytes = 1200u;
-constexpr size_t HCDELaneBudgetControlBytes = 96u;
-constexpr size_t HCDELaneBudgetCommandBytes = 4096u;
-constexpr size_t HCDELaneBudgetAuthorityBytes = 384u;
-constexpr size_t HCDELaneBudgetPlayerSnapshotBytes = 4096u;
-constexpr size_t HCDELaneBudgetActorDeltaBytes = 900u;
-constexpr size_t HCDELaneBudgetQueryRegistryBytes = 512u;
-constexpr size_t HCDELaneBudgetPresentationEchoBytes = 512u;
+
+// HCDE bandwidth profiles (sender-side per-snapshot lane budgets, in bytes).
+//
+// `light` matches the original constexpr values that were tuned for tight
+// localhost / competitive flow. `medium` and `heavy` raise the optional
+// content lanes (authority replay tail, actor delta, query/registry) to give
+// richer state replication on links with more headroom. The protected lanes
+// (control / command / player snapshot) and the diagnostic presentation echo
+// stay constant across modes so input pipeline and player-pawn snapshots
+// behave identically regardless of profile.
+//
+// Sums across all 7 lanes:
+//   light  = 10 596 B
+//   medium = 12 008 B
+//   heavy  = 13 720 B
+//
+// All three fit under the in-buffer logical cap (`MAX_MSGLEN` = 14 000) and
+// rely on the existing zlib compression path inside `SendPacket` to land on
+// the wire. Because the budget is only enforced on the sender (see
+// `HCDELiveLaneBudgetEnd` below), changing modes is a server-only decision
+// that does not require a protocol or capability bump.
+enum EHCDEBandwidthMode : uint8_t
+{
+	HCDE_BW_LIGHT = 0,
+	HCDE_BW_MEDIUM,
+	HCDE_BW_HEAVY,
+	HCDE_BW_COUNT,
+};
+
+static constexpr size_t HCDELaneBudgetTable[HCDE_BW_COUNT][HLANE_COUNT] = {
+	// HLANE_CONTROL, HLANE_COMMAND, HLANE_AUTHORITY, HLANE_PLAYER_SNAPSHOT,
+	// HLANE_ACTOR_DELTA, HLANE_QUERY_REGISTRY, HLANE_PRESENTATION_ECHO
+	{ 96u, 4096u,  384u, 4096u,  900u,  512u, 512u },	// light (default; preserves prior behavior)
+	{ 96u, 4096u,  640u, 4096u, 1800u,  768u, 512u },	// medium
+	{ 96u, 4096u,  896u, 4096u, 3000u, 1024u, 512u },	// heavy
+};
+
+static const char* const HCDE_BANDWIDTH_MODE_NAMES[HCDE_BW_COUNT] = {
+	"light",
+	"medium",
+	"heavy",
+};
+
+static bool HCDETryParseBandwidthMode(const char* text, EHCDEBandwidthMode& out)
+{
+	if (text == nullptr)
+		return false;
+	for (uint8_t i = 0u; i < HCDE_BW_COUNT; ++i)
+	{
+		if (stricmp(text, HCDE_BANDWIDTH_MODE_NAMES[i]) == 0)
+		{
+			out = EHCDEBandwidthMode(i);
+			return true;
+		}
+	}
+	return false;
+}
+
+static const char* HCDEBandwidthModeName(EHCDEBandwidthMode mode)
+{
+	const uint8_t i = uint8_t(mode);
+	return i < HCDE_BW_COUNT ? HCDE_BANDWIDTH_MODE_NAMES[i] : "unknown";
+}
+
+// HCDE bandwidth profile selector. Authority-side; clients see the value
+// reflected back via CVAR_SERVERINFO replication for diagnostics. Valid
+// values: "light" (default; matches previously hard-coded budgets), "medium",
+// "heavy". The string "auto" is reserved for the adaptive policy and is
+// accepted here but resolves to "light" until the auto policy is wired in.
+//
+// Setting the cvar takes effect immediately on the next snapshot encode --
+// no protocol bump and no client coordination required, because the lane
+// budgets only constrain the sender's per-snapshot byte budgets.
+//
+// `CVAR_NOSAVE` keeps the value out of the per-user config so a stale `auto`
+// from a previous session does not leak across builds while the policy is
+// still being tuned.
+CUSTOM_CVAR(String, sv_net_bandwidth, "light", CVAR_SERVERINFO | CVAR_NOSAVE)
+{
+	EHCDEBandwidthMode parsed = HCDE_BW_LIGHT;
+	if (stricmp(self, "auto") == 0)
+		return; // reserved for the adaptive policy; resolves to light for now.
+	if (HCDETryParseBandwidthMode(self, parsed))
+		return;
+	Printf("sv_net_bandwidth: unknown profile '%s'; expected light/medium/heavy/auto\n", *self);
+	self = "light";
+}
 constexpr int HCDEActorBaselineRepairWindowTics = TICRATE * 2;
 constexpr double HCDEInvasionMirrorVisualFallbackStepPerTic = 8.0;
 constexpr double HCDEInvasionMirrorVisualSpeedMultiplier = 1.10;
@@ -1796,27 +1881,27 @@ static void HCDERejectLiveGameplayForCapabilities(int client, EHCDELiveMessage t
 		static_cast<unsigned long long>(HCDELiveRequiredGameplayCapabilities()));
 }
 
+// Active bandwidth mode resolver. `sv_net_bandwidth` may legitimately hold
+// "auto" before the adaptive policy is wired in; until then we resolve it to
+// the same conservative default the previous hard-coded constants
+// represented (light). The resolver is intentionally cheap so per-snapshot
+// lane-budget reads stay branch-light.
+static EHCDEBandwidthMode HCDEResolveActiveBandwidthMode()
+{
+	EHCDEBandwidthMode mode = HCDE_BW_LIGHT;
+	const char* configured = *sv_net_bandwidth;
+	if (configured == nullptr || stricmp(configured, "auto") == 0)
+		return HCDE_BW_LIGHT;
+	if (HCDETryParseBandwidthMode(configured, mode))
+		return mode;
+	return HCDE_BW_LIGHT;
+}
+
 static size_t HCDELiveLaneDefaultBudgetBytes(uint8_t lane)
 {
-	switch (EHCDELiveLane(lane))
-	{
-	case HLANE_CONTROL:
-		return HCDELaneBudgetControlBytes;
-	case HLANE_COMMAND:
-		return HCDELaneBudgetCommandBytes;
-	case HLANE_AUTHORITY:
-		return HCDELaneBudgetAuthorityBytes;
-	case HLANE_PLAYER_SNAPSHOT:
-		return HCDELaneBudgetPlayerSnapshotBytes;
-	case HLANE_ACTOR_DELTA:
-		return HCDELaneBudgetActorDeltaBytes;
-	case HLANE_QUERY_REGISTRY:
-		return HCDELaneBudgetQueryRegistryBytes;
-	case HLANE_PRESENTATION_ECHO:
-		return HCDELaneBudgetPresentationEchoBytes;
-	default:
+	if (lane >= HLANE_COUNT)
 		return 0u;
-	}
+	return HCDELaneBudgetTable[HCDEResolveActiveBandwidthMode()][lane];
 }
 
 static size_t HCDELiveLaneBudgetBytes(int client, uint8_t lane)
