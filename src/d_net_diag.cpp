@@ -10,6 +10,7 @@
 #include "i_time.h"
 #include "d_event.h"
 #include "i_specialpaths.h"
+#include "m_crc32.h"
 
 #ifdef _WIN32
 #define WIN32_LEAN_AND_MEAN
@@ -17,6 +18,23 @@
 #endif
 
 EXTERN_CVAR(Int, net_echo_debug)
+
+static uint32_t Net_GetPspriteStateHash(FState* state)
+{
+	if (state == nullptr)
+		return 0u;
+
+	const FString stateName = FState::StaticGetStateName(state);
+	if (stateName.Len() == 0)
+		return 0u;
+
+	return CalcCRC32(reinterpret_cast<const uint8_t*>(stateName.GetChars()), unsigned(stateName.Len()));
+}
+
+static FString Net_GetPspriteStateName(FState* state)
+{
+	return state != nullptr ? FState::StaticGetStateName(state) : FString("None");
+}
 
 // Implement Net_LogPingSample
 void Net_LogPingSample(int clientNum, int leadTics, int leadMs, int rttMs, int ticDup, int extraTics, int delta)
@@ -28,7 +46,7 @@ void Net_LogPingSample(int clientNum, int leadTics, int leadMs, int rttMs, int t
 // Implement Net_CompareEchoToLocal
 void Net_CompareEchoToLocal(int clientNum, uint32_t serverTic, int playerNum,
 	uint32_t readyWeapName, uint32_t pendingWeapName,
-	uint32_t pspriteStateName, int16_t pspriteTics,
+	uint32_t pspriteStateHash, int16_t pspriteTics,
 	uint16_t weaponState, uint8_t playerState, int16_t viewHeight)
 {
 	if (playerNum < 0 || playerNum >= MAXPLAYERS)
@@ -47,8 +65,9 @@ void Net_CompareEchoToLocal(int clientNum, uint32_t serverTic, int playerNum,
 	else if (player.PendingWeapon == WP_NOCHANGE)
 		localPendingWeapName = 0xFFFFFFFF;
 
-	uint32_t localPspriteStateName = 0;
+	uint32_t localPspriteStateHash = 0;
 	int16_t localPspriteTics = 0;
+	FString localPspriteStateName("None");
 	if (player.psprites != nullptr)
 	{
 		DPSprite* sp = const_cast<player_t&>(player).psprites;
@@ -58,7 +77,8 @@ void Net_CompareEchoToLocal(int clientNum, uint32_t serverTic, int playerNum,
 		}
 		if (sp != nullptr && sp->GetState() != nullptr)
 		{
-			localPspriteStateName = FName(FState::StaticGetStateName(sp->GetState())).GetIndex();
+			localPspriteStateName = Net_GetPspriteStateName(sp->GetState());
+			localPspriteStateHash = Net_GetPspriteStateHash(sp->GetState());
 			localPspriteTics = sp->Tics;
 		}
 	}
@@ -85,13 +105,11 @@ void Net_CompareEchoToLocal(int clientNum, uint32_t serverTic, int playerNum,
 		DebugTrace::Warningf("net.desync", "[PENDING WEAPON DESYNC] player=%d server PendingWeapon=%s local PendingWeapon=%s tic=%u",
 			playerNum, sName, lName, serverTic);
 	}
-	if (localPspriteStateName != pspriteStateName || (pspriteStateName != 0 && localPspriteTics != pspriteTics))
+	if (localPspriteStateHash != pspriteStateHash || (pspriteStateHash != 0 && localPspriteTics != pspriteTics))
 	{
 		desync = true;
-		const char* sName = FName(ENamedName(pspriteStateName)).IsValidName() ? FName(ENamedName(pspriteStateName)).GetChars() : "None";
-		const char* lName = FName(ENamedName(localPspriteStateName)).IsValidName() ? FName(ENamedName(localPspriteStateName)).GetChars() : "None";
-		DebugTrace::Warningf("net.desync", "[PSPRITE STATE DESYNC] player=%d server state=%s (tics=%d) local state=%s (tics=%d) tic=%u",
-			playerNum, sName, pspriteTics, lName, localPspriteTics, serverTic);
+		DebugTrace::Warningf("net.desync", "[PSPRITE STATE DESYNC] player=%d server state-hash=0x%08x (tics=%d) local state=%s#0x%08x (tics=%d) tic=%u",
+			playerNum, pspriteStateHash, pspriteTics, localPspriteStateName.GetChars(), localPspriteStateHash, localPspriteTics, serverTic);
 	}
 	if (localWeaponState != weaponState)
 	{
@@ -142,7 +160,7 @@ bool HCDEAppendPresentationEcho(int client, uint8_t* output, size_t outputCapaci
 		else if (player.PendingWeapon == WP_NOCHANGE)
 			pendingWeapNameIndex = 0xFFFFFFFF; // sentinel for WP_NOCHANGE
 
-		uint32_t pspriteStateNameIndex = 0;
+		uint32_t pspriteStateHash = 0;
 		int16_t pspriteTics = 0;
 		if (player.psprites != nullptr)
 		{
@@ -153,7 +171,7 @@ bool HCDEAppendPresentationEcho(int client, uint8_t* output, size_t outputCapaci
 			}
 			if (sp != nullptr && sp->GetState() != nullptr)
 			{
-				pspriteStateNameIndex = FName(FState::StaticGetStateName(sp->GetState())).GetIndex();
+				pspriteStateHash = Net_GetPspriteStateHash(sp->GetState());
 				pspriteTics = sp->Tics;
 			}
 		}
@@ -165,7 +183,7 @@ bool HCDEAppendPresentationEcho(int client, uint8_t* output, size_t outputCapaci
 		if (!HCDEAppendByte(output, outputCapacity, cursor, playerNum)
 			|| !HCDEAppendBE32(output, outputCapacity, cursor, readyWeapNameIndex)
 			|| !HCDEAppendBE32(output, outputCapacity, cursor, pendingWeapNameIndex)
-			|| !HCDEAppendBE32(output, outputCapacity, cursor, pspriteStateNameIndex)
+			|| !HCDEAppendBE32(output, outputCapacity, cursor, pspriteStateHash)
 			|| !HCDEAppendBE16(output, outputCapacity, cursor, uint16_t(pspriteTics))
 			|| !HCDEAppendBE16(output, outputCapacity, cursor, weaponState)
 			|| !HCDEAppendByte(output, outputCapacity, cursor, playerState)
@@ -207,7 +225,7 @@ bool HCDEReadPresentationEcho(int clientNum, const uint8_t* body, size_t bodyByt
 		uint8_t playerNum = body[cursor++];
 		uint32_t readyWeapNameIndex = 0;
 		uint32_t pendingWeapNameIndex = 0;
-		uint32_t pspriteStateNameIndex = 0;
+		uint32_t pspriteStateHash = 0;
 		uint16_t pspriteTicsRaw = 0;
 		uint16_t weaponState = 0;
 		uint8_t playerState = 0;
@@ -215,7 +233,7 @@ bool HCDEReadPresentationEcho(int clientNum, const uint8_t* body, size_t bodyByt
 
 		if (!HCDEReadBE32Field(body, bodyBytes, cursor, readyWeapNameIndex)
 			|| !HCDEReadBE32Field(body, bodyBytes, cursor, pendingWeapNameIndex)
-			|| !HCDEReadBE32Field(body, bodyBytes, cursor, pspriteStateNameIndex)
+			|| !HCDEReadBE32Field(body, bodyBytes, cursor, pspriteStateHash)
 			|| !HCDEReadBE16Field(body, bodyBytes, cursor, pspriteTicsRaw)
 			|| !HCDEReadBE16Field(body, bodyBytes, cursor, weaponState)
 			|| !HCDEReadByteField(body, bodyBytes, cursor, playerState)
@@ -229,7 +247,7 @@ bool HCDEReadPresentationEcho(int clientNum, const uint8_t* body, size_t bodyByt
 
 		Net_CompareEchoToLocal(clientNum, serverTic, playerNum,
 			readyWeapNameIndex, pendingWeapNameIndex,
-			pspriteStateNameIndex, pspriteTics,
+			pspriteStateHash, pspriteTics,
 			weaponState, playerState, viewHeight);
 	}
 
@@ -255,8 +273,9 @@ CCMD(net_echo_dump)
 	else if (player.PendingWeapon == WP_NOCHANGE)
 		pendingWeapNameIndex = 0xFFFFFFFF;
 
-	uint32_t pspriteStateNameIndex = 0;
+	uint32_t pspriteStateHash = 0;
 	int16_t pspriteTics = 0;
+	FString pspriteStateName("None");
 	if (player.psprites != nullptr)
 	{
 		DPSprite* sp = const_cast<player_t&>(player).psprites;
@@ -266,26 +285,26 @@ CCMD(net_echo_dump)
 		}
 		if (sp != nullptr && sp->GetState() != nullptr)
 		{
-			pspriteStateNameIndex = FName(FState::StaticGetStateName(sp->GetState())).GetIndex();
+			pspriteStateName = Net_GetPspriteStateName(sp->GetState());
+			pspriteStateHash = Net_GetPspriteStateHash(sp->GetState());
 			pspriteTics = sp->Tics;
 		}
 	}
 
 	const char* readyName = FName(ENamedName(readyWeapNameIndex)).IsValidName() ? FName(ENamedName(readyWeapNameIndex)).GetChars() : "None";
 	const char* pendingName = (pendingWeapNameIndex == 0xFFFFFFFF) ? "WP_NOCHANGE" : (FName(ENamedName(pendingWeapNameIndex)).IsValidName() ? FName(ENamedName(pendingWeapNameIndex)).GetChars() : "None");
-	const char* pspStateName = FName(ENamedName(pspriteStateNameIndex)).IsValidName() ? FName(ENamedName(pspriteStateNameIndex)).GetChars() : "None";
 
 	Printf("Local Echo Dump (player=%d, gametic=%d, ClientTic=%d):\n"
 		"  ReadyWeapon: %s (0x%x)\n"
 		"  PendingWeapon: %s (0x%x)\n"
-		"  PSprite PSP_WEAPON state: %s (tics=%d, 0x%x)\n"
+		"  PSprite PSP_WEAPON state: %s (tics=%d, hash=0x%08x)\n"
 		"  WeaponState: 0x%04x\n"
 		"  playerstate: %d\n"
 		"  viewheight: %.2f\n",
 		consoleplayer, gametic, ClientTic,
 		readyName, readyWeapNameIndex,
 		pendingName, pendingWeapNameIndex,
-		pspStateName, pspriteTics, pspriteStateNameIndex,
+		pspriteStateName.GetChars(), pspriteTics, pspriteStateHash,
 		player.WeaponState,
 		player.playerstate,
 		player.viewheight);

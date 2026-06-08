@@ -1739,7 +1739,9 @@ void P_PlayerThink (player_t *player)
 	if (player->playerstate == PST_LIVE)
 		player->LastSafePos.Update(*player->mo);
 
-	++player->BobTimer;
+	const bool predicting = (player->cheats & CF_PREDICTING) != 0;
+	if (!predicting)
+		++player->BobTimer;
 
 	// Bots do not think in freeze mode.
 	if (player->mo->Level->isFrozen() && player->Bot != nullptr)
@@ -1747,7 +1749,7 @@ void P_PlayerThink (player_t *player)
 		return;
 	}
 
-	if (debugfile && !(player->cheats & CF_PREDICTING))
+	if (debugfile && !predicting)
 	{
 		fprintf (debugfile, "tic %d for pl %d: (%f, %f, %f, %f) b:%02x p:%d y:%d f:%d s:%d u:%d\n",
 			gametic, (int)(player-players), player->mo->X(), player->mo->Y(), player->mo->Z(),
@@ -1773,10 +1775,13 @@ void P_PlayerThink (player_t *player)
 		VMCall(func, &param, 1, nullptr, 0);
 	}
 
-	if (BobType == PSPB_2D)
-		P_BobWeapon(player);
-	else if (BobType == PSPB_3D)
-		P_BobWeapon3D(player);
+	if (!predicting)
+	{
+		if (BobType == PSPB_2D)
+			P_BobWeapon(player);
+		else if (BobType == PSPB_3D)
+			P_BobWeapon3D(player);
+	}
 
 	// Moved this to directly after player thinking to get more accurate velocity values. Also takes
 	// 3D vs 2D movement into account now.
