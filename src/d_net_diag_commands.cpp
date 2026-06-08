@@ -1269,6 +1269,51 @@ CCMD(net_migration)
 	}
 }
 
+CCMD(net_bandwidth)
+{
+	const EHCDEBandwidthMode active = HCDEResolveActiveBandwidthMode();
+	const char* configured = *sv_net_bandwidth;
+	const bool isAuto = configured != nullptr && stricmp(configured, "auto") == 0;
+	Printf(PRINT_HIGH, "HCDE bandwidth profile: configured=%s active=%s authority=%d\n",
+		configured != nullptr && configured[0] != '\0' ? configured : "(empty)",
+		HCDEBandwidthModeName(active),
+		I_IsLocalHCDEServiceAuthority() ? 1 : 0);
+	Printf(PRINT_HIGH, "  per-lane budget under active profile:\n");
+	for (uint8_t lane = 0u; lane < HLANE_COUNT; ++lane)
+	{
+		Printf(PRINT_HIGH, "    %s = %zu bytes\n",
+			HCDELiveLaneName(lane), HCDELiveLaneDefaultBudgetBytes(lane));
+	}
+	if (isAuto)
+	{
+		Printf(PRINT_HIGH,
+			"  auto policy: clamps/sec=%.2f deferred/sec=%.2f max-remote-rtt=%dms peers=%d player-cap=%s\n",
+			HCDEBandwidthAuto.LastClampsPerSec,
+			HCDEBandwidthAuto.LastDeferredPerSec,
+			HCDEBandwidthAuto.LastMaxRTTms,
+			HCDEBandwidthAuto.LastPlayerCount,
+			HCDEBandwidthModeName(HCDEBandwidthAuto.LastPlayerCountCap));
+		const uint64_t nowMS = I_msTime();
+		const uint64_t sinceChangeMS = HCDEBandwidthAuto.LastChangeMS != 0u && nowMS >= HCDEBandwidthAuto.LastChangeMS
+			? nowMS - HCDEBandwidthAuto.LastChangeMS : 0u;
+		Printf(PRINT_HIGH,
+			"  auto thresholds: demote-clamps/sec=%.2f demote-deferred/sec=%.2f demote-rtt=%dms promote-rtt=%dms promote-window=%ds cooldown=%ds since-change=%llums\n",
+			float(*sv_net_bandwidth_demote_clamps),
+			float(*sv_net_bandwidth_demote_deferred),
+			int(*sv_net_bandwidth_demote_rtt_ms),
+			int(*sv_net_bandwidth_promote_rtt_ms),
+			int(*sv_net_bandwidth_promote_window_sec),
+			int(*sv_net_bandwidth_cooldown_sec),
+			static_cast<unsigned long long>(sinceChangeMS));
+		Printf(PRINT_HIGH, "  last decision: %s\n",
+			HCDEBandwidthAuto.LastReason[0] != '\0' ? HCDEBandwidthAuto.LastReason : "(none yet)");
+	}
+	else
+	{
+		Printf(PRINT_HIGH, "  auto policy: disabled (cvar pinned to '%s')\n", configured);
+	}
+}
+
 CCMD(net_lanes)
 {
 	const EHCDEBandwidthMode active = HCDEResolveActiveBandwidthMode();
