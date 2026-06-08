@@ -992,7 +992,13 @@ static bool SendLauncherInfo(const sockaddr_in& to, const uint8_t* request, int 
 
 static bool WriteSessionToken(size_t offset, uint32_t token)
 {
-	if (offset + 4u > MaxTransmitSize)
+	// Buffer-overflow check: the session token is written into `NetBuffer`,
+	// whose capacity is `MAX_MSGLEN`, not `MaxTransmitSize` (the wire-side
+	// transmit cap, which is smaller). Wire-size enforcement happens in
+	// `SendPacket`. Using the wrong ceiling here would have rejected valid
+	// in-buffer writes on any future packet layout that grows past
+	// `MaxTransmitSize` before compression/transmission.
+	if (offset + 4u > MAX_MSGLEN)
 		return false;
 
 	WriteBE32(&NetBuffer[offset], token);
