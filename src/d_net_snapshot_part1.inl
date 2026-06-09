@@ -21,6 +21,8 @@ static bool HCDEWorldDeltaSectorIsReplicated(const sector_t& sector)
 		&& !sector.ceilingplane.isSlope();
 }
 
+static int HCDEGetPlayerBasicArmorAmount(const AActor* mo);
+
 static bool HCDEAppendServerWorldDeltas(int client, uint8_t* output, size_t outputCapacity, size_t& cursor, const uint8_t* playerNums, size_t playerCount)
 {
 	if (playerCount > MAXPLAYERS || playerCount > UINT8_MAX)
@@ -345,7 +347,7 @@ static int HCDEGetPlayerBasicArmorAmount(const AActor* mo)
 {
 	if (mo == nullptr)
 		return 0;
-	AActor* armor = mo->FindInventory(NAME_BasicArmor, true);
+	AActor* armor = const_cast<AActor*>(mo)->FindInventory(NAME_BasicArmor, true);
 	return armor != nullptr ? max<int>(0, armor->IntVar(NAME_Amount)) : 0;
 }
 

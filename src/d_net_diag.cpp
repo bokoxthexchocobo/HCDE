@@ -285,7 +285,7 @@ static void HCDEWriteHexenArmorSlots(const AActor* item, uint16_t outSlots[5])
 		outSlots[i] = 0u;
 	if (item == nullptr || !item->IsKindOf(NAME_HexenArmor))
 		return;
-	double* slots = (double*)item->ScriptVar(NAME_Slots, nullptr);
+	double* slots = (double*)const_cast<AActor*>(item)->ScriptVar(NAME_Slots, nullptr);
 	if (slots == nullptr)
 		return;
 	for (int i = 0; i < 5; ++i)
