@@ -98,30 +98,30 @@ jobs:
           install -m 0644 fm_banks/gs-by-papiezak-and-sneakernets.wopn "$root/opt/hcde-server/fm_banks/"
 
           cat > "$root/usr/bin/hcdeserv" <<'EOF'
-#!/bin/sh
-cd /opt/hcde-server
-exec ./hcdeserv "$@"
-EOF
+          #!/bin/sh
+          cd /opt/hcde-server
+          exec ./hcdeserv "$@"
+          EOF
           chmod 0755 "$root/usr/bin/hcdeserv"
 
           cat > "$root/usr/bin/hcdemaster" <<'EOF'
-#!/bin/sh
-cd /opt/hcde-server
-exec ./hcdemaster "$@"
-EOF
+          #!/bin/sh
+          cd /opt/hcde-server
+          exec ./hcdemaster "$@"
+          EOF
           chmod 0755 "$root/usr/bin/hcdemaster"
 
           cat > debian/control <<'EOF'
-Source: hcdeserv
-Section: games
-Priority: optional
-Maintainer: HCDE Maintainers <noreply@example.invalid>
-Standards-Version: 4.6.2
-Package: hcdeserv
-Architecture: amd64
-Description: HCDE dedicated server
- Dedicated server runtime and data files for HCDE.
-EOF
+          Source: hcdeserv
+          Section: games
+          Priority: optional
+          Maintainer: HCDE Maintainers <noreply@example.invalid>
+          Standards-Version: 4.6.2
+          Package: hcdeserv
+          Architecture: amd64
+          Description: HCDE dedicated server
+           Dedicated server runtime and data files for HCDE.
+          EOF
 
           deps="$(dpkg-shlibdeps -O \
             -e"$root/opt/hcde-server/hcdeserv" \
@@ -133,17 +133,17 @@ EOF
 
           installed_size="$(du -sk "$root" | awk '{print $1}')"
           cat > "$root/DEBIAN/control" <<EOF
-Package: $package
-Version: $deb_version
-Section: games
-Priority: optional
-Architecture: amd64
-Maintainer: HCDE Maintainers <noreply@example.invalid>
-Depends: $deps
-Installed-Size: $installed_size
-Description: HCDE dedicated server
- Dedicated server runtime and data files for HCDE.
-EOF
+          Package: $package
+          Version: $deb_version
+          Section: games
+          Priority: optional
+          Architecture: amd64
+          Maintainer: HCDE Maintainers <noreply@example.invalid>
+          Depends: $deps
+          Installed-Size: $installed_size
+          Description: HCDE dedicated server
+           Dedicated server runtime and data files for HCDE.
+          EOF
 
           fakeroot dpkg-deb --build "$root" "$outdir/${package}_${deb_version}_amd64.deb"
           dpkg-deb --info "$outdir/${package}_${deb_version}_amd64.deb"
