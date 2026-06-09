@@ -2357,6 +2357,7 @@ static void RemoveClientConnection(int client, const char* reason = nullptr)
 {
 	I_NetClientDisconnected(client, reason);
 	players[client].settings_controller = false;
+	Net_ClearRuntimeClientJoinState(client);
 	I_ClearClient(client);
 	NetworkClients -= client;
 	if (reason != nullptr && reason[0] != '\0')

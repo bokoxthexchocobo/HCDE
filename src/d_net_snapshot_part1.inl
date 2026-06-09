@@ -4762,6 +4762,17 @@ static void HCDEClearActorBaselineRepair(int clientNum, const char* reason)
 	HCDEAuthorityEventReplayNextId[clientNum] = 0u;
 }
 
+static bool Net_ShouldSeedAuthorityEventReplay(int clientNum)
+{
+	if (!HCDELivePeerHasCapability(clientNum, HCDELiveCapAuthorityEventsV1))
+		return false;
+	if (HCDEFirstRecentAuthorityEventId() == 0u)
+		return false;
+	if (Net_IsInvasionModeEnabled())
+		return true;
+	return Net_ShouldRecordCoopMapSpawnIndex();
+}
+
 static void HCDEBeginActorBaselineRepair(int clientNum, const char* reason)
 {
 	if (clientNum < 0 || clientNum >= MAXPLAYERS)
@@ -4772,7 +4783,9 @@ static void HCDEBeginActorBaselineRepair(int clientNum, const char* reason)
 	HCDEActorDeltaV2SendCursor[clientNum] = 0u;
 	HCDEActorBaselineRepairUntilTic[clientNum] = max<int>(HCDEActorBaselineRepairUntilTic[clientNum],
 		gametic + HCDEActorBaselineRepairWindowTics);
-	HCDEAuthorityEventReplayNextId[clientNum] = HCDEFirstRecentAuthorityEventId();
+	HCDEAuthorityEventReplayNextId[clientNum] = Net_ShouldSeedAuthorityEventReplay(clientNum)
+		? HCDEFirstRecentAuthorityEventId()
+		: 0u;
 	++HCDELiveProfile.ActorBaselineRepairWindows;
 	++HCDELiveProfile.ActorBaselineRepairResets;
 	++HCDELivePeers[clientNum].ActorBaselineRepairWindows;
@@ -5124,11 +5137,14 @@ static bool HCDEAppendAuthorityEvents(int clientNum, uint8_t* output, size_t out
 			nextCatchupId = nextEventIdAfter(i);
 	}
 
-	if (catchupActive && count > 0u)
+	if (catchupActive)
 	{
 		HCDEAuthorityEventReplayNextId[clientNum] = nextCatchupId;
-		HCDELiveProfile.AuthorityEventCatchupRecordsBuilt += count;
-		HCDELivePeers[clientNum].AuthorityEventCatchupRecords += count;
+		if (count > 0u)
+		{
+			HCDELiveProfile.AuthorityEventCatchupRecordsBuilt += count;
+			HCDELivePeers[clientNum].AuthorityEventCatchupRecords += count;
+		}
 		if (nextCatchupId == 0u)
 		{
 			++HCDELiveProfile.AuthorityEventCatchupWindowsCompleted;
@@ -6285,6 +6301,19 @@ static bool HCDEAppendSharedActorDeltasV2(int clientNum, uint8_t* output, size_t
 		static_cast<unsigned long long>(skippedUnchanged),
 		static_cast<unsigned long long>(deferredBudget));
 	return true;
+}
+
+static bool Net_IsLateJoinSyncPending(int client);
+
+static bool Net_ShouldSendCoopAuthorityEventReplay(int clientNum)
+{
+	if (Net_IsInvasionModeEnabled() || !Net_ShouldRecordCoopMapSpawnIndex())
+		return false;
+	if (!HCDELivePeerHasCapability(clientNum, HCDELiveCapAuthorityEventsV1))
+		return false;
+	if (!Net_IsLateJoinSyncPending(clientNum) && !HCDEActorBaselineRepairActive(clientNum))
+		return false;
+	return HCDEFirstRecentAuthorityEventId() != 0u;
 }
 
 static bool HCDEAppendCoopDeadSpawns(int clientNum, uint8_t* output, size_t outputCapacity, size_t& cursor)

@@ -260,6 +260,7 @@ void Net_SetWaiting();
 bool Net_LocalCanControlSettings();
 void Net_ClearBuffers();
 void Net_ResetClientState(int client);
+void Net_ClearRuntimeClientJoinState(int clientNum);
 bool Net_IsWaiting();
 double Net_ModifyFrac(double ticFrac);
 double Net_ModifyObjectFrac(DObject* obj, double ticFrac);

@@ -144,7 +144,8 @@ static bool HCDEBuildNativeServerSnapshotPayload(int client, uint8_t controlFlag
 	if (!HCDEAppendServerWorldDeltas(client, output, outputCapacity, bodyCursor, worldDeltaPlayers, worldDeltaPlayerCount))
 		return fail("server-snapshot-world-delta-build");
 	// Body chunk order must match HCDEApplyNativeServerSnapshotPayload: world,
-	// actor/invasion, coop-dead-spawns (co-op), presentation echo, checksum.
+	// actor/invasion, coop-dead-spawns (co-op), coop authority-event replay,
+	// presentation echo, checksum.
 	// Echo before actor breaks apply
 	// when clients negotiate actor-delta-v2.
 	if (!Net_IsInvasionModeEnabled()
@@ -157,6 +158,13 @@ static bool HCDEBuildNativeServerSnapshotPayload(int client, uint8_t controlFlag
 		&& !HCDEAppendCoopDeadSpawns(client, output, outputCapacity, bodyCursor))
 	{
 		return fail("server-snapshot-coop-dead-spawns-build");
+	}
+	if (!Net_IsInvasionModeEnabled()
+		&& Net_ShouldSendCoopAuthorityEventReplay(client)
+		&& !HCDEAppendAuthorityEvents(client, output,
+			HCDELiveLaneBudgetEnd(client, HLANE_AUTHORITY, bodyCursor, outputCapacity), bodyCursor))
+	{
+		return fail("server-snapshot-coop-authority-events-build");
 	}
 	if (Net_IsInvasionModeEnabled()
 		&& !HCDEAppendInvasionSnapshot(client, output, outputCapacity, bodyCursor))
@@ -296,6 +304,7 @@ static bool HCDEBuildNativeClientInputPayload(int client, uint8_t controlFlags, 
 
 static bool Net_IsLateJoinSyncPending(int client);
 static void Net_ClearLateJoinSyncPending(int client, const char* reason);
+static bool Net_ShouldSeedAuthorityEventReplay(int clientNum);
 static void Net_ResetAuthorityWaitWatchdog(const char* reason, bool trace);
 static void Net_EnsureRuntimeClientSlot(int client, int sourceClient);
 static void DisconnectClient(int clientNum);
@@ -371,6 +380,11 @@ static void HCDEApplyGameplayHeader(int clientNum, uint8_t controlFlags, uint8_t
 		const int targetCon = LateJoinSyncTargetConsistency[clientNum];
 		const bool seqReady = targetSeq < 0 || clientState.SequenceAck >= targetSeq;
 		const bool conReady = targetCon < 0 || int(consistencyAck) >= targetCon;
+		if (HCDEAuthorityEventReplayNextId[clientNum] != 0u
+			&& !Net_ShouldSeedAuthorityEventReplay(clientNum))
+		{
+			HCDEAuthorityEventReplayNextId[clientNum] = 0u;
+		}
 		const bool authorityReplayReady = HCDEAuthorityEventReplayNextId[clientNum] == 0u;
 
 		if (!seqReady)
@@ -392,6 +406,13 @@ static void HCDEApplyGameplayHeader(int clientNum, uint8_t controlFlags, uint8_t
 		{
 			players[clientNum].waiting = false;
 			Net_ClearLateJoinSyncPending(clientNum, "acks-caught-up-gameplay");
+		}
+		else if (seqReady && conReady && !authorityReplayReady
+			&& gametic % TICRATE == 0)
+		{
+			DebugTrace::Markf("net", "late-join sync waiting client=%d seq=%d/%d con=%d/%d auth-replay-next=%u room=%u",
+				clientNum, clientState.SequenceAck, targetSeq, int(consistencyAck), targetCon,
+				unsigned(HCDEAuthorityEventReplayNextId[clientNum]), unsigned(CurrentRoomID));
 		}
 	}
 	if (!I_IsLocalHCDEServiceAuthority() && I_IsHCDEServiceAuthoritySlot(clientNum))
@@ -945,6 +966,13 @@ static bool HCDETryApplyNativeServerSnapshotPayload(int clientNum, const uint8_t
 	{
 		if (!HCDEApplyCoopDeadSpawns(clientNum, body, bodyBytes, bodyCursor))
 			return fail("server-snapshot-coop-dead-spawns-invalid");
+	}
+	if (bodyCursor < bodyBytes
+		&& bodyBytes - bodyCursor >= HCDEAuthorityEventsHeaderSize
+		&& memcmp(&body[bodyCursor + HCDEAuthorityEventsMagicOffset], HCDEAuthorityEventsMagic, sizeof(HCDEAuthorityEventsMagic)) == 0)
+	{
+		if (!HCDEApplyAuthorityEvents(clientNum, body, bodyBytes, bodyCursor))
+			return fail("server-snapshot-authority-events-invalid");
 	}
 	if (expectInvasionSnapshot
 		&& !HCDEApplyInvasionSnapshot(clientNum, body, bodyBytes, bodyCursor))

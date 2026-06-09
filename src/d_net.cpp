@@ -5056,12 +5056,14 @@ static void ClientConnecting(int client)
 	const int currentSequence = max<int>(ClientTic / max<int>(TicDup, 1), 0);
 	const int currentConsistency = max<int>(CurrentConsistency, 0);
 	const int replayWindow = max<int>(MAXSENDTICS / 2, 1);
-	if (Net_IsLateJoinSyncPending(client))
+	if (Net_IsLateJoinSyncPending(client) && state.SequenceAck >= 0)
 	{
 		// Keep replay pressure active while this client is still catching up.
 		state.Flags |= CF_RETRANSMIT;
 		return;
 	}
+	if (Net_IsLateJoinSyncPending(client))
+		Net_ClearRuntimeClientJoinState(client);
 
 	// Stage 2 late-join sync: seed a bounded replay window and hold this client
 	// in a non-gating warmup state until first live gameplay packets arrive.
@@ -5125,8 +5127,27 @@ static void Net_EnsureRuntimeClientSlot(int client, int sourceClient)
 	}
 }
 
+void Net_ClearRuntimeClientJoinState(int clientNum)
+{
+	if (clientNum < 0 || clientNum >= MAXPLAYERS)
+		return;
+
+	if ((LateJoinSyncPending & ((uint64_t)1u << clientNum)) != 0u)
+	{
+		DebugTrace::Markf("net", "runtime join state cleared client=%d room=%u gametic=%d",
+			clientNum, unsigned(CurrentRoomID), gametic);
+	}
+	LateJoinSyncPending &= ~((uint64_t)1u << clientNum);
+	LateJoinSyncTargetSequence[clientNum] = -1;
+	LateJoinSyncTargetConsistency[clientNum] = -1;
+	LateJoinSyncStartTic[clientNum] = -1;
+	players[clientNum].waiting = false;
+	HCDEClearActorBaselineRepair(clientNum, "runtime-join-reset");
+}
+
 void Net_ResetClientState(int clientNum)
 {
+	Net_ClearRuntimeClientJoinState(clientNum);
 	auto& state = ClientStates[clientNum];
 	state.CurrentLatency = 0u;
 	state.bNewLatency = true;
@@ -5160,7 +5181,6 @@ void Net_ResetClientState(int clientNum)
 
 	HCDELivePeers[clientNum].Clear();
 	Net_ResetHCDEReplicatedActorBaseline(clientNum);
-	HCDEClearActorBaselineRepair(clientNum, "reset-client-state");
 }
 
 static void DisconnectClient(int clientNum)
