@@ -11,6 +11,8 @@
 #include "d_event.h"
 #include "i_specialpaths.h"
 
+#include <climits>
+
 #ifdef _WIN32
 #define WIN32_LEAN_AND_MEAN
 #include <windows.h>
@@ -45,6 +47,11 @@ static bool HCDEReadEchoString(const uint8_t* data, size_t dataSize, size_t& cur
 		return false;
 	if (len == 0u)
 		return true;
+	// The writer (HCDEAppendEchoString) always clamps strings to 255 bytes, so
+	// a larger length is a malformed/forged field. Reject it instead of letting
+	// it drive a multi-kilobyte FString allocation per snapshot.
+	if (len > 255u)
+		return false;
 	if (cursor > dataSize || dataSize - cursor < len)
 		return false;
 	out = FString(reinterpret_cast<const char*>(&data[cursor]), len);
@@ -307,7 +314,10 @@ static void Net_ReconcileLocalInventory(int invForPlayer, const TArray<HCDERepli
 	for (unsigned i = 0u; i < items.Size(); ++i)
 	{
 		PClassActor* cls = PClass::FindActor(FName(items[i].ClassName.GetChars(), true));
-		if (cls == nullptr)
+		// Only ever materialise Inventory-derived classes. The writer only emits
+		// weapons/ammo/armor, but a forged echo could name an arbitrary actor
+		// class; GiveInventoryType on a non-inventory class is undefined intent.
+		if (cls == nullptr || !cls->IsDescendantOf(NAME_Inventory))
 			continue;
 		if (mo->FindInventory(cls, true) == nullptr)
 			mo->GiveInventoryType(cls);
@@ -317,11 +327,16 @@ static void Net_ReconcileLocalInventory(int invForPlayer, const TArray<HCDERepli
 	for (unsigned i = 0u; i < items.Size(); ++i)
 	{
 		PClassActor* cls = PClass::FindActor(FName(items[i].ClassName.GetChars(), true));
-		if (cls == nullptr)
+		if (cls == nullptr || !cls->IsDescendantOf(NAME_Inventory))
 			continue;
 		AActor* inv = mo->FindInventory(cls, true);
 		if (inv != nullptr)
-			inv->IntVar(NAME_Amount) = int(items[i].Amount);
+		{
+			// Amount is a uint32 on the wire; values above INT_MAX would wrap to a
+			// negative count and corrupt the HUD/ammo logic. Clamp into int range.
+			const uint32_t raw = items[i].Amount;
+			inv->IntVar(NAME_Amount) = raw > uint32_t(INT_MAX) ? INT_MAX : int(raw);
+		}
 	}
 }
 
@@ -488,8 +503,15 @@ bool HCDEReadPresentationEcho(int clientNum, const uint8_t* body, size_t bodyByt
 		uint16_t itemCount = 0u;
 		if (!HCDEReadBE16Field(body, bodyBytes, cursor, itemCount))
 			return false;
+		// Each item is at least flags(1) + amount(4) + string length(2) = 7 bytes
+		// (an empty class-name string body is the minimum). Reject an itemCount
+		// the remaining body cannot possibly satisfy BEFORE allocating, so a
+		// 2-byte count field cannot force a ~64K-element allocation per packet.
+		const size_t kMinBytesPerItem = 7u;
+		if (cursor > bodyBytes || itemCount > (bodyBytes - cursor) / kMinBytesPerItem)
+			return false;
 		TArray<HCDEReplicatedInvItem> invItems;
-		invItems.Reserve(itemCount);
+		invItems.Resize(itemCount);
 		for (uint16_t i = 0u; i < itemCount; ++i)
 		{
 			uint8_t flags = 0u;

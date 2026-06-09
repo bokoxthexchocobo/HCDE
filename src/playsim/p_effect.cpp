@@ -713,7 +713,11 @@ void P_DrawRailTrail(AActor *source, TArray<SPortalHit> &portalhits, int color1,
 		length += seg.length;
 
 		auto player = source->Level->GetConsolePlayer();
-		AActor *mo = player != nullptr ? player->camera : nullptr;
+		AActor *mo = nullptr;
+		if (player != nullptr)
+		{
+			mo = player->camera;
+		}
 		if (mo != nullptr && seg.length > 0)
 		{
 			// Only consider sound in 2D (for now, anyway)
@@ -740,7 +744,11 @@ void P_DrawRailTrail(AActor *source, TArray<SPortalHit> &portalhits, int color1,
 		if (!(flags & RAF_SILENT))
 		{
 			auto player = source->Level->GetConsolePlayer();
-			AActor *mo = player != nullptr ? player->camera : nullptr;
+			AActor *mo = nullptr;
+			if (player != nullptr)
+			{
+				mo = player->camera;
+			}
 			if (mo != nullptr)
 			{
 				FSoundID sound;

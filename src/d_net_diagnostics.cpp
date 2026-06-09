@@ -37,6 +37,8 @@
 #include <climits>
 #include <cstdint>
 
+FString I_DetectOS();
+
 EXTERN_CVAR(Bool, debugtrace_enable)
 EXTERN_CVAR(Bool, debugtrace_stream)
 EXTERN_CVAR(Int, net_predict_debug)
