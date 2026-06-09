@@ -56,8 +56,9 @@ def main():
 
 	client_cmd = [
 		args.client, "-iwad", args.iwad,
-		"-connect", "127.0.0.1:5029",
-		"+set", "cl_name", "latejoin_probe",
+		"-join", "127.0.0.1:5029",
+		"-dedicatedjoin",
+		"+name", "latejoin_probe",
 	]
 
 	print("[probe] launching client for late-join sequence...")

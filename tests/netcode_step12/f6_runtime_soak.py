@@ -142,7 +142,7 @@ def main(argv: list[str]) -> int:
     parser.add_argument("--duration", type=float, default=30.0)
     parser.add_argument("--label", required=True)
     parser.add_argument("--trace-dir", required=True, type=Path)
-    parser.add_argument("--gametype", type=int, default=0, help="0=coop, 1=dm, 2=invasion")
+    parser.add_argument("--gametype", type=int, default=0, help="0=coop, 1=dm, 4=invasion")
     parser.add_argument("--map", default="MAP01")
     parser.add_argument("--server-cvar", action="append", default=[],
                         help="CVAR assignment to send after server warmup, e.g. 'net_extratic 1'")
