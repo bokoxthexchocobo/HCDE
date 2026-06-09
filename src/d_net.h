@@ -168,6 +168,7 @@ void NetUpdate(int tics);
 
 EXTERN_CVAR(Int, net_echo_debug)
 EXTERN_CVAR(Int, net_self_test_run_client)
+EXTERN_CVAR(Int, net_invasion_latejoin_replay_test)
 
 void HCDERecordLiveLaneTx(uint8_t lane, int client, size_t bytes);
 void HCDERecordLiveLaneRx(uint8_t lane, int client, size_t bytes);

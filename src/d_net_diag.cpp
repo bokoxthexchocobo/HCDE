@@ -295,6 +295,34 @@ static void HCDEWriteHexenArmorSlots(const AActor* item, uint16_t outSlots[5])
 	}
 }
 
+static bool Net_ShouldReplicateInventoryItem(const AActor* item)
+{
+	if (item == nullptr)
+		return false;
+	return item->IsKindOf(NAME_Weapon)
+		|| item->IsKindOf(NAME_Ammo)
+		|| item->IsKindOf(NAME_Armor)
+		|| item->IsKindOf(NAME_Key)
+		|| item->IsKindOf(NAME_Powerup)
+		|| item->IsKindOf(NAME_CustomInventory);
+}
+
+static uint8_t Net_ReplicatedInventoryItemFlags(const AActor* item)
+{
+	uint8_t flags = 0u;
+	if (item->IsKindOf(NAME_Weapon))
+		flags |= 0x01u;
+	if (item->IsKindOf(NAME_Armor))
+		flags |= 0x02u;
+	if (item->IsKindOf(NAME_Key))
+		flags |= 0x04u;
+	if (item->IsKindOf(NAME_Powerup))
+		flags |= 0x08u;
+	if (item->IsKindOf(NAME_CustomInventory))
+		flags |= 0x10u;
+	return flags;
+}
+
 static void HCDEApplyReplicatedArmorState(AActor* inv, const HCDEReplicatedInvItem& item)
 {
 	if (inv == nullptr || !item.IsArmor)
@@ -416,7 +444,7 @@ bool HCDEAppendPresentationEcho(int client, uint8_t* output, size_t outputCapaci
 			uint16_t itemCount = 0u;
 			for (AActor* item = invMo->Inventory; item != nullptr && itemCount < 255u; item = item->Inventory)
 			{
-				if (item->IsKindOf(NAME_Weapon) || item->IsKindOf(NAME_Ammo) || item->IsKindOf(NAME_Armor))
+				if (Net_ShouldReplicateInventoryItem(item))
 					++itemCount;
 			}
 			if (!HCDEAppendBE16(output, outputCapacity, cursor, itemCount))
@@ -424,11 +452,10 @@ bool HCDEAppendPresentationEcho(int client, uint8_t* output, size_t outputCapaci
 			uint16_t emitted = 0u;
 			for (AActor* item = invMo->Inventory; item != nullptr && emitted < itemCount; item = item->Inventory)
 			{
-				const bool isWeapon = item->IsKindOf(NAME_Weapon);
-				const bool isArmor = item->IsKindOf(NAME_Armor);
-				if (!isWeapon && !isArmor && !item->IsKindOf(NAME_Ammo))
+				if (!Net_ShouldReplicateInventoryItem(item))
 					continue;
-				const uint8_t flags = (isWeapon ? 0x01u : 0x00u) | (isArmor ? 0x02u : 0x00u);
+				const bool isArmor = item->IsKindOf(NAME_Armor);
+				const uint8_t flags = Net_ReplicatedInventoryItemFlags(item);
 				const uint32_t amount = uint32_t(max<int>(0, item->IntVar(NAME_Amount)));
 				uint16_t hexenSlots[5] = {};
 				if (isArmor)

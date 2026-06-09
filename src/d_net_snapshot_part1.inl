@@ -4512,6 +4512,25 @@ static FHCDEReplicatedActorRef* Net_RegisterHCDEReplicatedActorBaseline(uint32_t
 static bool Net_CoopIsProjectileRef(const FHCDEReplicatedActorRef& ref);
 static void Net_RecordCoopProjectileDespawnEvent(const FHCDEReplicatedActorRef& ref, AActor* actor, int serverHealth);
 
+static void Net_TryRecordCoopMonsterDeath(const FHCDEReplicatedActorRef& ref);
+static void Net_ApplyCoopDeadMapSpawnIndex(int32_t spawnIndex);
+
+static void Net_TryRecordCoopMonsterDeath(const FHCDEReplicatedActorRef& ref)
+{
+	if (!I_IsLocalHCDEServiceAuthority() || !Net_ShouldRecordCoopMapSpawnIndex())
+		return;
+	if (ref.Source != HREP_SOURCE_COOP || ref.Category != HREP_ACTOR_MONSTER || ref.CoopMapSpawnIndex < 0)
+		return;
+
+	const int32_t spawnIndex = ref.CoopMapSpawnIndex;
+	for (int32_t existing : HCDECoopDeadMapSpawnIndices)
+	{
+		if (existing == spawnIndex)
+			return;
+	}
+	HCDECoopDeadMapSpawnIndices.Push(spawnIndex);
+}
+
 static void Net_RetireHCDEReplicatedActor(uint32_t id)
 {
 	if (auto ref = Net_FindHCDEReplicatedActor(id); ref != nullptr)
@@ -4524,6 +4543,8 @@ static void Net_RetireHCDEReplicatedActor(uint32_t id)
 		{
 			Net_RecordCoopProjectileDespawnEvent(*ref, actor, actor->health);
 		}
+		if (I_IsLocalHCDEServiceAuthority())
+			Net_TryRecordCoopMonsterDeath(*ref);
 		Net_SetHCDEReplicatedActorPtr(*ref, nullptr);
 		ref->Active = false;
 		ref->Retired = true;
@@ -4649,6 +4670,8 @@ static int Net_CompactHCDEReplicatedActors()
 		const bool idDefect = ref.Id == 0u;
 		if (idDefect || retireExpired || (staleActor && !ref.Retired && !liveRemoteBaseline))
 		{
+			if (staleActor && !ref.Retired && !liveRemoteBaseline)
+				Net_TryRecordCoopMonsterDeath(ref);
 			if (idDefect) ++defectIdZero;
 			if (retireExpired) ++retiredExpiredCount;
 			++removed;
@@ -6113,6 +6136,8 @@ static bool HCDEAppendSharedActorDeltasV2(int clientNum, uint8_t* output, size_t
 		const uint32_t actorYaw = actor->Angles.Yaw.BAMs();
 		const uint32_t actorPitch = actor->Angles.Pitch.BAMs();
 		const int32_t spawnIndex = sharedRef.CoopMapSpawnIndex;
+		if (actorHealth <= 0 && spawnIndex >= 0 && sharedRef.Category == HREP_ACTOR_MONSTER)
+			Net_TryRecordCoopMonsterDeath(sharedRef);
 		const bool forceFull = baselineRepair
 			|| !sent.BaselineValid
 			|| sent.ClassId != sharedRef.ClassId
@@ -6259,6 +6284,76 @@ static bool HCDEAppendSharedActorDeltasV2(int clientNum, uint8_t* output, size_t
 		static_cast<unsigned long long>(partialSent),
 		static_cast<unsigned long long>(skippedUnchanged),
 		static_cast<unsigned long long>(deferredBudget));
+	return true;
+}
+
+static bool HCDEAppendCoopDeadSpawns(int clientNum, uint8_t* output, size_t outputCapacity, size_t& cursor)
+{
+	if (!I_IsLocalHCDEServiceAuthority() || !Net_ShouldRecordCoopMapSpawnIndex())
+		return true;
+	if (HCDECoopDeadMapSpawnIndices.Size() == 0u)
+		return true;
+
+	const size_t startCursor = cursor;
+	const size_t deadCount = HCDECoopDeadMapSpawnIndices.Size();
+	const uint8_t count = uint8_t(min<size_t>(deadCount, UINT8_MAX));
+	if (cursor > outputCapacity || outputCapacity - cursor < HCDECoopDeadSpawnsHeaderSize + size_t(count) * 4u)
+		return false;
+
+	if (!HCDEAppendBytes(output, outputCapacity, cursor, HCDECoopDeadSpawnsMagic, sizeof(HCDECoopDeadSpawnsMagic))
+		|| !HCDEAppendByte(output, outputCapacity, cursor, HCDECoopDeadSpawnsProtocolVersion)
+		|| !HCDEAppendByte(output, outputCapacity, cursor, 0u)
+		|| !HCDEAppendByte(output, outputCapacity, cursor, count)
+		|| !HCDEAppendByte(output, outputCapacity, cursor, 0u))
+	{
+		cursor = startCursor;
+		return false;
+	}
+
+	for (uint8_t i = 0u; i < count; ++i)
+	{
+		if (!HCDEAppendBE32(output, outputCapacity, cursor, uint32_t(HCDECoopDeadMapSpawnIndices[i])))
+		{
+			cursor = startCursor;
+			return false;
+		}
+	}
+
+	DebugTrace::Markf("net", "HCDE coop dead spawns send client=%d count=%u bytes=%zu",
+		clientNum, unsigned(count), cursor - startCursor);
+	return true;
+}
+
+static bool HCDEApplyCoopDeadSpawns(int clientNum, const uint8_t* body, size_t bodyBytes, size_t& bodyCursor)
+{
+	if (I_IsLocalHCDEServiceAuthority())
+		return true;
+	if (bodyCursor > bodyBytes || bodyBytes - bodyCursor < HCDECoopDeadSpawnsHeaderSize)
+		return false;
+	if (memcmp(&body[bodyCursor + HCDECoopDeadSpawnsMagicOffset], HCDECoopDeadSpawnsMagic, sizeof(HCDECoopDeadSpawnsMagic)) != 0)
+		return false;
+
+	const size_t startCursor = bodyCursor;
+	const uint8_t version = body[bodyCursor + HCDECoopDeadSpawnsVersionOffset];
+	const uint8_t count = body[bodyCursor + HCDECoopDeadSpawnsCountOffset];
+	if (version != HCDECoopDeadSpawnsProtocolVersion)
+		return false;
+
+	size_t cursor = bodyCursor + HCDECoopDeadSpawnsHeaderSize;
+	if (cursor > bodyBytes || bodyBytes - cursor < size_t(count) * 4u)
+		return false;
+
+	for (uint8_t i = 0u; i < count; ++i)
+	{
+		uint32_t spawnIndexRaw = 0u;
+		if (!HCDEReadBE32Field(body, bodyBytes, cursor, spawnIndexRaw))
+			return false;
+		Net_ApplyCoopDeadMapSpawnIndex(int32_t(spawnIndexRaw));
+	}
+
+	bodyCursor = cursor;
+	DebugTrace::Markf("net", "HCDE coop dead spawns apply client=%d count=%u bytes=%zu",
+		clientNum, unsigned(count), bodyCursor - startCursor);
 	return true;
 }
 
@@ -6793,6 +6888,7 @@ void Net_BeginCoopMapSpawnRegistration(FLevelLocals* level)
 	HCDECoopMapSpawnIndexLevel = level;
 	HCDECoopMapSpawnIndex.Clear();
 	HCDECoopMapSpawnActorByIndex.Clear();
+	HCDECoopDeadMapSpawnIndices.Clear();
 	// Drop any prior-map co-op NetID tables so recycled actor pointers cannot
 	// inherit stale spawn-index bindings after a map change.
 	if (Net_ShouldRecordCoopMapSpawnIndex())
@@ -6856,6 +6952,36 @@ static AActor* Net_FindCoopMapSpawnActorByIndex(int32_t index)
 	if (const TObjPtr<AActor*>* found = HCDECoopMapSpawnActorByIndex.CheckKey(index))
 		return found->Get();
 	return nullptr;
+}
+
+static void Net_ApplyCoopDeadMapSpawnIndex(int32_t spawnIndex)
+{
+	if (I_IsLocalHCDEServiceAuthority() || spawnIndex < 0)
+		return;
+
+	AActor* actor = Net_FindCoopMapSpawnActorByIndex(spawnIndex);
+	if (actor == nullptr || (actor->ObjectFlags & OF_EuthanizeMe) != 0)
+		return;
+
+	if (net_coop_id_debug)
+	{
+		Printf("[COOP DEAD SPAWN] spawn-index=%d class=%s\n",
+			int(spawnIndex),
+			actor->GetClass() != nullptr ? actor->GetClass()->TypeName.GetChars() : "<unknown>");
+	}
+
+	if (actor->health > 0 && (actor->flags & MF_CORPSE) == 0)
+	{
+		actor->health = 0;
+		Net_PrepareInvasionMirrorCorpsePhysics(actor, false);
+		actor->CallDie(nullptr, nullptr);
+	}
+
+	if (Net_IsInvasionActorCorpseLike(actor) && (actor->ObjectFlags & OF_EuthanizeMe) == 0)
+	{
+		actor->ClearCounters();
+		actor->Destroy();
+	}
 }
 
 static void Net_SetCoopAuthorityVisualOnly(uint32_t id, AActor* actor)

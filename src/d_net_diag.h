@@ -32,10 +32,13 @@ constexpr uint8_t HCDEPresentationEchoMagic[4] = { 'E', 'C', 'H', 'O' };
 // (BasicArmor entries carry zero slots). Amount alone is useless for HexenArmor
 // because AC lives in Slots[], not Inventory.Amount.
 //
+// v7 also mirrors keys, powerups, and custom inventory (Hexen artifacts, etc.)
+// so late joiners inherit the authority's full carried loadout.
+//
 // The local-inventory block is always sent so weapons/ammo/armor reconcile even
 // when net_echo_debug is off; only the per-player weapon/psprite diagnostic
 // records are gated behind net_echo_debug.
-constexpr uint8_t HCDEPresentationEchoProtocolVersion = 6u;
+constexpr uint8_t HCDEPresentationEchoProtocolVersion = 7u;
 
 // Forward declarations
 struct player_t;

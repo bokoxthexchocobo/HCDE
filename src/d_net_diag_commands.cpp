@@ -1502,6 +1502,30 @@ CCMD(net_invasion_missing_classes)
 // Prints the pattern for the next 10 waves under the current
 // `sv_invasionbosswaveevery` setting so soak runs can confirm the modulo
 // logic matches the documented "every Nth wave" contract.
+CCMD(net_invasion_latejoin_replay_test)
+{
+	const bool enabled = *net_invasion_latejoin_replay_test != 0;
+	Printf(PRINT_HIGH, "net_invasion_latejoin_replay_test=%d\n", enabled ? 1 : 0);
+	if (!Net_IsInvasionModeEnabled())
+	{
+		Printf(PRINT_HIGH, "Invasion mode is not active; start with +sv_gametype 4.\n");
+		return;
+	}
+
+	unsigned spawnEvents = 0u;
+	for (const auto& event : HCDERecentAuthorityEvents)
+	{
+		if (event.EventType == HCDEAuthorityEventSpawn)
+			++spawnEvents;
+	}
+
+	Printf(PRINT_HIGH,
+		"InvasionPendingSpawnEvents replay probe pending=%u authority-events=%zu spawn-events=%u\n",
+		unsigned(InvasionPendingSpawnEvents.Size()),
+		HCDERecentAuthorityEvents.Size(),
+		spawnEvents);
+}
+
 CCMD(net_invasion_bosswave_test)
 {
 	const int every = max<int>(*sv_invasionbosswaveevery, 0);

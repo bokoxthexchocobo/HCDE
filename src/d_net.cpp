@@ -246,6 +246,13 @@ CUSTOM_CVAR(Int, net_self_test_run_client, 0, CVAR_ARCHIVE | CVAR_GLOBALCONFIG)
 	else if (self > 1)
 		self = 1;
 }
+CUSTOM_CVAR(Int, net_invasion_latejoin_replay_test, 0, CVAR_ARCHIVE | CVAR_GLOBALCONFIG)
+{
+	if (self < 0)
+		self = 0;
+	else if (self > 1)
+		self = 1;
+}
 // HCDE: How many tics the local input/render side should run AHEAD of the
 // server-confirmed gametic on a non-authority netgame client. The world tic
 // gate inside TryRunTics holds back world simulation until ClientTic leads
@@ -580,8 +587,8 @@ constexpr uint8_t HCDEInvasionSnapshotMagic[4] = { 'H', 'C', 'I', 'V' };
 constexpr uint8_t HCDEInvasionSnapshotFlagBossWave = 1u << 0;
 constexpr uint8_t HCDEInvasionSnapshotSpawnFlagUsingFallback = 1u << 0;
 constexpr size_t HCDEAuthorityEventReplayLimit = 64u;
-constexpr size_t HCDEAuthorityEventHistoryLimit = 128u;
-constexpr size_t HCDEInvasionSpawnEventHistoryLimit = 128u;
+constexpr size_t HCDEAuthorityEventHistoryLimit = 512u;
+constexpr size_t HCDEInvasionSpawnEventHistoryLimit = 512u;
 constexpr size_t HCDEAuthorityEventActorDeltaReserveBytes = 900u;
 constexpr uint8_t HCDEInvasionActorActionNone = 0u;
 constexpr uint8_t HCDEInvasionActorActionSpawn = 1u;
@@ -609,6 +616,14 @@ constexpr uint16_t HCDEActorDeltaFieldPos = 1u << 4;
 constexpr uint16_t HCDEActorDeltaFieldVel = 1u << 5;
 constexpr uint16_t HCDEActorDeltaFieldAngles = 1u << 6;
 constexpr uint16_t HCDEActorDeltaFieldCoopSpawnIndex = 1u << 7;
+constexpr size_t HCDECoopDeadSpawnsMagicOffset = 0u;
+constexpr size_t HCDECoopDeadSpawnsVersionOffset = 4u;
+constexpr size_t HCDECoopDeadSpawnsFlagsOffset = 5u;
+constexpr size_t HCDECoopDeadSpawnsCountOffset = 6u;
+constexpr size_t HCDECoopDeadSpawnsReservedOffset = 7u;
+constexpr size_t HCDECoopDeadSpawnsHeaderSize = 8u;
+constexpr uint8_t HCDECoopDeadSpawnsProtocolVersion = 1u;
+constexpr uint8_t HCDECoopDeadSpawnsMagic[4] = { 'H', 'C', 'D', 'S' };
 constexpr uint16_t HCDEActorDeltaFieldAll =
 	HCDEActorDeltaFieldCategory
 	| HCDEActorDeltaFieldFlags
@@ -1341,6 +1356,7 @@ static FLevelLocals* InvasionRegisteredSpawnSpotLevel = nullptr;
 static TMap<const AActor*, int32_t> HCDECoopMapSpawnIndex = {};
 static TMap<int32_t, TObjPtr<AActor*>> HCDECoopMapSpawnActorByIndex = {};
 static FLevelLocals* HCDECoopMapSpawnIndexLevel = nullptr;
+static TArray<int32_t> HCDECoopDeadMapSpawnIndices = {};
 // Retained HCAV facts are replayed to late joiners and repair windows; keep the log bounded.
 static TArray<FHCDEAuthorityEvent> HCDERecentAuthorityEvents = {};
 static TArray<FHCDEAuthorityEvent> InvasionPendingSpawnEvents = {};
@@ -5064,6 +5080,21 @@ static void ClientConnecting(int client)
 	}
 
 	Net_SetLateJoinSyncPending(client, max<int>(currentSequence - 1, 0), max<int>(currentConsistency - 1, 0), "runtime-connect");
+	if (*net_invasion_latejoin_replay_test != 0 && Net_IsInvasionModeEnabled())
+	{
+		unsigned spawnEvents = 0u;
+		for (const auto& event : HCDERecentAuthorityEvents)
+		{
+			if (event.EventType == HCDEAuthorityEventSpawn)
+				++spawnEvents;
+		}
+		Printf(PRINT_HIGH,
+			"InvasionPendingSpawnEvents replay client=%d pending=%u authority-events=%zu spawn-events=%u\n",
+			client,
+			unsigned(InvasionPendingSpawnEvents.Size()),
+			HCDERecentAuthorityEvents.Size(),
+			spawnEvents);
+	}
 	if (!players[client].waiting)
 	{
 		players[client].waiting = true;
