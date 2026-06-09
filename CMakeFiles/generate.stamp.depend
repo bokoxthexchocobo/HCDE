@@ -1,0 +1,56 @@
+# CMake generation dependency list for this directory.
+C:/Program Files/CMake/share/cmake-4.3/Modules/CMakeCInformation.cmake
+C:/Program Files/CMake/share/cmake-4.3/Modules/CMakeCXXInformation.cmake
+C:/Program Files/CMake/share/cmake-4.3/Modules/CMakeCommonLanguageInclude.cmake
+C:/Program Files/CMake/share/cmake-4.3/Modules/CMakeGenericSystem.cmake
+C:/Program Files/CMake/share/cmake-4.3/Modules/CMakeInitializeConfigs.cmake
+C:/Program Files/CMake/share/cmake-4.3/Modules/CMakeLanguageInformation.cmake
+C:/Program Files/CMake/share/cmake-4.3/Modules/CMakeRCInformation.cmake
+C:/Program Files/CMake/share/cmake-4.3/Modules/CMakeSystemSpecificInformation.cmake
+C:/Program Files/CMake/share/cmake-4.3/Modules/CMakeSystemSpecificInitialize.cmake
+C:/Program Files/CMake/share/cmake-4.3/Modules/CheckCSourceCompiles.cmake
+C:/Program Files/CMake/share/cmake-4.3/Modules/CheckFunctionExists.cmake
+C:/Program Files/CMake/share/cmake-4.3/Modules/CheckIPOSupported.cmake
+C:/Program Files/CMake/share/cmake-4.3/Modules/CheckIPOSupported/CMakeLists-C.txt.in
+C:/Program Files/CMake/share/cmake-4.3/Modules/CheckIPOSupported/CMakeLists-CXX.txt.in
+C:/Program Files/CMake/share/cmake-4.3/Modules/CheckIPOSupported/foo.c
+C:/Program Files/CMake/share/cmake-4.3/Modules/CheckIPOSupported/foo.cpp
+C:/Program Files/CMake/share/cmake-4.3/Modules/CheckIPOSupported/main.c
+C:/Program Files/CMake/share/cmake-4.3/Modules/CheckIPOSupported/main.cpp
+C:/Program Files/CMake/share/cmake-4.3/Modules/CheckIncludeFile.cmake
+C:/Program Files/CMake/share/cmake-4.3/Modules/CheckLibraryExists.cmake
+C:/Program Files/CMake/share/cmake-4.3/Modules/Compiler/CMakeCommonCompilerMacros.cmake
+C:/Program Files/CMake/share/cmake-4.3/Modules/Compiler/MSVC-C.cmake
+C:/Program Files/CMake/share/cmake-4.3/Modules/Compiler/MSVC-CXX.cmake
+C:/Program Files/CMake/share/cmake-4.3/Modules/Compiler/MSVC.cmake
+C:/Program Files/CMake/share/cmake-4.3/Modules/FindBZip2.cmake
+C:/Program Files/CMake/share/cmake-4.3/Modules/FindPackageHandleStandardArgs.cmake
+C:/Program Files/CMake/share/cmake-4.3/Modules/FindPackageMessage.cmake
+C:/Program Files/CMake/share/cmake-4.3/Modules/FindPython/Support.cmake
+C:/Program Files/CMake/share/cmake-4.3/Modules/FindPython3.cmake
+C:/Program Files/CMake/share/cmake-4.3/Modules/FindThreads.cmake
+C:/Program Files/CMake/share/cmake-4.3/Modules/Internal/CMakeCLinkerInformation.cmake
+C:/Program Files/CMake/share/cmake-4.3/Modules/Internal/CMakeCXXLinkerInformation.cmake
+C:/Program Files/CMake/share/cmake-4.3/Modules/Internal/CMakeCommonLinkerInformation.cmake
+C:/Program Files/CMake/share/cmake-4.3/Modules/Internal/CheckSourceCompiles.cmake
+C:/Program Files/CMake/share/cmake-4.3/Modules/Linker/MSVC-C.cmake
+C:/Program Files/CMake/share/cmake-4.3/Modules/Linker/MSVC-CXX.cmake
+C:/Program Files/CMake/share/cmake-4.3/Modules/Linker/MSVC.cmake
+C:/Program Files/CMake/share/cmake-4.3/Modules/Platform/Linker/Windows-MSVC-C.cmake
+C:/Program Files/CMake/share/cmake-4.3/Modules/Platform/Linker/Windows-MSVC-CXX.cmake
+C:/Program Files/CMake/share/cmake-4.3/Modules/Platform/Linker/Windows-MSVC.cmake
+C:/Program Files/CMake/share/cmake-4.3/Modules/Platform/Windows-Initialize.cmake
+C:/Program Files/CMake/share/cmake-4.3/Modules/Platform/Windows-MSVC-C.cmake
+C:/Program Files/CMake/share/cmake-4.3/Modules/Platform/Windows-MSVC-CXX.cmake
+C:/Program Files/CMake/share/cmake-4.3/Modules/Platform/Windows-MSVC.cmake
+C:/Program Files/CMake/share/cmake-4.3/Modules/Platform/Windows.cmake
+C:/Program Files/CMake/share/cmake-4.3/Modules/Platform/WindowsPaths.cmake
+C:/Program Files/CMake/share/cmake-4.3/Modules/SelectLibraryConfigurations.cmake
+C:/Users/user/DoomConnector6/HCDE/CMakeFiles/4.3.2/CMakeCCompiler.cmake
+C:/Users/user/DoomConnector6/HCDE/CMakeFiles/4.3.2/CMakeCXXCompiler.cmake
+C:/Users/user/DoomConnector6/HCDE/CMakeFiles/4.3.2/CMakeRCCompiler.cmake
+C:/Users/user/DoomConnector6/HCDE/CMakeFiles/4.3.2/CMakeSystem.cmake
+C:/Users/user/DoomConnector6/HCDE/CMakeLists.txt
+C:/Users/user/DoomConnector6/HCDE/arch.c
+C:/Users/user/DoomConnector6/HCDE/cmake/FindVPX.cmake
+C:/Users/user/DoomConnector6/HCDE/cmake/TargetArch.cmake

@@ -1,0 +1,436 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="17.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <PreferredToolArchitecture>x64</PreferredToolArchitecture>
+  </PropertyGroup>
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="MinSizeRel|x64">
+      <Configuration>MinSizeRel</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="RelWithDebInfo|x64">
+      <Configuration>RelWithDebInfo</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{A8F3926E-42D5-3003-B813-F9882CFFCCF3}</ProjectGuid>
+    <Keyword>Win32Proj</Keyword>
+    <WindowsTargetPlatformVersion>10.0.26100.0</WindowsTargetPlatformVersion>
+    <Platform>x64</Platform>
+    <ProjectName>dumb</ProjectName>
+    <VCProjectUpgraderObjectName>NoUpgrade</VCProjectUpgraderObjectName>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>v143</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>v143</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>v143</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>v143</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>10.0.20506.1</_ProjectFileVersion>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">dumb.dir\Debug\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">dumb.dir\Debug\</IntDir>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">dumb</TargetName>
+    <TargetExt Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">.lib</TargetExt>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">dumb.dir\Release\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">dumb.dir\Release\</IntDir>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">dumb</TargetName>
+    <TargetExt Condition="'$(Configuration)|$(Platform)'=='Release|x64'">.lib</TargetExt>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">dumb.dir\MinSizeRel\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">dumb.dir\MinSizeRel\</IntDir>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">dumb</TargetName>
+    <TargetExt Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">.lib</TargetExt>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">dumb.dir\RelWithDebInfo\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">dumb.dir\RelWithDebInfo\</IntDir>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">dumb</TargetName>
+    <TargetExt Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">.lib</TargetExt>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\dumb\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalOptions>%(AdditionalOptions) /utf-8</AdditionalOptions>
+      <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
+      <BasicRuntimeChecks>Default</BasicRuntimeChecks>
+      <BufferSecurityCheck>false</BufferSecurityCheck>
+      <CallingConvention></CallingConvention>
+      <ConformanceMode>true</ConformanceMode>
+      <DisableSpecificWarnings>4996</DisableSpecificWarnings>
+      <ExceptionHandling>
+      </ExceptionHandling>
+      <FloatingPointModel></FloatingPointModel>
+      <ForceConformanceInForLoopScope></ForceConformanceInForLoopScope>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <MinimalRebuild></MinimalRebuild>
+      <OmitFramePointers>true</OmitFramePointers>
+      <Optimization>MaxSpeed</Optimization>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <RemoveUnreferencedCodeData></RemoveUnreferencedCodeData>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+      <RuntimeTypeInfo>false</RuntimeTypeInfo>
+      <StringPooling>true</StringPooling>
+      <SupportJustMyCode></SupportJustMyCode>
+      <TreatWChar_tAsBuiltInType></TreatWChar_tAsBuiltInType>
+      <UseFullPaths>false</UseFullPaths>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_WINDOWS;HAVE_VULKAN;HAVE_GLES2;UNICODE;_UNICODE;_WIN32_WINNT=0x0600;_CRT_SECURE_NO_DEPRECATE;_CRT_SECURE_NO_WARNINGS;_CRT_NONSTDC_NO_WARNINGS;NDEBUG;_CRTDBG_MAP_ALLOC;CMAKE_INTDIR="Debug"</PreprocessorDefinitions>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+      <DebugInformationFormat>
+      </DebugInformationFormat>
+      <ScanSourceForModuleDependencies>false</ScanSourceForModuleDependencies>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_DEBUG;_WINDOWS;HAVE_VULKAN;HAVE_GLES2;UNICODE;_UNICODE;_WIN32_WINNT=0x0600;_CRT_SECURE_NO_DEPRECATE;_CRT_SECURE_NO_WARNINGS;_CRT_NONSTDC_NO_WARNINGS;NDEBUG;_CRTDBG_MAP_ALLOC;CMAKE_INTDIR=\"Debug\"</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\dumb\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Midl>
+      <AdditionalIncludeDirectories>C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\dumb\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+    <Lib>
+      <AdditionalOptions>%(AdditionalOptions) /machine:x64</AdditionalOptions>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\dumb\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalOptions>%(AdditionalOptions) /utf-8</AdditionalOptions>
+      <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
+      <BasicRuntimeChecks>Default</BasicRuntimeChecks>
+      <BufferSecurityCheck>false</BufferSecurityCheck>
+      <CallingConvention></CallingConvention>
+      <ConformanceMode>true</ConformanceMode>
+      <DisableSpecificWarnings>4996</DisableSpecificWarnings>
+      <ExceptionHandling>
+      </ExceptionHandling>
+      <FloatingPointModel></FloatingPointModel>
+      <ForceConformanceInForLoopScope></ForceConformanceInForLoopScope>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <MinimalRebuild></MinimalRebuild>
+      <OmitFramePointers>true</OmitFramePointers>
+      <Optimization>MaxSpeed</Optimization>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <RemoveUnreferencedCodeData></RemoveUnreferencedCodeData>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <RuntimeTypeInfo>false</RuntimeTypeInfo>
+      <StringPooling>true</StringPooling>
+      <SupportJustMyCode></SupportJustMyCode>
+      <TreatWChar_tAsBuiltInType></TreatWChar_tAsBuiltInType>
+      <UseFullPaths>false</UseFullPaths>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_WINDOWS;HAVE_VULKAN;HAVE_GLES2;UNICODE;_UNICODE;_WIN32_WINNT=0x0600;_CRT_SECURE_NO_DEPRECATE;_CRT_SECURE_NO_WARNINGS;_CRT_NONSTDC_NO_WARNINGS;NDEBUG;CMAKE_INTDIR="Release"</PreprocessorDefinitions>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+      <DebugInformationFormat>
+      </DebugInformationFormat>
+      <ScanSourceForModuleDependencies>false</ScanSourceForModuleDependencies>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_WINDOWS;HAVE_VULKAN;HAVE_GLES2;UNICODE;_UNICODE;_WIN32_WINNT=0x0600;_CRT_SECURE_NO_DEPRECATE;_CRT_SECURE_NO_WARNINGS;_CRT_NONSTDC_NO_WARNINGS;NDEBUG;CMAKE_INTDIR=\"Release\"</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\dumb\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Midl>
+      <AdditionalIncludeDirectories>C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\dumb\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+    <Lib>
+      <AdditionalOptions>%(AdditionalOptions) /machine:x64</AdditionalOptions>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\dumb\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalOptions>%(AdditionalOptions) /utf-8</AdditionalOptions>
+      <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
+      <BasicRuntimeChecks>Default</BasicRuntimeChecks>
+      <BufferSecurityCheck>false</BufferSecurityCheck>
+      <CallingConvention></CallingConvention>
+      <ConformanceMode>true</ConformanceMode>
+      <DisableSpecificWarnings>4996</DisableSpecificWarnings>
+      <ExceptionHandling>
+      </ExceptionHandling>
+      <FloatingPointModel></FloatingPointModel>
+      <ForceConformanceInForLoopScope></ForceConformanceInForLoopScope>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <MinimalRebuild></MinimalRebuild>
+      <OmitFramePointers>true</OmitFramePointers>
+      <Optimization>MaxSpeed</Optimization>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <RemoveUnreferencedCodeData></RemoveUnreferencedCodeData>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <RuntimeTypeInfo>false</RuntimeTypeInfo>
+      <StringPooling>true</StringPooling>
+      <SupportJustMyCode></SupportJustMyCode>
+      <TreatWChar_tAsBuiltInType></TreatWChar_tAsBuiltInType>
+      <UseFullPaths>false</UseFullPaths>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_WINDOWS;HAVE_VULKAN;HAVE_GLES2;UNICODE;_UNICODE;_WIN32_WINNT=0x0600;_CRT_SECURE_NO_DEPRECATE;_CRT_SECURE_NO_WARNINGS;_CRT_NONSTDC_NO_WARNINGS;NDEBUG;CMAKE_INTDIR="MinSizeRel"</PreprocessorDefinitions>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+      <DebugInformationFormat>
+      </DebugInformationFormat>
+      <ScanSourceForModuleDependencies>false</ScanSourceForModuleDependencies>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_WINDOWS;HAVE_VULKAN;HAVE_GLES2;UNICODE;_UNICODE;_WIN32_WINNT=0x0600;_CRT_SECURE_NO_DEPRECATE;_CRT_SECURE_NO_WARNINGS;_CRT_NONSTDC_NO_WARNINGS;NDEBUG;CMAKE_INTDIR=\"MinSizeRel\"</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\dumb\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Midl>
+      <AdditionalIncludeDirectories>C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\dumb\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+    <Lib>
+      <AdditionalOptions>%(AdditionalOptions) /machine:x64</AdditionalOptions>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\dumb\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalOptions>%(AdditionalOptions) /utf-8</AdditionalOptions>
+      <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
+      <BasicRuntimeChecks>Default</BasicRuntimeChecks>
+      <BufferSecurityCheck>false</BufferSecurityCheck>
+      <CallingConvention></CallingConvention>
+      <ConformanceMode>true</ConformanceMode>
+      <DisableSpecificWarnings>4996</DisableSpecificWarnings>
+      <ExceptionHandling>
+      </ExceptionHandling>
+      <FloatingPointModel></FloatingPointModel>
+      <ForceConformanceInForLoopScope></ForceConformanceInForLoopScope>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <MinimalRebuild></MinimalRebuild>
+      <OmitFramePointers>true</OmitFramePointers>
+      <Optimization>MaxSpeed</Optimization>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <RemoveUnreferencedCodeData></RemoveUnreferencedCodeData>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <RuntimeTypeInfo>false</RuntimeTypeInfo>
+      <StringPooling>true</StringPooling>
+      <SupportJustMyCode></SupportJustMyCode>
+      <TreatWChar_tAsBuiltInType></TreatWChar_tAsBuiltInType>
+      <UseFullPaths>false</UseFullPaths>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_WINDOWS;HAVE_VULKAN;HAVE_GLES2;UNICODE;_UNICODE;_WIN32_WINNT=0x0600;_CRT_SECURE_NO_DEPRECATE;_CRT_SECURE_NO_WARNINGS;_CRT_NONSTDC_NO_WARNINGS;NDEBUG;CMAKE_INTDIR="RelWithDebInfo"</PreprocessorDefinitions>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+      <DebugInformationFormat>
+      </DebugInformationFormat>
+      <ScanSourceForModuleDependencies>false</ScanSourceForModuleDependencies>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_WINDOWS;HAVE_VULKAN;HAVE_GLES2;UNICODE;_UNICODE;_WIN32_WINNT=0x0600;_CRT_SECURE_NO_DEPRECATE;_CRT_SECURE_NO_WARNINGS;_CRT_NONSTDC_NO_WARNINGS;NDEBUG;CMAKE_INTDIR=\"RelWithDebInfo\"</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\dumb\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Midl>
+      <AdditionalIncludeDirectories>C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\dumb\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+    <Lib>
+      <AdditionalOptions>%(AdditionalOptions) /machine:x64</AdditionalOptions>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <CustomBuild Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\dumb\CMakeLists.txt">
+      <UseUtf8Encoding>Always</UseUtf8Encoding>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Building Custom Rule C:/Users/user/DoomConnector6/HCDE/libraries/ZMusic/thirdparty/dumb/CMakeLists.txt</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -SC:/Users/user/DoomConnector6/HCDE -BC:/Users/user/DoomConnector6/HCDE --check-stamp-file C:/Users/user/DoomConnector6/HCDE/libraries/ZMusic/thirdparty/dumb/CMakeFiles/generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:\Program Files\CMake\share\cmake-4.3\Modules\CheckCXXCompilerFlag.cmake;C:\Program Files\CMake\share\cmake-4.3\Modules\CheckFunctionExists.cmake;C:\Program Files\CMake\share\cmake-4.3\Modules\CheckIncludeFile.cmake;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\dumb\CMakeFiles\generate.stamp</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</LinkObjects>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Building Custom Rule C:/Users/user/DoomConnector6/HCDE/libraries/ZMusic/thirdparty/dumb/CMakeLists.txt</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -SC:/Users/user/DoomConnector6/HCDE -BC:/Users/user/DoomConnector6/HCDE --check-stamp-file C:/Users/user/DoomConnector6/HCDE/libraries/ZMusic/thirdparty/dumb/CMakeFiles/generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">C:\Program Files\CMake\share\cmake-4.3\Modules\CheckCXXCompilerFlag.cmake;C:\Program Files\CMake\share\cmake-4.3\Modules\CheckFunctionExists.cmake;C:\Program Files\CMake\share\cmake-4.3\Modules\CheckIncludeFile.cmake;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\dumb\CMakeFiles\generate.stamp</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</LinkObjects>
+      <Message Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">Building Custom Rule C:/Users/user/DoomConnector6/HCDE/libraries/ZMusic/thirdparty/dumb/CMakeLists.txt</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -SC:/Users/user/DoomConnector6/HCDE -BC:/Users/user/DoomConnector6/HCDE --check-stamp-file C:/Users/user/DoomConnector6/HCDE/libraries/ZMusic/thirdparty/dumb/CMakeFiles/generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">C:\Program Files\CMake\share\cmake-4.3\Modules\CheckCXXCompilerFlag.cmake;C:\Program Files\CMake\share\cmake-4.3\Modules\CheckFunctionExists.cmake;C:\Program Files\CMake\share\cmake-4.3\Modules\CheckIncludeFile.cmake;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\dumb\CMakeFiles\generate.stamp</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">false</LinkObjects>
+      <Message Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">Building Custom Rule C:/Users/user/DoomConnector6/HCDE/libraries/ZMusic/thirdparty/dumb/CMakeLists.txt</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -SC:/Users/user/DoomConnector6/HCDE -BC:/Users/user/DoomConnector6/HCDE --check-stamp-file C:/Users/user/DoomConnector6/HCDE/libraries/ZMusic/thirdparty/dumb/CMakeFiles/generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">C:\Program Files\CMake\share\cmake-4.3\Modules\CheckCXXCompilerFlag.cmake;C:\Program Files\CMake\share\cmake-4.3\Modules\CheckFunctionExists.cmake;C:\Program Files\CMake\share\cmake-4.3\Modules\CheckIncludeFile.cmake;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\dumb\CMakeFiles\generate.stamp</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">false</LinkObjects>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\dumb\src\core\unload.c" />
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\dumb\src\core\rendsig.c" />
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\dumb\src\core\rendduh.c" />
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\dumb\src\core\register.c" />
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\dumb\src\core\readduh.c" />
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\dumb\src\core\rawsig.c" />
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\dumb\src\core\makeduh.c" />
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\dumb\src\core\loadduh.c" />
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\dumb\src\core\dumbfile.c" />
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\dumb\src\core\duhtag.c" />
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\dumb\src\core\duhlen.c" />
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\dumb\src\core\atexit.c" />
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\dumb\src\helpers\stdfile.c" />
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\dumb\src\helpers\silence.c" />
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\dumb\src\helpers\sampbuf.c" />
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\dumb\src\helpers\riff.c" />
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\dumb\src\helpers\resample.c" />
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\dumb\src\helpers\memfile.c" />
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\dumb\src\helpers\clickrem.c" />
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\dumb\src\helpers\barray.c" />
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\dumb\src\it\xmeffect.c" />
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\dumb\src\it\readxm2.c" />
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\dumb\src\it\readxm.c" />
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\dumb\src\it\readstm2.c" />
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\dumb\src\it\readstm.c" />
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\dumb\src\it\reads3m2.c" />
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\dumb\src\it\reads3m.c" />
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\dumb\src\it\readriff.c" />
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\dumb\src\it\readptm.c" />
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\dumb\src\it\readpsm.c" />
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\dumb\src\it\readoldpsm.c" />
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\dumb\src\it\readokt2.c" />
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\dumb\src\it\readokt.c" />
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\dumb\src\it\readmtm.c" />
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\dumb\src\it\readmod2.c" />
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\dumb\src\it\readmod.c" />
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\dumb\src\it\readdsmf.c" />
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\dumb\src\it\readasy.c" />
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\dumb\src\it\readamf2.c" />
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\dumb\src\it\readamf.c" />
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\dumb\src\it\readam.c" />
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\dumb\src\it\read6692.c" />
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\dumb\src\it\read669.c" />
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\dumb\src\it\ptmeffect.c" />
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\dumb\src\it\loadxm2.c" />
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\dumb\src\it\loadxm.c" />
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\dumb\src\it\loadstm2.c" />
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\dumb\src\it\loadstm.c" />
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\dumb\src\it\loads3m2.c" />
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\dumb\src\it\loads3m.c" />
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\dumb\src\it\loadriff2.c" />
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\dumb\src\it\loadriff.c" />
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\dumb\src\it\loadptm2.c" />
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\dumb\src\it\loadptm.c" />
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\dumb\src\it\loadpsm2.c" />
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\dumb\src\it\loadpsm.c" />
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\dumb\src\it\loadoldpsm2.c" />
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\dumb\src\it\loadoldpsm.c" />
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\dumb\src\it\loadokt2.c" />
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\dumb\src\it\loadokt.c" />
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\dumb\src\it\loadmtm2.c" />
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\dumb\src\it\loadmtm.c" />
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\dumb\src\it\loadmod2.c" />
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\dumb\src\it\loadmod.c" />
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\dumb\src\it\loadasy2.c" />
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\dumb\src\it\loadasy.c" />
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\dumb\src\it\loadamf2.c" />
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\dumb\src\it\loadamf.c" />
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\dumb\src\it\load6692.c" />
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\dumb\src\it\load669.c" />
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\dumb\src\it\itunload.c" />
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\dumb\src\it\itrender.c" />
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\dumb\src\it\itread2.c" />
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\dumb\src\it\itread.c" />
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\dumb\src\it\itorder.c" />
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\dumb\src\it\itmisc.c" />
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\dumb\src\it\itload2.c" />
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\dumb\src\it\itload.c" />
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\dumb\src\it\readany.c" />
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\dumb\src\it\loadany2.c" />
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\dumb\src\it\loadany.c" />
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\dumb\src\it\readany2.c" />
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\dumb\src\helpers\resampler.c" />
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\dumb\src\helpers\lpc.c" />
+  </ItemGroup>
+  <ItemGroup />
+  <ItemGroup>
+    <ProjectReference Include="C:\Users\user\DoomConnector6\HCDE\ZERO_CHECK.vcxproj">
+      <Project>{E8197ADC-B231-3016-B201-AFCCCD85A09A}</Project>
+      <Name>ZERO_CHECK</Name>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

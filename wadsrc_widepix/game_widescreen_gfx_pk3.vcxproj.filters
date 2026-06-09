@@ -1,0 +1,805 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="17.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <CustomBuild Include="C:\Users\user\DoomConnector6\HCDE\CMakeFiles\f2ccca16b11cd5feb0bebae6bf4ef910\game_widescreen_gfx.pk3.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="C:\Users\user\DoomConnector6\HCDE\CMakeFiles\d4ed490ff1632b66ac3ab0f35384ce2d\game_widescreen_gfx_pk3.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\CMakeLists.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\heretic\graphics\e2end.png">
+      <Filter>Source Files\filter\heretic\graphics</Filter>
+    </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\credits.txt">
+      <Filter>Source Files</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\chex.chex1\graphics\titlepic.lmp">
+      <Filter>Source Files\filter\chex.chex1\graphics</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\chex.chex1\graphics\wimap0.lmp">
+      <Filter>Source Files\filter\chex.chex1\graphics</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\chex.chex2\graphics\credit.lmp">
+      <Filter>Source Files\filter\chex.chex2\graphics</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\chex.chex2\graphics\pfub1.lmp">
+      <Filter>Source Files\filter\chex.chex2\graphics</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\chex.chex2\graphics\pfub2.lmp">
+      <Filter>Source Files\filter\chex.chex2\graphics</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\chex.chex2\graphics\titlepic.lmp">
+      <Filter>Source Files\filter\chex.chex2\graphics</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\chex.chex2\graphics\victory2.lmp">
+      <Filter>Source Files\filter\chex.chex2\graphics</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\chex.chex3\graphics\endpic.lmp">
+      <Filter>Source Files\filter\chex.chex3\graphics</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\chex.chex3\graphics\interpic.lmp">
+      <Filter>Source Files\filter\chex.chex3\graphics</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\chex.chex3\graphics\pfub1.lmp">
+      <Filter>Source Files\filter\chex.chex3\graphics</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\chex.chex3\graphics\pfub2.lmp">
+      <Filter>Source Files\filter\chex.chex3\graphics</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\chex.chex3\graphics\titlepic.lmp">
+      <Filter>Source Files\filter\chex.chex3\graphics</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\chex.chex3\graphics\victory2.lmp">
+      <Filter>Source Files\filter\chex.chex3\graphics</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\chex.chex3\graphics\wimap0.lmp">
+      <Filter>Source Files\filter\chex.chex3\graphics</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\chex.chex3\graphics\wimap1.lmp">
+      <Filter>Source Files\filter\chex.chex3\graphics</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\chex.chex3\graphics\wimap2.lmp">
+      <Filter>Source Files\filter\chex.chex3\graphics</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\chex\graphics\credit.lmp">
+      <Filter>Source Files\filter\chex\graphics</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\chex\graphics\help1.lmp">
+      <Filter>Source Files\filter\chex\graphics</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\doom.id.doom1.registered\graphics\titlepic.lmp">
+      <Filter>Source Files\filter\doom.id.doom1.registered\graphics</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\doom.id.doom1.shareware\graphics\titlepic.lmp">
+      <Filter>Source Files\filter\doom.id.doom1.shareware\graphics</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\doom.id.doom1.ultimate\graphics\credit.lmp">
+      <Filter>Source Files\filter\doom.id.doom1.ultimate\graphics</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\doom.id.doom1.ultimate\graphics\titlepic.lmp">
+      <Filter>Source Files\filter\doom.id.doom1.ultimate\graphics</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\doom.id.doom1.ultimate\textures.txt">
+      <Filter>Source Files\filter\doom.id.doom1.ultimate</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\doom.id.doom1\graphics\credit.lmp">
+      <Filter>Source Files\filter\doom.id.doom1\graphics</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\doom.id.doom1\graphics\help1.lmp">
+      <Filter>Source Files\filter\doom.id.doom1\graphics</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\doom.id.doom1\graphics\help2.lmp">
+      <Filter>Source Files\filter\doom.id.doom1\graphics</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\doom.id.doom2.plutonia\graphics\titlepic.lmp">
+      <Filter>Source Files\filter\doom.id.doom2.plutonia\graphics</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\doom.id.doom2.plutonia\textures.txt">
+      <Filter>Source Files\filter\doom.id.doom2.plutonia</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\doom.id.doom2.tnt\graphics\titlepic.lmp">
+      <Filter>Source Files\filter\doom.id.doom2.tnt\graphics</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\doom.id.doom2.tnt\textures.txt">
+      <Filter>Source Files\filter\doom.id.doom2.tnt</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\doom.id.doom2\graphics\credit.lmp">
+      <Filter>Source Files\filter\doom.id.doom2\graphics</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\doom.id.doom2\graphics\help.lmp">
+      <Filter>Source Files\filter\doom.id.doom2\graphics</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\doom.id.doom2\graphics\titlepic.lmp">
+      <Filter>Source Files\filter\doom.id.doom2\graphics</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\doom.id.doom2\sprites\SHT2E0.lmp">
+      <Filter>Source Files\filter\doom.id.doom2\sprites</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\doom.id.wadsmoosh\sprites\SHT2E0.lmp">
+      <Filter>Source Files\filter\doom.id.wadsmoosh\sprites</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\doom.id\graphics\bossback.lmp">
+      <Filter>Source Files\filter\doom.id\graphics</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\doom.id\graphics\credit.lmp">
+      <Filter>Source Files\filter\doom.id\graphics</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\doom.id\graphics\endpic.lmp">
+      <Filter>Source Files\filter\doom.id\graphics</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\doom.id\graphics\help.lmp">
+      <Filter>Source Files\filter\doom.id\graphics</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\doom.id\graphics\inter_e4.lmp">
+      <Filter>Source Files\filter\doom.id\graphics</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\doom.id\graphics\interpic.lmp">
+      <Filter>Source Files\filter\doom.id\graphics</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\doom.id\graphics\pfub1.lmp">
+      <Filter>Source Files\filter\doom.id\graphics</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\doom.id\graphics\pfub2.lmp">
+      <Filter>Source Files\filter\doom.id\graphics</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\doom.id\graphics\pluboss.lmp">
+      <Filter>Source Files\filter\doom.id\graphics</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\doom.id\graphics\pluinter.lmp">
+      <Filter>Source Files\filter\doom.id\graphics</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\doom.id\graphics\tntboss.lmp">
+      <Filter>Source Files\filter\doom.id\graphics</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\doom.id\graphics\tntinter.lmp">
+      <Filter>Source Files\filter\doom.id\graphics</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\doom.id\graphics\victory2.lmp">
+      <Filter>Source Files\filter\doom.id\graphics</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\doom.id\graphics\wia20000.lmp">
+      <Filter>Source Files\filter\doom.id\graphics</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\doom.id\graphics\wia20001.lmp">
+      <Filter>Source Files\filter\doom.id\graphics</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\doom.id\graphics\wia20002.lmp">
+      <Filter>Source Files\filter\doom.id\graphics</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\doom.id\graphics\wia20400.lmp">
+      <Filter>Source Files\filter\doom.id\graphics</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\doom.id\graphics\wia20401.lmp">
+      <Filter>Source Files\filter\doom.id\graphics</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\doom.id\graphics\wia20402.lmp">
+      <Filter>Source Files\filter\doom.id\graphics</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\doom.id\graphics\wia20500.lmp">
+      <Filter>Source Files\filter\doom.id\graphics</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\doom.id\graphics\wia20501.lmp">
+      <Filter>Source Files\filter\doom.id\graphics</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\doom.id\graphics\wia20502.lmp">
+      <Filter>Source Files\filter\doom.id\graphics</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\doom.id\graphics\wimap0.lmp">
+      <Filter>Source Files\filter\doom.id\graphics</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\doom.id\graphics\wimap1.lmp">
+      <Filter>Source Files\filter\doom.id\graphics</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\doom.id\graphics\wimap2.lmp">
+      <Filter>Source Files\filter\doom.id\graphics</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\hacx.hacx1\graphics\credit.lmp">
+      <Filter>Source Files\filter\hacx.hacx1\graphics</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\hacx.hacx1\graphics\help.lmp">
+      <Filter>Source Files\filter\hacx.hacx1\graphics</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\hacx.hacx1\graphics\interpic.lmp">
+      <Filter>Source Files\filter\hacx.hacx1\graphics</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\hacx.hacx1\graphics\titlepic.lmp">
+      <Filter>Source Files\filter\hacx.hacx1\graphics</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\hacx.hacx1\sprites\CRYGA0.lmp">
+      <Filter>Source Files\filter\hacx.hacx1\sprites</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\hacx.hacx1\sprites\CRYGB0.lmp">
+      <Filter>Source Files\filter\hacx.hacx1\sprites</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\hacx.hacx1\sprites\CRYGC0.lmp">
+      <Filter>Source Files\filter\hacx.hacx1\sprites</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\hacx.hacx1\sprites\CRYGD0.lmp">
+      <Filter>Source Files\filter\hacx.hacx1\sprites</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\hacx.hacx1\sprites\CRYGE0.lmp">
+      <Filter>Source Files\filter\hacx.hacx1\sprites</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\hacx.hacx1\sprites\CRYGF0.lmp">
+      <Filter>Source Files\filter\hacx.hacx1\sprites</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\hacx.hacx1\sprites\CRYGG0.lmp">
+      <Filter>Source Files\filter\hacx.hacx1\sprites</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\hacx.hacx1\sprites\CRYGH0.lmp">
+      <Filter>Source Files\filter\hacx.hacx1\sprites</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\hacx.hacx1\sprites\CRYGI0.lmp">
+      <Filter>Source Files\filter\hacx.hacx1\sprites</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\hacx.hacx1\sprites\CRYGJ0.lmp">
+      <Filter>Source Files\filter\hacx.hacx1\sprites</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\hacx.hacx1\sprites\MISFA0.lmp">
+      <Filter>Source Files\filter\hacx.hacx1\sprites</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\hacx.hacx1\sprites\MISFB0.lmp">
+      <Filter>Source Files\filter\hacx.hacx1\sprites</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\hacx.hacx1\sprites\MISFC0.lmp">
+      <Filter>Source Files\filter\hacx.hacx1\sprites</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\hacx.hacx1\sprites\MISFD0.lmp">
+      <Filter>Source Files\filter\hacx.hacx1\sprites</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\hacx.hacx1\sprites\MISGA0.lmp">
+      <Filter>Source Files\filter\hacx.hacx1\sprites</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\hacx.hacx1\sprites\MISGB0.lmp">
+      <Filter>Source Files\filter\hacx.hacx1\sprites</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\hacx.hacx1\sprites\PISGE0.lmp">
+      <Filter>Source Files\filter\hacx.hacx1\sprites</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\hacx.hacx1\sprites\PLSGB0.lmp">
+      <Filter>Source Files\filter\hacx.hacx1\sprites</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\hacx.hacx1\sprites\SHT2A0.lmp">
+      <Filter>Source Files\filter\hacx.hacx1\sprites</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\hacx.hacx1\sprites\SHT2B0.lmp">
+      <Filter>Source Files\filter\hacx.hacx1\sprites</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\hacx.hacx1\sprites\SHT2C0.lmp">
+      <Filter>Source Files\filter\hacx.hacx1\sprites</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\hacx.hacx1\sprites\SHT2D0.lmp">
+      <Filter>Source Files\filter\hacx.hacx1\sprites</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\hacx.hacx1\sprites\SHT2E0.lmp">
+      <Filter>Source Files\filter\hacx.hacx1\sprites</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\hacx.hacx1\sprites\SHT2F0.lmp">
+      <Filter>Source Files\filter\hacx.hacx1\sprites</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\hacx.hacx1\sprites\SHT2G0.lmp">
+      <Filter>Source Files\filter\hacx.hacx1\sprites</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\hacx.hacx1\sprites\SHT2H0.lmp">
+      <Filter>Source Files\filter\hacx.hacx1\sprites</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\hacx.hacx1\sprites\SHT2I0.lmp">
+      <Filter>Source Files\filter\hacx.hacx1\sprites</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\hacx.hacx1\sprites\SHT2J0.lmp">
+      <Filter>Source Files\filter\hacx.hacx1\sprites</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\harmony\graphics\bossback.lmp">
+      <Filter>Source Files\filter\harmony\graphics</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\harmony\graphics\credit.lmp">
+      <Filter>Source Files\filter\harmony\graphics</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\harmony\graphics\titlepic.lmp">
+      <Filter>Source Files\filter\harmony\graphics</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\heretic.shadow\graphics\title.lmp">
+      <Filter>Source Files\filter\heretic.shadow\graphics</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\heretic\graphics\barback.lmp">
+      <Filter>Source Files\filter\heretic\graphics</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\heretic\graphics\credit.lmp">
+      <Filter>Source Files\filter\heretic\graphics</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\heretic\graphics\final1.lmp">
+      <Filter>Source Files\filter\heretic\graphics</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\heretic\graphics\final2.lmp">
+      <Filter>Source Files\filter\heretic\graphics</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\heretic\graphics\help1.lmp">
+      <Filter>Source Files\filter\heretic\graphics</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\heretic\graphics\help2.lmp">
+      <Filter>Source Files\filter\heretic\graphics</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\heretic\graphics\ltfctop.lmp">
+      <Filter>Source Files\filter\heretic\graphics</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\heretic\graphics\mape1.lmp">
+      <Filter>Source Files\filter\heretic\graphics</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\heretic\graphics\mape2.lmp">
+      <Filter>Source Files\filter\heretic\graphics</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\heretic\graphics\mape3.lmp">
+      <Filter>Source Files\filter\heretic\graphics</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\heretic\graphics\rtfctop.lmp">
+      <Filter>Source Files\filter\heretic\graphics</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\heretic\graphics\title.lmp">
+      <Filter>Source Files\filter\heretic\graphics</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\heretic\sprites\CRBWA0.lmp">
+      <Filter>Source Files\filter\heretic\sprites</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\heretic\sprites\CRBWB0.lmp">
+      <Filter>Source Files\filter\heretic\sprites</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\heretic\sprites\CRBWC0.lmp">
+      <Filter>Source Files\filter\heretic\sprites</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\heretic\sprites\CRBWD0.lmp">
+      <Filter>Source Files\filter\heretic\sprites</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\heretic\sprites\CRBWE0.lmp">
+      <Filter>Source Files\filter\heretic\sprites</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\heretic\sprites\CRBWF0.lmp">
+      <Filter>Source Files\filter\heretic\sprites</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\heretic\sprites\CRBWG0.lmp">
+      <Filter>Source Files\filter\heretic\sprites</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\heretic\sprites\CRBWH0.lmp">
+      <Filter>Source Files\filter\heretic\sprites</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\heretic\sprites\HRODA0.lmp">
+      <Filter>Source Files\filter\heretic\sprites</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\heretic\sprites\HRODC0.lmp">
+      <Filter>Source Files\filter\heretic\sprites</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\heretic\sprites\HRODD0.lmp">
+      <Filter>Source Files\filter\heretic\sprites</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\heretic\sprites\HRODE0.lmp">
+      <Filter>Source Files\filter\heretic\sprites</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\heretic\sprites\HRODF0.lmp">
+      <Filter>Source Files\filter\heretic\sprites</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\heretic\sprites\PHNXA0.lmp">
+      <Filter>Source Files\filter\heretic\sprites</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\heretic\sprites\PHNXB0.lmp">
+      <Filter>Source Files\filter\heretic\sprites</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\heretic\sprites\STFFC0.lmp">
+      <Filter>Source Files\filter\heretic\sprites</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\heretic\sprites\STFFH0.lmp">
+      <Filter>Source Files\filter\heretic\sprites</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\hexen.deathkings\graphics\credit.lmp">
+      <Filter>Source Files\filter\hexen.deathkings\graphics</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\hexen.deathkings\graphics\help1.lmp">
+      <Filter>Source Files\filter\hexen.deathkings\graphics</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\hexen.deathkings\graphics\help2.lmp">
+      <Filter>Source Files\filter\hexen.deathkings\graphics</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\hexen.deathkings\graphics\title.lmp">
+      <Filter>Source Files\filter\hexen.deathkings\graphics</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\hexen\graphics\credit.lmp">
+      <Filter>Source Files\filter\hexen\graphics</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\hexen\graphics\finale1.lmp">
+      <Filter>Source Files\filter\hexen\graphics</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\hexen\graphics\finale2.lmp">
+      <Filter>Source Files\filter\hexen\graphics</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\hexen\graphics\finale3.lmp">
+      <Filter>Source Files\filter\hexen\graphics</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\hexen\graphics\h2bar.lmp">
+      <Filter>Source Files\filter\hexen\graphics</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\hexen\graphics\h2top.lmp">
+      <Filter>Source Files\filter\hexen\graphics</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\hexen\graphics\help1.lmp">
+      <Filter>Source Files\filter\hexen\graphics</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\hexen\graphics\help2.lmp">
+      <Filter>Source Files\filter\hexen\graphics</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\hexen\graphics\interpic.lmp">
+      <Filter>Source Files\filter\hexen\graphics</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\hexen\graphics\title.lmp">
+      <Filter>Source Files\filter\hexen\graphics</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\hexen\sprites\CFLME0.lmp">
+      <Filter>Source Files\filter\hexen\sprites</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\hexen\sprites\CFLMF0.lmp">
+      <Filter>Source Files\filter\hexen\sprites</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\hexen\sprites\CMCEB0.lmp">
+      <Filter>Source Files\filter\hexen\sprites</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\hexen\sprites\CMCEC0.lmp">
+      <Filter>Source Files\filter\hexen\sprites</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\hexen\sprites\CMCED0.lmp">
+      <Filter>Source Files\filter\hexen\sprites</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\hexen\sprites\CMCEE0.lmp">
+      <Filter>Source Files\filter\hexen\sprites</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\hexen\sprites\CONEA0.lmp">
+      <Filter>Source Files\filter\hexen\sprites</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\hexen\sprites\CONEB0.lmp">
+      <Filter>Source Files\filter\hexen\sprites</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\hexen\sprites\CONEC0.lmp">
+      <Filter>Source Files\filter\hexen\sprites</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\hexen\sprites\CONED0.lmp">
+      <Filter>Source Files\filter\hexen\sprites</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\hexen\sprites\CONEE0.lmp">
+      <Filter>Source Files\filter\hexen\sprites</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\hexen\sprites\CONEF0.lmp">
+      <Filter>Source Files\filter\hexen\sprites</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\hexen\sprites\CONEG0.lmp">
+      <Filter>Source Files\filter\hexen\sprites</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\hexen\sprites\FAXEB0.lmp">
+      <Filter>Source Files\filter\hexen\sprites</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\hexen\sprites\FAXEC0.lmp">
+      <Filter>Source Files\filter\hexen\sprites</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\hexen\sprites\FAXEN0.lmp">
+      <Filter>Source Files\filter\hexen\sprites</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\hexen\sprites\FAXEO0.lmp">
+      <Filter>Source Files\filter\hexen\sprites</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\hexen\sprites\FHMRB0.lmp">
+      <Filter>Source Files\filter\hexen\sprites</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\hexen\sprites\FHMRC0.lmp">
+      <Filter>Source Files\filter\hexen\sprites</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\hexen\sprites\FPCHB0.lmp">
+      <Filter>Source Files\filter\hexen\sprites</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\hexen\sprites\FPCHC0.lmp">
+      <Filter>Source Files\filter\hexen\sprites</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\hexen\sprites\FPCHD0.lmp">
+      <Filter>Source Files\filter\hexen\sprites</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\hexen\sprites\FPCHE0.lmp">
+      <Filter>Source Files\filter\hexen\sprites</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\hexen\sprites\FSRDD0.lmp">
+      <Filter>Source Files\filter\hexen\sprites</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\hexen\sprites\FSRDE0.lmp">
+      <Filter>Source Files\filter\hexen\sprites</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\hexen\sprites\FSRDH0.lmp">
+      <Filter>Source Files\filter\hexen\sprites</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\hexen\sprites\FSRDI0.lmp">
+      <Filter>Source Files\filter\hexen\sprites</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\hexen\sprites\MLNGG0.lmp">
+      <Filter>Source Files\filter\hexen\sprites</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\hexen\sprites\MLNGH0.lmp">
+      <Filter>Source Files\filter\hexen\sprites</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\hexen\sprites\MLNGI0.lmp">
+      <Filter>Source Files\filter\hexen\sprites</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\strife\graphics\credit.lmp">
+      <Filter>Source Files\filter\strife\graphics</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\strife\graphics\help0.lmp">
+      <Filter>Source Files\filter\strife\graphics</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\strife\graphics\help1.lmp">
+      <Filter>Source Files\filter\strife\graphics</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\strife\graphics\help2.lmp">
+      <Filter>Source Files\filter\strife\graphics</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\strife\graphics\help3.lmp">
+      <Filter>Source Files\filter\strife\graphics</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\strife\graphics\invback.lmp">
+      <Filter>Source Files\filter\strife\graphics</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\strife\graphics\invtop.lmp">
+      <Filter>Source Files\filter\strife\graphics</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\strife\graphics\panel0.lmp">
+      <Filter>Source Files\filter\strife\graphics</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\strife\graphics\panel1.lmp">
+      <Filter>Source Files\filter\strife\graphics</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\strife\graphics\panel2.lmp">
+      <Filter>Source Files\filter\strife\graphics</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\strife\graphics\panel3.lmp">
+      <Filter>Source Files\filter\strife\graphics</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\strife\graphics\panel4.lmp">
+      <Filter>Source Files\filter\strife\graphics</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\strife\graphics\panel5.lmp">
+      <Filter>Source Files\filter\strife\graphics</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\strife\graphics\panel6.lmp">
+      <Filter>Source Files\filter\strife\graphics</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\strife\graphics\panel7.lmp">
+      <Filter>Source Files\filter\strife\graphics</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\strife\graphics\rgelogo.lmp">
+      <Filter>Source Files\filter\strife\graphics</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\strife\graphics\ss2f1.lmp">
+      <Filter>Source Files\filter\strife\graphics</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\strife\graphics\ss2f2.lmp">
+      <Filter>Source Files\filter\strife\graphics</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\strife\graphics\ss2f3.lmp">
+      <Filter>Source Files\filter\strife\graphics</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\strife\graphics\ss2f4.lmp">
+      <Filter>Source Files\filter\strife\graphics</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\strife\graphics\ss3f1.lmp">
+      <Filter>Source Files\filter\strife\graphics</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\strife\graphics\ss3f2.lmp">
+      <Filter>Source Files\filter\strife\graphics</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\strife\graphics\ss3f3.lmp">
+      <Filter>Source Files\filter\strife\graphics</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\strife\graphics\ss3f4.lmp">
+      <Filter>Source Files\filter\strife\graphics</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\strife\graphics\ss4f1.lmp">
+      <Filter>Source Files\filter\strife\graphics</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\strife\graphics\ss4f2.lmp">
+      <Filter>Source Files\filter\strife\graphics</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\strife\graphics\ss4f3.lmp">
+      <Filter>Source Files\filter\strife\graphics</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\strife\graphics\ss4f4.lmp">
+      <Filter>Source Files\filter\strife\graphics</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\strife\graphics\ss5f1.lmp">
+      <Filter>Source Files\filter\strife\graphics</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\strife\graphics\ss5f2.lmp">
+      <Filter>Source Files\filter\strife\graphics</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\strife\graphics\ss5f3.lmp">
+      <Filter>Source Files\filter\strife\graphics</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\strife\graphics\ss6f1.lmp">
+      <Filter>Source Files\filter\strife\graphics</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\strife\graphics\ss6f2.lmp">
+      <Filter>Source Files\filter\strife\graphics</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\strife\graphics\ss6f3.lmp">
+      <Filter>Source Files\filter\strife\graphics</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\strife\graphics\titlepic.lmp">
+      <Filter>Source Files\filter\strife\graphics</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\strife\graphics\vellogo.lmp">
+      <Filter>Source Files\filter\strife\graphics</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\strife\sprites\PNCHB0.lmp">
+      <Filter>Source Files\filter\strife\sprites</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\strife\sprites\PNCHC0.lmp">
+      <Filter>Source Files\filter\strife\sprites</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\strife\sprites\WAVEA0.lmp">
+      <Filter>Source Files\filter\strife\sprites</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\strife\sprites\WAVEB0.lmp">
+      <Filter>Source Files\filter\strife\sprites</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\strife\sprites\WAVEC0.lmp">
+      <Filter>Source Files\filter\strife\sprites</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\filter\strife\sprites\WAVED0.lmp">
+      <Filter>Source Files\filter\strife\sprites</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\static\license.md">
+      <Filter>Source Files</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_widepix\CMakeFiles\game_widescreen_gfx_pk3" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="CMake Rules">
+      <UniqueIdentifier>{6B4C33DB-601C-3F66-91C4-B80AF0AEEFDD}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{7A34F880-AD99-3A93-806C-D6F4B030A349}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\filter">
+      <UniqueIdentifier>{BBF41166-512E-3ACB-95FF-E7E765676C7D}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\filter\chex">
+      <UniqueIdentifier>{DF0F89C1-7D46-373F-B06A-55A428C827B4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\filter\chex.chex1">
+      <UniqueIdentifier>{D0777938-199A-3AEC-B88D-75561B37592D}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\filter\chex.chex1\graphics">
+      <UniqueIdentifier>{C3D8EBB4-4617-3926-AC4A-6F22882FA2DC}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\filter\chex.chex2">
+      <UniqueIdentifier>{02A28272-F5BB-3C60-A9B7-1DCD14B59850}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\filter\chex.chex2\graphics">
+      <UniqueIdentifier>{076B91BE-7930-3866-88D4-13FC959862C9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\filter\chex.chex3">
+      <UniqueIdentifier>{6C0C2579-AE0E-3248-80B0-877AD072E4B8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\filter\chex.chex3\graphics">
+      <UniqueIdentifier>{3C6FA6BC-B70E-34D5-906A-6F0956C92CB5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\filter\chex\graphics">
+      <UniqueIdentifier>{6B562C9A-D25A-38F5-AC5B-E7AEF253A1EC}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\filter\doom.id">
+      <UniqueIdentifier>{216295FC-B9F5-3555-B37A-F5050D08982A}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\filter\doom.id.doom1">
+      <UniqueIdentifier>{006BB78C-643E-3525-944B-8AF138B71B54}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\filter\doom.id.doom1.registered">
+      <UniqueIdentifier>{75EA1118-57BF-37C2-AD9A-7CC4A0E09A20}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\filter\doom.id.doom1.registered\graphics">
+      <UniqueIdentifier>{11D5FE10-15E1-3555-AF23-0947B9B671D0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\filter\doom.id.doom1.shareware">
+      <UniqueIdentifier>{F3F0AC23-D5AD-32C9-98FB-2CDFB83EE4F3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\filter\doom.id.doom1.shareware\graphics">
+      <UniqueIdentifier>{E2B9D6D4-FAD3-3488-8A44-AAECCE89405E}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\filter\doom.id.doom1.ultimate">
+      <UniqueIdentifier>{BE45E295-1B7C-3551-B2C4-059722445E99}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\filter\doom.id.doom1.ultimate\graphics">
+      <UniqueIdentifier>{076E051F-EAFB-381E-827E-C3F01749A778}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\filter\doom.id.doom1\graphics">
+      <UniqueIdentifier>{C2051FAD-C63D-3D8E-BC95-3550C9D735FA}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\filter\doom.id.doom2">
+      <UniqueIdentifier>{65A17818-6204-3CC5-BAC3-066C53735CBD}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\filter\doom.id.doom2.plutonia">
+      <UniqueIdentifier>{30A8B619-3170-34EE-B8A2-39A3C5974E4C}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\filter\doom.id.doom2.plutonia\graphics">
+      <UniqueIdentifier>{F9AF1D78-3F9A-3AB0-AF07-C57B45341245}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\filter\doom.id.doom2.tnt">
+      <UniqueIdentifier>{1DA4FABA-1C93-3CEA-AF56-9A21273121D0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\filter\doom.id.doom2.tnt\graphics">
+      <UniqueIdentifier>{A852BB1A-D3D4-3654-B2E9-B994D21830E2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\filter\doom.id.doom2\graphics">
+      <UniqueIdentifier>{F7E7E304-6A28-3914-8288-1DF0EB1BE539}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\filter\doom.id.doom2\sprites">
+      <UniqueIdentifier>{90F99E04-918F-31BF-96F0-D065CB6FE117}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\filter\doom.id.wadsmoosh">
+      <UniqueIdentifier>{B0F6D9D9-C9BC-3719-97C3-236B69953578}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\filter\doom.id.wadsmoosh\sprites">
+      <UniqueIdentifier>{13ECEA1A-CC69-3C0B-B9EB-F152451F5D90}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\filter\doom.id\graphics">
+      <UniqueIdentifier>{CC1279AE-8B44-33E0-9765-757D6C9F413F}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\filter\hacx.hacx1">
+      <UniqueIdentifier>{CE0BBE96-C345-365B-9E21-C0BB002DC76A}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\filter\hacx.hacx1\graphics">
+      <UniqueIdentifier>{33CF1ABF-9328-3463-8B8E-003C9BA79B75}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\filter\hacx.hacx1\sprites">
+      <UniqueIdentifier>{97E763B6-6E5E-35D8-A9AE-830B3C4B4557}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\filter\harmony">
+      <UniqueIdentifier>{DA948103-B655-3903-9E1C-267BAE92738E}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\filter\harmony\graphics">
+      <UniqueIdentifier>{7C05BDD9-1C52-3306-BD0B-D9B681299350}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\filter\heretic">
+      <UniqueIdentifier>{69C4DAFE-E353-3E3A-91F7-07378CA8CA8F}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\filter\heretic.shadow">
+      <UniqueIdentifier>{8EF95382-0E16-3302-B6BA-D748B7DFF079}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\filter\heretic.shadow\graphics">
+      <UniqueIdentifier>{2AC25777-DD55-39DA-A9A2-A7AE6E29DFA6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\filter\heretic\graphics">
+      <UniqueIdentifier>{E82B15BF-1103-33AD-9587-95A1B4F99904}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\filter\heretic\sprites">
+      <UniqueIdentifier>{BCCEA695-A1CD-3D66-8551-B0D2BDE9E61A}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\filter\hexen">
+      <UniqueIdentifier>{7725F782-CB90-39DD-9C23-F280E77117DA}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\filter\hexen.deathkings">
+      <UniqueIdentifier>{9C05EE56-65CC-3611-A01B-68F2B1E0EFB4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\filter\hexen.deathkings\graphics">
+      <UniqueIdentifier>{1628601A-D8B1-3D71-81D8-0CBF38F98144}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\filter\hexen\graphics">
+      <UniqueIdentifier>{F3A40E41-7C1E-3C83-83F3-7104CA4B8C02}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\filter\hexen\sprites">
+      <UniqueIdentifier>{F7B66A80-37B5-320A-B5DC-B885C5CAF0F1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\filter\strife">
+      <UniqueIdentifier>{EC1FFC54-7880-3E1C-B2B5-1EEA530CF142}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\filter\strife\graphics">
+      <UniqueIdentifier>{17477637-0E27-3026-A62F-5611D8CF1FA8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\filter\strife\sprites">
+      <UniqueIdentifier>{B18298AE-CF10-3027-A485-3802237A9EE4}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

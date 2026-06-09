@@ -1,0 +1,22 @@
+^C:\USERS\USER\DOOMCONNECTOR6\HCDE\CMAKEFILES\396EE02F378EA5F63270B62A30F5B2C6\COPY_METADATA.RULE
+setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -E copy C:/Users/user/DoomConnector6/HCDE/wadsrc/../src/posix/freedesktop/org.hcde.HCDE.metainfo.xml C:/Users/user/DoomConnector6/HCDE/wadsrc/static/meta.xml
+if %errorlevel% neq 0 goto :cmEnd
+"C:\Program Files\CMake\bin\cmake.exe" -E copy C:/Users/user/DoomConnector6/HCDE/wadsrc/../CONTRIBUTORS C:/Users/user/DoomConnector6/HCDE/wadsrc/static/contributors.txt
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd
+^C:\USERS\USER\DOOMCONNECTOR6\HCDE\WADSRC\CMAKELISTS.TXT
+setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -SC:/Users/user/DoomConnector6/HCDE -BC:/Users/user/DoomConnector6/HCDE --check-stamp-file C:/Users/user/DoomConnector6/HCDE/wadsrc/CMakeFiles/generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd

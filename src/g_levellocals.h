@@ -490,6 +490,11 @@ public:
 
 	TArray<vertex_t> vertexes;
 	TArray<sector_t> sectors;
+	// Per-sector map-load baselines for floor/ceiling center heights.
+	// Used by HCDE world-delta to detect permanent resting-state divergences
+	// and replicate sectors that differ from their original map heights.
+	TArray<double> SectorBaselineFloor;
+	TArray<double> SectorBaselineCeiling;
 	TArray<extsector_t> extsectors; // container for non-trivial sector information. sector_t must be trivially copyable for *_fakeflat to work as intended.
 	TArray<line_t*> linebuffer;	// contains the line lists for the sectors.
 	TArray<subsector_t*> subsectorbuffer;	// contains the subsector lists for the sectors.

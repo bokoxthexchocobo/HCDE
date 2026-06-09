@@ -1,0 +1,10 @@
+# CMake generation dependency list for this directory.
+C:/Program Files/CMake/share/cmake-4.3/Modules/CheckCSourceCompiles.cmake
+C:/Program Files/CMake/share/cmake-4.3/Modules/CheckIncludeFile.cmake
+C:/Program Files/CMake/share/cmake-4.3/Modules/CheckLibraryExists.cmake
+C:/Program Files/CMake/share/cmake-4.3/Modules/FindPackageHandleStandardArgs.cmake
+C:/Program Files/CMake/share/cmake-4.3/Modules/FindPackageMessage.cmake
+C:/Program Files/CMake/share/cmake-4.3/Modules/FindPkgConfig.cmake
+C:/Program Files/CMake/share/cmake-4.3/Modules/FindThreads.cmake
+C:/Users/user/DoomConnector6/HCDE/cmake/FindSDL2.cmake
+C:/Users/user/DoomConnector6/HCDE/libraries/ZWidget/CMakeLists.txt

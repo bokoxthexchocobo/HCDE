@@ -1,0 +1,112 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="17.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\adlmidi\adlmidi_midiplay.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\adlmidi\adlmidi_opl3.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\adlmidi\adlmidi_private.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\adlmidi\adlmidi.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\adlmidi\adlmidi_load.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\adlmidi\inst_db.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\adlmidi\chips\opal_opl3.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\adlmidi\chips\opal\opal.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\adlmidi\chips\dosbox\dbopl.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\adlmidi\chips\nuked_opl3_v174.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\adlmidi\chips\java_opl3.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\adlmidi\chips\dosbox_opl3.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\adlmidi\chips\nuked_opl3.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\adlmidi\chips\nuked\nukedopl3_174.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\adlmidi\chips\nuked\nukedopl3.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\adlmidi\chips\ym3812_lle.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\adlmidi\chips\ym3812_lle\nopl2.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\adlmidi\chips\ym3812_lle\nuked_fmopl2.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\adlmidi\chips\ymf262_lle.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\adlmidi\chips\ymf262_lle\nopl3.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\adlmidi\chips\ymf262_lle\nuked_fmopl3.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\adlmidi\chips\esfmu_opl3.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\adlmidi\chips\esfmu\esfm.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\adlmidi\chips\esfmu\esfm_registers.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\adlmidi\chips\mame_opl2.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\adlmidi\wopl\wopl_file.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\adlmidi\chips\ymfm_opl2.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\adlmidi\chips\ymfm_opl3.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\adlmidi\chips\ymfm\ymfm_adpcm.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\adlmidi\chips\ymfm\ymfm_misc.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\adlmidi\chips\ymfm\ymfm_opl.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\adlmidi\chips\ymfm\ymfm_pcm.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\adlmidi\chips\ymfm\ymfm_ssg.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\adlmidi\CMakeLists.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{7A34F880-AD99-3A93-806C-D6F4B030A349}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

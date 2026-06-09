@@ -1,5 +1,5 @@
 param(
-    [string]$Version = "0.4.9",
+    [string]$Version = "0.4.11",
     [string]$Configuration = "RelWithDebInfo",
     [string]$OpenALSoftVersion = "1.25.2",
     [string]$SndFileDll = "",
@@ -31,6 +31,12 @@ $ModCompatPackages = @(
         Label = "Armageddon2 invasion compatibility"
         Source = "wadsrc_mod_compat/armageddon2_test"
         Notes = "Skulltag invasion spot mappings and resource aliases for Armageddon2 testing."
+    },
+    [pscustomobject]@{
+        FileName = "hcde_mod_compat_doomcenter.pk3"
+        Label = "DoomCenter Skulltag actor + hub map compatibility"
+        Source = "wadsrc_mod_compat/doomcenter"
+        Notes = "HCDE-authored FloatyIcon stub preloaded ahead of DoomCenter so its DECORATE parents resolve; hub map startup override."
     }
 )
 

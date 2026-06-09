@@ -1,0 +1,1730 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="17.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <PreferredToolArchitecture>x64</PreferredToolArchitecture>
+  </PropertyGroup>
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="MinSizeRel|x64">
+      <Configuration>MinSizeRel</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="RelWithDebInfo|x64">
+      <Configuration>RelWithDebInfo</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{8D042522-C6B7-3F49-BE15-FC33457B1B0C}</ProjectGuid>
+    <Keyword>Win32Proj</Keyword>
+    <WindowsTargetPlatformVersion>10.0.26100.0</WindowsTargetPlatformVersion>
+    <Platform>x64</Platform>
+    <ProjectName>game_support_pk3</ProjectName>
+    <VCProjectUpgraderObjectName>NoUpgrade</VCProjectUpgraderObjectName>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>Utility</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v143</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>Utility</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v143</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'" Label="Configuration">
+    <ConfigurationType>Utility</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v143</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'" Label="Configuration">
+    <ConfigurationType>Utility</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v143</PlatformToolset>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>10.0.20506.1</_ProjectFileVersion>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(Platform)\$(Configuration)\$(ProjectName)\</IntDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(Platform)\$(Configuration)\$(ProjectName)\</IntDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">$(Platform)\$(Configuration)\$(ProjectName)\</IntDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">$(Platform)\$(Configuration)\$(ProjectName)\</IntDir>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Midl>
+      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+    <PostBuildEvent>
+      <Message>			</Message>
+      <Command>setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -E remove C:/Users/user/DoomConnector6/HCDE/wadsrc_extra/static/language.csv
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd
+setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -E remove C:/Users/user/DoomConnector6/HCDE/wadsrc_extra/static/filter/chex.chex3/language.csv
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd
+setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -E remove C:/Users/user/DoomConnector6/HCDE/wadsrc_extra/static/filter/harmony/language.csv
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd
+setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -E remove C:/Users/user/DoomConnector6/HCDE/wadsrc_extra/static/filter/hacx.hacx1/after_iwad/language.csv
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Midl>
+      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+    <PostBuildEvent>
+      <Message>			</Message>
+      <Command>setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -E remove C:/Users/user/DoomConnector6/HCDE/wadsrc_extra/static/language.csv
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd
+setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -E remove C:/Users/user/DoomConnector6/HCDE/wadsrc_extra/static/filter/chex.chex3/language.csv
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd
+setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -E remove C:/Users/user/DoomConnector6/HCDE/wadsrc_extra/static/filter/harmony/language.csv
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd
+setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -E remove C:/Users/user/DoomConnector6/HCDE/wadsrc_extra/static/filter/hacx.hacx1/after_iwad/language.csv
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">
+    <Midl>
+      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+    <PostBuildEvent>
+      <Message>			</Message>
+      <Command>setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -E remove C:/Users/user/DoomConnector6/HCDE/wadsrc_extra/static/language.csv
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd
+setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -E remove C:/Users/user/DoomConnector6/HCDE/wadsrc_extra/static/filter/chex.chex3/language.csv
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd
+setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -E remove C:/Users/user/DoomConnector6/HCDE/wadsrc_extra/static/filter/harmony/language.csv
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd
+setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -E remove C:/Users/user/DoomConnector6/HCDE/wadsrc_extra/static/filter/hacx.hacx1/after_iwad/language.csv
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">
+    <Midl>
+      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+    <PostBuildEvent>
+      <Message>			</Message>
+      <Command>setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -E remove C:/Users/user/DoomConnector6/HCDE/wadsrc_extra/static/language.csv
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd
+setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -E remove C:/Users/user/DoomConnector6/HCDE/wadsrc_extra/static/filter/chex.chex3/language.csv
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd
+setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -E remove C:/Users/user/DoomConnector6/HCDE/wadsrc_extra/static/filter/harmony/language.csv
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd
+setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -E remove C:/Users/user/DoomConnector6/HCDE/wadsrc_extra/static/filter/hacx.hacx1/after_iwad/language.csv
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <CustomBuild Include="C:\Users\user\DoomConnector6\HCDE\CMakeFiles\f2ccca16b11cd5feb0bebae6bf4ef910\game_support.pk3.rule">
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Generating ../game_support.pk3</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">setlocal
+..\tools\zipdir\Debug\zipdir.exe -udf C:/Users/user/DoomConnector6/HCDE/game_support.pk3 C:/Users/user/DoomConnector6/HCDE/wadsrc_extra/static C:/Users/user/DoomConnector6/HCDE/wadsrc_extra/nonfree
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:\Users\user\DoomConnector6\HCDE\tools\zipdir\Debug\zipdir.exe;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:\Users\user\DoomConnector6\HCDE\game_support.pk3</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</LinkObjects>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Generating ../game_support.pk3</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">setlocal
+..\tools\zipdir\Release\zipdir.exe -udf C:/Users/user/DoomConnector6/HCDE/game_support.pk3 C:/Users/user/DoomConnector6/HCDE/wadsrc_extra/static C:/Users/user/DoomConnector6/HCDE/wadsrc_extra/nonfree
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">C:\Users\user\DoomConnector6\HCDE\tools\zipdir\Release\zipdir.exe;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">C:\Users\user\DoomConnector6\HCDE\game_support.pk3</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</LinkObjects>
+      <Message Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">Generating ../game_support.pk3</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">setlocal
+..\tools\zipdir\MinSizeRel\zipdir.exe -udf C:/Users/user/DoomConnector6/HCDE/game_support.pk3 C:/Users/user/DoomConnector6/HCDE/wadsrc_extra/static C:/Users/user/DoomConnector6/HCDE/wadsrc_extra/nonfree
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">C:\Users\user\DoomConnector6\HCDE\tools\zipdir\MinSizeRel\zipdir.exe;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">C:\Users\user\DoomConnector6\HCDE\game_support.pk3</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">false</LinkObjects>
+      <Message Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">Generating ../game_support.pk3</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">setlocal
+..\tools\zipdir\RelWithDebInfo\zipdir.exe -udf C:/Users/user/DoomConnector6/HCDE/game_support.pk3 C:/Users/user/DoomConnector6/HCDE/wadsrc_extra/static C:/Users/user/DoomConnector6/HCDE/wadsrc_extra/nonfree
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">C:\Users\user\DoomConnector6\HCDE\tools\zipdir\RelWithDebInfo\zipdir.exe;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">C:\Users\user\DoomConnector6\HCDE\game_support.pk3</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">false</LinkObjects>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="C:\Users\user\DoomConnector6\HCDE\CMakeFiles\ab756c42effa7724d198aedfc1836852\game_support_pk3.rule">
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|x64'"></Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -E touch C:/Users/user/DoomConnector6/HCDE/tools/zipdir/Debug/zipdir.exe
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:\Users\user\DoomConnector6\HCDE\game_support.pk3;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\CMakeFiles\game_support_pk3</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</LinkObjects>
+      <VerifyInputsAndOutputsExist Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</VerifyInputsAndOutputsExist>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|x64'"></Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -E touch C:/Users/user/DoomConnector6/HCDE/tools/zipdir/Release/zipdir.exe
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">C:\Users\user\DoomConnector6\HCDE\game_support.pk3;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\CMakeFiles\game_support_pk3</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</LinkObjects>
+      <VerifyInputsAndOutputsExist Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</VerifyInputsAndOutputsExist>
+      <Message Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'"></Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -E touch C:/Users/user/DoomConnector6/HCDE/tools/zipdir/MinSizeRel/zipdir.exe
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">C:\Users\user\DoomConnector6\HCDE\game_support.pk3;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\CMakeFiles\game_support_pk3</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">false</LinkObjects>
+      <VerifyInputsAndOutputsExist Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">false</VerifyInputsAndOutputsExist>
+      <Message Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'"></Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -E touch C:/Users/user/DoomConnector6/HCDE/tools/zipdir/RelWithDebInfo/zipdir.exe
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">C:\Users\user\DoomConnector6\HCDE\game_support.pk3;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\CMakeFiles\game_support_pk3</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">false</LinkObjects>
+      <VerifyInputsAndOutputsExist Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">false</VerifyInputsAndOutputsExist>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\CMakeLists.txt">
+      <UseUtf8Encoding>Always</UseUtf8Encoding>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Building Custom Rule C:/Users/user/DoomConnector6/HCDE/wadsrc_extra/CMakeLists.txt</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -SC:/Users/user/DoomConnector6/HCDE -BC:/Users/user/DoomConnector6/HCDE --check-stamp-file C:/Users/user/DoomConnector6/HCDE/wadsrc_extra/CMakeFiles/generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\CMakeFiles\generate.stamp</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</LinkObjects>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Building Custom Rule C:/Users/user/DoomConnector6/HCDE/wadsrc_extra/CMakeLists.txt</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -SC:/Users/user/DoomConnector6/HCDE -BC:/Users/user/DoomConnector6/HCDE --check-stamp-file C:/Users/user/DoomConnector6/HCDE/wadsrc_extra/CMakeFiles/generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\CMakeFiles\generate.stamp</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</LinkObjects>
+      <Message Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">Building Custom Rule C:/Users/user/DoomConnector6/HCDE/wadsrc_extra/CMakeLists.txt</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -SC:/Users/user/DoomConnector6/HCDE -BC:/Users/user/DoomConnector6/HCDE --check-stamp-file C:/Users/user/DoomConnector6/HCDE/wadsrc_extra/CMakeFiles/generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\CMakeFiles\generate.stamp</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">false</LinkObjects>
+      <Message Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">Building Custom Rule C:/Users/user/DoomConnector6/HCDE/wadsrc_extra/CMakeLists.txt</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -SC:/Users/user/DoomConnector6/HCDE -BC:/Users/user/DoomConnector6/HCDE --check-stamp-file C:/Users/user/DoomConnector6/HCDE/wadsrc_extra/CMakeFiles/generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\CMakeFiles\generate.stamp</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">false</LinkObjects>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\ANCRINFO.txt">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\SNDINFO.txt">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\credits\harmmod.txt">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\chex.chex3\mapinfo.txt">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\doom.freedoom\decaldef.z">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\doom.id.doom1.unity\sndinfo.txt">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\doom.id.doom2.unity\sndinfo.txt">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\doom.id\sprofs.txt">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\hacx.hacx1\after_iwad\Decorate.txt">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\hacx.hacx1\after_iwad\menudef.txt">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\hacx.hacx1\after_iwad\zmapinfo.txt">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\hacx.hacx2\mapinfo.txt">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\after_iwad\textures.txt">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\althudcf.txt">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\decaldef.txt">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\decorate.txt">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\endoom.bin">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\0021.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\0022.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\0023.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\0024.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\0025.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\0027.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\0028.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\0029.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\002A.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\002B.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\002C.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\002D.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\002E.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\002F.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\0030.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\0031.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\0032.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\0033.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\0034.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\0035.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\0036.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\0037.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\0038.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\0039.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\003A.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\003B.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\003C.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\003D.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\003E.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\003F.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\0041.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\0042.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\0043.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\0044.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\0045.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\0046.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\0047.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\0048.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\0049.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\004A.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\004B.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\004C.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\004D.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\004E.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\004F.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\0050.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\0051.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\0052.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\0053.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\0054.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\0055.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\0056.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\0057.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\0058.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\0059.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\005A.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\005B.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\005C.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\005D.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\005E.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\005F.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\0060.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\00A1.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\00BF.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\00C0.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\00C1.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\00C2.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\00C3.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\00C4.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\00C5.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\00C6.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\00C7.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\00C8.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\00C9.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\00CA.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\00CB.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\00CC.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\00CD.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\00CE.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\00CF.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\00D0.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\00D1.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\00D2.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\00D3.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\00D4.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\00D5.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\00D6.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\00D8.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\00D9.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\00DA.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\00DB.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\00DC.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\00DD.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\00DE.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\0100.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\0102.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\0104.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\0106.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\0108.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\010A.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\010C.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\010E.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\0110.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\0112.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\0116.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\0118.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\011A.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\011C.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\011E.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\0120.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\0122.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\0124.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\0126.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\012A.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\012E.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\0130.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\0134.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\0136.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\0139.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\013B.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\013D.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\0141.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\0143.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\0145.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\0147.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\014A.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\014C.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\0150.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\0152.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\0154.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\0158.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\015A.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\015C.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\015E.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\0160.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\0162.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\0164.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\0166.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\016A.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\016C.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\016E.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\0170.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\0172.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\0174.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\0176.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\0178.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\0179.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\017B.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\017D.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\018F.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\01FC.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\01FE.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\0218.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\021A.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\0394.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\0398.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\039B.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\039E.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\03A3.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\03A8.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\03A9.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\0402.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\0403.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\0404.raw">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\0409.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\040A.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\040B.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\040C.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\040D.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\040E.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\040F.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\0410.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\0411.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\0412.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\0413.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\0414.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\0415.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\0416.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\0417.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\0418.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\0419.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\041A.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\041B.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\041C.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\041D.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\041E.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\041F.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\0420.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\0421.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\0422.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\0423.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\0424.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\0425.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\0426.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\0427.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\0428.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\0429.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\042A.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\042B.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\042C.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\042D.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\042E.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\042F.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\0490.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\1E80.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\1E82.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\1E84.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\1E9E.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\1EF2.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\defsmallfont\00A1.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\defsmallfont\00BF.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\defsmallfont\00C0.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\defsmallfont\00C1.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\defsmallfont\00C2.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\defsmallfont\00C3.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\defsmallfont\00C4.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\defsmallfont\00C5.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\defsmallfont\00C6.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\defsmallfont\00C7.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\defsmallfont\00C8.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\defsmallfont\00C9.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\defsmallfont\00CA.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\defsmallfont\00CB.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\defsmallfont\00CC.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\defsmallfont\00CD.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\defsmallfont\00CE.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\defsmallfont\00CF.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\defsmallfont\00D0.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\defsmallfont\00D1.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\defsmallfont\00D2.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\defsmallfont\00D3.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\defsmallfont\00D4.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\defsmallfont\00D5.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\defsmallfont\00D6.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\defsmallfont\00D8.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\defsmallfont\00D9.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\defsmallfont\00DA.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\defsmallfont\00DB.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\defsmallfont\00DC.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\defsmallfont\00DD.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\defsmallfont\00DE.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\defsmallfont\0100.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\defsmallfont\0102.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\defsmallfont\0104.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\defsmallfont\0106.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\defsmallfont\0108.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\defsmallfont\010A.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\defsmallfont\010C.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\defsmallfont\010E.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\defsmallfont\0110.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\defsmallfont\0112.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\defsmallfont\0116.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\defsmallfont\0118.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\defsmallfont\011A.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\defsmallfont\011C.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\defsmallfont\011E.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\defsmallfont\0120.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\defsmallfont\0122.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\defsmallfont\0124.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\defsmallfont\0126.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\defsmallfont\012A.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\defsmallfont\012E.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\defsmallfont\0130.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\defsmallfont\0134.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\defsmallfont\0136.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\defsmallfont\0139.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\defsmallfont\013B.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\defsmallfont\013D.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\defsmallfont\0141.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\defsmallfont\0143.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\defsmallfont\0145.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\defsmallfont\0147.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\defsmallfont\014A.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\defsmallfont\014C.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\defsmallfont\0150.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\defsmallfont\0152.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\defsmallfont\0154.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\defsmallfont\0158.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\defsmallfont\015A.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\defsmallfont\015C.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\defsmallfont\015E.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\defsmallfont\0160.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\defsmallfont\0162.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\defsmallfont\0164.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\defsmallfont\0166.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\defsmallfont\016A.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\defsmallfont\016C.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\defsmallfont\016E.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\defsmallfont\0170.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\defsmallfont\0172.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\defsmallfont\0174.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\defsmallfont\0176.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\defsmallfont\0178.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\defsmallfont\0179.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\defsmallfont\017B.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\defsmallfont\017D.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\defsmallfont\018F.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\defsmallfont\01FC.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\defsmallfont\01FE.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\defsmallfont\0394.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\defsmallfont\0398.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\defsmallfont\039B.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\defsmallfont\039E.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\defsmallfont\03A3.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\defsmallfont\03A8.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\defsmallfont\03A9.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\defsmallfont\0402.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\defsmallfont\0403.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\defsmallfont\0404.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\defsmallfont\0409.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\defsmallfont\040A.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\defsmallfont\040B.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\defsmallfont\040C.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\defsmallfont\040D.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\defsmallfont\040E.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\defsmallfont\040F.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\defsmallfont\0410.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\defsmallfont\0411.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\defsmallfont\0412.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\defsmallfont\0413.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\defsmallfont\0414.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\defsmallfont\0415.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\defsmallfont\0416.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\defsmallfont\0417.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\defsmallfont\0418.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\defsmallfont\0419.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\defsmallfont\041A.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\defsmallfont\041B.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\defsmallfont\041C.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\defsmallfont\041D.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\defsmallfont\041E.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\defsmallfont\041F.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\defsmallfont\0420.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\defsmallfont\0421.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\defsmallfont\0422.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\defsmallfont\0423.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\defsmallfont\0424.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\defsmallfont\0425.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\defsmallfont\0426.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\defsmallfont\0427.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\defsmallfont\0428.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\defsmallfont\0429.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\defsmallfont\042A.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\defsmallfont\042B.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\defsmallfont\042C.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\defsmallfont\042D.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\defsmallfont\042E.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\defsmallfont\042F.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\defsmallfont\0490.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\defsmallfont\1E80.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\defsmallfont\1E82.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\defsmallfont\1E84.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\defsmallfont\1E9E.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\defsmallfont\1EF2.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\lockdefs.txt">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\mapinfo.txt">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\menudef.txt">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\zscript.txt">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\zscript\decorate_replacement.zs">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\zscript\harm_sbar.zs">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\heretic\sprofs.txt">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\hereticshareware\mapinfo.txt">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\hexen\sprofs.txt">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\strife\sprofs.txt">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\strifeteaser1\mapinfo.txt">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\strifeteaser2\mapinfo.txt">
+    </None>
+    <Image Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\graphics\artibox.png">
+    </Image>
+    <Image Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\graphics\chexcurs.png">
+    </Image>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\graphics\clerface.lmp">
+    </None>
+    <Image Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\graphics\doomcurs.png">
+    </Image>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\graphics\fiteface.lmp">
+    </None>
+    <Image Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\graphics\herecurs.png">
+    </Image>
+    <Image Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\graphics\hexncurs.png">
+    </Image>
+    <Image Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\graphics\invgeml1.png">
+    </Image>
+    <Image Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\graphics\invgeml2.png">
+    </Image>
+    <Image Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\graphics\invgemr1.png">
+    </Image>
+    <Image Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\graphics\invgemr2.png">
+    </Image>
+    <Image Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\graphics\m_back_c.png">
+    </Image>
+    <Image Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\graphics\m_back_d.png">
+    </Image>
+    <Image Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\graphics\m_back_h.png">
+    </Image>
+    <Image Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\graphics\m_back_s.png">
+    </Image>
+    <Image Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\graphics\m_back_x.png">
+    </Image>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\graphics\mageface.lmp">
+    </None>
+    <Image Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\graphics\selectbo.png">
+    </Image>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\graphics\stfbany.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\graphics\stkeys6.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\graphics\stkeys7.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\graphics\stkeys8.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\graphics\stpbany.lmp">
+    </None>
+    <Image Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\graphics\strfcurs.png">
+    </Image>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\graphics\wislash.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\iwadinfo.txt">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\skins\BOKOA1.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\skins\BOKOA2A8.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\skins\BOKOA3A7.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\skins\BOKOA4A6.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\skins\BOKOA5.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\skins\BOKOB1.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\skins\BOKOB2B8.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\skins\BOKOB3B7.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\skins\BOKOB4B6.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\skins\BOKOB5.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\skins\BOKOC1.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\skins\BOKOC2C8.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\skins\BOKOC3C7.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\skins\BOKOC4C6.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\skins\BOKOC5.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\skins\BOKOD1.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\skins\BOKOD2D8.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\skins\BOKOD3D7.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\skins\BOKOD4D6.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\skins\BOKOD5.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\skins\BOKOE1.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\skins\BOKOE2E8.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\skins\BOKOE3E7.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\skins\BOKOE4E6.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\skins\BOKOE5.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\skins\BOKOF1.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\skins\BOKOF2F8.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\skins\BOKOF3F7.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\skins\BOKOF4F6.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\skins\BOKOF5.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\skins\BOKOG1.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\skins\BOKOG2G8.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\skins\BOKOG3G7.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\skins\BOKOG4G6.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\skins\BOKOG5.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\skins\BOKOH0.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\skins\BOKOI0.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\skins\BOKOJ0.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\skins\BOKOK0.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\skins\BOKOL0.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\skins\BOKOM0.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\skins\BOKON0.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\skins\BOKOO0.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\skins\BOKOP0.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\skins\BOKOQ0.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\skins\BOKOR0.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\skins\BOKOS0.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\skins\BOKOT0.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\skins\BOKOU0.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\skins\BOKOV0.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\skins\BOKOW0.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\skins\CHOBA1.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\skins\CHOBA2A8.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\skins\CHOBA3A7.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\skins\CHOBA4A6.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\skins\CHOBA5.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\skins\CHOBB1.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\skins\CHOBB2B8.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\skins\CHOBB3B7.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\skins\CHOBB4B6.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\skins\CHOBB5.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\skins\CHOBC1.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\skins\CHOBC2C8.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\skins\CHOBC3C7.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\skins\CHOBC4C6.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\skins\CHOBC5.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\skins\CHOBD1.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\skins\CHOBD2D8.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\skins\CHOBD3D7.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\skins\CHOBD4D6.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\skins\CHOBD5.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\skins\CHOBE1.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\skins\CHOBE2E8.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\skins\CHOBE3E7.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\skins\CHOBE4E6.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\skins\CHOBE5.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\skins\CHOBF1.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\skins\CHOBF2F8.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\skins\CHOBF3F7.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\skins\CHOBF4F6.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\skins\CHOBF5.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\skins\CHOBG1.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\skins\CHOBG2G8.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\skins\CHOBG3G7.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\skins\CHOBG4G6.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\skins\CHOBG5.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\skins\CHOBH0.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\skins\CHOBI0.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\skins\CHOBJ0.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\skins\CHOBK0.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\skins\CHOBL0.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\skins\CHOBM0.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\skins\CHOBN0.lmp">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\skins\DSWARK">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\skins\SKININFO">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\sounds\ATGSKDRP.wav">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\sounds\BOACCU.wav">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\sounds\BOASSIST.wav">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\sounds\BOBFLDRP.wav">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\sounds\BOBFLRTN.wav">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\sounds\BOBFLTKN.wav">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\sounds\BOBLUELD.wav">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\sounds\BOBSCORE.wav">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\sounds\BOBSKDRP.wav">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\sounds\BOBSKRTN.wav">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\sounds\BOBSKTKN.wav">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\sounds\BOCAPTUR.wav">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\sounds\BODEFENS.wav">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\sounds\BODMSPHR.wav">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\sounds\BODOMN.wav">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\sounds\BODRAIN.wav">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\sounds\BOENHSFL.wav">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\sounds\BOEXCL.wav">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\sounds\BOFFRAG.wav">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\sounds\BOFIGHT.wav">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\sounds\BOFISTNG.wav">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\sounds\BOFMNWRN.wav">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\sounds\BOGFLDRP.wav">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\sounds\BOGFLRTN.wav">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\sounds\BOGFLTKN.wav">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\sounds\BOGSCORE.wav">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\sounds\BOGSKRTN.wav">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\sounds\BOGSKTKN.wav">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\sounds\BOGUARD.wav">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\sounds\BOHASTE.wav">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\sounds\BOHIJUMP.wav">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\sounds\BOIMPR.wav">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\sounds\BOINCR.wav">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\sounds\BOINVS.wav">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\sounds\BOINVUL.wav">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\sounds\BOLLAM.wav">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\sounds\BOLOSTLD.wav">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\sounds\BOMEGA.wav">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\sounds\BOMIMP.wav">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\sounds\BONFLDRP.wav">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\sounds\BONFLRTN.wav">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\sounds\BONFLTKN.wav">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\sounds\BONOTENO.wav">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\sounds\BONSCORE.wav">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\sounds\BONSKRTN.wav">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\sounds\BONSKTKN.wav">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\sounds\BONXTRND.wav">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\sounds\BOONE.wav">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\sounds\BOONEFRG.wav">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\sounds\BOONMWRN.wav">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\sounds\BOPERFCT.wav">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\sounds\BOPINVS.wav">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\sounds\BOPOSDRP.wav">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\sounds\BOPOSPCK.wav">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\sounds\BOPREC.wav">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\sounds\BOPREPAR.wav">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\sounds\BOPROSP.wav">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\sounds\BORAGE.wav">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\sounds\BOREDLD.wav">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\sounds\BOREFL.wav">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\sounds\BOREGEN.wav">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\sounds\BORESIS.wav">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\sounds\BORFLDRP.wav">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\sounds\BORFLRTN.wav">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\sounds\BORFLTKN.wav">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\sounds\BORRSKUL.wav">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\sounds\BORSCORE.wav">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\sounds\BORSKDRP.wav">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\sounds\BORSKRTN.wav">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\sounds\BORSKTKN.wav">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\sounds\BOSOUL.wav">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\sounds\BOSPAM.wav">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\sounds\BOSPREAD.wav">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\sounds\BOSTR.wav">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\sounds\BOTAG.wav">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\sounds\BOTAKNLD.wav">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\sounds\BOTDOM.wav">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\sounds\BOTEAMTD.wav">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\sounds\BOTERM.wav">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\sounds\BOTERM2.wav">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\sounds\BOTHREE.wav">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\sounds\BOTHRFRG.wav">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\sounds\BOTIEDLD.wav">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\sounds\BOTIMFR.wav">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\sounds\BOTMHSFL.wav">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\sounds\BOTNSKDR.wav">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\sounds\BOTURBO.wav">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\sounds\BOTWO.wav">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\sounds\BOTWOFRG.wav">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\sounds\BOUHAVFL.wav">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\sounds\BOVFAIL.wav">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\sounds\BOVICTOR.wav">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\sounds\BOVNOW.wav">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\sounds\BOVPASS.wav">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\sounds\BOWELCTF.wav">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\sounds\BOWELST.wav">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\sounds\BOWFLRTN.wav">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\sounds\BOWIN.wav">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\sounds\BOWLOCTF.wav">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\sounds\BOYOUFAI.wav">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\sounds\dsquake.flac">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\sounds\icebrk1a.flac">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\sounds\icedth1.flac">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\sounds\railgf1.flac">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\sounds\spark1.flac">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\sounds\spark2.flac">
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\sounds\spark3.flac">
+    </None>
+    <Image Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\sprites\GWANA0.png">
+    </Image>
+    <Image Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\sprites\PLS1A0.png">
+    </Image>
+    <Image Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\sprites\PLS1B0.png">
+    </Image>
+    <Image Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\sprites\PLS1C0.png">
+    </Image>
+    <Image Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\sprites\PLS1D0.png">
+    </Image>
+    <Image Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\sprites\PLS1E0.png">
+    </Image>
+    <Image Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\sprites\PLS1F0.png">
+    </Image>
+    <Image Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\sprites\PLS1G0.png">
+    </Image>
+    <Image Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\sprites\PLS2A0.png">
+    </Image>
+    <Image Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\sprites\PLS2B0.png">
+    </Image>
+    <Image Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\sprites\PLS2C0.png">
+    </Image>
+    <Image Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\sprites\PLS2D0.png">
+    </Image>
+    <Image Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\sprites\PLS2E0.png">
+    </Image>
+    <Image Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\sprites\minza0.png">
+    </Image>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\CMakeFiles\game_support_pk3">
+    </None>
+  </ItemGroup>
+  <ItemGroup />
+  <ItemGroup>
+    <ProjectReference Include="C:\Users\user\DoomConnector6\HCDE\ZERO_CHECK.vcxproj">
+      <Project>{E8197ADC-B231-3016-B201-AFCCCD85A09A}</Project>
+      <Name>ZERO_CHECK</Name>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </ProjectReference>
+    <ProjectReference Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\game_support_pk3_static_filter_chex_chex3_language_csv.vcxproj">
+      <Project>{B1AFCCB2-CC37-32A2-BEDA-5FC9B97C8B2F}</Project>
+      <Name>game_support_pk3_static_filter_chex_chex3_language_csv</Name>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </ProjectReference>
+    <ProjectReference Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\game_support_pk3_static_filter_hacx_hacx1_after_iwad_language_csv.vcxproj">
+      <Project>{2D89F4FD-7BA9-3A4C-8F85-799029665083}</Project>
+      <Name>game_support_pk3_static_filter_hacx_hacx1_after_iwad_language_csv</Name>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </ProjectReference>
+    <ProjectReference Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\game_support_pk3_static_filter_harmony_language_csv.vcxproj">
+      <Project>{783FECC1-044C-3DED-8737-7BCF935F45D9}</Project>
+      <Name>game_support_pk3_static_filter_harmony_language_csv</Name>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </ProjectReference>
+    <ProjectReference Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\game_support_pk3_static_language_csv.vcxproj">
+      <Project>{94D94844-6063-37CA-AB6A-CBF73D548978}</Project>
+      <Name>game_support_pk3_static_language_csv</Name>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </ProjectReference>
+    <ProjectReference Include="C:\Users\user\DoomConnector6\HCDE\tools\zipdir\zipdir.vcxproj">
+      <Project>{243F25B4-1FCD-389E-B889-7DF140F7794D}</Project>
+      <Name>zipdir</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

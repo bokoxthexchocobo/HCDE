@@ -1,0 +1,34 @@
+#models:
+#  - name: Qwen 2.5 Coder 14B
+#    provider: ollama
+#    model: qwen2.5-coder:14b
+#    roles:
+#      - chat
+#      - edit
+#
+#  - name: Qwen 3 14B
+#    provider: ollama
+#    model: qwen3:14b
+#    roles:
+#      - chat
+#
+#  - name: Gemma 4 e4b
+#    provider: ollama
+#    model: gemma4:e4b
+#    roles:
+#      - chat
+#
+#  - name: GPT OSS 20B
+#    provider: ollama
+#    model: gpt-oss:20b
+#    roles:
+#      - chat
+#
+#tabAutocompleteModel:
+#  name: Qwen 2.5 Coder 14B
+#  provider: ollama
+#  model: qwen2.5-coder:14b
+#
+#embeddingsProvider:
+#  provider: ollama
+#  model: qwen2.5-coder:14b

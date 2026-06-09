@@ -1,0 +1,393 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="17.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZWidget\src\core\canvas.cpp">
+      <Filter>src\core</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZWidget\src\core\font.cpp">
+      <Filter>src\core</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZWidget\src\core\image.cpp">
+      <Filter>src\core</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZWidget\src\core\span_layout.cpp">
+      <Filter>src\core</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZWidget\src\core\timer.cpp">
+      <Filter>src\core</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZWidget\src\core\widget.cpp">
+      <Filter>src\core</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZWidget\src\core\theme.cpp">
+      <Filter>src\core</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZWidget\src\core\utf8reader.cpp">
+      <Filter>src\core</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZWidget\src\core\pathfill.cpp">
+      <Filter>src\core</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZWidget\src\core\truetypefont.cpp">
+      <Filter>src\core</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZWidget\src\core\picopng\picopng.cpp">
+      <Filter>src\core\picopng</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZWidget\src\core\nanosvg\nanosvg.cpp">
+      <Filter>src\core\nanosvg</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZWidget\src\widgets\lineedit\lineedit.cpp">
+      <Filter>src\widgets\lineedit</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZWidget\src\widgets\mainwindow\mainwindow.cpp">
+      <Filter>src\widgets\mainwindow</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZWidget\src\widgets\menubar\menubar.cpp">
+      <Filter>src\widgets\menubar</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZWidget\src\widgets\scrollbar\scrollbar.cpp">
+      <Filter>src\widgets\scrollbar</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZWidget\src\widgets\statusbar\statusbar.cpp">
+      <Filter>src\widgets\statusbar</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZWidget\src\widgets\textedit\textedit.cpp">
+      <Filter>src\widgets\textedit</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZWidget\src\widgets\toolbar\toolbar.cpp">
+      <Filter>src\widgets\toolbar</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZWidget\src\widgets\toolbar\toolbarbutton.cpp">
+      <Filter>src\widgets\toolbar</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZWidget\src\widgets\imagebox\imagebox.cpp">
+      <Filter>src\widgets\imagebox</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZWidget\src\widgets\textlabel\textlabel.cpp">
+      <Filter>src\widgets\textlabel</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZWidget\src\widgets\pushbutton\pushbutton.cpp">
+      <Filter>src\widgets\pushbutton</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZWidget\src\widgets\checkboxlabel\checkboxlabel.cpp">
+      <Filter>src\widgets\checkboxlabel</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZWidget\src\widgets\dropdown\dropdown.cpp">
+      <Filter>src\widgets\dropdown</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZWidget\src\widgets\listview\listview.cpp">
+      <Filter>src\widgets\listview</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZWidget\src\widgets\tabwidget\tabwidget.cpp">
+      <Filter>src\widgets\tabwidget</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZWidget\src\window\window.cpp">
+      <Filter>src\window</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZWidget\src\window\stub\stub_open_folder_dialog.cpp">
+      <Filter>src\window\stub</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZWidget\src\window\stub\stub_open_file_dialog.cpp">
+      <Filter>src\window\stub</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZWidget\src\window\stub\stub_save_file_dialog.cpp">
+      <Filter>src\window\stub</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZWidget\src\window\ztimer\ztimer.cpp">
+      <Filter>src\window</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZWidget\src\systemdialogs\open_folder_dialog.cpp">
+      <Filter>src\systemdialogs</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZWidget\src\systemdialogs\open_file_dialog.cpp">
+      <Filter>src\systemdialogs</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZWidget\src\systemdialogs\save_file_dialog.cpp">
+      <Filter>src\systemdialogs</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZWidget\src\window\win32\win32_display_backend.cpp">
+      <Filter>src\window\win32</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZWidget\src\window\win32\win32_display_window.cpp">
+      <Filter>src\window\win32</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZWidget\src\window\win32\win32_open_folder_dialog.cpp">
+      <Filter>src\window\win32</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZWidget\src\window\win32\win32_open_file_dialog.cpp">
+      <Filter>src\window\win32</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZWidget\src\window\win32\win32_save_file_dialog.cpp">
+      <Filter>src\window\win32</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZWidget\src\core\truetypefont.h">
+      <Filter>src\core</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZWidget\src\core\picopng\picopng.h">
+      <Filter>src\core\picopng</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZWidget\src\core\nanosvg\nanosvg.h">
+      <Filter>src\core\nanosvg</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZWidget\src\core\nanosvg\nanosvgrast.h">
+      <Filter>src\core\nanosvg</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZWidget\src\window\stub\stub_open_folder_dialog.h">
+      <Filter>src\window\stub</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZWidget\src\window\stub\stub_open_file_dialog.h">
+      <Filter>src\window\stub</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZWidget\src\window\stub\stub_save_file_dialog.h">
+      <Filter>src\window\stub</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZWidget\src\window\ztimer\ztimer.h">
+      <Filter>src\window</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZWidget\src\window\win32\win32_display_backend.h">
+      <Filter>src\window\win32</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZWidget\src\window\win32\win32_display_window.h">
+      <Filter>src\window\win32</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZWidget\src\window\win32\win32_open_folder_dialog.h">
+      <Filter>src\window\win32</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZWidget\src\window\win32\win32_open_file_dialog.h">
+      <Filter>src\window\win32</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZWidget\src\window\win32\win32_save_file_dialog.h">
+      <Filter>src\window\win32</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZWidget\src\window\win32\win32_util.h">
+      <Filter>src\window\win32</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZWidget\include\zwidget\core\canvas.h">
+      <Filter>include\core</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZWidget\include\zwidget\core\colorf.h">
+      <Filter>include\core</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZWidget\include\zwidget\core\font.h">
+      <Filter>include\core</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZWidget\include\zwidget\core\image.h">
+      <Filter>include\core</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZWidget\include\zwidget\core\rect.h">
+      <Filter>include\core</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZWidget\include\zwidget\core\pathfill.h">
+      <Filter>include\core</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZWidget\include\zwidget\core\span_layout.h">
+      <Filter>include\core</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZWidget\include\zwidget\core\timer.h">
+      <Filter>include\core</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZWidget\include\zwidget\core\widget.h">
+      <Filter>include\core</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZWidget\include\zwidget\core\theme.h">
+      <Filter>include\core</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZWidget\include\zwidget\core\utf8reader.h">
+      <Filter>include\core</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZWidget\include\zwidget\core\resourcedata.h">
+      <Filter>include\core</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZWidget\include\zwidget\widgets\lineedit\lineedit.h">
+      <Filter>include\widgets\lineedit</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZWidget\include\zwidget\widgets\mainwindow\mainwindow.h">
+      <Filter>include\widgets\mainwindow</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZWidget\include\zwidget\widgets\menubar\menubar.h">
+      <Filter>include\widgets\menubar</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZWidget\include\zwidget\widgets\scrollbar\scrollbar.h">
+      <Filter>include\widgets\scrollbar</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZWidget\include\zwidget\widgets\statusbar\statusbar.h">
+      <Filter>include\widgets\statusbar</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZWidget\include\zwidget\widgets\textedit\textedit.h">
+      <Filter>include\widgets\textedit</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZWidget\include\zwidget\widgets\toolbar\toolbar.h">
+      <Filter>include\widgets\toolbar</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZWidget\include\zwidget\widgets\toolbar\toolbarbutton.h">
+      <Filter>include\widgets\toolbar</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZWidget\include\zwidget\widgets\imagebox\imagebox.h">
+      <Filter>include\widgets\imagebox</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZWidget\include\zwidget\widgets\textlabel\textlabel.h">
+      <Filter>include\widgets\textlabel</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZWidget\include\zwidget\widgets\pushbutton\pushbutton.h">
+      <Filter>include\widgets\pushbutton</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZWidget\include\zwidget\widgets\checkboxlabel\checkboxlabel.h">
+      <Filter>include\widgets\checkboxlabel</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZWidget\include\zwidget\widgets\listview\listview.h">
+      <Filter>include\widgets\listview</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZWidget\include\zwidget\widgets\tabwidget\tabwidget.h">
+      <Filter>include\widgets\tabwidget</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZWidget\include\zwidget\window\window.h">
+      <Filter>include\window</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZWidget\include\zwidget\window\win32nativehandle.h">
+      <Filter>include\window</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZWidget\include\zwidget\window\sdl2nativehandle.h">
+      <Filter>include\window</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZWidget\include\zwidget\systemdialogs\open_folder_dialog.h">
+      <Filter>include\systemdialogs</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZWidget\include\zwidget\systemdialogs\open_file_dialog.h">
+      <Filter>include\systemdialogs</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZWidget\include\zwidget\systemdialogs\save_file_dialog.h">
+      <Filter>include\systemdialogs</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZWidget\CMakeLists.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="include">
+      <UniqueIdentifier>{238FEFB4-96AF-3194-B68E-B28DAA9376DD}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\core">
+      <UniqueIdentifier>{9ACB42F3-D46D-302F-988A-A2A060CD9223}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\systemdialogs">
+      <UniqueIdentifier>{AF0E3500-0471-3611-8628-FD0E78D3BB72}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\widgets">
+      <UniqueIdentifier>{BEF208E4-377D-3988-BA7B-EC240D918B2A}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\widgets\checkboxlabel">
+      <UniqueIdentifier>{9253BDEC-7015-3738-A488-8B3B51BC3CF4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\widgets\imagebox">
+      <UniqueIdentifier>{0E65D6E1-B359-3D8C-8A24-07971851CCFE}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\widgets\lineedit">
+      <UniqueIdentifier>{5D312CAC-9B48-36B0-ADEB-BF026C185CD7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\widgets\listview">
+      <UniqueIdentifier>{619D61E7-878B-3AEC-A319-B81415DCD05F}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\widgets\mainwindow">
+      <UniqueIdentifier>{B9023DE7-D631-34AC-BD73-CAAE66A44C91}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\widgets\menubar">
+      <UniqueIdentifier>{92E999FD-C2A1-35CB-9984-3481E8F8F2ED}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\widgets\pushbutton">
+      <UniqueIdentifier>{FD7E6189-9FE2-377E-A168-3B2D291D299F}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\widgets\scrollbar">
+      <UniqueIdentifier>{C30CDB32-E9E5-3394-A5F6-89C3FB29CA46}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\widgets\statusbar">
+      <UniqueIdentifier>{291DCD5E-601F-3954-B7EA-90DB8274D4C9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\widgets\tabwidget">
+      <UniqueIdentifier>{A12C50E3-6FB5-3E56-B205-A34A713B3BB0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\widgets\textedit">
+      <UniqueIdentifier>{A05F7836-3A47-330E-B942-B4EBE2C6385D}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\widgets\textlabel">
+      <UniqueIdentifier>{4FABBC86-E0E4-3803-88D1-CE4C67F3BA46}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\widgets\toolbar">
+      <UniqueIdentifier>{A50DA2FE-A07A-37E7-8AC1-87605D38A538}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\window">
+      <UniqueIdentifier>{035DEB21-3D1E-34F9-A724-55BC72473985}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src">
+      <UniqueIdentifier>{6B4202D8-23D5-3758-B96B-AEA4987BE7E4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\core">
+      <UniqueIdentifier>{B3E53553-7C76-37C7-B313-E3E165945F77}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\core\nanosvg">
+      <UniqueIdentifier>{DE159DE0-E65D-32B7-962A-4AD86B379B27}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\core\picopng">
+      <UniqueIdentifier>{4606AFDD-FD8D-3D67-9C1D-498B16B95020}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\systemdialogs">
+      <UniqueIdentifier>{684C8E89-1C85-3A35-B1BC-38E0DD41E25A}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\widgets">
+      <UniqueIdentifier>{A7A02AE9-2CE6-3939-9952-74D4580F4E62}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\widgets\checkboxlabel">
+      <UniqueIdentifier>{B1BED0F7-3034-3504-8F10-558101DAF1D3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\widgets\dropdown">
+      <UniqueIdentifier>{C5DC85BD-5168-387D-B3D9-57F2AB94A502}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\widgets\imagebox">
+      <UniqueIdentifier>{841B4C0E-9707-3184-ADCC-AE591E5E156C}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\widgets\lineedit">
+      <UniqueIdentifier>{770FEB06-5921-3068-B8A4-D7FDC148EFFC}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\widgets\listview">
+      <UniqueIdentifier>{8B53C5D0-335A-3C88-92B1-BBA4075D5BCF}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\widgets\mainwindow">
+      <UniqueIdentifier>{0B657066-39D8-38CC-A1F8-F6E3D710F1BA}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\widgets\menubar">
+      <UniqueIdentifier>{41423A39-03C8-310C-8B1C-3BA1888A9D01}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\widgets\pushbutton">
+      <UniqueIdentifier>{9C181FA1-7A76-3293-A45C-ED731CE7E03B}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\widgets\scrollbar">
+      <UniqueIdentifier>{6B2AAEC7-5A13-37B9-8745-52AB3FDCC544}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\widgets\statusbar">
+      <UniqueIdentifier>{881A6E48-EDB7-3D73-AFDA-7B598C6DF47C}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\widgets\tabwidget">
+      <UniqueIdentifier>{40974D44-51ED-36AF-A269-E810A7499028}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\widgets\textedit">
+      <UniqueIdentifier>{FCD1E034-564E-33CC-B999-EE5559E6CE35}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\widgets\textlabel">
+      <UniqueIdentifier>{9FBF3128-058B-37A6-8B37-68CE9DCC94CD}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\widgets\toolbar">
+      <UniqueIdentifier>{696C9BB6-76C0-326A-815C-BA4FF0AD60DA}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\window">
+      <UniqueIdentifier>{C46B6C97-6FE3-3B78-B397-DB3A2D7679B8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\window\stub">
+      <UniqueIdentifier>{45D314BB-5222-3BF8-A82E-2529208BCE26}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\window\win32">
+      <UniqueIdentifier>{C13B3C40-5148-329D-A868-CBE3379184A7}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

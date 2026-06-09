@@ -1,0 +1,4 @@
+C:/Users/user/DoomConnector6/HCDE/CMakeFiles/_CMakeLTOTest-C/bin/CMakeFiles/foo.dir
+C:/Users/user/DoomConnector6/HCDE/CMakeFiles/_CMakeLTOTest-C/bin/CMakeFiles/boo.dir
+C:/Users/user/DoomConnector6/HCDE/CMakeFiles/_CMakeLTOTest-C/bin/CMakeFiles/ALL_BUILD.dir
+C:/Users/user/DoomConnector6/HCDE/CMakeFiles/_CMakeLTOTest-C/bin/CMakeFiles/ZERO_CHECK.dir

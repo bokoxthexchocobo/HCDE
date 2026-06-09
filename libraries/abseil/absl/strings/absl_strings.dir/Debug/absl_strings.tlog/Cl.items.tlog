@@ -1,0 +1,14 @@
+C:\Users\user\DoomConnector6\HCDE\libraries\abseil\absl\strings\ascii.cc;C:\Users\user\DoomConnector6\HCDE\libraries\abseil\absl\strings\absl_strings.dir\Debug\ascii.obj
+C:\Users\user\DoomConnector6\HCDE\libraries\abseil\absl\strings\charconv.cc;C:\Users\user\DoomConnector6\HCDE\libraries\abseil\absl\strings\absl_strings.dir\Debug\charconv.obj
+C:\Users\user\DoomConnector6\HCDE\libraries\abseil\absl\strings\escaping.cc;C:\Users\user\DoomConnector6\HCDE\libraries\abseil\absl\strings\absl_strings.dir\Debug\escaping.obj
+C:\Users\user\DoomConnector6\HCDE\libraries\abseil\absl\strings\internal\charconv_bigint.cc;C:\Users\user\DoomConnector6\HCDE\libraries\abseil\absl\strings\absl_strings.dir\Debug\charconv_bigint.obj
+C:\Users\user\DoomConnector6\HCDE\libraries\abseil\absl\strings\internal\charconv_parse.cc;C:\Users\user\DoomConnector6\HCDE\libraries\abseil\absl\strings\absl_strings.dir\Debug\charconv_parse.obj
+C:\Users\user\DoomConnector6\HCDE\libraries\abseil\absl\strings\internal\damerau_levenshtein_distance.cc;C:\Users\user\DoomConnector6\HCDE\libraries\abseil\absl\strings\absl_strings.dir\Debug\damerau_levenshtein_distance.obj
+C:\Users\user\DoomConnector6\HCDE\libraries\abseil\absl\strings\internal\memutil.cc;C:\Users\user\DoomConnector6\HCDE\libraries\abseil\absl\strings\absl_strings.dir\Debug\memutil.obj
+C:\Users\user\DoomConnector6\HCDE\libraries\abseil\absl\strings\internal\stringify_sink.cc;C:\Users\user\DoomConnector6\HCDE\libraries\abseil\absl\strings\absl_strings.dir\Debug\stringify_sink.obj
+C:\Users\user\DoomConnector6\HCDE\libraries\abseil\absl\strings\match.cc;C:\Users\user\DoomConnector6\HCDE\libraries\abseil\absl\strings\absl_strings.dir\Debug\match.obj
+C:\Users\user\DoomConnector6\HCDE\libraries\abseil\absl\strings\numbers.cc;C:\Users\user\DoomConnector6\HCDE\libraries\abseil\absl\strings\absl_strings.dir\Debug\numbers.obj
+C:\Users\user\DoomConnector6\HCDE\libraries\abseil\absl\strings\str_cat.cc;C:\Users\user\DoomConnector6\HCDE\libraries\abseil\absl\strings\absl_strings.dir\Debug\str_cat.obj
+C:\Users\user\DoomConnector6\HCDE\libraries\abseil\absl\strings\str_replace.cc;C:\Users\user\DoomConnector6\HCDE\libraries\abseil\absl\strings\absl_strings.dir\Debug\str_replace.obj
+C:\Users\user\DoomConnector6\HCDE\libraries\abseil\absl\strings\str_split.cc;C:\Users\user\DoomConnector6\HCDE\libraries\abseil\absl\strings\absl_strings.dir\Debug\str_split.obj
+C:\Users\user\DoomConnector6\HCDE\libraries\abseil\absl\strings\substitute.cc;C:\Users\user\DoomConnector6\HCDE\libraries\abseil\absl\strings\absl_strings.dir\Debug\substitute.obj

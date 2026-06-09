@@ -1,0 +1,17 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="17.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <CustomBuild Include="C:\Users\user\DoomConnector6\HCDE\CMakeFiles\ab756c42effa7724d198aedfc1836852\game_support_pk3_static_filter_chex_chex3_language_csv.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\CMakeLists.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\CMakeFiles\game_support_pk3_static_filter_chex_chex3_language_csv" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="CMake Rules">
+      <UniqueIdentifier>{6B4C33DB-601C-3F66-91C4-B80AF0AEEFDD}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

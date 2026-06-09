@@ -1,0 +1,8 @@
+﻿gh : error: your authentication token is missing required scopes [read:project]
+At C:\Users\user\AppData\Local\Temp\ps-script-2368ac2a-4e3e-4e27-9242-f1570e812a23.ps1:81 char:1
++ gh project item-list 2 --owner bokoxthexchocobo --limit 100 --format  ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (error: your aut... [read:project]:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+To request it, run:  gh auth refresh -s read:project

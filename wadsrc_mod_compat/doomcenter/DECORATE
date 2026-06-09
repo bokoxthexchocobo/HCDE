@@ -1,0 +1,38 @@
+// HCDE mod compatibility resource for DoomCenter (doomcenter_v95.pk3 and later).
+//
+// This file is HCDE-owned. It is layered on TOP of DoomCenter and is never
+// written into the third-party DoomCenter archive.
+//
+// DoomCenter is a Skulltag/Zandronum-era hub mod. On HCDE (GZDoom-derived) its
+// DECORATE references a Skulltag/Zandronum ENGINE built-in actor, FloatyIcon,
+// which does not exist in HCDE and is NOT shipped in skulltag_content-4.0.pk3
+// or skulltag_actors.pk3 (verified). DoomCenter does:
+//
+//     ACTOR DCFloatyIcon : FloatyIcon replaces FloatyIcon
+//
+// so the missing parent/replacee aborts the whole DECORATE parse with a fatal
+// "Parent type 'FloatyIcon' not found" (the parent lookup is resolved by load
+// order at parse time, which is why this stub must be loaded BEFORE DoomCenter;
+// see HCDE_ModCompat's preload handling).
+//
+// FloatyIcon in Skulltag is a tiny non-interacting floating display actor (the
+// chat/medal bubble base). DoomCenter immediately replaces it, so the only
+// requirement here is that a valid, inert actor named FloatyIcon exists for the
+// subclass to derive from. This is an original HCDE-authored stub, not a copy
+// of any third-party actor.
+ACTOR FloatyIcon
+{
+	+NOBLOCKMAP
+	+NOGRAVITY
+	+NOINTERACTION
+	+DONTSPLASH
+	+NOTONAUTOMAP
+	RenderStyle Translucent
+	Alpha 1.0
+	States
+	{
+	Spawn:
+		TNT1 A -1
+		Stop
+	}
+}

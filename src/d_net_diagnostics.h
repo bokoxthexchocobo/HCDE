@@ -67,7 +67,13 @@ bool Net_DiagWriteBundle(const char* label, FString& outPath);
 void Net_DiagTraceUseEdge(int playerNum, uint32_t buttons, bool rising);
 void Net_DiagTraceUseLine(int playerNum, int lineIndex, bool success, bool useFail);
 void Net_DiagTraceLineSpec(int playerNum, int lineIndex, int special, int tag, bool success, bool predicted);
-void Net_DiagTraceDoorEvent(int tag, int type, int direction, double speed);
+void Net_DiagTraceDoorEvent(int tag, int type, int direction, double speed,
+	int sectorIndex, double ceilingZ, double floorZ, int activatorPlayer);
+// Door ceiling-mover lifecycle (construct/finished) so a client vs server diff
+// shows whether the client's door ever actually moves. The "run through a
+// closed door" report needs to know if the client created/ran the door thinker
+// at all, or if its ceiling stayed put while the server's moved.
+void Net_DiagTraceDoorMove(int sectorIndex, const char* phase, double ceilingZ, double floorZ);
 void Net_DiagTraceSectorAction(int sectorIndex, int activation, bool didIt);
 
 // Inspect bundle / blackbox from console

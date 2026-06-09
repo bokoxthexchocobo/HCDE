@@ -1,0 +1,20 @@
+^C:\USERS\USER\DOOMCONNECTOR6\HCDE\CMAKEFILES\D4ED490FF1632B66AC3AB0F35384CE2D\GAME_WIDESCREEN_GFX_PK3_COPY.RULE
+setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -E copy_if_different C:/Users/user/DoomConnector6/HCDE/game_widescreen_gfx.pk3 C:/Users/user/DoomConnector6/HCDE/Debug/game_widescreen_gfx.pk3
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd
+^C:\USERS\USER\DOOMCONNECTOR6\HCDE\WADSRC_WIDEPIX\CMAKELISTS.TXT
+setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -SC:/Users/user/DoomConnector6/HCDE -BC:/Users/user/DoomConnector6/HCDE --check-stamp-file C:/Users/user/DoomConnector6/HCDE/wadsrc_widepix/CMakeFiles/generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd

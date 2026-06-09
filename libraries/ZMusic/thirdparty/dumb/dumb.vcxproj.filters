@@ -1,0 +1,265 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="17.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\dumb\src\core\unload.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\dumb\src\core\rendsig.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\dumb\src\core\rendduh.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\dumb\src\core\register.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\dumb\src\core\readduh.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\dumb\src\core\rawsig.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\dumb\src\core\makeduh.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\dumb\src\core\loadduh.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\dumb\src\core\dumbfile.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\dumb\src\core\duhtag.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\dumb\src\core\duhlen.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\dumb\src\core\atexit.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\dumb\src\helpers\stdfile.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\dumb\src\helpers\silence.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\dumb\src\helpers\sampbuf.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\dumb\src\helpers\riff.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\dumb\src\helpers\resample.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\dumb\src\helpers\memfile.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\dumb\src\helpers\clickrem.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\dumb\src\helpers\barray.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\dumb\src\it\xmeffect.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\dumb\src\it\readxm2.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\dumb\src\it\readxm.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\dumb\src\it\readstm2.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\dumb\src\it\readstm.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\dumb\src\it\reads3m2.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\dumb\src\it\reads3m.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\dumb\src\it\readriff.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\dumb\src\it\readptm.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\dumb\src\it\readpsm.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\dumb\src\it\readoldpsm.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\dumb\src\it\readokt2.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\dumb\src\it\readokt.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\dumb\src\it\readmtm.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\dumb\src\it\readmod2.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\dumb\src\it\readmod.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\dumb\src\it\readdsmf.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\dumb\src\it\readasy.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\dumb\src\it\readamf2.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\dumb\src\it\readamf.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\dumb\src\it\readam.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\dumb\src\it\read6692.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\dumb\src\it\read669.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\dumb\src\it\ptmeffect.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\dumb\src\it\loadxm2.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\dumb\src\it\loadxm.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\dumb\src\it\loadstm2.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\dumb\src\it\loadstm.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\dumb\src\it\loads3m2.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\dumb\src\it\loads3m.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\dumb\src\it\loadriff2.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\dumb\src\it\loadriff.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\dumb\src\it\loadptm2.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\dumb\src\it\loadptm.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\dumb\src\it\loadpsm2.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\dumb\src\it\loadpsm.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\dumb\src\it\loadoldpsm2.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\dumb\src\it\loadoldpsm.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\dumb\src\it\loadokt2.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\dumb\src\it\loadokt.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\dumb\src\it\loadmtm2.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\dumb\src\it\loadmtm.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\dumb\src\it\loadmod2.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\dumb\src\it\loadmod.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\dumb\src\it\loadasy2.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\dumb\src\it\loadasy.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\dumb\src\it\loadamf2.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\dumb\src\it\loadamf.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\dumb\src\it\load6692.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\dumb\src\it\load669.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\dumb\src\it\itunload.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\dumb\src\it\itrender.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\dumb\src\it\itread2.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\dumb\src\it\itread.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\dumb\src\it\itorder.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\dumb\src\it\itmisc.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\dumb\src\it\itload2.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\dumb\src\it\itload.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\dumb\src\it\readany.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\dumb\src\it\loadany2.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\dumb\src\it\loadany.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\dumb\src\it\readany2.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\dumb\src\helpers\resampler.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\dumb\src\helpers\lpc.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\dumb\CMakeLists.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{7A34F880-AD99-3A93-806C-D6F4B030A349}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

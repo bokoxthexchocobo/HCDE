@@ -1,0 +1,38 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="17.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <CustomBuild Include="C:\Users\user\DoomConnector6\HCDE\CMakeFiles\f2ccca16b11cd5feb0bebae6bf4ef910\hcde_mod_compat_pink_valley_eng.pk3.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="C:\Users\user\DoomConnector6\HCDE\CMakeFiles\cf8b55309c9d6b8faaa99210ce15918b\hcde_mod_compat_pink_valley_eng_pk3.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_mod_compat\CMakeLists.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_mod_compat\pink_valley_eng\DECORATE">
+      <Filter>Source Files</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_mod_compat\pink_valley_eng\ZMAPINFO">
+      <Filter>Source Files</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_mod_compat\pink_valley_eng\zscript.txt">
+      <Filter>Source Files</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_mod_compat\pink_valley_eng\zscript\hcde_pink_valley_eventhandler_fix.zs">
+      <Filter>Source Files\zscript</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_mod_compat\CMakeFiles\hcde_mod_compat_pink_valley_eng_pk3" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="CMake Rules">
+      <UniqueIdentifier>{6B4C33DB-601C-3F66-91C4-B80AF0AEEFDD}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{7A34F880-AD99-3A93-806C-D6F4B030A349}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\zscript">
+      <UniqueIdentifier>{EBFA6460-CD94-3B52-8C13-79F9D26887FC}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

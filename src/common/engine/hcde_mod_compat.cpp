@@ -28,6 +28,14 @@ struct HCDEModCompatEntry
 	const char* StartupMapOverride;
 	const char* const* Patterns;
 	unsigned int Flags;
+	// Null-terminated list of resources that must be parsed BEFORE the matched
+	// mod (e.g. DECORATE/ZScript parent classes the mod inherits from). Unlike
+	// ResourceFile - which is appended after the mod, the right place for
+	// `replaces`/override shims - these are inserted ahead of the mod in the
+	// load order, because parent-class lookup is resolved by load order at
+	// parse time (PClass::FindActor in CreateNewActor). Trailing field, so
+	// existing 5-field initializers leave it null via aggregate value-init.
+	const char* const* PreloadFiles;
 };
 
 static const char* const BrutalDoomRailgunPatterns[] =
@@ -113,6 +121,32 @@ static const char* const BladeOfAgonyPatterns[] =
 	"boa_c31_4*",
 	"boa.ipk3",
 	"Blade of Agony*",
+	nullptr
+};
+
+static const char* const DoomCenterPatterns[] =
+{
+	"doomcenter*.pk3",
+	"doomcenter*",
+	"DoomCenter*",
+	nullptr
+};
+
+// Loaded ahead of DoomCenter so the DECORATE parents it inherits from exist
+// when its lumps are parsed (parent lookup is load-order sensitive).
+static const char* const DoomCenterPreloadFiles[] =
+{
+	// Skulltag base monsters (Abaddon, Belphegor, BloodDemon, Cacolantern,
+	// DarkImp, Hectebus, SuperShotgunGuy) that DoomCenter's holographic display
+	// actors inherit from. Third-party; the user supplies the file (the same one
+	// HCDE already pulls in for Armageddon2). Resolved best-effort - if it is
+	// absent DoomCenter will still fail on those parents, which is a genuine
+	// missing-dependency situation we cannot legally bundle.
+	"skulltag_content-4.0.pk3",
+	// HCDE-authored stub for FloatyIcon, a Skulltag/Zandronum engine built-in
+	// (present in neither skulltag_content nor skulltag_actors) that DoomCenter
+	// inherits from + replaces. Ours to ship.
+	"hcde_mod_compat_doomcenter.pk3",
 	nullptr
 };
 
@@ -450,6 +484,14 @@ static const HCDEModCompatEntry ModCompatEntries[] =
 		nullptr,
 		BladeOfAgonyPatterns,
 		0u
+	},
+	{
+		"DoomCenter Skulltag actor + hub map compatibility",
+		nullptr,
+		"MAP55",
+		DoomCenterPatterns,
+		0u,
+		DoomCenterPreloadFiles
 	}
 };
 
@@ -576,6 +618,41 @@ void HCDE_ModCompat_AppendFiles(std::vector<FileSys::ResourceName>& pwads, FConf
 		{
 			ActiveStartupMapOverride = entry.StartupMapOverride;
 			Printf("HCDE: startup map compatibility override is '%s'.\n", ActiveStartupMapOverride);
+		}
+
+		if (entry.PreloadFiles != nullptr)
+		{
+			// Insert each dependency immediately before the matched mod so its
+			// DECORATE/ZScript parents are parsed first. Appending (the
+			// ResourceFile path below) would leave the parents undefined and
+			// abort the mod's parse. modIndex tracks the mod's current position;
+			// each successful insert shifts the mod down by one, so we advance
+			// modIndex to keep the preload files in their listed order and all
+			// ahead of the mod.
+			int modIndex = HCDE_ModCompat_FindFirstMatch(pwads, entry.Patterns);
+			for (const char* const* preload = entry.PreloadFiles; *preload != nullptr; ++preload)
+			{
+				const char* preloadFile = HCDE_ModCompat_ResolveCompatFile(*preload, config, matchWads);
+				if (preloadFile == nullptr)
+				{
+					Printf("HCDE: mod compatibility '%s' dependency '%s' was not found near the engine or the loaded mods; "
+						"the mod may fail to load.\n", entry.Label, *preload);
+					continue;
+				}
+				if (HCDE_ModCompat_FileAlreadyListed(pwads, preloadFile))
+				{
+					continue;
+				}
+				const int insertAt = (modIndex >= 0) ? modIndex : -1;
+				if (D_AddFile(pwads, preloadFile, true, insertAt, config, false))
+				{
+					Printf("HCDE: preloaded dependency '%s' for mod compatibility '%s'.\n", preloadFile, entry.Label);
+					if (modIndex >= 0)
+					{
+						++modIndex;
+					}
+				}
+			}
 		}
 
 		if (entry.ResourceFile == nullptr || entry.ResourceFile[0] == '\0')

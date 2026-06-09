@@ -1,0 +1,30 @@
+^C:\USERS\USER\DOOMCONNECTOR6\HCDE\CMAKEFILES\F2CCCA16B11CD5FEB0BEBAE6BF4EF910\GAME_WIDESCREEN_GFX.PK3.RULE
+setlocal
+..\tools\zipdir\Debug\zipdir.exe -udf C:/Users/user/DoomConnector6/HCDE/game_widescreen_gfx.pk3 C:/Users/user/DoomConnector6/HCDE/wadsrc_widepix/static
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd
+^C:\USERS\USER\DOOMCONNECTOR6\HCDE\CMAKEFILES\D4ED490FF1632B66AC3AB0F35384CE2D\GAME_WIDESCREEN_GFX_PK3.RULE
+setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -E touch C:/Users/user/DoomConnector6/HCDE/tools/zipdir/Debug/zipdir.exe
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd
+^C:\USERS\USER\DOOMCONNECTOR6\HCDE\WADSRC_WIDEPIX\CMAKELISTS.TXT
+setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -SC:/Users/user/DoomConnector6/HCDE -BC:/Users/user/DoomConnector6/HCDE --check-stamp-file C:/Users/user/DoomConnector6/HCDE/wadsrc_widepix/CMakeFiles/generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd

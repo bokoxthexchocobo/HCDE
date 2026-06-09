@@ -1,0 +1,291 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="17.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\src\utils\fluid_conv.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\src\utils\fluid_hash.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\src\utils\fluid_list.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\src\utils\fluid_ringbuffer.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\src\utils\fluid_settings.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\src\utils\fluid_sys.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\src\sfloader\fluid_defsfont.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\src\sfloader\fluid_sfont.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\src\sfloader\fluid_sffile.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\src\sfloader\fluid_samplecache.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\src\rvoice\fluid_adsr_env.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\src\rvoice\fluid_chorus.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\src\rvoice\fluid_iir_filter.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\src\rvoice\fluid_iir_filter_impl.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\src\rvoice\fluid_lfo.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\src\rvoice\fluid_rvoice.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\src\rvoice\fluid_rvoice_dsp.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\src\rvoice\fluid_rvoice_event.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\src\rvoice\fluid_rvoice_mixer.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\src\rvoice\fluid_rev.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\src\synth\fluid_chan.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\src\synth\fluid_event.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\src\synth\fluid_gen.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\src\synth\fluid_mod.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\src\synth\fluid_synth.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\src\synth\fluid_synth_monopoly.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\src\synth\fluid_tuning.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\src\synth\fluid_voice.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\src\midi\fluid_midi.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\src\midi\fluid_midi_router.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\src\midi\fluid_seqbind.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\src\midi\fluid_seqbind_notes.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\src\midi\fluid_seq.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\src\midi\fluid_seq_queue.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\src\drivers\fluid_adriver.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\src\drivers\fluid_mdriver.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\src\bindings\fluid_filerenderer.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\src\bindings\fluid_ladspa.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\src\utils\win32_glibstubs.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\src\config.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\src\utils\fluid_conv.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\src\utils\fluid_hash.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\src\utils\fluid_list.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\src\utils\fluid_ringbuffer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\src\utils\fluid_settings.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\src\utils\fluidsynth_priv.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\src\utils\fluid_sys.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\src\sfloader\fluid_defsfont.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\src\sfloader\fluid_sfont.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\src\sfloader\fluid_sffile.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\src\sfloader\fluid_samplecache.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\src\rvoice\fluid_adsr_env.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\src\rvoice\fluid_chorus.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\src\rvoice\fluid_iir_filter.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\src\rvoice\fluid_lfo.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\src\rvoice\fluid_rvoice.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\src\rvoice\fluid_rvoice_event.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\src\rvoice\fluid_rvoice_mixer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\src\rvoice\fluid_phase.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\src\rvoice\fluid_rev.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\src\synth\fluid_chan.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\src\synth\fluid_event.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\src\synth\fluid_gen.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\src\synth\fluid_mod.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\src\synth\fluid_synth.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\src\synth\fluid_tuning.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\src\synth\fluid_voice.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\src\midi\fluid_midi.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\src\midi\fluid_midi_router.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\src\drivers\fluid_adriver.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\src\drivers\fluid_mdriver.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\src\bindings\fluid_ladspa.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\src\utils\win32_glibstubs.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\include\fluidsynth\audio.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\include\fluidsynth\event.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\include\fluidsynth\gen.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\include\fluidsynth\ladspa.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\include\fluidsynth\log.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\include\fluidsynth\midi.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\include\fluidsynth\misc.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\include\fluidsynth\mod.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\include\fluidsynth\seq.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\include\fluidsynth\seqbind.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\include\fluidsynth\settings.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\include\fluidsynth\sfont.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\include\fluidsynth\shell.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\include\fluidsynth\synth.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\include\fluidsynth\types.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\include\fluidsynth\voice.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\include\fluidsynth\version.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\include\fluidsynth.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\fluidsynth\src\CMakeLists.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{F4031774-2530-34F6-A3E3-BFF9B8A0DB72}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{7A34F880-AD99-3A93-806C-D6F4B030A349}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

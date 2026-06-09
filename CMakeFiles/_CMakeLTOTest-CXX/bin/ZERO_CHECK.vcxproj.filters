@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="17.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <CustomBuild Include="C:\Users\user\DoomConnector6\HCDE\CMakeFiles\_CMakeLTOTest-CXX\bin\CMakeFiles\e8e94666b1cd6f0c34cefba19739fab8\generate.stamp.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="CMake Rules">
+      <UniqueIdentifier>{BDC92B52-5DED-3FF2-9365-63B983EC579E}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

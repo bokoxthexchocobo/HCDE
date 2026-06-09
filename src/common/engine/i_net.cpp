@@ -1485,6 +1485,16 @@ void CloseNetwork()
 		MySocket = INVALID_SOCKET;
 		netgame = false;
 	}
+	// Reset per-session admission/join state so a later host/join in the same
+	// process cannot inherit a stale "game started" or dedicated late-join
+	// handshake state. These are re-seeded by HostGame()/JoinGame(), but
+	// clearing them here keeps a torn-down session from leaking flags into a
+	// subsequent non-dedicated game.
+	bGameStarted = false;
+	DedicatedJoinMode = false;
+	DedicatedLateJoinRetryAttempted = false;
+	DedicatedLateJoinRetryPendingSend = false;
+	DedicatedServerAbortRequested = false;
 #ifdef _WIN32
 	if (!DebugServer::RuntimeEvents::IsDebugServerRunning()){
 		WSACleanup();
@@ -1998,13 +2008,13 @@ static void GetPacket(sockaddr_in* const from = nullptr)
 						const bool authority = I_IsLocalHCDEServiceAuthority();
 						const bool listenLateJoinAllowed = !DedicatedServerMode && *sv_lateJoin;
 						const bool admissionAllowed = authority && (DedicatedServerMode || listenLateJoinAllowed);
-						const bool admitted = admissionAllowed
+						const bool processed = admissionAllowed
 							&& TryProcessSetupConnectPacket(fromAddress, strlen(net_password) > 0, false, true, nullptr);
-						if (admitted)
+						if (processed)
 						{
 							client = FindClient(fromAddress);
 						}
-						if (client == -1)
+						if (client == -1 && !processed)
 						{
 							NetBuffer[0] = NCMD_SETUP;
 							NetBuffer[1] = PRE_IN_PROGRESS;
@@ -2769,7 +2779,10 @@ static bool Host_CheckForConnections(void* connected)
 	I_GetKickClients(toBoot);
 	for (auto client : toBoot)
 	{
-		if (client <= 0 || Connected[client].Status == CSTAT_NONE)
+		// Bound-check the UI-sourced slot before indexing Connected[]; mirrors
+		// the disconnect handler's MAXPLAYERS guard so a bad index cannot read
+		// or mutate past the array.
+		if (client <= 0 || client >= MaxClients || client >= int(MAXPLAYERS) || Connected[client].Status == CSTAT_NONE)
 			continue;
 
 		sockaddr_in booted = Connected[client].Address;
@@ -2784,7 +2797,8 @@ static bool Host_CheckForConnections(void* connected)
 	I_GetBanClients(toBoot);
 	for (auto client : toBoot)
 	{
-		if (client <= 0 || Connected[client].Status == CSTAT_NONE)
+		// Same bound check as the kick loop above before indexing Connected[].
+		if (client <= 0 || client >= MaxClients || client >= int(MAXPLAYERS) || Connected[client].Status == CSTAT_NONE)
 			continue;
 
 		sockaddr_in booted = Connected[client].Address;
@@ -3255,11 +3269,21 @@ static bool HostGame(int arg)
 	}
 	if (DedicatedServerMode)
 	{
-		if (requestedClients <= 0)
-			requestedClients = 1;
-		if ((unsigned)requestedClients >= MAXPLAYERS)
-			I_FatalError("Cannot host a dedicated game with %u client slots. The limit is currently %lu", requestedClients, MAXPLAYERS - 1u);
-		MaxClients = requestedClients + 1;
+		// A standalone dedicated server's real playable capacity is the larger
+		// of the explicit -server count and the configured sv_maxplayers. This
+		// lets an operator open late-join co-op slots purely through the server
+		// config (sv_maxplayers) without passing a client count on the command
+		// line, and stops a small "-server N" from permanently capping the
+		// roster below the configured maximum. sv_maxplayers is a CVAR_ARCHIVE
+		// server setting restored by GameConfig->DoGameSetup() before this runs.
+		int playableSlots = requestedClients > 0 ? requestedClients : 0;
+		if (*sv_maxplayers > 0)
+			playableSlots = max<int>(playableSlots, *sv_maxplayers);
+		if (playableSlots <= 0)
+			playableSlots = 1;
+		if ((unsigned)playableSlots >= MAXPLAYERS)
+			I_FatalError("Cannot host a dedicated game with %u client slots. The limit is currently %lu", playableSlots, MAXPLAYERS - 1u);
+		MaxClients = playableSlots + 1;
 	}
 	else if (!(MaxClients = requestedClients))
 	{	// No player count specified, assume 2
@@ -3892,6 +3916,15 @@ static bool Guest_ContactHost(void* unused)
 				if (c < 0 || c >= MaxClients || c >= MAXPLAYERS)
 				{
 					DebugTrace::Markf("net", "ignored legacy peer userinfo for invalid client %d max=%d", c, MaxClients);
+					continue;
+				}
+				// A peer entry (c > 0) carries the peer's sockaddr at offset 7.
+				// Validate the packet actually contains those bytes before we
+				// mutate any state, so a short packet cannot splice stale
+				// NetBuffer contents into Connected[c].Address.
+				if (c > 0 && size_t(msgSize) < 7u + addrSize)
+				{
+					DebugTrace::Markf("net", "ignored short legacy peer userinfo for client %d (len=%d need=%zu)", c, msgSize, 7u + addrSize);
 					continue;
 				}
 				if (!ClientGotAck(consoleplayer, c))

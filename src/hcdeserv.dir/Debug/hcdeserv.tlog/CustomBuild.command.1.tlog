@@ -1,0 +1,40 @@
+^C:\USERS\USER\DOOMCONNECTOR6\HCDE\CMAKEFILES\CA1357EA50D7FAD19C508B580164EB9B\SC_MAN_SCANNER.H.RULE
+setlocal
+..\tools\re2c\Debug\re2c.exe --no-generation-date -s -o C:/Users/user/DoomConnector6/HCDE/src/sc_man_scanner.h C:/Users/user/DoomConnector6/HCDE/src/common/engine/sc_man_scanner.re
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd
+^C:\USERS\USER\DOOMCONNECTOR6\HCDE\CMAKEFILES\CA1357EA50D7FAD19C508B580164EB9B\XLAT_PARSER.C.RULE
+setlocal
+..\tools\lemon\Debug\lemon.exe -CC:/Users/user/DoomConnector6/HCDE/src C:/Users/user/DoomConnector6/HCDE/src/gamedata/xlat/xlat_parser.y
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd
+^C:\USERS\USER\DOOMCONNECTOR6\HCDE\CMAKEFILES\CA1357EA50D7FAD19C508B580164EB9B\ZCC-PARSE.C.RULE
+setlocal
+..\tools\lemon\Debug\lemon.exe -CC:/Users/user/DoomConnector6/HCDE/src C:/Users/user/DoomConnector6/HCDE/src/common/scripting/frontend/zcc-parse.lemon
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd
+^C:\USERS\USER\DOOMCONNECTOR6\HCDE\SRC\CMAKELISTS.TXT
+setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -SC:/Users/user/DoomConnector6/HCDE -BC:/Users/user/DoomConnector6/HCDE --check-stamp-file C:/Users/user/DoomConnector6/HCDE/src/CMakeFiles/generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd

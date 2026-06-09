@@ -132,6 +132,8 @@ static void I_CheckGUICapture ()
 		if (wantCapt && Keyboard != NULL)
 		{
 			Keyboard->AllKeysUp();
+			buttonMap.ResetButtonStates();
+			DebugTrace::Infof("win32.focus", "cleared transient input state reason=gui-capture");
 		}
 	}
 }

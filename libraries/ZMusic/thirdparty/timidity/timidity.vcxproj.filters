@@ -1,0 +1,72 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="17.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\timidity\common.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\timidity\instrum.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\timidity\instrum_dls.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\timidity\instrum_font.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\timidity\instrum_sf2.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\timidity\mix.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\timidity\playmidi.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\timidity\resample.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\timidity\timidity.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\timidity\timidity\common.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\timidity\timidity\dls1.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\timidity\timidity\dls2.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\timidity\timidity\gf1patch.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\timidity\timidity\instrum.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\timidity\timidity\playmidi.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\timidity\timidity\sf2.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\timidity\timidity\t_swap.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\timidity\timidity\timidity.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="C:\Users\user\DoomConnector6\HCDE\libraries\ZMusic\thirdparty\timidity\CMakeLists.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{F4031774-2530-34F6-A3E3-BFF9B8A0DB72}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{7A34F880-AD99-3A93-806C-D6F4B030A349}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

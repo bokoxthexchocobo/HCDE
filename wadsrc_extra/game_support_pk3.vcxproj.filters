@@ -1,0 +1,1978 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="17.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <CustomBuild Include="C:\Users\user\DoomConnector6\HCDE\CMakeFiles\f2ccca16b11cd5feb0bebae6bf4ef910\game_support.pk3.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="C:\Users\user\DoomConnector6\HCDE\CMakeFiles\ab756c42effa7724d198aedfc1836852\game_support_pk3.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\CMakeLists.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\graphics\artibox.png">
+      <Filter>Source Files\graphics</Filter>
+    </Image>
+    <Image Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\graphics\chexcurs.png">
+      <Filter>Source Files\graphics</Filter>
+    </Image>
+    <Image Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\graphics\doomcurs.png">
+      <Filter>Source Files\graphics</Filter>
+    </Image>
+    <Image Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\graphics\herecurs.png">
+      <Filter>Source Files\graphics</Filter>
+    </Image>
+    <Image Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\graphics\hexncurs.png">
+      <Filter>Source Files\graphics</Filter>
+    </Image>
+    <Image Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\graphics\invgeml1.png">
+      <Filter>Source Files\graphics</Filter>
+    </Image>
+    <Image Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\graphics\invgeml2.png">
+      <Filter>Source Files\graphics</Filter>
+    </Image>
+    <Image Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\graphics\invgemr1.png">
+      <Filter>Source Files\graphics</Filter>
+    </Image>
+    <Image Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\graphics\invgemr2.png">
+      <Filter>Source Files\graphics</Filter>
+    </Image>
+    <Image Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\graphics\m_back_c.png">
+      <Filter>Source Files\graphics</Filter>
+    </Image>
+    <Image Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\graphics\m_back_d.png">
+      <Filter>Source Files\graphics</Filter>
+    </Image>
+    <Image Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\graphics\m_back_h.png">
+      <Filter>Source Files\graphics</Filter>
+    </Image>
+    <Image Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\graphics\m_back_s.png">
+      <Filter>Source Files\graphics</Filter>
+    </Image>
+    <Image Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\graphics\m_back_x.png">
+      <Filter>Source Files\graphics</Filter>
+    </Image>
+    <Image Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\graphics\selectbo.png">
+      <Filter>Source Files\graphics</Filter>
+    </Image>
+    <Image Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\graphics\strfcurs.png">
+      <Filter>Source Files\graphics</Filter>
+    </Image>
+    <Image Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\sprites\GWANA0.png">
+      <Filter>Source Files\sprites</Filter>
+    </Image>
+    <Image Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\sprites\PLS1A0.png">
+      <Filter>Source Files\sprites</Filter>
+    </Image>
+    <Image Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\sprites\PLS1B0.png">
+      <Filter>Source Files\sprites</Filter>
+    </Image>
+    <Image Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\sprites\PLS1C0.png">
+      <Filter>Source Files\sprites</Filter>
+    </Image>
+    <Image Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\sprites\PLS1D0.png">
+      <Filter>Source Files\sprites</Filter>
+    </Image>
+    <Image Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\sprites\PLS1E0.png">
+      <Filter>Source Files\sprites</Filter>
+    </Image>
+    <Image Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\sprites\PLS1F0.png">
+      <Filter>Source Files\sprites</Filter>
+    </Image>
+    <Image Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\sprites\PLS1G0.png">
+      <Filter>Source Files\sprites</Filter>
+    </Image>
+    <Image Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\sprites\PLS2A0.png">
+      <Filter>Source Files\sprites</Filter>
+    </Image>
+    <Image Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\sprites\PLS2B0.png">
+      <Filter>Source Files\sprites</Filter>
+    </Image>
+    <Image Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\sprites\PLS2C0.png">
+      <Filter>Source Files\sprites</Filter>
+    </Image>
+    <Image Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\sprites\PLS2D0.png">
+      <Filter>Source Files\sprites</Filter>
+    </Image>
+    <Image Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\sprites\PLS2E0.png">
+      <Filter>Source Files\sprites</Filter>
+    </Image>
+    <Image Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\sprites\minza0.png">
+      <Filter>Source Files\sprites</Filter>
+    </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\ANCRINFO.txt">
+      <Filter>Source Files</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\SNDINFO.txt">
+      <Filter>Source Files</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\credits\harmmod.txt">
+      <Filter>Source Files\credits</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\chex.chex3\mapinfo.txt">
+      <Filter>Source Files\filter\chex.chex3</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\doom.freedoom\decaldef.z">
+      <Filter>Source Files\filter\doom.freedoom</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\doom.id.doom1.unity\sndinfo.txt">
+      <Filter>Source Files\filter\doom.id.doom1.unity</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\doom.id.doom2.unity\sndinfo.txt">
+      <Filter>Source Files\filter\doom.id.doom2.unity</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\doom.id\sprofs.txt">
+      <Filter>Source Files\filter\doom.id</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\hacx.hacx1\after_iwad\Decorate.txt">
+      <Filter>Source Files\filter\hacx.hacx1\after_iwad</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\hacx.hacx1\after_iwad\menudef.txt">
+      <Filter>Source Files\filter\hacx.hacx1\after_iwad</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\hacx.hacx1\after_iwad\zmapinfo.txt">
+      <Filter>Source Files\filter\hacx.hacx1\after_iwad</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\hacx.hacx2\mapinfo.txt">
+      <Filter>Source Files\filter\hacx.hacx2</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\after_iwad\textures.txt">
+      <Filter>Source Files\filter\harmony\after_iwad</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\althudcf.txt">
+      <Filter>Source Files\filter\harmony</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\decaldef.txt">
+      <Filter>Source Files\filter\harmony</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\decorate.txt">
+      <Filter>Source Files\filter\harmony</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\endoom.bin">
+      <Filter>Source Files\filter\harmony</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\0021.lmp">
+      <Filter>Source Files\filter\harmony\fonts\bigfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\0022.lmp">
+      <Filter>Source Files\filter\harmony\fonts\bigfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\0023.lmp">
+      <Filter>Source Files\filter\harmony\fonts\bigfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\0024.lmp">
+      <Filter>Source Files\filter\harmony\fonts\bigfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\0025.lmp">
+      <Filter>Source Files\filter\harmony\fonts\bigfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\0027.lmp">
+      <Filter>Source Files\filter\harmony\fonts\bigfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\0028.lmp">
+      <Filter>Source Files\filter\harmony\fonts\bigfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\0029.lmp">
+      <Filter>Source Files\filter\harmony\fonts\bigfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\002A.lmp">
+      <Filter>Source Files\filter\harmony\fonts\bigfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\002B.lmp">
+      <Filter>Source Files\filter\harmony\fonts\bigfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\002C.lmp">
+      <Filter>Source Files\filter\harmony\fonts\bigfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\002D.lmp">
+      <Filter>Source Files\filter\harmony\fonts\bigfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\002E.lmp">
+      <Filter>Source Files\filter\harmony\fonts\bigfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\002F.lmp">
+      <Filter>Source Files\filter\harmony\fonts\bigfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\0030.lmp">
+      <Filter>Source Files\filter\harmony\fonts\bigfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\0031.lmp">
+      <Filter>Source Files\filter\harmony\fonts\bigfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\0032.lmp">
+      <Filter>Source Files\filter\harmony\fonts\bigfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\0033.lmp">
+      <Filter>Source Files\filter\harmony\fonts\bigfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\0034.lmp">
+      <Filter>Source Files\filter\harmony\fonts\bigfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\0035.lmp">
+      <Filter>Source Files\filter\harmony\fonts\bigfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\0036.lmp">
+      <Filter>Source Files\filter\harmony\fonts\bigfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\0037.lmp">
+      <Filter>Source Files\filter\harmony\fonts\bigfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\0038.lmp">
+      <Filter>Source Files\filter\harmony\fonts\bigfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\0039.lmp">
+      <Filter>Source Files\filter\harmony\fonts\bigfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\003A.lmp">
+      <Filter>Source Files\filter\harmony\fonts\bigfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\003B.lmp">
+      <Filter>Source Files\filter\harmony\fonts\bigfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\003C.lmp">
+      <Filter>Source Files\filter\harmony\fonts\bigfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\003D.lmp">
+      <Filter>Source Files\filter\harmony\fonts\bigfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\003E.lmp">
+      <Filter>Source Files\filter\harmony\fonts\bigfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\003F.lmp">
+      <Filter>Source Files\filter\harmony\fonts\bigfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\0041.lmp">
+      <Filter>Source Files\filter\harmony\fonts\bigfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\0042.lmp">
+      <Filter>Source Files\filter\harmony\fonts\bigfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\0043.lmp">
+      <Filter>Source Files\filter\harmony\fonts\bigfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\0044.lmp">
+      <Filter>Source Files\filter\harmony\fonts\bigfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\0045.lmp">
+      <Filter>Source Files\filter\harmony\fonts\bigfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\0046.lmp">
+      <Filter>Source Files\filter\harmony\fonts\bigfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\0047.lmp">
+      <Filter>Source Files\filter\harmony\fonts\bigfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\0048.lmp">
+      <Filter>Source Files\filter\harmony\fonts\bigfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\0049.lmp">
+      <Filter>Source Files\filter\harmony\fonts\bigfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\004A.lmp">
+      <Filter>Source Files\filter\harmony\fonts\bigfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\004B.lmp">
+      <Filter>Source Files\filter\harmony\fonts\bigfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\004C.lmp">
+      <Filter>Source Files\filter\harmony\fonts\bigfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\004D.lmp">
+      <Filter>Source Files\filter\harmony\fonts\bigfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\004E.lmp">
+      <Filter>Source Files\filter\harmony\fonts\bigfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\004F.lmp">
+      <Filter>Source Files\filter\harmony\fonts\bigfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\0050.lmp">
+      <Filter>Source Files\filter\harmony\fonts\bigfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\0051.lmp">
+      <Filter>Source Files\filter\harmony\fonts\bigfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\0052.lmp">
+      <Filter>Source Files\filter\harmony\fonts\bigfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\0053.lmp">
+      <Filter>Source Files\filter\harmony\fonts\bigfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\0054.lmp">
+      <Filter>Source Files\filter\harmony\fonts\bigfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\0055.lmp">
+      <Filter>Source Files\filter\harmony\fonts\bigfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\0056.lmp">
+      <Filter>Source Files\filter\harmony\fonts\bigfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\0057.lmp">
+      <Filter>Source Files\filter\harmony\fonts\bigfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\0058.lmp">
+      <Filter>Source Files\filter\harmony\fonts\bigfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\0059.lmp">
+      <Filter>Source Files\filter\harmony\fonts\bigfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\005A.lmp">
+      <Filter>Source Files\filter\harmony\fonts\bigfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\005B.lmp">
+      <Filter>Source Files\filter\harmony\fonts\bigfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\005C.lmp">
+      <Filter>Source Files\filter\harmony\fonts\bigfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\005D.lmp">
+      <Filter>Source Files\filter\harmony\fonts\bigfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\005E.lmp">
+      <Filter>Source Files\filter\harmony\fonts\bigfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\005F.lmp">
+      <Filter>Source Files\filter\harmony\fonts\bigfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\0060.lmp">
+      <Filter>Source Files\filter\harmony\fonts\bigfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\00A1.lmp">
+      <Filter>Source Files\filter\harmony\fonts\bigfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\00BF.lmp">
+      <Filter>Source Files\filter\harmony\fonts\bigfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\00C0.lmp">
+      <Filter>Source Files\filter\harmony\fonts\bigfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\00C1.lmp">
+      <Filter>Source Files\filter\harmony\fonts\bigfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\00C2.lmp">
+      <Filter>Source Files\filter\harmony\fonts\bigfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\00C3.lmp">
+      <Filter>Source Files\filter\harmony\fonts\bigfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\00C4.lmp">
+      <Filter>Source Files\filter\harmony\fonts\bigfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\00C5.lmp">
+      <Filter>Source Files\filter\harmony\fonts\bigfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\00C6.lmp">
+      <Filter>Source Files\filter\harmony\fonts\bigfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\00C7.lmp">
+      <Filter>Source Files\filter\harmony\fonts\bigfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\00C8.lmp">
+      <Filter>Source Files\filter\harmony\fonts\bigfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\00C9.lmp">
+      <Filter>Source Files\filter\harmony\fonts\bigfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\00CA.lmp">
+      <Filter>Source Files\filter\harmony\fonts\bigfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\00CB.lmp">
+      <Filter>Source Files\filter\harmony\fonts\bigfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\00CC.lmp">
+      <Filter>Source Files\filter\harmony\fonts\bigfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\00CD.lmp">
+      <Filter>Source Files\filter\harmony\fonts\bigfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\00CE.lmp">
+      <Filter>Source Files\filter\harmony\fonts\bigfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\00CF.lmp">
+      <Filter>Source Files\filter\harmony\fonts\bigfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\00D0.lmp">
+      <Filter>Source Files\filter\harmony\fonts\bigfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\00D1.lmp">
+      <Filter>Source Files\filter\harmony\fonts\bigfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\00D2.lmp">
+      <Filter>Source Files\filter\harmony\fonts\bigfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\00D3.lmp">
+      <Filter>Source Files\filter\harmony\fonts\bigfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\00D4.lmp">
+      <Filter>Source Files\filter\harmony\fonts\bigfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\00D5.lmp">
+      <Filter>Source Files\filter\harmony\fonts\bigfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\00D6.lmp">
+      <Filter>Source Files\filter\harmony\fonts\bigfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\00D8.lmp">
+      <Filter>Source Files\filter\harmony\fonts\bigfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\00D9.lmp">
+      <Filter>Source Files\filter\harmony\fonts\bigfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\00DA.lmp">
+      <Filter>Source Files\filter\harmony\fonts\bigfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\00DB.lmp">
+      <Filter>Source Files\filter\harmony\fonts\bigfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\00DC.lmp">
+      <Filter>Source Files\filter\harmony\fonts\bigfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\00DD.lmp">
+      <Filter>Source Files\filter\harmony\fonts\bigfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\00DE.lmp">
+      <Filter>Source Files\filter\harmony\fonts\bigfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\0100.lmp">
+      <Filter>Source Files\filter\harmony\fonts\bigfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\0102.lmp">
+      <Filter>Source Files\filter\harmony\fonts\bigfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\0104.lmp">
+      <Filter>Source Files\filter\harmony\fonts\bigfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\0106.lmp">
+      <Filter>Source Files\filter\harmony\fonts\bigfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\0108.lmp">
+      <Filter>Source Files\filter\harmony\fonts\bigfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\010A.lmp">
+      <Filter>Source Files\filter\harmony\fonts\bigfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\010C.lmp">
+      <Filter>Source Files\filter\harmony\fonts\bigfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\010E.lmp">
+      <Filter>Source Files\filter\harmony\fonts\bigfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\0110.lmp">
+      <Filter>Source Files\filter\harmony\fonts\bigfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\0112.lmp">
+      <Filter>Source Files\filter\harmony\fonts\bigfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\0116.lmp">
+      <Filter>Source Files\filter\harmony\fonts\bigfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\0118.lmp">
+      <Filter>Source Files\filter\harmony\fonts\bigfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\011A.lmp">
+      <Filter>Source Files\filter\harmony\fonts\bigfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\011C.lmp">
+      <Filter>Source Files\filter\harmony\fonts\bigfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\011E.lmp">
+      <Filter>Source Files\filter\harmony\fonts\bigfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\0120.lmp">
+      <Filter>Source Files\filter\harmony\fonts\bigfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\0122.lmp">
+      <Filter>Source Files\filter\harmony\fonts\bigfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\0124.lmp">
+      <Filter>Source Files\filter\harmony\fonts\bigfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\0126.lmp">
+      <Filter>Source Files\filter\harmony\fonts\bigfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\012A.lmp">
+      <Filter>Source Files\filter\harmony\fonts\bigfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\012E.lmp">
+      <Filter>Source Files\filter\harmony\fonts\bigfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\0130.lmp">
+      <Filter>Source Files\filter\harmony\fonts\bigfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\0134.lmp">
+      <Filter>Source Files\filter\harmony\fonts\bigfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\0136.lmp">
+      <Filter>Source Files\filter\harmony\fonts\bigfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\0139.lmp">
+      <Filter>Source Files\filter\harmony\fonts\bigfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\013B.lmp">
+      <Filter>Source Files\filter\harmony\fonts\bigfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\013D.lmp">
+      <Filter>Source Files\filter\harmony\fonts\bigfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\0141.lmp">
+      <Filter>Source Files\filter\harmony\fonts\bigfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\0143.lmp">
+      <Filter>Source Files\filter\harmony\fonts\bigfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\0145.lmp">
+      <Filter>Source Files\filter\harmony\fonts\bigfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\0147.lmp">
+      <Filter>Source Files\filter\harmony\fonts\bigfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\014A.lmp">
+      <Filter>Source Files\filter\harmony\fonts\bigfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\014C.lmp">
+      <Filter>Source Files\filter\harmony\fonts\bigfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\0150.lmp">
+      <Filter>Source Files\filter\harmony\fonts\bigfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\0152.lmp">
+      <Filter>Source Files\filter\harmony\fonts\bigfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\0154.lmp">
+      <Filter>Source Files\filter\harmony\fonts\bigfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\0158.lmp">
+      <Filter>Source Files\filter\harmony\fonts\bigfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\015A.lmp">
+      <Filter>Source Files\filter\harmony\fonts\bigfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\015C.lmp">
+      <Filter>Source Files\filter\harmony\fonts\bigfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\015E.lmp">
+      <Filter>Source Files\filter\harmony\fonts\bigfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\0160.lmp">
+      <Filter>Source Files\filter\harmony\fonts\bigfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\0162.lmp">
+      <Filter>Source Files\filter\harmony\fonts\bigfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\0164.lmp">
+      <Filter>Source Files\filter\harmony\fonts\bigfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\0166.lmp">
+      <Filter>Source Files\filter\harmony\fonts\bigfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\016A.lmp">
+      <Filter>Source Files\filter\harmony\fonts\bigfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\016C.lmp">
+      <Filter>Source Files\filter\harmony\fonts\bigfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\016E.lmp">
+      <Filter>Source Files\filter\harmony\fonts\bigfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\0170.lmp">
+      <Filter>Source Files\filter\harmony\fonts\bigfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\0172.lmp">
+      <Filter>Source Files\filter\harmony\fonts\bigfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\0174.lmp">
+      <Filter>Source Files\filter\harmony\fonts\bigfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\0176.lmp">
+      <Filter>Source Files\filter\harmony\fonts\bigfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\0178.lmp">
+      <Filter>Source Files\filter\harmony\fonts\bigfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\0179.lmp">
+      <Filter>Source Files\filter\harmony\fonts\bigfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\017B.lmp">
+      <Filter>Source Files\filter\harmony\fonts\bigfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\017D.lmp">
+      <Filter>Source Files\filter\harmony\fonts\bigfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\018F.lmp">
+      <Filter>Source Files\filter\harmony\fonts\bigfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\01FC.lmp">
+      <Filter>Source Files\filter\harmony\fonts\bigfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\01FE.lmp">
+      <Filter>Source Files\filter\harmony\fonts\bigfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\0218.lmp">
+      <Filter>Source Files\filter\harmony\fonts\bigfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\021A.lmp">
+      <Filter>Source Files\filter\harmony\fonts\bigfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\0394.lmp">
+      <Filter>Source Files\filter\harmony\fonts\bigfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\0398.lmp">
+      <Filter>Source Files\filter\harmony\fonts\bigfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\039B.lmp">
+      <Filter>Source Files\filter\harmony\fonts\bigfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\039E.lmp">
+      <Filter>Source Files\filter\harmony\fonts\bigfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\03A3.lmp">
+      <Filter>Source Files\filter\harmony\fonts\bigfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\03A8.lmp">
+      <Filter>Source Files\filter\harmony\fonts\bigfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\03A9.lmp">
+      <Filter>Source Files\filter\harmony\fonts\bigfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\0402.lmp">
+      <Filter>Source Files\filter\harmony\fonts\bigfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\0403.lmp">
+      <Filter>Source Files\filter\harmony\fonts\bigfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\0404.raw">
+      <Filter>Source Files\filter\harmony\fonts\bigfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\0409.lmp">
+      <Filter>Source Files\filter\harmony\fonts\bigfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\040A.lmp">
+      <Filter>Source Files\filter\harmony\fonts\bigfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\040B.lmp">
+      <Filter>Source Files\filter\harmony\fonts\bigfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\040C.lmp">
+      <Filter>Source Files\filter\harmony\fonts\bigfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\040D.lmp">
+      <Filter>Source Files\filter\harmony\fonts\bigfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\040E.lmp">
+      <Filter>Source Files\filter\harmony\fonts\bigfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\040F.lmp">
+      <Filter>Source Files\filter\harmony\fonts\bigfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\0410.lmp">
+      <Filter>Source Files\filter\harmony\fonts\bigfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\0411.lmp">
+      <Filter>Source Files\filter\harmony\fonts\bigfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\0412.lmp">
+      <Filter>Source Files\filter\harmony\fonts\bigfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\0413.lmp">
+      <Filter>Source Files\filter\harmony\fonts\bigfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\0414.lmp">
+      <Filter>Source Files\filter\harmony\fonts\bigfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\0415.lmp">
+      <Filter>Source Files\filter\harmony\fonts\bigfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\0416.lmp">
+      <Filter>Source Files\filter\harmony\fonts\bigfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\0417.lmp">
+      <Filter>Source Files\filter\harmony\fonts\bigfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\0418.lmp">
+      <Filter>Source Files\filter\harmony\fonts\bigfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\0419.lmp">
+      <Filter>Source Files\filter\harmony\fonts\bigfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\041A.lmp">
+      <Filter>Source Files\filter\harmony\fonts\bigfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\041B.lmp">
+      <Filter>Source Files\filter\harmony\fonts\bigfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\041C.lmp">
+      <Filter>Source Files\filter\harmony\fonts\bigfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\041D.lmp">
+      <Filter>Source Files\filter\harmony\fonts\bigfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\041E.lmp">
+      <Filter>Source Files\filter\harmony\fonts\bigfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\041F.lmp">
+      <Filter>Source Files\filter\harmony\fonts\bigfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\0420.lmp">
+      <Filter>Source Files\filter\harmony\fonts\bigfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\0421.lmp">
+      <Filter>Source Files\filter\harmony\fonts\bigfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\0422.lmp">
+      <Filter>Source Files\filter\harmony\fonts\bigfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\0423.lmp">
+      <Filter>Source Files\filter\harmony\fonts\bigfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\0424.lmp">
+      <Filter>Source Files\filter\harmony\fonts\bigfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\0425.lmp">
+      <Filter>Source Files\filter\harmony\fonts\bigfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\0426.lmp">
+      <Filter>Source Files\filter\harmony\fonts\bigfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\0427.lmp">
+      <Filter>Source Files\filter\harmony\fonts\bigfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\0428.lmp">
+      <Filter>Source Files\filter\harmony\fonts\bigfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\0429.lmp">
+      <Filter>Source Files\filter\harmony\fonts\bigfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\042A.lmp">
+      <Filter>Source Files\filter\harmony\fonts\bigfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\042B.lmp">
+      <Filter>Source Files\filter\harmony\fonts\bigfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\042C.lmp">
+      <Filter>Source Files\filter\harmony\fonts\bigfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\042D.lmp">
+      <Filter>Source Files\filter\harmony\fonts\bigfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\042E.lmp">
+      <Filter>Source Files\filter\harmony\fonts\bigfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\042F.lmp">
+      <Filter>Source Files\filter\harmony\fonts\bigfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\0490.lmp">
+      <Filter>Source Files\filter\harmony\fonts\bigfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\1E80.lmp">
+      <Filter>Source Files\filter\harmony\fonts\bigfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\1E82.lmp">
+      <Filter>Source Files\filter\harmony\fonts\bigfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\1E84.lmp">
+      <Filter>Source Files\filter\harmony\fonts\bigfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\1E9E.lmp">
+      <Filter>Source Files\filter\harmony\fonts\bigfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\bigfont\1EF2.lmp">
+      <Filter>Source Files\filter\harmony\fonts\bigfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\defsmallfont\00A1.lmp">
+      <Filter>Source Files\filter\harmony\fonts\defsmallfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\defsmallfont\00BF.lmp">
+      <Filter>Source Files\filter\harmony\fonts\defsmallfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\defsmallfont\00C0.lmp">
+      <Filter>Source Files\filter\harmony\fonts\defsmallfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\defsmallfont\00C1.lmp">
+      <Filter>Source Files\filter\harmony\fonts\defsmallfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\defsmallfont\00C2.lmp">
+      <Filter>Source Files\filter\harmony\fonts\defsmallfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\defsmallfont\00C3.lmp">
+      <Filter>Source Files\filter\harmony\fonts\defsmallfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\defsmallfont\00C4.lmp">
+      <Filter>Source Files\filter\harmony\fonts\defsmallfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\defsmallfont\00C5.lmp">
+      <Filter>Source Files\filter\harmony\fonts\defsmallfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\defsmallfont\00C6.lmp">
+      <Filter>Source Files\filter\harmony\fonts\defsmallfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\defsmallfont\00C7.lmp">
+      <Filter>Source Files\filter\harmony\fonts\defsmallfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\defsmallfont\00C8.lmp">
+      <Filter>Source Files\filter\harmony\fonts\defsmallfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\defsmallfont\00C9.lmp">
+      <Filter>Source Files\filter\harmony\fonts\defsmallfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\defsmallfont\00CA.lmp">
+      <Filter>Source Files\filter\harmony\fonts\defsmallfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\defsmallfont\00CB.lmp">
+      <Filter>Source Files\filter\harmony\fonts\defsmallfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\defsmallfont\00CC.lmp">
+      <Filter>Source Files\filter\harmony\fonts\defsmallfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\defsmallfont\00CD.lmp">
+      <Filter>Source Files\filter\harmony\fonts\defsmallfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\defsmallfont\00CE.lmp">
+      <Filter>Source Files\filter\harmony\fonts\defsmallfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\defsmallfont\00CF.lmp">
+      <Filter>Source Files\filter\harmony\fonts\defsmallfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\defsmallfont\00D0.lmp">
+      <Filter>Source Files\filter\harmony\fonts\defsmallfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\defsmallfont\00D1.lmp">
+      <Filter>Source Files\filter\harmony\fonts\defsmallfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\defsmallfont\00D2.lmp">
+      <Filter>Source Files\filter\harmony\fonts\defsmallfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\defsmallfont\00D3.lmp">
+      <Filter>Source Files\filter\harmony\fonts\defsmallfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\defsmallfont\00D4.lmp">
+      <Filter>Source Files\filter\harmony\fonts\defsmallfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\defsmallfont\00D5.lmp">
+      <Filter>Source Files\filter\harmony\fonts\defsmallfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\defsmallfont\00D6.lmp">
+      <Filter>Source Files\filter\harmony\fonts\defsmallfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\defsmallfont\00D8.lmp">
+      <Filter>Source Files\filter\harmony\fonts\defsmallfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\defsmallfont\00D9.lmp">
+      <Filter>Source Files\filter\harmony\fonts\defsmallfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\defsmallfont\00DA.lmp">
+      <Filter>Source Files\filter\harmony\fonts\defsmallfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\defsmallfont\00DB.lmp">
+      <Filter>Source Files\filter\harmony\fonts\defsmallfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\defsmallfont\00DC.lmp">
+      <Filter>Source Files\filter\harmony\fonts\defsmallfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\defsmallfont\00DD.lmp">
+      <Filter>Source Files\filter\harmony\fonts\defsmallfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\defsmallfont\00DE.lmp">
+      <Filter>Source Files\filter\harmony\fonts\defsmallfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\defsmallfont\0100.lmp">
+      <Filter>Source Files\filter\harmony\fonts\defsmallfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\defsmallfont\0102.lmp">
+      <Filter>Source Files\filter\harmony\fonts\defsmallfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\defsmallfont\0104.lmp">
+      <Filter>Source Files\filter\harmony\fonts\defsmallfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\defsmallfont\0106.lmp">
+      <Filter>Source Files\filter\harmony\fonts\defsmallfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\defsmallfont\0108.lmp">
+      <Filter>Source Files\filter\harmony\fonts\defsmallfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\defsmallfont\010A.lmp">
+      <Filter>Source Files\filter\harmony\fonts\defsmallfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\defsmallfont\010C.lmp">
+      <Filter>Source Files\filter\harmony\fonts\defsmallfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\defsmallfont\010E.lmp">
+      <Filter>Source Files\filter\harmony\fonts\defsmallfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\defsmallfont\0110.lmp">
+      <Filter>Source Files\filter\harmony\fonts\defsmallfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\defsmallfont\0112.lmp">
+      <Filter>Source Files\filter\harmony\fonts\defsmallfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\defsmallfont\0116.lmp">
+      <Filter>Source Files\filter\harmony\fonts\defsmallfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\defsmallfont\0118.lmp">
+      <Filter>Source Files\filter\harmony\fonts\defsmallfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\defsmallfont\011A.lmp">
+      <Filter>Source Files\filter\harmony\fonts\defsmallfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\defsmallfont\011C.lmp">
+      <Filter>Source Files\filter\harmony\fonts\defsmallfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\defsmallfont\011E.lmp">
+      <Filter>Source Files\filter\harmony\fonts\defsmallfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\defsmallfont\0120.lmp">
+      <Filter>Source Files\filter\harmony\fonts\defsmallfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\defsmallfont\0122.lmp">
+      <Filter>Source Files\filter\harmony\fonts\defsmallfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\defsmallfont\0124.lmp">
+      <Filter>Source Files\filter\harmony\fonts\defsmallfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\defsmallfont\0126.lmp">
+      <Filter>Source Files\filter\harmony\fonts\defsmallfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\defsmallfont\012A.lmp">
+      <Filter>Source Files\filter\harmony\fonts\defsmallfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\defsmallfont\012E.lmp">
+      <Filter>Source Files\filter\harmony\fonts\defsmallfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\defsmallfont\0130.lmp">
+      <Filter>Source Files\filter\harmony\fonts\defsmallfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\defsmallfont\0134.lmp">
+      <Filter>Source Files\filter\harmony\fonts\defsmallfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\defsmallfont\0136.lmp">
+      <Filter>Source Files\filter\harmony\fonts\defsmallfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\defsmallfont\0139.lmp">
+      <Filter>Source Files\filter\harmony\fonts\defsmallfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\defsmallfont\013B.lmp">
+      <Filter>Source Files\filter\harmony\fonts\defsmallfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\defsmallfont\013D.lmp">
+      <Filter>Source Files\filter\harmony\fonts\defsmallfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\defsmallfont\0141.lmp">
+      <Filter>Source Files\filter\harmony\fonts\defsmallfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\defsmallfont\0143.lmp">
+      <Filter>Source Files\filter\harmony\fonts\defsmallfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\defsmallfont\0145.lmp">
+      <Filter>Source Files\filter\harmony\fonts\defsmallfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\defsmallfont\0147.lmp">
+      <Filter>Source Files\filter\harmony\fonts\defsmallfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\defsmallfont\014A.lmp">
+      <Filter>Source Files\filter\harmony\fonts\defsmallfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\defsmallfont\014C.lmp">
+      <Filter>Source Files\filter\harmony\fonts\defsmallfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\defsmallfont\0150.lmp">
+      <Filter>Source Files\filter\harmony\fonts\defsmallfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\defsmallfont\0152.lmp">
+      <Filter>Source Files\filter\harmony\fonts\defsmallfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\defsmallfont\0154.lmp">
+      <Filter>Source Files\filter\harmony\fonts\defsmallfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\defsmallfont\0158.lmp">
+      <Filter>Source Files\filter\harmony\fonts\defsmallfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\defsmallfont\015A.lmp">
+      <Filter>Source Files\filter\harmony\fonts\defsmallfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\defsmallfont\015C.lmp">
+      <Filter>Source Files\filter\harmony\fonts\defsmallfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\defsmallfont\015E.lmp">
+      <Filter>Source Files\filter\harmony\fonts\defsmallfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\defsmallfont\0160.lmp">
+      <Filter>Source Files\filter\harmony\fonts\defsmallfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\defsmallfont\0162.lmp">
+      <Filter>Source Files\filter\harmony\fonts\defsmallfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\defsmallfont\0164.lmp">
+      <Filter>Source Files\filter\harmony\fonts\defsmallfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\defsmallfont\0166.lmp">
+      <Filter>Source Files\filter\harmony\fonts\defsmallfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\defsmallfont\016A.lmp">
+      <Filter>Source Files\filter\harmony\fonts\defsmallfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\defsmallfont\016C.lmp">
+      <Filter>Source Files\filter\harmony\fonts\defsmallfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\defsmallfont\016E.lmp">
+      <Filter>Source Files\filter\harmony\fonts\defsmallfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\defsmallfont\0170.lmp">
+      <Filter>Source Files\filter\harmony\fonts\defsmallfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\defsmallfont\0172.lmp">
+      <Filter>Source Files\filter\harmony\fonts\defsmallfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\defsmallfont\0174.lmp">
+      <Filter>Source Files\filter\harmony\fonts\defsmallfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\defsmallfont\0176.lmp">
+      <Filter>Source Files\filter\harmony\fonts\defsmallfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\defsmallfont\0178.lmp">
+      <Filter>Source Files\filter\harmony\fonts\defsmallfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\defsmallfont\0179.lmp">
+      <Filter>Source Files\filter\harmony\fonts\defsmallfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\defsmallfont\017B.lmp">
+      <Filter>Source Files\filter\harmony\fonts\defsmallfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\defsmallfont\017D.lmp">
+      <Filter>Source Files\filter\harmony\fonts\defsmallfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\defsmallfont\018F.lmp">
+      <Filter>Source Files\filter\harmony\fonts\defsmallfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\defsmallfont\01FC.lmp">
+      <Filter>Source Files\filter\harmony\fonts\defsmallfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\defsmallfont\01FE.lmp">
+      <Filter>Source Files\filter\harmony\fonts\defsmallfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\defsmallfont\0394.lmp">
+      <Filter>Source Files\filter\harmony\fonts\defsmallfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\defsmallfont\0398.lmp">
+      <Filter>Source Files\filter\harmony\fonts\defsmallfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\defsmallfont\039B.lmp">
+      <Filter>Source Files\filter\harmony\fonts\defsmallfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\defsmallfont\039E.lmp">
+      <Filter>Source Files\filter\harmony\fonts\defsmallfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\defsmallfont\03A3.lmp">
+      <Filter>Source Files\filter\harmony\fonts\defsmallfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\defsmallfont\03A8.lmp">
+      <Filter>Source Files\filter\harmony\fonts\defsmallfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\defsmallfont\03A9.lmp">
+      <Filter>Source Files\filter\harmony\fonts\defsmallfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\defsmallfont\0402.lmp">
+      <Filter>Source Files\filter\harmony\fonts\defsmallfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\defsmallfont\0403.lmp">
+      <Filter>Source Files\filter\harmony\fonts\defsmallfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\defsmallfont\0404.lmp">
+      <Filter>Source Files\filter\harmony\fonts\defsmallfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\defsmallfont\0409.lmp">
+      <Filter>Source Files\filter\harmony\fonts\defsmallfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\defsmallfont\040A.lmp">
+      <Filter>Source Files\filter\harmony\fonts\defsmallfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\defsmallfont\040B.lmp">
+      <Filter>Source Files\filter\harmony\fonts\defsmallfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\defsmallfont\040C.lmp">
+      <Filter>Source Files\filter\harmony\fonts\defsmallfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\defsmallfont\040D.lmp">
+      <Filter>Source Files\filter\harmony\fonts\defsmallfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\defsmallfont\040E.lmp">
+      <Filter>Source Files\filter\harmony\fonts\defsmallfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\defsmallfont\040F.lmp">
+      <Filter>Source Files\filter\harmony\fonts\defsmallfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\defsmallfont\0410.lmp">
+      <Filter>Source Files\filter\harmony\fonts\defsmallfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\defsmallfont\0411.lmp">
+      <Filter>Source Files\filter\harmony\fonts\defsmallfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\defsmallfont\0412.lmp">
+      <Filter>Source Files\filter\harmony\fonts\defsmallfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\defsmallfont\0413.lmp">
+      <Filter>Source Files\filter\harmony\fonts\defsmallfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\defsmallfont\0414.lmp">
+      <Filter>Source Files\filter\harmony\fonts\defsmallfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\defsmallfont\0415.lmp">
+      <Filter>Source Files\filter\harmony\fonts\defsmallfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\defsmallfont\0416.lmp">
+      <Filter>Source Files\filter\harmony\fonts\defsmallfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\defsmallfont\0417.lmp">
+      <Filter>Source Files\filter\harmony\fonts\defsmallfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\defsmallfont\0418.lmp">
+      <Filter>Source Files\filter\harmony\fonts\defsmallfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\defsmallfont\0419.lmp">
+      <Filter>Source Files\filter\harmony\fonts\defsmallfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\defsmallfont\041A.lmp">
+      <Filter>Source Files\filter\harmony\fonts\defsmallfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\defsmallfont\041B.lmp">
+      <Filter>Source Files\filter\harmony\fonts\defsmallfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\defsmallfont\041C.lmp">
+      <Filter>Source Files\filter\harmony\fonts\defsmallfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\defsmallfont\041D.lmp">
+      <Filter>Source Files\filter\harmony\fonts\defsmallfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\defsmallfont\041E.lmp">
+      <Filter>Source Files\filter\harmony\fonts\defsmallfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\defsmallfont\041F.lmp">
+      <Filter>Source Files\filter\harmony\fonts\defsmallfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\defsmallfont\0420.lmp">
+      <Filter>Source Files\filter\harmony\fonts\defsmallfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\defsmallfont\0421.lmp">
+      <Filter>Source Files\filter\harmony\fonts\defsmallfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\defsmallfont\0422.lmp">
+      <Filter>Source Files\filter\harmony\fonts\defsmallfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\defsmallfont\0423.lmp">
+      <Filter>Source Files\filter\harmony\fonts\defsmallfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\defsmallfont\0424.lmp">
+      <Filter>Source Files\filter\harmony\fonts\defsmallfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\defsmallfont\0425.lmp">
+      <Filter>Source Files\filter\harmony\fonts\defsmallfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\defsmallfont\0426.lmp">
+      <Filter>Source Files\filter\harmony\fonts\defsmallfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\defsmallfont\0427.lmp">
+      <Filter>Source Files\filter\harmony\fonts\defsmallfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\defsmallfont\0428.lmp">
+      <Filter>Source Files\filter\harmony\fonts\defsmallfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\defsmallfont\0429.lmp">
+      <Filter>Source Files\filter\harmony\fonts\defsmallfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\defsmallfont\042A.lmp">
+      <Filter>Source Files\filter\harmony\fonts\defsmallfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\defsmallfont\042B.lmp">
+      <Filter>Source Files\filter\harmony\fonts\defsmallfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\defsmallfont\042C.lmp">
+      <Filter>Source Files\filter\harmony\fonts\defsmallfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\defsmallfont\042D.lmp">
+      <Filter>Source Files\filter\harmony\fonts\defsmallfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\defsmallfont\042E.lmp">
+      <Filter>Source Files\filter\harmony\fonts\defsmallfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\defsmallfont\042F.lmp">
+      <Filter>Source Files\filter\harmony\fonts\defsmallfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\defsmallfont\0490.lmp">
+      <Filter>Source Files\filter\harmony\fonts\defsmallfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\defsmallfont\1E80.lmp">
+      <Filter>Source Files\filter\harmony\fonts\defsmallfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\defsmallfont\1E82.lmp">
+      <Filter>Source Files\filter\harmony\fonts\defsmallfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\defsmallfont\1E84.lmp">
+      <Filter>Source Files\filter\harmony\fonts\defsmallfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\defsmallfont\1E9E.lmp">
+      <Filter>Source Files\filter\harmony\fonts\defsmallfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\fonts\defsmallfont\1EF2.lmp">
+      <Filter>Source Files\filter\harmony\fonts\defsmallfont</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\lockdefs.txt">
+      <Filter>Source Files\filter\harmony</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\mapinfo.txt">
+      <Filter>Source Files\filter\harmony</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\menudef.txt">
+      <Filter>Source Files\filter\harmony</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\zscript.txt">
+      <Filter>Source Files\filter\harmony</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\zscript\decorate_replacement.zs">
+      <Filter>Source Files\filter\harmony\zscript</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\harmony\zscript\harm_sbar.zs">
+      <Filter>Source Files\filter\harmony\zscript</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\heretic\sprofs.txt">
+      <Filter>Source Files\filter\heretic</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\hereticshareware\mapinfo.txt">
+      <Filter>Source Files\filter\hereticshareware</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\hexen\sprofs.txt">
+      <Filter>Source Files\filter\hexen</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\strife\sprofs.txt">
+      <Filter>Source Files\filter\strife</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\strifeteaser1\mapinfo.txt">
+      <Filter>Source Files\filter\strifeteaser1</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\filter\strifeteaser2\mapinfo.txt">
+      <Filter>Source Files\filter\strifeteaser2</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\graphics\clerface.lmp">
+      <Filter>Source Files\graphics</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\graphics\fiteface.lmp">
+      <Filter>Source Files\graphics</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\graphics\mageface.lmp">
+      <Filter>Source Files\graphics</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\graphics\stfbany.lmp">
+      <Filter>Source Files\graphics</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\graphics\stkeys6.lmp">
+      <Filter>Source Files\graphics</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\graphics\stkeys7.lmp">
+      <Filter>Source Files\graphics</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\graphics\stkeys8.lmp">
+      <Filter>Source Files\graphics</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\graphics\stpbany.lmp">
+      <Filter>Source Files\graphics</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\graphics\wislash.lmp">
+      <Filter>Source Files\graphics</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\iwadinfo.txt">
+      <Filter>Source Files</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\skins\BOKOA1.lmp">
+      <Filter>Source Files\skins</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\skins\BOKOA2A8.lmp">
+      <Filter>Source Files\skins</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\skins\BOKOA3A7.lmp">
+      <Filter>Source Files\skins</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\skins\BOKOA4A6.lmp">
+      <Filter>Source Files\skins</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\skins\BOKOA5.lmp">
+      <Filter>Source Files\skins</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\skins\BOKOB1.lmp">
+      <Filter>Source Files\skins</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\skins\BOKOB2B8.lmp">
+      <Filter>Source Files\skins</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\skins\BOKOB3B7.lmp">
+      <Filter>Source Files\skins</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\skins\BOKOB4B6.lmp">
+      <Filter>Source Files\skins</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\skins\BOKOB5.lmp">
+      <Filter>Source Files\skins</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\skins\BOKOC1.lmp">
+      <Filter>Source Files\skins</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\skins\BOKOC2C8.lmp">
+      <Filter>Source Files\skins</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\skins\BOKOC3C7.lmp">
+      <Filter>Source Files\skins</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\skins\BOKOC4C6.lmp">
+      <Filter>Source Files\skins</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\skins\BOKOC5.lmp">
+      <Filter>Source Files\skins</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\skins\BOKOD1.lmp">
+      <Filter>Source Files\skins</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\skins\BOKOD2D8.lmp">
+      <Filter>Source Files\skins</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\skins\BOKOD3D7.lmp">
+      <Filter>Source Files\skins</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\skins\BOKOD4D6.lmp">
+      <Filter>Source Files\skins</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\skins\BOKOD5.lmp">
+      <Filter>Source Files\skins</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\skins\BOKOE1.lmp">
+      <Filter>Source Files\skins</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\skins\BOKOE2E8.lmp">
+      <Filter>Source Files\skins</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\skins\BOKOE3E7.lmp">
+      <Filter>Source Files\skins</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\skins\BOKOE4E6.lmp">
+      <Filter>Source Files\skins</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\skins\BOKOE5.lmp">
+      <Filter>Source Files\skins</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\skins\BOKOF1.lmp">
+      <Filter>Source Files\skins</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\skins\BOKOF2F8.lmp">
+      <Filter>Source Files\skins</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\skins\BOKOF3F7.lmp">
+      <Filter>Source Files\skins</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\skins\BOKOF4F6.lmp">
+      <Filter>Source Files\skins</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\skins\BOKOF5.lmp">
+      <Filter>Source Files\skins</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\skins\BOKOG1.lmp">
+      <Filter>Source Files\skins</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\skins\BOKOG2G8.lmp">
+      <Filter>Source Files\skins</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\skins\BOKOG3G7.lmp">
+      <Filter>Source Files\skins</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\skins\BOKOG4G6.lmp">
+      <Filter>Source Files\skins</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\skins\BOKOG5.lmp">
+      <Filter>Source Files\skins</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\skins\BOKOH0.lmp">
+      <Filter>Source Files\skins</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\skins\BOKOI0.lmp">
+      <Filter>Source Files\skins</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\skins\BOKOJ0.lmp">
+      <Filter>Source Files\skins</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\skins\BOKOK0.lmp">
+      <Filter>Source Files\skins</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\skins\BOKOL0.lmp">
+      <Filter>Source Files\skins</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\skins\BOKOM0.lmp">
+      <Filter>Source Files\skins</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\skins\BOKON0.lmp">
+      <Filter>Source Files\skins</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\skins\BOKOO0.lmp">
+      <Filter>Source Files\skins</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\skins\BOKOP0.lmp">
+      <Filter>Source Files\skins</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\skins\BOKOQ0.lmp">
+      <Filter>Source Files\skins</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\skins\BOKOR0.lmp">
+      <Filter>Source Files\skins</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\skins\BOKOS0.lmp">
+      <Filter>Source Files\skins</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\skins\BOKOT0.lmp">
+      <Filter>Source Files\skins</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\skins\BOKOU0.lmp">
+      <Filter>Source Files\skins</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\skins\BOKOV0.lmp">
+      <Filter>Source Files\skins</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\skins\BOKOW0.lmp">
+      <Filter>Source Files\skins</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\skins\CHOBA1.lmp">
+      <Filter>Source Files\skins</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\skins\CHOBA2A8.lmp">
+      <Filter>Source Files\skins</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\skins\CHOBA3A7.lmp">
+      <Filter>Source Files\skins</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\skins\CHOBA4A6.lmp">
+      <Filter>Source Files\skins</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\skins\CHOBA5.lmp">
+      <Filter>Source Files\skins</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\skins\CHOBB1.lmp">
+      <Filter>Source Files\skins</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\skins\CHOBB2B8.lmp">
+      <Filter>Source Files\skins</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\skins\CHOBB3B7.lmp">
+      <Filter>Source Files\skins</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\skins\CHOBB4B6.lmp">
+      <Filter>Source Files\skins</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\skins\CHOBB5.lmp">
+      <Filter>Source Files\skins</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\skins\CHOBC1.lmp">
+      <Filter>Source Files\skins</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\skins\CHOBC2C8.lmp">
+      <Filter>Source Files\skins</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\skins\CHOBC3C7.lmp">
+      <Filter>Source Files\skins</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\skins\CHOBC4C6.lmp">
+      <Filter>Source Files\skins</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\skins\CHOBC5.lmp">
+      <Filter>Source Files\skins</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\skins\CHOBD1.lmp">
+      <Filter>Source Files\skins</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\skins\CHOBD2D8.lmp">
+      <Filter>Source Files\skins</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\skins\CHOBD3D7.lmp">
+      <Filter>Source Files\skins</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\skins\CHOBD4D6.lmp">
+      <Filter>Source Files\skins</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\skins\CHOBD5.lmp">
+      <Filter>Source Files\skins</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\skins\CHOBE1.lmp">
+      <Filter>Source Files\skins</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\skins\CHOBE2E8.lmp">
+      <Filter>Source Files\skins</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\skins\CHOBE3E7.lmp">
+      <Filter>Source Files\skins</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\skins\CHOBE4E6.lmp">
+      <Filter>Source Files\skins</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\skins\CHOBE5.lmp">
+      <Filter>Source Files\skins</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\skins\CHOBF1.lmp">
+      <Filter>Source Files\skins</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\skins\CHOBF2F8.lmp">
+      <Filter>Source Files\skins</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\skins\CHOBF3F7.lmp">
+      <Filter>Source Files\skins</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\skins\CHOBF4F6.lmp">
+      <Filter>Source Files\skins</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\skins\CHOBF5.lmp">
+      <Filter>Source Files\skins</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\skins\CHOBG1.lmp">
+      <Filter>Source Files\skins</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\skins\CHOBG2G8.lmp">
+      <Filter>Source Files\skins</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\skins\CHOBG3G7.lmp">
+      <Filter>Source Files\skins</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\skins\CHOBG4G6.lmp">
+      <Filter>Source Files\skins</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\skins\CHOBG5.lmp">
+      <Filter>Source Files\skins</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\skins\CHOBH0.lmp">
+      <Filter>Source Files\skins</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\skins\CHOBI0.lmp">
+      <Filter>Source Files\skins</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\skins\CHOBJ0.lmp">
+      <Filter>Source Files\skins</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\skins\CHOBK0.lmp">
+      <Filter>Source Files\skins</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\skins\CHOBL0.lmp">
+      <Filter>Source Files\skins</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\skins\CHOBM0.lmp">
+      <Filter>Source Files\skins</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\skins\CHOBN0.lmp">
+      <Filter>Source Files\skins</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\skins\DSWARK">
+      <Filter>Source Files\skins</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\skins\SKININFO">
+      <Filter>Source Files\skins</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\sounds\ATGSKDRP.wav">
+      <Filter>Source Files\sounds</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\sounds\BOACCU.wav">
+      <Filter>Source Files\sounds</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\sounds\BOASSIST.wav">
+      <Filter>Source Files\sounds</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\sounds\BOBFLDRP.wav">
+      <Filter>Source Files\sounds</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\sounds\BOBFLRTN.wav">
+      <Filter>Source Files\sounds</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\sounds\BOBFLTKN.wav">
+      <Filter>Source Files\sounds</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\sounds\BOBLUELD.wav">
+      <Filter>Source Files\sounds</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\sounds\BOBSCORE.wav">
+      <Filter>Source Files\sounds</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\sounds\BOBSKDRP.wav">
+      <Filter>Source Files\sounds</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\sounds\BOBSKRTN.wav">
+      <Filter>Source Files\sounds</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\sounds\BOBSKTKN.wav">
+      <Filter>Source Files\sounds</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\sounds\BOCAPTUR.wav">
+      <Filter>Source Files\sounds</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\sounds\BODEFENS.wav">
+      <Filter>Source Files\sounds</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\sounds\BODMSPHR.wav">
+      <Filter>Source Files\sounds</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\sounds\BODOMN.wav">
+      <Filter>Source Files\sounds</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\sounds\BODRAIN.wav">
+      <Filter>Source Files\sounds</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\sounds\BOENHSFL.wav">
+      <Filter>Source Files\sounds</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\sounds\BOEXCL.wav">
+      <Filter>Source Files\sounds</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\sounds\BOFFRAG.wav">
+      <Filter>Source Files\sounds</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\sounds\BOFIGHT.wav">
+      <Filter>Source Files\sounds</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\sounds\BOFISTNG.wav">
+      <Filter>Source Files\sounds</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\sounds\BOFMNWRN.wav">
+      <Filter>Source Files\sounds</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\sounds\BOGFLDRP.wav">
+      <Filter>Source Files\sounds</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\sounds\BOGFLRTN.wav">
+      <Filter>Source Files\sounds</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\sounds\BOGFLTKN.wav">
+      <Filter>Source Files\sounds</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\sounds\BOGSCORE.wav">
+      <Filter>Source Files\sounds</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\sounds\BOGSKRTN.wav">
+      <Filter>Source Files\sounds</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\sounds\BOGSKTKN.wav">
+      <Filter>Source Files\sounds</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\sounds\BOGUARD.wav">
+      <Filter>Source Files\sounds</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\sounds\BOHASTE.wav">
+      <Filter>Source Files\sounds</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\sounds\BOHIJUMP.wav">
+      <Filter>Source Files\sounds</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\sounds\BOIMPR.wav">
+      <Filter>Source Files\sounds</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\sounds\BOINCR.wav">
+      <Filter>Source Files\sounds</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\sounds\BOINVS.wav">
+      <Filter>Source Files\sounds</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\sounds\BOINVUL.wav">
+      <Filter>Source Files\sounds</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\sounds\BOLLAM.wav">
+      <Filter>Source Files\sounds</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\sounds\BOLOSTLD.wav">
+      <Filter>Source Files\sounds</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\sounds\BOMEGA.wav">
+      <Filter>Source Files\sounds</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\sounds\BOMIMP.wav">
+      <Filter>Source Files\sounds</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\sounds\BONFLDRP.wav">
+      <Filter>Source Files\sounds</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\sounds\BONFLRTN.wav">
+      <Filter>Source Files\sounds</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\sounds\BONFLTKN.wav">
+      <Filter>Source Files\sounds</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\sounds\BONOTENO.wav">
+      <Filter>Source Files\sounds</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\sounds\BONSCORE.wav">
+      <Filter>Source Files\sounds</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\sounds\BONSKRTN.wav">
+      <Filter>Source Files\sounds</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\sounds\BONSKTKN.wav">
+      <Filter>Source Files\sounds</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\sounds\BONXTRND.wav">
+      <Filter>Source Files\sounds</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\sounds\BOONE.wav">
+      <Filter>Source Files\sounds</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\sounds\BOONEFRG.wav">
+      <Filter>Source Files\sounds</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\sounds\BOONMWRN.wav">
+      <Filter>Source Files\sounds</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\sounds\BOPERFCT.wav">
+      <Filter>Source Files\sounds</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\sounds\BOPINVS.wav">
+      <Filter>Source Files\sounds</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\sounds\BOPOSDRP.wav">
+      <Filter>Source Files\sounds</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\sounds\BOPOSPCK.wav">
+      <Filter>Source Files\sounds</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\sounds\BOPREC.wav">
+      <Filter>Source Files\sounds</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\sounds\BOPREPAR.wav">
+      <Filter>Source Files\sounds</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\sounds\BOPROSP.wav">
+      <Filter>Source Files\sounds</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\sounds\BORAGE.wav">
+      <Filter>Source Files\sounds</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\sounds\BOREDLD.wav">
+      <Filter>Source Files\sounds</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\sounds\BOREFL.wav">
+      <Filter>Source Files\sounds</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\sounds\BOREGEN.wav">
+      <Filter>Source Files\sounds</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\sounds\BORESIS.wav">
+      <Filter>Source Files\sounds</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\sounds\BORFLDRP.wav">
+      <Filter>Source Files\sounds</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\sounds\BORFLRTN.wav">
+      <Filter>Source Files\sounds</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\sounds\BORFLTKN.wav">
+      <Filter>Source Files\sounds</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\sounds\BORRSKUL.wav">
+      <Filter>Source Files\sounds</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\sounds\BORSCORE.wav">
+      <Filter>Source Files\sounds</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\sounds\BORSKDRP.wav">
+      <Filter>Source Files\sounds</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\sounds\BORSKRTN.wav">
+      <Filter>Source Files\sounds</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\sounds\BORSKTKN.wav">
+      <Filter>Source Files\sounds</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\sounds\BOSOUL.wav">
+      <Filter>Source Files\sounds</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\sounds\BOSPAM.wav">
+      <Filter>Source Files\sounds</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\sounds\BOSPREAD.wav">
+      <Filter>Source Files\sounds</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\sounds\BOSTR.wav">
+      <Filter>Source Files\sounds</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\sounds\BOTAG.wav">
+      <Filter>Source Files\sounds</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\sounds\BOTAKNLD.wav">
+      <Filter>Source Files\sounds</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\sounds\BOTDOM.wav">
+      <Filter>Source Files\sounds</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\sounds\BOTEAMTD.wav">
+      <Filter>Source Files\sounds</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\sounds\BOTERM.wav">
+      <Filter>Source Files\sounds</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\sounds\BOTERM2.wav">
+      <Filter>Source Files\sounds</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\sounds\BOTHREE.wav">
+      <Filter>Source Files\sounds</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\sounds\BOTHRFRG.wav">
+      <Filter>Source Files\sounds</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\sounds\BOTIEDLD.wav">
+      <Filter>Source Files\sounds</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\sounds\BOTIMFR.wav">
+      <Filter>Source Files\sounds</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\sounds\BOTMHSFL.wav">
+      <Filter>Source Files\sounds</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\sounds\BOTNSKDR.wav">
+      <Filter>Source Files\sounds</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\sounds\BOTURBO.wav">
+      <Filter>Source Files\sounds</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\sounds\BOTWO.wav">
+      <Filter>Source Files\sounds</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\sounds\BOTWOFRG.wav">
+      <Filter>Source Files\sounds</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\sounds\BOUHAVFL.wav">
+      <Filter>Source Files\sounds</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\sounds\BOVFAIL.wav">
+      <Filter>Source Files\sounds</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\sounds\BOVICTOR.wav">
+      <Filter>Source Files\sounds</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\sounds\BOVNOW.wav">
+      <Filter>Source Files\sounds</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\sounds\BOVPASS.wav">
+      <Filter>Source Files\sounds</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\sounds\BOWELCTF.wav">
+      <Filter>Source Files\sounds</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\sounds\BOWELST.wav">
+      <Filter>Source Files\sounds</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\sounds\BOWFLRTN.wav">
+      <Filter>Source Files\sounds</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\sounds\BOWIN.wav">
+      <Filter>Source Files\sounds</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\sounds\BOWLOCTF.wav">
+      <Filter>Source Files\sounds</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\sounds\BOYOUFAI.wav">
+      <Filter>Source Files\sounds</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\sounds\dsquake.flac">
+      <Filter>Source Files\sounds</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\sounds\icebrk1a.flac">
+      <Filter>Source Files\sounds</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\sounds\icedth1.flac">
+      <Filter>Source Files\sounds</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\sounds\railgf1.flac">
+      <Filter>Source Files\sounds</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\sounds\spark1.flac">
+      <Filter>Source Files\sounds</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\sounds\spark2.flac">
+      <Filter>Source Files\sounds</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\static\sounds\spark3.flac">
+      <Filter>Source Files\sounds</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_extra\CMakeFiles\game_support_pk3" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="CMake Rules">
+      <UniqueIdentifier>{6B4C33DB-601C-3F66-91C4-B80AF0AEEFDD}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{7A34F880-AD99-3A93-806C-D6F4B030A349}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\credits">
+      <UniqueIdentifier>{C3A79B46-3561-3A3A-9DB8-2FB2DB97820D}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\filter">
+      <UniqueIdentifier>{BBF41166-512E-3ACB-95FF-E7E765676C7D}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\filter\chex.chex3">
+      <UniqueIdentifier>{6C0C2579-AE0E-3248-80B0-877AD072E4B8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\filter\doom.freedoom">
+      <UniqueIdentifier>{A988A0C1-21E1-3764-B293-F3B1B1FB200A}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\filter\doom.id">
+      <UniqueIdentifier>{216295FC-B9F5-3555-B37A-F5050D08982A}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\filter\doom.id.doom1.unity">
+      <UniqueIdentifier>{097EA946-4460-3AC1-9018-3B803AC4027D}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\filter\doom.id.doom2.unity">
+      <UniqueIdentifier>{6D137F42-82C3-35AC-B4CD-29AB809D5FA3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\filter\hacx.hacx1">
+      <UniqueIdentifier>{CE0BBE96-C345-365B-9E21-C0BB002DC76A}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\filter\hacx.hacx1\after_iwad">
+      <UniqueIdentifier>{F95701BE-F9C3-3206-918C-F5EE343A303F}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\filter\hacx.hacx2">
+      <UniqueIdentifier>{4FD0150B-AB8F-31DA-B9EA-111377BC6577}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\filter\harmony">
+      <UniqueIdentifier>{DA948103-B655-3903-9E1C-267BAE92738E}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\filter\harmony\after_iwad">
+      <UniqueIdentifier>{F9D65320-0ACE-3D94-8B21-65912A32CCC4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\filter\harmony\fonts">
+      <UniqueIdentifier>{ACB91826-1CBC-3505-A078-7AA0354A8F04}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\filter\harmony\fonts\bigfont">
+      <UniqueIdentifier>{D5D37A1C-2C9D-38B9-827C-81B331F93CB5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\filter\harmony\fonts\defsmallfont">
+      <UniqueIdentifier>{A606922B-D89C-391F-9F8A-FC321B2E164C}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\filter\harmony\zscript">
+      <UniqueIdentifier>{BB638F55-35B0-3549-A72E-19401E7D71EE}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\filter\heretic">
+      <UniqueIdentifier>{69C4DAFE-E353-3E3A-91F7-07378CA8CA8F}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\filter\hereticshareware">
+      <UniqueIdentifier>{1ED7E4FB-0F05-36EC-B295-9B62A8988490}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\filter\hexen">
+      <UniqueIdentifier>{7725F782-CB90-39DD-9C23-F280E77117DA}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\filter\strife">
+      <UniqueIdentifier>{EC1FFC54-7880-3E1C-B2B5-1EEA530CF142}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\filter\strifeteaser1">
+      <UniqueIdentifier>{02293DAD-DEEC-311F-8D36-E2FC59CDE2EF}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\filter\strifeteaser2">
+      <UniqueIdentifier>{6B3D2B35-9A8D-3E6A-9BFC-5FA1134B66A5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\graphics">
+      <UniqueIdentifier>{B119B131-D014-327C-9D18-37C9AF62D333}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\skins">
+      <UniqueIdentifier>{98AB73B5-74EC-3A72-A74B-FE47FE63ED06}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\sounds">
+      <UniqueIdentifier>{AA6CAC4D-BD66-35E4-A650-93B029305B2B}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\sprites">
+      <UniqueIdentifier>{4C087C56-540D-3803-9223-EC8B7EFDA772}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

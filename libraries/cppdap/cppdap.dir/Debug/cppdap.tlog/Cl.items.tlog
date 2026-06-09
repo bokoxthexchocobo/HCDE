@@ -1,0 +1,13 @@
+C:\Users\user\DoomConnector6\HCDE\libraries\cppdap\src\content_stream.cpp;C:\Users\user\DoomConnector6\HCDE\libraries\cppdap\cppdap.dir\Debug\content_stream.obj
+C:\Users\user\DoomConnector6\HCDE\libraries\cppdap\src\io.cpp;C:\Users\user\DoomConnector6\HCDE\libraries\cppdap\cppdap.dir\Debug\io.obj
+C:\Users\user\DoomConnector6\HCDE\libraries\cppdap\src\nlohmann_json_serializer.cpp;C:\Users\user\DoomConnector6\HCDE\libraries\cppdap\cppdap.dir\Debug\nlohmann_json_serializer.obj
+C:\Users\user\DoomConnector6\HCDE\libraries\cppdap\src\network.cpp;C:\Users\user\DoomConnector6\HCDE\libraries\cppdap\cppdap.dir\Debug\network.obj
+C:\Users\user\DoomConnector6\HCDE\libraries\cppdap\src\null_json_serializer.cpp;C:\Users\user\DoomConnector6\HCDE\libraries\cppdap\cppdap.dir\Debug\null_json_serializer.obj
+C:\Users\user\DoomConnector6\HCDE\libraries\cppdap\src\protocol_events.cpp;C:\Users\user\DoomConnector6\HCDE\libraries\cppdap\cppdap.dir\Debug\protocol_events.obj
+C:\Users\user\DoomConnector6\HCDE\libraries\cppdap\src\protocol_requests.cpp;C:\Users\user\DoomConnector6\HCDE\libraries\cppdap\cppdap.dir\Debug\protocol_requests.obj
+C:\Users\user\DoomConnector6\HCDE\libraries\cppdap\src\protocol_response.cpp;C:\Users\user\DoomConnector6\HCDE\libraries\cppdap\cppdap.dir\Debug\protocol_response.obj
+C:\Users\user\DoomConnector6\HCDE\libraries\cppdap\src\protocol_types.cpp;C:\Users\user\DoomConnector6\HCDE\libraries\cppdap\cppdap.dir\Debug\protocol_types.obj
+C:\Users\user\DoomConnector6\HCDE\libraries\cppdap\src\session.cpp;C:\Users\user\DoomConnector6\HCDE\libraries\cppdap\cppdap.dir\Debug\session.obj
+C:\Users\user\DoomConnector6\HCDE\libraries\cppdap\src\socket.cpp;C:\Users\user\DoomConnector6\HCDE\libraries\cppdap\cppdap.dir\Debug\socket.obj
+C:\Users\user\DoomConnector6\HCDE\libraries\cppdap\src\typeinfo.cpp;C:\Users\user\DoomConnector6\HCDE\libraries\cppdap\cppdap.dir\Debug\typeinfo.obj
+C:\Users\user\DoomConnector6\HCDE\libraries\cppdap\src\typeof.cpp;C:\Users\user\DoomConnector6\HCDE\libraries\cppdap\cppdap.dir\Debug\typeof.obj

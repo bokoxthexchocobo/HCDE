@@ -1,0 +1,68 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="17.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <CustomBuild Include="C:\Users\user\DoomConnector6\HCDE\CMakeFiles\f2ccca16b11cd5feb0bebae6bf4ef910\lights.pk3.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="C:\Users\user\DoomConnector6\HCDE\CMakeFiles\19054c9ae582696d2db74ecdd50e6d1f\lights_pk3.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_lights\CMakeLists.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_lights\static\filter\doom.freedoom\gldefs.txt">
+      <Filter>Source Files\filter\doom.freedoom</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_lights\static\filter\doom.id\gldefs.txt">
+      <Filter>Source Files\filter\doom.id</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_lights\static\filter\hacx.hacx1\gldefs.txt">
+      <Filter>Source Files\filter\hacx.hacx1</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_lights\static\filter\harmony\gldefs.txt">
+      <Filter>Source Files\filter\harmony</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_lights\static\filter\heretic\gldefs.txt">
+      <Filter>Source Files\filter\heretic</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_lights\static\filter\hexen\gldefs.txt">
+      <Filter>Source Files\filter\hexen</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_lights\static\filter\strife\gldefs.txt">
+      <Filter>Source Files\filter\strife</Filter>
+    </None>
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc_lights\CMakeFiles\lights_pk3" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="CMake Rules">
+      <UniqueIdentifier>{6B4C33DB-601C-3F66-91C4-B80AF0AEEFDD}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{7A34F880-AD99-3A93-806C-D6F4B030A349}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\filter">
+      <UniqueIdentifier>{BBF41166-512E-3ACB-95FF-E7E765676C7D}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\filter\doom.freedoom">
+      <UniqueIdentifier>{A988A0C1-21E1-3764-B293-F3B1B1FB200A}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\filter\doom.id">
+      <UniqueIdentifier>{216295FC-B9F5-3555-B37A-F5050D08982A}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\filter\hacx.hacx1">
+      <UniqueIdentifier>{CE0BBE96-C345-365B-9E21-C0BB002DC76A}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\filter\harmony">
+      <UniqueIdentifier>{DA948103-B655-3903-9E1C-267BAE92738E}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\filter\heretic">
+      <UniqueIdentifier>{69C4DAFE-E353-3E3A-91F7-07378CA8CA8F}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\filter\hexen">
+      <UniqueIdentifier>{7725F782-CB90-39DD-9C23-F280E77117DA}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\filter\strife">
+      <UniqueIdentifier>{EC1FFC54-7880-3E1C-B2B5-1EEA530CF142}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

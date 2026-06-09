@@ -533,11 +533,13 @@ constexpr size_t HCDEServerWorldDeltaHeaderSize = 11u;
 constexpr size_t HCDEServerWorldDeltaRecordV1Size = 60u;
 constexpr size_t HCDEServerWorldDeltaRecordV2Size = 36u;
 constexpr size_t HCDEServerWorldDeltaRecordSize = HCDEServerWorldDeltaRecordV2Size;
-constexpr uint8_t HCDEServerWorldDeltaProtocolVersion = 2u;
+constexpr uint8_t HCDEServerWorldDeltaProtocolVersion = 3u;
 constexpr uint8_t HCDEServerWorldDeltaMagic[4] = { 'H', 'C', 'D', 'W' };
 constexpr uint8_t HCDEServerWorldDeltaPoseHasActor = 1u << 0;
 constexpr uint8_t HCDEServerWorldDeltaPoseLive = 1u << 1;
 constexpr uint8_t HCDEServerWorldDeltaPoseOnGround = 1u << 2;
+constexpr uint8_t HCDEServerWorldDeltaSectorHasFloor = 1u << 0;
+constexpr uint8_t HCDEServerWorldDeltaSectorHasCeiling = 1u << 1;
 constexpr size_t HCDEAuthorityEventsMagicOffset = 0u;
 constexpr size_t HCDEAuthorityEventsVersionOffset = 4u;
 constexpr size_t HCDEAuthorityEventsFlagsOffset = 5u;
@@ -4558,64 +4560,27 @@ void Net_StartCutscene()
 		Net_SetInvasionState(INVS_COUNTDOWN, CutsceneCountdown, "cutscene-start");
 }
 
-// Allow the game to automatically start after a set amount of time.
-bool Net_CheckCutsceneReady()
+// Pure decision: is the active cutscene ready vote satisfied right now? This has
+// no side effects and emits no per-tic logging so the caller can evaluate it
+// every tic. Reserved server slots are never participants (see
+// Net_IsCutsceneReadyParticipant), so a dedicated-server ghost slot can never
+// inflate the human count and stall the vote.
+static bool Net_CutsceneReadyVoteSatisfied()
 {
-	if (!cutscene.runner)
-		return false;
-
-	int type = ST_VOTE;
-	IFVM(ScreenJobRunner, GetSkipType)
-		type = VMCallSingle<int>(func, cutscene.runner);
-
-	if (type == ST_UNSKIPPABLE)
-		return false;
-
-	// Keep the countdown progressing for every skippable cutscene mode. Without
-	// this, RT_ANYONE / RT_HOST_ONLY can deadlock forever when ready input never
-	// survives a tic-gate stall or DEM_READIED round-trip during map transitions.
-	if (CutsceneCountdown > 0)
-	{
-		--CutsceneCountdown;
-		if (CutsceneCountdown <= 0)
-		{
-			DebugTrace::Markf("net", "cutscene countdown auto-advance room=%u map=%s readytype=%d",
-				unsigned(CurrentRoomID), primaryLevel != nullptr ? primaryLevel->MapName.GetChars() : "<none>",
-				int(net_cutscenereadytype));
-			return true;
-		}
-		DebugTrace::Markf("net", "cutscene countdown ticking seconds=%.3f room=%u map=%s readytype=%d",
-			double(CutsceneCountdown) / TICRATE, unsigned(CurrentRoomID),
-			primaryLevel != nullptr ? primaryLevel->MapName.GetChars() : "<none>",
-			int(net_cutscenereadytype));
-		return false;
-	}
-
 	if (net_cutscenereadytype == RT_ANYONE)
 	{
 		for (auto client : NetworkClients)
 		{
 			if (Net_IsCutsceneReadyParticipant(client) && (CutsceneReady & ((uint64_t)1u << client)))
-			{
-				DebugTrace::Markf("net", "cutscene advance ready-anyone client=%d room=%u map=%s",
-					client, unsigned(CurrentRoomID),
-					primaryLevel != nullptr ? primaryLevel->MapName.GetChars() : "<none>");
 				return true;
-			}
 		}
-		DebugTrace::Markf("net", "cutscene advance blocked ready-anyone room=%u map=%s",
-			unsigned(CurrentRoomID), primaryLevel != nullptr ? primaryLevel->MapName.GetChars() : "<none>");
 		return false;
 	}
 
 	if (net_cutscenereadytype == RT_HOST_ONLY)
 	{
 		const int readyHost = Net_GetCutsceneReadyHost();
-		const bool ready = readyHost >= 0 && (CutsceneReady & ((uint64_t)1u << readyHost));
-		DebugTrace::Markf("net", "cutscene advance host-only host=%d ready=%d room=%u map=%s",
-			readyHost, ready ? 1 : 0, unsigned(CurrentRoomID),
-			primaryLevel != nullptr ? primaryLevel->MapName.GetChars() : "<none>");
-		return ready;
+		return readyHost >= 0 && (CutsceneReady & ((uint64_t)1u << readyHost));
 	}
 
 	uint64_t mask = 0u;
@@ -4645,6 +4610,7 @@ bool Net_CheckCutsceneReady()
 		}
 	}
 
+	// Solo / single-human tally screen: ready as soon as the lone human is ready.
 	if (humanClients <= 1)
 	{
 		const bool ready = humanReady >= humanClients;
@@ -4663,12 +4629,57 @@ bool Net_CheckCutsceneReady()
 		return true;
 
 	const float readyRatio = (float)totalReady / totalClients;
-	const bool thresholdReached = readyRatio >= net_cutscenereadypercent;
-	DebugTrace::Markf("net", "cutscene threshold check ratio=%.3f ready=%d/%d threshold=%.3f result=%d room=%u map=%s",
-		double(readyRatio), totalReady, totalClients, double(net_cutscenereadypercent), thresholdReached ? 1 : 0,
-		unsigned(CurrentRoomID), primaryLevel != nullptr ? primaryLevel->MapName.GetChars() : "<none>");
+	return readyRatio >= net_cutscenereadypercent;
+}
 
-	return thresholdReached;
+// Advance the cutscene/intermission once the ready vote passes or, as a fallback,
+// when the countdown expires -- whichever comes first (Zandronum-style). The vote
+// is checked BEFORE the countdown so pressing skip advances immediately instead
+// of being gated behind the full timer. The countdown still progresses on every
+// tic the vote is unsatisfied, so RT_ANYONE / RT_HOST_ONLY cannot deadlock if a
+// ready input is lost to a tic-gate stall or a dropped DEM_READIED round-trip.
+bool Net_CheckCutsceneReady()
+{
+	if (!cutscene.runner)
+		return false;
+
+	int type = ST_VOTE;
+	IFVM(ScreenJobRunner, GetSkipType)
+		type = VMCallSingle<int>(func, cutscene.runner);
+
+	if (type == ST_UNSKIPPABLE)
+		return false;
+
+	// Ready vote wins immediately, ahead of the countdown gate.
+	if (Net_CutsceneReadyVoteSatisfied())
+	{
+		DebugTrace::Markf("net", "cutscene advance ready-vote readytype=%d countdown=%d room=%u map=%s",
+			int(net_cutscenereadytype), CutsceneCountdown, unsigned(CurrentRoomID),
+			primaryLevel != nullptr ? primaryLevel->MapName.GetChars() : "<none>");
+		return true;
+	}
+
+	// Fallback timeout: keep the countdown progressing so a lost ready input
+	// still advances the map once the timer elapses.
+	if (CutsceneCountdown > 0)
+	{
+		--CutsceneCountdown;
+		if (CutsceneCountdown <= 0)
+		{
+			DebugTrace::Markf("net", "cutscene countdown auto-advance room=%u map=%s readytype=%d",
+				unsigned(CurrentRoomID), primaryLevel != nullptr ? primaryLevel->MapName.GetChars() : "<none>",
+				int(net_cutscenereadytype));
+			return true;
+		}
+		DebugTrace::Markf("net", "cutscene countdown ticking seconds=%.3f room=%u map=%s readytype=%d",
+			double(CutsceneCountdown) / TICRATE, unsigned(CurrentRoomID),
+			primaryLevel != nullptr ? primaryLevel->MapName.GetChars() : "<none>",
+			int(net_cutscenereadytype));
+		return false;
+	}
+
+	// No countdown configured: wait for the ready vote.
+	return false;
 }
 
 void Net_AdvanceCutscene()
@@ -5382,6 +5393,37 @@ static void CheckLevelStart(int client, int delayTics)
 			gametic = serverGametic;
 		}
 
+		// Intermission/cutscene lets ClientTic run ahead while gametic is gated.
+		// Weapons only advance on authoritative gametic tics (not during movement
+		// prediction), so an inflated ClientTic - gametic gap reads as gun delay
+		// on the first map after a level transition. Clamp back to the normal
+		// prediction lead without touching CurrentSequence (rewinding sequences
+		// deadlocks level start -- see the comment above).
+		if (I_UsesDedicatedServerSlot() && !I_IsLocalHCDEServiceAuthority()
+			&& consoleplayer >= 0 && consoleplayer < MAXPLAYERS)
+		{
+			const int ticDup = max<int>(TicDup, 1);
+			const int desiredLead = clamp<int>(HCDEMovementGetAdaptiveDesiredLead(int(*cl_net_prediction_lead)), 0, 8);
+			const int maxClientTic = gametic + desiredLead * ticDup;
+			if (ClientTic > maxClientTic)
+			{
+				DebugTrace::Markf("net.levelstart",
+					"client clamp prediction lead after level start clienttic=%d -> %d gametic=%d desired-lead=%d room=%u map=%s",
+					ClientTic, maxClientTic, gametic, desiredLead, unsigned(CurrentRoomID),
+					primaryLevel != nullptr ? primaryLevel->MapName.GetChars() : "<none>");
+				ClientTic = maxClientTic;
+				P_ClearPredictionData();
+			}
+			// AppliedSequence only advances on the authority process; on a dedicated
+			// client it stays at the Net_ResetCommands anchor while CurrentSequence
+			// keeps climbing through the intermission, producing a bogus 50+ tic
+			// cmdslot backlog in traces and masking real stalls. Re-anchor it to the
+			// playsim cursor so diagnostics match reality.
+			auto& localState = ClientStates[consoleplayer];
+			const int playTic = max<int>(gametic / ticDup, 0);
+			localState.AppliedSequence = min<int>(localState.CurrentSequence, playTic);
+		}
+
 		Net_ResetAuthorityWaitWatchdog("authority-start");
 		Printf(PRINT_HIGH, "NetGame:: Authority started level for client at gametic=%d clienttic=%d room=%u map=%s delay=%d\n",
 			gametic, ClientTic, unsigned(CurrentRoomID), primaryLevel != nullptr ? primaryLevel->MapName.GetChars() : "<none>", delayTics);
@@ -5835,7 +5877,6 @@ static void SendHeartbeat()
 	// authoritative-stream recovery. Mixing retransmit triggers into the
 	// heartbeat would race with those ladders and re-send packets the client
 	// already has; keep this lane probe-only.
-	const uint64_t time = I_msTime();
 	for (auto client : NetworkClients)
 	{
 		if (client == consoleplayer)
@@ -5844,19 +5885,38 @@ static void SendHeartbeat()
 		auto& state = ClientStates[client];
 		if (LastLatencyUpdate >= MAXSENDTICS)
 		{
+			// Average only COMPLETED probes (those whose ACK has arrived, i.e.
+			// RecvTime >= SentTime). The old code charged still-in-flight slots
+			// as (now - SentTime), so a single lost/stalled LATENCYACK - whose
+			// slot keeps growing until it hits the 5000ms clamp - injected
+			// 5000/MAXSENDTICS ~= 143ms into the average all by itself. That is
+			// exactly the bogus ~150ms "ping" seen on localhost where the real
+			// RTT is sub-millisecond. Skipping in-flight slots makes the reading
+			// reflect actual round-trip time and keeps one dropped probe from
+			// poisoning the whole window.
 			int delta = 0;
+			int completed = 0;
 			const uint8_t startTic = state.CurrentLatency - MAXSENDTICS;
 			for (int i = 0; i < MAXSENDTICS; ++i)
 			{
 				const int tic = (startTic + i) % MAXSENDTICS;
-				const uint64_t high = state.RecvTime[tic] < state.SentTime[tic] ? time : state.RecvTime[tic];
-				const uint64_t rawDelta = high - state.SentTime[tic];
-					// Clamp latency to a reasonable maximum (5 seconds) to prevent overflow
-					// from corrupted or out-of-order timestamps
-				delta += (rawDelta > 5000) ? 5000 : rawDelta;
+				// Slot never primed, or its ACK has not come back yet: ignore it
+				// rather than guessing a latency for it.
+				if (state.SentTime[tic] == 0u || state.RecvTime[tic] < state.SentTime[tic])
+					continue;
+				uint64_t rawDelta = state.RecvTime[tic] - state.SentTime[tic];
+				// Clamp latency to a reasonable maximum (5 seconds) to prevent
+				// overflow from corrupted or out-of-order timestamps.
+				if (rawDelta > 5000)
+					rawDelta = 5000;
+				delta += int(rawDelta);
+				++completed;
 			}
 
-			state.AverageLatency = delta / MAXSENDTICS;
+			// Keep the previous average if no probe completed this window so a
+			// transient stall reads as "last known good" instead of zero.
+			if (completed > 0)
+				state.AverageLatency = uint16_t(delta / completed);
 		}
 
 		if (state.bNewLatency)
