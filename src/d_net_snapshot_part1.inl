@@ -46,6 +46,7 @@ static bool HCDEAppendServerWorldDeltas(int client, uint8_t* output, size_t outp
 		const AActor* mo = player.mo;
 		uint8_t flags = 0u;
 		int health = player.health;
+		int armor = 0;
 		DVector3 pos = {};
 		DVector3 vel = {};
 		uint32_t yaw = 0u;
@@ -58,6 +59,7 @@ static bool HCDEAppendServerWorldDeltas(int client, uint8_t* output, size_t outp
 			if (player.onground)
 				flags |= HCDEServerWorldDeltaPoseOnGround;
 			health = mo->health;
+			armor = HCDEGetPlayerBasicArmorAmount(mo);
 			pos = mo->Pos();
 			vel = mo->Vel;
 			yaw = mo->Angles.Yaw.BAMs();
@@ -67,6 +69,7 @@ static bool HCDEAppendServerWorldDeltas(int client, uint8_t* output, size_t outp
 		if (!HCDEAppendByte(output, outputCapacity, cursor, playerNum)
 			|| !HCDEAppendByte(output, outputCapacity, cursor, flags)
 			|| !HCDEAppendBE16(output, outputCapacity, cursor, uint16_t(clamp<int>(health, INT16_MIN, INT16_MAX)))
+			|| !HCDEAppendBE16(output, outputCapacity, cursor, uint16_t(clamp<int>(armor, 0, INT16_MAX)))
 			|| !HCDEAppendFloat(output, outputCapacity, cursor, pos.X)
 			|| !HCDEAppendFloat(output, outputCapacity, cursor, pos.Y)
 			|| !HCDEAppendFloat(output, outputCapacity, cursor, pos.Z)
@@ -79,8 +82,8 @@ static bool HCDEAppendServerWorldDeltas(int client, uint8_t* output, size_t outp
 			return false;
 		}
 		Net_DiagTraceServerPlayerTruth(client, uint32_t(gametic), int(playerNum),
-			pos.X, pos.Y, pos.Z, vel.X, vel.Y, vel.Z, health, (flags & HCDEServerWorldDeltaPoseOnGround) != 0u,
-			uint8_t(player.playerstate));
+			pos.X, pos.Y, pos.Z, vel.X, vel.Y, vel.Z, health, armor,
+			(flags & HCDEServerWorldDeltaPoseOnGround) != 0u, uint8_t(player.playerstate));
 	}
 
 	uint8_t sectorCount = 0u;
@@ -338,7 +341,33 @@ static void Net_DebugDumpMonstersAroundLocalPlayer(int newHealth, int previousHe
 	}
 }
 
-static void HCDEApplyLocalHealthFields(player_t& player, int serverHealth, bool onGround)
+static int HCDEGetPlayerBasicArmorAmount(const AActor* mo)
+{
+	if (mo == nullptr)
+		return 0;
+	AActor* armor = mo->FindInventory(NAME_BasicArmor, true);
+	return armor != nullptr ? max<int>(0, armor->IntVar(NAME_Amount)) : 0;
+}
+
+static void HCDEApplyLocalBasicArmorAmount(player_t& player, int serverArmor)
+{
+	AActor* mo = player.mo;
+	if (mo == nullptr)
+		return;
+
+	AActor* armor = mo->FindInventory(NAME_BasicArmor, true);
+	if (armor == nullptr && serverArmor > 0)
+	{
+		PClassActor* cls = PClass::FindActor(NAME_BasicArmor);
+		if (cls != nullptr && cls->IsDescendantOf(NAME_Inventory))
+			mo->GiveInventoryType(cls);
+		armor = mo->FindInventory(NAME_BasicArmor, true);
+	}
+	if (armor != nullptr)
+		armor->IntVar(NAME_Amount) = clamp<int>(serverArmor, 0, INT_MAX);
+}
+
+static void HCDEApplyLocalHealthFields(player_t& player, int serverHealth, bool onGround, int serverArmor = -1)
 {
 	AActor* mo = player.mo;
 	if (mo == nullptr)
@@ -348,6 +377,8 @@ static void HCDEApplyLocalHealthFields(player_t& player, int serverHealth, bool 
 	mo->health = serverHealth;
 	player.health = serverHealth;
 	player.onground = onGround;
+	if (serverArmor >= 0)
+		HCDEApplyLocalBasicArmorAmount(player, serverArmor);
 	if (serverHealth < previousHealth)
 	{
 		player.damagecount = clamp<int>(player.damagecount + previousHealth - serverHealth, 0, 100);
@@ -926,7 +957,7 @@ static bool HCDELocalPlayerNeedsPoseRepair(const player_t& player, int serverHea
 
 static void HCDEQueuePredictedLocalHealthRepair(uint32_t serverTic, int serverHealth, bool onGround,
 	const DVector3* serverPos = nullptr, const DVector3* serverVel = nullptr,
-	uint32_t yawBam = 0u, uint32_t pitchBam = 0u, bool applyPose = false)
+	uint32_t yawBam = 0u, uint32_t pitchBam = 0u, bool applyPose = false, int serverArmor = -1)
 {
 	if (PendingLocalHealthRepair.Valid && serverTic < PendingLocalHealthRepair.ServerTic)
 		return;
@@ -934,6 +965,7 @@ static void HCDEQueuePredictedLocalHealthRepair(uint32_t serverTic, int serverHe
 	PendingLocalHealthRepair.Valid = true;
 	PendingLocalHealthRepair.ServerTic = serverTic;
 	PendingLocalHealthRepair.Health = serverHealth;
+	PendingLocalHealthRepair.Armor = serverArmor;
 	PendingLocalHealthRepair.OnGround = onGround;
 	PendingLocalHealthRepair.ApplyPose = applyPose;
 	if (applyPose && serverPos != nullptr && serverVel != nullptr)
@@ -962,7 +994,7 @@ static void HCDEQueuePredictedLocalHealthRepair(uint32_t serverTic, int serverHe
 			HCDEApplyLocalPoseRepair(player, *serverPos, *serverVel, yawBam, pitchBam, onGround,
 				hardRepair, !hardRepair, true, !hardRepair);
 		}
-		HCDEApplyLocalHealthFields(player, serverHealth, onGround);
+		HCDEApplyLocalHealthFields(player, serverHealth, onGround, serverArmor);
 	}
 }
 
@@ -992,10 +1024,12 @@ static void HCDEApplyPendingLocalHealthRepair()
 		}
 		HCDEApplyLocalHealthFields(player,
 			PendingLocalHealthRepair.Health,
-			PendingLocalHealthRepair.OnGround);
-		DebugTrace::Markf("net", "HCDE pending local health repair applied tic=%u health=%d pose=%d",
+			PendingLocalHealthRepair.OnGround,
+			PendingLocalHealthRepair.Armor);
+		DebugTrace::Markf("net", "HCDE pending local health repair applied tic=%u health=%d armor=%d pose=%d",
 			PendingLocalHealthRepair.ServerTic,
 			PendingLocalHealthRepair.Health,
+			PendingLocalHealthRepair.Armor,
 			PendingLocalHealthRepair.ApplyPose ? 1 : 0);
 	}
 
@@ -1074,9 +1108,11 @@ static bool HCDEValidateServerWorldDeltas(int clientNum, const uint8_t* body, si
 	const uint8_t version = body[bodyCursor + HCDEServerWorldDeltaVersionOffset];
 	const uint8_t flags = body[bodyCursor + HCDEServerWorldDeltaFlagsOffset];
 	const uint8_t deltaCount = body[bodyCursor + HCDEServerWorldDeltaCountOffset];
-	if ((version != 1u && version != 2u && version != HCDEServerWorldDeltaProtocolVersion) || flags != 0u || playerCount > MAXPLAYERS || deltaCount > MAXPLAYERS)
+	if ((version != 1u && version != 2u && version != 3u && version != HCDEServerWorldDeltaProtocolVersion)
+		|| flags != 0u || playerCount > MAXPLAYERS || deltaCount > MAXPLAYERS)
 		return false;
-	const size_t deltaRecordSize = version >= 2u ? HCDEServerWorldDeltaRecordV2Size : HCDEServerWorldDeltaRecordV1Size;
+	const size_t deltaRecordSize = version >= 4u ? HCDEServerWorldDeltaRecordV4Size
+		: (version >= 2u ? HCDEServerWorldDeltaRecordV2Size : HCDEServerWorldDeltaRecordV1Size);
 
 	uint64_t deltaPlayers = 0u;
 	uint32_t serverTic = 0u;
@@ -1093,12 +1129,14 @@ static bool HCDEValidateServerWorldDeltas(int clientNum, const uint8_t* body, si
 		uint8_t playerNum = 0u;
 		uint8_t poseFlags = 0u;
 		uint16_t healthBits = 0u;
+		uint16_t armorBits = 0u;
 		uint32_t yaw = 0u;
 		uint32_t pitch = 0u;
 		double values[6] = {};
 		if (!HCDEReadByteField(body, bodyBytes, cursor, playerNum)
 			|| !HCDEReadByteField(body, bodyBytes, cursor, poseFlags)
-			|| !HCDEReadBE16Field(body, bodyBytes, cursor, healthBits))
+			|| !HCDEReadBE16Field(body, bodyBytes, cursor, healthBits)
+			|| (version >= 4u && !HCDEReadBE16Field(body, bodyBytes, cursor, armorBits)))
 		{
 			return false;
 		}
@@ -1138,6 +1176,7 @@ static bool HCDEValidateServerWorldDeltas(int clientNum, const uint8_t* body, si
 		const DVector3 serverVel = { values[3], values[4], values[5] };
 		const double drift = HCDELocalPlayerDriftSqVsServer(player, serverPos);
 		const int serverHealth = int(int16_t(healthBits));
+		const int serverArmor = version >= 4u ? int(armorBits) : -1;
 		if (playerNum == consoleplayer)
 		{
 			const bool serverReportsOnGround = (poseFlags & HCDEServerWorldDeltaPoseOnGround) != 0u;
@@ -1173,7 +1212,7 @@ static bool HCDEValidateServerWorldDeltas(int clientNum, const uint8_t* body, si
 				// clearPrediction=true inside ApplyLocalPoseRepair also clears backup.
 				HCDEApplyLocalPoseRepair(player, serverPos, serverVel, yaw, pitch, serverReportsOnGround,
 					true, false, false, false);
-				HCDEApplyLocalHealthFields(player, serverHealth, serverReportsOnGround);
+				HCDEApplyLocalHealthFields(player, serverHealth, serverReportsOnGround, serverArmor);
 				HCDEHeadingRepairGraceUntilGametic = gametic + TICRATE / 4;
 				HCDELocalPlayerBaselineEstablished = true;
 				++peer.Reconciliations;
@@ -1485,7 +1524,7 @@ static bool HCDEValidateServerWorldDeltas(int clientNum, const uint8_t* body, si
 				// leave the client-owned look pitch alone (avoids free-look jitter).
 				HCDEApplyLocalPoseRepair(player, serverPos, serverVel, yaw, pitch, serverReportsOnGround, true,
 					false, true, false);
-					HCDEApplyLocalHealthFields(player, serverHealth, serverReportsOnGround);
+					HCDEApplyLocalHealthFields(player, serverHealth, serverReportsOnGround, serverArmor);
 					HCDELocalReconcileDebugTrace(serverTic, sqrt(drift), refVel, true, "apply-predict-pose");
 					++HCDELiveProfile.PredictionLocalStateRepairs;
 					++peer.Reconciliations;
@@ -1499,7 +1538,7 @@ static bool HCDEValidateServerWorldDeltas(int clientNum, const uint8_t* body, si
 				HCDEQueuePredictedLocalHealthRepair(serverTic, serverHealth, serverReportsOnGround,
 					applyPose ? &serverPos : nullptr,
 					applyPose ? &serverVel : nullptr,
-					yaw, pitch, applyPose);
+					yaw, pitch, applyPose, serverArmor);
 				HCDELocalReconcileDebugTrace(serverTic, sqrt(drift), refVel, applyPose,
 					applyPose ? "apply-predict-queue" : "skip-predict-queue");
 				++HCDELiveProfile.PredictionLocalHealthRepairs;
@@ -1573,6 +1612,8 @@ static bool HCDEValidateServerWorldDeltas(int clientNum, const uint8_t* body, si
 				player.viewheight = viewZOffset;
 				player.onground = serverReportsOnGround;
 				player.viewz = serverPos.Z + viewZOffset;
+				if (serverArmor >= 0)
+					HCDEApplyLocalBasicArmorAmount(player, serverArmor);
 				// Respawn is always a hard snap to the spawn point - never
 				// interpolate from the corpse position. ClearInterpolation
 				// resets Prev = Pos and PrevPortalGroup = Sector->PortalGroup,
@@ -1782,12 +1823,12 @@ static bool HCDEValidateServerWorldDeltas(int clientNum, const uint8_t* body, si
 				HCDEApplyLocalPoseRepair(player, serverPos, serverVel, yaw, pitch, serverReportsOnGround,
 					hardRepair || localNeedsBaselinePoseRepair, false, true, smoothRepair);
 			}
-			HCDEApplyLocalHealthFields(player, serverHealth, serverReportsOnGround);
+			HCDEApplyLocalHealthFields(player, serverHealth, serverReportsOnGround, serverArmor);
 			PendingLocalHealthRepair.Valid = false;
 			++peer.Reconciliations;
 			++HCDELiveProfile.PredictionLocalStateRepairs;
-			DebugTrace::Markf("net", "HCDE client local state repair from=%d player=%u drift=%.2f health=%d pose=%d reconciliations=%u",
-				clientNum, unsigned(playerNum), sqrt(drift), serverHealth, applyPose ? 1 : 0, peer.Reconciliations);
+			DebugTrace::Markf("net", "HCDE client local state repair from=%d player=%u drift=%.2f health=%d armor=%d pose=%d reconciliations=%u",
+				clientNum, unsigned(playerNum), sqrt(drift), serverHealth, serverArmor, applyPose ? 1 : 0, peer.Reconciliations);
 			continue;
 		}
 

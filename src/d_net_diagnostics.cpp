@@ -514,7 +514,7 @@ void Net_DiagTraceInputAuthority(int clientNum, const char* event, const char* d
 // = 1) to keep the trace volume bounded, and every tic in verbose mode.
 void Net_DiagTraceServerPlayerTruth(int clientNum, uint32_t serverTic, int playerNum,
 	double x, double y, double z, double vx, double vy, double vz,
-	int health, bool onGround, uint8_t playerState)
+	int health, int armor, bool onGround, uint8_t playerState)
 {
 	if (*net_event_debug <= 0)
 		return;
@@ -546,9 +546,9 @@ void Net_DiagTraceServerPlayerTruth(int clientNum, uint32_t serverTic, int playe
 	}
 	lastTraceTicPerClient[clientNum] = serverTicSigned;
 	DebugTrace::Markf("net.snapshot",
-		"SERVER_TRUTH client=%d player=%d tic=%u pos=(%.1f,%.1f,%.1f) vel=(%.2f,%.2f,%.2f) health=%d onground=%d pstate=%u",
+		"SERVER_TRUTH client=%d player=%d tic=%u pos=(%.1f,%.1f,%.1f) vel=(%.2f,%.2f,%.2f) health=%d armor=%d onground=%d pstate=%u",
 		clientNum, playerNum, unsigned(serverTic),
-		x, y, z, vx, vy, vz, health, onGround ? 1 : 0, unsigned(playerState));
+		x, y, z, vx, vy, vz, health, armor, onGround ? 1 : 0, unsigned(playerState));
 }
 
 // Trace the rising edge of BT_USE so we can correlate playsim use attempts

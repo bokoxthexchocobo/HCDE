@@ -27,7 +27,15 @@ constexpr uint8_t HCDEPresentationEchoMagic[4] = { 'E', 'C', 'H', 'O' };
 // but armor lived only as a client inventory item that nothing ever decremented
 // (the client never simulates damage on its own pawn), so armor never went down
 // when hit. Mirroring the Armor item's amount fixes the HUD armor readout.
-constexpr uint8_t HCDEPresentationEchoProtocolVersion = 5u;
+//
+// v6 appends five BE16 HexenArmor slot values after each armor inventory entry
+// (BasicArmor entries carry zero slots). Amount alone is useless for HexenArmor
+// because AC lives in Slots[], not Inventory.Amount.
+//
+// The local-inventory block is always sent so weapons/ammo/armor reconcile even
+// when net_echo_debug is off; only the per-player weapon/psprite diagnostic
+// records are gated behind net_echo_debug.
+constexpr uint8_t HCDEPresentationEchoProtocolVersion = 6u;
 
 // Forward declarations
 struct player_t;

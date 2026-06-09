@@ -145,7 +145,7 @@ static bool HCDEBuildNativeServerSnapshotPayload(int client, uint8_t controlFlag
 		return fail("server-snapshot-world-delta-build");
 	// Body chunk order must match HCDEApplyNativeServerSnapshotPayload: world,
 	// actor/invasion, presentation echo, checksum. Echo before actor breaks apply
-	// when net_echo_debug is on (default) and clients negotiate actor-delta-v2.
+	// when clients negotiate actor-delta-v2.
 	if (!Net_IsInvasionModeEnabled()
 		&& !HCDEAppendSharedActorDeltasV2(client, output,
 			HCDELiveLaneBudgetEnd(client, HLANE_ACTOR_DELTA, bodyCursor, outputCapacity), bodyCursor))
@@ -157,11 +157,10 @@ static bool HCDEBuildNativeServerSnapshotPayload(int client, uint8_t controlFlag
 	{
 		return fail("server-snapshot-invasion-build");
 	}
-	if (*net_echo_debug != 0)
-	{
-		if (!HCDEAppendPresentationEcho(client, output, outputCapacity, bodyCursor, worldDeltaPlayers, worldDeltaPlayerCount))
-			return fail("server-snapshot-presentation-echo-build");
-	}
+	// Always append the local-inventory reconciliation block (weapons/ammo/armor).
+	// Per-player weapon/psprite diagnostics inside the echo are gated by net_echo_debug.
+	if (!HCDEAppendPresentationEcho(client, output, outputCapacity, bodyCursor, worldDeltaPlayers, worldDeltaPlayerCount))
+		return fail("server-snapshot-presentation-echo-build");
 	Net_ChecksumApplyServerChunk(output, outputCapacity, bodyCursor);
 
 	const size_t bodyBytes = bodyCursor - HCDEServerSnapshotHeaderSize - quitterBytes;
