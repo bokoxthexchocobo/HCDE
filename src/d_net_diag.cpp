@@ -269,14 +269,77 @@ void Net_CompareEchoToLocal(int clientNum, uint32_t serverTic, int playerNum,
 	}
 }
 
-// One replicated inventory entry (echo v4 local-inventory block).
+// One replicated inventory entry (echo v4+ local-inventory block).
 struct HCDEReplicatedInvItem
 {
 	FString ClassName;
 	uint32_t Amount = 0u;
 	bool IsWeapon = false;
 	bool IsArmor = false;
+	uint16_t HexenSlots[5] = {};
 };
+
+static void HCDEWriteHexenArmorSlots(const AActor* item, uint16_t outSlots[5])
+{
+	for (int i = 0; i < 5; ++i)
+		outSlots[i] = 0u;
+	if (item == nullptr || !item->IsKindOf(NAME_HexenArmor))
+		return;
+	double* slots = (double*)item->ScriptVar(NAME_Slots, nullptr);
+	if (slots == nullptr)
+		return;
+	for (int i = 0; i < 5; ++i)
+	{
+		const double slot = max<double>(0.0, slots[i]);
+		outSlots[i] = uint16_t(min<double>(slot, 65535.0));
+	}
+}
+
+static bool Net_ShouldReplicateInventoryItem(const AActor* item)
+{
+	if (item == nullptr)
+		return false;
+	return item->IsKindOf(NAME_Weapon)
+		|| item->IsKindOf(NAME_Ammo)
+		|| item->IsKindOf(NAME_Armor)
+		|| item->IsKindOf(NAME_Key)
+		|| item->IsKindOf(NAME_Powerup)
+		|| item->IsKindOf(NAME_CustomInventory);
+}
+
+static uint8_t Net_ReplicatedInventoryItemFlags(const AActor* item)
+{
+	uint8_t flags = 0u;
+	if (item->IsKindOf(NAME_Weapon))
+		flags |= 0x01u;
+	if (item->IsKindOf(NAME_Armor))
+		flags |= 0x02u;
+	if (item->IsKindOf(NAME_Key))
+		flags |= 0x04u;
+	if (item->IsKindOf(NAME_Powerup))
+		flags |= 0x08u;
+	if (item->IsKindOf(NAME_CustomInventory))
+		flags |= 0x10u;
+	return flags;
+}
+
+static void HCDEApplyReplicatedArmorState(AActor* inv, const HCDEReplicatedInvItem& item)
+{
+	if (inv == nullptr || !item.IsArmor)
+		return;
+	if (inv->IsKindOf(NAME_HexenArmor))
+	{
+		double* slots = (double*)inv->ScriptVar(NAME_Slots, nullptr);
+		if (slots != nullptr)
+		{
+			for (int i = 0; i < 5; ++i)
+				slots[i] = double(item.HexenSlots[i]);
+		}
+		return;
+	}
+	const uint32_t raw = item.Amount;
+	inv->IntVar(NAME_Amount) = raw > uint32_t(INT_MAX) ? INT_MAX : int(raw);
+}
 
 // Reconcile the local view player's Weapon/Ammo/Armor inventory to the
 // authority's, using the echo local-inventory block. This is the missing half of
@@ -292,8 +355,6 @@ struct HCDEReplicatedInvItem
 // snapshots. Removal can be a later, separately-tested step.
 static void Net_ReconcileLocalInventory(int invForPlayer, const TArray<HCDEReplicatedInvItem>& items)
 {
-	if (!cl_follow_server_weapon)
-		return;
 	// The authority IS the source of truth and must not rewrite its own pawn.
 	if (I_IsLocalHCDEServiceAuthority())
 		return;
@@ -332,10 +393,15 @@ static void Net_ReconcileLocalInventory(int invForPlayer, const TArray<HCDERepli
 		AActor* inv = mo->FindInventory(cls, true);
 		if (inv != nullptr)
 		{
-			// Amount is a uint32 on the wire; values above INT_MAX would wrap to a
-			// negative count and corrupt the HUD/ammo logic. Clamp into int range.
-			const uint32_t raw = items[i].Amount;
-			inv->IntVar(NAME_Amount) = raw > uint32_t(INT_MAX) ? INT_MAX : int(raw);
+			if (items[i].IsArmor)
+				HCDEApplyReplicatedArmorState(inv, items[i]);
+			else
+			{
+				// Amount is a uint32 on the wire; values above INT_MAX would wrap to a
+				// negative count and corrupt the HUD/ammo logic. Clamp into int range.
+				const uint32_t raw = items[i].Amount;
+				inv->IntVar(NAME_Amount) = raw > uint32_t(INT_MAX) ? INT_MAX : int(raw);
+			}
 		}
 	}
 }
@@ -344,9 +410,13 @@ static void Net_ReconcileLocalInventory(int invForPlayer, const TArray<HCDERepli
 bool HCDEAppendPresentationEcho(int client, uint8_t* output, size_t outputCapacity, size_t& cursor, const uint8_t* playerNums, size_t playerCount)
 {
 	const size_t startCursor = cursor;
+	// Per-player weapon/psprite diagnostic records are optional; the inventory
+	// block below is required so dedicated clients mirror picked-up weapons and
+	// armor even when net_echo_debug is off.
+	const uint8_t echoPlayerCount = (*net_echo_debug != 0) ? uint8_t(playerCount) : 0u;
 	if (!HCDEAppendBytes(output, outputCapacity, cursor, HCDEPresentationEchoMagic, sizeof(HCDEPresentationEchoMagic))
 		|| !HCDEAppendByte(output, outputCapacity, cursor, HCDEPresentationEchoProtocolVersion)
-		|| !HCDEAppendByte(output, outputCapacity, cursor, uint8_t(playerCount)))
+		|| !HCDEAppendByte(output, outputCapacity, cursor, echoPlayerCount))
 	{
 		return false;
 	}
@@ -374,7 +444,7 @@ bool HCDEAppendPresentationEcho(int client, uint8_t* output, size_t outputCapaci
 			uint16_t itemCount = 0u;
 			for (AActor* item = invMo->Inventory; item != nullptr && itemCount < 255u; item = item->Inventory)
 			{
-				if (item->IsKindOf(NAME_Weapon) || item->IsKindOf(NAME_Ammo) || item->IsKindOf(NAME_Armor))
+				if (Net_ShouldReplicateInventoryItem(item))
 					++itemCount;
 			}
 			if (!HCDEAppendBE16(output, outputCapacity, cursor, itemCount))
@@ -382,24 +452,34 @@ bool HCDEAppendPresentationEcho(int client, uint8_t* output, size_t outputCapaci
 			uint16_t emitted = 0u;
 			for (AActor* item = invMo->Inventory; item != nullptr && emitted < itemCount; item = item->Inventory)
 			{
-				const bool isWeapon = item->IsKindOf(NAME_Weapon);
-				const bool isArmor = item->IsKindOf(NAME_Armor);
-				if (!isWeapon && !isArmor && !item->IsKindOf(NAME_Ammo))
+				if (!Net_ShouldReplicateInventoryItem(item))
 					continue;
-				const uint8_t flags = (isWeapon ? 0x01u : 0x00u) | (isArmor ? 0x02u : 0x00u);
+				const bool isArmor = item->IsKindOf(NAME_Armor);
+				const uint8_t flags = Net_ReplicatedInventoryItemFlags(item);
 				const uint32_t amount = uint32_t(max<int>(0, item->IntVar(NAME_Amount)));
+				uint16_t hexenSlots[5] = {};
+				if (isArmor)
+					HCDEWriteHexenArmorSlots(item, hexenSlots);
 				if (!HCDEAppendByte(output, outputCapacity, cursor, flags)
 					|| !HCDEAppendBE32(output, outputCapacity, cursor, amount)
 					|| !HCDEAppendEchoString(output, outputCapacity, cursor, item->GetClass()->TypeName.GetChars()))
 				{
 					return false;
 				}
+				if (isArmor)
+				{
+					for (int slot = 0; slot < 5; ++slot)
+					{
+						if (!HCDEAppendBE16(output, outputCapacity, cursor, hexenSlots[slot]))
+							return false;
+					}
+				}
 				++emitted;
 			}
 		}
 	}
 
-	for (size_t i = 0u; i < playerCount; ++i)
+	for (size_t i = 0u; i < echoPlayerCount; ++i)
 	{
 		const uint8_t playerNum = playerNums[i];
 		if (playerNum >= MAXPLAYERS)
@@ -504,9 +584,9 @@ bool HCDEReadPresentationEcho(int clientNum, const uint8_t* body, size_t bodyByt
 		if (!HCDEReadBE16Field(body, bodyBytes, cursor, itemCount))
 			return false;
 		// Each item is at least flags(1) + amount(4) + string length(2) = 7 bytes
-		// (an empty class-name string body is the minimum). Reject an itemCount
-		// the remaining body cannot possibly satisfy BEFORE allocating, so a
-		// 2-byte count field cannot force a ~64K-element allocation per packet.
+		// (an empty class-name string body is the minimum). Armor entries add
+		// five BE16 slot values (10 bytes). Reject an itemCount the remaining
+		// body cannot possibly satisfy BEFORE allocating.
 		const size_t kMinBytesPerItem = 7u;
 		if (cursor > bodyBytes || itemCount > (bodyBytes - cursor) / kMinBytesPerItem)
 			return false;
@@ -528,6 +608,16 @@ bool HCDEReadPresentationEcho(int clientNum, const uint8_t* body, size_t bodyByt
 			it.Amount = amount;
 			it.IsWeapon = (flags & 0x01u) != 0u;
 			it.IsArmor = (flags & 0x02u) != 0u;
+			if (it.IsArmor)
+			{
+				for (int slot = 0; slot < 5; ++slot)
+				{
+					uint16_t slotValue = 0u;
+					if (!HCDEReadBE16Field(body, bodyBytes, cursor, slotValue))
+						return false;
+					it.HexenSlots[slot] = slotValue;
+				}
+			}
 		}
 		Net_ReconcileLocalInventory(invForPlayer, invItems);
 	}

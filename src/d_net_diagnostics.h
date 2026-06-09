@@ -58,7 +58,7 @@ void Net_DiagGetProfileSummary(FHCDENetDiagProfileSummary& out);
 void Net_DiagTraceInputAuthority(int clientNum, const char* event, const char* detail);
 void Net_DiagTraceServerPlayerTruth(int clientNum, uint32_t serverTic, int playerNum,
 	double x, double y, double z, double vx, double vy, double vz,
-	int health, bool onGround, uint8_t playerState);
+	int health, int armor, bool onGround, uint8_t playerState);
 
 void Net_DiagRunPredictDump();
 bool Net_DiagWriteBundle(const char* label, FString& outPath);

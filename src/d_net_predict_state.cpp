@@ -445,6 +445,7 @@ struct FHCDEPendingLocalHealthRepair
 	bool Valid = false;
 	uint32_t ServerTic = 0u;
 	int Health = 0;
+	int Armor = -1;
 	bool OnGround = false;
 	bool ApplyPose = false;
 	DVector3 Pos = {};

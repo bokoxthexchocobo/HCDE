@@ -46,6 +46,7 @@ static bool HCDEAppendServerWorldDeltas(int client, uint8_t* output, size_t outp
 		const AActor* mo = player.mo;
 		uint8_t flags = 0u;
 		int health = player.health;
+		int armor = 0;
 		DVector3 pos = {};
 		DVector3 vel = {};
 		uint32_t yaw = 0u;
@@ -58,6 +59,7 @@ static bool HCDEAppendServerWorldDeltas(int client, uint8_t* output, size_t outp
 			if (player.onground)
 				flags |= HCDEServerWorldDeltaPoseOnGround;
 			health = mo->health;
+			armor = HCDEGetPlayerBasicArmorAmount(mo);
 			pos = mo->Pos();
 			vel = mo->Vel;
 			yaw = mo->Angles.Yaw.BAMs();
@@ -67,6 +69,7 @@ static bool HCDEAppendServerWorldDeltas(int client, uint8_t* output, size_t outp
 		if (!HCDEAppendByte(output, outputCapacity, cursor, playerNum)
 			|| !HCDEAppendByte(output, outputCapacity, cursor, flags)
 			|| !HCDEAppendBE16(output, outputCapacity, cursor, uint16_t(clamp<int>(health, INT16_MIN, INT16_MAX)))
+			|| !HCDEAppendBE16(output, outputCapacity, cursor, uint16_t(clamp<int>(armor, 0, INT16_MAX)))
 			|| !HCDEAppendFloat(output, outputCapacity, cursor, pos.X)
 			|| !HCDEAppendFloat(output, outputCapacity, cursor, pos.Y)
 			|| !HCDEAppendFloat(output, outputCapacity, cursor, pos.Z)
@@ -79,8 +82,8 @@ static bool HCDEAppendServerWorldDeltas(int client, uint8_t* output, size_t outp
 			return false;
 		}
 		Net_DiagTraceServerPlayerTruth(client, uint32_t(gametic), int(playerNum),
-			pos.X, pos.Y, pos.Z, vel.X, vel.Y, vel.Z, health, (flags & HCDEServerWorldDeltaPoseOnGround) != 0u,
-			uint8_t(player.playerstate));
+			pos.X, pos.Y, pos.Z, vel.X, vel.Y, vel.Z, health, armor,
+			(flags & HCDEServerWorldDeltaPoseOnGround) != 0u, uint8_t(player.playerstate));
 	}
 
 	uint8_t sectorCount = 0u;
@@ -338,7 +341,33 @@ static void Net_DebugDumpMonstersAroundLocalPlayer(int newHealth, int previousHe
 	}
 }
 
-static void HCDEApplyLocalHealthFields(player_t& player, int serverHealth, bool onGround)
+static int HCDEGetPlayerBasicArmorAmount(const AActor* mo)
+{
+	if (mo == nullptr)
+		return 0;
+	AActor* armor = mo->FindInventory(NAME_BasicArmor, true);
+	return armor != nullptr ? max<int>(0, armor->IntVar(NAME_Amount)) : 0;
+}
+
+static void HCDEApplyLocalBasicArmorAmount(player_t& player, int serverArmor)
+{
+	AActor* mo = player.mo;
+	if (mo == nullptr)
+		return;
+
+	AActor* armor = mo->FindInventory(NAME_BasicArmor, true);
+	if (armor == nullptr && serverArmor > 0)
+	{
+		PClassActor* cls = PClass::FindActor(NAME_BasicArmor);
+		if (cls != nullptr && cls->IsDescendantOf(NAME_Inventory))
+			mo->GiveInventoryType(cls);
+		armor = mo->FindInventory(NAME_BasicArmor, true);
+	}
+	if (armor != nullptr)
+		armor->IntVar(NAME_Amount) = clamp<int>(serverArmor, 0, INT_MAX);
+}
+
+static void HCDEApplyLocalHealthFields(player_t& player, int serverHealth, bool onGround, int serverArmor = -1)
 {
 	AActor* mo = player.mo;
 	if (mo == nullptr)
@@ -348,6 +377,8 @@ static void HCDEApplyLocalHealthFields(player_t& player, int serverHealth, bool 
 	mo->health = serverHealth;
 	player.health = serverHealth;
 	player.onground = onGround;
+	if (serverArmor >= 0)
+		HCDEApplyLocalBasicArmorAmount(player, serverArmor);
 	if (serverHealth < previousHealth)
 	{
 		player.damagecount = clamp<int>(player.damagecount + previousHealth - serverHealth, 0, 100);
@@ -926,7 +957,7 @@ static bool HCDELocalPlayerNeedsPoseRepair(const player_t& player, int serverHea
 
 static void HCDEQueuePredictedLocalHealthRepair(uint32_t serverTic, int serverHealth, bool onGround,
 	const DVector3* serverPos = nullptr, const DVector3* serverVel = nullptr,
-	uint32_t yawBam = 0u, uint32_t pitchBam = 0u, bool applyPose = false)
+	uint32_t yawBam = 0u, uint32_t pitchBam = 0u, bool applyPose = false, int serverArmor = -1)
 {
 	if (PendingLocalHealthRepair.Valid && serverTic < PendingLocalHealthRepair.ServerTic)
 		return;
@@ -934,6 +965,7 @@ static void HCDEQueuePredictedLocalHealthRepair(uint32_t serverTic, int serverHe
 	PendingLocalHealthRepair.Valid = true;
 	PendingLocalHealthRepair.ServerTic = serverTic;
 	PendingLocalHealthRepair.Health = serverHealth;
+	PendingLocalHealthRepair.Armor = serverArmor;
 	PendingLocalHealthRepair.OnGround = onGround;
 	PendingLocalHealthRepair.ApplyPose = applyPose;
 	if (applyPose && serverPos != nullptr && serverVel != nullptr)
@@ -962,7 +994,7 @@ static void HCDEQueuePredictedLocalHealthRepair(uint32_t serverTic, int serverHe
 			HCDEApplyLocalPoseRepair(player, *serverPos, *serverVel, yawBam, pitchBam, onGround,
 				hardRepair, !hardRepair, true, !hardRepair);
 		}
-		HCDEApplyLocalHealthFields(player, serverHealth, onGround);
+		HCDEApplyLocalHealthFields(player, serverHealth, onGround, serverArmor);
 	}
 }
 
@@ -992,10 +1024,12 @@ static void HCDEApplyPendingLocalHealthRepair()
 		}
 		HCDEApplyLocalHealthFields(player,
 			PendingLocalHealthRepair.Health,
-			PendingLocalHealthRepair.OnGround);
-		DebugTrace::Markf("net", "HCDE pending local health repair applied tic=%u health=%d pose=%d",
+			PendingLocalHealthRepair.OnGround,
+			PendingLocalHealthRepair.Armor);
+		DebugTrace::Markf("net", "HCDE pending local health repair applied tic=%u health=%d armor=%d pose=%d",
 			PendingLocalHealthRepair.ServerTic,
 			PendingLocalHealthRepair.Health,
+			PendingLocalHealthRepair.Armor,
 			PendingLocalHealthRepair.ApplyPose ? 1 : 0);
 	}
 
@@ -1074,9 +1108,11 @@ static bool HCDEValidateServerWorldDeltas(int clientNum, const uint8_t* body, si
 	const uint8_t version = body[bodyCursor + HCDEServerWorldDeltaVersionOffset];
 	const uint8_t flags = body[bodyCursor + HCDEServerWorldDeltaFlagsOffset];
 	const uint8_t deltaCount = body[bodyCursor + HCDEServerWorldDeltaCountOffset];
-	if ((version != 1u && version != 2u && version != HCDEServerWorldDeltaProtocolVersion) || flags != 0u || playerCount > MAXPLAYERS || deltaCount > MAXPLAYERS)
+	if ((version != 1u && version != 2u && version != 3u && version != HCDEServerWorldDeltaProtocolVersion)
+		|| flags != 0u || playerCount > MAXPLAYERS || deltaCount > MAXPLAYERS)
 		return false;
-	const size_t deltaRecordSize = version >= 2u ? HCDEServerWorldDeltaRecordV2Size : HCDEServerWorldDeltaRecordV1Size;
+	const size_t deltaRecordSize = version >= 4u ? HCDEServerWorldDeltaRecordV4Size
+		: (version >= 2u ? HCDEServerWorldDeltaRecordV2Size : HCDEServerWorldDeltaRecordV1Size);
 
 	uint64_t deltaPlayers = 0u;
 	uint32_t serverTic = 0u;
@@ -1093,12 +1129,14 @@ static bool HCDEValidateServerWorldDeltas(int clientNum, const uint8_t* body, si
 		uint8_t playerNum = 0u;
 		uint8_t poseFlags = 0u;
 		uint16_t healthBits = 0u;
+		uint16_t armorBits = 0u;
 		uint32_t yaw = 0u;
 		uint32_t pitch = 0u;
 		double values[6] = {};
 		if (!HCDEReadByteField(body, bodyBytes, cursor, playerNum)
 			|| !HCDEReadByteField(body, bodyBytes, cursor, poseFlags)
-			|| !HCDEReadBE16Field(body, bodyBytes, cursor, healthBits))
+			|| !HCDEReadBE16Field(body, bodyBytes, cursor, healthBits)
+			|| (version >= 4u && !HCDEReadBE16Field(body, bodyBytes, cursor, armorBits)))
 		{
 			return false;
 		}
@@ -1138,6 +1176,7 @@ static bool HCDEValidateServerWorldDeltas(int clientNum, const uint8_t* body, si
 		const DVector3 serverVel = { values[3], values[4], values[5] };
 		const double drift = HCDELocalPlayerDriftSqVsServer(player, serverPos);
 		const int serverHealth = int(int16_t(healthBits));
+		const int serverArmor = version >= 4u ? int(armorBits) : -1;
 		if (playerNum == consoleplayer)
 		{
 			const bool serverReportsOnGround = (poseFlags & HCDEServerWorldDeltaPoseOnGround) != 0u;
@@ -1173,7 +1212,7 @@ static bool HCDEValidateServerWorldDeltas(int clientNum, const uint8_t* body, si
 				// clearPrediction=true inside ApplyLocalPoseRepair also clears backup.
 				HCDEApplyLocalPoseRepair(player, serverPos, serverVel, yaw, pitch, serverReportsOnGround,
 					true, false, false, false);
-				HCDEApplyLocalHealthFields(player, serverHealth, serverReportsOnGround);
+				HCDEApplyLocalHealthFields(player, serverHealth, serverReportsOnGround, serverArmor);
 				HCDEHeadingRepairGraceUntilGametic = gametic + TICRATE / 4;
 				HCDELocalPlayerBaselineEstablished = true;
 				++peer.Reconciliations;
@@ -1485,7 +1524,7 @@ static bool HCDEValidateServerWorldDeltas(int clientNum, const uint8_t* body, si
 				// leave the client-owned look pitch alone (avoids free-look jitter).
 				HCDEApplyLocalPoseRepair(player, serverPos, serverVel, yaw, pitch, serverReportsOnGround, true,
 					false, true, false);
-					HCDEApplyLocalHealthFields(player, serverHealth, serverReportsOnGround);
+					HCDEApplyLocalHealthFields(player, serverHealth, serverReportsOnGround, serverArmor);
 					HCDELocalReconcileDebugTrace(serverTic, sqrt(drift), refVel, true, "apply-predict-pose");
 					++HCDELiveProfile.PredictionLocalStateRepairs;
 					++peer.Reconciliations;
@@ -1499,7 +1538,7 @@ static bool HCDEValidateServerWorldDeltas(int clientNum, const uint8_t* body, si
 				HCDEQueuePredictedLocalHealthRepair(serverTic, serverHealth, serverReportsOnGround,
 					applyPose ? &serverPos : nullptr,
 					applyPose ? &serverVel : nullptr,
-					yaw, pitch, applyPose);
+					yaw, pitch, applyPose, serverArmor);
 				HCDELocalReconcileDebugTrace(serverTic, sqrt(drift), refVel, applyPose,
 					applyPose ? "apply-predict-queue" : "skip-predict-queue");
 				++HCDELiveProfile.PredictionLocalHealthRepairs;
@@ -1573,6 +1612,8 @@ static bool HCDEValidateServerWorldDeltas(int clientNum, const uint8_t* body, si
 				player.viewheight = viewZOffset;
 				player.onground = serverReportsOnGround;
 				player.viewz = serverPos.Z + viewZOffset;
+				if (serverArmor >= 0)
+					HCDEApplyLocalBasicArmorAmount(player, serverArmor);
 				// Respawn is always a hard snap to the spawn point - never
 				// interpolate from the corpse position. ClearInterpolation
 				// resets Prev = Pos and PrevPortalGroup = Sector->PortalGroup,
@@ -1782,12 +1823,12 @@ static bool HCDEValidateServerWorldDeltas(int clientNum, const uint8_t* body, si
 				HCDEApplyLocalPoseRepair(player, serverPos, serverVel, yaw, pitch, serverReportsOnGround,
 					hardRepair || localNeedsBaselinePoseRepair, false, true, smoothRepair);
 			}
-			HCDEApplyLocalHealthFields(player, serverHealth, serverReportsOnGround);
+			HCDEApplyLocalHealthFields(player, serverHealth, serverReportsOnGround, serverArmor);
 			PendingLocalHealthRepair.Valid = false;
 			++peer.Reconciliations;
 			++HCDELiveProfile.PredictionLocalStateRepairs;
-			DebugTrace::Markf("net", "HCDE client local state repair from=%d player=%u drift=%.2f health=%d pose=%d reconciliations=%u",
-				clientNum, unsigned(playerNum), sqrt(drift), serverHealth, applyPose ? 1 : 0, peer.Reconciliations);
+			DebugTrace::Markf("net", "HCDE client local state repair from=%d player=%u drift=%.2f health=%d armor=%d pose=%d reconciliations=%u",
+				clientNum, unsigned(playerNum), sqrt(drift), serverHealth, serverArmor, applyPose ? 1 : 0, peer.Reconciliations);
 			continue;
 		}
 
@@ -4471,6 +4512,25 @@ static FHCDEReplicatedActorRef* Net_RegisterHCDEReplicatedActorBaseline(uint32_t
 static bool Net_CoopIsProjectileRef(const FHCDEReplicatedActorRef& ref);
 static void Net_RecordCoopProjectileDespawnEvent(const FHCDEReplicatedActorRef& ref, AActor* actor, int serverHealth);
 
+static void Net_TryRecordCoopMonsterDeath(const FHCDEReplicatedActorRef& ref);
+static void Net_ApplyCoopDeadMapSpawnIndex(int32_t spawnIndex);
+
+static void Net_TryRecordCoopMonsterDeath(const FHCDEReplicatedActorRef& ref)
+{
+	if (!I_IsLocalHCDEServiceAuthority() || !Net_ShouldRecordCoopMapSpawnIndex())
+		return;
+	if (ref.Source != HREP_SOURCE_COOP || ref.Category != HREP_ACTOR_MONSTER || ref.CoopMapSpawnIndex < 0)
+		return;
+
+	const int32_t spawnIndex = ref.CoopMapSpawnIndex;
+	for (int32_t existing : HCDECoopDeadMapSpawnIndices)
+	{
+		if (existing == spawnIndex)
+			return;
+	}
+	HCDECoopDeadMapSpawnIndices.Push(spawnIndex);
+}
+
 static void Net_RetireHCDEReplicatedActor(uint32_t id)
 {
 	if (auto ref = Net_FindHCDEReplicatedActor(id); ref != nullptr)
@@ -4483,6 +4543,8 @@ static void Net_RetireHCDEReplicatedActor(uint32_t id)
 		{
 			Net_RecordCoopProjectileDespawnEvent(*ref, actor, actor->health);
 		}
+		if (I_IsLocalHCDEServiceAuthority())
+			Net_TryRecordCoopMonsterDeath(*ref);
 		Net_SetHCDEReplicatedActorPtr(*ref, nullptr);
 		ref->Active = false;
 		ref->Retired = true;
@@ -4608,6 +4670,8 @@ static int Net_CompactHCDEReplicatedActors()
 		const bool idDefect = ref.Id == 0u;
 		if (idDefect || retireExpired || (staleActor && !ref.Retired && !liveRemoteBaseline))
 		{
+			if (staleActor && !ref.Retired && !liveRemoteBaseline)
+				Net_TryRecordCoopMonsterDeath(ref);
 			if (idDefect) ++defectIdZero;
 			if (retireExpired) ++retiredExpiredCount;
 			++removed;
@@ -4698,6 +4762,17 @@ static void HCDEClearActorBaselineRepair(int clientNum, const char* reason)
 	HCDEAuthorityEventReplayNextId[clientNum] = 0u;
 }
 
+static bool Net_ShouldSeedAuthorityEventReplay(int clientNum)
+{
+	if (!HCDELivePeerHasCapability(clientNum, HCDELiveCapAuthorityEventsV1))
+		return false;
+	if (HCDEFirstRecentAuthorityEventId() == 0u)
+		return false;
+	if (Net_IsInvasionModeEnabled())
+		return true;
+	return Net_ShouldRecordCoopMapSpawnIndex();
+}
+
 static void HCDEBeginActorBaselineRepair(int clientNum, const char* reason)
 {
 	if (clientNum < 0 || clientNum >= MAXPLAYERS)
@@ -4708,7 +4783,9 @@ static void HCDEBeginActorBaselineRepair(int clientNum, const char* reason)
 	HCDEActorDeltaV2SendCursor[clientNum] = 0u;
 	HCDEActorBaselineRepairUntilTic[clientNum] = max<int>(HCDEActorBaselineRepairUntilTic[clientNum],
 		gametic + HCDEActorBaselineRepairWindowTics);
-	HCDEAuthorityEventReplayNextId[clientNum] = HCDEFirstRecentAuthorityEventId();
+	HCDEAuthorityEventReplayNextId[clientNum] = Net_ShouldSeedAuthorityEventReplay(clientNum)
+		? HCDEFirstRecentAuthorityEventId()
+		: 0u;
 	++HCDELiveProfile.ActorBaselineRepairWindows;
 	++HCDELiveProfile.ActorBaselineRepairResets;
 	++HCDELivePeers[clientNum].ActorBaselineRepairWindows;
@@ -5060,11 +5137,14 @@ static bool HCDEAppendAuthorityEvents(int clientNum, uint8_t* output, size_t out
 			nextCatchupId = nextEventIdAfter(i);
 	}
 
-	if (catchupActive && count > 0u)
+	if (catchupActive)
 	{
 		HCDEAuthorityEventReplayNextId[clientNum] = nextCatchupId;
-		HCDELiveProfile.AuthorityEventCatchupRecordsBuilt += count;
-		HCDELivePeers[clientNum].AuthorityEventCatchupRecords += count;
+		if (count > 0u)
+		{
+			HCDELiveProfile.AuthorityEventCatchupRecordsBuilt += count;
+			HCDELivePeers[clientNum].AuthorityEventCatchupRecords += count;
+		}
 		if (nextCatchupId == 0u)
 		{
 			++HCDELiveProfile.AuthorityEventCatchupWindowsCompleted;
@@ -6072,6 +6152,8 @@ static bool HCDEAppendSharedActorDeltasV2(int clientNum, uint8_t* output, size_t
 		const uint32_t actorYaw = actor->Angles.Yaw.BAMs();
 		const uint32_t actorPitch = actor->Angles.Pitch.BAMs();
 		const int32_t spawnIndex = sharedRef.CoopMapSpawnIndex;
+		if (actorHealth <= 0 && spawnIndex >= 0 && sharedRef.Category == HREP_ACTOR_MONSTER)
+			Net_TryRecordCoopMonsterDeath(sharedRef);
 		const bool forceFull = baselineRepair
 			|| !sent.BaselineValid
 			|| sent.ClassId != sharedRef.ClassId
@@ -6218,6 +6300,89 @@ static bool HCDEAppendSharedActorDeltasV2(int clientNum, uint8_t* output, size_t
 		static_cast<unsigned long long>(partialSent),
 		static_cast<unsigned long long>(skippedUnchanged),
 		static_cast<unsigned long long>(deferredBudget));
+	return true;
+}
+
+static bool Net_IsLateJoinSyncPending(int client);
+
+static bool Net_ShouldSendCoopAuthorityEventReplay(int clientNum)
+{
+	if (Net_IsInvasionModeEnabled() || !Net_ShouldRecordCoopMapSpawnIndex())
+		return false;
+	if (!HCDELivePeerHasCapability(clientNum, HCDELiveCapAuthorityEventsV1))
+		return false;
+	if (!Net_IsLateJoinSyncPending(clientNum) && !HCDEActorBaselineRepairActive(clientNum))
+		return false;
+	return HCDEFirstRecentAuthorityEventId() != 0u;
+}
+
+static bool HCDEAppendCoopDeadSpawns(int clientNum, uint8_t* output, size_t outputCapacity, size_t& cursor)
+{
+	if (!I_IsLocalHCDEServiceAuthority() || !Net_ShouldRecordCoopMapSpawnIndex())
+		return true;
+	if (HCDECoopDeadMapSpawnIndices.Size() == 0u)
+		return true;
+
+	const size_t startCursor = cursor;
+	const size_t deadCount = HCDECoopDeadMapSpawnIndices.Size();
+	const uint8_t count = uint8_t(min<size_t>(deadCount, UINT8_MAX));
+	if (cursor > outputCapacity || outputCapacity - cursor < HCDECoopDeadSpawnsHeaderSize + size_t(count) * 4u)
+		return false;
+
+	if (!HCDEAppendBytes(output, outputCapacity, cursor, HCDECoopDeadSpawnsMagic, sizeof(HCDECoopDeadSpawnsMagic))
+		|| !HCDEAppendByte(output, outputCapacity, cursor, HCDECoopDeadSpawnsProtocolVersion)
+		|| !HCDEAppendByte(output, outputCapacity, cursor, 0u)
+		|| !HCDEAppendByte(output, outputCapacity, cursor, count)
+		|| !HCDEAppendByte(output, outputCapacity, cursor, 0u))
+	{
+		cursor = startCursor;
+		return false;
+	}
+
+	for (uint8_t i = 0u; i < count; ++i)
+	{
+		if (!HCDEAppendBE32(output, outputCapacity, cursor, uint32_t(HCDECoopDeadMapSpawnIndices[i])))
+		{
+			cursor = startCursor;
+			return false;
+		}
+	}
+
+	DebugTrace::Markf("net", "HCDE coop dead spawns send client=%d count=%u bytes=%zu",
+		clientNum, unsigned(count), cursor - startCursor);
+	return true;
+}
+
+static bool HCDEApplyCoopDeadSpawns(int clientNum, const uint8_t* body, size_t bodyBytes, size_t& bodyCursor)
+{
+	if (I_IsLocalHCDEServiceAuthority())
+		return true;
+	if (bodyCursor > bodyBytes || bodyBytes - bodyCursor < HCDECoopDeadSpawnsHeaderSize)
+		return false;
+	if (memcmp(&body[bodyCursor + HCDECoopDeadSpawnsMagicOffset], HCDECoopDeadSpawnsMagic, sizeof(HCDECoopDeadSpawnsMagic)) != 0)
+		return false;
+
+	const size_t startCursor = bodyCursor;
+	const uint8_t version = body[bodyCursor + HCDECoopDeadSpawnsVersionOffset];
+	const uint8_t count = body[bodyCursor + HCDECoopDeadSpawnsCountOffset];
+	if (version != HCDECoopDeadSpawnsProtocolVersion)
+		return false;
+
+	size_t cursor = bodyCursor + HCDECoopDeadSpawnsHeaderSize;
+	if (cursor > bodyBytes || bodyBytes - cursor < size_t(count) * 4u)
+		return false;
+
+	for (uint8_t i = 0u; i < count; ++i)
+	{
+		uint32_t spawnIndexRaw = 0u;
+		if (!HCDEReadBE32Field(body, bodyBytes, cursor, spawnIndexRaw))
+			return false;
+		Net_ApplyCoopDeadMapSpawnIndex(int32_t(spawnIndexRaw));
+	}
+
+	bodyCursor = cursor;
+	DebugTrace::Markf("net", "HCDE coop dead spawns apply client=%d count=%u bytes=%zu",
+		clientNum, unsigned(count), bodyCursor - startCursor);
 	return true;
 }
 
@@ -6752,6 +6917,7 @@ void Net_BeginCoopMapSpawnRegistration(FLevelLocals* level)
 	HCDECoopMapSpawnIndexLevel = level;
 	HCDECoopMapSpawnIndex.Clear();
 	HCDECoopMapSpawnActorByIndex.Clear();
+	HCDECoopDeadMapSpawnIndices.Clear();
 	// Drop any prior-map co-op NetID tables so recycled actor pointers cannot
 	// inherit stale spawn-index bindings after a map change.
 	if (Net_ShouldRecordCoopMapSpawnIndex())
@@ -6815,6 +6981,36 @@ static AActor* Net_FindCoopMapSpawnActorByIndex(int32_t index)
 	if (const TObjPtr<AActor*>* found = HCDECoopMapSpawnActorByIndex.CheckKey(index))
 		return found->Get();
 	return nullptr;
+}
+
+static void Net_ApplyCoopDeadMapSpawnIndex(int32_t spawnIndex)
+{
+	if (I_IsLocalHCDEServiceAuthority() || spawnIndex < 0)
+		return;
+
+	AActor* actor = Net_FindCoopMapSpawnActorByIndex(spawnIndex);
+	if (actor == nullptr || (actor->ObjectFlags & OF_EuthanizeMe) != 0)
+		return;
+
+	if (net_coop_id_debug)
+	{
+		Printf("[COOP DEAD SPAWN] spawn-index=%d class=%s\n",
+			int(spawnIndex),
+			actor->GetClass() != nullptr ? actor->GetClass()->TypeName.GetChars() : "<unknown>");
+	}
+
+	if (actor->health > 0 && (actor->flags & MF_CORPSE) == 0)
+	{
+		actor->health = 0;
+		Net_PrepareInvasionMirrorCorpsePhysics(actor, false);
+		actor->CallDie(nullptr, nullptr);
+	}
+
+	if (Net_IsInvasionActorCorpseLike(actor) && (actor->ObjectFlags & OF_EuthanizeMe) == 0)
+	{
+		actor->ClearCounters();
+		actor->Destroy();
+	}
 }
 
 static void Net_SetCoopAuthorityVisualOnly(uint32_t id, AActor* actor)
