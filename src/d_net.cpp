@@ -334,6 +334,11 @@ CUSTOM_CVAR(Int, net_predict_softwarn_passive_storm, 5, CVAR_ARCHIVE | CVAR_GLOB
 // but live gameplay must use HCDE `HCIN`/`HCSN` once the session is in netgame.
 CVAR(Bool, net_hcde_native_only, true, CVAR_SERVERINFO | CVAR_NOSAVE);
 
+// `sv_net_bandwidth` and the bandwidth-mode helpers are defined together with
+// the lane-budget table later in the file (after the `EHCDEBandwidthMode`
+// enum and `HCDELaneBudgetTable[][]` are declared) so the cvar callback can
+// validate against the enum directly.
+
 // Tier 1: Smooth reconciliation error decay cvars
 // Master switch for smooth reconcile. When enabled, pose repairs accumulate
 // into a render-space error that decays gradually instead of snapping instantly.
@@ -615,13 +620,132 @@ constexpr uint16_t HCDEActorDeltaFieldAll =
 constexpr double HCDEActorDeltaPosScale = 16.0;
 constexpr double HCDEActorDeltaVelScale = 32.0;
 constexpr size_t HCDEInvasionSnapshotPayloadBudgetBytes = 1200u;
-constexpr size_t HCDELaneBudgetControlBytes = 96u;
-constexpr size_t HCDELaneBudgetCommandBytes = 4096u;
-constexpr size_t HCDELaneBudgetAuthorityBytes = 384u;
-constexpr size_t HCDELaneBudgetPlayerSnapshotBytes = 4096u;
-constexpr size_t HCDELaneBudgetActorDeltaBytes = 900u;
-constexpr size_t HCDELaneBudgetQueryRegistryBytes = 512u;
-constexpr size_t HCDELaneBudgetPresentationEchoBytes = 512u;
+
+// HCDE bandwidth profiles (sender-side per-snapshot lane budgets, in bytes).
+//
+// `light` matches the original constexpr values that were tuned for tight
+// localhost / competitive flow. `medium` and `heavy` raise the optional
+// content lanes (authority replay tail, actor delta, query/registry) to give
+// richer state replication on links with more headroom. The protected lanes
+// (control / command / player snapshot) and the diagnostic presentation echo
+// stay constant across modes so input pipeline and player-pawn snapshots
+// behave identically regardless of profile.
+//
+// Sums across all 7 lanes:
+//   light  = 10 596 B
+//   medium = 12 008 B
+//   heavy  = 13 720 B
+//
+// All three fit under the in-buffer logical cap (`MAX_MSGLEN` = 14 000) and
+// rely on the existing zlib compression path inside `SendPacket` to land on
+// the wire. Because the budget is only enforced on the sender (see
+// `HCDELiveLaneBudgetEnd` below), changing modes is a server-only decision
+// that does not require a protocol or capability bump.
+enum EHCDEBandwidthMode : uint8_t
+{
+	HCDE_BW_LIGHT = 0,
+	HCDE_BW_MEDIUM,
+	HCDE_BW_HEAVY,
+	HCDE_BW_COUNT,
+};
+
+static constexpr size_t HCDELaneBudgetTable[HCDE_BW_COUNT][HLANE_COUNT] = {
+	// HLANE_CONTROL, HLANE_COMMAND, HLANE_AUTHORITY, HLANE_PLAYER_SNAPSHOT,
+	// HLANE_ACTOR_DELTA, HLANE_QUERY_REGISTRY, HLANE_PRESENTATION_ECHO
+	{ 96u, 4096u,  384u, 4096u,  900u,  512u, 512u },	// light (default; preserves prior behavior)
+	{ 96u, 4096u,  640u, 4096u, 1800u,  768u, 512u },	// medium
+	{ 96u, 4096u,  896u, 4096u, 3000u, 1024u, 512u },	// heavy
+};
+
+static const char* const HCDE_BANDWIDTH_MODE_NAMES[HCDE_BW_COUNT] = {
+	"light",
+	"medium",
+	"heavy",
+};
+
+static bool HCDETryParseBandwidthMode(const char* text, EHCDEBandwidthMode& out)
+{
+	if (text == nullptr)
+		return false;
+	for (uint8_t i = 0u; i < HCDE_BW_COUNT; ++i)
+	{
+		if (stricmp(text, HCDE_BANDWIDTH_MODE_NAMES[i]) == 0)
+		{
+			out = EHCDEBandwidthMode(i);
+			return true;
+		}
+	}
+	return false;
+}
+
+static const char* HCDEBandwidthModeName(EHCDEBandwidthMode mode)
+{
+	const uint8_t i = uint8_t(mode);
+	return i < HCDE_BW_COUNT ? HCDE_BANDWIDTH_MODE_NAMES[i] : "unknown";
+}
+
+// HCDE bandwidth profile selector. Authority-side; clients see the value
+// reflected back via CVAR_SERVERINFO replication for diagnostics. Valid
+// values: "light", "medium", "heavy", or "auto" (default). With "auto" the
+// adaptive policy in `Net_TickHCDEBandwidthAuto` picks the active row from
+// per-second clamp/deferred rates on the actor-delta lane, the worst remote
+// client RTT, and a player-count baseline cap.
+//
+// Setting the cvar takes effect immediately on the next snapshot encode --
+// no protocol bump and no client coordination required, because the lane
+// budgets only constrain the sender's per-snapshot byte budgets.
+//
+// `CVAR_NOSAVE` keeps the value out of the per-user config so a stale `auto`
+// from a previous session does not leak across builds while the policy is
+// still being tuned.
+CUSTOM_CVAR(String, sv_net_bandwidth, "auto", CVAR_SERVERINFO | CVAR_NOSAVE)
+{
+	EHCDEBandwidthMode parsed = HCDE_BW_LIGHT;
+	if (stricmp(self, "auto") == 0)
+		return;
+	if (HCDETryParseBandwidthMode(self, parsed))
+		return;
+	Printf("sv_net_bandwidth: unknown profile '%s'; expected light/medium/heavy/auto\n", *self);
+	self = "auto";
+}
+
+// Adaptive bandwidth policy thresholds. Exposed as separate CVARs so an
+// operator can tune the demote/promote behavior on a real link without
+// recompiling. The defaults are intentionally on the conservative side --
+// they will demote toward `light` whenever the actor-delta lane shows any
+// sustained clamp/deferred pressure or remote RTT climbs above a typical
+// LAN ceiling. `CVAR_SERVERINFO` so guests can audit what thresholds the
+// authority is using.
+CUSTOM_CVAR(Float, sv_net_bandwidth_demote_clamps, 4.0f, CVAR_SERVERINFO | CVAR_NOSAVE)
+{
+	if (self < 0.0f) self = 0.0f;
+	else if (self > 1000.0f) self = 1000.0f;
+}
+CUSTOM_CVAR(Float, sv_net_bandwidth_demote_deferred, 8.0f, CVAR_SERVERINFO | CVAR_NOSAVE)
+{
+	if (self < 0.0f) self = 0.0f;
+	else if (self > 1000.0f) self = 1000.0f;
+}
+CUSTOM_CVAR(Int, sv_net_bandwidth_demote_rtt_ms, 120, CVAR_SERVERINFO | CVAR_NOSAVE)
+{
+	if (self < 0) self = 0;
+	else if (self > 5000) self = 5000;
+}
+CUSTOM_CVAR(Int, sv_net_bandwidth_promote_rtt_ms, 50, CVAR_SERVERINFO | CVAR_NOSAVE)
+{
+	if (self < 0) self = 0;
+	else if (self > 5000) self = 5000;
+}
+CUSTOM_CVAR(Int, sv_net_bandwidth_promote_window_sec, 5, CVAR_SERVERINFO | CVAR_NOSAVE)
+{
+	if (self < 1) self = 1;
+	else if (self > 60) self = 60;
+}
+CUSTOM_CVAR(Int, sv_net_bandwidth_cooldown_sec, 2, CVAR_SERVERINFO | CVAR_NOSAVE)
+{
+	if (self < 0) self = 0;
+	else if (self > 60) self = 60;
+}
 constexpr int HCDEActorBaselineRepairWindowTics = TICRATE * 2;
 constexpr double HCDEInvasionMirrorVisualFallbackStepPerTic = 8.0;
 constexpr double HCDEInvasionMirrorVisualSpeedMultiplier = 1.10;
@@ -1798,27 +1922,231 @@ static void HCDERejectLiveGameplayForCapabilities(int client, EHCDELiveMessage t
 		static_cast<unsigned long long>(HCDELiveRequiredGameplayCapabilities()));
 }
 
+// Adaptive bandwidth policy state. Owned by the authority's per-tic loop in
+// `Net_TickHCDEBandwidthAuto`. Updated under "auto" mode only; on guests and
+// when the operator pins an explicit mode this state is dormant. All times
+// are in `I_msTime()` units (milliseconds).
+struct FHCDEBandwidthAutoState
+{
+	EHCDEBandwidthMode Resolved = HCDE_BW_MEDIUM;	// current `auto`-resolved row
+	uint64_t LastSampleMS = 0u;
+	uint64_t LastChangeMS = 0u;
+	uint64_t LastClampSample = 0u;
+	uint64_t LastDeferredSample = 0u;
+	int CleanWindowMS = 0;	// accumulator for promote window
+	double LastClampsPerSec = 0.0;
+	double LastDeferredPerSec = 0.0;
+	int LastMaxRTTms = 0;
+	int LastPlayerCount = 0;
+	EHCDEBandwidthMode LastPlayerCountCap = HCDE_BW_HEAVY;
+	char LastReason[160] = {};
+};
+
+static FHCDEBandwidthAutoState HCDEBandwidthAuto = {};
+
+// Player-count baseline cap. As the number of remote peers grows, larger
+// snapshot footprints multiply across all of them, so we conservatively
+// shrink the ceiling: 1-3 peers can run heavy, 4-5 cap at medium, 6+ cap
+// at light. The cap is a *ceiling*, not a target -- the clamp/deferred
+// signals can still demote below it.
+static EHCDEBandwidthMode HCDEBandwidthAutoMaxByPlayerCount(int remotePeers)
+{
+	if (remotePeers >= 6) return HCDE_BW_LIGHT;
+	if (remotePeers >= 4) return HCDE_BW_MEDIUM;
+	return HCDE_BW_HEAVY;
+}
+
+// Worst remote-peer RTT, in ms. The authority's own slot is excluded
+// because its `AverageLatency` is meaningless (or zero on dedicated).
+static int HCDEBandwidthAutoMaxRemoteRTTMs(int& outRemotePeers)
+{
+	const int authoritySlot = I_GetHCDEServiceAuthoritySlot();
+	int worst = 0;
+	int peers = 0;
+	for (auto pNum : NetworkClients)
+	{
+		if (pNum == authoritySlot) continue;
+		if (pNum < 0 || pNum >= int(MAXPLAYERS)) continue;
+		++peers;
+		const int rtt = int(ClientStates[pNum].AverageLatency);
+		if (rtt > worst) worst = rtt;
+	}
+	outRemotePeers = peers;
+	return worst;
+}
+
+// Active bandwidth mode resolver. The hot path: called from
+// `HCDELiveLaneDefaultBudgetBytes` for every per-snapshot lane budget read,
+// so it stays branch-light. When the cvar holds "auto" we return the cached
+// `HCDEBandwidthAuto.Resolved` value updated by `Net_TickHCDEBandwidthAuto`.
+static EHCDEBandwidthMode HCDEResolveActiveBandwidthMode()
+{
+	const char* configured = *sv_net_bandwidth;
+	if (configured == nullptr || configured[0] == '\0')
+		return HCDE_BW_LIGHT;
+	if (stricmp(configured, "auto") == 0)
+		return HCDEBandwidthAuto.Resolved;
+	EHCDEBandwidthMode mode = HCDE_BW_LIGHT;
+	if (HCDETryParseBandwidthMode(configured, mode))
+		return mode;
+	return HCDE_BW_LIGHT;
+}
+
 static size_t HCDELiveLaneDefaultBudgetBytes(uint8_t lane)
 {
-	switch (EHCDELiveLane(lane))
-	{
-	case HLANE_CONTROL:
-		return HCDELaneBudgetControlBytes;
-	case HLANE_COMMAND:
-		return HCDELaneBudgetCommandBytes;
-	case HLANE_AUTHORITY:
-		return HCDELaneBudgetAuthorityBytes;
-	case HLANE_PLAYER_SNAPSHOT:
-		return HCDELaneBudgetPlayerSnapshotBytes;
-	case HLANE_ACTOR_DELTA:
-		return HCDELaneBudgetActorDeltaBytes;
-	case HLANE_QUERY_REGISTRY:
-		return HCDELaneBudgetQueryRegistryBytes;
-	case HLANE_PRESENTATION_ECHO:
-		return HCDELaneBudgetPresentationEchoBytes;
-	default:
+	if (lane >= HLANE_COUNT)
 		return 0u;
+	return HCDELaneBudgetTable[HCDEResolveActiveBandwidthMode()][lane];
+}
+
+// Per-gametic adaptive bandwidth ticker. Runs only on the authority and
+// only when `sv_net_bandwidth == "auto"`. Decisions:
+//
+//   * Demote one step (toward `light`) when any of: actor-delta clamps/sec,
+//     deferred records/sec, or worst remote RTT exceeds its threshold; or
+//     when `Resolved` is already above the player-count cap.
+//   * Promote one step (toward `heavy`) once we have observed
+//     `sv_net_bandwidth_promote_window_sec` consecutive seconds with zero
+//     clamps, zero deferreds, RTT below the promote threshold, and the
+//     player-count cap permits it.
+//
+// Hysteresis: at most one mode change per `sv_net_bandwidth_cooldown_sec`.
+// On every change we capture a one-line rationale in
+// `HCDEBandwidthAuto.LastReason` and emit a `net.bandwidth` DebugTrace
+// marker so soak runs can audit the decision feedback loop.
+static void Net_TickHCDEBandwidthAuto()
+{
+	if (!I_IsLocalHCDEServiceAuthority())
+		return;
+	const char* configured = *sv_net_bandwidth;
+	if (configured == nullptr || stricmp(configured, "auto") != 0)
+		return;
+
+	const uint64_t nowMS = I_msTime();
+	const uint64_t curClamps = HCDELiveProfile.Lanes[HLANE_ACTOR_DELTA].BudgetClamps;
+	const uint64_t curDeferred = HCDELiveProfile.Lanes[HLANE_ACTOR_DELTA].Deferred;
+
+	// First tick: prime the sample baseline and bail. The first real
+	// decision happens after at least `kSampleIntervalMS` of accumulated
+	// counters, so a transient burst at startup cannot demote us before we
+	// have any signal.
+	if (HCDEBandwidthAuto.LastSampleMS == 0u)
+	{
+		HCDEBandwidthAuto.LastSampleMS = nowMS;
+		HCDEBandwidthAuto.LastClampSample = curClamps;
+		HCDEBandwidthAuto.LastDeferredSample = curDeferred;
+		return;
 	}
+
+	constexpr uint64_t kSampleIntervalMS = 500u;
+	const uint64_t elapsedMS = nowMS - HCDEBandwidthAuto.LastSampleMS;
+	if (elapsedMS < kSampleIntervalMS)
+		return;
+
+	const uint64_t deltaClamps = curClamps >= HCDEBandwidthAuto.LastClampSample
+		? curClamps - HCDEBandwidthAuto.LastClampSample : 0u;
+	const uint64_t deltaDeferred = curDeferred >= HCDEBandwidthAuto.LastDeferredSample
+		? curDeferred - HCDEBandwidthAuto.LastDeferredSample : 0u;
+	HCDEBandwidthAuto.LastClampSample = curClamps;
+	HCDEBandwidthAuto.LastDeferredSample = curDeferred;
+	HCDEBandwidthAuto.LastSampleMS = nowMS;
+
+	const double clampsPerSec = (double(deltaClamps) * 1000.0) / double(elapsedMS);
+	const double deferredPerSec = (double(deltaDeferred) * 1000.0) / double(elapsedMS);
+	int remotePeers = 0;
+	const int maxRTT = HCDEBandwidthAutoMaxRemoteRTTMs(remotePeers);
+	const EHCDEBandwidthMode playerCap = HCDEBandwidthAutoMaxByPlayerCount(remotePeers);
+	HCDEBandwidthAuto.LastClampsPerSec = clampsPerSec;
+	HCDEBandwidthAuto.LastDeferredPerSec = deferredPerSec;
+	HCDEBandwidthAuto.LastMaxRTTms = maxRTT;
+	HCDEBandwidthAuto.LastPlayerCount = remotePeers;
+	HCDEBandwidthAuto.LastPlayerCountCap = playerCap;
+
+	const uint64_t cooldownMS = uint64_t(*sv_net_bandwidth_cooldown_sec) * 1000ull;
+	const uint64_t sinceChangeMS = nowMS >= HCDEBandwidthAuto.LastChangeMS
+		? nowMS - HCDEBandwidthAuto.LastChangeMS : 0u;
+
+	const float demoteClampsRate = *sv_net_bandwidth_demote_clamps;
+	const float demoteDeferredRate = *sv_net_bandwidth_demote_deferred;
+	const int demoteRTTms = *sv_net_bandwidth_demote_rtt_ms;
+	const int promoteRTTms = *sv_net_bandwidth_promote_rtt_ms;
+	const int promoteWindowMS = *sv_net_bandwidth_promote_window_sec * 1000;
+
+	const char* reason = nullptr;
+	bool demote = false;
+	if (clampsPerSec > double(demoteClampsRate))
+	{
+		demote = true;
+		reason = "actor-delta-clamp-rate";
+	}
+	else if (deferredPerSec > double(demoteDeferredRate))
+	{
+		demote = true;
+		reason = "actor-delta-deferred-rate";
+	}
+	else if (maxRTT > demoteRTTms)
+	{
+		demote = true;
+		reason = "max-remote-rtt";
+	}
+	else if (uint8_t(HCDEBandwidthAuto.Resolved) > uint8_t(playerCap))
+	{
+		demote = true;
+		reason = "player-count-cap";
+	}
+
+	EHCDEBandwidthMode newMode = HCDEBandwidthAuto.Resolved;
+	bool changed = false;
+	if (demote)
+	{
+		if (sinceChangeMS < cooldownMS)
+			return;
+		const uint8_t cur = uint8_t(HCDEBandwidthAuto.Resolved);
+		const uint8_t target = cur > 0u ? uint8_t(cur - 1u) : 0u;
+		// Never sit above the player-count cap.
+		newMode = EHCDEBandwidthMode(min<uint8_t>(target, uint8_t(playerCap)));
+		HCDEBandwidthAuto.CleanWindowMS = 0;
+		changed = newMode != HCDEBandwidthAuto.Resolved;
+	}
+	else
+	{
+		const bool clean = (clampsPerSec <= 0.0) && (deferredPerSec <= 0.0) && (maxRTT < promoteRTTms);
+		if (clean)
+			HCDEBandwidthAuto.CleanWindowMS += int(elapsedMS);
+		else
+			HCDEBandwidthAuto.CleanWindowMS = 0;
+
+		if (HCDEBandwidthAuto.CleanWindowMS >= promoteWindowMS
+			&& uint8_t(HCDEBandwidthAuto.Resolved) < uint8_t(playerCap))
+		{
+			if (sinceChangeMS < cooldownMS)
+				return;
+			newMode = EHCDEBandwidthMode(uint8_t(HCDEBandwidthAuto.Resolved) + 1u);
+			HCDEBandwidthAuto.CleanWindowMS = 0;
+			reason = "clean-window-promote";
+			changed = newMode != HCDEBandwidthAuto.Resolved;
+		}
+	}
+
+	if (changed)
+	{
+		const EHCDEBandwidthMode oldMode = HCDEBandwidthAuto.Resolved;
+		HCDEBandwidthAuto.Resolved = newMode;
+		HCDEBandwidthAuto.LastChangeMS = nowMS;
+		mysnprintf(HCDEBandwidthAuto.LastReason, sizeof(HCDEBandwidthAuto.LastReason),
+			"%s: clamps/sec=%.2f deferred/sec=%.2f rtt=%dms peers=%d cap=%s",
+			reason != nullptr ? reason : "?",
+			clampsPerSec, deferredPerSec, maxRTT, remotePeers,
+			HCDEBandwidthModeName(playerCap));
+		DebugTrace::Markf("net.bandwidth", "auto switched %s -> %s (%s)",
+			HCDEBandwidthModeName(oldMode), HCDEBandwidthModeName(newMode),
+			HCDEBandwidthAuto.LastReason);
+	}
+}
+
+void Net_ResetHCDEBandwidthAutoState()
+{
+	HCDEBandwidthAuto = {};
 }
 
 static size_t HCDELiveLaneBudgetBytes(int client, uint8_t lane)
@@ -4284,7 +4612,15 @@ static bool Net_CutsceneReadyVoteSatisfied()
 
 	// Solo / single-human tally screen: ready as soon as the lone human is ready.
 	if (humanClients <= 1)
-		return humanReady >= humanClients;
+	{
+		const bool ready = humanReady >= humanClients;
+		DebugTrace::Markf("net", "cutscene human fast-path ready=%d/%d total=%d/%d result=%d room=%u map=%s levelStart=%s authority=%d countdown=%d",
+			humanReady, humanClients, totalReady, totalClients, ready ? 1 : 0, unsigned(CurrentRoomID),
+			primaryLevel != nullptr ? primaryLevel->MapName.GetChars() : "<none>",
+			Net_LevelStartStatusName(LevelStartStatus),
+			I_IsLocalHCDEServiceAuthority() ? 1 : 0, CutsceneCountdown);
+		return ready;
+	}
 
 	if (totalClients <= 0)
 		return true;
@@ -7303,6 +7639,7 @@ void TryRunTics()
 		else
 			Net_TickInvasionMirrorState();
 		Net_TickHCDEModeActorMigration();
+		Net_TickHCDEBandwidthAuto();
 		Net_TickInvasionAnnouncements();
 		MakeConsistencies();
 		HCDERewind_OnServerTick();

@@ -35,6 +35,12 @@ During dedicated join, HCDE negotiates and uses multiple lanes:
   - protected lanes stay first: control, commands, authority headers, and player snapshots are preserved before optional actor detail
   - optional authority event replay is capped separately from actor deltas, and actor deltas use their own budget instead of consuming all remaining snapshot space
   - `net_lanes` and `net_stressreport` report lane budgets, budget clamps, deferrals, and byte counters
+- bandwidth profiles (`sv_net_bandwidth`):
+  - three concrete profiles -- `light` (default for fixed mode), `medium`, `heavy` -- pick the per-lane byte budgets used while encoding each snapshot
+  - protected lanes (control / command / player snapshot) and the diagnostic presentation echo are constant across profiles; only optional content (authority replay, actor delta, query/registry) grows
+  - `auto` (default value) runs the adaptive policy that demotes on actor-delta clamp/deferred pressure or worst remote RTT and promotes after a clean window, capped by remote-peer count
+  - `net_bandwidth` reports configured/active mode, per-lane budget under the active profile, and the auto-policy decision rationale; `net.bandwidth` DebugTrace channel records every `auto` switch
+  - profile changes are sender-side and require no protocol or capability bump (clients receive whatever the authority encoded; old peers continue to negotiate `lane-budgets-v1` as before)
 - authority events:
   - modern live peers negotiate `authority-events-v1`
   - `HCAV` v1 carries protected server-authored gameplay facts on the authority lane

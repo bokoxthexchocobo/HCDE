@@ -992,7 +992,13 @@ static bool SendLauncherInfo(const sockaddr_in& to, const uint8_t* request, int 
 
 static bool WriteSessionToken(size_t offset, uint32_t token)
 {
-	if (offset + 4u > MaxTransmitSize)
+	// Buffer-overflow check: the session token is written into `NetBuffer`,
+	// whose capacity is `MAX_MSGLEN`, not `MaxTransmitSize` (the wire-side
+	// transmit cap, which is smaller). Wire-size enforcement happens in
+	// `SendPacket`. Using the wrong ceiling here would have rejected valid
+	// in-buffer writes on any future packet layout that grows past
+	// `MaxTransmitSize` before compression/transmission.
+	if (offset + 4u > MAX_MSGLEN)
 		return false;
 
 	WriteBE32(&NetBuffer[offset], token);
@@ -2124,8 +2130,13 @@ static bool TryProcessSetupConnectPacket(const sockaddr_in& from, bool hasPasswo
 	uint8_t* engineInfo = &NetBuffer[2];
 	if (NetBufferLength < 9u)
 	{
+		// Truncated PRE_CONNECT is a wire-protocol problem, not a credential
+		// failure. Reporting `PRE_WRONG_PASSWORD` here actively misleads
+		// operators trying to diagnose mismatched launchers / corrupted
+		// envelopes; switch to the protocol-error reason that the client
+		// surface ("HCDE service protocol negotiation") already covers.
 		DebugTrace::Markf("net", "malformed connect packet from %s (len=%zu)", inet_ntoa(from.sin_addr), NetBufferLength);
-		RejectConnection(from, PRE_WRONG_PASSWORD);
+		RejectConnection(from, PRE_PROTOCOL_ERROR);
 		return true;
 	}
 
@@ -2150,8 +2161,11 @@ static bool TryProcessSetupConnectPacket(const sockaddr_in& from, bool hasPasswo
 	}
 	if (2u + passwordOffset >= NetBufferLength)
 	{
+		// Out-of-range offset / unterminated password are wire-protocol
+		// failures, not credential mismatches; report them as such so the
+		// client UI surfaces the correct error.
 		DebugTrace::Markf("net", "malformed connect password from %s (offset=%zu len=%zu)", inet_ntoa(from.sin_addr), passwordOffset, NetBufferLength);
-		RejectConnection(from, PRE_WRONG_PASSWORD);
+		RejectConnection(from, PRE_PROTOCOL_ERROR);
 		return true;
 	}
 
@@ -2160,7 +2174,7 @@ static bool TryProcessSetupConnectPacket(const sockaddr_in& from, bool hasPasswo
 	if (!FindStringEnd(passwordStart, NetBufferLength, passwordEnd))
 	{
 		DebugTrace::Markf("net", "unterminated connect password from %s (offset=%zu len=%zu)", inet_ntoa(from.sin_addr), passwordOffset, NetBufferLength);
-		RejectConnection(from, PRE_WRONG_PASSWORD);
+		RejectConnection(from, PRE_PROTOCOL_ERROR);
 		return true;
 	}
 
@@ -3208,10 +3222,18 @@ static bool Host_CheckStartGameAcks(void* connected)
 static void SendAbort()
 {
 	NetBuffer[0] = NCMD_EXIT;
-	NetBufferLength = 1u;
 
 	if (consoleplayer == 0)
 	{
+		// Authority-side abort (host == authority pre-game). The receiver's
+		// `GetNetBufferSize()` returns `1 + I_IsHCDEServiceAuthoritySlot(sender)`
+		// for `NCMD_EXIT`, so an authority must always emit 2 bytes or the
+		// peer's `HGetPacket()` will treat the size as a mismatch and drop
+		// the packet -- leaving guests stuck waiting on a host that is
+		// actually tearing down. Mirror `D_QuitNetGame`'s authority path and
+		// include a (zero) next-authority placeholder.
+		NetBuffer[1] = 0u;
+		NetBufferLength = 2u;
 		for (int client = 1; client < MaxClients; ++client)
 		{
 			if (Connected[client].Status != CSTAT_NONE)
@@ -3220,6 +3242,8 @@ static void SendAbort()
 	}
 	else
 	{
+		// Guest abort: receiver is the authority, so it expects 1 byte.
+		NetBufferLength = 1u;
 		SendPacket(Connected[0].Address);
 	}
 }
@@ -3465,11 +3489,19 @@ static bool Guest_ContactHost(void* unused)
 		{
 			if (NetBufferLength < 8u || !CheckSessionToken(Connected[0], ReadSessionToken(NetBuffer, 2u), "host heartbeat"))
 				continue;
-			// Clamp the server-announced capacity to the engine slot limit. The
-			// raw byte can be up to 255, but Connected[] is only MAXPLAYERS (64)
-			// wide; an unclamped value would let later loops/indexing walk past
-			// the array. Mirrors the guarded HPS_CONSOLE_PLAYER path below.
-			MaxClients = min<int>(NetBuffer[7], int(MAXPLAYERS));
+			// Clamp wire-supplied client cap so a malicious or buggy host
+			// cannot push us into out-of-range loops over `Connected[]` /
+			// `players[]` / `ClientStates[]`. Host-side path already clamps
+			// at admit-time, but every guest path that consumes a single
+			// byte from a remote peer must independently enforce the upper
+			// bound.
+			const int announcedMaxClients = NetBuffer[7];
+			if (announcedMaxClients < 1 || announcedMaxClients > int(MAXPLAYERS))
+			{
+				DebugTrace::Markf("net", "ignored host heartbeat: invalid max-clients=%d", announcedMaxClients);
+				continue;
+			}
+			MaxClients = announcedMaxClients;
 			I_NetUpdatePlayers(NetBuffer[6], MaxClients);
 		}
 			else if (NetBuffer[1] == PRE_DISCONNECT)
@@ -3585,10 +3617,13 @@ static bool Guest_ContactHost(void* unused)
 					Printf("NetSession:: HCDE service connect negotiated v%u flags=0x%02x\n", NetBuffer[10], NetBuffer[11]);
 				}
 
-				// Clamp announced capacity to the engine slot limit (see the
-				// PRE_HEARTBEAT path); never trust a raw capacity byte beyond
-				// MAXPLAYERS.
-				MaxClients = min<int>(NetBuffer[4], int(MAXPLAYERS));
+				const int announcedMaxClients = NetBuffer[4];
+				if (announcedMaxClients < 1 || announcedMaxClients > int(MAXPLAYERS))
+				{
+					DebugTrace::Markf("net", "ignored connect ack: invalid max-clients=%d", announcedMaxClients);
+					continue;
+				}
+				MaxClients = announcedMaxClients;
 				if (Connected[0].Status != CSTAT_WAITING)
 				{
 					NetworkClients += 0;
@@ -3602,7 +3637,20 @@ static bool Guest_ContactHost(void* unused)
 				}
 				else
 				{
-					consoleplayer = NetBuffer[2];
+					// Legacy non-HCDE-service path: validate the host-assigned
+					// player slot before indexing. The HCDE service path at
+					// `HPS_CONSOLE_PLAYER` already validates; this path used to
+					// trust `NetBuffer[2]` blindly and could write past
+					// `Connected[]` / `players[]`.
+					const int assignedConsolePlayer = NetBuffer[2];
+					const int firstPlayable = I_GetFirstPlayableClientSlot();
+					if (assignedConsolePlayer < firstPlayable || assignedConsolePlayer >= MaxClients)
+					{
+						DebugTrace::Markf("net", "ignored connect ack: invalid console player=%d max=%d",
+							assignedConsolePlayer, MaxClients);
+						continue;
+					}
+					consoleplayer = assignedConsolePlayer;
 					NetworkClients += consoleplayer;
 					Connected[consoleplayer].Status = CSTAT_CONNECTING;
 					Connected[consoleplayer].SessionToken = Connected[0].SessionToken;
@@ -3668,10 +3716,16 @@ static bool Guest_ContactHost(void* unused)
 					break;
 				if (!CheckHCDEPregameService(0u, HCDEServiceHeaderSize + 2u, "guest service heartbeat"))
 					break;
-				// Clamp announced capacity to the engine slot limit (see the
-				// PRE_HEARTBEAT path).
-				MaxClients = min<int>(NetBuffer[HCDEServiceHeaderSize + 1u], int(MAXPLAYERS));
-				I_NetUpdatePlayers(NetBuffer[HCDEServiceHeaderSize], MaxClients);
+				{
+					const int announcedMaxClients = NetBuffer[HCDEServiceHeaderSize + 1u];
+					if (announcedMaxClients < 1 || announcedMaxClients > int(MAXPLAYERS))
+					{
+						DebugTrace::Markf("net", "ignored HCDE service heartbeat: invalid max-clients=%d", announcedMaxClients);
+						break;
+					}
+					MaxClients = announcedMaxClients;
+					I_NetUpdatePlayers(NetBuffer[HCDEServiceHeaderSize], MaxClients);
+				}
 				break;
 			case HPS_USER_INFO_ACK:
 				if (consoleplayer < 0)

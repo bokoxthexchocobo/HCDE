@@ -281,8 +281,8 @@ void P_SetPsprite(player_t *player, PSPLayers id, FState *state, bool pending)
 	auto psp = player->GetPSprite(id);
 	if (psp)
 	{
-		const char* stateName = state != nullptr ? FState::StaticGetStateName(state).GetChars() : "<null>";
-		DebugTrace::Debugf("playsim.psprite", "P_SetPsprite layer=%d state=%s player=%d", int(id), stateName, int(player - players));
+		FString stateName = state != nullptr ? FState::StaticGetStateName(state) : FString("<null>");
+		DebugTrace::Debugf("playsim.psprite", "P_SetPsprite layer=%d state=%s player=%d", int(id), stateName.GetChars(), int(player - players));
 		psp->SetState(state, pending);
 	}
 }
@@ -604,10 +604,10 @@ void DPSprite::SetState(FState *newstate, bool pending)
 
 	if (State != nullptr)
 	{
-		const char* stateName = FState::StaticGetStateName(State).GetChars();
+		FString stateName = FState::StaticGetStateName(State);
 		int ownerNum = Owner != nullptr ? int(Owner - players) : -1;
 		DebugTrace::Debugf("playsim.psprite", "DPSprite::SetState final state=%s sprite=%d frame=%d tics=%d ID=%d owner=%d",
-			stateName, int(Sprite), int(Frame), int(Tics), int(ID), ownerNum);
+			stateName.GetChars(), int(Sprite), int(Frame), int(Tics), int(ID), ownerNum);
 	}
 
 	return;

@@ -37,6 +37,10 @@
 #include <climits>
 #include <cstdint>
 
+// `I_DetectOS()` is implemented per-platform (`common/platform/...`) but its
+// declaration only ships in the win32 header. Other call sites (e.g.
+// `d_main.cpp`) forward-declare it locally; do the same here so the
+// session-begin log can compile on POSIX builds without the win32 header.
 FString I_DetectOS();
 
 EXTERN_CVAR(Bool, debugtrace_enable)

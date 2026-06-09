@@ -111,6 +111,8 @@ struct FDriftSummary
 	double VelMaxUnits = 0.0;
 	uint64_t HardRepairs = 0u;
 	uint64_t BaselineRepairs = 0u;
+	uint64_t RespawnRepairs = 0u;	// tier 3 repairs (respawn-driven)
+	uint64_t DeathRepairs = 0u;		// tier 4 repairs (death-driven)
 	uint64_t Skips = 0u;
 };
 
@@ -380,6 +382,8 @@ void HCDEMovementOnReconcile(uint32_t serverTic, double driftUnits, double velDe
 	{
 	case 1: ++gDrift.BaselineRepairs; break;
 	case 2: ++gDrift.HardRepairs; break;
+	case 3: ++gDrift.RespawnRepairs; break;
+	case 4: ++gDrift.DeathRepairs; break;
 	case 0: ++gDrift.Skips; break;
 	default: break;
 	}
@@ -525,11 +529,13 @@ void HCDEMovementPrintSummary()
 		const double variance = gDrift.Samples > 1u ? gDrift.DriftM2 / double(gDrift.Samples - 1u) : 0.0;
 		const double stdev = sqrt(variance);
 		Printf(PRINT_HIGH,
-			"drift: samples=%llu avg=%.3f stdev=%.3f max=%.3f vel-max=%.3f baseline=%llu hard=%llu skip=%llu\n",
+			"drift: samples=%llu avg=%.3f stdev=%.3f max=%.3f vel-max=%.3f baseline=%llu hard=%llu respawn=%llu death=%llu skip=%llu\n",
 			static_cast<unsigned long long>(gDrift.Samples),
 			gDrift.DriftAvgUnits, stdev, gDrift.DriftMaxUnits, gDrift.VelMaxUnits,
 			static_cast<unsigned long long>(gDrift.BaselineRepairs),
 			static_cast<unsigned long long>(gDrift.HardRepairs),
+			static_cast<unsigned long long>(gDrift.RespawnRepairs),
+			static_cast<unsigned long long>(gDrift.DeathRepairs),
 			static_cast<unsigned long long>(gDrift.Skips));
 	}
 
