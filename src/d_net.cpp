@@ -5052,6 +5052,22 @@ static void ClientConnecting(int client)
 	if (!NetworkClients.InGame(client) || I_IsHCDEServiceAuthoritySlot(client))
 		return;
 
+	// Do not admit a (re)joining client into the live simulation until its
+	// pregame reliable handshake has reached CSTAT_READY. AddClientConnection
+	// inserts the slot into NetworkClients the moment the connect is accepted, but
+	// spawning it (PST_ENTER), marking playeringame, and priming late-join replay
+	// while it is still exchanging console-player/user-info/map-load floods the
+	// joiner with live snapshots and host heartbeats it cannot use yet and wedges
+	// the handshake (the joiner never finishes its user-info exchange, so the
+	// authority retransmits user-info-ack forever and the client times out on
+	// "waiting for server start"). Mirror Odamex/Zandronum: connect fully, then
+	// enter. ClientConnecting runs after every inbound setup packet, so the slot
+	// is admitted on whichever packet drives the transition to READY; the live
+	// client-input path also calls this as an idempotent safety net in case the
+	// only post-READY setup packet (start-game ack) is lost.
+	if (I_IsHCDEClientSetupInProgress(client))
+		return;
+
 	auto& state = ClientStates[client];
 	const int currentSequence = max<int>(ClientTic / max<int>(TicDup, 1), 0);
 	const int currentConsistency = max<int>(CurrentConsistency, 0);
@@ -5932,6 +5948,13 @@ static void SendHeartbeat()
 	for (auto client : NetworkClients)
 	{
 		if (client == consoleplayer)
+			continue;
+
+		// A runtime joiner is in NetworkClients before its pregame handshake
+		// finishes. Probing it with latency heartbeats mid-handshake adds live
+		// traffic the joiner's setup loop has to wade through and contributed to
+		// wedging in-game joins; hold off until it has fully connected.
+		if (I_IsHCDEClientSetupInProgress(client))
 			continue;
 
 		auto& state = ClientStates[client];

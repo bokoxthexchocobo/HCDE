@@ -185,7 +185,30 @@ constexpr size_t HCDEServiceAckOffset = 11u;
 constexpr size_t HCDEServiceHeaderSize = 15u;
 constexpr size_t MaxHCDEReliableServices = 16u;
 constexpr uint64_t HCDEServiceResendMS = 250u;
+// Minimum spacing between PRE_CONNECT_ACK admission packets for a runtime late
+// joiner. DriveRuntimeSetupStateForClient runs from the live net loop and can
+// execute hundreds of times between tics; without pacing it would emit a burst
+// of identical connect-acks that competes with live game traffic and can starve
+// the joiner's receive buffer before its user-info reply advances setup.
+constexpr uint64_t HCDERuntimeConnectAckResendMS = 250u;
 constexpr uint64_t HCDEServiceTimeoutMS = 15000u;
+// Client-side stall ceiling. While joining (pregame or runtime late join) the
+// guest treats an advancing reliable-service receive sequence as forward
+// progress; READY-state host heartbeats keep that sequence climbing during a
+// legitimate "waiting for the host to start" wait, so this only trips when the
+// handshake is genuinely wedged (e.g. a setup packet is being lost on the path)
+// and turns an indefinite hang into a clean, retryable error.
+constexpr uint64_t HCDEGuestSetupProgressTimeoutMS = 30000u;
+// Absolute ceiling on how long a single reliable service may stay unacked before
+// the client is dropped, regardless of liveness. The per-service timeout above is
+// softened by a liveness grace (a client still sending valid service traffic is not
+// dropped at 15s), but that grace must not be open-ended: a peer that stays "alive"
+// yet can never complete the handshake (e.g. replies are reaching a stale port and
+// its acks never advance our peer-ack) would otherwise hold its slot and keep both
+// nodes retransmitting -- and tracing -- forever. The oldest pending service's
+// FirstSendTime resets whenever the client makes progress (acked services clear and
+// fresh ones start), so this ceiling only fires on a genuinely wedged service.
+constexpr uint64_t HCDEServiceHardTimeoutMS = 300000u;
 constexpr uint32_t HCDEServiceMalformedStrikeLimit = 4u;
 constexpr uint64_t HCDEServiceMalformedQuarantineMS = 3000u;
 constexpr uint8_t HCDEConnectProtocolVersion = 1u;
@@ -317,6 +340,14 @@ struct FConnection
 	uint32_t HCDEServiceDuplicateCount = 0u;
 	uint32_t HCDEServiceMalformedStrikes = 0u;
 	uint64_t HCDEServiceMalformedUntil = 0u;
+	uint64_t HCDEServiceLastValidRxTime = 0u;
+	uint64_t HCDERuntimeLastConnectAckTime = 0u;
+	// Throttle timestamps for the very chatty per-tic WAITING breadcrumbs. Without
+	// these the WAITING loop emits thousands of identical lines per second, which
+	// rolled the trace files over in ~30s and erased the connect/admission phase we
+	// most need for diagnosing stuck joins.
+	uint64_t HCDEServiceLastWaitLogTime = 0u;
+	uint64_t HCDEServiceLastReuseLogTime = 0u;
 	// True when this client was admitted while the host was already mid-match
 	// (the dedicated runtime late-join path). Used to advertise dedicated /
 	// server-authority ACK flags to the joiner even when the host itself is a
@@ -343,6 +374,10 @@ struct FConnection
 		HCDEServiceDuplicateCount = 0u;
 		HCDEServiceMalformedStrikes = 0u;
 		HCDEServiceMalformedUntil = 0u;
+		HCDEServiceLastValidRxTime = 0u;
+		HCDERuntimeLastConnectAckTime = 0u;
+		HCDEServiceLastWaitLogTime = 0u;
+		HCDEServiceLastReuseLogTime = 0u;
 		bRuntimeJoin = false;
 		for (auto& service : HCDEReliableServices)
 			service.Clear();
@@ -364,6 +399,8 @@ static bool DedicatedServerStartRequested = false;
 static bool DedicatedServerAbortRequested = false;
 static bool DedicatedLateJoinRetryAttempted = false;
 static bool DedicatedLateJoinRetryPendingSend = false;
+static uint64_t GuestHCDELastSetupProgressTime = 0u;
+static uint32_t GuestHCDELastSetupRxSeq = 0u;
 
 bool netgame = false;
 bool multiplayer = false;
@@ -601,6 +638,7 @@ static bool CheckHCDEPregameService(size_t client, size_t minimumSize, const cha
 	}
 	if (!CheckSessionToken(connection, ReadBE32(&NetBuffer[3]), context))
 		return false;
+	connection.HCDEServiceLastValidRxTime = I_msTime();
 
 	const uint32_t seq = ReadBE32(&NetBuffer[HCDEServiceSequenceOffset]);
 	const uint32_t ack = ReadBE32(&NetBuffer[HCDEServiceAckOffset]);
@@ -623,10 +661,31 @@ static bool CheckHCDEPregameService(size_t client, size_t minimumSize, const cha
 	}
 	if (seq <= connection.HCDEServiceRxSeq)
 	{
+		// A seq we have already accepted is an ordinary reliable-protocol
+		// retransmission, NOT an attack. The sender simply has not yet seen our
+		// ack for it (or our ack was lost), so it keeps resending its oldest
+		// unacked service every HCDEServiceResendMS. We must treat this as
+		// benign: drop the body so the handler does not re-run, but do NOT feed
+		// the malformed-traffic strike counter.
+		//
+		// Crucially, the ack field above was already processed before this
+		// point, so receiving a duplicate still advances our view of the peer's
+		// ack and clears our own acked services. Combined with both peers
+		// periodically retransmitting their oldest unacked service (each carrying
+		// the latest ack), the duplicate storm self-resolves once the lost ack
+		// is observed.
+		//
+		// Penalizing retransmits here (the previous behavior) was a latency- and
+		// loss-triggered deadlock: 4 "replay" strikes quarantined the connection
+		// for 3s, and the quarantine check at the top of this function drops
+		// every packet -- including the map-load service a late-joiner needs --
+		// before the ack field can be read, so the handshake never advanced. A
+		// LAN client joining at server start rarely retransmits and slipped past
+		// it; a higher-latency late-joiner reliably hit it and got stuck at
+		// "Waiting for server start".
 		++HCDEPregameServiceProfile.ServiceSeqReplayOrDuplicate;
 		++connection.HCDEServiceDuplicateCount;
-		DebugTrace::Markf("net", "%s duplicate/replayed service seq=%u last=%u count=%u", context, seq, connection.HCDEServiceRxSeq, connection.HCDEServiceDuplicateCount);
-		NoteHCDEServiceMalformedTraffic(connection, context, "replay");
+		DebugTrace::Markf("net", "%s duplicate retransmit service seq=%u last=%u count=%u (benign)", context, seq, connection.HCDEServiceRxSeq, connection.HCDEServiceDuplicateCount);
 		return false;
 	}
 
@@ -1382,17 +1441,24 @@ bool I_QueryServerInfo(const char* addrName, FServerQuerySnapshot& snapshot, FSt
 	if (error != nullptr)
 		*error = "";
 
+#ifdef _WIN32
+	static std::once_flag wsaInit;
+	static int wsaInitResult = 0;
+	std::call_once(wsaInit, []() {
+		WSADATA data;
+		wsaInitResult = WSAStartup(MAKEWORD(2, 2), &data);
+	});
+	if (wsaInitResult != 0)
+	{
+		if (error != nullptr)
+			error->Format("Couldn't initialize Windows sockets: %s", neterror());
+		return false;
+	}
+#endif
+
 	sockaddr_in address = {};
 	if (!TryBuildAddress(address, addrName, error))
 		return false;
-
-#ifdef _WIN32
-	static std::once_flag wsaInit;
-	std::call_once(wsaInit, []() {
-		WSADATA data;
-		WSAStartup(MAKEWORD(2, 2), &data);
-	});
-#endif
 
 	bool success = false;
 	SOCKET socketHandle = INVALID_SOCKET;
@@ -1494,6 +1560,8 @@ void CloseNetwork()
 	DedicatedJoinMode = false;
 	DedicatedLateJoinRetryAttempted = false;
 	DedicatedLateJoinRetryPendingSend = false;
+	GuestHCDELastSetupProgressTime = 0u;
+	GuestHCDELastSetupRxSeq = 0u;
 	DedicatedServerAbortRequested = false;
 #ifdef _WIN32
 	if (!DebugServer::RuntimeEvents::IsDebugServerRunning()){
@@ -1770,7 +1838,31 @@ static void SendPacket(const sockaddr_in& to)
 	TransmitBuffer[2] = crc >> 8;
 	TransmitBuffer[3] = crc;
 
-	sendto(MySocket, (const char*)TransmitBuffer, size + 4, 0, (const sockaddr*)&to, sizeof(to));
+	const int sendResult = sendto(MySocket, (const char*)TransmitBuffer, size + 4, 0, (const sockaddr*)&to, sizeof(to));
+	if (sendResult == SOCKET_ERROR)
+	{
+		// sendto failures were previously swallowed silently. That made a join
+		// that never reached the server impossible to diagnose: the guest would
+		// "send" a connect packet every tic, but if the OS rejected each one
+		// (no route to host, firewall block, bad/unreachable resolved address)
+		// there was zero record of it. Logging the failure with the destination
+		// localizes the fault to the local send path; if instead these succeed
+		// but the server's inbound trace never fires, the loss is in transit
+		// (NAT/hairpin). Errors are rare, so this never floods.
+		DebugTrace::Warningf("net", "sendto FAILED dest=%s:%u len=%lu cmd=0x%02x err=%s",
+			inet_ntoa(to.sin_addr), unsigned(ntohs(to.sin_port)),
+			static_cast<unsigned long>(size + 4u), unsigned(NetBuffer[0]), neterror());
+	}
+	else if (NetBuffer[0] & NCMD_SETUP)
+	{
+		// Handshake breadcrumb: confirms the node is actually emitting setup/
+		// connect/service packets to the resolved peer address during the
+		// pregame handshake. Scoped to NCMD_SETUP so in-game gameplay traffic
+		// does not flood the stream once the match is live.
+		DebugTrace::Markf("net", "sendto ok dest=%s:%u len=%lu setup-type=%u",
+			inet_ntoa(to.sin_addr), unsigned(ntohs(to.sin_port)),
+			static_cast<unsigned long>(size + 4u), unsigned(NetBuffer[1]));
+	}
 	Net_BlackboxRecordPacket(0, RemoteClient, 0u, 0u, 0u, 0u, NetBuffer, NetBufferLength);
 }
 
@@ -1819,9 +1911,18 @@ static bool BeginReliableHCDEPregameService(EHCDEPregameService service, FConnec
 	if (FindHCDEReliableService(connection, service, key) != nullptr)
 	{
 		++HCDEPregameServiceProfile.ServiceQueueReused;
-		DebugTrace::Markf("net", "reusing pending reliable service %s key=%u peerAck=%u tx=%u rx=%u",
-			HCDEServiceName(service), key, connection.HCDEServicePeerAck,
-			connection.HCDEServiceTxSeq, connection.HCDEServiceRxSeq);
+		// Throttle to at most once per second per client: this fires for every
+		// already-queued service on every tic and every received packet during
+		// WAITING, and was a major contributor to the trace-file churn that
+		// erased the connect phase. The profiling counter above is unthrottled.
+		const uint64_t nowReuseLog = I_msTime();
+		if (nowReuseLog - connection.HCDEServiceLastReuseLogTime >= 1000u)
+		{
+			connection.HCDEServiceLastReuseLogTime = nowReuseLog;
+			DebugTrace::Markf("net", "reusing pending reliable service %s key=%u peerAck=%u tx=%u rx=%u",
+				HCDEServiceName(service), key, connection.HCDEServicePeerAck,
+				connection.HCDEServiceTxSeq, connection.HCDEServiceRxSeq);
+		}
 		return false;
 	}
 	if (FindFreeHCDEReliableService(connection) == nullptr)
@@ -1993,6 +2094,20 @@ static void GetPacket(sockaddr_in* const from = nullptr)
 						}
 					}
 
+					// Inbound handshake breadcrumb (server side). A decoded setup
+					// packet from an address with no assigned client slot is the
+					// counterpart to the guest's "sendto ok" trace: if a stuck
+					// joiner's packets physically reach us, they appear here. If
+					// the guest logs sends but this line never fires, the loss is
+					// in transit (NAT/hairpin/firewall), not in admission logic.
+					// Rare by nature (only unrecognized peers), so no flood risk.
+					if (client == -1 && (NetBuffer[0] & NCMD_SETUP) && msgSize >= 2)
+					{
+						DebugTrace::Markf("net", "inbound setup from unknown peer %s:%u type=%u len=%d started=%d",
+							inet_ntoa(fromAddress.sin_addr), unsigned(ntohs(fromAddress.sin_port)),
+							unsigned(NetBuffer[1]), msgSize, bGameStarted ? 1 : 0);
+					}
+
 					// During an active match, allow setup/connect packets to enter
 					// the dedicated runtime late-join admission path instead of
 					// rejecting unknown peers immediately as PRE_IN_PROGRESS.
@@ -2008,6 +2123,12 @@ static void GetPacket(sockaddr_in* const from = nullptr)
 						const bool authority = I_IsLocalHCDEServiceAuthority();
 						const bool listenLateJoinAllowed = !DedicatedServerMode && *sv_lateJoin;
 						const bool admissionAllowed = authority && (DedicatedServerMode || listenLateJoinAllowed);
+						// TryProcessSetupConnectPacket reads the module-level
+						// NetBufferLength, but GetPacket normally writes it only
+						// after this branch. Publish the just-decoded setup packet
+						// length before late-join admission, or the parser sees a
+						// stale/zero length and falls back to PRE_IN_PROGRESS.
+						NetBufferLength = max<int>(msgSize, 0);
 						const bool processed = admissionAllowed
 							&& TryProcessSetupConnectPacket(fromAddress, strlen(net_password) > 0, false, true, nullptr);
 						if (processed)
@@ -2328,8 +2449,13 @@ static void AddClientConnection(const sockaddr_in& from, int client, const FHCDE
 	// admitting a non-HCDE peer.
 	if (connectInfo.Present)
 	{
-		I_NetLog("Client %u connected to server with HCDE service connect v%u flags=0x%02x%s",
-			client, connectInfo.Version, connectInfo.Flags, runtimeJoin ? " (runtime join)" : "");
+		// Log the resolved source endpoint we will reply to. On a stuck rejoin the
+		// server can latch onto a stale port from the prior connection; this single
+		// line is the ground truth for "where will map-load/game-info be sent" and
+		// is meant to be cross-checked against the joining client's local bind port.
+		I_NetLog("Client %u connected to server with HCDE service connect v%u flags=0x%02x%s dest=%s:%u",
+			client, connectInfo.Version, connectInfo.Flags, runtimeJoin ? " (runtime join)" : "",
+			inet_ntoa(from.sin_addr), unsigned(ntohs(from.sin_port)));
 	}
 	else
 	{
@@ -2387,15 +2513,36 @@ static bool DropClientForHCDETimeout(int client, int* connectedPlayers, const ch
 	if (client <= 0 || client >= MaxClients || Connected[client].Status == CSTAT_NONE || !Connected[client].bHCDEConnect)
 		return false;
 
-	auto* pending = FindTimedOutHCDEReliableService(Connected[client], I_msTime());
+	const uint64_t now = I_msTime();
+	auto* pending = FindTimedOutHCDEReliableService(Connected[client], now);
 	if (pending == nullptr)
 		return false;
+
+	auto& connection = Connected[client];
+	const uint64_t pendingElapsed = now - pending->FirstSendTime;
+	if (connection.HCDEServiceLastValidRxTime > 0u
+		&& now - connection.HCDEServiceLastValidRxTime < HCDEServiceTimeoutMS
+		&& pendingElapsed < HCDEServiceHardTimeoutMS)
+	{
+		// Runtime late join can be slow under heavy debug tracing or packet
+		// loss: a client may still be actively retransmitting valid service
+		// packets while our oldest pending service has not yet been acked. Do
+		// not drop a live peer just because one retained service crossed the
+		// resend timeout; require peer silence as well. If the peer really
+		// died, LastValidRxTime stops advancing and the normal timeout applies.
+		//
+		// The HardTimeout clause bounds the opposite failure: a peer that keeps
+		// chattering valid traffic but can never advance the handshake (the
+		// stale-port stuck-rejoin) is dropped once a single service has been
+		// unacked past the hard ceiling, so it cannot hold its slot forever.
+		return false;
+	}
 
 	const auto service = pending->Service;
 	const uint8_t key = pending->Key;
 	const uint32_t sequence = pending->Sequence;
 	const uint32_t sends = pending->SendCount;
-	const uint64_t elapsed = I_msTime() - pending->FirstSendTime;
+	const uint64_t elapsed = pendingElapsed;
 	const sockaddr_in timedOutAddress = Connected[client].Address;
 
 	I_NetLog("Client %d timed out during %s on HCDE service %s key=%u seq=%u after %llu ms (%u sends)",
@@ -2426,31 +2573,35 @@ static void DriveRuntimeSetupStateForClient(int client, int connectedPlayers)
 	const size_t addrSize = sizeof(sockaddr_in);
 	if (con.Status == CSTAT_CONNECTING)
 	{
-		BeginSetupPacket(PRE_CONNECT_ACK, con.SessionToken, 5u);
-		NetBuffer[2] = client;
-		NetBuffer[3] = connectedPlayers;
-		NetBuffer[4] = MaxClients;
-		// Advertise dedicated/server-authority semantics whenever we are a
-		// true dedicated server OR we admitted this client through the
-		// runtime late-join path (open-entry listen server). The joiner uses
-		// PRE_CONNECT_ACK_DEDICATED to mark itself as DedicatedJoinMode so
-		// it follows the late-join sync flow on its end; without this flag a
-		// listen-server's late-joiner would otherwise re-enter the legacy
-		// pregame path and the host would already have advanced past it.
-		const bool advertiseDedicated = DedicatedServerMode || con.bRuntimeJoin;
-		uint8_t ackFlags = advertiseDedicated ? PRE_CONNECT_ACK_DEDICATED : 0u;
-		if (con.bHCDEConnect)
-			ackFlags |= PRE_CONNECT_ACK_HCDE_SERVICE;
-		if (advertiseDedicated)
-			ackFlags |= PRE_CONNECT_ACK_SERVER_AUTHORITY;
-		NetBuffer[9] = ackFlags;
-		NetBufferLength = 10u;
-		if ((ackFlags & PRE_CONNECT_ACK_HCDE_SERVICE) != 0)
+		const uint64_t now = I_msTime();
+		if (con.HCDERuntimeLastConnectAckTime == 0u
+			|| now - con.HCDERuntimeLastConnectAckTime >= HCDERuntimeConnectAckResendMS)
 		{
-			NetBuffer[NetBufferLength++] = HCDEConnectProtocolVersion;
-			NetBuffer[NetBufferLength++] = HCDE_CONNECT_SERVER_AUTHORITY;
+			con.HCDERuntimeLastConnectAckTime = now;
+			BeginSetupPacket(PRE_CONNECT_ACK, con.SessionToken, 5u);
+			NetBuffer[2] = client;
+			NetBuffer[3] = connectedPlayers;
+			NetBuffer[4] = MaxClients;
+			// Runtime setup is driven from the live net loop and may run many
+			// times between tics while packets are being drained. Pace the
+			// admission ACK like the reliable service resend path so a rejoiner
+			// does not receive hundreds of duplicate connect ACKs before its
+			// user-info packet can advance the setup state.
+			const bool advertiseDedicated = DedicatedServerMode || con.bRuntimeJoin;
+			uint8_t ackFlags = advertiseDedicated ? PRE_CONNECT_ACK_DEDICATED : 0u;
+			if (con.bHCDEConnect)
+				ackFlags |= PRE_CONNECT_ACK_HCDE_SERVICE;
+			if (advertiseDedicated)
+				ackFlags |= PRE_CONNECT_ACK_SERVER_AUTHORITY;
+			NetBuffer[9] = ackFlags;
+			NetBufferLength = 10u;
+			if ((ackFlags & PRE_CONNECT_ACK_HCDE_SERVICE) != 0)
+			{
+				NetBuffer[NetBufferLength++] = HCDEConnectProtocolVersion;
+				NetBuffer[NetBufferLength++] = HCDE_CONNECT_SERVER_AUTHORITY;
+			}
+			SendPacket(con.Address);
 		}
-		SendPacket(con.Address);
 
 		if (con.bHCDEConnect)
 		{
@@ -2585,15 +2736,24 @@ static void DriveRuntimeSetupStateForClient(int client, int connectedPlayers)
 		}
 		else if (con.bHCDEConnect)
 		{
-			auto* oldest = FindOldestHCDEReliableService(con);
-			DebugTrace::Debugf("net", "runtime setup waiting slot=%d status=WAITING has-map=%d has-game=%d ack-self=%d pending=%s key=%u seq=%u sends=%u peerAck=%u",
-				client, con.bHasMapLoadInfo ? 1 : 0, con.bHasGameInfo ? 1 : 0,
-				ClientGotAck(client, client) ? 1 : 0,
-				oldest != nullptr ? HCDEServiceName(oldest->Service) : "<none>",
-				oldest != nullptr ? oldest->Key : 0u,
-				oldest != nullptr ? oldest->Sequence : 0u,
-				oldest != nullptr ? oldest->SendCount : 0u,
-				con.HCDEServicePeerAck);
+			// Throttle to at most once per second per client. This breadcrumb is
+			// otherwise emitted on every tic and every received packet during the
+			// WAITING phase, producing thousands of identical lines per second that
+			// roll the trace files before the connect/admission phase can be read.
+			const uint64_t nowWaitLog = I_msTime();
+			if (nowWaitLog - con.HCDEServiceLastWaitLogTime >= 1000u)
+			{
+				con.HCDEServiceLastWaitLogTime = nowWaitLog;
+				auto* oldest = FindOldestHCDEReliableService(con);
+				DebugTrace::Debugf("net", "runtime setup waiting slot=%d status=WAITING has-map=%d has-game=%d ack-self=%d pending=%s key=%u seq=%u sends=%u peerAck=%u",
+					client, con.bHasMapLoadInfo ? 1 : 0, con.bHasGameInfo ? 1 : 0,
+					ClientGotAck(client, client) ? 1 : 0,
+					oldest != nullptr ? HCDEServiceName(oldest->Service) : "<none>",
+					oldest != nullptr ? oldest->Key : 0u,
+					oldest != nullptr ? oldest->Sequence : 0u,
+					oldest != nullptr ? oldest->SendCount : 0u,
+					con.HCDEServicePeerAck);
+			}
 		}
 		if (con.bHCDEConnect)
 			FlushHCDEReliableServices(con.Address, con);
@@ -2966,28 +3126,41 @@ static bool Host_CheckForConnections(void* connected)
 
 		if (con.Status == CSTAT_CONNECTING)
 		{
-			BeginSetupPacket(PRE_CONNECT_ACK, con.SessionToken, 5u);
-			NetBuffer[2] = client;
-			NetBuffer[3] = *connectedPlayers;
-			NetBuffer[4] = MaxClients;
-			// Mirror DriveRuntimeSetupStateForClient: a listen-server's late
-			// joiner (bRuntimeJoin) needs to be told this is a dedicated /
-			// server-authority connection so its client-side state machine
-			// takes the late-join code path.
-			const bool advertiseDedicated = DedicatedServerMode || con.bRuntimeJoin;
-			uint8_t ackFlags = advertiseDedicated ? PRE_CONNECT_ACK_DEDICATED : 0u;
-			if (con.bHCDEConnect)
-				ackFlags |= PRE_CONNECT_ACK_HCDE_SERVICE;
-			if (advertiseDedicated)
-				ackFlags |= PRE_CONNECT_ACK_SERVER_AUTHORITY;
-			NetBuffer[9] = ackFlags;
-			NetBufferLength = 10u;
-			if ((ackFlags & PRE_CONNECT_ACK_HCDE_SERVICE) != 0)
+			// Pace the admission ACK exactly like DriveRuntimeSetupStateForClient.
+			// This pregame loop also runs many times between tics (the dedicated
+			// path spins on Sleep(1)), so without a guard a connecting client
+			// would receive a burst of identical connect-acks; the first send is
+			// immediate (timestamp 0) and the rest are spaced by the resend
+			// interval. The reliable console-player service below self-paces and
+			// stays outside the gate so it is queued promptly.
+			const uint64_t now = I_msTime();
+			if (con.HCDERuntimeLastConnectAckTime == 0u
+				|| now - con.HCDERuntimeLastConnectAckTime >= HCDERuntimeConnectAckResendMS)
 			{
-				NetBuffer[NetBufferLength++] = HCDEConnectProtocolVersion;
-				NetBuffer[NetBufferLength++] = HCDE_CONNECT_SERVER_AUTHORITY;
+				con.HCDERuntimeLastConnectAckTime = now;
+				BeginSetupPacket(PRE_CONNECT_ACK, con.SessionToken, 5u);
+				NetBuffer[2] = client;
+				NetBuffer[3] = *connectedPlayers;
+				NetBuffer[4] = MaxClients;
+				// Mirror DriveRuntimeSetupStateForClient: a listen-server's late
+				// joiner (bRuntimeJoin) needs to be told this is a dedicated /
+				// server-authority connection so its client-side state machine
+				// takes the late-join code path.
+				const bool advertiseDedicated = DedicatedServerMode || con.bRuntimeJoin;
+				uint8_t ackFlags = advertiseDedicated ? PRE_CONNECT_ACK_DEDICATED : 0u;
+				if (con.bHCDEConnect)
+					ackFlags |= PRE_CONNECT_ACK_HCDE_SERVICE;
+				if (advertiseDedicated)
+					ackFlags |= PRE_CONNECT_ACK_SERVER_AUTHORITY;
+				NetBuffer[9] = ackFlags;
+				NetBufferLength = 10u;
+				if ((ackFlags & PRE_CONNECT_ACK_HCDE_SERVICE) != 0)
+				{
+					NetBuffer[NetBufferLength++] = HCDEConnectProtocolVersion;
+					NetBuffer[NetBufferLength++] = HCDE_CONNECT_SERVER_AUTHORITY;
+				}
+				SendPacket(con.Address);
 			}
-			SendPacket(con.Address);
 			if (con.bHCDEConnect)
 			{
 				if (BeginReliableHCDEPregameService(HPS_CONSOLE_PLAYER, con, uint8_t(client)))
@@ -3294,12 +3467,21 @@ static bool HostGame(int arg)
 	if ((unsigned)MaxClients > MAXPLAYERS)
 		I_FatalError("Cannot host a game with %u players. The limit is currently %lu", MaxClients, MAXPLAYERS);
 
+	// Startup breadcrumbs. These are intentionally fine-grained because the
+	// dedicated-server host path has crashed at startup on some Linux runtimes
+	// (Debian 13) in a way that does not reproduce under a debugger. Combined
+	// with HCDE_TRACE_FLUSH_ALWAYS=1 (which fsyncs every trace line), the last
+	// breadcrumb in the stream file localizes the exact failing call.
+	DebugTrace::Markf("net", "host slots resolved max=%d consoleplayer=%d", MaxClients, consoleplayer);
+
 	HCDE_ServerMode_SetNetworkDetails(I_GetVisibleMaxClients(), MaxClients, GamePort, DedicatedServerMode, DedicatedServerMode ? "server-init" : "host-init");
 
 	GenerateGameID();
+	DebugTrace::Mark("net", "host gameid generated");
 	NetworkClients += 0;
 	Connected[consoleplayer].Status = CSTAT_READY;
 	Net_SetupUserInfo();
+	DebugTrace::Mark("net", "host userinfo ready");
 
 	// If only 1 player, don't bother starting the network
 	if (MaxClients == 1)
@@ -3309,9 +3491,11 @@ static bool HostGame(int arg)
 		return true;
 	}
 
+	DebugTrace::Markf("net", "host starting network port=%u", static_cast<unsigned>(GamePort));
 	StartNetwork(false);
 	DebugTrace::Markf("net", "host network ready port=%u", static_cast<unsigned>(GamePort));
 	SV_InitMasters();
+	DebugTrace::Mark("net", "host masters initialized");
 	HCDE_ServerMode_SetMasterState(SV_IsMasterAdvertisingEnabled(), SV_GetMasterCount());
 	HCDE_ServerMode_SetNetworkDetails(I_GetVisibleMaxClients(), MaxClients, GamePort, DedicatedServerMode, DedicatedServerMode ? "server-waiting" : "host-waiting");
 	HCDE_ServerMode_PrintDiagnostics(DedicatedServerMode ? "dedicated-host" : "host");
@@ -3419,7 +3603,9 @@ static FString ReadVerificationError(TArrayView<uint8_t> stream)
 	size_t offset = 5;
 	if (stream[0] == FVerificationError::VE_FILE_UNKNOWN)
 	{
-		FString er = "Host found unknown files:";
+		FString er = "Host rejected extra or unknown files:";
+		if (size == 0u)
+			return "Host rejected extra or unknown files, but did not identify which ones. Check for duplicate IWAD/PWAD entries.";
 		for (size_t i = 0; i < size; ++i)
 		{
 			FString crc = {};
@@ -3965,6 +4151,33 @@ static bool Guest_ContactHost(void* unused)
 		}
 	}
 
+	// Stall watchdog for the HCDE join handshake. Progress is defined as the
+	// reliable-service receive sequence advancing: every console-player,
+	// user-info-ack, map-load, game-info, peer-user-info and (in a lobby)
+	// heartbeat the host sends carries an incrementing sequence. As long as that
+	// keeps moving the timer is rearmed, so a guest that has finished setup and
+	// is merely waiting for the host to press start is never timed out. If the
+	// sequence freezes for the timeout window the handshake is wedged (a setup
+	// packet is being dropped on the path), so fail with a retryable error rather
+	// than hang forever on "waiting for server start".
+	if (Connected[0].bHCDEConnect)
+	{
+		const uint64_t now = I_msTime();
+		const uint32_t rxSeq = Connected[0].HCDEServiceRxSeq;
+		if (GuestHCDELastSetupProgressTime == 0u || rxSeq != GuestHCDELastSetupRxSeq)
+		{
+			GuestHCDELastSetupProgressTime = now;
+			GuestHCDELastSetupRxSeq = rxSeq;
+		}
+		else if (now - GuestHCDELastSetupProgressTime >= HCDEGuestSetupProgressTimeoutMS)
+		{
+			DebugTrace::Warningf("net", "guest HCDE setup timed out waiting for progress last-rx=%u elapsed=%llu",
+				GuestHCDELastSetupRxSeq,
+				static_cast<unsigned long long>(now - GuestHCDELastSetupProgressTime));
+			I_NetError("Timed out waiting for HCDE late-join setup. Try reconnecting.");
+		}
+	}
+
 	if (Connected[0].bHCDEConnect)
 		FlushHCDEReliableServices(Connected[0].Address, Connected[0]);
 
@@ -4064,11 +4277,21 @@ static bool JoinGame(int arg)
 	consoleplayer = -1;
 	DedicatedLateJoinRetryAttempted = false;
 	DedicatedLateJoinRetryPendingSend = false;
+	GuestHCDELastSetupProgressTime = 0u;
+	GuestHCDELastSetupRxSeq = 0u;
 	StartNetwork(true);
 	DebugTrace::Markf("net", "join network ready port=%u", static_cast<unsigned>(GamePort));
 
 	// Host is always client 0.
 	BuildAddress(Connected[0].Address, Args->GetArg(arg));
+	// Log the raw join argument alongside the address it actually resolved to.
+	// This is the ground truth for "what did the client dial", independent of
+	// what the launcher claims it passed: a LAN target here means a direct
+	// connect, a WAN target that equals our own public IP means a hairpin path
+	// (the historic stuck-rejoin cause). Pairs with the "sendto ok" trace.
+	DebugTrace::Markf("net", "join target arg='%s' resolved=%s:%u",
+		Args->GetArg(arg), inet_ntoa(Connected[0].Address.sin_addr),
+		unsigned(ntohs(Connected[0].Address.sin_port)));
 	Connected[0].Status = CSTAT_CONNECTING;
 
 	SetConnectFlow(NCF_CLIENT_AUTH);
@@ -4118,6 +4341,8 @@ bool I_InitNetwork()
 	DedicatedJoinMode = HCDE_ServerMode_IsDedicatedJoin();
 	DedicatedLateJoinRetryAttempted = false;
 	DedicatedLateJoinRetryPendingSend = false;
+	GuestHCDELastSetupProgressTime = 0u;
+	GuestHCDELastSetupRxSeq = 0u;
 	// This controls only the pregame room/status UI. Dedicated join protocol
 	// flags are still emitted through DedicatedJoinMode when the UI is visible.
 	SilentNetStartMode = HCDE_ServerMode_ShouldSuppressRoomUI();
@@ -4362,12 +4587,56 @@ bool I_IsHCDELiveAuthoritySlot(int client)
 	return I_IsHCDEServiceAuthoritySlot(client);
 }
 
+bool I_IsHCDEClientSetupInProgress(int client)
+{
+	// True only on the authority while a (re)joining client slot is still
+	// completing the fragile part of its pregame reliable handshake. A runtime
+	// joiner is inserted into NetworkClients the instant its connect packet is
+	// accepted, long before the handshake finishes, so callers that drive
+	// live-game participation must consult this to avoid acting on a half-open
+	// slot. Scoped to the authority: a guest evaluates I_IsLocalHCDEServiceAuthority
+	// as false and returns early, so this never affects guest->authority routing
+	// (the guest's view of the authority slot is not driven through these fields).
+	if (!I_IsLocalHCDEServiceAuthority())
+		return false;
+	if (client < 0 || client >= MaxClients || client >= int(MAXPLAYERS))
+		return false;
+	auto& con = Connected[client];
+	if (con.Status == CSTAT_NONE || !con.bHCDEConnect)
+		return false;
+	// Live participation opens at CSTAT_READY. By then every pregame reliable
+	// service (console-player, user-info-ack, map-load, game-info, peer-user-info)
+	// has been delivered and acked, so the joiner is out of the multi-step
+	// user-info exchange that the live packet flood was wedging. We deliberately
+	// do NOT also require the start-game ack: the guest enters the game the moment
+	// it receives start-game (it does not wait for its own ack to be confirmed),
+	// and once in the live loop it no longer re-acks retransmitted start-game
+	// setup packets. Gating live acceptance/admission on that ack would strand a
+	// guest whose start-game ack was lost -- it would be in-game while the
+	// authority refused its input forever. READY is the correct, race-free line.
+	return con.Status != CSTAT_READY;
+}
+
 static bool I_IsHCDELiveRoutablePeer(int client)
 {
-	return client >= 0
-		&& client < MaxClients
-		&& client != consoleplayer
-		&& I_ClientUsesHCDEService(client);
+	if (client < 0
+		|| client >= MaxClients
+		|| client == consoleplayer
+		|| !I_ClientUsesHCDEService(client))
+		return false;
+
+	// A runtime joiner must not participate in live traffic (server snapshots,
+	// live control, client input -- send or accept) until its pregame handshake
+	// has fully completed. Routing live packets to a still-handshaking slot
+	// floods the joiner with data it cannot use yet and was observed to wedge
+	// the handshake itself: the joiner never advances past its user-info
+	// exchange while the authority drowns it with heartbeats and rejected
+	// snapshots. Treat such a slot as non-routable until setup ends. This only
+	// suppresses on the authority (see I_IsHCDEClientSetupInProgress).
+	if (I_IsHCDEClientSetupInProgress(client))
+		return false;
+
+	return true;
 }
 
 bool I_ShouldSendHCDELiveControlTo(int client)

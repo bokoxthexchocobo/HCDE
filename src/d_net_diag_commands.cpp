@@ -105,8 +105,23 @@ FVerificationError Net_VerifyEngine(uint8_t*& stream, size_t& offset, size_t pac
 
 		if (error.Error == FVerificationError::VE_FILE_UNKNOWN)
 		{
-			if (crcs.Find(netCrc) >= crcs.Size())
+			const size_t c = crcs.Find(netCrc);
+			if (c >= crcs.Size())
+			{
 				error.UnknownFiles.Push(netCrc);
+			}
+			else
+			{
+				// The guest can also have "unknown" extras by loading a required
+				// file a second time (for example DOOM2.WAD as both IWAD and PWAD).
+				// The CRC is known and byte-identical, so it does not make the guest
+				// content incompatible. Track which expected CRCs have already been
+				// consumed and ignore later duplicate copies instead of rejecting a
+				// join that is otherwise file-compatible.
+				const size_t pending = unverified.Find(c);
+				if (pending < unverified.Size())
+					unverified.Delete(pending);
+			}
 		}
 		else if (crcs[i] != netCrc)
 		{
@@ -127,6 +142,13 @@ FVerificationError Net_VerifyEngine(uint8_t*& stream, size_t& offset, size_t pac
 		{
 			unverified.Delete(unverified.Find(i));
 		}
+	}
+
+	if (error.Error == FVerificationError::VE_FILE_UNKNOWN && error.UnknownFiles.Size() == 0u)
+	{
+		error.Error = unverified.Size() == 0u
+			? FVerificationError::VE_NONE
+			: FVerificationError::VE_FILE_MISSING;
 	}
 
 	if (error.Error == FVerificationError::VE_FILE_MISSING)

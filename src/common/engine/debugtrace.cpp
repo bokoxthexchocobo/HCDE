@@ -19,6 +19,7 @@
 #include <cstdint>
 #include <cstdio>
 #include <cstdarg>
+#include <cstdlib>
 #include <cstring>
 #include <functional>
 #include <mutex>
@@ -438,7 +439,18 @@ static void WriteStreamLine(const TraceSnapshot& snapshot, bool forceFlush)
 	const bool isError = snapshot.SeverityLevel == DebugTrace::Severity::Error;
 	const bool isWarning = snapshot.SeverityLevel == DebugTrace::Severity::Warning;
 	const bool severityFlush = isError || isWarning;
-	if (forceFlush || severityFlush || nowMS - LastStreamFlushMS >= StreamFlushIntervalMS)
+	// Opt-in diagnostic: when HCDE_TRACE_FLUSH_ALWAYS is set in the environment,
+	// fsync every trace line to disk immediately instead of batching on the
+	// 250ms timer. This trades throughput for a guarantee that the very last
+	// line written before a hard crash (SIGSEGV/abort) survives in the stream
+	// file, which is the only way to localize an early-startup crash that does
+	// not reproduce under a debugger. Cached once; default off, so normal runs
+	// keep the batched-flush behavior and pay no extra cost.
+	static const bool forceFlushAlways = []() noexcept {
+		const char* value = getenv("HCDE_TRACE_FLUSH_ALWAYS");
+		return value != nullptr && value[0] != '\0' && value[0] != '0';
+	}();
+	if (forceFlush || severityFlush || forceFlushAlways || nowMS - LastStreamFlushMS >= StreamFlushIntervalMS)
 	{
 		fflush(StreamFile);
 		LastStreamFlushMS = nowMS;

@@ -229,6 +229,11 @@ bool I_ShouldSendHCDELiveClientInputTo(int client);
 bool I_ShouldSendHCDELiveServerSnapshotTo(int client);
 bool I_ShouldAcceptHCDELiveClientInputFrom(int client);
 bool I_ShouldAcceptHCDELiveServerSnapshotFrom(int client);
+// True on the authority while a (re)joining client slot is still completing its
+// pregame reliable handshake. Callers that drive live-game participation (slot
+// admission, late-join replay, snapshot scheduling) must defer until this is
+// false so a half-open slot is never spawned or flooded with live traffic.
+bool I_IsHCDEClientSetupInProgress(int client);
 void I_GetLocalServerSnapshot(FServerQuerySnapshot& snapshot);
 bool I_QueryServerInfo(const char* addrName, FServerQuerySnapshot& snapshot, FString* error = nullptr);
 void I_ClearClient(size_t client);

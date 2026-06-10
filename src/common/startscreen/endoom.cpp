@@ -61,7 +61,10 @@ CUSTOM_CVAR(Int, showendoom, 0, CVAR_ARCHIVE|CVAR_GLOBALCONFIG)
 	else if (self > 2) self=2;
 }
 
-CVAR(Bool, consoleendoom, true, CVAR_ARCHIVE|CVAR_GLOBALCONFIG)
+// Default off: the ANSI ENDOOM dump on exit is noise on dedicated servers and
+// terminals (it prints the IWAD's end screen, e.g. the DOOM II credits, on
+// every shutdown). Users who want it can set consoleendoom 1.
+CVAR(Bool, consoleendoom, false, CVAR_ARCHIVE|CVAR_GLOBALCONFIG)
 
 #ifdef _WIN32
 extern bool FancyStdOut;

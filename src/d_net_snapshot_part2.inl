@@ -308,6 +308,9 @@ static bool Net_ShouldSeedAuthorityEventReplay(int clientNum);
 static void Net_ResetAuthorityWaitWatchdog(const char* reason, bool trace);
 static void Net_EnsureRuntimeClientSlot(int client, int sourceClient);
 static void DisconnectClient(int clientNum);
+// Defined later in d_net.cpp. Admits a runtime joiner into the live simulation
+// once its pregame handshake has completed; idempotent and safe to call again.
+static void ClientConnecting(int client);
 
 // Translate `eventCount` canonical HCDE tic events starting at `body[bodyCursor]`
 // into the byte stream consumed by Net_DoCommand. Native gameplay packets are
@@ -1200,7 +1203,18 @@ static bool HandleHCDELivePacket(int clientNum)
 		peer.PeerAck = ack;
 		++peer.ClientCommandReceived;
 		if (peer.ClientCommandReceived == 1u)
+		{
 			Printf("NetServer:: HCDE live client inputs active with client %d\n", clientNum);
+			// Receiving live client input is definitive proof the joiner finished
+			// its pregame handshake and entered the running game. Normally the
+			// setup packet that completes the handshake already drove ClientConnecting
+			// (slot admission, PST_ENTER, late-join replay), but if the joiner
+			// reached CSTAT_READY out-of-band and its single start-game ack was
+			// lost, that admission could be missed -- leaving an in-game client the
+			// authority never spawned. Drive it here as an idempotent safety net so
+			// the slot is always admitted by the time its input is applied.
+			ClientConnecting(clientNum);
+		}
 		DebugTrace::Markf("net", "HCDE live client-input boundary recv client=%d payload=%zu local-authority=%d",
 			clientNum, payloadSize, I_IsLocalHCDELiveAuthority());
 		return true;
