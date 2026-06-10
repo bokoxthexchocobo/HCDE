@@ -237,12 +237,17 @@ void Net_CompareEchoToLocal(int clientNum, uint32_t serverTic, int playerNum,
 		|| (serverPspriteState != nullptr && localPspriteTics != pspriteTics))
 	{
 		desync = true;
-		const char* sName = serverPspriteState != nullptr
-			? FState::StaticGetStateName(serverPspriteState).GetChars() : "None";
-		const char* lName = localPspriteState != nullptr
-			? FState::StaticGetStateName(localPspriteState).GetChars() : "None";
+		// StaticGetStateName returns an FString by value; binding .GetChars() to a
+		// const char* leaves a dangling pointer once the temporary dies at the end
+		// of the statement. Hold the FStrings in locals so the buffers outlive the
+		// log call. This crashed on death, when the weapon psprite goes null/invalid
+		// and this desync line fires.
+		const FString sName = serverPspriteState != nullptr
+			? FState::StaticGetStateName(serverPspriteState) : FString("None");
+		const FString lName = localPspriteState != nullptr
+			? FState::StaticGetStateName(localPspriteState) : FString("None");
 		DebugTrace::Warningf("net.desync", "[PSPRITE STATE DESYNC] player=%d server state=%s (tics=%d) local state=%s (tics=%d) tic=%u",
-			playerNum, sName, pspriteTics, lName, localPspriteTics, serverTic);
+			playerNum, sName.GetChars(), pspriteTics, lName.GetChars(), localPspriteTics, serverTic);
 	}
 	if (localWeaponState != weaponState)
 	{
