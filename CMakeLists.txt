@@ -91,7 +91,7 @@ function( add_pk3 PK3_NAME )
 
 	add_custom_command( OUTPUT ${HCDE_OUTPUT_DIR}/${PK3_NAME}
 		COMMAND zipdir -udf ${PK3_ZIPDIR_OPTIONS} ${HCDE_OUTPUT_DIR}/${PK3_NAME} ${ARGN}
-		DEPENDS zipdir )
+		DEPENDS zipdir ${PK3_SRCS} )
 
 	# Create a list of source files for this PK3, for use in the IDE
 	# Phase 1: Create a list of all source files for this PK3 archive, except
@@ -137,6 +137,7 @@ function( add_pk3 PK3_NAME )
 		DEPENDS ${PK3_TARGET}
 	)
 	add_dependencies(zdoom ${COPY_TARGET_NAME})
+	set_property(GLOBAL APPEND PROPERTY HCDE_PK3_COPY_TARGETS ${COPY_TARGET_NAME})
 
 	# Phase 5: Add the resulting PK3 to the install target.
 	if( WIN32 )
@@ -481,6 +482,17 @@ add_subdirectory( wadsrc_lights )
 add_subdirectory( wadsrc_extra )
 add_subdirectory( wadsrc_mod_compat )
 add_subdirectory( wadsrc_widepix )
+
+# Dedicated server and RCON builds must refresh runtime PK3s beside the exe,
+# not only when the client (zdoom) target is built.
+get_property(HCDE_PK3_COPY_TARGETS GLOBAL PROPERTY HCDE_PK3_COPY_TARGETS)
+if(HCDE_PK3_COPY_TARGETS)
+	foreach(_hcde_runtime_target zdoom hcdeserv hcdercon)
+		if(TARGET ${_hcde_runtime_target})
+			add_dependencies(${_hcde_runtime_target} ${HCDE_PK3_COPY_TARGETS})
+		endif()
+	endforeach()
+endif()
 
 if( ZMUSIC_SYSTEM_INSTALL )
 	# Internal ZMusic library provides miniz target, miniz.h file in partuclar
