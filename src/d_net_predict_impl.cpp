@@ -269,9 +269,10 @@ static void Net_PredictionDebugTick(int totalTics, int availableTics, int lowest
 		const int passiveThreshold = *net_predict_softwarn_passive_storm;
 		const bool warnAckLag = HCDEPredictionDebugMaxAckLag >= ackThreshold;
 		const bool warnMirror = mirrorDelta >= mirrorThreshold;
+		const bool bufferUnderPressure = HCDEPredictionDebugMaxBacklog > max<int>(TicDup * 2, 2);
 		const bool warnAvailable = HCDEPredictionDebugMinAvailable != INT_MAX
 			&& HCDEPredictionDebugMinAvailable <= 1
-			&& HCDEPredictionDebugMaxBacklog > TicDup;
+			&& bufferUnderPressure;
 		const bool warnStaleAttack = staleAttackingMirrors > 0;
 		const bool warnPassiveStorm = windowPassiveClient >= unsigned(passiveThreshold);
 		const bool warnHardChurn = windowHardRepairs >= 2u;
@@ -348,7 +349,9 @@ static void Net_PredictionDebugTick(int totalTics, int availableTics, int lowest
 					static_cast<unsigned long long>(windowPassiveClient));
 			}
 
+			const bool dumpFullTrace = warnMirror || warnStaleAttack || warnPassiveStorm || warnHardChurn;
 			if (level >= 3
+				&& dumpFullTrace
 				&& HCDELiveReportIntervalElapsed(HCDEPredictionDebugLastTraceDumpMS, 5000u))
 			{
 				const FString tracePath = FStringf("%s/hcde_prediction_softwarn_trace_%llu.txt",

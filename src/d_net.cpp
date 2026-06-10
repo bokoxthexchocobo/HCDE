@@ -292,7 +292,10 @@ CUSTOM_CVAR(Int, net_authority_catchup, 2, CVAR_ARCHIVE | CVAR_GLOBALCONFIG)
 		self = 64;
 }
 // SequenceAck lag (newestTic - SequenceAck) at which the soft-warn fires.
-CUSTOM_CVAR(Int, net_predict_softwarn_ack_lag, 3, CVAR_ARCHIVE | CVAR_GLOBALCONFIG)
+// A few tics of lead is normal in HCDE's prediction model; default this above
+// ordinary jitter so softwarn logging remains an anomaly detector, not a
+// per-session performance tax.
+CUSTOM_CVAR(Int, net_predict_softwarn_ack_lag, 12, CVAR_ARCHIVE | CVAR_GLOBALCONFIG)
 {
 	if (self < 1)
 		self = 1;
@@ -965,6 +968,11 @@ struct FHCDELivePeerState
 	uint64_t UnsupportedCapabilities = 0u;
 	uint32_t CapabilityControlReceived = 0u;
 	uint32_t LegacyControlReceived = 0u;
+	// Throttle state for the capability-gated gameplay reject below. A joining
+	// client legitimately has negotiated=0 until its first HLIVE_CONTROL lands,
+	// so the per-tic snapshot send trips the guard ~35x/sec for the whole join.
+	uint64_t LastCapabilityRejectLogMS = 0u;
+	uint32_t CapabilityRejectSuppressed = 0u;
 	uint32_t WorldDeltaReceived = 0u;
 	uint32_t BaselineRepairs = 0u;
 	uint32_t BaselineLocalDrift = 0u;
@@ -1880,7 +1888,8 @@ static bool HCDEEnforcesNativeGameplayForPeer(int client)
 		&& net_hcde_native_only
 		&& client >= 0
 		&& client < MAXPLAYERS
-		&& client != consoleplayer;
+		&& client != consoleplayer
+		&& !I_IsHCDEClientSetupInProgress(client);
 }
 
 // Reject classic NCMD gameplay traffic when the session is configured to require
@@ -1931,12 +1940,33 @@ static void HCDERejectLiveGameplayForCapabilities(int client, EHCDELiveMessage t
 	if (inbound)
 		++peer.UnsupportedReceived;
 	++HCDELiveProfile.LiveNativeCapabilityRejects;
+
+	// This rejection is expected and benign during the window between a
+	// (re)joining client completing pregame setup and its first HLIVE_CONTROL
+	// arriving: until that control lands the peer's negotiated capability mask
+	// is 0, so every per-tic gameplay send/recv attempt trips this guard.
+	// Unthrottled it emitted a WARN every tic (~35/sec) for the entire join,
+	// burying the trace under ~1k identical lines. Throttle to at most once per
+	// second per client and fold the suppressed count into the next emitted
+	// line so a genuinely stuck capability handshake stays visible.
+	const uint64_t now = I_msTime();
+	if (peer.LastCapabilityRejectLogMS != 0u && now - peer.LastCapabilityRejectLogMS < 1000u)
+	{
+		++peer.CapabilityRejectSuppressed;
+		return;
+	}
+
+	const uint32_t suppressed = peer.CapabilityRejectSuppressed;
+	peer.CapabilityRejectSuppressed = 0u;
+	peer.LastCapabilityRejectLogMS = now;
+
 	DebugTrace::Warningf("net",
-		"rejected HCDE live %s %s client=%d negotiated=0x%llx required=0x%llx native-only",
+		"rejected HCDE live %s %s client=%d negotiated=0x%llx required=0x%llx suppressed=%u native-only",
 		HCDELiveMessageName(uint8_t(type)), direction != nullptr ? direction : "gameplay",
 		client,
 		static_cast<unsigned long long>(peer.NegotiatedCapabilities),
-		static_cast<unsigned long long>(HCDELiveRequiredGameplayCapabilities()));
+		static_cast<unsigned long long>(HCDELiveRequiredGameplayCapabilities()),
+		suppressed);
 }
 
 // Adaptive bandwidth policy state. Owned by the authority's per-tic loop in
@@ -5633,6 +5663,9 @@ static void GetPackets()
 			if (HandleHCDELivePacket(clientNum))
 				continue;
 		}
+
+		if (I_IsHCDEClientSetupInProgress(clientNum))
+			continue;
 
 		if (HCDEEnforcesNativeGameplayForPeer(clientNum))
 		{

@@ -1340,6 +1340,9 @@ static void HCDEAbortLiveGameplaySend(int client, EHCDELiveMessage type, const c
 // guard rail rather than a fallback.
 static void HSendLiveGameplayPacket(int client, size_t size)
 {
+	if (I_IsHCDEClientSetupInProgress(client))
+		return;
+
 	const bool clientCommand = ShouldWrapHCDEClientCommandPacket(client);
 	const bool serverSnapshot = ShouldWrapHCDEServerSnapshotPacket(client);
 	if (!clientCommand && !serverSnapshot)
