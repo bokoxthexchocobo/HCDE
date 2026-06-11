@@ -43,6 +43,11 @@
 #include "win32glvideo.h"
 
 #include "gl_framebuffer.h"
+#include "hcde_renderer_fallback.h"
+#ifdef HAVE_VULKAN
+#include "vulkan/system/vk_renderdevice.h"
+#include "win32vulkanvideo.h"
+#endif
 
 extern "C" {
 HGLRC zd_wglCreateContext(HDC Arg1);
@@ -93,6 +98,39 @@ Win32GLVideo::Win32GLVideo()
 
 DFrameBuffer *Win32GLVideo::CreateFrameBuffer()
 {
+	HCDE_MigrateRendererCvars();
+
+#ifdef HAVE_VULKAN
+	if (vid_preferbackend == BACKEND_VULKAN)
+	{
+		try
+		{
+			unsigned int count = 64;
+			const char *names[64];
+			if (!I_GetVulkanPlatformExtensions(&count, names))
+				VulkanError("I_GetVulkanPlatformExtensions failed");
+
+			VulkanInstanceBuilder builder;
+			builder.DebugLayer(vk_debug);
+			for (unsigned int i = 0; i < count; i++)
+				builder.RequireExtension(names[i]);
+			auto instance = builder.Create();
+
+			VkSurfaceKHR surfacehandle = nullptr;
+			if (!I_CreateVulkanSurface(instance->Instance, &surfacehandle))
+				VulkanError("I_CreateVulkanSurface failed");
+
+			auto surface = std::make_shared<VulkanSurface>(instance, surfacehandle);
+			return new VulkanRenderDevice(m_hMonitor, vid_fullscreen, surface);
+		}
+		catch (const CEngineError &error)
+		{
+			Printf(TEXTCOLOR_RED "Vulkan framebuffer creation failed: %s\n", error.what());
+			Printf("Falling back to desktop OpenGL.\n");
+		}
+	}
+#endif
+
 	return new OpenGLRenderer::OpenGLFrameBuffer(m_hMonitor, vid_fullscreen);
 }
 

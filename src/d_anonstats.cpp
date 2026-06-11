@@ -277,7 +277,7 @@ static int GetRenderInfo()
 
 static int GetGLVersion()
 {
-	if (screen->Backend() == 1) return vkversion;
+	if (screen->Backend() == BACKEND_VULKAN) return vkversion;
 	auto info = gl_getInfo();
 	return int(info.first * 10);
 }

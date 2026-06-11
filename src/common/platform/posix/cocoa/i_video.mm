@@ -362,6 +362,7 @@ class CocoaVideo : public IVideo
 public:
 	CocoaVideo()
 	{
+		HCDE_MigrateRendererCvars();
 		ms_isVulkanEnabled = vid_preferbackend == BACKEND_VULKAN && NSAppKitVersionNumber >= 1404; // NSAppKitVersionNumber10_11
 	}
 
@@ -375,6 +376,7 @@ public:
 
 	virtual DFrameBuffer* CreateFrameBuffer() override
 	{
+		HCDE_MigrateRendererCvars();
 		assert(ms_window == nil);
 		ms_window = CreateWindow(STYLE_MASK_WINDOWED);
 
@@ -452,12 +454,6 @@ public:
 
 		if (fb == nullptr)
 		{
-			fb = new OpenGLRenderer::OpenGLFrameBuffer(0, vid_fullscreen);
-		}
-
-		if (fb == nullptr)
-		{
-			HCDE_ActivateSoftwareRendererFallback("Vulkan and OpenGL framebuffer creation failed");
 			fb = new OpenGLRenderer::OpenGLFrameBuffer(0, vid_fullscreen);
 		}
 

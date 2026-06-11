@@ -17,6 +17,7 @@
 #include "v_video.h"
 #include "c_dispatch.h"
 #include "printf.h"
+#include "v_text.h"
 
 #ifndef NO_SWRENDERER
 EXTERN_CVAR(Int, vid_rendermode)
@@ -38,6 +39,15 @@ void HCDE_MigrateRendererCvars()
 	}
 }
 
+bool HCDE_UsingSoftwareRenderer()
+{
+#ifndef NO_SWRENDERER
+	return vid_rendermode != 4;
+#else
+	return false;
+#endif
+}
+
 void HCDE_ActivateSoftwareRendererFallback(const char *reason)
 {
 	HCDE_MigrateRendererCvars();
@@ -55,5 +65,29 @@ void HCDE_ActivateSoftwareRendererFallback(const char *reason)
 	{
 		hcde_nanobsp_loader = 1;
 		Printf("Enabled hcde_nanobsp_loader for software renderer node building.\n");
+	}
+}
+
+CCMD(r_hcde_renderer_status)
+{
+	HCDE_MigrateRendererCvars();
+	Printf(PRINT_HIGH, "HCDE renderer status:\n");
+	Printf(PRINT_HIGH, "  vid_preferbackend = %d (%s)\n", *vid_preferbackend,
+		*vid_preferbackend == BACKEND_VULKAN ? "vulkan" :
+		(*vid_preferbackend == BACKEND_OPENGL ? "opengl" : "unknown"));
+#ifndef NO_SWRENDERER
+	Printf(PRINT_HIGH, "  vid_rendermode    = %d (%s)\n", *vid_rendermode,
+		HCDE_UsingSoftwareRenderer() ? "software" : "hardware");
+#else
+	Printf(PRINT_HIGH, "  vid_rendermode    = hardware (software renderer disabled at build time)\n");
+#endif
+	Printf(PRINT_HIGH, "  hcde_nanobsp_loader = %d\n", *hcde_nanobsp_loader);
+	if (screen != nullptr)
+	{
+		Printf(PRINT_HIGH, "  active backend    = %d\n", screen->Backend());
+	}
+	else
+	{
+		Printf(PRINT_HIGH, "  active backend    = (screen not initialized)\n");
 	}
 }

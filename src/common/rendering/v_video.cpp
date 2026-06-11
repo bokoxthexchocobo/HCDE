@@ -38,6 +38,8 @@
 #include "v_font.h"
 #include "v_video.h"
 #include "hcde_renderer_fallback.h"
+#include "engineerrors.h"
+#include "v_text.h"
 #include "version.h"
 #include "vm.h"
 #include "x86.h"
@@ -332,18 +334,64 @@ bool IVideo::SetResolution ()
 {
 	HCDE_MigrateRendererCvars();
 
-	DFrameBuffer *buff = CreateFrameBuffer();
+	DFrameBuffer *buff = nullptr;
+	try
+	{
+		buff = CreateFrameBuffer();
+	}
+	catch (const CEngineError &error)
+	{
+		Printf(TEXTCOLOR_RED "Framebuffer creation failed: %s\n", error.what());
+		buff = nullptr;
+	}
 
-	if (buff == NULL)
+	if (buff == nullptr)
 	{
 		HCDE_ActivateSoftwareRendererFallback("hardware framebuffer creation failed");
-		buff = CreateFrameBuffer();
-		if (buff == NULL)
+		try
+		{
+			buff = CreateFrameBuffer();
+		}
+		catch (const CEngineError &)
+		{
+			buff = nullptr;
+		}
+		if (buff == nullptr)
 			return false;
 	}
 
 	screen = buff;
-	screen->InitializeState();
+	try
+	{
+		screen->InitializeState();
+	}
+	catch (const CEngineError &error)
+	{
+		Printf(TEXTCOLOR_RED "Hardware renderer initialization failed: %s\n", error.what());
+		HCDE_ActivateSoftwareRendererFallback("hardware renderer initialization failed");
+		delete screen;
+		screen = nullptr;
+
+		try
+		{
+			buff = CreateFrameBuffer();
+			if (buff != nullptr)
+			{
+				screen = buff;
+				screen->InitializeState();
+			}
+		}
+		catch (const CEngineError &)
+		{
+			if (screen != nullptr)
+			{
+				delete screen;
+				screen = nullptr;
+			}
+		}
+		if (screen == nullptr)
+			return false;
+	}
 
 	V_UpdateModeSize(screen->GetWidth(), screen->GetHeight());
 

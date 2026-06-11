@@ -100,7 +100,7 @@ namespace
 		return 128;
 	}
 
-	int ShadowMapBudgetCapForQuality(int quality, int backend)
+	int ShadowMapBudgetCapForQuality(int quality)
 	{
 		int cap = 64;
 		if (quality >= 4096) cap = 1024;
@@ -205,7 +205,7 @@ namespace
 		int budgetCap = 1024;
 		if (hcde_shadow_autofallback)
 		{
-			budgetCap = ShadowMapBudgetCapForQuality(gl_shadowmap_quality, screen->Backend());
+			budgetCap = ShadowMapBudgetCapForQuality(gl_shadowmap_quality);
 		}
 
 		if (levelInfo != nullptr && levelInfo->HcdeShadowMaxLightsCap >= 0)

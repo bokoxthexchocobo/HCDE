@@ -15,10 +15,12 @@
 
 #pragma once
 
-// Normalize legacy renderer CVAR values and apply the software + NanoBSP
-// fallback path when hardware rendering is unavailable.
+// Normalize legacy renderer CVAR values (e.g. removed OpenGL ES backend id).
 void HCDE_MigrateRendererCvars();
 
 // Switch to the software scene drawer and enable the NanoBSP loader path.
 // Safe to call multiple times.
 void HCDE_ActivateSoftwareRendererFallback(const char *reason);
+
+// True when the software scene drawer should be used instead of the HW path.
+bool HCDE_UsingSoftwareRenderer();
