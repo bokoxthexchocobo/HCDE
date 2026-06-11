@@ -618,7 +618,7 @@
     <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc\static\compatibility.txt">
       <Filter>Source Files</Filter>
     </None>
-    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc\static\credits\UZDoom Logo.txt">
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc\static\credits\HCDE Logo.txt">
       <Filter>Source Files\credits</Filter>
     </None>
     <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc\static\credits\b@ckdrop.txt">
