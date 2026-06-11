@@ -137,6 +137,7 @@ struct FClientNetState
 	uint16_t	AverageLatency = 0u;		// Calculate the average latency every second or so, that way it doesn't give huge variance in the scoreboard.
 	uint64_t	SentTime[MAXSENDTICS] = {};	// Timestamp for when we sent out the packet to this client.
 	uint64_t	RecvTime[MAXSENDTICS] = {};	// Timestamp for when the client acknowledged our last packet.
+	uint64_t	LastPacketTimeMS = 0u;		// Last time any packet was heard from this client. Authorities use this to reap hard-closed ghost clients.
 
 	int				Flags = 0;				// State of this client.
 
@@ -196,6 +197,8 @@ int HCDEGetClientPredictionEndCapTic();
 void Net_NewClientTic();
 void Net_Initialize();
 uint8_t Net_GetCurrentRoomID();
+void Net_BeginRuntimeBootstrap(int client, const char* reason = nullptr);
+void Net_RequestRuntimeResync(int client, const char* reason = nullptr);
 void Net_WriteInt8(uint8_t);
 void Net_WriteInt16(int16_t);
 void Net_WriteInt32(int32_t);

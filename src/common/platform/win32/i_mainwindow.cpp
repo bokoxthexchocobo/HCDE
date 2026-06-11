@@ -2246,7 +2246,16 @@ void MainWindow::UpdateServerConsoleStatusFromLogLine(const char* text)
 	{
 		SetServerConsoleStatus("client connected");
 	}
-	else if (strstr(text, "Client ") != nullptr && strstr(text, " disconnected") != nullptr)
+	else if ((strstr(text, "Client ") != nullptr && strstr(text, " disconnected") != nullptr) ||
+		// In-game drops are logged by d_net (DisconnectClient / dead-client
+		// reaper) as "Disconnecting client N ..." and "Client N '...' timed
+		// out ...". Neither contains the literal " disconnected" the case
+		// above matches, so without these the dedicated console status stayed
+		// stuck on "client connected" after a client closed its window or a
+		// hard disconnect was reaped, making the server look occupied when
+		// nobody was connected.
+		strstr(text, "Disconnecting client ") != nullptr ||
+		(strstr(text, "Client ") != nullptr && strstr(text, " timed out") != nullptr))
 	{
 		SetServerConsoleStatus("client disconnected");
 	}

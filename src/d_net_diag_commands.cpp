@@ -286,18 +286,6 @@ void Net_ReadServerInfo(TArrayView<uint8_t>& stream)
 	C_ReadCVars(stream);
 }
 
-void Net_SetGameInfo(TArrayView<uint8_t>& stream)
-{
-	Net_SetMapLoadInfo(stream);
-	Net_SetServerInfo(stream);
-}
-
-void Net_ReadGameInfo(TArrayView<uint8_t>& stream)
-{
-	Net_ReadMapLoadInfo(stream);
-	Net_ReadServerInfo(stream);
-}
-
 // Connects players to each other if needed.
 bool D_CheckNetGame()
 {
@@ -901,6 +889,14 @@ CCMD(net_profile_reset)
 	HCDELiveProfile.Clear();
 	I_ResetHCDEPregameServiceProfile();
 	Printf(PRINT_HIGH, "HCDE net profile counters reset.\n");
+}
+
+CCMD(net_resync)
+{
+	if (I_RequestHCDEResync("console-command"))
+		Printf(PRINT_HIGH, "HCDE resync requested.\n");
+	else
+		Printf(PRINT_HIGH, "HCDE resync request was not sent (not a HCDE client netgame, or a request is already pending).\n");
 }
 
 // On-demand snapshot for the prediction-loss debugger. Forces a full DebugTrace

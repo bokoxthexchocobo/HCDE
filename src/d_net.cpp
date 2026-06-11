@@ -343,6 +343,17 @@ CUSTOM_CVAR(Int, net_predict_softwarn_passive_storm, 5, CVAR_ARCHIVE | CVAR_GLOB
 // Native-only gameplay policy. Pregame/setup/control traffic is still accepted,
 // but live gameplay must use HCDE `HCIN`/`HCSN` once the session is in netgame.
 CVAR(Bool, net_hcde_native_only, true, CVAR_SERVERINFO | CVAR_NOSAVE);
+// Milliseconds a live client may go completely silent before the authority
+// tears down its slot. A graceful quit is still processed immediately through
+// NCMD_EXIT; this catches hard closes/crashes where no exit packet arrives and
+// prevents the stale playeringame slot from blocking or crashing a later rejoin.
+CUSTOM_CVAR(Int, sv_net_dead_client_timeout_ms, 5000, CVAR_SERVERINFO | CVAR_NOSAVE)
+{
+	if (self < 0)
+		self = 0;
+	else if (self > 120000)
+		self = 120000;
+}
 
 // `sv_net_bandwidth` and the bandwidth-mode helpers are defined together with
 // the lane-budget table later in the file (after the `EHCDEBandwidthMode`
@@ -4398,6 +4409,7 @@ void Net_ClearBuffers()
 }
 
 static bool Net_IsLateJoinSyncPending(int client);
+static void Net_ResetAuthorityWaitWatchdog(const char* reason, bool trace = true);
 
 static bool Net_IsCutsceneReadyParticipant(int player)
 {
@@ -4463,6 +4475,54 @@ static void Net_ClearLateJoinSyncPending(int client, const char* reason)
 	LateJoinSyncTargetConsistency[client] = -1;
 	LateJoinSyncStartTic[client] = -1;
 	ConsistencyGraceUntilTic[client] = max<int>(ConsistencyGraceUntilTic[client], gametic + TICRATE);
+}
+
+void Net_BeginRuntimeBootstrap(int client, const char* reason)
+{
+	if (!I_IsLocalHCDEServiceAuthority())
+		return;
+	if (client < 0 || client >= MAXPLAYERS || I_IsHCDEServiceAuthoritySlot(client))
+		return;
+
+	auto& state = ClientStates[client];
+	const int currentSequence = max<int>(ClientTic / max<int>(TicDup, 1), 0);
+	const int currentConsistency = max<int>(CurrentConsistency, 0);
+	const int replayWindow = max<int>(MAXSENDTICS / 2, 1);
+	state.Flags |= CF_RETRANSMIT;
+	state.ResendSequenceFrom = min<int>(state.ResendSequenceFrom >= 0 ? state.ResendSequenceFrom : currentSequence,
+		max<int>(currentSequence - replayWindow, 0));
+	state.ResendConsistencyFrom = min<int>(state.ResendConsistencyFrom >= 0 ? state.ResendConsistencyFrom : currentConsistency,
+		max<int>(currentConsistency - replayWindow, 0));
+
+	Net_SetLateJoinSyncPending(client, max<int>(currentSequence - 1, 0), max<int>(currentConsistency - 1, 0),
+		reason != nullptr ? reason : "runtime-bootstrap");
+	DebugTrace::Infof("net", "runtime bootstrap begin client=%d room=%u gametic=%d clienttic=%d replay-seq=%d replay-con=%d reason=%s",
+		client, unsigned(CurrentRoomID), gametic, ClientTic, state.ResendSequenceFrom, state.ResendConsistencyFrom,
+		reason != nullptr ? reason : "runtime-bootstrap");
+}
+
+void Net_RequestRuntimeResync(int client, const char* reason)
+{
+	if (!I_IsLocalHCDEServiceAuthority())
+		return;
+	if (client < 0 || client >= MAXPLAYERS || I_IsHCDEServiceAuthoritySlot(client))
+		return;
+	if (!NetworkClients.InGame(client))
+		return;
+
+	auto& state = ClientStates[client];
+	const int currentSequence = max<int>(ClientTic / max<int>(TicDup, 1), 0);
+	const int currentConsistency = max<int>(CurrentConsistency, 0);
+	state.Flags |= CF_RETRANSMIT;
+	state.ResendSequenceFrom = max<int>(state.SequenceAck + 1, 0);
+	state.ResendConsistencyFrom = max<int>(state.ConsistencyAck + 1, 0);
+	Net_SetLateJoinSyncPending(client, max<int>(currentSequence - 1, 0), max<int>(currentConsistency - 1, 0),
+		reason != nullptr ? reason : "runtime-resync");
+	players[client].waiting = true;
+	Net_ResetAuthorityWaitWatchdog("runtime-resync");
+	DebugTrace::Warningf("net", "runtime resync requested client=%d room=%u gametic=%d clienttic=%d ack-seq=%d ack-con=%d reason=%s",
+		client, unsigned(CurrentRoomID), gametic, ClientTic, state.SequenceAck, state.ConsistencyAck,
+		reason != nullptr ? reason : "runtime-resync");
 }
 
 static int Net_GetCutsceneReadyHost()
@@ -4753,7 +4813,7 @@ static void Net_ClearStaleWaitingFlags()
 	HCDESetAuthorityWaiting(false);
 }
 
-static void Net_ResetAuthorityWaitWatchdog(const char* reason, bool trace = true)
+static void Net_ResetAuthorityWaitWatchdog(const char* reason, bool trace)
 {
 	LastGameUpdate = EnterTic;
 	AuthorityWaitGraceUntil = EnterTic + MAXSENDTICS * TicDup * 3;
@@ -5123,8 +5183,17 @@ static void ClientConnecting(int client)
 	if (!I_IsServerReservedSlot(client))
 	{
 		playeringame[client] = true;
-		if (players[client].playerstate == PST_GONE || players[client].playerstate == PST_DEAD)
+		if (players[client].playerstate == PST_GONE || players[client].playerstate == PST_DEAD
+			|| players[client].mo == nullptr)
+		{
+			// Reconnect can reuse a slot whose playerstate still says PST_LIVE
+			// even though disconnect cleanup already detached or destroyed the
+			// pawn. Mark it for the normal reborn path whenever the pawn is
+			// missing; otherwise the next P_PlayerThink sees playeringame=true
+			// with players[client].mo == null and aborts the server with
+			// "No player N start" before the setup handshake can finish.
 			SET_PLAYER_STATE(&players[client], client, PST_ENTER, "runtime_connect_admitted");
+		}
 	}
 
 	Net_SetLateJoinSyncPending(client, max<int>(currentSequence - 1, 0), max<int>(currentConsistency - 1, 0), "runtime-connect");
@@ -5167,7 +5236,8 @@ static void Net_EnsureRuntimeClientSlot(int client, int sourceClient)
 
 	const bool reserved = I_IsServerReservedSlot(client);
 	playeringame[client] = !reserved;
-	if (!reserved && !wasKnown && (players[client].playerstate == PST_GONE || players[client].playerstate == PST_DEAD))
+	if (!reserved && !wasKnown && (players[client].playerstate == PST_GONE || players[client].playerstate == PST_DEAD
+		|| players[client].mo == nullptr))
 	{
 		SET_PLAYER_STATE(&players[client], client, PST_ENTER, "runtime_slot_activated");
 	}
@@ -5200,6 +5270,7 @@ void Net_ResetClientState(int clientNum)
 	state.AverageLatency = 0u;
 	memset(state.SentTime, 0, sizeof(state.SentTime));
 	memset(state.RecvTime, 0, sizeof(state.RecvTime));
+	state.LastPacketTimeMS = 0u;
 
 	state.Flags = 0;
 	state.StabilityBuffer = 0u;
@@ -5240,6 +5311,20 @@ static void DisconnectClient(int clientNum)
 		return;
 	}
 
+	// Idempotency guard: the teardown below removes the slot from NetworkClients,
+	// so a second call for the same slot has nothing to do. This matters because
+	// quitter teardown can be re-driven for an already-gone client: the authority
+	// advertises a leave through NCMD_QUITTERS (both the native server-snapshot
+	// path in d_net_snapshot_part2.inl and the legacy quitters packet above) and
+	// that broadcast can be retransmitted or arrive in more than one snapshot, and
+	// separate quit paths (an exit packet vs a replay-strike eviction) can race.
+	// Without this guard each re-delivery re-arms PST_GONE, and G_DoPlayerPop then
+	// reprints "<player> left the game" every tic -- the disconnect log spam seen
+	// on late-join/reconnect. Callers that legitimately tear a slot down always do
+	// so while it is still in NetworkClients, so this only short-circuits re-entry.
+	if (!NetworkClients.InGame(clientNum))
+		return;
+
 	const auto& state = ClientStates[clientNum];
 	Printf(PRINT_HIGH, "NetGame:: Disconnecting client %d '%s' at gametic=%d clienttic=%d room=%u map=%s seq=%d ack=%d consistency=%d remoteConsistency=%d\n",
 		clientNum, players[clientNum].userinfo.GetName(), gametic, ClientTic, unsigned(CurrentRoomID),
@@ -5266,7 +5351,6 @@ static void DisconnectClient(int clientNum)
 	players[clientNum].settings_controller = false;
 	I_ClearClient(clientNum);
 	Net_ResetClientState(clientNum);
-	// Capture the pawn leaving in the next world tick.
 	SET_PLAYER_STATE(&players[clientNum], clientNum, PST_GONE, "Net_DisconnectClient");
 }
 
@@ -5297,6 +5381,16 @@ static int HCDESelectNextServiceAuthoritySlot(int leavingAuthority)
 		if (client != leavingAuthority)
 			return client;
 	}
+
+	// If nobody else can take over, keep the reserved dedicated-server slot as
+	// authority instead of re-asserting the departing client. Returning the
+	// leaving client here leaves the authority state pointed at a dead slot,
+	// which is exactly what a quick disconnect/reconnect on localhost can
+	// trip: the next reconnect sees a stale authority identity and the session
+	// tears itself down. Dedicated servers always have a transport-only server
+	// slot available, so prefer that stable anchor.
+	if (I_UsesDedicatedServerSlot())
+		return I_GetReservedServerSlot();
 
 	return leavingAuthority;
 }
@@ -5491,6 +5585,51 @@ static void CheckLevelStart(int client, int delayTics)
 			gametic = serverGametic;
 		}
 
+		// Late-join seat: a fresh (re)join adopts the authority's *current*
+		// gametic, which on a long-running session is thousands of tics ahead of
+		// this client's freshly-reset local counters (ClientTic and the per-peer
+		// CurrentSequence all start near zero after JoinGame). This is the exact
+		// opposite of the normal in-session map change guarded above -- there
+		// ClientTic has legitimately run AHEAD of gametic and must not be rewound;
+		// here ClientTic/CurrentSequence are far BEHIND the seated gametic.
+		//
+		// Leaving them behind makes the non-authority world budget
+		//   availableTics = (lowestSequence - gametic/TicDup) + 1
+		// permanently negative (lowestSequence stays at the stale ~0 sequence
+		// while gametic/TicDup is huge), so TryRunTics runs zero world tics and
+		// the joiner freezes on a single rendered frame at the authority's
+		// gametic even though snapshots keep arriving. Fast-forward the local
+		// command/sequence anchors up to the seated gametic so the world loop can
+		// advance. Outbound commands then continue from the sequence the
+		// authority's late-join replay window already expects, because the server
+		// seeds that target from its own ClientTic/gametic (see ClientConnecting),
+		// not from zero. max() guarantees we only ever move these anchors forward,
+		// so a client that is merely a tic or two behind is nudged to catch up and
+		// a client that is at/ahead of gametic is left untouched.
+		if (I_UsesDedicatedServerSlot() && !I_IsLocalHCDEServiceAuthority()
+			&& gametic > ClientTic)
+		{
+			const int seatTicDup = max<int>(TicDup, 1);
+			const int seatSequence = gametic / seatTicDup;
+			ClientTic = gametic;
+			if (consoleplayer >= 0 && consoleplayer < MAXPLAYERS)
+			{
+				auto& seatState = ClientStates[consoleplayer];
+				seatState.CurrentSequence = max<int>(seatState.CurrentSequence, seatSequence);
+				seatState.SequenceAck = max<int>(seatState.SequenceAck, seatSequence);
+				seatState.AppliedSequence = max<int>(seatState.AppliedSequence, seatSequence);
+			}
+			// Prediction history built against the pre-seat ClientTic is now stale
+			// relative to the jumped clock; drop it so the first post-seat frame
+			// re-predicts from the authoritative snapshot instead of replaying
+			// commands that belong to a different tic range.
+			P_ClearPredictionData();
+			DebugTrace::Markf("net.levelstart",
+				"late-join seat fast-forward gametic=%d clienttic=%d seat-seq=%d console=%d room=%u map=%s",
+				gametic, ClientTic, seatSequence, consoleplayer, unsigned(CurrentRoomID),
+				primaryLevel != nullptr ? primaryLevel->MapName.GetChars() : "<none>");
+		}
+
 		// Intermission/cutscene lets ClientTic run ahead while gametic is gated.
 		// Weapons only advance on authoritative gametic tics (not during movement
 		// prediction), so an inflated ClientTic - gametic gap reads as gun delay
@@ -5598,6 +5737,7 @@ static void GetPackets()
 	{
 		const int clientNum =  RemoteClient;
 		auto& clientState = ClientStates[clientNum];
+		clientState.LastPacketTimeMS = I_msTime();
 		Net_BlackboxRecordPacket(1, clientNum, 0u, 0u, 0u, uint8_t(CurrentRoomID), NetBuffer, NetBufferLength);
 		Net_TraceIncomingPacket(clientNum, NetBuffer[0], NetBufferLength);
 
@@ -6054,6 +6194,52 @@ static void CheckConsistencies()
 		ClientStates[client].LastVerifiedConsistency = ClientStates[client].CurrentNetConsistency;
 }
 
+static void CheckDeadClients()
+{
+	if (!netgame || demoplayback || !I_IsLocalHCDEServiceAuthority())
+		return;
+
+	const int timeoutMS = *sv_net_dead_client_timeout_ms;
+	if (timeoutMS <= 0)
+		return;
+
+	const uint64_t now = I_msTime();
+	TArray<int> timedOutClients = {};
+	for (auto client : NetworkClients)
+	{
+		if (client < 0 || client >= MAXPLAYERS)
+			continue;
+		if (I_IsHCDEServiceAuthoritySlot(client) || I_IsServerReservedSlot(client))
+			continue;
+		if (!playeringame[client] || I_IsHCDEClientSetupInProgress(client))
+			continue;
+
+		auto& state = ClientStates[client];
+		if (state.LastPacketTimeMS == 0u)
+		{
+			state.LastPacketTimeMS = now;
+			continue;
+		}
+
+		if (now - state.LastPacketTimeMS >= static_cast<uint64_t>(timeoutMS))
+			timedOutClients.Push(client);
+	}
+
+	for (auto client : timedOutClients)
+	{
+		const auto& state = ClientStates[client];
+		Printf(PRINT_HIGH, "NetGame:: Client %d '%s' timed out after %d ms with no packets at gametic=%d clienttic=%d room=%u\n",
+			client, players[client].userinfo.GetName(), timeoutMS, gametic, ClientTic, unsigned(CurrentRoomID));
+		DebugTrace::Warningf("net", "dead-client timeout client=%d name=%s timeout-ms=%d last-packet-ms=%llu now-ms=%llu gametic=%d clienttic=%d room=%u seq=%d ack=%d",
+			client, players[client].userinfo.GetName(), timeoutMS,
+			static_cast<unsigned long long>(state.LastPacketTimeMS),
+			static_cast<unsigned long long>(now),
+			gametic, ClientTic, unsigned(CurrentRoomID),
+			state.CurrentSequence, state.SequenceAck);
+		DisconnectClient(client);
+	}
+}
+
 //==========================================================================
 //
 // FRandom :: StaticSumSeeds
@@ -6353,10 +6539,36 @@ static bool Net_UpdateStatus()
 		}
 		else if (ClientStates[authoritySlot].Flags & CF_UPDATED)
 		{
-			// Check if the host is reporting that we're too far ahead of them.
+			// Check if we are running too far ahead of the authority's confirmed
+			// world clock and need to bleed prediction lead back down.
 			updated = true;
-			lowestDiff = CommandsAhead;
 			ClientStates[authoritySlot].Flags &= ~CF_UPDATED;
+
+			if (I_UsesDedicatedServerSlot() && !I_IsLocalHCDEServiceAuthority())
+			{
+				// CommandsAhead is fed from the server snapshot's stability field,
+				// but the wall-clock authority writes only its own global
+				// StabilityBuffer there (pinned near 1), NOT this client's real
+				// command lead -- so the legacy CommandsAhead signal can never reel
+				// in a self-inflated lead. A dedicated client knows both clocks
+				// locally, so measure the lead directly: ClientTic is the input
+				// clock and gametic is the authority-confirmed world clock, and both
+				// advance at wall-clock rate once steady, so any gap between them is
+				// frozen unless we actively close it. After a runtime rejoin the seat
+				// plus the synchronous level-load stall bursts ClientTic up toward the
+				// BACKUPTICS/2 command ceiling, and that ~60-tic gap then sticks --
+				// which renders the server-followed weapon psprite ~2s stale and
+				// bloats the reconcile window into visible jitter. Drive the skip
+				// throttle from the measured excess over the adaptive lead target so
+				// the surplus is bled off down to the intended 1-8 tic lead.
+				const int ticDup = max<int>(TicDup, 1);
+				const int desiredLead = clamp<int>(HCDEMovementGetAdaptiveDesiredLead(int(*cl_net_prediction_lead)), 0, 8);
+				lowestDiff = (ClientTic / ticDup - gametic / ticDup) - desiredLead;
+			}
+			else
+			{
+				lowestDiff = CommandsAhead;
+			}
 		}
 	}
 
@@ -6375,7 +6587,16 @@ static bool Net_UpdateStatus()
 				{
 					SkipCommandTimer = 0;
 					if (SkipCommandAmount <= 0)
-						SkipCommandAmount = lowestDiff * TicDup;
+					{
+						// Bleed the excess lead gradually. Capping each skip batch to a
+						// few tics spreads a one-time rejoin correction (which can be
+						// ~60 tics) across a couple of seconds of barely-perceptible
+						// input pacing instead of a single ~2s input freeze, while the
+						// SkipCommandTimer re-arm above re-measures every half second
+						// until the lead settles at the target.
+						const int maxSkipBatch = max<int>(TICRATE / 8, 1);
+						SkipCommandAmount = min<int>(lowestDiff, maxSkipBatch) * TicDup;
+					}
 				}
 			}
 		}
@@ -6392,6 +6613,7 @@ void NetUpdate(int tics)
 {
 	GetPackets();
 	HandleIncomingConnectionMaintenance();
+	CheckDeadClients();
 	if (tics <= 0)
 		return;
 
@@ -7024,6 +7246,20 @@ void NetUpdate(int tics)
 					}
 				}
 			}
+		}
+	}
+
+	if (localAuthority && quitters > 0)
+	{
+		// ClientQuit queues non-authority leaves as CF_QUIT so the authority can
+		// advertise them once in the next gameplay packet. With only one playable
+		// client there may be nobody left to receive that broadcast, but the slot
+		// still has to be torn down locally before it can be reused by a reconnect.
+		for (int i = 0; i < quitters; ++i)
+		{
+			const int quitter = quitNums[i];
+			if (NetworkClients.InGame(quitter))
+				DisconnectClient(quitter);
 		}
 	}
 
