@@ -45,9 +45,7 @@
 #include "v_video.h"
 #include "version.h"
 
-#ifdef HAVE_GLES2
-#include "gles_framebuffer.h"
-#endif
+#include "hcde_renderer_fallback.h"
 
 #ifdef HAVE_VULKAN
 #include "vulkan/system/vk_renderdevice.h"
@@ -79,11 +77,6 @@ CUSTOM_CVAR(Bool, gl_debug, false, CVAR_ARCHIVE | CVAR_GLOBALCONFIG | CVAR_NOINI
 {
 	Printf("This won't take effect until " GAMENAME " is restarted.\n");
 }
-CUSTOM_CVAR(Bool, gl_es, false, CVAR_ARCHIVE | CVAR_GLOBALCONFIG | CVAR_NOINITCALL)
-{
-	Printf("This won't take effect until " GAMENAME " is restarted.\n");
-}
-
 CUSTOM_CVAR(String, vid_sdl_render_driver, "", CVAR_ARCHIVE | CVAR_GLOBALCONFIG | CVAR_NOINITCALL)
 {
 	Printf("This won't take effect until " GAMENAME " is restarted.\n");
@@ -200,13 +193,7 @@ namespace Priv
 		if (gl_debug)
 			SDL_GL_SetAttribute(SDL_GL_CONTEXT_FLAGS, SDL_GL_CONTEXT_DEBUG_FLAG);
 
-		if (gl_es)
-		{
-			SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_ES);
-			SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 2);
-			SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 0);
-		}
-		else if (glver[0] > 2)
+		if (glver[0] > 2)
 		{
 			SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
 			SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, glver[0]);
@@ -321,6 +308,8 @@ bool I_CreateVulkanSurface(VkInstance instance, VkSurfaceKHR *surface)
 
 SDLVideo::SDLVideo ()
 {
+	HCDE_MigrateRendererCvars();
+
 	if (SDL_Init(SDL_INIT_VIDEO) < 0)
 	{
 		fprintf(stderr, "Video initialization failed: %s\n", SDL_GetError());
@@ -373,10 +362,14 @@ void SDLVideo::DumpAdapters()
 
 DFrameBuffer *SDLVideo::CreateFrameBuffer ()
 {
+	HCDE_MigrateRendererCvars();
 	SystemBaseFrameBuffer *fb = nullptr;
 
 	// first try Vulkan, if that fails OpenGL
 #ifdef HAVE_VULKAN
+	if (vid_preferbackend != BACKEND_VULKAN)
+		Priv::vulkanEnabled = false;
+
 	if (Priv::vulkanEnabled)
 	{
 		try
@@ -408,6 +401,7 @@ DFrameBuffer *SDLVideo::CreateFrameBuffer ()
 			}
 
 			Printf(TEXTCOLOR_RED "Initialization of Vulkan failed: %s\n", error.what());
+			Printf("Falling back to desktop OpenGL.\n");
 			Priv::vulkanEnabled = false;
 		}
 	}
@@ -415,12 +409,7 @@ DFrameBuffer *SDLVideo::CreateFrameBuffer ()
 
 	if (fb == nullptr)
 	{
-#ifdef HAVE_GLES2
-		if (vid_preferbackend != BACKEND_OPENGL)
-			fb = new OpenGLESRenderer::OpenGLFrameBuffer(0, vid_fullscreen);
-		else
-#endif
-			fb = new OpenGLRenderer::OpenGLFrameBuffer(0, vid_fullscreen);
+		fb = new OpenGLRenderer::OpenGLFrameBuffer(0, vid_fullscreen);
 	}
 
 	return fb;
@@ -572,6 +561,7 @@ SystemGLFrameBuffer::SystemGLFrameBuffer(void *hMonitor, bool fullscreen)
 	}
 	if (Priv::window == nullptr)
 	{
+		HCDE_ActivateSoftwareRendererFallback("desktop OpenGL context creation failed");
 		I_FatalError("Could not create OpenGL window:\n%s\n",SDL_GetError());
 	}
 }

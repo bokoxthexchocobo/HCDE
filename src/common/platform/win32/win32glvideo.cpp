@@ -43,8 +43,10 @@
 #include "win32glvideo.h"
 
 #include "gl_framebuffer.h"
-#ifdef HAVE_GLES2
-#include "gles_framebuffer.h"
+#include "hcde_renderer_fallback.h"
+#ifdef HAVE_VULKAN
+#include "vulkan/system/vk_renderdevice.h"
+#include "win32vulkanvideo.h"
 #endif
 
 extern "C" {
@@ -96,22 +98,40 @@ Win32GLVideo::Win32GLVideo()
 
 DFrameBuffer *Win32GLVideo::CreateFrameBuffer()
 {
-	SystemGLFrameBuffer *fb;
+	HCDE_MigrateRendererCvars();
 
-#ifdef HAVE_GLES2
-	if (vid_preferbackend == BACKEND_OPENGL)
+#ifdef HAVE_VULKAN
+	if (vid_preferbackend == BACKEND_VULKAN)
 	{
-		// Desktop OpenGL is currently known to black-screen during startup on
-		// Windows, while the GLES renderer on the same WGL surface works. Use
-		// GLES as the compatibility path even if a stale config requested GL.
-		Printf("Desktop OpenGL renderer requested; using OpenGLES 2.0 compatibility renderer instead.\n");
+		try
+		{
+			unsigned int count = 64;
+			const char *names[64];
+			if (!I_GetVulkanPlatformExtensions(&count, names))
+				VulkanError("I_GetVulkanPlatformExtensions failed");
+
+			VulkanInstanceBuilder builder;
+			builder.DebugLayer(vk_debug);
+			for (unsigned int i = 0; i < count; i++)
+				builder.RequireExtension(names[i]);
+			auto instance = builder.Create();
+
+			VkSurfaceKHR surfacehandle = nullptr;
+			if (!I_CreateVulkanSurface(instance->Instance, &surfacehandle))
+				VulkanError("I_CreateVulkanSurface failed");
+
+			auto surface = std::make_shared<VulkanSurface>(instance, surfacehandle);
+			return new VulkanRenderDevice(m_hMonitor, vid_fullscreen, surface);
+		}
+		catch (const CEngineError &error)
+		{
+			Printf(TEXTCOLOR_RED "Vulkan framebuffer creation failed: %s\n", error.what());
+			Printf("Falling back to desktop OpenGL.\n");
+		}
 	}
-	fb = new OpenGLESRenderer::OpenGLFrameBuffer(m_hMonitor, vid_fullscreen);
-#else
-	fb = new OpenGLRenderer::OpenGLFrameBuffer(m_hMonitor, vid_fullscreen);
 #endif
 
-	return fb;
+	return new OpenGLRenderer::OpenGLFrameBuffer(m_hMonitor, vid_fullscreen);
 }
 
 //==========================================================================

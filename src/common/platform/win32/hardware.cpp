@@ -34,9 +34,7 @@
 #include "version.h"
 #include "printf.h"
 #include "win32glvideo.h"
-#ifdef HAVE_VULKAN
-#include "win32vulkanvideo.h"
-#endif
+#include "hcde_renderer_fallback.h"
 #include "engineerrors.h"
 #include "i_system.h"
 #include "i_mainwindow.h"
@@ -78,27 +76,12 @@ void I_InitGraphics ()
 		SetFocus(mainwindow.GetHandle());
 	}
 
-#ifdef HAVE_VULKAN
-	if (vid_preferbackend == BACKEND_VULKAN)
-	{
-		// first try Vulkan, if that fails OpenGL
-		try
-		{
-			Video = new Win32VulkanVideo();
-		}
-		catch (CVulkanError &error)
-		{
-			Printf(TEXTCOLOR_RED "Initialization of Vulkan failed: %s\n", error.what());
-			Video = new Win32GLVideo();
-		}
-	}
-	else
-#endif
-	{
-		Video = new Win32GLVideo();
-	}
+	HCDE_MigrateRendererCvars();
 
-	// we somehow STILL don't have a display!!
+	// Win32GLVideo::CreateFrameBuffer tries Vulkan first when requested,
+	// then falls back to desktop OpenGL automatically.
+	Video = new Win32GLVideo();
+
 	if (Video == NULL)
 		I_FatalError ("Failed to initialize display");
 

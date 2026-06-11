@@ -100,7 +100,7 @@ namespace
 		return 128;
 	}
 
-	int ShadowMapBudgetCapForQuality(int quality, int backend)
+	int ShadowMapBudgetCapForQuality(int quality)
 	{
 		int cap = 64;
 		if (quality >= 4096) cap = 1024;
@@ -108,11 +108,6 @@ namespace
 		else if (quality >= 1024) cap = 512;
 		else if (quality >= 512) cap = 256;
 		else if (quality >= 256) cap = 128;
-
-		// GLES targets are usually tighter on fill/bandwidth; keep a conservative
-		// cap unless users explicitly disable auto-fallback.
-		if (backend == BACKEND_OPENGLES)
-			cap = std::min(cap, 256);
 
 		return cap;
 	}
@@ -197,8 +192,6 @@ namespace
 				textureLimit = 4096;
 
 			qualityCap = ShadowMapQualityCapForTextureLimit(textureLimit);
-			if (screen->Backend() == BACKEND_OPENGLES && qualityCap > 1024)
-				qualityCap = 1024;
 		}
 
 		if (levelInfo != nullptr && levelInfo->HcdeShadowQualityCap > 0)
@@ -212,7 +205,7 @@ namespace
 		int budgetCap = 1024;
 		if (hcde_shadow_autofallback)
 		{
-			budgetCap = ShadowMapBudgetCapForQuality(gl_shadowmap_quality, screen->Backend());
+			budgetCap = ShadowMapBudgetCapForQuality(gl_shadowmap_quality);
 		}
 
 		if (levelInfo != nullptr && levelInfo->HcdeShadowMaxLightsCap >= 0)
@@ -463,7 +456,6 @@ sector_t* RenderViewpoint(FRenderViewpoint& mainvp, AActor* camera, IntRect* bou
 		auto cm = di->SetFullbrightFlags(mainview ? vp.camera->player : nullptr);
 		float flash = 1.f;
 
-		// Only used by the GLES2 renderer
 		RenderState.SetSpecialColormap(cm, flash);
 
 		di->Viewpoint.FieldOfView = DAngle::fromDeg(fov);	// Set the real FOV for the current scene (it's not necessarily the same as the global setting in r_viewpoint)

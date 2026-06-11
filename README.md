@@ -76,7 +76,7 @@ python tests/netcode_step12/netcode_step12_stress.py --dry-run
 ## Recent updates
 
 - **Netcode hardening:** late-join and rejoin handshake fixes, dedicated-server join setup no longer drops HCDE clients during pregame, co-op monster authority replication (#49), armor replication on dedicated clients (#51), and a crash fix when psprite desync logging fired on player death (`net_echo_debug`).
-- **Windows desktop OpenGL:** auto-routes to OpenGL ES at startup so a stale `vid_preferbackend 0` config no longer black-screens after the splash. Vulkan stays the default Windows backend; residual cases tracked in [#31](https://github.com/bokoxthexchocobo/HCDE/issues/31).
+- **Renderer stack:** Vulkan is the default when supported, with automatic fallback to desktop OpenGL, then software rendering with the NanoBSP loader path (`hcde_nanobsp_loader`). The legacy OpenGL ES backend was removed.
 - **Single-player startup:** a real "HCDE is loading..." window during ZDL command-line resolution, IWAD/mod scanning, compat patching, and archive mounting.
 - **Invasion (`sv_gametype 4`):** starts cleanly from external launchers (`+set sv_gametype 4`); HCDE-styled wave announcements; operator guide in [`docs/HCDE_INVASION.md`](docs/HCDE_INVASION.md).
 - **Diagnostics:** `hcde_lag_hud` and `hcde_hud_debug` are decoupled — the perf/lag overlay is opt-in (`hcde_lag_hud 1`).

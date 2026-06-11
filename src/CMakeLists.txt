@@ -592,7 +592,6 @@ file( GLOB HEADER_FILES
 	common/thirdparty/utf8proc/*.h
 	common/rendering/*.h
 	common/rendering/gl_load/*.h
-	common/rendering/gles/*.h
 	common/rendering/hwrenderer/data/*.h
 	common/rendering/vulkan/*.h
 	common/rendering/vulkan/system/*.h
@@ -758,26 +757,6 @@ set (VULKAN_SOURCES
 	common/rendering/vulkan/textures/vk_texture.cpp
 	common/rendering/vulkan/textures/vk_framebuffer.cpp
 )
-
-if (HAVE_GLES2)
-	set (GLES_SOURCES
-		common/rendering/gles/gles_system.cpp
-		common/rendering/gles/gles_renderer.cpp
-		common/rendering/gles/gles_framebuffer.cpp
-		common/rendering/gles/gles_renderstate.cpp
-		common/rendering/gles/gles_renderbuffers.cpp
-		common/rendering/gles/gles_postprocess.cpp
-		common/rendering/gles/gles_postprocessstate.cpp
-		common/rendering/gles/gles_buffers.cpp
-		common/rendering/gles/gles_hwtexture.cpp
-		common/rendering/gles/gles_shader.cpp
-		common/rendering/gles/gles_shaderprogram.cpp
-		common/rendering/gles/gles_samplers.cpp
-		common/rendering/gles/glad/src/glad.c
-	)
-
-	list (APPEND FASTMATH_SOURCES ${GLES_SOURCES})
-endif()
 
 if (HAVE_VULKAN)
 	list (APPEND FASTMATH_SOURCES ${VULKAN_SOURCES})
@@ -1152,6 +1131,7 @@ set (PCH_SOURCES
 
 	common/rendering/v_framebuffer.cpp
 	common/rendering/v_video.cpp
+	common/rendering/hcde_renderer_fallback.cpp
 	common/rendering/r_thread.cpp
 	common/rendering/r_videoscale.cpp
 	common/rendering/stb_include.cpp
@@ -1393,9 +1373,6 @@ include_directories(
 	common/rendering/hwrenderer/data
 	common/rendering/gl_load
 	common/rendering/gl
-	common/rendering/gles
-	common/rendering/gles/glad/include
-	common/rendering/gles/Mali_OpenGL_ES_Emulator/include
 	common/scripting/vm
 	common/scripting/jit
 	common/scripting/core
@@ -1698,7 +1675,6 @@ source_group("Common\\Rendering\\Hardware Renderer\\Data" REGULAR_EXPRESSION "^$
 source_group("Common\\Rendering\\Hardware Renderer\\Postprocessing" REGULAR_EXPRESSION "^${CMAKE_CURRENT_SOURCE_DIR}/common/rendering/hwrenderer/postprocessing/.+")
 source_group("Common\\Rendering\\OpenGL Loader" REGULAR_EXPRESSION "^${CMAKE_CURRENT_SOURCE_DIR}/common/rendering/gl_load/.+")
 source_group("Common\\Rendering\\OpenGL Backend" REGULAR_EXPRESSION "^${CMAKE_CURRENT_SOURCE_DIR}/common/rendering/gl/.+")
-source_group("Common\\Rendering\\GLES Backend" REGULAR_EXPRESSION "^${CMAKE_CURRENT_SOURCE_DIR}/common/rendering/gles/.+")
 source_group("Common\\Rendering\\Vulkan Renderer\\System" REGULAR_EXPRESSION "^${CMAKE_CURRENT_SOURCE_DIR}/common/rendering/vulkan/system/.+")
 source_group("Common\\Rendering\\Vulkan Renderer\\Renderer" REGULAR_EXPRESSION "^${CMAKE_CURRENT_SOURCE_DIR}/common/rendering/vulkan/renderer/.+")
 source_group("Common\\Rendering\\Vulkan Renderer\\Shaders" REGULAR_EXPRESSION "^${CMAKE_CURRENT_SOURCE_DIR}/common/rendering/vulkan/shaders/.+")

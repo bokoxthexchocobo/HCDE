@@ -63,24 +63,17 @@ SettingsPage::SettingsPage(LauncherWindow* launcher, const FStartupSelectionInfo
 	BackendLabel = new TextLabel(this);
 	VulkanCheckbox = new CheckboxLabel(this);
 	OpenGLCheckbox = new CheckboxLabel(this);
-	GLESCheckbox = new CheckboxLabel(this);
-
 	OpenGLCheckbox->SetRadioStyle(true);
 	VulkanCheckbox->SetRadioStyle(true);
-	GLESCheckbox->SetRadioStyle(true);
-	OpenGLCheckbox->FuncChanged = [this](bool on) { if (on) { VulkanCheckbox->SetChecked(false); GLESCheckbox->SetChecked(false); }};
-	VulkanCheckbox->FuncChanged = [this](bool on) { if (on) { OpenGLCheckbox->SetChecked(false); GLESCheckbox->SetChecked(false); }};
-	GLESCheckbox->FuncChanged = [this](bool on) { if (on) { VulkanCheckbox->SetChecked(false); OpenGLCheckbox->SetChecked(false); }};
+	OpenGLCheckbox->FuncChanged = [this](bool on) { if (on) VulkanCheckbox->SetChecked(false); };
+	VulkanCheckbox->FuncChanged = [this](bool on) { if (on) OpenGLCheckbox->SetChecked(false); };
 	switch (info.DefaultBackend)
 	{
 	case 0:
 		OpenGLCheckbox->SetChecked(true);
 		break;
-	case 1:
+	default:
 		VulkanCheckbox->SetChecked(true);
-		break;
-	case 2:
-		GLESCheckbox->SetChecked(true);
 		break;
 	}
 #endif
@@ -169,11 +162,7 @@ void SettingsPage::SetValues(FStartupSelectionInfo& info) const
 	if (flBehaviour != -1) info.DefaultFileLoadBehaviour = flBehaviour;
 
 #ifdef RENDER_BACKENDS
-	int v = 1;
-	if (OpenGLCheckbox->GetChecked()) v = 0;
-	else if (VulkanCheckbox->GetChecked()) v = 1;
-	else if (GLESCheckbox->GetChecked()) v = 2;
-	info.DefaultBackend = v;
+	info.DefaultBackend = OpenGLCheckbox->GetChecked() ? 0 : 1;
 #endif
 }
 
@@ -204,7 +193,6 @@ void SettingsPage::UpdateLanguage()
 	BackendLabel->SetText(GStrings.GetString("PICKER_PREFERBACKEND"));
 	VulkanCheckbox->SetText(GStrings.GetString("OPTVAL_VULKAN"));
 	OpenGLCheckbox->SetText(GStrings.GetString("OPTVAL_OPENGL"));
-	GLESCheckbox->SetText(GStrings.GetString("OPTVAL_OPENGLES"));
 #endif
 }
 
@@ -251,9 +239,6 @@ void SettingsPage::OnGeometryChanged()
 
 	OpenGLCheckbox->SetFrameGeometry(x, y, 190.0, OpenGLCheckbox->GetPreferredHeight());
 	y += OpenGLCheckbox->GetPreferredHeight();
-
-	GLESCheckbox->SetFrameGeometry(x, y, 190.0, GLESCheckbox->GetPreferredHeight());
-	y += GLESCheckbox->GetPreferredHeight();
 #endif
 	const double backendsBottom = y;
 

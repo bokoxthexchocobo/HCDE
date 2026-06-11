@@ -81,7 +81,7 @@ public:
 	void UpdatePalette() override;
 	int MaxShadowMapTextureSize() const override;
 	const char* DeviceName() const override;
-	int Backend() override { return 1; }
+	int Backend() override { return BACKEND_VULKAN; }
 	void SetTextureFilterMode() override;
 	void StartPrecaching() override;
 	void BeginFrame() override;

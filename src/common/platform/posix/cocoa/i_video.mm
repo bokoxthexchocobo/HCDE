@@ -41,9 +41,7 @@
 #include "v_video.h"
 #include "version.h"
 
-#ifdef HAVE_GLES2
-#include "gles_framebuffer.h"
-#endif
+#include "hcde_renderer_fallback.h"
 
 #ifdef HAVE_VULKAN
 #include "vulkan/system/vk_renderdevice.h"
@@ -364,6 +362,7 @@ class CocoaVideo : public IVideo
 public:
 	CocoaVideo()
 	{
+		HCDE_MigrateRendererCvars();
 		ms_isVulkanEnabled = vid_preferbackend == BACKEND_VULKAN && NSAppKitVersionNumber >= 1404; // NSAppKitVersionNumber10_11
 	}
 
@@ -377,6 +376,11 @@ public:
 
 	virtual DFrameBuffer* CreateFrameBuffer() override
 	{
+		HCDE_MigrateRendererCvars();
+#ifdef HAVE_VULKAN
+		if (vid_preferbackend != BACKEND_VULKAN)
+			ms_isVulkanEnabled = false;
+#endif
 		assert(ms_window == nil);
 		ms_window = CreateWindow(STYLE_MASK_WINDOWED);
 
@@ -454,12 +458,7 @@ public:
 
 		if (fb == nullptr)
 		{
-#ifdef HAVE_GLES2
-			if(vid_preferbackend != BACKEND_OPENGL)
-				fb = new OpenGLESRenderer::OpenGLFrameBuffer(0, vid_fullscreen);
-			else
-#endif
-				fb = new OpenGLRenderer::OpenGLFrameBuffer(0, vid_fullscreen);
+			fb = new OpenGLRenderer::OpenGLFrameBuffer(0, vid_fullscreen);
 		}
 
 		fb->SetWindow(ms_window);
