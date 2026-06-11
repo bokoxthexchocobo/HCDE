@@ -456,7 +456,6 @@ sector_t* RenderViewpoint(FRenderViewpoint& mainvp, AActor* camera, IntRect* bou
 		auto cm = di->SetFullbrightFlags(mainview ? vp.camera->player : nullptr);
 		float flash = 1.f;
 
-		// Only used by the GLES2 renderer
 		RenderState.SetSpecialColormap(cm, flash);
 
 		di->Viewpoint.FieldOfView = DAngle::fromDeg(fov);	// Set the real FOV for the current scene (it's not necessarily the same as the global setting in r_viewpoint)

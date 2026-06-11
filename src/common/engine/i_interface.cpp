@@ -16,6 +16,7 @@
 */
 
 #include "i_interface.h"
+#include "hcde_renderer_fallback.h"
 #include "st_start.h"
 #include "gamestate.h"
 #include "startupinfo.h"
@@ -118,6 +119,7 @@ FStartupSelectionInfo::FStartupSelectionInfo(const TArray<WadStuff>& wads, FArgs
 {
 	DefaultQueryIWAD = queryiwad;
 	DefaultLanguage = language;
+	HCDE_MigrateRendererCvars();
 	DefaultBackend = vid_preferbackend;
 	DefaultFullscreen = vid_fullscreen;
 

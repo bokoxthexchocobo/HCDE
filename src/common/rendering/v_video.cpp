@@ -39,6 +39,7 @@
 #include "v_video.h"
 #include "hcde_renderer_fallback.h"
 #include "engineerrors.h"
+#include "i_system.h"
 #include "v_text.h"
 #include "version.h"
 #include "vm.h"
@@ -459,7 +460,9 @@ void V_Init2()
 
 	I_InitGraphics();
 
-	Video->SetResolution();	// this only fails via exceptions.
+	if (!Video->SetResolution())
+		I_FatalError("Failed to initialize video (Vulkan, OpenGL, and software fallback all failed).");
+
 	Printf ("Resolution: %d x %d\n", SCREENWIDTH, SCREENHEIGHT);
 
 	// init these for the scaling menu
