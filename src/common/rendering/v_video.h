@@ -252,6 +252,9 @@ public:
 	// Report a game restart
 	void SetClearColor(int color);
 	virtual int Backend() { return 0; }
+	virtual bool SupportsHardwareShadowmaps() const { return false; }
+	virtual bool SupportsRayQueries() const { return false; }
+	virtual bool RaytracingActive() const { return false; }
 	virtual int MaxShadowMapTextureSize() const { return 0; }
 	virtual const char* DeviceName() const { return "Unknown"; }
 	virtual void AmbientOccludeScene(float m5) {}

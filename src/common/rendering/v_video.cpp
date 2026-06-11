@@ -41,6 +41,7 @@
 #include "engineerrors.h"
 #include "i_system.h"
 #include "v_text.h"
+#include "hw_k8vavoom_lighting.h"
 #include "version.h"
 #include "vm.h"
 #include "x86.h"
@@ -351,6 +352,12 @@ bool IVideo::SetResolution ()
 		if (candidate == nullptr)
 			return false;
 
+		// k8vavoom lighting primes backend state (ray-query / shadowmap
+		// capability probe) before the framebuffer initializes. screen must be
+		// live first because the prepare step and InitializeState query it.
+		screen = candidate;
+		HCDE_K8vavoomPrepareBeforeInitializeState(candidate);
+
 		try
 		{
 			candidate->InitializeState();
@@ -358,11 +365,11 @@ bool IVideo::SetResolution ()
 		catch (const CEngineError &error)
 		{
 			Printf(TEXTCOLOR_RED "%s initialization failed: %s\n", stage, error.what());
+			screen = nullptr;
 			delete candidate;
 			return false;
 		}
 
-		screen = candidate;
 		return true;
 	};
 

@@ -577,3 +577,23 @@ bool VulkanRenderDevice::RaytracingEnabled()
 {
 	return vk_raytrace && device->SupportsExtension(VK_KHR_RAY_QUERY_EXTENSION_NAME);
 }
+
+bool VulkanRenderDevice::SupportsHardwareShadowmaps() const
+{
+	// device is created in the framebuffer constructor, before InitializeState().
+	if (device == nullptr)
+		return false;
+	if (hwcaps != 0)
+		return (hwcaps & RFL_SHADER_STORAGE_BUFFER) != 0 && allowSSBO();
+	return allowSSBO();
+}
+
+bool VulkanRenderDevice::SupportsRayQueries() const
+{
+	return device->SupportsExtension(VK_KHR_RAY_QUERY_EXTENSION_NAME);
+}
+
+bool VulkanRenderDevice::RaytracingActive() const
+{
+	return vk_raytrace && SupportsRayQueries();
+}

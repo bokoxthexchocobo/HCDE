@@ -115,6 +115,9 @@ public:
 	void WaitForCommands(bool finish) override;
 
 	bool RaytracingEnabled();
+	bool SupportsHardwareShadowmaps() const override;
+	bool SupportsRayQueries() const override;
+	bool RaytracingActive() const override;
 
 private:
 	void RenderTextureView(FCanvasTexture* tex, std::function<void(IntRect &)> renderFunc) override;

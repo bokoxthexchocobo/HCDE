@@ -134,7 +134,7 @@ picture; the per-feature `docs/HCDE_*_AUDIT.md` files hold the detail.
 | #5 | DSDA rewind | Phases 1-2, 4-5 wired (default off). Phase 3 (client resync after restore) absent; projectiles/rails bypass lag comp; stale header comments. |
 | #15 | Invasion mode | Core mode complete and running on the live tic loop. Long high-actor LOD soak, mirror/projectile edge verification, and late-join replay test are open (the test references a missing CCMD). |
 | #24 | RCON | Real TCP sockets + nonce auth + `hcdercon` client ship. Command dispatch is limited to `ping`/`status`; admin commands (`kick`/`map`/`say`) from the design doc are not implemented; README overstates "admin commands". |
-| #17 | k8vavoom rendering | Phase-1 **default-off** preset that composes existing shadowmap/bloom/SSAO CVARs. No new renderer path; `hcde_k8vavoom_raylight_probe` is a placeholder. The issue's "as default with raytracing" goal is not met. |
+| #17 / #38 | k8vavoom rendering | Phase 1 preset + Phase 2 ray-style lighting: runtime Vulkan extension probe, `vk_raytrace` wiring for ray-query shadows, auto-profile on capable hardware (`hcde_k8vavoom_auto_profile`). |
 | #7 | Gyroscope input | Windows-only dynamic SDL2 sensor probe; Linux/macOS/mobile unplumbed; held/toggle bindings pending; default off. |
 | #9 | Nugget player feel | `r_crosshair_recoil`, `r_killfeed`, `snd_footsteps_surface` wired. `m_smooth_curve` applies to forward/strafe mouse but **not** the mouselook turn path. Default off. |
 | #8 | Doom Retro physics & feel | Only one playsim tweak (`compat_dr_crusher`) + presentation pain-flash smoothing landed. Liquid friction and the broader "physics & feel layer" remain (one-tweak-per-PR by design). |
