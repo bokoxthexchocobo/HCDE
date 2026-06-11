@@ -3644,7 +3644,7 @@ static FString ReadVerificationError(TArrayView<uint8_t> stream)
 			else
 				er.AppendFormat("\n* <? Unknown file ?> (hash %s)", crc.GetChars());
 		}
-		er.Append("\nEnsure every player copied the same build output folder (for example build\\RelWithDebInfo) with matching hcde.exe, hcdeserv.exe, and hcde.pk3.");
+		er.AppendFormat("%s", "\nEnsure every player copied the same build output folder (for example build\\RelWithDebInfo) with matching hcde.exe, hcdeserv.exe, and hcde.pk3.");
 		return er;
 	}
 	else if (stream[0] == FVerificationError::VE_FILE_ORDER)

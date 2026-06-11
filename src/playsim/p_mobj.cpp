@@ -8238,6 +8238,18 @@ AActor *P_SpawnPlayerMissile (AActor *source, double x, double y, double z,
 	{
 		return nullptr;
 	}
+
+	// HCDE co-op: on a dedicated client the authority owns player-fired
+	// projectiles and replicates them as visual mirrors. Spawning a second
+	// client-local copy here would double every plasma ball / rocket the local
+	// player fires, so skip the local spawn and let the mirror be the only
+	// instance. The aim/pitch resolution below is purely local and unused once
+	// we bail, so this early-out is safe.
+	if (Net_ShouldSuppressLocalPlayerMissile(source, type))
+	{
+		return nullptr;
+	}
+
 	aimflags &= ~ALF_IGNORENOAUTOAIM; // just to be safe.
 
 	static const double angdiff[3] = { -5.625, 5.625, 0 };
@@ -8318,6 +8330,12 @@ AActor *P_SpawnPlayerMissile (AActor *source, double x, double y, double z,
 	}
 	if (P_CheckMissileSpawn (MissileActor, source->radius))
 	{
+		// HCDE co-op: on the authority, register this player-fired projectile so
+		// it replicates to clients as a visual mirror (no-op off-authority, in
+		// invasion, or when replication is disabled - see the function's gate).
+		// Uses the dedicated player path so it cannot be confused with the
+		// monster registration path (which would skip client suppression).
+		Net_RegisterCoopReplicatedPlayerMissile(MissileActor, source);
 		return MissileActor;
 	}
 	return NULL;

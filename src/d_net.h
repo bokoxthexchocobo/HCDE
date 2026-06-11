@@ -240,6 +240,15 @@ bool Net_IsCoopAuthorityVisualActor(const AActor* actor);
 bool Net_IsCoopAuthorityVisualBlockingActor(const AActor* actor);
 void Net_RegisterInvasionReplicatedMissile(AActor* missile, const AActor* source);
 void Net_RegisterCoopReplicatedMissile(AActor* missile, const AActor* source);
+// Authority-side co-op replication for PLAYER-fired projectiles (plasma/rocket/
+// BFG, etc.). Separate from the monster path so the replicated set always matches
+// the client's local-spawn suppression set. Called only from P_SpawnPlayerMissile.
+void Net_RegisterCoopReplicatedPlayerMissile(AActor* missile, const AActor* source);
+// Returns true when a player-fired projectile should NOT be spawned locally on
+// this process because the authority owns it and replicates a visual mirror
+// (dedicated co-op client firing its own projectile weapon). See
+// cl_coop_mirror_own_projectiles / sv_coop_replicate_player_projectiles.
+bool Net_ShouldSuppressLocalPlayerMissile(const AActor* source, PClassActor* type);
 void Net_RecordInvasionActorAttack(AActor* attacker, AActor* target);
 void Net_RecordCoopActorAttack(AActor* attacker, AActor* target);
 int Net_GetCompatDuelLimit();

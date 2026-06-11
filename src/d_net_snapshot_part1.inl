@@ -5826,6 +5826,15 @@ void Net_RegisterCoopReplicatedMissile(AActor* missile, const AActor* source)
 		return;
 	}
 
+	// Monster-fired projectiles only. A player source has no registered actor
+	// ref, so the check below also rejects any player missile that reaches here
+	// via the shared monster registration path (Net_RegisterMonsterReplicatedMissile).
+	// Player missiles are handled exclusively by Net_RegisterCoopReplicatedPlayerMissile
+	// (called from P_SpawnPlayerMissile, the same site where the firing client
+	// suppresses its local copy). Keeping the two paths separate guarantees the
+	// authority's replicated set and the client's suppressed set stay identical -
+	// otherwise a player missile could be replicated here (with no matching client
+	// suppression) and double on the firing client.
 	const FHCDEReplicatedActorRef* sourceRef = Net_FindHCDEReplicatedActorByActor(source);
 	if (sourceRef == nullptr
 		|| sourceRef->Source != HREP_SOURCE_COOP
@@ -5840,6 +5849,73 @@ void Net_RegisterCoopReplicatedMissile(AActor* missile, const AActor* source)
 	const uint32_t projectileId = Net_AllocateHCDEModeActorId();
 	Net_RegisterHCDEReplicatedActor(projectileId, missile, HREP_ACTOR_PROJECTILE, HREP_SOURCE_COOP);
 	Net_RecordCoopProjectileSpawnEvent(projectileId, missile);
+}
+
+// Authority-side registration for PLAYER-fired projectiles (plasma/rocket/BFG,
+// etc.). Mirrors Net_RegisterCoopReplicatedMissile but, because a player pawn is
+// not a registered co-op actor, there is no source ref to validate and no monster
+// action-state to force. Gated on sv_coop_replicate_player_projectiles; when off,
+// nothing is replicated and the legacy client-local-simulation path stays in
+// effect. Only ever called from P_SpawnPlayerMissile - the exact site where the
+// firing client suppresses its local copy - so the replicated set and the
+// suppressed set are guaranteed to match.
+void Net_RegisterCoopReplicatedPlayerMissile(AActor* missile, const AActor* source)
+{
+	if (!sv_coop_replicate_player_projectiles
+		|| !I_IsLocalHCDEServiceAuthority()
+		|| !Net_ShouldRecordCoopMapSpawnIndex()
+		|| Net_IsInvasionModeEnabled()
+		|| gamestate != GS_LEVEL
+		|| primaryLevel == nullptr
+		|| missile == nullptr
+		|| source == nullptr
+		|| source->player == nullptr
+		|| (missile->ObjectFlags & OF_EuthanizeMe) != 0
+		|| !Net_IsInvasionReplicatedProjectile(missile)
+		|| Net_FindHCDEReplicatedActorByActor(missile) != nullptr)
+	{
+		return;
+	}
+
+	const uint32_t projectileId = Net_AllocateHCDEModeActorId();
+	Net_RegisterHCDEReplicatedActor(projectileId, missile, HREP_ACTOR_PROJECTILE, HREP_SOURCE_COOP);
+	Net_RecordCoopProjectileSpawnEvent(projectileId, missile);
+}
+
+// See d_net.h. Decides whether P_SpawnPlayerMissile should skip the client-local
+// spawn and defer to the authority's replicated projectile mirror.
+bool Net_ShouldSuppressLocalPlayerMissile(const AActor* source, PClassActor* type)
+{
+	if (!cl_coop_mirror_own_projectiles
+		|| source == nullptr
+		|| type == nullptr
+		|| source->player == nullptr
+		|| I_IsLocalHCDEServiceAuthority()   // authority owns the real spawn
+		|| !I_UsesDedicatedServerSlot()      // only when talking to a remote authority
+		|| Net_IsInvasionModeEnabled())      // invasion keeps its own projectile path
+	{
+		return false;
+	}
+	// Only the LOCAL view player's own weapon think runs on this client; remote
+	// players never spawn player missiles here, so this is implicitly scoped, but
+	// assert it explicitly so a future shared-sim change can't double-fire others.
+	if (consoleplayer < 0 || consoleplayer >= MAXPLAYERS
+		|| source->player != &players[consoleplayer])
+	{
+		return false;
+	}
+	AActor* def = GetDefaultByType(type);
+	if (def == nullptr)
+		return false;
+	// Mirror the authority's replication filter (Net_IsInvasionReplicatedProjectile)
+	// as closely as a pre-spawn class check allows, so the set suppressed here is
+	// exactly the set the authority replicates. A mismatch would either double a
+	// shot (replicated but not suppressed) or hide it (suppressed but not
+	// replicated). The default object carries the same flags a fresh instance
+	// would have before any runtime state change.
+	return (def->flags & MF_MISSILE) != 0
+		|| (def->BounceFlags & BOUNCE_MBF) != 0
+		|| Net_ClassDefaultsSuggestProjectile(type);
 }
 
 static bool HCDEAppendEmptyActorDeltasV2(uint8_t* output, size_t outputCapacity, size_t& cursor)

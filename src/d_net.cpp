@@ -324,6 +324,22 @@ CUSTOM_CVAR(Int, cl_debug_monster_proximity, 768, CVAR_ARCHIVE | CVAR_GLOBALCONF
 
 CVAR(Bool, net_coop_id_debug, false, CVAR_ARCHIVE | CVAR_GLOBALCONFIG);
 
+// HCDE co-op: replicate player-fired projectiles (plasma/rocket/BFG, etc.) from
+// the authority to clients as visual mirrors, exactly the way co-op monster
+// missiles are mirrored. Player weapons spawn their projectiles client-locally,
+// so without this each client simulates its own divergent copy; with it the
+// authority owns the projectile and the firing client suppresses its local copy
+// (cl_coop_mirror_own_projectiles) so the authoritative mirror is the only one.
+// Authority-side gate.
+CVAR(Bool, sv_coop_replicate_player_projectiles, true, CVAR_ARCHIVE | CVAR_GLOBALCONFIG);
+// Client-side companion to sv_coop_replicate_player_projectiles: when a dedicated
+// co-op client fires a projectile weapon, suppress the client-local projectile
+// and display the authority's replicated mirror instead (avoids doubled plasma
+// balls / rockets). Assumes a matched server build with replication enabled; if
+// the server is NOT replicating player projectiles this must be off or the
+// client's own shots become invisible.
+CVAR(Bool, cl_coop_mirror_own_projectiles, true, CVAR_ARCHIVE | CVAR_GLOBALCONFIG);
+
 // |blocking-mirror-count - server-active-monster-count| at which the soft-warn fires.
 CUSTOM_CVAR(Int, net_predict_softwarn_mirror_delta, 2, CVAR_ARCHIVE | CVAR_GLOBALCONFIG)
 {
