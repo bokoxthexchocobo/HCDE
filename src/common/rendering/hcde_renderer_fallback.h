@@ -21,8 +21,7 @@ void HCDE_MigrateRendererCvars();
 // Request desktop OpenGL instead of Vulkan for the next framebuffer creation.
 void HCDE_ForceDesktopOpenGLFallback(const char *reason);
 
-// Switch to the software scene drawer and enable the NanoBSP loader path.
-// Safe to call multiple times.
+// Switch to the software scene drawer. Safe to call multiple times.
 void HCDE_ActivateSoftwareRendererFallback(const char *reason);
 
 // True when the software scene drawer should be used instead of the HW path.

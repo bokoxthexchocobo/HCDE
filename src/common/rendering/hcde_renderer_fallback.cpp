@@ -23,7 +23,6 @@
 EXTERN_CVAR(Int, vid_rendermode)
 #endif
 EXTERN_CVAR(Int, vid_preferbackend)
-EXTERN_CVAR(Int, hcde_nanobsp_loader)
 
 void HCDE_MigrateRendererCvars()
 {
@@ -67,17 +66,11 @@ void HCDE_ActivateSoftwareRendererFallback(const char *reason)
 #ifndef NO_SWRENDERER
 	if (vid_rendermode != 1)
 	{
-		Printf(TEXTCOLOR_ORANGE "Falling back to software renderer (NanoBSP path): %s\n",
+		Printf(TEXTCOLOR_ORANGE "Falling back to software renderer: %s\n",
 			reason != nullptr ? reason : "hardware renderer unavailable");
 		vid_rendermode = 1; // truecolor software scene drawer
 	}
 #endif
-
-	if (hcde_nanobsp_loader == 0)
-	{
-		hcde_nanobsp_loader = 1;
-		Printf("Enabled hcde_nanobsp_loader for software renderer node building.\n");
-	}
 }
 
 CCMD(r_hcde_renderer_status)
@@ -93,7 +86,6 @@ CCMD(r_hcde_renderer_status)
 #else
 	Printf(PRINT_HIGH, "  vid_rendermode    = hardware (software renderer disabled at build time)\n");
 #endif
-	Printf(PRINT_HIGH, "  hcde_nanobsp_loader = %d\n", *hcde_nanobsp_loader);
 	if (screen != nullptr)
 	{
 		Printf(PRINT_HIGH, "  active backend    = %d\n", screen->Backend());

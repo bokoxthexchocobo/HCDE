@@ -590,6 +590,11 @@ bool VulkanRenderDevice::SupportsHardwareShadowmaps() const
 
 bool VulkanRenderDevice::SupportsRayQueries() const
 {
+	// Reachable before InitializeState() via the k8vavoom raylight prepare path,
+	// so guard device like SupportsHardwareShadowmaps() does. device is created
+	// in the framebuffer constructor, but stay defensive against earlier calls.
+	if (device == nullptr)
+		return false;
 	return device->SupportsExtension(VK_KHR_RAY_QUERY_EXTENSION_NAME);
 }
 
