@@ -48,6 +48,18 @@ bool HCDE_UsingSoftwareRenderer()
 #endif
 }
 
+void HCDE_ForceDesktopOpenGLFallback(const char *reason)
+{
+	HCDE_MigrateRendererCvars();
+
+	if (vid_preferbackend != BACKEND_OPENGL)
+	{
+		Printf(TEXTCOLOR_ORANGE "Falling back to desktop OpenGL: %s\n",
+			reason != nullptr ? reason : "Vulkan unavailable");
+		vid_preferbackend = BACKEND_OPENGL;
+	}
+}
+
 void HCDE_ActivateSoftwareRendererFallback(const char *reason)
 {
 	HCDE_MigrateRendererCvars();

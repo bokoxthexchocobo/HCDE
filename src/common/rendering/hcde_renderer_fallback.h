@@ -18,6 +18,9 @@
 // Normalize legacy renderer CVAR values (e.g. removed OpenGL ES backend id).
 void HCDE_MigrateRendererCvars();
 
+// Request desktop OpenGL instead of Vulkan for the next framebuffer creation.
+void HCDE_ForceDesktopOpenGLFallback(const char *reason);
+
 // Switch to the software scene drawer and enable the NanoBSP loader path.
 // Safe to call multiple times.
 void HCDE_ActivateSoftwareRendererFallback(const char *reason);

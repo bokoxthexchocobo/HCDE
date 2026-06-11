@@ -377,6 +377,10 @@ public:
 	virtual DFrameBuffer* CreateFrameBuffer() override
 	{
 		HCDE_MigrateRendererCvars();
+#ifdef HAVE_VULKAN
+		if (vid_preferbackend != BACKEND_VULKAN)
+			ms_isVulkanEnabled = false;
+#endif
 		assert(ms_window == nil);
 		ms_window = CreateWindow(STYLE_MASK_WINDOWED);
 

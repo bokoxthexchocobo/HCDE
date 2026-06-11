@@ -335,64 +335,52 @@ bool IVideo::SetResolution ()
 {
 	HCDE_MigrateRendererCvars();
 
-	DFrameBuffer *buff = nullptr;
-	try
+	auto try_create_and_init = [&](const char *stage) -> bool
 	{
-		buff = CreateFrameBuffer();
-	}
-	catch (const CEngineError &error)
-	{
-		Printf(TEXTCOLOR_RED "Framebuffer creation failed: %s\n", error.what());
-		buff = nullptr;
-	}
-
-	if (buff == nullptr)
-	{
-		HCDE_ActivateSoftwareRendererFallback("hardware framebuffer creation failed");
+		DFrameBuffer *candidate = nullptr;
 		try
 		{
-			buff = CreateFrameBuffer();
+			candidate = CreateFrameBuffer();
 		}
-		catch (const CEngineError &)
+		catch (const CEngineError &error)
 		{
-			buff = nullptr;
+			Printf(TEXTCOLOR_RED "%s failed: %s\n", stage, error.what());
+			candidate = nullptr;
 		}
-		if (buff == nullptr)
-			return false;
-	}
 
-	screen = buff;
-	try
-	{
-		screen->InitializeState();
-	}
-	catch (const CEngineError &error)
-	{
-		Printf(TEXTCOLOR_RED "Hardware renderer initialization failed: %s\n", error.what());
-		HCDE_ActivateSoftwareRendererFallback("hardware renderer initialization failed");
-		delete screen;
-		screen = nullptr;
+		if (candidate == nullptr)
+			return false;
 
 		try
 		{
-			buff = CreateFrameBuffer();
-			if (buff != nullptr)
-			{
-				screen = buff;
-				screen->InitializeState();
-			}
+			candidate->InitializeState();
 		}
-		catch (const CEngineError &)
+		catch (const CEngineError &error)
 		{
-			if (screen != nullptr)
-			{
-				delete screen;
-				screen = nullptr;
-			}
-		}
-		if (screen == nullptr)
+			Printf(TEXTCOLOR_RED "%s initialization failed: %s\n", stage, error.what());
+			delete candidate;
 			return false;
+		}
+
+		screen = candidate;
+		return true;
+	};
+
+	bool ready = try_create_and_init("Framebuffer creation");
+#ifdef HAVE_VULKAN
+	if (!ready && *vid_preferbackend == BACKEND_VULKAN)
+	{
+		HCDE_ForceDesktopOpenGLFallback("hardware renderer initialization failed");
+		ready = try_create_and_init("Desktop OpenGL framebuffer creation");
 	}
+#endif
+	if (!ready)
+	{
+		HCDE_ActivateSoftwareRendererFallback("hardware renderer unavailable");
+		ready = try_create_and_init("Software renderer framebuffer creation");
+	}
+	if (!ready)
+		return false;
 
 	V_UpdateModeSize(screen->GetWidth(), screen->GetHeight());
 

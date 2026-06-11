@@ -367,6 +367,9 @@ DFrameBuffer *SDLVideo::CreateFrameBuffer ()
 
 	// first try Vulkan, if that fails OpenGL
 #ifdef HAVE_VULKAN
+	if (vid_preferbackend != BACKEND_VULKAN)
+		Priv::vulkanEnabled = false;
+
 	if (Priv::vulkanEnabled)
 	{
 		try
