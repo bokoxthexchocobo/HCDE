@@ -34,6 +34,7 @@
 #include "version.h"
 #include "printf.h"
 #include "win32glvideo.h"
+#include "hcde_renderer_fallback.h"
 #ifdef HAVE_VULKAN
 #include "win32vulkanvideo.h"
 #endif
@@ -78,10 +79,12 @@ void I_InitGraphics ()
 		SetFocus(mainwindow.GetHandle());
 	}
 
+	HCDE_MigrateRendererCvars();
+
 #ifdef HAVE_VULKAN
 	if (vid_preferbackend == BACKEND_VULKAN)
 	{
-		// first try Vulkan, if that fails OpenGL
+		// Prefer Vulkan when supported; fall back to desktop OpenGL.
 		try
 		{
 			Video = new Win32VulkanVideo();
@@ -89,6 +92,7 @@ void I_InitGraphics ()
 		catch (CVulkanError &error)
 		{
 			Printf(TEXTCOLOR_RED "Initialization of Vulkan failed: %s\n", error.what());
+			Printf("Falling back to desktop OpenGL.\n");
 			Video = new Win32GLVideo();
 		}
 	}
@@ -98,7 +102,12 @@ void I_InitGraphics ()
 		Video = new Win32GLVideo();
 	}
 
-	// we somehow STILL don't have a display!!
+	if (Video == NULL)
+	{
+		HCDE_ActivateSoftwareRendererFallback("display subsystem initialization failed");
+		Video = new Win32GLVideo();
+	}
+
 	if (Video == NULL)
 		I_FatalError ("Failed to initialize display");
 

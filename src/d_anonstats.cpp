@@ -266,8 +266,7 @@ static int GetCoreInfo()
 
 static int GetRenderInfo()
 {
-	if (screen->Backend() == 2) return 1;
-	if (screen->Backend() == 1) return 4;
+	if (screen->Backend() == BACKEND_VULKAN) return 4;
 	auto info = gl_getInfo();
 	if (!info.second)
 	{

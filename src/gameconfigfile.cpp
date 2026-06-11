@@ -590,6 +590,17 @@ void FGameConfigFile::DoGlobalSetup ()
 					UCVarValue v = var->GetGenericRep(CVAR_Int);
 					vid_preferbackend = v.Int;
 				}
+				var = FindCVar("vid_preferbackend", NULL);
+				if (var != NULL)
+				{
+					UCVarValue v = var->GetGenericRep(CVAR_Int);
+					if (v.Int == 2)
+					{
+						UCVarValue newvalue;
+						newvalue.Int = 1; // OpenGL ES removed; use Vulkan.
+						var->SetGenericRep(newvalue, CVAR_Int);
+					}
+				}
 				// 2019-12-31 - r_videoscale.cpp changes
 				var = FindCVar("vid_scale_customstretched", NULL);
 				if (var != NULL)

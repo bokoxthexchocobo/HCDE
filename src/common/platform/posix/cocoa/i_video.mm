@@ -41,9 +41,7 @@
 #include "v_video.h"
 #include "version.h"
 
-#ifdef HAVE_GLES2
-#include "gles_framebuffer.h"
-#endif
+#include "hcde_renderer_fallback.h"
 
 #ifdef HAVE_VULKAN
 #include "vulkan/system/vk_renderdevice.h"
@@ -454,12 +452,13 @@ public:
 
 		if (fb == nullptr)
 		{
-#ifdef HAVE_GLES2
-			if(vid_preferbackend != BACKEND_OPENGL)
-				fb = new OpenGLESRenderer::OpenGLFrameBuffer(0, vid_fullscreen);
-			else
-#endif
-				fb = new OpenGLRenderer::OpenGLFrameBuffer(0, vid_fullscreen);
+			fb = new OpenGLRenderer::OpenGLFrameBuffer(0, vid_fullscreen);
+		}
+
+		if (fb == nullptr)
+		{
+			HCDE_ActivateSoftwareRendererFallback("Vulkan and OpenGL framebuffer creation failed");
+			fb = new OpenGLRenderer::OpenGLFrameBuffer(0, vid_fullscreen);
 		}
 
 		fb->SetWindow(ms_window);

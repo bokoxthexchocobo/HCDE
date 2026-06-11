@@ -37,6 +37,7 @@
 #include "v_draw.h"
 #include "v_font.h"
 #include "v_video.h"
+#include "hcde_renderer_fallback.h"
 #include "version.h"
 #include "vm.h"
 #include "x86.h"
@@ -55,7 +56,6 @@ CVAR(Bool, win_maximized, false, CVAR_ARCHIVE | CVAR_GLOBALCONFIG | CVAR_NOINITC
 
 CVAR(Bool, r_skipmats, false, CVAR_ARCHIVE | CVAR_GLOBALCONFIG | CVAR_NOINITCALL)
 
-// 0 means 'no pipelining' for non GLES2 and 4 elements for GLES2
 CUSTOM_CVAR(Int, gl_pipeline_depth, 0, CVAR_ARCHIVE | CVAR_GLOBALCONFIG | CVAR_NOINITCALL)
 {
 	if (self < 0)
@@ -93,17 +93,11 @@ CUSTOM_CVAR(Int, vid_preferbackend, BACKEND_DEFAULT, CVAR_ARCHIVE | CVAR_GLOBALC
 	static_assert(0 <= BACKEND_DEFAULT && BACKEND_DEFAULT < NUM_BACKEND, "default back-end out of range");
 	const bool dedicatedserver = HCDE_ServerMode_IsDedicatedServer();
 
-#if defined(_WIN32) && defined(HAVE_GLES2)
-	if (self == BACKEND_OPENGL && !dedicatedserver)
+	if (self == 2)
 	{
-		// Desktop OpenGL currently presents a black startup frame on some
-		// Windows systems while Vulkan and OpenGL ES both work correctly.
-		// Treat explicit OpenGL requests as OpenGL ES so stale configs do not
-		// put users back on the broken renderer path.
-		Printf("Desktop OpenGL is disabled on Windows for now; using OpenGLES 2.0 backend...\n");
-		self = BACKEND_OPENGLES;
+		Printf("OpenGL ES backend removed; using Vulkan instead.\n");
+		self = BACKEND_VULKAN;
 	}
-#endif
 
 	switch(self)
 	{
@@ -113,11 +107,6 @@ CUSTOM_CVAR(Int, vid_preferbackend, BACKEND_DEFAULT, CVAR_ARCHIVE | CVAR_GLOBALC
 		else if (prev > self || prev <= 0) self = self-1;
 		else if (prev < self || prev >= NUM_BACKEND-1) self = self+1;
 		return;
-#ifdef HAVE_GLES2
-	case BACKEND_OPENGLES:
-		if (!dedicatedserver) Printf("Selecting OpenGLES 2.0 backend...\n");
-		break;
-#endif
 #ifdef HAVE_VULKAN
 	case BACKEND_VULKAN:
 		if (!dedicatedserver) Printf("Selecting Vulkan backend...\n");
@@ -129,12 +118,7 @@ CUSTOM_CVAR(Int, vid_preferbackend, BACKEND_DEFAULT, CVAR_ARCHIVE | CVAR_GLOBALC
 	}
 
 	if (dedicatedserver)
-	{
-		vid_shadersupport = self != BACKEND_OPENGLES;
 		return;
-	}
-
-	vid_shadersupport = self != BACKEND_OPENGLES;
 
 	static bool notice = false;
 	if (notice) Printf("Changing the video backend requires a restart for " GAMENAME ".\n");
@@ -346,11 +330,16 @@ void V_OutputResized (int width, int height)
 
 bool IVideo::SetResolution ()
 {
+	HCDE_MigrateRendererCvars();
+
 	DFrameBuffer *buff = CreateFrameBuffer();
 
-	if (buff == NULL)	// this cannot really happen
+	if (buff == NULL)
 	{
-		return false;
+		HCDE_ActivateSoftwareRendererFallback("hardware framebuffer creation failed");
+		buff = CreateFrameBuffer();
+		if (buff == NULL)
+			return false;
 	}
 
 	screen = buff;
@@ -406,6 +395,7 @@ void V_InitScreen()
 
 void V_Init2()
 {
+	HCDE_MigrateRendererCvars();
 	HCDE_ServerMode_GuardClientSubsystem("video renderer");
 	{
 		DFrameBuffer *s = screen;
