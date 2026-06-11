@@ -22,6 +22,7 @@
 */
 
 #include "gl_system.h"
+#include "d_main.h"
 #include "v_video.h"
 #include "m_png.h"
 
@@ -563,7 +564,9 @@ bool OpenGLFrameBuffer::CompileNextShader()
 
 bool OpenGLFrameBuffer::SupportsHardwareShadowmaps() const
 {
-	return (hwcaps & RFL_SHADER_STORAGE_BUFFER) != 0 && allowSSBO();
+	if (hwcaps != 0)
+		return (hwcaps & RFL_SHADER_STORAGE_BUFFER) != 0 && allowSSBO();
+	return V_IsHardwareRenderer() && allowSSBO();
 }
 
 //==========================================================================

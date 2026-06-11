@@ -580,7 +580,12 @@ bool VulkanRenderDevice::RaytracingEnabled()
 
 bool VulkanRenderDevice::SupportsHardwareShadowmaps() const
 {
-	return (hwcaps & RFL_SHADER_STORAGE_BUFFER) != 0 && allowSSBO();
+	// device is created in the framebuffer constructor, before InitializeState().
+	if (device == nullptr)
+		return false;
+	if (hwcaps != 0)
+		return (hwcaps & RFL_SHADER_STORAGE_BUFFER) != 0 && allowSSBO();
+	return allowSSBO();
 }
 
 bool VulkanRenderDevice::SupportsRayQueries() const

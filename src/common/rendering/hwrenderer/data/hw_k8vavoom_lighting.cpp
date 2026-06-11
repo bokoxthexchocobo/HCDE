@@ -23,6 +23,12 @@
 
 EXTERN_CVAR(Int, gl_shadowmap_quality)
 EXTERN_CVAR(Bool, vk_raytrace)
+EXTERN_CVAR(Bool, hcde_shadow_autofallback)
+EXTERN_CVAR(Bool, hcde_shadow_autobudget)
+EXTERN_CVAR(Bool, hcde_k8vavoom_auto_profile)
+EXTERN_CVAR(Bool, hcde_k8vavoom_shadow_boost)
+EXTERN_CVAR(Bool, hcde_k8vavoom_raylight_probe)
+EXTERN_CVAR(Int, hcde_k8vavoom_lighting_profile)
 
 namespace
 {
@@ -46,12 +52,12 @@ namespace
 
 	K8vavoomPresetSnapshot g_K8vavoomPresetState;
 
-	const char* BackendNameForScreen()
+	const char* BackendNameForFramebuffer(DFrameBuffer *framebuffer)
 	{
-		if (screen == nullptr)
+		if (framebuffer == nullptr)
 			return "unknown";
 
-		switch (screen->Backend())
+		switch (framebuffer->Backend())
 		{
 		case BACKEND_VULKAN: return "vulkan";
 		case BACKEND_OPENGL: return "opengl";
@@ -59,9 +65,9 @@ namespace
 		}
 	}
 
-	void HCDE_K8vavoomTryEnableRaylightPath()
+	void HCDE_K8vavoomTryEnableRaylightPath(DFrameBuffer *framebuffer)
 	{
-		if (screen == nullptr || !screen->SupportsRayQueries())
+		if (framebuffer == nullptr || !framebuffer->SupportsRayQueries())
 			return;
 
 		if (!vk_raytrace)
@@ -101,7 +107,7 @@ namespace
 			gl_shadowmap_filter = 1;
 
 		if (raylightProbe || shadowBoost)
-			HCDE_K8vavoomTryEnableRaylightPath();
+			HCDE_K8vavoomTryEnableRaylightPath(screen);
 
 		s.shadowmap           = gl_light_shadowmap;
 		s.prioritize          = gl_shadowmap_prioritize;
@@ -133,6 +139,11 @@ namespace
 			s.raylight_probe ? "on" : "off",
 			s.vk_raytrace ? "on" : "off");
 	}
+
+	bool RaylightPathRequested()
+	{
+		return hcde_k8vavoom_raylight_probe || hcde_k8vavoom_shadow_boost;
+	}
 }
 
 K8vavoomBackendCapabilities HCDE_ProbeK8vavoomBackendCapabilities()
@@ -142,11 +153,11 @@ K8vavoomBackendCapabilities HCDE_ProbeK8vavoomBackendCapabilities()
 
 	if (screen != nullptr)
 	{
-		caps.BackendName = BackendNameForScreen();
+		caps.BackendName = BackendNameForFramebuffer(screen);
 		caps.SupportsShadowmaps = caps.IsHardwareRenderer && screen->SupportsHardwareShadowmaps();
 		caps.SupportsRayQueries = screen->SupportsRayQueries();
 		caps.RaylightProbeActive = screen->RaytracingActive();
-		caps.RaylightProbeMeaningful = caps.SupportsRayQueries && hcde_k8vavoom_raylight_probe;
+		caps.RaylightProbeMeaningful = caps.SupportsRayQueries && RaylightPathRequested();
 
 		if (!caps.IsHardwareRenderer)
 			caps.Notes = "software backend; shadowmap and raylight features inactive";
@@ -155,7 +166,7 @@ K8vavoomBackendCapabilities HCDE_ProbeK8vavoomBackendCapabilities()
 		else if (caps.RaylightProbeActive)
 			caps.Notes = "Vulkan ray-query path active for dynamic light shadows";
 		else if (caps.SupportsRayQueries)
-			caps.Notes = "Vulkan ray-query extension available; enable hcde_k8vavoom_raylight_probe or profile with boost";
+			caps.Notes = "Vulkan ray-query extension available; enable hcde_k8vavoom_raylight_probe or shadow_boost";
 		else if (screen->Backend() == BACKEND_VULKAN)
 			caps.Notes = "Vulkan backend without VK_KHR_ray_query; using shadowmap path";
 		else
@@ -168,27 +179,24 @@ K8vavoomBackendCapabilities HCDE_ProbeK8vavoomBackendCapabilities()
 	return caps;
 }
 
-void HCDE_K8vavoomFinalizeAfterVideoInit()
+void HCDE_K8vavoomPrepareBeforeInitializeState(DFrameBuffer *framebuffer)
 {
-	if (screen == nullptr || !V_IsHardwareRenderer())
+	if (framebuffer == nullptr || !V_IsHardwareRenderer())
 		return;
 
-	const K8vavoomBackendCapabilities caps = HCDE_ProbeK8vavoomBackendCapabilities();
+	const bool supportsShadowmaps = framebuffer->SupportsHardwareShadowmaps();
 
-	if (hcde_k8vavoom_auto_profile && hcde_k8vavoom_lighting_profile == 0 && caps.SupportsShadowmaps)
+	if (hcde_k8vavoom_auto_profile && hcde_k8vavoom_lighting_profile == 0 && supportsShadowmaps)
 	{
-		hcde_k8vavoom_shadow_boost = caps.SupportsRayQueries;
-		if (caps.SupportsRayQueries)
+		hcde_k8vavoom_shadow_boost = framebuffer->SupportsRayQueries();
+		if (framebuffer->SupportsRayQueries())
 			hcde_k8vavoom_raylight_probe = true;
 		hcde_k8vavoom_lighting_profile = 1;
 		Printf(PRINT_HIGH, "Auto-enabled hcde_k8vavoom_lighting_profile on capable hardware.\n");
 	}
 
-	if (hcde_k8vavoom_lighting_profile > 0)
-	{
-		if (hcde_k8vavoom_raylight_probe || hcde_k8vavoom_shadow_boost)
-			HCDE_K8vavoomTryEnableRaylightPath();
-	}
+	if (hcde_k8vavoom_lighting_profile > 0 && RaylightPathRequested())
+		HCDE_K8vavoomTryEnableRaylightPath(framebuffer);
 }
 
 CVAR(Bool, hcde_k8vavoom_auto_profile, true, CVAR_ARCHIVE | CVAR_GLOBALCONFIG)
@@ -201,6 +209,8 @@ CUSTOM_CVAR(Int, hcde_k8vavoom_lighting_profile, 0, CVAR_ARCHIVE | CVAR_GLOBALCO
 		self = 0;
 	else if (self > 1)
 		self = 1;
+	else if (self == 0 && prev > 0)
+		hcde_k8vavoom_auto_profile = false;
 
 	HCDE_K8vavoomApplyLightingProfile(self, hcde_k8vavoom_shadow_boost, hcde_k8vavoom_raylight_probe);
 }

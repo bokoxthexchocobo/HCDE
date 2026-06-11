@@ -355,6 +355,7 @@ bool IVideo::SetResolution ()
 	}
 
 	screen = buff;
+	HCDE_K8vavoomPrepareBeforeInitializeState(buff);
 	screen->InitializeState();
 
 	V_UpdateModeSize(screen->GetWidth(), screen->GetHeight());
@@ -424,8 +425,6 @@ void V_Init2()
 
 	Video->SetResolution();	// this only fails via exceptions.
 	Printf ("Resolution: %d x %d\n", SCREENWIDTH, SCREENHEIGHT);
-
-	HCDE_K8vavoomFinalizeAfterVideoInit();
 
 	// init these for the scaling menu
 	menu_resolution_custom_width = SCREENWIDTH;

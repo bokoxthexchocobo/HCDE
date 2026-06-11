@@ -29,5 +29,6 @@ struct K8vavoomBackendCapabilities
 
 K8vavoomBackendCapabilities HCDE_ProbeK8vavoomBackendCapabilities();
 
-// Call after the real video framebuffer exists (end of V_Init2).
-void HCDE_K8vavoomFinalizeAfterVideoInit();
+// Apply k8vavoom profile / vk_raytrace before framebuffer InitializeState() so Vulkan
+// descriptor layouts and shader defines agree on ray-query support.
+void HCDE_K8vavoomPrepareBeforeInitializeState(DFrameBuffer *framebuffer);

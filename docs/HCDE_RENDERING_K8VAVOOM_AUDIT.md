@@ -103,6 +103,12 @@ for the common "undo the preset" path.
 3. **Default-on preset.** `hcde_k8vavoom_auto_profile` (default `true`) applies
    the lighting profile automatically on first video init when shadowmaps are
    supported; Vulkan + ray-query hardware also enables shadow boost and raylight.
+   Disabling the profile (`hcde_k8vavoom_lighting_profile 0`) turns off
+   `hcde_k8vavoom_auto_profile` so it does not re-enable on the next launch.
+
+4. **Init ordering.** `HCDE_K8vavoomPrepareBeforeInitializeState()` runs after the
+   real framebuffer is created but before `InitializeState()` so `vk_raytrace`,
+   Vulkan descriptor layouts, and shader defines all agree on ray-query support.
 
 ## Deferred / High-Risk Work
 
