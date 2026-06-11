@@ -242,6 +242,7 @@ void I_NetDone();
 const FHCDEPregameServiceProfile& I_GetHCDEPregameServiceProfile();
 void I_ResetHCDEPregameServiceProfile();
 int I_CountHCDEPregameServiceQuarantines();
+bool I_RequestHCDEResync(const char* reason = nullptr);
 void HandleIncomingConnection();
 void HandleIncomingConnectionMaintenance();
 void CloseNetwork();

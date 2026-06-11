@@ -3855,6 +3855,12 @@ static int FileSystemPrintf(FSMessageLevel level, const char* fmt, ...)
 
 static int D_InitGame(const FIWADInfo* iwad_info, std::vector<FileSys::ResourceName>& allwads, std::vector<FileSys::ResourceName>& pwads)
 {
+	if (iwad_info == nullptr)
+	{
+		I_FatalError("Cannot find a game IWAD (doom.wad, heretic.wad, etc).\n"
+					 "Please place a valid game IWAD in the engine directory or configure your search paths.");
+	}
+
 	NetworkEntityManager::InitializeNetworkEntities();
 	HCDE_ServerMode_InitFromArgs();
 	HCDE_ServerMode_SetSelectedIWAD(iwad_info != nullptr ? iwad_info->Name.GetChars() : nullptr);

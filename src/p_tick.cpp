@@ -271,8 +271,22 @@ void P_Ticker (void)
 		P_ThinkParticles(Level);	// [RH] make the particles think
 
 		for (i = 0; i < MAXPLAYERS; i++)
-			if (Level->PlayerInGame(i))
-				P_PlayerThink(Level->Players[i]);
+		{
+			if (!Level->PlayerInGame(i))
+				continue;
+			if (Level->Players[i]->mo == nullptr
+				&& netgame
+				&& I_ClientUsesHCDEService(i)
+				&& !I_IsHCDEServiceAuthoritySlot(i))
+			{
+				// A HCDE runtime joiner can be present in playeringame while its
+				// reliable setup is still exchanging console-player/user-info/map
+				// packets. Do not abort the authority before ClientConnecting can
+				// finish admission and spawn the pawn.
+				continue;
+			}
+			P_PlayerThink(Level->Players[i]);
+		}
 
 		// [ZZ] call the WorldTick hook
 		Level->localEventManager->WorldTick();

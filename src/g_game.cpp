@@ -1461,12 +1461,20 @@ static void G_ProcessPendingPlayerLifecycle()
 	// net snapshot application and event dispatch.
 	for (unsigned int i = 0; i < MAXPLAYERS; ++i)
 	{
+		if (players[i].playerstate == PST_GONE)
+		{
+			// A disconnect can remove the slot from network participation before
+			// the next world tick. Still process PST_GONE if a pawn/camera is left
+			// behind so the actor is popped instead of dangling into a reconnect.
+			if (playeringame[i] || players[i].mo != nullptr || players[i].camera != nullptr)
+				G_DoPlayerPop(i);
+			continue;
+		}
+
 		if (!playeringame[i])
 			continue;
 
-		if (players[i].playerstate == PST_GONE)
-			G_DoPlayerPop(i);
-		else if (players[i].playerstate == PST_REBORN || players[i].playerstate == PST_ENTER)
+		if (players[i].playerstate == PST_REBORN || players[i].playerstate == PST_ENTER)
 			primaryLevel->DoReborn(i, false);
 	}
 }
@@ -2397,6 +2405,18 @@ void FLevelLocals::DoReborn (int playernum, bool force)
 		else
 		{ // try to spawn at any random player's spot
 			FPlayerStart *start = PickPlayerStart(playernum, PPS_FORCERANDOM);
+			if (start == nullptr && playerstarts[0].type != 0)
+			{
+				// Stock IWAD maps often provide only player 1's regular start and
+				// do not populate AllPlayerStarts unless random starts are enabled.
+				// Late-join co-op must still admit players on those maps, so fall
+				// back to the player 1 start instead of leaving players[playernum].mo
+				// null and letting P_PlayerThink abort the server with
+				// "No player N start" on the next tic.
+				start = &playerstarts[0];
+				DebugTrace::Warningf("player", "fallback spawn start player=%d using-player1-start map=%s",
+					playernum, MapName.GetChars());
+			}
 			AActor *mo = SpawnPlayer(start, playernum);
 			if (mo != NULL) P_PlayerStartStomp(mo, true);
 		}
@@ -2430,24 +2450,26 @@ void G_DoPlayerPop(int playernum)
 
 	// [RH] Make the player disappear
 	auto mo = players[playernum].mo;
-	mo->Level->Behaviors.StopMyScripts(mo);
-	// [ZZ] fire player disconnect hook
-	mo->Level->localEventManager->PlayerDisconnected(playernum);
-	// [RH] Let the scripts know the player left
-	mo->Level->Behaviors.StartTypedScripts(SCRIPT_Disconnect, mo, true, playernum, true);
 	if (mo != NULL)
 	{
+		mo->Level->Behaviors.StopMyScripts(mo);
+		// [ZZ] fire player disconnect hook
+		mo->Level->localEventManager->PlayerDisconnected(playernum);
+		// [RH] Let the scripts know the player left
+		mo->Level->Behaviors.StartTypedScripts(SCRIPT_Disconnect, mo, true, playernum, true);
 		P_DisconnectEffect(mo);
 		mo->player = NULL;
 		mo->Destroy();
-		if (!(players[playernum].mo->ObjectFlags & OF_EuthanizeMe))
+		auto replacement = players[playernum].mo;
+		if (replacement != nullptr && replacement != mo && !(replacement->ObjectFlags & OF_EuthanizeMe))
 		{ // We just destroyed a morphed player, so now the original player
 			// has taken their place. Destroy that one too.
-			players[playernum].mo->Destroy();
+			replacement->Destroy();
 		}
-		players[playernum].mo = nullptr;
-		players[playernum].camera = nullptr;
 	}
+	players[playernum].mo = nullptr;
+	players[playernum].camera = nullptr;
+	players[playernum].playerstate = PST_DEAD;
 
 	players[playernum].DestroyPSprites();
 }

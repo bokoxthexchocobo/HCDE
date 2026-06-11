@@ -1317,6 +1317,15 @@ bool isTargetablePlayer(AActor *actor, player_t *player, INTBOOL allaround, void
 {
 	FLookExParams* params = (FLookExParams*)lookparams;
 
+	// In HCDE netplay a slot can be flagged playeringame while its pawn does
+	// not exist yet: the reserved server-authority slot never owns a pawn, and
+	// a (re)joining client is briefly admitted (playeringame == true) before
+	// ClientConnecting spawns its pawn. The callers here only gate on
+	// PlayerInGame(), so guard the pawn before touching any actor field or the
+	// monster look code dereferences a null mo (crash: mo->flags & MF_SHOOTABLE).
+	if (player->mo == nullptr)
+		return false;
+
 	if (!(player->mo->flags & MF_SHOOTABLE))
 		return false;			// not shootable (observer or dead)
 
