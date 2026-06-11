@@ -204,6 +204,42 @@ function Resolve-SndFileRuntime {
     throw "Required sndfile.dll not found. HCDE uses it for WAV/OGG mod sounds; pass -SndFileDll or place sndfile.dll in build\\deps."
 }
 
+function Sync-RuntimePk3FromBuildRoot {
+    param(
+        [string]$BuildRoot,
+        [string]$BuildConfigDir,
+        [string]$FileName
+    )
+
+    $configPath = Join-Path $BuildConfigDir $FileName
+    $rootPath = Join-Path $BuildRoot $FileName
+    if (-not (Test-Path -LiteralPath $rootPath)) {
+        return
+    }
+
+    if (-not (Test-Path -LiteralPath $configPath)) {
+        Write-Warning "$FileName missing from $BuildConfigDir; copying from $BuildRoot."
+        Copy-Item -LiteralPath $rootPath -Destination $configPath -Force
+        return
+    }
+
+    $configHash = (Get-FileHash -LiteralPath $configPath -Algorithm SHA256).Hash
+    $rootHash = (Get-FileHash -LiteralPath $rootPath -Algorithm SHA256).Hash
+    if ($configHash -eq $rootHash) {
+        return
+    }
+
+    $configItem = Get-Item -LiteralPath $configPath
+    $rootItem = Get-Item -LiteralPath $rootPath
+    if ($rootItem.LastWriteTimeUtc -gt $configItem.LastWriteTimeUtc) {
+        Write-Warning "$FileName in $BuildConfigDir is older than $BuildRoot; refreshing config copy."
+        Copy-Item -LiteralPath $rootPath -Destination $configPath -Force
+    }
+    else {
+        Write-Warning "$FileName differs between $BuildConfigDir and $BuildRoot; config copy is newer and will be packaged."
+    }
+}
+
 function Get-ModCompatRuntimeFiles {
     param(
         [string]$BuildRoot,
@@ -410,6 +446,17 @@ $runtimeFiles = @(
     "lights.pk3",
     "game_widescreen_gfx.pk3"
 )
+
+$runtimePk3Files = @(
+    "hcde.pk3",
+    "game_support.pk3",
+    "brightmaps.pk3",
+    "lights.pk3",
+    "game_widescreen_gfx.pk3"
+)
+foreach ($file in $runtimePk3Files) {
+    Sync-RuntimePk3FromBuildRoot -BuildRoot $buildRoot -BuildConfigDir $buildConfigDir -FileName $file
+}
 
 foreach ($file in $runtimeFiles) {
     Copy-Item -LiteralPath (Resolve-RequiredPath (Join-Path $buildConfigDir $file)) -Destination $stageDir
