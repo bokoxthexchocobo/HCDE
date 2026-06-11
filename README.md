@@ -6,7 +6,10 @@
 
 # HCDE
 
-HCDE is a Doom-engine project focused on multiplayer, mod compatibility, and dedicated-server workflows.
+HCDE is a Doom-engine project built on an UzDoom-derived core. It targets **server-authoritative multiplayer**, **mod compatibility** (MBF21, ID24, Eternity/EDGE surfaces), and **dedicated-server workflows** (`hcde`, `hcdeserv`, `hcdercon`).
+
+- **Issue tracker:** [github.com/bokoxthexchocobo/HCDE/issues](https://github.com/bokoxthexchocobo/HCDE/issues)
+- **Roadmap / Kanban:** [project board](https://github.com/users/bokoxthexchocobo/projects/2) · [`docs/HCDE_ROADMAP.md`](docs/HCDE_ROADMAP.md)
 
 ## Documentation (Wiki)
 
@@ -23,13 +26,26 @@ How-to guides and reference docs live on the [HCDE Wiki](https://github.com/boko
 | Engine netcode & diagnostics | [Network Protocol](https://github.com/bokoxthexchocobo/HCDE/wiki/Network-Protocol) |
 | Console variables | [CVAR Reference](https://github.com/bokoxthexchocobo/HCDE/wiki/CVAR-Reference) |
 
+### In-repo contributor docs
+
+These live beside the code and are the source of truth for architecture and audits:
+
+| Doc | Topic |
+| --- | --- |
+| [`docs/HCDE_NETCODE.md`](docs/HCDE_NETCODE.md) | Netcode architecture, lead vs. ping, desync repair, `net_self_test` |
+| [`docs/HCDE_INVASION.md`](docs/HCDE_INVASION.md) | Invasion operator guide (CVARs, state machine, tuning) |
+| [`docs/HCDE_REWIND.md`](docs/HCDE_REWIND.md) | Rewind / lag-comp (`net_rewind_enable`, `sv_lagcomp`) |
+| [`docs/HCDE_RCON.md`](docs/HCDE_RCON.md) | RCON transport and `hcdercon` usage |
+| [`docs/HCDE_ROADMAP.md`](docs/HCDE_ROADMAP.md) | Kanban mirror + verified completion status |
+| [`tests/netcode_step12/README.md`](tests/netcode_step12/README.md) | Repeatable netcode stress harness |
+
 ## What ships in this repo
 
 | Binary | Role |
 | --- | --- |
 | `hcde` | Client / game executable |
-| `hcdeserv` | Dedicated server |
-| `hcdercon` | Local RCON utility for dedicated-server admin commands |
+| `hcdeserv` | Dedicated server (Linux `.deb` built by CI — see [hcdeserv_deb workflow](.github/workflows/hcdeserv_deb.yml)) |
+| `hcdercon` | Local RCON utility (`ping` / `status` today; admin commands planned) |
 
 Master protocol constants live in `protocol/` so engine, launcher, and master stay separate (`protocol/hcde_master_protocol.json`, `protocol/hcde_master_protocol.h`).
 
@@ -51,36 +67,45 @@ cmake --build /path/to/HCDE/build -j
 
 See [Building](https://github.com/bokoxthexchocobo/HCDE/wiki/Building) for requirements, output paths, and Windows runtime DLLs (`soft_oal.dll` for SFX, `sndfile.dll` for OGG/FLAC/WAV music — auto-staged via `cmake/StageSndFileRuntime.cmake`). [Getting Started](https://github.com/bokoxthexchocobo/HCDE/wiki/Getting-Started) covers hosting/joining a dedicated server and starting a single-player Invasion match.
 
+**Netcode regression (optional):**
+
+```bash
+python tests/netcode_step12/netcode_step12_stress.py --dry-run
+```
+
 ## Recent updates
 
-- Windows desktop OpenGL backend is auto-routed to OpenGL ES at startup so a stale `vid_preferbackend 0` config no longer black-screens after the splash. Vulkan stays the default Windows backend; tracked in [#31](https://github.com/bokoxthexchocobo/HCDE/issues/31).
-- Single-player startup now shows a real "HCDE is loading..." window during ZDL command-line resolution, IWAD/mod scanning, compat patching, and archive mounting, so the window can't appear, vanish, then reappear minutes later.
-- Experimental NanoBSP loader (`hcde_nanobsp_loader`, `r_nanobsp_status`) landed default-off (falls back to the existing node builder), and the Eternity spatial-audio backend (`snd_backend eternity`, `snd_eternity_status`) is currently a **silent diagnostic facade** (no audio output until the mixer is vendored) — board items [#4](https://github.com/bokoxthexchocobo/HCDE/issues/4) and [#3](https://github.com/bokoxthexchocobo/HCDE/issues/3).
-- Single-player Invasion (`sv_gametype 4`) starts cleanly, including from external launchers that pass `+set sv_gametype 4` (Doom Connector, ZDL, etc.). Invasion announcements are HCDE-styled ("Prepare for Invasion! Wave 1 starting in 5,4,3,2,1.. BEGIN!" / "Wave N complete!").
-- `hcde_lag_hud` and `hcde_hud_debug` are decoupled — the perf/lag overlay is opt-in (`hcde_lag_hud 1`) instead of being forced on by the diagnostic-logging gate.
-- Music lookup prioritizes mod-nested `music/` folders so OGG-only mods (e.g. `D2Re.pk3`) play correctly when `sndfile.dll` is staged.
-- Single-player death/respawn is robust to autosave failures; respawn input is buffered through the death delay.
+- **Netcode hardening:** late-join and rejoin handshake fixes, dedicated-server join setup no longer drops HCDE clients during pregame, co-op monster authority replication (#49), armor replication on dedicated clients (#51), and a crash fix when psprite desync logging fired on player death (`net_echo_debug`).
+- **`hcdeserv` Debian packaging:** CI workflow builds a `.deb` for headless dedicated servers on Linux.
+- **Windows desktop OpenGL:** auto-routes to OpenGL ES at startup so a stale `vid_preferbackend 0` config no longer black-screens after the splash. Vulkan stays the default Windows backend; residual cases tracked in [#31](https://github.com/bokoxthexchocobo/HCDE/issues/31).
+- **Single-player startup:** a real "HCDE is loading..." window during ZDL command-line resolution, IWAD/mod scanning, compat patching, and archive mounting.
+- **Invasion (`sv_gametype 4`):** starts cleanly from external launchers (`+set sv_gametype 4`); HCDE-styled wave announcements; operator guide in [`docs/HCDE_INVASION.md`](docs/HCDE_INVASION.md).
+- **Diagnostics:** `hcde_lag_hud` and `hcde_hud_debug` are decoupled — the perf/lag overlay is opt-in (`hcde_lag_hud 1`).
+- **Audio:** mod-nested `music/` folders prioritized so OGG-only mods play when `sndfile.dll` is staged.
+- **Default-off experiments:** NanoBSP loader (`hcde_nanobsp_loader`) and Eternity spatial audio (`snd_backend eternity`, silent facade until the mixer is vendored) — board items [#4](https://github.com/bokoxthexchocobo/HCDE/issues/4) and [#3](https://github.com/bokoxthexchocobo/HCDE/issues/3).
 
 ## Project status
 
 Feature and maintenance work is tracked on the [HCDE Kanban board](https://github.com/users/bokoxthexchocobo/projects/2). The full roadmap with a **verified, code-level completion status** for every item lives in [`docs/HCDE_ROADMAP.md`](docs/HCDE_ROADMAP.md). In short:
 
-- **Complete and in use:** MBF21 compatibility, the server-authoritative netcode foundation, core single-player Invasion mode, smooth weapon bob + fullbright overrides, skin taunt sounds, the actor-registry compaction hardening, and the Windows dedicated-server settings UI.
-- **Opt-in / default-off and still in progress** (these ship behind CVARs and are not finished features yet): k8vavoom-style lighting preset (`hcde_k8vavoom_lighting_profile`), NanoBSP loader (`hcde_nanobsp_loader`, experimental, falls back), Eternity spatial audio (`snd_backend eternity`, silent facade — no audio yet), DSDA rewind / lag-comp (`net_rewind_enable`, `sv_lagcomp`), RCON (`hcdercon`; `ping`/`status` only so far), gyro input (Windows only), Nugget player-feel tweaks, Doom Retro compat tweaks, and the Doomsday presentation features.
-- **Backlog / scaffold:** Predator Economy mode and the monster AI system (both scaffolds, not playable yet), ID24 DEHEXTRA / extended-flag coverage, and assorted maintenance bugs.
+- **Complete and in use:** MBF21 compatibility, server-authoritative netcode foundation, core Invasion mode, smooth weapon bob + fullbright overrides, skin taunt sounds, actor-registry compaction hardening, and the Windows dedicated-server settings UI.
+- **Opt-in / default-off and still in progress** (ship behind CVARs; not finished features yet): k8vavoom-style lighting preset, NanoBSP loader, Eternity spatial audio (silent facade), DSDA rewind / lag-comp, RCON (`ping`/`status` only), gyro input (Windows only), Nugget player-feel tweaks, Doom Retro compat tweaks, and Doomsday presentation features.
+- **Backlog / scaffold:** Predator Economy mode and monster AI director (scaffolds, not playable), ID24 DEHEXTRA / extended-flag coverage.
+- **Open maintenance bugs:** announcer playback ([#29](https://github.com/bokoxthexchocobo/HCDE/issues/29)), SP dmflags CVAR ([#30](https://github.com/bokoxthexchocobo/HCDE/issues/30)), Windows GL black screen ([#31](https://github.com/bokoxthexchocobo/HCDE/issues/31)), bot respawn ([#32](https://github.com/bokoxthexchocobo/HCDE/issues/32)).
 
-See [`docs/HCDE_ROADMAP.md`](docs/HCDE_ROADMAP.md) for the per-item detail and the remaining work on each.
+See [`docs/HCDE_ROADMAP.md`](docs/HCDE_ROADMAP.md) for per-item detail and remaining work.
 
 ## Repository layout
 
 | Path | Contents |
 | --- | --- |
-| `src/` | Engine and networking |
+| `src/` | Engine, playsim, and networking (`d_net.*`, `i_net.cpp`, invasion, rewind, RCON) |
 | `protocol/` | Master protocol schema |
 | `tools/hcdemaster/` | Standalone master server source |
 | `wadsrc*` | Game resources and compat packs |
 | `wiki/` | Source for the GitHub Wiki (published by CI) |
-| `docs/` | Contributor netcode and review notes |
+| `docs/` | Architecture, operator guides, and audit notes |
+| `tests/` | Validation harnesses (`netcode_step12`, invasion, ID24, etc.) |
 
 ## Licensing
 
@@ -88,7 +113,7 @@ HCDE is **GPL-3.0-or-later** ([`LICENSE`](LICENSE)). Branding and some asset tre
 
 ## Contributors
 
-[`CONTRIBUTORS`](CONTRIBUTORS) — HCDE contributors/Code sourced from
+[`CONTRIBUTORS`](CONTRIBUTORS) — HCDE contributors / code sourced from
 
 ## Tech stack
 
