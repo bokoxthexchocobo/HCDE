@@ -44,7 +44,7 @@ These live beside the code and are the source of truth for architecture and audi
 | Binary | Role |
 | --- | --- |
 | `hcde` | Client / game executable |
-| `hcdeserv` | Dedicated server (Linux `.deb` built by CI — see [hcdeserv_deb workflow](.github/workflows/hcdeserv_deb.yml)) |
+| `hcdeserv` | Dedicated server |
 | `hcdercon` | Local RCON utility (`ping` / `status` today; admin commands planned) |
 
 Master protocol constants live in `protocol/` so engine, launcher, and master stay separate (`protocol/hcde_master_protocol.json`, `protocol/hcde_master_protocol.h`).
@@ -76,7 +76,6 @@ python tests/netcode_step12/netcode_step12_stress.py --dry-run
 ## Recent updates
 
 - **Netcode hardening:** late-join and rejoin handshake fixes, dedicated-server join setup no longer drops HCDE clients during pregame, co-op monster authority replication (#49), armor replication on dedicated clients (#51), and a crash fix when psprite desync logging fired on player death (`net_echo_debug`).
-- **`hcdeserv` Debian packaging:** CI workflow builds a `.deb` for headless dedicated servers on Linux.
 - **Windows desktop OpenGL:** auto-routes to OpenGL ES at startup so a stale `vid_preferbackend 0` config no longer black-screens after the splash. Vulkan stays the default Windows backend; residual cases tracked in [#31](https://github.com/bokoxthexchocobo/HCDE/issues/31).
 - **Single-player startup:** a real "HCDE is loading..." window during ZDL command-line resolution, IWAD/mod scanning, compat patching, and archive mounting.
 - **Invasion (`sv_gametype 4`):** starts cleanly from external launchers (`+set sv_gametype 4`); HCDE-styled wave announcements; operator guide in [`docs/HCDE_INVASION.md`](docs/HCDE_INVASION.md).
@@ -103,7 +102,7 @@ See [`docs/HCDE_ROADMAP.md`](docs/HCDE_ROADMAP.md) for per-item detail and remai
 | `protocol/` | Master protocol schema |
 | `tools/hcdemaster/` | Standalone master server source |
 | `wadsrc*` | Game resources and compat packs |
-| `wiki/` | Source for the GitHub Wiki (published by CI) |
+| `wiki/` | Source for the GitHub Wiki |
 | `docs/` | Architecture, operator guides, and audit notes |
 | `tests/` | Validation harnesses (`netcode_step12`, invasion, ID24, etc.) |
 
