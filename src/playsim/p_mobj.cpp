@@ -4608,6 +4608,15 @@ void AActor::Tick ()
 			return;
 		}
 
+		// Co-op authority visuals are pose- and action-driven from the server.
+		// Skip local velocity integration and the shared state tick below so A_Look
+		// and other spawn AI cannot fight replicated yaw/position.
+		if (Net_IsCoopAuthorityVisualActor(this))
+		{
+			flags8 &= ~MF8_INSCROLLSEC;
+			return;
+		}
+
 		if (!Vel.isZero() || !(flags & MF_NOBLOCKMAP))
 		{
 			// HCDE invasion client mirrors are visual-only. Keep this hook so a
