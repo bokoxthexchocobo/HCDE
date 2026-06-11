@@ -37,6 +37,7 @@
 #include "v_draw.h"
 #include "v_font.h"
 #include "v_video.h"
+#include "hw_k8vavoom_lighting.h"
 #include "version.h"
 #include "vm.h"
 #include "x86.h"
@@ -423,6 +424,8 @@ void V_Init2()
 
 	Video->SetResolution();	// this only fails via exceptions.
 	Printf ("Resolution: %d x %d\n", SCREENWIDTH, SCREENHEIGHT);
+
+	HCDE_K8vavoomFinalizeAfterVideoInit();
 
 	// init these for the scaling menu
 	menu_resolution_custom_width = SCREENWIDTH;

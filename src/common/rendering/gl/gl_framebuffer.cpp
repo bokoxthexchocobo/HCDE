@@ -561,6 +561,11 @@ bool OpenGLFrameBuffer::CompileNextShader()
 	return GLRenderer->mShaderManager->CompileNextShader();
 }
 
+bool OpenGLFrameBuffer::SupportsHardwareShadowmaps() const
+{
+	return (hwcaps & RFL_SHADER_STORAGE_BUFFER) != 0 && allowSSBO();
+}
+
 //==========================================================================
 //
 // OpenGLFrameBuffer :: WipeStartScreen

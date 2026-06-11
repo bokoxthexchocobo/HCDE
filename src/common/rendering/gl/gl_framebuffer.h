@@ -45,7 +45,8 @@ public:
 
 	OpenGLFrameBuffer(void *hMonitor, bool fullscreen) ;
 	~OpenGLFrameBuffer();
-	int Backend() override { return 2; }
+	int Backend() override { return BACKEND_OPENGL; }
+	bool SupportsHardwareShadowmaps() const override;
 	bool CompileNextShader() override;
 	void InitializeState() override;
 	void Update() override;

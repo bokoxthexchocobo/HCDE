@@ -87,10 +87,26 @@ for the common "undo the preset" path.
    and the live CVAR values so operators can see whether later manual edits
    changed the preset output.
 
+## Phase 2 Implemented (#38)
+
+1. **Runtime backend probing.** `HCDE_ProbeK8vavoomBackendCapabilities()` queries
+   the active `screen` framebuffer for hardware shadowmap SSBO support and Vulkan
+   `VK_KHR_ray_query` extension availability instead of guessing from
+   `vid_rendermode`.
+
+2. **Ray-style light path.** When `hcde_k8vavoom_raylight_probe` or
+   `hcde_k8vavoom_shadow_boost` is enabled on capable Vulkan hardware, the
+   profile enables `vk_raytrace` before shader compilation so `main.fp` uses
+   the existing `SUPPORTS_RAYTRACING` / `traceHit()` path for dynamic light
+   shadow attenuation.
+
+3. **Default-on preset.** `hcde_k8vavoom_auto_profile` (default `true`) applies
+   the lighting profile automatically on first video init when shadowmaps are
+   supported; Vulkan + ray-query hardware also enables shadow boost and raylight.
+
 ## Deferred / High-Risk Work
 
-- Real raytracing or ray queries. This requires backend capability probing,
-  shader work, and likely Vulkan-specific code. Track as a separate #17 phase.
+- Full hardware raytracing pipeline beyond ray-query shadow attenuation.
 - Renderer-visible light changes driven by actor AI or gameplay logic. Rejected
   unless represented as existing dynamic-light definitions.
 - Any map geometry acceleration structure that touches collision or movement.
