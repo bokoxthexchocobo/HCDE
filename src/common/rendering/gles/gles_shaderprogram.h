@@ -176,5 +176,17 @@ public:
 
 };
 
+class FShadowMapShader
+{
+public:
+	void Bind();
+	void ApplyUniforms();
+
+	ShaderUniformsGles<ShadowMapUniforms> Uniforms;
+
+private:
+	std::unique_ptr<FShaderProgram> mShader;
+	bool mUniformLocationsReady = false;
+};
 
 }

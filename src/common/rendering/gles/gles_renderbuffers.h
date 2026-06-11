@@ -126,6 +126,9 @@ public:
 
 	void BindDitherTexture(int texunit);
 
+	void BindShadowMapFB();
+	void BindShadowMapTexture(int index);
+
 	int GetWidth() const { return mWidth; }
 	int GetHeight() const { return mHeight; }
 
@@ -134,8 +137,10 @@ public:
 
 private:
 	void ClearScene();
+	void ClearShadowMap();
 
 	void CreateScene(int width, int height);
+	void CreateShadowMap();
 	void CreatePipeline(int width, int height);
 
 	PPGLTexture Create2DTexture(const char *name, GLuint format, int width, int height, const void *data = nullptr);
@@ -164,6 +169,10 @@ private:
 	bool mSceneUsesTextures = false;
 
 	PPGLTexture mDitherTexture;
+
+	PPGLTexture mShadowMapTexture;
+	PPGLFrameBuffer mShadowMapFB;
+	int mCurrentShadowMapSize = 0;
 
 	static bool FailedCreate;
 

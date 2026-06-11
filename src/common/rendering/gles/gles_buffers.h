@@ -98,8 +98,12 @@ public:
 class GLDataBuffer : public IDataBuffer, public GLBuffer
 {
 	int mBindingPoint;
+	bool mGpuSSBO = false;
+	int mSSBOType = 0;
 public:
 	GLDataBuffer(int bindingpoint, bool is_ssbo);
+	void SetData(size_t size, const void *data, BufferUsageType usage) override;
+	void SetSubData(size_t offset, size_t size, const void *data) override;
 	void BindRange(FRenderState* state, size_t start, size_t length);
 	void BindBase();
 };

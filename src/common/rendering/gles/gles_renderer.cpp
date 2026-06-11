@@ -72,6 +72,7 @@ void FGLRenderer::Initialize(int width, int height)
 	mScreenBuffers = new FGLRenderBuffers();
 	mBuffers = mScreenBuffers;
 	mPresentShader = new FPresentShader();
+	mShadowMapShader = new FShadowMapShader();
 
 	mFBID = 0;
 	mOldFBID = 0;
@@ -89,6 +90,7 @@ FGLRenderer::~FGLRenderer()
 
 	if (mBuffers) delete mBuffers;
 	if (mPresentShader) delete mPresentShader;
+	if (mShadowMapShader) delete mShadowMapShader;
 }
 
 //===========================================================================

@@ -241,6 +241,33 @@ namespace OpenGLESRenderer
 			gles.anistropicFilterAvailable = true;
 		}
 
+		// SSBO support is required for the hardware shadowmap pass.
+		if (gles.glesMode == GLES_MODE_OGL3)
+		{
+			if (glVersion >= 4.5)
+			{
+				gles.flags |= RFL_SHADER_STORAGE_BUFFER | RFL_BUFFER_STORAGE;
+
+				GLint vertexStorageBlocks = 0;
+				glGetIntegerv(GL_MAX_VERTEX_SHADER_STORAGE_BLOCKS, &vertexStorageBlocks);
+				if (vertexStorageBlocks == 0)
+					gles.flags &= ~RFL_SHADER_STORAGE_BUFFER;
+			}
+			else if (CheckExtension("GL_ARB_shader_storage_buffer_object"))
+			{
+				gles.flags |= RFL_SHADER_STORAGE_BUFFER | RFL_BUFFER_STORAGE;
+			}
+		}
+		else if (gles.glesMode == GLES_MODE_GLES)
+		{
+			if (CheckExtension("GL_EXT_shader_storage_buffer"))
+				gles.flags |= RFL_SHADER_STORAGE_BUFFER;
+			else if (strstr(glVersionStr, "OpenGL ES 3.1") != nullptr || strstr(glVersionStr, "OpenGL ES 3.2") != nullptr)
+				gles.flags |= RFL_SHADER_STORAGE_BUFFER;
+		}
+
+		Printf("GLES SSBO support: %s\n", (gles.flags & RFL_SHADER_STORAGE_BUFFER) ? "enabled" : "disabled");
+
 		setGlVersion(glVersion);
 	}
 }

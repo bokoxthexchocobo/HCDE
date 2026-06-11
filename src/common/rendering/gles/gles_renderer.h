@@ -78,6 +78,7 @@ public:
 	FGLRenderBuffers *mBuffers = nullptr;
 	FGLRenderBuffers *mScreenBuffers = nullptr;
 	FPresentShader *mPresentShader = nullptr;
+	FShadowMapShader *mShadowMapShader = nullptr;
 
 	//FRotator mAngles;
 

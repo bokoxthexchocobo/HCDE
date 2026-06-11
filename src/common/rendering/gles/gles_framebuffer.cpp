@@ -41,6 +41,7 @@
 #include "r_videoscale.h"
 #include "gles_buffers.h"
 #include "gles_postprocessstate.h"
+#include "hw_shadowmap.h"
 #include "v_draw.h"
 #include "printf.h"
 #include "gles_hwtexture.h"
@@ -110,7 +111,7 @@ void OpenGLFrameBuffer::InitializeState()
 	static bool first=true;
 
 	mPipelineNbr = gl_pipeline_depth == 0? min(4, HW_MAX_PIPELINE_BUFFERS) : clamp(*gl_pipeline_depth, 1, HW_MAX_PIPELINE_BUFFERS);
-	mPipelineType = 1;
+	mPipelineType = ((gles.flags & RFL_SHADER_STORAGE_BUFFER) && gl_pipeline_depth == 0) ? 0 : 1;
 
 	InitGLES();
 
@@ -346,7 +347,35 @@ void OpenGLFrameBuffer::SetSceneRenderTarget(bool useSSAO)
 #endif
 }
 
+EXTERN_CVAR(Int, gl_shadowmap_quality)
 
+void OpenGLFrameBuffer::UpdateShadowMap()
+{
+	if (mShadowMap.PerformUpdate())
+	{
+		FGLPostProcessState savedState;
+
+		static_cast<GLDataBuffer*>(screen->mShadowMap.mLightList)->BindBase();
+		static_cast<GLDataBuffer*>(screen->mShadowMap.mNodesBuffer)->BindBase();
+		static_cast<GLDataBuffer*>(screen->mShadowMap.mLinesBuffer)->BindBase();
+
+		GLRenderer->mBuffers->BindShadowMapFB();
+
+		GLRenderer->mShadowMapShader->Bind();
+		GLRenderer->mShadowMapShader->Uniforms->ShadowmapQuality = (float)gl_shadowmap_quality;
+		GLRenderer->mShadowMapShader->Uniforms->NodesCount = screen->mShadowMap.NodesCount();
+		GLRenderer->mShadowMapShader->ApplyUniforms();
+
+		glViewport(0, 0, gl_shadowmap_quality, screen->mShadowMap.ActiveLightRows());
+		GLRenderer->RenderScreenQuad();
+
+		const auto& viewport = screen->mScreenViewport;
+		glViewport(viewport.left, viewport.top, viewport.width, viewport.height);
+
+		GLRenderer->mBuffers->BindShadowMapTexture(16);
+		screen->mShadowMap.FinishUpdate();
+	}
+}
 
 void OpenGLFrameBuffer::WaitForCommands(bool finish)
 {

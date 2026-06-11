@@ -33,6 +33,7 @@
 #include <random>
 
 EXTERN_CVAR(Int, gl_debug_level)
+EXTERN_CVAR(Int, gl_shadowmap_quality)
 
 namespace OpenGLESRenderer
 {
@@ -57,6 +58,7 @@ namespace OpenGLESRenderer
 	FGLRenderBuffers::~FGLRenderBuffers()
 	{
 		ClearScene();
+		ClearShadowMap();
 
 		DeleteTexture(mDitherTexture);
 	}
@@ -202,9 +204,24 @@ namespace OpenGLESRenderer
 		default: I_FatalError("Unknown format passed to FGLRenderBuffers.Create2DTexture");
 		}
 	*/
-		format = GL_RGBA;
-		dataformat = GL_RGBA;
-		datatype = GL_UNSIGNED_BYTE;
+		switch (format)
+		{
+		case GL_RGBA:
+			dataformat = GL_RGBA;
+			datatype = GL_UNSIGNED_BYTE;
+			break;
+		case GL_R32F:
+			if (gles.glesMode < GLES_MODE_OGL3)
+				I_FatalError("R32F textures require OpenGL 3.3+ in the GLES renderer");
+			dataformat = GL_RED;
+			datatype = GL_FLOAT;
+			break;
+		default:
+			format = GL_RGBA;
+			dataformat = GL_RGBA;
+			datatype = GL_UNSIGNED_BYTE;
+			break;
+		}
 
 		glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, dataformat, datatype, data);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
@@ -419,13 +436,64 @@ namespace OpenGLESRenderer
 
 	//==========================================================================
 	//
+	// Shadow map texture and frame buffers
+	//
+	//==========================================================================
+
+	void FGLRenderBuffers::BindShadowMapFB()
+	{
+		CreateShadowMap();
+		glBindFramebuffer(GL_FRAMEBUFFER, mShadowMapFB.handle);
+	}
+
+	void FGLRenderBuffers::BindShadowMapTexture(int texunit)
+	{
+		CreateShadowMap();
+		glActiveTexture(GL_TEXTURE0 + texunit);
+		glBindTexture(GL_TEXTURE_2D, mShadowMapTexture.handle);
+	}
+
+	void FGLRenderBuffers::ClearShadowMap()
+	{
+		DeleteFrameBuffer(mShadowMapFB);
+		DeleteTexture(mShadowMapTexture);
+		mCurrentShadowMapSize = 0;
+	}
+
+	void FGLRenderBuffers::CreateShadowMap()
+	{
+		if (mShadowMapTexture.handle != 0 && gl_shadowmap_quality == mCurrentShadowMapSize)
+			return;
+
+		ClearShadowMap();
+
+		GLint activeTex, textureBinding, frameBufferBinding;
+		glGetIntegerv(GL_ACTIVE_TEXTURE, &activeTex);
+		glActiveTexture(GL_TEXTURE0);
+		glGetIntegerv(GL_TEXTURE_BINDING_2D, &textureBinding);
+		glGetIntegerv(GL_FRAMEBUFFER_BINDING, &frameBufferBinding);
+
+		mShadowMapTexture = Create2DTexture("ShadowMap", GL_R32F, gl_shadowmap_quality, 1024);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+
+		mShadowMapFB = CreateFrameBuffer("ShadowMapFB", mShadowMapTexture);
+
+		glBindTexture(GL_TEXTURE_2D, textureBinding);
+		glActiveTexture(activeTex);
+		glBindFramebuffer(GL_FRAMEBUFFER, frameBufferBinding);
+
+		mCurrentShadowMapSize = gl_shadowmap_quality;
+	}
+
+	//==========================================================================
+	//
 	// Returns true if render buffers are supported and should be used
 	//
 	//==========================================================================
 
 	bool FGLRenderBuffers::FailedCreate = false;
 
-
-
-
-}  // namespace OpenGLRenderer
+}  // namespace OpenGLESRenderer

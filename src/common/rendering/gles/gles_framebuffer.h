@@ -45,7 +45,7 @@ public:
 	explicit OpenGLFrameBuffer() {}
 	OpenGLFrameBuffer(void *hMonitor, bool fullscreen) ;
 	~OpenGLFrameBuffer();
-	int Backend() override { return 0; }
+	int Backend() override { return BACKEND_OPENGLES; }
 
 	void InitializeState() override;
 	void Update() override;
@@ -54,6 +54,7 @@ public:
 	void FirstEye() override;
 	void NextEye(int eyecount) override;
 	void SetSceneRenderTarget(bool useSSAO) override;
+	void UpdateShadowMap() override;
 	void WaitForCommands(bool finish) override;
 	void CopyScreenToBuffer(int width, int height, uint8_t* buffer) override;
 	bool FlipSavePic() const override { return true; }

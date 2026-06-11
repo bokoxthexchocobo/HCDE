@@ -313,7 +313,11 @@ void GLVertexBuffer::Bind(int *offsets)
 
 void GLDataBuffer::BindRange(FRenderState *state, size_t start, size_t length)
 {
-	if (mBindingPoint == 3)// VIEWPOINT_BINDINGPOINT
+	if (mGpuSSBO)
+	{
+		glBindBufferRange(mSSBOType, mBindingPoint, mBufferId, start, length);
+	}
+	else if (mBindingPoint == 3)// VIEWPOINT_BINDINGPOINT
 	{
 		static_cast<FGLRenderState*>(state)->ApplyViewport(memory + start);
 	}
@@ -321,12 +325,47 @@ void GLDataBuffer::BindRange(FRenderState *state, size_t start, size_t length)
 
 void GLDataBuffer::BindBase()
 {
+	if (mGpuSSBO)
+		glBindBufferBase(mSSBOType, mBindingPoint, mBufferId);
+}
 
+void GLDataBuffer::SetData(size_t size, const void *data, BufferUsageType usage)
+{
+	if (mGpuSSBO)
+	{
+		glBindBuffer(mSSBOType, mBufferId);
+		const GLenum glusage = (usage == BufferUsageType::Static) ? GL_STATIC_DRAW : GL_STREAM_DRAW;
+		glBufferData(mSSBOType, size, data, glusage);
+		buffersize = size;
+		return;
+	}
+	GLBuffer::SetData(size, data, usage);
+}
+
+void GLDataBuffer::SetSubData(size_t offset, size_t size, const void *data)
+{
+	if (mGpuSSBO)
+	{
+		glBindBuffer(mSSBOType, mBufferId);
+		glBufferSubData(mSSBOType, offset, size, data);
+		return;
+	}
+	GLBuffer::SetSubData(offset, size, data);
 }
 
 
 GLVertexBuffer::GLVertexBuffer() : GLBuffer(GL_ARRAY_BUFFER) {}
 GLIndexBuffer::GLIndexBuffer() : GLBuffer(GL_ELEMENT_ARRAY_BUFFER) {}
-GLDataBuffer::GLDataBuffer(int bindingpoint, bool is_ssbo) : GLBuffer(0), mBindingPoint(bindingpoint) {}
+GLDataBuffer::GLDataBuffer(int bindingpoint, bool is_ssbo)
+	: GLBuffer(0), mBindingPoint(bindingpoint)
+{
+	if (is_ssbo && (gles.flags & RFL_SHADER_STORAGE_BUFFER))
+	{
+		mGpuSSBO = true;
+		mSSBOType = GL_SHADER_STORAGE_BUFFER;
+		isData = false;
+		glGenBuffers(1, &mBufferId);
+	}
+}
 
 }

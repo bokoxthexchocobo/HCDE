@@ -24,6 +24,7 @@
 #include "hwrenderer/postprocessing/hw_postprocess_cvars.h"
 #include "c_dispatch.h"
 #include "printf.h"
+#include "v_video.h"
 
 /*
 	The 1D shadow maps are stored in a 1024x1024 texture as float depth values (R32F).
@@ -107,40 +108,56 @@ namespace
 		K8vavoomBackendCapabilities caps;
 		const int rendermode = *vid_rendermode;
 		caps.IsHardwareRenderer = (rendermode == 3 || rendermode == 4);
+
+		if (screen != nullptr)
+		{
+			switch (screen->Backend())
+			{
+			case BACKEND_VULKAN:
+				caps.BackendName = "vulkan";
+				break;
+			case BACKEND_OPENGL:
+				caps.BackendName = "opengl";
+				break;
+			case BACKEND_OPENGLES:
+				caps.BackendName = "opengles";
+				break;
+			default:
+				caps.BackendName = "unknown";
+				break;
+			}
+
+			const bool hasSSBO = screen->allowSSBO() && (screen->hwcaps & RFL_SHADER_STORAGE_BUFFER);
+			caps.SupportsShadowmaps = caps.IsHardwareRenderer && hasSSBO;
+			caps.SupportsRayQueries = (screen->Backend() == BACKEND_VULKAN);
+			caps.RaylightProbeMeaningful = false;
+
+			if (!caps.IsHardwareRenderer)
+				caps.Notes = "software backend; shadowmap features inactive";
+			else if (!hasSSBO)
+				caps.Notes = "hardware backend active but SSBO shadowmap path unavailable";
+			else if (screen->Backend() == BACKEND_OPENGLES)
+				caps.Notes = "opengles backend with SSBO shadowmaps; ray-query path requires vulkan";
+			else if (screen->Backend() == BACKEND_VULKAN)
+				caps.Notes = "vulkan backend; ray-query extensions not yet probed at runtime";
+			else
+				caps.Notes = "opengl backend; ray-query path requires vulkan";
+			return caps;
+		}
+
 		switch (rendermode)
 		{
-		case 0:
-			caps.BackendName = "software (palette)";
-			break;
-		case 1:
-			caps.BackendName = "software (truecolor)";
-			break;
-		case 2:
-			caps.BackendName = "software (truecolor + linear)";
-			break;
-		case 3:
-			caps.BackendName = "vulkan";
-			break;
-		case 4:
-			caps.BackendName = "opengl";
-			break;
-		default:
-			caps.BackendName = "unknown";
-			break;
+		case 0: caps.BackendName = "software (palette)"; break;
+		case 1: caps.BackendName = "software (truecolor)"; break;
+		case 2: caps.BackendName = "software (truecolor + linear)"; break;
+		case 3: caps.BackendName = "vulkan"; break;
+		case 4: caps.BackendName = "opengl"; break;
+		default: caps.BackendName = "unknown"; break;
 		}
 		caps.SupportsShadowmaps = caps.IsHardwareRenderer;
-		// Real ray-query support requires a Vulkan device with VK_KHR_ray_query
-		// (or VK_KHR_ray_tracing_pipeline). The active code path doesn't probe
-		// extensions yet; we report potential availability based on backend.
-		// Phase 2 must replace this with a runtime extension query.
-		caps.SupportsRayQueries = (rendermode == 3); // vulkan only
-		caps.RaylightProbeMeaningful = false;        // probe is a placeholder
-		if (!caps.IsHardwareRenderer)
-			caps.Notes = "software backend; raytracing/shadowmap features inactive";
-		else if (rendermode == 3)
-			caps.Notes = "vulkan backend; ray-query extensions not yet probed at runtime";
-		else
-			caps.Notes = "opengl backend; ray-query path requires vulkan";
+		caps.SupportsRayQueries = (rendermode == 3);
+		caps.RaylightProbeMeaningful = false;
+		caps.Notes = "screen not initialized; backend probe deferred";
 		return caps;
 	}
 }
@@ -153,6 +170,10 @@ namespace
 		bool   shadowmap = false;
 		bool   prioritize = false;
 		int    quality = 0;
+		int    maxlights = 0;
+		int    shadow_filter = 0;
+		bool   shadow_autobudget = false;
+		bool   shadow_autofallback = false;
 		bool   bloom = false;
 		int    tonemap = 0;
 		int    ssao = 0;
@@ -186,20 +207,35 @@ namespace
 		if (gl_ssao == 0)
 			gl_ssao = 1; // Low-quality SSAO floor
 
-		s.shadowmap     = gl_light_shadowmap;
-		s.prioritize    = gl_shadowmap_prioritize;
-		s.quality       = gl_shadowmap_quality;
-		s.bloom         = gl_bloom;
-		s.tonemap       = gl_tonemap;
-		s.ssao          = gl_ssao;
-		s.shadow_boost  = shadowBoost;
-		s.raylight_probe = raylightProbe;
+		hcde_shadow_autofallback = true;
+		hcde_shadow_autobudget = true;
+		if (gl_shadowmap_maxlights == 0)
+			gl_shadowmap_maxlights = shadowBoost ? 512 : 256;
+		if (gl_shadowmap_filter == 0)
+			gl_shadowmap_filter = 1;
+
+		s.shadowmap          = gl_light_shadowmap;
+		s.prioritize         = gl_shadowmap_prioritize;
+		s.quality            = gl_shadowmap_quality;
+		s.maxlights          = gl_shadowmap_maxlights;
+		s.shadow_filter      = gl_shadowmap_filter;
+		s.shadow_autobudget  = hcde_shadow_autobudget;
+		s.shadow_autofallback = hcde_shadow_autofallback;
+		s.bloom              = gl_bloom;
+		s.tonemap            = gl_tonemap;
+		s.ssao               = gl_ssao;
+		s.shadow_boost       = shadowBoost;
+		s.raylight_probe     = raylightProbe;
 
 		Printf(PRINT_HIGH,
-			"hcde_k8vavoom_lighting_profile=1 applied: shadowmap=%s prioritize=%s quality=%d bloom=%s tonemap=%d ssao=%d boost=%s raylight=%s\n",
+			"hcde_k8vavoom_lighting_profile=1 applied: shadowmap=%s prioritize=%s quality=%d maxlights=%d filter=%d autobudget=%s autofallback=%s bloom=%s tonemap=%d ssao=%d boost=%s raylight=%s\n",
 			s.shadowmap ? "on" : "off",
 			s.prioritize ? "on" : "off",
 			s.quality,
+			s.maxlights,
+			s.shadow_filter,
+			s.shadow_autobudget ? "on" : "off",
+			s.shadow_autofallback ? "on" : "off",
 			s.bloom ? "on" : "off",
 			s.tonemap,
 			s.ssao,
@@ -233,6 +269,12 @@ CCMD(r_k8vavoom_status)
 	Printf(PRINT_HIGH, "    gl_shadowmap_prioritize   = %s (live=%s)\n", s.prioritize ? "on" : "off",
 		gl_shadowmap_prioritize ? "on" : "off");
 	Printf(PRINT_HIGH, "    gl_shadowmap_quality      = %d (live=%d)\n", s.quality, *gl_shadowmap_quality);
+	Printf(PRINT_HIGH, "    gl_shadowmap_maxlights    = %d (live=%d)\n", s.maxlights, *gl_shadowmap_maxlights);
+	Printf(PRINT_HIGH, "    gl_shadowmap_filter       = %d (live=%d)\n", s.shadow_filter, *gl_shadowmap_filter);
+	Printf(PRINT_HIGH, "    hcde_shadow_autobudget    = %s (live=%s)\n", s.shadow_autobudget ? "on" : "off",
+		hcde_shadow_autobudget ? "on" : "off");
+	Printf(PRINT_HIGH, "    hcde_shadow_autofallback  = %s (live=%s)\n", s.shadow_autofallback ? "on" : "off",
+		hcde_shadow_autofallback ? "on" : "off");
 	Printf(PRINT_HIGH, "    gl_bloom                  = %s (live=%s)\n", s.bloom ? "on" : "off",
 		gl_bloom ? "on" : "off");
 	Printf(PRINT_HIGH, "    gl_tonemap                = %d (live=%d)\n", s.tonemap, *gl_tonemap);
@@ -260,13 +302,17 @@ CCMD(r_k8vavoom_reset)
 	gl_light_shadowmap = false;
 	gl_shadowmap_prioritize = true;
 	gl_shadowmap_quality = 512;
+	gl_shadowmap_maxlights = 0;
+	gl_shadowmap_filter = 0;
+	hcde_shadow_autobudget = false;
+	hcde_shadow_autofallback = true;
 	gl_bloom = false;
 	gl_tonemap = 0;
 	gl_ssao = 0;
 
 	g_K8vavoomPresetState = K8vavoomPresetSnapshot{};
 	Printf(PRINT_HIGH, "k8vavoom lighting preset reset to HCDE defaults.\n");
-	Printf(PRINT_HIGH, "  reset: profile=0 shadowmap=off prioritize=on quality=512 bloom=off tonemap=0 ssao=0\n");
+	Printf(PRINT_HIGH, "  reset: profile=0 shadowmap=off prioritize=on quality=512 maxlights=0 filter=0 autobudget=off bloom=off tonemap=0 ssao=0\n");
 }
 
 CUSTOM_CVAR(Float, hcde_shadow_autobudget_targetms, 1.20f, CVAR_ARCHIVE | CVAR_GLOBALCONFIG)

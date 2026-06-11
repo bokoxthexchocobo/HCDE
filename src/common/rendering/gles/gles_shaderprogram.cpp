@@ -292,4 +292,55 @@ void FPresentShader::Bind()
 	mShader->Bind();
 }
 
+/////////////////////////////////////////////////////////////////////////////
+
+void FShadowMapShader::Bind()
+{
+	if (!mShader)
+	{
+		FString prolog = Uniforms.CreateDeclaration("Uniforms", ShadowMapUniforms::Desc());
+
+		mShader.reset(new FShaderProgram());
+		mShader->Compile(FShaderProgram::Vertex, "shaders/pp/screenquad.vp", "", 330);
+		mShader->Compile(FShaderProgram::Fragment, "shaders/pp/shadowmap.fp", prolog.GetChars(), 330);
+		mShader->Link("shaders/pp/shadowmap");
+		Uniforms.Init();
+
+		Uniforms.UniformLocation.resize(Uniforms.mFields.size());
+		for (size_t n = 0; n < Uniforms.mFields.size(); n++)
+		{
+			Uniforms.UniformLocation[n] = glGetUniformLocation(mShader->mProgram, Uniforms.mFields[n].Name);
+		}
+		mUniformLocationsReady = true;
+	}
+	mShader->Bind();
+}
+
+void FShadowMapShader::ApplyUniforms()
+{
+	if (!mUniformLocationsReady || !mShader)
+		return;
+
+	for (size_t n = 0; n < Uniforms.mFields.size(); n++)
+	{
+		const int loc = Uniforms.UniformLocation[n];
+		if (loc < 0)
+			continue;
+
+		const UniformFieldDesc& field = Uniforms.mFields[n];
+		const uint8_t* base = reinterpret_cast<const uint8_t*>(&Uniforms.Values);
+		switch (field.Type)
+		{
+		case UniformType::Int:
+			glUniform1i(loc, *reinterpret_cast<const int*>(base + field.Offset));
+			break;
+		case UniformType::Float:
+			glUniform1f(loc, *reinterpret_cast<const float*>(base + field.Offset));
+			break;
+		default:
+			break;
+		}
+	}
+}
+
 }
