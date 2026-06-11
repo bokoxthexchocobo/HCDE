@@ -16,6 +16,10 @@
 
 #pragma once
 
+// Forward declaration so this header does not depend on include ordering
+// (hw_k8vavoom_lighting.cpp includes this before v_video.h).
+class DFrameBuffer;
+
 struct K8vavoomBackendCapabilities
 {
 	const char* BackendName = "unknown";
