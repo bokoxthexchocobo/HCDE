@@ -1,0 +1,6 @@
+HCDE branding assets in the branding/ directory (hcde-logo.svg, hcde-icon.svg,
+misc/appicon.png, misc/banner.png, misc/bootlogo.png, and related files) are
+part of the HCDE project. See branding/BRANDING-LICENSE.md for licensing terms.
+
+The in-game boot logo (graphics/bootlogo.png, graphics/vellogo.png) and launcher
+UI banners use the HCDE wordmark.

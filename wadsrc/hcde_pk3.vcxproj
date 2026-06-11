@@ -380,7 +380,7 @@ if %errorlevel% neq 0 goto :VCEnd</Command>
     </None>
     <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc\static\compatibility.txt">
     </None>
-    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc\static\credits\UZDoom Logo.txt">
+    <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc\static\credits\HCDE Logo.txt">
     </None>
     <None Include="C:\Users\user\DoomConnector6\HCDE\wadsrc\static\credits\b@ckdrop.txt">
     </None>
