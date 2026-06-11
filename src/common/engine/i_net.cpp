@@ -3614,10 +3614,11 @@ static FString ReadVerificationError(TArrayView<uint8_t> stream)
 
 			auto file = files.CheckKey(crc);
 			if (file != nullptr)
-				er.AppendFormat("\n* %s", file->GetChars());
+				er.AppendFormat("\n* %s (hash %s)", file->GetChars(), crc.GetChars());
 			else
-				er.AppendFormat("\n* <? Unknown file ?>");
+				er.AppendFormat("\n* <? Unknown file ?> (hash %s)", crc.GetChars());
 		}
+		er.Append("\nEnsure every player copied the same build output folder (for example build\\RelWithDebInfo) with matching hcde.exe, hcdeserv.exe, and hcde.pk3.");
 		return er;
 	}
 	else if (stream[0] == FVerificationError::VE_FILE_ORDER)

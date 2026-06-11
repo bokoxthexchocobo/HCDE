@@ -891,6 +891,20 @@ static void HCDEPrintLiveProfile()
 	}
 }
 
+CCMD(net_files)
+{
+	Printf(PRINT_HIGH, "Loaded network-verified files (name, hash):\n");
+	for (size_t i = 0u; i < fileSystem.GetNumWads(); ++i)
+	{
+		if (fileSystem.IsOptionalResource(i))
+			continue;
+
+		FString name = fileSystem.GetResourceFileName(i);
+		FixPathSeperator(name);
+		Printf("  %s\n    %s\n", name.GetChars(), fileSystem.GetResourceHash(i));
+	}
+}
+
 CCMD(net_profile)
 {
 	HCDEPrintLiveProfile();

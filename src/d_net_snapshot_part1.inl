@@ -3910,9 +3910,11 @@ static uint8_t Net_GetCoopActorActionState(const AActor* actor, const FHCDERepli
 		return HCDEInvasionActorActionMissile;
 	if (Net_InvasionStateSequenceContains(actor, actor->FindState(NAME_Pain), actor->state))
 		return HCDEInvasionActorActionPain;
-	if (actor->SeeState != nullptr)
+	if (actor->SeeState != nullptr
+		&& Net_InvasionStateSequenceContains(actor, actor->SeeState, actor->state))
 		return HCDEInvasionActorActionSee;
-	if (actor->SpawnState != nullptr)
+	if (actor->SpawnState != nullptr
+		&& Net_InvasionStateSequenceContains(actor, actor->SpawnState, actor->state))
 		return HCDEInvasionActorActionSpawn;
 	return HCDEInvasionActorActionNone;
 }
@@ -7057,9 +7059,6 @@ static void Net_SetCoopAuthorityVisualOnly(uint32_t id, AActor* actor)
 	if (!projectileVisual)
 		actor->Vel = DVector3(0, 0, 0);
 
-	if (!projectileVisual && actor->state == actor->SpawnState && actor->SeeState != nullptr)
-		actor->SetState(actor->SeeState, true);
-
 	if (wasThinking)
 		actor->ChangeStatNum(STAT_INFO);
 
@@ -7237,10 +7236,46 @@ static void Net_ApplyCoopInterpVisualPose(AActor* actor, const DVector3& pos, co
 		return;
 	}
 
-	actor->SetOrigin(pos, false);
-	actor->Prev = oldRenderPos;
-	actor->PrevPortalGroup = oldPortalGroup;
+	if (distSq > 0.01)
+	{
+		actor->SetOrigin(pos, false);
+		actor->Prev = oldRenderPos;
+		actor->PrevPortalGroup = oldPortalGroup;
+		actor->Vel = DVector3(0, 0, 0);
+		return;
+	}
+
+	// Already at the replicated pose: hold still so render interpolation
+	// does not wobble from tiny per-frame Prev churn.
+	actor->Prev = actor->Pos();
 	actor->Vel = DVector3(0, 0, 0);
+}
+
+static void Net_TickCoopAuthorityVisualActorState(FHCDEReplicatedActorRef& ref, AActor* actor)
+{
+	if (Net_CoopIsProjectileRef(ref))
+		return;
+
+	if (actor->state == nullptr
+		|| actor->tics == -1
+		|| (actor->ObjectFlags & OF_EuthanizeMe) != 0)
+	{
+		return;
+	}
+
+	const bool attackingVisual = ref.CoopVisualActionState == HCDEInvasionActorActionMelee
+		|| ref.CoopVisualActionState == HCDEInvasionActorActionMissile
+		|| ref.CoopVisualActionState == HCDEInvasionActorActionPain;
+	const int visualTargetAgeTics = gametic - ref.CoopVisualTargetTic;
+	const bool visualTargetStale = ref.CoopVisualTargetTic > 0
+		&& visualTargetAgeTics > TICRATE;
+	if (attackingVisual && visualTargetStale)
+		return;
+
+	if (actor->tics > 0)
+		--actor->tics;
+	if (actor->tics <= 0)
+		actor->SetState(actor->state->GetNextState(), true);
 }
 
 // Store the latest authoritative pose sample for per-frame client smoothing.
@@ -7411,51 +7446,53 @@ static void Net_ClientTickInterpolation(unsigned& updated, unsigned& skipped)
 			}
 
 			Net_ApplyCoopInterpVisualPose(actor, pos, vel, yaw, pitch, health, projectileVisual, snapDistanceSq);
-			++updated;
-			continue;
-		}
-
-		actor->health = ref.CoopVisualTargetHealth;
-		actor->Angles.Yaw = ref.CoopVisualTargetYaw;
-		actor->Angles.Pitch = ref.CoopVisualTargetPitch;
-
-		const DVector3 oldPos = actor->Pos();
-		const DVector3 delta = ref.CoopVisualTargetPos - oldPos;
-		const double distSq = delta.LengthSquared();
-		if (projectileVisual)
-		{
-			const DVector3 oldRenderPos = actor->Pos();
-			const int oldPortalGroup = actor->Sector != nullptr ? actor->Sector->PortalGroup : actor->PrevPortalGroup;
-			actor->SetOrigin(ref.CoopVisualTargetPos, false);
-			actor->Prev = oldRenderPos;
-			actor->PrevPortalGroup = oldPortalGroup;
-			actor->Vel = ref.CoopVisualTargetVel;
-		}
-		else if (distSq > snapDistanceSq)
-		{
-			actor->SetOrigin(ref.CoopVisualTargetPos, false);
-			actor->Prev = ref.CoopVisualTargetPos;
-			actor->PrevPortalGroup = actor->Sector != nullptr ? actor->Sector->PortalGroup : actor->PrevPortalGroup;
-			actor->ClearInterpolation();
-			actor->Vel = DVector3(0, 0, 0);
-		}
-		else if (distSq > 0.01)
-		{
-			const DVector3 oldRenderPos = actor->Pos();
-			const int oldPortalGroup = actor->Sector != nullptr ? actor->Sector->PortalGroup : actor->PrevPortalGroup;
-			const double dist = sqrt(distSq);
-			const double step = min(dist, HCDEInvasionMirrorVisualMaxStepPerTic);
-			const DVector3 nextPos = oldRenderPos + delta * (step / dist);
-			actor->SetOrigin(nextPos, false);
-			actor->Prev = oldRenderPos;
-			actor->PrevPortalGroup = oldPortalGroup;
-			actor->Vel = DVector3(0, 0, 0);
 		}
 		else
 		{
-			actor->Vel = DVector3(0, 0, 0);
+			actor->health = ref.CoopVisualTargetHealth;
+			actor->Angles.Yaw = ref.CoopVisualTargetYaw;
+			actor->Angles.Pitch = ref.CoopVisualTargetPitch;
+
+			const DVector3 oldPos = actor->Pos();
+			const DVector3 delta = ref.CoopVisualTargetPos - oldPos;
+			const double distSq = delta.LengthSquared();
+			if (projectileVisual)
+			{
+				const DVector3 oldRenderPos = actor->Pos();
+				const int oldPortalGroup = actor->Sector != nullptr ? actor->Sector->PortalGroup : actor->PrevPortalGroup;
+				actor->SetOrigin(ref.CoopVisualTargetPos, false);
+				actor->Prev = oldRenderPos;
+				actor->PrevPortalGroup = oldPortalGroup;
+				actor->Vel = ref.CoopVisualTargetVel;
+			}
+			else if (distSq > snapDistanceSq)
+			{
+				actor->SetOrigin(ref.CoopVisualTargetPos, false);
+				actor->Prev = ref.CoopVisualTargetPos;
+				actor->PrevPortalGroup = actor->Sector != nullptr ? actor->Sector->PortalGroup : actor->PrevPortalGroup;
+				actor->ClearInterpolation();
+				actor->Vel = DVector3(0, 0, 0);
+			}
+			else if (distSq > 0.01)
+			{
+				const DVector3 oldRenderPos = actor->Pos();
+				const int oldPortalGroup = actor->Sector != nullptr ? actor->Sector->PortalGroup : actor->PrevPortalGroup;
+				const double dist = sqrt(distSq);
+				const double step = min(dist, HCDEInvasionMirrorVisualMaxStepPerTic);
+				const DVector3 nextPos = oldRenderPos + delta * (step / dist);
+				actor->SetOrigin(nextPos, false);
+				actor->Prev = oldRenderPos;
+				actor->PrevPortalGroup = oldPortalGroup;
+				actor->Vel = DVector3(0, 0, 0);
+			}
+			else
+			{
+				actor->Prev = actor->Pos();
+				actor->Vel = DVector3(0, 0, 0);
+			}
 		}
 
+		Net_TickCoopAuthorityVisualActorState(ref, actor);
 		++updated;
 	}
 
