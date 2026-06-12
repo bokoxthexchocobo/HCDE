@@ -1,6 +1,6 @@
 # HCDE Roadmap #12 — Predator Mode
 
-**Last updated:** 2026-06-12
+**Last updated:** 2026-06-13
 **Status:** Phase 1 scaffold and Phase 2 snapshot contract landed
 default-off; role gameplay, radar, stealth, and kill-reward loop remain pending.
 
@@ -13,10 +13,11 @@ Counter-Strike buy-meta clone.
 
 ## What #12 means
 
-Board item: **Predator mode** — a multiplayer game mode where most players
-are survivors hunting (or evading) a server-assigned predator while
-monsters remain a live threat. Kill rewards fund survivor upgrades; taking
-down the predator pays the largest bonus.
+Board item: **Predator mode** — a **survival-based** multiplayer mode where
+most players are survivors with **one life per round** hunting (or evading)
+a server-assigned predator while monsters remain a live threat. Kill rewards
+fund survivor upgrades; taking down the predator pays the largest bonus.
+Dead survivors **do not respawn** until the round ends.
 
 This document does NOT specify final balance. It records the **target
 gameplay**, the **engine surface** the mode needs, and the **authority
@@ -31,8 +32,8 @@ Captured from design discussion. These are intent, not implemented behavior.
 | Role | Intent |
 | --- | --- |
 | **Predator** | One player selected by the server each round (see open question below). Granted **invisibility** — only revealed when they **fire a weapon** or **score a kill**. Carries a **predator-specific weapon set** distinct from survivors. |
-| **Survivors** | Armed players earning **currency for monster kills**. Primary objective tension: survive monsters, coordinate via radar, and **hunt the predator** for the round's largest payout. |
-| **Monsters** | Always-on ambient threat. They **move and attack players** throughout the round (reuse Invasion/spawn director patterns where possible). |
+| **Survivors** | Armed players with **no respawn** this round. Earn **currency for monster kills** while alive. Primary tension: survive monsters, coordinate via radar, and **hunt the predator** for the round's largest payout. Death means spectating until **End**. |
+| **Monsters** | Always-on ambient threat. They **move, attack, and respawn** throughout the round (reuse Invasion/spawn director patterns where possible). Monster deaths are expected; replenishment keeps pressure on shrinking survivor numbers. |
 
 ### Shared systems
 
@@ -47,14 +48,39 @@ Captured from design discussion. These are intent, not implemented behavior.
 - **Reveal rules.** Predator stealth breaks on **weapon discharge** and/or
   **confirmed kills**. Re-stealth after a cooldown is an open tuning knob.
 
+### Survival rules
+
+- **Survivors: one life per round.** Player deaths are permanent for the
+  current round. No respawn, no mid-round re-entry. Eliminated survivors
+  become spectators until the round ends.
+- **Predator: one life per round** (same survival stakes). If the predator
+  dies, survivors win the round (predator-kill bonus applies). Predator
+  death handling is authoritative on the server.
+- **Monsters: respawn allowed.** Monster population is replenished during
+  Hunt so threat stays high as survivor count drops. This is intentional —
+  the round gets harder for the living, not easier.
+- **Late join: spectate only.** Players who connect after a round has
+  started are **forced to spectator** until **End**, then eligible for the
+  next round's Setup. No drop-in as survivor or predator mid-Hunt.
+
+### Win / loss conditions (draft)
+
+| Outcome | Condition |
+| --- | --- |
+| Survivors win | Predator killed, or round timer expires with at least one survivor alive |
+| Predator wins | All survivors eliminated (by predator and/or monsters) |
+| Draw / timeout edge cases | TBD (e.g. predator alive, one survivor alive at timer — likely survivor win) |
+
 ### Round flow (revised from early scaffold)
 
 1. **Waiting** — enough players to start.
 2. **Setup** — server assigns predator (`pr_predator`); survivors receive
    starting loadout/currency; predator receives predator kit.
-3. **Hunt** — monsters spawn and roam; survivors farm monsters and search
-   for the predator; predator picks off survivors. Radar active for all.
-4. **End** — round scoring, currency tallies, optional predator rotation.
+3. **Hunt** — monsters spawn, roam, and **respawn**; survivors farm monsters
+   and search for the predator; predator picks off survivors (**no survivor
+   respawn**). Radar active for all. Late joiners spectate.
+4. **End** — round scoring, currency tallies, predator rotation; spectators
+   and late joiners become eligible for the next Setup.
 
 The early scaffold's dedicated **Buy** phase may shrink to a short
 **armory** window, merge into setup, or be replaced entirely by
@@ -75,6 +101,8 @@ The early scaffold's dedicated **Buy** phase may shrink to a short
 4. **Invasion overlap.** Predator mode and Invasion both drive monster
    presence. Assume **mutually exclusive** gametypes at the server level
    until a combined soak proves safe.
+5. **Spectator UX.** Late join and dead-player spectate need a clear camera
+   mode and HUD (radar may be spectator-only or disabled — TBD).
 
 ## Reference shape (engine)
 
@@ -112,7 +140,13 @@ only until the state enum is updated in code.
 4. **Stealth and radar are server-informed.** Clients render what snapshots
    and events allow; predator visibility state must not be client-writable.
 5. **Round timer is server-side.** Clients display replicated countdowns.
-6. **Cheat scoping.** While `sv_predator_enable` is on, cheat opcodes are
+6. **No survivor respawn mid-round.** Death transitions the player to
+   spectator; only the server may start a new life on the next round.
+7. **Late join is spectate-only** during Hunt. Join-in-progress as a
+   combatant is rejected until End → Waiting/Setup.
+8. **Monster respawn is server-driven** during Hunt; survivor deaths do not
+   pause or reduce spawn pressure unless tuned by CVAR.
+9. **Cheat scoping.** While `sv_predator_enable` is on, cheat opcodes are
    rejected unless `sv_predator_allow_cheats=1`.
 
 ## Phased plan
@@ -131,8 +165,9 @@ only until the state enum is updated in code.
   - Aliens-style radar replication
   - monster spawn/roam loop during Hunt
   - kill-reward currency (monsters + predator bonus)
-- **Phase 5.** Soak on dedicated server: late join, demos, RCON
-  `predator_status`, stealth/radar desync checks.
+- **Phase 5.** Soak on dedicated server: late-join spectate, no-respawn
+  death flow, monster respawn under load, demos, RCON `predator_status`,
+  stealth/radar desync checks.
 
 ## What this is NOT
 

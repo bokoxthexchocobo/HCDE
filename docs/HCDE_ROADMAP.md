@@ -88,7 +88,7 @@ scaffold-only.
 
 | Issue | Item | Notes |
 | --- | --- | --- |
-| [#12](https://github.com/bokoxthexchocobo/HCDE/issues/12) | Predator mode | Phase 1 scaffold + snapshot V1 contract in `src/d_net_predator.{cpp,h}` (round director, CVARs, `predator_status`). Target: asymmetric hunt — stealth predator, Aliens-style radar, monster pressure, kill rewards. See `HCDE_PREDATOR_AUDIT.md`. |
+| [#12](https://github.com/bokoxthexchocobo/HCDE/issues/12) | Predator mode | Phase 1 scaffold + snapshot V1 contract in `src/d_net_predator.{cpp,h}`. Target: survival hunt — no survivor respawn, monster respawn, late-join spectate, stealth predator, radar, kill rewards. See `HCDE_PREDATOR_AUDIT.md`. |
 
 ### Backlog — bug fixes and maintenance
 

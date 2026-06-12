@@ -26,10 +26,12 @@ detail (CVARs, state machine, on-the-wire layout, diagnostics).
   Single-player is supported: launchers can pass `+sv_gametype 4`
   (or `+set sv_gametype 4`), and the local console player is counted
   as a participant so waves start without a remote authority.
-- **Predator mode (#12)** — asymmetric hunt: one server-assigned predator
-  (stealth until fire/kill), survivors with Aliens-style radar, roaming
-  monsters, kill-earned currency with a predator-kill bonus. Phase 1/2
-  scaffold landed default-off. See `docs/HCDE_PREDATOR_AUDIT.md` and
+- **Predator mode (#12)** — survival-based asymmetric hunt: one
+  server-assigned predator (stealth until fire/kill), survivors with one
+  life per round (no respawn), Aliens-style radar, roaming monsters that
+  **do** respawn, kill-earned currency with a predator-kill bonus. Late
+  joiners spectate until the round ends. Phase 1/2 scaffold landed
+  default-off. See `docs/HCDE_PREDATOR_AUDIT.md` and
   `wadsrc/static/zscript/actors/predator/`.
 - **AI Director (monster AI)** — scoping doc only at the moment;
   defines the integration boundary for the future #13 work.
