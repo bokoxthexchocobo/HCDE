@@ -8,7 +8,7 @@ boundary for future hints.
 ## What #13 actually means
 
 Board item: "Make a AI system for hcde for monsters / enemies." Read in
-context with #12 (Predator Economy) and HCDE's general direction, this is
+context with #12 (Predator mode) and HCDE's general direction, this is
 **not** "rewrite vanilla monster AI". The vanilla state-machine AI in
 `p_enemy.cpp` and friends ships hundreds of finely-tuned states that are
 the soul of Doom; we will not replace them.

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Validate Predator Economy scaffolding and emit soak placeholders."""
+"""Validate Predator mode scaffolding and emit soak placeholders."""
 
 from __future__ import annotations
 

@@ -1,4 +1,4 @@
-// HCDE Predator Economy ZScript extension surface.
+// HCDE Predator mode ZScript extension surface.
 //
 // This is intentionally inert: it gives mods a stable class to derive from
 // once the C++ side replicates predator role/currency, but it does not alter

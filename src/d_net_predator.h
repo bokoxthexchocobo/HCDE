@@ -1,8 +1,8 @@
 #pragma once
 
-// HCDE Predator Economy game-mode scaffold.
+// HCDE Predator mode scaffold.
 //
-// Roadmap board item: #12 ("Predator Economy Game Mode"). This is Phase 1
+// Roadmap board item: #12 ("Predator mode"). This is Phase 1
 // scaffold-only -- mode CVARs, a state enum, a tick stub, and a status
 // CCMD. Snapshot replication, buy commands, role-based behaviour, and the
 // ZScript predator pawn are explicit follow-ups, in that order.
