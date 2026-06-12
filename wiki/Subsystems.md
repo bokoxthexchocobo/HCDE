@@ -28,11 +28,12 @@ detail (CVARs, state machine, on-the-wire layout, diagnostics).
   as a participant so waves start without a remote authority.
 - **Predator mode (#12)** — survival-based asymmetric hunt: one
   server-assigned predator who picks a **monster-inspired archetype** each
-  round (speed vs health tradeoffs), stealth until fire/kill, survivors
-  with one life per round (no respawn), Aliens-style radar, roaming
-  monsters that **do** respawn, kill-earned currency with a predator-kill
-  bonus. Late joiners spectate until the round ends. Phase 1/2 scaffold
-  landed default-off. See `docs/HCDE_PREDATOR_AUDIT.md` and
+  round; survivors each pick a **human class** (assault/scout/heavy/etc.)
+  during Setup. One life per round (no respawn), stealth predator until
+  fire/kill, Aliens-style radar, roaming monsters that **do** respawn,
+  kill-earned currency with a predator-kill bonus. Late joiners spectate
+  until the round ends. Phase 1/2 scaffold landed default-off. See
+  `docs/HCDE_PREDATOR_AUDIT.md` and
   `wadsrc/static/zscript/actors/predator/`.
 - **AI Director (monster AI)** — scoping doc only at the moment;
   defines the integration boundary for the future #13 work.

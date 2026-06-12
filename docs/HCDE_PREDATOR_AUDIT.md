@@ -1,6 +1,6 @@
 # HCDE Roadmap #12 — Predator Mode
 
-**Last updated:** 2026-06-14
+**Last updated:** 2026-06-15
 **Status:** Phase 1 scaffold and Phase 2 snapshot contract landed
 default-off; role gameplay, radar, stealth, and kill-reward loop remain pending.
 
@@ -32,7 +32,7 @@ Captured from design discussion. These are intent, not implemented behavior.
 | Role | Intent |
 | --- | --- |
 | **Predator** | One player selected by the server each round. During **Setup**, picks a **predator archetype** (monster-inspired class) with distinct strengths and weaknesses — e.g. fast runner with low health vs slow bruiser with high health. Granted **invisibility** until **fire or kill** (archetype may tune reveal noise/radar signature). Weapon kit may vary per archetype. |
-| **Survivors** | Armed players with **no respawn** this round. Earn **currency for monster kills** while alive. Primary tension: survive monsters, coordinate via radar, and **hunt the predator** for the round's largest payout. Death means spectating until **End**. |
+| **Survivors** | Armed players with **no respawn** this round. During **Setup**, each survivor picks a **survivor class** (human/marine-inspired roles with distinct kits and stat tradeoffs). Earn **currency for monster kills** while alive. Coordinate via radar and **hunt the predator** for the largest payout. Death means spectating until **End**. |
 | **Monsters** | Always-on ambient threat. They **move, attack, and respawn** throughout the round (reuse Invasion/spawn director patterns where possible). Monster deaths are expected; replenishment keeps pressure on shrinking survivor numbers. |
 
 ### Shared systems
@@ -97,6 +97,65 @@ stats and playstyle:
 3. **Rotation fairness** — random archetype if no pick before Setup timer
    expires?
 
+### Survivor classes (player pick)
+
+Every **survivor** (non-predator player) also chooses a class during
+**Setup**. Survivor classes are **human team roles** — not monster
+templates — tuned for hunting, holding ground, or farming monsters under
+survival pressure:
+
+| Example class | Strengths | Weaknesses |
+| --- | --- | --- |
+| **Assault** | Balanced weapons, solid DPS vs monsters and predator | No standout team utility |
+| **Scout** | Faster movement, wider radar range or faster radar refresh | Lower health, weaker direct duel vs predator |
+| **Heavy** | High health, damage resistance, anchors chokepoints | Slow, loud on radar, poorer monster-farming tempo |
+| **Technician** | Bonus currency from monster kills, deployable gadgets TBD | Light weapons, relies on positioning |
+| **More TBD** | Mod/ZScript data-driven | Balance pass required |
+
+**Design intent**
+
+- Pick in **Setup only** — server validates, replicates per-player
+  `SurvivorClassId` in the predator snapshot (or a dedicated per-player
+  mode slice). No mid-round respec.
+- Classes define **starting loadout**, **movement/health modifiers**, and
+  optional **team utility** (radar buffs, traps, healing — TBD). Kill-earned
+  currency still applies; classes may modify earn rate or spend discounts.
+- **Duplicate classes allowed** by default (multiple Scouts, etc.) unless
+  operators enable `sv_predator_unique_classes` or similar.
+- Late joiners who missed Setup **cannot pick a class** that round — they
+  spectate until End, then pick on the next Setup.
+
+**Engine surface (future)**
+
+- `EHCDEPredatorSurvivorClass` enum or string table in `d_net_predator.h`
+- Snapshot: `PlayerSurvivorClass[MAXPLAYERS]` + validity flags (mirror
+  currency fields in `FHCDEPredatorSnapshotV1`)
+- ZScript: `HCDEPredatorSurvivorPawn` base or extend existing `PlayerPawn`
+  with class data blocks under `wadsrc/static/zscript/actors/predator/`
+- Setup command: `predator_class <class>` or shared `predator_pick` with
+  role gating (predator vs survivor)
+- UI: class select during Setup window alongside predator archetype pick
+
+**Open survivor-class questions**
+
+1. **Team composition caps** — max one Technician? min one Scout for radar
+   fantasy? Operator CVARs vs hardcoded limits.
+2. **Currency interaction** — flat earn rates per class, or class only
+   affects starting gear and stats?
+3. **Visual identity** — distinct player skins per class for predator
+   counter-play after reveal.
+
+### Class selection flow (Setup)
+
+```text
+Setup opens
+  -> server assigns predator player
+  -> predator picks archetype (monster-themed)
+  -> each survivor picks class (human-themed)
+  -> optional short armory / starting-currency spend
+  -> Hunt begins (locks all picks)
+```
+
 ### Survival rules
 
 - **Survivors: one life per round.** Player deaths are permanent for the
@@ -124,8 +183,8 @@ stats and playstyle:
 
 1. **Waiting** — enough players to start.
 2. **Setup** — server assigns predator (`pr_predator`); predator **picks
-   archetype** (monster-class template); survivors receive starting
-   loadout/currency.
+   archetype**; each survivor **picks class**; starting loadout/currency
+   applied from class tables.
 3. **Hunt** — monsters spawn, roam, and **respawn**; survivors farm monsters
    and search for the predator; predator picks off survivors (**no survivor
    respawn**). Radar active for all. Late joiners spectate.
@@ -156,6 +215,8 @@ The early scaffold's dedicated **Buy** phase may shrink to a short
 6. **Archetype vs ambient monsters.** Predator archetypes must be
    distinguishable from respawning map monsters on radar and audio, or
    survivors cannot tell hunter from horde.
+7. **Class picks are Setup-only.** Survivor and predator selections lock
+   at Hunt start; late joiners spectate without a class pick that round.
 
 ## Reference shape (engine)
 
@@ -213,12 +274,12 @@ only until the state enum is updated in code.
   whether buy becomes armory/earn-only per design notes above.
 - **Phase 4.** Role gameplay:
   - predator selection + `HCDEPredatorPawn` wiring
-  - Setup-phase **archetype pick** (monster-class stat templates)
+  - Setup-phase **predator archetype** + **survivor class** picks
   - invisibility / reveal on fire and kill (per-archetype tuning)
-  - predator weapon kit (shared or per-archetype)
-  - Aliens-style radar replication (predator signature per archetype)
+  - per-class loadouts (predator archetypes + survivor classes)
+  - Aliens-style radar replication (signatures per role/class)
   - monster spawn/roam loop during Hunt
-  - kill-reward currency (monsters + predator bonus)
+  - kill-reward currency (monsters + predator bonus; class earn modifiers)
 - **Phase 5.** Soak on dedicated server: late-join spectate, no-respawn
   death flow, monster respawn under load, demos, RCON `predator_status`,
   stealth/radar desync checks.
