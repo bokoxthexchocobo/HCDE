@@ -51,5 +51,6 @@ return to coop.
 | Engine netcode lanes, diagnostics, debug traces | [Network Protocol](Network-Protocol) |
 | Windows in-launcher updates | [Windows Updater](Windows-Updater) |
 | Console variables | [CVAR Reference](CVAR-Reference) |
+| Rendering & lighting presets | [Rendering](Rendering) |
 
 Repository docs under `docs/` (netcode overhaul, stage notes) complement the wiki for contributors.

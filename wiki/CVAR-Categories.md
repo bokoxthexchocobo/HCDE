@@ -87,9 +87,10 @@ Prediction, replication, lag HUD, checksums, blackbox, and HCDE-native networkin
 
 Shadow auto-budget, NanoBSP loader, and other HCDE-specific rendering extensions.
 
-- `hcde_k8vavoom_lighting_profile` — Selects a composed K8vavoom lighting preset (0=off, 1+=profile id) and applies bundled renderer toggles.
-- `hcde_k8vavoom_raylight_probe` — Enable ray-light probing hooks used by K8vavoom-style lighting profile diagnostics.
-- `hcde_k8vavoom_shadow_boost` — Apply stronger shadow-map defaults when a K8vavoom lighting profile is active.
+- `hcde_k8vavoom_auto_profile` — Automatically apply the k8vavoom lighting profile on capable hardware at video init (default on).
+- `hcde_k8vavoom_lighting_profile` — Master k8vavoom lighting preset (0=off, 1=on); composes shadowmaps and postprocess CVARs.
+- `hcde_k8vavoom_raylight_probe` — Enable Vulkan ray-query dynamic light shadow attenuation when VK_KHR_ray_query is available.
+- `hcde_k8vavoom_shadow_boost` — Raise shadow-map quality floor and opt into Vulkan ray-query shadows when supported.
 - `hcde_nanobsp_loader` — Selects NanoBSP loader mode for map geometry ingestion (0=off, 1=on, 2=force).
 - `hcde_shadow_autobudget` — Adaptively reduce shadow-casting light count to stay near the target shadow-map frame budget.
 - `hcde_shadow_autobudget_minlights` — Minimum number of shadow-casting lights retained while auto-budget throttles the light count.
@@ -1154,7 +1155,7 @@ CVARs that do not match a more specific category rule.
 - `vk_device` — Likely controls vk device.
 - `vk_exclusivefullscreen` — Likely controls vk exclusivefullscreen.
 - `vk_hdr` — Likely controls vk hdr.
-- `vk_raytrace` — Likely controls vk raytrace.
+- `vk_raytrace` — Enable Vulkan ray-query acceleration structures for dynamic light shadow attenuation.
 - `vk_submit_size` — Likely controls vk submit size.
 - `vr_enable_quadbuffered` — Likely controls vr enable quadbuffered.
 - `vr_hunits_per_meter` — Likely controls vr hunits per meter.

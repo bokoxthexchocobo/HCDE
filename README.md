@@ -25,6 +25,7 @@ How-to guides and reference docs live on the [HCDE Wiki](https://github.com/boko
 | Dedicated launch & master list | [Launcher Protocol](https://github.com/bokoxthexchocobo/HCDE/wiki/Launcher-Protocol) |
 | Engine netcode & diagnostics | [Network Protocol](https://github.com/bokoxthexchocobo/HCDE/wiki/Network-Protocol) |
 | Console variables | [CVAR Reference](https://github.com/bokoxthexchocobo/HCDE/wiki/CVAR-Reference) |
+| Rendering & k8vavoom lighting | [Rendering](https://github.com/bokoxthexchocobo/HCDE/wiki/Rendering) |
 
 ### In-repo contributor docs
 
@@ -37,6 +38,7 @@ These live beside the code and are the source of truth for architecture and audi
 | [`docs/HCDE_REWIND.md`](docs/HCDE_REWIND.md) | Rewind / lag-comp (`net_rewind_enable`, `sv_lagcomp`) |
 | [`docs/HCDE_RCON.md`](docs/HCDE_RCON.md) | RCON transport and `hcdercon` usage |
 | [`docs/HCDE_ROADMAP.md`](docs/HCDE_ROADMAP.md) | Kanban mirror + verified completion status |
+| [`docs/HCDE_RENDERING_K8VAVOOM_AUDIT.md`](docs/HCDE_RENDERING_K8VAVOOM_AUDIT.md) | k8vavoom lighting profile design and Phase 2 ray-query path |
 | [`tests/netcode_step12/README.md`](tests/netcode_step12/README.md) | Repeatable netcode stress harness |
 
 ## What ships in this repo
@@ -75,6 +77,7 @@ python tests/netcode_step12/netcode_step12_stress.py --dry-run
 
 ## Recent updates
 
+- **k8vavoom lighting (Phase 2, #38):** runtime Vulkan/OpenGL capability probing, auto-profile on capable hardware (`hcde_k8vavoom_auto_profile`), and ray-query dynamic light shadows via `vk_raytrace` on Vulkan when `VK_KHR_ray_query` is present. Diagnostics: `r_k8vavoom_status` / `r_k8vavoom_reset`. See [Rendering wiki](https://github.com/bokoxthexchocobo/HCDE/wiki/Rendering) and [`docs/HCDE_RENDERING_K8VAVOOM_AUDIT.md`](docs/HCDE_RENDERING_K8VAVOOM_AUDIT.md).
 - **Netcode hardening:** late-join and rejoin handshake fixes, dedicated-server join setup no longer drops HCDE clients during pregame, co-op monster authority replication (#49), armor replication on dedicated clients (#51), and a crash fix when psprite desync logging fired on player death (`net_echo_debug`).
 - **Renderer stack:** Vulkan is the default when supported, with automatic fallback to desktop OpenGL, then software rendering with the NanoBSP loader path (`hcde_nanobsp_loader`). The legacy OpenGL ES backend was removed.
 - **Single-player startup:** a real "HCDE is loading..." window during ZDL command-line resolution, IWAD/mod scanning, compat patching, and archive mounting.
@@ -87,8 +90,8 @@ python tests/netcode_step12/netcode_step12_stress.py --dry-run
 
 Feature and maintenance work is tracked on the [HCDE Kanban board](https://github.com/users/bokoxthexchocobo/projects/2). The full roadmap with a **verified, code-level completion status** for every item lives in [`docs/HCDE_ROADMAP.md`](docs/HCDE_ROADMAP.md). In short:
 
-- **Complete and in use:** MBF21 compatibility, server-authoritative netcode foundation, core Invasion mode, smooth weapon bob + fullbright overrides, skin taunt sounds, actor-registry compaction hardening, and the Windows dedicated-server settings UI.
-- **Opt-in / default-off and still in progress** (ship behind CVARs; not finished features yet): k8vavoom-style lighting preset, NanoBSP loader, Eternity spatial audio (silent facade), DSDA rewind / lag-comp, RCON (`ping`/`status` only), gyro input (Windows only), Nugget player-feel tweaks, Doom Retro compat tweaks, and Doomsday presentation features.
+- **Complete and in use:** MBF21 compatibility, server-authoritative netcode foundation, core Invasion mode, k8vavoom-style lighting profile (shadowmaps + postprocess; Vulkan ray-query shadows when supported), smooth weapon bob + fullbright overrides, skin taunt sounds, actor-registry compaction hardening, and the Windows dedicated-server settings UI.
+- **Opt-in / default-off and still in progress** (ship behind CVARs; not finished features yet): NanoBSP loader, Eternity spatial audio (silent facade), DSDA rewind / lag-comp, RCON (`ping`/`status` only), gyro input (Windows only), Nugget player-feel tweaks, Doom Retro compat tweaks, and Doomsday presentation features.
 - **Backlog / scaffold:** Predator Economy mode and monster AI director (scaffolds, not playable), ID24 DEHEXTRA / extended-flag coverage.
 - **Open maintenance bugs:** announcer playback ([#29](https://github.com/bokoxthexchocobo/HCDE/issues/29)), SP dmflags CVAR ([#30](https://github.com/bokoxthexchocobo/HCDE/issues/30)), Windows GL black screen ([#31](https://github.com/bokoxthexchocobo/HCDE/issues/31)), bot respawn ([#32](https://github.com/bokoxthexchocobo/HCDE/issues/32)).
 

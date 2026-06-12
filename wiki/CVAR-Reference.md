@@ -111,9 +111,10 @@ Shadow auto-budget, NanoBSP loader, and other HCDE-specific rendering extensions
 
 | CVAR | Type | Default | Description | Source |
 | --- | --- | --- | --- | --- |
-| `hcde_k8vavoom_lighting_profile` | Int | 0 | Selects a composed K8vavoom lighting preset (0=off, 1+=profile id) and applies bundled renderer toggles. | `/workspace/src/common/rendering/hwrenderer/data/hw_shadowmap.cpp:214` |
-| `hcde_k8vavoom_raylight_probe` | Bool | false | Enable ray-light probing hooks used by K8vavoom-style lighting profile diagnostics. | `/workspace/src/common/rendering/hwrenderer/data/hw_shadowmap.cpp:212` |
-| `hcde_k8vavoom_shadow_boost` | Bool | false | Apply stronger shadow-map defaults when a K8vavoom lighting profile is active. | `/workspace/src/common/rendering/hwrenderer/data/hw_shadowmap.cpp:211` |
+| `hcde_k8vavoom_auto_profile` | Bool | true | Automatically apply the k8vavoom lighting profile on capable hardware at video init (default on). | `/workspace/src/common/rendering/hwrenderer/data/hw_k8vavoom_lighting.cpp:202` |
+| `hcde_k8vavoom_lighting_profile` | Int | 0 | Master k8vavoom lighting preset (0=off, 1=on); composes shadowmaps and postprocess CVARs. | `/workspace/src/common/rendering/hwrenderer/data/hw_k8vavoom_lighting.cpp:206` |
+| `hcde_k8vavoom_raylight_probe` | Bool | false | Enable Vulkan ray-query dynamic light shadow attenuation when VK_KHR_ray_query is available. | `/workspace/src/common/rendering/hwrenderer/data/hw_k8vavoom_lighting.cpp:204` |
+| `hcde_k8vavoom_shadow_boost` | Bool | false | Raise shadow-map quality floor and opt into Vulkan ray-query shadows when supported. | `/workspace/src/common/rendering/hwrenderer/data/hw_k8vavoom_lighting.cpp:203` |
 | `hcde_nanobsp_loader` | Int | 0 | Selects NanoBSP loader mode for map geometry ingestion (0=off, 1=on, 2=force). | `/workspace/src/d_nanobsp_loader.cpp:51` |
 | `hcde_shadow_autobudget` | Bool | false | Adaptively reduce shadow-casting light count to stay near the target shadow-map frame budget. | `/workspace/src/common/rendering/hwrenderer/data/hw_shadowmap.cpp:70` |
 | `hcde_shadow_autobudget_minlights` | Int | 64 | Minimum number of shadow-casting lights retained while auto-budget throttles the light count. | `/workspace/src/common/rendering/hwrenderer/data/hw_shadowmap.cpp:280` |
@@ -1204,7 +1205,7 @@ CVARs that do not match a more specific category rule.
 | `vk_device` | Int | 0 | Likely controls vk device. | `/workspace/src/common/rendering/vulkan/system/vk_renderdevice.cpp:81` |
 | `vk_exclusivefullscreen` | Bool | false | Likely controls vk exclusivefullscreen. | `/workspace/src/common/rendering/vulkan/textures/vk_framebuffer.cpp:32` |
 | `vk_hdr` | Bool | false | Likely controls vk hdr. | `/workspace/src/common/rendering/vulkan/textures/vk_framebuffer.cpp:31` |
-| `vk_raytrace` | Bool | false | Likely controls vk raytrace. | `/workspace/src/common/rendering/vulkan/system/vk_renderdevice.cpp:68` |
+| `vk_raytrace` | Bool | false | Enable Vulkan ray-query acceleration structures for dynamic light shadow attenuation. | `/workspace/src/common/rendering/vulkan/system/vk_renderdevice.cpp:68` |
 | `vk_submit_size` | Int | 1000 | Likely controls vk submit size. | `/workspace/src/common/rendering/vulkan/renderer/vk_renderstate.cpp:42` |
 | `vr_enable_quadbuffered` | Bool | false | Likely controls vr enable quadbuffered. | `/workspace/src/common/platform/win32/win32glvideo.cpp:68` |
 | `vr_hunits_per_meter` | Float | 41.0f | Likely controls vr hunits per meter. | `/workspace/src/common/rendering/hwrenderer/data/hw_vrmodes.cpp:45` |
@@ -1265,33 +1266,43 @@ These are the high-value controls for invasion, net diagnostics, compatibility, 
 - Present in runtime snapshot: n/a (source-only generation)
 - Runtime snapshot value: `n/a`
 
+### `hcde_k8vavoom_auto_profile`
+
+- Category: [HCDE Rendering](#category-hcde-rendering)
+- Description: Automatically apply the k8vavoom lighting profile on capable hardware at video init (default on).
+- Source default: `true`
+- Valid range/shape: `n/a`
+- Source: `/workspace/src/common/rendering/hwrenderer/data/hw_k8vavoom_lighting.cpp:202`
+- Present in runtime snapshot: n/a (source-only generation)
+- Runtime snapshot value: `n/a`
+
 ### `hcde_k8vavoom_lighting_profile`
 
 - Category: [HCDE Rendering](#category-hcde-rendering)
-- Description: Selects a composed K8vavoom lighting preset (0=off, 1+=profile id) and applies bundled renderer toggles.
+- Description: Master k8vavoom lighting preset (0=off, 1=on); composes shadowmaps and postprocess CVARs.
 - Source default: `0`
 - Valid range/shape: `n/a`
-- Source: `/workspace/src/common/rendering/hwrenderer/data/hw_shadowmap.cpp:214`
+- Source: `/workspace/src/common/rendering/hwrenderer/data/hw_k8vavoom_lighting.cpp:206`
 - Present in runtime snapshot: n/a (source-only generation)
 - Runtime snapshot value: `n/a`
 
 ### `hcde_k8vavoom_raylight_probe`
 
 - Category: [HCDE Rendering](#category-hcde-rendering)
-- Description: Enable ray-light probing hooks used by K8vavoom-style lighting profile diagnostics.
+- Description: Enable Vulkan ray-query dynamic light shadow attenuation when VK_KHR_ray_query is available.
 - Source default: `false`
 - Valid range/shape: `n/a`
-- Source: `/workspace/src/common/rendering/hwrenderer/data/hw_shadowmap.cpp:212`
+- Source: `/workspace/src/common/rendering/hwrenderer/data/hw_k8vavoom_lighting.cpp:204`
 - Present in runtime snapshot: n/a (source-only generation)
 - Runtime snapshot value: `n/a`
 
 ### `hcde_k8vavoom_shadow_boost`
 
 - Category: [HCDE Rendering](#category-hcde-rendering)
-- Description: Apply stronger shadow-map defaults when a K8vavoom lighting profile is active.
+- Description: Raise shadow-map quality floor and opt into Vulkan ray-query shadows when supported.
 - Source default: `false`
 - Valid range/shape: `n/a`
-- Source: `/workspace/src/common/rendering/hwrenderer/data/hw_shadowmap.cpp:211`
+- Source: `/workspace/src/common/rendering/hwrenderer/data/hw_k8vavoom_lighting.cpp:203`
 - Present in runtime snapshot: n/a (source-only generation)
 - Runtime snapshot value: `n/a`
 
@@ -7761,42 +7772,55 @@ This section is generated from CVAR, CUSTOM_CVAR, CVARD, CUSTOM_CVARD, and named
 - Present in runtime snapshot: n/a
 - Runtime snapshot value: `n/a`
 
+### `hcde_k8vavoom_auto_profile`
+
+- Category: [HCDE Rendering](#category-hcde-rendering)
+- Description: Automatically apply the k8vavoom lighting profile on capable hardware at video init (default on).
+- Type: `Bool`
+- Source default: `true`
+- Source flags: `CVAR_ARCHIVE | CVAR_GLOBALCONFIG`
+- Macro: `CVAR`
+- Ref symbol: `same as cvar name`
+- Source: `/workspace/src/common/rendering/hwrenderer/data/hw_k8vavoom_lighting.cpp:202`
+- Present in runtime snapshot: n/a
+- Runtime snapshot value: `n/a`
+
 ### `hcde_k8vavoom_lighting_profile`
 
 - Category: [HCDE Rendering](#category-hcde-rendering)
-- Description: Selects a composed K8vavoom lighting preset (0=off, 1+=profile id) and applies bundled renderer toggles.
+- Description: Master k8vavoom lighting preset (0=off, 1=on); composes shadowmaps and postprocess CVARs.
 - Type: `Int`
 - Source default: `0`
 - Source flags: `CVAR_ARCHIVE | CVAR_GLOBALCONFIG`
 - Macro: `CUSTOM_CVAR`
 - Ref symbol: `same as cvar name`
-- Source: `/workspace/src/common/rendering/hwrenderer/data/hw_shadowmap.cpp:214`
+- Source: `/workspace/src/common/rendering/hwrenderer/data/hw_k8vavoom_lighting.cpp:206`
 - Present in runtime snapshot: n/a
 - Runtime snapshot value: `n/a`
 
 ### `hcde_k8vavoom_raylight_probe`
 
 - Category: [HCDE Rendering](#category-hcde-rendering)
-- Description: Enable ray-light probing hooks used by K8vavoom-style lighting profile diagnostics.
+- Description: Enable Vulkan ray-query dynamic light shadow attenuation when VK_KHR_ray_query is available.
 - Type: `Bool`
 - Source default: `false`
 - Source flags: `CVAR_ARCHIVE | CVAR_GLOBALCONFIG`
 - Macro: `CVAR`
 - Ref symbol: `same as cvar name`
-- Source: `/workspace/src/common/rendering/hwrenderer/data/hw_shadowmap.cpp:212`
+- Source: `/workspace/src/common/rendering/hwrenderer/data/hw_k8vavoom_lighting.cpp:204`
 - Present in runtime snapshot: n/a
 - Runtime snapshot value: `n/a`
 
 ### `hcde_k8vavoom_shadow_boost`
 
 - Category: [HCDE Rendering](#category-hcde-rendering)
-- Description: Apply stronger shadow-map defaults when a K8vavoom lighting profile is active.
+- Description: Raise shadow-map quality floor and opt into Vulkan ray-query shadows when supported.
 - Type: `Bool`
 - Source default: `false`
 - Source flags: `CVAR_ARCHIVE | CVAR_GLOBALCONFIG`
 - Macro: `CVAR`
 - Ref symbol: `same as cvar name`
-- Source: `/workspace/src/common/rendering/hwrenderer/data/hw_shadowmap.cpp:211`
+- Source: `/workspace/src/common/rendering/hwrenderer/data/hw_k8vavoom_lighting.cpp:203`
 - Present in runtime snapshot: n/a
 - Runtime snapshot value: `n/a`
 
@@ -15265,7 +15289,7 @@ This section is generated from CVAR, CUSTOM_CVAR, CVARD, CUSTOM_CVARD, and named
 ### `vk_raytrace`
 
 - Category: [Other](#category-misc)
-- Description: Likely controls vk raytrace.
+- Description: Enable Vulkan ray-query acceleration structures for dynamic light shadow attenuation.
 - Type: `Bool`
 - Source default: `false`
 - Source flags: `CVAR_ARCHIVE | CVAR_GLOBALCONFIG`
