@@ -30,8 +30,9 @@ rather than as a parallel engine.
   playsim light definitions.
 - **Hardware renderer first.** The software renderer stays stable and can
   ignore the new CVARs unless a simple no-op is needed.
-- **Default-off while experimental.** New visual presets are opt-in until
-  performance and compatibility are measured.
+- **Auto-profile default-on.** `hcde_k8vavoom_auto_profile` applies the preset on
+  capable hardware; operators can disable with `r_k8vavoom_reset` or
+  `hcde_k8vavoom_lighting_profile 0`.
 - **Demo/multiplayer deterministic.** Two clients may choose different visual
   settings while receiving the same authoritative snapshots and producing the
   same demos.
@@ -51,24 +52,25 @@ rather than as a parallel engine.
 | `gl_tonemap`, `gl_exposure` | Tonemapping / exposure. |
 | `gl_ssao`, `gl_ssao_strength`, `gl_ssao_radius` | Ambient occlusion. |
 
-## New Scaffold
+## Profile CVARs and diagnostics
 
-`src/common/rendering/hwrenderer/data/hw_shadowmap.cpp` now contains these
-default-off roadmap CVARs and the first preset implementation:
+`src/common/rendering/hwrenderer/data/hw_k8vavoom_lighting.cpp` owns the
+k8vavoom profile CVARs, capability probe, and diagnostic CCMDs:
 
-| CVAR | Meaning |
+| CVAR / CCMD | Meaning |
 | --- | --- |
-| `hcde_k8vavoom_lighting_profile` | Master profile selector. `0` = disabled/current HCDE behaviour, `1` = experimental lighting-heavy preset. When set to `1`, this now composes existing shadowmap and postprocess CVARs. |
-| `hcde_k8vavoom_shadow_boost` | Allows the preset to prefer a higher shadow quality floor when supported. |
-| `hcde_k8vavoom_raylight_probe` | Placeholder for ray-style light probe experiments. Does not perform raytracing yet. |
-| `r_k8vavoom_status` | Diagnostic CCMD that prints the last composed preset snapshot and the current live renderer CVAR values. |
-| `r_k8vavoom_reset` | Helper CCMD that disables the profile/sub-flags and resets the touched renderer CVARs to HCDE defaults (`gl_light_shadowmap=0`, `gl_shadowmap_prioritize=1`, `gl_shadowmap_quality=512`, `gl_bloom=0`, `gl_tonemap=0`, `gl_ssao=0`). |
+| `hcde_k8vavoom_auto_profile` | Default `true`. Applies the lighting profile on capable hardware at video init; Vulkan + ray-query also enables shadow boost and raylight. |
+| `hcde_k8vavoom_lighting_profile` | Master profile selector. `0` = disabled, `1` = lighting-heavy preset composing shadowmap and postprocess CVARs. Setting to `0` disables auto-profile. |
+| `hcde_k8vavoom_shadow_boost` | Raises shadowmap quality floor (`1024` vs `512`) and participates in raylight path selection. |
+| `hcde_k8vavoom_raylight_probe` | Opt into Vulkan ray-query dynamic light shadows when `VK_KHR_ray_query` is available. |
+| `vk_raytrace` | Vulkan ray-query acceleration structures; enabled by the profile before shader init when the raylight path is active. |
+| `r_k8vavoom_status` | Prints composed preset snapshot, live renderer CVARs, and backend capability probe. |
+| `r_k8vavoom_reset` | Disables profile/sub-flags and resets touched renderer CVARs to HCDE defaults. |
 
-The profile remains default-off and presentation-only. Enabling it is a
-one-shot preset apply: it raises selected CVARs to conservative floors but does
-not remember or restore previous user values when the profile is disabled.
-Use `r_k8vavoom_status` to inspect the active values. Use `r_k8vavoom_reset`
-for the common "undo the preset" path.
+The profile is presentation-only. Enabling it is a one-shot preset apply: it
+raises selected CVARs to conservative floors but does not remember or restore
+previous user values when the profile is disabled. Use `r_k8vavoom_status` to
+inspect active values and `r_k8vavoom_reset` to undo the preset.
 
 ## Phase 1 Implemented
 
@@ -118,21 +120,19 @@ for the common "undo the preset" path.
 - Any map geometry acceleration structure that touches collision or movement.
   That belongs to #4 NanoBSP, not #17 rendering.
 
-## Raylight / Raytrace Experiment Boundary
+## Raylight / Raytrace Boundary (Phase 2)
 
-`hcde_k8vavoom_raylight_probe` remains a probe flag only. The next acceptable
-experiment is a renderer-local light visibility sample that:
+Phase 2 wires the existing Vulkan ray-query path (`vk_raytrace` +
+`main.fp` `traceHit()` / `SUPPORTS_RAYTRACING`) for dynamic light shadow
+attenuation when `hcde_k8vavoom_raylight_probe` or
+`hcde_k8vavoom_shadow_boost` is active on hardware that exposes
+`VK_KHR_ray_query`. The probe runs in the hardware renderer only, reads
+draw-side buffers, and never writes playsim state. `r_k8vavoom_status`
+reports `raylight-path-active` and backend capability fields.
 
-- runs only in the hardware renderer after the scene has already been built
-- reads draw-side light/geometry buffers but never writes playsim actors,
-  sectors, lines, RNG, saves, demos, or snapshots
-- is guarded by backend capability checks and silently falls back to the
-  existing dynamic-light path
-- has a budget counter in `r_k8vavoom_status` before any visual default changes
-
-Out of bounds for this roadmap step: gameplay-visible ray queries, changing
-AI sight/sound, replacing BSP/node traversal, or requiring Vulkan raytracing
-for the default renderer.
+Still out of scope: gameplay-visible ray queries, AI sight/sound changes,
+replacing BSP/node traversal, or requiring Vulkan raytracing for all backends.
+Full hardware raytracing beyond ray-query attenuation remains deferred.
 
 ## Smoke / Tuning Log
 

@@ -13,9 +13,22 @@ How-to guides and reference documentation for HCDE.
 - [Launcher Protocol](Launcher-Protocol) — dedicated launch, master list (legacy + NMS1), per-server query
 - [Network Protocol](Network-Protocol) — engine session lanes, net diagnostics, debug traces
 - [Subsystems](Subsystems) — rewind, RCON, Invasion, Predator, AI Director, ID24/NanoBSP imports, killfeed/gyro/taunts
+- [Rendering](Rendering) — Vulkan/OpenGL backends, k8vavoom lighting profile, shadow diagnostics
 - [CVAR Reference](CVAR-Reference) — console variables and defaults
 
-## Recent updates (May 2026)
+## Recent updates (June 2026)
+
+- **Renderer fallback chain** — OpenGL ES removed; startup tries Vulkan, then
+  desktop OpenGL, then software (NanoBSP path). Legacy `vid_preferbackend 2`
+  migrates to Vulkan. Use `r_hcde_renderer_status` to inspect the active path.
+- **k8vavoom lighting Phase 2 (#38)** — runtime backend capability probing,
+  auto-profile on capable hardware (`hcde_k8vavoom_auto_profile`), and Vulkan
+  ray-query dynamic light shadows when `VK_KHR_ray_query` is available. Use
+  `r_k8vavoom_status` to inspect the active preset; `r_k8vavoom_reset` to
+  return to HCDE defaults. See [Rendering](Rendering) and
+  `docs/HCDE_RENDERING_K8VAVOOM_AUDIT.md`.
+
+## Earlier updates (May 2026)
 
 - **Single-player Invasion** now starts cleanly on local solo launches.
   Doom Connector and other launchers can pass `+sv_gametype 4`,

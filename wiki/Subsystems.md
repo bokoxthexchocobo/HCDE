@@ -35,6 +35,15 @@ detail (CVARs, state machine, on-the-wire layout, diagnostics).
   See `docs/HCDE_AIDIRECTOR_AUDIT.md` and
   `wadsrc/static/zscript/actors/ai/`.
 
+## Rendering
+
+- **k8vavoom-style lighting (#17 / #38)** — composes shadowmaps, bloom,
+  tonemap, and SSAO; on Vulkan with `VK_KHR_ray_query`, enables
+  `vk_raytrace` for ray-style dynamic light shadow attenuation. Auto-profile
+  is on by default on capable hardware. Operator page: [Rendering](Rendering).
+  Audit: `docs/HCDE_RENDERING_K8VAVOOM_AUDIT.md`. Source:
+  `src/common/rendering/hwrenderer/data/hw_k8vavoom_lighting.{cpp,h}`.
+
 ## Compatibility imports
 
 - **ID24 compatibility** — survey of which behaviours are gated by
@@ -44,12 +53,11 @@ detail (CVARs, state machine, on-the-wire layout, diagnostics).
   integration boundary for the loader at `src/d_nanobsp_loader.{cpp,h}`
   and the nodebuilder under `src/utility/nodebuilder/nano/`.
   See `docs/HCDE_NANOBSP_AUDIT.md`.
-- **Crispy / Nugget / Doom Retro / Predator / k8vavoom feel imports**
-  — feel/render/QoL imports tracked in their respective audits:
-  `docs/HCDE_CRISPY_VFR_AUDIT.md`, `docs/HCDE_NUGGET_FEEL_AUDIT.md`,
-  `docs/HCDE_DOOM_RETRO_AUDIT.md`,
-  `docs/HCDE_RENDERING_K8VAVOOM_AUDIT.md`. The shared boundary doc is
-  `docs/HCDE_FEATURE_IMPORTS.md`.
+- **Crispy / Nugget / Doom Retro / Predator feel imports** — feel/render/QoL
+  imports tracked in their respective audits: `docs/HCDE_CRISPY_VFR_AUDIT.md`,
+  `docs/HCDE_NUGGET_FEEL_AUDIT.md`, `docs/HCDE_DOOM_RETRO_AUDIT.md`. The
+  shared boundary doc is `docs/HCDE_FEATURE_IMPORTS.md`. k8vavoom rendering
+  is documented under [Rendering](Rendering).
 
 ## Client feel and QoL
 
