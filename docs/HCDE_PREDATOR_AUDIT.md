@@ -1,6 +1,6 @@
 # HCDE Roadmap #12 — Predator Mode
 
-**Last updated:** 2026-06-16
+**Last updated:** 2026-06-17
 **Status:** Phase 1 scaffold and Phase 2 snapshot contract landed
 default-off; role gameplay, radar, stealth, and kill-reward loop remain pending.
 

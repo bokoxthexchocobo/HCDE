@@ -30,7 +30,8 @@ detail (CVARs, state machine, on-the-wire layout, diagnostics).
   server-assigned predator who picks a **monster-inspired archetype** each
   round; survivors each pick a **human class** (assault/scout/heavy/medic/etc.)
   with **team support** — e.g. medic heals allies, scout shares radar — plus
-  map loot. One life per round (no respawn), stealth predator until
+  map loot. The predator sees **overhead health and class tags** on survivors
+  (predator-only). One life per round (no respawn), stealth predator until
   fire/kill, Aliens-style radar, roaming monsters that **do** respawn,
   kill-earned currency with a predator-kill bonus. Late joiners spectate
   until the round ends. Phase 1/2 scaffold landed default-off. See
