@@ -1,6 +1,6 @@
 # HCDE Roadmap #12 — Predator Mode
 
-**Last updated:** 2026-06-13
+**Last updated:** 2026-06-14
 **Status:** Phase 1 scaffold and Phase 2 snapshot contract landed
 default-off; role gameplay, radar, stealth, and kill-reward loop remain pending.
 
@@ -31,7 +31,7 @@ Captured from design discussion. These are intent, not implemented behavior.
 
 | Role | Intent |
 | --- | --- |
-| **Predator** | One player selected by the server each round (see open question below). Granted **invisibility** — only revealed when they **fire a weapon** or **score a kill**. Carries a **predator-specific weapon set** distinct from survivors. |
+| **Predator** | One player selected by the server each round. During **Setup**, picks a **predator archetype** (monster-inspired class) with distinct strengths and weaknesses — e.g. fast runner with low health vs slow bruiser with high health. Granted **invisibility** until **fire or kill** (archetype may tune reveal noise/radar signature). Weapon kit may vary per archetype. |
 | **Survivors** | Armed players with **no respawn** this round. Earn **currency for monster kills** while alive. Primary tension: survive monsters, coordinate via radar, and **hunt the predator** for the round's largest payout. Death means spectating until **End**. |
 | **Monsters** | Always-on ambient threat. They **move, attack, and respawn** throughout the round (reuse Invasion/spawn director patterns where possible). Monster deaths are expected; replenishment keeps pressure on shrinking survivor numbers. |
 
@@ -47,6 +47,55 @@ Captured from design discussion. These are intent, not implemented behavior.
   - predator kills may grant smaller or zero currency depending on balance
 - **Reveal rules.** Predator stealth breaks on **weapon discharge** and/or
   **confirmed kills**. Re-stealth after a cooldown is an open tuning knob.
+
+### Predator archetypes (monster-class pick)
+
+Before each round's **Hunt** phase, the assigned predator player **chooses
+an archetype** — not a free-roaming invasion monster, but a **player
+predator build themed on a strong monster class**. Each archetype trades
+stats and playstyle:
+
+| Example archetype | Strengths | Weaknesses |
+| --- | --- | --- |
+| **Stalker** (fast fiend/revenant-style) | High speed, agile melee, quick reposition | Lower health, louder reveal ping on radar when moving fast |
+| **Bruiser** (baron/knight-style) | High health, heavy melee, wins direct fights | Slow movement, larger radar signature even while "invisible" |
+| **Skulker** (imp/spectre-style) | Quieter on radar, shorter reveal decay, good ambush | Mid health, lighter damage without setup |
+| **More TBD** | Mod/ZScript data-driven | Balance pass required |
+
+**Design intent**
+
+- Pick happens in **Setup only** — server validates choice, replicates
+  archetype id in the predator snapshot. No mid-round class swap.
+- Archetypes modify **player predator stats** (speed, health, damage,
+  height, sound radii, optional melee) — they do **not** replace the
+  predator with an AI monster actor.
+- The predator remains a **human player** with stealth + role weapons;
+  monster class is a **loadout template**, not membership in the ambient
+  monster spawn pool.
+- Survivors may learn archetype **after reveal** (HUD callout, distinct
+  pain/death sounds, or brief silhouette) so counter-play is possible.
+
+**Engine surface (future)**
+
+- `EHCDEPredatorArchetype` enum or string table in `d_net_predator.h`
+- Snapshot field: `PredatorArchetypeId` alongside `PredatorPlayerNum`
+- ZScript: derived classes under `wadsrc/static/zscript/actors/predator/`
+  (e.g. `HCDEPredatorPawn_Stalker`) or a single pawn with data-driven
+  stat blocks
+- Setup UI: ZScript menu or console `predator_pick <archetype>` validated
+  by server during Setup window
+- CVAR candidates: `sv_predator_archetype_allowlist`, per-archetype enable
+  flags for operators
+
+**Open archetype questions**
+
+1. **Visual model** — third-person only for predator, or first-person with
+   themed hands? Full monster sprite risks confusion with real monsters on
+   radar unless rules differ.
+2. **Weapons per archetype** — shared predator arsenal with stat mods, or
+   unique weapon sets per class?
+3. **Rotation fairness** — random archetype if no pick before Setup timer
+   expires?
 
 ### Survival rules
 
@@ -74,8 +123,9 @@ Captured from design discussion. These are intent, not implemented behavior.
 ### Round flow (revised from early scaffold)
 
 1. **Waiting** — enough players to start.
-2. **Setup** — server assigns predator (`pr_predator`); survivors receive
-   starting loadout/currency; predator receives predator kit.
+2. **Setup** — server assigns predator (`pr_predator`); predator **picks
+   archetype** (monster-class template); survivors receive starting
+   loadout/currency.
 3. **Hunt** — monsters spawn, roam, and **respawn**; survivors farm monsters
    and search for the predator; predator picks off survivors (**no survivor
    respawn**). Radar active for all. Late joiners spectate.
@@ -103,6 +153,9 @@ The early scaffold's dedicated **Buy** phase may shrink to a short
    until a combined soak proves safe.
 5. **Spectator UX.** Late join and dead-player spectate need a clear camera
    mode and HUD (radar may be spectator-only or disabled — TBD).
+6. **Archetype vs ambient monsters.** Predator archetypes must be
+   distinguishable from respawning map monsters on radar and audio, or
+   survivors cannot tell hunter from horde.
 
 ## Reference shape (engine)
 
@@ -160,9 +213,10 @@ only until the state enum is updated in code.
   whether buy becomes armory/earn-only per design notes above.
 - **Phase 4.** Role gameplay:
   - predator selection + `HCDEPredatorPawn` wiring
-  - invisibility / reveal on fire and kill
-  - predator weapon kit
-  - Aliens-style radar replication
+  - Setup-phase **archetype pick** (monster-class stat templates)
+  - invisibility / reveal on fire and kill (per-archetype tuning)
+  - predator weapon kit (shared or per-archetype)
+  - Aliens-style radar replication (predator signature per archetype)
   - monster spawn/roam loop during Hunt
   - kill-reward currency (monsters + predator bonus)
 - **Phase 5.** Soak on dedicated server: late-join spectate, no-respawn
