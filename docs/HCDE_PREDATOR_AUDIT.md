@@ -1,6 +1,6 @@
 # HCDE Roadmap #12 — Predator Mode
 
-**Last updated:** 2026-06-15
+**Last updated:** 2026-06-16
 **Status:** Phase 1 scaffold and Phase 2 snapshot contract landed
 default-off; role gameplay, radar, stealth, and kill-reward loop remain pending.
 
@@ -101,16 +101,33 @@ stats and playstyle:
 
 Every **survivor** (non-predator player) also chooses a class during
 **Setup**. Survivor classes are **human team roles** — not monster
-templates — tuned for hunting, holding ground, or farming monsters under
-survival pressure:
+templates — built around **cooperative survival**: players still loot the
+map for weapons, ammo, and health pickups, but **classes support each
+other** with role abilities (healing, radar, buffs, deployables).
 
-| Example class | Strengths | Weaknesses |
+| Example class | Combat role | Team support |
 | --- | --- | --- |
-| **Assault** | Balanced weapons, solid DPS vs monsters and predator | No standout team utility |
-| **Scout** | Faster movement, wider radar range or faster radar refresh | Lower health, weaker direct duel vs predator |
-| **Heavy** | High health, damage resistance, anchors chokepoints | Slow, loud on radar, poorer monster-farming tempo |
-| **Technician** | Bonus currency from monster kills, deployable gadgets TBD | Light weapons, relies on positioning |
+| **Assault** | Balanced DPS vs monsters and predator | Minor: can share ammo drops faster / resupply aura TBD |
+| **Scout** | Fast flanks, predator spotting | **Radar pulse** — brief team-wide enemy reveal or extended blip range |
+| **Heavy** | Anchors chokepoints, absorbs damage | **Suppress** — draws monster aggro or shields nearby allies briefly TBD |
+| **Medic** | Light weapons, stays mid-line | **Heal allies** — targeted or AoE heal on teammates (not self-spam infinite) |
+| **Technician** | Moderate DPS, utility focus | **Gadgets** — deployables (sentry, barrier, currency beacon); bonus monster-kill credits |
 | **More TBD** | Mod/ZScript data-driven | Balance pass required |
+
+**Cooperative support (core pillar)**
+
+Survivors are a **team**, not solo deathmatchers. Besides map pickups:
+
+- **Medic** can **heal other players** — restored health is server-authoritative;
+  medkits on the map remain valuable but medics extend team sustain during
+  a no-respawn round.
+- **Scout** improves team awareness (radar/share intel) so the group can hunt
+  the predator together.
+- **Heavy / Technician** provide space control and objective tools so weaker
+  classes can keep farming monsters safely.
+- Support abilities are **class abilities**, not unlimited inventory cheats —
+  cooldowns, range limits, and/or consumable charges (medkit charges, battery
+  packs) keep healing from negating survival stakes.
 
 **Design intent**
 
@@ -118,8 +135,10 @@ survival pressure:
   `SurvivorClassId` in the predator snapshot (or a dedicated per-player
   mode slice). No mid-round respec.
 - Classes define **starting loadout**, **movement/health modifiers**, and
-  optional **team utility** (radar buffs, traps, healing — TBD). Kill-earned
+  **active team support** (heal, radar buff, deployables). Kill-earned
   currency still applies; classes may modify earn rate or spend discounts.
+- **Map loot still matters** — classes supplement pickups; they do not
+  replace exploring the map for gear.
 - **Duplicate classes allowed** by default (multiple Scouts, etc.) unless
   operators enable `sv_predator_unique_classes` or similar.
 - Late joiners who missed Setup **cannot pick a class** that round — they
@@ -136,14 +155,29 @@ survival pressure:
   role gating (predator vs survivor)
 - UI: class select during Setup window alongside predator archetype pick
 
+**Support ability rules (draft)**
+
+1. **Healing is server-validated.** Medic heal requests are commands;
+   server checks range, line of sight, cooldown/charges, and target is an
+   alive survivor teammate. No client-side HP writes.
+2. **Cannot revive dead players** — healing only applies to living survivors;
+   death still means spectate until End (unless a future defibrillator item
+   is added as rare map loot, not default medic kit).
+3. **Predator interaction** — healing during combat is allowed but may have
+   cast time or interruption on damage to prevent immovable deathballs.
+4. **Self-sustain limits** — medic self-heal weaker than ally-heal, or
+   ally-heal only, to encourage sticking with the team.
+
 **Open survivor-class questions**
 
-1. **Team composition caps** — max one Technician? min one Scout for radar
-   fantasy? Operator CVARs vs hardcoded limits.
+1. **Team composition caps** — max one Medic? max two Technicians? Operator
+   CVARs vs hardcoded limits.
 2. **Currency interaction** — flat earn rates per class, or class only
    affects starting gear and stats?
 3. **Visual identity** — distinct player skins per class for predator
    counter-play after reveal.
+4. **Heal tuning** — charge-based medkit vs cooldown aura; whether medic
+   can heal through walls; cap on % HP restored per Hunt phase.
 
 ### Class selection flow (Setup)
 
@@ -217,6 +251,8 @@ The early scaffold's dedicated **Buy** phase may shrink to a short
    survivors cannot tell hunter from horde.
 7. **Class picks are Setup-only.** Survivor and predator selections lock
    at Hunt start; late joiners spectate without a class pick that round.
+8. **Team support is server-authoritative.** Heals, buffs, and deployables
+   validate on the server; clients show VFX/audio only after grant.
 
 ## Reference shape (engine)
 
@@ -277,6 +313,7 @@ only until the state enum is updated in code.
   - Setup-phase **predator archetype** + **survivor class** picks
   - invisibility / reveal on fire and kill (per-archetype tuning)
   - per-class loadouts (predator archetypes + survivor classes)
+  - cooperative support abilities (medic heal, scout radar, technician gadgets)
   - Aliens-style radar replication (signatures per role/class)
   - monster spawn/roam loop during Hunt
   - kill-reward currency (monsters + predator bonus; class earn modifiers)
