@@ -110,37 +110,67 @@ void FState::SetAction(const char *name)
 }
 
 
-void FState::CheckCallerType(AActor *self, AActor *stateowner)
+bool FState::MatchesCallerType(AActor *self, AActor *stateowner) const
 {
-	auto CheckType = [this](AActor *check, PType *requiredType)
+	if (ActionFunc == nullptr || ActionFunc->ImplicitArgs < 1)
 	{
-		// This should really never happen. Any valid action function must have actor pointers here.
+		return true;
+	}
+
+	auto MatchesType = [this](AActor *check, PType *requiredType)
+	{
 		if (!requiredType->isObjectPointer())
 		{
-			ThrowAbortException(X_OTHER, "Bad function prototype in function call to %s", ActionFunc->PrintableName);
+			return false;
 		}
 		auto cls = static_cast<PObjectPointer*>(requiredType)->PointedClass();
 		if (check == nullptr)
 		{
-			ThrowAbortException(X_OTHER, "%s called without valid caller. %s expected", ActionFunc->PrintableName, cls->TypeName.GetChars());
+			return false;
 		}
-		if (!(StateFlags & STF_DEHACKED) && !check->IsKindOf(cls))
+		if (StateFlags & STF_DEHACKED)
 		{
-			ThrowAbortException(X_OTHER, "Invalid class %s in function call to %s. %s expected", check->GetClass()->TypeName.GetChars(), ActionFunc->PrintableName, cls->TypeName.GetChars());
+			return true;
 		}
+		return check->IsKindOf(cls);
 	};
 
-	if (ActionFunc->ImplicitArgs >= 1)
+	auto argtypes = ActionFunc->Proto->ArgumentTypes;
+	if (!MatchesType(self, argtypes[0]))
 	{
-		auto argtypes = ActionFunc->Proto->ArgumentTypes;
-
-		CheckType(self, argtypes[0]);
-
-		if (ActionFunc->ImplicitArgs >= 2)
-		{
-			CheckType(stateowner, argtypes[1]);
-		}
+		return false;
 	}
+	if (ActionFunc->ImplicitArgs >= 2)
+	{
+		return MatchesType(stateowner, argtypes[1]);
+	}
+	return true;
+}
+
+void FState::CheckCallerType(AActor *self, AActor *stateowner)
+{
+	if (ActionFunc == nullptr || ActionFunc->ImplicitArgs < 1)
+	{
+		return;
+	}
+
+	auto argtypes = ActionFunc->Proto->ArgumentTypes;
+	if (!argtypes[0]->isObjectPointer())
+	{
+		ThrowAbortException(X_OTHER, "Bad function prototype in function call to %s", ActionFunc->PrintableName);
+	}
+
+	if (MatchesCallerType(self, stateowner))
+	{
+		return;
+	}
+
+	auto cls = static_cast<PObjectPointer*>(argtypes[0])->PointedClass();
+	if (self == nullptr)
+	{
+		ThrowAbortException(X_OTHER, "%s called without valid caller. %s expected", ActionFunc->PrintableName, cls->TypeName.GetChars());
+	}
+	ThrowAbortException(X_OTHER, "Invalid class %s in function call to %s. %s expected", self->GetClass()->TypeName.GetChars(), ActionFunc->PrintableName, cls->TypeName.GetChars());
 }
 
 TArray<VMValue> actionParams;

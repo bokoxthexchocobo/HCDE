@@ -1045,6 +1045,17 @@ struct FHCDELiveNativeSendScratch
 };
 
 static uint8_t	CurrentRoomID = 0u;	// Ignore commands not from this room (useful when transitioning levels).
+// Server room id a late-joining guest must adopt on its first level load. The
+// room id is a monotonic per-process generation counter (++CurrentRoomID per
+// level transition), NOT a function of map identity. A guest that connects mid
+// session has not walked through the host's prior transitions, so a fresh
+// ++ from 0 would leave it one or more rooms behind the host (e.g. guest=1 vs
+// host=2 after one map change). Every server snapshot would then be rejected as
+// a stale-room envelope and the client would freeze at the join with zero
+// snapshots applied. The bootstrap control service carries the host's current
+// room; we stash it here and override CurrentRoomID at the next level load.
+// -1 means "no pending adoption" (normal monotonic increment).
+static int	HCDEPendingAdoptRoomID = -1;
 
 void Net_TraceSetSvGametype(int value, const char* reason)
 {
@@ -4327,6 +4338,7 @@ void Net_ClearBuffers()
 		state.CurrentNetConsistency = state.LastVerifiedConsistency = state.ConsistencyAck = state.ResendConsistencyFrom = -1;
 		state.CurrentSequence = state.SequenceAck = state.ResendSequenceFrom = -1;
 		state.AppliedSequence = -1;
+		state.InputGapStallTic = -1;
 		state.Flags = 0;
 
 		for (int j = 0; j < BACKUPTICS; ++j)
@@ -4384,6 +4396,7 @@ void Net_ClearBuffers()
 	MutedClients = 0u;
 	LateJoinSyncPending = 0u;
 	CurrentRoomID = 0u;
+	HCDEPendingAdoptRoomID = -1;
 	NetworkClients.Clear();
 	netgame = multiplayer = false;
 	LastSentConsistency = CurrentConsistency = 0;
@@ -4862,6 +4875,19 @@ void Net_ResetCommands(bool midTic)
 {
 	bCommandsReset = midTic;
 	++CurrentRoomID;
+	// Late-join room adoption: if the host told us its current room during the
+	// bootstrap handshake, snap to it now (the guest only loads a single level
+	// on join, so the monotonic ++ above cannot reach the host's generation on
+	// its own). Consume the pending value so subsequent in-session transitions
+	// resume normal lockstep incrementing. Applied before the ResendID loop
+	// below so every per-client cursor is anchored to the adopted room.
+	if (HCDEPendingAdoptRoomID >= 0)
+	{
+		DebugTrace::Markf("net", "late-join room adopt %u -> %u (host bootstrap)",
+			unsigned(CurrentRoomID), unsigned(HCDEPendingAdoptRoomID));
+		CurrentRoomID = uint8_t(HCDEPendingAdoptRoomID);
+		HCDEPendingAdoptRoomID = -1;
+	}
 	// A room/map change invalidates old waiting state. Leaving it set can stop
 	// the first command for the next map from being generated.
 	Net_ClearStaleWaitingFlags();
@@ -5210,6 +5236,23 @@ static void ClientConnecting(int client)
 			// "No player N start" before the setup handshake can finish.
 			SET_PLAYER_STATE(&players[client], client, PST_ENTER, "runtime_connect_admitted");
 		}
+
+		// Seed only AppliedSequence on a truly fresh slot (AppliedSequence < 0 after
+		// Net_ResetClientState). This prevents the multi-thousand-tic backlog that
+		// occurs when CurrentSequence jumps on first input while AppliedSequence
+		// starts at -1 and can only advance 1+catchup per world tic. We seed it
+		// just behind the late-join replay target (currentSequence-1) so the first
+		// received command has a short, bounded distance to drain.
+		//
+		// We deliberately do NOT touch CurrentSequence or SequenceAck here. Those
+		// live in the client's native command sequence namespace; seeding them with
+		// the authority's global ClientTic creates a cross-namespace mismatch on
+		// rejoin to a reused slot. The first client input packet will set them
+		// correctly from the client's reported base/ack values. Over-eager seeding
+		// of all three fields was the cause of the "less smooth forward movement"
+		// regression (frozen ack, perpetual passive resend, backlog growth).
+		if (state.AppliedSequence < 0)
+			state.AppliedSequence = max<int>(currentSequence - 1, 0);
 	}
 
 	Net_SetLateJoinSyncPending(client, max<int>(currentSequence - 1, 0), max<int>(currentConsistency - 1, 0), "runtime-connect");
@@ -5295,6 +5338,7 @@ void Net_ResetClientState(int clientNum)
 	state.SequenceAck = -1;
 	state.CurrentSequence = -1;
 	state.AppliedSequence = -1;
+	state.InputGapStallTic = -1;
 	state.ResendConsistencyFrom = -1;
 	state.ConsistencyAck = -1;
 	state.LastVerifiedConsistency = -1;
@@ -5626,8 +5670,23 @@ static void CheckLevelStart(int client, int delayTics)
 			&& gametic > ClientTic)
 		{
 			const int seatTicDup = max<int>(TicDup, 1);
-			const int seatSequence = gametic / seatTicDup;
-			ClientTic = gametic;
+			// Seat the local clock with the normal prediction lead ALREADY
+			// established instead of pinning ClientTic == gametic (lead 0). A
+			// lead-0 seat is the cause of the "initial hesitation on joining":
+			// the world tic gate's rescue at the bottom of TryRunTics only grants
+			// availableTics when currentLead > 0, so for the first frame(s) after
+			// the jump availableTics = (lowestSequence - gametic/TicDup) + 1 stays
+			// <= 0 and the world runs zero tics -- a visible spawn-in stutter --
+			// until prediction lead organically rebuilds. Starting at the desired
+			// lead gives the gate immediate headroom so the world advances from
+			// the very first post-seat frame. ClientTic / seatTicDup is kept equal
+			// to the seated sequence so the (ClientTic == CurrentSequence*TicDup)
+			// build-cursor invariant holds, and the downstream prediction-lead
+			// clamp leaves ClientTic untouched (it equals maxClientTic exactly).
+			const int seatLead = clamp<int>(
+				HCDEMovementGetAdaptiveDesiredLead(int(*cl_net_prediction_lead)), 0, 8);
+			ClientTic = gametic + seatLead * seatTicDup;
+			const int seatSequence = ClientTic / seatTicDup;
 			if (consoleplayer >= 0 && consoleplayer < MAXPLAYERS)
 			{
 				auto& seatState = ClientStates[consoleplayer];
@@ -5641,8 +5700,8 @@ static void CheckLevelStart(int client, int delayTics)
 			// commands that belong to a different tic range.
 			P_ClearPredictionData();
 			DebugTrace::Markf("net.levelstart",
-				"late-join seat fast-forward gametic=%d clienttic=%d seat-seq=%d console=%d room=%u map=%s",
-				gametic, ClientTic, seatSequence, consoleplayer, unsigned(CurrentRoomID),
+				"late-join seat fast-forward gametic=%d clienttic=%d seat-seq=%d seat-lead=%d console=%d room=%u map=%s",
+				gametic, ClientTic, seatSequence, seatLead, consoleplayer, unsigned(CurrentRoomID),
 				primaryLevel != nullptr ? primaryLevel->MapName.GetChars() : "<none>");
 		}
 
@@ -8062,6 +8121,17 @@ void Net_Initialize()
 uint8_t Net_GetCurrentRoomID()
 {
 	return CurrentRoomID;
+}
+
+// Stash the host's current room id (from the bootstrap control service) so the
+// guest's next level load adopts it instead of incrementing from a stale 0.
+// See HCDEPendingAdoptRoomID and Net_ResetCommands. Authorities ignore this -
+// they own the room counter and must keep incrementing it monotonically.
+void Net_AdoptServerRoomID(int room)
+{
+	if (I_IsLocalHCDEServiceAuthority() || room < 0 || room > 255)
+		return;
+	HCDEPendingAdoptRoomID = room;
 }
 
 void Net_WriteInt8(uint8_t it)

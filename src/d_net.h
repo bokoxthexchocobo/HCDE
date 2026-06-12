@@ -147,6 +147,7 @@ struct FClientNetState
 	int				SequenceAck = -1;		// The last sequence the client reported from us.
 	int 			CurrentSequence = -1;	// The last sequence we've gotten from this client.
 	int 			AppliedSequence = -1;	// Authority cursor: the last command sequence actually fed to the think. The wall-clock authority can reach a gametic before that tic's command has arrived, so consumption is decoupled from gametic - this advances by at most one per tic toward CurrentSequence so every received command runs exactly once (no blank-command stalls, no dropped late commands).
+	int 			InputGapStallTic = -1;	// Authority input-gap watchdog: gametic when CurrentSequence first stalled while the client kept sending higher sequences. -1 = not stalled. If a lost input tic is never resent (a client whose own SequenceAck is masked by the snapshot stream never re-requests it) this lets the authority resync the input stream forward instead of freezing the player's input forever. See UnwrapHCDELiveClientInputPayload.
 
 	// Every packet includes consistencies for tics that client ran. When
 	// a world tic is ran, the local client will store all the consistencies
@@ -197,6 +198,7 @@ int HCDEGetClientPredictionEndCapTic();
 void Net_NewClientTic();
 void Net_Initialize();
 uint8_t Net_GetCurrentRoomID();
+void Net_AdoptServerRoomID(int room);
 void Net_BeginRuntimeBootstrap(int client, const char* reason = nullptr);
 void Net_RequestRuntimeResync(int client, const char* reason = nullptr);
 void Net_WriteInt8(uint8_t);

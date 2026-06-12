@@ -4644,13 +4644,30 @@ static int Net_CompactHCDEReplicatedActors()
 		const bool staleActor = actor == nullptr || (actor->ObjectFlags & OF_EuthanizeMe) != 0;
 		if (staleActor && actor != nullptr)
 			Net_ForgetCoopMapSpawnActor(actor);
+		// A co-op projectile whose actor is gone (Destroy()ed, or the GC has
+		// already nulled the soft pointer before this pass) is gone for good.
+		// Emit its despawn event so late-join/repair clients retire their mirror,
+		// then mark the ref retired so it leaves on the normal retire-expiry path.
+		// CRITICAL: do NOT gate this on actor != nullptr. When the projectile is
+		// destroyed the TObjPtr is usually already null here, so the old
+		// actor!=nullptr guard skipped recording the despawn entirely. The ref
+		// then fell through to the "live remote baseline" branch below (a
+		// HREP_SOURCE_COOP projectile matches the pickup-source test) and lingered
+		// for ten seconds while still being streamed as a frozen actor-delta,
+		// producing a ghost projectile on clients that never despawned.
 		if (staleActor
-			&& actor != nullptr
 			&& I_IsLocalHCDEServiceAuthority()
 			&& Net_CoopIsProjectileRef(ref)
 			&& !ref.Retired)
 		{
-			Net_RecordCoopProjectileDespawnEvent(ref, actor, actor->health);
+			Net_RecordCoopProjectileDespawnEvent(ref, actor,
+				actor != nullptr ? actor->health : ref.CoopVisualTargetHealth);
+			Net_SetHCDEReplicatedActorPtr(ref, nullptr);
+			ref.Active = false;
+			ref.Retired = true;
+			ref.RetireTic = gametic;
+			ref.LastTouchedTic = gametic;
+			++HCDELiveProfile.SharedActorRetired;
 		}
 		if (staleActor && Net_ShouldRecordHCDEPickupRetireEvent(ref, actor))
 		{
@@ -4662,9 +4679,17 @@ static int Net_CompactHCDEReplicatedActors()
 			ref.LastTouchedTic = gametic;
 			++HCDELiveProfile.SharedActorRetired;
 		}
+		// "Live remote baselines" are actor-less refs we deliberately keep so a
+		// late-joining client can still learn the entity exists. That only makes
+		// sense for world PICKUPS (the item is still there; each client spawns its
+		// own visual). Projectiles and monsters with a null actor are gone and
+		// must be retired, so restrict the keep-alive to the pickup category.
+		// HREP_SOURCE_COOP alone is not sufficient - co-op projectiles also carry
+		// that source and would otherwise be preserved as ghost baselines.
 		const bool liveRemoteBaseline = actor == nullptr
 			&& ref.Active
 			&& !ref.Retired
+			&& ref.Category == HREP_ACTOR_PICKUP
 			&& Net_IsHCDEAuthorityPickupSource(ref.Source)
 			&& ref.LastTouchedTic > 0
 			&& gametic - ref.LastTouchedTic <= TICRATE * 10;
@@ -6389,8 +6414,19 @@ static bool Net_ShouldSendCoopAuthorityEventReplay(int clientNum)
 {
 	if (Net_IsInvasionModeEnabled() || !Net_ShouldRecordCoopMapSpawnIndex())
 		return false;
+	if (I_IsServerReservedSlot(clientNum))
+		return false;
 	if (!HCDELivePeerHasCapability(clientNum, HCDELiveCapAuthorityEventsV1))
 		return false;
+	// Send the authority-event replay during the initial late-join bootstrap
+	// window AND during on-demand baseline repair windows. The repair path is
+	// load-bearing: when a client detects a stale mirror it wipes its own
+	// replication baseline (Net_ResetCoopClientReplicationBaseline) and asks
+	// for a repair, expecting the seeded event replay (spawn/despawn history)
+	// to rebuild it. Gating this on the bootstrap window alone strands those
+	// clients with orphaned projectile mirrors that can never despawn. Repair
+	// windows are bounded (HCDEActorBaselineRepairWindowTics with a 1-second
+	// request cooldown), so steady-state snapshots still skip this payload.
 	if (!Net_IsLateJoinSyncPending(clientNum) && !HCDEActorBaselineRepairActive(clientNum))
 		return false;
 	return HCDEFirstRecentAuthorityEventId() != 0u;
@@ -6400,7 +6436,16 @@ static bool HCDEAppendCoopDeadSpawns(int clientNum, uint8_t* output, size_t outp
 {
 	if (!I_IsLocalHCDEServiceAuthority() || !Net_ShouldRecordCoopMapSpawnIndex())
 		return true;
+	if (I_IsServerReservedSlot(clientNum))
+		return true;
 	if (HCDECoopDeadMapSpawnIndices.Size() == 0u)
+		return true;
+	// Dead-spawn indices are needed during the initial late-join bootstrap and
+	// during on-demand baseline repair windows (a repairing client has wiped
+	// its replication baseline and must re-learn which map spawns are dead).
+	// Outside those bounded windows the list is skipped, so live clients do
+	// not pay the per-tic CPU/bandwidth cost of re-sending it every snapshot.
+	if (!Net_IsLateJoinSyncPending(clientNum) && !HCDEActorBaselineRepairActive(clientNum))
 		return true;
 
 	const size_t startCursor = cursor;

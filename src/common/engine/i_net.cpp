@@ -4058,6 +4058,11 @@ static bool Guest_ContactHost(void* unused)
 					unsigned(ReadBE32(&NetBuffer[HCDEServiceHeaderSize + 1u])),
 					unsigned(ReadBE32(&NetBuffer[HCDEServiceHeaderSize + 5u])),
 					unsigned(ReadBE32(&NetBuffer[HCDEServiceHeaderSize + 9u])));
+				// Adopt the host's room id so our upcoming level load lands in the
+				// host's room generation instead of incrementing from a stale 0.
+				// Without this the guest sits one room behind after any host map
+				// change and every snapshot is rejected as a stale-room envelope.
+				Net_AdoptServerRoomID(int(NetBuffer[HCDEServiceHeaderSize]));
 				AckHCDEControlService(HPS_BOOTSTRAP_ACK);
 				break;
 			case HPS_START_GAME:

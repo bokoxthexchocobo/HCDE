@@ -571,6 +571,8 @@ void DPSprite::SetState(FState *newstate, bool pending)
 		{
 			FState *nextstate;
 			FStateParamInfo stp = { newstate, STATE_Psprite, ID };
+			AActor *actionSelf = Owner->mo;
+			AActor *actionOwner = Caller;
 			if (newstate->ActionFunc != nullptr && newstate->ActionFunc->Unsafe)
 			{
 				// If an unsafe function (i.e. one that accesses user variables) is being detected, print a warning once and remove the bogus function. We may not call it because that would inevitably crash.
@@ -578,7 +580,19 @@ void DPSprite::SetState(FState *newstate, bool pending)
 					FState::StaticGetStateName(newstate).GetChars(), newstate->ActionFunc->PrintableName);
 				newstate->ActionFunc = nullptr;
 			}
-			if (newstate->ActionFunc != nullptr && newstate->CallAction(Owner->mo, Caller, &stp, &nextstate))
+			// Inventory-item overlays converted from DECORATE (e.g. M&A HealingHealth
+			// : PowerTargeter) compile state actions with the item as self, while weapon
+			// overlays correctly use the player pawn. Fall back to item-as-self when the
+			// default pairing fails but the swapped pairing matches.
+			if (newstate->ActionFunc != nullptr && Caller != nullptr
+				&& !Caller->IsKindOf(NAME_Weapon)
+				&& !newstate->MatchesCallerType(actionSelf, actionOwner)
+				&& newstate->MatchesCallerType(Caller, Owner->mo))
+			{
+				actionSelf = Caller;
+				actionOwner = Owner->mo;
+			}
+			if (newstate->ActionFunc != nullptr && newstate->CallAction(actionSelf, actionOwner, &stp, &nextstate))
 			{
 				// It's possible this call resulted in this very layer being replaced.
 				if (ObjectFlags & OF_EuthanizeMe)

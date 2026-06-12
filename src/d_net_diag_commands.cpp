@@ -234,7 +234,18 @@ void Net_ReadUserInfo(int client, TArrayView<uint8_t>& stream)
 
 void Net_SetMapLoadInfo(TArrayView<uint8_t>& stream)
 {
-	WriteFString(startmap, stream);
+	// Late-joiners must load the map the server is CURRENTLY running, not the
+	// session's original startmap. `startmap` only records the map the host first
+	// launched; after any level transition (e.g. MAP01 -> MAP02) it is stale.
+	// Sending the stale name puts the joiner in the wrong room, so every server
+	// snapshot is rejected as a stale-room envelope ("ignored stale ... snapshot
+	// envelope room=2 current=1") and the client freezes at the join with zero
+	// snapshots applied. Prefer the live level name whenever a level is loaded;
+	// fall back to startmap during initial host setup before the level exists.
+	FString currentMap = startmap;
+	if (gamestate == GS_LEVEL && primaryLevel != nullptr && primaryLevel->MapName.IsNotEmpty())
+		currentMap = primaryLevel->MapName;
+	WriteFString(currentMap, stream);
 	WriteInt32(rngseed, stream);
 
 	auto load = Args->CheckValue(FArg_loadgame);

@@ -168,6 +168,7 @@ public:
 	void ClearAction() { ActionFunc = NULL; }
 	void SetAction(const char *name);
 	bool CallAction(AActor *self, AActor *stateowner, FStateParamInfo *stateinfo, FState **stateret);
+	bool MatchesCallerType(AActor *self, AActor *stateowner) const;
 	void CheckCallerType(AActor *self, AActor *stateowner);
 
 	static PClassActor *StaticFindStateOwner (const FState *state);

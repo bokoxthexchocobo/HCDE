@@ -599,6 +599,60 @@ static bool HCDETryApplyNativeClientInputPayload(int clientNum, const uint8_t* p
 			commandEvents[commandOffset].SetData(eventScratch, int(eventCursor));
 			commandPresent[commandOffset] = HCDEReadUserCmdFields(body, bodyBytes, bodyCursor, commands[commandOffset]);
 		}
+		// Authority input-gap resync watchdog.
+		//
+		// The apply loop below only advances CurrentSequence on a strictly
+		// contiguous stream (seq == CurrentSequence + 1); any forward gap sets
+		// CF_MISSING_SEQ and breaks without advancing, expecting the client to
+		// resend the missing tic. That recovery silently fails for a real
+		// client whose own SequenceAck is fed by the inbound snapshot stream
+		// rather than the authority's ack of its input: such a client believes
+		// the server already has everything and never re-requests the dropped
+		// tic. A single input packet lost during the heavy frame around a peer
+		// connect/disconnect then freezes this client's CurrentSequence FOREVER:
+		//   - the authority keeps applying the last (stale) command for it,
+		//   - the per-client snapshot send window's passive-resend fires every
+		//     tic (startSequence - SequenceAck stays huge), splitting each tic's
+		//     snapshot into MAXSENDTICS-sized fragments (3+ packets/tic),
+		//   - which is exactly the persistent "really laggy after the 2nd
+		//     client joins then leaves" the remaining client reported.
+		// If the stream stays gapped past the recoverable window, resync the
+		// input cursor forward to the live block (carry-forward semantics: the
+		// skipped tics simply never run, which already happened during the
+		// stall) so the player un-freezes. Bounded by HCDEInputGapResyncTics so
+		// ordinary single-tic drops still heal via the normal resend path first.
+		// This mirrors Zandronum/Odamex tolerance of dropped client input - one
+		// stale tic is far better than a permanently frozen player.
+		const bool authorityOwnClientInput = I_IsLocalHCDEServiceAuthority()
+			&& !I_IsHCDEServiceAuthoritySlot(clientNum)
+			&& playerNum == clientNum;
+		if (authorityOwnClientInput && commandTics > 0
+			&& int(baseSequence) > pState.CurrentSequence + 1)
+		{
+			constexpr int HCDEInputGapResyncTics = 2 * TICRATE; // ~2s recoverable window
+			if (pState.InputGapStallTic < 0)
+				pState.InputGapStallTic = gametic;
+			else if (gametic - pState.InputGapStallTic > HCDEInputGapResyncTics)
+			{
+				const int resyncTo = int(baseSequence) - 1;
+				DebugTrace::Warningf("net",
+					"authority input-gap resync client=%d stuck-seq=%d -> %d incoming=%d stall-tics=%d gametic=%d room=%u",
+					clientNum, pState.CurrentSequence, resyncTo, int(baseSequence),
+					gametic - pState.InputGapStallTic, gametic, unsigned(CurrentRoomID));
+				// Jump both the receive cursor and the authority consumption
+				// cursor forward together. Advancing AppliedSequence too is
+				// essential: it normally chases CurrentSequence one tic per
+				// frame, so a bare CurrentSequence jump would replay ~hundreds
+				// of stale ring-buffer slots as garbage commands. Snapping them
+				// in lockstep makes the lost span a clean no-op.
+				pState.CurrentSequence = resyncTo;
+				if (pState.AppliedSequence < resyncTo)
+					pState.AppliedSequence = resyncTo;
+				pState.InputGapStallTic = -1;
+				ClientStates[clientNum].Flags &= ~(CF_MISSING_SEQ | CF_RETRANSMIT_SEQ);
+				ClientStates[clientNum].ResendSequenceFrom = -1;
+			}
+		}
 		for (uint8_t i = 0u; i < commandTics; ++i)
 		{
 			const int seq = int(baseSequence) + int(i);
@@ -621,6 +675,9 @@ static bool HCDETryApplyNativeClientInputPayload(int clientNum, const uint8_t* p
 				|| I_IsHCDEServiceAuthoritySlot(playerNum) || !I_IsHCDEServiceAuthoritySlot(clientNum))
 			{
 				pState.CurrentSequence = seq;
+				// Stream advanced cleanly; disarm the input-gap watchdog.
+				if (authorityOwnClientInput)
+					pState.InputGapStallTic = -1;
 			}
 			if (!I_IsLocalHCDEServiceAuthority() && !I_IsHCDEServiceAuthoritySlot(playerNum))
 				pState.SequenceAck = seq;
@@ -665,6 +722,7 @@ static bool UnwrapHCDELiveClientInputPayload(int clientNum, size_t payloadSize, 
 	if ((gameplayFlags & HCDEGameplayFlagActorRepairRequest) != 0u
 		&& I_IsLocalHCDEServiceAuthority()
 		&& Net_ShouldRecordCoopMapSpawnIndex()
+		&& !I_IsServerReservedSlot(clientNum)
 		&& gametic >= HCDECoopServerActorRepairCooldownUntilTic[clientNum])
 	{
 		HCDECoopServerActorRepairCooldownUntilTic[clientNum] = gametic + TICRATE;
