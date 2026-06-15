@@ -218,13 +218,59 @@ on the 3090 overnight. Everything lands on the 40 TB RAID10.
 with the 3090 worker; later add a second PC or a rented cloud GPU without design
 changes.
 
-## 8. Adopt the body, build the upbringing
+## 8. The brain and the body
 
-The hard part of an OS agent (the "body") is largely solved and openly licensed.
-**Adopt it.** The novel, valuable part (the "upbringing" — the trust ladder + learning
-loop) is what we build.
+A useful split: the **body** (senses + hands) is largely solved and openly licensed —
+**adopt it**. The **brain** (cognition + memory + motivation) and the **upbringing**
+(trust ladder + learning loop) are what we build. Perception tools like Screenpipe and
+control tools like agent-cu/UI-TARS are the *body*; they let K8ti interact. They are
+**not** the thing that thinks or "feels."
 
-### 8.1 The two ways to operate any OS (use both)
+### 8.1 The brain (cognition core) — the part that "thinks and feels"
+
+The brain is four cooperating systems. Don't conflate them with the body:
+
+1. **Cognition (the "thinking") = the model itself.** K8ti is a reasoning-capable
+   **vision-language model** (UI-TARS is one such base). Given perception + memory + a
+   goal, it reasons and decides the next action. This is the *policy*. "Think before
+   acting" (explicit reasoning traces) is a property of the base model and the prompt
+   loop, not a separate component.
+2. **Executive function = the agent loop.** observe → plan → act → verify → reflect
+   (the "loopcraft" cycle). This turns a model that *answers once* into an agent that
+   *pursues a goal over many steps and self-corrects*. Without it, you have a chatbot,
+   not an assistant.
+3. **Memory = continuity / sense of self over time.** Short-term (context window) +
+   long-term (a vector store / RAG over Screenpipe's captured history and the data
+   lake). Identity-over-time emerges from persistent memory: "what was I doing, what do
+   I usually do, who is this person." This is what makes K8ti feel like *one* assistant
+   rather than a fresh stranger every session.
+4. **Reward / value model = the functional analog of "feeling."** A machine does not
+   feel like a human — subjective experience (qualia) is a genuine unknown, not
+   something you can implement. But the *functional* role of feeling — **valence
+   (this is going well / badly), confidence, uncertainty, and drive toward a goal** —
+   can be engineered as a **value/reward signal**. K8ti's auto-scorer (tests passed =
+   "good," reverted = "bad") is its raw affect; a learned **value model** that
+   *predicts* good/bad *before* acting is its internalized "gut feeling." That signal
+   is what motivates behavior and what training optimizes — the engine of "caring"
+   whether it succeeds. This is where "feel" lives in this architecture.
+
+> Summary: **body lets it interact; brain = model (think) + agent loop (act with
+> intent) + memory (continuity) + value model (the functional 'feel').**
+
+### 8.2 The body — perception and action (use both halves)
+
+- **Perception (senses):** **Screenpipe** — continuous local screen + audio capture,
+  accessibility-first text extraction (OCR fallback), Whisper transcription, searchable
+  episodic memory. It is K8ti's "eyes and ears that never stop," and a goldmine of
+  Rung-1 *Observe* demonstration data. It feeds the brain's memory; it is not the brain.
+  *(Privacy: continuous screen/audio recording is highly sensitive — keep it strictly
+  local, with redaction and consent controls. Screenpipe is local-first by design.)*
+- **Action (hands):** **agent-cu** (accessibility, deterministic — best for Observe and
+  reliable manipulation) + **UI-TARS** (vision + mouse/keyboard — best for
+  generalization) + shell/code execution in the sandbox (optionally **Open
+  Interpreter** as a separate executor backend — see §9 and §12).
+
+### 8.3 The two ways to operate any OS (use both)
 
 - **Vision-based** (screenshots + mouse/keyboard, e.g. UI-TARS): maximally portable
   across OSes/apps; local 7B is less reliable on long tasks. Best for *generalization*
@@ -239,8 +285,10 @@ loop) is what we build.
 | Layer | Use | Project | License |
 | --- | --- | --- | --- |
 | **Starting policy (model)** | K8ti's base weights, to fine-tune | **UI-TARS-7B** (ByteDance-Seed) | **Apache-2.0** (code *and* weights) |
+| **Perception / memory (senses)** | Continuous screen+audio capture, OCR/text, transcription, searchable memory | **Screenpipe** (mediar-ai) | **MIT core** (⚠️ `ee/` enterprise dir non-free; commercial source use may need a license — re-check) |
 | **OS control — Observe** | Accessibility capture (deterministic) | **agent-cu** (kortix-ai) | **MIT** |
 | **OS control — Manipulate/Execute** | Vision + mouse/keyboard | **UI-TARS** | **Apache-2.0** |
+| **Execute backend (optional)** | LLM-writes-and-runs-code loop | **Open Interpreter** | ⚠️ **AGPL-3.0** — use as a *separate, unmodified process only* (see §12) |
 | **Local engine** | Serve/infer the policy | **Ollama / llama.cpp** (or **vLLM**) | MIT / Apache-2.0 |
 | **Cross-platform shell** | One app, all OSes | **Avalonia** (reuse from StayVibin) | **MIT** |
 | **Eval environments** | Grade OS-agent ability | **OSWorld** / **WindowsAgentArena** | Apache-2.0 / MIT |
@@ -279,18 +327,29 @@ This is the irreplaceable asset. Suggested layout:
 
 ## 12. Licensing (the stack is deliberately permissive)
 
-Everything recommended is **MIT or Apache-2.0**, mutually compatible and compatible
-with keeping K8ti under the owner's own (MIT-style) terms. Nothing forces this project
-open; the fine-tuned K8ti weights remain fully owned.
+The **core** stack is deliberately **MIT or Apache-2.0**, mutually compatible and
+compatible with keeping K8ti under the owner's own (MIT-style) terms. Nothing in the
+core forces this project open; the fine-tuned K8ti weights remain fully owned. Two
+optional components carry conditions — handle them at arm's length.
 
-- ✅ Build a product on: UI-TARS (Apache-2.0, code+weights), agent-cu (MIT),
+- ✅ **Build the core on:** UI-TARS (Apache-2.0, code+weights), agent-cu (MIT),
   Ollama/llama.cpp (MIT), vLLM (Apache-2.0), Avalonia (MIT), OSWorld (Apache-2.0),
   WindowsAgentArena (MIT).
-- ⚠️ **Avoid as a base:** **Open Interpreter** and **aiden** are **AGPL-3.0** — a
-  *network copyleft* license. If you build on them and expose the result over a network
-  (even a home server API), you must release your **entire derivative** under AGPL, and
-  it is **incompatible with keeping K8ti MIT**. You may run them as separate standalone
-  tools, but do not fork them into the core.
+- ⚠️ **Screenpipe — mixed.** The repo `LICENSE.md` marks the **core + CLI as MIT**, but
+  the **`ee/` (enterprise) directory is a non-free commercial license**, and the
+  project's own messaging now describes the source as "free for personal use, commercial
+  use requires a license." ✅ Fine for personal local K8ti. ⚠️ If K8ti ever becomes a
+  commercial product, re-check the then-current license and avoid `ee/` features. Prefer
+  using its **REST API** rather than forking its source.
+- ⚠️ **Open Interpreter — AGPL-3.0 (network copyleft).** If you **fork/modify** it and
+  expose the result over a network (even a home-server API), you must release your
+  **entire derivative** under AGPL — **incompatible with keeping K8ti MIT**. ✅ But you
+  *may* run **stock, unmodified OI as a separate executor process** that K8ti calls over
+  its CLI/API (arm's-length, not linked into your code); this is the standard boundary.
+  Do **not** fork it into the core. (Also wrap it: OI's default is to *auto-run code* —
+  the opposite of the trust ladder — so gate it and run it inside the sandbox VM until
+  the Execute rung is earned.) *aiden* (AGPL-3.0) carries the same caution.
+- ℹ️ Not legal advice — confirm with counsel before any commercial release.
 
 ## 13. Relationship to StayVibin
 
