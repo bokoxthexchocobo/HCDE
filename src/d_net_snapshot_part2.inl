@@ -976,6 +976,82 @@ static bool HCDETryApplyNativeServerSnapshotPayload(int clientNum, const uint8_t
 			commandEvents[commandOffset].SetData(eventScratch, int(eventCursor));
 			commandPresent[commandOffset] = HCDEReadUserCmdFields(body, bodyBytes, bodyCursor, commands[commandOffset]);
 		}
+		// Client snapshot-gap resync watchdog (inbound mirror of the authority
+		// input-gap watchdog in HCDETryApplyNativeClientInputPayload).
+		//
+		// The loop below only advances CurrentSequence on a strictly contiguous
+		// stream (seq == CurrentSequence + 1); a forward gap sets CF_MISSING_SEQ
+		// and breaks WITHOUT advancing. On a non-authority client the world tic
+		// gate is lowestSequence = min over tic-gate players of CurrentSequence,
+		// so when a late joiner is seated at sequence S but the authority's live
+		// snapshots already carry that player's commands at S + hundreds (the
+		// world froze briefly during the late-join burst while the server kept
+		// running on), EVERY snapshot trips the gap test, CurrentSequence never
+		// advances, lowestSequence stays pinned below gametic, availableTics
+		// collapses to 0 and the client's world freezes permanently a few
+		// seconds behind the server -- the "can't spawn / can't move after late
+		// join" the user reported. The normal resend path cannot heal it: the
+		// missing tics are the client's OWN commands, which the authority already
+		// consumed and will never re-emit at the stale low sequence.
+		//
+		// When the gap persists past the recoverable window, snap the receive
+		// cursor forward to the live block (Zandronum/Odamex-style "render the
+		// latest server state"; the skipped tics simply never run locally, which
+		// already happened during the stall). Unfreezing CurrentSequence lets
+		// lowestSequence climb, which in turn lets the late-join frontier
+		// catch-up reseat (in TryRunTics) snap gametic forward and resume normal
+		// prediction. Timed in wall-clock ms because gametic is frozen for the
+		// duration of this exact stall, so a gametic-based timer would never
+		// elapse.
+		const bool clientSnapshotGatePlayer = !I_IsLocalHCDEServiceAuthority()
+			&& I_IsHCDEServiceAuthoritySlot(clientNum)
+			&& NetworkClients.InGame(playerNum)
+			&& !I_IsServerReservedSlot(playerNum);
+		if (clientSnapshotGatePlayer && commandTics > 0
+			&& int(baseSequence) > pState.CurrentSequence + 1)
+		{
+			constexpr int64_t HCDESnapshotGapResyncMS = 2000; // ~2s recoverable window
+			// A gap wider than a few seconds of tics can never be a recoverable
+			// single-packet drop; it is the late-join backlog freeze. Snap forward
+			// on first sight instead of idling another 2s with a frozen world.
+			constexpr int HCDESnapshotGapImmediateTics = 3 * TICRATE;
+			const int64_t nowMS = int64_t(I_msTime());
+			if (pState.SnapshotGapStallMS < 0)
+				pState.SnapshotGapStallMS = nowMS;
+			const bool gapTooWide = int(baseSequence) - pState.CurrentSequence > HCDESnapshotGapImmediateTics;
+			if (gapTooWide || nowMS - pState.SnapshotGapStallMS > HCDESnapshotGapResyncMS)
+			{
+				const int resyncTo = int(baseSequence) - 1;
+				DebugTrace::Warningf("net",
+					"client snapshot-gap resync from=%d player=%d stuck-seq=%d -> %d incoming=%d stall-ms=%lld gametic=%d clienttic=%d room=%u",
+					clientNum, int(playerNum), pState.CurrentSequence, resyncTo, int(baseSequence),
+					(long long)(nowMS - pState.SnapshotGapStallMS), gametic, ClientTic, unsigned(CurrentRoomID));
+				// Snap CurrentSequence (and AppliedSequence, which the authority
+				// consumption cursor chases one-per-tic) forward together so the
+				// lost span is a clean no-op rather than a replay of hundreds of
+				// stale ring-buffer slots.
+				pState.CurrentSequence = resyncTo;
+				if (pState.AppliedSequence < resyncTo)
+					pState.AppliedSequence = resyncTo;
+				// Forward the consistency cursor in lockstep. The per-player
+				// consistency stream (loop above) gates contiguously on
+				// CurrentNetConsistency exactly like CurrentSequence does, so
+				// leaving it parked at the stale value would simply trade the
+				// sequence-gap freeze for a permanent CF_MISSING_CON resend storm
+				// the moment the world un-freezes. Skipping the consistency span
+				// is correct: those tics never ran locally, and the next frame
+				// re-predicts from the authoritative snapshot anyway.
+				const int conResyncTo = int(baseConsistency) - 1;
+				if (pState.CurrentNetConsistency < conResyncTo)
+					pState.CurrentNetConsistency = conResyncTo;
+				pState.SnapshotGapStallMS = -1;
+				// Stop re-requesting the unrecoverable snapshot-stream span from
+				// the authority slot so the passive-resend storm winds down.
+				ClientStates[clientNum].Flags &= ~(CF_MISSING_SEQ | CF_RETRANSMIT_SEQ | CF_MISSING_CON | CF_RETRANSMIT_CON);
+				ClientStates[clientNum].ResendSequenceFrom = -1;
+				ClientStates[clientNum].ResendConsistencyFrom = -1;
+			}
+		}
 		for (uint8_t i = 0u; i < commandTics; ++i)
 		{
 			const int seq = int(baseSequence) + int(i);
@@ -997,6 +1073,9 @@ static bool HCDETryApplyNativeServerSnapshotPayload(int clientNum, const uint8_t
 				|| I_IsHCDEServiceAuthoritySlot(playerNum) || !I_IsHCDEServiceAuthoritySlot(clientNum))
 			{
 				pState.CurrentSequence = seq;
+				// Snapshot stream advanced cleanly; disarm the snapshot-gap watchdog.
+				if (clientSnapshotGatePlayer)
+					pState.SnapshotGapStallMS = -1;
 			}
 			if (!I_IsLocalHCDEServiceAuthority() && !I_IsHCDEServiceAuthoritySlot(playerNum))
 				pState.SequenceAck = seq;

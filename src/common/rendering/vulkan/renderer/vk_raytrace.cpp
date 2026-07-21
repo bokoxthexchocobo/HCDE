@@ -53,11 +53,25 @@ void VkRaytrace::SetLevelMesh(hwrenderer::LevelMesh* mesh)
 
 	if (mesh != Mesh)
 	{
+		// Level changes can arrive while the previous frame still references the
+		// old TLAS/BLAS through the fixed descriptor set. Retiring those
+		// acceleration structures without first draining the queue can produce a
+		// GPU-side fault on the next submit (observed as VK_ERROR_DEVICE_LOST
+		// during MAP01 -> MAP02 with vk_raytrace enabled). This is a map-load
+		// path, not a per-frame path, so a device idle wait is acceptable and
+		// mirrors the backend destructor's resource-lifetime fence.
+		if (Mesh != nullptr)
+			vkDeviceWaitIdle(fb->device->device);
 		Reset();
 		Mesh = mesh;
 		if (fb->RaytracingEnabled())
 		{
 			CreateVulkanObjects();
+			// Build commands are recorded on the transfer command buffer. Submit
+			// and wait here so the new acceleration structures are fully built
+			// before render descriptors can bind them on the first frame of the
+			// new map.
+			fb->GetCommands()->WaitForCommands(false, true);
 		}
 	}
 }

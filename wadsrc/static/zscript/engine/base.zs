@@ -801,6 +801,10 @@ class Object native
 
 	native static uint MSTime();
 	native static double MSTimeF();
+	// HCDE: returns true when PlayerThink should advance this player's weapon
+	// psprite on the current pass. Lets a dedicated client drive its own weapon
+	// on the steady prediction clock instead of the snapshot-gated world tick.
+	native static bool Net_ShouldTickWeaponPSprites(Actor mo);
 	native ui static double GetDeltaTime(bool current = false);
 	native clearscope static double GetPhysicsTimeStep();
 	native vararg static void ThrowAbortException(String fmt, ...);

@@ -92,6 +92,59 @@ CVAR(Bool, cl_noprediction, false, CVAR_ARCHIVE | CVAR_GLOBALCONFIG)
 CVAR(Bool, cl_hcde_predict_dedicated, true, CVAR_GLOBALCONFIG)
 CVAR(Float, cl_predict_lerpscale, 0.05f, CVAR_ARCHIVE | CVAR_GLOBALCONFIG)
 CVAR(Float, cl_predict_lerpthreshold, 2.00f, CVAR_ARCHIVE | CVAR_GLOBALCONFIG)
+// HCDE (Zandronum/Odamex-style client weapon): when on, the LOCAL player's
+// weapon psprite is advanced on the steady client prediction clock instead of
+// the snapshot-gated authoritative world tick. On a dedicated client the
+// authoritative world tic arrives in bursty snapshot-sized windows, so ticking
+// the gun there makes it animate/fire unevenly ("turbo" after a stall). Driving
+// it from prediction (once per genuinely-new client command tic) keeps the gun
+// smooth and responsive while projectiles/hitscan stay server-authoritative.
+// Set to 0 to fall back to the legacy authoritative-only weapon tick exactly.
+CVAR(Bool, cl_predict_weapon, true, CVAR_ARCHIVE | CVAR_GLOBALCONFIG)
+
+// Set true only for the duration of the P_PlayerThink call of a genuinely-new
+// predicted tic (see the P_PredictClient replay loop), so re-replayed tics on a
+// reconcile do not advance the weapon psprite a second time ("turbo" fire).
+static bool HCDEWeaponPredictNewTic = false;
+
+// A dedicated client predicts the local view player's weapon. Host/listen
+// servers, single player, and demos keep the legacy authoritative tick.
+static bool HCDEClientPredictsLocalWeapon(const player_t* p)
+{
+	return cl_predict_weapon
+		&& netgame && !demoplayback
+		&& I_UsesDedicatedServerSlot() && !I_IsLocalHCDEServiceAuthority()
+		&& consoleplayer >= 0 && consoleplayer < MAXPLAYERS
+		&& p == &players[consoleplayer];
+}
+
+// Decide whether PlayerThink should advance this player's weapon psprite on the
+// current pass. Legacy behaviour (everything except a dedicated client's own
+// player) ticks only on the authoritative pass. The predicted local weapon
+// instead ticks once per new predicted tic and is suppressed on the
+// authoritative pass so it is not double-advanced.
+static bool P_ShouldTickWeaponPSprites(const player_t* p)
+{
+	if (p == nullptr)
+		return false;
+	if (!HCDEClientPredictsLocalWeapon(p))
+		return !(p->cheats & CF_PREDICTING);
+	if (p->cheats & CF_PREDICTING)
+		return HCDEWeaponPredictNewTic;
+	// Authoritative pass for the predicted local player: suppressed only while
+	// prediction is actually driving the weapon (player alive). When not live,
+	// P_PredictClient bails before the replay loop, so fall back to the
+	// authoritative tick or the death / weapon-bring-up animation would freeze.
+	return p->playerstate != PST_LIVE;
+}
+
+DEFINE_ACTION_FUNCTION(DObject, Net_ShouldTickWeaponPSprites)
+{
+	PARAM_PROLOGUE;
+	PARAM_OBJECT(mo, AActor);
+	const bool result = (mo != nullptr) && P_ShouldTickWeaponPSprites(mo->player);
+	ACTION_RETURN_BOOL(result);
+}
 
 CUSTOM_CVAR(Float, cl_rubberband_scale, 0.3f, CVAR_ARCHIVE | CVAR_GLOBALCONFIG)
 {
@@ -466,6 +519,46 @@ struct FPredictionData
 	bool WeaponBobBackupValid = false;
 	int WeaponBobBackupPlayer = -1;
 	FPlayerBob WeaponBobBackup = {};
+
+	// Highest client command tic for which the predicted local weapon psprite
+	// has already been advanced. Monotonic across reconcile re-replays so the
+	// same tic never ticks the weapon twice (no "turbo" fire).
+	int WeaponPSpriteTic = 0;
+	// The local weapon (psprite objects + these few player fields) is kept out
+	// of the per-frame rollback so it advances steadily on the prediction clock.
+	// The psprite DObjects already survive rollback (they are not in the rollback
+	// set); these scalar/pointer fields are restored manually after unpredict.
+	bool WeaponPredictStateValid = false;
+	uint16_t SavedWeaponState = 0;
+	short SavedRefire = 0;
+	bool SavedAttackDown = false;
+	bool SavedUseDown = false;
+	AActor* SavedReadyWeapon = nullptr;
+	AActor* SavedPendingWeapon = nullptr;
+
+	void CaptureWeaponPredictState(const player_t& p)
+	{
+		SavedWeaponState = p.WeaponState;
+		SavedRefire = p.refire;
+		SavedAttackDown = p.attackdown;
+		SavedUseDown = p.usedown;
+		SavedReadyWeapon = p.ReadyWeapon;
+		SavedPendingWeapon = p.PendingWeapon;
+		WeaponPredictStateValid = true;
+	}
+
+	void RestoreWeaponPredictState(player_t& p)
+	{
+		if (!WeaponPredictStateValid)
+			return;
+		p.WeaponState = SavedWeaponState;
+		p.refire = SavedRefire;
+		p.attackdown = SavedAttackDown;
+		p.usedown = SavedUseDown;
+		p.ReadyWeapon = SavedReadyWeapon;
+		p.PendingWeapon = SavedPendingWeapon;
+		WeaponPredictStateValid = false;
+	}
 
 	FPredictionData() : RollbackReaderAllocator(ParseBuffer, sizeof(ParseBuffer)) {}
 
@@ -2096,6 +2189,14 @@ void P_PredictClient()
 	int hcdeReplayedPitchApplied = 0;
 	int hcdeReplayedPitchZeroed = 0;
 
+	// HCDE (Zandronum-style client weapon): advance the local weapon psprite on
+	// the steady prediction clock. The watermark below is monotonic so reconcile
+	// re-replays of already-seen tics do not re-tick the gun; a backward jump
+	// (e.g. ClientTic reset on a map change) reseeds it to the current window.
+	const bool hcdePredictWeapon = HCDEClientPredictsLocalWeapon(player);
+	if (PredictionData.WeaponPSpriteTic > predictEnd)
+		PredictionData.WeaponPSpriteTic = predictStart;
+
 	for (int i = predictStart; i < predictEnd; ++i)
 	{
 		// Got snagged on something. Start correcting towards the player's final predicted position. We're
@@ -2158,7 +2259,12 @@ void P_PredictClient()
 		player->mo->ClearInterpolation();
 		player->mo->ClearFOVInterpolation();
 		const DAngle hcdePreThinkPitch = player->mo->Angles.Pitch;
+		// Only advance the predicted weapon on tics not yet seen, so the
+		// gun ticks exactly once per client command tic regardless of how
+		// often reconcile replays the unacknowledged window.
+		HCDEWeaponPredictNewTic = hcdePredictWeapon && (i >= PredictionData.WeaponPSpriteTic);
 		P_PlayerThink(player);
+		HCDEWeaponPredictNewTic = false;
 		if (hcdePredictDiag && replayPitchCmd != 0)
 		{
 			const DAngle postPitch = player->mo->Angles.Pitch;
@@ -2277,6 +2383,8 @@ void P_PredictClient()
 
 	PredictionData.LastPredictedTic = predictEnd;
 	PredictionData.bResetPrediction = false;
+	if (hcdePredictWeapon && !paused)
+		PredictionData.WeaponPSpriteTic = max(PredictionData.WeaponPSpriteTic, predictEnd);
 
 	// This is intentionally done after rubberbanding starts since it'll automatically smooth itself towards
 	// the right spot until it reaches it.
@@ -2301,6 +2409,18 @@ void P_UnPredictClient()
 	}
 
 	NetworkEntityManager::DisablePrediction();
+
+	// HCDE (Zandronum-style client weapon): the local weapon is advanced on the
+	// prediction clock and must NOT be rolled back to the pre-replay
+	// authoritative state every frame, or its few player_t fields (which ARE in
+	// the rollback archive) would fight the persisted psprite objects. Snapshot
+	// the predicted weapon state here and restore it after the rollback so the
+	// gun stays consistent with its psprites. Projectiles/hitscan remain
+	// server-authoritative; this only governs the local view weapon display.
+	const bool hcdePredictWeapon = (consoleplayer >= 0 && consoleplayer < MAXPLAYERS)
+		&& HCDEClientPredictsLocalWeapon(&players[consoleplayer]);
+	if (hcdePredictWeapon)
+		PredictionData.CaptureWeaponPredictState(players[consoleplayer]);
 
 	FDoomSerializer reader = { PredictionData.RollbackLevel };
 	if (reader.OpenReader(PredictionData.RollbackReaderAllocator, PredictionData.RollbackData.data(), PredictionData.RollbackData.size(), true))
@@ -2330,6 +2450,12 @@ void P_UnPredictClient()
 		}
 	}
 
+	// Reapply the predicted local weapon state the rollback just reverted, so
+	// the gun keeps advancing on the steady prediction clock instead of being
+	// pinned to the snapshot-gated authoritative tick.
+	if (hcdePredictWeapon && consoleplayer >= 0 && consoleplayer < MAXPLAYERS)
+		PredictionData.RestoreWeaponPredictState(players[consoleplayer]);
+
 	PredictionData.ClearBackup();
 
 	// The rollback above restores player_t::cheats from the pre-prediction
@@ -2343,6 +2469,8 @@ void P_UnPredictClient()
 	// and lets WeaponState/pickups settle on the authoritative tick.
 	if (consoleplayer >= 0 && consoleplayer < MAXPLAYERS)
 		players[consoleplayer].cheats &= ~CF_PREDICTING;
+
+	Net_FlushPendingAuthoritySpawnEvents();
 }
 
 void player_t::Serialize(FSerializer &arc)

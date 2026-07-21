@@ -4705,6 +4705,17 @@ AActor *P_LineAttack(AActor *t1, DAngle angle, double distance,
 		return nullptr;
 	}
 
+	// HCDE co-op: dedicated clients do not simulate local player hitscan. The
+	// authority runs the trace with lag compensation and replicates cosmetic puffs.
+	if (Net_ShouldSuppressLocalPlayerHitscan(t1))
+	{
+		if (victim != NULL)
+			memset(victim, 0, sizeof(*victim));
+		if (actualdamage != NULL)
+			*actualdamage = 0;
+		return nullptr;
+	}
+
 	// Phase 5: server-side lag compensation for player hitscan. The scope
 	// rewinds the authority world to the shooter's view tic for the trace,
 	// then restores live state and replays captured damage events.
@@ -5024,6 +5035,11 @@ AActor *P_LineAttack(AActor *t1, DAngle angle, double distance,
 	}
 
 	t1->Level->localEventManager->WorldHitscanFired(t1, tempos, puffpos, puff, flags);
+
+	if (puff != NULL && pufftype != nullptr && !killPuff)
+	{
+		Net_RecordCoopHitscanCosmetic(t1, pufftype, puff->Pos(), trace.SrcAngleFromTarget, pitch);
+	}
 
 	if (killPuff && puff != NULL)
 	{

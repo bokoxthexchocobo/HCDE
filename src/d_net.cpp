@@ -586,10 +586,11 @@ constexpr size_t HCDEAuthorityEventsReservedOffset = 7u;
 constexpr size_t HCDEAuthorityEventsHeaderSize = 8u;
 constexpr uint8_t HCDEAuthorityEventsProtocolVersion = 1u;
 constexpr uint8_t HCDEAuthorityEventsMagic[4] = { 'H', 'C', 'A', 'V' };
-constexpr size_t HCDEAuthorityEventPacketLimit = 8u;
+constexpr size_t HCDEAuthorityEventPacketLimit = 16u;
 constexpr uint8_t HCDEAuthorityEventSpawn = 1u;
 constexpr uint8_t HCDEAuthorityEventDespawn = 2u;
 constexpr uint8_t HCDEAuthorityEventDamage = 3u;
+constexpr uint8_t HCDEAuthorityEventCosmeticSpawn = 4u;
 constexpr int HCDEAuthorityDamageMinIntervalTics = TICRATE / 7;
 constexpr int HCDEAuthorityDamageImmediateDelta = 16;
 constexpr size_t HCDEInvasionSnapshotMagicOffset = 0u;
@@ -1261,6 +1262,7 @@ struct FHCDEAuthorityEvent
 	DVector3 Pos = {};
 	DVector3 Vel = {};
 	DAngle Yaw = nullAngle;
+	DAngle Pitch = nullAngle;
 	int Health = 0;
 };
 
@@ -1346,6 +1348,16 @@ struct FHCDECoopInterpSample
 	DAngle Pitch = nullAngle;
 	int Health = 0;
 };
+
+struct FHCDERemotePlayerInterpState
+{
+	FHCDECoopInterpSample Ring[HCDECoopInterpRingSize] = {};
+	uint8_t RingWrite = 0;
+	uint8_t RingCount = 0;
+	bool Armed = false;
+};
+
+static FHCDERemotePlayerInterpState HCDERemotePlayerInterp[MAXPLAYERS] = {};
 
 struct FHCDEReplicatedActorRef
 {
@@ -4339,6 +4351,7 @@ void Net_ClearBuffers()
 		state.CurrentSequence = state.SequenceAck = state.ResendSequenceFrom = -1;
 		state.AppliedSequence = -1;
 		state.InputGapStallTic = -1;
+		state.SnapshotGapStallMS = -1;
 		state.Flags = 0;
 
 		for (int j = 0; j < BACKUPTICS; ++j)
@@ -4891,6 +4904,7 @@ void Net_ResetCommands(bool midTic)
 	// A room/map change invalidates old waiting state. Leaving it set can stop
 	// the first command for the next map from being generated.
 	Net_ClearStaleWaitingFlags();
+	Net_ResetPresentationEchoState();
 	LateJoinSyncPending = 0u;
 	for (int i = 0; i < MAXPLAYERS; ++i)
 	{
@@ -4899,7 +4913,10 @@ void Net_ResetCommands(bool midTic)
 		LateJoinSyncStartTic[i] = -1;
 		HCDEActorBaselineRepairUntilTic[i] = 0;
 		HCDEAuthorityEventReplayNextId[i] = 0u;
+		HCDERemotePlayerInterp[i] = {};
 	}
+	HCDEPendingAuthoritySpawnEvents.Clear();
+	HCDEPendingAuthoritySpawnDropped = 0u;
 	LastTicGateStallTrace = 0;
 	SkipCommandTimer = SkipCommandAmount = CommandsAhead = 0;
 	StabilityBuffer = PrevAvailableDiff = 0;
@@ -4947,6 +4964,12 @@ void Net_ResetCommands(bool midTic)
 		// post-reset tics starting at `tic + 1`.
 		state.ResendSequenceFrom = -1;
 		state.ResendConsistencyFrom = -1;
+		// Disarm both stream-gap watchdogs across the room reset. Their armed
+		// timestamps reference the pre-reset sequence/clock and would otherwise
+		// risk a spurious resync against the freshly re-anchored CurrentSequence
+		// on the new map's first frames.
+		state.InputGapStallTic = -1;
+		state.SnapshotGapStallMS = -1;
 
 		// Make sure not to run its current command either.
 		auto& curTic = state.Tics[tic % BACKUPTICS];
@@ -5339,6 +5362,7 @@ void Net_ResetClientState(int clientNum)
 	state.CurrentSequence = -1;
 	state.AppliedSequence = -1;
 	state.InputGapStallTic = -1;
+	state.SnapshotGapStallMS = -1;
 	state.ResendConsistencyFrom = -1;
 	state.ConsistencyAck = -1;
 	state.LastVerifiedConsistency = -1;
@@ -5358,6 +5382,19 @@ void Net_ResetClientState(int clientNum)
 
 	HCDELivePeers[clientNum].Clear();
 	Net_ResetHCDEReplicatedActorBaseline(clientNum);
+
+	// A reused slot ("second connect") must not inherit per-recipient
+	// presentation/replication state from the previous occupant. Without these
+	// resets the reconnecting client never re-receives the initial weapon
+	// ready-class/force-reseat echo (gun behavioral issues on rejoin), keeps a
+	// stale remote-player interpolation ring, and resumes actor-delta sending
+	// from a mid-array cursor against a freshly rebuilt baseline.
+	Net_ResetPresentationEchoStateForClient(clientNum);
+	HCDERemotePlayerInterp[clientNum] = {};
+	HCDEInvasionActorDeltaV2SendCursor[clientNum] = 0u;
+	HCDEActorDeltaV2SendCursor[clientNum] = 0u;
+	HCDEActorPriorityQueues[clientNum].Clear();
+	HCDECoopServerActorRepairCooldownUntilTic[clientNum] = 0;
 }
 
 static void DisconnectClient(int clientNum)
@@ -7483,6 +7520,31 @@ void TryRunTics()
 	if (!hasTicGateClient)
 		lowestSequence = ClientTic / TicDup;
 
+	// HCDE dedicated-client scheduler: use the authority snapshot frontier, not
+	// the mirrored per-player command cursor, as the world tic gate. This is the
+	// Zandronum/Odamex shape: the server's accepted snapshot tic advances the
+	// client world, and local input is predicted on top of that committed base.
+	//
+	// The old UZDoom-style gate used min(ClientStates[*].CurrentSequence). That
+	// cursor is only a replay/diagnostic stream inside HCDE live snapshots; it
+	// can arrive in bursty MAXSENDTICS-sized windows or be temporarily behind the
+	// snapshot tic even while full authoritative world deltas are applying. When
+	// it stalled below gametic the client limped forward on the one-tic fallback,
+	// building a sawtooth prediction buffer (1..12 tics) and visible jitter even
+	// on localhost. The snapshot tic is the real "server has confirmed world up
+	// to here" contract, so dedicated clients should gate on it directly.
+	if (netgame && !demoplayback
+		&& I_UsesDedicatedServerSlot() && !I_IsLocalHCDEServiceAuthority())
+	{
+		const int authoritySlot = I_GetHCDEServiceAuthoritySlot();
+		if (authoritySlot >= 0 && authoritySlot < MAXPLAYERS)
+		{
+			const uint32_t frontierTic = HCDELivePeers[authoritySlot].LastAppliedSnapshotGameTic;
+			if (frontierTic > 0u)
+				lowestSequence = int(frontierTic / uint32_t(max<int>(TicDup, 1)));
+		}
+	}
+
 	// Test player prediction code in singleplayer by pretending there is another player
 	// that is running exactly x ticks behind us, emulating having a specific amount of ping
 	if (cl_debugprediction > 0
@@ -7541,6 +7603,95 @@ void TryRunTics()
 			if (currentLead > 0 && currentLead <= desiredLead + 1)
 				availableTics = 1;
 		}
+	}
+
+	// HCDE late-join frontier catch-up (Zandronum/Odamex-style "render the
+	// latest server state, predict the local player forward from it").
+	//
+	// A late joiner that stalled during its initial snapshot burst (the world
+	// could not tick while availableTics was negative, e.g. waiting on a stale
+	// authority-slot sequence) ends up with its gametic permanently parked far
+	// behind the snapshot frontier `lowestSequence`. Once that gap exists the
+	// prediction-lead cap below pins the world to ~1 tic/frame -- exactly
+	// real-time -- so the gap NEVER drains and the joiner renders a world that
+	// is `availableTics` tics (often ~3.5s) in the past forever, even on
+	// localhost. The original (first) client never hits this because it joins
+	// at gametic 1 with no backlog.
+	//
+	// Grinding the backlog down one tic at a time is both impossible here (the
+	// lead cap forbids it) and not what Zandronum/Odamex do anyway: their
+	// clients snap straight to the authority's current state on join and only
+	// predict the local player on top of it. Mirror that by re-seating the
+	// local clock forward to the frontier when a large backlog persists, using
+	// the same jump the level-start late-join seat performs (gametic +
+	// ClientTic forward, prediction history cleared so the next frame
+	// re-predicts from the authoritative snapshot). This fires at most once per
+	// drift episode -- after the jump availableTics collapses to the normal
+	// 1-2, the steady-state lead cap keeps it there, and the persistence
+	// counter guards against thrashing on transient bursts (which the
+	// aggressive catch-up further down already handles).
+	static int HCDELateJoinFrontierStallFrames = 0;
+	if (netgame && !singletics && !demoplayback
+		&& I_UsesDedicatedServerSlot() && !I_IsLocalHCDEServiceAuthority()
+		&& gamestate == GS_LEVEL && LevelStartStatus == LST_READY)
+	{
+		const int frontierTicDup = max<int>(TicDup, 1);
+		const int frontierDesiredLead = clamp<int>(
+			HCDEMovementGetAdaptiveDesiredLead(int(*cl_net_prediction_lead)), 0, 8);
+		// `availableTics` already encodes (lowestSequence - gametic/TicDup) + 1
+		// (+1 pipeline bonus), so it is a direct read of how far the frontier
+		// leads gametic. Allow the intended lead plus ~0.5s of healthy jitter
+		// buffer before treating the gap as a stuck backlog.
+		const int frontierBacklogTrigger = frontierDesiredLead + TICRATE / 2;
+		if (availableTics > frontierBacklogTrigger)
+			++HCDELateJoinFrontierStallFrames;
+		else
+			HCDELateJoinFrontierStallFrames = 0;
+
+		// Require the backlog to persist ~0.5s so a brief snapshot burst that
+		// the normal catch-up can absorb does not trigger a visible re-seat.
+		if (HCDELateJoinFrontierStallFrames >= TICRATE / 2)
+		{
+			// Land gametic exactly on the frontier (the latest snapshot we hold
+			// authoritative state for) and keep ClientTic the configured lead
+			// ahead for local prediction headroom.
+			const int newGametic = lowestSequence * frontierTicDup;
+			if (newGametic > gametic)
+			{
+				const int oldGametic = gametic;
+				const int oldClientTic = ClientTic;
+				gametic = newGametic;
+				ClientTic = max<int>(ClientTic, newGametic + frontierDesiredLead * frontierTicDup);
+				if (consoleplayer >= 0 && consoleplayer < MAXPLAYERS)
+				{
+					const int seatSequence = ClientTic / frontierTicDup;
+					auto& seatState = ClientStates[consoleplayer];
+					seatState.CurrentSequence = max<int>(seatState.CurrentSequence, seatSequence);
+					seatState.SequenceAck = max<int>(seatState.SequenceAck, seatSequence);
+					seatState.AppliedSequence = max<int>(seatState.AppliedSequence, seatSequence);
+				}
+				// Drop prediction history built against the pre-jump clock so the
+				// first post-reseat frame re-predicts from the authoritative
+				// snapshot instead of replaying commands for a stale tic range.
+				P_ClearPredictionData();
+				// Recompute the world budget against the seated gametic; without
+				// this the same inflated availableTics would drive a needless
+				// catch-up burst on the very frame we just resynced.
+				const int recomputeBonus =
+					(I_UsesDedicatedServerSlot() && !I_IsLocalHCDEServiceAuthority()) ? 1 : 0;
+				availableTics = (lowestSequence - gametic / frontierTicDup) + 1 + recomputeBonus;
+				DebugTrace::Markf("net",
+					"late-join frontier catch-up reseat gametic %d -> %d clienttic %d -> %d frontier=%d lead=%d avail=%d room=%u map=%s",
+					oldGametic, gametic, oldClientTic, ClientTic, lowestSequence,
+					frontierDesiredLead, availableTics, unsigned(CurrentRoomID),
+					primaryLevel != nullptr ? primaryLevel->MapName.GetChars() : "<none>");
+			}
+			HCDELateJoinFrontierStallFrames = 0;
+		}
+	}
+	else
+	{
+		HCDELateJoinFrontierStallFrames = 0;
 	}
 
 	// Sample sub-fault prediction health every frame. Cheap when off
@@ -7662,12 +7813,17 @@ void TryRunTics()
 		const int schedConsole = (consoleplayer >= 0 && consoleplayer < MAXPLAYERS) ? consoleplayer : 0;
 		DebugTrace::Markf("net.sched",
 			"HCDE cli sched gametic=%d clienttic=%d lowestSeq=%d avail=%d total=%d run=%d "
-			"lead(client-gametic)=%d buffer(clienttic-ack)=%d desired=%d held=%d",
+			"lead(client-gametic)=%d buffer(clienttic-ack)=%d desired=%d held=%d "
+			"interp=%.3f pending-spawns=%zu pending-dropped=%llu auth-missing=%llu",
 			gametic, ClientTic, lowestSequence, availableTics, totalTics, runTics,
 			ClientTic / TicDup - gametic / TicDup,
 			ClientTic / TicDup - ClientStates[schedConsole].SequenceAck,
 			HCDEMovementGetAdaptiveDesiredLead(int(*cl_net_prediction_lead)),
-			predictionLeadHeldWorld ? 1 : 0);
+			predictionLeadHeldWorld ? 1 : 0,
+			double(*cl_interp),
+			HCDEPendingAuthoritySpawnEvents.Size(),
+			static_cast<unsigned long long>(HCDEPendingAuthoritySpawnDropped),
+			static_cast<unsigned long long>(HCDELiveProfile.AuthorityEventRecordsMissing));
 	}
 
 	const int worldTimer = primaryLevel->LocalWorldTimer;

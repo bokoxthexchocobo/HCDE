@@ -148,6 +148,7 @@ struct FClientNetState
 	int 			CurrentSequence = -1;	// The last sequence we've gotten from this client.
 	int 			AppliedSequence = -1;	// Authority cursor: the last command sequence actually fed to the think. The wall-clock authority can reach a gametic before that tic's command has arrived, so consumption is decoupled from gametic - this advances by at most one per tic toward CurrentSequence so every received command runs exactly once (no blank-command stalls, no dropped late commands).
 	int 			InputGapStallTic = -1;	// Authority input-gap watchdog: gametic when CurrentSequence first stalled while the client kept sending higher sequences. -1 = not stalled. If a lost input tic is never resent (a client whose own SequenceAck is masked by the snapshot stream never re-requests it) this lets the authority resync the input stream forward instead of freezing the player's input forever. See UnwrapHCDELiveClientInputPayload.
+	int64_t 		SnapshotGapStallMS = -1;	// Client snapshot-gap watchdog (mirror of InputGapStallTic for the inbound snapshot stream): I_msTime() stamp when this player's CurrentSequence first stalled far behind the authority snapshot's baseSequence. Stamped in wall-clock ms because the offending stall FREEZES gametic on the client (the world gate lowestSequence == this CurrentSequence), so a gametic-based timer would never advance. -1 = not stalled. Lets a late joiner whose seated CurrentSequence fell hopelessly behind the live snapshot frontier resync forward instead of freezing forever.
 
 	// Every packet includes consistencies for tics that client ran. When
 	// a world tic is ran, the local client will store all the consistencies
@@ -251,6 +252,14 @@ void Net_RegisterCoopReplicatedPlayerMissile(AActor* missile, const AActor* sour
 // (dedicated co-op client firing its own projectile weapon). See
 // cl_coop_mirror_own_projectiles / sv_coop_replicate_player_projectiles.
 bool Net_ShouldSuppressLocalPlayerMissile(const AActor* source, PClassActor* type);
+// Returns true when a player hitscan trace should NOT run locally on this
+// process because the authority owns damage and replicates cosmetic impacts.
+bool Net_ShouldSuppressLocalPlayerHitscan(const AActor* source);
+// Authority-side: replicate a one-shot cosmetic puff/blood spawn to clients.
+void Net_RecordCoopHitscanCosmetic(const AActor* source, PClassActor* effectClass,
+	const DVector3& pos, DAngle yaw, DAngle pitch);
+// Flush spawn events queued while client prediction was active.
+void Net_FlushPendingAuthoritySpawnEvents();
 void Net_RecordInvasionActorAttack(AActor* attacker, AActor* target);
 void Net_RecordCoopActorAttack(AActor* attacker, AActor* target);
 int Net_GetCompatDuelLimit();

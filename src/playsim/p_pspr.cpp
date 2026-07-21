@@ -484,6 +484,17 @@ void DPSprite::NewTick()
 
 void DPSprite::SetState(FState *newstate, bool pending)
 {
+	// HCDE: the local weapon psprite intentionally keeps running its own state
+	// machine on dedicated clients. It owns the smooth, frame-rate-local parts of
+	// the view weapon -- raise/lower, the ready bob, and the vertical position
+	// (sy) that holds the gun at the top of the screen. The authority presentation
+	// echo (Net_FollowServerWeaponPSprite) only re-seats the visible STATE/frame
+	// and retargets ReadyWeapon each snapshot to correct drift; it deliberately
+	// does NOT dictate position. A previous build hard-suppressed this SetState
+	// for the weapon layer once an echo was seen, which also killed the local
+	// raise/bob logic and left the gun parked low ("poking out the bottom of the
+	// screen"). Local think for positioning + echo for state correction is the
+	// correct split, so no suppression here.
 	if (ID == PSP_WEAPON)
 	{ // A_WeaponReady will re-set these as needed
 		Owner->WeaponState &= ~(WF_WEAPONREADY | WF_WEAPONREADYALT | WF_WEAPONBOBBING | WF_WEAPONSWITCHOK | WF_WEAPONRELOADOK | WF_WEAPONZOOMOK |

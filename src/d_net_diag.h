@@ -38,7 +38,16 @@ constexpr uint8_t HCDEPresentationEchoMagic[4] = { 'E', 'C', 'H', 'O' };
 // The local-inventory block is always sent so weapons/ammo/armor reconcile even
 // when net_echo_debug is off; only the per-player weapon/psprite diagnostic
 // records are gated behind net_echo_debug.
-constexpr uint8_t HCDEPresentationEchoProtocolVersion = 7u;
+//
+// v8 sends the receiving client's own weapon record only on discrete weapon
+// changes (ready-weapon class change or forced lower/switch), plus a compact
+// weaponChangeFlags byte. The client owns local weapon animation between
+// corrections (Zandronum/Odamex-style display).
+constexpr uint8_t HCDEPresentationEchoProtocolVersion = 8u;
+
+// weaponChangeFlags bits in v8 per-player records.
+constexpr uint8_t HCDEWeaponChangeReadyClass = 0x01u;
+constexpr uint8_t HCDEWeaponChangeForceReseat = 0x02u;
 
 // Forward declarations
 struct player_t;
@@ -59,3 +68,7 @@ bool HCDEReadPresentationEcho(int clientNum, const uint8_t* body, size_t bodyByt
 
 struct usercmd_t;
 void Net_ApplySelfTestInputs(usercmd_t* cmd, int clientTic);
+
+// Reset per-client weapon echo change-detection state on map/room change.
+void Net_ResetPresentationEchoState();
+void Net_ResetPresentationEchoStateForClient(int clientNum);

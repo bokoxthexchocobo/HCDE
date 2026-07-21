@@ -1760,13 +1760,19 @@ class PlayerPawn : Actor
 		CalcHeight ();
 		if (bMakeFootsteps) MakeFootsteps();
 
+		// Weapon psprite ticking is decided per-pass. Legacy behaviour (and the
+		// host/listen authority) advances the gun only on the authoritative pass.
+		// A dedicated client instead advances its OWN weapon on the steady
+		// prediction clock (Zandronum-style) so the gun does not animate/fire in
+		// "turbo" bursts tied to snapshot arrival; see cl_predict_weapon. The
+		// watermark in P_PredictClient guarantees each tic advances it once, so
+		// reconcile re-replays cannot double-tick the animation.
+		if (Net_ShouldTickWeaponPSprites(player.mo))
+		{
+			player.mo.TickPSprites();
+		}
 		if (!(player.cheats & CF_PREDICTING))
 		{
-			// Weapon psprites stay authoritative. Advancing them during the
-			// prediction replay double-ticks the animation (the authoritative
-			// P_Ticker pass already ticks them and psprites are not in the
-			// rollback set), which makes the gun fire/animate in "turbo".
-			player.mo.TickPSprites();
 			CheckEnvironment();
 			// Note that after this point the PlayerPawn may have changed due to getting unmorphed or getting its skull popped so 'self' is no longer safe to use.
 			// This also must not read mo into a local variable because several functions in this block can change the attached PlayerPawn.
