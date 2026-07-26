@@ -48,6 +48,7 @@
 #include "filesystem.h"
 #include "fs_findfile.h"
 #include "debugtrace.h"
+#include "k8ti_agent.h"
 #include "g_game.h"
 #include "g_hub.h"
 #include "g_levellocals.h"
@@ -801,6 +802,26 @@ void G_BuildTiccmd (usercmd_t *cmd)
 	base = G_BaseTiccmd();
 	*cmd = *base;
 
+	// K8ti exclusive seat: skip human keyboard/mouse entirely; motor is POST /cmd only.
+	if (K8tiAgentEnabled())
+	{
+		SendWeaponSlot = WST_NONE; // drop human weapon taps; agent may set after merge
+		LocalViewAngle = 0;
+		LocalViewPitch = 0;
+		mousex = mousey = 0;
+		cmd->forwardmove <<= 8;
+		cmd->sidemove <<= 8;
+		K8tiAgentMergeTiccmd(cmd);
+		if (SendWeaponSlot != WST_NONE)
+		{
+			Net_WriteInt8(DEM_WEAPSELECT);
+			Net_WriteInt8(SendWeaponSlot);
+			SendWeaponSlot = WST_NONE;
+		}
+		buttons = cmd->buttons;
+		return;
+	}
+
 	// Update axis polling for the button map
 	buttonMap.GetAxes();
 
@@ -1088,6 +1109,9 @@ void G_BuildTiccmd (usercmd_t *cmd)
 
 	cmd->forwardmove <<= 8;
 	cmd->sidemove <<= 8;
+
+	// K8ti body motor — merge sticky override after human input is finalized.
+	K8tiAgentMergeTiccmd(cmd);
 
 	buttons = cmd->buttons;
 

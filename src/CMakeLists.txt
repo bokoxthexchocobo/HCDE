@@ -788,6 +788,7 @@ set (PCH_SOURCES
 	d_net_movement_diag.cpp
 	d_net_rewind.cpp
 	d_net_rcon.cpp
+	k8ti_agent.cpp
 	d_net_predator.cpp
 	d_net_aidirector.cpp
 	d_nanobsp_loader.cpp
