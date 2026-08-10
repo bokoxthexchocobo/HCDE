@@ -34,17 +34,22 @@ public sealed class UdpTransport : IDisposable
         received = 0;
         remote = default;
 
-        if (timeout is { } wait && wait > TimeSpan.Zero)
-        {
-            if (!_socket.Poll((int)wait.TotalMilliseconds, SelectMode.SelectRead))
-                return false;
-        }
+        var pollMs = timeout is { } wait ? (int)wait.TotalMilliseconds : 0;
+        if (!_socket.Poll(pollMs, SelectMode.SelectRead))
+            return false;
 
-        EndPoint from = new IPEndPoint(IPAddress.Any, 0);
-        received = _socket.ReceiveFrom(buffer, SocketFlags.None, ref from);
-        var endpoint = (IPEndPoint)from;
-        remote = new NetworkEndpoint(endpoint.Address, endpoint.Port);
-        return received > 0;
+        try
+        {
+            EndPoint from = new IPEndPoint(IPAddress.Any, 0);
+            received = _socket.ReceiveFrom(buffer, SocketFlags.None, ref from);
+            var endpoint = (IPEndPoint)from;
+            remote = new NetworkEndpoint(endpoint.Address, endpoint.Port);
+            return received > 0;
+        }
+        catch (SocketException ex) when (ex.SocketErrorCode == SocketError.WouldBlock)
+        {
+            return false;
+        }
     }
 
     public void Dispose()
