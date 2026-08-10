@@ -20,6 +20,8 @@ The full engine is ~640k lines of C++. This is a long-running migration, not a b
 | Master protocol constants | `protocol/hcde_master_protocol.h` | `HCDE.Protocol` | Done |
 | Master list packets | `tools/hcdemaster/` | `HCDE.Protocol` + `HCDE.Master` | Done |
 | RCON client | `tools/hcdercon/` | `HCDE.Protocol` + `HCDE.Rcon` | Done |
+| NMS1 packet codec | `src/common/engine/sv_master_nms1.*` | `HCDE.Protocol` | Done |
+| Phase 1 principal audit | — | `docs/HCDE_CSHARP_PHASE1_AUDIT.md` | Done |
 | Engine core | `src/` | — | Not started |
 | Dedicated server | `hcdeserv` target | — | Planned |
 | Netcode | `d_net*.cpp` | — | Planned |
@@ -63,11 +65,12 @@ csharp/
 
 ## Migration phases
 
-### Phase 1 — Tools and protocol (current)
+### Phase 1 — Tools and protocol (complete)
 
-- Protocol constants and binary codecs
+- Protocol constants and binary codecs (legacy + NMS1)
 - `hcdemaster` and `hcdercon`
 - Unit tests proving wire compatibility with the C++ implementations
+- Principal audit: [`docs/HCDE_CSHARP_PHASE1_AUDIT.md`](../docs/HCDE_CSHARP_PHASE1_AUDIT.md)
 
 ### Phase 2 — Dedicated server shell
 

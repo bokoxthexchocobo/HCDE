@@ -38,15 +38,17 @@ The UzDoom-derived C++ tree remains buildable until each subsystem has a tested 
 
 **Delivered:**
 
-- `HCDE.Protocol` — mirrors `protocol/hcde_master_protocol.h`
+- `HCDE.Protocol` — mirrors `protocol/hcde_master_protocol.h` (legacy + NMS1 codecs)
 - `HCDE.Master` — `hcdemaster` UDP master server
 - `HCDE.Rcon` — `hcdercon` TCP RCON client
-- xUnit tests for packet codecs and master server round-trip
+- xUnit tests for packet codecs, NMS1 golden vectors, RCON loopback integration, and master server round-trip
+- Principal audit: [`docs/HCDE_CSHARP_PHASE1_AUDIT.md`](HCDE_CSHARP_PHASE1_AUDIT.md)
 
-**Next in phase 1:**
+**Follow-ups (non-blocking):**
 
-- RCON server-side framing tests against a running `hcdeserv`
-- NMS1 packet codec (schema already in `hcde_master_protocol.json`)
+- CI job running `dotnet test` on `csharp/`
+- JSON → C#/C++ codegen for protocol constants
+- Live `hcdercon` (C#) vs `hcdeserv` (C++) soak test
 
 ## Phase 2 — Dedicated server
 
