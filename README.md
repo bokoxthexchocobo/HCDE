@@ -51,7 +51,7 @@ Master protocol constants live in `protocol/` so engine, launcher, and master st
 
 ## C# migration (in progress)
 
-HCDE is being ported to C# incrementally. The legacy C++/C engine under `src/` still builds with CMake; new work lands in [`csharp/`](csharp/README.md). Phase 1 (protocol + tools) is complete — see [`docs/HCDE_CSHARP_PHASE1_AUDIT.md`](docs/HCDE_CSHARP_PHASE1_AUDIT.md) and [`docs/HCDE_CSHARP_MIGRATION.md`](docs/HCDE_CSHARP_MIGRATION.md).
+HCDE is being ported to C# incrementally. Phase 1 (protocol + tools) is complete; Phase 2 (dedicated server / net transport) is in progress. See [`docs/HCDE_CSHARP_PHASE1_AUDIT.md`](docs/HCDE_CSHARP_PHASE1_AUDIT.md), [`docs/HCDE_CSHARP_PHASE2_AUDIT.md`](docs/HCDE_CSHARP_PHASE2_AUDIT.md), and [`docs/HCDE_CSHARP_MIGRATION.md`](docs/HCDE_CSHARP_MIGRATION.md).
 
 ```bash
 cd csharp && dotnet build && dotnet test

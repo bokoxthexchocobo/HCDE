@@ -35,22 +35,6 @@ public class NetworkEndpointTests
     }
 }
 
-public class PregameServiceHeaderTests
-{
-    [Fact]
-    public void RoundTrip()
-    {
-        var header = new PregameServiceHeader(0xAABBCCDD, (byte)PregameSetupType.HcdeService, 42, 17);
-        var buffer = new byte[PregameConstants.ServiceHeaderSize];
-        Assert.Equal(PregameConstants.ServiceHeaderSize, header.Write(buffer));
-        Assert.True(PregameServiceHeader.TryRead(buffer, out var parsed));
-        Assert.Equal(header.Crc, parsed.Crc);
-        Assert.Equal(header.CommandByte, parsed.CommandByte);
-        Assert.Equal(header.Sequence, parsed.Sequence);
-        Assert.Equal(header.Acknowledgement, parsed.Acknowledgement);
-    }
-}
-
 public class HcdeConnectInfoTests
 {
     [Fact]

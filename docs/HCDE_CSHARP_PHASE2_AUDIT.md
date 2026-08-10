@@ -1,7 +1,7 @@
 # HCDE C# Migration — Phase 2 Principal Audit
 
 **Last updated:** 2026-08-10  
-**Status:** In progress — transport layer started (`HCDE.Net.Transport`).  
+**Status:** In progress — Phase **2b** pregame service layer started (`HCDE.Net.Pregame`).  
 **Prerequisite:** [Phase 1 audit](HCDE_CSHARP_PHASE1_AUDIT.md) (complete)  
 **Related:** [`docs/HCDE_CSHARP_MIGRATION.md`](HCDE_CSHARP_MIGRATION.md) · [`docs/HCDE_NETCODE.md`](HCDE_NETCODE.md)
 
@@ -26,7 +26,7 @@ Phase 2 does **not** include rendering, audio, ZScript VM, or client prediction.
 | **2e — Playsim (server)** | `HCDE.Playsim` | `playsim/`, `p_tick.cpp` | Dedicated server loads map + runs ticks |
 | **2f — Server shell** | `HCDE.Server` → `hcdeserv` | `d_main.cpp` dedicated path | End-to-end dedicated hosting |
 
-**Current work:** Phase **2a** (this PR iteration).
+**Current work:** Phase **2b** — pregame reliable-service codecs and queue (C# loopback tests green; C++ cross-test pending).
 
 ## Boundaries (non-negotiable)
 
@@ -36,36 +36,60 @@ Phase 2 does **not** include rendering, audio, ZScript VM, or client prediction.
 4. **Authority-only server path.** Phase 2 targets `hcdeserv` / dedicated authority — not listen-host UI (`NetStartWindow`) or client prediction.
 5. **Determinism deferred to 2e.** Transport and pregame may use managed memory; playsim port must document fixed-point / tick determinism requirements before merge.
 
-## Phase 2a delivered (this iteration)
+## Phase 2a delivered
 
 | Artifact | Location | C++ reference |
 | --- | --- | --- |
 | Net constants | `NetConstants.cs` | `i_net.h`, `i_net.cpp` |
-| Pregame enums + service layout | `PregameConstants.cs`, `PregameServiceHeader.cs` | `i_net.cpp` lines 174–268 |
-| HCDE connect block (`HCD3`) | `HcdeConnectInfo` | `HCDEConnectMagic` in `i_net.cpp` |
+| Pregame enums + offsets | `PregameConstants.cs` | `i_net.cpp` lines 174–289 |
+| HCDE connect block (`HCD3`) | `HcdeConnectInfo.cs` | `HCDEConnectMagic` in `i_net.cpp` |
 | UDP transport wrapper | `UdpTransport.cs` | `CreateUDPSocket`, `GetPacket`, `SendPacket` |
 | Address parsing | `NetworkEndpoint.cs` | `TryBuildAddress` |
 | Server query codec + client | `ServerQueryCodec.cs`, `ServerQueryClient.cs` | `I_QueryServerInfo`, `TryReadServerQuerySnapshot` |
 
-## Verification matrix (Phase 2a)
+## Phase 2b delivered (this iteration)
+
+| Artifact | Location | C++ reference |
+| --- | --- | --- |
+| zlib CRC-32 | `Crc32.cs` | `m_crc32.h` `CalcCRC32` / `AddCRC32` |
+| Setup wire envelope | `SetupPacketCodec.cs` | `SendPacket` / `GetPacket` CRC prefix |
+| HCDE service packet | `HcdeServicePacket.cs` | `BeginHCDEPregameService`, 15-byte `NetBuffer` header |
+| Service receive validation | `PregameServiceReceiver.cs` | `CheckHCDEPregameService` |
+| Reliable service queue | `ReliableServiceQueue.cs`, `PregameServiceSender.cs` | `FHCDEPendingService`, `FlushHCDEReliableServices` |
+| Connect admission ACK | `ConnectAckCodec.cs` | `PRE_CONNECT_ACK` / `DriveRuntimeSetupStateForClient` |
+| Connection state | `PregameConnectionState.cs` | `FConnection` seq/ack fields |
+
+**Correction from 2a:** The initial `PregameServiceHeader` treated bytes 0–3 as CRC inside the 15-byte header. The C++ `NetBuffer` layout places `NCMD_SETUP` at byte 0; CRC is only on the wire in `TransmitBuffer[0..3]`. The incorrect struct was removed; the correct layout lives in `HcdeServicePacket`.
+
+**Enum fix:** `PregameServiceType` now matches C++ `EHCDEPregameService` (starts at `Heartbeat = 1`, includes `Roster`, `StartGame`, `ConsolePlayer`, etc.).
+
+## Verification matrix (Phase 2a + 2b)
 
 | Check | Method | Result |
 | --- | --- | --- |
 | Default game port 5029 | `NetConstantsTests` | Pass |
-| Pregame service header 15-byte layout | `PregameServiceHeaderTests` | Pass |
 | HCD3 connect info round-trip | `HcdeConnectInfoTests` | Pass |
 | Launcher challenge BE encoding | `ServerQueryCodecTests` | Pass |
 | Server query response round-trip | `ServerQueryCodecTests` | Pass |
 | Query client vs loopback UDP server | `ServerQueryIntegrationTests` | Pass |
+| CRC-32 golden vector | `Crc32Tests` | Pass |
+| Setup packet CRC wire round-trip | `SetupPacketCodecTests` | Pass |
+| HCDE service 15-byte header layout | `HcdeServicePacketTests` | Pass |
+| Duplicate seq treated as benign | `PregameServiceReceiverTests` | Pass |
+| PRE_CONNECT_ACK round-trip | `ConnectAckCodecTests` | Pass |
+| Reliable queue ack refresh on flush | `ReliableServiceQueueTests` | Pass |
+| Connect ACK + console-player wire path | `PregameHandshakeIntegrationTests` | Pass |
 
-## Not yet in Phase 2a
+**Test count:** 40 passing (`dotnet test` in `csharp/`).
 
-| Item | Target sub-phase |
+## Not yet in Phase 2b
+
+| Item | Target |
 | --- | --- |
-| `SendPacket` / `GetPacket` DEM envelope | 2b |
-| PRE_CONNECT / PRE_HCDE_SERVICE handling | 2b |
-| Reliable service queue + retransmit | 2b |
-| CRC over service payload | 2b |
+| zlib compression on wire (`NCMD_COMPRESSED`) | 2b follow-up |
+| PRE_CONNECT guest parser + session token minting | 2b follow-up |
+| Full pregame state machine (`HostGame` / guest join) | 2b follow-up |
+| Cross-language soak (C# guest vs C++ `hcdeserv`) | 2b acceptance gate |
 | Live gameplay lanes (`HGP_*`, `HLANE_*`) | 2c |
 | Map loader / playsim | 2d–2e |
 

@@ -50,11 +50,16 @@ The UzDoom-derived C++ tree remains buildable until each subsystem has a tested 
 - JSON → C#/C++ codegen for protocol constants
 - Live `hcdercon` (C#) vs `hcdeserv` (C++) soak test
 
-## Phase 2 — Dedicated server
+## Phase 2 — Dedicated server (in progress)
 
 **Goal:** A headless `hcdeserv` in C# that loads a map, runs ticks, and serves HCDE netcode.
 
-**Order:**
+**Phase 2a delivered (transport):**
+
+- `HCDE.Net.Transport` — UDP sockets, net/pregame constants, server query codec/client
+- Principal audit: [`docs/HCDE_CSHARP_PHASE2_AUDIT.md`](HCDE_CSHARP_PHASE2_AUDIT.md)
+
+**Order (remaining):**
 
 1. `HCDE.Net.Transport` — port `common/engine/i_net.cpp` UDP primitives
 2. `HCDE.Net.Core` — port `d_net.cpp` server paths (snapshots, commands, late join)
