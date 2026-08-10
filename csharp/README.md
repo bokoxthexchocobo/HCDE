@@ -23,6 +23,7 @@ The full engine is ~640k lines of C++. This is a long-running migration, not a b
 | NMS1 packet codec | `src/common/engine/sv_master_nms1.*` | `HCDE.Protocol` | Done |
 | Phase 1 principal audit | — | `docs/HCDE_CSHARP_PHASE1_AUDIT.md` | Done |
 | Engine core | `src/` | — | Not started |
+| UDP transport + server query | `common/engine/i_net.cpp` (subset) | `HCDE.Net.Transport` | In progress (Phase 2a) |
 | Dedicated server | `hcdeserv` target | — | Planned |
 | Netcode | `d_net*.cpp` | — | Planned |
 | Playsim | `src/playsim/` | — | Planned |
@@ -72,12 +73,14 @@ csharp/
 - Unit tests proving wire compatibility with the C++ implementations
 - Principal audit: [`docs/HCDE_CSHARP_PHASE1_AUDIT.md`](../docs/HCDE_CSHARP_PHASE1_AUDIT.md)
 
-### Phase 2 — Dedicated server shell
+### Phase 2 — Dedicated server shell (in progress)
 
+- `HCDE.Net.Transport` — UDP sockets, net constants, server query client (Phase 2a)
 - UDP transport (`i_net.cpp` server path)
 - Snapshot/command netcode (`d_net*.cpp`) — server-authoritative path first
 - Minimal playsim tick loop without rendering
 - Map loader and gamedata parsers (DEHACKED, MAPINFO, UDMF)
+- Principal audit: [`docs/HCDE_CSHARP_PHASE2_AUDIT.md`](../docs/HCDE_CSHARP_PHASE2_AUDIT.md)
 
 ### Phase 3 — Full simulation
 
