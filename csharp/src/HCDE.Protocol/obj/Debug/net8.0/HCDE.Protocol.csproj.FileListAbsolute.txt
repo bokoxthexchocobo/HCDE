@@ -1,0 +1,12 @@
+/workspace/csharp/src/HCDE.Protocol/bin/Debug/net8.0/HCDE.Protocol.deps.json
+/workspace/csharp/src/HCDE.Protocol/bin/Debug/net8.0/HCDE.Protocol.dll
+/workspace/csharp/src/HCDE.Protocol/bin/Debug/net8.0/HCDE.Protocol.pdb
+/workspace/csharp/src/HCDE.Protocol/obj/Debug/net8.0/HCDE.Protocol.GeneratedMSBuildEditorConfig.editorconfig
+/workspace/csharp/src/HCDE.Protocol/obj/Debug/net8.0/HCDE.Protocol.AssemblyInfoInputs.cache
+/workspace/csharp/src/HCDE.Protocol/obj/Debug/net8.0/HCDE.Protocol.AssemblyInfo.cs
+/workspace/csharp/src/HCDE.Protocol/obj/Debug/net8.0/HCDE.Protocol.csproj.CoreCompileInputs.cache
+/workspace/csharp/src/HCDE.Protocol/obj/Debug/net8.0/HCDE.Protocol.sourcelink.json
+/workspace/csharp/src/HCDE.Protocol/obj/Debug/net8.0/HCDE.Protocol.dll
+/workspace/csharp/src/HCDE.Protocol/obj/Debug/net8.0/refint/HCDE.Protocol.dll
+/workspace/csharp/src/HCDE.Protocol/obj/Debug/net8.0/HCDE.Protocol.pdb
+/workspace/csharp/src/HCDE.Protocol/obj/Debug/net8.0/ref/HCDE.Protocol.dll

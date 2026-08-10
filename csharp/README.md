@@ -1,0 +1,113 @@
+# HCDE C# Migration
+
+This directory contains the C# rewrite of HCDE. The legacy engine remains in C++ under `src/` while new work lands here incrementally.
+
+## Why migrate?
+
+HCDE currently mixes C++, C (build tools and vendored libraries), and ZScript. A C# codebase gives us:
+
+- One primary language for engine services, tools, and multiplayer code
+- Safer memory management for netcode and server workflows
+- Easier testing with xUnit and modern tooling
+- Cross-platform builds without maintaining parallel CMake/VS project files for new code
+
+The full engine is ~640k lines of C++. This is a long-running migration, not a big-bang rewrite.
+
+## Current status
+
+| Component | C++ location | C# project | Status |
+| --- | --- | --- | --- |
+| Master protocol constants | `protocol/hcde_master_protocol.h` | `HCDE.Protocol` | Done |
+| Master list packets | `tools/hcdemaster/` | `HCDE.Protocol` + `HCDE.Master` | Done |
+| RCON client | `tools/hcdercon/` | `HCDE.Protocol` + `HCDE.Rcon` | Done |
+| Engine core | `src/` | — | Not started |
+| Dedicated server | `hcdeserv` target | — | Planned |
+| Netcode | `d_net*.cpp` | — | Planned |
+| Playsim | `src/playsim/` | — | Planned |
+| Renderer (Vulkan/SW) | `src/rendering/` | — | Keep native or P/Invoke initially |
+| ZScript VM | `src/common/scripting/` | — | Keep native or P/Invoke initially |
+| Audio (ZMusic) | `libraries/ZMusic/` | — | Keep native via P/Invoke |
+| Build tools (re2c, lemon, zipdir) | `tools/` | — | Replace or wrap later |
+
+## Build
+
+Requires [.NET 8 SDK](https://dotnet.microsoft.com/download/dotnet/8.0).
+
+```bash
+cd csharp
+dotnet build
+dotnet test
+```
+
+Published binaries (same names as the C++ tools):
+
+```bash
+dotnet publish src/HCDE.Master/HCDE.Master.csproj -c Release -o ../bin/csharp
+dotnet publish src/HCDE.Rcon/HCDE.Rcon.csproj -c Release -o ../bin/csharp
+```
+
+Outputs: `hcdemaster` and `hcdercon`.
+
+## Solution layout
+
+```
+csharp/
+  HCDE.sln
+  src/
+    HCDE.Protocol/     Shared protocol types and packet codecs
+    HCDE.Master/       hcdemaster — UDP master server
+    HCDE.Rcon/         hcdercon — TCP RCON client
+  tests/
+    HCDE.*.Tests/      xUnit regression tests
+```
+
+## Migration phases
+
+### Phase 1 — Tools and protocol (current)
+
+- Protocol constants and binary codecs
+- `hcdemaster` and `hcdercon`
+- Unit tests proving wire compatibility with the C++ implementations
+
+### Phase 2 — Dedicated server shell
+
+- UDP transport (`i_net.cpp` server path)
+- Snapshot/command netcode (`d_net*.cpp`) — server-authoritative path first
+- Minimal playsim tick loop without rendering
+- Map loader and gamedata parsers (DEHACKED, MAPINFO, UDMF)
+
+### Phase 3 — Full simulation
+
+- Complete playsim, save/load, compatibility layers
+- HCDE invasion, rewind, RCON server side in-engine
+
+### Phase 4 — Client
+
+- ZScript VM (likely native interop initially)
+- Software renderer, then Vulkan via Silk.NET/Veldrid or retained C++ interop
+- Audio via ZMusic P/Invoke
+- Launcher UI (Avalonia or similar)
+
+### Native code to retain (initially)
+
+These are poor candidates for a first-pass C# rewrite:
+
+- `libraries/ZVulkan/` — Vulkan + glslang
+- `libraries/ZMusic/` — many C audio backends
+- `libraries/asmjit/` — ZScript JIT
+- Texture scalers with hand-written ASM in `common/textures/`
+
+## Coexistence with C++
+
+During migration both trees build independently:
+
+- **C++:** `cmake -S . -B build && cmake --build build` (unchanged)
+- **C#:** `cd csharp && dotnet build`
+
+The C# `HCDE.Protocol` types mirror `protocol/hcde_master_protocol.json`. When protocol constants change, update the JSON header and the C# `MasterProtocol` class together until we add code generation.
+
+## Regression safety
+
+Reuse existing Python harnesses under `tests/` for netcode and compatibility. Add C# integration tests beside them as each subsystem ports.
+
+See also: [`docs/HCDE_CSHARP_MIGRATION.md`](../docs/HCDE_CSHARP_MIGRATION.md) for the detailed engineering plan.

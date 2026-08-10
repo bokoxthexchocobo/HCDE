@@ -49,6 +49,14 @@ These live beside the code and are the source of truth for architecture and audi
 
 Master protocol constants live in `protocol/` so engine, launcher, and master stay separate (`protocol/hcde_master_protocol.json`, `protocol/hcde_master_protocol.h`).
 
+## C# migration (in progress)
+
+HCDE is being ported to C# incrementally. The legacy C++/C engine under `src/` still builds with CMake; new work lands in [`csharp/`](csharp/README.md). Phase 1 replaces the standalone `hcdemaster` and `hcdercon` tools plus shared protocol code. See [`docs/HCDE_CSHARP_MIGRATION.md`](docs/HCDE_CSHARP_MIGRATION.md) for the full plan.
+
+```bash
+cd csharp && dotnet build && dotnet test
+```
+
 ## Quick build
 
 **Windows (Visual Studio):**
