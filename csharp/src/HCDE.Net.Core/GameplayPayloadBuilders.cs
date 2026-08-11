@@ -144,14 +144,28 @@ public static class GameplayPayloadBuilders
         uint consistencyAck,
         uint baseSequence,
         uint baseConsistency,
-        IReadOnlyList<ServerSnapshotPlayerRecord> players)
+        IReadOnlyList<ServerSnapshotPlayerRecord> players,
+        bool includeMinimalTail = false,
+        uint gameTic = 0)
     {
         if (payload.Length < LiveConstants.ServerSnapshotHeaderSize + LiveConstants.ServerSnapshotRecordsHeaderSize)
             return 0;
 
+        var tailSize = includeMinimalTail ? ServerSnapshotTailCodec.MinimalTailSize : 0;
         var bodyWritten = ServerSnapshotBodyCodec.WritePlayerRecords(payload[LiveConstants.ServerSnapshotHeaderSize..], players);
         if (bodyWritten == 0)
             return 0;
+
+        if (includeMinimalTail)
+        {
+            var tailWritten = ServerSnapshotTailCodec.WriteMinimal(
+                payload[(LiveConstants.ServerSnapshotHeaderSize + bodyWritten)..],
+                gameTic);
+            if (tailWritten == 0)
+                return 0;
+
+            bodyWritten += tailWritten;
+        }
 
         var header = new ServerSnapshotHeader(
             controlFlags: 0,
@@ -172,6 +186,28 @@ public static class GameplayPayloadBuilders
 
         return LiveConstants.ServerSnapshotHeaderSize + bodyWritten;
     }
+
+    public static int BuildServerSnapshot(
+        Span<byte> payload,
+        byte playerCount,
+        byte commandTics,
+        byte consistencyTics,
+        uint sequenceAck,
+        uint consistencyAck,
+        uint baseSequence,
+        uint baseConsistency,
+        IReadOnlyList<ServerSnapshotPlayerRecord> players)
+        => BuildServerSnapshot(
+            payload,
+            playerCount,
+            commandTics,
+            consistencyTics,
+            sequenceAck,
+            consistencyAck,
+            baseSequence,
+            baseConsistency,
+            players,
+            includeMinimalTail: false);
 
     public static int BuildServerSnapshotSinglePlayer(
         Span<byte> payload,

@@ -77,12 +77,24 @@ public static class LiveConstants
     public const byte ServerSnapshotRecordsProtocolVersion = 2;
 
     public const int ServerWorldDeltaHeaderSize = 11;
+    public const int ServerWorldDeltaPoseRecordV4Size = 38;
+    public const int ServerWorldDeltaSectorRecordSize = 11;
     public const int AuthorityEventsHeaderSize = 8;
+    public const int ActorDeltasHeaderSize = 8;
     public const byte ServerWorldDeltaProtocolVersion = 4;
     public const byte AuthorityEventsProtocolVersion = 1;
+    public const byte ActorDeltasProtocolVersion = 2;
 
     public static ReadOnlySpan<byte> ServerWorldDeltaMagic => "HCDW"u8;
     public static ReadOnlySpan<byte> AuthorityEventsMagic => "HCAV"u8;
+    public static ReadOnlySpan<byte> ActorDeltasMagic => "HCDA"u8;
+
+    public const byte ServerWorldDeltaPoseHasActor = 1 << 0;
+    public const byte ServerWorldDeltaPoseLive = 1 << 1;
+    public const byte ServerWorldDeltaPoseOnGround = 1 << 2;
+    public const byte ServerWorldDeltaSectorHasFloor = 1 << 0;
+    public const byte ServerWorldDeltaSectorHasCeiling = 1 << 1;
+    public const byte ActorDeltasFlagComplete = 1 << 0;
 
     public const ulong CapControlV1 = 1UL << 0;
     public const ulong CapClientInputV5 = 1UL << 1;
