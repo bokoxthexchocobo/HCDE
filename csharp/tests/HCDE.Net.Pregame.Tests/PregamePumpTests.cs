@@ -126,6 +126,65 @@ public class PregameHostGuestLoopbackTests
     }
 
     [Fact]
+    public async Task GuestCompletesWaitingSetupHandshake()
+    {
+        using var hostTransport = new UdpTransport();
+        hostTransport.Bind(0);
+        hostTransport.SetNonBlocking(true);
+        var hostEndpoint = new NetworkEndpoint(IPAddress.Loopback, hostTransport.BoundPort);
+
+        var engineInfo = new EngineInfoSnapshot();
+        var session = new PregameSessionSnapshot
+        {
+            MapLoad = new MapLoadInfo { MapName = "MAP01", RngSeed = 42 },
+            GameInfo = new GameInfoPayload { TicDup = 1, GameId = new byte[] { 1, 2, 3, 4, 5, 6, 7, 8 } },
+            HostUserInfo = "name\\host",
+        };
+
+        var host = new PregameHost(hostTransport, new PregameHostOptions
+        {
+            MaxClients = 8,
+            ExpectedEngineInfo = engineInfo,
+            GameId = session.GameInfo.GameId,
+            Session = session,
+        });
+
+        using var guestTransport = new UdpTransport();
+        guestTransport.Bind(0);
+        guestTransport.SetNonBlocking(true);
+
+        var guest = new PregameGuest(guestTransport, new PregameGuestOptions
+        {
+            ServerAddress = hostEndpoint,
+            EngineInfo = engineInfo,
+            UserInfo = "name\\guest",
+        });
+
+        var deadline = Environment.TickCount64 + 5000;
+        while (Environment.TickCount64 < deadline)
+        {
+            var now = (ulong)Environment.TickCount64;
+            host.Pump(now);
+            guest.Pump(now);
+
+            if (guest.Phase == PregameGuestPhase.Ready
+                && host.Clients.Any(c => c.ClientSlot == guest.AssignedClientSlot && c.Status == ConnectionStatus.Ready))
+                break;
+
+            await Task.Delay(10);
+        }
+
+        Assert.Equal(PregameGuestPhase.Ready, guest.Phase);
+        Assert.NotNull(guest.ReceivedMapLoad);
+        Assert.Equal("MAP01", guest.ReceivedMapLoad!.MapName);
+        Assert.Equal(42, guest.ReceivedMapLoad.RngSeed);
+        Assert.NotNull(guest.ReceivedGameInfo);
+        Assert.Equal(session.GameInfo.GameId, guest.ReceivedGameInfo!.GameId);
+        Assert.True(guest.ReceivedRoster.Count >= 1);
+        Assert.Contains(host.Clients, c => c.Status == ConnectionStatus.Ready);
+    }
+
+    [Fact]
     public async Task HostRejectsMissingHcd3Block()
     {
         using var hostTransport = new UdpTransport();

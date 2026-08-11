@@ -11,10 +11,11 @@ public sealed class PregameHostOptions
     public bool AdvertiseDedicated { get; set; }
     public EngineInfoSnapshot ExpectedEngineInfo { get; set; } = new();
     public bool RequireHcdeConnectInfo { get; set; } = true;
+    public PregameSessionSnapshot Session { get; set; } = new();
 }
 
 /// <summary>
-/// Minimal host-side pregame pump: admit PRE_CONNECT, emit PRE_CONNECT_ACK and console-player service.
+/// Host-side pregame pump through CONNECTING and WAITING setup states.
 /// </summary>
 public sealed class PregameHost
 {
@@ -23,6 +24,7 @@ public sealed class PregameHost
     private readonly PregameServiceReceiver _receiver = new();
     private readonly PregameClient[] _clients;
     private readonly byte[] _netBuffer = new byte[NetConstants.MaxMessageLength];
+    private readonly byte[] _payloadBuffer = new byte[NetConstants.MaxMessageLength];
     private int _connectedPlayers;
 
     public PregameHost(UdpTransport transport, PregameHostOptions? options = null)
@@ -40,6 +42,7 @@ public sealed class PregameHost
     {
         DrainInbound(nowMilliseconds);
         DriveConnectingClients(nowMilliseconds);
+        DriveWaitingClients(nowMilliseconds);
     }
 
     private void DrainInbound(ulong nowMilliseconds)
@@ -55,19 +58,44 @@ public sealed class PregameHost
             }
 
             var client = FindClientByAddress(remote);
-            if (client is null)
+            if (client is null || span.Length < 2 || span[1] != (byte)PregameSetupType.HcdeService)
                 continue;
 
-            if (span.Length >= 2 && span[1] == (byte)PregameSetupType.HcdeService)
-            {
-                _receiver.TryAccept(span, client.Connection, nowMilliseconds);
-                if (span.Length >= PregameConstants.ServiceHeaderSize + 1
-                    && span[2] == (byte)PregameServiceType.ClientUserInfo)
-                {
-                    client.Status = ConnectionStatus.Waiting;
-                }
-            }
+            if (_receiver.TryAccept(span, client.Connection, nowMilliseconds) != PregameServiceReceiveResult.Accepted)
+                continue;
+
+            if (!HcdeServicePacket.TryRead(span, out var service))
+                continue;
+
+            HandleServiceFromClient(client, service, nowMilliseconds);
         }
+    }
+
+    private void HandleServiceFromClient(PregameClient client, HcdeServicePacket service, ulong nowMilliseconds)
+    {
+        switch (service.Service)
+        {
+            case PregameServiceType.ClientUserInfo:
+                client.ReceivedClientUserInfo = true;
+                client.UserInfo = System.Text.Encoding.ASCII.GetString(service.Payload.Span);
+                client.Status = ConnectionStatus.Waiting;
+                break;
+            case PregameServiceType.UserInfoAck:
+                if (service.Payload.Length >= 1 && service.Payload.Span[0] == client.ClientSlot)
+                    client.ReceivedUserInfoAck = true;
+                break;
+            case PregameServiceType.MapLoadAck:
+                client.HasMapLoadAck = true;
+                break;
+            case PregameServiceType.GameInfoAck:
+                client.HasGameInfoAck = true;
+                break;
+            case PregameServiceType.RosterAck:
+                client.HasRosterAck = true;
+                break;
+        }
+
+        FlushClient(client, nowMilliseconds);
     }
 
     private void TryAdmitConnect(ReadOnlySpan<byte> netBuffer, NetworkEndpoint remote, ulong nowMilliseconds)
@@ -82,6 +110,13 @@ public sealed class PregameHost
         }
 
         if (connect.HasConnectInfo && connect.ConnectVersion != PregameConstants.ConnectProtocolVersion)
+        {
+            SendReject(remote, PregameSetupType.ProtocolError);
+            return;
+        }
+
+        var verification = EngineInfoVerifier.Verify(connect.EngineInfo, _options.Session.RequiredWadCrcs);
+        if (!verification.IsSuccess)
         {
             SendReject(remote, PregameSetupType.ProtocolError);
             return;
@@ -143,18 +178,125 @@ public sealed class PregameHost
                 (byte)_options.MaxClients,
                 (byte)HcdeConnectFlags.ServerAuthority,
             };
-            if (client.Sender.TryQueueReliable(
-                    PregameServiceType.ConsolePlayer,
-                    client.Connection,
-                    client.ClientSlot,
-                    consolePayload))
+            client.Sender.TryQueueReliable(
+                PregameServiceType.ConsolePlayer,
+                client.Connection,
+                client.ClientSlot,
+                consolePayload);
+            FlushClient(client, nowMilliseconds, force: true);
+        }
+    }
+
+    private void DriveWaitingClients(ulong nowMilliseconds)
+    {
+        foreach (var client in _clients)
+        {
+            if (client.Status != ConnectionStatus.Waiting)
+                continue;
+
+            if (!client.ReceivedUserInfoAck)
             {
-                // queued
+                QueueUserInfoAck(client);
+            }
+            else if (!client.HasMapLoadAck)
+            {
+                QueueMapLoad(client);
+            }
+            else if (!client.HasGameInfoAck)
+            {
+                QueueGameInfo(client);
+            }
+            else if (!client.HasRosterAck)
+            {
+                QueueRoster(client);
+            }
+            else
+            {
+                client.Status = ConnectionStatus.Ready;
             }
 
-            if (client.Sender.TryFlush(client.Connection, nowMilliseconds, _netBuffer, out var length, force: true))
-                PregameWire.TrySend(_transport, _netBuffer.AsSpan(0, length), client.Address);
+            FlushClient(client, nowMilliseconds, force: true);
         }
+    }
+
+    private void QueueUserInfoAck(PregameClient client)
+    {
+        if (!client.ReceivedClientUserInfo)
+            return;
+
+        var payload = new byte[] { client.ClientSlot };
+        client.Sender.TryQueueReliable(PregameServiceType.UserInfoAck, client.Connection, client.ClientSlot, payload);
+    }
+
+    private void QueueMapLoad(PregameClient client)
+    {
+        var payloadLength = PregameServicePayloads.WriteMapLoadInfo(_payloadBuffer, _options.Session.MapLoad);
+        if (payloadLength == 0)
+            return;
+        client.Sender.TryQueueReliable(
+            PregameServiceType.MapLoad,
+            client.Connection,
+            key: 0,
+            _payloadBuffer.AsSpan(0, payloadLength));
+    }
+
+    private void QueueGameInfo(PregameClient client)
+    {
+        var gameInfo = _options.Session.GameInfo;
+        if (gameInfo.GameId.Length < 8)
+            gameInfo = new GameInfoPayload { TicDup = gameInfo.TicDup, GameId = _options.GameId, ServerInfo = gameInfo.ServerInfo };
+
+        var payloadLength = PregameServicePayloads.WriteGameInfo(_payloadBuffer, gameInfo);
+        if (payloadLength == 0)
+            return;
+        client.Sender.TryQueueReliable(
+            PregameServiceType.GameInfo,
+            client.Connection,
+            key: 0,
+            _payloadBuffer.AsSpan(0, payloadLength));
+    }
+
+    private void QueueRoster(PregameClient client)
+    {
+        var entries = new List<RosterEntry>
+        {
+            new()
+            {
+                ClientSlot = 0,
+                UserInfo = _options.Session.HostUserInfo,
+            },
+            new()
+            {
+                ClientSlot = client.ClientSlot,
+                Address = CreateSockAddrPlaceholder(client.Address),
+                UserInfo = client.UserInfo,
+            },
+        };
+
+        var payloadLength = PregameServicePayloads.WriteRoster(_payloadBuffer, entries);
+        if (payloadLength == 0)
+            return;
+        client.Sender.TryQueueReliable(
+            PregameServiceType.Roster,
+            client.Connection,
+            key: 0,
+            _payloadBuffer.AsSpan(0, payloadLength));
+    }
+
+    private static byte[] CreateSockAddrPlaceholder(NetworkEndpoint endpoint)
+    {
+        var bytes = new byte[PregameServicePayloads.SockAddrInSize];
+        if (endpoint.Address.AddressFamily == System.Net.Sockets.AddressFamily.InterNetwork)
+            endpoint.Address.GetAddressBytes().CopyTo(bytes, 4);
+        bytes[2] = (byte)(endpoint.Port >> 8);
+        bytes[3] = (byte)endpoint.Port;
+        return bytes;
+    }
+
+    private void FlushClient(PregameClient client, ulong nowMilliseconds, bool force = false)
+    {
+        if (client.Sender.TryFlush(client.Connection, nowMilliseconds, _netBuffer, out var length, force))
+            PregameWire.TrySend(_transport, _netBuffer.AsSpan(0, length), client.Address);
     }
 
     private void SendConnectAck(PregameClient client)

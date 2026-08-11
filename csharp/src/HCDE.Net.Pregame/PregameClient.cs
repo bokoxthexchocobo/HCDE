@@ -11,4 +11,11 @@ public sealed class PregameClient
     public PregameServiceSender Sender { get; } = new();
     public bool HcdeConnect { get; set; }
     public HcdeConnectFlags ConnectFlags { get; set; }
+
+    public bool ReceivedClientUserInfo { get; set; }
+    public bool ReceivedUserInfoAck { get; set; }
+    public bool HasMapLoadAck { get; set; }
+    public bool HasGameInfoAck { get; set; }
+    public bool HasRosterAck { get; set; }
+    public string UserInfo { get; set; } = "";
 }
