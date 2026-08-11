@@ -9,6 +9,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\HCDE.Net.Core\HCDE.Net.Core.csproj" />
     <ProjectReference Include="..\HCDE.Net.Pregame\HCDE.Net.Pregame.csproj" />
   </ItemGroup>
 

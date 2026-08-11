@@ -129,6 +129,18 @@ Phase 2 does **not** include rendering, audio, ZScript VM, or client prediction.
 | Control endpoint pump | `LiveControlEndpoint` | `SendHCDELiveControl` |
 | Gameplay endpoint pump | `LiveGameplayEndpoint` | `HLIVE_CLIENT_COMMANDS` / `HLIVE_SERVER_SNAPSHOT` send |
 
+### Record bodies + lane headers (Phase 2c — iteration 4)
+
+| Artifact | Location | C++ reference |
+| --- | --- | --- |
+| 16-byte explicit `usercmd_t` | `UserCmdCodec.cs` | `HCDEAppendUserCmdFields` |
+| HCDE event-record block | `EventRecordsCodec.cs` | `HCDEAppendEventRecords` |
+| HCIR player-record body | `ClientInputBodyCodec.cs` | `HCDEBuildNativeClientInputPayload` |
+| HCSR player-record body | `ServerSnapshotBodyCodec.cs` | `HCDEBuildNativeServerSnapshotPayload` (records section) |
+| HCDW / HCAV chunk headers | `LaneChunkHeaderCodec.cs` | world delta + authority event headers |
+| Live authority/guest sessions | `LiveSession.cs` | post-pregame live pump glue |
+| Guest CLI `--live-ticks` | `HCDE.PregameGuest.Cli` | pregame `Starting` → live guest pump |
+
 **Correction from 2a:** The initial `PregameServiceHeader` treated bytes 0–3 as CRC inside the 15-byte header. The C++ `NetBuffer` layout places `NCMD_SETUP` at byte 0; CRC is only on the wire in `TransmitBuffer[0..3]`. The incorrect struct was removed; the correct layout lives in `HcdeServicePacket`.
 
 **Enum fix:** `PregameServiceType` now matches C++ `EHCDEPregameService` (starts at `Heartbeat = 1`).
@@ -174,8 +186,11 @@ Phase 2 does **not** include rendering, audio, ZScript VM, or client prediction.
 | HCSN header layout + length validation | `ServerSnapshotHeaderCodecTests` | Pass |
 | Authority/guest routing predicates | `LiveAuthorityRoutingTests` | Pass |
 | Live control packet build/parse | `LiveControlPacketTests` | Pass |
+| GameID gameplay wire CRC round-trip | `GameplayWireCodecTests` | Pass |
+| Empty HCIN/HCSN payload builders | `GameplayPayloadBuilderTests` | Pass |
+| UDP live control + empty HCIN loopback | `LiveWireLoopbackTests` | Pass |
 
-**Test count:** 87 passing (`dotnet test` in `csharp/`).
+**Test count:** 95 passing (`dotnet test` in `csharp/`).
 
 ## Not yet in Phase 2b (sign-off blockers)
 
@@ -224,9 +239,9 @@ Phase 2b is complete when **all** hold:
 
 ## Phase 2c next slice
 
-1. **Gameplay wire CRC** — non-setup `SendPacket` GameID CRC envelope for UDP loopback
-2. **Live UDP pump** — authority/guest exchange HLIVE_CONTROL after pregame `HPS_START_GAME`
-3. **HCIN/HCSN body encode** — minimal empty-records payloads for native-live smoke
+1. **HCIN/HCSN record bodies** — usercmd, consistency, DEM event streams (not just empty headers)
+2. **HCDW / HCAV / HCDA** — world delta, authority events, actor delta lanes
+3. **Pregame → live handoff** — promote `PregameHost`/`PregameGuest` into `Starting` phase with live endpoints
 
 ## Phase 2b next slice
 
@@ -252,6 +267,6 @@ Do **not** port snapshot encode/decode bodies until HCIN/HCSN headers are green.
 
 **Phase 2b C# pregame stack is feature-complete for fresh dedicated joins** — loopback WAITING setup, verification-error replies, start-game, and a cross-language guest CLI/harness are in place. The remaining 2b gate is executing the harness against a real `hcdeserv` build and recording the result.
 
-**Phase 2c iteration 2** adds HCIN/HCSN/HCIR/HCSR header codecs, authority routing helpers, and live control packet build/parse with a 1 Hz scheduler.
+**Phase 2c iteration 3** adds GameID wire CRC, empty HCIN/HCSN payloads, HGPL-wrapped live packets, and UDP loopback control/gameplay exchange.
 
-Next audit checkpoint: **Phase 2c iteration 3** when live control UDP loopback works after pregame start-game.
+Next audit checkpoint: **Phase 2c iteration 4** when HCIN/HCSN record bodies (usercmds + events) land.

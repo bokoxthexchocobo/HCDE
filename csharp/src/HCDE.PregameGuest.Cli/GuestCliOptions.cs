@@ -10,6 +10,7 @@ public sealed class GuestCliOptions
     public byte EngineMinor { get; set; }
     public byte EngineRevision { get; set; }
     public List<string> WadCrcs { get; } = [];
+    public int LiveTicks { get; set; }
     public int TimeoutMilliseconds { get; set; } = 30000;
 
     public static GuestCliOptions Parse(string[] args)
@@ -46,6 +47,9 @@ public sealed class GuestCliOptions
                 case "--timeout-ms":
                     options.TimeoutMilliseconds = int.Parse(RequireValue(args, ref i));
                     break;
+                case "--live-ticks":
+                    options.LiveTicks = int.Parse(RequireValue(args, ref i));
+                    break;
             }
         }
 
@@ -68,7 +72,7 @@ public sealed class GuestCliOptions
               dotnet run --project csharp/src/HCDE.PregameGuest.Cli -- --server 127.0.0.1:5029
                 [--password PASS] [--userinfo name\\guest]
                 [--engine-version 1.0.0] [--wad-crc <crc>]...
-                [--timeout-ms 30000]
+                [--timeout-ms 30000] [--live-ticks 0]
             """);
     }
 }

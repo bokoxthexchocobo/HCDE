@@ -1,4 +1,5 @@
 using System.Net;
+using HCDE.Net.Core;
 using HCDE.Net.Pregame;
 using HCDE.Net.Transport;
 
@@ -53,6 +54,26 @@ public static class Program
                 Console.WriteLine($"phase={guest.Phase} slot={guest.AssignedClientSlot} token=0x{guest.Connection.SessionToken:X8}");
                 if (guest.ReceivedMapLoad is { } mapLoad)
                     Console.WriteLine($"map={mapLoad.MapName} seed={mapLoad.RngSeed}");
+
+                if (options.LiveTicks > 0 && guest.Phase == PregameGuestPhase.Starting && guest.ReceivedGameInfo is { } gameInfo)
+                {
+                    var live = new LiveGuestSession(
+                        transport,
+                        gameInfo.GameId,
+                        serverEndpoint,
+                        guestPlayerSlot: guest.AssignedClientSlot,
+                        authoritySlot: 0,
+                        maxClients: guest.MaxClients);
+
+                    for (var tick = 0; tick < options.LiveTicks; tick++)
+                    {
+                        live.Pump((ulong)Environment.TickCount64 + (ulong)tick * 1000);
+                        await Task.Delay(10);
+                    }
+
+                    Console.WriteLine($"live-ticks={options.LiveTicks}");
+                }
+
                 return 0;
             }
 

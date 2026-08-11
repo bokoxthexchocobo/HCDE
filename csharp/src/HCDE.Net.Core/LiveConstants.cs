@@ -76,6 +76,14 @@ public static class LiveConstants
     public const byte ServerSnapshotProtocolVersion = 4;
     public const byte ServerSnapshotRecordsProtocolVersion = 2;
 
+    public const int ServerWorldDeltaHeaderSize = 11;
+    public const int AuthorityEventsHeaderSize = 8;
+    public const byte ServerWorldDeltaProtocolVersion = 4;
+    public const byte AuthorityEventsProtocolVersion = 1;
+
+    public static ReadOnlySpan<byte> ServerWorldDeltaMagic => "HCDW"u8;
+    public static ReadOnlySpan<byte> AuthorityEventsMagic => "HCAV"u8;
+
     public const ulong CapControlV1 = 1UL << 0;
     public const ulong CapClientInputV5 = 1UL << 1;
     public const ulong CapServerSnapshotV4 = 1UL << 2;

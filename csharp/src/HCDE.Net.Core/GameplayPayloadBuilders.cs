@@ -62,6 +62,153 @@ public static class GameplayPayloadBuilders
             new ServerSnapshotRecordsHeader(playerCount: 0));
         return bodyWritten == 0 ? 0 : written + bodyWritten;
     }
+
+    public static int BuildClientInput(
+        Span<byte> payload,
+        byte playerCount,
+        byte commandTics,
+        byte consistencyTics,
+        uint sequenceAck,
+        uint consistencyAck,
+        uint baseSequence,
+        uint baseConsistency,
+        IReadOnlyList<ClientInputPlayerRecord> players)
+    {
+        if (payload.Length < LiveConstants.ClientInputHeaderSize + LiveConstants.ClientInputRecordsHeaderSize)
+            return 0;
+
+        var bodyWritten = ClientInputBodyCodec.Write(payload[LiveConstants.ClientInputHeaderSize..], players);
+        if (bodyWritten == 0)
+            return 0;
+
+        var header = new ClientInputHeader(
+            controlFlags: 0,
+            routingByte: 0,
+            playerCount: playerCount,
+            sequenceAck: sequenceAck,
+            consistencyAck: consistencyAck,
+            baseSequence: baseSequence,
+            baseConsistency: baseConsistency,
+            commandTics: commandTics,
+            consistencyTics: consistencyTics,
+            stabilityBuffer: (byte)NetConstants.StabilityTics,
+            bodyBytes: (ushort)bodyWritten);
+
+        if (ClientInputHeader.Write(payload, header) == 0)
+            return 0;
+
+        return LiveConstants.ClientInputHeaderSize + bodyWritten;
+    }
+
+    public static int BuildClientInputSinglePlayer(
+        Span<byte> payload,
+        byte playerNum,
+        UserCmd command,
+        byte commandTics = 1,
+        byte consistencyTics = 0)
+    {
+        var players = new[]
+        {
+            new ClientInputPlayerRecord
+            {
+                PlayerNum = playerNum,
+                Commands = new[]
+                {
+                    new ClientInputCommandRecord
+                    {
+                        CommandOffset = 0,
+                        Command = command,
+                    },
+                },
+            },
+        };
+
+        return BuildClientInput(
+            payload,
+            playerCount: 1,
+            commandTics,
+            consistencyTics,
+            sequenceAck: 0,
+            consistencyAck: 0,
+            baseSequence: 1,
+            baseConsistency: 0,
+            players);
+    }
+
+    public static int BuildServerSnapshot(
+        Span<byte> payload,
+        byte playerCount,
+        byte commandTics,
+        byte consistencyTics,
+        uint sequenceAck,
+        uint consistencyAck,
+        uint baseSequence,
+        uint baseConsistency,
+        IReadOnlyList<ServerSnapshotPlayerRecord> players)
+    {
+        if (payload.Length < LiveConstants.ServerSnapshotHeaderSize + LiveConstants.ServerSnapshotRecordsHeaderSize)
+            return 0;
+
+        var bodyWritten = ServerSnapshotBodyCodec.WritePlayerRecords(payload[LiveConstants.ServerSnapshotHeaderSize..], players);
+        if (bodyWritten == 0)
+            return 0;
+
+        var header = new ServerSnapshotHeader(
+            controlFlags: 0,
+            routingByte: 0,
+            playerCount: playerCount,
+            sequenceAck: sequenceAck,
+            consistencyAck: consistencyAck,
+            quitterBytes: 0,
+            baseSequence: baseSequence,
+            baseConsistency: baseConsistency,
+            commandTics: commandTics,
+            consistencyTics: consistencyTics,
+            stabilityBuffer: (byte)NetConstants.StabilityTics,
+            bodyBytes: (ushort)bodyWritten);
+
+        if (ServerSnapshotHeader.Write(payload, header) == 0)
+            return 0;
+
+        return LiveConstants.ServerSnapshotHeaderSize + bodyWritten;
+    }
+
+    public static int BuildServerSnapshotSinglePlayer(
+        Span<byte> payload,
+        byte playerNum,
+        UserCmd command,
+        ushort averageLatency = 0,
+        byte commandTics = 1,
+        byte consistencyTics = 0)
+    {
+        var players = new[]
+        {
+            new ServerSnapshotPlayerRecord
+            {
+                PlayerNum = playerNum,
+                AverageLatency = averageLatency,
+                Commands = new[]
+                {
+                    new ServerSnapshotCommandRecord
+                    {
+                        CommandOffset = 0,
+                        Command = command,
+                    },
+                },
+            },
+        };
+
+        return BuildServerSnapshot(
+            payload,
+            playerCount: 1,
+            commandTics,
+            consistencyTics,
+            sequenceAck: 0,
+            consistencyAck: 0,
+            baseSequence: 1,
+            baseConsistency: 0,
+            players);
+    }
 }
 
 public static class LiveGameplayPacketBuilder

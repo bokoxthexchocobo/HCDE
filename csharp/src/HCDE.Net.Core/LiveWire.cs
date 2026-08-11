@@ -137,10 +137,14 @@ public sealed class LiveGameplayEndpoint
             : new byte[GameplayWireCodec.GameIdSize];
     }
 
-    public bool TrySendEmptyClientInputs(NetworkEndpoint remote, byte roomId, uint gameTic)
+    public bool TrySendEmptyClientInputs(NetworkEndpoint remote, byte roomId, uint gameTic) =>
+        TrySendClientInput(remote, roomId, gameTic, playerNum: 0);
+
+    public bool TrySendClientInput(NetworkEndpoint remote, byte roomId, uint gameTic, byte playerNum, UserCmd command = default)
     {
-        Span<byte> inputPayload = stackalloc byte[LiveConstants.ClientInputHeaderSize + LiveConstants.ClientInputRecordsHeaderSize];
-        if (GameplayPayloadBuilders.BuildEmptyClientInput(inputPayload) == 0)
+        Span<byte> inputPayload = stackalloc byte[512];
+        var length = GameplayPayloadBuilders.BuildClientInputSinglePlayer(inputPayload, playerNum, command);
+        if (length == 0)
             return false;
 
         return TrySendGameplay(
@@ -149,13 +153,17 @@ public sealed class LiveGameplayEndpoint
             GameplayPayloadKind.ClientInputs,
             roomId,
             gameTic,
-            inputPayload);
+            inputPayload[..length]);
     }
 
-    public bool TrySendEmptyServerSnapshot(NetworkEndpoint remote, byte roomId, uint gameTic)
+    public bool TrySendEmptyServerSnapshot(NetworkEndpoint remote, byte roomId, uint gameTic) =>
+        TrySendServerSnapshot(remote, roomId, gameTic, playerNum: 0);
+
+    public bool TrySendServerSnapshot(NetworkEndpoint remote, byte roomId, uint gameTic, byte playerNum, UserCmd command = default)
     {
-        Span<byte> snapshotPayload = stackalloc byte[LiveConstants.ServerSnapshotHeaderSize + LiveConstants.ServerSnapshotRecordsHeaderSize];
-        if (GameplayPayloadBuilders.BuildEmptyServerSnapshot(snapshotPayload) == 0)
+        Span<byte> snapshotPayload = stackalloc byte[512];
+        var length = GameplayPayloadBuilders.BuildServerSnapshotSinglePlayer(snapshotPayload, playerNum, command);
+        if (length == 0)
             return false;
 
         return TrySendGameplay(
@@ -164,7 +172,7 @@ public sealed class LiveGameplayEndpoint
             GameplayPayloadKind.ServerSnapshot,
             roomId,
             gameTic,
-            snapshotPayload);
+            snapshotPayload[..length]);
     }
 
     public bool TryReceiveGameplay(
