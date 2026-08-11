@@ -26,7 +26,7 @@ public static class SetupPacketCodec
             return 0;
 
         netBuffer.CopyTo(wireBuffer[CrcPrefixSize..]);
-        var crc = Crc32.Calc(netBuffer);
+        var crc = HCDE.Net.Transport.Crc32.Calc(netBuffer);
         BinaryPrimitives.WriteUInt32BigEndian(wireBuffer, crc);
         return netBuffer.Length + CrcPrefixSize;
     }
@@ -42,7 +42,7 @@ public static class SetupPacketCodec
 
         var payload = wireBuffer[CrcPrefixSize..];
         var expectedCrc = BinaryPrimitives.ReadUInt32BigEndian(wireBuffer);
-        var actualCrc = Crc32.Calc(payload);
+        var actualCrc = HCDE.Net.Transport.Crc32.Calc(payload);
         if (expectedCrc != actualCrc)
             return SetupPacketDecodeStatus.BadCrc;
 
@@ -100,7 +100,7 @@ public static class SetupPacketCodec
 
         compressed.CopyTo(payload);
         var payloadLength = 1 + compressed.Length;
-        var crc = Crc32.Calc(wireBuffer.Slice(CrcPrefixSize, payloadLength));
+        var crc = HCDE.Net.Transport.Crc32.Calc(wireBuffer.Slice(CrcPrefixSize, payloadLength));
         BinaryPrimitives.WriteUInt32BigEndian(wireBuffer, crc);
         return CrcPrefixSize + payloadLength;
     }

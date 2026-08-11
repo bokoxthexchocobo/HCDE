@@ -1,4 +1,4 @@
-namespace HCDE.Net.Pregame;
+namespace HCDE.Net.Transport;
 
 /// <summary>
 /// zlib-compatible CRC-32 matching <c>CalcCRC32</c> / <c>AddCRC32</c> in <c>m_crc32.h</c>.
