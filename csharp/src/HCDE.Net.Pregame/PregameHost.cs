@@ -118,7 +118,11 @@ public sealed class PregameHost
         var verification = EngineInfoVerifier.Verify(connect.EngineInfo, _options.Session.RequiredWadCrcs);
         if (!verification.IsSuccess)
         {
-            SendReject(remote, PregameSetupType.ProtocolError);
+            var errorPacket = VerificationErrorCodec.FromEngineVerification(
+                verification,
+                _options.ExpectedEngineInfo,
+                connect.EngineInfo);
+            SendVerificationError(remote, errorPacket);
             return;
         }
 
@@ -322,6 +326,25 @@ public sealed class PregameHost
         _netBuffer[0] = (byte)NetCommandFlags.Setup;
         _netBuffer[1] = (byte)reason;
         PregameWire.TrySend(_transport, _netBuffer.AsSpan(0, 2), remote);
+    }
+
+    private void SendVerificationError(NetworkEndpoint remote, VerificationErrorPacket error)
+    {
+        var length = VerificationErrorCodec.Write(_netBuffer, error);
+        if (length > 0)
+            PregameWire.TrySend(_transport, _netBuffer.AsSpan(0, length), remote);
+    }
+
+    public void StartGame(ulong nowMilliseconds)
+    {
+        foreach (var client in _clients)
+        {
+            if (client.Status != ConnectionStatus.Ready)
+                continue;
+
+            client.Sender.TryQueueReliable(PregameServiceType.StartGame, client.Connection, key: 0, ReadOnlySpan<byte>.Empty);
+            FlushClient(client, nowMilliseconds, force: true);
+        }
     }
 
     private PregameClient? FindClientByAddress(NetworkEndpoint remote)

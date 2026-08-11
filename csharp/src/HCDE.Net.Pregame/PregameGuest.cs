@@ -20,6 +20,7 @@ public enum PregameGuestPhase
     WaitingForStart,
     Synchronizing,
     Ready,
+    Starting,
     Rejected,
 }
 
@@ -50,6 +51,7 @@ public sealed class PregameGuest
     public MapLoadInfo? ReceivedMapLoad { get; private set; }
     public GameInfoPayload? ReceivedGameInfo { get; private set; }
     public IReadOnlyList<RosterEntry> ReceivedRoster { get; private set; } = Array.Empty<RosterEntry>();
+    public VerificationErrorPacket? VerificationError { get; private set; }
 
     public void Pump(ulong nowMilliseconds)
     {
@@ -109,12 +111,20 @@ public sealed class PregameGuest
             if (setupType is PregameSetupType.Full
                 or PregameSetupType.InProgress
                 or PregameSetupType.WrongPassword
-                or PregameSetupType.VerificationError
                 or PregameSetupType.Kicked
                 or PregameSetupType.Banned
                 or PregameSetupType.ProtocolError
                 or PregameSetupType.SetupTimeout)
             {
+                RejectReason = setupType;
+                Phase = PregameGuestPhase.Rejected;
+                continue;
+            }
+
+            if (setupType == PregameSetupType.VerificationError)
+            {
+                if (VerificationErrorCodec.TryRead(span, out var verificationError))
+                    VerificationError = verificationError;
                 RejectReason = setupType;
                 Phase = PregameGuestPhase.Rejected;
                 continue;
@@ -165,6 +175,10 @@ public sealed class PregameGuest
                     ReceivedRoster = roster;
                 QueueHeaderOnlyAck(PregameServiceType.RosterAck, key: 0);
                 Phase = PregameGuestPhase.Ready;
+                break;
+            case PregameServiceType.StartGame:
+                QueueHeaderOnlyAck(PregameServiceType.StartGameAck, key: 0);
+                Phase = PregameGuestPhase.Starting;
                 break;
         }
     }

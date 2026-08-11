@@ -1,7 +1,7 @@
 # HCDE C# Migration — Phase 2 Principal Audit
 
-**Last updated:** 2026-08-10  
-**Status:** In progress — Phase **2b** pregame host/guest pump landed (`HCDE.Net.Pregame`).  
+**Last updated:** 2026-08-11  
+**Status:** In progress — Phase **2b** verification errors, start-game, and cross-language harness landed.  
 **Prerequisite:** [Phase 1 audit](HCDE_CSHARP_PHASE1_AUDIT.md) (complete)  
 **Related:** [`docs/HCDE_CSHARP_MIGRATION.md`](HCDE_CSHARP_MIGRATION.md) · [`docs/HCDE_NETCODE.md`](HCDE_NETCODE.md)
 
@@ -26,7 +26,7 @@ Phase 2 does **not** include rendering, audio, ZScript VM, or client prediction.
 | **2e — Playsim (server)** | `HCDE.Playsim` | `playsim/`, `p_tick.cpp` | Dedicated server loads map + runs ticks |
 | **2f — Server shell** | `HCDE.Server` → `hcdeserv` | `d_main.cpp` dedicated path | End-to-end dedicated hosting |
 
-**Current work:** Phase **2b** — C# loopback admission handshake complete; C++ `hcdeserv` cross-test is the remaining 2b gate.
+**Current work:** Phase **2b** — C# loopback handshake through WAITING setup (map/game/roster) complete; C++ `hcdeserv` cross-test remains the 2b gate.
 
 ## Boundaries (non-negotiable)
 
@@ -61,7 +61,7 @@ Phase 2 does **not** include rendering, audio, ZScript VM, or client prediction.
 | Connect admission ACK | `ConnectAckCodec.cs` | `PRE_CONNECT_ACK` / `DriveRuntimeSetupStateForClient` |
 | Connection state | `PregameConnectionState.cs` | `FConnection` seq/ack fields |
 
-### Host/guest pump (iteration 2 — this PR)
+### Host/guest pump (iteration 2)
 
 | Artifact | Location | C++ reference |
 | --- | --- | --- |
@@ -72,6 +72,17 @@ Phase 2 does **not** include rendering, audio, ZScript VM, or client prediction.
 | Host admission pump | `PregameHost.cs` | `TryProcessSetupConnectPacket`, `DriveRuntimeSetupStateForClient` |
 | Guest join pump | `PregameGuest.cs` | `JoinGame` guest setup loop |
 | Wire compression | `SetupPacketCodec.EncodeCompressed` / decode path | `NCMD_COMPRESSED` in `SendPacket` / `GetPacket` |
+
+### WAITING setup + verification (iteration 3 — this PR)
+
+| Artifact | Location | C++ reference |
+| --- | --- | --- |
+| Protocol stream helpers | `ProtocolStreamCodec.cs` | `WriteString`, `WriteInt32`, `WriteInt8` in `i_protocol.cpp` |
+| Engine CRC verification | `EngineInfoVerifier.cs` | `Net_VerifyEngine` CRC matching |
+| Service payloads | `PregameServicePayloads.cs` | `Net_SetMapLoadInfo`, `Net_SetEngineInfo`, roster layout |
+| Session snapshot config | `PregameSessionSnapshot.cs` | host map/game/roster data for WAITING driver |
+| Host WAITING driver | `PregameHost.DriveWaitingClients` | `HostGame` WAITING loop |
+| Guest WAITING handler | `PregameGuest` service switch | guest `HPS_*` handlers in `JoinGame` |
 
 **Correction from 2a:** The initial `PregameServiceHeader` treated bytes 0–3 as CRC inside the 15-byte header. The C++ `NetBuffer` layout places `NCMD_SETUP` at byte 0; CRC is only on the wire in `TransmitBuffer[0..3]`. The incorrect struct was removed; the correct layout lives in `HcdeServicePacket`.
 
@@ -102,16 +113,18 @@ Phase 2 does **not** include rendering, audio, ZScript VM, or client prediction.
 | Host/guest UDP admission handshake | `PregameHostGuestLoopbackTests` | Pass |
 | Host rejects missing HCD3 block | `PregameHostGuestLoopbackTests` | Pass |
 | Non-blocking UDP drain (no throw) | `PregameHostGuestLoopbackTests` | Pass |
+| Engine CRC verification rules | `EngineInfoVerifierTests` | Pass |
+| Map/game/roster payload round-trips | `PregameServicePayloadTests` | Pass |
+| Full WAITING setup to READY (loopback) | `GuestCompletesWaitingSetupHandshake` | Pass |
 
-**Test count:** 47 passing (`dotnet test` in `csharp/`).
+**Test count:** 55 passing (`dotnet test` in `csharp/`).
 
 ## Not yet in Phase 2b (sign-off blockers)
 
 | Item | Notes |
 | --- | --- |
-| Full `Net_VerifyEngine` with WAD CRC lists | Host uses simplified engine-info match; C++ cross-test needs real IWAD/PWAD hashes |
-| Guest `HPS_CLIENT_USER_INFO` send path | Guest pump stops at console-player assignment |
-| Host WAITING-state services (map load, game info, roster) | Host only drives CONNECTING admission slice |
+| Full `Net_VerifyEngine` version-byte rejection + verification-error replies | Host sends `PRE_PROTOCOL_ERROR` today; `PRE_VERIFICATION_ERROR` payload not ported |
+| `HPS_START_GAME` / bootstrap / resync services | Runtime late-join path |
 | Cross-language soak (C# guest vs C++ `hcdeserv`) | **Phase 2b acceptance gate** |
 | Live gameplay lanes (`HGP_*`, `HLANE_*`) | Phase 2c |
 
@@ -143,14 +156,16 @@ Phase 2b is complete when **all** hold:
 - [x] C# codecs for PRE_CONNECT, PRE_CONNECT_ACK, PRE_HCDE_SERVICE, CRC wire envelope
 - [x] Reliable service queue with benign duplicate handling
 - [x] C# host/guest loopback admission through console-player assignment
+- [x] C# host/guest loopback through WAITING setup (user-info, map-load, game-info, roster)
+- [x] Engine CRC list verification (`EngineInfoVerifier`)
 - [ ] C# guest completes pregame admission against shipping C++ `hcdeserv`
 - [ ] Principal audit updated with cross-language evidence
 
 ## Phase 2b next slice
 
-1. **Engine verification parity** — port WAD CRC list matching for real `hcdeserv` joins
-2. **Guest user-info + host WAITING services** — extend pumps through map-load / game-info acks
-3. **Cross-language soak** — C# `PregameGuest` against C++ `hcdeserv` on loopback
+1. **Cross-language soak** — C# `PregameGuest` against C++ `hcdeserv` on loopback with real WAD CRCs
+2. **`PRE_VERIFICATION_ERROR` replies** — wire-compatible rejection payloads
+3. **Runtime services** — `HPS_START_GAME`, bootstrap, resync (late-join path)
 
 Do **not** start `d_net` snapshot lanes until 2b pregame handshake is green against C++.
 
@@ -169,6 +184,6 @@ Do **not** start `d_net` snapshot lanes until 2b pregame handshake is green agai
 
 ## Audit conclusion (interim)
 
-**Phase 2b C# loopback pregame admission is working** — a guest can send `PRE_CONNECT`, receive `PRE_CONNECT_ACK`, and accept the `HPS_CONSOLE_PLAYER` reliable service over UDP with CRC framing. The remaining 2b gate is interoperability with the shipping C++ dedicated server.
+**Phase 2b C# loopback pregame setup is working end-to-end through WAITING** — guest admission, user-info exchange, map-load/game-info/roster services, and host READY promotion all pass in loopback tests. The remaining 2b gate is interoperability with the shipping C++ dedicated server.
 
 Next audit checkpoint: **Phase 2b sign-off** when `PregameGuest` interoperates with C++ `hcdeserv`.
