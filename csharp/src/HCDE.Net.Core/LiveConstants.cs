@@ -62,6 +62,19 @@ public static class LiveConstants
     public static ReadOnlySpan<byte> ControlCapabilitiesMagic => "HCAP"u8;
     public static ReadOnlySpan<byte> ClientInputMagic => "HCIN"u8;
     public static ReadOnlySpan<byte> ServerSnapshotMagic => "HCSN"u8;
+    public static ReadOnlySpan<byte> ClientInputRecordsMagic => "HCIR"u8;
+    public static ReadOnlySpan<byte> ServerSnapshotRecordsMagic => "HCSR"u8;
+
+    public const int ClientInputHeaderSize = 29;
+    public const int ServerSnapshotHeaderSize = 31;
+    public const int ClientInputRecordsHeaderSize = 6;
+    public const int ServerSnapshotRecordsHeaderSize = 6;
+    public const int ExplicitUserCmdBytes = 16;
+
+    public const byte ClientInputProtocolVersion = 5;
+    public const byte ClientInputRecordsProtocolVersion = 4;
+    public const byte ServerSnapshotProtocolVersion = 4;
+    public const byte ServerSnapshotRecordsProtocolVersion = 2;
 
     public const ulong CapControlV1 = 1UL << 0;
     public const ulong CapClientInputV5 = 1UL << 1;
