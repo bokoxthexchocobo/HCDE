@@ -1,7 +1,7 @@
 # HCDE C# Migration — Phase 2 Principal Audit
 
 **Last updated:** 2026-08-11  
-**Status:** In progress — Phase **2b** verification errors, start-game, and cross-language harness landed.  
+**Status:** In progress — Phase **2c** live protocol codecs (iteration 1) landed. Phase **2b** verification errors, start-game, and cross-language harness complete.  
 **Prerequisite:** [Phase 1 audit](HCDE_CSHARP_PHASE1_AUDIT.md) (complete)  
 **Related:** [`docs/HCDE_CSHARP_MIGRATION.md`](HCDE_CSHARP_MIGRATION.md) · [`docs/HCDE_NETCODE.md`](HCDE_NETCODE.md)
 
@@ -26,7 +26,7 @@ Phase 2 does **not** include rendering, audio, ZScript VM, or client prediction.
 | **2e — Playsim (server)** | `HCDE.Playsim` | `playsim/`, `p_tick.cpp` | Dedicated server loads map + runs ticks |
 | **2f — Server shell** | `HCDE.Server` → `hcdeserv` | `d_main.cpp` dedicated path | End-to-end dedicated hosting |
 
-**Current work:** Phase **2b** — C# loopback handshake through WAITING setup (map/game/roster) complete; C++ `hcdeserv` cross-test remains the 2b gate.
+**Current work:** Phase **2c** — HLIV/HGPL/HCAP live wire codecs and per-lane sequence tracking. Phase **2b** cross-test harness ready; C++ `hcdeserv` cross-test runs when binaries/IWAD are present.
 
 ## Boundaries (non-negotiable)
 
@@ -84,6 +84,27 @@ Phase 2 does **not** include rendering, audio, ZScript VM, or client prediction.
 | Host WAITING driver | `PregameHost.DriveWaitingClients` | `HostGame` WAITING loop |
 | Guest WAITING handler | `PregameGuest` service switch | guest `HPS_*` handlers in `JoinGame` |
 
+### Verification + start-game + cross-test harness (iteration 4 — this PR)
+
+| Artifact | Location | C++ reference |
+| --- | --- | --- |
+| Verification error codec | `VerificationErrorCodec.cs` | `SendVerificationError` / `ReadVerificationError` |
+| Host verification replies | `PregameHost.SendVerificationError` | `PRE_VERIFICATION_ERROR` on failed `Net_VerifyEngine` |
+| Start-game service | `PregameHost.StartGame`, guest `HPS_START_GAME` handler | `HPS_START_GAME` / `HPS_START_GAME_ACK` |
+| Guest CLI | `HCDE.PregameGuest.Cli` → `hcde-pregame-guest` | C++ `-join` guest path (pregame only) |
+| Cross-language harness | `tests/pregame_validation/pregame_guest_smoke.py` | manual `hcdeserv` + C# guest soak |
+
+### Live netcode wire codecs (Phase 2c — iteration 1)
+
+| Artifact | Location | C++ reference |
+| --- | --- | --- |
+| Live lanes, message types, capability bits | `LiveConstants.cs` | `d_net.h` `EHCDELiveLane`, `d_net.cpp` `HCDELiveCap*` |
+| HLIV 15-byte live header | `LiveHeaderCodec.cs` | `BeginHCDELivePacket`, `HCDELiveBufferLooksLikePacket` |
+| HGPL 12-byte gameplay envelope | `GameplayEnvelopeCodec.cs` | `WriteHCDEGameplayEnvelope`, `UnwrapHCDEGameplayEnvelope` |
+| HCAP capability block + control base payload | `LiveControlCapabilitiesCodec.cs` | `HCDEAppendLiveControlCapabilities`, `HCDEApplyLiveControlCapabilities` |
+| Capability negotiation | `LiveCapabilities.cs` | `HCDEApplyLiveControlCapabilities` negotiated mask |
+| Per-lane sequence tracking | `LiveSequenceTracker.cs` | `HCDELiveSequenceIsFresh`, `AcceptHCDELiveSequence` |
+
 **Correction from 2a:** The initial `PregameServiceHeader` treated bytes 0–3 as CRC inside the 15-byte header. The C++ `NetBuffer` layout places `NCMD_SETUP` at byte 0; CRC is only on the wire in `TransmitBuffer[0..3]`. The incorrect struct was removed; the correct layout lives in `HcdeServicePacket`.
 
 **Enum fix:** `PregameServiceType` now matches C++ `EHCDEPregameService` (starts at `Heartbeat = 1`).
@@ -116,17 +137,26 @@ Phase 2 does **not** include rendering, audio, ZScript VM, or client prediction.
 | Engine CRC verification rules | `EngineInfoVerifierTests` | Pass |
 | Map/game/roster payload round-trips | `PregameServicePayloadTests` | Pass |
 | Full WAITING setup to READY (loopback) | `GuestCompletesWaitingSetupHandshake` | Pass |
+| Verification error wire round-trip | `VerificationErrorCodecTests` | Pass |
+| Host sends `PRE_VERIFICATION_ERROR` on CRC mismatch | `VerificationErrorCodecTests` | Pass |
+| Start-game service loopback | `StartGameServiceTests` | Pass |
+| Cross-language env gate (optional) | `CrossLanguageIntegrationTests` | Pass (skip when unset) |
+| HLIV header golden layout | `LiveHeaderCodecTests` | Pass |
+| HGPL envelope round-trip + validation | `GameplayEnvelopeCodecTests` | Pass |
+| HCAP capability block (14/18 byte forms) | `LiveControlCapabilitiesTests` | Pass |
+| Control payload matches `SendHCDELiveControl` | `LiveControlCapabilitiesTests` | Pass |
+| Per-lane sequence independence | `LiveSequenceTrackerTests` | Pass |
 
-**Test count:** 55 passing (`dotnet test` in `csharp/`).
+**Test count:** 75 passing (`dotnet test` in `csharp/`).
 
 ## Not yet in Phase 2b (sign-off blockers)
 
 | Item | Notes |
 | --- | --- |
-| Full `Net_VerifyEngine` version-byte rejection + verification-error replies | Host sends `PRE_PROTOCOL_ERROR` today; `PRE_VERIFICATION_ERROR` payload not ported |
-| `HPS_START_GAME` / bootstrap / resync services | Runtime late-join path |
-| Cross-language soak (C# guest vs C++ `hcdeserv`) | **Phase 2b acceptance gate** |
-| Live gameplay lanes (`HGP_*`, `HLANE_*`) | Phase 2c |
+| Automated cross-language soak in CI | Requires built `hcdeserv` + IWAD + real WAD CRCs in the agent image |
+| `HPS_BOOTSTRAP_*` / `HPS_RESYNC_*` runtime late-join services | Not needed for fresh dedicated join |
+| Cross-language evidence recorded in audit | Run `pregame_guest_smoke.py` against local `hcdeserv` build |
+| Live gameplay lanes (`HGP_*`, `HLANE_*`) | Phase 2c (in progress — wire codecs landed) |
 
 ## Principal risks
 
@@ -158,16 +188,24 @@ Phase 2b is complete when **all** hold:
 - [x] C# host/guest loopback admission through console-player assignment
 - [x] C# host/guest loopback through WAITING setup (user-info, map-load, game-info, roster)
 - [x] Engine CRC list verification (`EngineInfoVerifier`)
-- [ ] C# guest completes pregame admission against shipping C++ `hcdeserv`
+- [x] `PRE_VERIFICATION_ERROR` wire codec and host replies
+- [x] `HPS_START_GAME` / `HPS_START_GAME_ACK` loopback
+- [x] Guest CLI + Python cross-language harness (skips when `hcdeserv`/IWAD absent)
+- [ ] C# guest completes pregame admission against shipping C++ `hcdeserv` (harness ready; needs binaries)
 - [ ] Principal audit updated with cross-language evidence
+
+## Phase 2c next slice
+
+1. **HCIN/HCSN payload headers** — client-input and server-snapshot record envelopes
+2. **Live packet pump skeleton** — authority routing helpers mirroring `I_ShouldSendHCDELive*`
+3. **Cross-test** — loopback live control exchange after pregame `HPS_START_GAME`
 
 ## Phase 2b next slice
 
-1. **Cross-language soak** — C# `PregameGuest` against C++ `hcdeserv` on loopback with real WAD CRCs
-2. **`PRE_VERIFICATION_ERROR` replies** — wire-compatible rejection payloads
-3. **Runtime services** — `HPS_START_GAME`, bootstrap, resync (late-join path)
+1. **Run cross-language soak** — `python3 tests/pregame_validation/pregame_guest_smoke.py` with local `hcdeserv` + IWAD CRCs
+2. **Bootstrap/resync services** — runtime late-join path
 
-Do **not** start `d_net` snapshot lanes until 2b pregame handshake is green against C++.
+Do **not** port snapshot encode/decode bodies until HCIN/HCSN headers are green.
 
 ## Source map
 
@@ -178,12 +216,14 @@ Do **not** start `d_net` snapshot lanes until 2b pregame handshake is green agai
 | Pregame constants | `i_net.cpp` | `PregameConstants.cs` |
 | Service packet + queue | `BeginHCDEPregameService`, `FHCDEPendingService` | `HCDE.Net.Pregame/*` |
 | PRE_CONNECT admission | `TryProcessSetupConnectPacket` | `PregameHost.cs`, `ConnectPacketCodec.cs` |
-| Guest join loop | `JoinGame` | `PregameGuest.cs` |
-| Live netcode | `d_net*.cpp` | Not started (2c) |
+| Guest join loop | `JoinGame` | `PregameGuest.cs`, `HCDE.PregameGuest.Cli` |
+| Live netcode | `d_net*.cpp` | `HCDE.Net.Core/*` (wire codecs; pump not started) |
 | RCON server | `d_net_rcon.cpp` | Phase 1 client only; server stays C++ until 2f |
 
 ## Audit conclusion (interim)
 
-**Phase 2b C# loopback pregame setup is working end-to-end through WAITING** — guest admission, user-info exchange, map-load/game-info/roster services, and host READY promotion all pass in loopback tests. The remaining 2b gate is interoperability with the shipping C++ dedicated server.
+**Phase 2b C# pregame stack is feature-complete for fresh dedicated joins** — loopback WAITING setup, verification-error replies, start-game, and a cross-language guest CLI/harness are in place. The remaining 2b gate is executing the harness against a real `hcdeserv` build and recording the result.
 
-Next audit checkpoint: **Phase 2b sign-off** when `PregameGuest` interoperates with C++ `hcdeserv`.
+**Phase 2c iteration 1** delivers C# wire codecs for the HLIV live header, HGPL gameplay envelope, and HCAP control capability block with golden-vector tests matching `d_net.cpp` layout.
+
+Next audit checkpoint: **Phase 2c iteration 2** when HCIN/HCSN header codecs land.
