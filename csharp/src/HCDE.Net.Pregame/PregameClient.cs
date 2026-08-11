@@ -17,5 +17,6 @@ public sealed class PregameClient
     public bool HasMapLoadAck { get; set; }
     public bool HasGameInfoAck { get; set; }
     public bool HasRosterAck { get; set; }
+    public bool HasStartGameAck { get; set; }
     public string UserInfo { get; set; } = "";
 }

@@ -22,7 +22,16 @@ public static class CanonicalEventPayloadCodec
 
             DemoCommand.Say or DemoCommand.Taunt => TryCanonicalizeSay(legacy, ref legacyCursor, output, ref cursor),
             DemoCommand.Print or DemoCommand.CenterPrint or DemoCommand.UinfChanged or DemoCommand.ChangeMap
-                or DemoCommand.Spray => TryCanonicalizeNullStringOnly(legacy, ref legacyCursor, output, ref cursor),
+                or DemoCommand.Spray or DemoCommand.MusicChange => TryCanonicalizeNullStringOnly(legacy, ref legacyCursor, output, ref cursor),
+
+            DemoCommand.GiveCheat => TryCanonicalizeStringPlusFixed(legacy, ref legacyCursor, output, ref cursor, 4),
+            DemoCommand.SinfChanged => CanonicalCVarChangeCodec.TryBuildFromLegacy(legacy, ref legacyCursor, output, ref cursor, xorVariant: false),
+            DemoCommand.RunScript or DemoCommand.RunScript2 or DemoCommand.RunSpecial
+                => CanonicalRunArgsCodec.TryBuildFromLegacy(legacy, ref legacyCursor, output, ref cursor, named: false),
+            DemoCommand.RunNamedScript
+                => CanonicalRunArgsCodec.TryBuildFromLegacy(legacy, ref legacyCursor, output, ref cursor, named: true),
+            DemoCommand.NetEvent => TryCanonicalizeStringPlusFixed(legacy, ref legacyCursor, output, ref cursor, 14),
+            DemoCommand.ZscCmd => TryCanonicalizeZscCmd(legacy, ref legacyCursor, output, ref cursor),
 
             _ => false,
         };
@@ -73,5 +82,39 @@ public static class CanonicalEventPayloadCodec
             return false;
 
         return CanonicalStringCodec.Write(output, ref cursor, stringBytes) > 0;
+    }
+
+    private static bool TryCanonicalizeStringPlusFixed(
+        ReadOnlySpan<byte> legacy,
+        ref int legacyCursor,
+        Span<byte> output,
+        ref int cursor,
+        int fixedBytes)
+    {
+        if (!CanonicalStringCodec.TryReadLegacyNullTerminated(legacy, ref legacyCursor, out var stringBytes)
+            || CanonicalStringCodec.Write(output, ref cursor, stringBytes) == 0)
+            return false;
+
+        return TryCopyFixedLegacy(legacy, ref legacyCursor, output, ref cursor, fixedBytes);
+    }
+
+    private static bool TryCanonicalizeZscCmd(ReadOnlySpan<byte> legacy, ref int legacyCursor, Span<byte> output, ref int cursor)
+    {
+        if (!CanonicalStringCodec.TryReadLegacyNullTerminated(legacy, ref legacyCursor, out var nameBytes)
+            || CanonicalStringCodec.Write(output, ref cursor, nameBytes) == 0
+            || legacy.Length - legacyCursor < 2)
+            return false;
+
+        var commandBytes = System.Buffers.Binary.BinaryPrimitives.ReadUInt16BigEndian(legacy[legacyCursor..]);
+        legacyCursor += 2;
+        if (output.Length - cursor < 2 + commandBytes || legacy.Length - legacyCursor < commandBytes)
+            return false;
+
+        System.Buffers.Binary.BinaryPrimitives.WriteUInt16BigEndian(output[cursor..], commandBytes);
+        cursor += 2;
+        legacy.Slice(legacyCursor, commandBytes).CopyTo(output[cursor..]);
+        legacyCursor += commandBytes;
+        cursor += commandBytes;
+        return true;
     }
 }

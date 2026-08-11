@@ -95,6 +95,25 @@ public static class LiveConstants
     public const byte ServerWorldDeltaSectorHasFloor = 1 << 0;
     public const byte ServerWorldDeltaSectorHasCeiling = 1 << 1;
     public const byte ActorDeltasFlagComplete = 1 << 0;
+    public const byte ActorDeltaFlagLive = 1 << 0;
+
+    public const ushort ActorDeltaFieldCategory = 1 << 0;
+    public const ushort ActorDeltaFieldFlags = 1 << 1;
+    public const ushort ActorDeltaFieldAction = 1 << 2;
+    public const ushort ActorDeltaFieldHealth = 1 << 3;
+    public const ushort ActorDeltaFieldPos = 1 << 4;
+    public const ushort ActorDeltaFieldVel = 1 << 5;
+    public const ushort ActorDeltaFieldAngles = 1 << 6;
+    public const ushort ActorDeltaFieldCoopSpawnIndex = 1 << 7;
+
+    public const double ActorDeltaPosScale = 16.0;
+    public const double ActorDeltaVelScale = 32.0;
+
+    public const int SnapshotChecksumBlockSize = 34;
+    public const byte SnapshotChecksumProtocolVersion = 1;
+    public const byte SnapshotChecksumCategoryCount = 6;
+
+    public static ReadOnlySpan<byte> SnapshotChecksumMagic => "HCKS"u8;
 
     public const ulong CapControlV1 = 1UL << 0;
     public const ulong CapClientInputV5 = 1UL << 1;

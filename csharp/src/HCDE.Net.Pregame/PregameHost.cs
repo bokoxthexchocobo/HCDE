@@ -1,3 +1,4 @@
+using HCDE.Net.Core;
 using HCDE.Net.Transport;
 
 namespace HCDE.Net.Pregame;
@@ -26,6 +27,9 @@ public sealed class PregameHost
     private readonly byte[] _netBuffer = new byte[NetConstants.MaxMessageLength];
     private readonly byte[] _payloadBuffer = new byte[NetConstants.MaxMessageLength];
     private int _connectedPlayers;
+    private bool _startGameSent;
+
+    public bool StartGameSent => _startGameSent;
 
     public PregameHost(UdpTransport transport, PregameHostOptions? options = null)
     {
@@ -92,6 +96,9 @@ public sealed class PregameHost
                 break;
             case PregameServiceType.RosterAck:
                 client.HasRosterAck = true;
+                break;
+            case PregameServiceType.StartGameAck:
+                client.HasStartGameAck = true;
                 break;
         }
 
@@ -344,6 +351,49 @@ public sealed class PregameHost
 
             client.Sender.TryQueueReliable(PregameServiceType.StartGame, client.Connection, key: 0, ReadOnlySpan<byte>.Empty);
             FlushClient(client, nowMilliseconds, force: true);
+        }
+
+        _startGameSent = true;
+    }
+
+    public bool AllReadyClientsAckedStartGame
+    {
+        get
+        {
+            if (!_startGameSent)
+                return false;
+
+            var hasReadyClient = false;
+            foreach (var client in _clients)
+            {
+                if (client.Status != ConnectionStatus.Ready)
+                    continue;
+
+                hasReadyClient = true;
+                if (!client.HasStartGameAck)
+                    return false;
+            }
+
+            return hasReadyClient;
+        }
+    }
+
+    public LiveAuthoritySession? TryCreateLiveAuthoritySession(int authoritySlot = 0)
+    {
+        if (!AllReadyClientsAckedStartGame)
+            return null;
+
+        return new LiveAuthoritySession(_transport, _options.GameId, authoritySlot, _options.MaxClients);
+    }
+
+    public void PumpLiveClients(ulong nowMilliseconds, LiveAuthoritySession session)
+    {
+        foreach (var client in _clients)
+        {
+            if (!client.HasStartGameAck)
+                continue;
+
+            session.PumpClient(nowMilliseconds, client.Address, client.ClientSlot);
         }
     }
 

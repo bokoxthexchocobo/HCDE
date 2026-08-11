@@ -1,6 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <ItemGroup>
+    <ProjectReference Include="..\HCDE.Net.Core\HCDE.Net.Core.csproj" />
     <ProjectReference Include="..\HCDE.Net.Transport\HCDE.Net.Transport.csproj" />
   </ItemGroup>
 

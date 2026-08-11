@@ -142,6 +142,19 @@ Phase 2 does **not** include rendering, audio, ZScript VM, or client prediction.
 | HCSR tail (HCDW + HCDA) | `ServerSnapshotTailCodec.cs` | post-HCSR snapshot append path |
 | Snapshot builder tail option | `GameplayPayloadBuilders.cs` | `includeMinimalTail` on `BuildServerSnapshot` |
 
+### HCDA records, checksum tail, pregame handoff (Phase 2c — iteration 6)
+
+| Artifact | Location | C++ reference |
+| --- | --- | --- |
+| Extended DEM payloads | `CanonicalEventPayloadCodec.cs`, `CanonicalCVarChangeCodec.cs`, `CanonicalRunArgsCodec.cs` | remaining `HCDEAppendCanonicalEventPayload` cases in enum |
+| HCDA V2 record bodies | `ActorDeltaRecord.cs`, `ActorDeltaQuantization.cs`, `ActorDeltasCodec.cs` | `HCDEAppendActorDeltasV2` / `HCDEAppendSharedActorDeltasV2` |
+| HCKS checksum block | `SnapshotChecksumCodec.cs` | `Net_ChecksumApplyServerChunk` |
+| Tail with checksum | `ServerSnapshotTailCodec.cs` | post-HCDA `HCKS` append |
+| Live snapshots with tail | `LiveWire.cs` | authority snapshot send path |
+| Pregame → live host glue | `PregameHost.cs` | `Host_CheckStartGameAcks` + `I_NetDone` handoff |
+
+### Record bodies + lane headers (Phase 2c — iteration 4)
+
 | Artifact | Location | C++ reference |
 | --- | --- | --- |
 | 16-byte explicit `usercmd_t` | `UserCmdCodec.cs` | `HCDEAppendUserCmdFields` |
@@ -205,8 +218,12 @@ Phase 2 does **not** include rendering, audio, ZScript VM, or client prediction.
 | HCSR single-player command body | `ServerSnapshotBodyCodecTests` | Pass |
 | HCDW/HCAV header layout | `LaneChunkHeaderCodecTests` | Pass |
 | Live session client-input exchange | `LiveSessionTests` | Pass |
+| Canonical DEM event payload conversion | `CanonicalEventPayloadCodecTests` | Pass |
+| Legacy DEM stream → event records | `DemEventStreamConverterTests` | Pass |
+| HCDW pose/sector chunk round-trip | `WorldDeltaChunkCodecTests` | Pass |
+| HCSR minimal tail (HCDW + HCDA) | `ServerSnapshotTailCodecTests` | Pass |
 
-**Test count:** 101 passing (`dotnet test` in `csharp/`).
+**Test count:** 110 passing (`dotnet test` in `csharp/`).
 
 ## Not yet in Phase 2b (sign-off blockers)
 
@@ -255,9 +272,10 @@ Phase 2b is complete when **all** hold:
 
 ## Phase 2c next slice
 
-1. **DEM event payload canonicalization** — `HCDEAppendCanonicalEventPayload` for real event streams
-2. **HCDW record bodies** — world delta pose records (60/36/38-byte forms)
-3. **Full server snapshot tail** — actor delta, invasion, presentation echo after HCSR section
+1. **Remaining DEM payloads** — `HCDEAppendCanonicalEventPayload` cases not yet ported (scripts, CVAR changes, summon, etc.)
+2. **Full HCDA encode/decode** — invasion actor delta V2 records (non-empty blocks)
+3. **Full server snapshot tail** — invasion snapshot, presentation echo, checksum after HCDW/HCDA
+4. **Pregame → live handoff in host** — authority session pump after `HPS_START_GAME` (guest CLI `--live-ticks` exists)
 
 ## Phase 2b next slice
 
@@ -283,6 +301,6 @@ Do **not** port snapshot encode/decode bodies until HCIN/HCSN headers are green.
 
 **Phase 2b C# pregame stack is feature-complete for fresh dedicated joins** — loopback WAITING setup, verification-error replies, start-game, and a cross-language guest CLI/harness are in place. The remaining 2b gate is executing the harness against a real `hcdeserv` build and recording the result.
 
-**Phase 2c iteration 4** adds HCIN/HCSR record bodies with explicit usercmds, HCDW/HCAV header codecs, live authority/guest session pumps, and `--live-ticks` on the guest CLI.
+**Phase 2c iteration 5** adds DEM event payload canonicalization (subset), HCDW V4 pose/sector record bodies, empty HCDA blocks, and minimal HCSR tail append via `ServerSnapshotTailCodec`.
 
-Next audit checkpoint: **Phase 2c iteration 5** when DEM event payloads and HCDW record bodies land.
+Next audit checkpoint: **Phase 2c iteration 6** when full HCDA/invasion tail and pregame→live host handoff land.

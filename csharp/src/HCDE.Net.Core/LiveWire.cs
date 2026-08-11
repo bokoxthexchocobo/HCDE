@@ -159,10 +159,15 @@ public sealed class LiveGameplayEndpoint
     public bool TrySendEmptyServerSnapshot(NetworkEndpoint remote, byte roomId, uint gameTic) =>
         TrySendServerSnapshot(remote, roomId, gameTic, playerNum: 0);
 
-    public bool TrySendServerSnapshot(NetworkEndpoint remote, byte roomId, uint gameTic, byte playerNum, UserCmd command = default)
+    public bool TrySendServerSnapshot(NetworkEndpoint remote, byte roomId, uint gameTic, byte playerNum, UserCmd command = default, bool includeMinimalTail = true)
     {
         Span<byte> snapshotPayload = stackalloc byte[512];
-        var length = GameplayPayloadBuilders.BuildServerSnapshotSinglePlayer(snapshotPayload, playerNum, command);
+        var length = GameplayPayloadBuilders.BuildServerSnapshotSinglePlayer(
+            snapshotPayload,
+            playerNum,
+            command,
+            includeMinimalTail: includeMinimalTail,
+            gameTic: gameTic);
         if (length == 0)
             return false;
 

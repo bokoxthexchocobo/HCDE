@@ -215,7 +215,9 @@ public static class GameplayPayloadBuilders
         UserCmd command,
         ushort averageLatency = 0,
         byte commandTics = 1,
-        byte consistencyTics = 0)
+        byte consistencyTics = 0,
+        bool includeMinimalTail = false,
+        uint gameTic = 0)
     {
         var players = new[]
         {
@@ -243,7 +245,9 @@ public static class GameplayPayloadBuilders
             consistencyAck: 0,
             baseSequence: 1,
             baseConsistency: 0,
-            players);
+            players,
+            includeMinimalTail,
+            gameTic);
     }
 }
 

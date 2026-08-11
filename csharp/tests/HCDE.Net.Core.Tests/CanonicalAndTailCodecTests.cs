@@ -36,6 +36,30 @@ public class CanonicalEventPayloadCodecTests
         Assert.True(CanonicalEventPayloadCodec.TryBuildFromLegacy((byte)DemoCommand.Readied, ReadOnlySpan<byte>.Empty, ref legacyCursor, output, out var length));
         Assert.Equal(0, length);
     }
+
+    [Fact]
+    public void RunScript_CopiesWordArgCountAndArgs()
+    {
+        var legacy = new byte[] { 0x12, 0x34, 2, 0, 0, 0, 1, 0, 0, 0, 2 };
+        Span<byte> output = stackalloc byte[32];
+        var legacyCursor = 0;
+
+        Assert.True(CanonicalEventPayloadCodec.TryBuildFromLegacy((byte)DemoCommand.RunScript, legacy, ref legacyCursor, output, out var length));
+        Assert.Equal(legacy.Length, legacyCursor);
+        Assert.Equal(legacy, output[..length].ToArray());
+    }
+
+    [Fact]
+    public void GiveCheat_StringPlusInt()
+    {
+        var legacy = new byte[] { (byte)'g', (byte)'o', (byte)'d', 0, 1, 2, 3, 4 };
+        Span<byte> output = stackalloc byte[32];
+        var legacyCursor = 0;
+
+        Assert.True(CanonicalEventPayloadCodec.TryBuildFromLegacy((byte)DemoCommand.GiveCheat, legacy, ref legacyCursor, output, out var length));
+        Assert.Equal(legacy.Length, legacyCursor);
+        Assert.Equal(new byte[] { 0, 3, (byte)'g', (byte)'o', (byte)'d', 1, 2, 3, 4 }, output[..length].ToArray());
+    }
 }
 
 public class DemEventStreamConverterTests
@@ -187,5 +211,55 @@ public class ServerSnapshotTailCodecTests
         var tail = payload[(LiveConstants.ServerSnapshotHeaderSize + hcsrBytes)..written];
         Assert.True(ServerSnapshotTailCodec.TryReadMinimal(tail, out var worldDelta, out _, out _, out _));
         Assert.Equal(44u, worldDelta.GameTic);
+    }
+
+    [Fact]
+    public void MinimalTail_WithChecksum_AppendsHcksBlock()
+    {
+        Span<byte> tail = stackalloc byte[ServerSnapshotTailCodec.MinimalTailWithChecksumSize];
+        var hashes = new uint[] { 1, 2, 3, 4, 5, 6 };
+        Assert.Equal(ServerSnapshotTailCodec.MinimalTailWithChecksumSize, ServerSnapshotTailCodec.WriteMinimal(tail, gameTic: 7, hashes));
+
+        Assert.True(ServerSnapshotTailCodec.TryReadMinimal(tail[..ServerSnapshotTailCodec.MinimalTailSize], out _, out _, out _, out _));
+        Assert.True(ServerSnapshotTailCodec.TryReadChecksum(
+            tail[ServerSnapshotTailCodec.MinimalTailSize..],
+            out var gameTic,
+            out var parsedHashes,
+            out var consumed));
+        Assert.Equal(7u, gameTic);
+        Assert.Equal(hashes, parsedHashes);
+        Assert.Equal(LiveConstants.SnapshotChecksumBlockSize, consumed);
+    }
+}
+
+public class ActorDeltasCodecTests
+{
+    [Fact]
+    public void SingleRecord_RoundTrip()
+    {
+        var record = new ActorDeltaRecord
+        {
+            ActorId = 42,
+            ClassId = 7,
+            FieldMask = LiveConstants.ActorDeltaFieldCategory
+                | LiveConstants.ActorDeltaFieldHealth
+                | LiveConstants.ActorDeltaFieldPos,
+            Category = 2,
+            Health = 80,
+            PosX = 64.0,
+            PosY = -32.0,
+            PosZ = 16.0,
+        };
+
+        Span<byte> chunk = stackalloc byte[64];
+        var written = ActorDeltasCodec.Write(chunk, new[] { record });
+        Assert.True(written > LiveConstants.ActorDeltasHeaderSize);
+
+        Assert.True(ActorDeltasCodec.TryRead(chunk[..written], out var header, out var records, out var consumed, out _));
+        Assert.Equal(1, header.RecordCount);
+        Assert.Equal(written, consumed);
+        Assert.Equal(record.ActorId, records[0].ActorId);
+        Assert.Equal(record.Health, records[0].Health);
+        Assert.Equal(record.PosX, records[0].PosX);
     }
 }
