@@ -195,6 +195,16 @@ Phase 2 does **not** include rendering, audio, ZScript VM, or client prediction.
 | Multi-client authority pump | `LiveAuthoritySession.PumpAllClients` | one gametic, all acked clients |
 | Pregame live pump fix | `PregameHost.PumpLiveClients` | single `AdvanceTick` per host pump |
 
+### Multi-player HCSR + admin DEM payloads (Phase 2c — iteration 11)
+
+| Artifact | Location | C++ reference |
+| --- | --- | --- |
+| HCSR duplicate-offset guards | `ServerSnapshotBodyCodec.cs` | parity with `HCDEApplyNativeServerSnapshot` |
+| Multi-player/multi-tic tests | `ServerSnapshotBodyCodecTests` | 2 players × 2 command tics round-trip |
+| Expanded `DemoCommand` enum | `DemoCommand.cs` | admin/cheat DEM types from `d_protocol.h` |
+| Admin DEM canonicalization | `CanonicalEventPayloadCodec.cs` | summon/savegame/addbot/etc. |
+| Cross-language netcode gate | `NetcodeCrossLanguageTests` | env-gated soak prerequisites |
+
 ### Record bodies + lane headers (Phase 2c — iteration 4)
 
 | Artifact | Location | C++ reference |

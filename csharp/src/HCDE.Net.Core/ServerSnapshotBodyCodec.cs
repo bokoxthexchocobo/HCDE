@@ -1,4 +1,5 @@
 using System.Buffers.Binary;
+using HCDE.Net.Transport;
 
 namespace HCDE.Net.Core;
 
@@ -99,6 +100,12 @@ public static class ServerSnapshotBodyCodec
             }
 
             var playerNum = body[cursor++];
+            if (playerNum >= NetConstants.MaxPlayers)
+            {
+                rejectReason = "server-snapshot-invalid-player-record";
+                return false;
+            }
+
             var averageLatency = BinaryPrimitives.ReadUInt16BigEndian(body[cursor..]);
             cursor += 2;
             var consistencyCount = body[cursor++];
@@ -112,27 +119,37 @@ public static class ServerSnapshotBodyCodec
             var playerMask = 1UL << playerNum;
             if ((playersSeen & playerMask) != 0)
             {
-                rejectReason = "server-snapshot-duplicate-player-slot";
+                rejectReason = "server-snapshot-duplicate-player-record";
                 return false;
             }
 
             playersSeen |= playerMask;
 
             var consistencies = new List<ushort>(consistencyCount);
+            var consistencyOffsets = 0UL;
             for (var r = 0; r < consistencyCount; r++)
             {
-                if (body.Length - cursor < 3)
+                if (body.Length - cursor < 3 || body[cursor] >= consistencyCount)
                 {
                     rejectReason = "server-snapshot-consistency-truncated";
                     return false;
                 }
 
+                var offsetMask = 1UL << body[cursor];
+                if ((consistencyOffsets & offsetMask) != 0)
+                {
+                    rejectReason = "server-snapshot-duplicate-consistency-offset";
+                    return false;
+                }
+
+                consistencyOffsets |= offsetMask;
                 cursor += 1;
                 consistencies.Add(BinaryPrimitives.ReadUInt16BigEndian(body[cursor..]));
                 cursor += 2;
             }
 
             var commands = new List<ServerSnapshotCommandRecord>(commandCount);
+            var commandOffsets = 0UL;
             for (var t = 0; t < commandCount; t++)
             {
                 if (body.Length - cursor < 3 + LiveConstants.ExplicitUserCmdBytes)
@@ -142,6 +159,20 @@ public static class ServerSnapshotBodyCodec
                 }
 
                 var commandOffset = body[cursor++];
+                if (commandOffset >= commandCount)
+                {
+                    rejectReason = "server-snapshot-command-offset-out-of-range";
+                    return false;
+                }
+
+                var commandMask = 1UL << commandOffset;
+                if ((commandOffsets & commandMask) != 0)
+                {
+                    rejectReason = "server-snapshot-duplicate-command-offset";
+                    return false;
+                }
+
+                commandOffsets |= commandMask;
                 var eventCursor = cursor;
                 if (!EventRecordsCodec.TryRead(body, ref eventCursor, out _, out rejectReason))
                     return false;

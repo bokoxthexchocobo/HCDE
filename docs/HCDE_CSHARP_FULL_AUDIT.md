@@ -40,7 +40,7 @@ csharp/
     HCDE.Net.Pregame/      22 files, ~2,038 LOC   (pregame host/guest pumps)
     HCDE.Net.Core/         35 files, ~3,719 LOC   (live protocol codecs + session glue)
     HCDE.PregameGuest.Cli/  5 files,   ~207 LOC   (hcde-pregame-guest CLI)
-  tests/                   32 files, 135 tests
+  tests/                   32 files, 134 tests
 ```
 
 ### 2.2 Test matrix
@@ -53,7 +53,7 @@ csharp/
 | `HCDE.Net.Transport.Tests` | 10 | Constants, query, HCD3, gameplay CRC |
 | `HCDE.Net.Pregame.Tests` | 32 | CRC, service queue, host/guest loopback |
 | `HCDE.Net.Core.Tests` | 51 | Live headers, bodies, tail, DEM, sessions |
-| **Total** | **135** | |
+| **Total** | **134** | |
 
 ### 2.3 Dependency graph
 

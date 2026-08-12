@@ -60,6 +60,42 @@ public class CanonicalEventPayloadCodecTests
         Assert.Equal(legacy.Length, legacyCursor);
         Assert.Equal(new byte[] { 0, 3, (byte)'g', (byte)'o', (byte)'d', 1, 2, 3, 4 }, output[..length].ToArray());
     }
+
+    [Fact]
+    public void Summon_CanonicalizesNullTerminatedString()
+    {
+        var legacy = new byte[] { (byte)'m', (byte)'o', (byte)'b', 0 };
+        Span<byte> output = stackalloc byte[16];
+        var legacyCursor = 0;
+
+        Assert.True(CanonicalEventPayloadCodec.TryBuildFromLegacy((byte)DemoCommand.Summon, legacy, ref legacyCursor, output, out var length));
+        Assert.Equal(legacy.Length, legacyCursor);
+        Assert.Equal(new byte[] { 0, 3, (byte)'m', (byte)'o', (byte)'b' }, output[..length].ToArray());
+    }
+
+    [Fact]
+    public void AddBot_CanonicalizesBotshiftStringAndSkillBytes()
+    {
+        var legacy = new byte[] { 2, (byte)'b', (byte)'o', (byte)'t', 0, 1, 2, 3, 4 };
+        Span<byte> output = stackalloc byte[32];
+        var legacyCursor = 0;
+
+        Assert.True(CanonicalEventPayloadCodec.TryBuildFromLegacy((byte)DemoCommand.AddBot, legacy, ref legacyCursor, output, out var length));
+        Assert.Equal(legacy.Length, legacyCursor);
+        Assert.Equal(new byte[] { 2, 0, 3, (byte)'b', (byte)'o', (byte)'t', 1, 2, 3, 4 }, output[..length].ToArray());
+    }
+
+    [Fact]
+    public void SaveGame_CanonicalizesTwoStrings()
+    {
+        var legacy = new byte[] { (byte)'a', (byte)'.', (byte)'s', (byte)'a', (byte)'v', 0, (byte)'d', (byte)'e', (byte)'s', (byte)'c', 0 };
+        Span<byte> output = stackalloc byte[32];
+        var legacyCursor = 0;
+
+        Assert.True(CanonicalEventPayloadCodec.TryBuildFromLegacy((byte)DemoCommand.SaveGame, legacy, ref legacyCursor, output, out var length));
+        Assert.Equal(legacy.Length, legacyCursor);
+        Assert.True(length > 0);
+    }
 }
 
 public class DemEventStreamConverterTests
