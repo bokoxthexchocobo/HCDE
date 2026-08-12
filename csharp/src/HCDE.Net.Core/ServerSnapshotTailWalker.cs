@@ -17,7 +17,9 @@ public readonly struct ServerSnapshotTailSections
         PresentationEchoHeader presentationEcho,
         bool hasChecksum,
         uint checksumGameTic,
-        uint[]? checksumHashes)
+        uint[]? checksumHashes,
+        PresentationEchoBlock? echoBlock,
+        AuthorityEventRecord[]? authorityEventRecords = null)
     {
         WorldDelta = worldDelta;
         ActorDelta = actorDelta;
@@ -28,6 +30,8 @@ public readonly struct ServerSnapshotTailSections
         HasChecksum = hasChecksum;
         ChecksumGameTic = checksumGameTic;
         ChecksumHashes = checksumHashes;
+        EchoBlock = echoBlock;
+        AuthorityEventRecords = authorityEventRecords;
     }
 
     public ServerWorldDeltaHeader WorldDelta { get; }
@@ -39,6 +43,8 @@ public readonly struct ServerSnapshotTailSections
     public bool HasChecksum { get; }
     public uint ChecksumGameTic { get; }
     public uint[]? ChecksumHashes { get; }
+    public PresentationEchoBlock? EchoBlock { get; }
+    public AuthorityEventRecord[]? AuthorityEventRecords { get; }
 }
 
 public static class ServerSnapshotTailWalker
@@ -61,6 +67,7 @@ public static class ServerSnapshotTailWalker
 
         CoopDeadSpawnsHeader? coopDeadSpawns = null;
         AuthorityEventsHeader? authorityEvents = null;
+        AuthorityEventRecord[]? authorityEventRecords = null;
         InvasionSnapshotHeader? invasionSnapshot = null;
         ActorDeltasHeader actorDelta;
 
@@ -91,30 +98,28 @@ public static class ServerSnapshotTailWalker
 
             if (cursor < tail.Length && AuthorityEventsCodec.TryPeek(tail[cursor..]))
             {
-                if (!AuthorityEventsHeader.TryRead(tail[cursor..], out var authorityHeader))
-                {
-                    rejectReason = "authority-events-header-invalid";
-                    return false;
-                }
-
-                var authorityCursor = cursor;
-                if (!AuthorityEventsCodec.TryReadAndSkip(tail, ref authorityCursor, out rejectReason))
+                if (!AuthorityEventsCodec.TryRead(tail[cursor..], out var authorityHeader, out var authorityRecords, out var authorityBytes, out rejectReason))
                     return false;
 
                 authorityEvents = authorityHeader;
-                cursor = authorityCursor;
+                authorityEventRecords = authorityRecords;
+                cursor += authorityBytes;
             }
         }
 
+        PresentationEchoBlock echoBlock;
         if (cursor >= tail.Length || !tail[cursor..].StartsWith(LiveConstants.PresentationEchoMagic))
         {
             rejectReason = "missing-presentation-echo";
             return false;
         }
 
-        if (!PresentationEchoCodec.TryReadAndSkip(tail[cursor..], out var echoHeader, out var echoBytes, out rejectReason))
+        if (!PresentationEchoCodec.TryRead(tail[cursor..], out echoBlock, out var echoBytes, out rejectReason))
             return false;
 
+        var echoHeader = new PresentationEchoHeader(
+            (byte)echoBlock.Players.Length,
+            echoBlock.InventoryPlayerSlot ?? LiveConstants.PresentationEchoInvalidInventorySlot);
         cursor += echoBytes;
 
         var hasChecksum = false;
@@ -144,7 +149,9 @@ public static class ServerSnapshotTailWalker
             echoHeader,
             hasChecksum,
             checksumGameTic,
-            checksumHashes);
+            checksumHashes,
+            echoBlock,
+            authorityEventRecords);
         bytesConsumed = cursor;
         return true;
     }

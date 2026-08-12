@@ -215,6 +215,16 @@ Phase 2 does **not** include rendering, audio, ZScript VM, or client prediction.
 | Guest quitter apply | `LiveGuestSession.TryReceiveServerSnapshot` | `NCMD_QUITTERS` prefix before HCSR |
 | Snapshot send with quitters | `LiveWire.TrySendServerSnapshot` | authority quitter prefix injection |
 
+### ECHO/HCAV apply stubs (Phase 2c — iteration 13)
+
+| Artifact | Location | C++ reference |
+| --- | --- | --- |
+| Weapon-change policy | `PresentationEchoWeaponChangePolicy.cs` | `HCDEComputeWeaponChangeFlags` |
+| ECHO apply session | `PresentationEchoApplySession.cs` | `HCDEReadPresentationEcho` inventory + weapon follow |
+| HCAV replay router | `AuthorityEventsApplySession.cs` | `HCDEApplyAuthorityEvents` dispatch table |
+| Parsed tail blocks | `ServerSnapshotTailWalker` | full ECHO + HCAV records for apply |
+| Guest tail apply hook | `LiveGuestSession.SetApplySinks` | optional sink-driven apply on receive |
+
 ### Record bodies + lane headers (Phase 2c — iteration 4)
 
 | Artifact | Location | C++ reference |
@@ -306,8 +316,12 @@ Phase 2 does **not** include rendering, audio, ZScript VM, or client prediction.
 | Weapon index codec round-trip | `CanonicalWeaponIndexCodecTests` | Pass |
 | Guest quitter apply on snapshot | `LiveSessionTests` | Pass |
 | Peer slot disconnect tracker | `LivePeerSlotTrackerTests` | Pass |
+| Weapon-change policy | `PresentationEchoWeaponChangePolicyTests` | Pass |
+| ECHO apply session | `PresentationEchoApplySessionTests` | Pass |
+| HCAV replay routing | `AuthorityEventsApplySessionTests` | Pass |
+| Parsed tail ECHO/HCAV blocks | `ServerSnapshotTailWalkerTests` | Pass |
 
-**Test count:** 148 passing (`dotnet test` in `csharp/`).
+**Test count:** 154 passing (`dotnet test` in `csharp/`).
 
 ## Not yet in Phase 2b (sign-off blockers)
 
@@ -357,9 +371,9 @@ Phase 2b is complete when **all** hold:
 ## Phase 2c next slice
 
 1. **Cross-language netcode soak** — run `tests/netcode_step12/` against C++ authority/guest when binaries available
-2. **Playsim-backed checksum inputs** — wire `SnapshotChecksumSession` to real world state in Phase 2e
-3. **HCSR apply paths** — snapshot mutation stubs beyond quitter disconnect tracking
-4. **ECHO/HCAV apply** — weapon follow, authority event replay policy
+2. **Playsim-backed apply sinks** — wire `IPresentationEchoApplySink` / `IAuthorityEventSink` to real world state in Phase 2e
+3. **Playsim-backed checksum inputs** — wire `SnapshotChecksumSession` to real world state in Phase 2e
+4. **HCSR apply paths** — snapshot mutation stubs beyond quitter disconnect tracking
 
 ## Phase 2b next slice
 
@@ -385,8 +399,8 @@ Do **not** port snapshot encode/decode bodies until HCIN/HCSN headers are green.
 
 **Phase 2b C# pregame stack is feature-complete for fresh dedicated joins** — loopback WAITING setup, verification-error replies, start-game, and a cross-language guest CLI/harness are in place. The remaining 2b gate is executing the harness against a real `hcdeserv` build and recording the result.
 
+**Phase 2c iteration 13** adds wire-only ECHO apply (inventory reconcile + weapon-follow policy) and HCAV replay routing via injectable sinks, with parsed tail blocks exposed by `ServerSnapshotTailWalker`.
+
 **Phase 2c iteration 12** adds weapon-slot DEM canonicalization (`SetSlot`, `SetSlotPnum`, `AddSlot*`), guest-side quitter apply via `LivePeerSlotTracker`, and authority snapshot send with quitter prefix.
 
-**Phase 2c iteration 11** hardens HCSR validation (duplicate consistency/command offsets), adds multi-player multi-tic round-trip tests, expands admin/cheat DEM canonicalization, and adds an env-gated cross-language netcode test gate.
-
-Next audit checkpoint: **Phase 2c iteration 13** when cross-language `netcode_step12` evidence is recorded or ECHO/HCAV apply paths begin.
+Next audit checkpoint: **Phase 2c iteration 14** when cross-language `netcode_step12` evidence is recorded or playsim-backed apply sinks begin.

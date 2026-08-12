@@ -9,6 +9,9 @@ public sealed class LiveGuestSession
     private readonly NetworkEndpoint _authorityEndpoint;
     private readonly LivePeerRoutingState _routing;
     private readonly LivePeerSlotTracker _peerSlots;
+    private readonly PresentationEchoApplySession _echoApply;
+    private IPresentationEchoApplySink? _echoSink;
+    private IAuthorityEventSink? _authoritySink;
     private byte _roomId;
     private uint _gameTic;
 
@@ -30,9 +33,18 @@ public sealed class LiveGuestSession
             isLocalAuthority: false,
             usesHcdeService: true);
         _peerSlots = new LivePeerSlotTracker(maxClients);
+        _echoApply = new PresentationEchoApplySession(maxClients);
     }
 
     public LivePeerSlotTracker PeerSlots => _peerSlots;
+
+    public PresentationEchoApplySession EchoApply => _echoApply;
+
+    public void SetApplySinks(IPresentationEchoApplySink? echoSink, IAuthorityEventSink? authoritySink)
+    {
+        _echoSink = echoSink;
+        _authoritySink = authoritySink;
+    }
 
     public void Pump(ulong nowMs, byte roomId = 0)
     {
@@ -88,6 +100,8 @@ public sealed class LiveGuestSession
             }
 
             _peerSlots.ApplyQuitterSlots(quitterPlayerSlots);
+            foreach (var slot in quitterPlayerSlots)
+                _echoApply.ResetClient(slot);
         }
 
         if (!ServerSnapshotBodyCodec.TryReadPlayerRecords(
@@ -110,7 +124,30 @@ public sealed class LiveGuestSession
             return false;
 
         tailSections = sections;
+        TryApplyTailSections(sections);
         return true;
+    }
+
+    private void TryApplyTailSections(ServerSnapshotTailSections sections)
+    {
+        if (sections.AuthorityEventRecords is { Length: > 0 } authorityRecords && _authoritySink != null)
+        {
+            AuthorityEventsApplySession.TryApply(
+                authorityRecords,
+                _authoritySink,
+                out _,
+                out _);
+        }
+
+        if (sections.EchoBlock is { } echoBlock && _echoSink != null)
+        {
+            _echoApply.TryApply(
+                _routing.ConsolePlayer,
+                echoBlock,
+                _echoSink,
+                out _,
+                out _);
+        }
     }
 
     public bool TryReceiveServerSnapshot(out ServerSnapshotHeader header, out IReadOnlyList<ServerSnapshotPlayerRecord> players)

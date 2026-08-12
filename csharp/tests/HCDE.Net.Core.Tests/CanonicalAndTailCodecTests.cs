@@ -321,6 +321,46 @@ public class ServerSnapshotTailWalkerTests
         Assert.NotNull(sections.CoopDeadSpawns);
         Assert.Equal(2, sections.CoopDeadSpawns.Value.RecordCount);
         Assert.Null(sections.InvasionSnapshot);
+        Assert.NotNull(sections.EchoBlock);
+    }
+
+    [Fact]
+    public void CoopShipping_WithAuthorityEvents_ExposesParsedRecords()
+    {
+        var authorityRecord = new AuthorityEventRecord(
+            AuthorityEventType.Spawn,
+            ReplicatedActorSource.Coop,
+            ReplicatedActorCategory.Projectile,
+            actorFlags: 0,
+            actorId: 9,
+            eventTic: 4,
+            classId: 2,
+            health: 1,
+            wave: 0,
+            System.Text.Encoding.UTF8.GetBytes("Rocket"),
+            posX: 1,
+            posY: 2,
+            posZ: 3,
+            velX: 0,
+            velY: 0,
+            velZ: 0,
+            yaw: 0,
+            pitch: 0);
+
+        Span<byte> tail = stackalloc byte[512];
+        var written = ServerSnapshotTailCodec.WriteCoopShipping(
+            tail,
+            gameTic: 8,
+            poses: ReadOnlySpan<PlayerPoseWorldDelta>.Empty,
+            sectors: ReadOnlySpan<SectorWorldDelta>.Empty,
+            actorDeltas: ReadOnlySpan<ActorDeltaRecord>.Empty,
+            coopDeadSpawnIndices: ReadOnlySpan<uint>.Empty,
+            authorityEvents: new[] { authorityRecord });
+
+        Assert.True(ServerSnapshotTailWalker.TryWalk(tail[..written], out var sections, out _, out _));
+        Assert.NotNull(sections.AuthorityEventRecords);
+        Assert.Single(sections.AuthorityEventRecords!);
+        Assert.Equal(9u, sections.AuthorityEventRecords![0].ActorId);
     }
 
     [Fact]

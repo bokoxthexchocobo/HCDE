@@ -149,6 +149,8 @@ public static class LiveConstants
     public const byte WeaponChangeReadyClass = 1 << 0;
     public const byte WeaponChangeForceReseat = 1 << 1;
 
+    public const ushort WeaponStateReady = 1 << 0;
+
     public const ulong CapControlV1 = 1UL << 0;
     public const ulong CapClientInputV5 = 1UL << 1;
     public const ulong CapServerSnapshotV4 = 1UL << 2;
