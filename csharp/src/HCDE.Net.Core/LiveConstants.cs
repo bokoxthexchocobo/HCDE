@@ -142,6 +142,9 @@ public static class LiveConstants
     public const byte PresentationEchoProtocolVersion = 8;
     public const int PresentationEchoMinHeaderSize = 7;
     public const byte PresentationEchoInvalidInventorySlot = 0xFF;
+    public const byte PresentationEchoInventoryFlagWeapon = 1 << 0;
+    public const byte PresentationEchoInventoryFlagArmor = 1 << 1;
+    public const int PresentationEchoPlayerFixedPrefixSize = 25;
 
     public const byte WeaponChangeReadyClass = 1 << 0;
     public const byte WeaponChangeForceReseat = 1 << 1;
