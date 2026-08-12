@@ -166,6 +166,16 @@ Phase 2 does **not** include rendering, audio, ZScript VM, or client prediction.
 | Co-op shipping tail writer | `ServerSnapshotTailCodec.WriteCoopShipping` | HCDW + HCDA + HCDS + ECHO + [HCKS] |
 | Minimal tail (HCDW+HCDA+ECHO) | `ServerSnapshotTailCodec.WriteMinimal` | default live snapshot tail |
 
+### HCAV bodies + checksum ring compare (Phase 2c — iteration 8)
+
+| Artifact | Location | C++ reference |
+| --- | --- | --- |
+| Authority event record bodies | `AuthorityEventRecord.cs`, `AuthorityEventsCodec.cs` | `HCDEAppendAuthorityEvents` / `HCDEApplyAuthorityEvents` |
+| Replicated actor enums | `AuthorityEventRecord.cs` | `EHCDEReplicatedActorCategory`, `EHCDEReplicatedActorSource` |
+| Co-op tail with HCAV | `ServerSnapshotTailCodec.WriteCoopShipping` | HCDW + HCDA + [HCDS] + HCAV + ECHO + [HCKS] |
+| Checksum tic ring buffer | `SnapshotChecksumRing.cs` | `TicHashHistory` / `FindTicHashBucket` |
+| Client checksum compare | `SnapshotChecksumRing.TryReadAndCompare` | `Net_ChecksumReadAndCompare` |
+
 ### Record bodies + lane headers (Phase 2c — iteration 4)
 
 | Artifact | Location | C++ reference |
@@ -243,8 +253,11 @@ Phase 2 does **not** include rendering, audio, ZScript VM, or client prediction.
 | ECHO minimal header round-trip | `PresentationEchoCodecTests` | Pass |
 | HCDS coop dead spawns round-trip | `CoopDeadSpawnsCodecTests` | Pass |
 | Guest receives tailed server snapshot | `LiveSessionTests` | Pass |
+| HCAV authority event record round-trip | `AuthorityEventsCodecTests` | Pass |
+| Co-op tail with embedded HCAV block | `AuthorityEventsCodecTests` | Pass |
+| Snapshot checksum ring compare | `SnapshotChecksumRingTests` | Pass |
 
-**Test count:** 120 passing (`dotnet test` in `csharp/`).
+**Test count:** 125 passing (`dotnet test` in `csharp/`).
 
 ## Not yet in Phase 2b (sign-off blockers)
 
@@ -294,10 +307,10 @@ Phase 2b is complete when **all** hold:
 ## Phase 2c next slice
 
 1. **Remaining DEM payloads** — admin/cheat DEM types not yet in C# enum (summon, slots, bots, etc.)
-2. **HCAV authority event bodies** — full encode/decode (skip-walker exists; bodies not round-tripped)
-3. **Checksum hash computation** — category hash ring buffer (parse-only stub exists)
-4. **Full live loop** — authority pumps tailed snapshots for all acked clients each tick
-5. **Cross-language netcode soak** — `tests/netcode_step12/` against C++ authority/guest
+2. **Checksum hash computation** — category hash mixers from playsim state (ring compare exists)
+3. **Full live loop** — authority pumps tailed snapshots for all acked clients each tick
+4. **Cross-language netcode soak** — `tests/netcode_step12/` against C++ authority/guest
+5. **ECHO full bodies** — inventory/player echo encode beyond minimal header
 
 ## Phase 2b next slice
 
@@ -323,6 +336,6 @@ Do **not** port snapshot encode/decode bodies until HCIN/HCSN headers are green.
 
 **Phase 2b C# pregame stack is feature-complete for fresh dedicated joins** — loopback WAITING setup, verification-error replies, start-game, and a cross-language guest CLI/harness are in place. The remaining 2b gate is executing the harness against a real `hcdeserv` build and recording the result.
 
-**Phase 2c iteration 7** adds invasion snapshot (`HCIV`) header + embedded HCAV/HCDA skip path, coop dead spawns (`HCDS`), presentation echo (`ECHO`) minimal header, a full snapshot tail walker for co-op vs invasion order, and guest tail consumption in `LiveGuestSession`.
+**Phase 2c iteration 8** adds HCAV authority event record encode/decode, co-op tail assembly with HCAV blocks, and a per-tic checksum ring buffer with client-side compare (`Net_ChecksumReadAndCompare` semantics).
 
-Next audit checkpoint: **Phase 2c iteration 8** when HCAV event bodies round-trip and checksum hash computation lands.
+Next audit checkpoint: **Phase 2c iteration 9** when playsim-backed checksum hash computation or cross-language netcode soak evidence lands.

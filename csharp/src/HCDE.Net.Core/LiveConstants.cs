@@ -97,6 +97,16 @@ public static class LiveConstants
     public const byte ActorDeltasFlagComplete = 1 << 0;
     public const byte ActorDeltaFlagLive = 1 << 0;
 
+    public const byte AuthorityEventSpawn = 1;
+    public const byte AuthorityEventDespawn = 2;
+    public const byte AuthorityEventDamage = 3;
+    public const byte AuthorityEventCosmeticSpawn = 4;
+    public const int AuthorityEventRecordPrefixSize = 19;
+    public const int AuthorityEventRecordSuffixSize = 56;
+
+    public const int SnapshotChecksumHistoryDepth = 64;
+    public const byte SnapshotChecksumDefaultCategoryMask = 0x3F;
+
     public const ushort ActorDeltaFieldCategory = 1 << 0;
     public const ushort ActorDeltaFieldFlags = 1 << 1;
     public const ushort ActorDeltaFieldAction = 1 << 2;

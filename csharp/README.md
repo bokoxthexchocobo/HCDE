@@ -68,7 +68,7 @@ csharp/
     HCDE.Net.Core/       Live protocol codecs (HLIV/HGPL/HCIN/HCSN/…)
     HCDE.PregameGuest.Cli/  hcde-pregame-guest CLI
   tests/
-    HCDE.*.Tests/        xUnit regression tests (120 passing)
+    HCDE.*.Tests/        xUnit regression tests (125 passing)
 ```
 
 ## Migration phases

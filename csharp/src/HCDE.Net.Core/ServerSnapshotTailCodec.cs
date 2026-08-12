@@ -53,6 +53,7 @@ public static class ServerSnapshotTailCodec
         ReadOnlySpan<SectorWorldDelta> sectors,
         ReadOnlySpan<ActorDeltaRecord> actorDeltas,
         ReadOnlySpan<uint> coopDeadSpawnIndices,
+        ReadOnlySpan<AuthorityEventRecord> authorityEvents = default,
         uint[]? checksumHashes = null)
     {
         var actorDeltaSize = LiveConstants.ActorDeltasHeaderSize;
@@ -63,9 +64,18 @@ public static class ServerSnapshotTailCodec
             ? 0
             : LiveConstants.CoopDeadSpawnsHeaderSize + coopDeadSpawnIndices.Length * 4;
 
+        var authorityEventSize = 0;
+        if (!authorityEvents.IsEmpty)
+        {
+            authorityEventSize = LiveConstants.AuthorityEventsHeaderSize;
+            foreach (var record in authorityEvents)
+                authorityEventSize += AuthorityEventRecord.MinRecordSize(record.ClassName);
+        }
+
         var required = WorldDeltaChunkCodec.MinChunkSize((byte)poses.Length, (byte)sectors.Length)
             + actorDeltaSize
             + deadSpawnSize
+            + authorityEventSize
             + LiveConstants.PresentationEchoMinHeaderSize
             + (checksumHashes is { Length: LiveConstants.SnapshotChecksumCategoryCount }
                 ? LiveConstants.SnapshotChecksumBlockSize
@@ -95,6 +105,15 @@ public static class ServerSnapshotTailCodec
             cursor += deadWritten;
         }
 
+        if (!authorityEvents.IsEmpty)
+        {
+            var authorityWritten = AuthorityEventsCodec.Write(tail[cursor..], authorityEvents);
+            if (authorityWritten == 0)
+                return 0;
+
+            cursor += authorityWritten;
+        }
+
         var echoWritten = PresentationEchoCodec.WriteMinimal(tail[cursor..]);
         if (echoWritten == 0)
             return 0;
@@ -119,7 +138,7 @@ public static class ServerSnapshotTailCodec
         ReadOnlySpan<SectorWorldDelta> sectors,
         ReadOnlySpan<ActorDeltaRecord> actorDeltas,
         uint[]? checksumHashes = null)
-        => WriteCoopShipping(tail, gameTic, poses, sectors, actorDeltas, ReadOnlySpan<uint>.Empty, checksumHashes);
+        => WriteCoopShipping(tail, gameTic, poses, sectors, actorDeltas, ReadOnlySpan<uint>.Empty, default, checksumHashes);
 
     public static bool TryReadMinimal(
         ReadOnlySpan<byte> tail,
