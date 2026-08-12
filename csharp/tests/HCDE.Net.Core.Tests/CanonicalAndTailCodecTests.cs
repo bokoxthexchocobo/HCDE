@@ -96,6 +96,42 @@ public class CanonicalEventPayloadCodecTests
         Assert.Equal(legacy.Length, legacyCursor);
         Assert.True(length > 0);
     }
+
+    [Fact]
+    public void AddSlot_CanonicalizesSlotAndWeaponIndex()
+    {
+        var legacy = new byte[] { 3, 0x85, 0x02 };
+        Span<byte> output = stackalloc byte[16];
+        var legacyCursor = 0;
+
+        Assert.True(CanonicalEventPayloadCodec.TryBuildFromLegacy((byte)DemoCommand.AddSlot, legacy, ref legacyCursor, output, out var length));
+        Assert.Equal(legacy.Length, legacyCursor);
+        Assert.Equal(new byte[] { 3, 0x01, 0x05 }, output[..length].ToArray());
+    }
+
+    [Fact]
+    public void SetSlot_CanonicalizesSlotCountAndWeaponIndices()
+    {
+        var legacy = new byte[] { 2, 2, 5, 0x82, 0x01 };
+        Span<byte> output = stackalloc byte[16];
+        var legacyCursor = 0;
+
+        Assert.True(CanonicalEventPayloadCodec.TryBuildFromLegacy((byte)DemoCommand.SetSlot, legacy, ref legacyCursor, output, out var length));
+        Assert.Equal(legacy.Length, legacyCursor);
+        Assert.Equal(new byte[] { 2, 2, 0x00, 0x05, 0x00, 0x82 }, output[..length].ToArray());
+    }
+
+    [Fact]
+    public void SetSlotPnum_PrefixesPlayerNumber()
+    {
+        var legacy = new byte[] { 1, 4, 1, 9 };
+        Span<byte> output = stackalloc byte[16];
+        var legacyCursor = 0;
+
+        Assert.True(CanonicalEventPayloadCodec.TryBuildFromLegacy((byte)DemoCommand.SetSlotPnum, legacy, ref legacyCursor, output, out var length));
+        Assert.Equal(legacy.Length, legacyCursor);
+        Assert.Equal(new byte[] { 1, 4, 1, 0x00, 0x09 }, output[..length].ToArray());
+    }
 }
 
 public class DemEventStreamConverterTests

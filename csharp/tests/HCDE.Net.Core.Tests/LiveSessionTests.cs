@@ -102,4 +102,39 @@ public class LiveSessionTests
         Assert.Equal(1u, tail1.Value.WorldDelta.GameTic);
         Assert.Equal(1u, tail2.Value.WorldDelta.GameTic);
     }
+
+    [Fact]
+    public void GuestAppliesQuitterPrefixFromServerSnapshot()
+    {
+        var gameId = new byte[] { 0xAA, 0xBB, 0xCC, 0xDD, 0x11, 0x22, 0x33, 0x44 };
+
+        using var authorityTransport = new UdpTransport();
+        using var guestTransport = new UdpTransport();
+        authorityTransport.Bind(0);
+        guestTransport.Bind(0);
+        authorityTransport.SetNonBlocking(true);
+        guestTransport.SetNonBlocking(true);
+
+        var authorityEndpoint = new NetworkEndpoint(System.Net.IPAddress.Loopback, authorityTransport.BoundPort);
+        var guestEndpoint = new NetworkEndpoint(System.Net.IPAddress.Loopback, guestTransport.BoundPort);
+
+        var authority = new LiveAuthoritySession(authorityTransport, gameId, authoritySlot: 0, maxClients: 4);
+        var guest = new LiveGuestSession(guestTransport, gameId, authorityEndpoint, guestPlayerSlot: 1, authoritySlot: 0, maxClients: 4);
+
+        var gameplay = new LiveGameplayEndpoint(authorityTransport, gameId);
+        var now = (ulong)Environment.TickCount64;
+        gameplay.TrySendServerSnapshot(
+            guestEndpoint,
+            roomId: 0,
+            gameTic: 1,
+            playerNum: 1,
+            includeMinimalTail: true,
+            quitterPlayerSlots: new byte[] { 2, 3 });
+
+        Assert.True(guest.TryReceiveServerSnapshot(out var header, out _, out _));
+        Assert.Equal((byte)NetCommandFlags.Quitters, header.ControlFlags);
+        Assert.False(guest.PeerSlots.IsConnected(2));
+        Assert.False(guest.PeerSlots.IsConnected(3));
+        Assert.True(guest.PeerSlots.IsConnected(1));
+    }
 }

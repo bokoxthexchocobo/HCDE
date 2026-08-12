@@ -8,6 +8,7 @@ public sealed class LiveGuestSession
     private readonly LiveGameplayEndpoint _gameplay;
     private readonly NetworkEndpoint _authorityEndpoint;
     private readonly LivePeerRoutingState _routing;
+    private readonly LivePeerSlotTracker _peerSlots;
     private byte _roomId;
     private uint _gameTic;
 
@@ -28,7 +29,10 @@ public sealed class LiveGuestSession
             authoritySlot: authoritySlot,
             isLocalAuthority: false,
             usesHcdeService: true);
+        _peerSlots = new LivePeerSlotTracker(maxClients);
     }
+
+    public LivePeerSlotTracker PeerSlots => _peerSlots;
 
     public void Pump(ulong nowMs, byte roomId = 0)
     {
@@ -71,6 +75,20 @@ public sealed class LiveGuestSession
 
         if (!ServerSnapshotHeader.TryRead(nativePayload.Span, out header))
             return false;
+
+        if (header.QuitterBytes > 0)
+        {
+            if (!ServerSnapshotQuitterCodec.TryRead(
+                    nativePayload.Span[LiveConstants.ServerSnapshotHeaderSize..],
+                    header.QuitterBytes,
+                    out var quitterPlayerSlots,
+                    out _))
+            {
+                return false;
+            }
+
+            _peerSlots.ApplyQuitterSlots(quitterPlayerSlots);
+        }
 
         if (!ServerSnapshotBodyCodec.TryReadPlayerRecords(
                 nativePayload.Span[(LiveConstants.ServerSnapshotHeaderSize + header.QuitterBytes)..],

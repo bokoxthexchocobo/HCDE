@@ -2,7 +2,7 @@
 
 **Last updated:** 2026-08-12  
 **Scope:** All code under `csharp/` (7 projects, 6 test suites)  
-**Verification:** `dotnet build` and `dotnet test` in `csharp/` — **134 tests passing**  
+**Verification:** `dotnet build` and `dotnet test` in `csharp/` — **148 tests passing**  
 **Related:** [`HCDE_CSHARP_PHASE1_AUDIT.md`](HCDE_CSHARP_PHASE1_AUDIT.md) · [`HCDE_CSHARP_PHASE2_AUDIT.md`](HCDE_CSHARP_PHASE2_AUDIT.md) · [`HCDE_CSHARP_MIGRATION.md`](HCDE_CSHARP_MIGRATION.md)
 
 ---
@@ -38,9 +38,9 @@ csharp/
     HCDE.Rcon/              2 files,   ~157 LOC   (hcdercon binary)
     HCDE.Net.Transport/    13 files,   ~812 LOC   (UDP, CRC, query, pregame constants)
     HCDE.Net.Pregame/      22 files, ~2,038 LOC   (pregame host/guest pumps)
-    HCDE.Net.Core/         35 files, ~3,719 LOC   (live protocol codecs + session glue)
+    HCDE.Net.Core/         38 files, ~3,850 LOC   (live protocol codecs + session glue)
     HCDE.PregameGuest.Cli/  5 files,   ~207 LOC   (hcde-pregame-guest CLI)
-  tests/                   32 files, 134 tests
+  tests/                   34 files, 148 tests
 ```
 
 ### 2.2 Test matrix
@@ -52,8 +52,8 @@ csharp/
 | `HCDE.Rcon.Tests` | 6 | FNV-1a + loopback auth/ping/status |
 | `HCDE.Net.Transport.Tests` | 10 | Constants, query, HCD3, gameplay CRC |
 | `HCDE.Net.Pregame.Tests` | 32 | CRC, service queue, host/guest loopback |
-| `HCDE.Net.Core.Tests` | 51 | Live headers, bodies, tail, DEM, sessions |
-| **Total** | **134** | |
+| `HCDE.Net.Core.Tests` | 84 | Live headers, bodies, tail, DEM, sessions |
+| **Total** | **148** | |
 
 ### 2.3 Dependency graph
 
@@ -241,7 +241,8 @@ PRE_CONNECT → PRE_CONNECT_ACK → console-player
 | Checksum compare | `SnapshotChecksumRing`, `SnapshotChecksumSession` | Ring buffer + mixer + compute-if-stale |
 | Tail walker | `ServerSnapshotTailWalker` | Co-op vs invasion tail order |
 | Tail assembler | `ServerSnapshotTailCodec` | HCDW + HCDA + ECHO + optional HCKS |
-| HCSN quitter prefix | `ServerSnapshotQuitterCodec` | `NCMD_QUITTERS` byte list after header |
+| HCSN quitter prefix | `ServerSnapshotQuitterCodec`, `LivePeerSlotTracker` | `NCMD_QUITTERS` + guest disconnect tracking |
+| Weapon-slot DEM | `CanonicalWeaponIndexCodec`, slot payloads in `CanonicalEventPayloadCodec` | `DEM_SETSLOT*`, `DEM_ADDSLOT*` |
 | Session glue | `LiveWire`, `Live*Endpoint`, `Live*Session`, `LiveAuthorityClientRegistry` | UDP pump + multi-client authority |
 | Routing | `LiveAuthorityRouting`, `LivePeerRoutingState` | `I_ShouldSend/AcceptHCDELive*` |
 
@@ -251,12 +252,10 @@ PRE_CONNECT → PRE_CONNECT_ACK → console-player
 | --- | --- | --- |
 | HCAV authority events | Full record encode/decode + skip | Apply/replay policy, catchup window selection |
 | HCKS checksum | Wire parse/write + ring compare + mixer session | Playsim-fed category inputs |
-| DEM payloads | ~30 event types | ~40 admin/cheat types; no reverse (canonical→legacy) |
+| DEM payloads | ~50 event types incl. weapon slots | No reverse (canonical→legacy) |
 | ECHO presentation | Full inventory/player encode-decode | Apply/reconcile weapon follow |
 | HCIV invasion | V2 header + embedded skip | Spawn spot payloads, full invasion state |
-| HCSN quitter prefix | Encode/decode | Apply disconnect on quitter list |
-| Multi-player bodies | Single-player tests only | Multi-tic, duplicate-offset edge cases |
-| Guest receive | HCSR + tail walker | Apply paths still absent |
+| Guest receive | HCSR + tail walker + quitter apply | Full snapshot mutation still absent |
 
 ### 6.3 Missing entirely
 

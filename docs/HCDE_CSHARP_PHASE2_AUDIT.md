@@ -205,6 +205,16 @@ Phase 2 does **not** include rendering, audio, ZScript VM, or client prediction.
 | Admin DEM canonicalization | `CanonicalEventPayloadCodec.cs` | summon/savegame/addbot/etc. |
 | Cross-language netcode gate | `NetcodeCrossLanguageTests` | env-gated soak prerequisites |
 
+### Weapon-slot DEM + guest quitter apply (Phase 2c — iteration 12)
+
+| Artifact | Location | C++ reference |
+| --- | --- | --- |
+| Weapon index canonicalization | `CanonicalWeaponIndexCodec.cs` | `HCDEAppendCanonicalWeaponIndex` |
+| SetSlot/AddSlot DEM payloads | `CanonicalEventPayloadCodec.cs` | `DEM_SETSLOT`, `DEM_SETSLOTPNUM`, `DEM_ADDSLOT*` |
+| Guest peer slot tracker | `LivePeerSlotTracker.cs` | `DisconnectClient` on quitter broadcast |
+| Guest quitter apply | `LiveGuestSession.TryReceiveServerSnapshot` | `NCMD_QUITTERS` prefix before HCSR |
+| Snapshot send with quitters | `LiveWire.TrySendServerSnapshot` | authority quitter prefix injection |
+
 ### Record bodies + lane headers (Phase 2c — iteration 4)
 
 | Artifact | Location | C++ reference |
@@ -289,8 +299,15 @@ Phase 2 does **not** include rendering, audio, ZScript VM, or client prediction.
 | Checksum mixer + compute-if-stale session | `SnapshotChecksumMixerTests` | Pass |
 | HCSN quitter prefix round-trip | `ServerSnapshotQuitterCodecTests` | Pass |
 | Multi-client authority pump | `LiveSessionTests` | Pass |
+| Multi-player HCSR round-trip | `ServerSnapshotBodyCodecTests` | Pass |
+| Admin DEM payload canonicalization | `CanonicalEventPayloadCodecTests` | Pass |
+| Cross-language netcode gate | `NetcodeCrossLanguageTests` | Pass (skip when unset) |
+| Weapon-slot DEM canonicalization | `CanonicalEventPayloadCodecTests` | Pass |
+| Weapon index codec round-trip | `CanonicalWeaponIndexCodecTests` | Pass |
+| Guest quitter apply on snapshot | `LiveSessionTests` | Pass |
+| Peer slot disconnect tracker | `LivePeerSlotTrackerTests` | Pass |
 
-**Test count:** 134 passing (`dotnet test` in `csharp/`).
+**Test count:** 148 passing (`dotnet test` in `csharp/`).
 
 ## Not yet in Phase 2b (sign-off blockers)
 
@@ -339,10 +356,10 @@ Phase 2b is complete when **all** hold:
 
 ## Phase 2c next slice
 
-1. **Remaining DEM payloads** — admin/cheat DEM types not yet in C# enum (summon, slots, bots, etc.)
+1. **Cross-language netcode soak** — run `tests/netcode_step12/` against C++ authority/guest when binaries available
 2. **Playsim-backed checksum inputs** — wire `SnapshotChecksumSession` to real world state in Phase 2e
-3. **Cross-language netcode soak** — `tests/netcode_step12/` against C++ authority/guest
-4. **Multi-player snapshot bodies** — multi-tic and multi-player HCSR edge cases
+3. **HCSR apply paths** — snapshot mutation stubs beyond quitter disconnect tracking
+4. **ECHO/HCAV apply** — weapon follow, authority event replay policy
 
 ## Phase 2b next slice
 
@@ -368,6 +385,8 @@ Do **not** port snapshot encode/decode bodies until HCIN/HCSN headers are green.
 
 **Phase 2b C# pregame stack is feature-complete for fresh dedicated joins** — loopback WAITING setup, verification-error replies, start-game, and a cross-language guest CLI/harness are in place. The remaining 2b gate is executing the harness against a real `hcdeserv` build and recording the result.
 
-**Phase 2c iteration 10** adds HCSN quitter prefix encode/decode, fixes snapshot builder layout for quitters, and implements multi-client authority pump (`PumpAllClients` with shared gametic and client registry).
+**Phase 2c iteration 12** adds weapon-slot DEM canonicalization (`SetSlot`, `SetSlotPnum`, `AddSlot*`), guest-side quitter apply via `LivePeerSlotTracker`, and authority snapshot send with quitter prefix.
 
-Next audit checkpoint: **Phase 2c iteration 11** when cross-language netcode soak evidence or multi-player HCSR bodies land.
+**Phase 2c iteration 11** hardens HCSR validation (duplicate consistency/command offsets), adds multi-player multi-tic round-trip tests, expands admin/cheat DEM canonicalization, and adds an env-gated cross-language netcode test gate.
+
+Next audit checkpoint: **Phase 2c iteration 13** when cross-language `netcode_step12` evidence is recorded or ECHO/HCAV apply paths begin.

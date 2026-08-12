@@ -29,4 +29,6 @@ python3 tests/pregame_validation/pregame_guest_smoke.py \
   --iwad /path/to/DOOM2.WAD
 ```
 
-Full native live gameplay stress remains under `tests/netcode_step12/`.
+Full native live gameplay stress remains under `tests/netcode_step12/`. The managed
+gate also includes `NetcodeCrossLanguageTests`, which skips unless
+`HCDE_HCDESERV_PATH` and `HCDE_IWAD_PATH` are set.

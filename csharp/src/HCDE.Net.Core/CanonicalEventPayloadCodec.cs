@@ -49,6 +49,11 @@ public static class CanonicalEventPayloadCodec
             DemoCommand.NetEvent => TryCanonicalizeStringPlusFixed(legacy, ref legacyCursor, output, ref cursor, 14),
             DemoCommand.ZscCmd => TryCanonicalizeZscCmd(legacy, ref legacyCursor, output, ref cursor),
 
+            DemoCommand.SetSlot => TryCanonicalizeSetSlot(legacy, ref legacyCursor, output, ref cursor, includePlayerNum: false),
+            DemoCommand.SetSlotPnum => TryCanonicalizeSetSlot(legacy, ref legacyCursor, output, ref cursor, includePlayerNum: true),
+            DemoCommand.AddSlot or DemoCommand.AddSlotDefault
+                => TryCanonicalizeAddSlot(legacy, ref legacyCursor, output, ref cursor),
+
             _ => false,
         };
 
@@ -168,5 +173,46 @@ public static class CanonicalEventPayloadCodec
             return false;
 
         return TryCanonicalizeNullStringOnly(legacy, ref legacyCursor, output, ref cursor);
+    }
+
+    private static bool TryCanonicalizeAddSlot(
+        ReadOnlySpan<byte> legacy,
+        ref int legacyCursor,
+        Span<byte> output,
+        ref int cursor)
+    {
+        if (!TryCopyFixedLegacy(legacy, ref legacyCursor, output, ref cursor, 1))
+            return false;
+
+        return CanonicalWeaponIndexCodec.TryAppendFromLegacy(legacy, ref legacyCursor, output, ref cursor);
+    }
+
+    private static bool TryCanonicalizeSetSlot(
+        ReadOnlySpan<byte> legacy,
+        ref int legacyCursor,
+        Span<byte> output,
+        ref int cursor,
+        bool includePlayerNum)
+    {
+        if (includePlayerNum && !TryCopyFixedLegacy(legacy, ref legacyCursor, output, ref cursor, 1))
+            return false;
+
+        if (!TryCopyFixedLegacy(legacy, ref legacyCursor, output, ref cursor, 1))
+            return false;
+
+        if (legacy.Length - legacyCursor < 1 || output.Length - cursor < 1)
+            return false;
+
+        var count = legacy[legacyCursor];
+        output[cursor++] = count;
+        legacyCursor++;
+
+        for (var i = 0; i < count; i++)
+        {
+            if (!CanonicalWeaponIndexCodec.TryAppendFromLegacy(legacy, ref legacyCursor, output, ref cursor))
+                return false;
+        }
+
+        return true;
     }
 }

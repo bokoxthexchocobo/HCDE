@@ -232,7 +232,8 @@ public static class GameplayPayloadBuilders
         byte commandTics = 1,
         byte consistencyTics = 0,
         bool includeMinimalTail = false,
-        uint gameTic = 0)
+        uint gameTic = 0,
+        ReadOnlySpan<byte> quitterPlayerSlots = default)
     {
         var players = new[]
         {
@@ -262,7 +263,8 @@ public static class GameplayPayloadBuilders
             baseConsistency: 0,
             players,
             includeMinimalTail,
-            gameTic);
+            gameTic,
+            quitterPlayerSlots);
     }
 }
 
