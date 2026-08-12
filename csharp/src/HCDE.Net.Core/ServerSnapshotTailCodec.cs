@@ -2,7 +2,11 @@ namespace HCDE.Net.Core;
 
 public static class ServerSnapshotTailCodec
 {
-    public const int MinimalTailSize = LiveConstants.ServerWorldDeltaHeaderSize + 1 + LiveConstants.ActorDeltasHeaderSize;
+    public const int MinimalTailSize =
+        LiveConstants.ServerWorldDeltaHeaderSize
+        + 1
+        + LiveConstants.ActorDeltasHeaderSize
+        + LiveConstants.PresentationEchoMinHeaderSize;
 
     public static int MinimalTailWithChecksumSize => MinimalTailSize + LiveConstants.SnapshotChecksumBlockSize;
 
@@ -25,6 +29,11 @@ public static class ServerSnapshotTailCodec
             return 0;
 
         cursor += actorDeltaWritten;
+        var echoWritten = PresentationEchoCodec.WriteMinimal(tail[cursor..]);
+        if (echoWritten == 0)
+            return 0;
+
+        cursor += echoWritten;
         if (checksumHashes is { Length: LiveConstants.SnapshotChecksumCategoryCount })
         {
             var checksumWritten = SnapshotChecksumCodec.Write(tail[cursor..], gameTic, checksumHashes);
@@ -37,19 +46,27 @@ public static class ServerSnapshotTailCodec
         return cursor;
     }
 
-    public static int Write(
+    public static int WriteCoopShipping(
         Span<byte> tail,
         uint gameTic,
         ReadOnlySpan<PlayerPoseWorldDelta> poses,
         ReadOnlySpan<SectorWorldDelta> sectors,
         ReadOnlySpan<ActorDeltaRecord> actorDeltas,
+        ReadOnlySpan<uint> coopDeadSpawnIndices,
         uint[]? checksumHashes = null)
     {
         var actorDeltaSize = LiveConstants.ActorDeltasHeaderSize;
         foreach (var record in actorDeltas)
             actorDeltaSize += ActorDeltaRecord.MinRecordSize(record.FieldMask);
+
+        var deadSpawnSize = coopDeadSpawnIndices.Length == 0
+            ? 0
+            : LiveConstants.CoopDeadSpawnsHeaderSize + coopDeadSpawnIndices.Length * 4;
+
         var required = WorldDeltaChunkCodec.MinChunkSize((byte)poses.Length, (byte)sectors.Length)
             + actorDeltaSize
+            + deadSpawnSize
+            + LiveConstants.PresentationEchoMinHeaderSize
             + (checksumHashes is { Length: LiveConstants.SnapshotChecksumCategoryCount }
                 ? LiveConstants.SnapshotChecksumBlockSize
                 : 0);
@@ -69,6 +86,20 @@ public static class ServerSnapshotTailCodec
             return 0;
 
         cursor += actorDeltaWritten;
+        if (coopDeadSpawnIndices.Length > 0)
+        {
+            var deadWritten = CoopDeadSpawnsCodec.Write(tail[cursor..], coopDeadSpawnIndices);
+            if (deadWritten == 0)
+                return 0;
+
+            cursor += deadWritten;
+        }
+
+        var echoWritten = PresentationEchoCodec.WriteMinimal(tail[cursor..]);
+        if (echoWritten == 0)
+            return 0;
+
+        cursor += echoWritten;
         if (checksumHashes is { Length: LiveConstants.SnapshotChecksumCategoryCount })
         {
             var checksumWritten = SnapshotChecksumCodec.Write(tail[cursor..], gameTic, checksumHashes);
@@ -80,6 +111,15 @@ public static class ServerSnapshotTailCodec
 
         return cursor;
     }
+
+    public static int Write(
+        Span<byte> tail,
+        uint gameTic,
+        ReadOnlySpan<PlayerPoseWorldDelta> poses,
+        ReadOnlySpan<SectorWorldDelta> sectors,
+        ReadOnlySpan<ActorDeltaRecord> actorDeltas,
+        uint[]? checksumHashes = null)
+        => WriteCoopShipping(tail, gameTic, poses, sectors, actorDeltas, ReadOnlySpan<uint>.Empty, checksumHashes);
 
     public static bool TryReadMinimal(
         ReadOnlySpan<byte> tail,
@@ -93,21 +133,15 @@ public static class ServerSnapshotTailCodec
         bytesConsumed = 0;
         rejectReason = null;
 
-        if (!WorldDeltaChunkCodec.TryRead(tail, out worldDeltaHeader, out _, out _, out var worldDeltaBytes, out rejectReason))
+        if (!ServerSnapshotTailWalker.TryWalk(tail, out var sections, out bytesConsumed, out rejectReason))
             return false;
 
-        var actorTail = tail[worldDeltaBytes..];
-        if (!ActorDeltasCodec.TryRead(actorTail, out actorDeltaHeader, out var records, out var actorDeltaBytes, out rejectReason))
-            return false;
-
-        if (records.Count != 0)
-        {
-            rejectReason = "actor-delta-tail-not-empty";
-            return false;
-        }
-
-        bytesConsumed = worldDeltaBytes + actorDeltaBytes;
-        return true;
+        worldDeltaHeader = sections.WorldDelta;
+        actorDeltaHeader = sections.ActorDelta;
+        return sections.CoopDeadSpawns is null
+            && sections.AuthorityEvents is null
+            && sections.InvasionSnapshot is null
+            && !sections.HasChecksum;
     }
 
     public static bool TryReadChecksum(ReadOnlySpan<byte> tail, out uint gameTic, out uint[] categoryHashes, out int bytesConsumed)

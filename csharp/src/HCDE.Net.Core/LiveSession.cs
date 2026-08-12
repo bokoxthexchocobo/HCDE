@@ -50,10 +50,14 @@ public sealed class LiveGuestSession
     public bool TryReceiveAuthorityControl(out LiveControlBasePayload basePayload) =>
         _control.TryReceiveControl(_authorityEndpoint, out basePayload, out _, out _);
 
-    public bool TryReceiveServerSnapshot(out ServerSnapshotHeader header, out IReadOnlyList<ServerSnapshotPlayerRecord> players)
+    public bool TryReceiveServerSnapshot(
+        out ServerSnapshotHeader header,
+        out IReadOnlyList<ServerSnapshotPlayerRecord> players,
+        out ServerSnapshotTailSections? tailSections)
     {
         header = default;
         players = Array.Empty<ServerSnapshotPlayerRecord>();
+        tailSections = null;
         if (!_gameplay.TryReceiveGameplay(
                 _authorityEndpoint,
                 GameplayPayloadKind.ServerSnapshot,
@@ -68,13 +72,32 @@ public sealed class LiveGuestSession
         if (!ServerSnapshotHeader.TryRead(nativePayload.Span, out header))
             return false;
 
-        return ServerSnapshotBodyCodec.TryReadPlayerRecords(
-            nativePayload.Span[LiveConstants.ServerSnapshotHeaderSize..],
-            header.ConsistencyTics,
-            header.CommandTics,
-            out players,
-            out _,
-            out _);
+        if (!ServerSnapshotBodyCodec.TryReadPlayerRecords(
+                nativePayload.Span[LiveConstants.ServerSnapshotHeaderSize..],
+                header.ConsistencyTics,
+                header.CommandTics,
+                out players,
+                out var hcsrBytes,
+                out _))
+        {
+            return false;
+        }
+
+        var tail = nativePayload.Span[(LiveConstants.ServerSnapshotHeaderSize + hcsrBytes)..];
+        if (tail.Length == 0)
+            return true;
+
+        if (!ServerSnapshotTailWalker.TryWalk(tail, out var sections, out _, out _))
+            return false;
+
+        tailSections = sections;
+        return true;
+    }
+
+    public bool TryReceiveServerSnapshot(out ServerSnapshotHeader header, out IReadOnlyList<ServerSnapshotPlayerRecord> players)
+    {
+        var ok = TryReceiveServerSnapshot(out header, out players, out _);
+        return ok;
     }
 }
 

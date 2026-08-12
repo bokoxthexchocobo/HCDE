@@ -2,21 +2,21 @@
 
 **Last updated:** 2026-08-12  
 **Scope:** All code under `csharp/` (7 projects, 6 test suites)  
-**Verification:** `dotnet build` and `dotnet test` in `csharp/` — **115 tests passing**  
+**Verification:** `dotnet build` and `dotnet test` in `csharp/` — **120 tests passing**  
 **Related:** [`HCDE_CSHARP_PHASE1_AUDIT.md`](HCDE_CSHARP_PHASE1_AUDIT.md) · [`HCDE_CSHARP_PHASE2_AUDIT.md`](HCDE_CSHARP_PHASE2_AUDIT.md) · [`HCDE_CSHARP_MIGRATION.md`](HCDE_CSHARP_MIGRATION.md)
 
 ---
 
 ## 1. Executive summary
 
-The C# tree is a **well-tested protocol and networking foundation** (~8,200 LOC source, ~115 unit/integration tests) covering Phase 1 tools and Phase 2a–2c wire codecs. It does **not** yet run a game: no map loader, playsim, or `hcdeserv` executable.
+The C# tree is a **well-tested protocol and networking foundation** (~8,400 LOC source, ~120 unit/integration tests) covering Phase 1 tools and Phase 2a–2c wire codecs. It does **not** yet run a game: no map loader, playsim, or `hcdeserv` executable.
 
 | Layer | Status | Confidence |
 | --- | --- | --- |
 | Phase 1 — tools & master protocol | **Complete** | High (loopback); medium without C++ binary soak |
 | Phase 2a — UDP transport & query | **Complete** | High |
 | Phase 2b — pregame handshake | **~95%** (fresh join loopback) | Medium (no recorded C++ interop) |
-| Phase 2c — live netcode wire | **~35–40%** of `d_net` surface | Medium (encode-heavy; apply paths absent) |
+| Phase 2c — live netcode wire | **~40–45%** of `d_net` surface | Medium (encode-heavy; apply paths absent) |
 | Phase 2d–2f — map, playsim, server | **Not started** | — |
 | Phase 3–4 — full sim & client | **Not started** | — |
 
@@ -40,7 +40,7 @@ csharp/
     HCDE.Net.Pregame/      22 files, ~2,038 LOC   (pregame host/guest pumps)
     HCDE.Net.Core/         35 files, ~3,719 LOC   (live protocol codecs + session glue)
     HCDE.PregameGuest.Cli/  5 files,   ~207 LOC   (hcde-pregame-guest CLI)
-  tests/                   27 files, 115 tests
+  tests/                   27 files, 120 tests
 ```
 
 ### 2.2 Test matrix
@@ -53,7 +53,7 @@ csharp/
 | `HCDE.Net.Transport.Tests` | 10 | Constants, query, HCD3, gameplay CRC |
 | `HCDE.Net.Pregame.Tests` | 32 | CRC, service queue, host/guest loopback |
 | `HCDE.Net.Core.Tests` | 51 | Live headers, bodies, tail, DEM, sessions |
-| **Total** | **115** | |
+| **Total** | **120** | |
 
 ### 2.3 Dependency graph
 
@@ -234,7 +234,12 @@ PRE_CONNECT → PRE_CONNECT_ACK → console-player
 | HCDW | `WorldDeltaPoseCodec`, `WorldDeltaChunkCodec` | V4 pose (38 B) + sector (11 B) |
 | HCDA | `ActorDeltaRecord`, `ActorDeltasCodec` | V2 masked records |
 | HCKS | `SnapshotChecksumCodec` | 34-byte wire block (parse/write only) |
-| Tail assembler | `ServerSnapshotTailCodec` | HCDW + HCDA + optional HCKS |
+| HCIV | `InvasionSnapshotCodec` | V2 header + embedded HCAV/HCDA skip |
+| HCDS | `CoopDeadSpawnsCodec` | Co-op dead spawn index list |
+| ECHO | `PresentationEchoCodec` | v8 minimal header + skip walker |
+| HCAV | `AuthorityEventsCodec` | Header peek + event skip walker |
+| Tail walker | `ServerSnapshotTailWalker` | Co-op vs invasion tail order |
+| Tail assembler | `ServerSnapshotTailCodec` | HCDW + HCDA + ECHO + optional HCKS |
 | Session glue | `LiveWire`, `Live*Endpoint`, `Live*Session` | UDP pump scaffold |
 | Routing | `LiveAuthorityRouting`, `LivePeerRoutingState` | `I_ShouldSend/AcceptHCDELive*` |
 
@@ -242,21 +247,19 @@ PRE_CONNECT → PRE_CONNECT_ACK → console-player
 
 | Item | What exists | What's missing |
 | --- | --- | --- |
-| HCAV authority events | 8-byte header | Event record bodies, replay |
+| HCAV authority events | Header + skip walker | Event record bodies, replay |
 | HCKS checksum | Wire parse/write | `Net_ChecksumComputeIfStale`, hash ring, compare |
 | DEM payloads | ~30 event types | ~40 admin/cheat types; no reverse (canonical→legacy) |
-| Snapshot tail order | HCDW → HCDA → [HCKS] | HCDS, HCAV bodies, ECHO, full C++ order |
+| ECHO presentation | Minimal header + skip | Full inventory/player echo bodies |
+| HCIV invasion | V2 header + embedded skip | Spawn spot payloads, full invasion state |
 | HCSN quitter prefix | — | `NCMD_QUITTERS` + byte list after header |
 | Multi-player bodies | Single-player tests only | Multi-tic, duplicate-offset edge cases |
-| Guest receive | HCSR parsed | Tail (HCDW+) ignored after HCSR |
+| Guest receive | HCSR + tail walker | Apply paths still absent |
 
 ### 6.3 Missing entirely
 
 | Feature | C++ location |
 | --- | --- |
-| **HCIV** invasion snapshot (52-byte V2 header) | `HCDEAppendInvasionSnapshot` |
-| **ECHO** presentation echo (v8 inventory) | `d_net_diag.cpp` |
-| **HCDS** coop dead spawns | `d_net_snapshot_part1.inl` |
 | **Apply paths** (`HCDETryApplyNative*`) | All snapshot/input mutation |
 | Lag comp, prediction, rewind hooks | `d_net.cpp` |
 | Lane budget enforcement | `HCDELiveLaneBudget*` |
@@ -268,14 +271,15 @@ PRE_CONNECT → PRE_CONNECT_ACK → console-player
 ```
 C++ (co-op):     HCSR → HCDW → HCDA → HCDS → HCAV → ECHO → HCKS
 C++ (invasion):  HCSR → HCDW → HCIV (embeds HCAV+HCDA) → ECHO → HCKS
-C# (minimal):    HCSR → HCDW → HCDA → [HCKS]
+C# (minimal):    HCSR → HCDW → HCDA → ECHO → [HCKS]
+C# (walker):     Parses co-op and invasion order; skips HCAV/HCDA inside HCIV
 ```
 
-**Interop risk:** A C# guest receiving a shipping C++ snapshot parses HCSR then leaves HCAV/ECHO/HCKS unconsumed.
+**Interop risk:** Tail parse/skip is implemented; apply/reconciliation still absent. Full ECHO inventory bodies not yet encoded.
 
 ### 6.5 Phase 2c verdict
 
-Wire-first codecs for the **core live envelope and record bodies** are in good shape. The **semantic layer** (apply, reconciliation, invasion/echo tails) is absent. Estimated **~35–40%** of `d_net` wire surface; **~0%** of playsim integration.
+Wire-first codecs for the **core live envelope and record bodies** are in good shape. The **semantic layer** (apply, reconciliation) is absent. Estimated **~40–45%** of `d_net` wire surface; **~0%** of playsim integration.
 
 ---
 
@@ -305,7 +309,7 @@ Wire-first codecs for the **core live envelope and record bodies** are in good s
 | --- | --- | --- |
 | Wire constant drift | High | JSON codegen; expand golden vectors |
 | No cross-language soak | High | Run `pregame_guest_smoke.py` + `netcode_step12` vs C++ |
-| Tail order mismatch | High | Port HCIV/ECHO; full tail walker |
+| Tail order mismatch | Medium | Walker parses co-op/invasion; finish ECHO/HCAV bodies |
 | Missing apply paths | High | Expected until 2e; document boundary |
 | Pregame timeout gaps | Medium | Wire existing constants into pumps |
 | Compression send gap | Medium | Use `SetupPacketCodec.EncodeCompressed` in `PregameWire` |

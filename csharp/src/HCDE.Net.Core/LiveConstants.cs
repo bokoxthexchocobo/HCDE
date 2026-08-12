@@ -114,6 +114,27 @@ public static class LiveConstants
     public const byte SnapshotChecksumCategoryCount = 6;
 
     public static ReadOnlySpan<byte> SnapshotChecksumMagic => "HCKS"u8;
+    public static ReadOnlySpan<byte> CoopDeadSpawnsMagic => "HCDS"u8;
+    public static ReadOnlySpan<byte> InvasionSnapshotMagic => "HCIV"u8;
+    public static ReadOnlySpan<byte> PresentationEchoMagic => "ECHO"u8;
+
+    public const int CoopDeadSpawnsHeaderSize = 8;
+    public const byte CoopDeadSpawnsProtocolVersion = 1;
+
+    public const int InvasionSnapshotHeaderV1Size = 36;
+    public const int InvasionSnapshotHeaderV2Size = 52;
+    public const byte InvasionSnapshotProtocolVersion = 2;
+    public const int InvasionSnapshotPayloadBudgetBytes = 1200;
+
+    public const byte InvasionSnapshotFlagBossWave = 1 << 0;
+    public const byte InvasionSnapshotSpawnFlagUsingFallback = 1 << 0;
+
+    public const byte PresentationEchoProtocolVersion = 8;
+    public const int PresentationEchoMinHeaderSize = 7;
+    public const byte PresentationEchoInvalidInventorySlot = 0xFF;
+
+    public const byte WeaponChangeReadyClass = 1 << 0;
+    public const byte WeaponChangeForceReseat = 1 << 1;
 
     public const ulong CapControlV1 = 1UL << 0;
     public const ulong CapClientInputV5 = 1UL << 1;

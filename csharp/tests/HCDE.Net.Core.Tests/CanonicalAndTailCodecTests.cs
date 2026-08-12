@@ -220,15 +220,94 @@ public class ServerSnapshotTailCodecTests
         var hashes = new uint[] { 1, 2, 3, 4, 5, 6 };
         Assert.Equal(ServerSnapshotTailCodec.MinimalTailWithChecksumSize, ServerSnapshotTailCodec.WriteMinimal(tail, gameTic: 7, hashes));
 
-        Assert.True(ServerSnapshotTailCodec.TryReadMinimal(tail[..ServerSnapshotTailCodec.MinimalTailSize], out _, out _, out _, out _));
-        Assert.True(ServerSnapshotTailCodec.TryReadChecksum(
-            tail[ServerSnapshotTailCodec.MinimalTailSize..],
-            out var gameTic,
-            out var parsedHashes,
-            out var consumed));
-        Assert.Equal(7u, gameTic);
-        Assert.Equal(hashes, parsedHashes);
-        Assert.Equal(LiveConstants.SnapshotChecksumBlockSize, consumed);
+        Assert.True(ServerSnapshotTailWalker.TryWalk(tail, out var sections, out _, out _));
+        Assert.Equal(7u, sections.WorldDelta.GameTic);
+        Assert.True(sections.HasChecksum);
+        Assert.Equal(hashes, sections.ChecksumHashes);
+    }
+}
+
+public class ServerSnapshotTailWalkerTests
+{
+    [Fact]
+    public void CoopShipping_WithDeadSpawns_WalksAllSections()
+    {
+        Span<byte> tail = stackalloc byte[256];
+        var deadSpawns = new uint[] { 10, 20 };
+        var written = ServerSnapshotTailCodec.WriteCoopShipping(
+            tail,
+            gameTic: 99,
+            poses: ReadOnlySpan<PlayerPoseWorldDelta>.Empty,
+            sectors: ReadOnlySpan<SectorWorldDelta>.Empty,
+            actorDeltas: ReadOnlySpan<ActorDeltaRecord>.Empty,
+            coopDeadSpawnIndices: deadSpawns);
+
+        Assert.True(written > ServerSnapshotTailCodec.MinimalTailSize);
+        Assert.True(ServerSnapshotTailWalker.TryWalk(tail[..written], out var sections, out var consumed, out _));
+        Assert.Equal(written, consumed);
+        Assert.Equal(99u, sections.WorldDelta.GameTic);
+        Assert.NotNull(sections.CoopDeadSpawns);
+        Assert.Equal(2, sections.CoopDeadSpawns.Value.RecordCount);
+        Assert.Null(sections.InvasionSnapshot);
+    }
+
+    [Fact]
+    public void InvasionTail_SkipsHcdaOutsideHcivBlock()
+    {
+        Span<byte> tail = stackalloc byte[128];
+        var cursor = 0;
+        cursor += WorldDeltaChunkCodec.WriteEmpty(tail[cursor..], gameTic: 5);
+        var invasionHeader = new InvasionSnapshotHeader(
+            flags: 0,
+            state: 1,
+            stateTics: 3,
+            wave: 2,
+            maxWaves: 10,
+            waveBudget: 8,
+            waveSpawned: 4,
+            waveCleared: 1,
+            activeMonsters: 6);
+        cursor += InvasionSnapshotCodec.WriteEmptyV2(tail[cursor..], invasionHeader);
+        cursor += PresentationEchoCodec.WriteMinimal(tail[cursor..]);
+
+        Assert.True(ServerSnapshotTailWalker.TryWalk(tail[..cursor], out var sections, out var consumed, out _));
+        Assert.Equal(cursor, consumed);
+        Assert.NotNull(sections.InvasionSnapshot);
+        Assert.Equal(2u, sections.InvasionSnapshot.Value.Wave);
+        Assert.Equal(default(ActorDeltasHeader), sections.ActorDelta);
+        Assert.Null(sections.CoopDeadSpawns);
+    }
+}
+
+public class PresentationEchoCodecTests
+{
+    [Fact]
+    public void MinimalHeader_RoundTrip()
+    {
+        Span<byte> chunk = stackalloc byte[LiveConstants.PresentationEchoMinHeaderSize];
+        Assert.Equal(LiveConstants.PresentationEchoMinHeaderSize, PresentationEchoCodec.WriteMinimal(chunk));
+
+        Assert.True(PresentationEchoCodec.TryReadAndSkip(chunk, out var header, out var consumed, out _));
+        Assert.Equal(LiveConstants.PresentationEchoMinHeaderSize, consumed);
+        Assert.Equal(0, header.PlayerCount);
+        Assert.Equal(LiveConstants.PresentationEchoInvalidInventorySlot, header.InventoryPlayerSlot);
+    }
+}
+
+public class CoopDeadSpawnsCodecTests
+{
+    [Fact]
+    public void Indices_RoundTrip()
+    {
+        var indices = new uint[] { 1, 42, 9001 };
+        Span<byte> chunk = stackalloc byte[32];
+        var written = CoopDeadSpawnsCodec.Write(chunk, indices);
+        Assert.True(written > LiveConstants.CoopDeadSpawnsHeaderSize);
+
+        Assert.True(CoopDeadSpawnsCodec.TryRead(chunk[..written], out var header, out var readIndices, out var consumed, out _));
+        Assert.Equal(indices.Length, header.RecordCount);
+        Assert.Equal(written, consumed);
+        Assert.Equal(indices, readIndices);
     }
 }
 

@@ -153,6 +153,19 @@ Phase 2 does **not** include rendering, audio, ZScript VM, or client prediction.
 | Live snapshots with tail | `LiveWire.cs` | authority snapshot send path |
 | Pregame → live host glue | `PregameHost.cs` | `Host_CheckStartGameAcks` + `I_NetDone` handoff |
 
+### Invasion tail, presentation echo, full tail walker (Phase 2c — iteration 7)
+
+| Artifact | Location | C++ reference |
+| --- | --- | --- |
+| HCIV invasion snapshot V2 | `InvasionSnapshotCodec.cs` | `HCDEAppendInvasionSnapshot` |
+| HCDS coop dead spawns | `CoopDeadSpawnsCodec.cs` | `HCDEAppendCoopDeadSpawns` |
+| ECHO presentation echo v8 | `PresentationEchoCodec.cs` | `d_net_diag.cpp` presentation echo |
+| HCAV event skip walker | `AuthorityEventsCodec.cs` | authority event records in snapshot tail |
+| Full tail order walker | `ServerSnapshotTailWalker.cs` | co-op vs invasion post-HCSR tail |
+| Guest tail consumption | `LiveSession.cs` | guest receives HCDW+ tail via walker |
+| Co-op shipping tail writer | `ServerSnapshotTailCodec.WriteCoopShipping` | HCDW + HCDA + HCDS + ECHO + [HCKS] |
+| Minimal tail (HCDW+HCDA+ECHO) | `ServerSnapshotTailCodec.WriteMinimal` | default live snapshot tail |
+
 ### Record bodies + lane headers (Phase 2c — iteration 4)
 
 | Artifact | Location | C++ reference |
@@ -222,8 +235,16 @@ Phase 2 does **not** include rendering, audio, ZScript VM, or client prediction.
 | Legacy DEM stream → event records | `DemEventStreamConverterTests` | Pass |
 | HCDW pose/sector chunk round-trip | `WorldDeltaChunkCodecTests` | Pass |
 | HCSR minimal tail (HCDW + HCDA) | `ServerSnapshotTailCodecTests` | Pass |
+| HCDA single-record round-trip | `ActorDeltasCodecTests` | Pass |
+| HCKS checksum tail block | `ServerSnapshotTailCodecTests` | Pass |
+| Extended DEM payload conversion | `CanonicalEventPayloadCodecTests` | Pass |
+| Pregame start-game ack → live session | `PregameLiveHandoffTests` | Pass |
+| Full snapshot tail walker (co-op + invasion) | `ServerSnapshotTailWalkerTests` | Pass |
+| ECHO minimal header round-trip | `PresentationEchoCodecTests` | Pass |
+| HCDS coop dead spawns round-trip | `CoopDeadSpawnsCodecTests` | Pass |
+| Guest receives tailed server snapshot | `LiveSessionTests` | Pass |
 
-**Test count:** 110 passing (`dotnet test` in `csharp/`).
+**Test count:** 120 passing (`dotnet test` in `csharp/`).
 
 ## Not yet in Phase 2b (sign-off blockers)
 
@@ -272,10 +293,11 @@ Phase 2b is complete when **all** hold:
 
 ## Phase 2c next slice
 
-1. **Remaining DEM payloads** — `HCDEAppendCanonicalEventPayload` cases not yet ported (scripts, CVAR changes, summon, etc.)
-2. **Full HCDA encode/decode** — invasion actor delta V2 records (non-empty blocks)
-3. **Full server snapshot tail** — invasion snapshot, presentation echo, checksum after HCDW/HCDA
-4. **Pregame → live handoff in host** — authority session pump after `HPS_START_GAME` (guest CLI `--live-ticks` exists)
+1. **Remaining DEM payloads** — admin/cheat DEM types not yet in C# enum (summon, slots, bots, etc.)
+2. **HCAV authority event bodies** — full encode/decode (skip-walker exists; bodies not round-tripped)
+3. **Checksum hash computation** — category hash ring buffer (parse-only stub exists)
+4. **Full live loop** — authority pumps tailed snapshots for all acked clients each tick
+5. **Cross-language netcode soak** — `tests/netcode_step12/` against C++ authority/guest
 
 ## Phase 2b next slice
 
@@ -301,6 +323,6 @@ Do **not** port snapshot encode/decode bodies until HCIN/HCSN headers are green.
 
 **Phase 2b C# pregame stack is feature-complete for fresh dedicated joins** — loopback WAITING setup, verification-error replies, start-game, and a cross-language guest CLI/harness are in place. The remaining 2b gate is executing the harness against a real `hcdeserv` build and recording the result.
 
-**Phase 2c iteration 5** adds DEM event payload canonicalization (subset), HCDW V4 pose/sector record bodies, empty HCDA blocks, and minimal HCSR tail append via `ServerSnapshotTailCodec`.
+**Phase 2c iteration 7** adds invasion snapshot (`HCIV`) header + embedded HCAV/HCDA skip path, coop dead spawns (`HCDS`), presentation echo (`ECHO`) minimal header, a full snapshot tail walker for co-op vs invasion order, and guest tail consumption in `LiveGuestSession`.
 
-Next audit checkpoint: **Phase 2c iteration 6** when full HCDA/invasion tail and pregame→live host handoff land.
+Next audit checkpoint: **Phase 2c iteration 8** when HCAV event bodies round-trip and checksum hash computation lands.
