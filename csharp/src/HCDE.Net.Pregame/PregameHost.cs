@@ -388,12 +388,13 @@ public sealed class PregameHost
 
     public void PumpLiveClients(ulong nowMilliseconds, LiveAuthoritySession session)
     {
+        session.AdvanceTick();
         foreach (var client in _clients)
         {
             if (!client.HasStartGameAck)
                 continue;
 
-            session.PumpClient(nowMilliseconds, client.Address, client.ClientSlot);
+            session.SendToClient(nowMilliseconds, client.Address, client.ClientSlot);
         }
     }
 

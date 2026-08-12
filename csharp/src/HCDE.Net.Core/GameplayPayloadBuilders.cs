@@ -146,20 +146,25 @@ public static class GameplayPayloadBuilders
         uint baseConsistency,
         IReadOnlyList<ServerSnapshotPlayerRecord> players,
         bool includeMinimalTail = false,
-        uint gameTic = 0)
+        uint gameTic = 0,
+        ReadOnlySpan<byte> quitterPlayerSlots = default)
     {
-        if (payload.Length < LiveConstants.ServerSnapshotHeaderSize + LiveConstants.ServerSnapshotRecordsHeaderSize)
+        var quitterBytes = (ushort)(quitterPlayerSlots.Length == 0 ? 0 : quitterPlayerSlots.Length + 1);
+        var controlFlags = quitterBytes > 0 ? (byte)NetCommandFlags.Quitters : (byte)0;
+        var bodyOffset = LiveConstants.ServerSnapshotHeaderSize + quitterBytes;
+        var tailSize = includeMinimalTail ? ServerSnapshotTailCodec.MinimalTailSize : 0;
+
+        if (payload.Length < bodyOffset + LiveConstants.ServerSnapshotRecordsHeaderSize + tailSize)
             return 0;
 
-        var tailSize = includeMinimalTail ? ServerSnapshotTailCodec.MinimalTailSize : 0;
-        var bodyWritten = ServerSnapshotBodyCodec.WritePlayerRecords(payload[LiveConstants.ServerSnapshotHeaderSize..], players);
+        var bodyWritten = ServerSnapshotBodyCodec.WritePlayerRecords(payload[bodyOffset..], players);
         if (bodyWritten == 0)
             return 0;
 
         if (includeMinimalTail)
         {
             var tailWritten = ServerSnapshotTailCodec.WriteMinimal(
-                payload[(LiveConstants.ServerSnapshotHeaderSize + bodyWritten)..],
+                payload[(bodyOffset + bodyWritten)..],
                 gameTic);
             if (tailWritten == 0)
                 return 0;
@@ -167,13 +172,23 @@ public static class GameplayPayloadBuilders
             bodyWritten += tailWritten;
         }
 
+        if (quitterBytes > 0)
+        {
+            if (ServerSnapshotQuitterCodec.Write(
+                    payload[LiveConstants.ServerSnapshotHeaderSize..],
+                    quitterPlayerSlots) != quitterBytes)
+            {
+                return 0;
+            }
+        }
+
         var header = new ServerSnapshotHeader(
-            controlFlags: 0,
+            controlFlags: controlFlags,
             routingByte: 0,
             playerCount: playerCount,
             sequenceAck: sequenceAck,
             consistencyAck: consistencyAck,
-            quitterBytes: 0,
+            quitterBytes: quitterBytes,
             baseSequence: baseSequence,
             baseConsistency: baseConsistency,
             commandTics: commandTics,
@@ -184,7 +199,7 @@ public static class GameplayPayloadBuilders
         if (ServerSnapshotHeader.Write(payload, header) == 0)
             return 0;
 
-        return LiveConstants.ServerSnapshotHeaderSize + bodyWritten;
+        return bodyOffset + bodyWritten;
     }
 
     public static int BuildServerSnapshot(

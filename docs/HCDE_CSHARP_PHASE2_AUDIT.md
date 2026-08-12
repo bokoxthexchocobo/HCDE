@@ -184,6 +184,17 @@ Phase 2 does **not** include rendering, audio, ZScript VM, or client prediction.
 | Checksum mix helpers | `SnapshotChecksumMixer.cs` | `MixU32`, `MixDouble`, category hash mixers |
 | Checksum compute session | `SnapshotChecksumSession.cs` | `Net_ChecksumComputeIfStale` + `Net_ChecksumApplyServerChunk` |
 
+### Quitter prefix + multi-client authority pump (Phase 2c — iteration 10)
+
+| Artifact | Location | C++ reference |
+| --- | --- | --- |
+| HCSN quitter prefix | `ServerSnapshotQuitterCodec.cs` | `NCMD_QUITTERS` byte list after HCSN header |
+| Snapshot builder quitters | `GameplayPayloadBuilders.BuildServerSnapshot` | quitter prefix before HCSR body |
+| Guest quitter-aware parse | `LiveGuestSession.TryReceiveServerSnapshot` | skip `quitterBytes` before HCSR |
+| Authority client registry | `LiveAuthorityClientRegistry.cs` | tracked live client slots |
+| Multi-client authority pump | `LiveAuthoritySession.PumpAllClients` | one gametic, all acked clients |
+| Pregame live pump fix | `PregameHost.PumpLiveClients` | single `AdvanceTick` per host pump |
+
 ### Record bodies + lane headers (Phase 2c — iteration 4)
 
 | Artifact | Location | C++ reference |
@@ -266,8 +277,10 @@ Phase 2 does **not** include rendering, audio, ZScript VM, or client prediction.
 | Snapshot checksum ring compare | `SnapshotChecksumRingTests` | Pass |
 | ECHO full inventory/player round-trip | `PresentationEchoFullCodecTests` | Pass |
 | Checksum mixer + compute-if-stale session | `SnapshotChecksumMixerTests` | Pass |
+| HCSN quitter prefix round-trip | `ServerSnapshotQuitterCodecTests` | Pass |
+| Multi-client authority pump | `LiveSessionTests` | Pass |
 
-**Test count:** 131 passing (`dotnet test` in `csharp/`).
+**Test count:** 134 passing (`dotnet test` in `csharp/`).
 
 ## Not yet in Phase 2b (sign-off blockers)
 
@@ -318,8 +331,8 @@ Phase 2b is complete when **all** hold:
 
 1. **Remaining DEM payloads** — admin/cheat DEM types not yet in C# enum (summon, slots, bots, etc.)
 2. **Playsim-backed checksum inputs** — wire `SnapshotChecksumSession` to real world state in Phase 2e
-3. **Full live loop** — authority pumps tailed snapshots for all acked clients each tick
-4. **Cross-language netcode soak** — `tests/netcode_step12/` against C++ authority/guest
+3. **Cross-language netcode soak** — `tests/netcode_step12/` against C++ authority/guest
+4. **Multi-player snapshot bodies** — multi-tic and multi-player HCSR edge cases
 
 ## Phase 2b next slice
 
@@ -345,6 +358,6 @@ Do **not** port snapshot encode/decode bodies until HCIN/HCSN headers are green.
 
 **Phase 2b C# pregame stack is feature-complete for fresh dedicated joins** — loopback WAITING setup, verification-error replies, start-game, and a cross-language guest CLI/harness are in place. The remaining 2b gate is executing the harness against a real `hcdeserv` build and recording the result.
 
-**Phase 2c iteration 9** adds full ECHO v8 inventory/player encode-decode and a testable checksum mixer session (`MixU32`/`MixDouble`, category hash mixers, compute-if-stale, server chunk write).
+**Phase 2c iteration 10** adds HCSN quitter prefix encode/decode, fixes snapshot builder layout for quitters, and implements multi-client authority pump (`PumpAllClients` with shared gametic and client registry).
 
-Next audit checkpoint: **Phase 2c iteration 10** when cross-language netcode soak evidence or full authority live pump lands.
+Next audit checkpoint: **Phase 2c iteration 11** when cross-language netcode soak evidence or multi-player HCSR bodies land.

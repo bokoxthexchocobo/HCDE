@@ -62,4 +62,44 @@ public class LiveSessionTests
         Assert.Null(tailSections.Value.InvasionSnapshot);
         Assert.False(tailSections.Value.HasChecksum);
     }
+
+    [Fact]
+    public void AuthorityPumpAllClients_SendsSameGameTicToTrackedGuests()
+    {
+        var gameId = new byte[] { 0xAA, 0xBB, 0xCC, 0xDD, 0x11, 0x22, 0x33, 0x44 };
+
+        using var authorityTransport = new UdpTransport();
+        using var guest1Transport = new UdpTransport();
+        using var guest2Transport = new UdpTransport();
+        authorityTransport.Bind(0);
+        guest1Transport.Bind(0);
+        guest2Transport.Bind(0);
+        authorityTransport.SetNonBlocking(true);
+        guest1Transport.SetNonBlocking(true);
+        guest2Transport.SetNonBlocking(true);
+
+        var authorityEndpoint = new NetworkEndpoint(System.Net.IPAddress.Loopback, authorityTransport.BoundPort);
+        var guest1Endpoint = new NetworkEndpoint(System.Net.IPAddress.Loopback, guest1Transport.BoundPort);
+        var guest2Endpoint = new NetworkEndpoint(System.Net.IPAddress.Loopback, guest2Transport.BoundPort);
+
+        var authority = new LiveAuthoritySession(authorityTransport, gameId, authoritySlot: 0, maxClients: 4);
+        authority.TrackClient(guest1Endpoint, clientSlot: 1);
+        authority.TrackClient(guest2Endpoint, clientSlot: 2);
+
+        var guest1 = new LiveGuestSession(guest1Transport, gameId, authorityEndpoint, guestPlayerSlot: 1, authoritySlot: 0, maxClients: 4);
+        var guest2 = new LiveGuestSession(guest2Transport, gameId, authorityEndpoint, guestPlayerSlot: 2, authoritySlot: 0, maxClients: 4);
+
+        var now = (ulong)Environment.TickCount64;
+        authority.PumpAllClients(now);
+
+        Assert.Equal(1u, authority.GameTic);
+        Assert.True(guest1.TryReceiveAuthorityControl(out _));
+        Assert.True(guest2.TryReceiveAuthorityControl(out _));
+        Assert.True(guest1.TryReceiveServerSnapshot(out _, out _, out var tail1));
+        Assert.True(guest2.TryReceiveServerSnapshot(out _, out _, out var tail2));
+        Assert.NotNull(tail1);
+        Assert.NotNull(tail2);
+        Assert.Equal(1u, tail1.Value.WorldDelta.GameTic);
+        Assert.Equal(1u, tail2.Value.WorldDelta.GameTic);
+    }
 }

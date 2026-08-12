@@ -73,7 +73,7 @@ public sealed class LiveGuestSession
             return false;
 
         if (!ServerSnapshotBodyCodec.TryReadPlayerRecords(
-                nativePayload.Span[LiveConstants.ServerSnapshotHeaderSize..],
+                nativePayload.Span[(LiveConstants.ServerSnapshotHeaderSize + header.QuitterBytes)..],
                 header.ConsistencyTics,
                 header.CommandTics,
                 out players,
@@ -83,7 +83,8 @@ public sealed class LiveGuestSession
             return false;
         }
 
-        var tail = nativePayload.Span[(LiveConstants.ServerSnapshotHeaderSize + hcsrBytes)..];
+        var bodyStart = LiveConstants.ServerSnapshotHeaderSize + header.QuitterBytes;
+        var tail = nativePayload.Span[(bodyStart + hcsrBytes)..];
         if (tail.Length == 0)
             return true;
 
@@ -106,6 +107,7 @@ public sealed class LiveAuthoritySession
     private readonly LiveControlEndpoint _control;
     private readonly LiveGameplayEndpoint _gameplay;
     private readonly LivePeerRoutingState _routing;
+    private readonly LiveAuthorityClientRegistry _clients = new();
     private byte _roomId;
     private uint _gameTic;
 
@@ -125,15 +127,39 @@ public sealed class LiveAuthoritySession
             usesHcdeService: true);
     }
 
-    public void PumpClient(ulong nowMs, NetworkEndpoint clientEndpoint, int clientSlot, byte roomId = 0)
+    public LiveAuthorityClientRegistry Clients => _clients;
+
+    public uint GameTic => _gameTic;
+
+    public void TrackClient(NetworkEndpoint clientEndpoint, int clientSlot) =>
+        _clients.Track(clientEndpoint, clientSlot);
+
+    public bool UntrackClient(int clientSlot) => _clients.Remove(clientSlot);
+
+    public void AdvanceTick(byte roomId = 0)
     {
         _roomId = roomId;
         _gameTic++;
+    }
 
+    public void PumpClient(ulong nowMs, NetworkEndpoint clientEndpoint, int clientSlot, byte roomId = 0)
+    {
+        AdvanceTick(roomId);
+        SendToClient(nowMs, clientEndpoint, clientSlot);
+    }
+
+    public void PumpAllClients(ulong nowMs, byte roomId = 0)
+    {
+        AdvanceTick(roomId);
+        foreach (var client in _clients.Clients)
+            SendToClient(nowMs, client.Endpoint, client.ClientSlot);
+    }
+
+    public void SendToClient(ulong nowMs, NetworkEndpoint clientEndpoint, int clientSlot)
+    {
         if (_routing.ShouldSendControlTo(clientSlot))
         {
-            _control.TrySendScheduledControl(
-                nowMs,
+            _control.TrySendControl(
                 clientEndpoint,
                 new LiveControlBasePayload(_gameTic, (byte)_routing.AuthoritySlot, (byte)_routing.MaxClients),
                 new LiveControlCapabilities(LiveConstants.DefaultLocalCapabilities));
