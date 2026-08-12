@@ -22,10 +22,13 @@ The full engine is ~640k lines of C++. This is a long-running migration, not a b
 | RCON client | `tools/hcdercon/` | `HCDE.Protocol` + `HCDE.Rcon` | Done |
 | NMS1 packet codec | `src/common/engine/sv_master_nms1.*` | `HCDE.Protocol` | Done |
 | Phase 1 principal audit | — | `docs/HCDE_CSHARP_PHASE1_AUDIT.md` | Done |
+| Full C# audit (all projects) | — | `docs/HCDE_CSHARP_FULL_AUDIT.md` | Done |
+| UDP transport + server query | `common/engine/i_net.cpp` (subset) | `HCDE.Net.Transport` | Done (Phase 2a) |
+| Pregame handshake | `i_net.cpp` PRE_* / HCDE services | `HCDE.Net.Pregame` | Done loopback (Phase 2b) |
+| Live netcode wire codecs | `d_net*.cpp` | `HCDE.Net.Core` | In progress (Phase 2c) |
+| Pregame guest CLI | C++ `-join` guest path | `HCDE.PregameGuest.Cli` | Done (pregame + `--live-ticks`) |
 | Engine core | `src/` | — | Not started |
-| UDP transport + server query | `common/engine/i_net.cpp` (subset) | `HCDE.Net.Transport` | In progress (Phase 2a) |
 | Dedicated server | `hcdeserv` target | — | Planned |
-| Netcode | `d_net*.cpp` | — | Planned |
 | Playsim | `src/playsim/` | — | Planned |
 | Renderer (Vulkan/SW) | `src/rendering/` | — | Keep native or P/Invoke initially |
 | ZScript VM | `src/common/scripting/` | — | Keep native or P/Invoke initially |
@@ -57,11 +60,15 @@ Outputs: `hcdemaster` and `hcdercon`.
 csharp/
   HCDE.sln
   src/
-    HCDE.Protocol/     Shared protocol types and packet codecs
-    HCDE.Master/       hcdemaster — UDP master server
-    HCDE.Rcon/         hcdercon — TCP RCON client
+    HCDE.Protocol/       Shared protocol types and packet codecs
+    HCDE.Master/         hcdemaster — UDP master server
+    HCDE.Rcon/           hcdercon — TCP RCON client
+    HCDE.Net.Transport/  UDP, CRC, server query, net constants
+    HCDE.Net.Pregame/    Pregame host/guest handshake pumps
+    HCDE.Net.Core/       Live protocol codecs (HLIV/HGPL/HCIN/HCSN/…)
+    HCDE.PregameGuest.Cli/  hcde-pregame-guest CLI
   tests/
-    HCDE.*.Tests/      xUnit regression tests
+    HCDE.*.Tests/        xUnit regression tests (115 passing)
 ```
 
 ## Migration phases
