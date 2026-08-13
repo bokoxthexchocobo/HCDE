@@ -2,7 +2,7 @@
 
 **Last updated:** 2026-08-12  
 **Scope:** All code under `csharp/` (7 projects, 6 test suites)  
-**Verification:** `dotnet build` and `dotnet test` in `csharp/` — **160 tests passing**  
+**Verification:** `dotnet build` and `dotnet test` in `csharp/` — **165 tests passing**  
 **Related:** [`HCDE_CSHARP_PHASE1_AUDIT.md`](HCDE_CSHARP_PHASE1_AUDIT.md) · [`HCDE_CSHARP_PHASE2_AUDIT.md`](HCDE_CSHARP_PHASE2_AUDIT.md) · [`HCDE_CSHARP_MIGRATION.md`](HCDE_CSHARP_MIGRATION.md)
 
 ---
@@ -38,9 +38,9 @@ csharp/
     HCDE.Rcon/              2 files,   ~157 LOC   (hcdercon binary)
     HCDE.Net.Transport/    13 files,   ~812 LOC   (UDP, CRC, query, pregame constants)
     HCDE.Net.Pregame/      22 files, ~2,038 LOC   (pregame host/guest pumps)
-    HCDE.Net.Core/         42 files, ~4,100 LOC   (live protocol codecs + session glue)
+    HCDE.Net.Core/         47 files, ~4,450 LOC   (live protocol codecs + session glue)
     HCDE.PregameGuest.Cli/  5 files,   ~207 LOC   (hcde-pregame-guest CLI)
-  tests/                   35 files, 154 tests
+  tests/                   36 files, 160 tests
 ```
 
 ### 2.2 Test matrix
@@ -52,8 +52,8 @@ csharp/
 | `HCDE.Rcon.Tests` | 6 | FNV-1a + loopback auth/ping/status |
 | `HCDE.Net.Transport.Tests` | 10 | Constants, query, HCD3, gameplay CRC |
 | `HCDE.Net.Pregame.Tests` | 32 | CRC, service queue, host/guest loopback |
-| `HCDE.Net.Core.Tests` | 90 | Live headers, bodies, tail, DEM, sessions, apply |
-| **Total** | **154** | |
+| `HCDE.Net.Core.Tests` | 96 | Live headers, bodies, tail, DEM, sessions, apply |
+| **Total** | **160** | |
 
 ### 2.3 Dependency graph
 
@@ -245,6 +245,7 @@ PRE_CONNECT → PRE_CONNECT_ACK → console-player
 | Weapon-slot DEM | `CanonicalWeaponIndexCodec`, slot payloads in `CanonicalEventPayloadCodec` | `DEM_SETSLOT*`, `DEM_ADDSLOT*` |
 | ECHO apply | `PresentationEchoApplySession`, `PresentationEchoWeaponChangePolicy` | inventory reconcile + weapon follow policy |
 | HCAV apply router | `AuthorityEventsApplySession`, `IAuthorityEventSink` | invasion/coop/pickup dispatch table |
+| HCSR/HCIN apply | `ServerSnapshotApplySession`, `ClientInputApplySession` | sequence/consistency + command sinks |
 | Session glue | `LiveWire`, `Live*Endpoint`, `Live*Session`, `LiveAuthorityClientRegistry` | UDP pump + multi-client authority |
 | Routing | `LiveAuthorityRouting`, `LivePeerRoutingState` | `I_ShouldSend/AcceptHCDELive*` |
 
@@ -257,13 +258,13 @@ PRE_CONNECT → PRE_CONNECT_ACK → console-player
 | DEM payloads | ~50 event types incl. weapon slots | No reverse (canonical→legacy) |
 | ECHO presentation | Full inventory/player encode-decode + apply session | Playsim-backed inventory/weapon follow |
 | HCIV invasion | V2 header + embedded skip | Spawn spot payloads, full invasion state |
-| Guest receive | HCSR + tail walker + quitter apply + optional sinks | Full snapshot mutation still absent |
+| Guest receive | HCSR/HCIN apply sessions + tail sinks + quitter tracking | World-delta mutation + playsim command execution |
 
 ### 6.3 Missing entirely
 
 | Feature | C++ location |
 | --- | --- |
-| **Apply paths** (`HCDETryApplyNative*`) | All snapshot/input mutation |
+| **Apply paths** (`HCDETryApplyNative*`) | World-delta mutation + playsim command execution |
 | Lag comp, prediction, rewind hooks | `d_net.cpp` |
 | Lane budget enforcement | `HCDELiveLaneBudget*` |
 | Actor baseline repair handler | `HCDEBeginActorBaselineRepair` |
@@ -282,7 +283,7 @@ C# (walker):     Parses co-op and invasion order; skips HCAV/HCDA inside HCIV
 
 ### 6.5 Phase 2c verdict
 
-Wire-first codecs for the **core live envelope and record bodies** are in good shape. The **semantic layer** (apply, reconciliation) is absent. Estimated **~50–55%** of `d_net` wire surface; **~0%** of playsim integration.
+Wire-first codecs for the **core live envelope and record bodies** are in good shape. **HCSR/HCIN apply sessions** now track sequence/consistency and dispatch commands via injectable sinks; world-delta mutation and playsim execution remain deferred to Phase 2e. Estimated **~55–60%** of `d_net` wire surface; **~0%** of playsim integration.
 
 ---
 

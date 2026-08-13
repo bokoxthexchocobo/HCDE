@@ -19,7 +19,11 @@ public readonly struct ServerSnapshotTailSections
         uint checksumGameTic,
         uint[]? checksumHashes,
         PresentationEchoBlock? echoBlock,
-        AuthorityEventRecord[]? authorityEventRecords = null)
+        AuthorityEventRecord[]? authorityEventRecords = null,
+        IReadOnlyList<PlayerPoseWorldDelta>? worldDeltaPoses = null,
+        IReadOnlyList<SectorWorldDelta>? worldDeltaSectors = null,
+        IReadOnlyList<ActorDeltaRecord>? actorDeltaRecords = null,
+        uint[]? coopDeadSpawnIndices = null)
     {
         WorldDelta = worldDelta;
         ActorDelta = actorDelta;
@@ -32,6 +36,10 @@ public readonly struct ServerSnapshotTailSections
         ChecksumHashes = checksumHashes;
         EchoBlock = echoBlock;
         AuthorityEventRecords = authorityEventRecords;
+        WorldDeltaPoses = worldDeltaPoses;
+        WorldDeltaSectors = worldDeltaSectors;
+        ActorDeltaRecords = actorDeltaRecords;
+        CoopDeadSpawnIndices = coopDeadSpawnIndices;
     }
 
     public ServerWorldDeltaHeader WorldDelta { get; }
@@ -45,6 +53,10 @@ public readonly struct ServerSnapshotTailSections
     public uint[]? ChecksumHashes { get; }
     public PresentationEchoBlock? EchoBlock { get; }
     public AuthorityEventRecord[]? AuthorityEventRecords { get; }
+    public IReadOnlyList<PlayerPoseWorldDelta>? WorldDeltaPoses { get; }
+    public IReadOnlyList<SectorWorldDelta>? WorldDeltaSectors { get; }
+    public IReadOnlyList<ActorDeltaRecord>? ActorDeltaRecords { get; }
+    public uint[]? CoopDeadSpawnIndices { get; }
 }
 
 public static class ServerSnapshotTailWalker
@@ -60,16 +72,18 @@ public static class ServerSnapshotTailWalker
         rejectReason = null;
         var cursor = 0;
 
-        if (!WorldDeltaChunkCodec.TryRead(tail[cursor..], out var worldDelta, out _, out _, out var worldDeltaBytes, out rejectReason))
+        if (!WorldDeltaChunkCodec.TryRead(tail[cursor..], out var worldDelta, out var worldDeltaPoses, out var worldDeltaSectors, out var worldDeltaBytes, out rejectReason))
             return false;
 
         cursor += worldDeltaBytes;
 
         CoopDeadSpawnsHeader? coopDeadSpawns = null;
+        uint[]? coopDeadSpawnIndices = null;
         AuthorityEventsHeader? authorityEvents = null;
         AuthorityEventRecord[]? authorityEventRecords = null;
         InvasionSnapshotHeader? invasionSnapshot = null;
         ActorDeltasHeader actorDelta;
+        IReadOnlyList<ActorDeltaRecord>? actorDeltaRecords = null;
 
         if (cursor < tail.Length && InvasionSnapshotHeader.TryRead(tail[cursor..], out var invasionHeader))
         {
@@ -82,14 +96,14 @@ public static class ServerSnapshotTailWalker
         }
         else
         {
-            if (!ActorDeltasCodec.TryRead(tail[cursor..], out actorDelta, out _, out var actorDeltaBytes, out rejectReason))
+            if (!ActorDeltasCodec.TryRead(tail[cursor..], out actorDelta, out actorDeltaRecords, out var actorDeltaBytes, out rejectReason))
                 return false;
 
             cursor += actorDeltaBytes;
 
             if (cursor < tail.Length && CoopDeadSpawnsHeader.TryRead(tail[cursor..], out var deadSpawnsHeader))
             {
-                if (!CoopDeadSpawnsCodec.TryRead(tail[cursor..], out deadSpawnsHeader, out _, out var deadBytes, out rejectReason))
+                if (!CoopDeadSpawnsCodec.TryRead(tail[cursor..], out deadSpawnsHeader, out coopDeadSpawnIndices, out var deadBytes, out rejectReason))
                     return false;
 
                 coopDeadSpawns = deadSpawnsHeader;
@@ -151,7 +165,11 @@ public static class ServerSnapshotTailWalker
             checksumGameTic,
             checksumHashes,
             echoBlock,
-            authorityEventRecords);
+            authorityEventRecords,
+            worldDeltaPoses,
+            worldDeltaSectors,
+            actorDeltaRecords,
+            coopDeadSpawnIndices);
         bytesConsumed = cursor;
         return true;
     }

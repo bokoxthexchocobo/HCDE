@@ -115,6 +115,15 @@ public static class LiveConstants
     public const ushort ActorDeltaFieldVel = 1 << 5;
     public const ushort ActorDeltaFieldAngles = 1 << 6;
     public const ushort ActorDeltaFieldCoopSpawnIndex = 1 << 7;
+    public const ushort ActorDeltaFieldAll =
+        ActorDeltaFieldCategory
+        | ActorDeltaFieldFlags
+        | ActorDeltaFieldAction
+        | ActorDeltaFieldHealth
+        | ActorDeltaFieldPos
+        | ActorDeltaFieldVel
+        | ActorDeltaFieldAngles
+        | ActorDeltaFieldCoopSpawnIndex;
 
     public const double ActorDeltaPosScale = 16.0;
     public const double ActorDeltaVelScale = 32.0;

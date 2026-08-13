@@ -235,6 +235,16 @@ Phase 2 does **not** include rendering, audio, ZScript VM, or client prediction.
 | Command apply sinks | `IServerSnapshotCommandSink`, `IClientInputCommandSink` | command/event executor hooks |
 | Guest/authority wiring | `LiveGuestSession`, `LiveAuthoritySession` | apply on snapshot/input receive |
 
+### World-delta apply stubs (Phase 2c — iteration 15)
+
+| Artifact | Location | C++ reference |
+| --- | --- | --- |
+| Parsed tail blocks | `ServerSnapshotTailWalker` | HCDW/HCDA/HCDS full records exposed |
+| HCDW apply session | `WorldDeltaApplySession.cs` | `HCDEValidateServerWorldDeltas` pose validation |
+| HCDA apply session | `ActorDeltasApplySession.cs` | `HCDEApplyActorDeltasV2` dispatch |
+| HCDS apply session | `CoopDeadSpawnsApplySession.cs` | `HCDEApplyCoopDeadSpawns` retire indices |
+| Guest tail apply hook | `LiveGuestSession.SetApplySinks` | world/actor/coop sinks on receive |
+
 ### Record bodies + lane headers (Phase 2c — iteration 4)
 
 | Artifact | Location | C++ reference |

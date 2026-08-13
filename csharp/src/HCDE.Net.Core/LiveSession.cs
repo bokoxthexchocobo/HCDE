@@ -14,6 +14,9 @@ public sealed class LiveGuestSession
     private IPresentationEchoApplySink? _echoSink;
     private IAuthorityEventSink? _authoritySink;
     private IServerSnapshotCommandSink? _snapshotCommandSink;
+    private IWorldDeltaApplySink? _worldDeltaSink;
+    private IActorDeltaApplySink? _actorDeltaSink;
+    private ICoopDeadSpawnsApplySink? _coopDeadSpawnsSink;
     private byte _roomId;
     private uint _gameTic;
 
@@ -48,11 +51,17 @@ public sealed class LiveGuestSession
     public void SetApplySinks(
         IPresentationEchoApplySink? echoSink,
         IAuthorityEventSink? authoritySink,
-        IServerSnapshotCommandSink? snapshotCommandSink = null)
+        IServerSnapshotCommandSink? snapshotCommandSink = null,
+        IWorldDeltaApplySink? worldDeltaSink = null,
+        IActorDeltaApplySink? actorDeltaSink = null,
+        ICoopDeadSpawnsApplySink? coopDeadSpawnsSink = null)
     {
         _echoSink = echoSink;
         _authoritySink = authoritySink;
         _snapshotCommandSink = snapshotCommandSink;
+        _worldDeltaSink = worldDeltaSink;
+        _actorDeltaSink = actorDeltaSink;
+        _coopDeadSpawnsSink = coopDeadSpawnsSink;
     }
 
     public void Pump(ulong nowMs, byte roomId = 0)
@@ -151,12 +160,51 @@ public sealed class LiveGuestSession
             return false;
 
         tailSections = sections;
-        TryApplyTailSections(sections);
+        TryApplyTailSections(sections, players);
         return true;
     }
 
-    private void TryApplyTailSections(ServerSnapshotTailSections sections)
+    private void TryApplyTailSections(
+        ServerSnapshotTailSections sections,
+        IReadOnlyList<ServerSnapshotPlayerRecord> players)
     {
+        var sequenceAck = _netRegistry[_routing.ConsolePlayer].SequenceAck;
+
+        if (sections.WorldDeltaPoses is { Count: > 0 } poses)
+        {
+            WorldDeltaApplySession.TryApply(
+                sections.WorldDelta,
+                poses,
+                sections.WorldDeltaSectors ?? Array.Empty<SectorWorldDelta>(),
+                SnapshotPlayerMask.Build(players),
+                _routing.ConsolePlayer,
+                sequenceAck,
+                _worldDeltaSink,
+                out _,
+                out _);
+        }
+
+        if (sections.ActorDeltaRecords is { Count: > 0 })
+        {
+            ActorDeltasApplySession.TryApply(
+                sections.ActorDelta,
+                sections.ActorDeltaRecords,
+                _routing.ConsolePlayer,
+                _actorDeltaSink,
+                out _,
+                out _);
+        }
+
+        if (sections.CoopDeadSpawnIndices is { Length: > 0 } deadSpawns && sections.CoopDeadSpawns is { } deadHeader)
+        {
+            CoopDeadSpawnsApplySession.TryApply(
+                deadHeader,
+                deadSpawns,
+                _coopDeadSpawnsSink,
+                out _,
+                out _);
+        }
+
         if (sections.AuthorityEventRecords is { Length: > 0 } authorityRecords && _authoritySink != null)
         {
             AuthorityEventsApplySession.TryApply(
