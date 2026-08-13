@@ -225,6 +225,16 @@ Phase 2 does **not** include rendering, audio, ZScript VM, or client prediction.
 | Parsed tail blocks | `ServerSnapshotTailWalker` | full ECHO + HCAV records for apply |
 | Guest tail apply hook | `LiveGuestSession.SetApplySinks` | optional sink-driven apply on receive |
 
+### HCSR/HCIN apply sessions (Phase 2c — iteration 14)
+
+| Artifact | Location | C++ reference |
+| --- | --- | --- |
+| Per-player net state | `LivePeerNetRegistry`, `LivePlayerNetState` | `ClientStates[]` sequence/consistency cursors |
+| HCSR apply session | `ServerSnapshotApplySession.cs` | `HCDETryApplyNativeServerSnapshotPayload` |
+| HCIN apply session | `ClientInputApplySession.cs` | `HCDETryApplyNativeClientInputPayload` |
+| Command apply sinks | `IServerSnapshotCommandSink`, `IClientInputCommandSink` | command/event executor hooks |
+| Guest/authority wiring | `LiveGuestSession`, `LiveAuthoritySession` | apply on snapshot/input receive |
+
 ### Record bodies + lane headers (Phase 2c — iteration 4)
 
 | Artifact | Location | C++ reference |
@@ -320,8 +330,11 @@ Phase 2 does **not** include rendering, audio, ZScript VM, or client prediction.
 | ECHO apply session | `PresentationEchoApplySessionTests` | Pass |
 | HCAV replay routing | `AuthorityEventsApplySessionTests` | Pass |
 | Parsed tail ECHO/HCAV blocks | `ServerSnapshotTailWalkerTests` | Pass |
+| HCSR apply session | `ServerSnapshotApplySessionTests` | Pass |
+| HCIN apply session | `ClientInputApplySessionTests` | Pass |
+| Peer net registry reset | `LivePeerNetRegistryTests` | Pass |
 
-**Test count:** 154 passing (`dotnet test` in `csharp/`).
+**Test count:** 160 passing (`dotnet test` in `csharp/`).
 
 ## Not yet in Phase 2b (sign-off blockers)
 
@@ -371,9 +384,9 @@ Phase 2b is complete when **all** hold:
 ## Phase 2c next slice
 
 1. **Cross-language netcode soak** — run `tests/netcode_step12/` against C++ authority/guest when binaries available
-2. **Playsim-backed apply sinks** — wire `IPresentationEchoApplySink` / `IAuthorityEventSink` to real world state in Phase 2e
-3. **Playsim-backed checksum inputs** — wire `SnapshotChecksumSession` to real world state in Phase 2e
-4. **HCSR apply paths** — snapshot mutation stubs beyond quitter disconnect tracking
+2. **Playsim-backed command sinks** — wire `IServerSnapshotCommandSink` / `IClientInputCommandSink` to real tick executor in Phase 2e
+3. **Playsim-backed apply sinks** — wire `IPresentationEchoApplySink` / `IAuthorityEventSink` to real world state in Phase 2e
+4. **World delta apply** — HCDW/HCDA/HCIV mutation stubs beyond wire parse
 
 ## Phase 2b next slice
 
@@ -399,8 +412,8 @@ Do **not** port snapshot encode/decode bodies until HCIN/HCSN headers are green.
 
 **Phase 2b C# pregame stack is feature-complete for fresh dedicated joins** — loopback WAITING setup, verification-error replies, start-game, and a cross-language guest CLI/harness are in place. The remaining 2b gate is executing the harness against a real `hcdeserv` build and recording the result.
 
+**Phase 2c iteration 14** adds HCSR/HCIN apply sessions with per-player sequence/consistency tracking, idempotent snapshot handling, gap-resync policy, and injectable command sinks wired into guest/authority receive paths.
+
 **Phase 2c iteration 13** adds wire-only ECHO apply (inventory reconcile + weapon-follow policy) and HCAV replay routing via injectable sinks, with parsed tail blocks exposed by `ServerSnapshotTailWalker`.
 
-**Phase 2c iteration 12** adds weapon-slot DEM canonicalization (`SetSlot`, `SetSlotPnum`, `AddSlot*`), guest-side quitter apply via `LivePeerSlotTracker`, and authority snapshot send with quitter prefix.
-
-Next audit checkpoint: **Phase 2c iteration 14** when cross-language `netcode_step12` evidence is recorded or playsim-backed apply sinks begin.
+Next audit checkpoint: **Phase 2c iteration 15** when cross-language `netcode_step12` evidence is recorded or world-delta apply stubs begin.

@@ -151,6 +151,11 @@ public static class LiveConstants
 
     public const ushort WeaponStateReady = 1 << 0;
 
+    public const int InputGapResyncTics = 2 * TicRate;
+    public const int SnapshotGapResyncMs = 2000;
+    public const int SnapshotGapImmediateTics = 3 * TicRate;
+    public const int TicRate = 35;
+
     public const ulong CapControlV1 = 1UL << 0;
     public const ulong CapClientInputV5 = 1UL << 1;
     public const ulong CapServerSnapshotV4 = 1UL << 2;

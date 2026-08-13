@@ -2,7 +2,7 @@
 
 **Last updated:** 2026-08-12  
 **Scope:** All code under `csharp/` (7 projects, 6 test suites)  
-**Verification:** `dotnet build` and `dotnet test` in `csharp/` — **154 tests passing**  
+**Verification:** `dotnet build` and `dotnet test` in `csharp/` — **160 tests passing**  
 **Related:** [`HCDE_CSHARP_PHASE1_AUDIT.md`](HCDE_CSHARP_PHASE1_AUDIT.md) · [`HCDE_CSHARP_PHASE2_AUDIT.md`](HCDE_CSHARP_PHASE2_AUDIT.md) · [`HCDE_CSHARP_MIGRATION.md`](HCDE_CSHARP_MIGRATION.md)
 
 ---
@@ -252,12 +252,12 @@ PRE_CONNECT → PRE_CONNECT_ACK → console-player
 
 | Item | What exists | What's missing |
 | --- | --- | --- |
-| HCAV authority events | Full record encode/decode + skip | Apply/replay policy, catchup window selection |
+| HCAV authority events | Full record encode/decode + replay router | Playsim-backed sink implementations |
 | HCKS checksum | Wire parse/write + ring compare + mixer session | Playsim-fed category inputs |
 | DEM payloads | ~50 event types incl. weapon slots | No reverse (canonical→legacy) |
-| ECHO presentation | Full inventory/player encode-decode | Apply/reconcile weapon follow |
+| ECHO presentation | Full inventory/player encode-decode + apply session | Playsim-backed inventory/weapon follow |
 | HCIV invasion | V2 header + embedded skip | Spawn spot payloads, full invasion state |
-| Guest receive | HCSR + tail walker + quitter apply | Full snapshot mutation still absent |
+| Guest receive | HCSR + tail walker + quitter apply + optional sinks | Full snapshot mutation still absent |
 
 ### 6.3 Missing entirely
 

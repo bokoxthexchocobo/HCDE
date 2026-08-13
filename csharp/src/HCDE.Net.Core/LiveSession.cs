@@ -9,9 +9,11 @@ public sealed class LiveGuestSession
     private readonly NetworkEndpoint _authorityEndpoint;
     private readonly LivePeerRoutingState _routing;
     private readonly LivePeerSlotTracker _peerSlots;
+    private readonly LivePeerNetRegistry _netRegistry;
     private readonly PresentationEchoApplySession _echoApply;
     private IPresentationEchoApplySink? _echoSink;
     private IAuthorityEventSink? _authoritySink;
+    private IServerSnapshotCommandSink? _snapshotCommandSink;
     private byte _roomId;
     private uint _gameTic;
 
@@ -33,17 +35,24 @@ public sealed class LiveGuestSession
             isLocalAuthority: false,
             usesHcdeService: true);
         _peerSlots = new LivePeerSlotTracker(maxClients);
+        _netRegistry = new LivePeerNetRegistry(maxClients);
         _echoApply = new PresentationEchoApplySession(maxClients);
     }
 
     public LivePeerSlotTracker PeerSlots => _peerSlots;
 
+    public LivePeerNetRegistry NetRegistry => _netRegistry;
+
     public PresentationEchoApplySession EchoApply => _echoApply;
 
-    public void SetApplySinks(IPresentationEchoApplySink? echoSink, IAuthorityEventSink? authoritySink)
+    public void SetApplySinks(
+        IPresentationEchoApplySink? echoSink,
+        IAuthorityEventSink? authoritySink,
+        IServerSnapshotCommandSink? snapshotCommandSink = null)
     {
         _echoSink = echoSink;
         _authoritySink = authoritySink;
+        _snapshotCommandSink = snapshotCommandSink;
     }
 
     public void Pump(ulong nowMs, byte roomId = 0)
@@ -79,7 +88,7 @@ public sealed class LiveGuestSession
                 GameplayPayloadKind.ServerSnapshot,
                 _roomId,
                 out _,
-                out _,
+                out var envelope,
                 out var nativePayload))
         {
             return false;
@@ -88,20 +97,24 @@ public sealed class LiveGuestSession
         if (!ServerSnapshotHeader.TryRead(nativePayload.Span, out header))
             return false;
 
+        ReadOnlySpan<byte> quitterPlayerSlots = default;
         if (header.QuitterBytes > 0)
         {
             if (!ServerSnapshotQuitterCodec.TryRead(
                     nativePayload.Span[LiveConstants.ServerSnapshotHeaderSize..],
                     header.QuitterBytes,
-                    out var quitterPlayerSlots,
+                    out var quitters,
                     out _))
             {
                 return false;
             }
 
-            _peerSlots.ApplyQuitterSlots(quitterPlayerSlots);
+            quitterPlayerSlots = quitters;
             foreach (var slot in quitterPlayerSlots)
+            {
                 _echoApply.ResetClient(slot);
+                _netRegistry.ResetClient(slot);
+            }
         }
 
         if (!ServerSnapshotBodyCodec.TryReadPlayerRecords(
@@ -114,6 +127,20 @@ public sealed class LiveGuestSession
         {
             return false;
         }
+
+        ServerSnapshotApplySession.TryApply(
+            header,
+            quitterPlayerSlots,
+            players,
+            envelope.GameTic,
+            _routing.ConsolePlayer,
+            _routing,
+            _netRegistry,
+            _peerSlots,
+            _snapshotCommandSink,
+            (ulong)Environment.TickCount64,
+            out _,
+            out _);
 
         var bodyStart = LiveConstants.ServerSnapshotHeaderSize + header.QuitterBytes;
         var tail = nativePayload.Span[(bodyStart + hcsrBytes)..];
@@ -163,6 +190,8 @@ public sealed class LiveAuthoritySession
     private readonly LiveGameplayEndpoint _gameplay;
     private readonly LivePeerRoutingState _routing;
     private readonly LiveAuthorityClientRegistry _clients = new();
+    private readonly LivePeerNetRegistry _netRegistry;
+    private IClientInputCommandSink? _clientInputCommandSink;
     private byte _roomId;
     private uint _gameTic;
 
@@ -180,7 +209,12 @@ public sealed class LiveAuthoritySession
             authoritySlot: authoritySlot,
             isLocalAuthority: true,
             usesHcdeService: true);
+        _netRegistry = new LivePeerNetRegistry(maxClients);
     }
+
+    public LivePeerNetRegistry NetRegistry => _netRegistry;
+
+    public void SetClientInputSink(IClientInputCommandSink? sink) => _clientInputCommandSink = sink;
 
     public LiveAuthorityClientRegistry Clients => _clients;
 
@@ -239,7 +273,7 @@ public sealed class LiveAuthoritySession
                     GameplayPayloadKind.ClientInputs,
                     _roomId,
                     out var liveHeader,
-                    out _,
+                    out var envelope,
                     out var nativePayload))
             {
                 continue;
@@ -251,17 +285,45 @@ public sealed class LiveAuthoritySession
             if (!ClientInputHeader.TryRead(nativePayload.Span, out header))
                 continue;
 
-            if (ClientInputBodyCodec.TryRead(
+            if (!ClientInputBodyCodec.TryRead(
                     nativePayload.Span[LiveConstants.ClientInputHeaderSize..],
                     header.ConsistencyTics,
                     header.CommandTics,
                     out players,
                     out _))
             {
-                return true;
+                continue;
             }
+
+            var clientSlot = FindClientSlot(clientEndpoint);
+            if (clientSlot >= 0)
+            {
+                ClientInputApplySession.TryApply(
+                    header,
+                    players,
+                    clientSlot,
+                    _routing,
+                    _netRegistry,
+                    _clientInputCommandSink,
+                    (int)envelope.GameTic,
+                    out _,
+                    out _);
+            }
+
+            return true;
         }
 
         return false;
+    }
+
+    private int FindClientSlot(NetworkEndpoint clientEndpoint)
+    {
+        foreach (var client in _clients.Clients)
+        {
+            if (client.Endpoint.Equals(clientEndpoint))
+                return client.ClientSlot;
+        }
+
+        return -1;
     }
 }
