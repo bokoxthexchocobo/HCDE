@@ -24,7 +24,7 @@ When a local C++ `hcdeserv` build and IWAD are available, run the existing
 pregame cross-language harness:
 
 ```bash
-python3 tests/pregame_validation/pregame_guest_smoke.py \
+python3 csharp/validation/pregame/pregame_guest_smoke.py \
   --server /path/to/hcdeserv \
   --iwad /path/to/DOOM2.WAD
 ```

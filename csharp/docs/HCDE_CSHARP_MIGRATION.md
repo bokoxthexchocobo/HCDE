@@ -1,6 +1,6 @@
 # HCDE C# migration plan
 
-This document describes how HCDE moves from its UzDoom-derived C++/C codebase to a uniform C# engine. It complements [`csharp/README.md`](../csharp/README.md).
+This document describes how HCDE moves from its UzDoom-derived C++/C codebase to a uniform C# engine. It complements [`README.md`](../README.md).
 
 ## Scope reality check
 
@@ -42,7 +42,7 @@ The UzDoom-derived C++ tree remains buildable until each subsystem has a tested 
 - `HCDE.Master` — `hcdemaster` UDP master server
 - `HCDE.Rcon` — `hcdercon` TCP RCON client
 - xUnit tests for packet codecs, NMS1 golden vectors, RCON loopback integration, and master server round-trip
-- Principal audit: [`docs/HCDE_CSHARP_PHASE1_AUDIT.md`](HCDE_CSHARP_PHASE1_AUDIT.md)
+- Principal audit: [`HCDE_CSHARP_PHASE1_AUDIT.md`](HCDE_CSHARP_PHASE1_AUDIT.md)
 
 **Follow-ups (non-blocking):**
 
@@ -57,7 +57,7 @@ The UzDoom-derived C++ tree remains buildable until each subsystem has a tested 
 **Phase 2a delivered (transport):**
 
 - `HCDE.Net.Transport` — UDP sockets, net/pregame constants, server query codec/client
-- Principal audit: [`docs/HCDE_CSHARP_PHASE2_AUDIT.md`](HCDE_CSHARP_PHASE2_AUDIT.md)
+- Principal audit: [`HCDE_CSHARP_PHASE2_AUDIT.md`](HCDE_CSHARP_PHASE2_AUDIT.md)
 
 **Order (remaining):**
 

@@ -3,7 +3,7 @@
 **Last updated:** 2026-08-11  
 **Status:** In progress — Phase **2c** live protocol codecs (iteration 1) landed. Phase **2b** verification errors, start-game, and cross-language harness complete.  
 **Prerequisite:** [Phase 1 audit](HCDE_CSHARP_PHASE1_AUDIT.md) (complete)  
-**Related:** [`docs/HCDE_CSHARP_MIGRATION.md`](HCDE_CSHARP_MIGRATION.md) · [`docs/HCDE_NETCODE.md`](HCDE_NETCODE.md)
+**Related:** [`HCDE_CSHARP_MIGRATION.md`](HCDE_CSHARP_MIGRATION.md) · [`HCDE_NETCODE.md`](../../docs/HCDE_NETCODE.md)
 
 ## What Phase 2 means
 
@@ -92,7 +92,7 @@ Phase 2 does **not** include rendering, audio, ZScript VM, or client prediction.
 | Host verification replies | `PregameHost.SendVerificationError` | `PRE_VERIFICATION_ERROR` on failed `Net_VerifyEngine` |
 | Start-game service | `PregameHost.StartGame`, guest `HPS_START_GAME` handler | `HPS_START_GAME` / `HPS_START_GAME_ACK` |
 | Guest CLI | `HCDE.PregameGuest.Cli` → `hcde-pregame-guest` | C++ `-join` guest path (pregame only) |
-| Cross-language harness | `tests/pregame_validation/pregame_guest_smoke.py` | manual `hcdeserv` + C# guest soak |
+| Cross-language harness | `csharp/validation/pregame/pregame_guest_smoke.py` | manual `hcdeserv` + C# guest soak |
 
 ### Live netcode wire codecs (Phase 2c — iteration 1)
 
@@ -343,8 +343,12 @@ Phase 2 does **not** include rendering, audio, ZScript VM, or client prediction.
 | HCSR apply session | `ServerSnapshotApplySessionTests` | Pass |
 | HCIN apply session | `ClientInputApplySessionTests` | Pass |
 | Peer net registry reset | `LivePeerNetRegistryTests` | Pass |
+| World-delta apply session | `WorldDeltaApplySessionTests` | Pass |
+| Actor delta apply session | `ActorDeltasApplySessionTests` | Pass |
+| Coop dead spawns apply | `CoopDeadSpawnsApplySessionTests` | Pass |
+| Parsed tail world/actor blocks | `ServerSnapshotTailParsedBlocksTests` | Pass |
 
-**Test count:** 160 passing (`dotnet test` in `csharp/`).
+**Test count:** 165 passing (`dotnet test` in `csharp/`).
 
 ## Not yet in Phase 2b (sign-off blockers)
 
@@ -394,13 +398,13 @@ Phase 2b is complete when **all** hold:
 ## Phase 2c next slice
 
 1. **Cross-language netcode soak** — run `tests/netcode_step12/` against C++ authority/guest when binaries available
-2. **Playsim-backed command sinks** — wire `IServerSnapshotCommandSink` / `IClientInputCommandSink` to real tick executor in Phase 2e
-3. **Playsim-backed apply sinks** — wire `IPresentationEchoApplySink` / `IAuthorityEventSink` to real world state in Phase 2e
-4. **World delta apply** — HCDW/HCDA/HCIV mutation stubs beyond wire parse
+2. **Playsim-backed world sinks** — wire `IWorldDeltaApplySink` / `IActorDeltaApplySink` to real pose/actor mutation in Phase 2e
+3. **HCIV invasion apply** — invasion snapshot state + embedded HCAV/HCDA replay
+4. **Checksum playsim inputs** — wire `SnapshotChecksumSession` to real world state in Phase 2e
 
 ## Phase 2b next slice
 
-1. **Run cross-language soak** — `python3 tests/pregame_validation/pregame_guest_smoke.py` with local `hcdeserv` + IWAD CRCs
+1. **Run cross-language soak** — `python3 csharp/validation/pregame/pregame_guest_smoke.py` with local `hcdeserv` + IWAD CRCs
 2. **Bootstrap/resync services** — runtime late-join path
 
 Do **not** port snapshot encode/decode bodies until HCIN/HCSN headers are green.
@@ -422,8 +426,8 @@ Do **not** port snapshot encode/decode bodies until HCIN/HCSN headers are green.
 
 **Phase 2b C# pregame stack is feature-complete for fresh dedicated joins** — loopback WAITING setup, verification-error replies, start-game, and a cross-language guest CLI/harness are in place. The remaining 2b gate is executing the harness against a real `hcdeserv` build and recording the result.
 
+**Phase 2c iteration 15** adds world-delta apply stubs (HCDW pose validation, HCDA record routing, HCDS spawn retire) with parsed tail blocks and injectable sinks wired into guest receive.
+
 **Phase 2c iteration 14** adds HCSR/HCIN apply sessions with per-player sequence/consistency tracking, idempotent snapshot handling, gap-resync policy, and injectable command sinks wired into guest/authority receive paths.
 
-**Phase 2c iteration 13** adds wire-only ECHO apply (inventory reconcile + weapon-follow policy) and HCAV replay routing via injectable sinks, with parsed tail blocks exposed by `ServerSnapshotTailWalker`.
-
-Next audit checkpoint: **Phase 2c iteration 15** when cross-language `netcode_step12` evidence is recorded or world-delta apply stubs begin.
+Next audit checkpoint: **Phase 2c iteration 16** when cross-language `netcode_step12` evidence is recorded or HCIV invasion apply begins.

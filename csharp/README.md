@@ -59,6 +59,10 @@ Outputs: `hcdemaster` and `hcdercon`.
 ```
 csharp/
   HCDE.sln
+  docs/                  Migration plan and principal audits
+  validation/
+    pregame/             Cross-language pregame guest smoke harness
+    netcode/             Managed wire codec validation notes
   src/
     HCDE.Protocol/       Shared protocol types and packet codecs
     HCDE.Master/         hcdemaster — UDP master server
@@ -78,7 +82,7 @@ csharp/
 - Protocol constants and binary codecs (legacy + NMS1)
 - `hcdemaster` and `hcdercon`
 - Unit tests proving wire compatibility with the C++ implementations
-- Principal audit: [`docs/HCDE_CSHARP_PHASE1_AUDIT.md`](../docs/HCDE_CSHARP_PHASE1_AUDIT.md)
+- Principal audit: [`docs/HCDE_CSHARP_PHASE1_AUDIT.md`](docs/HCDE_CSHARP_PHASE1_AUDIT.md)
 
 ### Phase 2 — Dedicated server shell (in progress)
 
@@ -87,7 +91,7 @@ csharp/
 - Snapshot/command netcode (`d_net*.cpp`) — server-authoritative path first
 - Minimal playsim tick loop without rendering
 - Map loader and gamedata parsers (DEHACKED, MAPINFO, UDMF)
-- Principal audit: [`docs/HCDE_CSHARP_PHASE2_AUDIT.md`](../docs/HCDE_CSHARP_PHASE2_AUDIT.md)
+- Principal audit: [`docs/HCDE_CSHARP_PHASE2_AUDIT.md`](docs/HCDE_CSHARP_PHASE2_AUDIT.md)
 
 ### Phase 3 — Full simulation
 
@@ -121,6 +125,6 @@ The C# `HCDE.Protocol` types mirror `protocol/hcde_master_protocol.json`. When p
 
 ## Regression safety
 
-Reuse existing Python harnesses under `tests/` for netcode and compatibility. Add C# integration tests beside them as each subsystem ports.
+Reuse existing Python harnesses under `tests/` for native netcode stress. C# cross-language and wire validation live under `validation/`. Add C# integration tests beside them as each subsystem ports.
 
-See also: [`docs/HCDE_CSHARP_MIGRATION.md`](../docs/HCDE_CSHARP_MIGRATION.md) for the detailed engineering plan.
+See also: [`docs/HCDE_CSHARP_MIGRATION.md`](docs/HCDE_CSHARP_MIGRATION.md) for the detailed engineering plan.

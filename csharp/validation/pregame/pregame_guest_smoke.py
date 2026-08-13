@@ -13,7 +13,7 @@ from pathlib import Path
 
 
 def repo_root() -> Path:
-    return Path(__file__).resolve().parents[2]
+    return Path(__file__).resolve().parents[3]
 
 
 def find_guest_cli(root: Path) -> list[str]:

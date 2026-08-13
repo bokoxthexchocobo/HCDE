@@ -16,7 +16,7 @@ dotnet run --project csharp/src/HCDE.PregameGuest.Cli -- \
 Requires a built `hcdeserv` and IWAD on disk. Skips gracefully when binaries are missing.
 
 ```bash
-python3 tests/pregame_validation/pregame_guest_smoke.py \
+python3 csharp/validation/pregame/pregame_guest_smoke.py \
   --server build/hcdeserv \
   --iwad /path/to/doom2.wad \
   --wad-crc <iwad-crc>

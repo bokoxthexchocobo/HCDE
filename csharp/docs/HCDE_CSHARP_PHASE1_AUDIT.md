@@ -2,7 +2,7 @@
 
 **Last updated:** 2026-08-10  
 **Status:** Complete (tools + protocol layer). Ready to begin Phase 2 (dedicated server).  
-**Related:** [`docs/HCDE_CSHARP_MIGRATION.md`](HCDE_CSHARP_MIGRATION.md) · [`csharp/README.md`](../csharp/README.md) · PR [#66](https://github.com/bokoxthexocobo/HCDE/pull/66)
+**Related:** [`HCDE_CSHARP_MIGRATION.md`](HCDE_CSHARP_MIGRATION.md) · [`README.md`](../README.md) · PR [#66](https://github.com/bokoxthexocobo/HCDE/pull/66)
 
 ## What Phase 1 means
 
@@ -34,7 +34,7 @@ Phase 1 does **not** touch the UzDoom-derived engine (`src/`), rendering, playsi
 | Master server | `HCDE.Master` → `hcdemaster` | `tools/hcdemaster/hcdemaster.cpp` | UDP, TTL prune, list query |
 | RCON client | `HCDE.Rcon` → `hcdercon` | `tools/hcdercon/hcdercon.cpp` | Nonce auth, `ping`/`status` |
 | Unit tests | `csharp/tests/HCDE.*.Tests/` | — | 22 tests at Phase 1 completion |
-| Migration plan | `docs/HCDE_CSHARP_MIGRATION.md` | — | Phases 2–4 defined |
+| Migration plan | `csharp/docs/HCDE_CSHARP_MIGRATION.md` | — | Phases 2–4 defined |
 
 ## Verification matrix
 
@@ -112,4 +112,4 @@ Do **not** begin renderer, ZScript VM, or ZMusic ports in Phase 2.
 
 **Phase 1 is complete** for the agreed scope: protocol layer, standalone tools, tests, and documentation. The C# tree is a valid foundation for Phase 2. The engine core remains C++; no production binary switch has occurred yet.
 
-Next principal audit: **`docs/HCDE_CSHARP_PHASE2_AUDIT.md`** (to be created when Phase 2 scoping begins).
+Next principal audit: **`csharp/docs/HCDE_CSHARP_PHASE2_AUDIT.md`** (to be created when Phase 2 scoping begins).

@@ -38,9 +38,9 @@ csharp/
     HCDE.Rcon/              2 files,   ~157 LOC   (hcdercon binary)
     HCDE.Net.Transport/    13 files,   ~812 LOC   (UDP, CRC, query, pregame constants)
     HCDE.Net.Pregame/      22 files, ~2,038 LOC   (pregame host/guest pumps)
-    HCDE.Net.Core/         47 files, ~4,450 LOC   (live protocol codecs + session glue)
+    HCDE.Net.Core/         52 files, ~4,750 LOC   (live protocol codecs + session glue)
     HCDE.PregameGuest.Cli/  5 files,   ~207 LOC   (hcde-pregame-guest CLI)
-  tests/                   36 files, 160 tests
+  tests/                   37 files, 165 tests
 ```
 
 ### 2.2 Test matrix
@@ -52,8 +52,8 @@ csharp/
 | `HCDE.Rcon.Tests` | 6 | FNV-1a + loopback auth/ping/status |
 | `HCDE.Net.Transport.Tests` | 10 | Constants, query, HCD3, gameplay CRC |
 | `HCDE.Net.Pregame.Tests` | 32 | CRC, service queue, host/guest loopback |
-| `HCDE.Net.Core.Tests` | 96 | Live headers, bodies, tail, DEM, sessions, apply |
-| **Total** | **160** | |
+| `HCDE.Net.Core.Tests` | 101 | Live headers, bodies, tail, DEM, sessions, apply |
+| **Total** | **165** | |
 
 ### 2.3 Dependency graph
 
@@ -246,6 +246,7 @@ PRE_CONNECT → PRE_CONNECT_ACK → console-player
 | ECHO apply | `PresentationEchoApplySession`, `PresentationEchoWeaponChangePolicy` | inventory reconcile + weapon follow policy |
 | HCAV apply router | `AuthorityEventsApplySession`, `IAuthorityEventSink` | invasion/coop/pickup dispatch table |
 | HCSR/HCIN apply | `ServerSnapshotApplySession`, `ClientInputApplySession` | sequence/consistency + command sinks |
+| World-delta apply | `WorldDeltaApplySession`, `ActorDeltasApplySession`, `CoopDeadSpawnsApplySession` | HCDW/HCDA/HCDS validation + sinks |
 | Session glue | `LiveWire`, `Live*Endpoint`, `Live*Session`, `LiveAuthorityClientRegistry` | UDP pump + multi-client authority |
 | Routing | `LiveAuthorityRouting`, `LivePeerRoutingState` | `I_ShouldSend/AcceptHCDELive*` |
 
@@ -258,7 +259,7 @@ PRE_CONNECT → PRE_CONNECT_ACK → console-player
 | DEM payloads | ~50 event types incl. weapon slots | No reverse (canonical→legacy) |
 | ECHO presentation | Full inventory/player encode-decode + apply session | Playsim-backed inventory/weapon follow |
 | HCIV invasion | V2 header + embedded skip | Spawn spot payloads, full invasion state |
-| Guest receive | HCSR/HCIN apply sessions + tail sinks + quitter tracking | World-delta mutation + playsim command execution |
+| Guest receive | HCSR/HCIN apply + tail sinks (ECHO/HCAV/HCDW/HCDA/HCDS) | Playsim-backed mutation + HCIV invasion apply |
 
 ### 6.3 Missing entirely
 
