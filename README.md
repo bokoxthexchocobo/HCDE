@@ -38,6 +38,8 @@ These live beside the code and are the source of truth for architecture and audi
 | [`docs/HCDE_RCON.md`](docs/HCDE_RCON.md) | RCON transport and `hcdercon` usage |
 | [`docs/HCDE_ROADMAP.md`](docs/HCDE_ROADMAP.md) | Kanban mirror + verified completion status |
 | [`tests/netcode_step12/README.md`](tests/netcode_step12/README.md) | Repeatable netcode stress harness |
+| [`csharp/README.md`](csharp/README.md) | C# migration overview, build, and project layout |
+| [`csharp/docs/HCDE_CSHARP_MIGRATION.md`](csharp/docs/HCDE_CSHARP_MIGRATION.md) | C# migration engineering plan |
 
 ## What ships in this repo
 
@@ -49,13 +51,50 @@ These live beside the code and are the source of truth for architecture and audi
 
 Master protocol constants live in `protocol/` so engine, launcher, and master stay separate (`protocol/hcde_master_protocol.json`, `protocol/hcde_master_protocol.h`).
 
-## C# migration (in progress)
+## C# migration
 
-HCDE is being ported to C# incrementally. Phase 1 (protocol + tools) is complete; Phase 2 (dedicated server / net transport) is in progress. See [`csharp/README.md`](csharp/README.md) and the audits under [`csharp/docs/`](csharp/docs/).
+HCDE is being ported to C# incrementally. All migration code, docs, and validation harnesses live under [`csharp/`](csharp/).
+
+| Phase | Scope | Status |
+| --- | --- | --- |
+| 1 | Protocol codecs, `hcdemaster`, `hcdercon` | Complete |
+| 2a | UDP transport, server query | Complete |
+| 2b | Pregame handshake, guest CLI | Complete (loopback + cross-language harness) |
+| 2c | Live netcode wire codecs + apply stubs | In progress |
+| 3+ | Playsim, dedicated server, client | Planned |
+
+**Build and test:**
 
 ```bash
 cd csharp && dotnet build && dotnet test
 ```
+
+**Docs** (under `csharp/docs/`):
+
+| Doc | Topic |
+| --- | --- |
+| [`HCDE_CSHARP_MIGRATION.md`](csharp/docs/HCDE_CSHARP_MIGRATION.md) | Engineering plan and phase breakdown |
+| [`HCDE_CSHARP_PHASE1_AUDIT.md`](csharp/docs/HCDE_CSHARP_PHASE1_AUDIT.md) | Phase 1 principal audit |
+| [`HCDE_CSHARP_PHASE2_AUDIT.md`](csharp/docs/HCDE_CSHARP_PHASE2_AUDIT.md) | Phase 2 principal audit |
+| [`HCDE_CSHARP_FULL_AUDIT.md`](csharp/docs/HCDE_CSHARP_FULL_AUDIT.md) | Full codebase audit (all C# projects) |
+
+**Validation** (under `csharp/validation/`):
+
+| Harness | Purpose |
+| --- | --- |
+| [`validation/pregame/`](csharp/validation/pregame/) | C# guest vs C++ `hcdeserv` pregame smoke test |
+| [`validation/netcode/`](csharp/validation/netcode/) | Managed wire codec validation notes |
+
+Cross-language pregame soak (requires a built `hcdeserv` and IWAD):
+
+```bash
+python3 csharp/validation/pregame/pregame_guest_smoke.py \
+  --server build/hcdeserv \
+  --iwad /path/to/doom2.wad \
+  --wad-crc <iwad-crc>
+```
+
+See [`csharp/README.md`](csharp/README.md) for the full solution layout and migration status.
 
 ## Quick build
 
@@ -83,6 +122,7 @@ python tests/netcode_step12/netcode_step12_stress.py --dry-run
 
 ## Recent updates
 
+- **C# migration:** incremental server-first rewrite under [`csharp/`](csharp/) — Phase 1 tools/protocol complete, Phase 2 net transport and live wire codecs in progress (165 xUnit tests).
 - **Netcode hardening:** late-join and rejoin handshake fixes, dedicated-server join setup no longer drops HCDE clients during pregame, co-op monster authority replication (#49), armor replication on dedicated clients (#51), and a crash fix when psprite desync logging fired on player death (`net_echo_debug`).
 - **Renderer stack:** Vulkan is the default when supported, with automatic fallback to desktop OpenGL, then software rendering with the NanoBSP loader path (`hcde_nanobsp_loader`). The legacy OpenGL ES backend was removed.
 - **Single-player startup:** a real "HCDE is loading..." window during ZDL command-line resolution, IWAD/mod scanning, compat patching, and archive mounting.
@@ -107,12 +147,13 @@ See [`docs/HCDE_ROADMAP.md`](docs/HCDE_ROADMAP.md) for per-item detail and remai
 | Path | Contents |
 | --- | --- |
 | `src/` | Engine, playsim, and networking (`d_net.*`, `i_net.cpp`, invasion, rewind, RCON) |
+| `csharp/` | C# migration — solution, docs, validation harnesses, xUnit tests |
 | `protocol/` | Master protocol schema |
 | `tools/hcdemaster/` | Standalone master server source |
 | `wadsrc*` | Game resources and compat packs |
 | `wiki/` | Source for the GitHub Wiki |
-| `docs/` | Architecture, operator guides, and audit notes |
-| `tests/` | Validation harnesses (`netcode_step12`, invasion, ID24, etc.) |
+| `docs/` | Architecture, operator guides, and audit notes (C++ engine) |
+| `tests/` | Native validation harnesses (`netcode_step12`, invasion, ID24, etc.) |
 
 ## Licensing
 
@@ -124,4 +165,4 @@ HCDE is **GPL-3.0-or-later** ([`LICENSE`](LICENSE)). Branding and some asset tre
 
 ## Tech stack
 
-CMake (≥ 3.16), C++20, Python 3; bundled libraries include ZMusic, ZVulkan, ZWidget, Abseil, WebP, LZMA, and others under `libraries/`. Per-component licenses: [`docs/licenses/`](docs/licenses/).
+CMake (≥ 3.16), C++20, Python 3, .NET 8 (C# migration); bundled libraries include ZMusic, ZVulkan, ZWidget, Abseil, WebP, LZMA, and others under `libraries/`. Per-component licenses: [`docs/licenses/`](docs/licenses/).

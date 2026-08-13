@@ -25,7 +25,7 @@ The full engine is ~640k lines of C++. This is a long-running migration, not a b
 | Full C# audit (all projects) | — | `docs/HCDE_CSHARP_FULL_AUDIT.md` | Done |
 | UDP transport + server query | `common/engine/i_net.cpp` (subset) | `HCDE.Net.Transport` | Done (Phase 2a) |
 | Pregame handshake | `i_net.cpp` PRE_* / HCDE services | `HCDE.Net.Pregame` | Done loopback (Phase 2b) |
-| Live netcode wire codecs | `d_net*.cpp` | `HCDE.Net.Core` | In progress (Phase 2c) |
+| Live netcode wire codecs | `d_net*.cpp` | `HCDE.Net.Core` | In progress (Phase 2c wire + apply stubs) |
 | Pregame guest CLI | C++ `-join` guest path | `HCDE.PregameGuest.Cli` | Done (pregame + `--live-ticks`) |
 | Engine core | `src/` | — | Not started |
 | Dedicated server | `hcdeserv` target | — | Planned |
@@ -53,6 +53,35 @@ dotnet publish src/HCDE.Rcon/HCDE.Rcon.csproj -c Release -o ../bin/csharp
 ```
 
 Outputs: `hcdemaster` and `hcdercon`.
+
+## Documentation
+
+| Doc | Topic |
+| --- | --- |
+| [`docs/HCDE_CSHARP_MIGRATION.md`](docs/HCDE_CSHARP_MIGRATION.md) | Engineering plan and phase breakdown |
+| [`docs/HCDE_CSHARP_PHASE1_AUDIT.md`](docs/HCDE_CSHARP_PHASE1_AUDIT.md) | Phase 1 principal audit (tools + protocol) |
+| [`docs/HCDE_CSHARP_PHASE2_AUDIT.md`](docs/HCDE_CSHARP_PHASE2_AUDIT.md) | Phase 2 principal audit (dedicated server path) |
+| [`docs/HCDE_CSHARP_FULL_AUDIT.md`](docs/HCDE_CSHARP_FULL_AUDIT.md) | Full codebase audit (all projects) |
+
+## Validation
+
+Managed wire compatibility is gated by `dotnet test` (165 tests). Cross-language checks live under `validation/`:
+
+| Harness | Purpose |
+| --- | --- |
+| [`validation/pregame/`](validation/pregame/) | C# pregame guest vs C++ `hcdeserv` smoke test |
+| [`validation/netcode/`](validation/netcode/) | Wire codec validation notes and optional soak pointers |
+
+Pregame cross-language soak (requires built `hcdeserv` and IWAD; skips gracefully when missing):
+
+```bash
+python3 csharp/validation/pregame/pregame_guest_smoke.py \
+  --server /path/to/hcdeserv \
+  --iwad /path/to/doom2.wad \
+  --wad-crc <iwad-crc>
+```
+
+Full native live gameplay stress remains under [`tests/netcode_step12/`](../tests/netcode_step12/). The xUnit suite also includes `NetcodeCrossLanguageTests`, which skips unless `HCDE_HCDESERV_PATH` and `HCDE_IWAD_PATH` are set.
 
 ## Solution layout
 
@@ -86,10 +115,10 @@ csharp/
 
 ### Phase 2 — Dedicated server shell (in progress)
 
-- `HCDE.Net.Transport` — UDP sockets, net constants, server query client (Phase 2a)
-- UDP transport (`i_net.cpp` server path)
-- Snapshot/command netcode (`d_net*.cpp`) — server-authoritative path first
-- Minimal playsim tick loop without rendering
+- `HCDE.Net.Transport` — UDP sockets, net constants, server query client (Phase 2a, done)
+- `HCDE.Net.Pregame` — pregame host/guest handshake pumps (Phase 2b, done loopback)
+- `HCDE.Net.Core` — live wire codecs and apply-session stubs (Phase 2c, in progress)
+- Minimal playsim tick loop without rendering (Phase 2e, planned)
 - Map loader and gamedata parsers (DEHACKED, MAPINFO, UDMF)
 - Principal audit: [`docs/HCDE_CSHARP_PHASE2_AUDIT.md`](docs/HCDE_CSHARP_PHASE2_AUDIT.md)
 
