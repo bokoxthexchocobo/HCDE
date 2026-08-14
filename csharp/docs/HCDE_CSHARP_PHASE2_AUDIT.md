@@ -254,6 +254,14 @@ Phase 2 does **not** include rendering, audio, ZScript VM, or client prediction.
 | HCIV apply session | `InvasionSnapshotApplySession.cs` | `HCDEApplyInvasionSnapshot` mirror + embedded replay |
 | Guest invasion wiring | `LiveGuestSession.SetApplySinks` | invasion sink + capability gate on receive |
 
+### Bootstrap/resync services (Phase 2c — iteration 18)
+
+| Artifact | Location | C++ reference |
+| --- | --- | --- |
+| Bootstrap control payload | `BootstrapControlPayload`, `PregameServicePayloads` | `QueueHCDEBootstrapControlService` 13-byte body |
+| Runtime join bootstrap | `PregameHost` + `AdmitAsRuntimeJoin` | `HPS_BOOTSTRAP_BEGIN` / `HPS_BOOTSTRAP_ACK` |
+| Guest resync lane | `PregameGuest.RequestResync` | `HPS_RESYNC_REQUEST` / `HPS_RESYNC_BEGIN` / `HPS_RESYNC_ACK` |
+
 ### Invasion spawn directory + checksum apply (Phase 2c — iteration 17)
 
 | Artifact | Location | C++ reference |
@@ -371,8 +379,11 @@ Phase 2 does **not** include rendering, audio, ZScript VM, or client prediction.
 | Invasion spawn directory parse | `InvasionSpawnDirectoryCodecTests` | Pass |
 | Invasion spawn count validation | `InvasionSnapshotApplySessionTests` | Pass |
 | Snapshot checksum apply session | `SnapshotChecksumApplySessionTests` | Pass |
+| Bootstrap control payload | `BootstrapControlPayloadTests` | Pass |
+| Runtime bootstrap loopback | `BootstrapResyncLoopbackTests` | Pass |
+| Guest resync request loopback | `BootstrapResyncLoopbackTests` | Pass |
 
-**Test count:** 174 passing (`dotnet test` in `csharp/`).
+**Test count:** 177 passing (`dotnet test` in `csharp/`).
 
 ## Not yet in Phase 2b (sign-off blockers)
 
@@ -449,6 +460,8 @@ Do **not** port snapshot encode/decode bodies until HCIN/HCSN headers are green.
 
 **Phase 2b C# pregame stack is feature-complete for fresh dedicated joins** — loopback WAITING setup, verification-error replies, start-game, and a cross-language guest CLI/harness are in place. The remaining 2b gate is executing the harness against a real `hcdeserv` build and recording the result.
 
+**Phase 2c iteration 18** adds bootstrap/resync pregame services (`HPS_BOOTSTRAP_*`, `HPS_RESYNC_*`) with 13-byte control payloads and runtime-join loopback tests.
+
 **Phase 2c iteration 17** adds invasion spawn-directory mirror (`InvasionSpawnDirectoryCodec`, `ApplySpawnDirectory`) and snapshot checksum apply (`SnapshotChecksumApplySession`) wired into guest receive.
 
 **Phase 2c iteration 16** adds HCIV invasion apply (`InvasionSnapshotApplySession`, wave monotonic policy, embedded HCAV/HCDA replay) with parsed invasion tail blocks and guest receive wiring.
@@ -457,4 +470,4 @@ Do **not** port snapshot encode/decode bodies until HCIN/HCSN headers are green.
 
 **Phase 2c iteration 14** adds HCSR/HCIN apply sessions with per-player sequence/consistency tracking, idempotent snapshot handling, gap-resync policy, and injectable command sinks wired into guest/authority receive paths.
 
-Next audit checkpoint: **Phase 2c iteration 18** when cross-language `netcode_step12` evidence is recorded or playsim-backed checksum inputs begin.
+Next audit checkpoint: **Phase 2c iteration 19** when cross-language `netcode_step12` evidence is recorded or playsim-backed checksum inputs begin.

@@ -52,6 +52,21 @@ public sealed class PregameGuest
     public GameInfoPayload? ReceivedGameInfo { get; private set; }
     public IReadOnlyList<RosterEntry> ReceivedRoster { get; private set; } = Array.Empty<RosterEntry>();
     public VerificationErrorPacket? VerificationError { get; private set; }
+    public byte AdoptedRoomId { get; private set; }
+    public BootstrapControlPayload? ReceivedBootstrap { get; private set; }
+    public BootstrapControlPayload? ReceivedResync { get; private set; }
+
+    public bool RequestResync()
+    {
+        if (_connection.SessionToken == 0)
+            return false;
+
+        return _sender.TryQueueReliable(
+            PregameServiceType.ResyncRequest,
+            _connection,
+            key: 0,
+            ReadOnlySpan<byte>.Empty);
+    }
 
     public void Pump(ulong nowMilliseconds)
     {
@@ -179,6 +194,22 @@ public sealed class PregameGuest
             case PregameServiceType.StartGame:
                 QueueHeaderOnlyAck(PregameServiceType.StartGameAck, key: 0);
                 Phase = PregameGuestPhase.Starting;
+                break;
+            case PregameServiceType.BootstrapBegin:
+                if (PregameServicePayloads.TryReadBootstrapControl(service.Payload.Span, out var bootstrap))
+                {
+                    AdoptedRoomId = bootstrap.RoomId;
+                    ReceivedBootstrap = bootstrap;
+                    QueueHeaderOnlyAck(PregameServiceType.BootstrapAck, key: 0);
+                }
+                break;
+            case PregameServiceType.ResyncBegin:
+                if (PregameServicePayloads.TryReadBootstrapControl(service.Payload.Span, out var resync))
+                {
+                    AdoptedRoomId = resync.RoomId;
+                    ReceivedResync = resync;
+                    QueueHeaderOnlyAck(PregameServiceType.ResyncAck, key: 0);
+                }
                 break;
         }
     }

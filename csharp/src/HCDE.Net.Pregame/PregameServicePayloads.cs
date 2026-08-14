@@ -1,4 +1,22 @@
+using System.Buffers.Binary;
+
 namespace HCDE.Net.Pregame;
+
+public readonly struct BootstrapControlPayload
+{
+    public BootstrapControlPayload(byte roomId, uint gameTic, uint clientTic, uint consistency)
+    {
+        RoomId = roomId;
+        GameTic = gameTic;
+        ClientTic = clientTic;
+        Consistency = consistency;
+    }
+
+    public byte RoomId { get; }
+    public uint GameTic { get; }
+    public uint ClientTic { get; }
+    public uint Consistency { get; }
+}
 
 public sealed class MapLoadInfo
 {
@@ -24,6 +42,33 @@ public sealed class RosterEntry
 public static class PregameServicePayloads
 {
     public const int SockAddrInSize = 16;
+    public const int BootstrapControlPayloadSize = 13;
+
+    public static int WriteBootstrapControl(Span<byte> buffer, BootstrapControlPayload payload)
+    {
+        if (buffer.Length < BootstrapControlPayloadSize)
+            return 0;
+
+        buffer[0] = payload.RoomId;
+        BinaryPrimitives.WriteUInt32BigEndian(buffer[1..], payload.GameTic);
+        BinaryPrimitives.WriteUInt32BigEndian(buffer[5..], payload.ClientTic);
+        BinaryPrimitives.WriteUInt32BigEndian(buffer[9..], payload.Consistency);
+        return BootstrapControlPayloadSize;
+    }
+
+    public static bool TryReadBootstrapControl(ReadOnlySpan<byte> payload, out BootstrapControlPayload control)
+    {
+        control = default;
+        if (payload.Length < BootstrapControlPayloadSize)
+            return false;
+
+        control = new BootstrapControlPayload(
+            payload[0],
+            BinaryPrimitives.ReadUInt32BigEndian(payload[1..]),
+            BinaryPrimitives.ReadUInt32BigEndian(payload[5..]),
+            BinaryPrimitives.ReadUInt32BigEndian(payload[9..]));
+        return true;
+    }
 
     public static int WriteMapLoadInfo(Span<byte> buffer, MapLoadInfo info)
     {

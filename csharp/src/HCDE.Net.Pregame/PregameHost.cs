@@ -10,6 +10,7 @@ public sealed class PregameHostOptions
     public bool RequirePassword { get; set; }
     public string Password { get; set; } = "";
     public bool AdvertiseDedicated { get; set; }
+    public bool AdmitAsRuntimeJoin { get; set; }
     public EngineInfoSnapshot ExpectedEngineInfo { get; set; } = new();
     public bool RequireHcdeConnectInfo { get; set; } = true;
     public PregameSessionSnapshot Session { get; set; } = new();
@@ -100,6 +101,12 @@ public sealed class PregameHost
             case PregameServiceType.StartGameAck:
                 client.HasStartGameAck = true;
                 break;
+            case PregameServiceType.BootstrapAck:
+                client.HasBootstrapAck = true;
+                break;
+            case PregameServiceType.ResyncRequest:
+                QueueBootstrapControl(client, PregameServiceType.ResyncBegin);
+                break;
         }
 
         FlushClient(client, nowMilliseconds);
@@ -162,6 +169,7 @@ public sealed class PregameHost
         slot.Status = ConnectionStatus.Connecting;
         slot.HcdeConnect = connect.HasConnectInfo;
         slot.ConnectFlags = connect.ConnectFlags;
+        slot.RuntimeJoin = _options.AdmitAsRuntimeJoin;
         slot.Connection.Reset();
         slot.Connection.SessionToken = SessionToken.Mint(remote, slot.ClientSlot, _options.GameId, nowMilliseconds);
         _connectedPlayers++;
@@ -220,6 +228,10 @@ public sealed class PregameHost
             else if (!client.HasRosterAck)
             {
                 QueueRoster(client);
+            }
+            else if (client.RuntimeJoin && !client.HasBootstrapAck)
+            {
+                QueueBootstrapControl(client, PregameServiceType.BootstrapBegin);
             }
             else
             {
@@ -289,6 +301,24 @@ public sealed class PregameHost
             return;
         client.Sender.TryQueueReliable(
             PregameServiceType.Roster,
+            client.Connection,
+            key: 0,
+            _payloadBuffer.AsSpan(0, payloadLength));
+    }
+
+    private void QueueBootstrapControl(PregameClient client, PregameServiceType service)
+    {
+        var payload = new BootstrapControlPayload(
+            _options.Session.RoomId,
+            _options.Session.AuthorityGameTic,
+            _options.Session.AuthorityClientTic,
+            consistency: service == PregameServiceType.ResyncBegin ? _options.Session.Consistency : 0);
+        var payloadLength = PregameServicePayloads.WriteBootstrapControl(_payloadBuffer, payload);
+        if (payloadLength == 0)
+            return;
+
+        client.Sender.TryQueueReliable(
+            service,
             client.Connection,
             key: 0,
             _payloadBuffer.AsSpan(0, payloadLength));

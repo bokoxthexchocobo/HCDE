@@ -2,7 +2,7 @@
 
 **Last updated:** 2026-08-12  
 **Scope:** All code under `csharp/` (7 projects, 6 test suites)  
-**Verification:** `dotnet build` and `dotnet test` in `csharp/` — **174 tests passing**  
+**Verification:** `dotnet build` and `dotnet test` in `csharp/` — **177 tests passing**  
 **Related:** [`HCDE_CSHARP_PHASE1_AUDIT.md`](HCDE_CSHARP_PHASE1_AUDIT.md) · [`HCDE_CSHARP_PHASE2_AUDIT.md`](HCDE_CSHARP_PHASE2_AUDIT.md) · [`HCDE_CSHARP_MIGRATION.md`](HCDE_CSHARP_MIGRATION.md)
 
 ---
@@ -51,9 +51,9 @@ csharp/
 | `HCDE.Master.Tests` | 1 | UDP heartbeat + list query integration |
 | `HCDE.Rcon.Tests` | 6 | FNV-1a + loopback auth/ping/status |
 | `HCDE.Net.Transport.Tests` | 10 | Constants, query, HCD3, gameplay CRC |
-| `HCDE.Net.Pregame.Tests` | 32 | CRC, service queue, host/guest loopback |
+| `HCDE.Net.Pregame.Tests` | 35 | CRC, service queue, host/guest loopback, bootstrap/resync |
 | `HCDE.Net.Core.Tests` | 110 | Live headers, bodies, tail, DEM, sessions, apply |
-| **Total** | **174** | |
+| **Total** | **177** | |
 
 ### 2.3 Dependency graph
 
