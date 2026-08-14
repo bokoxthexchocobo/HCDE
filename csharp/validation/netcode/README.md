@@ -20,8 +20,9 @@ dotnet test
 
 ## Cross-language soak (optional)
 
-When a local C++ `hcdeserv` build and IWAD are available, run the existing
-pregame cross-language harness:
+When a local C++ `hcdeserv` build and IWAD are available:
+
+**Pregame** — `PregameCrossLanguageSoak.RunPregameGuestSmoke()` or:
 
 ```bash
 python3 csharp/validation/pregame/pregame_guest_smoke.py \
@@ -29,6 +30,20 @@ python3 csharp/validation/pregame/pregame_guest_smoke.py \
   --iwad /path/to/DOOM2.WAD
 ```
 
+**Netcode (Step 12)** — `NetcodeCrossLanguageSoak.RunStep12InvasionSmoke()` or:
+
+```bash
+python3 tests/netcode_step12/netcode_step12_stress.py \
+  --server /path/to/hcdeserv \
+  --iwad /path/to/DOOM2.WAD \
+  --cases invasion \
+  --duration 20 \
+  --wave-pulses 2
+```
+
+Set `HCDE_HCDE_CLIENT_PATH` to add one joining client during the soak.
+
 Full native live gameplay stress remains under `tests/netcode_step12/`. The managed
-gate also includes `NetcodeCrossLanguageTests`, which skips unless
-`HCDE_HCDESERV_PATH` and `HCDE_IWAD_PATH` are set.
+gate includes `NetcodeCrossLanguageTests`, `NetcodeCrossLanguageSoakTests`, and
+`PregameCrossLanguageSoakTests`, which skip unless `HCDE_HCDESERV_PATH` and
+`HCDE_IWAD_PATH` are set.

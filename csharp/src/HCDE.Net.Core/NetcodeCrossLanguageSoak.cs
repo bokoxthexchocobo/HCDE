@@ -1,11 +1,10 @@
 using System.Diagnostics;
-using HCDE.Net.Core;
 
-namespace HCDE.Net.Pregame;
+namespace HCDE.Net.Core;
 
-public static class PregameCrossLanguageSoak
+public static class NetcodeCrossLanguageSoak
 {
-    public static CrossLanguageSoakResult RunPregameGuestSmoke(string? repositoryRoot = null)
+    public static CrossLanguageSoakResult RunStep12InvasionSmoke(string? repositoryRoot = null)
     {
         var serverPath = Environment.GetEnvironmentVariable("HCDE_HCDESERV_PATH");
         var iwadPath = Environment.GetEnvironmentVariable("HCDE_IWAD_PATH");
@@ -14,7 +13,7 @@ public static class PregameCrossLanguageSoak
             return new CrossLanguageSoakResult(
                 CrossLanguageSoakStatus.Skipped,
                 output: string.Empty,
-                skipReason: "Set HCDE_HCDESERV_PATH and HCDE_IWAD_PATH to run the cross-language pregame soak.");
+                skipReason: "Set HCDE_HCDESERV_PATH and HCDE_IWAD_PATH to run the cross-language netcode soak.");
         }
 
         if (!File.Exists(serverPath) || !File.Exists(iwadPath))
@@ -26,12 +25,12 @@ public static class PregameCrossLanguageSoak
         }
 
         repositoryRoot ??= FindRepositoryRoot();
-        var scriptPath = Path.Combine(repositoryRoot, "csharp", "validation", "pregame", "pregame_guest_smoke.py");
+        var scriptPath = Path.Combine(repositoryRoot, "tests", "netcode_step12", "netcode_step12_stress.py");
         if (!File.Exists(scriptPath))
         {
             return new CrossLanguageSoakResult(
                 CrossLanguageSoakStatus.Failed,
-                $"pregame smoke script not found: {scriptPath}");
+                $"netcode step12 script not found: {scriptPath}");
         }
 
         var arguments = new List<string>
@@ -41,15 +40,25 @@ public static class PregameCrossLanguageSoak
             serverPath,
             "--iwad",
             iwadPath,
+            "--cases",
+            "invasion",
+            "--duration",
+            "20",
+            "--wave-pulses",
+            "2",
         };
 
-        var wadCrcs = Environment.GetEnvironmentVariable("HCDE_IWAD_CRC");
-        if (!string.IsNullOrWhiteSpace(wadCrcs))
+        var clientPath = Environment.GetEnvironmentVariable("HCDE_HCDE_CLIENT_PATH");
+        if (!string.IsNullOrWhiteSpace(clientPath) && File.Exists(clientPath))
         {
-            foreach (var crc in wadCrcs.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries))
-                arguments.AddRange(["--wad-crc", crc]);
+            arguments.AddRange(["--client", clientPath, "--client-count", "1"]);
         }
 
+        return RunPython(repositoryRoot, arguments);
+    }
+
+    private static CrossLanguageSoakResult RunPython(string repositoryRoot, IReadOnlyList<string> arguments)
+    {
         var startInfo = new ProcessStartInfo
         {
             FileName = "python3",
@@ -66,7 +75,7 @@ public static class PregameCrossLanguageSoak
         {
             return new CrossLanguageSoakResult(
                 CrossLanguageSoakStatus.Failed,
-                "Failed to start python3 for pregame cross-language soak.");
+                "Failed to start python3 for netcode cross-language soak.");
         }
 
         var stdout = process.StandardOutput.ReadToEnd();
