@@ -148,6 +148,21 @@ public static class LiveConstants
     public const byte InvasionSnapshotFlagBossWave = 1 << 0;
     public const byte InvasionSnapshotSpawnFlagUsingFallback = 1 << 0;
 
+    public const byte InvasionStateDisabled = 0;
+    public const byte InvasionStateWaiting = 1;
+    public const byte InvasionStateCountdown = 2;
+    public const byte InvasionStateSpawning = 3;
+    public const byte InvasionStateCleanup = 4;
+    public const byte InvasionStateIntermission = 5;
+    public const byte InvasionStateVictory = 6;
+    public const byte InvasionStateFailure = 7;
+
+    public const byte InvasionSpawnSourceNone = 0;
+    public const byte InvasionSpawnSourceClassic = 1;
+    public const byte InvasionSpawnSourceMapSpot = 2;
+    public const byte InvasionSpawnSourceDeathmatch = 3;
+    public const byte InvasionSpawnSourcePlayerStart = 4;
+
     public const byte PresentationEchoProtocolVersion = 8;
     public const int PresentationEchoMinHeaderSize = 7;
     public const byte PresentationEchoInvalidInventorySlot = 0xFF;

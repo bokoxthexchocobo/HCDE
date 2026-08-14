@@ -245,6 +245,15 @@ Phase 2 does **not** include rendering, audio, ZScript VM, or client prediction.
 | HCDS apply session | `CoopDeadSpawnsApplySession.cs` | `HCDEApplyCoopDeadSpawns` retire indices |
 | Guest tail apply hook | `LiveGuestSession.SetApplySinks` | world/actor/coop sinks on receive |
 
+### HCIV invasion apply (Phase 2c — iteration 16)
+
+| Artifact | Location | C++ reference |
+| --- | --- | --- |
+| Parsed invasion embedded blocks | `InvasionSnapshotCodec.TryReadBlock` | HCAV/HCDA inside HCIV payload budget |
+| Wave monotonic policy | `InvasionSnapshotWavePolicy.cs` | `HCDEApplyInvasionSnapshot` spawn/cleared merge |
+| HCIV apply session | `InvasionSnapshotApplySession.cs` | `HCDEApplyInvasionSnapshot` mirror + embedded replay |
+| Guest invasion wiring | `LiveGuestSession.SetApplySinks` | invasion sink + capability gate on receive |
+
 ### Record bodies + lane headers (Phase 2c — iteration 4)
 
 | Artifact | Location | C++ reference |
@@ -347,8 +356,11 @@ Phase 2 does **not** include rendering, audio, ZScript VM, or client prediction.
 | Actor delta apply session | `ActorDeltasApplySessionTests` | Pass |
 | Coop dead spawns apply | `CoopDeadSpawnsApplySessionTests` | Pass |
 | Parsed tail world/actor blocks | `ServerSnapshotTailParsedBlocksTests` | Pass |
+| HCIV invasion apply session | `InvasionSnapshotApplySessionTests` | Pass |
+| Invasion wave monotonic policy | `InvasionSnapshotWavePolicyTests` | Pass |
+| Parsed invasion embedded HCAV/HCDA | `InvasionSnapshotTailParsedBlocksTests` | Pass |
 
-**Test count:** 165 passing (`dotnet test` in `csharp/`).
+**Test count:** 170 passing (`dotnet test` in `csharp/`).
 
 ## Not yet in Phase 2b (sign-off blockers)
 
@@ -399,8 +411,8 @@ Phase 2b is complete when **all** hold:
 
 1. **Cross-language netcode soak** — run `tests/netcode_step12/` against C++ authority/guest when binaries available
 2. **Playsim-backed world sinks** — wire `IWorldDeltaApplySink` / `IActorDeltaApplySink` to real pose/actor mutation in Phase 2e
-3. **HCIV invasion apply** — invasion snapshot state + embedded HCAV/HCDA replay
-4. **Checksum playsim inputs** — wire `SnapshotChecksumSession` to real world state in Phase 2e
+3. **Checksum playsim inputs** — wire `SnapshotChecksumSession` to real world state in Phase 2e
+4. **Invasion spawn spot payloads** — decode HCIV embedded spawn metadata beyond header mirror
 
 ## Phase 2b next slice
 
@@ -426,8 +438,10 @@ Do **not** port snapshot encode/decode bodies until HCIN/HCSN headers are green.
 
 **Phase 2b C# pregame stack is feature-complete for fresh dedicated joins** — loopback WAITING setup, verification-error replies, start-game, and a cross-language guest CLI/harness are in place. The remaining 2b gate is executing the harness against a real `hcdeserv` build and recording the result.
 
+**Phase 2c iteration 16** adds HCIV invasion apply (`InvasionSnapshotApplySession`, wave monotonic policy, embedded HCAV/HCDA replay) with parsed invasion tail blocks and guest receive wiring.
+
 **Phase 2c iteration 15** adds world-delta apply stubs (HCDW pose validation, HCDA record routing, HCDS spawn retire) with parsed tail blocks and injectable sinks wired into guest receive.
 
 **Phase 2c iteration 14** adds HCSR/HCIN apply sessions with per-player sequence/consistency tracking, idempotent snapshot handling, gap-resync policy, and injectable command sinks wired into guest/authority receive paths.
 
-Next audit checkpoint: **Phase 2c iteration 16** when cross-language `netcode_step12` evidence is recorded or HCIV invasion apply begins.
+Next audit checkpoint: **Phase 2c iteration 17** when cross-language `netcode_step12` evidence is recorded or invasion spawn-spot payloads begin.

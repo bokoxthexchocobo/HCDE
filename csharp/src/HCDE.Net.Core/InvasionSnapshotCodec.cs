@@ -180,10 +180,16 @@ public static class InvasionSnapshotCodec
     public static bool TryReadBlock(
         ReadOnlySpan<byte> chunk,
         out InvasionSnapshotHeader header,
+        out AuthorityEventRecord[]? authorityEventRecords,
+        out ActorDeltasHeader actorDeltaHeader,
+        out IReadOnlyList<ActorDeltaRecord>? actorDeltaRecords,
         out int bytesConsumed,
         out string? rejectReason)
     {
         header = default;
+        authorityEventRecords = null;
+        actorDeltaHeader = default;
+        actorDeltaRecords = null;
         bytesConsumed = 0;
         rejectReason = null;
 
@@ -198,13 +204,16 @@ public static class InvasionSnapshotCodec
 
         if (cursor < payloadEnd && AuthorityEventsCodec.TryPeek(chunk[cursor..]))
         {
-            if (!AuthorityEventsCodec.TryReadAndSkip(chunk, ref cursor, out rejectReason))
+            if (!AuthorityEventsCodec.TryRead(chunk[cursor..], out _, out var authorityRecords, out var authorityBytes, out rejectReason))
                 return false;
+
+            authorityEventRecords = authorityRecords;
+            cursor += authorityBytes;
         }
 
         if (cursor < payloadEnd && chunk[cursor..].StartsWith(LiveConstants.ActorDeltasMagic))
         {
-            if (!ActorDeltasCodec.TryRead(chunk[cursor..], out _, out _, out var actorBytes, out rejectReason))
+            if (!ActorDeltasCodec.TryRead(chunk[cursor..], out actorDeltaHeader, out actorDeltaRecords, out var actorBytes, out rejectReason))
                 return false;
 
             cursor += actorBytes;

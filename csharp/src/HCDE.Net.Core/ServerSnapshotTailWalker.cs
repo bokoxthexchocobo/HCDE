@@ -87,12 +87,18 @@ public static class ServerSnapshotTailWalker
 
         if (cursor < tail.Length && InvasionSnapshotHeader.TryRead(tail[cursor..], out var invasionHeader))
         {
-            if (!InvasionSnapshotCodec.TryReadBlock(tail[cursor..], out invasionHeader, out var invasionBytes, out rejectReason))
+            if (!InvasionSnapshotCodec.TryReadBlock(
+                    tail[cursor..],
+                    out invasionHeader,
+                    out authorityEventRecords,
+                    out actorDelta,
+                    out actorDeltaRecords,
+                    out var invasionBytes,
+                    out rejectReason))
                 return false;
 
             invasionSnapshot = invasionHeader;
             cursor += invasionBytes;
-            actorDelta = default;
         }
         else
         {

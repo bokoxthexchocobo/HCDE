@@ -17,6 +17,8 @@ public sealed class LiveGuestSession
     private IWorldDeltaApplySink? _worldDeltaSink;
     private IActorDeltaApplySink? _actorDeltaSink;
     private ICoopDeadSpawnsApplySink? _coopDeadSpawnsSink;
+    private IInvasionSnapshotApplySink? _invasionSink;
+    private ulong _negotiatedCapabilities = LiveConstants.DefaultLocalCapabilities;
     private byte _roomId;
     private uint _gameTic;
 
@@ -48,13 +50,17 @@ public sealed class LiveGuestSession
 
     public PresentationEchoApplySession EchoApply => _echoApply;
 
+    public void SetNegotiatedCapabilities(ulong negotiatedCapabilities) =>
+        _negotiatedCapabilities = negotiatedCapabilities;
+
     public void SetApplySinks(
         IPresentationEchoApplySink? echoSink,
         IAuthorityEventSink? authoritySink,
         IServerSnapshotCommandSink? snapshotCommandSink = null,
         IWorldDeltaApplySink? worldDeltaSink = null,
         IActorDeltaApplySink? actorDeltaSink = null,
-        ICoopDeadSpawnsApplySink? coopDeadSpawnsSink = null)
+        ICoopDeadSpawnsApplySink? coopDeadSpawnsSink = null,
+        IInvasionSnapshotApplySink? invasionSink = null)
     {
         _echoSink = echoSink;
         _authoritySink = authoritySink;
@@ -62,6 +68,7 @@ public sealed class LiveGuestSession
         _worldDeltaSink = worldDeltaSink;
         _actorDeltaSink = actorDeltaSink;
         _coopDeadSpawnsSink = coopDeadSpawnsSink;
+        _invasionSink = invasionSink;
     }
 
     public void Pump(ulong nowMs, byte roomId = 0)
@@ -184,34 +191,53 @@ public sealed class LiveGuestSession
                 out _);
         }
 
-        if (sections.ActorDeltaRecords is { Count: > 0 })
+        if (sections.InvasionSnapshot is { } invasionHeader)
         {
-            ActorDeltasApplySession.TryApply(
+            InvasionSnapshotApplySession.TryApply(
+                invasionHeader,
+                sections.AuthorityEventRecords,
                 sections.ActorDelta,
                 sections.ActorDeltaRecords,
+                _negotiatedCapabilities,
                 _routing.ConsolePlayer,
+                _routing.IsLocalAuthority,
+                _invasionSink,
+                _authoritySink,
                 _actorDeltaSink,
                 out _,
                 out _);
         }
-
-        if (sections.CoopDeadSpawnIndices is { Length: > 0 } deadSpawns && sections.CoopDeadSpawns is { } deadHeader)
+        else
         {
-            CoopDeadSpawnsApplySession.TryApply(
-                deadHeader,
-                deadSpawns,
-                _coopDeadSpawnsSink,
-                out _,
-                out _);
-        }
+            if (sections.ActorDeltaRecords is { Count: > 0 })
+            {
+                ActorDeltasApplySession.TryApply(
+                    sections.ActorDelta,
+                    sections.ActorDeltaRecords,
+                    _routing.ConsolePlayer,
+                    _actorDeltaSink,
+                    out _,
+                    out _);
+            }
 
-        if (sections.AuthorityEventRecords is { Length: > 0 } authorityRecords && _authoritySink != null)
-        {
-            AuthorityEventsApplySession.TryApply(
-                authorityRecords,
-                _authoritySink,
-                out _,
-                out _);
+            if (sections.CoopDeadSpawnIndices is { Length: > 0 } deadSpawns && sections.CoopDeadSpawns is { } deadHeader)
+            {
+                CoopDeadSpawnsApplySession.TryApply(
+                    deadHeader,
+                    deadSpawns,
+                    _coopDeadSpawnsSink,
+                    out _,
+                    out _);
+            }
+
+            if (sections.AuthorityEventRecords is { Length: > 0 } authorityRecords && _authoritySink != null)
+            {
+                AuthorityEventsApplySession.TryApply(
+                    authorityRecords,
+                    _authoritySink,
+                    out _,
+                    out _);
+            }
         }
 
         if (sections.EchoBlock is { } echoBlock && _echoSink != null)
