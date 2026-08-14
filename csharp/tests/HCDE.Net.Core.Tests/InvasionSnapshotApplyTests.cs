@@ -67,6 +67,14 @@ public class InvasionSnapshotApplySessionTests
             MirrorState = new InvasionMirrorState(header.State, (int)header.Wave, waveSpawned, waveCleared);
             return true;
         }
+
+        public bool ApplySpawnDirectory(InvasionSpawnDirectory directory)
+        {
+            SpawnDirectory = directory;
+            return true;
+        }
+
+        public InvasionSpawnDirectory? SpawnDirectory { get; private set; }
     }
 
     private sealed class RecordingAuthoritySink : IAuthorityEventSink
@@ -201,6 +209,7 @@ public class InvasionSnapshotApplySessionTests
             out _));
 
         Assert.True(result.MirrorApplied);
+        Assert.True(result.SpawnDirectoryApplied);
         Assert.Equal(1, result.AuthorityApplied);
         Assert.Equal(1, result.ActorApplied);
         Assert.Equal(1, invasionSink.ApplyCalls);
@@ -208,6 +217,136 @@ public class InvasionSnapshotApplySessionTests
         Assert.Equal(1, actorSink.Applied);
         Assert.Equal(LiveConstants.InvasionStateCountdown, invasionSink.MirrorState.State);
         Assert.Equal(3, invasionSink.MirrorState.Wave);
+        Assert.NotNull(invasionSink.SpawnDirectory);
+        Assert.Equal(6, invasionSink.SpawnDirectory!.Value.TotalSpotCount);
+        Assert.Equal(2, invasionSink.SpawnDirectory!.Value.ActiveSpotCount);
+        Assert.Equal(4u, invasionSink.SpawnDirectory!.Value.SpawnedThisWave);
+        Assert.True(invasionSink.SpawnDirectory!.Value.UsingFallback);
+    }
+
+    [Fact]
+    public void Apply_RejectsActiveSpawnCountAboveTotal()
+    {
+        var header = new InvasionSnapshotHeader(
+            flags: 0,
+            state: LiveConstants.InvasionStateSpawning,
+            stateTics: 1,
+            wave: 1,
+            maxWaves: 10,
+            waveBudget: 8,
+            waveSpawned: 1,
+            waveCleared: 0,
+            activeMonsters: 1,
+            spawnSpotCount: 2,
+            activeSpawnSpotCount: 5);
+
+        Assert.False(InvasionSnapshotApplySession.TryApply(
+            header,
+            embeddedAuthorityRecords: null,
+            embeddedActorHeader: default,
+            embeddedActorRecords: null,
+            LiveConstants.DefaultLocalCapabilities,
+            recipientClientSlot: 0,
+            isLocalAuthority: false,
+            invasionSink: new RecordingInvasionSink(),
+            authoritySink: null,
+            actorSink: null,
+            out _,
+            out var rejectReason));
+
+        Assert.Equal("invasion-spawn-active-count-overflow", rejectReason);
+    }
+}
+
+public class InvasionSpawnDirectoryCodecTests
+{
+    [Fact]
+    public void ParseFromHeader_BuildsV2Directory()
+    {
+        var header = new InvasionSnapshotHeader(
+            flags: 0,
+            state: LiveConstants.InvasionStateSpawning,
+            stateTics: 2,
+            wave: 4,
+            maxWaves: 12,
+            waveBudget: 10,
+            waveSpawned: 7,
+            waveCleared: 3,
+            activeMonsters: 9,
+            spawnSpotCount: 8,
+            activeSpawnSpotCount: 3,
+            spawnPlanBudget: 15,
+            spawnActiveTag: 42,
+            spawnFlags: LiveConstants.InvasionSnapshotSpawnFlagUsingFallback,
+            spawnFallbackSource: LiveConstants.InvasionSpawnSourceDeathmatch);
+
+        Assert.True(InvasionSpawnDirectoryCodec.TryParseFromHeader(header, spawnedThisWave: 7, out var directory, out _));
+        Assert.Equal(8, directory.TotalSpotCount);
+        Assert.Equal(3, directory.ActiveSpotCount);
+        Assert.Equal(15u, directory.SpawnPlanBudget);
+        Assert.Equal(42u, directory.ActiveTag);
+        Assert.Equal(7u, directory.SpawnedThisWave);
+        Assert.True(directory.UsingFallback);
+        Assert.Equal(LiveConstants.InvasionSpawnSourceDeathmatch, directory.FallbackSource);
+    }
+}
+
+public class SnapshotChecksumApplySessionTests
+{
+    private sealed class RecordingMismatchSink : ISnapshotChecksumMismatchSink
+    {
+        public List<SnapshotChecksumMismatch> Reported { get; } = new();
+
+        public void ReportMismatch(SnapshotChecksumMismatch mismatch, uint remoteTic) => Reported.Add(mismatch);
+    }
+
+    [Fact]
+    public void Apply_SkipsWhenLocalBucketMissing()
+    {
+        var ring = new SnapshotChecksumRing();
+        var remoteHashes = new uint[] { 1, 2, 3, 4, 5, 6 };
+
+        Assert.True(SnapshotChecksumApplySession.TryApply(
+            remoteTic: 99,
+            remoteHashes,
+            ring,
+            checksumEnabled: true,
+            SnapshotChecksumRing.DefaultEnabledCategoryMask,
+            mismatchSink: null,
+            out var result,
+            out _));
+
+        Assert.False(result.Compared);
+        Assert.True(result.LocalBucketMissing);
+        Assert.Equal(0, result.MismatchCount);
+    }
+
+    [Fact]
+    public void Apply_ReportsCategoryMismatch()
+    {
+        var ring = new SnapshotChecksumRing();
+        var localHashes = new uint[] { 10, 20, 30, 40, 50, 60 };
+        ring.Store(50, localHashes);
+        var remoteHashes = localHashes.ToArray();
+        remoteHashes[(int)SnapshotChecksumCategory.Actors] = 999;
+
+        var sink = new RecordingMismatchSink();
+        Assert.True(SnapshotChecksumApplySession.TryApply(
+            remoteTic: 50,
+            remoteHashes,
+            ring,
+            checksumEnabled: true,
+            SnapshotChecksumRing.DefaultEnabledCategoryMask,
+            sink,
+            out var result,
+            out _));
+
+        Assert.True(result.Compared);
+        Assert.Equal(1, result.MismatchCount);
+        Assert.Single(sink.Reported);
+        Assert.Equal(SnapshotChecksumCategory.Actors, sink.Reported[0].Category);
+        Assert.Equal(999u, sink.Reported[0].ServerHash);
+        Assert.Equal(40u, sink.Reported[0].LocalHash);
     }
 }
 

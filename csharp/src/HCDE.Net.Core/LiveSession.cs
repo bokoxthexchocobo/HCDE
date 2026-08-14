@@ -18,6 +18,8 @@ public sealed class LiveGuestSession
     private IActorDeltaApplySink? _actorDeltaSink;
     private ICoopDeadSpawnsApplySink? _coopDeadSpawnsSink;
     private IInvasionSnapshotApplySink? _invasionSink;
+    private SnapshotChecksumSession? _checksumSession;
+    private ISnapshotChecksumMismatchSink? _checksumMismatchSink;
     private ulong _negotiatedCapabilities = LiveConstants.DefaultLocalCapabilities;
     private byte _roomId;
     private uint _gameTic;
@@ -52,6 +54,14 @@ public sealed class LiveGuestSession
 
     public void SetNegotiatedCapabilities(ulong negotiatedCapabilities) =>
         _negotiatedCapabilities = negotiatedCapabilities;
+
+    public void SetChecksumSession(
+        SnapshotChecksumSession? checksumSession,
+        ISnapshotChecksumMismatchSink? mismatchSink = null)
+    {
+        _checksumSession = checksumSession;
+        _checksumMismatchSink = mismatchSink;
+    }
 
     public void SetApplySinks(
         IPresentationEchoApplySink? echoSink,
@@ -246,6 +256,21 @@ public sealed class LiveGuestSession
                 _routing.ConsolePlayer,
                 echoBlock,
                 _echoSink,
+                out _,
+                out _);
+        }
+
+        if (sections.HasChecksum
+            && sections.ChecksumHashes is { Length: > 0 }
+            && _checksumSession != null)
+        {
+            SnapshotChecksumApplySession.TryApply(
+                sections.ChecksumGameTic,
+                sections.ChecksumHashes,
+                _checksumSession.Ring,
+                checksumEnabled: true,
+                SnapshotChecksumRing.DefaultEnabledCategoryMask,
+                _checksumMismatchSink,
                 out _,
                 out _);
         }

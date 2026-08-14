@@ -65,7 +65,7 @@ Outputs: `hcdemaster` and `hcdercon`.
 
 ## Validation
 
-Managed wire compatibility is gated by `dotnet test` (170 tests). Cross-language checks live under `validation/`:
+Managed wire compatibility is gated by `dotnet test` (174 tests). Cross-language checks live under `validation/`:
 
 | Harness | Purpose |
 | --- | --- |
@@ -101,7 +101,7 @@ csharp/
     HCDE.Net.Core/       Live protocol codecs (HLIV/HGPL/HCIN/HCSN/…)
     HCDE.PregameGuest.Cli/  hcde-pregame-guest CLI
   tests/
-    HCDE.*.Tests/        xUnit regression tests (170 passing)
+    HCDE.*.Tests/        xUnit regression tests (174 passing)
 ```
 
 ## Migration phases

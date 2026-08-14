@@ -8,18 +8,22 @@ public interface IInvasionSnapshotApplySink
         InvasionSnapshotHeader header,
         uint waveSpawned,
         uint waveCleared);
+
+    bool ApplySpawnDirectory(InvasionSpawnDirectory directory);
 }
 
 public readonly struct InvasionSnapshotApplyResult
 {
     public InvasionSnapshotApplyResult(
         bool mirrorApplied,
+        bool spawnDirectoryApplied,
         int authorityRecords,
         int authorityApplied,
         int actorRecords,
         int actorApplied)
     {
         MirrorApplied = mirrorApplied;
+        SpawnDirectoryApplied = spawnDirectoryApplied;
         AuthorityRecords = authorityRecords;
         AuthorityApplied = authorityApplied;
         ActorRecords = actorRecords;
@@ -27,6 +31,7 @@ public readonly struct InvasionSnapshotApplyResult
     }
 
     public bool MirrorApplied { get; }
+    public bool SpawnDirectoryApplied { get; }
     public int AuthorityRecords { get; }
     public int AuthorityApplied { get; }
     public int ActorRecords { get; }
@@ -62,14 +67,37 @@ public static class InvasionSnapshotApplySession
             return false;
 
         var mirrorApplied = false;
+        var spawnDirectoryApplied = false;
+        uint resolvedWaveSpawned = header.WaveSpawned;
+        uint resolvedWaveCleared = header.WaveCleared;
         if (invasionSink != null)
         {
             var previous = invasionSink.MirrorState;
-            var (waveSpawned, waveCleared) = InvasionSnapshotWavePolicy.ResolveWaveCounts(
+            (resolvedWaveSpawned, resolvedWaveCleared) = InvasionSnapshotWavePolicy.ResolveWaveCounts(
                 previous,
                 header,
                 isLocalAuthority);
-            mirrorApplied = invasionSink.ApplyMirror(header, waveSpawned, waveCleared);
+            mirrorApplied = invasionSink.ApplyMirror(header, resolvedWaveSpawned, resolvedWaveCleared);
+
+            if (!InvasionSpawnDirectoryCodec.TryParseFromHeader(
+                    header,
+                    resolvedWaveSpawned,
+                    out var spawnDirectory,
+                    out rejectReason))
+            {
+                return false;
+            }
+
+            if (header.ProtocolVersion >= 2)
+                spawnDirectoryApplied = invasionSink.ApplySpawnDirectory(spawnDirectory);
+        }
+        else if (!InvasionSpawnDirectoryCodec.TryParseFromHeader(
+                     header,
+                     header.WaveSpawned,
+                     out _,
+                     out rejectReason))
+        {
+            return false;
         }
 
         var authorityRecords = embeddedAuthorityRecords?.Length ?? 0;
@@ -127,6 +155,7 @@ public static class InvasionSnapshotApplySession
 
         result = new InvasionSnapshotApplyResult(
             mirrorApplied,
+            spawnDirectoryApplied,
             authorityRecords,
             authorityApplied,
             actorRecords,
