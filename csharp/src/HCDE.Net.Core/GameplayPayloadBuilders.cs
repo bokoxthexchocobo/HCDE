@@ -147,12 +147,19 @@ public static class GameplayPayloadBuilders
         IReadOnlyList<ServerSnapshotPlayerRecord> players,
         bool includeMinimalTail = false,
         uint gameTic = 0,
-        ReadOnlySpan<byte> quitterPlayerSlots = default)
+        ReadOnlySpan<byte> quitterPlayerSlots = default,
+        uint[]? checksumHashes = null)
     {
         var quitterBytes = (ushort)(quitterPlayerSlots.Length == 0 ? 0 : quitterPlayerSlots.Length + 1);
         var controlFlags = quitterBytes > 0 ? (byte)NetCommandFlags.Quitters : (byte)0;
         var bodyOffset = LiveConstants.ServerSnapshotHeaderSize + quitterBytes;
-        var tailSize = includeMinimalTail ? ServerSnapshotTailCodec.MinimalTailSize : 0;
+        var tailSize = 0;
+        if (includeMinimalTail)
+        {
+            tailSize = checksumHashes is { Length: LiveConstants.SnapshotChecksumCategoryCount }
+                ? ServerSnapshotTailCodec.MinimalTailWithChecksumSize
+                : ServerSnapshotTailCodec.MinimalTailSize;
+        }
 
         if (payload.Length < bodyOffset + LiveConstants.ServerSnapshotRecordsHeaderSize + tailSize)
             return 0;
@@ -165,7 +172,8 @@ public static class GameplayPayloadBuilders
         {
             var tailWritten = ServerSnapshotTailCodec.WriteMinimal(
                 payload[(bodyOffset + bodyWritten)..],
-                gameTic);
+                gameTic,
+                checksumHashes);
             if (tailWritten == 0)
                 return 0;
 
@@ -233,7 +241,8 @@ public static class GameplayPayloadBuilders
         byte consistencyTics = 0,
         bool includeMinimalTail = false,
         uint gameTic = 0,
-        ReadOnlySpan<byte> quitterPlayerSlots = default)
+        ReadOnlySpan<byte> quitterPlayerSlots = default,
+        uint[]? checksumHashes = null)
     {
         var players = new[]
         {
@@ -264,7 +273,8 @@ public static class GameplayPayloadBuilders
             players,
             includeMinimalTail,
             gameTic,
-            quitterPlayerSlots);
+            quitterPlayerSlots,
+            checksumHashes);
     }
 }
 

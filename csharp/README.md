@@ -65,7 +65,7 @@ Outputs: `hcdemaster` and `hcdercon`.
 
 ## Validation
 
-Managed wire compatibility is gated by `dotnet test` (177 tests). Cross-language checks live under `validation/`:
+Managed wire compatibility is gated by `dotnet test` (181 tests). Cross-language checks live under `validation/`:
 
 | Harness | Purpose |
 | --- | --- |
@@ -81,7 +81,7 @@ python3 csharp/validation/pregame/pregame_guest_smoke.py \
   --wad-crc <iwad-crc>
 ```
 
-Full native live gameplay stress remains under [`tests/netcode_step12/`](../tests/netcode_step12/). The xUnit suite also includes `NetcodeCrossLanguageTests`, which skips unless `HCDE_HCDESERV_PATH` and `HCDE_IWAD_PATH` are set.
+Full native live gameplay stress remains under [`tests/netcode_step12/`](../tests/netcode_step12/). The xUnit suite includes `NetcodeCrossLanguageTests` and `PregameCrossLanguageSoakTests`, which skip unless `HCDE_HCDESERV_PATH` and `HCDE_IWAD_PATH` are set.
 
 ## Solution layout
 
@@ -101,7 +101,7 @@ csharp/
     HCDE.Net.Core/       Live protocol codecs (HLIV/HGPL/HCIN/HCSN/…)
     HCDE.PregameGuest.Cli/  hcde-pregame-guest CLI
   tests/
-    HCDE.*.Tests/        xUnit regression tests (177 passing)
+    HCDE.*.Tests/        xUnit regression tests (181 passing)
 ```
 
 ## Migration phases

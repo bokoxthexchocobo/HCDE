@@ -254,6 +254,15 @@ Phase 2 does **not** include rendering, audio, ZScript VM, or client prediction.
 | HCIV apply session | `InvasionSnapshotApplySession.cs` | `HCDEApplyInvasionSnapshot` mirror + embedded replay |
 | Guest invasion wiring | `LiveGuestSession.SetApplySinks` | invasion sink + capability gate on receive |
 
+### Cross-language pregame soak + checksum tail (Phase 2c — iteration 19)
+
+| Artifact | Location | C++ reference |
+| --- | --- | --- |
+| Pregame cross-language soak runner | `PregameCrossLanguageSoak.cs` | `csharp/validation/pregame/pregame_guest_smoke.py` |
+| Snapshot checksum tail on send | `GameplayPayloadBuilders`, `LiveWire.TrySendServerSnapshot` | HCKS block appended after ECHO in minimal tail |
+| Guest checksum integration | `GuestChecksumApplyIntegrationTests` | HCKS tail compare via `SetChecksumSession` on receive |
+| Full snapshot + HCKS round-trip | `ServerSnapshotChecksumTailTests` | `ServerSnapshotTailWalker` after HCSR + tail |
+
 ### Bootstrap/resync services (Phase 2c — iteration 18)
 
 | Artifact | Location | C++ reference |
@@ -382,8 +391,11 @@ Phase 2 does **not** include rendering, audio, ZScript VM, or client prediction.
 | Bootstrap control payload | `BootstrapControlPayloadTests` | Pass |
 | Runtime bootstrap loopback | `BootstrapResyncLoopbackTests` | Pass |
 | Guest resync request loopback | `BootstrapResyncLoopbackTests` | Pass |
+| Pregame cross-language soak runner | `PregameCrossLanguageSoakTests` | Pass (skip when unset) |
+| Server snapshot HCKS tail build | `ServerSnapshotChecksumTailTests` | Pass |
+| Guest checksum mismatch on receive | `GuestChecksumApplyIntegrationTests` | Pass |
 
-**Test count:** 177 passing (`dotnet test` in `csharp/`).
+**Test count:** 181 passing (`dotnet test` in `csharp/`).
 
 ## Not yet in Phase 2b (sign-off blockers)
 
@@ -460,6 +472,8 @@ Do **not** port snapshot encode/decode bodies until HCIN/HCSN headers are green.
 
 **Phase 2b C# pregame stack is feature-complete for fresh dedicated joins** — loopback WAITING setup, verification-error replies, start-game, and a cross-language guest CLI/harness are in place. The remaining 2b gate is executing the harness against a real `hcdeserv` build and recording the result.
 
+**Phase 2c iteration 19** adds a managed pregame cross-language soak runner (`PregameCrossLanguageSoak`), optional HCKS checksum hashes on minimal server-snapshot tails, and guest checksum mismatch integration tests.
+
 **Phase 2c iteration 18** adds bootstrap/resync pregame services (`HPS_BOOTSTRAP_*`, `HPS_RESYNC_*`) with 13-byte control payloads and runtime-join loopback tests.
 
 **Phase 2c iteration 17** adds invasion spawn-directory mirror (`InvasionSpawnDirectoryCodec`, `ApplySpawnDirectory`) and snapshot checksum apply (`SnapshotChecksumApplySession`) wired into guest receive.
@@ -470,4 +484,4 @@ Do **not** port snapshot encode/decode bodies until HCIN/HCSN headers are green.
 
 **Phase 2c iteration 14** adds HCSR/HCIN apply sessions with per-player sequence/consistency tracking, idempotent snapshot handling, gap-resync policy, and injectable command sinks wired into guest/authority receive paths.
 
-Next audit checkpoint: **Phase 2c iteration 19** when cross-language `netcode_step12` evidence is recorded or playsim-backed checksum inputs begin.
+Next audit checkpoint: **Phase 2c iteration 20** when cross-language `netcode_step12` evidence is recorded or playsim-backed checksum inputs begin.
