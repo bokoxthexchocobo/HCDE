@@ -88,7 +88,7 @@ scaffold-only.
 
 | Issue | Item | Notes |
 | --- | --- | --- |
-| [#12](https://github.com/bokoxthexchocobo/HCDE/issues/12) | Predator Economy game mode | Phase 1 scaffold + snapshot V1 contract in `src/d_net_predator.{cpp,h}` (round director, CVARs, `predator_status`). Buy opcode, per-player currency, and role gameplay pending. See `HCDE_PREDATOR_AUDIT.md`. |
+| [#12](https://github.com/bokoxthexchocobo/HCDE/issues/12) | Predator mode | Phase 1 scaffold + snapshot V1 contract in `src/d_net_predator.{cpp,h}`. Target: survival hunt — no survivor respawn, monster respawn, late-join spectate, stealth predator, radar, kill rewards. See `HCDE_PREDATOR_AUDIT.md`. |
 
 ### Backlog — bug fixes and maintenance
 
@@ -151,7 +151,7 @@ picture; the per-feature `docs/HCDE_*_AUDIT.md` files hold the detail.
 | Issue | Item | State |
 | --- | --- | --- |
 | #6 | Doomsday three features | In progress. Reverb is wired to OpenAL EFX; FakeRadio/geometry-AO are a capped view-blend darkening fallback, not real renderer passes. Phase 4 soak pending. |
-| #12 | Predator Economy | Scaffold only: `HCDEPredatorTick()` is never called, snapshot V1 isn't wired into the wire format, bought items aren't granted, pawn is abstract. Not playable. |
+| #12 | Predator mode | Scaffold only: `HCDEPredatorTick()` is never called, snapshot V1 isn't wired into the wire format, stealth/radar/role gameplay not built. Not playable. Design captured in `HCDE_PREDATOR_AUDIT.md`. |
 | #29-#32 | Maintenance bugs | Backlog; not started. |
 
 ## Roadmap grouping by subsystem
@@ -198,7 +198,7 @@ picture; the per-feature `docs/HCDE_*_AUDIT.md` files hold the detail.
 
 ### Gameplay systems
 
-- Predator Economy mode (#12), monster/enemy AI (#13), and skin taunt sounds
+- Predator mode (#12), monster/enemy AI (#13), and skin taunt sounds
   (#21) use authority events, replicated mode state, and cosmetic/event
   separation as appropriate.
 

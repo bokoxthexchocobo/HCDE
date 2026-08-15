@@ -1,8 +1,8 @@
 # HCDE Predator Validation
 
-Roadmap board item: #12 ("Predator Economy Game Mode").
+Roadmap board item: #12 ("Predator mode").
 
-`validate_predator_scaffold.py` verifies the static Predator Economy surface:
+`validate_predator_scaffold.py` verifies the static Predator mode surface:
 
 - snapshot V1 contract
 - live capability bit

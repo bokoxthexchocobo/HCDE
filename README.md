@@ -137,7 +137,7 @@ Feature and maintenance work is tracked on the [HCDE Kanban board](https://githu
 
 - **Complete and in use:** MBF21 compatibility, server-authoritative netcode foundation, core Invasion mode, smooth weapon bob + fullbright overrides, skin taunt sounds, actor-registry compaction hardening, and the Windows dedicated-server settings UI.
 - **Opt-in / default-off and still in progress** (ship behind CVARs; not finished features yet): k8vavoom-style lighting preset, NanoBSP loader, Eternity spatial audio (silent facade), DSDA rewind / lag-comp, RCON (`ping`/`status` only), gyro input (Windows only), Nugget player-feel tweaks, Doom Retro compat tweaks, and Doomsday presentation features.
-- **Backlog / scaffold:** Predator Economy mode and monster AI director (scaffolds, not playable), ID24 DEHEXTRA / extended-flag coverage.
+- **Backlog / scaffold:** Predator mode (#12) and monster AI director (scaffolds, not playable), ID24 DEHEXTRA / extended-flag coverage.
 - **Open maintenance bugs:** announcer playback ([#29](https://github.com/bokoxthexchocobo/HCDE/issues/29)), SP dmflags CVAR ([#30](https://github.com/bokoxthexchocobo/HCDE/issues/30)), Windows GL black screen ([#31](https://github.com/bokoxthexchocobo/HCDE/issues/31)), bot respawn ([#32](https://github.com/bokoxthexchocobo/HCDE/issues/32)).
 
 See [`docs/HCDE_ROADMAP.md`](docs/HCDE_ROADMAP.md) for per-item detail and remaining work.

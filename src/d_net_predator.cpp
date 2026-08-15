@@ -1,4 +1,4 @@
-// HCDE Predator Economy game-mode scaffold -- see d_net_predator.h.
+// HCDE Predator mode scaffold -- see d_net_predator.h.
 //
 // Phase 1: scaffold and diagnostics only. No snapshot replication, no
 // buy command opcode, no role-based gameplay. This file gives the
@@ -635,7 +635,7 @@ CCMD(predator_admin_grant)
 CCMD(predator_status)
 {
 	const FHCDEPredatorRoundDirector& dir = HCDEPredatorRoundDirector();
-	Printf(PRINT_HIGH, "\n=== HCDE Predator Economy ===\n");
+	Printf(PRINT_HIGH, "\n=== HCDE Predator Mode ===\n");
 	Printf(PRINT_HIGH, "  sv_predator_enable             = %s\n", *sv_predator_enable ? "on" : "off");
 	Printf(PRINT_HIGH, "  sv_predator_allow_cheats       = %s\n", *sv_predator_allow_cheats ? "on" : "off");
 	Printf(PRINT_HIGH, "  sv_predator_round_seconds      = %d\n", *sv_predator_round_seconds);
