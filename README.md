@@ -122,7 +122,7 @@ python tests/netcode_step12/netcode_step12_stress.py --dry-run
 
 ## Recent updates
 
-- **C# migration:** incremental server-first rewrite under [`csharp/`](csharp/) — Phase 1 tools/protocol complete, Phase 2 net transport and live wire codecs in progress (183 xUnit tests).
+- **C# migration:** incremental server-first rewrite under [`csharp/`](csharp/) — Phase 1 tools/protocol complete, Phase 2 net transport and live wire codecs in progress (187 xUnit tests).
 - **Netcode hardening:** late-join and rejoin handshake fixes, dedicated-server join setup no longer drops HCDE clients during pregame, co-op monster authority replication (#49), armor replication on dedicated clients (#51), and a crash fix when psprite desync logging fired on player death (`net_echo_debug`).
 - **Renderer stack:** Vulkan is the default when supported, with automatic fallback to desktop OpenGL, then software rendering with the NanoBSP loader path (`hcde_nanobsp_loader`). The legacy OpenGL ES backend was removed.
 - **Single-player startup:** a real "HCDE is loading..." window during ZDL command-line resolution, IWAD/mod scanning, compat patching, and archive mounting.

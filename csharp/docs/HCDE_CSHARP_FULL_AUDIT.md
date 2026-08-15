@@ -1,26 +1,26 @@
 # HCDE C# Migration — Full Principal Audit
 
-**Last updated:** 2026-08-14  
+**Last updated:** 2026-08-15  
 **Scope:** All code under `csharp/` (7 projects, 6 test suites)  
-**Verification:** `dotnet build` and `dotnet test` in `csharp/` — **183 tests passing**  
+**Verification:** `dotnet build` and `dotnet test` in `csharp/` — **187 tests passing**  
 **Related:** [`HCDE_CSHARP_PHASE1_AUDIT.md`](HCDE_CSHARP_PHASE1_AUDIT.md) · [`HCDE_CSHARP_PHASE2_AUDIT.md`](HCDE_CSHARP_PHASE2_AUDIT.md) · [`HCDE_CSHARP_MIGRATION.md`](HCDE_CSHARP_MIGRATION.md)
 
 ---
 
 ## 1. Executive summary
 
-The C# tree is a **well-tested protocol and networking foundation** (~9,100 LOC source, ~131 unit/integration tests) covering Phase 1 tools and Phase 2a–2c wire codecs. It does **not** yet run a game: no map loader, playsim, or `hcdeserv` executable.
+The C# tree is a **well-tested protocol and networking foundation** (~12,700 LOC source, 187 unit/integration tests) covering Phase 1 tools and Phase 2a–2c wire codecs plus apply-session stubs. It does **not** yet run a game: no map loader, playsim tick loop, or `hcdeserv` executable.
 
 | Layer | Status | Confidence |
 | --- | --- | --- |
 | Phase 1 — tools & master protocol | **Complete** | High (loopback); medium without C++ binary soak |
 | Phase 2a — UDP transport & query | **Complete** | High |
 | Phase 2b — pregame handshake | **~95%** (fresh join loopback) | Medium (no recorded C++ interop) |
-| Phase 2c — live netcode wire | **~50–55%** of `d_net` surface | Medium (encode-heavy; apply paths absent) |
+| Phase 2c — live netcode wire | **~60%** of `d_net` wire surface; apply stubs in place | Medium (playsim mutation deferred) |
 | Phase 2d–2f — map, playsim, server | **Not started** | — |
 | Phase 3–4 — full sim & client | **Not started** | — |
 
-**Overall migration progress (by engine LOC):** ~5–10% of `src/` (~640k LOC).  
+**Overall migration progress (by engine LOC):** ~2% of HCDE-owned C++ (`src/` + `tools/` ≈ 672k LOC).  
 **Runnable C# dedicated server:** 0%.
 
 ---
@@ -38,9 +38,9 @@ csharp/
     HCDE.Rcon/              2 files,   ~157 LOC   (hcdercon binary)
     HCDE.Net.Transport/    13 files,   ~812 LOC   (UDP, CRC, query, pregame constants)
     HCDE.Net.Pregame/      22 files, ~2,038 LOC   (pregame host/guest pumps)
-    HCDE.Net.Core/         56 files, ~5,100 LOC   (live protocol codecs + session glue)
+    HCDE.Net.Core/         59 files, ~5,600 LOC   (live protocol codecs + session glue + world-store stubs)
     HCDE.PregameGuest.Cli/  5 files,   ~207 LOC   (hcde-pregame-guest CLI)
-  tests/                   42 files, 183 tests
+  tests/                   43 files, 187 tests
 ```
 
 ### 2.2 Test matrix
@@ -52,8 +52,8 @@ csharp/
 | `HCDE.Rcon.Tests` | 6 | FNV-1a + loopback auth/ping/status |
 | `HCDE.Net.Transport.Tests` | 10 | Constants, query, HCD3, gameplay CRC |
 | `HCDE.Net.Pregame.Tests` | 37 | CRC, service queue, host/guest loopback, bootstrap/resync, cross-language soak |
-| `HCDE.Net.Core.Tests` | 114 | Live headers, bodies, tail, DEM, sessions, apply, checksum + netcode soak |
-| **Total** | **183** | |
+| `HCDE.Net.Core.Tests` | 118 | Live headers, bodies, tail, DEM, sessions, apply, soak, world-store stubs |
+| **Total** | **187** | |
 
 ### 2.3 Dependency graph
 
@@ -250,6 +250,8 @@ PRE_CONNECT → PRE_CONNECT_ACK → console-player
 | Invasion apply | `InvasionSnapshotApplySession`, `InvasionSnapshotWavePolicy` | HCIV mirror + embedded HCAV/HCDA replay |
 | Spawn directory | `InvasionSpawnDirectoryCodec` | HCIV V2 spawn metadata mirror |
 | Checksum apply | `SnapshotChecksumApplySession` | HCKS ring compare + mismatch sink |
+| World-state stub | `GuestWorldStateStore`, `SnapshotChecksumPlaysimInputs` | In-memory HCDW/HCDA apply + checksum input bridge |
+| Soak evidence | `CrossLanguageSoakEvidence`, pregame/netcode runners | JSON audit trail for cross-language runs |
 | Session glue | `LiveWire`, `Live*Endpoint`, `Live*Session`, `LiveAuthorityClientRegistry` | UDP pump + multi-client authority |
 | Routing | `LiveAuthorityRouting`, `LivePeerRoutingState` | `I_ShouldSend/AcceptHCDELive*` |
 
@@ -258,11 +260,11 @@ PRE_CONNECT → PRE_CONNECT_ACK → console-player
 | Item | What exists | What's missing |
 | --- | --- | --- |
 | HCAV authority events | Full record encode/decode + replay router | Playsim-backed sink implementations |
-| HCKS checksum | Wire parse/write + ring compare + mixer session | Playsim-fed category inputs |
+| HCKS checksum | Wire parse/write + ring compare + mixer session + world-store input builder | Real playsim category inputs; guest receive wiring |
 | DEM payloads | ~50 event types incl. weapon slots | No reverse (canonical→legacy) |
 | ECHO presentation | Full inventory/player encode-decode + apply session | Playsim-backed inventory/weapon follow |
-| HCIV invasion | V2 header + embedded skip | Spawn spot payloads, full invasion state |
-| Guest receive | HCSR/HCIN apply + tail sinks (ECHO/HCAV/HCDW/HCDA/HCDS/HCIV) | Playsim-backed mutation + invasion spawn spots |
+| HCIV invasion | V2 header + embedded skip + spawn directory | Spawn spot payloads, full invasion state |
+| Guest receive | HCSR/HCIN apply + tail sinks (ECHO/HCAV/HCDW/HCDA/HCDS/HCIV/HCKS) | Wire `GuestWorldStateStore` for checksum compute |
 
 ### 6.3 Missing entirely
 
@@ -287,7 +289,7 @@ C# (walker):     Parses co-op and invasion order; skips HCAV/HCDA inside HCIV
 
 ### 6.5 Phase 2c verdict
 
-Wire-first codecs for the **core live envelope and record bodies** are in good shape. **HCSR/HCIN apply sessions** now track sequence/consistency and dispatch commands via injectable sinks; world-delta mutation and playsim execution remain deferred to Phase 2e. Estimated **~55–60%** of `d_net` wire surface; **~0%** of playsim integration.
+Wire-first codecs for the **core live envelope and record bodies** are in good shape. **HCSR/HCIN apply sessions** track sequence/consistency and dispatch commands via injectable sinks; **GuestWorldStateStore** provides an in-memory bridge for HCDW/HCDA mutation and checksum input building. Full playsim execution remains deferred to Phase 2e. Estimated **~60%** of `d_net` wire surface; **~2%** of HCDE-owned C++ LOC migrated.
 
 ---
 
@@ -303,20 +305,19 @@ Wire-first codecs for the **core live envelope and record bodies** are in good s
 
 ### 7.2 Weaknesses
 
-1. **No C++ binary interop evidence** — all compatibility inferred from unit tests
+1. **No C++ binary interop evidence recorded in audit** — soak runners and JSON evidence writer exist; CI/agent image still lacks `hcdeserv`/IWAD binaries
 2. **Hand-maintained constants** — drift risk across C#, `.h`, JSON
 3. **Single-player test bias** — multi-client scenarios under-tested
-4. **Encode-heavy** — many codecs write well; apply/decode paths for full snapshots incomplete
-5. **README outdated** — `csharp/README.md` still lists netcode/playsim as "Planned"
-6. **No CI job** — `dotnet test` not in automated pipeline (recommended since Phase 1)
-7. **Layering leaks** — Transport has gameplay CRC; Pregame references Core for live handoff
+4. **Encode-heavy** — many codecs write well; full playsim-backed apply paths incomplete
+5. **No CI job** — `dotnet test` not in automated pipeline (recommended since Phase 1)
+6. **Layering leaks** — Transport has gameplay CRC; Pregame references Core for live handoff
 
 ### 7.3 Principal risk register
 
 | Risk | Severity | Mitigation |
 | --- | --- | --- |
 | Wire constant drift | High | JSON codegen; expand golden vectors |
-| No cross-language soak | High | Run `pregame_guest_smoke.py` + `netcode_step12` vs C++ |
+| No cross-language soak evidence | High | Set `HCDE_SOAK_EVIDENCE_DIR`; run pregame + Step 12 soaks vs C++ |
 | Tail order mismatch | Medium | Walker parses co-op/invasion; finish ECHO/HCAV bodies |
 | Missing apply paths | High | Expected until 2e; document boundary |
 | Pregame timeout gaps | Medium | Wire existing constants into pumps |
@@ -344,27 +345,25 @@ Wire-first codecs for the **core live envelope and record bodies** are in good s
 
 ### P0 — Trust & CI
 1. Add GitHub Actions job: `cd csharp && dotnet test`
-2. Record cross-language pregame soak (`pregame_guest_smoke.py` + `hcdeserv`)
+2. Record cross-language pregame + Step 12 soaks with `HCDE_SOAK_EVIDENCE_DIR`
 3. Export C++ golden vectors for session token, NMS1 writes, one full HCIN/HCSN capture
 
 ### P1 — Phase 2c completion
-4. HCIV header codec + invasion tail path
-5. ECHO parse (read-first; write later)
-6. Full snapshot tail walker (HCDS → HCAV → ECHO → HCKS)
-7. `LiveGuestSession` tail consumption
+4. Wire `GuestWorldStateStore` into `LiveGuestSession` tail apply + checksum compute
+5. Lane budget enforcement (`HCDELiveLaneBudget*`)
+6. Actor baseline repair handler (`HCDEBeginActorBaselineRepair`)
 
 ### P1 — Phase 2b hardening
-8. Enforce `ServiceTimeoutMilliseconds` / `GuestSetupProgressTimeoutMilliseconds` in pumps
-9. Wire outbound compression in `PregameWire.TrySend`
-10. Decouple `PregameHost` live handoff to glue layer
+7. Enforce `ServiceTimeoutMilliseconds` / `GuestSetupProgressTimeoutMilliseconds` in pumps
+8. Wire outbound compression in `PregameWire.TrySend`
+9. Decouple `PregameHost` live handoff to glue layer
 
 ### P2 — Phase 2d entry
-11. Begin `HCDE.MapLoader` with UDMF/BSP subset
-12. JSON → C# codegen for `MasterProtocol` + net constants
+10. Begin `HCDE.MapLoader` with UDMF/BSP subset
+11. JSON → C# codegen for `MasterProtocol` + net constants
 
 ### P3 — Documentation hygiene
-13. Update `csharp/README.md` status table
-14. Keep this audit updated at each iteration checkpoint
+12. Keep audits updated at each iteration checkpoint
 
 ---
 
@@ -399,9 +398,35 @@ The C# migration has produced a **credible, well-tested networking stack** that 
 
 What exists today is **infrastructure**, not a game server. The next meaningful milestones are:
 
-1. **Prove interop** with shipping C++ binaries (pregame + netcode harnesses)
-2. **Finish live tail codecs** (HCIV, ECHO, full tail walker)
+1. **Record cross-language evidence** — pregame + Step 12 soaks with JSON audit trail
+2. **Wire guest world store** into live receive for checksum compute from applied tails
 3. **Start map loader** (2d) — the gate to any authoritative tick loop
-4. **Port playsim** (2e) — the bulk of remaining work
+4. **Port playsim** (2e) — the bulk of remaining work (~98k LOC in `src/playsim/` alone)
 
 Until 2d–2e land, C# cannot replace `hcdeserv`. The current tree is the right foundation; the mountain is simulation, not more UDP headers.
+
+---
+
+## 12. LOC migration ledger (2026-08-15)
+
+| Tree | LOC | Notes |
+| --- | ---: | --- |
+| `csharp/src/` | ~12,700 | All C# delivered |
+| `src/` | ~659,000 | Engine — primary target |
+| `tools/` | ~13,300 | Master/rcon ported; lemon/re2c/zipdir stay |
+| `libraries/` | ~891,000 | Vendored — stay native |
+| **HCDE-owned C++ remaining** | **~672,000** | `src/` + `tools/` |
+
+| `src/` subdir | LOC | Phase |
+| --- | ---: | --- |
+| `src/common/` | ~319,000 | Mixed (net, engine, scripting) |
+| `src/playsim/` | ~98,000 | 2e |
+| `src/rendering/` | ~47,000 | Keep native initially |
+| `src/gamedata/` | ~26,000 | 2d |
+| `src/maploader/` | ~14,000 | 2d |
+
+| Net C++ reference | LOC |
+| --- | ---: |
+| `d_net.cpp` | ~10,700 |
+| `d_net_snapshot_part*.inl` | ~9,600 |
+| `i_net.cpp` | ~4,700 |

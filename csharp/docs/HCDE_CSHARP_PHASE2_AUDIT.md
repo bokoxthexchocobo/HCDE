@@ -1,7 +1,7 @@
 # HCDE C# Migration — Phase 2 Principal Audit
 
-**Last updated:** 2026-08-11  
-**Status:** In progress — Phase **2c** live protocol codecs (iteration 1) landed. Phase **2b** verification errors, start-game, and cross-language harness complete.  
+**Last updated:** 2026-08-15  
+**Status:** In progress — Phase **2c** live protocol codecs (iteration 21). Phase **2b** verification errors, start-game, bootstrap/resync, and cross-language harness complete.  
 **Prerequisite:** [Phase 1 audit](HCDE_CSHARP_PHASE1_AUDIT.md) (complete)  
 **Related:** [`HCDE_CSHARP_MIGRATION.md`](HCDE_CSHARP_MIGRATION.md) · [`HCDE_NETCODE.md`](../../docs/HCDE_NETCODE.md)
 
@@ -262,6 +262,14 @@ Phase 2 does **not** include rendering, audio, ZScript VM, or client prediction.
 | Netcode cross-language soak | `NetcodeCrossLanguageSoak.cs` | `tests/netcode_step12/netcode_step12_stress.py` invasion smoke |
 | Optional client join | `HCDE_HCDE_CLIENT_PATH` env | `--client-count 1` on Step 12 harness |
 
+### Playsim stub world state + soak evidence (Phase 2c — iteration 21)
+
+| Artifact | Location | C++ reference |
+| --- | --- | --- |
+| In-memory guest world store | `GuestWorldStateStore.cs` | Phase 2e bridge implementing `IWorldDeltaApplySink` / `IActorDeltaApplySink` |
+| Checksum inputs from store | `SnapshotChecksumPlaysimInputs.cs` | `SnapshotChecksumSession` compute fed from applied HCDW/HCDA state |
+| Cross-language soak evidence | `CrossLanguageSoakEvidence.cs` | JSON audit trail when `HCDE_SOAK_EVIDENCE_DIR` is set |
+
 ### Cross-language pregame soak + checksum tail (Phase 2c — iteration 19)
 
 | Artifact | Location | C++ reference |
@@ -403,8 +411,11 @@ Phase 2 does **not** include rendering, audio, ZScript VM, or client prediction.
 | Server snapshot HCKS tail build | `ServerSnapshotChecksumTailTests` | Pass |
 | Guest checksum mismatch on receive | `GuestChecksumApplyIntegrationTests` | Pass |
 | Netcode Step 12 cross-language soak | `NetcodeCrossLanguageSoakTests` | Pass (skip when unset) |
+| Guest world state store | `GuestWorldStateStoreTests` | Pass |
+| Checksum inputs from world store | `SnapshotChecksumPlaysimInputsTests` | Pass |
+| Soak evidence JSON writer | `CrossLanguageSoakEvidenceTests` | Pass |
 
-**Test count:** 183 passing (`dotnet test` in `csharp/`).
+**Test count:** 187 passing (`dotnet test` in `csharp/`).
 
 ## Not yet in Phase 2b (sign-off blockers)
 
@@ -451,11 +462,23 @@ Phase 2b is complete when **all** hold:
 - [ ] C# guest completes pregame admission against shipping C++ `hcdeserv` (harness ready; needs binaries)
 - [ ] Principal audit updated with cross-language evidence
 
+## LOC migration ledger (2026-08-15)
+
+| Tree | LOC | Migration intent |
+| --- | ---: | --- |
+| `csharp/src/` | **~12,700** | C# delivered so far |
+| `src/` (engine) | **~659,000** | Primary migration target |
+| `tools/` | **~13,300** | Partial (master/rcon ported; build tools stay) |
+| `libraries/` (vendored) | **~891,000** | Stay native / P/Invoke |
+| **HCDE-owned C++ remaining** | **~672,000** | `src/` + non-vendored `tools/` |
+
+**Progress by LOC:** C# is ~1.9% of HCDE-owned C++ surface area. Wire/protocol layers mirror ~55–60% of `d_net` message surface but ~0% of playsim execution.
+
 ## Phase 2c next slice
 
-1. **Cross-language netcode soak** — run `tests/netcode_step12/` against C++ authority/guest when binaries available
-2. **Playsim-backed world sinks** — wire `IWorldDeltaApplySink` / `IActorDeltaApplySink` to real pose/actor mutation in Phase 2e
-3. **Checksum playsim inputs** — wire `SnapshotChecksumSession` compute to real world state in Phase 2e
+1. **Wire `GuestWorldStateStore` into `LiveGuestSession`** — apply HCDW/HCDA tails into store, compute HCKS from store each tick
+2. **Cross-language evidence in CI** — run soak runners with `HCDE_SOAK_EVIDENCE_DIR` when agent image has `hcdeserv`/IWAD
+3. **Phase 2d map loader entry** — `HCDE.MapLoader` UDMF/BSP subset (gate to real playsim ticks)
 
 ## Phase 2b next slice
 
@@ -481,6 +504,8 @@ Do **not** port snapshot encode/decode bodies until HCIN/HCSN headers are green.
 
 **Phase 2b C# pregame stack is feature-complete for fresh dedicated joins** — loopback WAITING setup, verification-error replies, start-game, and a cross-language guest CLI/harness are in place. The remaining 2b gate is executing the harness against a real `hcdeserv` build and recording the result.
 
+**Phase 2c iteration 21** adds in-memory guest world state (`GuestWorldStateStore`), checksum input builder from applied HCDW/HCDA state (`SnapshotChecksumPlaysimInputs`), and JSON soak evidence recording (`CrossLanguageSoakEvidence` via `HCDE_SOAK_EVIDENCE_DIR`).
+
 **Phase 2c iteration 20** adds a managed netcode Step 12 cross-language soak runner (`NetcodeCrossLanguageSoak`) with shared soak result types and optional client join via `HCDE_HCDE_CLIENT_PATH`.
 
 **Phase 2c iteration 19** adds a managed pregame cross-language soak runner (`PregameCrossLanguageSoak`), optional HCKS checksum hashes on minimal server-snapshot tails, and guest checksum mismatch integration tests.
@@ -495,4 +520,4 @@ Do **not** port snapshot encode/decode bodies until HCIN/HCSN headers are green.
 
 **Phase 2c iteration 14** adds HCSR/HCIN apply sessions with per-player sequence/consistency tracking, idempotent snapshot handling, gap-resync policy, and injectable command sinks wired into guest/authority receive paths.
 
-Next audit checkpoint: **Phase 2c iteration 21** when cross-language Step 12 evidence is recorded in CI or playsim-backed checksum inputs begin.
+Next audit checkpoint: **Phase 2c iteration 22** when guest receive wires world-store checksum compute end-to-end or Phase 2d map-loader scaffolding begins.
