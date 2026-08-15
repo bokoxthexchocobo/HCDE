@@ -46,4 +46,4 @@ Set `HCDE_HCDE_CLIENT_PATH` to add one joining client during the soak.
 Full native live gameplay stress remains under `tests/netcode_step12/`. The managed
 gate includes `NetcodeCrossLanguageTests`, `NetcodeCrossLanguageSoakTests`, and
 `PregameCrossLanguageSoakTests`, which skip unless `HCDE_HCDESERV_PATH` and
-`HCDE_IWAD_PATH` are set.
+`HCDE_IWAD_PATH` are set. Set `HCDE_SOAK_EVIDENCE_DIR` to write JSON audit evidence.
