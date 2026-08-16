@@ -1,7 +1,7 @@
 # HCDE C# Migration — Phase 2 Principal Audit
 
-**Last updated:** 2026-08-15  
-**Status:** In progress — Phase **2c** live protocol codecs (iteration 21). Phase **2b** verification errors, start-game, bootstrap/resync, and cross-language harness complete.  
+**Last updated:** 2026-08-16  
+**Status:** In progress — Phase **2c** live protocol codecs (iteration 25). Phase **2b** verification errors, start-game, bootstrap/resync, and cross-language harness complete.  
 **Prerequisite:** [Phase 1 audit](HCDE_CSHARP_PHASE1_AUDIT.md) (complete)  
 **Related:** [`HCDE_CSHARP_MIGRATION.md`](HCDE_CSHARP_MIGRATION.md) · [`HCDE_NETCODE.md`](../../docs/HCDE_NETCODE.md)
 
@@ -262,6 +262,15 @@ Phase 2 does **not** include rendering, audio, ZScript VM, or client prediction.
 | Netcode cross-language soak | `NetcodeCrossLanguageSoak.cs` | `tests/netcode_step12/netcode_step12_stress.py` invasion smoke |
 | Optional client join | `HCDE_HCDE_CLIENT_PATH` env | `--client-count 1` on Step 12 harness |
 
+### Geometry lump decode + map sector bootstrap (Phase 2c/2d — iteration 25)
+
+| Artifact | Location | C++ reference |
+| --- | --- | --- |
+| VERTEXES/SEGS/NODES decode | `GeometryMapLumpCodec.cs`, `BinaryMapGeometryDecoder.cs` | `mapvertex_t`, `seg_t`, `node_t` |
+| Sector bootstrap helper | `MapSectorBootstrap.cs` | `mapsector_t` read path before playsim |
+| Guest world store seed | `GuestWorldStateBootstrap.cs`, `GuestWorldStateStore.SeedMapSector` | Phase 2e bridge: map sectors → HCDW checksum inputs |
+| Cross-language soak CI | `.github/workflows/csharp-cross-language-soak.yml` | optional pregame + Step 12 soak when secrets set |
+
 ### Binary map lump decode + authority HCDW tail (Phase 2c/2d — iteration 24)
 
 | Artifact | Location | C++ reference |
@@ -511,9 +520,9 @@ Phase 2b is complete when **all** hold:
 
 ## Phase 2c next slice
 
-1. **VERTEXES/SEGS/NODES decode** — complete binary map geometry read path
-2. **Map → world store bootstrap** — seed `GuestWorldStateStore` sectors from decoded `mapsector_t`
-3. **Optional cross-language soak CI job** when agent image has `hcdeserv`/IWAD
+1. **SSECTORS/SIDEDEFS decode** — complete BSP subsector + sidedef read path
+2. **Map bootstrap E2E** — authority seeds world store from WAD at map load, guest checksum matches
+3. **Record cross-language soak evidence** when agent image has `hcdeserv`/IWAD
 
 ## Phase 2b next slice
 
@@ -539,6 +548,8 @@ Do **not** port snapshot encode/decode bodies until HCIN/HCSN headers are green.
 
 **Phase 2b C# pregame stack is feature-complete for fresh dedicated joins** — loopback WAITING setup, verification-error replies, start-game, and a cross-language guest CLI/harness are in place. The remaining 2b gate is executing the harness against a real `hcdeserv` build and recording the result.
 
+**Phase 2c iteration 25** adds VERTEXES/SEGS/NODES binary geometry decode, `GuestWorldStateBootstrap` to seed `GuestWorldStateStore` sectors from decoded `mapsector_t`, and an optional cross-language soak GitHub Actions workflow.
+
 **Phase 2c iteration 24** adds binary map lump record decode (THINGS/LINEDEFS/SECTORS), `WorldStateTailBuilder` for authority HCDW tails, and end-to-end authority→guest checksum match when world store is wired on both sides.
 
 **Phase 2c iteration 23** adds WAD directory + map lump catalog readers (`WadArchiveReader`, `MapLumpCatalogReader`), UDMF `TEXTMAP` probe, and authority outbound HCKS via `SetAuthorityWorldState`.
@@ -561,4 +572,4 @@ Do **not** port snapshot encode/decode bodies until HCIN/HCSN headers are green.
 
 **Phase 2c iteration 14** adds HCSR/HCIN apply sessions with per-player sequence/consistency tracking, idempotent snapshot handling, gap-resync policy, and injectable command sinks wired into guest/authority receive paths.
 
-Next audit checkpoint: **Phase 2c iteration 25** when VERTEXES/SEGS/NODES decode lands or map-to-world-store bootstrap begins.
+Next audit checkpoint: **Phase 2c iteration 26** when SSECTORS/SIDEDEFS decode lands or map-bootstrap E2E checksum path is wired on authority load.

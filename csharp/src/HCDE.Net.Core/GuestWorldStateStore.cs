@@ -70,6 +70,25 @@ public sealed class GuestWorldStateStore : IWorldDeltaApplySink, IActorDeltaAppl
         return true;
     }
 
+    public void SeedMapSector(
+        ushort sectorIndex,
+        short floorHeight,
+        short ceilingHeight,
+        short lightLevel,
+        short special)
+    {
+        if (!_sectors.TryGetValue(sectorIndex, out var state))
+        {
+            state = new GuestSectorState { SectorIndex = sectorIndex };
+            _sectors[sectorIndex] = state;
+        }
+
+        state.Floor = floorHeight;
+        state.Ceiling = ceilingHeight;
+        state.LightLevel = lightLevel;
+        state.Special = special;
+    }
+
     public bool TryApply(int recipientClientSlot, ActorDeltaRecord record)
     {
         _ = recipientClientSlot;

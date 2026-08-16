@@ -20,6 +20,9 @@ public static class TestWadBuilder
         {
             lumps.Add((MapLumpNames.Things, BuildThingLump(100, 200, 90, 1, 7)));
             lumps.Add((MapLumpNames.Linedefs, BuildLinedefLump(0, 1, 0, 0, 0, 0, 0xFFFF)));
+            lumps.Add((MapLumpNames.Vertexes, BuildVertexLump(0, 0, 100, 0)));
+            lumps.Add((MapLumpNames.Segs, BuildSegLump(0, 1, 0, 0, 0, 0)));
+            lumps.Add((MapLumpNames.Nodes, BuildNodeLump(50, 0, 100, 0, 0, 0, 128, 128, 0, 0)));
             lumps.Add((MapLumpNames.Sectors, BuildSectorLump(0, 128, "FLOOR1_1", "CEIL1_1", 160, 0, 1)));
         }
 
@@ -99,6 +102,65 @@ public static class TestWadBuilder
         return lump;
     }
 
+    public static byte[] BuildVertexLump(params short[] coordinates)
+    {
+        if (coordinates.Length % 2 != 0)
+            throw new ArgumentException("vertex coordinates must be x/y pairs", nameof(coordinates));
+
+        var lump = new byte[(coordinates.Length / 2) * MapVertexRecord.RecordSize];
+        var cursor = 0;
+        for (var i = 0; i < coordinates.Length; i += 2)
+        {
+            BinaryPrimitives.WriteInt16LittleEndian(lump.AsSpan(cursor, 2), coordinates[i]);
+            BinaryPrimitives.WriteInt16LittleEndian(lump.AsSpan(cursor + 2, 2), coordinates[i + 1]);
+            cursor += MapVertexRecord.RecordSize;
+        }
+
+        return lump;
+    }
+
+    public static byte[] BuildSegLump(ushort v1, ushort v2, short angle, ushort linedef, short side, short offset)
+    {
+        var lump = new byte[MapSegRecord.RecordSize];
+        BinaryPrimitives.WriteUInt16LittleEndian(lump.AsSpan(0, 2), v1);
+        BinaryPrimitives.WriteUInt16LittleEndian(lump.AsSpan(2, 2), v2);
+        BinaryPrimitives.WriteInt16LittleEndian(lump.AsSpan(4, 2), angle);
+        BinaryPrimitives.WriteUInt16LittleEndian(lump.AsSpan(6, 2), linedef);
+        BinaryPrimitives.WriteInt16LittleEndian(lump.AsSpan(8, 2), side);
+        BinaryPrimitives.WriteInt16LittleEndian(lump.AsSpan(10, 2), offset);
+        return lump;
+    }
+
+    public static byte[] BuildNodeLump(
+        short x,
+        short y,
+        short deltaX,
+        short deltaY,
+        short bboxLeft,
+        short bboxRight,
+        short bboxTop,
+        short bboxBottom,
+        ushort childA,
+        ushort childB)
+    {
+        var lump = new byte[MapNodeRecord.RecordSize];
+        BinaryPrimitives.WriteInt16LittleEndian(lump.AsSpan(0, 2), x);
+        BinaryPrimitives.WriteInt16LittleEndian(lump.AsSpan(2, 2), y);
+        BinaryPrimitives.WriteInt16LittleEndian(lump.AsSpan(4, 2), deltaX);
+        BinaryPrimitives.WriteInt16LittleEndian(lump.AsSpan(6, 2), deltaY);
+        BinaryPrimitives.WriteInt16LittleEndian(lump.AsSpan(8, 2), bboxLeft);
+        BinaryPrimitives.WriteInt16LittleEndian(lump.AsSpan(10, 2), bboxRight);
+        BinaryPrimitives.WriteInt16LittleEndian(lump.AsSpan(12, 2), bboxTop);
+        BinaryPrimitives.WriteInt16LittleEndian(lump.AsSpan(14, 2), bboxBottom);
+        BinaryPrimitives.WriteInt16LittleEndian(lump.AsSpan(16, 2), bboxLeft);
+        BinaryPrimitives.WriteInt16LittleEndian(lump.AsSpan(18, 2), bboxRight);
+        BinaryPrimitives.WriteInt16LittleEndian(lump.AsSpan(20, 2), bboxTop);
+        BinaryPrimitives.WriteInt16LittleEndian(lump.AsSpan(22, 2), bboxBottom);
+        BinaryPrimitives.WriteUInt16LittleEndian(lump.AsSpan(24, 2), childA);
+        BinaryPrimitives.WriteUInt16LittleEndian(lump.AsSpan(26, 2), childB);
+        return lump;
+    }
+
     private static void WritePicName(Span<byte> destination, string name)
     {
         var bytes = Encoding.ASCII.GetBytes(name);
@@ -113,7 +175,7 @@ public class WadArchiveReaderTests
     {
         var wad = TestWadBuilder.BuildMinimalMapWad("MAP01");
         Assert.True(WadArchiveReader.TryReadDirectory(wad, out var entries, out _));
-        Assert.Equal(4, entries.Length);
+        Assert.Equal(7, entries.Length);
         Assert.Equal("MAP01", entries[0].Name);
         Assert.Equal("THINGS", entries[1].Name);
     }
@@ -131,6 +193,12 @@ public class MapLumpCatalogReaderTests
         Assert.Equal((uint)MapThingRecord.RecordSize, things.Entry.Size);
         Assert.True(catalog.TryGetLump(MapLumpKind.Sectors, out var sectors));
         Assert.Equal((uint)MapSectorRecord.RecordSize, sectors.Entry.Size);
+        Assert.True(catalog.TryGetLump(MapLumpKind.Vertexes, out var vertexes));
+        Assert.Equal((uint)(MapVertexRecord.RecordSize * 2), vertexes.Entry.Size);
+        Assert.True(catalog.TryGetLump(MapLumpKind.Segs, out var segs));
+        Assert.Equal((uint)MapSegRecord.RecordSize, segs.Entry.Size);
+        Assert.True(catalog.TryGetLump(MapLumpKind.Nodes, out var nodes));
+        Assert.Equal((uint)MapNodeRecord.RecordSize, nodes.Entry.Size);
     }
 
     [Fact]

@@ -1,0 +1,27 @@
+name: C# cross-language soak
+
+on:
+  workflow_dispatch:
+  schedule:
+  # Weekly Monday 06:00 UTC when hcdeserv/IWAD secrets are configured.
+    - cron: '0 6 * * 1'
+
+jobs:
+  soak:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+      - name: Cross-language soak tests
+        env:
+          HCDE_HCDESERV_PATH: ${{ secrets.HCDE_HCDESERV_PATH }}
+          HCDE_IWAD_PATH: ${{ secrets.HCDE_IWAD_PATH }}
+          HCDE_IWAD_CRC: ${{ secrets.HCDE_IWAD_CRC }}
+          HCDE_HCDE_CLIENT_PATH: ${{ secrets.HCDE_HCDE_CLIENT_PATH }}
+          HCDE_SOAK_EVIDENCE_DIR: ${{ runner.temp }}/hcde-soak-evidence
+        run: |
+          cd csharp
+          dotnet build
+          dotnet test --no-build --filter "FullyQualifiedName~CrossLanguageSoak"
