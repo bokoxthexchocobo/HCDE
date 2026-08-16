@@ -276,6 +276,57 @@ public static class GameplayPayloadBuilders
             quitterPlayerSlots,
             checksumHashes);
     }
+
+    public static int BuildServerSnapshotSinglePlayerWithExternalTail(
+        Span<byte> payload,
+        byte playerNum,
+        ReadOnlySpan<byte> externalTail,
+        UserCmd command = default,
+        ushort averageLatency = 0,
+        byte commandTics = 1,
+        byte consistencyTics = 0,
+        uint gameTic = 0,
+        ReadOnlySpan<byte> quitterPlayerSlots = default)
+    {
+        var written = BuildServerSnapshotSinglePlayer(
+            payload,
+            playerNum,
+            command,
+            averageLatency,
+            commandTics,
+            consistencyTics,
+            includeMinimalTail: false,
+            gameTic,
+            quitterPlayerSlots);
+        if (written == 0 || externalTail.Length == 0)
+            return written;
+
+        if (payload.Length < written + externalTail.Length)
+            return 0;
+
+        externalTail.CopyTo(payload[written..]);
+        if (!ServerSnapshotHeader.TryRead(payload[..written], out var header))
+            return 0;
+
+        var updatedHeader = new ServerSnapshotHeader(
+            header.ControlFlags,
+            header.RoutingByte,
+            header.PlayerCount,
+            header.SequenceAck,
+            header.ConsistencyAck,
+            header.QuitterBytes,
+            header.BaseSequence,
+            header.BaseConsistency,
+            header.CommandTics,
+            header.ConsistencyTics,
+            header.StabilityBuffer,
+            (ushort)(header.BodyBytes + externalTail.Length),
+            header.ProtocolVersion);
+        if (ServerSnapshotHeader.Write(payload, updatedHeader) == 0)
+            return 0;
+
+        return written + externalTail.Length;
+    }
 }
 
 public static class LiveGameplayPacketBuilder

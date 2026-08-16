@@ -182,6 +182,33 @@ public sealed class LiveGameplayEndpoint
             snapshotPayload[..length]);
     }
 
+    public bool TrySendServerSnapshotWithExternalTail(
+        NetworkEndpoint remote,
+        byte roomId,
+        uint gameTic,
+        byte playerNum,
+        ReadOnlySpan<byte> externalTail,
+        UserCmd command = default)
+    {
+        Span<byte> snapshotPayload = stackalloc byte[1024];
+        var length = GameplayPayloadBuilders.BuildServerSnapshotSinglePlayerWithExternalTail(
+            snapshotPayload,
+            playerNum,
+            externalTail,
+            command,
+            gameTic: gameTic);
+        if (length == 0)
+            return false;
+
+        return TrySendGameplay(
+            remote,
+            LiveMessageType.ServerSnapshot,
+            GameplayPayloadKind.ServerSnapshot,
+            roomId,
+            gameTic,
+            snapshotPayload[..length]);
+    }
+
     public bool TryReceiveGameplay(
         NetworkEndpoint expectedRemote,
         GameplayPayloadKind expectedKind,

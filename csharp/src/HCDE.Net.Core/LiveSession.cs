@@ -20,6 +20,8 @@ public sealed class LiveGuestSession
     private IInvasionSnapshotApplySink? _invasionSink;
     private SnapshotChecksumSession? _checksumSession;
     private ISnapshotChecksumMismatchSink? _checksumMismatchSink;
+    private GuestWorldStateStore? _guestWorldState;
+    private int _guestWorldStateRngSeed;
     private ulong _negotiatedCapabilities = LiveConstants.DefaultLocalCapabilities;
     private byte _roomId;
     private uint _gameTic;
@@ -52,6 +54,8 @@ public sealed class LiveGuestSession
 
     public PresentationEchoApplySession EchoApply => _echoApply;
 
+    public GuestWorldStateStore? GuestWorldState => _guestWorldState;
+
     public void SetNegotiatedCapabilities(ulong negotiatedCapabilities) =>
         _negotiatedCapabilities = negotiatedCapabilities;
 
@@ -61,6 +65,19 @@ public sealed class LiveGuestSession
     {
         _checksumSession = checksumSession;
         _checksumMismatchSink = mismatchSink;
+    }
+
+    public void SetGuestWorldState(
+        GuestWorldStateStore worldState,
+        SnapshotChecksumSession checksumSession,
+        int rngSeed = 0,
+        ISnapshotChecksumMismatchSink? mismatchSink = null)
+    {
+        _guestWorldState = worldState;
+        _guestWorldStateRngSeed = rngSeed;
+        SetChecksumSession(checksumSession, mismatchSink);
+        _worldDeltaSink = worldState;
+        _actorDeltaSink = worldState;
     }
 
     public void SetApplySinks(
@@ -187,12 +204,14 @@ public sealed class LiveGuestSession
     {
         var sequenceAck = _netRegistry[_routing.ConsolePlayer].SequenceAck;
 
-        if (sections.WorldDeltaPoses is { Count: > 0 } poses)
+        var poses = sections.WorldDeltaPoses ?? Array.Empty<PlayerPoseWorldDelta>();
+        var sectors = sections.WorldDeltaSectors ?? Array.Empty<SectorWorldDelta>();
+        if (poses.Count > 0 || sectors.Count > 0)
         {
             WorldDeltaApplySession.TryApply(
                 sections.WorldDelta,
                 poses,
-                sections.WorldDeltaSectors ?? Array.Empty<SectorWorldDelta>(),
+                sectors,
                 SnapshotPlayerMask.Build(players),
                 _routing.ConsolePlayer,
                 sequenceAck,
@@ -260,6 +279,8 @@ public sealed class LiveGuestSession
                 out _);
         }
 
+        TryComputeGuestWorldStateChecksum(sections);
+
         if (sections.HasChecksum
             && sections.ChecksumHashes is { Length: > 0 }
             && _checksumSession != null)
@@ -274,6 +295,24 @@ public sealed class LiveGuestSession
                 out _,
                 out _);
         }
+    }
+
+    private void TryComputeGuestWorldStateChecksum(ServerSnapshotTailSections sections)
+    {
+        if (_guestWorldState is null || _checksumSession is null)
+            return;
+
+        var gameTic = sections.HasChecksum
+            ? (int)sections.ChecksumGameTic
+            : (int)sections.WorldDelta.GameTic;
+        if (gameTic < 0)
+            return;
+
+        SnapshotChecksumPlaysimInputs.ComputeAndStore(
+            _checksumSession,
+            _guestWorldState,
+            gameTic,
+            _guestWorldStateRngSeed);
     }
 
     public bool TryReceiveServerSnapshot(out ServerSnapshotHeader header, out IReadOnlyList<ServerSnapshotPlayerRecord> players)

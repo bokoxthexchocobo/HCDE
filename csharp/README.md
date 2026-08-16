@@ -26,6 +26,7 @@ The full engine is ~640k lines of C++. This is a long-running migration, not a b
 | UDP transport + server query | `common/engine/i_net.cpp` (subset) | `HCDE.Net.Transport` | Done (Phase 2a) |
 | Pregame handshake | `i_net.cpp` PRE_* / HCDE services | `HCDE.Net.Pregame` | Done loopback (Phase 2b) |
 | Live netcode wire codecs | `d_net*.cpp` | `HCDE.Net.Core` | In progress (Phase 2c wire + apply stubs) |
+| Map loader | `maploader/`, `p_setup.cpp` | `HCDE.MapLoader` | Scaffold (Phase 2d) |
 | Pregame guest CLI | C++ `-join` guest path | `HCDE.PregameGuest.Cli` | Done (pregame + `--live-ticks`) |
 | Engine core | `src/` | — | Not started |
 | Dedicated server | `hcdeserv` target | — | Planned |

@@ -262,6 +262,16 @@ Phase 2 does **not** include rendering, audio, ZScript VM, or client prediction.
 | Netcode cross-language soak | `NetcodeCrossLanguageSoak.cs` | `tests/netcode_step12/netcode_step12_stress.py` invasion smoke |
 | Optional client join | `HCDE_HCDE_CLIENT_PATH` env | `--client-count 1` on Step 12 harness |
 
+### Guest world state wiring (Phase 2c — iteration 22)
+
+| Artifact | Location | C++ reference |
+| --- | --- | --- |
+| Guest world state hook | `LiveGuestSession.SetGuestWorldState` | HCDW/HCDA apply + HCKS compute on receive |
+| External tail snapshot build | `BuildServerSnapshotSinglePlayerWithExternalTail` | HCSR + custom coop/invasion tail |
+| Sector-only world delta apply | `LiveGuestSession.TryApplyTailSections` | sector deltas without pose records |
+| Phase 2d scaffold | `HCDE.MapLoader` | `maploader/`, `p_setup.cpp` entry point |
+| CI gate | `.github/workflows/csharp.yml` | `dotnet test` on `csharp/` pushes |
+
 ### Playsim stub world state + soak evidence (Phase 2c — iteration 21)
 
 | Artifact | Location | C++ reference |
@@ -414,8 +424,10 @@ Phase 2 does **not** include rendering, audio, ZScript VM, or client prediction.
 | Guest world state store | `GuestWorldStateStoreTests` | Pass |
 | Checksum inputs from world store | `SnapshotChecksumPlaysimInputsTests` | Pass |
 | Soak evidence JSON writer | `CrossLanguageSoakEvidenceTests` | Pass |
+| Guest world state checksum E2E | `GuestWorldStateChecksumIntegrationTests` | Pass |
+| Map loader scaffold | `MapLoaderConstantsTests` | Pass |
 
-**Test count:** 187 passing (`dotnet test` in `csharp/`).
+**Test count:** 190 passing (`dotnet test` in `csharp/`).
 
 ## Not yet in Phase 2b (sign-off blockers)
 
@@ -476,9 +488,9 @@ Phase 2b is complete when **all** hold:
 
 ## Phase 2c next slice
 
-1. **Wire `GuestWorldStateStore` into `LiveGuestSession`** — apply HCDW/HCDA tails into store, compute HCKS from store each tick
-2. **Cross-language evidence in CI** — run soak runners with `HCDE_SOAK_EVIDENCE_DIR` when agent image has `hcdeserv`/IWAD
-3. **Phase 2d map loader entry** — `HCDE.MapLoader` UDMF/BSP subset (gate to real playsim ticks)
+1. **UDMF/BSP read path in `HCDE.MapLoader`** — first map lump parser against golden vectors
+2. **Authority-side world store** — mirror guest store for checksum generation on send
+3. **Cross-language evidence in CI** — optional soak job when agent image has `hcdeserv`/IWAD
 
 ## Phase 2b next slice
 
@@ -504,6 +516,8 @@ Do **not** port snapshot encode/decode bodies until HCIN/HCSN headers are green.
 
 **Phase 2b C# pregame stack is feature-complete for fresh dedicated joins** — loopback WAITING setup, verification-error replies, start-game, and a cross-language guest CLI/harness are in place. The remaining 2b gate is executing the harness against a real `hcdeserv` build and recording the result.
 
+**Phase 2c iteration 22** wires `GuestWorldStateStore` into `LiveGuestSession` (`SetGuestWorldState`), adds external-tail snapshot building, sector-only world-delta apply, `HCDE.MapLoader` scaffold, and a GitHub Actions `dotnet test` CI job.
+
 **Phase 2c iteration 21** adds in-memory guest world state (`GuestWorldStateStore`), checksum input builder from applied HCDW/HCDA state (`SnapshotChecksumPlaysimInputs`), and JSON soak evidence recording (`CrossLanguageSoakEvidence` via `HCDE_SOAK_EVIDENCE_DIR`).
 
 **Phase 2c iteration 20** adds a managed netcode Step 12 cross-language soak runner (`NetcodeCrossLanguageSoak`) with shared soak result types and optional client join via `HCDE_HCDE_CLIENT_PATH`.
@@ -520,4 +534,4 @@ Do **not** port snapshot encode/decode bodies until HCIN/HCSN headers are green.
 
 **Phase 2c iteration 14** adds HCSR/HCIN apply sessions with per-player sequence/consistency tracking, idempotent snapshot handling, gap-resync policy, and injectable command sinks wired into guest/authority receive paths.
 
-Next audit checkpoint: **Phase 2c iteration 22** when guest receive wires world-store checksum compute end-to-end or Phase 2d map-loader scaffolding begins.
+Next audit checkpoint: **Phase 2c iteration 23** when `HCDE.MapLoader` reads first map lump or authority-side checksum generation lands.
