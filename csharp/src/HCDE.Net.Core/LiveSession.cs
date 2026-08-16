@@ -330,6 +330,9 @@ public sealed class LiveAuthoritySession
     private readonly LiveAuthorityClientRegistry _clients = new();
     private readonly LivePeerNetRegistry _netRegistry;
     private IClientInputCommandSink? _clientInputCommandSink;
+    private GuestWorldStateStore? _authorityWorldState;
+    private SnapshotChecksumSession? _checksumSession;
+    private int _authorityWorldStateRngSeed;
     private byte _roomId;
     private uint _gameTic;
 
@@ -353,6 +356,16 @@ public sealed class LiveAuthoritySession
     public LivePeerNetRegistry NetRegistry => _netRegistry;
 
     public void SetClientInputSink(IClientInputCommandSink? sink) => _clientInputCommandSink = sink;
+
+    public void SetAuthorityWorldState(
+        GuestWorldStateStore worldState,
+        SnapshotChecksumSession checksumSession,
+        int rngSeed = 0)
+    {
+        _authorityWorldState = worldState;
+        _checksumSession = checksumSession;
+        _authorityWorldStateRngSeed = rngSeed;
+    }
 
     public LiveAuthorityClientRegistry Clients => _clients;
 
@@ -393,7 +406,25 @@ public sealed class LiveAuthoritySession
         }
 
         if (_routing.ShouldSendServerSnapshotTo(clientSlot))
-            _gameplay.TrySendServerSnapshot(clientEndpoint, _roomId, _gameTic, playerNum: (byte)clientSlot);
+        {
+            uint[]? checksumHashes = null;
+            if (_authorityWorldState is not null && _checksumSession is not null)
+            {
+                SnapshotChecksumPlaysimInputs.ComputeAndStore(
+                    _checksumSession,
+                    _authorityWorldState,
+                    (int)_gameTic,
+                    _authorityWorldStateRngSeed);
+                _checksumSession.Ring.TryFind((int)_gameTic, out checksumHashes);
+            }
+
+            _gameplay.TrySendServerSnapshot(
+                clientEndpoint,
+                _roomId,
+                _gameTic,
+                playerNum: (byte)clientSlot,
+                checksumHashes: checksumHashes);
+        }
     }
 
     public bool TryReceiveClientInput(

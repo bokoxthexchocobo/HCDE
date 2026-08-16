@@ -2,14 +2,14 @@
 
 **Last updated:** 2026-08-15  
 **Scope:** All code under `csharp/` (7 projects, 6 test suites)  
-**Verification:** `dotnet build` and `dotnet test` in `csharp/` — **190 tests passing** (CI: `.github/workflows/csharp.yml`)  
+**Verification:** `dotnet build` and `dotnet test` in `csharp/` — **194 tests passing** (CI: `.github/workflows/csharp.yml`)  
 **Related:** [`HCDE_CSHARP_PHASE1_AUDIT.md`](HCDE_CSHARP_PHASE1_AUDIT.md) · [`HCDE_CSHARP_PHASE2_AUDIT.md`](HCDE_CSHARP_PHASE2_AUDIT.md) · [`HCDE_CSHARP_MIGRATION.md`](HCDE_CSHARP_MIGRATION.md)
 
 ---
 
 ## 1. Executive summary
 
-The C# tree is a **well-tested protocol and networking foundation** (~12,800 LOC source, 190 unit/integration tests) covering Phase 1 tools, Phase 2a–2c wire codecs, apply-session stubs, and a Phase 2d map-loader scaffold. It does **not** yet run a game: no map parsing, playsim tick loop, or `hcdeserv` executable.
+The C# tree is a **well-tested protocol and networking foundation** (~13,500 LOC source, 194 unit/integration tests) covering Phase 1 tools, Phase 2a–2c wire codecs, apply-session stubs, and Phase 2d map-loader read path. It does **not** yet run a game: no lump record decode, playsim tick loop, or `hcdeserv` executable.
 
 | Layer | Status | Confidence |
 | --- | --- | --- |
@@ -17,7 +17,7 @@ The C# tree is a **well-tested protocol and networking foundation** (~12,800 LOC
 | Phase 2a — UDP transport & query | **Complete** | High |
 | Phase 2b — pregame handshake | **~95%** (fresh join loopback) | Medium (no recorded C++ interop) |
 | Phase 2c — live netcode wire | **~60%** of `d_net` wire surface; apply stubs in place | Medium (playsim mutation deferred) |
-| Phase 2d — map loader | **Scaffold** (`HCDE.MapLoader`) | — |
+| Phase 2d — map loader | **In progress** (WAD directory + lump catalog) | Medium |
 | Phase 2e–2f — playsim, server | **Not started** | — |
 | Phase 3–4 — full sim & client | **Not started** | — |
 
@@ -40,9 +40,9 @@ csharp/
     HCDE.Net.Transport/    13 files,   ~812 LOC   (UDP, CRC, query, pregame constants)
     HCDE.Net.Pregame/      22 files, ~2,038 LOC   (pregame host/guest pumps)
     HCDE.Net.Core/         59 files, ~5,600 LOC   (live protocol codecs + session glue + world-store stubs)
-    HCDE.MapLoader/          1 file,    ~20 LOC   (Phase 2d scaffold)
+    HCDE.MapLoader/          5 files,   ~250 LOC   (WAD directory + map lump catalog)
     HCDE.PregameGuest.Cli/  5 files,   ~207 LOC   (hcde-pregame-guest CLI)
-  tests/                   44 files, 190 tests
+  tests/                   45 files, 194 tests
 ```
 
 ### 2.2 Test matrix
@@ -54,9 +54,9 @@ csharp/
 | `HCDE.Rcon.Tests` | 6 | FNV-1a + loopback auth/ping/status |
 | `HCDE.Net.Transport.Tests` | 10 | Constants, query, HCD3, gameplay CRC |
 | `HCDE.Net.Pregame.Tests` | 37 | CRC, service queue, host/guest loopback, bootstrap/resync, cross-language soak |
-| `HCDE.Net.Core.Tests` | 120 | Live headers, bodies, tail, DEM, sessions, apply, soak, world-store E2E |
-| `HCDE.MapLoader.Tests` | 1 | Phase 2d scaffold |
-| **Total** | **190** | |
+| `HCDE.Net.Core.Tests` | 121 | Live headers, bodies, tail, DEM, sessions, apply, soak, world-store E2E |
+| `HCDE.MapLoader.Tests` | 4 | WAD directory, map lump catalog, UDMF probe |
+| **Total** | **194** | |
 
 ### 2.3 Dependency graph
 
@@ -267,8 +267,8 @@ PRE_CONNECT → PRE_CONNECT_ACK → console-player
 | DEM payloads | ~50 event types incl. weapon slots | No reverse (canonical→legacy) |
 | ECHO presentation | Full inventory/player encode-decode + apply session | Playsim-backed inventory/weapon follow |
 | HCIV invasion | V2 header + embedded skip + spawn directory | Spawn spot payloads, full invasion state |
-| Guest receive | HCSR/HCIN apply + tail sinks (ECHO/HCAV/HCDW/HCDA/HCDS/HCIV/HCKS) | Authority-side store + send-path checksum generation |
-| World-state wiring | `SetGuestWorldState` applies tails + computes HCKS on receive | Authority mirror for outbound snapshots |
+| Guest receive | HCSR/HCIN apply + tail sinks (ECHO/HCAV/HCDW/HCDA/HCDS/HCIV/HCKS) | Authority HCDW tail embed on send |
+| World-state wiring | `SetGuestWorldState` + `SetAuthorityWorldState` | Outbound snapshots carry applied world deltas |
 
 ### 6.3 Missing entirely
 

@@ -262,6 +262,15 @@ Phase 2 does **not** include rendering, audio, ZScript VM, or client prediction.
 | Netcode cross-language soak | `NetcodeCrossLanguageSoak.cs` | `tests/netcode_step12/netcode_step12_stress.py` invasion smoke |
 | Optional client join | `HCDE_HCDE_CLIENT_PATH` env | `--client-count 1` on Step 12 harness |
 
+### WAD map lump catalog (Phase 2c/2d — iteration 23)
+
+| Artifact | Location | C++ reference |
+| --- | --- | --- |
+| WAD directory reader | `WadArchiveReader.cs` | `wadinfo_t` / `wadlump_t` in `file_wad.cpp` |
+| Map lump catalog | `MapLumpCatalogReader.cs` | `ML_*` lump order in `doomdata.h` |
+| UDMF probe | `UdmfMapProbe.cs` | `TEXTMAP` / `namespace` prefix in `udmf.cpp` |
+| Authority checksum send | `LiveAuthoritySession.SetAuthorityWorldState` | outbound HCKS from authority world store |
+
 ### Guest world state wiring (Phase 2c — iteration 22)
 
 | Artifact | Location | C++ reference |
@@ -426,8 +435,11 @@ Phase 2 does **not** include rendering, audio, ZScript VM, or client prediction.
 | Soak evidence JSON writer | `CrossLanguageSoakEvidenceTests` | Pass |
 | Guest world state checksum E2E | `GuestWorldStateChecksumIntegrationTests` | Pass |
 | Map loader scaffold | `MapLoaderConstantsTests` | Pass |
+| WAD directory parse | `WadArchiveReaderTests` | Pass |
+| Map lump catalog + UDMF probe | `MapLumpCatalogReaderTests` | Pass |
+| Authority outbound HCKS | `AuthorityWorldStateChecksumIntegrationTests` | Pass |
 
-**Test count:** 190 passing (`dotnet test` in `csharp/`).
+**Test count:** 194 passing (`dotnet test` in `csharp/`).
 
 ## Not yet in Phase 2b (sign-off blockers)
 
@@ -488,9 +500,9 @@ Phase 2b is complete when **all** hold:
 
 ## Phase 2c next slice
 
-1. **UDMF/BSP read path in `HCDE.MapLoader`** — first map lump parser against golden vectors
-2. **Authority-side world store** — mirror guest store for checksum generation on send
-3. **Cross-language evidence in CI** — optional soak job when agent image has `hcdeserv`/IWAD
+1. **Read lump payloads** — THINGS/LINEDEFS/SECTORS record decode in `HCDE.MapLoader`
+2. **Authority send with HCDW tail** — embed world deltas in snapshots when world store is set
+3. **Optional cross-language soak CI job** when agent image has `hcdeserv`/IWAD
 
 ## Phase 2b next slice
 
@@ -516,6 +528,8 @@ Do **not** port snapshot encode/decode bodies until HCIN/HCSN headers are green.
 
 **Phase 2b C# pregame stack is feature-complete for fresh dedicated joins** — loopback WAITING setup, verification-error replies, start-game, and a cross-language guest CLI/harness are in place. The remaining 2b gate is executing the harness against a real `hcdeserv` build and recording the result.
 
+**Phase 2c iteration 23** adds WAD directory + map lump catalog readers (`WadArchiveReader`, `MapLumpCatalogReader`), UDMF `TEXTMAP` probe, and authority outbound HCKS via `SetAuthorityWorldState`.
+
 **Phase 2c iteration 22** wires `GuestWorldStateStore` into `LiveGuestSession` (`SetGuestWorldState`), adds external-tail snapshot building, sector-only world-delta apply, `HCDE.MapLoader` scaffold, and a GitHub Actions `dotnet test` CI job.
 
 **Phase 2c iteration 21** adds in-memory guest world state (`GuestWorldStateStore`), checksum input builder from applied HCDW/HCDA state (`SnapshotChecksumPlaysimInputs`), and JSON soak evidence recording (`CrossLanguageSoakEvidence` via `HCDE_SOAK_EVIDENCE_DIR`).
@@ -534,4 +548,4 @@ Do **not** port snapshot encode/decode bodies until HCIN/HCSN headers are green.
 
 **Phase 2c iteration 14** adds HCSR/HCIN apply sessions with per-player sequence/consistency tracking, idempotent snapshot handling, gap-resync policy, and injectable command sinks wired into guest/authority receive paths.
 
-Next audit checkpoint: **Phase 2c iteration 23** when `HCDE.MapLoader` reads first map lump or authority-side checksum generation lands.
+Next audit checkpoint: **Phase 2c iteration 24** when binary map lump record decode lands or authority sends HCDW tails from world store.
