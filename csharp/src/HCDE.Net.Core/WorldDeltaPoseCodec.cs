@@ -48,18 +48,33 @@ public readonly struct PlayerPoseWorldDelta
 
 public readonly struct SectorWorldDelta
 {
-    public SectorWorldDelta(ushort sectorIndex, byte flags, float floor, float ceiling)
+    public SectorWorldDelta(
+        ushort sectorIndex,
+        byte flags,
+        float floor,
+        float ceiling,
+        short lightLevel = 0,
+        short special = 0)
     {
         SectorIndex = sectorIndex;
         Flags = flags;
         Floor = floor;
         Ceiling = ceiling;
+        LightLevel = lightLevel;
+        Special = special;
     }
 
     public ushort SectorIndex { get; }
     public byte Flags { get; }
     public float Floor { get; }
     public float Ceiling { get; }
+    public short LightLevel { get; }
+    public short Special { get; }
+
+    public static int GetWireSize(byte flags) =>
+        LiveConstants.ServerWorldDeltaSectorRecordSize
+        + ((flags & LiveConstants.ServerWorldDeltaSectorHasLight) != 0 ? 2 : 0)
+        + ((flags & LiveConstants.ServerWorldDeltaSectorHasSpecial) != 0 ? 2 : 0);
 }
 
 public static class WorldDeltaPoseCodec
@@ -129,7 +144,8 @@ public static class WorldDeltaPoseCodec
 
     public static int WriteSector(Span<byte> buffer, ref int cursor, SectorWorldDelta sector)
     {
-        if (buffer.Length - cursor < LiveConstants.ServerWorldDeltaSectorRecordSize)
+        var required = SectorWorldDelta.GetWireSize(sector.Flags);
+        if (buffer.Length - cursor < required)
             return 0;
 
         BinaryPrimitives.WriteUInt16BigEndian(buffer[cursor..], sector.SectorIndex);
@@ -139,7 +155,20 @@ public static class WorldDeltaPoseCodec
         cursor += 4;
         BinaryPrimitives.WriteSingleBigEndian(buffer[cursor..], sector.Ceiling);
         cursor += 4;
-        return LiveConstants.ServerWorldDeltaSectorRecordSize;
+
+        if ((sector.Flags & LiveConstants.ServerWorldDeltaSectorHasLight) != 0)
+        {
+            BinaryPrimitives.WriteInt16BigEndian(buffer[cursor..], sector.LightLevel);
+            cursor += 2;
+        }
+
+        if ((sector.Flags & LiveConstants.ServerWorldDeltaSectorHasSpecial) != 0)
+        {
+            BinaryPrimitives.WriteInt16BigEndian(buffer[cursor..], sector.Special);
+            cursor += 2;
+        }
+
+        return required;
     }
 
     public static bool TryReadSector(ReadOnlySpan<byte> buffer, ref int cursor, out SectorWorldDelta sector)
@@ -151,11 +180,35 @@ public static class WorldDeltaPoseCodec
         var sectorIndex = BinaryPrimitives.ReadUInt16BigEndian(buffer[cursor..]);
         cursor += 2;
         var flags = buffer[cursor++];
+        if ((flags & ~LiveConstants.ServerWorldDeltaSectorKnownFlags) != 0)
+            return false;
+
         var floor = BinaryPrimitives.ReadSingleBigEndian(buffer[cursor..]);
         cursor += 4;
         var ceiling = BinaryPrimitives.ReadSingleBigEndian(buffer[cursor..]);
         cursor += 4;
-        sector = new SectorWorldDelta(sectorIndex, flags, floor, ceiling);
+
+        short lightLevel = 0;
+        if ((flags & LiveConstants.ServerWorldDeltaSectorHasLight) != 0)
+        {
+            if (buffer.Length - cursor < 2)
+                return false;
+
+            lightLevel = BinaryPrimitives.ReadInt16BigEndian(buffer[cursor..]);
+            cursor += 2;
+        }
+
+        short special = 0;
+        if ((flags & LiveConstants.ServerWorldDeltaSectorHasSpecial) != 0)
+        {
+            if (buffer.Length - cursor < 2)
+                return false;
+
+            special = BinaryPrimitives.ReadInt16BigEndian(buffer[cursor..]);
+            cursor += 2;
+        }
+
+        sector = new SectorWorldDelta(sectorIndex, flags, floor, ceiling, lightLevel, special);
         return true;
     }
 }

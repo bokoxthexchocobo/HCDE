@@ -333,6 +333,7 @@ public sealed class LiveAuthoritySession
     private GuestWorldStateStore? _authorityWorldState;
     private SnapshotChecksumSession? _checksumSession;
     private int _authorityWorldStateRngSeed;
+    private bool _replicateSectorMetadata;
     private byte _roomId;
     private uint _gameTic;
 
@@ -360,11 +361,13 @@ public sealed class LiveAuthoritySession
     public void SetAuthorityWorldState(
         GuestWorldStateStore worldState,
         SnapshotChecksumSession checksumSession,
-        int rngSeed = 0)
+        int rngSeed = 0,
+        bool replicateSectorMetadata = false)
     {
         _authorityWorldState = worldState;
         _checksumSession = checksumSession;
         _authorityWorldStateRngSeed = rngSeed;
+        _replicateSectorMetadata = replicateSectorMetadata;
     }
 
     public LiveAuthorityClientRegistry Clients => _clients;
@@ -426,7 +429,8 @@ public sealed class LiveAuthoritySession
                     tail,
                     _authorityWorldState,
                     _gameTic,
-                    checksumHashes);
+                    checksumHashes,
+                    _replicateSectorMetadata);
                 if (tailWritten > 0)
                 {
                     _gameplay.TrySendServerSnapshotWithExternalTail(

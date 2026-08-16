@@ -79,6 +79,7 @@ public static class LiveConstants
     public const int ServerWorldDeltaHeaderSize = 11;
     public const int ServerWorldDeltaPoseRecordV4Size = 38;
     public const int ServerWorldDeltaSectorRecordSize = 11;
+    public const int ServerWorldDeltaSectorRecordMaxSize = 15;
     public const int AuthorityEventsHeaderSize = 8;
     public const int ActorDeltasHeaderSize = 8;
     public const byte ServerWorldDeltaProtocolVersion = 4;
@@ -94,6 +95,13 @@ public static class LiveConstants
     public const byte ServerWorldDeltaPoseOnGround = 1 << 2;
     public const byte ServerWorldDeltaSectorHasFloor = 1 << 0;
     public const byte ServerWorldDeltaSectorHasCeiling = 1 << 1;
+    public const byte ServerWorldDeltaSectorHasLight = 1 << 2;
+    public const byte ServerWorldDeltaSectorHasSpecial = 1 << 3;
+    public const byte ServerWorldDeltaSectorKnownFlags =
+        ServerWorldDeltaSectorHasFloor
+        | ServerWorldDeltaSectorHasCeiling
+        | ServerWorldDeltaSectorHasLight
+        | ServerWorldDeltaSectorHasSpecial;
     public const byte ActorDeltasFlagComplete = 1 << 0;
     public const byte ActorDeltaFlagLive = 1 << 0;
 

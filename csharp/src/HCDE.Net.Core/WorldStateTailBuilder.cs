@@ -6,7 +6,8 @@ public static class WorldStateTailBuilder
         Span<byte> tail,
         GuestWorldStateStore store,
         uint gameTic,
-        uint[]? checksumHashes = null)
+        uint[]? checksumHashes = null,
+        bool replicateSectorMetadata = false)
     {
         var poses = new PlayerPoseWorldDelta[store.Players.Count];
         var poseIndex = 0;
@@ -35,11 +36,20 @@ public static class WorldStateTailBuilder
         var sectorIndex = 0;
         foreach (var sector in store.Sectors.Values.OrderBy(static s => s.SectorIndex))
         {
+            byte flags = 0;
+            if (replicateSectorMetadata)
+            {
+                flags |= LiveConstants.ServerWorldDeltaSectorHasLight;
+                flags |= LiveConstants.ServerWorldDeltaSectorHasSpecial;
+            }
+
             sectors[sectorIndex++] = new SectorWorldDelta(
                 sector.SectorIndex,
-                flags: 0,
+                flags,
                 sector.Floor,
-                sector.Ceiling);
+                sector.Ceiling,
+                sector.LightLevel,
+                sector.Special);
         }
 
         return ServerSnapshotTailCodec.WriteCoopShipping(

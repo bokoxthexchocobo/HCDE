@@ -67,6 +67,10 @@ public sealed class GuestWorldStateStore : IWorldDeltaApplySink, IActorDeltaAppl
 
         state.Floor = sector.Floor;
         state.Ceiling = sector.Ceiling;
+        if ((sector.Flags & LiveConstants.ServerWorldDeltaSectorHasLight) != 0)
+            state.LightLevel = sector.LightLevel;
+        if ((sector.Flags & LiveConstants.ServerWorldDeltaSectorHasSpecial) != 0)
+            state.Special = sector.Special;
         return true;
     }
 

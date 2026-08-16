@@ -26,6 +26,8 @@ public static class TestWadBuilder
             lumps.Add((MapLumpNames.Ssectors, BuildSubsectorLump(1, 0)));
             lumps.Add((MapLumpNames.Nodes, BuildNodeLump(50, 0, 100, 0, 0, 0, 128, 128, 0, 0)));
             lumps.Add((MapLumpNames.Sectors, BuildSectorLump(0, 128, "FLOOR1_1", "CEIL1_1", 160, 0, 1)));
+            lumps.Add((MapLumpNames.Reject, BuildRejectLump(1)));
+            lumps.Add((MapLumpNames.Blockmap, BuildBlockmapLump(0, 0, 1, 1)));
         }
 
         var headerSize = WadArchiveReader.HeaderSize;
@@ -130,6 +132,25 @@ public static class TestWadBuilder
         return lump;
     }
 
+    public static byte[] BuildRejectLump(int sectorCount)
+    {
+        var bytes = (sectorCount * sectorCount + 7) / 8;
+        return new byte[bytes];
+    }
+
+    public static byte[] BuildBlockmapLump(short originX, short originY, ushort width, ushort height)
+    {
+        // Minimal 1x1 blockmap: header + one offset + terminator list.
+        var lump = new byte[12];
+        BinaryPrimitives.WriteInt16LittleEndian(lump.AsSpan(0, 2), originX);
+        BinaryPrimitives.WriteInt16LittleEndian(lump.AsSpan(2, 2), originY);
+        BinaryPrimitives.WriteUInt16LittleEndian(lump.AsSpan(4, 2), width);
+        BinaryPrimitives.WriteUInt16LittleEndian(lump.AsSpan(6, 2), height);
+        BinaryPrimitives.WriteInt16LittleEndian(lump.AsSpan(8, 2), 5);
+        BinaryPrimitives.WriteInt16LittleEndian(lump.AsSpan(10, 2), -1);
+        return lump;
+    }
+
     public static byte[] BuildVertexLump(params short[] coordinates)
     {
         if (coordinates.Length % 2 != 0)
@@ -203,7 +224,7 @@ public class WadArchiveReaderTests
     {
         var wad = TestWadBuilder.BuildMinimalMapWad("MAP01");
         Assert.True(WadArchiveReader.TryReadDirectory(wad, out var entries, out _));
-        Assert.Equal(9, entries.Length);
+        Assert.Equal(11, entries.Length);
         Assert.Equal("MAP01", entries[0].Name);
         Assert.Equal("THINGS", entries[1].Name);
     }
@@ -223,6 +244,10 @@ public class MapLumpCatalogReaderTests
         Assert.Equal((uint)MapSidedefRecord.RecordSize, sidedefs.Entry.Size);
         Assert.True(catalog.TryGetLump(MapLumpKind.Ssectors, out var ssectors));
         Assert.Equal((uint)MapSubsectorRecord.RecordSize, ssectors.Entry.Size);
+        Assert.True(catalog.TryGetLump(MapLumpKind.Reject, out var reject));
+        Assert.Equal(1u, reject.Entry.Size);
+        Assert.True(catalog.TryGetLump(MapLumpKind.Blockmap, out var blockmap));
+        Assert.Equal(12u, blockmap.Entry.Size);
         Assert.True(catalog.TryGetLump(MapLumpKind.Sectors, out var sectors));
         Assert.Equal((uint)MapSectorRecord.RecordSize, sectors.Entry.Size);
         Assert.True(catalog.TryGetLump(MapLumpKind.Vertexes, out var vertexes));

@@ -2,14 +2,14 @@
 
 **Last updated:** 2026-08-16  
 **Scope:** All code under `csharp/` (7 projects, 6 test suites)  
-**Verification:** `dotnet build` and `dotnet test` in `csharp/` — **209 tests passing** (CI: `.github/workflows/csharp.yml`; optional soak: `.github/workflows/csharp-cross-language-soak.yml`)  
+**Verification:** `dotnet build` and `dotnet test` in `csharp/` — **215 tests passing** (CI: `.github/workflows/csharp.yml`; optional soak: `.github/workflows/csharp-cross-language-soak.yml`)  
 **Related:** [`HCDE_CSHARP_PHASE1_AUDIT.md`](HCDE_CSHARP_PHASE1_AUDIT.md) · [`HCDE_CSHARP_PHASE2_AUDIT.md`](HCDE_CSHARP_PHASE2_AUDIT.md) · [`HCDE_CSHARP_MIGRATION.md`](HCDE_CSHARP_MIGRATION.md)
 
 ---
 
 ## 1. Executive summary
 
-The C# tree is a **well-tested protocol and networking foundation** (~14,100 LOC source, 209 unit/integration tests) covering Phase 1 tools, Phase 2a–2c wire codecs, world-store checksum path, and Phase 2d binary map lump + geometry + surface decode.
+The C# tree is a **well-tested protocol and networking foundation** (~14,200 LOC source, 215 unit/integration tests) covering Phase 1 tools, Phase 2a–2c wire codecs, world-store checksum path, and Phase 2d full binary map lump decode through collision.
 
 | Layer | Status | Confidence |
 | --- | --- | --- |
@@ -17,7 +17,7 @@ The C# tree is a **well-tested protocol and networking foundation** (~14,100 LOC
 | Phase 2a — UDP transport & query | **Complete** | High |
 | Phase 2b — pregame handshake | **~95%** (fresh join loopback) | Medium (no recorded C++ interop) |
 | Phase 2c — live netcode wire | **~60%** of `d_net` wire surface; apply stubs in place | Medium (playsim mutation deferred) |
-| Phase 2d — map loader | **In progress** (WAD + THINGS/LINEDEFS/SECTORS + VERTEXES/SEGS/NODES + SIDEDEFS/SSECTORS decode; map-load bootstrap) | Medium |
+| Phase 2d — map loader | **In progress** (full binary lump decode through BLOCKMAP/REJECT; map-load bootstrap) | Medium |
 | Phase 2e–2f — playsim, server | **Not started** | — |
 | Phase 3–4 — full sim & client | **Not started** | — |
 
@@ -40,9 +40,9 @@ csharp/
     HCDE.Net.Transport/    13 files,   ~812 LOC   (UDP, CRC, query, pregame constants)
     HCDE.Net.Pregame/      22 files, ~2,038 LOC   (pregame host/guest pumps)
     HCDE.Net.Core/         60 files, ~8,300 LOC   (live protocol codecs + session glue + world-store stubs)
-    HCDE.MapLoader/         12 files, ~1,060 LOC   (WAD directory + binary lump + geometry + surface decode)
+    HCDE.MapLoader/         14 files, ~1,200 LOC   (WAD directory + full binary lump + collision decode)
     HCDE.PregameGuest.Cli/  5 files,   ~207 LOC   (hcde-pregame-guest CLI)
-  tests/                   50 files, 209 tests
+  tests/                   52 files, 215 tests
 ```
 
 ### 2.2 Test matrix
@@ -54,9 +54,9 @@ csharp/
 | `HCDE.Rcon.Tests` | 6 | FNV-1a + loopback auth/ping/status |
 | `HCDE.Net.Transport.Tests` | 10 | Constants, query, HCD3, gameplay CRC |
 | `HCDE.Net.Pregame.Tests` | 37 | CRC, service queue, host/guest loopback, bootstrap/resync, cross-language soak |
-| `HCDE.Net.Core.Tests` | 126 | Live headers, bodies, tail, DEM, sessions, world-store + map-bootstrap E2E |
-| `HCDE.MapLoader.Tests` | 14 | WAD directory, lump catalog, binary + geometry + surface decode |
-| **Total** | **209** | |
+| `HCDE.Net.Core.Tests` | 129 | Live headers, bodies, tail, DEM, sessions, world-store + map-bootstrap E2E |
+| `HCDE.MapLoader.Tests` | 17 | WAD directory, lump catalog, binary + geometry + surface + collision decode |
+| **Total** | **215** | |
 
 ### 2.3 Dependency graph
 
@@ -335,7 +335,7 @@ Wire-first codecs for the **core live envelope and record bodies** are in good s
 
 | Planned project | C++ reference | LOC order of magnitude |
 | --- | --- | --- |
-| `HCDE.MapLoader` | `maploader/`, `p_setup.cpp` | WAD + full binary lump decode through SSECTORS (~1,060 LOC) |
+| `HCDE.MapLoader` | `maploader/`, `p_setup.cpp` | WAD + full binary lump decode through BLOCKMAP/REJECT (~1,200 LOC) |
 | `HCDE.Gamedata` | DEHACKED, MAPINFO, UDMF | Tens of thousands |
 | `HCDE.Playsim` | `playsim/`, `p_tick.cpp` | **Hundreds of thousands** |
 | `HCDE.Server` | `d_main.cpp` dedicated path | Medium (orchestration) |
@@ -357,7 +357,8 @@ Wire-first codecs for the **core live envelope and record bodies** are in good s
 1. ~~VERTEXES/SEGS/NODES lump decode in `HCDE.MapLoader`~~ (done — iteration 25)
 2. ~~Map sector bootstrap into `GuestWorldStateStore`~~ (done — `GuestWorldStateBootstrap`)
 3. ~~SSECTORS/SIDEDEFS decode + map-load bootstrap E2E~~ (done — iteration 26)
-4. BLOCKMAP/REJECT decode + sector light/special on HCDW wire
+4. ~~BLOCKMAP/REJECT decode + sector light/special on HCDW wire~~ (done — iteration 27)
+5. Unified `BinaryMapDecoder` + C++ sector-metadata flag parity
 
 ---
 

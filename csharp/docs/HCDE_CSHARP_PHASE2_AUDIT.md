@@ -262,6 +262,15 @@ Phase 2 does **not** include rendering, audio, ZScript VM, or client prediction.
 | Netcode cross-language soak | `NetcodeCrossLanguageSoak.cs` | `tests/netcode_step12/netcode_step12_stress.py` invasion smoke |
 | Optional client join | `HCDE_HCDE_CLIENT_PATH` env | `--client-count 1` on Step 12 harness |
 
+### Collision lump decode + sector metadata on HCDW wire (Phase 2c/2d — iteration 27)
+
+| Artifact | Location | C++ reference |
+| --- | --- | --- |
+| BLOCKMAP/REJECT decode | `CollisionMapLumpCodec.cs`, `BinaryMapCollisionDecoder.cs` | `blockmap_t`, `rejectmatrix` in `maploader.cpp` |
+| Sector light/special wire | `SectorWorldDelta`, `WorldDeltaPoseCodec` | HCDE extension beyond C++ floor/ceiling flags |
+| Authority metadata replicate | `LiveAuthoritySession.SetAuthorityWorldState(replicateSectorMetadata)` | guests without local WAD bootstrap |
+| Guest-without-WAD E2E | `MapLoadBootstrapIntegrationTests` | HCDW metadata + HCKS checksum match |
+
 ### Surface lump decode + map-load bootstrap E2E (Phase 2c/2d — iteration 26)
 
 | Artifact | Location | C++ reference |
@@ -528,8 +537,8 @@ Phase 2b is complete when **all** hold:
 
 ## Phase 2c next slice
 
-1. **BLOCKMAP/REJECT decode** — complete collision/reject read path
-2. **Sector light/special on HCDW wire** — extend `SectorWorldDelta` when map-bootstrap guests lack local WAD
+1. **Full map decode aggregate** — single `BinaryMapDecoder` combining lumps + collision
+2. **C++ parity for sector metadata flags** — land `HasLight`/`HasSpecial` in `d_net_snapshot_part1.inl`
 3. **Record cross-language soak evidence** when agent image has `hcdeserv`/IWAD
 
 ## Phase 2b next slice
@@ -555,6 +564,8 @@ Do **not** port snapshot encode/decode bodies until HCIN/HCSN headers are green.
 ## Audit conclusion (interim)
 
 **Phase 2b C# pregame stack is feature-complete for fresh dedicated joins** — loopback WAITING setup, verification-error replies, start-game, and a cross-language guest CLI/harness are in place. The remaining 2b gate is executing the harness against a real `hcdeserv` build and recording the result.
+
+**Phase 2c iteration 27** adds BLOCKMAP/REJECT collision decode, optional sector light/special on HCDW wire (`replicateSectorMetadata`), and guest-without-WAD checksum E2E.
 
 **Phase 2c iteration 26** adds SIDEDEFS/SSECTORS binary surface decode, `MapLoadBootstrap` to seed world stores from WAD map sectors, and authority→guest HCDW+HCKS E2E when both sides bootstrap from the same map.
 
@@ -582,4 +593,4 @@ Do **not** port snapshot encode/decode bodies until HCIN/HCSN headers are green.
 
 **Phase 2c iteration 14** adds HCSR/HCIN apply sessions with per-player sequence/consistency tracking, idempotent snapshot handling, gap-resync policy, and injectable command sinks wired into guest/authority receive paths.
 
-Next audit checkpoint: **Phase 2c iteration 27** when BLOCKMAP/REJECT decode lands or sector light/special ships on HCDW wire.
+Next audit checkpoint: **Phase 2c iteration 28** when unified map decode lands or C++ sector-metadata flags ship.

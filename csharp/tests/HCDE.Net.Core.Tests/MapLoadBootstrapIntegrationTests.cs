@@ -68,4 +68,55 @@ public class MapLoadBootstrapIntegrationTests
         Assert.Equal(authorityHashes, guestHashes);
         Assert.Equal(authorityHashes, tailSections.Value.ChecksumHashes);
     }
+
+    [Fact]
+    public void AuthoritySend_SectorMetadataOnWire_GuestWithoutWad_MatchesChecksum()
+    {
+        var wad = TestWadBuilder.BuildMinimalMapWad("MAP01");
+        const int rngSeed = 23;
+        var gameId = new byte[] { 0x10, 0x20, 0x30, 0x40, 0x50, 0x60, 0x70, 0x80 };
+
+        using var authorityTransport = new HCDE.Net.Transport.UdpTransport();
+        using var guestTransport = new HCDE.Net.Transport.UdpTransport();
+        authorityTransport.Bind(0);
+        guestTransport.Bind(0);
+        authorityTransport.SetNonBlocking(true);
+        guestTransport.SetNonBlocking(true);
+
+        var authorityEndpoint = new HCDE.Net.Transport.NetworkEndpoint(System.Net.IPAddress.Loopback, authorityTransport.BoundPort);
+        var guestEndpoint = new HCDE.Net.Transport.NetworkEndpoint(System.Net.IPAddress.Loopback, guestTransport.BoundPort);
+
+        var authorityStore = new GuestWorldStateStore();
+        Assert.True(MapLoadBootstrap.TrySeedGuestWorldState(wad, "MAP01", authorityStore, out _));
+
+        var authorityChecksum = new SnapshotChecksumSession();
+        var authority = new LiveAuthoritySession(authorityTransport, gameId, authoritySlot: 0, maxClients: 4);
+        authority.TrackClient(guestEndpoint, clientSlot: 1);
+        authority.SetAuthorityWorldState(
+            authorityStore,
+            authorityChecksum,
+            rngSeed,
+            replicateSectorMetadata: true);
+
+        var guestStore = new GuestWorldStateStore();
+        var guestChecksum = new SnapshotChecksumSession();
+        var guest = new LiveGuestSession(guestTransport, gameId, authorityEndpoint, guestPlayerSlot: 1, authoritySlot: 0, maxClients: 4);
+        guest.SetGuestWorldState(guestStore, guestChecksum, rngSeed);
+
+        var now = (ulong)Environment.TickCount64;
+        authority.PumpClient(now, guestEndpoint, clientSlot: 1);
+
+        Assert.True(guest.TryReceiveAuthorityControl(out _));
+        Assert.True(guest.TryReceiveServerSnapshot(out _, out _, out var tailSections));
+        Assert.NotNull(tailSections);
+        Assert.True(tailSections.Value.HasChecksum);
+        Assert.True(guestStore.Sectors.TryGetValue(0, out var guestSector));
+        Assert.Equal(0, guestSector.Floor);
+        Assert.Equal(128, guestSector.Ceiling);
+        Assert.Equal(160, guestSector.LightLevel);
+        Assert.Equal(0, guestSector.Special);
+        Assert.True(authorityChecksum.Ring.TryFind((int)tailSections.Value.ChecksumGameTic, out var authorityHashes));
+        Assert.True(guestChecksum.Ring.TryFind((int)tailSections.Value.ChecksumGameTic, out var guestHashes));
+        Assert.Equal(authorityHashes, guestHashes);
+    }
 }

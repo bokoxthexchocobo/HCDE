@@ -6,7 +6,7 @@ public static class WorldDeltaChunkCodec
         LiveConstants.ServerWorldDeltaHeaderSize
         + playerCount * LiveConstants.ServerWorldDeltaPoseRecordV4Size
         + 1
-        + sectorCount * LiveConstants.ServerWorldDeltaSectorRecordSize;
+        + sectorCount * LiveConstants.ServerWorldDeltaSectorRecordMaxSize;
 
     public static int Write(
         Span<byte> chunk,
