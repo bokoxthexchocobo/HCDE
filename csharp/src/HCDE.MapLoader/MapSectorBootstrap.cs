@@ -12,10 +12,10 @@ public static class MapSectorBootstrap
     {
         sectors = Array.Empty<MapSectorRecord>();
         rejectReason = null;
-        if (!BinaryMapLumpDecoder.TryDecode(wad, catalog, out var records, out rejectReason))
+        if (!BinaryMapDecoder.TryDecode(wad, catalog, out var map, out rejectReason))
             return false;
 
-        sectors = records.Sectors;
+        sectors = map.Core.Sectors;
         return true;
     }
 }

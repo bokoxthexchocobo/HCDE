@@ -578,6 +578,14 @@ constexpr uint8_t HCDEServerWorldDeltaPoseLive = 1u << 1;
 constexpr uint8_t HCDEServerWorldDeltaPoseOnGround = 1u << 2;
 constexpr uint8_t HCDEServerWorldDeltaSectorHasFloor = 1u << 0;
 constexpr uint8_t HCDEServerWorldDeltaSectorHasCeiling = 1u << 1;
+constexpr uint8_t HCDEServerWorldDeltaSectorHasLight = 1u << 2;
+constexpr uint8_t HCDEServerWorldDeltaSectorHasSpecial = 1u << 3;
+constexpr uint8_t HCDEServerWorldDeltaSectorKnownFlags =
+	HCDEServerWorldDeltaSectorHasFloor
+	| HCDEServerWorldDeltaSectorHasCeiling
+	| HCDEServerWorldDeltaSectorHasLight
+	| HCDEServerWorldDeltaSectorHasSpecial;
+bool HCDEWorldDeltaReplicateSectorMetadata = false;
 constexpr size_t HCDEAuthorityEventsMagicOffset = 0u;
 constexpr size_t HCDEAuthorityEventsVersionOffset = 4u;
 constexpr size_t HCDEAuthorityEventsFlagsOffset = 5u;

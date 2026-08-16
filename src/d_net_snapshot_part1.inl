@@ -145,12 +145,27 @@ static bool HCDEAppendServerWorldDeltas(int client, uint8_t* output, size_t outp
 				sectorFlags |= HCDEServerWorldDeltaSectorHasFloor;
 			if (sector.ceilingdata != nullptr)
 				sectorFlags |= HCDEServerWorldDeltaSectorHasCeiling;
+			if (HCDEWorldDeltaReplicateSectorMetadata)
+			{
+				sectorFlags |= HCDEServerWorldDeltaSectorHasLight;
+				sectorFlags |= HCDEServerWorldDeltaSectorHasSpecial;
+			}
 			if (!HCDEAppendBE16(output, outputCapacity, cursor, uint16_t(sectorIndex))
 				|| !HCDEAppendByte(output, outputCapacity, cursor, sectorFlags)
 				|| !HCDEAppendFloat(output, outputCapacity, cursor, sector.CenterFloor())
 				|| !HCDEAppendFloat(output, outputCapacity, cursor, sector.CenterCeiling()))
 			{
 				return false;
+			}
+			if ((sectorFlags & HCDEServerWorldDeltaSectorHasLight) != 0u)
+			{
+				if (!HCDEAppendBE16(output, outputCapacity, cursor, uint16_t(int16_t(sector.lightlevel))))
+					return false;
+			}
+			if ((sectorFlags & HCDEServerWorldDeltaSectorHasSpecial) != 0u)
+			{
+				if (!HCDEAppendBE16(output, outputCapacity, cursor, uint16_t(int16_t(clamp<int>(sector.special, INT16_MIN, INT16_MAX)))))
+					return false;
 			}
 			++emitted;
 		}
@@ -1072,7 +1087,23 @@ static bool HCDEApplyServerSectorDeltas(int clientNum, uint32_t serverTic, const
 		{
 			return false;
 		}
-		if ((sectorFlags & ~(HCDEServerWorldDeltaSectorHasFloor | HCDEServerWorldDeltaSectorHasCeiling)) != 0u
+		int16_t lightLevel = 0;
+		int16_t special = 0;
+		if ((sectorFlags & HCDEServerWorldDeltaSectorHasLight) != 0u)
+		{
+			uint16_t lightBits = 0u;
+			if (!HCDEReadBE16Field(body, bodyBytes, cursor, lightBits))
+				return false;
+			lightLevel = int16_t(lightBits);
+		}
+		if ((sectorFlags & HCDEServerWorldDeltaSectorHasSpecial) != 0u)
+		{
+			uint16_t specialBits = 0u;
+			if (!HCDEReadBE16Field(body, bodyBytes, cursor, specialBits))
+				return false;
+			special = int16_t(specialBits);
+		}
+		if ((sectorFlags & ~HCDEServerWorldDeltaSectorKnownFlags) != 0u
 			|| sectorIndex >= primaryLevel->sectors.Size())
 		{
 			return false;
@@ -1086,6 +1117,10 @@ static bool HCDEApplyServerSectorDeltas(int clientNum, uint32_t serverTic, const
 			HCDEApplyServerSectorPlane(sector, sector_t::floor, floorZ);
 		if ((sectorFlags & HCDEServerWorldDeltaSectorHasCeiling) != 0u)
 			HCDEApplyServerSectorPlane(sector, sector_t::ceiling, ceilingZ);
+		if ((sectorFlags & HCDEServerWorldDeltaSectorHasLight) != 0u)
+			sector.lightlevel = lightLevel;
+		if ((sectorFlags & HCDEServerWorldDeltaSectorHasSpecial) != 0u)
+			sector.special = special;
 		const double newFloorZ = sector.CenterFloor();
 		const double newCeilingZ = sector.CenterCeiling();
 		if (fabs(newFloorZ - oldFloorZ) > 0.01 || fabs(newCeilingZ - oldCeilingZ) > 0.01)

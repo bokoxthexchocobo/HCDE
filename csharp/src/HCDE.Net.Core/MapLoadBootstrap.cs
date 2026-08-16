@@ -11,13 +11,10 @@ public static class MapLoadBootstrap
         out string? rejectReason)
     {
         rejectReason = null;
-        if (!MapLumpCatalogReader.TryReadMap(wad, mapName, out var catalog, out rejectReason))
+        if (!BinaryMapDecoder.TryReadMap(wad, mapName, out var map, out _, out rejectReason))
             return false;
 
-        if (!MapSectorBootstrap.TryReadSectors(wad, catalog, out var sectors, out rejectReason))
-            return false;
-
-        GuestWorldStateBootstrap.SeedFromMapSectors(store, sectors);
+        GuestWorldStateBootstrap.SeedFromMapSectors(store, map.Core.Sectors);
         return true;
     }
 }
