@@ -20,8 +20,10 @@ public static class TestWadBuilder
         {
             lumps.Add((MapLumpNames.Things, BuildThingLump(100, 200, 90, 1, 7)));
             lumps.Add((MapLumpNames.Linedefs, BuildLinedefLump(0, 1, 0, 0, 0, 0, 0xFFFF)));
+            lumps.Add((MapLumpNames.Sidedefs, BuildSidedefLump(0, 0, "-", "-", "STARTAN2", 0)));
             lumps.Add((MapLumpNames.Vertexes, BuildVertexLump(0, 0, 100, 0)));
             lumps.Add((MapLumpNames.Segs, BuildSegLump(0, 1, 0, 0, 0, 0)));
+            lumps.Add((MapLumpNames.Ssectors, BuildSubsectorLump(1, 0)));
             lumps.Add((MapLumpNames.Nodes, BuildNodeLump(50, 0, 100, 0, 0, 0, 128, 128, 0, 0)));
             lumps.Add((MapLumpNames.Sectors, BuildSectorLump(0, 128, "FLOOR1_1", "CEIL1_1", 160, 0, 1)));
         }
@@ -102,6 +104,32 @@ public static class TestWadBuilder
         return lump;
     }
 
+    public static byte[] BuildSidedefLump(
+        short textureOffset,
+        short rowOffset,
+        string topTexture,
+        string bottomTexture,
+        string midTexture,
+        short sector)
+    {
+        var lump = new byte[MapSidedefRecord.RecordSize];
+        BinaryPrimitives.WriteInt16LittleEndian(lump.AsSpan(0, 2), textureOffset);
+        BinaryPrimitives.WriteInt16LittleEndian(lump.AsSpan(2, 2), rowOffset);
+        WritePicName(lump.AsSpan(4, 8), topTexture);
+        WritePicName(lump.AsSpan(12, 8), bottomTexture);
+        WritePicName(lump.AsSpan(20, 8), midTexture);
+        BinaryPrimitives.WriteInt16LittleEndian(lump.AsSpan(28, 2), sector);
+        return lump;
+    }
+
+    public static byte[] BuildSubsectorLump(ushort numSegs, ushort firstSeg)
+    {
+        var lump = new byte[MapSubsectorRecord.RecordSize];
+        BinaryPrimitives.WriteUInt16LittleEndian(lump.AsSpan(0, 2), numSegs);
+        BinaryPrimitives.WriteUInt16LittleEndian(lump.AsSpan(2, 2), firstSeg);
+        return lump;
+    }
+
     public static byte[] BuildVertexLump(params short[] coordinates)
     {
         if (coordinates.Length % 2 != 0)
@@ -175,7 +203,7 @@ public class WadArchiveReaderTests
     {
         var wad = TestWadBuilder.BuildMinimalMapWad("MAP01");
         Assert.True(WadArchiveReader.TryReadDirectory(wad, out var entries, out _));
-        Assert.Equal(7, entries.Length);
+        Assert.Equal(9, entries.Length);
         Assert.Equal("MAP01", entries[0].Name);
         Assert.Equal("THINGS", entries[1].Name);
     }
@@ -191,6 +219,10 @@ public class MapLumpCatalogReaderTests
         Assert.Equal(MapDataFormat.DoomBinary, catalog.Format);
         Assert.True(catalog.TryGetLump(MapLumpKind.Things, out var things));
         Assert.Equal((uint)MapThingRecord.RecordSize, things.Entry.Size);
+        Assert.True(catalog.TryGetLump(MapLumpKind.Sidedefs, out var sidedefs));
+        Assert.Equal((uint)MapSidedefRecord.RecordSize, sidedefs.Entry.Size);
+        Assert.True(catalog.TryGetLump(MapLumpKind.Ssectors, out var ssectors));
+        Assert.Equal((uint)MapSubsectorRecord.RecordSize, ssectors.Entry.Size);
         Assert.True(catalog.TryGetLump(MapLumpKind.Sectors, out var sectors));
         Assert.Equal((uint)MapSectorRecord.RecordSize, sectors.Entry.Size);
         Assert.True(catalog.TryGetLump(MapLumpKind.Vertexes, out var vertexes));

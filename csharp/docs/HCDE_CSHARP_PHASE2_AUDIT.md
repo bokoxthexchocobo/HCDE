@@ -262,6 +262,14 @@ Phase 2 does **not** include rendering, audio, ZScript VM, or client prediction.
 | Netcode cross-language soak | `NetcodeCrossLanguageSoak.cs` | `tests/netcode_step12/netcode_step12_stress.py` invasion smoke |
 | Optional client join | `HCDE_HCDE_CLIENT_PATH` env | `--client-count 1` on Step 12 harness |
 
+### Surface lump decode + map-load bootstrap E2E (Phase 2c/2d — iteration 26)
+
+| Artifact | Location | C++ reference |
+| --- | --- | --- |
+| SIDEDEFS/SSECTORS decode | `SurfaceMapLumpCodec.cs`, `BinaryMapSurfaceDecoder.cs` | `mapsidedef_t`, `mapsubsector_t` |
+| Map-load world store seed | `MapLoadBootstrap.cs` | `p_setup.cpp` sector init before playsim |
+| Authority map-bootstrap E2E | `MapLoadBootstrapIntegrationTests` | authority HCDW+HCKS with map-seeded stores |
+
 ### Geometry lump decode + map sector bootstrap (Phase 2c/2d — iteration 25)
 
 | Artifact | Location | C++ reference |
@@ -520,8 +528,8 @@ Phase 2b is complete when **all** hold:
 
 ## Phase 2c next slice
 
-1. **SSECTORS/SIDEDEFS decode** — complete BSP subsector + sidedef read path
-2. **Map bootstrap E2E** — authority seeds world store from WAD at map load, guest checksum matches
+1. **BLOCKMAP/REJECT decode** — complete collision/reject read path
+2. **Sector light/special on HCDW wire** — extend `SectorWorldDelta` when map-bootstrap guests lack local WAD
 3. **Record cross-language soak evidence** when agent image has `hcdeserv`/IWAD
 
 ## Phase 2b next slice
@@ -548,6 +556,8 @@ Do **not** port snapshot encode/decode bodies until HCIN/HCSN headers are green.
 
 **Phase 2b C# pregame stack is feature-complete for fresh dedicated joins** — loopback WAITING setup, verification-error replies, start-game, and a cross-language guest CLI/harness are in place. The remaining 2b gate is executing the harness against a real `hcdeserv` build and recording the result.
 
+**Phase 2c iteration 26** adds SIDEDEFS/SSECTORS binary surface decode, `MapLoadBootstrap` to seed world stores from WAD map sectors, and authority→guest HCDW+HCKS E2E when both sides bootstrap from the same map.
+
 **Phase 2c iteration 25** adds VERTEXES/SEGS/NODES binary geometry decode, `GuestWorldStateBootstrap` to seed `GuestWorldStateStore` sectors from decoded `mapsector_t`, and an optional cross-language soak GitHub Actions workflow.
 
 **Phase 2c iteration 24** adds binary map lump record decode (THINGS/LINEDEFS/SECTORS), `WorldStateTailBuilder` for authority HCDW tails, and end-to-end authority→guest checksum match when world store is wired on both sides.
@@ -572,4 +582,4 @@ Do **not** port snapshot encode/decode bodies until HCIN/HCSN headers are green.
 
 **Phase 2c iteration 14** adds HCSR/HCIN apply sessions with per-player sequence/consistency tracking, idempotent snapshot handling, gap-resync policy, and injectable command sinks wired into guest/authority receive paths.
 
-Next audit checkpoint: **Phase 2c iteration 26** when SSECTORS/SIDEDEFS decode lands or map-bootstrap E2E checksum path is wired on authority load.
+Next audit checkpoint: **Phase 2c iteration 27** when BLOCKMAP/REJECT decode lands or sector light/special ships on HCDW wire.
