@@ -41,7 +41,10 @@ public class AuthorityWorldStateChecksumIntegrationTests
         authority.TrackClient(guestEndpoint, clientSlot: 1);
         authority.SetAuthorityWorldState(worldState, authorityChecksum, rngSeed);
 
+        var guestChecksum = new SnapshotChecksumSession();
+        var guestStore = new GuestWorldStateStore();
         var guest = new LiveGuestSession(guestTransport, gameId, authorityEndpoint, guestPlayerSlot: 1, authoritySlot: 0, maxClients: 4);
+        guest.SetGuestWorldState(guestStore, guestChecksum, rngSeed);
 
         var now = (ulong)Environment.TickCount64;
         authority.PumpClient(now, guestEndpoint, clientSlot: 1);
@@ -50,7 +53,13 @@ public class AuthorityWorldStateChecksumIntegrationTests
         Assert.True(guest.TryReceiveServerSnapshot(out _, out _, out var tailSections));
         Assert.NotNull(tailSections);
         Assert.True(tailSections.Value.HasChecksum);
+        Assert.NotNull(tailSections.Value.WorldDeltaPoses);
+        Assert.Single(tailSections.Value.WorldDeltaPoses!);
+        Assert.True(guestStore.Players.ContainsKey(1));
+        Assert.Equal(75, guestStore.Players[1].Health);
         Assert.True(authorityChecksum.Ring.TryFind((int)tailSections.Value.ChecksumGameTic, out var authorityHashes));
+        Assert.True(guestChecksum.Ring.TryFind((int)tailSections.Value.ChecksumGameTic, out var guestHashes));
+        Assert.Equal(authorityHashes, guestHashes);
         Assert.Equal(authorityHashes, tailSections.Value.ChecksumHashes);
     }
 }

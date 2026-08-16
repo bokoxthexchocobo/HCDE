@@ -418,6 +418,27 @@ public sealed class LiveAuthoritySession
                 _checksumSession.Ring.TryFind((int)_gameTic, out checksumHashes);
             }
 
+            if (_authorityWorldState is not null
+                && WorldStateTailBuilder.HasWorldDeltaPayload(_authorityWorldState))
+            {
+                Span<byte> tail = stackalloc byte[512];
+                var tailWritten = WorldStateTailBuilder.WriteCoopTailFromStore(
+                    tail,
+                    _authorityWorldState,
+                    _gameTic,
+                    checksumHashes);
+                if (tailWritten > 0)
+                {
+                    _gameplay.TrySendServerSnapshotWithExternalTail(
+                        clientEndpoint,
+                        _roomId,
+                        _gameTic,
+                        playerNum: (byte)clientSlot,
+                        externalTail: tail[..tailWritten]);
+                    return;
+                }
+            }
+
             _gameplay.TrySendServerSnapshot(
                 clientEndpoint,
                 _roomId,

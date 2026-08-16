@@ -1,0 +1,35 @@
+namespace HCDE.Net.Core.Tests;
+
+public class WorldStateTailBuilderTests
+{
+    [Fact]
+    public void WriteCoopTailFromStore_IncludesPlayerAndSectorDeltas()
+    {
+        var store = new GuestWorldStateStore();
+        store.ApplyPose(
+            1,
+            new PlayerPoseWorldDelta(
+                1,
+                LiveConstants.ServerWorldDeltaPoseHasActor | LiveConstants.ServerWorldDeltaPoseOnGround,
+                health: 55,
+                armor: 0,
+                posX: 0,
+                posY: 0,
+                posZ: 0,
+                velX: 0,
+                velY: 0,
+                velZ: 0,
+                yawBams: 0,
+                pitchBams: 0),
+            sequenceAck: 0);
+        store.ApplySector(new SectorWorldDelta(2, flags: 0, floor: 16, ceiling: 96));
+
+        Span<byte> tail = stackalloc byte[512];
+        var written = WorldStateTailBuilder.WriteCoopTailFromStore(tail, store, gameTic: 9);
+        Assert.True(written > ServerSnapshotTailCodec.MinimalTailSize);
+        Assert.True(ServerSnapshotTailWalker.TryWalk(tail[..written], out var sections, out _, out _));
+        Assert.Single(sections.WorldDeltaPoses!);
+        Assert.Single(sections.WorldDeltaSectors!);
+        Assert.Equal(55, sections.WorldDeltaPoses![0].Health);
+    }
+}
