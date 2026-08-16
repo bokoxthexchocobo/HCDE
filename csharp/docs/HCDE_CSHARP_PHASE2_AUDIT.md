@@ -262,6 +262,14 @@ Phase 2 does **not** include rendering, audio, ZScript VM, or client prediction.
 | Netcode cross-language soak | `NetcodeCrossLanguageSoak.cs` | `tests/netcode_step12/netcode_step12_stress.py` invasion smoke |
 | Optional client join | `HCDE_HCDE_CLIENT_PATH` env | `--client-count 1` on Step 12 harness |
 
+### Binary map lump decode + authority HCDW tail (Phase 2c/2d — iteration 24)
+
+| Artifact | Location | C++ reference |
+| --- | --- | --- |
+| THINGS/LINEDEFS/SECTORS decode | `BinaryMapLumpCodec.cs`, `BinaryMapLumpDecoder.cs` | `mapthing_t`, `maplinedef_t`, `mapsector_t` |
+| World-state tail builder | `WorldStateTailBuilder.cs` | HCDW coop tail from `GuestWorldStateStore` |
+| Authority HCDW send | `LiveAuthoritySession.SendToClient` | outbound snapshots embed world deltas + HCKS |
+
 ### WAD map lump catalog (Phase 2c/2d — iteration 23)
 
 | Artifact | Location | C++ reference |
@@ -438,8 +446,11 @@ Phase 2 does **not** include rendering, audio, ZScript VM, or client prediction.
 | WAD directory parse | `WadArchiveReaderTests` | Pass |
 | Map lump catalog + UDMF probe | `MapLumpCatalogReaderTests` | Pass |
 | Authority outbound HCKS | `AuthorityWorldStateChecksumIntegrationTests` | Pass |
+| Binary map lump decode | `BinaryMapLumpDecoderTests` | Pass |
+| World-state tail builder | `WorldStateTailBuilderTests` | Pass |
+| Authority→guest HCDW+HCKS E2E | `AuthorityWorldStateChecksumIntegrationTests` | Pass |
 
-**Test count:** 194 passing (`dotnet test` in `csharp/`).
+**Test count:** 196 passing (`dotnet test` in `csharp/`).
 
 ## Not yet in Phase 2b (sign-off blockers)
 
@@ -500,8 +511,8 @@ Phase 2b is complete when **all** hold:
 
 ## Phase 2c next slice
 
-1. **Read lump payloads** — THINGS/LINEDEFS/SECTORS record decode in `HCDE.MapLoader`
-2. **Authority send with HCDW tail** — embed world deltas in snapshots when world store is set
+1. **VERTEXES/SEGS/NODES decode** — complete binary map geometry read path
+2. **Map → world store bootstrap** — seed `GuestWorldStateStore` sectors from decoded `mapsector_t`
 3. **Optional cross-language soak CI job** when agent image has `hcdeserv`/IWAD
 
 ## Phase 2b next slice
@@ -528,6 +539,8 @@ Do **not** port snapshot encode/decode bodies until HCIN/HCSN headers are green.
 
 **Phase 2b C# pregame stack is feature-complete for fresh dedicated joins** — loopback WAITING setup, verification-error replies, start-game, and a cross-language guest CLI/harness are in place. The remaining 2b gate is executing the harness against a real `hcdeserv` build and recording the result.
 
+**Phase 2c iteration 24** adds binary map lump record decode (THINGS/LINEDEFS/SECTORS), `WorldStateTailBuilder` for authority HCDW tails, and end-to-end authority→guest checksum match when world store is wired on both sides.
+
 **Phase 2c iteration 23** adds WAD directory + map lump catalog readers (`WadArchiveReader`, `MapLumpCatalogReader`), UDMF `TEXTMAP` probe, and authority outbound HCKS via `SetAuthorityWorldState`.
 
 **Phase 2c iteration 22** wires `GuestWorldStateStore` into `LiveGuestSession` (`SetGuestWorldState`), adds external-tail snapshot building, sector-only world-delta apply, `HCDE.MapLoader` scaffold, and a GitHub Actions `dotnet test` CI job.
@@ -548,4 +561,4 @@ Do **not** port snapshot encode/decode bodies until HCIN/HCSN headers are green.
 
 **Phase 2c iteration 14** adds HCSR/HCIN apply sessions with per-player sequence/consistency tracking, idempotent snapshot handling, gap-resync policy, and injectable command sinks wired into guest/authority receive paths.
 
-Next audit checkpoint: **Phase 2c iteration 24** when binary map lump record decode lands or authority sends HCDW tails from world store.
+Next audit checkpoint: **Phase 2c iteration 25** when VERTEXES/SEGS/NODES decode lands or map-to-world-store bootstrap begins.

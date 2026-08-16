@@ -2,14 +2,14 @@
 
 **Last updated:** 2026-08-15  
 **Scope:** All code under `csharp/` (7 projects, 6 test suites)  
-**Verification:** `dotnet build` and `dotnet test` in `csharp/` — **194 tests passing** (CI: `.github/workflows/csharp.yml`)  
+**Verification:** `dotnet build` and `dotnet test` in `csharp/` — **196 tests passing** (CI: `.github/workflows/csharp.yml`)  
 **Related:** [`HCDE_CSHARP_PHASE1_AUDIT.md`](HCDE_CSHARP_PHASE1_AUDIT.md) · [`HCDE_CSHARP_PHASE2_AUDIT.md`](HCDE_CSHARP_PHASE2_AUDIT.md) · [`HCDE_CSHARP_MIGRATION.md`](HCDE_CSHARP_MIGRATION.md)
 
 ---
 
 ## 1. Executive summary
 
-The C# tree is a **well-tested protocol and networking foundation** (~13,500 LOC source, 194 unit/integration tests) covering Phase 1 tools, Phase 2a–2c wire codecs, apply-session stubs, and Phase 2d map-loader read path. It does **not** yet run a game: no lump record decode, playsim tick loop, or `hcdeserv` executable.
+The C# tree is a **well-tested protocol and networking foundation** (~14,200 LOC source, 196 unit/integration tests) covering Phase 1 tools, Phase 2a–2c wire codecs, world-store checksum path, and Phase 2d binary map lump decode.
 
 | Layer | Status | Confidence |
 | --- | --- | --- |
@@ -17,7 +17,7 @@ The C# tree is a **well-tested protocol and networking foundation** (~13,500 LOC
 | Phase 2a — UDP transport & query | **Complete** | High |
 | Phase 2b — pregame handshake | **~95%** (fresh join loopback) | Medium (no recorded C++ interop) |
 | Phase 2c — live netcode wire | **~60%** of `d_net` wire surface; apply stubs in place | Medium (playsim mutation deferred) |
-| Phase 2d — map loader | **In progress** (WAD directory + lump catalog) | Medium |
+| Phase 2d — map loader | **In progress** (WAD directory + THINGS/LINEDEFS/SECTORS decode) | Medium |
 | Phase 2e–2f — playsim, server | **Not started** | — |
 | Phase 3–4 — full sim & client | **Not started** | — |
 
@@ -40,9 +40,9 @@ csharp/
     HCDE.Net.Transport/    13 files,   ~812 LOC   (UDP, CRC, query, pregame constants)
     HCDE.Net.Pregame/      22 files, ~2,038 LOC   (pregame host/guest pumps)
     HCDE.Net.Core/         59 files, ~5,600 LOC   (live protocol codecs + session glue + world-store stubs)
-    HCDE.MapLoader/          5 files,   ~250 LOC   (WAD directory + map lump catalog)
+    HCDE.MapLoader/          7 files,   ~450 LOC   (WAD directory + binary lump decode)
     HCDE.PregameGuest.Cli/  5 files,   ~207 LOC   (hcde-pregame-guest CLI)
-  tests/                   45 files, 194 tests
+  tests/                   46 files, 196 tests
 ```
 
 ### 2.2 Test matrix
@@ -54,9 +54,9 @@ csharp/
 | `HCDE.Rcon.Tests` | 6 | FNV-1a + loopback auth/ping/status |
 | `HCDE.Net.Transport.Tests` | 10 | Constants, query, HCD3, gameplay CRC |
 | `HCDE.Net.Pregame.Tests` | 37 | CRC, service queue, host/guest loopback, bootstrap/resync, cross-language soak |
-| `HCDE.Net.Core.Tests` | 121 | Live headers, bodies, tail, DEM, sessions, apply, soak, world-store E2E |
-| `HCDE.MapLoader.Tests` | 4 | WAD directory, map lump catalog, UDMF probe |
-| **Total** | **194** | |
+| `HCDE.Net.Core.Tests` | 122 | Live headers, bodies, tail, DEM, sessions, world-store E2E |
+| `HCDE.MapLoader.Tests` | 5 | WAD directory, lump catalog, binary decode |
+| **Total** | **196** | |
 
 ### 2.3 Dependency graph
 
@@ -267,8 +267,8 @@ PRE_CONNECT → PRE_CONNECT_ACK → console-player
 | DEM payloads | ~50 event types incl. weapon slots | No reverse (canonical→legacy) |
 | ECHO presentation | Full inventory/player encode-decode + apply session | Playsim-backed inventory/weapon follow |
 | HCIV invasion | V2 header + embedded skip + spawn directory | Spawn spot payloads, full invasion state |
-| Guest receive | HCSR/HCIN apply + tail sinks (ECHO/HCAV/HCDW/HCDA/HCDS/HCIV/HCKS) | Authority HCDW tail embed on send |
-| World-state wiring | `SetGuestWorldState` + `SetAuthorityWorldState` | Outbound snapshots carry applied world deltas |
+| Guest receive | HCSR/HCIN apply + tail sinks | Map-to-world-store bootstrap from decoded lumps |
+| World-state wiring | `SetGuestWorldState` + `SetAuthorityWorldState` + `WorldStateTailBuilder` | Complete |
 
 ### 6.3 Missing entirely
 
@@ -335,7 +335,7 @@ Wire-first codecs for the **core live envelope and record bodies** are in good s
 
 | Planned project | C++ reference | LOC order of magnitude |
 | --- | --- | --- |
-| `HCDE.MapLoader` | `maploader/`, `p_setup.cpp` | WAD directory + lump catalog (~250 LOC) |
+| `HCDE.MapLoader` | `maploader/`, `p_setup.cpp` | WAD + THINGS/LINEDEFS/SECTORS decode (~450 LOC) |
 | `HCDE.Gamedata` | DEHACKED, MAPINFO, UDMF | Tens of thousands |
 | `HCDE.Playsim` | `playsim/`, `p_tick.cpp` | **Hundreds of thousands** |
 | `HCDE.Server` | `d_main.cpp` dedicated path | Medium (orchestration) |
@@ -353,12 +353,8 @@ Wire-first codecs for the **core live envelope and record bodies** are in good s
 3. Export C++ golden vectors for session token, NMS1 writes, one full HCIN/HCSN capture
 
 ### P1 — Phase 2d entry
-7. Binary map lump record decode (THINGS/LINEDEFS/SECTORS) in `HCDE.MapLoader`
-8. JSON → C# codegen for `MasterProtocol` + net constants
-
-### P1 — Phase 2c completion
-9. Authority send embeds HCDW tail from world store
-10. Lane budget enforcement (`HCDELiveLaneBudget*`)
+7. VERTEXES/SEGS/NODES lump decode in `HCDE.MapLoader`
+8. Map sector bootstrap into `GuestWorldStateStore`
 
 ---
 
