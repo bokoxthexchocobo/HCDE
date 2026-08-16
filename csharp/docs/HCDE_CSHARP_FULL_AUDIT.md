@@ -335,7 +335,7 @@ Wire-first codecs for the **core live envelope and record bodies** are in good s
 
 | Planned project | C++ reference | LOC order of magnitude |
 | --- | --- | --- |
-| `HCDE.MapLoader` | `maploader/`, `p_setup.cpp` | Scaffold only (~20 LOC) |
+| `HCDE.MapLoader` | `maploader/`, `p_setup.cpp` | WAD directory + lump catalog (~250 LOC) |
 | `HCDE.Gamedata` | DEHACKED, MAPINFO, UDMF | Tens of thousands |
 | `HCDE.Playsim` | `playsim/`, `p_tick.cpp` | **Hundreds of thousands** |
 | `HCDE.Server` | `d_main.cpp` dedicated path | Medium (orchestration) |
@@ -352,14 +352,13 @@ Wire-first codecs for the **core live envelope and record bodies** are in good s
 2. Record cross-language pregame + Step 12 soaks with `HCDE_SOAK_EVIDENCE_DIR`
 3. Export C++ golden vectors for session token, NMS1 writes, one full HCIN/HCSN capture
 
-### P1 — Phase 2c completion
-4. Authority-side world store + outbound HCKS generation on send
-5. Lane budget enforcement (`HCDELiveLaneBudget*`)
-6. Actor baseline repair handler (`HCDEBeginActorBaselineRepair`)
-
 ### P1 — Phase 2d entry
-7. UDMF/BSP lump read path in `HCDE.MapLoader`
+7. Binary map lump record decode (THINGS/LINEDEFS/SECTORS) in `HCDE.MapLoader`
 8. JSON → C# codegen for `MasterProtocol` + net constants
+
+### P1 — Phase 2c completion
+9. Authority send embeds HCDW tail from world store
+10. Lane budget enforcement (`HCDELiveLaneBudget*`)
 
 ---
 

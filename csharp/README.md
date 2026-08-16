@@ -26,7 +26,7 @@ The full engine is ~640k lines of C++. This is a long-running migration, not a b
 | UDP transport + server query | `common/engine/i_net.cpp` (subset) | `HCDE.Net.Transport` | Done (Phase 2a) |
 | Pregame handshake | `i_net.cpp` PRE_* / HCDE services | `HCDE.Net.Pregame` | Done loopback (Phase 2b) |
 | Live netcode wire codecs | `d_net*.cpp` | `HCDE.Net.Core` | In progress (Phase 2c wire + apply stubs) |
-| Map loader | `maploader/`, `p_setup.cpp` | `HCDE.MapLoader` | Scaffold (Phase 2d) |
+| Map loader | `maploader/`, `p_setup.cpp` | `HCDE.MapLoader` | In progress (WAD + lump catalog) |
 | Pregame guest CLI | C++ `-join` guest path | `HCDE.PregameGuest.Cli` | Done (pregame + `--live-ticks`) |
 | Engine core | `src/` | — | Not started |
 | Dedicated server | `hcdeserv` target | — | Planned |
@@ -66,7 +66,7 @@ Outputs: `hcdemaster` and `hcdercon`.
 
 ## Validation
 
-Managed wire compatibility is gated by `dotnet test` (190 tests; CI via `.github/workflows/csharp.yml`). Cross-language checks live under `validation/`:
+Managed wire compatibility is gated by `dotnet test` (194 tests; CI via `.github/workflows/csharp.yml`). Cross-language checks live under `validation/`:
 
 | Harness | Purpose |
 | --- | --- |
@@ -100,10 +100,10 @@ csharp/
     HCDE.Net.Transport/  UDP, CRC, server query, net constants
     HCDE.Net.Pregame/    Pregame host/guest handshake pumps
     HCDE.Net.Core/       Live protocol codecs (HLIV/HGPL/HCIN/HCSN/…)
-    HCDE.MapLoader/      Map format constants (Phase 2d scaffold)
+    HCDE.MapLoader/      WAD directory + map lump catalog (Phase 2d)
     HCDE.PregameGuest.Cli/  hcde-pregame-guest CLI
   tests/
-    HCDE.*.Tests/        xUnit regression tests (190 passing)
+    HCDE.*.Tests/        xUnit regression tests (194 passing)
 ```
 
 ## Migration phases
