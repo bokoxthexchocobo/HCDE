@@ -1,7 +1,7 @@
 # HCDE C# Migration — Phase 2 Principal Audit
 
 **Last updated:** 2026-08-17  
-**Status:** In progress — Phase **2c** live protocol codecs (iteration 35 complete). Phase **2b** verification errors, start-game, bootstrap/resync, and cross-language harness complete.  
+**Status:** In progress — Phase **2c** live protocol codecs (iteration 36 step 1). Phase **2b** verification errors, start-game, bootstrap/resync, and cross-language harness complete.  
 **Prerequisite:** [Phase 1 audit](HCDE_CSHARP_PHASE1_AUDIT.md) (complete)  
 **Related:** [`HCDE_CSHARP_MIGRATION.md`](HCDE_CSHARP_MIGRATION.md) · [`HCDE_NETCODE.md`](../../docs/HCDE_NETCODE.md)
 
@@ -589,9 +589,18 @@ Phase 2b is complete when **all** hold:
 
 ## Phase 2c next slice (iteration 36)
 
-1. **BEHAVIOR bytecode operands** — gravity/air-control direct, more ZDoom stack ops
+1. ~~**BEHAVIOR bytecode operands**~~ — gravity/air-control direct, more ZDoom stack ops
 2. **Authority playsim tick polish** — player pose deltas on authority pump, guest checksum mismatch policy
 3. **Cross-language soak evidence** — re-record Passed manifest in CI and commit refreshed templates
+
+### BEHAVIOR gravity/global PCD operands (Phase 2c/2d — iteration 36 step 1)
+
+| Artifact | Location | C++ reference |
+| --- | --- | --- |
+| Gravity/air-control opcodes | `AcsPcode.cs` | `PCD_SETGRAVITY`, `PCD_SETAIRCONTROLDIRECT` |
+| Global var stack ops | `AcsPcode.cs` | `PCD_PUSHGLOBALVAR`, `PCD_ASSIGNGLOBALVAR` |
+| Operand skip table | `MapBehaviorBytecodeWalker.cs` | direct gravity/air-control + global var indices |
+| Walk tests | `MapBehaviorBytecodeWalkerTests` | `TryWalkScript_OldFormat_ReadsGravityAirControlAndGlobalVarOps` |
 
 ### Passed soak gate in main CI (Phase 2c — iteration 35 step 3)
 
