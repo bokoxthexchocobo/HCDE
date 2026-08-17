@@ -59,6 +59,55 @@ public class LiveSessionTests
     }
 
     [Fact]
+    public void AuthorityPump_SendsWorldStateTailViaPump()
+    {
+        var wad = HCDE.MapLoader.Tests.TestWadBuilder.BuildMinimalMapWad("MAP01");
+        var gameId = new byte[] { 0xAA, 0xBB, 0xCC, 0xDD, 0x11, 0x22, 0x33, 0x44 };
+
+        using var authorityTransport = new UdpTransport();
+        using var guestTransport = new UdpTransport();
+        authorityTransport.Bind(0);
+        guestTransport.Bind(0);
+        authorityTransport.SetNonBlocking(true);
+        guestTransport.SetNonBlocking(true);
+
+        var authorityEndpoint = new NetworkEndpoint(System.Net.IPAddress.Loopback, authorityTransport.BoundPort);
+        var guestEndpoint = new NetworkEndpoint(System.Net.IPAddress.Loopback, guestTransport.BoundPort);
+
+        var authority = new LiveAuthoritySession(authorityTransport, gameId, authoritySlot: 0, maxClients: 4);
+        Assert.True(AuthorityMapLoadBootstrap.TryBootstrapAuthorityWorldState(
+            authority,
+            wad,
+            "MAP01",
+            out _,
+            rngSeed: 9,
+            replicateSectorMetadata: true));
+        authority.TrackClient(guestEndpoint, clientSlot: 1);
+
+        var guestStore = new GuestWorldStateStore();
+        var guestChecksum = new SnapshotChecksumSession();
+        var guest = new LiveGuestSession(
+            guestTransport,
+            gameId,
+            authorityEndpoint,
+            guestPlayerSlot: 1,
+            authoritySlot: 0,
+            maxClients: 4);
+        guest.SetGuestWorldState(guestStore, guestChecksum, rngSeed: 9);
+
+        var now = (ulong)Environment.TickCount64;
+        authority.Pump(now);
+
+        Assert.Equal(1u, authority.GameTic);
+        Assert.True(guest.TryReceiveAuthorityControl(out _));
+        Assert.True(guest.TryReceiveServerSnapshot(out _, out _, out var tailSections));
+        Assert.NotNull(tailSections);
+        Assert.True(guestStore.Sectors.TryGetValue(0, out var sector));
+        Assert.Equal(160, sector.LightLevel);
+        Assert.True(guestChecksum.Ring.TryFind((int)tailSections!.Value.ChecksumGameTic, out _));
+    }
+
+    [Fact]
     public void GuestReceivesServerSnapshotWithMinimalTail()
     {
         var gameId = new byte[] { 0xAA, 0xBB, 0xCC, 0xDD, 0x11, 0x22, 0x33, 0x44 };

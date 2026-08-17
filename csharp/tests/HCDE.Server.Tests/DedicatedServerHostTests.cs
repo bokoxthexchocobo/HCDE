@@ -133,7 +133,8 @@ public class DedicatedServerHostTests
         }
 
         Assert.True(host.LiveSession.GameTic > ticBefore);
-        Assert.True(guestStore.Sectors.ContainsKey(0));
+        Assert.True(guestStore.Sectors.TryGetValue(0, out var sector));
+        Assert.Equal(160, sector.LightLevel);
     }
 
     [Fact]

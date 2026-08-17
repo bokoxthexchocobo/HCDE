@@ -1,7 +1,7 @@
 # HCDE C# Migration — Phase 2 Principal Audit
 
 **Last updated:** 2026-08-17  
-**Status:** In progress — Phase **2c** live protocol codecs (iteration 34 complete). Phase **2b** verification errors, start-game, bootstrap/resync, and cross-language harness complete.  
+**Status:** In progress — Phase **2c** live protocol codecs (iteration 35 step 1). Phase **2b** verification errors, start-game, bootstrap/resync, and cross-language harness complete.  
 **Prerequisite:** [Phase 1 audit](HCDE_CSHARP_PHASE1_AUDIT.md) (complete)  
 **Related:** [`HCDE_CSHARP_MIGRATION.md`](HCDE_CSHARP_MIGRATION.md) · [`HCDE_NETCODE.md`](../../docs/HCDE_NETCODE.md)
 
@@ -583,9 +583,18 @@ Phase 2b is complete when **all** hold:
 
 ## Phase 2c next slice (iteration 35)
 
-1. **BEHAVIOR bytecode operands** — continue ZDoom/Skulltag PCD table (music/sound direct, more stack ops)
+1. ~~**BEHAVIOR bytecode operands**~~ — continue ZDoom/Skulltag PCD table (music/sound direct, more stack ops)
 2. **Authority playsim tick polish** — snapshot tail builders on authority pump, guest apply wiring
 3. **Cross-language Passed soak gate** — document release checklist + enforce in main CI when secrets configured
+
+### BEHAVIOR music/stack PCD operands (Phase 2c/2d — iteration 35 step 1)
+
+| Artifact | Location | C++ reference |
+| --- | --- | --- |
+| Music opcodes | `AcsPcode.cs` | `PCD_MUSICCHANGE`, `PCD_SETMUSIC`, `PCD_LOCALSETMUSICDIRECT` |
+| Stack push opcodes | `AcsPcode.cs` | `PCD_PUSHBYTE`, `PCD_PUSHBYTES`, `PCD_PUSH2BYTES`…`PCD_DUP`/`PCD_SWAP` |
+| Operand skip table | `MapBehaviorBytecodeWalker.cs` | music direct specials + variable `PushBytes` skip |
+| Walk tests | `MapBehaviorBytecodeWalkerTests` | music direct + little-enhanced push-byte fixtures |
 
 ### Cross-language Passed soak gate (Phase 2c — iteration 34 step 3)
 

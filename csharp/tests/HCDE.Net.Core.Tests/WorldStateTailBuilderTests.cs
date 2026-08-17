@@ -32,4 +32,17 @@ public class WorldStateTailBuilderTests
         Assert.Single(sections.WorldDeltaSectors!);
         Assert.Equal(55, sections.WorldDeltaPoses![0].Health);
     }
+
+    [Fact]
+    public void TryBuildCoopTailFromStore_ReturnsBytesWrittenWhenStoreHasSectors()
+    {
+        var store = new GuestWorldStateStore();
+        store.ApplySector(new SectorWorldDelta(0, flags: 0, floor: 0, ceiling: 128, lightLevel: 160, special: 0));
+
+        Span<byte> tail = stackalloc byte[512];
+        var build = WorldStateTailBuilder.TryBuildCoopTailFromStore(tail, store, gameTic: 3);
+        Assert.True(build.HasTail);
+        Assert.True(build.BytesWritten > 0);
+        Assert.Equal(build.BytesWritten, WorldStateTailBuilder.WriteCoopTailFromStore(tail, store, gameTic: 3));
+    }
 }

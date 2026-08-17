@@ -1,5 +1,17 @@
 namespace HCDE.Net.Core;
 
+public readonly struct WorldStateTailBuildResult
+{
+    public WorldStateTailBuildResult(bool hasTail, int bytesWritten)
+    {
+        HasTail = hasTail;
+        BytesWritten = bytesWritten;
+    }
+
+    public bool HasTail { get; }
+    public int BytesWritten { get; }
+}
+
 public static class WorldStateTailBuilder
 {
     public static int WriteCoopTailFromStore(
@@ -65,4 +77,23 @@ public static class WorldStateTailBuilder
 
     public static bool HasWorldDeltaPayload(GuestWorldStateStore store) =>
         store.Players.Count > 0 || store.Sectors.Count > 0;
+
+    public static WorldStateTailBuildResult TryBuildCoopTailFromStore(
+        Span<byte> tail,
+        GuestWorldStateStore store,
+        uint gameTic,
+        uint[]? checksumHashes = null,
+        bool replicateSectorMetadata = false)
+    {
+        if (!HasWorldDeltaPayload(store))
+            return default;
+
+        var written = WriteCoopTailFromStore(
+            tail,
+            store,
+            gameTic,
+            checksumHashes,
+            replicateSectorMetadata);
+        return new WorldStateTailBuildResult(written > 0, written);
+    }
 }
