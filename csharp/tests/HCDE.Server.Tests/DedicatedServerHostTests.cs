@@ -104,8 +104,7 @@ public class DedicatedServerHostTests
 
         Assert.NotNull(host.LiveSession);
 
-        var guestEndpoint = new NetworkEndpoint(System.Net.IPAddress.Loopback, guestTransport.BoundPort);
-        host.LiveSession!.TrackClient(guestEndpoint, guest.AssignedClientSlot);
+        Assert.Contains(host.LiveSession!.Clients.Clients, c => c.ClientSlot == guest.AssignedClientSlot);
 
         var guestStore = new GuestWorldStateStore();
         var guestChecksum = new SnapshotChecksumSession();
@@ -118,10 +117,122 @@ public class DedicatedServerHostTests
             maxClients: 8);
         liveGuest.SetGuestWorldState(guestStore, guestChecksum, rngSeed: 3);
 
-        host.PregameHost.PumpLiveClients((ulong)Environment.TickCount64, host.LiveSession);
-        Assert.True(liveGuest.TryReceiveAuthorityControl(out _));
-        Assert.True(liveGuest.TryReceiveServerSnapshot(out _, out _, out _));
+        var ticBefore = host.LiveSession.GameTic;
+        var receiveDeadline = Environment.TickCount64 + 2000;
+        while (Environment.TickCount64 < receiveDeadline)
+        {
+            host.Pump((ulong)Environment.TickCount64);
+            liveGuest.Pump((ulong)Environment.TickCount64);
+            if (liveGuest.TryReceiveAuthorityControl(out _)
+                && liveGuest.TryReceiveServerSnapshot(out _, out _, out _))
+            {
+                break;
+            }
+
+            await Task.Delay(10);
+        }
+
+        Assert.True(host.LiveSession.GameTic > ticBefore);
         Assert.True(guestStore.Sectors.ContainsKey(0));
+    }
+
+    [Fact]
+    public async Task Pump_LiveSessionReceivesGuestClientInput()
+    {
+        var wad = TestWadBuilder.BuildMinimalMapWad("MAP01");
+        var gameId = new byte[] { 1, 2, 3, 4, 5, 6, 7, 8 };
+        using var host = new DedicatedServerHost(new DedicatedServerOptions
+        {
+            Port = 0,
+            IwadBytes = wad,
+            Pregame = new PregameHostOptions
+            {
+                GameId = gameId,
+                ExpectedEngineInfo = new EngineInfoSnapshot(),
+                Session = new PregameSessionSnapshot
+                {
+                    MapLoad = new MapLoadInfo { MapName = "MAP01", RngSeed = 3 },
+                    GameInfo = new GameInfoPayload { GameId = gameId },
+                },
+            },
+        });
+
+        var hostEndpoint = new NetworkEndpoint(IPAddress.Loopback, host.BoundPort);
+        using var guestTransport = new UdpTransport();
+        guestTransport.Bind(0);
+        guestTransport.SetNonBlocking(true);
+
+        var guest = new PregameGuest(guestTransport, new PregameGuestOptions
+        {
+            ServerAddress = hostEndpoint,
+            EngineInfo = new EngineInfoSnapshot(),
+        });
+
+        var liveGuest = await HandshakeToLiveSession(host, guest, guestTransport, gameId, hostEndpoint);
+        var ticBefore = host.LiveSession!.GameTic;
+        liveGuest.Pump((ulong)Environment.TickCount64);
+        host.Pump((ulong)Environment.TickCount64);
+
+        Assert.True(host.LiveSession.GameTic > ticBefore);
+        Assert.True(liveGuest.TryReceiveAuthorityControl(out _));
+    }
+
+    private static async Task<LiveGuestSession> HandshakeToLiveSession(
+        DedicatedServerHost host,
+        PregameGuest guest,
+        UdpTransport guestTransport,
+        byte[] gameId,
+        NetworkEndpoint hostEndpoint)
+    {
+        var deadline = Environment.TickCount64 + 5000;
+        while (Environment.TickCount64 < deadline)
+        {
+            var now = (ulong)Environment.TickCount64;
+            host.Pump(now);
+            guest.Pump(now);
+
+            if (guest.Phase == PregameGuestPhase.Ready
+                && host.PregameHost.Clients.Any(c => c.ClientSlot == guest.AssignedClientSlot && c.Status == ConnectionStatus.Ready))
+            {
+                host.PregameHost.StartGame(now);
+            }
+
+            if (guest.Phase == PregameGuestPhase.Starting)
+                break;
+
+            await Task.Delay(10);
+        }
+
+        while (Environment.TickCount64 < deadline)
+        {
+            var now = (ulong)Environment.TickCount64;
+            host.Pump(now);
+            guest.Pump(now);
+            if (host.PregameHost.AllReadyClientsAckedStartGame)
+                break;
+
+            await Task.Delay(10);
+        }
+
+        while (Environment.TickCount64 < deadline)
+        {
+            var now = (ulong)Environment.TickCount64;
+            host.Pump(now);
+            guest.Pump(now);
+            if (host.LiveSession is not null)
+                break;
+
+            await Task.Delay(10);
+        }
+
+        Assert.NotNull(host.LiveSession);
+        return new LiveGuestSession(
+            guestTransport,
+            gameId,
+            hostEndpoint,
+            guestPlayerSlot: guest.AssignedClientSlot,
+            authoritySlot: 0,
+            maxClients: 8);
     }
 
     [Fact]

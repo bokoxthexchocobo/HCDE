@@ -33,6 +33,32 @@ public class LiveSessionTests
     }
 
     [Fact]
+    public void AuthorityPump_ReceivesClientInputAndAdvancesGameTic()
+    {
+        var gameId = new byte[] { 0xAA, 0xBB, 0xCC, 0xDD, 0x11, 0x22, 0x33, 0x44 };
+
+        using var authorityTransport = new UdpTransport();
+        using var guestTransport = new UdpTransport();
+        authorityTransport.Bind(0);
+        guestTransport.Bind(0);
+        authorityTransport.SetNonBlocking(true);
+        guestTransport.SetNonBlocking(true);
+
+        var authorityEndpoint = new NetworkEndpoint(System.Net.IPAddress.Loopback, authorityTransport.BoundPort);
+        var guestEndpoint = new NetworkEndpoint(System.Net.IPAddress.Loopback, guestTransport.BoundPort);
+
+        var authority = new LiveAuthoritySession(authorityTransport, gameId, authoritySlot: 0, maxClients: 4);
+        authority.TrackClient(guestEndpoint, clientSlot: 1);
+        var guest = new LiveGuestSession(guestTransport, gameId, authorityEndpoint, guestPlayerSlot: 1, authoritySlot: 0, maxClients: 4);
+
+        var now = (ulong)Environment.TickCount64;
+        guest.Pump(now);
+        authority.Pump(now + 1000);
+
+        Assert.Equal(1u, authority.GameTic);
+    }
+
+    [Fact]
     public void GuestReceivesServerSnapshotWithMinimalTail()
     {
         var gameId = new byte[] { 0xAA, 0xBB, 0xCC, 0xDD, 0x11, 0x22, 0x33, 0x44 };

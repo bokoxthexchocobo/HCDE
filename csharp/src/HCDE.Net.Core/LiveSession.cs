@@ -398,6 +398,14 @@ public sealed class LiveAuthoritySession
             SendToClient(nowMs, client.Endpoint, client.ClientSlot);
     }
 
+    public void Pump(ulong nowMs, byte roomId = 0)
+    {
+        foreach (var client in _clients.Clients)
+            TryReceiveClientInput(client.Endpoint, out _, out _);
+
+        PumpAllClients(nowMs, roomId);
+    }
+
     public void SendToClient(ulong nowMs, NetworkEndpoint clientEndpoint, int clientSlot)
     {
         if (_routing.ShouldSendControlTo(clientSlot))

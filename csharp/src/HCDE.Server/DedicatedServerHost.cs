@@ -73,13 +73,24 @@ public sealed class DedicatedServerHost : IDisposable
                 _options.IwadBytes,
                 out var session,
                 out _,
-                _options.ReplicateSectorMetadata))
+                _options.ReplicateSectorMetadata)
+            && session is not null)
         {
             _liveSession = session;
+            SyncLiveClients(_liveSession);
         }
 
         if (_liveSession is not null)
-            _pregameHost.PumpLiveClients(nowMilliseconds, _liveSession);
+            _liveSession.Pump(nowMilliseconds);
+    }
+
+    private void SyncLiveClients(LiveAuthoritySession session)
+    {
+        foreach (var client in _pregameHost.Clients)
+        {
+            if (client.HasStartGameAck)
+                session.TrackClient(client.Address, client.ClientSlot);
+        }
     }
 
     private ServerQuerySnapshot BuildQuerySnapshot()
