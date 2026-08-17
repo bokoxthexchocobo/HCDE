@@ -7,20 +7,23 @@ public readonly struct BinaryMapBehavior
         MapBehaviorFormat.Unknown,
         0,
         Array.Empty<byte>(),
-        Array.Empty<MapBehaviorScriptEntry>());
+        Array.Empty<MapBehaviorScriptEntry>(),
+        Array.Empty<MapBehaviorScriptBytecode>());
 
     public BinaryMapBehavior(
         bool isPresent,
         MapBehaviorFormat format,
         uint directoryOffset,
         byte[] data,
-        IReadOnlyList<MapBehaviorScriptEntry> scripts)
+        IReadOnlyList<MapBehaviorScriptEntry> scripts,
+        IReadOnlyList<MapBehaviorScriptBytecode> scriptBodies)
     {
         IsPresent = isPresent;
         Format = format;
         DirectoryOffset = directoryOffset;
         Data = data;
         Scripts = scripts;
+        ScriptBodies = scriptBodies;
     }
 
     public bool IsPresent { get; }
@@ -28,6 +31,7 @@ public readonly struct BinaryMapBehavior
     public uint DirectoryOffset { get; }
     public byte[] Data { get; }
     public IReadOnlyList<MapBehaviorScriptEntry> Scripts { get; }
+    public IReadOnlyList<MapBehaviorScriptBytecode> ScriptBodies { get; }
 }
 
 public static class BinaryMapBehaviorDecoder
@@ -59,7 +63,23 @@ public static class BinaryMapBehaviorDecoder
             return false;
         }
 
-        behavior = new BinaryMapBehavior(true, record.Format, record.DirectoryOffset, record.Data, scripts);
+        if (!MapBehaviorBytecodeWalker.TryWalkScripts(
+                record.Data,
+                record.Format,
+                scripts,
+                out var scriptBodies,
+                out rejectReason))
+        {
+            return false;
+        }
+
+        behavior = new BinaryMapBehavior(
+            true,
+            record.Format,
+            record.DirectoryOffset,
+            record.Data,
+            scripts,
+            scriptBodies);
         return true;
     }
 }
