@@ -105,6 +105,22 @@ public class CrossLanguageSoakGateTests
     }
 
     [Fact]
+    public void Evaluate_EnforcesEvidenceFreshnessWhenSecretsConfigured()
+    {
+        if (!AreSoakSecretsConfigured())
+            return;
+
+        if (Environment.GetEnvironmentVariable("HCDE_ENFORCE_SOAK_GATE") != "1")
+            return;
+
+        var result = CrossLanguageSoakGate.EvaluateEvidenceFreshness(
+            repositoryRoot: null,
+            DateTimeOffset.UtcNow,
+            CrossLanguageSoakGate.ResolveMaxEvidenceAgeDays());
+        Assert.Equal(CrossLanguageSoakGateStatus.Passed, result.Status);
+    }
+
+    [Fact]
     public void Evaluate_FailsWhenEvidenceFileIsMissing()
     {
         var baseDir = Path.Combine(Path.GetTempPath(), $"hcde-soak-evidence-missing-{Guid.NewGuid():N}");

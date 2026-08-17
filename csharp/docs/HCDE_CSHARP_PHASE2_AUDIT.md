@@ -1,7 +1,7 @@
 # HCDE C# Migration — Phase 2 Principal Audit
 
 **Last updated:** 2026-08-17  
-**Status:** In progress — Phase **2c** live protocol codecs (iteration 41 step 1). Phase **2b** verification errors, start-game, bootstrap/resync, and cross-language harness complete. Phase **2b** verification errors, start-game, bootstrap/resync, and cross-language harness complete.  
+**Status:** In progress — Phase **2c** live protocol codecs (iteration 41 complete). Phase **2b** verification errors, start-game, bootstrap/resync, and cross-language harness complete. Phase **2b** verification errors, start-game, bootstrap/resync, and cross-language harness complete.  
 **Prerequisite:** [Phase 1 audit](HCDE_CSHARP_PHASE1_AUDIT.md) (complete)  
 **Related:** [`HCDE_CSHARP_MIGRATION.md`](HCDE_CSHARP_MIGRATION.md) · [`HCDE_NETCODE.md`](../../docs/HCDE_NETCODE.md)
 
@@ -617,11 +617,36 @@ Phase 2b is complete when **all** hold:
 2. ~~**Authority playsim tick polish**~~ — authority event tails on pump, guest invasion apply wiring
 3. ~~**Cross-language soak evidence**~~ — evidence file freshness gate for committed templates
 
-## Phase 2c next slice (iteration 41)
+## Phase 2c next slice (iteration 41 — delivered)
 
 1. ~~**BEHAVIOR bytecode operands**~~ — more ZDoom/Skulltag PCD table entries, enhanced-format operand coverage
-2. **Authority playsim tick polish** — invasion spawn-directory apply on guest pump, authority checksum tail polish
-3. **Cross-language soak evidence** — evidence staleness enforcement in main CI workflow
+2. ~~**Authority playsim tick polish**~~ — invasion spawn-directory apply on guest pump, authority checksum tail polish
+3. ~~**Cross-language soak evidence**~~ — evidence staleness enforcement in main CI workflow
+
+## Phase 2c next slice (iteration 42)
+
+1. **BEHAVIOR bytecode operands** — actor property/getter PCDs, more enhanced-format direct specials
+2. **Authority playsim tick polish** — embedded HCIV authority events on guest apply, coop+invasion tail merge policy
+3. **Cross-language soak evidence** — stale evidence rejection in weekly template commit workflow
+
+### Evidence staleness CI enforcement (Phase 2c — iteration 41 step 3)
+
+| Artifact | Location | C++ reference |
+| --- | --- | --- |
+| Main CI gate | `.github/workflows/csharp.yml` | `HCDE_SOAK_EVIDENCE_MAX_AGE_DAYS` on soak gate step |
+| Soak CI gate | `.github/workflows/csharp-cross-language-soak.yml` | dedicated evidence freshness enforce step |
+| Gate tests | `CrossLanguageSoakGateTests` | `Evaluate_EnforcesEvidenceFreshnessWhenSecretsConfigured` |
+| Release checklist | `validation/soak/README.md` | main + soak workflow env docs |
+
+### Invasion spawn-directory + checksum tail polish (Phase 2c — iteration 41 step 2)
+
+| Artifact | Location | C++ reference |
+| --- | --- | --- |
+| Checksum helper | `WorldStateTailBuilder.TryComputeChecksumHashes` | shared HCKS hash compute for authority tails |
+| Invasion tail builder | `WorldStateTailBuilder.TryBuildInvasionTailWithChecksum` | HCIV + HCKS when world store wired |
+| Authority pump send | `LiveAuthoritySession.SendToClient` | invasion pump uses checksum helper |
+| Guest invasion apply | `GuestInvasionState.ApplySpawnDirectory` | V2 spawn metadata on guest receive |
+| E2E tests | `LiveSessionTests`, `WorldStateTailBuilderTests` | spawn directory apply + invasion HCKS pump |
 
 ### BEHAVIOR inventory/global-array + enhanced PCD operands (Phase 2c/2d — iteration 41 step 1)
 
@@ -956,6 +981,8 @@ Do **not** port snapshot encode/decode bodies until HCIN/HCSN headers are green.
 ## Audit conclusion (interim)
 
 **Phase 2b C# pregame stack is feature-complete for fresh dedicated joins** — loopback WAITING setup, verification-error replies, start-game, and a cross-language guest CLI/harness are in place. The remaining 2b gate is executing the harness against a real `hcdeserv` build and recording the result.
+
+**Phase 2c iteration 41** adds inventory/global-array/Skulltag PCD operand coverage with little-enhanced walker support, invasion spawn-directory apply on guest pump with HCIV+HCKS checksum tail polish, and evidence staleness enforcement in main/soak CI workflows.
 
 **Phase 2c iteration 40** adds script char-range/Eternity stack PCD operand coverage, HCAV authority event tails on authority pump with guest invasion apply wiring, and evidence file freshness enforcement in the Passed soak gate.
 
