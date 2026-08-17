@@ -34,4 +34,20 @@ Set `HCDE_REFRESH_SOAK_TEMPLATES=1` and run `RefreshCommittedEvidence_ReplacesSt
 
 Evidence files land in `csharp/validation/soak/evidence/` as `{harness}_{timestamp}_{status}.json`. A rollup manifest is written to `csharp/validation/soak/manifest.json`.
 
+## Release checklist gate
+
+When `HCDE_HCDESERV_PATH` and `HCDE_IWAD_PATH` are configured, release validation requires **Passed** status for every harness in `manifest.json`. Evaluate the gate from C#:
+
+```csharp
+var gate = CrossLanguageSoakGate.Evaluate();
+```
+
+In CI (after evidence refresh), run:
+
+```bash
+HCDE_ENFORCE_SOAK_GATE=1 dotnet test --filter CrossLanguageSoakGateTests
+```
+
+When soak secrets are absent, the gate returns `NotRequired` and does not block merges.
+
 When binaries are absent, harnesses record `Skipped` status with a reason instead of failing the xUnit suite.

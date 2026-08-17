@@ -47,6 +47,15 @@ jobs:
         run: |
           cd csharp
           dotnet test --no-build --filter "FullyQualifiedName~RefreshCommittedEvidence_ReplacesStaleHarnessFiles"
+      - name: Enforce Passed soak gate
+        if: ${{ secrets.HCDE_HCDESERV_PATH != '' && secrets.HCDE_IWAD_PATH != '' }}
+        env:
+          HCDE_HCDESERV_PATH: ${{ secrets.HCDE_HCDESERV_PATH }}
+          HCDE_IWAD_PATH: ${{ secrets.HCDE_IWAD_PATH }}
+          HCDE_ENFORCE_SOAK_GATE: '1'
+        run: |
+          cd csharp
+          dotnet test --no-build --filter "FullyQualifiedName~Evaluate_RequiresPassedManifestWhenSecretsConfigured"
       - name: Upload soak evidence
         if: always()
         uses: actions/upload-artifact@v4

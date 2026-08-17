@@ -2,14 +2,14 @@
 
 **Last updated:** 2026-08-17  
 **Scope:** All code under `csharp/` (7 projects, 6 test suites)  
-**Verification:** `dotnet build` and `dotnet test` in `csharp/` — **251 tests passing** (CI: `.github/workflows/csharp.yml`; optional soak: `.github/workflows/csharp-cross-language-soak.yml`)  
+**Verification:** `dotnet build` and `dotnet test` in `csharp/` — **257 tests passing** (CI: `.github/workflows/csharp.yml`; optional soak: `.github/workflows/csharp-cross-language-soak.yml`)  
 **Related:** [`HCDE_CSHARP_PHASE1_AUDIT.md`](HCDE_CSHARP_PHASE1_AUDIT.md) · [`HCDE_CSHARP_PHASE2_AUDIT.md`](HCDE_CSHARP_PHASE2_AUDIT.md) · [`HCDE_CSHARP_MIGRATION.md`](HCDE_CSHARP_MIGRATION.md)
 
 ---
 
 ## 1. Executive summary
 
-The C# tree is a **well-tested protocol and networking foundation** (~15,100 LOC source, 251 unit/integration tests) covering Phase 1 tools, Phase 2a–2c wire codecs, `HCDE.Server` query/advertise CLI, BEHAVIOR bytecode walk, and Phase 2d unified binary map decode.
+The C# tree is a **well-tested protocol and networking foundation** (~15,200 LOC source, 257 unit/integration tests) covering Phase 1 tools, Phase 2a–2c wire codecs, `HCDE.Server` query/advertise + live authority pump, BEHAVIOR bytecode walk, and Phase 2d unified binary map decode.
 
 | Layer | Status | Confidence |
 | --- | --- | --- |
@@ -18,7 +18,7 @@ The C# tree is a **well-tested protocol and networking foundation** (~15,100 LOC
 | Phase 2b — pregame handshake | **~95%** (fresh join loopback) | Medium (no recorded C++ interop) |
 | Phase 2c — live netcode wire | **~60%** of `d_net` wire surface; apply stubs in place | Medium (playsim mutation deferred) |
 | Phase 2d — map loader | **In progress** (unified `BinaryMapDecoder`; full binary lump decode through collision + BEHAVIOR script directory) | Medium |
-| Phase 2f — server shell | **In progress** (`HCDE.Server` query/advertise + pregame + map-load bootstrap) | Low |
+| Phase 2f — server shell | **In progress** (`HCDE.Server` query/advertise + pregame + map-load bootstrap + live authority pump) | Low |
 | Phase 3–4 — full sim & client | **Not started** | — |
 
 **Overall migration progress (by engine LOC):** ~2% of HCDE-owned C++ (`src/` + `tools/` ≈ 672k LOC).  
@@ -43,7 +43,7 @@ csharp/
     HCDE.MapLoader/         21 files, ~1,550 LOC   (WAD directory + unified binary map decode + BEHAVIOR directory)
     HCDE.Server/             6 files,   ~420 LOC   (hcdeserv host + CLI + query/advertise)
     HCDE.PregameGuest.Cli/  5 files,   ~207 LOC   (hcde-pregame-guest CLI)
-  tests/                   63 files, 251 tests
+  tests/                   65 files, 257 tests
 ```
 
 ### 2.2 Test matrix
@@ -54,11 +54,11 @@ csharp/
 | `HCDE.Master.Tests` | 1 | UDP heartbeat + list query integration |
 | `HCDE.Rcon.Tests` | 6 | FNV-1a + loopback auth/ping/status |
 | `HCDE.Net.Transport.Tests` | 10 | Constants, query, HCD3, gameplay CRC |
-| `HCDE.Net.Pregame.Tests` | 47 | CRC, service queue, host/guest loopback, bootstrap/resync, cross-language soak + manifest refresh |
-| `HCDE.Net.Core.Tests` | 130 | Live headers, bodies, tail, DEM, sessions, world-store + map-bootstrap + authority map-load E2E |
-| `HCDE.MapLoader.Tests` | 34 | WAD directory, unified map decode, BEHAVIOR directory + print-stack bytecode walk |
-| `HCDE.Server.Tests` | 8 | Dedicated host bind, CLI parser, query responder, master heartbeat, pregame→live bootstrap E2E |
-| **Total** | **251** | |
+| `HCDE.Net.Pregame.Tests` | 50 | CRC, service queue, host/guest loopback, bootstrap/resync, cross-language soak + manifest refresh + Passed gate |
+| `HCDE.Net.Core.Tests` | 131 | Live headers, bodies, tail, DEM, sessions, world-store + map-bootstrap + authority map-load + authority pump E2E |
+| `HCDE.MapLoader.Tests` | 35 | WAD directory, unified map decode, BEHAVIOR directory + HUD/inventory bytecode walk |
+| `HCDE.Server.Tests` | 9 | Dedicated host bind, CLI parser, query responder, master heartbeat, pregame→live bootstrap + live pump E2E |
+| **Total** | **257** | |
 
 ### 2.3 Dependency graph
 
@@ -365,6 +365,7 @@ Wire-first codecs for the **core live envelope and record bodies** are in good s
 7. ~~BEHAVIOR script directory + pregame map-load handoff + soak evidence archive~~ (done — iteration 30)
 8. ~~BEHAVIOR bytecode operands + HCDE.Server master advertise + Passed soak evidence in CI~~ (done — iteration 32)
 9. ~~Print-stack PCD operands + hcdeserv master CLI + committed soak template refresh~~ (done — iteration 33)
+10. ~~HUD/inventory PCD operands + LiveAuthoritySession pump + Passed soak gate~~ (done — iteration 34)
 
 ---
 

@@ -1,7 +1,7 @@
 # HCDE C# Migration — Phase 2 Principal Audit
 
 **Last updated:** 2026-08-17  
-**Status:** In progress — Phase **2c** live protocol codecs (iteration 34 step 2). Phase **2b** verification errors, start-game, bootstrap/resync, and cross-language harness complete.  
+**Status:** In progress — Phase **2c** live protocol codecs (iteration 34 complete). Phase **2b** verification errors, start-game, bootstrap/resync, and cross-language harness complete.  
 **Prerequisite:** [Phase 1 audit](HCDE_CSHARP_PHASE1_AUDIT.md) (complete)  
 **Related:** [`HCDE_CSHARP_MIGRATION.md`](HCDE_CSHARP_MIGRATION.md) · [`HCDE_NETCODE.md`](../../docs/HCDE_NETCODE.md)
 
@@ -575,11 +575,26 @@ Phase 2b is complete when **all** hold:
 | Script entry record | `MapBehaviorScriptEntry` | `ScriptPtr`, `ScriptPtr1`, `ScriptPtr2`, `ScriptPtr3` |
 | Unified behavior decode | `BinaryMapBehavior.Scripts` | `BinaryMapBehaviorDecoder` after ACS probe |
 
-## Phase 2c next slice (iteration 34)
+## Phase 2c next slice (iteration 34 — delivered)
 
 1. ~~**BEHAVIOR bytecode operands**~~ — HUD message / inventory direct specials (`MoreHudMessage`, `Lspec*DirectB`)
 2. ~~**HCDE.Server playsim pump**~~ — wire `LiveAuthoritySession` tick after map-load bootstrap
-3. **Cross-language soak gate** — require Passed evidence in release checklist when secrets configured
+3. ~~**Cross-language soak gate**~~ — require Passed evidence in release checklist when secrets configured
+
+## Phase 2c next slice (iteration 35)
+
+1. **BEHAVIOR bytecode operands** — continue ZDoom/Skulltag PCD table (music/sound direct, more stack ops)
+2. **Authority playsim tick polish** — snapshot tail builders on authority pump, guest apply wiring
+3. **Cross-language Passed soak gate** — document release checklist + enforce in main CI when secrets configured
+
+### Cross-language Passed soak gate (Phase 2c — iteration 34 step 3)
+
+| Artifact | Location | C++ reference |
+| --- | --- | --- |
+| Manifest gate | `CrossLanguageSoakGate.cs` | require `Passed` per harness when soak secrets set |
+| Gate tests | `CrossLanguageSoakGateTests` | NotRequired / Passed / Skipped-manifest failure |
+| CI enforce step | `.github/workflows/csharp-cross-language-soak.yml` | `HCDE_ENFORCE_SOAK_GATE=1` after evidence refresh |
+| Release checklist | `validation/soak/README.md` | gate evaluation + CI invocation |
 
 ### LiveAuthoritySession tick pump (Phase 2f — iteration 34 step 2)
 
@@ -716,12 +731,14 @@ Do **not** port snapshot encode/decode bodies until HCIN/HCSN headers are green.
 | Service packet + queue | `BeginHCDEPregameService`, `FHCDEPendingService` | `HCDE.Net.Pregame/*` |
 | PRE_CONNECT admission | `TryProcessSetupConnectPacket` | `PregameHost.cs`, `ConnectPacketCodec.cs` |
 | Guest join loop | `JoinGame` | `PregameGuest.cs`, `HCDE.PregameGuest.Cli` |
-| Live netcode | `d_net*.cpp` | `HCDE.Net.Core/*` (wire codecs; pump not started) |
+| Live netcode | `d_net*.cpp` | `HCDE.Net.Core/*` (wire codecs + authority pump on `hcdeserv`) |
 | RCON server | `d_net_rcon.cpp` | Phase 1 client only; server stays C++ until 2f |
 
 ## Audit conclusion (interim)
 
 **Phase 2b C# pregame stack is feature-complete for fresh dedicated joins** — loopback WAITING setup, verification-error replies, start-game, and a cross-language guest CLI/harness are in place. The remaining 2b gate is executing the harness against a real `hcdeserv` build and recording the result.
+
+**Phase 2c iteration 34** adds HUD/inventory PCD operand skip coverage, `LiveAuthoritySession.Pump` wired into `DedicatedServerHost` after map-load bootstrap, and `CrossLanguageSoakGate` to require Passed manifest entries when soak secrets are configured.
 
 **Phase 2c iteration 33** adds print-stack/direct-special PCD operand coverage, `hcdeserv` `--master` CLI with public query snapshot fields, and `RefreshCommittedEvidence` to prune/refresh committed soak templates in CI.
 
@@ -763,4 +780,4 @@ Do **not** port snapshot encode/decode bodies until HCIN/HCSN headers are green.
 
 **Phase 2c iteration 14** adds HCSR/HCIN apply sessions with per-player sequence/consistency tracking, idempotent snapshot handling, gap-resync policy, and injectable command sinks wired into guest/authority receive paths.
 
-Next audit checkpoint: **Phase 2c iteration 34** when HUD/inventory PCD operands land or `hcdeserv` begins authority tick pump.
+Next audit checkpoint: **Phase 2c iteration 35** when more PCD operands land or authority snapshot tail builders wire into the tick pump.
