@@ -1,7 +1,7 @@
 # HCDE C# Migration — Phase 2 Principal Audit
 
 **Last updated:** 2026-08-17  
-**Status:** In progress — Phase **2c** live protocol codecs (iteration 33 complete). Phase **2b** verification errors, start-game, bootstrap/resync, and cross-language harness complete.  
+**Status:** In progress — Phase **2c** live protocol codecs (iteration 34 step 1). Phase **2b** verification errors, start-game, bootstrap/resync, and cross-language harness complete.  
 **Prerequisite:** [Phase 1 audit](HCDE_CSHARP_PHASE1_AUDIT.md) (complete)  
 **Related:** [`HCDE_CSHARP_MIGRATION.md`](HCDE_CSHARP_MIGRATION.md) · [`HCDE_NETCODE.md`](../../docs/HCDE_NETCODE.md)
 
@@ -577,9 +577,19 @@ Phase 2b is complete when **all** hold:
 
 ## Phase 2c next slice (iteration 34)
 
-1. **BEHAVIOR bytecode operands** — HUD message / inventory direct specials (`MoreHudMessage`, `GiveInventoryDirectB`)
+1. ~~**BEHAVIOR bytecode operands**~~ — HUD message / inventory direct specials (`MoreHudMessage`, `Lspec*DirectB`)
 2. **HCDE.Server playsim pump** — wire `LiveAuthoritySession` tick after map-load bootstrap
 3. **Cross-language soak gate** — require Passed evidence in release checklist when secrets configured
+
+### BEHAVIOR HUD/inventory PCD operands (Phase 2c/2d — iteration 34 step 1)
+
+| Artifact | Location | C++ reference |
+| --- | --- | --- |
+| HUD message opcodes | `AcsPcode.cs` | `PCD_MOREHUDMESSAGE`, `PCD_OPTHUDMESSAGE`, `PCD_ENDHUDMESSAGE` |
+| Direct-byte specials | `AcsPcode.cs` | `PCD_LSPEC1DIRECTB`…`PCD_LSPEC5DIRECTB`, `PCD_DELAYDIRECTB`, `PCD_RANDOMDIRECTB` |
+| Inventory opcodes | `AcsPcode.cs` | `PCD_GIVEINVENTORY`, `PCD_CLEARINVENTORY`, `PCD_SETFONTDIRECT` |
+| Operand skip table | `MapBehaviorBytecodeWalker.cs` | HUD stack pops + `Lspec*DirectB` byte args |
+| Walk tests | `MapBehaviorBytecodeWalkerTests` | `TryWalkScript_OldFormat_ReadsHudMessageAndDirectByteSpecials` |
 
 ### BEHAVIOR print stack + direct specials (Phase 2c/2d — iteration 33 step 1)
 

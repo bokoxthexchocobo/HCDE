@@ -209,6 +209,18 @@ public static class MapBehaviorBytecodeWalker
         (int)AcsPcode.GiveInventoryDirect or (int)AcsPcode.TakeInventoryDirect
             or (int)AcsPcode.CheckInventoryDirect => 2,
         (int)AcsPcode.SetMusicDirect => 3,
+        (int)AcsPcode.MoreHudMessage or (int)AcsPcode.OptHudMessage
+            or (int)AcsPcode.EndHudMessage or (int)AcsPcode.EndHudMessageBold
+            or (int)AcsPcode.SetStyle or (int)AcsPcode.SetFont => 0,
+        (int)AcsPcode.SetStyleDirect => 2,
+        (int)AcsPcode.SetFontDirect => 1,
+        (int)AcsPcode.GiveInventory or (int)AcsPcode.ClearInventory => 0,
+        (int)AcsPcode.Lspec1DirectB => 1,
+        (int)AcsPcode.Lspec2DirectB => 1,
+        (int)AcsPcode.Lspec3DirectB => 1,
+        (int)AcsPcode.Lspec4DirectB => 2,
+        (int)AcsPcode.Lspec5DirectB => 2,
+        (int)AcsPcode.DelayDirectB or (int)AcsPcode.RandomDirectB => 1,
         _ => UnknownOperandWords,
     };
 
@@ -246,6 +258,19 @@ public static class MapBehaviorBytecodeWalker
         (int)AcsPcode.GiveInventoryDirect or (int)AcsPcode.TakeInventoryDirect
             or (int)AcsPcode.CheckInventoryDirect => 8,
         (int)AcsPcode.SetMusicDirect => 12,
+        (int)AcsPcode.MoreHudMessage or (int)AcsPcode.OptHudMessage
+            or (int)AcsPcode.EndHudMessage or (int)AcsPcode.EndHudMessageBold
+            or (int)AcsPcode.SetStyle or (int)AcsPcode.SetFont => 0,
+        (int)AcsPcode.SetStyleDirect => 8,
+        (int)AcsPcode.SetFontDirect => 4,
+        (int)AcsPcode.GiveInventory or (int)AcsPcode.ClearInventory => 0,
+        (int)AcsPcode.Lspec1DirectB => 2,
+        (int)AcsPcode.Lspec2DirectB => 3,
+        (int)AcsPcode.Lspec3DirectB => 4,
+        (int)AcsPcode.Lspec4DirectB => 5,
+        (int)AcsPcode.Lspec5DirectB => 6,
+        (int)AcsPcode.DelayDirectB => 1,
+        (int)AcsPcode.RandomDirectB => 2,
         _ => UnknownOperandWords,
     };
 
