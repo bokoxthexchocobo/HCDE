@@ -1,7 +1,7 @@
 # HCDE C# Migration — Phase 2 Principal Audit
 
 **Last updated:** 2026-08-17  
-**Status:** In progress — Phase **2c** live protocol codecs (iteration 37 complete). Phase **2b** verification errors, start-game, bootstrap/resync, and cross-language harness complete.  
+**Status:** In progress — Phase **2c** live protocol codecs (iteration 38 step 1). Phase **2b** verification errors, start-game, bootstrap/resync, and cross-language harness complete.  
 **Prerequisite:** [Phase 1 audit](HCDE_CSHARP_PHASE1_AUDIT.md) (complete)  
 **Related:** [`HCDE_CSHARP_MIGRATION.md`](HCDE_CSHARP_MIGRATION.md) · [`HCDE_NETCODE.md`](../../docs/HCDE_NETCODE.md)
 
@@ -601,9 +601,18 @@ Phase 2b is complete when **all** hold:
 
 ## Phase 2c next slice (iteration 38)
 
-1. **BEHAVIOR bytecode operands** — map/world array PCDs, translation range ops
+1. ~~**BEHAVIOR bytecode operands**~~ — map/world array PCDs, translation range ops
 2. **Authority playsim tick polish** — coop dead-spawn tails on authority pump, guest gap resync wiring
 3. **Cross-language soak evidence** — weekly Passed template commit automation from artifact bundle
+
+### BEHAVIOR map/world array + translation PCD operands (Phase 2c/2d — iteration 38 step 1)
+
+| Artifact | Location | C++ reference |
+| --- | --- | --- |
+| Translation opcodes | `AcsPcode.cs` | `PCD_STARTTRANSLATION`, `PCD_TRANSLATIONRANGE1`…`5`, `PCD_ENDTRANSLATION` |
+| Map/world array opcodes | `AcsPcode.cs` | `PCD_PUSHMAPARRAY`…`PCD_DECMAPARRAY`, `PCD_PUSHWORLDARRAY`…`PCD_DECWORLDARRAY` |
+| Operand skip table | `MapBehaviorBytecodeWalker.cs` | stack-only translation ops + 1-word map/world array indices |
+| Walk tests | `MapBehaviorBytecodeWalkerTests` | `TryWalkScript_OldFormat_ReadsMapWorldArrayAndTranslationOps` |
 
 ### Soak template export bundle (Phase 2c — iteration 37 step 3)
 
