@@ -66,7 +66,7 @@ Outputs: `hcdemaster` and `hcdercon`.
 
 ## Validation
 
-Managed wire compatibility is gated by `dotnet test` (227 tests; CI via `.github/workflows/csharp.yml`). Optional cross-language soak CI runs `FullyQualifiedName~CrossLanguageSoak` when `HCDE_HCDESERV_PATH` / `HCDE_IWAD_PATH` secrets are configured. Cross-language checks live under `validation/`:
+Managed wire compatibility is gated by `dotnet test` (236 tests; CI via `.github/workflows/csharp.yml`). Optional cross-language soak CI runs `FullyQualifiedName~CrossLanguageSoak` when `HCDE_HCDESERV_PATH` / `HCDE_IWAD_PATH` secrets are configured. Cross-language checks live under `validation/`:
 
 | Harness | Purpose |
 | --- | --- |
@@ -82,7 +82,7 @@ python3 csharp/validation/pregame/pregame_guest_smoke.py \
   --wad-crc <iwad-crc>
 ```
 
-Full native live gameplay stress remains under [`tests/netcode_step12/`](../tests/netcode_step12/). The xUnit suite includes `NetcodeCrossLanguageTests`, `NetcodeCrossLanguageSoakTests`, `PregameCrossLanguageSoakTests`, and `CrossLanguageSoakSuiteTests`, which skip unless `HCDE_HCDESERV_PATH` and `HCDE_IWAD_PATH` are set. Set `HCDE_HCDE_CLIENT_PATH` to add a joining client during the Step 12 soak. Set `HCDE_SOAK_EVIDENCE_DIR` to write JSON audit evidence from soak runners (`CrossLanguageSoakSuite.RunAll()` runs both harnesses).
+Full native live gameplay stress remains under [`tests/netcode_step12/`](../tests/netcode_step12/). The xUnit suite includes `NetcodeCrossLanguageTests`, `NetcodeCrossLanguageSoakTests`, `PregameCrossLanguageSoakTests`, `CrossLanguageSoakSuiteTests`, and `CrossLanguageSoakEvidenceArchiveTests`, which skip unless `HCDE_HCDESERV_PATH` and `HCDE_IWAD_PATH` are set. Set `HCDE_HCDE_CLIENT_PATH` to add a joining client during the Step 12 soak. Set `HCDE_SOAK_EVIDENCE_DIR` to write JSON audit evidence from soak runners (`CrossLanguageSoakSuite.RunAll()` or `CrossLanguageSoakEvidenceArchive.RecordDefaultEvidence()`). Skipped evidence templates live under [`validation/soak/evidence/`](validation/soak/evidence/).
 
 ## Solution layout
 
@@ -103,7 +103,7 @@ csharp/
     HCDE.MapLoader/      WAD directory + binary map lump decode (Phase 2d)
     HCDE.PregameGuest.Cli/  hcde-pregame-guest CLI
   tests/
-    HCDE.*.Tests/        xUnit regression tests (227 passing)
+    HCDE.*.Tests/        xUnit regression tests (236 passing)
 ```
 
 ## Migration phases

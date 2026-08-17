@@ -3,6 +3,7 @@ using HCDE.Net.Pregame;
 
 namespace HCDE.Net.Pregame.Tests;
 
+[Collection("CrossLanguageSoak")]
 public class PregameCrossLanguageSoakTests
 {
     [Fact]
