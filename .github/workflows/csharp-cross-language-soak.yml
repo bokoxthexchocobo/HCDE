@@ -58,6 +58,14 @@ jobs:
         run: |
           cd csharp
           dotnet test --no-build --filter "FullyQualifiedName~TryRecordPassedValidationEvidence_PassesGateWhenBinariesPresent"
+      - name: Export soak templates for commit
+        if: ${{ secrets.HCDE_HCDESERV_PATH != '' && secrets.HCDE_IWAD_PATH != '' }}
+        env:
+          HCDE_EXPORT_SOAK_TEMPLATES: '1'
+          HCDE_SOAK_TEMPLATE_EXPORT_DIR: ${{ runner.temp }}/soak-templates-for-commit
+        run: |
+          cd csharp
+          dotnet test --no-build --filter "FullyQualifiedName~ExportCommittedTemplates_WritesCiArtifactBundle"
       - name: Enforce Passed soak gate
         if: ${{ secrets.HCDE_HCDESERV_PATH != '' && secrets.HCDE_IWAD_PATH != '' }}
         env:
@@ -74,5 +82,6 @@ jobs:
           name: csharp-soak-evidence
           path: |
             ${{ runner.temp }}/hcde-soak-evidence/*.json
+            ${{ runner.temp }}/soak-templates-for-commit/**
             csharp/validation/soak/evidence/*.json
             csharp/validation/soak/manifest.json

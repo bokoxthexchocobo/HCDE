@@ -1,7 +1,7 @@
 # HCDE C# Migration — Phase 2 Principal Audit
 
 **Last updated:** 2026-08-17  
-**Status:** In progress — Phase **2c** live protocol codecs (iteration 37 step 1). Phase **2b** verification errors, start-game, bootstrap/resync, and cross-language harness complete.  
+**Status:** In progress — Phase **2c** live protocol codecs (iteration 37 complete). Phase **2b** verification errors, start-game, bootstrap/resync, and cross-language harness complete.  
 **Prerequisite:** [Phase 1 audit](HCDE_CSHARP_PHASE1_AUDIT.md) (complete)  
 **Related:** [`HCDE_CSHARP_MIGRATION.md`](HCDE_CSHARP_MIGRATION.md) · [`HCDE_NETCODE.md`](../../docs/HCDE_NETCODE.md)
 
@@ -593,11 +593,36 @@ Phase 2b is complete when **all** hold:
 2. ~~**Authority playsim tick polish**~~ — player pose deltas on authority pump, guest checksum mismatch policy
 3. ~~**Cross-language soak evidence**~~ — re-record Passed manifest in CI and commit refreshed templates
 
-## Phase 2c next slice (iteration 37)
+## Phase 2c next slice (iteration 37 — delivered)
 
 1. ~~**BEHAVIOR bytecode operands**~~ — call/discard stack ops, more global array PCDs
-2. **Authority playsim tick polish** — actor delta tails on authority pump, guest resync on mismatch
-3. **Cross-language soak evidence** — automate committing refreshed Passed templates from CI artifacts
+2. ~~**Authority playsim tick polish**~~ — actor delta tails on authority pump, guest resync on mismatch
+3. ~~**Cross-language soak evidence**~~ — automate committing refreshed Passed templates from CI artifacts
+
+## Phase 2c next slice (iteration 38)
+
+1. **BEHAVIOR bytecode operands** — map/world array PCDs, translation range ops
+2. **Authority playsim tick polish** — coop dead-spawn tails on authority pump, guest gap resync wiring
+3. **Cross-language soak evidence** — weekly Passed template commit automation from artifact bundle
+
+### Soak template export bundle (Phase 2c — iteration 37 step 3)
+
+| Artifact | Location | C++ reference |
+| --- | --- | --- |
+| Export helper | `CrossLanguageSoakEvidenceArchive.ExportCommittedTemplates` | CI artifact bundle for commit |
+| CI export step | `.github/workflows/csharp-cross-language-soak.yml` | `HCDE_SOAK_TEMPLATE_EXPORT_DIR` |
+| Archive tests | `CrossLanguageSoakEvidenceArchiveTests` | export + CI bundle coverage |
+| Release checklist | `validation/soak/README.md` | artifact copy instructions |
+
+### Actor delta tail + checksum resync (Phase 2c — iteration 37 step 2)
+
+| Artifact | Location | C++ reference |
+| --- | --- | --- |
+| Actor seed from map | `GuestWorldStateBootstrap.SeedPlayersFromMapThings` | player-start actors in HCDA tail |
+| Tail builder | `WorldStateTailBuilder.WriteCoopTailFromStore` | ships `ActorDeltaRecord` from authority store |
+| Resync policy | `SnapshotChecksumMismatchPolicy.ResyncNetStateOnMismatch` | reset guest net registry on HCKS mismatch |
+| Guest state | `LiveGuestSession.NeedsChecksumResync` | post-snapshot mismatch resync flag |
+| E2E tests | `LiveSessionTests`, `GuestWorldStateChecksumIntegrationTests` | actor HCDA apply + resync on mismatch |
 
 ### BEHAVIOR call/global-array PCD operands (Phase 2c/2d — iteration 37 step 1)
 
@@ -814,6 +839,8 @@ Do **not** port snapshot encode/decode bodies until HCIN/HCSN headers are green.
 
 **Phase 2b C# pregame stack is feature-complete for fresh dedicated joins** — loopback WAITING setup, verification-error replies, start-game, and a cross-language guest CLI/harness are in place. The remaining 2b gate is executing the harness against a real `hcdeserv` build and recording the result.
 
+**Phase 2c iteration 37** adds call/discard/global-array PCD operand coverage, HCDA actor delta tails on authority pump with checksum mismatch resync policy, and `ExportCommittedTemplates` CI artifact bundles for committing Passed soak templates.
+
 **Phase 2c iteration 36** adds gravity/air-control/global-var PCD operand coverage, player-pose HCDW tail seeding from map THINGS with guest checksum mismatch policy, and `TryRecordPassedValidationEvidence` to re-record Passed soak templates in CI.
 
 **Phase 2c iteration 35** adds music/stack PCD operand coverage, `WorldStateTailBuilder.TryBuildCoopTailFromStore` on authority pump with guest sector apply E2E, and Passed soak gate enforcement in main CI when secrets are configured.
@@ -860,4 +887,4 @@ Do **not** port snapshot encode/decode bodies until HCIN/HCSN headers are green.
 
 **Phase 2c iteration 14** adds HCSR/HCIN apply sessions with per-player sequence/consistency tracking, idempotent snapshot handling, gap-resync policy, and injectable command sinks wired into guest/authority receive paths.
 
-Next audit checkpoint: **Phase 2c iteration 37** when call/discard PCD operands land or authority actor-delta tail builders wire into the tick pump.
+Next audit checkpoint: **Phase 2c iteration 38** when map/world array PCD operands land or authority coop dead-spawn tail builders wire into the tick pump.

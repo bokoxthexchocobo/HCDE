@@ -67,6 +67,48 @@ public static class CrossLanguageSoakEvidenceArchive
         return CrossLanguageSoakGate.Evaluate(repositoryRoot, requireConfiguredSecrets: true);
     }
 
+    public static IReadOnlyList<string> ExportCommittedTemplates(string outputDirectory, string? repositoryRoot = null)
+    {
+        repositoryRoot ??= FindRepositoryRoot();
+        Directory.CreateDirectory(outputDirectory);
+        var evidenceDirectory = ResolveDefaultEvidenceDirectory(repositoryRoot);
+        var outputEvidenceDirectory = Path.Combine(outputDirectory, "evidence");
+        Directory.CreateDirectory(outputEvidenceDirectory);
+
+        var copied = new List<string>();
+        if (Directory.Exists(evidenceDirectory))
+        {
+            foreach (var file in Directory.GetFiles(evidenceDirectory, "*.json"))
+            {
+                var destination = Path.Combine(outputEvidenceDirectory, Path.GetFileName(file));
+                File.Copy(file, destination, overwrite: true);
+                copied.Add(destination);
+            }
+        }
+
+        var manifestPath = CrossLanguageSoakManifest.ResolveDefaultManifestPath(repositoryRoot);
+        if (File.Exists(manifestPath))
+        {
+            var destinationManifest = Path.Combine(outputDirectory, "manifest.json");
+            File.Copy(manifestPath, destinationManifest, overwrite: true);
+            copied.Add(destinationManifest);
+        }
+
+        var instructionsPath = Path.Combine(outputDirectory, "COMMIT_INSTRUCTIONS.md");
+        File.WriteAllText(
+            instructionsPath,
+            """
+            # Soak template commit bundle
+
+            Copy this artifact into the repository after a green cross-language soak run:
+
+            - `evidence/*.json` -> `csharp/validation/soak/evidence/`
+            - `manifest.json` -> `csharp/validation/soak/manifest.json`
+            """);
+        copied.Add(instructionsPath);
+        return copied;
+    }
+
     public static void PruneHarnessEvidenceFiles(string evidenceDirectory)
     {
         if (!Directory.Exists(evidenceDirectory))

@@ -116,6 +116,52 @@ public class CrossLanguageSoakEvidenceArchiveTests
     }
 
     [Fact]
+    public void ExportCommittedTemplates_WritesCiArtifactBundle()
+    {
+        if (Environment.GetEnvironmentVariable("HCDE_EXPORT_SOAK_TEMPLATES") != "1")
+            return;
+
+        var outputDir = Environment.GetEnvironmentVariable("HCDE_SOAK_TEMPLATE_EXPORT_DIR");
+        Assert.False(string.IsNullOrWhiteSpace(outputDir));
+
+        var files = CrossLanguageSoakEvidenceArchive.ExportCommittedTemplates(outputDir!);
+        Assert.NotEmpty(files);
+        Assert.True(File.Exists(Path.Combine(outputDir!, "manifest.json")));
+        Assert.True(Directory.Exists(Path.Combine(outputDir!, "evidence")));
+    }
+
+    [Fact]
+    public void ExportCommittedTemplates_CopiesManifestAndEvidence()
+    {
+        if (Environment.GetEnvironmentVariable("HCDE_EXPORT_SOAK_TEMPLATES") != "1")
+            return;
+
+        var baseDir = Path.Combine(Path.GetTempPath(), $"hcde-soak-export-{Guid.NewGuid():N}");
+        var repositoryRoot = Path.Combine(baseDir, "repo");
+        var evidenceDir = Path.Combine(repositoryRoot, "csharp", "validation", "soak", "evidence");
+        Directory.CreateDirectory(evidenceDir);
+        File.WriteAllText(Path.Combine(repositoryRoot, "README.md"), "test");
+        File.WriteAllText(Path.Combine(evidenceDir, "pregame_guest_smoke_test_Passed.json"), "{}");
+        File.WriteAllText(
+            Path.Combine(repositoryRoot, "csharp", "validation", "soak", "manifest.json"),
+            """{"Harnesses":[{"Harness":"pregame_guest_smoke","Status":"Passed"}]}""");
+
+        var outputDir = Path.Combine(baseDir, "artifact");
+        try
+        {
+            var files = CrossLanguageSoakEvidenceArchive.ExportCommittedTemplates(outputDir, repositoryRoot);
+            Assert.Contains(files, path => path.EndsWith("manifest.json"));
+            Assert.Contains(files, path => path.Contains("evidence/pregame_guest_smoke_test_Passed.json"));
+            Assert.True(File.Exists(Path.Combine(outputDir, "COMMIT_INSTRUCTIONS.md")));
+        }
+        finally
+        {
+            if (Directory.Exists(baseDir))
+                Directory.Delete(baseDir, recursive: true);
+        }
+    }
+
+    [Fact]
     public void TryRecordPassedValidationEvidence_ReturnsNotRequiredWhenSecretsMissing()
     {
         if (CrossLanguageSoakGate.AreSoakSecretsConfigured())
