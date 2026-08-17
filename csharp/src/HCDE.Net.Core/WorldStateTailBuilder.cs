@@ -113,4 +113,21 @@ public static class WorldStateTailBuilder
             replicateSectorMetadata);
         return new WorldStateTailBuildResult(written > 0, written);
     }
+
+    public static int WriteInvasionTail(
+        Span<byte> tail,
+        uint gameTic,
+        InvasionSnapshotHeader invasionSnapshot,
+        uint[]? checksumHashes = null)
+        => ServerSnapshotTailCodec.WriteInvasionShipping(tail, gameTic, invasionSnapshot, checksumHashes);
+
+    public static WorldStateTailBuildResult TryBuildInvasionTail(
+        Span<byte> tail,
+        uint gameTic,
+        InvasionSnapshotHeader invasionSnapshot,
+        uint[]? checksumHashes = null)
+    {
+        var written = WriteInvasionTail(tail, gameTic, invasionSnapshot, checksumHashes);
+        return new WorldStateTailBuildResult(written > 0, written);
+    }
 }

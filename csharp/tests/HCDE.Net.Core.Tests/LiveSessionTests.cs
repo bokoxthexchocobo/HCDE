@@ -264,4 +264,95 @@ public class LiveSessionTests
         Assert.Equal(new uint[] { 77 }, tailSections.Value.CoopDeadSpawnIndices);
         Assert.Contains(77u, guestStore.RetiredCoopDeadSpawns);
     }
+
+    [Fact]
+    public void AuthorityPump_SendsInvasionTailViaPump()
+    {
+        var gameId = new byte[] { 0xAA, 0xBB, 0xCC, 0xDD, 0x11, 0x22, 0x33, 0x44 };
+
+        using var authorityTransport = new UdpTransport();
+        using var guestTransport = new UdpTransport();
+        authorityTransport.Bind(0);
+        guestTransport.Bind(0);
+        authorityTransport.SetNonBlocking(true);
+        guestTransport.SetNonBlocking(true);
+
+        var authorityEndpoint = new NetworkEndpoint(System.Net.IPAddress.Loopback, authorityTransport.BoundPort);
+        var guestEndpoint = new NetworkEndpoint(System.Net.IPAddress.Loopback, guestTransport.BoundPort);
+
+        var authority = new LiveAuthoritySession(authorityTransport, gameId, authoritySlot: 0, maxClients: 4);
+        authority.SetAuthorityInvasionSnapshot(new InvasionSnapshotHeader(
+            flags: 0,
+            state: LiveConstants.InvasionStateSpawning,
+            stateTics: 1,
+            wave: 4,
+            maxWaves: 12,
+            waveBudget: 8,
+            waveSpawned: 2,
+            waveCleared: 0,
+            activeMonsters: 3));
+        authority.TrackClient(guestEndpoint, clientSlot: 1);
+
+        var guest = new LiveGuestSession(
+            guestTransport,
+            gameId,
+            authorityEndpoint,
+            guestPlayerSlot: 1,
+            authoritySlot: 0,
+            maxClients: 4);
+
+        authority.Pump((ulong)Environment.TickCount64);
+
+        Assert.True(guest.TryReceiveAuthorityControl(out _));
+        Assert.True(guest.TryReceiveServerSnapshot(out _, out _, out var tailSections));
+        Assert.NotNull(tailSections);
+        Assert.NotNull(tailSections!.Value.InvasionSnapshot);
+        Assert.Equal(4u, tailSections.Value.InvasionSnapshot!.Value.Wave);
+    }
+
+    [Fact]
+    public void GuestAppliesPresentationEchoWhenWorldStateWired()
+    {
+        var gameId = new byte[] { 0xAA, 0xBB, 0xCC, 0xDD, 0x11, 0x22, 0x33, 0x44 };
+
+        using var authorityTransport = new UdpTransport();
+        using var guestTransport = new UdpTransport();
+        authorityTransport.Bind(0);
+        guestTransport.Bind(0);
+        authorityTransport.SetNonBlocking(true);
+        guestTransport.SetNonBlocking(true);
+
+        var authorityEndpoint = new NetworkEndpoint(System.Net.IPAddress.Loopback, authorityTransport.BoundPort);
+        var guestEndpoint = new NetworkEndpoint(System.Net.IPAddress.Loopback, guestTransport.BoundPort);
+
+        var guestStore = new GuestWorldStateStore();
+        var guestChecksum = new SnapshotChecksumSession();
+        var guest = new LiveGuestSession(
+            guestTransport,
+            gameId,
+            authorityEndpoint,
+            guestPlayerSlot: 1,
+            authoritySlot: 0,
+            maxClients: 4);
+        guest.SetGuestWorldState(guestStore, guestChecksum);
+
+        Span<byte> tail = stackalloc byte[512];
+        var cursor = 0;
+        cursor += WorldDeltaChunkCodec.WriteEmpty(tail[cursor..], gameTic: 1);
+        cursor += ActorDeltasCodec.WriteEmpty(tail[cursor..]);
+        cursor += PresentationEchoCodec.Write(tail[cursor..], PresentationEchoCodec.CreateExampleBlock());
+
+        var gameplay = new LiveGameplayEndpoint(authorityTransport, gameId);
+        gameplay.TrySendServerSnapshotWithExternalTail(
+            guestEndpoint,
+            roomId: 0,
+            gameTic: 1,
+            playerNum: 1,
+            externalTail: tail[..cursor]);
+
+        Assert.True(guest.TryReceiveServerSnapshot(out _, out _, out var tailSections));
+        Assert.NotNull(guest.PresentationEchoState);
+        Assert.NotNull(guest.PresentationEchoState!.LastInventoryItems);
+        Assert.NotEmpty(guest.PresentationEchoState.LastInventoryItems!);
+    }
 }

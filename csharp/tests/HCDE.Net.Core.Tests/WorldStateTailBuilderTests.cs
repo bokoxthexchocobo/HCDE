@@ -61,4 +61,27 @@ public class WorldStateTailBuilderTests
         Assert.Equal(new uint[] { 42, 99 }, sections.CoopDeadSpawnIndices);
         Assert.False(store.HasPendingCoopDeadSpawns);
     }
+
+    [Fact]
+    public void TryBuildInvasionTail_WritesHcivBeforeEcho()
+    {
+        var invasionHeader = new InvasionSnapshotHeader(
+            flags: 0,
+            state: LiveConstants.InvasionStateSpawning,
+            stateTics: 2,
+            wave: 3,
+            maxWaves: 10,
+            waveBudget: 8,
+            waveSpawned: 4,
+            waveCleared: 1,
+            activeMonsters: 6);
+
+        Span<byte> tail = stackalloc byte[256];
+        var build = WorldStateTailBuilder.TryBuildInvasionTail(tail, gameTic: 7, invasionHeader);
+        Assert.True(build.HasTail);
+        Assert.True(ServerSnapshotTailWalker.TryWalk(tail[..build.BytesWritten], out var sections, out _, out _));
+        Assert.NotNull(sections.InvasionSnapshot);
+        Assert.Equal(3u, sections.InvasionSnapshot!.Value.Wave);
+        Assert.NotNull(sections.EchoBlock);
+    }
 }

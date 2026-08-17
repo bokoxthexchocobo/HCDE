@@ -131,6 +131,49 @@ public static class ServerSnapshotTailCodec
         return cursor;
     }
 
+    public static int WriteInvasionShipping(
+        Span<byte> tail,
+        uint gameTic,
+        InvasionSnapshotHeader invasionSnapshot,
+        uint[]? checksumHashes = null)
+    {
+        var required = WorldDeltaChunkCodec.MinChunkSize(0, 0)
+            + LiveConstants.InvasionSnapshotHeaderV2Size
+            + LiveConstants.PresentationEchoMinHeaderSize
+            + (checksumHashes is { Length: LiveConstants.SnapshotChecksumCategoryCount }
+                ? LiveConstants.SnapshotChecksumBlockSize
+                : 0);
+        if (tail.Length < required)
+            return 0;
+
+        var cursor = 0;
+        var worldDeltaWritten = WorldDeltaChunkCodec.WriteEmpty(tail[cursor..], gameTic);
+        if (worldDeltaWritten == 0)
+            return 0;
+
+        cursor += worldDeltaWritten;
+        var invasionWritten = InvasionSnapshotCodec.WriteEmptyV2(tail[cursor..], invasionSnapshot);
+        if (invasionWritten == 0)
+            return 0;
+
+        cursor += invasionWritten;
+        var echoWritten = PresentationEchoCodec.WriteMinimal(tail[cursor..]);
+        if (echoWritten == 0)
+            return 0;
+
+        cursor += echoWritten;
+        if (checksumHashes is { Length: LiveConstants.SnapshotChecksumCategoryCount })
+        {
+            var checksumWritten = SnapshotChecksumCodec.Write(tail[cursor..], gameTic, checksumHashes);
+            if (checksumWritten == 0)
+                return 0;
+
+            cursor += checksumWritten;
+        }
+
+        return cursor;
+    }
+
     public static int Write(
         Span<byte> tail,
         uint gameTic,

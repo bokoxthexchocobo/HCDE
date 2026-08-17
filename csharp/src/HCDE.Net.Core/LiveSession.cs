@@ -21,6 +21,7 @@ public sealed class LiveGuestSession
     private SnapshotChecksumSession? _checksumSession;
     private ISnapshotChecksumMismatchSink? _checksumMismatchSink;
     private GuestWorldStateStore? _guestWorldState;
+    private GuestPresentationEchoState? _presentationEchoState;
     private int _guestWorldStateRngSeed;
     private SnapshotChecksumMismatchPolicyKind _checksumMismatchPolicy = SnapshotChecksumMismatchPolicyKind.ReportAllCompared;
     private GuestChecksumApplyState _lastChecksumApplyState;
@@ -91,11 +92,14 @@ public sealed class LiveGuestSession
         _checksumMismatchSink = mismatchSink;
     }
 
+    public GuestPresentationEchoState? PresentationEchoState => _presentationEchoState;
+
     public void SetGuestWorldState(
         GuestWorldStateStore worldState,
         SnapshotChecksumSession checksumSession,
         int rngSeed = 0,
-        ISnapshotChecksumMismatchSink? mismatchSink = null)
+        ISnapshotChecksumMismatchSink? mismatchSink = null,
+        GuestPresentationEchoState? presentationEchoState = null)
     {
         _guestWorldState = worldState;
         _guestWorldStateRngSeed = rngSeed;
@@ -103,6 +107,8 @@ public sealed class LiveGuestSession
         _worldDeltaSink = worldState;
         _actorDeltaSink = worldState;
         _coopDeadSpawnsSink = worldState;
+        _presentationEchoState = presentationEchoState ?? new GuestPresentationEchoState();
+        _echoSink = _presentationEchoState;
     }
 
     public void SetApplySinks(
@@ -368,6 +374,7 @@ public sealed class LiveAuthoritySession
     private readonly LivePeerNetRegistry _netRegistry;
     private IClientInputCommandSink? _clientInputCommandSink;
     private GuestWorldStateStore? _authorityWorldState;
+    private InvasionSnapshotHeader? _authorityInvasionSnapshot;
     private SnapshotChecksumSession? _checksumSession;
     private int _authorityWorldStateRngSeed;
     private bool _replicateSectorMetadata;
@@ -406,6 +413,9 @@ public sealed class LiveAuthoritySession
         _authorityWorldStateRngSeed = rngSeed;
         _replicateSectorMetadata = replicateSectorMetadata;
     }
+
+    public void SetAuthorityInvasionSnapshot(InvasionSnapshotHeader? invasionSnapshot) =>
+        _authorityInvasionSnapshot = invasionSnapshot;
 
     public LiveAuthorityClientRegistry Clients => _clients;
 
@@ -464,6 +474,26 @@ public sealed class LiveAuthoritySession
                     (int)_gameTic,
                     _authorityWorldStateRngSeed);
                 _checksumSession.Ring.TryFind((int)_gameTic, out checksumHashes);
+            }
+
+            if (_authorityInvasionSnapshot is { } invasionSnapshot)
+            {
+                Span<byte> tail = stackalloc byte[512];
+                var tailBuild = WorldStateTailBuilder.TryBuildInvasionTail(
+                    tail,
+                    _gameTic,
+                    invasionSnapshot,
+                    checksumHashes);
+                if (tailBuild.HasTail)
+                {
+                    _gameplay.TrySendServerSnapshotWithExternalTail(
+                        clientEndpoint,
+                        _roomId,
+                        _gameTic,
+                        playerNum: (byte)clientSlot,
+                        externalTail: tail[..tailBuild.BytesWritten]);
+                    return;
+                }
             }
 
             if (_authorityWorldState is not null)
