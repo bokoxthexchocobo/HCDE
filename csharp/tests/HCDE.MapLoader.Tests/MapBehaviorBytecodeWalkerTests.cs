@@ -314,6 +314,57 @@ public class MapBehaviorBytecodeWalkerTests
     }
 
     [Fact]
+    public void TryWalkScript_OldFormat_ReadsMapWorldArrayAndTranslationOps()
+    {
+        var lump = TestWadBuilder.BuildBehaviorLump(
+            MapBehaviorFormat.AcsOld,
+            scriptCount: 1,
+            includeTerminateBytecode: false,
+            bytecodeOpcodes:
+            [
+                (int)AcsPcode.StartTranslation,
+                (int)AcsPcode.TranslationRange1,
+                (int)AcsPcode.TranslationRange2,
+                (int)AcsPcode.EndTranslation,
+                (int)AcsPcode.PushMapArray, 1,
+                (int)AcsPcode.AssignMapArray, 2,
+                (int)AcsPcode.AddMapArray, 3,
+                (int)AcsPcode.PushWorldArray, 4,
+                (int)AcsPcode.AssignWorldArray, 5,
+                (int)AcsPcode.AddWorldArray, 6,
+                (int)AcsPcode.TranslationRange3,
+                (int)AcsPcode.Terminate,
+            ]);
+        Assert.True(MapBehaviorCodec.TryProbe(lump, out var record, out _));
+        Assert.True(MapBehaviorDirectoryCodec.TryReadScripts(
+            record.Data,
+            record.Format,
+            record.DirectoryOffset,
+            out var scripts,
+            out _));
+        Assert.Single(scripts);
+
+        Assert.True(MapBehaviorBytecodeWalker.TryWalkScript(
+            record.Data,
+            record.Format,
+            scripts[0].Address,
+            out var instructions,
+            out var terminated,
+            out _));
+
+        Assert.True(terminated);
+        Assert.Equal(12, instructions.Count);
+        Assert.Equal((int)AcsPcode.StartTranslation, instructions[0].Opcode);
+        Assert.Equal(0, instructions[0].OperandWordCount);
+        Assert.Equal((int)AcsPcode.TranslationRange1, instructions[1].Opcode);
+        Assert.Equal((int)AcsPcode.PushMapArray, instructions[4].Opcode);
+        Assert.Equal(1, instructions[4].OperandWordCount);
+        Assert.Equal((int)AcsPcode.PushWorldArray, instructions[7].Opcode);
+        Assert.Equal(1, instructions[7].OperandWordCount);
+        Assert.Equal((int)AcsPcode.TranslationRange3, instructions[10].Opcode);
+    }
+
+    [Fact]
     public void TryWalkScript_LittleEnhanced_ReadsPushByteAndPushBytes()
     {
         var bytecode = new byte[]

@@ -212,8 +212,22 @@ public static class MapBehaviorBytecodeWalker
         (int)AcsPcode.SetGravity or (int)AcsPcode.SetAirControl => 0,
         (int)AcsPcode.SetGravityDirect or (int)AcsPcode.SetAirControlDirect => 1,
         (int)AcsPcode.AssignGlobalVar or (int)AcsPcode.PushGlobalVar => 1,
+        (int)AcsPcode.StartTranslation
+            or (int)AcsPcode.TranslationRange1 or (int)AcsPcode.TranslationRange2
+            or (int)AcsPcode.TranslationRange3 or (int)AcsPcode.TranslationRange4
+            or (int)AcsPcode.TranslationRange5 or (int)AcsPcode.EndTranslation => 0,
         (int)AcsPcode.Call or (int)AcsPcode.CallDiscard => 1,
         (int)AcsPcode.ReturnVoid or (int)AcsPcode.ReturnVal => 0,
+        (int)AcsPcode.PushMapArray or (int)AcsPcode.AssignMapArray
+            or (int)AcsPcode.AddMapArray or (int)AcsPcode.SubMapArray
+            or (int)AcsPcode.MulMapArray or (int)AcsPcode.DivMapArray
+            or (int)AcsPcode.ModMapArray or (int)AcsPcode.IncMapArray
+            or (int)AcsPcode.DecMapArray => 1,
+        (int)AcsPcode.PushWorldArray or (int)AcsPcode.AssignWorldArray
+            or (int)AcsPcode.AddWorldArray or (int)AcsPcode.SubWorldArray
+            or (int)AcsPcode.MulWorldArray or (int)AcsPcode.DivWorldArray
+            or (int)AcsPcode.ModWorldArray or (int)AcsPcode.IncWorldArray
+            or (int)AcsPcode.DecWorldArray => 1,
         (int)AcsPcode.PushGlobalArray or (int)AcsPcode.AssignGlobalArray
             or (int)AcsPcode.AddGlobalArray => 1,
         (int)AcsPcode.GiveInventoryDirect or (int)AcsPcode.TakeInventoryDirect
@@ -290,8 +304,22 @@ public static class MapBehaviorBytecodeWalker
         (int)AcsPcode.SetGravity or (int)AcsPcode.SetAirControl => 0,
         (int)AcsPcode.SetGravityDirect or (int)AcsPcode.SetAirControlDirect => 4,
         (int)AcsPcode.AssignGlobalVar or (int)AcsPcode.PushGlobalVar => 4,
+        (int)AcsPcode.StartTranslation
+            or (int)AcsPcode.TranslationRange1 or (int)AcsPcode.TranslationRange2
+            or (int)AcsPcode.TranslationRange3 or (int)AcsPcode.TranslationRange4
+            or (int)AcsPcode.TranslationRange5 or (int)AcsPcode.EndTranslation => 0,
         (int)AcsPcode.Call or (int)AcsPcode.CallDiscard => 1,
         (int)AcsPcode.ReturnVoid or (int)AcsPcode.ReturnVal => 0,
+        (int)AcsPcode.PushMapArray or (int)AcsPcode.AssignMapArray
+            or (int)AcsPcode.AddMapArray or (int)AcsPcode.SubMapArray
+            or (int)AcsPcode.MulMapArray or (int)AcsPcode.DivMapArray
+            or (int)AcsPcode.ModMapArray or (int)AcsPcode.IncMapArray
+            or (int)AcsPcode.DecMapArray => 1,
+        (int)AcsPcode.PushWorldArray or (int)AcsPcode.AssignWorldArray
+            or (int)AcsPcode.AddWorldArray or (int)AcsPcode.SubWorldArray
+            or (int)AcsPcode.MulWorldArray or (int)AcsPcode.DivWorldArray
+            or (int)AcsPcode.ModWorldArray or (int)AcsPcode.IncWorldArray
+            or (int)AcsPcode.DecWorldArray => 1,
         (int)AcsPcode.PushGlobalArray or (int)AcsPcode.AssignGlobalArray
             or (int)AcsPcode.AddGlobalArray => 1,
         (int)AcsPcode.GiveInventoryDirect or (int)AcsPcode.TakeInventoryDirect
