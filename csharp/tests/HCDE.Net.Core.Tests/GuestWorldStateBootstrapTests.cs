@@ -45,4 +45,22 @@ public class GuestWorldStateBootstrapTests
         var written = WorldStateTailBuilder.WriteCoopTailFromStore(tail, store, gameTic: 5);
         Assert.True(written > 0);
     }
+
+    [Fact]
+    public void SeedPlayersFromMapThings_SeedsDoomPlayerStarts()
+    {
+        var things = new[]
+        {
+            new MapThingRecord(100, 200, 90, type: 1, options: 7),
+            new MapThingRecord(0, 0, 0, type: 3004, options: 0),
+            new MapThingRecord(50, 50, 0, type: 2, options: 0),
+        };
+
+        var store = new GuestWorldStateStore();
+        Assert.Equal(2, GuestWorldStateBootstrap.SeedPlayersFromMapThings(store, things));
+        Assert.True(store.Players.TryGetValue(0, out var player0));
+        Assert.True(store.Players.TryGetValue(1, out var player1));
+        Assert.Equal(100, player0.Health);
+        Assert.Equal(100, player1.Health);
+    }
 }

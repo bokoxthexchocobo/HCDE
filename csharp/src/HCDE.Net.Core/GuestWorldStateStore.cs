@@ -93,6 +93,18 @@ public sealed class GuestWorldStateStore : IWorldDeltaApplySink, IActorDeltaAppl
         state.Special = special;
     }
 
+    public void SeedPlayer(byte playerNum, short health = 100, bool onGround = true)
+    {
+        if (!_players.TryGetValue(playerNum, out var player))
+        {
+            player = new GuestPlayerState { PlayerNum = playerNum };
+            _players[playerNum] = player;
+        }
+
+        player.Health = health;
+        player.OnGround = onGround;
+    }
+
     public bool TryApply(int recipientClientSlot, ActorDeltaRecord record)
     {
         _ = recipientClientSlot;

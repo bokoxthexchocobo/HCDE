@@ -15,6 +15,7 @@ public static class MapLoadBootstrap
             return false;
 
         GuestWorldStateBootstrap.SeedFromMapSectors(store, map.Core.Sectors);
+        GuestWorldStateBootstrap.SeedPlayersFromMapThings(store, map.Core.Things);
         return true;
     }
 }

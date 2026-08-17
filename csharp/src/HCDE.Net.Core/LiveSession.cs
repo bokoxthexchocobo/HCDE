@@ -22,6 +22,8 @@ public sealed class LiveGuestSession
     private ISnapshotChecksumMismatchSink? _checksumMismatchSink;
     private GuestWorldStateStore? _guestWorldState;
     private int _guestWorldStateRngSeed;
+    private SnapshotChecksumMismatchPolicyKind _checksumMismatchPolicy = SnapshotChecksumMismatchPolicyKind.ReportAllCompared;
+    private GuestChecksumApplyState _lastChecksumApplyState;
     private ulong _negotiatedCapabilities = LiveConstants.DefaultLocalCapabilities;
     private byte _roomId;
     private uint _gameTic;
@@ -55,6 +57,22 @@ public sealed class LiveGuestSession
     public PresentationEchoApplySession EchoApply => _echoApply;
 
     public GuestWorldStateStore? GuestWorldState => _guestWorldState;
+
+    public GuestChecksumApplyState LastChecksumApplyState => _lastChecksumApplyState;
+
+    public SnapshotChecksumMismatchPolicyKind ChecksumMismatchPolicy
+    {
+        get => _checksumMismatchPolicy;
+        set => _checksumMismatchPolicy = value;
+    }
+
+    public bool LastChecksumApplyValid =>
+        SnapshotChecksumMismatchPolicy.ShouldTreatAsValid(
+            new SnapshotChecksumApplyResult(
+                _lastChecksumApplyState.Compared,
+                _lastChecksumApplyState.MismatchCount,
+                _lastChecksumApplyState.LocalBucketMissing),
+            _checksumMismatchPolicy);
 
     public void SetNegotiatedCapabilities(ulong negotiatedCapabilities) =>
         _negotiatedCapabilities = negotiatedCapabilities;
@@ -292,8 +310,9 @@ public sealed class LiveGuestSession
                 checksumEnabled: true,
                 SnapshotChecksumRing.DefaultEnabledCategoryMask,
                 _checksumMismatchSink,
-                out _,
+                out var checksumResult,
                 out _);
+            _lastChecksumApplyState = new GuestChecksumApplyState(checksumResult);
         }
     }
 
