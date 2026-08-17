@@ -146,7 +146,9 @@ public static class MapBehaviorBytecodeWalker
                 ? 240 + ((first - 240) << 8) + data[offset + 1]
                 : first;
             var opcodeBytes = first >= 240 ? 2 : 1;
-            var operandBytes = GetLittleEnhancedOperandSkipBytes(opcode);
+            var operandBytes = TryGetLittleEnhancedOperandSkipBytes(data, offset, opcode, opcodeBytes, out var skipBytes)
+                ? skipBytes
+                : GetLittleEnhancedOperandSkipBytes(opcode);
             if (operandBytes == EndScript)
             {
                 list.Add(new MapBehaviorInstruction(offset, opcode, 0));
@@ -208,7 +210,8 @@ public static class MapBehaviorBytecodeWalker
         (int)AcsPcode.ConsoleCommand => 0,
         (int)AcsPcode.GiveInventoryDirect or (int)AcsPcode.TakeInventoryDirect
             or (int)AcsPcode.CheckInventoryDirect => 2,
-        (int)AcsPcode.SetMusicDirect => 3,
+        (int)AcsPcode.SetMusic or (int)AcsPcode.LocalSetMusic or (int)AcsPcode.MusicChange => 0,
+        (int)AcsPcode.SetMusicDirect or (int)AcsPcode.LocalSetMusicDirect => 3,
         (int)AcsPcode.MoreHudMessage or (int)AcsPcode.OptHudMessage
             or (int)AcsPcode.EndHudMessage or (int)AcsPcode.EndHudMessageBold
             or (int)AcsPcode.SetStyle or (int)AcsPcode.SetFont => 0,
@@ -221,8 +224,28 @@ public static class MapBehaviorBytecodeWalker
         (int)AcsPcode.Lspec4DirectB => 2,
         (int)AcsPcode.Lspec5DirectB => 2,
         (int)AcsPcode.DelayDirectB or (int)AcsPcode.RandomDirectB => 1,
+        (int)AcsPcode.Dup or (int)AcsPcode.Swap => 0,
         _ => UnknownOperandWords,
     };
+
+    private static bool TryGetLittleEnhancedOperandSkipBytes(
+        ReadOnlySpan<byte> data,
+        int offset,
+        int opcode,
+        int opcodeBytes,
+        out int operandBytes)
+    {
+        operandBytes = 0;
+        if (opcode != (int)AcsPcode.PushBytes)
+            return false;
+
+        var countOffset = offset + opcodeBytes;
+        if (countOffset >= data.Length)
+            return false;
+
+        operandBytes = 1 + data[countOffset];
+        return true;
+    }
 
     private static int GetLittleEnhancedOperandSkipBytes(int opcode) => opcode switch
     {
@@ -257,7 +280,8 @@ public static class MapBehaviorBytecodeWalker
         (int)AcsPcode.ConsoleCommand => 0,
         (int)AcsPcode.GiveInventoryDirect or (int)AcsPcode.TakeInventoryDirect
             or (int)AcsPcode.CheckInventoryDirect => 8,
-        (int)AcsPcode.SetMusicDirect => 12,
+        (int)AcsPcode.SetMusic or (int)AcsPcode.LocalSetMusic or (int)AcsPcode.MusicChange => 0,
+        (int)AcsPcode.SetMusicDirect or (int)AcsPcode.LocalSetMusicDirect => 12,
         (int)AcsPcode.MoreHudMessage or (int)AcsPcode.OptHudMessage
             or (int)AcsPcode.EndHudMessage or (int)AcsPcode.EndHudMessageBold
             or (int)AcsPcode.SetStyle or (int)AcsPcode.SetFont => 0,
@@ -271,6 +295,12 @@ public static class MapBehaviorBytecodeWalker
         (int)AcsPcode.Lspec5DirectB => 6,
         (int)AcsPcode.DelayDirectB => 1,
         (int)AcsPcode.RandomDirectB => 2,
+        (int)AcsPcode.PushByte => 1,
+        (int)AcsPcode.Push2Bytes => 2,
+        (int)AcsPcode.Push3Bytes => 3,
+        (int)AcsPcode.Push4Bytes => 4,
+        (int)AcsPcode.Push5Bytes => 5,
+        (int)AcsPcode.Dup or (int)AcsPcode.Swap => 0,
         _ => UnknownOperandWords,
     };
 

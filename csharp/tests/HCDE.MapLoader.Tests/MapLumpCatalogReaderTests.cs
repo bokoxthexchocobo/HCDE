@@ -283,6 +283,40 @@ public static class TestWadBuilder
         return lump;
     }
 
+    public static byte[] BuildBehaviorLumpWithBytecode(
+        MapBehaviorFormat format,
+        int scriptCount,
+        byte[] bytecode,
+        int scriptNumber = 1,
+        byte scriptType = 1)
+    {
+        const uint scriptPointerChunkId = 0x52545053; // SPTR
+        var payloadSize = scriptCount * 12;
+        var chunkTableSize = 8 + payloadSize;
+        const int directoryOffset = 24;
+        var bytecodeOffset = directoryOffset + chunkTableSize;
+        var lump = new byte[bytecodeOffset + bytecode.Length];
+        WriteBehaviorHeader(lump, format, directoryOffset);
+        BinaryPrimitives.WriteUInt32LittleEndian(lump.AsSpan(directoryOffset, 4), scriptPointerChunkId);
+        BinaryPrimitives.WriteInt32LittleEndian(lump.AsSpan(directoryOffset + 4, 4), payloadSize);
+        var cursor = directoryOffset + 8;
+        for (var i = 0; i < scriptCount; i++)
+        {
+            BinaryPrimitives.WriteInt16LittleEndian(lump.AsSpan(cursor, 2), (short)scriptNumber);
+            BinaryPrimitives.WriteUInt16LittleEndian(lump.AsSpan(cursor + 2, 2), scriptType);
+            BinaryPrimitives.WriteUInt32LittleEndian(
+                lump.AsSpan(cursor + 4, 4),
+                bytecode.Length > 0 ? (uint)bytecodeOffset : (uint)(bytecodeOffset + i * 4));
+            BinaryPrimitives.WriteInt32LittleEndian(lump.AsSpan(cursor + 8, 4), 1);
+            cursor += 12;
+        }
+
+        if (bytecode.Length > 0)
+            bytecode.CopyTo(lump.AsSpan(bytecodeOffset));
+
+        return lump;
+    }
+
     public static byte[] BuildVertexLump(params short[] coordinates)
     {
         if (coordinates.Length % 2 != 0)
