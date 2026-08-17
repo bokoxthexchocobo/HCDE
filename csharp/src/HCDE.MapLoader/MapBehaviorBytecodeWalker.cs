@@ -245,7 +245,10 @@ public static class MapBehaviorBytecodeWalker
             or (int)AcsPcode.DecScriptArray or (int)AcsPcode.AndScriptArray
             or (int)AcsPcode.EorScriptArray or (int)AcsPcode.OrScriptArray => 1,
         (int)AcsPcode.PushGlobalArray or (int)AcsPcode.AssignGlobalArray
-            or (int)AcsPcode.AddGlobalArray => 1,
+            or (int)AcsPcode.AddGlobalArray or (int)AcsPcode.SubGlobalArray
+            or (int)AcsPcode.MulGlobalArray or (int)AcsPcode.DivGlobalArray
+            or (int)AcsPcode.ModGlobalArray or (int)AcsPcode.IncGlobalArray
+            or (int)AcsPcode.DecGlobalArray => 1,
         (int)AcsPcode.GiveInventoryDirect or (int)AcsPcode.TakeInventoryDirect
             or (int)AcsPcode.CheckInventoryDirect => 2,
         (int)AcsPcode.SetMusic or (int)AcsPcode.LocalSetMusic or (int)AcsPcode.MusicChange => 0,
@@ -255,7 +258,9 @@ public static class MapBehaviorBytecodeWalker
             or (int)AcsPcode.SetStyle or (int)AcsPcode.SetFont => 0,
         (int)AcsPcode.SetStyleDirect => 2,
         (int)AcsPcode.SetFontDirect => 1,
-        (int)AcsPcode.GiveInventory or (int)AcsPcode.ClearInventory => 0,
+        (int)AcsPcode.GiveInventory or (int)AcsPcode.ClearInventory
+            or (int)AcsPcode.TakeInventory or (int)AcsPcode.CheckInventory => 0,
+        >= (int)AcsPcode.IsNetworkGame and <= (int)AcsPcode.PlayerHealth => 0,
         (int)AcsPcode.Lspec1DirectB => 1,
         (int)AcsPcode.Lspec2DirectB => 1,
         (int)AcsPcode.Lspec3DirectB => 1,
@@ -353,7 +358,10 @@ public static class MapBehaviorBytecodeWalker
             or (int)AcsPcode.DecScriptArray or (int)AcsPcode.AndScriptArray
             or (int)AcsPcode.EorScriptArray or (int)AcsPcode.OrScriptArray => 1,
         (int)AcsPcode.PushGlobalArray or (int)AcsPcode.AssignGlobalArray
-            or (int)AcsPcode.AddGlobalArray => 1,
+            or (int)AcsPcode.AddGlobalArray or (int)AcsPcode.SubGlobalArray
+            or (int)AcsPcode.MulGlobalArray or (int)AcsPcode.DivGlobalArray
+            or (int)AcsPcode.ModGlobalArray or (int)AcsPcode.IncGlobalArray
+            or (int)AcsPcode.DecGlobalArray => 1,
         (int)AcsPcode.GiveInventoryDirect or (int)AcsPcode.TakeInventoryDirect
             or (int)AcsPcode.CheckInventoryDirect => 8,
         (int)AcsPcode.SetMusic or (int)AcsPcode.LocalSetMusic or (int)AcsPcode.MusicChange => 0,
@@ -363,7 +371,9 @@ public static class MapBehaviorBytecodeWalker
             or (int)AcsPcode.SetStyle or (int)AcsPcode.SetFont => 0,
         (int)AcsPcode.SetStyleDirect => 8,
         (int)AcsPcode.SetFontDirect => 4,
-        (int)AcsPcode.GiveInventory or (int)AcsPcode.ClearInventory => 0,
+        (int)AcsPcode.GiveInventory or (int)AcsPcode.ClearInventory
+            or (int)AcsPcode.TakeInventory or (int)AcsPcode.CheckInventory => 0,
+        >= (int)AcsPcode.IsNetworkGame and <= (int)AcsPcode.PlayerHealth => 0,
         (int)AcsPcode.Lspec1DirectB => 2,
         (int)AcsPcode.Lspec2DirectB => 3,
         (int)AcsPcode.Lspec3DirectB => 4,
