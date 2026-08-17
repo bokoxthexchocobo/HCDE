@@ -45,4 +45,20 @@ public class WorldStateTailBuilderTests
         Assert.True(build.BytesWritten > 0);
         Assert.Equal(build.BytesWritten, WorldStateTailBuilder.WriteCoopTailFromStore(tail, store, gameTic: 3));
     }
+
+    [Fact]
+    public void WriteCoopTailFromStore_IncludesPendingCoopDeadSpawns()
+    {
+        var store = new GuestWorldStateStore();
+        store.QueueCoopDeadSpawn(42);
+        store.QueueCoopDeadSpawn(99);
+
+        Span<byte> tail = stackalloc byte[512];
+        var written = WorldStateTailBuilder.WriteCoopTailFromStore(tail, store, gameTic: 4);
+        Assert.True(written > 0);
+        Assert.True(ServerSnapshotTailWalker.TryWalk(tail[..written], out var sections, out _, out _));
+        Assert.NotNull(sections.CoopDeadSpawnIndices);
+        Assert.Equal(new uint[] { 42, 99 }, sections.CoopDeadSpawnIndices);
+        Assert.False(store.HasPendingCoopDeadSpawns);
+    }
 }

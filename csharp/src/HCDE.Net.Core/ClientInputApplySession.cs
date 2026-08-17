@@ -34,6 +34,7 @@ public static class ClientInputApplySession
         var commandsApplied = 0;
         var missingSequence = false;
         var missingConsistency = false;
+        var inputGapResynced = false;
 
         foreach (var player in players)
         {
@@ -59,6 +60,7 @@ public static class ClientInputApplySession
                     sink,
                     gameTic,
                     ref commandsApplied,
+                    ref inputGapResynced,
                     out missingSequence))
             {
                 break;
@@ -67,7 +69,7 @@ public static class ClientInputApplySession
 
         clientState.SequenceAck = (int)header.SequenceAck;
         clientState.ConsistencyAck = (int)header.ConsistencyAck;
-        result = new ClientInputApplyResult(commandsApplied, missingSequence, missingConsistency);
+        result = new ClientInputApplyResult(commandsApplied, missingSequence, missingConsistency, inputGapResynced);
         return true;
     }
 
@@ -110,6 +112,7 @@ public static class ClientInputApplySession
         IClientInputCommandSink? sink,
         int gameTic,
         ref int commandsApplied,
+        ref bool inputGapResynced,
         out bool missingSequence)
     {
         missingSequence = false;
@@ -120,7 +123,8 @@ public static class ClientInputApplySession
         if (authorityOwnClientInput && header.CommandTics > 0
             && header.BaseSequence > (uint)(playerState.CurrentSequence + 1))
         {
-            TryResyncInputGap(playerState, header, gameTic);
+            if (TryResyncInputGap(playerState, header, gameTic))
+                inputGapResynced = true;
         }
 
         for (var i = 0; i < header.CommandTics; i++)
@@ -148,16 +152,17 @@ public static class ClientInputApplySession
         return true;
     }
 
-    private static void TryResyncInputGap(LivePlayerNetState playerState, ClientInputHeader header, int gameTic)
+    private static bool TryResyncInputGap(LivePlayerNetState playerState, ClientInputHeader header, int gameTic)
     {
         if (playerState.InputGapStallTic < 0)
             playerState.InputGapStallTic = gameTic;
 
         if (gameTic - playerState.InputGapStallTic <= LiveConstants.InputGapResyncTics)
-            return;
+            return false;
 
         playerState.CurrentSequence = (int)header.BaseSequence - 1;
         playerState.InputGapStallTic = -1;
+        return true;
     }
 
     private static ClientInputCommandRecord? FindCommand(

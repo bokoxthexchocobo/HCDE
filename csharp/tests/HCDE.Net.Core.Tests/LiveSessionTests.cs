@@ -216,4 +216,52 @@ public class LiveSessionTests
         Assert.False(guest.PeerSlots.IsConnected(3));
         Assert.True(guest.PeerSlots.IsConnected(1));
     }
+
+    [Fact]
+    public void AuthorityPump_SendsCoopDeadSpawnTailViaPump()
+    {
+        var wad = HCDE.MapLoader.Tests.TestWadBuilder.BuildMinimalMapWad("MAP01");
+        var gameId = new byte[] { 0xAA, 0xBB, 0xCC, 0xDD, 0x11, 0x22, 0x33, 0x44 };
+
+        using var authorityTransport = new UdpTransport();
+        using var guestTransport = new UdpTransport();
+        authorityTransport.Bind(0);
+        guestTransport.Bind(0);
+        authorityTransport.SetNonBlocking(true);
+        guestTransport.SetNonBlocking(true);
+
+        var authorityEndpoint = new NetworkEndpoint(System.Net.IPAddress.Loopback, authorityTransport.BoundPort);
+        var guestEndpoint = new NetworkEndpoint(System.Net.IPAddress.Loopback, guestTransport.BoundPort);
+
+        var authority = new LiveAuthoritySession(authorityTransport, gameId, authoritySlot: 0, maxClients: 4);
+        var authorityStore = new GuestWorldStateStore();
+        Assert.True(MapLoadBootstrap.TrySeedGuestWorldState(wad, "MAP01", authorityStore, out _));
+        authority.SetAuthorityWorldState(
+            authorityStore,
+            new SnapshotChecksumSession(),
+            rngSeed: 9,
+            replicateSectorMetadata: true);
+        authorityStore.QueueCoopDeadSpawn(77);
+        authority.TrackClient(guestEndpoint, clientSlot: 1);
+
+        var guestStore = new GuestWorldStateStore();
+        var guestChecksum = new SnapshotChecksumSession();
+        var guest = new LiveGuestSession(
+            guestTransport,
+            gameId,
+            authorityEndpoint,
+            guestPlayerSlot: 1,
+            authoritySlot: 0,
+            maxClients: 4);
+        guest.SetGuestWorldState(guestStore, guestChecksum, rngSeed: 9);
+
+        authority.Pump((ulong)Environment.TickCount64);
+
+        Assert.True(guest.TryReceiveAuthorityControl(out _));
+        Assert.True(guest.TryReceiveServerSnapshot(out _, out _, out var tailSections));
+        Assert.NotNull(tailSections);
+        Assert.NotNull(tailSections!.Value.CoopDeadSpawnIndices);
+        Assert.Equal(new uint[] { 77 }, tailSections.Value.CoopDeadSpawnIndices);
+        Assert.Contains(77u, guestStore.RetiredCoopDeadSpawns);
+    }
 }

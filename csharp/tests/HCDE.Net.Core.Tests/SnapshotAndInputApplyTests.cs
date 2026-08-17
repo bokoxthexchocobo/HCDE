@@ -145,6 +145,57 @@ public class ServerSnapshotApplySessionTests
 
         Assert.False(peerSlots.IsConnected(2));
     }
+
+    [Fact]
+    public void Apply_SnapshotGapResync_ReportsResyncWhenStallExpired()
+    {
+        var registry = new LivePeerNetRegistry(maxClients: 4);
+        var routing = new LivePeerRoutingState(
+            consolePlayer: 1,
+            maxClients: 4,
+            authoritySlot: 0,
+            isLocalAuthority: false,
+            usesHcdeService: true);
+        registry[0].CurrentSequence = 1;
+        registry[0].SnapshotGapStallMs = 0;
+
+        var header = new ServerSnapshotHeader(
+            0, 0, 1, sequenceAck: 0, consistencyAck: 0, quitterBytes: 0,
+            baseSequence: 10, baseConsistency: 0, commandTics: 1, consistencyTics: 0,
+            stabilityBuffer: (byte)NetConstants.StabilityTics, bodyBytes: 1);
+        var players = new[]
+        {
+            new ServerSnapshotPlayerRecord
+            {
+                PlayerNum = 0,
+                Commands = new[]
+                {
+                    new ServerSnapshotCommandRecord
+                    {
+                        CommandOffset = 0,
+                        Command = new UserCmd(1, 0, 90, 0, 0, 0, 0),
+                    },
+                },
+            },
+        };
+
+        Assert.True(ServerSnapshotApplySession.TryApply(
+            header,
+            ReadOnlySpan<byte>.Empty,
+            players,
+            remoteGameTic: 1,
+            recipientClientSlot: 0,
+            routing,
+            registry,
+            peerSlots: null,
+            sink: null,
+            nowMs: LiveConstants.SnapshotGapResyncMs + 1,
+            out var result,
+            out _));
+
+        Assert.True(result.SnapshotGapResynced);
+        Assert.Equal(10, registry[0].CurrentSequence);
+    }
 }
 
 public class ClientInputApplySessionTests
@@ -242,6 +293,49 @@ public class ClientInputApplySessionTests
             out var rejectReason));
 
         Assert.Equal("client-input-unauthorized-player-record", rejectReason);
+    }
+
+    [Fact]
+    public void Apply_InputGapResync_ReportsResyncAfterStallTics()
+    {
+        var registry = new LivePeerNetRegistry(maxClients: 4);
+        var routing = new LivePeerRoutingState(0, 4, 0, isLocalAuthority: true, usesHcdeService: true);
+        registry[1].CurrentSequence = 1;
+        registry[1].InputGapStallTic = 0;
+
+        var header = new ClientInputHeader(
+            0, 0, 1, sequenceAck: 0, consistencyAck: 0,
+            baseSequence: 8, baseConsistency: 0, commandTics: 1, consistencyTics: 0,
+            stabilityBuffer: (byte)NetConstants.StabilityTics, bodyBytes: 1);
+        var players = new[]
+        {
+            new ClientInputPlayerRecord
+            {
+                PlayerNum = 1,
+                Commands = new[]
+                {
+                    new ClientInputCommandRecord
+                    {
+                        CommandOffset = 0,
+                        Command = new UserCmd(1, 0, 90, 0, 0, 0, 0),
+                    },
+                },
+            },
+        };
+
+        Assert.True(ClientInputApplySession.TryApply(
+            header,
+            players,
+            clientSlot: 1,
+            routing,
+            registry,
+            sink: null,
+            gameTic: LiveConstants.InputGapResyncTics + 1,
+            out var result,
+            out _));
+
+        Assert.True(result.InputGapResynced);
+        Assert.Equal(8, registry[1].CurrentSequence);
     }
 }
 

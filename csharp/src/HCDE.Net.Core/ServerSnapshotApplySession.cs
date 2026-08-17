@@ -51,6 +51,7 @@ public static class ServerSnapshotApplySession
         var commandsApplied = 0;
         var missingSequence = false;
         var missingConsistency = false;
+        var snapshotGapResynced = false;
 
         foreach (var player in players)
         {
@@ -74,6 +75,7 @@ public static class ServerSnapshotApplySession
                     sink,
                     nowMs,
                     ref commandsApplied,
+                    ref snapshotGapResynced,
                     out missingSequence))
             {
                 break;
@@ -83,7 +85,7 @@ public static class ServerSnapshotApplySession
         recipientState.LastAppliedSnapshotGameTic = remoteGameTic;
         recipientState.SequenceAck = (int)header.SequenceAck;
         recipientState.ConsistencyAck = (int)header.ConsistencyAck;
-        result = new ServerSnapshotApplyResult(false, commandsApplied, missingSequence, missingConsistency);
+        result = new ServerSnapshotApplyResult(false, commandsApplied, missingSequence, missingConsistency, snapshotGapResynced);
         return true;
     }
 
@@ -123,6 +125,7 @@ public static class ServerSnapshotApplySession
         IServerSnapshotCommandSink? sink,
         ulong nowMs,
         ref int commandsApplied,
+        ref bool snapshotGapResynced,
         out bool missingSequence)
     {
         missingSequence = false;
@@ -133,7 +136,8 @@ public static class ServerSnapshotApplySession
         if (clientSnapshotGatePlayer && header.CommandTics > 0
             && header.BaseSequence > (uint)(playerState.CurrentSequence + 1))
         {
-            TryResyncSnapshotGap(playerState, header, nowMs);
+            if (TryResyncSnapshotGap(playerState, header, nowMs))
+                snapshotGapResynced = true;
         }
 
         for (var i = 0; i < header.CommandTics; i++)
@@ -169,7 +173,7 @@ public static class ServerSnapshotApplySession
         return true;
     }
 
-    private static void TryResyncSnapshotGap(LivePlayerNetState playerState, ServerSnapshotHeader header, ulong nowMs)
+    private static bool TryResyncSnapshotGap(LivePlayerNetState playerState, ServerSnapshotHeader header, ulong nowMs)
     {
         if (playerState.SnapshotGapStallMs < 0)
             playerState.SnapshotGapStallMs = (long)nowMs;
@@ -177,7 +181,7 @@ public static class ServerSnapshotApplySession
         var gapTooWide = header.BaseSequence > (uint)(playerState.CurrentSequence + LiveConstants.SnapshotGapImmediateTics);
         var stallExpired = nowMs - (ulong)playerState.SnapshotGapStallMs > LiveConstants.SnapshotGapResyncMs;
         if (!gapTooWide && !stallExpired)
-            return;
+            return false;
 
         var resyncTo = (int)header.BaseSequence - 1;
         playerState.CurrentSequence = resyncTo;
@@ -185,6 +189,7 @@ public static class ServerSnapshotApplySession
         if (playerState.CurrentNetConsistency < consistencyResyncTo)
             playerState.CurrentNetConsistency = consistencyResyncTo;
         playerState.SnapshotGapStallMs = -1;
+        return true;
     }
 
     private static ServerSnapshotCommandRecord? FindCommand(

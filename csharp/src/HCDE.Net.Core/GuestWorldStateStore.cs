@@ -29,15 +29,19 @@ public sealed class GuestActorState
     public byte Flags { get; set; }
 }
 
-public sealed class GuestWorldStateStore : IWorldDeltaApplySink, IActorDeltaApplySink
+public sealed class GuestWorldStateStore : IWorldDeltaApplySink, IActorDeltaApplySink, ICoopDeadSpawnsApplySink
 {
     private readonly Dictionary<byte, GuestPlayerState> _players = new();
     private readonly Dictionary<ushort, GuestSectorState> _sectors = new();
     private readonly Dictionary<uint, GuestActorState> _actors = new();
+    private readonly List<uint> _pendingCoopDeadSpawns = new();
+    private readonly HashSet<uint> _retiredCoopDeadSpawns = new();
 
     public IReadOnlyDictionary<byte, GuestPlayerState> Players => _players;
     public IReadOnlyDictionary<ushort, GuestSectorState> Sectors => _sectors;
     public IReadOnlyDictionary<uint, GuestActorState> Actors => _actors;
+    public IReadOnlyCollection<uint> RetiredCoopDeadSpawns => _retiredCoopDeadSpawns;
+    public bool HasPendingCoopDeadSpawns => _pendingCoopDeadSpawns.Count > 0;
 
     public bool ApplyPose(int recipientClientSlot, PlayerPoseWorldDelta pose, int sequenceAck)
     {
@@ -137,5 +141,34 @@ public sealed class GuestWorldStateStore : IWorldDeltaApplySink, IActorDeltaAppl
 
         actor.ClassId = record.ClassId;
         return true;
+    }
+
+    public void QueueCoopDeadSpawn(uint spawnIndex)
+    {
+        if (_retiredCoopDeadSpawns.Contains(spawnIndex))
+            return;
+
+        if (!_pendingCoopDeadSpawns.Contains(spawnIndex))
+            _pendingCoopDeadSpawns.Add(spawnIndex);
+    }
+
+    public bool TryRetireSpawnIndex(uint spawnIndex)
+    {
+        if (_retiredCoopDeadSpawns.Contains(spawnIndex))
+            return false;
+
+        _retiredCoopDeadSpawns.Add(spawnIndex);
+        _pendingCoopDeadSpawns.Remove(spawnIndex);
+        return true;
+    }
+
+    public uint[] TakePendingCoopDeadSpawnsForTail()
+    {
+        if (_pendingCoopDeadSpawns.Count == 0)
+            return Array.Empty<uint>();
+
+        var pending = _pendingCoopDeadSpawns.ToArray();
+        _pendingCoopDeadSpawns.Clear();
+        return pending;
     }
 }

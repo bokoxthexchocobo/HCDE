@@ -25,6 +25,7 @@ public sealed class LiveGuestSession
     private SnapshotChecksumMismatchPolicyKind _checksumMismatchPolicy = SnapshotChecksumMismatchPolicyKind.ReportAllCompared;
     private GuestChecksumApplyState _lastChecksumApplyState;
     private bool _needsChecksumResync;
+    private bool _needsNetGapResync;
     private ulong _negotiatedCapabilities = LiveConstants.DefaultLocalCapabilities;
     private byte _roomId;
     private uint _gameTic;
@@ -77,6 +78,8 @@ public sealed class LiveGuestSession
 
     public bool NeedsChecksumResync => _needsChecksumResync;
 
+    public bool NeedsNetGapResync => _needsNetGapResync;
+
     public void SetNegotiatedCapabilities(ulong negotiatedCapabilities) =>
         _negotiatedCapabilities = negotiatedCapabilities;
 
@@ -99,6 +102,7 @@ public sealed class LiveGuestSession
         SetChecksumSession(checksumSession, mismatchSink);
         _worldDeltaSink = worldState;
         _actorDeltaSink = worldState;
+        _coopDeadSpawnsSink = worldState;
     }
 
     public void SetApplySinks(
@@ -203,8 +207,14 @@ public sealed class LiveGuestSession
             _peerSlots,
             _snapshotCommandSink,
             (ulong)Environment.TickCount64,
-            out _,
+            out var applyResult,
             out _);
+
+        if (applyResult.SnapshotGapResynced)
+        {
+            _needsNetGapResync = true;
+            _netRegistry.ResetClient(_routing.ConsolePlayer);
+        }
 
         var bodyStart = LiveConstants.ServerSnapshotHeaderSize + header.QuitterBytes;
         var tail = nativePayload.Span[(bodyStart + hcsrBytes)..];
@@ -534,8 +544,11 @@ public sealed class LiveAuthoritySession
                     _netRegistry,
                     _clientInputCommandSink,
                     (int)envelope.GameTic,
-                    out _,
+                    out var applyResult,
                     out _);
+
+                if (applyResult.InputGapResynced)
+                    _netRegistry.ResetClient(clientSlot);
             }
 
             return true;

@@ -16,30 +16,39 @@ public readonly struct ServerSnapshotApplyResult
         bool idempotent,
         int commandsApplied,
         bool missingSequence,
-        bool missingConsistency)
+        bool missingConsistency,
+        bool snapshotGapResynced = false)
     {
         Idempotent = idempotent;
         CommandsApplied = commandsApplied;
         MissingSequence = missingSequence;
         MissingConsistency = missingConsistency;
+        SnapshotGapResynced = snapshotGapResynced;
     }
 
     public bool Idempotent { get; }
     public int CommandsApplied { get; }
     public bool MissingSequence { get; }
     public bool MissingConsistency { get; }
+    public bool SnapshotGapResynced { get; }
 }
 
 public readonly struct ClientInputApplyResult
 {
-    public ClientInputApplyResult(int commandsApplied, bool missingSequence, bool missingConsistency)
+    public ClientInputApplyResult(
+        int commandsApplied,
+        bool missingSequence,
+        bool missingConsistency,
+        bool inputGapResynced = false)
     {
         CommandsApplied = commandsApplied;
         MissingSequence = missingSequence;
         MissingConsistency = missingConsistency;
+        InputGapResynced = inputGapResynced;
     }
 
     public int CommandsApplied { get; }
     public bool MissingSequence { get; }
     public bool MissingConsistency { get; }
+    public bool InputGapResynced { get; }
 }

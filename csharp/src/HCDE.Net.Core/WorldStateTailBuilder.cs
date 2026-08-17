@@ -87,13 +87,13 @@ public static class WorldStateTailBuilder
             poses,
             sectors,
             actorDeltas,
-            ReadOnlySpan<uint>.Empty,
+            store.TakePendingCoopDeadSpawnsForTail(),
             default,
             checksumHashes);
     }
 
     public static bool HasWorldDeltaPayload(GuestWorldStateStore store) =>
-        store.Players.Count > 0 || store.Sectors.Count > 0 || store.Actors.Count > 0;
+        store.Players.Count > 0 || store.Sectors.Count > 0 || store.Actors.Count > 0 || store.HasPendingCoopDeadSpawns;
 
     public static WorldStateTailBuildResult TryBuildCoopTailFromStore(
         Span<byte> tail,
