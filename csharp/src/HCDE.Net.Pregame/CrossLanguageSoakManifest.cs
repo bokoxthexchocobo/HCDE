@@ -28,6 +28,8 @@ public sealed class CrossLanguageSoakManifestEntry
 
 public static class CrossLanguageSoakManifest
 {
+    public const int DefaultMaxManifestAgeDays = 8;
+
     private static readonly string[] HarnessOrder =
     [
         "pregame_guest_smoke",
@@ -76,6 +78,22 @@ public static class CrossLanguageSoakManifest
         Directory.CreateDirectory(Path.GetDirectoryName(manifestPath)!);
         var json = JsonSerializer.Serialize(manifest, new JsonSerializerOptions { WriteIndented = true });
         File.WriteAllText(manifestPath, json);
+    }
+
+    public static bool TryReadRecordedAtUtc(string manifestPath, out DateTimeOffset recordedAtUtc)
+    {
+        recordedAtUtc = default;
+        if (!File.Exists(manifestPath))
+            return false;
+
+        using var document = JsonDocument.Parse(File.ReadAllText(manifestPath));
+        if (!document.RootElement.TryGetProperty("RecordedAtUtc", out var recordedAt)
+            || recordedAt.ValueKind != JsonValueKind.String)
+        {
+            return false;
+        }
+
+        return DateTimeOffset.TryParse(recordedAt.GetString(), out recordedAtUtc);
     }
 
     private static string FindRepositoryRoot()

@@ -1,7 +1,7 @@
 # HCDE C# Migration — Phase 2 Principal Audit
 
 **Last updated:** 2026-08-17  
-**Status:** In progress — Phase **2c** live protocol codecs (iteration 39 step 1). Phase **2b** verification errors, start-game, bootstrap/resync, and cross-language harness complete. Phase **2b** verification errors, start-game, bootstrap/resync, and cross-language harness complete.  
+**Status:** In progress — Phase **2c** live protocol codecs (iteration 39 step 2). Phase **2b** verification errors, start-game, bootstrap/resync, and cross-language harness complete. Phase **2b** verification errors, start-game, bootstrap/resync, and cross-language harness complete.  
 **Prerequisite:** [Phase 1 audit](HCDE_CSHARP_PHASE1_AUDIT.md) (complete)  
 **Related:** [`HCDE_CSHARP_MIGRATION.md`](HCDE_CSHARP_MIGRATION.md) · [`HCDE_NETCODE.md`](../../docs/HCDE_NETCODE.md)
 
@@ -608,8 +608,19 @@ Phase 2b is complete when **all** hold:
 ## Phase 2c next slice (iteration 39)
 
 1. ~~**BEHAVIOR bytecode operands**~~ — script array PCDs, more ZDoom stack ops
-2. **Authority playsim tick polish** — invasion tail on authority pump, guest presentation echo apply wiring
+2. ~~**Authority playsim tick polish**~~ — invasion tail on authority pump, guest presentation echo apply wiring
 3. **Cross-language soak evidence** — manifest staleness gate for committed templates
+
+### Invasion tail + guest presentation echo (Phase 2c — iteration 39 step 2)
+
+| Artifact | Location | C++ reference |
+| --- | --- | --- |
+| Invasion tail writer | `ServerSnapshotTailCodec.WriteInvasionShipping` | `HCDEAppendInvasionSnapshot` shipping tail |
+| Tail builder | `WorldStateTailBuilder.TryBuildInvasionTail` | HCIV before ECHO on authority pump |
+| Authority pump send | `LiveAuthoritySession.SetAuthorityInvasionSnapshot` | outbound invasion snapshots |
+| Guest echo state | `GuestPresentationEchoState` | `HCDEReadPresentationEcho` inventory/weapon apply |
+| Guest wiring | `LiveGuestSession.SetGuestWorldState` | auto-wire `IPresentationEchoApplySink` |
+| E2E tests | `LiveSessionTests`, `WorldStateTailBuilderTests` | invasion HCIV pump + echo apply |
 
 ### BEHAVIOR script-array + stack PCD operands (Phase 2c/2d — iteration 39 step 1)
 

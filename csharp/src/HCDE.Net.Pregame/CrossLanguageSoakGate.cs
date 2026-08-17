@@ -62,9 +62,47 @@ public static class CrossLanguageSoakGate
             }
         }
 
+        var staleness = EvaluateManifestStaleness(
+            manifestPath,
+            DateTimeOffset.UtcNow,
+            ResolveMaxManifestAgeDays());
+        if (staleness.Status == CrossLanguageSoakGateStatus.Failed)
+            return staleness;
+
         return new CrossLanguageSoakGateResult(CrossLanguageSoakGateStatus.Passed);
     }
 
     public static bool ShouldEnforceInCi() =>
         string.Equals(Environment.GetEnvironmentVariable("HCDE_ENFORCE_SOAK_GATE"), "1", StringComparison.Ordinal);
+
+    public static int ResolveMaxManifestAgeDays()
+    {
+        var configured = Environment.GetEnvironmentVariable("HCDE_SOAK_MANIFEST_MAX_AGE_DAYS");
+        return int.TryParse(configured, out var days) && days > 0
+            ? days
+            : CrossLanguageSoakManifest.DefaultMaxManifestAgeDays;
+    }
+
+    public static CrossLanguageSoakGateResult EvaluateManifestStaleness(
+        string manifestPath,
+        DateTimeOffset nowUtc,
+        int maxAgeDays)
+    {
+        if (!CrossLanguageSoakManifest.TryReadRecordedAtUtc(manifestPath, out var recordedAtUtc))
+        {
+            return new CrossLanguageSoakGateResult(
+                CrossLanguageSoakGateStatus.Failed,
+                "manifest missing RecordedAtUtc");
+        }
+
+        var age = nowUtc - recordedAtUtc;
+        if (age > TimeSpan.FromDays(maxAgeDays))
+        {
+            return new CrossLanguageSoakGateResult(
+                CrossLanguageSoakGateStatus.Failed,
+                $"manifest stale: recorded {recordedAtUtc:O}, max age {maxAgeDays} days");
+        }
+
+        return new CrossLanguageSoakGateResult(CrossLanguageSoakGateStatus.Passed);
+    }
 }
