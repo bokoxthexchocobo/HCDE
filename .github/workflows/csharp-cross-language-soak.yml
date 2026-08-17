@@ -6,6 +6,9 @@ on:
   # Weekly Monday 06:00 UTC when hcdeserv/IWAD secrets are configured.
     - cron: '0 6 * * 1'
 
+permissions:
+  contents: write
+
 jobs:
   soak:
     runs-on: ubuntu-latest
@@ -66,6 +69,26 @@ jobs:
         run: |
           cd csharp
           dotnet test --no-build --filter "FullyQualifiedName~ExportCommittedTemplates_WritesCiArtifactBundle"
+      - name: Apply soak templates to repository
+        if: ${{ secrets.HCDE_HCDESERV_PATH != '' && secrets.HCDE_IWAD_PATH != '' }}
+        env:
+          HCDE_APPLY_SOAK_TEMPLATES: '1'
+          HCDE_SOAK_TEMPLATE_EXPORT_DIR: ${{ runner.temp }}/soak-templates-for-commit
+        run: |
+          cd csharp
+          dotnet test --no-build --filter "FullyQualifiedName~ApplyExportedTemplates_WritesCommittedSoakTree"
+      - name: Commit refreshed soak templates
+        if: ${{ secrets.HCDE_HCDESERV_PATH != '' && secrets.HCDE_IWAD_PATH != '' }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add csharp/validation/soak/
+          if git diff --staged --quiet; then
+            echo "No soak template changes to commit."
+          else
+            git commit -m "chore(soak): refresh cross-language Passed templates [skip ci]"
+            git push
+          fi
       - name: Enforce Passed soak gate
         if: ${{ secrets.HCDE_HCDESERV_PATH != '' && secrets.HCDE_IWAD_PATH != '' }}
         env:

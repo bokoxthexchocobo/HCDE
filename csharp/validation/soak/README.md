@@ -32,7 +32,7 @@ CrossLanguageSoakEvidenceArchive.RefreshCommittedEvidence(); // prune + re-recor
 
 Set `HCDE_REFRESH_SOAK_TEMPLATES=1` and run `RefreshCommittedEvidence_ReplacesStaleHarnessFiles` to refresh the committed `validation/soak/evidence/` tree (used by CI when soak secrets are configured).
 
-When binaries are present, CI also runs `TryRecordPassedValidationEvidence_PassesGateWhenBinariesPresent` with `HCDE_RECORD_PASSED_VALIDATION_EVIDENCE=1` to re-record Passed harness JSON, refresh `manifest.json`, and verify the Passed gate in one step. The workflow then exports a `soak-templates-for-commit` artifact bundle via `ExportCommittedTemplates` (`HCDE_EXPORT_SOAK_TEMPLATES=1`) for copying back into `csharp/validation/soak/`. Commit the refreshed tree after a green soak workflow run.
+When binaries are present, CI also runs `TryRecordPassedValidationEvidence_PassesGateWhenBinariesPresent` with `HCDE_RECORD_PASSED_VALIDATION_EVIDENCE=1` to re-record Passed harness JSON, refresh `manifest.json`, and verify the Passed gate in one step. The workflow then exports a `soak-templates-for-commit` artifact bundle via `ExportCommittedTemplates` (`HCDE_EXPORT_SOAK_TEMPLATES=1`) for copying back into `csharp/validation/soak/`. On weekly scheduled runs, CI applies the artifact bundle back into the repository via `ApplyExportedTemplates` (`HCDE_APPLY_SOAK_TEMPLATES=1`) and commits refreshed templates when they change. Commit the refreshed tree after a green soak workflow run.
 
 Evidence files land in `csharp/validation/soak/evidence/` as `{harness}_{timestamp}_{status}.json`. A rollup manifest is written to `csharp/validation/soak/manifest.json`.
 

@@ -109,6 +109,70 @@ public static class CrossLanguageSoakEvidenceArchive
         return copied;
     }
 
+    public static IReadOnlyList<string> ApplyExportedTemplates(string exportDirectory, string? repositoryRoot = null)
+    {
+        repositoryRoot ??= FindRepositoryRoot();
+        if (!Directory.Exists(exportDirectory))
+            throw new DirectoryNotFoundException(exportDirectory);
+
+        var evidenceDirectory = ResolveDefaultEvidenceDirectory(repositoryRoot);
+        Directory.CreateDirectory(evidenceDirectory);
+        var copied = new List<string>();
+
+        foreach (var file in Directory.GetFiles(evidenceDirectory, "*.json"))
+            File.Delete(file);
+
+        var exportEvidenceDirectory = Path.Combine(exportDirectory, "evidence");
+        if (Directory.Exists(exportEvidenceDirectory))
+        {
+            foreach (var file in Directory.GetFiles(exportEvidenceDirectory, "*.json"))
+            {
+                var destination = Path.Combine(evidenceDirectory, Path.GetFileName(file));
+                File.Copy(file, destination, overwrite: true);
+                copied.Add(destination);
+            }
+        }
+
+        var exportManifest = Path.Combine(exportDirectory, "manifest.json");
+        if (File.Exists(exportManifest))
+        {
+            var destinationManifest = CrossLanguageSoakManifest.ResolveDefaultManifestPath(repositoryRoot);
+            Directory.CreateDirectory(Path.GetDirectoryName(destinationManifest)!);
+            File.Copy(exportManifest, destinationManifest, overwrite: true);
+            copied.Add(destinationManifest);
+        }
+
+        return copied;
+    }
+
+    public static CrossLanguageSoakGateResult TryApplyExportedTemplatesFromEnvironment(string? repositoryRoot = null)
+    {
+        if (Environment.GetEnvironmentVariable("HCDE_APPLY_SOAK_TEMPLATES") != "1")
+        {
+            return new CrossLanguageSoakGateResult(
+                CrossLanguageSoakGateStatus.NotRequired,
+                "apply soak templates not requested");
+        }
+
+        var exportDirectory = Environment.GetEnvironmentVariable("HCDE_SOAK_TEMPLATE_EXPORT_DIR");
+        if (string.IsNullOrWhiteSpace(exportDirectory))
+        {
+            return new CrossLanguageSoakGateResult(
+                CrossLanguageSoakGateStatus.Failed,
+                "HCDE_SOAK_TEMPLATE_EXPORT_DIR not set");
+        }
+
+        ApplyExportedTemplates(exportDirectory, repositoryRoot);
+        if (!CrossLanguageSoakGate.AreSoakSecretsConfigured())
+        {
+            return new CrossLanguageSoakGateResult(
+                CrossLanguageSoakGateStatus.NotRequired,
+                "soak secrets not configured");
+        }
+
+        return CrossLanguageSoakGate.Evaluate(repositoryRoot, requireConfiguredSecrets: true);
+    }
+
     public static void PruneHarnessEvidenceFiles(string evidenceDirectory)
     {
         if (!Directory.Exists(evidenceDirectory))

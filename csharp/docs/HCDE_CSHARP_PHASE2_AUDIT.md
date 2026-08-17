@@ -1,7 +1,7 @@
 # HCDE C# Migration — Phase 2 Principal Audit
 
 **Last updated:** 2026-08-17  
-**Status:** In progress — Phase **2c** live protocol codecs (iteration 38 step 1). Phase **2b** verification errors, start-game, bootstrap/resync, and cross-language harness complete.  
+**Status:** In progress — Phase **2c** live protocol codecs (iteration 38 complete). Phase **2b** verification errors, start-game, bootstrap/resync, and cross-language harness complete. Phase **2b** verification errors, start-game, bootstrap/resync, and cross-language harness complete.  
 **Prerequisite:** [Phase 1 audit](HCDE_CSHARP_PHASE1_AUDIT.md) (complete)  
 **Related:** [`HCDE_CSHARP_MIGRATION.md`](HCDE_CSHARP_MIGRATION.md) · [`HCDE_NETCODE.md`](../../docs/HCDE_NETCODE.md)
 
@@ -599,11 +599,38 @@ Phase 2b is complete when **all** hold:
 2. ~~**Authority playsim tick polish**~~ — actor delta tails on authority pump, guest resync on mismatch
 3. ~~**Cross-language soak evidence**~~ — automate committing refreshed Passed templates from CI artifacts
 
-## Phase 2c next slice (iteration 38)
+## Phase 2c next slice (iteration 38 — delivered)
 
 1. ~~**BEHAVIOR bytecode operands**~~ — map/world array PCDs, translation range ops
-2. **Authority playsim tick polish** — coop dead-spawn tails on authority pump, guest gap resync wiring
-3. **Cross-language soak evidence** — weekly Passed template commit automation from artifact bundle
+2. ~~**Authority playsim tick polish**~~ — coop dead-spawn tails on authority pump, guest gap resync wiring
+3. ~~**Cross-language soak evidence**~~ — weekly Passed template commit automation from artifact bundle
+
+## Phase 2c next slice (iteration 39)
+
+1. **BEHAVIOR bytecode operands** — script array PCDs, more ZDoom stack ops
+2. **Authority playsim tick polish** — invasion tail on authority pump, guest presentation echo apply wiring
+3. **Cross-language soak evidence** — manifest staleness gate for committed templates
+
+### Weekly soak template apply + commit (Phase 2c — iteration 38 step 3)
+
+| Artifact | Location | C++ reference |
+| --- | --- | --- |
+| Apply helper | `CrossLanguageSoakEvidenceArchive.ApplyExportedTemplates` | copy CI artifact bundle into `validation/soak/` |
+| CI apply step | `.github/workflows/csharp-cross-language-soak.yml` | `HCDE_APPLY_SOAK_TEMPLATES=1` after export |
+| CI commit step | `.github/workflows/csharp-cross-language-soak.yml` | weekly auto-commit refreshed templates |
+| Archive tests | `CrossLanguageSoakEvidenceArchiveTests` | apply bundle + env-gated CI apply |
+| Release checklist | `validation/soak/README.md` | weekly apply + commit workflow docs |
+
+### Coop dead-spawn tail + guest gap resync (Phase 2c — iteration 38 step 2)
+
+| Artifact | Location | C++ reference |
+| --- | --- | --- |
+| Dead-spawn queue | `GuestWorldStateStore.QueueCoopDeadSpawn` | `HCDEAppendCoopDeadSpawns` authority retire list |
+| Tail builder | `WorldStateTailBuilder.WriteCoopTailFromStore` | ships HCDS from pending authority store indices |
+| Gap resync flags | `ServerSnapshotApplyResult`, `ClientInputApplyResult` | `TryResyncSnapshotGap` / `TryResyncInputGap` |
+| Guest wiring | `LiveGuestSession.NeedsNetGapResync` | reset guest net registry on snapshot gap resync |
+| Authority wiring | `LiveAuthoritySession.TryReceiveClientInput` | reset client registry on input gap resync |
+| E2E tests | `LiveSessionTests`, `WorldStateTailBuilderTests`, `SnapshotAndInputApplyTests` | HCDS pump apply + gap resync reporting |
 
 ### BEHAVIOR map/world array + translation PCD operands (Phase 2c/2d — iteration 38 step 1)
 
@@ -896,4 +923,4 @@ Do **not** port snapshot encode/decode bodies until HCIN/HCSN headers are green.
 
 **Phase 2c iteration 14** adds HCSR/HCIN apply sessions with per-player sequence/consistency tracking, idempotent snapshot handling, gap-resync policy, and injectable command sinks wired into guest/authority receive paths.
 
-Next audit checkpoint: **Phase 2c iteration 38** when map/world array PCD operands land or authority coop dead-spawn tail builders wire into the tick pump.
+Next audit checkpoint: **Phase 2c iteration 39** when script-array PCD operands land or authority invasion tail builders wire into the tick pump.
