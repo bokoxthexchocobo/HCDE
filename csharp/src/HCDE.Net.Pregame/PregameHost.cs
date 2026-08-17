@@ -3,6 +3,11 @@ using HCDE.Net.Transport;
 
 namespace HCDE.Net.Pregame;
 
+public interface IPregameInboundInterceptor
+{
+    bool TryHandle(ReadOnlySpan<byte> packet, NetworkEndpoint remote);
+}
+
 public sealed class PregameHostOptions
 {
     public int MaxClients { get; set; } = 8;
@@ -14,6 +19,7 @@ public sealed class PregameHostOptions
     public EngineInfoSnapshot ExpectedEngineInfo { get; set; } = new();
     public bool RequireHcdeConnectInfo { get; set; } = true;
     public PregameSessionSnapshot Session { get; set; } = new();
+    public IPregameInboundInterceptor? InboundInterceptor { get; set; }
 }
 
 /// <summary>
@@ -52,28 +58,50 @@ public sealed class PregameHost
 
     private void DrainInbound(ulong nowMilliseconds)
     {
+        if (_options.InboundInterceptor is not null)
+        {
+            Span<byte> wire = stackalloc byte[NetConstants.MaxTransmitSize];
+            while (_transport.TryReceive(wire, out var received, out var remote, TimeSpan.Zero))
+            {
+                var raw = wire[..received];
+                if (_options.InboundInterceptor.TryHandle(raw, remote))
+                    continue;
+
+                if (SetupPacketCodec.TryDecode(raw, _netBuffer, out var length) != SetupPacketDecodeStatus.Ok)
+                    continue;
+
+                ProcessInboundNetBuffer(_netBuffer.AsSpan(0, length), remote, nowMilliseconds);
+            }
+
+            return;
+        }
+
         while (PregameWire.TryReceive(_transport, _netBuffer, out var length, out var remote, TimeSpan.Zero)
                == SetupPacketDecodeStatus.Ok)
         {
-            var span = _netBuffer.AsSpan(0, length);
-            if (span.Length >= 2 && span[1] == (byte)PregameSetupType.Connect)
-            {
-                TryAdmitConnect(span, remote, nowMilliseconds);
-                continue;
-            }
-
-            var client = FindClientByAddress(remote);
-            if (client is null || span.Length < 2 || span[1] != (byte)PregameSetupType.HcdeService)
-                continue;
-
-            if (_receiver.TryAccept(span, client.Connection, nowMilliseconds) != PregameServiceReceiveResult.Accepted)
-                continue;
-
-            if (!HcdeServicePacket.TryRead(span, out var service))
-                continue;
-
-            HandleServiceFromClient(client, service, nowMilliseconds);
+            ProcessInboundNetBuffer(_netBuffer.AsSpan(0, length), remote, nowMilliseconds);
         }
+    }
+
+    private void ProcessInboundNetBuffer(ReadOnlySpan<byte> span, NetworkEndpoint remote, ulong nowMilliseconds)
+    {
+        if (span.Length >= 2 && span[1] == (byte)PregameSetupType.Connect)
+        {
+            TryAdmitConnect(span, remote, nowMilliseconds);
+            return;
+        }
+
+        var client = FindClientByAddress(remote);
+        if (client is null || span.Length < 2 || span[1] != (byte)PregameSetupType.HcdeService)
+            return;
+
+        if (_receiver.TryAccept(span, client.Connection, nowMilliseconds) != PregameServiceReceiveResult.Accepted)
+            return;
+
+        if (!HcdeServicePacket.TryRead(span, out var service))
+            return;
+
+        HandleServiceFromClient(client, service, nowMilliseconds);
     }
 
     private void HandleServiceFromClient(PregameClient client, HcdeServicePacket service, ulong nowMilliseconds)

@@ -2,6 +2,8 @@ using HCDE.MapLoader.Tests;
 using HCDE.Net.Core;
 using HCDE.Net.Pregame;
 using HCDE.Net.Transport;
+using HCDE.Protocol;
+using System.Net;
 
 namespace HCDE.Server.Tests;
 
@@ -120,5 +122,73 @@ public class DedicatedServerHostTests
         Assert.True(liveGuest.TryReceiveAuthorityControl(out _));
         Assert.True(liveGuest.TryReceiveServerSnapshot(out _, out _, out _));
         Assert.True(guestStore.Sectors.ContainsKey(0));
+    }
+
+    [Fact]
+    public async Task Pump_RespondsToLauncherServerQuery()
+    {
+        var wad = TestWadBuilder.BuildMinimalMapWad("MAP01");
+        using var host = new DedicatedServerHost(new DedicatedServerOptions
+        {
+            Port = 0,
+            IwadBytes = wad,
+            ServerName = "Iter32 Query Host",
+            Pregame = new PregameHostOptions
+            {
+                Session = new PregameSessionSnapshot
+                {
+                    MapLoad = new MapLoadInfo { MapName = "MAP01", RngSeed = 3 },
+                },
+            },
+        });
+
+        var hostEndpoint = new NetworkEndpoint(IPAddress.Loopback, host.BoundPort);
+        var clientTask = Task.Run(async () =>
+        {
+            await Task.Delay(50);
+            var client = new ServerQueryClient();
+            return client.Query(new ServerQueryClientOptions
+            {
+                Address = hostEndpoint.ToString(),
+                Timeout = TimeSpan.FromSeconds(2),
+            });
+        });
+
+        var deadline = Environment.TickCount64 + 5000;
+        while (Environment.TickCount64 < deadline)
+        {
+            host.Pump((ulong)Environment.TickCount64);
+            if (clientTask.IsCompleted)
+                break;
+
+            await Task.Delay(10);
+        }
+
+        var snapshot = await clientTask;
+        Assert.Equal("Iter32 Query Host", snapshot.HostName);
+        Assert.Equal("MAP01", snapshot.MapName);
+        Assert.Equal("waiting", snapshot.SessionState);
+    }
+
+    [Fact]
+    public void Advertiser_SendsHeartbeatToMaster()
+    {
+        using var master = new UdpTransport();
+        master.Bind(0);
+        master.SetNonBlocking(true);
+
+        using var server = new UdpTransport();
+        server.Bind(0);
+        server.SetNonBlocking(true);
+
+        var masterEndpoint = new NetworkEndpoint(IPAddress.Loopback, master.BoundPort);
+        var advertiser = new DedicatedServerAdvertiser(server, masterEndpoint, (ushort)server.BoundPort, intervalSeconds: 1);
+        advertiser.Pump(1000);
+
+        var buffer = new byte[64];
+        Assert.True(master.TryReceive(buffer, out var received, out var remote, TimeSpan.FromSeconds(2)));
+        Assert.True(MasterPackets.TryReadServerHeartbeat(buffer.AsSpan(0, received), out var gamePort));
+        Assert.Equal((ushort)server.BoundPort, gamePort);
+        Assert.Equal(IPAddress.Loopback, remote.Address);
     }
 }
