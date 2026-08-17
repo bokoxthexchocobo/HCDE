@@ -34,6 +34,7 @@ public class BinaryMapBehaviorDecoderTests
         Assert.True(behavior.IsPresent);
         Assert.Equal(MapBehaviorFormat.AcsOld, behavior.Format);
         Assert.Equal(24u, behavior.DirectoryOffset);
+        Assert.Single(behavior.Scripts);
     }
 
     [Fact]

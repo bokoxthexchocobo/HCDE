@@ -2,20 +2,32 @@ namespace HCDE.MapLoader;
 
 public readonly struct BinaryMapBehavior
 {
-    public static BinaryMapBehavior Absent => new(false, MapBehaviorFormat.Unknown, 0, Array.Empty<byte>());
+    public static BinaryMapBehavior Absent => new(
+        false,
+        MapBehaviorFormat.Unknown,
+        0,
+        Array.Empty<byte>(),
+        Array.Empty<MapBehaviorScriptEntry>());
 
-    public BinaryMapBehavior(bool isPresent, MapBehaviorFormat format, uint directoryOffset, byte[] data)
+    public BinaryMapBehavior(
+        bool isPresent,
+        MapBehaviorFormat format,
+        uint directoryOffset,
+        byte[] data,
+        IReadOnlyList<MapBehaviorScriptEntry> scripts)
     {
         IsPresent = isPresent;
         Format = format;
         DirectoryOffset = directoryOffset;
         Data = data;
+        Scripts = scripts;
     }
 
     public bool IsPresent { get; }
     public MapBehaviorFormat Format { get; }
     public uint DirectoryOffset { get; }
     public byte[] Data { get; }
+    public IReadOnlyList<MapBehaviorScriptEntry> Scripts { get; }
 }
 
 public static class BinaryMapBehaviorDecoder
@@ -37,7 +49,17 @@ public static class BinaryMapBehaviorDecoder
             return false;
         }
 
-        behavior = new BinaryMapBehavior(true, record.Format, record.DirectoryOffset, record.Data);
+        if (!MapBehaviorDirectoryCodec.TryReadScripts(
+                record.Data,
+                record.Format,
+                record.DirectoryOffset,
+                out var scripts,
+                out rejectReason))
+        {
+            return false;
+        }
+
+        behavior = new BinaryMapBehavior(true, record.Format, record.DirectoryOffset, record.Data, scripts);
         return true;
     }
 }

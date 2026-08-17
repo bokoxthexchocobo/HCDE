@@ -567,11 +567,34 @@ Phase 2b is complete when **all** hold:
 | Evidence recording | `CrossLanguageSoakEvidence.Finalize` | JSON audit trail via `HCDE_SOAK_EVIDENCE_DIR` |
 | Suite tests | `CrossLanguageSoakSuiteTests` | skip-when-unconfigured + evidence file count |
 
-## Phase 2c next slice (iteration 30)
+### BEHAVIOR script directory decode (Phase 2c/2d — iteration 30 step 1)
 
-1. **BEHAVIOR lump usage** — beyond ACS magic probe (script bytecode layout)
-2. **Dedicated server map-load integration** — wire `AuthorityMapLoadBootstrap` into server shell path
-3. **Record cross-language soak evidence** — run `CrossLanguageSoakSuite.RunAll()` with local `hcdeserv` + IWAD and commit JSON under `validation/`
+| Artifact | Location | C++ reference |
+| --- | --- | --- |
+| ACS script directory | `MapBehaviorDirectoryCodec.cs` | `FBehavior::LoadScriptsDirectory` |
+| Script entry record | `MapBehaviorScriptEntry` | `ScriptPtr`, `ScriptPtr1`, `ScriptPtr2`, `ScriptPtr3` |
+| Unified behavior decode | `BinaryMapBehavior.Scripts` | `BinaryMapBehaviorDecoder` after ACS probe |
+
+## Phase 2c next slice (iteration 31)
+
+1. **BEHAVIOR bytecode walk** — PCD opcode layout beyond script directory
+2. **HCDE.Server scaffold** — dedicated host process wrapping pregame + map-load bootstrap
+3. **Passed soak evidence** — re-record when `hcdeserv`/IWAD are available in CI
+
+### Dedicated server map-load integration (Phase 2c/2f — iteration 30 step 2)
+
+| Artifact | Location | C++ reference |
+| --- | --- | --- |
+| Bootstrapped live handoff | `PregameHost.TryCreateBootstrappedLiveAuthoritySession` | `p_setup.cpp` before `I_NetDone` live pump |
+| Pregame map-load E2E | `PregameMapLoadBootstrapTests` | pregame start-game ack → authority HCDW+HCKS |
+
+### Cross-language soak evidence archive (Phase 2c — iteration 30 step 3)
+
+| Artifact | Location | C++ reference |
+| --- | --- | --- |
+| Evidence archive runner | `CrossLanguageSoakEvidenceArchive.cs` | `HCDE_SOAK_EVIDENCE_DIR` JSON audit trail |
+| Validation evidence | `validation/soak/evidence/*.json` | skipped harness records when binaries absent |
+| Archive tests | `CrossLanguageSoakEvidenceArchiveTests` | evidence file count + skip status |
 
 ## Phase 2b next slice
 
@@ -596,6 +619,8 @@ Do **not** port snapshot encode/decode bodies until HCIN/HCSN headers are green.
 ## Audit conclusion (interim)
 
 **Phase 2b C# pregame stack is feature-complete for fresh dedicated joins** — loopback WAITING setup, verification-error replies, start-game, and a cross-language guest CLI/harness are in place. The remaining 2b gate is executing the harness against a real `hcdeserv` build and recording the result.
+
+**Phase 2c iteration 30** adds BEHAVIOR script directory decode (`MapBehaviorDirectoryCodec`), `PregameHost.TryCreateBootstrappedLiveAuthoritySession` for pregame→live map-load handoff, and `CrossLanguageSoakEvidenceArchive` with skipped harness JSON under `validation/soak/evidence/`.
 
 **Phase 2c iteration 29** adds BEHAVIOR lump ACS magic probe (`BinaryMapBehaviorDecoder`), `AuthorityMapLoadBootstrap` for authority WAD→world-store seeding with metadata replicate, and `CrossLanguageSoakSuite` to run pregame + Step 12 soaks with JSON evidence recording.
 
@@ -629,4 +654,4 @@ Do **not** port snapshot encode/decode bodies until HCIN/HCSN headers are green.
 
 **Phase 2c iteration 14** adds HCSR/HCIN apply sessions with per-player sequence/consistency tracking, idempotent snapshot handling, gap-resync policy, and injectable command sinks wired into guest/authority receive paths.
 
-Next audit checkpoint: **Phase 2c iteration 30** when BEHAVIOR bytecode decode lands or dedicated server map-load integration is wired.
+Next audit checkpoint: **Phase 2c iteration 31** when BEHAVIOR bytecode walk lands or HCDE.Server scaffold starts.
