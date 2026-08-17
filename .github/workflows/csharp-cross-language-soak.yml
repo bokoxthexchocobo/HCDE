@@ -25,3 +25,10 @@ jobs:
           cd csharp
           dotnet build
           dotnet test --no-build --filter "FullyQualifiedName~CrossLanguageSoak"
+      - name: Upload soak evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: csharp-soak-evidence
+          path: |
+            ${{ runner.temp }}/hcde-soak-evidence/*.json

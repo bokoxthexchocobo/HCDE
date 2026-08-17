@@ -29,7 +29,7 @@ The full engine is ~640k lines of C++. This is a long-running migration, not a b
 | Map loader | `maploader/`, `p_setup.cpp` | `HCDE.MapLoader` | In progress (unified `BinaryMapDecoder`, map-load bootstrap) |
 | Pregame guest CLI | C++ `-join` guest path | `HCDE.PregameGuest.Cli` | Done (pregame + `--live-ticks`) |
 | Engine core | `src/` | — | Not started |
-| Dedicated server | `hcdeserv` target | — | Planned |
+| Dedicated server | `hcdeserv` (`HCDE.Server`) | Scaffold — pregame + map-load bootstrap | In progress |
 | Playsim | `src/playsim/` | — | Planned |
 | Renderer (Vulkan/SW) | `src/rendering/` | — | Keep native or P/Invoke initially |
 | ZScript VM | `src/common/scripting/` | — | Keep native or P/Invoke initially |
@@ -66,7 +66,7 @@ Outputs: `hcdemaster` and `hcdercon`.
 
 ## Validation
 
-Managed wire compatibility is gated by `dotnet test` (236 tests; CI via `.github/workflows/csharp.yml`). Optional cross-language soak CI runs `FullyQualifiedName~CrossLanguageSoak` when `HCDE_HCDESERV_PATH` / `HCDE_IWAD_PATH` secrets are configured. Cross-language checks live under `validation/`:
+Managed wire compatibility is gated by `dotnet test` (241 tests; CI via `.github/workflows/csharp.yml`). Optional cross-language soak CI runs `FullyQualifiedName~CrossLanguageSoak` when `HCDE_HCDESERV_PATH` / `HCDE_IWAD_PATH` secrets are configured. Cross-language checks live under `validation/`:
 
 | Harness | Purpose |
 | --- | --- |
@@ -103,7 +103,7 @@ csharp/
     HCDE.MapLoader/      WAD directory + binary map lump decode (Phase 2d)
     HCDE.PregameGuest.Cli/  hcde-pregame-guest CLI
   tests/
-    HCDE.*.Tests/        xUnit regression tests (236 passing)
+    HCDE.*.Tests/        xUnit regression tests (241 passing)
 ```
 
 ## Migration phases

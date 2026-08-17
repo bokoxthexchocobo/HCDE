@@ -2,14 +2,14 @@
 
 **Last updated:** 2026-08-17  
 **Scope:** All code under `csharp/` (7 projects, 6 test suites)  
-**Verification:** `dotnet build` and `dotnet test` in `csharp/` — **236 tests passing** (CI: `.github/workflows/csharp.yml`; optional soak: `.github/workflows/csharp-cross-language-soak.yml`)  
+**Verification:** `dotnet build` and `dotnet test` in `csharp/` — **241 tests passing** (CI: `.github/workflows/csharp.yml`; optional soak: `.github/workflows/csharp-cross-language-soak.yml`)  
 **Related:** [`HCDE_CSHARP_PHASE1_AUDIT.md`](HCDE_CSHARP_PHASE1_AUDIT.md) · [`HCDE_CSHARP_PHASE2_AUDIT.md`](HCDE_CSHARP_PHASE2_AUDIT.md) · [`HCDE_CSHARP_MIGRATION.md`](HCDE_CSHARP_MIGRATION.md)
 
 ---
 
 ## 1. Executive summary
 
-The C# tree is a **well-tested protocol and networking foundation** (~14,800 LOC source, 236 unit/integration tests) covering Phase 1 tools, Phase 2a–2c wire codecs, world-store checksum path, pregame map-load bootstrap, BEHAVIOR script directory decode, and Phase 2d unified binary map decode.
+The C# tree is a **well-tested protocol and networking foundation** (~15,100 LOC source, 241 unit/integration tests) covering Phase 1 tools, Phase 2a–2c wire codecs, `HCDE.Server` scaffold, BEHAVIOR bytecode walk, and Phase 2d unified binary map decode.
 
 | Layer | Status | Confidence |
 | --- | --- | --- |
@@ -18,7 +18,7 @@ The C# tree is a **well-tested protocol and networking foundation** (~14,800 LOC
 | Phase 2b — pregame handshake | **~95%** (fresh join loopback) | Medium (no recorded C++ interop) |
 | Phase 2c — live netcode wire | **~60%** of `d_net` wire surface; apply stubs in place | Medium (playsim mutation deferred) |
 | Phase 2d — map loader | **In progress** (unified `BinaryMapDecoder`; full binary lump decode through collision + BEHAVIOR script directory) | Medium |
-| Phase 2e–2f — playsim, server | **Not started** | — |
+| Phase 2f — server shell | **In progress** (`HCDE.Server` scaffold with pregame + map-load bootstrap) | Low |
 | Phase 3–4 — full sim & client | **Not started** | — |
 
 **Overall migration progress (by engine LOC):** ~2% of HCDE-owned C++ (`src/` + `tools/` ≈ 672k LOC).  
@@ -41,8 +41,9 @@ csharp/
     HCDE.Net.Pregame/      24 files, ~2,270 LOC   (pregame host/guest pumps + cross-language soak suite)
     HCDE.Net.Core/         72 files, ~8,450 LOC   (live protocol codecs + session glue + world-store stubs + authority map-load)
     HCDE.MapLoader/         21 files, ~1,550 LOC   (WAD directory + unified binary map decode + BEHAVIOR directory)
+    HCDE.Server/             2 files,   ~180 LOC   (hcdeserv dedicated host scaffold)
     HCDE.PregameGuest.Cli/  5 files,   ~207 LOC   (hcde-pregame-guest CLI)
-  tests/                   58 files, 236 tests
+  tests/                   60 files, 241 tests
 ```
 
 ### 2.2 Test matrix
@@ -53,10 +54,11 @@ csharp/
 | `HCDE.Master.Tests` | 1 | UDP heartbeat + list query integration |
 | `HCDE.Rcon.Tests` | 6 | FNV-1a + loopback auth/ping/status |
 | `HCDE.Net.Transport.Tests` | 10 | Constants, query, HCD3, gameplay CRC |
-| `HCDE.Net.Pregame.Tests` | 44 | CRC, service queue, host/guest loopback, bootstrap/resync, cross-language soak + evidence archive |
+| `HCDE.Net.Pregame.Tests` | 45 | CRC, service queue, host/guest loopback, bootstrap/resync, cross-language soak + manifest |
 | `HCDE.Net.Core.Tests` | 130 | Live headers, bodies, tail, DEM, sessions, world-store + map-bootstrap + authority map-load E2E |
-| `HCDE.MapLoader.Tests` | 30 | WAD directory, unified map decode, all lump groups + BEHAVIOR directory |
-| **Total** | **236** | |
+| `HCDE.MapLoader.Tests` | 32 | WAD directory, unified map decode, BEHAVIOR directory + bytecode walk |
+| `HCDE.Server.Tests` | 2 | Dedicated host bind + pregame→live bootstrap E2E |
+| **Total** | **241** | |
 
 ### 2.3 Dependency graph
 
@@ -361,7 +363,7 @@ Wire-first codecs for the **core live envelope and record bodies** are in good s
 5. ~~Unified `BinaryMapDecoder` + C++ sector-metadata flag parity~~ (done — iteration 28)
 6. ~~BEHAVIOR lump probe + authority map-load bootstrap + cross-language soak suite~~ (done — iteration 29)
 7. ~~BEHAVIOR script directory + pregame map-load handoff + soak evidence archive~~ (done — iteration 30)
-8. BEHAVIOR bytecode walk + HCDE.Server scaffold + passed soak evidence in CI
+8. BEHAVIOR bytecode operands + HCDE.Server master advertise + Passed soak evidence in CI
 
 ---
 
@@ -409,7 +411,7 @@ Until 2d–2e land, C# cannot replace `hcdeserv`. The current tree is the right 
 
 | Tree | LOC | Notes |
 | --- | ---: | --- |
-| `csharp/src/` | ~14,800 | All C# delivered |
+| `csharp/src/` | ~15,100 | All C# delivered |
 | `src/` | ~659,000 | Engine — primary target |
 | `tools/` | ~13,300 | Master/rcon ported; lemon/re2c/zipdir stay |
 | `libraries/` | ~891,000 | Vendored — stay native |

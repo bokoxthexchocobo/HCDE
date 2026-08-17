@@ -4,6 +4,28 @@ namespace HCDE.Net.Pregame.Tests;
 public class CrossLanguageSoakEvidenceArchiveTests
 {
     [Fact]
+    public void RecordEvidence_WritesManifestWithHarnessStatuses()
+    {
+        var baseDir = Path.Combine(Path.GetTempPath(), $"hcde-soak-manifest-{Guid.NewGuid():N}");
+        var evidenceDir = Path.Combine(baseDir, "evidence");
+        try
+        {
+            var files = CrossLanguageSoakEvidenceArchive.RecordEvidence(evidenceDir);
+            Assert.Equal(2, files.Count);
+            var manifestPath = Path.Combine(baseDir, "manifest.json");
+            Assert.True(File.Exists(manifestPath));
+            var json = File.ReadAllText(manifestPath);
+            Assert.Contains("pregame_guest_smoke", json);
+            Assert.Contains("netcode_step12_invasion", json);
+        }
+        finally
+        {
+            if (Directory.Exists(baseDir))
+                Directory.Delete(baseDir, recursive: true);
+        }
+    }
+
+    [Fact]
     public void RecordEvidence_WritesHarnessJsonFiles()
     {
         var evidenceDir = Path.Combine(Path.GetTempPath(), $"hcde-soak-archive-{Guid.NewGuid():N}");
@@ -63,5 +85,6 @@ public class CrossLanguageSoakEvidenceArchiveTests
         var files = CrossLanguageSoakEvidenceArchive.RecordDefaultEvidence();
         Assert.Equal(2, files.Count);
         Assert.All(files, path => Assert.Contains("_Skipped.json", path));
+        Assert.True(File.Exists(CrossLanguageSoakManifest.ResolveDefaultManifestPath()));
     }
 }

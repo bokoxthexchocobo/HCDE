@@ -11,8 +11,11 @@ public static class CrossLanguageSoakEvidenceArchive
         Environment.SetEnvironmentVariable("HCDE_SOAK_EVIDENCE_DIR", evidenceDirectory);
         try
         {
-            CrossLanguageSoakSuite.RunAll(repositoryRoot);
-            return Directory.GetFiles(evidenceDirectory, "*.json").OrderBy(path => path).ToArray();
+            var results = CrossLanguageSoakSuite.RunAll(repositoryRoot);
+            var files = Directory.GetFiles(evidenceDirectory, "*.json").OrderBy(path => path).ToArray();
+            var manifestPath = Path.Combine(Directory.GetParent(evidenceDirectory)!.FullName, "manifest.json");
+            CrossLanguageSoakManifest.Write(manifestPath, results, files);
+            return files;
         }
         finally
         {

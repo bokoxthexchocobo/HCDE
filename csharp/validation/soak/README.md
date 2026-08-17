@@ -29,6 +29,6 @@ Or archive directly from C#:
 CrossLanguageSoakEvidenceArchive.RecordDefaultEvidence();
 ```
 
-Evidence files land in `csharp/validation/soak/evidence/` as `{harness}_{timestamp}_{status}.json`.
+Evidence files land in `csharp/validation/soak/evidence/` as `{harness}_{timestamp}_{status}.json`. A rollup manifest is written to `csharp/validation/soak/manifest.json`.
 
 When binaries are absent, harnesses record `Skipped` status with a reason instead of failing the xUnit suite.

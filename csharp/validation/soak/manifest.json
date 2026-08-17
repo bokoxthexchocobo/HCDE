@@ -1,0 +1,19 @@
+{
+  "RecordedAtUtc": "2026-08-17T16:53:31.1225589+00:00",
+  "Harnesses": [
+    {
+      "Harness": "pregame_guest_smoke",
+      "Status": "Skipped",
+      "RecordedAtUtc": "2026-08-17T16:53:31.1224796+00:00",
+      "SkipReason": "Set HCDE_HCDESERV_PATH and HCDE_IWAD_PATH to run the cross-language pregame soak.",
+      "EvidenceFile": "pregame_guest_smoke_20260817_165331_Skipped.json"
+    },
+    {
+      "Harness": "netcode_step12_invasion",
+      "Status": "Skipped",
+      "RecordedAtUtc": "2026-08-17T16:53:31.1225586+00:00",
+      "SkipReason": "Set HCDE_HCDESERV_PATH and HCDE_IWAD_PATH to run the cross-language netcode soak.",
+      "EvidenceFile": "netcode_step12_invasion_20260817_165331_Skipped.json"
+    }
+  ]
+}
