@@ -34,6 +34,51 @@ public class MapBehaviorBytecodeWalkerTests
     }
 
     [Fact]
+    public void TryWalkScript_OldFormat_ReadsIfNotGotoScriptWaitAndLspec6()
+    {
+        var lump = TestWadBuilder.BuildBehaviorLump(
+            MapBehaviorFormat.AcsOld,
+            scriptCount: 1,
+            includeTerminateBytecode: false,
+            bytecodeOpcodes:
+            [
+                (int)AcsPcode.PushNumber, 1,
+                (int)AcsPcode.IfNotGoto, 20,
+                (int)AcsPcode.ScriptWaitDirect, 5,
+                (int)AcsPcode.Lspec6,
+                (int)AcsPcode.CaseGoto, 7, 30,
+                (int)AcsPcode.Terminate,
+            ]);
+        Assert.True(MapBehaviorCodec.TryProbe(lump, out var record, out _));
+        Assert.True(MapBehaviorDirectoryCodec.TryReadScripts(
+            record.Data,
+            record.Format,
+            record.DirectoryOffset,
+            out var scripts,
+            out _));
+        Assert.Single(scripts);
+
+        Assert.True(MapBehaviorBytecodeWalker.TryWalkScript(
+            record.Data,
+            record.Format,
+            scripts[0].Address,
+            out var instructions,
+            out var terminated,
+            out _));
+
+        Assert.True(terminated);
+        Assert.Equal(6, instructions.Count);
+        Assert.Equal((int)AcsPcode.IfNotGoto, instructions[1].Opcode);
+        Assert.Equal(1, instructions[1].OperandWordCount);
+        Assert.Equal((int)AcsPcode.ScriptWaitDirect, instructions[2].Opcode);
+        Assert.Equal(1, instructions[2].OperandWordCount);
+        Assert.Equal((int)AcsPcode.Lspec6, instructions[3].Opcode);
+        Assert.Equal(0, instructions[3].OperandWordCount);
+        Assert.Equal((int)AcsPcode.CaseGoto, instructions[4].Opcode);
+        Assert.Equal(2, instructions[4].OperandWordCount);
+    }
+
+    [Fact]
     public void TryDecode_IncludesScriptBytecodeBodies()
     {
         var wad = TestWadBuilder.BuildMinimalMapWad("MAP01", includeBehavior: true);

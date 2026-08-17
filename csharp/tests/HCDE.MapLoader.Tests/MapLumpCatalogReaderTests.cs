@@ -161,7 +161,8 @@ public static class TestWadBuilder
         int scriptCount = 0,
         int scriptNumber = 1,
         byte scriptType = 1,
-        bool includeTerminateBytecode = false)
+        bool includeTerminateBytecode = false,
+        IReadOnlyList<int>? bytecodeOpcodes = null)
     {
         if (scriptCount <= 0)
         {
@@ -172,9 +173,9 @@ public static class TestWadBuilder
 
         return format switch
         {
-            MapBehaviorFormat.AcsOld => BuildOldBehaviorLump(scriptCount, scriptNumber, scriptType, includeTerminateBytecode),
+            MapBehaviorFormat.AcsOld => BuildOldBehaviorLump(scriptCount, scriptNumber, scriptType, includeTerminateBytecode, bytecodeOpcodes),
             MapBehaviorFormat.AcsEnhanced or MapBehaviorFormat.AcsLittleEnhanced
-                => BuildEnhancedBehaviorLump(format, scriptCount, scriptNumber, scriptType, includeTerminateBytecode),
+                => BuildEnhancedBehaviorLump(format, scriptCount, scriptNumber, scriptType, includeTerminateBytecode, bytecodeOpcodes),
             _ => throw new ArgumentOutOfRangeException(nameof(format)),
         };
     }
@@ -194,36 +195,54 @@ public static class TestWadBuilder
         BinaryPrimitives.WriteUInt32LittleEndian(lump[4..], directoryOffset);
     }
 
+    private static byte[] BuildWordBytecode(bool includeTerminateBytecode, IReadOnlyList<int>? bytecodeOpcodes)
+    {
+        if (bytecodeOpcodes is { Count: > 0 })
+        {
+            var bytecode = new byte[bytecodeOpcodes.Count * 4];
+            for (var i = 0; i < bytecodeOpcodes.Count; i++)
+                BinaryPrimitives.WriteInt32LittleEndian(bytecode.AsSpan(i * 4, 4), bytecodeOpcodes[i]);
+
+            return bytecode;
+        }
+
+        if (!includeTerminateBytecode)
+            return Array.Empty<byte>();
+
+        var defaultBytecode = new byte[12];
+        BinaryPrimitives.WriteInt32LittleEndian(defaultBytecode.AsSpan(0, 4), (int)AcsPcode.PushNumber);
+        BinaryPrimitives.WriteInt32LittleEndian(defaultBytecode.AsSpan(4, 4), 42);
+        BinaryPrimitives.WriteInt32LittleEndian(defaultBytecode.AsSpan(8, 4), (int)AcsPcode.Terminate);
+        return defaultBytecode;
+    }
+
     private static byte[] BuildOldBehaviorLump(
         int scriptCount,
         int scriptNumber,
         byte scriptType,
-        bool includeTerminateBytecode)
+        bool includeTerminateBytecode,
+        IReadOnlyList<int>? bytecodeOpcodes)
     {
+        var bytecode = BuildWordBytecode(includeTerminateBytecode, bytecodeOpcodes);
         const int directoryOffset = 24;
         var directorySize = 4 + scriptCount * 12;
-        var bytecodeSize = includeTerminateBytecode ? 12 : 0;
-        var lump = new byte[directoryOffset + directorySize + bytecodeSize];
+        var bytecodeOffset = directoryOffset + directorySize;
+        var lump = new byte[bytecodeOffset + bytecode.Length];
         WriteBehaviorHeader(lump, MapBehaviorFormat.AcsOld, directoryOffset);
         BinaryPrimitives.WriteInt32LittleEndian(lump.AsSpan(directoryOffset, 4), scriptCount);
-        var bytecodeOffset = directoryOffset + directorySize;
         var cursor = directoryOffset + 4;
         for (var i = 0; i < scriptCount; i++)
         {
             BinaryPrimitives.WriteInt32LittleEndian(lump.AsSpan(cursor, 4), scriptNumber + scriptType * 1000);
             BinaryPrimitives.WriteUInt32LittleEndian(
                 lump.AsSpan(cursor + 4, 4),
-                includeTerminateBytecode ? (uint)bytecodeOffset : (uint)(bytecodeOffset + i * 4));
+                bytecode.Length > 0 ? (uint)bytecodeOffset : (uint)(bytecodeOffset + i * 4));
             BinaryPrimitives.WriteInt32LittleEndian(lump.AsSpan(cursor + 8, 4), 2);
             cursor += 12;
         }
 
-        if (includeTerminateBytecode)
-        {
-            BinaryPrimitives.WriteInt32LittleEndian(lump.AsSpan(bytecodeOffset, 4), (int)AcsPcode.PushNumber);
-            BinaryPrimitives.WriteInt32LittleEndian(lump.AsSpan(bytecodeOffset + 4, 4), 42);
-            BinaryPrimitives.WriteInt32LittleEndian(lump.AsSpan(bytecodeOffset + 8, 4), (int)AcsPcode.Terminate);
-        }
+        if (bytecode.Length > 0)
+            bytecode.CopyTo(lump.AsSpan(bytecodeOffset));
 
         return lump;
     }
@@ -233,18 +252,19 @@ public static class TestWadBuilder
         int scriptCount,
         int scriptNumber,
         byte scriptType,
-        bool includeTerminateBytecode)
+        bool includeTerminateBytecode,
+        IReadOnlyList<int>? bytecodeOpcodes)
     {
         const uint scriptPointerChunkId = 0x52545053; // SPTR
+        var bytecode = BuildWordBytecode(includeTerminateBytecode, bytecodeOpcodes);
         var payloadSize = scriptCount * 12;
         var chunkTableSize = 8 + payloadSize;
         const int directoryOffset = 24;
-        var bytecodeSize = includeTerminateBytecode ? 12 : 0;
-        var lump = new byte[directoryOffset + chunkTableSize + bytecodeSize];
+        var bytecodeOffset = directoryOffset + chunkTableSize;
+        var lump = new byte[bytecodeOffset + bytecode.Length];
         WriteBehaviorHeader(lump, format, directoryOffset);
         BinaryPrimitives.WriteUInt32LittleEndian(lump.AsSpan(directoryOffset, 4), scriptPointerChunkId);
         BinaryPrimitives.WriteInt32LittleEndian(lump.AsSpan(directoryOffset + 4, 4), payloadSize);
-        var bytecodeOffset = directoryOffset + chunkTableSize;
         var cursor = directoryOffset + 8;
         for (var i = 0; i < scriptCount; i++)
         {
@@ -252,17 +272,13 @@ public static class TestWadBuilder
             BinaryPrimitives.WriteUInt16LittleEndian(lump.AsSpan(cursor + 2, 2), scriptType);
             BinaryPrimitives.WriteUInt32LittleEndian(
                 lump.AsSpan(cursor + 4, 4),
-                includeTerminateBytecode ? (uint)bytecodeOffset : (uint)(bytecodeOffset + i * 4));
+                bytecode.Length > 0 ? (uint)bytecodeOffset : (uint)(bytecodeOffset + i * 4));
             BinaryPrimitives.WriteInt32LittleEndian(lump.AsSpan(cursor + 8, 4), 1);
             cursor += 12;
         }
 
-        if (includeTerminateBytecode)
-        {
-            BinaryPrimitives.WriteInt32LittleEndian(lump.AsSpan(bytecodeOffset, 4), (int)AcsPcode.PushNumber);
-            BinaryPrimitives.WriteInt32LittleEndian(lump.AsSpan(bytecodeOffset + 4, 4), 42);
-            BinaryPrimitives.WriteInt32LittleEndian(lump.AsSpan(bytecodeOffset + 8, 4), (int)AcsPcode.Terminate);
-        }
+        if (bytecode.Length > 0)
+            bytecode.CopyTo(lump.AsSpan(bytecodeOffset));
 
         return lump;
     }
