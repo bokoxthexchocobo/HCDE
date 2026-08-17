@@ -228,6 +228,13 @@ public static class MapBehaviorBytecodeWalker
             or (int)AcsPcode.MulWorldArray or (int)AcsPcode.DivWorldArray
             or (int)AcsPcode.ModWorldArray or (int)AcsPcode.IncWorldArray
             or (int)AcsPcode.DecWorldArray => 1,
+        (int)AcsPcode.PushFunction => 1,
+        (int)AcsPcode.CallStack or (int)AcsPcode.GotoStack => 0,
+        (int)AcsPcode.AssignScriptArray or (int)AcsPcode.PushScriptArray
+            or (int)AcsPcode.AddScriptArray or (int)AcsPcode.SubScriptArray
+            or (int)AcsPcode.MulScriptArray or (int)AcsPcode.DivScriptArray
+            or (int)AcsPcode.ModScriptArray or (int)AcsPcode.IncScriptArray
+            or (int)AcsPcode.DecScriptArray => 1,
         (int)AcsPcode.PushGlobalArray or (int)AcsPcode.AssignGlobalArray
             or (int)AcsPcode.AddGlobalArray => 1,
         (int)AcsPcode.GiveInventoryDirect or (int)AcsPcode.TakeInventoryDirect
@@ -320,6 +327,13 @@ public static class MapBehaviorBytecodeWalker
             or (int)AcsPcode.MulWorldArray or (int)AcsPcode.DivWorldArray
             or (int)AcsPcode.ModWorldArray or (int)AcsPcode.IncWorldArray
             or (int)AcsPcode.DecWorldArray => 1,
+        (int)AcsPcode.PushFunction => 1,
+        (int)AcsPcode.CallStack or (int)AcsPcode.GotoStack => 0,
+        (int)AcsPcode.AssignScriptArray or (int)AcsPcode.PushScriptArray
+            or (int)AcsPcode.AddScriptArray or (int)AcsPcode.SubScriptArray
+            or (int)AcsPcode.MulScriptArray or (int)AcsPcode.DivScriptArray
+            or (int)AcsPcode.ModScriptArray or (int)AcsPcode.IncScriptArray
+            or (int)AcsPcode.DecScriptArray => 1,
         (int)AcsPcode.PushGlobalArray or (int)AcsPcode.AssignGlobalArray
             or (int)AcsPcode.AddGlobalArray => 1,
         (int)AcsPcode.GiveInventoryDirect or (int)AcsPcode.TakeInventoryDirect
