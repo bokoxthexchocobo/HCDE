@@ -1,7 +1,7 @@
 # HCDE C# Migration — Phase 2 Principal Audit
 
 **Last updated:** 2026-08-17  
-**Status:** In progress — Phase **2c** live protocol codecs (iteration 32 complete). Phase **2b** verification errors, start-game, bootstrap/resync, and cross-language harness complete.  
+**Status:** In progress — Phase **2c** live protocol codecs (iteration 33 complete). Phase **2b** verification errors, start-game, bootstrap/resync, and cross-language harness complete.  
 **Prerequisite:** [Phase 1 audit](HCDE_CSHARP_PHASE1_AUDIT.md) (complete)  
 **Related:** [`HCDE_CSHARP_MIGRATION.md`](HCDE_CSHARP_MIGRATION.md) · [`HCDE_NETCODE.md`](../../docs/HCDE_NETCODE.md)
 
@@ -575,11 +575,42 @@ Phase 2b is complete when **all** hold:
 | Script entry record | `MapBehaviorScriptEntry` | `ScriptPtr`, `ScriptPtr1`, `ScriptPtr2`, `ScriptPtr3` |
 | Unified behavior decode | `BinaryMapBehavior.Scripts` | `BinaryMapBehaviorDecoder` after ACS probe |
 
-## Phase 2c next slice (iteration 33)
+## Phase 2c next slice (iteration 34)
 
-1. **BEHAVIOR bytecode operands** — continue ZDoom/Skulltag PCD table (print stack, more direct specials)
-2. **HCDE.Server master advertise polish** — CLI flags for `--master`, public query snapshot fields
-3. **Commit Passed soak evidence** — refresh `validation/soak/evidence/` templates when CI secrets run green
+1. **BEHAVIOR bytecode operands** — HUD message / inventory direct specials (`MoreHudMessage`, `GiveInventoryDirectB`)
+2. **HCDE.Server playsim pump** — wire `LiveAuthoritySession` tick after map-load bootstrap
+3. **Cross-language soak gate** — require Passed evidence in release checklist when secrets configured
+
+### BEHAVIOR print stack + direct specials (Phase 2c/2d — iteration 33 step 1)
+
+| Artifact | Location | C++ reference |
+| --- | --- | --- |
+| Print stack opcodes | `AcsPcode.cs` | `PCD_PRINTNUMBER`, `PCD_PRINTCHARACTER`, `PCD_PRINTNAME` |
+| Logical/bitwise range | `MapBehaviorBytecodeWalker.cs` | `PCD_ORLOGICAL`…`PCD_RSHIFT` |
+| Direct specials | `MapBehaviorBytecodeWalker.cs` | `GiveInventoryDirect`, `ConsoleCommandDirect`, `SpawnDirect` |
+| Walk tests | `MapBehaviorBytecodeWalkerTests` | print stack + direct-special bytecode |
+
+### HCDE.Server master CLI polish (Phase 2f — iteration 33 step 2)
+
+| Artifact | Location | C++ reference |
+| --- | --- | --- |
+| CLI parser | `DedicatedServerCommandLine.cs` | `--master`, `--server-name`, `--skill`, `--no-query` |
+| Query snapshot fields | `DedicatedServerHost.BuildQuerySnapshot` | `BuildServerQuerySnapshot` player rows + game mode |
+| CLI tests | `DedicatedServerCommandLineTests` | master host/port + public query fields |
+
+### Committed soak evidence refresh (Phase 2c — iteration 33 step 3)
+
+| Artifact | Location | C++ reference |
+| --- | --- | --- |
+| Evidence prune + refresh | `CrossLanguageSoakEvidenceArchive.RefreshCommittedEvidence` | replace stale harness JSON under `validation/soak/evidence/` |
+| Template refresh test | `CrossLanguageSoakEvidenceArchiveTests` | `HCDE_REFRESH_SOAK_TEMPLATES=1` |
+| CI template upload | `.github/workflows/csharp-cross-language-soak.yml` | refresh step + committed manifest/evidence artifacts |
+
+## Phase 2c next slice (iteration 33 — delivered)
+
+1. ~~**BEHAVIOR bytecode operands**~~ — continue ZDoom/Skulltag PCD table (print stack, more direct specials)
+2. ~~**HCDE.Server master advertise polish**~~ — CLI flags for `--master`, public query snapshot fields
+3. ~~**Commit Passed soak evidence**~~ — refresh `validation/soak/evidence/` templates when CI secrets run green
 
 ### BEHAVIOR bytecode operands (Phase 2c/2d — iteration 32 step 1)
 
@@ -672,6 +703,8 @@ Do **not** port snapshot encode/decode bodies until HCIN/HCSN headers are green.
 
 **Phase 2b C# pregame stack is feature-complete for fresh dedicated joins** — loopback WAITING setup, verification-error replies, start-game, and a cross-language guest CLI/harness are in place. The remaining 2b gate is executing the harness against a real `hcdeserv` build and recording the result.
 
+**Phase 2c iteration 33** adds print-stack/direct-special PCD operand coverage, `hcdeserv` `--master` CLI with public query snapshot fields, and `RefreshCommittedEvidence` to prune/refresh committed soak templates in CI.
+
 **Phase 2c iteration 32** adds expanded ACS PCD operand skip coverage (`IfNotGoto`, `CaseGoto`, `Lspec6`), `DedicatedServerQueryResponder` + `DedicatedServerAdvertiser` on `DedicatedServerHost`, and CI validation evidence re-record when soak secrets are configured.
 
 **Phase 2c iteration 31** adds ACS PCD bytecode walk (`MapBehaviorBytecodeWalker`), `HCDE.Server` dedicated host scaffold (`DedicatedServerHost` + `hcdeserv` CLI), and cross-language soak manifest/CI artifact upload.
@@ -710,4 +743,4 @@ Do **not** port snapshot encode/decode bodies until HCIN/HCSN headers are green.
 
 **Phase 2c iteration 14** adds HCSR/HCIN apply sessions with per-player sequence/consistency tracking, idempotent snapshot handling, gap-resync policy, and injectable command sinks wired into guest/authority receive paths.
 
-Next audit checkpoint: **Phase 2c iteration 33** when additional PCD operands land or `hcdeserv` CLI exposes master advertise flags.
+Next audit checkpoint: **Phase 2c iteration 34** when HUD/inventory PCD operands land or `hcdeserv` begins authority tick pump.

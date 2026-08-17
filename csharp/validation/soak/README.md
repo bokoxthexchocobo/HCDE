@@ -27,7 +27,10 @@ Or archive directly from C#:
 
 ```csharp
 CrossLanguageSoakEvidenceArchive.RecordDefaultEvidence();
+CrossLanguageSoakEvidenceArchive.RefreshCommittedEvidence(); // prune + re-record committed templates
 ```
+
+Set `HCDE_REFRESH_SOAK_TEMPLATES=1` and run `RefreshCommittedEvidence_ReplacesStaleHarnessFiles` to refresh the committed `validation/soak/evidence/` tree (used by CI when soak secrets are configured).
 
 Evidence files land in `csharp/validation/soak/evidence/` as `{harness}_{timestamp}_{status}.json`. A rollup manifest is written to `csharp/validation/soak/manifest.json`.
 

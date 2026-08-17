@@ -36,6 +36,17 @@ jobs:
         run: |
           cd csharp
           dotnet test --no-build --filter "FullyQualifiedName~RecordValidationPassedEvidence"
+      - name: Refresh committed soak templates
+        if: ${{ secrets.HCDE_HCDESERV_PATH != '' && secrets.HCDE_IWAD_PATH != '' }}
+        env:
+          HCDE_HCDESERV_PATH: ${{ secrets.HCDE_HCDESERV_PATH }}
+          HCDE_IWAD_PATH: ${{ secrets.HCDE_IWAD_PATH }}
+          HCDE_IWAD_CRC: ${{ secrets.HCDE_IWAD_CRC }}
+          HCDE_HCDE_CLIENT_PATH: ${{ secrets.HCDE_HCDE_CLIENT_PATH }}
+          HCDE_REFRESH_SOAK_TEMPLATES: '1'
+        run: |
+          cd csharp
+          dotnet test --no-build --filter "FullyQualifiedName~RefreshCommittedEvidence_ReplacesStaleHarnessFiles"
       - name: Upload soak evidence
         if: always()
         uses: actions/upload-artifact@v4
@@ -43,3 +54,5 @@ jobs:
           name: csharp-soak-evidence
           path: |
             ${{ runner.temp }}/hcde-soak-evidence/*.json
+            csharp/validation/soak/evidence/*.json
+            csharp/validation/soak/manifest.json

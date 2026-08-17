@@ -114,4 +114,22 @@ public class CrossLanguageSoakEvidenceArchiveTests
         var manifest = File.ReadAllText(CrossLanguageSoakManifest.ResolveDefaultManifestPath());
         Assert.Contains("\"Passed\"", manifest);
     }
+
+    [Fact]
+    public void RefreshCommittedEvidence_ReplacesStaleHarnessFiles()
+    {
+        if (Environment.GetEnvironmentVariable("HCDE_REFRESH_SOAK_TEMPLATES") != "1")
+            return;
+
+        var evidenceDir = CrossLanguageSoakEvidenceArchive.ResolveDefaultEvidenceDirectory();
+        Directory.CreateDirectory(evidenceDir);
+        var stalePath = Path.Combine(evidenceDir, "pregame_guest_smoke_19990101_000000_Skipped.json");
+        File.WriteAllText(stalePath, "{}");
+
+        var files = CrossLanguageSoakEvidenceArchive.RefreshCommittedEvidence();
+        Assert.Equal(2, files.Count);
+        Assert.False(File.Exists(stalePath));
+        Assert.All(files, path => Assert.StartsWith(evidenceDir, Path.GetDirectoryName(path)!));
+        Assert.True(File.Exists(CrossLanguageSoakManifest.ResolveDefaultManifestPath()));
+    }
 }
