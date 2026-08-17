@@ -47,6 +47,17 @@ jobs:
         run: |
           cd csharp
           dotnet test --no-build --filter "FullyQualifiedName~RefreshCommittedEvidence_ReplacesStaleHarnessFiles"
+      - name: Verify Passed manifest after refresh
+        if: ${{ secrets.HCDE_HCDESERV_PATH != '' && secrets.HCDE_IWAD_PATH != '' }}
+        env:
+          HCDE_HCDESERV_PATH: ${{ secrets.HCDE_HCDESERV_PATH }}
+          HCDE_IWAD_PATH: ${{ secrets.HCDE_IWAD_PATH }}
+          HCDE_IWAD_CRC: ${{ secrets.HCDE_IWAD_CRC }}
+          HCDE_HCDE_CLIENT_PATH: ${{ secrets.HCDE_HCDE_CLIENT_PATH }}
+          HCDE_RECORD_PASSED_VALIDATION_EVIDENCE: '1'
+        run: |
+          cd csharp
+          dotnet test --no-build --filter "FullyQualifiedName~TryRecordPassedValidationEvidence_PassesGateWhenBinariesPresent"
       - name: Enforce Passed soak gate
         if: ${{ secrets.HCDE_HCDESERV_PATH != '' && secrets.HCDE_IWAD_PATH != '' }}
         env:

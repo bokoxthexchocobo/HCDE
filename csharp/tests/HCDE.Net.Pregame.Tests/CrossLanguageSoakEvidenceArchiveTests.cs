@@ -116,6 +116,32 @@ public class CrossLanguageSoakEvidenceArchiveTests
     }
 
     [Fact]
+    public void TryRecordPassedValidationEvidence_ReturnsNotRequiredWhenSecretsMissing()
+    {
+        if (CrossLanguageSoakGate.AreSoakSecretsConfigured())
+            return;
+
+        var result = CrossLanguageSoakEvidenceArchive.TryRecordPassedValidationEvidence();
+        Assert.Equal(CrossLanguageSoakGateStatus.NotRequired, result.Status);
+    }
+
+    [Fact]
+    public void TryRecordPassedValidationEvidence_PassesGateWhenBinariesPresent()
+    {
+        if (!CrossLanguageSoakGate.AreSoakSecretsConfigured())
+            return;
+
+        if (Environment.GetEnvironmentVariable("HCDE_RECORD_PASSED_VALIDATION_EVIDENCE") != "1")
+            return;
+
+        var result = CrossLanguageSoakEvidenceArchive.TryRecordPassedValidationEvidence();
+        Assert.Equal(CrossLanguageSoakGateStatus.Passed, result.Status);
+        Assert.True(File.Exists(CrossLanguageSoakManifest.ResolveDefaultManifestPath()));
+        var manifest = File.ReadAllText(CrossLanguageSoakManifest.ResolveDefaultManifestPath());
+        Assert.Contains("\"Passed\"", manifest);
+    }
+
+    [Fact]
     public void RefreshCommittedEvidence_ReplacesStaleHarnessFiles()
     {
         if (Environment.GetEnvironmentVariable("HCDE_REFRESH_SOAK_TEMPLATES") != "1")

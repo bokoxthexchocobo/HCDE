@@ -54,6 +54,19 @@ public static class CrossLanguageSoakEvidenceArchive
         return RecordEvidence(evidenceDirectory, repositoryRoot);
     }
 
+    public static CrossLanguageSoakGateResult TryRecordPassedValidationEvidence(string? repositoryRoot = null)
+    {
+        if (!CrossLanguageSoakGate.AreSoakSecretsConfigured())
+        {
+            return new CrossLanguageSoakGateResult(
+                CrossLanguageSoakGateStatus.NotRequired,
+                "soak secrets not configured");
+        }
+
+        RefreshCommittedEvidence(repositoryRoot);
+        return CrossLanguageSoakGate.Evaluate(repositoryRoot, requireConfiguredSecrets: true);
+    }
+
     public static void PruneHarnessEvidenceFiles(string evidenceDirectory)
     {
         if (!Directory.Exists(evidenceDirectory))
