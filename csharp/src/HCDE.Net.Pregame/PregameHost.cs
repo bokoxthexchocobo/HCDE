@@ -416,6 +416,42 @@ public sealed class PregameHost
         return new LiveAuthoritySession(_transport, _options.GameId, authoritySlot, _options.MaxClients);
     }
 
+    public bool TryCreateBootstrappedLiveAuthoritySession(
+        ReadOnlySpan<byte> wad,
+        out LiveAuthoritySession? session,
+        out string? rejectReason,
+        bool replicateSectorMetadata = true)
+    {
+        session = TryCreateLiveAuthoritySession();
+        if (session is null)
+        {
+            rejectReason = "start-game-not-ready";
+            return false;
+        }
+
+        var mapName = _options.Session.MapLoad.MapName;
+        if (string.IsNullOrWhiteSpace(mapName))
+        {
+            session = null;
+            rejectReason = "map-name-missing";
+            return false;
+        }
+
+        if (!AuthorityMapLoadBootstrap.TryBootstrapAuthorityWorldState(
+                session,
+                wad,
+                mapName,
+                out rejectReason,
+                _options.Session.MapLoad.RngSeed,
+                replicateSectorMetadata))
+        {
+            session = null;
+            return false;
+        }
+
+        return true;
+    }
+
     public void PumpLiveClients(ulong nowMilliseconds, LiveAuthoritySession session)
     {
         session.AdvanceTick();

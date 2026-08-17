@@ -21,6 +21,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\HCDE.MapLoader.Tests\HCDE.MapLoader.Tests.csproj" />
     <ProjectReference Include="..\..\src\HCDE.Net.Pregame\HCDE.Net.Pregame.csproj" />
     <ProjectReference Include="..\..\src\HCDE.Net.Transport\HCDE.Net.Transport.csproj" />
   </ItemGroup>
