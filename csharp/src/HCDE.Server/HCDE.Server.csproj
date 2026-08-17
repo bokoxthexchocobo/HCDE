@@ -1,0 +1,18 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <ItemGroup>
+    <ProjectReference Include="..\HCDE.MapLoader\HCDE.MapLoader.csproj" />
+    <ProjectReference Include="..\HCDE.Net.Pregame\HCDE.Net.Pregame.csproj" />
+    <ProjectReference Include="..\HCDE.Net.Transport\HCDE.Net.Transport.csproj" />
+  </ItemGroup>
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net8.0</TargetFramework>
+    <AssemblyName>hcdeserv</AssemblyName>
+    <RootNamespace>HCDE.Server</RootNamespace>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+</Project>
