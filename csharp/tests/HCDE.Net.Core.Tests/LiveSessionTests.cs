@@ -106,6 +106,8 @@ public class LiveSessionTests
         Assert.Equal(160, sector.LightLevel);
         Assert.True(guestStore.Players.TryGetValue(0, out var player));
         Assert.Equal(100, player.Health);
+        Assert.True(guestStore.Actors.TryGetValue(1, out var actor));
+        Assert.Equal(1, actor.ClassId);
         Assert.True(guestChecksum.Ring.TryFind((int)tailSections!.Value.ChecksumGameTic, out _));
     }
 

@@ -93,6 +93,20 @@ public sealed class GuestWorldStateStore : IWorldDeltaApplySink, IActorDeltaAppl
         state.Special = special;
     }
 
+    public void SeedActor(uint actorId, ushort classId, short health = 100, byte category = 0, byte flags = 0)
+    {
+        if (!_actors.TryGetValue(actorId, out var actor))
+        {
+            actor = new GuestActorState { ActorId = actorId };
+            _actors[actorId] = actor;
+        }
+
+        actor.ClassId = classId;
+        actor.Health = health;
+        actor.Category = category;
+        actor.Flags = flags;
+    }
+
     public void SeedPlayer(byte playerNum, short health = 100, bool onGround = true)
     {
         if (!_players.TryGetValue(playerNum, out var player))

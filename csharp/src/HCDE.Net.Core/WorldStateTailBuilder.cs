@@ -64,19 +64,36 @@ public static class WorldStateTailBuilder
                 sector.Special);
         }
 
+        var actorDeltas = new ActorDeltaRecord[store.Actors.Count];
+        var actorIndex = 0;
+        foreach (var actor in store.Actors.Values.OrderBy(static a => a.ActorId))
+        {
+            actorDeltas[actorIndex++] = new ActorDeltaRecord
+            {
+                ActorId = actor.ActorId,
+                ClassId = actor.ClassId,
+                FieldMask = (ushort)(LiveConstants.ActorDeltaFieldCategory
+                    | LiveConstants.ActorDeltaFieldFlags
+                    | LiveConstants.ActorDeltaFieldHealth),
+                Category = actor.Category,
+                Flags = actor.Flags,
+                Health = actor.Health,
+            };
+        }
+
         return ServerSnapshotTailCodec.WriteCoopShipping(
             tail,
             gameTic,
             poses,
             sectors,
-            ReadOnlySpan<ActorDeltaRecord>.Empty,
+            actorDeltas,
             ReadOnlySpan<uint>.Empty,
             default,
             checksumHashes);
     }
 
     public static bool HasWorldDeltaPayload(GuestWorldStateStore store) =>
-        store.Players.Count > 0 || store.Sectors.Count > 0;
+        store.Players.Count > 0 || store.Sectors.Count > 0 || store.Actors.Count > 0;
 
     public static WorldStateTailBuildResult TryBuildCoopTailFromStore(
         Span<byte> tail,

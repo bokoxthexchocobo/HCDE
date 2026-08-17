@@ -29,6 +29,7 @@ public static class GuestWorldStateBootstrap
                 continue;
 
             store.SeedPlayer((byte)(thing.Type - 1));
+            store.SeedActor((uint)thing.Type, classId: (ushort)thing.Type);
             count++;
         }
 

@@ -19,4 +19,13 @@ public class SnapshotChecksumMismatchPolicyTests
             result,
             SnapshotChecksumMismatchPolicyKind.IgnoreWhenLocalBucketMissing));
     }
+
+    [Fact]
+    public void ShouldResyncNetState_ReturnsTrueWhenComparedMismatch()
+    {
+        var result = new SnapshotChecksumApplyResult(compared: true, mismatchCount: 1, localBucketMissing: false);
+        Assert.True(SnapshotChecksumMismatchPolicy.ShouldResyncNetState(
+            result,
+            SnapshotChecksumMismatchPolicyKind.ResyncNetStateOnMismatch));
+    }
 }

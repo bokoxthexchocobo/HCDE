@@ -63,4 +63,15 @@ public class GuestWorldStateBootstrapTests
         Assert.Equal(100, player0.Health);
         Assert.Equal(100, player1.Health);
     }
+
+    [Fact]
+    public void SeedPlayersFromMapThings_SeedsActorDeltasForPlayerStarts()
+    {
+        var things = new[] { new MapThingRecord(100, 200, 90, type: 1, options: 7) };
+        var store = new GuestWorldStateStore();
+        GuestWorldStateBootstrap.SeedPlayersFromMapThings(store, things);
+        Assert.True(store.Actors.TryGetValue(1, out var actor));
+        Assert.Equal(1, actor.ClassId);
+        Assert.Equal(100, actor.Health);
+    }
 }

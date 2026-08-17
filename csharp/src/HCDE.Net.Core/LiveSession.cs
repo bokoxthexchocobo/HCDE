@@ -24,6 +24,7 @@ public sealed class LiveGuestSession
     private int _guestWorldStateRngSeed;
     private SnapshotChecksumMismatchPolicyKind _checksumMismatchPolicy = SnapshotChecksumMismatchPolicyKind.ReportAllCompared;
     private GuestChecksumApplyState _lastChecksumApplyState;
+    private bool _needsChecksumResync;
     private ulong _negotiatedCapabilities = LiveConstants.DefaultLocalCapabilities;
     private byte _roomId;
     private uint _gameTic;
@@ -73,6 +74,8 @@ public sealed class LiveGuestSession
                 _lastChecksumApplyState.MismatchCount,
                 _lastChecksumApplyState.LocalBucketMissing),
             _checksumMismatchPolicy);
+
+    public bool NeedsChecksumResync => _needsChecksumResync;
 
     public void SetNegotiatedCapabilities(ulong negotiatedCapabilities) =>
         _negotiatedCapabilities = negotiatedCapabilities;
@@ -313,6 +316,11 @@ public sealed class LiveGuestSession
                 out var checksumResult,
                 out _);
             _lastChecksumApplyState = new GuestChecksumApplyState(checksumResult);
+            _needsChecksumResync = SnapshotChecksumMismatchPolicy.ShouldResyncNetState(
+                checksumResult,
+                _checksumMismatchPolicy);
+            if (_needsChecksumResync)
+                _netRegistry.ResetClient(_routing.ConsolePlayer);
         }
     }
 

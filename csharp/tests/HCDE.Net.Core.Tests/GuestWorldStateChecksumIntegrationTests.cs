@@ -162,6 +162,78 @@ public class GuestWorldStateChecksumIntegrationTests
     }
 
     [Fact]
+    public void GuestReceive_ResetsNetStateOnChecksumMismatchWhenPolicySet()
+    {
+        var gameId = new byte[] { 0xAA, 0xBB, 0xCC, 0xDD, 0x11, 0x22, 0x33, 0x44 };
+        const int gameTic = 7;
+        const int rngSeed = 3;
+
+        var pose = new PlayerPoseWorldDelta(
+            playerNum: 1,
+            flags: LiveConstants.ServerWorldDeltaPoseHasActor,
+            health: 90,
+            armor: 0,
+            posX: 0,
+            posY: 0,
+            posZ: 0,
+            velX: 0,
+            velY: 0,
+            velZ: 0,
+            yawBams: 0,
+            pitchBams: 0);
+
+        var authorityStore = new GuestWorldStateStore();
+        authorityStore.ApplyPose(1, pose, sequenceAck: 0);
+        var authoritySession = new SnapshotChecksumSession();
+        SnapshotChecksumPlaysimInputs.ComputeAndStore(authoritySession, authorityStore, gameTic, rngSeed);
+        Assert.True(authoritySession.Ring.TryFind(gameTic, out var remoteHashes));
+        remoteHashes[0] ^= 0xFFFF;
+
+        Span<byte> tail = stackalloc byte[512];
+        var tailWritten = ServerSnapshotTailCodec.WriteCoopShipping(
+            tail,
+            gameTic: (uint)gameTic,
+            poses: new[] { pose },
+            sectors: ReadOnlySpan<SectorWorldDelta>.Empty,
+            actorDeltas: ReadOnlySpan<ActorDeltaRecord>.Empty,
+            coopDeadSpawnIndices: ReadOnlySpan<uint>.Empty,
+            authorityEvents: default,
+            checksumHashes: remoteHashes);
+
+        using var authorityTransport = new HCDE.Net.Transport.UdpTransport();
+        using var guestTransport = new HCDE.Net.Transport.UdpTransport();
+        authorityTransport.Bind(0);
+        guestTransport.Bind(0);
+        authorityTransport.SetNonBlocking(true);
+        guestTransport.SetNonBlocking(true);
+
+        var authorityEndpoint = new HCDE.Net.Transport.NetworkEndpoint(System.Net.IPAddress.Loopback, authorityTransport.BoundPort);
+        var guestStore = new GuestWorldStateStore();
+        guestStore.ApplyPose(1, pose, sequenceAck: 0);
+        var guestSession = new SnapshotChecksumSession();
+        SnapshotChecksumPlaysimInputs.ComputeAndStore(guestSession, guestStore, gameTic, rngSeed);
+
+        var guestEndpoint = new HCDE.Net.Transport.NetworkEndpoint(System.Net.IPAddress.Loopback, guestTransport.BoundPort);
+
+        var guest = new LiveGuestSession(guestTransport, gameId, authorityEndpoint, guestPlayerSlot: 1, authoritySlot: 0, maxClients: 4);
+        guest.ChecksumMismatchPolicy = SnapshotChecksumMismatchPolicyKind.ResyncNetStateOnMismatch;
+        guest.SetGuestWorldState(guestStore, guestSession, rngSeed);
+        guest.NetRegistry.GetOrCreate(1).CurrentSequence = 42;
+
+        var gameplay = new LiveGameplayEndpoint(authorityTransport, gameId);
+        Assert.True(gameplay.TrySendServerSnapshotWithExternalTail(
+            guestEndpoint,
+            roomId: 0,
+            gameTic: (uint)gameTic,
+            playerNum: 1,
+            externalTail: tail[..tailWritten]));
+
+        Assert.True(guest.TryReceiveServerSnapshot(out _, out _, out _));
+        Assert.True(guest.NeedsChecksumResync);
+        Assert.Equal(0, guest.NetRegistry.GetOrCreate(1).CurrentSequence);
+    }
+
+    [Fact]
     public void GuestReceive_AppliesSectorOnlyWorldDelta()
     {
         var store = new GuestWorldStateStore();

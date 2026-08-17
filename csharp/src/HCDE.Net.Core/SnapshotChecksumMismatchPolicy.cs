@@ -4,6 +4,7 @@ public enum SnapshotChecksumMismatchPolicyKind
 {
     ReportAllCompared,
     IgnoreWhenLocalBucketMissing,
+    ResyncNetStateOnMismatch,
 }
 
 public readonly struct GuestChecksumApplyState
@@ -30,7 +31,17 @@ public static class SnapshotChecksumMismatchPolicy
         {
             SnapshotChecksumMismatchPolicyKind.IgnoreWhenLocalBucketMissing
                 => result.MismatchCount == 0 || result.LocalBucketMissing,
+            SnapshotChecksumMismatchPolicyKind.ResyncNetStateOnMismatch
+                => result.MismatchCount == 0,
             _ => result.MismatchCount == 0,
         };
     }
+
+    public static bool ShouldResyncNetState(
+        SnapshotChecksumApplyResult result,
+        SnapshotChecksumMismatchPolicyKind policy) =>
+        policy == SnapshotChecksumMismatchPolicyKind.ResyncNetStateOnMismatch
+        && result.Compared
+        && result.MismatchCount > 0
+        && !result.LocalBucketMissing;
 }
