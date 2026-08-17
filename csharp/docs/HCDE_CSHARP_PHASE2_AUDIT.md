@@ -544,11 +544,19 @@ Phase 2b is complete when **all** hold:
 
 **Progress by LOC:** C# is ~1.9% of HCDE-owned C++ surface area. Wire/protocol layers mirror ~55–60% of `d_net` message surface but ~0% of playsim execution.
 
-## Phase 2c next slice
+### BEHAVIOR lump probe (Phase 2c/2d — iteration 29 step 1)
 
-1. **BEHAVIOR lump decode** — UDMF/Hexen map scripts entry point
-2. **Cross-language soak evidence** — record pregame + Step 12 runs when `hcdeserv`/IWAD available
-3. **Authority map-load hook** — wire `MapLoadBootstrap` into dedicated server startup path
+| Artifact | Location | C++ reference |
+| --- | --- | --- |
+| ACS BEHAVIOR probe | `MapBehaviorCodec.cs`, `BinaryMapBehaviorDecoder.cs` | `FBehavior::Init` ACS magic in `p_acs.cpp` |
+| Catalog BEHAVIOR lump | `MapLumpNames.BinaryMapLumpOrder` | `ML_BEHAVIOR` in `doomdata.h` |
+| Unified decode extension | `BinaryMapDecoder` + `BinaryMapBehavior` | optional Hexen scripts entry point |
+
+## Phase 2c next slice (iteration 29 in progress)
+
+1. ~~**BEHAVIOR lump decode**~~ — ACS magic probe + optional `BinaryMap.Behavior` (step 1 done)
+2. **Authority map-load hook** — wire `MapLoadBootstrap` into `LiveAuthoritySession` (step 2)
+3. **Cross-language soak evidence** — combined soak suite runner (step 3)
 
 ## Phase 2b next slice
 
