@@ -1,7 +1,7 @@
 # HCDE C# Migration — Phase 2 Principal Audit
 
 **Last updated:** 2026-08-17  
-**Status:** In progress — Phase **2c** live protocol codecs (iteration 39 step 2). Phase **2b** verification errors, start-game, bootstrap/resync, and cross-language harness complete. Phase **2b** verification errors, start-game, bootstrap/resync, and cross-language harness complete.  
+**Status:** In progress — Phase **2c** live protocol codecs (iteration 39 complete). Phase **2b** verification errors, start-game, bootstrap/resync, and cross-language harness complete. Phase **2b** verification errors, start-game, bootstrap/resync, and cross-language harness complete.  
 **Prerequisite:** [Phase 1 audit](HCDE_CSHARP_PHASE1_AUDIT.md) (complete)  
 **Related:** [`HCDE_CSHARP_MIGRATION.md`](HCDE_CSHARP_MIGRATION.md) · [`HCDE_NETCODE.md`](../../docs/HCDE_NETCODE.md)
 
@@ -605,11 +605,27 @@ Phase 2b is complete when **all** hold:
 2. ~~**Authority playsim tick polish**~~ — coop dead-spawn tails on authority pump, guest gap resync wiring
 3. ~~**Cross-language soak evidence**~~ — weekly Passed template commit automation from artifact bundle
 
-## Phase 2c next slice (iteration 39)
+## Phase 2c next slice (iteration 39 — delivered)
 
 1. ~~**BEHAVIOR bytecode operands**~~ — script array PCDs, more ZDoom stack ops
 2. ~~**Authority playsim tick polish**~~ — invasion tail on authority pump, guest presentation echo apply wiring
-3. **Cross-language soak evidence** — manifest staleness gate for committed templates
+3. ~~**Cross-language soak evidence**~~ — manifest staleness gate for committed templates
+
+## Phase 2c next slice (iteration 40)
+
+1. **BEHAVIOR bytecode operands** — script char-range PCDs, more Eternity stack ops
+2. **Authority playsim tick polish** — authority event tails on pump, guest invasion apply wiring
+3. **Cross-language soak evidence** — evidence file freshness gate for committed templates
+
+### Manifest staleness gate (Phase 2c — iteration 39 step 3)
+
+| Artifact | Location | C++ reference |
+| --- | --- | --- |
+| Manifest reader | `CrossLanguageSoakManifest.TryReadRecordedAtUtc` | `validation/soak/manifest.json` freshness |
+| Staleness policy | `CrossLanguageSoakGate.EvaluateManifestStaleness` | reject manifests older than max age |
+| Gate integration | `CrossLanguageSoakGate.Evaluate` | staleness check after Passed status |
+| Gate tests | `CrossLanguageSoakGateTests` | stale + fresh manifest coverage |
+| Release checklist | `validation/soak/README.md` | `HCDE_SOAK_MANIFEST_MAX_AGE_DAYS` docs |
 
 ### Invasion tail + guest presentation echo (Phase 2c — iteration 39 step 2)
 
@@ -895,6 +911,8 @@ Do **not** port snapshot encode/decode bodies until HCIN/HCSN headers are green.
 
 **Phase 2b C# pregame stack is feature-complete for fresh dedicated joins** — loopback WAITING setup, verification-error replies, start-game, and a cross-language guest CLI/harness are in place. The remaining 2b gate is executing the harness against a real `hcdeserv` build and recording the result.
 
+**Phase 2c iteration 39** adds script-array/stack PCD operand coverage, HCIV invasion tails on authority pump with guest presentation echo apply wiring, and manifest staleness enforcement in the Passed soak gate.
+
 **Phase 2c iteration 38** adds map/world array and translation-range PCD operand coverage, HCDS coop dead-spawn tails on authority pump with guest gap resync wiring, and weekly `ApplyExportedTemplates` CI apply+commit automation for Passed soak templates.
 
 **Phase 2c iteration 37** adds call/discard/global-array PCD operand coverage, HCDA actor delta tails on authority pump with checksum mismatch resync policy, and `ExportCommittedTemplates` CI artifact bundles for committing Passed soak templates.
@@ -945,4 +963,4 @@ Do **not** port snapshot encode/decode bodies until HCIN/HCSN headers are green.
 
 **Phase 2c iteration 14** adds HCSR/HCIN apply sessions with per-player sequence/consistency tracking, idempotent snapshot handling, gap-resync policy, and injectable command sinks wired into guest/authority receive paths.
 
-Next audit checkpoint: **Phase 2c iteration 39** when script-array PCD operands land or authority invasion tail builders wire into the tick pump.
+Next audit checkpoint: **Phase 2c iteration 40** when script char-range PCD operands land or authority event tail builders wire into the tick pump.
