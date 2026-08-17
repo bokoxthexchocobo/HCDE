@@ -52,5 +52,6 @@ public static class MapLumpNames
         Sectors,
         Reject,
         Blockmap,
+        Behavior,
     ];
 }

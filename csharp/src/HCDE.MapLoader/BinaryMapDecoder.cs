@@ -6,18 +6,21 @@ public readonly struct BinaryMap
         BinaryMapRecords core,
         BinaryMapGeometry geometry,
         BinaryMapSurface surface,
-        BinaryMapCollision collision)
+        BinaryMapCollision collision,
+        BinaryMapBehavior behavior)
     {
         Core = core;
         Geometry = geometry;
         Surface = surface;
         Collision = collision;
+        Behavior = behavior;
     }
 
     public BinaryMapRecords Core { get; }
     public BinaryMapGeometry Geometry { get; }
     public BinaryMapSurface Surface { get; }
     public BinaryMapCollision Collision { get; }
+    public BinaryMapBehavior Behavior { get; }
 }
 
 public static class BinaryMapDecoder
@@ -51,12 +54,13 @@ public static class BinaryMapDecoder
 
         if (!BinaryMapGeometryDecoder.TryDecode(wad, catalog, out var geometry, out rejectReason)
             || !BinaryMapSurfaceDecoder.TryDecode(wad, catalog, out var surface, out rejectReason)
-            || !BinaryMapCollisionDecoder.TryDecode(wad, catalog, core.Sectors.Length, out var collision, out rejectReason))
+            || !BinaryMapCollisionDecoder.TryDecode(wad, catalog, core.Sectors.Length, out var collision, out rejectReason)
+            || !BinaryMapBehaviorDecoder.TryDecode(wad, catalog, out var behavior, out rejectReason))
         {
             return false;
         }
 
-        map = new BinaryMap(core, geometry, surface, collision);
+        map = new BinaryMap(core, geometry, surface, collision, behavior);
         return true;
     }
 }

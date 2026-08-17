@@ -19,6 +19,16 @@ public class BinaryMapDecoderTests
         Assert.Single(map.Surface.Subsectors);
         Assert.Equal(1, map.Collision.Reject.SectorCount);
         Assert.Equal(1, map.Collision.Blockmap.Header.Width);
+        Assert.False(map.Behavior.IsPresent);
+    }
+
+    [Fact]
+    public void TryReadMap_DecodesHexenBehaviorWhenPresent()
+    {
+        var wad = TestWadBuilder.BuildMinimalMapWad("MAP01", includeBehavior: true);
+        Assert.True(BinaryMapDecoder.TryReadMap(wad, "MAP01", out var map, out _, out _));
+        Assert.True(map.Behavior.IsPresent);
+        Assert.Equal(MapBehaviorFormat.AcsOld, map.Behavior.Format);
     }
 
     [Fact]

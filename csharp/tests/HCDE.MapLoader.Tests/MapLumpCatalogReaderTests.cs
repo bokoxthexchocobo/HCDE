@@ -5,7 +5,7 @@ namespace HCDE.MapLoader.Tests;
 
 public static class TestWadBuilder
 {
-    public static byte[] BuildMinimalMapWad(string mapName, bool udmfTextMap = false)
+    public static byte[] BuildMinimalMapWad(string mapName, bool udmfTextMap = false, bool includeBehavior = false)
     {
         var lumps = new List<(string Name, byte[] Data)>
         {
@@ -28,6 +28,8 @@ public static class TestWadBuilder
             lumps.Add((MapLumpNames.Sectors, BuildSectorLump(0, 128, "FLOOR1_1", "CEIL1_1", 160, 0, 1)));
             lumps.Add((MapLumpNames.Reject, BuildRejectLump(1)));
             lumps.Add((MapLumpNames.Blockmap, BuildBlockmapLump(0, 0, 1, 1)));
+            if (includeBehavior)
+                lumps.Add((MapLumpNames.Behavior, BuildBehaviorLump(MapBehaviorFormat.AcsOld)));
         }
 
         var headerSize = WadArchiveReader.HeaderSize;
@@ -148,6 +150,23 @@ public static class TestWadBuilder
         BinaryPrimitives.WriteUInt16LittleEndian(lump.AsSpan(6, 2), height);
         BinaryPrimitives.WriteInt16LittleEndian(lump.AsSpan(8, 2), 5);
         BinaryPrimitives.WriteInt16LittleEndian(lump.AsSpan(10, 2), -1);
+        return lump;
+    }
+
+    public static byte[] BuildBehaviorLump(MapBehaviorFormat format)
+    {
+        var lump = new byte[MapBehaviorRecord.MinLumpSize];
+        lump[0] = (byte)'A';
+        lump[1] = (byte)'C';
+        lump[2] = (byte)'S';
+        lump[3] = format switch
+        {
+            MapBehaviorFormat.AcsOld => 0,
+            MapBehaviorFormat.AcsEnhanced => (byte)'E',
+            MapBehaviorFormat.AcsLittleEnhanced => (byte)'e',
+            _ => byte.MaxValue,
+        };
+        BinaryPrimitives.WriteUInt32LittleEndian(lump.AsSpan(4, 4), 24);
         return lump;
     }
 
