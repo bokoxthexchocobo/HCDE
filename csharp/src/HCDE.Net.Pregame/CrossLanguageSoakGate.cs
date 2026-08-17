@@ -64,4 +64,7 @@ public static class CrossLanguageSoakGate
 
         return new CrossLanguageSoakGateResult(CrossLanguageSoakGateStatus.Passed);
     }
+
+    public static bool ShouldEnforceInCi() =>
+        string.Equals(Environment.GetEnvironmentVariable("HCDE_ENFORCE_SOAK_GATE"), "1", StringComparison.Ordinal);
 }

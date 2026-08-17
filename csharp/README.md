@@ -66,7 +66,7 @@ Outputs: `hcdemaster` and `hcdercon`.
 
 ## Validation
 
-Managed wire compatibility is gated by `dotnet test` (257 tests; CI via `.github/workflows/csharp.yml`). Optional cross-language soak CI runs `FullyQualifiedName~CrossLanguageSoak` when `HCDE_HCDESERV_PATH` / `HCDE_IWAD_PATH` secrets are configured, and enforces a Passed manifest gate when those secrets are present. Cross-language checks live under `validation/`:
+Managed wire compatibility is gated by `dotnet test` (261 tests; CI via `.github/workflows/csharp.yml`). Optional cross-language soak CI runs `FullyQualifiedName~CrossLanguageSoak` when `HCDE_HCDESERV_PATH` / `HCDE_IWAD_PATH` secrets are configured; both workflows enforce a Passed manifest gate when those secrets are present. Cross-language checks live under `validation/`:
 
 | Harness | Purpose |
 | --- | --- |
@@ -103,7 +103,7 @@ csharp/
     HCDE.MapLoader/      WAD directory + binary map lump decode (Phase 2d)
     HCDE.PregameGuest.Cli/  hcde-pregame-guest CLI
   tests/
-    HCDE.*.Tests/        xUnit regression tests (257 passing)
+    HCDE.*.Tests/        xUnit regression tests (261 passing)
 ```
 
 ## Migration phases

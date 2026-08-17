@@ -57,6 +57,21 @@ public class CrossLanguageSoakGateTests
         }
     }
 
+    [Fact]
+    public void ShouldEnforceInCi_ReturnsTrueWhenEnvSet()
+    {
+        var previous = Environment.GetEnvironmentVariable("HCDE_ENFORCE_SOAK_GATE");
+        try
+        {
+            Environment.SetEnvironmentVariable("HCDE_ENFORCE_SOAK_GATE", "1");
+            Assert.True(CrossLanguageSoakGate.ShouldEnforceInCi());
+        }
+        finally
+        {
+            Environment.SetEnvironmentVariable("HCDE_ENFORCE_SOAK_GATE", previous);
+        }
+    }
+
     private static bool AreSoakSecretsConfigured()
     {
         return CrossLanguageSoakGate.AreSoakSecretsConfigured();

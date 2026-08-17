@@ -48,6 +48,8 @@ In CI (after evidence refresh), run:
 HCDE_ENFORCE_SOAK_GATE=1 dotnet test --filter CrossLanguageSoakGateTests
 ```
 
+The main `csharp.yml` workflow also runs `CrossLanguageSoakGateTests` with `HCDE_ENFORCE_SOAK_GATE=1` when `HCDE_HCDESERV_PATH` and `HCDE_IWAD_PATH` repository secrets are configured.
+
 When soak secrets are absent, the gate returns `NotRequired` and does not block merges.
 
 When binaries are absent, harnesses record `Skipped` status with a reason instead of failing the xUnit suite.
