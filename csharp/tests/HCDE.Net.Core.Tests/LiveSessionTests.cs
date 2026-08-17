@@ -355,4 +355,93 @@ public class LiveSessionTests
         Assert.NotNull(guest.PresentationEchoState!.LastInventoryItems);
         Assert.NotEmpty(guest.PresentationEchoState.LastInventoryItems!);
     }
+
+    [Fact]
+    public void AuthorityPump_SendsAuthorityEventTailViaPump()
+    {
+        var wad = HCDE.MapLoader.Tests.TestWadBuilder.BuildMinimalMapWad("MAP01");
+        var gameId = new byte[] { 0xAA, 0xBB, 0xCC, 0xDD, 0x11, 0x22, 0x33, 0x44 };
+
+        using var authorityTransport = new UdpTransport();
+        using var guestTransport = new UdpTransport();
+        authorityTransport.Bind(0);
+        guestTransport.Bind(0);
+        authorityTransport.SetNonBlocking(true);
+        guestTransport.SetNonBlocking(true);
+
+        var authorityEndpoint = new NetworkEndpoint(System.Net.IPAddress.Loopback, authorityTransport.BoundPort);
+        var guestEndpoint = new NetworkEndpoint(System.Net.IPAddress.Loopback, guestTransport.BoundPort);
+
+        var authority = new LiveAuthoritySession(authorityTransport, gameId, authoritySlot: 0, maxClients: 4);
+        var authorityStore = new GuestWorldStateStore();
+        Assert.True(MapLoadBootstrap.TrySeedGuestWorldState(wad, "MAP01", authorityStore, out _));
+        authorityStore.QueueAuthorityEvent(AuthorityEventsCodec.CreateSpawnExample("Imp", actorId: 55));
+        authority.SetAuthorityWorldState(authorityStore, new SnapshotChecksumSession());
+        authority.TrackClient(guestEndpoint, clientSlot: 1);
+
+        var guest = new LiveGuestSession(
+            guestTransport,
+            gameId,
+            authorityEndpoint,
+            guestPlayerSlot: 1,
+            authoritySlot: 0,
+            maxClients: 4);
+
+        authority.Pump((ulong)Environment.TickCount64);
+
+        Assert.True(guest.TryReceiveAuthorityControl(out _));
+        Assert.True(guest.TryReceiveServerSnapshot(out _, out _, out var tailSections));
+        Assert.NotNull(tailSections);
+        Assert.NotNull(tailSections!.Value.AuthorityEventRecords);
+        Assert.Single(tailSections.Value.AuthorityEventRecords!);
+        Assert.Equal(55u, tailSections.Value.AuthorityEventRecords![0].ActorId);
+    }
+
+    [Fact]
+    public void GuestAppliesInvasionSnapshotWhenWorldStateWired()
+    {
+        var gameId = new byte[] { 0xAA, 0xBB, 0xCC, 0xDD, 0x11, 0x22, 0x33, 0x44 };
+
+        using var authorityTransport = new UdpTransport();
+        using var guestTransport = new UdpTransport();
+        authorityTransport.Bind(0);
+        guestTransport.Bind(0);
+        authorityTransport.SetNonBlocking(true);
+        guestTransport.SetNonBlocking(true);
+
+        var authorityEndpoint = new NetworkEndpoint(System.Net.IPAddress.Loopback, authorityTransport.BoundPort);
+        var guestEndpoint = new NetworkEndpoint(System.Net.IPAddress.Loopback, guestTransport.BoundPort);
+
+        var guestStore = new GuestWorldStateStore();
+        var guest = new LiveGuestSession(
+            guestTransport,
+            gameId,
+            authorityEndpoint,
+            guestPlayerSlot: 1,
+            authoritySlot: 0,
+            maxClients: 4);
+        guest.SetNegotiatedCapabilities(LiveConstants.DefaultLocalCapabilities);
+        guest.SetGuestWorldState(guestStore, new SnapshotChecksumSession());
+
+        var authority = new LiveAuthoritySession(authorityTransport, gameId, authoritySlot: 0, maxClients: 4);
+        authority.SetAuthorityInvasionSnapshot(new InvasionSnapshotHeader(
+            flags: 0,
+            state: LiveConstants.InvasionStateCountdown,
+            stateTics: 5,
+            wave: 2,
+            maxWaves: 10,
+            waveBudget: 8,
+            waveSpawned: 1,
+            waveCleared: 0,
+            activeMonsters: 4));
+        authority.TrackClient(guestEndpoint, clientSlot: 1);
+        authority.Pump((ulong)Environment.TickCount64);
+
+        Assert.True(guest.TryReceiveAuthorityControl(out _));
+        Assert.True(guest.TryReceiveServerSnapshot(out _, out _, out _));
+        Assert.NotNull(guest.InvasionState);
+        Assert.Equal(1, guest.InvasionState!.ApplyMirrorCalls);
+        Assert.Equal(2, guest.InvasionState.MirrorState.Wave);
+        Assert.Equal(LiveConstants.InvasionStateCountdown, guest.InvasionState.MirrorState.State);
+    }
 }

@@ -36,12 +36,14 @@ public sealed class GuestWorldStateStore : IWorldDeltaApplySink, IActorDeltaAppl
     private readonly Dictionary<uint, GuestActorState> _actors = new();
     private readonly List<uint> _pendingCoopDeadSpawns = new();
     private readonly HashSet<uint> _retiredCoopDeadSpawns = new();
+    private readonly List<AuthorityEventRecord> _pendingAuthorityEvents = new();
 
     public IReadOnlyDictionary<byte, GuestPlayerState> Players => _players;
     public IReadOnlyDictionary<ushort, GuestSectorState> Sectors => _sectors;
     public IReadOnlyDictionary<uint, GuestActorState> Actors => _actors;
     public IReadOnlyCollection<uint> RetiredCoopDeadSpawns => _retiredCoopDeadSpawns;
     public bool HasPendingCoopDeadSpawns => _pendingCoopDeadSpawns.Count > 0;
+    public bool HasPendingAuthorityEvents => _pendingAuthorityEvents.Count > 0;
 
     public bool ApplyPose(int recipientClientSlot, PlayerPoseWorldDelta pose, int sequenceAck)
     {
@@ -169,6 +171,19 @@ public sealed class GuestWorldStateStore : IWorldDeltaApplySink, IActorDeltaAppl
 
         var pending = _pendingCoopDeadSpawns.ToArray();
         _pendingCoopDeadSpawns.Clear();
+        return pending;
+    }
+
+    public void QueueAuthorityEvent(AuthorityEventRecord record) =>
+        _pendingAuthorityEvents.Add(record);
+
+    public AuthorityEventRecord[] TakePendingAuthorityEventsForTail()
+    {
+        if (_pendingAuthorityEvents.Count == 0)
+            return Array.Empty<AuthorityEventRecord>();
+
+        var pending = _pendingAuthorityEvents.ToArray();
+        _pendingAuthorityEvents.Clear();
         return pending;
     }
 }

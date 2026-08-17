@@ -22,6 +22,7 @@ public sealed class LiveGuestSession
     private ISnapshotChecksumMismatchSink? _checksumMismatchSink;
     private GuestWorldStateStore? _guestWorldState;
     private GuestPresentationEchoState? _presentationEchoState;
+    private GuestInvasionState? _invasionState;
     private int _guestWorldStateRngSeed;
     private SnapshotChecksumMismatchPolicyKind _checksumMismatchPolicy = SnapshotChecksumMismatchPolicyKind.ReportAllCompared;
     private GuestChecksumApplyState _lastChecksumApplyState;
@@ -94,12 +95,15 @@ public sealed class LiveGuestSession
 
     public GuestPresentationEchoState? PresentationEchoState => _presentationEchoState;
 
+    public GuestInvasionState? InvasionState => _invasionState;
+
     public void SetGuestWorldState(
         GuestWorldStateStore worldState,
         SnapshotChecksumSession checksumSession,
         int rngSeed = 0,
         ISnapshotChecksumMismatchSink? mismatchSink = null,
-        GuestPresentationEchoState? presentationEchoState = null)
+        GuestPresentationEchoState? presentationEchoState = null,
+        GuestInvasionState? invasionState = null)
     {
         _guestWorldState = worldState;
         _guestWorldStateRngSeed = rngSeed;
@@ -109,6 +113,8 @@ public sealed class LiveGuestSession
         _coopDeadSpawnsSink = worldState;
         _presentationEchoState = presentationEchoState ?? new GuestPresentationEchoState();
         _echoSink = _presentationEchoState;
+        _invasionState = invasionState ?? new GuestInvasionState();
+        _invasionSink = _invasionState;
     }
 
     public void SetApplySinks(

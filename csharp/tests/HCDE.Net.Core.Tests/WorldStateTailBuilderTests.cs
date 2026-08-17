@@ -63,6 +63,22 @@ public class WorldStateTailBuilderTests
     }
 
     [Fact]
+    public void WriteCoopTailFromStore_IncludesPendingAuthorityEvents()
+    {
+        var store = new GuestWorldStateStore();
+        store.QueueAuthorityEvent(AuthorityEventsCodec.CreateSpawnExample("Imp", actorId: 77));
+
+        Span<byte> tail = stackalloc byte[512];
+        var written = WorldStateTailBuilder.WriteCoopTailFromStore(tail, store, gameTic: 5);
+        Assert.True(written > 0);
+        Assert.True(ServerSnapshotTailWalker.TryWalk(tail[..written], out var sections, out _, out _));
+        Assert.NotNull(sections.AuthorityEventRecords);
+        Assert.Single(sections.AuthorityEventRecords!);
+        Assert.Equal(77u, sections.AuthorityEventRecords![0].ActorId);
+        Assert.False(store.HasPendingAuthorityEvents);
+    }
+
+    [Fact]
     public void TryBuildInvasionTail_WritesHcivBeforeEcho()
     {
         var invasionHeader = new InvasionSnapshotHeader(
