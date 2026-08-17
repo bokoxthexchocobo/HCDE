@@ -196,10 +196,19 @@ public static class MapBehaviorBytecodeWalker
         >= (int)AcsPcode.AndLogical and <= (int)AcsPcode.UnaryMinus => 0,
         (int)AcsPcode.LineSide or (int)AcsPcode.ScriptWait => 0,
         (int)AcsPcode.ClearLineSpecial => 0,
-        (int)AcsPcode.BeginPrint or (int)AcsPcode.EndPrint => 0,
-        (int)AcsPcode.PrintString => 0,
-        >= (int)AcsPcode.PlayerCount and <= (int)AcsPcode.EndPrintBold => 0,
+        (int)AcsPcode.BeginPrint or (int)AcsPcode.EndPrint or (int)AcsPcode.EndPrintBold => 0,
+        (int)AcsPcode.PrintString or (int)AcsPcode.PrintNumber or (int)AcsPcode.PrintCharacter
+            or (int)AcsPcode.PrintFixed or (int)AcsPcode.PrintLocalized or (int)AcsPcode.PrintName => 0,
+        >= (int)AcsPcode.PlayerCount and <= (int)AcsPcode.ThingSound => 0,
+        >= (int)AcsPcode.ActivatorSound and <= (int)AcsPcode.LocalAmbientSound => 0,
         (int)AcsPcode.Lspec6 or (int)AcsPcode.Lspec6Direct => 0,
+        (int)AcsPcode.SpawnDirect => 6,
+        (int)AcsPcode.SpawnSpotDirect => 4,
+        (int)AcsPcode.ConsoleCommandDirect => 3,
+        (int)AcsPcode.ConsoleCommand => 0,
+        (int)AcsPcode.GiveInventoryDirect or (int)AcsPcode.TakeInventoryDirect
+            or (int)AcsPcode.CheckInventoryDirect => 2,
+        (int)AcsPcode.SetMusicDirect => 3,
         _ => UnknownOperandWords,
     };
 
@@ -224,10 +233,19 @@ public static class MapBehaviorBytecodeWalker
         >= (int)AcsPcode.AndLogical and <= (int)AcsPcode.UnaryMinus => 0,
         (int)AcsPcode.LineSide or (int)AcsPcode.ScriptWait => 0,
         (int)AcsPcode.ClearLineSpecial => 0,
-        (int)AcsPcode.BeginPrint or (int)AcsPcode.EndPrint => 0,
-        (int)AcsPcode.PrintString => 0,
-        >= (int)AcsPcode.PlayerCount and <= (int)AcsPcode.EndPrintBold => 0,
+        (int)AcsPcode.BeginPrint or (int)AcsPcode.EndPrint or (int)AcsPcode.EndPrintBold => 0,
+        (int)AcsPcode.PrintString or (int)AcsPcode.PrintNumber or (int)AcsPcode.PrintCharacter
+            or (int)AcsPcode.PrintFixed or (int)AcsPcode.PrintLocalized or (int)AcsPcode.PrintName => 0,
+        >= (int)AcsPcode.PlayerCount and <= (int)AcsPcode.ThingSound => 0,
+        >= (int)AcsPcode.ActivatorSound and <= (int)AcsPcode.LocalAmbientSound => 0,
         (int)AcsPcode.Lspec6 or (int)AcsPcode.Lspec6Direct => 0,
+        (int)AcsPcode.SpawnDirect => 24,
+        (int)AcsPcode.SpawnSpotDirect => 16,
+        (int)AcsPcode.ConsoleCommandDirect => 12,
+        (int)AcsPcode.ConsoleCommand => 0,
+        (int)AcsPcode.GiveInventoryDirect or (int)AcsPcode.TakeInventoryDirect
+            or (int)AcsPcode.CheckInventoryDirect => 8,
+        (int)AcsPcode.SetMusicDirect => 12,
         _ => UnknownOperandWords,
     };
 
