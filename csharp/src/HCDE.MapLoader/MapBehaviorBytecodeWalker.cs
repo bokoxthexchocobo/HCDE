@@ -229,12 +229,21 @@ public static class MapBehaviorBytecodeWalker
             or (int)AcsPcode.ModWorldArray or (int)AcsPcode.IncWorldArray
             or (int)AcsPcode.DecWorldArray => 1,
         (int)AcsPcode.PushFunction => 1,
-        (int)AcsPcode.CallStack or (int)AcsPcode.GotoStack => 0,
+        (int)AcsPcode.CallStack or (int)AcsPcode.GotoStack
+            or (int)AcsPcode.ScriptWaitNamed or (int)AcsPcode.SaveString => 0,
+        (int)AcsPcode.CallFunc => 2,
+        (int)AcsPcode.PrintScriptCharArray or (int)AcsPcode.PrintScriptCharRange
+            or (int)AcsPcode.StrCpyToScriptCharRange
+            or (int)AcsPcode.PrintMapCharRange or (int)AcsPcode.PrintWorldCharRange
+            or (int)AcsPcode.PrintGlobalCharRange
+            or (int)AcsPcode.StrCpyToMapCharRange or (int)AcsPcode.StrCpyToWorldCharRange
+            or (int)AcsPcode.StrCpyToGlobalCharRange => 0,
         (int)AcsPcode.AssignScriptArray or (int)AcsPcode.PushScriptArray
             or (int)AcsPcode.AddScriptArray or (int)AcsPcode.SubScriptArray
             or (int)AcsPcode.MulScriptArray or (int)AcsPcode.DivScriptArray
             or (int)AcsPcode.ModScriptArray or (int)AcsPcode.IncScriptArray
-            or (int)AcsPcode.DecScriptArray => 1,
+            or (int)AcsPcode.DecScriptArray or (int)AcsPcode.AndScriptArray
+            or (int)AcsPcode.EorScriptArray or (int)AcsPcode.OrScriptArray => 1,
         (int)AcsPcode.PushGlobalArray or (int)AcsPcode.AssignGlobalArray
             or (int)AcsPcode.AddGlobalArray => 1,
         (int)AcsPcode.GiveInventoryDirect or (int)AcsPcode.TakeInventoryDirect
@@ -328,12 +337,21 @@ public static class MapBehaviorBytecodeWalker
             or (int)AcsPcode.ModWorldArray or (int)AcsPcode.IncWorldArray
             or (int)AcsPcode.DecWorldArray => 1,
         (int)AcsPcode.PushFunction => 1,
-        (int)AcsPcode.CallStack or (int)AcsPcode.GotoStack => 0,
+        (int)AcsPcode.CallStack or (int)AcsPcode.GotoStack
+            or (int)AcsPcode.ScriptWaitNamed or (int)AcsPcode.SaveString => 0,
+        (int)AcsPcode.CallFunc => 2,
+        (int)AcsPcode.PrintScriptCharArray or (int)AcsPcode.PrintScriptCharRange
+            or (int)AcsPcode.StrCpyToScriptCharRange
+            or (int)AcsPcode.PrintMapCharRange or (int)AcsPcode.PrintWorldCharRange
+            or (int)AcsPcode.PrintGlobalCharRange
+            or (int)AcsPcode.StrCpyToMapCharRange or (int)AcsPcode.StrCpyToWorldCharRange
+            or (int)AcsPcode.StrCpyToGlobalCharRange => 0,
         (int)AcsPcode.AssignScriptArray or (int)AcsPcode.PushScriptArray
             or (int)AcsPcode.AddScriptArray or (int)AcsPcode.SubScriptArray
             or (int)AcsPcode.MulScriptArray or (int)AcsPcode.DivScriptArray
             or (int)AcsPcode.ModScriptArray or (int)AcsPcode.IncScriptArray
-            or (int)AcsPcode.DecScriptArray => 1,
+            or (int)AcsPcode.DecScriptArray or (int)AcsPcode.AndScriptArray
+            or (int)AcsPcode.EorScriptArray or (int)AcsPcode.OrScriptArray => 1,
         (int)AcsPcode.PushGlobalArray or (int)AcsPcode.AssignGlobalArray
             or (int)AcsPcode.AddGlobalArray => 1,
         (int)AcsPcode.GiveInventoryDirect or (int)AcsPcode.TakeInventoryDirect

@@ -411,6 +411,51 @@ public class MapBehaviorBytecodeWalkerTests
     }
 
     [Fact]
+    public void TryWalkScript_OldFormat_ReadsScriptCharRangeAndEternityOps()
+    {
+        var lump = TestWadBuilder.BuildBehaviorLump(
+            MapBehaviorFormat.AcsOld,
+            scriptCount: 1,
+            includeTerminateBytecode: false,
+            bytecodeOpcodes:
+            [
+                (int)AcsPcode.CallFunc, 2, 99,
+                (int)AcsPcode.SaveString,
+                (int)AcsPcode.ScriptWaitNamed,
+                (int)AcsPcode.PrintScriptCharArray,
+                (int)AcsPcode.PrintScriptCharRange,
+                (int)AcsPcode.StrCpyToScriptCharRange,
+                (int)AcsPcode.PrintMapCharRange,
+                (int)AcsPcode.StrCpyToGlobalCharRange,
+                (int)AcsPcode.Terminate,
+            ]);
+        Assert.True(MapBehaviorCodec.TryProbe(lump, out var record, out _));
+        Assert.True(MapBehaviorDirectoryCodec.TryReadScripts(
+            record.Data,
+            record.Format,
+            record.DirectoryOffset,
+            out var scripts,
+            out _));
+        Assert.Single(scripts);
+
+        Assert.True(MapBehaviorBytecodeWalker.TryWalkScript(
+            record.Data,
+            record.Format,
+            scripts[0].Address,
+            out var instructions,
+            out var terminated,
+            out _));
+
+        Assert.True(terminated);
+        Assert.Equal(9, instructions.Count);
+        Assert.Equal((int)AcsPcode.CallFunc, instructions[0].Opcode);
+        Assert.Equal(2, instructions[0].OperandWordCount);
+        Assert.Equal((int)AcsPcode.ScriptWaitNamed, instructions[2].Opcode);
+        Assert.Equal((int)AcsPcode.PrintScriptCharRange, instructions[4].Opcode);
+        Assert.Equal(0, instructions[4].OperandWordCount);
+    }
+
+    [Fact]
     public void TryWalkScript_LittleEnhanced_ReadsPushByteAndPushBytes()
     {
         var bytecode = new byte[]

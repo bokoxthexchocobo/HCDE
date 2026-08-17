@@ -1,7 +1,7 @@
 # HCDE C# Migration — Phase 2 Principal Audit
 
 **Last updated:** 2026-08-17  
-**Status:** In progress — Phase **2c** live protocol codecs (iteration 39 complete). Phase **2b** verification errors, start-game, bootstrap/resync, and cross-language harness complete. Phase **2b** verification errors, start-game, bootstrap/resync, and cross-language harness complete.  
+**Status:** In progress — Phase **2c** live protocol codecs (iteration 40 step 1). Phase **2b** verification errors, start-game, bootstrap/resync, and cross-language harness complete. Phase **2b** verification errors, start-game, bootstrap/resync, and cross-language harness complete.  
 **Prerequisite:** [Phase 1 audit](HCDE_CSHARP_PHASE1_AUDIT.md) (complete)  
 **Related:** [`HCDE_CSHARP_MIGRATION.md`](HCDE_CSHARP_MIGRATION.md) · [`HCDE_NETCODE.md`](../../docs/HCDE_NETCODE.md)
 
@@ -613,9 +613,19 @@ Phase 2b is complete when **all** hold:
 
 ## Phase 2c next slice (iteration 40)
 
-1. **BEHAVIOR bytecode operands** — script char-range PCDs, more Eternity stack ops
+1. ~~**BEHAVIOR bytecode operands**~~ — script char-range PCDs, more Eternity stack ops
 2. **Authority playsim tick polish** — authority event tails on pump, guest invasion apply wiring
 3. **Cross-language soak evidence** — evidence file freshness gate for committed templates
+
+### BEHAVIOR script char-range + Eternity stack PCD operands (Phase 2c/2d — iteration 40 step 1)
+
+| Artifact | Location | C++ reference |
+| --- | --- | --- |
+| Char-range opcodes | `AcsPcode.cs` | `PCD_PRINTMAPCHARARRAY`…`PCD_STRCPYTOSCRIPTCHARARRAY` |
+| Eternity stack opcodes | `AcsPcode.cs` | `PCD_CALLFUNC`, `PCD_SAVESTRING`, `PCD_SCRIPTWAITNAMED` |
+| Script array logic ops | `AcsPcode.cs` | `PCD_ANDSCRIPTARRAY`…`PCD_ORSCRIPTARRAY` |
+| Operand skip table | `MapBehaviorBytecodeWalker.cs` | 2-word `CallFunc`, stack-only char-range ops |
+| Walk tests | `MapBehaviorBytecodeWalkerTests` | `TryWalkScript_OldFormat_ReadsScriptCharRangeAndEternityOps` |
 
 ### Manifest staleness gate (Phase 2c — iteration 39 step 3)
 
