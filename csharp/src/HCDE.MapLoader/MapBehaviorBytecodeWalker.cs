@@ -212,6 +212,10 @@ public static class MapBehaviorBytecodeWalker
         (int)AcsPcode.SetGravity or (int)AcsPcode.SetAirControl => 0,
         (int)AcsPcode.SetGravityDirect or (int)AcsPcode.SetAirControlDirect => 1,
         (int)AcsPcode.AssignGlobalVar or (int)AcsPcode.PushGlobalVar => 1,
+        (int)AcsPcode.Call or (int)AcsPcode.CallDiscard => 1,
+        (int)AcsPcode.ReturnVoid or (int)AcsPcode.ReturnVal => 0,
+        (int)AcsPcode.PushGlobalArray or (int)AcsPcode.AssignGlobalArray
+            or (int)AcsPcode.AddGlobalArray => 1,
         (int)AcsPcode.GiveInventoryDirect or (int)AcsPcode.TakeInventoryDirect
             or (int)AcsPcode.CheckInventoryDirect => 2,
         (int)AcsPcode.SetMusic or (int)AcsPcode.LocalSetMusic or (int)AcsPcode.MusicChange => 0,
@@ -286,6 +290,10 @@ public static class MapBehaviorBytecodeWalker
         (int)AcsPcode.SetGravity or (int)AcsPcode.SetAirControl => 0,
         (int)AcsPcode.SetGravityDirect or (int)AcsPcode.SetAirControlDirect => 4,
         (int)AcsPcode.AssignGlobalVar or (int)AcsPcode.PushGlobalVar => 4,
+        (int)AcsPcode.Call or (int)AcsPcode.CallDiscard => 1,
+        (int)AcsPcode.ReturnVoid or (int)AcsPcode.ReturnVal => 0,
+        (int)AcsPcode.PushGlobalArray or (int)AcsPcode.AssignGlobalArray
+            or (int)AcsPcode.AddGlobalArray => 1,
         (int)AcsPcode.GiveInventoryDirect or (int)AcsPcode.TakeInventoryDirect
             or (int)AcsPcode.CheckInventoryDirect => 8,
         (int)AcsPcode.SetMusic or (int)AcsPcode.LocalSetMusic or (int)AcsPcode.MusicChange => 0,

@@ -1,7 +1,7 @@
 # HCDE C# Migration — Phase 2 Principal Audit
 
 **Last updated:** 2026-08-17  
-**Status:** In progress — Phase **2c** live protocol codecs (iteration 36 complete). Phase **2b** verification errors, start-game, bootstrap/resync, and cross-language harness complete.  
+**Status:** In progress — Phase **2c** live protocol codecs (iteration 37 step 1). Phase **2b** verification errors, start-game, bootstrap/resync, and cross-language harness complete.  
 **Prerequisite:** [Phase 1 audit](HCDE_CSHARP_PHASE1_AUDIT.md) (complete)  
 **Related:** [`HCDE_CSHARP_MIGRATION.md`](HCDE_CSHARP_MIGRATION.md) · [`HCDE_NETCODE.md`](../../docs/HCDE_NETCODE.md)
 
@@ -595,9 +595,18 @@ Phase 2b is complete when **all** hold:
 
 ## Phase 2c next slice (iteration 37)
 
-1. **BEHAVIOR bytecode operands** — call/discard stack ops, more global array PCDs
+1. ~~**BEHAVIOR bytecode operands**~~ — call/discard stack ops, more global array PCDs
 2. **Authority playsim tick polish** — actor delta tails on authority pump, guest resync on mismatch
 3. **Cross-language soak evidence** — automate committing refreshed Passed templates from CI artifacts
+
+### BEHAVIOR call/global-array PCD operands (Phase 2c/2d — iteration 37 step 1)
+
+| Artifact | Location | C++ reference |
+| --- | --- | --- |
+| Call stack opcodes | `AcsPcode.cs` | `PCD_CALL`, `PCD_CALLDISCARD`, `PCD_RETURNVOID`, `PCD_RETURNVAL` |
+| Global array opcodes | `AcsPcode.cs` | `PCD_PUSHGLOBALARRAY`, `PCD_ASSIGNGLOBALARRAY`, `PCD_ADDGLOBALARRAY` |
+| Operand skip table | `MapBehaviorBytecodeWalker.cs` | call byte arg + global array index |
+| Walk tests | `MapBehaviorBytecodeWalkerTests` | `TryWalkScript_OldFormat_ReadsCallDiscardAndGlobalArrayOps` |
 
 ### Passed soak evidence refresh (Phase 2c — iteration 36 step 3)
 
