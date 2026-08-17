@@ -875,6 +875,8 @@ Do **not** port snapshot encode/decode bodies until HCIN/HCSN headers are green.
 
 **Phase 2b C# pregame stack is feature-complete for fresh dedicated joins** — loopback WAITING setup, verification-error replies, start-game, and a cross-language guest CLI/harness are in place. The remaining 2b gate is executing the harness against a real `hcdeserv` build and recording the result.
 
+**Phase 2c iteration 38** adds map/world array and translation-range PCD operand coverage, HCDS coop dead-spawn tails on authority pump with guest gap resync wiring, and weekly `ApplyExportedTemplates` CI apply+commit automation for Passed soak templates.
+
 **Phase 2c iteration 37** adds call/discard/global-array PCD operand coverage, HCDA actor delta tails on authority pump with checksum mismatch resync policy, and `ExportCommittedTemplates` CI artifact bundles for committing Passed soak templates.
 
 **Phase 2c iteration 36** adds gravity/air-control/global-var PCD operand coverage, player-pose HCDW tail seeding from map THINGS with guest checksum mismatch policy, and `TryRecordPassedValidationEvidence` to re-record Passed soak templates in CI.
