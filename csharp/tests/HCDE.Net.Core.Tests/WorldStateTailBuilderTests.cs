@@ -79,6 +79,38 @@ public class WorldStateTailBuilderTests
     }
 
     [Fact]
+    public void TryBuildInvasionTailWithChecksum_IncludesHcksWhenStoreProvided()
+    {
+        var store = new GuestWorldStateStore();
+        store.SeedPlayer(playerNum: 0, health: 88);
+        var checksumSession = new SnapshotChecksumSession();
+        var invasionHeader = new InvasionSnapshotHeader(
+            flags: 0,
+            state: LiveConstants.InvasionStateSpawning,
+            stateTics: 1,
+            wave: 1,
+            maxWaves: 10,
+            waveBudget: 8,
+            waveSpawned: 0,
+            waveCleared: 0,
+            activeMonsters: 2);
+
+        Span<byte> tail = stackalloc byte[256];
+        var build = WorldStateTailBuilder.TryBuildInvasionTailWithChecksum(
+            tail,
+            store,
+            checksumSession,
+            gameTic: 6,
+            invasionHeader,
+            rngSeed: 3);
+        Assert.True(build.HasTail);
+        Assert.True(ServerSnapshotTailWalker.TryWalk(tail[..build.BytesWritten], out var sections, out _, out _));
+        Assert.NotNull(sections.InvasionSnapshot);
+        Assert.True(sections.HasChecksum);
+        Assert.NotNull(sections.ChecksumHashes);
+    }
+
+    [Fact]
     public void TryBuildInvasionTail_WritesHcivBeforeEcho()
     {
         var invasionHeader = new InvasionSnapshotHeader(

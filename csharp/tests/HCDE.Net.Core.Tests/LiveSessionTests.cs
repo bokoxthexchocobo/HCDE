@@ -444,4 +444,115 @@ public class LiveSessionTests
         Assert.Equal(2, guest.InvasionState.MirrorState.Wave);
         Assert.Equal(LiveConstants.InvasionStateCountdown, guest.InvasionState.MirrorState.State);
     }
+
+    [Fact]
+    public void GuestAppliesInvasionSpawnDirectoryWhenWorldStateWired()
+    {
+        var gameId = new byte[] { 0xAA, 0xBB, 0xCC, 0xDD, 0x11, 0x22, 0x33, 0x44 };
+
+        using var authorityTransport = new UdpTransport();
+        using var guestTransport = new UdpTransport();
+        authorityTransport.Bind(0);
+        guestTransport.Bind(0);
+        authorityTransport.SetNonBlocking(true);
+        guestTransport.SetNonBlocking(true);
+
+        var authorityEndpoint = new NetworkEndpoint(System.Net.IPAddress.Loopback, authorityTransport.BoundPort);
+        var guestEndpoint = new NetworkEndpoint(System.Net.IPAddress.Loopback, guestTransport.BoundPort);
+
+        var guestStore = new GuestWorldStateStore();
+        var guest = new LiveGuestSession(
+            guestTransport,
+            gameId,
+            authorityEndpoint,
+            guestPlayerSlot: 1,
+            authoritySlot: 0,
+            maxClients: 4);
+        guest.SetNegotiatedCapabilities(LiveConstants.DefaultLocalCapabilities);
+        guest.SetGuestWorldState(guestStore, new SnapshotChecksumSession());
+
+        var authority = new LiveAuthoritySession(authorityTransport, gameId, authoritySlot: 0, maxClients: 4);
+        authority.SetAuthorityInvasionSnapshot(new InvasionSnapshotHeader(
+            flags: 0,
+            state: LiveConstants.InvasionStateSpawning,
+            stateTics: 2,
+            wave: 3,
+            maxWaves: 10,
+            waveBudget: 8,
+            waveSpawned: 5,
+            waveCleared: 1,
+            activeMonsters: 6,
+            spawnSpotCount: 8,
+            activeSpawnSpotCount: 2,
+            spawnPlanBudget: 12,
+            spawnActiveTag: 77,
+            spawnFlags: LiveConstants.InvasionSnapshotSpawnFlagUsingFallback,
+            spawnFallbackSource: LiveConstants.InvasionSpawnSourceDeathmatch));
+        authority.TrackClient(guestEndpoint, clientSlot: 1);
+        authority.Pump((ulong)Environment.TickCount64);
+
+        Assert.True(guest.TryReceiveAuthorityControl(out _));
+        Assert.True(guest.TryReceiveServerSnapshot(out _, out _, out _));
+        Assert.NotNull(guest.InvasionState?.SpawnDirectory);
+        Assert.Equal(8, guest.InvasionState!.SpawnDirectory!.Value.TotalSpotCount);
+        Assert.Equal(2, guest.InvasionState.SpawnDirectory!.Value.ActiveSpotCount);
+        Assert.Equal(77u, guest.InvasionState.SpawnDirectory!.Value.ActiveTag);
+        Assert.True(guest.InvasionState.SpawnDirectory!.Value.UsingFallback);
+    }
+
+    [Fact]
+    public void AuthorityInvasionPump_IncludesChecksumWhenWorldStateWired()
+    {
+        var wad = HCDE.MapLoader.Tests.TestWadBuilder.BuildMinimalMapWad("MAP01");
+        var gameId = new byte[] { 0xAA, 0xBB, 0xCC, 0xDD, 0x11, 0x22, 0x33, 0x44 };
+        const int rngSeed = 17;
+
+        using var authorityTransport = new UdpTransport();
+        using var guestTransport = new UdpTransport();
+        authorityTransport.Bind(0);
+        guestTransport.Bind(0);
+        authorityTransport.SetNonBlocking(true);
+        guestTransport.SetNonBlocking(true);
+
+        var authorityEndpoint = new NetworkEndpoint(System.Net.IPAddress.Loopback, authorityTransport.BoundPort);
+        var guestEndpoint = new NetworkEndpoint(System.Net.IPAddress.Loopback, guestTransport.BoundPort);
+
+        var authorityStore = new GuestWorldStateStore();
+        Assert.True(MapLoadBootstrap.TrySeedGuestWorldState(wad, "MAP01", authorityStore, out _));
+        var authorityChecksum = new SnapshotChecksumSession();
+        var authority = new LiveAuthoritySession(authorityTransport, gameId, authoritySlot: 0, maxClients: 4);
+        authority.SetAuthorityWorldState(authorityStore, authorityChecksum, rngSeed);
+        authority.SetAuthorityInvasionSnapshot(new InvasionSnapshotHeader(
+            flags: 0,
+            state: LiveConstants.InvasionStateSpawning,
+            stateTics: 1,
+            wave: 2,
+            maxWaves: 10,
+            waveBudget: 8,
+            waveSpawned: 1,
+            waveCleared: 0,
+            activeMonsters: 3));
+        authority.TrackClient(guestEndpoint, clientSlot: 1);
+
+        var guest = new LiveGuestSession(
+            guestTransport,
+            gameId,
+            authorityEndpoint,
+            guestPlayerSlot: 1,
+            authoritySlot: 0,
+            maxClients: 4);
+        guest.SetNegotiatedCapabilities(LiveConstants.DefaultLocalCapabilities);
+        guest.SetGuestWorldState(new GuestWorldStateStore(), new SnapshotChecksumSession(), rngSeed);
+
+        authority.Pump((ulong)Environment.TickCount64);
+
+        Assert.True(guest.TryReceiveAuthorityControl(out _));
+        Assert.True(guest.TryReceiveServerSnapshot(out _, out _, out var tailSections));
+        Assert.NotNull(tailSections);
+        Assert.NotNull(tailSections!.Value.InvasionSnapshot);
+        Assert.True(tailSections.Value.HasChecksum);
+        Assert.NotNull(tailSections.Value.ChecksumHashes);
+        Assert.True(authorityChecksum.Ring.TryFind((int)tailSections.Value.ChecksumGameTic, out var authorityHashes));
+        Assert.Equal(authorityHashes, tailSections.Value.ChecksumHashes);
+    }
 }

@@ -1,7 +1,7 @@
 # HCDE C# Migration — Phase 2 Principal Audit
 
 **Last updated:** 2026-08-17  
-**Status:** In progress — Phase **2c** live protocol codecs (iteration 40 complete). Phase **2b** verification errors, start-game, bootstrap/resync, and cross-language harness complete. Phase **2b** verification errors, start-game, bootstrap/resync, and cross-language harness complete.  
+**Status:** In progress — Phase **2c** live protocol codecs (iteration 41 step 1). Phase **2b** verification errors, start-game, bootstrap/resync, and cross-language harness complete. Phase **2b** verification errors, start-game, bootstrap/resync, and cross-language harness complete.  
 **Prerequisite:** [Phase 1 audit](HCDE_CSHARP_PHASE1_AUDIT.md) (complete)  
 **Related:** [`HCDE_CSHARP_MIGRATION.md`](HCDE_CSHARP_MIGRATION.md) · [`HCDE_NETCODE.md`](../../docs/HCDE_NETCODE.md)
 
@@ -619,9 +619,19 @@ Phase 2b is complete when **all** hold:
 
 ## Phase 2c next slice (iteration 41)
 
-1. **BEHAVIOR bytecode operands** — more ZDoom/Skulltag PCD table entries, enhanced-format operand coverage
+1. ~~**BEHAVIOR bytecode operands**~~ — more ZDoom/Skulltag PCD table entries, enhanced-format operand coverage
 2. **Authority playsim tick polish** — invasion spawn-directory apply on guest pump, authority checksum tail polish
 3. **Cross-language soak evidence** — evidence staleness enforcement in main CI workflow
+
+### BEHAVIOR inventory/global-array + enhanced PCD operands (Phase 2c/2d — iteration 41 step 1)
+
+| Artifact | Location | C++ reference |
+| --- | --- | --- |
+| Inventory opcodes | `AcsPcode.cs` | `PCD_TAKEINVENTORY`, `PCD_CHECKINVENTORY` |
+| Skulltag player opcodes | `AcsPcode.cs` | `PCD_ISNETWORKGAME`…`PCD_PLAYERHEALTH` |
+| Global array opcodes | `AcsPcode.cs` | `PCD_SUBGLOBALARRAY`…`PCD_DECGLOBALARRAY` |
+| Operand skip table | `MapBehaviorBytecodeWalker.cs` | old + little-enhanced inventory/global-array skips |
+| Walk tests | `MapBehaviorBytecodeWalkerTests` | `TryWalkScript_*_ReadsInventoryAndGlobalArrayOps` |
 
 ### Evidence file freshness gate (Phase 2c — iteration 40 step 3)
 

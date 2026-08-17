@@ -131,4 +131,29 @@ public static class WorldStateTailBuilder
         var written = WriteInvasionTail(tail, gameTic, invasionSnapshot, checksumHashes);
         return new WorldStateTailBuildResult(written > 0, written);
     }
+
+    public static uint[]? TryComputeChecksumHashes(
+        GuestWorldStateStore? store,
+        SnapshotChecksumSession? checksumSession,
+        int gameTic,
+        int rngSeed = 0)
+    {
+        if (store is null || checksumSession is null)
+            return null;
+
+        SnapshotChecksumPlaysimInputs.ComputeAndStore(checksumSession, store, gameTic, rngSeed);
+        return checksumSession.Ring.TryFind(gameTic, out var hashes) ? hashes : null;
+    }
+
+    public static WorldStateTailBuildResult TryBuildInvasionTailWithChecksum(
+        Span<byte> tail,
+        GuestWorldStateStore? store,
+        SnapshotChecksumSession? checksumSession,
+        uint gameTic,
+        InvasionSnapshotHeader invasionSnapshot,
+        int rngSeed = 0)
+    {
+        var checksumHashes = TryComputeChecksumHashes(store, checksumSession, (int)gameTic, rngSeed);
+        return TryBuildInvasionTail(tail, gameTic, invasionSnapshot, checksumHashes);
+    }
 }

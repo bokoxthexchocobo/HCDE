@@ -471,25 +471,22 @@ public sealed class LiveAuthoritySession
 
         if (_routing.ShouldSendServerSnapshotTo(clientSlot))
         {
-            uint[]? checksumHashes = null;
-            if (_authorityWorldState is not null && _checksumSession is not null)
-            {
-                SnapshotChecksumPlaysimInputs.ComputeAndStore(
-                    _checksumSession,
-                    _authorityWorldState,
-                    (int)_gameTic,
-                    _authorityWorldStateRngSeed);
-                _checksumSession.Ring.TryFind((int)_gameTic, out checksumHashes);
-            }
+            var checksumHashes = WorldStateTailBuilder.TryComputeChecksumHashes(
+                _authorityWorldState,
+                _checksumSession,
+                (int)_gameTic,
+                _authorityWorldStateRngSeed);
 
             if (_authorityInvasionSnapshot is { } invasionSnapshot)
             {
                 Span<byte> tail = stackalloc byte[512];
-                var tailBuild = WorldStateTailBuilder.TryBuildInvasionTail(
+                var tailBuild = WorldStateTailBuilder.TryBuildInvasionTailWithChecksum(
                     tail,
+                    _authorityWorldState,
+                    _checksumSession,
                     _gameTic,
                     invasionSnapshot,
-                    checksumHashes);
+                    _authorityWorldStateRngSeed);
                 if (tailBuild.HasTail)
                 {
                     _gameplay.TrySendServerSnapshotWithExternalTail(
