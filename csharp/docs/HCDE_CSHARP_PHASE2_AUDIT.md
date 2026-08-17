@@ -1,7 +1,7 @@
 # HCDE C# Migration — Phase 2 Principal Audit
 
-**Last updated:** 2026-08-16  
-**Status:** In progress — Phase **2c** live protocol codecs (iteration 25). Phase **2b** verification errors, start-game, bootstrap/resync, and cross-language harness complete.  
+**Last updated:** 2026-08-17  
+**Status:** In progress — Phase **2c** live protocol codecs (iteration 29 complete). Phase **2b** verification errors, start-game, bootstrap/resync, and cross-language harness complete.  
 **Prerequisite:** [Phase 1 audit](HCDE_CSHARP_PHASE1_AUDIT.md) (complete)  
 **Related:** [`HCDE_CSHARP_MIGRATION.md`](HCDE_CSHARP_MIGRATION.md) · [`HCDE_NETCODE.md`](../../docs/HCDE_NETCODE.md)
 
@@ -536,13 +536,13 @@ Phase 2b is complete when **all** hold:
 
 | Tree | LOC | Migration intent |
 | --- | ---: | --- |
-| `csharp/src/` | **~12,700** | C# delivered so far |
+| `csharp/src/` | **~14,550** | C# delivered so far |
 | `src/` (engine) | **~659,000** | Primary migration target |
 | `tools/` | **~13,300** | Partial (master/rcon ported; build tools stay) |
 | `libraries/` (vendored) | **~891,000** | Stay native / P/Invoke |
 | **HCDE-owned C++ remaining** | **~672,000** | `src/` + non-vendored `tools/` |
 
-**Progress by LOC:** C# is ~1.9% of HCDE-owned C++ surface area. Wire/protocol layers mirror ~55–60% of `d_net` message surface but ~0% of playsim execution.
+**Progress by LOC:** C# is ~2.2% of HCDE-owned C++ surface area. Wire/protocol layers mirror ~55–60% of `d_net` message surface but ~0% of playsim execution.
 
 ### BEHAVIOR lump probe (Phase 2c/2d — iteration 29 step 1)
 
@@ -552,11 +552,26 @@ Phase 2b is complete when **all** hold:
 | Catalog BEHAVIOR lump | `MapLumpNames.BinaryMapLumpOrder` | `ML_BEHAVIOR` in `doomdata.h` |
 | Unified decode extension | `BinaryMapDecoder` + `BinaryMapBehavior` | optional Hexen scripts entry point |
 
-## Phase 2c next slice (iteration 29 in progress)
+### Authority map-load hook (Phase 2c/2d — iteration 29 step 2)
 
-1. ~~**BEHAVIOR lump decode**~~ — ACS magic probe + optional `BinaryMap.Behavior` (step 1 done)
-2. **Authority map-load hook** — wire `MapLoadBootstrap` into `LiveAuthoritySession` (step 2)
-3. **Cross-language soak evidence** — combined soak suite runner (step 3)
+| Artifact | Location | C++ reference |
+| --- | --- | --- |
+| Authority WAD bootstrap | `AuthorityMapLoadBootstrap.cs` | `p_setup.cpp` map load before net pump |
+| Map-load E2E | `AuthorityMapLoadBootstrapTests` | authority seeds store + metadata replicate + guest receive |
+
+### Cross-language soak suite (Phase 2c — iteration 29 step 3)
+
+| Artifact | Location | C++ reference |
+| --- | --- | --- |
+| Combined soak runner | `CrossLanguageSoakSuite.cs` | pregame guest smoke + Step 12 invasion harness |
+| Evidence recording | `CrossLanguageSoakEvidence.Finalize` | JSON audit trail via `HCDE_SOAK_EVIDENCE_DIR` |
+| Suite tests | `CrossLanguageSoakSuiteTests` | skip-when-unconfigured + evidence file count |
+
+## Phase 2c next slice (iteration 30)
+
+1. **BEHAVIOR lump usage** — beyond ACS magic probe (script bytecode layout)
+2. **Dedicated server map-load integration** — wire `AuthorityMapLoadBootstrap` into server shell path
+3. **Record cross-language soak evidence** — run `CrossLanguageSoakSuite.RunAll()` with local `hcdeserv` + IWAD and commit JSON under `validation/`
 
 ## Phase 2b next slice
 
@@ -581,6 +596,8 @@ Do **not** port snapshot encode/decode bodies until HCIN/HCSN headers are green.
 ## Audit conclusion (interim)
 
 **Phase 2b C# pregame stack is feature-complete for fresh dedicated joins** — loopback WAITING setup, verification-error replies, start-game, and a cross-language guest CLI/harness are in place. The remaining 2b gate is executing the harness against a real `hcdeserv` build and recording the result.
+
+**Phase 2c iteration 29** adds BEHAVIOR lump ACS magic probe (`BinaryMapBehaviorDecoder`), `AuthorityMapLoadBootstrap` for authority WAD→world-store seeding with metadata replicate, and `CrossLanguageSoakSuite` to run pregame + Step 12 soaks with JSON evidence recording.
 
 **Phase 2c iteration 28** adds unified `BinaryMapDecoder`, routes `MapLoadBootstrap` through full map decode, and lands C++ parity for sector light/special HCDW flags (`HCDEWorldDeltaReplicateSectorMetadata`).
 
@@ -612,4 +629,4 @@ Do **not** port snapshot encode/decode bodies until HCIN/HCSN headers are green.
 
 **Phase 2c iteration 14** adds HCSR/HCIN apply sessions with per-player sequence/consistency tracking, idempotent snapshot handling, gap-resync policy, and injectable command sinks wired into guest/authority receive paths.
 
-Next audit checkpoint: **Phase 2c iteration 29** when BEHAVIOR lump decode lands or cross-language soak evidence is recorded.
+Next audit checkpoint: **Phase 2c iteration 30** when BEHAVIOR bytecode decode lands or dedicated server map-load integration is wired.
