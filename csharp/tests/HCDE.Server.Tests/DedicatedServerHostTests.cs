@@ -132,7 +132,11 @@ public class DedicatedServerHostTests
         {
             Port = 0,
             IwadBytes = wad,
-            ServerName = "Iter32 Query Host",
+            ServerName = "Iter33 Query Host",
+            Skill = 4,
+            Deathmatch = true,
+            GameMode = 2,
+            GameModeName = "Invasion",
             Pregame = new PregameHostOptions
             {
                 Session = new PregameSessionSnapshot
@@ -165,9 +169,13 @@ public class DedicatedServerHostTests
         }
 
         var snapshot = await clientTask;
-        Assert.Equal("Iter32 Query Host", snapshot.HostName);
+        Assert.Equal("Iter33 Query Host", snapshot.HostName);
         Assert.Equal("MAP01", snapshot.MapName);
         Assert.Equal("waiting", snapshot.SessionState);
+        Assert.Equal((byte)4, snapshot.Skill);
+        Assert.True(snapshot.Deathmatch);
+        Assert.Equal((byte)2, snapshot.GameMode);
+        Assert.Equal("Invasion", snapshot.GameModeName);
     }
 
     [Fact]

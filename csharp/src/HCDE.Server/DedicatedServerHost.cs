@@ -20,6 +20,11 @@ public sealed class DedicatedServerOptions
     public string ServerName { get; set; } = "HCDE Server";
     public string VersionLabel { get; set; } = "hcdeserv-csharp";
     public string GitHash { get; set; } = "";
+    public byte Skill { get; set; } = 3;
+    public byte GameMode { get; set; }
+    public string GameModeName { get; set; } = "Co-op";
+    public bool Deathmatch { get; set; }
+    public bool Teamplay { get; set; }
 }
 
 public sealed class DedicatedServerHost : IDisposable
@@ -79,24 +84,38 @@ public sealed class DedicatedServerHost : IDisposable
 
     private ServerQuerySnapshot BuildQuerySnapshot()
     {
-        var connectedPlayers = _pregameHost.Clients.Count(client =>
-            client.Status is ConnectionStatus.Connecting
+        var connectedClients = _pregameHost.Clients
+            .Where(client => client.Status is ConnectionStatus.Connecting
                 or ConnectionStatus.Waiting
-                or ConnectionStatus.Ready);
+                or ConnectionStatus.Ready)
+            .ToArray();
 
-        return new ServerQuerySnapshot
+        var snapshot = new ServerQuerySnapshot
         {
             HostName = _options.ServerName,
             MapName = _options.Pregame.Session.MapLoad.MapName,
             SessionState = _liveSession is not null ? "running" : "waiting",
             Version = _options.VersionLabel,
             GitHash = _options.GitHash,
-            PlayerCount = (byte)Math.Min(connectedPlayers, byte.MaxValue),
+            PlayerCount = (byte)Math.Min(connectedClients.Length, byte.MaxValue),
             MaxPlayers = (byte)Math.Min(_options.Pregame.MaxClients, byte.MaxValue),
-            Skill = 3,
+            Skill = _options.Skill,
+            Deathmatch = _options.Deathmatch,
+            Teamplay = _options.Teamplay,
             GameName = "HCDE",
-            GameModeName = "Co-op",
+            GameMode = _options.GameMode,
+            GameModeName = _options.GameModeName,
         };
+
+        foreach (var client in connectedClients)
+        {
+            var name = string.IsNullOrWhiteSpace(client.UserInfo)
+                ? $"Player{client.ClientSlot + 1}"
+                : client.UserInfo;
+            snapshot.Players.Add(new ServerQueryPlayer { Name = name });
+        }
+
+        return snapshot;
     }
 
     public void Dispose() => _transport.Dispose();
