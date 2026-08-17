@@ -25,6 +25,17 @@ jobs:
           cd csharp
           dotnet build
           dotnet test --no-build --filter "FullyQualifiedName~CrossLanguageSoak"
+      - name: Record validation soak evidence
+        if: ${{ secrets.HCDE_HCDESERV_PATH != '' && secrets.HCDE_IWAD_PATH != '' }}
+        env:
+          HCDE_HCDESERV_PATH: ${{ secrets.HCDE_HCDESERV_PATH }}
+          HCDE_IWAD_PATH: ${{ secrets.HCDE_IWAD_PATH }}
+          HCDE_IWAD_CRC: ${{ secrets.HCDE_IWAD_CRC }}
+          HCDE_HCDE_CLIENT_PATH: ${{ secrets.HCDE_HCDE_CLIENT_PATH }}
+          HCDE_RECORD_VALIDATION_EVIDENCE: '1'
+        run: |
+          cd csharp
+          dotnet test --no-build --filter "FullyQualifiedName~RecordValidationPassedEvidence"
       - name: Upload soak evidence
         if: always()
         uses: actions/upload-artifact@v4

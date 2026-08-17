@@ -34,6 +34,11 @@ public static class CrossLanguageSoakEvidenceArchive
         return RecordEvidence(ResolveDefaultEvidenceDirectory(repositoryRoot), repositoryRoot);
     }
 
+    public static IReadOnlyList<string> RecordValidationEvidence(string? repositoryRoot = null)
+    {
+        return RecordDefaultEvidence(repositoryRoot);
+    }
+
     private static string FindRepositoryRoot()
     {
         var cursor = new DirectoryInfo(AppContext.BaseDirectory);

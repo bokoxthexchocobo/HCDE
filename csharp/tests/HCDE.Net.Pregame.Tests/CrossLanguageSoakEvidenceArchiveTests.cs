@@ -87,4 +87,31 @@ public class CrossLanguageSoakEvidenceArchiveTests
         Assert.All(files, path => Assert.Contains("_Skipped.json", path));
         Assert.True(File.Exists(CrossLanguageSoakManifest.ResolveDefaultManifestPath()));
     }
+
+    [Fact]
+    public void RecordValidationPassedEvidence_WhenRequested()
+    {
+        if (Environment.GetEnvironmentVariable("HCDE_RECORD_VALIDATION_EVIDENCE") != "1")
+            return;
+
+        var serverPath = Environment.GetEnvironmentVariable("HCDE_HCDESERV_PATH");
+        var iwadPath = Environment.GetEnvironmentVariable("HCDE_IWAD_PATH");
+        if (string.IsNullOrWhiteSpace(serverPath) || string.IsNullOrWhiteSpace(iwadPath))
+            return;
+
+        var evidenceDir = CrossLanguageSoakEvidenceArchive.ResolveDefaultEvidenceDirectory();
+        if (Directory.Exists(evidenceDir))
+        {
+            foreach (var file in Directory.GetFiles(evidenceDir, "*.json"))
+                File.Delete(file);
+        }
+
+        var files = CrossLanguageSoakEvidenceArchive.RecordValidationEvidence();
+        Assert.Equal(2, files.Count);
+        Assert.All(files, path => Assert.DoesNotContain("_Skipped.json", path));
+        Assert.All(files, path => Assert.Contains("_Passed.json", path));
+        Assert.True(File.Exists(CrossLanguageSoakManifest.ResolveDefaultManifestPath()));
+        var manifest = File.ReadAllText(CrossLanguageSoakManifest.ResolveDefaultManifestPath());
+        Assert.Contains("\"Passed\"", manifest);
+    }
 }
