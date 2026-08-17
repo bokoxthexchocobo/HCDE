@@ -2,14 +2,14 @@
 
 **Last updated:** 2026-08-17  
 **Scope:** All code under `csharp/` (7 projects, 6 test suites)  
-**Verification:** `dotnet build` and `dotnet test` in `csharp/` — **289 tests passing** (CI: `.github/workflows/csharp.yml`; optional soak: `.github/workflows/csharp-cross-language-soak.yml`)  
+**Verification:** `dotnet build` and `dotnet test` in `csharp/` — **296 tests passing** (CI: `.github/workflows/csharp.yml`; optional soak: `.github/workflows/csharp-cross-language-soak.yml`)  
 **Related:** [`HCDE_CSHARP_PHASE1_AUDIT.md`](HCDE_CSHARP_PHASE1_AUDIT.md) · [`HCDE_CSHARP_PHASE2_AUDIT.md`](HCDE_CSHARP_PHASE2_AUDIT.md) · [`HCDE_CSHARP_MIGRATION.md`](HCDE_CSHARP_MIGRATION.md)
 
 ---
 
 ## 1. Executive summary
 
-The C# tree is a **well-tested protocol and networking foundation** (~15,500 LOC source, 289 unit/integration tests) covering Phase 1 tools, Phase 2a–2c wire codecs, `HCDE.Server` live authority pump with HCDW/HCDA/HCDS/HCIV tail shipping, BEHAVIOR bytecode walk, and Phase 2d unified binary map decode.
+The C# tree is a **well-tested protocol and networking foundation** (~15,500 LOC source, 296 unit/integration tests) covering Phase 1 tools, Phase 2a–2c wire codecs, `HCDE.Server` live authority pump with HCDW/HCDA/HCDS/HCIV/HCAV tail shipping, BEHAVIOR bytecode walk, and Phase 2d unified binary map decode.
 
 | Layer | Status | Confidence |
 | --- | --- | --- |
@@ -43,7 +43,7 @@ csharp/
     HCDE.MapLoader/         21 files, ~1,550 LOC   (WAD directory + unified binary map decode + BEHAVIOR directory)
     HCDE.Server/             6 files,   ~420 LOC   (hcdeserv host + CLI + query/advertise)
     HCDE.PregameGuest.Cli/  5 files,   ~207 LOC   (hcde-pregame-guest CLI)
-  tests/                   66 files, 289 tests
+  tests/                   66 files, 296 tests
 ```
 
 ### 2.2 Test matrix
@@ -58,7 +58,7 @@ csharp/
 | `HCDE.Net.Core.Tests` | 140 | Live headers, bodies, tail, DEM, sessions, world-store + HCDA actor tail + checksum resync |
 | `HCDE.MapLoader.Tests` | 39 | WAD directory, unified map decode, BEHAVIOR directory + call/global-array bytecode walk |
 | `HCDE.Server.Tests` | 9 | Dedicated host bind, CLI parser, query responder, master heartbeat, pregame→live bootstrap + guest apply E2E |
-| **Total** | **289** | |
+| **Total** | **296** | |
 
 ### 2.3 Dependency graph
 

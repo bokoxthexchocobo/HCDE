@@ -69,6 +69,10 @@ public static class CrossLanguageSoakGate
         if (staleness.Status == CrossLanguageSoakGateStatus.Failed)
             return staleness;
 
+        var evidenceFreshness = EvaluateEvidenceFreshness(repositoryRoot, DateTimeOffset.UtcNow, ResolveMaxEvidenceAgeDays());
+        if (evidenceFreshness.Status == CrossLanguageSoakGateStatus.Failed)
+            return evidenceFreshness;
+
         return new CrossLanguageSoakGateResult(CrossLanguageSoakGateStatus.Passed);
     }
 
@@ -81,6 +85,50 @@ public static class CrossLanguageSoakGate
         return int.TryParse(configured, out var days) && days > 0
             ? days
             : CrossLanguageSoakManifest.DefaultMaxManifestAgeDays;
+    }
+
+    public static int ResolveMaxEvidenceAgeDays()
+    {
+        var configured = Environment.GetEnvironmentVariable("HCDE_SOAK_EVIDENCE_MAX_AGE_DAYS");
+        return int.TryParse(configured, out var days) && days > 0
+            ? days
+            : CrossLanguageSoakManifest.DefaultMaxEvidenceAgeDays;
+    }
+
+    public static CrossLanguageSoakGateResult EvaluateEvidenceFreshness(
+        string? repositoryRoot,
+        DateTimeOffset nowUtc,
+        int maxAgeDays)
+    {
+        var manifestPath = CrossLanguageSoakManifest.ResolveDefaultManifestPath(repositoryRoot);
+        if (!CrossLanguageSoakManifest.TryReadHarnessEvidenceFiles(manifestPath, out var entries))
+        {
+            return new CrossLanguageSoakGateResult(
+                CrossLanguageSoakGateStatus.Failed,
+                "manifest missing harness evidence files");
+        }
+
+        var evidenceDirectory = CrossLanguageSoakEvidenceArchive.ResolveDefaultEvidenceDirectory(repositoryRoot);
+        foreach (var (harness, evidenceFile) in entries)
+        {
+            var evidencePath = Path.Combine(evidenceDirectory, evidenceFile);
+            if (!File.Exists(evidencePath))
+            {
+                return new CrossLanguageSoakGateResult(
+                    CrossLanguageSoakGateStatus.Failed,
+                    $"evidence file missing for {harness}: {evidenceFile}");
+            }
+
+            var age = nowUtc - File.GetLastWriteTimeUtc(evidencePath);
+            if (age > TimeSpan.FromDays(maxAgeDays))
+            {
+                return new CrossLanguageSoakGateResult(
+                    CrossLanguageSoakGateStatus.Failed,
+                    $"evidence file stale for {harness}: {evidenceFile}");
+            }
+        }
+
+        return new CrossLanguageSoakGateResult(CrossLanguageSoakGateStatus.Passed);
     }
 
     public static CrossLanguageSoakGateResult EvaluateManifestStaleness(

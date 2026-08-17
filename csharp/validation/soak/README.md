@@ -56,4 +56,6 @@ When soak secrets are absent, the gate returns `NotRequired` and does not block 
 
 Committed templates must also be fresh: `CrossLanguageSoakGate.Evaluate` rejects manifests older than `CrossLanguageSoakManifest.DefaultMaxManifestAgeDays` (8 days). Override with `HCDE_SOAK_MANIFEST_MAX_AGE_DAYS` when enforcing the gate in CI.
 
+Each manifest `EvidenceFile` entry must exist under `csharp/validation/soak/evidence/` and be newer than `CrossLanguageSoakManifest.DefaultMaxEvidenceAgeDays` (8 days). Override with `HCDE_SOAK_EVIDENCE_MAX_AGE_DAYS` when enforcing the gate in CI.
+
 When binaries are absent, harnesses record `Skipped` status with a reason instead of failing the xUnit suite.

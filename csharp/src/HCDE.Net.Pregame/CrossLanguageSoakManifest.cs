@@ -29,6 +29,7 @@ public sealed class CrossLanguageSoakManifestEntry
 public static class CrossLanguageSoakManifest
 {
     public const int DefaultMaxManifestAgeDays = 8;
+    public const int DefaultMaxEvidenceAgeDays = 8;
 
     private static readonly string[] HarnessOrder =
     [
@@ -94,6 +95,42 @@ public static class CrossLanguageSoakManifest
         }
 
         return DateTimeOffset.TryParse(recordedAt.GetString(), out recordedAtUtc);
+    }
+
+    public static bool TryReadHarnessEvidenceFiles(
+        string manifestPath,
+        out IReadOnlyList<(string Harness, string EvidenceFile)> entries)
+    {
+        entries = Array.Empty<(string, string)>();
+        if (!File.Exists(manifestPath))
+            return false;
+
+        using var document = JsonDocument.Parse(File.ReadAllText(manifestPath));
+        if (!document.RootElement.TryGetProperty("Harnesses", out var harnesses)
+            || harnesses.ValueKind != JsonValueKind.Array)
+        {
+            return false;
+        }
+
+        var list = new List<(string, string)>();
+        foreach (var harness in harnesses.EnumerateArray())
+        {
+            if (!harness.TryGetProperty("Harness", out var harnessName)
+                || !harness.TryGetProperty("EvidenceFile", out var evidenceFile)
+                || evidenceFile.ValueKind != JsonValueKind.String)
+            {
+                continue;
+            }
+
+            var fileName = evidenceFile.GetString();
+            if (string.IsNullOrWhiteSpace(fileName))
+                continue;
+
+            list.Add((harnessName.GetString() ?? string.Empty, fileName));
+        }
+
+        entries = list;
+        return true;
     }
 
     private static string FindRepositoryRoot()

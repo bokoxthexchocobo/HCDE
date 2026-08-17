@@ -1,7 +1,7 @@
 # HCDE C# Migration — Phase 2 Principal Audit
 
 **Last updated:** 2026-08-17  
-**Status:** In progress — Phase **2c** live protocol codecs (iteration 40 step 1). Phase **2b** verification errors, start-game, bootstrap/resync, and cross-language harness complete. Phase **2b** verification errors, start-game, bootstrap/resync, and cross-language harness complete.  
+**Status:** In progress — Phase **2c** live protocol codecs (iteration 40 complete). Phase **2b** verification errors, start-game, bootstrap/resync, and cross-language harness complete. Phase **2b** verification errors, start-game, bootstrap/resync, and cross-language harness complete.  
 **Prerequisite:** [Phase 1 audit](HCDE_CSHARP_PHASE1_AUDIT.md) (complete)  
 **Related:** [`HCDE_CSHARP_MIGRATION.md`](HCDE_CSHARP_MIGRATION.md) · [`HCDE_NETCODE.md`](../../docs/HCDE_NETCODE.md)
 
@@ -611,11 +611,37 @@ Phase 2b is complete when **all** hold:
 2. ~~**Authority playsim tick polish**~~ — invasion tail on authority pump, guest presentation echo apply wiring
 3. ~~**Cross-language soak evidence**~~ — manifest staleness gate for committed templates
 
-## Phase 2c next slice (iteration 40)
+## Phase 2c next slice (iteration 40 — delivered)
 
 1. ~~**BEHAVIOR bytecode operands**~~ — script char-range PCDs, more Eternity stack ops
-2. **Authority playsim tick polish** — authority event tails on pump, guest invasion apply wiring
-3. **Cross-language soak evidence** — evidence file freshness gate for committed templates
+2. ~~**Authority playsim tick polish**~~ — authority event tails on pump, guest invasion apply wiring
+3. ~~**Cross-language soak evidence**~~ — evidence file freshness gate for committed templates
+
+## Phase 2c next slice (iteration 41)
+
+1. **BEHAVIOR bytecode operands** — more ZDoom/Skulltag PCD table entries, enhanced-format operand coverage
+2. **Authority playsim tick polish** — invasion spawn-directory apply on guest pump, authority checksum tail polish
+3. **Cross-language soak evidence** — evidence staleness enforcement in main CI workflow
+
+### Evidence file freshness gate (Phase 2c — iteration 40 step 3)
+
+| Artifact | Location | C++ reference |
+| --- | --- | --- |
+| Evidence file reader | `CrossLanguageSoakManifest.TryReadHarnessEvidenceFiles` | `manifest.json` `EvidenceFile` entries |
+| Freshness policy | `CrossLanguageSoakGate.EvaluateEvidenceFreshness` | reject evidence older than max age |
+| Gate integration | `CrossLanguageSoakGate.Evaluate` | evidence check after manifest staleness |
+| Gate tests | `CrossLanguageSoakGateTests` | missing + stale + fresh evidence coverage |
+| Release checklist | `validation/soak/README.md` | `HCDE_SOAK_EVIDENCE_MAX_AGE_DAYS` docs |
+
+### Authority event tail + guest invasion apply (Phase 2c — iteration 40 step 2)
+
+| Artifact | Location | C++ reference |
+| --- | --- | --- |
+| Authority event queue | `GuestWorldStateStore.QueueAuthorityEvent` | `HCDEAppendAuthorityEvents` pending list |
+| Tail builder | `WorldStateTailBuilder.WriteCoopTailFromStore` | ships HCAV from pending authority events |
+| Guest invasion state | `GuestInvasionState` | `HCDEApplyInvasionSnapshot` mirror apply |
+| Guest wiring | `LiveGuestSession.SetGuestWorldState` | auto-wire `IInvasionSnapshotApplySink` |
+| E2E tests | `LiveSessionTests`, `WorldStateTailBuilderTests` | HCAV pump + HCIV invasion apply |
 
 ### BEHAVIOR script char-range + Eternity stack PCD operands (Phase 2c/2d — iteration 40 step 1)
 
@@ -920,6 +946,8 @@ Do **not** port snapshot encode/decode bodies until HCIN/HCSN headers are green.
 ## Audit conclusion (interim)
 
 **Phase 2b C# pregame stack is feature-complete for fresh dedicated joins** — loopback WAITING setup, verification-error replies, start-game, and a cross-language guest CLI/harness are in place. The remaining 2b gate is executing the harness against a real `hcdeserv` build and recording the result.
+
+**Phase 2c iteration 40** adds script char-range/Eternity stack PCD operand coverage, HCAV authority event tails on authority pump with guest invasion apply wiring, and evidence file freshness enforcement in the Passed soak gate.
 
 **Phase 2c iteration 39** adds script-array/stack PCD operand coverage, HCIV invasion tails on authority pump with guest presentation echo apply wiring, and manifest staleness enforcement in the Passed soak gate.
 
