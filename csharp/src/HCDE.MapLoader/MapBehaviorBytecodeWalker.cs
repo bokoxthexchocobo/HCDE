@@ -328,6 +328,8 @@ public static class MapBehaviorBytecodeWalker
             or (int)AcsPcode.EorWorldVar or (int)AcsPcode.EorGlobalVar or (int)AcsPcode.EorMapArray
             or (int)AcsPcode.EorWorldArray or (int)AcsPcode.EorGlobalArray or (int)AcsPcode.OrScriptVar
             or (int)AcsPcode.OrMapVar or (int)AcsPcode.OrWorldVar => 1,
+        313 or 314 or 315 or 316 or 317 or 318 or 319 or 320 or 321 or 322 or 323 or 324 or 325 or 326
+            => 1, // C++ Ls/Rs script/map/world/global var+array shift PCDs (shadow legacy IncWorldArray… enum aliases)
         (int)AcsPcode.NegateBinary or (int)AcsPcode.GetActorPitch or (int)AcsPcode.SetActorPitch
             or (int)AcsPcode.PrintBind or (int)AcsPcode.SetActorState or (int)AcsPcode.ThingDamage2 => 0,
         (int)AcsPcode.UseInventory or (int)AcsPcode.UseActorInventory
@@ -512,6 +514,8 @@ public static class MapBehaviorBytecodeWalker
             or (int)AcsPcode.EorWorldVar or (int)AcsPcode.EorGlobalVar or (int)AcsPcode.EorMapArray
             or (int)AcsPcode.EorWorldArray or (int)AcsPcode.EorGlobalArray or (int)AcsPcode.OrScriptVar
             or (int)AcsPcode.OrMapVar or (int)AcsPcode.OrWorldVar => 1,
+        313 or 314 or 315 or 316 or 317 or 318 or 319 or 320 or 321 or 322 or 323 or 324 or 325 or 326
+            => 1, // C++ Ls/Rs script/map/world/global var+array shift PCDs (shadow legacy IncWorldArray… enum aliases)
         346 or 347 => 0, // C++ PCD_CHECKPLAYERCAMERA / PCD_GETPLAYERINPUT (shadow legacy GetPlayerInput enum alias)
         (int)AcsPcode.NegateBinary or (int)AcsPcode.GetActorPitch or (int)AcsPcode.SetActorPitch
             or (int)AcsPcode.PrintBind or (int)AcsPcode.SetActorState or (int)AcsPcode.ThingDamage2 => 0,

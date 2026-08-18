@@ -1209,6 +1209,53 @@ public class MapBehaviorBytecodeWalkerTests
     }
 
     [Fact]
+    public void TryWalkScript_OldFormat_ReadsBitwiseShiftAndEternityStackOps()
+    {
+        var lump = TestWadBuilder.BuildBehaviorLump(
+            MapBehaviorFormat.AcsOld,
+            scriptCount: 1,
+            includeTerminateBytecode: false,
+            bytecodeOpcodes:
+            [
+                313, 0, // PCD_LSSCRIPTVAR wire (shadows IncWorldArray enum alias)
+                317, 1, // PCD_LSSCRIPTARRAY wire
+                321, 2, // PCD_RSSCRIPTVAR wire
+                325, 3, // PCD_RSSCRIPTARRAY wire
+                (int)AcsPcode.PushFunction, 4,
+                (int)AcsPcode.CallStack,
+                (int)AcsPcode.GotoStack,
+                (int)AcsPcode.Terminate,
+            ]);
+        Assert.True(MapBehaviorCodec.TryProbe(lump, out var record, out _));
+        Assert.True(MapBehaviorDirectoryCodec.TryReadScripts(
+            record.Data,
+            record.Format,
+            record.DirectoryOffset,
+            out var scripts,
+            out _));
+        Assert.Single(scripts);
+
+        Assert.True(MapBehaviorBytecodeWalker.TryWalkScript(
+            record.Data,
+            record.Format,
+            scripts[0].Address,
+            out var instructions,
+            out var terminated,
+            out _));
+
+        Assert.True(terminated);
+        Assert.Equal(8, instructions.Count);
+        Assert.Equal(313, instructions[0].Opcode);
+        Assert.Equal(1, instructions[0].OperandWordCount);
+        Assert.Equal(317, instructions[1].Opcode);
+        Assert.Equal(321, instructions[2].Opcode);
+        Assert.Equal(325, instructions[3].Opcode);
+        Assert.Equal((int)AcsPcode.PushFunction, instructions[4].Opcode);
+        Assert.Equal((int)AcsPcode.CallStack, instructions[5].Opcode);
+        Assert.Equal((int)AcsPcode.GotoStack, instructions[6].Opcode);
+    }
+
+    [Fact]
     public void TryDecode_IncludesScriptBytecodeBodies()
     {
         var wad = TestWadBuilder.BuildMinimalMapWad("MAP01", includeBehavior: true);
