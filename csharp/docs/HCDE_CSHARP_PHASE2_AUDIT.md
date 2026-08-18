@@ -1,7 +1,7 @@
 # HCDE C# Migration — Phase 2 Principal Audit
 
 **Last updated:** 2026-08-18  
-**Status:** In progress — Phase **2c** live protocol codecs (iteration 52 complete). Phase **2b** verification errors, start-game, bootstrap/resync, and cross-language harness complete. Phase **2b** verification errors, start-game, bootstrap/resync, and cross-language harness complete.  
+**Status:** In progress — Phase **2c** live protocol codecs (iteration 53 complete). Phase **2b** verification errors, start-game, bootstrap/resync, and cross-language harness complete. Phase **2b** verification errors, start-game, bootstrap/resync, and cross-language harness complete.  
 **Prerequisite:** [Phase 1 audit](HCDE_CSHARP_PHASE1_AUDIT.md) (complete)  
 **Related:** [`HCDE_CSHARP_MIGRATION.md`](HCDE_CSHARP_MIGRATION.md) · [`HCDE_NETCODE.md`](../../docs/HCDE_NETCODE.md)
 
@@ -689,11 +689,45 @@ Phase 2b is complete when **all** hold:
 2. ~~**Authority playsim tick polish**~~ — coop/invasion line-spec gap resync follow-ups, echo tail polish
 3. ~~**Cross-language soak evidence**~~ — manifest staleness gate in main CI workflow
 
-## Phase 2c next slice (iteration 53)
+## Phase 2c next slice (iteration 53 — delivered)
 
-1. **BEHAVIOR bytecode operands** — mouse/input follow-up PCDs, more Eternity stack ops
-2. **Authority playsim tick polish** — invasion actor-delta gap resync follow-ups, line-spec tail polish
+1. ~~**BEHAVIOR bytecode operands**~~ — mouse/input follow-up PCDs, more Eternity stack ops
+2. ~~**Authority playsim tick polish**~~ — invasion actor-delta gap resync follow-ups, line-spec tail polish
+3. ~~**Cross-language soak evidence**~~ — stale manifest rejection gate in main CI workflow
+
+## Phase 2c next slice (iteration 54)
+
+1. **BEHAVIOR bytecode operands** — bitwise shift PCDs, more Eternity stack ops
+2. **Authority playsim tick polish** — coop actor-delta gap resync follow-ups, authority-event tail polish
 3. **Cross-language soak evidence** — next CI freshness gate
+
+### Stale manifest rejection main CI gate (Phase 2c — iteration 53 step 3)
+
+| Artifact | Location | C++ reference |
+| --- | --- | --- |
+| Stale manifest rejection | `CrossLanguageSoakGate.Evaluate` | reject manifests older than max age |
+| Main CI workflow | `.github/workflows/csharp.yml` | `Evaluate_FailsWhenManifestIsStale` step |
+| Gate tests | `CrossLanguageSoakGateTests` | `Evaluate_FailsWhenManifestIsStale` |
+| Release checklist | `validation/soak/README.md` | main CI stale manifest rejection docs |
+
+### Invasion actor-delta gap resync follow-ups + line-spec tail polish (Phase 2c — iteration 53 step 2)
+
+| Artifact | Location | C++ reference |
+| --- | --- | --- |
+| Line-spec tail polish | `SnapshotChecksumLineSpecPolicy.PolishRollingHashWithActorDelta` | fold actor-delta into line-spec hash |
+| Actor-delta commit polish | `GuestWorldStateStore.CommitAppliedActorDeltas` | polish line-spec rolling hash on HCDA apply |
+| Invasion actor-delta mismatch | `SnapshotChecksumMismatchPolicy.ShouldTriggerNetGapResyncOnInvasionActorDeltaMismatch` | net gap resync when invasion actor category mismatches |
+| Guest pump wiring | `LiveGuestSession.TryApplyTailSections` | tracks invasion actor-delta mismatch gap resync follow-ups |
+| E2E tests | `SnapshotChecksumLineSpecPolicyTests`, `SnapshotChecksumMismatchPolicyTests`, `GuestWorldStateChecksumIntegrationTests` | line-spec polish + invasion actor-delta mismatch gap resync |
+
+### BEHAVIOR input follow-up + Eternity bitwise stack PCD operands (Phase 2c/2d — iteration 53 step 1)
+
+| Artifact | Location | C++ reference |
+| --- | --- | --- |
+| Bitwise opcodes | `AcsPcode.cs` | `PCD_ANDSCRIPTVAR`…`PCD_ORWORLDVAR` |
+| Input wire-value skips | `MapBehaviorBytecodeWalker.cs` | C++ wire values for CheckPlayerCamera/GetPlayerInput |
+| Operand skip table | `MapBehaviorBytecodeWalker.cs` | old + little-enhanced bitwise + input follow-up skips |
+| Walk tests | `MapBehaviorBytecodeWalkerTests` | `TryWalkScript_OldFormat_ReadsInputFollowUpAndBitwiseStackOps` |
 
 ### Manifest staleness main CI gate (Phase 2c — iteration 52 step 3)
 
