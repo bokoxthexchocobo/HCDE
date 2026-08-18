@@ -171,6 +171,8 @@ public sealed class GuestWorldStateStore : IWorldDeltaApplySink, IActorDeltaAppl
 
         var pending = _pendingCoopDeadSpawns.ToArray();
         _pendingCoopDeadSpawns.Clear();
+        foreach (var spawnIndex in pending)
+            _retiredCoopDeadSpawns.Add(spawnIndex);
         return pending;
     }
 

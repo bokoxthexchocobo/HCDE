@@ -710,6 +710,64 @@ public class LiveSessionTests
     }
 
     [Fact]
+    public void GuestAppliesPresentationEchoOnInvasionTailWhenWorldStateWired()
+    {
+        var gameId = new byte[] { 0xAA, 0xBB, 0xCC, 0xDD, 0x11, 0x22, 0x33, 0x44 };
+
+        using var authorityTransport = new UdpTransport();
+        using var guestTransport = new UdpTransport();
+        authorityTransport.Bind(0);
+        guestTransport.Bind(0);
+        authorityTransport.SetNonBlocking(true);
+        guestTransport.SetNonBlocking(true);
+
+        var authorityEndpoint = new NetworkEndpoint(System.Net.IPAddress.Loopback, authorityTransport.BoundPort);
+        var guestEndpoint = new NetworkEndpoint(System.Net.IPAddress.Loopback, guestTransport.BoundPort);
+
+        var guest = new LiveGuestSession(
+            guestTransport,
+            gameId,
+            authorityEndpoint,
+            guestPlayerSlot: 1,
+            authoritySlot: 0,
+            maxClients: 4);
+        guest.SetNegotiatedCapabilities(LiveConstants.DefaultLocalCapabilities);
+        guest.SetGuestWorldState(new GuestWorldStateStore(), new SnapshotChecksumSession());
+
+        Span<byte> tail = stackalloc byte[512];
+        var cursor = 0;
+        cursor += WorldDeltaChunkCodec.WriteEmpty(tail[cursor..], gameTic: 1);
+        cursor += InvasionSnapshotCodec.WriteV2(
+            tail[cursor..],
+            new InvasionSnapshotHeader(
+                flags: 0,
+                state: LiveConstants.InvasionStateSpawning,
+                stateTics: 1,
+                wave: 1,
+                maxWaves: 10,
+                waveBudget: 8,
+                waveSpawned: 0,
+                waveCleared: 0,
+                activeMonsters: 2));
+        cursor += PresentationEchoCodec.Write(tail[cursor..], PresentationEchoCodec.CreateExampleBlock());
+
+        var gameplay = new LiveGameplayEndpoint(authorityTransport, gameId);
+        Assert.True(gameplay.TrySendServerSnapshotWithExternalTail(
+            guestEndpoint,
+            roomId: 0,
+            gameTic: 1,
+            playerNum: 1,
+            externalTail: tail[..cursor]));
+
+        Assert.True(guest.TryReceiveServerSnapshot(out _, out _, out var tailSections));
+        Assert.NotNull(tailSections);
+        Assert.NotNull(tailSections!.Value.InvasionSnapshot);
+        Assert.NotNull(guest.PresentationEchoState);
+        Assert.NotNull(guest.PresentationEchoState!.LastInventoryItems);
+        Assert.NotEmpty(guest.PresentationEchoState.LastInventoryItems!);
+    }
+
+    [Fact]
     public void AuthorityInvasionPump_IncludesChecksumWhenWorldStateWired()
     {
         var wad = HCDE.MapLoader.Tests.TestWadBuilder.BuildMinimalMapWad("MAP01");

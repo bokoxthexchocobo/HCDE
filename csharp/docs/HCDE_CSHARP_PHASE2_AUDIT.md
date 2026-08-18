@@ -1,7 +1,7 @@
 # HCDE C# Migration — Phase 2 Principal Audit
 
 **Last updated:** 2026-08-18  
-**Status:** In progress — Phase **2c** live protocol codecs (iteration 44 complete). Phase **2b** verification errors, start-game, bootstrap/resync, and cross-language harness complete. Phase **2b** verification errors, start-game, bootstrap/resync, and cross-language harness complete.  
+**Status:** In progress — Phase **2c** live protocol codecs (iteration 45 step 1). Phase **2b** verification errors, start-game, bootstrap/resync, and cross-language harness complete. Phase **2b** verification errors, start-game, bootstrap/resync, and cross-language harness complete.  
 **Prerequisite:** [Phase 1 audit](HCDE_CSHARP_PHASE1_AUDIT.md) (complete)  
 **Related:** [`HCDE_CSHARP_MIGRATION.md`](HCDE_CSHARP_MIGRATION.md) · [`HCDE_NETCODE.md`](../../docs/HCDE_NETCODE.md)
 
@@ -643,9 +643,19 @@ Phase 2b is complete when **all** hold:
 
 ## Phase 2c next slice (iteration 45)
 
-1. **BEHAVIOR bytecode operands** — actor pitch/state PCDs, more Eternity stack ops
+1. ~~**BEHAVIOR bytecode operands**~~ — actor pitch/state PCDs, more Eternity stack ops
 2. **Authority playsim tick polish** — invasion embedded HCDS checksum polish, guest presentation echo apply wiring
 3. **Cross-language soak evidence** — committed template export freshness in main CI
+
+### BEHAVIOR actor pitch/state + Eternity shift PCD operands (Phase 2c/2d — iteration 45 step 1)
+
+| Artifact | Location | C++ reference |
+| --- | --- | --- |
+| Actor pitch/state opcodes | `AcsPcode.cs` | `PCD_GETACTORPITCH`…`PCD_SETACTORSTATE` |
+| Eternity shift opcodes | `AcsPcode.cs` | `PCD_LSSCRIPTVAR`…`PCD_RSGLOBALARRAY` |
+| Actor morph opcodes | `AcsPcode.cs` | `PCD_MORPHACTOR`, `PCD_UNMORPHACTOR`, `PCD_CLASSIFYACTOR` |
+| Operand skip table | `MapBehaviorBytecodeWalker.cs` | old + little-enhanced actor/shift skips |
+| Walk tests | `MapBehaviorBytecodeWalkerTests` | `TryWalkScript_OldFormat_ReadsActorPitchStateAndEternityShiftOps` |
 
 ### Dual freshness main CI gate (Phase 2c — iteration 44 step 3)
 
