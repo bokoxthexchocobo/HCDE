@@ -653,11 +653,49 @@ Phase 2b is complete when **all** hold:
 2. ~~**Authority playsim tick polish**~~ — invasion embedded HCDS gap resync, authority event tail checksum polish
 3. ~~**Cross-language soak evidence**~~ — export bundle freshness in soak CI workflow
 
-## Phase 2c next slice (iteration 47)
+## Phase 2c next slice (iteration 47 — delivered)
 
-1. **BEHAVIOR bytecode operands** — actor light/texture PCDs, more ZDoom morph ops
-2. **Authority playsim tick polish** — invasion embedded HCAV gap resync, actor-delta tail checksum polish
-3. **Cross-language soak evidence** — apply-bundle dual freshness in main CI workflow
+1. ~~**BEHAVIOR bytecode operands**~~ — actor light/texture PCDs, more ZDoom morph ops
+2. ~~**Authority playsim tick polish**~~ — invasion embedded HCAV gap resync, actor-delta tail checksum polish
+3. ~~**Cross-language soak evidence**~~ — apply-bundle dual freshness in main CI workflow
+
+## Phase 2c next slice (iteration 48)
+
+1. **BEHAVIOR bytecode operands** — spawn/projectile PCDs, more Eternity char-range ops
+2. **Authority playsim tick polish** — invasion embedded HCDA gap resync, presentation echo checksum polish
+3. **Cross-language soak evidence** — apply-bundle freshness in soak CI workflow
+
+### Apply-bundle dual freshness main CI gate (Phase 2c — iteration 47 step 3)
+
+| Artifact | Location | C++ reference |
+| --- | --- | --- |
+| Apply freshness gate | `CrossLanguageSoakEvidenceArchive.ApplyExportedTemplates` | reject stale export manifest/evidence before apply |
+| Dual freshness gate | `CrossLanguageSoakGate.EvaluateExportBundleDualFreshness` | manifest+evidence staleness before apply |
+| Main CI workflow | `.github/workflows/csharp.yml` | `ApplyExportedTemplates_RejectsStale` step |
+| Archive tests | `CrossLanguageSoakEvidenceArchiveTests` | stale export manifest and bundle evidence rejection |
+| Release checklist | `validation/soak/README.md` | main CI apply-bundle freshness docs |
+
+### Invasion HCAV gap resync + HCDA checksum polish (Phase 2c — iteration 47 step 2)
+
+| Artifact | Location | C++ reference |
+| --- | --- | --- |
+| HCDA rolling hash | `SnapshotChecksumActorDeltaPolicy.ComputeRollingHash` | fold shipped/applied HCDA into Actors HCKS |
+| Actor delta ship | `GuestWorldStateStore.MixShippedActorDeltas` | mix records into rolling hash on tail ship |
+| Actor delta apply | `GuestWorldStateStore.CommitAppliedActorDeltas` | mix records on guest invasion/coop apply |
+| Checksum mixer | `SnapshotChecksumMixer.ComputeAll` | mix `ActorDeltaRollingHash` into Actors category |
+| Invasion HCAV gap resync | `SnapshotChecksumMismatchPolicy.ShouldTriggerNetGapResyncOnInvasionAuthorityEventApply` | net gap resync when invasion HCAV applied without HCKS |
+| Guest pump wiring | `LiveGuestSession.TryApplyTailSections` | commits HCDA hash + invasion HCAV gap resync |
+| E2E tests | `SnapshotChecksumActorDeltaPolicyTests`, `LiveSessionTests` | HCDA checksum commit + invasion HCAV gap resync |
+
+### BEHAVIOR actor light/texture + morph PCD operands (Phase 2c/2d — iteration 47 step 1)
+
+| Artifact | Location | C++ reference |
+| --- | --- | --- |
+| Actor texture/light opcodes | `AcsPcode.cs` | `PCD_CHECKACTORCEILINGTEXTURE`…`PCD_GETACTORLIGHTLEVEL` |
+| Actor camera/position opcodes | `AcsPcode.cs` | `PCD_CHECKPLAYERCAMERA`, `PCD_SETACTORANGLE`, `PCD_SETACTORPOSITION` |
+| Morph opcodes | `AcsPcode.cs` | `PCD_MORPHACTOR`, `PCD_UNMORPHACTOR`, `PCD_CLASSIFYACTOR` |
+| Operand skip table | `MapBehaviorBytecodeWalker.cs` | old + little-enhanced actor texture/morph skips |
+| Walk tests | `MapBehaviorBytecodeWalkerTests` | `TryWalkScript_OldFormat_ReadsActorLightTextureAndMorphOps` |
 
 ### Export bundle freshness soak CI gate (Phase 2c — iteration 46 step 3)
 
