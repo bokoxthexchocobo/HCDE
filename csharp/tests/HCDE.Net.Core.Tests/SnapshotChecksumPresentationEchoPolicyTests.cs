@@ -30,4 +30,14 @@ public class SnapshotChecksumPresentationEchoPolicyTests
         Assert.Equal(first, second);
         Assert.NotEqual(0u, first);
     }
+
+    [Fact]
+    public void PolishRollingHash_MixesLineSpecTailWhenBothPresent()
+    {
+        var echoHash = SnapshotChecksumPresentationEchoPolicy.MixBlock(0, PresentationEchoCodec.CreateExampleBlock());
+        var polished = SnapshotChecksumPresentationEchoPolicy.PolishRollingHash(echoHash, lineSpecHash: 0x5A5A5A5Au);
+
+        Assert.NotEqual(echoHash, polished);
+        Assert.Equal(echoHash, SnapshotChecksumPresentationEchoPolicy.PolishRollingHash(echoHash, lineSpecHash: 0));
+    }
 }

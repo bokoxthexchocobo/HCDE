@@ -112,4 +112,19 @@ public static class SnapshotChecksumMismatchPolicy
         appliedInvasionLineSpec
         && !hasChecksum
         && policy == SnapshotChecksumMismatchPolicyKind.ResyncNetStateOnMismatch;
+
+    public static bool ShouldTriggerNetGapResyncOnCoopLineSpecApply(
+        bool appliedCoopLineSpec,
+        bool hasChecksum,
+        SnapshotChecksumMismatchPolicyKind policy) =>
+        appliedCoopLineSpec
+        && !hasChecksum
+        && policy == SnapshotChecksumMismatchPolicyKind.ResyncNetStateOnMismatch;
+
+    public static bool ShouldTriggerNetGapResyncOnInvasionLineSpecMismatch(
+        SnapshotChecksumApplyResult result,
+        bool appliedInvasionLineSpec,
+        SnapshotChecksumMismatchPolicyKind policy) =>
+        ShouldTriggerNetGapResyncOnLineSpecMismatch(result, policy)
+        && appliedInvasionLineSpec;
 }

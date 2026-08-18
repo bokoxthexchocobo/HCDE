@@ -50,4 +50,17 @@ public class SnapshotChecksumLineSpecPolicyTests
         Assert.NotEqual(before, store.LineSpecRollingHash);
         Assert.NotEqual(0u, store.PresentationEchoRollingHash);
     }
+
+    [Fact]
+    public void NoteLineSpec_PolishesPresentationEchoRollingHash()
+    {
+        var store = new GuestWorldStateStore();
+        store.CommitAppliedPresentationEcho(PresentationEchoCodec.CreateExampleBlock());
+        var before = store.PresentationEchoRollingHash;
+
+        store.NoteLineSpec(lineIndex: 3, special: 8, success: true);
+
+        Assert.NotEqual(before, store.PresentationEchoRollingHash);
+        Assert.NotEqual(0u, store.LineSpecRollingHash);
+    }
 }

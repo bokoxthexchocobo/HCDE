@@ -27,4 +27,12 @@ public static class SnapshotChecksumPresentationEchoPolicy
 
         return hash;
     }
+
+    public static uint PolishRollingHash(uint echoHash, uint lineSpecHash)
+    {
+        if (echoHash == 0 || lineSpecHash == 0)
+            return echoHash;
+
+        return SnapshotChecksumMixer.MixU32(echoHash, lineSpecHash);
+    }
 }

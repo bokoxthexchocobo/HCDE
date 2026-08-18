@@ -274,6 +274,7 @@ public sealed class LiveGuestSession
         var appliedInvasionActorDeltas = false;
         var appliedInvasionPresentationEcho = false;
         var appliedInvasionLineSpec = false;
+        var appliedCoopLineSpec = false;
         var appliedPresentationEcho = false;
         if (sections.InvasionSnapshot is { } invasionHeader)
         {
@@ -353,6 +354,9 @@ public sealed class LiveGuestSession
 
                 _guestWorldState?.CommitAppliedAuthorityEvents(authorityRecords);
             }
+
+            if (_guestWorldState is { LineSpecRollingHash: not 0 })
+                appliedCoopLineSpec = true;
         }
 
         if (sections.EchoBlock is { } echoBlock && _echoSink != null)
@@ -450,6 +454,28 @@ public sealed class LiveGuestSession
         if (SnapshotChecksumMismatchPolicy.ShouldTriggerNetGapResyncOnInvasionLineSpecApply(
                 appliedInvasionLineSpec,
                 sections.HasChecksum,
+                _checksumMismatchPolicy))
+        {
+            _needsNetGapResync = true;
+        }
+
+        if (SnapshotChecksumMismatchPolicy.ShouldTriggerNetGapResyncOnCoopLineSpecApply(
+                appliedCoopLineSpec,
+                sections.HasChecksum,
+                _checksumMismatchPolicy))
+        {
+            _needsNetGapResync = true;
+        }
+
+        if (_lastChecksumApplyState.Compared
+            && SnapshotChecksumMismatchPolicy.ShouldTriggerNetGapResyncOnInvasionLineSpecMismatch(
+                new SnapshotChecksumApplyResult(
+                    _lastChecksumApplyState.Compared,
+                    _lastChecksumApplyState.MismatchCount,
+                    _lastChecksumApplyState.LocalBucketMissing,
+                    hasActorCategoryMismatch: _lastChecksumApplyState.HasActorCategoryMismatch,
+                    hasLineSpecCategoryMismatch: _lastChecksumApplyState.HasLineSpecCategoryMismatch),
+                appliedInvasionLineSpec,
                 _checksumMismatchPolicy))
         {
             _needsNetGapResync = true;

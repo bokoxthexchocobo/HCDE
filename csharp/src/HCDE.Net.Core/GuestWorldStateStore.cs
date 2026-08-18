@@ -225,6 +225,11 @@ public sealed class GuestWorldStateStore : IWorldDeltaApplySink, IActorDeltaAppl
             _presentationEchoRollingHash);
     }
 
-    public void NoteLineSpec(int lineIndex, int special, bool success) =>
+    public void NoteLineSpec(int lineIndex, int special, bool success)
+    {
         _lineSpecRollingHash = SnapshotChecksumLineSpecPolicy.MixRecord(_lineSpecRollingHash, lineIndex, special, success);
+        _presentationEchoRollingHash = SnapshotChecksumPresentationEchoPolicy.PolishRollingHash(
+            _presentationEchoRollingHash,
+            _lineSpecRollingHash);
+    }
 }

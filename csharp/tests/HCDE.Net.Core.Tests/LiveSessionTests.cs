@@ -467,6 +467,55 @@ public class LiveSessionTests
     }
 
     [Fact]
+    public void GuestCoopLineSpecWithoutChecksum_TriggersNetGapResync()
+    {
+        var gameId = new byte[] { 0xAA, 0xBB, 0xCC, 0xDD, 0x11, 0x22, 0x33, 0x44 };
+
+        using var authorityTransport = new UdpTransport();
+        using var guestTransport = new UdpTransport();
+        authorityTransport.Bind(0);
+        guestTransport.Bind(0);
+        authorityTransport.SetNonBlocking(true);
+        guestTransport.SetNonBlocking(true);
+
+        var authorityEndpoint = new NetworkEndpoint(System.Net.IPAddress.Loopback, authorityTransport.BoundPort);
+        var guestEndpoint = new NetworkEndpoint(System.Net.IPAddress.Loopback, guestTransport.BoundPort);
+
+        var guestStore = new GuestWorldStateStore();
+        guestStore.NoteLineSpec(lineIndex: 2, special: 4, success: true);
+        var guest = new LiveGuestSession(
+            guestTransport,
+            gameId,
+            authorityEndpoint,
+            guestPlayerSlot: 1,
+            authoritySlot: 0,
+            maxClients: 4);
+        guest.ChecksumMismatchPolicy = SnapshotChecksumMismatchPolicyKind.ResyncNetStateOnMismatch;
+        guest.SetGuestWorldState(guestStore, new SnapshotChecksumSession());
+
+        Span<byte> tail = stackalloc byte[512];
+        var cursor = 0;
+        cursor += WorldDeltaChunkCodec.WriteEmpty(tail[cursor..], gameTic: 1);
+        cursor += ActorDeltasCodec.WriteEmpty(tail[cursor..]);
+        cursor += PresentationEchoCodec.WriteMinimal(tail[cursor..]);
+
+        var gameplay = new LiveGameplayEndpoint(authorityTransport, gameId);
+        Assert.True(gameplay.TrySendServerSnapshotWithExternalTail(
+            guestEndpoint,
+            roomId: 0,
+            gameTic: 1,
+            playerNum: 1,
+            externalTail: tail[..cursor]));
+
+        Assert.True(guest.TryReceiveServerSnapshot(out _, out _, out var tailSections));
+        Assert.NotNull(tailSections);
+        Assert.Null(tailSections!.Value.InvasionSnapshot);
+        Assert.False(tailSections.Value.HasChecksum);
+        Assert.NotEqual(0u, guestStore.LineSpecRollingHash);
+        Assert.True(guest.NeedsNetGapResync);
+    }
+
+    [Fact]
     public void AuthorityPump_SendsAuthorityEventTailViaPump()
     {
         var wad = HCDE.MapLoader.Tests.TestWadBuilder.BuildMinimalMapWad("MAP01");
