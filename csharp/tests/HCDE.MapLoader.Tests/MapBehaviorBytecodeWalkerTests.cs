@@ -1163,6 +1163,52 @@ public class MapBehaviorBytecodeWalkerTests
     }
 
     [Fact]
+    public void TryWalkScript_OldFormat_ReadsInputFollowUpAndBitwiseStackOps()
+    {
+        var lump = TestWadBuilder.BuildBehaviorLump(
+            MapBehaviorFormat.AcsOld,
+            scriptCount: 1,
+            includeTerminateBytecode: false,
+            bytecodeOpcodes:
+            [
+                (int)AcsPcode.GrabInput,
+                (int)AcsPcode.SetMousePointer,
+                (int)AcsPcode.AndScriptVar, 0,
+                (int)AcsPcode.EorMapVar, 1,
+                (int)AcsPcode.OrWorldVar, 2,
+                308, 3, // PCD_ORGLOBALVAR wire (shadows AddWorldArray enum alias)
+                346, // PCD_CHECKPLAYERCAMERA wire
+                347, // PCD_GETPLAYERINPUT wire (shadows GetPlayerInput enum alias)
+                (int)AcsPcode.PushFunction, 4,
+                (int)AcsPcode.Terminate,
+            ]);
+        Assert.True(MapBehaviorCodec.TryProbe(lump, out var record, out _));
+        Assert.True(MapBehaviorDirectoryCodec.TryReadScripts(
+            record.Data,
+            record.Format,
+            record.DirectoryOffset,
+            out var scripts,
+            out _));
+        Assert.Single(scripts);
+
+        Assert.True(MapBehaviorBytecodeWalker.TryWalkScript(
+            record.Data,
+            record.Format,
+            scripts[0].Address,
+            out var instructions,
+            out var terminated,
+            out _));
+
+        Assert.True(terminated);
+        Assert.Equal(10, instructions.Count);
+        Assert.Equal((int)AcsPcode.GrabInput, instructions[0].Opcode);
+        Assert.Equal((int)AcsPcode.AndScriptVar, instructions[2].Opcode);
+        Assert.Equal(346, instructions[6].Opcode);
+        Assert.Equal(347, instructions[7].Opcode);
+        Assert.Equal((int)AcsPcode.PushFunction, instructions[8].Opcode);
+    }
+
+    [Fact]
     public void TryDecode_IncludesScriptBytecodeBodies()
     {
         var wad = TestWadBuilder.BuildMinimalMapWad("MAP01", includeBehavior: true);

@@ -300,7 +300,8 @@ public static class MapBehaviorBytecodeWalker
         (int)AcsPcode.SetThingSpecial => 0,
         261 or 262 or 264 or 265 or 266 or 267 or 268 or 269 or 270 or 271 or 272
             or 273 or 274 or 275 or 277 or 278 or 279 or 281 or 290
-            => 0, // C++ sector/level/player PCDs (shadow legacy global-var enum aliases)
+            or 346 or 347
+            => 0, // C++ sector/level/input PCDs (shadow legacy global-var enum aliases)
         (int)AcsPcode.AddGlobalVar or (int)AcsPcode.SubGlobalVar or (int)AcsPcode.MulGlobalVar
             or (int)AcsPcode.DivGlobalVar or (int)AcsPcode.ModGlobalVar
             or (int)AcsPcode.IncGlobalVar or (int)AcsPcode.DecGlobalVar => 1,
@@ -320,7 +321,12 @@ public static class MapBehaviorBytecodeWalker
             or (int)AcsPcode.PrintWorldCharArray or (int)AcsPcode.PrintGlobalCharArray
             or (int)AcsPcode.GrabInput or (int)AcsPcode.SetMousePointer
             or (int)AcsPcode.MoveMousePointer or (int)AcsPcode.GetSectorLightLevel
-            or (int)AcsPcode.PlayerClass => 0,
+            or (int)AcsPcode.PlayerClass or (int)AcsPcode.AndScriptVar or (int)AcsPcode.AndMapVar
+            or (int)AcsPcode.AndWorldVar or (int)AcsPcode.AndGlobalVar or (int)AcsPcode.AndMapArray
+            or (int)AcsPcode.AndWorldArray or (int)AcsPcode.AndGlobalArray or (int)AcsPcode.EorScriptVar
+            or (int)AcsPcode.EorMapVar or (int)AcsPcode.EorWorldVar or (int)AcsPcode.EorGlobalVar
+            or (int)AcsPcode.EorMapArray or (int)AcsPcode.EorWorldArray or (int)AcsPcode.EorGlobalArray
+            or (int)AcsPcode.OrScriptVar or (int)AcsPcode.OrMapVar or (int)AcsPcode.OrWorldVar => 1,
         (int)AcsPcode.NegateBinary or (int)AcsPcode.GetActorPitch or (int)AcsPcode.SetActorPitch
             or (int)AcsPcode.PrintBind or (int)AcsPcode.SetActorState or (int)AcsPcode.ThingDamage2 => 0,
         (int)AcsPcode.UseInventory or (int)AcsPcode.UseActorInventory
@@ -498,7 +504,13 @@ public static class MapBehaviorBytecodeWalker
             or (int)AcsPcode.PrintWorldCharArray or (int)AcsPcode.PrintGlobalCharArray
             or (int)AcsPcode.GrabInput or (int)AcsPcode.SetMousePointer
             or (int)AcsPcode.MoveMousePointer or (int)AcsPcode.GetSectorLightLevel
-            or (int)AcsPcode.PlayerClass => 0,
+            or (int)AcsPcode.PlayerClass or (int)AcsPcode.AndScriptVar or (int)AcsPcode.AndMapVar
+            or (int)AcsPcode.AndWorldVar or (int)AcsPcode.AndGlobalVar or (int)AcsPcode.AndMapArray
+            or (int)AcsPcode.AndWorldArray or (int)AcsPcode.AndGlobalArray or (int)AcsPcode.EorScriptVar
+            or (int)AcsPcode.EorMapVar or (int)AcsPcode.EorWorldVar or (int)AcsPcode.EorGlobalVar
+            or (int)AcsPcode.EorMapArray or (int)AcsPcode.EorWorldArray or (int)AcsPcode.EorGlobalArray
+            or (int)AcsPcode.OrScriptVar or (int)AcsPcode.OrMapVar or (int)AcsPcode.OrWorldVar => 1,
+        346 or 347 => 0, // C++ PCD_CHECKPLAYERCAMERA / PCD_GETPLAYERINPUT (shadow legacy GetPlayerInput enum alias)
         (int)AcsPcode.NegateBinary or (int)AcsPcode.GetActorPitch or (int)AcsPcode.SetActorPitch
             or (int)AcsPcode.PrintBind or (int)AcsPcode.SetActorState or (int)AcsPcode.ThingDamage2 => 0,
         (int)AcsPcode.UseInventory or (int)AcsPcode.UseActorInventory
