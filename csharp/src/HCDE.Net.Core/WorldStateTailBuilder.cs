@@ -120,7 +120,11 @@ public static class WorldStateTailBuilder
         uint gameTic,
         InvasionSnapshotHeader invasionSnapshot,
         uint[]? checksumHashes = null)
-        => ServerSnapshotTailCodec.WriteInvasionShipping(tail, gameTic, invasionSnapshot, checksumHashes);
+        => ServerSnapshotTailCodec.WriteInvasionShipping(
+            tail,
+            gameTic,
+            invasionSnapshot,
+            checksumHashes: checksumHashes);
 
     public static WorldStateTailBuildResult TryBuildInvasionTail(
         Span<byte> tail,
@@ -155,5 +159,84 @@ public static class WorldStateTailBuilder
     {
         var checksumHashes = TryComputeChecksumHashes(store, checksumSession, (int)gameTic, rngSeed);
         return TryBuildInvasionTail(tail, gameTic, invasionSnapshot, checksumHashes);
+    }
+
+    public static WorldStateTailBuildResult TryBuildMergedInvasionCoopTail(
+        Span<byte> tail,
+        GuestWorldStateStore store,
+        SnapshotChecksumSession? checksumSession,
+        uint gameTic,
+        InvasionSnapshotHeader invasionSnapshot,
+        int rngSeed = 0,
+        bool replicateSectorMetadata = false)
+    {
+        var poses = CollectPoses(store);
+        var sectors = CollectSectors(store, replicateSectorMetadata);
+        var embeddedAuthorityEvents = store.TakePendingAuthorityEventsForTail();
+        var checksumHashes = TryComputeChecksumHashes(store, checksumSession, (int)gameTic, rngSeed);
+        var written = ServerSnapshotTailCodec.WriteInvasionShipping(
+            tail,
+            gameTic,
+            invasionSnapshot,
+            poses,
+            sectors,
+            embeddedAuthorityEvents,
+            checksumHashes);
+        return new WorldStateTailBuildResult(written > 0, written);
+    }
+
+    private static PlayerPoseWorldDelta[] CollectPoses(GuestWorldStateStore store)
+    {
+        var poses = new PlayerPoseWorldDelta[store.Players.Count];
+        var poseIndex = 0;
+        foreach (var player in store.Players.Values.OrderBy(static p => p.PlayerNum))
+        {
+            var flags = LiveConstants.ServerWorldDeltaPoseHasActor;
+            if (player.OnGround)
+                flags |= LiveConstants.ServerWorldDeltaPoseOnGround;
+
+            poses[poseIndex++] = new PlayerPoseWorldDelta(
+                player.PlayerNum,
+                flags,
+                player.Health,
+                armor: 0,
+                posX: 0,
+                posY: 0,
+                posZ: 0,
+                velX: 0,
+                velY: 0,
+                velZ: 0,
+                yawBams: 0,
+                pitchBams: 0);
+        }
+
+        return poses;
+    }
+
+    private static SectorWorldDelta[] CollectSectors(
+        GuestWorldStateStore store,
+        bool replicateSectorMetadata)
+    {
+        var sectors = new SectorWorldDelta[store.Sectors.Count];
+        var sectorIndex = 0;
+        foreach (var sector in store.Sectors.Values.OrderBy(static s => s.SectorIndex))
+        {
+            byte flags = 0;
+            if (replicateSectorMetadata)
+            {
+                flags |= LiveConstants.ServerWorldDeltaSectorHasLight;
+                flags |= LiveConstants.ServerWorldDeltaSectorHasSpecial;
+            }
+
+            sectors[sectorIndex++] = new SectorWorldDelta(
+                sector.SectorIndex,
+                flags,
+                sector.Floor,
+                sector.Ceiling,
+                sector.LightLevel,
+                sector.Special);
+        }
+
+        return sectors;
     }
 }

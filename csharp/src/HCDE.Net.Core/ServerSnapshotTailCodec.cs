@@ -135,10 +135,22 @@ public static class ServerSnapshotTailCodec
         Span<byte> tail,
         uint gameTic,
         InvasionSnapshotHeader invasionSnapshot,
+        ReadOnlySpan<PlayerPoseWorldDelta> poses = default,
+        ReadOnlySpan<SectorWorldDelta> sectors = default,
+        ReadOnlySpan<AuthorityEventRecord> embeddedAuthorityEvents = default,
         uint[]? checksumHashes = null)
     {
-        var required = WorldDeltaChunkCodec.MinChunkSize(0, 0)
+        var authorityEventSize = 0;
+        if (!embeddedAuthorityEvents.IsEmpty)
+        {
+            authorityEventSize = LiveConstants.AuthorityEventsHeaderSize;
+            foreach (var record in embeddedAuthorityEvents)
+                authorityEventSize += AuthorityEventRecord.MinRecordSize(record.ClassName);
+        }
+
+        var required = WorldDeltaChunkCodec.MinChunkSize((byte)poses.Length, (byte)sectors.Length)
             + LiveConstants.InvasionSnapshotHeaderV2Size
+            + authorityEventSize
             + LiveConstants.PresentationEchoMinHeaderSize
             + (checksumHashes is { Length: LiveConstants.SnapshotChecksumCategoryCount }
                 ? LiveConstants.SnapshotChecksumBlockSize
@@ -147,12 +159,17 @@ public static class ServerSnapshotTailCodec
             return 0;
 
         var cursor = 0;
-        var worldDeltaWritten = WorldDeltaChunkCodec.WriteEmpty(tail[cursor..], gameTic);
+        var worldDeltaWritten = poses.Length == 0 && sectors.Length == 0
+            ? WorldDeltaChunkCodec.WriteEmpty(tail[cursor..], gameTic)
+            : WorldDeltaChunkCodec.Write(tail[cursor..], flags: 0, gameTic, poses, sectors);
         if (worldDeltaWritten == 0)
             return 0;
 
         cursor += worldDeltaWritten;
-        var invasionWritten = InvasionSnapshotCodec.WriteEmptyV2(tail[cursor..], invasionSnapshot);
+        var invasionWritten = InvasionSnapshotCodec.WriteV2(
+            tail[cursor..],
+            invasionSnapshot,
+            embeddedAuthorityEvents);
         if (invasionWritten == 0)
             return 0;
 

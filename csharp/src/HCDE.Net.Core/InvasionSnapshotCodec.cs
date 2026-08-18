@@ -171,10 +171,38 @@ public readonly struct InvasionSnapshotHeader
 
 public static class InvasionSnapshotCodec
 {
-    public static int WriteEmptyV2(Span<byte> chunk, InvasionSnapshotHeader header)
+    public static int WriteEmptyV2(Span<byte> chunk, InvasionSnapshotHeader header) =>
+        WriteV2(chunk, header);
+
+    public static int WriteV2(
+        Span<byte> chunk,
+        InvasionSnapshotHeader header,
+        ReadOnlySpan<AuthorityEventRecord> embeddedAuthorityEvents = default,
+        ReadOnlySpan<ActorDeltaRecord> embeddedActorDeltas = default)
     {
-        var written = InvasionSnapshotHeader.Write(chunk, header);
-        return written == 0 ? 0 : written;
+        var cursor = InvasionSnapshotHeader.Write(chunk, header);
+        if (cursor == 0)
+            return 0;
+
+        if (!embeddedAuthorityEvents.IsEmpty)
+        {
+            var authorityWritten = AuthorityEventsCodec.Write(chunk[cursor..], embeddedAuthorityEvents);
+            if (authorityWritten == 0)
+                return 0;
+
+            cursor += authorityWritten;
+        }
+
+        if (!embeddedActorDeltas.IsEmpty)
+        {
+            var actorWritten = ActorDeltasCodec.Write(chunk[cursor..], embeddedActorDeltas);
+            if (actorWritten == 0)
+                return 0;
+
+            cursor += actorWritten;
+        }
+
+        return cursor;
     }
 
     public static bool TryReadBlock(

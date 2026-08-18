@@ -23,6 +23,7 @@ public sealed class LiveGuestSession
     private GuestWorldStateStore? _guestWorldState;
     private GuestPresentationEchoState? _presentationEchoState;
     private GuestInvasionState? _invasionState;
+    private GuestAuthorityEventState? _authorityEventState;
     private int _guestWorldStateRngSeed;
     private SnapshotChecksumMismatchPolicyKind _checksumMismatchPolicy = SnapshotChecksumMismatchPolicyKind.ReportAllCompared;
     private GuestChecksumApplyState _lastChecksumApplyState;
@@ -97,13 +98,16 @@ public sealed class LiveGuestSession
 
     public GuestInvasionState? InvasionState => _invasionState;
 
+    public GuestAuthorityEventState? AuthorityEventState => _authorityEventState;
+
     public void SetGuestWorldState(
         GuestWorldStateStore worldState,
         SnapshotChecksumSession checksumSession,
         int rngSeed = 0,
         ISnapshotChecksumMismatchSink? mismatchSink = null,
         GuestPresentationEchoState? presentationEchoState = null,
-        GuestInvasionState? invasionState = null)
+        GuestInvasionState? invasionState = null,
+        GuestAuthorityEventState? authorityEventState = null)
     {
         _guestWorldState = worldState;
         _guestWorldStateRngSeed = rngSeed;
@@ -115,6 +119,8 @@ public sealed class LiveGuestSession
         _echoSink = _presentationEchoState;
         _invasionState = invasionState ?? new GuestInvasionState();
         _invasionSink = _invasionState;
+        _authorityEventState = authorityEventState ?? new GuestAuthorityEventState();
+        _authoritySink = _authorityEventState;
     }
 
     public void SetApplySinks(
@@ -480,13 +486,24 @@ public sealed class LiveAuthoritySession
             if (_authorityInvasionSnapshot is { } invasionSnapshot)
             {
                 Span<byte> tail = stackalloc byte[512];
-                var tailBuild = WorldStateTailBuilder.TryBuildInvasionTailWithChecksum(
-                    tail,
-                    _authorityWorldState,
-                    _checksumSession,
-                    _gameTic,
-                    invasionSnapshot,
-                    _authorityWorldStateRngSeed);
+                var tailBuild = WorldStateTailMergePolicy.ShouldMergeCoopIntoInvasion(
+                        invasionSnapshot,
+                        _authorityWorldState)
+                    ? WorldStateTailBuilder.TryBuildMergedInvasionCoopTail(
+                        tail,
+                        _authorityWorldState!,
+                        _checksumSession,
+                        _gameTic,
+                        invasionSnapshot,
+                        _authorityWorldStateRngSeed,
+                        _replicateSectorMetadata)
+                    : WorldStateTailBuilder.TryBuildInvasionTailWithChecksum(
+                        tail,
+                        _authorityWorldState,
+                        _checksumSession,
+                        _gameTic,
+                        invasionSnapshot,
+                        _authorityWorldStateRngSeed);
                 if (tailBuild.HasTail)
                 {
                     _gameplay.TrySendServerSnapshotWithExternalTail(

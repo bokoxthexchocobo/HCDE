@@ -79,6 +79,42 @@ public class WorldStateTailBuilderTests
     }
 
     [Fact]
+    public void TryBuildMergedInvasionCoopTail_IncludesWorldDeltaAndEmbeddedHcav()
+    {
+        var store = new GuestWorldStateStore();
+        store.SeedPlayer(playerNum: 0, health: 66);
+        store.SeedMapSector(sectorIndex: 1, floorHeight: 0, ceilingHeight: 128, lightLevel: 160, special: 0);
+        store.QueueAuthorityEvent(AuthorityEventsCodec.CreateSpawnExample("Imp", actorId: 33));
+
+        var invasionHeader = new InvasionSnapshotHeader(
+            flags: 0,
+            state: LiveConstants.InvasionStateSpawning,
+            stateTics: 1,
+            wave: 1,
+            maxWaves: 10,
+            waveBudget: 8,
+            waveSpawned: 0,
+            waveCleared: 0,
+            activeMonsters: 2);
+
+        Span<byte> tail = stackalloc byte[512];
+        var build = WorldStateTailBuilder.TryBuildMergedInvasionCoopTail(
+            tail,
+            store,
+            checksumSession: null,
+            gameTic: 8,
+            invasionHeader);
+        Assert.True(build.HasTail);
+        Assert.True(ServerSnapshotTailWalker.TryWalk(tail[..build.BytesWritten], out var sections, out _, out _));
+        Assert.NotNull(sections.InvasionSnapshot);
+        Assert.NotNull(sections.WorldDeltaSectors);
+        Assert.Single(sections.WorldDeltaSectors!);
+        Assert.NotNull(sections.AuthorityEventRecords);
+        Assert.Single(sections.AuthorityEventRecords!);
+        Assert.Equal(33u, sections.AuthorityEventRecords![0].ActorId);
+    }
+
+    [Fact]
     public void TryBuildInvasionTailWithChecksum_IncludesHcksWhenStoreProvided()
     {
         var store = new GuestWorldStateStore();
