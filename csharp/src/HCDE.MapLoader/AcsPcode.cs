@@ -207,4 +207,12 @@ public enum AcsPcode : int
     ModGlobalArray = 245,
     IncGlobalArray = 246,
     DecGlobalArray = 248,
+    GetActorZ = 198,
+    GetActorFloorZ = 259,
+    GetActorAngle = 260,
+    GetActorCeilingZ = 282,
+    SetActorProperty = 325,
+    GetActorProperty = 326,
+    SetGravityDirectB = 327,
+    SetAirControlDirectB = 328,
 }

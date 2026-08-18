@@ -542,6 +542,90 @@ public class MapBehaviorBytecodeWalkerTests
     }
 
     [Fact]
+    public void TryWalkScript_OldFormat_ReadsActorPropertyAndGetterOps()
+    {
+        var lump = TestWadBuilder.BuildBehaviorLump(
+            MapBehaviorFormat.AcsOld,
+            scriptCount: 1,
+            includeTerminateBytecode: false,
+            bytecodeOpcodes:
+            [
+                (int)AcsPcode.GetActorAngle,
+                (int)AcsPcode.GetActorFloorZ,
+                (int)AcsPcode.SetActorProperty,
+                (int)AcsPcode.GetActorProperty,
+                (int)AcsPcode.SetGravityDirectB, 4,
+                (int)AcsPcode.Terminate,
+            ]);
+        Assert.True(MapBehaviorCodec.TryProbe(lump, out var record, out _));
+        Assert.True(MapBehaviorDirectoryCodec.TryReadScripts(
+            record.Data,
+            record.Format,
+            record.DirectoryOffset,
+            out var scripts,
+            out _));
+        Assert.Single(scripts);
+
+        Assert.True(MapBehaviorBytecodeWalker.TryWalkScript(
+            record.Data,
+            record.Format,
+            scripts[0].Address,
+            out var instructions,
+            out var terminated,
+            out _));
+
+        Assert.True(terminated);
+        Assert.Equal(6, instructions.Count);
+        Assert.Equal((int)AcsPcode.GetActorAngle, instructions[0].Opcode);
+        Assert.Equal(0, instructions[0].OperandWordCount);
+        Assert.Equal((int)AcsPcode.SetGravityDirectB, instructions[4].Opcode);
+        Assert.Equal(1, instructions[4].OperandWordCount);
+    }
+
+    [Fact]
+    public void TryWalkScript_LittleEnhanced_ReadsDirectSpecialOps()
+    {
+        var bytecode = new byte[]
+        {
+            (byte)AcsPcode.SetMusicDirect, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12,
+            (byte)AcsPcode.GiveInventoryDirect, 13, 14, 15, 16, 17, 18, 19, 20,
+            240, 87, 21, 22, 23, 24,
+            240, 42,
+            (byte)AcsPcode.Terminate,
+        };
+        var lump = TestWadBuilder.BuildBehaviorLumpWithBytecode(
+            MapBehaviorFormat.AcsLittleEnhanced,
+            scriptCount: 1,
+            bytecode);
+
+        Assert.True(MapBehaviorCodec.TryProbe(lump, out var record, out _));
+        Assert.True(MapBehaviorDirectoryCodec.TryReadScripts(
+            record.Data,
+            record.Format,
+            record.DirectoryOffset,
+            out var scripts,
+            out _));
+        Assert.Single(scripts);
+
+        Assert.True(MapBehaviorBytecodeWalker.TryWalkScript(
+            record.Data,
+            record.Format,
+            scripts[0].Address,
+            out var instructions,
+            out var terminated,
+            out _));
+
+        Assert.True(terminated);
+        Assert.Equal(5, instructions.Count);
+        Assert.Equal((int)AcsPcode.SetMusicDirect, instructions[0].Opcode);
+        Assert.Equal(12, instructions[0].OperandWordCount);
+        Assert.Equal((int)AcsPcode.SetGravityDirectB, instructions[2].Opcode);
+        Assert.Equal(4, instructions[2].OperandWordCount);
+        Assert.Equal((int)AcsPcode.GetActorCeilingZ, instructions[3].Opcode);
+        Assert.Equal(0, instructions[3].OperandWordCount);
+    }
+
+    [Fact]
     public void TryWalkScript_LittleEnhanced_ReadsPushByteAndPushBytes()
     {
         var bytecode = new byte[]
