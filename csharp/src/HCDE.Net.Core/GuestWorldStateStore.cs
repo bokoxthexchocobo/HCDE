@@ -39,6 +39,7 @@ public sealed class GuestWorldStateStore : IWorldDeltaApplySink, IActorDeltaAppl
     private readonly List<AuthorityEventRecord> _pendingAuthorityEvents = new();
     private uint _authorityEventRollingHash;
     private uint _actorDeltaRollingHash;
+    private uint _presentationEchoRollingHash;
 
     public IReadOnlyDictionary<byte, GuestPlayerState> Players => _players;
     public IReadOnlyDictionary<ushort, GuestSectorState> Sectors => _sectors;
@@ -48,6 +49,7 @@ public sealed class GuestWorldStateStore : IWorldDeltaApplySink, IActorDeltaAppl
     public bool HasPendingAuthorityEvents => _pendingAuthorityEvents.Count > 0;
     public uint AuthorityEventRollingHash => _authorityEventRollingHash;
     public uint ActorDeltaRollingHash => _actorDeltaRollingHash;
+    public uint PresentationEchoRollingHash => _presentationEchoRollingHash;
 
     public bool ApplyPose(int recipientClientSlot, PlayerPoseWorldDelta pose, int sequenceAck)
     {
@@ -212,4 +214,7 @@ public sealed class GuestWorldStateStore : IWorldDeltaApplySink, IActorDeltaAppl
         foreach (var record in records)
             _actorDeltaRollingHash = SnapshotChecksumActorDeltaPolicy.MixRecord(_actorDeltaRollingHash, record);
     }
+
+    public void CommitAppliedPresentationEcho(PresentationEchoBlock block) =>
+        _presentationEchoRollingHash = SnapshotChecksumPresentationEchoPolicy.MixBlock(_presentationEchoRollingHash, block);
 }

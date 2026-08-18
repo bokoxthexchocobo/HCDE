@@ -49,7 +49,8 @@ public static class SnapshotChecksumPlaysimInputs
             gameTic,
             coopDeadSpawnRollingHash: SnapshotChecksumCoopDeadSpawnPolicy.ComputeRollingHash(store),
             authorityEventRollingHash: SnapshotChecksumAuthorityEventPolicy.ComputeRollingHash(store),
-            actorDeltaRollingHash: SnapshotChecksumActorDeltaPolicy.ComputeRollingHash(store));
+            actorDeltaRollingHash: SnapshotChecksumActorDeltaPolicy.ComputeRollingHash(store),
+            presentationEchoRollingHash: SnapshotChecksumPresentationEchoPolicy.ComputeRollingHash(store));
     }
 
     public static void ComputeAndStore(
