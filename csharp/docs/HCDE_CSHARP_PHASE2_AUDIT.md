@@ -1,7 +1,7 @@
 # HCDE C# Migration — Phase 2 Principal Audit
 
 **Last updated:** 2026-08-17  
-**Status:** In progress — Phase **2c** live protocol codecs (iteration 42 step 2). Phase **2b** verification errors, start-game, bootstrap/resync, and cross-language harness complete. Phase **2b** verification errors, start-game, bootstrap/resync, and cross-language harness complete.  
+**Status:** In progress — Phase **2c** live protocol codecs (iteration 42 complete). Phase **2b** verification errors, start-game, bootstrap/resync, and cross-language harness complete. Phase **2b** verification errors, start-game, bootstrap/resync, and cross-language harness complete.  
 **Prerequisite:** [Phase 1 audit](HCDE_CSHARP_PHASE1_AUDIT.md) (complete)  
 **Related:** [`HCDE_CSHARP_MIGRATION.md`](HCDE_CSHARP_MIGRATION.md) · [`HCDE_NETCODE.md`](../../docs/HCDE_NETCODE.md)
 
@@ -623,11 +623,27 @@ Phase 2b is complete when **all** hold:
 2. ~~**Authority playsim tick polish**~~ — invasion spawn-directory apply on guest pump, authority checksum tail polish
 3. ~~**Cross-language soak evidence**~~ — evidence staleness enforcement in main CI workflow
 
-## Phase 2c next slice (iteration 42)
+## Phase 2c next slice (iteration 42 — delivered)
 
 1. ~~**BEHAVIOR bytecode operands**~~ — actor property/getter PCDs, more enhanced-format direct specials
 2. ~~**Authority playsim tick polish**~~ — embedded HCIV authority events on guest apply, coop+invasion tail merge policy
-3. **Cross-language soak evidence** — stale evidence rejection in weekly template commit workflow
+3. ~~**Cross-language soak evidence**~~ — stale evidence rejection in weekly template commit workflow
+
+## Phase 2c next slice (iteration 43)
+
+1. **BEHAVIOR bytecode operands** — actor inventory PCDs, enhanced-format translation operands
+2. **Authority playsim tick polish** — invasion embedded HCDA apply on guest pump, authority tail checksum mismatch polish
+3. **Cross-language soak evidence** — manifest+evidence dual staleness in weekly commit gate
+
+### Stale export bundle rejection (Phase 2c — iteration 42 step 3)
+
+| Artifact | Location | C++ reference |
+| --- | --- | --- |
+| Bundle freshness gate | `CrossLanguageSoakGate.EvaluateExportBundleEvidenceFreshness` | reject stale/missing export evidence before apply |
+| Apply integration | `CrossLanguageSoakEvidenceArchive.ApplyExportedTemplates` | throws when bundle evidence is stale |
+| CI apply workflow | `.github/workflows/csharp-cross-language-soak.yml` | stale bundle test before weekly commit |
+| Archive tests | `CrossLanguageSoakEvidenceArchiveTests` | `ApplyExportedTemplates_RejectsStaleBundleEvidence` |
+| Release checklist | `validation/soak/README.md` | weekly apply stale-bundle docs |
 
 ### Embedded HCIV authority events + coop/invasion merge (Phase 2c — iteration 42 step 2)
 
@@ -1002,6 +1018,8 @@ Do **not** port snapshot encode/decode bodies until HCIN/HCSN headers are green.
 ## Audit conclusion (interim)
 
 **Phase 2b C# pregame stack is feature-complete for fresh dedicated joins** — loopback WAITING setup, verification-error replies, start-game, and a cross-language guest CLI/harness are in place. The remaining 2b gate is executing the harness against a real `hcdeserv` build and recording the result.
+
+**Phase 2c iteration 42** adds actor property/getter and enhanced direct-special PCD operand coverage, embedded HCIV authority events on guest apply with coop+invasion tail merge policy, and stale export-bundle rejection before weekly soak template commits.
 
 **Phase 2c iteration 41** adds inventory/global-array/Skulltag PCD operand coverage with little-enhanced walker support, invasion spawn-directory apply on guest pump with HCIV+HCKS checksum tail polish, and evidence staleness enforcement in main/soak CI workflows.
 
