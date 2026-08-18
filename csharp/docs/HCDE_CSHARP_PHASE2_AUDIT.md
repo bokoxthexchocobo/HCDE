@@ -1,7 +1,7 @@
 # HCDE C# Migration — Phase 2 Principal Audit
 
 **Last updated:** 2026-08-18  
-**Status:** In progress — Phase **2c** live protocol codecs (iteration 44 step 2). Phase **2b** verification errors, start-game, bootstrap/resync, and cross-language harness complete. Phase **2b** verification errors, start-game, bootstrap/resync, and cross-language harness complete.  
+**Status:** In progress — Phase **2c** live protocol codecs (iteration 44 complete). Phase **2b** verification errors, start-game, bootstrap/resync, and cross-language harness complete. Phase **2b** verification errors, start-game, bootstrap/resync, and cross-language harness complete.  
 **Prerequisite:** [Phase 1 audit](HCDE_CSHARP_PHASE1_AUDIT.md) (complete)  
 **Related:** [`HCDE_CSHARP_MIGRATION.md`](HCDE_CSHARP_MIGRATION.md) · [`HCDE_NETCODE.md`](../../docs/HCDE_NETCODE.md)
 
@@ -635,11 +635,26 @@ Phase 2b is complete when **all** hold:
 2. ~~**Authority playsim tick polish**~~ — invasion embedded HCDA apply on guest pump, authority tail checksum mismatch polish
 3. ~~**Cross-language soak evidence**~~ — manifest+evidence dual staleness in weekly commit gate
 
-## Phase 2c next slice (iteration 44)
+## Phase 2c next slice (iteration 44 — delivered)
 
 1. ~~**BEHAVIOR bytecode operands**~~ — sector/line PCDs, more ZDoom stack ops
 2. ~~**Authority playsim tick polish**~~ — guest checksum gap resync on HCDA mismatch, dead-player tail polish
-3. **Cross-language soak evidence** — dual freshness enforcement in main CI workflow
+3. ~~**Cross-language soak evidence**~~ — dual freshness enforcement in main CI workflow
+
+## Phase 2c next slice (iteration 45)
+
+1. **BEHAVIOR bytecode operands** — actor pitch/state PCDs, more Eternity stack ops
+2. **Authority playsim tick polish** — invasion embedded HCDS checksum polish, guest presentation echo apply wiring
+3. **Cross-language soak evidence** — committed template export freshness in main CI
+
+### Dual freshness main CI gate (Phase 2c — iteration 44 step 3)
+
+| Artifact | Location | C++ reference |
+| --- | --- | --- |
+| Dual freshness gate | `CrossLanguageSoakGate.EvaluateCommittedDualFreshness` | reject stale manifest and evidence in main CI |
+| Main CI workflow | `.github/workflows/csharp.yml` | dedicated dual freshness enforce step |
+| Gate tests | `CrossLanguageSoakGateTests` | `Evaluate_EnforcesDualFreshnessWhenSecretsConfigured` |
+| Release checklist | `validation/soak/README.md` | main CI dual freshness docs |
 
 ### Guest actor-checksum gap resync + invasion HCDS tail (Phase 2c — iteration 44 step 2)
 
