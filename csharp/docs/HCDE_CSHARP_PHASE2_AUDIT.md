@@ -1,7 +1,7 @@
 # HCDE C# Migration — Phase 2 Principal Audit
 
 **Last updated:** 2026-08-18  
-**Status:** In progress — Phase **2c** live protocol codecs (iteration 49 complete). Phase **2b** verification errors, start-game, bootstrap/resync, and cross-language harness complete. Phase **2b** verification errors, start-game, bootstrap/resync, and cross-language harness complete.  
+**Status:** In progress — Phase **2c** live protocol codecs (iteration 50 complete). Phase **2b** verification errors, start-game, bootstrap/resync, and cross-language harness complete. Phase **2b** verification errors, start-game, bootstrap/resync, and cross-language harness complete.  
 **Prerequisite:** [Phase 1 audit](HCDE_CSHARP_PHASE1_AUDIT.md) (complete)  
 **Related:** [`HCDE_CSHARP_MIGRATION.md`](HCDE_CSHARP_MIGRATION.md) · [`HCDE_NETCODE.md`](../../docs/HCDE_NETCODE.md)
 
@@ -671,11 +671,47 @@ Phase 2b is complete when **all** hold:
 2. ~~**Authority playsim tick polish**~~ — invasion embedded ECHO gap resync, line-spec tail checksum polish
 3. ~~**Cross-language soak evidence**~~ — committed template apply freshness in soak CI workflow
 
-## Phase 2c next slice (iteration 50)
+## Phase 2c next slice (iteration 50 — delivered)
 
-1. **BEHAVIOR bytecode operands** — HUD/screen follow-up PCDs, more Eternity stack ops
-2. **Authority playsim tick polish** — invasion embedded ECHO gap resync follow-ups, line-spec tail polish
+1. ~~**BEHAVIOR bytecode operands**~~ — HUD/screen follow-up PCDs, more Eternity stack ops
+2. ~~**Authority playsim tick polish**~~ — invasion embedded ECHO gap resync follow-ups, line-spec tail polish
+3. ~~**Cross-language soak evidence**~~ — evidence freshness gate in main CI workflow
+
+## Phase 2c next slice (iteration 51)
+
+1. **BEHAVIOR bytecode operands** — CVAR/result follow-up PCDs, more Eternity stack ops
+2. **Authority playsim tick polish** — line-spec mismatch gap resync follow-ups, presentation echo tail polish
 3. **Cross-language soak evidence** — next CI freshness gate
+
+### Evidence freshness main CI gate (Phase 2c — iteration 50 step 3)
+
+| Artifact | Location | C++ reference |
+| --- | --- | --- |
+| Evidence freshness gate | `CrossLanguageSoakGate.EvaluateEvidenceFreshness` | reject stale soak evidence files in main CI |
+| Main CI workflow | `.github/workflows/csharp.yml` | `Evaluate_EnforcesEvidenceFreshnessWhenSecretsConfigured` step |
+| Gate tests | `CrossLanguageSoakGateTests` | `Evaluate_EnforcesEvidenceFreshnessWhenSecretsConfigured` |
+| Release checklist | `validation/soak/README.md` | main CI evidence freshness docs |
+
+### ECHO gap resync follow-ups + line-spec tail polish (Phase 2c — iteration 50 step 2)
+
+| Artifact | Location | C++ reference |
+| --- | --- | --- |
+| Line-spec tail polish | `SnapshotChecksumLineSpecPolicy.PolishRollingHash` | fold presentation-echo commit into line-spec hash |
+| Echo commit polish | `GuestWorldStateStore.CommitAppliedPresentationEcho` | polish line-spec rolling hash on ECHO apply |
+| Line-spec mismatch resync | `SnapshotChecksumMismatchPolicy.ShouldTriggerNetGapResyncOnLineSpecMismatch` | net gap resync when LineSpec category mismatches |
+| Coop ECHO gap resync | `SnapshotChecksumMismatchPolicy.ShouldTriggerNetGapResyncOnPresentationEchoApply` | net gap resync when ECHO applied without HCKS |
+| Invasion line-spec gap resync | `SnapshotChecksumMismatchPolicy.ShouldTriggerNetGapResyncOnInvasionLineSpecApply` | net gap resync when invasion tail arrives without HCKS and line-spec state exists |
+| Guest pump wiring | `LiveGuestSession.TryApplyTailSections` | tracks coop/invasion ECHO + invasion line-spec gap resync |
+| E2E tests | `SnapshotChecksumLineSpecPolicyTests`, `LiveSessionTests` | line-spec polish + gap resync follow-ups |
+
+### BEHAVIOR HUD/screen follow-up + Eternity stack PCD operands (Phase 2c/2d — iteration 50 step 1)
+
+| Artifact | Location | C++ reference |
+| --- | --- | --- |
+| HUD/screen opcodes | `AcsPcode.cs` | `PCD_GETCVAR`…`PCD_GETLINEROWOFFSET`, `PCD_LSPEC5RESULT` |
+| CaseGotoSorted skip | `MapBehaviorBytecodeWalker.cs` | variable operand skip for sorted case tables |
+| Operand skip table | `MapBehaviorBytecodeWalker.cs` | old + little-enhanced HUD/screen + Lspec5Result skips |
+| Walk tests | `MapBehaviorBytecodeWalkerTests` | `TryWalkScript_OldFormat_ReadsHudScreenFollowUpAndStackOps` |
 
 ### Committed template apply freshness soak CI gate (Phase 2c — iteration 49 step 3)
 
