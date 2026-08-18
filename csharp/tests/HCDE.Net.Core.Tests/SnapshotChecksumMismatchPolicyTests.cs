@@ -104,4 +104,23 @@ public class SnapshotChecksumMismatchPolicyTests
             appliedCoopActorDeltas: false,
             SnapshotChecksumMismatchPolicyKind.ResyncNetStateOnMismatch));
     }
+
+    [Fact]
+    public void ShouldTriggerNetGapResyncOnInvasionAuthorityEventMismatch_RequiresAppliedInvasionAuthorityEvents()
+    {
+        var result = new SnapshotChecksumApplyResult(
+            compared: true,
+            mismatchCount: 1,
+            localBucketMissing: false,
+            hasActorCategoryMismatch: true);
+
+        Assert.True(SnapshotChecksumMismatchPolicy.ShouldTriggerNetGapResyncOnInvasionAuthorityEventMismatch(
+            result,
+            appliedInvasionAuthorityEvents: true,
+            SnapshotChecksumMismatchPolicyKind.ResyncNetStateOnMismatch));
+        Assert.False(SnapshotChecksumMismatchPolicy.ShouldTriggerNetGapResyncOnInvasionAuthorityEventMismatch(
+            result,
+            appliedInvasionAuthorityEvents: false,
+            SnapshotChecksumMismatchPolicyKind.ResyncNetStateOnMismatch));
+    }
 }
