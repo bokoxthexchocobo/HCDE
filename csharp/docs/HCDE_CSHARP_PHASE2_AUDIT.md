@@ -659,11 +659,47 @@ Phase 2b is complete when **all** hold:
 2. ~~**Authority playsim tick polish**~~ — invasion embedded HCAV gap resync, actor-delta tail checksum polish
 3. ~~**Cross-language soak evidence**~~ — apply-bundle dual freshness in main CI workflow
 
-## Phase 2c next slice (iteration 48)
+## Phase 2c next slice (iteration 48 — delivered)
 
-1. **BEHAVIOR bytecode operands** — spawn/projectile PCDs, more Eternity char-range ops
-2. **Authority playsim tick polish** — invasion embedded HCDA gap resync, presentation echo checksum polish
-3. **Cross-language soak evidence** — apply-bundle freshness in soak CI workflow
+1. ~~**BEHAVIOR bytecode operands**~~ — spawn/projectile PCDs, more Eternity char-range ops
+2. ~~**Authority playsim tick polish**~~ — invasion embedded HCDA gap resync, presentation echo checksum polish
+3. ~~**Cross-language soak evidence**~~ — apply-bundle freshness in soak CI workflow
+
+## Phase 2c next slice (iteration 49)
+
+1. **BEHAVIOR bytecode operands** — marine/screen PCDs, more Eternity stack ops
+2. **Authority playsim tick polish** — invasion embedded ECHO gap resync, line-spec tail checksum polish
+3. **Cross-language soak evidence** — committed template apply freshness in soak CI workflow
+
+### Apply-bundle freshness soak CI gate (Phase 2c — iteration 48 step 3)
+
+| Artifact | Location | C++ reference |
+| --- | --- | --- |
+| Apply freshness gate | `CrossLanguageSoakEvidenceArchive.ApplyExportedTemplates` | reject stale export manifest/evidence before soak apply |
+| Soak CI workflow | `.github/workflows/csharp-cross-language-soak.yml` | `ApplyExportedTemplates_RejectsStale` step before apply |
+| Archive tests | `CrossLanguageSoakEvidenceArchiveTests` | stale export manifest and bundle evidence rejection |
+| Release checklist | `validation/soak/README.md` | soak CI apply-bundle freshness docs |
+
+### Invasion HCDA gap resync + ECHO checksum polish (Phase 2c — iteration 48 step 2)
+
+| Artifact | Location | C++ reference |
+| --- | --- | --- |
+| ECHO rolling hash | `SnapshotChecksumPresentationEchoPolicy.ComputeRollingHash` | fold applied ECHO into Actors HCKS |
+| Echo apply commit | `GuestWorldStateStore.CommitAppliedPresentationEcho` | mix ECHO block on guest tail receive |
+| Checksum mixer | `SnapshotChecksumMixer.ComputeAll` | mix `PresentationEchoRollingHash` into Actors category |
+| Invasion HCDA gap resync | `SnapshotChecksumMismatchPolicy.ShouldTriggerNetGapResyncOnInvasionActorDeltaApply` | net gap resync when invasion HCDA applied without HCKS |
+| Guest pump wiring | `LiveGuestSession.TryApplyTailSections` | commits ECHO hash + invasion HCDA gap resync |
+| E2E tests | `SnapshotChecksumPresentationEchoPolicyTests`, `LiveSessionTests` | ECHO checksum commit + invasion HCDA gap resync |
+
+### BEHAVIOR spawn/projectile + char-range PCD operands (Phase 2c/2d — iteration 48 step 1)
+
+| Artifact | Location | C++ reference |
+| --- | --- | --- |
+| Projectile opcodes | `AcsPcode.cs` | `PCD_THING_PROJECTILE2`, `PCD_SPAWNPROJECTILE`, `PCD_SPAWNSPOTFACING` |
+| Thing count opcode | `AcsPcode.cs` | `PCD_THINGCOUNTNAME` |
+| Char-range opcodes | `AcsPcode.cs` | `PCD_PRINTWORLDCHRANGE`…`PCD_STRCPYTOMAPCHRANGE` |
+| Operand skip table | `MapBehaviorBytecodeWalker.cs` | old + little-enhanced spawn/projectile skips |
+| Walk tests | `MapBehaviorBytecodeWalkerTests` | `TryWalkScript_OldFormat_ReadsSpawnProjectileAndCharRangeOps` |
 
 ### Apply-bundle dual freshness main CI gate (Phase 2c — iteration 47 step 3)
 
