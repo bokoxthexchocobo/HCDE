@@ -138,6 +138,7 @@ public static class ServerSnapshotTailCodec
         ReadOnlySpan<PlayerPoseWorldDelta> poses = default,
         ReadOnlySpan<SectorWorldDelta> sectors = default,
         ReadOnlySpan<AuthorityEventRecord> embeddedAuthorityEvents = default,
+        ReadOnlySpan<ActorDeltaRecord> embeddedActorDeltas = default,
         uint[]? checksumHashes = null)
     {
         var authorityEventSize = 0;
@@ -148,9 +149,14 @@ public static class ServerSnapshotTailCodec
                 authorityEventSize += AuthorityEventRecord.MinRecordSize(record.ClassName);
         }
 
+        var actorDeltaSize = LiveConstants.ActorDeltasHeaderSize;
+        foreach (var record in embeddedActorDeltas)
+            actorDeltaSize += ActorDeltaRecord.MinRecordSize(record.FieldMask);
+
         var required = WorldDeltaChunkCodec.MinChunkSize((byte)poses.Length, (byte)sectors.Length)
             + LiveConstants.InvasionSnapshotHeaderV2Size
             + authorityEventSize
+            + actorDeltaSize
             + LiveConstants.PresentationEchoMinHeaderSize
             + (checksumHashes is { Length: LiveConstants.SnapshotChecksumCategoryCount }
                 ? LiveConstants.SnapshotChecksumBlockSize
@@ -169,7 +175,8 @@ public static class ServerSnapshotTailCodec
         var invasionWritten = InvasionSnapshotCodec.WriteV2(
             tail[cursor..],
             invasionSnapshot,
-            embeddedAuthorityEvents);
+            embeddedAuthorityEvents,
+            embeddedActorDeltas);
         if (invasionWritten == 0)
             return 0;
 

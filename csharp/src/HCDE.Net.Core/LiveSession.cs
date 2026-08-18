@@ -477,7 +477,7 @@ public sealed class LiveAuthoritySession
 
         if (_routing.ShouldSendServerSnapshotTo(clientSlot))
         {
-            var checksumHashes = WorldStateTailBuilder.TryComputeChecksumHashes(
+            var checksumHashes = SnapshotChecksumTailPolicy.TryResolveTailChecksumHashes(
                 _authorityWorldState,
                 _checksumSession,
                 (int)_gameTic,

@@ -157,7 +157,11 @@ public static class WorldStateTailBuilder
         InvasionSnapshotHeader invasionSnapshot,
         int rngSeed = 0)
     {
-        var checksumHashes = TryComputeChecksumHashes(store, checksumSession, (int)gameTic, rngSeed);
+        var checksumHashes = SnapshotChecksumTailPolicy.TryResolveTailChecksumHashes(
+            store,
+            checksumSession,
+            (int)gameTic,
+            rngSeed);
         return TryBuildInvasionTail(tail, gameTic, invasionSnapshot, checksumHashes);
     }
 
@@ -173,7 +177,12 @@ public static class WorldStateTailBuilder
         var poses = CollectPoses(store);
         var sectors = CollectSectors(store, replicateSectorMetadata);
         var embeddedAuthorityEvents = store.TakePendingAuthorityEventsForTail();
-        var checksumHashes = TryComputeChecksumHashes(store, checksumSession, (int)gameTic, rngSeed);
+        var embeddedActorDeltas = CollectActorDeltas(store);
+        var checksumHashes = SnapshotChecksumTailPolicy.TryResolveTailChecksumHashes(
+            store,
+            checksumSession,
+            (int)gameTic,
+            rngSeed);
         var written = ServerSnapshotTailCodec.WriteInvasionShipping(
             tail,
             gameTic,
@@ -181,6 +190,7 @@ public static class WorldStateTailBuilder
             poses,
             sectors,
             embeddedAuthorityEvents,
+            embeddedActorDeltas,
             checksumHashes);
         return new WorldStateTailBuildResult(written > 0, written);
     }
@@ -238,5 +248,27 @@ public static class WorldStateTailBuilder
         }
 
         return sectors;
+    }
+
+    private static ActorDeltaRecord[] CollectActorDeltas(GuestWorldStateStore store)
+    {
+        var actorDeltas = new ActorDeltaRecord[store.Actors.Count];
+        var actorIndex = 0;
+        foreach (var actor in store.Actors.Values.OrderBy(static a => a.ActorId))
+        {
+            actorDeltas[actorIndex++] = new ActorDeltaRecord
+            {
+                ActorId = actor.ActorId,
+                ClassId = actor.ClassId,
+                FieldMask = (ushort)(LiveConstants.ActorDeltaFieldCategory
+                    | LiveConstants.ActorDeltaFieldFlags
+                    | LiveConstants.ActorDeltaFieldHealth),
+                Category = actor.Category,
+                Flags = actor.Flags,
+                Health = actor.Health,
+            };
+        }
+
+        return actorDeltas;
     }
 }
