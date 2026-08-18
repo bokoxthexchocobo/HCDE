@@ -276,7 +276,12 @@ public static class MapBehaviorBytecodeWalker
         (int)AcsPcode.GetPlayerInfo or (int)AcsPcode.ChangeLevel or (int)AcsPcode.SectorDamage
             or (int)AcsPcode.ReplaceTextures => 0,
         (int)AcsPcode.NegateBinary or (int)AcsPcode.GetActorPitch or (int)AcsPcode.SetActorPitch
-            or (int)AcsPcode.PrintBind or (int)AcsPcode.SetActorState => 0,
+            or (int)AcsPcode.PrintBind or (int)AcsPcode.SetActorState or (int)AcsPcode.ThingDamage2 => 0,
+        (int)AcsPcode.UseInventory or (int)AcsPcode.UseActorInventory
+            or (int)AcsPcode.CheckActorCeilingTexture or (int)AcsPcode.CheckActorFloorTexture
+            or (int)AcsPcode.GetActorLightLevel or (int)AcsPcode.SetMugshotState
+            or (int)AcsPcode.ThingCountSector or (int)AcsPcode.ThingCountNameSector
+            or (int)AcsPcode.GetPlayerInput => 0,
         >= (int)AcsPcode.LsScriptVar and <= (int)AcsPcode.RsGlobalArray => 0,
         (int)AcsPcode.MorphActor or (int)AcsPcode.UnmorphActor or (int)AcsPcode.ClassifyActor
             or (int)AcsPcode.PrintBinary or (int)AcsPcode.PrintHex => 0,
@@ -414,7 +419,12 @@ public static class MapBehaviorBytecodeWalker
         (int)AcsPcode.GetPlayerInfo or (int)AcsPcode.ChangeLevel or (int)AcsPcode.SectorDamage
             or (int)AcsPcode.ReplaceTextures => 0,
         (int)AcsPcode.NegateBinary or (int)AcsPcode.GetActorPitch or (int)AcsPcode.SetActorPitch
-            or (int)AcsPcode.PrintBind or (int)AcsPcode.SetActorState => 0,
+            or (int)AcsPcode.PrintBind or (int)AcsPcode.SetActorState or (int)AcsPcode.ThingDamage2 => 0,
+        (int)AcsPcode.UseInventory or (int)AcsPcode.UseActorInventory
+            or (int)AcsPcode.CheckActorCeilingTexture or (int)AcsPcode.CheckActorFloorTexture
+            or (int)AcsPcode.GetActorLightLevel or (int)AcsPcode.SetMugshotState
+            or (int)AcsPcode.ThingCountSector or (int)AcsPcode.ThingCountNameSector
+            or (int)AcsPcode.GetPlayerInput => 0,
         >= (int)AcsPcode.LsScriptVar and <= (int)AcsPcode.RsGlobalArray => 0,
         (int)AcsPcode.MorphActor or (int)AcsPcode.UnmorphActor or (int)AcsPcode.ClassifyActor
             or (int)AcsPcode.PrintBinary or (int)AcsPcode.PrintHex => 0,

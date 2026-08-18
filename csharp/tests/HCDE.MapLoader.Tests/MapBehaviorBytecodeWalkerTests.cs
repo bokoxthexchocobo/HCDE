@@ -797,6 +797,53 @@ public class MapBehaviorBytecodeWalkerTests
     }
 
     [Fact]
+    public void TryWalkScript_OldFormat_ReadsThingDamageAndUseInventoryOps()
+    {
+        var lump = TestWadBuilder.BuildBehaviorLump(
+            MapBehaviorFormat.AcsOld,
+            scriptCount: 1,
+            includeTerminateBytecode: false,
+            bytecodeOpcodes:
+            [
+                (int)AcsPcode.ThingDamage2,
+                (int)AcsPcode.UseInventory,
+                (int)AcsPcode.UseActorInventory,
+                (int)AcsPcode.CheckActorCeilingTexture,
+                (int)AcsPcode.CheckActorFloorTexture,
+                (int)AcsPcode.GetActorLightLevel,
+                (int)AcsPcode.SetMugshotState,
+                (int)AcsPcode.ThingCountSector,
+                (int)AcsPcode.ThingCountNameSector,
+                (int)AcsPcode.GetPlayerInput,
+                (int)AcsPcode.PrintBind,
+                (int)AcsPcode.Terminate,
+            ]);
+        Assert.True(MapBehaviorCodec.TryProbe(lump, out var record, out _));
+        Assert.True(MapBehaviorDirectoryCodec.TryReadScripts(
+            record.Data,
+            record.Format,
+            record.DirectoryOffset,
+            out var scripts,
+            out _));
+        Assert.Single(scripts);
+
+        Assert.True(MapBehaviorBytecodeWalker.TryWalkScript(
+            record.Data,
+            record.Format,
+            scripts[0].Address,
+            out var instructions,
+            out var terminated,
+            out _));
+
+        Assert.True(terminated);
+        Assert.Equal(12, instructions.Count);
+        Assert.Equal((int)AcsPcode.ThingDamage2, instructions[0].Opcode);
+        Assert.Equal((int)AcsPcode.UseInventory, instructions[1].Opcode);
+        Assert.Equal((int)AcsPcode.ThingCountNameSector, instructions[8].Opcode);
+        Assert.Equal((int)AcsPcode.GetPlayerInput, instructions[9].Opcode);
+    }
+
+    [Fact]
     public void TryWalkScript_OldFormat_ReadsActorPitchStateAndEternityShiftOps()
     {
         var lump = TestWadBuilder.BuildBehaviorLump(
