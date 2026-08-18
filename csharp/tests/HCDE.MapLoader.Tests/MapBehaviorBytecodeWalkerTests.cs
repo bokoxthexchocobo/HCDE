@@ -797,6 +797,52 @@ public class MapBehaviorBytecodeWalkerTests
     }
 
     [Fact]
+    public void TryWalkScript_OldFormat_ReadsActorPitchStateAndEternityShiftOps()
+    {
+        var lump = TestWadBuilder.BuildBehaviorLump(
+            MapBehaviorFormat.AcsOld,
+            scriptCount: 1,
+            includeTerminateBytecode: false,
+            bytecodeOpcodes:
+            [
+                (int)AcsPcode.GetActorPitch,
+                (int)AcsPcode.SetActorPitch,
+                (int)AcsPcode.SetActorState,
+                (int)AcsPcode.NegateBinary,
+                (int)AcsPcode.LsScriptVar,
+                (int)AcsPcode.RsGlobalArray,
+                (int)AcsPcode.MorphActor,
+                (int)AcsPcode.UnmorphActor,
+                (int)AcsPcode.ClassifyActor,
+                (int)AcsPcode.PrintBinary,
+                (int)AcsPcode.PrintHex,
+                (int)AcsPcode.Terminate,
+            ]);
+        Assert.True(MapBehaviorCodec.TryProbe(lump, out var record, out _));
+        Assert.True(MapBehaviorDirectoryCodec.TryReadScripts(
+            record.Data,
+            record.Format,
+            record.DirectoryOffset,
+            out var scripts,
+            out _));
+        Assert.Single(scripts);
+
+        Assert.True(MapBehaviorBytecodeWalker.TryWalkScript(
+            record.Data,
+            record.Format,
+            scripts[0].Address,
+            out var instructions,
+            out var terminated,
+            out _));
+
+        Assert.True(terminated);
+        Assert.Equal(12, instructions.Count);
+        Assert.Equal((int)AcsPcode.GetActorPitch, instructions[0].Opcode);
+        Assert.Equal((int)AcsPcode.LsScriptVar, instructions[4].Opcode);
+        Assert.Equal((int)AcsPcode.ClassifyActor, instructions[8].Opcode);
+    }
+
+    [Fact]
     public void TryDecode_IncludesScriptBytecodeBodies()
     {
         var wad = TestWadBuilder.BuildMinimalMapWad("MAP01", includeBehavior: true);

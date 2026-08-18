@@ -275,6 +275,11 @@ public static class MapBehaviorBytecodeWalker
             or (int)AcsPcode.IncGlobalVar or (int)AcsPcode.DecGlobalVar => 1,
         (int)AcsPcode.GetPlayerInfo or (int)AcsPcode.ChangeLevel or (int)AcsPcode.SectorDamage
             or (int)AcsPcode.ReplaceTextures => 0,
+        (int)AcsPcode.NegateBinary or (int)AcsPcode.GetActorPitch or (int)AcsPcode.SetActorPitch
+            or (int)AcsPcode.PrintBind or (int)AcsPcode.SetActorState => 0,
+        >= (int)AcsPcode.LsScriptVar and <= (int)AcsPcode.RsGlobalArray => 0,
+        (int)AcsPcode.MorphActor or (int)AcsPcode.UnmorphActor or (int)AcsPcode.ClassifyActor
+            or (int)AcsPcode.PrintBinary or (int)AcsPcode.PrintHex => 0,
         (int)AcsPcode.GetActorZ or (int)AcsPcode.GetActorFloorZ or (int)AcsPcode.GetActorAngle
             or (int)AcsPcode.GetActorCeilingZ or (int)AcsPcode.SetActorProperty
             or (int)AcsPcode.GetActorProperty => 0,
@@ -408,6 +413,11 @@ public static class MapBehaviorBytecodeWalker
             or (int)AcsPcode.IncGlobalVar or (int)AcsPcode.DecGlobalVar => 1,
         (int)AcsPcode.GetPlayerInfo or (int)AcsPcode.ChangeLevel or (int)AcsPcode.SectorDamage
             or (int)AcsPcode.ReplaceTextures => 0,
+        (int)AcsPcode.NegateBinary or (int)AcsPcode.GetActorPitch or (int)AcsPcode.SetActorPitch
+            or (int)AcsPcode.PrintBind or (int)AcsPcode.SetActorState => 0,
+        >= (int)AcsPcode.LsScriptVar and <= (int)AcsPcode.RsGlobalArray => 0,
+        (int)AcsPcode.MorphActor or (int)AcsPcode.UnmorphActor or (int)AcsPcode.ClassifyActor
+            or (int)AcsPcode.PrintBinary or (int)AcsPcode.PrintHex => 0,
         (int)AcsPcode.GetActorZ or (int)AcsPcode.GetActorFloorZ or (int)AcsPcode.GetActorAngle
             or (int)AcsPcode.GetActorCeilingZ or (int)AcsPcode.SetActorProperty
             or (int)AcsPcode.GetActorProperty => 0,
