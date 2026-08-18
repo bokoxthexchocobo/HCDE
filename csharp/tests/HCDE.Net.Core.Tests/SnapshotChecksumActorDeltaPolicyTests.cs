@@ -48,4 +48,43 @@ public class SnapshotChecksumActorDeltaPolicyTests
         Assert.NotEqual(0u, store.ActorDeltaRollingHash);
         Assert.Equal(store.ActorDeltaRollingHash, SnapshotChecksumActorDeltaPolicy.ComputeRollingHash(store));
     }
+
+    [Fact]
+    public void PolishPresentationEchoRollingHash_MixesActorDeltaTailWhenBothPresent()
+    {
+        var echoHash = SnapshotChecksumPresentationEchoPolicy.MixBlock(0, PresentationEchoCodec.CreateExampleBlock());
+        var actorHash = SnapshotChecksumActorDeltaPolicy.MixRecord(0, new ActorDeltaRecord
+        {
+            ActorId = 4,
+            ClassId = 2,
+            FieldMask = LiveConstants.ActorDeltaFieldHealth,
+            Health = 55,
+        });
+        var polished = SnapshotChecksumActorDeltaPolicy.PolishPresentationEchoRollingHash(echoHash, actorHash);
+
+        Assert.NotEqual(echoHash, polished);
+        Assert.Equal(echoHash, SnapshotChecksumActorDeltaPolicy.PolishPresentationEchoRollingHash(echoHash, actorDeltaHash: 0));
+    }
+
+    [Fact]
+    public void CommitAppliedActorDeltas_PolishesPresentationEchoRollingHash()
+    {
+        var store = new GuestWorldStateStore();
+        store.CommitAppliedPresentationEcho(PresentationEchoCodec.CreateExampleBlock());
+        var before = store.PresentationEchoRollingHash;
+
+        store.CommitAppliedActorDeltas(new[]
+        {
+            new ActorDeltaRecord
+            {
+                ActorId = 7,
+                ClassId = 1,
+                FieldMask = LiveConstants.ActorDeltaFieldHealth,
+                Health = 60,
+            },
+        });
+
+        Assert.NotEqual(before, store.PresentationEchoRollingHash);
+        Assert.NotEqual(0u, store.ActorDeltaRollingHash);
+    }
 }
