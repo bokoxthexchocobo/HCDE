@@ -78,4 +78,12 @@ public static class SnapshotChecksumMismatchPolicy
         appliedInvasionActorDeltas
         && !hasChecksum
         && policy == SnapshotChecksumMismatchPolicyKind.ResyncNetStateOnMismatch;
+
+    public static bool ShouldTriggerNetGapResyncOnInvasionPresentationEchoApply(
+        bool appliedInvasionPresentationEcho,
+        bool hasChecksum,
+        SnapshotChecksumMismatchPolicyKind policy) =>
+        appliedInvasionPresentationEcho
+        && !hasChecksum
+        && policy == SnapshotChecksumMismatchPolicyKind.ResyncNetStateOnMismatch;
 }

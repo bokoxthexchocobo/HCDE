@@ -40,6 +40,7 @@ public sealed class GuestWorldStateStore : IWorldDeltaApplySink, IActorDeltaAppl
     private uint _authorityEventRollingHash;
     private uint _actorDeltaRollingHash;
     private uint _presentationEchoRollingHash;
+    private uint _lineSpecRollingHash;
 
     public IReadOnlyDictionary<byte, GuestPlayerState> Players => _players;
     public IReadOnlyDictionary<ushort, GuestSectorState> Sectors => _sectors;
@@ -50,6 +51,7 @@ public sealed class GuestWorldStateStore : IWorldDeltaApplySink, IActorDeltaAppl
     public uint AuthorityEventRollingHash => _authorityEventRollingHash;
     public uint ActorDeltaRollingHash => _actorDeltaRollingHash;
     public uint PresentationEchoRollingHash => _presentationEchoRollingHash;
+    public uint LineSpecRollingHash => _lineSpecRollingHash;
 
     public bool ApplyPose(int recipientClientSlot, PlayerPoseWorldDelta pose, int sequenceAck)
     {
@@ -217,4 +219,7 @@ public sealed class GuestWorldStateStore : IWorldDeltaApplySink, IActorDeltaAppl
 
     public void CommitAppliedPresentationEcho(PresentationEchoBlock block) =>
         _presentationEchoRollingHash = SnapshotChecksumPresentationEchoPolicy.MixBlock(_presentationEchoRollingHash, block);
+
+    public void NoteLineSpec(int lineIndex, int special, bool success) =>
+        _lineSpecRollingHash = SnapshotChecksumLineSpecPolicy.MixRecord(_lineSpecRollingHash, lineIndex, special, success);
 }

@@ -47,6 +47,7 @@ public static class SnapshotChecksumPlaysimInputs
             actors,
             rngSeed,
             gameTic,
+            lineSpecRollingHash: SnapshotChecksumLineSpecPolicy.ComputeRollingHash(store),
             coopDeadSpawnRollingHash: SnapshotChecksumCoopDeadSpawnPolicy.ComputeRollingHash(store),
             authorityEventRollingHash: SnapshotChecksumAuthorityEventPolicy.ComputeRollingHash(store),
             actorDeltaRollingHash: SnapshotChecksumActorDeltaPolicy.ComputeRollingHash(store),

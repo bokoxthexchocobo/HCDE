@@ -272,6 +272,7 @@ public sealed class LiveGuestSession
         var appliedInvasionCoopDeadSpawns = false;
         var appliedInvasionAuthorityEvents = false;
         var appliedInvasionActorDeltas = false;
+        var appliedInvasionPresentationEcho = false;
         if (sections.InvasionSnapshot is { } invasionHeader)
         {
             InvasionSnapshotApplySession.TryApply(
@@ -359,6 +360,8 @@ public sealed class LiveGuestSession
                 out _);
 
             _guestWorldState?.CommitAppliedPresentationEcho(echoBlock);
+            if (sections.InvasionSnapshot is not null)
+                appliedInvasionPresentationEcho = true;
         }
 
         TryComputeGuestWorldStateChecksum(sections);
@@ -409,6 +412,14 @@ public sealed class LiveGuestSession
 
         if (SnapshotChecksumMismatchPolicy.ShouldTriggerNetGapResyncOnInvasionActorDeltaApply(
                 appliedInvasionActorDeltas,
+                sections.HasChecksum,
+                _checksumMismatchPolicy))
+        {
+            _needsNetGapResync = true;
+        }
+
+        if (SnapshotChecksumMismatchPolicy.ShouldTriggerNetGapResyncOnInvasionPresentationEchoApply(
+                appliedInvasionPresentationEcho,
                 sections.HasChecksum,
                 _checksumMismatchPolicy))
         {

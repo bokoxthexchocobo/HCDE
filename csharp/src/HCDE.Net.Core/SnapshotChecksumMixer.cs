@@ -255,9 +255,7 @@ public sealed class SnapshotChecksumSession
 
     public void NoteLineSpec(int lineIndex, int special, bool success)
     {
-        _lineSpecRollingHash = SnapshotChecksumMixer.MixU32(_lineSpecRollingHash, unchecked((uint)lineIndex));
-        _lineSpecRollingHash = SnapshotChecksumMixer.MixU32(_lineSpecRollingHash, unchecked((uint)special));
-        _lineSpecRollingHash = SnapshotChecksumMixer.MixU32(_lineSpecRollingHash, success ? 1u : 0u);
+        _lineSpecRollingHash = SnapshotChecksumLineSpecPolicy.MixRecord(_lineSpecRollingHash, lineIndex, special, success);
     }
 
     public ReadOnlySpan<uint> CategoryHashes => _categoryHashes;
@@ -267,6 +265,14 @@ public sealed class SnapshotChecksumSession
         if (_lastComputedTic == gameTic)
             return;
 
+        var lineSpecHash = inputs.LineSpecRollingHash;
+        if (_lineSpecRollingHash != 0)
+        {
+            lineSpecHash = lineSpecHash != 0
+                ? SnapshotChecksumMixer.MixU32(lineSpecHash, _lineSpecRollingHash)
+                : _lineSpecRollingHash;
+        }
+
         var mergedInputs = new SnapshotChecksumInputs(
             inputs.Players,
             inputs.Sectors,
@@ -274,7 +280,7 @@ public sealed class SnapshotChecksumSession
             inputs.Actors,
             inputs.RngSeed,
             inputs.GameTic,
-            _lineSpecRollingHash);
+            lineSpecHash);
         var computed = SnapshotChecksumMixer.ComputeAll(mergedInputs, categoryMask);
         computed.CopyTo(_categoryHashes, 0);
         _lastComputedTic = gameTic;
