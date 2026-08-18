@@ -1,7 +1,7 @@
 # HCDE C# Migration — Phase 2 Principal Audit
 
 **Last updated:** 2026-08-18  
-**Status:** In progress — Phase **2c** live protocol codecs (iteration 43 complete). Phase **2b** verification errors, start-game, bootstrap/resync, and cross-language harness complete. Phase **2b** verification errors, start-game, bootstrap/resync, and cross-language harness complete.  
+**Status:** In progress — Phase **2c** live protocol codecs (iteration 44 step 1). Phase **2b** verification errors, start-game, bootstrap/resync, and cross-language harness complete. Phase **2b** verification errors, start-game, bootstrap/resync, and cross-language harness complete.  
 **Prerequisite:** [Phase 1 audit](HCDE_CSHARP_PHASE1_AUDIT.md) (complete)  
 **Related:** [`HCDE_CSHARP_MIGRATION.md`](HCDE_CSHARP_MIGRATION.md) · [`HCDE_NETCODE.md`](../../docs/HCDE_NETCODE.md)
 
@@ -637,9 +637,19 @@ Phase 2b is complete when **all** hold:
 
 ## Phase 2c next slice (iteration 44)
 
-1. **BEHAVIOR bytecode operands** — sector/line PCDs, more ZDoom stack ops
+1. ~~**BEHAVIOR bytecode operands**~~ — sector/line PCDs, more ZDoom stack ops
 2. **Authority playsim tick polish** — guest checksum gap resync on HCDA mismatch, dead-player tail polish
 3. **Cross-language soak evidence** — dual freshness enforcement in main CI workflow
+
+### BEHAVIOR sector/line + global stack PCD operands (Phase 2c/2d — iteration 44 step 1)
+
+| Artifact | Location | C++ reference |
+| --- | --- | --- |
+| Line/sector opcodes | `AcsPcode.cs` | `PCD_SETLINETEXTURE`…`PCD_SETLINESPECIAL`, `PCD_SETLINEMONSTERBLOCKING`, `PCD_SECTORDAMAGE` |
+| Skulltag key opcodes | `AcsPcode.cs` | `PCD_PLAYERBLUESKULL`…`PCD_PLAYERGOLDCARD` |
+| Global stack opcodes | `AcsPcode.cs` | `PCD_SETTHINGSPECIAL`, `PCD_ADDGLOBALVAR`…`PCD_DECGLOBALVAR` |
+| Operand skip table | `MapBehaviorBytecodeWalker.cs` | old + little-enhanced sector/line/global-stack skips |
+| Walk tests | `MapBehaviorBytecodeWalkerTests` | `TryWalkScript_OldFormat_ReadsSectorLineAndGlobalStackOps` |
 
 ### Manifest+evidence dual staleness weekly gate (Phase 2c — iteration 43 step 3)
 

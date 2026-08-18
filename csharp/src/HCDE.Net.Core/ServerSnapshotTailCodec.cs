@@ -139,6 +139,7 @@ public static class ServerSnapshotTailCodec
         ReadOnlySpan<SectorWorldDelta> sectors = default,
         ReadOnlySpan<AuthorityEventRecord> embeddedAuthorityEvents = default,
         ReadOnlySpan<ActorDeltaRecord> embeddedActorDeltas = default,
+        ReadOnlySpan<uint> coopDeadSpawnIndices = default,
         uint[]? checksumHashes = null)
     {
         var authorityEventSize = 0;
@@ -153,10 +154,15 @@ public static class ServerSnapshotTailCodec
         foreach (var record in embeddedActorDeltas)
             actorDeltaSize += ActorDeltaRecord.MinRecordSize(record.FieldMask);
 
+        var deadSpawnSize = coopDeadSpawnIndices.Length == 0
+            ? 0
+            : LiveConstants.CoopDeadSpawnsHeaderSize + coopDeadSpawnIndices.Length * 4;
+
         var required = WorldDeltaChunkCodec.MinChunkSize((byte)poses.Length, (byte)sectors.Length)
             + LiveConstants.InvasionSnapshotHeaderV2Size
             + authorityEventSize
             + actorDeltaSize
+            + deadSpawnSize
             + LiveConstants.PresentationEchoMinHeaderSize
             + (checksumHashes is { Length: LiveConstants.SnapshotChecksumCategoryCount }
                 ? LiveConstants.SnapshotChecksumBlockSize
@@ -181,6 +187,15 @@ public static class ServerSnapshotTailCodec
             return 0;
 
         cursor += invasionWritten;
+        if (coopDeadSpawnIndices.Length > 0)
+        {
+            var deadWritten = CoopDeadSpawnsCodec.Write(tail[cursor..], coopDeadSpawnIndices);
+            if (deadWritten == 0)
+                return 0;
+
+            cursor += deadWritten;
+        }
+
         var echoWritten = PresentationEchoCodec.WriteMinimal(tail[cursor..]);
         if (echoWritten == 0)
             return 0;

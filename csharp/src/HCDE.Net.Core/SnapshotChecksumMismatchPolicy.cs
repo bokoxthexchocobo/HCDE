@@ -14,11 +14,13 @@ public readonly struct GuestChecksumApplyState
         Compared = result.Compared;
         MismatchCount = result.MismatchCount;
         LocalBucketMissing = result.LocalBucketMissing;
+        HasActorCategoryMismatch = result.HasActorCategoryMismatch;
     }
 
     public bool Compared { get; }
     public int MismatchCount { get; }
     public bool LocalBucketMissing { get; }
+    public bool HasActorCategoryMismatch { get; }
 }
 
 public static class SnapshotChecksumMismatchPolicy
@@ -43,5 +45,13 @@ public static class SnapshotChecksumMismatchPolicy
         policy == SnapshotChecksumMismatchPolicyKind.ResyncNetStateOnMismatch
         && result.Compared
         && result.MismatchCount > 0
+        && !result.LocalBucketMissing;
+
+    public static bool ShouldTriggerNetGapResyncOnActorMismatch(
+        SnapshotChecksumApplyResult result,
+        SnapshotChecksumMismatchPolicyKind policy) =>
+        policy == SnapshotChecksumMismatchPolicyKind.ResyncNetStateOnMismatch
+        && result.Compared
+        && result.HasActorCategoryMismatch
         && !result.LocalBucketMissing;
 }

@@ -659,6 +659,57 @@ public class LiveSessionTests
     }
 
     [Fact]
+    public void GuestAppliesEmbeddedInvasionCoopDeadSpawnsWhenWorldStateWired()
+    {
+        var gameId = new byte[] { 0xAA, 0xBB, 0xCC, 0xDD, 0x11, 0x22, 0x33, 0x44 };
+
+        using var authorityTransport = new UdpTransport();
+        using var guestTransport = new UdpTransport();
+        authorityTransport.Bind(0);
+        guestTransport.Bind(0);
+        authorityTransport.SetNonBlocking(true);
+        guestTransport.SetNonBlocking(true);
+
+        var authorityEndpoint = new NetworkEndpoint(System.Net.IPAddress.Loopback, authorityTransport.BoundPort);
+        var guestEndpoint = new NetworkEndpoint(System.Net.IPAddress.Loopback, guestTransport.BoundPort);
+
+        var guestStore = new GuestWorldStateStore();
+        var guest = new LiveGuestSession(
+            guestTransport,
+            gameId,
+            authorityEndpoint,
+            guestPlayerSlot: 1,
+            authoritySlot: 0,
+            maxClients: 4);
+        guest.SetNegotiatedCapabilities(LiveConstants.DefaultLocalCapabilities);
+        guest.SetGuestWorldState(guestStore, new SnapshotChecksumSession());
+
+        var authorityStore = new GuestWorldStateStore();
+        authorityStore.QueueCoopDeadSpawn(88);
+        var authority = new LiveAuthoritySession(authorityTransport, gameId, authoritySlot: 0, maxClients: 4);
+        authority.SetAuthorityWorldState(authorityStore, new SnapshotChecksumSession());
+        authority.SetAuthorityInvasionSnapshot(new InvasionSnapshotHeader(
+            flags: 0,
+            state: LiveConstants.InvasionStateSpawning,
+            stateTics: 1,
+            wave: 1,
+            maxWaves: 10,
+            waveBudget: 8,
+            waveSpawned: 0,
+            waveCleared: 0,
+            activeMonsters: 2));
+        authority.TrackClient(guestEndpoint, clientSlot: 1);
+        authority.Pump((ulong)Environment.TickCount64);
+
+        Assert.True(guest.TryReceiveAuthorityControl(out _));
+        Assert.True(guest.TryReceiveServerSnapshot(out _, out _, out var tailSections));
+        Assert.NotNull(tailSections);
+        Assert.NotNull(tailSections!.Value.CoopDeadSpawnIndices);
+        Assert.Equal(new uint[] { 88 }, tailSections.Value.CoopDeadSpawnIndices);
+        Assert.Contains(88u, guestStore.RetiredCoopDeadSpawns);
+    }
+
+    [Fact]
     public void AuthorityInvasionPump_IncludesChecksumWhenWorldStateWired()
     {
         var wad = HCDE.MapLoader.Tests.TestWadBuilder.BuildMinimalMapWad("MAP01");

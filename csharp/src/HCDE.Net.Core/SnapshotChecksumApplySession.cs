@@ -7,16 +7,18 @@ public interface ISnapshotChecksumMismatchSink
 
 public readonly struct SnapshotChecksumApplyResult
 {
-    public SnapshotChecksumApplyResult(bool compared, int mismatchCount, bool localBucketMissing)
+    public SnapshotChecksumApplyResult(bool compared, int mismatchCount, bool localBucketMissing, bool hasActorCategoryMismatch = false)
     {
         Compared = compared;
         MismatchCount = mismatchCount;
         LocalBucketMissing = localBucketMissing;
+        HasActorCategoryMismatch = hasActorCategoryMismatch;
     }
 
     public bool Compared { get; }
     public int MismatchCount { get; }
     public bool LocalBucketMissing { get; }
+    public bool HasActorCategoryMismatch { get; }
 }
 
 public static class SnapshotChecksumApplySession
@@ -50,6 +52,7 @@ public static class SnapshotChecksumApplySession
         }
 
         var mismatchList = new List<SnapshotChecksumMismatch>();
+        var hasActorCategoryMismatch = false;
         for (var i = 0; i < LiveConstants.SnapshotChecksumCategoryCount; i++)
         {
             if ((enabledCategoryMask & (1 << i)) == 0)
@@ -63,13 +66,16 @@ public static class SnapshotChecksumApplySession
                 remoteHashes[i],
                 localHashes[i]);
             mismatchList.Add(mismatch);
+            if (mismatch.Category == SnapshotChecksumCategory.Actors)
+                hasActorCategoryMismatch = true;
             mismatchSink?.ReportMismatch(mismatch, remoteTic);
         }
 
         result = new SnapshotChecksumApplyResult(
             compared: true,
             mismatchCount: mismatchList.Count,
-            localBucketMissing: false);
+            localBucketMissing: false,
+            hasActorCategoryMismatch: hasActorCategoryMismatch);
         return true;
     }
 }

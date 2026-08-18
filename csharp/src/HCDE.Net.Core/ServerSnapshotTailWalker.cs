@@ -99,6 +99,15 @@ public static class ServerSnapshotTailWalker
 
             invasionSnapshot = invasionHeader;
             cursor += invasionBytes;
+
+            if (cursor < tail.Length && CoopDeadSpawnsHeader.TryRead(tail[cursor..], out var invasionDeadSpawnsHeader))
+            {
+                if (!CoopDeadSpawnsCodec.TryRead(tail[cursor..], out invasionDeadSpawnsHeader, out coopDeadSpawnIndices, out var deadBytes, out rejectReason))
+                    return false;
+
+                coopDeadSpawns = invasionDeadSpawnsHeader;
+                cursor += deadBytes;
+            }
         }
         else
         {

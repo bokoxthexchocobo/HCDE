@@ -284,6 +284,17 @@ public sealed class LiveGuestSession
                 _actorDeltaSink,
                 out _,
                 out _);
+
+            if (sections.CoopDeadSpawnIndices is { Length: > 0 } invasionDeadSpawns
+                && sections.CoopDeadSpawns is { } invasionDeadHeader)
+            {
+                CoopDeadSpawnsApplySession.TryApply(
+                    invasionDeadHeader,
+                    invasionDeadSpawns,
+                    _coopDeadSpawnsSink,
+                    out _,
+                    out _);
+            }
         }
         else
         {
@@ -347,6 +358,13 @@ public sealed class LiveGuestSession
             _needsChecksumResync = SnapshotChecksumMismatchPolicy.ShouldResyncNetState(
                 checksumResult,
                 _checksumMismatchPolicy);
+            if (SnapshotChecksumMismatchPolicy.ShouldTriggerNetGapResyncOnActorMismatch(
+                    checksumResult,
+                    _checksumMismatchPolicy))
+            {
+                _needsNetGapResync = true;
+            }
+
             if (_needsChecksumResync)
                 _netRegistry.ResetClient(_routing.ConsolePlayer);
         }

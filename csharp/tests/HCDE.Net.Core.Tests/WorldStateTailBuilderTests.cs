@@ -147,6 +147,37 @@ public class WorldStateTailBuilderTests
     }
 
     [Fact]
+    public void TryBuildMergedInvasionCoopTail_IncludesEmbeddedCoopDeadSpawns()
+    {
+        var store = new GuestWorldStateStore();
+        store.QueueCoopDeadSpawn(55);
+
+        var invasionHeader = new InvasionSnapshotHeader(
+            flags: 0,
+            state: LiveConstants.InvasionStateSpawning,
+            stateTics: 1,
+            wave: 1,
+            maxWaves: 10,
+            waveBudget: 8,
+            waveSpawned: 0,
+            waveCleared: 0,
+            activeMonsters: 2);
+
+        Span<byte> tail = stackalloc byte[512];
+        var build = WorldStateTailBuilder.TryBuildMergedInvasionCoopTail(
+            tail,
+            store,
+            checksumSession: null,
+            gameTic: 9,
+            invasionHeader);
+        Assert.True(build.HasTail);
+        Assert.True(ServerSnapshotTailWalker.TryWalk(tail[..build.BytesWritten], out var sections, out _, out _));
+        Assert.NotNull(sections.CoopDeadSpawnIndices);
+        Assert.Equal(new uint[] { 55 }, sections.CoopDeadSpawnIndices);
+        Assert.False(store.HasPendingCoopDeadSpawns);
+    }
+
+    [Fact]
     public void TryBuildInvasionTailWithChecksum_IncludesHcksWhenStoreProvided()
     {
         var store = new GuestWorldStateStore();

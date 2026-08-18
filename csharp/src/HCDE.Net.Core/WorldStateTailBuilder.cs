@@ -178,6 +178,7 @@ public static class WorldStateTailBuilder
         var sectors = CollectSectors(store, replicateSectorMetadata);
         var embeddedAuthorityEvents = store.TakePendingAuthorityEventsForTail();
         var embeddedActorDeltas = CollectActorDeltas(store);
+        var embeddedCoopDeadSpawns = store.TakePendingCoopDeadSpawnsForTail();
         var checksumHashes = SnapshotChecksumTailPolicy.TryResolveTailChecksumHashes(
             store,
             checksumSession,
@@ -191,6 +192,7 @@ public static class WorldStateTailBuilder
             sectors,
             embeddedAuthorityEvents,
             embeddedActorDeltas,
+            embeddedCoopDeadSpawns,
             checksumHashes);
         return new WorldStateTailBuildResult(written > 0, written);
     }
