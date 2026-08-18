@@ -85,3 +85,10 @@ jobs:
         run: |
           cd csharp
           dotnet test --no-build --filter "FullyQualifiedName~Evaluate_EnforcesEvidenceFreshnessWhenSecretsConfigured"
+      - name: Enforce manifest staleness gate
+        if: ${{ secrets.HCDE_HCDESERV_PATH != '' && secrets.HCDE_IWAD_PATH != '' }}
+        env:
+          HCDE_SOAK_MANIFEST_MAX_AGE_DAYS: '8'
+        run: |
+          cd csharp
+          dotnet test --no-build --filter "FullyQualifiedName~EvaluateManifestStaleness_PassesWhenWithinMaxAge"
