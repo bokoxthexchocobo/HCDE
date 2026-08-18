@@ -890,6 +890,51 @@ public class MapBehaviorBytecodeWalkerTests
     }
 
     [Fact]
+    public void TryWalkScript_OldFormat_ReadsActorLightTextureAndMorphOps()
+    {
+        var lump = TestWadBuilder.BuildBehaviorLump(
+            MapBehaviorFormat.AcsOld,
+            scriptCount: 1,
+            includeTerminateBytecode: false,
+            bytecodeOpcodes:
+            [
+                (int)AcsPcode.CheckActorCeilingTexture,
+                (int)AcsPcode.CheckActorFloorTexture,
+                (int)AcsPcode.GetActorLightLevel,
+                (int)AcsPcode.CheckPlayerCamera,
+                (int)AcsPcode.SetActorAngle,
+                (int)AcsPcode.SetActorPosition,
+                (int)AcsPcode.MorphActor,
+                (int)AcsPcode.UnmorphActor,
+                (int)AcsPcode.ClassifyActor,
+                (int)AcsPcode.Terminate,
+            ]);
+        Assert.True(MapBehaviorCodec.TryProbe(lump, out var record, out _));
+        Assert.True(MapBehaviorDirectoryCodec.TryReadScripts(
+            record.Data,
+            record.Format,
+            record.DirectoryOffset,
+            out var scripts,
+            out _));
+        Assert.Single(scripts);
+
+        Assert.True(MapBehaviorBytecodeWalker.TryWalkScript(
+            record.Data,
+            record.Format,
+            scripts[0].Address,
+            out var instructions,
+            out var terminated,
+            out _));
+
+        Assert.True(terminated);
+        Assert.Equal(10, instructions.Count);
+        Assert.Equal((int)AcsPcode.CheckActorCeilingTexture, instructions[0].Opcode);
+        Assert.Equal((int)AcsPcode.GetActorLightLevel, instructions[2].Opcode);
+        Assert.Equal((int)AcsPcode.SetActorPosition, instructions[5].Opcode);
+        Assert.Equal((int)AcsPcode.ClassifyActor, instructions[8].Opcode);
+    }
+
+    [Fact]
     public void TryDecode_IncludesScriptBytecodeBodies()
     {
         var wad = TestWadBuilder.BuildMinimalMapWad("MAP01", includeBehavior: true);

@@ -210,7 +210,10 @@ public enum AcsPcode : int
     GetActorZ = 198,
     GetActorFloorZ = 259,
     GetActorAngle = 260,
+    SetActorAngle = 276,
+    SpawnProjectile = 280,
     GetActorCeilingZ = 282,
+    SetActorPosition = 283,
     SetActorProperty = 325,
     GetActorProperty = 326,
     SetGravityDirectB = 327,
@@ -278,5 +281,6 @@ public enum AcsPcode : int
     SetMugshotState = 343,
     ThingCountSector = 344,
     ThingCountNameSector = 345,
+    CheckPlayerCamera = 346,
     GetPlayerInput = 429,
 }

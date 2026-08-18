@@ -281,13 +281,14 @@ public static class MapBehaviorBytecodeWalker
             or (int)AcsPcode.CheckActorCeilingTexture or (int)AcsPcode.CheckActorFloorTexture
             or (int)AcsPcode.GetActorLightLevel or (int)AcsPcode.SetMugshotState
             or (int)AcsPcode.ThingCountSector or (int)AcsPcode.ThingCountNameSector
-            or (int)AcsPcode.GetPlayerInput => 0,
+            or (int)AcsPcode.CheckPlayerCamera or (int)AcsPcode.GetPlayerInput => 0,
         >= (int)AcsPcode.LsScriptVar and <= (int)AcsPcode.RsGlobalArray => 0,
         (int)AcsPcode.MorphActor or (int)AcsPcode.UnmorphActor or (int)AcsPcode.ClassifyActor
             or (int)AcsPcode.PrintBinary or (int)AcsPcode.PrintHex => 0,
         (int)AcsPcode.GetActorZ or (int)AcsPcode.GetActorFloorZ or (int)AcsPcode.GetActorAngle
-            or (int)AcsPcode.GetActorCeilingZ or (int)AcsPcode.SetActorProperty
-            or (int)AcsPcode.GetActorProperty => 0,
+            or (int)AcsPcode.SetActorAngle or (int)AcsPcode.SpawnProjectile
+            or (int)AcsPcode.GetActorCeilingZ or (int)AcsPcode.SetActorPosition
+            or (int)AcsPcode.SetActorProperty or (int)AcsPcode.GetActorProperty => 0,
         (int)AcsPcode.SetGravityDirectB or (int)AcsPcode.SetAirControlDirectB => 1,
         (int)AcsPcode.ClearActorInventory or (int)AcsPcode.GiveActorInventory
             or (int)AcsPcode.TakeActorInventory or (int)AcsPcode.CheckActorInventory => 0,
@@ -424,13 +425,14 @@ public static class MapBehaviorBytecodeWalker
             or (int)AcsPcode.CheckActorCeilingTexture or (int)AcsPcode.CheckActorFloorTexture
             or (int)AcsPcode.GetActorLightLevel or (int)AcsPcode.SetMugshotState
             or (int)AcsPcode.ThingCountSector or (int)AcsPcode.ThingCountNameSector
-            or (int)AcsPcode.GetPlayerInput => 0,
+            or (int)AcsPcode.CheckPlayerCamera or (int)AcsPcode.GetPlayerInput => 0,
         >= (int)AcsPcode.LsScriptVar and <= (int)AcsPcode.RsGlobalArray => 0,
         (int)AcsPcode.MorphActor or (int)AcsPcode.UnmorphActor or (int)AcsPcode.ClassifyActor
             or (int)AcsPcode.PrintBinary or (int)AcsPcode.PrintHex => 0,
         (int)AcsPcode.GetActorZ or (int)AcsPcode.GetActorFloorZ or (int)AcsPcode.GetActorAngle
-            or (int)AcsPcode.GetActorCeilingZ or (int)AcsPcode.SetActorProperty
-            or (int)AcsPcode.GetActorProperty => 0,
+            or (int)AcsPcode.SetActorAngle or (int)AcsPcode.SpawnProjectile
+            or (int)AcsPcode.GetActorCeilingZ or (int)AcsPcode.SetActorPosition
+            or (int)AcsPcode.SetActorProperty or (int)AcsPcode.GetActorProperty => 0,
         (int)AcsPcode.SetGravityDirectB or (int)AcsPcode.SetAirControlDirectB => 4,
         (int)AcsPcode.ClearActorInventory or (int)AcsPcode.GiveActorInventory
             or (int)AcsPcode.TakeActorInventory or (int)AcsPcode.CheckActorInventory => 0,
