@@ -298,6 +298,8 @@ public static class MapBehaviorBytecodeWalker
         (int)AcsPcode.Lspec5DirectB => 2,
         (int)AcsPcode.DelayDirectB or (int)AcsPcode.RandomDirectB => 1,
         (int)AcsPcode.SetThingSpecial => 0,
+        261 or 262 or 264 or 265 or 266 or 267 or 268 or 269 or 270 or 271 or 272
+            => 0, // C++ sector/level/player PCDs (shadow legacy global-var enum aliases)
         (int)AcsPcode.AddGlobalVar or (int)AcsPcode.SubGlobalVar or (int)AcsPcode.MulGlobalVar
             or (int)AcsPcode.DivGlobalVar or (int)AcsPcode.ModGlobalVar
             or (int)AcsPcode.IncGlobalVar or (int)AcsPcode.DecGlobalVar => 1,
@@ -307,7 +309,13 @@ public static class MapBehaviorBytecodeWalker
             or (int)AcsPcode.GetScreenWidth or (int)AcsPcode.GetScreenHeight
             or (int)AcsPcode.StrLen or (int)AcsPcode.SetHudSize
             or (int)AcsPcode.GetCvar or (int)AcsPcode.SetResultValue
-            or (int)AcsPcode.GetLineRowOffset or (int)AcsPcode.ActivatorTid => 0,
+            or (int)AcsPcode.GetLineRowOffset or (int)AcsPcode.ActivatorTid
+            or (int)AcsPcode.GetSectorFloorZ or (int)AcsPcode.GetSectorCeilingZ
+            or (int)AcsPcode.GetSigilPieces or (int)AcsPcode.GetLevelInfo
+            or (int)AcsPcode.ChangeSky or (int)AcsPcode.PlayerInGame
+            or (int)AcsPcode.PlayerIsBot or (int)AcsPcode.SetCameraToTexture
+            or (int)AcsPcode.EndLog or (int)AcsPcode.GetAmmoCapacity
+            or (int)AcsPcode.SetAmmoCapacity => 0,
         (int)AcsPcode.NegateBinary or (int)AcsPcode.GetActorPitch or (int)AcsPcode.SetActorPitch
             or (int)AcsPcode.PrintBind or (int)AcsPcode.SetActorState or (int)AcsPcode.ThingDamage2 => 0,
         (int)AcsPcode.UseInventory or (int)AcsPcode.UseActorInventory
@@ -475,7 +483,13 @@ public static class MapBehaviorBytecodeWalker
             or (int)AcsPcode.GetScreenWidth or (int)AcsPcode.GetScreenHeight
             or (int)AcsPcode.StrLen or (int)AcsPcode.SetHudSize
             or (int)AcsPcode.GetCvar or (int)AcsPcode.SetResultValue
-            or (int)AcsPcode.GetLineRowOffset or (int)AcsPcode.ActivatorTid => 0,
+            or (int)AcsPcode.GetLineRowOffset or (int)AcsPcode.ActivatorTid
+            or (int)AcsPcode.GetSectorFloorZ or (int)AcsPcode.GetSectorCeilingZ
+            or (int)AcsPcode.GetSigilPieces or (int)AcsPcode.GetLevelInfo
+            or (int)AcsPcode.ChangeSky or (int)AcsPcode.PlayerInGame
+            or (int)AcsPcode.PlayerIsBot or (int)AcsPcode.SetCameraToTexture
+            or (int)AcsPcode.EndLog or (int)AcsPcode.GetAmmoCapacity
+            or (int)AcsPcode.SetAmmoCapacity => 0,
         (int)AcsPcode.NegateBinary or (int)AcsPcode.GetActorPitch or (int)AcsPcode.SetActorPitch
             or (int)AcsPcode.PrintBind or (int)AcsPcode.SetActorState or (int)AcsPcode.ThingDamage2 => 0,
         (int)AcsPcode.UseInventory or (int)AcsPcode.UseActorInventory

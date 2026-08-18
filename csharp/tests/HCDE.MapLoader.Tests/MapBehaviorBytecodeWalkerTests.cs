@@ -1070,6 +1070,52 @@ public class MapBehaviorBytecodeWalkerTests
     }
 
     [Fact]
+    public void TryWalkScript_OldFormat_ReadsCvarResultFollowUpAndStackOps()
+    {
+        var lump = TestWadBuilder.BuildBehaviorLump(
+            MapBehaviorFormat.AcsOld,
+            scriptCount: 1,
+            includeTerminateBytecode: false,
+            bytecodeOpcodes:
+            [
+                (int)AcsPcode.GetCvar,
+                (int)AcsPcode.SetResultValue,
+                (int)AcsPcode.GetSectorFloorZ,
+                (int)AcsPcode.GetLevelInfo,
+                (int)AcsPcode.ChangeSky,
+                (int)AcsPcode.PlayerInGame,
+                (int)AcsPcode.EndLog,
+                (int)AcsPcode.GetAmmoCapacity,
+                (int)AcsPcode.CallStack,
+                (int)AcsPcode.Terminate,
+            ]);
+        Assert.True(MapBehaviorCodec.TryProbe(lump, out var record, out _));
+        Assert.True(MapBehaviorDirectoryCodec.TryReadScripts(
+            record.Data,
+            record.Format,
+            record.DirectoryOffset,
+            out var scripts,
+            out _));
+        Assert.Single(scripts);
+
+        Assert.True(MapBehaviorBytecodeWalker.TryWalkScript(
+            record.Data,
+            record.Format,
+            scripts[0].Address,
+            out var instructions,
+            out var terminated,
+            out _));
+
+        Assert.True(terminated);
+        Assert.Equal(10, instructions.Count);
+        Assert.Equal((int)AcsPcode.GetCvar, instructions[0].Opcode);
+        Assert.Equal((int)AcsPcode.GetSectorFloorZ, instructions[2].Opcode);
+        Assert.Equal((int)AcsPcode.GetLevelInfo, instructions[3].Opcode);
+        Assert.Equal((int)AcsPcode.EndLog, instructions[6].Opcode);
+        Assert.Equal((int)AcsPcode.CallStack, instructions[8].Opcode);
+    }
+
+    [Fact]
     public void TryDecode_IncludesScriptBytecodeBodies()
     {
         var wad = TestWadBuilder.BuildMinimalMapWad("MAP01", includeBehavior: true);
