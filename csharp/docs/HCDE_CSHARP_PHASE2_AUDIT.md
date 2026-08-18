@@ -1,7 +1,7 @@
 # HCDE C# Migration — Phase 2 Principal Audit
 
 **Last updated:** 2026-08-18  
-**Status:** In progress — Phase **2c** live protocol codecs (iteration 56 complete). Phase **2b** verification errors, start-game, bootstrap/resync, and cross-language harness complete. Phase **2b** verification errors, start-game, bootstrap/resync, and cross-language harness complete.  
+**Status:** In progress — Phase **2c** live protocol codecs (iteration 57 complete). Phase **2b** verification errors, start-game, bootstrap/resync, and cross-language harness complete. Phase **2b** verification errors, start-game, bootstrap/resync, and cross-language harness complete.  
 **Prerequisite:** [Phase 1 audit](HCDE_CSHARP_PHASE1_AUDIT.md) (complete)  
 **Related:** [`HCDE_CSHARP_MIGRATION.md`](HCDE_CSHARP_MIGRATION.md) · [`HCDE_NETCODE.md`](../../docs/HCDE_NETCODE.md)
 
@@ -713,11 +713,45 @@ Phase 2b is complete when **all** hold:
 2. ~~**Authority playsim tick polish**~~ — coop authority-event gap resync follow-ups, presentation-echo tail polish
 3. ~~**Cross-language soak evidence**~~ — skipped harness rejection gate in main CI workflow
 
-## Phase 2c next slice (iteration 57)
+## Phase 2c next slice (iteration 57 — delivered)
 
-1. **BEHAVIOR bytecode operands** — print-bind/actor-state follow-up PCDs, more Eternity stack ops
-2. **Authority playsim tick polish** — invasion presentation-echo gap resync follow-ups, line-spec tail polish
+1. ~~**BEHAVIOR bytecode operands**~~ — print-bind/actor-state follow-up PCDs, more Eternity stack ops
+2. ~~**Authority playsim tick polish**~~ — invasion presentation-echo gap resync follow-ups, line-spec tail polish
+3. ~~**Cross-language soak evidence**~~ — passed evidence freshness gate in main CI workflow
+
+## Phase 2c next slice (iteration 58)
+
+1. **BEHAVIOR bytecode operands** — thing-damage/use-inventory follow-up PCDs, more Eternity stack ops
+2. **Authority playsim tick polish** — coop presentation-echo gap resync follow-ups, authority-event tail polish
 3. **Cross-language soak evidence** — next CI freshness gate
+
+### Passed evidence freshness main CI gate (Phase 2c — iteration 57 step 3)
+
+| Artifact | Location | C++ reference |
+| --- | --- | --- |
+| Passed evidence freshness | `CrossLanguageSoakGate.EvaluateEvidenceFreshness` | accept evidence files within max age |
+| Main CI workflow | `.github/workflows/csharp.yml` | `EvaluateEvidenceFreshness_PassesWhenWithinMaxAge` step |
+| Gate tests | `CrossLanguageSoakGateTests` | `EvaluateEvidenceFreshness_PassesWhenWithinMaxAge` |
+| Release checklist | `validation/soak/README.md` | main CI passed evidence freshness docs |
+
+### Invasion presentation-echo gap resync follow-ups + line-spec tail polish (Phase 2c — iteration 57 step 2)
+
+| Artifact | Location | C++ reference |
+| --- | --- | --- |
+| Line-spec tail polish | `SnapshotChecksumLineSpecPolicy.PolishActorDeltaRollingHash` | fold line-spec into actor-delta hash |
+| Line-spec commit polish | `GuestWorldStateStore.NoteLineSpec` | polish actor-delta rolling hash on line-spec note |
+| Invasion presentation-echo mismatch | `SnapshotChecksumMismatchPolicy.ShouldTriggerNetGapResyncOnInvasionPresentationEchoMismatch` | net gap resync when invasion actor category mismatches |
+| Guest pump wiring | `LiveGuestSession.TryApplyTailSections` | tracks invasion presentation-echo mismatch gap resync follow-ups |
+| E2E tests | `SnapshotChecksumLineSpecPolicyTests`, `SnapshotChecksumMismatchPolicyTests`, `GuestWorldStateChecksumIntegrationTests` | line-spec polish + invasion presentation-echo mismatch gap resync |
+
+### BEHAVIOR print-bind/actor-state follow-up + Eternity stack PCD operands (Phase 2c/2d — iteration 57 step 1)
+
+| Artifact | Location | C++ reference |
+| --- | --- | --- |
+| Print-bind/state opcodes | `AcsPcode.cs` | `PCD_PRINTBIND`…`PCD_SETACTORSTATE` |
+| Wire-value skips | `MapBehaviorBytecodeWalker.cs` | C++ wire values for print-bind/state PCDs shadowing legacy enum aliases |
+| Operand skip table | `MapBehaviorBytecodeWalker.cs` | old + little-enhanced print-bind/state follow-up skips |
+| Walk tests | `MapBehaviorBytecodeWalkerTests` | `TryWalkScript_OldFormat_ReadsPrintBindActorStateAndEternityStackOps` |
 
 ### Skipped harness rejection main CI gate (Phase 2c — iteration 56 step 3)
 
