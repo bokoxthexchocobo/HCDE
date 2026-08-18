@@ -1,7 +1,7 @@
 # HCDE C# Migration — Phase 2 Principal Audit
 
 **Last updated:** 2026-08-18  
-**Status:** In progress — Phase **2c** live protocol codecs (iteration 57 complete). Phase **2b** verification errors, start-game, bootstrap/resync, and cross-language harness complete. Phase **2b** verification errors, start-game, bootstrap/resync, and cross-language harness complete.  
+**Status:** In progress — Phase **2c** live protocol codecs (iteration 58 complete). Phase **2b** verification errors, start-game, bootstrap/resync, and cross-language harness complete. Phase **2b** verification errors, start-game, bootstrap/resync, and cross-language harness complete.  
 **Prerequisite:** [Phase 1 audit](HCDE_CSHARP_PHASE1_AUDIT.md) (complete)  
 **Related:** [`HCDE_CSHARP_MIGRATION.md`](HCDE_CSHARP_MIGRATION.md) · [`HCDE_NETCODE.md`](../../docs/HCDE_NETCODE.md)
 
@@ -719,11 +719,45 @@ Phase 2b is complete when **all** hold:
 2. ~~**Authority playsim tick polish**~~ — invasion presentation-echo gap resync follow-ups, line-spec tail polish
 3. ~~**Cross-language soak evidence**~~ — passed evidence freshness gate in main CI workflow
 
-## Phase 2c next slice (iteration 58)
+## Phase 2c next slice (iteration 58 — delivered)
 
-1. **BEHAVIOR bytecode operands** — thing-damage/use-inventory follow-up PCDs, more Eternity stack ops
-2. **Authority playsim tick polish** — coop presentation-echo gap resync follow-ups, authority-event tail polish
+1. ~~**BEHAVIOR bytecode operands**~~ — thing-damage/use-inventory follow-up PCDs, more Eternity stack ops
+2. ~~**Authority playsim tick polish**~~ — coop presentation-echo gap resync follow-ups, authority-event tail polish
+3. ~~**Cross-language soak evidence**~~ — committed dual freshness stale manifest rejection gate in main CI workflow
+
+## Phase 2c next slice (iteration 59)
+
+1. **BEHAVIOR bytecode operands** — actor-texture/light follow-up PCDs, more Eternity stack ops
+2. **Authority playsim tick polish** — invasion line-spec gap resync follow-ups, actor-delta tail polish
 3. **Cross-language soak evidence** — next CI freshness gate
+
+### Committed dual freshness stale manifest rejection main CI gate (Phase 2c — iteration 58 step 3)
+
+| Artifact | Location | C++ reference |
+| --- | --- | --- |
+| Stale committed dual freshness rejection | `CrossLanguageSoakGate.EvaluateCommittedDualFreshness` | reject stale manifest in committed dual freshness check |
+| Main CI workflow | `.github/workflows/csharp.yml` | `EvaluateCommittedDualFreshness_FailsWhenManifestIsStale` step |
+| Gate tests | `CrossLanguageSoakGateTests` | `EvaluateCommittedDualFreshness_FailsWhenManifestIsStale` |
+| Release checklist | `validation/soak/README.md` | main CI committed dual freshness stale manifest rejection docs |
+
+### Coop presentation-echo gap resync follow-ups + authority-event tail polish (Phase 2c — iteration 58 step 2)
+
+| Artifact | Location | C++ reference |
+| --- | --- | --- |
+| Authority-event tail polish | `SnapshotChecksumAuthorityEventPolicy.PolishPresentationEchoRollingHash` | fold authority-event into presentation-echo hash |
+| Authority-event commit polish | `GuestWorldStateStore.CommitAppliedAuthorityEvents` | polish presentation-echo rolling hash on HCAV apply |
+| Coop presentation-echo mismatch | `SnapshotChecksumMismatchPolicy.ShouldTriggerNetGapResyncOnCoopPresentationEchoMismatch` | net gap resync when coop actor category mismatches |
+| Guest pump wiring | `LiveGuestSession.TryApplyTailSections` | tracks coop presentation-echo mismatch gap resync follow-ups |
+| E2E tests | `SnapshotChecksumAuthorityEventPolicyTests`, `SnapshotChecksumMismatchPolicyTests`, `GuestWorldStateChecksumIntegrationTests` | authority-event polish + coop presentation-echo mismatch gap resync |
+
+### BEHAVIOR thing-damage/use-inventory follow-up + Eternity stack PCD operands (Phase 2c/2d — iteration 58 step 1)
+
+| Artifact | Location | C++ reference |
+| --- | --- | --- |
+| Thing-damage/inventory opcodes | `AcsPcode.cs` | `PCD_THINGDAMAGE2`…`PCD_USEACTORINVENTORY` |
+| Wire-value skips | `MapBehaviorBytecodeWalker.cs` | C++ wire values for thing-damage/inventory PCDs shadowing legacy enum aliases |
+| Operand skip table | `MapBehaviorBytecodeWalker.cs` | old + little-enhanced thing-damage/inventory follow-up skips |
+| Walk tests | `MapBehaviorBytecodeWalkerTests` | `TryWalkScript_OldFormat_ReadsThingDamageUseInventoryAndEternityStackOps` |
 
 ### Passed evidence freshness main CI gate (Phase 2c — iteration 57 step 3)
 
