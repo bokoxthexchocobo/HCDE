@@ -106,3 +106,8 @@ jobs:
         run: |
           cd csharp
           dotnet test --no-build --filter "FullyQualifiedName~Evaluate_FailsWhenEvidenceFileIsStale"
+      - name: Enforce missing evidence rejection gate
+        if: ${{ secrets.HCDE_HCDESERV_PATH != '' && secrets.HCDE_IWAD_PATH != '' }}
+        run: |
+          cd csharp
+          dotnet test --no-build --filter "FullyQualifiedName~Evaluate_FailsWhenEvidenceFileIsMissing"

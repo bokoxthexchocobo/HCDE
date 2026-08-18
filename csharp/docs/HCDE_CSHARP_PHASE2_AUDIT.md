@@ -1,7 +1,7 @@
 # HCDE C# Migration — Phase 2 Principal Audit
 
 **Last updated:** 2026-08-18  
-**Status:** In progress — Phase **2c** live protocol codecs (iteration 54 complete). Phase **2b** verification errors, start-game, bootstrap/resync, and cross-language harness complete. Phase **2b** verification errors, start-game, bootstrap/resync, and cross-language harness complete.  
+**Status:** In progress — Phase **2c** live protocol codecs (iteration 55 complete). Phase **2b** verification errors, start-game, bootstrap/resync, and cross-language harness complete. Phase **2b** verification errors, start-game, bootstrap/resync, and cross-language harness complete.  
 **Prerequisite:** [Phase 1 audit](HCDE_CSHARP_PHASE1_AUDIT.md) (complete)  
 **Related:** [`HCDE_CSHARP_MIGRATION.md`](HCDE_CSHARP_MIGRATION.md) · [`HCDE_NETCODE.md`](../../docs/HCDE_NETCODE.md)
 
@@ -701,11 +701,45 @@ Phase 2b is complete when **all** hold:
 2. ~~**Authority playsim tick polish**~~ — coop actor-delta gap resync follow-ups, authority-event tail polish
 3. ~~**Cross-language soak evidence**~~ — stale evidence rejection gate in main CI workflow
 
-## Phase 2c next slice (iteration 55)
+## Phase 2c next slice (iteration 55 — delivered)
 
-1. **BEHAVIOR bytecode operands** — player-info follow-up PCDs, more Eternity stack ops
-2. **Authority playsim tick polish** — invasion authority-event gap resync follow-ups, actor-delta tail polish
+1. ~~**BEHAVIOR bytecode operands**~~ — player-info follow-up PCDs, more Eternity stack ops
+2. ~~**Authority playsim tick polish**~~ — invasion authority-event gap resync follow-ups, actor-delta tail polish
+3. ~~**Cross-language soak evidence**~~ — missing evidence rejection gate in main CI workflow
+
+## Phase 2c next slice (iteration 56)
+
+1. **BEHAVIOR bytecode operands** — negate/actor-pitch follow-up PCDs, more Eternity stack ops
+2. **Authority playsim tick polish** — coop authority-event gap resync follow-ups, presentation-echo tail polish
 3. **Cross-language soak evidence** — next CI freshness gate
+
+### Missing evidence rejection main CI gate (Phase 2c — iteration 55 step 3)
+
+| Artifact | Location | C++ reference |
+| --- | --- | --- |
+| Missing evidence rejection | `CrossLanguageSoakGate.Evaluate` | reject manifests referencing absent evidence files |
+| Main CI workflow | `.github/workflows/csharp.yml` | `Evaluate_FailsWhenEvidenceFileIsMissing` step |
+| Gate tests | `CrossLanguageSoakGateTests` | `Evaluate_FailsWhenEvidenceFileIsMissing` |
+| Release checklist | `validation/soak/README.md` | main CI missing evidence rejection docs |
+
+### Invasion authority-event gap resync follow-ups + actor-delta tail polish (Phase 2c — iteration 55 step 2)
+
+| Artifact | Location | C++ reference |
+| --- | --- | --- |
+| Authority-event tail polish | `SnapshotChecksumActorDeltaPolicy.PolishAuthorityEventRollingHash` | fold actor-delta into authority-event hash |
+| Actor-delta commit polish | `GuestWorldStateStore.CommitAppliedActorDeltas` | polish authority-event rolling hash on HCDA apply |
+| Invasion authority-event mismatch | `SnapshotChecksumMismatchPolicy.ShouldTriggerNetGapResyncOnInvasionAuthorityEventMismatch` | net gap resync when invasion actor category mismatches |
+| Guest pump wiring | `LiveGuestSession.TryApplyTailSections` | tracks invasion authority-event mismatch gap resync follow-ups |
+| E2E tests | `SnapshotChecksumActorDeltaPolicyTests`, `SnapshotChecksumMismatchPolicyTests`, `GuestWorldStateChecksumIntegrationTests` | authority-event polish + invasion authority-event mismatch gap resync |
+
+### BEHAVIOR player-info follow-up + Eternity stack PCD operands (Phase 2c/2d — iteration 55 step 1)
+
+| Artifact | Location | C++ reference |
+| --- | --- | --- |
+| Player-info opcodes | `AcsPcode.cs` | `PCD_GETPLAYERINFO`…`PCD_REPLACETEXTURES` |
+| Wire-value skips | `MapBehaviorBytecodeWalker.cs` | C++ wire values for player-info PCDs shadowing SetAirControlDirectB enum alias |
+| Operand skip table | `MapBehaviorBytecodeWalker.cs` | old + little-enhanced player-info follow-up skips |
+| Walk tests | `MapBehaviorBytecodeWalkerTests` | `TryWalkScript_OldFormat_ReadsPlayerInfoAndEternityStackOps` |
 
 ### Stale evidence rejection main CI gate (Phase 2c — iteration 54 step 3)
 
