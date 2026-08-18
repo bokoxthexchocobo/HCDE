@@ -1,7 +1,7 @@
 # HCDE C# Migration — Phase 2 Principal Audit
 
 **Last updated:** 2026-08-18  
-**Status:** In progress — Phase **2c** live protocol codecs (iteration 44 step 1). Phase **2b** verification errors, start-game, bootstrap/resync, and cross-language harness complete. Phase **2b** verification errors, start-game, bootstrap/resync, and cross-language harness complete.  
+**Status:** In progress — Phase **2c** live protocol codecs (iteration 44 step 2). Phase **2b** verification errors, start-game, bootstrap/resync, and cross-language harness complete. Phase **2b** verification errors, start-game, bootstrap/resync, and cross-language harness complete.  
 **Prerequisite:** [Phase 1 audit](HCDE_CSHARP_PHASE1_AUDIT.md) (complete)  
 **Related:** [`HCDE_CSHARP_MIGRATION.md`](HCDE_CSHARP_MIGRATION.md) · [`HCDE_NETCODE.md`](../../docs/HCDE_NETCODE.md)
 
@@ -638,8 +638,21 @@ Phase 2b is complete when **all** hold:
 ## Phase 2c next slice (iteration 44)
 
 1. ~~**BEHAVIOR bytecode operands**~~ — sector/line PCDs, more ZDoom stack ops
-2. **Authority playsim tick polish** — guest checksum gap resync on HCDA mismatch, dead-player tail polish
+2. ~~**Authority playsim tick polish**~~ — guest checksum gap resync on HCDA mismatch, dead-player tail polish
 3. **Cross-language soak evidence** — dual freshness enforcement in main CI workflow
+
+### Guest actor-checksum gap resync + invasion HCDS tail (Phase 2c — iteration 44 step 2)
+
+| Artifact | Location | C++ reference |
+| --- | --- | --- |
+| Actor mismatch detect | `SnapshotChecksumApplySession.TryApply` | `HasActorCategoryMismatch` on HCKS compare |
+| Gap resync policy | `SnapshotChecksumMismatchPolicy.ShouldTriggerNetGapResyncOnActorMismatch` | net gap resync when Actors category mismatches |
+| Guest pump wiring | `LiveGuestSession.TryApplyTailSections` | sets `NeedsNetGapResync` on actor HCDA mismatch |
+| Invasion HCDS writer | `ServerSnapshotTailCodec.WriteInvasionShipping` | `coopDeadSpawnIndices` after HCIV block |
+| Merged tail builder | `WorldStateTailBuilder.TryBuildMergedInvasionCoopTail` | embed pending HCDS in invasion tail |
+| Tail walker | `ServerSnapshotTailWalker.TryWalk` | parse HCDS after invasion block |
+| Guest HCDS apply | `LiveGuestSession` invasion path | applies coop dead spawns on invasion receive |
+| E2E tests | `GuestWorldStateChecksumIntegrationTests`, `LiveSessionTests`, `WorldStateTailBuilderTests` | actor mismatch gap resync + invasion HCDS |
 
 ### BEHAVIOR sector/line + global stack PCD operands (Phase 2c/2d — iteration 44 step 1)
 

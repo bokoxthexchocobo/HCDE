@@ -224,6 +224,61 @@ public class CrossLanguageSoakGateTests
     }
 
     [Fact]
+    public void Evaluate_EnforcesDualFreshnessWhenSecretsConfigured()
+    {
+        if (!AreSoakSecretsConfigured())
+            return;
+
+        if (Environment.GetEnvironmentVariable("HCDE_ENFORCE_SOAK_GATE") != "1")
+            return;
+
+        var result = CrossLanguageSoakGate.EvaluateCommittedDualFreshness(
+            repositoryRoot: null,
+            DateTimeOffset.UtcNow,
+            CrossLanguageSoakGate.ResolveMaxManifestAgeDays(),
+            CrossLanguageSoakGate.ResolveMaxEvidenceAgeDays());
+        Assert.Equal(CrossLanguageSoakGateStatus.Passed, result.Status);
+    }
+
+    [Fact]
+    public void EvaluateCommittedDualFreshness_FailsWhenManifestIsStale()
+    {
+        var baseDir = Path.Combine(Path.GetTempPath(), $"hcde-soak-dual-stale-{Guid.NewGuid():N}");
+        var soakDir = Path.Combine(baseDir, "csharp", "validation", "soak");
+        var evidenceDir = Path.Combine(soakDir, "evidence");
+        Directory.CreateDirectory(evidenceDir);
+        File.WriteAllText(Path.Combine(baseDir, "README.md"), "test");
+        var evidenceFile = "pregame_guest_smoke_20260101_Passed.json";
+        File.WriteAllText(Path.Combine(evidenceDir, evidenceFile), "{}");
+        File.WriteAllText(
+            Path.Combine(soakDir, "manifest.json"),
+            $$"""
+            {
+              "RecordedAtUtc": "2020-01-01T00:00:00+00:00",
+              "Harnesses": [
+                { "Harness": "pregame_guest_smoke", "Status": "Passed", "EvidenceFile": "{{evidenceFile}}" }
+              ]
+            }
+            """);
+
+        try
+        {
+            var result = CrossLanguageSoakGate.EvaluateCommittedDualFreshness(
+                baseDir,
+                DateTimeOffset.UtcNow,
+                maxManifestAgeDays: 8,
+                maxEvidenceAgeDays: 8);
+            Assert.Equal(CrossLanguageSoakGateStatus.Failed, result.Status);
+            Assert.Contains("manifest stale", result.Reason);
+        }
+        finally
+        {
+            if (Directory.Exists(baseDir))
+                Directory.Delete(baseDir, recursive: true);
+        }
+    }
+
+    [Fact]
     public void EvaluateManifestStaleness_PassesWhenWithinMaxAge()
     {
         var manifestPath = Path.Combine(Path.GetTempPath(), $"hcde-soak-fresh-{Guid.NewGuid():N}.json");

@@ -76,6 +76,20 @@ public static class CrossLanguageSoakGate
         return new CrossLanguageSoakGateResult(CrossLanguageSoakGateStatus.Passed);
     }
 
+    public static CrossLanguageSoakGateResult EvaluateCommittedDualFreshness(
+        string? repositoryRoot,
+        DateTimeOffset nowUtc,
+        int maxManifestAgeDays,
+        int maxEvidenceAgeDays)
+    {
+        var manifestPath = CrossLanguageSoakManifest.ResolveDefaultManifestPath(repositoryRoot);
+        var manifestStaleness = EvaluateManifestStaleness(manifestPath, nowUtc, maxManifestAgeDays);
+        if (manifestStaleness.Status == CrossLanguageSoakGateStatus.Failed)
+            return manifestStaleness;
+
+        return EvaluateEvidenceFreshness(repositoryRoot, nowUtc, maxEvidenceAgeDays);
+    }
+
     public static bool ShouldEnforceInCi() =>
         string.Equals(Environment.GetEnvironmentVariable("HCDE_ENFORCE_SOAK_GATE"), "1", StringComparison.Ordinal);
 
