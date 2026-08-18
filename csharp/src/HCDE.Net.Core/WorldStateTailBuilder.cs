@@ -64,22 +64,7 @@ public static class WorldStateTailBuilder
                 sector.Special);
         }
 
-        var actorDeltas = new ActorDeltaRecord[store.Actors.Count];
-        var actorIndex = 0;
-        foreach (var actor in store.Actors.Values.OrderBy(static a => a.ActorId))
-        {
-            actorDeltas[actorIndex++] = new ActorDeltaRecord
-            {
-                ActorId = actor.ActorId,
-                ClassId = actor.ClassId,
-                FieldMask = (ushort)(LiveConstants.ActorDeltaFieldCategory
-                    | LiveConstants.ActorDeltaFieldFlags
-                    | LiveConstants.ActorDeltaFieldHealth),
-                Category = actor.Category,
-                Flags = actor.Flags,
-                Health = actor.Health,
-            };
-        }
+        var actorDeltas = CollectActorDeltas(store);
 
         return ServerSnapshotTailCodec.WriteCoopShipping(
             tail,
@@ -271,6 +256,7 @@ public static class WorldStateTailBuilder
             };
         }
 
+        store.MixShippedActorDeltas(actorDeltas);
         return actorDeltas;
     }
 }

@@ -62,4 +62,12 @@ public static class SnapshotChecksumMismatchPolicy
         appliedInvasionCoopDeadSpawns
         && !hasChecksum
         && policy == SnapshotChecksumMismatchPolicyKind.ResyncNetStateOnMismatch;
+
+    public static bool ShouldTriggerNetGapResyncOnInvasionAuthorityEventApply(
+        bool appliedInvasionAuthorityEvents,
+        bool hasChecksum,
+        SnapshotChecksumMismatchPolicyKind policy) =>
+        appliedInvasionAuthorityEvents
+        && !hasChecksum
+        && policy == SnapshotChecksumMismatchPolicyKind.ResyncNetStateOnMismatch;
 }

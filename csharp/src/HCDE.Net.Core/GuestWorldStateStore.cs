@@ -38,6 +38,7 @@ public sealed class GuestWorldStateStore : IWorldDeltaApplySink, IActorDeltaAppl
     private readonly HashSet<uint> _retiredCoopDeadSpawns = new();
     private readonly List<AuthorityEventRecord> _pendingAuthorityEvents = new();
     private uint _authorityEventRollingHash;
+    private uint _actorDeltaRollingHash;
 
     public IReadOnlyDictionary<byte, GuestPlayerState> Players => _players;
     public IReadOnlyDictionary<ushort, GuestSectorState> Sectors => _sectors;
@@ -46,6 +47,7 @@ public sealed class GuestWorldStateStore : IWorldDeltaApplySink, IActorDeltaAppl
     public bool HasPendingCoopDeadSpawns => _pendingCoopDeadSpawns.Count > 0;
     public bool HasPendingAuthorityEvents => _pendingAuthorityEvents.Count > 0;
     public uint AuthorityEventRollingHash => _authorityEventRollingHash;
+    public uint ActorDeltaRollingHash => _actorDeltaRollingHash;
 
     public bool ApplyPose(int recipientClientSlot, PlayerPoseWorldDelta pose, int sequenceAck)
     {
@@ -197,5 +199,17 @@ public sealed class GuestWorldStateStore : IWorldDeltaApplySink, IActorDeltaAppl
     {
         foreach (var record in records)
             _authorityEventRollingHash = SnapshotChecksumAuthorityEventPolicy.MixRecord(_authorityEventRollingHash, record);
+    }
+
+    public void MixShippedActorDeltas(IReadOnlyList<ActorDeltaRecord> records)
+    {
+        foreach (var record in records)
+            _actorDeltaRollingHash = SnapshotChecksumActorDeltaPolicy.MixRecord(_actorDeltaRollingHash, record);
+    }
+
+    public void CommitAppliedActorDeltas(IReadOnlyList<ActorDeltaRecord> records)
+    {
+        foreach (var record in records)
+            _actorDeltaRollingHash = SnapshotChecksumActorDeltaPolicy.MixRecord(_actorDeltaRollingHash, record);
     }
 }

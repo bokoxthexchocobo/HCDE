@@ -270,6 +270,7 @@ public sealed class LiveGuestSession
         }
 
         var appliedInvasionCoopDeadSpawns = false;
+        var appliedInvasionAuthorityEvents = false;
         if (sections.InvasionSnapshot is { } invasionHeader)
         {
             InvasionSnapshotApplySession.TryApply(
@@ -298,23 +299,28 @@ public sealed class LiveGuestSession
                 appliedInvasionCoopDeadSpawns = true;
             }
 
-            if (sections.AuthorityEventRecords is { Length: > 0 } invasionAuthorityRecords
-                && _guestWorldState != null)
+            if (sections.AuthorityEventRecords is { Length: > 0 } invasionAuthorityRecords)
             {
-                _guestWorldState.CommitAppliedAuthorityEvents(invasionAuthorityRecords);
+                appliedInvasionAuthorityEvents = true;
+                _guestWorldState?.CommitAppliedAuthorityEvents(invasionAuthorityRecords);
             }
+
+            if (sections.ActorDeltaRecords is { Count: > 0 } invasionActorRecords)
+                _guestWorldState?.CommitAppliedActorDeltas(invasionActorRecords);
         }
         else
         {
-            if (sections.ActorDeltaRecords is { Count: > 0 })
+            if (sections.ActorDeltaRecords is { Count: > 0 } actorRecords)
             {
                 ActorDeltasApplySession.TryApply(
                     sections.ActorDelta,
-                    sections.ActorDeltaRecords,
+                    actorRecords,
                     _routing.ConsolePlayer,
                     _actorDeltaSink,
                     out _,
                     out _);
+
+                _guestWorldState?.CommitAppliedActorDeltas(actorRecords);
             }
 
             if (sections.CoopDeadSpawnIndices is { Length: > 0 } deadSpawns && sections.CoopDeadSpawns is { } deadHeader)
@@ -381,6 +387,14 @@ public sealed class LiveGuestSession
 
         if (SnapshotChecksumMismatchPolicy.ShouldTriggerNetGapResyncOnInvasionCoopDeadSpawnApply(
                 appliedInvasionCoopDeadSpawns,
+                sections.HasChecksum,
+                _checksumMismatchPolicy))
+        {
+            _needsNetGapResync = true;
+        }
+
+        if (SnapshotChecksumMismatchPolicy.ShouldTriggerNetGapResyncOnInvasionAuthorityEventApply(
+                appliedInvasionAuthorityEvents,
                 sections.HasChecksum,
                 _checksumMismatchPolicy))
         {

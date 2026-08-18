@@ -560,6 +560,66 @@ public class LiveSessionTests
     }
 
     [Fact]
+    public void GuestInvasionAuthorityEventsWithoutChecksum_TriggersNetGapResync()
+    {
+        var gameId = new byte[] { 0xAA, 0xBB, 0xCC, 0xDD, 0x11, 0x22, 0x33, 0x44 };
+
+        using var authorityTransport = new UdpTransport();
+        using var guestTransport = new UdpTransport();
+        authorityTransport.Bind(0);
+        guestTransport.Bind(0);
+        authorityTransport.SetNonBlocking(true);
+        guestTransport.SetNonBlocking(true);
+
+        var authorityEndpoint = new NetworkEndpoint(System.Net.IPAddress.Loopback, authorityTransport.BoundPort);
+        var guestEndpoint = new NetworkEndpoint(System.Net.IPAddress.Loopback, guestTransport.BoundPort);
+
+        var guestStore = new GuestWorldStateStore();
+        var guest = new LiveGuestSession(
+            guestTransport,
+            gameId,
+            authorityEndpoint,
+            guestPlayerSlot: 1,
+            authoritySlot: 0,
+            maxClients: 4);
+        guest.SetNegotiatedCapabilities(LiveConstants.DefaultLocalCapabilities);
+        guest.ChecksumMismatchPolicy = SnapshotChecksumMismatchPolicyKind.ResyncNetStateOnMismatch;
+        guest.SetGuestWorldState(guestStore, new SnapshotChecksumSession());
+
+        var authorityRecord = AuthorityEventsCodec.CreateSpawnExample("Imp", actorId: 55);
+        Span<byte> tail = stackalloc byte[512];
+        var written = ServerSnapshotTailCodec.WriteInvasionShipping(
+            tail,
+            gameTic: 1,
+            new InvasionSnapshotHeader(
+                flags: 0,
+                state: LiveConstants.InvasionStateSpawning,
+                stateTics: 1,
+                wave: 1,
+                maxWaves: 10,
+                waveBudget: 8,
+                waveSpawned: 0,
+                waveCleared: 0,
+                activeMonsters: 2),
+            embeddedAuthorityEvents: new[] { authorityRecord });
+
+        var gameplay = new LiveGameplayEndpoint(authorityTransport, gameId);
+        Assert.True(gameplay.TrySendServerSnapshotWithExternalTail(
+            guestEndpoint,
+            roomId: 0,
+            gameTic: 1,
+            playerNum: 1,
+            externalTail: tail[..written]));
+
+        Assert.True(guest.TryReceiveServerSnapshot(out _, out _, out var tailSections));
+        Assert.NotNull(tailSections);
+        Assert.NotNull(tailSections!.Value.AuthorityEventRecords);
+        Assert.False(tailSections.Value.HasChecksum);
+        Assert.NotEqual(0u, guestStore.AuthorityEventRollingHash);
+        Assert.True(guest.NeedsNetGapResync);
+    }
+
+    [Fact]
     public void AuthorityPump_MergesCoopWorldDeltaIntoInvasionTail()
     {
         var wad = HCDE.MapLoader.Tests.TestWadBuilder.BuildMinimalMapWad("MAP01");
@@ -716,6 +776,7 @@ public class LiveSessionTests
         Assert.Single(tailSections.Value.ActorDeltaRecords!);
         Assert.True(guestStore.Actors.ContainsKey(44));
         Assert.Equal(55, guestStore.Actors[44].Health);
+        Assert.NotEqual(0u, guestStore.ActorDeltaRollingHash);
     }
 
     [Fact]
