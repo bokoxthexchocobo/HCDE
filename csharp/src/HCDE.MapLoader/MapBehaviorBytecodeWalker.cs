@@ -301,8 +301,9 @@ public static class MapBehaviorBytecodeWalker
         261 or 262 or 264 or 265 or 266 or 267 or 268 or 269 or 270 or 271 or 272
             or 273 or 274 or 275 or 277 or 278 or 279 or 281 or 290
             or 328 or 329 or 330 or 331
+            or 332 or 333 or 334
             or 346 or 347
-            => 0, // C++ sector/level/input/player-info PCDs (shadow legacy global-var enum aliases)
+            => 0, // C++ sector/level/input/player-info/negate-pitch PCDs (shadow legacy global-var enum aliases)
         (int)AcsPcode.AddGlobalVar or (int)AcsPcode.SubGlobalVar or (int)AcsPcode.MulGlobalVar
             or (int)AcsPcode.DivGlobalVar or (int)AcsPcode.ModGlobalVar
             or (int)AcsPcode.IncGlobalVar or (int)AcsPcode.DecGlobalVar => 1,
@@ -515,6 +516,8 @@ public static class MapBehaviorBytecodeWalker
             => 1, // C++ Ls/Rs script/map/world/global var+array shift PCDs (shadow legacy IncWorldArray… enum aliases)
         328 or 329 or 330 or 331
             => 0, // C++ PCD_GETPLAYERINFO…PCD_REPLACETEXTURES (shadow legacy SetAirControlDirectB enum alias)
+        332 or 333 or 334
+            => 0, // C++ PCD_NEGATEBINARY…PCD_SETACTORPITCH (shadow legacy negate/pitch enum aliases)
         346 or 347 => 0, // C++ PCD_CHECKPLAYERCAMERA / PCD_GETPLAYERINPUT (shadow legacy GetPlayerInput enum alias)
         (int)AcsPcode.NegateBinary or (int)AcsPcode.GetActorPitch or (int)AcsPcode.SetActorPitch
             or (int)AcsPcode.PrintBind or (int)AcsPcode.SetActorState or (int)AcsPcode.ThingDamage2 => 0,
