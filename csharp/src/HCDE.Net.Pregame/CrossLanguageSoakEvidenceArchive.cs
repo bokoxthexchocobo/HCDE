@@ -115,9 +115,10 @@ public static class CrossLanguageSoakEvidenceArchive
         if (!Directory.Exists(exportDirectory))
             throw new DirectoryNotFoundException(exportDirectory);
 
-        var bundleFreshness = CrossLanguageSoakGate.EvaluateExportBundleEvidenceFreshness(
+        var bundleFreshness = CrossLanguageSoakGate.EvaluateExportBundleDualFreshness(
             exportDirectory,
             DateTimeOffset.UtcNow,
+            CrossLanguageSoakGate.ResolveMaxManifestAgeDays(),
             CrossLanguageSoakGate.ResolveMaxEvidenceAgeDays());
         if (bundleFreshness.Status == CrossLanguageSoakGateStatus.Failed)
             throw new InvalidOperationException(bundleFreshness.Reason);
@@ -169,9 +170,10 @@ public static class CrossLanguageSoakEvidenceArchive
                 "HCDE_SOAK_TEMPLATE_EXPORT_DIR not set");
         }
 
-        var bundleFreshness = CrossLanguageSoakGate.EvaluateExportBundleEvidenceFreshness(
+        var bundleFreshness = CrossLanguageSoakGate.EvaluateExportBundleDualFreshness(
             exportDirectory,
             DateTimeOffset.UtcNow,
+            CrossLanguageSoakGate.ResolveMaxManifestAgeDays(),
             CrossLanguageSoakGate.ResolveMaxEvidenceAgeDays());
         if (bundleFreshness.Status == CrossLanguageSoakGateStatus.Failed)
             return bundleFreshness;

@@ -179,6 +179,47 @@ public class CrossLanguageSoakEvidenceArchiveTests
     }
 
     [Fact]
+    public void ApplyExportedTemplates_RejectsStaleExportManifest()
+    {
+        var baseDir = Path.Combine(Path.GetTempPath(), $"hcde-soak-stale-manifest-{Guid.NewGuid():N}");
+        var exportDir = Path.Combine(baseDir, "artifact");
+        var exportEvidenceDir = Path.Combine(exportDir, "evidence");
+        Directory.CreateDirectory(exportEvidenceDir);
+        var evidenceFile = "pregame_guest_smoke_20260101_Passed.json";
+        File.WriteAllText(Path.Combine(exportEvidenceDir, evidenceFile), "{}");
+        File.WriteAllText(
+            Path.Combine(exportDir, "manifest.json"),
+            $$"""
+            {
+              "RecordedAtUtc": "2020-01-01T00:00:00+00:00",
+              "Harnesses": [
+                { "Harness": "pregame_guest_smoke", "Status": "Passed", "EvidenceFile": "{{evidenceFile}}" }
+              ]
+            }
+            """);
+
+        try
+        {
+            var freshness = CrossLanguageSoakGate.EvaluateExportBundleDualFreshness(
+                exportDir,
+                DateTimeOffset.UtcNow,
+                maxManifestAgeDays: 8,
+                maxEvidenceAgeDays: 8);
+            Assert.Equal(CrossLanguageSoakGateStatus.Failed, freshness.Status);
+            Assert.Contains("manifest stale", freshness.Reason);
+
+            var ex = Assert.Throws<InvalidOperationException>(
+                () => CrossLanguageSoakEvidenceArchive.ApplyExportedTemplates(exportDir, Path.Combine(baseDir, "repo")));
+            Assert.Contains("manifest stale", ex.Message);
+        }
+        finally
+        {
+            if (Directory.Exists(baseDir))
+                Directory.Delete(baseDir, recursive: true);
+        }
+    }
+
+    [Fact]
     public void ApplyExportedTemplates_RejectsStaleBundleEvidence()
     {
         var baseDir = Path.Combine(Path.GetTempPath(), $"hcde-soak-stale-bundle-{Guid.NewGuid():N}");
@@ -190,7 +231,14 @@ public class CrossLanguageSoakEvidenceArchiveTests
         File.SetLastWriteTimeUtc(Path.Combine(exportEvidenceDir, evidenceFile), DateTime.UtcNow.AddDays(-30));
         File.WriteAllText(
             Path.Combine(exportDir, "manifest.json"),
-            $$"""{"Harnesses":[{"Harness":"pregame_guest_smoke","Status":"Passed","EvidenceFile":"{{evidenceFile}}"}]}""");
+            $$"""
+            {
+              "RecordedAtUtc": "{{DateTimeOffset.UtcNow:O}}",
+              "Harnesses": [
+                { "Harness": "pregame_guest_smoke", "Status": "Passed", "EvidenceFile": "{{evidenceFile}}" }
+              ]
+            }
+            """);
 
         try
         {
@@ -228,8 +276,9 @@ public class CrossLanguageSoakEvidenceArchiveTests
         File.WriteAllText(Path.Combine(exportEvidenceDir, "pregame_guest_smoke_test_Passed.json"), "{}");
         File.WriteAllText(
             Path.Combine(exportDir, "manifest.json"),
-            """
+            $$"""
             {
+              "RecordedAtUtc": "{{DateTimeOffset.UtcNow:O}}",
               "Harnesses": [
                 {
                   "Harness": "pregame_guest_smoke",

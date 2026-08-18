@@ -131,6 +131,20 @@ public static class CrossLanguageSoakGate
         return new CrossLanguageSoakGateResult(CrossLanguageSoakGateStatus.Passed);
     }
 
+    public static CrossLanguageSoakGateResult EvaluateExportBundleDualFreshness(
+        string exportDirectory,
+        DateTimeOffset nowUtc,
+        int maxManifestAgeDays,
+        int maxEvidenceAgeDays)
+    {
+        var manifestPath = Path.Combine(exportDirectory, "manifest.json");
+        var manifestStaleness = EvaluateManifestStaleness(manifestPath, nowUtc, maxManifestAgeDays);
+        if (manifestStaleness.Status == CrossLanguageSoakGateStatus.Failed)
+            return manifestStaleness;
+
+        return EvaluateExportBundleEvidenceFreshness(exportDirectory, nowUtc, maxEvidenceAgeDays);
+    }
+
     public static CrossLanguageSoakGateResult EvaluateExportBundleEvidenceFreshness(
         string exportDirectory,
         DateTimeOffset nowUtc,

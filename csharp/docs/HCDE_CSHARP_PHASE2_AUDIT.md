@@ -1,7 +1,7 @@
 # HCDE C# Migration — Phase 2 Principal Audit
 
 **Last updated:** 2026-08-18  
-**Status:** In progress — Phase **2c** live protocol codecs (iteration 43 step 1). Phase **2b** verification errors, start-game, bootstrap/resync, and cross-language harness complete. Phase **2b** verification errors, start-game, bootstrap/resync, and cross-language harness complete.  
+**Status:** In progress — Phase **2c** live protocol codecs (iteration 43 step 2). Phase **2b** verification errors, start-game, bootstrap/resync, and cross-language harness complete. Phase **2b** verification errors, start-game, bootstrap/resync, and cross-language harness complete.  
 **Prerequisite:** [Phase 1 audit](HCDE_CSHARP_PHASE1_AUDIT.md) (complete)  
 **Related:** [`HCDE_CSHARP_MIGRATION.md`](HCDE_CSHARP_MIGRATION.md) · [`HCDE_NETCODE.md`](../../docs/HCDE_NETCODE.md)
 
@@ -629,11 +629,39 @@ Phase 2b is complete when **all** hold:
 2. ~~**Authority playsim tick polish**~~ — embedded HCIV authority events on guest apply, coop+invasion tail merge policy
 3. ~~**Cross-language soak evidence**~~ — stale evidence rejection in weekly template commit workflow
 
-## Phase 2c next slice (iteration 43)
+## Phase 2c next slice (iteration 43 — delivered)
 
 1. ~~**BEHAVIOR bytecode operands**~~ — actor inventory PCDs, enhanced-format translation operands
-2. **Authority playsim tick polish** — invasion embedded HCDA apply on guest pump, authority tail checksum mismatch polish
-3. **Cross-language soak evidence** — manifest+evidence dual staleness in weekly commit gate
+2. ~~**Authority playsim tick polish**~~ — invasion embedded HCDA apply on guest pump, authority tail checksum mismatch polish
+3. ~~**Cross-language soak evidence**~~ — manifest+evidence dual staleness in weekly commit gate
+
+## Phase 2c next slice (iteration 44)
+
+1. **BEHAVIOR bytecode operands** — sector/line PCDs, more ZDoom stack ops
+2. **Authority playsim tick polish** — guest checksum gap resync on HCDA mismatch, dead-player tail polish
+3. **Cross-language soak evidence** — dual freshness enforcement in main CI workflow
+
+### Manifest+evidence dual staleness weekly gate (Phase 2c — iteration 43 step 3)
+
+| Artifact | Location | C++ reference |
+| --- | --- | --- |
+| Dual freshness gate | `CrossLanguageSoakGate.EvaluateExportBundleDualFreshness` | reject stale manifest and evidence before weekly apply |
+| Apply integration | `CrossLanguageSoakEvidenceArchive.ApplyExportedTemplates` | throws when manifest or bundle evidence is stale |
+| CI apply workflow | `.github/workflows/csharp-cross-language-soak.yml` | dual staleness test before weekly commit |
+| Archive tests | `CrossLanguageSoakEvidenceArchiveTests` | `ApplyExportedTemplates_RejectsStaleExportManifest` |
+| Release checklist | `validation/soak/README.md` | manifest+evidence dual staleness docs |
+
+### Invasion embedded HCDA + checksum tail policy (Phase 2c — iteration 43 step 2)
+
+| Artifact | Location | C++ reference |
+| --- | --- | --- |
+| Checksum policy | `SnapshotChecksumTailPolicy.TryResolveTailChecksumHashes` | shared HCKS hash resolve for authority tails |
+| Actor delta collect | `WorldStateTailBuilder.CollectActorDeltas` | embed HCDA in merged invasion tail |
+| Invasion tail codec | `ServerSnapshotTailCodec.WriteInvasionShipping` | `embeddedActorDeltas` on invasion shipping |
+| Merged tail builder | `WorldStateTailBuilder.TryBuildMergedInvasionCoopTail` | HCDW+HCDS+HCDA+HCIV+HCAV+HCKS |
+| Authority pump send | `LiveAuthoritySession.SendToClient` | uses `SnapshotChecksumTailPolicy` |
+| Guest HCDA apply | `LiveSession` guest pump | applies embedded actor deltas on invasion receive |
+| E2E tests | `LiveSessionTests`, `WorldStateTailBuilderTests`, `SnapshotChecksumTailPolicyTests` | embedded HCDA apply + checksum policy |
 
 ### BEHAVIOR actor inventory + translation PCD operands (Phase 2c/2d — iteration 43 step 1)
 
