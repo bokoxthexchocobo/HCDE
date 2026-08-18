@@ -87,7 +87,8 @@ public readonly struct SnapshotChecksumInputs
         int rngSeed,
         int gameTic,
         uint lineSpecRollingHash = 0,
-        uint coopDeadSpawnRollingHash = 0)
+        uint coopDeadSpawnRollingHash = 0,
+        uint authorityEventRollingHash = 0)
     {
         Players = players.Length == 0 ? Array.Empty<SnapshotChecksumPlayerSample>() : players.ToArray();
         Sectors = sectors.Length == 0 ? Array.Empty<SnapshotChecksumSectorSample>() : sectors.ToArray();
@@ -97,6 +98,7 @@ public readonly struct SnapshotChecksumInputs
         GameTic = gameTic;
         LineSpecRollingHash = lineSpecRollingHash;
         CoopDeadSpawnRollingHash = coopDeadSpawnRollingHash;
+        AuthorityEventRollingHash = authorityEventRollingHash;
     }
 
     public SnapshotChecksumPlayerSample[] Players { get; }
@@ -107,6 +109,7 @@ public readonly struct SnapshotChecksumInputs
     public int GameTic { get; }
     public uint LineSpecRollingHash { get; }
     public uint CoopDeadSpawnRollingHash { get; }
+    public uint AuthorityEventRollingHash { get; }
 }
 
 public static class SnapshotChecksumMixer
@@ -211,6 +214,8 @@ public static class SnapshotChecksumMixer
             var actorsHash = ComputeActors(inputs.Actors);
             if (inputs.CoopDeadSpawnRollingHash != 0)
                 actorsHash = MixU32(actorsHash, inputs.CoopDeadSpawnRollingHash);
+            if (inputs.AuthorityEventRollingHash != 0)
+                actorsHash = MixU32(actorsHash, inputs.AuthorityEventRollingHash);
             hashes[(int)SnapshotChecksumCategory.Actors] = actorsHash;
         }
         if ((categoryMask & (1 << (int)SnapshotChecksumCategory.Rng)) != 0)

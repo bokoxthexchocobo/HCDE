@@ -269,6 +269,7 @@ public sealed class LiveGuestSession
                 out _);
         }
 
+        var appliedInvasionCoopDeadSpawns = false;
         if (sections.InvasionSnapshot is { } invasionHeader)
         {
             InvasionSnapshotApplySession.TryApply(
@@ -294,6 +295,13 @@ public sealed class LiveGuestSession
                     _coopDeadSpawnsSink,
                     out _,
                     out _);
+                appliedInvasionCoopDeadSpawns = true;
+            }
+
+            if (sections.AuthorityEventRecords is { Length: > 0 } invasionAuthorityRecords
+                && _guestWorldState != null)
+            {
+                _guestWorldState.CommitAppliedAuthorityEvents(invasionAuthorityRecords);
             }
         }
         else
@@ -326,6 +334,8 @@ public sealed class LiveGuestSession
                     _authoritySink,
                     out _,
                     out _);
+
+                _guestWorldState?.CommitAppliedAuthorityEvents(authorityRecords);
             }
         }
 
@@ -358,7 +368,7 @@ public sealed class LiveGuestSession
             _needsChecksumResync = SnapshotChecksumMismatchPolicy.ShouldResyncNetState(
                 checksumResult,
                 _checksumMismatchPolicy);
-            if (SnapshotChecksumMismatchPolicy.ShouldTriggerNetGapResyncOnActorMismatch(
+            if (SnapshotChecksumMismatchPolicy.ShouldTriggerNetGapResyncOnCoopDeadSpawnMismatch(
                     checksumResult,
                     _checksumMismatchPolicy))
             {
@@ -367,6 +377,14 @@ public sealed class LiveGuestSession
 
             if (_needsChecksumResync)
                 _netRegistry.ResetClient(_routing.ConsolePlayer);
+        }
+
+        if (SnapshotChecksumMismatchPolicy.ShouldTriggerNetGapResyncOnInvasionCoopDeadSpawnApply(
+                appliedInvasionCoopDeadSpawns,
+                sections.HasChecksum,
+                _checksumMismatchPolicy))
+        {
+            _needsNetGapResync = true;
         }
     }
 

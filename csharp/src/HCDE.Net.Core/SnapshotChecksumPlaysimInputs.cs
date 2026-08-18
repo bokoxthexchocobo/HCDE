@@ -47,7 +47,8 @@ public static class SnapshotChecksumPlaysimInputs
             actors,
             rngSeed,
             gameTic,
-            coopDeadSpawnRollingHash: SnapshotChecksumCoopDeadSpawnPolicy.ComputeRollingHash(store));
+            coopDeadSpawnRollingHash: SnapshotChecksumCoopDeadSpawnPolicy.ComputeRollingHash(store),
+            authorityEventRollingHash: SnapshotChecksumAuthorityEventPolicy.ComputeRollingHash(store));
     }
 
     public static void ComputeAndStore(

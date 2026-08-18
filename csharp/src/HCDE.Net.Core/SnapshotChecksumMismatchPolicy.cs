@@ -47,11 +47,19 @@ public static class SnapshotChecksumMismatchPolicy
         && result.MismatchCount > 0
         && !result.LocalBucketMissing;
 
-    public static bool ShouldTriggerNetGapResyncOnActorMismatch(
+    public static bool ShouldTriggerNetGapResyncOnCoopDeadSpawnMismatch(
         SnapshotChecksumApplyResult result,
         SnapshotChecksumMismatchPolicyKind policy) =>
         policy == SnapshotChecksumMismatchPolicyKind.ResyncNetStateOnMismatch
         && result.Compared
         && result.HasActorCategoryMismatch
         && !result.LocalBucketMissing;
+
+    public static bool ShouldTriggerNetGapResyncOnInvasionCoopDeadSpawnApply(
+        bool appliedInvasionCoopDeadSpawns,
+        bool hasChecksum,
+        SnapshotChecksumMismatchPolicyKind policy) =>
+        appliedInvasionCoopDeadSpawns
+        && !hasChecksum
+        && policy == SnapshotChecksumMismatchPolicyKind.ResyncNetStateOnMismatch;
 }
