@@ -1,7 +1,7 @@
 # HCDE C# Migration — Phase 2 Principal Audit
 
 **Last updated:** 2026-08-17  
-**Status:** In progress — Phase **2c** live protocol codecs (iteration 42 step 1). Phase **2b** verification errors, start-game, bootstrap/resync, and cross-language harness complete. Phase **2b** verification errors, start-game, bootstrap/resync, and cross-language harness complete.  
+**Status:** In progress — Phase **2c** live protocol codecs (iteration 42 step 2). Phase **2b** verification errors, start-game, bootstrap/resync, and cross-language harness complete. Phase **2b** verification errors, start-game, bootstrap/resync, and cross-language harness complete.  
 **Prerequisite:** [Phase 1 audit](HCDE_CSHARP_PHASE1_AUDIT.md) (complete)  
 **Related:** [`HCDE_CSHARP_MIGRATION.md`](HCDE_CSHARP_MIGRATION.md) · [`HCDE_NETCODE.md`](../../docs/HCDE_NETCODE.md)
 
@@ -626,8 +626,19 @@ Phase 2b is complete when **all** hold:
 ## Phase 2c next slice (iteration 42)
 
 1. ~~**BEHAVIOR bytecode operands**~~ — actor property/getter PCDs, more enhanced-format direct specials
-2. **Authority playsim tick polish** — embedded HCIV authority events on guest apply, coop+invasion tail merge policy
+2. ~~**Authority playsim tick polish**~~ — embedded HCIV authority events on guest apply, coop+invasion tail merge policy
 3. **Cross-language soak evidence** — stale evidence rejection in weekly template commit workflow
+
+### Embedded HCIV authority events + coop/invasion merge (Phase 2c — iteration 42 step 2)
+
+| Artifact | Location | C++ reference |
+| --- | --- | --- |
+| HCIV writer | `InvasionSnapshotCodec.WriteV2` | embedded HCAV/HCDA inside invasion payload |
+| Merge policy | `WorldStateTailMergePolicy.ShouldMergeCoopIntoInvasion` | ship HCDW+HCDS with HCIV when store has payload |
+| Merged tail builder | `WorldStateTailBuilder.TryBuildMergedInvasionCoopTail` | coop world delta + embedded HCAV in invasion tail |
+| Guest authority apply | `GuestAuthorityEventState` | auto-wire `IAuthorityEventSink` on `SetGuestWorldState` |
+| Authority pump send | `LiveAuthoritySession.SendToClient` | merged invasion/coop tail selection |
+| E2E tests | `LiveSessionTests`, `WorldStateTailBuilderTests` | embedded HCAV apply + merged HCDW/HCIV pump |
 
 ### BEHAVIOR actor property/getter + enhanced direct PCD operands (Phase 2c/2d — iteration 42 step 1)
 

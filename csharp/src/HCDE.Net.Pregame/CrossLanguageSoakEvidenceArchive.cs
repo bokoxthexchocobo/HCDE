@@ -115,6 +115,13 @@ public static class CrossLanguageSoakEvidenceArchive
         if (!Directory.Exists(exportDirectory))
             throw new DirectoryNotFoundException(exportDirectory);
 
+        var bundleFreshness = CrossLanguageSoakGate.EvaluateExportBundleEvidenceFreshness(
+            exportDirectory,
+            DateTimeOffset.UtcNow,
+            CrossLanguageSoakGate.ResolveMaxEvidenceAgeDays());
+        if (bundleFreshness.Status == CrossLanguageSoakGateStatus.Failed)
+            throw new InvalidOperationException(bundleFreshness.Reason);
+
         var evidenceDirectory = ResolveDefaultEvidenceDirectory(repositoryRoot);
         Directory.CreateDirectory(evidenceDirectory);
         var copied = new List<string>();
@@ -161,6 +168,13 @@ public static class CrossLanguageSoakEvidenceArchive
                 CrossLanguageSoakGateStatus.Failed,
                 "HCDE_SOAK_TEMPLATE_EXPORT_DIR not set");
         }
+
+        var bundleFreshness = CrossLanguageSoakGate.EvaluateExportBundleEvidenceFreshness(
+            exportDirectory,
+            DateTimeOffset.UtcNow,
+            CrossLanguageSoakGate.ResolveMaxEvidenceAgeDays());
+        if (bundleFreshness.Status == CrossLanguageSoakGateStatus.Failed)
+            return bundleFreshness;
 
         ApplyExportedTemplates(exportDirectory, repositoryRoot);
         if (!CrossLanguageSoakGate.AreSoakSecretsConfigured())

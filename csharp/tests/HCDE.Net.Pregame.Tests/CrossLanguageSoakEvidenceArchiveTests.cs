@@ -179,6 +179,40 @@ public class CrossLanguageSoakEvidenceArchiveTests
     }
 
     [Fact]
+    public void ApplyExportedTemplates_RejectsStaleBundleEvidence()
+    {
+        var baseDir = Path.Combine(Path.GetTempPath(), $"hcde-soak-stale-bundle-{Guid.NewGuid():N}");
+        var exportDir = Path.Combine(baseDir, "artifact");
+        var exportEvidenceDir = Path.Combine(exportDir, "evidence");
+        Directory.CreateDirectory(exportEvidenceDir);
+        var evidenceFile = "pregame_guest_smoke_20200101_Passed.json";
+        File.WriteAllText(Path.Combine(exportEvidenceDir, evidenceFile), "{}");
+        File.SetLastWriteTimeUtc(Path.Combine(exportEvidenceDir, evidenceFile), DateTime.UtcNow.AddDays(-30));
+        File.WriteAllText(
+            Path.Combine(exportDir, "manifest.json"),
+            $$"""{"Harnesses":[{"Harness":"pregame_guest_smoke","Status":"Passed","EvidenceFile":"{{evidenceFile}}"}]}""");
+
+        try
+        {
+            var freshness = CrossLanguageSoakGate.EvaluateExportBundleEvidenceFreshness(
+                exportDir,
+                DateTimeOffset.UtcNow,
+                maxAgeDays: 8);
+            Assert.Equal(CrossLanguageSoakGateStatus.Failed, freshness.Status);
+            Assert.Contains("export bundle evidence stale", freshness.Reason);
+
+            var ex = Assert.Throws<InvalidOperationException>(
+                () => CrossLanguageSoakEvidenceArchive.ApplyExportedTemplates(exportDir, Path.Combine(baseDir, "repo")));
+            Assert.Contains("export bundle evidence stale", ex.Message);
+        }
+        finally
+        {
+            if (Directory.Exists(baseDir))
+                Directory.Delete(baseDir, recursive: true);
+        }
+    }
+
+    [Fact]
     public void ApplyExportedTemplates_CopiesBundleIntoCommittedTree()
     {
         var baseDir = Path.Combine(Path.GetTempPath(), $"hcde-soak-apply-{Guid.NewGuid():N}");
@@ -194,7 +228,17 @@ public class CrossLanguageSoakEvidenceArchiveTests
         File.WriteAllText(Path.Combine(exportEvidenceDir, "pregame_guest_smoke_test_Passed.json"), "{}");
         File.WriteAllText(
             Path.Combine(exportDir, "manifest.json"),
-            """{"Harnesses":[{"Harness":"pregame_guest_smoke","Status":"Passed"}]}""");
+            """
+            {
+              "Harnesses": [
+                {
+                  "Harness": "pregame_guest_smoke",
+                  "Status": "Passed",
+                  "EvidenceFile": "pregame_guest_smoke_test_Passed.json"
+                }
+              ]
+            }
+            """);
 
         try
         {

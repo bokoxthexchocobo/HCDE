@@ -77,6 +77,13 @@ jobs:
         run: |
           cd csharp
           dotnet test --no-build --filter "FullyQualifiedName~ApplyExportedTemplates_WritesCommittedSoakTree"
+      - name: Reject stale export bundle before soak template commit
+        if: ${{ secrets.HCDE_HCDESERV_PATH != '' && secrets.HCDE_IWAD_PATH != '' }}
+        env:
+          HCDE_SOAK_EVIDENCE_MAX_AGE_DAYS: '8'
+        run: |
+          cd csharp
+          dotnet test --no-build --filter "FullyQualifiedName~ApplyExportedTemplates_RejectsStaleBundleEvidence"
       - name: Commit refreshed soak templates
         if: ${{ secrets.HCDE_HCDESERV_PATH != '' && secrets.HCDE_IWAD_PATH != '' }}
         run: |

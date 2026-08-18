@@ -131,6 +131,42 @@ public static class CrossLanguageSoakGate
         return new CrossLanguageSoakGateResult(CrossLanguageSoakGateStatus.Passed);
     }
 
+    public static CrossLanguageSoakGateResult EvaluateExportBundleEvidenceFreshness(
+        string exportDirectory,
+        DateTimeOffset nowUtc,
+        int maxAgeDays)
+    {
+        var manifestPath = Path.Combine(exportDirectory, "manifest.json");
+        if (!CrossLanguageSoakManifest.TryReadHarnessEvidenceFiles(manifestPath, out var entries))
+        {
+            return new CrossLanguageSoakGateResult(
+                CrossLanguageSoakGateStatus.Failed,
+                "export bundle missing harness evidence files");
+        }
+
+        var evidenceDirectory = Path.Combine(exportDirectory, "evidence");
+        foreach (var (harness, evidenceFile) in entries)
+        {
+            var evidencePath = Path.Combine(evidenceDirectory, evidenceFile);
+            if (!File.Exists(evidencePath))
+            {
+                return new CrossLanguageSoakGateResult(
+                    CrossLanguageSoakGateStatus.Failed,
+                    $"export bundle evidence missing for {harness}: {evidenceFile}");
+            }
+
+            var age = nowUtc - File.GetLastWriteTimeUtc(evidencePath);
+            if (age > TimeSpan.FromDays(maxAgeDays))
+            {
+                return new CrossLanguageSoakGateResult(
+                    CrossLanguageSoakGateStatus.Failed,
+                    $"export bundle evidence stale for {harness}: {evidenceFile}");
+            }
+        }
+
+        return new CrossLanguageSoakGateResult(CrossLanguageSoakGateStatus.Passed);
+    }
+
     public static CrossLanguageSoakGateResult EvaluateManifestStaleness(
         string manifestPath,
         DateTimeOffset nowUtc,
