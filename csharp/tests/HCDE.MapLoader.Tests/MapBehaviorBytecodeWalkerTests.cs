@@ -1220,7 +1220,7 @@ public class MapBehaviorBytecodeWalkerTests
                 313, 0, // PCD_LSSCRIPTVAR wire (shadows IncWorldArray enum alias)
                 317, 1, // PCD_LSSCRIPTARRAY wire
                 321, 2, // PCD_RSSCRIPTVAR wire
-                325, 3, // PCD_RSSCRIPTARRAY wire
+                324, 3, // PCD_RSGLOBALVAR wire (326 shadows GetActorProperty enum alias)
                 (int)AcsPcode.PushFunction, 4,
                 (int)AcsPcode.CallStack,
                 (int)AcsPcode.GotoStack,
@@ -1249,7 +1249,7 @@ public class MapBehaviorBytecodeWalkerTests
         Assert.Equal(1, instructions[0].OperandWordCount);
         Assert.Equal(317, instructions[1].Opcode);
         Assert.Equal(321, instructions[2].Opcode);
-        Assert.Equal(325, instructions[3].Opcode);
+        Assert.Equal(324, instructions[3].Opcode);
         Assert.Equal((int)AcsPcode.PushFunction, instructions[4].Opcode);
         Assert.Equal((int)AcsPcode.CallStack, instructions[5].Opcode);
         Assert.Equal((int)AcsPcode.GotoStack, instructions[6].Opcode);

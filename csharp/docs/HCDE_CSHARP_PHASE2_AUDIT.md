@@ -1,7 +1,7 @@
 # HCDE C# Migration — Phase 2 Principal Audit
 
 **Last updated:** 2026-08-18  
-**Status:** In progress — Phase **2c** live protocol codecs (iteration 53 complete). Phase **2b** verification errors, start-game, bootstrap/resync, and cross-language harness complete. Phase **2b** verification errors, start-game, bootstrap/resync, and cross-language harness complete.  
+**Status:** In progress — Phase **2c** live protocol codecs (iteration 54 complete). Phase **2b** verification errors, start-game, bootstrap/resync, and cross-language harness complete. Phase **2b** verification errors, start-game, bootstrap/resync, and cross-language harness complete.  
 **Prerequisite:** [Phase 1 audit](HCDE_CSHARP_PHASE1_AUDIT.md) (complete)  
 **Related:** [`HCDE_CSHARP_MIGRATION.md`](HCDE_CSHARP_MIGRATION.md) · [`HCDE_NETCODE.md`](../../docs/HCDE_NETCODE.md)
 
@@ -695,11 +695,45 @@ Phase 2b is complete when **all** hold:
 2. ~~**Authority playsim tick polish**~~ — invasion actor-delta gap resync follow-ups, line-spec tail polish
 3. ~~**Cross-language soak evidence**~~ — stale manifest rejection gate in main CI workflow
 
-## Phase 2c next slice (iteration 54)
+## Phase 2c next slice (iteration 54 — delivered)
 
-1. **BEHAVIOR bytecode operands** — bitwise shift PCDs, more Eternity stack ops
-2. **Authority playsim tick polish** — coop actor-delta gap resync follow-ups, authority-event tail polish
+1. ~~**BEHAVIOR bytecode operands**~~ — bitwise shift PCDs, more Eternity stack ops
+2. ~~**Authority playsim tick polish**~~ — coop actor-delta gap resync follow-ups, authority-event tail polish
+3. ~~**Cross-language soak evidence**~~ — stale evidence rejection gate in main CI workflow
+
+## Phase 2c next slice (iteration 55)
+
+1. **BEHAVIOR bytecode operands** — player-info follow-up PCDs, more Eternity stack ops
+2. **Authority playsim tick polish** — invasion authority-event gap resync follow-ups, actor-delta tail polish
 3. **Cross-language soak evidence** — next CI freshness gate
+
+### Stale evidence rejection main CI gate (Phase 2c — iteration 54 step 3)
+
+| Artifact | Location | C++ reference |
+| --- | --- | --- |
+| Stale evidence rejection | `CrossLanguageSoakGate.Evaluate` | reject evidence files older than max age |
+| Main CI workflow | `.github/workflows/csharp.yml` | `Evaluate_FailsWhenEvidenceFileIsStale` step |
+| Gate tests | `CrossLanguageSoakGateTests` | `Evaluate_FailsWhenEvidenceFileIsStale` |
+| Release checklist | `validation/soak/README.md` | main CI stale evidence rejection docs |
+
+### Coop actor-delta gap resync follow-ups + authority-event tail polish (Phase 2c — iteration 54 step 2)
+
+| Artifact | Location | C++ reference |
+| --- | --- | --- |
+| Actor-delta tail polish | `SnapshotChecksumAuthorityEventPolicy.PolishActorDeltaRollingHash` | fold authority-event into actor-delta hash |
+| Authority-event commit polish | `GuestWorldStateStore.CommitAppliedAuthorityEvents` | polish actor-delta rolling hash on HCAV apply |
+| Coop actor-delta mismatch | `SnapshotChecksumMismatchPolicy.ShouldTriggerNetGapResyncOnCoopActorDeltaMismatch` | net gap resync when coop actor category mismatches |
+| Guest pump wiring | `LiveGuestSession.TryApplyTailSections` | tracks coop actor-delta mismatch gap resync follow-ups |
+| E2E tests | `SnapshotChecksumAuthorityEventPolicyTests`, `SnapshotChecksumMismatchPolicyTests` | authority-event polish + coop actor-delta mismatch gap resync |
+
+### BEHAVIOR bitwise shift + Eternity stack PCD operands (Phase 2c/2d — iteration 54 step 1)
+
+| Artifact | Location | C++ reference |
+| --- | --- | --- |
+| Shift opcodes | `MapBehaviorBytecodeWalker.cs` | `PCD_LSSCRIPTVAR`…`PCD_RSGLOBALARRAY` wire skips |
+| Wire-value skips | `MapBehaviorBytecodeWalker.cs` | C++ wire values for Ls/Rs shift PCDs shadowing IncWorldArray… enum aliases |
+| Operand skip table | `MapBehaviorBytecodeWalker.cs` | old + little-enhanced bitwise shift skips |
+| Walk tests | `MapBehaviorBytecodeWalkerTests` | `TryWalkScript_OldFormat_ReadsBitwiseShiftAndEternityStackOps` |
 
 ### Stale manifest rejection main CI gate (Phase 2c — iteration 53 step 3)
 
