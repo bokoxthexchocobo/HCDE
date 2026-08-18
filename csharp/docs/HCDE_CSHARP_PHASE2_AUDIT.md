@@ -1,7 +1,7 @@
 # HCDE C# Migration — Phase 2 Principal Audit
 
 **Last updated:** 2026-08-18  
-**Status:** In progress — Phase **2c** live protocol codecs (iteration 50 complete). Phase **2b** verification errors, start-game, bootstrap/resync, and cross-language harness complete. Phase **2b** verification errors, start-game, bootstrap/resync, and cross-language harness complete.  
+**Status:** In progress — Phase **2c** live protocol codecs (iteration 51 complete). Phase **2b** verification errors, start-game, bootstrap/resync, and cross-language harness complete. Phase **2b** verification errors, start-game, bootstrap/resync, and cross-language harness complete.  
 **Prerequisite:** [Phase 1 audit](HCDE_CSHARP_PHASE1_AUDIT.md) (complete)  
 **Related:** [`HCDE_CSHARP_MIGRATION.md`](HCDE_CSHARP_MIGRATION.md) · [`HCDE_NETCODE.md`](../../docs/HCDE_NETCODE.md)
 
@@ -677,11 +677,46 @@ Phase 2b is complete when **all** hold:
 2. ~~**Authority playsim tick polish**~~ — invasion embedded ECHO gap resync follow-ups, line-spec tail polish
 3. ~~**Cross-language soak evidence**~~ — evidence freshness gate in main CI workflow
 
-## Phase 2c next slice (iteration 51)
+## Phase 2c next slice (iteration 51 — delivered)
 
-1. **BEHAVIOR bytecode operands** — CVAR/result follow-up PCDs, more Eternity stack ops
-2. **Authority playsim tick polish** — line-spec mismatch gap resync follow-ups, presentation echo tail polish
+1. ~~**BEHAVIOR bytecode operands**~~ — CVAR/result follow-up PCDs, more Eternity stack ops
+2. ~~**Authority playsim tick polish**~~ — line-spec mismatch gap resync follow-ups, presentation echo tail polish
+3. ~~**Cross-language soak evidence**~~ — Passed manifest gate in main CI workflow
+
+## Phase 2c next slice (iteration 52)
+
+1. **BEHAVIOR bytecode operands** — sector/level follow-up PCDs, more Eternity stack ops
+2. **Authority playsim tick polish** — coop/invasion line-spec gap resync follow-ups, echo tail polish
 3. **Cross-language soak evidence** — next CI freshness gate
+
+### Passed manifest main CI gate (Phase 2c — iteration 51 step 3)
+
+| Artifact | Location | C++ reference |
+| --- | --- | --- |
+| Passed manifest gate | `CrossLanguageSoakGate.Evaluate` | reject non-Passed soak harnesses in main CI |
+| Main CI workflow | `.github/workflows/csharp.yml` | `Evaluate_RequiresPassedManifestWhenSecretsConfigured` step |
+| Gate tests | `CrossLanguageSoakGateTests` | `Evaluate_RequiresPassedManifestWhenSecretsConfigured` |
+| Release checklist | `validation/soak/README.md` | main CI Passed manifest docs |
+
+### Line-spec gap resync follow-ups + ECHO tail polish (Phase 2c — iteration 51 step 2)
+
+| Artifact | Location | C++ reference |
+| --- | --- | --- |
+| Echo tail polish | `SnapshotChecksumPresentationEchoPolicy.PolishRollingHash` | fold line-spec into presentation-echo hash |
+| Line-spec note polish | `GuestWorldStateStore.NoteLineSpec` | polish echo rolling hash on line-spec apply |
+| Coop line-spec gap resync | `SnapshotChecksumMismatchPolicy.ShouldTriggerNetGapResyncOnCoopLineSpecApply` | net gap resync when coop tail arrives without HCKS and line-spec state exists |
+| Invasion line-spec mismatch | `SnapshotChecksumMismatchPolicy.ShouldTriggerNetGapResyncOnInvasionLineSpecMismatch` | net gap resync when invasion line-spec category mismatches |
+| Guest pump wiring | `LiveGuestSession.TryApplyTailSections` | tracks coop/invasion line-spec gap resync follow-ups |
+| E2E tests | `SnapshotChecksumPresentationEchoPolicyTests`, `SnapshotChecksumLineSpecPolicyTests`, `LiveSessionTests` | echo/line-spec polish + coop line-spec gap resync |
+
+### BEHAVIOR CVAR/result follow-up + Eternity stack PCD operands (Phase 2c/2d — iteration 51 step 1)
+
+| Artifact | Location | C++ reference |
+| --- | --- | --- |
+| Sector/level opcodes | `AcsPcode.cs` | `PCD_GETSECTORFLOORZ`…`PCD_SETAMMOCAPACITY` |
+| Wire-value skips | `MapBehaviorBytecodeWalker.cs` | C++ wire values for sector/level/player PCDs shadowing global-var aliases |
+| Operand skip table | `MapBehaviorBytecodeWalker.cs` | old + little-enhanced CVAR/result follow-up skips |
+| Walk tests | `MapBehaviorBytecodeWalkerTests` | `TryWalkScript_OldFormat_ReadsCvarResultFollowUpAndStackOps` |
 
 ### Evidence freshness main CI gate (Phase 2c — iteration 50 step 3)
 
