@@ -1,7 +1,7 @@
 # HCDE C# Migration — Phase 2 Principal Audit
 
 **Last updated:** 2026-08-18  
-**Status:** In progress — Phase **2c** live protocol codecs (iteration 45 step 2). Phase **2b** verification errors, start-game, bootstrap/resync, and cross-language harness complete. Phase **2b** verification errors, start-game, bootstrap/resync, and cross-language harness complete.  
+**Status:** In progress — Phase **2c** live protocol codecs (iteration 45 complete). Phase **2b** verification errors, start-game, bootstrap/resync, and cross-language harness complete. Phase **2b** verification errors, start-game, bootstrap/resync, and cross-language harness complete.  
 **Prerequisite:** [Phase 1 audit](HCDE_CSHARP_PHASE1_AUDIT.md) (complete)  
 **Related:** [`HCDE_CSHARP_MIGRATION.md`](HCDE_CSHARP_MIGRATION.md) · [`HCDE_NETCODE.md`](../../docs/HCDE_NETCODE.md)
 
@@ -641,11 +641,27 @@ Phase 2b is complete when **all** hold:
 2. ~~**Authority playsim tick polish**~~ — guest checksum gap resync on HCDA mismatch, dead-player tail polish
 3. ~~**Cross-language soak evidence**~~ — dual freshness enforcement in main CI workflow
 
-## Phase 2c next slice (iteration 45)
+## Phase 2c next slice (iteration 45 — delivered)
 
 1. ~~**BEHAVIOR bytecode operands**~~ — actor pitch/state PCDs, more Eternity stack ops
 2. ~~**Authority playsim tick polish**~~ — invasion embedded HCDS checksum polish, guest presentation echo apply wiring
-3. **Cross-language soak evidence** — committed template export freshness in main CI
+3. ~~**Cross-language soak evidence**~~ — committed template export freshness in main CI
+
+## Phase 2c next slice (iteration 46)
+
+1. **BEHAVIOR bytecode operands** — thing damage/use-inventory PCDs, more ZDoom print ops
+2. **Authority playsim tick polish** — invasion embedded HCDS gap resync, authority event tail checksum polish
+3. **Cross-language soak evidence** — export bundle freshness in soak CI workflow
+
+### Committed template export freshness main CI gate (Phase 2c — iteration 45 step 3)
+
+| Artifact | Location | C++ reference |
+| --- | --- | --- |
+| Export freshness gate | `CrossLanguageSoakEvidenceArchive.ExportCommittedTemplates` | reject stale committed manifest/evidence before export |
+| Export integration | `CrossLanguageSoakEvidenceArchive.TryExportCommittedTemplatesFromEnvironment` | env-gated export with freshness validation |
+| Main CI workflow | `.github/workflows/csharp.yml` | `ExportCommittedTemplates_RejectsStaleCommittedManifest` step |
+| Archive tests | `CrossLanguageSoakEvidenceArchiveTests` | stale committed manifest rejection on export |
+| Release checklist | `validation/soak/README.md` | main CI export freshness docs |
 
 ### Invasion HCDS checksum polish + guest echo wiring (Phase 2c — iteration 45 step 2)
 
