@@ -1397,6 +1397,53 @@ public class MapBehaviorBytecodeWalkerTests
     }
 
     [Fact]
+    public void TryWalkScript_OldFormat_ReadsThingDamageUseInventoryAndEternityStackOps()
+    {
+        var lump = TestWadBuilder.BuildBehaviorLump(
+            MapBehaviorFormat.AcsOld,
+            scriptCount: 1,
+            includeTerminateBytecode: false,
+            bytecodeOpcodes:
+            [
+                335, // PCD_THINGDAMAGE2 wire (shadows PrintBind enum alias)
+                336, // PCD_USEINVENTORY wire
+                337, // PCD_USEACTORINVENTORY wire (shadows ThingDamage2 enum alias)
+                (int)AcsPcode.SubScriptArray, 1,
+                (int)AcsPcode.MulScriptArray, 2,
+                (int)AcsPcode.DecScriptArray, 3,
+                (int)AcsPcode.CallStack,
+                (int)AcsPcode.GotoStack,
+                (int)AcsPcode.Terminate,
+            ]);
+        Assert.True(MapBehaviorCodec.TryProbe(lump, out var record, out _));
+        Assert.True(MapBehaviorDirectoryCodec.TryReadScripts(
+            record.Data,
+            record.Format,
+            record.DirectoryOffset,
+            out var scripts,
+            out _));
+        Assert.Single(scripts);
+
+        Assert.True(MapBehaviorBytecodeWalker.TryWalkScript(
+            record.Data,
+            record.Format,
+            scripts[0].Address,
+            out var instructions,
+            out var terminated,
+            out _));
+
+        Assert.True(terminated);
+        Assert.Equal(9, instructions.Count);
+        Assert.Equal(335, instructions[0].Opcode);
+        Assert.Equal(0, instructions[0].OperandWordCount);
+        Assert.Equal(336, instructions[1].Opcode);
+        Assert.Equal(337, instructions[2].Opcode);
+        Assert.Equal((int)AcsPcode.SubScriptArray, instructions[3].Opcode);
+        Assert.Equal(1, instructions[3].OperandWordCount);
+        Assert.Equal((int)AcsPcode.CallStack, instructions[6].Opcode);
+    }
+
+    [Fact]
     public void TryDecode_IncludesScriptBytecodeBodies()
     {
         var wad = TestWadBuilder.BuildMinimalMapWad("MAP01", includeBehavior: true);

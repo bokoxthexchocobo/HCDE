@@ -303,8 +303,9 @@ public static class MapBehaviorBytecodeWalker
             or 328 or 329 or 330 or 331
             or 332 or 333 or 334
             or 335 or 336
+            or 337
             or 346 or 347
-            => 0, // C++ sector/level/input/player-info/negate-pitch/print-bind PCDs (shadow legacy global-var enum aliases)
+            => 0, // C++ sector/level/input/player-info/negate-pitch/print-bind/thing-damage PCDs (shadow legacy global-var enum aliases)
         (int)AcsPcode.AddGlobalVar or (int)AcsPcode.SubGlobalVar or (int)AcsPcode.MulGlobalVar
             or (int)AcsPcode.DivGlobalVar or (int)AcsPcode.ModGlobalVar
             or (int)AcsPcode.IncGlobalVar or (int)AcsPcode.DecGlobalVar => 1,
@@ -331,8 +332,6 @@ public static class MapBehaviorBytecodeWalker
             or (int)AcsPcode.OrMapVar or (int)AcsPcode.OrWorldVar => 1,
         313 or 314 or 315 or 316 or 317 or 318 or 319 or 320 or 321 or 322 or 323 or 324
             => 1, // C++ Ls/Rs script/map/world/global var+array shift PCDs (shadow legacy IncWorldArray… enum aliases)
-        (int)AcsPcode.NegateBinary or (int)AcsPcode.GetActorPitch or (int)AcsPcode.SetActorPitch
-            or (int)AcsPcode.PrintBind or (int)AcsPcode.SetActorState or (int)AcsPcode.ThingDamage2 => 0,
         (int)AcsPcode.UseInventory or (int)AcsPcode.UseActorInventory
             or (int)AcsPcode.CheckActorCeilingTexture or (int)AcsPcode.CheckActorFloorTexture
             or (int)AcsPcode.GetActorLightLevel or (int)AcsPcode.SetMugshotState
@@ -521,9 +520,9 @@ public static class MapBehaviorBytecodeWalker
             => 0, // C++ PCD_NEGATEBINARY…PCD_SETACTORPITCH (shadow legacy negate/pitch enum aliases)
         335 or 336
             => 0, // C++ PCD_PRINTBIND…PCD_SETACTORSTATE (shadow legacy print-bind/state enum aliases)
+        337
+            => 0, // C++ PCD_THINGDAMAGE2 / USEACTORINVENTORY wire (shadows ThingDamage2 enum alias)
         346 or 347 => 0, // C++ PCD_CHECKPLAYERCAMERA / PCD_GETPLAYERINPUT (shadow legacy GetPlayerInput enum alias)
-        (int)AcsPcode.NegateBinary or (int)AcsPcode.GetActorPitch or (int)AcsPcode.SetActorPitch
-            or (int)AcsPcode.PrintBind or (int)AcsPcode.SetActorState or (int)AcsPcode.ThingDamage2 => 0,
         (int)AcsPcode.UseInventory or (int)AcsPcode.UseActorInventory
             or (int)AcsPcode.CheckActorCeilingTexture or (int)AcsPcode.CheckActorFloorTexture
             or (int)AcsPcode.GetActorLightLevel or (int)AcsPcode.SetMugshotState
