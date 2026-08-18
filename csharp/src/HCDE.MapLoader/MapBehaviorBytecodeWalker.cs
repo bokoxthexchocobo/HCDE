@@ -271,6 +271,8 @@ public static class MapBehaviorBytecodeWalker
             or (int)AcsPcode.GetActorCeilingZ or (int)AcsPcode.SetActorProperty
             or (int)AcsPcode.GetActorProperty => 0,
         (int)AcsPcode.SetGravityDirectB or (int)AcsPcode.SetAirControlDirectB => 1,
+        (int)AcsPcode.ClearActorInventory or (int)AcsPcode.GiveActorInventory
+            or (int)AcsPcode.TakeActorInventory or (int)AcsPcode.CheckActorInventory => 0,
         (int)AcsPcode.Dup or (int)AcsPcode.Swap => 0,
         _ => UnknownOperandWords,
     };
@@ -394,6 +396,8 @@ public static class MapBehaviorBytecodeWalker
             or (int)AcsPcode.GetActorCeilingZ or (int)AcsPcode.SetActorProperty
             or (int)AcsPcode.GetActorProperty => 0,
         (int)AcsPcode.SetGravityDirectB or (int)AcsPcode.SetAirControlDirectB => 4,
+        (int)AcsPcode.ClearActorInventory or (int)AcsPcode.GiveActorInventory
+            or (int)AcsPcode.TakeActorInventory or (int)AcsPcode.CheckActorInventory => 0,
         (int)AcsPcode.Dup or (int)AcsPcode.Swap => 0,
         _ => UnknownOperandWords,
     };

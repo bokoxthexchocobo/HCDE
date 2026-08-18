@@ -215,4 +215,8 @@ public enum AcsPcode : int
     GetActorProperty = 326,
     SetGravityDirectB = 327,
     SetAirControlDirectB = 328,
+    ClearActorInventory = 284,
+    GiveActorInventory = 285,
+    TakeActorInventory = 286,
+    CheckActorInventory = 287,
 }

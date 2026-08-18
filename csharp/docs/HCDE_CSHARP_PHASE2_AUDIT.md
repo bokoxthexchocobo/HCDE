@@ -1,7 +1,7 @@
 # HCDE C# Migration — Phase 2 Principal Audit
 
-**Last updated:** 2026-08-17  
-**Status:** In progress — Phase **2c** live protocol codecs (iteration 42 complete). Phase **2b** verification errors, start-game, bootstrap/resync, and cross-language harness complete. Phase **2b** verification errors, start-game, bootstrap/resync, and cross-language harness complete.  
+**Last updated:** 2026-08-18  
+**Status:** In progress — Phase **2c** live protocol codecs (iteration 43 step 1). Phase **2b** verification errors, start-game, bootstrap/resync, and cross-language harness complete. Phase **2b** verification errors, start-game, bootstrap/resync, and cross-language harness complete.  
 **Prerequisite:** [Phase 1 audit](HCDE_CSHARP_PHASE1_AUDIT.md) (complete)  
 **Related:** [`HCDE_CSHARP_MIGRATION.md`](HCDE_CSHARP_MIGRATION.md) · [`HCDE_NETCODE.md`](../../docs/HCDE_NETCODE.md)
 
@@ -631,9 +631,18 @@ Phase 2b is complete when **all** hold:
 
 ## Phase 2c next slice (iteration 43)
 
-1. **BEHAVIOR bytecode operands** — actor inventory PCDs, enhanced-format translation operands
+1. ~~**BEHAVIOR bytecode operands**~~ — actor inventory PCDs, enhanced-format translation operands
 2. **Authority playsim tick polish** — invasion embedded HCDA apply on guest pump, authority tail checksum mismatch polish
 3. **Cross-language soak evidence** — manifest+evidence dual staleness in weekly commit gate
+
+### BEHAVIOR actor inventory + translation PCD operands (Phase 2c/2d — iteration 43 step 1)
+
+| Artifact | Location | C++ reference |
+| --- | --- | --- |
+| Actor inventory opcodes | `AcsPcode.cs` | `PCD_CLEARACTORINVENTORY`…`PCD_CHECKACTORINVENTORY` |
+| Translation range opcodes | `AcsPcode.cs` | `PCD_TRANSLATIONRANGE3`…`PCD_TRANSLATIONRANGE5` |
+| Operand skip table | `MapBehaviorBytecodeWalker.cs` | old + little-enhanced actor-inventory/translation skips |
+| Walk tests | `MapBehaviorBytecodeWalkerTests` | `TryWalkScript_OldFormat_ReadsActorInventoryOps`, `TryWalkScript_LittleEnhanced_ReadsTranslationRangeOps` |
 
 ### Stale export bundle rejection (Phase 2c — iteration 42 step 3)
 
