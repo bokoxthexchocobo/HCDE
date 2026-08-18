@@ -275,6 +275,7 @@ public sealed class LiveGuestSession
         var appliedInvasionPresentationEcho = false;
         var appliedInvasionLineSpec = false;
         var appliedCoopLineSpec = false;
+        var appliedCoopActorDeltas = false;
         var appliedPresentationEcho = false;
         if (sections.InvasionSnapshot is { } invasionHeader)
         {
@@ -332,6 +333,7 @@ public sealed class LiveGuestSession
                     out _);
 
                 _guestWorldState?.CommitAppliedActorDeltas(actorRecords);
+                appliedCoopActorDeltas = true;
             }
 
             if (sections.CoopDeadSpawnIndices is { Length: > 0 } deadSpawns && sections.CoopDeadSpawns is { } deadHeader)
@@ -504,6 +506,20 @@ public sealed class LiveGuestSession
                     hasActorCategoryMismatch: _lastChecksumApplyState.HasActorCategoryMismatch,
                     hasLineSpecCategoryMismatch: _lastChecksumApplyState.HasLineSpecCategoryMismatch),
                 appliedInvasionActorDeltas,
+                _checksumMismatchPolicy))
+        {
+            _needsNetGapResync = true;
+        }
+
+        if (_lastChecksumApplyState.Compared
+            && SnapshotChecksumMismatchPolicy.ShouldTriggerNetGapResyncOnCoopActorDeltaMismatch(
+                new SnapshotChecksumApplyResult(
+                    _lastChecksumApplyState.Compared,
+                    _lastChecksumApplyState.MismatchCount,
+                    _lastChecksumApplyState.LocalBucketMissing,
+                    hasActorCategoryMismatch: _lastChecksumApplyState.HasActorCategoryMismatch,
+                    hasLineSpecCategoryMismatch: _lastChecksumApplyState.HasLineSpecCategoryMismatch),
+                appliedCoopActorDeltas,
                 _checksumMismatchPolicy))
         {
             _needsNetGapResync = true;

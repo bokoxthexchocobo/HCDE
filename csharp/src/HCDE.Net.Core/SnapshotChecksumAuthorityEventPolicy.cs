@@ -14,4 +14,12 @@ public static class SnapshotChecksumAuthorityEventPolicy
         hash = SnapshotChecksumMixer.MixU32(hash, unchecked((uint)record.Health));
         return hash;
     }
+
+    public static uint PolishActorDeltaRollingHash(uint actorDeltaHash, uint authorityEventHash)
+    {
+        if (actorDeltaHash == 0 || authorityEventHash == 0)
+            return actorDeltaHash;
+
+        return SnapshotChecksumMixer.MixU32(actorDeltaHash, authorityEventHash);
+    }
 }

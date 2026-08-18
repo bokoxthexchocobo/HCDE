@@ -141,4 +141,11 @@ public static class SnapshotChecksumMismatchPolicy
         SnapshotChecksumMismatchPolicyKind policy) =>
         ShouldTriggerNetGapResyncOnCoopDeadSpawnMismatch(result, policy)
         && appliedInvasionActorDeltas;
+
+    public static bool ShouldTriggerNetGapResyncOnCoopActorDeltaMismatch(
+        SnapshotChecksumApplyResult result,
+        bool appliedCoopActorDeltas,
+        SnapshotChecksumMismatchPolicyKind policy) =>
+        ShouldTriggerNetGapResyncOnCoopDeadSpawnMismatch(result, policy)
+        && appliedCoopActorDeltas;
 }
