@@ -104,7 +104,9 @@ public static class MapBehaviorBytecodeWalker
         while (offset + 4 <= data.Length)
         {
             var opcode = BinaryPrimitives.ReadInt32LittleEndian(data[offset..]);
-            var operandWords = GetWordOperandSkipCount(opcode);
+            var operandWords = TryGetWordOperandSkipCount(data, offset, opcode, out var variableOperandWords)
+                ? variableOperandWords
+                : GetWordOperandSkipCount(opcode);
             if (operandWords == EndScript)
             {
                 list.Add(new MapBehaviorInstruction(offset, opcode, 0));
@@ -171,6 +173,30 @@ public static class MapBehaviorBytecodeWalker
         return true;
     }
 
+    private static bool TryGetWordOperandSkipCount(
+        ReadOnlySpan<byte> data,
+        int offset,
+        int opcode,
+        out int operandWords)
+    {
+        operandWords = 0;
+        if (opcode != (int)AcsPcode.CaseGotoSorted)
+            return false;
+
+        var afterOpcode = offset + 4;
+        var aligned = (afterOpcode + 3) & ~3;
+        if (aligned + 4 > data.Length)
+            return false;
+
+        var numCases = BinaryPrimitives.ReadInt32LittleEndian(data[aligned..]);
+        if (numCases < 0)
+            return false;
+
+        var paddingWords = (aligned - afterOpcode) / 4;
+        operandWords = paddingWords + 1 + numCases * 2;
+        return true;
+    }
+
     private static int GetWordOperandSkipCount(int opcode) => opcode switch
     {
         (int)AcsPcode.Nop => 0,
@@ -234,7 +260,8 @@ public static class MapBehaviorBytecodeWalker
         244 or 247 => 0, // C++ PCD_SETMARINEWEAPON / PCD_PLAYERNUMBER (shadow legacy DivGlobalArray/PushByte enum aliases)
         (int)AcsPcode.CallStack or (int)AcsPcode.GotoStack
             or (int)AcsPcode.ScriptWaitNamed or (int)AcsPcode.SaveString
-            or (int)AcsPcode.Lspec5Ex or (int)AcsPcode.Lspec5ExResult => 0,
+            or (int)AcsPcode.Lspec5Ex or (int)AcsPcode.Lspec5ExResult
+            or (int)AcsPcode.Lspec5Result => 0,
         (int)AcsPcode.CallFunc => 2,
         (int)AcsPcode.PrintScriptCharArray or (int)AcsPcode.PrintScriptCharRange
             or (int)AcsPcode.StrCpyToScriptCharRange
@@ -278,7 +305,9 @@ public static class MapBehaviorBytecodeWalker
             or (int)AcsPcode.ReplaceTextures => 0,
         (int)AcsPcode.SetMarineSprite
             or (int)AcsPcode.GetScreenWidth or (int)AcsPcode.GetScreenHeight
-            or (int)AcsPcode.StrLen or (int)AcsPcode.SetHudSize => 0,
+            or (int)AcsPcode.StrLen or (int)AcsPcode.SetHudSize
+            or (int)AcsPcode.GetCvar or (int)AcsPcode.SetResultValue
+            or (int)AcsPcode.GetLineRowOffset or (int)AcsPcode.ActivatorTid => 0,
         (int)AcsPcode.NegateBinary or (int)AcsPcode.GetActorPitch or (int)AcsPcode.SetActorPitch
             or (int)AcsPcode.PrintBind or (int)AcsPcode.SetActorState or (int)AcsPcode.ThingDamage2 => 0,
         (int)AcsPcode.UseInventory or (int)AcsPcode.UseActorInventory
@@ -310,6 +339,21 @@ public static class MapBehaviorBytecodeWalker
         out int operandBytes)
     {
         operandBytes = 0;
+        if (opcode == (int)AcsPcode.CaseGotoSorted)
+        {
+            var afterOpcode = offset + opcodeBytes;
+            var aligned = (afterOpcode + 3) & ~3;
+            if (aligned + 4 > data.Length)
+                return false;
+
+            var numCases = BinaryPrimitives.ReadInt32LittleEndian(data[aligned..]);
+            if (numCases < 0)
+                return false;
+
+            operandBytes = (aligned - afterOpcode) + 4 + numCases * 8;
+            return true;
+        }
+
         if (opcode != (int)AcsPcode.PushBytes)
             return false;
 
@@ -377,7 +421,8 @@ public static class MapBehaviorBytecodeWalker
         (int)AcsPcode.PushFunction => 1,
         (int)AcsPcode.CallStack or (int)AcsPcode.GotoStack
             or (int)AcsPcode.ScriptWaitNamed or (int)AcsPcode.SaveString
-            or (int)AcsPcode.Lspec5Ex or (int)AcsPcode.Lspec5ExResult => 0,
+            or (int)AcsPcode.Lspec5Ex or (int)AcsPcode.Lspec5ExResult
+            or (int)AcsPcode.Lspec5Result => 0,
         (int)AcsPcode.CallFunc => 2,
         (int)AcsPcode.PrintScriptCharArray or (int)AcsPcode.PrintScriptCharRange
             or (int)AcsPcode.StrCpyToScriptCharRange
@@ -428,7 +473,9 @@ public static class MapBehaviorBytecodeWalker
             or (int)AcsPcode.ReplaceTextures => 0,
         (int)AcsPcode.SetMarineWeapon or (int)AcsPcode.SetMarineSprite or (int)AcsPcode.PlayerNumber
             or (int)AcsPcode.GetScreenWidth or (int)AcsPcode.GetScreenHeight
-            or (int)AcsPcode.StrLen or (int)AcsPcode.SetHudSize => 0,
+            or (int)AcsPcode.StrLen or (int)AcsPcode.SetHudSize
+            or (int)AcsPcode.GetCvar or (int)AcsPcode.SetResultValue
+            or (int)AcsPcode.GetLineRowOffset or (int)AcsPcode.ActivatorTid => 0,
         (int)AcsPcode.NegateBinary or (int)AcsPcode.GetActorPitch or (int)AcsPcode.SetActorPitch
             or (int)AcsPcode.PrintBind or (int)AcsPcode.SetActorState or (int)AcsPcode.ThingDamage2 => 0,
         (int)AcsPcode.UseInventory or (int)AcsPcode.UseActorInventory
