@@ -7,18 +7,20 @@ public interface ISnapshotChecksumMismatchSink
 
 public readonly struct SnapshotChecksumApplyResult
 {
-    public SnapshotChecksumApplyResult(bool compared, int mismatchCount, bool localBucketMissing, bool hasActorCategoryMismatch = false)
+    public SnapshotChecksumApplyResult(bool compared, int mismatchCount, bool localBucketMissing, bool hasActorCategoryMismatch = false, bool hasLineSpecCategoryMismatch = false)
     {
         Compared = compared;
         MismatchCount = mismatchCount;
         LocalBucketMissing = localBucketMissing;
         HasActorCategoryMismatch = hasActorCategoryMismatch;
+        HasLineSpecCategoryMismatch = hasLineSpecCategoryMismatch;
     }
 
     public bool Compared { get; }
     public int MismatchCount { get; }
     public bool LocalBucketMissing { get; }
     public bool HasActorCategoryMismatch { get; }
+    public bool HasLineSpecCategoryMismatch { get; }
 }
 
 public static class SnapshotChecksumApplySession
@@ -53,6 +55,7 @@ public static class SnapshotChecksumApplySession
 
         var mismatchList = new List<SnapshotChecksumMismatch>();
         var hasActorCategoryMismatch = false;
+        var hasLineSpecCategoryMismatch = false;
         for (var i = 0; i < LiveConstants.SnapshotChecksumCategoryCount; i++)
         {
             if ((enabledCategoryMask & (1 << i)) == 0)
@@ -68,6 +71,8 @@ public static class SnapshotChecksumApplySession
             mismatchList.Add(mismatch);
             if (mismatch.Category == SnapshotChecksumCategory.Actors)
                 hasActorCategoryMismatch = true;
+            if (mismatch.Category == SnapshotChecksumCategory.LineSpec)
+                hasLineSpecCategoryMismatch = true;
             mismatchSink?.ReportMismatch(mismatch, remoteTic);
         }
 
@@ -75,7 +80,8 @@ public static class SnapshotChecksumApplySession
             compared: true,
             mismatchCount: mismatchList.Count,
             localBucketMissing: false,
-            hasActorCategoryMismatch: hasActorCategoryMismatch);
+            hasActorCategoryMismatch: hasActorCategoryMismatch,
+            hasLineSpecCategoryMismatch: hasLineSpecCategoryMismatch);
         return true;
     }
 }

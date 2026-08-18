@@ -11,4 +11,12 @@ public static class SnapshotChecksumLineSpecPolicy
         hash = SnapshotChecksumMixer.MixU32(hash, unchecked((uint)special));
         return SnapshotChecksumMixer.MixU32(hash, success ? 1u : 0u);
     }
+
+    public static uint PolishRollingHash(uint lineSpecHash, uint presentationEchoHash)
+    {
+        if (lineSpecHash == 0 || presentationEchoHash == 0)
+            return lineSpecHash;
+
+        return SnapshotChecksumMixer.MixU32(lineSpecHash, presentationEchoHash);
+    }
 }

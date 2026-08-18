@@ -15,12 +15,14 @@ public readonly struct GuestChecksumApplyState
         MismatchCount = result.MismatchCount;
         LocalBucketMissing = result.LocalBucketMissing;
         HasActorCategoryMismatch = result.HasActorCategoryMismatch;
+        HasLineSpecCategoryMismatch = result.HasLineSpecCategoryMismatch;
     }
 
     public bool Compared { get; }
     public int MismatchCount { get; }
     public bool LocalBucketMissing { get; }
     public bool HasActorCategoryMismatch { get; }
+    public bool HasLineSpecCategoryMismatch { get; }
 }
 
 public static class SnapshotChecksumMismatchPolicy
@@ -55,6 +57,14 @@ public static class SnapshotChecksumMismatchPolicy
         && result.HasActorCategoryMismatch
         && !result.LocalBucketMissing;
 
+    public static bool ShouldTriggerNetGapResyncOnLineSpecMismatch(
+        SnapshotChecksumApplyResult result,
+        SnapshotChecksumMismatchPolicyKind policy) =>
+        policy == SnapshotChecksumMismatchPolicyKind.ResyncNetStateOnMismatch
+        && result.Compared
+        && result.HasLineSpecCategoryMismatch
+        && !result.LocalBucketMissing;
+
     public static bool ShouldTriggerNetGapResyncOnInvasionCoopDeadSpawnApply(
         bool appliedInvasionCoopDeadSpawns,
         bool hasChecksum,
@@ -84,6 +94,22 @@ public static class SnapshotChecksumMismatchPolicy
         bool hasChecksum,
         SnapshotChecksumMismatchPolicyKind policy) =>
         appliedInvasionPresentationEcho
+        && !hasChecksum
+        && policy == SnapshotChecksumMismatchPolicyKind.ResyncNetStateOnMismatch;
+
+    public static bool ShouldTriggerNetGapResyncOnPresentationEchoApply(
+        bool appliedPresentationEcho,
+        bool hasChecksum,
+        SnapshotChecksumMismatchPolicyKind policy) =>
+        appliedPresentationEcho
+        && !hasChecksum
+        && policy == SnapshotChecksumMismatchPolicyKind.ResyncNetStateOnMismatch;
+
+    public static bool ShouldTriggerNetGapResyncOnInvasionLineSpecApply(
+        bool appliedInvasionLineSpec,
+        bool hasChecksum,
+        SnapshotChecksumMismatchPolicyKind policy) =>
+        appliedInvasionLineSpec
         && !hasChecksum
         && policy == SnapshotChecksumMismatchPolicyKind.ResyncNetStateOnMismatch;
 }

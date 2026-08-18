@@ -273,6 +273,8 @@ public sealed class LiveGuestSession
         var appliedInvasionAuthorityEvents = false;
         var appliedInvasionActorDeltas = false;
         var appliedInvasionPresentationEcho = false;
+        var appliedInvasionLineSpec = false;
+        var appliedPresentationEcho = false;
         if (sections.InvasionSnapshot is { } invasionHeader)
         {
             InvasionSnapshotApplySession.TryApply(
@@ -312,6 +314,9 @@ public sealed class LiveGuestSession
                 appliedInvasionActorDeltas = true;
                 _guestWorldState?.CommitAppliedActorDeltas(invasionActorRecords);
             }
+
+            if (_guestWorldState is { LineSpecRollingHash: not 0 })
+                appliedInvasionLineSpec = true;
         }
         else
         {
@@ -360,6 +365,7 @@ public sealed class LiveGuestSession
                 out _);
 
             _guestWorldState?.CommitAppliedPresentationEcho(echoBlock);
+            appliedPresentationEcho = true;
             if (sections.InvasionSnapshot is not null)
                 appliedInvasionPresentationEcho = true;
         }
@@ -384,6 +390,13 @@ public sealed class LiveGuestSession
                 checksumResult,
                 _checksumMismatchPolicy);
             if (SnapshotChecksumMismatchPolicy.ShouldTriggerNetGapResyncOnCoopDeadSpawnMismatch(
+                    checksumResult,
+                    _checksumMismatchPolicy))
+            {
+                _needsNetGapResync = true;
+            }
+
+            if (SnapshotChecksumMismatchPolicy.ShouldTriggerNetGapResyncOnLineSpecMismatch(
                     checksumResult,
                     _checksumMismatchPolicy))
             {
@@ -420,6 +433,22 @@ public sealed class LiveGuestSession
 
         if (SnapshotChecksumMismatchPolicy.ShouldTriggerNetGapResyncOnInvasionPresentationEchoApply(
                 appliedInvasionPresentationEcho,
+                sections.HasChecksum,
+                _checksumMismatchPolicy))
+        {
+            _needsNetGapResync = true;
+        }
+
+        if (SnapshotChecksumMismatchPolicy.ShouldTriggerNetGapResyncOnPresentationEchoApply(
+                appliedPresentationEcho,
+                sections.HasChecksum,
+                _checksumMismatchPolicy))
+        {
+            _needsNetGapResync = true;
+        }
+
+        if (SnapshotChecksumMismatchPolicy.ShouldTriggerNetGapResyncOnInvasionLineSpecApply(
+                appliedInvasionLineSpec,
                 sections.HasChecksum,
                 _checksumMismatchPolicy))
         {

@@ -217,8 +217,13 @@ public sealed class GuestWorldStateStore : IWorldDeltaApplySink, IActorDeltaAppl
             _actorDeltaRollingHash = SnapshotChecksumActorDeltaPolicy.MixRecord(_actorDeltaRollingHash, record);
     }
 
-    public void CommitAppliedPresentationEcho(PresentationEchoBlock block) =>
+    public void CommitAppliedPresentationEcho(PresentationEchoBlock block)
+    {
         _presentationEchoRollingHash = SnapshotChecksumPresentationEchoPolicy.MixBlock(_presentationEchoRollingHash, block);
+        _lineSpecRollingHash = SnapshotChecksumLineSpecPolicy.PolishRollingHash(
+            _lineSpecRollingHash,
+            _presentationEchoRollingHash);
+    }
 
     public void NoteLineSpec(int lineIndex, int special, bool success) =>
         _lineSpecRollingHash = SnapshotChecksumLineSpecPolicy.MixRecord(_lineSpecRollingHash, lineIndex, special, success);

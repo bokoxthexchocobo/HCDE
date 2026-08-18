@@ -27,4 +27,27 @@ public class SnapshotChecksumLineSpecPolicyTests
         Assert.Equal(first, second);
         Assert.NotEqual(0u, first);
     }
+
+    [Fact]
+    public void PolishRollingHash_MixesPresentationEchoTailWhenBothPresent()
+    {
+        var lineSpecHash = SnapshotChecksumLineSpecPolicy.MixRecord(0, lineIndex: 2, special: 5, success: true);
+        var polished = SnapshotChecksumLineSpecPolicy.PolishRollingHash(lineSpecHash, presentationEchoHash: 0xA5A5A5A5u);
+
+        Assert.NotEqual(lineSpecHash, polished);
+        Assert.Equal(lineSpecHash, SnapshotChecksumLineSpecPolicy.PolishRollingHash(lineSpecHash, presentationEchoHash: 0));
+    }
+
+    [Fact]
+    public void CommitAppliedPresentationEcho_PolishesLineSpecRollingHash()
+    {
+        var store = new GuestWorldStateStore();
+        store.NoteLineSpec(lineIndex: 3, special: 8, success: true);
+        var before = store.LineSpecRollingHash;
+
+        store.CommitAppliedPresentationEcho(PresentationEchoCodec.CreateExampleBlock());
+
+        Assert.NotEqual(before, store.LineSpecRollingHash);
+        Assert.NotEqual(0u, store.PresentationEchoRollingHash);
+    }
 }
