@@ -22,4 +22,12 @@ public static class SnapshotChecksumAuthorityEventPolicy
 
         return SnapshotChecksumMixer.MixU32(actorDeltaHash, authorityEventHash);
     }
+
+    public static uint PolishPresentationEchoRollingHash(uint presentationEchoHash, uint authorityEventHash)
+    {
+        if (presentationEchoHash == 0 || authorityEventHash == 0)
+            return presentationEchoHash;
+
+        return SnapshotChecksumMixer.MixU32(presentationEchoHash, authorityEventHash);
+    }
 }

@@ -76,4 +76,33 @@ public class SnapshotChecksumAuthorityEventPolicyTests
         Assert.NotEqual(before, store.ActorDeltaRollingHash);
         Assert.NotEqual(0u, store.AuthorityEventRollingHash);
     }
+
+    [Fact]
+    public void PolishPresentationEchoRollingHash_MixesAuthorityEventTailWhenBothPresent()
+    {
+        var echoHash = SnapshotChecksumPresentationEchoPolicy.MixBlock(0, PresentationEchoCodec.CreateExampleBlock());
+        var authorityHash = SnapshotChecksumAuthorityEventPolicy.MixRecord(
+            0,
+            AuthorityEventsCodec.CreateSpawnExample("Imp", actorId: 12));
+        var polished = SnapshotChecksumAuthorityEventPolicy.PolishPresentationEchoRollingHash(echoHash, authorityHash);
+
+        Assert.NotEqual(echoHash, polished);
+        Assert.Equal(echoHash, SnapshotChecksumAuthorityEventPolicy.PolishPresentationEchoRollingHash(echoHash, authorityEventHash: 0));
+    }
+
+    [Fact]
+    public void CommitAppliedAuthorityEvents_PolishesPresentationEchoRollingHash()
+    {
+        var store = new GuestWorldStateStore();
+        store.CommitAppliedPresentationEcho(PresentationEchoCodec.CreateExampleBlock());
+        var before = store.PresentationEchoRollingHash;
+
+        store.CommitAppliedAuthorityEvents(new[]
+        {
+            AuthorityEventsCodec.CreateSpawnExample("DoomImp", actorId: 19),
+        });
+
+        Assert.NotEqual(before, store.PresentationEchoRollingHash);
+        Assert.NotEqual(0u, store.AuthorityEventRollingHash);
+    }
 }
