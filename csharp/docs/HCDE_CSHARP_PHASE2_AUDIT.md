@@ -1,7 +1,7 @@
 # HCDE C# Migration — Phase 2 Principal Audit
 
 **Last updated:** 2026-08-18  
-**Status:** In progress — Phase **2c** live protocol codecs (iteration 45 step 1). Phase **2b** verification errors, start-game, bootstrap/resync, and cross-language harness complete. Phase **2b** verification errors, start-game, bootstrap/resync, and cross-language harness complete.  
+**Status:** In progress — Phase **2c** live protocol codecs (iteration 45 step 2). Phase **2b** verification errors, start-game, bootstrap/resync, and cross-language harness complete. Phase **2b** verification errors, start-game, bootstrap/resync, and cross-language harness complete.  
 **Prerequisite:** [Phase 1 audit](HCDE_CSHARP_PHASE1_AUDIT.md) (complete)  
 **Related:** [`HCDE_CSHARP_MIGRATION.md`](HCDE_CSHARP_MIGRATION.md) · [`HCDE_NETCODE.md`](../../docs/HCDE_NETCODE.md)
 
@@ -644,8 +644,18 @@ Phase 2b is complete when **all** hold:
 ## Phase 2c next slice (iteration 45)
 
 1. ~~**BEHAVIOR bytecode operands**~~ — actor pitch/state PCDs, more Eternity stack ops
-2. **Authority playsim tick polish** — invasion embedded HCDS checksum polish, guest presentation echo apply wiring
+2. ~~**Authority playsim tick polish**~~ — invasion embedded HCDS checksum polish, guest presentation echo apply wiring
 3. **Cross-language soak evidence** — committed template export freshness in main CI
+
+### Invasion HCDS checksum polish + guest echo wiring (Phase 2c — iteration 45 step 2)
+
+| Artifact | Location | C++ reference |
+| --- | --- | --- |
+| HCDS retire on ship | `GuestWorldStateStore.TakePendingCoopDeadSpawnsForTail` | retire indices when authority ships HCDS |
+| Checksum policy | `SnapshotChecksumCoopDeadSpawnPolicy.ComputeRollingHash` | fold retired HCDS into Actors HCKS |
+| Checksum mixer | `SnapshotChecksumMixer.ComputeAll` | mix `CoopDeadSpawnRollingHash` into Actors category |
+| Guest echo apply | `LiveGuestSession.TryApplyTailSections` | ECHO apply after invasion+HCDS tail receive |
+| E2E tests | `SnapshotChecksumCoopDeadSpawnPolicyTests`, `LiveSessionTests` | HCDS checksum retire + invasion ECHO apply |
 
 ### BEHAVIOR actor pitch/state + Eternity shift PCD operands (Phase 2c/2d — iteration 45 step 1)
 

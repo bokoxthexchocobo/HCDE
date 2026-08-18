@@ -144,7 +144,14 @@ public class CrossLanguageSoakEvidenceArchiveTests
         File.WriteAllText(Path.Combine(evidenceDir, "pregame_guest_smoke_test_Passed.json"), "{}");
         File.WriteAllText(
             Path.Combine(repositoryRoot, "csharp", "validation", "soak", "manifest.json"),
-            """{"Harnesses":[{"Harness":"pregame_guest_smoke","Status":"Passed"}]}""");
+            $$"""
+            {
+              "RecordedAtUtc": "{{DateTimeOffset.UtcNow:O}}",
+              "Harnesses": [
+                { "Harness": "pregame_guest_smoke", "Status": "Passed", "EvidenceFile": "pregame_guest_smoke_test_Passed.json" }
+              ]
+            }
+            """);
 
         var outputDir = Path.Combine(baseDir, "artifact");
         try
@@ -153,6 +160,41 @@ public class CrossLanguageSoakEvidenceArchiveTests
             Assert.Contains(files, path => path.EndsWith("manifest.json"));
             Assert.Contains(files, path => path.Contains("evidence/pregame_guest_smoke_test_Passed.json"));
             Assert.True(File.Exists(Path.Combine(outputDir, "COMMIT_INSTRUCTIONS.md")));
+        }
+        finally
+        {
+            if (Directory.Exists(baseDir))
+                Directory.Delete(baseDir, recursive: true);
+        }
+    }
+
+    [Fact]
+    public void ExportCommittedTemplates_RejectsStaleCommittedManifest()
+    {
+        var baseDir = Path.Combine(Path.GetTempPath(), $"hcde-soak-export-stale-{Guid.NewGuid():N}");
+        var repositoryRoot = Path.Combine(baseDir, "repo");
+        var evidenceDir = Path.Combine(repositoryRoot, "csharp", "validation", "soak", "evidence");
+        Directory.CreateDirectory(evidenceDir);
+        File.WriteAllText(Path.Combine(repositoryRoot, "README.md"), "test");
+        File.WriteAllText(Path.Combine(evidenceDir, "pregame_guest_smoke_test_Passed.json"), "{}");
+        File.WriteAllText(
+            Path.Combine(repositoryRoot, "csharp", "validation", "soak", "manifest.json"),
+            """
+            {
+              "RecordedAtUtc": "2020-01-01T00:00:00+00:00",
+              "Harnesses": [
+                { "Harness": "pregame_guest_smoke", "Status": "Passed", "EvidenceFile": "pregame_guest_smoke_test_Passed.json" }
+              ]
+            }
+            """);
+
+        try
+        {
+            var ex = Assert.Throws<InvalidOperationException>(
+                () => CrossLanguageSoakEvidenceArchive.ExportCommittedTemplates(
+                    Path.Combine(baseDir, "artifact"),
+                    repositoryRoot));
+            Assert.Contains("manifest stale", ex.Message);
         }
         finally
         {

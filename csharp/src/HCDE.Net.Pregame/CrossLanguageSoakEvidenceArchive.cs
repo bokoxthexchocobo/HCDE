@@ -70,6 +70,14 @@ public static class CrossLanguageSoakEvidenceArchive
     public static IReadOnlyList<string> ExportCommittedTemplates(string outputDirectory, string? repositoryRoot = null)
     {
         repositoryRoot ??= FindRepositoryRoot();
+        var committedFreshness = CrossLanguageSoakGate.EvaluateCommittedDualFreshness(
+            repositoryRoot,
+            DateTimeOffset.UtcNow,
+            CrossLanguageSoakGate.ResolveMaxManifestAgeDays(),
+            CrossLanguageSoakGate.ResolveMaxEvidenceAgeDays());
+        if (committedFreshness.Status == CrossLanguageSoakGateStatus.Failed)
+            throw new InvalidOperationException(committedFreshness.Reason);
+
         Directory.CreateDirectory(outputDirectory);
         var evidenceDirectory = ResolveDefaultEvidenceDirectory(repositoryRoot);
         var outputEvidenceDirectory = Path.Combine(outputDirectory, "evidence");
@@ -107,6 +115,34 @@ public static class CrossLanguageSoakEvidenceArchive
             """);
         copied.Add(instructionsPath);
         return copied;
+    }
+
+    public static CrossLanguageSoakGateResult TryExportCommittedTemplatesFromEnvironment(string? repositoryRoot = null)
+    {
+        if (Environment.GetEnvironmentVariable("HCDE_EXPORT_SOAK_TEMPLATES") != "1")
+        {
+            return new CrossLanguageSoakGateResult(
+                CrossLanguageSoakGateStatus.NotRequired,
+                "export soak templates not requested");
+        }
+
+        var outputDirectory = Environment.GetEnvironmentVariable("HCDE_SOAK_TEMPLATE_EXPORT_DIR");
+        if (string.IsNullOrWhiteSpace(outputDirectory))
+        {
+            return new CrossLanguageSoakGateResult(
+                CrossLanguageSoakGateStatus.Failed,
+                "HCDE_SOAK_TEMPLATE_EXPORT_DIR not set");
+        }
+
+        try
+        {
+            ExportCommittedTemplates(outputDirectory, repositoryRoot);
+            return new CrossLanguageSoakGateResult(CrossLanguageSoakGateStatus.Passed);
+        }
+        catch (InvalidOperationException ex)
+        {
+            return new CrossLanguageSoakGateResult(CrossLanguageSoakGateStatus.Failed, ex.Message);
+        }
     }
 
     public static IReadOnlyList<string> ApplyExportedTemplates(string exportDirectory, string? repositoryRoot = null)
