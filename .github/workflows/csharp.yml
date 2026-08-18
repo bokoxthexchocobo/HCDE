@@ -111,3 +111,8 @@ jobs:
         run: |
           cd csharp
           dotnet test --no-build --filter "FullyQualifiedName~Evaluate_FailsWhenEvidenceFileIsMissing"
+      - name: Enforce skipped harness rejection gate
+        if: ${{ secrets.HCDE_HCDESERV_PATH != '' && secrets.HCDE_IWAD_PATH != '' }}
+        run: |
+          cd csharp
+          dotnet test --no-build --filter "FullyQualifiedName~Evaluate_FailsWhenManifestContainsSkippedHarness"
