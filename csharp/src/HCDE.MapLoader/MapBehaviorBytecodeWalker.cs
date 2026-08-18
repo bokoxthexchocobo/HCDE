@@ -231,8 +231,10 @@ public static class MapBehaviorBytecodeWalker
             or (int)AcsPcode.ModWorldArray or (int)AcsPcode.IncWorldArray
             or (int)AcsPcode.DecWorldArray => 1,
         (int)AcsPcode.PushFunction => 1,
+        244 or 247 => 0, // C++ PCD_SETMARINEWEAPON / PCD_PLAYERNUMBER (shadow legacy DivGlobalArray/PushByte enum aliases)
         (int)AcsPcode.CallStack or (int)AcsPcode.GotoStack
-            or (int)AcsPcode.ScriptWaitNamed or (int)AcsPcode.SaveString => 0,
+            or (int)AcsPcode.ScriptWaitNamed or (int)AcsPcode.SaveString
+            or (int)AcsPcode.Lspec5Ex or (int)AcsPcode.Lspec5ExResult => 0,
         (int)AcsPcode.CallFunc => 2,
         (int)AcsPcode.PrintScriptCharArray or (int)AcsPcode.PrintScriptCharRange
             or (int)AcsPcode.StrCpyToScriptCharRange
@@ -248,9 +250,8 @@ public static class MapBehaviorBytecodeWalker
             or (int)AcsPcode.EorScriptArray or (int)AcsPcode.OrScriptArray => 1,
         (int)AcsPcode.PushGlobalArray or (int)AcsPcode.AssignGlobalArray
             or (int)AcsPcode.AddGlobalArray or (int)AcsPcode.SubGlobalArray
-            or (int)AcsPcode.MulGlobalArray or (int)AcsPcode.DivGlobalArray
-            or (int)AcsPcode.ModGlobalArray or (int)AcsPcode.IncGlobalArray
-            or (int)AcsPcode.DecGlobalArray => 1,
+            or (int)AcsPcode.MulGlobalArray or (int)AcsPcode.ModGlobalArray
+            or (int)AcsPcode.IncGlobalArray or (int)AcsPcode.DecGlobalArray => 1,
         (int)AcsPcode.GiveInventoryDirect or (int)AcsPcode.TakeInventoryDirect
             or (int)AcsPcode.CheckInventoryDirect => 2,
         (int)AcsPcode.SetMusic or (int)AcsPcode.LocalSetMusic or (int)AcsPcode.MusicChange => 0,
@@ -275,6 +276,9 @@ public static class MapBehaviorBytecodeWalker
             or (int)AcsPcode.IncGlobalVar or (int)AcsPcode.DecGlobalVar => 1,
         (int)AcsPcode.GetPlayerInfo or (int)AcsPcode.ChangeLevel or (int)AcsPcode.SectorDamage
             or (int)AcsPcode.ReplaceTextures => 0,
+        (int)AcsPcode.SetMarineSprite
+            or (int)AcsPcode.GetScreenWidth or (int)AcsPcode.GetScreenHeight
+            or (int)AcsPcode.StrLen or (int)AcsPcode.SetHudSize => 0,
         (int)AcsPcode.NegateBinary or (int)AcsPcode.GetActorPitch or (int)AcsPcode.SetActorPitch
             or (int)AcsPcode.PrintBind or (int)AcsPcode.SetActorState or (int)AcsPcode.ThingDamage2 => 0,
         (int)AcsPcode.UseInventory or (int)AcsPcode.UseActorInventory
@@ -372,7 +376,8 @@ public static class MapBehaviorBytecodeWalker
             or (int)AcsPcode.DecWorldArray => 1,
         (int)AcsPcode.PushFunction => 1,
         (int)AcsPcode.CallStack or (int)AcsPcode.GotoStack
-            or (int)AcsPcode.ScriptWaitNamed or (int)AcsPcode.SaveString => 0,
+            or (int)AcsPcode.ScriptWaitNamed or (int)AcsPcode.SaveString
+            or (int)AcsPcode.Lspec5Ex or (int)AcsPcode.Lspec5ExResult => 0,
         (int)AcsPcode.CallFunc => 2,
         (int)AcsPcode.PrintScriptCharArray or (int)AcsPcode.PrintScriptCharRange
             or (int)AcsPcode.StrCpyToScriptCharRange
@@ -421,6 +426,9 @@ public static class MapBehaviorBytecodeWalker
             or (int)AcsPcode.IncGlobalVar or (int)AcsPcode.DecGlobalVar => 1,
         (int)AcsPcode.GetPlayerInfo or (int)AcsPcode.ChangeLevel or (int)AcsPcode.SectorDamage
             or (int)AcsPcode.ReplaceTextures => 0,
+        (int)AcsPcode.SetMarineWeapon or (int)AcsPcode.SetMarineSprite or (int)AcsPcode.PlayerNumber
+            or (int)AcsPcode.GetScreenWidth or (int)AcsPcode.GetScreenHeight
+            or (int)AcsPcode.StrLen or (int)AcsPcode.SetHudSize => 0,
         (int)AcsPcode.NegateBinary or (int)AcsPcode.GetActorPitch or (int)AcsPcode.SetActorPitch
             or (int)AcsPcode.PrintBind or (int)AcsPcode.SetActorState or (int)AcsPcode.ThingDamage2 => 0,
         (int)AcsPcode.UseInventory or (int)AcsPcode.UseActorInventory
