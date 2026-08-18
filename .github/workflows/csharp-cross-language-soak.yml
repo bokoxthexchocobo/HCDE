@@ -61,6 +61,14 @@ jobs:
         run: |
           cd csharp
           dotnet test --no-build --filter "FullyQualifiedName~TryRecordPassedValidationEvidence_PassesGateWhenBinariesPresent"
+      - name: Reject stale committed manifest before soak export
+        if: ${{ secrets.HCDE_HCDESERV_PATH != '' && secrets.HCDE_IWAD_PATH != '' }}
+        env:
+          HCDE_SOAK_MANIFEST_MAX_AGE_DAYS: '8'
+          HCDE_SOAK_EVIDENCE_MAX_AGE_DAYS: '8'
+        run: |
+          cd csharp
+          dotnet test --no-build --filter "FullyQualifiedName~ExportCommittedTemplates_RejectsStaleCommittedManifest"
       - name: Export soak templates for commit
         if: ${{ secrets.HCDE_HCDESERV_PATH != '' && secrets.HCDE_IWAD_PATH != '' }}
         env:

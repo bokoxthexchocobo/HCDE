@@ -50,7 +50,7 @@ In CI (after evidence refresh), run:
 HCDE_ENFORCE_SOAK_GATE=1 dotnet test --filter CrossLanguageSoakGateTests
 ```
 
-The main `csharp.yml` workflow also runs `CrossLanguageSoakGateTests` with `HCDE_ENFORCE_SOAK_GATE=1` when `HCDE_HCDESERV_PATH` and `HCDE_IWAD_PATH` repository secrets are configured. The main workflow includes dedicated `Evaluate_EnforcesDualFreshnessWhenSecretsConfigured` and `ExportCommittedTemplates_RejectsStaleCommittedManifest` steps via `CrossLanguageSoakGate.EvaluateCommittedDualFreshness` and `CrossLanguageSoakEvidenceArchive.ExportCommittedTemplates`. Both `csharp.yml` and `csharp-cross-language-soak.yml` set `HCDE_SOAK_MANIFEST_MAX_AGE_DAYS` and `HCDE_SOAK_EVIDENCE_MAX_AGE_DAYS` to 8 when enforcing the gate.
+The main `csharp.yml` workflow also runs `CrossLanguageSoakGateTests` with `HCDE_ENFORCE_SOAK_GATE=1` when `HCDE_HCDESERV_PATH` and `HCDE_IWAD_PATH` repository secrets are configured. The main workflow includes dedicated `Evaluate_EnforcesDualFreshnessWhenSecretsConfigured` and `ExportCommittedTemplates_RejectsStaleCommittedManifest` steps via `CrossLanguageSoakGate.EvaluateCommittedDualFreshness` and `CrossLanguageSoakEvidenceArchive.ExportCommittedTemplates`. The soak workflow (`csharp-cross-language-soak.yml`) also runs `ExportCommittedTemplates_RejectsStaleCommittedManifest` before exporting templates for commit. Both `csharp.yml` and `csharp-cross-language-soak.yml` set `HCDE_SOAK_MANIFEST_MAX_AGE_DAYS` and `HCDE_SOAK_EVIDENCE_MAX_AGE_DAYS` to 8 when enforcing the gate.
 
 When soak secrets are absent, the gate returns `NotRequired` and does not block merges.
 

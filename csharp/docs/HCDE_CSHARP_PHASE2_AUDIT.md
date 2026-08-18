@@ -647,11 +647,49 @@ Phase 2b is complete when **all** hold:
 2. ~~**Authority playsim tick polish**~~ — invasion embedded HCDS checksum polish, guest presentation echo apply wiring
 3. ~~**Cross-language soak evidence**~~ — committed template export freshness in main CI
 
-## Phase 2c next slice (iteration 46)
+## Phase 2c next slice (iteration 46 — delivered)
 
-1. **BEHAVIOR bytecode operands** — thing damage/use-inventory PCDs, more ZDoom print ops
-2. **Authority playsim tick polish** — invasion embedded HCDS gap resync, authority event tail checksum polish
-3. **Cross-language soak evidence** — export bundle freshness in soak CI workflow
+1. ~~**BEHAVIOR bytecode operands**~~ — thing damage/use-inventory PCDs, more ZDoom print ops
+2. ~~**Authority playsim tick polish**~~ — invasion embedded HCDS gap resync, authority event tail checksum polish
+3. ~~**Cross-language soak evidence**~~ — export bundle freshness in soak CI workflow
+
+## Phase 2c next slice (iteration 47)
+
+1. **BEHAVIOR bytecode operands** — actor light/texture PCDs, more ZDoom morph ops
+2. **Authority playsim tick polish** — invasion embedded HCAV gap resync, actor-delta tail checksum polish
+3. **Cross-language soak evidence** — apply-bundle dual freshness in main CI workflow
+
+### Export bundle freshness soak CI gate (Phase 2c — iteration 46 step 3)
+
+| Artifact | Location | C++ reference |
+| --- | --- | --- |
+| Export freshness gate | `CrossLanguageSoakEvidenceArchive.ExportCommittedTemplates` | reject stale committed manifest before soak export |
+| Soak CI workflow | `.github/workflows/csharp-cross-language-soak.yml` | `ExportCommittedTemplates_RejectsStaleCommittedManifest` step before export |
+| Archive tests | `CrossLanguageSoakEvidenceArchiveTests` | stale committed manifest rejection on export |
+| Release checklist | `validation/soak/README.md` | soak CI export freshness docs |
+
+### Invasion HCDS gap resync + HCAV checksum polish (Phase 2c — iteration 46 step 2)
+
+| Artifact | Location | C++ reference |
+| --- | --- | --- |
+| HCAV rolling hash | `SnapshotChecksumAuthorityEventPolicy.ComputeRollingHash` | fold shipped/applied HCAV into Actors HCKS |
+| Authority event ship | `GuestWorldStateStore.TakePendingAuthorityEventsForTail` | mix records into rolling hash on tail ship |
+| Authority event apply | `GuestWorldStateStore.CommitAppliedAuthorityEvents` | mix records on guest invasion/coop apply |
+| Checksum mixer | `SnapshotChecksumMixer.ComputeAll` | mix `AuthorityEventRollingHash` into Actors category |
+| Invasion HCDS gap resync | `SnapshotChecksumMismatchPolicy.ShouldTriggerNetGapResyncOnInvasionCoopDeadSpawnApply` | net gap resync when invasion HCDS applied without HCKS |
+| Coop dead-spawn gap resync | `SnapshotChecksumMismatchPolicy.ShouldTriggerNetGapResyncOnCoopDeadSpawnMismatch` | net gap resync when Actors category mismatches |
+| Guest pump wiring | `LiveGuestSession.TryApplyTailSections` | commits HCAV hash + invasion HCDS gap resync |
+| E2E tests | `SnapshotChecksumAuthorityEventPolicyTests`, `LiveSessionTests` | HCAV checksum commit + invasion HCDS gap resync |
+
+### BEHAVIOR thing damage/use-inventory + print PCD operands (Phase 2c/2d — iteration 46 step 1)
+
+| Artifact | Location | C++ reference |
+| --- | --- | --- |
+| Thing damage/inventory opcodes | `AcsPcode.cs` | `PCD_THINGDAMAGE2`, `PCD_USEINVENTORY`, `PCD_USEACTORINVENTORY` |
+| Actor texture/light opcodes | `AcsPcode.cs` | `PCD_CHECKACTORCEILINGTEXTURE`…`PCD_GETACTORLIGHTLEVEL` |
+| Mugshot/count/input opcodes | `AcsPcode.cs` | `PCD_SETMUGSHOTSTATE`…`PCD_GETPLAYERINPUT` |
+| Operand skip table | `MapBehaviorBytecodeWalker.cs` | old + little-enhanced thing/inventory skips |
+| Walk tests | `MapBehaviorBytecodeWalkerTests` | `TryWalkScript_OldFormat_ReadsThingDamageAndUseInventoryOps` |
 
 ### Committed template export freshness main CI gate (Phase 2c — iteration 45 step 3)
 
@@ -697,7 +735,7 @@ Phase 2b is complete when **all** hold:
 | Artifact | Location | C++ reference |
 | --- | --- | --- |
 | Actor mismatch detect | `SnapshotChecksumApplySession.TryApply` | `HasActorCategoryMismatch` on HCKS compare |
-| Gap resync policy | `SnapshotChecksumMismatchPolicy.ShouldTriggerNetGapResyncOnActorMismatch` | net gap resync when Actors category mismatches |
+| Gap resync policy | `SnapshotChecksumMismatchPolicy.ShouldTriggerNetGapResyncOnCoopDeadSpawnMismatch` | net gap resync when Actors category mismatches |
 | Guest pump wiring | `LiveGuestSession.TryApplyTailSections` | sets `NeedsNetGapResync` on actor HCDA mismatch |
 | Invasion HCDS writer | `ServerSnapshotTailCodec.WriteInvasionShipping` | `coopDeadSpawnIndices` after HCIV block |
 | Merged tail builder | `WorldStateTailBuilder.TryBuildMergedInvasionCoopTail` | embed pending HCDS in invasion tail |
