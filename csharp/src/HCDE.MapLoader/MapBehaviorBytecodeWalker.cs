@@ -300,13 +300,12 @@ public static class MapBehaviorBytecodeWalker
         (int)AcsPcode.SetThingSpecial => 0,
         261 or 262 or 264 or 265 or 266 or 267 or 268 or 269 or 270 or 271 or 272
             or 273 or 274 or 275 or 277 or 278 or 279 or 281 or 290
+            or 328 or 329 or 330 or 331
             or 346 or 347
-            => 0, // C++ sector/level/input PCDs (shadow legacy global-var enum aliases)
+            => 0, // C++ sector/level/input/player-info PCDs (shadow legacy global-var enum aliases)
         (int)AcsPcode.AddGlobalVar or (int)AcsPcode.SubGlobalVar or (int)AcsPcode.MulGlobalVar
             or (int)AcsPcode.DivGlobalVar or (int)AcsPcode.ModGlobalVar
             or (int)AcsPcode.IncGlobalVar or (int)AcsPcode.DecGlobalVar => 1,
-        (int)AcsPcode.GetPlayerInfo or (int)AcsPcode.ChangeLevel or (int)AcsPcode.SectorDamage
-            or (int)AcsPcode.ReplaceTextures => 0,
         (int)AcsPcode.SetMarineSprite
             or (int)AcsPcode.GetScreenWidth or (int)AcsPcode.GetScreenHeight
             or (int)AcsPcode.StrLen or (int)AcsPcode.SetHudSize
@@ -346,7 +345,7 @@ public static class MapBehaviorBytecodeWalker
             or (int)AcsPcode.SpawnSpotFacing
             or (int)AcsPcode.GetActorCeilingZ or (int)AcsPcode.SetActorPosition
             or (int)AcsPcode.SetActorProperty or (int)AcsPcode.GetActorProperty => 0,
-        (int)AcsPcode.SetGravityDirectB or (int)AcsPcode.SetAirControlDirectB => 1,
+        (int)AcsPcode.SetGravityDirectB => 1,
         (int)AcsPcode.ClearActorInventory or (int)AcsPcode.GiveActorInventory
             or (int)AcsPcode.TakeActorInventory or (int)AcsPcode.CheckActorInventory => 0,
         (int)AcsPcode.Dup or (int)AcsPcode.Swap => 0,
@@ -491,8 +490,6 @@ public static class MapBehaviorBytecodeWalker
         (int)AcsPcode.AddGlobalVar or (int)AcsPcode.SubGlobalVar or (int)AcsPcode.MulGlobalVar
             or (int)AcsPcode.DivGlobalVar or (int)AcsPcode.ModGlobalVar
             or (int)AcsPcode.IncGlobalVar or (int)AcsPcode.DecGlobalVar => 1,
-        (int)AcsPcode.GetPlayerInfo or (int)AcsPcode.ChangeLevel or (int)AcsPcode.SectorDamage
-            or (int)AcsPcode.ReplaceTextures => 0,
         (int)AcsPcode.SetMarineWeapon or (int)AcsPcode.SetMarineSprite or (int)AcsPcode.PlayerNumber
             or (int)AcsPcode.GetScreenWidth or (int)AcsPcode.GetScreenHeight
             or (int)AcsPcode.StrLen or (int)AcsPcode.SetHudSize
@@ -516,6 +513,8 @@ public static class MapBehaviorBytecodeWalker
             or (int)AcsPcode.OrMapVar or (int)AcsPcode.OrWorldVar => 1,
         313 or 314 or 315 or 316 or 317 or 318 or 319 or 320 or 321 or 322 or 323 or 324
             => 1, // C++ Ls/Rs script/map/world/global var+array shift PCDs (shadow legacy IncWorldArray… enum aliases)
+        328 or 329 or 330 or 331
+            => 0, // C++ PCD_GETPLAYERINFO…PCD_REPLACETEXTURES (shadow legacy SetAirControlDirectB enum alias)
         346 or 347 => 0, // C++ PCD_CHECKPLAYERCAMERA / PCD_GETPLAYERINPUT (shadow legacy GetPlayerInput enum alias)
         (int)AcsPcode.NegateBinary or (int)AcsPcode.GetActorPitch or (int)AcsPcode.SetActorPitch
             or (int)AcsPcode.PrintBind or (int)AcsPcode.SetActorState or (int)AcsPcode.ThingDamage2 => 0,
@@ -533,7 +532,7 @@ public static class MapBehaviorBytecodeWalker
             or (int)AcsPcode.SpawnSpotFacing
             or (int)AcsPcode.GetActorCeilingZ or (int)AcsPcode.SetActorPosition
             or (int)AcsPcode.SetActorProperty or (int)AcsPcode.GetActorProperty => 0,
-        (int)AcsPcode.SetGravityDirectB or (int)AcsPcode.SetAirControlDirectB => 4,
+        (int)AcsPcode.SetGravityDirectB => 4,
         (int)AcsPcode.ClearActorInventory or (int)AcsPcode.GiveActorInventory
             or (int)AcsPcode.TakeActorInventory or (int)AcsPcode.CheckActorInventory => 0,
         (int)AcsPcode.Dup or (int)AcsPcode.Swap => 0,
