@@ -935,6 +935,50 @@ public class MapBehaviorBytecodeWalkerTests
     }
 
     [Fact]
+    public void TryWalkScript_OldFormat_ReadsSpawnProjectileAndCharRangeOps()
+    {
+        var lump = TestWadBuilder.BuildBehaviorLump(
+            MapBehaviorFormat.AcsOld,
+            scriptCount: 1,
+            includeTerminateBytecode: false,
+            bytecodeOpcodes:
+            [
+                (int)AcsPcode.ThingProjectile2,
+                (int)AcsPcode.SpawnProjectile,
+                (int)AcsPcode.SpawnSpotFacing,
+                (int)AcsPcode.ThingCountName,
+                (int)AcsPcode.PrintWorldCharRange,
+                (int)AcsPcode.StrCpyToWorldCharRange,
+                (int)AcsPcode.PrintGlobalCharRange,
+                (int)AcsPcode.StrCpyToMapCharRange,
+                (int)AcsPcode.Terminate,
+            ]);
+        Assert.True(MapBehaviorCodec.TryProbe(lump, out var record, out _));
+        Assert.True(MapBehaviorDirectoryCodec.TryReadScripts(
+            record.Data,
+            record.Format,
+            record.DirectoryOffset,
+            out var scripts,
+            out _));
+        Assert.Single(scripts);
+
+        Assert.True(MapBehaviorBytecodeWalker.TryWalkScript(
+            record.Data,
+            record.Format,
+            scripts[0].Address,
+            out var instructions,
+            out var terminated,
+            out _));
+
+        Assert.True(terminated);
+        Assert.Equal(9, instructions.Count);
+        Assert.Equal((int)AcsPcode.ThingProjectile2, instructions[0].Opcode);
+        Assert.Equal((int)AcsPcode.SpawnSpotFacing, instructions[2].Opcode);
+        Assert.Equal((int)AcsPcode.PrintWorldCharRange, instructions[4].Opcode);
+        Assert.Equal((int)AcsPcode.StrCpyToMapCharRange, instructions[7].Opcode);
+    }
+
+    [Fact]
     public void TryDecode_IncludesScriptBytecodeBodies()
     {
         var wad = TestWadBuilder.BuildMinimalMapWad("MAP01", includeBehavior: true);

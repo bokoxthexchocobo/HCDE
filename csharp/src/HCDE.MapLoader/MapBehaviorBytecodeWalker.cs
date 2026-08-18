@@ -287,6 +287,8 @@ public static class MapBehaviorBytecodeWalker
             or (int)AcsPcode.PrintBinary or (int)AcsPcode.PrintHex => 0,
         (int)AcsPcode.GetActorZ or (int)AcsPcode.GetActorFloorZ or (int)AcsPcode.GetActorAngle
             or (int)AcsPcode.SetActorAngle or (int)AcsPcode.SpawnProjectile
+            or (int)AcsPcode.ThingProjectile2 or (int)AcsPcode.ThingCountName
+            or (int)AcsPcode.SpawnSpotFacing
             or (int)AcsPcode.GetActorCeilingZ or (int)AcsPcode.SetActorPosition
             or (int)AcsPcode.SetActorProperty or (int)AcsPcode.GetActorProperty => 0,
         (int)AcsPcode.SetGravityDirectB or (int)AcsPcode.SetAirControlDirectB => 1,
@@ -431,6 +433,8 @@ public static class MapBehaviorBytecodeWalker
             or (int)AcsPcode.PrintBinary or (int)AcsPcode.PrintHex => 0,
         (int)AcsPcode.GetActorZ or (int)AcsPcode.GetActorFloorZ or (int)AcsPcode.GetActorAngle
             or (int)AcsPcode.SetActorAngle or (int)AcsPcode.SpawnProjectile
+            or (int)AcsPcode.ThingProjectile2 or (int)AcsPcode.ThingCountName
+            or (int)AcsPcode.SpawnSpotFacing
             or (int)AcsPcode.GetActorCeilingZ or (int)AcsPcode.SetActorPosition
             or (int)AcsPcode.SetActorProperty or (int)AcsPcode.GetActorProperty => 0,
         (int)AcsPcode.SetGravityDirectB or (int)AcsPcode.SetAirControlDirectB => 4,
