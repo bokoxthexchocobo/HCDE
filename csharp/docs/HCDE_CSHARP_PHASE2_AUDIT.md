@@ -1,7 +1,7 @@
 # HCDE C# Migration — Phase 2 Principal Audit
 
 **Last updated:** 2026-08-18  
-**Status:** In progress — Phase **2c** live protocol codecs (iteration 45 complete). Phase **2b** verification errors, start-game, bootstrap/resync, and cross-language harness complete. Phase **2b** verification errors, start-game, bootstrap/resync, and cross-language harness complete.  
+**Status:** In progress — Phase **2c** live protocol codecs (iteration 49 complete). Phase **2b** verification errors, start-game, bootstrap/resync, and cross-language harness complete. Phase **2b** verification errors, start-game, bootstrap/resync, and cross-language harness complete.  
 **Prerequisite:** [Phase 1 audit](HCDE_CSHARP_PHASE1_AUDIT.md) (complete)  
 **Related:** [`HCDE_CSHARP_MIGRATION.md`](HCDE_CSHARP_MIGRATION.md) · [`HCDE_NETCODE.md`](../../docs/HCDE_NETCODE.md)
 
@@ -665,11 +665,45 @@ Phase 2b is complete when **all** hold:
 2. ~~**Authority playsim tick polish**~~ — invasion embedded HCDA gap resync, presentation echo checksum polish
 3. ~~**Cross-language soak evidence**~~ — apply-bundle freshness in soak CI workflow
 
-## Phase 2c next slice (iteration 49)
+## Phase 2c next slice (iteration 49 — delivered)
 
-1. **BEHAVIOR bytecode operands** — marine/screen PCDs, more Eternity stack ops
-2. **Authority playsim tick polish** — invasion embedded ECHO gap resync, line-spec tail checksum polish
-3. **Cross-language soak evidence** — committed template apply freshness in soak CI workflow
+1. ~~**BEHAVIOR bytecode operands**~~ — marine/screen PCDs, more Eternity stack ops
+2. ~~**Authority playsim tick polish**~~ — invasion embedded ECHO gap resync, line-spec tail checksum polish
+3. ~~**Cross-language soak evidence**~~ — committed template apply freshness in soak CI workflow
+
+## Phase 2c next slice (iteration 50)
+
+1. **BEHAVIOR bytecode operands** — HUD/screen follow-up PCDs, more Eternity stack ops
+2. **Authority playsim tick polish** — invasion embedded ECHO gap resync follow-ups, line-spec tail polish
+3. **Cross-language soak evidence** — next CI freshness gate
+
+### Committed template apply freshness soak CI gate (Phase 2c — iteration 49 step 3)
+
+| Artifact | Location | C++ reference |
+| --- | --- | --- |
+| Dual freshness gate | `CrossLanguageSoakGate.EvaluateExportBundleDualFreshness` | manifest+evidence staleness before soak apply |
+| Soak CI workflow | `.github/workflows/csharp-cross-language-soak.yml` | `Evaluate_EnforcesDualFreshnessWhenSecretsConfigured` step before apply |
+| Gate tests | `CrossLanguageSoakGateTests` | `Evaluate_EnforcesDualFreshnessWhenSecretsConfigured` |
+| Release checklist | `validation/soak/README.md` | soak CI committed-template apply freshness docs |
+
+### Invasion ECHO gap resync + line-spec checksum polish (Phase 2c — iteration 49 step 2)
+
+| Artifact | Location | C++ reference |
+| --- | --- | --- |
+| Line-spec rolling hash | `SnapshotChecksumLineSpecPolicy.ComputeRollingHash` | fold applied line-spec into Actors HCKS |
+| Line-spec apply commit | `GuestWorldStateStore.NoteLineSpec` | mix line-spec on guest tail receive |
+| Checksum mixer | `SnapshotChecksumMixer.ComputeIfStale` | merge store + session line-spec hashes |
+| Invasion ECHO gap resync | `SnapshotChecksumMismatchPolicy.ShouldTriggerNetGapResyncOnInvasionPresentationEchoApply` | net gap resync when invasion ECHO applied without HCKS |
+| Guest pump wiring | `LiveSession.TryApplyInvasionPresentationEcho` | commits ECHO hash + invasion ECHO gap resync |
+| E2E tests | `SnapshotChecksumLineSpecPolicyTests`, `LiveSessionTests` | line-spec checksum commit + invasion ECHO gap resync |
+
+### BEHAVIOR marine/screen + Eternity stack PCD operands (Phase 2c/2d — iteration 49 step 1)
+
+| Artifact | Location | C++ reference |
+| --- | --- | --- |
+| Marine/screen opcodes | `AcsPcode.cs` | `PCD_SETMARINEWEAPON`…`PCD_SETHUDSIZE`, `PCD_LSPEC5EX` |
+| Operand skip table | `MapBehaviorBytecodeWalker.cs` | old-format C++ wire values for marine/screen + Lspec5Ex skips |
+| Walk tests | `MapBehaviorBytecodeWalkerTests` | `TryWalkScript_OldFormat_ReadsMarineScreenAndEternityStackOps` |
 
 ### Apply-bundle freshness soak CI gate (Phase 2c — iteration 48 step 3)
 

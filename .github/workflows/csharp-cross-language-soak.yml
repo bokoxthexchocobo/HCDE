@@ -64,6 +64,17 @@ jobs:
       - name: Reject stale committed manifest before soak export
         if: ${{ secrets.HCDE_HCDESERV_PATH != '' && secrets.HCDE_IWAD_PATH != '' }}
         env:
+          HCDE_HCDESERV_PATH: ${{ secrets.HCDE_HCDESERV_PATH }}
+          HCDE_IWAD_PATH: ${{ secrets.HCDE_IWAD_PATH }}
+          HCDE_ENFORCE_SOAK_GATE: '1'
+          HCDE_SOAK_MANIFEST_MAX_AGE_DAYS: '8'
+          HCDE_SOAK_EVIDENCE_MAX_AGE_DAYS: '8'
+        run: |
+          cd csharp
+          dotnet test --no-build --filter "FullyQualifiedName~Evaluate_EnforcesDualFreshnessWhenSecretsConfigured"
+      - name: Enforce committed template freshness before soak export
+        if: ${{ secrets.HCDE_HCDESERV_PATH != '' && secrets.HCDE_IWAD_PATH != '' }}
+        env:
           HCDE_SOAK_MANIFEST_MAX_AGE_DAYS: '8'
           HCDE_SOAK_EVIDENCE_MAX_AGE_DAYS: '8'
         run: |
