@@ -747,6 +747,56 @@ public class MapBehaviorBytecodeWalkerTests
     }
 
     [Fact]
+    public void TryWalkScript_OldFormat_ReadsSectorLineAndGlobalStackOps()
+    {
+        var lump = TestWadBuilder.BuildBehaviorLump(
+            MapBehaviorFormat.AcsOld,
+            scriptCount: 1,
+            includeTerminateBytecode: false,
+            bytecodeOpcodes:
+            [
+                (int)AcsPcode.LineSide,
+                (int)AcsPcode.SetLineTexture,
+                (int)AcsPcode.SetLineBlocking,
+                (int)AcsPcode.SetLineSpecial,
+                (int)AcsPcode.ClearLineSpecial,
+                (int)AcsPcode.SectorSound,
+                (int)AcsPcode.SetLineMonsterBlocking,
+                (int)AcsPcode.PlayerBlueSkull,
+                (int)AcsPcode.SetThingSpecial,
+                (int)AcsPcode.AddGlobalVar, 1,
+                (int)AcsPcode.Dup,
+                (int)AcsPcode.Swap,
+                (int)AcsPcode.SectorDamage,
+                (int)AcsPcode.ChangeLevel,
+                (int)AcsPcode.Terminate,
+            ]);
+        Assert.True(MapBehaviorCodec.TryProbe(lump, out var record, out _));
+        Assert.True(MapBehaviorDirectoryCodec.TryReadScripts(
+            record.Data,
+            record.Format,
+            record.DirectoryOffset,
+            out var scripts,
+            out _));
+        Assert.Single(scripts);
+
+        Assert.True(MapBehaviorBytecodeWalker.TryWalkScript(
+            record.Data,
+            record.Format,
+            scripts[0].Address,
+            out var instructions,
+            out var terminated,
+            out _));
+
+        Assert.True(terminated);
+        Assert.Equal(15, instructions.Count);
+        Assert.Equal((int)AcsPcode.SetLineMonsterBlocking, instructions[6].Opcode);
+        Assert.Equal((int)AcsPcode.AddGlobalVar, instructions[9].Opcode);
+        Assert.Equal(1, instructions[9].OperandWordCount);
+        Assert.Equal((int)AcsPcode.SectorDamage, instructions[12].Opcode);
+    }
+
+    [Fact]
     public void TryDecode_IncludesScriptBytecodeBodies()
     {
         var wad = TestWadBuilder.BuildMinimalMapWad("MAP01", includeBehavior: true);
