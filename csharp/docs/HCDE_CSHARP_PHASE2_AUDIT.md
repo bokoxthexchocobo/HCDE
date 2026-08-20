@@ -1,7 +1,7 @@
 # HCDE C# Migration — Phase 2 Principal Audit
 
 **Last updated:** 2026-08-18  
-**Status:** In progress — Phase **2c** live protocol codecs (iteration 65 complete). Phase **2b** verification errors, start-game, bootstrap/resync, and cross-language harness complete. Phase **2b** verification errors, start-game, bootstrap/resync, and cross-language harness complete.  
+**Status:** In progress — Phase **2c** live protocol codecs (iteration 66 complete). Phase **2b** verification errors, start-game, bootstrap/resync, and cross-language harness complete. Phase **2b** verification errors, start-game, bootstrap/resync, and cross-language harness complete.  
 **Prerequisite:** [Phase 1 audit](HCDE_CSHARP_PHASE1_AUDIT.md) (complete)  
 **Related:** [`HCDE_CSHARP_MIGRATION.md`](HCDE_CSHARP_MIGRATION.md) · [`HCDE_NETCODE.md`](../../docs/HCDE_NETCODE.md)
 
@@ -731,11 +731,45 @@ Phase 2b is complete when **all** hold:
 2. ~~**Authority playsim tick polish**~~ — invasion actor-delta gap resync follow-ups, presentation-echo tail polish
 3. ~~**Cross-language soak evidence**~~ — record-evidence skip gate in main CI workflow
 
-## Phase 2c next slice (iteration 66)
+## Phase 2c next slice (iteration 66 — delivered)
 
-1. **BEHAVIOR bytecode operands** — script-array follow-up PCDs, more Eternity stack ops
-2. **Authority playsim tick polish** — coop actor-delta gap resync follow-ups, authority-event tail polish
+1. ~~**BEHAVIOR bytecode operands**~~ — script-array follow-up PCDs, more Eternity stack ops
+2. ~~**Authority playsim tick polish**~~ — coop actor-delta gap resync follow-ups, authority-event tail polish
+3. ~~**Cross-language soak evidence**~~ — run-all skip gate in main CI workflow
+
+## Phase 2c next slice (iteration 67)
+
+1. **BEHAVIOR bytecode operands** — script-array shift ops, more Eternity stack ops
+2. **Authority playsim tick polish** — coop authority-event gap resync follow-ups, presentation-echo tail polish
 3. **Cross-language soak evidence** — next CI freshness gate
+
+### Run-all skip gate main CI step (Phase 2c — iteration 66 step 3)
+
+| Artifact | Location | C++ reference |
+| --- | --- | --- |
+| Run-all skip gate | `CrossLanguageSoakSuite.RunAll` | skip harnesses when soak secrets are absent |
+| Main CI workflow | `.github/workflows/csharp.yml` | `RunAll_SkipsWhenHcdeservOrIwadMissing` step |
+| Gate tests | `CrossLanguageSoakSuiteTests` | `RunAll_SkipsWhenHcdeservOrIwadMissing` |
+| Release checklist | `validation/soak/README.md` | main CI run-all skip gate docs |
+
+### Coop actor-delta gap resync follow-ups + authority-event tail polish (Phase 2c — iteration 66 step 2)
+
+| Artifact | Location | C++ reference |
+| --- | --- | --- |
+| Line-spec tail polish | `SnapshotChecksumLineSpecPolicy.PolishRollingHashWithAuthorityEvent` | fold authority-event into line-spec hash |
+| Actor-delta commit polish | `GuestWorldStateStore.CommitAppliedActorDeltas` | polish line-spec rolling hash on HCDA apply |
+| Coop actor-delta line-spec mismatch | `SnapshotChecksumMismatchPolicy.ShouldTriggerNetGapResyncOnCoopActorDeltaLineSpecMismatch` | net gap resync when coop line-spec category mismatches |
+| Guest pump wiring | `LiveGuestSession.TryApplyTailSections` | tracks coop actor-delta line-spec mismatch gap resync follow-ups |
+| E2E tests | `SnapshotChecksumLineSpecPolicyTests`, `SnapshotChecksumMismatchPolicyTests`, `GuestWorldStateChecksumIntegrationTests` | line-spec polish + coop actor-delta line-spec mismatch gap resync |
+
+### BEHAVIOR script-array follow-up + Eternity stack PCD operands (Phase 2c/2d — iteration 66 step 1)
+
+| Artifact | Location | C++ reference |
+| --- | --- | --- |
+| Script-array opcodes | `AcsPcode.cs` | `PCD_ASSIGNSCRIPTARRAY`…`PCD_ADDSCRIPTARRAY`, `PCD_TRANSLATIONRANGE3`, `PCD_PUSHSCRIPTARRAY` |
+| Wire-value skips | `MapBehaviorBytecodeWalker.cs` | C++ wire values for script-array PCDs shadowing legacy enum aliases |
+| Operand skip table | `MapBehaviorBytecodeWalker.cs` | old-format script-array follow-up skips |
+| Walk tests | `MapBehaviorBytecodeWalkerTests` | `TryWalkScript_OldFormat_ReadsScriptArrayFollowUpAndEternityStackOps` |
 
 ### Record-evidence skip gate main CI step (Phase 2c — iteration 65 step 3)
 

@@ -169,3 +169,8 @@ jobs:
         run: |
           cd csharp
           dotnet test --no-build --filter "FullyQualifiedName~RecordEvidence_SkipsWhenHcdeservOrIwadMissing"
+      - name: Enforce run-all skip gate when secrets missing
+        if: ${{ secrets.HCDE_HCDESERV_PATH == '' || secrets.HCDE_IWAD_PATH == '' }}
+        run: |
+          cd csharp
+          dotnet test --no-build --filter "FullyQualifiedName~RunAll_SkipsWhenHcdeservOrIwadMissing"
