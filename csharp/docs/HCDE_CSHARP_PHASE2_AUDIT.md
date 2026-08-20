@@ -1,7 +1,7 @@
 # HCDE C# Migration — Phase 2 Principal Audit
 
 **Last updated:** 2026-08-18  
-**Status:** In progress — Phase **2c** live protocol codecs (iteration 64 complete). Phase **2b** verification errors, start-game, bootstrap/resync, and cross-language harness complete. Phase **2b** verification errors, start-game, bootstrap/resync, and cross-language harness complete.  
+**Status:** In progress — Phase **2c** live protocol codecs (iteration 65 complete). Phase **2b** verification errors, start-game, bootstrap/resync, and cross-language harness complete. Phase **2b** verification errors, start-game, bootstrap/resync, and cross-language harness complete.  
 **Prerequisite:** [Phase 1 audit](HCDE_CSHARP_PHASE1_AUDIT.md) (complete)  
 **Related:** [`HCDE_CSHARP_MIGRATION.md`](HCDE_CSHARP_MIGRATION.md) · [`HCDE_NETCODE.md`](../../docs/HCDE_NETCODE.md)
 
@@ -724,6 +724,46 @@ Phase 2b is complete when **all** hold:
 1. ~~**BEHAVIOR bytecode operands**~~ — thing-damage/use-inventory follow-up PCDs, more Eternity stack ops
 2. ~~**Authority playsim tick polish**~~ — coop presentation-echo gap resync follow-ups, authority-event tail polish
 3. ~~**Cross-language soak evidence**~~ — committed dual freshness stale manifest rejection gate in main CI workflow
+
+## Phase 2c next slice (iteration 65 — delivered)
+
+1. ~~**BEHAVIOR bytecode operands**~~ — pushfunction/script-wait follow-up PCDs, more Eternity stack ops
+2. ~~**Authority playsim tick polish**~~ — invasion actor-delta gap resync follow-ups, presentation-echo tail polish
+3. ~~**Cross-language soak evidence**~~ — record-evidence skip gate in main CI workflow
+
+## Phase 2c next slice (iteration 66)
+
+1. **BEHAVIOR bytecode operands** — script-array follow-up PCDs, more Eternity stack ops
+2. **Authority playsim tick polish** — coop actor-delta gap resync follow-ups, authority-event tail polish
+3. **Cross-language soak evidence** — next CI freshness gate
+
+### Record-evidence skip gate main CI step (Phase 2c — iteration 65 step 3)
+
+| Artifact | Location | C++ reference |
+| --- | --- | --- |
+| Record-evidence skip gate | `CrossLanguageSoakEvidenceArchive.RecordEvidence` | record Skipped harnesses when soak secrets are absent |
+| Main CI workflow | `.github/workflows/csharp.yml` | `RecordEvidence_SkipsWhenHcdeservOrIwadMissing` step |
+| Gate tests | `CrossLanguageSoakEvidenceArchiveTests` | `RecordEvidence_SkipsWhenHcdeservOrIwadMissing` |
+| Release checklist | `validation/soak/README.md` | main CI record-evidence skip gate docs |
+
+### Invasion actor-delta gap resync follow-ups + presentation-echo tail polish (Phase 2c — iteration 65 step 2)
+
+| Artifact | Location | C++ reference |
+| --- | --- | --- |
+| Presentation-echo tail polish | `SnapshotChecksumPresentationEchoPolicy.PolishRollingHash` | fold line-spec into presentation-echo hash |
+| Actor-delta commit polish | `GuestWorldStateStore.CommitAppliedActorDeltas` | polish presentation-echo rolling hash on HCDA apply |
+| Invasion actor-delta line-spec mismatch | `SnapshotChecksumMismatchPolicy.ShouldTriggerNetGapResyncOnInvasionActorDeltaLineSpecMismatch` | net gap resync when invasion line-spec category mismatches |
+| Guest pump wiring | `LiveGuestSession.TryApplyTailSections` | tracks invasion actor-delta line-spec mismatch gap resync follow-ups |
+| E2E tests | `SnapshotChecksumActorDeltaPolicyTests`, `SnapshotChecksumMismatchPolicyTests`, `GuestWorldStateChecksumIntegrationTests` | presentation-echo polish + invasion actor-delta line-spec mismatch gap resync |
+
+### BEHAVIOR pushfunction/script-wait follow-up + Eternity stack PCD operands (Phase 2c/2d — iteration 65 step 1)
+
+| Artifact | Location | C++ reference |
+| --- | --- | --- |
+| Eternity-stack opcodes | `AcsPcode.cs` | `PCD_CALLSTACK`…`PCD_GOTOSTACK`, `PCD_PUSHFUNCTION`, `PCD_SCRIPTWAITNAMED` |
+| Wire-value skips | `MapBehaviorBytecodeWalker.cs` | C++ wire values for eternity-stack PCDs shadowing legacy enum aliases |
+| Operand skip table | `MapBehaviorBytecodeWalker.cs` | old-format eternity-stack follow-up skips |
+| Walk tests | `MapBehaviorBytecodeWalkerTests` | `TryWalkScript_OldFormat_ReadsPushFunctionScriptWaitAndEternityStackOps` |
 
 ## Phase 2c next slice (iteration 64 — delivered)
 
