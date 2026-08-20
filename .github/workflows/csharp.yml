@@ -174,3 +174,10 @@ jobs:
         run: |
           cd csharp
           dotnet test --no-build --filter "FullyQualifiedName~RunAll_SkipsWhenHcdeservOrIwadMissing"
+      - name: Enforce export committed templates gate
+        env:
+          HCDE_EXPORT_SOAK_TEMPLATES: '1'
+          HCDE_SOAK_TEMPLATE_EXPORT_DIR: ${{ runner.temp }}/soak-export-gate-test
+        run: |
+          cd csharp
+          dotnet test --no-build --filter "FullyQualifiedName~ExportCommittedTemplates_WritesCiArtifactBundle"

@@ -1,7 +1,7 @@
 # HCDE C# Migration — Phase 2 Principal Audit
 
 **Last updated:** 2026-08-18  
-**Status:** In progress — Phase **2c** live protocol codecs (iteration 66 complete). Phase **2b** verification errors, start-game, bootstrap/resync, and cross-language harness complete. Phase **2b** verification errors, start-game, bootstrap/resync, and cross-language harness complete.  
+**Status:** In progress — Phase **2c** live protocol codecs (iteration 67 complete). Phase **2b** verification errors, start-game, bootstrap/resync, and cross-language harness complete. Phase **2b** verification errors, start-game, bootstrap/resync, and cross-language harness complete.  
 **Prerequisite:** [Phase 1 audit](HCDE_CSHARP_PHASE1_AUDIT.md) (complete)  
 **Related:** [`HCDE_CSHARP_MIGRATION.md`](HCDE_CSHARP_MIGRATION.md) · [`HCDE_NETCODE.md`](../../docs/HCDE_NETCODE.md)
 
@@ -737,11 +737,45 @@ Phase 2b is complete when **all** hold:
 2. ~~**Authority playsim tick polish**~~ — coop actor-delta gap resync follow-ups, authority-event tail polish
 3. ~~**Cross-language soak evidence**~~ — run-all skip gate in main CI workflow
 
-## Phase 2c next slice (iteration 67)
+## Phase 2c next slice (iteration 67 — delivered)
 
-1. **BEHAVIOR bytecode operands** — script-array shift ops, more Eternity stack ops
-2. **Authority playsim tick polish** — coop authority-event gap resync follow-ups, presentation-echo tail polish
+1. ~~**BEHAVIOR bytecode operands**~~ — script-array shift ops, more Eternity stack ops
+2. ~~**Authority playsim tick polish**~~ — coop authority-event gap resync follow-ups, presentation-echo tail polish
+3. ~~**Cross-language soak evidence**~~ — export committed templates gate in main CI workflow
+
+## Phase 2c next slice (iteration 68)
+
+1. **BEHAVIOR bytecode operands** — script char-array follow-up PCDs, more Eternity stack ops
+2. **Authority playsim tick polish** — invasion authority-event gap resync follow-ups, actor-delta tail polish
 3. **Cross-language soak evidence** — next CI freshness gate
+
+### Export committed templates gate main CI step (Phase 2c — iteration 67 step 3)
+
+| Artifact | Location | C++ reference |
+| --- | --- | --- |
+| Export committed templates gate | `CrossLanguageSoakEvidenceArchive.ExportCommittedTemplates` | CI artifact bundle for Passed soak templates |
+| Main CI workflow | `.github/workflows/csharp.yml` | `ExportCommittedTemplates_WritesCiArtifactBundle` step |
+| Gate tests | `CrossLanguageSoakEvidenceArchiveTests` | `ExportCommittedTemplates_WritesCiArtifactBundle` |
+| Release checklist | `validation/soak/README.md` | main CI export committed templates gate docs |
+
+### Coop authority-event gap resync follow-ups + presentation-echo tail polish (Phase 2c — iteration 67 step 2)
+
+| Artifact | Location | C++ reference |
+| --- | --- | --- |
+| Presentation-echo tail polish | `SnapshotChecksumPresentationEchoPolicy.PolishRollingHash` | fold line-spec into presentation-echo hash |
+| Authority-event commit polish | `GuestWorldStateStore.CommitAppliedAuthorityEvents` | polish presentation-echo rolling hash on HCAV apply |
+| Coop authority-event presentation-echo line-spec mismatch | `SnapshotChecksumMismatchPolicy.ShouldTriggerNetGapResyncOnCoopAuthorityEventPresentationEchoLineSpecMismatch` | net gap resync when coop line-spec category mismatches |
+| Guest pump wiring | `LiveGuestSession.TryApplyTailSections` | tracks coop authority-event presentation-echo line-spec mismatch gap resync follow-ups |
+| E2E tests | `SnapshotChecksumPresentationEchoPolicyTests`, `SnapshotChecksumMismatchPolicyTests`, `GuestWorldStateChecksumIntegrationTests` | presentation-echo polish + coop authority-event presentation-echo line-spec mismatch gap resync |
+
+### BEHAVIOR script-array shift + Eternity stack PCD operands (Phase 2c/2d — iteration 67 step 1)
+
+| Artifact | Location | C++ reference |
+| --- | --- | --- |
+| Script-array shift opcodes | `AcsPcode.cs` | `PCD_LSSCRIPTARRAY`/`PCD_RSSCRIPTARRAY`, `PCD_PUSHFUNCTION`, `PCD_SCRIPTWAITNAMED` |
+| Wire-value skips | `MapBehaviorBytecodeWalker.cs` | C++ wire values for script-array shift and eternity-stack PCDs shadowing legacy enum aliases |
+| Operand skip table | `MapBehaviorBytecodeWalker.cs` | old-format script-array shift and eternity-stack follow-up skips |
+| Walk tests | `MapBehaviorBytecodeWalkerTests` | `TryWalkScript_OldFormat_ReadsScriptArrayShiftAndEternityStackOps` |
 
 ### Run-all skip gate main CI step (Phase 2c — iteration 66 step 3)
 
