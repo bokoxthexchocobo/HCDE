@@ -275,4 +275,23 @@ public class SnapshotChecksumMismatchPolicyTests
             appliedCoopPresentationEcho: false,
             SnapshotChecksumMismatchPolicyKind.ResyncNetStateOnMismatch));
     }
+
+    [Fact]
+    public void ShouldTriggerNetGapResyncOnCoopPresentationEchoLineSpecMismatch_RequiresAppliedCoopPresentationEcho()
+    {
+        var result = new SnapshotChecksumApplyResult(
+            compared: true,
+            mismatchCount: 1,
+            localBucketMissing: false,
+            hasLineSpecCategoryMismatch: true);
+
+        Assert.True(SnapshotChecksumMismatchPolicy.ShouldTriggerNetGapResyncOnCoopPresentationEchoLineSpecMismatch(
+            result,
+            appliedCoopPresentationEcho: true,
+            SnapshotChecksumMismatchPolicyKind.ResyncNetStateOnMismatch));
+        Assert.False(SnapshotChecksumMismatchPolicy.ShouldTriggerNetGapResyncOnCoopPresentationEchoLineSpecMismatch(
+            result,
+            appliedCoopPresentationEcho: false,
+            SnapshotChecksumMismatchPolicyKind.ResyncNetStateOnMismatch));
+    }
 }

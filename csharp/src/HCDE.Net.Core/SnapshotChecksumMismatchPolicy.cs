@@ -211,4 +211,11 @@ public static class SnapshotChecksumMismatchPolicy
         SnapshotChecksumMismatchPolicyKind policy) =>
         ShouldTriggerNetGapResyncOnCoopDeadSpawnMismatch(result, policy)
         && appliedCoopPresentationEcho;
+
+    public static bool ShouldTriggerNetGapResyncOnCoopPresentationEchoLineSpecMismatch(
+        SnapshotChecksumApplyResult result,
+        bool appliedCoopPresentationEcho,
+        SnapshotChecksumMismatchPolicyKind policy) =>
+        ShouldTriggerNetGapResyncOnLineSpecMismatch(result, policy)
+        && appliedCoopPresentationEcho;
 }
