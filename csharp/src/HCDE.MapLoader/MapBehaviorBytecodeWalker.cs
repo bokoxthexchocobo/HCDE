@@ -297,6 +297,7 @@ public static class MapBehaviorBytecodeWalker
         (int)AcsPcode.Lspec4DirectB => 2,
         (int)AcsPcode.Lspec5DirectB => 2,
         (int)AcsPcode.DelayDirectB or (int)AcsPcode.RandomDirectB => 1,
+        351 => 2, // C++ PCD_CALLFUNC wire (shadow legacy CallFunc enum alias)
         (int)AcsPcode.SetThingSpecial => 0,
         261 or 262 or 264 or 265 or 266 or 267 or 268 or 269 or 270 or 271 or 272
             or 273 or 274 or 275 or 277 or 278 or 279 or 281 or 290
@@ -309,8 +310,9 @@ public static class MapBehaviorBytecodeWalker
             or 344 or 345
             or 346 or 347
             or 348 or 349 or 350
+            or 352
             or 427 or 428 or 430 or 431 or 432
-            => 0, // C++ sector/level/input/player-info/negate-pitch/print-bind/thing-damage/actor-texture-light/thing-count-camera/classify-print/morph-classify PCDs (shadow legacy global-var enum aliases)
+            => 0, // C++ sector/level/input/player-info/negate-pitch/print-bind/thing-damage/actor-texture-light/thing-count-camera/classify-print/savestring/morph-classify PCDs (shadow legacy global-var enum aliases)
         (int)AcsPcode.AddGlobalVar or (int)AcsPcode.SubGlobalVar or (int)AcsPcode.MulGlobalVar
             or (int)AcsPcode.DivGlobalVar or (int)AcsPcode.ModGlobalVar
             or (int)AcsPcode.IncGlobalVar or (int)AcsPcode.DecGlobalVar => 1,
@@ -530,6 +532,9 @@ public static class MapBehaviorBytecodeWalker
         346 or 347 => 0, // C++ PCD_CHECKPLAYERCAMERA / PCD_GETPLAYERINPUT (shadow legacy GetPlayerInput enum alias)
         348 or 349 or 350
             => 0, // C++ PCD_CLASSIFYACTOR…PCD_PRINTHEX wire (shadow legacy classify/print enum aliases)
+        351 => 2, // C++ PCD_CALLFUNC wire (shadow legacy CallFunc enum alias)
+        352
+            => 0, // C++ PCD_SAVESTRING wire (shadow legacy SaveString enum alias)
         427 or 428 or 430 or 431 or 432
             => 0, // C++ PCD_MORPHACTOR…PCD_PRINTHEX wire (shadow legacy morph/classify enum aliases)
         (int)AcsPcode.UseInventory or (int)AcsPcode.UseActorInventory => 0,
