@@ -59,6 +59,28 @@ public class SnapshotChecksumPresentationEchoPolicyTests
     }
 
     [Fact]
+    public void CommitAppliedActorDeltas_PolishesActorDeltaRollingHashFromPresentationEcho()
+    {
+        var store = new GuestWorldStateStore();
+        store.CommitAppliedPresentationEcho(PresentationEchoCodec.CreateExampleBlock());
+        var before = store.ActorDeltaRollingHash;
+
+        store.CommitAppliedActorDeltas(new[]
+        {
+            new ActorDeltaRecord
+            {
+                ActorId = 8,
+                ClassId = 2,
+                FieldMask = LiveConstants.ActorDeltaFieldHealth,
+                Health = 72,
+            },
+        });
+
+        Assert.NotEqual(before, store.ActorDeltaRollingHash);
+        Assert.NotEqual(0u, store.PresentationEchoRollingHash);
+    }
+
+    [Fact]
     public void CommitAppliedPresentationEcho_PolishesActorDeltaRollingHash()
     {
         var store = new GuestWorldStateStore();
