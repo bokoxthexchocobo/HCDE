@@ -79,4 +79,17 @@ public class SnapshotChecksumPresentationEchoPolicyTests
         Assert.NotEqual(before, store.ActorDeltaRollingHash);
         Assert.NotEqual(0u, store.PresentationEchoRollingHash);
     }
+
+    [Fact]
+    public void CommitAppliedPresentationEcho_PolishesPresentationEchoRollingHashFromLineSpec()
+    {
+        var store = new GuestWorldStateStore();
+        store.NoteLineSpec(lineIndex: 3, special: 8, success: true);
+        var before = store.PresentationEchoRollingHash;
+
+        store.CommitAppliedPresentationEcho(PresentationEchoCodec.CreateExampleBlock());
+
+        Assert.NotEqual(before, store.PresentationEchoRollingHash);
+        Assert.NotEqual(0u, store.LineSpecRollingHash);
+    }
 }
