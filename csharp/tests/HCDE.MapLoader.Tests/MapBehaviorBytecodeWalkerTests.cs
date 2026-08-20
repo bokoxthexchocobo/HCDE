@@ -1542,6 +1542,54 @@ public class MapBehaviorBytecodeWalkerTests
     }
 
     [Fact]
+    public void TryWalkScript_OldFormat_ReadsCharRangeFollowUpAndEternityStackOps()
+    {
+        var lump = TestWadBuilder.BuildBehaviorLump(
+            MapBehaviorFormat.AcsOld,
+            scriptCount: 1,
+            includeTerminateBytecode: false,
+            bytecodeOpcodes:
+            [
+                354, // PCD_PRINTWORLDCHRANGE wire
+                355, // PCD_PRINTGLOBALCHRANGE wire
+                356, // PCD_STRCPYTOMAPCHRANGE wire
+                357, // PCD_STRCPYTOWORLDCHRANGE wire
+                358, // PCD_STRCPYTOGLOBALCHRANGE wire
+                (int)AcsPcode.PushScriptArray, 1,
+                (int)AcsPcode.IncScriptArray, 2,
+                (int)AcsPcode.OrScriptArray, 3,
+                (int)AcsPcode.CallStack,
+                (int)AcsPcode.GotoStack,
+                (int)AcsPcode.Terminate,
+            ]);
+        Assert.True(MapBehaviorCodec.TryProbe(lump, out var record, out _));
+        Assert.True(MapBehaviorDirectoryCodec.TryReadScripts(
+            record.Data,
+            record.Format,
+            record.DirectoryOffset,
+            out var scripts,
+            out _));
+        Assert.Single(scripts);
+
+        Assert.True(MapBehaviorBytecodeWalker.TryWalkScript(
+            record.Data,
+            record.Format,
+            scripts[0].Address,
+            out var instructions,
+            out var terminated,
+            out _));
+
+        Assert.True(terminated);
+        Assert.Equal(11, instructions.Count);
+        Assert.Equal(354, instructions[0].Opcode);
+        Assert.Equal(0, instructions[0].OperandWordCount);
+        Assert.Equal(358, instructions[4].Opcode);
+        Assert.Equal((int)AcsPcode.PushScriptArray, instructions[5].Opcode);
+        Assert.Equal(1, instructions[5].OperandWordCount);
+        Assert.Equal((int)AcsPcode.CallStack, instructions[8].Opcode);
+    }
+
+    [Fact]
     public void TryWalkScript_OldFormat_ReadsCallFuncSaveStringAndEternityStackOps()
     {
         var lump = TestWadBuilder.BuildBehaviorLump(

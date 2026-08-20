@@ -310,9 +310,9 @@ public static class MapBehaviorBytecodeWalker
             or 344 or 345
             or 346 or 347
             or 348 or 349 or 350
-            or 352
+            or 352 or 354
             or 427 or 428 or 430 or 431 or 432
-            => 0, // C++ sector/level/input/player-info/negate-pitch/print-bind/thing-damage/actor-texture-light/thing-count-camera/classify-print/savestring/morph-classify PCDs (shadow legacy global-var enum aliases)
+            => 0, // C++ sector/level/input/player-info/negate-pitch/print-bind/thing-damage/actor-texture-light/thing-count-camera/classify-print/savestring/char-range/morph-classify PCDs (shadow legacy global-var enum aliases)
         (int)AcsPcode.AddGlobalVar or (int)AcsPcode.SubGlobalVar or (int)AcsPcode.MulGlobalVar
             or (int)AcsPcode.DivGlobalVar or (int)AcsPcode.ModGlobalVar
             or (int)AcsPcode.IncGlobalVar or (int)AcsPcode.DecGlobalVar => 1,
