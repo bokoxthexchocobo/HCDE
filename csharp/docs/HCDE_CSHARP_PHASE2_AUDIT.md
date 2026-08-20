@@ -1,7 +1,7 @@
 # HCDE C# Migration — Phase 2 Principal Audit
 
 **Last updated:** 2026-08-18  
-**Status:** In progress — Phase **2c** live protocol codecs (iteration 58 complete). Phase **2b** verification errors, start-game, bootstrap/resync, and cross-language harness complete. Phase **2b** verification errors, start-game, bootstrap/resync, and cross-language harness complete.  
+**Status:** In progress — Phase **2c** live protocol codecs (iteration 59 complete). Phase **2b** verification errors, start-game, bootstrap/resync, and cross-language harness complete. Phase **2b** verification errors, start-game, bootstrap/resync, and cross-language harness complete.  
 **Prerequisite:** [Phase 1 audit](HCDE_CSHARP_PHASE1_AUDIT.md) (complete)  
 **Related:** [`HCDE_CSHARP_MIGRATION.md`](HCDE_CSHARP_MIGRATION.md) · [`HCDE_NETCODE.md`](../../docs/HCDE_NETCODE.md)
 
@@ -725,11 +725,45 @@ Phase 2b is complete when **all** hold:
 2. ~~**Authority playsim tick polish**~~ — coop presentation-echo gap resync follow-ups, authority-event tail polish
 3. ~~**Cross-language soak evidence**~~ — committed dual freshness stale manifest rejection gate in main CI workflow
 
-## Phase 2c next slice (iteration 59)
+## Phase 2c next slice (iteration 59 — delivered)
 
-1. **BEHAVIOR bytecode operands** — actor-texture/light follow-up PCDs, more Eternity stack ops
-2. **Authority playsim tick polish** — invasion line-spec gap resync follow-ups, actor-delta tail polish
+1. ~~**BEHAVIOR bytecode operands**~~ — actor-texture/light follow-up PCDs, more Eternity stack ops
+2. ~~**Authority playsim tick polish**~~ — invasion line-spec gap resync follow-ups, actor-delta tail polish
+3. ~~**Cross-language soak evidence**~~ — stale export bundle evidence rejection gate in main CI workflow
+
+## Phase 2c next slice (iteration 60)
+
+1. **BEHAVIOR bytecode operands** — thing-count/camera follow-up PCDs, more Eternity stack ops
+2. **Authority playsim tick polish** — coop line-spec gap resync follow-ups, presentation-echo tail polish
 3. **Cross-language soak evidence** — next CI freshness gate
+
+### Stale export bundle evidence rejection main CI gate (Phase 2c — iteration 59 step 3)
+
+| Artifact | Location | C++ reference |
+| --- | --- | --- |
+| Stale export bundle evidence rejection | `CrossLanguageSoakGate.EvaluateExportBundleEvidenceFreshness` | reject stale evidence in export bundle apply |
+| Main CI workflow | `.github/workflows/csharp.yml` | `ApplyExportedTemplates_RejectsStaleBundleEvidence` step |
+| Gate tests | `CrossLanguageSoakEvidenceArchiveTests` | `ApplyExportedTemplates_RejectsStaleBundleEvidence` |
+| Release checklist | `validation/soak/README.md` | main CI stale export bundle evidence rejection docs |
+
+### Invasion line-spec gap resync follow-ups + actor-delta tail polish (Phase 2c — iteration 59 step 2)
+
+| Artifact | Location | C++ reference |
+| --- | --- | --- |
+| Line-spec tail polish | `SnapshotChecksumLineSpecPolicy.PolishRollingHashWithActorDelta` | fold actor-delta into line-spec hash |
+| Authority-event commit polish | `GuestWorldStateStore.CommitAppliedAuthorityEvents` | polish line-spec rolling hash on HCAV apply |
+| Invasion line-spec actor mismatch | `SnapshotChecksumMismatchPolicy.ShouldTriggerNetGapResyncOnInvasionLineSpecActorMismatch` | net gap resync when invasion actor category mismatches |
+| Guest pump wiring | `LiveGuestSession.TryApplyTailSections` | tracks invasion line-spec actor mismatch gap resync follow-ups |
+| E2E tests | `SnapshotChecksumAuthorityEventPolicyTests`, `SnapshotChecksumMismatchPolicyTests`, `GuestWorldStateChecksumIntegrationTests` | line-spec polish + invasion line-spec actor mismatch gap resync |
+
+### BEHAVIOR actor-texture/light follow-up + Eternity stack PCD operands (Phase 2c/2d — iteration 59 step 1)
+
+| Artifact | Location | C++ reference |
+| --- | --- | --- |
+| Actor-texture/light opcodes | `AcsPcode.cs` | `PCD_CHECKACTORCEILINGTEXTURE`…`PCD_SETMUGSHOTSTATE` |
+| Wire-value skips | `MapBehaviorBytecodeWalker.cs` | C++ wire values for actor-texture/light PCDs shadowing legacy enum aliases |
+| Operand skip table | `MapBehaviorBytecodeWalker.cs` | old + little-enhanced actor-texture/light follow-up skips |
+| Walk tests | `MapBehaviorBytecodeWalkerTests` | `TryWalkScript_OldFormat_ReadsActorTextureLightAndEternityStackOps` |
 
 ### Committed dual freshness stale manifest rejection main CI gate (Phase 2c — iteration 58 step 3)
 
