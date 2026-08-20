@@ -181,3 +181,12 @@ jobs:
         run: |
           cd csharp
           dotnet test --no-build --filter "FullyQualifiedName~ExportCommittedTemplates_WritesCiArtifactBundle"
+      - name: Enforce apply exported templates gate
+        env:
+          HCDE_EXPORT_SOAK_TEMPLATES: '1'
+          HCDE_SOAK_TEMPLATE_EXPORT_DIR: ${{ runner.temp }}/soak-apply-gate-test
+          HCDE_APPLY_SOAK_TEMPLATES: '1'
+        run: |
+          cd csharp
+          dotnet test --no-build --filter "FullyQualifiedName~ExportCommittedTemplates_WritesCiArtifactBundle"
+          dotnet test --no-build --filter "FullyQualifiedName~ApplyExportedTemplates_WritesCommittedSoakTree"
