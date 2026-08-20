@@ -1,7 +1,7 @@
 # HCDE C# Migration — Phase 2 Principal Audit
 
 **Last updated:** 2026-08-18  
-**Status:** In progress — Phase **2c** live protocol codecs (iteration 59 complete). Phase **2b** verification errors, start-game, bootstrap/resync, and cross-language harness complete. Phase **2b** verification errors, start-game, bootstrap/resync, and cross-language harness complete.  
+**Status:** In progress — Phase **2c** live protocol codecs (iteration 60 complete). Phase **2b** verification errors, start-game, bootstrap/resync, and cross-language harness complete. Phase **2b** verification errors, start-game, bootstrap/resync, and cross-language harness complete.  
 **Prerequisite:** [Phase 1 audit](HCDE_CSHARP_PHASE1_AUDIT.md) (complete)  
 **Related:** [`HCDE_CSHARP_MIGRATION.md`](HCDE_CSHARP_MIGRATION.md) · [`HCDE_NETCODE.md`](../../docs/HCDE_NETCODE.md)
 
@@ -725,17 +725,51 @@ Phase 2b is complete when **all** hold:
 2. ~~**Authority playsim tick polish**~~ — coop presentation-echo gap resync follow-ups, authority-event tail polish
 3. ~~**Cross-language soak evidence**~~ — committed dual freshness stale manifest rejection gate in main CI workflow
 
+## Phase 2c next slice (iteration 60 — delivered)
+
+1. ~~**BEHAVIOR bytecode operands**~~ — thing-count/camera follow-up PCDs, more Eternity stack ops
+2. ~~**Authority playsim tick polish**~~ — coop line-spec gap resync follow-ups, presentation-echo tail polish
+3. ~~**Cross-language soak evidence**~~ — stale export manifest rejection gate in main CI workflow
+
+## Phase 2c next slice (iteration 61)
+
+1. **BEHAVIOR bytecode operands** — morph/classify follow-up PCDs, more Eternity stack ops
+2. **Authority playsim tick polish** — invasion authority-event gap resync follow-ups, line-spec tail polish
+3. **Cross-language soak evidence** — next CI freshness gate
+
+### Stale export manifest rejection main CI gate (Phase 2c — iteration 60 step 3)
+
+| Artifact | Location | C++ reference |
+| --- | --- | --- |
+| Stale export manifest rejection | `CrossLanguageSoakGate.EvaluateExportBundleDualFreshness` | reject stale manifest in export bundle apply |
+| Main CI workflow | `.github/workflows/csharp.yml` | `ApplyExportedTemplates_RejectsStaleExportManifest` step |
+| Gate tests | `CrossLanguageSoakEvidenceArchiveTests` | `ApplyExportedTemplates_RejectsStaleExportManifest` |
+| Release checklist | `validation/soak/README.md` | main CI stale export manifest rejection docs |
+
+### Coop line-spec gap resync follow-ups + presentation-echo tail polish (Phase 2c — iteration 60 step 2)
+
+| Artifact | Location | C++ reference |
+| --- | --- | --- |
+| Presentation-echo tail polish | `SnapshotChecksumPresentationEchoPolicy.PolishRollingHash` | fold line-spec into presentation-echo hash |
+| Presentation-echo commit polish | `GuestWorldStateStore.CommitAppliedPresentationEcho` | polish presentation-echo rolling hash on HCIV apply |
+| Coop line-spec actor mismatch | `SnapshotChecksumMismatchPolicy.ShouldTriggerNetGapResyncOnCoopLineSpecActorMismatch` | net gap resync when coop actor category mismatches |
+| Guest pump wiring | `LiveGuestSession.TryApplyTailSections` | tracks coop line-spec actor mismatch gap resync follow-ups |
+| E2E tests | `SnapshotChecksumPresentationEchoPolicyTests`, `SnapshotChecksumMismatchPolicyTests`, `GuestWorldStateChecksumIntegrationTests` | presentation-echo polish + coop line-spec actor mismatch gap resync |
+
+### BEHAVIOR thing-count/camera follow-up + Eternity stack PCD operands (Phase 2c/2d — iteration 60 step 1)
+
+| Artifact | Location | C++ reference |
+| --- | --- | --- |
+| Thing-count/camera opcodes | `AcsPcode.cs` | `PCD_THINGCOUNTSECTOR`…`PCD_GETPLAYERINPUT` |
+| Wire-value skips | `MapBehaviorBytecodeWalker.cs` | C++ wire values for thing-count/camera PCDs shadowing legacy enum aliases |
+| Operand skip table | `MapBehaviorBytecodeWalker.cs` | old + little-enhanced thing-count/camera follow-up skips |
+| Walk tests | `MapBehaviorBytecodeWalkerTests` | `TryWalkScript_OldFormat_ReadsThingCountCameraAndEternityStackOps` |
+
 ## Phase 2c next slice (iteration 59 — delivered)
 
 1. ~~**BEHAVIOR bytecode operands**~~ — actor-texture/light follow-up PCDs, more Eternity stack ops
 2. ~~**Authority playsim tick polish**~~ — invasion line-spec gap resync follow-ups, actor-delta tail polish
 3. ~~**Cross-language soak evidence**~~ — stale export bundle evidence rejection gate in main CI workflow
-
-## Phase 2c next slice (iteration 60)
-
-1. **BEHAVIOR bytecode operands** — thing-count/camera follow-up PCDs, more Eternity stack ops
-2. **Authority playsim tick polish** — coop line-spec gap resync follow-ups, presentation-echo tail polish
-3. **Cross-language soak evidence** — next CI freshness gate
 
 ### Stale export bundle evidence rejection main CI gate (Phase 2c — iteration 59 step 3)
 

@@ -138,3 +138,11 @@ jobs:
         run: |
           cd csharp
           dotnet test --no-build --filter "FullyQualifiedName~ApplyExportedTemplates_RejectsStaleBundleEvidence"
+      - name: Enforce stale export manifest rejection gate
+        if: ${{ secrets.HCDE_HCDESERV_PATH != '' && secrets.HCDE_IWAD_PATH != '' }}
+        env:
+          HCDE_SOAK_MANIFEST_MAX_AGE_DAYS: '8'
+          HCDE_SOAK_EVIDENCE_MAX_AGE_DAYS: '8'
+        run: |
+          cd csharp
+          dotnet test --no-build --filter "FullyQualifiedName~ApplyExportedTemplates_RejectsStaleExportManifest"
