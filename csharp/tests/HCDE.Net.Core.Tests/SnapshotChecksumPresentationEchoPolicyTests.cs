@@ -81,6 +81,19 @@ public class SnapshotChecksumPresentationEchoPolicyTests
     }
 
     [Fact]
+    public void CommitAppliedPresentationEcho_PolishesPresentationEchoRollingHashFromAuthorityEvent()
+    {
+        var store = new GuestWorldStateStore();
+        store.CommitAppliedAuthorityEvents(new[] { AuthorityEventsCodec.CreateSpawnExample("Imp", actorId: 12) });
+        var before = store.PresentationEchoRollingHash;
+
+        store.CommitAppliedPresentationEcho(PresentationEchoCodec.CreateExampleBlock());
+
+        Assert.NotEqual(before, store.PresentationEchoRollingHash);
+        Assert.NotEqual(0u, store.AuthorityEventRollingHash);
+    }
+
+    [Fact]
     public void CommitAppliedPresentationEcho_PolishesActorDeltaRollingHashFromAuthorityEvent()
     {
         var store = new GuestWorldStateStore();
