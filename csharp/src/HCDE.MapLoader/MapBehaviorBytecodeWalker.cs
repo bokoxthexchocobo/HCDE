@@ -266,14 +266,14 @@ public static class MapBehaviorBytecodeWalker
             or (int)AcsPcode.Lspec5Ex or (int)AcsPcode.Lspec5ExResult
             or (int)AcsPcode.Lspec5Result => 0,
         (int)AcsPcode.CallFunc => 2,
-        (int)AcsPcode.PrintScriptCharArray or (int)AcsPcode.PrintScriptCharRange
-            or (int)AcsPcode.StrCpyToScriptCharRange
-            or (int)AcsPcode.PrintMapCharRange or (int)AcsPcode.PrintWorldCharRange
+        (int)AcsPcode.PrintMapCharRange or (int)AcsPcode.PrintWorldCharRange
             or (int)AcsPcode.PrintGlobalCharRange
             or (int)AcsPcode.StrCpyToMapCharRange or (int)AcsPcode.StrCpyToWorldCharRange
             or (int)AcsPcode.StrCpyToGlobalCharRange => 0,
         376 or 377
             => 1, // C++ PCD_LSSCRIPTARRAY/PCD_RSSCRIPTARRAY wire (shadow legacy EorScriptArray/OrScriptArray enum aliases)
+        378 or 379 or 380
+            => 0, // C++ PCD_PRINTSCRIPTCHARARRAY…PCD_STRCPYTOSCRIPTCHRANGE wire (shadow legacy script char-array enum aliases)
         (int)AcsPcode.AssignScriptArray or (int)AcsPcode.PushScriptArray
             or (int)AcsPcode.AddScriptArray or (int)AcsPcode.SubScriptArray
             or (int)AcsPcode.MulScriptArray or (int)AcsPcode.DivScriptArray
