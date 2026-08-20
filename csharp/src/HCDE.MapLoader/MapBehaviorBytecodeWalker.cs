@@ -308,8 +308,9 @@ public static class MapBehaviorBytecodeWalker
             or 420 or 421
             or 344 or 345
             or 346 or 347
+            or 348 or 349 or 350
             or 427 or 428 or 430 or 431 or 432
-            => 0, // C++ sector/level/input/player-info/negate-pitch/print-bind/thing-damage/actor-texture-light/thing-count-camera/morph-classify PCDs (shadow legacy global-var enum aliases)
+            => 0, // C++ sector/level/input/player-info/negate-pitch/print-bind/thing-damage/actor-texture-light/thing-count-camera/classify-print/morph-classify PCDs (shadow legacy global-var enum aliases)
         (int)AcsPcode.AddGlobalVar or (int)AcsPcode.SubGlobalVar or (int)AcsPcode.MulGlobalVar
             or (int)AcsPcode.DivGlobalVar or (int)AcsPcode.ModGlobalVar
             or (int)AcsPcode.IncGlobalVar or (int)AcsPcode.DecGlobalVar => 1,
@@ -527,6 +528,8 @@ public static class MapBehaviorBytecodeWalker
         344 or 345
             => 0, // C++ PCD_THINGCOUNTSECTOR / PCD_THINGCOUNTNAMESECTOR wire (shadow legacy inventory enum aliases)
         346 or 347 => 0, // C++ PCD_CHECKPLAYERCAMERA / PCD_GETPLAYERINPUT (shadow legacy GetPlayerInput enum alias)
+        348 or 349 or 350
+            => 0, // C++ PCD_CLASSIFYACTOR…PCD_PRINTHEX wire (shadow legacy classify/print enum aliases)
         427 or 428 or 430 or 431 or 432
             => 0, // C++ PCD_MORPHACTOR…PCD_PRINTHEX wire (shadow legacy morph/classify enum aliases)
         (int)AcsPcode.UseInventory or (int)AcsPcode.UseActorInventory => 0,
