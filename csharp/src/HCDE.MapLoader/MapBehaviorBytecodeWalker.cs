@@ -306,8 +306,9 @@ public static class MapBehaviorBytecodeWalker
             or 337
             or 342 or 343
             or 420 or 421
+            or 344 or 345
             or 346 or 347
-            => 0, // C++ sector/level/input/player-info/negate-pitch/print-bind/thing-damage/actor-texture-light PCDs (shadow legacy global-var enum aliases)
+            => 0, // C++ sector/level/input/player-info/negate-pitch/print-bind/thing-damage/actor-texture-light/thing-count-camera PCDs (shadow legacy global-var enum aliases)
         (int)AcsPcode.AddGlobalVar or (int)AcsPcode.SubGlobalVar or (int)AcsPcode.MulGlobalVar
             or (int)AcsPcode.DivGlobalVar or (int)AcsPcode.ModGlobalVar
             or (int)AcsPcode.IncGlobalVar or (int)AcsPcode.DecGlobalVar => 1,
@@ -334,9 +335,7 @@ public static class MapBehaviorBytecodeWalker
             or (int)AcsPcode.OrMapVar or (int)AcsPcode.OrWorldVar => 1,
         313 or 314 or 315 or 316 or 317 or 318 or 319 or 320 or 321 or 322 or 323 or 324
             => 1, // C++ Ls/Rs script/map/world/global var+array shift PCDs (shadow legacy IncWorldArray… enum aliases)
-        (int)AcsPcode.UseInventory or (int)AcsPcode.UseActorInventory
-            or (int)AcsPcode.ThingCountSector or (int)AcsPcode.ThingCountNameSector
-            or (int)AcsPcode.CheckPlayerCamera or (int)AcsPcode.GetPlayerInput => 0,
+        (int)AcsPcode.UseInventory or (int)AcsPcode.UseActorInventory => 0,
         >= (int)AcsPcode.LsScriptVar and <= (int)AcsPcode.RsGlobalArray => 0,
         (int)AcsPcode.MorphActor or (int)AcsPcode.UnmorphActor or (int)AcsPcode.ClassifyActor
             or (int)AcsPcode.PrintBinary or (int)AcsPcode.PrintHex => 0,
@@ -526,10 +525,10 @@ public static class MapBehaviorBytecodeWalker
             => 0, // C++ PCD_GETACTORLIGHTLEVEL / PCD_SETMUGSHOTSTATE wire (shadows Lspec5Result enum alias)
         420 or 421
             => 0, // C++ PCD_CHECKACTORCEILINGTEXTURE / PCD_CHECKACTORFLOORTEXTURE wire (shadow legacy inventory enum aliases)
+        344 or 345
+            => 0, // C++ PCD_THINGCOUNTSECTOR / PCD_THINGCOUNTNAMESECTOR wire (shadow legacy inventory enum aliases)
         346 or 347 => 0, // C++ PCD_CHECKPLAYERCAMERA / PCD_GETPLAYERINPUT (shadow legacy GetPlayerInput enum alias)
-        (int)AcsPcode.UseInventory or (int)AcsPcode.UseActorInventory
-            or (int)AcsPcode.ThingCountSector or (int)AcsPcode.ThingCountNameSector
-            or (int)AcsPcode.CheckPlayerCamera or (int)AcsPcode.GetPlayerInput => 0,
+        (int)AcsPcode.UseInventory or (int)AcsPcode.UseActorInventory => 0,
         >= (int)AcsPcode.LsScriptVar and <= (int)AcsPcode.RsGlobalArray => 0,
         (int)AcsPcode.MorphActor or (int)AcsPcode.UnmorphActor or (int)AcsPcode.ClassifyActor
             or (int)AcsPcode.PrintBinary or (int)AcsPcode.PrintHex => 0,

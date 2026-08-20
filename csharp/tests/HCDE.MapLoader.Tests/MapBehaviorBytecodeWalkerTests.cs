@@ -814,7 +814,7 @@ public class MapBehaviorBytecodeWalkerTests
                 (int)AcsPcode.SetMugshotState,
                 (int)AcsPcode.ThingCountSector,
                 (int)AcsPcode.ThingCountNameSector,
-                (int)AcsPcode.GetPlayerInput,
+                347, // PCD_GETPLAYERINPUT wire (shadows GetPlayerInput enum alias)
                 (int)AcsPcode.PrintBind,
                 (int)AcsPcode.Terminate,
             ]);
@@ -840,7 +840,7 @@ public class MapBehaviorBytecodeWalkerTests
         Assert.Equal((int)AcsPcode.ThingDamage2, instructions[0].Opcode);
         Assert.Equal((int)AcsPcode.UseInventory, instructions[1].Opcode);
         Assert.Equal((int)AcsPcode.ThingCountNameSector, instructions[8].Opcode);
-        Assert.Equal((int)AcsPcode.GetPlayerInput, instructions[9].Opcode);
+        Assert.Equal(347, instructions[9].Opcode);
     }
 
     [Fact]
@@ -1488,6 +1488,55 @@ public class MapBehaviorBytecodeWalkerTests
         Assert.Equal(342, instructions[2].Opcode);
         Assert.Equal(343, instructions[3].Opcode);
         Assert.Equal((int)AcsPcode.EorScriptArray, instructions[4].Opcode);
+        Assert.Equal(1, instructions[4].OperandWordCount);
+        Assert.Equal((int)AcsPcode.CallStack, instructions[7].Opcode);
+    }
+
+    [Fact]
+    public void TryWalkScript_OldFormat_ReadsThingCountCameraAndEternityStackOps()
+    {
+        var lump = TestWadBuilder.BuildBehaviorLump(
+            MapBehaviorFormat.AcsOld,
+            scriptCount: 1,
+            includeTerminateBytecode: false,
+            bytecodeOpcodes:
+            [
+                344, // PCD_THINGCOUNTSECTOR wire
+                345, // PCD_THINGCOUNTNAMESECTOR wire
+                346, // PCD_CHECKPLAYERCAMERA wire
+                347, // PCD_GETPLAYERINPUT wire (shadows GetPlayerInput enum alias)
+                (int)AcsPcode.MulScriptArray, 1,
+                (int)AcsPcode.ModScriptArray, 2,
+                (int)AcsPcode.IncScriptArray, 3,
+                (int)AcsPcode.CallStack,
+                (int)AcsPcode.GotoStack,
+                (int)AcsPcode.Terminate,
+            ]);
+        Assert.True(MapBehaviorCodec.TryProbe(lump, out var record, out _));
+        Assert.True(MapBehaviorDirectoryCodec.TryReadScripts(
+            record.Data,
+            record.Format,
+            record.DirectoryOffset,
+            out var scripts,
+            out _));
+        Assert.Single(scripts);
+
+        Assert.True(MapBehaviorBytecodeWalker.TryWalkScript(
+            record.Data,
+            record.Format,
+            scripts[0].Address,
+            out var instructions,
+            out var terminated,
+            out _));
+
+        Assert.True(terminated);
+        Assert.Equal(10, instructions.Count);
+        Assert.Equal(344, instructions[0].Opcode);
+        Assert.Equal(0, instructions[0].OperandWordCount);
+        Assert.Equal(345, instructions[1].Opcode);
+        Assert.Equal(346, instructions[2].Opcode);
+        Assert.Equal(347, instructions[3].Opcode);
+        Assert.Equal((int)AcsPcode.MulScriptArray, instructions[4].Opcode);
         Assert.Equal(1, instructions[4].OperandWordCount);
         Assert.Equal((int)AcsPcode.CallStack, instructions[7].Opcode);
     }
