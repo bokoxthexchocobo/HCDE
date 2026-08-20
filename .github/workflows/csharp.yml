@@ -155,3 +155,8 @@ jobs:
         run: |
           cd csharp
           dotnet test --no-build --filter "FullyQualifiedName~TryApplyExportedTemplatesFromEnvironment_ReturnsNotRequiredWhenUnset"
+      - name: Enforce record-evidence gate not required when secrets missing
+        if: ${{ secrets.HCDE_HCDESERV_PATH == '' || secrets.HCDE_IWAD_PATH == '' }}
+        run: |
+          cd csharp
+          dotnet test --no-build --filter "FullyQualifiedName~TryRecordPassedValidationEvidence_ReturnsNotRequiredWhenSecretsMissing"
