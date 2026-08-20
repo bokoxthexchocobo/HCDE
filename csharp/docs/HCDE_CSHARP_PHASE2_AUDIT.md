@@ -1,7 +1,7 @@
 # HCDE C# Migration — Phase 2 Principal Audit
 
 **Last updated:** 2026-08-18  
-**Status:** In progress — Phase **2c** live protocol codecs (iteration 60 complete). Phase **2b** verification errors, start-game, bootstrap/resync, and cross-language harness complete. Phase **2b** verification errors, start-game, bootstrap/resync, and cross-language harness complete.  
+**Status:** In progress — Phase **2c** live protocol codecs (iteration 61 complete). Phase **2b** verification errors, start-game, bootstrap/resync, and cross-language harness complete. Phase **2b** verification errors, start-game, bootstrap/resync, and cross-language harness complete.  
 **Prerequisite:** [Phase 1 audit](HCDE_CSHARP_PHASE1_AUDIT.md) (complete)  
 **Related:** [`HCDE_CSHARP_MIGRATION.md`](HCDE_CSHARP_MIGRATION.md) · [`HCDE_NETCODE.md`](../../docs/HCDE_NETCODE.md)
 
@@ -725,17 +725,51 @@ Phase 2b is complete when **all** hold:
 2. ~~**Authority playsim tick polish**~~ — coop presentation-echo gap resync follow-ups, authority-event tail polish
 3. ~~**Cross-language soak evidence**~~ — committed dual freshness stale manifest rejection gate in main CI workflow
 
+## Phase 2c next slice (iteration 61 — delivered)
+
+1. ~~**BEHAVIOR bytecode operands**~~ — morph/classify follow-up PCDs, more Eternity stack ops
+2. ~~**Authority playsim tick polish**~~ — invasion authority-event gap resync follow-ups, line-spec tail polish
+3. ~~**Cross-language soak evidence**~~ — not-required soak gate in main CI workflow
+
+## Phase 2c next slice (iteration 62)
+
+1. **BEHAVIOR bytecode operands** — print-binary/hex follow-up PCDs, more Eternity stack ops
+2. **Authority playsim tick polish** — coop authority-event gap resync follow-ups, actor-delta tail polish
+3. **Cross-language soak evidence** — next CI freshness gate
+
+### Not-required soak gate main CI step (Phase 2c — iteration 61 step 3)
+
+| Artifact | Location | C++ reference |
+| --- | --- | --- |
+| Not-required soak gate | `CrossLanguageSoakGate.Evaluate` | return NotRequired when soak secrets are absent |
+| Main CI workflow | `.github/workflows/csharp.yml` | `Evaluate_ReturnsNotRequiredWhenSecretsMissing` step |
+| Gate tests | `CrossLanguageSoakGateTests` | `Evaluate_ReturnsNotRequiredWhenSecretsMissing` |
+| Release checklist | `validation/soak/README.md` | main CI not-required soak gate docs |
+
+### Invasion authority-event gap resync follow-ups + line-spec tail polish (Phase 2c — iteration 61 step 2)
+
+| Artifact | Location | C++ reference |
+| --- | --- | --- |
+| Line-spec tail polish | `SnapshotChecksumLineSpecPolicy.PolishRollingHashWithAuthorityEvent` | fold authority-event into line-spec hash |
+| Authority-event commit polish | `GuestWorldStateStore.CommitAppliedAuthorityEvents` | polish line-spec rolling hash on HCAV apply |
+| Invasion authority-event line-spec mismatch | `SnapshotChecksumMismatchPolicy.ShouldTriggerNetGapResyncOnInvasionAuthorityEventLineSpecMismatch` | net gap resync when invasion line-spec category mismatches |
+| Guest pump wiring | `LiveGuestSession.TryApplyTailSections` | tracks invasion authority-event line-spec mismatch gap resync follow-ups |
+| E2E tests | `SnapshotChecksumLineSpecPolicyTests`, `SnapshotChecksumMismatchPolicyTests`, `GuestWorldStateChecksumIntegrationTests` | line-spec polish + invasion authority-event line-spec mismatch gap resync |
+
+### BEHAVIOR morph/classify follow-up + Eternity stack PCD operands (Phase 2c/2d — iteration 61 step 1)
+
+| Artifact | Location | C++ reference |
+| --- | --- | --- |
+| Morph/classify opcodes | `AcsPcode.cs` | `PCD_MORPHACTOR`…`PCD_PRINTHEX` |
+| Wire-value skips | `MapBehaviorBytecodeWalker.cs` | C++ wire values for morph/classify PCDs shadowing legacy enum aliases |
+| Operand skip table | `MapBehaviorBytecodeWalker.cs` | old + little-enhanced morph/classify follow-up skips |
+| Walk tests | `MapBehaviorBytecodeWalkerTests` | `TryWalkScript_OldFormat_ReadsMorphClassifyAndEternityStackOps` |
+
 ## Phase 2c next slice (iteration 60 — delivered)
 
 1. ~~**BEHAVIOR bytecode operands**~~ — thing-count/camera follow-up PCDs, more Eternity stack ops
 2. ~~**Authority playsim tick polish**~~ — coop line-spec gap resync follow-ups, presentation-echo tail polish
 3. ~~**Cross-language soak evidence**~~ — stale export manifest rejection gate in main CI workflow
-
-## Phase 2c next slice (iteration 61)
-
-1. **BEHAVIOR bytecode operands** — morph/classify follow-up PCDs, more Eternity stack ops
-2. **Authority playsim tick polish** — invasion authority-event gap resync follow-ups, line-spec tail polish
-3. **Cross-language soak evidence** — next CI freshness gate
 
 ### Stale export manifest rejection main CI gate (Phase 2c — iteration 60 step 3)
 

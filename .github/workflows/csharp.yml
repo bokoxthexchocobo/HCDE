@@ -146,3 +146,8 @@ jobs:
         run: |
           cd csharp
           dotnet test --no-build --filter "FullyQualifiedName~ApplyExportedTemplates_RejectsStaleExportManifest"
+      - name: Enforce soak gate not required when secrets missing
+        if: ${{ secrets.HCDE_HCDESERV_PATH == '' || secrets.HCDE_IWAD_PATH == '' }}
+        run: |
+          cd csharp
+          dotnet test --no-build --filter "FullyQualifiedName~Evaluate_ReturnsNotRequiredWhenSecretsMissing"
