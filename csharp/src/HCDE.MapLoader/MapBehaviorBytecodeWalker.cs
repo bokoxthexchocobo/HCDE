@@ -258,7 +258,8 @@ public static class MapBehaviorBytecodeWalker
             or (int)AcsPcode.MulWorldArray or (int)AcsPcode.DivWorldArray
             or (int)AcsPcode.ModWorldArray or (int)AcsPcode.IncWorldArray
             or (int)AcsPcode.DecWorldArray => 1,
-        (int)AcsPcode.PushFunction => 1,
+        359 => 1, // C++ PCD_PUSHFUNCTION wire (shadow legacy PushFunction enum alias)
+        361 => 0, // C++ PCD_SCRIPTWAITNAMED wire (shadow legacy PushFunction enum alias)
         244 or 247 => 0, // C++ PCD_SETMARINEWEAPON / PCD_PLAYERNUMBER (shadow legacy DivGlobalArray/PushByte enum aliases)
         (int)AcsPcode.CallStack
             or (int)AcsPcode.ScriptWaitNamed or (int)AcsPcode.SaveString
@@ -271,12 +272,13 @@ public static class MapBehaviorBytecodeWalker
             or (int)AcsPcode.PrintGlobalCharRange
             or (int)AcsPcode.StrCpyToMapCharRange or (int)AcsPcode.StrCpyToWorldCharRange
             or (int)AcsPcode.StrCpyToGlobalCharRange => 0,
+        376 or 377
+            => 1, // C++ PCD_LSSCRIPTARRAY/PCD_RSSCRIPTARRAY wire (shadow legacy EorScriptArray/OrScriptArray enum aliases)
         (int)AcsPcode.AssignScriptArray or (int)AcsPcode.PushScriptArray
             or (int)AcsPcode.AddScriptArray or (int)AcsPcode.SubScriptArray
             or (int)AcsPcode.MulScriptArray or (int)AcsPcode.DivScriptArray
             or (int)AcsPcode.ModScriptArray or (int)AcsPcode.IncScriptArray
-            or (int)AcsPcode.DecScriptArray or (int)AcsPcode.AndScriptArray
-            or (int)AcsPcode.EorScriptArray or (int)AcsPcode.OrScriptArray => 1,
+            or (int)AcsPcode.DecScriptArray or (int)AcsPcode.AndScriptArray => 1,
         (int)AcsPcode.PushGlobalArray or (int)AcsPcode.AssignGlobalArray
             or (int)AcsPcode.AddGlobalArray or (int)AcsPcode.SubGlobalArray
             or (int)AcsPcode.MulGlobalArray or (int)AcsPcode.ModGlobalArray
@@ -312,7 +314,7 @@ public static class MapBehaviorBytecodeWalker
             or 344 or 345
             or 346 or 347
             or 348 or 349 or 350
-            or 352 or 354 or 360 or 362 or 363
+            or 352 or 354 or 360 or 361 or 362 or 363
             or 427 or 428 or 430 or 431 or 432
             => 0, // C++ sector/level/input/player-info/negate-pitch/print-bind/thing-damage/actor-texture-light/thing-count-camera/classify-print/savestring/char-range/eternity-stack/morph-classify PCDs (shadow legacy global-var enum aliases)
         (int)AcsPcode.AddGlobalVar or (int)AcsPcode.SubGlobalVar or (int)AcsPcode.MulGlobalVar
@@ -459,8 +461,7 @@ public static class MapBehaviorBytecodeWalker
             or (int)AcsPcode.AddScriptArray or (int)AcsPcode.SubScriptArray
             or (int)AcsPcode.MulScriptArray or (int)AcsPcode.DivScriptArray
             or (int)AcsPcode.ModScriptArray or (int)AcsPcode.IncScriptArray
-            or (int)AcsPcode.DecScriptArray or (int)AcsPcode.AndScriptArray
-            or (int)AcsPcode.EorScriptArray or (int)AcsPcode.OrScriptArray => 1,
+            or (int)AcsPcode.DecScriptArray or (int)AcsPcode.AndScriptArray => 1,
         (int)AcsPcode.PushGlobalArray or (int)AcsPcode.AssignGlobalArray
             or (int)AcsPcode.AddGlobalArray or (int)AcsPcode.SubGlobalArray
             or (int)AcsPcode.MulGlobalArray or (int)AcsPcode.DivGlobalArray

@@ -373,7 +373,7 @@ public class MapBehaviorBytecodeWalkerTests
             includeTerminateBytecode: false,
             bytecodeOpcodes:
             [
-                (int)AcsPcode.PushFunction, 9,
+                359, 9,
                 (int)AcsPcode.CallStack,
                 363,
                 (int)AcsPcode.PushScriptArray, 1,
@@ -402,7 +402,7 @@ public class MapBehaviorBytecodeWalkerTests
 
         Assert.True(terminated);
         Assert.Equal(9, instructions.Count);
-        Assert.Equal((int)AcsPcode.PushFunction, instructions[0].Opcode);
+        Assert.Equal(359, instructions[0].Opcode);
         Assert.Equal(1, instructions[0].OperandWordCount);
         Assert.Equal((int)AcsPcode.CallStack, instructions[1].Opcode);
         Assert.Equal(0, instructions[1].OperandWordCount);
@@ -948,7 +948,7 @@ public class MapBehaviorBytecodeWalkerTests
                 (int)AcsPcode.SpawnSpotFacing,
                 (int)AcsPcode.ThingCountName,
                 (int)AcsPcode.PrintWorldCharRange,
-                (int)AcsPcode.StrCpyToWorldCharRange,
+                357, // PCD_STRCPYTOWORLDCHRANGE wire
                 (int)AcsPcode.PrintGlobalCharRange,
                 (int)AcsPcode.StrCpyToMapCharRange,
                 (int)AcsPcode.Terminate,
@@ -992,7 +992,7 @@ public class MapBehaviorBytecodeWalkerTests
                 (int)AcsPcode.GetScreenWidth,
                 (int)AcsPcode.GetScreenHeight,
                 (int)AcsPcode.SetHudSize,
-                (int)AcsPcode.PushFunction, 1,
+                359, 1,
                 (int)AcsPcode.Lspec5Ex,
                 (int)AcsPcode.Lspec5ExResult,
                 (int)AcsPcode.CallStack,
@@ -1179,7 +1179,7 @@ public class MapBehaviorBytecodeWalkerTests
                 308, 3, // PCD_ORGLOBALVAR wire (shadows AddWorldArray enum alias)
                 346, // PCD_CHECKPLAYERCAMERA wire
                 347, // PCD_GETPLAYERINPUT wire (shadows GetPlayerInput enum alias)
-                (int)AcsPcode.PushFunction, 4,
+                359, 4,
                 (int)AcsPcode.Terminate,
             ]);
         Assert.True(MapBehaviorCodec.TryProbe(lump, out var record, out _));
@@ -1205,7 +1205,7 @@ public class MapBehaviorBytecodeWalkerTests
         Assert.Equal((int)AcsPcode.AndScriptVar, instructions[2].Opcode);
         Assert.Equal(346, instructions[6].Opcode);
         Assert.Equal(347, instructions[7].Opcode);
-        Assert.Equal((int)AcsPcode.PushFunction, instructions[8].Opcode);
+        Assert.Equal(359, instructions[8].Opcode);
     }
 
     [Fact]
@@ -1221,7 +1221,7 @@ public class MapBehaviorBytecodeWalkerTests
                 317, 1, // PCD_LSSCRIPTARRAY wire
                 321, 2, // PCD_RSSCRIPTVAR wire
                 324, 3, // PCD_RSGLOBALVAR wire (326 shadows GetActorProperty enum alias)
-                (int)AcsPcode.PushFunction, 4,
+                359, 4,
                 (int)AcsPcode.CallStack,
                 363,
                 (int)AcsPcode.Terminate,
@@ -1250,7 +1250,7 @@ public class MapBehaviorBytecodeWalkerTests
         Assert.Equal(317, instructions[1].Opcode);
         Assert.Equal(321, instructions[2].Opcode);
         Assert.Equal(324, instructions[3].Opcode);
-        Assert.Equal((int)AcsPcode.PushFunction, instructions[4].Opcode);
+        Assert.Equal(359, instructions[4].Opcode);
         Assert.Equal((int)AcsPcode.CallStack, instructions[5].Opcode);
         Assert.Equal(363, instructions[6].Opcode);
     }
@@ -1316,7 +1316,7 @@ public class MapBehaviorBytecodeWalkerTests
                 333, // PCD_GETACTORPITCH wire
                 334, // PCD_SETACTORPITCH wire
                 362, // PCD_TRANSLATIONRANGE3 wire
-                (int)AcsPcode.PushFunction, 1,
+                359, 1,
                 (int)AcsPcode.ScriptWaitNamed,
                 (int)AcsPcode.CallStack,
                 363,
@@ -1346,7 +1346,7 @@ public class MapBehaviorBytecodeWalkerTests
         Assert.Equal(333, instructions[1].Opcode);
         Assert.Equal(334, instructions[2].Opcode);
         Assert.Equal(362, instructions[3].Opcode);
-        Assert.Equal((int)AcsPcode.PushFunction, instructions[4].Opcode);
+        Assert.Equal(359, instructions[4].Opcode);
         Assert.Equal((int)AcsPcode.CallStack, instructions[6].Opcode);
         Assert.Equal(363, instructions[7].Opcode);
     }
@@ -1593,6 +1593,54 @@ public class MapBehaviorBytecodeWalkerTests
     }
 
     [Fact]
+    public void TryWalkScript_OldFormat_ReadsScriptArrayShiftAndEternityStackOps()
+    {
+        var lump = TestWadBuilder.BuildBehaviorLump(
+            MapBehaviorFormat.AcsOld,
+            scriptCount: 1,
+            includeTerminateBytecode: false,
+            bytecodeOpcodes:
+            [
+                376, 1, // PCD_LSSCRIPTARRAY wire
+                377, 2, // PCD_RSSCRIPTARRAY wire
+                359, 3, // PCD_PUSHFUNCTION wire
+                361, // PCD_SCRIPTWAITNAMED wire
+                360, // PCD_CALLSTACK wire
+                363, // PCD_GOTOSTACK wire
+                (int)AcsPcode.Terminate,
+            ]);
+        Assert.True(MapBehaviorCodec.TryProbe(lump, out var record, out _));
+        Assert.True(MapBehaviorDirectoryCodec.TryReadScripts(
+            record.Data,
+            record.Format,
+            record.DirectoryOffset,
+            out var scripts,
+            out _));
+        Assert.Single(scripts);
+
+        Assert.True(MapBehaviorBytecodeWalker.TryWalkScript(
+            record.Data,
+            record.Format,
+            scripts[0].Address,
+            out var instructions,
+            out var terminated,
+            out _));
+
+        Assert.True(terminated);
+        Assert.Equal(7, instructions.Count);
+        Assert.Equal(376, instructions[0].Opcode);
+        Assert.Equal(1, instructions[0].OperandWordCount);
+        Assert.Equal(377, instructions[1].Opcode);
+        Assert.Equal(1, instructions[1].OperandWordCount);
+        Assert.Equal(359, instructions[2].Opcode);
+        Assert.Equal(1, instructions[2].OperandWordCount);
+        Assert.Equal(361, instructions[3].Opcode);
+        Assert.Equal(0, instructions[3].OperandWordCount);
+        Assert.Equal(360, instructions[4].Opcode);
+        Assert.Equal(363, instructions[5].Opcode);
+    }
+
+    [Fact]
     public void TryWalkScript_OldFormat_ReadsPushFunctionScriptWaitAndEternityStackOps()
     {
         var lump = TestWadBuilder.BuildBehaviorLump(
@@ -1603,7 +1651,7 @@ public class MapBehaviorBytecodeWalkerTests
             [
                 360, // PCD_CALLSTACK wire
                 363, // PCD_GOTOSTACK wire
-                (int)AcsPcode.PushFunction, 1,
+                359, 1,
                 (int)AcsPcode.ScriptWaitNamed,
                 (int)AcsPcode.DecScriptArray, 2,
                 (int)AcsPcode.AndScriptArray, 3,
@@ -1633,7 +1681,7 @@ public class MapBehaviorBytecodeWalkerTests
         Assert.Equal(360, instructions[0].Opcode);
         Assert.Equal(0, instructions[0].OperandWordCount);
         Assert.Equal(363, instructions[1].Opcode);
-        Assert.Equal((int)AcsPcode.PushFunction, instructions[2].Opcode);
+        Assert.Equal(359, instructions[2].Opcode);
         Assert.Equal(1, instructions[2].OperandWordCount);
         Assert.Equal((int)AcsPcode.ScriptWaitNamed, instructions[3].Opcode);
         Assert.Equal((int)AcsPcode.DecScriptArray, instructions[4].Opcode);
