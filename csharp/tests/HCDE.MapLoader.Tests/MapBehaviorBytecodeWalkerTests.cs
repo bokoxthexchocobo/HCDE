@@ -1641,6 +1641,52 @@ public class MapBehaviorBytecodeWalkerTests
     }
 
     [Fact]
+    public void TryWalkScript_OldFormat_ReadsLspec5ExFollowUpAndEternityStackOps()
+    {
+        var lump = TestWadBuilder.BuildBehaviorLump(
+            MapBehaviorFormat.AcsOld,
+            scriptCount: 1,
+            includeTerminateBytecode: false,
+            bytecodeOpcodes:
+            [
+                381, // PCD_LSPEC5EX wire
+                382, // PCD_LSPEC5EXRESULT wire
+                359, 1, // PCD_PUSHFUNCTION wire
+                361, // PCD_SCRIPTWAITNAMED wire
+                360, // PCD_CALLSTACK wire
+                363, // PCD_GOTOSTACK wire
+                (int)AcsPcode.Terminate,
+            ]);
+        Assert.True(MapBehaviorCodec.TryProbe(lump, out var record, out _));
+        Assert.True(MapBehaviorDirectoryCodec.TryReadScripts(
+            record.Data,
+            record.Format,
+            record.DirectoryOffset,
+            out var scripts,
+            out _));
+        Assert.Single(scripts);
+
+        Assert.True(MapBehaviorBytecodeWalker.TryWalkScript(
+            record.Data,
+            record.Format,
+            scripts[0].Address,
+            out var instructions,
+            out var terminated,
+            out _));
+
+        Assert.True(terminated);
+        Assert.Equal(7, instructions.Count);
+        Assert.Equal(381, instructions[0].Opcode);
+        Assert.Equal(0, instructions[0].OperandWordCount);
+        Assert.Equal(382, instructions[1].Opcode);
+        Assert.Equal(359, instructions[2].Opcode);
+        Assert.Equal(1, instructions[2].OperandWordCount);
+        Assert.Equal(361, instructions[3].Opcode);
+        Assert.Equal(360, instructions[4].Opcode);
+        Assert.Equal(363, instructions[5].Opcode);
+    }
+
+    [Fact]
     public void TryWalkScript_OldFormat_ReadsScriptArrayShiftAndEternityStackOps()
     {
         var lump = TestWadBuilder.BuildBehaviorLump(

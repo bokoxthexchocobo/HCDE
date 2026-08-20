@@ -263,7 +263,6 @@ public static class MapBehaviorBytecodeWalker
         244 or 247 => 0, // C++ PCD_SETMARINEWEAPON / PCD_PLAYERNUMBER (shadow legacy DivGlobalArray/PushByte enum aliases)
         (int)AcsPcode.CallStack
             or (int)AcsPcode.ScriptWaitNamed or (int)AcsPcode.SaveString
-            or (int)AcsPcode.Lspec5Ex or (int)AcsPcode.Lspec5ExResult
             or (int)AcsPcode.Lspec5Result => 0,
         (int)AcsPcode.CallFunc => 2,
         (int)AcsPcode.PrintMapCharRange or (int)AcsPcode.PrintWorldCharRange
@@ -274,6 +273,8 @@ public static class MapBehaviorBytecodeWalker
             => 1, // C++ PCD_LSSCRIPTARRAY/PCD_RSSCRIPTARRAY wire (shadow legacy EorScriptArray/OrScriptArray enum aliases)
         378 or 379 or 380
             => 0, // C++ PCD_PRINTSCRIPTCHARARRAY…PCD_STRCPYTOSCRIPTCHRANGE wire (shadow legacy script char-array enum aliases)
+        381 or 382
+            => 0, // C++ PCD_LSPEC5EX/PCD_LSPEC5EXRESULT wire (shadow legacy lspec5 enum aliases)
         (int)AcsPcode.AssignScriptArray or (int)AcsPcode.PushScriptArray
             or (int)AcsPcode.AddScriptArray or (int)AcsPcode.SubScriptArray
             or (int)AcsPcode.MulScriptArray or (int)AcsPcode.DivScriptArray
@@ -446,9 +447,10 @@ public static class MapBehaviorBytecodeWalker
             or (int)AcsPcode.ModWorldArray or (int)AcsPcode.IncWorldArray
             or (int)AcsPcode.DecWorldArray => 1,
         (int)AcsPcode.PushFunction => 1,
+        381 or 382
+            => 0, // C++ PCD_LSPEC5EX/PCD_LSPEC5EXRESULT wire (shadow legacy lspec5 enum aliases)
         (int)AcsPcode.CallStack
             or (int)AcsPcode.ScriptWaitNamed or (int)AcsPcode.SaveString
-            or (int)AcsPcode.Lspec5Ex or (int)AcsPcode.Lspec5ExResult
             or (int)AcsPcode.Lspec5Result => 0,
         (int)AcsPcode.CallFunc => 2,
         (int)AcsPcode.PrintScriptCharArray or (int)AcsPcode.PrintScriptCharRange
