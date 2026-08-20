@@ -104,6 +104,22 @@ public class SnapshotChecksumLineSpecPolicyTests
     }
 
     [Fact]
+    public void CommitAppliedAuthorityEvents_PolishesLineSpecRollingHashFromAuthorityEvent()
+    {
+        var store = new GuestWorldStateStore();
+        store.NoteLineSpec(lineIndex: 5, special: 6, success: true);
+        var before = store.LineSpecRollingHash;
+
+        store.CommitAppliedAuthorityEvents(new[]
+        {
+            AuthorityEventsCodec.CreateSpawnExample("DoomImp", actorId: 19),
+        });
+
+        Assert.NotEqual(before, store.LineSpecRollingHash);
+        Assert.NotEqual(0u, store.AuthorityEventRollingHash);
+    }
+
+    [Fact]
     public void PolishActorDeltaRollingHash_MixesLineSpecTailWhenBothPresent()
     {
         var lineSpecHash = SnapshotChecksumLineSpecPolicy.MixRecord(0, lineIndex: 6, special: 9, success: true);

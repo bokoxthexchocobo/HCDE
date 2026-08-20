@@ -28,6 +28,14 @@ public static class SnapshotChecksumLineSpecPolicy
         return SnapshotChecksumMixer.MixU32(lineSpecHash, actorDeltaHash);
     }
 
+    public static uint PolishRollingHashWithAuthorityEvent(uint lineSpecHash, uint authorityEventHash)
+    {
+        if (lineSpecHash == 0 || authorityEventHash == 0)
+            return lineSpecHash;
+
+        return SnapshotChecksumMixer.MixU32(lineSpecHash, authorityEventHash);
+    }
+
     public static uint PolishActorDeltaRollingHash(uint actorDeltaHash, uint lineSpecHash)
     {
         if (actorDeltaHash == 0 || lineSpecHash == 0)

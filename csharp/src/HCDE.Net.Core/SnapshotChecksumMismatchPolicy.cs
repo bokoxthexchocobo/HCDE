@@ -170,6 +170,13 @@ public static class SnapshotChecksumMismatchPolicy
         ShouldTriggerNetGapResyncOnCoopDeadSpawnMismatch(result, policy)
         && appliedInvasionAuthorityEvents;
 
+    public static bool ShouldTriggerNetGapResyncOnInvasionAuthorityEventLineSpecMismatch(
+        SnapshotChecksumApplyResult result,
+        bool appliedInvasionAuthorityEvents,
+        SnapshotChecksumMismatchPolicyKind policy) =>
+        ShouldTriggerNetGapResyncOnLineSpecMismatch(result, policy)
+        && appliedInvasionAuthorityEvents;
+
     public static bool ShouldTriggerNetGapResyncOnCoopAuthorityEventMismatch(
         SnapshotChecksumApplyResult result,
         bool appliedCoopAuthorityEvents,
