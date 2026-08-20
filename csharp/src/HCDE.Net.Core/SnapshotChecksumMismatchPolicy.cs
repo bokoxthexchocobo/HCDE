@@ -128,6 +128,13 @@ public static class SnapshotChecksumMismatchPolicy
         ShouldTriggerNetGapResyncOnLineSpecMismatch(result, policy)
         && appliedInvasionLineSpec;
 
+    public static bool ShouldTriggerNetGapResyncOnInvasionLineSpecActorMismatch(
+        SnapshotChecksumApplyResult result,
+        bool appliedInvasionLineSpec,
+        SnapshotChecksumMismatchPolicyKind policy) =>
+        ShouldTriggerNetGapResyncOnCoopDeadSpawnMismatch(result, policy)
+        && appliedInvasionLineSpec;
+
     public static bool ShouldTriggerNetGapResyncOnCoopLineSpecMismatch(
         SnapshotChecksumApplyResult result,
         bool appliedCoopLineSpec,
