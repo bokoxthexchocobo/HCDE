@@ -771,12 +771,6 @@ Phase 2b is complete when **all** hold:
 2. ~~**Authority playsim tick polish**~~ — coop presentation-echo gap resync follow-ups, line-spec tail polish
 3. ~~**Cross-language soak evidence**~~ — soak CI enforcement gate in main CI workflow
 
-## Phase 2c next slice (iteration 65)
-
-1. **BEHAVIOR bytecode operands** — pushfunction/script-wait follow-up PCDs, more Eternity stack ops
-2. **Authority playsim tick polish** — invasion actor-delta gap resync follow-ups, presentation-echo tail polish
-3. **Cross-language soak evidence** — next CI freshness gate
-
 ### Soak CI enforcement gate main CI step (Phase 2c — iteration 64 step 3)
 
 | Artifact | Location | C++ reference |
