@@ -332,7 +332,7 @@ public class MapBehaviorBytecodeWalkerTests
                 (int)AcsPcode.PushWorldArray, 4,
                 (int)AcsPcode.AssignWorldArray, 5,
                 (int)AcsPcode.AddWorldArray, 6,
-                (int)AcsPcode.TranslationRange3,
+                362, // PCD_TRANSLATIONRANGE3 wire
                 (int)AcsPcode.Terminate,
             ]);
         Assert.True(MapBehaviorCodec.TryProbe(lump, out var record, out _));
@@ -361,7 +361,7 @@ public class MapBehaviorBytecodeWalkerTests
         Assert.Equal(1, instructions[4].OperandWordCount);
         Assert.Equal((int)AcsPcode.PushWorldArray, instructions[7].Opcode);
         Assert.Equal(1, instructions[7].OperandWordCount);
-        Assert.Equal((int)AcsPcode.TranslationRange3, instructions[10].Opcode);
+        Assert.Equal(362, instructions[10].Opcode);
     }
 
     [Fact]
@@ -375,7 +375,7 @@ public class MapBehaviorBytecodeWalkerTests
             [
                 (int)AcsPcode.PushFunction, 9,
                 (int)AcsPcode.CallStack,
-                (int)AcsPcode.GotoStack,
+                363,
                 (int)AcsPcode.PushScriptArray, 1,
                 (int)AcsPcode.AssignScriptArray, 2,
                 (int)AcsPcode.AddScriptArray, 3,
@@ -1038,7 +1038,7 @@ public class MapBehaviorBytecodeWalkerTests
                 (int)AcsPcode.SetResultValue,
                 (int)AcsPcode.CaseGotoSorted, 1, 10, 20,
                 (int)AcsPcode.Lspec5Result,
-                (int)AcsPcode.GotoStack,
+                363,
                 (int)AcsPcode.Terminate,
             ]);
         Assert.True(MapBehaviorCodec.TryProbe(lump, out var record, out _));
@@ -1066,7 +1066,7 @@ public class MapBehaviorBytecodeWalkerTests
         Assert.Equal((int)AcsPcode.CaseGotoSorted, instructions[4].Opcode);
         Assert.Equal(3, instructions[4].OperandWordCount);
         Assert.Equal((int)AcsPcode.Lspec5Result, instructions[5].Opcode);
-        Assert.Equal((int)AcsPcode.GotoStack, instructions[6].Opcode);
+        Assert.Equal(363, instructions[6].Opcode);
     }
 
     [Fact]
@@ -1132,7 +1132,7 @@ public class MapBehaviorBytecodeWalkerTests
                 (int)AcsPcode.GrabInput,
                 (int)AcsPcode.PlayerClass,
                 (int)AcsPcode.SaveString,
-                (int)AcsPcode.GotoStack,
+                363,
                 (int)AcsPcode.Terminate,
             ]);
         Assert.True(MapBehaviorCodec.TryProbe(lump, out var record, out _));
@@ -1159,7 +1159,7 @@ public class MapBehaviorBytecodeWalkerTests
         Assert.Equal((int)AcsPcode.PrintMapCharArray, instructions[2].Opcode);
         Assert.Equal((int)AcsPcode.GetLevelInfo, instructions[4].Opcode);
         Assert.Equal((int)AcsPcode.PlayerClass, instructions[6].Opcode);
-        Assert.Equal((int)AcsPcode.GotoStack, instructions[8].Opcode);
+        Assert.Equal(363, instructions[8].Opcode);
     }
 
     [Fact]
@@ -1223,7 +1223,7 @@ public class MapBehaviorBytecodeWalkerTests
                 324, 3, // PCD_RSGLOBALVAR wire (326 shadows GetActorProperty enum alias)
                 (int)AcsPcode.PushFunction, 4,
                 (int)AcsPcode.CallStack,
-                (int)AcsPcode.GotoStack,
+                363,
                 (int)AcsPcode.Terminate,
             ]);
         Assert.True(MapBehaviorCodec.TryProbe(lump, out var record, out _));
@@ -1252,7 +1252,7 @@ public class MapBehaviorBytecodeWalkerTests
         Assert.Equal(324, instructions[3].Opcode);
         Assert.Equal((int)AcsPcode.PushFunction, instructions[4].Opcode);
         Assert.Equal((int)AcsPcode.CallStack, instructions[5].Opcode);
-        Assert.Equal((int)AcsPcode.GotoStack, instructions[6].Opcode);
+        Assert.Equal(363, instructions[6].Opcode);
     }
 
     [Fact]
@@ -1271,7 +1271,7 @@ public class MapBehaviorBytecodeWalkerTests
                 (int)AcsPcode.ScriptWaitNamed,
                 (int)AcsPcode.SaveString,
                 (int)AcsPcode.CallStack,
-                (int)AcsPcode.GotoStack,
+                363,
                 (int)AcsPcode.Terminate,
             ]);
         Assert.True(MapBehaviorCodec.TryProbe(lump, out var record, out _));
@@ -1300,7 +1300,7 @@ public class MapBehaviorBytecodeWalkerTests
         Assert.Equal(331, instructions[3].Opcode);
         Assert.Equal((int)AcsPcode.ScriptWaitNamed, instructions[4].Opcode);
         Assert.Equal((int)AcsPcode.CallStack, instructions[6].Opcode);
-        Assert.Equal((int)AcsPcode.GotoStack, instructions[7].Opcode);
+        Assert.Equal(363, instructions[7].Opcode);
     }
 
     [Fact]
@@ -1315,11 +1315,11 @@ public class MapBehaviorBytecodeWalkerTests
                 332, // PCD_NEGATEBINARY wire (shadows NegateBinary enum alias)
                 333, // PCD_GETACTORPITCH wire
                 334, // PCD_SETACTORPITCH wire
-                (int)AcsPcode.TranslationRange3,
+                362, // PCD_TRANSLATIONRANGE3 wire
                 (int)AcsPcode.PushFunction, 1,
                 (int)AcsPcode.ScriptWaitNamed,
                 (int)AcsPcode.CallStack,
-                (int)AcsPcode.GotoStack,
+                363,
                 (int)AcsPcode.Terminate,
             ]);
         Assert.True(MapBehaviorCodec.TryProbe(lump, out var record, out _));
@@ -1345,10 +1345,10 @@ public class MapBehaviorBytecodeWalkerTests
         Assert.Equal(0, instructions[0].OperandWordCount);
         Assert.Equal(333, instructions[1].Opcode);
         Assert.Equal(334, instructions[2].Opcode);
-        Assert.Equal((int)AcsPcode.TranslationRange3, instructions[3].Opcode);
+        Assert.Equal(362, instructions[3].Opcode);
         Assert.Equal((int)AcsPcode.PushFunction, instructions[4].Opcode);
         Assert.Equal((int)AcsPcode.CallStack, instructions[6].Opcode);
-        Assert.Equal((int)AcsPcode.GotoStack, instructions[7].Opcode);
+        Assert.Equal(363, instructions[7].Opcode);
     }
 
     [Fact]
@@ -1366,7 +1366,7 @@ public class MapBehaviorBytecodeWalkerTests
                 (int)AcsPcode.PushScriptArray, 2,
                 (int)AcsPcode.AddScriptArray, 3,
                 (int)AcsPcode.CallStack,
-                (int)AcsPcode.GotoStack,
+                363,
                 (int)AcsPcode.Terminate,
             ]);
         Assert.True(MapBehaviorCodec.TryProbe(lump, out var record, out _));
@@ -1412,7 +1412,7 @@ public class MapBehaviorBytecodeWalkerTests
                 (int)AcsPcode.MulScriptArray, 2,
                 (int)AcsPcode.DecScriptArray, 3,
                 (int)AcsPcode.CallStack,
-                (int)AcsPcode.GotoStack,
+                363,
                 (int)AcsPcode.Terminate,
             ]);
         Assert.True(MapBehaviorCodec.TryProbe(lump, out var record, out _));
@@ -1460,7 +1460,7 @@ public class MapBehaviorBytecodeWalkerTests
                 (int)AcsPcode.OrScriptArray, 2,
                 (int)AcsPcode.AndScriptArray, 3,
                 (int)AcsPcode.CallStack,
-                (int)AcsPcode.GotoStack,
+                363,
                 (int)AcsPcode.Terminate,
             ]);
         Assert.True(MapBehaviorCodec.TryProbe(lump, out var record, out _));
@@ -1509,7 +1509,7 @@ public class MapBehaviorBytecodeWalkerTests
                 (int)AcsPcode.ModScriptArray, 2,
                 (int)AcsPcode.IncScriptArray, 3,
                 (int)AcsPcode.CallStack,
-                (int)AcsPcode.GotoStack,
+                363,
                 (int)AcsPcode.Terminate,
             ]);
         Assert.True(MapBehaviorCodec.TryProbe(lump, out var record, out _));
@@ -1542,6 +1542,57 @@ public class MapBehaviorBytecodeWalkerTests
     }
 
     [Fact]
+    public void TryWalkScript_OldFormat_ReadsScriptArrayFollowUpAndEternityStackOps()
+    {
+        var lump = TestWadBuilder.BuildBehaviorLump(
+            MapBehaviorFormat.AcsOld,
+            scriptCount: 1,
+            includeTerminateBytecode: false,
+            bytecodeOpcodes:
+            [
+                362, // PCD_TRANSLATIONRANGE3 wire
+                364, 1, // PCD_ASSIGNSCRIPTARRAY wire
+                365, 2, // PCD_PUSHSCRIPTARRAY wire
+                366, 3, // PCD_ADDSCRIPTARRAY wire
+                (int)AcsPcode.SubScriptArray, 4,
+                (int)AcsPcode.MulScriptArray, 5,
+                (int)AcsPcode.CallStack,
+                363, // PCD_GOTOSTACK wire
+                (int)AcsPcode.Terminate,
+            ]);
+        Assert.True(MapBehaviorCodec.TryProbe(lump, out var record, out _));
+        Assert.True(MapBehaviorDirectoryCodec.TryReadScripts(
+            record.Data,
+            record.Format,
+            record.DirectoryOffset,
+            out var scripts,
+            out _));
+        Assert.Single(scripts);
+
+        Assert.True(MapBehaviorBytecodeWalker.TryWalkScript(
+            record.Data,
+            record.Format,
+            scripts[0].Address,
+            out var instructions,
+            out var terminated,
+            out _));
+
+        Assert.True(terminated);
+        Assert.Equal(9, instructions.Count);
+        Assert.Equal(362, instructions[0].Opcode);
+        Assert.Equal(0, instructions[0].OperandWordCount);
+        Assert.Equal(364, instructions[1].Opcode);
+        Assert.Equal(1, instructions[1].OperandWordCount);
+        Assert.Equal(365, instructions[2].Opcode);
+        Assert.Equal(1, instructions[2].OperandWordCount);
+        Assert.Equal(366, instructions[3].Opcode);
+        Assert.Equal(1, instructions[3].OperandWordCount);
+        Assert.Equal((int)AcsPcode.SubScriptArray, instructions[4].Opcode);
+        Assert.Equal((int)AcsPcode.CallStack, instructions[6].Opcode);
+        Assert.Equal(363, instructions[7].Opcode);
+    }
+
+    [Fact]
     public void TryWalkScript_OldFormat_ReadsPushFunctionScriptWaitAndEternityStackOps()
     {
         var lump = TestWadBuilder.BuildBehaviorLump(
@@ -1557,7 +1608,7 @@ public class MapBehaviorBytecodeWalkerTests
                 (int)AcsPcode.DecScriptArray, 2,
                 (int)AcsPcode.AndScriptArray, 3,
                 (int)AcsPcode.CallStack,
-                (int)AcsPcode.GotoStack,
+                363,
                 (int)AcsPcode.Terminate,
             ]);
         Assert.True(MapBehaviorCodec.TryProbe(lump, out var record, out _));
@@ -1587,7 +1638,7 @@ public class MapBehaviorBytecodeWalkerTests
         Assert.Equal((int)AcsPcode.ScriptWaitNamed, instructions[3].Opcode);
         Assert.Equal((int)AcsPcode.DecScriptArray, instructions[4].Opcode);
         Assert.Equal((int)AcsPcode.CallStack, instructions[6].Opcode);
-        Assert.Equal((int)AcsPcode.GotoStack, instructions[7].Opcode);
+        Assert.Equal(363, instructions[7].Opcode);
     }
 
     [Fact]
@@ -1608,7 +1659,7 @@ public class MapBehaviorBytecodeWalkerTests
                 (int)AcsPcode.IncScriptArray, 2,
                 (int)AcsPcode.OrScriptArray, 3,
                 (int)AcsPcode.CallStack,
-                (int)AcsPcode.GotoStack,
+                363,
                 (int)AcsPcode.Terminate,
             ]);
         Assert.True(MapBehaviorCodec.TryProbe(lump, out var record, out _));
@@ -1653,7 +1704,7 @@ public class MapBehaviorBytecodeWalkerTests
                 (int)AcsPcode.MulScriptArray, 2,
                 (int)AcsPcode.DivScriptArray, 3,
                 (int)AcsPcode.CallStack,
-                (int)AcsPcode.GotoStack,
+                363,
                 (int)AcsPcode.Terminate,
             ]);
         Assert.True(MapBehaviorCodec.TryProbe(lump, out var record, out _));
@@ -1700,7 +1751,7 @@ public class MapBehaviorBytecodeWalkerTests
                 (int)AcsPcode.AssignScriptArray, 2,
                 (int)AcsPcode.SubScriptArray, 3,
                 (int)AcsPcode.CallStack,
-                (int)AcsPcode.GotoStack,
+                363,
                 (int)AcsPcode.Terminate,
             ]);
         Assert.True(MapBehaviorCodec.TryProbe(lump, out var record, out _));
@@ -1749,7 +1800,7 @@ public class MapBehaviorBytecodeWalkerTests
                 (int)AcsPcode.AssignScriptArray, 2,
                 (int)AcsPcode.AddScriptArray, 3,
                 (int)AcsPcode.CallStack,
-                (int)AcsPcode.GotoStack,
+                363,
                 (int)AcsPcode.Terminate,
             ]);
         Assert.True(MapBehaviorCodec.TryProbe(lump, out var record, out _));

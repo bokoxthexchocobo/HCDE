@@ -240,9 +240,11 @@ public static class MapBehaviorBytecodeWalker
         (int)AcsPcode.SetGravity or (int)AcsPcode.SetAirControl => 0,
         (int)AcsPcode.SetGravityDirect or (int)AcsPcode.SetAirControlDirect => 1,
         (int)AcsPcode.AssignGlobalVar or (int)AcsPcode.PushGlobalVar => 1,
+        364 or 365
+            => 1, // C++ PCD_ASSIGNSCRIPTARRAY/PCD_PUSHSCRIPTARRAY wire (shadow legacy TranslationRange3/GotoStack enum aliases)
         (int)AcsPcode.StartTranslation
             or (int)AcsPcode.TranslationRange1 or (int)AcsPcode.TranslationRange2
-            or (int)AcsPcode.TranslationRange3 or (int)AcsPcode.TranslationRange4
+            or (int)AcsPcode.TranslationRange4
             or (int)AcsPcode.TranslationRange5 or (int)AcsPcode.EndTranslation => 0,
         (int)AcsPcode.Call or (int)AcsPcode.CallDiscard => 1,
         (int)AcsPcode.ReturnVoid or (int)AcsPcode.ReturnVal => 0,
@@ -258,7 +260,7 @@ public static class MapBehaviorBytecodeWalker
             or (int)AcsPcode.DecWorldArray => 1,
         (int)AcsPcode.PushFunction => 1,
         244 or 247 => 0, // C++ PCD_SETMARINEWEAPON / PCD_PLAYERNUMBER (shadow legacy DivGlobalArray/PushByte enum aliases)
-        (int)AcsPcode.CallStack or (int)AcsPcode.GotoStack
+        (int)AcsPcode.CallStack
             or (int)AcsPcode.ScriptWaitNamed or (int)AcsPcode.SaveString
             or (int)AcsPcode.Lspec5Ex or (int)AcsPcode.Lspec5ExResult
             or (int)AcsPcode.Lspec5Result => 0,
@@ -310,7 +312,7 @@ public static class MapBehaviorBytecodeWalker
             or 344 or 345
             or 346 or 347
             or 348 or 349 or 350
-            or 352 or 354 or 360 or 363
+            or 352 or 354 or 360 or 362 or 363
             or 427 or 428 or 430 or 431 or 432
             => 0, // C++ sector/level/input/player-info/negate-pitch/print-bind/thing-damage/actor-texture-light/thing-count-camera/classify-print/savestring/char-range/eternity-stack/morph-classify PCDs (shadow legacy global-var enum aliases)
         (int)AcsPcode.AddGlobalVar or (int)AcsPcode.SubGlobalVar or (int)AcsPcode.MulGlobalVar
@@ -442,7 +444,7 @@ public static class MapBehaviorBytecodeWalker
             or (int)AcsPcode.ModWorldArray or (int)AcsPcode.IncWorldArray
             or (int)AcsPcode.DecWorldArray => 1,
         (int)AcsPcode.PushFunction => 1,
-        (int)AcsPcode.CallStack or (int)AcsPcode.GotoStack
+        (int)AcsPcode.CallStack
             or (int)AcsPcode.ScriptWaitNamed or (int)AcsPcode.SaveString
             or (int)AcsPcode.Lspec5Ex or (int)AcsPcode.Lspec5ExResult
             or (int)AcsPcode.Lspec5Result => 0,
