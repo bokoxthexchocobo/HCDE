@@ -308,7 +308,8 @@ public static class MapBehaviorBytecodeWalker
             or 420 or 421
             or 344 or 345
             or 346 or 347
-            => 0, // C++ sector/level/input/player-info/negate-pitch/print-bind/thing-damage/actor-texture-light/thing-count-camera PCDs (shadow legacy global-var enum aliases)
+            or 427 or 428 or 430 or 431 or 432
+            => 0, // C++ sector/level/input/player-info/negate-pitch/print-bind/thing-damage/actor-texture-light/thing-count-camera/morph-classify PCDs (shadow legacy global-var enum aliases)
         (int)AcsPcode.AddGlobalVar or (int)AcsPcode.SubGlobalVar or (int)AcsPcode.MulGlobalVar
             or (int)AcsPcode.DivGlobalVar or (int)AcsPcode.ModGlobalVar
             or (int)AcsPcode.IncGlobalVar or (int)AcsPcode.DecGlobalVar => 1,
@@ -337,8 +338,6 @@ public static class MapBehaviorBytecodeWalker
             => 1, // C++ Ls/Rs script/map/world/global var+array shift PCDs (shadow legacy IncWorldArray… enum aliases)
         (int)AcsPcode.UseInventory or (int)AcsPcode.UseActorInventory => 0,
         >= (int)AcsPcode.LsScriptVar and <= (int)AcsPcode.RsGlobalArray => 0,
-        (int)AcsPcode.MorphActor or (int)AcsPcode.UnmorphActor or (int)AcsPcode.ClassifyActor
-            or (int)AcsPcode.PrintBinary or (int)AcsPcode.PrintHex => 0,
         (int)AcsPcode.GetActorZ or (int)AcsPcode.GetActorFloorZ or (int)AcsPcode.GetActorAngle
             or (int)AcsPcode.SetActorAngle or (int)AcsPcode.SpawnProjectile
             or (int)AcsPcode.ThingProjectile2 or (int)AcsPcode.ThingCountName
@@ -528,10 +527,10 @@ public static class MapBehaviorBytecodeWalker
         344 or 345
             => 0, // C++ PCD_THINGCOUNTSECTOR / PCD_THINGCOUNTNAMESECTOR wire (shadow legacy inventory enum aliases)
         346 or 347 => 0, // C++ PCD_CHECKPLAYERCAMERA / PCD_GETPLAYERINPUT (shadow legacy GetPlayerInput enum alias)
+        427 or 428 or 430 or 431 or 432
+            => 0, // C++ PCD_MORPHACTOR…PCD_PRINTHEX wire (shadow legacy morph/classify enum aliases)
         (int)AcsPcode.UseInventory or (int)AcsPcode.UseActorInventory => 0,
         >= (int)AcsPcode.LsScriptVar and <= (int)AcsPcode.RsGlobalArray => 0,
-        (int)AcsPcode.MorphActor or (int)AcsPcode.UnmorphActor or (int)AcsPcode.ClassifyActor
-            or (int)AcsPcode.PrintBinary or (int)AcsPcode.PrintHex => 0,
         (int)AcsPcode.GetActorZ or (int)AcsPcode.GetActorFloorZ or (int)AcsPcode.GetActorAngle
             or (int)AcsPcode.SetActorAngle or (int)AcsPcode.SpawnProjectile
             or (int)AcsPcode.ThingProjectile2 or (int)AcsPcode.ThingCountName
