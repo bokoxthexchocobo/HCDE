@@ -151,3 +151,7 @@ jobs:
         run: |
           cd csharp
           dotnet test --no-build --filter "FullyQualifiedName~Evaluate_ReturnsNotRequiredWhenSecretsMissing"
+      - name: Enforce apply-bundle gate not required when env unset
+        run: |
+          cd csharp
+          dotnet test --no-build --filter "FullyQualifiedName~TryApplyExportedTemplatesFromEnvironment_ReturnsNotRequiredWhenUnset"
