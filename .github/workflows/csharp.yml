@@ -160,3 +160,7 @@ jobs:
         run: |
           cd csharp
           dotnet test --no-build --filter "FullyQualifiedName~TryRecordPassedValidationEvidence_ReturnsNotRequiredWhenSecretsMissing"
+      - name: Enforce soak gate CI enforcement flag
+        run: |
+          cd csharp
+          dotnet test --no-build --filter "FullyQualifiedName~ShouldEnforceInCi_ReturnsTrueWhenEnvSet"
