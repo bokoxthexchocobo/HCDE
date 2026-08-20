@@ -104,6 +104,23 @@ public class SnapshotChecksumPresentationEchoPolicyTests
     }
 
     [Fact]
+    public void CommitAppliedAuthorityEvents_PolishesPresentationEchoRollingHashFromLineSpec()
+    {
+        var store = new GuestWorldStateStore();
+        store.NoteLineSpec(lineIndex: 4, special: 7, success: true);
+        store.CommitAppliedPresentationEcho(PresentationEchoCodec.CreateExampleBlock());
+        var before = store.PresentationEchoRollingHash;
+
+        store.CommitAppliedAuthorityEvents(new[]
+        {
+            AuthorityEventsCodec.CreateSpawnExample("DoomImp", actorId: 19),
+        });
+
+        Assert.NotEqual(before, store.PresentationEchoRollingHash);
+        Assert.NotEqual(0u, store.LineSpecRollingHash);
+    }
+
+    [Fact]
     public void CommitAppliedPresentationEcho_PolishesPresentationEchoRollingHashFromAuthorityEvent()
     {
         var store = new GuestWorldStateStore();
