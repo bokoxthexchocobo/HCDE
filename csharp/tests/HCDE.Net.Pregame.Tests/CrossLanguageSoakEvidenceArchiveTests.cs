@@ -4,6 +4,29 @@ namespace HCDE.Net.Pregame.Tests;
 public class CrossLanguageSoakEvidenceArchiveTests
 {
     [Fact]
+    public void RecordEvidence_CopiesManifestAndEvidence()
+    {
+        var baseDir = Path.Combine(Path.GetTempPath(), $"hcde-soak-record-{Guid.NewGuid():N}");
+        var repositoryRoot = Path.Combine(baseDir, "repo");
+        var evidenceDir = CrossLanguageSoakEvidenceArchive.ResolveDefaultEvidenceDirectory(repositoryRoot);
+        Directory.CreateDirectory(evidenceDir);
+        File.WriteAllText(Path.Combine(repositoryRoot, "README.md"), "test");
+
+        try
+        {
+            var files = CrossLanguageSoakEvidenceArchive.RecordEvidence(evidenceDir, repositoryRoot);
+            Assert.Equal(2, files.Count);
+            Assert.True(File.Exists(CrossLanguageSoakManifest.ResolveDefaultManifestPath(repositoryRoot)));
+            Assert.All(files, path => Assert.StartsWith(evidenceDir, Path.GetDirectoryName(path)!));
+        }
+        finally
+        {
+            if (Directory.Exists(baseDir))
+                Directory.Delete(baseDir, recursive: true);
+        }
+    }
+
+    [Fact]
     public void RecordEvidence_WritesManifestWithHarnessStatuses()
     {
         var baseDir = Path.Combine(Path.GetTempPath(), $"hcde-soak-manifest-{Guid.NewGuid():N}");

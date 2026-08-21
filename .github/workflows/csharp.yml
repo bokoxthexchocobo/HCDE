@@ -204,6 +204,10 @@ jobs:
         run: |
           cd csharp
           dotnet test --no-build --filter "FullyQualifiedName~RecordEvidence_WritesManifestWithHarnessStatuses"
+      - name: Enforce record-evidence manifest copy gate
+        run: |
+          cd csharp
+          dotnet test --no-build --filter "FullyQualifiedName~RecordEvidence_CopiesManifestAndEvidence"
       - name: Enforce record-evidence harness gate
         run: |
           cd csharp

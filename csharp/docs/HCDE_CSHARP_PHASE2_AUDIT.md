@@ -1,7 +1,7 @@
 # HCDE C# Migration — Phase 2 Principal Audit
 
 **Last updated:** 2026-08-21  
-**Status:** In progress — Phase **2c** live protocol codecs (iteration 77 complete). Phase **2b** verification errors, start-game, bootstrap/resync, and cross-language harness complete.  
+**Status:** In progress — Phase **2c** live protocol codecs (iteration 78 complete). Phase **2b** verification errors, start-game, bootstrap/resync, and cross-language harness complete.  
 **Prerequisite:** [Phase 1 audit](HCDE_CSHARP_PHASE1_AUDIT.md) (complete)  
 **Related:** [`HCDE_CSHARP_MIGRATION.md`](HCDE_CSHARP_MIGRATION.md) · [`HCDE_NETCODE.md`](../../docs/HCDE_NETCODE.md)
 
@@ -803,11 +803,45 @@ Phase 2b is complete when **all** hold:
 2. ~~**Authority playsim tick polish**~~ — coop invasion-style cross-tail follow-ups, line-spec tail polish
 3. ~~**Cross-language soak evidence**~~ — refresh committed evidence copy gate in main CI workflow
 
-## Phase 2c next slice (iteration 78)
+## Phase 2c next slice (iteration 78 — delivered)
 
-1. **BEHAVIOR bytecode operands** — map-var shift follow-up PCDs, more Eternity stack ops
-2. **Authority playsim tick polish** — invasion coop-style cross-tail follow-ups, authority-event tail polish
-3. **Cross-language soak evidence** — record-evidence manifest copy gate in main CI workflow
+1. ~~**BEHAVIOR bytecode operands**~~ — map-var shift follow-up PCDs, more Eternity stack ops
+2. ~~**Authority playsim tick polish**~~ — invasion coop-style cross-tail follow-ups, authority-event tail polish
+3. ~~**Cross-language soak evidence**~~ — record-evidence manifest copy gate in main CI workflow
+
+## Phase 2c next slice (iteration 79)
+
+1. **BEHAVIOR bytecode operands** — world-var shift follow-up PCDs, more Eternity stack ops
+2. **Authority playsim tick polish** — coop invasion-style cross-tail follow-ups, actor-delta tail polish
+3. **Cross-language soak evidence** — record-evidence harness copy gate in main CI workflow
+
+### Record-evidence manifest copy gate main CI step (Phase 2c — iteration 78 step 3)
+
+| Artifact | Location | C++ reference |
+| --- | --- | --- |
+| Record-evidence manifest copy gate | `CrossLanguageSoakEvidenceArchive.RecordEvidence` | manifest + evidence copy for CI validation |
+| Main CI workflow | `.github/workflows/csharp.yml` | `RecordEvidence_CopiesManifestAndEvidence` step |
+| Gate tests | `CrossLanguageSoakEvidenceArchiveTests` | `RecordEvidence_CopiesManifestAndEvidence` |
+| Release checklist | `validation/soak/README.md` | main CI record-evidence manifest copy gate docs |
+
+### Invasion authority-event gap resync follow-ups + authority-event tail polish (Phase 2c — iteration 78 step 2)
+
+| Artifact | Location | C++ reference |
+| --- | --- | --- |
+| Authority-event tail polish | `SnapshotChecksumLineSpecPolicy.PolishAuthorityEventRollingHash` | fold line-spec into authority-event hash |
+| Authority-event commit polish | `GuestWorldStateStore.CommitAppliedActorDeltas` | polish authority-event rolling hash on HCDA apply |
+| Invasion authority-event actor-delta presentation-echo mismatch | `SnapshotChecksumMismatchPolicy.ShouldTriggerNetGapResyncOnInvasionAuthorityEventActorDeltaPresentationEchoMismatch` | net gap resync when invasion actor category mismatches |
+| Guest pump wiring | `LiveGuestSession.TryApplyTailSections` | tracks invasion authority-event actor-delta presentation-echo mismatch gap resync follow-ups |
+| E2E tests | `SnapshotChecksumLineSpecPolicyTests`, `SnapshotChecksumMismatchPolicyTests`, `GuestWorldStateChecksumIntegrationTests` | authority-event polish + invasion authority-event actor-delta presentation-echo mismatch gap resync |
+
+### BEHAVIOR map-var shift follow-up + Eternity stack PCD operands (Phase 2c/2d — iteration 78 step 1)
+
+| Artifact | Location | C++ reference |
+| --- | --- | --- |
+| Map-var shift opcodes | `AcsPcode.cs` | `PCD_LSMAPVAR`/`PCD_RSMAPVAR` |
+| Wire-value skips | `MapBehaviorBytecodeWalker.cs` | C++ wire values for map-var shift PCDs shadowing legacy enum aliases |
+| Operand skip table | `MapBehaviorBytecodeWalker.cs` | little-enhanced map-var shift follow-up skips |
+| Walk tests | `MapBehaviorBytecodeWalkerTests` | `TryWalkScript_OldFormat_ReadsMapVarShiftFollowUpAndEternityStackOps`, `TryWalkScript_LittleEnhanced_ReadsMapVarShiftFollowUpAndEternityStackOps` |
 
 ### Refresh committed evidence copy gate main CI step (Phase 2c — iteration 77 step 3)
 
@@ -2230,6 +2264,8 @@ Do **not** port snapshot encode/decode bodies until HCIN/HCSN headers are green.
 ## Audit conclusion (interim)
 
 **Phase 2b C# pregame stack is feature-complete for fresh dedicated joins** — loopback WAITING setup, verification-error replies, start-game, and a cross-language guest CLI/harness are in place. The remaining 2b gate is executing the harness against a real `hcdeserv` build and recording the result.
+
+**Phase 2c iteration 78** adds map-var shift follow-up/Eternity stack PCD operand coverage, invasion authority-event actor-delta presentation-echo gap resync follow-ups with authority-event tail polish on HCDA apply, and `RecordEvidence_CopiesManifestAndEvidence` main CI gate for record-evidence manifest copy validation.
 
 **Phase 2c iteration 77** adds script-var shift follow-up/Eternity stack PCD operand coverage, coop authority-event actor-delta presentation-echo gap resync follow-ups with line-spec tail polish on HCDA apply, and `RefreshCommittedEvidence_CopiesManifestAndEvidence` main CI gate for refresh copy validation.
 
