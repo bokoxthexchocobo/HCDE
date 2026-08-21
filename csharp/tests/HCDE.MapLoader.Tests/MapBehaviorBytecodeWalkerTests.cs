@@ -974,7 +974,7 @@ public class MapBehaviorBytecodeWalkerTests
                 (int)AcsPcode.SetActorState,
                 (int)AcsPcode.NegateBinary,
                 (int)AcsPcode.LsScriptVar,
-                (int)AcsPcode.RsGlobalArray,
+                (int)AcsPcode.RsGlobalVar,
                 (int)AcsPcode.MorphActor,
                 (int)AcsPcode.UnmorphActor,
                 (int)AcsPcode.ClassifyActor,
