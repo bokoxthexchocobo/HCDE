@@ -154,4 +154,29 @@ public class SnapshotChecksumActorDeltaPolicyTests
         Assert.NotEqual(before, store.AuthorityEventRollingHash);
         Assert.NotEqual(0u, store.ActorDeltaRollingHash);
     }
+
+    [Fact]
+    public void CommitAppliedAuthorityEvents_PolishesAuthorityEventRollingHashFromActorDelta()
+    {
+        var store = new GuestWorldStateStore();
+        store.CommitAppliedActorDeltas(new[]
+        {
+            new ActorDeltaRecord
+            {
+                ActorId = 10,
+                ClassId = 5,
+                FieldMask = LiveConstants.ActorDeltaFieldHealth,
+                Health = 91,
+            },
+        });
+        var before = store.AuthorityEventRollingHash;
+
+        store.CommitAppliedAuthorityEvents(new[]
+        {
+            AuthorityEventsCodec.CreateSpawnExample("DoomImp", actorId: 22),
+        });
+
+        Assert.NotEqual(before, store.AuthorityEventRollingHash);
+        Assert.NotEqual(0u, store.ActorDeltaRollingHash);
+    }
 }

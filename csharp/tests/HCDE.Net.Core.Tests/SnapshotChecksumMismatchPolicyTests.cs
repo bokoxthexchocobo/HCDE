@@ -336,6 +336,32 @@ public class SnapshotChecksumMismatchPolicyTests
     }
 
     [Fact]
+    public void ShouldTriggerNetGapResyncOnInvasionAuthorityEventActorDeltaLineSpecMismatch_RequiresAppliedInvasionAuthorityEventsAndActorDeltas()
+    {
+        var result = new SnapshotChecksumApplyResult(
+            compared: true,
+            mismatchCount: 1,
+            localBucketMissing: false,
+            hasLineSpecCategoryMismatch: true);
+
+        Assert.True(SnapshotChecksumMismatchPolicy.ShouldTriggerNetGapResyncOnInvasionAuthorityEventActorDeltaLineSpecMismatch(
+            result,
+            appliedInvasionAuthorityEvents: true,
+            appliedInvasionActorDeltas: true,
+            SnapshotChecksumMismatchPolicyKind.ResyncNetStateOnMismatch));
+        Assert.False(SnapshotChecksumMismatchPolicy.ShouldTriggerNetGapResyncOnInvasionAuthorityEventActorDeltaLineSpecMismatch(
+            result,
+            appliedInvasionAuthorityEvents: false,
+            appliedInvasionActorDeltas: true,
+            SnapshotChecksumMismatchPolicyKind.ResyncNetStateOnMismatch));
+        Assert.False(SnapshotChecksumMismatchPolicy.ShouldTriggerNetGapResyncOnInvasionAuthorityEventActorDeltaLineSpecMismatch(
+            result,
+            appliedInvasionAuthorityEvents: true,
+            appliedInvasionActorDeltas: false,
+            SnapshotChecksumMismatchPolicyKind.ResyncNetStateOnMismatch));
+    }
+
+    [Fact]
     public void ShouldTriggerNetGapResyncOnInvasionAuthorityEventActorDeltaPresentationEchoLineSpecMismatch_RequiresAppliedInvasionAuthorityEventsActorDeltasAndPresentationEcho()
     {
         var result = new SnapshotChecksumApplyResult(
