@@ -433,6 +433,7 @@ public static class MapBehaviorBytecodeWalker
         (int)AcsPcode.AssignGlobalVar or (int)AcsPcode.PushGlobalVar => 4,
         (int)AcsPcode.StartTranslation
             or (int)AcsPcode.TranslationRange1 or (int)AcsPcode.TranslationRange2
+            or (int)AcsPcode.TranslationRange3
             or (int)AcsPcode.EndTranslation => 0,
         444 or 465 or 466
             => 0, // C++ PCD_TRANSLATIONRANGE3…PCD_TRANSLATIONRANGE5 wire (shadow legacy translation-range enum aliases)

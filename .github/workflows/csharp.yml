@@ -194,3 +194,9 @@ jobs:
         run: |
           cd csharp
           dotnet test --no-build --filter "FullyQualifiedName~RecordEvidence_WritesManifestWithHarnessStatuses"
+      - name: Enforce passed record-evidence gate
+        env:
+          HCDE_RECORD_PASSED_VALIDATION_EVIDENCE: '1'
+        run: |
+          cd csharp
+          dotnet test --no-build --filter "FullyQualifiedName~TryRecordPassedValidationEvidence_PassesGateWhenBinariesPresent"
