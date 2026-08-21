@@ -200,3 +200,9 @@ jobs:
         run: |
           cd csharp
           dotnet test --no-build --filter "FullyQualifiedName~TryRecordPassedValidationEvidence_PassesGateWhenBinariesPresent"
+      - name: Enforce refresh committed evidence gate
+        env:
+          HCDE_REFRESH_SOAK_TEMPLATES: '1'
+        run: |
+          cd csharp
+          dotnet test --no-build --filter "FullyQualifiedName~RefreshCommittedEvidence_ReplacesStaleHarnessFiles"

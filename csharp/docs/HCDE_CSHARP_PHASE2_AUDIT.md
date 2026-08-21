@@ -1,7 +1,7 @@
 # HCDE C# Migration — Phase 2 Principal Audit
 
 **Last updated:** 2026-08-20  
-**Status:** In progress — Phase **2c** live protocol codecs (iteration 70 complete). Phase **2b** verification errors, start-game, bootstrap/resync, and cross-language harness complete.  
+**Status:** In progress — Phase **2c** live protocol codecs (iteration 71 complete). Phase **2b** verification errors, start-game, bootstrap/resync, and cross-language harness complete.  
 **Prerequisite:** [Phase 1 audit](HCDE_CSHARP_PHASE1_AUDIT.md) (complete)  
 **Related:** [`HCDE_CSHARP_MIGRATION.md`](HCDE_CSHARP_MIGRATION.md) · [`HCDE_NETCODE.md`](../../docs/HCDE_NETCODE.md)
 
@@ -761,11 +761,45 @@ Phase 2b is complete when **all** hold:
 2. ~~**Authority playsim tick polish**~~ — invasion actor-delta gap resync follow-ups, line-spec tail polish
 3. ~~**Cross-language soak evidence**~~ — passed record-evidence gate in main CI workflow
 
-## Phase 2c next slice (iteration 71)
+## Phase 2c next slice (iteration 71 — delivered)
 
-1. **BEHAVIOR bytecode operands** — goto-stack follow-up PCDs, more Eternity stack ops
-2. **Authority playsim tick polish** — coop authority-event gap resync follow-ups, actor-delta tail polish
-3. **Cross-language soak evidence** — refresh committed evidence gate in main CI workflow
+1. ~~**BEHAVIOR bytecode operands**~~ — goto-stack follow-up PCDs, more Eternity stack ops
+2. ~~**Authority playsim tick polish**~~ — coop authority-event gap resync follow-ups, actor-delta tail polish
+3. ~~**Cross-language soak evidence**~~ — refresh committed evidence gate in main CI workflow
+
+## Phase 2c next slice (iteration 72)
+
+1. **BEHAVIOR bytecode operands** — script-array assign follow-up PCDs, more Eternity stack ops
+2. **Authority playsim tick polish** — invasion authority-event gap resync follow-ups, presentation-echo tail polish
+3. **Cross-language soak evidence** — record-evidence harness gate in main CI workflow
+
+### Refresh committed evidence gate main CI step (Phase 2c — iteration 71 step 3)
+
+| Artifact | Location | C++ reference |
+| --- | --- | --- |
+| Refresh committed evidence gate | `CrossLanguageSoakEvidenceArchive.RefreshCommittedEvidence` | prune + re-record committed soak templates |
+| Main CI workflow | `.github/workflows/csharp.yml` | `RefreshCommittedEvidence_ReplacesStaleHarnessFiles` step |
+| Gate tests | `CrossLanguageSoakEvidenceArchiveTests` | `RefreshCommittedEvidence_ReplacesStaleHarnessFiles` |
+| Release checklist | `validation/soak/README.md` | main CI refresh committed evidence gate docs |
+
+### Coop authority-event gap resync follow-ups + actor-delta tail polish (Phase 2c — iteration 71 step 2)
+
+| Artifact | Location | C++ reference |
+| --- | --- | --- |
+| Actor-delta tail polish | `SnapshotChecksumPresentationEchoPolicy.PolishActorDeltaRollingHash` | fold presentation-echo into actor-delta hash |
+| Authority-event commit polish | `GuestWorldStateStore.CommitAppliedAuthorityEvents` | polish actor-delta rolling hash on HCAV apply |
+| Coop authority-event actor-delta line-spec mismatch | `SnapshotChecksumMismatchPolicy.ShouldTriggerNetGapResyncOnCoopAuthorityEventActorDeltaLineSpecMismatch` | net gap resync when coop line-spec category mismatches |
+| Guest pump wiring | `LiveGuestSession.TryApplyTailSections` | tracks coop authority-event actor-delta line-spec mismatch gap resync follow-ups |
+| E2E tests | `SnapshotChecksumAuthorityEventPolicyTests`, `SnapshotChecksumMismatchPolicyTests`, `GuestWorldStateChecksumIntegrationTests` | actor-delta polish + coop authority-event actor-delta line-spec mismatch gap resync |
+
+### BEHAVIOR goto-stack follow-up + Eternity stack PCD operands (Phase 2c/2d — iteration 71 step 1)
+
+| Artifact | Location | C++ reference |
+| --- | --- | --- |
+| Goto-stack opcodes | `AcsPcode.cs` | `PCD_CALLSTACK`, `PCD_TRANSLATIONRANGE3`, `PCD_GOTOSTACK` |
+| Wire-value skips | `MapBehaviorBytecodeWalker.cs` | C++ wire values for goto-stack PCDs shadowing legacy eternity-stack enum aliases |
+| Operand skip table | `MapBehaviorBytecodeWalker.cs` | old-format goto-stack follow-up skips |
+| Walk tests | `MapBehaviorBytecodeWalkerTests` | `TryWalkScript_OldFormat_ReadsGotoStackFollowUpAndEternityStackOps` |
 
 ### Passed record-evidence gate main CI step (Phase 2c — iteration 70 step 3)
 
@@ -1992,6 +2026,8 @@ Do **not** port snapshot encode/decode bodies until HCIN/HCSN headers are green.
 ## Audit conclusion (interim)
 
 **Phase 2b C# pregame stack is feature-complete for fresh dedicated joins** — loopback WAITING setup, verification-error replies, start-game, and a cross-language guest CLI/harness are in place. The remaining 2b gate is executing the harness against a real `hcdeserv` build and recording the result.
+
+**Phase 2c iteration 71** adds goto-stack/Eternity stack PCD operand coverage, coop authority-event actor-delta line-spec gap resync follow-ups with actor-delta tail polish on HCAV apply, and `RefreshCommittedEvidence_ReplacesStaleHarnessFiles` main CI gate for committed soak template refresh.
 
 **Phase 2c iteration 70** adds translation-range/Eternity stack PCD operand coverage, invasion actor-delta presentation-echo line-spec gap resync follow-ups with line-spec tail polish on HCDA apply, and `TryRecordPassedValidationEvidence_PassesGateWhenBinariesPresent` main CI gate for Passed soak re-recording.
 
