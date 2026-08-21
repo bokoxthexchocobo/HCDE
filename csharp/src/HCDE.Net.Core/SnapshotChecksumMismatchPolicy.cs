@@ -163,6 +163,15 @@ public static class SnapshotChecksumMismatchPolicy
         ShouldTriggerNetGapResyncOnLineSpecMismatch(result, policy)
         && appliedInvasionActorDeltas;
 
+    public static bool ShouldTriggerNetGapResyncOnInvasionActorDeltaPresentationEchoLineSpecMismatch(
+        SnapshotChecksumApplyResult result,
+        bool appliedInvasionActorDeltas,
+        bool appliedInvasionPresentationEcho,
+        SnapshotChecksumMismatchPolicyKind policy) =>
+        ShouldTriggerNetGapResyncOnLineSpecMismatch(result, policy)
+        && appliedInvasionActorDeltas
+        && appliedInvasionPresentationEcho;
+
     public static bool ShouldTriggerNetGapResyncOnCoopActorDeltaMismatch(
         SnapshotChecksumApplyResult result,
         bool appliedCoopActorDeltas,

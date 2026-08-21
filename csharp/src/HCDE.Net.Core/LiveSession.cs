@@ -559,6 +559,21 @@ public sealed class LiveGuestSession
         }
 
         if (_lastChecksumApplyState.Compared
+            && SnapshotChecksumMismatchPolicy.ShouldTriggerNetGapResyncOnInvasionActorDeltaPresentationEchoLineSpecMismatch(
+                new SnapshotChecksumApplyResult(
+                    _lastChecksumApplyState.Compared,
+                    _lastChecksumApplyState.MismatchCount,
+                    _lastChecksumApplyState.LocalBucketMissing,
+                    hasActorCategoryMismatch: _lastChecksumApplyState.HasActorCategoryMismatch,
+                    hasLineSpecCategoryMismatch: _lastChecksumApplyState.HasLineSpecCategoryMismatch),
+                appliedInvasionActorDeltas,
+                appliedInvasionPresentationEcho,
+                _checksumMismatchPolicy))
+        {
+            _needsNetGapResync = true;
+        }
+
+        if (_lastChecksumApplyState.Compared
             && SnapshotChecksumMismatchPolicy.ShouldTriggerNetGapResyncOnCoopActorDeltaMismatch(
                 new SnapshotChecksumApplyResult(
                     _lastChecksumApplyState.Compared,

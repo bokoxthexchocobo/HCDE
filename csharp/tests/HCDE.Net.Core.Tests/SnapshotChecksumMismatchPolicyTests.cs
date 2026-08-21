@@ -144,6 +144,32 @@ public class SnapshotChecksumMismatchPolicyTests
     }
 
     [Fact]
+    public void ShouldTriggerNetGapResyncOnInvasionActorDeltaPresentationEchoLineSpecMismatch_RequiresAppliedInvasionActorDeltasAndPresentationEcho()
+    {
+        var result = new SnapshotChecksumApplyResult(
+            compared: true,
+            mismatchCount: 1,
+            localBucketMissing: false,
+            hasLineSpecCategoryMismatch: true);
+
+        Assert.True(SnapshotChecksumMismatchPolicy.ShouldTriggerNetGapResyncOnInvasionActorDeltaPresentationEchoLineSpecMismatch(
+            result,
+            appliedInvasionActorDeltas: true,
+            appliedInvasionPresentationEcho: true,
+            SnapshotChecksumMismatchPolicyKind.ResyncNetStateOnMismatch));
+        Assert.False(SnapshotChecksumMismatchPolicy.ShouldTriggerNetGapResyncOnInvasionActorDeltaPresentationEchoLineSpecMismatch(
+            result,
+            appliedInvasionActorDeltas: false,
+            appliedInvasionPresentationEcho: true,
+            SnapshotChecksumMismatchPolicyKind.ResyncNetStateOnMismatch));
+        Assert.False(SnapshotChecksumMismatchPolicy.ShouldTriggerNetGapResyncOnInvasionActorDeltaPresentationEchoLineSpecMismatch(
+            result,
+            appliedInvasionActorDeltas: true,
+            appliedInvasionPresentationEcho: false,
+            SnapshotChecksumMismatchPolicyKind.ResyncNetStateOnMismatch));
+    }
+
+    [Fact]
     public void ShouldTriggerNetGapResyncOnCoopActorDeltaMismatch_RequiresAppliedCoopActorDeltas()
     {
         var result = new SnapshotChecksumApplyResult(
