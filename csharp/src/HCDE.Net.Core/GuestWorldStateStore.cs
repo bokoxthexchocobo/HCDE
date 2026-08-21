@@ -247,6 +247,9 @@ public sealed class GuestWorldStateStore : IWorldDeltaApplySink, IActorDeltaAppl
         foreach (var record in records)
             _actorDeltaRollingHash = SnapshotChecksumActorDeltaPolicy.MixRecord(_actorDeltaRollingHash, record);
 
+        _actorDeltaRollingHash = SnapshotChecksumAuthorityEventPolicy.PolishActorDeltaRollingHash(
+            _actorDeltaRollingHash,
+            _authorityEventRollingHash);
         _presentationEchoRollingHash = SnapshotChecksumActorDeltaPolicy.PolishPresentationEchoRollingHash(
             _presentationEchoRollingHash,
             _actorDeltaRollingHash);
