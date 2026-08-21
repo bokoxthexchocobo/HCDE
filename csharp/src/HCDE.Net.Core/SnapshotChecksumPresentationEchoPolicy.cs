@@ -36,6 +36,14 @@ public static class SnapshotChecksumPresentationEchoPolicy
         return SnapshotChecksumMixer.MixU32(echoHash, lineSpecHash);
     }
 
+    public static uint PolishRollingHashWithAuthorityEvent(uint echoHash, uint authorityEventHash)
+    {
+        if (echoHash == 0 || authorityEventHash == 0)
+            return echoHash;
+
+        return SnapshotChecksumMixer.MixU32(echoHash, authorityEventHash);
+    }
+
     public static uint PolishActorDeltaRollingHash(uint actorDeltaHash, uint presentationEchoHash)
     {
         if (actorDeltaHash == 0 || presentationEchoHash == 0)
