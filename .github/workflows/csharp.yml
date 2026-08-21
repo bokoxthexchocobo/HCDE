@@ -196,6 +196,10 @@ jobs:
           cd csharp
           dotnet test --no-build --filter "FullyQualifiedName~ExportCommittedTemplates_WritesCiArtifactBundle"
           dotnet test --no-build --filter "FullyQualifiedName~ApplyExportedTemplates_WritesCommittedSoakTree"
+      - name: Enforce apply exported templates copy gate
+        run: |
+          cd csharp
+          dotnet test --no-build --filter "FullyQualifiedName~ApplyExportedTemplates_CopiesBundleIntoCommittedTree"
       - name: Enforce record-evidence manifest gate
         run: |
           cd csharp
