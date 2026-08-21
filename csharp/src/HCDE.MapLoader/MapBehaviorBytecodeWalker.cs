@@ -240,8 +240,8 @@ public static class MapBehaviorBytecodeWalker
         (int)AcsPcode.SetGravity or (int)AcsPcode.SetAirControl => 0,
         (int)AcsPcode.SetGravityDirect or (int)AcsPcode.SetAirControlDirect => 1,
         (int)AcsPcode.AssignGlobalVar or (int)AcsPcode.PushGlobalVar => 1,
-        364 or 365
-            => 1, // C++ PCD_ASSIGNSCRIPTARRAY/PCD_PUSHSCRIPTARRAY wire (shadow legacy TranslationRange3/GotoStack enum aliases)
+        364 or 365 or 366 or 367 or 368 or 369 or 370 or 371 or 372 or 373 or 374 or 375
+            => 1, // C++ PCD_ASSIGNSCRIPTARRAY…PCD_ANDSCRIPTARRAY wire (shadow legacy script-array enum aliases)
         (int)AcsPcode.StartTranslation
             or (int)AcsPcode.TranslationRange1 or (int)AcsPcode.TranslationRange2
             or (int)AcsPcode.EndTranslation => 0,
@@ -277,11 +277,6 @@ public static class MapBehaviorBytecodeWalker
             => 0, // C++ PCD_LSPEC5EX/PCD_LSPEC5EXRESULT wire (shadow legacy lspec5 enum aliases)
         444 or 465 or 466
             => 0, // C++ PCD_TRANSLATIONRANGE3…PCD_TRANSLATIONRANGE5 wire (shadow legacy translation-range enum aliases)
-        (int)AcsPcode.AssignScriptArray or (int)AcsPcode.PushScriptArray
-            or (int)AcsPcode.AddScriptArray or (int)AcsPcode.SubScriptArray
-            or (int)AcsPcode.MulScriptArray or (int)AcsPcode.DivScriptArray
-            or (int)AcsPcode.ModScriptArray or (int)AcsPcode.IncScriptArray
-            or (int)AcsPcode.DecScriptArray or (int)AcsPcode.AndScriptArray => 1,
         (int)AcsPcode.PushGlobalArray or (int)AcsPcode.AssignGlobalArray
             or (int)AcsPcode.AddGlobalArray or (int)AcsPcode.SubGlobalArray
             or (int)AcsPcode.MulGlobalArray or (int)AcsPcode.ModGlobalArray
@@ -464,11 +459,8 @@ public static class MapBehaviorBytecodeWalker
             or (int)AcsPcode.PrintGlobalCharRange
             or (int)AcsPcode.StrCpyToMapCharRange or (int)AcsPcode.StrCpyToWorldCharRange
             or (int)AcsPcode.StrCpyToGlobalCharRange => 0,
-        (int)AcsPcode.AssignScriptArray or (int)AcsPcode.PushScriptArray
-            or (int)AcsPcode.AddScriptArray or (int)AcsPcode.SubScriptArray
-            or (int)AcsPcode.MulScriptArray or (int)AcsPcode.DivScriptArray
-            or (int)AcsPcode.ModScriptArray or (int)AcsPcode.IncScriptArray
-            or (int)AcsPcode.DecScriptArray or (int)AcsPcode.AndScriptArray => 1,
+        364 or 365 or 366 or 367 or 368 or 369 or 370 or 371 or 372 or 373 or 374 or 375
+            => 1, // C++ PCD_ASSIGNSCRIPTARRAY…PCD_ANDSCRIPTARRAY wire (shadow legacy script-array enum aliases)
         (int)AcsPcode.PushGlobalArray or (int)AcsPcode.AssignGlobalArray
             or (int)AcsPcode.AddGlobalArray or (int)AcsPcode.SubGlobalArray
             or (int)AcsPcode.MulGlobalArray or (int)AcsPcode.DivGlobalArray
