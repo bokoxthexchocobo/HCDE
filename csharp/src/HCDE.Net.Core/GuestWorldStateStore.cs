@@ -222,6 +222,9 @@ public sealed class GuestWorldStateStore : IWorldDeltaApplySink, IActorDeltaAppl
         _lineSpecRollingHash = SnapshotChecksumLineSpecPolicy.PolishRollingHashWithAuthorityEvent(
             _lineSpecRollingHash,
             _authorityEventRollingHash);
+        _lineSpecRollingHash = SnapshotChecksumLineSpecPolicy.PolishRollingHash(
+            _lineSpecRollingHash,
+            _presentationEchoRollingHash);
         _actorDeltaRollingHash = SnapshotChecksumLineSpecPolicy.PolishActorDeltaRollingHash(
             _actorDeltaRollingHash,
             _lineSpecRollingHash);
