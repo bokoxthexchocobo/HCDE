@@ -232,3 +232,7 @@ jobs:
         run: |
           cd csharp
           dotnet test --no-build --filter "FullyQualifiedName~RefreshCommittedEvidence_ReplacesStaleHarnessFiles"
+      - name: Enforce refresh committed evidence copy gate
+        run: |
+          cd csharp
+          dotnet test --no-build --filter "FullyQualifiedName~RefreshCommittedEvidence_CopiesManifestAndEvidence"

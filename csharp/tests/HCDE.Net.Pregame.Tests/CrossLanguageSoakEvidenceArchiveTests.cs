@@ -382,6 +382,31 @@ public class CrossLanguageSoakEvidenceArchiveTests
     }
 
     [Fact]
+    public void RefreshCommittedEvidence_CopiesManifestAndEvidence()
+    {
+        var baseDir = Path.Combine(Path.GetTempPath(), $"hcde-soak-refresh-{Guid.NewGuid():N}");
+        var repositoryRoot = Path.Combine(baseDir, "repo");
+        var evidenceDir = Path.Combine(repositoryRoot, "csharp", "validation", "soak", "evidence");
+        Directory.CreateDirectory(evidenceDir);
+        File.WriteAllText(Path.Combine(repositoryRoot, "README.md"), "test");
+        File.WriteAllText(Path.Combine(evidenceDir, "pregame_guest_smoke_19990101_000000_Skipped.json"), "{}");
+
+        try
+        {
+            var files = CrossLanguageSoakEvidenceArchive.RefreshCommittedEvidence(repositoryRoot);
+            Assert.Equal(2, files.Count);
+            Assert.False(File.Exists(Path.Combine(evidenceDir, "pregame_guest_smoke_19990101_000000_Skipped.json")));
+            Assert.True(File.Exists(CrossLanguageSoakManifest.ResolveDefaultManifestPath(repositoryRoot)));
+            Assert.All(files, path => Assert.StartsWith(evidenceDir, Path.GetDirectoryName(path)!));
+        }
+        finally
+        {
+            if (Directory.Exists(baseDir))
+                Directory.Delete(baseDir, recursive: true);
+        }
+    }
+
+    [Fact]
     public void RefreshCommittedEvidence_ReplacesStaleHarnessFiles()
     {
         if (Environment.GetEnvironmentVariable("HCDE_REFRESH_SOAK_TEMPLATES") != "1")
