@@ -461,6 +461,8 @@ public static class MapBehaviorBytecodeWalker
             or (int)AcsPcode.StrCpyToGlobalCharRange => 0,
         364 or 365 or 366 or 367 or 368 or 369 or 370 or 371 or 372 or 373 or 374 or 375
             => 1, // C++ PCD_ASSIGNSCRIPTARRAY…PCD_ANDSCRIPTARRAY wire (shadow legacy script-array enum aliases)
+        376 or 377
+            => 1, // C++ PCD_LSSCRIPTARRAY/PCD_RSSCRIPTARRAY wire (shadow legacy EorScriptArray/OrScriptArray enum aliases)
         (int)AcsPcode.PushGlobalArray or (int)AcsPcode.AssignGlobalArray
             or (int)AcsPcode.AddGlobalArray or (int)AcsPcode.SubGlobalArray
             or (int)AcsPcode.MulGlobalArray or (int)AcsPcode.DivGlobalArray
