@@ -275,6 +275,8 @@ public static class MapBehaviorBytecodeWalker
             => 1, // C++ PCD_LSMAPARRAY/PCD_RSMAPARRAY wire (shadow legacy LsMapArray/RsMapArray enum aliases)
         398 or 405
             => 1, // C++ PCD_LSWORLDARRAY/PCD_RSWORLDARRAY wire (shadow legacy LsWorldArray/RsWorldArray enum aliases)
+        399 or 406
+            => 1, // C++ PCD_LSGLOBALARRAY/PCD_RSGLOBALARRAY wire (shadow legacy LsGlobalArray/RsGlobalArray enum aliases)
         378 or 379 or 380
             => 0, // C++ PCD_PRINTSCRIPTCHARARRAY…PCD_STRCPYTOSCRIPTCHRANGE wire (shadow legacy script char-array enum aliases)
         381 or 382
@@ -471,6 +473,8 @@ public static class MapBehaviorBytecodeWalker
             => 1, // C++ PCD_LSMAPARRAY/PCD_RSMAPARRAY wire (shadow legacy LsMapArray/RsMapArray enum aliases)
         398 or 405
             => 1, // C++ PCD_LSWORLDARRAY/PCD_RSWORLDARRAY wire (shadow legacy LsWorldArray/RsWorldArray enum aliases)
+        399 or 406
+            => 1, // C++ PCD_LSGLOBALARRAY/PCD_RSGLOBALARRAY wire (shadow legacy LsGlobalArray/RsGlobalArray enum aliases)
         (int)AcsPcode.PushGlobalArray or (int)AcsPcode.AssignGlobalArray
             or (int)AcsPcode.AddGlobalArray or (int)AcsPcode.SubGlobalArray
             or (int)AcsPcode.MulGlobalArray or (int)AcsPcode.DivGlobalArray
