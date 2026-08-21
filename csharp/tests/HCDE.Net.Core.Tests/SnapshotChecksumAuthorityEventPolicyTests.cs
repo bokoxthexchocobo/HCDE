@@ -107,6 +107,32 @@ public class SnapshotChecksumAuthorityEventPolicyTests
     }
 
     [Fact]
+    public void CommitAppliedAuthorityEvents_PolishesActorDeltaRollingHashFromPresentationEcho()
+    {
+        var store = new GuestWorldStateStore();
+        store.CommitAppliedActorDeltas(new[]
+        {
+            new ActorDeltaRecord
+            {
+                ActorId = 8,
+                ClassId = 2,
+                FieldMask = LiveConstants.ActorDeltaFieldHealth,
+                Health = 72,
+            },
+        });
+        store.CommitAppliedPresentationEcho(PresentationEchoCodec.CreateExampleBlock());
+        var before = store.ActorDeltaRollingHash;
+
+        store.CommitAppliedAuthorityEvents(new[]
+        {
+            AuthorityEventsCodec.CreateSpawnExample("DoomImp", actorId: 19),
+        });
+
+        Assert.NotEqual(before, store.ActorDeltaRollingHash);
+        Assert.NotEqual(0u, store.PresentationEchoRollingHash);
+    }
+
+    [Fact]
     public void CommitAppliedAuthorityEvents_PolishesLineSpecRollingHash()
     {
         var store = new GuestWorldStateStore();
