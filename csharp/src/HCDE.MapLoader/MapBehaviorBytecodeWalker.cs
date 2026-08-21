@@ -259,9 +259,10 @@ public static class MapBehaviorBytecodeWalker
             or (int)AcsPcode.DecWorldArray => 1,
         359 => 1, // C++ PCD_PUSHFUNCTION wire (shadow legacy PushFunction enum alias)
         361 => 0, // C++ PCD_SCRIPTWAITNAMED wire (shadow legacy PushFunction enum alias)
+        360 or 362 or 363
+            => 0, // C++ PCD_CALLSTACK/PCD_TRANSLATIONRANGE3/PCD_GOTOSTACK wire (shadow legacy eternity-stack enum aliases)
         244 or 247 => 0, // C++ PCD_SETMARINEWEAPON / PCD_PLAYERNUMBER (shadow legacy DivGlobalArray/PushByte enum aliases)
-        (int)AcsPcode.CallStack
-            or (int)AcsPcode.ScriptWaitNamed or (int)AcsPcode.SaveString
+        (int)AcsPcode.SaveString
             or (int)AcsPcode.Lspec5Result => 0,
         (int)AcsPcode.CallFunc => 2,
         (int)AcsPcode.PrintMapCharRange or (int)AcsPcode.PrintWorldCharRange
@@ -316,7 +317,7 @@ public static class MapBehaviorBytecodeWalker
             or 344 or 345
             or 346 or 347
             or 348 or 349 or 350
-            or 352 or 354 or 360 or 361 or 362 or 363
+            or 352 or 354 or 361
             or 427 or 428 or 430 or 431 or 432
             => 0, // C++ sector/level/input/player-info/negate-pitch/print-bind/thing-damage/actor-texture-light/thing-count-camera/classify-print/savestring/char-range/eternity-stack/morph-classify PCDs (shadow legacy global-var enum aliases)
         (int)AcsPcode.AddGlobalVar or (int)AcsPcode.SubGlobalVar or (int)AcsPcode.MulGlobalVar
@@ -452,8 +453,9 @@ public static class MapBehaviorBytecodeWalker
         (int)AcsPcode.PushFunction => 1,
         381 or 382
             => 0, // C++ PCD_LSPEC5EX/PCD_LSPEC5EXRESULT wire (shadow legacy lspec5 enum aliases)
-        (int)AcsPcode.CallStack
-            or (int)AcsPcode.ScriptWaitNamed or (int)AcsPcode.SaveString
+        360 or 362 or 363
+            => 0, // C++ PCD_CALLSTACK/PCD_TRANSLATIONRANGE3/PCD_GOTOSTACK wire (shadow legacy eternity-stack enum aliases)
+        (int)AcsPcode.SaveString
             or (int)AcsPcode.Lspec5Result => 0,
         (int)AcsPcode.CallFunc => 2,
         (int)AcsPcode.PrintScriptCharArray or (int)AcsPcode.PrintScriptCharRange
