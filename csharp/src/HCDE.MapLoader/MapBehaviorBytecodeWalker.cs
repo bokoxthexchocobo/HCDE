@@ -271,6 +271,8 @@ public static class MapBehaviorBytecodeWalker
             or (int)AcsPcode.StrCpyToGlobalCharRange => 0,
         376 or 377
             => 1, // C++ PCD_LSSCRIPTARRAY/PCD_RSSCRIPTARRAY wire (shadow legacy EorScriptArray/OrScriptArray enum aliases)
+        393 or 400
+            => 1, // C++ PCD_LSSCRIPTVAR/PCD_RSSCRIPTVAR wire (shadow legacy LsScriptVar/RsScriptVar enum aliases)
         397 or 404
             => 1, // C++ PCD_LSMAPARRAY/PCD_RSMAPARRAY wire (shadow legacy LsMapArray/RsMapArray enum aliases)
         398 or 405
@@ -469,6 +471,8 @@ public static class MapBehaviorBytecodeWalker
             => 1, // C++ PCD_ASSIGNSCRIPTARRAY…PCD_ANDSCRIPTARRAY wire (shadow legacy script-array enum aliases)
         376 or 377
             => 1, // C++ PCD_LSSCRIPTARRAY/PCD_RSSCRIPTARRAY wire (shadow legacy EorScriptArray/OrScriptArray enum aliases)
+        393 or 400
+            => 1, // C++ PCD_LSSCRIPTVAR/PCD_RSSCRIPTVAR wire (shadow legacy LsScriptVar/RsScriptVar enum aliases)
         397 or 404
             => 1, // C++ PCD_LSMAPARRAY/PCD_RSMAPARRAY wire (shadow legacy LsMapArray/RsMapArray enum aliases)
         398 or 405
