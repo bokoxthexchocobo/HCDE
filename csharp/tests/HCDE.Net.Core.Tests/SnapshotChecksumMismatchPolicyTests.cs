@@ -536,6 +536,41 @@ public class SnapshotChecksumMismatchPolicyTests
     }
 
     [Fact]
+    public void ShouldTriggerNetGapResyncOnCoopAuthorityEventActorDeltaPresentationEchoMismatch_RequiresAppliedCoopAuthorityEventsActorDeltasAndPresentationEcho()
+    {
+        var result = new SnapshotChecksumApplyResult(
+            compared: true,
+            mismatchCount: 1,
+            localBucketMissing: false,
+            hasActorCategoryMismatch: true);
+
+        Assert.True(SnapshotChecksumMismatchPolicy.ShouldTriggerNetGapResyncOnCoopAuthorityEventActorDeltaPresentationEchoMismatch(
+            result,
+            appliedCoopAuthorityEvents: true,
+            appliedCoopActorDeltas: true,
+            appliedCoopPresentationEcho: true,
+            SnapshotChecksumMismatchPolicyKind.ResyncNetStateOnMismatch));
+        Assert.False(SnapshotChecksumMismatchPolicy.ShouldTriggerNetGapResyncOnCoopAuthorityEventActorDeltaPresentationEchoMismatch(
+            result,
+            appliedCoopAuthorityEvents: true,
+            appliedCoopActorDeltas: true,
+            appliedCoopPresentationEcho: false,
+            SnapshotChecksumMismatchPolicyKind.ResyncNetStateOnMismatch));
+        Assert.False(SnapshotChecksumMismatchPolicy.ShouldTriggerNetGapResyncOnCoopAuthorityEventActorDeltaPresentationEchoMismatch(
+            result,
+            appliedCoopAuthorityEvents: true,
+            appliedCoopActorDeltas: false,
+            appliedCoopPresentationEcho: true,
+            SnapshotChecksumMismatchPolicyKind.ResyncNetStateOnMismatch));
+        Assert.False(SnapshotChecksumMismatchPolicy.ShouldTriggerNetGapResyncOnCoopAuthorityEventActorDeltaPresentationEchoMismatch(
+            result,
+            appliedCoopAuthorityEvents: false,
+            appliedCoopActorDeltas: true,
+            appliedCoopPresentationEcho: true,
+            SnapshotChecksumMismatchPolicyKind.ResyncNetStateOnMismatch));
+    }
+
+    [Fact]
     public void ShouldTriggerNetGapResyncOnInvasionPresentationEchoMismatch_RequiresAppliedInvasionPresentationEcho()
     {
         var result = new SnapshotChecksumApplyResult(

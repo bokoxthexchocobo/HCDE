@@ -299,6 +299,17 @@ public static class SnapshotChecksumMismatchPolicy
         && appliedCoopActorDeltas
         && appliedCoopPresentationEcho;
 
+    public static bool ShouldTriggerNetGapResyncOnCoopAuthorityEventActorDeltaPresentationEchoMismatch(
+        SnapshotChecksumApplyResult result,
+        bool appliedCoopAuthorityEvents,
+        bool appliedCoopActorDeltas,
+        bool appliedCoopPresentationEcho,
+        SnapshotChecksumMismatchPolicyKind policy) =>
+        ShouldTriggerNetGapResyncOnCoopDeadSpawnMismatch(result, policy)
+        && appliedCoopAuthorityEvents
+        && appliedCoopActorDeltas
+        && appliedCoopPresentationEcho;
+
     public static bool ShouldTriggerNetGapResyncOnInvasionPresentationEchoMismatch(
         SnapshotChecksumApplyResult result,
         bool appliedInvasionPresentationEcho,
