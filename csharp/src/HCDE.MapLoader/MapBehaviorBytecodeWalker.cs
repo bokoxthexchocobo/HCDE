@@ -244,8 +244,7 @@ public static class MapBehaviorBytecodeWalker
             => 1, // C++ PCD_ASSIGNSCRIPTARRAY/PCD_PUSHSCRIPTARRAY wire (shadow legacy TranslationRange3/GotoStack enum aliases)
         (int)AcsPcode.StartTranslation
             or (int)AcsPcode.TranslationRange1 or (int)AcsPcode.TranslationRange2
-            or (int)AcsPcode.TranslationRange4
-            or (int)AcsPcode.TranslationRange5 or (int)AcsPcode.EndTranslation => 0,
+            or (int)AcsPcode.EndTranslation => 0,
         (int)AcsPcode.Call or (int)AcsPcode.CallDiscard => 1,
         (int)AcsPcode.ReturnVoid or (int)AcsPcode.ReturnVal => 0,
         (int)AcsPcode.PushMapArray or (int)AcsPcode.AssignMapArray
@@ -275,6 +274,8 @@ public static class MapBehaviorBytecodeWalker
             => 0, // C++ PCD_PRINTSCRIPTCHARARRAY…PCD_STRCPYTOSCRIPTCHRANGE wire (shadow legacy script char-array enum aliases)
         381 or 382
             => 0, // C++ PCD_LSPEC5EX/PCD_LSPEC5EXRESULT wire (shadow legacy lspec5 enum aliases)
+        444 or 465 or 466
+            => 0, // C++ PCD_TRANSLATIONRANGE3…PCD_TRANSLATIONRANGE5 wire (shadow legacy translation-range enum aliases)
         (int)AcsPcode.AssignScriptArray or (int)AcsPcode.PushScriptArray
             or (int)AcsPcode.AddScriptArray or (int)AcsPcode.SubScriptArray
             or (int)AcsPcode.MulScriptArray or (int)AcsPcode.DivScriptArray
@@ -432,8 +433,9 @@ public static class MapBehaviorBytecodeWalker
         (int)AcsPcode.AssignGlobalVar or (int)AcsPcode.PushGlobalVar => 4,
         (int)AcsPcode.StartTranslation
             or (int)AcsPcode.TranslationRange1 or (int)AcsPcode.TranslationRange2
-            or (int)AcsPcode.TranslationRange3 or (int)AcsPcode.TranslationRange4
-            or (int)AcsPcode.TranslationRange5 or (int)AcsPcode.EndTranslation => 0,
+            or (int)AcsPcode.EndTranslation => 0,
+        444 or 465 or 466
+            => 0, // C++ PCD_TRANSLATIONRANGE3…PCD_TRANSLATIONRANGE5 wire (shadow legacy translation-range enum aliases)
         (int)AcsPcode.Call or (int)AcsPcode.CallDiscard => 1,
         (int)AcsPcode.ReturnVoid or (int)AcsPcode.ReturnVal => 0,
         (int)AcsPcode.PushMapArray or (int)AcsPcode.AssignMapArray
