@@ -275,6 +275,8 @@ public static class MapBehaviorBytecodeWalker
             => 1, // C++ PCD_LSSCRIPTVAR/PCD_RSSCRIPTVAR wire (shadow legacy LsScriptVar/RsScriptVar enum aliases)
         394 or 401
             => 1, // C++ PCD_LSMAPVAR/PCD_RSMAPVAR wire (shadow legacy LsMapVar/RsMapVar enum aliases)
+        395 or 402
+            => 1, // C++ PCD_LSWORLDVAR/PCD_RSWORLDVAR wire (shadow legacy LsWorldVar/RsWorldVar enum aliases)
         397 or 404
             => 1, // C++ PCD_LSMAPARRAY/PCD_RSMAPARRAY wire (shadow legacy LsMapArray/RsMapArray enum aliases)
         398 or 405
@@ -477,6 +479,8 @@ public static class MapBehaviorBytecodeWalker
             => 1, // C++ PCD_LSSCRIPTVAR/PCD_RSSCRIPTVAR wire (shadow legacy LsScriptVar/RsScriptVar enum aliases)
         394 or 401
             => 1, // C++ PCD_LSMAPVAR/PCD_RSMAPVAR wire (shadow legacy LsMapVar/RsMapVar enum aliases)
+        395 or 402
+            => 1, // C++ PCD_LSWORLDVAR/PCD_RSWORLDVAR wire (shadow legacy LsWorldVar/RsWorldVar enum aliases)
         397 or 404
             => 1, // C++ PCD_LSMAPARRAY/PCD_RSMAPARRAY wire (shadow legacy LsMapArray/RsMapArray enum aliases)
         398 or 405

@@ -973,7 +973,7 @@ public class MapBehaviorBytecodeWalkerTests
                 (int)AcsPcode.SetActorPitch,
                 (int)AcsPcode.SetActorState,
                 (int)AcsPcode.NegateBinary,
-                (int)AcsPcode.LsWorldVar,
+                (int)AcsPcode.LsGlobalVar,
                 (int)AcsPcode.RsGlobalVar,
                 (int)AcsPcode.MorphActor,
                 (int)AcsPcode.UnmorphActor,
@@ -1002,7 +1002,7 @@ public class MapBehaviorBytecodeWalkerTests
         Assert.True(terminated);
         Assert.Equal(12, instructions.Count);
         Assert.Equal((int)AcsPcode.GetActorPitch, instructions[0].Opcode);
-        Assert.Equal((int)AcsPcode.LsWorldVar, instructions[4].Opcode);
+        Assert.Equal((int)AcsPcode.LsGlobalVar, instructions[4].Opcode);
         Assert.Equal((int)AcsPcode.ClassifyActor, instructions[8].Opcode);
     }
 
@@ -2186,6 +2186,95 @@ public class MapBehaviorBytecodeWalkerTests
         Assert.Equal(393, instructions[0].Opcode);
         Assert.Equal(1, instructions[0].OperandWordCount);
         Assert.Equal(400, instructions[1].Opcode);
+        Assert.Equal(1, instructions[1].OperandWordCount);
+    }
+
+    [Fact]
+    public void TryWalkScript_OldFormat_ReadsWorldVarShiftFollowUpAndEternityStackOps()
+    {
+        var lump = TestWadBuilder.BuildBehaviorLump(
+            MapBehaviorFormat.AcsOld,
+            scriptCount: 1,
+            includeTerminateBytecode: false,
+            bytecodeOpcodes:
+            [
+                315, 1, // PCD_LSWORLDVAR wire (313-324 shift block)
+                395, 2, // PCD_LSWORLDVAR wire (shadow LsWorldVar enum alias)
+                402, 3, // PCD_RSWORLDVAR wire (shadow RsWorldVar enum alias)
+                359, 4, // PCD_PUSHFUNCTION wire
+                361, // PCD_SCRIPTWAITNAMED wire
+                360, // PCD_CALLSTACK wire
+                363, // PCD_GOTOSTACK wire
+                (int)AcsPcode.Terminate,
+            ]);
+        Assert.True(MapBehaviorCodec.TryProbe(lump, out var record, out _));
+        Assert.True(MapBehaviorDirectoryCodec.TryReadScripts(
+            record.Data,
+            record.Format,
+            record.DirectoryOffset,
+            out var scripts,
+            out _));
+        Assert.Single(scripts);
+
+        Assert.True(MapBehaviorBytecodeWalker.TryWalkScript(
+            record.Data,
+            record.Format,
+            scripts[0].Address,
+            out var instructions,
+            out var terminated,
+            out _));
+
+        Assert.True(terminated);
+        Assert.Equal(8, instructions.Count);
+        Assert.Equal(315, instructions[0].Opcode);
+        Assert.Equal(1, instructions[0].OperandWordCount);
+        Assert.Equal(395, instructions[1].Opcode);
+        Assert.Equal(1, instructions[1].OperandWordCount);
+        Assert.Equal(402, instructions[2].Opcode);
+        Assert.Equal(1, instructions[2].OperandWordCount);
+        Assert.Equal(359, instructions[3].Opcode);
+        Assert.Equal(1, instructions[3].OperandWordCount);
+        Assert.Equal(361, instructions[4].Opcode);
+        Assert.Equal(360, instructions[5].Opcode);
+        Assert.Equal(363, instructions[6].Opcode);
+    }
+
+    [Fact]
+    public void TryWalkScript_LittleEnhanced_ReadsWorldVarShiftFollowUpAndEternityStackOps()
+    {
+        var bytecode = new byte[]
+        {
+            240, 155, 1, // PCD_LSWORLDVAR wire (shadow LsWorldVar enum alias)
+            240, 162, 2, // PCD_RSWORLDVAR wire (shadow RsWorldVar enum alias)
+            (byte)AcsPcode.Terminate,
+        };
+        var lump = TestWadBuilder.BuildBehaviorLumpWithBytecode(
+            MapBehaviorFormat.AcsLittleEnhanced,
+            scriptCount: 1,
+            bytecode);
+
+        Assert.True(MapBehaviorCodec.TryProbe(lump, out var record, out _));
+        Assert.True(MapBehaviorDirectoryCodec.TryReadScripts(
+            record.Data,
+            record.Format,
+            record.DirectoryOffset,
+            out var scripts,
+            out _));
+        Assert.Single(scripts);
+
+        Assert.True(MapBehaviorBytecodeWalker.TryWalkScript(
+            record.Data,
+            record.Format,
+            scripts[0].Address,
+            out var instructions,
+            out var terminated,
+            out _));
+
+        Assert.True(terminated);
+        Assert.Equal(3, instructions.Count);
+        Assert.Equal(395, instructions[0].Opcode);
+        Assert.Equal(1, instructions[0].OperandWordCount);
+        Assert.Equal(402, instructions[1].Opcode);
         Assert.Equal(1, instructions[1].OperandWordCount);
     }
 
