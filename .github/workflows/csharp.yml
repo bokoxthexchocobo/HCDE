@@ -151,10 +151,6 @@ jobs:
         run: |
           cd csharp
           dotnet test --no-build --filter "FullyQualifiedName~Evaluate_ReturnsNotRequiredWhenSecretsMissing"
-      - name: Enforce apply-bundle gate not required when env unset
-        run: |
-          cd csharp
-          dotnet test --no-build --filter "FullyQualifiedName~TryApplyExportedTemplatesFromEnvironment_ReturnsNotRequiredWhenUnset"
       - name: Enforce record-evidence gate not required when secrets missing
         if: ${{ secrets.HCDE_HCDESERV_PATH == '' || secrets.HCDE_IWAD_PATH == '' }}
         run: |
@@ -204,6 +200,10 @@ jobs:
         run: |
           cd csharp
           dotnet test --no-build --filter "FullyQualifiedName~TryApplyExportedTemplates_CopiesHarnessJsonFiles"
+      - name: Enforce try-apply-exported-templates not-required gate
+        run: |
+          cd csharp
+          dotnet test --no-build --filter "FullyQualifiedName~TryApplyExportedTemplatesFromEnvironment_ReturnsNotRequiredWhenUnset"
       - name: Enforce record-evidence manifest gate
         run: |
           cd csharp

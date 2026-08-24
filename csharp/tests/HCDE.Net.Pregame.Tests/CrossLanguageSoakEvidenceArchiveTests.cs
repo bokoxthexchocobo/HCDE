@@ -541,8 +541,21 @@ public class CrossLanguageSoakEvidenceArchiveTests
         if (Environment.GetEnvironmentVariable("HCDE_APPLY_SOAK_TEMPLATES") == "1")
             return;
 
-        var result = CrossLanguageSoakEvidenceArchive.TryApplyExportedTemplatesFromEnvironment();
-        Assert.Equal(CrossLanguageSoakGateStatus.NotRequired, result.Status);
+        var baseDir = Path.Combine(Path.GetTempPath(), $"hcde-soak-try-apply-unset-{Guid.NewGuid():N}");
+        var repositoryRoot = Path.Combine(baseDir, "repo");
+        Directory.CreateDirectory(Path.Combine(repositoryRoot, "csharp", "validation", "soak", "evidence"));
+        File.WriteAllText(Path.Combine(repositoryRoot, "README.md"), "test");
+
+        try
+        {
+            var result = CrossLanguageSoakEvidenceArchive.TryApplyExportedTemplatesFromEnvironment(repositoryRoot);
+            Assert.Equal(CrossLanguageSoakGateStatus.NotRequired, result.Status);
+        }
+        finally
+        {
+            if (Directory.Exists(baseDir))
+                Directory.Delete(baseDir, recursive: true);
+        }
     }
 
     [Fact]
