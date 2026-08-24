@@ -423,6 +423,22 @@ public static class SnapshotChecksumMismatchPolicy
         && appliedCoopPresentationEcho
         && appliedCoopDeadSpawns;
 
+    public static bool ShouldTriggerNetGapResyncOnCoopAuthorityEventActorDeltaPresentationEchoCoopDeadSpawnActorLineSpecMultiBucketMismatch(
+        SnapshotChecksumApplyResult result,
+        bool appliedCoopAuthorityEvents,
+        bool appliedCoopActorDeltas,
+        bool appliedCoopPresentationEcho,
+        bool appliedCoopDeadSpawns,
+        SnapshotChecksumMismatchPolicyKind policy) =>
+        ShouldTriggerNetGapResyncOnCoopAuthorityEventActorDeltaPresentationEchoCoopDeadSpawnActorLineSpecMismatch(
+            result,
+            appliedCoopAuthorityEvents,
+            appliedCoopActorDeltas,
+            appliedCoopPresentationEcho,
+            appliedCoopDeadSpawns,
+            policy)
+        && result.MismatchCount >= 2;
+
     public static bool ShouldTriggerNetGapResyncOnInvasionPresentationEchoMismatch(
         SnapshotChecksumApplyResult result,
         bool appliedInvasionPresentationEcho,
