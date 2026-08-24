@@ -117,6 +117,29 @@ public class CrossLanguageSoakEvidenceArchiveTests
     }
 
     [Fact]
+    public void RecordValidationSkippedEvidence_ReturnsEmptyWhenNotRequested()
+    {
+        if (Environment.GetEnvironmentVariable("HCDE_RECORD_VALIDATION_EVIDENCE") == "1")
+            return;
+
+        var baseDir = Path.Combine(Path.GetTempPath(), $"hcde-soak-record-skipped-empty-{Guid.NewGuid():N}");
+        var repositoryRoot = Path.Combine(baseDir, "repo");
+        Directory.CreateDirectory(Path.Combine(repositoryRoot, "csharp", "validation", "soak", "evidence"));
+        File.WriteAllText(Path.Combine(repositoryRoot, "README.md"), "test");
+
+        try
+        {
+            var files = CrossLanguageSoakEvidenceArchive.RecordValidationSkippedEvidence(repositoryRoot);
+            Assert.Empty(files);
+        }
+        finally
+        {
+            if (Directory.Exists(baseDir))
+                Directory.Delete(baseDir, recursive: true);
+        }
+    }
+
+    [Fact]
     public void RecordValidationSkippedEvidence_ReturnsNotRequiredWhenNotRequested()
     {
         if (Environment.GetEnvironmentVariable("HCDE_RECORD_VALIDATION_EVIDENCE") == "1")
