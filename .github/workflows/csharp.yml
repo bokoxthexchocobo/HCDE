@@ -229,6 +229,12 @@ jobs:
         run: |
           cd csharp
           dotnet test --no-build --filter "FullyQualifiedName~RecordValidationSkippedEvidence_ReturnsNotRequiredWhenNotRequested"
+      - name: Enforce try-record-validation-skipped evidence gate
+        env:
+          HCDE_RECORD_VALIDATION_EVIDENCE: '1'
+        run: |
+          cd csharp
+          dotnet test --no-build --filter "FullyQualifiedName~TryRecordValidationSkippedEvidence_WhenRequested"
       - name: Enforce try-record-validation-skipped evidence copy gate
         run: |
           cd csharp

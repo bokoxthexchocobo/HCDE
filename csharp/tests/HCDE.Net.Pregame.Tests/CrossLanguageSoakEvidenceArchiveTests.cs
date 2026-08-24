@@ -176,6 +176,27 @@ public class CrossLanguageSoakEvidenceArchiveTests
     }
 
     [Fact]
+    public void TryRecordValidationSkippedEvidence_WhenRequested()
+    {
+        if (Environment.GetEnvironmentVariable("HCDE_RECORD_VALIDATION_EVIDENCE") != "1")
+            return;
+
+        var evidenceDir = CrossLanguageSoakEvidenceArchive.ResolveDefaultEvidenceDirectory();
+        if (Directory.Exists(evidenceDir))
+        {
+            foreach (var file in Directory.GetFiles(evidenceDir, "*.json"))
+                File.Delete(file);
+        }
+
+        var result = CrossLanguageSoakEvidenceArchive.TryRecordValidationSkippedEvidence();
+        Assert.NotEqual(CrossLanguageSoakGateStatus.Failed, result.Status);
+        var files = Directory.GetFiles(evidenceDir, "*.json").OrderBy(path => path).ToArray();
+        Assert.Equal(2, files.Length);
+        Assert.All(files, path => Assert.Contains("_Skipped.json", path));
+        Assert.True(File.Exists(CrossLanguageSoakManifest.ResolveDefaultManifestPath()));
+    }
+
+    [Fact]
     public void RecordValidationSkippedEvidence_WhenRequested()
     {
         if (Environment.GetEnvironmentVariable("HCDE_RECORD_VALIDATION_EVIDENCE") != "1")
