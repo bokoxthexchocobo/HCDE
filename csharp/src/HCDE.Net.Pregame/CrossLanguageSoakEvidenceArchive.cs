@@ -53,6 +53,14 @@ public static class CrossLanguageSoakEvidenceArchive
         return RecordValidationEvidence(repositoryRoot);
     }
 
+    public static IReadOnlyList<string> RecordValidationSkippedEvidence(string? repositoryRoot = null)
+    {
+        if (Environment.GetEnvironmentVariable("HCDE_RECORD_VALIDATION_EVIDENCE") != "1")
+            return Array.Empty<string>();
+
+        return RecordValidationEvidence(repositoryRoot);
+    }
+
     public static CrossLanguageSoakGateResult TryRecordValidationPassedEvidence(string? repositoryRoot = null)
     {
         if (Environment.GetEnvironmentVariable("HCDE_RECORD_VALIDATION_EVIDENCE") != "1")

@@ -197,15 +197,22 @@ public class CrossLanguageSoakEvidenceArchiveTests
     [Fact]
     public void RecordValidationSkippedEvidence_CopiesHarnessJsonFiles()
     {
+        if (CrossLanguageSoakGate.AreSoakSecretsConfigured())
+            return;
+
         var baseDir = Path.Combine(Path.GetTempPath(), $"hcde-soak-skipped-{Guid.NewGuid():N}");
         var repositoryRoot = Path.Combine(baseDir, "repo");
         var evidenceDir = CrossLanguageSoakEvidenceArchive.ResolveDefaultEvidenceDirectory(repositoryRoot);
         Directory.CreateDirectory(evidenceDir);
         File.WriteAllText(Path.Combine(repositoryRoot, "README.md"), "test");
 
+        var priorRecord = Environment.GetEnvironmentVariable("HCDE_RECORD_VALIDATION_EVIDENCE");
+
         try
         {
-            var files = CrossLanguageSoakEvidenceArchive.RecordDefaultEvidence(repositoryRoot);
+            Environment.SetEnvironmentVariable("HCDE_RECORD_VALIDATION_EVIDENCE", "1");
+
+            var files = CrossLanguageSoakEvidenceArchive.RecordValidationSkippedEvidence(repositoryRoot);
             Assert.Equal(2, files.Count);
             Assert.Contains(files, path => path.Contains("pregame_guest_smoke", StringComparison.Ordinal));
             Assert.Contains(files, path => path.Contains("netcode_step12_invasion", StringComparison.Ordinal));
@@ -215,6 +222,7 @@ public class CrossLanguageSoakEvidenceArchiveTests
         }
         finally
         {
+            Environment.SetEnvironmentVariable("HCDE_RECORD_VALIDATION_EVIDENCE", priorRecord);
             if (Directory.Exists(baseDir))
                 Directory.Delete(baseDir, recursive: true);
         }
