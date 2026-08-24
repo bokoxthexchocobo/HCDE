@@ -821,11 +821,45 @@ Phase 2b is complete when **all** hold:
 2. ~~**Authority playsim tick polish**~~ — invasion coop-style cross-tail follow-ups, line-spec tail polish
 3. ~~**Cross-language soak evidence**~~ — record-validation-skipped evidence copy gate in main CI workflow
 
-## Phase 2c next slice (iteration 81)
+## Phase 2c next slice (iteration 81 — delivered)
 
-1. **BEHAVIOR bytecode operands** — map-array shift follow-up PCDs, more Eternity stack ops
-2. **Authority playsim tick polish** — coop invasion-style cross-tail follow-ups, presentation-echo tail polish
-3. **Cross-language soak evidence** — record-validation-passed evidence copy gate in main CI workflow
+1. ~~**BEHAVIOR bytecode operands**~~ — map-array shift follow-up PCDs, more Eternity stack ops
+2. ~~**Authority playsim tick polish**~~ — coop invasion-style cross-tail follow-ups, presentation-echo tail polish
+3. ~~**Cross-language soak evidence**~~ — record-validation-passed evidence copy gate in main CI workflow
+
+## Phase 2c next slice (iteration 82)
+
+1. **BEHAVIOR bytecode operands** — world-array shift follow-up PCDs, more Eternity stack ops
+2. **Authority playsim tick polish** — invasion coop-style cross-tail follow-ups, authority-event tail polish
+3. **Cross-language soak evidence** — try-record-passed-validation evidence copy gate in main CI workflow
+
+### Record-validation-passed evidence copy gate main CI step (Phase 2c — iteration 81 step 3)
+
+| Artifact | Location | C++ reference |
+| --- | --- | --- |
+| Record-validation-passed evidence copy gate | `CrossLanguageSoakEvidenceArchive.RecordDefaultEvidence` | harness JSON files copied into committed evidence dir |
+| Main CI workflow | `.github/workflows/csharp.yml` | `RecordValidationPassedEvidence_CopiesHarnessJsonFiles` step |
+| Gate tests | `CrossLanguageSoakEvidenceArchiveTests` | `RecordValidationPassedEvidence_CopiesHarnessJsonFiles` |
+| Release checklist | `validation/soak/README.md` | main CI record-validation-passed evidence copy gate docs |
+
+### Coop authority-event gap resync follow-ups + presentation-echo tail polish (Phase 2c — iteration 81 step 2)
+
+| Artifact | Location | C++ reference |
+| --- | --- | --- |
+| Presentation-echo tail polish | `SnapshotChecksumLineSpecPolicy.PolishPresentationEchoRollingHash` | fold line-spec into presentation-echo hash |
+| Presentation-echo commit polish | `GuestWorldStateStore.CommitAppliedActorDeltas` | polish presentation-echo rolling hash on HCDA apply |
+| Coop authority-event actor-delta presentation-echo coop-dead-spawn mismatch | `SnapshotChecksumMismatchPolicy.ShouldTriggerNetGapResyncOnCoopAuthorityEventActorDeltaPresentationEchoCoopDeadSpawnMismatch` | net gap resync when coop actor category mismatches |
+| Guest pump wiring | `LiveGuestSession.TryApplyTailSections` | tracks coop authority-event actor-delta presentation-echo coop-dead-spawn mismatch gap resync follow-ups |
+| E2E tests | `SnapshotChecksumLineSpecPolicyTests`, `SnapshotChecksumMismatchPolicyTests`, `GuestWorldStateChecksumIntegrationTests` | presentation-echo polish + coop quadruple cross-tail mismatch gap resync |
+
+### BEHAVIOR map-array shift follow-up + Eternity stack PCD operands (Phase 2c/2d — iteration 81 step 1)
+
+| Artifact | Location | C++ reference |
+| --- | --- | --- |
+| Map-array shift opcodes | `AcsPcode.cs` | `PCD_LSMAPARRAY`/`PCD_RSMAPARRAY` |
+| Wire-value skips | `MapBehaviorBytecodeWalker.cs` | C++ wire values for map-array shift PCDs shadowing legacy enum aliases |
+| Operand skip table | `MapBehaviorBytecodeWalker.cs` | little-enhanced map-array shift follow-up skips |
+| Walk tests | `MapBehaviorBytecodeWalkerTests` | `TryWalkScript_OldFormat_ReadsMapArrayShiftBlockEntryFollowUpAndEternityStackOps`, `TryWalkScript_LittleEnhanced_ReadsMapArrayShiftFollowUpAndEternityStackOps` |
 
 ### Record-validation-skipped evidence copy gate main CI step (Phase 2c — iteration 80 step 3)
 
@@ -2332,6 +2366,8 @@ Do **not** port snapshot encode/decode bodies until HCIN/HCSN headers are green.
 ## Audit conclusion (interim)
 
 **Phase 2b C# pregame stack is feature-complete for fresh dedicated joins** — loopback WAITING setup, verification-error replies, start-game, and a cross-language guest CLI/harness are in place. The remaining 2b gate is executing the harness against a real `hcdeserv` build and recording the result.
+
+**Phase 2c iteration 81** adds map-array shift block-entry follow-up/Eternity stack PCD operand coverage, coop authority-event actor-delta presentation-echo coop-dead-spawn gap resync follow-ups with presentation-echo tail polish on HCDA apply, and `RecordValidationPassedEvidence_CopiesHarnessJsonFiles` main CI gate for record-validation-passed evidence copy validation.
 
 **Phase 2c iteration 80** adds global-var shift follow-up/Eternity stack PCD operand coverage, invasion authority-event actor-delta coop-dead-spawn gap resync follow-ups with line-spec tail polish on HCDA apply, and `RecordValidationSkippedEvidence_CopiesHarnessJsonFiles` main CI gate for record-validation-skipped evidence copy validation.
 
