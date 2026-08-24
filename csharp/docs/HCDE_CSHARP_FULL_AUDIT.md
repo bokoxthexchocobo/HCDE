@@ -2,7 +2,7 @@
 
 **Last updated:** 2026-08-18  
 **Scope:** All code under `csharp/` (7 projects, 6 test suites)  
-**Verification:** `dotnet build` and `dotnet test` in `csharp/` — **507 tests passing** (CI: `.github/workflows/csharp.yml`; optional soak: `.github/workflows/csharp-cross-language-soak.yml`)  
+**Verification:** `dotnet build` and `dotnet test` in `csharp/` — **513 tests passing** (CI: `.github/workflows/csharp.yml`; optional soak: `.github/workflows/csharp-cross-language-soak.yml`)  
 **Related:** [`HCDE_CSHARP_PHASE1_AUDIT.md`](HCDE_CSHARP_PHASE1_AUDIT.md) · [`HCDE_CSHARP_PHASE2_AUDIT.md`](HCDE_CSHARP_PHASE2_AUDIT.md) · [`HCDE_CSHARP_MIGRATION.md`](HCDE_CSHARP_MIGRATION.md)
 
 ---
@@ -43,7 +43,7 @@ csharp/
     HCDE.MapLoader/         21 files, ~1,550 LOC   (WAD directory + unified binary map decode + BEHAVIOR directory)
     HCDE.Server/             6 files,   ~420 LOC   (hcdeserv host + CLI + query/advertise)
     HCDE.PregameGuest.Cli/  5 files,   ~207 LOC   (hcde-pregame-guest CLI)
-  tests/                   69 files, 507 tests
+  tests/                   69 files, 513 tests
 ```
 
 ### 2.2 Test matrix

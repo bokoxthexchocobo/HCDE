@@ -481,6 +481,61 @@ public class CrossLanguageSoakEvidenceArchiveTests
     }
 
     [Fact]
+    public void TryApplyExportedTemplates_CopiesHarnessJsonFiles()
+    {
+        if (Environment.GetEnvironmentVariable("HCDE_APPLY_SOAK_TEMPLATES") == "1")
+            return;
+
+        var baseDir = Path.Combine(Path.GetTempPath(), $"hcde-soak-try-apply-{Guid.NewGuid():N}");
+        var repositoryRoot = Path.Combine(baseDir, "repo");
+        var evidenceDir = Path.Combine(repositoryRoot, "csharp", "validation", "soak", "evidence");
+        Directory.CreateDirectory(evidenceDir);
+        File.WriteAllText(Path.Combine(repositoryRoot, "README.md"), "test");
+        File.WriteAllText(Path.Combine(evidenceDir, "stale.json"), "{}");
+
+        var exportDir = Path.Combine(baseDir, "artifact");
+        var exportEvidenceDir = Path.Combine(exportDir, "evidence");
+        Directory.CreateDirectory(exportEvidenceDir);
+        File.WriteAllText(Path.Combine(exportEvidenceDir, "pregame_guest_smoke_test_Passed.json"), "{}");
+        File.WriteAllText(
+            Path.Combine(exportDir, "manifest.json"),
+            $$"""
+            {
+              "RecordedAtUtc": "{{DateTimeOffset.UtcNow:O}}",
+              "Harnesses": [
+                {
+                  "Harness": "pregame_guest_smoke",
+                  "Status": "Passed",
+                  "EvidenceFile": "pregame_guest_smoke_test_Passed.json"
+                }
+              ]
+            }
+            """);
+
+        var priorApply = Environment.GetEnvironmentVariable("HCDE_APPLY_SOAK_TEMPLATES");
+        var priorExportDir = Environment.GetEnvironmentVariable("HCDE_SOAK_TEMPLATE_EXPORT_DIR");
+
+        try
+        {
+            Environment.SetEnvironmentVariable("HCDE_APPLY_SOAK_TEMPLATES", "1");
+            Environment.SetEnvironmentVariable("HCDE_SOAK_TEMPLATE_EXPORT_DIR", exportDir);
+
+            var result = CrossLanguageSoakEvidenceArchive.TryApplyExportedTemplatesFromEnvironment(repositoryRoot);
+            Assert.NotEqual(CrossLanguageSoakGateStatus.Failed, result.Status);
+            Assert.False(File.Exists(Path.Combine(evidenceDir, "stale.json")));
+            Assert.True(File.Exists(Path.Combine(evidenceDir, "pregame_guest_smoke_test_Passed.json")));
+            Assert.True(File.Exists(CrossLanguageSoakManifest.ResolveDefaultManifestPath(repositoryRoot)));
+        }
+        finally
+        {
+            Environment.SetEnvironmentVariable("HCDE_APPLY_SOAK_TEMPLATES", priorApply);
+            Environment.SetEnvironmentVariable("HCDE_SOAK_TEMPLATE_EXPORT_DIR", priorExportDir);
+            if (Directory.Exists(baseDir))
+                Directory.Delete(baseDir, recursive: true);
+        }
+    }
+
+    [Fact]
     public void TryApplyExportedTemplatesFromEnvironment_ReturnsNotRequiredWhenUnset()
     {
         if (Environment.GetEnvironmentVariable("HCDE_APPLY_SOAK_TEMPLATES") == "1")
