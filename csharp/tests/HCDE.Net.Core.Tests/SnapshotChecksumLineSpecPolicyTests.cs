@@ -268,6 +268,40 @@ public class SnapshotChecksumLineSpecPolicyTests
     }
 
     [Fact]
+    public void PolishPresentationEchoRollingHash_MixesLineSpecTailWhenBothPresent()
+    {
+        var lineSpecHash = SnapshotChecksumLineSpecPolicy.MixRecord(0, lineIndex: 4, special: 6, success: true);
+        var echoHash = SnapshotChecksumPresentationEchoPolicy.MixBlock(0, PresentationEchoCodec.CreateExampleBlock());
+        var polished = SnapshotChecksumLineSpecPolicy.PolishPresentationEchoRollingHash(echoHash, lineSpecHash);
+
+        Assert.NotEqual(echoHash, polished);
+        Assert.Equal(echoHash, SnapshotChecksumLineSpecPolicy.PolishPresentationEchoRollingHash(echoHash, lineSpecHash: 0));
+    }
+
+    [Fact]
+    public void CommitAppliedActorDeltas_PolishesPresentationEchoRollingHashFromLineSpec()
+    {
+        var store = new GuestWorldStateStore();
+        store.NoteLineSpec(lineIndex: 2, special: 4, success: true);
+        store.CommitAppliedPresentationEcho(PresentationEchoCodec.CreateExampleBlock());
+        var before = store.PresentationEchoRollingHash;
+
+        store.CommitAppliedActorDeltas(new[]
+        {
+            new ActorDeltaRecord
+            {
+                ActorId = 12,
+                ClassId = 5,
+                FieldMask = LiveConstants.ActorDeltaFieldHealth,
+                Health = 68,
+            },
+        });
+
+        Assert.NotEqual(before, store.PresentationEchoRollingHash);
+        Assert.NotEqual(0u, store.LineSpecRollingHash);
+    }
+
+    [Fact]
     public void CommitAppliedActorDeltas_PolishesActorDeltaRollingHashFromLineSpec()
     {
         var store = new GuestWorldStateStore();

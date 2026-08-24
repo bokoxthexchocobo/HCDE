@@ -51,4 +51,12 @@ public static class SnapshotChecksumLineSpecPolicy
 
         return SnapshotChecksumMixer.MixU32(authorityEventHash, lineSpecHash);
     }
+
+    public static uint PolishPresentationEchoRollingHash(uint presentationEchoHash, uint lineSpecHash)
+    {
+        if (presentationEchoHash == 0 || lineSpecHash == 0)
+            return presentationEchoHash;
+
+        return SnapshotChecksumMixer.MixU32(presentationEchoHash, lineSpecHash);
+    }
 }
