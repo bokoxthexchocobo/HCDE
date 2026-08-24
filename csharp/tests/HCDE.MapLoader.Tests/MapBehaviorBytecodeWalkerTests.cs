@@ -2251,6 +2251,56 @@ public class MapBehaviorBytecodeWalkerTests
     }
 
     [Fact]
+    public void TryWalkScript_OldFormat_ReadsScriptVarShiftBlockEntryFollowUpAndEternityStackOps()
+    {
+        var lump = TestWadBuilder.BuildBehaviorLump(
+            MapBehaviorFormat.AcsOld,
+            scriptCount: 1,
+            includeTerminateBytecode: false,
+            bytecodeOpcodes:
+            [
+                321, 1, // PCD_LSSCRIPTVAR wire (313-324 shift block)
+                393, 2, // PCD_LSSCRIPTVAR wire (shadow LsScriptVar enum alias)
+                400, 3, // PCD_RSSCRIPTVAR wire (shadow RsScriptVar enum alias)
+                359, 4, // PCD_PUSHFUNCTION wire
+                361, // PCD_SCRIPTWAITNAMED wire
+                360, // PCD_CALLSTACK wire
+                363, // PCD_GOTOSTACK wire
+                (int)AcsPcode.Terminate,
+            ]);
+        Assert.True(MapBehaviorCodec.TryProbe(lump, out var record, out _));
+        Assert.True(MapBehaviorDirectoryCodec.TryReadScripts(
+            record.Data,
+            record.Format,
+            record.DirectoryOffset,
+            out var scripts,
+            out _));
+        Assert.Single(scripts);
+
+        Assert.True(MapBehaviorBytecodeWalker.TryWalkScript(
+            record.Data,
+            record.Format,
+            scripts[0].Address,
+            out var instructions,
+            out var terminated,
+            out _));
+
+        Assert.True(terminated);
+        Assert.Equal(8, instructions.Count);
+        Assert.Equal(321, instructions[0].Opcode);
+        Assert.Equal(1, instructions[0].OperandWordCount);
+        Assert.Equal(393, instructions[1].Opcode);
+        Assert.Equal(1, instructions[1].OperandWordCount);
+        Assert.Equal(400, instructions[2].Opcode);
+        Assert.Equal(1, instructions[2].OperandWordCount);
+        Assert.Equal(359, instructions[3].Opcode);
+        Assert.Equal(1, instructions[3].OperandWordCount);
+        Assert.Equal(361, instructions[4].Opcode);
+        Assert.Equal(360, instructions[5].Opcode);
+        Assert.Equal(363, instructions[6].Opcode);
+    }
+
+    [Fact]
     public void TryWalkScript_OldFormat_ReadsScriptVarShiftFollowUpAndEternityStackOps()
     {
         var lump = TestWadBuilder.BuildBehaviorLump(
