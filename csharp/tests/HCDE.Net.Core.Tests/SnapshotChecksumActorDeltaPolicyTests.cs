@@ -234,6 +234,33 @@ public class SnapshotChecksumActorDeltaPolicyTests
         });
 
         Assert.NotEqual(before, store.LineSpecRollingHash);
+        Assert.NotEqual(0u, store.LineSpecRollingHash);
+    }
+
+    [Fact]
+    public void CommitAppliedActorDeltas_PolishesLineSpecRollingHashAtTailFromActorDelta()
+    {
+        var store = new GuestWorldStateStore();
+        store.NoteLineSpec(lineIndex: 6, special: 10, success: true);
+        store.CommitAppliedAuthorityEvents(new[]
+        {
+            AuthorityEventsCodec.CreateSpawnExample("DoomImp", actorId: 20),
+        });
+        store.CommitAppliedPresentationEcho(PresentationEchoCodec.CreateExampleBlock());
+        var before = store.LineSpecRollingHash;
+
+        store.CommitAppliedActorDeltas(new[]
+        {
+            new ActorDeltaRecord
+            {
+                ActorId = 14,
+                ClassId = 5,
+                FieldMask = LiveConstants.ActorDeltaFieldHealth,
+                Health = 64,
+            },
+        });
+
+        Assert.NotEqual(before, store.LineSpecRollingHash);
         Assert.NotEqual(0u, store.ActorDeltaRollingHash);
     }
 

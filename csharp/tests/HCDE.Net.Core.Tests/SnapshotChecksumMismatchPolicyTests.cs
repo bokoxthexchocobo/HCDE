@@ -754,6 +754,45 @@ public class SnapshotChecksumMismatchPolicyTests
     }
 
     [Fact]
+    public void ShouldTriggerNetGapResyncOnInvasionAuthorityEventActorDeltaPresentationEchoCoopDeadSpawnLineSpecMismatch_RequiresAppliedInvasionAuthorityEventsActorDeltasPresentationEchoAndCoopDeadSpawns()
+    {
+        var result = new SnapshotChecksumApplyResult(
+            compared: true,
+            mismatchCount: 1,
+            localBucketMissing: false,
+            hasLineSpecCategoryMismatch: true);
+
+        Assert.True(SnapshotChecksumMismatchPolicy.ShouldTriggerNetGapResyncOnInvasionAuthorityEventActorDeltaPresentationEchoCoopDeadSpawnLineSpecMismatch(
+            result,
+            appliedInvasionAuthorityEvents: true,
+            appliedInvasionActorDeltas: true,
+            appliedInvasionPresentationEcho: true,
+            appliedInvasionCoopDeadSpawns: true,
+            SnapshotChecksumMismatchPolicyKind.ResyncNetStateOnMismatch));
+        Assert.False(SnapshotChecksumMismatchPolicy.ShouldTriggerNetGapResyncOnInvasionAuthorityEventActorDeltaPresentationEchoCoopDeadSpawnLineSpecMismatch(
+            result,
+            appliedInvasionAuthorityEvents: true,
+            appliedInvasionActorDeltas: true,
+            appliedInvasionPresentationEcho: true,
+            appliedInvasionCoopDeadSpawns: false,
+            SnapshotChecksumMismatchPolicyKind.ResyncNetStateOnMismatch));
+        Assert.False(SnapshotChecksumMismatchPolicy.ShouldTriggerNetGapResyncOnInvasionAuthorityEventActorDeltaPresentationEchoCoopDeadSpawnLineSpecMismatch(
+            result,
+            appliedInvasionAuthorityEvents: true,
+            appliedInvasionActorDeltas: true,
+            appliedInvasionPresentationEcho: false,
+            appliedInvasionCoopDeadSpawns: true,
+            SnapshotChecksumMismatchPolicyKind.ResyncNetStateOnMismatch));
+        Assert.False(SnapshotChecksumMismatchPolicy.ShouldTriggerNetGapResyncOnInvasionAuthorityEventActorDeltaPresentationEchoCoopDeadSpawnLineSpecMismatch(
+            result,
+            appliedInvasionAuthorityEvents: true,
+            appliedInvasionActorDeltas: false,
+            appliedInvasionPresentationEcho: true,
+            appliedInvasionCoopDeadSpawns: true,
+            SnapshotChecksumMismatchPolicyKind.ResyncNetStateOnMismatch));
+    }
+
+    [Fact]
     public void ShouldTriggerNetGapResyncOnCoopAuthorityEventActorDeltaPresentationEchoCoopDeadSpawnLineSpecMismatch_RequiresAppliedCoopAuthorityEventsActorDeltasPresentationEchoAndCoopDeadSpawns()
     {
         var result = new SnapshotChecksumApplyResult(
