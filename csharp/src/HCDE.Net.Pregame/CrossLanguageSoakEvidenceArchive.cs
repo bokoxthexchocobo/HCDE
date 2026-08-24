@@ -45,6 +45,26 @@ public static class CrossLanguageSoakEvidenceArchive
         return RecordDefaultEvidence(repositoryRoot);
     }
 
+    public static CrossLanguageSoakGateResult TryRecordValidationPassedEvidence(string? repositoryRoot = null)
+    {
+        if (Environment.GetEnvironmentVariable("HCDE_RECORD_VALIDATION_EVIDENCE") != "1")
+        {
+            return new CrossLanguageSoakGateResult(
+                CrossLanguageSoakGateStatus.NotRequired,
+                "record validation evidence not requested");
+        }
+
+        if (!CrossLanguageSoakGate.AreSoakSecretsConfigured())
+        {
+            return new CrossLanguageSoakGateResult(
+                CrossLanguageSoakGateStatus.NotRequired,
+                "soak secrets not configured");
+        }
+
+        RecordValidationEvidence(repositoryRoot);
+        return CrossLanguageSoakGate.Evaluate(repositoryRoot, requireConfiguredSecrets: true);
+    }
+
     public static IReadOnlyList<string> RefreshCommittedEvidence(string? repositoryRoot = null)
     {
         repositoryRoot ??= FindRepositoryRoot();

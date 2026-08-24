@@ -1,7 +1,7 @@
 # HCDE C# Migration — Phase 2 Principal Audit
 
 **Last updated:** 2026-08-21  
-**Status:** In progress — Phase **2c** live protocol codecs (iteration 85 complete). Phase **2b** verification errors, start-game, bootstrap/resync, and cross-language harness complete.  
+**Status:** In progress — Phase **2c** live protocol codecs (iteration 86 complete). Phase **2b** verification errors, start-game, bootstrap/resync, and cross-language harness complete.  
 **Prerequisite:** [Phase 1 audit](HCDE_CSHARP_PHASE1_AUDIT.md) (complete)  
 **Related:** [`HCDE_CSHARP_MIGRATION.md`](HCDE_CSHARP_MIGRATION.md) · [`HCDE_NETCODE.md`](../../docs/HCDE_NETCODE.md)
 
@@ -851,11 +851,43 @@ Phase 2b is complete when **all** hold:
 2. ~~**Authority playsim tick polish**~~ — coop invasion-style cross-tail follow-ups, presentation-echo tail polish
 3. ~~**Cross-language soak evidence**~~ — try-record-passed-validation not-required gate in main CI workflow
 
-## Phase 2c next slice (iteration 86)
+## Phase 2c next slice (iteration 86 — delivered)
 
-1. **BEHAVIOR bytecode operands** — map-var shift follow-up PCDs, more Eternity stack ops
-2. **Authority playsim tick polish** — invasion coop-style cross-tail follow-ups, authority-event tail polish
-3. **Cross-language soak evidence** — record-validation-passed not-required gate in main CI workflow
+1. ~~**BEHAVIOR bytecode operands**~~ — map-var shift follow-up PCDs, more Eternity stack ops
+2. ~~**Authority playsim tick polish**~~ — invasion coop-style cross-tail follow-ups, authority-event tail polish
+3. ~~**Cross-language soak evidence**~~ — record-validation-passed not-required gate in main CI workflow
+
+## Phase 2c next slice (iteration 87)
+
+1. **BEHAVIOR bytecode operands** — world-var shift follow-up PCDs, more Eternity stack ops
+2. **Authority playsim tick polish** — coop invasion-style cross-tail follow-ups, actor-delta tail polish
+3. **Cross-language soak evidence** — record-validation-skipped not-required gate in main CI workflow
+
+### Record-validation-passed not-required gate main CI step (Phase 2c — iteration 86 step 3)
+
+| Artifact | Location | C++ reference |
+| --- | --- | --- |
+| Record-validation-passed not-required gate | `CrossLanguageSoakEvidenceArchive.TryRecordValidationPassedEvidence` | return NotRequired when soak secrets are absent |
+| Main CI workflow | `.github/workflows/csharp.yml` | `RecordValidationPassedEvidence_ReturnsNotRequiredWhenSecretsMissing` step |
+| Gate tests | `CrossLanguageSoakEvidenceArchiveTests` | `RecordValidationPassedEvidence_ReturnsNotRequiredWhenSecretsMissing` |
+| Release checklist | `validation/soak/README.md` | main CI record-validation-passed not-required gate docs |
+
+### Invasion authority-event gap resync follow-ups + authority-event tail polish (Phase 2c — iteration 86 step 2)
+
+| Artifact | Location | C++ reference |
+| --- | --- | --- |
+| Authority-event tail polish | `SnapshotChecksumActorDeltaPolicy.PolishAuthorityEventRollingHash` | fold actor-delta into authority-event hash |
+| Authority-event commit polish | `GuestWorldStateStore.CommitAppliedActorDeltas` | polish authority-event rolling hash on HCDA apply |
+| Invasion authority-event actor-delta presentation-echo coop-dead-spawn actor-line-spec mismatch | `SnapshotChecksumMismatchPolicy.ShouldTriggerNetGapResyncOnInvasionAuthorityEventActorDeltaPresentationEchoCoopDeadSpawnActorLineSpecMismatch` | net gap resync when invasion actor and line-spec categories mismatch |
+| Guest pump wiring | `LiveGuestSession.TryApplyTailSections` | tracks invasion authority-event actor-delta presentation-echo coop-dead-spawn dual-category mismatch gap resync follow-ups |
+| E2E tests | `SnapshotChecksumActorDeltaPolicyTests`, `SnapshotChecksumMismatchPolicyTests`, `GuestWorldStateChecksumIntegrationTests` | authority-event polish + invasion dual-category cross-tail mismatch gap resync |
+
+### BEHAVIOR map-var shift block-entry + Eternity stack PCD operands (Phase 2c/2d — iteration 86 step 1)
+
+| Artifact | Location | C++ reference |
+| --- | --- | --- |
+| Map-var shift block-entry wire skips | `MapBehaviorBytecodeWalker` | `322`/`394`/`401` operand skip arms |
+| Walker tests | `MapBehaviorBytecodeWalkerTests` | `TryWalkScript_OldFormat_ReadsMapVarShiftBlockEntryFollowUpAndEternityStackOps` |
 
 ### Try-record-passed-validation not-required gate main CI step (Phase 2c — iteration 85 step 3)
 
@@ -2496,6 +2528,8 @@ Do **not** port snapshot encode/decode bodies until HCIN/HCSN headers are green.
 ## Audit conclusion (interim)
 
 **Phase 2b C# pregame stack is feature-complete for fresh dedicated joins** — loopback WAITING setup, verification-error replies, start-game, and a cross-language guest CLI/harness are in place. The remaining 2b gate is executing the harness against a real `hcdeserv` build and recording the result.
+
+**Phase 2c iteration 86** adds map-var shift block-entry follow-up/Eternity stack PCD operand coverage, invasion authority-event actor-delta presentation-echo coop-dead-spawn actor-line-spec dual-category gap resync follow-ups with authority-event tail polish on HCDA apply, and `RecordValidationPassedEvidence_ReturnsNotRequiredWhenSecretsMissing` main CI gate for record-validation-passed not-required validation.
 
 **Phase 2c iteration 85** adds script-var shift block-entry follow-up/Eternity stack PCD operand coverage, coop authority-event actor-delta presentation-echo coop-dead-spawn actor-line-spec dual-category gap resync follow-ups with presentation-echo tail polish on HCDA apply, and `TryRecordPassedValidationEvidence_ReturnsNotRequiredWhenSecretsMissing` main CI gate for try-record-passed-validation not-required validation.
 

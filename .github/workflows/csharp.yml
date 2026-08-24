@@ -235,6 +235,11 @@ jobs:
         run: |
           cd csharp
           dotnet test --no-build --filter "FullyQualifiedName~RecordValidationPassedEvidence_CopiesHarnessJsonFiles"
+      - name: Enforce record-validation-passed not-required gate
+        if: ${{ secrets.HCDE_HCDESERV_PATH == '' || secrets.HCDE_IWAD_PATH == '' }}
+        run: |
+          cd csharp
+          dotnet test --no-build --filter "FullyQualifiedName~RecordValidationPassedEvidence_ReturnsNotRequiredWhenSecretsMissing"
       - name: Enforce passed record-evidence gate
         env:
           HCDE_RECORD_PASSED_VALIDATION_EVIDENCE: '1'

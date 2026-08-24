@@ -162,6 +162,33 @@ public class CrossLanguageSoakEvidenceArchiveTests
     }
 
     [Fact]
+    public void RecordValidationPassedEvidence_ReturnsNotRequiredWhenSecretsMissing()
+    {
+        if (CrossLanguageSoakGate.AreSoakSecretsConfigured())
+            return;
+
+        var baseDir = Path.Combine(Path.GetTempPath(), $"hcde-soak-record-passed-unset-{Guid.NewGuid():N}");
+        var repositoryRoot = Path.Combine(baseDir, "repo");
+        Directory.CreateDirectory(Path.Combine(repositoryRoot, "csharp", "validation", "soak", "evidence"));
+        File.WriteAllText(Path.Combine(repositoryRoot, "README.md"), "test");
+
+        var priorRecord = Environment.GetEnvironmentVariable("HCDE_RECORD_VALIDATION_EVIDENCE");
+
+        try
+        {
+            Environment.SetEnvironmentVariable("HCDE_RECORD_VALIDATION_EVIDENCE", "1");
+            var result = CrossLanguageSoakEvidenceArchive.TryRecordValidationPassedEvidence(repositoryRoot);
+            Assert.Equal(CrossLanguageSoakGateStatus.NotRequired, result.Status);
+        }
+        finally
+        {
+            Environment.SetEnvironmentVariable("HCDE_RECORD_VALIDATION_EVIDENCE", priorRecord);
+            if (Directory.Exists(baseDir))
+                Directory.Delete(baseDir, recursive: true);
+        }
+    }
+
+    [Fact]
     public void RecordValidationPassedEvidence_WhenRequested()
     {
         if (Environment.GetEnvironmentVariable("HCDE_RECORD_VALIDATION_EVIDENCE") != "1")
