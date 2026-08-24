@@ -74,8 +74,31 @@ public static class CrossLanguageSoakEvidenceArchive
                 "record validation evidence not requested");
         }
 
-        RecordValidationEvidence(repositoryRoot);
-        return CrossLanguageSoakGate.Evaluate(repositoryRoot, requireConfiguredSecrets: false);
+        var files = RecordValidationEvidence(repositoryRoot);
+        if (files.Count == 0)
+        {
+            return new CrossLanguageSoakGateResult(
+                CrossLanguageSoakGateStatus.Failed,
+                "validation evidence recording produced no files");
+        }
+
+        if (files.Any(path => !path.Contains("_Skipped.json", StringComparison.Ordinal)))
+        {
+            return new CrossLanguageSoakGateResult(
+                CrossLanguageSoakGateStatus.Failed,
+                "validation evidence recording did not produce skipped harness files");
+        }
+
+        if (!File.Exists(CrossLanguageSoakManifest.ResolveDefaultManifestPath(repositoryRoot)))
+        {
+            return new CrossLanguageSoakGateResult(
+                CrossLanguageSoakGateStatus.Failed,
+                "validation evidence manifest missing after recording");
+        }
+
+        return new CrossLanguageSoakGateResult(
+            CrossLanguageSoakGateStatus.Passed,
+            "validation skipped evidence recorded");
     }
 
     public static IReadOnlyList<string> RefreshCommittedEvidence(string? repositoryRoot = null)

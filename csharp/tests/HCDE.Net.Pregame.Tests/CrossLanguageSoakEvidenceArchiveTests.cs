@@ -140,6 +140,42 @@ public class CrossLanguageSoakEvidenceArchiveTests
     }
 
     [Fact]
+    public void TryRecordValidationSkippedEvidence_CopiesHarnessJsonFiles()
+    {
+        if (CrossLanguageSoakGate.AreSoakSecretsConfigured())
+            return;
+
+        var baseDir = Path.Combine(Path.GetTempPath(), $"hcde-soak-try-record-skipped-{Guid.NewGuid():N}");
+        var repositoryRoot = Path.Combine(baseDir, "repo");
+        var evidenceDir = CrossLanguageSoakEvidenceArchive.ResolveDefaultEvidenceDirectory(repositoryRoot);
+        Directory.CreateDirectory(evidenceDir);
+        File.WriteAllText(Path.Combine(repositoryRoot, "README.md"), "test");
+
+        var priorRecord = Environment.GetEnvironmentVariable("HCDE_RECORD_VALIDATION_EVIDENCE");
+
+        try
+        {
+            Environment.SetEnvironmentVariable("HCDE_RECORD_VALIDATION_EVIDENCE", "1");
+
+            var result = CrossLanguageSoakEvidenceArchive.TryRecordValidationSkippedEvidence(repositoryRoot);
+            Assert.NotEqual(CrossLanguageSoakGateStatus.Failed, result.Status);
+            var files = Directory.GetFiles(evidenceDir, "*.json").OrderBy(path => path).ToArray();
+            Assert.Equal(2, files.Length);
+            Assert.Contains(files, path => path.Contains("pregame_guest_smoke", StringComparison.Ordinal));
+            Assert.Contains(files, path => path.Contains("netcode_step12_invasion", StringComparison.Ordinal));
+            Assert.All(files, path => Assert.Contains("_Skipped.json", path));
+            Assert.All(files, path => Assert.StartsWith(evidenceDir, Path.GetDirectoryName(path)!));
+            Assert.True(File.Exists(CrossLanguageSoakManifest.ResolveDefaultManifestPath(repositoryRoot)));
+        }
+        finally
+        {
+            Environment.SetEnvironmentVariable("HCDE_RECORD_VALIDATION_EVIDENCE", priorRecord);
+            if (Directory.Exists(baseDir))
+                Directory.Delete(baseDir, recursive: true);
+        }
+    }
+
+    [Fact]
     public void RecordValidationSkippedEvidence_WhenRequested()
     {
         if (Environment.GetEnvironmentVariable("HCDE_RECORD_VALIDATION_EVIDENCE") != "1")
