@@ -268,6 +268,28 @@ public class SnapshotChecksumLineSpecPolicyTests
     }
 
     [Fact]
+    public void CommitAppliedActorDeltas_PolishesActorDeltaRollingHashFromLineSpec()
+    {
+        var store = new GuestWorldStateStore();
+        store.NoteLineSpec(lineIndex: 2, special: 4, success: true);
+        var before = store.ActorDeltaRollingHash;
+
+        store.CommitAppliedActorDeltas(new[]
+        {
+            new ActorDeltaRecord
+            {
+                ActorId = 11,
+                ClassId = 4,
+                FieldMask = LiveConstants.ActorDeltaFieldHealth,
+                Health = 65,
+            },
+        });
+
+        Assert.NotEqual(before, store.ActorDeltaRollingHash);
+        Assert.NotEqual(0u, store.LineSpecRollingHash);
+    }
+
+    [Fact]
     public void NoteLineSpec_PolishesActorDeltaRollingHash()
     {
         var store = new GuestWorldStateStore();
