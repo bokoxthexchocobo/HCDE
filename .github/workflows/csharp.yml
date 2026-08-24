@@ -242,6 +242,12 @@ jobs:
         run: |
           cd csharp
           dotnet test --no-build --filter "FullyQualifiedName~TryRecordPassedValidationEvidence_PassesGateWhenBinariesPresent"
+      - name: Enforce try-record-passed-validation evidence copy gate
+        env:
+          HCDE_RECORD_PASSED_VALIDATION_EVIDENCE: '1'
+        run: |
+          cd csharp
+          dotnet test --no-build --filter "FullyQualifiedName~TryRecordPassedValidationEvidence_CopiesHarnessJsonFiles"
       - name: Enforce refresh committed evidence gate
         env:
           HCDE_REFRESH_SOAK_TEMPLATES: '1'

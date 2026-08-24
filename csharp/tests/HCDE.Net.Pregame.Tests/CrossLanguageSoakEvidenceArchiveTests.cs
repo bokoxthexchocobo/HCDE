@@ -220,6 +220,37 @@ public class CrossLanguageSoakEvidenceArchiveTests
     }
 
     [Fact]
+    public void TryRecordPassedValidationEvidence_CopiesHarnessJsonFiles()
+    {
+        if (!CrossLanguageSoakGate.AreSoakSecretsConfigured())
+            return;
+
+        var baseDir = Path.Combine(Path.GetTempPath(), $"hcde-soak-try-passed-{Guid.NewGuid():N}");
+        var repositoryRoot = Path.Combine(baseDir, "repo");
+        var evidenceDir = CrossLanguageSoakEvidenceArchive.ResolveDefaultEvidenceDirectory(repositoryRoot);
+        Directory.CreateDirectory(evidenceDir);
+        File.WriteAllText(Path.Combine(repositoryRoot, "README.md"), "test");
+
+        try
+        {
+            var result = CrossLanguageSoakEvidenceArchive.TryRecordPassedValidationEvidence(repositoryRoot);
+            Assert.Equal(CrossLanguageSoakGateStatus.Passed, result.Status);
+            var files = Directory.GetFiles(evidenceDir, "*.json").OrderBy(path => path).ToArray();
+            Assert.Equal(2, files.Length);
+            Assert.Contains(files, path => path.Contains("pregame_guest_smoke", StringComparison.Ordinal));
+            Assert.Contains(files, path => path.Contains("netcode_step12_invasion", StringComparison.Ordinal));
+            Assert.All(files, path => Assert.Contains("_Passed.json", path));
+            Assert.All(files, path => Assert.StartsWith(evidenceDir, Path.GetDirectoryName(path)!));
+            Assert.True(File.Exists(CrossLanguageSoakManifest.ResolveDefaultManifestPath(repositoryRoot)));
+        }
+        finally
+        {
+            if (Directory.Exists(baseDir))
+                Directory.Delete(baseDir, recursive: true);
+        }
+    }
+
+    [Fact]
     public void ExportCommittedTemplates_WritesCiArtifactBundle()
     {
         if (Environment.GetEnvironmentVariable("HCDE_EXPORT_SOAK_TEMPLATES") != "1")
