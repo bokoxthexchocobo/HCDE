@@ -277,6 +277,8 @@ public static class MapBehaviorBytecodeWalker
             => 1, // C++ PCD_LSMAPVAR/PCD_RSMAPVAR wire (shadow legacy LsMapVar/RsMapVar enum aliases)
         395 or 402
             => 1, // C++ PCD_LSWORLDVAR/PCD_RSWORLDVAR wire (shadow legacy LsWorldVar/RsWorldVar enum aliases)
+        396 or 403
+            => 1, // C++ PCD_LSGLOBALVAR/PCD_RSGLOBALVAR wire (shadow legacy LsGlobalVar/RsGlobalVar enum aliases)
         397 or 404
             => 1, // C++ PCD_LSMAPARRAY/PCD_RSMAPARRAY wire (shadow legacy LsMapArray/RsMapArray enum aliases)
         398 or 405
@@ -354,7 +356,6 @@ public static class MapBehaviorBytecodeWalker
         313 or 314 or 315 or 316 or 317 or 318 or 319 or 320 or 321 or 322 or 323 or 324
             => 1, // C++ Ls/Rs script/map/world/global var+array shift PCDs (shadow legacy IncWorldArray… enum aliases)
         (int)AcsPcode.UseInventory or (int)AcsPcode.UseActorInventory => 0,
-        >= (int)AcsPcode.LsScriptVar and <= (int)AcsPcode.RsGlobalArray => 0,
         (int)AcsPcode.GetActorZ or (int)AcsPcode.GetActorFloorZ or (int)AcsPcode.GetActorAngle
             or (int)AcsPcode.SetActorAngle or (int)AcsPcode.SpawnProjectile
             or (int)AcsPcode.ThingProjectile2 or (int)AcsPcode.ThingCountName
@@ -481,6 +482,8 @@ public static class MapBehaviorBytecodeWalker
             => 1, // C++ PCD_LSMAPVAR/PCD_RSMAPVAR wire (shadow legacy LsMapVar/RsMapVar enum aliases)
         395 or 402
             => 1, // C++ PCD_LSWORLDVAR/PCD_RSWORLDVAR wire (shadow legacy LsWorldVar/RsWorldVar enum aliases)
+        396 or 403
+            => 1, // C++ PCD_LSGLOBALVAR/PCD_RSGLOBALVAR wire (shadow legacy LsGlobalVar/RsGlobalVar enum aliases)
         397 or 404
             => 1, // C++ PCD_LSMAPARRAY/PCD_RSMAPARRAY wire (shadow legacy LsMapArray/RsMapArray enum aliases)
         398 or 405
@@ -566,7 +569,6 @@ public static class MapBehaviorBytecodeWalker
         427 or 428 or 430 or 431 or 432
             => 0, // C++ PCD_MORPHACTOR…PCD_PRINTHEX wire (shadow legacy morph/classify enum aliases)
         (int)AcsPcode.UseInventory or (int)AcsPcode.UseActorInventory => 0,
-        >= (int)AcsPcode.LsScriptVar and <= (int)AcsPcode.RsGlobalArray => 0,
         (int)AcsPcode.GetActorZ or (int)AcsPcode.GetActorFloorZ or (int)AcsPcode.GetActorAngle
             or (int)AcsPcode.SetActorAngle or (int)AcsPcode.SpawnProjectile
             or (int)AcsPcode.ThingProjectile2 or (int)AcsPcode.ThingCountName
