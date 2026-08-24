@@ -66,6 +66,30 @@ public class CrossLanguageSoakEvidenceArchiveTests
     }
 
     [Fact]
+    public void RecordEvidence_CopiesHarnessJsonFiles()
+    {
+        var baseDir = Path.Combine(Path.GetTempPath(), $"hcde-soak-harness-{Guid.NewGuid():N}");
+        var repositoryRoot = Path.Combine(baseDir, "repo");
+        var evidenceDir = CrossLanguageSoakEvidenceArchive.ResolveDefaultEvidenceDirectory(repositoryRoot);
+        Directory.CreateDirectory(evidenceDir);
+        File.WriteAllText(Path.Combine(repositoryRoot, "README.md"), "test");
+
+        try
+        {
+            var files = CrossLanguageSoakEvidenceArchive.RecordEvidence(evidenceDir, repositoryRoot);
+            Assert.Equal(2, files.Count);
+            Assert.Contains(files, path => path.Contains("pregame_guest_smoke", StringComparison.Ordinal));
+            Assert.Contains(files, path => path.Contains("netcode_step12_invasion", StringComparison.Ordinal));
+            Assert.All(files, path => Assert.StartsWith(evidenceDir, Path.GetDirectoryName(path)!));
+        }
+        finally
+        {
+            if (Directory.Exists(baseDir))
+                Directory.Delete(baseDir, recursive: true);
+        }
+    }
+
+    [Fact]
     public void RecordEvidence_SkipsWhenHcdeservOrIwadMissing()
     {
         var serverPath = Environment.GetEnvironmentVariable("HCDE_HCDESERV_PATH");
