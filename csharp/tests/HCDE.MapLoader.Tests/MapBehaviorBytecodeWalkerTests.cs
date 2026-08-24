@@ -2972,6 +2972,63 @@ public class MapBehaviorBytecodeWalkerTests
     }
 
     [Fact]
+    public void TryWalkScript_LittleEnhanced_ReadsShiftBlockCompletionCrossOpFollowUpsAndEternityStackOps()
+    {
+        var bytecode = new byte[]
+        {
+            240, 153, 1, // PCD_LSSCRIPTVAR wire (cross-op script-var entry)
+            240, 136, 2, // PCD_LSSCRIPTARRAY wire (cross-op script-array shadow)
+            240, 137, 3, // PCD_RSSCRIPTARRAY wire (cross-op script-array shadow)
+            240, 154, 4, // PCD_LSMAPVAR wire (cross-op map-var entry)
+            240, 157, 5, // PCD_LSMAPARRAY wire (cross-op map-array shadow)
+            240, 164, 6, // PCD_RSMAPARRAY wire (cross-op map-array shadow)
+            240, 155, 7, // PCD_LSWORLDVAR wire (cross-op world-var entry)
+            240, 158, 8, // PCD_LSWORLDARRAY wire (cross-op world-array shadow)
+            240, 165, 9, // PCD_RSWORLDARRAY wire (cross-op world-array shadow)
+            240, 156, 10, // PCD_LSGLOBALVAR wire (cross-op global-var entry)
+            240, 159, 11, // PCD_LSGLOBALARRAY wire (cross-op global-array shadow)
+            240, 166, 12, // PCD_RSGLOBALARRAY wire (cross-op global-array shadow)
+            (byte)AcsPcode.Terminate,
+        };
+        var lump = TestWadBuilder.BuildBehaviorLumpWithBytecode(
+            MapBehaviorFormat.AcsLittleEnhanced,
+            scriptCount: 1,
+            bytecode);
+
+        Assert.True(MapBehaviorCodec.TryProbe(lump, out var record, out _));
+        Assert.True(MapBehaviorDirectoryCodec.TryReadScripts(
+            record.Data,
+            record.Format,
+            record.DirectoryOffset,
+            out var scripts,
+            out _));
+        Assert.Single(scripts);
+
+        Assert.True(MapBehaviorBytecodeWalker.TryWalkScript(
+            record.Data,
+            record.Format,
+            scripts[0].Address,
+            out var instructions,
+            out var terminated,
+            out _));
+
+        Assert.True(terminated);
+        Assert.Equal(13, instructions.Count);
+        Assert.Equal(393, instructions[0].Opcode);
+        Assert.Equal(376, instructions[1].Opcode);
+        Assert.Equal(377, instructions[2].Opcode);
+        Assert.Equal(394, instructions[3].Opcode);
+        Assert.Equal(397, instructions[4].Opcode);
+        Assert.Equal(404, instructions[5].Opcode);
+        Assert.Equal(395, instructions[6].Opcode);
+        Assert.Equal(398, instructions[7].Opcode);
+        Assert.Equal(405, instructions[8].Opcode);
+        Assert.Equal(396, instructions[9].Opcode);
+        Assert.Equal(399, instructions[10].Opcode);
+        Assert.Equal(406, instructions[11].Opcode);
+    }
+
+    [Fact]
     public void TryWalkScript_LittleEnhanced_ReadsGlobalArrayShiftFollowUpAndEternityStackOps()
     {
         var bytecode = new byte[]
