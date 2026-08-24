@@ -564,8 +564,21 @@ public class CrossLanguageSoakEvidenceArchiveTests
         if (CrossLanguageSoakGate.AreSoakSecretsConfigured())
             return;
 
-        var result = CrossLanguageSoakEvidenceArchive.TryRecordPassedValidationEvidence();
-        Assert.Equal(CrossLanguageSoakGateStatus.NotRequired, result.Status);
+        var baseDir = Path.Combine(Path.GetTempPath(), $"hcde-soak-try-record-unset-{Guid.NewGuid():N}");
+        var repositoryRoot = Path.Combine(baseDir, "repo");
+        Directory.CreateDirectory(Path.Combine(repositoryRoot, "csharp", "validation", "soak", "evidence"));
+        File.WriteAllText(Path.Combine(repositoryRoot, "README.md"), "test");
+
+        try
+        {
+            var result = CrossLanguageSoakEvidenceArchive.TryRecordPassedValidationEvidence(repositoryRoot);
+            Assert.Equal(CrossLanguageSoakGateStatus.NotRequired, result.Status);
+        }
+        finally
+        {
+            if (Directory.Exists(baseDir))
+                Directory.Delete(baseDir, recursive: true);
+        }
     }
 
     [Fact]

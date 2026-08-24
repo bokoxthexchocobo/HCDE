@@ -1,7 +1,7 @@
 # HCDE C# Migration — Phase 2 Principal Audit
 
 **Last updated:** 2026-08-21  
-**Status:** In progress — Phase **2c** live protocol codecs (iteration 84 complete). Phase **2b** verification errors, start-game, bootstrap/resync, and cross-language harness complete.  
+**Status:** In progress — Phase **2c** live protocol codecs (iteration 85 complete). Phase **2b** verification errors, start-game, bootstrap/resync, and cross-language harness complete.  
 **Prerequisite:** [Phase 1 audit](HCDE_CSHARP_PHASE1_AUDIT.md) (complete)  
 **Related:** [`HCDE_CSHARP_MIGRATION.md`](HCDE_CSHARP_MIGRATION.md) · [`HCDE_NETCODE.md`](../../docs/HCDE_NETCODE.md)
 
@@ -845,11 +845,43 @@ Phase 2b is complete when **all** hold:
 2. ~~**Authority playsim tick polish**~~ — invasion coop-style cross-tail follow-ups, line-spec tail polish
 3. ~~**Cross-language soak evidence**~~ — try-apply-exported-templates not-required gate in main CI workflow
 
-## Phase 2c next slice (iteration 85)
+## Phase 2c next slice (iteration 85 — delivered)
 
-1. **BEHAVIOR bytecode operands** — script-var shift follow-up PCDs, more Eternity stack ops
-2. **Authority playsim tick polish** — coop invasion-style cross-tail follow-ups, presentation-echo tail polish
-3. **Cross-language soak evidence** — try-record-passed-validation not-required gate in main CI workflow
+1. ~~**BEHAVIOR bytecode operands**~~ — script-var shift follow-up PCDs, more Eternity stack ops
+2. ~~**Authority playsim tick polish**~~ — coop invasion-style cross-tail follow-ups, presentation-echo tail polish
+3. ~~**Cross-language soak evidence**~~ — try-record-passed-validation not-required gate in main CI workflow
+
+## Phase 2c next slice (iteration 86)
+
+1. **BEHAVIOR bytecode operands** — map-var shift follow-up PCDs, more Eternity stack ops
+2. **Authority playsim tick polish** — invasion coop-style cross-tail follow-ups, authority-event tail polish
+3. **Cross-language soak evidence** — record-validation-passed not-required gate in main CI workflow
+
+### Try-record-passed-validation not-required gate main CI step (Phase 2c — iteration 85 step 3)
+
+| Artifact | Location | C++ reference |
+| --- | --- | --- |
+| Try-record-passed-validation not-required gate | `CrossLanguageSoakEvidenceArchive.TryRecordPassedValidationEvidence` | return NotRequired when soak secrets are absent |
+| Main CI workflow | `.github/workflows/csharp.yml` | `TryRecordPassedValidationEvidence_ReturnsNotRequiredWhenSecretsMissing` step |
+| Gate tests | `CrossLanguageSoakEvidenceArchiveTests` | `TryRecordPassedValidationEvidence_ReturnsNotRequiredWhenSecretsMissing` |
+| Release checklist | `validation/soak/README.md` | main CI try-record-passed-validation not-required gate docs |
+
+### Coop authority-event gap resync follow-ups + presentation-echo tail polish (Phase 2c — iteration 85 step 2)
+
+| Artifact | Location | C++ reference |
+| --- | --- | --- |
+| Presentation-echo tail polish | `SnapshotChecksumActorDeltaPolicy.PolishPresentationEchoRollingHash` | fold actor-delta into presentation-echo hash |
+| Presentation-echo commit polish | `GuestWorldStateStore.CommitAppliedActorDeltas` | polish presentation-echo rolling hash on HCDA apply |
+| Coop authority-event actor-delta presentation-echo coop-dead-spawn actor-line-spec mismatch | `SnapshotChecksumMismatchPolicy.ShouldTriggerNetGapResyncOnCoopAuthorityEventActorDeltaPresentationEchoCoopDeadSpawnActorLineSpecMismatch` | net gap resync when coop actor and line-spec categories mismatch |
+| Guest pump wiring | `LiveGuestSession.TryApplyTailSections` | tracks coop authority-event actor-delta presentation-echo coop-dead-spawn dual-category mismatch gap resync follow-ups |
+| E2E tests | `SnapshotChecksumActorDeltaPolicyTests`, `SnapshotChecksumMismatchPolicyTests`, `GuestWorldStateChecksumIntegrationTests` | presentation-echo polish + coop dual-category cross-tail mismatch gap resync |
+
+### BEHAVIOR script-var shift block-entry + Eternity stack PCD operands (Phase 2c/2d — iteration 85 step 1)
+
+| Artifact | Location | C++ reference |
+| --- | --- | --- |
+| Script-var shift block-entry wire skips | `MapBehaviorBytecodeWalker` | `321`/`393`/`400` operand skip arms |
+| Walker tests | `MapBehaviorBytecodeWalkerTests` | `TryWalkScript_OldFormat_ReadsScriptVarShiftBlockEntryFollowUpAndEternityStackOps` |
 
 ### Try-apply-exported-templates not-required gate main CI step (Phase 2c — iteration 84 step 3)
 
@@ -2464,6 +2496,8 @@ Do **not** port snapshot encode/decode bodies until HCIN/HCSN headers are green.
 ## Audit conclusion (interim)
 
 **Phase 2b C# pregame stack is feature-complete for fresh dedicated joins** — loopback WAITING setup, verification-error replies, start-game, and a cross-language guest CLI/harness are in place. The remaining 2b gate is executing the harness against a real `hcdeserv` build and recording the result.
+
+**Phase 2c iteration 85** adds script-var shift block-entry follow-up/Eternity stack PCD operand coverage, coop authority-event actor-delta presentation-echo coop-dead-spawn actor-line-spec dual-category gap resync follow-ups with presentation-echo tail polish on HCDA apply, and `TryRecordPassedValidationEvidence_ReturnsNotRequiredWhenSecretsMissing` main CI gate for try-record-passed-validation not-required validation.
 
 **Phase 2c iteration 84** adds script-array shift block-entry follow-up/Eternity stack PCD operand coverage, invasion authority-event actor-delta presentation-echo coop-dead-spawn line-spec gap resync follow-ups with line-spec tail polish on HCDA apply, and `TryApplyExportedTemplatesFromEnvironment_ReturnsNotRequiredWhenUnset` main CI gate for try-apply-exported-templates not-required validation.
 

@@ -151,11 +151,6 @@ jobs:
         run: |
           cd csharp
           dotnet test --no-build --filter "FullyQualifiedName~Evaluate_ReturnsNotRequiredWhenSecretsMissing"
-      - name: Enforce record-evidence gate not required when secrets missing
-        if: ${{ secrets.HCDE_HCDESERV_PATH == '' || secrets.HCDE_IWAD_PATH == '' }}
-        run: |
-          cd csharp
-          dotnet test --no-build --filter "FullyQualifiedName~TryRecordPassedValidationEvidence_ReturnsNotRequiredWhenSecretsMissing"
       - name: Enforce soak gate CI enforcement flag
         run: |
           cd csharp
@@ -252,6 +247,11 @@ jobs:
         run: |
           cd csharp
           dotnet test --no-build --filter "FullyQualifiedName~TryRecordPassedValidationEvidence_CopiesHarnessJsonFiles"
+      - name: Enforce try-record-passed-validation not-required gate
+        if: ${{ secrets.HCDE_HCDESERV_PATH == '' || secrets.HCDE_IWAD_PATH == '' }}
+        run: |
+          cd csharp
+          dotnet test --no-build --filter "FullyQualifiedName~TryRecordPassedValidationEvidence_ReturnsNotRequiredWhenSecretsMissing"
       - name: Enforce refresh committed evidence gate
         env:
           HCDE_REFRESH_SOAK_TEMPLATES: '1'
