@@ -54,15 +54,43 @@ public static class CrossLanguageSoakEvidenceArchive
                 "record validation evidence not requested");
         }
 
-        if (!CrossLanguageSoakGate.AreSoakSecretsConfigured())
+        var files = RecordValidationEvidence(repositoryRoot);
+        if (files.Count == 0)
         {
             return new CrossLanguageSoakGateResult(
-                CrossLanguageSoakGateStatus.NotRequired,
-                "soak secrets not configured");
+                CrossLanguageSoakGateStatus.Failed,
+                "validation evidence recording produced no files");
         }
 
-        RecordValidationEvidence(repositoryRoot);
-        return CrossLanguageSoakGate.Evaluate(repositoryRoot, requireConfiguredSecrets: true);
+        if (!File.Exists(CrossLanguageSoakManifest.ResolveDefaultManifestPath(repositoryRoot)))
+        {
+            return new CrossLanguageSoakGateResult(
+                CrossLanguageSoakGateStatus.Failed,
+                "validation evidence manifest missing after recording");
+        }
+
+        if (CrossLanguageSoakGate.AreSoakSecretsConfigured())
+        {
+            if (files.Any(path => !path.Contains("_Passed.json", StringComparison.Ordinal)))
+            {
+                return new CrossLanguageSoakGateResult(
+                    CrossLanguageSoakGateStatus.Failed,
+                    "validation evidence recording did not produce passed harness files");
+            }
+
+            return CrossLanguageSoakGate.Evaluate(repositoryRoot, requireConfiguredSecrets: true);
+        }
+
+        if (files.Any(path => !path.Contains("_Skipped.json", StringComparison.Ordinal)))
+        {
+            return new CrossLanguageSoakGateResult(
+                CrossLanguageSoakGateStatus.Failed,
+                "validation evidence recording did not produce skipped harness files");
+        }
+
+        return new CrossLanguageSoakGateResult(
+            CrossLanguageSoakGateStatus.Passed,
+            "validation passed evidence recorded");
     }
 
     public static CrossLanguageSoakGateResult TryRecordValidationSkippedEvidence(string? repositoryRoot = null)

@@ -223,7 +223,7 @@ public class CrossLanguageSoakEvidenceArchiveTests
     [Fact]
     public void RecordValidationPassedEvidence_ReturnsNotRequiredWhenSecretsMissing()
     {
-        if (CrossLanguageSoakGate.AreSoakSecretsConfigured())
+        if (Environment.GetEnvironmentVariable("HCDE_RECORD_VALIDATION_EVIDENCE") == "1")
             return;
 
         var baseDir = Path.Combine(Path.GetTempPath(), $"hcde-soak-record-passed-unset-{Guid.NewGuid():N}");
@@ -231,13 +231,45 @@ public class CrossLanguageSoakEvidenceArchiveTests
         Directory.CreateDirectory(Path.Combine(repositoryRoot, "csharp", "validation", "soak", "evidence"));
         File.WriteAllText(Path.Combine(repositoryRoot, "README.md"), "test");
 
+        try
+        {
+            var result = CrossLanguageSoakEvidenceArchive.TryRecordValidationPassedEvidence(repositoryRoot);
+            Assert.Equal(CrossLanguageSoakGateStatus.NotRequired, result.Status);
+        }
+        finally
+        {
+            if (Directory.Exists(baseDir))
+                Directory.Delete(baseDir, recursive: true);
+        }
+    }
+
+    [Fact]
+    public void TryRecordValidationPassedEvidence_CopiesHarnessJsonFiles()
+    {
+        if (CrossLanguageSoakGate.AreSoakSecretsConfigured())
+            return;
+
+        var baseDir = Path.Combine(Path.GetTempPath(), $"hcde-soak-try-record-passed-{Guid.NewGuid():N}");
+        var repositoryRoot = Path.Combine(baseDir, "repo");
+        var evidenceDir = CrossLanguageSoakEvidenceArchive.ResolveDefaultEvidenceDirectory(repositoryRoot);
+        Directory.CreateDirectory(evidenceDir);
+        File.WriteAllText(Path.Combine(repositoryRoot, "README.md"), "test");
+
         var priorRecord = Environment.GetEnvironmentVariable("HCDE_RECORD_VALIDATION_EVIDENCE");
 
         try
         {
             Environment.SetEnvironmentVariable("HCDE_RECORD_VALIDATION_EVIDENCE", "1");
+
             var result = CrossLanguageSoakEvidenceArchive.TryRecordValidationPassedEvidence(repositoryRoot);
-            Assert.Equal(CrossLanguageSoakGateStatus.NotRequired, result.Status);
+            Assert.NotEqual(CrossLanguageSoakGateStatus.Failed, result.Status);
+            var files = Directory.GetFiles(evidenceDir, "*.json").OrderBy(path => path).ToArray();
+            Assert.Equal(2, files.Length);
+            Assert.Contains(files, path => path.Contains("pregame_guest_smoke", StringComparison.Ordinal));
+            Assert.Contains(files, path => path.Contains("netcode_step12_invasion", StringComparison.Ordinal));
+            Assert.All(files, path => Assert.Contains("_Skipped.json", path));
+            Assert.All(files, path => Assert.StartsWith(evidenceDir, Path.GetDirectoryName(path)!));
+            Assert.True(File.Exists(CrossLanguageSoakManifest.ResolveDefaultManifestPath(repositoryRoot)));
         }
         finally
         {
