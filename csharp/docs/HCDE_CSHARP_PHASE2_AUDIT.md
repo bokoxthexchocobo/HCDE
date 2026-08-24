@@ -1,7 +1,7 @@
 # HCDE C# Migration — Phase 2 Principal Audit
 
 **Last updated:** 2026-08-21  
-**Status:** In progress — Phase **2c** live protocol codecs (iteration 89 complete). Phase **2b** verification errors, start-game, bootstrap/resync, and cross-language harness complete.  
+**Status:** In progress — Phase **2c** live protocol codecs (iteration 90 complete). Phase **2b** verification errors, start-game, bootstrap/resync, and cross-language harness complete.  
 **Prerequisite:** [Phase 1 audit](HCDE_CSHARP_PHASE1_AUDIT.md) (complete)  
 **Related:** [`HCDE_CSHARP_MIGRATION.md`](HCDE_CSHARP_MIGRATION.md) · [`HCDE_NETCODE.md`](../../docs/HCDE_NETCODE.md)
 
@@ -875,13 +875,45 @@ Phase 2b is complete when **all** hold:
 2. ~~**Authority playsim tick polish**~~ — coop invasion-style multi-bucket follow-ups, presentation-echo tail polish
 3. ~~**Cross-language soak evidence**~~ — try-record-validation-passed evidence copy gate in main CI workflow
 
-## Phase 2c next slice (iteration 90)
+## Phase 2c next slice (iteration 90 — delivered)
 
-1. **BEHAVIOR bytecode operands** — little-enhanced shift-block completion cross-op follow-ups, more Eternity stack ops
-2. **Authority playsim tick polish** — invasion coop-style multi-bucket follow-ups, authority-event tail polish
-3. **Cross-language soak evidence** — record-validation-passed evidence copy gate in main CI workflow
+1. ~~**BEHAVIOR bytecode operands**~~ — little-enhanced shift-block completion cross-op follow-ups, more Eternity stack ops
+2. ~~**Authority playsim tick polish**~~ — invasion coop-style multi-bucket follow-ups, authority-event tail polish
+3. ~~**Cross-language soak evidence**~~ — record-validation-passed evidence copy gate in main CI workflow
 
-### Try-record-validation-passed evidence copy gate main CI step (Phase 2c — iteration 89 step 3)
+## Phase 2c next slice (iteration 91)
+
+1. **BEHAVIOR bytecode operands** — little-enhanced shift-block completion cross-op Eternity stack ops
+2. **Authority playsim tick polish** — coop invasion-style multi-bucket follow-ups, line-spec tail polish
+3. **Cross-language soak evidence** — record-validation-skipped evidence copy gate in main CI workflow
+
+### Record-validation-passed evidence copy gate main CI step (Phase 2c — iteration 90 step 3)
+
+| Artifact | Location | C++ reference |
+| --- | --- | --- |
+| Record-validation-passed evidence copy gate | `CrossLanguageSoakEvidenceArchive.RecordValidationPassedEvidence` | Harness JSON files copied into committed evidence dir when record env is set |
+| Main CI workflow | `.github/workflows/csharp.yml` | `RecordValidationPassedEvidence_CopiesHarnessJsonFiles` step |
+| Gate tests | `CrossLanguageSoakEvidenceArchiveTests` | `RecordValidationPassedEvidence_CopiesHarnessJsonFiles` |
+| Release checklist | `validation/soak/README.md` | main CI record-validation-passed evidence copy gate docs |
+
+### Invasion authority-event gap resync follow-ups + authority-event tail polish (Phase 2c — iteration 90 step 2)
+
+| Artifact | Location | C++ reference |
+| --- | --- | --- |
+| Authority-event tail polish | `SnapshotChecksumPresentationEchoPolicy.PolishAuthorityEventRollingHash` | fold presentation-echo into authority-event hash |
+| Authority-event commit polish | `GuestWorldStateStore.CommitAppliedActorDeltas` | polish authority-event rolling hash on HCDA apply |
+| Invasion authority-event actor-delta presentation-echo coop-dead-spawn actor-line-spec multi-bucket mismatch follow-up | `SnapshotChecksumMismatchPolicy.ShouldTriggerNetGapResyncOnInvasionAuthorityEventActorDeltaPresentationEchoCoopDeadSpawnActorLineSpecMultiBucketMismatchFollowUp` | net gap resync when invasion actor and line-spec categories mismatch across three or more buckets |
+| Guest pump wiring | `LiveGuestSession.TryApplyTailSections` | tracks invasion authority-event actor-delta presentation-echo coop-dead-spawn multi-bucket mismatch gap resync follow-ups |
+| E2E tests | `SnapshotChecksumActorDeltaPolicyTests`, `SnapshotChecksumMismatchPolicyTests`, `GuestWorldStateChecksumIntegrationTests` | authority-event polish + invasion multi-bucket follow-up cross-tail mismatch gap resync |
+
+### BEHAVIOR little-enhanced shift-block completion cross-op + Eternity stack PCD operands (Phase 2c/2d — iteration 90 step 1)
+
+| Artifact | Location | C++ reference |
+| --- | --- | --- |
+| Little-enhanced shift-block completion cross-op wire skips | `MapBehaviorBytecodeWalker` | cross-op var/array shadow follow-ups in little-enhanced encoding |
+| Walker tests | `MapBehaviorBytecodeWalkerTests` | `TryWalkScript_LittleEnhanced_ReadsShiftBlockCompletionCrossOpFollowUpsAndEternityStackOps` |
+
+## Phase 2c next slice (iteration 89 — delivered)
 
 | Artifact | Location | C++ reference |
 | --- | --- | --- |
@@ -2624,6 +2656,8 @@ Do **not** port snapshot encode/decode bodies until HCIN/HCSN headers are green.
 ## Audit conclusion (interim)
 
 **Phase 2b C# pregame stack is feature-complete for fresh dedicated joins** — loopback WAITING setup, verification-error replies, start-game, and a cross-language guest CLI/harness are in place. The remaining 2b gate is executing the harness against a real `hcdeserv` build and recording the result.
+
+**Phase 2c iteration 90** adds little-enhanced shift-block completion cross-op follow-up/Eternity stack PCD operand coverage, invasion authority-event actor-delta presentation-echo coop-dead-spawn actor-line-spec multi-bucket gap resync follow-ups with authority-event tail polish on HCDA apply, and `RecordValidationPassedEvidence_CopiesHarnessJsonFiles` main CI gate for record-validation-passed evidence copy validation.
 
 **Phase 2c iteration 89** adds shift-block completion cross-op follow-up/Eternity stack PCD operand coverage (313–324 block entries with cross-category shadow aliases), coop authority-event actor-delta presentation-echo coop-dead-spawn actor-line-spec multi-bucket gap resync follow-ups with presentation-echo tail polish on HCDA apply, and `TryRecordValidationPassedEvidence_CopiesHarnessJsonFiles` main CI gate for try-record-validation-passed evidence copy validation.
 
