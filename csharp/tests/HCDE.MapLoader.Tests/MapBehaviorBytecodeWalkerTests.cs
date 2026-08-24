@@ -2988,6 +2988,10 @@ public class MapBehaviorBytecodeWalkerTests
             240, 156, 10, // PCD_LSGLOBALVAR wire (cross-op global-var entry)
             240, 159, 11, // PCD_LSGLOBALARRAY wire (cross-op global-array shadow)
             240, 166, 12, // PCD_RSGLOBALARRAY wire (cross-op global-array shadow)
+            240, 119, 13, // PCD_PUSHFUNCTION wire
+            240, 121, // PCD_SCRIPTWAITNAMED wire
+            240, 120, // PCD_CALLSTACK wire
+            240, 123, // PCD_GOTOSTACK wire
             (byte)AcsPcode.Terminate,
         };
         var lump = TestWadBuilder.BuildBehaviorLumpWithBytecode(
@@ -3013,7 +3017,7 @@ public class MapBehaviorBytecodeWalkerTests
             out _));
 
         Assert.True(terminated);
-        Assert.Equal(13, instructions.Count);
+        Assert.Equal(17, instructions.Count);
         Assert.Equal(393, instructions[0].Opcode);
         Assert.Equal(376, instructions[1].Opcode);
         Assert.Equal(377, instructions[2].Opcode);
@@ -3026,6 +3030,11 @@ public class MapBehaviorBytecodeWalkerTests
         Assert.Equal(396, instructions[9].Opcode);
         Assert.Equal(399, instructions[10].Opcode);
         Assert.Equal(406, instructions[11].Opcode);
+        Assert.Equal(359, instructions[12].Opcode);
+        Assert.Equal(1, instructions[12].OperandWordCount);
+        Assert.Equal(361, instructions[13].Opcode);
+        Assert.Equal(360, instructions[14].Opcode);
+        Assert.Equal(363, instructions[15].Opcode);
     }
 
     [Fact]

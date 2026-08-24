@@ -458,7 +458,8 @@ public static class MapBehaviorBytecodeWalker
             or (int)AcsPcode.MulWorldArray or (int)AcsPcode.DivWorldArray
             or (int)AcsPcode.ModWorldArray or (int)AcsPcode.IncWorldArray
             or (int)AcsPcode.DecWorldArray => 1,
-        (int)AcsPcode.PushFunction => 1,
+        359 => 1, // C++ PCD_PUSHFUNCTION wire (shadow legacy PushFunction enum alias)
+        361 => 0, // C++ PCD_SCRIPTWAITNAMED wire (shadow legacy ScriptWaitNamed enum alias)
         381 or 382
             => 0, // C++ PCD_LSPEC5EX/PCD_LSPEC5EXRESULT wire (shadow legacy lspec5 enum aliases)
         360 or 362 or 363
