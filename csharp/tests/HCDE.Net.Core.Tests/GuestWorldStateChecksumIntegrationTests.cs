@@ -2206,6 +2206,85 @@ public class GuestWorldStateChecksumIntegrationTests
     }
 
     [Fact]
+    public void GuestReceive_TriggersNetGapResyncOnCoopAuthorityEventActorDeltaPresentationEchoCoopDeadSpawnLineSpecChecksumMismatchWhenPolicySet()
+    {
+        var gameId = new byte[] { 0xAA, 0xBB, 0xCC, 0xDD, 0x11, 0x22, 0x33, 0x44 };
+        const int gameTic = 39;
+        const int rngSeed = 37;
+        const uint deadSpawnIndex = 91;
+
+        var actor = new ActorDeltaRecord
+        {
+            ActorId = 61,
+            ClassId = 19,
+            FieldMask = LiveConstants.ActorDeltaFieldHealth,
+            Health = 99,
+        };
+        var authorityRecord = AuthorityEventsCodec.CreateSpawnExample("Imp", actorId: 103);
+        var echoBlock = PresentationEchoCodec.CreateExampleBlock();
+
+        var authorityStore = new GuestWorldStateStore();
+        authorityStore.NoteLineSpec(lineIndex: 9, special: 12, success: true);
+        authorityStore.TryApply(1, actor);
+        authorityStore.CommitAppliedAuthorityEvents(new[] { authorityRecord });
+        authorityStore.CommitAppliedPresentationEcho(echoBlock);
+        authorityStore.TryRetireSpawnIndex(deadSpawnIndex);
+        var authoritySession = new SnapshotChecksumSession();
+        SnapshotChecksumPlaysimInputs.ComputeAndStore(authoritySession, authorityStore, gameTic, rngSeed);
+        Assert.True(authoritySession.Ring.TryFind(gameTic, out var remoteHashes));
+        remoteHashes[(int)SnapshotChecksumCategory.LineSpec] ^= 0xFFFF;
+
+        Span<byte> tail = stackalloc byte[512];
+        var tailWritten = ServerSnapshotTailCodec.WriteCoopShipping(
+            tail,
+            gameTic: (uint)gameTic,
+            poses: ReadOnlySpan<PlayerPoseWorldDelta>.Empty,
+            sectors: ReadOnlySpan<SectorWorldDelta>.Empty,
+            actorDeltas: new[] { actor },
+            coopDeadSpawnIndices: new uint[] { deadSpawnIndex },
+            authorityEvents: new[] { authorityRecord },
+            checksumHashes: remoteHashes);
+
+        using var authorityTransport = new HCDE.Net.Transport.UdpTransport();
+        using var guestTransport = new HCDE.Net.Transport.UdpTransport();
+        authorityTransport.Bind(0);
+        guestTransport.Bind(0);
+        authorityTransport.SetNonBlocking(true);
+        guestTransport.SetNonBlocking(true);
+
+        var authorityEndpoint = new HCDE.Net.Transport.NetworkEndpoint(System.Net.IPAddress.Loopback, authorityTransport.BoundPort);
+        var guestEndpoint = new HCDE.Net.Transport.NetworkEndpoint(System.Net.IPAddress.Loopback, guestTransport.BoundPort);
+
+        var guestStore = new GuestWorldStateStore();
+        guestStore.NoteLineSpec(lineIndex: 9, special: 12, success: true);
+        guestStore.TryApply(1, actor);
+        guestStore.CommitAppliedAuthorityEvents(new[] { authorityRecord });
+        guestStore.CommitAppliedPresentationEcho(echoBlock);
+        var guestSession = new SnapshotChecksumSession();
+        SnapshotChecksumPlaysimInputs.ComputeAndStore(guestSession, guestStore, gameTic, rngSeed);
+
+        var guest = new LiveGuestSession(guestTransport, gameId, authorityEndpoint, guestPlayerSlot: 1, authoritySlot: 0, maxClients: 4);
+        guest.ChecksumMismatchPolicy = SnapshotChecksumMismatchPolicyKind.ResyncNetStateOnMismatch;
+        guest.SetGuestWorldState(guestStore, guestSession, rngSeed);
+        guest.NetRegistry.GetOrCreate(1).CurrentSequence = 42;
+
+        var gameplay = new LiveGameplayEndpoint(authorityTransport, gameId);
+        Assert.True(gameplay.TrySendServerSnapshotWithExternalTail(
+            guestEndpoint,
+            roomId: 0,
+            gameTic: (uint)gameTic,
+            playerNum: 1,
+            externalTail: tail[..tailWritten]));
+
+        Assert.True(guest.TryReceiveServerSnapshot(out _, out _, out _));
+        Assert.True(guest.LastChecksumApplyState.HasLineSpecCategoryMismatch);
+        Assert.True(guest.NeedsChecksumResync);
+        Assert.True(guest.NeedsNetGapResync);
+        Assert.Equal(0, guest.NetRegistry.GetOrCreate(1).CurrentSequence);
+        Assert.Contains(deadSpawnIndex, guestStore.RetiredCoopDeadSpawns);
+    }
+
+    [Fact]
     public void GuestReceive_TriggersNetGapResyncOnInvasionAuthorityEventActorDeltaPresentationEchoCoopDeadSpawnChecksumMismatchWhenPolicySet()
     {
         var gameId = new byte[] { 0xAA, 0xBB, 0xCC, 0xDD, 0x11, 0x22, 0x33, 0x44 };
