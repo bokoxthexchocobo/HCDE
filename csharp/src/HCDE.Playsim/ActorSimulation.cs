@@ -8,6 +8,7 @@ public readonly struct PlayerCommand
     public short ForwardMove { get; init; }
     public short SideMove { get; init; }
     public short YawDelta { get; init; }
+    public bool Attack { get; init; }
 }
 
 public class Actor : Thinker
@@ -46,12 +47,15 @@ public sealed class PlayerPawn : Actor
     public byte PlayerNum { get; init; }
     public PlayerCommand Pending { get; set; }
     public PlayerInventory Inventory { get; } = new();
+    public bool AttackPressed { get; set; }
 
     public override void Tick()
     {
         RememberPosition();
         var command = Pending;
         Pending = default;
+        if (command.Attack)
+            AttackPressed = true;
         Angle = new BamAngle(unchecked(Angle.Raw + (uint)(command.YawDelta << 16)));
         if (Level != null)
         {
@@ -414,6 +418,7 @@ public sealed class AuthoritySimulation
         Thinkers.Run();
         SeparateSolids();
         CollectPickups();
+        ResolveAttacks();
         LineSpecials.ActivateCrossings(this);
         LineSpecials.TickMotions(this);
         Acs.Tick(this);
@@ -422,6 +427,17 @@ public sealed class AuthoritySimulation
             Rewind.Capture(this);
         RecomputeChecksum();
         PublishStatus();
+    }
+
+    private void ResolveAttacks()
+    {
+        foreach (var player in Players)
+        {
+            if (!player.AttackPressed)
+                continue;
+            player.AttackPressed = false;
+            HitscanCombat.Fire(this, player);
+        }
     }
 
     private void SeparateSolids()

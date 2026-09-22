@@ -138,6 +138,16 @@ The rows below are the first C#-only slice. They are not a port of `a_pickups.cp
 | Actor blocking | Done | Overlapping solids are put back. Pickups, teleport destinations, and invasion spots do not block. |
 | Floors | Done | Specials 18, 19, and 62 step 8 units. The lift waits 5 tics and returns. |
 
+## Phase 6 — Firing (slice complete)
+
+Fixed-damage attacks, not `p_pspr.cpp`. Principal audit: [`HCDE_CSHARP_PHASE6_AUDIT.md`](HCDE_CSHARP_PHASE6_AUDIT.md).
+
+| Gate | Status | What landed |
+| --- | --- | --- |
+| Hitscan | Done | Pistol, chaingun, shotgun, plasma, and BFG. One ammo each. A miss still spends it. |
+| Melee | Done | Fist and chainsaw, 64 units in front, no ammo. |
+| Armor | Done | A player saves `damage * percent / 100` until the armor pool is empty. |
+
 ## What stays C/C++ (for now)
 
 | Component | Reason |

@@ -47,6 +47,7 @@ public sealed class PlayerInventory
     public bool BlueKey { get; set; }
     public bool YellowKey { get; set; }
     public WeaponKind Weapons { get; set; } = WeaponKind.Fist | WeaponKind.Pistol;
+    public WeaponKind Selected { get; set; } = WeaponKind.Pistol;
 
     public bool Owns(WeaponKind weapon) => (Weapons & weapon) != 0;
 
@@ -87,6 +88,30 @@ public sealed class PlayerInventory
                 break;
             default:
                 Cells = next;
+                break;
+        }
+
+        return true;
+    }
+
+    public bool TrySpendAmmo(AmmoKind kind, int amount)
+    {
+        if (amount <= 0 || Ammo(kind) < amount)
+            return false;
+
+        switch (kind)
+        {
+            case AmmoKind.Bullets:
+                Bullets -= amount;
+                break;
+            case AmmoKind.Shells:
+                Shells -= amount;
+                break;
+            case AmmoKind.Rockets:
+                Rockets -= amount;
+                break;
+            default:
+                Cells -= amount;
                 break;
         }
 

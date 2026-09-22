@@ -30,7 +30,7 @@ The full engine is ~640k lines of C++. This is a long-running migration, not a b
 | Pregame guest CLI | C++ `-join` guest path | `HCDE.PregameGuest.Cli` | Done (pregame + `--live-ticks`) |
 | Engine core | `src/` | — | Not started |
 | Dedicated server | `hcdeserv` (`HCDE.Server`) | Headless map boot, tick, snapshot publish, in-engine RCON | Phase 3 subset |
-| Playsim | `src/playsim/` | `HCDE.Playsim` | Phase 5 subset (Phase 3, plus pickups, blockmap, floors) |
+| Playsim | `src/playsim/` | `HCDE.Playsim` | Phase 6 subset (Phase 5, plus hitscan and melee) |
 | Renderer (Vulkan/SW) | `src/rendering/` | `HCDE.Client` | Phase 4 subset (column view + recorded quads) |
 | ZScript VM | `src/common/scripting/` | `HCDE.Client` | Phase 4 subset (managed opcodes; asmjit probed, not bound) |
 | Audio (ZMusic) | `libraries/ZMusic/` | `HCDE.Client` | Phase 4 subset (PCM mix; ZMusic probed, not bound) |
@@ -66,10 +66,11 @@ Outputs: `hcdemaster` and `hcdercon`.
 | [`docs/HCDE_CSHARP_PHASE3_AUDIT.md`](docs/HCDE_CSHARP_PHASE3_AUDIT.md) | Phase 3 principal audit (simulation subset) |
 | [`docs/HCDE_CSHARP_PHASE4_AUDIT.md`](docs/HCDE_CSHARP_PHASE4_AUDIT.md) | Phase 4 principal audit (client subset) |
 | [`docs/HCDE_CSHARP_PHASE5_AUDIT.md`](docs/HCDE_CSHARP_PHASE5_AUDIT.md) | Phase 5 principal audit (pickups and floors) |
+| [`docs/HCDE_CSHARP_PHASE6_AUDIT.md`](docs/HCDE_CSHARP_PHASE6_AUDIT.md) | Phase 6 principal audit (firing) |
 
 ## Validation
 
-Managed wire compatibility is gated by `dotnet test` (633 tests; CI via `.github/workflows/csharp.yml`). Optional cross-language soak CI runs `FullyQualifiedName~CrossLanguageSoak` when `HCDE_HCDESERV_PATH` / `HCDE_IWAD_PATH` secrets are configured; both workflows enforce a Passed manifest gate when those secrets are present. Cross-language checks live under `validation/`:
+Managed wire compatibility is gated by `dotnet test` (638 tests; CI via `.github/workflows/csharp.yml`). Optional cross-language soak CI runs `FullyQualifiedName~CrossLanguageSoak` when `HCDE_HCDESERV_PATH` / `HCDE_IWAD_PATH` secrets are configured; both workflows enforce a Passed manifest gate when those secrets are present. Cross-language checks live under `validation/`:
 
 | Harness | Purpose |
 | --- | --- |
@@ -108,7 +109,7 @@ csharp/
     HCDE.Client/         hcde — headless client subset (Phase 4)
     HCDE.PregameGuest.Cli/  hcde-pregame-guest CLI
   tests/
-    HCDE.*.Tests/        xUnit regression tests (633 passing)
+    HCDE.*.Tests/        xUnit regression tests (638 passing)
 ```
 
 ## Migration phases
@@ -147,7 +148,12 @@ csharp/
 - Pistol-start inventory and vanilla touch pickups
 - Blockmap line tests, solid actors, and an 8-unit floor raise, lower, and lift
 - Principal audit: [`docs/HCDE_CSHARP_PHASE5_AUDIT.md`](docs/HCDE_CSHARP_PHASE5_AUDIT.md)
-- No C++ deleted. Combat is next.
+
+### Phase 6 — Firing (complete for this slice)
+
+- Pistol, shotgun, plasma, fist, and chainsaw with fixed damage
+- Player armor absorbs a percent of the hit
+- Principal audit: [`docs/HCDE_CSHARP_PHASE6_AUDIT.md`](docs/HCDE_CSHARP_PHASE6_AUDIT.md)
 
 ### Native code to retain (initially)
 
