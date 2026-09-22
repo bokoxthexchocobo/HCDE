@@ -27,6 +27,8 @@ public sealed class DedicatedServerOptions
     public string GameModeName { get; set; } = "Co-op";
     public bool Deathmatch { get; set; }
     public bool Teamplay { get; set; }
+    public string RconPassword { get; set; } = "";
+    public int RconPort { get; set; }
 }
 
 public sealed class DedicatedServerHost : IDisposable
@@ -36,6 +38,7 @@ public sealed class DedicatedServerHost : IDisposable
     private readonly PregameHost _pregameHost;
     private readonly DedicatedServerQueryResponder? _queryResponder;
     private readonly DedicatedServerAdvertiser? _advertiser;
+    private readonly InEngineRconServer? _rcon;
     private LiveAuthoritySession? _liveSession;
 
     public DedicatedServerHost(DedicatedServerOptions options)
@@ -67,7 +70,12 @@ public sealed class DedicatedServerHost : IDisposable
         {
             Simulation = AuthoritySimulation.Start(level, options.Pregame.Session.MapLoad.RngSeed);
         }
+
+        if (Simulation != null && !string.IsNullOrEmpty(options.RconPassword))
+            _rcon = new InEngineRconServer(options.RconPassword, Simulation, options.RconPort);
     }
+
+    public int RconPort => _rcon?.Port ?? 0;
 
     public int BoundPort => _transport.BoundPort;
 
@@ -154,5 +162,10 @@ public sealed class DedicatedServerHost : IDisposable
         return snapshot;
     }
 
-    public void Dispose() => _transport.Dispose();
+    public void Dispose()
+    {
+        if (_rcon != null)
+            _rcon.DisposeAsync().AsTask().GetAwaiter().GetResult();
+        _transport.Dispose();
+    }
 }

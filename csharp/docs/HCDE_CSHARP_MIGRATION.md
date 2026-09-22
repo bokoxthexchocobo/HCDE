@@ -99,20 +99,44 @@ Sub-phases 2c–2f are too large to finish in one step. Phase 2 is **18 mini-pha
 | 17 | **2f-3** Sim snapshots | Done | Snapshot tails carry the ticked player position |
 | 18 | **2-accept** In-process load and tick | Done | Minimal map loads, spawns, and ticks. Python harnesses not run |
 
-## Phase 3 — Simulation completeness
+## Phase 3 — Simulation completeness (server subset complete)
 
-- Full playsim including `p_acs.cpp`, specials, bots
-- Save/load (`p_saveg.cpp`)
-- Compatibility facades (`hcde_mod_compat`, Eternity/MBF21/ID24 surfaces)
-- Invasion, rewind, in-engine RCON server
+The bullets below are the headless-server gates, not a port of `p_acs.cpp` or `p_saveg.cpp`. Principal audit: [`HCDE_CSHARP_PHASE3_AUDIT.md`](HCDE_CSHARP_PHASE3_AUDIT.md).
 
-## Phase 4 — Client
+| Gate | Status | What landed |
+| --- | --- | --- |
+| Line specials | Done | Door raise/open, exit, teleport, ACS execute. Special 1 repeats. Other one-shots clear. |
+| ACS subset | Done | Word pcode: push, add/sub, delay, goto, drop, `Lspec1Direct`. Unknown opcodes stop the fiber. |
+| Bots | Done | `BotPawn` walks forward. Invasion spawns them. |
+| Save/load | Done | `HCSV` pose archive: tic, actors by id, sector floor/ceiling, exit flags. |
+| Compat facades | Done | MBF21 special 270, ID24 secret exit 243, Eternity sector special 200. Flags, not full specs. |
+| Invasion | Done | One wave at thing type 3004, or at (64, 64). Default off. |
+| Rewind | Done | Authority keyframe ring using the save codec. No client resync. Default off. |
+| In-engine RCON | Done | Loopback TCP, nonce auth, allowlist `ping` / `status` / `map`. `--rcon-password` on `hcdeserv`. |
 
-- ZScript VM — start with P/Invoke to existing bytecode/JIT; rewrite compiler later if needed
-- Software renderer (`rendering/swrenderer/`)
-- Hardware renderer — Vulkan via native interop or Silk.NET
-- Audio — ZMusic P/Invoke
-- Launcher/widgets — Avalonia or ImGui.NET
+## Phase 4 — Client (headless subset complete)
+
+The rows below are the headless-client gates, not a port of `swrenderer`, the Vulkan backend, ZMusic, or the ZScript VM. Principal audit: [`HCDE_CSHARP_PHASE4_AUDIT.md`](HCDE_CSHARP_PHASE4_AUDIT.md).
+
+| Gate | Status | What landed |
+| --- | --- | --- |
+| ZScript subset | Done | Managed opcodes: load, add, jump-if-zero, return, call-native. Unknown opcode or native stops the fiber. asmjit is probed and not called. |
+| Software view | Done | One ray per column against blocking lines. Ceiling and floor fill the rest. Not `rendering/swrenderer`. |
+| Hardware path | Done | Recorded quads, blitted on the CPU. Vulkan is probed and not bound. |
+| Audio | Done | PCM sum with int16 clamp. Mute yields silence. ZMusic is probed and not called. |
+| Launcher | Done | Validates the start selection and builds `hcde` arguments. `--self-test` draws the demo room. No window. |
+
+## Phase 5 — Pickups and floors (slice complete)
+
+The rows below are the first C#-only slice. They are not a port of `a_pickups.cpp` or `p_map.cpp`, and no C++ file was deleted. Principal audit: [`HCDE_CSHARP_PHASE5_AUDIT.md`](HCDE_CSHARP_PHASE5_AUDIT.md).
+
+| Gate | Status | What landed |
+| --- | --- | --- |
+| Inventory | Done | Pistol start: 50 bullets, fist, and pistol. Armor, ammo, keys, and the other weapons. |
+| Pickups | Done | Stimpack through BFG, by DoomEdNum. A gift that changes nothing stays on the map. |
+| Blockmap | Done | A loaded `BLOCKMAP` limits line tests to the blocks the actor crosses. No blockmap still scans every line. |
+| Actor blocking | Done | Overlapping solids are put back. Pickups, teleport destinations, and invasion spots do not block. |
+| Floors | Done | Specials 18, 19, and 62 step 8 units. The lift waits 5 tics and returns. |
 
 ## What stays C/C++ (for now)
 

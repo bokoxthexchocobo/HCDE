@@ -29,11 +29,11 @@ The full engine is ~640k lines of C++. This is a long-running migration, not a b
 | Map loader | `maploader/`, `p_setup.cpp` | `HCDE.MapLoader` | In progress (binary and UDMF level build) |
 | Pregame guest CLI | C++ `-join` guest path | `HCDE.PregameGuest.Cli` | Done (pregame + `--live-ticks`) |
 | Engine core | `src/` | — | Not started |
-| Dedicated server | `hcdeserv` (`HCDE.Server`) | Headless map boot, tick, and snapshot publish | In progress |
-| Playsim | `src/playsim/` | `HCDE.Playsim` | Subset (spawn, thrust, line slide, thinker tick) |
-| Renderer (Vulkan/SW) | `src/rendering/` | — | Keep native or P/Invoke initially |
-| ZScript VM | `src/common/scripting/` | — | Keep native or P/Invoke initially |
-| Audio (ZMusic) | `libraries/ZMusic/` | — | Keep native via P/Invoke |
+| Dedicated server | `hcdeserv` (`HCDE.Server`) | Headless map boot, tick, snapshot publish, in-engine RCON | Phase 3 subset |
+| Playsim | `src/playsim/` | `HCDE.Playsim` | Phase 5 subset (Phase 3, plus pickups, blockmap, floors) |
+| Renderer (Vulkan/SW) | `src/rendering/` | `HCDE.Client` | Phase 4 subset (column view + recorded quads) |
+| ZScript VM | `src/common/scripting/` | `HCDE.Client` | Phase 4 subset (managed opcodes; asmjit probed, not bound) |
+| Audio (ZMusic) | `libraries/ZMusic/` | `HCDE.Client` | Phase 4 subset (PCM mix; ZMusic probed, not bound) |
 | Build tools (re2c, lemon, zipdir) | `tools/` | — | Replace or wrap later |
 
 ## Build
@@ -63,10 +63,13 @@ Outputs: `hcdemaster` and `hcdercon`.
 | [`docs/HCDE_CSHARP_PHASE1_AUDIT.md`](docs/HCDE_CSHARP_PHASE1_AUDIT.md) | Phase 1 principal audit (tools + protocol) |
 | [`docs/HCDE_CSHARP_PHASE2_AUDIT.md`](docs/HCDE_CSHARP_PHASE2_AUDIT.md) | Phase 2 principal audit (dedicated server path) |
 | [`docs/HCDE_CSHARP_FULL_AUDIT.md`](docs/HCDE_CSHARP_FULL_AUDIT.md) | Full codebase audit (all projects) |
+| [`docs/HCDE_CSHARP_PHASE3_AUDIT.md`](docs/HCDE_CSHARP_PHASE3_AUDIT.md) | Phase 3 principal audit (simulation subset) |
+| [`docs/HCDE_CSHARP_PHASE4_AUDIT.md`](docs/HCDE_CSHARP_PHASE4_AUDIT.md) | Phase 4 principal audit (client subset) |
+| [`docs/HCDE_CSHARP_PHASE5_AUDIT.md`](docs/HCDE_CSHARP_PHASE5_AUDIT.md) | Phase 5 principal audit (pickups and floors) |
 
 ## Validation
 
-Managed wire compatibility is gated by `dotnet test` (596 tests; CI via `.github/workflows/csharp.yml`). Optional cross-language soak CI runs `FullyQualifiedName~CrossLanguageSoak` when `HCDE_HCDESERV_PATH` / `HCDE_IWAD_PATH` secrets are configured; both workflows enforce a Passed manifest gate when those secrets are present. Cross-language checks live under `validation/`:
+Managed wire compatibility is gated by `dotnet test` (633 tests; CI via `.github/workflows/csharp.yml`). Optional cross-language soak CI runs `FullyQualifiedName~CrossLanguageSoak` when `HCDE_HCDESERV_PATH` / `HCDE_IWAD_PATH` secrets are configured; both workflows enforce a Passed manifest gate when those secrets are present. Cross-language checks live under `validation/`:
 
 | Harness | Purpose |
 | --- | --- |
@@ -101,9 +104,11 @@ csharp/
     HCDE.Net.Pregame/    Pregame host/guest handshake pumps
     HCDE.Net.Core/       Live protocol codecs (HLIV/HGPL/HCIN/HCSN/…)
     HCDE.MapLoader/      WAD directory + binary map lump decode (Phase 2d)
+    HCDE.Playsim/        Authority tick subset (Phase 3)
+    HCDE.Client/         hcde — headless client subset (Phase 4)
     HCDE.PregameGuest.Cli/  hcde-pregame-guest CLI
   tests/
-    HCDE.*.Tests/        xUnit regression tests (275 passing)
+    HCDE.*.Tests/        xUnit regression tests (633 passing)
 ```
 
 ## Migration phases
@@ -124,17 +129,25 @@ csharp/
 - Map loader and gamedata parsers (DEHACKED, MAPINFO, UDMF)
 - Principal audit: [`docs/HCDE_CSHARP_PHASE2_AUDIT.md`](docs/HCDE_CSHARP_PHASE2_AUDIT.md)
 
-### Phase 3 — Full simulation
+### Phase 3 — Simulation subset (complete for the server gates)
 
-- Complete playsim, save/load, compatibility layers
-- HCDE invasion, rewind, RCON server side in-engine
+- Line specials, a word-format ACS subset, bots, `HCSV` save/load
+- MBF21 / ID24 / Eternity flags, invasion waves, authority rewind, in-engine RCON
+- Principal audit: [`docs/HCDE_CSHARP_PHASE3_AUDIT.md`](docs/HCDE_CSHARP_PHASE3_AUDIT.md)
 
-### Phase 4 — Client
+### Phase 4 — Client subset (complete for the headless gates)
 
-- ZScript VM (likely native interop initially)
-- Software renderer, then Vulkan via Silk.NET/Veldrid or retained C++ interop
-- Audio via ZMusic P/Invoke
-- Launcher UI (Avalonia or similar)
+- Managed ZScript stand-in, software column view, recorded hardware blit
+- PCM mixer, launcher argument plan, `hcde --self-test`
+- asmjit, Vulkan, and ZMusic are probed and not called
+- Principal audit: [`docs/HCDE_CSHARP_PHASE4_AUDIT.md`](docs/HCDE_CSHARP_PHASE4_AUDIT.md)
+
+### Phase 5 — Pickups and floors (complete for this slice)
+
+- Pistol-start inventory and vanilla touch pickups
+- Blockmap line tests, solid actors, and an 8-unit floor raise, lower, and lift
+- Principal audit: [`docs/HCDE_CSHARP_PHASE5_AUDIT.md`](docs/HCDE_CSHARP_PHASE5_AUDIT.md)
+- No C++ deleted. Combat is next.
 
 ### Native code to retain (initially)
 

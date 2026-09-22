@@ -1,9 +1,9 @@
 # HCDE C# Migration — Full Principal Audit
 
-**Last updated:** 2026-08-18  
-**Scope:** All code under `csharp/` (7 projects, 6 test suites)  
-**Verification:** `dotnet build` and `dotnet test` in `csharp/` — **596 tests passing** (CI: `.github/workflows/csharp.yml`; optional soak: `.github/workflows/csharp-cross-language-soak.yml`)  
-**Related:** [`HCDE_CSHARP_PHASE1_AUDIT.md`](HCDE_CSHARP_PHASE1_AUDIT.md) · [`HCDE_CSHARP_PHASE2_AUDIT.md`](HCDE_CSHARP_PHASE2_AUDIT.md) · [`HCDE_CSHARP_MIGRATION.md`](HCDE_CSHARP_MIGRATION.md)
+**Last updated:** 2026-09-22  
+**Scope:** All code under `csharp/`. Section 2's inventory predates Phases 3–4; the phase audits are the current record for those gates.  
+**Verification:** `dotnet test` in `csharp/` — **633 tests passing** on 2026-09-22 (CI: `.github/workflows/csharp.yml`; optional soak: `.github/workflows/csharp-cross-language-soak.yml`)  
+**Related:** [`HCDE_CSHARP_PHASE1_AUDIT.md`](HCDE_CSHARP_PHASE1_AUDIT.md) · [`HCDE_CSHARP_PHASE2_AUDIT.md`](HCDE_CSHARP_PHASE2_AUDIT.md) · [`HCDE_CSHARP_PHASE3_AUDIT.md`](HCDE_CSHARP_PHASE3_AUDIT.md) · [`HCDE_CSHARP_PHASE4_AUDIT.md`](HCDE_CSHARP_PHASE4_AUDIT.md) · [`HCDE_CSHARP_PHASE5_AUDIT.md`](HCDE_CSHARP_PHASE5_AUDIT.md) · [`HCDE_CSHARP_MIGRATION.md`](HCDE_CSHARP_MIGRATION.md)
 
 ---
 
@@ -20,7 +20,9 @@ The C# tree is a **well-tested protocol and networking foundation** (~15,500 LOC
 | Phase 2d — map loader | **In progress** (binary lumps, UDMF TEXTMAP, and a level built from either) | Medium |
 | Phase 2e — playsim subset | **Started** (fixed point, thinkers, actor spawn, player thrust, line slide) | Medium for this subset |
 | Phase 2f — server shell | **In progress** (`HCDE.Server` loads a map, ticks, and publishes snapshot tails) | Medium for load-and-tick; low for full net play |
-| Phase 3–4 — full sim & client | **Not started** | — |
+| Phase 3 — simulation subset | **Server gates complete** (see `HCDE_CSHARP_PHASE3_AUDIT.md`) | Medium for the subset; not `p_acs` / `p_saveg` |
+| Phase 4 — client subset | **Headless gates complete** (see `HCDE_CSHARP_PHASE4_AUDIT.md`) | Medium for the subset; not swrenderer, Vulkan, ZMusic, or the ZScript VM |
+| Phase 5 — pickups and floors | **Slice complete** (see `HCDE_CSHARP_PHASE5_AUDIT.md`) | Medium for the slice; not `a_pickups` / `p_map` |
 
 **Overall migration progress (by engine LOC):** ~2% of HCDE-owned C++ (`src/` + `tools/` ≈ 672k LOC).  
 **Runnable C# dedicated server:** headless load-and-tick of a map lump. Python Step 12, MBF21, and ID24 harnesses were not run.
@@ -342,9 +344,9 @@ Wire-first codecs for the **core live envelope and record bodies** are in good s
 | `HCDE.Gamedata` | DEHACKED, MAPINFO, UDMF | Tens of thousands |
 | `HCDE.Playsim` | `playsim/`, `p_tick.cpp` | **Hundreds of thousands** |
 | `HCDE.Server` | `d_main.cpp` dedicated path | Medium (orchestration) |
-| `HCDE.Client` | Full client | Majority of engine |
-| In-engine RCON server | `d_net_rcon.cpp` server side | Small (client tool done) |
-| ZScript VM, renderers, audio | Various | Keep native / P/Invoke |
+| `HCDE.Client` | Headless subset in `src/HCDE.Client` (`hcde --self-test`) | See the Phase 4 audit. Not the C++ client |
+| In-engine RCON server | `d_net_rcon.cpp` server side | Loopback allowlist landed in Phase 3 |
+| ZScript VM, renderers, audio | Stand-ins in `HCDE.Client`; native libraries probed and not bound | The C++ pipelines stay |
 
 ---
 

@@ -57,5 +57,7 @@ public sealed class GameTicClock
 
     public void Advance() => Tic++;
 
+    public void Restore(int tic) => Tic = tic < 0 ? 0 : tic;
+
     public double Seconds => Tic / (double)TicRate;
 }

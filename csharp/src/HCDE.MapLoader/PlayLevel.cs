@@ -31,6 +31,7 @@ public sealed class LevelSide
 public sealed class LevelLine
 {
     public const int BlockingFlag = 1;
+    public const int RepeatSpecialFlag = 512;
     public const int NoSide = -1;
 
     public int Index { get; init; }
@@ -43,10 +44,19 @@ public sealed class LevelLine
     public int Flags { get; init; }
     public int SideFront { get; init; }
     public int SideBack { get; init; }
+    public int Special { get; set; }
+    public int Tag { get; init; }
+    public int Arg0 { get; init; }
+    public int Arg1 { get; init; }
+    public int Arg2 { get; init; }
+    public int Arg3 { get; init; }
+    public int Arg4 { get; init; }
 
     public bool OneSided => SideBack < 0;
 
     public bool BlocksMovement => OneSided || (Flags & BlockingFlag) != 0;
+
+    public bool RepeatsSpecial => Special == 1 || (Flags & RepeatSpecialFlag) != 0;
 }
 
 public sealed class LevelThing
@@ -67,6 +77,11 @@ public sealed class PlayLevel
     public IReadOnlyList<LevelSide> Sides { get; init; } = Array.Empty<LevelSide>();
     public IReadOnlyList<LevelLine> Lines { get; init; } = Array.Empty<LevelLine>();
     public IReadOnlyList<LevelThing> Things { get; init; } = Array.Empty<LevelThing>();
+
+    /// <summary>
+    /// Decoded BLOCKMAP. When set, movement tests only the lines listed in the blocks the actor crosses.
+    /// </summary>
+    public MapBlockmapRecord? Blockmap { get; set; }
 }
 
 /// <summary>
@@ -102,6 +117,13 @@ public static class LevelBuilder
             return false;
 
         level = FromBinary(binary, mapName);
+        if (catalog.TryGetLump(MapLumpKind.Blockmap, out var blockmapLump)
+            && WadArchiveReader.TryReadLumpData(wad, blockmapLump.Entry, out var blockmapData, out _)
+            && MapBlockmapCodec.TryRead(blockmapData, out var blockmap, out _))
+        {
+            level.Blockmap = blockmap;
+        }
+
         return true;
     }
 
@@ -150,6 +172,8 @@ public static class LevelBuilder
                 Flags = source.Flags,
                 SideFront = SideIndex(source.SideFront),
                 SideBack = SideIndex(source.SideBack),
+                Special = source.Special,
+                Tag = source.Tag,
             };
         }
 
@@ -222,6 +246,13 @@ public static class LevelBuilder
                 Flags = flags,
                 SideFront = source.SideFront,
                 SideBack = source.SideBack,
+                Special = source.Special,
+                Tag = source.Id,
+                Arg0 = source.Arg0,
+                Arg1 = source.Arg1,
+                Arg2 = source.Arg2,
+                Arg3 = source.Arg3,
+                Arg4 = source.Arg4,
             };
         }
 

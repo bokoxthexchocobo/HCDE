@@ -108,6 +108,24 @@ public static class DedicatedServerCommandLine
                 case "--no-query":
                     options.EnableServerQuery = false;
                     break;
+                case "--rcon-password":
+                    if (!TryReadArg(args, ref i, out var rconPassword) || string.IsNullOrWhiteSpace(rconPassword))
+                    {
+                        error = "--rcon-password requires a non-empty value";
+                        return false;
+                    }
+
+                    options.RconPassword = rconPassword;
+                    break;
+                case "--rcon-port":
+                    if (!TryReadArg(args, ref i, out var rconPortText) || !int.TryParse(rconPortText, out var rconPort) || rconPort is < 0 or > 65535)
+                    {
+                        error = "--rcon-port requires a TCP port";
+                        return false;
+                    }
+
+                    options.RconPort = rconPort;
+                    break;
                 case "--master":
                     advertiseMaster = true;
                     if (i + 1 < args.Length && !args[i + 1].StartsWith('-'))
@@ -162,7 +180,7 @@ public static class DedicatedServerCommandLine
             "Usage: hcdeserv --iwad <path> [--map <name>] [--port <port>] [--bind <ipv4>] [--rng-seed <int>]");
         Console.WriteLine("       [--server-name <name>] [--skill <0-255>] [--deathmatch] [--teamplay]");
         Console.WriteLine("       [--gamemode <id>] [--gamemode-name <label>] [--no-query]");
-        Console.WriteLine("       [--master [host[:port]]]");
+        Console.WriteLine("       [--master [host[:port]]] [--rcon-password <secret>] [--rcon-port <port>]");
         Console.WriteLine();
         Console.WriteLine("Managed dedicated-server scaffold: pregame host pump with map-load bootstrap handoff.");
         Console.WriteLine("Defaults: --bind 0.0.0.0 --port 10666 --map MAP01 --rng-seed 1");

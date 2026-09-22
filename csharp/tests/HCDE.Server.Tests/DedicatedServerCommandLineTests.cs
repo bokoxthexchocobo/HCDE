@@ -79,6 +79,26 @@ public class DedicatedServerCommandLineTests
         }
     }
 
+    [Fact]
+    public void TryParse_ReadsRconPasswordAndPort()
+    {
+        var iwad = CreateTempIwad();
+        try
+        {
+            Assert.True(DedicatedServerCommandLine.TryParse(
+                ["--iwad", iwad, "--rcon-password", "secret", "--rcon-port", "10667"],
+                out var options,
+                out var error),
+                error);
+            Assert.Equal("secret", options.RconPassword);
+            Assert.Equal(10667, options.RconPort);
+        }
+        finally
+        {
+            File.Delete(iwad);
+        }
+    }
+
     private static string CreateTempIwad()
     {
         var path = Path.Combine(Path.GetTempPath(), $"hcde-iwad-{Guid.NewGuid():N}.wad");

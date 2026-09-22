@@ -19,22 +19,37 @@ public class Actor : Thinker
     public int DoomEdNum { get; init; }
     public Fixed X { get; set; }
     public Fixed Y { get; set; }
+    public Fixed PreviousX { get; private set; }
+    public Fixed PreviousY { get; private set; }
     public BamAngle Angle { get; set; }
     public int Health { get; set; } = 100;
     public Fixed Radius { get; set; } = Fixed.FromInt(20);
     public Fixed Height { get; set; } = Fixed.FromInt(56);
     public PlayLevel? Level { get; init; }
 
+    public bool BlocksActors =>
+        DoomEdNum != LineSpecials.TeleportDestType
+        && DoomEdNum != InvasionDirector.SpawnSpotType
+        && !PickupCatalog.IsPickup(DoomEdNum);
+
     public static bool IsPlayerStart(int type) => type is >= PlayerStartMin and <= PlayerStartMax;
+
+    public void RememberPosition()
+    {
+        PreviousX = X;
+        PreviousY = Y;
+    }
 }
 
 public sealed class PlayerPawn : Actor
 {
     public byte PlayerNum { get; init; }
     public PlayerCommand Pending { get; set; }
+    public PlayerInventory Inventory { get; } = new();
 
     public override void Tick()
     {
+        RememberPosition();
         var command = Pending;
         Pending = default;
         Angle = new BamAngle(unchecked(Angle.Raw + (uint)(command.YawDelta << 16)));
@@ -111,6 +126,20 @@ public static class LineSlide
 
     private static bool CanOccupy(PlayLevel level, double x, double y, double radius, double fromX, double fromY)
     {
+        if (level.Blockmap is MapBlockmapRecord blockmap)
+        {
+            foreach (var index in BlockmapLines.Near(blockmap, x, y, radius).Concat(BlockmapLines.Near(blockmap, fromX, fromY, radius)))
+            {
+                if ((uint)index >= (uint)level.Lines.Count)
+                    continue;
+                var line = level.Lines[index];
+                if (line.BlocksMovement && Hits(x, y, radius, fromX, fromY, line))
+                    return false;
+            }
+
+            return true;
+        }
+
         foreach (var line in level.Lines)
         {
             if (line.BlocksMovement && Hits(x, y, radius, fromX, fromY, line))
@@ -145,6 +174,9 @@ public static class LineSlide
         var dy = ay - by;
         return Math.Sqrt(dx * dx + dy * dy);
     }
+
+    public static bool Crosses(double fromX, double fromY, double toX, double toY, LevelLine line) =>
+        SegmentsCross(fromX, fromY, toX, toY, line.X1, line.Y1, line.X2, line.Y2);
 
     private static bool SegmentsCross(
         double ax, double ay, double bx, double by,
@@ -205,6 +237,7 @@ public static class ActorSpawner
                 };
 
             nextId++;
+            actor.RememberPosition();
             thinkers.Add(actor, playerStart ? ThinkerStat.Player : ThinkerStat.Default);
             actors.Add(actor);
         }
@@ -225,31 +258,143 @@ public static class ActorSpawner
 
 public sealed class AuthoritySimulation
 {
+    private readonly List<Actor> _actors;
+    private readonly List<SectorMotion> _motions = new();
+
     private AuthoritySimulation(
         PlayLevel level,
         ThinkerCollection thinkers,
-        IReadOnlyList<Actor> actors,
-        int rngSeed)
+        List<Actor> actors,
+        int rngSeed,
+        CompatSurface compat)
     {
         Level = level;
         Thinkers = thinkers;
-        Actors = actors;
+        _actors = actors;
         RngSeed = rngSeed;
+        Compat = compat;
+        Floors = level.Sectors.Select(sector => sector.FloorHeight).ToArray();
+        Ceilings = level.Sectors.Select(sector => sector.CeilingHeight).ToArray();
+        Acs = new AcsVm();
+        Invasion = new InvasionDirector();
+        Rewind = new RewindBuffer();
+        ReverbActive = compat.HasFlag(CompatSurface.Eternity)
+            && level.Sectors.Any(sector => sector.Special == CompatSurfaceRules.EternityReverbSpecial);
         RecomputeChecksum();
+        PublishStatus();
     }
 
     public PlayLevel Level { get; }
     public ThinkerCollection Thinkers { get; }
-    public IReadOnlyList<Actor> Actors { get; }
-    public IEnumerable<PlayerPawn> Players => Actors.OfType<PlayerPawn>();
+    public IReadOnlyList<Actor> Actors => _actors;
+    public IEnumerable<PlayerPawn> Players => _actors.OfType<PlayerPawn>();
     public int RngSeed { get; }
     public uint Checksum { get; private set; }
+    public string StatusLine { get; private set; } = "";
+    public CompatSurface Compat { get; }
+    public bool Exited { get; private set; }
+    public bool SecretExit { get; private set; }
+    public bool ReverbActive { get; }
+    public bool RewindEnabled { get; set; }
+    public AcsVm Acs { get; }
+    public InvasionDirector Invasion { get; }
+    public RewindBuffer Rewind { get; }
+    internal short[] Floors { get; }
+    internal short[] Ceilings { get; }
+    internal List<SectorMotion> Motions => _motions;
 
-    public static AuthoritySimulation Start(PlayLevel level, int rngSeed = 0, DehackedPatchResult? dehacked = null)
+    public short FloorOf(int sector) => sector >= 0 && sector < Floors.Length ? Floors[sector] : (short)0;
+
+    public static AuthoritySimulation Start(
+        PlayLevel level,
+        int rngSeed = 0,
+        DehackedPatchResult? dehacked = null,
+        CompatSurface compat = CompatSurface.None)
     {
         var thinkers = new ThinkerCollection();
-        var actors = ActorSpawner.Spawn(level, thinkers, dehacked);
-        return new AuthoritySimulation(level, thinkers, actors, rngSeed);
+        var actors = ActorSpawner.Spawn(level, thinkers, dehacked).ToList();
+        return new AuthoritySimulation(level, thinkers, actors, rngSeed, compat);
+    }
+
+    public BotPawn AddBot(double x, double y)
+    {
+        var id = _actors.Count == 0 ? 1u : _actors.Max(actor => actor.Id) + 1;
+        var bot = new BotPawn
+        {
+            Id = id,
+            DoomEdNum = InvasionDirector.SpawnSpotType,
+            X = Fixed.FromDouble(x),
+            Y = Fixed.FromDouble(y),
+            Angle = new BamAngle(0),
+            Health = 30,
+            Level = Level,
+        };
+        bot.RememberPosition();
+        _actors.Add(bot);
+        Thinkers.Add(bot, ThinkerStat.Default);
+        return bot;
+    }
+
+    public void MarkExited(bool secret)
+    {
+        Exited = true;
+        SecretExit = secret;
+    }
+
+    public string Describe() =>
+        $"OK map={Level.MapName} tic={Thinkers.Clock.Tic} players={Players.Count()} bots={_actors.OfType<BotPawn>().Count()} checksum={Checksum:x8} invasion={Invasion.Phase} exited={(Exited ? 1 : 0)} secret={(SecretExit ? 1 : 0)}";
+
+    public SimSaveState CaptureState()
+    {
+        var state = new SimSaveState
+        {
+            Tic = Thinkers.Clock.Tic,
+            Exited = Exited,
+            SecretExit = SecretExit,
+        };
+        foreach (var actor in _actors.OrderBy(actor => actor.Id))
+        {
+            state.Actors.Add(new SimActorPose
+            {
+                Id = actor.Id,
+                X = actor.X.Raw,
+                Y = actor.Y.Raw,
+                Angle = actor.Angle.Raw,
+                Health = actor.Health,
+            });
+        }
+
+        for (var i = 0; i < Floors.Length; i++)
+            state.Sectors.Add((Floors[i], Ceilings[i]));
+        return state;
+    }
+
+    public void RestoreState(SimSaveState state)
+    {
+        Thinkers.Clock.Restore(state.Tic);
+        Exited = state.Exited;
+        SecretExit = state.SecretExit;
+        foreach (var pose in state.Actors)
+        {
+            var actor = _actors.FirstOrDefault(candidate => candidate.Id == pose.Id);
+            if (actor == null)
+                continue;
+            actor.X = new Fixed(pose.X);
+            actor.Y = new Fixed(pose.Y);
+            actor.Angle = new BamAngle(pose.Angle);
+            actor.Health = pose.Health;
+            actor.RememberPosition();
+        }
+
+        var count = Math.Min(Floors.Length, state.Sectors.Count);
+        for (var i = 0; i < count; i++)
+        {
+            Floors[i] = state.Sectors[i].Floor;
+            Ceilings[i] = state.Sectors[i].Ceiling;
+        }
+
+        RecomputeChecksum();
+        PublishStatus();
     }
 
     public void QueueCommand(byte playerNum, PlayerCommand command)
@@ -267,21 +412,86 @@ public sealed class AuthoritySimulation
     public void Tick()
     {
         Thinkers.Run();
+        SeparateSolids();
+        CollectPickups();
+        LineSpecials.ActivateCrossings(this);
+        LineSpecials.TickMotions(this);
+        Acs.Tick(this);
+        Invasion.Tick(this);
+        if (RewindEnabled)
+            Rewind.Capture(this);
         RecomputeChecksum();
+        PublishStatus();
     }
+
+    private void SeparateSolids()
+    {
+        foreach (var actor in _actors)
+        {
+            if (!actor.BlocksActors)
+                continue;
+            foreach (var other in _actors)
+            {
+                if (ReferenceEquals(actor, other) || !other.BlocksActors)
+                    continue;
+                if (!CirclesOverlap(actor, other))
+                    continue;
+                actor.X = actor.PreviousX;
+                actor.Y = actor.PreviousY;
+                break;
+            }
+        }
+    }
+
+    private void CollectPickups()
+    {
+        var taken = new List<Actor>();
+        foreach (var player in Players)
+        {
+            foreach (var actor in _actors)
+            {
+                if (taken.Contains(actor) || !PickupCatalog.IsPickup(actor.DoomEdNum))
+                    continue;
+                if (!CirclesOverlap(player, actor))
+                    continue;
+                if (PickupCatalog.TryGive(player, actor.DoomEdNum))
+                    taken.Add(actor);
+            }
+        }
+
+        foreach (var actor in taken)
+        {
+            actor.Destroy();
+            _actors.Remove(actor);
+        }
+    }
+
+    private static bool CirclesOverlap(Actor left, Actor right)
+    {
+        var dx = left.X.ToDouble() - right.X.ToDouble();
+        var dy = left.Y.ToDouble() - right.Y.ToDouble();
+        var reach = left.Radius.ToDouble() + right.Radius.ToDouble();
+        return dx * dx + dy * dy <= reach * reach;
+    }
+
+    private void PublishStatus() => StatusLine = Describe();
 
     private void RecomputeChecksum()
     {
         var hash = 2166136261u;
         hash = Mix(hash, unchecked((uint)Thinkers.Clock.Tic));
         hash = Mix(hash, unchecked((uint)RngSeed));
-        foreach (var actor in Actors.OrderBy(actor => actor.Id))
+        foreach (var actor in _actors.OrderBy(actor => actor.Id))
         {
             hash = Mix(hash, actor.Id);
             hash = Mix(hash, unchecked((uint)actor.X.Raw));
             hash = Mix(hash, unchecked((uint)actor.Y.Raw));
             hash = Mix(hash, unchecked((uint)actor.Health));
         }
+
+        foreach (var floor in Floors)
+            hash = Mix(hash, unchecked((uint)floor));
+        hash = Mix(hash, Exited ? 1u : 0u);
 
         Checksum = hash;
     }
