@@ -9,6 +9,9 @@ public sealed class GuestPlayerState
     public short Health { get; set; }
     public byte PlayerState { get; set; }
     public bool OnGround { get; set; }
+    public float PosX { get; set; }
+    public float PosY { get; set; }
+    public uint YawBams { get; set; }
 }
 
 public sealed class GuestSectorState
@@ -68,6 +71,9 @@ public sealed class GuestWorldStateStore : IWorldDeltaApplySink, IActorDeltaAppl
 
         player.Health = pose.Health;
         player.OnGround = (pose.Flags & LiveConstants.ServerWorldDeltaPoseOnGround) != 0;
+        player.PosX = pose.PosX;
+        player.PosY = pose.PosY;
+        player.YawBams = pose.YawBams;
         return true;
     }
 
@@ -131,6 +137,15 @@ public sealed class GuestWorldStateStore : IWorldDeltaApplySink, IActorDeltaAppl
 
         player.Health = health;
         player.OnGround = onGround;
+    }
+
+    public void SetPlayerPose(byte playerNum, short health, bool onGround, float posX, float posY, uint yawBams)
+    {
+        SeedPlayer(playerNum, health, onGround);
+        var player = _players[playerNum];
+        player.PosX = posX;
+        player.PosY = posY;
+        player.YawBams = yawBams;
     }
 
     public bool TryApply(int recipientClientSlot, ActorDeltaRecord record)
@@ -324,6 +339,9 @@ public sealed class GuestWorldStateStore : IWorldDeltaApplySink, IActorDeltaAppl
             _lineSpecRollingHash);
         _presentationEchoRollingHash = SnapshotChecksumPresentationEchoPolicy.PolishRollingHash(
             _presentationEchoRollingHash,
+            _lineSpecRollingHash);
+        _authorityEventRollingHash = SnapshotChecksumLineSpecPolicy.PolishAuthorityEventRollingHash(
+            _authorityEventRollingHash,
             _lineSpecRollingHash);
     }
 

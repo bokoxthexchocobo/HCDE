@@ -2,7 +2,7 @@
 
 **Last updated:** 2026-08-18  
 **Scope:** All code under `csharp/` (7 projects, 6 test suites)  
-**Verification:** `dotnet build` and `dotnet test` in `csharp/` — **558 tests passing** (CI: `.github/workflows/csharp.yml`; optional soak: `.github/workflows/csharp-cross-language-soak.yml`)  
+**Verification:** `dotnet build` and `dotnet test` in `csharp/` — **596 tests passing** (CI: `.github/workflows/csharp.yml`; optional soak: `.github/workflows/csharp-cross-language-soak.yml`)  
 **Related:** [`HCDE_CSHARP_PHASE1_AUDIT.md`](HCDE_CSHARP_PHASE1_AUDIT.md) · [`HCDE_CSHARP_PHASE2_AUDIT.md`](HCDE_CSHARP_PHASE2_AUDIT.md) · [`HCDE_CSHARP_MIGRATION.md`](HCDE_CSHARP_MIGRATION.md)
 
 ---
@@ -17,12 +17,13 @@ The C# tree is a **well-tested protocol and networking foundation** (~15,500 LOC
 | Phase 2a — UDP transport & query | **Complete** | High |
 | Phase 2b — pregame handshake | **~95%** (fresh join loopback) | Medium (no recorded C++ interop) |
 | Phase 2c — live netcode wire | **~60%** of `d_net` wire surface; apply stubs in place | Medium (playsim mutation deferred) |
-| Phase 2d — map loader | **In progress** (unified `BinaryMapDecoder`; full binary lump decode through collision + BEHAVIOR script directory) | Medium |
-| Phase 2f — server shell | **In progress** (`HCDE.Server` query/advertise + pregame + map-load bootstrap + live authority pump) | Low |
+| Phase 2d — map loader | **In progress** (binary lumps, UDMF TEXTMAP, and a level built from either) | Medium |
+| Phase 2e — playsim subset | **Started** (fixed point, thinkers, actor spawn, player thrust, line slide) | Medium for this subset |
+| Phase 2f — server shell | **In progress** (`HCDE.Server` loads a map, ticks, and publishes snapshot tails) | Medium for load-and-tick; low for full net play |
 | Phase 3–4 — full sim & client | **Not started** | — |
 
 **Overall migration progress (by engine LOC):** ~2% of HCDE-owned C++ (`src/` + `tools/` ≈ 672k LOC).  
-**Runnable C# dedicated server:** 0%.
+**Runnable C# dedicated server:** headless load-and-tick of a map lump. Python Step 12, MBF21, and ID24 harnesses were not run.
 
 ---
 
@@ -43,7 +44,7 @@ csharp/
     HCDE.MapLoader/         21 files, ~1,550 LOC   (WAD directory + unified binary map decode + BEHAVIOR directory)
     HCDE.Server/             6 files,   ~420 LOC   (hcdeserv host + CLI + query/advertise)
     HCDE.PregameGuest.Cli/  5 files,   ~207 LOC   (hcde-pregame-guest CLI)
-  tests/                   69 files, 558 tests
+  tests/                   84 files, 596 tests
 ```
 
 ### 2.2 Test matrix

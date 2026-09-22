@@ -26,11 +26,11 @@ The full engine is ~640k lines of C++. This is a long-running migration, not a b
 | UDP transport + server query | `common/engine/i_net.cpp` (subset) | `HCDE.Net.Transport` | Done (Phase 2a) |
 | Pregame handshake | `i_net.cpp` PRE_* / HCDE services | `HCDE.Net.Pregame` | Done loopback (Phase 2b) |
 | Live netcode wire codecs | `d_net*.cpp` | `HCDE.Net.Core` | In progress (Phase 2c wire + apply stubs) |
-| Map loader | `maploader/`, `p_setup.cpp` | `HCDE.MapLoader` | In progress (unified `BinaryMapDecoder`, map-load bootstrap) |
+| Map loader | `maploader/`, `p_setup.cpp` | `HCDE.MapLoader` | In progress (binary and UDMF level build) |
 | Pregame guest CLI | C++ `-join` guest path | `HCDE.PregameGuest.Cli` | Done (pregame + `--live-ticks`) |
 | Engine core | `src/` | — | Not started |
-| Dedicated server | `hcdeserv` (`HCDE.Server`) | Scaffold — pregame + map-load bootstrap | In progress |
-| Playsim | `src/playsim/` | — | Planned |
+| Dedicated server | `hcdeserv` (`HCDE.Server`) | Headless map boot, tick, and snapshot publish | In progress |
+| Playsim | `src/playsim/` | `HCDE.Playsim` | Subset (spawn, thrust, line slide, thinker tick) |
 | Renderer (Vulkan/SW) | `src/rendering/` | — | Keep native or P/Invoke initially |
 | ZScript VM | `src/common/scripting/` | — | Keep native or P/Invoke initially |
 | Audio (ZMusic) | `libraries/ZMusic/` | — | Keep native via P/Invoke |
@@ -66,7 +66,7 @@ Outputs: `hcdemaster` and `hcdercon`.
 
 ## Validation
 
-Managed wire compatibility is gated by `dotnet test` (558 tests; CI via `.github/workflows/csharp.yml`). Optional cross-language soak CI runs `FullyQualifiedName~CrossLanguageSoak` when `HCDE_HCDESERV_PATH` / `HCDE_IWAD_PATH` secrets are configured; both workflows enforce a Passed manifest gate when those secrets are present. Cross-language checks live under `validation/`:
+Managed wire compatibility is gated by `dotnet test` (596 tests; CI via `.github/workflows/csharp.yml`). Optional cross-language soak CI runs `FullyQualifiedName~CrossLanguageSoak` when `HCDE_HCDESERV_PATH` / `HCDE_IWAD_PATH` secrets are configured; both workflows enforce a Passed manifest gate when those secrets are present. Cross-language checks live under `validation/`:
 
 | Harness | Purpose |
 | --- | --- |

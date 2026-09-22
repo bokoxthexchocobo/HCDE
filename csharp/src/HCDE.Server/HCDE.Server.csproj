@@ -2,6 +2,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\HCDE.MapLoader\HCDE.MapLoader.csproj" />
+    <ProjectReference Include="..\HCDE.Playsim\HCDE.Playsim.csproj" />
     <ProjectReference Include="..\HCDE.Net.Pregame\HCDE.Net.Pregame.csproj" />
     <ProjectReference Include="..\HCDE.Net.Transport\HCDE.Net.Transport.csproj" />
     <ProjectReference Include="..\HCDE.Protocol\HCDE.Protocol.csproj" />

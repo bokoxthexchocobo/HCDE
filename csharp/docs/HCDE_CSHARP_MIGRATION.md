@@ -74,6 +74,31 @@ The UzDoom-derived C++ tree remains buildable until each subsystem has a tested 
 - `tests/mbf21_validation/`
 - `tests/id24_validation/`
 
+### Mini-phases (18)
+
+Sub-phases 2c–2f are too large to finish in one step. Phase 2 is **18 mini-phases**. All 18 have a C# gate. MBF21 and ID24 harnesses currently launch the C++ client and a ZScript validator; their C# server gate is “the dedicated server loads the fixture and ticks.” That load-and-tick gate is covered in-process by mini-phase 18. The Python harnesses were not run. A ZScript `PASS` stays Phase 3–4. Phase 2 sign-off in [`HCDE_CSHARP_PHASE2_AUDIT.md`](HCDE_CSHARP_PHASE2_AUDIT.md) still requires those harnesses against a C# server and an IWAD. Audit for 7 and 12–18: [`HCDE_CSHARP_PHASE2_MINI_7_12_18_AUDIT.md`](HCDE_CSHARP_PHASE2_MINI_7_12_18_AUDIT.md).
+
+| # | Mini-phase | Status | Gate |
+| --- | --- | --- | --- |
+| 1 | **2a** Transport: UDP, query, constants | Done | Loopback query tests |
+| 2 | **2b** Pregame handshake | Done | Host/guest loopback through start-game |
+| 3 | **2c-1** Live wire codecs and apply stubs | Done | xUnit round-trips for HLIV/HGPL/HCIN/HCSN tails |
+| 4 | **2d-1** Binary map lumps | Done | THINGS through BEHAVIOR decode tests |
+| 5 | **2f-1** Dedicated host scaffold | Done | Bind, query, advertise, pregame→live handoff |
+| 6 | **2d-2** UDMF TEXTMAP | Done | Parse vertex, linedef, sidedef, sector, thing |
+| 7 | **2d-3** Level build | Done | Sectors, lines, sides, vertices, things from binary or UDMF |
+| 8 | **2d-4** MAPINFO | Done | Map name, next map, sky, cluster enough to boot a map |
+| 9 | **2d-5** DEHACKED | Done | Thing, state, and sound patches for vanilla actors |
+| 10 | **2e-1** Fixed point | Done | 16.16 numbers, angles, tic clock |
+| 11 | **2e-2** Thinkers | Done | Thinker list and tick order |
+| 12 | **2e-3** Actor spawn | Done | Map things become actors |
+| 13 | **2e-4** Player | Done | Player pawn consumes usercmds |
+| 14 | **2e-5** Collision | Done | Slide movement against lines |
+| 15 | **2e-6** Authority tick | Done | `P_Ticker` subset updates checksums from simulated state |
+| 16 | **2f-2** Headless map boot | Done | `hcdeserv` loads a map lump and ticks with no renderer |
+| 17 | **2f-3** Sim snapshots | Done | Snapshot tails carry the ticked player position |
+| 18 | **2-accept** In-process load and tick | Done | Minimal map loads, spawns, and ticks. Python harnesses not run |
+
 ## Phase 3 — Simulation completeness
 
 - Full playsim including `p_acs.cpp`, specials, bots

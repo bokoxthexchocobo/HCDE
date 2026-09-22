@@ -1,7 +1,9 @@
 using System.Net;
+using HCDE.MapLoader;
 using HCDE.Net.Core;
 using HCDE.Net.Pregame;
 using HCDE.Net.Transport;
+using HCDE.Playsim;
 using HCDE.Protocol;
 
 namespace HCDE.Server;
@@ -56,6 +58,15 @@ public sealed class DedicatedServerHost : IDisposable
             var masterEndpoint = new NetworkEndpoint(IPAddress.Parse(options.MasterHost), options.MasterPort);
             _advertiser = new DedicatedServerAdvertiser(_transport, masterEndpoint, (ushort)_transport.BoundPort);
         }
+
+        var mapName = options.Pregame.Session.MapLoad.MapName;
+        if (string.IsNullOrWhiteSpace(mapName))
+            mapName = MapLoaderConstants.DefaultMapName;
+        if (options.IwadBytes.Length > 0
+            && LevelBuilder.TryFromWad(options.IwadBytes, mapName, out var level, out _))
+        {
+            Simulation = AuthoritySimulation.Start(level, options.Pregame.Session.MapLoad.RngSeed);
+        }
     }
 
     public int BoundPort => _transport.BoundPort;
@@ -63,6 +74,8 @@ public sealed class DedicatedServerHost : IDisposable
     public PregameHost PregameHost => _pregameHost;
 
     public LiveAuthoritySession? LiveSession => _liveSession;
+
+    public AuthoritySimulation? Simulation { get; private set; }
 
     public void Pump(ulong nowMilliseconds)
     {
@@ -78,7 +91,19 @@ public sealed class DedicatedServerHost : IDisposable
         {
             _liveSession = session;
             SyncLiveClients(_liveSession);
+            if (Simulation != null)
+                _liveSession.SetClientInputSink(new SimulationCommandSink(Simulation));
         }
+
+        if (Simulation != null && _liveSession is not null)
+        {
+            foreach (var client in _liveSession.Clients.Clients)
+                _liveSession.TryReceiveClientInput(client.Endpoint, out _, out _);
+        }
+
+        Simulation?.Tick();
+        if (Simulation != null && _liveSession?.AuthorityWorldState is { } store)
+            SimSnapshotPublisher.Publish(Simulation, store);
 
         if (_liveSession is not null)
             _liveSession.Pump(nowMilliseconds);

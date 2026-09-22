@@ -899,11 +899,37 @@ Phase 2b is complete when **all** hold:
 2. ~~**Authority playsim tick polish**~~ — coop invasion-style multi-bucket follow-up follow-up follow-ups, presentation-echo tail polish
 3. ~~**Cross-language soak evidence**~~ — record-validation-skipped not-required gate in main CI workflow
 
-## Phase 2c next slice (iteration 94)
+## Phase 2c next slice (iteration 94 — delivered)
 
-1. **BEHAVIOR bytecode operands** — little-enhanced shift-block completion Eternity stack cross-op follow-up follow-ups
-2. **Authority playsim tick polish** — invasion coop-style multi-bucket follow-up follow-up follow-ups, authority-event tail polish
-3. **Cross-language soak evidence** — try-record-validation-passed not-required gate in main CI workflow
+1. ~~**BEHAVIOR bytecode operands**~~ — little-enhanced shift-block completion Eternity stack cross-op follow-up follow-ups
+2. ~~**Authority playsim tick polish**~~ — invasion coop-style multi-bucket follow-up follow-up follow-ups, authority-event tail polish
+3. ~~**Cross-language soak evidence**~~ — try-record-validation-passed not-required gate in main CI workflow
+
+### Try-record-validation-passed not-required gate main CI step (Phase 2c — iteration 94 step 3)
+
+| Artifact | Location | C++ reference |
+| --- | --- | --- |
+| Try-record-validation-passed not-required gate | `CrossLanguageSoakEvidenceArchive.TryRecordValidationPassedEvidence` | return NotRequired when record env is unset |
+| Main CI workflow | `.github/workflows/csharp.yml` | `TryRecordValidationPassedEvidence_ReturnsNotRequiredWhenNotRequested` step |
+| Gate tests | `CrossLanguageSoakEvidenceArchiveTests` | `TryRecordValidationPassedEvidence_ReturnsNotRequiredWhenNotRequested` |
+| Release checklist | `validation/soak/README.md` | main CI try-record-validation-passed not-required gate docs |
+
+### Invasion authority-event gap resync follow-up follow-up follow-ups + authority-event tail polish (Phase 2c — iteration 94 step 2)
+
+| Artifact | Location | C++ reference |
+| --- | --- | --- |
+| Authority-event tail polish | `SnapshotChecksumLineSpecPolicy.PolishAuthorityEventRollingHash` | fold line-spec into authority-event hash |
+| Authority-event commit polish | `GuestWorldStateStore.CommitAppliedActorDeltas` | polish authority-event rolling hash on HCDA apply |
+| Invasion authority-event actor-delta presentation-echo coop-dead-spawn actor-line-spec multi-bucket mismatch follow-up follow-up follow-up | `SnapshotChecksumMismatchPolicy.ShouldTriggerNetGapResyncOnInvasionAuthorityEventActorDeltaPresentationEchoCoopDeadSpawnActorLineSpecMultiBucketMismatchFollowUpFollowUpFollowUp` | net gap resync when invasion actor and line-spec categories mismatch across five or more buckets |
+| Guest pump wiring | `LiveGuestSession.TryApplyTailSections` | tracks invasion authority-event actor-delta presentation-echo coop-dead-spawn multi-bucket mismatch gap resync follow-up follow-up follow-ups |
+| E2E tests | `SnapshotChecksumActorDeltaPolicyTests`, `SnapshotChecksumMismatchPolicyTests`, `GuestWorldStateChecksumIntegrationTests` | authority-event polish + invasion multi-bucket follow-up follow-up follow-up cross-tail mismatch gap resync |
+
+### BEHAVIOR little-enhanced shift-block completion Eternity stack cross-op follow-up follow-up PCD operands (Phase 2c/2d — iteration 94 step 1)
+
+| Artifact | Location | C++ reference |
+| --- | --- | --- |
+| Little-enhanced Eternity stack cross-op follow-up follow-up wire skips | `MapBehaviorBytecodeWalker` | world/global var and array shadow follow-ups after eternity-stack cross-op follow-ups in little-enhanced encoding |
+| Walker tests | `MapBehaviorBytecodeWalkerTests` | `TryWalkScript_LittleEnhanced_ReadsShiftBlockCompletionEternityStackCrossOpFollowUpFollowUps` |
 
 ### Record-validation-skipped not-required gate main CI step (Phase 2c — iteration 93 step 3)
 
@@ -2752,6 +2778,8 @@ Do **not** port snapshot encode/decode bodies until HCIN/HCSN headers are green.
 ## Audit conclusion (interim)
 
 **Phase 2b C# pregame stack is feature-complete for fresh dedicated joins** — loopback WAITING setup, verification-error replies, start-game, and a cross-language guest CLI/harness are in place. The remaining 2b gate is executing the harness against a real `hcdeserv` build and recording the result.
+
+**Phase 2c iteration 94** adds little-enhanced shift-block completion Eternity stack cross-op follow-up follow-up PCD operand coverage, invasion authority-event actor-delta presentation-echo coop-dead-spawn actor-line-spec multi-bucket gap resync follow-up follow-up follow-ups with authority-event tail polish on HCDA apply, and `TryRecordValidationPassedEvidence_ReturnsNotRequiredWhenNotRequested` main CI gate for try-record-validation-passed not-required validation. This closes the queued Phase 2c follow-up slices.
 
 **Phase 2c iteration 93** adds old-format shift-block completion Eternity stack cross-op follow-up PCD operand coverage, coop authority-event actor-delta presentation-echo coop-dead-spawn actor-line-spec multi-bucket gap resync follow-up follow-up follow-ups with presentation-echo tail polish on HCDA apply, and `RecordValidationSkippedEvidence_ReturnsEmptyWhenNotRequested` main CI gate for record-validation-skipped not-required validation.
 

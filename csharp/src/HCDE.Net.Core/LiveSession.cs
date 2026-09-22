@@ -842,6 +842,23 @@ public sealed class LiveGuestSession
         }
 
         if (_lastChecksumApplyState.Compared
+            && SnapshotChecksumMismatchPolicy.ShouldTriggerNetGapResyncOnInvasionAuthorityEventActorDeltaPresentationEchoCoopDeadSpawnActorLineSpecMultiBucketMismatchFollowUpFollowUpFollowUp(
+                new SnapshotChecksumApplyResult(
+                    _lastChecksumApplyState.Compared,
+                    _lastChecksumApplyState.MismatchCount,
+                    _lastChecksumApplyState.LocalBucketMissing,
+                    hasActorCategoryMismatch: _lastChecksumApplyState.HasActorCategoryMismatch,
+                    hasLineSpecCategoryMismatch: _lastChecksumApplyState.HasLineSpecCategoryMismatch),
+                appliedInvasionAuthorityEvents,
+                appliedInvasionActorDeltas,
+                appliedInvasionPresentationEcho,
+                appliedInvasionCoopDeadSpawns,
+                _checksumMismatchPolicy))
+        {
+            _needsNetGapResync = true;
+        }
+
+        if (_lastChecksumApplyState.Compared
             && SnapshotChecksumMismatchPolicy.ShouldTriggerNetGapResyncOnCoopAuthorityEventMismatch(
                 new SnapshotChecksumApplyResult(
                     _lastChecksumApplyState.Compared,
@@ -1197,6 +1214,8 @@ public sealed class LiveAuthoritySession
     }
 
     public LivePeerNetRegistry NetRegistry => _netRegistry;
+
+    public GuestWorldStateStore? AuthorityWorldState => _authorityWorldState;
 
     public void SetClientInputSink(IClientInputCommandSink? sink) => _clientInputCommandSink = sink;
 

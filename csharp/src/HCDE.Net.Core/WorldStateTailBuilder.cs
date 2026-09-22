@@ -34,13 +34,13 @@ public static class WorldStateTailBuilder
                 flags,
                 player.Health,
                 armor: 0,
-                posX: 0,
-                posY: 0,
+                player.PosX,
+                player.PosY,
                 posZ: 0,
                 velX: 0,
                 velY: 0,
                 velZ: 0,
-                yawBams: 0,
+                player.YawBams,
                 pitchBams: 0);
         }
 
@@ -197,13 +197,13 @@ public static class WorldStateTailBuilder
                 flags,
                 player.Health,
                 armor: 0,
-                posX: 0,
-                posY: 0,
+                player.PosX,
+                player.PosY,
                 posZ: 0,
                 velX: 0,
                 velY: 0,
                 velZ: 0,
-                yawBams: 0,
+                player.YawBams,
                 pitchBams: 0);
         }
 

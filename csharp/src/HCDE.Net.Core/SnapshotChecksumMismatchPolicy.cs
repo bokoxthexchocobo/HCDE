@@ -357,6 +357,22 @@ public static class SnapshotChecksumMismatchPolicy
             policy)
         && result.MismatchCount >= 4;
 
+    public static bool ShouldTriggerNetGapResyncOnInvasionAuthorityEventActorDeltaPresentationEchoCoopDeadSpawnActorLineSpecMultiBucketMismatchFollowUpFollowUpFollowUp(
+        SnapshotChecksumApplyResult result,
+        bool appliedInvasionAuthorityEvents,
+        bool appliedInvasionActorDeltas,
+        bool appliedInvasionPresentationEcho,
+        bool appliedInvasionCoopDeadSpawns,
+        SnapshotChecksumMismatchPolicyKind policy) =>
+        ShouldTriggerNetGapResyncOnInvasionAuthorityEventActorDeltaPresentationEchoCoopDeadSpawnActorLineSpecMultiBucketMismatchFollowUpFollowUp(
+            result,
+            appliedInvasionAuthorityEvents,
+            appliedInvasionActorDeltas,
+            appliedInvasionPresentationEcho,
+            appliedInvasionCoopDeadSpawns,
+            policy)
+        && result.MismatchCount >= 5;
+
     public static bool ShouldTriggerNetGapResyncOnCoopAuthorityEventMismatch(
         SnapshotChecksumApplyResult result,
         bool appliedCoopAuthorityEvents,
