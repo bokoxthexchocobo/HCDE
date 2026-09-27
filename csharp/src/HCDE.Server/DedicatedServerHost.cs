@@ -13,6 +13,7 @@ public sealed class DedicatedServerOptions
     public int Port { get; set; } = 10666;
     public string BindAddress { get; set; } = "0.0.0.0";
     public byte[] IwadBytes { get; set; } = Array.Empty<byte>();
+    public ModResources? Resources { get; set; }
     public bool ReplicateSectorMetadata { get; set; } = true;
     public PregameHostOptions Pregame { get; set; } = new();
     public bool EnableServerQuery { get; set; } = true;
@@ -29,9 +30,12 @@ public sealed class DedicatedServerOptions
     public bool Teamplay { get; set; }
     public string RconPassword { get; set; } = "";
     public int RconPort { get; set; }
+    public int InvasionWaves { get; set; } = 8;
+    public int InvasionCountdownTics { get; set; } = 30 * GameTicClock.TicRate;
+    public int InvasionIntermissionTics { get; set; } = GameTicClock.TicRate;
 }
 
-public sealed class DedicatedServerHost : IDisposable
+public sealed class DedicatedServerHost : IDisposable, IPregameInboundInterceptor
 {
     private readonly DedicatedServerOptions _options;
     private readonly UdpTransport _transport;
@@ -39,11 +43,30 @@ public sealed class DedicatedServerHost : IDisposable
     private readonly DedicatedServerQueryResponder? _queryResponder;
     private readonly DedicatedServerAdvertiser? _advertiser;
     private readonly InEngineRconServer? _rcon;
+    private readonly IPregameInboundInterceptor? _upstreamInterceptor;
     private LiveAuthoritySession? _liveSession;
 
     public DedicatedServerHost(DedicatedServerOptions options)
     {
         _options = options;
+        var mapName = string.IsNullOrWhiteSpace(options.Pregame.Session.MapLoad.MapName)
+            ? MapLoaderConstants.DefaultMapName : options.Pregame.Session.MapLoad.MapName;
+        PlayLevel? level = null;
+        HCDE.Gamedata.DehackedPatchResult? patch = null;
+        if (options.IwadBytes.Length > 0)
+        {
+            if (!LevelBuilder.TryFromWad(options.IwadBytes, mapName, out level, out var mapError))
+                throw new InvalidDataException($"Cannot load {mapName}: {mapError}");
+            WadArchiveReader.TryReadDirectory(options.IwadBytes, out var entries, out _);
+            foreach (var entry in entries.Where(entry => entry.Name.Equals("DEHACKED", StringComparison.OrdinalIgnoreCase)))
+            {
+                if (!WadArchiveReader.TryReadLumpData(options.IwadBytes, entry, out var data, out var lumpError))
+                    throw new InvalidDataException(lumpError);
+                patch = HCDE.Gamedata.DehackedPatch.Apply(System.Text.Encoding.UTF8.GetString(data), patch);
+                if (patch.Errors.Count > 0) throw new InvalidDataException(string.Join("; ", patch.Errors));
+            }
+        }
+        _upstreamInterceptor = options.Pregame.InboundInterceptor;
         _transport = new UdpTransport();
         _transport.Bind(options.Port);
         _transport.SetNonBlocking(true);
@@ -51,9 +74,9 @@ public sealed class DedicatedServerHost : IDisposable
         if (options.EnableServerQuery)
         {
             _queryResponder = new DedicatedServerQueryResponder(_transport, BuildQuerySnapshot);
-            options.Pregame.InboundInterceptor = _queryResponder;
         }
 
+        options.Pregame.InboundInterceptor = this;
         _pregameHost = new PregameHost(_transport, options.Pregame);
 
         if (options.EnableMasterAdvertise)
@@ -62,13 +85,13 @@ public sealed class DedicatedServerHost : IDisposable
             _advertiser = new DedicatedServerAdvertiser(_transport, masterEndpoint, (ushort)_transport.BoundPort);
         }
 
-        var mapName = options.Pregame.Session.MapLoad.MapName;
-        if (string.IsNullOrWhiteSpace(mapName))
-            mapName = MapLoaderConstants.DefaultMapName;
-        if (options.IwadBytes.Length > 0
-            && LevelBuilder.TryFromWad(options.IwadBytes, mapName, out var level, out _))
+        if (level != null)
         {
-            Simulation = AuthoritySimulation.Start(level, options.Pregame.Session.MapLoad.RngSeed);
+            Simulation = AuthoritySimulation.Start(level, options.Pregame.Session.MapLoad.RngSeed, patch,
+                spawnOptions: new SpawnOptions(Math.Clamp((int)options.Skill, 0, 4),
+                    options.Deathmatch ? SpawnGameMode.Deathmatch : SpawnGameMode.Cooperative));
+            if (options.GameMode == 4)
+                Simulation.Invasion.Configure(options.InvasionWaves, options.InvasionCountdownTics, options.InvasionIntermissionTics);
         }
 
         if (Simulation != null && !string.IsNullOrEmpty(options.RconPassword))
@@ -88,6 +111,8 @@ public sealed class DedicatedServerHost : IDisposable
     public void Pump(ulong nowMilliseconds)
     {
         _advertiser?.Pump(nowMilliseconds);
+        if (_liveSession != null)
+            SyncLiveClients(_liveSession);
         _pregameHost.Pump(nowMilliseconds);
         if (_liveSession is null
             && _pregameHost.TryCreateBootstrappedLiveAuthoritySession(
@@ -103,19 +128,25 @@ public sealed class DedicatedServerHost : IDisposable
                 _liveSession.SetClientInputSink(new SimulationCommandSink(Simulation));
         }
 
-        if (Simulation != null && _liveSession is not null)
+        if (Simulation != null && _options.GameMode == 4 && _liveSession != null)
+            Simulation.Invasion.Enabled = true;
+        // Map actors must not attack player starts while everyone is still in the lobby.
+        if (_liveSession != null) Simulation?.Tick();
+        if (Simulation != null && _liveSession?.AuthorityWorldState is { } store)
         {
-            foreach (var client in _liveSession.Clients.Clients)
-                _liveSession.TryReceiveClientInput(client.Endpoint, out _, out _);
+            SimSnapshotPublisher.Publish(Simulation, store);
+            _liveSession.SetAuthorityInvasionSnapshot(_options.GameMode == 4
+                ? InvasionSnapshotPublisher.Capture(Simulation.Invasion) : null);
         }
 
-        Simulation?.Tick();
-        if (Simulation != null && _liveSession?.AuthorityWorldState is { } store)
-            SimSnapshotPublisher.Publish(Simulation, store);
-
         if (_liveSession is not null)
-            _liveSession.Pump(nowMilliseconds);
+            _liveSession.PumpAllClients(nowMilliseconds);
     }
+
+    bool IPregameInboundInterceptor.TryHandle(ReadOnlySpan<byte> packet, NetworkEndpoint remote) =>
+        (_queryResponder?.TryHandle(packet, remote) ?? false)
+        || (_liveSession?.TryApplyClientInputPacket(packet, remote) ?? false)
+        || (_upstreamInterceptor?.TryHandle(packet, remote) ?? false);
 
     private void SyncLiveClients(LiveAuthoritySession session)
     {
@@ -148,7 +179,7 @@ public sealed class DedicatedServerHost : IDisposable
             Teamplay = _options.Teamplay,
             GameName = "HCDE",
             GameMode = _options.GameMode,
-            GameModeName = _options.GameModeName,
+            GameModeName = _options.GameMode == 4 && _options.GameModeName == "Co-op" ? "Invasion" : _options.GameModeName,
         };
 
         foreach (var client in connectedClients)
@@ -158,6 +189,9 @@ public sealed class DedicatedServerHost : IDisposable
                 : client.UserInfo;
             snapshot.Players.Add(new ServerQueryPlayer { Name = name });
         }
+
+        if (_options.GameMode == 4 && Simulation != null)
+            InvasionSnapshotPublisher.ApplyToQuery(Simulation.Invasion, snapshot);
 
         return snapshot;
     }

@@ -29,7 +29,7 @@ public class InvasionSnapshotWavePolicyTests
     }
 
     [Fact]
-    public void ResolveWaveCounts_MonotonicWhenSameActiveWave()
+    public void ResolveWaveCounts_AcceptsAuthorityCorrectionWithinSameWave()
     {
         var previous = new InvasionMirrorState(
             LiveConstants.InvasionStateSpawning,
@@ -45,11 +45,12 @@ public class InvasionSnapshotWavePolicyTests
             waveBudget: 8,
             waveSpawned: 6,
             waveCleared: 2,
-            activeMonsters: 6);
+            activeMonsters: 4);
 
         var (spawned, cleared) = InvasionSnapshotWavePolicy.ResolveWaveCounts(previous, incoming, isLocalAuthority: false);
-        Assert.Equal(10u, spawned);
-        Assert.Equal(4u, cleared);
+        Assert.Equal(6u, spawned);
+        Assert.Equal(2u, cleared);
+        Assert.Equal(incoming.ActiveMonsters, spawned - cleared);
     }
 }
 

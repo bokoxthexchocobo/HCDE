@@ -8,7 +8,10 @@ public readonly struct PlayerCommand
     public short ForwardMove { get; init; }
     public short SideMove { get; init; }
     public short YawDelta { get; init; }
+    public short PitchDelta { get; init; }
     public bool Attack { get; init; }
+    public bool Jump { get; init; }
+    public bool Use { get; init; }
 }
 
 public class Actor : Thinker
@@ -18,19 +21,66 @@ public class Actor : Thinker
 
     public uint Id { get; init; }
     public int DoomEdNum { get; init; }
+    public int ThingId { get; init; }
+    public double SpawnZOffset { get; init; }
     public Fixed X { get; set; }
     public Fixed Y { get; set; }
+    public Fixed Z { get; set; }
+    public Fixed VelocityX { get; set; }
+    public Fixed VelocityY { get; set; }
+    public Fixed VelocityZ { get; set; }
+    public Fixed PreviousZ { get; private set; }
+    public int SectorIndex { get; internal set; } = -1;
+    public bool OnGround { get; internal set; } = true;
+    public bool NoGravity { get; set; }
+    public int PainChance { get; set; } = 256;
+    public double ChaseSpeed { get; set; } = 1;
+    public bool Solid { get; set; } = true;
+    public bool Shootable { get; set; } = true;
+    public bool Invulnerable { get; set; }
+    public Fixed MaxStepHeight { get; set; } = Fixed.FromInt(24);
+    internal AuthoritySimulation? Simulation { get; set; }
+    public MonsterBrain? Brain { get; set; }
     public Fixed PreviousX { get; private set; }
     public Fixed PreviousY { get; private set; }
     public BamAngle Angle { get; set; }
-    public int Health { get; set; } = 100;
+    private int _health = 100;
+    public int Health
+    {
+        get => _health;
+        set
+        {
+            var dead = _health <= 0;
+            _health = Math.Max(0, value);
+            if (!dead && IsDead)
+            {
+                DeathCount++;
+                if (States.HasState(DeathState)) States.Enter(this, DeathState);
+                if (this is PlayerPawn player) { player.Pending = default; player.AttackPressed = false; }
+            }
+            else if (dead && !IsDead && States.HasState(SpawnState)) States.Enter(this, SpawnState);
+        }
+    }
+    public ActorStateMachine States { get; } = new();
+    public int SpawnState { get; set; } = ActorStateMachine.Spawn;
+    public int PainState { get; set; } = ActorStateMachine.Pain;
+    public int DeathState { get; set; } = ActorStateMachine.Death;
+    public int DeathCount { get; private set; }
+    public uint? LastDamageSourceId { get; internal set; }
+    internal void RestoreHealth(int health) => _health = Math.Max(0, health);
     public Fixed Radius { get; set; } = Fixed.FromInt(20);
     public Fixed Height { get; set; } = Fixed.FromInt(56);
     public PlayLevel? Level { get; init; }
 
+    public bool IsDead => Health <= 0;
+
     public bool BlocksActors =>
-        DoomEdNum != LineSpecials.TeleportDestType
+        Solid && !IsDead && !Destroyed && DoomEdNum != LineSpecials.TeleportDestType
         && DoomEdNum != InvasionDirector.SpawnSpotType
+        && !PickupCatalog.IsPickup(DoomEdNum);
+
+    public bool CanTakeDamage => Shootable && !IsDead && !Destroyed
+        && DoomEdNum != LineSpecials.TeleportDestType && DoomEdNum != InvasionDirector.SpawnSpotType
         && !PickupCatalog.IsPickup(DoomEdNum);
 
     public static bool IsPlayerStart(int type) => type is >= PlayerStartMin and <= PlayerStartMax;
@@ -39,7 +89,22 @@ public class Actor : Thinker
     {
         PreviousX = X;
         PreviousY = Y;
+        PreviousZ = Z;
     }
+
+    public override void Tick()
+    {
+        RememberPosition();
+        States.Tick(this);
+        if (!Destroyed && Simulation != null)
+        {
+            Brain?.Tick(Simulation, this);
+            TickMovement(Simulation);
+        }
+        base.Tick();
+    }
+
+    protected virtual void TickMovement(AuthoritySimulation sim) => ActorPhysics.Step(sim, this);
 }
 
 public sealed class PlayerPawn : Actor
@@ -48,21 +113,48 @@ public sealed class PlayerPawn : Actor
     public PlayerCommand Pending { get; set; }
     public PlayerInventory Inventory { get; } = new();
     public bool AttackPressed { get; set; }
+    public bool UsePressed { get; set; }
+    public bool UseHeld { get; internal set; }
+    private double _pitchDegrees;
+    public double PitchDegrees
+    {
+        get => _pitchDegrees;
+        set
+        {
+            if (!double.IsFinite(value)) throw new ArgumentOutOfRangeException(nameof(value));
+            _pitchDegrees = Fixed.FromDouble(Math.Clamp(value, -89, 89)).ToDouble();
+        }
+    }
+    public int WeaponCooldown { get; internal set; }
 
     public override void Tick()
     {
         RememberPosition();
         var command = Pending;
         Pending = default;
+        UsePressed = !IsDead && command.Use && !UseHeld;
+        UseHeld = !IsDead && command.Use;
+        if (WeaponCooldown > 0) WeaponCooldown--;
+        if (IsDead)
+        {
+            AttackPressed = false;
+            base.Tick();
+            return;
+        }
         if (command.Attack)
             AttackPressed = true;
         Angle = new BamAngle(unchecked(Angle.Raw + (uint)(command.YawDelta << 16)));
+        PitchDegrees = Math.Clamp(PitchDegrees + command.PitchDelta * (360.0 / 65536), -89, 89);
         if (Level != null)
         {
             var (dx, dy) = Movement.Thrust(Angle, command.ForwardMove, command.SideMove);
-            var moved = LineSlide.Move(Level, X.ToDouble(), Y.ToDouble(), Radius.ToDouble(), dx, dy);
-            X = Fixed.FromDouble(moved.X);
-            Y = Fixed.FromDouble(moved.Y);
+            VelocityX = Fixed.FromDouble(VelocityX.ToDouble() + dx);
+            VelocityY = Fixed.FromDouble(VelocityY.ToDouble() + dy);
+            if (command.Jump && OnGround)
+            {
+                VelocityZ = Fixed.FromInt(8);
+                OnGround = false;
+            }
         }
 
         base.Tick();
@@ -202,16 +294,18 @@ public static class ActorSpawner
     public static IReadOnlyList<Actor> Spawn(
         PlayLevel level,
         ThinkerCollection thinkers,
-        DehackedPatchResult? dehacked = null)
+        DehackedPatchResult? dehacked = null, SpawnOptions? spawnOptions = null)
     {
         var actors = new List<Actor>();
         uint nextId = 1;
         foreach (var thing in level.Things)
         {
-            if (thing.Type == 0)
+            if (thing.Type == 0 || !(spawnOptions ?? new SpawnOptions()).Includes(thing))
                 continue;
 
-            var defaults = dehacked?.Actors.FirstOrDefault(actor => actor.DoomEdNum == thing.Type);
+            var defaults = dehacked?.Actors.FirstOrDefault(actor => actor.DoomEdNum == thing.Type && actor.Patched);
+            var definitionType = defaults?.OriginalDoomEdNum is > 0 ? defaults.OriginalDoomEdNum : thing.Type;
+            var definition = DoomActorCatalog.Find(definitionType);
             var playerStart = Actor.IsPlayerStart(thing.Type);
             Actor actor = playerStart
                 ? new PlayerPawn
@@ -219,8 +313,9 @@ public static class ActorSpawner
                     PlayerNum = (byte)(thing.Type - 1),
                     Id = nextId,
                     DoomEdNum = thing.Type,
-                    X = Fixed.FromInt(thing.X),
-                    Y = Fixed.FromInt(thing.Y),
+                    X = Fixed.FromDouble(thing.X),
+                    Y = Fixed.FromDouble(thing.Y),
+                    ThingId = thing.Id, SpawnZOffset = thing.Z,
                     Angle = BamAngle.FromDegrees(thing.Angle),
                     Health = defaults?.Health ?? 100,
                     Radius = RadiusOf(defaults, player: true),
@@ -231,16 +326,21 @@ public static class ActorSpawner
                 {
                     Id = nextId,
                     DoomEdNum = thing.Type,
-                    X = Fixed.FromInt(thing.X),
-                    Y = Fixed.FromInt(thing.Y),
+                    X = Fixed.FromDouble(thing.X),
+                    Y = Fixed.FromDouble(thing.Y),
+                    ThingId = thing.Id, SpawnZOffset = thing.Z,
                     Angle = BamAngle.FromDegrees(thing.Angle),
-                    Health = defaults?.Health ?? 30,
-                    Radius = RadiusOf(defaults, player: false),
-                    Height = HeightOf(defaults),
+                    Health = defaults?.Health ?? definition?.Health ?? 30,
+                    Radius = defaults == null && definition != null ? Fixed.FromInt(definition.Radius) : RadiusOf(defaults, player: false),
+                    Height = defaults == null && definition != null ? Fixed.FromInt(definition.Height) : HeightOf(defaults),
+                    PainChance = defaults?.PainChance ?? definition?.PainChance ?? 256,
+                    ChaseSpeed = Math.Clamp((defaults?.Speed ?? definition?.Speed ?? 4) / 4.0, 0, ActorPhysics.MaxMove),
+                    NoGravity = definition?.Floating ?? false,
                     Level = level,
                 };
 
             nextId++;
+            actor.Brain = MonsterBrain.ForType(definitionType);
             actor.RememberPosition();
             thinkers.Add(actor, playerStart ? ThinkerStat.Player : ThinkerStat.Default);
             actors.Add(actor);
@@ -263,6 +363,8 @@ public static class ActorSpawner
 public sealed class AuthoritySimulation
 {
     private readonly List<Actor> _actors;
+    private uint _nextActorId;
+    public uint CombatRandomState { get; private set; }
     private readonly List<SectorMotion> _motions = new();
 
     private AuthoritySimulation(
@@ -275,10 +377,21 @@ public sealed class AuthoritySimulation
         Level = level;
         Thinkers = thinkers;
         _actors = actors;
+        _nextActorId = actors.Count == 0 ? 1 : checked(actors.Max(actor => actor.Id) + 1);
         RngSeed = rngSeed;
+        CombatRandomState = unchecked((uint)rngSeed) ^ 0x9e3779b9u;
         Compat = compat;
         Floors = level.Sectors.Select(sector => sector.FloorHeight).ToArray();
         Ceilings = level.Sectors.Select(sector => sector.CeilingHeight).ToArray();
+        foreach (var actor in _actors)
+        {
+            actor.Simulation = this;
+            ActorPhysics.PlaceOnFloor(this, actor);
+            actor.Z = Fixed.FromDouble(Math.Clamp(actor.Z.ToDouble() + actor.SpawnZOffset, short.MinValue, short.MaxValue));
+            actor.OnGround = actor.SpawnZOffset <= 0;
+            ActorPhysics.FitToSector(this, actor, carryFloor: false);
+            actor.RememberPosition();
+        }
         Acs = new AcsVm();
         Invasion = new InvasionDirector();
         Rewind = new RewindBuffer();
@@ -308,35 +421,64 @@ public sealed class AuthoritySimulation
     internal List<SectorMotion> Motions => _motions;
 
     public short FloorOf(int sector) => sector >= 0 && sector < Floors.Length ? Floors[sector] : (short)0;
+    public short CeilingOf(int sector) => sector >= 0 && sector < Ceilings.Length ? Ceilings[sector] : (short)0;
 
     public static AuthoritySimulation Start(
         PlayLevel level,
         int rngSeed = 0,
         DehackedPatchResult? dehacked = null,
-        CompatSurface compat = CompatSurface.None)
+        CompatSurface compat = CompatSurface.None, SpawnOptions? spawnOptions = null)
     {
         var thinkers = new ThinkerCollection();
-        var actors = ActorSpawner.Spawn(level, thinkers, dehacked).ToList();
+        var actors = ActorSpawner.Spawn(level, thinkers, dehacked, spawnOptions).ToList();
         return new AuthoritySimulation(level, thinkers, actors, rngSeed, compat);
     }
 
     public BotPawn AddBot(double x, double y)
     {
-        var id = _actors.Count == 0 ? 1u : _actors.Max(actor => actor.Id) + 1;
+        var id = _nextActorId;
+        _nextActorId = checked(_nextActorId + 1);
         var bot = new BotPawn
         {
             Id = id,
-            DoomEdNum = InvasionDirector.SpawnSpotType,
+            DoomEdNum = 3004,
             X = Fixed.FromDouble(x),
             Y = Fixed.FromDouble(y),
             Angle = new BamAngle(0),
             Health = 30,
             Level = Level,
+            Brain = new MonsterBrain(MonsterAttack.Hitscan),
         };
         bot.RememberPosition();
+        bot.Simulation = this;
+        ActorPhysics.PlaceOnFloor(this, bot);
         _actors.Add(bot);
         Thinkers.Add(bot, ThinkerStat.Default);
         return bot;
+    }
+
+    public uint NextCombatRandom()
+    {
+        CombatRandomState = unchecked(1664525u * CombatRandomState + 1013904223u);
+        return CombatRandomState;
+    }
+
+    internal double NextCombatSpread() => ((int)(NextCombatRandom() >> 24) - (int)(NextCombatRandom() >> 24)) / 255.0;
+
+    public ProjectileActor SpawnProjectile(Actor owner, ProjectileKind kind, Actor? target = null)
+    {
+        var projectile = new ProjectileActor(owner, kind)
+        {
+            Id = _nextActorId, Level = Level, Simulation = this,
+            X = owner.X, Y = owner.Y,
+            Z = Fixed.FromDouble(owner.Z.ToDouble() + owner.Height.ToDouble() / 2),
+            Angle = owner.Angle,
+        };
+        _nextActorId = checked(_nextActorId + 1);
+        projectile.Aim(target);
+        _actors.Add(projectile);
+        Thinkers.Add(projectile);
+        return projectile;
     }
 
     public void MarkExited(bool secret)
@@ -355,6 +497,7 @@ public sealed class AuthoritySimulation
             Tic = Thinkers.Clock.Tic,
             Exited = Exited,
             SecretExit = SecretExit,
+            CombatRandomState = CombatRandomState,
         };
         foreach (var actor in _actors.OrderBy(actor => actor.Id))
         {
@@ -365,6 +508,16 @@ public sealed class AuthoritySimulation
                 Y = actor.Y.Raw,
                 Angle = actor.Angle.Raw,
                 Health = actor.Health,
+                Z = actor.Z.Raw,
+                VelocityX = actor.VelocityX.Raw,
+                VelocityY = actor.VelocityY.Raw,
+                VelocityZ = actor.VelocityZ.Raw,
+                State = actor.States.Current,
+                StateTics = actor.States.RemainingTics,
+                OnGround = actor.OnGround,
+                WeaponCooldown = actor is PlayerPawn pawn ? pawn.WeaponCooldown : 0,
+                Pitch = actor is PlayerPawn aiming ? Fixed.FromDouble(aiming.PitchDegrees).Raw : 0,
+                UseHeld = actor is PlayerPawn usingPawn && usingPawn.UseHeld,
             });
         }
 
@@ -375,9 +528,17 @@ public sealed class AuthoritySimulation
 
     public void RestoreState(SimSaveState state)
     {
+        foreach (var pose in state.Actors)
+        {
+            var actor = _actors.FirstOrDefault(candidate => candidate.Id == pose.Id);
+            if (actor != null && (pose.WeaponCooldown < 0 || Math.Abs((long)pose.Pitch) > 89L * 65536
+                || pose.HasPhysics && (!actor.States.HasState(pose.State) || pose.StateTics < -1)))
+                throw new InvalidOperationException("Saved actor state is not in the current table.");
+        }
         Thinkers.Clock.Restore(state.Tic);
         Exited = state.Exited;
         SecretExit = state.SecretExit;
+        if (state.CombatRandomState is { } randomState) CombatRandomState = randomState;
         foreach (var pose in state.Actors)
         {
             var actor = _actors.FirstOrDefault(candidate => candidate.Id == pose.Id);
@@ -386,7 +547,21 @@ public sealed class AuthoritySimulation
             actor.X = new Fixed(pose.X);
             actor.Y = new Fixed(pose.Y);
             actor.Angle = new BamAngle(pose.Angle);
-            actor.Health = pose.Health;
+            actor.RestoreHealth(pose.Health);
+            actor.Z = new Fixed(pose.Z);
+            actor.VelocityX = new Fixed(pose.VelocityX);
+            actor.VelocityY = new Fixed(pose.VelocityY);
+            actor.VelocityZ = new Fixed(pose.VelocityZ);
+            actor.OnGround = pose.OnGround;
+            actor.SectorIndex = ActorPhysics.SectorAt(Level, actor.X.ToDouble(), actor.Y.ToDouble());
+            if (pose.HasPhysics) actor.States.Restore(pose.State, pose.StateTics);
+            else actor.States.Restore(actor.IsDead ? actor.DeathState : actor.SpawnState, -1);
+            if (actor is PlayerPawn player)
+            {
+                player.Pending = default; player.AttackPressed = false; player.UsePressed = false;
+                player.WeaponCooldown = pose.WeaponCooldown;
+                player.PitchDegrees = new Fixed(pose.Pitch).ToDouble(); player.UseHeld = pose.UseHeld;
+            }
             actor.RememberPosition();
         }
 
@@ -395,6 +570,11 @@ public sealed class AuthoritySimulation
         {
             Floors[i] = state.Sectors[i].Floor;
             Ceilings[i] = state.Sectors[i].Ceiling;
+        }
+        foreach (var pose in state.Actors.Where(pose => !pose.HasPhysics))
+        {
+            var actor = _actors.FirstOrDefault(candidate => candidate.Id == pose.Id);
+            if (actor != null) ActorPhysics.PlaceOnFloor(this, actor);
         }
 
         RecomputeChecksum();
@@ -416,11 +596,13 @@ public sealed class AuthoritySimulation
     public void Tick()
     {
         Thinkers.Run();
-        SeparateSolids();
+        _actors.RemoveAll(actor => actor.Destroyed);
         CollectPickups();
         ResolveAttacks();
         LineSpecials.ActivateCrossings(this);
+        LineSpecials.ActivateUses(this);
         LineSpecials.TickMotions(this);
+        foreach (var actor in _actors.Where(actor => actor is not ProjectileActor)) ActorPhysics.FitToSector(this, actor);
         Acs.Tick(this);
         Invasion.Tick(this);
         if (RewindEnabled)
@@ -431,7 +613,7 @@ public sealed class AuthoritySimulation
 
     private void ResolveAttacks()
     {
-        foreach (var player in Players)
+        foreach (var player in Players.ToArray())
         {
             if (!player.AttackPressed)
                 continue;
@@ -440,30 +622,13 @@ public sealed class AuthoritySimulation
         }
     }
 
-    private void SeparateSolids()
-    {
-        foreach (var actor in _actors)
-        {
-            if (!actor.BlocksActors)
-                continue;
-            foreach (var other in _actors)
-            {
-                if (ReferenceEquals(actor, other) || !other.BlocksActors)
-                    continue;
-                if (!CirclesOverlap(actor, other))
-                    continue;
-                actor.X = actor.PreviousX;
-                actor.Y = actor.PreviousY;
-                break;
-            }
-        }
-    }
-
     private void CollectPickups()
     {
         var taken = new List<Actor>();
         foreach (var player in Players)
         {
+            if (player.IsDead)
+                continue;
             foreach (var actor in _actors)
             {
                 if (taken.Contains(actor) || !PickupCatalog.IsPickup(actor.DoomEdNum))
@@ -487,7 +652,9 @@ public sealed class AuthoritySimulation
         var dx = left.X.ToDouble() - right.X.ToDouble();
         var dy = left.Y.ToDouble() - right.Y.ToDouble();
         var reach = left.Radius.ToDouble() + right.Radius.ToDouble();
-        return dx * dx + dy * dy <= reach * reach;
+        return dx * dx + dy * dy <= reach * reach
+            && left.Z.ToDouble() < right.Z.ToDouble() + right.Height.ToDouble()
+            && right.Z.ToDouble() < left.Z.ToDouble() + left.Height.ToDouble();
     }
 
     private void PublishStatus() => StatusLine = Describe();
@@ -497,16 +664,66 @@ public sealed class AuthoritySimulation
         var hash = 2166136261u;
         hash = Mix(hash, unchecked((uint)Thinkers.Clock.Tic));
         hash = Mix(hash, unchecked((uint)RngSeed));
+        hash = Mix(hash, CombatRandomState);
         foreach (var actor in _actors.OrderBy(actor => actor.Id))
         {
             hash = Mix(hash, actor.Id);
             hash = Mix(hash, unchecked((uint)actor.X.Raw));
             hash = Mix(hash, unchecked((uint)actor.Y.Raw));
+            hash = Mix(hash, unchecked((uint)actor.Z.Raw));
+            hash = Mix(hash, unchecked((uint)actor.VelocityX.Raw));
+            hash = Mix(hash, unchecked((uint)actor.VelocityY.Raw));
+            hash = Mix(hash, unchecked((uint)actor.VelocityZ.Raw));
+            hash = Mix(hash, actor.Angle.Raw);
+            hash = Mix(hash, unchecked((uint)actor.States.Current));
+            hash = Mix(hash, unchecked((uint)actor.States.RemainingTics));
             hash = Mix(hash, unchecked((uint)actor.Health));
+            hash = Mix(hash, unchecked((uint)actor.PainChance));
+            hash = Mix(hash, unchecked((uint)Fixed.FromDouble(actor.ChaseSpeed).Raw));
+            hash = Mix(hash, (uint)actor.Radius.Raw);
+            hash = Mix(hash, (uint)actor.Height.Raw);
+            hash = Mix(hash, actor.NoGravity ? 1u : 0u);
+            hash = Mix(hash, actor.LastDamageSourceId ?? 0);
+            if (actor is PlayerPawn player)
+            {
+                hash = Mix(hash, (uint)player.WeaponCooldown);
+                hash = Mix(hash, player.UseHeld ? 1u : 0u);
+                hash = Mix(hash, (uint)Fixed.FromDouble(player.PitchDegrees).Raw);
+                hash = Mix(hash, player.Inventory.BlueKey ? 1u : 0u);
+                hash = Mix(hash, player.Inventory.YellowKey ? 1u : 0u);
+                hash = Mix(hash, player.Inventory.RedKey ? 1u : 0u);
+                hash = Mix(hash, (uint)player.Inventory.Bullets);
+                hash = Mix(hash, (uint)player.Inventory.Shells);
+                hash = Mix(hash, (uint)player.Inventory.Rockets);
+                hash = Mix(hash, (uint)player.Inventory.Cells);
+                hash = Mix(hash, (uint)player.Inventory.Armor);
+                hash = Mix(hash, (uint)player.Inventory.ArmorSavePercent);
+                hash = Mix(hash, (uint)player.Inventory.Selected);
+                hash = Mix(hash, (uint)player.Inventory.Weapons);
+            }
+            if (actor.Brain is { } brain)
+            {
+                hash = Mix(hash, brain.StateChecksum);
+            }
+            if (actor is ProjectileActor projectile)
+            {
+                hash = Mix(hash, projectile.Owner.Id);
+                hash = Mix(hash, (uint)projectile.Kind);
+                hash = Mix(hash, (uint)projectile.RemainingTics);
+            }
         }
 
         foreach (var floor in Floors)
             hash = Mix(hash, unchecked((uint)floor));
+        foreach (var ceiling in Ceilings)
+            hash = Mix(hash, unchecked((uint)ceiling));
+        foreach (var motion in _motions.OrderBy(motion => motion.SectorIndex))
+        {
+            foreach (var value in new[] { motion.SectorIndex, (int)motion.Kind, motion.ClosedFloor,
+                motion.TargetFloor, motion.ClosedCeiling, motion.TargetCeiling, motion.Speed, motion.Delay,
+                motion.Wait, motion.CrushDamage, motion.Closing ? 1 : 0, motion.CloseAfterOpen ? 1 : 0 })
+                hash = Mix(hash, unchecked((uint)value));
+        }
         hash = Mix(hash, Exited ? 1u : 0u);
 
         Checksum = hash;

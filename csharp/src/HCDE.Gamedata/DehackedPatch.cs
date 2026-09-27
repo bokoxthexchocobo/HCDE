@@ -2,6 +2,7 @@ namespace HCDE.Gamedata;
 
 public sealed class DehackedActor
 {
+    internal DehackedActor Copy() => (DehackedActor)MemberwiseClone();
     public int Index { get; init; }
     public string Name { get; init; } = "";
     public int Health { get; set; }
@@ -12,6 +13,7 @@ public sealed class DehackedActor
     public int ReactionTime { get; set; }
     public int PainChance { get; set; }
     public int DoomEdNum { get; set; }
+    public int OriginalDoomEdNum { get; init; }
     public uint Bits { get; set; }
     public int SeeSound { get; set; }
     public int AttackSound { get; set; }
@@ -31,6 +33,7 @@ public sealed class DehackedActor
 
 public sealed class DehackedState
 {
+    internal DehackedState Copy() => (DehackedState)MemberwiseClone();
     public const int DehackedFlag = 64;
     public const int FullBrightFlag = 16;
 
@@ -48,6 +51,7 @@ public sealed class DehackedState
 
 public sealed class DehackedSound
 {
+    internal DehackedSound Copy() => (DehackedSound)MemberwiseClone();
     public int Index { get; init; }
     public string Name { get; set; } = "";
 }
@@ -70,9 +74,9 @@ public static class DehackedPatch
 {
     public static DehackedPatchResult Apply(string text, DehackedPatchResult? baseline = null)
     {
-        var actors = (baseline?.Actors ?? CreateVanillaActors()).ToDictionary(actor => actor.Index);
-        var states = (baseline?.States ?? CreateVanillaStates(1024)).ToDictionary(state => state.Index);
-        var sounds = (baseline?.Sounds ?? CreateVanillaSounds()).ToDictionary(sound => sound.Index);
+        var actors = (baseline?.Actors ?? CreateVanillaActors()).ToDictionary(actor => actor.Index, actor => actor.Copy());
+        var states = (baseline?.States ?? CreateVanillaStates(1024)).ToDictionary(state => state.Index, state => state.Copy());
+        var sounds = (baseline?.Sounds ?? CreateVanillaSounds()).ToDictionary(sound => sound.Index, sound => sound.Copy());
         var errors = new List<string>();
         var lines = SplitLines(text);
 
@@ -143,7 +147,17 @@ public static class DehackedPatch
                 Index = i + 1,
                 Name = names[i],
                 Health = names[i] == "Player" ? 100 : 30,
+                DoomEdNum = i switch { 0 => 1, 1 => 3004, 2 => 9, 3 => 64, 5 => 66, 8 => 67, 10 => 65, 11 => 3001, _ => -1 },
+                OriginalDoomEdNum = i switch { 0 => 1, 1 => 3004, 2 => 9, 3 => 64, 5 => 66, 8 => 67, 10 => 65, 11 => 3001, _ => -1 },
             };
+            if (DoomActorCatalog.Find(actors[i].DoomEdNum) is { } definition)
+            {
+                actors[i].Health = definition.Health;
+                actors[i].Radius = definition.Radius;
+                actors[i].Height = definition.Height;
+                actors[i].Speed = definition.Speed;
+                actors[i].PainChance = definition.PainChance;
+            }
         }
 
         return actors;

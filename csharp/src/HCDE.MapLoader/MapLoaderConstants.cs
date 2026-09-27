@@ -5,6 +5,7 @@ public enum MapDataFormat : byte
   Unknown = 0,
   DoomBinary = 1,
   UdmfText = 2,
+  HexenBinary = 3,
 }
 
 public static class MapLoaderConstants

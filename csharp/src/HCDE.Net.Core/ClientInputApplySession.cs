@@ -28,6 +28,13 @@ public static class ClientInputApplySession
             return false;
         }
 
+        if (players.Count != header.PlayerCount
+            || players.Any(player => !IsAuthorizedInputRecord(clientSlot, player.PlayerNum, header.PlayerCount)))
+        {
+            rejectReason = "client-input-unauthorized-player-record";
+            return false;
+        }
+
         var clientState = registry[clientSlot];
         clientState.StabilityBuffer = header.StabilityBuffer;
 

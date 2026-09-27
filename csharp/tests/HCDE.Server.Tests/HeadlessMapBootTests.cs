@@ -8,7 +8,7 @@ namespace HCDE.Server.Tests;
 public class HeadlessMapBootTests
 {
     [Fact]
-    public void Constructor_LoadsTheMapAndPumpAdvancesTheTic()
+    public void ConstructorLoadsTheMapButLobbyPumpDoesNotAdvanceGameplay()
     {
         var wad = TestWadBuilder.BuildMinimalMapWad("MAP01");
         using var host = new DedicatedServerHost(new DedicatedServerOptions
@@ -30,8 +30,8 @@ public class HeadlessMapBootTests
         Assert.Equal(200, player.Y.ToDouble());
         var checksum = host.Simulation.Checksum;
         host.Pump(1);
-        Assert.Equal(1, host.Simulation.Thinkers.Clock.Tic);
-        Assert.NotEqual(checksum, host.Simulation.Checksum);
+        Assert.Equal(0, host.Simulation.Thinkers.Clock.Tic);
+        Assert.Equal(checksum, host.Simulation.Checksum);
     }
 
     [Fact]

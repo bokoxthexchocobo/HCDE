@@ -3,6 +3,35 @@ namespace HCDE.Server.Tests;
 public class DedicatedServerCommandLineTests
 {
     [Fact]
+    public void TryParse_ConfiguresInvasionModeWaveLimitAndTimers()
+    {
+        var iwad = CreateTempIwad();
+        try
+        {
+            Assert.True(DedicatedServerCommandLine.TryParse(
+                ["--iwad", iwad, "--gamemode", "4", "--invasion-waves", "5", "--invasion-countdown", "2", "--invasion-intermission", "3"],
+                out var options, out var error), error);
+            Assert.Equal("Invasion", options.GameModeName);
+            Assert.Equal(5, options.InvasionWaves);
+            Assert.Equal(70, options.InvasionCountdownTics);
+            Assert.Equal(105, options.InvasionIntermissionTics);
+        }
+        finally { File.Delete(iwad); }
+    }
+
+    [Theory]
+    [InlineData("--invasion-waves", "0")]
+    [InlineData("--invasion-waves", "65536")]
+    [InlineData("--invasion-countdown", "-1")]
+    [InlineData("--invasion-intermission", "3601")]
+    [InlineData("--invasion-countdown", "many")]
+    public void TryParse_RejectsInvalidInvasionSettings(string option, string value)
+    {
+        Assert.False(DedicatedServerCommandLine.TryParse([option, value], out _, out var error));
+        Assert.StartsWith(option, error);
+    }
+
+    [Fact]
     public void TryParse_EnablesMasterAdvertiseWithDefaults()
     {
         var iwad = CreateTempIwad();

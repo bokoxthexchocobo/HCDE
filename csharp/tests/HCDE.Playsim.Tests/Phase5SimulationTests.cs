@@ -114,12 +114,12 @@ public class Phase5SimulationTests
     }
 
     [Fact]
-    public void Blockmap_IgnoresAWallListedInAnotherBlock()
+    public void IncorrectBlockmapCannotLetActorsPassThroughWalls()
     {
         var open = AuthoritySimulation.Start(WallLevel(blockWithLine: 1));
         open.QueueCommand(0, new PlayerCommand { ForwardMove = 8192 });
         open.Tick();
-        Assert.Equal(33, open.Players.Single().X.ToDouble());
+        Assert.Equal(32, open.Players.Single().X.ToDouble());
 
         var closed = AuthoritySimulation.Start(WallLevel(blockWithLine: 0));
         closed.QueueCommand(0, new PlayerCommand { ForwardMove = 8192 });

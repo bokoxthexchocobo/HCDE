@@ -31,6 +31,10 @@ public sealed class LevelSide
 public sealed class LevelLine
 {
     public const int BlockingFlag = 1;
+    public const int BlockEverythingFlag = 0x00008000;
+    public const int BlockHitscanFlag = 0x08000000;
+    public const int BlockSightFlag = 0x04000000;
+    public const int BlockProjectileFlag = 0x01000000;
     public const int RepeatSpecialFlag = 512;
     public const int NoSide = -1;
 
@@ -51,10 +55,14 @@ public sealed class LevelLine
     public int Arg2 { get; init; }
     public int Arg3 { get; init; }
     public int Arg4 { get; init; }
+    public bool PlayerCross { get; init; }
+    public bool PlayerUse { get; init; }
+    public bool UseThrough { get; init; }
+    public bool Repeat { get; init; }
 
     public bool OneSided => SideBack < 0;
 
-    public bool BlocksMovement => OneSided || (Flags & BlockingFlag) != 0;
+    public bool BlocksMovement => OneSided || (Flags & (BlockingFlag | BlockEverythingFlag)) != 0;
 
     public bool RepeatsSpecial => Special == 1 || (Flags & RepeatSpecialFlag) != 0;
 }
@@ -62,16 +70,27 @@ public sealed class LevelLine
 public sealed class LevelThing
 {
     public int Index { get; init; }
-    public short X { get; init; }
-    public short Y { get; init; }
-    public short Angle { get; init; }
-    public short Type { get; init; }
+    public double X { get; init; }
+    public double Y { get; init; }
+    public double Z { get; init; }
+    public double Angle { get; init; }
+    public int Type { get; init; }
     public short Options { get; init; }
+    public int Id { get; init; }
+    public int Special { get; init; }
+    public int[] Args { get; init; } = new int[5];
+    public int SkillMask { get; init; } = 31;
+    public bool Single { get; init; } = true;
+    public bool Coop { get; init; } = true;
+    public bool Deathmatch { get; init; } = true;
 }
 
 public sealed class PlayLevel
 {
     public string MapName { get; init; } = "";
+    public MapDataFormat Format { get; init; }
+    public string Namespace { get; init; } = "";
+    public ReadOnlyMemory<byte> BehaviorData { get; internal set; }
     public IReadOnlyList<LevelVertex> Vertices { get; init; } = Array.Empty<LevelVertex>();
     public IReadOnlyList<LevelSector> Sectors { get; init; } = Array.Empty<LevelSector>();
     public IReadOnlyList<LevelSide> Sides { get; init; } = Array.Empty<LevelSide>();
@@ -79,7 +98,8 @@ public sealed class PlayLevel
     public IReadOnlyList<LevelThing> Things { get; init; } = Array.Empty<LevelThing>();
 
     /// <summary>
-    /// Decoded BLOCKMAP. When set, movement tests only the lines listed in the blocks the actor crosses.
+    /// Decoded BLOCKMAP for legacy broad-phase helpers. Authority cylinder physics
+    /// scans geometry directly so malformed block lists cannot bypass collision.
     /// </summary>
     public MapBlockmapRecord? Blockmap { get; set; }
 }
@@ -105,14 +125,31 @@ public static class LevelBuilder
                 return false;
             }
 
-            var bytes = wad.Slice((int)textmap.Entry.FilePosition, (int)textmap.Entry.Size);
+            if (!WadArchiveReader.TryReadLumpData(wad, textmap.Entry, out var bytes, out error))
+                return false;
             if (!UdmfTextMapParser.TryParse(bytes, out var udmf, out error))
                 return false;
 
+            if (!new[] { "Doom", "ZDoom", "ZDoomTranslated" }.Contains(udmf.Namespace, StringComparer.OrdinalIgnoreCase))
+            {
+                error = "unsupported-udmf-namespace";
+                return false;
+            }
+            if (udmf.Sectors.Any(sector => !FitsShort(sector.HeightFloor) || !FitsShort(sector.HeightCeiling)
+                || !FitsShort(sector.LightLevel) || !FitsShort(sector.Special) || !FitsShort(sector.Id)))
+            {
+                error = "unsupported-udmf-sector-range-or-fraction";
+                return false;
+            }
+
             level = FromUdmf(udmf, mapName);
-            return true;
+            return LevelValidation.TryValidate(level, out error);
         }
 
+        if (catalog.TryGetLump(MapLumpKind.Behavior, out _))
+        {
+            return HexenLevelDecoder.TryDecode(wad, catalog, out level, out error);
+        }
         if (!BinaryMapDecoder.TryReadMap(wad, mapName, out var binary, out _, out error))
             return false;
 
@@ -124,7 +161,7 @@ public static class LevelBuilder
             level.Blockmap = blockmap;
         }
 
-        return true;
+        return LevelValidation.TryValidate(level, out error);
     }
 
     public static PlayLevel FromBinary(BinaryMap map, string mapName)
@@ -185,11 +222,16 @@ public static class LevelBuilder
             Angle = thing.Angle,
             Type = thing.Type,
             Options = thing.Options,
+            SkillMask = ((thing.Options & 1) != 0 ? 3 : 0) | ((thing.Options & 2) != 0 ? 4 : 0) | ((thing.Options & 4) != 0 ? 24 : 0),
+            Single = (thing.Options & 16) == 0,
+            Coop = (thing.Options & 64) == 0,
+            Deathmatch = (thing.Options & 32) == 0,
         }).ToArray();
 
         return new PlayLevel
         {
             MapName = mapName,
+            Format = MapDataFormat.DoomBinary,
             Vertices = vertices,
             Sectors = sectors,
             Sides = sides,
@@ -198,7 +240,7 @@ public static class LevelBuilder
         };
     }
 
-    public static PlayLevel FromUdmf(UdmfTextMap map, string mapName)
+    public static PlayLevel FromUdmf(UdmfTextMap map, string mapName, MapDataFormat format = MapDataFormat.UdmfText)
     {
         var vertices = map.Vertices.Select((vertex, index) => new LevelVertex
         {
@@ -234,6 +276,10 @@ public static class LevelBuilder
             var flags = 0;
             if (source.Blocking)
                 flags |= LevelLine.BlockingFlag;
+            if (source.BlockEverything) flags |= LevelLine.BlockEverythingFlag;
+            if (source.BlockSight) flags |= LevelLine.BlockSightFlag;
+            if (source.BlockHitscan) flags |= LevelLine.BlockHitscanFlag;
+            if (source.BlockProjectiles) flags |= LevelLine.BlockProjectileFlag;
             lines[i] = new LevelLine
             {
                 Index = i,
@@ -253,22 +299,34 @@ public static class LevelBuilder
                 Arg2 = source.Arg2,
                 Arg3 = source.Arg3,
                 Arg4 = source.Arg4,
+                PlayerCross = source.PlayerCross,
+                PlayerUse = source.PlayerUse,
+                UseThrough = source.PassUse,
+                Repeat = source.RepeatSpecial,
             };
         }
 
         var things = map.Things.Select((thing, index) => new LevelThing
         {
             Index = index,
-            X = (short)thing.X,
-            Y = (short)thing.Y,
-            Angle = (short)thing.Angle,
-            Type = (short)thing.Type,
+            X = thing.X,
+            Y = thing.Y,
+            Z = thing.Height,
+            Angle = thing.Angle,
+            Type = thing.Type,
+            Id = thing.Id,
+            Special = thing.Special,
+            Args = new[] { thing.Arg0, thing.Arg1, thing.Arg2, thing.Arg3, thing.Arg4 },
+            SkillMask = (thing.Skill1 ? 1 : 0) | (thing.Skill2 ? 2 : 0) | (thing.Skill3 ? 4 : 0) | (thing.Skill4 ? 8 : 0) | (thing.Skill5 ? 16 : 0),
+            Single = thing.Single, Coop = thing.Coop, Deathmatch = thing.Dm,
             Options = 0,
         }).ToArray();
 
         return new PlayLevel
         {
             MapName = mapName,
+            Format = format,
+            Namespace = map.Namespace,
             Vertices = vertices,
             Sectors = sectors,
             Sides = sides,
@@ -281,4 +339,7 @@ public static class LevelBuilder
         index >= 0 && index < vertices.Count ? vertices[index] : new LevelVertex();
 
     private static int SideIndex(ushort side) => side == ushort.MaxValue ? LevelLine.NoSide : side;
+
+    private static bool FitsShort(double value) => double.IsFinite(value) && value >= short.MinValue
+        && value <= short.MaxValue && value == Math.Truncate(value);
 }

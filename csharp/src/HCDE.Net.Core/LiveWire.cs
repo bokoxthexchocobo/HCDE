@@ -124,6 +124,7 @@ public sealed class LiveControlEndpoint
 
 public sealed class LiveGameplayEndpoint
 {
+    private uint _inputCommandSequence;
     private readonly UdpTransport _transport;
     private readonly byte[] _gameId;
     private readonly LiveSequenceTracker _sequenceTracker = new();
@@ -143,17 +144,21 @@ public sealed class LiveGameplayEndpoint
     public bool TrySendClientInput(NetworkEndpoint remote, byte roomId, uint gameTic, byte playerNum, UserCmd command = default)
     {
         Span<byte> inputPayload = stackalloc byte[512];
-        var length = GameplayPayloadBuilders.BuildClientInputSinglePlayer(inputPayload, playerNum, command);
+        var nextSequence = _inputCommandSequence + 1;
+        var length = GameplayPayloadBuilders.BuildClientInputSinglePlayer(inputPayload, playerNum, command, baseSequence: nextSequence);
         if (length == 0)
             return false;
 
-        return TrySendGameplay(
+        var sent = TrySendGameplay(
             remote,
             LiveMessageType.ClientCommands,
             GameplayPayloadKind.ClientInputs,
             roomId,
             gameTic,
             inputPayload[..length]);
+        if (sent)
+            _inputCommandSequence = nextSequence;
+        return sent;
     }
 
     public bool TrySendEmptyServerSnapshot(NetworkEndpoint remote, byte roomId, uint gameTic) =>
@@ -190,7 +195,9 @@ public sealed class LiveGameplayEndpoint
         ReadOnlySpan<byte> externalTail,
         UserCmd command = default)
     {
-        Span<byte> snapshotPayload = stackalloc byte[1024];
+        if (externalTail.Length > NetConstants.MaxTransmitSize - 256)
+            return false;
+        Span<byte> snapshotPayload = stackalloc byte[Math.Max(1024, externalTail.Length + 128)];
         var length = GameplayPayloadBuilders.BuildServerSnapshotSinglePlayerWithExternalTail(
             snapshotPayload,
             playerNum,

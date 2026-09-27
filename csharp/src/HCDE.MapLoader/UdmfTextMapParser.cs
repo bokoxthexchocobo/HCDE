@@ -18,7 +18,15 @@ public sealed class UdmfLinedef
     public int Special { get; set; }
     public int Id { get; set; }
     public bool Blocking { get; set; }
+    public bool BlockEverything { get; set; }
+    public bool BlockSight { get; set; }
+    public bool BlockHitscan { get; set; }
+    public bool BlockProjectiles { get; set; }
     public bool TwoSided { get; set; }
+    public bool PlayerCross { get; set; }
+    public bool PlayerUse { get; set; }
+    public bool PassUse { get; set; }
+    public bool RepeatSpecial { get; set; }
     public int Arg0 { get; set; }
     public int Arg1 { get; set; }
     public int Arg2 { get; set; }
@@ -38,8 +46,8 @@ public sealed class UdmfSidedef
 
 public sealed class UdmfSector
 {
-    public int HeightFloor { get; set; }
-    public int HeightCeiling { get; set; }
+    public double HeightFloor { get; set; }
+    public double HeightCeiling { get; set; }
     public string TextureFloor { get; set; } = "-";
     public string TextureCeiling { get; set; } = "-";
     public int LightLevel { get; set; }
@@ -98,9 +106,13 @@ public static class UdmfTextMapParser
         map = new UdmfTextMap();
         error = null;
         var parser = new Parser(text);
-        if (!parser.TryParse(out map, out error))
+        try { return parser.TryParse(out map, out error); }
+        catch (OverflowException)
+        {
+            map = new UdmfTextMap();
+            error = "udmf-integer-out-of-range-or-fraction";
             return false;
-        return true;
+        }
     }
 
     private sealed class Parser
@@ -266,7 +278,15 @@ public static class UdmfTextMapParser
             Special = Int(fields, "special"),
             Id = Int(fields, "id"),
             Blocking = Bool(fields, "blocking"),
+            BlockEverything = Bool(fields, "blockeverything"),
+            BlockSight = Bool(fields, "blocksight"),
+            BlockHitscan = Bool(fields, "blockhitscan"),
+            BlockProjectiles = Bool(fields, "blockprojectiles"),
             TwoSided = Bool(fields, "twosided"),
+            PlayerCross = Bool(fields, "playercross"),
+            PlayerUse = Bool(fields, "playeruse"),
+            PassUse = Bool(fields, "passuse"),
+            RepeatSpecial = Bool(fields, "repeatspecial"),
             Arg0 = Int(fields, "arg0"),
             Arg1 = Int(fields, "arg1"),
             Arg2 = Int(fields, "arg2"),
@@ -286,8 +306,8 @@ public static class UdmfTextMapParser
 
         private static UdmfSector ReadSector(Dictionary<string, Value> fields) => new()
         {
-            HeightFloor = Int(fields, "heightfloor"),
-            HeightCeiling = Int(fields, "heightceiling"),
+            HeightFloor = Number(fields, "heightfloor"),
+            HeightCeiling = Number(fields, "heightceiling"),
             TextureFloor = Text(fields, "texturefloor", "-"),
             TextureCeiling = Text(fields, "textureceiling", "-"),
             LightLevel = Int(fields, "lightlevel"),
@@ -322,11 +342,15 @@ public static class UdmfTextMapParser
         private static double Number(Dictionary<string, Value> fields, string key) =>
             fields.TryGetValue(key, out var value) ? value.Number : 0;
 
-        private static int Int(Dictionary<string, Value> fields, string key, int fallback = 0) =>
-            fields.TryGetValue(key, out var value) ? (int)value.Number : fallback;
+        private static int Int(Dictionary<string, Value> fields, string key, int fallback = 0)
+        {
+            if (!fields.TryGetValue(key, out var value)) return fallback;
+            if (!double.IsFinite(value.Number) || value.Number != Math.Truncate(value.Number)) throw new OverflowException();
+            return checked((int)value.Number);
+        }
 
-        private static bool Bool(Dictionary<string, Value> fields, string key) =>
-            fields.TryGetValue(key, out var value) && value.Boolean;
+        private static bool Bool(Dictionary<string, Value> fields, string key, bool fallback = false) =>
+            fields.TryGetValue(key, out var value) ? value.Boolean : fallback;
 
         private static string Text(Dictionary<string, Value> fields, string key, string fallback) =>
             fields.TryGetValue(key, out var value) && value.Text is not null ? value.Text : fallback;

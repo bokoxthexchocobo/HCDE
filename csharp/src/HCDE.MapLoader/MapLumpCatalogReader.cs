@@ -55,7 +55,7 @@ public static class MapLumpCatalogReader
             return false;
 
         var labelIndex = -1;
-        for (var i = 0; i < entries.Length; i++)
+        for (var i = entries.Length - 1; i >= 0; i--)
         {
             if (string.Equals(entries[i].Name, mapName, StringComparison.OrdinalIgnoreCase))
             {

@@ -35,6 +35,7 @@
 #include "d_eventbase.h"
 #include "d_main.h"
 #include "d_net.h"
+#include "d_net_invasion_policy.h"
 #include "d_net_diag.h"
 #include "d_net_diagnostics.h"
 #include "d_net_blackbox.h"
@@ -1608,7 +1609,7 @@ static void Net_TickInvasionAnnouncements()
 
 	if (state == INVS_COUNTDOWN)
 	{
-		const int tics = max(CutsceneCountdown, max(InvasionStateTics, 0));
+		const int tics = Net_GetInvasionStateTics();
 		const int seconds = (tics + TICRATE - 1) / TICRATE;
 		if (seconds > 0 && seconds != InvasionAnnouncementLastCountdownSecond)
 		{
@@ -3448,22 +3449,16 @@ static bool HCDEApplyInvasionSnapshot(int clientNum, const uint8_t* body, size_t
 	InvasionState = newState;
 	InvasionStateTics = max<int>(int(stateTics), 0);
 	InvasionWaveDirector.Wave = max<int>(int(wave), 0);
+	InvasionPendingWave = HCDEInvasionPolicy::PendingWave(newState == INVS_COUNTDOWN, InvasionWaveDirector.Wave);
 	InvasionWaveDirector.MaxWaves = max<int>(int(maxWaves), 0);
 	InvasionWaveDirector.WaveBudget = max<int>(int(waveBudget), 0);
 	const int incomingSpawned = max<int>(int(waveSpawned), 0);
 	const int incomingCleared = max<int>(int(waveCleared), 0);
-	if (!I_IsLocalHCDEServiceAuthority()
-		&& previousWave == InvasionWaveDirector.Wave
-		&& Net_IsInvasionRoundActiveState(InvasionState))
-	{
-		InvasionWaveDirector.WaveSpawned = max(InvasionWaveDirector.WaveSpawned, incomingSpawned);
-		InvasionWaveDirector.WaveCleared = max(InvasionWaveDirector.WaveCleared, incomingCleared);
-	}
-	else
-	{
-		InvasionWaveDirector.WaveSpawned = incomingSpawned;
-		InvasionWaveDirector.WaveCleared = incomingCleared;
-	}
+	// The outer snapshot handler rejects stale game tics. Keep counts from the
+	// same accepted snapshot as its timer and active count, including corrections
+	// and retries of the same numbered wave.
+	InvasionWaveDirector.WaveSpawned = incomingSpawned;
+	InvasionWaveDirector.WaveCleared = incomingCleared;
 	InvasionWaveDirector.WaveFlags = (flags & HCDEInvasionSnapshotFlagBossWave) != 0u ? INV_WAVEF_BOSS : 0u;
 	InvasionReplicatedActiveMonsterCount = max<int>(int(activeMonsters), 0);
 	InvasionSpawnDirectory.TotalSpotCount = int(spawnSpotCount);
@@ -9715,9 +9710,8 @@ const char* Net_GetInvasionStateName()
 
 int Net_GetInvasionStateTics()
 {
-	if (InvasionState == INVS_COUNTDOWN)
-		return max(CutsceneCountdown, max(InvasionStateTics, 0));
-	return max(InvasionStateTics, 0);
+	return HCDEInvasionPolicy::CountdownTics(Net_IsLocalInvasionAuthority(),
+		InvasionState == INVS_COUNTDOWN, InvasionStateTics, CutsceneCountdown);
 }
 
 int Net_GetClassicInvasionState()

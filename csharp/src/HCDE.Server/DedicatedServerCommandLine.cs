@@ -1,6 +1,8 @@
 using System.Net;
 using HCDE.Net.Pregame;
 using HCDE.Protocol;
+using HCDE.Playsim;
+using HCDE.MapLoader;
 
 namespace HCDE.Server;
 
@@ -11,10 +13,12 @@ public static class DedicatedServerCommandLine
         options = new DedicatedServerOptions();
         error = null;
         string? iwadPath = null;
+        var modPaths = new List<string>();
         var mapName = "MAP01";
         var rngSeed = 1;
         var advertiseMaster = false;
         string? masterAddress = null;
+        var gameModeNameSpecified = false;
 
         for (var i = 0; i < args.Length; i++)
         {
@@ -37,6 +41,11 @@ public static class DedicatedServerCommandLine
                         error = "--map requires a name";
                         return false;
                     }
+                    break;
+                case "--file":
+                    if (!TryReadArg(args, ref i, out var modPath) || string.IsNullOrWhiteSpace(modPath))
+                    { error = "--file requires a WAD or PK3 path"; return false; }
+                    modPaths.Add(modPath);
                     break;
                 case "--port":
                     if (!TryReadArg(args, ref i, out var portText) || !int.TryParse(portText, out var port) || port is <= 0 or > 65535)
@@ -104,6 +113,27 @@ public static class DedicatedServerCommandLine
                     }
 
                     options.GameModeName = gameModeName;
+                    gameModeNameSpecified = true;
+                    break;
+                case "--invasion-waves":
+                    if (!TryReadArg(args, ref i, out var wavesText) || !int.TryParse(wavesText, out var waves) || waves is < 1 or > 65535)
+                    {
+                        error = "--invasion-waves requires a value from 1 to 65535";
+                        return false;
+                    }
+                    options.InvasionWaves = waves;
+                    break;
+                case "--invasion-countdown":
+                case "--invasion-intermission":
+                    if (!TryReadArg(args, ref i, out var secondsText) || !int.TryParse(secondsText, out var seconds) || seconds is < 0 or > 3600)
+                    {
+                        error = $"{arg} requires seconds from 0 to 3600";
+                        return false;
+                    }
+                    if (arg == "--invasion-countdown")
+                        options.InvasionCountdownTics = seconds * GameTicClock.TicRate;
+                    else
+                        options.InvasionIntermissionTics = seconds * GameTicClock.TicRate;
                     break;
                 case "--no-query":
                     options.EnableServerQuery = false;
@@ -162,7 +192,24 @@ public static class DedicatedServerCommandLine
                 return false;
         }
 
-        options.IwadBytes = File.ReadAllBytes(iwadPath);
+        try
+        {
+            var paths = new[] { iwadPath }.Concat(modPaths).ToArray();
+            long total = 0;
+            foreach (var path in paths)
+            {
+                total += new FileInfo(path).Length;
+                if (total > WadLoadOrder.MaxBytes) { error = "WAD load order exceeds 256 MiB"; return false; }
+            }
+            var archives = paths.Select(File.ReadAllBytes).ToArray();
+            if (modPaths.Count == 0) options.IwadBytes = archives[0];
+            else if (!ModResources.TryLoad(archives, out var resources, out error)) return false;
+            else { options.IwadBytes = resources.MapWad; options.Resources = resources; }
+        }
+        catch (Exception exception) when (exception is IOException or UnauthorizedAccessException)
+        { error = exception.Message; return false; }
+        if (options.GameMode == 4 && !gameModeNameSpecified)
+            options.GameModeName = "Invasion";
         options.Pregame = new PregameHostOptions
         {
             Session = new PregameSessionSnapshot
@@ -179,11 +226,14 @@ public static class DedicatedServerCommandLine
         Console.WriteLine(
             "Usage: hcdeserv --iwad <path> [--map <name>] [--port <port>] [--bind <ipv4>] [--rng-seed <int>]");
         Console.WriteLine("       [--server-name <name>] [--skill <0-255>] [--deathmatch] [--teamplay]");
+        Console.WriteLine("       [--file <WAD-or-PK3>] (repeat in load order; later maps override earlier maps)");
         Console.WriteLine("       [--gamemode <id>] [--gamemode-name <label>] [--no-query]");
+        Console.WriteLine("       [--invasion-waves <1-65535>] [--invasion-countdown <seconds>] [--invasion-intermission <seconds>]");
         Console.WriteLine("       [--master [host[:port]]] [--rcon-password <secret>] [--rcon-port <port>]");
         Console.WriteLine();
         Console.WriteLine("Managed dedicated-server scaffold: pregame host pump with map-load bootstrap handoff.");
         Console.WriteLine("Defaults: --bind 0.0.0.0 --port 10666 --map MAP01 --rng-seed 1");
+        Console.WriteLine("Invasion: --gamemode 4 (defaults: 8 waves, 30-second countdown, 1-second intermission).");
         Console.WriteLine($"Master advertise defaults: {MasterProtocol.DefaultMasterHost}:{MasterProtocol.DefaultMasterPort}");
     }
 

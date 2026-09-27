@@ -8,6 +8,16 @@ Script:
 
 ## What It Validates
 
+For the snapshot countdown policy alone, compile `invasion_policy_tests.cpp` with
+C++17. Its static assertions exercise late-join wave announcements and a stale
+client cutscene timer. With a Visual Studio developer prompt:
+
+```powershell
+cl /nologo /std:c++17 /W4 /WX /c tests/invasion_stage9/invasion_policy_tests.cpp /Fo"$env:TEMP\hcde-invasion-policy-tests.obj"
+```
+
+This compile-only check does not replace the following runtime checks.
+
 1. `sv_gametype` query compatibility for:
    - `0` Co-op
    - `1` Deathmatch

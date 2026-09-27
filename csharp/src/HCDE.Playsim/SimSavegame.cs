@@ -9,6 +9,17 @@ public sealed class SimActorPose
     public int Y { get; init; }
     public uint Angle { get; init; }
     public int Health { get; init; }
+    public int Z { get; init; }
+    public int VelocityX { get; init; }
+    public int VelocityY { get; init; }
+    public int VelocityZ { get; init; }
+    public int State { get; init; }
+    public int StateTics { get; init; } = -1;
+    public bool OnGround { get; init; } = true;
+    public bool HasPhysics { get; init; } = true;
+    public int WeaponCooldown { get; init; }
+    public int Pitch { get; init; }
+    public bool UseHeld { get; init; }
 }
 
 public sealed class SimSaveState
@@ -16,6 +27,7 @@ public sealed class SimSaveState
     public int Tic { get; init; }
     public bool Exited { get; init; }
     public bool SecretExit { get; init; }
+    public uint? CombatRandomState { get; init; }
     public List<SimActorPose> Actors { get; } = new();
     public List<(short Floor, short Ceiling)> Sectors { get; } = new();
 }
@@ -32,12 +44,12 @@ public static class SimSavegame
 
     public static byte[] Write(SimSaveState state)
     {
-        var size = 4 + 2 + 4 + 1 + 1 + 4 + state.Actors.Count * 20 + 4 + state.Sectors.Count * 4;
+        var size = checked(28 + state.Actors.Count * 60 + state.Sectors.Count * 4);
         var buffer = new byte[size];
         var span = buffer.AsSpan();
         Magic.CopyTo(span);
         var cursor = 4;
-        BinaryPrimitives.WriteUInt16LittleEndian(span[cursor..], 1);
+        BinaryPrimitives.WriteUInt16LittleEndian(span[cursor..], 4);
         cursor += 2;
         BinaryPrimitives.WriteInt32LittleEndian(span[cursor..], state.Tic);
         cursor += 4;
@@ -52,7 +64,17 @@ public static class SimSavegame
             BinaryPrimitives.WriteInt32LittleEndian(span[(cursor + 8)..], actor.Y);
             BinaryPrimitives.WriteUInt32LittleEndian(span[(cursor + 12)..], actor.Angle);
             BinaryPrimitives.WriteInt32LittleEndian(span[(cursor + 16)..], actor.Health);
-            cursor += 20;
+            BinaryPrimitives.WriteInt32LittleEndian(span[(cursor + 20)..], actor.Z);
+            BinaryPrimitives.WriteInt32LittleEndian(span[(cursor + 24)..], actor.VelocityX);
+            BinaryPrimitives.WriteInt32LittleEndian(span[(cursor + 28)..], actor.VelocityY);
+            BinaryPrimitives.WriteInt32LittleEndian(span[(cursor + 32)..], actor.VelocityZ);
+            BinaryPrimitives.WriteInt32LittleEndian(span[(cursor + 36)..], actor.State);
+            BinaryPrimitives.WriteInt32LittleEndian(span[(cursor + 40)..], actor.StateTics);
+            BinaryPrimitives.WriteInt32LittleEndian(span[(cursor + 44)..], (actor.OnGround ? 1 : 0) | (actor.HasPhysics ? 2 : 0));
+            BinaryPrimitives.WriteInt32LittleEndian(span[(cursor + 48)..], actor.WeaponCooldown);
+            BinaryPrimitives.WriteInt32LittleEndian(span[(cursor + 52)..], actor.Pitch);
+            BinaryPrimitives.WriteInt32LittleEndian(span[(cursor + 56)..], actor.UseHeld ? 1 : 0);
+            cursor += 60;
         }
 
         BinaryPrimitives.WriteInt32LittleEndian(span[cursor..], state.Sectors.Count);
@@ -64,6 +86,8 @@ public static class SimSavegame
             cursor += 4;
         }
 
+        BinaryPrimitives.WriteUInt32LittleEndian(span[cursor..], state.CombatRandomState ?? 0);
+        BinaryPrimitives.WriteInt32LittleEndian(span[(cursor + 4)..], state.CombatRandomState.HasValue ? 1 : 0);
         return buffer;
     }
 
@@ -78,7 +102,7 @@ public static class SimSavegame
         }
 
         var version = BinaryPrimitives.ReadUInt16LittleEndian(bytes[4..]);
-        if (version != 1)
+        if (version is not (1 or 2 or 3 or 4))
         {
             error = "save-version";
             return false;
@@ -88,7 +112,8 @@ public static class SimSavegame
         var exited = bytes[10] != 0;
         var secret = bytes[11] != 0;
         var actorCount = BinaryPrimitives.ReadInt32LittleEndian(bytes[12..]);
-        if (actorCount < 0)
+        var actorSize = version == 1 ? 20 : version == 2 ? 48 : version == 3 ? 52 : 60;
+        if (actorCount < 0 || actorCount > (bytes.Length - 16) / actorSize)
         {
             error = "save-actor-count";
             return false;
@@ -98,7 +123,7 @@ public static class SimSavegame
         var actors = new List<SimActorPose>(actorCount);
         for (var i = 0; i < actorCount; i++)
         {
-            if (cursor + 20 > bytes.Length)
+            if (cursor + actorSize > bytes.Length)
             {
                 error = "save-truncated-actor";
                 return false;
@@ -111,8 +136,19 @@ public static class SimSavegame
                 Y = BinaryPrimitives.ReadInt32LittleEndian(bytes[(cursor + 8)..]),
                 Angle = BinaryPrimitives.ReadUInt32LittleEndian(bytes[(cursor + 12)..]),
                 Health = BinaryPrimitives.ReadInt32LittleEndian(bytes[(cursor + 16)..]),
+                Z = version >= 2 ? BinaryPrimitives.ReadInt32LittleEndian(bytes[(cursor + 20)..]) : 0,
+                VelocityX = version >= 2 ? BinaryPrimitives.ReadInt32LittleEndian(bytes[(cursor + 24)..]) : 0,
+                VelocityY = version >= 2 ? BinaryPrimitives.ReadInt32LittleEndian(bytes[(cursor + 28)..]) : 0,
+                VelocityZ = version >= 2 ? BinaryPrimitives.ReadInt32LittleEndian(bytes[(cursor + 32)..]) : 0,
+                State = version >= 2 ? BinaryPrimitives.ReadInt32LittleEndian(bytes[(cursor + 36)..]) : 0,
+                StateTics = version >= 2 ? BinaryPrimitives.ReadInt32LittleEndian(bytes[(cursor + 40)..]) : -1,
+                OnGround = version == 1 || (BinaryPrimitives.ReadInt32LittleEndian(bytes[(cursor + 44)..]) & 1) != 0,
+                HasPhysics = version >= 2 && (BinaryPrimitives.ReadInt32LittleEndian(bytes[(cursor + 44)..]) & 2) != 0,
+                WeaponCooldown = version >= 3 ? BinaryPrimitives.ReadInt32LittleEndian(bytes[(cursor + 48)..]) : 0,
+                Pitch = version >= 4 ? BinaryPrimitives.ReadInt32LittleEndian(bytes[(cursor + 52)..]) : 0,
+                UseHeld = version >= 4 && BinaryPrimitives.ReadInt32LittleEndian(bytes[(cursor + 56)..]) != 0,
             });
-            cursor += 20;
+            cursor += actorSize;
         }
 
         if (cursor + 4 > bytes.Length)
@@ -123,13 +159,17 @@ public static class SimSavegame
 
         var sectorCount = BinaryPrimitives.ReadInt32LittleEndian(bytes[cursor..]);
         cursor += 4;
-        if (sectorCount < 0 || cursor + sectorCount * 4 != bytes.Length)
+        var remaining = bytes.Length - cursor - (version >= 3 ? 8 : 0);
+        if (remaining < 0 || sectorCount < 0 || sectorCount != remaining / 4 || remaining % 4 != 0)
         {
             error = "save-sector-size";
             return false;
         }
 
-        state = new SimSaveState { Tic = tic, Exited = exited, SecretExit = secret };
+        var footer = bytes.Length - 8;
+        state = new SimSaveState { Tic = tic, Exited = exited, SecretExit = secret,
+            CombatRandomState = version >= 3 && BinaryPrimitives.ReadInt32LittleEndian(bytes[(footer + 4)..]) != 0
+                ? BinaryPrimitives.ReadUInt32LittleEndian(bytes[footer..]) : null };
         state.Actors.AddRange(actors);
         for (var i = 0; i < sectorCount; i++)
         {

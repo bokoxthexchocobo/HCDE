@@ -15,6 +15,56 @@ The full engine is ~640k lines of C++. This is a long-running migration, not a b
 
 ## Current status
 
+Latest: [phase 1–3 movers/damage audit](docs/HCDE_CSHARP_MOVERS_DAMAGE_AUDIT.md).
+Loaded maps now support additional floors, lifts and crushing actions, with rider
+and obstruction handling. Mover checksums and green-armor rounding are corrected.
+**920 tests pass; phases 1–3 remain incomplete.**
+
+Previous: [phase 2/3 continuation audit](docs/HCDE_CSHARP_PHASE23_COMPLETION_AUDIT.md).
+Native monster defaults, pitch-aware combat, PK3 resources, Hexen record loading,
+locked doors and extended-map network bootstrap now have regression coverage.
+The suite has 908 passing tests. **Phases 2 and 3 remain incomplete**: the report
+lists the remaining native actor actions, geometry/specials, mod-runtime and
+multiplayer gates. Earlier pass summaries below are historical.
+
+The phase-3 maps/mods foundation adds ordered `--file` PWAD loading, embedded
+DEHACKED application, safer map validation, spawn filters and format-specific
+line activation with player use. See the
+[maps/mods and combined audit](docs/HCDE_CSHARP_MAPS_MODS_AUDIT.md) for 858 passing
+tests and the remaining compatibility/release gates. Full maps/mods conversion
+is not yet complete; PK3, complete special translation and native mod runtimes
+still need work.
+
+The combat/AI pass adds weapon cadence, shotgun pellets, traveling projectiles,
+rocket splash and generic monster sight/chase/attack behavior. See the
+[combat/AI and combined audit](docs/HCDE_CSHARP_COMBAT_AI_AUDIT.md) for 832 passing
+Release tests and the remaining blockers. Full native combat parity is not yet
+signed off; sustained projectile traffic still needs snapshot paging/retirement.
+
+The new gameplay-foundation pass adds XYZ momentum, gravity, jumping, swept
+flat-sector collision, timed actor states and shared damage/death handling.
+The [combined foundation audit](docs/HCDE_CSHARP_GAMEPLAY_FOUNDATION_AUDIT.md)
+also reviews the preceding combat, invasion and networking work, records fixes
+and lists release blockers. This is a tested foundation subset, not full native
+physics parity. Its phase numbering is separate from the historical audits below.
+
+September 26 follow-up: combat now traces walls and closed openings, dead pawns
+stop acting, and invasion waves wait for their enemies to be cleared. The guest
+ignores stale snapshot tails and keeps invasion timers and enemy counts from the
+same authority snapshot. See [combat and invasion follow-up](docs/HCDE_CSHARP_COMBAT_INVASION_FOLLOWUP.md)
+for validation and remaining migration gaps. These are still engine subsets.
+
+The dedicated server now enables the managed director with `--gamemode 4`, publishes
+its state in live snapshots and server queries, and runs at 35 simulation tics per
+second. Network attacks, enemy poses, finite-wave victory and shared per-tic invasion
+payloads are covered by loopback tests. Example (from repository root):
+
+```powershell
+dotnet run --project csharp/src/HCDE.Server -- --iwad C:/Games/doom2.wad --gamemode 4 --invasion-waves 8 --invasion-countdown 30 --invasion-intermission 1
+```
+
+This command runs the C# subset; it does not launch a complete graphical client.
+
 | Component | C++ location | C# project | Status |
 | --- | --- | --- | --- |
 | Master protocol constants | `protocol/hcde_master_protocol.h` | `HCDE.Protocol` | Done |
@@ -30,7 +80,7 @@ The full engine is ~640k lines of C++. This is a long-running migration, not a b
 | Pregame guest CLI | C++ `-join` guest path | `HCDE.PregameGuest.Cli` | Done (pregame + `--live-ticks`) |
 | Engine core | `src/` | — | Not started |
 | Dedicated server | `hcdeserv` (`HCDE.Server`) | Headless map boot, tick, snapshot publish, in-engine RCON | Phase 3 subset |
-| Playsim | `src/playsim/` | `HCDE.Playsim` | Phase 6 subset (Phase 5, plus hitscan and melee) |
+| Playsim | `src/playsim/` | `HCDE.Playsim` | Gameplay foundation subset: physics, states, damage, hitscan and melee |
 | Renderer (Vulkan/SW) | `src/rendering/` | `HCDE.Client` | Phase 4 subset (column view + recorded quads) |
 | ZScript VM | `src/common/scripting/` | `HCDE.Client` | Phase 4 subset (managed opcodes; asmjit probed, not bound) |
 | Audio (ZMusic) | `libraries/ZMusic/` | `HCDE.Client` | Phase 4 subset (PCM mix; ZMusic probed, not bound) |
@@ -70,7 +120,7 @@ Outputs: `hcdemaster` and `hcdercon`.
 
 ## Validation
 
-Managed wire compatibility is gated by `dotnet test` (638 tests; CI via `.github/workflows/csharp.yml`). Optional cross-language soak CI runs `FullyQualifiedName~CrossLanguageSoak` when `HCDE_HCDESERV_PATH` / `HCDE_IWAD_PATH` secrets are configured; both workflows enforce a Passed manifest gate when those secrets are present. Cross-language checks live under `validation/`:
+Managed regression checks run through `dotnet test` (832 tests; CI via `.github/workflows/csharp.yml`). Passing these does not prove full native runtime compatibility. Optional cross-language soak CI runs `FullyQualifiedName~CrossLanguageSoak` when `HCDE_HCDESERV_PATH` / `HCDE_IWAD_PATH` secrets are configured; both workflows enforce a Passed manifest gate when those secrets are present. Cross-language checks live under `validation/`:
 
 | Harness | Purpose |
 | --- | --- |
@@ -109,7 +159,7 @@ csharp/
     HCDE.Client/         hcde — headless client subset (Phase 4)
     HCDE.PregameGuest.Cli/  hcde-pregame-guest CLI
   tests/
-    HCDE.*.Tests/        xUnit regression tests (638 passing)
+    HCDE.*.Tests/        xUnit regression tests (776 passing)
 ```
 
 ## Migration phases

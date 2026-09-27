@@ -36,10 +36,10 @@ public static class WorldStateTailBuilder
                 armor: 0,
                 player.PosX,
                 player.PosY,
-                posZ: 0,
-                velX: 0,
-                velY: 0,
-                velZ: 0,
+                player.PosZ,
+                player.VelX,
+                player.VelY,
+                player.VelZ,
                 player.YawBams,
                 pitchBams: 0);
         }
@@ -97,6 +97,20 @@ public static class WorldStateTailBuilder
             gameTic,
             checksumHashes,
             replicateSectorMetadata);
+        return new WorldStateTailBuildResult(written > 0, written);
+    }
+
+    public static WorldStateTailBuildResult TryBuildCoopTailWithChecksum(
+        Span<byte> tail, GuestWorldStateStore store, SnapshotChecksumSession? checksumSession,
+        uint gameTic, int rngSeed = 0, bool replicateSectorMetadata = false)
+    {
+        var poses = CollectPoses(store);
+        var sectors = CollectSectors(store, replicateSectorMetadata);
+        var events = store.TakePendingAuthorityEventsForTail();
+        var actors = CollectActorDeltas(store);
+        var retired = store.TakePendingCoopDeadSpawnsForTail();
+        var hashes = SnapshotChecksumTailPolicy.TryResolveTailChecksumHashes(store, checksumSession, (int)gameTic, rngSeed);
+        var written = ServerSnapshotTailCodec.WriteCoopShipping(tail, gameTic, poses, sectors, actors, retired, events, hashes);
         return new WorldStateTailBuildResult(written > 0, written);
     }
 
@@ -199,10 +213,10 @@ public static class WorldStateTailBuilder
                 armor: 0,
                 player.PosX,
                 player.PosY,
-                posZ: 0,
-                velX: 0,
-                velY: 0,
-                velZ: 0,
+                player.PosZ,
+                player.VelX,
+                player.VelY,
+                player.VelZ,
                 player.YawBams,
                 pitchBams: 0);
         }
@@ -249,10 +263,15 @@ public static class WorldStateTailBuilder
                 ClassId = actor.ClassId,
                 FieldMask = (ushort)(LiveConstants.ActorDeltaFieldCategory
                     | LiveConstants.ActorDeltaFieldFlags
-                    | LiveConstants.ActorDeltaFieldHealth),
+                    | LiveConstants.ActorDeltaFieldHealth
+                    | (actor.HasPose ? LiveConstants.ActorDeltaFieldPos | LiveConstants.ActorDeltaFieldAngles : 0)),
                 Category = actor.Category,
                 Flags = actor.Flags,
                 Health = actor.Health,
+                PosX = actor.PosX,
+                PosY = actor.PosY,
+                PosZ = actor.PosZ,
+                YawBams = actor.YawBams,
             };
         }
 

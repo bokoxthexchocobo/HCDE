@@ -27,17 +27,9 @@ public static class InvasionSnapshotWavePolicy
         InvasionSnapshotHeader incoming,
         bool isLocalAuthority)
     {
-        var spawned = incoming.WaveSpawned;
-        var cleared = incoming.WaveCleared;
-        if (!isLocalAuthority
-            && previous.Wave == (int)incoming.Wave
-            && IsRoundActive(incoming.State))
-        {
-            spawned = Math.Max(previous.WaveSpawned, spawned);
-            cleared = Math.Max(previous.WaveCleared, cleared);
-        }
-
-        return (spawned, cleared);
+        // Ordering belongs to the enclosing snapshot session. Mixing prior maxima
+        // with a fresh active count makes retries and authority corrections disagree.
+        return (incoming.WaveSpawned, incoming.WaveCleared);
     }
 
     public static bool IsRoundActive(byte state) =>

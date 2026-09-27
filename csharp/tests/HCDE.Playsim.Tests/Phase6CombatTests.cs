@@ -10,7 +10,7 @@ public class Phase6CombatTests
         var sim = Range(3001, 200);
         sim.QueueCommand(0, new PlayerCommand { Attack = true });
         sim.Tick();
-        Assert.Equal(20, Target(sim).Health);
+        Assert.Equal(50, Target(sim).Health);
         Assert.Equal(49, sim.Players.Single().Inventory.Bullets);
     }
 
@@ -20,7 +20,7 @@ public class Phase6CombatTests
         var sim = Range(3001, 0);
         sim.QueueCommand(0, new PlayerCommand { Attack = true });
         sim.Tick();
-        Assert.Equal(30, Target(sim).Health);
+        Assert.Equal(60, Target(sim).Health);
         Assert.Equal(49, sim.Players.Single().Inventory.Bullets);
     }
 
@@ -31,7 +31,7 @@ public class Phase6CombatTests
         sim.Players.Single().Inventory.Bullets = 0;
         sim.QueueCommand(0, new PlayerCommand { Attack = true });
         sim.Tick();
-        Assert.Equal(30, Target(sim).Health);
+        Assert.Equal(60, Target(sim).Health);
         Assert.Equal(0, sim.Players.Single().Inventory.Bullets);
     }
 
@@ -43,14 +43,14 @@ public class Phase6CombatTests
         player.Inventory.Selected = WeaponKind.Fist;
         sim.QueueCommand(0, new PlayerCommand { Attack = true });
         sim.Tick();
-        Assert.Equal(20, Target(sim).Health);
+        Assert.Equal(50, Target(sim).Health);
         Assert.Equal(50, player.Inventory.Bullets);
 
         var far = Range(3001, 200);
         far.Players.Single().Inventory.Selected = WeaponKind.Fist;
         far.QueueCommand(0, new PlayerCommand { Attack = true });
         far.Tick();
-        Assert.Equal(30, Target(far).Health);
+        Assert.Equal(60, Target(far).Health);
     }
 
     [Fact]

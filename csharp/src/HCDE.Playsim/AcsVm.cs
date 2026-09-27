@@ -47,6 +47,7 @@ public sealed class AcsVm
 
             Run(sim, fiber);
         }
+        _fibers.RemoveAll(fiber => fiber.Done);
     }
 
     private static void Run(AuthoritySimulation sim, Fiber fiber)
@@ -55,7 +56,7 @@ public sealed class AcsVm
         while (!fiber.Done && fiber.Wait == 0 && steps < InstructionBudget)
         {
             steps++;
-            if (fiber.Pc + 4 > fiber.Code.Length)
+            if (fiber.Pc < 0 || fiber.Pc > fiber.Code.Length - 4)
             {
                 fiber.Done = true;
                 return;
@@ -85,7 +86,7 @@ public sealed class AcsVm
                 case (int)AcsPcode.Lspec1Direct:
                     var special = ReadI32(fiber);
                     var arg = ReadI32(fiber);
-                    LineSpecials.Execute(sim, null, special, arg);
+                    if (!fiber.Done) LineSpecials.Execute(sim, null, special, arg);
                     break;
                 case (int)AcsPcode.Goto:
                     fiber.Pc = ReadI32(fiber);
@@ -127,7 +128,7 @@ public sealed class AcsVm
 
     private static int ReadI32(Fiber fiber)
     {
-        if (fiber.Pc + 4 > fiber.Code.Length)
+        if (fiber.Pc < 0 || fiber.Pc > fiber.Code.Length - 4)
         {
             fiber.Done = true;
             return 0;

@@ -263,6 +263,25 @@ public class ClientInputApplySessionTests
     }
 
     [Fact]
+    public void Apply_RejectsMismatchedPlayerCountBeforeMutatingAcknowledgements()
+    {
+        var registry = new LivePeerNetRegistry(maxClients: 4);
+        var routing = new LivePeerRoutingState(0, 4, 0, isLocalAuthority: true, usesHcdeService: true);
+        var players = new[]
+        {
+            new ClientInputPlayerRecord { PlayerNum = 1 },
+            new ClientInputPlayerRecord { PlayerNum = 2 },
+        };
+        var header = new ClientInputHeader(0, 0, playerCount: 1, sequenceAck: 99, consistencyAck: 99,
+            baseSequence: 1, baseConsistency: 0, commandTics: 0, consistencyTics: 0,
+            stabilityBuffer: 7, bodyBytes: 2);
+        Assert.False(ClientInputApplySession.TryApply(header, players, 1, routing, registry,
+            null, 1, out _, out _));
+        Assert.Equal(0, registry[1].SequenceAck);
+        Assert.Equal(0, registry[1].ConsistencyAck);
+    }
+
+    [Fact]
     public void Apply_RejectsUnauthorizedPlayerRecord()
     {
         var registry = new LivePeerNetRegistry(maxClients: 4);

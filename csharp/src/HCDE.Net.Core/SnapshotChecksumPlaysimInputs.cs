@@ -33,9 +33,9 @@ public static class SnapshotChecksumPlaysimInputs
 
         var actors = new SnapshotChecksumActorSample[store.Actors.Count];
         var actorIndex = 0;
+        Span<byte> className = stackalloc byte[2];
         foreach (var actor in store.Actors.Values.OrderBy(static a => a.ActorId))
         {
-            Span<byte> className = stackalloc byte[2];
             BinaryPrimitives.WriteUInt16BigEndian(className, actor.ClassId);
             actors[actorIndex++] = new SnapshotChecksumActorSample(className, actor.Health);
         }

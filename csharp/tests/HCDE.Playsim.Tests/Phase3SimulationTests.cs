@@ -8,15 +8,20 @@ public class Phase3SimulationTests
     [Fact]
     public void DoorRaise_OpensThenClosesTheTaggedSector()
     {
-        var sim = AuthoritySimulation.Start(DoorLevel(LineSpecials.DoorRaise));
-        sim.QueueCommand(0, new PlayerCommand { ForwardMove = 8192 });
+        var sim = AuthoritySimulation.Start(new PlayLevel
+        {
+            Sectors = new[] { new LevelSector { CeilingHeight = 0, Tag = 1 }, new LevelSector { CeilingHeight = 12 } },
+            Sides = new[] { new LevelSide { Sector = 0 }, new LevelSide { Sector = 1 } },
+            Lines = new[] { new LevelLine { SideFront = 0, SideBack = 1 } },
+        });
+        Assert.True(LineSpecials.Execute(sim, null, LineSpecials.DoorRaise, 1));
         sim.Tick();
-        Assert.Equal(8, sim.FloorOf(0));
-        Assert.Equal(LineSpecials.DoorRaise, sim.Level.Lines[0].Special);
+        Assert.Equal(8, sim.CeilingOf(0));
+        Assert.Equal(0, sim.FloorOf(0));
 
         for (var i = 0; i < 6; i++)
             sim.Tick();
-        Assert.Equal(0, sim.FloorOf(0));
+        Assert.Equal(0, sim.CeilingOf(0));
     }
 
     [Fact]
@@ -96,18 +101,20 @@ public class Phase3SimulationTests
     }
 
     [Fact]
-    public void Bot_WalksEast()
+    public void BotWithoutATargetStaysIdle()
     {
         var sim = AuthoritySimulation.Start(new PlayLevel { MapName = "MAP01" });
         var bot = sim.AddBot(32, 32);
         sim.Tick();
-        Assert.True(bot.X.ToDouble() > 32);
+        for (var i = 0; i < 20; i++) sim.Tick();
+        Assert.Equal(32, bot.X.ToDouble());
+        Assert.Equal(MonsterMode.Idle, bot.Brain!.Mode);
     }
 
     [Fact]
     public void Savegame_RestoresPoseFloorAndExit()
     {
-        var sim = AuthoritySimulation.Start(DoorLevel(LineSpecials.DoorRaise));
+        var sim = AuthoritySimulation.Start(DoorLevel(LineSpecials.FloorRaise));
         sim.QueueCommand(0, new PlayerCommand { ForwardMove = 8192 });
         sim.Tick();
         var savedX = sim.Players.Single().X.Raw;
@@ -174,7 +181,7 @@ public class Phase3SimulationTests
     }
 
     [Fact]
-    public void Invasion_SpawnsABotThatWalks()
+    public void Invasion_SpawnsAnEnemyThatWaitsForATarget()
     {
         var sim = AuthoritySimulation.Start(new PlayLevel
         {
@@ -188,7 +195,8 @@ public class Phase3SimulationTests
         Assert.Equal(InvasionPhase.Wave, sim.Invasion.Phase);
         Assert.Equal(10, bot.X.ToDouble());
         sim.Tick();
-        Assert.True(bot.X.ToDouble() > 10);
+        Assert.Equal(10, bot.X.ToDouble());
+        Assert.NotNull(bot.Brain);
     }
 
     [Fact]
@@ -230,7 +238,7 @@ public class Phase3SimulationTests
     private static PlayLevel DoorLevel(int special) => new()
     {
         MapName = "MAP01",
-        Sectors = new[] { new LevelSector { FloorHeight = 0, CeilingHeight = 12, Tag = 1 } },
+        Sectors = new[] { new LevelSector { FloorHeight = 0, CeilingHeight = 128, Tag = 1 } },
         Lines = new[]
         {
             new LevelLine

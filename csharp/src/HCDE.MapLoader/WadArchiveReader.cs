@@ -55,7 +55,7 @@ public static class WadArchiveReader
 
         var lumpCount = BinaryPrimitives.ReadUInt32LittleEndian(wad[4..]);
         var directoryOffset = BinaryPrimitives.ReadUInt32LittleEndian(wad[8..]);
-        if (directoryOffset + lumpCount * LumpEntrySize > (uint)wad.Length)
+        if ((ulong)directoryOffset + (ulong)lumpCount * LumpEntrySize > (ulong)wad.Length)
         {
             rejectReason = "wad-directory-out-of-range";
             return false;
@@ -97,7 +97,7 @@ public static class WadArchiveReader
     {
         data = default;
         rejectReason = null;
-        if (entry.FilePosition + entry.Size > (uint)wad.Length)
+        if ((ulong)entry.FilePosition + entry.Size > (ulong)wad.Length)
         {
             rejectReason = "wad-lump-out-of-range";
             return false;

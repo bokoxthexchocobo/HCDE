@@ -1,4 +1,5 @@
 using HCDE.Net.Pregame;
+using HCDE.Net.Transport;
 
 namespace HCDE.Server;
 
@@ -34,15 +35,28 @@ static class Program
                 options.EnableServerQuery ? "on" : "off",
                 options.EnableMasterAdvertise ? $"{options.MasterHost}:{options.MasterPort}" : "off");
 
+            var scheduler = new ServerTicScheduler((ulong)Environment.TickCount64);
             while (!cts.IsCancellationRequested)
             {
-                host.Pump((ulong)Environment.TickCount64);
+                var now = (ulong)Environment.TickCount64;
+                var due = scheduler.TakeDueTics(now);
+                for (var tic = 0; tic < due; tic++)
+                {
+                    host.Pump(now);
+                    if (!host.PregameHost.StartGameSent
+                        && host.PregameHost.Clients.Any(client => client.Status == ConnectionStatus.Ready))
+                        host.PregameHost.StartGame(now);
+                }
                 await Task.Delay(10, cts.Token).ConfigureAwait(false);
             }
 
             return 0;
         }
-        catch (Exception ex) when (ex is not OperationCanceledException)
+        catch (OperationCanceledException) when (cts.IsCancellationRequested)
+        {
+            return 0;
+        }
+        catch (Exception ex)
         {
             Console.Error.WriteLine("hcdeserv: {0}", ex.Message);
             return 1;

@@ -12,13 +12,13 @@ public static class DemEventStreamConverter
 
         var records = new List<EventRecord>();
         var legacyCursor = 0;
+        Span<byte> payloadBuffer = stackalloc byte[512];
         while (legacyCursor < legacyDem.Length)
         {
             var eventType = legacyDem[legacyCursor++];
             if (!DemoCommandPolicy.IsAllowedTicEvent(eventType))
                 return false;
 
-            Span<byte> payloadBuffer = stackalloc byte[512];
             if (!CanonicalEventPayloadCodec.TryBuildFromLegacy(eventType, legacyDem, ref legacyCursor, payloadBuffer, out var payloadLength))
                 return false;
 

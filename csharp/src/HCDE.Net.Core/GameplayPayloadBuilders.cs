@@ -105,7 +105,8 @@ public static class GameplayPayloadBuilders
         byte playerNum,
         UserCmd command,
         byte commandTics = 1,
-        byte consistencyTics = 0)
+        byte consistencyTics = 0,
+        uint baseSequence = 1)
     {
         var players = new[]
         {
@@ -130,7 +131,7 @@ public static class GameplayPayloadBuilders
             consistencyTics,
             sequenceAck: 0,
             consistencyAck: 0,
-            baseSequence: 1,
+            baseSequence: baseSequence,
             baseConsistency: 0,
             players);
     }

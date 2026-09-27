@@ -11,6 +11,10 @@ public sealed class GuestPlayerState
     public bool OnGround { get; set; }
     public float PosX { get; set; }
     public float PosY { get; set; }
+    public float PosZ { get; set; }
+    public float VelX { get; set; }
+    public float VelY { get; set; }
+    public float VelZ { get; set; }
     public uint YawBams { get; set; }
 }
 
@@ -30,6 +34,11 @@ public sealed class GuestActorState
     public short Health { get; set; }
     public byte Category { get; set; }
     public byte Flags { get; set; }
+    public bool HasPose { get; set; }
+    public double PosX { get; set; }
+    public double PosY { get; set; }
+    public double PosZ { get; set; }
+    public uint YawBams { get; set; }
 }
 
 public sealed class GuestWorldStateStore : IWorldDeltaApplySink, IActorDeltaApplySink, ICoopDeadSpawnsApplySink
@@ -73,6 +82,10 @@ public sealed class GuestWorldStateStore : IWorldDeltaApplySink, IActorDeltaAppl
         player.OnGround = (pose.Flags & LiveConstants.ServerWorldDeltaPoseOnGround) != 0;
         player.PosX = pose.PosX;
         player.PosY = pose.PosY;
+        player.PosZ = pose.PosZ;
+        player.VelX = pose.VelX;
+        player.VelY = pose.VelY;
+        player.VelZ = pose.VelZ;
         player.YawBams = pose.YawBams;
         return true;
     }
@@ -139,12 +152,17 @@ public sealed class GuestWorldStateStore : IWorldDeltaApplySink, IActorDeltaAppl
         player.OnGround = onGround;
     }
 
-    public void SetPlayerPose(byte playerNum, short health, bool onGround, float posX, float posY, uint yawBams)
+    public void SetPlayerPose(byte playerNum, short health, bool onGround, float posX, float posY, uint yawBams,
+        float posZ = 0, float velX = 0, float velY = 0, float velZ = 0)
     {
         SeedPlayer(playerNum, health, onGround);
         var player = _players[playerNum];
         player.PosX = posX;
         player.PosY = posY;
+        player.PosZ = posZ;
+        player.VelX = velX;
+        player.VelY = velY;
+        player.VelZ = velZ;
         player.YawBams = yawBams;
     }
 
@@ -163,6 +181,15 @@ public sealed class GuestWorldStateStore : IWorldDeltaApplySink, IActorDeltaAppl
             actor.Flags = record.Flags;
         if ((record.FieldMask & LiveConstants.ActorDeltaFieldHealth) != 0)
             actor.Health = record.Health;
+        if ((record.FieldMask & LiveConstants.ActorDeltaFieldPos) != 0)
+        {
+            actor.PosX = record.PosX;
+            actor.PosY = record.PosY;
+            actor.PosZ = record.PosZ;
+            actor.HasPose = true;
+        }
+        if ((record.FieldMask & LiveConstants.ActorDeltaFieldAngles) != 0)
+            actor.YawBams = record.YawBams;
 
         actor.ClassId = record.ClassId;
         return true;

@@ -196,11 +196,6 @@ public sealed class LiveGuestSession
             }
 
             quitterPlayerSlots = quitters;
-            foreach (var slot in quitterPlayerSlots)
-            {
-                _echoApply.ResetClient(slot);
-                _netRegistry.ResetClient(slot);
-            }
         }
 
         if (!ServerSnapshotBodyCodec.TryReadPlayerRecords(
@@ -214,7 +209,7 @@ public sealed class LiveGuestSession
             return false;
         }
 
-        ServerSnapshotApplySession.TryApply(
+        if (!ServerSnapshotApplySession.TryApply(
             header,
             quitterPlayerSlots,
             players,
@@ -226,7 +221,19 @@ public sealed class LiveGuestSession
             _snapshotCommandSink,
             (ulong)Environment.TickCount64,
             out var applyResult,
-            out _);
+            out _))
+            return false;
+
+        // A newer packet sequence can still carry an old simulation tic. The
+        // command layer rejects it; its invasion/world tail must also be ignored.
+        if (applyResult.Idempotent)
+            return true;
+
+        foreach (var slot in quitterPlayerSlots)
+        {
+            _echoApply.ResetClient(slot);
+            _netRegistry.ResetClient(slot);
+        }
 
         if (applyResult.SnapshotGapResynced)
         {
@@ -1182,6 +1189,7 @@ public sealed class LiveGuestSession
 
 public sealed class LiveAuthoritySession
 {
+    private readonly Dictionary<NetworkEndpoint, LiveSequenceTracker> _inputSequences = new();
     private readonly LiveControlEndpoint _control;
     private readonly LiveGameplayEndpoint _gameplay;
     private readonly LivePeerRoutingState _routing;
@@ -1190,6 +1198,7 @@ public sealed class LiveAuthoritySession
     private IClientInputCommandSink? _clientInputCommandSink;
     private GuestWorldStateStore? _authorityWorldState;
     private InvasionSnapshotHeader? _authorityInvasionSnapshot;
+    private byte[]? _worldTailForTick;
     private SnapshotChecksumSession? _checksumSession;
     private int _authorityWorldStateRngSeed;
     private bool _replicateSectorMetadata;
@@ -1229,10 +1238,14 @@ public sealed class LiveAuthoritySession
         _checksumSession = checksumSession;
         _authorityWorldStateRngSeed = rngSeed;
         _replicateSectorMetadata = replicateSectorMetadata;
+        _worldTailForTick = null;
     }
 
-    public void SetAuthorityInvasionSnapshot(InvasionSnapshotHeader? invasionSnapshot) =>
+    public void SetAuthorityInvasionSnapshot(InvasionSnapshotHeader? invasionSnapshot)
+    {
         _authorityInvasionSnapshot = invasionSnapshot;
+        _worldTailForTick = null;
+    }
 
     public LiveAuthorityClientRegistry Clients => _clients;
 
@@ -1241,12 +1254,18 @@ public sealed class LiveAuthoritySession
     public void TrackClient(NetworkEndpoint clientEndpoint, int clientSlot) =>
         _clients.Track(clientEndpoint, clientSlot);
 
-    public bool UntrackClient(int clientSlot) => _clients.Remove(clientSlot);
+    public bool UntrackClient(int clientSlot)
+    {
+        foreach (var client in _clients.Clients.Where(client => client.ClientSlot == clientSlot))
+            _inputSequences.Remove(client.Endpoint);
+        return _clients.Remove(clientSlot);
+    }
 
     public void AdvanceTick(byte roomId = 0)
     {
         _roomId = roomId;
         _gameTic++;
+        _worldTailForTick = null;
     }
 
     public void PumpClient(ulong nowMs, NetworkEndpoint clientEndpoint, int clientSlot, byte roomId = 0)
@@ -1282,15 +1301,16 @@ public sealed class LiveAuthoritySession
 
         if (_routing.ShouldSendServerSnapshotTo(clientSlot))
         {
-            var checksumHashes = SnapshotChecksumTailPolicy.TryResolveTailChecksumHashes(
-                _authorityWorldState,
-                _checksumSession,
-                (int)_gameTic,
-                _authorityWorldStateRngSeed);
-
+            if (_worldTailForTick != null)
+            {
+                _gameplay.TrySendServerSnapshotWithExternalTail(clientEndpoint, _roomId, _gameTic,
+                    (byte)clientSlot, _worldTailForTick);
+                return;
+            }
             if (_authorityInvasionSnapshot is { } invasionSnapshot)
             {
-                Span<byte> tail = stackalloc byte[512];
+                // Leave room for the live envelope, player command record and CRC.
+                Span<byte> tail = new byte[NetConstants.MaxTransmitSize - 256];
                 var tailBuild = WorldStateTailMergePolicy.ShouldMergeCoopIntoInvasion(
                         invasionSnapshot,
                         _authorityWorldState)
@@ -1311,6 +1331,9 @@ public sealed class LiveAuthoritySession
                         _authorityWorldStateRngSeed);
                 if (tailBuild.HasTail)
                 {
+                    // Building a tail drains events and advances rolling hashes. Do it
+                    // once per tic so every peer gets the same authoritative state.
+                    _worldTailForTick = tail[..tailBuild.BytesWritten].ToArray();
                     _gameplay.TrySendServerSnapshotWithExternalTail(
                         clientEndpoint,
                         _roomId,
@@ -1319,19 +1342,22 @@ public sealed class LiveAuthoritySession
                         externalTail: tail[..tailBuild.BytesWritten]);
                     return;
                 }
+                throw new InvalidOperationException("Invasion snapshot exceeds the managed packet or actor-count limit.");
             }
 
             if (_authorityWorldState is not null)
             {
-                Span<byte> tail = stackalloc byte[512];
-                var tailBuild = WorldStateTailBuilder.TryBuildCoopTailFromStore(
+                Span<byte> tail = new byte[NetConstants.MaxTransmitSize - 256];
+                var tailBuild = WorldStateTailBuilder.TryBuildCoopTailWithChecksum(
                     tail,
                     _authorityWorldState,
+                    _checksumSession,
                     _gameTic,
-                    checksumHashes,
+                    _authorityWorldStateRngSeed,
                     _replicateSectorMetadata);
                 if (tailBuild.HasTail)
                 {
+                    _worldTailForTick = tail[..tailBuild.BytesWritten].ToArray();
                     _gameplay.TrySendServerSnapshotWithExternalTail(
                         clientEndpoint,
                         _roomId,
@@ -1340,8 +1366,11 @@ public sealed class LiveAuthoritySession
                         externalTail: tail[..tailBuild.BytesWritten]);
                     return;
                 }
+                throw new InvalidOperationException("World snapshot exceeds the managed packet or actor-count limit.");
             }
 
+            var checksumHashes = SnapshotChecksumTailPolicy.TryResolveTailChecksumHashes(
+                _authorityWorldState, _checksumSession, (int)_gameTic, _authorityWorldStateRngSeed);
             _gameplay.TrySendServerSnapshot(
                 clientEndpoint,
                 _roomId,
@@ -1421,5 +1450,36 @@ public sealed class LiveAuthoritySession
         }
 
         return -1;
+    }
+
+    /// <summary>Apply a datagram already routed by a server's shared query/pregame/live socket.</summary>
+    public bool TryApplyClientInputPacket(ReadOnlySpan<byte> wire, NetworkEndpoint remote)
+    {
+        var slot = FindClientSlot(remote);
+        if (slot < 0)
+            return false;
+        Span<byte> net = stackalloc byte[NetConstants.MaxMessageLength];
+        if (GameplayWireCodec.TryDecode(wire, _control.GameId, net, out var length) != GameplayWireDecodeStatus.Ok
+            || !LivePacket.TryRead(net[..length], out var packet)
+            || packet.Header.MessageType != LiveMessageType.ClientCommands
+            || !LiveGameplayPacketBuilder.TryUnwrap(packet, GameplayPayloadKind.ClientInputs, _roomId,
+                out var envelope, out var payload, out _))
+            return false;
+
+        if (!_inputSequences.TryGetValue(remote, out var sequence))
+            _inputSequences[remote] = sequence = new LiveSequenceTracker();
+        if (!sequence.IsFresh(packet.Header.MessageType, packet.Header.TxSequence))
+            return true; // Recognized duplicate, never pass it to the pregame parser.
+        if (!ClientInputHeader.TryRead(payload.Span, out var header)
+            || !ClientInputBodyCodec.TryRead(payload.Span[LiveConstants.ClientInputHeaderSize..],
+                header.ConsistencyTics, header.CommandTics, out var players, out _))
+            return false;
+        if (!ClientInputApplySession.TryApply(header, players, slot, _routing, _netRegistry,
+                _clientInputCommandSink, (int)envelope.GameTic, out var result, out _))
+            return false;
+        sequence.Accept(packet.Header.MessageType, packet.Header.TxSequence);
+        if (result.InputGapResynced)
+            _netRegistry.ResetClient(slot);
+        return true;
     }
 }

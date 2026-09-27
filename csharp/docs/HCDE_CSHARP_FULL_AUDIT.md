@@ -1,5 +1,11 @@
 # HCDE C# Migration — Full Principal Audit
 
+> Historical audit. The current combined review is
+> [Phase 1–3 movers/damage audit](HCDE_CSHARP_MOVERS_DAMAGE_AUDIT.md), including Release
+> validation, map/mod loading, combat/AI, gameplay-foundation work and unresolved
+> release blockers. Percentages and totals below are historical estimates, not
+> current conversion measurements.
+
 **Last updated:** 2026-09-22  
 **Scope:** All code under `csharp/`. Section 2's inventory predates Phases 3–4; the phase audits are the current record for those gates.  
 **Verification:** `dotnet test` in `csharp/` — **638 tests passing** on 2026-09-22 (CI: `.github/workflows/csharp.yml`; optional soak: `.github/workflows/csharp-cross-language-soak.yml`)  

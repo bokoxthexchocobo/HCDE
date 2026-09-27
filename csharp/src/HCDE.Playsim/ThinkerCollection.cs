@@ -37,6 +37,7 @@ public sealed class ThinkerCollection
     private readonly Thinker?[] _thinkers = new Thinker?[ThinkerStat.MaxStatNum + 1];
     private readonly Thinker?[] _fresh = new Thinker?[ThinkerStat.MaxStatNum + 1];
     private readonly GameTicClock _clock;
+    private readonly HashSet<Thinker> _ticked = new();
 
     public ThinkerCollection(GameTicClock? clock = null) => _clock = clock ?? new GameTicClock();
 
@@ -64,6 +65,7 @@ public sealed class ThinkerCollection
 
     public void Run()
     {
+        _ticked.Clear();
         for (var stat = ThinkerStat.FirstThinking; stat <= ThinkerStat.MaxStatNum; stat++)
             TickList(_thinkers, stat, destination: null);
 
@@ -87,15 +89,16 @@ public sealed class ThinkerCollection
         return list;
     }
 
-    private static int TickList(Thinker?[] table, int stat, Thinker?[]? destination)
+    private int TickList(Thinker?[] table, int stat, Thinker?[]? destination)
     {
         var count = 0;
-        var node = table[stat];
-        while (node != null)
+        var pending = new List<Thinker>();
+        for (var item = table[stat]; item != null; item = item.Next) pending.Add(item);
+        foreach (var node in pending)
         {
             count++;
-            var next = node.Next;
-            if (node.JustSpawned)
+            if (!node.InList || node.StatNum != stat) continue;
+            if (!node.Destroyed && node.JustSpawned)
             {
                 if (destination != null)
                 {
@@ -103,16 +106,17 @@ public sealed class ThinkerCollection
                     AddTail(destination, node);
                 }
 
+                node.JustSpawned = false;
                 node.PostBeginPlay();
             }
 
-            if (!node.Destroyed)
+            if (!node.Destroyed && _ticked.Add(node))
             {
                 node.Tick();
                 node.JustSpawned = false;
             }
+            if (node.Destroyed) Remove(node);
 
-            node = next;
         }
 
         return count;

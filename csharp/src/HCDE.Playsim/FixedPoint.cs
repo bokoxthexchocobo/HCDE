@@ -43,7 +43,7 @@ public readonly record struct BamAngle
     public BamAngle(uint raw) => Raw = raw;
 
     public static BamAngle FromDegrees(double degrees) =>
-        new(unchecked((uint)Fixed.RoundHalfEven(degrees * (Angle90 / 90.0))));
+        new((uint)(Math.Round(((degrees % 360 + 360) % 360) * (4294967296.0 / 360)) % 4294967296.0));
 
     public double ToDegrees() => Raw * (90.0 / Angle90);
 }
