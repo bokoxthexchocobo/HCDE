@@ -29,7 +29,7 @@ public sealed class SimSaveState
     public bool SecretExit { get; init; }
     public uint? CombatRandomState { get; init; }
     public List<SimActorPose> Actors { get; } = new();
-    public List<(short Floor, short Ceiling)> Sectors { get; } = new();
+    public List<(double Floor, double Ceiling)> Sectors { get; } = new();
 }
 
 /// <summary>
@@ -44,12 +44,13 @@ public static class SimSavegame
 
     public static byte[] Write(SimSaveState state)
     {
-        var size = checked(28 + state.Actors.Count * 60 + state.Sectors.Count * 4);
+        ValidateSectors(state);
+        var size = checked(28 + state.Actors.Count * 60 + state.Sectors.Count * 8);
         var buffer = new byte[size];
         var span = buffer.AsSpan();
         Magic.CopyTo(span);
         var cursor = 4;
-        BinaryPrimitives.WriteUInt16LittleEndian(span[cursor..], 4);
+        BinaryPrimitives.WriteUInt16LittleEndian(span[cursor..], 5);
         cursor += 2;
         BinaryPrimitives.WriteInt32LittleEndian(span[cursor..], state.Tic);
         cursor += 4;
@@ -81,9 +82,9 @@ public static class SimSavegame
         cursor += 4;
         foreach (var sector in state.Sectors)
         {
-            BinaryPrimitives.WriteInt16LittleEndian(span[cursor..], sector.Floor);
-            BinaryPrimitives.WriteInt16LittleEndian(span[(cursor + 2)..], sector.Ceiling);
-            cursor += 4;
+            BinaryPrimitives.WriteInt32LittleEndian(span[cursor..], Fixed.FromDouble(sector.Floor).Raw);
+            BinaryPrimitives.WriteInt32LittleEndian(span[(cursor + 4)..], Fixed.FromDouble(sector.Ceiling).Raw);
+            cursor += 8;
         }
 
         BinaryPrimitives.WriteUInt32LittleEndian(span[cursor..], state.CombatRandomState ?? 0);
@@ -102,7 +103,7 @@ public static class SimSavegame
         }
 
         var version = BinaryPrimitives.ReadUInt16LittleEndian(bytes[4..]);
-        if (version is not (1 or 2 or 3 or 4))
+        if (version is not (1 or 2 or 3 or 4 or 5))
         {
             error = "save-version";
             return false;
@@ -160,7 +161,8 @@ public static class SimSavegame
         var sectorCount = BinaryPrimitives.ReadInt32LittleEndian(bytes[cursor..]);
         cursor += 4;
         var remaining = bytes.Length - cursor - (version >= 3 ? 8 : 0);
-        if (remaining < 0 || sectorCount < 0 || sectorCount != remaining / 4 || remaining % 4 != 0)
+        var sectorSize = version >= 5 ? 8 : 4;
+        if (remaining < 0 || sectorCount < 0 || sectorCount != remaining / sectorSize || remaining % sectorSize != 0)
         {
             error = "save-sector-size";
             return false;
@@ -173,10 +175,13 @@ public static class SimSavegame
         state.Actors.AddRange(actors);
         for (var i = 0; i < sectorCount; i++)
         {
-            state.Sectors.Add((
-                BinaryPrimitives.ReadInt16LittleEndian(bytes[cursor..]),
-                BinaryPrimitives.ReadInt16LittleEndian(bytes[(cursor + 2)..])));
-            cursor += 4;
+            var floor = version >= 5 ? new Fixed(BinaryPrimitives.ReadInt32LittleEndian(bytes[cursor..])).ToDouble()
+                : BinaryPrimitives.ReadInt16LittleEndian(bytes[cursor..]);
+            var ceiling = version >= 5 ? new Fixed(BinaryPrimitives.ReadInt32LittleEndian(bytes[(cursor + 4)..])).ToDouble()
+                : BinaryPrimitives.ReadInt16LittleEndian(bytes[(cursor + 2)..]);
+            if (floor > ceiling) { error = "save-sector-inverted"; state = new(); return false; }
+            state.Sectors.Add((floor, ceiling));
+            cursor += sectorSize;
         }
 
         return true;
@@ -187,5 +192,13 @@ public static class SimSavegame
         if (!TryRead(bytes, out var state, out var error))
             throw new InvalidOperationException(error);
         sim.RestoreState(state);
+    }
+
+    internal static void ValidateSectors(SimSaveState state)
+    {
+        foreach (var (floor, ceiling) in state.Sectors)
+            if (!double.IsFinite(floor) || !double.IsFinite(ceiling) || floor < -32768
+                || ceiling > int.MaxValue / 65536.0 || floor > ceiling)
+                throw new InvalidOperationException("Saved sector planes are invalid.");
     }
 }

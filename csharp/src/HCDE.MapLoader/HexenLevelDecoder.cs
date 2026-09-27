@@ -30,6 +30,7 @@ public static class HexenLevelDecoder
                 Arg0 = data[15], Arg1 = data[16], Arg2 = data[17], Arg3 = data[18], Arg4 = data[19],
                 Skill1 = (flags & 1) != 0, Skill2 = (flags & 1) != 0, Skill3 = (flags & 2) != 0,
                 Skill4 = (flags & 4) != 0, Skill5 = (flags & 4) != 0,
+                Ambush = (flags & 8) != 0,
                 Single = (flags & 256) != 0, Coop = (flags & 512) != 0, Dm = (flags & 1024) != 0,
             });
         }
@@ -45,6 +46,7 @@ public static class HexenLevelDecoder
                 // Encoded 7 is projectile touch, not the internal AnyCross value.
                 PlayerCross = activation == 0, PlayerUse = activation is 1 or 6, PassUse = activation == 6,
                 RepeatSpecial = (flags & 512) != 0,
+                BlockSound = (flags & LevelLine.BlockSoundFlag) != 0,
             });
         }
         var map = new UdmfTextMap {

@@ -136,6 +136,8 @@ public readonly struct InvasionSnapshotHeader
 
     public static int Write(Span<byte> chunk, InvasionSnapshotHeader header)
     {
+        if (header.ProtocolVersion != 1 && header.ProtocolVersion != LiveConstants.InvasionSnapshotProtocolVersion)
+            return 0;
         var headerSize = header.HeaderSize;
         if (chunk.Length < headerSize)
             return 0;

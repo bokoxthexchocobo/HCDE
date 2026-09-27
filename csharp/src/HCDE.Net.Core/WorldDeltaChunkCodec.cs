@@ -15,6 +15,9 @@ public static class WorldDeltaChunkCodec
         ReadOnlySpan<PlayerPoseWorldDelta> poses,
         ReadOnlySpan<SectorWorldDelta> sectors)
     {
+        if (poses.Length > byte.MaxValue || sectors.Length > byte.MaxValue)
+            return 0;
+
         if (chunk.Length < MinChunkSize((byte)poses.Length, (byte)sectors.Length))
             return 0;
 

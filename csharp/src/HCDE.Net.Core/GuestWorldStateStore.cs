@@ -7,6 +7,7 @@ public sealed class GuestPlayerState
 {
     public byte PlayerNum { get; init; }
     public short Health { get; set; }
+    public short Armor { get; set; }
     public byte PlayerState { get; set; }
     public bool OnGround { get; set; }
     public float PosX { get; set; }
@@ -16,6 +17,7 @@ public sealed class GuestPlayerState
     public float VelY { get; set; }
     public float VelZ { get; set; }
     public uint YawBams { get; set; }
+    public uint PitchBams { get; set; }
 }
 
 public sealed class GuestSectorState
@@ -79,6 +81,7 @@ public sealed class GuestWorldStateStore : IWorldDeltaApplySink, IActorDeltaAppl
         }
 
         player.Health = pose.Health;
+        player.Armor = pose.Armor;
         player.OnGround = (pose.Flags & LiveConstants.ServerWorldDeltaPoseOnGround) != 0;
         player.PosX = pose.PosX;
         player.PosY = pose.PosY;
@@ -87,6 +90,7 @@ public sealed class GuestWorldStateStore : IWorldDeltaApplySink, IActorDeltaAppl
         player.VelY = pose.VelY;
         player.VelZ = pose.VelZ;
         player.YawBams = pose.YawBams;
+        player.PitchBams = pose.PitchBams;
         return true;
     }
 
@@ -109,8 +113,8 @@ public sealed class GuestWorldStateStore : IWorldDeltaApplySink, IActorDeltaAppl
 
     public void SeedMapSector(
         ushort sectorIndex,
-        short floorHeight,
-        short ceilingHeight,
+        double floorHeight,
+        double ceilingHeight,
         short lightLevel,
         short special)
     {
@@ -120,8 +124,8 @@ public sealed class GuestWorldStateStore : IWorldDeltaApplySink, IActorDeltaAppl
             _sectors[sectorIndex] = state;
         }
 
-        state.Floor = floorHeight;
-        state.Ceiling = ceilingHeight;
+        state.Floor = (float)floorHeight;
+        state.Ceiling = (float)ceilingHeight;
         state.LightLevel = lightLevel;
         state.Special = special;
     }
@@ -153,7 +157,8 @@ public sealed class GuestWorldStateStore : IWorldDeltaApplySink, IActorDeltaAppl
     }
 
     public void SetPlayerPose(byte playerNum, short health, bool onGround, float posX, float posY, uint yawBams,
-        float posZ = 0, float velX = 0, float velY = 0, float velZ = 0)
+        float posZ = 0, float velX = 0, float velY = 0, float velZ = 0,
+        short armor = 0, uint pitchBams = 0)
     {
         SeedPlayer(playerNum, health, onGround);
         var player = _players[playerNum];
@@ -164,6 +169,8 @@ public sealed class GuestWorldStateStore : IWorldDeltaApplySink, IActorDeltaAppl
         player.VelY = velY;
         player.VelZ = velZ;
         player.YawBams = yawBams;
+        player.Armor = armor;
+        player.PitchBams = pitchBams;
     }
 
     public bool TryApply(int recipientClientSlot, ActorDeltaRecord record)
@@ -225,6 +232,10 @@ public sealed class GuestWorldStateStore : IWorldDeltaApplySink, IActorDeltaAppl
             _retiredCoopDeadSpawns.Add(spawnIndex);
         return pending;
     }
+
+    internal uint[] PeekPendingCoopDeadSpawnsForTail() => _pendingCoopDeadSpawns.ToArray();
+
+    internal AuthorityEventRecord[] PeekPendingAuthorityEventsForTail() => _pendingAuthorityEvents.ToArray();
 
     public void QueueAuthorityEvent(AuthorityEventRecord record) =>
         _pendingAuthorityEvents.Add(record);

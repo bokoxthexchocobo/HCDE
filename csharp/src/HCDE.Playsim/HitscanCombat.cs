@@ -16,6 +16,7 @@ public static class HitscanCombat
         if (definition == null || !player.Inventory.Owns(weapon)) return false;
         if (definition.Ammo is { } ammo && !player.Inventory.TrySpendAmmo(ammo, definition.AmmoUse)) return false;
         player.WeaponCooldown = definition.RefireTics;
+        SoundPropagation.Alert(sim, player);
         if (definition.Projectile is { } projectile)
         {
             sim.SpawnProjectile(player, projectile);

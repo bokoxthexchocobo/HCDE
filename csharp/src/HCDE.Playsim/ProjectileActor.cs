@@ -2,7 +2,7 @@ using HCDE.MapLoader;
 
 namespace HCDE.Playsim;
 
-public enum ProjectileKind { Rocket, Plasma, Bfg, ImpBall }
+public enum ProjectileKind { Rocket, Plasma, Bfg, ImpBall, BaronBall, CacodemonBall, CyberRocket, ArachnotronPlasma, MancubusBall, RevenantTracer }
 
 /// <summary>Traveling cylinder projectiles with swept impacts and finite lifetime.</summary>
 public sealed class ProjectileActor : Actor
@@ -10,21 +10,39 @@ public sealed class ProjectileActor : Actor
     public Actor Owner { get; }
     public ProjectileKind Kind { get; }
     public int RemainingTics { get; private set; } = 175;
-    public double Speed => Kind switch { ProjectileKind.Rocket => 20, ProjectileKind.Plasma or ProjectileKind.Bfg => 25, _ => 10 };
-    public int ImpactDamage => Kind switch { ProjectileKind.Rocket => 20, ProjectileKind.Plasma => 20, ProjectileKind.Bfg => 100, _ => 12 };
-    public int BlastRadius => Kind == ProjectileKind.Rocket ? 128 : 0;
+    public uint? TracerTargetId { get; private set; }
+    public double Speed => Kind switch
+    {
+        ProjectileKind.Rocket or ProjectileKind.CyberRocket or ProjectileKind.MancubusBall => 20,
+        ProjectileKind.Plasma or ProjectileKind.Bfg or ProjectileKind.ArachnotronPlasma => 25,
+        ProjectileKind.BaronBall => 15, _ => 10
+    };
+    // Native Damage is a base multiplied by a random integer from one through eight on impact.
+    public int ImpactDamage => Kind switch
+    {
+        ProjectileKind.Rocket or ProjectileKind.CyberRocket => 20,
+        ProjectileKind.Plasma or ProjectileKind.ArachnotronPlasma or ProjectileKind.CacodemonBall => 5,
+        ProjectileKind.Bfg => 100, ProjectileKind.BaronBall or ProjectileKind.MancubusBall => 8,
+        ProjectileKind.RevenantTracer => 10, _ => 3
+    };
+    public int BlastRadius => Kind is ProjectileKind.Rocket or ProjectileKind.CyberRocket ? 128 : 0;
 
     public ProjectileActor(Actor owner, ProjectileKind kind)
     {
+        ArgumentNullException.ThrowIfNull(owner);
+        if (!Enum.IsDefined(kind)) throw new ArgumentOutOfRangeException(nameof(kind));
         Owner = owner; Kind = kind;
-        DoomEdNum = 65530 + (int)kind; // Managed-only class identities, not native spawn indices.
+        DoomEdNum = kind <= ProjectileKind.ImpBall ? 65530 + (int)kind : 65516 + (int)kind;
+        // Managed-only class identities, not native spawn indices; keep every identity within ushort.
         Solid = Shootable = false; NoGravity = true;
-        Radius = Fixed.FromInt(kind == ProjectileKind.Plasma ? 13 : 6);
-        Height = Fixed.FromInt(8);
+        Radius = Fixed.FromInt(kind is ProjectileKind.Plasma or ProjectileKind.ArachnotronPlasma ? 13
+            : kind == ProjectileKind.RevenantTracer ? 11 : 6);
+        Height = Fixed.FromInt(kind == ProjectileKind.BaronBall ? 16 : 8);
     }
 
     internal void Aim(Actor? target)
     {
+        TracerTargetId = Kind == ProjectileKind.RevenantTracer ? target?.Id : null;
         var radians = Angle.Raw * Math.PI / 0x80000000u;
         var dz = Owner is PlayerPawn player ? -Math.Tan(Math.Clamp(player.PitchDegrees, -89, 89) * Math.PI / 180) : 0;
         if (target != null)
@@ -32,18 +50,59 @@ public sealed class ProjectileActor : Actor
             var dx = target.X.ToDouble() - X.ToDouble();
             var dy = target.Y.ToDouble() - Y.ToDouble();
             radians = Math.Atan2(dy, dx);
-            dz = (target.Z.ToDouble() + target.Height.ToDouble() / 2 - Z.ToDouble()) / Math.Max(1, Math.Sqrt(dx * dx + dy * dy));
+            var vertical = target.Z.ToDouble() + target.Height.ToDouble() / 2 - Z.ToDouble();
+            if (Owner is not PlayerPawn)
+            {
+                // P_SpawnMissileXYZ derives the direction from the source, then lowers
+                // shots whose spawn offset would put them above the destination.
+                var sourceZ = Owner.Z.ToDouble() + (Kind == ProjectileKind.RevenantTracer ? 16 : 0);
+                vertical = target.Z.ToDouble() - sourceZ;
+                var offset = Z.ToDouble() - sourceZ;
+                if (offset >= target.Height.ToDouble()) vertical += target.Height.ToDouble() - offset;
+            }
+            dz = vertical / Math.Max(1, Math.Sqrt(dx * dx + dy * dy));
             Angle = BamAngle.FromDegrees(radians * 180 / Math.PI);
         }
-        var horizontalSpeed = target == null && Owner is PlayerPawn ? Speed / Math.Sqrt(1 + dz * dz) : Speed;
+        var horizontalSpeed = Speed / Math.Sqrt(1 + dz * dz);
         VelocityX = Fixed.FromDouble(Math.Cos(radians) * horizontalSpeed);
         VelocityY = Fixed.FromDouble(Math.Sin(radians) * horizontalSpeed);
         VelocityZ = Fixed.FromDouble(Math.Clamp(dz * horizontalSpeed, -Speed, Speed));
     }
 
+    internal void RotateYaw(double degrees)
+    {
+        var speed = Math.Sqrt(Math.Pow(VelocityX.ToDouble(), 2) + Math.Pow(VelocityY.ToDouble(), 2));
+        var radians = Angle.Raw * Math.PI / 0x80000000u + degrees * Math.PI / 180;
+        Angle = BamAngle.FromDegrees(radians * 180 / Math.PI);
+        VelocityX = Fixed.FromDouble(Math.Cos(radians) * speed);
+        VelocityY = Fixed.FromDouble(Math.Sin(radians) * speed);
+    }
+
+    private void TrackTarget(AuthoritySimulation sim)
+    {
+        if (Kind != ProjectileKind.RevenantTracer || (sim.Thinkers.Clock.Tic & 3) != 0) return;
+        var target = sim.Actors.FirstOrDefault(actor => actor.Id == TracerTargetId && actor.CanTakeDamage);
+        if (target == null) return;
+        var dx = target.X.ToDouble() - X.ToDouble(); var dy = target.Y.ToDouble() - Y.ToDouble();
+        var desired = Math.Atan2(dy, dx) * 180 / Math.PI;
+        var current = Angle.Raw * 180.0 / 0x80000000u;
+        var delta = (desired - current + 540) % 360 - 180;
+        RotateYaw(Math.Clamp(delta, -16.875, 16.875));
+        var radians = Angle.Raw * Math.PI / 0x80000000u;
+        VelocityX = Fixed.FromDouble(Math.Cos(radians) * Speed);
+        VelocityY = Fixed.FromDouble(Math.Sin(radians) * Speed);
+        var travel = Math.Max(1, Math.Sqrt(dx * dx + dy * dy) / Speed);
+        // A_Tracer's small-target branch uses the missile's height, matching DoTracer2.
+        var aimZ = target.Z.ToDouble() + (target.Height.ToDouble() >= 56 ? 40 : Height.ToDouble() * 2 / 3);
+        var desiredZ = (aimZ - Z.ToDouble()) / travel;
+        var velocityZ = VelocityZ.ToDouble();
+        VelocityZ = Fixed.FromDouble(velocityZ + (desiredZ < velocityZ ? -0.125 : 0.125));
+    }
+
     protected override void TickMovement(AuthoritySimulation sim)
     {
         if (--RemainingTics <= 0) { Destroy(); return; }
+        TrackTarget(sim);
         var vx = VelocityX.ToDouble(); var vy = VelocityY.ToDouble(); var vz = VelocityZ.ToDouble();
         var steps = Math.Max(1, (int)Math.Ceiling(Math.Max(Math.Max(Math.Abs(vx), Math.Abs(vy)), Math.Abs(vz)) / 2));
         for (var i = 0; i < steps; i++)
@@ -137,12 +196,12 @@ public sealed class ProjectileActor : Actor
     private void Impact(AuthoritySimulation sim, Actor? victim)
     {
         Destroy(); // Commit removal before damage callbacks can spawn or destroy actors.
-        if (victim != null) ActorDamage.Apply(victim, ImpactDamage, Owner);
+        if (victim != null) ActorDamage.Apply(victim, ImpactDamage * (1 + (int)(sim.NextCombatRandom() % 8)), Owner);
         if (BlastRadius > 0)
         {
             foreach (var actor in sim.Actors.ToArray())
             {
-                if (!actor.CanTakeDamage) continue;
+                if (!actor.CanTakeDamage || actor.NoRadiusDamage) continue;
                 var horizontal = Math.Max(0, Math.Sqrt(Math.Pow(actor.X.ToDouble() - X.ToDouble(), 2)
                     + Math.Pow(actor.Y.ToDouble() - Y.ToDouble(), 2)) - actor.Radius.ToDouble());
                 var vertical = Math.Max(0, Math.Max(actor.Z.ToDouble() - Z.ToDouble(), Z.ToDouble() - actor.Z.ToDouble() - actor.Height.ToDouble()));
@@ -153,11 +212,17 @@ public sealed class ProjectileActor : Actor
         }
         if (Kind == ProjectileKind.Bfg)
         {
-            // Managed approximation of the native owner-origin BFG spray.
+            // A_BFGSpray fans out from the owner's position along the missile's yaw.
+            // Native vertical autoaim and the explosion-state delay remain separate work.
             for (var ray = 0; ray < 40; ray++)
             {
-                var target = CombatTrace.FindTarget(sim, Owner, 1024, -45 + 90.0 * ray / 39);
-                if (target != null) ActorDamage.Apply(target, 15 + (int)(sim.NextCombatRandom() % 105), Owner);
+                var yaw = Angle.ToDegrees() - Owner.Angle.ToDegrees() - 45 + 90.0 * ray / 40;
+                var pitch = Owner is PlayerPawn player ? -player.PitchDegrees : 0;
+                var target = CombatTrace.FindTarget(sim, Owner, 1024, yaw, pitch);
+                if (target == null) continue;
+                var damage = 0;
+                for (var die = 0; die < 15; die++) damage += 1 + (int)(sim.NextCombatRandom() % 8);
+                ActorDamage.Apply(target, damage, Owner);
             }
         }
     }

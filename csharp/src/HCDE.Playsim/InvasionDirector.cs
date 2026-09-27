@@ -32,6 +32,12 @@ public sealed class InvasionDirector
     public int IntermissionTics { get; private set; } = WaveGapTics;
     public int SpawnSpotCount { get; private set; }
 
+    internal void RegisterChild(Actor parent, Actor child)
+    {
+        if (Enabled && Phase == InvasionPhase.Wave && _waveActors.Contains(parent.Id) && _waveActors.Add(child.Id))
+            Spawned++;
+    }
+
     public void Configure(int maxWaves, int countdownTics, int intermissionTics)
     {
         if (maxWaves < 0 || countdownTics < 0 || intermissionTics < 0)
@@ -56,7 +62,9 @@ public sealed class InvasionDirector
         if (Phase == InvasionPhase.Wave)
         {
             ActiveMonsters = sim.Actors.Count(actor => _waveActors.Contains(actor.Id) && !actor.IsDead && !actor.Destroyed);
-            if (ActiveMonsters == 0)
+            var pendingDeathSpawn = sim.Actors.Any(actor => _waveActors.Contains(actor.Id) && actor.IsDead
+                && !actor.Destroyed && actor.Brain is { Enabled: true, HasPendingDeathAction: true });
+            if (ActiveMonsters == 0 && !pendingDeathSpawn)
             {
                 Phase = MaxWaves > 0 && Wave >= MaxWaves ? InvasionPhase.Victory : InvasionPhase.Intermission;
                 Cooldown = Phase == InvasionPhase.Victory ? 0 : IntermissionTics;

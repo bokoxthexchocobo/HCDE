@@ -43,7 +43,8 @@ public static class EventRecordsCodec
         ushort count = 0;
         foreach (var record in events)
         {
-            if (count == ushort.MaxValue || buffer.Length - cursor < 3 + record.Payload.Length)
+            if (count == ushort.MaxValue || record.Payload.Length > ushort.MaxValue
+                || buffer.Length - cursor < 3 + record.Payload.Length)
                 return 0;
 
             buffer[cursor++] = record.EventType;

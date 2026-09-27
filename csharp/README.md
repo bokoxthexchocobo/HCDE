@@ -15,7 +15,16 @@ The full engine is ~640k lines of C++. This is a long-running migration, not a b
 
 ## Current status
 
-Latest: [command-buffer audit](docs/HCDE_CSHARP_INPUT_BUFFER_AUDIT.md).
+Latest: [gameplay phases 1–3 status and audit](docs/HCDE_CSHARP_PHASE123_STATUS_AUDIT.md).
+Failed snapshot writes now preserve pending state; armor/pitch replicate;
+buffered Doom weapon selection and flat-sector weapon noise are implemented.
+The continuation converts fractional sector planes, classic ceilings/crushers
+and Doom stair chains, with backward-compatible v5 plane saves.
+**1,065 tests pass; gameplay phases 1–3 remain incomplete.** The audit gives the
+remaining completion gates. Historical phase numbers below refer to narrower
+tools/protocol/server milestones, not full gameplay conversion.
+
+Previous: [command-buffer audit](docs/HCDE_CSHARP_INPUT_BUFFER_AUDIT.md).
 Accepted command bursts now retain their order in a bounded per-player queue,
 with one command executed per tic and retry-safe admission when full.
 **923 tests pass.** Phases 1–3 and the larger release gates remain incomplete.

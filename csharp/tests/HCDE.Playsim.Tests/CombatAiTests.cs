@@ -104,7 +104,8 @@ public class CombatAiTests
         var projectile = sim.SpawnProjectile(sim.Players.Single(), ProjectileKind.Plasma);
         for (var i = 0; i < 10; i++) sim.Tick();
         Assert.True(projectile.Destroyed);
-        Assert.Equal(980, first.Health);
+        Assert.InRange(1000 - first.Health, 5, 40);
+        Assert.Equal(0, (1000 - first.Health) % 5);
         Assert.Equal(1000, Target(sim).Health);
         Assert.Equal(100, sim.Players.Single().Health);
     }

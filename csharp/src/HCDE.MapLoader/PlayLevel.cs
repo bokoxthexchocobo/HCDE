@@ -10,8 +10,8 @@ public sealed class LevelVertex
 public sealed class LevelSector
 {
     public int Index { get; init; }
-    public short FloorHeight { get; init; }
-    public short CeilingHeight { get; init; }
+    public double FloorHeight { get; init; }
+    public double CeilingHeight { get; init; }
     public short LightLevel { get; init; }
     public short Special { get; init; }
     public short Tag { get; init; }
@@ -31,6 +31,7 @@ public sealed class LevelSide
 public sealed class LevelLine
 {
     public const int BlockingFlag = 1;
+    public const int BlockSoundFlag = 0x40;
     public const int BlockEverythingFlag = 0x00008000;
     public const int BlockHitscanFlag = 0x08000000;
     public const int BlockSightFlag = 0x04000000;
@@ -76,6 +77,7 @@ public sealed class LevelThing
     public double Angle { get; init; }
     public int Type { get; init; }
     public short Options { get; init; }
+    public bool Ambush { get; init; }
     public int Id { get; init; }
     public int Special { get; init; }
     public int[] Args { get; init; } = new int[5];
@@ -135,8 +137,7 @@ public static class LevelBuilder
                 error = "unsupported-udmf-namespace";
                 return false;
             }
-            if (udmf.Sectors.Any(sector => !FitsShort(sector.HeightFloor) || !FitsShort(sector.HeightCeiling)
-                || !FitsShort(sector.LightLevel) || !FitsShort(sector.Special) || !FitsShort(sector.Id)))
+            if (udmf.Sectors.Any(sector => !FitsShort(sector.LightLevel) || !FitsShort(sector.Special) || !FitsShort(sector.Id)))
             {
                 error = "unsupported-udmf-sector-range-or-fraction";
                 return false;
@@ -222,6 +223,7 @@ public static class LevelBuilder
             Angle = thing.Angle,
             Type = thing.Type,
             Options = thing.Options,
+            Ambush = (thing.Options & 8) != 0,
             SkillMask = ((thing.Options & 1) != 0 ? 3 : 0) | ((thing.Options & 2) != 0 ? 4 : 0) | ((thing.Options & 4) != 0 ? 24 : 0),
             Single = (thing.Options & 16) == 0,
             Coop = (thing.Options & 64) == 0,
@@ -251,8 +253,8 @@ public static class LevelBuilder
         var sectors = map.Sectors.Select((sector, index) => new LevelSector
         {
             Index = index,
-            FloorHeight = (short)sector.HeightFloor,
-            CeilingHeight = (short)sector.HeightCeiling,
+            FloorHeight = sector.HeightFloor,
+            CeilingHeight = sector.HeightCeiling,
             LightLevel = (short)sector.LightLevel,
             Special = (short)sector.Special,
             Tag = (short)sector.Id,
@@ -280,6 +282,7 @@ public static class LevelBuilder
             if (source.BlockSight) flags |= LevelLine.BlockSightFlag;
             if (source.BlockHitscan) flags |= LevelLine.BlockHitscanFlag;
             if (source.BlockProjectiles) flags |= LevelLine.BlockProjectileFlag;
+            if (source.BlockSound) flags |= LevelLine.BlockSoundFlag;
             lines[i] = new LevelLine
             {
                 Index = i,
@@ -315,6 +318,7 @@ public static class LevelBuilder
             Angle = thing.Angle,
             Type = thing.Type,
             Id = thing.Id,
+            Ambush = thing.Ambush,
             Special = thing.Special,
             Args = new[] { thing.Arg0, thing.Arg1, thing.Arg2, thing.Arg3, thing.Arg4 },
             SkillMask = (thing.Skill1 ? 1 : 0) | (thing.Skill2 ? 2 : 0) | (thing.Skill3 ? 4 : 0) | (thing.Skill4 ? 8 : 0) | (thing.Skill5 ? 16 : 0),

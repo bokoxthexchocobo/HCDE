@@ -36,13 +36,14 @@ public static class ActorPhysics
     public static void PlaceOnFloor(AuthoritySimulation sim, Actor actor)
     {
         actor.SectorIndex = SectorAt(sim.Level, actor.X.ToDouble(), actor.Y.ToDouble());
-        actor.Z = Fixed.FromInt(sim.FloorOf(actor.SectorIndex));
+        actor.Z = Fixed.FromDouble(sim.FloorOf(actor.SectorIndex));
         actor.OnGround = true;
         actor.RememberPosition();
     }
 
     public static void Step(AuthoritySimulation sim, Actor actor)
     {
+        if (actor.Brain?.Charging == true) { StepCharge(sim, actor); return; }
         var vx = Math.Clamp(actor.VelocityX.ToDouble(), -MaxMove, MaxMove);
         var vy = Math.Clamp(actor.VelocityY.ToDouble(), -MaxMove, MaxMove);
         var steps = Math.Max(1, (int)Math.Ceiling(Math.Max(Math.Abs(vx), Math.Abs(vy)) / 2));
@@ -77,10 +78,25 @@ public static class ActorPhysics
         if (!actor.NoGravity && (z > floor || vz != 0)) vz -= Gravity;
         actor.Z = Fixed.FromDouble(z + vz);
         actor.VelocityZ = Fixed.FromDouble(vz);
+        FloatTowardTarget(sim, actor);
         FitToSector(sim, actor, carryFloor: false);
         var friction = actor.OnGround ? GroundFriction : 1;
         actor.VelocityX = Fixed.FromDouble(Math.Abs(vx * friction) < 0.0625 ? 0 : vx * friction);
         actor.VelocityY = Fixed.FromDouble(Math.Abs(vy * friction) < 0.0625 ? 0 : vy * friction);
+    }
+
+    private static void FloatTowardTarget(AuthoritySimulation sim, Actor actor)
+    {
+        if (!actor.Floating || actor.IsDead || actor.Destroyed || actor.Brain is not { Enabled: true, Charging: false } brain
+            || !double.IsFinite(actor.FloatSpeed) || actor.FloatSpeed <= 0) return;
+        var target = sim.Actors.FirstOrDefault(candidate => candidate.Id == brain.TargetId && candidate.CanTakeDamage);
+        if (target == null) return;
+        var dx = target.X.ToDouble() - actor.X.ToDouble(); var dy = target.Y.ToDouble() - actor.Y.ToDouble();
+        var distance = Math.Sqrt(dx * dx + dy * dy);
+        var delta = target.Z.ToDouble() + target.Height.ToDouble() / 2 - actor.Z.ToDouble();
+        // P_ZMovement compares the target's center to the floater's base, not its center.
+        if (delta != 0 && distance < Math.Abs(delta) * 3)
+            actor.Z = Fixed.FromDouble(actor.Z.ToDouble() + Math.Sign(delta) * actor.FloatSpeed);
     }
 
     public static void FitToSector(AuthoritySimulation sim, Actor actor, bool carryFloor = true)
@@ -103,9 +119,61 @@ public static class ActorPhysics
         actor.OnGround = z <= floor && actor.VelocityZ.Raw <= 0;
     }
 
-    private static bool TryMove(AuthoritySimulation sim, Actor actor, double x, double y, out LevelLine? wall)
+    private static void StepCharge(AuthoritySimulation sim, Actor actor)
+    {
+        var vx = actor.VelocityX.ToDouble(); var vy = actor.VelocityY.ToDouble(); var vz = actor.VelocityZ.ToDouble();
+        var steps = Math.Max(1, (int)Math.Ceiling(Math.Max(Math.Max(Math.Abs(vx), Math.Abs(vy)), Math.Abs(vz)) / 2));
+        for (var i = 0; i < steps; i++)
+        {
+            var previousZ = actor.Z;
+            actor.Z = Fixed.FromDouble(actor.Z.ToDouble() + vz / steps);
+            var floor = sim.FloorOf(actor.SectorIndex);
+            var ceiling = actor.SectorIndex >= 0 ? sim.CeilingOf(actor.SectorIndex) : double.PositiveInfinity;
+            if (actor.Z.ToDouble() < floor)
+            {
+                actor.Z = Fixed.FromDouble(floor);
+                vz = 0; actor.VelocityZ = default;
+            }
+            if (actor.Z.ToDouble() + actor.Height.ToDouble() > ceiling)
+            {
+                actor.Z = Fixed.FromDouble(ceiling - actor.Height.ToDouble());
+                vz = -Math.Abs(vz); actor.VelocityZ = Fixed.FromDouble(vz);
+            }
+            Actor? victim = null;
+            if (actor.Z.ToDouble() < floor
+                || !TryMove(sim, actor, actor.X.ToDouble() + vx / steps, actor.Y.ToDouble() + vy / steps, out _, out victim))
+            {
+                actor.Z = previousZ;
+                actor.Brain!.StopCharge(actor);
+                if (victim?.CanTakeDamage == true)
+                    ActorDamage.Apply(victim, 3 * (1 + (int)(sim.NextCombatRandom() % 8)), actor);
+                return;
+            }
+            actor.OnGround = actor.Z.ToDouble() <= sim.FloorOf(actor.SectorIndex);
+        }
+    }
+
+    internal static bool TryMove(AuthoritySimulation sim, Actor actor, double x, double y, out LevelLine? wall) =>
+        TryMove(sim, actor, x, y, out wall, out _);
+
+    internal static bool CanOccupy(AuthoritySimulation sim, Actor actor)
+    {
+        var x = actor.X.ToDouble(); var y = actor.Y.ToDouble(); var z = actor.Z.ToDouble();
+        var radius = actor.Radius.ToDouble(); var height = actor.Height.ToDouble();
+        var sector = SectorAt(sim.Level, x, y);
+        if (z < sim.FloorOf(sector) || sector >= 0 && z + height > sim.CeilingOf(sector)) return false;
+        if (sim.Level.Lines.Any(line => Blocks(sim, actor, line)
+            && DistanceSquared(x, y, line.X1, line.Y1, line.X2, line.Y2) < radius * radius)) return false;
+        return !sim.Actors.Any(other => !ReferenceEquals(actor, other) && other.BlocksActors
+            && z < other.Z.ToDouble() + other.Height.ToDouble() && z + height > other.Z.ToDouble()
+            && Math.Pow(x - other.X.ToDouble(), 2) + Math.Pow(y - other.Y.ToDouble(), 2)
+                < Math.Pow(radius + other.Radius.ToDouble(), 2));
+    }
+
+    private static bool TryMove(AuthoritySimulation sim, Actor actor, double x, double y, out LevelLine? wall, out Actor? blocker)
     {
         wall = null;
+        blocker = null;
         var ox = actor.X.ToDouble();
         var oy = actor.Y.ToDouble();
         var radius = Math.Max(0, actor.Radius.ToDouble());
@@ -122,8 +190,8 @@ public static class ActorPhysics
                 || LineSlide.Crosses(ox, oy, x, y, line)) { wall = line; return false; }
         }
         var sector = SectorAt(sim.Level, x, y);
-        var z = Math.Max(actor.Z.ToDouble(), sim.FloorOf(sector));
-        if (sector >= 0 && (z - actor.Z.ToDouble() > actor.MaxStepHeight.ToDouble()
+        var z = actor.Brain?.Charging == true ? actor.Z.ToDouble() : Math.Max(actor.Z.ToDouble(), sim.FloorOf(sector));
+        if (sector >= 0 && (z < sim.FloorOf(sector) || z - actor.Z.ToDouble() > actor.MaxStepHeight.ToDouble()
             || z + actor.Height.ToDouble() > sim.CeilingOf(sector))) return false;
         if (actor.BlocksActors)
         {
@@ -137,8 +205,9 @@ public static class ActorPhysics
                 var cy = other.Y.ToDouble();
                 var before = (ox - cx) * (ox - cx) + (oy - cy) * (oy - cy);
                 var after = (x - cx) * (x - cx) + (y - cy) * (y - cy);
-                if (DistanceSquared(cx, cy, ox, oy, x, y) < reach * reach - 1e-8
-                    && (before >= reach * reach || after < before - 1e-8)) return false;
+                if (actor.Brain?.Charging == true && after < reach * reach - 1e-8
+                    || DistanceSquared(cx, cy, ox, oy, x, y) < reach * reach - 1e-8
+                    && (before >= reach * reach || after < before - 1e-8)) { blocker = other; return false; }
             }
         }
         actor.X = Fixed.FromDouble(x);

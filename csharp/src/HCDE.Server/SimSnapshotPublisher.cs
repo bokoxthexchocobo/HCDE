@@ -1,5 +1,6 @@
 using HCDE.Net.Core;
 using HCDE.Playsim;
+using System.Buffers.Binary;
 
 namespace HCDE.Server;
 
@@ -31,7 +32,7 @@ public static class SimSnapshotPublisher
         {
             store.SetPlayerPose(
                 player.PlayerNum,
-                (short)player.Health,
+                (short)Math.Clamp(player.Health, 0, short.MaxValue),
                 onGround: player.OnGround,
                 (float)player.X.ToDouble(),
                 (float)player.Y.ToDouble(),
@@ -39,12 +40,14 @@ public static class SimSnapshotPublisher
                 (float)player.Z.ToDouble(),
                 (float)player.VelocityX.ToDouble(),
                 (float)player.VelocityY.ToDouble(),
-                (float)player.VelocityZ.ToDouble());
+                (float)player.VelocityZ.ToDouble(),
+                (short)Math.Clamp(player.Inventory.Armor, 0, short.MaxValue),
+                BamAngle.FromDegrees(player.PitchDegrees).Raw);
         }
 
         foreach (var actor in simulation.Actors)
         {
-            store.SeedActor(actor.Id, (ushort)actor.DoomEdNum, (short)actor.Health,
+            store.SeedActor(actor.Id, (ushort)actor.DoomEdNum, (short)Math.Clamp(actor.Health, 0, short.MaxValue),
                 category: actor is PlayerPawn ? (byte)ReplicatedActorCategory.Player
                     : actor is ProjectileActor ? (byte)ReplicatedActorCategory.Projectile
                     : PickupCatalog.IsPickup(actor.DoomEdNum) ? (byte)ReplicatedActorCategory.Pickup
@@ -76,9 +79,11 @@ public sealed class SimulationCommandSink : IClientInputCommandSink
     {
         _ = clientSlot;
         _ = sequence;
-        _ = eventRecords;
+        if (!TryReadWeaponSelections(eventRecords.Span, out var selections))
+            return false;
         return _simulation.QueueCommand(playerNum, new PlayerCommand
         {
+            WeaponSelections = selections,
             ForwardMove = command.ForwardMove,
             SideMove = command.SideMove,
             YawDelta = command.Yaw,
@@ -87,5 +92,30 @@ public sealed class SimulationCommandSink : IClientInputCommandSink
             Jump = (command.Buttons & 4u) != 0, // BT_JUMP
             Use = (command.Buttons & 2u) != 0, // BT_USE
         });
+    }
+
+    private static bool TryReadWeaponSelections(ReadOnlySpan<byte> block, out byte[] selections)
+    {
+        selections = [];
+        if (block.IsEmpty) return true; // Direct callers may omit the empty canonical block.
+        var end = 0;
+        if (!EventRecordsCodec.TryRead(block, ref end, out var count, out _) || end != block.Length)
+            return false;
+        var slots = new List<byte>();
+        var cursor = EventRecordsCodec.EmptyBlockSize;
+        for (var i = 0; i < count; i++)
+        {
+            var type = block[cursor++];
+            var length = BinaryPrimitives.ReadUInt16BigEndian(block[cursor..]);
+            cursor += 2;
+            if (type == (byte)DemoCommand.WeapSelect)
+            {
+                if (length != 1) return false;
+                slots.Add(block[cursor]);
+            }
+            cursor += length;
+        }
+        selections = slots.ToArray();
+        return true;
     }
 }

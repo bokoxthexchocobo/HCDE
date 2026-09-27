@@ -7,26 +7,38 @@ public enum MotionKind
     Door,
     Floor,
     Lift,
+    Ceiling,
+    Stair,
 }
 
 public sealed class SectorMotion
 {
     public int SectorIndex { get; init; }
-    public short ClosedFloor { get; init; }
-    public short TargetFloor { get; init; }
-    public short ClosedCeiling { get; init; }
-    public short TargetCeiling { get; init; }
+    public double ClosedFloor { get; init; }
+    public double TargetFloor { get; init; }
+    public double ClosedCeiling { get; init; }
+    public double TargetCeiling { get; init; }
     public MotionKind Kind { get; init; }
     public bool CloseAfterOpen { get; init; }
     public int Wait { get; set; }
     public bool Closing { get; set; }
-    public int Speed { get; init; } = 8;
+    public double Speed { get; init; } = 8;
     public int Delay { get; init; } = 5;
     public int CrushDamage { get; init; }
+    public int Tag { get; init; }
+    public bool Paused { get; set; }
+    public bool Loop { get; init; }
+    public double ReturnSpeed { get; init; }
+    public bool SlowOnCrush { get; init; }
+    public bool StopOnCrush { get; init; }
+    public bool Slowed { get; set; }
+    public int StairGroup { get; init; }
+    public bool Completed { get; set; }
+    public bool MovesCeiling => Kind is MotionKind.Door or MotionKind.Ceiling;
 }
 
 /// <summary>
-/// Doom linedef specials used by the headless server: doors, an 8-unit floor step, a lift, exit, teleport, and ACS execute.
+/// Managed flat-sector doors, floors, lifts, ceilings, crushers, stairs, exits, teleport and ACS dispatch.
 /// MBF21 floor nudge and the ID24 secret exit stay behind <see cref="CompatSurface"/>.
 /// </summary>
 public static class LineSpecials
@@ -105,7 +117,7 @@ public static class LineSpecials
         bool repeat;
         if (doom)
         {
-            repeat = line.Special is 1 or 26 or 27 or 28 or 60 or 62 or 65 or 69 or 82 or 88 or 90 or 92 or 94 or 97 or 124;
+            repeat = line.Special is 1 or 26 or 27 or 28 or 43 or 60 or 62 or 65 or 69 or 72 or 73 or 74 or 77 or 82 or 88 or 90 or 92 or 94 or 97 or 124 or 150 or 152 or 183 or 184 or 185 or 187 or 188 or 256 or 257 or 258 or 259;
             activated = (line.Special, use) switch
             {
                 (1, true) => StartDoor(sim, line, 0, true),
@@ -122,6 +134,16 @@ public static class LineSpecials
                 (58 or 92, false) => StartMapFloor(sim, line, line.Tag, FloorTarget.RaiseBy, amount: 24),
                 (21 or 62, true) or (10 or 88, false) => StartMapFloor(sim, line, line.Tag, FloorTarget.Lowest, speed: 4, lift: true),
                 (55 or 65, true) or (56 or 94, false) => StartMapFloor(sim, line, line.Tag, FloorTarget.CrushCeiling, crush: 10),
+                (41 or 43, true) or (145 or 152, false) => CeilingActions.Start(sim, line, line.Tag, CeilingTarget.Floor),
+                (6 or 77, false) or (164 or 183, true) => CeilingActions.Start(sim, line, line.Tag, CeilingTarget.Crush,
+                    speed: 2, upSpeed: 2, crush: 10, returnToStart: true, loop: true),
+                (25 or 73 or 141 or 150, false) or (49 or 165 or 184 or 185, true) => CeilingActions.Start(sim, line, line.Tag, CeilingTarget.Crush,
+                    crush: 10, returnToStart: true, loop: true, slow: true),
+                (44 or 72, false) or (167 or 187, true) => CeilingActions.Start(sim, line, line.Tag, CeilingTarget.Crush,
+                    crush: 0, stop: true),
+                (57 or 74, false) or (168 or 188, true) => CeilingActions.Stop(sim, line, line.Tag),
+                (7 or 258, true) or (8 or 256, false) => StairActions.Start(sim, line, line.Tag, 0.25, 8),
+                (127 or 259, true) or (100 or 257, false) => StairActions.Start(sim, line, line.Tag, 4, 16, crush: true),
                 _ => false,
             };
         }
@@ -131,18 +153,37 @@ public static class LineSpecials
             repeat = line.Repeat;
             activated = line.Special switch
             {
-                11 => StartDoor(sim, line, line.Arg0, false, Math.Max(1, line.Arg1 / 8)),
-                12 => StartDoor(sim, line, line.Arg0, true, Math.Max(1, line.Arg1 / 8), line.Arg2),
-                20 => StartMapFloor(sim, line, line.Arg0, FloorTarget.LowerBy, Math.Max(1, line.Arg1 / 8), line.Arg2),
-                21 => StartMapFloor(sim, line, line.Arg0, FloorTarget.Lowest, Math.Max(1, line.Arg1 / 8)),
-                23 => StartMapFloor(sim, line, line.Arg0, FloorTarget.RaiseBy, Math.Max(1, line.Arg1 / 8), line.Arg2),
-                25 => StartMapFloor(sim, line, line.Arg0, FloorTarget.NextHigher, Math.Max(1, line.Arg1 / 8)),
-                62 => StartMapFloor(sim, line, line.Arg0, FloorTarget.Lowest, Math.Max(1, line.Arg1 / 8), lift: true,
+                11 => StartDoor(sim, line, line.Arg0, false, line.Arg1 / 8.0),
+                12 => StartDoor(sim, line, line.Arg0, true, line.Arg1 / 8.0, line.Arg2),
+                20 => StartMapFloor(sim, line, line.Arg0, FloorTarget.LowerBy, line.Arg1 / 8.0, line.Arg2),
+                21 => StartMapFloor(sim, line, line.Arg0, FloorTarget.Lowest, line.Arg1 / 8.0),
+                23 => StartMapFloor(sim, line, line.Arg0, FloorTarget.RaiseBy, line.Arg1 / 8.0, line.Arg2),
+                25 => StartMapFloor(sim, line, line.Arg0, FloorTarget.NextHigher, line.Arg1 / 8.0),
+                62 => StartMapFloor(sim, line, line.Arg0, FloorTarget.Lowest, line.Arg1 / 8.0, lift: true,
                     delay: Math.Max(0, line.Arg2), lip: 8),
                 70 => TeleportActivator(sim, actor, line.Arg0, byThingId: true),
                 80 => sim.Acs.Enqueue(line.Arg0),
                 243 => Exit(sim, false),
                 244 => Exit(sim, true),
+                40 when line.Arg3 == 0 => CeilingActions.Start(sim, line, line.Arg0, CeilingTarget.LowerBy, speed: line.Arg1 / 8.0, amount: line.Arg2,
+                    crush: line.Arg4 > 0 ? line.Arg4 : -1),
+                41 when line.Arg3 == 0 => CeilingActions.Start(sim, line, line.Arg0, CeilingTarget.RaiseBy, speed: line.Arg1 / 8.0, amount: line.Arg2,
+                    crush: line.Arg4 > 0 ? line.Arg4 : -1),
+                42 => CeilingActions.Start(sim, line, line.Arg0, CeilingTarget.Crush, speed: line.Arg1 / 8.0, upSpeed: line.Arg1 / 16.0,
+                    crush: line.Arg2, returnToStart: true, loop: true, slow: line.Arg3 == 3, stop: line.Arg3 == 2),
+                43 => CeilingActions.Start(sim, line, line.Arg0, CeilingTarget.Crush, speed: line.Arg1 / 8.0,
+                    crush: line.Arg2, slow: line.Arg3 == 3 || line.Arg3 == 0 && line.Arg1 == 8, stop: line.Arg3 == 2),
+                44 => CeilingActions.Stop(sim, line, line.Arg0, remove: line.Arg1 == 2),
+                45 => CeilingActions.Start(sim, line, line.Arg0, CeilingTarget.Crush, speed: line.Arg1 / 8.0, upSpeed: line.Arg1 / 16.0,
+                    crush: line.Arg2, returnToStart: true, slow: line.Arg3 == 3, stop: line.Arg3 == 2),
+                168 or 104 => CeilingActions.Start(sim, line, line.Arg0, CeilingTarget.Crush, speed: line.Arg2 / 8.0, upSpeed: line.Arg2 / 8.0,
+                    amount: line.Arg1, crush: line.Arg3, returnToStart: true, loop: true,
+                    slow: line.Arg4 == 3 || line.Arg4 == 0 && line.Arg2 == 8, stop: line.Arg4 == 2),
+                254 when line.Arg2 == 0 => CeilingActions.Start(sim, line, line.Arg0, CeilingTarget.Floor, speed: line.Arg1 / 8.0, amount: line.Arg4,
+                    crush: line.Arg3 > 0 ? line.Arg3 : -1),
+                262 when line.Arg2 == 0 => CeilingActions.Start(sim, line, line.Arg0, CeilingTarget.Highest, speed: line.Arg1 / 8.0),
+                217 or 270 or 273 when line.Arg3 == 0 && line.Arg4 == 0 => StairActions.Start(sim, line, line.Arg0,
+                    line.Arg1 / 8.0, line.Arg2, down: line.Special == 270, crush: line.Special == 273),
                 _ => false,
             };
         }
@@ -205,6 +246,12 @@ public static class LineSpecials
         for (var i = sim.Motions.Count - 1; i >= 0; i--)
         {
             var motion = sim.Motions[i];
+            if (motion.Completed) continue;
+            if (motion.Kind == MotionKind.Ceiling)
+            {
+                if (CeilingActions.Tick(sim, motion)) sim.Motions.RemoveAt(i);
+                continue;
+            }
             if (motion.Wait > 0)
             {
                 motion.Wait--;
@@ -219,10 +266,12 @@ public static class LineSpecials
                 : motion.Closing
                     ? motion.ClosedFloor
                     : motion.TargetFloor;
+            target = door ? Math.Max(target, sim.Floors[motion.SectorIndex])
+                : Math.Min(target, sim.Ceilings[motion.SectorIndex]);
             if (floor < target)
-                floor = (short)Math.Min(target, floor + motion.Speed);
+                floor = Math.Min(target, floor + motion.Speed);
             else if (floor > target)
-                floor = (short)Math.Max(target, floor - motion.Speed);
+                floor = Math.Max(target, floor - motion.Speed);
             if (door && motion.Closing && sim.Actors.Any(actor => actor.BlocksActors
                 && actor.SectorIndex == motion.SectorIndex && actor.Z.ToDouble() + actor.Height.ToDouble() > floor))
             {
@@ -239,6 +288,7 @@ public static class LineSpecials
                     {
                         if ((sim.Thinkers.Clock.Tic & 3) == 0)
                             foreach (var actor in blocked) ActorDamage.Apply(actor, motion.CrushDamage);
+                        if (motion.StopOnCrush) continue;
                     }
                     else
                     {
@@ -260,18 +310,25 @@ public static class LineSpecials
                 continue;
             }
 
-            sim.Motions.RemoveAt(i);
+            if (motion.Kind == MotionKind.Stair) motion.Completed = true;
+            else sim.Motions.RemoveAt(i);
         }
+        // Keep the entire stair chain locked until its last step finishes.
+        var completedStairs = sim.Motions.Where(motion => motion.Kind == MotionKind.Stair)
+            .GroupBy(motion => motion.StairGroup).Where(group => group.All(motion => motion.Completed))
+            .Select(group => group.Key).ToHashSet();
+        sim.Motions.RemoveAll(motion => motion.Kind == MotionKind.Stair && completedStairs.Contains(motion.StairGroup));
     }
 
-    private static bool StartDoor(AuthoritySimulation sim, LevelLine? line, int tag, bool closeAfterOpen, int? speed = null, int? delay = null)
+    private static bool StartDoor(AuthoritySimulation sim, LevelLine? line, int tag, bool closeAfterOpen, double? speed = null, int? delay = null)
     {
+        if (speed <= 0) return false;
         var started = false;
         foreach (var sector in TargetSectors(sim, line, tag, backSide: sim.Level.Format != MapDataFormat.Unknown))
         {
-            if (sim.Motions.Any(motion => motion.SectorIndex == sector))
+            if (sim.Motions.Any(motion => motion.SectorIndex == sector && motion.MovesCeiling))
                 continue;
-            var neighbors = new List<short>();
+            var neighbors = new List<double>();
             foreach (var boundary in sim.Level.Lines)
             {
                 if ((uint)boundary.SideFront >= (uint)sim.Level.Sides.Count
@@ -282,7 +339,7 @@ public static class LineSpecials
                 if (back == sector && front != sector && (uint)front < (uint)sim.Ceilings.Length) neighbors.Add(sim.Ceilings[front]);
             }
             if (neighbors.Count == 0) continue;
-            var targetCeiling = (short)Math.Clamp(neighbors.Min() - 4, sim.Floors[sector], short.MaxValue);
+            var targetCeiling = Math.Clamp(neighbors.Min() - 4, sim.Floors[sector], short.MaxValue);
             if (targetCeiling <= sim.Ceilings[sector]) continue;
             sim.Motions.Add(new SectorMotion
             {
@@ -305,13 +362,13 @@ public static class LineSpecials
         var started = false;
         foreach (var sector in TargetSectors(sim, line, tag))
         {
-            if (sim.Motions.Any(motion => motion.SectorIndex == sector))
+            if (sim.Motions.Any(motion => motion.SectorIndex == sector && !motion.MovesCeiling))
                 continue;
 
             var floor = sim.Floors[sector];
             var target = delta > 0
-                ? (short)Math.Min(sim.Ceilings[sector], floor + delta)
-                : (short)Math.Max(short.MinValue, floor + delta);
+                ? Math.Min(sim.Ceilings[sector], floor + delta)
+                : Math.Max(short.MinValue, floor + delta);
             if (target == floor)
                 continue;
 
@@ -332,24 +389,24 @@ public static class LineSpecials
     private enum FloorTarget { Lowest, NextHigher, RaiseBy, LowerBy, CrushCeiling }
 
     private static bool StartMapFloor(AuthoritySimulation sim, LevelLine line, int tag, FloorTarget kind,
-        int speed = 1, int amount = 0, bool lift = false, int delay = 105, int lip = 0, int crush = 0)
+        double speed = 1, int amount = 0, bool lift = false, int delay = 105, int lip = 0, int crush = 0)
     {
-        if (amount < 0) return false;
+        if (amount < 0 || speed <= 0) return false;
         var started = false;
         foreach (var sector in TargetSectors(sim, line, tag, backSide: true))
         {
-            if (sim.Motions.Any(motion => motion.SectorIndex == sector)) continue;
+            if (sim.Motions.Any(motion => motion.SectorIndex == sector && !motion.MovesCeiling)) continue;
             var current = sim.Floors[sector];
             var neighbors = NeighborSectors(sim, sector).Select(index => sim.Floors[index]).ToArray();
-            long destination = kind switch
+            double destination = kind switch
             {
                 FloorTarget.Lowest => Math.Min(current, neighbors.DefaultIfEmpty(current).Min() + lip),
                 FloorTarget.NextHigher => neighbors.Where(height => height > current).DefaultIfEmpty(current).Min(),
-                FloorTarget.RaiseBy => (long)current + amount,
-                FloorTarget.LowerBy => (long)current - amount,
+                FloorTarget.RaiseBy => current + amount,
+                FloorTarget.LowerBy => current - amount,
                 _ => sim.Ceilings[sector] - 8L,
             };
-            var target = (short)Math.Clamp(destination, short.MinValue, sim.Ceilings[sector]);
+            var target = Math.Clamp(destination, short.MinValue, sim.Ceilings[sector]);
             if (target == current || kind == FloorTarget.CrushCeiling && target < current) continue;
             sim.Motions.Add(new SectorMotion {
                 SectorIndex = sector, ClosedFloor = current, TargetFloor = target,
@@ -361,7 +418,7 @@ public static class LineSpecials
         return started;
     }
 
-    private static IEnumerable<int> NeighborSectors(AuthoritySimulation sim, int sector)
+    internal static IEnumerable<int> NeighborSectors(AuthoritySimulation sim, int sector)
     {
         foreach (var boundary in sim.Level.Lines)
         {
@@ -379,7 +436,7 @@ public static class LineSpecials
         foreach (var sector in TargetSectors(sim, line, tag))
         {
             var ceiling = sim.Ceilings[sector];
-            var next = (short)Math.Min(ceiling, sim.Floors[sector] + amount);
+            var next = Math.Min(ceiling, sim.Floors[sector] + amount);
             if (next == sim.Floors[sector])
                 continue;
             sim.Floors[sector] = next;
@@ -406,7 +463,7 @@ public static class LineSpecials
         return true;
     }
 
-    private static IEnumerable<int> TargetSectors(AuthoritySimulation sim, LevelLine? line, int tag, bool backSide = false)
+    internal static IEnumerable<int> TargetSectors(AuthoritySimulation sim, LevelLine? line, int tag, bool backSide = false)
     {
         if (tag != 0)
         {

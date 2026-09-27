@@ -18,7 +18,11 @@ public static class LevelValidation
             if (line.X1 == line.X2 && line.Y1 == line.Y2) { error = "map-line-zero-length"; return false; }
         }
         foreach (var sector in level.Sectors)
+        {
+            if (!Coordinate(sector.FloorHeight) || !Coordinate(sector.CeilingHeight))
+            { error = "map-sector-height-out-of-range"; return false; }
             if (sector.FloorHeight > sector.CeilingHeight) { error = "map-sector-inverted"; return false; }
+        }
         foreach (var thing in level.Things)
             if (!Coordinate(thing.X) || !Coordinate(thing.Y) || !Coordinate(thing.Z) || !double.IsFinite(thing.Angle)
                 || thing.Type is < 0 or > ushort.MaxValue)

@@ -22,6 +22,7 @@ public sealed class UdmfLinedef
     public bool BlockSight { get; set; }
     public bool BlockHitscan { get; set; }
     public bool BlockProjectiles { get; set; }
+    public bool BlockSound { get; set; }
     public bool TwoSided { get; set; }
     public bool PlayerCross { get; set; }
     public bool PlayerUse { get; set; }
@@ -65,6 +66,7 @@ public sealed class UdmfThing
     public int Id { get; set; }
     public int Special { get; set; }
     public bool Skill1 { get; set; }
+    public bool Ambush { get; set; }
     public bool Skill2 { get; set; }
     public bool Skill3 { get; set; }
     public bool Skill4 { get; set; }
@@ -282,6 +284,7 @@ public static class UdmfTextMapParser
             BlockSight = Bool(fields, "blocksight"),
             BlockHitscan = Bool(fields, "blockhitscan"),
             BlockProjectiles = Bool(fields, "blockprojectiles"),
+            BlockSound = Bool(fields, "blocksound"),
             TwoSided = Bool(fields, "twosided"),
             PlayerCross = Bool(fields, "playercross"),
             PlayerUse = Bool(fields, "playeruse"),
@@ -325,6 +328,7 @@ public static class UdmfTextMapParser
             Id = Int(fields, "id"),
             Special = Int(fields, "special"),
             Skill1 = Bool(fields, "skill1"),
+            Ambush = Bool(fields, "ambush"),
             Skill2 = Bool(fields, "skill2"),
             Skill3 = Bool(fields, "skill3"),
             Skill4 = Bool(fields, "skill4"),

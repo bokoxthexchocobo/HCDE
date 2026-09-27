@@ -51,6 +51,45 @@ public sealed class PlayerInventory
 
     public bool Owns(WeaponKind weapon) => (Weapons & weapon) != 0;
 
+    // Default Doom slots from doomplayer.zs. Custom class/slot tables are not loaded yet.
+    private static readonly WeaponKind[][] Slots = [[], [WeaponKind.Fist, WeaponKind.Chainsaw],
+        [WeaponKind.Pistol], [WeaponKind.Shotgun, WeaponKind.SuperShotgun], [WeaponKind.Chaingun],
+        [WeaponKind.RocketLauncher], [WeaponKind.Plasma], [WeaponKind.Bfg], [], []];
+    private static readonly WeaponKind[] Cycle = Slots.SelectMany(slot => slot).ToArray();
+
+    public void SelectSlot(byte slot)
+    {
+        // WST_NONE=10, WST_PREV=11, WST_NEXT=12 in g_game.h.
+        if (slot is 11 or 12)
+        {
+            var current = Array.IndexOf(Cycle, Selected);
+            if (current < 0) return;
+            var direction = slot == 12 ? 1 : -1;
+            for (var step = 1; step <= Cycle.Length; step++)
+            {
+                var weapon = Cycle[(current + step * direction + Cycle.Length) % Cycle.Length];
+                if (CanSelect(weapon)) { Selected = weapon; return; }
+            }
+            return;
+        }
+        if (slot >= Slots.Length) return;
+        var weapons = Slots[slot];
+        var index = Array.IndexOf(weapons, Selected);
+        // Repeated presses cycle backwards in the slot; entry prefers its last weapon.
+        for (var step = 1; step <= weapons.Length; step++)
+        {
+            var weapon = weapons[((index < 0 ? 0 : index) - step + weapons.Length) % weapons.Length];
+            if (CanSelect(weapon)) { Selected = weapon; return; }
+        }
+    }
+
+    private bool CanSelect(WeaponKind weapon)
+    {
+        var definition = WeaponCatalog.Find(weapon);
+        return Owns(weapon) && definition != null
+            && (definition.Ammo is not { } ammo || Ammo(ammo) >= definition.AmmoUse);
+    }
+
     public int Ammo(AmmoKind kind) => kind switch
     {
         AmmoKind.Bullets => Bullets,

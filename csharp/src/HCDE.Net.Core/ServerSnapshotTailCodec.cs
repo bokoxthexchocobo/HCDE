@@ -56,6 +56,11 @@ public static class ServerSnapshotTailCodec
         ReadOnlySpan<AuthorityEventRecord> authorityEvents = default,
         uint[]? checksumHashes = null)
     {
+        if (poses.Length > byte.MaxValue || sectors.Length > byte.MaxValue
+            || actorDeltas.Length > byte.MaxValue || coopDeadSpawnIndices.Length > byte.MaxValue
+            || authorityEvents.Length > byte.MaxValue)
+            return 0;
+
         var actorDeltaSize = LiveConstants.ActorDeltasHeaderSize;
         foreach (var record in actorDeltas)
             actorDeltaSize += ActorDeltaRecord.MinRecordSize(record.FieldMask);
@@ -142,6 +147,11 @@ public static class ServerSnapshotTailCodec
         ReadOnlySpan<uint> coopDeadSpawnIndices = default,
         uint[]? checksumHashes = null)
     {
+        if (poses.Length > byte.MaxValue || sectors.Length > byte.MaxValue
+            || embeddedActorDeltas.Length > byte.MaxValue || coopDeadSpawnIndices.Length > byte.MaxValue
+            || embeddedAuthorityEvents.Length > byte.MaxValue)
+            return 0;
+
         var authorityEventSize = 0;
         if (!embeddedAuthorityEvents.IsEmpty)
         {
