@@ -8,8 +8,8 @@ public static class WeaponCatalog
 {
     public static WeaponDefinition? Find(WeaponKind weapon) => weapon switch
     {
-        WeaponKind.Fist => new(null, 0, 22),
-        WeaponKind.Chainsaw => new(null, 0, 4),
+        WeaponKind.Fist => new(null, 0, 22, SpreadDegrees: 5.625),
+        WeaponKind.Chainsaw => new(null, 0, 4, SpreadDegrees: 2.8125),
         WeaponKind.Pistol => new(AmmoKind.Bullets, 1, 19),
         WeaponKind.Chaingun => new(AmmoKind.Bullets, 1, 4, SpreadDegrees: 5.625),
         WeaponKind.Shotgun => new(AmmoKind.Shells, 1, 35, 7, 5.625),

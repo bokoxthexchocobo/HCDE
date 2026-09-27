@@ -40,7 +40,8 @@ public class CombatTraceTests
         state.Sectors[1] = (0, 128);
         sim.RestoreState(state);
         Fire(sim);
-        Assert.Equal(50, Target(sim).Health);
+        Assert.InRange(60 - Target(sim).Health, 5, 15);
+        Assert.Equal(0, (60 - Target(sim).Health) % 5);
     }
 
     [Theory]
@@ -108,7 +109,8 @@ public class CombatTraceTests
         Assert.True(sim.Actors[1].IsDead);
         Assert.False(sim.Actors[1].BlocksActors);
         Fire(sim);
-        Assert.Equal(140, sim.Actors[2].Health); // Demon starts at native health 150.
+        Assert.InRange(150 - sim.Actors[2].Health, 5, 15); // Demon starts at native health 150.
+        Assert.Equal(0, (150 - sim.Actors[2].Health) % 5);
         var state = sim.CaptureState();
         sim.Actors[1].Health = 30;
         sim.RestoreState(state);

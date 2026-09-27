@@ -113,7 +113,7 @@ public class CeilingActionsTests
     {
         var state = new SimSaveState(); state.Sectors.Add((0.125, 128.875));
         var bytes = SimSavegame.Write(state);
-        Assert.Equal(5, BinaryPrimitives.ReadUInt16LittleEndian(bytes.AsSpan(4)));
+        Assert.Equal(6, BinaryPrimitives.ReadUInt16LittleEndian(bytes.AsSpan(4)));
         Assert.True(SimSavegame.TryRead(bytes, out var restored, out var error), error);
         Assert.Equal(state.Sectors, restored.Sectors);
         var legacy = new byte[32];

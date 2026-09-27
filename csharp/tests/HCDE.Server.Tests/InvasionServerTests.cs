@@ -154,20 +154,24 @@ public class InvasionServerTests
         var enemy = host.Simulation.Actors.OfType<BotPawn>().Single();
         Assert.Equal(30, world.Actors[enemy.Id].Health);
         Assert.Equal(enemy.X.ToDouble(), world.Actors[enemy.Id].PosX, 2);
-        for (uint shot = 1; shot <= 3; shot++)
+        uint inputTic = 0;
+        for (var shot = 0; shot < 6 && !enemy.IsDead; shot++)
         {
             while (host.Simulation.Players.Single().WeaponCooldown > 1) TickAndReceive();
-            Assert.True(input.TrySendClientInput(endpoint, 0, shot, 1, new UserCmd(1, 0, 0, 0, 0, 0, 0)));
+            var before = enemy.Health;
+            Assert.True(input.TrySendClientInput(endpoint, 0, ++inputTic, 1, new UserCmd(1, 0, 0, 0, 0, 0, 0)));
             TickAndReceive();
-            Assert.Equal(30 - 10 * (int)shot, enemy.Health);
+            Assert.InRange(before - enemy.Health, Math.Min(before, 5), Math.Min(before, 15));
+            Assert.Equal(0, (before - enemy.Health) % 5);
             Assert.Equal(enemy.Health, world.Actors[enemy.Id].Health);
         }
-        Assert.Equal(47, host.Simulation.Players.Single().Inventory.Bullets);
+        Assert.True(enemy.IsDead);
+        Assert.Equal(50 - (int)inputTic, host.Simulation.Players.Single().Inventory.Bullets);
         Assert.Equal(LiveConstants.InvasionStateVictory, live.InvasionState!.MirrorState.State);
         Assert.Equal(1u, live.InvasionState.MirrorState.WaveCleared);
         Assert.Equal(0u, live.InvasionState.ActiveMonsters);
         Assert.Equal(0, world.Actors[enemy.Id].Flags & LiveConstants.ActorDeltaFlagLive);
-        Assert.True(input.TrySendClientInput(endpoint, 0, 4, 1, new UserCmd(4, 0, 0, 0, 0, 0, 0)));
+        Assert.True(input.TrySendClientInput(endpoint, 0, ++inputTic, 1, new UserCmd(4, 0, 0, 0, 0, 0, 0)));
         TickAndReceive();
         var jumping = host.Simulation.Players.Single();
         Assert.False(world.Players[1].OnGround);
@@ -179,7 +183,7 @@ public class InvasionServerTests
         jumping.Inventory.Selected = WeaponKind.Plasma;
         jumping.Inventory.Cells = 1;
         while (jumping.WeaponCooldown > 1) TickAndReceive();
-        Assert.True(input.TrySendClientInput(endpoint, 0, 5, 1, new UserCmd(1, 0, 0, 0, 0, 0, 0)));
+        Assert.True(input.TrySendClientInput(endpoint, 0, ++inputTic, 1, new UserCmd(1, 0, 0, 0, 0, 0, 0)));
         TickAndReceive();
         var projectile = Assert.Single(host.Simulation.Actors.OfType<ProjectileActor>());
         Assert.Equal((byte)ReplicatedActorCategory.Projectile, world.Actors[projectile.Id].Category);

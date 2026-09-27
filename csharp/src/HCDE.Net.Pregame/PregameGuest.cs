@@ -36,6 +36,7 @@ public sealed class PregameGuest
     private readonly PregameServiceReceiver _receiver = new();
     private readonly byte[] _netBuffer = new byte[NetConstants.MaxMessageLength];
     private readonly byte[] _payloadBuffer = new byte[NetConstants.MaxMessageLength];
+    private ulong _lastConnectSendTime;
 
     public PregameGuest(UdpTransport transport, PregameGuestOptions options)
     {
@@ -71,16 +72,19 @@ public sealed class PregameGuest
     public void Pump(ulong nowMilliseconds)
     {
         if (Phase == PregameGuestPhase.Disconnected)
-            SendConnect();
+            SendConnect(nowMilliseconds);
 
         if (Phase == PregameGuestPhase.Assigned)
             TrySendClientUserInfo();
 
         DrainInbound(nowMilliseconds);
+        if (Phase == PregameGuestPhase.SentConnect && nowMilliseconds >= _lastConnectSendTime
+            && nowMilliseconds - _lastConnectSendTime >= PregameConstants.RuntimeConnectAckResendMilliseconds)
+            SendConnect(nowMilliseconds);
         FlushOutbound(nowMilliseconds);
     }
 
-    private void SendConnect()
+    private void SendConnect(ulong nowMilliseconds)
     {
         var length = ConnectPacketCodec.Write(
             _netBuffer,
@@ -91,7 +95,10 @@ public sealed class PregameGuest
             return;
 
         if (PregameWire.TrySend(_transport, _netBuffer.AsSpan(0, length), _options.ServerAddress))
+        {
+            _lastConnectSendTime = nowMilliseconds;
             Phase = PregameGuestPhase.SentConnect;
+        }
     }
 
     private void TrySendClientUserInfo()
@@ -112,6 +119,8 @@ public sealed class PregameGuest
         while (PregameWire.TryReceive(_transport, _netBuffer, out var length, out var remote, TimeSpan.Zero)
                == SetupPacketDecodeStatus.Ok)
         {
+            if (remote != _options.ServerAddress)
+                continue;
             var span = _netBuffer.AsSpan(0, length);
             if (span.Length < 2)
                 continue;
@@ -236,9 +245,13 @@ public sealed class PregameGuest
 
     private void HandleConnectAck(ReadOnlySpan<byte> netBuffer)
     {
+        // ConnectAck is retransmitted independently of reliable services. A late
+        // copy must not reset phase or replace a token used by pending messages.
+        if (_connection.SessionToken != 0)
+            return;
         if (!ConnectAckPacket.TryRead(netBuffer, out var ack))
             return;
-        if (!ack.Flags.HasFlag(PreConnectAckFlags.HcdeService))
+        if (!ack.Flags.HasFlag(PreConnectAckFlags.HcdeService) || ack.SessionToken == 0)
             return;
 
         _connection.SessionToken = ack.SessionToken;

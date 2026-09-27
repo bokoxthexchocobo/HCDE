@@ -24,7 +24,7 @@ public static class SimSnapshotPublisher
                 (ushort)sector.Index,
                 simulation.FloorOf(sector.Index),
                 simulation.CeilingOf(sector.Index),
-                sector.LightLevel,
+                simulation.LightOf(sector.Index),
                 sector.Special);
         }
 

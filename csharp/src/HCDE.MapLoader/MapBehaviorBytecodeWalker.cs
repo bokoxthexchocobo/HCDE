@@ -4,16 +4,20 @@ namespace HCDE.MapLoader;
 
 public readonly struct MapBehaviorInstruction
 {
-    public MapBehaviorInstruction(int offset, int opcode, int operandWordCount)
+    public MapBehaviorInstruction(int offset, int opcode, int operandWordCount, int? operandByteCount = null)
     {
         Offset = offset;
         Opcode = opcode;
         OperandWordCount = operandWordCount;
+        OperandByteCount = operandByteCount ?? operandWordCount * 4;
     }
 
     public int Offset { get; }
     public int Opcode { get; }
+    // Legacy units: words for word opcodes (rounded up for packed payloads), bytes for compact opcodes.
     public int OperandWordCount { get; }
+    /// <summary>Exact encoded operand length, including a packed push's count byte.</summary>
+    public int OperandByteCount { get; }
 }
 
 public readonly struct MapBehaviorScriptBytecode
@@ -104,9 +108,38 @@ public static class MapBehaviorBytecodeWalker
         while (offset + 4 <= data.Length)
         {
             var opcode = BinaryPrimitives.ReadInt32LittleEndian(data[offset..]);
-            var operandWords = TryGetWordOperandSkipCount(data, offset, opcode, out var variableOperandWords)
-                ? variableOperandWords
-                : GetWordOperandSkipCount(opcode);
+            if (opcode == (int)AcsPcode.CaseGotoSorted)
+            {
+                var tableCountOffset = ((long)offset + 7) & ~3L;
+                if (tableCountOffset + 4 > data.Length)
+                    return Reject("behavior-script-bytecode-truncated", out instructions, out terminatedNormally, out rejectReason);
+                var cases = BinaryPrimitives.ReadInt32LittleEndian(data[(int)tableCountOffset..]);
+                if (cases < 0 || cases > (data.Length - tableCountOffset - 4) / 8)
+                    return Reject("behavior-script-bytecode-truncated", out instructions, out terminatedNormally, out rejectReason);
+                var bytes = (int)(tableCountOffset - offset) + cases * 8;
+                list.Add(new MapBehaviorInstruction(offset, opcode, (bytes + 3) / 4, bytes));
+                offset += 4 + bytes;
+                continue;
+            }
+            if (opcode is >= (int)AcsPcode.PushByte and <= (int)AcsPcode.DelayDirectB
+                || opcode is >= (int)AcsPcode.PushBytes and <= (int)AcsPcode.Push5Bytes)
+            {
+                var bytes = opcode is (int)AcsPcode.PushByte or (int)AcsPcode.DelayDirectB ? 1
+                    : opcode <= (int)AcsPcode.Lspec5DirectB ? opcode - (int)AcsPcode.Lspec1DirectB + 2
+                    : opcode - (int)AcsPcode.Push2Bytes + 2;
+                if (opcode == (int)AcsPcode.PushBytes)
+                {
+                    if (data.Length - offset < 5)
+                        return Reject("behavior-script-bytecode-truncated", out instructions, out terminatedNormally, out rejectReason);
+                    bytes = 1 + data[offset + 4];
+                }
+                if (bytes > data.Length - offset - 4)
+                    return Reject("behavior-script-bytecode-truncated", out instructions, out terminatedNormally, out rejectReason);
+                list.Add(new MapBehaviorInstruction(offset, opcode, (bytes + 3) / 4, bytes));
+                offset += 4 + bytes;
+                continue;
+            }
+            var operandWords = GetWordOperandSkipCount(opcode);
             if (operandWords == EndScript)
             {
                 list.Add(new MapBehaviorInstruction(offset, opcode, 0));
@@ -144,6 +177,8 @@ public static class MapBehaviorBytecodeWalker
         while (offset < data.Length)
         {
             var first = data[offset];
+            if (first >= 240 && offset + 1 >= data.Length)
+                return Reject("behavior-script-bytecode-truncated", out instructions, out terminatedNormally, out rejectReason);
             var opcode = first >= 240
                 ? 240 + ((first - 240) << 8) + data[offset + 1]
                 : first;
@@ -165,35 +200,11 @@ public static class MapBehaviorBytecodeWalker
             if (offset + opcodeBytes + operandBytes > data.Length)
                 return Reject("behavior-script-bytecode-truncated", out instructions, out terminatedNormally, out rejectReason);
 
-            list.Add(new MapBehaviorInstruction(offset, opcode, operandBytes));
+            list.Add(new MapBehaviorInstruction(offset, opcode, operandBytes, operandBytes));
             offset += opcodeBytes + operandBytes;
         }
 
         instructions = list;
-        return true;
-    }
-
-    private static bool TryGetWordOperandSkipCount(
-        ReadOnlySpan<byte> data,
-        int offset,
-        int opcode,
-        out int operandWords)
-    {
-        operandWords = 0;
-        if (opcode != (int)AcsPcode.CaseGotoSorted)
-            return false;
-
-        var afterOpcode = offset + 4;
-        var aligned = (afterOpcode + 3) & ~3;
-        if (aligned + 4 > data.Length)
-            return false;
-
-        var numCases = BinaryPrimitives.ReadInt32LittleEndian(data[aligned..]);
-        if (numCases < 0)
-            return false;
-
-        var paddingWords = (aligned - afterOpcode) / 4;
-        operandWords = paddingWords + 1 + numCases * 2;
         return true;
     }
 
@@ -236,10 +247,14 @@ public static class MapBehaviorBytecodeWalker
         (int)AcsPcode.SpawnSpotDirect => 4,
         (int)AcsPcode.ConsoleCommandDirect => 3,
         (int)AcsPcode.ConsoleCommand => 0,
-        (int)AcsPcode.FixedMul or (int)AcsPcode.FixedDiv => 0,
+        (int)AcsPcode.Sin or (int)AcsPcode.Cos or (int)AcsPcode.VectorAngle => 0,
+        (int)AcsPcode.SinglePlayer or (int)AcsPcode.FixedMul or (int)AcsPcode.FixedDiv => 0,
         (int)AcsPcode.SetGravity or (int)AcsPcode.SetAirControl => 0,
         (int)AcsPcode.SetGravityDirect or (int)AcsPcode.SetAirControlDirect => 1,
         (int)AcsPcode.AssignGlobalVar or (int)AcsPcode.PushGlobalVar => 1,
+        (int)AcsPcode.AddGlobalVar or (int)AcsPcode.SubGlobalVar or (int)AcsPcode.MulGlobalVar
+            or (int)AcsPcode.DivGlobalVar or (int)AcsPcode.ModGlobalVar
+            or (int)AcsPcode.IncGlobalVar or (int)AcsPcode.DecGlobalVar => 1,
         364 or 365 or 366 or 367 or 368 or 369 or 370 or 371 or 372 or 373 or 374 or 375
             => 1, // C++ PCD_ASSIGNSCRIPTARRAY…PCD_ANDSCRIPTARRAY wire (shadow legacy script-array enum aliases)
         (int)AcsPcode.StartTranslation
@@ -261,9 +276,9 @@ public static class MapBehaviorBytecodeWalker
         361 => 0, // C++ PCD_SCRIPTWAITNAMED wire (shadow legacy PushFunction enum alias)
         360 or 362 or 363
             => 0, // C++ PCD_CALLSTACK/PCD_TRANSLATIONRANGE3/PCD_GOTOSTACK wire (shadow legacy eternity-stack enum aliases)
-        244 or 247 => 0, // C++ PCD_SETMARINEWEAPON / PCD_PLAYERNUMBER (shadow legacy DivGlobalArray/PushByte enum aliases)
-        (int)AcsPcode.SaveString
-            or (int)AcsPcode.Lspec5Result => 0,
+        244 or 247 => 0, // C++ PCD_SETMARINEWEAPON / PCD_PLAYERNUMBER.
+        (int)AcsPcode.SaveString => 0,
+        (int)AcsPcode.Lspec5Result => 1,
         (int)AcsPcode.CallFunc => 2,
         (int)AcsPcode.PrintMapCharRange or (int)AcsPcode.PrintWorldCharRange
             or (int)AcsPcode.PrintGlobalCharRange
@@ -272,31 +287,30 @@ public static class MapBehaviorBytecodeWalker
         376 or 377
             => 1, // C++ PCD_LSSCRIPTARRAY/PCD_RSSCRIPTARRAY wire (shadow legacy EorScriptArray/OrScriptArray enum aliases)
         393 or 400
-            => 1, // C++ PCD_LSSCRIPTVAR/PCD_RSSCRIPTVAR wire (shadow legacy LsScriptVar/RsScriptVar enum aliases)
+            => 1, // Legacy decoder aliases retained; native shift opcodes are 312-325.
         394 or 401
-            => 1, // C++ PCD_LSMAPVAR/PCD_RSMAPVAR wire (shadow legacy LsMapVar/RsMapVar enum aliases)
+            => 1, // Legacy decoder aliases retained; native shift opcodes are 312-325.
         395 or 402
-            => 1, // C++ PCD_LSWORLDVAR/PCD_RSWORLDVAR wire (shadow legacy LsWorldVar/RsWorldVar enum aliases)
+            => 1, // Legacy decoder aliases retained; native shift opcodes are 312-325.
         396 or 403
-            => 1, // C++ PCD_LSGLOBALVAR/PCD_RSGLOBALVAR wire (shadow legacy LsGlobalVar/RsGlobalVar enum aliases)
+            => 1, // Legacy decoder aliases retained; native shift opcodes are 312-325.
         397 or 404
-            => 1, // C++ PCD_LSMAPARRAY/PCD_RSMAPARRAY wire (shadow legacy LsMapArray/RsMapArray enum aliases)
+            => 1, // Legacy decoder aliases retained; native shift opcodes are 312-325.
         398 or 405
-            => 1, // C++ PCD_LSWORLDARRAY/PCD_RSWORLDARRAY wire (shadow legacy LsWorldArray/RsWorldArray enum aliases)
+            => 1, // Legacy decoder aliases retained; native shift opcodes are 312-325.
         399 or 406
-            => 1, // C++ PCD_LSGLOBALARRAY/PCD_RSGLOBALARRAY wire (shadow legacy LsGlobalArray/RsGlobalArray enum aliases)
+            => 1, // Legacy decoder aliases retained; native shift opcodes are 312-325.
         378 or 379 or 380
             => 0, // C++ PCD_PRINTSCRIPTCHARARRAY…PCD_STRCPYTOSCRIPTCHRANGE wire (shadow legacy script char-array enum aliases)
-        381 or 382
-            => 0, // C++ PCD_LSPEC5EX/PCD_LSPEC5EXRESULT wire (shadow legacy lspec5 enum aliases)
-        444 or 465 or 466
+        (int)AcsPcode.Lspec5Ex or (int)AcsPcode.Lspec5ExResult => 1,
+        383 or 384 or 444 or 465 or 466
             => 0, // C++ PCD_TRANSLATIONRANGE3…PCD_TRANSLATIONRANGE5 wire (shadow legacy translation-range enum aliases)
         (int)AcsPcode.PushGlobalArray or (int)AcsPcode.AssignGlobalArray
             or (int)AcsPcode.AddGlobalArray or (int)AcsPcode.SubGlobalArray
-            or (int)AcsPcode.MulGlobalArray or (int)AcsPcode.ModGlobalArray
+            or (int)AcsPcode.MulGlobalArray or (int)AcsPcode.DivGlobalArray or (int)AcsPcode.ModGlobalArray
             or (int)AcsPcode.IncGlobalArray or (int)AcsPcode.DecGlobalArray => 1,
-        (int)AcsPcode.GiveInventoryDirect or (int)AcsPcode.TakeInventoryDirect
-            or (int)AcsPcode.CheckInventoryDirect => 2,
+        (int)AcsPcode.GiveInventoryDirect or (int)AcsPcode.TakeInventoryDirect => 2,
+        (int)AcsPcode.CheckInventoryDirect => 1,
         (int)AcsPcode.SetMusic or (int)AcsPcode.LocalSetMusic or (int)AcsPcode.MusicChange => 0,
         (int)AcsPcode.SetMusicDirect or (int)AcsPcode.LocalSetMusicDirect => 3,
         (int)AcsPcode.MoreHudMessage or (int)AcsPcode.OptHudMessage
@@ -306,14 +320,13 @@ public static class MapBehaviorBytecodeWalker
         (int)AcsPcode.SetFontDirect => 1,
         (int)AcsPcode.GiveInventory or (int)AcsPcode.ClearInventory
             or (int)AcsPcode.TakeInventory or (int)AcsPcode.CheckInventory => 0,
-        >= (int)AcsPcode.IsNetworkGame and <= (int)AcsPcode.PlayerHealth => 0,
+        >= (int)AcsPcode.IsNetworkGame and <= (int)AcsPcode.PlayerArmorPoints => 0,
         (int)AcsPcode.Lspec1DirectB => 1,
         (int)AcsPcode.Lspec2DirectB => 1,
         (int)AcsPcode.Lspec3DirectB => 1,
         (int)AcsPcode.Lspec4DirectB => 2,
         (int)AcsPcode.Lspec5DirectB => 2,
         (int)AcsPcode.DelayDirectB or (int)AcsPcode.RandomDirectB => 1,
-        351 => 2, // C++ PCD_CALLFUNC wire (shadow legacy CallFunc enum alias)
         (int)AcsPcode.SetThingSpecial => 0,
         261 or 262 or 264 or 265 or 266 or 267 or 268 or 269 or 270 or 271 or 272
             or 273 or 274 or 275 or 277 or 278 or 279 or 281 or 290
@@ -321,7 +334,7 @@ public static class MapBehaviorBytecodeWalker
             or 332 or 333 or 334
             or 335 or 336
             or 337
-            or 342 or 343
+            or 340 or 342 or 343
             or 420 or 421
             or 344 or 345
             or 346 or 347
@@ -329,9 +342,6 @@ public static class MapBehaviorBytecodeWalker
             or 352 or 354 or 361
             or 427 or 428 or 430 or 431 or 432
             => 0, // C++ sector/level/input/player-info/negate-pitch/print-bind/thing-damage/actor-texture-light/thing-count-camera/classify-print/savestring/char-range/eternity-stack/morph-classify PCDs (shadow legacy global-var enum aliases)
-        (int)AcsPcode.AddGlobalVar or (int)AcsPcode.SubGlobalVar or (int)AcsPcode.MulGlobalVar
-            or (int)AcsPcode.DivGlobalVar or (int)AcsPcode.ModGlobalVar
-            or (int)AcsPcode.IncGlobalVar or (int)AcsPcode.DecGlobalVar => 1,
         (int)AcsPcode.SetMarineSprite
             or (int)AcsPcode.GetScreenWidth or (int)AcsPcode.GetScreenHeight
             or (int)AcsPcode.StrLen or (int)AcsPcode.SetHudSize
@@ -353,10 +363,11 @@ public static class MapBehaviorBytecodeWalker
             or (int)AcsPcode.EorWorldVar or (int)AcsPcode.EorGlobalVar or (int)AcsPcode.EorMapArray
             or (int)AcsPcode.EorWorldArray or (int)AcsPcode.EorGlobalArray or (int)AcsPcode.OrScriptVar
             or (int)AcsPcode.OrMapVar or (int)AcsPcode.OrWorldVar => 1,
-        313 or 314 or 315 or 316 or 317 or 318 or 319 or 320 or 321 or 322 or 323 or 324
+        308 or 309 or 310 or 311 or 312 => 1, // OR global/arrays and left-shift script variable.
+        313 or 314 or 315 or 316 or 317 or 318 or 319 or 320 or 321 or 322 or 323 or 324 or 325
             => 1, // C++ Ls/Rs script/map/world/global var+array shift PCDs (shadow legacy IncWorldArray… enum aliases)
         (int)AcsPcode.UseInventory or (int)AcsPcode.UseActorInventory => 0,
-        (int)AcsPcode.GetActorZ or (int)AcsPcode.GetActorFloorZ or (int)AcsPcode.GetActorAngle
+        (int)AcsPcode.GetActorX or (int)AcsPcode.GetActorY or (int)AcsPcode.GetActorZ or (int)AcsPcode.GetActorFloorZ or (int)AcsPcode.GetActorAngle
             or (int)AcsPcode.SetActorAngle or (int)AcsPcode.SpawnProjectile
             or (int)AcsPcode.ThingProjectile2 or (int)AcsPcode.ThingCountName
             or (int)AcsPcode.SpawnSpotFacing
@@ -436,15 +447,16 @@ public static class MapBehaviorBytecodeWalker
         (int)AcsPcode.SpawnSpotDirect => 16,
         (int)AcsPcode.ConsoleCommandDirect => 12,
         (int)AcsPcode.ConsoleCommand => 0,
-        (int)AcsPcode.FixedMul or (int)AcsPcode.FixedDiv => 0,
+        (int)AcsPcode.Sin or (int)AcsPcode.Cos or (int)AcsPcode.VectorAngle => 0,
+        (int)AcsPcode.SinglePlayer or (int)AcsPcode.FixedMul or (int)AcsPcode.FixedDiv => 0,
         (int)AcsPcode.SetGravity or (int)AcsPcode.SetAirControl => 0,
         (int)AcsPcode.SetGravityDirect or (int)AcsPcode.SetAirControlDirect => 4,
-        (int)AcsPcode.AssignGlobalVar or (int)AcsPcode.PushGlobalVar => 4,
+        (int)AcsPcode.AssignGlobalVar or (int)AcsPcode.PushGlobalVar => 1,
         (int)AcsPcode.StartTranslation
             or (int)AcsPcode.TranslationRange1 or (int)AcsPcode.TranslationRange2
             or (int)AcsPcode.TranslationRange3
             or (int)AcsPcode.EndTranslation => 0,
-        444 or 465 or 466
+        383 or 384 or 444 or 465 or 466
             => 0, // C++ PCD_TRANSLATIONRANGE3…PCD_TRANSLATIONRANGE5 wire (shadow legacy translation-range enum aliases)
         (int)AcsPcode.Call or (int)AcsPcode.CallDiscard => 1,
         (int)AcsPcode.ReturnVoid or (int)AcsPcode.ReturnVal => 0,
@@ -460,13 +472,12 @@ public static class MapBehaviorBytecodeWalker
             or (int)AcsPcode.DecWorldArray => 1,
         359 => 1, // C++ PCD_PUSHFUNCTION wire (shadow legacy PushFunction enum alias)
         361 => 0, // C++ PCD_SCRIPTWAITNAMED wire (shadow legacy ScriptWaitNamed enum alias)
-        381 or 382
-            => 0, // C++ PCD_LSPEC5EX/PCD_LSPEC5EXRESULT wire (shadow legacy lspec5 enum aliases)
+        (int)AcsPcode.Lspec5Ex or (int)AcsPcode.Lspec5ExResult => 4,
         360 or 362 or 363
             => 0, // C++ PCD_CALLSTACK/PCD_TRANSLATIONRANGE3/PCD_GOTOSTACK wire (shadow legacy eternity-stack enum aliases)
-        (int)AcsPcode.SaveString
-            or (int)AcsPcode.Lspec5Result => 0,
-        (int)AcsPcode.CallFunc => 2,
+        (int)AcsPcode.SaveString => 0,
+        (int)AcsPcode.Lspec5Result => 1,
+        (int)AcsPcode.CallFunc => 3,
         (int)AcsPcode.PrintScriptCharArray or (int)AcsPcode.PrintScriptCharRange
             or (int)AcsPcode.StrCpyToScriptCharRange
             or (int)AcsPcode.PrintMapCharRange or (int)AcsPcode.PrintWorldCharRange
@@ -478,26 +489,26 @@ public static class MapBehaviorBytecodeWalker
         376 or 377
             => 1, // C++ PCD_LSSCRIPTARRAY/PCD_RSSCRIPTARRAY wire (shadow legacy EorScriptArray/OrScriptArray enum aliases)
         393 or 400
-            => 1, // C++ PCD_LSSCRIPTVAR/PCD_RSSCRIPTVAR wire (shadow legacy LsScriptVar/RsScriptVar enum aliases)
+            => 1, // Legacy decoder aliases retained; native shift opcodes are 312-325.
         394 or 401
-            => 1, // C++ PCD_LSMAPVAR/PCD_RSMAPVAR wire (shadow legacy LsMapVar/RsMapVar enum aliases)
+            => 1, // Legacy decoder aliases retained; native shift opcodes are 312-325.
         395 or 402
-            => 1, // C++ PCD_LSWORLDVAR/PCD_RSWORLDVAR wire (shadow legacy LsWorldVar/RsWorldVar enum aliases)
+            => 1, // Legacy decoder aliases retained; native shift opcodes are 312-325.
         396 or 403
-            => 1, // C++ PCD_LSGLOBALVAR/PCD_RSGLOBALVAR wire (shadow legacy LsGlobalVar/RsGlobalVar enum aliases)
+            => 1, // Legacy decoder aliases retained; native shift opcodes are 312-325.
         397 or 404
-            => 1, // C++ PCD_LSMAPARRAY/PCD_RSMAPARRAY wire (shadow legacy LsMapArray/RsMapArray enum aliases)
+            => 1, // Legacy decoder aliases retained; native shift opcodes are 312-325.
         398 or 405
-            => 1, // C++ PCD_LSWORLDARRAY/PCD_RSWORLDARRAY wire (shadow legacy LsWorldArray/RsWorldArray enum aliases)
+            => 1, // Legacy decoder aliases retained; native shift opcodes are 312-325.
         399 or 406
-            => 1, // C++ PCD_LSGLOBALARRAY/PCD_RSGLOBALARRAY wire (shadow legacy LsGlobalArray/RsGlobalArray enum aliases)
+            => 1, // Legacy decoder aliases retained; native shift opcodes are 312-325.
         (int)AcsPcode.PushGlobalArray or (int)AcsPcode.AssignGlobalArray
             or (int)AcsPcode.AddGlobalArray or (int)AcsPcode.SubGlobalArray
             or (int)AcsPcode.MulGlobalArray or (int)AcsPcode.DivGlobalArray
             or (int)AcsPcode.ModGlobalArray or (int)AcsPcode.IncGlobalArray
             or (int)AcsPcode.DecGlobalArray => 1,
-        (int)AcsPcode.GiveInventoryDirect or (int)AcsPcode.TakeInventoryDirect
-            or (int)AcsPcode.CheckInventoryDirect => 8,
+        (int)AcsPcode.GiveInventoryDirect or (int)AcsPcode.TakeInventoryDirect => 8,
+        (int)AcsPcode.CheckInventoryDirect => 4,
         (int)AcsPcode.SetMusic or (int)AcsPcode.LocalSetMusic or (int)AcsPcode.MusicChange => 0,
         (int)AcsPcode.SetMusicDirect or (int)AcsPcode.LocalSetMusicDirect => 12,
         (int)AcsPcode.MoreHudMessage or (int)AcsPcode.OptHudMessage
@@ -507,7 +518,7 @@ public static class MapBehaviorBytecodeWalker
         (int)AcsPcode.SetFontDirect => 4,
         (int)AcsPcode.GiveInventory or (int)AcsPcode.ClearInventory
             or (int)AcsPcode.TakeInventory or (int)AcsPcode.CheckInventory => 0,
-        >= (int)AcsPcode.IsNetworkGame and <= (int)AcsPcode.PlayerHealth => 0,
+        >= (int)AcsPcode.IsNetworkGame and <= (int)AcsPcode.PlayerArmorPoints => 0,
         (int)AcsPcode.Lspec1DirectB => 2,
         (int)AcsPcode.Lspec2DirectB => 3,
         (int)AcsPcode.Lspec3DirectB => 4,
@@ -545,17 +556,18 @@ public static class MapBehaviorBytecodeWalker
             or (int)AcsPcode.EorWorldVar or (int)AcsPcode.EorGlobalVar or (int)AcsPcode.EorMapArray
             or (int)AcsPcode.EorWorldArray or (int)AcsPcode.EorGlobalArray or (int)AcsPcode.OrScriptVar
             or (int)AcsPcode.OrMapVar or (int)AcsPcode.OrWorldVar => 1,
-        313 or 314 or 315 or 316 or 317 or 318 or 319 or 320 or 321 or 322 or 323 or 324
+        308 or 309 or 310 or 311 or 312 => 1, // OR global/arrays and left-shift script variable.
+        313 or 314 or 315 or 316 or 317 or 318 or 319 or 320 or 321 or 322 or 323 or 324 or 325
             => 1, // C++ Ls/Rs script/map/world/global var+array shift PCDs (shadow legacy IncWorldArray… enum aliases)
         328 or 329 or 330 or 331
-            => 0, // C++ PCD_GETPLAYERINFO…PCD_REPLACETEXTURES (shadow legacy SetAirControlDirectB enum alias)
+            => 0, // C++ PCD_SECTORDAMAGE through PCD_GETACTORPITCH.
         332 or 333 or 334
-            => 0, // C++ PCD_NEGATEBINARY…PCD_SETACTORPITCH (shadow legacy negate/pitch enum aliases)
+            => 0, // C++ PCD_SETACTORPITCH through PCD_SETACTORSTATE.
         335 or 336
-            => 0, // C++ PCD_PRINTBIND…PCD_SETACTORSTATE (shadow legacy print-bind/state enum aliases)
+            => 0, // C++ PCD_THINGDAMAGE2 / PCD_USEINVENTORY.
         337
-            => 0, // C++ PCD_THINGDAMAGE2 / USEACTORINVENTORY wire (shadows ThingDamage2 enum alias)
-        342 or 343
+            => 0, // C++ PCD_USEACTORINVENTORY.
+        340 or 342 or 343
             => 0, // C++ PCD_GETACTORLIGHTLEVEL / PCD_SETMUGSHOTSTATE wire (shadows Lspec5Result enum alias)
         420 or 421
             => 0, // C++ PCD_CHECKACTORCEILINGTEXTURE / PCD_CHECKACTORFLOORTEXTURE wire (shadow legacy inventory enum aliases)
@@ -564,13 +576,10 @@ public static class MapBehaviorBytecodeWalker
         346 or 347 => 0, // C++ PCD_CHECKPLAYERCAMERA / PCD_GETPLAYERINPUT (shadow legacy GetPlayerInput enum alias)
         348 or 349 or 350
             => 0, // C++ PCD_CLASSIFYACTOR…PCD_PRINTHEX wire (shadow legacy classify/print enum aliases)
-        351 => 2, // C++ PCD_CALLFUNC wire (shadow legacy CallFunc enum alias)
-        352
-            => 0, // C++ PCD_SAVESTRING wire (shadow legacy SaveString enum alias)
         427 or 428 or 430 or 431 or 432
             => 0, // C++ PCD_MORPHACTOR…PCD_PRINTHEX wire (shadow legacy morph/classify enum aliases)
         (int)AcsPcode.UseInventory or (int)AcsPcode.UseActorInventory => 0,
-        (int)AcsPcode.GetActorZ or (int)AcsPcode.GetActorFloorZ or (int)AcsPcode.GetActorAngle
+        (int)AcsPcode.GetActorX or (int)AcsPcode.GetActorY or (int)AcsPcode.GetActorZ or (int)AcsPcode.GetActorFloorZ or (int)AcsPcode.GetActorAngle
             or (int)AcsPcode.SetActorAngle or (int)AcsPcode.SpawnProjectile
             or (int)AcsPcode.ThingProjectile2 or (int)AcsPcode.ThingCountName
             or (int)AcsPcode.SpawnSpotFacing

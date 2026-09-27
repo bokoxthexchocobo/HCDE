@@ -10,6 +10,10 @@ public enum CompatSurface
     Mbf21 = 1,
     Id24 = 2,
     Eternity = 4,
+    SharedLightMaximum = 8,
+    LegacyScriptWaitDirect = 16,
+    // Selects native Hexen defaults for converted crush/stop modes, independent of map format.
+    HexenCrushDefaults = 32,
 }
 
 public static class CompatSurfaceRules

@@ -13,14 +13,24 @@ public sealed class LevelSector
     public double FloorHeight { get; init; }
     public double CeilingHeight { get; init; }
     public short LightLevel { get; init; }
-    public short Special { get; init; }
+    public short Special { get; set; }
+    public int DamageAmount { get; set; }
+    public string DamageType { get; set; } = "None";
+    public int DamageInterval { get; set; }
+    public int Leakiness { get; set; }
+    public bool DamageEndsGodMode { get; set; }
+    public bool DamageEndsLevel { get; set; }
+    public bool HurtMonsters { get; init; }
+    public bool HarmInAir { get; init; }
     public short Tag { get; init; }
-    public string FloorPic { get; init; } = "-";
+    public string FloorPic { get; set; } = "-";
     public string CeilingPic { get; init; } = "-";
+    internal LevelSector Copy() => (LevelSector)MemberwiseClone();
 }
 
 public sealed class LevelSide
 {
+    public double MidTextureOffsetY { get; init; }
     public int Index { get; init; }
     public int Sector { get; init; }
     public string TopTexture { get; init; } = "-";
@@ -31,6 +41,7 @@ public sealed class LevelSide
 public sealed class LevelLine
 {
     public const int BlockingFlag = 1;
+    public const int TwoSidedFlag = 4;
     public const int BlockSoundFlag = 0x40;
     public const int BlockEverythingFlag = 0x00008000;
     public const int BlockHitscanFlag = 0x08000000;
@@ -54,7 +65,7 @@ public sealed class LevelLine
     public int Arg0 { get; init; }
     public int Arg1 { get; init; }
     public int Arg2 { get; init; }
-    public int Arg3 { get; init; }
+    public int Arg3 { get; set; }
     public int Arg4 { get; init; }
     public bool PlayerCross { get; init; }
     public bool PlayerUse { get; init; }
@@ -66,6 +77,8 @@ public sealed class LevelLine
     public bool BlocksMovement => OneSided || (Flags & (BlockingFlag | BlockEverythingFlag)) != 0;
 
     public bool RepeatsSpecial => Special == 1 || (Flags & RepeatSpecialFlag) != 0;
+
+    internal LevelLine Copy() => (LevelLine)MemberwiseClone();
 }
 
 public sealed class LevelThing
@@ -92,6 +105,9 @@ public sealed class PlayLevel
     public string MapName { get; init; } = "";
     public MapDataFormat Format { get; init; }
     public string Namespace { get; init; } = "";
+    public bool UsesDoomSectorNumbers => Format == MapDataFormat.DoomBinary
+        || Format == MapDataFormat.UdmfText && (Namespace.Equals("Doom", StringComparison.OrdinalIgnoreCase)
+            || Namespace.Equals("ZDoomTranslated", StringComparison.OrdinalIgnoreCase));
     public ReadOnlyMemory<byte> BehaviorData { get; internal set; }
     public IReadOnlyList<LevelVertex> Vertices { get; init; } = Array.Empty<LevelVertex>();
     public IReadOnlyList<LevelSector> Sectors { get; init; } = Array.Empty<LevelSector>();
@@ -104,6 +120,14 @@ public sealed class PlayLevel
     /// scans geometry directly so malformed block lists cannot bypass collision.
     /// </summary>
     public MapBlockmapRecord? Blockmap { get; set; }
+
+    /// <summary>Copies runtime line and sector state while sharing other map data.</summary>
+    public PlayLevel CopyForSimulation() => new()
+    {
+        MapName = MapName, Format = Format, Namespace = Namespace, BehaviorData = BehaviorData,
+        Vertices = Vertices, Sectors = Sectors.Select(sector => sector.Copy()).ToArray(), Sides = Sides, Things = Things, Blockmap = Blockmap,
+        Lines = Lines.Select(line => line.Copy()).ToList(),
+    };
 }
 
 /// <summary>
@@ -191,6 +215,7 @@ public static class LevelBuilder
             TopTexture = side.TopTexture,
             BottomTexture = side.BottomTexture,
             MidTexture = side.MidTexture,
+            MidTextureOffsetY = side.RowOffset,
         }).ToArray();
         var lines = new LevelLine[map.Core.Linedefs.Length];
         for (var i = 0; i < lines.Length; i++)
@@ -257,6 +282,13 @@ public static class LevelBuilder
             CeilingHeight = sector.HeightCeiling,
             LightLevel = (short)sector.LightLevel,
             Special = (short)sector.Special,
+            DamageAmount = sector.DamageAmount,
+            DamageType = sector.DamageAmount == 0 ? "None" : sector.DamageType,
+            // Native sector fields narrow to signed 16 bits before interval normalization.
+            DamageInterval = sector.DamageAmount == 0 ? 0 : Math.Max(1, (int)unchecked((short)sector.DamageInterval)),
+            Leakiness = sector.DamageAmount == 0 ? 0 : unchecked((short)sector.Leakiness),
+            HurtMonsters = sector.HurtMonsters,
+            HarmInAir = sector.HarmInAir,
             Tag = (short)sector.Id,
             FloorPic = sector.TextureFloor,
             CeilingPic = sector.TextureCeiling,
@@ -268,6 +300,11 @@ public static class LevelBuilder
             TopTexture = side.TextureTop,
             BottomTexture = side.TextureBottom,
             MidTexture = side.TextureMiddle,
+            MidTextureOffsetY = side.OffsetY + (
+                string.Equals(map.Namespace, "ZDoom", StringComparison.OrdinalIgnoreCase)
+                || string.Equals(map.Namespace, "ZDoomTranslated", StringComparison.OrdinalIgnoreCase)
+                || string.Equals(map.Namespace, "Vavoom", StringComparison.OrdinalIgnoreCase)
+                    ? side.OffsetYMid : 0),
         }).ToArray();
         var lines = new LevelLine[map.Linedefs.Count];
         for (var i = 0; i < lines.Length; i++)
@@ -276,6 +313,7 @@ public static class LevelBuilder
             var v1 = Vertex(vertices, source.V1);
             var v2 = Vertex(vertices, source.V2);
             var flags = 0;
+            if (source.TwoSided) flags |= LevelLine.TwoSidedFlag;
             if (source.Blocking)
                 flags |= LevelLine.BlockingFlag;
             if (source.BlockEverything) flags |= LevelLine.BlockEverythingFlag;

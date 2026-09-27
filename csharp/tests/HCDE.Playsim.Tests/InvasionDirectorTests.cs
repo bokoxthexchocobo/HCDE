@@ -24,7 +24,7 @@ public class InvasionDirectorTests
         sim.Tick();
         var bot = Assert.Single(sim.Actors.OfType<BotPawn>());
         // Verify these enemies can actually be killed through the combat path.
-        for (var i = 0; i < 3; i++)
+        for (var i = 0; i < 6 && !bot.IsDead; i++)
         {
             while (sim.Players.Single().WeaponCooldown > 1) sim.Tick();
             sim.QueueCommand(0, new PlayerCommand { Attack = true });

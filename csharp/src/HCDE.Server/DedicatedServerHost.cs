@@ -27,7 +27,10 @@ public sealed class DedicatedServerOptions
     public byte GameMode { get; set; }
     public string GameModeName { get; set; } = "Co-op";
     public bool Deathmatch { get; set; }
+    /// <summary>Suppress damaging-floor and actor-triggered ordinary map exits in deathmatch.</summary>
+    public bool NoExit { get; set; }
     public bool Teamplay { get; set; }
+    public CompatSurface Compatibility { get; set; } = CompatSurface.None;
     public string RconPassword { get; set; } = "";
     public int RconPort { get; set; }
     public int InvasionWaves { get; set; } = 8;
@@ -88,8 +91,9 @@ public sealed class DedicatedServerHost : IDisposable, IPregameInboundIntercepto
         if (level != null)
         {
             Simulation = AuthoritySimulation.Start(level, options.Pregame.Session.MapLoad.RngSeed, patch,
+                compat: options.Compatibility,
                 spawnOptions: new SpawnOptions(Math.Clamp((int)options.Skill, 0, 4),
-                    options.Deathmatch ? SpawnGameMode.Deathmatch : SpawnGameMode.Cooperative));
+                    options.Deathmatch ? SpawnGameMode.Deathmatch : SpawnGameMode.Cooperative), noExit: options.NoExit);
             if (options.GameMode == 4)
                 Simulation.Invasion.Configure(options.InvasionWaves, options.InvasionCountdownTics, options.InvasionIntermissionTics);
         }

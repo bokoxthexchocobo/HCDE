@@ -37,6 +37,8 @@ public class Actor : Thinker
     public bool Floating { get; set; }
     public double FloatSpeed { get; set; } = 4;
     public bool NoRadiusDamage { get; set; }
+    public bool NoSectorDamage { get; set; }
+    public bool ForceSectorDamage { get; set; }
     public bool Ambush { get; set; }
     public int PainChance { get; set; } = 256;
     public int ResurrectionHealth { get; internal set; }
@@ -52,6 +54,17 @@ public class Actor : Thinker
     public Fixed PreviousX { get; private set; }
     public Fixed PreviousY { get; private set; }
     public BamAngle Angle { get; set; }
+    private double _pitchDegrees;
+    public double PitchDegrees
+    {
+        get => _pitchDegrees;
+        set
+        {
+            if (!double.IsFinite(value)) throw new ArgumentOutOfRangeException(nameof(value));
+            _pitchDegrees = Fixed.FromDouble(this is PlayerPawn ? Math.Clamp(value, -89, 89) : value).ToDouble();
+        }
+    }
+
     private int _health = 100;
     public int Health
     {
@@ -109,6 +122,7 @@ public class Actor : Thinker
         {
             Brain?.Tick(Simulation, this);
             TickMovement(Simulation);
+            SectorDamage.Tick(Simulation, this);
         }
         base.Tick();
     }
@@ -137,19 +151,10 @@ public sealed class PlayerPawn : Actor
     }
     public void ClearCommands() => _commands.Clear();
     public PlayerInventory Inventory { get; } = new();
+    public bool GodMode { get; set; }
     public bool AttackPressed { get; set; }
     public bool UsePressed { get; set; }
     public bool UseHeld { get; internal set; }
-    private double _pitchDegrees;
-    public double PitchDegrees
-    {
-        get => _pitchDegrees;
-        set
-        {
-            if (!double.IsFinite(value)) throw new ArgumentOutOfRangeException(nameof(value));
-            _pitchDegrees = Fixed.FromDouble(Math.Clamp(value, -89, 89)).ToDouble();
-        }
-    }
     public int WeaponCooldown { get; internal set; }
 
     public override void Tick()
@@ -397,6 +402,10 @@ public sealed class AuthoritySimulation
     private readonly List<Actor> _actors;
     private uint _nextActorId;
     public uint CombatRandomState { get; private set; }
+    private uint _strobeRandomState;
+    private uint _flickerRandomState;
+    private uint _lightFlashRandomState;
+    private uint _fireFlickerRandomState;
     private readonly List<SectorMotion> _motions = new();
 
     private AuthoritySimulation(
@@ -404,7 +413,7 @@ public sealed class AuthoritySimulation
         ThinkerCollection thinkers,
         List<Actor> actors,
         int rngSeed,
-        CompatSurface compat)
+        CompatSurface compat, bool damageExitAllowed, SpawnOptions spawnOptions)
     {
         Level = level;
         Thinkers = thinkers;
@@ -412,9 +421,19 @@ public sealed class AuthoritySimulation
         _nextActorId = actors.Count == 0 ? 1 : checked(actors.Max(actor => actor.Id) + 1);
         RngSeed = rngSeed;
         CombatRandomState = unchecked((uint)rngSeed) ^ 0x9e3779b9u;
+        _strobeRandomState = unchecked((uint)rngSeed) ^ 0x7374726fu;
+        _flickerRandomState = unchecked((uint)rngSeed) ^ 0x666c6963u;
+        _lightFlashRandomState = unchecked((uint)rngSeed) ^ 0x666c6173u;
+        _fireFlickerRandomState = unchecked((uint)rngSeed) ^ 0x66697265u;
         Compat = compat;
+        DamageExitAllowed = damageExitAllowed;
+        GameMode = spawnOptions.Mode;
+        Skill = Math.Clamp(spawnOptions.Skill, 0, 4);
         Floors = level.Sectors.Select(sector => Fixed.FromDouble(sector.FloorHeight).ToDouble()).ToArray();
         Ceilings = level.Sectors.Select(sector => Fixed.FromDouble(sector.CeilingHeight).ToDouble()).ToArray();
+        Lights = level.Sectors.Select(sector => sector.LightLevel).ToArray();
+        LightActions.Initialize(this);
+        SectorDamage.Initialize(this);
         foreach (var actor in _actors)
         {
             actor.Simulation = this;
@@ -441,6 +460,8 @@ public sealed class AuthoritySimulation
     public uint Checksum { get; private set; }
     public string StatusLine { get; private set; } = "";
     public CompatSurface Compat { get; }
+    public SpawnGameMode GameMode { get; }
+    public int Skill { get; }
     public bool Exited { get; private set; }
     public bool SecretExit { get; private set; }
     public bool ReverbActive { get; }
@@ -450,6 +471,9 @@ public sealed class AuthoritySimulation
     public RewindBuffer Rewind { get; }
     internal double[] Floors { get; }
     internal double[] Ceilings { get; }
+    internal short[] Lights { get; }
+    internal List<LightEffect> LightEffects { get; } = [];
+    public short LightOf(int sector) => (uint)sector < (uint)Lights.Length ? Lights[sector] : (short)0;
     internal List<SectorMotion> Motions => _motions;
 
     public double FloorOf(int sector) => sector >= 0 && sector < Floors.Length ? Floors[sector] : (short)0;
@@ -459,11 +483,14 @@ public sealed class AuthoritySimulation
         PlayLevel level,
         int rngSeed = 0,
         DehackedPatchResult? dehacked = null,
-        CompatSurface compat = CompatSurface.None, SpawnOptions? spawnOptions = null)
+        CompatSurface compat = CompatSurface.None, SpawnOptions? spawnOptions = null, bool noExit = false)
     {
+        level = level.CopyForSimulation();
+        spawnOptions ??= new SpawnOptions();
         var thinkers = new ThinkerCollection();
         var actors = ActorSpawner.Spawn(level, thinkers, dehacked, spawnOptions).ToList();
-        return new AuthoritySimulation(level, thinkers, actors, rngSeed, compat);
+        return new AuthoritySimulation(level, thinkers, actors, rngSeed, compat,
+            !noExit || spawnOptions.Mode != SpawnGameMode.Deathmatch, spawnOptions);
     }
 
     public BotPawn AddBot(double x, double y)
@@ -498,6 +525,31 @@ public sealed class AuthoritySimulation
     }
 
     internal double NextCombatSpread() => ((int)(NextCombatRandom() >> 24) - (int)(NextCombatRandom() >> 24)) / 255.0;
+
+    // Independent managed stream: lighting must not change weapon damage/spread rolls.
+    internal int NextFlickerRandom()
+    {
+        _flickerRandomState = unchecked(1664525u * _flickerRandomState + 1013904223u);
+        return (int)(_flickerRandomState >> 24);
+    }
+
+    internal int NextLightFlashRandom()
+    {
+        _lightFlashRandomState = unchecked(1664525u * _lightFlashRandomState + 1013904223u);
+        return (int)(_lightFlashRandomState >> 24);
+    }
+
+    internal int NextFireFlickerRandom()
+    {
+        _fireFlickerRandomState = unchecked(1664525u * _fireFlickerRandomState + 1013904223u);
+        return (int)(_fireFlickerRandomState >> 24);
+    }
+
+    internal int NextStrobeDelay()
+    {
+        _strobeRandomState = unchecked(1664525u * _strobeRandomState + 1013904223u);
+        return (int)((_strobeRandomState >> 24) & 7) + 1;
+    }
 
     public ProjectileActor SpawnProjectile(Actor owner, ProjectileKind kind, Actor? target = null)
     {
@@ -560,6 +612,8 @@ public sealed class AuthoritySimulation
         SecretExit = secret;
     }
 
+    public bool DamageExitAllowed { get; }
+
     public string Describe() =>
         $"OK map={Level.MapName} tic={Thinkers.Clock.Tic} players={Players.Count()} bots={_actors.OfType<BotPawn>().Count()} checksum={Checksum:x8} invasion={Invasion.Phase} exited={(Exited ? 1 : 0)} secret={(SecretExit ? 1 : 0)}";
 
@@ -589,7 +643,7 @@ public sealed class AuthoritySimulation
                 StateTics = actor.States.RemainingTics,
                 OnGround = actor.OnGround,
                 WeaponCooldown = actor is PlayerPawn pawn ? pawn.WeaponCooldown : 0,
-                Pitch = actor is PlayerPawn aiming ? Fixed.FromDouble(aiming.PitchDegrees).Raw : 0,
+                Pitch = Fixed.FromDouble(actor.PitchDegrees).Raw,
                 UseHeld = actor is PlayerPawn usingPawn && usingPawn.UseHeld,
             });
         }
@@ -605,7 +659,7 @@ public sealed class AuthoritySimulation
         foreach (var pose in state.Actors)
         {
             var actor = _actors.FirstOrDefault(candidate => candidate.Id == pose.Id);
-            if (actor != null && (pose.WeaponCooldown < 0 || Math.Abs((long)pose.Pitch) > 89L * 65536
+            if (actor != null && (pose.WeaponCooldown < 0 || Math.Abs((long)pose.Pitch) > (actor is PlayerPawn ? 89L : 180L) * 65536
                 || pose.HasPhysics && (!actor.States.HasState(pose.State) || pose.StateTics < -1)))
                 throw new InvalidOperationException("Saved actor state is not in the current table.");
         }
@@ -621,6 +675,7 @@ public sealed class AuthoritySimulation
             actor.X = new Fixed(pose.X);
             actor.Y = new Fixed(pose.Y);
             actor.Angle = new BamAngle(pose.Angle);
+            actor.PitchDegrees = new Fixed(pose.Pitch).ToDouble();
             actor.RestoreHealth(pose.Health);
             actor.Z = new Fixed(pose.Z);
             actor.VelocityX = new Fixed(pose.VelocityX);
@@ -634,7 +689,7 @@ public sealed class AuthoritySimulation
             {
                 player.ClearCommands(); player.AttackPressed = false; player.UsePressed = false;
                 player.WeaponCooldown = pose.WeaponCooldown;
-                player.PitchDegrees = new Fixed(pose.Pitch).ToDouble(); player.UseHeld = pose.UseHeld;
+                player.UseHeld = pose.UseHeld;
             }
             actor.RememberPosition();
         }
@@ -669,6 +724,9 @@ public sealed class AuthoritySimulation
 
     public void Tick()
     {
+        // Native ACS observes Level->time before the end-of-tic increment.
+        var levelTic = Thinkers.Clock.Tic;
+        LightEffects.RemoveAll(effect => effect.Tick(this));
         Thinkers.Run();
         _actors.RemoveAll(actor => actor.Destroyed);
         CollectPickups();
@@ -677,7 +735,7 @@ public sealed class AuthoritySimulation
         LineSpecials.ActivateUses(this);
         LineSpecials.TickMotions(this);
         foreach (var actor in _actors.Where(actor => actor is not ProjectileActor)) ActorPhysics.FitToSector(this, actor);
-        Acs.Tick(this);
+        Acs.Tick(this, levelTic);
         Invasion.Tick(this);
         if (RewindEnabled)
             Rewind.Capture(this);
@@ -736,12 +794,22 @@ public sealed class AuthoritySimulation
     private void RecomputeChecksum()
     {
         var hash = 2166136261u;
+        hash = Mix(hash, unchecked((uint)Compat));
+        hash = Mix(hash, DamageExitAllowed ? 1u : 0u);
+        hash = Mix(hash, (uint)GameMode);
+        hash = Mix(hash, (uint)Skill);
         hash = Mix(hash, unchecked((uint)Thinkers.Clock.Tic));
         hash = Mix(hash, unchecked((uint)RngSeed));
         hash = Mix(hash, CombatRandomState);
+        hash = Mix(hash, _strobeRandomState);
+        hash = Mix(hash, _flickerRandomState);
+        hash = Mix(hash, _lightFlashRandomState);
+        hash = Mix(hash, _fireFlickerRandomState);
+        hash = Mix(hash, Acs.Checksum);
         foreach (var actor in _actors.OrderBy(actor => actor.Id))
         {
             hash = Mix(hash, actor.Id);
+            hash = Mix(hash, unchecked((uint)actor.ThingId));
             hash = Mix(hash, unchecked((uint)actor.X.Raw));
             hash = Mix(hash, unchecked((uint)actor.Y.Raw));
             hash = Mix(hash, unchecked((uint)actor.Z.Raw));
@@ -749,6 +817,7 @@ public sealed class AuthoritySimulation
             hash = Mix(hash, unchecked((uint)actor.VelocityY.Raw));
             hash = Mix(hash, unchecked((uint)actor.VelocityZ.Raw));
             hash = Mix(hash, actor.Angle.Raw);
+            hash = Mix(hash, unchecked((uint)Fixed.FromDouble(actor.PitchDegrees).Raw));
             hash = Mix(hash, unchecked((uint)actor.States.Current));
             hash = Mix(hash, unchecked((uint)actor.States.RemainingTics));
             hash = Mix(hash, unchecked((uint)actor.Health));
@@ -764,13 +833,17 @@ public sealed class AuthoritySimulation
             hash = Mix(hash, (uint)actor.RaiseDuration);
             hash = Mix(hash, (uint)actor.Mass);
             hash = Mix(hash, actor.NoRadiusDamage ? 1u : 0u);
+            hash = Mix(hash, actor.NoSectorDamage ? 1u : 0u);
+            hash = Mix(hash, actor.ForceSectorDamage ? 1u : 0u);
             hash = Mix(hash, actor.Ambush ? 1u : 0u);
             hash = Mix(hash, actor.LastDamageSourceId ?? 0);
             if (actor is PlayerPawn player)
             {
                 hash = Mix(hash, (uint)player.WeaponCooldown);
+                hash = Mix(hash, player.PlayerNum);
+                hash = Mix(hash, player.GodMode ? 1u : 0u);
                 hash = Mix(hash, player.UseHeld ? 1u : 0u);
-                hash = Mix(hash, (uint)Fixed.FromDouble(player.PitchDegrees).Raw);
+
                 hash = Mix(hash, player.Inventory.BlueKey ? 1u : 0u);
                 hash = Mix(hash, player.Inventory.YellowKey ? 1u : 0u);
                 hash = Mix(hash, player.Inventory.RedKey ? 1u : 0u);
@@ -796,10 +869,40 @@ public sealed class AuthoritySimulation
             }
         }
 
+        foreach (var line in Level.Lines)
+        {
+            hash = Mix(hash, unchecked((uint)line.Special));
+            hash = Mix(hash, unchecked((uint)line.Arg3));
+        }
+        foreach (var side in Level.Sides)
+        {
+            var offsetBits = BitConverter.DoubleToInt64Bits(side.MidTextureOffsetY);
+            hash = Mix(hash, unchecked((uint)offsetBits));
+            hash = Mix(hash, unchecked((uint)(offsetBits >> 32)));
+        }
+        foreach (var sector in Level.Sectors)
+        {
+            hash = Mix(hash, unchecked((uint)sector.Special));
+            hash = Mix(hash, unchecked((uint)sector.DamageAmount));
+            hash = Mix(hash, unchecked((uint)sector.DamageInterval));
+            hash = Mix(hash, unchecked((uint)sector.Leakiness));
+            hash = Mix(hash, sector.DamageEndsGodMode ? 1u : 0u);
+            hash = Mix(hash, sector.DamageEndsLevel ? 1u : 0u);
+            hash = Mix(hash, sector.HurtMonsters ? 1u : 0u);
+            hash = Mix(hash, sector.HarmInAir ? 1u : 0u);
+            hash = Mix(hash, (uint)sector.DamageType.Length);
+            foreach (var character in sector.DamageType) hash = Mix(hash, character);
+            hash = Mix(hash, (uint)sector.FloorPic.Length);
+            foreach (var character in sector.FloorPic) hash = Mix(hash, character);
+        }
         foreach (var floor in Floors)
             hash = Mix(hash, unchecked((uint)Fixed.FromDouble(floor).Raw));
         foreach (var ceiling in Ceilings)
             hash = Mix(hash, unchecked((uint)Fixed.FromDouble(ceiling).Raw));
+        foreach (var light in Lights)
+            hash = Mix(hash, unchecked((uint)light));
+        foreach (var effect in LightEffects.OrderBy(effect => effect.Sector))
+            hash = Mix(hash, effect.Checksum);
         foreach (var motion in _motions.OrderBy(motion => motion.SectorIndex).ThenBy(motion => motion.Kind))
         {
             foreach (var value in new[] { motion.SectorIndex, (int)motion.Kind, motion.ClosedFloor,
@@ -807,7 +910,9 @@ public sealed class AuthoritySimulation
                 motion.Wait, motion.CrushDamage, motion.Closing ? 1 : 0, motion.CloseAfterOpen ? 1 : 0,
                 motion.Tag, motion.Paused ? 1 : 0, motion.Loop ? 1 : 0, motion.ReturnSpeed,
                 motion.SlowOnCrush ? 1 : 0, motion.StopOnCrush ? 1 : 0, motion.Slowed ? 1 : 0,
-                motion.StairGroup, motion.Completed ? 1 : 0 })
+                motion.StairGroup, motion.StairSeedIndex, motion.Completed ? 1 : 0, motion.StairStopped ? 1 : 0, motion.ResetCountdown, motion.WaitingForReset ? 1 : 0,
+                motion.StepPeriod, motion.StepCountdown, motion.StairPause, motion.CloseOnly ? 1 : 0,
+                motion.OpenAfterClose ? 1 : 0, motion.CeilingDirection, motion.FloorDirection, motion.CrushWithoutDamage ? 1 : 0, motion.FloorCrushStopEligible ? 1 : 0 })
             {
                 hash = Mix(hash, unchecked((uint)BitConverter.DoubleToInt64Bits(value)));
                 hash = Mix(hash, unchecked((uint)(BitConverter.DoubleToInt64Bits(value) >> 32)));

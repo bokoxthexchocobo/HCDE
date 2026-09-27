@@ -43,7 +43,8 @@ public class Phase6CombatTests
         player.Inventory.Selected = WeaponKind.Fist;
         sim.QueueCommand(0, new PlayerCommand { Attack = true });
         sim.Tick();
-        Assert.Equal(50, Target(sim).Health);
+        Assert.InRange(60 - Target(sim).Health, 2, 20);
+        Assert.Equal(0, (60 - Target(sim).Health) % 2);
         Assert.Equal(50, player.Inventory.Bullets);
 
         var far = Range(3001, 200);

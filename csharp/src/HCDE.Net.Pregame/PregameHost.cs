@@ -54,6 +54,11 @@ public sealed class PregameHost
         DrainInbound(nowMilliseconds);
         DriveConnectingClients(nowMilliseconds);
         DriveWaitingClients(nowMilliseconds);
+        // Ready peers still have reliable setup traffic, including StartGame.
+        // Retry it even when no inbound packet arrives to trigger a flush.
+        foreach (var client in _clients)
+            if (client.Status == ConnectionStatus.Ready)
+                FlushClient(client, nowMilliseconds);
     }
 
     private void DrainInbound(ulong nowMilliseconds)
@@ -177,6 +182,15 @@ public sealed class PregameHost
         if (_options.RequirePassword && connect.Password != _options.Password)
         {
             SendReject(remote, PregameSetupType.WrongPassword);
+            return;
+        }
+
+        // A retransmitted Connect belongs to the existing endpoint's session.
+        // Do this before capacity checks so a full server can repeat its ack.
+        var existing = FindClientByAddress(remote);
+        if (existing is not null)
+        {
+            SendConnectAck(existing);
             return;
         }
 
@@ -364,7 +378,7 @@ public sealed class PregameHost
 
     private void FlushClient(PregameClient client, ulong nowMilliseconds, bool force = false)
     {
-        if (client.Sender.TryFlush(client.Connection, nowMilliseconds, _netBuffer, out var length, force))
+        if (client.Sender.TryFlush(client.Connection, nowMilliseconds, _netBuffer, out var length, force) && length > 0)
             PregameWire.TrySend(_transport, _netBuffer.AsSpan(0, length), client.Address);
     }
 

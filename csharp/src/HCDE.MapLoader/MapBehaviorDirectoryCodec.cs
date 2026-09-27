@@ -56,7 +56,7 @@ public static class MapBehaviorDirectoryCodec
         MapBehaviorFormat format,
         uint directoryOffset)
     {
-        if (format != MapBehaviorFormat.AcsOld || directoryOffset < 24 || directoryOffset + 4 > data.Length)
+        if (format != MapBehaviorFormat.AcsOld || directoryOffset < 24 || (ulong)directoryOffset + 4 > (ulong)data.Length)
             return format;
 
         var pretag = BinaryPrimitives.ReadUInt32LittleEndian(data.Slice((int)directoryOffset - 4, 4));
@@ -77,7 +77,7 @@ public static class MapBehaviorDirectoryCodec
         scripts = Array.Empty<MapBehaviorScriptEntry>();
         rejectReason = null;
 
-        if (directoryOffset + 4 > data.Length)
+        if ((ulong)directoryOffset + 4 > (ulong)data.Length)
             return Reject("behavior-directory-out-of-range", out scripts, out rejectReason);
 
         var scriptCount = BinaryPrimitives.ReadInt32LittleEndian(data[(int)directoryOffset..]);
@@ -85,8 +85,7 @@ public static class MapBehaviorDirectoryCodec
             return Reject("behavior-script-count-negative", out scripts, out rejectReason);
 
         var cursor = (int)directoryOffset + 4;
-        var required = cursor + scriptCount * 12;
-        if (required > data.Length)
+        if (scriptCount > (data.Length - cursor) / 12)
             return Reject("behavior-script-directory-truncated", out scripts, out rejectReason);
 
         if (scriptCount == 0)

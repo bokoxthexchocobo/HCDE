@@ -93,6 +93,9 @@ public static class DedicatedServerCommandLine
                 case "--deathmatch":
                     options.Deathmatch = true;
                     break;
+                case "--hexen-crush-defaults":
+                    options.Compatibility |= CompatSurface.HexenCrushDefaults;
+                    break;
                 case "--teamplay":
                     options.Teamplay = true;
                     break;
@@ -226,6 +229,7 @@ public static class DedicatedServerCommandLine
         Console.WriteLine(
             "Usage: hcdeserv --iwad <path> [--map <name>] [--port <port>] [--bind <ipv4>] [--rng-seed <int>]");
         Console.WriteLine("       [--server-name <name>] [--skill <0-255>] [--deathmatch] [--teamplay]");
+        Console.WriteLine("       [--hexen-crush-defaults] (converted crush/stop defaults only; not full Hexen support)");
         Console.WriteLine("       [--file <WAD-or-PK3>] (repeat in load order; later maps override earlier maps)");
         Console.WriteLine("       [--gamemode <id>] [--gamemode-name <label>] [--no-query]");
         Console.WriteLine("       [--invasion-waves <1-65535>] [--invasion-countdown <seconds>] [--invasion-intermission <seconds>]");

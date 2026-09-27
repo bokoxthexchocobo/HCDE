@@ -3,10 +3,8 @@ namespace HCDE.Playsim;
 /// <summary>Weapon dispatch: paced melee/hitscan, seeded pellet spread and traveling projectiles.</summary>
 public static class HitscanCombat
 {
-    public const int MeleeDamage = 10;
-    public const int BulletDamage = 10;
     public const double MeleeRange = 64;
-    public const double HitscanRange = 2048;
+    public const double HitscanRange = 8192; // PLAYERMISSILERANGE; monster hitscans use MISSILERANGE.
 
     public static bool Fire(AuthoritySimulation sim, PlayerPawn player)
     {
@@ -25,9 +23,13 @@ public static class HitscanCombat
         var melee = weapon is WeaponKind.Fist or WeaponKind.Chainsaw;
         for (var pellet = 0; pellet < definition.Pellets; pellet++)
         {
-            var spread = definition.SpreadDegrees == 0 ? 0 : sim.NextCombatSpread() * definition.SpreadDegrees;
-            var target = CombatTrace.FindTarget(sim, player, melee ? MeleeRange : HitscanRange, spread);
-            var damage = definition.Pellets > 1 ? 5 * (1 + (int)(sim.NextCombatRandom() % 3)) : melee ? MeleeDamage : BulletDamage;
+            // GunShot / A_FireShotgun2 / A_Punch / A_Saw roll damage before spread.
+            var damage = melee ? 2 * (1 + (int)(sim.NextCombatRandom() % 10))
+                : 5 * (1 + (int)(sim.NextCombatRandom() % 3));
+            var spreadScale = weapon == WeaponKind.Chainsaw ? 1 : 255.0 / 256;
+            var spread = definition.SpreadDegrees == 0 ? 0 : sim.NextCombatSpread() * definition.SpreadDegrees * spreadScale;
+            var pitchSpread = weapon == WeaponKind.SuperShotgun ? sim.NextCombatSpread() * (7.097 * 255 / 256) : 0;
+            var target = CombatTrace.FindTarget(sim, player, melee ? MeleeRange : HitscanRange, spread, pitchSpread);
             if (target != null) ActorDamage.Apply(target, damage, player);
         }
         return true;

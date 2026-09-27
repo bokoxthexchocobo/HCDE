@@ -74,7 +74,7 @@ public class Phase3SimulationTests
     }
 
     [Fact]
-    public void Acs_DelayThenExitRunsOnTheThirdTic()
+    public void Acs_DelayOneThenExitRunsOnTheSecondTic()
     {
         var sim = AuthoritySimulation.Start(new PlayLevel { MapName = "MAP01" });
         sim.Acs.Add(new AcsProgram
@@ -93,8 +93,6 @@ public class Phase3SimulationTests
         sim.Tick();
         Assert.False(sim.Exited);
         Assert.Equal(1, sim.Acs.RunningCount);
-        sim.Tick();
-        Assert.False(sim.Exited);
         sim.Tick();
         Assert.True(sim.Exited);
         Assert.Equal(0, sim.Acs.RunningCount);

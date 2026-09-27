@@ -43,10 +43,17 @@ public sealed class UdmfSidedef
     public string TextureMiddle { get; set; } = "-";
     public int OffsetX { get; set; }
     public int OffsetY { get; set; }
+    public double OffsetYMid { get; set; }
 }
 
 public sealed class UdmfSector
 {
+    public int DamageAmount { get; set; }
+    public string DamageType { get; set; } = "None";
+    public int DamageInterval { get; set; } = 32;
+    public int Leakiness { get; set; }
+    public bool HurtMonsters { get; set; }
+    public bool HarmInAir { get; set; }
     public double HeightFloor { get; set; }
     public double HeightCeiling { get; set; }
     public string TextureFloor { get; set; } = "-";
@@ -305,10 +312,17 @@ public static class UdmfTextMapParser
             TextureMiddle = Text(fields, "texturemiddle", "-"),
             OffsetX = Int(fields, "offsetx"),
             OffsetY = Int(fields, "offsety"),
+            OffsetYMid = Number(fields, "offsety_mid"),
         };
 
         private static UdmfSector ReadSector(Dictionary<string, Value> fields) => new()
         {
+            DamageAmount = Int(fields, "damageamount"),
+            DamageType = Text(fields, "damagetype", "None"),
+            DamageInterval = Int(fields, "damageinterval", 32),
+            Leakiness = Int(fields, "leakiness"),
+            HurtMonsters = Bool(fields, "hurtmonsters"),
+            HarmInAir = Bool(fields, "harminair"),
             HeightFloor = Number(fields, "heightfloor"),
             HeightCeiling = Number(fields, "heightceiling"),
             TextureFloor = Text(fields, "texturefloor", "-"),

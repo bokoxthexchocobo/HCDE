@@ -23,7 +23,8 @@ public class MapsModsTests
         sim.QueueCommand(0, new PlayerCommand { Use = true });
         sim.Tick();
         Assert.True(sim.Exited);
-        Assert.Equal(0, line.Special);
+        Assert.Equal(0, sim.Level.Lines[0].Special);
+        Assert.Equal(11, line.Special);
     }
 
     [Theory]

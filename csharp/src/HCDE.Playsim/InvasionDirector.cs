@@ -31,6 +31,37 @@ public sealed class InvasionDirector
     public int CountdownTics { get; private set; }
     public int IntermissionTics { get; private set; } = WaveGapTics;
     public int SpawnSpotCount { get; private set; }
+    // Native EInvasionState IDs; waves spawn atomically here, then enter cleanup.
+    public byte NativeState => (byte)(!Enabled ? 0 : Phase switch
+    {
+        InvasionPhase.Waiting => 1,
+        InvasionPhase.Countdown => 2,
+        InvasionPhase.Wave => 4,
+        InvasionPhase.Intermission => 5,
+        InvasionPhase.Victory => 6,
+        _ => 0,
+    });
+
+    internal int? QueryAcs(int function) => function switch
+    {
+        19700 => NativeState,
+        19701 => Cooldown,
+        19702 => Wave,
+        19703 => MaxWaves,
+        19704 => Spawned, // The managed wave budget is spawned in one batch.
+        19705 => Spawned,
+        19706 => Cleared,
+        19707 => ActiveMonsters,
+        _ => null,
+    };
+    public int ClassicState => !Enabled ? 0 : Phase switch
+    {
+        InvasionPhase.Countdown => 5,
+        InvasionPhase.Wave => 6,
+        InvasionPhase.Intermission => 7,
+        InvasionPhase.Victory => 8,
+        _ => 0,
+    };
 
     internal void RegisterChild(Actor parent, Actor child)
     {

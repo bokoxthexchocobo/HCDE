@@ -50,7 +50,7 @@ public static class SimSavegame
         var span = buffer.AsSpan();
         Magic.CopyTo(span);
         var cursor = 4;
-        BinaryPrimitives.WriteUInt16LittleEndian(span[cursor..], 5);
+        BinaryPrimitives.WriteUInt16LittleEndian(span[cursor..], 6);
         cursor += 2;
         BinaryPrimitives.WriteInt32LittleEndian(span[cursor..], state.Tic);
         cursor += 4;
@@ -103,7 +103,7 @@ public static class SimSavegame
         }
 
         var version = BinaryPrimitives.ReadUInt16LittleEndian(bytes[4..]);
-        if (version is not (1 or 2 or 3 or 4 or 5))
+        if (version is not (1 or 2 or 3 or 4 or 5 or 6))
         {
             error = "save-version";
             return false;

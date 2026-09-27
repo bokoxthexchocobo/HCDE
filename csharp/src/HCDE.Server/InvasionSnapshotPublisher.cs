@@ -9,16 +9,7 @@ public static class InvasionSnapshotPublisher
 {
     public static InvasionSnapshotHeader Capture(InvasionDirector director) => new(
         flags: 0,
-        state: !director.Enabled ? LiveConstants.InvasionStateDisabled : director.Phase switch
-        {
-            InvasionPhase.Waiting => LiveConstants.InvasionStateWaiting,
-            InvasionPhase.Countdown => LiveConstants.InvasionStateCountdown,
-            // This subset spawns the whole wave at once, then waits for kills.
-            InvasionPhase.Wave => LiveConstants.InvasionStateCleanup,
-            InvasionPhase.Intermission => LiveConstants.InvasionStateIntermission,
-            InvasionPhase.Victory => LiveConstants.InvasionStateVictory,
-            _ => LiveConstants.InvasionStateDisabled,
-        },
+        state: director.NativeState,
         stateTics: (uint)director.Cooldown,
         wave: (uint)director.Wave,
         maxWaves: (uint)director.MaxWaves,

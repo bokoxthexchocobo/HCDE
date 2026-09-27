@@ -7,6 +7,48 @@ namespace HCDE.Server.Tests;
 public class PlayerPoseReplicationTests
 {
     [Fact]
+    public void AnimatedLightPublishesEachAuthoritativeStep()
+    {
+        var simulation = AuthoritySimulation.Start(new PlayLevel
+        {
+            Format = MapDataFormat.HexenBinary,
+            Sectors = [new LevelSector { Index = 0, Tag = 7, LightLevel = 128, CeilingHeight = 128 }],
+            Things = [new LevelThing { Type = 1 }],
+        });
+        Assert.True(LineSpecials.ActivateMapLine(simulation, simulation.Players.Single(),
+            new LevelLine { Special = 113, Arg0 = 7, Arg1 = 328, Arg2 = 2, PlayerUse = true }, true));
+        var store = new GuestWorldStateStore();
+        foreach (var expected in new[] { 128, 228, 328 })
+        {
+            simulation.Tick(); SimSnapshotPublisher.Publish(simulation, store);
+            var buffer = new byte[4096];
+            var written = WorldStateTailBuilder.WriteCoopTailFromStore(buffer, store, 1, replicateSectorMetadata: true);
+            Assert.True(ServerSnapshotTailWalker.TryWalk(buffer.AsSpan(0, written), out var sections, out _, out var error), error);
+            Assert.Equal(expected, Assert.Single(sections.WorldDeltaSectors!).LightLevel);
+        }
+    }
+
+    [Theory]
+    [InlineData(110, 328)]
+    [InlineData(111, -72)]
+    public void ChangedSectorLightReachesSnapshotWithoutClampingToByte(int special, int expected)
+    {
+        var simulation = AuthoritySimulation.Start(new PlayLevel
+        {
+            Format = MapDataFormat.HexenBinary,
+            Sectors = [new LevelSector { Index = 0, Tag = 7, LightLevel = 128, CeilingHeight = 128 }],
+            Things = [new LevelThing { Type = 1 }],
+        });
+        Assert.True(LineSpecials.ActivateMapLine(simulation, simulation.Players.Single(),
+            new LevelLine { Special = special, Arg0 = 7, Arg1 = 200, PlayerUse = true }, true));
+        var store = new GuestWorldStateStore(); SimSnapshotPublisher.Publish(simulation, store);
+        var buffer = new byte[4096];
+        var written = WorldStateTailBuilder.WriteCoopTailFromStore(buffer, store, 1, replicateSectorMetadata: true);
+        Assert.True(ServerSnapshotTailWalker.TryWalk(buffer.AsSpan(0, written), out var sections, out _, out var error), error);
+        Assert.Equal(expected, Assert.Single(sections.WorldDeltaSectors!).LightLevel);
+    }
+
+    [Fact]
     public void FractionalSectorHeightsCarryPlayerAndReachSnapshot()
     {
         var simulation = AuthoritySimulation.Start(new PlayLevel {

@@ -84,6 +84,94 @@ public class VerificationErrorCodecTests
 
 public class StartGameServiceTests
 {
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public void DelayedConnectAckCannotRegressStartingGuestOrReplaceSession(bool differentToken)
+    {
+        using var host = new UdpTransport(); host.Bind(0); host.SetNonBlocking(true);
+        using var transport = new UdpTransport(); transport.Bind(0); transport.SetNonBlocking(true);
+        var endpoint = new NetworkEndpoint(System.Net.IPAddress.Loopback, transport.BoundPort);
+        var guest = new PregameGuest(transport, new PregameGuestOptions
+        { ServerAddress = new NetworkEndpoint(System.Net.IPAddress.Loopback, host.BoundPort) });
+        var buffer = new byte[2048];
+        void ConnectAck(uint token)
+        {
+            var length = ConnectAckPacket.Write(buffer, 1, 1, 8, token,
+                PreConnectAckFlags.HcdeService, PregameConstants.ConnectProtocolVersion, HcdeConnectFlags.ServerAuthority);
+            Assert.True(PregameWire.TrySend(host, buffer.AsSpan(0, length), endpoint));
+        }
+        void StartGame()
+        {
+            var length = HcdeServicePacket.Write(buffer, PregameServiceType.StartGame, 123, 1, 0, ReadOnlySpan<byte>.Empty);
+            Assert.True(PregameWire.TrySend(host, buffer.AsSpan(0, length), endpoint));
+        }
+        void PumpUntil(Func<bool> condition)
+        {
+            var deadline = Environment.TickCount64 + 2000;
+            do { guest.Pump((ulong)Environment.TickCount64); }
+            while (!condition() && Environment.TickCount64 < deadline);
+            Assert.True(condition());
+        }
+        ConnectAck(123);
+        PumpUntil(() => guest.Phase == PregameGuestPhase.WaitingForAssignment);
+        StartGame(); PumpUntil(() => guest.Phase == PregameGuestPhase.Starting);
+        // Consume pending traffic, dropping the first StartGameAck.
+        var receivedAck = false;
+        while (PregameWire.TryReceive(host, buffer, out var length, out _, TimeSpan.FromMilliseconds(20)) == SetupPacketDecodeStatus.Ok)
+            if (HcdeServicePacket.TryRead(buffer.AsSpan(0, length), out var service)
+                && service.Service == PregameServiceType.StartGameAck) receivedAck = true;
+        Assert.True(receivedAck);
+        ConnectAck(differentToken ? 456u : 123u);
+        // A following StartGame retry is rejected as a duplicate. It must not be
+        // needed to restore the guest phase after a stale ConnectAck.
+        StartGame();
+        PumpUntil(() => guest.Connection.ServiceDuplicateCount > 0);
+        Assert.Equal(123u, guest.Connection.SessionToken);
+        Assert.Equal(PregameGuestPhase.Starting, guest.Phase);
+        {
+            Assert.Equal(SetupPacketDecodeStatus.Ok,
+                PregameWire.TryReceive(host, buffer, out var length, out _, TimeSpan.FromSeconds(2)));
+            Assert.True(HcdeServicePacket.TryRead(buffer.AsSpan(0, length), out var ack));
+            Assert.Equal(PregameServiceType.StartGameAck, ack.Service);
+            Assert.Equal(123u, ack.SessionToken);
+        }
+    }
+
+    [Fact]
+    public void ReadyClientRetransmitsDroppedStartGameWithoutInboundTraffic()
+    {
+        using var transport = new UdpTransport(); transport.Bind(0); transport.SetNonBlocking(true);
+        using var guest = new UdpTransport(); guest.Bind(0); guest.SetNonBlocking(true);
+        var host = new PregameHost(transport);
+        var client = host.Clients[0];
+        client.Address = new NetworkEndpoint(System.Net.IPAddress.Loopback, guest.BoundPort);
+        client.Status = ConnectionStatus.Ready; client.Connection.SessionToken = 123;
+        host.StartGame(1000);
+        var buffer = new byte[2048];
+        // Consume the first datagram without acknowledging it, simulating loss.
+        Assert.True(guest.TryReceive(buffer, out _, out _, TimeSpan.FromSeconds(2)));
+        var pending = Assert.Single(client.Sender.Queue.Pending, item => item.Active);
+        Assert.Equal(1u, pending.SendCount);
+        var retryTime = 1000UL + PregameConstants.ServiceResendMilliseconds;
+        host.Pump(retryTime - 1); Assert.Equal(1u, pending.SendCount);
+        host.Pump(retryTime); Assert.Equal(2u, pending.SendCount);
+        Assert.Equal(SetupPacketDecodeStatus.Ok,
+            PregameWire.TryReceive(guest, buffer, out var length, out _, TimeSpan.FromSeconds(2)));
+        Assert.True(HcdeServicePacket.TryRead(buffer.AsSpan(0, length), out var packet));
+        Assert.Equal(PregameServiceType.StartGame, packet.Service);
+        Assert.False(host.AllReadyClientsAckedStartGame);
+        // A real acknowledgement must still be received before live bootstrap.
+        var ackLength = HcdeServicePacket.Write(buffer, PregameServiceType.StartGameAck,
+            123, 1, pending.Sequence, ReadOnlySpan<byte>.Empty);
+        Assert.True(PregameWire.TrySend(guest, buffer.AsSpan(0, ackLength),
+            new NetworkEndpoint(System.Net.IPAddress.Loopback, transport.BoundPort)));
+        var deadline = Environment.TickCount64 + 2000;
+        while (!host.AllReadyClientsAckedStartGame && Environment.TickCount64 < deadline) host.Pump(retryTime + 1);
+        Assert.True(host.AllReadyClientsAckedStartGame);
+        Assert.False(client.Sender.Queue.HasPending());
+    }
+
     [Fact]
     public async Task HostStartGamePromotesGuestToStarting()
     {

@@ -17,7 +17,7 @@ public static class ActorDamage
     public static DamageResult Apply(Actor target, int damage, Actor? source = null, DamageFlags flags = DamageFlags.None)
     {
         if (damage <= 0 || !target.CanTakeDamage
-            || (target.Invulnerable && !flags.HasFlag(DamageFlags.BypassInvulnerability)))
+            || ((target.Invulnerable || target is PlayerPawn { GodMode: true }) && !flags.HasFlag(DamageFlags.BypassInvulnerability)))
             return default;
         var absorbed = 0;
         if (target is PlayerPawn player && !flags.HasFlag(DamageFlags.BypassArmor))

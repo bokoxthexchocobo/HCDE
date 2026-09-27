@@ -4,6 +4,65 @@ namespace HCDE.Playsim.Tests;
 
 public class MovingFloorTests
 {
+    [Theory]
+    [InlineData(10.5, 2)]
+    [InlineData(11, 3)]
+    public void CrushingFloorRollsBackBlockedOvershootButKeepsExactArrival(double ceiling, double expected)
+    {
+        var sim = AuthoritySimulation.Start(new PlayLevel
+        {
+            Format = MapDataFormat.DoomBinary,
+            Sectors = [new LevelSector { Tag = 7, CeilingHeight = ceiling }],
+            Things = [new LevelThing { Type = 1 }]
+        });
+        var player = sim.Players.Single(); player.Height = Fixed.FromInt(10);
+        Assert.True(LineSpecials.ActivateMapLine(sim, player, new LevelLine { Special = 56, Tag = 7 }, false));
+        for (var i = 0; i < 3; i++) sim.Tick();
+        Assert.Equal(expected, sim.FloorOf(0));
+        Assert.True(LineSpecials.Execute(sim, player, LineSpecials.FloorRaise, 7));
+    }
+
+    [Theory]
+    [InlineData(8, 1)]
+    [InlineData(24, 0)]
+    public void BlockedFloorEndpointRollsBackAndReleasesOwnership(int speed, int expected)
+    {
+        var sim = Room(format: MapDataFormat.HexenBinary); var player = sim.Players.Single();
+        player.Height = Fixed.FromInt(127);
+        Assert.True(LineSpecials.ActivateMapLine(sim, player, new LevelLine
+            { Special = 23, Arg0 = 7, Arg1 = speed, Arg2 = 2, PlayerUse = true }, true));
+        sim.Tick(); if (speed == 8) sim.Tick();
+        Assert.Equal(expected, sim.FloorOf(0)); Assert.Equal(100, player.Health);
+        Assert.True(LineSpecials.Execute(sim, player, LineSpecials.FloorRaise, 7));
+    }
+
+    [Fact]
+    public void IntermediateFloorObstructionKeepsOwnershipUntilSpaceClears()
+    {
+        var sim = Room(format: MapDataFormat.HexenBinary); var player = sim.Players.Single();
+        player.Height = Fixed.FromInt(127);
+        Assert.True(LineSpecials.ActivateMapLine(sim, player, new LevelLine
+            { Special = 23, Arg0 = 7, Arg1 = 8, Arg2 = 4, PlayerUse = true }, true));
+        sim.Tick(); sim.Tick(); Assert.Equal(1, sim.FloorOf(0));
+        Assert.False(LineSpecials.Execute(sim, player, LineSpecials.FloorRaise, 7));
+        player.Solid = false;
+        for (var i = 0; i < 3; i++) sim.Tick();
+        Assert.Equal(4, sim.FloorOf(0)); Assert.True(LineSpecials.Execute(sim, player, LineSpecials.FloorRaise, 7));
+    }
+
+    [Fact]
+    public void BlockedReturningLiftEndpointCompletesInsteadOfReversing()
+    {
+        var sim = Room(floor: 64, neighbor: 0); var player = sim.Players.Single();
+        Assert.True(LineSpecials.ActivateMapLine(sim, player, new LevelLine { Special = 62, Tag = 7 }, true));
+        for (var i = 0; i < 16 + 105; i++) sim.Tick();
+        player.Height = Fixed.FromInt(65);
+        for (var i = 0; i < 16; i++) sim.Tick();
+        Assert.Equal(60, sim.FloorOf(0)); Assert.Equal(100, player.Health);
+        sim.Tick(); Assert.Equal(60, sim.FloorOf(0));
+        Assert.True(LineSpecials.Execute(sim, player, LineSpecials.FloorRaise, 7));
+    }
+
     [Fact]
     public void BlockedReturningLiftReversesWithoutDamage()
     {
@@ -111,10 +170,14 @@ public class MovingFloorTests
     }
 
     [Fact]
-    public void MissingNeighborDoesNotConsumeOneShotRaise()
+    public void MissingHigherNeighborConsumesOneShotRaiseAndReleasesAfterTick()
     {
         var sim = Room(neighbor: -16); var line = new LevelLine { Special = 18, Tag = 7 };
-        Assert.False(LineSpecials.ActivateMapLine(sim, sim.Players.Single(), line, true));
-        Assert.Equal(18, line.Special);
+        Assert.True(LineSpecials.ActivateMapLine(sim, sim.Players.Single(), line, true));
+        Assert.Equal(0, line.Special);
+        var original = sim.FloorOf(0);
+        Assert.False(LineSpecials.Execute(sim, sim.Players.Single(), LineSpecials.FloorRaise, 7));
+        sim.Tick(); Assert.Equal(original, sim.FloorOf(0));
+        Assert.True(LineSpecials.Execute(sim, sim.Players.Single(), LineSpecials.FloorRaise, 7));
     }
 }

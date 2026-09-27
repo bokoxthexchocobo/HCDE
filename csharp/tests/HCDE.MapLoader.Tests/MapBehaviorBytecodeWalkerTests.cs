@@ -130,33 +130,17 @@ public class MapBehaviorBytecodeWalkerTests
     [Fact]
     public void TryWalkScript_OldFormat_ReadsHudMessageAndDirectByteSpecials()
     {
-        var lump = TestWadBuilder.BuildBehaviorLump(
-            MapBehaviorFormat.AcsOld,
-            scriptCount: 1,
-            includeTerminateBytecode: false,
-            bytecodeOpcodes:
-            [
-                (int)AcsPcode.MoreHudMessage,
-                (int)AcsPcode.OptHudMessage,
-                (int)AcsPcode.EndHudMessage,
-                (int)AcsPcode.SetFontDirect, 9001,
-                (int)AcsPcode.Lspec1DirectB, 0x00020001,
-                (int)AcsPcode.Lspec2DirectB, 0x00030201,
-                (int)AcsPcode.Terminate,
-            ]);
-        Assert.True(MapBehaviorCodec.TryProbe(lump, out var record, out _));
-        Assert.True(MapBehaviorDirectoryCodec.TryReadScripts(
-            record.Data,
-            record.Format,
-            record.DirectoryOffset,
-            out var scripts,
-            out _));
-        Assert.Single(scripts);
-
+        var bytes = new List<byte>();
+        foreach (var word in new[] { (int)AcsPcode.MoreHudMessage, (int)AcsPcode.OptHudMessage,
+            (int)AcsPcode.EndHudMessage, (int)AcsPcode.SetFontDirect, 9001, (int)AcsPcode.Lspec1DirectB })
+        {
+            var encoded = new byte[4]; System.Buffers.Binary.BinaryPrimitives.WriteInt32LittleEndian(encoded, word); bytes.AddRange(encoded);
+        }
+        bytes.AddRange([1, 2, 169, 0, 0, 0, 1, 2, 3, 1, 0, 0, 0]);
         Assert.True(MapBehaviorBytecodeWalker.TryWalkScript(
-            record.Data,
-            record.Format,
-            scripts[0].Address,
+            bytes.ToArray(),
+            MapBehaviorFormat.AcsOld,
+            0,
             out var instructions,
             out var terminated,
             out _));
@@ -170,8 +154,10 @@ public class MapBehaviorBytecodeWalkerTests
         Assert.Equal(1, instructions[3].OperandWordCount);
         Assert.Equal((int)AcsPcode.Lspec1DirectB, instructions[4].Opcode);
         Assert.Equal(1, instructions[4].OperandWordCount);
+        Assert.Equal(2, instructions[4].OperandByteCount);
         Assert.Equal((int)AcsPcode.Lspec2DirectB, instructions[5].Opcode);
         Assert.Equal(1, instructions[5].OperandWordCount);
+        Assert.Equal(3, instructions[5].OperandByteCount);
     }
 
     [Fact]
@@ -502,11 +488,11 @@ public class MapBehaviorBytecodeWalkerTests
     {
         var bytecode = new byte[]
         {
-            240, 7, 42,
+            167, 42,
             (byte)AcsPcode.TakeInventory,
             (byte)AcsPcode.CheckInventory,
-            240, 2, 3,
-            240, 8, 9,
+            238, 3,
+            240, 3, 9,
             (byte)AcsPcode.Terminate,
         };
         var lump = TestWadBuilder.BuildBehaviorLumpWithBytecode(
@@ -672,7 +658,7 @@ public class MapBehaviorBytecodeWalkerTests
             (byte)AcsPcode.StartTranslation,
             (byte)AcsPcode.TranslationRange1,
             (byte)AcsPcode.TranslationRange2,
-            240, 124,
+            240, 122, // Native PCD_TRANSLATIONRANGE3 = 362.
             (byte)AcsPcode.EndTranslation,
             (byte)AcsPcode.Terminate,
         };
@@ -826,7 +812,7 @@ public class MapBehaviorBytecodeWalkerTests
     {
         var bytecode = new byte[]
         {
-            240, 7, 42,
+            167, 42,
             (byte)AcsPcode.Push2Bytes, 1, 2,
             (byte)AcsPcode.PushBytes, 2, 9, 8,
             (byte)AcsPcode.Terminate,
@@ -1110,8 +1096,8 @@ public class MapBehaviorBytecodeWalkerTests
                 (int)AcsPcode.GetScreenHeight,
                 (int)AcsPcode.SetHudSize,
                 359, 1,
-                (int)AcsPcode.Lspec5Ex,
-                (int)AcsPcode.Lspec5ExResult,
+                (int)AcsPcode.Lspec5Ex, 116,
+                (int)AcsPcode.Lspec5ExResult, 112,
                 (int)AcsPcode.CallStack,
                 (int)AcsPcode.Terminate,
             ]);
@@ -1154,7 +1140,7 @@ public class MapBehaviorBytecodeWalkerTests
                 (int)AcsPcode.GetLineRowOffset,
                 (int)AcsPcode.SetResultValue,
                 (int)AcsPcode.CaseGotoSorted, 1, 10, 20,
-                (int)AcsPcode.Lspec5Result,
+                (int)AcsPcode.Lspec5Result, 112,
                 363,
                 (int)AcsPcode.Terminate,
             ]);
@@ -1429,9 +1415,9 @@ public class MapBehaviorBytecodeWalkerTests
             includeTerminateBytecode: false,
             bytecodeOpcodes:
             [
-                332, // PCD_NEGATEBINARY wire (shadows NegateBinary enum alias)
-                333, // PCD_GETACTORPITCH wire
-                334, // PCD_SETACTORPITCH wire
+                330, // PCD_NEGATEBINARY wire
+                331, // PCD_GETACTORPITCH wire
+                332, // PCD_SETACTORPITCH wire
                 362, // PCD_TRANSLATIONRANGE3 wire
                 359, 1,
                 (int)AcsPcode.ScriptWaitNamed,
@@ -1458,10 +1444,10 @@ public class MapBehaviorBytecodeWalkerTests
 
         Assert.True(terminated);
         Assert.Equal(9, instructions.Count);
-        Assert.Equal(332, instructions[0].Opcode);
+        Assert.Equal(330, instructions[0].Opcode);
         Assert.Equal(0, instructions[0].OperandWordCount);
-        Assert.Equal(333, instructions[1].Opcode);
-        Assert.Equal(334, instructions[2].Opcode);
+        Assert.Equal(331, instructions[1].Opcode);
+        Assert.Equal(332, instructions[2].Opcode);
         Assert.Equal(362, instructions[3].Opcode);
         Assert.Equal(359, instructions[4].Opcode);
         Assert.Equal((int)AcsPcode.CallStack, instructions[6].Opcode);
@@ -1913,8 +1899,8 @@ public class MapBehaviorBytecodeWalkerTests
             includeTerminateBytecode: false,
             bytecodeOpcodes:
             [
-                381, // PCD_LSPEC5EX wire
-                382, // PCD_LSPEC5EXRESULT wire
+                381, 116, // PCD_LSPEC5EX wire and special
+                382, 112, // PCD_LSPEC5EXRESULT wire and special
                 359, 1, // PCD_PUSHFUNCTION wire
                 361, // PCD_SCRIPTWAITNAMED wire
                 360, // PCD_CALLSTACK wire
@@ -1941,7 +1927,7 @@ public class MapBehaviorBytecodeWalkerTests
         Assert.True(terminated);
         Assert.Equal(7, instructions.Count);
         Assert.Equal(381, instructions[0].Opcode);
-        Assert.Equal(0, instructions[0].OperandWordCount);
+        Assert.Equal(1, instructions[0].OperandWordCount);
         Assert.Equal(382, instructions[1].Opcode);
         Assert.Equal(359, instructions[2].Opcode);
         Assert.Equal(1, instructions[2].OperandWordCount);
