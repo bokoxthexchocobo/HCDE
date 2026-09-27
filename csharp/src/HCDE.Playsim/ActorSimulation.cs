@@ -56,7 +56,7 @@ public class Actor : Thinker
             {
                 DeathCount++;
                 if (States.HasState(DeathState)) States.Enter(this, DeathState);
-                if (this is PlayerPawn player) { player.Pending = default; player.AttackPressed = false; }
+                if (this is PlayerPawn player) { player.ClearCommands(); player.AttackPressed = false; }
             }
             else if (dead && !IsDead && States.HasState(SpawnState)) States.Enter(this, SpawnState);
         }
@@ -109,8 +109,24 @@ public class Actor : Thinker
 
 public sealed class PlayerPawn : Actor
 {
+    public const int CommandQueueCapacity = 128;
+    private readonly Queue<PlayerCommand> _commands = new();
     public byte PlayerNum { get; init; }
-    public PlayerCommand Pending { get; set; }
+    /// <summary>Compatibility slot for direct input/restore; assignment replaces buffered input.</summary>
+    public PlayerCommand Pending
+    {
+        get => _commands.TryPeek(out var command) ? command : default;
+        set { _commands.Clear(); _commands.Enqueue(value); }
+    }
+    public int BufferedCommandCount => _commands.Count;
+    public bool TryQueueCommand(PlayerCommand command)
+    {
+        if (IsDead || Destroyed) return true; // Consume dead-player input without saving it for resurrection.
+        if (_commands.Count >= CommandQueueCapacity) return false;
+        _commands.Enqueue(command);
+        return true;
+    }
+    public void ClearCommands() => _commands.Clear();
     public PlayerInventory Inventory { get; } = new();
     public bool AttackPressed { get; set; }
     public bool UsePressed { get; set; }
@@ -130,8 +146,7 @@ public sealed class PlayerPawn : Actor
     public override void Tick()
     {
         RememberPosition();
-        var command = Pending;
-        Pending = default;
+        var command = _commands.TryDequeue(out var queued) ? queued : default;
         UsePressed = !IsDead && command.Use && !UseHeld;
         UseHeld = !IsDead && command.Use;
         if (WeaponCooldown > 0) WeaponCooldown--;
@@ -558,7 +573,7 @@ public sealed class AuthoritySimulation
             else actor.States.Restore(actor.IsDead ? actor.DeathState : actor.SpawnState, -1);
             if (actor is PlayerPawn player)
             {
-                player.Pending = default; player.AttackPressed = false; player.UsePressed = false;
+                player.ClearCommands(); player.AttackPressed = false; player.UsePressed = false;
                 player.WeaponCooldown = pose.WeaponCooldown;
                 player.PitchDegrees = new Fixed(pose.Pitch).ToDouble(); player.UseHeld = pose.UseHeld;
             }
@@ -581,16 +596,16 @@ public sealed class AuthoritySimulation
         PublishStatus();
     }
 
-    public void QueueCommand(byte playerNum, PlayerCommand command)
+    public bool QueueCommand(byte playerNum, PlayerCommand command)
     {
         foreach (var player in Players)
         {
             if (player.PlayerNum == playerNum)
             {
-                player.Pending = command;
-                return;
+                return player.TryQueueCommand(command);
             }
         }
+        return false;
     }
 
     public void Tick()

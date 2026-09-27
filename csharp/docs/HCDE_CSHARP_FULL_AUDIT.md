@@ -1,7 +1,7 @@
 # HCDE C# Migration — Full Principal Audit
 
 > Historical audit. The current combined review is
-> [Phase 1–3 movers/damage audit](HCDE_CSHARP_MOVERS_DAMAGE_AUDIT.md), including Release
+> [Command-buffer continuation audit](HCDE_CSHARP_INPUT_BUFFER_AUDIT.md), including Release
 > validation, map/mod loading, combat/AI, gameplay-foundation work and unresolved
 > release blockers. Percentages and totals below are historical estimates, not
 > current conversion measurements.

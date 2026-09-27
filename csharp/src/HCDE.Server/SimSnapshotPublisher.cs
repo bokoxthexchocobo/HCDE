@@ -77,7 +77,7 @@ public sealed class SimulationCommandSink : IClientInputCommandSink
         _ = clientSlot;
         _ = sequence;
         _ = eventRecords;
-        _simulation.QueueCommand(playerNum, new PlayerCommand
+        return _simulation.QueueCommand(playerNum, new PlayerCommand
         {
             ForwardMove = command.ForwardMove,
             SideMove = command.SideMove,
@@ -87,6 +87,5 @@ public sealed class SimulationCommandSink : IClientInputCommandSink
             Jump = (command.Buttons & 4u) != 0, // BT_JUMP
             Use = (command.Buttons & 2u) != 0, // BT_USE
         });
-        return true;
     }
 }

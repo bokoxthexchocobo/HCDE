@@ -15,7 +15,12 @@ The full engine is ~640k lines of C++. This is a long-running migration, not a b
 
 ## Current status
 
-Latest: [phase 1–3 movers/damage audit](docs/HCDE_CSHARP_MOVERS_DAMAGE_AUDIT.md).
+Latest: [command-buffer audit](docs/HCDE_CSHARP_INPUT_BUFFER_AUDIT.md).
+Accepted command bursts now retain their order in a bounded per-player queue,
+with one command executed per tic and retry-safe admission when full.
+**923 tests pass.** Phases 1–3 and the larger release gates remain incomplete.
+
+Previous: [phase 1–3 movers/damage audit](docs/HCDE_CSHARP_MOVERS_DAMAGE_AUDIT.md).
 Loaded maps now support additional floors, lifts and crushing actions, with rider
 and obstruction handling. Mover checksums and green-armor rounding are corrected.
 **920 tests pass; phases 1–3 remain incomplete.**
