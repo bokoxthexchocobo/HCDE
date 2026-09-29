@@ -91,6 +91,8 @@ public sealed class SimulationCommandSink : IClientInputCommandSink
             Attack = (command.Buttons & 1u) != 0, // BT_ATTACK in src/d_event.h
             Jump = (command.Buttons & 4u) != 0, // BT_JUMP
             Use = (command.Buttons & 2u) != 0, // BT_USE
+            Crouch = (command.Buttons & 8u) != 0, // BT_CROUCH
+            Turn180 = (command.Buttons & 16u) != 0, // BT_TURN180
         });
     }
 

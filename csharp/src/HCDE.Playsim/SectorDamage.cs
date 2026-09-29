@@ -84,7 +84,7 @@ internal static class SectorDamage
         if (simulation.Thinkers.Clock.Tic % sector.DamageInterval != 0) return;
         if (sector.DamageAmount > 0)
         {
-            ActorDamage.Apply(actor, sector.DamageAmount);
+            ActorDamage.Apply(actor, sector.DamageAmount, damageType: sector.DamageType);
             if (sector.DamageEndsLevel && actor is PlayerPawn && actor.Health <= 10 && simulation.DamageExitAllowed)
                 simulation.MarkExited(secret: false);
         }

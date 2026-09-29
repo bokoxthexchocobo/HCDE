@@ -8,7 +8,7 @@ public static class HitscanCombat
 
     public static bool Fire(AuthoritySimulation sim, PlayerPawn player)
     {
-        if (player.IsDead || player.Destroyed || player.WeaponCooldown > 0) return false;
+        if (player.IsDead || player.Destroyed || player.WeaponCooldown > 0 || !player.WeaponReady) return false;
         var weapon = player.Inventory.Selected;
         var definition = WeaponCatalog.Find(weapon);
         if (definition == null || !player.Inventory.Owns(weapon)) return false;
@@ -30,7 +30,7 @@ public static class HitscanCombat
             var spread = definition.SpreadDegrees == 0 ? 0 : sim.NextCombatSpread() * definition.SpreadDegrees * spreadScale;
             var pitchSpread = weapon == WeaponKind.SuperShotgun ? sim.NextCombatSpread() * (7.097 * 255 / 256) : 0;
             var target = CombatTrace.FindTarget(sim, player, melee ? MeleeRange : HitscanRange, spread, pitchSpread);
-            if (target != null) ActorDamage.Apply(target, damage, player);
+            if (target != null) ActorDamage.Apply(target, damage, player, inflictor: player);
         }
         return true;
     }

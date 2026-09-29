@@ -93,7 +93,7 @@ public class MapsModsTests
         Assert.True(UdmfTextMapParser.TryParse("""
             namespace = "ZDoom";
             thing { x=1.25; y=2.5; height=3.75; angle=270.5; type=3004; id=42; skill3=true; coop=true; }
-            linedef { playeruse=true; playercross=false; repeatspecial=true; arg0=9; }
+            linedef { playeruse=true; playeruseback=true; playercross=false; repeatspecial=true; arg0=9; }
             """, out var map, out var error), error);
         var level = LevelBuilder.FromUdmf(map, "MAP01");
         var thing = Assert.Single(level.Things);
@@ -101,6 +101,7 @@ public class MapsModsTests
         Assert.True(thing.Coop);
         Assert.False(thing.Single);
         Assert.True(level.Lines[0].PlayerUse);
+        Assert.True(level.Lines[0].PlayerUseBack);
         Assert.True(level.Lines[0].Repeat);
         Assert.False(level.Lines[0].PlayerCross);
     }

@@ -26,6 +26,7 @@ public sealed class UdmfLinedef
     public bool TwoSided { get; set; }
     public bool PlayerCross { get; set; }
     public bool PlayerUse { get; set; }
+    public bool PlayerUseBack { get; set; }
     public bool PassUse { get; set; }
     public bool RepeatSpecial { get; set; }
     public int Arg0 { get; set; }
@@ -295,6 +296,7 @@ public static class UdmfTextMapParser
             TwoSided = Bool(fields, "twosided"),
             PlayerCross = Bool(fields, "playercross"),
             PlayerUse = Bool(fields, "playeruse"),
+            PlayerUseBack = Bool(fields, "playeruseback"),
             PassUse = Bool(fields, "passuse"),
             RepeatSpecial = Bool(fields, "repeatspecial"),
             Arg0 = Int(fields, "arg0"),

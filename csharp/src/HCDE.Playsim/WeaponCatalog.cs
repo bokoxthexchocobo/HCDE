@@ -3,7 +3,7 @@ namespace HCDE.Playsim;
 public sealed record WeaponDefinition(AmmoKind? Ammo, int AmmoUse, int RefireTics,
     int Pellets = 1, double SpreadDegrees = 0, ProjectileKind? Projectile = null);
 
-/// <summary>Managed firing cadence and ammo rules; native psprite animation is not reproduced.</summary>
+/// <summary>Managed firing cadence and ammo rules. Raise and lower gate firing; psprite sprites are not reproduced.</summary>
 public static class WeaponCatalog
 {
     public static WeaponDefinition? Find(WeaponKind weapon) => weapon switch

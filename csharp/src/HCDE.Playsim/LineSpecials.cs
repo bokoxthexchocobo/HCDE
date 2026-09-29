@@ -99,21 +99,38 @@ public static class LineSpecials
         {
             if (!player.UsePressed || player.IsDead || player.Destroyed) continue;
             player.UsePressed = false;
+            // P_UseLines traces yaw for Player.UseRange (64). Portals are not applied.
+            var range = double.IsFinite(player.UseRange) ? Math.Max(0, player.UseRange) : 0;
+            if (range <= 0) continue;
             var radians = player.Angle.ToDegrees() * Math.PI / 180;
+            var x = player.X.ToDouble();
+            var y = player.Y.ToDouble();
             var hits = sim.Level.Lines.Select(line => (Line: line, Distance: CombatTrace.RayLine(
-                player.X.ToDouble(), player.Y.ToDouble(), Math.Cos(radians), Math.Sin(radians), line)))
-                .Where(hit => hit.Distance <= 64).OrderBy(hit => hit.Distance);
+                x, y, Math.Cos(radians), Math.Sin(radians), line)))
+                .Where(hit => hit.Distance <= range).OrderBy(hit => hit.Distance);
             foreach (var hit in hits)
             {
-                if (ActivateMapLine(sim, player, hit.Line, use: true))
+                var back = IsBackSide(hit.Line, x, y);
+                // The back side activates only with SPAC_UseBack. UseBack-only lines ignore the front.
+                var usable = back ? hit.Line.PlayerUseBack : !hit.Line.PlayerUseBack || hit.Line.PlayerUse;
+                if (!usable)
                 {
-                    if (!hit.Line.UseThrough) break;
+                    if (BlocksUse(sim, player, hit.Line)) break;
                     continue;
                 }
-                if (CombatTrace.BlocksShot(sim, hit.Line, player.Z.ToDouble() + player.Height.ToDouble() / 2)) break;
+                if (ActivateMapLine(sim, player, hit.Line, use: true, backSide: back))
+                {
+                    // SPAC_Use and SPAC_UseBack eat the use. SPAC_UseThrough keeps tracing.
+                    if (back || !hit.Line.UseThrough) break;
+                    continue;
+                }
+                if (BlocksUse(sim, player, hit.Line)) break;
             }
         }
     }
+
+    private static bool BlocksUse(AuthoritySimulation sim, PlayerPawn player, LevelLine line) =>
+        CombatTrace.BlocksShot(sim, line, player.Z.ToDouble() + player.Height.ToDouble() / 2);
 
     /// <summary>Dispatch map numbers in their own namespace; Execute remains the internal action API.</summary>
     public static bool ActivateMapLine(AuthoritySimulation sim, Actor actor, LevelLine line, bool use, bool? backSide = null)

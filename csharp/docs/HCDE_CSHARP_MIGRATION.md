@@ -148,6 +148,26 @@ Fixed-damage attacks, not `p_pspr.cpp`. Principal audit: [`HCDE_CSHARP_PHASE6_AU
 | Melee | Done | Fist and chainsaw, 64 units in front, no ammo. |
 | Armor | Done | A player saves `damage * percent / 100` until the armor pool is empty. |
 
+## Phase 7 — ACS core (slice of the largest source file)
+
+`p_acs.cpp` is the largest C++ file. This is not that file. Principal audit: [`HCDE_CSHARP_PHASE7_AUDIT.md`](HCDE_CSHARP_PHASE7_AUDIT.md).
+
+| Gate | Status | What landed |
+| --- | --- | --- |
+| Arithmetic and compares | Done | Multiply, divide, modulus, six compares, logical and bitwise ops. Divide by zero pushes 0. |
+| Variables | Done | 20 script variables and 32 shared map variables. |
+| Queries | Done | Thing count by editor number, player count, timer, skill, game type. |
+
+## Phase 8 — ZScript integer core (slice of the largest subsystem)
+
+`src/common/scripting` is the largest C++ subsystem. This is the integer half of `vmexec.cpp`, in `HCDE.Scripting`. Principal audit: [`HCDE_CSHARP_PHASE8_AUDIT.md`](HCDE_CSHARP_PHASE8_AUDIT.md).
+
+| Gate | Status | What landed |
+| --- | --- | --- |
+| Instruction word | Done | Little-endian opcode, A, B, C. Numbers match `vmops.h`. |
+| Integer math | Done | Add, subtract, multiply, divide, modulus, shifts, abs, neg, not. Divide by zero stops. |
+| Control | Done | Compare-and-jump, test, 24-bit jump, integer return. Unknown opcodes stop. |
+
 ## What stays C/C++ (for now)
 
 | Component | Reason |

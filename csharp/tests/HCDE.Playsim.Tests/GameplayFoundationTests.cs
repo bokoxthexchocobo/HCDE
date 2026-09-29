@@ -79,6 +79,30 @@ public class GameplayFoundationTests
         Assert.Equal(0, player.VelocityX.Raw);
     }
 
+    [Fact]
+    public void CornerSlideFollowsTheNearestWall()
+    {
+        // East wall is listed first. The center reaches the north wall sooner, so
+        // FSlide::SlideMove clips Y and still advances along that wall.
+        var sim = AuthoritySimulation.Start(new PlayLevel
+        {
+            Sectors = new[] { new LevelSector { CeilingHeight = 128 } },
+            Things = new[] { new LevelThing { Type = 1, X = 22.5, Y = 23.5 } },
+            Lines = new[]
+            {
+                new LevelLine { X1 = 40, Y1 = -128, X2 = 40, Y2 = 128, SideBack = -1 },
+                new LevelLine { X1 = -128, Y1 = 40, X2 = 40, Y2 = 40, SideBack = -1 },
+            },
+        });
+        var player = sim.Players.Single();
+        player.VelocityX = Fixed.FromDouble(6);
+        player.VelocityY = Fixed.FromDouble(6);
+        sim.Tick();
+        Assert.InRange(player.X.ToDouble(), 22.75, 24);
+        Assert.InRange(player.Y.ToDouble(), 23.7, 24);
+        Assert.True(player.X.ToDouble() < 24);
+    }
+
     [Theory]
     [InlineData(24, 128, true)]
     [InlineData(25, 128, false)]
@@ -97,6 +121,40 @@ public class GameplayFoundationTests
         Assert.Equal(pass ? 1 : 0, player.SectorIndex);
     }
 
+    [Theory]
+    [InlineData(24, false, false, true)]
+    [InlineData(25, false, false, false)]
+    [InlineData(48, true, false, true)]
+    [InlineData(48, false, true, true)]
+    public void MonsterDropOffMatchesNativeLimit(int drop, bool allowDropOff, bool floating, bool enters)
+    {
+        var sim = TwoRooms((short)-drop, 128);
+        var monster = sim.AddBot(-1, 80);
+        monster.Brain!.Enabled = false;
+        monster.AllowDropOff = allowDropOff;
+        monster.Floating = floating;
+        monster.VelocityX = Fixed.FromInt(4);
+        sim.Tick();
+        Assert.Equal(enters, monster.SectorIndex == 1);
+        if (!enters)
+        {
+            Assert.Equal(0, monster.Z.ToDouble());
+            Assert.Equal(0, monster.SectorIndex);
+        }
+    }
+
+    [Fact]
+    public void PlayerMayWalkOffATallLedge()
+    {
+        var sim = TwoRooms(-48, 128);
+        var player = sim.Players.Single();
+        player.X = Fixed.FromInt(-1);
+        player.VelocityX = Fixed.FromInt(4);
+        sim.Tick();
+        Assert.Equal(1, player.SectorIndex);
+        Assert.False(player.OnGround);
+    }
+
     [Fact]
     public void DropOffFallsInsteadOfSnappingDown()
     {
@@ -110,6 +168,239 @@ public class GameplayFoundationTests
         Assert.False(player.OnGround);
         for (var i = 0; i < 10; i++) sim.Tick();
         Assert.Equal(-24, player.Z.ToDouble());
+    }
+
+    [Fact]
+    public void CrouchShrinksToHalfHeightAndStandsBackUp()
+    {
+        var sim = Room();
+        var player = sim.Players.Single();
+        var standing = player.Height.ToDouble();
+        for (var i = 0; i < 6; i++)
+        {
+            sim.QueueCommand(0, new PlayerCommand { Crouch = true });
+            sim.Tick();
+        }
+
+        Assert.Equal(PlayerPawn.MinimumCrouchFactor, player.CrouchFactor, 3);
+        Assert.Equal(standing / 2, player.Height.ToDouble(), 3);
+        Assert.Equal(PlayerPawn.StandingViewHeight / 2, player.ViewHeight, 3);
+
+        for (var i = 0; i < 6; i++) sim.Tick();
+        Assert.Equal(1, player.CrouchFactor, 3);
+        Assert.Equal(standing, player.Height.ToDouble(), 3);
+        Assert.Equal(PlayerPawn.StandingViewHeight, player.ViewHeight, 3);
+    }
+
+    [Fact]
+    public void JumpWhileCrouchedStandsUpWithoutLeavingTheGround()
+    {
+        var sim = Room();
+        var player = sim.Players.Single();
+        for (var i = 0; i < 6; i++)
+        {
+            sim.QueueCommand(0, new PlayerCommand { Crouch = true });
+            sim.Tick();
+        }
+
+        sim.QueueCommand(0, new PlayerCommand { Jump = true });
+        sim.Tick();
+        Assert.Equal(0, player.VelocityZ.ToDouble());
+        Assert.True(player.OnGround);
+        Assert.True(player.CrouchFactor > PlayerPawn.MinimumCrouchFactor);
+        Assert.True(player.UncrouchLocked);
+    }
+
+    [Fact]
+    public void LowCeilingBlocksUncrouch()
+    {
+        var sim = TwoRooms(0, 30);
+        var player = sim.Players.Single();
+        player.X = Fixed.FromInt(-40);
+        for (var i = 0; i < 6; i++)
+        {
+            sim.QueueCommand(0, new PlayerCommand { Crouch = true });
+            sim.Tick();
+        }
+
+        var crouched = player.Height.ToDouble();
+        player.X = Fixed.FromInt(1);
+        sim.Tick();
+        Assert.Equal(crouched, player.Height.ToDouble(), 3);
+        Assert.Equal(PlayerPawn.MinimumCrouchFactor, player.CrouchFactor, 3);
+    }
+
+    [Fact]
+    public void DeathRestoresStandingHeight()
+    {
+        var sim = Room();
+        var player = sim.Players.Single();
+        var standing = player.Height.ToDouble();
+        for (var i = 0; i < 6; i++)
+        {
+            sim.QueueCommand(0, new PlayerCommand { Crouch = true });
+            sim.Tick();
+        }
+
+        ActorDamage.Apply(player, 1000);
+        sim.Tick();
+        Assert.Equal(standing, player.Height.ToDouble(), 3);
+        Assert.Equal(1, player.CrouchFactor, 3);
+    }
+
+    [Fact]
+    public void DrainReturnsHalfThePostArmorHitUpToMaxHealth()
+    {
+        var source = new PlayerPawn { Health = 40, DrainStrength = 0.5 };
+        var monster = new Actor { Health = 80 };
+        ActorDamage.Apply(monster, 80, source);
+        Assert.Equal(0, monster.Health);
+        Assert.Equal(80, source.Health);
+
+        source.Health = 50;
+        var armored = new Actor { Health = 100, Armor = 100, ArmorSavePercent = PlayerInventory.GreenSavePercent };
+        ActorDamage.Apply(armored, 80, source);
+        Assert.Equal(77, source.Health);
+
+        var other = new PlayerPawn { Health = 50 };
+        source.Health = 95;
+        ActorDamage.Apply(other, 20, source);
+        Assert.Equal(100, source.Health);
+        Assert.Equal(30, other.Health);
+
+        source.Health = 150;
+        ActorDamage.Apply(new Actor { Health = 40 }, 20, source);
+        Assert.Equal(150, source.Health);
+
+        var blocked = new Actor { Health = 40, DontDrain = true };
+        source.Health = 40;
+        ActorDamage.Apply(blocked, 20, source);
+        Assert.Equal(40, source.Health);
+        Assert.Equal(20, blocked.Health);
+
+        ActorDamage.Apply(source, 10, source);
+        Assert.Equal(30, source.Health);
+    }
+
+    [Fact]
+    public void DrainStrengthIsInTheChecksumAndSurvivesAPoseRestore()
+    {
+        var left = Room();
+        var right = Room();
+        left.Players.Single().DrainStrength = 0.5;
+        left.Tick();
+        right.Tick();
+        Assert.NotEqual(left.Checksum, right.Checksum);
+        right.Players.Single().DrainStrength = 0.5;
+        left.Tick();
+        right.Tick();
+        Assert.Equal(left.Checksum, right.Checksum);
+
+        var checksum = left.Checksum;
+        left.RestoreState(left.CaptureState());
+        Assert.Equal(0.5, left.Players.Single().DrainStrength);
+        Assert.Equal(checksum, left.Checksum);
+    }
+
+    [Fact]
+    public void WeaponDropSpawnsTheSelectedMapThingAndLeavesTheInventory()
+    {
+        var quiet = Room();
+        var quietPlayer = quiet.Players.Single();
+        quietPlayer.Inventory.Weapons |= WeaponKind.Shotgun;
+        quietPlayer.Inventory.Selected = WeaponKind.Shotgun;
+        var before = quiet.Actors.Count;
+        ActorDamage.Apply(quietPlayer, 1000);
+        Assert.Equal(before, quiet.Actors.Count);
+
+        var sim = Room();
+        sim.WeaponDrop = true;
+        var player = sim.Players.Single();
+        player.X = Fixed.FromInt(24);
+        player.Inventory.Weapons |= WeaponKind.Shotgun;
+        player.Inventory.Selected = WeaponKind.Shotgun;
+        ActorDamage.Apply(player, 1000);
+        var drop = Assert.Single(sim.Actors, actor => actor.DoomEdNum == PickupCatalog.Shotgun);
+        Assert.Equal(24, drop.X.ToDouble());
+        Assert.True(player.Inventory.Owns(WeaponKind.Shotgun));
+        Assert.False(drop.Solid);
+
+        var pistol = Room();
+        pistol.WeaponDrop = true;
+        var count = pistol.Actors.Count;
+        ActorDamage.Apply(pistol.Players.Single(), 1000);
+        Assert.Equal(count, pistol.Actors.Count);
+    }
+
+    [Fact]
+    public void WeaponDropFlagIsInTheChecksumAndSurvivesAPoseRestore()
+    {
+        var left = Room();
+        var right = Room();
+        left.WeaponDrop = true;
+        left.Tick();
+        right.Tick();
+        Assert.NotEqual(left.Checksum, right.Checksum);
+        right.WeaponDrop = true;
+        left.Tick();
+        right.Tick();
+        Assert.Equal(left.Checksum, right.Checksum);
+
+        var checksum = left.Checksum;
+        left.RestoreState(left.CaptureState());
+        Assert.True(left.WeaponDrop);
+        Assert.Equal(checksum, left.Checksum);
+    }
+
+    [Fact]
+    public void DeadPlayerTurnsTowardTheKillerAndLowersTheView()
+    {
+        var sim = Room();
+        var player = sim.Players.Single();
+        var killer = sim.AddBot(0, 64);
+        killer.Brain = null;
+        player.PitchDegrees = 10;
+        ActorDamage.Apply(player, 1000, killer);
+        sim.Tick();
+        Assert.Equal(PlayerPawn.DeathTurnStep, player.Angle.ToDegrees(), 3);
+        Assert.Equal(PlayerPawn.StandingViewHeight - 1, player.ViewHeight, 3);
+        Assert.Equal(10 - PlayerPawn.DeathPitchStep, player.PitchDegrees, 3);
+
+        for (var i = 0; i < 17; i++) sim.Tick();
+        Assert.Equal(90, player.Angle.ToDegrees(), 3);
+        Assert.Equal(0, player.PitchDegrees, 3);
+        for (var i = 0; i < 20; i++) sim.Tick();
+        Assert.Equal(PlayerPawn.DeathViewHeight, player.ViewHeight, 3);
+        Assert.Equal(90, player.Angle.ToDegrees(), 3);
+    }
+
+    [Fact]
+    public void DeathWithoutAKillerDoesNotTurnAndIceSkipsTheViewDrop()
+    {
+        var plain = Room();
+        var player = plain.Players.Single();
+        player.Angle = BamAngle.FromDegrees(40);
+        ActorDamage.Apply(player, 1000, player);
+        plain.Tick();
+        Assert.Equal(40, player.Angle.ToDegrees(), 3);
+        Assert.Equal(PlayerPawn.StandingViewHeight - 1, player.ViewHeight, 3);
+
+        var frozen = Room();
+        var ice = frozen.Players.Single();
+        var killer = frozen.AddBot(0, 64);
+        killer.Brain = null;
+        ice.IceCorpse = true;
+        ice.PitchDegrees = 10;
+        ActorDamage.Apply(ice, 1000, killer);
+        frozen.Tick();
+        Assert.Equal(PlayerPawn.DeathTurnStep, ice.Angle.ToDegrees(), 3);
+        Assert.Equal(PlayerPawn.StandingViewHeight, ice.ViewHeight, 3);
+        Assert.Equal(10, ice.PitchDegrees, 3);
+
+        var checksum = frozen.Checksum;
+        frozen.RestoreState(frozen.CaptureState());
+        Assert.Equal(PlayerPawn.StandingViewHeight, ice.ViewHeight, 3);
+        Assert.Equal(checksum, frozen.Checksum);
     }
 
     [Theory]
@@ -126,6 +417,213 @@ public class GameplayFoundationTests
         player.VelocityX = Fixed.FromInt(30);
         sim.Tick();
         Assert.Equal(passes, player.X.ToDouble() > target.X.ToDouble());
+    }
+
+    [Theory]
+    [InlineData(24, true)]
+    [InlineData(25, false)]
+    public void PlayerStepsOntoASolidActorWithinMaxStepHeight(int height, bool stepsUp)
+    {
+        var sim = Room();
+        var player = sim.Players.Single();
+        player.Radius = Fixed.FromInt(16);
+        var platform = sim.AddBot(36, 0);
+        platform.Brain = null;
+        platform.Radius = Fixed.FromInt(16);
+        platform.Height = Fixed.FromInt(height);
+        player.VelocityX = Fixed.FromInt(8);
+        sim.Tick();
+        Assert.Equal(stepsUp, player.Z.ToDouble() == height);
+        Assert.Equal(stepsUp, player.X.ToDouble() > 6);
+        if (!stepsUp)
+        {
+            Assert.Equal(0, player.Z.ToDouble());
+            Assert.True(player.X.ToDouble() < 5);
+        }
+    }
+
+    [Fact]
+    public void PlayerLandsOnAnActorInsteadOfTheFloor()
+    {
+        var sim = Room();
+        var player = sim.Players.Single();
+        var platform = sim.AddBot(0, 0);
+        platform.Brain = null;
+        platform.Height = Fixed.FromInt(16);
+        player.Z = Fixed.FromInt(64);
+        for (var i = 0; i < 20; i++) sim.Tick();
+        Assert.Equal(16, player.Z.ToDouble());
+        Assert.Equal(0, player.VelocityZ.ToDouble());
+        Assert.True(player.OnGround);
+    }
+
+    [Fact]
+    public void LowCeilingRejectsAStepOntoAnActor()
+    {
+        var sim = Room(70);
+        var player = sim.Players.Single();
+        player.Radius = Fixed.FromInt(16);
+        var platform = sim.AddBot(36, 0);
+        platform.Brain = null;
+        platform.Radius = Fixed.FromInt(16);
+        platform.Height = Fixed.FromInt(16);
+        player.VelocityX = Fixed.FromInt(8);
+        sim.Tick();
+        Assert.Equal(0, player.Z.ToDouble());
+        Assert.True(player.X.ToDouble() < 5);
+    }
+
+    [Fact]
+    public void MonsterDoesNotStepOntoAnotherActor()
+    {
+        var sim = Room();
+        var walker = sim.AddBot(0, 80);
+        var platform = sim.AddBot(20, 80);
+        walker.Brain = platform.Brain = null;
+        walker.Radius = platform.Radius = Fixed.FromInt(16);
+        platform.Height = Fixed.FromInt(16);
+        walker.VelocityX = Fixed.FromInt(8);
+        sim.Tick();
+        Assert.Equal(0, walker.Z.ToDouble());
+        Assert.Equal(0, walker.X.ToDouble());
+    }
+
+    [Theory]
+    [InlineData(16, true)]
+    [InlineData(24, true)]
+    [InlineData(25, false)]
+    public void MonsterStepsOntoABridgeWithinMaxStepHeight(int height, bool steps)
+    {
+        var sim = Room();
+        var walker = sim.AddBot(0, 80);
+        var bridge = sim.AddBot(20, 80);
+        walker.Brain = bridge.Brain = null;
+        walker.Radius = bridge.Radius = Fixed.FromInt(16);
+        bridge.Height = Fixed.FromInt(height);
+        bridge.ActsLikeBridge = true;
+        walker.VelocityX = Fixed.FromInt(8);
+        sim.Tick();
+        if (steps)
+        {
+            Assert.Equal(height, walker.Z.ToDouble());
+            Assert.True(walker.X.ToDouble() > 0);
+            Assert.True(walker.OnGround);
+        }
+        else
+        {
+            Assert.Equal(0, walker.Z.ToDouble());
+            Assert.Equal(0, walker.X.ToDouble());
+        }
+    }
+
+    [Fact]
+    public void DeadBridgeIsNotAPlatform()
+    {
+        var sim = Room();
+        var walker = sim.AddBot(0, 80);
+        var bridge = sim.AddBot(20, 80);
+        walker.Brain = bridge.Brain = null;
+        walker.Radius = bridge.Radius = Fixed.FromInt(16);
+        bridge.Height = Fixed.FromInt(16);
+        bridge.ActsLikeBridge = true;
+        bridge.Health = 0;
+        walker.VelocityX = Fixed.FromInt(8);
+        sim.Tick();
+        Assert.Equal(0, walker.Z.ToDouble());
+        Assert.True(walker.X.ToDouble() > 0);
+    }
+
+    [Theory]
+    [InlineData(16, true)]
+    [InlineData(24, true)]
+    [InlineData(25, false)]
+    [InlineData(56, false)]
+    public void IceCorpseStepsOntoACorpseWithinMaxStepHeight(int height, bool steps)
+    {
+        var sim = Room();
+        var walker = sim.AddBot(0, 80);
+        var corpse = sim.AddBot(20, 80);
+        walker.Brain = corpse.Brain = null;
+        walker.Radius = corpse.Radius = Fixed.FromInt(16);
+        walker.IceCorpse = true;
+        corpse.Height = Fixed.FromInt(height);
+        corpse.Health = 0;
+        walker.VelocityX = Fixed.FromInt(8);
+        sim.Tick();
+        if (steps)
+        {
+            Assert.Equal(height, walker.Z.ToDouble());
+            Assert.True(walker.X.ToDouble() > 0);
+            Assert.True(walker.OnGround);
+        }
+        else
+        {
+            Assert.Equal(0, walker.Z.ToDouble());
+            Assert.Equal(0, walker.X.ToDouble());
+        }
+    }
+
+    [Fact]
+    public void LivingActorWalksThroughACorpse()
+    {
+        var sim = Room();
+        var player = sim.Players.Single();
+        var corpse = sim.AddBot(20, 0);
+        corpse.Brain = null;
+        corpse.Radius = Fixed.FromInt(16);
+        corpse.Height = Fixed.FromInt(16);
+        corpse.Health = 0;
+        player.Radius = Fixed.FromInt(16);
+        player.VelocityX = Fixed.FromInt(8);
+        sim.Tick();
+        Assert.Equal(0, player.Z.ToDouble());
+        Assert.True(player.X.ToDouble() > 0);
+    }
+
+    [Fact]
+    public void IceCorpseFlagIsInTheChecksumAndSurvivesAPoseRestore()
+    {
+        var left = Room();
+        var right = Room();
+        var first = left.AddBot(80, 0);
+        var second = right.AddBot(80, 0);
+        first.Brain = second.Brain = null;
+        first.IceCorpse = true;
+        left.Tick();
+        right.Tick();
+        Assert.NotEqual(left.Checksum, right.Checksum);
+        second.IceCorpse = true;
+        left.Tick();
+        right.Tick();
+        Assert.Equal(left.Checksum, right.Checksum);
+
+        var checksum = left.Checksum;
+        left.RestoreState(left.CaptureState());
+        Assert.True(first.IceCorpse);
+        Assert.Equal(checksum, left.Checksum);
+    }
+
+    [Fact]
+    public void BridgeFlagIsInTheChecksumAndSurvivesAPoseRestore()
+    {
+        var left = Room();
+        var right = Room();
+        var first = left.AddBot(80, 0);
+        var second = right.AddBot(80, 0);
+        first.Brain = second.Brain = null;
+        first.ActsLikeBridge = true;
+        left.Tick();
+        right.Tick();
+        Assert.NotEqual(left.Checksum, right.Checksum);
+        second.ActsLikeBridge = true;
+        left.Tick();
+        right.Tick();
+        Assert.Equal(left.Checksum, right.Checksum);
+
+        var checksum = left.Checksum;
+        left.RestoreState(left.CaptureState());
+        Assert.True(first.ActsLikeBridge);
+        Assert.Equal(checksum, left.Checksum);
     }
 
     [Fact]
@@ -241,13 +739,737 @@ public class GameplayFoundationTests
         Assert.Equal(default, ActorDamage.Apply(player, 100));
         Assert.Equal(85, player.Health);
         Assert.True(ActorDamage.Apply(player, 100, flags: DamageFlags.BypassInvulnerability).Killed);
+        Assert.Equal(-15, player.Health);
         ActorDamage.Apply(player, 100); player.Health = -100;
+        Assert.Equal(-100, player.Health);
         Assert.Equal(1, player.DeathCount);
         Assert.False(player.BlocksActors);
         Assert.False(player.CanTakeDamage);
         for (var i = 0; i < 6; i++) player.Tick();
         Assert.Equal(ActorStateMachine.Corpse, player.States.Current);
     }
+
+    [Fact]
+    public void OverkillRemainsBelowZeroAndGibsOnlyPastSpawnHealth()
+    {
+        var player = new PlayerPawn();
+        Assert.Equal(new DamageResult(200, 0, true), ActorDamage.Apply(player, 200));
+        Assert.Equal(-100, player.Health);
+        Assert.Equal(ActorStateMachine.Death, player.States.Current);
+
+        var armored = new PlayerPawn();
+        armored.Inventory.Armor = 300;
+        armored.Inventory.ArmorSavePercent = PlayerInventory.GreenSavePercent;
+        var saved = ActorDamage.Apply(armored, 450);
+        Assert.Equal(150, saved.ArmorLost);
+        Assert.Equal(300, saved.HealthLost);
+        Assert.Equal(-200, armored.Health);
+
+        var gibbed = new PlayerPawn { ExtremeDeathState = 4 };
+        gibbed.States.Configure(gibbed, DeathFrames(), 0);
+        ActorDamage.Apply(gibbed, 201);
+        Assert.Equal(-101, gibbed.Health);
+        Assert.Equal(4, gibbed.States.Current);
+
+        var boundary = new PlayerPawn { ExtremeDeathState = 4 };
+        boundary.States.Configure(boundary, DeathFrames(), 0);
+        ActorDamage.Apply(boundary, 200);
+        Assert.Equal(-100, boundary.Health);
+        Assert.Equal(ActorStateMachine.Death, boundary.States.Current);
+
+        var monster = new Actor { Health = 30, GibHealth = -30 };
+        Assert.Equal(new DamageResult(80, 0, true), ActorDamage.Apply(monster, 80));
+        Assert.Equal(-50, monster.Health);
+        Assert.Equal(ActorStateMachine.Death, monster.States.Current);
+    }
+
+    [Fact]
+    public void ATypedDeathBeatsTheGibStateUnlessTheTypeIsMissing()
+    {
+        var burned = TypedVictim();
+        burned.SetTypedDeath("Fire", 6, extreme: true);
+        ActorDamage.Apply(burned, 201, damageType: "Fire");
+        Assert.Equal(-101, burned.Health);
+        Assert.Equal(6, burned.States.Current);
+
+        var plain = TypedVictim();
+        ActorDamage.Apply(plain, 201, damageType: "Fire");
+        Assert.Equal(5, plain.States.Current);
+
+        var wrongCase = TypedVictim();
+        ActorDamage.Apply(wrongCase, 201, damageType: "fire");
+        Assert.Equal(4, wrongCase.States.Current);
+
+        var forced = TypedVictim();
+        ActorDamage.Apply(forced, 100, damageType: "Extreme");
+        Assert.Equal(0, forced.Health);
+        Assert.Equal(4, forced.States.Current);
+
+        var iced = TypedVictim();
+        ActorDamage.Apply(iced, 201, damageType: "Ice");
+        Assert.Equal(4, iced.States.Current);
+
+        var scratch = TypedVictim();
+        ActorDamage.Apply(scratch, 10, damageType: "Fire");
+        Assert.Equal(90, scratch.Health);
+        Assert.False(scratch.IsDead);
+        Assert.Equal(1, scratch.States.Current);
+    }
+
+    [Fact]
+    public void GenericFreezeDeathReplacesAMissingIceDeath()
+    {
+        var frozen = TypedVictim();
+        frozen.GenericFreezeDeath = 6;
+        ActorDamage.Apply(frozen, 201, damageType: "Ice");
+        Assert.Equal(-101, frozen.Health);
+        Assert.Equal(6, frozen.States.Current);
+
+        var typed = TypedVictim();
+        typed.GenericFreezeDeath = 6;
+        typed.SetTypedDeath("Ice", 5);
+        ActorDamage.Apply(typed, 201, damageType: "Ice");
+        Assert.Equal(5, typed.States.Current);
+
+        var extremeIce = TypedVictim();
+        extremeIce.GenericFreezeDeath = 6;
+        extremeIce.SetTypedDeath("Ice", 2, extreme: true);
+        ActorDamage.Apply(extremeIce, 201, damageType: "Ice");
+        Assert.Equal(2, extremeIce.States.Current);
+
+        var blocked = TypedVictim();
+        blocked.GenericFreezeDeath = 6;
+        blocked.NoIceDeath = true;
+        ActorDamage.Apply(blocked, 201, damageType: "Ice");
+        Assert.Equal(4, blocked.States.Current);
+
+        var decoration = FreezeBody();
+        ActorDamage.Apply(decoration, 201, damageType: "Ice");
+        Assert.Equal(4, decoration.States.Current);
+
+        var monster = FreezeBody();
+        monster.Brain = new MonsterBrain(MonsterAttack.Melee);
+        ActorDamage.Apply(monster, 201, damageType: "Ice");
+        Assert.Equal(6, monster.States.Current);
+
+        var wrongCase = TypedVictim();
+        wrongCase.GenericFreezeDeath = 6;
+        ActorDamage.Apply(wrongCase, 201, damageType: "ice");
+        Assert.Equal(4, wrongCase.States.Current);
+
+        var fire = TypedVictim();
+        fire.GenericFreezeDeath = 6;
+        ActorDamage.Apply(fire, 201, damageType: "Fire");
+        Assert.Equal(5, fire.States.Current);
+
+        var scratch = TypedVictim();
+        scratch.GenericFreezeDeath = 6;
+        ActorDamage.Apply(scratch, 10, damageType: "Ice");
+        Assert.Equal(90, scratch.Health);
+        Assert.False(scratch.IsDead);
+        Assert.Equal(1, scratch.States.Current);
+    }
+
+    [Fact]
+    public void ATypedPainUsesThatFrameAndItsOwnChance()
+    {
+        var burned = PainVictim();
+        burned.SetTypedPain("Fire", 4);
+        ActorDamage.Apply(burned, 10, damageType: "Fire");
+        Assert.Equal(90, burned.Health);
+        Assert.Equal(4, burned.States.Current);
+
+        var other = PainVictim();
+        other.SetTypedPain("Fire", 4);
+        ActorDamage.Apply(other, 10, damageType: "Slime");
+        Assert.Equal(1, other.States.Current);
+
+        var quiet = PainVictim();
+        quiet.SetTypedPain("Fire", 4, chance: 0);
+        ActorDamage.Apply(quiet, 10, damageType: "Fire");
+        Assert.Equal(90, quiet.Health);
+        Assert.Equal(0, quiet.States.Current);
+        ActorDamage.Apply(quiet, 10, damageType: "Slime");
+        Assert.Equal(1, quiet.States.Current);
+
+        var wrongCase = PainVictim();
+        wrongCase.SetTypedPain("Fire", 4);
+        ActorDamage.Apply(wrongCase, 10, damageType: "fire");
+        Assert.Equal(1, wrongCase.States.Current);
+    }
+
+    [Fact]
+    public void TypedPainIsInTheChecksumAndSurvivesAPoseRestore()
+    {
+        var left = Room();
+        var right = Room();
+        left.Players.Single().SetTypedPain("Fire", 1, chance: 0);
+        left.Tick();
+        right.Tick();
+        Assert.NotEqual(left.Checksum, right.Checksum);
+        right.Players.Single().SetTypedPain("Fire", 1, chance: 0);
+        left.Tick();
+        right.Tick();
+        Assert.Equal(left.Checksum, right.Checksum);
+
+        var checksum = left.Checksum;
+        left.RestoreState(left.CaptureState());
+        Assert.Equal(checksum, left.Checksum);
+    }
+
+    private static Actor PainVictim()
+    {
+        var actor = new Actor { Health = 100 };
+        actor.States.Configure(actor, new ActorFrame[]
+        {
+            new(-1, 0), new(4, 0), new(6, 3), new(-1, 3), new(5, 0),
+        }, 0);
+        return actor;
+    }
+
+    [Fact]
+    public void PainThresholdSkipsAHitBelowThePostArmorAmount()
+    {
+        var actor = new Actor { Health = 100, PainThreshold = 10 };
+        ActorDamage.Apply(actor, 9);
+        Assert.Equal(91, actor.Health);
+        Assert.Equal(0, actor.States.Current);
+
+        ActorDamage.Apply(actor, 10);
+        Assert.Equal(81, actor.Health);
+        Assert.Equal(1, actor.States.Current);
+
+        var armored = new Actor
+        {
+            Health = 100,
+            PainThreshold = 21,
+            Armor = 100,
+            ArmorSavePercent = PlayerInventory.GreenSavePercent,
+        };
+        ActorDamage.Apply(armored, 30);
+        Assert.Equal(80, armored.Health);
+        Assert.Equal(0, armored.States.Current);
+    }
+
+    [Fact]
+    public void PainThresholdIsInTheChecksumAndSurvivesAPoseRestore()
+    {
+        var left = Room();
+        var right = Room();
+        left.Players.Single().PainThreshold = 10;
+        left.Tick();
+        right.Tick();
+        Assert.NotEqual(left.Checksum, right.Checksum);
+        right.Players.Single().PainThreshold = 10;
+        left.Tick();
+        right.Tick();
+        Assert.Equal(left.Checksum, right.Checksum);
+
+        var checksum = left.Checksum;
+        left.RestoreState(left.CaptureState());
+        Assert.Equal(10, left.Players.Single().PainThreshold);
+        Assert.Equal(checksum, left.Checksum);
+    }
+
+    [Fact]
+    public void ForcePainFlinchesThroughTheThresholdAndAFailedRoll()
+    {
+        var forcer = new Actor { ForcePain = true };
+        var below = new Actor { Health = 100, PainThreshold = 10 };
+        ActorDamage.Apply(below, 9, inflictor: forcer);
+        Assert.Equal(91, below.Health);
+        Assert.Equal(1, below.States.Current);
+
+        var quiet = new Actor { Health = 100, PainChance = 0, PainThreshold = 10 };
+        ActorDamage.Apply(quiet, 9, source: forcer);
+        Assert.Equal(91, quiet.Health);
+        Assert.Equal(0, quiet.States.Current);
+
+        var absorbed = new Actor { Health = 100, Armor = 100, ArmorSavePercent = 100, PainChance = 0 };
+        ActorDamage.Apply(absorbed, 30, inflictor: forcer);
+        Assert.Equal(100, absorbed.Health);
+        Assert.Equal(1, absorbed.States.Current);
+
+        var blocked = new Actor { Health = 100, PainThreshold = 10 };
+        ActorDamage.Apply(blocked, 9, inflictor: forcer, flags: DamageFlags.NoPain);
+        Assert.Equal(91, blocked.Health);
+        Assert.Equal(0, blocked.States.Current);
+    }
+
+    [Fact]
+    public void ForcePainIsInTheChecksumAndSurvivesAPoseRestore()
+    {
+        var left = Room();
+        var right = Room();
+        var leftBot = left.AddBot(8, 8);
+        var rightBot = right.AddBot(8, 8);
+        leftBot.Brain!.Enabled = false;
+        rightBot.Brain!.Enabled = false;
+        leftBot.ForcePain = true;
+        left.Tick();
+        right.Tick();
+        Assert.NotEqual(left.Checksum, right.Checksum);
+        rightBot.ForcePain = true;
+        left.Tick();
+        right.Tick();
+        Assert.Equal(left.Checksum, right.Checksum);
+
+        var checksum = left.Checksum;
+        left.RestoreState(left.CaptureState());
+        Assert.True(leftBot.ForcePain);
+        Assert.Equal(checksum, left.Checksum);
+    }
+
+    [Fact]
+    public void NoPainAndPainlessBlockTheFlinchEvenWhenForced()
+    {
+        var forcer = new Actor { ForcePain = true, Painless = true };
+        var quiet = new Actor { Health = 100, NoPain = true };
+        ActorDamage.Apply(quiet, 50, inflictor: forcer);
+        Assert.Equal(50, quiet.Health);
+        Assert.Equal(0, quiet.States.Current);
+
+        var player = new PlayerPawn { Health = 100, NoPain = true };
+        ActorDamage.Apply(player, 50, inflictor: new Actor { ForcePain = true });
+        Assert.Equal(50, player.Health);
+        Assert.Equal(0, player.States.Current);
+
+        var victim = new Actor { Health = 100 };
+        ActorDamage.Apply(victim, 50, inflictor: forcer);
+        Assert.Equal(50, victim.Health);
+        Assert.Equal(0, victim.States.Current);
+
+        var stillHurts = new Actor { Health = 100 };
+        ActorDamage.Apply(stillHurts, 50, source: new Actor { Painless = true });
+        Assert.Equal(50, stillHurts.Health);
+        Assert.Equal(1, stillHurts.States.Current);
+    }
+
+    [Fact]
+    public void NoPainAndPainlessAreInTheChecksumAndSurviveAPoseRestore()
+    {
+        var left = Room();
+        var right = Room();
+        var leftBot = left.AddBot(8, 8);
+        var rightBot = right.AddBot(8, 8);
+        leftBot.Brain!.Enabled = false;
+        rightBot.Brain!.Enabled = false;
+        leftBot.NoPain = true;
+        left.Tick();
+        right.Tick();
+        Assert.NotEqual(left.Checksum, right.Checksum);
+        rightBot.NoPain = true;
+        leftBot.Painless = true;
+        left.Tick();
+        right.Tick();
+        Assert.NotEqual(left.Checksum, right.Checksum);
+        rightBot.Painless = true;
+        left.Tick();
+        right.Tick();
+        Assert.Equal(left.Checksum, right.Checksum);
+
+        var checksum = left.Checksum;
+        left.RestoreState(left.CaptureState());
+        Assert.True(leftBot.NoPain);
+        Assert.True(leftBot.Painless);
+        Assert.Equal(checksum, left.Checksum);
+    }
+
+    [Fact]
+    public void TypedDeathIsInTheChecksumAndSurvivesAPoseRestore()
+    {
+        var left = Room();
+        var right = Room();
+        left.Players.Single().SetTypedDeath("Fire", 2);
+        left.Tick();
+        right.Tick();
+        Assert.NotEqual(left.Checksum, right.Checksum);
+        right.Players.Single().SetTypedDeath("Fire", 2);
+        left.Tick();
+        right.Tick();
+        Assert.Equal(left.Checksum, right.Checksum);
+
+        var checksum = left.Checksum;
+        left.RestoreState(left.CaptureState());
+        Assert.Equal(checksum, left.Checksum);
+    }
+
+    [Fact]
+    public void GenericFreezeDeathIsInTheChecksumAndSurvivesAPoseRestore()
+    {
+        var left = Room();
+        var right = Room();
+        var leftPlayer = left.Players.Single();
+        var rightPlayer = right.Players.Single();
+        leftPlayer.GenericFreezeDeath = 6;
+        left.Tick();
+        right.Tick();
+        Assert.NotEqual(left.Checksum, right.Checksum);
+        rightPlayer.GenericFreezeDeath = 6;
+        leftPlayer.NoIceDeath = true;
+        left.Tick();
+        right.Tick();
+        Assert.NotEqual(left.Checksum, right.Checksum);
+        rightPlayer.NoIceDeath = true;
+        left.Tick();
+        right.Tick();
+        Assert.Equal(left.Checksum, right.Checksum);
+
+        var checksum = left.Checksum;
+        left.RestoreState(left.CaptureState());
+        Assert.Equal(6, leftPlayer.GenericFreezeDeath);
+        Assert.True(leftPlayer.NoIceDeath);
+        Assert.Equal(checksum, left.Checksum);
+    }
+
+    private static Actor FreezeBody()
+    {
+        var actor = new Actor { Health = 100, ExtremeDeathState = 4, GibHealth = -100, GenericFreezeDeath = 6 };
+        actor.States.Configure(actor, new ActorFrame[]
+        {
+            new(-1, 0), new(4, 0), new(6, 3), new(-1, 3), new(7, 3), new(8, 3), new(9, 3),
+        }, 0);
+        return actor;
+    }
+
+    private static PlayerPawn TypedVictim()
+    {
+        var actor = new PlayerPawn { ExtremeDeathState = 4, GibHealth = -100 };
+        actor.States.Configure(actor, new ActorFrame[]
+        {
+            new(-1, 0), new(4, 0), new(6, 3), new(-1, 3), new(7, 3), new(8, 3), new(9, 3),
+        }, 0);
+        actor.SetTypedDeath("Fire", 5);
+        return actor;
+    }
+
+    [Fact]
+    public void MonsterArmorAbsorbsWithThePlayerSaveFormula()
+    {
+        var green = new Actor { Health = 30, GibHealth = -30, Armor = 100, ArmorSavePercent = PlayerInventory.GreenSavePercent };
+        var saved = ActorDamage.Apply(green, 80);
+        Assert.Equal(26, saved.ArmorLost);
+        Assert.Equal(54, saved.HealthLost);
+        Assert.Equal(-24, green.Health);
+        Assert.Equal(74, green.Armor);
+        Assert.Equal(PlayerInventory.GreenSavePercent, green.ArmorSavePercent);
+
+        var depleted = new Actor { Health = 100, Armor = 10, ArmorSavePercent = 50 };
+        var hit = ActorDamage.Apply(depleted, 100);
+        Assert.Equal(10, hit.ArmorLost);
+        Assert.Equal(90, hit.HealthLost);
+        Assert.Equal(10, depleted.Health);
+        Assert.Equal(0, depleted.Armor);
+        Assert.Equal(0, depleted.ArmorSavePercent);
+
+        var forced = new Actor { Health = 50, Armor = 100, ArmorSavePercent = 100 };
+        Assert.Equal(0, ActorDamage.Apply(forced, 20, flags: DamageFlags.BypassArmor).ArmorLost);
+        Assert.Equal(30, forced.Health);
+        Assert.Equal(100, forced.Armor);
+    }
+
+    [Fact]
+    public void MonsterArmorIsInTheChecksumAndSurvivesAPoseRestore()
+    {
+        var left = Room();
+        var right = Room();
+        var first = left.AddBot(80, 0);
+        var second = right.AddBot(80, 0);
+        first.Brain = second.Brain = null;
+        first.Armor = 50;
+        first.ArmorSavePercent = 33;
+        left.Tick();
+        right.Tick();
+        Assert.NotEqual(left.Checksum, right.Checksum);
+        second.Armor = 50;
+        second.ArmorSavePercent = 33;
+        left.Tick();
+        right.Tick();
+        Assert.Equal(left.Checksum, right.Checksum);
+
+        var checksum = left.Checksum;
+        left.RestoreState(left.CaptureState());
+        Assert.Equal(50, first.Armor);
+        Assert.Equal(33, first.ArmorSavePercent);
+        Assert.Equal(checksum, left.Checksum);
+    }
+
+    [Fact]
+    public void BuddhaStopsAKillingBlowAtOneHealth()
+    {
+        var monster = new Actor { Health = 30, GibHealth = -30, Buddha = true };
+        var saved = ActorDamage.Apply(monster, 80);
+        Assert.Equal(new DamageResult(29, 0, false), saved);
+        Assert.Equal(1, monster.Health);
+        Assert.Equal(0, monster.DeathCount);
+        Assert.NotEqual(ActorStateMachine.Death, monster.States.Current);
+
+        var wounded = new Actor { Health = 30, Buddha = true };
+        Assert.Equal(10, ActorDamage.Apply(wounded, 10).HealthLost);
+        Assert.Equal(20, wounded.Health);
+
+        var telefrag = new Actor { Health = 30, Buddha = true };
+        ActorDamage.Apply(telefrag, ActorDamage.TelefragDamage);
+        Assert.Equal(30 - ActorDamage.TelefragDamage, telefrag.Health);
+        Assert.Equal(ActorStateMachine.Death, telefrag.States.Current);
+
+        var forced = new Actor { Health = 30, Buddha = true, Armor = 100, ArmorSavePercent = 100 };
+        var forcedHit = ActorDamage.Apply(forced, 80, flags: DamageFlags.Forced);
+        Assert.Equal(0, forcedHit.ArmorLost);
+        Assert.Equal(-50, forced.Health);
+        Assert.Equal(100, forced.Armor);
+
+        var foiled = new Actor { Health = 30, Buddha = true };
+        ActorDamage.Apply(foiled, 80, flags: DamageFlags.FoilBuddha);
+        Assert.Equal(-50, foiled.Health);
+
+        var player = new PlayerPawn { Health = 40, Buddha = true };
+        ActorDamage.Apply(player, 80, flags: DamageFlags.FoilBuddha);
+        Assert.Equal(1, player.Health);
+        Assert.False(player.IsDead);
+
+        var armored = new Actor { Health = 30, Buddha = true, Armor = 100, ArmorSavePercent = PlayerInventory.GreenSavePercent };
+        var absorbed = ActorDamage.Apply(armored, 80);
+        Assert.Equal(26, absorbed.ArmorLost);
+        Assert.Equal(1, armored.Health);
+        Assert.Equal(74, armored.Armor);
+        Assert.False(armored.IsDead);
+    }
+
+    [Fact]
+    public void Buddha2SurvivesTelefragAndForcedDamage()
+    {
+        var player = new PlayerPawn { Health = 30, Buddha2 = true };
+        ActorDamage.Apply(player, ActorDamage.TelefragDamage);
+        Assert.Equal(1, player.Health);
+        Assert.False(player.IsDead);
+        Assert.Equal(0, player.DeathCount);
+
+        player.Health = 30;
+        var forced = ActorDamage.Apply(player, 80, flags: DamageFlags.Forced);
+        Assert.Equal(1, player.Health);
+        Assert.Equal(29, forced.HealthLost);
+        Assert.False(player.IsDead);
+
+        player.Health = 30;
+        player.Inventory.Armor = 100;
+        player.Inventory.ArmorSavePercent = 100;
+        var armored = ActorDamage.Apply(player, 80, flags: DamageFlags.Forced);
+        Assert.Equal(80, armored.ArmorLost);
+        Assert.Equal(30, player.Health);
+        Assert.Equal(20, player.Inventory.Armor);
+
+        player.GodMode = true;
+        player.Health = 40;
+        var blocked = ActorDamage.Apply(player, 80, flags: DamageFlags.Forced);
+        Assert.Equal(0, blocked.HealthLost);
+        Assert.Equal(40, player.Health);
+
+        var ordinary = new PlayerPawn { Health = 30, Buddha = true };
+        ActorDamage.Apply(ordinary, ActorDamage.TelefragDamage);
+        Assert.Equal(30 - ActorDamage.TelefragDamage, ordinary.Health);
+        Assert.True(ordinary.IsDead);
+
+        var scratch = new PlayerPawn { Health = 30, Buddha2 = true };
+        Assert.Equal(10, ActorDamage.Apply(scratch, 10).HealthLost);
+        Assert.Equal(20, scratch.Health);
+    }
+
+    [Fact]
+    public void Buddha2IsInTheChecksumAndSurvivesAPoseRestore()
+    {
+        var left = Room();
+        var right = Room();
+        left.Players.Single().Buddha2 = true;
+        left.Tick();
+        right.Tick();
+        Assert.NotEqual(left.Checksum, right.Checksum);
+        right.Players.Single().Buddha2 = true;
+        left.Tick();
+        right.Tick();
+        Assert.Equal(left.Checksum, right.Checksum);
+
+        var checksum = left.Checksum;
+        left.RestoreState(left.CaptureState());
+        Assert.True(left.Players.Single().Buddha2);
+        Assert.Equal(checksum, left.Checksum);
+    }
+
+    [Fact]
+    public void PowerBuddhaLastsSixtySecondsAndStopsAKillingBlow()
+    {
+        var player = new PlayerPawn { Health = 30 };
+        player.GivePowerBuddha();
+        Assert.Equal(PlayerPawn.PowerBuddhaDuration, player.PowerBuddhaTics);
+        Assert.Equal(60 * GameTicClock.TicRate, player.PowerBuddhaTics);
+
+        ActorDamage.Apply(player, 80);
+        Assert.Equal(1, player.Health);
+        Assert.False(player.IsDead);
+
+        player.Health = 30;
+        ActorDamage.Apply(player, 80, flags: DamageFlags.FoilBuddha);
+        Assert.Equal(1, player.Health);
+        Assert.False(player.IsDead);
+
+        player.Health = 30;
+        player.Inventory.Armor = 100;
+        player.Inventory.ArmorSavePercent = 100;
+        var forced = ActorDamage.Apply(player, 80, flags: DamageFlags.Forced);
+        Assert.Equal(0, forced.ArmorLost);
+        Assert.Equal(100, player.Inventory.Armor);
+        Assert.True(player.IsDead);
+
+        var telefrag = new PlayerPawn { Health = 30 };
+        telefrag.GivePowerBuddha();
+        ActorDamage.Apply(telefrag, ActorDamage.TelefragDamage);
+        Assert.True(telefrag.IsDead);
+
+        var scratch = new PlayerPawn { Health = 30 };
+        scratch.GivePowerBuddha();
+        Assert.Equal(10, ActorDamage.Apply(scratch, 10).HealthLost);
+        Assert.Equal(20, scratch.Health);
+
+        var held = new PlayerPawn { PowerBuddhaTics = PlayerPawn.PowerBuddhaBlinkThreshold + 1 };
+        held.GivePowerBuddha();
+        Assert.Equal(PlayerPawn.PowerBuddhaBlinkThreshold + 1, held.PowerBuddhaTics);
+
+        var low = new PlayerPawn { PowerBuddhaTics = PlayerPawn.PowerBuddhaBlinkThreshold };
+        low.GivePowerBuddha();
+        Assert.Equal(PlayerPawn.PowerBuddhaDuration, low.PowerBuddhaTics);
+
+        var fading = new PlayerPawn { Health = 30, PowerBuddhaTics = 1 };
+        fading.Tick();
+        Assert.Equal(0, fading.PowerBuddhaTics);
+        ActorDamage.Apply(fading, 80);
+        Assert.True(fading.IsDead);
+    }
+
+    [Fact]
+    public void PowerBuddhaIsInTheChecksumAndSurvivesAPoseRestore()
+    {
+        var left = Room();
+        var right = Room();
+        left.Players.Single().PowerBuddhaTics = 5;
+        left.Tick();
+        right.Tick();
+        Assert.NotEqual(left.Checksum, right.Checksum);
+        right.Players.Single().PowerBuddhaTics = left.Players.Single().PowerBuddhaTics;
+        left.Tick();
+        right.Tick();
+        Assert.Equal(left.Checksum, right.Checksum);
+
+        var checksum = left.Checksum;
+        left.RestoreState(left.CaptureState());
+        Assert.Equal(3, left.Players.Single().PowerBuddhaTics);
+        Assert.Equal(checksum, left.Checksum);
+    }
+
+    [Fact]
+    public void InflictorFoilBuddhaKillsAMonsterAndNotAPlayer()
+    {
+        var missile = new Actor { FoilBuddha = true };
+        var monster = new Actor { Health = 30, Buddha = true };
+        ActorDamage.Apply(monster, 80, inflictor: missile);
+        Assert.Equal(-50, monster.Health);
+        Assert.True(monster.IsDead);
+
+        var plain = new Actor { Health = 30, Buddha = true };
+        ActorDamage.Apply(plain, 80, source: new Actor { FoilBuddha = true });
+        Assert.Equal(1, plain.Health);
+        Assert.False(plain.IsDead);
+
+        var player = new PlayerPawn { Health = 30, Buddha = true };
+        ActorDamage.Apply(player, 80, inflictor: missile);
+        Assert.Equal(1, player.Health);
+        Assert.False(player.IsDead);
+
+        var powered = new PlayerPawn { Health = 30 };
+        powered.GivePowerBuddha();
+        ActorDamage.Apply(powered, 80, inflictor: missile);
+        Assert.Equal(1, powered.Health);
+        Assert.False(powered.IsDead);
+
+        var melee = new Actor { Health = 30, Buddha = true };
+        var attacker = new Actor { FoilBuddha = true };
+        ActorDamage.Apply(melee, 80, attacker, inflictor: attacker);
+        Assert.True(melee.IsDead);
+    }
+
+    [Fact]
+    public void FoilBuddhaIsInTheChecksumAndSurvivesAPoseRestore()
+    {
+        var left = Room();
+        var right = Room();
+        var first = left.AddBot(80, 0);
+        var second = right.AddBot(80, 0);
+        first.Brain = second.Brain = null;
+        first.FoilBuddha = true;
+        left.Tick();
+        right.Tick();
+        Assert.NotEqual(left.Checksum, right.Checksum);
+        second.FoilBuddha = true;
+        left.Tick();
+        right.Tick();
+        Assert.Equal(left.Checksum, right.Checksum);
+
+        var checksum = left.Checksum;
+        left.RestoreState(left.CaptureState());
+        Assert.True(first.FoilBuddha);
+        Assert.Equal(checksum, left.Checksum);
+    }
+
+    [Fact]
+    public void BuddhaIsInTheChecksumAndSurvivesAPoseRestore()
+    {
+        var left = Room();
+        var right = Room();
+        var first = left.AddBot(80, 0);
+        var second = right.AddBot(80, 0);
+        first.Brain = second.Brain = null;
+        first.Buddha = true;
+        left.Tick();
+        right.Tick();
+        Assert.NotEqual(left.Checksum, right.Checksum);
+        second.Buddha = true;
+        left.Tick();
+        right.Tick();
+        Assert.Equal(left.Checksum, right.Checksum);
+
+        var checksum = left.Checksum;
+        left.RestoreState(left.CaptureState());
+        Assert.True(first.Buddha);
+        Assert.Equal(checksum, left.Checksum);
+    }
+
+    [Fact]
+    public void NegativeHealthRoundTripsThroughThePose()
+    {
+        var sim = Room();
+        var player = sim.Players.Single();
+        ActorDamage.Apply(player, 250);
+        Assert.Equal(-150, player.Health);
+        Assert.Equal(ActorStateMachine.Death, player.States.Current);
+        var saved = SimSavegame.Write(sim);
+        sim.Tick();
+        SimSavegame.Apply(sim, saved);
+        Assert.Equal(-150, player.Health);
+        Assert.Equal(ActorStateMachine.Death, player.States.Current);
+        var checksum = sim.Checksum;
+        var view = player.ViewHeight;
+        sim.Tick();
+        SimSavegame.Apply(sim, saved);
+        Assert.Equal(-150, player.Health);
+        Assert.Equal(ActorStateMachine.Death, player.States.Current);
+        // The pose does not store the death view, so another dead tic keeps the lower value.
+        Assert.Equal(view - 1, player.ViewHeight, 3);
+        Assert.NotEqual(checksum, sim.Checksum);
+    }
+
+    private static ActorFrame[] DeathFrames() =>
+    [
+        new(-1, 0), new(4, 0), new(6, 3), new(-1, 3), new(6, 3),
+    ];
 
     [Fact]
     public void ShootingUsesShootableFlagAndVerticalOpening()
@@ -307,6 +1529,576 @@ public class GameplayFoundationTests
             Assert.Equal(left.Checksum, right.Checksum);
         }
     }
+
+    [Fact]
+    public void WeaponSwitchLowersAndRaisesBeforeItCanFire()
+    {
+        var sim = Room();
+        var player = sim.Players.Single();
+        player.Inventory.Weapons |= WeaponKind.Shotgun;
+        player.Inventory.Shells = 5;
+        Assert.Equal(PlayerPawn.WeaponTop, player.WeaponOffsetY);
+
+        sim.QueueCommand(0, new PlayerCommand { Attack = true, WeaponSelections = new byte[] { 3 } });
+        sim.Tick();
+        Assert.Equal(WeaponKind.Pistol, player.Inventory.Selected);
+        Assert.Equal(WeaponKind.Shotgun, player.Inventory.Pending);
+        Assert.Equal(PlayerPawn.WeaponTop + PlayerPawn.WeaponMoveSpeed, player.WeaponOffsetY);
+        Assert.False(player.WeaponReady);
+        Assert.Equal(5, player.Inventory.Shells);
+        Assert.Equal(0, player.WeaponCooldown);
+
+        for (var i = 0; i < 15; i++) sim.Tick();
+        Assert.Equal(WeaponKind.Shotgun, player.Inventory.Selected);
+        Assert.Null(player.Inventory.Pending);
+        Assert.Equal(PlayerPawn.WeaponBottom, player.WeaponOffsetY);
+        Assert.False(player.WeaponLowering);
+        Assert.False(player.WeaponReady);
+        Assert.Equal(5, player.Inventory.Shells);
+
+        for (var i = 0; i < 16; i++) sim.Tick();
+        Assert.True(player.WeaponReady);
+        Assert.Equal(PlayerPawn.WeaponTop, player.WeaponOffsetY);
+
+        sim.QueueCommand(0, new PlayerCommand { Attack = true });
+        sim.Tick();
+        Assert.Equal(4, player.Inventory.Shells);
+        Assert.Equal(35, player.WeaponCooldown);
+        sim.QueueCommand(0, new PlayerCommand { Attack = true });
+        sim.Tick();
+        Assert.Equal(4, player.Inventory.Shells);
+        Assert.Equal(34, player.WeaponCooldown);
+    }
+
+    [Fact]
+    public void ALaterSlotReplacesPendingAndTheReadySlotLeavesIt()
+    {
+        var sim = Room();
+        var player = sim.Players.Single();
+        player.Inventory.Weapons |= WeaponKind.Shotgun | WeaponKind.SuperShotgun;
+        player.Inventory.Shells = 8;
+        sim.QueueCommand(0, new PlayerCommand { WeaponSelections = new byte[] { 3 } });
+        sim.Tick();
+        Assert.Equal(WeaponKind.Pistol, player.Inventory.Selected);
+        Assert.Equal(WeaponKind.SuperShotgun, player.Inventory.Pending);
+
+        sim.QueueCommand(0, new PlayerCommand { WeaponSelections = new byte[] { 3 } });
+        sim.Tick();
+        Assert.Equal(WeaponKind.Shotgun, player.Inventory.Pending);
+        Assert.Equal(WeaponKind.Pistol, player.Inventory.Selected);
+
+        sim.QueueCommand(0, new PlayerCommand { WeaponSelections = new byte[] { 2 } });
+        sim.Tick();
+        Assert.Equal(WeaponKind.Shotgun, player.Inventory.Pending);
+        Assert.Equal(WeaponKind.Pistol, player.Inventory.Selected);
+    }
+
+    [Fact]
+    public void PendingWeaponIsInTheChecksumAndSurvivesAPoseRestore()
+    {
+        var left = Room();
+        var right = Room();
+        left.Players.Single().Inventory.Pending = WeaponKind.Chaingun;
+        right.Players.Single().Inventory.Pending = WeaponKind.Shotgun;
+        left.Tick();
+        right.Tick();
+        Assert.NotEqual(left.Checksum, right.Checksum);
+        right.Players.Single().Inventory.Pending = WeaponKind.Chaingun;
+        left.Tick();
+        right.Tick();
+        Assert.Equal(left.Checksum, right.Checksum);
+
+        var checksum = left.Checksum;
+        left.RestoreState(left.CaptureState());
+        Assert.Equal(WeaponKind.Chaingun, left.Players.Single().Inventory.Pending);
+        Assert.Equal(checksum, left.Checksum);
+    }
+
+    [Fact]
+    public void ViewBobFollowsHorizontalSpeedAndLeavesEyeHeightAlone()
+    {
+        var player = new PlayerPawn { BobTimer = 5 };
+        player.VelocityX = Fixed.FromDouble(8);
+        player.UpdateViewBob();
+        Assert.Equal(8, player.ViewBobOffset, 3);
+        Assert.Equal(PlayerPawn.StandingViewHeight, player.ViewHeight);
+
+        player.BobTimer = 10;
+        player.UpdateViewBob();
+        Assert.Equal(0, player.ViewBobOffset, 3);
+
+        player.VelocityX = Fixed.FromDouble(100);
+        player.BobTimer = 5;
+        player.UpdateViewBob();
+        Assert.Equal(8, player.ViewBobOffset, 3);
+
+        player.VelocityX = default;
+        player.UpdateViewBob();
+        Assert.Equal(0, player.ViewBobOffset, 3);
+
+        var sim = Room();
+        var pawn = sim.Players.Single();
+        var eye = pawn.ViewHeight;
+        sim.Tick();
+        Assert.Equal(1, pawn.BobTimer);
+        Assert.Equal(0, pawn.ViewBobOffset, 3);
+        Assert.Equal(eye, pawn.ViewHeight);
+    }
+
+    [Fact]
+    public void ViewBobTimerFollowsTheClockThroughAPoseRestore()
+    {
+        var sim = Room();
+        var player = sim.Players.Single();
+        player.VelocityX = Fixed.FromDouble(8);
+        sim.Tick();
+        Assert.Equal(sim.Thinkers.Clock.Tic, player.BobTimer);
+        var checksum = sim.Checksum;
+        var saved = SimSavegame.Write(sim);
+        sim.Tick();
+        Assert.NotEqual(checksum, sim.Checksum);
+        SimSavegame.Apply(sim, saved);
+        Assert.Equal(sim.Thinkers.Clock.Tic, player.BobTimer);
+        Assert.Equal(checksum, sim.Checksum);
+    }
+
+    [Fact]
+    public void WeaponBobUsesTheNormalStyleAndStopsWhileFiringOrLowering()
+    {
+        var player = new PlayerPawn { BobTimer = 16 };
+        player.VelocityX = Fixed.FromDouble(8);
+        player.VelocityZ = Fixed.FromDouble(40);
+        player.UpdateViewBob();
+        Assert.Equal(PlayerPawn.MaxBob, player.MovementBob, 3);
+        Assert.Equal(0, player.WeaponBobX, 3);
+        Assert.Equal(PlayerPawn.MaxBob, player.WeaponBobY, 3);
+        Assert.Equal(PlayerPawn.StandingViewHeight, player.ViewHeight);
+
+        player.BobTimer = 0;
+        player.UpdateViewBob();
+        Assert.Equal(PlayerPawn.MaxBob, player.WeaponBobX, 3);
+        Assert.Equal(0, player.WeaponBobY, 3);
+
+        player.BobTimer = 16;
+        player.AttackPressed = true;
+        player.UpdateViewBob();
+        Assert.Equal(0, player.WeaponBobX, 3);
+        Assert.Equal(0, player.WeaponBobY, 3);
+
+        var sim = Room();
+        var pawn = sim.Players.Single();
+        sim.QueueCommand(0, new PlayerCommand { WeaponSelections = new byte[] { 1 } });
+        sim.Tick();
+        pawn.VelocityX = Fixed.FromDouble(8);
+        pawn.BobTimer = 16;
+        pawn.UpdateViewBob();
+        Assert.Equal(0, pawn.WeaponBobX, 3);
+        Assert.Equal(0, pawn.WeaponBobY, 3);
+
+        var firing = Room();
+        var shooter = firing.Players.Single();
+        firing.QueueCommand(0, new PlayerCommand { Attack = true });
+        firing.Tick();
+        shooter.VelocityX = Fixed.FromDouble(8);
+        shooter.BobTimer = 16;
+        shooter.UpdateViewBob();
+        Assert.Equal(0, shooter.WeaponBobX, 3);
+        Assert.Equal(0, shooter.WeaponBobY, 3);
+    }
+
+    [Fact]
+    public void Turn180TakesNineTicsAndIgnoresYawUntilItFinishes()
+    {
+        var sim = Room();
+        var player = sim.Players.Single();
+        sim.QueueCommand(0, new PlayerCommand { Turn180 = true, YawDelta = 16384 });
+        sim.Tick();
+        Assert.Equal(20, player.Angle.ToDegrees(), 3);
+        Assert.Equal(PlayerPawn.Turn180Ticks - 1, player.TurnTicks);
+
+        for (var i = 0; i < PlayerPawn.Turn180Ticks - 1; i++)
+        {
+            sim.QueueCommand(0, new PlayerCommand { Turn180 = true, YawDelta = 16384 });
+            sim.Tick();
+        }
+        Assert.Equal(180, player.Angle.ToDegrees(), 3);
+        Assert.Equal(0, player.TurnTicks);
+
+        sim.QueueCommand(0, new PlayerCommand { Turn180 = true });
+        sim.Tick();
+        Assert.Equal(180, player.Angle.ToDegrees(), 3);
+        Assert.Equal(0, player.TurnTicks);
+
+        sim.Tick();
+        sim.QueueCommand(0, new PlayerCommand { Turn180 = true });
+        sim.Tick();
+        Assert.Equal(200, player.Angle.ToDegrees(), 3);
+        Assert.Equal(PlayerPawn.Turn180Ticks - 1, player.TurnTicks);
+
+        var checksum = sim.Checksum;
+        var ticks = player.TurnTicks;
+        sim.RestoreState(sim.CaptureState());
+        Assert.Equal(ticks, player.TurnTicks);
+        Assert.Equal(checksum, sim.Checksum);
+        sim.QueueCommand(0, new PlayerCommand { Turn180 = true });
+        sim.Tick();
+        Assert.Equal(ticks - 1, player.TurnTicks);
+    }
+
+    [Fact]
+    public void Turn180IsInTheChecksumAndSurvivesAPoseRestore()
+    {
+        var left = Room();
+        var right = Room();
+        left.Players.Single().TurnTicks = 4;
+        left.Tick();
+        right.Tick();
+        Assert.NotEqual(left.Checksum, right.Checksum);
+        right.Players.Single().TurnTicks = left.Players.Single().TurnTicks;
+        right.Players.Single().Angle = left.Players.Single().Angle;
+        left.Tick();
+        right.Tick();
+        Assert.Equal(left.Checksum, right.Checksum);
+
+        var checksum = left.Checksum;
+        left.RestoreState(left.CaptureState());
+        Assert.Equal(2, left.Players.Single().TurnTicks);
+        Assert.Equal(checksum, left.Checksum);
+    }
+
+    [Fact]
+    public void InstantWeaponSwitchIsReadyOnTheSameTic()
+    {
+        var sim = Room();
+        var player = sim.Players.Single();
+        player.Inventory.Weapons |= WeaponKind.Shotgun;
+        player.Inventory.Shells = 5;
+        player.InstantWeaponSwitch = true;
+        sim.QueueCommand(0, new PlayerCommand { Attack = true, WeaponSelections = new byte[] { 3 } });
+        sim.Tick();
+        Assert.Equal(WeaponKind.Shotgun, player.Inventory.Selected);
+        Assert.Null(player.Inventory.Pending);
+        Assert.Equal(PlayerPawn.WeaponTop, player.WeaponOffsetY);
+        Assert.True(player.WeaponReady);
+        Assert.Equal(4, player.Inventory.Shells);
+        Assert.Equal(35, player.WeaponCooldown);
+    }
+
+    [Fact]
+    public void InstantWeaponSwitchIsInTheChecksumAndSurvivesAPoseRestore()
+    {
+        var left = Room();
+        var right = Room();
+        left.Players.Single().InstantWeaponSwitch = true;
+        left.Tick();
+        right.Tick();
+        Assert.NotEqual(left.Checksum, right.Checksum);
+        right.Players.Single().InstantWeaponSwitch = true;
+        left.Tick();
+        right.Tick();
+        Assert.Equal(left.Checksum, right.Checksum);
+
+        var checksum = left.Checksum;
+        left.RestoreState(left.CaptureState());
+        Assert.True(left.Players.Single().InstantWeaponSwitch);
+        Assert.Equal(checksum, left.Checksum);
+    }
+
+    [Fact]
+    public void DirectWeaponAssignmentStaysReady()
+    {
+        var sim = Room();
+        var player = sim.Players.Single();
+        player.Inventory.Weapons |= WeaponKind.Shotgun;
+        player.Inventory.Shells = 2;
+        player.Inventory.Selected = WeaponKind.Shotgun;
+        sim.QueueCommand(0, new PlayerCommand { Attack = true });
+        sim.Tick();
+        Assert.Equal(1, player.Inventory.Shells);
+        Assert.True(player.WeaponReady);
+    }
+
+    [Fact]
+    public void WeaponOffsetIsInTheChecksumAndSurvivesAPoseRestore()
+    {
+        var left = Room();
+        var right = Room();
+        var command = new PlayerCommand { WeaponSelections = new byte[] { 1 } };
+        left.QueueCommand(0, command);
+        right.QueueCommand(0, command);
+        left.Tick();
+        right.Tick();
+        Assert.Equal(left.Checksum, right.Checksum);
+        left.Tick();
+        Assert.NotEqual(left.Checksum, right.Checksum);
+        right.Tick();
+        Assert.Equal(left.Checksum, right.Checksum);
+
+        var checksum = left.Checksum;
+        var player = left.Players.Single();
+        left.RestoreState(left.CaptureState());
+        Assert.Equal(PlayerPawn.WeaponTop + PlayerPawn.WeaponMoveSpeed * 2, player.WeaponOffsetY);
+        Assert.True(player.WeaponLowering);
+        Assert.Equal(checksum, left.Checksum);
+    }
+
+    [Fact]
+    public void BackpackLiftsTheCapsThenGivesOnePack()
+    {
+        var player = Room().Players.Single();
+        player.Inventory.Bullets = 200;
+        Assert.True(PickupCatalog.TryGive(player, PickupCatalog.Backpack));
+        Assert.True(player.Inventory.HasBackpack);
+        Assert.Equal(400, player.Inventory.MaxBullets);
+        Assert.Equal(100, player.Inventory.MaxShells);
+        Assert.Equal(100, player.Inventory.MaxRockets);
+        Assert.Equal(600, player.Inventory.MaxCells);
+        Assert.Equal(210, player.Inventory.Bullets);
+        Assert.Equal(4, player.Inventory.Shells);
+        Assert.Equal(1, player.Inventory.Rockets);
+        Assert.Equal(20, player.Inventory.Cells);
+    }
+
+    [Fact]
+    public void ASecondBackpackAddsAmmoAndAFullPackIsStillTaken()
+    {
+        var player = Room().Players.Single();
+        player.Inventory.Bullets = 50;
+        Assert.True(PickupCatalog.TryGive(player, PickupCatalog.Backpack));
+        Assert.True(PickupCatalog.TryGive(player, PickupCatalog.Backpack));
+        Assert.Equal(70, player.Inventory.Bullets);
+        Assert.Equal(8, player.Inventory.Shells);
+        Assert.Equal(2, player.Inventory.Rockets);
+        Assert.Equal(40, player.Inventory.Cells);
+        Assert.Equal(400, player.Inventory.MaxBullets);
+        player.Inventory.Bullets = 400;
+        player.Inventory.Shells = 100;
+        player.Inventory.Rockets = 100;
+        player.Inventory.Cells = 600;
+        Assert.True(PickupCatalog.TryGive(player, PickupCatalog.Backpack));
+        Assert.Equal(400, player.Inventory.Bullets);
+        Assert.Equal(100, player.Inventory.Shells);
+        Assert.Equal(100, player.Inventory.Rockets);
+        Assert.Equal(600, player.Inventory.Cells);
+        Assert.Equal(400, player.Inventory.MaxBullets);
+    }
+
+    [Fact]
+    public void PistolStartClearsTheBackpack()
+    {
+        var player = Room().Players.Single();
+        PickupCatalog.TryGive(player, PickupCatalog.Backpack);
+        player.Inventory.ResetToPistolStart();
+        Assert.False(player.Inventory.HasBackpack);
+        Assert.Equal(200, player.Inventory.MaxBullets);
+        Assert.Equal(50, player.Inventory.MaxShells);
+        Assert.Equal(50, player.Inventory.MaxRockets);
+        Assert.Equal(300, player.Inventory.MaxCells);
+        Assert.Equal(50, player.Inventory.Bullets);
+    }
+
+    [Fact]
+    public void ADroppedBackpackRestoresTheCapsAndGivesNoAmmo()
+    {
+        var sim = Room();
+        var player = sim.Players.Single();
+        Assert.True(PickupCatalog.TryGive(player, PickupCatalog.Backpack));
+        player.Inventory.Bullets = 250;
+        Assert.Null(sim.DropBackpack(new PlayerPawn()));
+        var drop = sim.DropBackpack(player);
+        Assert.NotNull(drop);
+        Assert.True(drop.Depleted);
+        Assert.Equal(PickupCatalog.Backpack, drop.DoomEdNum);
+        Assert.False(player.Inventory.HasBackpack);
+        Assert.Equal(200, player.Inventory.MaxBullets);
+        Assert.Equal(50, player.Inventory.MaxShells);
+        Assert.Equal(200, player.Inventory.Bullets);
+        Assert.Equal(4, player.Inventory.Shells);
+        Assert.Equal(1, player.Inventory.Rockets);
+        Assert.Equal(20, player.Inventory.Cells);
+        Assert.Null(sim.DropBackpack(player));
+
+        sim.Tick();
+        Assert.True(player.Inventory.HasBackpack);
+        Assert.Equal(400, player.Inventory.MaxBullets);
+        Assert.Equal(200, player.Inventory.Bullets);
+        Assert.Equal(4, player.Inventory.Shells);
+        Assert.Equal(1, player.Inventory.Rockets);
+        Assert.Equal(20, player.Inventory.Cells);
+        Assert.DoesNotContain(sim.Actors, actor => actor.DoomEdNum == PickupCatalog.Backpack);
+
+        Assert.True(PickupCatalog.TryGive(player, PickupCatalog.Backpack, depleted: true));
+        Assert.Equal(210, player.Inventory.Bullets);
+        Assert.Equal(8, player.Inventory.Shells);
+    }
+
+    [Fact]
+    public void DepletedIsInTheChecksumAndSurvivesAPoseRestore()
+    {
+        var left = Room();
+        var right = Room();
+        var leftBot = left.AddBot(8, 8);
+        var rightBot = right.AddBot(8, 8);
+        leftBot.Brain!.Enabled = false;
+        rightBot.Brain!.Enabled = false;
+        leftBot.Depleted = true;
+        left.Tick();
+        right.Tick();
+        Assert.NotEqual(left.Checksum, right.Checksum);
+        rightBot.Depleted = true;
+        left.Tick();
+        right.Tick();
+        Assert.Equal(left.Checksum, right.Checksum);
+
+        var checksum = left.Checksum;
+        left.RestoreState(left.CaptureState());
+        Assert.True(leftBot.Depleted);
+        Assert.Equal(checksum, left.Checksum);
+    }
+
+    [Fact]
+    public void BackpackIsInTheChecksumAndSurvivesAPoseRestore()
+    {
+        var left = Room();
+        var right = Room();
+        Assert.True(PickupCatalog.TryGive(left.Players.Single(), PickupCatalog.Backpack));
+        left.Tick();
+        right.Tick();
+        Assert.NotEqual(left.Checksum, right.Checksum);
+        Assert.True(PickupCatalog.TryGive(right.Players.Single(), PickupCatalog.Backpack));
+        left.Tick();
+        right.Tick();
+        Assert.Equal(left.Checksum, right.Checksum);
+
+        var checksum = left.Checksum;
+        left.RestoreState(left.CaptureState());
+        Assert.True(left.Players.Single().Inventory.HasBackpack);
+        Assert.Equal(400, left.Players.Single().Inventory.MaxBullets);
+        Assert.Equal(checksum, left.Checksum);
+    }
+
+    [Fact]
+    public void BabyAndNightmareDoubleAmmoAndTheOtherSkillsDoNot()
+    {
+        var baby = Skilled(0);
+        Assert.True(PickupCatalog.TryGive(baby.Players.Single(), PickupCatalog.Clip));
+        Assert.Equal(70, baby.Players.Single().Inventory.Bullets);
+        Assert.True(PickupCatalog.TryGive(baby.Players.Single(), PickupCatalog.Backpack));
+        Assert.Equal(90, baby.Players.Single().Inventory.Bullets);
+        Assert.Equal(8, baby.Players.Single().Inventory.Shells);
+        Assert.Equal(2, baby.Players.Single().Inventory.Rockets);
+        Assert.Equal(40, baby.Players.Single().Inventory.Cells);
+        Assert.Equal(400, baby.Players.Single().Inventory.MaxBullets);
+
+        var nightmare = Skilled(4);
+        Assert.True(PickupCatalog.TryGive(nightmare.Players.Single(), PickupCatalog.Clip));
+        Assert.Equal(70, nightmare.Players.Single().Inventory.Bullets);
+
+        var easy = Skilled(1);
+        Assert.True(PickupCatalog.TryGive(easy.Players.Single(), PickupCatalog.Clip));
+        Assert.Equal(60, easy.Players.Single().Inventory.Bullets);
+    }
+
+    [Fact]
+    public void AmmoFactorScalesTheSkillValueAndTruncatesTowardZero()
+    {
+        var sim = Room();
+        sim.AmmoFactor = 1.5;
+        var player = sim.Players.Single();
+        Assert.True(PickupCatalog.TryGive(player, PickupCatalog.Clip));
+        Assert.Equal(65, player.Inventory.Bullets);
+        Assert.True(PickupCatalog.TryGive(player, PickupCatalog.Rocket));
+        Assert.Equal(1, player.Inventory.Rockets);
+
+        sim.AmmoFactor = 0;
+        Assert.False(PickupCatalog.TryGive(player, PickupCatalog.Clip));
+        Assert.Equal(65, player.Inventory.Bullets);
+    }
+
+    [Fact]
+    public void ADroppedWeaponIgnoresTheSkillAmmoFactor()
+    {
+        var doubled = Skilled(0, new LevelThing { Type = PickupCatalog.Shotgun });
+        doubled.Tick();
+        Assert.Equal(16, doubled.Players.Single().Inventory.Shells);
+
+        var ignored = Skilled(0, new LevelThing { Type = PickupCatalog.Shotgun });
+        Assert.Single(ignored.Actors, actor => actor.DoomEdNum == PickupCatalog.Shotgun).IgnoreAmmoSkill = true;
+        ignored.Tick();
+        Assert.Equal(8, ignored.Players.Single().Inventory.Shells);
+    }
+
+    [Fact]
+    public void DoubleAmmoReplacesTheSkillFactorWithTwo()
+    {
+        var normal = Room();
+        normal.DoubleAmmo = true;
+        Assert.True(PickupCatalog.TryGive(normal.Players.Single(), PickupCatalog.Clip));
+        Assert.Equal(70, normal.Players.Single().Inventory.Bullets);
+
+        var easy = Skilled(1);
+        easy.DoubleAmmo = true;
+        Assert.True(PickupCatalog.TryGive(easy.Players.Single(), PickupCatalog.Clip));
+        Assert.Equal(70, easy.Players.Single().Inventory.Bullets);
+
+        var baby = Skilled(0);
+        baby.DoubleAmmo = true;
+        baby.AmmoFactor = 1.5;
+        Assert.True(PickupCatalog.TryGive(baby.Players.Single(), PickupCatalog.Clip));
+        Assert.Equal(80, baby.Players.Single().Inventory.Bullets);
+
+        var dropped = Skilled(2, new LevelThing { Type = PickupCatalog.Shotgun });
+        dropped.DoubleAmmo = true;
+        Assert.Single(dropped.Actors, actor => actor.DoomEdNum == PickupCatalog.Shotgun).IgnoreAmmoSkill = true;
+        dropped.Tick();
+        Assert.Equal(8, dropped.Players.Single().Inventory.Shells);
+    }
+
+    [Fact]
+    public void DoubleAmmoIsInTheChecksumAndSurvivesAPoseRestore()
+    {
+        var left = Room();
+        var right = Room();
+        left.DoubleAmmo = true;
+        left.Tick();
+        right.Tick();
+        Assert.NotEqual(left.Checksum, right.Checksum);
+        right.DoubleAmmo = true;
+        left.Tick();
+        right.Tick();
+        Assert.Equal(left.Checksum, right.Checksum);
+
+        var checksum = left.Checksum;
+        left.RestoreState(left.CaptureState());
+        Assert.True(left.DoubleAmmo);
+        Assert.Equal(checksum, left.Checksum);
+    }
+
+    [Fact]
+    public void AmmoFactorIsInTheChecksumAndSurvivesAPoseRestore()
+    {
+        var left = Room();
+        var right = Room();
+        left.AmmoFactor = 1.5;
+        left.Tick();
+        right.Tick();
+        Assert.NotEqual(left.Checksum, right.Checksum);
+        right.AmmoFactor = 1.5;
+        left.Tick();
+        right.Tick();
+        Assert.Equal(left.Checksum, right.Checksum);
+
+        var checksum = left.Checksum;
+        left.RestoreState(left.CaptureState());
+        Assert.Equal(1.5, left.AmmoFactor);
+        Assert.Equal(checksum, left.Checksum);
+    }
+
+    private static AuthoritySimulation Skilled(int skill, params LevelThing[] extras) => AuthoritySimulation.Start(new PlayLevel
+    {
+        Sectors = new[] { new LevelSector { CeilingHeight = 128 } },
+        Things = new[] { new LevelThing { Type = 1 } }.Concat(extras).ToArray(),
+    }, spawnOptions: new SpawnOptions(Skill: skill));
 
     private static AuthoritySimulation Room(short ceiling = 128) => AuthoritySimulation.Start(new PlayLevel
     {

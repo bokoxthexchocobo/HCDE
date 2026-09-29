@@ -93,28 +93,50 @@ public static class MapBehaviorBytecodeWalker
         };
     }
 
+    /// <summary>
+    /// Decodes [start, end) without stopping at terminate. A script can jump over an early terminate,
+    /// so the first terminator is not the end of its bytes.
+    /// </summary>
+    public static bool TryWalkWordSpan(
+        ReadOnlySpan<byte> data,
+        int start,
+        int end,
+        out IReadOnlyList<MapBehaviorInstruction> instructions,
+        out string? rejectReason)
+    {
+        instructions = Array.Empty<MapBehaviorInstruction>();
+        rejectReason = null;
+        if (start < 0 || end < start || end > data.Length)
+            return Reject("behavior-script-span-invalid", out instructions, out _, out rejectReason);
+        return WalkWordOpcodes(data, start, out instructions, out _, out rejectReason, end, stopAtTerminator: false);
+    }
+
     private static bool WalkWordOpcodes(
         ReadOnlySpan<byte> data,
         int offset,
         out IReadOnlyList<MapBehaviorInstruction> instructions,
         out bool terminatedNormally,
-        out string? rejectReason)
+        out string? rejectReason,
+        int limit = -1,
+        bool stopAtTerminator = true)
     {
         instructions = Array.Empty<MapBehaviorInstruction>();
         terminatedNormally = false;
         rejectReason = null;
+        if (limit < 0)
+            limit = data.Length;
 
         var list = new List<MapBehaviorInstruction>();
-        while (offset + 4 <= data.Length)
+        while (offset + 4 <= limit)
         {
             var opcode = BinaryPrimitives.ReadInt32LittleEndian(data[offset..]);
             if (opcode == (int)AcsPcode.CaseGotoSorted)
             {
                 var tableCountOffset = ((long)offset + 7) & ~3L;
-                if (tableCountOffset + 4 > data.Length)
+                if (tableCountOffset + 4 > limit)
                     return Reject("behavior-script-bytecode-truncated", out instructions, out terminatedNormally, out rejectReason);
                 var cases = BinaryPrimitives.ReadInt32LittleEndian(data[(int)tableCountOffset..]);
-                if (cases < 0 || cases > (data.Length - tableCountOffset - 4) / 8)
+                if (cases < 0 || cases > (limit - tableCountOffset - 4) / 8)
                     return Reject("behavior-script-bytecode-truncated", out instructions, out terminatedNormally, out rejectReason);
                 var bytes = (int)(tableCountOffset - offset) + cases * 8;
                 list.Add(new MapBehaviorInstruction(offset, opcode, (bytes + 3) / 4, bytes));
@@ -129,11 +151,11 @@ public static class MapBehaviorBytecodeWalker
                     : opcode - (int)AcsPcode.Push2Bytes + 2;
                 if (opcode == (int)AcsPcode.PushBytes)
                 {
-                    if (data.Length - offset < 5)
+                    if (limit - offset < 5)
                         return Reject("behavior-script-bytecode-truncated", out instructions, out terminatedNormally, out rejectReason);
                     bytes = 1 + data[offset + 4];
                 }
-                if (bytes > data.Length - offset - 4)
+                if (bytes > limit - offset - 4)
                     return Reject("behavior-script-bytecode-truncated", out instructions, out terminatedNormally, out rejectReason);
                 list.Add(new MapBehaviorInstruction(offset, opcode, (bytes + 3) / 4, bytes));
                 offset += 4 + bytes;
@@ -144,19 +166,28 @@ public static class MapBehaviorBytecodeWalker
             {
                 list.Add(new MapBehaviorInstruction(offset, opcode, 0));
                 terminatedNormally = opcode == (int)AcsPcode.Terminate || opcode == (int)AcsPcode.Suspend;
-                instructions = list;
-                return true;
+                offset += 4;
+                if (stopAtTerminator)
+                {
+                    instructions = list;
+                    return true;
+                }
+
+                continue;
             }
 
             if (operandWords == UnknownOperandWords)
                 return Reject($"behavior-unknown-pcode-{opcode}", out instructions, out terminatedNormally, out rejectReason);
 
-            if (offset + 4 + operandWords * 4 > data.Length)
+            if (offset + 4 + operandWords * 4 > limit)
                 return Reject("behavior-script-bytecode-truncated", out instructions, out terminatedNormally, out rejectReason);
 
             list.Add(new MapBehaviorInstruction(offset, opcode, operandWords));
             offset += 4 + operandWords * 4;
         }
+
+        if (!stopAtTerminator && offset != limit)
+            return Reject("behavior-script-span-misaligned", out instructions, out terminatedNormally, out rejectReason);
 
         instructions = list;
         return true;

@@ -4,7 +4,7 @@ namespace HCDE.MapLoader;
 
 public readonly struct MapBehaviorScriptEntry
 {
-    public MapBehaviorScriptEntry(int number, byte type, byte argCount, uint address)
+    public MapBehaviorScriptEntry(int number, int type, int argCount, uint address)
     {
         Number = number;
         Type = type;
@@ -13,8 +13,10 @@ public readonly struct MapBehaviorScriptEntry
     }
 
     public int Number { get; }
-    public byte Type { get; }
-    public byte ArgCount { get; }
+    /// <summary>Native script type. Kept as a full integer so values above 255 are not mistaken for a known type.</summary>
+    public int Type { get; }
+    /// <summary>Declared argument count. Old-format lumps store this as a 32-bit count, not a byte.</summary>
+    public int ArgCount { get; }
     public uint Address { get; }
 }
 
@@ -97,8 +99,8 @@ public static class MapBehaviorDirectoryCodec
             var packedNumber = BinaryPrimitives.ReadInt32LittleEndian(data[cursor..]);
             entries[i] = new MapBehaviorScriptEntry(
                 packedNumber % 1000,
-                (byte)(packedNumber / 1000),
-                (byte)BinaryPrimitives.ReadInt32LittleEndian(data[(cursor + 8)..]),
+                packedNumber / 1000,
+                BinaryPrimitives.ReadInt32LittleEndian(data[(cursor + 8)..]),
                 BinaryPrimitives.ReadUInt32LittleEndian(data[(cursor + 4)..]));
             cursor += 12;
         }
@@ -155,8 +157,8 @@ public static class MapBehaviorDirectoryCodec
             {
                 entries[i] = new MapBehaviorScriptEntry(
                     BinaryPrimitives.ReadInt16LittleEndian(payload[cursor..]),
-                    (byte)BinaryPrimitives.ReadUInt16LittleEndian(payload[(cursor + 2)..]),
-                    (byte)BinaryPrimitives.ReadInt32LittleEndian(payload[(cursor + 8)..]),
+                    BinaryPrimitives.ReadUInt16LittleEndian(payload[(cursor + 2)..]),
+                    BinaryPrimitives.ReadInt32LittleEndian(payload[(cursor + 8)..]),
                     BinaryPrimitives.ReadUInt32LittleEndian(payload[(cursor + 4)..]));
             }
 

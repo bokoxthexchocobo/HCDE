@@ -34,7 +34,7 @@ public sealed class ProjectileActor : Actor
         Owner = owner; Kind = kind;
         DoomEdNum = kind <= ProjectileKind.ImpBall ? 65530 + (int)kind : 65516 + (int)kind;
         // Managed-only class identities, not native spawn indices; keep every identity within ushort.
-        Solid = Shootable = false; NoGravity = true;
+        Solid = Shootable = false; NoGravity = true; AllowDropOff = true;
         Radius = Fixed.FromInt(kind is ProjectileKind.Plasma or ProjectileKind.ArachnotronPlasma ? 13
             : kind == ProjectileKind.RevenantTracer ? 11 : 6);
         Height = Fixed.FromInt(kind == ProjectileKind.BaronBall ? 16 : 8);
@@ -196,7 +196,7 @@ public sealed class ProjectileActor : Actor
     private void Impact(AuthoritySimulation sim, Actor? victim)
     {
         Destroy(); // Commit removal before damage callbacks can spawn or destroy actors.
-        if (victim != null) ActorDamage.Apply(victim, ImpactDamage * (1 + (int)(sim.NextCombatRandom() % 8)), Owner);
+        if (victim != null) ActorDamage.Apply(victim, ImpactDamage * (1 + (int)(sim.NextCombatRandom() % 8)), Owner, inflictor: this);
         if (BlastRadius > 0)
         {
             foreach (var actor in sim.Actors.ToArray())
@@ -207,7 +207,7 @@ public sealed class ProjectileActor : Actor
                 var vertical = Math.Max(0, Math.Max(actor.Z.ToDouble() - Z.ToDouble(), Z.ToDouble() - actor.Z.ToDouble() - actor.Height.ToDouble()));
                 var distance = Math.Sqrt(horizontal * horizontal + vertical * vertical);
                 if (distance >= BlastRadius || !CombatTrace.HasLineOfSight(sim, this, actor)) continue;
-                ActorDamage.Apply(actor, Math.Max(1, BlastRadius - (int)distance), Owner);
+                ActorDamage.Apply(actor, Math.Max(1, BlastRadius - (int)distance), Owner, inflictor: this);
             }
         }
         if (Kind == ProjectileKind.Bfg)

@@ -34,7 +34,7 @@ internal static class ArchvileActions
 
     internal static void Attack(AuthoritySimulation sim, Actor archvile, Actor target, bool fireExists)
     {
-        ActorDamage.Apply(target, 20, archvile);
+        ActorDamage.Apply(target, 20, archvile, inflictor: archvile);
         if (fireExists)
         {
             var radians = archvile.Angle.ToDegrees() * Math.PI / 180;

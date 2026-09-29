@@ -34,13 +34,36 @@ public static class PickupCatalog
     public const int ShellBox = 2049;
     public const int RocketBox = 2046;
     public const int SuperShotgun = 82;
+    public const int Backpack = 8;
 
     public static bool IsPickup(int doomEdNum) => TryDescribe(doomEdNum, out _);
 
-    public static bool TryGive(PlayerPawn player, int doomEdNum)
+    /// <summary>Card and skull of one color are the same key in this port.</summary>
+    public static bool IsKey(int doomEdNum) =>
+        doomEdNum is BlueCard or BlueSkull or YellowCard or YellowSkull or RedCard or RedSkull;
+
+    /// <summary>Map thing for a weapon drop. Fist and pistol have no vanilla thing.</summary>
+    public static bool TryWeaponEdNum(WeaponKind weapon, out int doomEdNum)
+    {
+        doomEdNum = weapon switch
+        {
+            WeaponKind.Chainsaw => Chainsaw,
+            WeaponKind.Shotgun => Shotgun,
+            WeaponKind.SuperShotgun => SuperShotgun,
+            WeaponKind.Chaingun => Chaingun,
+            WeaponKind.RocketLauncher => RocketLauncher,
+            WeaponKind.Plasma => PlasmaRifle,
+            WeaponKind.Bfg => Bfg,
+            _ => 0,
+        };
+        return doomEdNum != 0;
+    }
+
+    public static bool TryGive(PlayerPawn player, int doomEdNum, bool ignoreSkill = false, bool depleted = false)
     {
         if (!TryDescribe(doomEdNum, out var gift))
             return false;
+        var ammo = ignoreSkill ? gift.Amount : ScaleAmmo(gift.Amount, player);
 
         return gift.Kind switch
         {
@@ -48,11 +71,33 @@ public static class PickupCatalog
             GiftKind.ArmorBonus => GiveArmorBonus(player.Inventory),
             GiftKind.GreenArmor => GiveArmor(player.Inventory, PlayerInventory.GreenArmorAmount, PlayerInventory.GreenSavePercent),
             GiftKind.MegaArmor => GiveArmor(player.Inventory, PlayerInventory.MegaArmorAmount, PlayerInventory.MegaSavePercent),
-            GiftKind.Ammo => player.Inventory.TryAddAmmo(gift.Ammo, gift.Amount),
+            GiftKind.Ammo => player.Inventory.TryAddAmmo(gift.Ammo, ammo),
             GiftKind.Key => GiveKey(player.Inventory, gift.Key),
-            GiftKind.Weapon => GiveWeapon(player.Inventory, gift.Weapon, gift.Ammo, gift.Amount),
+            GiftKind.Weapon => GiveWeapon(player.Inventory, gift.Weapon, gift.Ammo, ammo),
+            GiftKind.Backpack => player.Inventory.GiveBackpack(
+                ScaleAmmo(10, player, ignoreSkill),
+                ScaleAmmo(4, player, ignoreSkill),
+                ScaleAmmo(1, player, ignoreSkill),
+                ScaleAmmo(20, player, ignoreSkill),
+                depleted),
             _ => false,
         };
+    }
+
+    /// <summary>
+    /// Baby and nightmare ammo factor 2. Other Doom skills stay 1.
+    /// <c>sv_doubleammo</c> replaces that factor with 2. <c>sv_ammofactor</c> multiplies the result.
+    /// Truncates toward zero.
+    /// </summary>
+    public static int ScaleAmmo(int amount, PlayerPawn player, bool ignoreSkill = false)
+    {
+        if (amount <= 0 || ignoreSkill)
+            return amount;
+        var skill = player.Simulation?.Skill ?? 2;
+        var skillFactor = player.Simulation?.DoubleAmmo == true || skill is 0 or 4 ? 2.0 : 1.0;
+        var extra = player.Simulation?.AmmoFactor ?? 1;
+        var scaled = (int)(amount * skillFactor * extra);
+        return scaled < 0 ? 0 : scaled;
     }
 
     private static bool GiveHealth(PlayerPawn player, int amount, int maximum)
@@ -79,6 +124,9 @@ public static class PickupCatalog
             return false;
         inventory.Armor = amount;
         inventory.ArmorSavePercent = savePercent;
+        // Doom green and mega leave both caps at 0. AbsorbCount stays.
+        inventory.MaxAbsorb = 0;
+        inventory.MaxFullAbsorb = 0;
         return true;
     }
 
@@ -140,6 +188,7 @@ public static class PickupCatalog
             RocketLauncher => new Gift(GiftKind.Weapon, WeaponKind.RocketLauncher, AmmoKind.Rockets, 2),
             PlasmaRifle => new Gift(GiftKind.Weapon, WeaponKind.Plasma, AmmoKind.Cells, 40),
             Bfg => new Gift(GiftKind.Weapon, WeaponKind.Bfg, AmmoKind.Cells, 40),
+            Backpack => new Gift(GiftKind.Backpack, 0, 0),
             _ => default,
         };
         return gift.Kind != GiftKind.None;
@@ -155,6 +204,7 @@ public static class PickupCatalog
         Ammo,
         Key,
         Weapon,
+        Backpack,
     }
 
     private enum KeyColor

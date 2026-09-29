@@ -102,7 +102,7 @@ This command runs the C# subset; it does not launch a complete graphical client.
 | Dedicated server | `hcdeserv` (`HCDE.Server`) | Headless map boot, tick, snapshot publish, in-engine RCON | Phase 3 subset |
 | Playsim | `src/playsim/` | `HCDE.Playsim` | Gameplay foundation subset: physics, states, damage, hitscan and melee |
 | Renderer (Vulkan/SW) | `src/rendering/` | `HCDE.Client` | Phase 4 subset (column view + recorded quads) |
-| ZScript VM | `src/common/scripting/` | `HCDE.Client` | Phase 4 subset (managed opcodes; asmjit probed, not bound) |
+| ZScript VM | `src/common/scripting/vm/` | `HCDE.Scripting` | Phase 8 integer core. The client still has the Phase 4 stack stand-in |
 | Audio (ZMusic) | `libraries/ZMusic/` | `HCDE.Client` | Phase 4 subset (PCM mix; ZMusic probed, not bound) |
 | Build tools (re2c, lemon, zipdir) | `tools/` | — | Replace or wrap later |
 
@@ -137,6 +137,8 @@ Outputs: `hcdemaster` and `hcdercon`.
 | [`docs/HCDE_CSHARP_PHASE4_AUDIT.md`](docs/HCDE_CSHARP_PHASE4_AUDIT.md) | Phase 4 principal audit (client subset) |
 | [`docs/HCDE_CSHARP_PHASE5_AUDIT.md`](docs/HCDE_CSHARP_PHASE5_AUDIT.md) | Phase 5 principal audit (pickups and floors) |
 | [`docs/HCDE_CSHARP_PHASE6_AUDIT.md`](docs/HCDE_CSHARP_PHASE6_AUDIT.md) | Phase 6 principal audit (firing) |
+| [`docs/HCDE_CSHARP_PHASE7_AUDIT.md`](docs/HCDE_CSHARP_PHASE7_AUDIT.md) | Phase 7 principal audit (ACS core) |
+| [`docs/HCDE_CSHARP_PHASE8_AUDIT.md`](docs/HCDE_CSHARP_PHASE8_AUDIT.md) | Phase 8 principal audit (ZScript integer core) |
 
 ## Validation
 
@@ -177,6 +179,7 @@ csharp/
     HCDE.MapLoader/      WAD directory + binary map lump decode (Phase 2d)
     HCDE.Playsim/        Authority tick subset (Phase 3)
     HCDE.Client/         hcde — headless client subset (Phase 4)
+    HCDE.Scripting/      ZScript integer VM (Phase 8)
     HCDE.PregameGuest.Cli/  hcde-pregame-guest CLI
   tests/
     HCDE.*.Tests/        xUnit regression tests (776 passing)
@@ -224,6 +227,18 @@ csharp/
 - Pistol, shotgun, plasma, fist, and chainsaw with fixed damage
 - Player armor absorbs a percent of the hit
 - Principal audit: [`docs/HCDE_CSHARP_PHASE6_AUDIT.md`](docs/HCDE_CSHARP_PHASE6_AUDIT.md)
+
+### Phase 7 — ACS core (started, largest source file)
+
+- Arithmetic, compares, script and map variables, thing count, timer
+- Principal audit: [`docs/HCDE_CSHARP_PHASE7_AUDIT.md`](docs/HCDE_CSHARP_PHASE7_AUDIT.md)
+- The ZScript VM under `src/common/scripting` is the next largest component
+
+### Phase 8 — ZScript integer core (started, largest subsystem)
+
+- Register word format from `vmexec.cpp`: arithmetic, compares, jumps, integer return
+- Principal audit: [`docs/HCDE_CSHARP_PHASE8_AUDIT.md`](docs/HCDE_CSHARP_PHASE8_AUDIT.md)
+- Calls and memory loads are the next part of the same VM
 
 ### Native code to retain (initially)
 

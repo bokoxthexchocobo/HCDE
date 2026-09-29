@@ -60,6 +60,7 @@ public static class HexenLevelDecoder
         };
         level = LevelBuilder.FromUdmf(map, catalog.MapName, MapDataFormat.HexenBinary);
         level.BehaviorData = behavior.ToArray();
+        level.HasBehavior = true;
         return LevelValidation.TryValidate(level, out error);
     }
 

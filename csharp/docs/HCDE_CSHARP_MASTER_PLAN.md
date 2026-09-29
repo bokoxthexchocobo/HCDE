@@ -57,6 +57,53 @@ with each change in the status audit.
 
 ### Phase 1 — gameplay foundation
 
+Full audit, 2026-09-27: **not complete.** See
+[`HCDE_CSHARP_PHASE1_GAMEPLAY_AUDIT.md`](HCDE_CSHARP_PHASE1_GAMEPLAY_AUDIT.md).
+Movement, damage, pistol-start inventory, and the buffered command subset are
+implemented. A flat dropoff limit, per-player ENTER startup, negative
+overkill health, a flat use trace, and a bounded player respawn were added
+after that audit and are still subsets. The respawn waits 35 tics, then a
+fresh press asks single-player to reload or revives coop and deathmatch at
+the player start. The map is not reloaded. A blocked player slides along the
+nearest wall and can clip a second wall once. A grounded player can stand on
+a solid actor whose top is within the step height. Holding crouch shrinks
+the player to half height; a jump while crouched stands them up. A monster
+with armor uses the same integer save as the player. Ordinary Buddha
+stops a killing blow at 1 health. A weapon slot change lowers and raises
+before that weapon can fire. A grounded monster steps onto a solid
+bridge whose top is within the step height. An ice corpse steps onto a
+short corpse; other actors walk through it. A dead player turns toward
+the killer and the view falls to 6. Weapon drop stays off until asked,
+then leaves the selected weapon's map thing. A draining player gains
+half the post-armor hit, up to 100 health. A backpack lifts the four
+ammo caps and gives one pack; another backpack only adds ammo. A tossed
+pack is depleted and gives no ammo when picked up again. A
+cooperative revive keeps that pack until a lose flag is set. A
+deathmatch revive uses a thing-11 start when the map has one.
+`sv_norespawn` holds that revive until the flag clears. Baby and
+nightmare double ammo pickups. `sv_doubleammo` replaces that
+factor with 2 on every skill. Armor can save a full slice before
+its percent, then stop at a total cap. Drowning damage skips armor. Buddha2 leaves a player at 1 health
+through a telefrag and through forced damage. PowerBuddha lasts 60
+seconds and stops a killing blow the way ordinary Buddha does. An
+inflictor with the foil flag kills a monster Buddha and leaves a player
+alone. A stored armor pickup replaces a suit that reaches 0, best
+save percent first. A slot press keeps the old weapon until the lower
+reaches the bottom. Instant switch finishes that handoff on the same
+tic. A fresh turn-180 button takes nine tics and ignores yaw.
+View bob follows horizontal speed and leaves eye height alone.
+The ready weapon bobs in the normal style and holds still while it
+fires or lowers. A revive telefrags a monster standing on the spot,
+and deathmatch telefrags another player there too. Cooperative key
+sharing copies a key to the other players. A typed death uses that
+frame when the table has it. A typed pain frame does the same, and
+that type can carry its own pain chance. A pain threshold blocks a
+flinch below that post-armor amount. Forced pain on the inflictor
+flinches through that threshold. A no-pain target and a painless
+inflictor still block the flinch. An Ice kill with no Ice death uses
+the generic freeze frame for a player or a monster. Crush, psprite
+sprites, and a native tick trace are not.
+
 - [ ] Match native collision, dropoff, stacking and corner behavior.
 - [ ] Implement remaining actor states/actions and player lifecycle/roster rules.
 - [ ] Complete remaining input commands and activation rules.
@@ -117,6 +164,16 @@ with each change in the status audit.
    observe a real map effect. Reject unsupported formats/features explicitly.
    Then extend compact execution and module/function support with fixtures.
    Gate: a loaded map executes without manually constructed AcsProgram objects.
+   Word-format progress, 2026-09-27: a Hexen map's ACS\0 lump now registers its
+   scripts at simulation start and queues OPEN scripts. The boot tic can change
+   a sector light, including a branch whose target is a module address past an
+   early terminate. Enhanced, compact, and redesigned headers are rejected.
+   Closed scripts are registered and not auto-started. ENTER scripts start once
+   per spawned player, with ACS_ALWAYS, after the OPEN queue. Death and respawn
+   scripts start on those events, also with ACS_ALWAYS and one zero argument.
+   Pickup, return, and the other known types still wait. This does not load libraries, functions, map
+   arrays, or compact bytecode, and a jump from one script into another
+   script's bytes still stops. The gate is only partly met.
 2. **Establish native comparison fixtures in parallel with conversion work.**
    Identify available IWAD/maps and a reproducible native build; record exact
    versions, commands and traces. Obtain missing assets from the user when needed.

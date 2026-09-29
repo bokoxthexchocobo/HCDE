@@ -12,6 +12,10 @@ public readonly struct PlayerCommand
     public bool Attack { get; init; }
     public bool Jump { get; init; }
     public bool Use { get; init; }
+    /// <summary>Native BT_CROUCH (1&lt;&lt;3).</summary>
+    public bool Crouch { get; init; }
+    /// <summary>Native BT_TURN180 (1&lt;&lt;4).</summary>
+    public bool Turn180 { get; init; }
     public ReadOnlyMemory<byte> WeaponSelections { get; init; }
 }
 
@@ -41,6 +45,8 @@ public class Actor : Thinker
     public bool ForceSectorDamage { get; set; }
     public bool Ambush { get; set; }
     public int PainChance { get; set; } = 256;
+    /// <summary>Native <c>PainThreshold</c>. A surviving hit below this post-armor amount does not flinch. 0 flinches on any loss.</summary>
+    public int PainThreshold { get; set; }
     public int ResurrectionHealth { get; internal set; }
     public int RaiseDuration { get; internal set; }
     public int Mass { get; set; } = 100;
@@ -48,7 +54,31 @@ public class Actor : Thinker
     public bool Solid { get; set; } = true;
     public bool Shootable { get; set; } = true;
     public bool Invulnerable { get; set; }
+    /// <summary>Native <c>MF7_BUDDHA</c>. A killing blow stops at 1 health unless it is a telefrag or forced.</summary>
+    public bool Buddha { get; set; }
+    /// <summary>Native <c>MF7_FOILBUDDHA</c>. As an inflictor, this kills a non-player Buddha.</summary>
+    public bool FoilBuddha { get; set; }
+    /// <summary>Native <c>MF6_FORCEPAIN</c>. As an inflictor, this flinches through the pain threshold and the pain roll.</summary>
+    public bool ForcePain { get; set; }
+    /// <summary>Native <c>MF5_NOPAIN</c>. This actor does not flinch, even when the inflictor forces pain.</summary>
+    public bool NoPain { get; set; }
+    /// <summary>Native <c>MF5_PAINLESS</c>. As an inflictor, this hit does not flinch, even when forced pain is also set.</summary>
+    public bool Painless { get; set; }
     public Fixed MaxStepHeight { get; set; } = Fixed.FromInt(24);
+    /// <summary>Native MaxDropOffHeight. A drop strictly taller than this is refused unless <see cref="AllowDropOff"/> or <see cref="Floating"/>.</summary>
+    public Fixed MaxDropOffHeight { get; set; } = Fixed.FromInt(24);
+    /// <summary>Native MF_DROPOFF. Players and projectiles may walk off ledges. Monsters may not.</summary>
+    public bool AllowDropOff { get; set; }
+    /// <summary>Native <c>MF4_ACTLIKEBRIDGE</c>. A grounded monster can step onto this solid actor.</summary>
+    public bool ActsLikeBridge { get; set; }
+    /// <summary>Native <c>MF_ICECORPSE</c>. This actor collides with corpses and can stand on them.</summary>
+    public bool IceCorpse { get; set; }
+    /// <summary>Native <c>MF6_NOTELEFRAG</c>. A spawn stomp skips this actor.</summary>
+    public bool NoTelefrag { get; set; }
+    /// <summary>Native <c>MF7_ALWAYSTELEFRAG</c>. A spawn stomp kills this actor even when <see cref="NoTelefrag"/> is set.</summary>
+    public bool AlwaysTelefrag { get; set; }
+    /// <summary>Native <c>MF5_DONTDRAIN</c>. A draining player gains nothing from this actor.</summary>
+    public bool DontDrain { get; set; }
     internal AuthoritySimulation? Simulation { get; set; }
     public MonsterBrain? Brain { get; set; }
     public Fixed PreviousX { get; private set; }
@@ -72,12 +102,18 @@ public class Actor : Thinker
         set
         {
             var dead = _health <= 0;
-            _health = Math.Max(0, value);
+            _health = value;
             if (!dead && IsDead)
             {
                 DeathCount++;
-                if (States.HasState(DeathState)) States.Enter(this, DeathState);
-                if (this is PlayerPawn player) { player.ClearCommands(); player.AttackPressed = false; }
+                var death = ChooseDeathState();
+                if (States.HasState(death)) States.Enter(this, death);
+                if (this is PlayerPawn player)
+                {
+                    player.ClearCommands();
+                    player.AttackPressed = false;
+                    player.NoteDeath(Simulation);
+                }
             }
             else if (dead && !IsDead && States.HasState(SpawnState)) States.Enter(this, SpawnState);
         }
@@ -86,10 +122,41 @@ public class Actor : Thinker
     public int SpawnState { get; set; } = ActorStateMachine.Spawn;
     public int PainState { get; set; } = ActorStateMachine.Pain;
     public int DeathState { get; set; } = ActorStateMachine.Death;
+    /// <summary>Optional Death.Extreme state. Absent until a table actually contains it.</summary>
+    public int ExtremeDeathState { get; set; } = -1;
+    /// <summary>Native GenericFreezeDeath. An Ice kill uses this when no Ice death is registered. -1 means absent.</summary>
+    public int GenericFreezeDeath { get; set; } = -1;
+    /// <summary>Native <c>MF4_NOICEDEATH</c>. An Ice kill does not fall back to <see cref="GenericFreezeDeath"/>.</summary>
+    public bool NoIceDeath { get; set; }
+    /// <summary>Damage type of the hit currently being applied. The setter consumes it.</summary>
+    internal string? DamageTypeReceived { get; set; }
+    private readonly Dictionary<string, int> _typedDeaths = new(StringComparer.Ordinal);
+    private readonly Dictionary<string, int> _typedExtremeDeaths = new(StringComparer.Ordinal);
+    private readonly Dictionary<string, int> _typedPain = new(StringComparer.Ordinal);
+    private readonly Dictionary<string, int> _typedPainChance = new(StringComparer.Ordinal);
+    /// <summary>Native GetGibHealth. A killing blow below this value can enter <see cref="ExtremeDeathState"/>.</summary>
+    public int GibHealth { get; set; } = -100;
+    /// <summary>
+    /// BasicArmor amount for a non-player. Players absorb from <see cref="PlayerPawn.Inventory"/> instead.
+    /// Spawned monsters start at 0, which is why a bare hit is not reduced.
+    /// </summary>
+    public int Armor { get; set; }
+    /// <summary>BasicArmor save percent. 33 is Doom green armor's exact one-third. 0 saves nothing.</summary>
+    public int ArmorSavePercent { get; set; }
+    /// <summary>BasicArmor total save cap. 0 means no cap.</summary>
+    public int MaxAbsorb { get; set; }
+    /// <summary>BasicArmor amount saved at 100% before the percent applies.</summary>
+    public int MaxFullAbsorb { get; set; }
+    /// <summary>Saved so far. A new suit does not clear it.</summary>
+    public int AbsorbCount { get; set; }
+    /// <summary>Dropped weapons skip the skill ammo factor, matching <c>bIgnoreSkill</c>.</summary>
+    public bool IgnoreAmmoSkill { get; set; }
+    /// <summary>Native <c>BackpackItem.bDepleted</c>. A tossed backpack raises caps and gives no ammo.</summary>
+    public bool Depleted { get; set; }
     public int DeathCount { get; private set; }
     public uint? LastDamageSourceId { get; internal set; }
     public uint? LastHeardTargetId { get; internal set; }
-    internal void RestoreHealth(int health) => _health = Math.Max(0, health);
+    internal void RestoreHealth(int health) => _health = health;
     public Fixed Radius { get; set; } = Fixed.FromInt(20);
     public Fixed Height { get; set; } = Fixed.FromInt(56);
     public PlayLevel? Level { get; init; }
@@ -106,6 +173,97 @@ public class Actor : Thinker
         && !PickupCatalog.IsPickup(DoomEdNum);
 
     public static bool IsPlayerStart(int type) => type is >= PlayerStartMin and <= PlayerStartMax;
+
+    /// <summary>
+    /// <c>Death.Fire</c> or <c>Death.Extreme.Fire</c>. The name match is ordinal.
+    /// A missing frame falls through. An Ice kill can still use <see cref="GenericFreezeDeath"/>.
+    /// </summary>
+    public void SetTypedDeath(string damageType, int state, bool extreme = false)
+    {
+        if (string.IsNullOrEmpty(damageType) || damageType is "None" or "Extreme")
+            throw new ArgumentException("A typed death needs a damage type other than None or Extreme.", nameof(damageType));
+        (extreme ? _typedExtremeDeaths : _typedDeaths)[damageType] = state;
+    }
+
+    internal IEnumerable<(string Type, int State, bool Extreme)> TypedDeaths()
+    {
+        foreach (var entry in _typedDeaths.OrderBy(pair => pair.Key, StringComparer.Ordinal))
+            yield return (entry.Key, entry.Value, false);
+        foreach (var entry in _typedExtremeDeaths.OrderBy(pair => pair.Key, StringComparer.Ordinal))
+            yield return (entry.Key, entry.Value, true);
+    }
+
+    /// <summary>
+    /// Native death-state order. An extreme typed frame wins, then the plain typed
+    /// frame, then generic ice freeze, then <see cref="ExtremeDeathState"/>, then <see cref="DeathState"/>.
+    /// A plain typed frame is used even when health is past the gib line.
+    /// Damage type <c>Extreme</c> forces the gib state and then clears the type.
+    /// Ice freeze is not extreme. It applies to a player or a monster, and <see cref="NoIceDeath"/> blocks it.
+    /// </summary>
+    private int ChooseDeathState()
+    {
+        var type = DamageTypeReceived;
+        var extreme = _health < GibHealth;
+        if (string.Equals(type, "Extreme", StringComparison.Ordinal))
+        {
+            extreme = true;
+            type = null;
+        }
+        if (!string.IsNullOrEmpty(type) && !string.Equals(type, "None", StringComparison.Ordinal))
+        {
+            if (extreme && _typedExtremeDeaths.TryGetValue(type, out var extremeState) && States.HasState(extremeState))
+                return extremeState;
+            if (_typedDeaths.TryGetValue(type, out var typed) && States.HasState(typed))
+                return typed;
+            if (string.Equals(type, "Ice", StringComparison.Ordinal) && !NoIceDeath
+                && (this is PlayerPawn || Brain != null) && States.HasState(GenericFreezeDeath))
+                return GenericFreezeDeath;
+        }
+        if (extreme && States.HasState(ExtremeDeathState))
+            return ExtremeDeathState;
+        return DeathState;
+    }
+
+    /// <summary>
+    /// <c>Pain.Fire</c>. The name match is ordinal. A missing frame uses <see cref="PainState"/>.
+    /// <paramref name="chance"/> replaces <see cref="PainChance"/> for that type only.
+    /// Electric flicker and poison howling are absent.
+    /// </summary>
+    public void SetTypedPain(string damageType, int state, int? chance = null)
+    {
+        if (string.IsNullOrEmpty(damageType) || damageType == "None")
+            throw new ArgumentException("A typed pain needs a damage type other than None.", nameof(damageType));
+        _typedPain[damageType] = state;
+        if (chance is { } value)
+            _typedPainChance[damageType] = value;
+    }
+
+    internal int PainStateFor(string? damageType)
+    {
+        if (!string.IsNullOrEmpty(damageType)
+            && !string.Equals(damageType, "None", StringComparison.Ordinal)
+            && _typedPain.TryGetValue(damageType, out var state)
+            && States.HasState(state))
+            return state;
+        return PainState;
+    }
+
+    internal int PainChanceFor(string? damageType)
+    {
+        if (!string.IsNullOrEmpty(damageType)
+            && _typedPainChance.TryGetValue(damageType, out var chance))
+            return chance;
+        return PainChance;
+    }
+
+    internal IEnumerable<(string Type, int State, int? Chance)> TypedPains()
+    {
+        foreach (var entry in _typedPain.OrderBy(pair => pair.Key, StringComparer.Ordinal))
+        {
+            var stored = _typedPainChance.TryGetValue(entry.Key, out var chance) ? chance : (int?)null;
+            yield return (entry.Key, entry.Value, stored);
+        }
+    }
 
     public void RememberPosition()
     {
@@ -132,9 +290,102 @@ public class Actor : Thinker
 
 public sealed class PlayerPawn : Actor
 {
+    public PlayerPawn()
+    {
+        AllowDropOff = true;
+    }
+
+    public const double CrouchSpeed = 1.0 / 12;
+    public const double MinimumCrouchFactor = 0.5;
+    public const double StandingViewHeight = 41;
+    /// <summary>Native DeathThink leaves the view here.</summary>
+    public const double DeathViewHeight = 6;
+    public const double DeathPitchStep = 3;
+    public const double DeathTurnStep = 5;
+    /// <summary>Native <c>P_GiveBody</c> cap for drain. Health already above this is left alone.</summary>
+    public const int DrainMaxHealth = 100;
+    /// <summary>PowerDrain strength. 0 is off. 0.5 is the usual half of the post-armor hit.</summary>
+    public double DrainStrength { get; set; }
+
+    /// <summary>Height before crouch. <c>BeginPlay</c> copies the spawned height.</summary>
+    public double FullHeight { get; internal set; }
+    /// <summary>Native player.crouchfactor. 1 is standing. 0.5 is fully crouched.</summary>
+    public double CrouchFactor { get; private set; } = 1;
+    /// <summary>Native player.viewheight. Standing view is 41, scaled by <see cref="CrouchFactor"/>.</summary>
+    public double ViewHeight { get; internal set; } = StandingViewHeight;
+    /// <summary>Native <c>MAXBOB</c>.</summary>
+    public const double MaxBob = 16;
+    /// <summary>Native <c>movebob</c> default.</summary>
+    public const double MoveBob = 0.25;
+    /// <summary>Native <c>ViewBobSpeed</c> default. The angle is <c>BobTimer / speed * 360</c>.</summary>
+    public const double ViewBobSpeed = 20;
+    /// <summary>Native <c>BobTimer</c>. It advances once per player tic.</summary>
+    public int BobTimer { get; set; }
+    /// <summary>Added to view Z. <see cref="ViewHeight"/> stays the standing or crouched eye height.</summary>
+    public double ViewBobOffset { get; internal set; }
+    /// <summary>Native <c>player.bob</c>. Horizontal speed squared times <see cref="MoveBob"/>, capped at <see cref="MaxBob"/>.</summary>
+    public double MovementBob { get; internal set; }
+    /// <summary>Native weapon <c>BobSpeed</c>. Doom weapons leave this at 1.</summary>
+    public const double WeaponBobSpeed = 1;
+    /// <summary>Native <c>BobRangeX</c> / <c>BobRangeY</c>. Doom weapons leave both at 1.</summary>
+    public const double WeaponBobRange = 1;
+    /// <summary><c>BobWeapon</c> X at the end of the tic. Other bob styles are absent.</summary>
+    public double WeaponBobX { get; internal set; }
+    /// <summary><c>BobWeapon</c> Y. Normal style uses the absolute sine.</summary>
+    public double WeaponBobY { get; internal set; }
+    /// <summary>Native player.crouching == 1. Jumping while crouched stands the player back up.</summary>
+    public bool UncrouchLocked { get; private set; }
+
+    /// <summary>Native <c>WEAPONTOP</c>. The weapon can fire only at this offset.</summary>
+    public const int WeaponTop = 32;
+    /// <summary>Native <c>WEAPONBOTTOM</c>.</summary>
+    public const int WeaponBottom = 128;
+    /// <summary>Default <c>A_Raise</c> / <c>A_Lower</c> speed.</summary>
+    public const int WeaponMoveSpeed = 6;
+    /// <summary>Native <c>TURN180_TICKS</c>. <c>(TICRATE / 4) + 1</c> is 9.</summary>
+    public const int Turn180Ticks = (GameTicClock.TicRate / 4) + 1;
+    /// <summary>
+    /// Psprite Y for the ready weapon. A spawned weapon starts here, so it can fire.
+    /// A slot change lowers it to <see cref="WeaponBottom"/> and then raises it.
+    /// </summary>
+    public int WeaponOffsetY { get; internal set; } = WeaponTop;
+    public bool WeaponLowering { get; internal set; }
+    /// <summary>Native <c>CF_INSTANTWEAPSWITCH</c>. A lower finishes and the new weapon is ready on that tic.</summary>
+    public bool InstantWeaponSwitch { get; set; }
+    /// <summary>Tics left in a <c>BT_TURN180</c>. Each tic adds <c>180 / Turn180Ticks</c> degrees and ignores yaw.</summary>
+    public int TurnTicks { get; set; }
+    private bool _turnHeld;
+    internal bool TurnHeld => _turnHeld;
+    internal void ClearTurnHeld() => _turnHeld = false;
+    public bool WeaponReady => WeaponOffsetY == WeaponTop && !WeaponLowering;
+
     public const int CommandQueueCapacity = 128;
     private readonly Queue<PlayerCommand> _commands = new();
     public byte PlayerNum { get; init; }
+    /// <summary>
+    /// Native <c>CF_BUDDHA2</c>. A killing blow, including a telefrag, leaves health at 1.
+    /// <c>DMG_FORCED</c> no longer skips armor or god mode.
+    /// </summary>
+    public bool Buddha2 { get; set; }
+    /// <summary>Native inventory <c>BLINKTHRESHOLD</c>. A second PowerBuddha does not extend past this.</summary>
+    public const int PowerBuddhaBlinkThreshold = 4 * 32;
+    /// <summary>Native <c>Powerup.Duration -60</c>. A negative duration is seconds, so this is 60 * 35 tics.</summary>
+    public const int PowerBuddhaDuration = 60 * GameTicClock.TicRate;
+    /// <summary>Tics of <c>PowerBuddha</c> left. Zero means the item is gone.</summary>
+    public int PowerBuddhaTics { get; set; }
+
+    /// <summary>
+    /// Grants <c>PowerBuddha</c>. Above <see cref="PowerBuddhaBlinkThreshold"/> the new
+    /// item is taken and the timer stays. At or below that line it resets to
+    /// <see cref="PowerBuddhaDuration"/>.
+    /// </summary>
+    public void GivePowerBuddha()
+    {
+        if (PowerBuddhaTics > PowerBuddhaBlinkThreshold)
+            return;
+        if (PowerBuddhaDuration > PowerBuddhaTics)
+            PowerBuddhaTics = PowerBuddhaDuration;
+    }
     /// <summary>Compatibility slot for direct input/restore; assignment replaces buffered input.</summary>
     public PlayerCommand Pending
     {
@@ -144,7 +395,16 @@ public sealed class PlayerPawn : Actor
     public int BufferedCommandCount => _commands.Count;
     public bool TryQueueCommand(PlayerCommand command)
     {
-        if (IsDead || Destroyed) return true; // Consume dead-player input without saving it for resurrection.
+        if (Destroyed) return true;
+        if (IsDead)
+        {
+            // The press can arm respawn. Weapon, movement, and the command itself are not kept for revival.
+            if ((command.Use && !UseHeld) || (command.Attack && !_attackHeld))
+                RespawnArmed = true;
+            UseHeld = command.Use;
+            _attackHeld = command.Attack;
+            return true;
+        }
         if (_commands.Count >= CommandQueueCapacity) return false;
         _commands.Enqueue(command);
         return true;
@@ -155,40 +415,239 @@ public sealed class PlayerPawn : Actor
     public bool AttackPressed { get; set; }
     public bool UsePressed { get; set; }
     public bool UseHeld { get; internal set; }
+    /// <summary>Native Player.UseRange. The use trace follows yaw for this distance.</summary>
+    public double UseRange { get; set; } = 64;
     public int WeaponCooldown { get; internal set; }
+    /// <summary>First tic on which a press may respawn. <see cref="int.MaxValue"/> until the player dies.</summary>
+    public int RespawnEarliestTic { get; private set; } = int.MaxValue;
+    /// <summary>Set by a rising use or attack edge while dead. Cleared when the respawn is taken.</summary>
+    public bool RespawnArmed { get; private set; }
+    private bool _attackHeld;
+    internal bool AttackHeld => _attackHeld;
+
+    internal void NoteDeath(AuthoritySimulation? sim)
+    {
+        RespawnArmed = false;
+        if (sim == null)
+        {
+            RespawnEarliestTic = int.MaxValue;
+            return;
+        }
+        var tic = sim.Thinkers.Clock.Tic;
+        RespawnEarliestTic = tic > int.MaxValue - GameTicClock.TicRate ? int.MaxValue : tic + GameTicClock.TicRate;
+        sim.DropSelectedWeapon(this);
+        sim.StartPlayerScripts(death: true, this);
+    }
+
+    internal void DisarmRespawn() => RespawnArmed = false;
+
+    private void ApplyCrouch(PlayerCommand command)
+    {
+        if (FullHeight <= 0) FullHeight = Height.ToDouble();
+        // A jump clears BT_CROUCH for this tic, then a locked stand-up ignores the button.
+        var crouch = command.Crouch && !command.Jump;
+        var direction = !UncrouchLocked ? (crouch ? -1 : 1) : 1;
+        if (UncrouchLocked && crouch)
+            UncrouchLocked = false;
+        var before = CrouchFactor;
+        if (direction > 0 && CrouchFactor < 1)
+            CrouchMove(1);
+        else if (direction < 0 && CrouchFactor > MinimumCrouchFactor)
+            CrouchMove(-1);
+        // Leave an externally chosen height alone while the player is not crouching.
+        if (Math.Abs(CrouchFactor - before) > 1e-12)
+            Height = Fixed.FromDouble(FullHeight * CrouchFactor);
+        ViewHeight = StandingViewHeight * CrouchFactor;
+    }
+
+    private void CrouchMove(int direction)
+    {
+        var next = Math.Clamp(CrouchFactor + direction * CrouchSpeed, MinimumCrouchFactor, 1);
+        if (next >= CrouchFactor && Simulation != null
+            && !ActorPhysics.FitsAtHeight(Simulation, this, FullHeight * next))
+            return;
+        CrouchFactor = next;
+    }
+
+    private void Uncrouch()
+    {
+        if (FullHeight <= 0) FullHeight = Height.ToDouble();
+        // Native Uncrouch copies the standing view only while a crouch is actually cleared.
+        var wasCrouched = CrouchFactor != 1;
+        CrouchFactor = 1;
+        UncrouchLocked = false;
+        if (wasCrouched) ViewHeight = StandingViewHeight;
+        Height = Fixed.FromDouble(FullHeight);
+    }
 
     public override void Tick()
     {
+        if (PowerBuddhaTics > 0) PowerBuddhaTics--;
+        BobTimer++;
         RememberPosition();
-        var command = _commands.TryDequeue(out var queued) ? queued : default;
-        UsePressed = !IsDead && command.Use && !UseHeld;
-        UseHeld = !IsDead && command.Use;
         if (WeaponCooldown > 0) WeaponCooldown--;
         if (IsDead)
         {
             AttackPressed = false;
+            ViewBobOffset = 0;
+            MovementBob = 0;
+            WeaponBobX = 0;
+            WeaponBobY = 0;
+            Uncrouch();
+            WatchKiller();
+            Simulation?.TryPlayerRespawn(this);
             base.Tick();
             return;
         }
+        var command = _commands.TryDequeue(out var queued) ? queued : default;
+        var freshUse = command.Use && !UseHeld;
+        UseHeld = command.Use;
+        _attackHeld = command.Attack;
+        UsePressed = freshUse;
         foreach (var slot in command.WeaponSelections.Span)
             Inventory.SelectSlot(slot);
-        if (command.Attack)
+        if (Inventory.Pending != null)
+            WeaponLowering = true;
+        AdvanceWeapon();
+        if (command.Attack && WeaponReady)
             AttackPressed = true;
-        Angle = new BamAngle(unchecked(Angle.Raw + (uint)(command.YawDelta << 16)));
+        var freshTurn = command.Turn180 && !_turnHeld;
+        _turnHeld = command.Turn180;
+        if (freshTurn)
+            TurnTicks = Turn180Ticks;
+        if (TurnTicks > 0)
+        {
+            TurnTicks--;
+            Angle = BamAngle.FromDegrees(Angle.ToDegrees() + 180.0 / Turn180Ticks);
+        }
+        else
+            Angle = new BamAngle(unchecked(Angle.Raw + (uint)(command.YawDelta << 16)));
         PitchDegrees = Math.Clamp(PitchDegrees + command.PitchDelta * (360.0 / 65536), -89, 89);
         if (Level != null)
         {
             var (dx, dy) = Movement.Thrust(Angle, command.ForwardMove, command.SideMove);
             VelocityX = Fixed.FromDouble(VelocityX.ToDouble() + dx);
             VelocityY = Fixed.FromDouble(VelocityY.ToDouble() + dy);
-            if (command.Jump && OnGround)
-            {
-                VelocityZ = Fixed.FromInt(8);
-                OnGround = false;
-            }
         }
+        // CheckJump runs before CheckCrouch. A jump while crouched only stands the player up.
+        var crouched = CrouchFactor < 1;
+        if (command.Jump && crouched)
+            UncrouchLocked = true;
+        else if (command.Jump && OnGround && Level != null)
+        {
+            VelocityZ = Fixed.FromInt(8);
+            OnGround = false;
+        }
+        ApplyCrouch(command);
 
         base.Tick();
+        UpdateViewBob();
+    }
+
+    /// <summary>
+    /// <c>CalcHeight</c> movement bob. Horizontal speed squared, times <see cref="MoveBob"/>,
+    /// capped at <see cref="MaxBob"/>. The view term is that amount times
+    /// <c>sin(BobTimer / ViewBobSpeed * 360) * 0.5</c>. Still bob is 0.
+    /// <c>BobWeapon</c> then swings the ready weapon in the normal style.
+    /// </summary>
+    public void UpdateViewBob()
+    {
+        var speed = VelocityX.ToDouble() * VelocityX.ToDouble() + VelocityY.ToDouble() * VelocityY.ToDouble();
+        MovementBob = speed <= 0 ? 0 : Math.Min(MaxBob, speed * MoveBob);
+        var angle = BobTimer / ViewBobSpeed * 360 * Math.PI / 180;
+        ViewBobOffset = MovementBob * Math.Sin(angle) * 0.5;
+        UpdateWeaponBob();
+    }
+
+    /// <summary>
+    /// <c>BobWeapon</c> for <c>Bob_Normal</c> at the end of the tic.
+    /// The angle is <c>BobTimer * BobSpeed * 128 * 360 / 8192</c> degrees.
+    /// X is the cosine. Y is the absolute sine. A weapon that is lowering,
+    /// raising, or firing stays at 0. <c>wbobfire</c> is 0.
+    /// </summary>
+    private void UpdateWeaponBob()
+    {
+        var bobbing = WeaponReady && WeaponCooldown == 0 && !AttackPressed;
+        if (MovementBob == 0 || !bobbing)
+        {
+            WeaponBobX = 0;
+            WeaponBobY = 0;
+            return;
+        }
+
+        var degrees = BobTimer * (WeaponBobSpeed * 128) * (360.0 / 8192);
+        var radians = degrees * Math.PI / 180;
+        WeaponBobX = MovementBob * WeaponBobRange * Math.Cos(radians);
+        WeaponBobY = MovementBob * WeaponBobRange * Math.Abs(Math.Sin(radians));
+    }
+
+    /// <summary>
+    /// <c>DeathThink</c> watches the killer and settles the view. Turn at most
+    /// <see cref="DeathTurnStep"/> degrees toward <see cref="Actor.LastDamageSourceId"/>.
+    /// View height falls to <see cref="DeathViewHeight"/> and pitch falls to 0,
+    /// unless this pawn is an ice corpse.
+    /// </summary>
+    private void WatchKiller()
+    {
+        if (!IceCorpse)
+        {
+            if (ViewHeight > DeathViewHeight) ViewHeight -= 1;
+            if (ViewHeight < DeathViewHeight) ViewHeight = DeathViewHeight;
+            if (PitchDegrees > 0) PitchDegrees -= DeathPitchStep;
+            else if (PitchDegrees < 0) PitchDegrees += DeathPitchStep;
+            if (Math.Abs(PitchDegrees) < DeathPitchStep) PitchDegrees = 0;
+        }
+        if (LastDamageSourceId is not uint sourceId || Simulation == null) return;
+        var attacker = Simulation.Actors.FirstOrDefault(actor => actor.Id == sourceId);
+        if (attacker == null || ReferenceEquals(attacker, this)) return;
+        var aim = Math.Atan2(attacker.Y.ToDouble() - Y.ToDouble(), attacker.X.ToDouble() - X.ToDouble()) * 180 / Math.PI;
+        var diff = AimDelta(Angle.ToDegrees(), aim);
+        Angle = BamAngle.FromDegrees(Angle.ToDegrees() + Math.Clamp(diff, -DeathTurnStep, DeathTurnStep));
+    }
+
+    private static double AimDelta(double fromDegrees, double toDegrees)
+    {
+        var diff = (toDegrees - fromDegrees) % 360;
+        if (diff > 180) diff -= 360;
+        else if (diff < -180) diff += 360;
+        return diff;
+    }
+
+    /// <summary>
+    /// One tic of <c>A_Lower</c> then <c>A_Raise</c>. Reaching the bottom commits
+    /// <see cref="PlayerInventory.Pending"/> and does not raise on that same tic.
+    /// <see cref="InstantWeaponSwitch"/> finishes that handoff at <see cref="WeaponTop"/>
+    /// in the same tic. Sprites, flash, and bob are not represented.
+    /// </summary>
+    private void AdvanceWeapon()
+    {
+        if (WeaponLowering && InstantWeaponSwitch)
+        {
+            if (Inventory.Pending is { } instant)
+            {
+                Inventory.Selected = instant;
+                Inventory.Pending = null;
+            }
+            WeaponLowering = false;
+            WeaponOffsetY = WeaponTop;
+            return;
+        }
+        if (WeaponLowering)
+        {
+            WeaponOffsetY = Math.Min(WeaponBottom, WeaponOffsetY + WeaponMoveSpeed);
+            if (WeaponOffsetY >= WeaponBottom)
+            {
+                WeaponLowering = false;
+                if (Inventory.Pending is { } pending)
+                {
+                    Inventory.Selected = pending;
+                    Inventory.Pending = null;
+                }
+            }
+            return;
+        }
+        if (WeaponOffsetY > WeaponTop)
+            WeaponOffsetY = Math.Max(WeaponTop, WeaponOffsetY - WeaponMoveSpeed);
     }
 }
 
@@ -331,7 +790,8 @@ public static class ActorSpawner
         uint nextId = 1;
         foreach (var thing in level.Things)
         {
-            if (thing.Type == 0 || !(spawnOptions ?? new SpawnOptions()).Includes(thing))
+            if (thing.Type == 0 || thing.Type == DeathmatchStarts.ThingType
+                || !(spawnOptions ?? new SpawnOptions()).Includes(thing))
                 continue;
 
             var defaults = dehacked?.Actors.FirstOrDefault(actor => actor.DoomEdNum == thing.Type && actor.Patched);
@@ -372,8 +832,11 @@ public static class ActorSpawner
                     Level = level,
                 };
 
+            if (actor is PlayerPawn player)
+                player.FullHeight = player.Height.ToDouble();
             nextId++;
             actor.ResurrectionHealth = actor.Health;
+            if (actor.ResurrectionHealth > 0) actor.GibHealth = -actor.ResurrectionHealth;
             actor.Mass = DoomActorCatalog.MassOf(definitionType);
             actor.RaiseDuration = ArchvileActions.RaiseDuration(definitionType);
             actor.Ambush = thing.Ambush;
@@ -402,6 +865,8 @@ public sealed class AuthoritySimulation
     private readonly List<Actor> _actors;
     private uint _nextActorId;
     public uint CombatRandomState { get; private set; }
+    /// <summary>Rolls for a deathmatch respawn. Not the native <c>DMSpawn</c> table, and not in the save pose.</summary>
+    public uint DmSpawnRandomState { get; set; }
     private uint _strobeRandomState;
     private uint _flickerRandomState;
     private uint _lightFlashRandomState;
@@ -421,6 +886,7 @@ public sealed class AuthoritySimulation
         _nextActorId = actors.Count == 0 ? 1 : checked(actors.Max(actor => actor.Id) + 1);
         RngSeed = rngSeed;
         CombatRandomState = unchecked((uint)rngSeed) ^ 0x9e3779b9u;
+        DmSpawnRandomState = unchecked((uint)rngSeed) ^ 0x646d7370u;
         _strobeRandomState = unchecked((uint)rngSeed) ^ 0x7374726fu;
         _flickerRandomState = unchecked((uint)rngSeed) ^ 0x666c6963u;
         _lightFlashRandomState = unchecked((uint)rngSeed) ^ 0x666c6173u;
@@ -444,6 +910,21 @@ public sealed class AuthoritySimulation
             actor.RememberPosition();
         }
         Acs = new AcsVm();
+        var catalog = AcsStartupCatalog.Empty;
+        if (level.HasBehavior && !AcsBehaviorBinder.TryBind(Acs, level.BehaviorData.Span, out catalog, out var behaviorError))
+            throw new InvalidDataException(behaviorError ?? "acs-map-bind-failed");
+        _deathScripts = catalog.Death;
+        _respawnScripts = catalog.Respawn;
+        // p_mobj.cpp starts SCRIPT_Enter with ACS_ALWAYS when a player enters, after OPEN was queued.
+        // One zero argument matches the native arg1. Death and respawn wait for those events.
+        foreach (var player in Players)
+        {
+            foreach (var number in catalog.Enter)
+            {
+                if (!Acs.ExecuteAlways(number, [0], player))
+                    throw new InvalidDataException("acs-enter-script-start-failed");
+            }
+        }
         Invasion = new InvasionDirector();
         Rewind = new RewindBuffer();
         ReverbActive = compat.HasFlag(CompatSurface.Eternity)
@@ -461,7 +942,42 @@ public sealed class AuthoritySimulation
     public string StatusLine { get; private set; } = "";
     public CompatSurface Compat { get; }
     public SpawnGameMode GameMode { get; }
+    /// <summary>
+    /// Single-player death sets this instead of moving the corpse. Native <c>G_DoReborn</c> reloads the map.
+    /// There is no <c>G_InitNew</c> here.
+    /// </summary>
+    public bool ReloadRequested { get; private set; }
+    /// <summary>Native <c>sv_singleplayerrespawn</c>. When set, single-player death revives at the player start.</summary>
+    public bool AllowSinglePlayerRespawn { get; set; }
+    /// <summary>Native <c>sv_forcerespawn</c>. Deathmatch only: revive after the wait without a button press.</summary>
+    public bool ForceRespawn { get; set; }
+    /// <summary>Native <c>sv_norespawn</c>. Off until set. A buffered press is kept and used once this clears.</summary>
+    public bool NoRespawn { get; set; }
+    /// <summary>Native <c>sv_weapondrop</c>. Off until set. Fist and pistol still drop nothing.</summary>
+    public bool WeaponDrop { get; set; }
+    /// <summary>Native <c>sv_cooploseinventory</c>. Off until set. Cooperative and single-player respawn only.</summary>
+    public bool CoopLoseInventory { get; set; }
+    /// <summary>Native <c>sv_cooplosekeys</c>. Drops every key unless <see cref="CoopShareKeys"/> is set.</summary>
+    public bool CoopLoseKeys { get; set; }
+    /// <summary>Native <c>sv_coopsharekeys</c>. Off until set. Cooperative key pickups are copied to every player.</summary>
+    public bool CoopShareKeys { get; set; }
+    /// <summary>Native <c>sv_cooploseweapons</c>. Fist and pistol stay.</summary>
+    public bool CoopLoseWeapons { get; set; }
+    /// <summary>Native <c>sv_cooplosearmor</c>. There is no default armor, so this clears it.</summary>
+    public bool CoopLoseArmor { get; set; }
+    /// <summary>Native <c>sv_cooploseammo</c>. Bullets return to 50. Other pools return to 0.</summary>
+    public bool CoopLoseAmmo { get; set; }
+    /// <summary>Native <c>sv_coophalveammo</c>. Ignored when <see cref="CoopLoseAmmo"/> is set.</summary>
+    public bool CoopHalveAmmo { get; set; }
+    /// <summary>Native <c>sv_spawnfarthest</c>. Deathmatch respawn only, and only while another player is alive.</summary>
+    public bool SpawnFarthest { get; set; }
+    private readonly int[] _deathScripts = [];
+    private readonly int[] _respawnScripts = [];
     public int Skill { get; }
+    /// <summary>Native <c>sv_ammofactor</c>. Multiplies the skill ammo factor. 1 leaves the skill value alone.</summary>
+    public double AmmoFactor { get; set; } = 1;
+    /// <summary>Native <c>sv_doubleammo</c>. Off until set. Replaces the skill factor with 2.</summary>
+    public bool DoubleAmmo { get; set; }
     public bool Exited { get; private set; }
     public bool SecretExit { get; private set; }
     public bool ReverbActive { get; }
@@ -493,6 +1009,67 @@ public sealed class AuthoritySimulation
             !noExit || spawnOptions.Mode != SpawnGameMode.Deathmatch, spawnOptions);
     }
 
+    /// <summary>
+    /// <c>sv_weapondrop</c> copy of the ready weapon. The corpse keeps its inventory.
+    /// The pickup uses the catalog amount, not the ammo the player was holding,
+    /// and it ignores the skill ammo factor.
+    /// </summary>
+    internal void DropSelectedWeapon(PlayerPawn player)
+    {
+        if (!WeaponDrop || !PickupCatalog.TryWeaponEdNum(player.Inventory.Selected, out var type))
+            return;
+        var id = _nextActorId;
+        _nextActorId = checked(_nextActorId + 1);
+        var drop = new Actor
+        {
+            Id = id,
+            DoomEdNum = type,
+            X = player.X,
+            Y = player.Y,
+            Level = Level,
+            Solid = false,
+            Shootable = false,
+            IgnoreAmmoSkill = true,
+        };
+        drop.RememberPosition();
+        drop.Simulation = this;
+        ActorPhysics.PlaceOnFloor(this, drop);
+        _actors.Add(drop);
+        Thinkers.Add(drop, ThinkerStat.Default);
+    }
+
+    /// <summary>
+    /// <c>BackpackItem.CreateTossable</c>. The pack leaves the player, the caps fall
+    /// back to 200/50/50/300, and ammo above those caps is cut. The tossed thing is
+    /// depleted, so picking it up restores the caps and gives no ammo. There is no
+    /// drop-inventory command; this is the toss. A player who already has a pack
+    /// still receives ammo from a depleted one, matching <c>HandlePickup</c>.
+    /// </summary>
+    public Actor? DropBackpack(PlayerPawn player)
+    {
+        if (!player.Inventory.RemoveBackpack())
+            return null;
+        var id = _nextActorId;
+        _nextActorId = checked(_nextActorId + 1);
+        var drop = new Actor
+        {
+            Id = id,
+            DoomEdNum = PickupCatalog.Backpack,
+            X = player.X,
+            Y = player.Y,
+            Level = Level,
+            Solid = false,
+            Shootable = false,
+            Depleted = true,
+        };
+        drop.RememberPosition();
+        drop.Simulation = this;
+        ActorPhysics.PlaceOnFloor(this, drop);
+        _actors.Add(drop);
+        Thinkers.Add(drop, ThinkerStat.Default);
+        return drop;
+    }
+
     public BotPawn AddBot(double x, double y)
     {
         var id = _nextActorId;
@@ -506,6 +1083,7 @@ public sealed class AuthoritySimulation
             Angle = new BamAngle(0),
             Health = 30,
             ResurrectionHealth = 30,
+            GibHealth = -30,
             RaiseDuration = ArchvileActions.RaiseDuration(3004),
             Level = Level,
             Brain = new MonsterBrain(MonsterAttack.Hitscan),
@@ -522,6 +1100,12 @@ public sealed class AuthoritySimulation
     {
         CombatRandomState = unchecked(1664525u * CombatRandomState + 1013904223u);
         return CombatRandomState;
+    }
+
+    private uint NextDmSpawnRandom()
+    {
+        DmSpawnRandomState = unchecked(1664525u * DmSpawnRandomState + 1013904223u);
+        return DmSpawnRandomState;
     }
 
     internal double NextCombatSpread() => ((int)(NextCombatRandom() >> 24) - (int)(NextCombatRandom() >> 24)) / 255.0;
@@ -578,7 +1162,9 @@ public sealed class AuthoritySimulation
             Id = _nextActorId, DoomEdNum = 3006, Level = Level, Simulation = this,
             X = parent.X, Y = parent.Y, Z = Fixed.FromDouble(parent.Z.ToDouble() + 8),
             Radius = Fixed.FromInt(definition.Radius), Height = Fixed.FromInt(definition.Height),
-            Health = definition.Health, PainChance = definition.PainChance, ChaseSpeed = definition.Speed / 4.0,
+            Health = definition.Health, ResurrectionHealth = definition.Health,
+            GibHealth = definition.Health > 0 ? -definition.Health : -1,
+            PainChance = definition.PainChance, ChaseSpeed = definition.Speed / 4.0,
             NoGravity = true, OnGround = false, SectorIndex = parent.SectorIndex,
             Floating = true,
             Mass = DoomActorCatalog.MassOf(3006),
@@ -690,6 +1276,13 @@ public sealed class AuthoritySimulation
                 player.ClearCommands(); player.AttackPressed = false; player.UsePressed = false;
                 player.WeaponCooldown = pose.WeaponCooldown;
                 player.UseHeld = pose.UseHeld;
+                player.BobTimer = state.Tic;
+                player.ViewBobOffset = 0;
+                player.MovementBob = 0;
+                player.WeaponBobX = 0;
+                player.WeaponBobY = 0;
+                if (!player.IsDead)
+                    player.UpdateViewBob();
             }
             actor.RememberPosition();
         }
@@ -720,6 +1313,153 @@ public sealed class AuthoritySimulation
             }
         }
         return false;
+    }
+
+    internal void StartPlayerScripts(bool death, PlayerPawn player)
+    {
+        foreach (var number in death ? _deathScripts : _respawnScripts)
+        {
+            if (!Acs.ExecuteAlways(number, [0], player))
+                throw new InvalidDataException(death ? "acs-death-script-start-failed" : "acs-respawn-script-start-failed");
+        }
+    }
+
+    /// <summary>
+    /// player.zs DeathThink, then g_game.cpp G_DoReborn for the supported modes.
+    /// The wait is TICRATE (35). A button held across the killing tic does not arm.
+    /// <see cref="NoRespawn"/> keeps the corpse and the buffered press.
+    /// Single-player requests a reload and leaves the corpse. Coop and deathmatch revive
+    /// at that player's start, or player 1's start if theirs is missing. Deathmatch
+    /// inventory returns to the pistol start. Cooperative and single-player respawn
+    /// run the coop inventory filter, which keeps the pack while every lose flag is off.
+    /// A deathmatch revive uses a thing-11 start when the map has one. The weapon offset
+    /// and the view are snapped ready. The revive telefrags a monster standing on that
+    /// spot, and in deathmatch it telefrags another player there too. <see cref="WeaponDrop"/>
+    /// spawns the selected weapon's map thing. Level load still spawns players on player
+    /// starts and does not stomp.
+    /// </summary>
+    internal void TryPlayerRespawn(PlayerPawn player)
+    {
+        if (player.Destroyed || !player.IsDead || ReloadRequested) return;
+        var forced = ForceRespawn && GameMode == SpawnGameMode.Deathmatch;
+        if (!player.RespawnArmed && !forced) return;
+        if (Thinkers.Clock.Tic < player.RespawnEarliestTic) return;
+        if (NoRespawn) return;
+        player.DisarmRespawn();
+        if (GameMode == SpawnGameMode.Single && !AllowSinglePlayerRespawn)
+        {
+            ReloadRequested = true;
+            return;
+        }
+
+        var start = GameMode == SpawnGameMode.Deathmatch
+            ? PickDeathmatchRespawn(player) ?? PlayerStart(player)
+            : PlayerStart(player);
+        if (start != null)
+        {
+            player.X = Fixed.FromDouble(start.X);
+            player.Y = Fixed.FromDouble(start.Y);
+            player.Angle = BamAngle.FromDegrees(start.Angle);
+        }
+        player.VelocityX = default;
+        player.VelocityY = default;
+        player.VelocityZ = default;
+        player.Health = player.ResurrectionHealth > 0 ? player.ResurrectionHealth : 100;
+        ActorPhysics.PlaceOnFloor(this, player);
+        player.ClearCommands();
+        player.AttackPressed = false;
+        player.UsePressed = false;
+        if (GameMode == SpawnGameMode.Deathmatch)
+        {
+            player.Inventory.ResetToPistolStart();
+            player.PowerBuddhaTics = 0;
+        }
+        else
+        {
+            player.Inventory.FilterCoopRespawn(CoopLoseInventory, CoopLoseKeys && !CoopShareKeys, CoopLoseWeapons, CoopLoseArmor, CoopLoseAmmo, CoopHalveAmmo);
+            if (CoopLoseInventory)
+                player.PowerBuddhaTics = 0;
+        }
+        player.Inventory.Pending = null;
+        player.TurnTicks = 0;
+        player.ClearTurnHeld();
+        player.WeaponOffsetY = PlayerPawn.WeaponTop;
+        player.WeaponLowering = false;
+        player.ViewHeight = PlayerPawn.StandingViewHeight;
+        player.PitchDegrees = 0;
+        StompSpawn(player);
+        StartPlayerScripts(death: false, player);
+    }
+
+    /// <summary>
+    /// <c>P_PlayerStartStomp</c> after a revive. Monsters on the spot are telefragged.
+    /// Other players are telefragged only in deathmatch. The overlap is a square of the
+    /// two radii, and the bodies must meet in Z. A monster here is an actor with a
+    /// <see cref="MonsterBrain"/>. Level load does not stomp.
+    /// </summary>
+    private void StompSpawn(PlayerPawn player)
+    {
+        var monstersOnly = GameMode != SpawnGameMode.Deathmatch;
+        var px = player.X.ToDouble();
+        var py = player.Y.ToDouble();
+        var pz = player.Z.ToDouble();
+        var pTop = pz + player.Height.ToDouble();
+        foreach (var other in _actors)
+        {
+            if (other == player || !other.Shootable || other.IsDead || other.Destroyed)
+                continue;
+            if (other is not PlayerPawn && other.Brain == null)
+                continue;
+            if (other is PlayerPawn && monstersOnly)
+                continue;
+            if (other.NoTelefrag && !other.AlwaysTelefrag)
+                continue;
+            var block = other.Radius.ToDouble() + player.Radius.ToDouble();
+            if (Math.Abs(other.X.ToDouble() - px) >= block || Math.Abs(other.Y.ToDouble() - py) >= block)
+                continue;
+            var otherTop = other.Z.ToDouble() + other.Height.ToDouble();
+            if (pz > otherTop || pTop < other.Z.ToDouble())
+                continue;
+            ActorDamage.Apply(other, ActorDamage.TelefragDamage, player, inflictor: player);
+        }
+    }
+
+    private LevelThing? PlayerStart(PlayerPawn player) =>
+        Level.Things.FirstOrDefault(thing => thing.Type == player.PlayerNum + 1)
+        ?? Level.Things.FirstOrDefault(thing => Actor.IsPlayerStart(thing.Type));
+
+    private LevelThing? PickDeathmatchRespawn(PlayerPawn player)
+    {
+        var starts = Level.Things.Where(thing => thing.Type == DeathmatchStarts.ThingType).ToList();
+        if (starts.Count == 0)
+            return null;
+        var living = _actors.OfType<PlayerPawn>()
+            .Where(other => other != player && !other.IsDead && !other.Destroyed)
+            .Select(other => (other.X.ToDouble(), other.Y.ToDouble()))
+            .ToList();
+        if (SpawnFarthest && living.Count > 0)
+        {
+            var farthest = DeathmatchStarts.PickFarthest(starts, living);
+            if (farthest != null)
+                return farthest;
+        }
+        return DeathmatchStarts.PickRandom(starts, count => (int)(NextDmSpawnRandom() % (uint)count), spot => SpotOpen(player, spot));
+    }
+
+    private bool SpotOpen(PlayerPawn player, LevelThing spot)
+    {
+        var reachBase = player.Radius.ToDouble();
+        foreach (var other in _actors)
+        {
+            if (other == player || other.IsDead || other.Destroyed || !other.Solid)
+                continue;
+            var dx = spot.X - other.X.ToDouble();
+            var dy = spot.Y - other.Y.ToDouble();
+            var reach = reachBase + other.Radius.ToDouble();
+            if (dx * dx + dy * dy <= reach * reach)
+                return false;
+        }
+        return true;
     }
 
     public void Tick()
@@ -767,8 +1507,17 @@ public sealed class AuthoritySimulation
                     continue;
                 if (!CirclesOverlap(player, actor))
                     continue;
-                if (PickupCatalog.TryGive(player, actor.DoomEdNum))
-                    taken.Add(actor);
+                if (!PickupCatalog.TryGive(player, actor.DoomEdNum, actor.IgnoreAmmoSkill, actor.Depleted))
+                    continue;
+                taken.Add(actor);
+                if (GameMode == SpawnGameMode.Cooperative && CoopShareKeys && PickupCatalog.IsKey(actor.DoomEdNum))
+                {
+                    foreach (var other in Players)
+                    {
+                        if (other != player)
+                            PickupCatalog.TryGive(other, actor.DoomEdNum);
+                    }
+                }
             }
         }
 
@@ -797,7 +1546,23 @@ public sealed class AuthoritySimulation
         hash = Mix(hash, unchecked((uint)Compat));
         hash = Mix(hash, DamageExitAllowed ? 1u : 0u);
         hash = Mix(hash, (uint)GameMode);
+        hash = Mix(hash, ReloadRequested ? 1u : 0u);
+        hash = Mix(hash, AllowSinglePlayerRespawn ? 1u : 0u);
+        hash = Mix(hash, ForceRespawn ? 1u : 0u);
+        hash = Mix(hash, NoRespawn ? 1u : 0u);
+        hash = Mix(hash, WeaponDrop ? 1u : 0u);
+        hash = Mix(hash, CoopLoseInventory ? 1u : 0u);
+        hash = Mix(hash, CoopLoseKeys ? 1u : 0u);
+        hash = Mix(hash, CoopShareKeys ? 1u : 0u);
+        hash = Mix(hash, CoopLoseWeapons ? 1u : 0u);
+        hash = Mix(hash, CoopLoseArmor ? 1u : 0u);
+        hash = Mix(hash, CoopLoseAmmo ? 1u : 0u);
+        hash = Mix(hash, CoopHalveAmmo ? 1u : 0u);
+        hash = Mix(hash, SpawnFarthest ? 1u : 0u);
+        hash = Mix(hash, DmSpawnRandomState);
         hash = Mix(hash, (uint)Skill);
+        hash = Mix(hash, unchecked((uint)Fixed.FromDouble(AmmoFactor).Raw));
+        hash = Mix(hash, DoubleAmmo ? 1u : 0u);
         hash = Mix(hash, unchecked((uint)Thinkers.Clock.Tic));
         hash = Mix(hash, unchecked((uint)RngSeed));
         hash = Mix(hash, CombatRandomState);
@@ -822,14 +1587,54 @@ public sealed class AuthoritySimulation
             hash = Mix(hash, unchecked((uint)actor.States.RemainingTics));
             hash = Mix(hash, unchecked((uint)actor.Health));
             hash = Mix(hash, unchecked((uint)actor.PainChance));
+            hash = Mix(hash, unchecked((uint)actor.PainThreshold));
             hash = Mix(hash, unchecked((uint)Fixed.FromDouble(actor.ChaseSpeed).Raw));
             hash = Mix(hash, (uint)actor.Radius.Raw);
             hash = Mix(hash, (uint)actor.Height.Raw);
             hash = Mix(hash, actor.NoGravity ? 1u : 0u);
             hash = Mix(hash, actor.LastHeardTargetId ?? 0);
             hash = Mix(hash, actor.Floating ? 1u : 0u);
+            hash = Mix(hash, actor.AllowDropOff ? 1u : 0u);
+            hash = Mix(hash, unchecked((uint)actor.MaxDropOffHeight.Raw));
             hash = Mix(hash, unchecked((uint)Fixed.FromDouble(actor.FloatSpeed).Raw));
             hash = Mix(hash, (uint)actor.ResurrectionHealth);
+            hash = Mix(hash, unchecked((uint)actor.GibHealth));
+            hash = Mix(hash, unchecked((uint)actor.ExtremeDeathState));
+            hash = Mix(hash, unchecked((uint)actor.GenericFreezeDeath));
+            hash = Mix(hash, actor.NoIceDeath ? 1u : 0u);
+            foreach (var typed in actor.TypedDeaths())
+            {
+                hash = Mix(hash, typed.Extreme ? 1u : 0u);
+                hash = Mix(hash, unchecked((uint)typed.State));
+                foreach (var character in typed.Type)
+                    hash = Mix(hash, character);
+                hash = Mix(hash, 0);
+            }
+            foreach (var pain in actor.TypedPains())
+            {
+                hash = Mix(hash, unchecked((uint)pain.State));
+                hash = Mix(hash, unchecked((uint)(pain.Chance ?? -1)));
+                foreach (var character in pain.Type)
+                    hash = Mix(hash, character);
+                hash = Mix(hash, 0);
+            }
+            hash = Mix(hash, unchecked((uint)actor.Armor));
+            hash = Mix(hash, unchecked((uint)actor.ArmorSavePercent));
+            hash = Mix(hash, unchecked((uint)actor.MaxAbsorb));
+            hash = Mix(hash, unchecked((uint)actor.MaxFullAbsorb));
+            hash = Mix(hash, unchecked((uint)actor.AbsorbCount));
+            hash = Mix(hash, actor.Buddha ? 1u : 0u);
+            hash = Mix(hash, actor.FoilBuddha ? 1u : 0u);
+            hash = Mix(hash, actor.ForcePain ? 1u : 0u);
+            hash = Mix(hash, actor.NoPain ? 1u : 0u);
+            hash = Mix(hash, actor.Painless ? 1u : 0u);
+            hash = Mix(hash, actor.ActsLikeBridge ? 1u : 0u);
+            hash = Mix(hash, actor.IceCorpse ? 1u : 0u);
+            hash = Mix(hash, actor.NoTelefrag ? 1u : 0u);
+            hash = Mix(hash, actor.AlwaysTelefrag ? 1u : 0u);
+            hash = Mix(hash, actor.DontDrain ? 1u : 0u);
+            hash = Mix(hash, actor.IgnoreAmmoSkill ? 1u : 0u);
+            hash = Mix(hash, actor.Depleted ? 1u : 0u);
             hash = Mix(hash, (uint)actor.RaiseDuration);
             hash = Mix(hash, (uint)actor.Mass);
             hash = Mix(hash, actor.NoRadiusDamage ? 1u : 0u);
@@ -843,6 +1648,28 @@ public sealed class AuthoritySimulation
                 hash = Mix(hash, player.PlayerNum);
                 hash = Mix(hash, player.GodMode ? 1u : 0u);
                 hash = Mix(hash, player.UseHeld ? 1u : 0u);
+                hash = Mix(hash, player.AttackHeld ? 1u : 0u);
+                hash = Mix(hash, player.RespawnArmed ? 1u : 0u);
+                hash = Mix(hash, unchecked((uint)player.RespawnEarliestTic));
+                hash = Mix(hash, unchecked((uint)Fixed.FromDouble(player.UseRange).Raw));
+                hash = Mix(hash, unchecked((uint)Fixed.FromDouble(player.CrouchFactor).Raw));
+                hash = Mix(hash, unchecked((uint)Fixed.FromDouble(player.FullHeight).Raw));
+                hash = Mix(hash, unchecked((uint)Fixed.FromDouble(player.ViewHeight).Raw));
+                hash = Mix(hash, unchecked((uint)player.BobTimer));
+                hash = Mix(hash, unchecked((uint)Fixed.FromDouble(player.ViewBobOffset).Raw));
+                hash = Mix(hash, unchecked((uint)Fixed.FromDouble(player.MovementBob).Raw));
+                hash = Mix(hash, unchecked((uint)Fixed.FromDouble(player.WeaponBobX).Raw));
+                hash = Mix(hash, unchecked((uint)Fixed.FromDouble(player.WeaponBobY).Raw));
+                hash = Mix(hash, player.UncrouchLocked ? 1u : 0u);
+                hash = Mix(hash, unchecked((uint)player.WeaponOffsetY));
+                hash = Mix(hash, player.WeaponLowering ? 1u : 0u);
+                hash = Mix(hash, player.InstantWeaponSwitch ? 1u : 0u);
+                hash = Mix(hash, (uint)player.TurnTicks);
+                hash = Mix(hash, player.TurnHeld ? 1u : 0u);
+                hash = Mix(hash, player.Inventory.Pending is { } pending ? (uint)pending : 0u);
+                hash = Mix(hash, unchecked((uint)Fixed.FromDouble(player.DrainStrength).Raw));
+                hash = Mix(hash, player.Buddha2 ? 1u : 0u);
+                hash = Mix(hash, unchecked((uint)player.PowerBuddhaTics));
 
                 hash = Mix(hash, player.Inventory.BlueKey ? 1u : 0u);
                 hash = Mix(hash, player.Inventory.YellowKey ? 1u : 0u);
@@ -851,8 +1678,24 @@ public sealed class AuthoritySimulation
                 hash = Mix(hash, (uint)player.Inventory.Shells);
                 hash = Mix(hash, (uint)player.Inventory.Rockets);
                 hash = Mix(hash, (uint)player.Inventory.Cells);
+                hash = Mix(hash, (uint)player.Inventory.MaxBullets);
+                hash = Mix(hash, (uint)player.Inventory.MaxShells);
+                hash = Mix(hash, (uint)player.Inventory.MaxRockets);
+                hash = Mix(hash, (uint)player.Inventory.MaxCells);
+                hash = Mix(hash, player.Inventory.HasBackpack ? 1u : 0u);
                 hash = Mix(hash, (uint)player.Inventory.Armor);
                 hash = Mix(hash, (uint)player.Inventory.ArmorSavePercent);
+                hash = Mix(hash, (uint)player.Inventory.MaxAbsorb);
+                hash = Mix(hash, (uint)player.Inventory.MaxFullAbsorb);
+                hash = Mix(hash, (uint)player.Inventory.AbsorbCount);
+                hash = Mix(hash, (uint)player.Inventory.SpareArmor.Count);
+                foreach (var spare in player.Inventory.SpareArmor)
+                {
+                    hash = Mix(hash, (uint)spare.SaveAmount);
+                    hash = Mix(hash, (uint)spare.SavePercent);
+                    hash = Mix(hash, (uint)spare.MaxAbsorb);
+                    hash = Mix(hash, (uint)spare.MaxFullAbsorb);
+                }
                 hash = Mix(hash, (uint)player.Inventory.Selected);
                 hash = Mix(hash, (uint)player.Inventory.Weapons);
             }
@@ -873,6 +1716,9 @@ public sealed class AuthoritySimulation
         {
             hash = Mix(hash, unchecked((uint)line.Special));
             hash = Mix(hash, unchecked((uint)line.Arg3));
+            hash = Mix(hash, line.PlayerUse ? 1u : 0u);
+            hash = Mix(hash, line.UseThrough ? 1u : 0u);
+            hash = Mix(hash, line.PlayerUseBack ? 1u : 0u);
         }
         foreach (var side in Level.Sides)
         {
@@ -939,7 +1785,17 @@ public static class HeadlessMapBoot
         if (!LevelBuilder.TryFromWad(wad, mapName, out var level, out error))
             return false;
 
-        simulation = AuthoritySimulation.Start(level, rngSeed);
+        try
+        {
+            simulation = AuthoritySimulation.Start(level, rngSeed);
+        }
+        catch (InvalidDataException ex)
+        {
+            simulation = null;
+            error = ex.Message;
+            return false;
+        }
+
         simulation.Tick();
         return true;
     }

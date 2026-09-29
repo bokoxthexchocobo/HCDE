@@ -17,7 +17,8 @@ public class MapsModsTests
     [Fact]
     public void DoomSwitchExitRequiresUseAndClearsOnce()
     {
-        var line = new LevelLine { X1 = 32, X2 = 32, Y1 = -64, Y2 = 64, SideBack = -1, Special = 11 };
+        // Downward winding puts the origin on the front. An upward line would be the back side.
+        var line = new LevelLine { X1 = 32, X2 = 32, Y1 = 64, Y2 = -64, SideBack = -1, Special = 11 };
         var sim = Room(line);
         Assert.False(LineSpecials.ActivateMapLine(sim, sim.Players.Single(), line, false));
         sim.QueueCommand(0, new PlayerCommand { Use = true });

@@ -9,7 +9,7 @@
 **Last updated:** 2026-09-22  
 **Scope:** All code under `csharp/`. Section 2's inventory predates Phases 3–4; the phase audits are the current record for those gates.  
 **Verification:** `dotnet test` in `csharp/` — **638 tests passing** on 2026-09-22 (CI: `.github/workflows/csharp.yml`; optional soak: `.github/workflows/csharp-cross-language-soak.yml`)  
-**Related:** [`HCDE_CSHARP_PHASE1_AUDIT.md`](HCDE_CSHARP_PHASE1_AUDIT.md) · [`HCDE_CSHARP_PHASE2_AUDIT.md`](HCDE_CSHARP_PHASE2_AUDIT.md) · [`HCDE_CSHARP_PHASE3_AUDIT.md`](HCDE_CSHARP_PHASE3_AUDIT.md) · [`HCDE_CSHARP_PHASE4_AUDIT.md`](HCDE_CSHARP_PHASE4_AUDIT.md) · [`HCDE_CSHARP_PHASE5_AUDIT.md`](HCDE_CSHARP_PHASE5_AUDIT.md) · [`HCDE_CSHARP_PHASE6_AUDIT.md`](HCDE_CSHARP_PHASE6_AUDIT.md) · [`HCDE_CSHARP_MIGRATION.md`](HCDE_CSHARP_MIGRATION.md)
+**Related:** [`HCDE_CSHARP_PHASE1_AUDIT.md`](HCDE_CSHARP_PHASE1_AUDIT.md) · [`HCDE_CSHARP_PHASE2_AUDIT.md`](HCDE_CSHARP_PHASE2_AUDIT.md) · [`HCDE_CSHARP_PHASE3_AUDIT.md`](HCDE_CSHARP_PHASE3_AUDIT.md) · [`HCDE_CSHARP_PHASE4_AUDIT.md`](HCDE_CSHARP_PHASE4_AUDIT.md) · [`HCDE_CSHARP_PHASE5_AUDIT.md`](HCDE_CSHARP_PHASE5_AUDIT.md) · [`HCDE_CSHARP_PHASE6_AUDIT.md`](HCDE_CSHARP_PHASE6_AUDIT.md) · [`HCDE_CSHARP_PHASE7_AUDIT.md`](HCDE_CSHARP_PHASE7_AUDIT.md) · [`HCDE_CSHARP_PHASE8_AUDIT.md`](HCDE_CSHARP_PHASE8_AUDIT.md) · [`HCDE_CSHARP_MIGRATION.md`](HCDE_CSHARP_MIGRATION.md)
 
 ---
 
@@ -30,6 +30,8 @@ The C# tree is a **well-tested protocol and networking foundation** (~15,500 LOC
 | Phase 4 — client subset | **Headless gates complete** (see `HCDE_CSHARP_PHASE4_AUDIT.md`) | Medium for the subset; not swrenderer, Vulkan, ZMusic, or the ZScript VM |
 | Phase 5 — pickups and floors | **Slice complete** (see `HCDE_CSHARP_PHASE5_AUDIT.md`) | Medium for the slice; not `a_pickups` / `p_map` |
 | Phase 6 — firing | **Slice complete** (see `HCDE_CSHARP_PHASE6_AUDIT.md`) | Medium for the slice; not `p_pspr` / `p_enemy` |
+| Phase 7 — ACS core | **Slice started** (see `HCDE_CSHARP_PHASE7_AUDIT.md`) | Medium for the opcodes that run; not `p_acs.cpp` |
+| Phase 8 — ZScript integer core | **Slice started** (see `HCDE_CSHARP_PHASE8_AUDIT.md`) | Medium for the integer opcodes; not `vmexec.cpp` |
 
 **Overall migration progress (by engine LOC):** ~2% of HCDE-owned C++ (`src/` + `tools/` ≈ 672k LOC).  
 **Runnable C# dedicated server:** headless load-and-tick of a map lump. Python Step 12, MBF21, and ID24 harnesses were not run.

@@ -10,6 +10,897 @@ phase 2 means combat/AI, and phase 3 means maps/mods. The older numbered audits
 describe smaller protocol/server milestones; their "complete" labels do not
 certify these gameplay phases or the full C++ conversion.
 
+## Audit: word-format BEHAVIOR binding (2026-09-27)
+
+A Hexen map with an ACS\0 BEHAVIOR lump now registers scripts when the
+simulation starts and queues OPEN scripts for the next tic. `AcsMapBehaviorTests`
+covers a sector-light change, number-ordered OPEN scripts, a module-address
+branch past an early terminate, closed/enter scripts staying idle, empty
+directories, and explicit rejection of enhanced, redesigned, unterminated,
+oversized, duplicate, and truncated type/argument values. Release build with
+warnings as errors is clean. `git diff --check` is clean.
+
+The first binder draft failed its own audit and was corrected before this note:
+
+- Duplicate detection called a helper that always returned false, so a second
+  script with the same number would have replaced the first. Registration now
+  uses a set and happens only after every script validates.
+- Script bytes were cut at the first terminate. ACC can jump over that
+  instruction, so the branch fixture died and left the light unchanged. Each
+  script now owns the bytes from its address to the next script address, or to
+  the directory when the directory follows the code. `TryWalkWordSpan` decodes
+  that whole range.
+- Old-format script type and argument count were stored in a byte. Type 257
+  would have become OPEN, and argument count 256 would have become zero. The
+  directory reader now keeps the full integer, and the binder rejects both.
+
+Still true after those corrections:
+
+- This is not native parity and does not finish master-plan step 1. Compact
+  modules, libraries, functions, strings, map arrays, and jump-table chunks are
+  not loaded. A jump from one script into another script's span stops the fiber.
+- Duplicate script numbers and two scripts at the same address are rejected.
+  Native old-format lumps warn and can keep both numbers. One program slot per
+  number cannot do that safely.
+- Only OPEN scripts start at map load (`maploader/specials.cpp`, `runNow` false).
+  ENTER scripts start later, once per spawned player. Respawn, death, and the
+  other known types are registered and wait.
+- `LegacyHexenDelay` stays off. Native adds that extra tic only for
+  `GAME_Hexen`, and this actor model is Doom.
+- OPEN locals stay zero. Native passes one zero `arg1`, which matches that.
+- A present but empty or unsupported BEHAVIOR lump fails the boot. A Doom map
+  with no BEHAVIOR lump does not.
+- If enqueue failed after registration, the VM would already contain programs.
+  Enqueue fails only when the number was not registered, which this path has
+  just done. The constructor still discards the simulation on any bind error.
+
+`dotnet test csharp/HCDE.sln -c Release` reported three failures, all in the
+untracked `Phase7AcsTests.cs`, which never loads a BEHAVIOR lump. Divide by zero
+stops the fiber in the committed VM; that test still expects a pushed zero.
+Thing-count and the first-tic timer expectation also disagree with the committed
+VM. Those failures are outside this slice. The new behavior tests passed
+(13), and MapLoader's existing walker tests passed (396).
+
+## Audit: flat dropoff and ENTER startup (2026-09-27)
+
+`ActorPhysics.TryMove` now refuses a move when the destination floor is strictly
+more than `MaxDropOffHeight` (default 24) below the floor the actor is already
+in. `AllowDropOff` is set on `PlayerPawn` and `ProjectileActor`. Floating actors
+are also exempt. `NoGravity` alone is not. A drop of exactly 24 is allowed.
+`GameplayFoundationTests.MonsterDropOffMatchesNativeLimit` and
+`PlayerMayWalkOffATallLedge` cover the monster, floater, flag, and player cases.
+The existing 24-unit player fall test still passes.
+
+This is the center-of-actor sector change, not `PIT_CheckLine`. A monster whose
+radius overlaps a ledge while its center stays on the high floor is not stopped.
+`COMPATF_CROSSDROPOFF`, `MF2_ONMOBJ`, `MF5_AVOIDINGDROPOFF`, and `MF5_NODROPOFF`
+are not implemented. Player corners now take the two-clip `FSlide::SlideMove`
+path described in the corner audit below. Monster and missile blocks still
+use one clip against the first blocking line.
+
+`AllowDropOff` and `MaxDropOffHeight` are mixed into the actor checksum.
+`SimSavegame` still stores a pose, not those fields. `RestoreState` writes the
+pose back onto the same actor, so a non-default flag survives that restore. A
+fresh actor built only from the pose would lose it. That is the same gap as
+`NoGravity` and `Floating`.
+
+ENTER follows `p_mobj.cpp`: after OPEN is queued, each spawned player gets
+`ExecuteAlways` for every ENTER script, with activator set to that player and
+one zero argument. Number order matches OPEN, which is not the native directory
+order. No player means the script stays idle, which is why
+`ClosedAndEnterScriptsAreRegisteredWithoutRunning` still holds. Save restore
+does not start ENTER again. Death and respawn scripts start later, on those
+events, and are covered in the respawn audit below. A second player uses
+always-instances; a normal execute would reject the second start while the
+first fiber is still queued.
+
+Single-player spawn still requires the Hexen single-player thing flag, including
+player starts. An ENTER script cannot run for a player the spawner drops.
+
+`dotnet build csharp/HCDE.sln -c Release -warnaserror` is clean, and
+`git diff --check` is clean. The full Release suite still fails the same three
+untracked `Phase7AcsTests` cases (divide by zero, thing count, first-tic timer).
+Playsim otherwise passed 2,013 tests. Those three failures do not load this
+BEHAVIOR path and are not a dropoff or ENTER regression.
+
+## Audit: negative overkill health (2026-09-28)
+
+`P_DamageMobj` subtracts the post-armor remainder and leaves health negative.
+`GetGibHealth` is `-SpawnHealth`. Extreme death requires `health < gibhealth`
+and a `Death.Extreme` state. This slice stores that remainder. Spawn paths set
+`GibHealth` from the spawn health. The default state table has no extreme
+frame, so the death state stays the normal one unless a caller configures
+`ExtremeDeathState`. Players still absorb with the existing armor percent.
+Monsters have no inventory item to absorb with, and a test locks that a
+30-health monster hit for 80 ends at -50.
+
+`RestoreHealth` no longer clamps at 0, so the pose round-trips a negative
+value. `GibHealth` and `ExtremeDeathState` are checksummed and are not pose
+fields. Sector healing already ignores dead actors, so a negative corpse is
+not revived by a heal sector. A killing blow still skips the pain state
+because the health write happens first.
+
+The Release suite after this change still fails the same three untracked
+`Phase7AcsTests` cases. Playsim otherwise passed 2,015. The warn-as-error
+build is clean.
+
+## Audit: use trace side and range (2026-09-28)
+
+`P_UseLines` looks along the player's yaw for `UseRange` (64). `P_UseTraverse`
+activates the back side only for `SPAC_UseBack`, and that activation eats the
+press. An open line that cannot be used from the side the player is on does
+not stop the trace. `ActivateUses` now does that for flat maps. UDMF
+`playeruseback` is stored on the line. The trace origin is the player's map
+position; portals are not applied. The block test is the existing hitscan
+opening at chest height.
+
+`UseRange` is mixed into the player checksum and is not a pose field. The
+use flags are mixed into the line checksum. They live on the loaded map, so
+a pose restore does not need to write them back.
+
+A one-sided line used from its back side now stops the trace without
+activating. `DoomSwitchExitRequiresUseAndClearsOnce` had the player on that
+back side. The line winding was turned so the origin is the front, which is
+the side `P_VanillaPointOnLineSide` calls side 0.
+
+## Audit: player death and respawn (2026-09-28)
+
+`p_interaction.cpp` starts `SCRIPT_Death` when a player dies and sets
+`respawn_time` to `level.time + TICRATE`. `DeathThink` buffers a rising edge
+of use, attack, or alt-attack. After the wait, single-player without a
+respawn cvar reloads the level in `G_DoReborn`. Coop and deathmatch respawn
+at a player start. `PST_REBORN` then starts `SCRIPT_Respawn`.
+
+The managed path does the wait, the rising edge, and the mode split.
+`ReloadRequested` is the single-player result. Nothing in the simulation
+loads another map. Coop, deathmatch, and `AllowSinglePlayerRespawn` move the
+same pawn to its start (`thing.Type == PlayerNum + 1`, otherwise the first
+player start), restore spawn health, clear velocity, and enter the spawn
+state. Deathmatch inventory goes back to 50 bullets, fist, and pistol.
+Coop keeps what the player was carrying. `ForceRespawn` auto-revives
+deathmatch after the wait. `sv_norespawn` is the later no-respawn section.
+
+A command from a dead player is not stored. Its use or attack edge can arm
+respawn, and a later revive does not replay a weapon slot from that command.
+A button that was already down on the killing tic does not arm.
+
+`SCRIPT_Death` runs on the death tic, before the end-of-tic ACS pass.
+`SCRIPT_Respawn` runs on the revive tic the same way. Both use
+`ExecuteAlways` and one zero argument, in script-number order.
+
+The new sim flags and the player's respawn tic, armed bit, and attack edge
+are in the checksum. They are not pose fields. `RestoreState` on the same
+actor keeps them. The attack edge is not written by the pose, unlike
+`UseHeld`.
+
+Still absent: random deathmatch starts, the coop inventory filter, weapon
+drop, and the roster. Phase 1 stays open. Death facing is the section after
+ice corpses.
+Psprites and a native tick trace are the other open gates. Monster armor is
+the section after crouch.
+Player stacking is the following section. Crouch is the section after it.
+
+## Audit: player corner slide (2026-09-28)
+
+`P_XYMovement` calls `P_SlideMove` only for a non-missile with `MF2_SLIDE`
+or `MF2_BLASTED`. `FSlide::SlideMove` traces the leading corners, moves up
+to the nearest line, and `HitSlideLine` clears the into-wall axis. If that
+clipped move is blocked, it retries, then stairsteps Y and then X.
+
+The player path now does two of those clips. The line is the one the actor
+center reaches first along the step, so line order does not choose the wall.
+A vertical line clears X and a horizontal line clears Y. The second clip
+covers the corner where the first slide runs into the other wall. No new
+checksum field is involved: the result is position and velocity, which the
+pose already stores.
+
+Not in this subset: the three bounding-box corner traces, the blockmap,
+`COMPATF_WALLRUN`, icy bounce, and slope walking. Monsters and missiles stay
+on the old single clip against whichever blocking line `TryMove` returns
+first. Actor-versus-actor blocks still split X, then Y.
+
+## Audit: player stacking (2026-09-28)
+
+`P_TryMove` treats a solid non-player as a step when `Top() - Z()` is within
+`MaxStepHeight` and the player still fits under the ceiling. `MF2_PASSMOBJ`
+is what lets the player finish that move. The Z pass then sets the player
+on that top and clears downward velocity.
+
+A grounded player now does that. Height 24 is stood on. Height 25 blocks.
+A ceiling that the head would enter blocks. Once up, that top is the floor
+for gravity, landing, and `OnGround`, so a fall stops on the actor instead
+of the sector. The result is position and `OnGround`, which the pose already
+stores. There is no rider id. After a restore, the next tic sees the top
+under the saved feet and keeps the player there.
+
+Monsters do not step up. Corpses are already non-solid, so they are not
+platforms. Crush, `MF4_ACTLIKEBRIDGE`, and moving the actor the player
+stands on are absent.
+
+## Audit: crouch (2026-09-28)
+
+`CheckJump` runs before `CheckCrouch`. `BT_CROUCH` is button bit 3. The
+command sink now copies that bit. Factor changes by `CROUCHSPEED` (`1/12`)
+and clamps to `[0.5, 1]`. Height becomes `FullHeight * factor` and view
+height becomes `41 * factor`. Height is rewritten only when the factor
+changes, so a floor test that sets a taller body is left in place while the
+player is standing. Growing calls `TryMove` at the new height, so
+a ceiling of 30 keeps a half-height player crouched. A jump while the factor
+is below 1 sets the stand-up lock and does not set vertical velocity. Death
+restores the spawned height.
+
+`CrouchFactor`, `FullHeight`, `ViewHeight`, and the lock are checksummed.
+They are not pose fields. Height is already in the checksum. A same-actor
+restore keeps the live body. Crouch sprites, fake-floor triggers, and button
+bits other than attack, use, jump, and crouch are absent.
+
+## Audit: monster armor (2026-09-28)
+
+`P_DamageMobj` calls `AbsorbDamage` for a non-player when the actor has an
+inventory and the hit is not `DMG_NO_ARMOR` or `DMG_FORCED`.
+`ABasicArmor::AbsorbDamage` saves `full absorb + (damage - full) * SavePercent`
+and caps that by `Amount` and `MaxAbsorb`. This subset has no full-absorb
+bonus and no max-absorb cap, so the save is the same integer formula the
+player already uses: percent 33 is `damage / 3`, and every other percent is
+`damage * percent / 100`. The armor amount caps the save.
+
+A non-player stores that amount and percent on the actor. Players still
+absorb only from `PlayerInventory` and do not clear their percent. When a
+non-player's amount reaches 0 because some armor was spent, the percent is
+cleared, which is the BasicArmor branch. A hit that spends nothing leaves a
+zero amount's percent alone. `BypassArmor` skips both paths.
+
+A former human with health 30 and no armor, hit for 80, still ends at -50
+with no armor loss. The same actor with 100 green armor ends at -24, armor
+74, and percent 33. Ten points at 50 percent against 100 damage save 10,
+leave health at 10, and clear the percent.
+
+`Armor` and `ArmorSavePercent` are in the checksum. They are not pose fields.
+`RestoreState` on the same actor keeps them. There is no armor pickup chain,
+no reserve `BasicArmorPickup` when the amount hits 0, no Hexen armor, and no
+damage-type `IgnoreArmor` beyond the bypass flag. Spawned monsters still
+start with armor 0.
+
+Phase 1 stays open. Crush, corpse platforms, the rest of the actor states
+and roster, weapon raise and psprites, and a native tick trace are still
+absent. Buddha is the following section.
+
+## Audit: Buddha (2026-09-29)
+
+`P_DamageMobj` leaves a player or monster at 1 health when `MF7_BUDDHA`
+would otherwise kill them. This subset is that flag on the actor. The raw
+hit is compared with `TELEFRAG_DAMAGE` (1,000,000) before armor is
+considered, so green armor does not turn a telefrag into a survivable hit.
+`DMG_FORCED` skips armor, god mode, invulnerability, and Buddha.
+`DMG_FOILBUDDHA` kills a non-player and leaves a player at 1, matching the
+player branch, which does not consult that flag.
+
+The clamp happens before `Health` is assigned. Assigning a negative value
+first would enter the death state and, for a player, note the death.
+A hit from 30 health for 80 ends at 1, death count 0, and not the death
+state. A hit for 10 ends at 20. Armor still saves first: 100 green armor
+on that 80-damage hit saves 26, and Buddha then stops the remainder at 1.
+
+`Buddha` is in the checksum. It is not a pose field. `RestoreState` on the
+same actor keeps it. Buddha2, the PowerBuddha inventory item, an inflictor
+`MF7_FOILBUDDHA` flag, voodoo dolls, drain, and damage-type deaths are
+absent. A hit that Buddha reduces from 1 health back to 1 does not enter
+pain, because pain follows a health change.
+
+Phase 1 stays open. Crush, corpse platforms, the rest of the actor states
+and roster, and a native tick trace are still absent. Weapon raise is the
+following section.
+
+## Audit: weapon raise and lower (2026-09-29)
+
+`A_Lower` adds 6 to the weapon psprite Y until `WEAPONBOTTOM` (128).
+`A_Raise` subtracts 6 until `WEAPONTOP` (32), then the weapon can fire.
+The tic that reaches the bottom does not also raise. This subset uses that
+offset as a fire gate.
+
+The slot command still changes `Selected` on the tic it runs. Native keeps
+the old ready weapon until the lower finishes and only then brings up
+`PendingWeapon`. Cycling and the command-queue tests depend on the managed
+order, so the offset does not delay the selection itself. An attack on the
+switch tic does not fire, and it does not start the refire cooldown. After
+32 tics the offset is back at 32 and a shot spends ammo. The next tic is
+blocked by that cooldown.
+
+A spawned weapon starts at 32. Assigning `Selected` from a test does not
+start the animation. Re-selecting the weapon already in hand does not
+restart it. Death leaves the offset where it was. Respawn sets it back to
+32 and clears the lowering bit. Sprites, flash, bob, `CF_INSTANTWEAPSWITCH`,
+and the pending-weapon handoff are absent.
+
+`WeaponOffsetY` and the lowering bit are in the checksum. They are not
+pose fields. `RestoreState` on the same actor keeps them.
+
+Phase 1 stays open. Crush, corpse platforms, the rest of the actor states
+and roster, psprite sprites, and a native tick trace are still absent.
+Monster bridges are the following section.
+
+## Audit: monster bridges (2026-09-29)
+
+`PIT_CheckThing` lets a non-floating monster walk onto a solid actor with
+`MF4_ACTLIKEBRIDGE` when that top is within `MaxStepHeight` and the head
+fits. Players already step onto any solid non-player through the
+`MF2_PASSMOBJ` path. This subset adds the monster case only.
+
+A bridge of height 16 or 24 is a step. Height 25 blocks, and the monster
+stays where it was. The monster then uses that top as its floor, so the
+next sector fit does not pull it back down. A dead actor does not block
+and is not a floor, even with the flag set, because `BlocksActors` requires
+the actor to be alive. Floating actors and projectiles do not take the step.
+There is no rider id, so the bridge does not carry the monster when the
+bridge itself moves. Crush while standing on it is absent.
+
+`ActsLikeBridge` is in the checksum. It is not a pose field. `RestoreState`
+on the same actor keeps it.
+
+Phase 1 stays open. Crush, the rest of the actor states and roster,
+psprite sprites, and a native tick trace are still absent. Ice corpses are
+the following section.
+
+## Audit: ice corpses on corpses (2026-09-29)
+
+`P_TestMobjZ` skips a corpse obstacle unless the mover has `MF_ICECORPSE`.
+Ordinary actors walk through dead bodies. This subset is that exception.
+
+A corpse stays non-solid for players, living monsters, and door checks.
+An ice corpse treats a dead solid actor as a step. Height 16 or 24 is a
+floor, and the ice corpse stands there. Height 25 or 56 blocks, and the
+ice corpse does not move. Headroom still has to fit under the ceiling.
+The corpse is not carried, and it does not crush the actor standing on it.
+Shatter, frozen ticks, and blood are absent.
+
+`IceCorpse` is in the checksum. It is not a pose field. `RestoreState` on
+the same actor keeps it.
+
+Phase 1 stays open. Crush, the rest of the actor states and roster,
+psprite sprites, and a native tick trace are still absent. Death facing is
+the following section.
+
+## Audit: death facing (2026-09-29)
+
+`DeathThink` turns a dead player toward `player.attacker` by at most 5
+degrees each tic. The managed killer is `LastDamageSourceId` from the blow
+that set it. A north killer from an east-facing pawn is 5 degrees after one
+tic and due north after 18. The pawn does not turn when that id is missing
+or is the pawn itself.
+
+The same tic lowers view height by 1 until it reaches 6, and moves pitch 3
+degrees toward 0, snapping once the remainder is under 3. Native
+`Uncrouch` only rewrites the view when a crouch is being cleared, so the
+drop is not reset on later dead tics. An ice corpse skips the view and
+pitch settle and still turns. Damage and poison counters are not faded.
+Respawn puts the view back at 41 and pitch at 0.
+
+View height is already in the checksum and not in the pose. A same-actor
+restore keeps the lowered view. A save written before the drop does not
+put that view back, so another dead tic leaves it lower. Angle is already
+in the pose.
+
+Phase 1 stays open. Crush, the rest of the actor states and roster,
+psprite sprites, and a native tick trace are still absent. Weapon drop is
+the following section.
+
+## Audit: weapon drop (2026-09-29)
+
+`PlayerPawn.Die` drops the ready weapon when `sv_weapondrop` is set.
+The managed flag is `WeaponDrop`, and it stays off. A death with the flag
+clear adds no actor.
+
+When the flag is set, chainsaw, shotgun, super shotgun, chaingun, rocket
+launcher, plasma, and BFG spawn that map thing at the corpse. The corpse
+keeps the weapon. Fist and pistol have no vanilla thing, so they spawn
+nothing. The pickup grants the catalog amount (a shotgun gives 8 shells),
+not the ammo the player was holding. Drop lists, probability, and skill
+ammo are absent.
+
+`WeaponDrop` is in the checksum. It is not a pose field. `RestoreState` on
+the same simulation keeps it. The spawned thing is an actor, so a later
+pose that includes actors keeps the thing.
+
+Phase 1 stays open. Crush, the rest of the actor states and roster,
+psprite sprites, and a native tick trace are still absent. Drain is the
+following section.
+
+## Audit: drain (2026-09-29)
+
+`P_DamageMobj` heals a player who has PowerDrain by `int(strength * damage)`
+after armor, then `P_GiveBody` stops at max health. This subset stores the
+strength on the player. 0 is off. 0.5 is the usual power.
+
+A player at 40 health who hits for 80 gains 40 and ends at 80. Green armor
+on that same 80-damage hit saves 26, and the drain uses the remaining 54,
+which is 27. A player at 95 who would gain 10 stops at 100. Health already
+at 150 stays 150. A dead player does not heal. `DontDrain` on the target
+and a hit against oneself grant nothing. Another player can be drained.
+There is no PowerDrain inventory item, no OnDrain script, and no heal sound.
+
+`DrainStrength` and `DontDrain` are in the checksum. They are not pose
+fields. `RestoreState` on the same actor keeps them.
+
+Phase 1 stays open. Crush, the rest of the actor states and roster,
+psprite sprites, and a native tick trace are still absent. Backpack is
+the following section.
+
+## Audit: backpack (2026-09-29)
+
+`BackpackItem` gives every parent ammo its backpack amount and, the first
+time, its backpack max. Doom thing 8 is that item. This subset knows the
+four Doom pools only.
+
+A player already holding 200 bullets picks one up and ends at 210, with
+caps 400, 100, 100, and 600, plus 4 shells, 1 rocket, and 20 cells. A
+second one adds 10, 4, 1, and 20 again. When every pool is already at the
+new cap the pickup still succeeds and the amounts stay put. Skill ammo
+factor is not applied, and there is no tossed empty backpack.
+
+`ResetToPistolStart` clears the flag and restores 200/50/50/300, so a
+deathmatch revive loses the backpack. Cooperative respawn keeps the live
+inventory, including the raised caps.
+
+`HasBackpack` and the four max amounts are in the checksum. They are not
+pose fields. `RestoreState` on the same actor keeps them.
+
+Phase 1 stays open. Crush, the rest of the actor states and roster,
+psprite sprites, and a native tick trace are still absent. The cooperative
+inventory filter is the following section.
+
+## Audit: cooperative respawn inventory (2026-09-29)
+
+`FilterCoopRespawnInventory` walks the dead player's inventory before the
+new body keeps it. `dmflags` starts at 0, so each lose flag is off and a
+cooperative revive still keeps the pack. Deathmatch never calls it.
+
+Lose inventory is a pistol start, including the backpack. Lose keys drops
+red, blue, and yellow. Lose weapons keeps fist and pistol and, when the
+selected weapon was removed, readies the pistol, or the fist when that
+pistol has no bullet. Lose armor clears the
+amount and the save percent. Lose ammo puts bullets back at 50 and zeroes
+shells, rockets, and cells. Halve ammo divides a pool above 1. Bullets of
+120 become 60. Bullets of 40 become 50. A shell of 1 stays 1. When both
+ammo flags are set, lose wins. The backpack and its raised caps stay
+unless everything is lost. A shotgun with no shells left is put away.
+
+An enabled single-player respawn uses the same filter. Shared keys,
+powerups, and Hexen armor are absent.
+
+The six flags are in the checksum. They are not pose fields.
+`RestoreState` on the same simulation keeps them.
+
+Phase 1 stays open. Crush, the rest of the actor states and roster,
+psprite sprites, and a native tick trace are still absent. Deathmatch
+starts are the following section.
+
+## Audit: deathmatch starts (2026-09-29)
+
+`G_DeathMatchSpawnPlayer` picks a thing 11 for a deathmatch reborn. This
+subset does that on respawn. Level load still puts each player on a player
+start. A map with no thing 11 still revives at that player's own start.
+Cooperative respawn ignores thing 11. Thing 11 is not spawned as an actor.
+
+The roll is a separate counter, seeded from the sim and mixed into the
+checksum. It is not the native `DMSpawn` table and it is not in the pose.
+`RestoreState` keeps the live counter. An open spot has no living solid
+actor overlapping it. Twenty blocked tries still return the last spot, and
+nobody there is telefragged. `SpawnFarthest` picks the start farthest from
+the nearest other living player. A tie keeps the earlier start. It does
+nothing while that player is the only one alive. A farthest miss falls
+through to the random thing-11 pick.
+
+Phase 1 stays open. Crush, the rest of the actor states and roster,
+psprite sprites, and a native tick trace are still absent. No-respawn is
+the following section.
+
+## Audit: no respawn (2026-09-29)
+
+`DeathThink` revives only when `sv_norespawn` is clear. The flag defaults
+off. While it is set, a fresh press still buffers, and the corpse stays
+after the 35-tic wait. Single-player does not ask for a reload. Deathmatch
+`sv_forcerespawn` does not revive. Clearing the flag on a later tic uses
+that buffered press, or the force flag, without a new button. The press is
+cleared only when the revive runs.
+
+`NoRespawn` is in the checksum. It is not a pose field. `RestoreState` on
+the same simulation keeps it.
+
+Phase 1 stays open. Crush, the rest of the actor states and roster,
+psprite sprites, and a native tick trace are still absent. Skill ammo is
+the following section.
+
+## Audit: skill ammo (2026-09-29)
+
+`SKILLP_AmmoFactor` is 2 for baby and nightmare and 1 for the other Doom
+skills. `sv_ammofactor` defaults to 1 and multiplies that. The product is
+truncated toward zero, matching `int(amount * factor)`.
+
+A clip of 10 becomes 20 on baby, so a pistol start ends at 70. The same
+clip on easy stays 10 and ends at 60. An extra factor of 1.5 turns that
+clip into 15 and a single rocket into 1. A factor of 0 adds nothing and
+leaves the pickup on the map. A baby backpack gives 20, 8, 2, and 40. The
+caps stay 400/100/100/600. Health and armor are not scaled.
+
+A dropped weapon sets `IgnoreAmmoSkill`. On baby, that shotgun still gives
+8 shells. A map shotgun without the flag gives 16.
+
+`AmmoFactor` and `IgnoreAmmoSkill` are in the checksum. They are not pose
+fields. `RestoreState` keeps the live values.
+
+Phase 1 stays open. Crush, the rest of the actor states and roster,
+psprite sprites, and a native tick trace are still absent. Double ammo is
+the following section.
+
+## Audit: double ammo (2026-09-29)
+
+`sv_doubleammo` makes `SKILLP_AmmoFactor` return `DoubleAmmoFactor`. Doom
+leaves that at 2 for every skill. The flag defaults off. It replaces the
+skill factor. Baby stays at 2, which is the same as baby without the flag,
+so a clip of 10 is still 20 bullets added. Easy and normal, which were 1,
+become 2, and a pistol start ends at 70.
+
+`sv_ammofactor` still multiplies afterward. Baby with the flag and a factor
+of 1.5 turns a clip of 10 into 30, so the start ends at 80. A dropped weapon
+still skips the factor and gives 8 shells. Heretic and Hexen set the factor
+to 1.5, and that table is absent.
+
+`DoubleAmmo` is in the checksum. It is not a pose field. `RestoreState`
+keeps it.
+
+Phase 1 stays open. Crush, the rest of the actor states and roster,
+psprite sprites, and a native tick trace are still absent. Armor absorb
+caps are the following section.
+
+## Audit: armor absorb caps (2026-09-29)
+
+`BasicArmor.AbsorbDamage` saves `MaxFullAbsorb` in full, then the save
+percent on the rest, and `MaxAbsorb` stops the running total. Doom green
+and mega leave both caps at 0, so their save is unchanged: percent 33 is
+still `damage / 3`.
+
+A suit with full absorb 10 and 50 percent, hit for 30, saves 20. The next
+30 saves 15, because the full slice is already used. A 100 percent suit
+with a total cap of 25, hit for 40, saves 25 and the player loses 15. The
+next 40 saves nothing. The armor amount still caps a save, and a monster
+whose armor reaches 0 still clears its percent.
+
+Picking up mega armor clears both caps and keeps `AbsorbCount`. A pistol
+start clears the count as well. There is no spare armor item waiting to
+replace an empty suit, and damage types still do not ignore armor.
+
+The caps and the count are in the checksum for the player and for other
+actors. They are not pose fields. `RestoreState` keeps them.
+
+Phase 1 stays open. Crush, the rest of the actor states and roster,
+psprite sprites, and a native tick trace are still absent. Drowning is
+the following section.
+
+## Audit: drowning ignores armor (2026-09-29)
+
+`DamageTypeDefinition.IgnoreArmor` is true only for the mapinfo type
+`Drowning`. That is the only `NoArmor` entry. A hit tagged `Drowning`
+skips armor and still subtracts the full amount from health. Green armor
+of 100, hit for 30, stays 100 and health falls by 30. The same hit tagged
+`Slime` saves 10 and health falls by 20. The lowercase spelling `drowning`
+is a different name and still uses armor.
+
+A sector whose damage type is `Drowning` passes that name into the same
+call. Ten points on the first tic leave armor at 100 and health at 90.
+A `Slime` sector of 10 saves 3. God mode still blocks the hit. The sector
+type was already in the checksum, so no new field was added.
+
+Phase 1 stays open. Crush, the rest of the actor states and roster,
+psprite sprites, and a native tick trace are still missing. Buddha2 is
+the following section.
+
+## Audit: Buddha2 (2026-09-29)
+
+`CF_BUDDHA2` is checked before ordinary Buddha. It is a player cheat, so
+only `PlayerPawn` has it. A killing blow leaves health at 1, including a
+hit of 1,000,000. Ordinary Buddha still dies to that hit.
+
+`DMG_FORCED` is cleared before armor and god mode. A forced hit of 80
+against 100 armor at 100 percent saves 80 and leaves health at 30. The
+same hit with no armor leaves health at 1. God mode still blocks it.
+A hit of 10 from 30 health leaves 20. Monsters do not gain this flag.
+The PowerBuddha item is the following section.
+
+`Buddha2` is in the checksum. It is not a pose field. `RestoreState`
+keeps it.
+
+Phase 1 stays open. Crush, the rest of the actor states and roster,
+psprite sprites, and a native tick trace are still missing.
+
+## Audit: PowerBuddha (2026-09-29)
+
+`PowerBuddha` is a powerup with `Duration -60`. A negative duration is
+seconds, so the item lasts 2,100 tics. While any tics remain, a player
+follows ordinary Buddha. A hit of 80 from 30 health leaves 1. A telefrag
+and `DMG_FORCED` still kill. Forced damage still skips armor.
+`DMG_FOILBUDDHA` does not remove the item from a player.
+
+A second grant is taken and does not extend the timer while more than
+128 tics remain. At 128 or below, the timer resets to 2,100. Every player
+tic counts down, including while dead. A deathmatch revive clears it. A
+cooperative lose-inventory revive clears it. A cooperative revive that
+keeps inventory leaves the tics that remain after the wait.
+
+`PowerBuddhaTics` is in the checksum. It is not a pose field.
+`RestoreState` keeps it. The inflictor foil flag is the following section.
+
+Phase 1 stays open. Crush, the rest of the actor states and roster,
+psprite sprites, and a native tick trace are still missing.
+
+## Audit: inflictor foil Buddha (2026-09-29)
+
+`MF7_FOILBUDDHA` is `Actor.FoilBuddha`. The monster Buddha check looks at
+the inflictor, not the source. A missile with the flag, hitting a monster
+at 30 health for 80, leaves health at -50. The same hit with the flag only
+on the source, and no inflictor, leaves health at 1. A null inflictor does
+not foil. A player with Buddha or PowerBuddha stays at 1. Buddha2 is
+unchanged.
+
+Direct impact and blast pass the missile. Melee, hitscan, a charge, and
+the archvile's direct 20-point hit pass the attacker. BFG spray still has
+no puff actor, so it does not copy a puff's foil flag into the damage.
+
+`FoilBuddha` is in the checksum. It is not a pose field. `RestoreState`
+keeps it.
+
+Phase 1 stays open. Crush, the rest of the actor states and roster,
+psprite sprites, and a native tick trace are still missing. Stored armor
+is the following section.
+
+## Audit: stored armor pickups (2026-09-29)
+
+`BasicArmor` with amount 0 clears its save percent, then uses the stored
+`BasicArmorPickup` with the highest save percent. An equal percent keeps
+the earlier item. The saved-so-far count stays. The new suit's absorb caps
+replace the old ones.
+
+A pickup whose max amount is above 0 is used immediately when the worn
+amount is below its save amount. Otherwise it is kept. Doom green and mega
+have max amount 0, so a full suit still rejects them and they are not
+stored. Skill armor factor stays 1. Hexen armor is absent.
+
+A hit of 400 against 100 green armor saves 100. A stored 40-point suit at
+100 percent is used before a stored 80-point suit at 50 percent. The same
+hit's remainder is not absorbed by the new suit. Drowning does not enter
+this path. A pistol start and a lose-armor revive clear the stored list.
+A cooperative revive that keeps inventory leaves it.
+
+The stored list is in the checksum. It is not a pose field. `RestoreState`
+keeps it. Monsters still have no pickup list.
+
+Phase 1 stays open. Crush, the rest of the actor states and roster,
+psprite sprites, and a native tick trace are still missing. The pending
+weapon is the following section.
+
+## Audit: pending weapon (2026-09-29)
+
+`Weapon.Use` sets `PendingWeapon` when the pick is not the ready weapon.
+The ready weapon stays `Selected` while the offset lowers by 6 from 32
+toward 128. The tic that reaches 128 copies the pending weapon into
+`Selected`, clears the pending weapon, and does not raise. The next tics
+raise by 6 until 32. Fire stays refused until then. A shotgun press from
+the pistol leaves the pistol selected and the shells unspent. Sixteen
+lower tics commit the shotgun at offset 128. Sixteen raise tics return
+to 32, and the next attack spends a shell.
+
+A second press replaces the pending weapon. Slot 3 with both shotguns
+owned picks the super shotgun first, then the shotgun. Pressing the pistol
+slot while the pistol is still ready does not cancel that switch. Cycling
+uses the pending weapon when one is set. A revive clears the pending
+weapon and snaps the offset to 32. Sprites, flash, and bob are absent.
+Instant switch is the following section.
+
+`Pending` is in the checksum. It is not a pose field. `RestoreState`
+keeps it.
+
+Phase 1 stays open. Crush, the rest of the actor states and roster,
+psprite sprites, and a native tick trace are still missing.
+
+## Audit: instant weapon switch (2026-09-29)
+
+`CF_INSTANTWEAPSWITCH` is `PlayerPawn.InstantWeaponSwitch`. It is off
+until set. `A_Lower` then sets the offset to 128 and `BringUpWeapon`
+puts it back at 32 in the same call. The pending weapon becomes the
+ready weapon on that tic. An attack queued with the slot press fires:
+five shells become four, and the cooldown is 35. Without the flag the
+same press still spends the sixteen lower tics and does not fire.
+
+The flag is in the checksum. It is not a pose field. `RestoreState`
+keeps it. Sprites, flash, and bob are absent. Turn 180 is the following
+section.
+
+Phase 1 stays open. Crush, the rest of the actor states and roster,
+psprite sprites, and a native tick trace are still missing.
+
+## Audit: turn 180 (2026-09-29)
+
+`BT_TURN180` is bit 4 on the user command. A fresh press sets
+`TurnTicks` to `(35 / 4) + 1`, which is 9. That tic turns 20 degrees and
+leaves 8. Yaw on those tics is ignored. Nine tics from angle 0 land on
+180. Holding the button past that does not start another turn. Releasing
+it and pressing again does. A press during the turn restarts the 9 tics.
+
+`TurnTicks` and the held bit are in the checksum. They are not pose
+fields. `RestoreState` keeps both, so a held button keeps counting down.
+A revive clears them. Alt attack, reload, zoom, and run are absent.
+View bob is the following section.
+
+Phase 1 stays open. Crush, the rest of the actor states and roster,
+psprite sprites, and a native tick trace are still missing.
+
+## Audit: view bob (2026-09-29)
+
+`CalcHeight` sets `player.bob` from horizontal speed squared times
+`movebob` (0.25), capped at 16. The view term is that amount times
+`sin(BobTimer / 20 * 360) * 0.5`. Speed 8 at timer 5 is a 90-degree sine,
+so the offset is 8. Timer 10 is a 180-degree sine, so the offset is 0.
+Speed 100 still caps at 16 and the same timer still offsets by 8.
+Standing still stays at 0. `ViewHeight` stays 41.
+
+`BobTimer` advances once per player tic, in step with the sim clock.
+`ViewBobOffset` is the camera term. It is not added to eye height. Both
+are in the checksum and not in the pose. A pose restore sets the timer
+from the saved clock tic and recomputes the camera term from the restored
+horizontal speed. The weapon swing is separate from this camera term.
+Vertical speed is not part of this bob.
+
+Phase 1 stays open. Crush, the rest of the actor states and roster,
+psprite sprites, and a native tick trace are still missing.
+
+## Audit: weapon bob (2026-09-29)
+
+`BobWeapon` runs after movement. This port takes the normal style at the
+end of the tic, so the between-tic blend is the second sample only. The
+angle is `BobTimer * 128 * 360 / 8192` degrees. X is the movement bob
+times the cosine. Y is that amount times the absolute sine. Speed 8 is
+the cap of 16. Timer 16 puts the sprite at X 0, Y 16. Timer 0 puts it at
+X 16, Y 0. Vertical speed is not part of the amount.
+
+The sprite stays at 0 while the weapon is lowering or firing. `wbobfire`
+is 0, so a fire tic and the cooldown after it do not swing. Eye height
+stays 41. The movement bob and both sprite terms are in the checksum and
+not in the pose. A pose restore recomputes them from the restored speed
+and the clock tic. Other styles, a non-default range, and the 3D bob are
+absent.
+
+Phase 1 stays open. Crush, the rest of the actor states and roster,
+psprite sprites, and a native tick trace are still missing.
+
+## Audit: spawn stomp (2026-09-29)
+
+`P_PlayerStartStomp` runs after a coop or deathmatch revive. A monster
+on the spot takes telefrag damage. Another player takes it only in
+deathmatch, and that hit goes through god mode and invulnerability.
+`Buddha2` still stops at 1. Cooperative leaves the other player alone.
+The overlap is a square of the two radii: a gap of exactly that sum is
+spared, and one map unit closer is not. A body whose feet are above the
+revived player's head is spared. `NoTelefrag` skips the hit unless
+`AlwaysTelefrag` is set. A shootable actor with no monster brain is not
+a monster, so a decoration is spared. Both flags are in the checksum and
+not in the pose. A same-actor restore keeps them. Level load still does
+not stomp.
+
+Phase 1 stays open. Crush, the rest of the actor states and roster,
+psprite sprites, and a native tick trace are still missing.
+
+## Audit: shared keys (2026-09-29)
+
+`sv_coopsharekeys` stays off. In cooperative play, a key pickup is copied
+to every other player, including a dead one. A clip picked up on the same
+tic is not copied. Deathmatch does not share, even with the flag set.
+`sv_cooplosekeys` drops keys only when sharing is off. Losing the whole
+pack still clears them. A card and a skull of one color are the same key.
+Puzzle items, the pickup message, and the bonus flash are absent. The
+flag is in the checksum and not in the pose. A same-actor restore keeps it.
+
+Phase 1 stays open. Crush, the rest of the actor states and roster,
+psprite sprites, and a native tick trace are still missing.
+
+## Audit: depleted backpack (2026-09-29)
+
+`BackpackItem.CreateTossable` marks the tossed pack depleted.
+`DetachFromOwner` puts the caps back at 200/50/50/300 and cuts ammo
+above those caps. Ammo under the caps stays. Picking up that pack is
+`CreateCopy` with `bDepleted`: the caps return to 400/100/100/600 and
+no ammo is added. A player who already has a pack still receives the
+normal pack amounts, because `HandlePickup` does not look at the
+depleted flag. There is no drop-inventory key; `DropBackpack` is the
+toss. `Depleted` is in the checksum and not in the pose. A same-actor
+restore keeps it.
+
+Phase 1 stays open. Crush, the rest of the actor states and roster,
+psprite sprites, and a native tick trace are still missing.
+
+## Audit: typed deaths (2026-09-29)
+
+`P_DamageMobj` picks the death frame from the damage type. An extreme
+typed frame, such as `Death.Extreme.Fire`, wins when health is strictly
+below the gib line and that frame exists. Otherwise `Death.Fire` is used
+even when the hit is past the gib line. A missing type falls through to
+the gib frame, then the normal death. The name match is ordinal. Damage
+type `Extreme` forces the gib frame and does not look up a typed state.
+Generic ice freeze, `MF4_NOICEDEATH`, and the inflictor extreme-death
+flags are absent. The registrations are in the checksum and not in the
+pose. A same-actor restore keeps them. The default four-frame table has
+no typed death, so an unconfigured actor still uses the normal death.
+
+Phase 1 stays open. Crush, the rest of the actor states and roster,
+psprite sprites, and a native tick trace are still missing.
+
+## Audit: typed pain (2026-09-29)
+
+`TriggerPainChance` looks up `Pain.Fire` before the normal pain frame.
+A registered frame is entered when the pain roll succeeds. A missing
+frame, or a name that does not match, uses the normal pain state. The
+match is ordinal. A per-type chance replaces `PainChance` for that name
+only. Chance 0 never flinches, and another type still uses the actor's
+own chance. Electric flicker, poison howling, and wound states are
+absent. The registrations are in the checksum and
+not in the pose. A same-actor restore keeps them.
+
+Phase 1 stays open. Crush, the rest of the actor states and roster,
+psprite sprites, and a native tick trace are still missing.
+
+## Audit: pain threshold (2026-09-29)
+
+`ReactToDamage` flinches only when the post-armor amount is at least
+`PainThreshold`. The default is 0, so any health loss can still flinch.
+A hit of 9 against a threshold of 10 drops health and stays in the spawn
+state. A hit of 10 enters pain. Green armor saves 10 of a 30-point hit,
+so 20 remains and a threshold of 21 stays quiet.
+The threshold is in the checksum and not in the pose. A same-actor
+restore keeps it.
+
+Phase 1 stays open. Crush, the rest of the actor states and roster,
+psprite sprites, and a native tick trace are still missing.
+
+## Audit: forced pain (2026-09-29)
+
+`MF6_FORCEPAIN` on the inflictor skips `PainThreshold` and the pain
+roll. A hit of 9 against a threshold of 10 still enters pain. Pain
+chance 0 still flinches. A hit that armor absorbs completely still
+flinches, because the flag does not require a health loss. The source's
+flag does not count unless that actor is the inflictor. `DMG_NO_PAIN`
+still blocks the flinch. A dead target does not enter pain. The flag is
+in the checksum and not in the pose. A same-actor restore keeps it.
+
+Phase 1 stays open. Crush, the rest of the actor states and roster,
+psprite sprites, and a native tick trace are still missing.
+
+## Audit: painless hits (2026-09-29)
+
+`MF5_NOPAIN` on the target and `MF5_PAINLESS` on the inflictor block the
+pain frame. A 50-point hit still drops health and stays in the spawn
+state. Forced pain does not override either flag. An inflictor that has
+both flags stays painless. A player with no-pain stays in spawn the same
+way. The source's painless flag does not count unless that actor is the
+inflictor. Wake-up and see states are absent, so these flags only gate
+the flinch. Both flags are in the checksum and not in the pose. A
+same-actor restore keeps them.
+
+Phase 1 stays open. Crush, the rest of the actor states and roster,
+psprite sprites, and a native tick trace are still missing.
+
+## Audit: generic ice freeze (2026-09-29)
+
+An Ice kill uses `GenericFreezeDeath` when that frame is registered and
+the actor has no Ice death of its own. The frame is not extreme, so a
+killing blow past the gib line stays on it instead of the gib frame. A
+typed Ice death, including an extreme one, still wins. `MF4_NOICEDEATH`
+blocks the fallback. A decoration does not freeze. A monster is an actor
+with a brain, and a player freezes without one. The name `ice` does not
+match. A non-killing Ice hit still enters pain. Dehacked autofreeze-off
+and ice-corpse shatter are absent. The state and the flag are in the
+checksum and not in the pose. A same-actor restore keeps them.
+
+Phase 1 stays open. Crush, the rest of the actor states and roster,
+psprite sprites, and a native tick trace are still missing.
+
 ## Implemented and audited in this pass
 
 ### Snapshot failure handling

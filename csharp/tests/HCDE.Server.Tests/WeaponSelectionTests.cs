@@ -29,13 +29,16 @@ public class WeaponSelectionTests
         Assert.True(sink.ApplyCommand(0, 0, 2, new UserCmd(1, 0, 0, 0, 0, 0, 0), Events(2)));
         Assert.Equal(WeaponKind.Pistol, player.Inventory.Selected);
         sim.Tick();
-        Assert.Equal(WeaponKind.Shotgun, player.Inventory.Selected);
-        Assert.Equal(4, player.Inventory.Shells);
-        Assert.Equal(35, player.WeaponCooldown);
+        Assert.Equal(WeaponKind.Pistol, player.Inventory.Selected);
+        Assert.Equal(WeaponKind.Shotgun, player.Inventory.Pending);
+        Assert.False(player.WeaponReady);
+        Assert.Equal(5, player.Inventory.Shells);
+        Assert.Equal(0, player.WeaponCooldown);
         sim.Tick();
         Assert.Equal(WeaponKind.Pistol, player.Inventory.Selected);
+        Assert.Equal(WeaponKind.Shotgun, player.Inventory.Pending);
         Assert.Equal(50, player.Inventory.Bullets);
-        Assert.Equal(34, player.WeaponCooldown);
+        Assert.Equal(0, player.WeaponCooldown);
     }
 
     [Fact]
@@ -50,16 +53,17 @@ public class WeaponSelectionTests
             Assert.True(sink.ApplyCommand(0, 0, 1, default, Events(slots)));
             sim.Tick();
         }
-        Select(3); Assert.Equal(WeaponKind.SuperShotgun, inventory.Selected);
-        Select(3); Assert.Equal(WeaponKind.Shotgun, inventory.Selected);
-        Select(3, 3); Assert.Equal(WeaponKind.Shotgun, inventory.Selected); // Preserve every event in a tic.
+        Select(3); Assert.Equal(WeaponKind.SuperShotgun, inventory.Pending);
+        Select(3); Assert.Equal(WeaponKind.Shotgun, inventory.Pending);
+        Select(3, 3); Assert.Equal(WeaponKind.Shotgun, inventory.Pending); // Preserve every event in a tic.
         inventory.Shells = 1;
-        Select(3); Assert.Equal(WeaponKind.Shotgun, inventory.Selected); // SSG needs two shells.
-        Select(12); Assert.Equal(WeaponKind.Fist, inventory.Selected); // Wrap past unowned weapons.
-        Select(12); Assert.Equal(WeaponKind.Chainsaw, inventory.Selected);
-        Select(11); Assert.Equal(WeaponKind.Fist, inventory.Selected);
-        Select(11); Assert.Equal(WeaponKind.Shotgun, inventory.Selected);
-        Select(0, 8, 9, 10, 255); Assert.Equal(WeaponKind.Shotgun, inventory.Selected);
+        Select(3); Assert.Equal(WeaponKind.Shotgun, inventory.Pending); // SSG needs two shells.
+        Select(12); Assert.Equal(WeaponKind.Fist, inventory.Pending); // Wrap past unowned weapons.
+        Select(12); Assert.Equal(WeaponKind.Chainsaw, inventory.Pending);
+        Select(11); Assert.Equal(WeaponKind.Fist, inventory.Pending);
+        Select(11); Assert.Equal(WeaponKind.Shotgun, inventory.Pending);
+        Select(0, 8, 9, 10, 255); Assert.Equal(WeaponKind.Shotgun, inventory.Pending);
+        Assert.Equal(WeaponKind.Pistol, inventory.Selected);
     }
 
     [Fact]
@@ -74,7 +78,8 @@ public class WeaponSelectionTests
         Assert.True(sink.ApplyCommand(0, 0, 1, default, events));
         events[^1] = 2;
         for (var i = 0; i < PlayerPawn.CommandQueueCapacity; i++) sim.Tick();
-        Assert.Equal(WeaponKind.Fist, player.Inventory.Selected);
+        Assert.Equal(WeaponKind.Pistol, player.Inventory.Selected);
+        Assert.Equal(WeaponKind.Fist, player.Inventory.Pending);
     }
 
     [Theory]
@@ -91,6 +96,29 @@ public class WeaponSelectionTests
         sim.Tick();
         Assert.Equal(0u, player.Angle.Raw);
         Assert.Equal(50, player.Inventory.Bullets);
+    }
+
+    [Fact]
+    public void Turn180ButtonReachesTheSimulation()
+    {
+        var sim = Room();
+        var player = sim.Players.Single();
+        Assert.True(new SimulationCommandSink(sim).ApplyCommand(0, 0, 1, new UserCmd(16, 0, 16384, 0, 0, 0, 0), Events()));
+        sim.Tick();
+        Assert.Equal(20, player.Angle.ToDegrees(), 3);
+        Assert.Equal(PlayerPawn.Turn180Ticks - 1, player.TurnTicks);
+    }
+
+    [Fact]
+    public void CrouchButtonReachesTheSimulation()
+    {
+        var sim = Room();
+        var player = sim.Players.Single();
+        var standing = player.Height.ToDouble();
+        Assert.True(new SimulationCommandSink(sim).ApplyCommand(0, 0, 1, new UserCmd(8, 0, 0, 0, 0, 0, 0), Events()));
+        sim.Tick();
+        Assert.True(player.Height.ToDouble() < standing);
+        Assert.Equal(PlayerPawn.StandingViewHeight * player.CrouchFactor, player.ViewHeight, 3);
     }
 
     [Fact]

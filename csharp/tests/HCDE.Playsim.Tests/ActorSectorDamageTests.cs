@@ -71,6 +71,28 @@ public class ActorSectorDamageTests
         Assert.Equal(original.Actors.Single().Health, changed.Actors.Single().Health);
     }
 
+    [Fact]
+    public void ADrowningSectorLeavesArmorAlone()
+    {
+        var drowning = Room(true, false, 10);
+        drowning.Level.Sectors[0].DamageType = "Drowning";
+        var player = drowning.Players.Single();
+        player.Inventory.Armor = 100;
+        player.Inventory.ArmorSavePercent = PlayerInventory.GreenSavePercent;
+        drowning.Tick();
+        Assert.Equal(90, player.Health);
+        Assert.Equal(100, player.Inventory.Armor);
+
+        var slime = Room(true, false, 10);
+        slime.Level.Sectors[0].DamageType = "Slime";
+        player = slime.Players.Single();
+        player.Inventory.Armor = 100;
+        player.Inventory.ArmorSavePercent = PlayerInventory.GreenSavePercent;
+        slime.Tick();
+        Assert.Equal(93, player.Health);
+        Assert.Equal(97, player.Inventory.Armor);
+    }
+
     private static AuthoritySimulation Room(bool player, bool sectorOptIn, int amount)
     {
         var sim = AuthoritySimulation.Start(new PlayLevel

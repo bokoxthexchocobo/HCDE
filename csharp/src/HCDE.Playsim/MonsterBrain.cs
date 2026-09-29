@@ -137,12 +137,12 @@ public sealed class MonsterBrain(MonsterAttack attack)
             if (!canAttack) WindupTics = 0;
             else if (--WindupTics == 0)
             {
-                if (melee) ActorDamage.Apply(target, 10, actor);
+                if (melee) ActorDamage.Apply(target, 10, actor, inflictor: actor);
                 else if (Attack == MonsterAttack.Fireball) sim.SpawnProjectile(actor, ProjectileKind.ImpBall, target);
                 else
                 {
                     var hit = CombatTrace.FindTarget(sim, actor, 1024, sim.NextCombatSpread() * 5.625);
-                    if (hit != null) ActorDamage.Apply(hit, 5, actor);
+                    if (hit != null) ActorDamage.Apply(hit, 5, actor, inflictor: actor);
                 }
                 AttackCooldown = 25;
                 Mode = MonsterMode.Recovery;
@@ -203,7 +203,7 @@ public sealed class MonsterBrain(MonsterAttack attack)
         if (_separateMelee || Attack == MonsterAttack.Melee || melee && profile.MeleeDice > 0)
         {
             if (melee && visible) ActorDamage.Apply(target,
-                (1 + (int)(sim.NextCombatRandom() % (uint)profile.MeleeDice)) * profile.MeleeMultiplier, actor);
+                (1 + (int)(sim.NextCombatRandom() % (uint)profile.MeleeDice)) * profile.MeleeMultiplier, actor, inflictor: actor);
             return;
         }
         if (profile.Projectile is { } kind)
@@ -224,7 +224,7 @@ public sealed class MonsterBrain(MonsterAttack attack)
             var spread = sim.NextCombatSpread() * (22.5 * 255 / 256);
             var damage = 3 * (1 + (int)(sim.NextCombatRandom() % 5));
             var hit = CombatTrace.FindTarget(sim, actor, 2048, spread, pitch);
-            if (hit != null) ActorDamage.Apply(hit, damage, actor);
+            if (hit != null) ActorDamage.Apply(hit, damage, actor, inflictor: actor);
         }
     }
 

@@ -69,6 +69,8 @@ public sealed class LevelLine
     public int Arg4 { get; init; }
     public bool PlayerCross { get; init; }
     public bool PlayerUse { get; init; }
+    /// <summary>Native SPAC_UseBack. A use trace may activate this line from its back side.</summary>
+    public bool PlayerUseBack { get; init; }
     public bool UseThrough { get; init; }
     public bool Repeat { get; init; }
 
@@ -109,6 +111,8 @@ public sealed class PlayLevel
         || Format == MapDataFormat.UdmfText && (Namespace.Equals("Doom", StringComparison.OrdinalIgnoreCase)
             || Namespace.Equals("ZDoomTranslated", StringComparison.OrdinalIgnoreCase));
     public ReadOnlyMemory<byte> BehaviorData { get; internal set; }
+    /// <summary>True when the map supplied a BEHAVIOR lump, including an empty or unsupported one.</summary>
+    public bool HasBehavior { get; internal set; }
     public IReadOnlyList<LevelVertex> Vertices { get; init; } = Array.Empty<LevelVertex>();
     public IReadOnlyList<LevelSector> Sectors { get; init; } = Array.Empty<LevelSector>();
     public IReadOnlyList<LevelSide> Sides { get; init; } = Array.Empty<LevelSide>();
@@ -124,7 +128,7 @@ public sealed class PlayLevel
     /// <summary>Copies runtime line and sector state while sharing other map data.</summary>
     public PlayLevel CopyForSimulation() => new()
     {
-        MapName = MapName, Format = Format, Namespace = Namespace, BehaviorData = BehaviorData,
+        MapName = MapName, Format = Format, Namespace = Namespace, BehaviorData = BehaviorData, HasBehavior = HasBehavior,
         Vertices = Vertices, Sectors = Sectors.Select(sector => sector.Copy()).ToArray(), Sides = Sides, Things = Things, Blockmap = Blockmap,
         Lines = Lines.Select(line => line.Copy()).ToList(),
     };
@@ -342,6 +346,7 @@ public static class LevelBuilder
                 Arg4 = source.Arg4,
                 PlayerCross = source.PlayerCross,
                 PlayerUse = source.PlayerUse,
+                PlayerUseBack = source.PlayerUseBack,
                 UseThrough = source.PassUse,
                 Repeat = source.RepeatSpecial,
             };

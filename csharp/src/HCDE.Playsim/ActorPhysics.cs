@@ -2,7 +2,19 @@ using HCDE.MapLoader;
 
 namespace HCDE.Playsim;
 
-/// <summary>Flat-sector cylinder physics. Slopes, portals and 3D floors are not implemented.</summary>
+/// <summary>
+/// Flat-sector cylinder physics. A monster is refused when the destination floor is
+/// strictly more than MaxDropOffHeight below the floor it is standing on. Players,
+/// projectiles, and floating actors may cross. A blocked player step moves up to the
+/// nearest wall and clips along it, then once more if a second wall blocks that slide
+/// (<c>FSlide::SlideMove</c> / <c>HitSlideLine</c>, the <c>MF2_SLIDE</c> path).
+/// Bounding-box corner traces, icy bounce, slopes, portals, and 3D floors are not implemented.
+/// A player already on the ground can step onto a solid non-player whose top is within
+/// MaxStepHeight, then stand there (<c>P_TryMove</c> thingblocker / <c>MF2_PASSMOBJ</c>).
+/// A grounded monster can do that only when the other actor has <c>MF4_ACTLIKEBRIDGE</c>.
+/// An <c>MF_ICECORPSE</c> actor also steps onto a corpse. Other actors walk through corpses.
+/// Crush is not applied.
+/// </summary>
 public static class ActorPhysics
 {
     public const double GroundFriction = 0xE800 / 65536.0;
@@ -55,8 +67,11 @@ public static class ActorPhysics
             var dy = vy / steps;
             if (!TryMove(sim, actor, x + dx, y + dy, out var wall))
             {
-                if (wall != null)
+                if (wall != null && actor is PlayerPawn)
+                    SlideFromBlock(sim, actor, ref vx, ref vy, steps, x, y, dx, dy);
+                else if (wall != null)
                 {
+                    // Monsters and missiles do not have MF2_SLIDE. Keep the single clip they already had.
                     var lx = wall.X2 - wall.X1;
                     var ly = wall.Y2 - wall.Y1;
                     var length = lx * lx + ly * ly;
@@ -72,11 +87,22 @@ public static class ActorPhysics
                 }
             }
         }
-        var floor = sim.FloorOf(actor.SectorIndex);
+        var floor = SupportFloor(sim, actor);
         var z = actor.Z.ToDouble();
         var vz = actor.VelocityZ.ToDouble();
+        if (actor.OnGround && z < floor && floor - z <= actor.MaxStepHeight.ToDouble())
+        {
+            z = floor;
+            if (vz < 0) vz = 0;
+        }
         if (!actor.NoGravity && (z > floor || vz != 0)) vz -= Gravity;
-        actor.Z = Fixed.FromDouble(z + vz);
+        z += vz;
+        if (z < floor)
+        {
+            z = floor;
+            if (vz < 0) vz = 0;
+        }
+        actor.Z = Fixed.FromDouble(z);
         actor.VelocityZ = Fixed.FromDouble(vz);
         FloatTowardTarget(sim, actor);
         FitToSector(sim, actor, carryFloor: false);
@@ -99,9 +125,52 @@ public static class ActorPhysics
             actor.Z = Fixed.FromDouble(actor.Z.ToDouble() + Math.Sign(delta) * actor.FloatSpeed);
     }
 
-    public static void FitToSector(AuthoritySimulation sim, Actor actor, bool carryFloor = true)
+    /// <summary>
+    /// Sector floor, or a solid actor's top when someone is standing on it or stepping onto it.
+    /// Players use any solid non-player. Monsters use <see cref="Actor.ActsLikeBridge"/> only.
+    /// An <see cref="Actor.IceCorpse"/> also uses a corpse top. The top has to be within
+    /// <see cref="Actor.MaxStepHeight"/> and leave headroom.
+    /// </summary>
+    private static double SupportFloor(AuthoritySimulation sim, Actor actor)
     {
         var floor = sim.FloorOf(actor.SectorIndex);
+        if (actor.Floating || actor is ProjectileActor) return floor;
+        var player = actor is PlayerPawn;
+        var x = actor.X.ToDouble();
+        var y = actor.Y.ToDouble();
+        var z = actor.Z.ToDouble();
+        var radius = actor.Radius.ToDouble();
+        var ceiling = actor.SectorIndex >= 0 ? sim.CeilingOf(actor.SectorIndex) : double.PositiveInfinity;
+        foreach (var other in sim.Actors)
+        {
+            if (ReferenceEquals(actor, other)) continue;
+            var corpse = actor.IceCorpse && IsCorpseObstacle(other);
+            if ((!other.BlocksActors && !corpse) || (other is PlayerPawn && !other.IsDead)) continue;
+            if (!player && !other.ActsLikeBridge && !corpse) continue;
+            var reach = radius + other.Radius.ToDouble();
+            var dx = x - other.X.ToDouble();
+            var dy = y - other.Y.ToDouble();
+            if (dx * dx + dy * dy >= reach * reach) continue;
+            var top = other.Z.ToDouble() + other.Height.ToDouble();
+            if (top + actor.Height.ToDouble() > ceiling) continue;
+            var rise = top - z;
+            if (rise > actor.MaxStepHeight.ToDouble()) continue;
+            if (top <= z + 1e-4 || actor.OnGround)
+                floor = Math.Max(floor, top);
+        }
+        return floor;
+    }
+
+    /// <summary>A dead solid actor. Living movers ignore it. <see cref="Actor.IceCorpse"/> does not.</summary>
+    private static bool IsCorpseObstacle(Actor other) =>
+        other.IsDead && !other.Destroyed && other.Solid
+        && other.DoomEdNum != LineSpecials.TeleportDestType
+        && other.DoomEdNum != InvasionDirector.SpawnSpotType
+        && !PickupCatalog.IsPickup(other.DoomEdNum);
+
+    public static void FitToSector(AuthoritySimulation sim, Actor actor, bool carryFloor = true)
+    {
+        var floor = SupportFloor(sim, actor);
         var ceiling = actor.SectorIndex < 0 ? double.PositiveInfinity : sim.CeilingOf(actor.SectorIndex);
         var z = actor.Z.ToDouble();
         if (carryFloor && actor.OnGround) z = floor;
@@ -146,7 +215,7 @@ public static class ActorPhysics
                 actor.Z = previousZ;
                 actor.Brain!.StopCharge(actor);
                 if (victim?.CanTakeDamage == true)
-                    ActorDamage.Apply(victim, 3 * (1 + (int)(sim.NextCombatRandom() % 8)), actor);
+                    ActorDamage.Apply(victim, 3 * (1 + (int)(sim.NextCombatRandom() % 8)), actor, inflictor: actor);
                 return;
             }
             actor.OnGround = actor.Z.ToDouble() <= sim.FloorOf(actor.SectorIndex);
@@ -155,6 +224,122 @@ public static class ActorPhysics
 
     internal static bool TryMove(AuthoritySimulation sim, Actor actor, double x, double y, out LevelLine? wall) =>
         TryMove(sim, actor, x, y, out wall, out _);
+
+    /// <summary>PlayerPawn.CrouchMove fit test. The actor keeps its current height.</summary>
+    internal static bool FitsAtHeight(AuthoritySimulation sim, Actor actor, double height)
+    {
+        var saved = actor.Height;
+        actor.Height = Fixed.FromDouble(height);
+        var fits = TryMove(sim, actor, actor.X.ToDouble(), actor.Y.ToDouble(), out _, out _);
+        actor.Height = saved;
+        return fits;
+    }
+
+    /// <summary>
+    /// Two attempts of <c>FSlide::SlideMove</c>. The line reached first along this step is
+    /// the slide wall, not the first blocking line in the map. <c>HitSlideLine</c> then
+    /// drops the into-wall part of the velocity. A second wall gets one more clip.
+    /// The trace is the actor center, not the three bounding-box corners, and ice does not bounce.
+    /// </summary>
+    private static void SlideFromBlock(
+        AuthoritySimulation sim, Actor actor, ref double vx, ref double vy,
+        int steps, double x, double y, double dx, double dy)
+    {
+        for (var attempt = 0; attempt < 2; attempt++)
+        {
+            var radius = Math.Max(0, actor.Radius.ToDouble());
+            var line = NearestApproachingLine(sim, actor, x, y, dx, dy, radius);
+            if (line == null)
+            {
+                StairStep(sim, actor, ref vx, ref vy, x, y, dx, dy);
+                return;
+            }
+
+            var frac = ContactFraction(x, y, dx, dy, line, radius);
+            if (frac > 0)
+            {
+                if (!TryMove(sim, actor, x + dx * frac, y + dy * frac, out _))
+                {
+                    var fudge = frac - (1.0 / 32);
+                    if (fudge > 0)
+                        TryMove(sim, actor, x + dx * fudge, y + dy * fudge, out _);
+                }
+            }
+
+            ClipToLine(line, ref vx, ref vy);
+            var remain = Math.Clamp(1 - frac, 0, 1);
+            dx = vx / steps * remain;
+            dy = vy / steps * remain;
+            x = actor.X.ToDouble();
+            y = actor.Y.ToDouble();
+            if (Math.Abs(dx) < 1e-9 && Math.Abs(dy) < 1e-9)
+                return;
+            if (TryMove(sim, actor, x + dx, y + dy, out _))
+                return;
+        }
+
+        StairStep(sim, actor, ref vx, ref vy, actor.X.ToDouble(), actor.Y.ToDouble(), dx, dy);
+    }
+
+    private static void StairStep(
+        AuthoritySimulation sim, Actor actor, ref double vx, ref double vy,
+        double x, double y, double dx, double dy)
+    {
+        // FSlide::SlideMove stairstep after the slide retries: Y, then X.
+        if (!TryMove(sim, actor, x, y + dy, out _)) vy = 0;
+        if (!TryMove(sim, actor, actor.X.ToDouble() + dx, actor.Y.ToDouble(), out _)) vx = 0;
+    }
+
+    private static LevelLine? NearestApproachingLine(
+        AuthoritySimulation sim, Actor actor, double x, double y, double dx, double dy, double radius)
+    {
+        LevelLine? best = null;
+        var bestFrac = 1.0;
+        foreach (var line in sim.Level.Lines)
+        {
+            if (!Blocks(sim, actor, line)) continue;
+            var frac = ContactFraction(x, y, dx, dy, line, radius);
+            if (frac < bestFrac)
+            {
+                bestFrac = frac;
+                best = line;
+            }
+        }
+        return best;
+    }
+
+    private static double ContactFraction(double x, double y, double dx, double dy, LevelLine line, double radius)
+    {
+        var limit = radius * radius - 1e-8;
+        double At(double t) => DistanceSquared(x + dx * t, y + dy * t, line.X1, line.Y1, line.X2, line.Y2);
+        var start = At(0);
+        if (start < limit)
+            return At(1) < start - 1e-8 ? 0 : 1;
+        if (At(1) >= limit)
+            return 1;
+        var lo = 0.0;
+        var hi = 1.0;
+        for (var i = 0; i < 16; i++)
+        {
+            var mid = (lo + hi) / 2;
+            if (At(mid) >= limit) lo = mid;
+            else hi = mid;
+        }
+        return hi;
+    }
+
+    private static void ClipToLine(LevelLine line, ref double vx, ref double vy)
+    {
+        var lx = line.X2 - line.X1;
+        var ly = line.Y2 - line.Y1;
+        if (lx == 0) { vx = 0; return; }
+        if (ly == 0) { vy = 0; return; }
+        var length = lx * lx + ly * ly;
+        if (length <= 0) { vx = vy = 0; return; }
+        var scale = (vx * lx + vy * ly) / length;
+        vx = lx * scale;
+        vy = ly * scale;
+    }
 
     internal static bool CanOccupy(AuthoritySimulation sim, Actor actor)
     {
@@ -190,6 +375,14 @@ public static class ActorPhysics
                 || LineSlide.Crosses(ox, oy, x, y, line)) { wall = line; return false; }
         }
         var sector = SectorAt(sim.Level, x, y);
+        // P_TryMove refuses floorz - dropoffz > MaxDropOffHeight unless MF_DROPOFF, MF_FLOAT, or MF_MISSILE.
+        // Flat maps use the current floor against the destination floor. A drop of exactly the limit is allowed.
+        if (sector >= 0 && actor.SectorIndex >= 0 && !actor.AllowDropOff && !actor.Floating)
+        {
+            var drop = sim.FloorOf(actor.SectorIndex) - sim.FloorOf(sector);
+            if (drop > actor.MaxDropOffHeight.ToDouble())
+                return false;
+        }
         var z = actor.Brain?.Charging == true ? actor.Z.ToDouble() : Math.Max(actor.Z.ToDouble(), sim.FloorOf(sector));
         if (sector >= 0 && (z < sim.FloorOf(sector) || z - actor.Z.ToDouble() > actor.MaxStepHeight.ToDouble()
             || z + actor.Height.ToDouble() > sim.CeilingOf(sector))) return false;
@@ -197,7 +390,8 @@ public static class ActorPhysics
         {
             foreach (var other in sim.Actors)
             {
-                if (ReferenceEquals(actor, other) || !other.BlocksActors
+                var corpse = actor.IceCorpse && IsCorpseObstacle(other);
+                if (ReferenceEquals(actor, other) || (!other.BlocksActors && !corpse)
                     || z >= other.Z.ToDouble() + other.Height.ToDouble()
                     || z + actor.Height.ToDouble() <= other.Z.ToDouble()) continue;
                 var reach = radius + other.Radius.ToDouble();
@@ -205,9 +399,24 @@ public static class ActorPhysics
                 var cy = other.Y.ToDouble();
                 var before = (ox - cx) * (ox - cx) + (oy - cy) * (oy - cy);
                 var after = (x - cx) * (x - cx) + (y - cy) * (y - cy);
-                if (actor.Brain?.Charging == true && after < reach * reach - 1e-8
+                if (!(actor.Brain?.Charging == true && after < reach * reach - 1e-8
                     || DistanceSquared(cx, cy, ox, oy, x, y) < reach * reach - 1e-8
-                    && (before >= reach * reach || after < before - 1e-8)) { blocker = other; return false; }
+                    && (before >= reach * reach || after < before - 1e-8)))
+                    continue;
+                // P_TryMove lets a grounded player onto a non-player when the top is a legal step
+                // and the head still fits. PIT_CheckThing lets a grounded monster onto MF4_ACTLIKEBRIDGE.
+                // P_TestMobjZ lets MF_ICECORPSE land on a corpse.
+                var top = other.Z.ToDouble() + other.Height.ToDouble();
+                var ceiling = sector >= 0 ? sim.CeilingOf(sector) : double.PositiveInfinity;
+                var rise = top - actor.Z.ToDouble();
+                var playerStep = actor is PlayerPawn && other is not PlayerPawn && !corpse;
+                var bridgeStep = actor is not PlayerPawn && actor is not ProjectileActor && other.ActsLikeBridge;
+                if (actor.OnGround && !actor.Floating && (playerStep || bridgeStep || corpse)
+                    && rise > 0 && rise <= actor.MaxStepHeight.ToDouble()
+                    && top + actor.Height.ToDouble() <= ceiling)
+                    continue;
+                blocker = other;
+                return false;
             }
         }
         actor.X = Fixed.FromDouble(x);

@@ -25,6 +25,9 @@ public enum AmmoKind
 /// <summary>
 /// Doom pistol-start inventory. Bullets begin at 50. Fist and pistol are already owned.
 /// </summary>
+/// <summary>One stored <c>BasicArmorPickup</c>. The worn suit is separate.</summary>
+public readonly record struct SpareArmor(int SaveAmount, int SavePercent, int MaxAbsorb, int MaxFullAbsorb);
+
 public sealed class PlayerInventory
 {
     public const int MaxHealthBonus = 200;
@@ -35,6 +38,15 @@ public sealed class PlayerInventory
 
     public int Armor { get; set; }
     public int ArmorSavePercent { get; set; }
+    /// <summary>BasicArmor total save cap. 0 means no cap.</summary>
+    public int MaxAbsorb { get; set; }
+    /// <summary>BasicArmor amount saved at 100% before the percent applies.</summary>
+    public int MaxFullAbsorb { get; set; }
+    /// <summary>Saved so far. A new suit does not clear it.</summary>
+    public int AbsorbCount { get; set; }
+    private readonly List<SpareArmor> _spareArmor = new();
+    /// <summary>BasicArmorPickup items kept because the worn suit was at least as strong.</summary>
+    public IReadOnlyList<SpareArmor> SpareArmor => _spareArmor;
     public int Bullets { get; set; } = 50;
     public int Shells { get; set; }
     public int Rockets { get; set; }
@@ -43,13 +55,198 @@ public sealed class PlayerInventory
     public int MaxShells { get; set; } = 50;
     public int MaxRockets { get; set; } = 50;
     public int MaxCells { get; set; } = 300;
+    /// <summary>Set by the first backpack. Later backpacks only add ammo.</summary>
+    public bool HasBackpack { get; set; }
     public bool RedKey { get; set; }
     public bool BlueKey { get; set; }
     public bool YellowKey { get; set; }
     public WeaponKind Weapons { get; set; } = WeaponKind.Fist | WeaponKind.Pistol;
     public WeaponKind Selected { get; set; } = WeaponKind.Pistol;
+    /// <summary>Native <c>PendingWeapon</c>. Null is <c>WP_NOCHANGE</c>. The ready weapon stays <see cref="Selected"/> until the lower finishes.</summary>
+    public WeaponKind? Pending { get; set; }
+
+    /// <summary>Deathmatch pistol start. Cooperative respawn uses <see cref="FilterCoopRespawn"/>.</summary>
+    public void ResetToPistolStart()
+    {
+        Armor = 0;
+        ArmorSavePercent = 0;
+        MaxAbsorb = 0;
+        MaxFullAbsorb = 0;
+        AbsorbCount = 0;
+        _spareArmor.Clear();
+        Bullets = 50;
+        Shells = 0;
+        Rockets = 0;
+        Cells = 0;
+        MaxBullets = 200;
+        MaxShells = 50;
+        MaxRockets = 50;
+        MaxCells = 300;
+        HasBackpack = false;
+        RedKey = false;
+        BlueKey = false;
+        YellowKey = false;
+        Weapons = WeaponKind.Fist | WeaponKind.Pistol;
+        Selected = WeaponKind.Pistol;
+        Pending = null;
+    }
+
+    /// <summary>
+    /// Keeps a <c>BasicArmorPickup</c> whose max amount is above 0. A worn amount
+    /// below the save amount uses it now. Otherwise it stays, and the highest save
+    /// percent is used when the worn suit reaches 0. Doom green and mega do not
+    /// come through here.
+    /// </summary>
+    public bool TryKeepArmorPickup(int saveAmount, int savePercent, int maxAbsorb = 0, int maxFullAbsorb = 0)
+    {
+        if (saveAmount <= 0) return false;
+        savePercent = Math.Clamp(savePercent, 0, 100);
+        if (Armor < saveAmount)
+        {
+            Armor = saveAmount;
+            ArmorSavePercent = savePercent;
+            MaxAbsorb = maxAbsorb;
+            MaxFullAbsorb = maxFullAbsorb;
+            return true;
+        }
+        _spareArmor.Add(new SpareArmor(saveAmount, savePercent, maxAbsorb, maxFullAbsorb));
+        return true;
+    }
+
+    /// <summary>
+    /// <c>BasicArmor.AbsorbDamage</c> when the amount reaches 0. The percent is
+    /// cleared, then the spare with the highest save percent is used. An equal
+    /// percent keeps the earlier spare. <see cref="AbsorbCount"/> stays.
+    /// </summary>
+    internal void PromoteSpareArmor()
+    {
+        if (Armor != 0) return;
+        ArmorSavePercent = 0;
+        if (_spareArmor.Count == 0) return;
+        var best = 0;
+        for (var i = 1; i < _spareArmor.Count; i++)
+            if (_spareArmor[i].SavePercent > _spareArmor[best].SavePercent)
+                best = i;
+        var spare = _spareArmor[best];
+        _spareArmor.RemoveAt(best);
+        Armor = spare.SaveAmount;
+        ArmorSavePercent = spare.SavePercent;
+        MaxAbsorb = spare.MaxAbsorb;
+        MaxFullAbsorb = spare.MaxFullAbsorb;
+    }
+
+    /// <summary>
+    /// <c>FilterCoopRespawnInventory</c> for this pistol-start inventory.
+    /// Every flag defaults off, which keeps the pack. Lose-everything is a pistol start.
+    /// Bullets are the only default ammo, at 50. Other pools have no default item, so
+    /// lose-ammo zeroes them and halve-ammo divides them when the amount is above 1.
+    /// A backpack stays unless everything is lost. PowerBuddha is cleared with a pistol
+    /// start. Spare armor is cleared with the worn suit. Lose-keys is skipped by the
+    /// caller when keys are shared. Losing everything still clears keys. Puzzle items
+    /// are absent.
+    /// </summary>
+    public void FilterCoopRespawn(bool loseInventory, bool loseKeys, bool loseWeapons, bool loseArmor, bool loseAmmo, bool halveAmmo)
+    {
+        if (loseInventory)
+        {
+            ResetToPistolStart();
+            return;
+        }
+
+        if (loseKeys)
+        {
+            RedKey = false;
+            BlueKey = false;
+            YellowKey = false;
+        }
+        if (loseWeapons)
+            Weapons = WeaponKind.Fist | WeaponKind.Pistol;
+        if (loseArmor)
+        {
+            Armor = 0;
+            ArmorSavePercent = 0;
+            MaxAbsorb = 0;
+            MaxFullAbsorb = 0;
+            AbsorbCount = 0;
+            _spareArmor.Clear();
+        }
+        if (loseAmmo)
+        {
+            Bullets = 50;
+            Shells = 0;
+            Rockets = 0;
+            Cells = 0;
+        }
+        else if (halveAmmo)
+        {
+            Bullets = HalveAmmo(Bullets, 50);
+            Shells = HalveAmmo(Shells, 0);
+            Rockets = HalveAmmo(Rockets, 0);
+            Cells = HalveAmmo(Cells, 0);
+        }
+
+        if ((loseWeapons || loseAmmo || halveAmmo) && !CanSelect(Selected))
+            Selected = CanSelect(WeaponKind.Pistol) ? WeaponKind.Pistol : WeaponKind.Fist;
+    }
+
+    private static int HalveAmmo(int amount, int starting)
+    {
+        if (amount <= 1)
+            return amount;
+        var halved = amount / 2;
+        return starting > 0 ? Math.Max(halved, starting) : halved;
+    }
 
     public bool Owns(WeaponKind weapon) => (Weapons & weapon) != 0;
+
+    /// <summary>
+    /// Doom backpack. The first one lifts the caps to 400/100/100/600 and gives
+    /// 10 bullets, 4 shells, 1 rocket, and 20 cells. Another one only gives ammo.
+    /// The pickup is taken even when every pool is already full.
+    /// A depleted first pack lifts the caps and gives nothing. A depleted pack
+    /// still gives ammo when the player already has one.
+    /// Amounts are already scaled by the caller.
+    /// </summary>
+    public bool GiveBackpack(int bullets = 10, int shells = 4, int rockets = 1, int cells = 20, bool depleted = false)
+    {
+        var first = !HasBackpack;
+        if (first)
+        {
+            HasBackpack = true;
+            MaxBullets = 400;
+            MaxShells = 100;
+            MaxRockets = 100;
+            MaxCells = 600;
+        }
+        if (!(depleted && first))
+        {
+            TryAddAmmo(AmmoKind.Bullets, bullets);
+            TryAddAmmo(AmmoKind.Shells, shells);
+            TryAddAmmo(AmmoKind.Rockets, rockets);
+            TryAddAmmo(AmmoKind.Cells, cells);
+        }
+        return true;
+    }
+
+    /// <summary>
+    /// <c>DetachFromOwner</c> for the one backpack. Caps return to the pistol start.
+    /// Ammo above those caps is cut. Ammo under them stays.
+    /// </summary>
+    public bool RemoveBackpack()
+    {
+        if (!HasBackpack)
+            return false;
+        HasBackpack = false;
+        MaxBullets = 200;
+        MaxShells = 50;
+        MaxRockets = 50;
+        MaxCells = 300;
+        Bullets = Math.Min(Bullets, MaxBullets);
+        Shells = Math.Min(Shells, MaxShells);
+        Rockets = Math.Min(Rockets, MaxRockets);
+        Cells = Math.Min(Cells, MaxCells);
+        return true;
+    }
 
     // Default Doom slots from doomplayer.zs. Custom class/slot tables are not loaded yet.
     private static readonly WeaponKind[][] Slots = [[], [WeaponKind.Fist, WeaponKind.Chainsaw],
@@ -59,28 +256,40 @@ public sealed class PlayerInventory
 
     public void SelectSlot(byte slot)
     {
+        // Weapon.Use sets PendingWeapon when the pick is not the ready weapon.
+        // A press of the ready weapon leaves an existing pending switch alone.
+        var choice = ChooseSlot(slot, Pending ?? Selected);
+        if (choice is not { } weapon || weapon == Selected)
+            return;
+        Pending = weapon;
+    }
+
+    private WeaponKind? ChooseSlot(byte slot, WeaponKind recent)
+    {
         // WST_NONE=10, WST_PREV=11, WST_NEXT=12 in g_game.h.
+        // A switch in progress cycles from the pending weapon.
         if (slot is 11 or 12)
         {
-            var current = Array.IndexOf(Cycle, Selected);
-            if (current < 0) return;
+            var current = Array.IndexOf(Cycle, recent);
+            if (current < 0) return null;
             var direction = slot == 12 ? 1 : -1;
             for (var step = 1; step <= Cycle.Length; step++)
             {
                 var weapon = Cycle[(current + step * direction + Cycle.Length) % Cycle.Length];
-                if (CanSelect(weapon)) { Selected = weapon; return; }
+                if (CanSelect(weapon)) return weapon;
             }
-            return;
+            return null;
         }
-        if (slot >= Slots.Length) return;
+        if (slot >= Slots.Length) return null;
         var weapons = Slots[slot];
-        var index = Array.IndexOf(weapons, Selected);
+        var index = Array.IndexOf(weapons, recent);
         // Repeated presses cycle backwards in the slot; entry prefers its last weapon.
         for (var step = 1; step <= weapons.Length; step++)
         {
             var weapon = weapons[((index < 0 ? 0 : index) - step + weapons.Length) % weapons.Length];
-            if (CanSelect(weapon)) { Selected = weapon; return; }
+            if (CanSelect(weapon)) return weapon;
         }
+        return null;
     }
 
     private bool CanSelect(WeaponKind weapon)
