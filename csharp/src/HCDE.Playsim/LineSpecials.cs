@@ -64,6 +64,8 @@ public static class LineSpecials
     public const int Lift = 62;
     public const int Teleport = 70;
     public const int AcsExecute = 80;
+    public const int ScrollFloor = 223;
+    public const int ScrollCeiling = 224;
     public const int FloorStep = 8;
     public const int TeleportDestType = 14;
     private const int DoorSpeed = 8;
@@ -196,7 +198,7 @@ public static class LineSpecials
                 110 or 111 or 112 or 113 or 114 or 115 or 116 or 117 or 232 or 233 or 234 =>
                     LightActions.ExecuteSpecial(sim, line.Special, line.Arg0, line.Arg1, line.Arg2, line.Arg3, line.Arg4) == true,
                 10 or 11 or 12 or 249 => ExecuteDoorSpecial(sim, line.Special, line.Arg0, line.Arg1, line.Arg2, line.Arg3, line) == true,
-                20 or 21 or 22 or 23 or 24 or 25 or 28 or 35 or 36 or 37 or 46 or 62 or 66 or 67 or 68 or 99 or 238 or 239 or 242 or 256 or 257 or 258 or 259 or 260 or 275 or 279 => ExecuteFloorSpecial(sim, line.Special,
+                20 or 21 or 22 or 23 or 24 or 25 or 28 or 35 or 36 or 37 or 46 or 62 or 66 or 67 or 68 or 99 or 238 or 239 or 242 or 256 or 257 or 258 or 259 or 260 or 275 or 279 or ScrollFloor or ScrollCeiling => ExecuteFloorSpecial(sim, line.Special,
                     line.Arg0, line.Arg1, line.Arg2, line.Arg3, line.Arg4, line) == true,
                 70 => TeleportActivator(sim, actor, line.Arg0, byThingId: true),
                 80 or 81 or 82 or 226 => ExecuteScriptControl(sim, line.Special, line.Arg0, line.Arg1, line.Arg2, line.Arg3, line.Arg4, actor, line, backSide ?? IsBackSide(line, actor.X.ToDouble(), actor.Y.ToDouble())) == true,
@@ -258,8 +260,10 @@ public static class LineSpecials
     internal static bool? ExecuteFloorSpecial(AuthoritySimulation sim, int special, int tag, int speed, int arg2,
         int arg3, int arg4, LevelLine? line = null)
     {
-        if (special is not (20 or 21 or 22 or 23 or 24 or 25 or 28 or 35 or 36 or 37 or 46 or 62 or 66 or 67 or 68 or 99 or 238 or 239 or 242 or 256 or 257 or 258 or 259 or 260 or 275 or 279)) return null;
+        if (special is not (20 or 21 or 22 or 23 or 24 or 25 or 28 or 35 or 36 or 37 or 46 or 62 or 66 or 67 or 68 or 99 or 238 or 239 or 242 or 256 or 257 or 258 or 259 or 260 or 275 or 279 or ScrollFloor or ScrollCeiling)) return null;
         if (tag == 0 && line is null) return false;
+        if (special is ScrollFloor or ScrollCeiling)
+            return ScrollActions.ExecuteSpecial(sim, special, tag, speed, arg2, arg3, line);
         if (special == 239)
         {
             LevelSector? model = null;
@@ -552,7 +556,15 @@ public static class LineSpecials
                     if (motion.CrushDamage > 0 || motion.CrushWithoutDamage)
                     {
                         if ((sim.Thinkers.Clock.Tic & 3) == 0)
-                            foreach (var actor in blocked) ActorDamage.Apply(actor, motion.CrushDamage);
+                        {
+                            var tic = sim.Thinkers.Clock.Tic;
+                            foreach (var actor in blocked)
+                            {
+                                actor.MarkMoverCrush(tic);
+                                ActorDamage.Apply(actor, motion.CrushDamage);
+                                ActorPhysics.CrushStandingRiders(sim, actor, motion.CrushDamage, tic);
+                            }
+                        }
                         if (motion.StopOnCrush)
                         {
                             if (!reachedDestination) continue;

@@ -184,6 +184,26 @@ public class AcsMapBehaviorTests
     }
 
     [Fact]
+    public void ThingCountName_UsesBehaviorStringTableFromOldLump()
+    {
+        var words = new List<int>
+        {
+            (int)AcsPcode.PushNumber, 0,
+            (int)AcsPcode.PushNumber, 0,
+            (int)AcsPcode.ThingCountName,
+            (int)AcsPcode.PushNumber, 1,
+            (int)AcsPcode.Eq,
+            (int)AcsPcode.IfGoto, 24,
+        };
+        words.AddRange(LightTo(35));
+        words.Add((int)AcsPcode.Terminate);
+        var things = PlayerStart(1).Concat(ImpThing(96)).ToArray();
+        var wad = HexenMap(OldBehaviorWithStrings((1, AcsBehaviorBinder.ScriptOpen, 0, words.ToArray()), ["DoomImp"]), things);
+        Assert.True(HeadlessMapBoot.TryBoot(wad, "MAP01", out var sim, out var error), error);
+        Assert.Equal(35, sim!.LightOf(0));
+    }
+
+    [Fact]
     public void BindingRefusesAVmThatAlreadyHasPrograms()
     {
         var vm = new AcsVm();
@@ -204,6 +224,49 @@ public class AcsMapBehaviorTests
     private static byte[] Redesigned(byte[] lump)
     {
         BinaryPrimitives.WriteUInt32LittleEndian(lump.AsSpan(20), 0x45534341);
+        return lump;
+    }
+
+    private static byte[] OldBehaviorWithStrings(
+        (int Number, int Type, int ArgCount, int[] Words) script,
+        string[] stringTable)
+    {
+        const int directory = 24;
+        var code = new List<byte>();
+        foreach (var word in script.Words)
+        {
+            var bytes = new byte[4];
+            BinaryPrimitives.WriteInt32LittleEndian(bytes, word);
+            code.AddRange(bytes);
+        }
+
+        var stringTableStart = directory + 4 + 12;
+        var stringDataStart = stringTableStart + 4 + stringTable.Length * 4;
+        var blob = new List<byte>();
+        foreach (var entry in stringTable)
+            blob.AddRange(Encoding.ASCII.GetBytes(entry + "\0"));
+        var codeStart = stringDataStart + blob.Count;
+        var lump = new byte[codeStart + code.Count];
+        lump[0] = (byte)'A';
+        lump[1] = (byte)'C';
+        lump[2] = (byte)'S';
+        BinaryPrimitives.WriteUInt32LittleEndian(lump.AsSpan(4), directory);
+        BinaryPrimitives.WriteInt32LittleEndian(lump.AsSpan(directory), 1);
+        BinaryPrimitives.WriteInt32LittleEndian(lump.AsSpan(directory + 4), script.Number + script.Type * 1000);
+        BinaryPrimitives.WriteUInt32LittleEndian(lump.AsSpan(directory + 8), (uint)codeStart);
+        BinaryPrimitives.WriteInt32LittleEndian(lump.AsSpan(directory + 12), script.ArgCount);
+        BinaryPrimitives.WriteInt32LittleEndian(lump.AsSpan(stringTableStart), stringTable.Length);
+        var cursor = stringTableStart + 4;
+        var offset = stringDataStart;
+        for (var i = 0; i < stringTable.Length; i++)
+        {
+            BinaryPrimitives.WriteInt32LittleEndian(lump.AsSpan(cursor), offset);
+            cursor += 4;
+            offset += Encoding.ASCII.GetByteCount(stringTable[i]) + 1;
+        }
+
+        blob.CopyTo(lump.AsSpan(stringDataStart));
+        code.CopyTo(lump.AsSpan(codeStart));
         return lump;
     }
 
@@ -240,6 +303,14 @@ public class AcsMapBehaviorTests
 
         code.CopyTo(lump.AsSpan(cursor));
         return lump;
+    }
+
+    private static byte[] ImpThing(short x)
+    {
+        var thing = new byte[20];
+        BinaryPrimitives.WriteInt16LittleEndian(thing.AsSpan(2), x);
+        BinaryPrimitives.WriteUInt16LittleEndian(thing.AsSpan(10), 3001);
+        return thing;
     }
 
     private static byte[] PlayerStart(int type, short x = 0, ushort flags = 0x100)

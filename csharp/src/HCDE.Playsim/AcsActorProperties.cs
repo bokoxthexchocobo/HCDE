@@ -1,0 +1,100 @@
+namespace HCDE.Playsim;
+
+/// <summary>Native <c>APROP_*</c> subset for ACS get/set actor property.</summary>
+internal static class AcsActorProperties
+{
+    public const int Health = 0;
+    public const int Ambush = 10;
+    public const int Invulnerable = 11;
+    public const int Friendly = 16;
+    public const int SpawnHealth = 17;
+    public const int NoTarget = 19;
+    public const int TargetTid = 26;
+    public const int Mass = 32;
+    public const int MaxStepHeight = 44;
+    public const int MaxDropOffHeight = 45;
+
+    public static void Set(AuthoritySimulation sim, Actor? activator, int tid, int property, int value)
+    {
+        if (tid == 0)
+        {
+            ApplySet(activator, property, value);
+            return;
+        }
+
+        foreach (var actor in AcsActorTid.AllFromTid(sim, tid))
+            ApplySet(actor, property, value);
+    }
+
+    public static int Get(AuthoritySimulation sim, Actor? activator, int tid, int property)
+    {
+        var actor = tid == 0 ? activator : AcsActorTid.SingleFromTid(sim, tid);
+        return actor is null || actor.Destroyed ? 0 : Read(actor, property);
+    }
+
+    private static void ApplySet(Actor? actor, int property, int value)
+    {
+        if (actor is null || actor.Destroyed)
+            return;
+
+        switch (property)
+        {
+            case Health:
+                if (actor.Health <= 0)
+                    return;
+                actor.Health = value;
+                break;
+            case Ambush:
+                actor.Ambush = value != 0;
+                break;
+            case Invulnerable:
+                actor.Invulnerable = value != 0;
+                break;
+            case Friendly:
+                actor.Friendly = value != 0;
+                break;
+            case NoTarget:
+                actor.NoTarget = value != 0;
+                break;
+            case SpawnHealth:
+                actor.ResurrectionHealth = value;
+                break;
+            case Mass:
+                actor.Mass = value;
+                break;
+            case MaxStepHeight:
+                actor.MaxStepHeight = Fixed.FromDouble(value / 65536.0);
+                break;
+            case MaxDropOffHeight:
+                actor.MaxDropOffHeight = Fixed.FromDouble(value / 65536.0);
+                break;
+            case TargetTid:
+                if (actor.Brain is MonsterBrain brain && actor.Simulation is { } sim)
+                    brain.SetTargetThingId(sim, value);
+                break;
+        }
+    }
+
+    private static int Read(Actor actor, int property) => property switch
+    {
+        Health => actor.Health,
+        Ambush => actor.Ambush ? 1 : 0,
+        Invulnerable => actor.Invulnerable ? 1 : 0,
+        Friendly => actor.Friendly ? 1 : 0,
+        NoTarget => actor.NoTarget ? 1 : 0,
+        SpawnHealth => actor.ResurrectionHealth,
+        Mass => actor.Mass,
+        MaxStepHeight => actor.MaxStepHeight.Raw,
+        MaxDropOffHeight => actor.MaxDropOffHeight.Raw,
+        TargetTid => TargetThingId(actor),
+        _ => 0,
+    };
+
+    private static int TargetThingId(Actor actor)
+    {
+        if (actor.Brain is not MonsterBrain brain || brain.TargetId is not { } targetId)
+            return 0;
+        var target = actor.Simulation?.Actors.FirstOrDefault(candidate => candidate.Id == targetId && !candidate.Destroyed);
+        return target?.ThingId ?? 0;
+    }
+}

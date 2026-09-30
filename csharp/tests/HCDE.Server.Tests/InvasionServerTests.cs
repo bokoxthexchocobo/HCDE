@@ -161,9 +161,10 @@ public class InvasionServerTests
             var before = enemy.Health;
             Assert.True(input.TrySendClientInput(endpoint, 0, ++inputTic, 1, new UserCmd(1, 0, 0, 0, 0, 0, 0)));
             TickAndReceive();
-            Assert.InRange(before - enemy.Health, Math.Min(before, 5), Math.Min(before, 15));
+            // Doom pistol damage is 5, 10, or 15; overkill still counts the full roll.
+            Assert.InRange(before - enemy.Health, Math.Min(before, 5), 15);
             Assert.Equal(0, (before - enemy.Health) % 5);
-            Assert.Equal(enemy.Health, world.Actors[enemy.Id].Health);
+            Assert.Equal(Math.Max(0, enemy.Health), world.Actors[enemy.Id].Health);
         }
         Assert.True(enemy.IsDead);
         Assert.Equal(50 - (int)inputTic, host.Simulation.Players.Single().Inventory.Bullets);

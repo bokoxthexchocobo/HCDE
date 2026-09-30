@@ -27,6 +27,18 @@ public class Actor : Thinker
     public uint Id { get; init; }
     public int DoomEdNum { get; init; }
     public int ThingId { get; init; }
+    /// <summary>Native <c>AActor::IsMapActor</c>. Owned inventory items are excluded from ACS thing counts.</summary>
+    internal virtual bool IsMapActor => true;
+    /// <summary>Native <c>TIDtoHate</c>. Teammates share this value; a shooter may hurt or wake actors whose <see cref="ThingId"/> matches.</summary>
+    public int TidToHate { get; set; }
+    /// <summary>Native <c>MF3_NOTARGET</c>. Wake-up ignores this actor unless <see cref="TidToHate"/> matches its <see cref="ThingId"/> or it is hostile.</summary>
+    public bool NoTarget { get; set; }
+    /// <summary>Native <c>MF2_ONMOBJ</c>. The actor is standing on another solid actor's top.</summary>
+    public bool OnMobj { get; set; }
+    /// <summary>Native <c>MF3_ISMONSTER</c>. Infighting-off damage gates apply only between monsters.</summary>
+    public bool IsMonster { get; set; }
+    /// <summary>Native <c>MF7_HARMFRIENDS</c>. At standard infighting, this shooter may hurt friendlies.</summary>
+    public bool HarmFriends { get; set; }
     public double SpawnZOffset { get; init; }
     public Fixed X { get; set; }
     public Fixed Y { get; set; }
@@ -64,6 +76,14 @@ public class Actor : Thinker
     public bool NoPain { get; set; }
     /// <summary>Native <c>MF5_PAINLESS</c>. As an inflictor, this hit does not flinch, even when forced pain is also set.</summary>
     public bool Painless { get; set; }
+    /// <summary>Native <c>MF4_EXTREMEDEATH</c>. As an inflictor, this killing blow can use the extreme death frame without passing the gib line.</summary>
+    public bool ExtremeDeath { get; set; }
+    /// <summary>Native <c>MF4_NOEXTREMEDEATH</c>. As an inflictor, this hit never uses an extreme death frame, even past the gib line.</summary>
+    public bool NoExtremeDeath { get; set; }
+    /// <summary>Native <c>RF_FULLBRIGHT</c> from an electric hit that passed the pain roll but missed the pain flicker.</summary>
+    public bool FullBright { get; set; }
+    /// <summary>Native <c>MF_JUSTHIT</c>. Set when a pain flinch lands from the current or no chase target.</summary>
+    public bool JustHit { get; set; }
     public Fixed MaxStepHeight { get; set; } = Fixed.FromInt(24);
     /// <summary>Native MaxDropOffHeight. A drop strictly taller than this is refused unless <see cref="AllowDropOff"/> or <see cref="Floating"/>.</summary>
     public Fixed MaxDropOffHeight { get; set; } = Fixed.FromInt(24);
@@ -73,6 +93,109 @@ public class Actor : Thinker
     public bool ActsLikeBridge { get; set; }
     /// <summary>Native <c>MF_ICECORPSE</c>. This actor collides with corpses and can stand on them.</summary>
     public bool IceCorpse { get; set; }
+    /// <summary>Native <c>MF6_SHATTERING</c>. A frozen corpse is breaking apart.</summary>
+    public bool Shattering { get; set; }
+    /// <summary>Native <c>MF7_ICESHATTER</c>. As an inflictor, ice damage does not shatter a frozen corpse.</summary>
+    public bool IceShatter { get; set; }
+    /// <summary>Native <c>MF7_NEVERTARGET</c>. Wake-up will not chase this actor.</summary>
+    public bool NeverTarget { get; set; }
+    /// <summary>Native <c>MF4_NOTARGETSWITCH</c>. Wake-up will not pick a new chase target while one is alive.</summary>
+    public bool NoTargetSwitch { get; set; }
+    /// <summary>Native <c>MF4_NOHATEPLAYERS</c>. <see cref="OkayToSwitchTarget"/> ignores player sources.</summary>
+    public bool NoHatePlayers { get; set; }
+    /// <summary>Native <c>MF4_QUICKTORETALIATE</c>. Wake-up may switch targets while chase threshold is still positive.</summary>
+    public bool QuickToRetaliate { get; set; }
+    /// <summary>Native <c>MF_FRIENDLY</c>. Used with <see cref="FriendPlayer"/> for <see cref="IsFriend"/>.</summary>
+    public bool Friendly { get; set; }
+    /// <summary>Native <c>FriendPlayer</c>. 0 means any friendly. 1 is the first player.</summary>
+    public int FriendPlayer { get; set; }
+    /// <summary>Native <c>MF5_NOINFIGHTING</c>. Wake-up treats infighting as off for this actor.</summary>
+    public bool NoInfighting { get; set; }
+    /// <summary>Native <c>MF7_FORCEINFIGHTING</c>. Standard infighting applies when the level is set to none.</summary>
+    public bool ForceInfighting { get; set; }
+    /// <summary>Native <c>MF6_DOHARMSPECIES</c>. Same-species projectile immunity does not apply.</summary>
+    public bool DoHarmSpecies { get; set; }
+    /// <summary>Native <c>IsFriend</c> subset. Deathmatch teamplay and designated teams are absent.</summary>
+    public bool IsFriend(Actor other)
+    {
+        if (!Friendly || !other.Friendly) return false;
+        if (FriendPlayer == 0 || other.FriendPlayer == 0) return true;
+        return FriendPlayer == other.FriendPlayer;
+    }
+    /// <summary>Native <c>IsHostile</c> subset. Two plain monsters are never hostile to each other.</summary>
+    public bool IsHostile(Actor other)
+    {
+        if (!Friendly && !other.Friendly) return false;
+        if ((Friendly && other.Friendly))
+        {
+            return FriendPlayer != 0 && other.FriendPlayer != 0 && FriendPlayer != other.FriendPlayer;
+        }
+        return true;
+    }
+    /// <summary>Native species subset for default <c>P_ProjectileImmune</c>. Uses <see cref="DoomEdNum"/>.</summary>
+    public bool IsSameSpecies(Actor other) =>
+        DoomEdNum == other.DoomEdNum && this is not PlayerPawn && other is not PlayerPawn;
+    /// <summary>Native <c>P_ProjectileImmune</c> default-group subset. Projectile groups are absent.</summary>
+    public bool ProjectileImmune(Actor source) =>
+        IsSameSpecies(source) && !DoHarmSpecies;
+    /// <summary>Native <c>CanAttackHurt</c> subset for monster-monster damage.</summary>
+    internal bool CanAttackHurtFrom(Actor shooter)
+    {
+        if (this is PlayerPawn || shooter is PlayerPawn) return true;
+        var sim = Simulation;
+        if (sim == null) return true;
+        var infight = sim.GetInfightLevel(this);
+        if (infight < 0)
+        {
+            if (shooter.Shootable && IsMonster && !IsHostile(shooter)
+                && (ThingId == 0 || shooter.TidToHate != ThingId))
+                return false;
+        }
+        else if (infight == 0)
+        {
+            if (IsFriend(shooter) && !shooter.HarmFriends) return false;
+            if (TidToHate != 0 && TidToHate == shooter.TidToHate) return false;
+            if (ProjectileImmune(shooter) && !IsHostile(shooter)
+                && (ThingId == 0 || shooter.TidToHate != ThingId))
+                return false;
+        }
+        return true;
+    }
+
+    /// <summary>Native <c>OkayToSwitchTarget</c> subset. Master/minion and infighting groups are absent.</summary>
+    internal bool OkayToSwitchTarget(Actor other, MonsterBrain brain)
+    {
+        if (!other.CanTakeDamage || other.Id == Id || other.NeverTarget)
+            return false;
+        if (NoTargetSwitch && brain.TargetId != null)
+            return false;
+        if (other.NoTarget && (other.ThingId != TidToHate || TidToHate == 0) && !IsHostile(other))
+            return false;
+        if (brain.Threshold > 0 && !QuickToRetaliate)
+            return false;
+        if (IsFriend(other))
+            return false;
+        var sim = Simulation;
+        var infight = sim?.GetInfightLevel(this) ?? 1;
+        if (infight < 0 && other is not PlayerPawn && !IsHostile(other))
+            return false;
+        if (TidToHate != 0 && TidToHate == other.TidToHate)
+            return false;
+        if (other is PlayerPawn && NoHatePlayers)
+            return false;
+        if (other is not PlayerPawn && infight == 0 && ProjectileImmune(other) && !IsHostile(other)
+            && (other.TidToHate == 0 || other.TidToHate != ThingId))
+            return false;
+        if (sim != null && brain.TargetId is { } currentId && other.Id != currentId && TidToHate != 0)
+        {
+            var current = sim.Actors.FirstOrDefault(candidate => candidate.Id == currentId);
+            if (current != null && current.CanTakeDamage && current.ThingId == TidToHate
+                && sim.NextSwitchTargetRandom() % 256 < 128
+                && CombatTrace.HasLineOfSight(sim, this, current))
+                return false;
+        }
+        return true;
+    }
     /// <summary>Native <c>MF6_NOTELEFRAG</c>. A spawn stomp skips this actor.</summary>
     public bool NoTelefrag { get; set; }
     /// <summary>Native <c>MF7_ALWAYSTELEFRAG</c>. A spawn stomp kills this actor even when <see cref="NoTelefrag"/> is set.</summary>
@@ -106,20 +229,30 @@ public class Actor : Thinker
             if (!dead && IsDead)
             {
                 DeathCount++;
-                var death = ChooseDeathState();
+                var death = ChooseDeathState(out var extremeDeath);
+                if (extremeDeath && this is not PlayerPawn && _health >= GibHealth)
+                    _health = GibHealth - 1;
                 if (States.HasState(death)) States.Enter(this, death);
                 if (this is PlayerPawn player)
                 {
+                    player.ExtremelyDead = extremeDeath;
                     player.ClearCommands();
                     player.AttackPressed = false;
                     player.NoteDeath(Simulation);
                 }
             }
-            else if (dead && !IsDead && States.HasState(SpawnState)) States.Enter(this, SpawnState);
+            else if (dead && !IsDead && States.HasState(SpawnState))
+            {
+                States.Enter(this, SpawnState);
+                if (this is PlayerPawn revived)
+                    revived.ExtremelyDead = false;
+            }
         }
     }
     public ActorStateMachine States { get; } = new();
     public int SpawnState { get; set; } = ActorStateMachine.Spawn;
+    /// <summary>Native See state. A waking monster in <see cref="SpawnState"/> can enter this frame. -1 means absent.</summary>
+    public int SeeState { get; set; } = -1;
     public int PainState { get; set; } = ActorStateMachine.Pain;
     public int DeathState { get; set; } = ActorStateMachine.Death;
     /// <summary>Optional Death.Extreme state. Absent until a table actually contains it.</summary>
@@ -130,10 +263,15 @@ public class Actor : Thinker
     public bool NoIceDeath { get; set; }
     /// <summary>Damage type of the hit currently being applied. The setter consumes it.</summary>
     internal string? DamageTypeReceived { get; set; }
+    /// <summary>Inflictor for the hit currently being applied. The health setter consumes it.</summary>
+    internal Actor? DeathInflictor { get; set; }
     private readonly Dictionary<string, int> _typedDeaths = new(StringComparer.Ordinal);
     private readonly Dictionary<string, int> _typedExtremeDeaths = new(StringComparer.Ordinal);
     private readonly Dictionary<string, int> _typedPain = new(StringComparer.Ordinal);
     private readonly Dictionary<string, int> _typedPainChance = new(StringComparer.Ordinal);
+    private readonly Dictionary<string, int> _typedWounds = new(StringComparer.Ordinal);
+    /// <summary>Native <c>WoundHealth</c>. A surviving hit at or below this health can enter a typed wound frame.</summary>
+    public int WoundHealth { get; set; }
     /// <summary>Native GetGibHealth. A killing blow below this value can enter <see cref="ExtremeDeathState"/>.</summary>
     public int GibHealth { get; set; } = -100;
     /// <summary>
@@ -156,6 +294,9 @@ public class Actor : Thinker
     public int DeathCount { get; private set; }
     public uint? LastDamageSourceId { get; internal set; }
     public uint? LastHeardTargetId { get; internal set; }
+    /// <summary>Mover crush on this tic. Suppresses duplicate sector pinch crush the same tic.</summary>
+    internal int MoverCrushTic { get; private set; }
+    internal void MarkMoverCrush(int tic) => MoverCrushTic = tic;
     internal void RestoreHealth(int health) => _health = health;
     public Fixed Radius { get; set; } = Fixed.FromInt(20);
     public Fixed Height { get; set; } = Fixed.FromInt(56);
@@ -199,11 +340,15 @@ public class Actor : Thinker
     /// A plain typed frame is used even when health is past the gib line.
     /// Damage type <c>Extreme</c> forces the gib state and then clears the type.
     /// Ice freeze is not extreme. It applies to a player or a monster, and <see cref="NoIceDeath"/> blocks it.
+    /// Inflictor <see cref="ExtremeDeath"/> and <see cref="NoExtremeDeath"/> follow native <c>MF4_*</c> on the inflictor only.
     /// </summary>
-    private int ChooseDeathState()
+    private int ChooseDeathState(out bool usedExtremeDeath)
     {
+        usedExtremeDeath = false;
         var type = DamageTypeReceived;
-        var extreme = _health < GibHealth;
+        var inflictor = DeathInflictor;
+        var extreme = (_health < GibHealth || inflictor is { ExtremeDeath: true })
+            && inflictor is not { NoExtremeDeath: true };
         if (string.Equals(type, "Extreme", StringComparison.Ordinal))
         {
             extreme = true;
@@ -212,7 +357,10 @@ public class Actor : Thinker
         if (!string.IsNullOrEmpty(type) && !string.Equals(type, "None", StringComparison.Ordinal))
         {
             if (extreme && _typedExtremeDeaths.TryGetValue(type, out var extremeState) && States.HasState(extremeState))
+            {
+                usedExtremeDeath = true;
                 return extremeState;
+            }
             if (_typedDeaths.TryGetValue(type, out var typed) && States.HasState(typed))
                 return typed;
             if (string.Equals(type, "Ice", StringComparison.Ordinal) && !NoIceDeath
@@ -220,15 +368,42 @@ public class Actor : Thinker
                 return GenericFreezeDeath;
         }
         if (extreme && States.HasState(ExtremeDeathState))
+        {
+            usedExtremeDeath = true;
             return ExtremeDeathState;
+        }
         return DeathState;
     }
 
     /// <summary>
     /// <c>Pain.Fire</c>. The name match is ordinal. A missing frame uses <see cref="PainState"/>.
     /// <paramref name="chance"/> replaces <see cref="PainChance"/> for that type only.
-    /// Electric flicker and poison howling are absent.
+    /// Electric flicker uses <see cref="AuthoritySimulation.NextFlickerRandom"/>. Poison howling is absent.
     /// </summary>
+    /// <summary><c>Wound.Fire</c>. The name match is ordinal. A missing frame is ignored.</summary>
+    public void SetTypedWound(string damageType, int state)
+    {
+        if (string.IsNullOrEmpty(damageType) || damageType == "None")
+            throw new ArgumentException("A typed wound needs a damage type other than None.", nameof(damageType));
+        _typedWounds[damageType] = state;
+    }
+
+    internal IEnumerable<(string Type, int State)> TypedWounds()
+    {
+        foreach (var entry in _typedWounds.OrderBy(pair => pair.Key, StringComparer.Ordinal))
+            yield return (entry.Key, entry.Value);
+    }
+
+    internal int WoundStateFor(string? damageType)
+    {
+        if (!string.IsNullOrEmpty(damageType)
+            && !string.Equals(damageType, "None", StringComparison.Ordinal)
+            && _typedWounds.TryGetValue(damageType, out var state)
+            && States.HasState(state))
+            return state;
+        return -1;
+    }
+
     public void SetTypedPain(string damageType, int state, int? chance = null)
     {
         if (string.IsNullOrEmpty(damageType) || damageType == "None")
@@ -367,12 +542,16 @@ public sealed class PlayerPawn : Actor
     /// <c>DMG_FORCED</c> no longer skips armor or god mode.
     /// </summary>
     public bool Buddha2 { get; set; }
+    /// <summary>Native <c>CF_EXTREMELYDEAD</c>. Set when an extreme death frame kills the player.</summary>
+    public bool ExtremelyDead { get; set; }
     /// <summary>Native inventory <c>BLINKTHRESHOLD</c>. A second PowerBuddha does not extend past this.</summary>
     public const int PowerBuddhaBlinkThreshold = 4 * 32;
     /// <summary>Native <c>Powerup.Duration -60</c>. A negative duration is seconds, so this is 60 * 35 tics.</summary>
     public const int PowerBuddhaDuration = 60 * GameTicClock.TicRate;
     /// <summary>Tics of <c>PowerBuddha</c> left. Zero means the item is gone.</summary>
     public int PowerBuddhaTics { get; set; }
+    /// <summary>Native <c>player_t::fragcount</c> for ACS <c>PlayerFrags</c>.</summary>
+    public int FragCount { get; set; }
 
     /// <summary>
     /// Grants <c>PowerBuddha</c>. Above <see cref="PowerBuddhaBlinkThreshold"/> the new
@@ -865,6 +1044,8 @@ public sealed class AuthoritySimulation
     private readonly List<Actor> _actors;
     private uint _nextActorId;
     public uint CombatRandomState { get; private set; }
+    /// <summary>Native <c>pr_switcher</c> for <see cref="Actor.OkayToSwitchTarget"/> hate stickiness.</summary>
+    public uint SwitchTargetRandomState { get; private set; }
     /// <summary>Rolls for a deathmatch respawn. Not the native <c>DMSpawn</c> table, and not in the save pose.</summary>
     public uint DmSpawnRandomState { get; set; }
     private uint _strobeRandomState;
@@ -886,6 +1067,7 @@ public sealed class AuthoritySimulation
         _nextActorId = actors.Count == 0 ? 1 : checked(actors.Max(actor => actor.Id) + 1);
         RngSeed = rngSeed;
         CombatRandomState = unchecked((uint)rngSeed) ^ 0x9e3779b9u;
+        SwitchTargetRandomState = unchecked((uint)rngSeed) ^ 0x73776974u;
         DmSpawnRandomState = unchecked((uint)rngSeed) ^ 0x646d7370u;
         _strobeRandomState = unchecked((uint)rngSeed) ^ 0x7374726fu;
         _flickerRandomState = unchecked((uint)rngSeed) ^ 0x666c6963u;
@@ -898,6 +1080,9 @@ public sealed class AuthoritySimulation
         Floors = level.Sectors.Select(sector => Fixed.FromDouble(sector.FloorHeight).ToDouble()).ToArray();
         Ceilings = level.Sectors.Select(sector => Fixed.FromDouble(sector.CeilingHeight).ToDouble()).ToArray();
         Lights = level.Sectors.Select(sector => sector.LightLevel).ToArray();
+        SectorScrollX = new double[level.Sectors.Count];
+        SectorScrollY = new double[level.Sectors.Count];
+        _sectorCarryScrolls = [];
         LightActions.Initialize(this);
         SectorDamage.Initialize(this);
         foreach (var actor in _actors)
@@ -978,6 +1163,8 @@ public sealed class AuthoritySimulation
     public double AmmoFactor { get; set; } = 1;
     /// <summary>Native <c>sv_doubleammo</c>. Off until set. Replaces the skill factor with 2.</summary>
     public bool DoubleAmmo { get; set; }
+    /// <summary>Native <c>infighting</c> cvar. -1 never, 0 standard Doom, 1 always.</summary>
+    public int Infighting { get; set; }
     public bool Exited { get; private set; }
     public bool SecretExit { get; private set; }
     public bool ReverbActive { get; }
@@ -988,12 +1175,54 @@ public sealed class AuthoritySimulation
     internal double[] Floors { get; }
     internal double[] Ceilings { get; }
     internal short[] Lights { get; }
+    internal double[] SectorScrollX { get; }
+    internal double[] SectorScrollY { get; }
+    private List<SectorCarryScroll> _sectorCarryScrolls;
+    /// <summary>Native <c>netgame</c> for ACS. Client-hosted sessions are absent.</summary>
+    public bool IsNetworkGame => false;
     internal List<LightEffect> LightEffects { get; } = [];
     public short LightOf(int sector) => (uint)sector < (uint)Lights.Length ? Lights[sector] : (short)0;
     internal List<SectorMotion> Motions => _motions;
 
     public double FloorOf(int sector) => sector >= 0 && sector < Floors.Length ? Floors[sector] : (short)0;
     public double CeilingOf(int sector) => sector >= 0 && sector < Ceilings.Length ? Ceilings[sector] : (short)0;
+
+    /// <summary>Replace carry scrollers on <paramref name="sector"/> (native <c>SetScroller</c> rate update). Texture and displacement scrollers are absent.</summary>
+    public void SetSectorScroll(int sector, double dx, double dy)
+    {
+        if ((uint)sector >= (uint)SectorScrollX.Length) return;
+        _sectorCarryScrolls.RemoveAll(scroll => scroll.SectorIndex == sector);
+        if (dx != 0 || dy != 0)
+            _sectorCarryScrolls.Add(new SectorCarryScroll(sector, dx, dy));
+    }
+
+    /// <summary>Add another carry scroller on the sector. Multiple entries sum each tic like separate <c>DScroller</c> thinkers.</summary>
+    public void AppendSectorCarryScroll(int sector, double dx, double dy)
+    {
+        if ((uint)sector >= (uint)SectorScrollX.Length) return;
+        if (dx == 0 && dy == 0) return;
+        _sectorCarryScrolls.Add(new SectorCarryScroll(sector, dx, dy));
+    }
+
+    internal void RebuildSectorCarryScrolls()
+    {
+        Array.Clear(SectorScrollX, 0, SectorScrollX.Length);
+        Array.Clear(SectorScrollY, 0, SectorScrollY.Length);
+        foreach (var scroll in _sectorCarryScrolls)
+        {
+            SectorScrollX[scroll.SectorIndex] += scroll.Dx;
+            SectorScrollY[scroll.SectorIndex] += scroll.Dy;
+        }
+    }
+
+    /// <summary>Native <c>Level-&gt;GetInfighting()</c> with per-actor overrides.</summary>
+    internal int GetInfightLevel(Actor actor)
+    {
+        if (actor.NoInfighting) return -1;
+        var level = Infighting;
+        if (level < 0 && actor.ForceInfighting) return 0;
+        return level;
+    }
 
     public static AuthoritySimulation Start(
         PlayLevel level,
@@ -1070,23 +1299,29 @@ public sealed class AuthoritySimulation
         return drop;
     }
 
-    public BotPawn AddBot(double x, double y)
+    public BotPawn AddBot(double x, double y, int doomEdNum = 3004, int thingId = 0)
     {
         var id = _nextActorId;
         _nextActorId = checked(_nextActorId + 1);
+        var catalogHealth = DoomActorCatalog.Find(doomEdNum)?.Health;
+        var health = doomEdNum == 3004 ? 30 : catalogHealth ?? 30;
         var bot = new BotPawn
         {
             Id = id,
-            DoomEdNum = 3004,
+            DoomEdNum = doomEdNum,
+            ThingId = thingId,
             X = Fixed.FromDouble(x),
             Y = Fixed.FromDouble(y),
             Angle = new BamAngle(0),
-            Health = 30,
-            ResurrectionHealth = 30,
-            GibHealth = -30,
-            RaiseDuration = ArchvileActions.RaiseDuration(3004),
+            Health = health,
+            ResurrectionHealth = health,
+            GibHealth = health > 0 ? -health : -1,
+            RaiseDuration = ArchvileActions.RaiseDuration(doomEdNum),
             Level = Level,
-            Brain = new MonsterBrain(MonsterAttack.Hitscan),
+            Brain = doomEdNum == 3004
+                ? new MonsterBrain(MonsterAttack.Hitscan)
+                : MonsterBrain.ForType(doomEdNum) ?? new MonsterBrain(MonsterAttack.Hitscan),
+            IsMonster = true,
         };
         bot.RememberPosition();
         bot.Simulation = this;
@@ -1102,6 +1337,12 @@ public sealed class AuthoritySimulation
         return CombatRandomState;
     }
 
+    internal uint NextSwitchTargetRandom()
+    {
+        SwitchTargetRandomState = unchecked(1664525u * SwitchTargetRandomState + 1013904223u);
+        return SwitchTargetRandomState;
+    }
+
     private uint NextDmSpawnRandom()
     {
         DmSpawnRandomState = unchecked(1664525u * DmSpawnRandomState + 1013904223u);
@@ -1109,6 +1350,45 @@ public sealed class AuthoritySimulation
     }
 
     internal double NextCombatSpread() => ((int)(NextCombatRandom() >> 24) - (int)(NextCombatRandom() >> 24)) / 255.0;
+
+    /// <summary>Native <c>A_FreezeDeathChunks</c> when <see cref="Actor.Shattering"/> is already set.</summary>
+    internal void SpawnIceChunks(Actor corpse)
+    {
+        var radius = corpse.Radius.ToDouble();
+        var height = corpse.Height.ToDouble();
+        var numChunks = Math.Max(4, (int)(radius * height / 32));
+        var jitterSpan = Math.Max(1u, (uint)(numChunks / 4));
+        var jitter = (int)(NextCombatRandom() % jitterSpan);
+        var spawnCount = Math.Max(24, numChunks + jitter);
+        var baseX = corpse.X.ToDouble();
+        var baseY = corpse.Y.ToDouble();
+        var baseZ = corpse.Z.ToDouble();
+        for (var i = spawnCount; i >= 0; i--)
+        {
+            var xo = ((NextCombatRandom() % 256) - 128) * radius / 128;
+            var yo = ((NextCombatRandom() % 256) - 128) * radius / 128;
+            var zo = (NextCombatRandom() % 256) * height / 255;
+            var remainingTics = 70 + (int)(NextCombatRandom() % 64);
+            var chunk = new IceChunkActor(remainingTics)
+            {
+                Id = _nextActorId,
+                Level = Level,
+                Simulation = this,
+                X = Fixed.FromDouble(baseX + xo),
+                Y = Fixed.FromDouble(baseY + yo),
+                Z = Fixed.FromDouble(baseZ + zo),
+            };
+            _nextActorId = checked(_nextActorId + 1);
+            var spread = NextCombatSpread();
+            chunk.VelocityX = Fixed.FromDouble(spread);
+            chunk.VelocityY = Fixed.FromDouble(NextCombatSpread());
+            chunk.VelocityZ = Fixed.FromDouble(height > 0 ? zo / height * 4 : 0);
+            chunk.RememberPosition();
+            ActorPhysics.PlaceOnFloor(this, chunk);
+            _actors.Add(chunk);
+            Thinkers.Add(chunk, ThinkerStat.Default);
+        }
+    }
 
     // Independent managed stream: lighting must not change weapon damage/spread rolls.
     internal int NextFlickerRandom()
@@ -1315,6 +1595,13 @@ public sealed class AuthoritySimulation
         return false;
     }
 
+    /// <summary>Native <c>Level-&gt;PlayerInGame</c> for ACS. Server slot remapping is absent.</summary>
+    internal bool IsPlayerInGame(int playerNum) =>
+        Players.Any(player => !player.Destroyed && player.PlayerNum == playerNum);
+
+    /// <summary>Native <c>Level-&gt;Players[n]-&gt;Bot</c> for ACS. Player-slot bots are absent.</summary>
+    internal bool IsPlayerBot(int playerNum) => false;
+
     internal void StartPlayerScripts(bool death, PlayerPawn player)
     {
         foreach (var number in death ? _deathScripts : _respawnScripts)
@@ -1468,13 +1755,19 @@ public sealed class AuthoritySimulation
         var levelTic = Thinkers.Clock.Tic;
         LightEffects.RemoveAll(effect => effect.Tick(this));
         Thinkers.Run();
+        RebuildSectorCarryScrolls();
+        foreach (var actor in _actors)
+            ActorPhysics.ApplySectorScroll(this, actor);
         _actors.RemoveAll(actor => actor.Destroyed);
         CollectPickups();
         ResolveAttacks();
         LineSpecials.ActivateCrossings(this);
         LineSpecials.ActivateUses(this);
         LineSpecials.TickMotions(this);
-        foreach (var actor in _actors.Where(actor => actor is not ProjectileActor)) ActorPhysics.FitToSector(this, actor);
+        // Carriers before riders so <see cref="ActorPhysics.SupportFloor"/> sees updated mobj tops.
+        foreach (var actor in _actors.Where(actor => actor is not ProjectileActor)
+            .OrderBy(actor => actor.OnMobj ? 1 : 0).ThenBy(actor => actor.Id))
+            ActorPhysics.FitToSector(this, actor, sectorPinchCrush: true);
         Acs.Tick(this, levelTic);
         Invasion.Tick(this);
         if (RewindEnabled)
@@ -1563,9 +1856,11 @@ public sealed class AuthoritySimulation
         hash = Mix(hash, (uint)Skill);
         hash = Mix(hash, unchecked((uint)Fixed.FromDouble(AmmoFactor).Raw));
         hash = Mix(hash, DoubleAmmo ? 1u : 0u);
+        hash = Mix(hash, unchecked((uint)Infighting));
         hash = Mix(hash, unchecked((uint)Thinkers.Clock.Tic));
         hash = Mix(hash, unchecked((uint)RngSeed));
         hash = Mix(hash, CombatRandomState);
+        hash = Mix(hash, SwitchTargetRandomState);
         hash = Mix(hash, _strobeRandomState);
         hash = Mix(hash, _flickerRandomState);
         hash = Mix(hash, _lightFlashRandomState);
@@ -1599,6 +1894,7 @@ public sealed class AuthoritySimulation
             hash = Mix(hash, unchecked((uint)Fixed.FromDouble(actor.FloatSpeed).Raw));
             hash = Mix(hash, (uint)actor.ResurrectionHealth);
             hash = Mix(hash, unchecked((uint)actor.GibHealth));
+            hash = Mix(hash, unchecked((uint)actor.SeeState));
             hash = Mix(hash, unchecked((uint)actor.ExtremeDeathState));
             hash = Mix(hash, unchecked((uint)actor.GenericFreezeDeath));
             hash = Mix(hash, actor.NoIceDeath ? 1u : 0u);
@@ -1618,6 +1914,14 @@ public sealed class AuthoritySimulation
                     hash = Mix(hash, character);
                 hash = Mix(hash, 0);
             }
+            hash = Mix(hash, unchecked((uint)actor.WoundHealth));
+            foreach (var wound in actor.TypedWounds())
+            {
+                hash = Mix(hash, unchecked((uint)wound.State));
+                foreach (var character in wound.Type)
+                    hash = Mix(hash, character);
+                hash = Mix(hash, 0);
+            }
             hash = Mix(hash, unchecked((uint)actor.Armor));
             hash = Mix(hash, unchecked((uint)actor.ArmorSavePercent));
             hash = Mix(hash, unchecked((uint)actor.MaxAbsorb));
@@ -1628,8 +1932,28 @@ public sealed class AuthoritySimulation
             hash = Mix(hash, actor.ForcePain ? 1u : 0u);
             hash = Mix(hash, actor.NoPain ? 1u : 0u);
             hash = Mix(hash, actor.Painless ? 1u : 0u);
+            hash = Mix(hash, actor.ExtremeDeath ? 1u : 0u);
+            hash = Mix(hash, actor.NoExtremeDeath ? 1u : 0u);
+            hash = Mix(hash, actor.FullBright ? 1u : 0u);
+            hash = Mix(hash, actor.JustHit ? 1u : 0u);
             hash = Mix(hash, actor.ActsLikeBridge ? 1u : 0u);
             hash = Mix(hash, actor.IceCorpse ? 1u : 0u);
+            hash = Mix(hash, actor.Shattering ? 1u : 0u);
+            hash = Mix(hash, actor.IceShatter ? 1u : 0u);
+            hash = Mix(hash, actor.NeverTarget ? 1u : 0u);
+            hash = Mix(hash, actor.NoTarget ? 1u : 0u);
+            hash = Mix(hash, actor.OnMobj ? 1u : 0u);
+            hash = Mix(hash, actor.IsMonster ? 1u : 0u);
+            hash = Mix(hash, actor.HarmFriends ? 1u : 0u);
+            hash = Mix(hash, actor.NoTargetSwitch ? 1u : 0u);
+            hash = Mix(hash, actor.NoHatePlayers ? 1u : 0u);
+            hash = Mix(hash, unchecked((uint)actor.TidToHate));
+            hash = Mix(hash, actor.QuickToRetaliate ? 1u : 0u);
+            hash = Mix(hash, actor.Friendly ? 1u : 0u);
+            hash = Mix(hash, (uint)actor.FriendPlayer);
+            hash = Mix(hash, actor.NoInfighting ? 1u : 0u);
+            hash = Mix(hash, actor.ForceInfighting ? 1u : 0u);
+            hash = Mix(hash, actor.DoHarmSpecies ? 1u : 0u);
             hash = Mix(hash, actor.NoTelefrag ? 1u : 0u);
             hash = Mix(hash, actor.AlwaysTelefrag ? 1u : 0u);
             hash = Mix(hash, actor.DontDrain ? 1u : 0u);
@@ -1669,7 +1993,9 @@ public sealed class AuthoritySimulation
                 hash = Mix(hash, player.Inventory.Pending is { } pending ? (uint)pending : 0u);
                 hash = Mix(hash, unchecked((uint)Fixed.FromDouble(player.DrainStrength).Raw));
                 hash = Mix(hash, player.Buddha2 ? 1u : 0u);
+                hash = Mix(hash, player.ExtremelyDead ? 1u : 0u);
                 hash = Mix(hash, unchecked((uint)player.PowerBuddhaTics));
+                hash = Mix(hash, unchecked((uint)player.FragCount));
 
                 hash = Mix(hash, player.Inventory.BlueKey ? 1u : 0u);
                 hash = Mix(hash, player.Inventory.YellowKey ? 1u : 0u);
@@ -1710,6 +2036,8 @@ public sealed class AuthoritySimulation
                 hash = Mix(hash, (uint)projectile.RemainingTics);
                 hash = Mix(hash, projectile.TracerTargetId ?? 0);
             }
+            if (actor is IceChunkActor chunk)
+                hash = Mix(hash, (uint)chunk.RemainingTics);
         }
 
         foreach (var line in Level.Lines)
@@ -1747,6 +2075,10 @@ public sealed class AuthoritySimulation
             hash = Mix(hash, unchecked((uint)Fixed.FromDouble(ceiling).Raw));
         foreach (var light in Lights)
             hash = Mix(hash, unchecked((uint)light));
+        foreach (var scroll in SectorScrollX)
+            hash = Mix(hash, unchecked((uint)BitConverter.DoubleToInt64Bits(scroll)));
+        foreach (var scroll in SectorScrollY)
+            hash = Mix(hash, unchecked((uint)BitConverter.DoubleToInt64Bits(scroll)));
         foreach (var effect in LightEffects.OrderBy(effect => effect.Sector))
             hash = Mix(hash, effect.Checksum);
         foreach (var motion in _motions.OrderBy(motion => motion.SectorIndex).ThenBy(motion => motion.Kind))

@@ -839,8 +839,8 @@ A registered frame is entered when the pain roll succeeds. A missing
 frame, or a name that does not match, uses the normal pain state. The
 match is ordinal. A per-type chance replaces `PainChance` for that name
 only. Chance 0 never flinches, and another type still uses the actor's
-own chance. Electric flicker, poison howling, and wound states are
-absent. The registrations are in the checksum and
+own chance. Electric flicker, poison howling, and wound states landed in
+later audits below. The registrations are in the checksum and
 not in the pose. A same-actor restore keeps them.
 
 Phase 1 stays open. Crush, the rest of the actor states and roster,
@@ -879,8 +879,8 @@ pain frame. A 50-point hit still drops health and stays in the spawn
 state. Forced pain does not override either flag. An inflictor that has
 both flags stays painless. A player with no-pain stays in spawn the same
 way. The source's painless flag does not count unless that actor is the
-inflictor. Wake-up and see states are absent, so these flags only gate
-the flinch. Both flags are in the checksum and not in the pose. A
+inflictor. A no-pain monster still wakes. These flags only gate the
+flinch. Both flags are in the checksum and not in the pose. A
 same-actor restore keeps them.
 
 Phase 1 stays open. Crush, the rest of the actor states and roster,
@@ -897,6 +897,539 @@ with a brain, and a player freezes without one. The name `ice` does not
 match. A non-killing Ice hit still enters pain. Dehacked autofreeze-off
 and ice-corpse shatter are absent. The state and the flag are in the
 checksum and not in the pose. A same-actor restore keeps them.
+
+Phase 1 stays open. Crush, the rest of the actor states and roster,
+psprite sprites, and a native tick trace are still missing.
+
+## Audit: inflictor extreme death (2026-09-29)
+
+`MF4_EXTREMEDEATH` on the inflictor can enter the gib frame when health
+stops at -50 on a -100 gib line. `MF4_NOEXTREMEDEATH` keeps a -101 kill
+on the normal death frame instead of the gib frame. A typed extreme
+`Fire` death falls back to the plain `Fire` frame when the inflictor
+blocks extreme deaths. The source's flag does not count unless that
+actor is the inflictor. Both flags are in the checksum and not in the
+pose. A same-actor restore keeps them. Player extremely-dead cheats and
+the non-player health clamp past gib landed in the extreme-death-clamp
+audit below.
+
+Phase 1 stays open. Crush, the rest of the actor states and roster,
+psprite sprites, and a native tick trace are still missing.
+
+## Audit: extreme death clamp (2026-09-29)
+
+A non-player extreme death frame clamps health to `GibHealth - 1` when
+the post-hit amount is still on or above the gib line. An inflictor
+extreme-death flag on a 150-point kill stops at -101 on a -100 gib line
+instead of -50. A player keeps -50 overkill. A kill already past the
+gib line stays at -101. Player `CF_EXTREMELYDEAD` landed in the
+player-extremely-dead audit below.
+
+Phase 1 stays open. Crush, the rest of the actor states and roster,
+psprite sprites, and a native tick trace are still missing.
+
+## Audit: monster damage wake (2026-09-29)
+
+A post-armor hit or forced pain clears `ReactionTics`, sets chase
+target to the damage source, and enters `SeeState` when the actor is
+still in spawn and that frame exists. Pain runs before wake, so a
+flinch blocks see on that tic. `MF5_NOPAIN` still wakes. Target
+`MF_JUSTHIT` landed in a later audit. Chase threshold and a partial
+`OkayToSwitchTarget` landed in the chase-threshold audit below. Last-enemy
+memory and friend checks are still absent. `SeeState` is in the checksum
+and not in the pose. A same-actor restore keeps it.
+
+Phase 1 stays open. Crush, the rest of the actor states and roster,
+psprite sprites, and a native tick trace are still missing.
+
+## Audit: electric pain flicker (2026-09-29)
+
+After the pain chance passes, `DamageType Electric` rolls the flicker
+stream. A roll below 96 enters the typed or normal pain frame and clears
+fullbright. A miss sets `RF_FULLBRIGHT` and stays in the prior state.
+Forced pain still flinches and skips the flicker roll. The flag is in
+the checksum and not in the pose. A same-actor restore keeps it. Poison
+howling is absent.
+
+Phase 1 stays open. Crush, the rest of the actor states and roster,
+psprite sprites, and a native tick trace are still missing.
+
+## Audit: typed wound (2026-09-29)
+
+`Wound.Fire` replaces pain when health after the hit is at or below
+`WoundHealth`. A hit above the line still enters pain. A different
+damage type still uses pain. Health equal to the threshold wounds. The
+early-out skips wake on that tic. `WoundHealth` and the typed table are
+in the checksum and not in the pose. A same-actor restore keeps them.
+
+Phase 1 stays open. Crush, the rest of the actor states and roster,
+psprite sprites, and a native tick trace are still missing.
+
+## Audit: ACS TID inventory and ClearInventory (2026-09-29)
+
+`ClearInventory` (142) and `ClearActorInventory` (284) reset a player to the
+pistol-start pack (`ResetToPistolStart`, clears `PowerBuddhaTics`). Monsters are
+ignored. `GiveActorInventory`, `TakeActorInventory`, and `CheckActorInventory` use
+`AcsActorTid` (`LastOrDefault` for check, all matches for give/take) with native
+stack order (top = amount or string id, tid on bottom for three-operand forms).
+`SingleActorFromTID` client-side and TID 0 world targets are absent.
+
+`AcsPlayerInventoryTests` covers cooperative two-player give-by-TID, `CheckActorInventory`,
+and activator clear.
+
+Release playsim: **2,225** passed on 2026-09-29.
+
+Phase 1 stays open. DECORATE inventory classes and Gate 5 native trace are still
+missing.
+
+## Audit: ACS GiveInventory / TakeInventory (2026-09-29)
+
+`GiveInventory`, `GiveInventoryDirect`, `TakeInventory`, and `TakeInventoryDirect`
+apply to the activator with native stack order (top = amount, next = string-table
+index). `AcsPlayerInventory` maps the same Doom names as `CheckInventory` for
+health, armor, keys, ammo pools, and owned weapons.
+
+`AcsPlayerInventoryTests` covers give/take `Clip` ammo and the existing check
+fixtures.
+
+Release playsim: **2,222** passed on 2026-09-29.
+
+Phase 1 stays open. TID-targeted give/take landed in the audit above. Gate 5 native
+trace is still missing.
+
+## Audit: ACS player inventory queries (2026-09-29)
+
+`PlayerFrags` (122) and `PlayerTeam` (119, always 0) read the activator.
+Skull-tag opcodes **104–117** push key flags for blue/red/yellow and master
+(all three). Extended skull/card colors push 0. `CheckInventory` / `CheckInventoryDirect`
+resolve string-table names to Doom keys, armor, health, ammo pools, and owned
+weapons (`AcsPlayerInventory`). `GiveInventory` / `TakeInventory` landed in the give/take audit above. `ThingCount`
+skips actors that fail `IsMapActor` (always true until owned inventory items exist).
+
+`AcsPlayerInventoryTests` covers frags, blue card, and `CheckInventoryDirect`
+for `Clip`. `FragCount` is checksummed and not in the pose.
+
+Phase 1 stays open. DECORATE class inventory, `CheckActorInventory`, and Gate 5
+native trace are still missing.
+
+Release playsim: **2,220** passed on 2026-09-29.
+
+## Audit: BEHAVIOR STRE decrypt (2026-09-29)
+
+`TryDecryptStre` now matches `FBehavior::UnencryptStrings` in `p_acs.cpp`: string
+count at chunk dword **3** (payload offset 4), offsets at dword **5+strnum**, ciphertext
+at payload base **+ ofs**, post-xor zero terminates each string. A false
+`behavior-stre-unterminated` when the null byte sat on the last payload byte is
+fixed. The in-place `STRL` header rewrite on dword 0 was removed because enhanced
+reads use the decrypted padded table body only.
+
+`MapBehaviorStringTableCodecTests.EnhancedStreChunk_DecryptsLikeNativeUnencryptStrings`
+builds a synthetic `STRE` chunk with the native xor scramble. Release MapLoader:
+**400** passed on 2026-09-29 (codec subset **4**). Playsim **2,217** unchanged.
+
+Phase 1 stays open. Real map lumps with `STRE`, DECORATE replacements, and Gate 5
+native trace are still missing.
+
+## Audit: sector carry scroll buffer (2026-09-29)
+
+Carry rates live in a `SectorCarryScroll` list. Each tic, after `Thinkers.Run`,
+`RebuildSectorCarryScrolls` clears `SectorScrollX/Y` and sums every entry, matching
+native `FLevelLocals::Tick` memset plus `DScroller::sc_carry` accumulation.
+`SetSectorScroll` replaces scrollers on one sector (line `SetScroller` rate update).
+`AppendSectorCarryScroll` adds another rate so multiple thinkers on the same sector
+sum. Displacement, acceleration, texture scroll, and `MF8_INSCROLLSEC` are absent.
+
+`SectorScrollCarryTests.MultipleCarryScrollsOnSameSectorAccumulateEachTic` covers
+additive carry. `ManagedGameplayTraceTests` and `HCDE_CSHARP_PHASE1_NATIVE_TRACE.md`
+record a managed-only Gate 5 baseline; native IWAD pairing is still missing.
+Release playsim: **2,217** passed on 2026-09-29.
+
+Phase 1 stays open. Gate 5 native recorder and full `DScroller` feature set are
+still missing.
+
+## Audit: ACS activator context (2026-09-29)
+
+`ActivatorTid`, `PlayerHealth`, and `LineSide` read the fiber activator and trigger
+line context supplied by `AcsVm.Enqueue` / line specials. `ThingCount` TID filtering
+now has a positive fixture (`LevelThing.Id` → `Actor.ThingId`). Scroll carry
+regressions cover rate updates on repeat `Scroll_Floor` use and multi-tic persistence.
+
+`AcsActivatorQueryTests` and extended `Phase7AcsTests` / `SectorScrollCarryTests`
+cover the above.
+
+Phase 1 stays open. `DScroller` displacement/acceleration and gate 5 native trace are
+still missing.
+
+## Audit: scroll carry regression pass (2026-09-29)
+
+`Scroll_Floor` carry mode **2** sets carry like native `arg3 > 0` even though floor
+texture scroll is still absent. Hexen 201–224 player carry **adds** to line-driven
+`SetSectorScroll` on the same sector. `SectorScrollCarryTests` covers both.
+
+ACS regressions now assert `ThingCount` skips dead actors, `ThingCountSector`
+honors sector tags, deathmatch `GameType`, and `PlayerCount`. Map-loader `STRE`
+chunk id was corrected to native `MAKE_ID('S','T','R','E')`; decrypt parity and a
+synthetic encrypted fixture landed in the STRE decrypt audit above.
+
+Phase 1 stays open. `DScroller` thinkers and gate 5 native trace are still missing.
+
+## Audit: BEHAVIOR string tables (2026-09-29)
+
+`MapBehaviorStringTableCodec` reads old-format tables after the script directory
+and enhanced `STRL` / `STRE` chunks, including `strbin` unescaping and the native
+`STRE` xor decrypt. `AcsBehaviorBinder` copies the parsed table onto every
+registered `AcsProgram`. Map-loader and playsim tests cover old lumps, padded
+`STRL`, and `ThingCountName` fed from a bound behavior lump.
+
+DECORATE replacements, library string ids, and enhanced-only modules without old
+format remain partial. Gate 5 native trace is still missing.
+
+## Audit: ACS ThingCountName subset (2026-09-29)
+
+`ThingCountName` (288) and `ThingCountNameSector` (345) resolve ACS string-table
+entries through `DoomActorCatalog.TryEditorNumberForClassName`, then reuse
+`ThingCount` on editor numbers. Stack order matches native
+`PCD_THINGCOUNTNAME` / `PCD_THINGCOUNTNAMESECTOR`. Programs may supply
+`AcsProgram.StringTable` or the bound BEHAVIOR string table. DECORATE
+replacements and inventory exclusion are absent.
+
+`AcsThingCountNameTests` covers `DoomImp`, unknown classes, and a tagged sector.
+
+Phase 1 stays open. Automatic string binding from map lumps and gate 5 native
+trace are still missing.
+
+## Audit: Scroll_Ceiling line activation (2026-09-29)
+
+`Scroll_Ceiling` (224) now routes through `ExecuteFloorSpecial` like native
+`LS_Scroll_Ceiling`. Tagged sectors must exist for activation to succeed.
+Ceiling texture scroll and `DScroller` thinkers are still absent, so carry and
+planes stay unchanged; the line can clear on one-shot maps.
+
+`SectorScrollCarryTests.ScrollCeilingLineActivatesWithoutCarry` covers use
+activation with no movement.
+
+Phase 1 stays open. Real ceiling scrolling and gate 5 native trace are still
+missing.
+
+## Audit: ACS GameType and GameSkill (2026-09-29)
+
+`GameType` pushes 0 for single-player, 1 for cooperative, and 2 for
+deathmatch. `GameSkill` pushes the boot `SpawnOptions.Skill` clamped to 0–4.
+`AcsPlayerQueryTests` covers both alongside the existing player-query opcodes.
+
+Phase 1 stays open. MAPINFO custom skill ACS returns and gate 5 trace are still
+missing.
+
+## Audit: ACS ThingCountSector (2026-09-29)
+
+`ThingCountSector` (344) pops tag, tid, then type (top = tag), matching
+`PCD_THINGCOUNTSECTOR` in `p_acs.cpp`. The count reuses `ThingCount` with a
+sector-tag filter when tag is not `-1`; map actors with health are included.
+DECORATE class names, `ThingCountNameSector`, and inventory exclusion are
+absent.
+
+`Phase7AcsTests.ThingCountSector_RespectsSectorTag` covers a tagged sector.
+Release playsim: **2,210** passed on 2026-09-29 after monster scroll carry test.
+
+Phase 1 stays open. Name-based counts and gate 5 native trace are still missing.
+
+## Audit: Hexen sector scroll player carry (2026-09-29)
+
+Hexen sector specials **201–224** add player-only carry deltas (`* 0.5` table)
+on top of line-driven scroll vectors in `ApplySectorScroll`. Monsters ignore
+the Hexen table but still follow `SetSectorScroll` / `Scroll_Floor` carry.
+Raven compat speeds, `DScroller`, texture/ceiling scroll, and `MF8_INSCROLLSEC`
+are absent.
+
+`SectorScrollCarryTests.HexenNorthSlowScrollMovesPlayersOnly` and
+`GroundedMonsterMovesWithSectorScroll` cover the split.
+
+Phase 1 stays open. `Scroll_Ceiling` (224) texture scroll and gate 5 trace are
+still missing.
+
+## Audit: sector scroll carry subset (2026-09-29)
+
+`SetSectorScroll` stores per-sector XY deltas applied after `Thinkers.Run`.
+`ActorPhysics.ApplySectorScroll` moves grounded, non-floating actors with
+`TryMove`. Floating actors ignore scroll. `Scroll_Floor` (223) sets or clears
+carry from line args with native `/32` scaling; only the carry path is wired
+(texture scroll, `Scroll_Ceiling`, `DScroller` thinkers, and `MF8_INSCROLLSEC`
+are absent; Hexen 201–224 player carry is documented separately above). Scroll arrays are checksummed and not in
+the pose.
+
+`SectorScrollCarryTests` covers direct scroll, line special 223, carry clear,
+and a floating skip.
+
+Phase 1 stays open. Polyobjects, ceiling/wall scroll, and gate 5 native trace
+are still missing.
+
+## Audit: ACS IsNetworkGame (2026-09-29)
+
+`IsNetworkGame` pushes 0 because this authority sim is always local. Client
+sessions are absent. `AcsPlayerQueryTests` covers the opcode.
+
+## Audit: ACS SinglePlayer and PlayerInGame (2026-09-29)
+
+`SinglePlayer` pushes 1 when `SpawnGameMode` is single-player. `PlayerInGame`
+checks the internal player slot with `IsPlayerInGame`. `PlayerIsBot` always
+pushes 0 because player-slot bot controllers are not implemented. Visible
+client slot remapping is absent. `AcsPlayerQueryTests` covers all three
+opcodes. `AcsFixedPointTests` no longer treats `SinglePlayer` as unsupported.
+
+`dotnet test csharp/tests/HCDE.Playsim.Tests/HCDE.Playsim.Tests.csproj -c Release`
+reported 2,207 passed on 2026-09-29.
+
+Phase 1 stays open. Scroll sectors, TID iterators, and gate 5 native trace are
+still missing.
+
+## Audit: MF4_NOHATEPLAYERS (2026-09-29)
+
+`OkayToSwitchTarget` returns false when the source is a player and the victim
+has `NoHatePlayers`. Player damage still applies; wake-up does not chase the
+player. Monster retaliation is unchanged. The flag is checksummed and not in the
+pose.
+
+Phase 1 stays open. Gate 5 native trace, scroll sectors, and the rest of the
+actor roster are still missing.
+
+## Audit: ACS stack divide-by-zero tests (2026-09-29)
+
+`AcsExpressionTests` now expects stack `Divide` and `Modulus` by zero to push 0
+and continue, matching `Phase7AcsTests` and native ACS. Script-var and array
+divide-by-zero paths still stop the fiber.
+
+`dotnet test csharp/tests/HCDE.Playsim.Tests/HCDE.Playsim.Tests.csproj -c Release`
+reported 2,197 passed on 2026-09-29.
+
+## Audit: Phase 7 ACS opcodes (2026-09-29)
+
+Stack `Divide` and `Modulus` by zero push 0 instead of stopping the fiber.
+`ThingCount`, `ThingCountDirect`, `PlayerCount`, and `Timer` match the Phase 7
+regression scripts. `Timer` reports start-of-tic `levelTic`, matching `AcsTimerTests`. Native divide-by-zero abort and
+name-based thing counts are absent. All six `Phase7AcsTests` pass.
+
+Phase 1 stays open. Gate 5 native trace, the rest of the actor states and
+roster, psprite sprites, and scroll sectors are still missing.
+
+## Audit: sector floor mobj carry order (2026-09-29)
+
+Rising sector floors already move grounded actors through post-mover
+`FitToSector`. End-of-tic fitting now runs carriers before `OnMobj` riders so
+support tops are current when riders snap. Scroll sectors are absent.
+
+Phase 1 stays open. Crush, the rest of the actor states and roster,
+psprite sprites, and a native tick trace are still missing.
+
+## Audit: pr_switcher hate stickiness (2026-09-29)
+
+`OkayToSwitchTarget` uses a dedicated `pr_switcher` stream. When the actor
+already chases a living target whose `ThingId` matches `TIDtoHate`, a roll
+below 128 with line of sight blocks switching to a new source. `SwitchTargetRandomState`
+is checksummed and not in the pose.
+
+Phase 1 stays open. Crush, the rest of the actor states and roster,
+psprite sprites, and a native tick trace are still missing.
+
+## Audit: barrels and HarmFriends (2026-09-29)
+
+`CanAttackHurt` uses `MF3_ISMONSTER` on the victim. With infighting off,
+monsters still cannot hurt each other unless hostility or `TIDtoHate` applies,
+but they can hurt non-monsters such as barrels. `MF7_HARMFRIENDS` allows a
+shooter to damage a friendly at standard infighting. Wake-up is unchanged.
+`IsMonster` defaults on for `AddBot`. The flags are checksummed and not in the
+pose.
+
+Phase 1 stays open. Crush, the rest of the actor states and roster,
+psprite sprites, and a native tick trace are still missing.
+
+## Audit: horizontal rider carry (2026-09-29)
+
+A solid carrier's physics step moves actors standing on its top by the same
+XY and Z delta. Blocked rider moves try axis splits. `MF2_ONMOBJ` tracks mobj
+support and keeps dropoff from using only the sector floor while set. Scroll
+sectors and polyobjects are absent. `OnMobj` is checksummed and not in the
+pose.
+
+Phase 1 stays open. Crush, the rest of the actor states and roster,
+psprite sprites, and a native tick trace are still missing.
+
+## Audit: TIDtoHate (2026-09-29)
+
+`TIDtoHate` and `MF3_NOTARGET` gate monster wake-up and monster-monster
+damage. Teammates with the same hate id do not target or hurt each other. With infighting off, a shooter may still hurt an actor whose `ThingId` matches
+`TIDtoHate`; wake-up still needs hostility unless standard infighting applies
+the hated-tid species exception. At standard infighting, same-species damage still yields
+when the hated tid matches. TID look iterators are absent. `pr_switcher` stickiness is documented in a
+later audit. `TidToHate` is checksummed and not in the pose.
+
+Phase 1 stays open. Crush, the rest of the actor states and roster,
+psprite sprites, and a native tick trace are still missing.
+
+## Audit: rider stack crush (2026-09-29)
+
+Mover crush and sector pinch crush also hit actors standing on the crushed
+actor's top within both radii. Horizontal rider carry is documented separately.
+Polyobjects are absent.
+
+Phase 1 stays open. Crush, the rest of the actor states and roster,
+psprite sprites, and a native tick trace are still missing.
+
+## Audit: infighting damage (2026-09-29)
+
+`ActorDamage.Apply` uses the native `CanAttackHurt` subset for monster-monster
+hits. Standard infighting blocks same `DoomEdNum` species unless
+`MF6_DOHARMSPECIES` or hostility applies. Infighting off blocks unless the
+victim is hostile to the shooter. Players are never gated. Non-monsters are not
+gated when infighting is off. `TIDtoHate` and `MF7_HARMFRIENDS` are documented
+in later audits.
+
+Phase 1 stays open. Crush, the rest of the actor states and roster,
+psprite sprites, and a native tick trace are still missing.
+
+## Audit: standard infighting species (2026-09-29)
+
+At infighting `0`, wake-up blocks the same `DoomEdNum` species unless
+`MF6_DOHARMSPECIES` is set or the source is hostile. Infighting `1` allows
+same-species wake. `MF7_FORCEINFIGHTING` applies standard rules when the
+level is set to none. Projectile groups and `TIDtoHate` are absent. The flags
+are in the checksum and not in the pose.
+
+Phase 1 stays open. Crush, the rest of the actor states and roster,
+psprite sprites, and a native tick trace are still missing.
+
+## Audit: ice chunks (2026-09-29)
+
+A shattering frozen corpse on a simulation spawns deterministic `IceChunk`
+debris from the native count and offset formula. Combat RNG drives placement,
+velocity, and lifetime. Chunks move with gravity and expire. A corpse with no
+simulation still shatters without spawning debris. Chunk heads, terrain melt,
+and sounds are absent.
+
+Phase 1 stays open. Crush, the rest of the actor states and roster,
+psprite sprites, and a native tick trace are still missing.
+
+## Audit: last enemy resume (2026-09-29)
+
+After the player scan, an enabled brain tick resumes a living non-friend
+`lastenemy` when nothing else is acquired, then clears the slot. A dead or
+friendly last enemy only clears the id. Goals and look states are absent.
+
+Phase 1 stays open. Crush, the rest of the actor states and roster,
+psprite sprites, and a native tick trace are still missing.
+
+## Audit: infighting wake-up (2026-09-29)
+
+`MF5_NOINFIGHTING` and the level `infighting` cvar gate wake-up against
+non-players when infighting is off. `IsHostile` is a subset: two plain
+monsters are not hostile, and opposing friendlies with different
+`FriendPlayer` values are. At infighting `0`, same `DoomEdNum` species is
+blocked unless `MF6_DOHARMSPECIES` or hostility applies.
+`MF7_FORCEINFIGHTING` upgrades a none level to standard rules. Projectile
+groups, `TIDtoHate`, and deathmatch teamplay are absent. `NoInfighting`
+and `Infighting` are in the checksum and not in the pose. A same-actor
+restore keeps them.
+
+Phase 1 stays open. Crush, the rest of the actor states and roster,
+psprite sprites, and a native tick trace are still missing.
+
+## Audit: just hit (2026-09-29)
+
+`MF_JUSTHIT` is set when a pain flinch lands and the damage source is the
+chase target or there is no chase target. A wound or electric fullbright
+does not set it. A monster already chasing someone else stays clear when
+a different source hurts it. The brain clears the flag on the next
+enabled tick. `IsFriend` gates retargeting and just-hit when the chase
+target is a friend. The flag is in the checksum and not in the pose. A
+same-actor restore keeps it.
+
+Phase 1 stays open. Crush, the rest of the actor states and roster,
+psprite sprites, and a native tick trace are still missing.
+
+## Audit: ice corpse shatter (2026-09-29)
+
+A shootable frozen corpse shatters on damage unless the hit is ice from
+an inflictor that lacks `MF7_ICESHATTER`. Fire still shatters. Quiet
+ice leaves the corpse alone. An ice-shatter inflictor still breaks it.
+A warm corpse ignores the hit. Shatter zeroes velocity, sets
+`MF6_SHATTERING`, and forces one state tic. Chunks spawn on a simulation.
+The
+flags are in the checksum and not in the pose. A same-actor restore
+keeps them.
+
+Phase 1 stays open. Crush, the rest of the actor states and roster,
+psprite sprites, and a native tick trace are still missing.
+
+## Audit: player extremely dead (2026-09-29)
+
+`CF_EXTREMELYDEAD` is set when an extreme death frame kills the player.
+A gib-line kill sets it. A typed `Fire` death past the gib line does
+not. An inflictor extreme-death flag on a sub-gib kill still sets it.
+Raising health back to spawn clears it. The flag is in the checksum and
+not in the pose. A same-actor restore keeps it.
+
+Phase 1 stays open. Crush, the rest of the actor states and roster,
+psprite sprites, and a native tick trace are still missing.
+
+## Audit: chase threshold (2026-09-29)
+
+Wake-up reloads `Threshold` from `DefThreshold` when the source is already
+the chase target or when `OkayToSwitchTarget` allows a switch. A hit from
+a new source is ignored while threshold is positive. One hundred enabled
+brain tics clear a default threshold of 100 and then allow the switch. A
+`DefThreshold` of 0 switches immediately. `MF7_NEVERTARGET` leaves the
+target empty. Friends and species checks are absent. `DefThreshold` and
+`Threshold` are in the brain checksum. A same-actor restore keeps them.
+
+Phase 1 stays open. Crush, the rest of the actor states and roster,
+psprite sprites, and a native tick trace are still missing.
+
+## Audit: last-enemy memory (2026-09-29)
+
+Wake-up stores the prior chase target in `LastEnemyId` when
+`OkayToSwitchTarget` allows a switch. The slot is filled when it was empty,
+the stored actor is not a player, or the stored actor is dead. A living
+player last enemy is kept across later monster switches. `TIDtoHate` and
+sleep early-out are absent. `LastEnemyId` is in the brain checksum. A
+same-actor restore keeps it.
+
+Phase 1 stays open. The rest of the actor states and roster, psprite
+sprites, and a native tick trace are still missing.
+
+## Audit: friendly IsFriend (2026-09-29)
+
+`MF_FRIENDLY` and `FriendPlayer` feed a subset of native `IsFriend`. Two
+friendly actors with the same nonzero `FriendPlayer`, or either side at 0,
+are friends. Wake-up does not acquire or switch to a friendly source.
+`MF_JUSTHIT` is applied after wake-up, matching native `ReactToDamage`.
+The gate is the source is already the chase target, there is no chase
+target, or the chase target is not a friend.
+Deathmatch teamplay and designated teams are absent. Both fields are in the
+actor checksum. A same-actor restore keeps them.
+
+Phase 1 stays open. The rest of the actor states and roster, psprite
+sprites, and a native tick trace are still missing.
+
+## Audit: sector pinch crush (2026-09-29)
+
+After movers tick, `FitToSector` applies 10 crush damage every four tics
+when sector headroom is below actor height. Only solid blockers are
+crushed. Map load and per-step fits skip it. An active mover on the
+sector or mover crush on the same tic suppresses the pinch so crushers do
+not double-hit. Damage type is `Crush`. Carried riders, polyobjects, and
+touchy detonation are absent.
+
+Phase 1 stays open. The rest of the actor states and roster, psprite
+sprites, and a native tick trace are still missing.
+
+## Audit: target-switch flags (2026-09-29)
+
+`MF4_NOTARGETSWITCH` on the victim blocks `OkayToSwitchTarget` while a
+chase target is already set. A later hit from someone else leaves that
+target in place. `MF4_QUICKTORETALIATE` lets a new source take over even
+when threshold is still positive and reloads threshold from
+`DefThreshold` on the switch. Both flags are in the actor checksum and
+survive a same-actor restore. Friend, species, and TID hate checks remain
+absent.
 
 Phase 1 stays open. Crush, the rest of the actor states and roster,
 psprite sprites, and a native tick trace are still missing.
@@ -4335,3 +4868,53 @@ and immediate sound-alert coverage supersedes only those specific open items.
 This is a source review and regression self-audit, not an independent review or
 an exhaustive native parity audit. Passing this suite does not close the gates
 above. Full completion requested by the user has not been achieved.
+
+## Audit: ACS actor properties and UseInventory (2026-09-29)
+
+`SetActorProperty` / `GetActorProperty` (opcodes 245/246) route through
+`AcsActorProperties` with tid 0 meaning the activator and non-zero tids iterating
+all matches (`AcsActorTid`). Health refuses writes on dead actors. Step and
+dropoff heights accept fixed-point raw values like native. `APROP_TARGETTID` reads
+and writes through `MonsterBrain` only. Unknown property ids read as 0 and ignore
+sets. `AcsActorPropertyTests` covers health by tid and tid-zero activator paths.
+
+`UseInventory` (418) pops a string id and pushes 0/1 like `p_acs.cpp`
+`UseInventory` → `DoUseInv`. Only weapon class names the inventory layer already
+knows are supported; success sets `Pending` when the ready weapon differs. Health,
+armor, keys, activator-null all-player use, and `UseActorInventory` are absent.
+
+Release `HCDE.Playsim.Tests`: **2,229** passed (includes two new inventory tests
+and two actor-property tests from this slice). Phase 1 gate 5 and master-plan
+checkboxes stay open. Managed gameplay trace checksum **2927491796** unchanged.
+
+## Audit: UseActorInventory (2026-09-29)
+
+`UseActorInventory` (419) pops string id then tid (top = string), matching
+`PCD_USEACTORINVENTORY` in `p_acs.cpp`. Tid 0 calls the same all-player
+`UseInventory` path as a null activator. Non-zero tids sum `DoUseInv` across
+`GetActorIterator` matches. Weapon rules match activator `UseInventory`.
+`AcsPlayerInventoryTests.UseActorInventory_SelectsWeaponOnTidTarget` covers a
+cooperative second player. `ACSF_GetMaxInventory` and non-weapon use remain
+absent.
+
+Release `HCDE.Playsim.Tests`: **2,230** passed after this note.
+
+## Audit: actor-property flags and UseActorInventory tid 0 (2026-09-29)
+
+Regression-only slice: `AcsActorPropertyTests` now covers `APROP_Ambush` (10) and
+`APROP_TARGETTID` (26) on a monster tid, including brain target resolution by thing
+id. `UseActorInventory_TidZeroUsesEveryPlayer` checks cooperative tid **0** selects
+the weapon on both spawned players. No playsim behavior changes.
+
+Release `HCDE.Playsim.Tests`: **2,233** passed after this note.
+
+## Audit: ACS ammo capacity opcodes (2026-09-29)
+
+`GetAmmoCapacity` (271) and `SetAmmoCapacity` (272) follow `p_acs.cpp`
+`PCD_GETAMMOCAPACITY` / `PCD_SETAMMOCAPACITY`: Doom ammo string names only
+(`Clip`, `Shell`, `Cell`, `RocketAmmo`, …). Reads and writes the managed
+`MaxBullets` / `MaxShells` / `MaxRockets` / `MaxCells` fields on the activator
+player. Weapons, armor, and `ACSF_GetMaxInventory` are still absent. Tests cover
+pistol-start read and a set/get round trip.
+
+Release `HCDE.Playsim.Tests`: **2,235** passed after this note.

@@ -29,9 +29,29 @@ public static class ActorDamage
             forced = false;
         // God mode and invulnerability stop ordinary hits. A telefrag goes through both.
         var telefrag = damage >= TelefragDamage;
-        if (damage <= 0 || !target.CanTakeDamage
+        if (damage <= 0)
+            return default;
+        if (target.IsDead)
+        {
+            if (!target.Shootable)
+                return default;
+            if (inflictor is { } && string.Equals(damageType, "Ice", StringComparison.Ordinal) && !inflictor.IceShatter)
+                return default;
+            if (target.IceCorpse)
+            {
+                target.Shattering = true;
+                target.VelocityX = target.VelocityY = target.VelocityZ = default;
+                target.States.ForceRemainingTics(1);
+                target.Simulation?.SpawnIceChunks(target);
+            }
+            return default;
+        }
+        if (!target.CanTakeDamage
             || ((target.Invulnerable || target is PlayerPawn { GodMode: true })
                 && !telefrag && !forced && !flags.HasFlag(DamageFlags.BypassInvulnerability)))
+            return default;
+        var attacker = source ?? inflictor;
+        if (attacker != null && !target.CanAttackHurtFrom(attacker))
             return default;
         var absorbed = 0;
         if (!forced && !flags.HasFlag(DamageFlags.BypassArmor) && !IgnoresArmor(damageType))
@@ -61,6 +81,7 @@ public static class ActorDamage
         var before = target.Health;
         target.LastDamageSourceId = source?.Id;
         target.DamageTypeReceived = damageType;
+        target.DeathInflictor = inflictor;
         // P_DamageMobj subtracts the post-armor remainder and keeps the negative overkill.
         // GetGibHealth is -spawn health. Health equal to that threshold is not an extreme death.
         var next = (long)before - (damage - absorbed);
@@ -69,20 +90,68 @@ public static class ActorDamage
             next = 1;
         target.Health = (int)Math.Clamp(next, int.MinValue, int.MaxValue);
         target.DamageTypeReceived = null;
+        target.DeathInflictor = null;
         var lost = before - target.Health;
         var dealt = damage - absorbed;
+        var forcedPain = inflictor is { ForcePain: true };
+        if (!target.IsDead && target.WoundHealth > 0 && target.Health <= target.WoundHealth)
+        {
+            var wound = target.WoundStateFor(damageType);
+            if (wound >= 0)
+            {
+                target.States.Enter(target, wound);
+                Drain(target, source, damage - absorbed);
+                return new DamageResult(lost, absorbed, target.IsDead);
+            }
+        }
         var painChance = target.PainChanceFor(damageType);
         var painState = target.PainStateFor(damageType);
         // MF6_FORCEPAIN skips the threshold and the pain roll. MF5_NOPAIN, MF5_PAINLESS, and DMG_NO_PAIN still block.
-        var forcedPain = inflictor is { ForcePain: true };
         var painless = target.NoPain || inflictor is { Painless: true } || flags.HasFlag(DamageFlags.NoPain);
-        if (!target.IsDead && !painless && target.States.HasState(painState)
+        var painFlinch = !target.IsDead && !painless && target.States.HasState(painState)
             && (forcedPain || (lost > 0 && dealt >= target.PainThreshold
                 && (painChance >= 256 || painChance > 0 && target.Simulation != null
-                    && target.Simulation.NextCombatRandom() % 256 < painChance))))
-            target.States.Enter(target, painState);
+                    && target.Simulation.NextCombatRandom() % 256 < painChance)))
+            && TryEnterPain(target, painState, damageType, forcedPain);
+        if (!target.IsDead)
+            target.Brain?.WakeOnDamage(target, source, dealt, forcedPain);
+        if (painFlinch && source != null && ShouldMarkJustHit(target, source))
+            target.JustHit = true;
         Drain(target, source, damage - absorbed);
         return new DamageResult(lost, absorbed, target.IsDead);
+    }
+
+    /// <summary>Electric pain rolls <c>pr_lightning</c> on the flicker stream. Poison howling is absent.</summary>
+    private static bool TryEnterPain(Actor target, int painState, string? damageType, bool forcedPain)
+    {
+        if (!string.Equals(damageType, "Electric", StringComparison.Ordinal))
+        {
+            target.States.Enter(target, painState);
+            return true;
+        }
+        if (target.Simulation == null)
+        {
+            target.States.Enter(target, painState);
+            return true;
+        }
+        if (forcedPain || target.Simulation.NextFlickerRandom() < 96)
+        {
+            target.FullBright = false;
+            target.States.Enter(target, painState);
+            return true;
+        }
+        target.FullBright = true;
+        return false;
+    }
+
+    /// <summary>Native <c>MF_JUSTHIT</c> gate. Teamplay and designated teams are absent.</summary>
+    private static bool ShouldMarkJustHit(Actor target, Actor source)
+    {
+        if (target.Brain is not { } brain) return true;
+        if (brain.TargetId == source.Id) return true;
+        if (brain.TargetId == null) return true;
+        var chase = target.Simulation?.Actors.FirstOrDefault(actor => actor.Id == brain.TargetId);
+        return chase != null && !target.IsFriend(chase);
     }
 
     /// <summary>Mapinfo <c>DamageType Drowning</c> is the only <c>NoArmor</c> type in this port.</summary>

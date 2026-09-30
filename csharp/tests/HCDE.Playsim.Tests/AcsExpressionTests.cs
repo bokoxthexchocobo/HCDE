@@ -59,10 +59,10 @@ public class AcsExpressionTests
     [Theory]
     [InlineData(17)]
     [InlineData(18)]
-    public void ZeroDivisorStopsBeforeWorldMutation(int opcode)
+    public void ZeroDivisorPushesZeroAndContinues(int opcode)
     {
         var sim = Room(); Run(sim, 3, 7, 3, 0, opcode, 10, 112, 7, 35, 1);
-        Assert.Equal(128, sim.LightOf(0));
+        Assert.Equal(35, sim.LightOf(0));
     }
 
     [Theory]

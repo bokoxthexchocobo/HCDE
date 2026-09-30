@@ -5,64 +5,78 @@ namespace HCDE.Playsim.Tests;
 
 public class AcsActivatorQueryTests
 {
-    [Theory]
-    [InlineData(1, 0)]
-    [InlineData(4, 3)]
-    [InlineData(3001, -1)]
-    [InlineData(0, -1)]
-    public void PlayerNumberReportsVisiblePlayerSlotOrMinusOne(int type, int expected)
+    [Fact]
+    public void ActivatorTid_ReportsTheTriggeringActor()
     {
-        var sim = Room(type, 42); Query(sim, 247, sim.Actors.FirstOrDefault());
-        Assert.Equal(expected, sim.LightOf(0));
-    }
-
-    [Theory]
-    [InlineData(1, 42)]
-    [InlineData(3001, 73)]
-    [InlineData(1, 0)]
-    [InlineData(0, 0)]
-    public void ActivatorTidUsesMapThingId(int type, int tid)
-    {
-        var sim = Room(type, tid); Query(sim, 248, sim.Actors.FirstOrDefault());
-        Assert.Equal(tid, sim.LightOf(0));
-    }
-
-    [Theory]
-    [InlineData(247, -1)]
-    [InlineData(248, 0)]
-    public void DestroyedActivatorUsesWorldDefault(int opcode, int expected)
-    {
-        var sim = Room(1, 42); var actor = sim.Actors.Single(); actor.Destroy();
-        Query(sim, opcode, actor); Assert.Equal(expected, sim.LightOf(0));
-    }
-
-    [Theory]
-    [InlineData(247, 0)]
-    [InlineData(248, 42)]
-    public void DeadButExistingActivatorRetainsIdentity(int opcode, int expected)
-    {
-        var sim = Room(1, 42); var actor = sim.Actors.Single(); actor.Health = 0;
-        Query(sim, opcode, actor); Assert.Equal(expected, sim.LightOf(0));
+        var sim = Room(playerThingId: 42);
+        var player = sim.Players.Single();
+        Assert.Equal(42, player.ThingId);
+        Run(sim, player,
+            (int)AcsPcode.ActivatorTid,
+            (int)AcsPcode.PushNumber, 42,
+            (int)AcsPcode.Eq,
+            (int)AcsPcode.IfGoto, 24,
+            (int)AcsPcode.Lspec2Direct, 112, 7, 35);
+        Assert.Equal(35, sim.LightOf(0));
     }
 
     [Fact]
-    public void ThingIdentityParticipatesInSimulationChecksum()
+    public void PlayerHealth_ReportsActivatorHealth()
     {
-        Assert.NotEqual(Room(1, 42).Checksum, Room(1, 43).Checksum);
+        var sim = Room();
+        var player = sim.Players.Single();
+        player.Health = 77;
+        Run(sim, player,
+            (int)AcsPcode.PlayerHealth,
+            (int)AcsPcode.PushNumber, 77,
+            (int)AcsPcode.Eq,
+            (int)AcsPcode.IfGoto, 24,
+            (int)AcsPcode.Lspec2Direct, 112, 7, 35);
+        Assert.Equal(35, sim.LightOf(0));
     }
 
-    private static void Query(AuthoritySimulation sim, int opcode, Actor? actor)
+    [Fact]
+    public void LineSide_ReportsBackSideActivation()
     {
-        int[] words = [3, 7, opcode, 5, 112, 1];
+        var sim = Room();
+        var player = sim.Players.Single();
+        var line = new LevelLine { Index = 0, X1 = 0, Y1 = 0, X2 = 0, Y2 = 64 };
+        Run(sim, player, line, backSide: true,
+            (int)AcsPcode.LineSide,
+            (int)AcsPcode.PushNumber, 1,
+            (int)AcsPcode.Eq,
+            (int)AcsPcode.IfGoto, 24,
+            (int)AcsPcode.Lspec2Direct, 112, 7, 35);
+        Assert.Equal(35, sim.LightOf(0));
+    }
+
+    private static void Run(
+        AuthoritySimulation sim,
+        Actor activator,
+        params int[] words) =>
+        Run(sim, activator, triggerLine: null, backSide: false, words);
+
+    private static void Run(
+        AuthoritySimulation sim,
+        Actor activator,
+        LevelLine? triggerLine,
+        bool backSide,
+        params int[] words)
+    {
         var bytes = new byte[words.Length * 4];
-        for (var i = 0; i < words.Length; i++) BinaryPrimitives.WriteInt32LittleEndian(bytes.AsSpan(i * 4), words[i]);
+        for (var i = 0; i < words.Length; i++)
+            BinaryPrimitives.WriteInt32LittleEndian(bytes.AsSpan(i * 4), words[i]);
         sim.Acs.Add(new AcsProgram { Number = 1, Code = bytes });
-        Assert.True(sim.Acs.TryExecute(1, [], actor)); sim.Acs.Tick(sim);
+        Assert.True(sim.Acs.Enqueue(1, ReadOnlySpan<int>.Empty, activator, triggerLine, backSide));
+        sim.Acs.Tick(sim);
+        Assert.Equal(0, sim.Acs.RunningCount);
     }
 
-    private static AuthoritySimulation Room(int type, int tid) => AuthoritySimulation.Start(new PlayLevel
+    private static AuthoritySimulation Room(int playerThingId = 0) => AuthoritySimulation.Start(new PlayLevel
     {
-        Sectors = [new LevelSector { Tag = 7, CeilingHeight = 128, LightLevel = 128 }],
-        Things = type == 0 ? [] : [new LevelThing { Type = type, Id = tid }],
+        Format = MapDataFormat.HexenBinary,
+        MapName = "MAP01",
+        Sectors = [new LevelSector { Index = 0, Tag = 7, LightLevel = 128, CeilingHeight = 128 }],
+        Things = [new LevelThing { Type = 1, Id = playerThingId, X = 32, Y = 64 }],
     });
 }

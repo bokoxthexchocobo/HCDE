@@ -13,13 +13,100 @@ namespace HCDE.Playsim;
 /// MaxStepHeight, then stand there (<c>P_TryMove</c> thingblocker / <c>MF2_PASSMOBJ</c>).
 /// A grounded monster can do that only when the other actor has <c>MF4_ACTLIKEBRIDGE</c>.
 /// An <c>MF_ICECORPSE</c> actor also steps onto a corpse. Other actors walk through corpses.
-/// Crush is not applied.
+/// A shootable actor whose headroom is below its height takes 10 crush damage every four tics
+/// after movers run (<c>P_CheckPosition</c> / <c>NAME_Crush</c>). Standing riders take the same
+/// mover and sector pinch crush as the actor they are on. A carrier's horizontal and vertical
+/// step delta moves riders that were standing on it at step start. A per-sector scroll vector
+/// carries grounded non-floating actors after thinkers run. Line-triggered scrollers, polyobjects,
+/// and touchy detonation are absent.
 /// </summary>
 public static class ActorPhysics
 {
     public const double GroundFriction = 0xE800 / 65536.0;
     public const double Gravity = 1;
     public const double MaxMove = 30;
+    /// <summary>Native default sector pinch crush when <c>crushchange</c> is 10.</summary>
+    public const int SectorCrushDamage = 10;
+
+    /// <summary>Native rider crush subset. The rider stands on the carrier's top within both radii.</summary>
+    public static bool IsStandingOn(Actor carrier, Actor rider)
+    {
+        if (ReferenceEquals(carrier, rider) || !rider.BlocksActors) return false;
+        var top = carrier.Z.ToDouble() + carrier.Height.ToDouble();
+        if (Math.Abs(rider.Z.ToDouble() - top) > 1) return false;
+        var reach = carrier.Radius.ToDouble() + rider.Radius.ToDouble();
+        var dx = rider.X.ToDouble() - carrier.X.ToDouble();
+        var dy = rider.Y.ToDouble() - carrier.Y.ToDouble();
+        return dx * dx + dy * dy <= reach * reach;
+    }
+
+    /// <summary>Applies the same crush damage to every actor standing on <paramref name="carrier"/>.</summary>
+    public static void CrushStandingRiders(AuthoritySimulation sim, Actor carrier, int damage, int tic, string? damageType = null)
+    {
+        if (damage <= 0) return;
+        foreach (var rider in sim.Actors)
+        {
+            if (!IsStandingOn(carrier, rider)) continue;
+            rider.MarkMoverCrush(tic);
+            ActorDamage.Apply(rider, damage, damageType: damageType);
+        }
+    }
+
+    /// <summary>Moves riders that were on <paramref name="carrier"/> before it stepped this tic.</summary>
+    public static void CarryStandingRiders(AuthoritySimulation sim, Actor carrier, double dx, double dy, double dz, IReadOnlyList<Actor> riders)
+    {
+        if (riders.Count == 0 || (Math.Abs(dx) < 1e-9 && Math.Abs(dy) < 1e-9 && Math.Abs(dz) < 1e-9))
+            return;
+        foreach (var rider in riders)
+        {
+            if (ReferenceEquals(rider, carrier) || rider.Destroyed) continue;
+            var x = rider.X.ToDouble() + dx;
+            var y = rider.Y.ToDouble() + dy;
+            if (!TryMove(sim, rider, x, y, out _))
+            {
+                if (!TryMove(sim, rider, rider.X.ToDouble() + dx, rider.Y.ToDouble(), out _)
+                    && !TryMove(sim, rider, rider.X.ToDouble(), rider.Y.ToDouble() + dy, out _))
+                    continue;
+            }
+            if (Math.Abs(dz) > 1e-9)
+                rider.Z = Fixed.FromDouble(rider.Z.ToDouble() + dz);
+            FitToSector(sim, rider, carryFloor: false);
+            RefreshOnMobj(sim, rider);
+        }
+    }
+
+    /// <summary>Native <c>Level-&gt;Scrolls</c> carry subset for grounded actors.</summary>
+    internal static void ApplySectorScroll(AuthoritySimulation sim, Actor actor)
+    {
+        if (actor.Destroyed || actor.Floating || !actor.OnGround || actor is ProjectileActor)
+            return;
+        var sector = actor.SectorIndex;
+        if (sector < 0 || sector >= sim.SectorScrollX.Length)
+            return;
+        var dx = sim.SectorScrollX[sector];
+        var dy = sim.SectorScrollY[sector];
+        if (actor is PlayerPawn && (uint)sector < (uint)sim.Level.Sectors.Count
+            && HexenSectorScroll.TryGetPlayerCarryDelta(sim.Level.Sectors[sector].Special, out var hexDx, out var hexDy))
+        {
+            dx += hexDx;
+            dy += hexDy;
+        }
+        if (Math.Abs(dx) < 1e-9 && Math.Abs(dy) < 1e-9)
+            return;
+        TryMove(sim, actor, actor.X.ToDouble() + dx, actor.Y.ToDouble() + dy, out _);
+    }
+
+    internal static void RefreshOnMobj(AuthoritySimulation sim, Actor actor)
+    {
+        if (actor.Floating || actor is ProjectileActor)
+        {
+            actor.OnMobj = false;
+            return;
+        }
+        var floor = sim.FloorOf(actor.SectorIndex);
+        var support = SupportFloor(sim, actor);
+        actor.OnMobj = support > floor + 1e-4;
+    }
 
     public static int SectorAt(PlayLevel level, double x, double y)
     {
@@ -56,6 +143,10 @@ public static class ActorPhysics
     public static void Step(AuthoritySimulation sim, Actor actor)
     {
         if (actor.Brain?.Charging == true) { StepCharge(sim, actor); return; }
+        var startX = actor.X.ToDouble();
+        var startY = actor.Y.ToDouble();
+        var startZ = actor.Z.ToDouble();
+        var riders = sim.Actors.Where(candidate => IsStandingOn(actor, candidate)).ToArray();
         var vx = Math.Clamp(actor.VelocityX.ToDouble(), -MaxMove, MaxMove);
         var vy = Math.Clamp(actor.VelocityY.ToDouble(), -MaxMove, MaxMove);
         var steps = Math.Max(1, (int)Math.Ceiling(Math.Max(Math.Abs(vx), Math.Abs(vy)) / 2));
@@ -109,6 +200,8 @@ public static class ActorPhysics
         var friction = actor.OnGround ? GroundFriction : 1;
         actor.VelocityX = Fixed.FromDouble(Math.Abs(vx * friction) < 0.0625 ? 0 : vx * friction);
         actor.VelocityY = Fixed.FromDouble(Math.Abs(vy * friction) < 0.0625 ? 0 : vy * friction);
+        CarryStandingRiders(sim, actor, actor.X.ToDouble() - startX, actor.Y.ToDouble() - startY, actor.Z.ToDouble() - startZ, riders);
+        RefreshOnMobj(sim, actor);
     }
 
     private static void FloatTowardTarget(AuthoritySimulation sim, Actor actor)
@@ -168,7 +261,8 @@ public static class ActorPhysics
         && other.DoomEdNum != InvasionDirector.SpawnSpotType
         && !PickupCatalog.IsPickup(other.DoomEdNum);
 
-    public static void FitToSector(AuthoritySimulation sim, Actor actor, bool carryFloor = true)
+    /// <summary>Snaps grounded actors to sector and mobj support. Call carriers before riders.</summary>
+    public static void FitToSector(AuthoritySimulation sim, Actor actor, bool carryFloor = true, bool sectorPinchCrush = false)
     {
         var floor = SupportFloor(sim, actor);
         var ceiling = actor.SectorIndex < 0 ? double.PositiveInfinity : sim.CeilingOf(actor.SectorIndex);
@@ -186,6 +280,17 @@ public static class ActorPhysics
         }
         actor.Z = Fixed.FromDouble(z);
         actor.OnGround = z <= floor && actor.VelocityZ.Raw <= 0;
+        RefreshOnMobj(sim, actor);
+        if (sectorPinchCrush && actor.SectorIndex >= 0 && actor.BlocksActors
+            && ceiling - floor < actor.Height.ToDouble() - 1e-4
+            && actor.MoverCrushTic != sim.Thinkers.Clock.Tic
+            && !sim.Motions.Any(m => m.SectorIndex == actor.SectorIndex)
+            && (sim.Thinkers.Clock.Tic & 3) == 0)
+        {
+            var tic = sim.Thinkers.Clock.Tic;
+            ActorDamage.Apply(actor, SectorCrushDamage, damageType: "Crush");
+            CrushStandingRiders(sim, actor, SectorCrushDamage, tic, "Crush");
+        }
     }
 
     private static void StepCharge(AuthoritySimulation sim, Actor actor)
@@ -379,7 +484,10 @@ public static class ActorPhysics
         // Flat maps use the current floor against the destination floor. A drop of exactly the limit is allowed.
         if (sector >= 0 && actor.SectorIndex >= 0 && !actor.AllowDropOff && !actor.Floating)
         {
-            var drop = sim.FloorOf(actor.SectorIndex) - sim.FloorOf(sector);
+            var floorz = sim.FloorOf(sector);
+            if (actor.OnMobj)
+                floorz = Math.Max(actor.Z.ToDouble(), floorz);
+            var drop = sim.FloorOf(actor.SectorIndex) - floorz;
             if (drop > actor.MaxDropOffHeight.ToDouble())
                 return false;
         }

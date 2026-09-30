@@ -53,6 +53,9 @@ public static class AcsBehaviorBinder
         if (!MapBehaviorDirectoryCodec.TryReadScripts(record.Data, record.Format, record.DirectoryOffset, out var scripts, out error))
             return false;
 
+        if (!MapBehaviorStringTableCodec.TryRead(record.Data, record.Format, record.DirectoryOffset, out var stringTable, out error))
+            return false;
+
         var prepared = new List<AcsProgram>(scripts.Count);
         var openScripts = new List<int>();
         var enter = new List<int>();
@@ -78,6 +81,7 @@ public static class AcsBehaviorBinder
                 Code = code,
                 CodeBaseOffset = (int)script.Address,
                 ArgumentCount = script.ArgCount,
+                StringTable = stringTable,
             });
             if (script.Type == ScriptOpen)
                 openScripts.Add(script.Number);

@@ -117,7 +117,15 @@ internal static class CeilingActions
             if (blocked.Length > 0)
             {
                 if (crushDamage >= 0 && (sim.Thinkers.Clock.Tic & 3) == 0)
-                    foreach (var actor in blocked) ActorDamage.Apply(actor, crushDamage);
+                {
+                    var tic = sim.Thinkers.Clock.Tic;
+                    foreach (var actor in blocked)
+                    {
+                        actor.MarkMoverCrush(tic);
+                        ActorDamage.Apply(actor, crushDamage);
+                        ActorPhysics.CrushStandingRiders(sim, actor, crushDamage, tic);
+                    }
+                }
                 // Native MoveCeiling completes a destination-clamped leg even when
                 // obstruction rolls the plane back; an overshoot also forces rollback.
                 if (crushDamage < 0 || motion.StopOnCrush

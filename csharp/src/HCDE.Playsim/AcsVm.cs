@@ -1,4 +1,5 @@
 using System.Buffers.Binary;
+using HCDE.Gamedata;
 using HCDE.MapLoader;
 
 namespace HCDE.Playsim;
@@ -15,6 +16,8 @@ public sealed class AcsProgram
     public int[] LocalArraySizes { get; init; } = Array.Empty<int>();
     /// <summary>Jump-table targets expressed as byte offsets within Code.</summary>
     public int[] JumpPoints { get; init; } = Array.Empty<int>();
+    /// <summary>BEHAVIOR string table entries indexed by ACS string ids. DECORATE replacements are absent.</summary>
+    public string[] StringTable { get; init; } = Array.Empty<string>();
 }
 
 /// <summary>
@@ -156,9 +159,12 @@ public sealed class AcsVm
                 throw new ArgumentOutOfRangeException(nameof(program), "ACS local layout exceeds supported limits.");
         }
         // Keep registered/running code stable if the caller later edits its input array.
+        var stringTable = program.StringTable.Length == 0
+            ? Array.Empty<string>()
+            : program.StringTable.Select(entry => entry ?? string.Empty).ToArray();
         var owned = new AcsProgram { Number = program.Number, Code = (byte[])program.Code.Clone(), LegacyHexenDelay = program.LegacyHexenDelay,
             LocalVariableCount = program.LocalVariableCount, LocalArraySizes = sizes, ArgumentCount = program.ArgumentCount,
-            JumpPoints = jumpPoints, CodeBaseOffset = program.CodeBaseOffset };
+            JumpPoints = jumpPoints, CodeBaseOffset = program.CodeBaseOffset, StringTable = stringTable };
         _programs[owned.Number] = owned;
         var hash = HashCodeBytes(owned.Code);
         hash = unchecked((hash ^ (uint)owned.CodeBaseOffset) * 16777619u);
@@ -168,6 +174,11 @@ public sealed class AcsVm
         foreach (var size in sizes) hash = unchecked((hash ^ (uint)size) * 16777619u);
         hash = unchecked((hash ^ (uint)jumpPoints.Length) * 16777619u);
         foreach (var target in jumpPoints) hash = unchecked((hash ^ (uint)target) * 16777619u);
+        foreach (var entry in stringTable)
+        {
+            foreach (var ch in entry) hash = unchecked((hash ^ ch) * 16777619u);
+            hash = unchecked((hash ^ 0xFFu) * 16777619u);
+        }
         _programHashes[owned.Number] = hash;
     }
 
@@ -550,6 +561,9 @@ public sealed class AcsVm
                     if (degrees < 0) degrees += 360;
                     fiber.Stack.Add((int)(degrees * (16384.0 / 90.0)));
                     break;
+                case (int)AcsPcode.IsNetworkGame:
+                    fiber.Stack.Add(sim.IsNetworkGame ? 1 : 0);
+                    break;
                 case (int)AcsPcode.GameType:
                     fiber.Stack.Add(sim.GameMode switch
                     {
@@ -564,6 +578,75 @@ public sealed class AcsVm
                 case (int)AcsPcode.Timer:
                     fiber.Stack.Add(levelTic);
                     break;
+                case (int)AcsPcode.PlayerCount:
+                    fiber.Stack.Add(sim.Players.Count(player => !player.Destroyed));
+                    break;
+                case (int)AcsPcode.SinglePlayer:
+                    fiber.Stack.Add(sim.GameMode == SpawnGameMode.Single ? 1 : 0);
+                    break;
+                case (int)AcsPcode.PlayerInGame:
+                {
+                    var playerNum = Pop(fiber);
+                    if (fiber.Done) break;
+                    fiber.Stack.Add(sim.IsPlayerInGame(playerNum) ? 1 : 0);
+                    break;
+                }
+                case (int)AcsPcode.PlayerIsBot:
+                {
+                    var botPlayerNum = Pop(fiber);
+                    if (fiber.Done) break;
+                    fiber.Stack.Add(sim.IsPlayerBot(botPlayerNum) ? 1 : 0);
+                    break;
+                }
+                case (int)AcsPcode.ThingCount:
+                {
+                    if (fiber.Stack.Count < 2) { fiber.Done = true; return; }
+                    var thingTid = Pop(fiber);
+                    var type = Pop(fiber);
+                    if (fiber.Done) break;
+                    fiber.Stack.Add(ThingCount(sim, type, thingTid));
+                    break;
+                }
+                case (int)AcsPcode.ThingCountDirect:
+                {
+                    var type = ReadI32(fiber);
+                    var thingTid = ReadI32(fiber);
+                    if (fiber.Done) break;
+                    fiber.Stack.Add(ThingCount(sim, type, thingTid));
+                    break;
+                }
+                case (int)AcsPcode.ThingCountSector:
+                {
+                    if (fiber.Stack.Count < 3) { fiber.Done = true; return; }
+                    // Native PCD_THINGCOUNTSECTOR: ThingCount(STACK(3), -1, STACK(2), STACK(1)); top = tag.
+                    var sectorTag = Pop(fiber);
+                    var sectorTid = Pop(fiber);
+                    var sectorType = Pop(fiber);
+                    if (fiber.Done) break;
+                    fiber.Stack.Add(ThingCount(sim, sectorType, sectorTid, sectorTag));
+                    break;
+                }
+                case (int)AcsPcode.ThingCountName:
+                {
+                    if (fiber.Stack.Count < 2) { fiber.Done = true; return; }
+                    // Native PCD_THINGCOUNTNAME: ThingCount(-1, STACK(2), STACK(1), -1); top = tid.
+                    var nameTid = Pop(fiber);
+                    var nameStringId = Pop(fiber);
+                    if (fiber.Done) break;
+                    fiber.Stack.Add(ThingCountByName(fiber, sim, nameStringId, nameTid, tag: -1));
+                    break;
+                }
+                case (int)AcsPcode.ThingCountNameSector:
+                {
+                    if (fiber.Stack.Count < 3) { fiber.Done = true; return; }
+                    // Native PCD_THINGCOUNTNAMESECTOR: ThingCount(-1, STACK(3), STACK(2), STACK(1)); top = tag.
+                    var nameSectorTag = Pop(fiber);
+                    var nameSectorTid = Pop(fiber);
+                    var nameSectorStringId = Pop(fiber);
+                    if (fiber.Done) break;
+                    fiber.Stack.Add(ThingCountByName(fiber, sim, nameSectorStringId, nameSectorTid, nameSectorTag));
+                    break;
+                }
                 case (int)AcsPcode.PlayerHealth:
                     fiber.Stack.Add(fiber.Activator is { Destroyed: false } healthActor ? healthActor.Health : 0);
                     break;
@@ -571,6 +654,182 @@ public sealed class AcsVm
                     fiber.Stack.Add(fiber.Activator is PlayerPawn { Destroyed: false } armorPlayer
                         ? armorPlayer.Inventory.Armor : 0);
                     break;
+                case (int)AcsPcode.PlayerTeam:
+                    fiber.Stack.Add(0);
+                    break;
+                case (int)AcsPcode.PlayerFrags:
+                    fiber.Stack.Add(fiber.Activator is PlayerPawn { Destroyed: false } fragPlayer
+                        ? fragPlayer.FragCount : 0);
+                    break;
+                case (int)AcsPcode.PlayerBlueSkull:
+                case (int)AcsPcode.PlayerBlueCard:
+                    fiber.Stack.Add(AcsPlayerInventory.HasKey(fiber.Activator, PickupCatalog.KeyColor.Blue));
+                    break;
+                case (int)AcsPcode.PlayerRedSkull:
+                case (int)AcsPcode.PlayerRedCard:
+                    fiber.Stack.Add(AcsPlayerInventory.HasKey(fiber.Activator, PickupCatalog.KeyColor.Red));
+                    break;
+                case (int)AcsPcode.PlayerYellowSkull:
+                case (int)AcsPcode.PlayerYellowCard:
+                    fiber.Stack.Add(AcsPlayerInventory.HasKey(fiber.Activator, PickupCatalog.KeyColor.Yellow));
+                    break;
+                case (int)AcsPcode.PlayerMasterSkull:
+                case (int)AcsPcode.PlayerMasterCard:
+                    fiber.Stack.Add(AcsPlayerInventory.HasMasterKeys(fiber.Activator));
+                    break;
+                case (int)AcsPcode.PlayerBlackSkull:
+                case (int)AcsPcode.PlayerSilverSkull:
+                case (int)AcsPcode.PlayerGoldSkull:
+                case (int)AcsPcode.PlayerBlackCard:
+                case (int)AcsPcode.PlayerSilverCard:
+                case (int)AcsPcode.PlayerGoldCard:
+                    fiber.Stack.Add(0);
+                    break;
+                case (int)AcsPcode.ClearInventory:
+                    AcsPlayerInventory.Clear(fiber.Activator);
+                    break;
+                case (int)AcsPcode.ClearActorInventory:
+                {
+                    var clearTid = Pop(fiber);
+                    if (fiber.Done) break;
+                    foreach (var actor in AcsActorTid.AllFromTid(sim, clearTid))
+                        AcsPlayerInventory.Clear(actor);
+                    break;
+                }
+                case (int)AcsPcode.GiveInventory:
+                {
+                    if (fiber.Stack.Count < 2) { fiber.Done = true; return; }
+                    var giveAmount = Pop(fiber);
+                    var giveStringId = Pop(fiber);
+                    if (fiber.Done) break;
+                    AcsPlayerInventory.Give(fiber.Activator, fiber.StringTable, giveStringId, giveAmount);
+                    break;
+                }
+                case (int)AcsPcode.GiveInventoryDirect:
+                {
+                    var giveDirectStringId = ReadI32(fiber);
+                    var giveDirectAmount = ReadI32(fiber);
+                    if (fiber.Done) break;
+                    AcsPlayerInventory.Give(fiber.Activator, fiber.StringTable, giveDirectStringId, giveDirectAmount);
+                    break;
+                }
+                case (int)AcsPcode.TakeInventory:
+                {
+                    if (fiber.Stack.Count < 2) { fiber.Done = true; return; }
+                    var takeAmount = Pop(fiber);
+                    var takeStringId = Pop(fiber);
+                    if (fiber.Done) break;
+                    AcsPlayerInventory.Take(fiber.Activator, fiber.StringTable, takeStringId, takeAmount);
+                    break;
+                }
+                case (int)AcsPcode.TakeInventoryDirect:
+                {
+                    var takeDirectStringId = ReadI32(fiber);
+                    var takeDirectAmount = ReadI32(fiber);
+                    if (fiber.Done) break;
+                    AcsPlayerInventory.Take(fiber.Activator, fiber.StringTable, takeDirectStringId, takeDirectAmount);
+                    break;
+                }
+                case (int)AcsPcode.GiveActorInventory:
+                {
+                    if (fiber.Stack.Count < 3) { fiber.Done = true; return; }
+                    var giveActorAmount = Pop(fiber);
+                    var giveActorStringId = Pop(fiber);
+                    var giveActorTid = Pop(fiber);
+                    if (fiber.Done) break;
+                    foreach (var actor in AcsActorTid.AllFromTid(sim, giveActorTid))
+                        AcsPlayerInventory.Give(actor, fiber.StringTable, giveActorStringId, giveActorAmount);
+                    break;
+                }
+                case (int)AcsPcode.TakeActorInventory:
+                {
+                    if (fiber.Stack.Count < 3) { fiber.Done = true; return; }
+                    var takeActorAmount = Pop(fiber);
+                    var takeActorStringId = Pop(fiber);
+                    var takeActorTid = Pop(fiber);
+                    if (fiber.Done) break;
+                    foreach (var actor in AcsActorTid.AllFromTid(sim, takeActorTid))
+                        AcsPlayerInventory.Take(actor, fiber.StringTable, takeActorStringId, takeActorAmount);
+                    break;
+                }
+                case (int)AcsPcode.CheckInventory:
+                {
+                    if (fiber.Stack.Count < 1) { fiber.Done = true; return; }
+                    var invStringId = Pop(fiber);
+                    if (fiber.Done) break;
+                    fiber.Stack.Add(AcsPlayerInventory.Count(fiber.Activator, fiber.StringTable, invStringId, max: false));
+                    break;
+                }
+                case (int)AcsPcode.CheckInventoryDirect:
+                {
+                    var directStringId = ReadI32(fiber);
+                    if (fiber.Done) break;
+                    fiber.Stack.Add(AcsPlayerInventory.Count(fiber.Activator, fiber.StringTable, directStringId, max: false));
+                    break;
+                }
+                case (int)AcsPcode.CheckActorInventory:
+                {
+                    if (fiber.Stack.Count < 2) { fiber.Done = true; return; }
+                    var actorInvStringId = Pop(fiber);
+                    var actorInvTid = Pop(fiber);
+                    if (fiber.Done) break;
+                    var actorInvTarget = AcsActorTid.SingleFromTid(sim, actorInvTid);
+                    fiber.Stack.Add(AcsPlayerInventory.Count(actorInvTarget, fiber.StringTable, actorInvStringId, max: false));
+                    break;
+                }
+                case (int)AcsPcode.UseInventory:
+                {
+                    if (fiber.Stack.Count < 1) { fiber.Done = true; return; }
+                    var useStringId = Pop(fiber);
+                    if (fiber.Done) break;
+                    fiber.Stack.Add(AcsPlayerInventory.Use(fiber.Activator, fiber.StringTable, useStringId));
+                    break;
+                }
+                case (int)AcsPcode.UseActorInventory:
+                {
+                    if (fiber.Stack.Count < 2) { fiber.Done = true; return; }
+                    var useActorStringId = Pop(fiber);
+                    var useActorTid = Pop(fiber);
+                    if (fiber.Done) break;
+                    fiber.Stack.Add(AcsPlayerInventory.UseByTid(sim, useActorTid, fiber.StringTable, useActorStringId));
+                    break;
+                }
+                case (int)AcsPcode.GetAmmoCapacity:
+                {
+                    if (fiber.Stack.Count < 1) { fiber.Done = true; return; }
+                    var ammoCapStringId = Pop(fiber);
+                    if (fiber.Done) break;
+                    fiber.Stack.Add(AcsPlayerInventory.AmmoCapacity(fiber.Activator, fiber.StringTable, ammoCapStringId));
+                    break;
+                }
+                case (int)AcsPcode.SetAmmoCapacity:
+                {
+                    if (fiber.Stack.Count < 2) { fiber.Done = true; return; }
+                    var ammoCapValue = Pop(fiber);
+                    var ammoCapSetStringId = Pop(fiber);
+                    if (fiber.Done) break;
+                    AcsPlayerInventory.SetAmmoCapacity(fiber.Activator, fiber.StringTable, ammoCapSetStringId, ammoCapValue);
+                    break;
+                }
+                case (int)AcsPcode.SetActorProperty:
+                {
+                    if (fiber.Stack.Count < 3) { fiber.Done = true; return; }
+                    var setValue = Pop(fiber);
+                    var setProperty = Pop(fiber);
+                    var setTid = Pop(fiber);
+                    if (fiber.Done) break;
+                    AcsActorProperties.Set(sim, fiber.Activator, setTid, setProperty, setValue);
+                    break;
+                }
+                case (int)AcsPcode.GetActorProperty:
+                {
+                    if (fiber.Stack.Count < 2) { fiber.Done = true; return; }
+                    var getProperty = Pop(fiber);
+                    var getTid = Pop(fiber);
+                    if (fiber.Done) break;
+                    fiber.Stack.Add(AcsActorProperties.Get(sim, fiber.Activator, getTid, getProperty));
+                    break;
+                }
                 case (int)AcsPcode.PlayerNumber:
                     fiber.Stack.Add(fiber.Activator is PlayerPawn { Destroyed: false } player ? player.PlayerNum : -1);
                     break;
@@ -796,7 +1055,10 @@ public sealed class AcsVm
         var right = Pop(fiber);
         var left = Pop(fiber);
         if (opcode is (int)AcsPcode.Divide or (int)AcsPcode.Modulus && right == 0)
-        { fiber.Done = true; return; }
+        {
+            fiber.Stack.Add(0);
+            return;
+        }
         fiber.Stack.Add(opcode switch
         {
             14 => unchecked(left + right), 15 => unchecked(left - right), 16 => unchecked(left * right),
@@ -820,6 +1082,33 @@ public sealed class AcsVm
         if ((Math.Abs((long)numerator) >> 15) >= Math.Abs((long)denominator))
             return (numerator ^ denominator) < 0 ? int.MinValue : int.MaxValue;
         return (int)(((long)numerator << 16) / denominator);
+    }
+
+    private static int ThingCount(AuthoritySimulation sim, int type, int tid, int tag = -1)
+    {
+        var count = 0;
+        foreach (var actor in sim.Actors)
+        {
+            if (actor.Destroyed || actor.Health <= 0 || !actor.IsMapActor) continue;
+            if (type > 0 && actor.DoomEdNum != type) continue;
+            if (tid != 0 && actor.ThingId != tid) continue;
+            if (tag >= 0)
+            {
+                if (actor.SectorIndex < 0 || actor.SectorIndex >= sim.Level.Sectors.Count) continue;
+                if (sim.Level.Sectors[actor.SectorIndex].Tag != tag) continue;
+            }
+            count++;
+        }
+        return count;
+    }
+
+    private static int ThingCountByName(Fiber fiber, AuthoritySimulation sim, int stringId, int tid, int tag)
+    {
+        if (stringId < 0 || stringId >= fiber.StringTable.Length)
+            return 0;
+        if (!DoomActorCatalog.TryEditorNumberForClassName(fiber.StringTable[stringId], out var editorNumber))
+            return 0;
+        return ThingCount(sim, editorNumber, tid, tag);
     }
 
     private static int Pop(Fiber fiber)
@@ -865,6 +1154,7 @@ public sealed class AcsVm
             Code = program.Code;
             CodeBaseOffset = program.CodeBaseOffset;
             JumpPoints = program.JumpPoints;
+            StringTable = program.StringTable;
             LegacyHexenDelay = program.LegacyHexenDelay;
             ArraySizes = program.LocalArraySizes;
             ArrayOffsets = new int[ArraySizes.Length];
@@ -877,6 +1167,7 @@ public sealed class AcsVm
         public byte[] Code { get; }
         public int CodeBaseOffset { get; }
         public int[] JumpPoints { get; }
+        public string[] StringTable { get; }
         public Actor? Activator { get; }
         public LevelLine? TriggerLine { get; }
         public bool BackSide { get; }

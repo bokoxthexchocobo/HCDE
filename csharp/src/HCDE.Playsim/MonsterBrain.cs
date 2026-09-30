@@ -20,6 +20,12 @@ public sealed class MonsterBrain(MonsterAttack attack)
     public MonsterAttack Attack { get; } = attack;
     public MonsterMode Mode { get; private set; }
     public uint? TargetId { get; private set; }
+    /// <summary>Native <c>lastenemy</c>. Updated when wake-up switches chase targets.</summary>
+    public uint? LastEnemyId { get; private set; }
+    /// <summary>Native chase threshold. While positive, <see cref="OkayToSwitchTarget"/> blocks a new target.</summary>
+    public int Threshold { get; private set; }
+    /// <summary>Native <c>DefThreshold</c>. Wake-up reloads <see cref="Threshold"/> from this value.</summary>
+    public int DefThreshold { get; set; } = 100;
     public int ReactionTics { get; private set; } = 10;
     public int AttackCooldown { get; private set; }
     public int WindupTics { get; private set; }
@@ -32,7 +38,7 @@ public sealed class MonsterBrain(MonsterAttack attack)
         get
         {
             var hash = 2166136261u;
-            foreach (var value in new[] { (uint)Attack, (uint)Mode, TargetId ?? 0, (uint)ReactionTics,
+            foreach (var value in new[] { (uint)Attack, (uint)Mode, TargetId ?? 0, LastEnemyId ?? 0, (uint)Threshold, (uint)DefThreshold, (uint)ReactionTics,
                 (uint)AttackCooldown, (uint)WindupTics, (uint)_blockedTics, (uint)_previousX.Raw,
                 (uint)_previousY.Raw, (uint)Fixed.FromDouble(_lastX).Raw, (uint)Fixed.FromDouble(_lastY).Raw, Enabled ? 1u : 0u,
                 (uint)_nativeType, unchecked((uint)_attackTic), _separateMelee ? 1u : 0u, Charging ? 1u : 0u,
@@ -49,6 +55,60 @@ public sealed class MonsterBrain(MonsterAttack attack)
         return null;
     }
 
+    /// <summary>Native <c>ReactToDamage</c> wake-up for a non-player. Pain runs before this in <see cref="ActorDamage.Apply"/>.</summary>
+    internal void WakeOnDamage(Actor actor, Actor? source, int dealt, bool forcedPain)
+    {
+        if (actor is PlayerPawn) return;
+        if (dealt <= 0 && !forcedPain) return;
+        ReactionTics = 0;
+        if (source == null || !source.CanTakeDamage || source.Id == actor.Id) return;
+        if (TargetId == source.Id)
+            Threshold = DefThreshold;
+        else if (TargetId == null)
+        {
+            if (actor.OkayToSwitchTarget(source, this))
+            {
+                TargetId = source.Id;
+                Threshold = DefThreshold;
+            }
+        }
+        else if (actor.OkayToSwitchTarget(source, this))
+        {
+            if (TargetId is { } previous && actor.Simulation != null)
+                RememberLastEnemy(actor.Simulation, previous);
+            TargetId = source.Id;
+            Threshold = DefThreshold;
+        }
+        if (TargetId == source.Id
+            && actor.States.Current == actor.SpawnState && actor.States.HasState(actor.SeeState))
+            actor.States.Enter(actor, actor.SeeState);
+    }
+
+    /// <summary>Native last-enemy update on target switch. <c>TIDtoHate</c> priority over monsters is absent.</summary>
+    internal void RememberLastEnemy(AuthoritySimulation sim, uint previousTargetId)
+    {
+        var last = LastEnemyId == null ? null : sim.Actors.FirstOrDefault(actor => actor.Id == LastEnemyId);
+        if (LastEnemyId == null || last is not PlayerPawn || !last.CanTakeDamage)
+            LastEnemyId = previousTargetId;
+    }
+
+    /// <summary>Native <c>P_LookForPlayers</c> / look fallbacks when no target is acquired.</summary>
+    private Actor? TryResumeLastEnemy(AuthoritySimulation sim, Actor actor)
+    {
+        if (LastEnemyId is not { } lastId) return null;
+        var last = sim.Actors.FirstOrDefault(candidate => candidate.Id == lastId);
+        if (last == null || !last.CanTakeDamage || actor.IsFriend(last))
+        {
+            LastEnemyId = null;
+            return null;
+        }
+        LastEnemyId = null;
+        TargetId = last.Id;
+        _lastX = last.X.ToDouble();
+        _lastY = last.Y.ToDouble();
+        return last;
+    }
+
     internal void Hear(AuthoritySimulation sim, Actor actor, Actor target)
     {
         if (!Enabled || !actor.CanTakeDamage || !target.CanTakeDamage || TargetId != null
@@ -58,9 +118,25 @@ public sealed class MonsterBrain(MonsterAttack attack)
         _lastY = target.Y.ToDouble();
     }
 
+    internal void ClearTarget() => TargetId = null;
+
+    internal void SetTargetThingId(AuthoritySimulation sim, int thingId)
+    {
+        if (thingId == 0)
+        {
+            TargetId = null;
+            return;
+        }
+
+        var target = sim.Actors.LastOrDefault(actor => !actor.Destroyed && actor.ThingId == thingId);
+        TargetId = target?.Id;
+    }
+
     public void Tick(AuthoritySimulation sim, Actor actor)
     {
         if (!Enabled) return;
+        actor.JustHit = false;
+        if (Threshold > 0) Threshold--;
         if (Charging && (actor.IsDead || actor.Destroyed || actor.States.Current == actor.PainState))
             StopCharge(actor);
         if (Charging) return;
@@ -96,6 +172,7 @@ public sealed class MonsterBrain(MonsterAttack attack)
             && (!actor.Ambush || CombatTrace.HasLineOfSight(sim, actor, candidate)));
         target ??= sim.Players.Where(p => p.CanTakeDamage && Distance(actor, p) <= 2048 && CombatTrace.HasLineOfSight(sim, actor, p))
             .OrderBy(p => Distance(actor, p)).ThenBy(p => p.Id).FirstOrDefault();
+        target ??= TryResumeLastEnemy(sim, actor);
         if (target == null)
         {
             Mode = MonsterMode.Idle; TargetId = null; WindupTics = 0; _attackTic = -1; return;

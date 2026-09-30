@@ -63,16 +63,24 @@ their gates.
 - Stacking: a grounded player steps onto a solid non-player when that top is
   within 24 and the head still fits, then stands there instead of falling
   through. A top of 25 blocks. A low ceiling blocks. A monster does not step
-  up. Corpses are not platforms, and crush is absent.
+  up. Corpses are not platforms. A static sector pinch applies 10 crush
+  damage every four tics when headroom is below height.   Mover crushers propagate crush damage to actors standing on the
+  blocked carrier. Sector pinch crush does the same. A carrier's step delta
+  moves standing riders horizontally and vertically. `MF2_ONMOBJ` is set on
+  an actor support floor above the sector floor and relaxes dropoff while set.
+  Rising sector floors carry grounded actors through post-mover fitting; carriers
+  are fitted before `OnMobj` riders.   A per-sector scroll vector carries grounded actors after thinkers run.
+  `Scroll_Floor` (223) sets carry from line args when mode is positive.
+  Hexen sector specials 201–224 add player-only carry on top of that vector.
+  Texture scroll and polyobjects are absent. `Scroll_Ceiling` (224) activates on
+  tagged sectors but does not scroll ceilings yet.
 - Bridges: a grounded monster steps onto a solid actor marked
   `MF4_ACTLIKEBRIDGE` when that top is within 24 and the head fits. A top
   of 25 blocks. A dead actor with the flag is not a platform. Players
-  already step onto any solid non-player. Crush and a carried rider are
-  absent.
+  already step onto any solid non-player. A carried rider is absent.
 - Ice corpses: an actor with `MF_ICECORPSE` steps onto a corpse whose top
   is within 24 and stops against a taller one. A player and a living
-  monster still walk through that corpse. Shatter, blood, and crush are
-  absent.
+  monster still walk through that corpse. Shatter and blood are absent.
 - Crouch: holding BT_CROUCH lowers crouchfactor by 1/12 each tic, down to
   0.5, and height and view height follow it. Releasing stands back up when
   the taller body fits. A jump while crouched does not leave the ground; it
@@ -172,14 +180,15 @@ That is still not the native test:
   A top of 25 still blocks. Corpses stay non-solid for ordinary movers, so
   a player walks through one. `MF_ICECORPSE` is the exception from
   `P_TestMobjZ`: that actor steps onto a corpse of height 24 and is stopped
-  by a corpse of height 56. Crush and a carried rider list are absent.
+  by a corpse of height 56. A carried rider list is absent.
 - Slopes, portals, and 3D floors are not implemented. Sector lookup is a ray
   cross of every line, not the BSP or blockmap. One-sector synthetic maps fall
   back to sector 0 even when the point is outside the geometry.
 
 Step-up, actor blocking, the flat dropoff cases, the player two-wall slide,
 the player step onto a short actor, the monster step onto a bridge, and the
-ice-corpse step onto a corpse are covered by managed tests. Crush is not
+ice-corpse step onto a corpse are covered by managed tests. Static sector
+pinch crush is covered. Full stacking crush and riders are not
 matched. Gate 1 stays open.
 
 ## Gate 2 — actor states, actions, and player lifecycle
@@ -378,9 +387,14 @@ source's flag does not count unless that actor is the inflictor. A hit
 that armor absorbs completely still flinches. `MF5_NOPAIN` on the target
 and `MF5_PAINLESS` on the inflictor block the flinch, including a forced
 hit. Painless wins when the inflictor also forces pain. The source's
-painless flag does not count. `DMG_NO_PAIN` still blocks. Wake-up and
-see states are absent, so these flags only gate the pain frame.
-Electric flicker and poison howling are absent.
+painless flag does not count. `DMG_NO_PAIN` still blocks. A no-pain monster
+still wakes. These flags only gate the pain frame.
+`DamageType Electric` rolls the flicker stream after the pain chance. A roll
+below 96 enters the pain frame and clears fullbright. A miss sets
+`RF_FULLBRIGHT` and skips the flinch. Forced pain still flinches. Poison
+howling is absent. A typed `Wound` frame replaces pain when health is at
+or below `WoundHealth` after the hit. That early-out skips wake on that
+tic. The match is ordinal.
 Green armor uses integer division by 3 so that 3 damage saves 1. Other
 percents use `damage * percent / 100`. `MaxFullAbsorb` is saved in full
 before that percent, and `MaxAbsorb` caps the running total. Both default
@@ -434,8 +448,60 @@ death. The type name is ordinal, so `fire` is not `Fire`. Damage type
 `Extreme` forces the gib frame. An Ice kill with no Ice death uses
 `GenericFreezeDeath` for a player or a monster, and that frame is not
 extreme. A typed Ice death still wins. `MF4_NOICEDEATH`, a decoration,
-and the name `ice` fall through to the gib frame. Ice-corpse shatter is
-absent. Voodoo dolls are not implemented.
+and the name `ice` fall through to the gib frame. `MF4_EXTREMEDEATH` on
+the inflictor can pick the gib frame without passing the gib line.
+`MF4_NOEXTREMEDEATH` blocks every extreme frame, including past the gib
+line, and a typed extreme death falls back to the plain typed frame. The
+source's flags do not count. A shootable frozen corpse shatters on a hit
+that is not blocked ice: ice damage from an inflictor without
+`MF7_ICESHATTER` does nothing. Shatter zeroes velocity, sets
+`MF6_SHATTERING`, and snaps the state to one tic. Shatter spawns deterministic
+`IceChunk` debris with combat RNG when the corpse is on a simulation. Chunk
+heads, terrain melt, and sounds are absent.
+Voodoo dolls
+are not implemented. A non-player with a brain clears `ReactionTics` on a
+post-armor hit or forced pain, sets chase target to the source, and enters
+`SeeState` from spawn when that frame exists. Pain runs first, so a
+flinch blocks see on that tic. Wake-up reloads chase `Threshold` from
+`DefThreshold` when the source is already the target or when
+`OkayToSwitchTarget` allows it. A positive threshold blocks switching
+until it counts down on an enabled brain tick. `MF4_QUICKTORETALIATE` may
+switch while threshold is still positive. `MF4_NOTARGETSWITCH` blocks a new
+target while the current one is set. `MF4_NOHATEPLAYERS` blocks wake-up against
+players but not monsters. `MF7_NEVERTARGET` blocks chase on the
+source. `MF_FRIENDLY` and `FriendPlayer` drive a subset of `IsFriend` for
+wake retargeting and `MF_JUSTHIT`. Teamplay and designated teams are absent.
+`TIDtoHate` and `MF3_NOTARGET` drive a subset of `OkayToSwitchTarget` and
+`CanAttackHurt`: shared hate ids block teammates, a shooter may hurt an actor whose `ThingId` matches `TIDtoHate`. Wake-up with
+infighting off still needs hostility; at standard infighting the hated tid can
+override same-species blocks. `NOTARGET` is ignored for that hated tid or when
+the source is hostile. `pr_switcher` can keep the current chase target when its
+`ThingId` matches `TIDtoHate`, line of sight holds, and the roll is below 128.
+TID look iterators are absent. Wake-up stores `lastenemy` when
+switching targets, and keeps a living player there across later monster
+switches. The brain tick resumes a living non-friend `lastenemy` after
+player scan when nothing else is acquired, then clears the slot. Goals and
+look states are absent.
+`MF_JUSTHIT` is set on a pain flinch when the source is the chase target
+or there is no chase target. A wound or electric fullbright does not set
+it. A chase target aimed at someone else still allows it when that target is
+not a friend. A friendly chase target blocks `MF_JUSTHIT` from a third
+source.
+The brain clears it on the next enabled tick. `MF5_NOINFIGHTING` and the
+level `infighting` cvar gate wake-up against non-players when infighting
+is off. `IsHostile` is a subset: two plain monsters are not hostile, and
+opposing friendlies with different `FriendPlayer` values are. At standard infighting (`0`), wake-up and monster damage both block the same
+`DoomEdNum` species unless `MF6_DOHARMSPECIES` is set or the source is hostile.
+With infighting off, monster damage is blocked unless the victim is hostile to
+the shooter. `MF7_FORCEINFIGHTING` upgrades a level with infighting off to
+standard rules. With infighting off, monster-monster damage stays gated by
+`MF3_ISMONSTER`; barrels and other non-monsters are not. `MF7_HARMFRIENDS`
+lets a shooter hurt friendlies at standard infighting. Projectile groups and
+deathmatch teamplay are absent. `IsMonster`, `HarmFriends`, and `TidToHate` are
+in the checksum and not in the pose. A non-player extreme death clamps health to `GibHealth - 1` when
+the post-hit amount is still on or above the gib line. Players keep
+overkill. A player extreme death sets `CF_EXTREMELYDEAD`. A plain typed
+death does not. Revive clears it.
 
 The pose archive already stored health as an int32. Restore used to clamp it
 at 0, which would have dropped overkill on load. It now writes the saved value
@@ -476,13 +542,30 @@ build, not another managed fixture. No IWAD, native `hcde` binary, command
 line, or trace pair is recorded for movement, damage, or a player life. The
 managed suite can replay its own checksum. That does not satisfy the gate.
 
-The Release suite is also not a clean sign-off number. The plan's checkpoint
-of 3,050 passed predates the word-format BEHAVIOR tests. The full run after
-the respawn slice still failed the same three cases in the untracked
-`Phase7AcsTests.cs` (divide by zero stops the fiber, thing count is not that
-opcode, and the first tic's timer is 0). Playsim otherwise passed 2,135.
-The warn-as-error Release build is clean. Those three failures are outside
-this slice, and they mean the suite cannot be cited as all green.
+The Release playsim suite is green aside from unrelated projects. Phase 7 ACS
+coverage now implements stack divide-by-zero as zero, `ThingCountDirect`,
+`ThingCountSector` (sector tag filter), `ThingCountName` / `ThingCountNameSector`
+(Doom spawn names via bound BEHAVIOR or program string tables), `PlayerCount`,
+start-of-tic `Timer`,
+`SinglePlayer`, `PlayerInGame`, `PlayerIsBot` (always false until player-slot
+bots exist), `IsNetworkGame` (always false on local authority), `GameType`, `GameSkill`, activator queries (`ActivatorTid`, `PlayerHealth`, `LineSide`),
+and a player-inventory subset (`PlayerFrags`, skull-tag key opcodes,
+`CheckInventory` / `CheckInventoryDirect`, and activator
+`GiveInventory` / `TakeInventory` direct/stack forms, TID give/take/check, and
+`ClearInventory` / `ClearActorInventory` on players),
+`SetActorProperty` / `GetActorProperty` for a bounded `APROP_*` subset (health,
+ambush, invulnerable, friendly, no-target, spawn health, mass, step/dropoff,
+target TID via monster brain; ambush and target TID have regression tests),
+activator `UseInventory` and `UseActorInventory`
+for owned weapons (pending raise only; tid 0 hits every spawned player; no
+health, keys, or consumable use), and `GetAmmoCapacity` / `SetAmmoCapacity` on
+activator ammo pools (not `ACSF_GetMaxInventory` or DECORATE defaults).
+Gate 5 still needs a recorded native IWAD/binary trace pair, not managed-only
+fixtures. The warn-as-error Release build is clean.
+
+A managed baseline fixture (`ManagedGameplayTraceTests`, documented in
+`HCDE_CSHARP_PHASE1_NATIVE_TRACE.md`) pins map/seed/tic count and checksum for
+future native diff. It does not close the gate.
 
 Gate 5 stays open.
 
@@ -493,8 +576,8 @@ Gate 5 stays open.
    and the player still advances along the nearer one. The stacking fixture
    is in place: a top of 24 is a step and a top of 25 blocks. A monster
    steps onto a bridge of height 24 and stops at 25. An ice corpse steps
-   onto a corpse of height 24 and stops at 56. Crush is not in that
-   fixture. The flat dropoff fixture is
+   onto a corpse of height 24 and stops at 56. Static sector pinch crush
+   is in a separate fixture. The flat dropoff fixture is
    also in place: a monster
    stops at a drop taller than 24, and a player does not.
 2. Player death, respawn, and the roster follow `p_user.cpp` / `p_mobj.cpp`
@@ -536,9 +619,11 @@ Gate 5 stays open.
    `PainThreshold` blocks a flinch when the post-armor hit is smaller.
    An inflictor with forced pain flinches through that threshold and
    through a failed pain roll. A no-pain target and a painless inflictor
-   still block that flinch.
+   still block that flinch. Electric pain can fullbright instead of
+   flinching. A typed wound frame replaces pain when health is low enough.
    An Ice kill with no Ice death uses the generic freeze frame for a
-   player or a monster. Negative overkill and
+   player or a monster. Inflictor extreme-death flags can force or block
+   the gib frame. Negative overkill and
    the gib threshold are in place.
 5. One recorded native session and the matching managed run agree on position,
    health, and inventory at the same tics.

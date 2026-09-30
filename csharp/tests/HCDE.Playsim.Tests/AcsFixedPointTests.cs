@@ -50,7 +50,7 @@ public class AcsFixedPointTests
     }
 
     [Theory]
-    [InlineData(135)] // SINGLEPLAYER, not FIXEDMUL.
+    [InlineData(269)] // SETCAMERATOTEXTURE, not FIXEDMUL.
     [InlineData(138)] // SETGRAVITY, not arithmetic.
     public void AdjacentUnsupportedOpcodesDoNotExecuteArithmetic(int opcode)
     {

@@ -458,6 +458,123 @@ public class GameplayFoundationTests
     }
 
     [Fact]
+    public void SectorPinchCrushesEveryFourTics()
+    {
+        var sim = Room(ceiling: 48);
+        var player = sim.Players.Single();
+        Assert.Equal(100, player.Health);
+        for (var tic = 0; tic < 3; tic++)
+        {
+            sim.Tick();
+            Assert.Equal(100, player.Health);
+        }
+        sim.Tick();
+        Assert.Equal(90, player.Health);
+        sim.Tick();
+        Assert.Equal(90, player.Health);
+    }
+
+    [Fact]
+    public void MoverCrushDamagesActorsStandingOnTheCarrier()
+    {
+        var sim = Room();
+        var platform = sim.AddBot(0, 0);
+        platform.Brain = null;
+        platform.Height = Fixed.FromInt(16);
+        var player = sim.Players.Single();
+        player.Z = Fixed.FromInt(16);
+        player.VelocityZ = default;
+        var tic = sim.Thinkers.Clock.Tic;
+        ActorPhysics.CrushStandingRiders(sim, platform, 10, tic);
+        Assert.Equal(90, player.Health);
+        Assert.Equal(30, platform.Health);
+    }
+
+    [Fact]
+    public void HorizontalCarryMovesRidersWithTheCarrier()
+    {
+        var sim = Room();
+        var platform = sim.AddBot(0, 64);
+        platform.Brain = null;
+        platform.Radius = Fixed.FromInt(16);
+        platform.Height = Fixed.FromInt(16);
+        var player = sim.Players.Single();
+        player.Radius = Fixed.FromInt(16);
+        player.X = platform.X;
+        player.Y = platform.Y;
+        player.Z = Fixed.FromInt(16);
+        player.VelocityZ = default;
+        player.VelocityX = default;
+        platform.VelocityX = Fixed.FromInt(8);
+        sim.Tick();
+        Assert.True(platform.X.ToDouble() > 0);
+        Assert.Equal(platform.X.Raw, player.X.Raw);
+        Assert.True(player.OnMobj);
+    }
+
+    [Fact]
+    public void OnMobjIsInTheChecksum()
+    {
+        var left = Room();
+        var right = Room();
+        var platform = left.AddBot(0, 64);
+        platform.Brain = null;
+        platform.Height = Fixed.FromInt(16);
+        var rider = left.Players.Single();
+        rider.Z = Fixed.FromInt(16);
+        rider.X = platform.X;
+        rider.Y = platform.Y;
+        left.Tick();
+        right.Tick();
+        Assert.NotEqual(left.Checksum, right.Checksum);
+        var rightPlatform = right.AddBot(0, 64);
+        rightPlatform.Brain = null;
+        rightPlatform.Height = Fixed.FromInt(16);
+        var rightRider = right.Players.Single();
+        rightRider.Z = Fixed.FromInt(16);
+        rightRider.X = rightPlatform.X;
+        rightRider.Y = rightPlatform.Y;
+        right.Tick();
+        left.Tick();
+        Assert.Equal(left.Checksum, right.Checksum);
+    }
+
+    [Fact]
+    public void SectorPinchCrushDamagesActorsStandingOnThePinchedActor()
+    {
+        var sim = Room(ceiling: 32);
+        var platform = sim.AddBot(32, 0);
+        platform.Brain = null;
+        platform.Health = 100;
+        platform.Height = Fixed.FromInt(40);
+        var player = sim.Players.Single();
+        player.Health = 100;
+        player.X = platform.X;
+        player.Z = Fixed.FromInt(40);
+        player.VelocityZ = default;
+        for (var tic = 0; tic < 4; tic++)
+            sim.Tick();
+        Assert.Equal(90, platform.Health);
+        Assert.Equal(90, player.Health);
+    }
+
+    [Fact]
+    public void SectorPinchCrushSkipsDeadAndNonShootableActors()
+    {
+        var sim = Room(ceiling: 48);
+        var dead = sim.AddBot(32, 0);
+        dead.Health = 0;
+        dead.Brain = null;
+        var decoration = sim.AddBot(64, 0);
+        decoration.Brain = null;
+        decoration.Shootable = false;
+        for (var tic = 0; tic < 4; tic++)
+            sim.Tick();
+        Assert.Equal(0, dead.Health);
+        Assert.Equal(30, decoration.Health);
+    }
+
+    [Fact]
     public void LowCeilingRejectsAStepOntoAnActor()
     {
         var sim = Room(70);
@@ -817,6 +934,1283 @@ public class GameplayFoundationTests
     }
 
     [Fact]
+    public void InflictorExtremeDeathFlagsChooseTheGibFrame()
+    {
+        var quiet = TypedVictim();
+        ActorDamage.Apply(quiet, 150);
+        Assert.Equal(-50, quiet.Health);
+        Assert.Equal(2, quiet.States.Current);
+
+        var forced = TypedVictim();
+        ActorDamage.Apply(forced, 150, inflictor: new Actor { ExtremeDeath = true });
+        Assert.Equal(-50, forced.Health);
+        Assert.Equal(4, forced.States.Current);
+
+        var blocked = TypedVictim();
+        ActorDamage.Apply(blocked, 201, inflictor: new Actor { NoExtremeDeath = true });
+        Assert.Equal(-101, blocked.Health);
+        Assert.Equal(2, blocked.States.Current);
+
+        var typed = TypedVictim();
+        typed.SetTypedDeath("Fire", 6, extreme: true);
+        ActorDamage.Apply(typed, 201, damageType: "Fire", inflictor: new Actor { NoExtremeDeath = true });
+        Assert.Equal(5, typed.States.Current);
+
+        var sourceOnly = TypedVictim();
+        ActorDamage.Apply(sourceOnly, 150, source: new Actor { ExtremeDeath = true });
+        Assert.Equal(2, sourceOnly.States.Current);
+    }
+
+    [Fact]
+    public void ChaseThresholdBlocksTargetSwitchUntilItCountsDown()
+    {
+        var sim = Room();
+        var bot = sim.AddBot(64, 64);
+        bot.Health = 100;
+        bot.Brain!.Enabled = false;
+        bot.Brain.DefThreshold = 100;
+        bot.PainChance = 256;
+        var player = sim.Players.Single();
+        var other = RivalBot(sim, 128, 64);
+        other.Health = 100;
+        other.Brain!.Enabled = false;
+        ActorDamage.Apply(bot, 10, source: other, inflictor: other);
+        Assert.Equal(other.Id, bot.Brain.TargetId);
+        Assert.Equal(100, bot.Brain.Threshold);
+        ActorDamage.Apply(bot, 10, source: player, inflictor: player);
+        Assert.Equal(other.Id, bot.Brain.TargetId);
+
+        bot.Brain.Enabled = true;
+        for (var tic = 0; tic < 100; tic++)
+            sim.Tick();
+        Assert.Equal(0, bot.Brain.Threshold);
+        bot.Brain.Enabled = false;
+        ActorDamage.Apply(bot, 10, source: player, inflictor: player);
+        Assert.Equal(player.Id, bot.Brain.TargetId);
+        Assert.Equal(100, bot.Brain.Threshold);
+
+        var picky = sim.AddBot(160, 64);
+        picky.Health = 100;
+        picky.Brain!.Enabled = false;
+        picky.Brain.DefThreshold = 0;
+        ActorDamage.Apply(picky, 10, source: other, inflictor: other);
+        ActorDamage.Apply(picky, 10, source: player, inflictor: player);
+        Assert.Equal(player.Id, picky.Brain!.TargetId);
+
+        var ignored = sim.AddBot(192, 64);
+        ignored.Health = 100;
+        ignored.Brain!.Enabled = false;
+        ignored.Brain.DefThreshold = 0;
+        other.NeverTarget = true;
+        ActorDamage.Apply(ignored, 10, source: other, inflictor: other);
+        Assert.Null(ignored.Brain!.TargetId);
+    }
+
+    [Fact]
+    public void NoTargetSwitchKeepsTheChaseTargetUntilItIsGone()
+    {
+        var sim = Room();
+        var bot = sim.AddBot(64, 64);
+        bot.Health = 100;
+        bot.Brain!.Enabled = false;
+        bot.Brain.DefThreshold = 0;
+        bot.PainChance = 0;
+        bot.NoTargetSwitch = true;
+        var player = sim.Players.Single();
+        var other = RivalBot(sim, 128, 64);
+        other.Health = 100;
+        other.Brain!.Enabled = false;
+        ActorDamage.Apply(bot, 10, source: other, inflictor: other);
+        ActorDamage.Apply(bot, 10, source: player, inflictor: player);
+        Assert.Equal(other.Id, bot.Brain.TargetId);
+    }
+
+    [Fact]
+    public void NoHatePlayersIgnoresPlayerWakeButStillRetaliatesAgainstMonsters()
+    {
+        var sim = Room();
+        var bot = sim.AddBot(64, 64);
+        bot.Health = 100;
+        bot.Brain!.Enabled = false;
+        bot.Brain.DefThreshold = 0;
+        bot.PainChance = 0;
+        bot.NoHatePlayers = true;
+        var player = sim.Players.Single();
+        var other = RivalBot(sim, 128, 64);
+        other.Health = 100;
+        other.Brain!.Enabled = false;
+        ActorDamage.Apply(bot, 10, source: player, inflictor: player);
+        Assert.Null(bot.Brain.TargetId);
+        Assert.Equal(90, bot.Health);
+        ActorDamage.Apply(bot, 10, source: other, inflictor: other);
+        Assert.Equal(other.Id, bot.Brain.TargetId);
+        ActorDamage.Apply(bot, 10, source: player, inflictor: player);
+        Assert.Equal(other.Id, bot.Brain.TargetId);
+    }
+
+    [Fact]
+    public void NoInfightingBlocksMonsterWakeAndTargetSwitch()
+    {
+        var sim = Room();
+        var victim = sim.AddBot(64, 64);
+        victim.Health = 100;
+        victim.Brain!.Enabled = false;
+        victim.Brain.DefThreshold = 0;
+        victim.PainChance = 0;
+        victim.NoInfighting = true;
+        var rival = sim.AddBot(96, 64);
+        rival.Health = 100;
+        rival.Brain!.Enabled = false;
+        var player = sim.Players.Single();
+        ActorDamage.Apply(victim, 10, source: rival, inflictor: rival);
+        Assert.Null(victim.Brain!.TargetId);
+        ActorDamage.Apply(victim, 10, source: player, inflictor: player);
+        Assert.Equal(player.Id, victim.Brain.TargetId);
+        ActorDamage.Apply(victim, 10, source: rival, inflictor: rival);
+        Assert.Equal(player.Id, victim.Brain.TargetId);
+    }
+
+    [Fact]
+    public void LevelInfightingOffBlocksMonsterMonstersButNotThePlayer()
+    {
+        var sim = Room();
+        sim.Infighting = -1;
+        var victim = sim.AddBot(64, 64);
+        victim.Health = 100;
+        victim.Brain!.Enabled = false;
+        victim.Brain.DefThreshold = 0;
+        victim.PainChance = 0;
+        var rival = sim.AddBot(96, 64);
+        rival.Health = 100;
+        rival.Brain!.Enabled = false;
+        var player = sim.Players.Single();
+        ActorDamage.Apply(victim, 10, source: rival, inflictor: rival);
+        Assert.Null(victim.Brain!.TargetId);
+        ActorDamage.Apply(victim, 10, source: player, inflictor: player);
+        Assert.Equal(player.Id, victim.Brain.TargetId);
+    }
+
+    [Fact]
+    public void StandardInfightingBlocksSameSpeciesMonsterDamage()
+    {
+        var sim = Room();
+        sim.Infighting = 0;
+        var victim = sim.AddBot(64, 64);
+        victim.Health = 100;
+        var rival = sim.AddBot(96, 64);
+        rival.Health = 100;
+        var result = ActorDamage.Apply(victim, 10, source: rival, inflictor: rival);
+        Assert.Equal(0, result.HealthLost);
+        Assert.Equal(100, victim.Health);
+
+        var sergeant = sim.AddBot(128, 64, doomEdNum: 3001);
+        sergeant.Health = 100;
+        result = ActorDamage.Apply(victim, 10, source: sergeant, inflictor: sergeant);
+        Assert.Equal(10, result.HealthLost);
+        Assert.Equal(90, victim.Health);
+    }
+
+    [Fact]
+    public void AlwaysInfightingAllowsSameSpeciesMonsterDamage()
+    {
+        var sim = Room();
+        sim.Infighting = 1;
+        var victim = sim.AddBot(64, 64);
+        victim.Health = 100;
+        var rival = sim.AddBot(96, 64);
+        rival.Health = 100;
+        var result = ActorDamage.Apply(victim, 10, source: rival, inflictor: rival);
+        Assert.Equal(10, result.HealthLost);
+        Assert.Equal(90, victim.Health);
+    }
+
+    [Fact]
+    public void LevelInfightingOffBlocksMonsterDamageUnlessHostile()
+    {
+        var sim = Room();
+        sim.Infighting = -1;
+        var victim = sim.AddBot(64, 64);
+        victim.Health = 100;
+        var rival = sim.AddBot(96, 64);
+        rival.Health = 100;
+        var result = ActorDamage.Apply(victim, 10, source: rival, inflictor: rival);
+        Assert.Equal(0, result.HealthLost);
+        Assert.Equal(100, victim.Health);
+
+        victim.Friendly = rival.Friendly = true;
+        victim.FriendPlayer = 1;
+        rival.FriendPlayer = 2;
+        result = ActorDamage.Apply(victim, 10, source: rival, inflictor: rival);
+        Assert.Equal(10, result.HealthLost);
+    }
+
+    [Fact]
+    public void InfightingOffAllowsMonsterDamageToNonMonstersSuchAsBarrels()
+    {
+        var sim = Room();
+        sim.Infighting = -1;
+        var barrel = sim.AddBot(96, 64);
+        barrel.Brain = null;
+        barrel.IsMonster = false;
+        barrel.Health = 20;
+        var rival = RivalBot(sim, 64, 64);
+        rival.Health = 100;
+        var result = ActorDamage.Apply(barrel, 10, source: rival, inflictor: rival);
+        Assert.Equal(10, result.HealthLost);
+        Assert.Equal(10, barrel.Health);
+    }
+
+    [Fact]
+    public void HarmFriendsAllowsFriendlyDamageAtStandardInfighting()
+    {
+        var sim = Room();
+        sim.Infighting = 0;
+        var victim = sim.AddBot(64, 64);
+        victim.Health = 100;
+        victim.Friendly = true;
+        victim.FriendPlayer = 1;
+        var ally = RivalBot(sim, 96, 64);
+        ally.Health = 100;
+        ally.Friendly = true;
+        ally.FriendPlayer = 1;
+        var blocked = ActorDamage.Apply(victim, 10, source: ally, inflictor: ally);
+        Assert.Equal(0, blocked.HealthLost);
+        ally.HarmFriends = true;
+        var allowed = ActorDamage.Apply(victim, 10, source: ally, inflictor: ally);
+        Assert.Equal(10, allowed.HealthLost);
+        Assert.Equal(90, victim.Health);
+    }
+
+    [Fact]
+    public void StandardInfightingBlocksSameSpeciesMonsterWake()
+    {
+        var sim = Room();
+        sim.Infighting = 0;
+        var victim = sim.AddBot(64, 64);
+        victim.Health = 100;
+        victim.Brain!.Enabled = false;
+        victim.Brain.DefThreshold = 0;
+        victim.PainChance = 0;
+        var rival = sim.AddBot(96, 64);
+        rival.Health = 100;
+        rival.Brain!.Enabled = false;
+        ActorDamage.Apply(victim, 10, source: rival, inflictor: rival);
+        Assert.Null(victim.Brain!.TargetId);
+
+        var sergeant = sim.AddBot(128, 64, doomEdNum: 3001);
+        sergeant.Health = 100;
+        sergeant.Brain!.Enabled = false;
+        ActorDamage.Apply(victim, 10, source: sergeant, inflictor: sergeant);
+        Assert.Equal(sergeant.Id, victim.Brain!.TargetId);
+    }
+
+    [Fact]
+    public void AlwaysInfightingAllowsSameSpeciesWake()
+    {
+        var sim = Room();
+        sim.Infighting = 1;
+        var victim = sim.AddBot(64, 64);
+        victim.Health = 100;
+        victim.Brain!.Enabled = false;
+        victim.Brain.DefThreshold = 0;
+        victim.PainChance = 0;
+        var rival = sim.AddBot(96, 64);
+        rival.Health = 100;
+        rival.Brain!.Enabled = false;
+        ActorDamage.Apply(victim, 10, source: rival, inflictor: rival);
+        Assert.Equal(rival.Id, victim.Brain!.TargetId);
+    }
+
+    [Fact]
+    public void DoHarmSpeciesAllowsSameSpeciesWakeAtStandardInfighting()
+    {
+        var sim = Room();
+        sim.Infighting = 0;
+        var victim = sim.AddBot(64, 64);
+        victim.Health = 100;
+        victim.Brain!.Enabled = false;
+        victim.Brain.DefThreshold = 0;
+        victim.PainChance = 0;
+        victim.DoHarmSpecies = true;
+        var rival = sim.AddBot(96, 64);
+        rival.Health = 100;
+        rival.Brain!.Enabled = false;
+        ActorDamage.Apply(victim, 10, source: rival, inflictor: rival);
+        Assert.Equal(rival.Id, victim.Brain!.TargetId);
+    }
+
+    [Fact]
+    public void ForceInfightingUsesStandardRulesWhenLevelInfightingIsOff()
+    {
+        var sim = Room();
+        sim.Infighting = -1;
+        var victim = sim.AddBot(64, 64);
+        victim.Health = 100;
+        victim.Brain!.Enabled = false;
+        victim.Brain.DefThreshold = 0;
+        victim.PainChance = 0;
+        victim.ForceInfighting = true;
+        var rival = sim.AddBot(96, 64);
+        rival.Health = 100;
+        rival.Brain!.Enabled = false;
+        ActorDamage.Apply(victim, 10, source: rival, inflictor: rival);
+        Assert.Null(victim.Brain!.TargetId);
+        var sergeant = sim.AddBot(128, 64, doomEdNum: 3001);
+        sergeant.Health = 100;
+        sergeant.Brain!.Enabled = false;
+        ActorDamage.Apply(victim, 10, source: sergeant, inflictor: sergeant);
+        Assert.Equal(sergeant.Id, victim.Brain!.TargetId);
+    }
+
+    [Fact]
+    public void OpposingFriendliesRetaliateWhenInfightingIsOff()
+    {
+        var sim = Room();
+        sim.Infighting = -1;
+        var left = sim.AddBot(64, 64);
+        left.Health = 100;
+        left.Brain!.Enabled = false;
+        left.Brain.DefThreshold = 0;
+        left.PainChance = 0;
+        left.Friendly = true;
+        left.FriendPlayer = 1;
+        var right = sim.AddBot(96, 64);
+        right.Health = 100;
+        right.Brain!.Enabled = false;
+        right.Friendly = true;
+        right.FriendPlayer = 2;
+        ActorDamage.Apply(left, 10, source: right, inflictor: right);
+        Assert.Equal(right.Id, left.Brain!.TargetId);
+    }
+
+    [Fact]
+    public void TidToHateAllowsMonsterDamageWhenInfightingIsOff()
+    {
+        var sim = Room();
+        sim.Infighting = -1;
+        var victim = sim.AddBot(64, 64, thingId: 42);
+        victim.Health = 100;
+        victim.Brain!.Enabled = false;
+        victim.Brain.DefThreshold = 0;
+        victim.PainChance = 0;
+        var rival = RivalBot(sim, 96, 64);
+        rival.Health = 100;
+        rival.Brain!.Enabled = false;
+        rival.TidToHate = 42;
+        var result = ActorDamage.Apply(victim, 10, source: rival, inflictor: rival);
+        Assert.Equal(10, result.HealthLost);
+        Assert.Null(victim.Brain!.TargetId);
+    }
+
+    [Fact]
+    public void TidToHateAllowsSameSpeciesWakeAtStandardInfighting()
+    {
+        var sim = Room();
+        sim.Infighting = 0;
+        var victim = sim.AddBot(64, 64, thingId: 9);
+        victim.Health = 100;
+        victim.Brain!.Enabled = false;
+        victim.Brain.DefThreshold = 0;
+        victim.PainChance = 0;
+        var rival = sim.AddBot(96, 64);
+        rival.Health = 100;
+        rival.Brain!.Enabled = false;
+        rival.TidToHate = 9;
+        ActorDamage.Apply(victim, 10, source: rival, inflictor: rival);
+        Assert.Equal(rival.Id, victim.Brain!.TargetId);
+    }
+
+    [Fact]
+    public void SharedTidToHateBlocksMonsterDamageAtStandardInfighting()
+    {
+        var sim = Room();
+        sim.Infighting = 0;
+        var victim = sim.AddBot(64, 64);
+        victim.Health = 100;
+        var rival = RivalBot(sim, 96, 64);
+        rival.Health = 100;
+        victim.TidToHate = rival.TidToHate = 7;
+        var result = ActorDamage.Apply(victim, 10, source: rival, inflictor: rival);
+        Assert.Equal(0, result.HealthLost);
+        Assert.Equal(100, victim.Health);
+    }
+
+    [Fact]
+    public void TidToHateAllowsSameSpeciesDamageAtStandardInfighting()
+    {
+        var sim = Room();
+        sim.Infighting = 0;
+        var victim = sim.AddBot(64, 64, thingId: 9);
+        victim.Health = 100;
+        var rival = sim.AddBot(96, 64);
+        rival.Health = 100;
+        rival.TidToHate = 9;
+        var result = ActorDamage.Apply(victim, 10, source: rival, inflictor: rival);
+        Assert.Equal(10, result.HealthLost);
+    }
+
+    [Fact]
+    public void HatedTargetSwitcherStickinessSometimesBlocksRetarget()
+    {
+        var blocked = false;
+        var allowed = false;
+        for (var seed = 0; seed < 256; seed++)
+        {
+            var sim = AuthoritySimulation.Start(new PlayLevel
+            {
+                Sectors = new[] { new LevelSector { CeilingHeight = 128 } },
+                Things = new[] { new LevelThing { Type = 1 } },
+            }, rngSeed: seed);
+            sim.Infighting = 1;
+            var victim = sim.AddBot(64, 64);
+            victim.Health = 100;
+            victim.Brain!.Enabled = false;
+            victim.Brain.DefThreshold = 0;
+            victim.PainChance = 0;
+            victim.TidToHate = 7;
+            var hated = sim.AddBot(96, 64, doomEdNum: 3001, thingId: 7);
+            hated.Health = 100;
+            hated.Brain!.Enabled = false;
+            var rival = RivalBot(sim, 128, 64);
+            rival.Health = 100;
+            rival.Brain!.Enabled = false;
+            ActorDamage.Apply(victim, 10, source: hated, inflictor: hated);
+            ActorDamage.Apply(victim, 10, source: rival, inflictor: rival);
+            if (victim.Brain!.TargetId == hated.Id) blocked = true;
+            if (victim.Brain.TargetId == rival.Id) allowed = true;
+        }
+        Assert.True(blocked);
+        Assert.True(allowed);
+    }
+
+    [Fact]
+    public void SharedTidToHateBlocksMonsterWake()
+    {
+        var sim = Room();
+        sim.Infighting = 1;
+        var victim = sim.AddBot(64, 64);
+        victim.Health = 100;
+        victim.Brain!.Enabled = false;
+        victim.Brain.DefThreshold = 0;
+        victim.PainChance = 0;
+        victim.TidToHate = 3;
+        var rival = RivalBot(sim, 96, 64);
+        rival.Health = 100;
+        rival.Brain!.Enabled = false;
+        rival.TidToHate = 3;
+        ActorDamage.Apply(victim, 10, source: rival, inflictor: rival);
+        Assert.Null(victim.Brain!.TargetId);
+    }
+
+    [Fact]
+    public void NoTargetBlocksWakeUnlessTheTidIsHated()
+    {
+        var sim = Room();
+        var victim = sim.AddBot(64, 64);
+        victim.Health = 100;
+        victim.Brain!.Enabled = false;
+        victim.Brain.DefThreshold = 0;
+        victim.PainChance = 0;
+        var rival = RivalBot(sim, 96, 64);
+        rival.Health = 100;
+        rival.Brain!.Enabled = false;
+        rival.NoTarget = true;
+        ActorDamage.Apply(victim, 10, source: rival, inflictor: rival);
+        Assert.Null(victim.Brain!.TargetId);
+
+        var hated = sim.AddBot(112, 64, doomEdNum: 3001, thingId: 55);
+        hated.Health = 100;
+        hated.Brain!.Enabled = false;
+        hated.NoTarget = true;
+        victim.TidToHate = 55;
+        ActorDamage.Apply(victim, 10, source: hated, inflictor: hated);
+        Assert.Equal(hated.Id, victim.Brain!.TargetId);
+    }
+
+    [Fact]
+    public void QuickToRetaliateSwitchesTargetsDespitePositiveThreshold()
+    {
+        var sim = Room();
+        var bot = sim.AddBot(64, 64);
+        bot.Health = 100;
+        bot.Brain!.Enabled = false;
+        bot.Brain.DefThreshold = 100;
+        bot.PainChance = 0;
+        bot.QuickToRetaliate = true;
+        var player = sim.Players.Single();
+        var other = RivalBot(sim, 128, 64);
+        other.Health = 100;
+        other.Brain!.Enabled = false;
+        ActorDamage.Apply(bot, 10, source: other, inflictor: other);
+        Assert.Equal(100, bot.Brain!.Threshold);
+        ActorDamage.Apply(bot, 10, source: player, inflictor: player);
+        Assert.Equal(player.Id, bot.Brain.TargetId);
+        Assert.Equal(100, bot.Brain.Threshold);
+    }
+
+    [Fact]
+    public void LastEnemyResumesChaseWhenTheCurrentTargetIsGone()
+    {
+        var sim = Room();
+        var bot = sim.AddBot(64, 64);
+        bot.Health = 100;
+        bot.PainChance = 0;
+        bot.Brain!.DefThreshold = 0;
+        var other = RivalBot(sim, 96, 64);
+        other.Health = 100;
+        other.Brain!.Enabled = false;
+        var player = sim.Players.Single();
+        bot.Brain.Enabled = false;
+        ActorDamage.Apply(bot, 10, source: other, inflictor: other);
+        ActorDamage.Apply(bot, 10, source: player, inflictor: player);
+        Assert.Equal(other.Id, bot.Brain.LastEnemyId);
+        ActorDamage.Apply(player, 200, source: bot, inflictor: bot);
+        Assert.False(player.CanTakeDamage);
+        bot.Brain.Enabled = true;
+        sim.Tick();
+        Assert.Equal(other.Id, bot.Brain.TargetId);
+        Assert.Null(bot.Brain.LastEnemyId);
+        Assert.NotEqual(MonsterMode.Idle, bot.Brain.Mode);
+    }
+
+    [Fact]
+    public void DeadLastEnemyIsClearedWithoutResumingChase()
+    {
+        var sim = Room();
+        var bot = sim.AddBot(64, 64);
+        bot.Health = 100;
+        bot.PainChance = 0;
+        bot.Brain!.DefThreshold = 0;
+        var other = RivalBot(sim, 96, 64);
+        other.Health = 100;
+        other.Brain!.Enabled = false;
+        var player = sim.Players.Single();
+        bot.Brain.Enabled = false;
+        ActorDamage.Apply(bot, 10, source: other, inflictor: other);
+        ActorDamage.Apply(bot, 10, source: player, inflictor: player);
+        ActorDamage.Apply(other, 200, source: player, inflictor: player);
+        ActorDamage.Apply(player, 200, source: bot, inflictor: bot);
+        bot.Brain.Enabled = true;
+        sim.Tick();
+        Assert.Null(bot.Brain!.TargetId);
+        Assert.Null(bot.Brain.LastEnemyId);
+        Assert.Equal(MonsterMode.Idle, bot.Brain.Mode);
+    }
+
+    [Fact]
+    public void LastEnemyRecordsThePriorTargetOnWakeSwitch()
+    {
+        var sim = Room();
+        var bot = sim.AddBot(64, 64);
+        bot.Health = 100;
+        bot.Brain!.Enabled = false;
+        bot.Brain.DefThreshold = 0;
+        bot.PainChance = 0;
+        var other = RivalBot(sim, 96, 64);
+        other.Health = 100;
+        other.Brain!.Enabled = false;
+        var player = sim.Players.Single();
+        ActorDamage.Apply(bot, 10, source: other, inflictor: other);
+        ActorDamage.Apply(bot, 10, source: player, inflictor: player);
+        Assert.Equal(player.Id, bot.Brain!.TargetId);
+        Assert.Equal(other.Id, bot.Brain.LastEnemyId);
+    }
+
+    [Fact]
+    public void LastEnemyKeepsAPlayerWhenLaterSwitchesStayAmongMonsters()
+    {
+        var sim = Room();
+        var bot = sim.AddBot(64, 64);
+        bot.Health = 100;
+        bot.Brain!.Enabled = false;
+        bot.Brain.DefThreshold = 0;
+        bot.PainChance = 0;
+        var player = sim.Players.Single();
+        var other = RivalBot(sim, 96, 64);
+        other.Health = 100;
+        other.Brain!.Enabled = false;
+        var third = RivalBot(sim, 128, 64);
+        third.Health = 100;
+        third.Brain!.Enabled = false;
+        ActorDamage.Apply(bot, 10, source: player, inflictor: player);
+        ActorDamage.Apply(bot, 10, source: other, inflictor: other);
+        Assert.Equal(player.Id, bot.Brain!.LastEnemyId);
+        ActorDamage.Apply(bot, 10, source: third, inflictor: third);
+        Assert.Equal(third.Id, bot.Brain.TargetId);
+        Assert.Equal(player.Id, bot.Brain.LastEnemyId);
+    }
+
+    [Fact]
+    public void LastEnemyIsInTheChecksumAndSurvivesAPoseRestore()
+    {
+        var left = Room();
+        var right = Room();
+        var leftBot = left.AddBot(8, 8);
+        var rightBot = right.AddBot(8, 8);
+        leftBot.Brain!.Enabled = false;
+        rightBot.Brain!.Enabled = false;
+        leftBot.Brain.DefThreshold = 0;
+        leftBot.PainChance = 0;
+        rightBot.Brain.DefThreshold = 0;
+        rightBot.PainChance = 0;
+        var leftOther = RivalBot(left, 32, 8);
+        var rightOther = RivalBot(right, 32, 8);
+        ActorDamage.Apply(leftBot, 10, source: leftOther, inflictor: leftOther);
+        ActorDamage.Apply(leftBot, 10, source: left.Players.Single(), inflictor: left.Players.Single());
+        left.Tick();
+        right.Tick();
+        Assert.NotEqual(left.Checksum, right.Checksum);
+        ActorDamage.Apply(rightBot, 10, source: rightOther, inflictor: rightOther);
+        ActorDamage.Apply(rightBot, 10, source: right.Players.Single(), inflictor: right.Players.Single());
+        left.Tick();
+        right.Tick();
+        Assert.Equal(left.Checksum, right.Checksum);
+
+        var checksum = left.Checksum;
+        left.RestoreState(left.CaptureState());
+        Assert.Equal(leftOther.Id, leftBot.Brain!.LastEnemyId);
+        Assert.Equal(checksum, left.Checksum);
+    }
+
+    [Fact]
+    public void TidToHateIsInTheChecksum()
+    {
+        var left = Room();
+        var right = Room();
+        left.AddBot(8, 8).TidToHate = 11;
+        var rightBot = right.AddBot(8, 8);
+        left.Tick();
+        right.Tick();
+        Assert.NotEqual(left.Checksum, right.Checksum);
+        rightBot.TidToHate = 11;
+        left.Tick();
+        right.Tick();
+        Assert.Equal(left.Checksum, right.Checksum);
+    }
+
+    [Fact]
+    public void InfightingFlagsAreInTheChecksumAndSurviveAPoseRestore()
+    {
+        var left = Room();
+        var right = Room();
+        var leftBot = left.AddBot(8, 8);
+        var rightBot = right.AddBot(8, 8);
+        leftBot.NoInfighting = true;
+        rightBot.NoInfighting = true;
+        left.Infighting = -1;
+        left.Tick();
+        right.Tick();
+        Assert.NotEqual(left.Checksum, right.Checksum);
+        right.Infighting = -1;
+        left.Tick();
+        right.Tick();
+        Assert.Equal(left.Checksum, right.Checksum);
+
+        var checksum = left.Checksum;
+        left.RestoreState(left.CaptureState());
+        Assert.True(leftBot.NoInfighting);
+        Assert.Equal(-1, left.Infighting);
+        Assert.Equal(checksum, left.Checksum);
+    }
+
+    [Fact]
+    public void TargetSwitchFlagsAreInTheChecksumAndSurviveAPoseRestore()
+    {
+        var left = Room();
+        var right = Room();
+        var leftBot = left.AddBot(8, 8);
+        var rightBot = right.AddBot(8, 8);
+        leftBot.NoTargetSwitch = true;
+        leftBot.QuickToRetaliate = true;
+        left.Tick();
+        right.Tick();
+        Assert.NotEqual(left.Checksum, right.Checksum);
+        rightBot.NoTargetSwitch = true;
+        rightBot.QuickToRetaliate = true;
+        left.Tick();
+        right.Tick();
+        Assert.Equal(left.Checksum, right.Checksum);
+
+        var checksum = left.Checksum;
+        left.RestoreState(left.CaptureState());
+        Assert.True(leftBot.NoTargetSwitch);
+        Assert.True(leftBot.QuickToRetaliate);
+        Assert.Equal(checksum, left.Checksum);
+    }
+
+    [Fact]
+    public void ChaseThresholdIsInTheChecksumAndSurvivesAPoseRestore()
+    {
+        var left = Room();
+        var right = Room();
+        var leftBot = left.AddBot(8, 8);
+        var rightBot = right.AddBot(8, 8);
+        leftBot.Brain!.Enabled = false;
+        rightBot.Brain!.Enabled = false;
+        leftBot.PainChance = 0;
+        rightBot.PainChance = 0;
+        leftBot.Brain.DefThreshold = 60;
+        left.Tick();
+        right.Tick();
+        Assert.NotEqual(left.Checksum, right.Checksum);
+        rightBot.Brain.DefThreshold = 60;
+        left.Tick();
+        right.Tick();
+        Assert.Equal(left.Checksum, right.Checksum);
+
+        leftBot.Health = 100;
+        rightBot.Health = 100;
+        var leftPlayer = left.Players.Single();
+        var rightPlayer = right.Players.Single();
+        ActorDamage.Apply(leftBot, 10, source: leftPlayer, inflictor: leftPlayer);
+        ActorDamage.Apply(rightBot, 10, source: rightPlayer, inflictor: rightPlayer);
+        left.Tick();
+        right.Tick();
+        Assert.Equal(left.Checksum, right.Checksum);
+
+        var checksum = left.Checksum;
+        left.RestoreState(left.CaptureState());
+        Assert.Equal(60, leftBot.Brain!.DefThreshold);
+        Assert.Equal(60, leftBot.Brain.Threshold);
+        Assert.Equal(checksum, left.Checksum);
+    }
+
+    [Fact]
+    public void PlayerExtremelyDeadMarksAnExtremeDeathFrame()
+    {
+        var gibbed = TypedVictim();
+        ActorDamage.Apply(gibbed, 201);
+        Assert.True(gibbed.IsDead);
+        Assert.True(gibbed.ExtremelyDead);
+        Assert.Equal(4, gibbed.States.Current);
+
+        var burned = TypedVictim();
+        ActorDamage.Apply(burned, 201, damageType: "Fire");
+        Assert.True(burned.IsDead);
+        Assert.False(burned.ExtremelyDead);
+        Assert.Equal(5, burned.States.Current);
+
+        var forced = TypedVictim();
+        ActorDamage.Apply(forced, 150, inflictor: new Actor { ExtremeDeath = true });
+        Assert.True(forced.ExtremelyDead);
+        Assert.Equal(-50, forced.Health);
+
+        gibbed.Health = 100;
+        Assert.False(gibbed.ExtremelyDead);
+    }
+
+    [Fact]
+    public void ExtremelyDeadIsInTheChecksumAndSurvivesAPoseRestore()
+    {
+        var left = Room();
+        var right = Room();
+        left.Players.Single().ExtremelyDead = true;
+        left.Tick();
+        right.Tick();
+        Assert.NotEqual(left.Checksum, right.Checksum);
+        right.Players.Single().ExtremelyDead = true;
+        left.Tick();
+        right.Tick();
+        Assert.Equal(left.Checksum, right.Checksum);
+
+        var checksum = left.Checksum;
+        left.RestoreState(left.CaptureState());
+        Assert.True(left.Players.Single().ExtremelyDead);
+        Assert.Equal(checksum, left.Checksum);
+    }
+
+    [Fact]
+    public void IceCorpseShatterZeroesVelocityAndSnapsTheCorpseTics()
+    {
+        var corpse = new Actor { Health = 0, Shootable = true, IceCorpse = true, VelocityX = Fixed.FromInt(8) };
+        corpse.States.Configure(corpse, new ActorFrame[] { new(10, 0), new(-1, 0) }, 0);
+        ActorDamage.Apply(corpse, 5, inflictor: new Actor(), damageType: "Fire");
+        Assert.True(corpse.Shattering);
+        Assert.Equal(0, corpse.VelocityX.Raw);
+        Assert.Equal(1, corpse.States.RemainingTics);
+
+        var quiet = new Actor { Health = 0, Shootable = true, IceCorpse = true };
+        quiet.States.Configure(quiet, new ActorFrame[] { new(10, 0), new(-1, 0) }, 0);
+        ActorDamage.Apply(quiet, 5, inflictor: new Actor(), damageType: "Ice");
+        Assert.False(quiet.Shattering);
+        Assert.Equal(10, quiet.States.RemainingTics);
+
+        var allowed = new Actor { Health = 0, Shootable = true, IceCorpse = true };
+        allowed.States.Configure(allowed, new ActorFrame[] { new(10, 0), new(-1, 0) }, 0);
+        ActorDamage.Apply(allowed, 5, inflictor: new Actor { IceShatter = true }, damageType: "Ice");
+        Assert.True(allowed.Shattering);
+        Assert.Equal(1, allowed.States.RemainingTics);
+
+        var warm = new Actor { Health = 0, Shootable = true };
+        warm.States.Configure(warm, new ActorFrame[] { new(10, 0), new(-1, 0) }, 0);
+        ActorDamage.Apply(warm, 5, inflictor: new Actor(), damageType: "Fire");
+        Assert.False(warm.Shattering);
+        Assert.Equal(10, warm.States.RemainingTics);
+    }
+
+    [Fact]
+    public void IceCorpseShatterSpawnsDeterministicChunksOnTheSimulation()
+    {
+        var left = Room();
+        var right = Room();
+        ShatterCorpse(left);
+        ShatterCorpse(right);
+        var count = left.Actors.OfType<IceChunkActor>().Count();
+        Assert.InRange(count, 25, 64);
+        Assert.Equal(count, right.Actors.OfType<IceChunkActor>().Count());
+        left.Tick();
+        right.Tick();
+        Assert.Equal(left.Checksum, right.Checksum);
+    }
+
+    [Fact]
+    public void IceChunksWithoutASimulationStayAbsent()
+    {
+        var corpse = new Actor { Health = 0, Shootable = true, IceCorpse = true };
+        corpse.States.Configure(corpse, new ActorFrame[] { new(10, 0), new(-1, 0) }, 0);
+        ActorDamage.Apply(corpse, 5, inflictor: new Actor(), damageType: "Fire");
+        Assert.True(corpse.Shattering);
+    }
+
+    [Fact]
+    public void IceCorpseShatterFlagsAreInTheChecksumAndSurviveAPoseRestore()
+    {
+        var left = Room();
+        var right = Room();
+        var leftBot = left.AddBot(8, 8);
+        var rightBot = right.AddBot(8, 8);
+        leftBot.Brain!.Enabled = false;
+        rightBot.Brain!.Enabled = false;
+        leftBot.Shattering = true;
+        left.Tick();
+        right.Tick();
+        Assert.NotEqual(left.Checksum, right.Checksum);
+        rightBot.Shattering = true;
+        leftBot.IceShatter = true;
+        left.Tick();
+        right.Tick();
+        Assert.NotEqual(left.Checksum, right.Checksum);
+        rightBot.IceShatter = true;
+        left.Tick();
+        right.Tick();
+        Assert.Equal(left.Checksum, right.Checksum);
+
+        var checksum = left.Checksum;
+        left.RestoreState(left.CaptureState());
+        Assert.True(leftBot.Shattering);
+        Assert.True(leftBot.IceShatter);
+        Assert.Equal(checksum, left.Checksum);
+    }
+
+    [Fact]
+    public void ExtremeDeathClampsAMonsterToGibHealthMinusOne()
+    {
+        var monster = FreezeBody();
+        monster.Brain = new MonsterBrain(MonsterAttack.Melee);
+        ActorDamage.Apply(monster, 150, inflictor: new Actor { ExtremeDeath = true });
+        Assert.Equal(-101, monster.Health);
+        Assert.Equal(4, monster.States.Current);
+
+        var player = TypedVictim();
+        ActorDamage.Apply(player, 150, inflictor: new Actor { ExtremeDeath = true });
+        Assert.Equal(-50, player.Health);
+        Assert.Equal(4, player.States.Current);
+
+        var pastGib = FreezeBody();
+        pastGib.Brain = new MonsterBrain(MonsterAttack.Melee);
+        ActorDamage.Apply(pastGib, 201);
+        Assert.Equal(-101, pastGib.Health);
+        Assert.Equal(4, pastGib.States.Current);
+    }
+
+    [Fact]
+    public void JustHitMarksAPainFlinchAndClearsOnTheNextBrainTick()
+    {
+        var sim = Room();
+        var bot = sim.AddBot(64, 64);
+        bot.Health = 100;
+        bot.Brain!.Enabled = false;
+        bot.PainChance = 256;
+        var player = sim.Players.Single();
+        ActorDamage.Apply(bot, 10, source: player, inflictor: player);
+        Assert.True(bot.JustHit);
+        bot.Brain.Enabled = true;
+        sim.Tick();
+        Assert.False(bot.JustHit);
+
+        var distracted = sim.AddBot(96, 64);
+        distracted.Health = 100;
+        distracted.Brain!.Enabled = false;
+        distracted.PainChance = 256;
+        var other = RivalBot(sim, 128, 64);
+        other.Health = 100;
+        other.Brain!.Enabled = false;
+        ActorDamage.Apply(distracted, 10, source: other, inflictor: other);
+        distracted.JustHit = false;
+        ActorDamage.Apply(distracted, 10, source: player, inflictor: player);
+        Assert.True(distracted.JustHit);
+
+        var wounded = sim.AddBot(160, 64);
+        wounded.Health = 55;
+        wounded.Brain!.Enabled = false;
+        wounded.WoundHealth = 50;
+        wounded.States.Configure(wounded, new ActorFrame[]
+        {
+            new(-1, 0), new(4, 0), new(6, 3), new(-1, 3), new(5, 0),
+        }, 0);
+        wounded.SetTypedWound("Fire", 4);
+        ActorDamage.Apply(wounded, 10, source: player, inflictor: player, damageType: "Fire");
+        Assert.False(wounded.JustHit);
+    }
+
+    [Fact]
+    public void FriendlyWakeUpIgnoresAnotherFriendlySource()
+    {
+        var sim = Room();
+        var victim = sim.AddBot(64, 64);
+        victim.Health = 100;
+        victim.Brain!.Enabled = false;
+        victim.Friendly = true;
+        victim.FriendPlayer = 1;
+        victim.PainChance = 0;
+        var ally = sim.AddBot(96, 64);
+        ally.Health = 100;
+        ally.Brain!.Enabled = false;
+        ally.Friendly = true;
+        ally.FriendPlayer = 1;
+        var player = sim.Players.Single();
+        ActorDamage.Apply(victim, 10, source: ally, inflictor: ally);
+        Assert.Null(victim.Brain.TargetId);
+        ActorDamage.Apply(victim, 10, source: player, inflictor: player);
+        Assert.Equal(player.Id, victim.Brain!.TargetId);
+    }
+
+    [Fact]
+    public void JustHitHonorsFriendlyChaseTargets()
+    {
+        var sim = Room();
+        var bot = sim.AddBot(64, 64);
+        bot.Health = 100;
+        bot.Brain!.Enabled = false;
+        bot.Brain.DefThreshold = 100;
+        bot.PainChance = 256;
+        var ally = RivalBot(sim, 96, 64);
+        ally.Health = 100;
+        ally.Brain!.Enabled = false;
+        var player = sim.Players.Single();
+        ActorDamage.Apply(bot, 10, source: ally, inflictor: ally);
+        Assert.Equal(ally.Id, bot.Brain!.TargetId);
+        bot.Friendly = ally.Friendly = true;
+        bot.FriendPlayer = ally.FriendPlayer = 1;
+        bot.JustHit = false;
+        ActorDamage.Apply(bot, 10, source: player, inflictor: player);
+        Assert.False(bot.JustHit);
+
+        var rival = sim.AddBot(128, 64, doomEdNum: 3002);
+        rival.Health = 100;
+        rival.Brain!.Enabled = false;
+        bot.Brain.DefThreshold = 0;
+        bot.Brain.Enabled = true;
+        for (var tic = 0; tic < 100; tic++)
+            sim.Tick();
+        bot.Brain.Enabled = false;
+        ActorDamage.Apply(bot, 10, source: rival, inflictor: rival);
+        Assert.Equal(rival.Id, bot.Brain.TargetId);
+        bot.JustHit = false;
+        ActorDamage.Apply(bot, 10, source: player, inflictor: player);
+        Assert.True(bot.JustHit);
+    }
+
+    [Fact]
+    public void FriendlyFlagsAreInTheChecksumAndSurviveAPoseRestore()
+    {
+        var left = Room();
+        var right = Room();
+        var leftBot = left.AddBot(8, 8);
+        var rightBot = right.AddBot(8, 8);
+        leftBot.Friendly = true;
+        leftBot.FriendPlayer = 1;
+        left.Tick();
+        right.Tick();
+        Assert.NotEqual(left.Checksum, right.Checksum);
+        rightBot.Friendly = true;
+        rightBot.FriendPlayer = 1;
+        left.Tick();
+        right.Tick();
+        Assert.Equal(left.Checksum, right.Checksum);
+
+        var checksum = left.Checksum;
+        left.RestoreState(left.CaptureState());
+        Assert.True(leftBot.Friendly);
+        Assert.Equal(1, leftBot.FriendPlayer);
+        Assert.Equal(checksum, left.Checksum);
+    }
+
+    [Fact]
+    public void JustHitIsInTheChecksumAndSurvivesAPoseRestore()
+    {
+        var left = Room();
+        var right = Room();
+        var leftBot = left.AddBot(8, 8);
+        var rightBot = right.AddBot(8, 8);
+        leftBot.Brain!.Enabled = false;
+        rightBot.Brain!.Enabled = false;
+        leftBot.JustHit = true;
+        left.Tick();
+        right.Tick();
+        Assert.NotEqual(left.Checksum, right.Checksum);
+        rightBot.JustHit = true;
+        left.Tick();
+        right.Tick();
+        Assert.Equal(left.Checksum, right.Checksum);
+
+        var checksum = left.Checksum;
+        left.RestoreState(left.CaptureState());
+        Assert.True(leftBot.JustHit);
+        Assert.Equal(checksum, left.Checksum);
+    }
+
+    [Fact]
+    public void TypedWoundReplacesPainAndSkipsWakeWhenHealthIsLowEnough()
+    {
+        var sim = Room();
+        var bot = sim.AddBot(64, 64);
+        bot.Health = 100;
+        bot.Brain!.Enabled = false;
+        bot.WoundHealth = 50;
+        bot.PainChance = 256;
+        bot.States.Configure(bot, new ActorFrame[]
+        {
+            new(-1, 0), new(4, 0), new(6, 3), new(-1, 3), new(5, 0),
+        }, 0);
+        bot.SetTypedWound("Fire", 4);
+        var player = sim.Players.Single();
+        ActorDamage.Apply(bot, 10, source: player, inflictor: player, damageType: "Fire");
+        Assert.Equal(90, bot.Health);
+        Assert.Equal(1, bot.States.Current);
+        Assert.Equal(0, bot.Brain.ReactionTics);
+
+        var wounded = sim.AddBot(80, 64);
+        wounded.Health = 55;
+        wounded.Brain!.Enabled = false;
+        wounded.WoundHealth = 50;
+        wounded.States.Configure(wounded, new ActorFrame[]
+        {
+            new(-1, 0), new(4, 0), new(6, 3), new(-1, 3), new(5, 0),
+        }, 0);
+        wounded.SetTypedWound("Fire", 4);
+        Assert.Equal(10, wounded.Brain!.ReactionTics);
+        ActorDamage.Apply(wounded, 10, source: player, inflictor: player, damageType: "Fire");
+        Assert.Equal(45, wounded.Health);
+        Assert.Equal(4, wounded.States.Current);
+        Assert.Equal(10, wounded.Brain.ReactionTics);
+
+        var other = sim.AddBot(96, 64);
+        other.Health = 100;
+        other.Brain!.Enabled = false;
+        other.WoundHealth = 50;
+        other.PainChance = 256;
+        other.States.Configure(other, new ActorFrame[]
+        {
+            new(-1, 0), new(4, 0), new(6, 3), new(-1, 3), new(5, 0),
+        }, 0);
+        other.SetTypedWound("Fire", 4);
+        ActorDamage.Apply(other, 50, source: player, inflictor: player, damageType: "Slime");
+        Assert.Equal(1, other.States.Current);
+
+        var edge = sim.AddBot(128, 64);
+        edge.Health = 100;
+        edge.Brain!.Enabled = false;
+        edge.WoundHealth = 50;
+        edge.States.Configure(edge, new ActorFrame[]
+        {
+            new(-1, 0), new(4, 0), new(6, 3), new(-1, 3), new(5, 0),
+        }, 0);
+        edge.SetTypedWound("Fire", 4);
+        ActorDamage.Apply(edge, 50, source: player, inflictor: player, damageType: "Fire");
+        Assert.Equal(50, edge.Health);
+        Assert.Equal(4, edge.States.Current);
+    }
+
+    [Fact]
+    public void TypedWoundIsInTheChecksumAndSurvivesAPoseRestore()
+    {
+        var left = Room();
+        var right = Room();
+        var leftBot = left.AddBot(8, 8);
+        var rightBot = right.AddBot(8, 8);
+        leftBot.Brain!.Enabled = false;
+        rightBot.Brain!.Enabled = false;
+        leftBot.WoundHealth = 25;
+        leftBot.SetTypedWound("Fire", 3);
+        left.Tick();
+        right.Tick();
+        Assert.NotEqual(left.Checksum, right.Checksum);
+        rightBot.WoundHealth = 25;
+        rightBot.SetTypedWound("Fire", 3);
+        left.Tick();
+        right.Tick();
+        Assert.Equal(left.Checksum, right.Checksum);
+
+        var checksum = left.Checksum;
+        left.RestoreState(left.CaptureState());
+        Assert.Equal(25, leftBot.WoundHealth);
+        Assert.Equal(checksum, left.Checksum);
+    }
+
+    [Fact]
+    public void ElectricPainEitherFlinchesOrSetsFullBright()
+    {
+        var painSeed = -1;
+        var brightSeed = -1;
+        for (var seed = 0; seed < 10_000 && (painSeed < 0 || brightSeed < 0); seed++)
+        {
+            var sim = SeededRoom(seed);
+            var shocked = ShockedBot(sim);
+            ActorDamage.Apply(shocked, 10, damageType: "Electric");
+            if (shocked.States.Current == 4) painSeed = seed;
+            if (shocked.FullBright) brightSeed = seed;
+        }
+        Assert.True(painSeed >= 0);
+        Assert.True(brightSeed >= 0);
+
+        var painVictim = ShockedBot(SeededRoom(painSeed));
+        ActorDamage.Apply(painVictim, 10, damageType: "Electric");
+        Assert.Equal(4, painVictim.States.Current);
+        Assert.False(painVictim.FullBright);
+
+        var brightVictim = ShockedBot(SeededRoom(brightSeed));
+        ActorDamage.Apply(brightVictim, 10, damageType: "Electric");
+        Assert.Equal(0, brightVictim.States.Current);
+        Assert.True(brightVictim.FullBright);
+
+        var forced = ShockedBot(SeededRoom(brightSeed));
+        ActorDamage.Apply(forced, 10, damageType: "Electric", inflictor: new Actor { ForcePain = true });
+        Assert.Equal(4, forced.States.Current);
+        Assert.False(forced.FullBright);
+    }
+
+    [Fact]
+    public void FullBrightIsInTheChecksumAndSurvivesAPoseRestore()
+    {
+        var left = Room();
+        var right = Room();
+        var leftBot = left.AddBot(8, 8);
+        var rightBot = right.AddBot(8, 8);
+        leftBot.Brain!.Enabled = false;
+        rightBot.Brain!.Enabled = false;
+        leftBot.FullBright = true;
+        left.Tick();
+        right.Tick();
+        Assert.NotEqual(left.Checksum, right.Checksum);
+        rightBot.FullBright = true;
+        left.Tick();
+        right.Tick();
+        Assert.Equal(left.Checksum, right.Checksum);
+
+        var checksum = left.Checksum;
+        left.RestoreState(left.CaptureState());
+        Assert.True(leftBot.FullBright);
+        Assert.Equal(checksum, left.Checksum);
+    }
+
+    [Fact]
+    public void DamageWakesAMonsterAndEntersSeeFromSpawn()
+    {
+        var sim = Room();
+        var bot = sim.AddBot(64, 64);
+        bot.Brain!.Enabled = false;
+        bot.PainChance = 0;
+        bot.SeeState = 3;
+        bot.States.Configure(bot, new ActorFrame[]
+        {
+            new(-1, 0), new(4, 0), new(6, 3), new(-1, 3), new(7, 3),
+        }, 0);
+        Assert.Equal(10, bot.Brain.ReactionTics);
+        var player = sim.Players.Single();
+        ActorDamage.Apply(bot, 10, source: player, inflictor: player);
+        Assert.Equal(0, bot.Brain.ReactionTics);
+        Assert.Equal(player.Id, bot.Brain.TargetId);
+        Assert.Equal(3, bot.States.Current);
+
+        var quiet = sim.AddBot(96, 64);
+        quiet.Brain!.Enabled = false;
+        quiet.NoPain = true;
+        quiet.SeeState = 3;
+        quiet.States.Configure(quiet, new ActorFrame[]
+        {
+            new(-1, 0), new(4, 0), new(6, 3), new(-1, 3), new(7, 3),
+        }, 0);
+        ActorDamage.Apply(quiet, 10, source: player, inflictor: player);
+        Assert.Equal(0, quiet.Brain!.ReactionTics);
+        Assert.Equal(3, quiet.States.Current);
+
+        var pained = sim.AddBot(128, 64);
+        pained.Brain!.Enabled = false;
+        pained.SeeState = 3;
+        pained.States.Configure(pained, new ActorFrame[]
+        {
+            new(-1, 0), new(4, 0), new(6, 3), new(-1, 3), new(7, 3),
+        }, 0);
+        ActorDamage.Apply(pained, 10, source: player, inflictor: player);
+        Assert.Equal(1, pained.States.Current);
+    }
+
+    [Fact]
+    public void SeeStateIsInTheChecksumAndSurvivesAPoseRestore()
+    {
+        var left = Room();
+        var right = Room();
+        var leftBot = left.AddBot(8, 8);
+        var rightBot = right.AddBot(8, 8);
+        leftBot.Brain!.Enabled = false;
+        rightBot.Brain!.Enabled = false;
+        leftBot.SeeState = 3;
+        left.Tick();
+        right.Tick();
+        Assert.NotEqual(left.Checksum, right.Checksum);
+        rightBot.SeeState = 3;
+        left.Tick();
+        right.Tick();
+        Assert.Equal(left.Checksum, right.Checksum);
+
+        var checksum = left.Checksum;
+        left.RestoreState(left.CaptureState());
+        Assert.Equal(3, leftBot.SeeState);
+        Assert.Equal(checksum, left.Checksum);
+    }
+
+    [Fact]
+    public void InflictorExtremeDeathFlagsAreInTheChecksumAndSurviveAPoseRestore()
+    {
+        var left = Room();
+        var right = Room();
+        var leftBot = left.AddBot(8, 8);
+        var rightBot = right.AddBot(8, 8);
+        leftBot.Brain!.Enabled = false;
+        rightBot.Brain!.Enabled = false;
+        leftBot.ExtremeDeath = true;
+        left.Tick();
+        right.Tick();
+        Assert.NotEqual(left.Checksum, right.Checksum);
+        rightBot.ExtremeDeath = true;
+        leftBot.NoExtremeDeath = true;
+        left.Tick();
+        right.Tick();
+        Assert.NotEqual(left.Checksum, right.Checksum);
+        rightBot.NoExtremeDeath = true;
+        left.Tick();
+        right.Tick();
+        Assert.Equal(left.Checksum, right.Checksum);
+
+        var checksum = left.Checksum;
+        left.RestoreState(left.CaptureState());
+        Assert.True(leftBot.ExtremeDeath);
+        Assert.True(leftBot.NoExtremeDeath);
+        Assert.Equal(checksum, left.Checksum);
+    }
+
+    [Fact]
     public void GenericFreezeDeathReplacesAMissingIceDeath()
     {
         var frozen = TypedVictim();
@@ -925,6 +2319,25 @@ public class GameplayFoundationTests
             new(-1, 0), new(4, 0), new(6, 3), new(-1, 3), new(5, 0),
         }, 0);
         return actor;
+    }
+
+    private static AuthoritySimulation SeededRoom(int seed) => AuthoritySimulation.Start(new PlayLevel
+    {
+        Sectors = new[] { new LevelSector { CeilingHeight = 128 } },
+        Things = new[] { new LevelThing { Type = 1 } },
+    }, rngSeed: seed);
+
+    private static Actor ShockedBot(AuthoritySimulation sim)
+    {
+        var bot = sim.AddBot(64, 64);
+        bot.Brain!.Enabled = false;
+        bot.PainChance = 256;
+        bot.States.Configure(bot, new ActorFrame[]
+        {
+            new(-1, 0), new(4, 0), new(6, 3), new(-1, 3), new(5, 0),
+        }, 0);
+        bot.SetTypedPain("Electric", 4);
+        return bot;
     }
 
     [Fact]
@@ -2122,4 +3535,17 @@ public class GameplayFoundationTests
 
     private static LevelLine Edge(double x1, double y1, double x2, double y2, int side) =>
         new() { X1 = x1, Y1 = y1, X2 = x2, Y2 = y2, SideFront = side, SideBack = -1 };
+
+    private static BotPawn RivalBot(AuthoritySimulation sim, double x, double y) =>
+        sim.AddBot(x, y, doomEdNum: 3001);
+
+    private static void ShatterCorpse(AuthoritySimulation sim)
+    {
+        var bot = sim.AddBot(64, 64);
+        bot.Health = 0;
+        bot.IceCorpse = true;
+        bot.Shootable = true;
+        bot.States.Configure(bot, new ActorFrame[] { new(10, 0), new(-1, 0) }, 0);
+        ActorDamage.Apply(bot, 5, inflictor: new Actor(), damageType: "Fire");
+    }
 }

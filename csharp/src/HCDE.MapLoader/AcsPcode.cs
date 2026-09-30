@@ -228,6 +228,8 @@ public enum AcsPcode : int
     CheckInventory = 147,
     PlayerHealth = 120,
     PlayerArmorPoints = 121,
+    PlayerFrags = 122,
+    PlayerTeam = 119,
     IsNetworkGame = 118,
     SubGlobalArray = 238,
     MulGlobalArray = 239,

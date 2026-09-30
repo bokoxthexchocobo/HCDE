@@ -207,7 +207,7 @@ public static class PickupCatalog
         Backpack,
     }
 
-    private enum KeyColor
+    public enum KeyColor
     {
         Red,
         Blue,

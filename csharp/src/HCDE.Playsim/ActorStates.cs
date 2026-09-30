@@ -82,4 +82,7 @@ public sealed class ActorStateMachine
         Current = state;
         RemainingTics = tics;
     }
+
+    /// <summary>Native corpse shatter sets <c>tics</c> to 1 without changing the frame.</summary>
+    internal void ForceRemainingTics(int tics) => RemainingTics = tics;
 }

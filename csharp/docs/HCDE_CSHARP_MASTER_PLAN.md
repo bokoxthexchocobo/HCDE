@@ -101,7 +101,15 @@ that type can carry its own pain chance. A pain threshold blocks a
 flinch below that post-armor amount. Forced pain on the inflictor
 flinches through that threshold. A no-pain target and a painless
 inflictor still block the flinch. An Ice kill with no Ice death uses
-the generic freeze frame for a player or a monster. Crush, psprite
+the generic freeze frame for a player or a monster. Inflictor
+extreme-death flags can force or block the gib frame. Monster damage
+wake clears reaction time and can enter see from spawn. Electric pain
+can fullbright instead of flinching. A typed wound frame replaces pain
+when health is low enough. A pain flinch can set just-hit. A non-player extreme death clamps to
+gib minus one. A frozen corpse can shatter when shot. A player extreme death sets
+extremely dead. Chase threshold, no-target-switch, and quick retaliate gate wake retargeting.
+Static sector pinch crush. Friendly `IsFriend` gates wake and just-hit. Last-enemy memory on wake
+switch. Full stacking crush, psprite
 sprites, and a native tick trace are not.
 
 - [ ] Match native collision, dropoff, stacking and corner behavior.

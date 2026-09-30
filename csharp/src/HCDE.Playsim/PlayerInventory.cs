@@ -199,6 +199,14 @@ public sealed class PlayerInventory
 
     public bool Owns(WeaponKind weapon) => (Weapons & weapon) != 0;
 
+    public bool HasKey(PickupCatalog.KeyColor color) => color switch
+    {
+        PickupCatalog.KeyColor.Blue => BlueKey,
+        PickupCatalog.KeyColor.Red => RedKey,
+        PickupCatalog.KeyColor.Yellow => YellowKey,
+        _ => false,
+    };
+
     /// <summary>
     /// Doom backpack. The first one lifts the caps to 400/100/100/600 and gives
     /// 10 bullets, 4 shells, 1 rocket, and 20 cells. Another one only gives ammo.

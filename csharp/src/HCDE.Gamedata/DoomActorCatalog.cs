@@ -5,6 +5,30 @@ public sealed record DoomActorDefinition(int EditorNumber, int Health, int Radiu
 
 public static class DoomActorCatalog
 {
+    /// <summary>Default Doom spawn names from <c>mapinfo/doomitems.txt</c> for catalog editor numbers.</summary>
+    private static readonly Dictionary<string, int> SpawnClassNames = new(StringComparer.OrdinalIgnoreCase)
+    {
+        ["SpiderMastermind"] = 7,
+        ["ShotgunGuy"] = 9,
+        ["Cyberdemon"] = 16,
+        ["Spectre"] = 58,
+        ["Archvile"] = 64,
+        ["ChaingunGuy"] = 65,
+        ["Revenant"] = 66,
+        ["Fatso"] = 67,
+        ["Arachnotron"] = 68,
+        ["HellKnight"] = 69,
+        ["PainElemental"] = 71,
+        ["WolfensteinSS"] = 84,
+        ["DoomImp"] = 3001,
+        ["Demon"] = 3002,
+        ["BaronOfHell"] = 3003,
+        ["Zombieman"] = 3004,
+        ["ZombieMan"] = 3004,
+        ["Cacodemon"] = 3005,
+        ["LostSoul"] = 3006,
+    };
+
     private static readonly Dictionary<int, DoomActorDefinition> Definitions = new DoomActorDefinition[]
     {
         new(3004,20,20,56,8,200), new(9,30,20,56,8,170), new(65,70,20,56,8,170),
@@ -17,6 +41,15 @@ public static class DoomActorCatalog
     }.ToDictionary(definition => definition.EditorNumber);
 
     public static DoomActorDefinition? Find(int editorNumber) => Definitions.GetValueOrDefault(editorNumber);
+
+    /// <summary>Resolves a Doom spawn class name to an editor number when this port tracks it.</summary>
+    public static bool TryEditorNumberForClassName(string? className, out int editorNumber)
+    {
+        editorNumber = 0;
+        if (string.IsNullOrWhiteSpace(className)) return false;
+        if (!SpawnClassNames.TryGetValue(className.Trim(), out editorNumber)) return false;
+        return Definitions.ContainsKey(editorNumber);
+    }
 
     public static int MassOf(int editorNumber) => editorNumber switch
     {
