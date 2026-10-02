@@ -22,24 +22,75 @@ public sealed class LevelSector
     public bool DamageEndsLevel { get; set; }
     public bool HurtMonsters { get; init; }
     public bool HarmInAir { get; init; }
-    public short Tag { get; init; }
+    public int Tag { get; init; }
+    public IReadOnlyList<int> AdditionalTags { get; init; } = Array.Empty<int>();
+    public bool HasTag(int tag) => tag != 0 && (Tag == tag || AdditionalTags.Contains(tag));
+    public bool MatchesTag(int tag) => tag == 0 ? Tag == 0 && AdditionalTags.Count == 0 : HasTag(tag);
+    public int HealthFloor { get; set; }
+    public int HealthCeiling { get; set; }
+    public int Health3D { get; set; }
+    public int HealthFloorGroup { get; set; }
+    public int HealthCeilingGroup { get; set; }
+    public int Health3DGroup { get; set; }
     public string FloorPic { get; set; } = "-";
+    /// <summary>Native floor texture scroll offset (visual only).</summary>
+    public double FloorTextureOffsetX { get; set; }
+    public double FloorTextureOffsetY { get; set; }
+    public double FloorTextureScaleX { get; set; } = 1;
+    public double FloorTextureScaleY { get; set; } = 1;
+    /// <summary>Native floor plane texture rotation in BAM units.</summary>
+    public uint FloorTextureAngle { get; set; }
+    public uint FloorTextureBaseAngle { get; set; }
+    public double FloorTextureBaseOffsetY { get; set; }
     public string CeilingPic { get; init; } = "-";
+    public double CeilingTextureOffsetX { get; set; }
+    public double CeilingTextureOffsetY { get; set; }
+    public double CeilingTextureScaleX { get; set; } = 1;
+    public double CeilingTextureScaleY { get; set; } = 1;
+    public uint CeilingTextureAngle { get; set; }
+    public uint CeilingTextureBaseAngle { get; set; }
+    public double CeilingTextureBaseOffsetY { get; set; }
+    /// <summary>ACS <c>SetSectorTerrain</c> floor override. Footstep audio is absent.</summary>
+    public string FloorTerrain { get; set; } = string.Empty;
+    /// <summary>ACS <c>SetSectorTerrain</c> ceiling override.</summary>
+    public string CeilingTerrain { get; set; } = string.Empty;
     internal LevelSector Copy() => (LevelSector)MemberwiseClone();
 }
 
 public sealed class LevelSide
 {
-    public double MidTextureOffsetY { get; init; }
+    public double TopTextureScaleX { get; set; } = 1;
+    public double TopTextureScaleY { get; set; } = 1;
+    public double MidTextureScaleX { get; set; } = 1;
+    public double MidTextureScaleY { get; set; } = 1;
+    public double BottomTextureScaleX { get; set; } = 1;
+    public double BottomTextureScaleY { get; set; } = 1;
+    public double MidTextureOffsetY { get; set; }
+    public double MidTextureOffsetX { get; set; }
+    public double TopTextureOffsetX { get; set; }
+    public double TopTextureOffsetY { get; set; }
+    public double BottomTextureOffsetX { get; set; }
+    public double BottomTextureOffsetY { get; set; }
     public int Index { get; init; }
     public int Sector { get; init; }
     public string TopTexture { get; init; } = "-";
     public string BottomTexture { get; init; } = "-";
     public string MidTexture { get; init; } = "-";
+    /// <summary>UDMF map-load wall scroll rates (parts mask matches <c>WallScrollParts</c>).</summary>
+    public List<(double Dx, double Dy, int PartsMask)> MapLoadWallScrolls { get; private set; } = [];
+
+    internal LevelSide Copy()
+    {
+        var copy = (LevelSide)MemberwiseClone();
+        copy.MapLoadWallScrolls = new List<(double Dx, double Dy, int PartsMask)>(MapLoadWallScrolls);
+        return copy;
+    }
 }
 
 public sealed class LevelLine
 {
+    public IReadOnlyList<int> AdditionalIds { get; init; } = Array.Empty<int>();
+    public bool HasId(int id) => id != -1 && (Tag == id || AdditionalIds.Contains(id));
     public const int BlockingFlag = 1;
     public const int TwoSidedFlag = 4;
     public const int BlockSoundFlag = 0x40;
@@ -48,6 +99,7 @@ public sealed class LevelLine
     public const int BlockSightFlag = 0x04000000;
     public const int BlockProjectileFlag = 0x01000000;
     public const int RepeatSpecialFlag = 512;
+    public const int MidTex3DFlag = 0x00200000;
     public const int NoSide = -1;
 
     public int Index { get; init; }
@@ -67,12 +119,14 @@ public sealed class LevelLine
     public int Arg2 { get; init; }
     public int Arg3 { get; set; }
     public int Arg4 { get; init; }
-    public bool PlayerCross { get; init; }
-    public bool PlayerUse { get; init; }
+    public bool PlayerCross { get; set; }
+    public bool PlayerUse { get; set; }
     /// <summary>Native SPAC_UseBack. A use trace may activate this line from its back side.</summary>
-    public bool PlayerUseBack { get; init; }
-    public bool UseThrough { get; init; }
-    public bool Repeat { get; init; }
+    public bool PlayerUseBack { get; set; }
+    public bool UseThrough { get; set; }
+    public bool Repeat { get; set; }
+    public int Health { get; set; }
+    public int HealthGroup { get; set; }
 
     public bool OneSided => SideBack < 0;
 
@@ -85,6 +139,8 @@ public sealed class LevelLine
 
 public sealed class LevelThing
 {
+    public short Pitch { get; init; }
+    public short Roll { get; init; }
     public int Index { get; init; }
     public double X { get; init; }
     public double Y { get; init; }
@@ -125,11 +181,12 @@ public sealed class PlayLevel
     /// </summary>
     public MapBlockmapRecord? Blockmap { get; set; }
 
-    /// <summary>Copies runtime line and sector state while sharing other map data.</summary>
+    /// <summary>Copies runtime lines, sectors and sides while sharing immutable map data.</summary>
     public PlayLevel CopyForSimulation() => new()
     {
         MapName = MapName, Format = Format, Namespace = Namespace, BehaviorData = BehaviorData, HasBehavior = HasBehavior,
-        Vertices = Vertices, Sectors = Sectors.Select(sector => sector.Copy()).ToArray(), Sides = Sides, Things = Things, Blockmap = Blockmap,
+        Vertices = Vertices, Sectors = Sectors.Select(sector => sector.Copy()).ToArray(),
+        Sides = Sides.Select(side => side.Copy()).ToArray(), Things = Things, Blockmap = Blockmap,
         Lines = Lines.Select(line => line.Copy()).ToList(),
     };
 }
@@ -220,6 +277,11 @@ public static class LevelBuilder
             BottomTexture = side.BottomTexture,
             MidTexture = side.MidTexture,
             MidTextureOffsetY = side.RowOffset,
+            MidTextureOffsetX = side.TextureOffset,
+            TopTextureOffsetX = side.TextureOffset,
+            TopTextureOffsetY = side.RowOffset,
+            BottomTextureOffsetX = side.TextureOffset,
+            BottomTextureOffsetY = side.RowOffset,
         }).ToArray();
         var lines = new LevelLine[map.Core.Linedefs.Length];
         for (var i = 0; i < lines.Length; i++)
@@ -271,8 +333,21 @@ public static class LevelBuilder
         };
     }
 
+    private static double WallScale(double scale) => scale == 0 ? 1 : scale;
+
+    public static uint TextureAngleFromDegrees(double degrees)
+    {
+        var normalized = degrees % 360.0;
+        if (normalized < 0)
+            normalized += 360.0;
+        return (uint)(normalized * (4294967296.0 / 360.0));
+    }
+
     public static PlayLevel FromUdmf(UdmfTextMap map, string mapName, MapDataFormat format = MapDataFormat.UdmfText)
     {
+        var planeTransforms = map.Namespace.Equals("ZDoom", StringComparison.OrdinalIgnoreCase)
+            || map.Namespace.Equals("ZDoomTranslated", StringComparison.OrdinalIgnoreCase)
+            || map.Namespace.Equals("Vavoom", StringComparison.OrdinalIgnoreCase);
         var vertices = map.Vertices.Select((vertex, index) => new LevelVertex
         {
             Index = index,
@@ -293,22 +368,56 @@ public static class LevelBuilder
             Leakiness = sector.DamageAmount == 0 ? 0 : unchecked((short)sector.Leakiness),
             HurtMonsters = sector.HurtMonsters,
             HarmInAir = sector.HarmInAir,
-            Tag = (short)sector.Id,
+            Tag = sector.Id,
+            AdditionalTags = planeTransforms ? MoreIds(sector.MoreIds, sector.Id, sector: true) : Array.Empty<int>(),
+            HealthFloor = sector.HealthFloor,
+            HealthCeiling = sector.HealthCeiling,
+            Health3D = sector.Health3D,
+            HealthFloorGroup = sector.HealthFloorGroup,
+            HealthCeilingGroup = sector.HealthCeilingGroup,
+            Health3DGroup = sector.Health3DGroup,
             FloorPic = sector.TextureFloor,
             CeilingPic = sector.TextureCeiling,
+            FloorTextureAngle = planeTransforms ? TextureAngleFromDegrees(sector.RotationFloor) : 0,
+            CeilingTextureAngle = planeTransforms ? TextureAngleFromDegrees(sector.RotationCeiling) : 0,
+            FloorTextureOffsetX = planeTransforms ? sector.XPanningFloor : 0,
+            FloorTextureOffsetY = planeTransforms ? sector.YPanningFloor : 0,
+            CeilingTextureOffsetX = planeTransforms ? sector.XPanningCeiling : 0,
+            CeilingTextureOffsetY = planeTransforms ? sector.YPanningCeiling : 0,
+            FloorTextureScaleX = planeTransforms ? sector.XScaleFloor : 1,
+            FloorTextureScaleY = planeTransforms ? sector.YScaleFloor : 1,
+            CeilingTextureScaleX = planeTransforms ? sector.XScaleCeiling : 1,
+            CeilingTextureScaleY = planeTransforms ? sector.YScaleCeiling : 1,
         }).ToArray();
-        var sides = map.Sidedefs.Select((side, index) => new LevelSide
+        var sides = map.Sidedefs.Select((side, index) =>
         {
-            Index = index,
-            Sector = side.Sector,
-            TopTexture = side.TextureTop,
-            BottomTexture = side.TextureBottom,
-            MidTexture = side.TextureMiddle,
-            MidTextureOffsetY = side.OffsetY + (
-                string.Equals(map.Namespace, "ZDoom", StringComparison.OrdinalIgnoreCase)
-                || string.Equals(map.Namespace, "ZDoomTranslated", StringComparison.OrdinalIgnoreCase)
-                || string.Equals(map.Namespace, "Vavoom", StringComparison.OrdinalIgnoreCase)
-                    ? side.OffsetYMid : 0),
+            var built = new LevelSide
+            {
+                Index = index,
+                Sector = side.Sector,
+                TopTexture = side.TextureTop,
+                BottomTexture = side.TextureBottom,
+                MidTexture = side.TextureMiddle,
+                TopTextureScaleX = planeTransforms ? WallScale(side.ScaleXTop) : 1,
+                TopTextureScaleY = planeTransforms ? WallScale(side.ScaleYTop) : 1,
+                MidTextureScaleX = planeTransforms ? WallScale(side.ScaleXMid) : 1,
+                MidTextureScaleY = planeTransforms ? WallScale(side.ScaleYMid) : 1,
+                BottomTextureScaleX = planeTransforms ? WallScale(side.ScaleXBottom) : 1,
+                BottomTextureScaleY = planeTransforms ? WallScale(side.ScaleYBottom) : 1,
+                TopTextureOffsetX = (planeTransforms ? side.OffsetXTop : 0) + side.OffsetX,
+                TopTextureOffsetY = (planeTransforms ? side.OffsetYTop : 0) + side.OffsetY,
+                MidTextureOffsetX = (planeTransforms ? side.OffsetXMid : 0) + side.OffsetX,
+                MidTextureOffsetY = side.OffsetY + (
+                    string.Equals(map.Namespace, "ZDoom", StringComparison.OrdinalIgnoreCase)
+                    || string.Equals(map.Namespace, "ZDoomTranslated", StringComparison.OrdinalIgnoreCase)
+                    || string.Equals(map.Namespace, "Vavoom", StringComparison.OrdinalIgnoreCase)
+                        ? side.OffsetYMid : 0),
+                BottomTextureOffsetX = (planeTransforms ? side.OffsetXBottom : 0) + side.OffsetX,
+                BottomTextureOffsetY = (planeTransforms ? side.OffsetYBottom : 0) + side.OffsetY,
+            };
+            foreach (var scroll in BuildUdmfWallScrolls(side))
+                built.MapLoadWallScrolls.Add(scroll);
+            return built;
         }).ToArray();
         var lines = new LevelLine[map.Linedefs.Count];
         for (var i = 0; i < lines.Length; i++)
@@ -339,6 +448,7 @@ public static class LevelBuilder
                 SideBack = source.SideBack,
                 Special = source.Special,
                 Tag = source.Id,
+                AdditionalIds = planeTransforms ? MoreIds(source.MoreIds, source.Id, sector: false) : Array.Empty<int>(),
                 Arg0 = source.Arg0,
                 Arg1 = source.Arg1,
                 Arg2 = source.Arg2,
@@ -349,11 +459,15 @@ public static class LevelBuilder
                 PlayerUseBack = source.PlayerUseBack,
                 UseThrough = source.PassUse,
                 Repeat = source.RepeatSpecial,
+                Health = source.Health,
+                HealthGroup = source.HealthGroup,
             };
         }
 
         var things = map.Things.Select((thing, index) => new LevelThing
         {
+            Pitch = unchecked((short)thing.Pitch),
+            Roll = unchecked((short)thing.Roll),
             Index = index,
             X = thing.X,
             Y = thing.Y,
@@ -389,4 +503,32 @@ public static class LevelBuilder
 
     private static bool FitsShort(double value) => double.IsFinite(value) && value >= short.MinValue
         && value <= short.MaxValue && value == Math.Truncate(value);
+
+    private static IReadOnlyList<int> MoreIds(string text, int primary, bool sector)
+        => UdmfAdditionalIds.Parse(text, primary, sector);
+
+    private static IEnumerable<(double Dx, double Dy, int PartsMask)> BuildUdmfWallScrolls(UdmfSidedef side)
+    {
+        const int allParts = 1 | 2 | 4;
+        var scrolls = new (double X, double Y)[]
+        {
+            (side.XScroll, side.YScroll),
+            (side.XScrollTop, side.YScrollTop),
+            (side.XScrollMid, side.YScrollMid),
+            (side.XScrollBottom, side.YScrollBottom),
+        };
+        var mask = allParts;
+        for (var i = 1; i < 4; i++)
+        {
+            var (x, y) = scrolls[i];
+            if (x == 0 && y == 0)
+                continue;
+            mask &= ~(1 << (i - 1));
+            yield return (x, y, 1 << (i - 1));
+        }
+
+        var (gx, gy) = scrolls[0];
+        if ((gx != 0 || gy != 0) && mask != 0)
+            yield return (gx, gy, mask);
+    }
 }

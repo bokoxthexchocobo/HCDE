@@ -44,12 +44,27 @@ internal static class SectorDamage
         int damageType, int interval, int leakiness)
     {
         if (special != 214) return null;
+        _ = ApplyTagged(simulation, tag, amount, damageType, interval, leakiness);
+        return true;
+    }
+
+    /// <summary>Native ACS <c>SetSectorDamage</c> and line special 214.</summary>
+    public static int ApplyTagged(
+        AuthoritySimulation simulation,
+        int tag,
+        int amount,
+        int damageType,
+        int interval,
+        int leakiness)
+    {
         if (interval <= 0)
         {
             leakiness = amount < 20 ? 0 : amount < 50 ? 5 : 256;
             interval = amount < 50 ? 32 : 1;
         }
-        foreach (var sector in simulation.Level.Sectors.Where(sector => sector.Tag == tag))
+
+        var count = 0;
+        foreach (var sector in simulation.Level.Sectors.Where(sector => sector.MatchesTag(tag)))
         {
             sector.DamageAmount = unchecked((short)amount);
             sector.DamageType = damageType switch
@@ -62,8 +77,10 @@ internal static class SectorDamage
             };
             sector.DamageInterval = unchecked((short)interval);
             sector.Leakiness = unchecked((short)leakiness);
+            count++;
         }
-        return true;
+
+        return count;
     }
 
     public static void Tick(AuthoritySimulation simulation, Actor actor)

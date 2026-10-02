@@ -32,6 +32,18 @@ internal static class AcsActorProperties
         return actor is null || actor.Destroyed ? 0 : Read(actor, property);
     }
 
+    /// <summary>Native <c>CheckActorProperty</c> for integer and boolean <c>APROP_*</c> we support.</summary>
+    public static bool Check(AuthoritySimulation sim, Actor? activator, int tid, int property, int value)
+    {
+        var actor = tid == 0 ? activator : AcsActorTid.SingleFromTid(sim, tid);
+        if (actor is null || actor.Destroyed)
+            return false;
+        var actual = Read(actor, property);
+        return IsBoolean(property) ? actual == (value != 0 ? 1 : 0) : actual == value;
+    }
+
+    private static bool IsBoolean(int property) => property is Ambush or Invulnerable or Friendly or NoTarget;
+
     private static void ApplySet(Actor? actor, int property, int value)
     {
         if (actor is null || actor.Destroyed)

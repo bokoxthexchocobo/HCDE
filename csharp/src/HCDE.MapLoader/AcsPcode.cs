@@ -221,6 +221,8 @@ public enum AcsPcode : int
     Sin = 220,
     Cos = 221,
     VectorAngle = 222,
+    CheckWeapon = 223,
+    SetWeapon = 224,
     PushByte = 167,
     GiveInventory = 143,
     ClearInventory = 142,

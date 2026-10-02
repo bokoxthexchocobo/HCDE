@@ -28,7 +28,7 @@ internal static class AcsPlayerInventory
             return max ? player.Inventory.Armor : player.Inventory.Armor;
 
         if (typeName.Equals("Health", StringComparison.OrdinalIgnoreCase))
-            return max ? 100 : player.Health;
+            return max ? PlayerInventory.MaxHealthBonus : player.Health;
 
         if (typeName.Equals("BlueCard", StringComparison.OrdinalIgnoreCase)
             || typeName.Equals("BlueSkull", StringComparison.OrdinalIgnoreCase))
@@ -132,10 +132,48 @@ internal static class AcsPlayerInventory
     public static int Use(Actor? activator, string[] stringTable, int stringId) =>
         Use(activator, stringId < 0 || stringId >= stringTable.Length ? null : stringTable[stringId]);
 
+    /// <summary>Native <c>PCD_CHECKWEAPON</c>: ready weapon class name match.</summary>
+    public static int CheckWeapon(Actor? activator, string[] stringTable, int stringId) =>
+        CheckWeapon(activator, stringId < 0 || stringId >= stringTable.Length ? null : stringTable[stringId]);
+
+    public static int CheckWeapon(Actor? activator, string? typeName)
+    {
+        if (activator is not PlayerPawn { Destroyed: false } player || string.IsNullOrEmpty(typeName))
+            return 0;
+        if (!TryWeaponKind(typeName, out var weaponKind))
+            return 0;
+        return player.Inventory.Selected == weaponKind ? 1 : 0;
+    }
+
+    /// <summary>Native <c>PCD_SETWEAPON</c>; returns 0/1 like <see cref="Use"/>.</summary>
+    public static int SetWeapon(Actor? activator, string[] stringTable, int stringId) =>
+        Use(activator, stringTable, stringId);
+
     public static int Use(Actor? activator, string? typeName)
     {
         if (activator is not PlayerPawn { Destroyed: false } player || string.IsNullOrEmpty(typeName))
             return 0;
+
+        if (TryHealthUse(typeName, out var healAmount, out var healCap))
+        {
+            if (player.Health >= healCap)
+                return 0;
+            player.Health = Math.Min(healCap, player.Health + healAmount);
+            return 1;
+        }
+
+        if (TryArmorUse(typeName, out var armorAmount, out var armorCap, out var savePercent))
+        {
+            if (player.Inventory.Armor >= armorCap)
+                return 0;
+            player.Inventory.Armor = Math.Min(armorCap, player.Inventory.Armor + armorAmount);
+            if (player.Inventory.ArmorSavePercent == 0)
+                player.Inventory.ArmorSavePercent = savePercent;
+            return 1;
+        }
+
+        if (typeName.Equals("Backpack", StringComparison.OrdinalIgnoreCase))
+            return player.Inventory.GiveBackpack() ? 1 : 0;
 
         if (!TryWeaponKind(typeName, out var weaponKind))
             return 0;
@@ -214,6 +252,12 @@ internal static class AcsPlayerInventory
             return;
         }
 
+        if (typeName.Equals("Backpack", StringComparison.OrdinalIgnoreCase))
+        {
+            inventory.GiveBackpack();
+            return;
+        }
+
         if (TryAmmoKind(typeName, out var ammoKind))
         {
             inventory.TryAddAmmo(ammoKind, amount);
@@ -231,6 +275,18 @@ internal static class AcsPlayerInventory
 
     public static void Take(Actor? activator, string[] stringTable, int stringId, int amount) =>
         Take(activator, stringId < 0 || stringId >= stringTable.Length ? null : stringTable[stringId], amount);
+
+    /// <summary>Native <c>ACSF_DropInventory</c> subset: strip without spawning pickups.</summary>
+    public static bool Drop(Actor? activator, string? typeName)
+    {
+        if (activator is not PlayerPawn { Destroyed: false } || string.IsNullOrEmpty(typeName))
+            return false;
+        var amount = Count(activator, typeName, max: false);
+        if (amount <= 0)
+            return false;
+        Take(activator, typeName, TryWeaponKind(typeName, out _) ? 1 : amount);
+        return true;
+    }
 
     public static void Take(Actor? activator, string? typeName, int amount)
     {
@@ -261,6 +317,12 @@ internal static class AcsPlayerInventory
                 case PickupCatalog.KeyColor.Red: inventory.RedKey = false; break;
                 case PickupCatalog.KeyColor.Yellow: inventory.YellowKey = false; break;
             }
+            return;
+        }
+
+        if (typeName.Equals("Backpack", StringComparison.OrdinalIgnoreCase))
+        {
+            inventory.RemoveBackpack();
             return;
         }
 
@@ -335,6 +397,133 @@ internal static class AcsPlayerInventory
         kind = default;
         return false;
     }
+
+    private static bool TryArmorUse(string typeName, out int amount, out int maximum, out int savePercent)
+    {
+        if (typeName.Equals("Armor", StringComparison.OrdinalIgnoreCase)
+            || typeName.Equals("BasicArmor", StringComparison.OrdinalIgnoreCase)
+            || typeName.Equals("GreenArmor", StringComparison.OrdinalIgnoreCase))
+        {
+            amount = PlayerInventory.GreenArmorAmount;
+            maximum = PlayerInventory.GreenArmorAmount;
+            savePercent = PlayerInventory.GreenSavePercent;
+            return true;
+        }
+        if (typeName.Equals("MegaArmor", StringComparison.OrdinalIgnoreCase))
+        {
+            amount = PlayerInventory.MegaArmorAmount;
+            maximum = PlayerInventory.MegaArmorAmount;
+            savePercent = PlayerInventory.MegaSavePercent;
+            return true;
+        }
+        if (typeName.Equals("ArmorBonus", StringComparison.OrdinalIgnoreCase))
+        {
+            amount = 1;
+            maximum = PlayerInventory.MaxHealthBonus;
+            savePercent = PlayerInventory.GreenSavePercent;
+            return true;
+        }
+        amount = 0;
+        maximum = 0;
+        savePercent = 0;
+        return false;
+    }
+
+    private static bool TryHealthUse(string typeName, out int amount, out int maximum)
+    {
+        if (typeName.Equals("Health", StringComparison.OrdinalIgnoreCase)
+            || typeName.Equals("Stimpack", StringComparison.OrdinalIgnoreCase))
+        {
+            amount = 10;
+            maximum = 100;
+            return true;
+        }
+        if (typeName.Equals("Medikit", StringComparison.OrdinalIgnoreCase))
+        {
+            amount = 25;
+            maximum = 100;
+            return true;
+        }
+        if (typeName.Equals("HealthBonus", StringComparison.OrdinalIgnoreCase))
+        {
+            amount = 1;
+            maximum = PlayerInventory.MaxHealthBonus;
+            return true;
+        }
+        if (typeName.Equals("Soulsphere", StringComparison.OrdinalIgnoreCase))
+        {
+            amount = 100;
+            maximum = PlayerInventory.MaxHealthBonus;
+            return true;
+        }
+        amount = 0;
+        maximum = 0;
+        return false;
+    }
+
+    /// <summary>Native <c>ACSF_GetArmorType</c>: returns worn amount when the type name matches.</summary>
+    public static int ArmorTypeAmount(AuthoritySimulation sim, string? typeName, int playerNumber)
+    {
+        if (string.IsNullOrEmpty(typeName) || playerNumber < 0)
+            return 0;
+        var player = sim.Players.FirstOrDefault(p => !p.Destroyed && p.PlayerNum == playerNumber);
+        if (player is null)
+            return 0;
+        if (!typeName.Equals("BasicArmor", StringComparison.OrdinalIgnoreCase)
+            && !typeName.Equals("Armor", StringComparison.OrdinalIgnoreCase))
+            return 0;
+        return player.Inventory.Armor > 0 && player.Inventory.ArmorSavePercent > 0
+            ? player.Inventory.Armor
+            : 0;
+    }
+
+    /// <summary>Native <c>ACSF_GetArmorInfo</c> subset for worn BasicArmor.</summary>
+    public static int ArmorInfo(Actor? activator, int infoKind, AcsGlobalStrings globalStrings)
+    {
+        if (activator is not PlayerPawn { Destroyed: false } player)
+            return infoKind == 0 ? globalStrings.Add("None") : 0;
+
+        var inventory = player.Inventory;
+        var hasArmor = inventory.Armor > 0 && inventory.ArmorSavePercent > 0;
+        return infoKind switch
+        {
+            0 => globalStrings.Add(hasArmor ? "BasicArmor" : "None"),
+            1 => hasArmor
+                ? inventory.ArmorSavePercent >= PlayerInventory.MegaSavePercent
+                    ? PlayerInventory.MegaArmorAmount
+                    : PlayerInventory.GreenArmorAmount
+                : 0,
+            2 => hasArmor ? DoubleToAcs(inventory.ArmorSavePercent / 100.0) : 0,
+            3 => hasArmor ? inventory.MaxAbsorb : 0,
+            4 => hasArmor ? inventory.MaxFullAbsorb : 0,
+            5 => hasArmor ? inventory.AbsorbCount : 0,
+            _ => 0,
+        };
+    }
+
+    private static int DoubleToAcs(double value) => (int)Math.Floor(value * 65536.0);
+
+    /// <summary>Native <c>ACSF_GetWeapon</c> ready-weapon class name.</summary>
+    public static string ReadyWeaponClassName(Actor? activator)
+    {
+        if (activator is not PlayerPawn { Destroyed: false } player)
+            return "None";
+        return WeaponClassName(player.Inventory.Selected);
+    }
+
+    internal static string WeaponClassName(WeaponKind kind) => kind switch
+    {
+        WeaponKind.Pistol => "Pistol",
+        WeaponKind.Fist => "Fist",
+        WeaponKind.Shotgun => "Shotgun",
+        WeaponKind.SuperShotgun => "SuperShotgun",
+        WeaponKind.Chaingun => "Chaingun",
+        WeaponKind.RocketLauncher => "RocketLauncher",
+        WeaponKind.Plasma => "PlasmaRifle",
+        WeaponKind.Bfg => "BFG9000",
+        WeaponKind.Chainsaw => "Chainsaw",
+        _ => "None",
+    };
 
     private static bool TryWeaponKind(string typeName, out WeaponKind kind)
     {

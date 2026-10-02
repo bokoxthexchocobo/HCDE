@@ -64,8 +64,12 @@ public static class LineSpecials
     public const int Lift = 62;
     public const int Teleport = 70;
     public const int AcsExecute = 80;
+    public const int SectorCopyScroller = 58;
     public const int ScrollFloor = 223;
     public const int ScrollCeiling = 224;
+    public const int SectorSetRotation = 185;
+    /// <summary>Eternity <c>Scroll_Wall</c> (Hexen/UDMF action 52 — not Doom binary exit).</summary>
+    public const int ScrollWall = WallScrollActions.ScrollWall;
     public const int FloorStep = 8;
     public const int TeleportDestType = 14;
     private const int DoorSpeed = 8;
@@ -194,6 +198,17 @@ public static class LineSpecials
             repeat = line.Repeat;
             activated = line.Special switch
             {
+                SectorSetRotation => ExecuteSectorRotation(sim, line.Special, line.Arg0, line.Arg1, line.Arg2) == true,
+                WallTextureOffset.Special => WallTextureOffset.Execute(sim, line.Special, line.Arg0, line.Arg1, line.Arg2, line.Arg3, line.Arg4) == true,
+                WallTextureScale.Special => WallTextureScale.Execute(sim, line.Special, line.Arg0, line.Arg1, line.Arg2, line.Arg3, line.Arg4) == true,
+                SectorTextureScale.CeilingFixed or SectorTextureScale.FloorFixed or SectorTextureScale.Ceiling or SectorTextureScale.Floor =>
+                    SectorTextureScale.Execute(sim, line.Special, line.Arg0, line.Arg1, line.Arg2, line.Arg3, line.Arg4) == true,
+                SectorTexturePanning.Floor or SectorTexturePanning.Ceiling =>
+                    SectorTexturePanning.Execute(sim, line.Special, line.Arg0, line.Arg1, line.Arg2, line.Arg3, line.Arg4) == true,
+                SectorTextureAlignment.AlignFloor or SectorTextureAlignment.AlignCeiling =>
+                    SectorTextureAlignment.Execute(sim, line.Special, line.Arg0, line.Arg1) == true,
+                GeometryHealthActions.LineSetHealth or GeometryHealthActions.SectorSetHealth =>
+                    GeometryHealthActions.Execute(sim, line.Special, line.Arg0, line.Arg1, line.Arg2) == true,
                 214 => SectorDamage.ExecuteSpecial(sim, line.Special, line.Arg0, line.Arg1, line.Arg2, line.Arg3, line.Arg4) == true,
                 110 or 111 or 112 or 113 or 114 or 115 or 116 or 117 or 232 or 233 or 234 =>
                     LightActions.ExecuteSpecial(sim, line.Special, line.Arg0, line.Arg1, line.Arg2, line.Arg3, line.Arg4) == true,
@@ -208,11 +223,27 @@ public static class LineSpecials
                     line.Arg0, line.Arg1, line.Arg2, line.Arg3, line.Arg4, line) == true,
                 26 or 27 or 31 or 32 or 204 or 217 or 270 or 271 or 272 or 273 => ExecuteStairSpecial(sim, line.Special,
                     line.Arg0, line.Arg1, line.Arg2, line.Arg3, line.Arg4, line) == true,
+                ScrollWall or WallScrollActions.ScrollBoth => WallScrollActions.ExecuteSpecial(sim, line),
                 _ => false,
             };
         }
         if (activated && !repeat) line.Special = 0;
         return activated;
+    }
+
+    internal static bool? ExecuteSectorRotation(AuthoritySimulation sim, int special, int tag, int floorDegrees, int ceilingDegrees)
+    {
+        if (special != SectorSetRotation) return null;
+        var floor = LevelBuilder.TextureAngleFromDegrees(floorDegrees);
+        var ceiling = LevelBuilder.TextureAngleFromDegrees(ceilingDegrees);
+        // Native uses the tag iterator without a trigger line: zero selects untagged sectors.
+        foreach (var sector in sim.Level.Sectors)
+        {
+            if (!sector.MatchesTag(tag)) continue;
+            sector.FloorTextureAngle = floor;
+            sector.CeilingTextureAngle = ceiling;
+        }
+        return true;
     }
 
     internal static bool? ExecuteScriptControl(AuthoritySimulation sim, int special, int script, int map, int arg1, int arg2, int arg3, Actor? activator = null, LevelLine? triggerLine = null, bool backSide = false)
@@ -261,9 +292,9 @@ public static class LineSpecials
         int arg3, int arg4, LevelLine? line = null)
     {
         if (special is not (20 or 21 or 22 or 23 or 24 or 25 or 28 or 35 or 36 or 37 or 46 or 62 or 66 or 67 or 68 or 99 or 238 or 239 or 242 or 256 or 257 or 258 or 259 or 260 or 275 or 279 or ScrollFloor or ScrollCeiling)) return null;
-        if (tag == 0 && line is null) return false;
         if (special is ScrollFloor or ScrollCeiling)
             return ScrollActions.ExecuteSpecial(sim, special, tag, speed, arg2, arg3, line);
+        if (tag == 0 && line is null) return false;
         if (special == 239)
         {
             LevelSector? model = null;
@@ -816,7 +847,7 @@ public static class LineSpecials
             return false;
         var dest = sim.Actors.FirstOrDefault(actor => actor.DoomEdNum == TeleportDestType && !actor.Destroyed
             && (target == 0 || (byThingId ? actor.ThingId == target
-                : (uint)actor.SectorIndex < (uint)sim.Level.Sectors.Count && sim.Level.Sectors[actor.SectorIndex].Tag == target)));
+                : (uint)actor.SectorIndex < (uint)sim.Level.Sectors.Count && sim.Level.Sectors[actor.SectorIndex].MatchesTag(target))));
         if (dest == null)
             return false;
         activator.X = dest.X;
@@ -833,7 +864,7 @@ public static class LineSpecials
         {
             for (var i = 0; i < sim.Level.Sectors.Count; i++)
             {
-                if (sim.Level.Sectors[i].Tag == tag)
+                if (sim.Level.Sectors[i].MatchesTag(tag))
                     yield return i;
             }
 

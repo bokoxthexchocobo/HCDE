@@ -116,7 +116,7 @@ internal static class LightActions
     {
         for (var sector = 0; sector < sim.Level.Sectors.Count; sector++)
         {
-            if (sim.Level.Sectors[sector].Tag != tag) continue;
+            if (!sim.Level.Sectors[sector].MatchesTag(tag)) continue;
             var start = Math.Clamp(upper, short.MinValue, short.MaxValue);
             sim.Lights[sector] = (short)start;
             sim.LightEffects.Add(new LightEffect
@@ -133,7 +133,7 @@ internal static class LightActions
     {
         for (var sector = 0; sector < sim.Level.Sectors.Count; sector++)
         {
-            if (sim.Level.Sectors[sector].Tag != tag) continue;
+            if (!sim.Level.Sectors[sector].MatchesTag(tag)) continue;
             AddDoomStrobe(sim, sector, brightTime, darkTime, false);
         }
         return true;
@@ -145,7 +145,7 @@ internal static class LightActions
         if (kind == LightEffectKind.Glow && upper < lower) (upper, lower) = (lower, upper);
         for (var sector = 0; sector < sim.Level.Sectors.Count; sector++)
         {
-            if (sim.Level.Sectors[sector].Tag != tag) continue;
+            if (!sim.Level.Sectors[sector].MatchesTag(tag)) continue;
             if (kind == LightEffectKind.Fade && tics <= 0)
             {
                 sim.Lights[sector] = (short)Math.Clamp(upper, short.MinValue, short.MaxValue);
@@ -165,7 +165,7 @@ internal static class LightActions
 
     internal static bool Stop(AuthoritySimulation sim, int tag)
     {
-        sim.LightEffects.RemoveAll(effect => sim.Level.Sectors[effect.Sector].Tag == tag);
+        sim.LightEffects.RemoveAll(effect => sim.Level.Sectors[effect.Sector].MatchesTag(tag));
         return true;
     }
 
@@ -176,7 +176,7 @@ internal static class LightActions
         // Native light actions use the tag iterator even for tag zero, not the line's back sector.
         for (var sector = 0; sector < sim.Level.Sectors.Count; sector++)
         {
-            if (sim.Level.Sectors[sector].Tag != tag) continue;
+            if (!sim.Level.Sectors[sector].MatchesTag(tag)) continue;
             long light = action switch
             {
                 LightAction.Raise => (long)sim.LightOf(sector) + value,

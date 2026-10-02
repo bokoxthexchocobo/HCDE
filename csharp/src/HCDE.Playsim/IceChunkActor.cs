@@ -5,12 +5,13 @@ public sealed class IceChunkActor : Actor
 {
     public const int DoomEdNumMarker = 65540;
 
-    private int _remainingTics;
-    public int RemainingTics => _remainingTics;
+    public int RemainingTics => Destroyed ? 0 : States.RemainingTics;
+    internal override bool IsBlockmapActor => false;
+    internal override double GravityFactor => 0.125;
 
     internal IceChunkActor(int remainingTics)
     {
-        _remainingTics = remainingTics;
+        if (remainingTics <= 0) throw new ArgumentOutOfRangeException(nameof(remainingTics));
         DoomEdNum = DoomEdNumMarker;
         Solid = false;
         Shootable = false;
@@ -18,19 +19,15 @@ public sealed class IceChunkActor : Actor
         Radius = Fixed.FromInt(3);
         Height = Fixed.FromInt(4);
         Mass = 5;
+        States.Configure(this, [new ActorFrame(remainingTics, 1, _ => SetFrameDuration()),
+            new ActorFrame(remainingTics, 2, _ => SetFrameDuration()),
+            new ActorFrame(remainingTics, 3, _ => SetFrameDuration()),
+            new ActorFrame(remainingTics, -1, _ => SetFrameDuration())], 0);
     }
 
-    public override void Tick()
+    private void SetFrameDuration()
     {
-        RememberPosition();
-        if (--_remainingTics <= 0)
-        {
-            Destroy();
-            return;
-        }
-
-        if (Simulation != null)
-            ActorPhysics.Step(Simulation, this);
-        base.Tick();
+        if (Simulation is { } sim)
+            States.ForceRemainingTics(70 + (int)(sim.NextCombatRandom() % 64));
     }
 }

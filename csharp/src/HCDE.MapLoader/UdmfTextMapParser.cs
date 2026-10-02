@@ -11,6 +11,7 @@ public sealed class UdmfVertex
 
 public sealed class UdmfLinedef
 {
+    public string MoreIds { get; set; } = string.Empty;
     public int V1 { get; set; }
     public int V2 { get; set; }
     public int SideFront { get; set; } = -1;
@@ -34,10 +35,18 @@ public sealed class UdmfLinedef
     public int Arg2 { get; set; }
     public int Arg3 { get; set; }
     public int Arg4 { get; set; }
+    public int Health { get; set; }
+    public int HealthGroup { get; set; }
 }
 
 public sealed class UdmfSidedef
 {
+    public double ScaleXTop { get; set; } = 1;
+    public double ScaleYTop { get; set; } = 1;
+    public double ScaleXMid { get; set; } = 1;
+    public double ScaleYMid { get; set; } = 1;
+    public double ScaleXBottom { get; set; } = 1;
+    public double ScaleYBottom { get; set; } = 1;
     public int Sector { get; set; }
     public string TextureTop { get; set; } = "-";
     public string TextureBottom { get; set; } = "-";
@@ -45,10 +54,24 @@ public sealed class UdmfSidedef
     public int OffsetX { get; set; }
     public int OffsetY { get; set; }
     public double OffsetYMid { get; set; }
+    public double OffsetXTop { get; set; }
+    public double OffsetYTop { get; set; }
+    public double OffsetXMid { get; set; }
+    public double OffsetXBottom { get; set; }
+    public double OffsetYBottom { get; set; }
+    public double XScroll { get; set; }
+    public double YScroll { get; set; }
+    public double XScrollTop { get; set; }
+    public double YScrollTop { get; set; }
+    public double XScrollMid { get; set; }
+    public double YScrollMid { get; set; }
+    public double XScrollBottom { get; set; }
+    public double YScrollBottom { get; set; }
 }
 
 public sealed class UdmfSector
 {
+    public string MoreIds { get; set; } = string.Empty;
     public int DamageAmount { get; set; }
     public string DamageType { get; set; } = "None";
     public int DamageInterval { get; set; } = 32;
@@ -59,13 +82,31 @@ public sealed class UdmfSector
     public double HeightCeiling { get; set; }
     public string TextureFloor { get; set; } = "-";
     public string TextureCeiling { get; set; } = "-";
+    public double RotationFloor { get; set; }
+    public double RotationCeiling { get; set; }
+    public double XPanningFloor { get; set; }
+    public double YPanningFloor { get; set; }
+    public double XPanningCeiling { get; set; }
+    public double YPanningCeiling { get; set; }
+    public double XScaleFloor { get; set; } = 1;
+    public double YScaleFloor { get; set; } = 1;
+    public double XScaleCeiling { get; set; } = 1;
+    public double YScaleCeiling { get; set; } = 1;
     public int LightLevel { get; set; }
     public int Special { get; set; }
     public int Id { get; set; }
+    public int HealthFloor { get; set; }
+    public int HealthCeiling { get; set; }
+    public int Health3D { get; set; }
+    public int HealthFloorGroup { get; set; }
+    public int HealthCeilingGroup { get; set; }
+    public int Health3DGroup { get; set; }
 }
 
 public sealed class UdmfThing
 {
+    public int Pitch { get; set; }
+    public int Roll { get; set; }
     public double X { get; set; }
     public double Y { get; set; }
     public double Height { get; set; }
@@ -281,6 +322,7 @@ public static class UdmfTextMapParser
 
         private static UdmfLinedef ReadLinedef(Dictionary<string, Value> fields) => new()
         {
+            MoreIds = Text(fields, "moreids", string.Empty),
             V1 = Int(fields, "v1"),
             V2 = Int(fields, "v2"),
             SideFront = Int(fields, "sidefront", -1),
@@ -304,10 +346,18 @@ public static class UdmfTextMapParser
             Arg2 = Int(fields, "arg2"),
             Arg3 = Int(fields, "arg3"),
             Arg4 = Int(fields, "arg4"),
+            Health = Int(fields, "health"),
+            HealthGroup = Int(fields, "healthgroup"),
         };
 
         private static UdmfSidedef ReadSidedef(Dictionary<string, Value> fields) => new()
         {
+            ScaleXTop = Number(fields, "scalex_top", 1),
+            ScaleYTop = Number(fields, "scaley_top", 1),
+            ScaleXMid = Number(fields, "scalex_mid", 1),
+            ScaleYMid = Number(fields, "scaley_mid", 1),
+            ScaleXBottom = Number(fields, "scalex_bottom", 1),
+            ScaleYBottom = Number(fields, "scaley_bottom", 1),
             Sector = Int(fields, "sector"),
             TextureTop = Text(fields, "texturetop", "-"),
             TextureBottom = Text(fields, "texturebottom", "-"),
@@ -315,6 +365,19 @@ public static class UdmfTextMapParser
             OffsetX = Int(fields, "offsetx"),
             OffsetY = Int(fields, "offsety"),
             OffsetYMid = Number(fields, "offsety_mid"),
+            OffsetXTop = Number(fields, "offsetx_top"),
+            OffsetYTop = Number(fields, "offsety_top"),
+            OffsetXMid = Number(fields, "offsetx_mid"),
+            OffsetXBottom = Number(fields, "offsetx_bottom"),
+            OffsetYBottom = Number(fields, "offsety_bottom"),
+            XScroll = Number(fields, "xscroll"),
+            YScroll = Number(fields, "yscroll"),
+            XScrollTop = Number(fields, "xscrolltop"),
+            YScrollTop = Number(fields, "yscrolltop"),
+            XScrollMid = Number(fields, "xscrollmid"),
+            YScrollMid = Number(fields, "yscrollmid"),
+            XScrollBottom = Number(fields, "xscrollbottom"),
+            YScrollBottom = Number(fields, "yscrollbottom"),
         };
 
         private static UdmfSector ReadSector(Dictionary<string, Value> fields) => new()
@@ -329,13 +392,32 @@ public static class UdmfTextMapParser
             HeightCeiling = Number(fields, "heightceiling"),
             TextureFloor = Text(fields, "texturefloor", "-"),
             TextureCeiling = Text(fields, "textureceiling", "-"),
+            RotationFloor = Number(fields, "rotationfloor"),
+            RotationCeiling = Number(fields, "rotationceiling"),
+            XPanningFloor = Number(fields, "xpanningfloor"),
+            YPanningFloor = Number(fields, "ypanningfloor"),
+            XPanningCeiling = Number(fields, "xpanningceiling"),
+            YPanningCeiling = Number(fields, "ypanningceiling"),
+            XScaleFloor = Number(fields, "xscalefloor", 1),
+            YScaleFloor = Number(fields, "yscalefloor", 1),
+            XScaleCeiling = Number(fields, "xscaleceiling", 1),
+            YScaleCeiling = Number(fields, "yscaleceiling", 1),
             LightLevel = Int(fields, "lightlevel"),
             Special = Int(fields, "special"),
             Id = Int(fields, "id"),
+            MoreIds = Text(fields, "moreids", string.Empty),
+            HealthFloor = Int(fields, "healthfloor"),
+            HealthCeiling = Int(fields, "healthceiling"),
+            Health3D = Int(fields, "health3d"),
+            HealthFloorGroup = Int(fields, "healthfloorgroup"),
+            HealthCeilingGroup = Int(fields, "healthceilinggroup"),
+            Health3DGroup = Int(fields, "health3dgroup"),
         };
 
         private static UdmfThing ReadThing(Dictionary<string, Value> fields) => new()
         {
+            Pitch = Int(fields, "pitch"),
+            Roll = Int(fields, "roll"),
             X = Number(fields, "x"),
             Y = Number(fields, "y"),
             Height = Number(fields, "height"),
@@ -359,8 +441,8 @@ public static class UdmfTextMapParser
             Arg4 = Int(fields, "arg4"),
         };
 
-        private static double Number(Dictionary<string, Value> fields, string key) =>
-            fields.TryGetValue(key, out var value) ? value.Number : 0;
+        private static double Number(Dictionary<string, Value> fields, string key, double fallback = 0) =>
+            fields.TryGetValue(key, out var value) ? value.Number : fallback;
 
         private static int Int(Dictionary<string, Value> fields, string key, int fallback = 0)
         {

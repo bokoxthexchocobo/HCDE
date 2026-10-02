@@ -72,8 +72,44 @@ their gates.
   are fitted before `OnMobj` riders.   A per-sector scroll vector carries grounded actors after thinkers run.
   `Scroll_Floor` (223) sets carry from line args when mode is positive.
   Hexen sector specials 201–224 add player-only carry on top of that vector.
-  Texture scroll and polyobjects are absent. `Scroll_Ceiling` (224) activates on
-  tagged sectors but does not scroll ceilings yet.
+  Map-load <c>Scroll_Floor</c> (223) carry lines register via
+  <c>ScrollCarryInitialize</c> (multiple thinkers sum per sector). Displacement carry
+  (`Arg1` &amp; 3) tracks control-sector center height each tic. Texture scroll and polyobjects are absent. `Scroll_Ceiling` (224) activates on
+  tagged sectors but does not scroll ceilings yet. Carry samples the center sector
+  plus radius cardinals and averages multi-sector scroll like native players.
+  Per-scroller `ScrollCarryAffect` (players / monsters / static) filters carry
+  like `DScroller::m_Affect`; default is all kinds. `CompatSurface.BoomScroll`
+  matches `COMPATF_BOOMSCROLL` (monsters sum multi-sector carry; players average).
+  `MF8_INSCROLLSEC` is set per tic for monsters on carry scrollers; players ignore it.
+  `CallFunc` ACS helpers include `CheckClass` (200), `DamageActor` (201),
+  `GetActorVelX`/`Y`/`Z` (9–11), `GetActorViewHeight` (14), `GetChar` (15),
+  `GetArmorType` (19), `CheckActorProperty` (22), `SetActorVelocity` (23),
+  `CheckActorClass` (27), `UniqueTID` (46),
+  `IsTIDUsed` (47), `Sqrt` (48),
+  `FixedSqrt` (49), `VectorLength` (50), `strcmp` (63), `stricmp` (64),
+  `StrLeft`/`StrRight`/`StrMid` (65–67), `GetActorClass` (68), `GetWeapon` (69),
+  `CheckProximity` (98, catalog radius), `CheckActorState` (99, Spawn/See/Pain/Death labels),
+  `SoundVolume` (70, no-op success), `PlayActorSound` (71, actor count only),
+  `SpawnDecal` (72, actor count only), `CheckFont` (73, built-in Doom font names),
+  `DropItem` (74, catalog pickup spawn; optional amount override),
+  `SetLineActivation` / `GetLineActivation` (76–77, cross/use/use-back/use-through),
+  `GetActorPowerupTics` (78, `PowerBuddha` on players),
+  `CheckFlag` (75), `SetActorFlag` (202),
+  `Floor`/`Round`/`Ceil` (207–209, fixed quantize), `GetActorFloorTexture` (204), `StrArg` (206, `SpawnOptions.StrArgs`),
+  `ChangeActorAngle` (79), `ChangeActorPitch` (80), `GetArmorInfo` (81), `DropInventory` (82, strip only),
+  `ChangeActorRoll` (89), `GetActorRoll` (90), `PickActor` (83, `CombatTrace` ray + TID assign),
+  `IsPointerEqual` (84, `AAPTR` subset), `CanRaiseActor` (85, archvile corpse gates),
+  `SetActorTeleFog` / `SwapActorTeleFog` (86–87, per-actor fog name overrides),
+  `SetActorRoll` (88, absolute BAM roll; shares **89** `ChangeActorRoll` path),
+  `LineAttack` (60, `CombatTrace.PickActor` + `ActorDamage`), `PlaySound` (61, actor count only),
+  `StopSound` (62, no-op success), `QuakeEx` (91, no-op success),
+  `SetSectorDamage` (94, tag match via `SectorDamage.ApplyTagged`),
+  `SetSectorTerrain` (95, floor/ceiling name on tagged sectors),
+  `GetActorFloorTerrain` (205, reads `FloorTerrain`), `SpawnParticle` (96, no-op success),
+  `SetMusicVolume` (97, stores `MusicVolume`; playback absent) —
+  catalog / `DoomPlayer`; `UniqueTID` (46) random start when tid **0**
+  spawn names only, not full DECORATE/`PClass`. Backpack give/take via ACS inventory
+  opcodes matches `GiveBackpack` / `RemoveBackpack`.
 - Bridges: a grounded monster steps onto a solid actor marked
   `MF4_ACTLIKEBRIDGE` when that top is within 24 and the head fits. A top
   of 25 blocks. A dead actor with the flag is not a platform. Players
@@ -555,11 +591,16 @@ and a player-inventory subset (`PlayerFrags`, skull-tag key opcodes,
 `ClearInventory` / `ClearActorInventory` on players),
 `SetActorProperty` / `GetActorProperty` for a bounded `APROP_*` subset (health,
 ambush, invulnerable, friendly, no-target, spawn health, mass, step/dropoff,
-target TID via monster brain; ambush and target TID have regression tests),
+target TID via monster brain; ambush, target TID, no-target, spawn health,
+invulnerable damage block, mass, max step/dropoff height, and no-target wake
+blocking have regression tests),
 activator `UseInventory` and `UseActorInventory`
-for owned weapons (pending raise only; tid 0 hits every spawned player; no
-health, keys, or consumable use), and `GetAmmoCapacity` / `SetAmmoCapacity` on
-activator ammo pools (not `ACSF_GetMaxInventory` or DECORATE defaults).
+for owned weapons (pending raise only; tid 0 hits every spawned player) and
+activator health-, armor-class, and `Backpack` `UseInventory` / `GiveInventory`
+(no keys via use or item instances),
+`GetAmmoCapacity` / `SetAmmoCapacity` on activator ammo pools, and
+`ACSF_GetMaxInventory` (93) via `CallFunc` (DECORATE max amounts still absent),
+and `CheckWeapon` / `SetWeapon` on the ready weapon class name.
 Gate 5 still needs a recorded native IWAD/binary trace pair, not managed-only
 fixtures. The warn-as-error Release build is clean.
 

@@ -29,8 +29,11 @@ public static class HitscanCombat
             var spreadScale = weapon == WeaponKind.Chainsaw ? 1 : 255.0 / 256;
             var spread = definition.SpreadDegrees == 0 ? 0 : sim.NextCombatSpread() * definition.SpreadDegrees * spreadScale;
             var pitchSpread = weapon == WeaponKind.SuperShotgun ? sim.NextCombatSpread() * (7.097 * 255 / 256) : 0;
-            var target = CombatTrace.FindTarget(sim, player, melee ? MeleeRange : HitscanRange, spread, pitchSpread);
-            if (target != null) ActorDamage.Apply(target, damage, player, inflictor: player);
+            var hit = CombatTrace.TraceLineAttack(sim, player,
+                BamAngle.FromDegrees(player.Angle.ToDegrees() + spread),
+                BamAngle.FromDegrees(player.PitchDegrees + pitchSpread), melee ? MeleeRange : HitscanRange);
+            if (hit.Victim is { } target) ActorDamage.Apply(target, damage, player, inflictor: player);
+            else GeometryLineAttack.Apply(sim, hit, damage);
         }
         return true;
     }

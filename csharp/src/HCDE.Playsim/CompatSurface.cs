@@ -14,6 +14,8 @@ public enum CompatSurface
     LegacyScriptWaitDirect = 16,
     // Selects native Hexen defaults for converted crush/stop modes, independent of map format.
     HexenCrushDefaults = 32,
+    /// <summary>Native <c>COMPATF_BOOMSCROLL</c>. Non-players sum multi-sector carry; players still average.</summary>
+    BoomScroll = 64,
 }
 
 public static class CompatSurfaceRules

@@ -1,5 +1,1776 @@
 # Gameplay phases 1–3: implementation and completion audit
 
+## Conversion and audit: drop chance boundaries and safe ACS iteration (2026-10-01)
+
+Audited Actor.A_DropItem and TossItem in inventory_util.zs. Native chance
+accepts random[DropItem]() <= chance, including equality and zero when the
+random byte is zero. It draws even for guaranteed chance 256. Converted the
+managed chance comparison and draw consumption; vanilla shatter drops now
+use the same chance path. The managed generator remains the shared combat
+generator, not the native dedicated DropItem stream.
+
+The new multi-TID regression exposed collection invalidation: successful
+spawning appended to the list being enumerated. Snapshotting matching actors
+before spawning fixes the exception and processes each original match once.
+Added ten regressions for negative/zero/intermediate/guaranteed chances,
+equality, zero-byte success, per-match draws, unresolved types and missing
+droppers. The first test run caught the iteration bug; after fixing it,
+**4,291 tests passed (3,218 Playsim; 500 MapLoader)**. Warnings-as-errors build
+passed with zero warnings/errors. Touched-file whitespace validation passed.
+
+Native source also confirms drop-style-dependent height and randomized toss
+velocity, gated by COMPATF_NOTOSSDROPS. Those movement behaviors remain open,
+along with dedicated RNG streams, missing dynamic actor restoration, custom
+drop classes and native executable acceptance. Changes remain uncommitted.
+
+## Conversion and audit: pickup property archive persistence (2026-10-01)
+
+Audited native inventory Amount and BackpackItem.bDepleted fields, actor flag
+serialization in p_mobj.cpp, and DObject.SerializeUserVars/WriteAllFields.
+The managed pose archive omitted PickupAmount, IgnoreAmmoSkill and Depleted.
+Added an optional version-17 pickup trailer over the existing version-16
+archive, capturing those properties for catalog pickups and restoring them
+onto matching actor IDs. Default values are saved explicitly, so restoring
+can clear changed properties. Versions 1-16 retain their existing behavior.
+Archives without catalog pickups retain their prior version.
+
+Added sixteen regressions for exact property round trips, checksum and ammo
+continuation, depleted backpack behavior, a matching spawned weapon drop,
+legacy preservation, malformed flags/amounts/sizes/counts, truncation and
+negative-amount rejection before restore mutation. Release validation:
+**4,281 tests passed (3,208 Playsim; 500 MapLoader)**. Warnings-as-errors build
+passed with zero warnings/errors. Touched-file whitespace validation passed.
+
+This remains the managed pose archive, not the native save format. Missing
+dynamic actors are not recreated; full actor/inventory/thinker reconstruction,
+custom drop properties, toss behavior and native executable acceptance remain
+open. Changes remain uncommitted.
+
+## Conversion and audit: native default dropped-ammo amounts (2026-10-01)
+
+Audited Actor.A_DropItem in inventory_util.zs and Ammo/Weapon.ModifyDropAmount
+in inventory/ammo.zs and inventory/weapons.zs. Converted the vanilla default
+drop factor: ammo drops halve their regular amount with a minimum of one;
+weapon drops halve their ammo grant. Positive explicit ammo amounts retain
+their requested amount, while weapon inventory amounts do not override ammo.
+Pickup applies skill/server ammo scaling after this adjustment, including
+explicit ammo amounts. Existing player weapon-drop ignore-skill behavior is
+preserved. Uses the existing PickupAmount field and checksum contribution.
+
+Added eight regressions: four frozen-monster drops collected through simulation,
+and doubled-ammo cases covering default clips, minimum-one rockets, explicit
+ammo and weapon amounts. Release validation: **4,265 tests passed (3,192 Playsim;
+500 MapLoader)**. Warnings-as-errors build passed with zero warnings/errors.
+Touched-file whitespace validation passed.
+
+Custom skill DropAmmoFactor, DropAmmoFactorMultiplier, custom DropAmount,
+drop toss/height, class replacement, dropped pickup property save persistence,
+ordinary death-state drop wiring and native executable acceptance remain open.
+Changes remain uncommitted.
+
+## Conversion and audit: vanilla frozen-monster item drops (2026-10-01)
+
+Audited A_Unblock/A_NoBlocking in native a_action.cpp and drop declarations
+in Doom possessed.zs. Converted standard item drops at managed shatter
+completion: ZombieMan/WolfensteinSS drop Clip, ShotgunGuy drops Shotgun,
+ChaingunGuy drops Chaingun. Reused existing dropped-pickup spawning before
+corpse removal. Delayed shattering drops nothing and removed corpses cannot
+repeat drops. The helper excludes players and is limited to vanilla editor types.
+
+Added six regressions for four native drop mappings, unchanged pickup spawn
+coordinates/flags, exactly-once drops, delay and a monster without a drop.
+Adjusted the debris-only trace test to keep newly dropped pickups outside its
+ray. Release validation: **4,257 tests passed (3,184 Playsim; 500 MapLoader)**.
+Build with warnings treated as errors passed with zero warnings/errors.
+An initial network attack test timed out; subsequent full-suite runs passed.
+
+General/custom drop metadata, conversation drops, class replacement, ordinary
+death-state drop wiring, dropped-item native toss/ammo properties, corpse queue,
+player head transfer, shatter timing, RNG parity and executable acceptance
+remain open. Changes remain uncommitted.
+
+## Conversion and audit: completed shatter corpse removal (2026-10-01)
+
+Audited the end of native A_FreezeDeathChunks in shared/ice.zs: after debris,
+player-head and boss handling, it performs A_NoBlocking and enters null state.
+Converted the ordinary managed completion path to clear collision/shootability
+and enter the removal state after spawning debris. Destroyed corpses cannot
+repeat spawning. The moving-corpse delay returns before removal, retaining its
+blocking flags and active actor identity.
+
+Added three regressions for stationary/forced completion, null state and flags,
+repeat spawn/damage without extra shards or RNG consumption, thinker cleanup
+after ticking, and retention of a delayed moving corpse.
+Release validation: **4,251 tests passed (3,178 Playsim; 500 MapLoader)**.
+Build with warnings treated as errors passed with zero warnings/errors.
+
+Player head/camera/inventory transfer, boss actions and full A_NoBlocking item
+drop behavior remain open. Damage-triggered shattering still spawns immediately
+instead of waiting for the native next state action. GenericFreezeDeath wiring,
+RNG parity, terrain timing, dynamic actor archival and executable acceptance
+remain open. Changes remain uncommitted.
+
+## Conversion and audit: moving-corpse shatter delay (2026-10-01)
+
+Audited A_FreezeDeathChunks in native shared/ice.zs. Converted the entry gate:
+when velocity is nonzero and Shattering is unset, the operation resets current
+state tics to 3*TICRATE (105) and returns before clearing velocity or drawing
+random values. Stationary corpses or explicitly forced shattering proceed.
+Updated momentum-reset regressions to identify their forced-shatter scenario.
+
+Added four regressions for motion on each axis, unchanged frame/velocity/random
+state and actor count during delay, forced bypass after delay, and stationary
+immediate spawning. Existing damage-triggered shatter coverage still passes.
+Release validation: **4,248 tests passed (3,175 Playsim; 500 MapLoader)**.
+Build with warnings treated as errors passed with zero warnings/errors.
+
+This converts the shared operation's gate, not the full GenericFreezeDeath
+state/action wiring or natural timed shatter lifecycle. Dedicated RNG streams,
+terrain timing, head chunks, complete vertical physics, dynamic actor recreation
+and native executable acceptance remain open. Changes remain uncommitted.
+
+## Conversion and audit: shatter operation clears corpse momentum (2026-10-01)
+
+Audited native A_FreezeDeathChunks in shared/ice.zs: after the moving-corpse
+delay gate, the shatter operation clears all corpse velocity before spawning
+shards. The managed damage caller already cleared velocity, but SpawnIceChunks
+itself depended on that caller. Moved the native stop rule into the spawning
+operation as well, preserving corpse coordinates and independent shard velocity.
+
+Added three regressions for positive/negative and vertical-only corpse motion.
+Moving and stationary corpses with identical managed random state produce equal
+post-shatter checksums and remain equal after ticking. Tests verify stopped
+corpse velocity, unchanged origin, moving shards and equal random consumption.
+Release validation: **4,244 tests passed (3,171 Playsim; 500 MapLoader)**.
+Build with warnings treated as errors passed with zero warnings/errors.
+
+The pre-shatter moving-corpse delay gate, dedicated random streams, terrain
+timing, head chunks, full vertical physics, dynamic actor recreation and native
+executable acceptance remain open. Changes remain uncommitted.
+
+## Conversion and audit: ice debris randomized initial frame (2026-10-01)
+
+Audited A_FreezeDeathChunks in native shared/ice.zs: spawned IceChunk enters
+SpawnState plus a random offset in 0-2, running that frame's A_IceSetTics.
+Converted selection among the first three frames in managed shatter spawning,
+including duration resampling on selected frame zero. Selection happens before
+horizontal velocity draws. Later state progression now naturally runs only the
+frames remaining after the selected starting state rather than always all four.
+
+Added seven regressions for all three starting frames at both duration bounds,
+exact expiry, production shatter coverage of frames 0-2 and deterministic
+two-simulation checks before/after ticking.
+Release validation: **4,241 tests passed (3,168 Playsim; 500 MapLoader)**.
+Build with warnings treated as errors passed with zero warnings/errors.
+
+Selection and timing still use the existing managed combat stream rather than
+native independent FreezeDeathChunks/IceTics streams. Terrain-dependent timing,
+full vertical physics, head chunks, dynamic actor recreation and native
+executable acceptance remain open. Changes remain uncommitted.
+
+## Conversion and audit: ice debris four-frame lifecycle (2026-10-01)
+
+Audited IceChunk's ICEC ABCD sequence and A_IceSetTics in native shared/ice.zs.
+Replaced the managed one-duration hidden lifetime with four timed actor states,
+then removal. Subsequent simulated frame entries resample 70-133 tics using the
+current managed random stream. RemainingTics now reports current-frame progress,
+and existing actor pose state/tics determine expiry for an already-present chunk.
+Constructor duration remains the initial frame duration; random initial frame
+selection is not yet converted.
+
+Added six tests for duration endpoints, all four frames, simulated resampling,
+restored final-frame expiry and invalid duration rejection. Updated the prior
+expiry test to restore the final frame rather than treat the first as terminal.
+Release validation: **4,234 tests passed (3,161 Playsim; 500 MapLoader)**.
+Build with warnings treated as errors passed with zero warnings/errors.
+
+Dedicated IceTics RNG and its archive state, terrain Fire/Ice scaling, initial
+spawn-frame selection, full vertical physics, head chunks, dynamic actor
+recreation and native executable acceptance remain open. Resampling still
+shares the existing managed combat stream; native RNG parity is not claimed.
+Changes remain uncommitted.
+
+## Conversion and audit: signed ice spawn offsets and velocity scaling (2026-10-01)
+
+Audited A_FreezeDeathChunks in native shared/ice.zs. Corrected managed XY spawn
+offsets to convert the random byte to signed integer before subtracting 128;
+unsigned subtraction previously wrapped negative offsets into huge coordinates.
+Converted horizontal ice velocity scaling from weapon spread's 255 divisor to
+the native Random2 / 128 scale. Kept the same managed random draws and left
+weapon spread unchanged. Dedicated native FreezeDeathChunks RNG remains open.
+
+Added two regressions with different corpse dimensions at a nonzero XYZ origin.
+Tests verify every shard lies within corpse bounds, spreads on both XY sides,
+retains previous position, and has horizontal/vertical velocity in native bounds.
+The deterministic sample also exercises horizontal speeds above one, detecting
+the prior weapon-spread scaling. Existing two-simulation shatter determinism
+coverage continues to pass.
+Release validation: **4,228 tests passed (3,155 Playsim; 500 MapLoader)**.
+Build with warnings treated as errors passed with zero warnings/errors.
+
+Native random stream/order, randomized spawn frame, terrain-dependent lifetime,
+head chunks, full vertical physics, dynamic actor archival and executable
+acceptance remain open. Changes remain uncommitted.
+
+## Conversion and audit: ice debris gravity factor (2026-10-01)
+
+Audited IceChunk's Gravity 0.125 default in shared/ice.zs, AActor::GetGravity
+in actorinlines.h and P_ZMovement in p_mobj.cpp. Converted the inherent ice
+actor gravity multiplier within the existing managed physics model. Ordinary
+actors retain factor one; ice debris uses one eighth. NoGravity still bypasses
+acceleration, and resting debris does not acquire downward velocity. The factor
+is derived from actor type, so it introduces no mutable pose field or RNG state.
+
+Added eight regressions for rising/resting/falling velocity, NoGravity override,
+two successive ticks, unchanged ordinary gravity and grounded debris.
+Release validation: **4,226 tests passed (3,153 Playsim; 500 MapLoader)**.
+Build with warnings treated as errors passed with zero warnings/errors.
+
+This converts the actor multiplier, not complete native vertical physics.
+Managed gravity/movement order, native FallAndSink, level/sector gravity,
+runtime actor gravity properties, terrain lifetime, IceTics RNG, head chunks,
+dynamic actor archival and executable acceptance remain open.
+Changes remain uncommitted.
+
+## Conversion and audit: ice debris movement, spawn height and query exclusion (2026-10-01)
+
+Audited IceChunk defaults in native shared/ice.zs and blockmap actor linkage/
+trace iteration in p_maputl.cpp. Converted inherent ice debris NOBLOCKMAP query
+exclusion. Managed IceChunk.Tick also called ActorPhysics.Step explicitly before
+base actor ticking called it again; removed the extra movement pass so debris
+advances once and previous-position tracking retains the actual tick origin.
+SpawnIceChunks now restores its requested randomized Z after sector placement
+and sets airborne contact correctly rather than snapping every chunk to floor.
+
+Added six regressions for positive/negative/stationary horizontal velocity,
+single upward movement, previous-position tracking, expiry without movement,
+elevated randomized spawn heights and all-actor/solid-mask query exclusion.
+Release validation: **4,218 tests passed (3,145 Playsim; 500 MapLoader)**.
+Build with warnings treated as errors passed with zero warnings/errors.
+
+IceChunk's native 0.125 gravity factor, terrain-dependent lifetime, IceTics RNG,
+head chunks, dynamic actor archival, general NOBLOCKMAP flag handling,
+advanced geometry and native executable acceptance remain open.
+Changes remain uncommitted.
+
+## Conversion and audit: puff blockmap query exclusion and dimensions (2026-10-01)
+
+Audited BulletPuff's NOBLOCKMAP default in doommisc.zs, inherited Actor radius
+20/height 16 in actor.zs, and blockmap linkage/thing traversal in p_maputl.cpp.
+Managed combat tracing previously scanned cosmetic puffs, allowing all-actor or
+NoGravity masks to select them before a real target. Added inherent blockmap
+participation to managed actor types and excluded nonparticipating puff actors
+before trace mask/box evaluation. Puffs retain actor/TID registration; production
+ACS PickActor can no longer reassign a cosmetic puff's TID by tracing it.
+Converted inherited puff dimensions, preserving the geometry-specific epsilon
+radius applied after impact spawning.
+
+Added six regressions for all-actor/NoGravity masks, later targets versus misses,
+trace selection, ACS TID assignment/stack behavior and zero-distance containing
+puffs. Release validation: **4,212 tests passed (3,139 Playsim; 500 MapLoader)**.
+Build with warnings treated as errors passed with zero warnings/errors.
+
+General runtime NOBLOCKMAP flag handling, native blockmap traversal/order,
+randomization, temporary/blood puff classification, custom classes, dynamic
+actor archival, advanced geometry and executable acceptance remain open.
+Changes remain uncommitted.
+
+## Conversion and audit: ACS hitscan puff inflictor and damage source (2026-10-01)
+
+Audited actor-hit P_LineAttack in native p_map.cpp and P_SpawnPuff in p_mobj.cpp.
+Native damage uses the puff as inflictor while retaining the shooter as source;
+spawned puffs retain a separate damagesource reference. Corrected ACS helper
+damage to pass the puff as inflictor and added the source reference to actor and
+geometry puffs. Shooter attribution remains unchanged. Shooter-only ForcePain,
+Painless and FoilBuddha flags no longer leak into ordinary BulletPuff damage.
+
+Added five regressions through production ACS invocation for source ForcePain,
+Painless and FoilBuddha isolation, Buddha survival, shooter attribution, and
+actor/geometry puff source references. Release validation: **4,206 tests passed
+(3,133 Playsim; 500 MapLoader)**. Build with warnings treated as errors passed
+with zero warnings/errors.
+
+Native temporary versus visible actor puffs, blood classification, puff source
+reference archival, weapon/monster inflictor wiring, randomization, melee state
+selection, custom classes, advanced geometry and executable acceptance remain
+open. ACS puff/decal flags were audited but their remaining unsupported effects
+are not claimed converted. Changes remain uncommitted.
+
+## Conversion and audit: bullet puff state-frame lifecycle (2026-10-01)
+
+Audited BulletPuff Spawn/Melee frames in native doommisc.zs and first-frame
+randomization in P_SpawnPuff in p_mobj.cpp. Replaced the managed two-tic hidden
+timer with the existing actor state machine: four frames, four tics each by
+default, first-frame full brightness, remaining frames unlit, then removal.
+The first frame accepts the native randomized duration bounds of one to four
+tics; production currently uses four pending the dedicated SpawnPuff RNG port.
+Total frame lifetime is therefore 13-16 tics, with the unrandomized default 16.
+Also converted BulletPuff's mass of five.
+
+Lifetime derives from current state/tics, removing an independent counter that
+would disagree with restored state progress. Existing pose fields can represent
+this progress for an already-present puff; recreation and full cosmetic state
+restoration are not complete. Updated the prior two-tic expiry regression.
+Added seven tests for all first-frame durations, frame progression/brightness,
+expiry, restored timer progress and invalid duration rejection.
+Release validation: **4,201 tests passed (3,128 Playsim; 500 MapLoader)**.
+Build with warnings treated as errors passed with zero warnings/errors.
+
+Random first-frame selection, random puff Z, SpawnPuff RNG/archive state,
+melee state selection, sprite/render properties, actor blood/puff classification,
+custom classes, dynamic actor recreation, advanced geometry and native executable
+acceptance remain open. Changes remain uncommitted.
+
+## Conversion and audit: bullet puff drift and facing (2026-10-01)
+
+Audited BulletPuff defaults/states in native doommisc.zs and P_SpawnPuff in
+p_mobj.cpp. Converted the default upward VSpeed of one unit per tick and
+opposite-shot yaw (hitdir + 180 degrees). Managed puffs now use normal actor
+movement rather than the empty movement override; NoGravity and noncolliding
+flags remain intact. ACS actor and geometry puffs receive the native facing,
+including negative-range shots whose hit direction remains the original angle.
+
+Added eight regressions for four cardinal shot directions with positive and
+negative ranges, checking exact BAM facing, upward drift, stationary XY,
+NoGravity, collision flags, TID and single-hit damage.
+Release validation: **4,194 tests passed (3,121 Playsim; 500 MapLoader)**.
+Build with warnings treated as errors passed with zero warnings/errors.
+
+The current two-tic managed lifetime remains a placeholder. Native BulletPuff
+has four four-tic frames and randomizes the first frame; random Z/lifetime,
+dedicated SpawnPuff RNG/archive state, actor blood/puff classification, custom
+puff classes, SKYEXPLODE/ALWAYSPUFF, weapon/monster puff creation, advanced
+geometry and native executable acceptance remain open. Changes are uncommitted.
+
+## Conversion and audit: geometry puff placement and horizon suppression (2026-10-01)
+
+Audited the geometry-hit branch of P_LineAttack in native p_map.cpp. Converted
+normal horizon-wall puff suppression while preserving the stopping wall trace
+and existing geometry damage immunity. Ordinary geometry puffs now spawn four
+units behind the impact along the original shot vector, including pitch and
+negative-range shots, and use native EQUAL_EPSILON radius. Geometry damage is
+applied before puff creation, matching native ordering.
+
+New coordinate tests exposed that SpawnHitscanPuff's floor placement overwrote
+the supplied Z coordinate. It now retains sector placement information but
+restores requested impact Z before remembering position and registering the puff.
+This also fixes actor-hit puff height without changing its other cosmetics.
+
+Added eight regressions covering horizontal directions, positive/negative
+ranges, pitched floor/ceiling offsets, puff radius/TID, and horizon suppression
+with/without a requested TID. Release validation: **4,186 tests passed
+(3,113 Playsim; 500 MapLoader)**. Build with warnings treated as errors passed
+with zero warnings/errors.
+
+Actor blood/puff classification, random puff Z/lifetime, custom puff classes,
+SKYEXPLODE/ALWAYSPUFF, weapon/monster puff creation, callbacks, blockmap ties,
+compatibility, autoaim, slopes/portals/3D floors, full AI archives and native
+executable acceptance remain open. Changes remain uncommitted.
+
+## Conversion and audit: standard sky hitscan suppression (2026-10-01)
+
+Audited EditTraceResult in native p_trace.cpp and the default TRACE_NoSky flags
+in P_LineAttack/P_LinePickActor in p_map.cpp. Converted suppression of standard
+F_SKY1 floor/ceiling impacts and upper-wall impacts with sky ceilings on both
+sides. Lower-wall and one-sided impacts remain ordinary geometry hits. A
+discarded sky result preserves impact coordinates, stops selection through that
+boundary, and reports no hit, preventing normal attack damage and puff creation.
+Reused the standard sky-texture helper for existing plane damage protection.
+
+Added six regressions for sky floor/ceiling, case-insensitive texture names,
+both-sky upper walls and mixed sky/ordinary ceilings. Tests verify classification,
+coordinates, blocked actor selection, puff count, wall and sector health.
+Release suite: **4,178 tests passed (3,105 Playsim; 500 MapLoader)**. After adding
+the explicit one-sided exclusion, all six targeted sky tests passed again.
+Final build with warnings treated as errors passed with zero warnings/errors.
+
+Custom sky aliases, SKYEXPLODE/ALWAYSPUFF classes, callbacks, blockmap ties,
+compatibility, autoaim, slopes/portals/3D floors, full AI archives and native
+executable acceptance remain open. Changes remain uncommitted.
+
+## Conversion and audit: combat trace miss endpoints (2026-10-01)
+
+Audited the TRACE_HitNone completion path in native TraceTraverse in p_trace.cpp.
+When traversal selects no actor, line or plane, native trace results still report
+Start + Vec * MaxDist as the endpoint. Managed tracing previously returned a
+default result with zero coordinates. Valid misses now retain their signed-range
+endpoint while Hit remains false and actor/wall/plane metadata remains empty.
+Invalid inputs retain the existing validation behavior.
+
+Added eight regressions for cardinal yaw, ascending/descending pitch, negative
+ranges and zero distance from a nonzero XYZ origin. Cases verify endpoint
+coordinates and classification, PickActor misses, absence of attack damage/puff
+creation, and unchanged random state. Release validation: **4,172 tests passed
+(3,099 Playsim; 500 MapLoader)**. Build with warnings treated as errors passed
+with zero warnings/errors.
+
+Callbacks, blockmap ordering/ties, compatibility, autoaim, slopes/portals/3D
+floors, full AI archives and native executable acceptance remain open.
+Changes remain uncommitted.
+
+## Conversion and audit: ordered flat-sector transitions (2026-10-01)
+
+Audited LineCheck, TraceTraverse and CheckPlane in native p_trace.cpp. Converted
+the current flat-geometry subset to visit line intercepts in distance order,
+carry CurSector across open two-sided lines, and record signed EnterDist.
+Near-side selection now prefers the current sector before native geometric
+fallback; one-sided fallback uses the front side. Plane classification at a line
+uses the current sector and requires distance strictly after EnterDist and
+before MaxDist. Failed classifications retain the destination-opening fallback.
+After unsuccessful traversal, plane checks use the final current sector rather
+than searching all sectors by sampled XY position. Actors entered before a
+stopping line remain eligible under the existing native actor-entry ordering.
+
+Added four regressions using deliberately reversed line storage order, both
+horizontal directions and floor/ceiling entry boundaries. Ceiling entry equality
+does not block a later open destination; descending floor arithmetic rounds
+below the opening and stops at the first line. Tests verify query selection,
+classification and attack damage. Corrected older one-sided wall-side and
+rounded ceiling/wall expectations to follow native classification operations.
+Release validation: **4,164 tests passed (3,091 Playsim; 500 MapLoader)**.
+Build with warnings treated as errors passed with zero warnings/errors.
+
+This converts CurSector/EnterDist for ordinary flat-sector lines; callbacks,
+blockmap ordering/ties, compatibility, autoaim, slopes/portals/3D floors,
+full AI archives and native executable acceptance remain open. Exact floating
+boundary parity still requires executable comparison. Changes remain uncommitted.
+
+## Conversion and audit: pitched failed-plane opening fallback (2026-10-01)
+
+Audited LineCheck's cont path and CheckPlane in native p_trace.cpp. When a
+near-sector floor/ceiling classification cannot produce a plane intersection
+strictly after EnterDist and before MaxDist, a two-sided line falls back to
+the destination floor/ceiling opening. In that path, wall-mask flags are ignored.
+Managed code previously applied this fallback only to horizontal or negative
+shots. It now also applies to pitched shots whose plane intersection is at the
+origin, behind the origin, or outside the signed range. The check uses the
+original vertical direction and signed range for negative traversal.
+
+Added sixteen regressions for pitched shots beginning exactly on the near
+floor/ceiling, both traversal directions, open/closed destination sectors,
+and lines with/without hitscan-blocking flags. Cases verify actor selection,
+PickActor, trace classification, actor damage and wall health.
+Release validation: **4,160 tests passed (3,087 Playsim; 500 MapLoader)**.
+Build with warnings treated as errors passed with zero warnings/errors.
+
+The lower plane-distance bound remains the initial EnterDist of zero; tracking
+later sector-entry distances requires full CurSector/EnterDist traversal.
+Blockmap ordering/ties, compatibility, autoaim, slopes/portals/3D floors,
+full AI archives and native executable acceptance remain open.
+Changes remain uncommitted.
+
+## Conversion and audit: zero-distance actor tracing (2026-10-01)
+
+Audited FPathTraverse::init/AddThingIntercepts in native p_maputl.cpp and
+ThingCheck/CheckPlane in p_trace.cpp. A zero-delta traversal still visits its
+starting block and adds fraction-zero intercepts for boxes strictly containing
+the XY origin. Zero-delta endpoint side tests do not select box edges or lines.
+Actor height checks include exact top/bottom boundaries; planes require a
+strictly positive distance below MaxDist and cannot hit at zero range.
+
+Removed zero-range rejection from the shared trace and internal attack helper.
+The existing actor-box and signed height checks now resolve origin-only hits.
+Production ACS PickActor preserves explicit zero distance; production ACS
+LineAttack retains its native omitted/zero range default of 2048.
+
+Added eleven regressions covering strict XY containment and boundary misses,
+exact top/bottom height hits and misses, origin coordinates, read-only query
+state, production ACS PickActor/TID assignment/stack behavior, helper damage,
+and coincident line/plane misses. Release validation: **4,144 tests passed
+(3,071 Playsim; 500 MapLoader)**. Build with warnings treated as errors passed
+with zero warnings/errors.
+
+Full CurSector/EnterDist traversal, blockmap ordering/ties, compatibility,
+autoaim, slopes/portals/3D floors, full AI archives and native executable
+acceptance remain open. Zero-distance behavior is converted within the current
+noncompatibility actor-box subset. Changes remain uncommitted.
+
+## Conversion and audit: signed backward combat tracing (2026-10-01)
+
+Audited TraceTraverse/ThingCheck/CheckPlane in native p_trace.cpp and actor-box
+intercepts/Next in p_maputl.cpp. Converted negative ranges for the current
+actor-box and flat-line subset: traversal reverses and orders intercepts along
+the reversed delta, while actor height adjustment retains the original vertical
+direction and signed maximum distance. PickActor and the ACS attack helper now
+allow negative ranges through the shared trace. Positive height adjustment also
+uses the native explicit top/bottom checks rather than a clipped Z interval.
+
+Native CheckPlane requires a distance greater than EnterDist (initially zero)
+and less than MaxDist, so negative ranges cannot select ordinary plane hits.
+The managed negative path omits plane candidates and uses the failed-plane
+opening fallback at lines. Omitted/zero ACS range defaults remain unchanged.
+
+Added twelve regressions covering backward actor entry at/beyond range, both
+yaw directions, pitched backward wall damage without plane damage, and original
+pitch/signed-limit actor-height rejection. Tests exercise trace coordinates,
+PickActor and production ACS invocation/stack behavior. Release validation:
+**4,133 tests passed (3,060 Playsim; 500 MapLoader)**. Build with warnings treated
+as errors passed with zero warnings/errors.
+
+Zero-distance tracing, full CurSector/EnterDist traversal, blockmap ties,
+compatibility, autoaim, slopes/portals/3D floors, full AI archives and native
+executable acceptance remain open. Signed tracing is converted only within
+the existing supported geometry subset. Changes remain uncommitted.
+
+## Conversion and audit: ACS range fallback removal (2026-10-01)
+
+Audited ACSF_LineAttack in native p_acs.cpp, P_LineAttack in p_map.cpp,
+Trace/TraceTraverse in p_trace.cpp and FPathTraverse::Next in p_maputl.cpp.
+Native ACS defaults omitted or zero ranges to MISSILERANGE (2048), but preserves
+nonzero signed ranges. The managed ACS boundary already performs that default.
+Removed the internal helper's separate 64-unit fallback for nonpositive or
+nonfinite ranges, which incorrectly converted negative ACS ranges into forward
+shots with actor/geometry damage and puff creation.
+
+Added ten regressions for negative, zero and nonfinite helper ranges, negative
+ACS ranges with forward actors/walls, and omitted/zero ACS defaults reaching a
+target beyond 64 units. Tests verify damage, actor count, random state, return
+value and stack consumption. Release validation: **4,121 tests passed
+(3,048 Playsim; 500 MapLoader)**. Build with warnings treated as errors passed
+with zero warnings/errors.
+
+This removes an unintended forward attack; it does not implement native signed
+traversal. Native negative distances reverse the traversal delta while retaining
+the original direction and signed distance for intercept/height checks. Managed
+nonpositive tracing remains unsupported and returns no hit. Full signed/zero
+trace parity, CurSector/EnterDist traversal, blockmap ties, compatibility, autoaim,
+slopes/portals/3D floors, full AI archives and native executable acceptance remain
+open. Changes remain uncommitted.
+
+## Conversion and audit: ordinary plane fallback after actor traversal (2026-10-01)
+
+Audited ThingCheck and TraceTraverse in native p_trace.cpp. Ordinary sector
+planes are checked after traversal only when no hit was selected. ThingCheck
+performs its actor-versus-plane precheck only for sectors containing 3D floors.
+Removed the managed ordinary-plane distance rejection of otherwise successful
+actor hits. Earlier blocking line intercepts still stop actor selection, including
+lines that classify a near-sector floor/ceiling hit. Range and actor bounds remain
+enforced. This preserves native selection even for actors outside ordinary planes.
+
+Added twelve regressions covering floor/ceiling, both horizontal directions,
+actor misses that fall back to planes, and lines before/after actor entry. Tests
+verify PickActor, trace classification, actor damage and plane damage. Corrected
+two older tests whose shielding expectations contradicted the native source.
+Release validation: **4,111 tests passed (3,038 Playsim; 500 MapLoader)**.
+Build with warnings treated as errors passed with zero warnings/errors.
+
+Full CurSector/EnterDist traversal, blockmap ties, compatibility, signed ranges,
+autoaim, slopes/portals/3D floors, full AI archives and native executable
+acceptance remain open. Changes remain uncommitted.
+
+## Conversion and audit: actor entry versus later blocking walls (2026-10-01)
+
+Audited FPathTraverse::Next, TraceTraverse and ThingCheck in native p_maputl.cpp
+and p_trace.cpp. A successful actor intercept stops traversal before a later
+line is visited, even if height adjustment moves the final actor impact beyond
+that line's intersection. Managed tracing now compares actor box entry against
+the blocking-line distance, rather than suppressing it with the adjusted hit
+distance. The final impact still respects range and actor height/box bounds.
+
+Added eight regressions for both directions, walls before/coincident with actor
+entry, between entry and height-adjusted impact, and beyond the final impact.
+Cases verify coordinates, PickActor, actor damage and absence of wall damage.
+Exact entry ties retain the managed geometry-first policy pending blockmap work.
+Release validation: **4,099 tests passed (3,026 Playsim; 500 MapLoader)**.
+Build with warnings treated as errors passed with zero warnings/errors.
+
+Flat-plane comparisons still use adjusted impact distance; native combined
+sector/actor/plane traversal is not complete. Other open work includes blockmap
+ties, compatibility, signed ranges, autoaim, slopes/portals/3D floors, full AI
+archives and native acceptance. Changes remain uncommitted.
+
+## Conversion and audit: actor entry order before height adjustment (2026-10-01)
+
+Audited AddThingIntercepts/Next in p_maputl.cpp and ThingCheck in p_trace.cpp.
+Native traversal visits horizontal box entries before ThingCheck adjusts an
+intersection onto the actor's top or bottom. Corrected managed actor selection
+to compare box-entry distance rather than adjusted 3D impact distance. Returned
+coordinates still describe the actual height-adjusted impact. The managed
+equal-entry tie remains actor-ID order pending native blockmap ordering work.
+
+Added eight regressions covering ascending/descending shots, both horizontal
+directions and reversed actor insertion order. A large actor entered first is
+selected even when its height-adjusted impact is beyond a later actor's entry.
+Cases verify trace metadata, PickActor and actual ACS-helper damage selection.
+Release validation: **4,091 tests passed (3,018 Playsim; 500 MapLoader)**.
+Build with warnings treated as errors passed with zero warnings/errors.
+
+Actor-versus-wall/plane ordering after height adjustment still uses the managed
+geometry-distance check; fully reproducing native combined intercept traversal
+remains open. Other gaps include blockmap ties, compatibility, signed ranges,
+autoaim, slopes/portals/3D floors, full AI archives and native acceptance.
+Changes remain uncommitted.
+
+## Conversion and audit: close actor/geometry impact ordering (2026-10-01)
+
+Audited FPathTraverse::Next in native p_maputl.cpp: pending intercepts are
+ordered with exact fraction comparisons, without a distance epsilon. Removed
+the managed actor-versus-geometry exclusion gap. An actor strictly before a
+wall or plane now remains eligible even when the separation is below 1e-9.
+The managed exact-tie policy still prefers geometry; native equal-fraction
+ordering depends on intercept insertion and blockmap traversal.
+
+Added six regressions for both directions with a wall just before, coincident
+with or just after actor-box entry, including PickActor and the internal ACS
+attack helper. Cases verify actual actor damage versus line health reduction.
+The close cases differ by 1e-10 map units.
+Release validation: **4,083 tests passed (3,010 Playsim; 500 MapLoader)**.
+Build with warnings treated as errors passed with zero warnings/errors.
+
+Native equal-fraction ordering, full CurSector/EnterDist traversal,
+compatibility handling, signed ranges, autoaim, slopes/portals/3D floors,
+full AI archives and executable acceptance remain open. Changes remain
+uncommitted.
+
+## Conversion and audit: close plane/wall impact ordering (2026-10-01)
+
+Audited native LineCheck's near-plane classification and CheckPlane's exact
+distance comparisons in p_trace.cpp. Removed the artificial epsilon gap that
+discarded a flat-plane candidate immediately before a wall. Equal plane/wall
+distances now retain the near-sector plane using the selected wall side, rather
+than resolving the boundary point into a potentially different sector. Plane
+tracing now tests nonzero vertical direction exactly rather than a magnitude
+cutoff. Strict ray-origin/range exclusions remain intact.
+
+Added six regressions for floor/ceiling impacts with the wall just before,
+exactly on or just after the plane intersection. The close cases differ by
+1e-10 map units and verify both impact metadata and which geometry loses health.
+Release validation: **4,077 tests passed (3,004 Playsim; 500 MapLoader)**.
+Build with warnings treated as errors passed with zero warnings/errors.
+
+Full CurSector/EnterDist traversal, nonhorizontal fallback after unsuccessful
+near-plane checks, compatibility handling, signed ranges, autoaim,
+slopes/portals/3D floors, full AI archives and executable acceptance remain
+open. Changes remain uncommitted.
+
+## Conversion and audit: near-plane precedence over wall masks (2026-10-01)
+
+Follow-up audit of LineCheck in native p_trace.cpp confirmed that near-sector
+floor/ceiling classification precedes explicit WallMask handling. When a
+horizontal trace cannot intersect the near plane, the destination-opening
+fallback can pass through a two-sided line despite BlockHitscan or
+BlockEverything. Moved the managed mask check after that fallback. One-sided
+lines and closed destination boundaries continue to stop the trace.
+
+Expanded the existing plane-opening regression matrix by sixteen cases for
+both wall flags, both directions, floor/ceiling and open/closed destinations.
+Each case verifies TraceLineAttack and PickActor. Existing ordinary flagged-wall
+and geometry-damage boundary tests also pass.
+Release validation: **4,071 tests passed (2,998 Playsim; 500 MapLoader)**.
+Build with warnings treated as errors passed with zero warnings/errors.
+
+Nonhorizontal near-plane metadata, full CurSector/EnterDist traversal,
+compatibility handling, signed ranges, autoaim, slopes/portals/3D floors,
+full AI archives and executable acceptance remain open. Changes remain
+uncommitted.
+
+## Conversion and audit: horizontal near-plane opening fallback (2026-10-01)
+
+Audited LineCheck's cont block and CheckSectorPlane failure handling in native
+p_trace.cpp. When a horizontal trace is on or outside the near sector plane,
+the native plane calculation fails; an open two-sided destination can then
+allow traversal. Added that fallback to the managed unflagged opening test.
+The destination floor/ceiling bounds are strict in this fallback, preserving
+blocking when the same boundary also occurs in the destination sector.
+
+Existing door regressions also exposed orientation-only side selection. The
+opening check now samples SectorAt immediately before each crossing, selecting
+the matching sector side when available and falling back to geometric side
+otherwise. Returned wall metadata retains that selected side for damage.
+This remains an approximation of native CurSector traversal, not a complete
+sector walker.
+
+Added eight regressions for floor/ceiling boundaries, both impact directions,
+open/closed destinations and shared PickActor behavior.
+Release validation: **4,055 tests passed (2,982 Playsim; 500 MapLoader)**.
+Build with warnings treated as errors passed with zero warnings/errors.
+
+This slice covers horizontal unflagged openings. Near-plane precedence over
+explicit wall masks, nonhorizontal plane metadata, native CurSector/EnterDist,
+compatibility traversal, signed ranges, autoaim, slopes/portals/3D floors,
+full AI archives and executable acceptance remain open. Changes remain
+uncommitted.
+
+## Conversion and audit: direction-sensitive opening ceilings (2026-10-01)
+
+Audited FTraceInfo::LineCheck in native p_trace.cpp. The current sector's
+floor/ceiling bounds exclude exact boundary heights, while the destination
+sector accepts its exact floor and ceiling. Replaced BlocksPick's symmetric
+opening limits with near/far checks selected by the impact side. An unflagged
+opening now permits a ray at exactly the far ceiling; explicit wall masks
+continue to block it. Shared TraceLineAttack/PickActor callers receive the fix.
+
+Added eight regressions for front/back traversal one Q16 unit below, exactly
+on and above the destination ceiling, including PickActor. Explicit blocking
+tests verify upper-tier ceiling and line damage at the exact height.
+Release validation: **4,047 tests passed (2,974 Playsim; 500 MapLoader)**.
+Build with warnings treated as errors passed with zero warnings/errors.
+
+Near-sector out-of-bounds classification still requires full plane/sector
+transition metadata rather than the managed wall-block approximation. Native
+CurSector selection, compatibility traversal, signed ranges, autoaim,
+slopes/portals/3D floors, full AI archives and executable acceptance remain
+open. Changes remain uncommitted.
+
+## Conversion and audit: lower-wall floor damage boundary (2026-10-01)
+
+Audited FTraceInfo::LineCheck in p_trace.cpp and P_GeometryLineAttack in
+p_destructible.cpp. Native classifies a blocking wall impact at or below the
+opposite sector's floor as TIER_Lower; geometry damage then applies to the back
+floor before the line. Corrected the managed lower-tier check from strict less
+than to inclusive less-or-equal. Upper-tier behavior remains unchanged.
+
+Added seven regressions for front/back impacts one Q16 unit below, exactly on
+and above the floor boundary, plus the ACS path with floor and wall sharing a
+health group. That case verifies sequential damage: floor damage synchronizes
+the group, then line damage reduces the synchronized value again.
+Release validation: **4,039 tests passed (2,966 Playsim; 500 MapLoader)**.
+Build with warnings treated as errors passed with zero warnings/errors.
+
+Audit still identifies direction-sensitive opening boundaries and native
+sector-transition metadata as incomplete in the managed trace. Compatibility
+traversal, signed ranges, autoaim, slopes/portals/3D floors, full AI archives
+and executable acceptance remain open. Changes remain uncommitted.
+
+## Conversion and audit: actor entry-edge classification (2026-10-01)
+
+Audited the non-compatible AddThingIntercepts branch in native p_maputl.cpp.
+Actor tracing now tests origin-facing box edges in native top/right/bottom/left
+order, using the shared full-delta endpoint-side classification. Only a strictly
+inside-box origin receives an immediate intercept when no faces are eligible.
+This corrects grazing asymmetry and vertical rays starting exactly on a box
+edge. Horizontal interval clipping still bounds later height intersections.
+
+Extracted the scalar segment calculation so wall and actor edges share the
+native side test without allocating synthetic walls. Removed its redundant
+segment-fraction restriction: native uses endpoint-side classification and ray
+fraction, and the extra division rejected floating-point diagonal corner hits.
+Existing four-quadrant diagonal regressions caught and verify that correction.
+
+Added ten regressions for opposite grazing edges, nearby inside/outside rays,
+strict vertical entry boundaries and PickActor integration.
+Release validation: **4,032 tests passed (2,959 Playsim; 500 MapLoader)**.
+Build with warnings treated as errors passed with zero warnings/errors.
+
+Compatibility-mode diagonal intercepts, blockmap ordering/start nudging,
+sector EnterDist, signed ranges, native autoaim, slopes/portals/3D floors,
+full AI archives and executable acceptance remain open. Changes remain
+uncommitted.
+
+## Conversion and audit: inclusive actor height boundaries (2026-10-01)
+
+Audited ThingCheck in src/playsim/p_trace.cpp. Native rejects entry heights
+strictly above Top or below Z, and accepts a top/bottom intersection at exactly
+MaxDist. Corrected the managed horizontal trace to include the actor's exact
+top surface. Height clipping now uses exact zero direction and interval bounds
+rather than classifying small nonzero vertical directions as horizontal or
+extending a disjoint interval with an epsilon.
+
+Added ten regressions covering one-Q16-unit positions around top and bottom,
+descending top intersections just before/at/after range, and read-only PickActor
+at the exact top. This deliberately preserves the distinct native rule for
+sector planes, whose intersections must occur strictly before MaxDist.
+Release validation: **4,022 tests passed (2,949 Playsim; 500 MapLoader)**.
+Build with warnings treated as errors passed with zero warnings/errors.
+
+Remaining differences include compatibility-mode actor intercepts, box-edge
+side classification, blockmap ordering/start nudging, sector EnterDist and
+signed ranges. Native autoaim, slopes/portals/3D floors, full AI archives and
+executable acceptance remain open. Changes remain uncommitted.
+
+## Conversion and audit: native actor box intersections (2026-10-01)
+
+Audited the non-compatible FPathTraverse::AddThingIntercepts branch in native
+p_maputl.cpp and ThingCheck in p_trace.cpp. Native hitscan traversal intersects
+the actor's axis-aligned horizontal bounding box rather than a circular radius.
+Replaced the managed quadratic circle intersection with interval clipping
+against both horizontal box axes. Existing vertical height clipping, 3D range,
+nearest-hit selection and geometry occlusion remain wired through the shared
+trace, including PickActor and managed target selection.
+
+Added nine regressions for diagonal box entry in all four quadrants, corner
+entry before the old circular surface, range cutoffs, vertical corner hits,
+outside-box misses and PickActor integration. Existing combat tests pass.
+Release validation: **4,012 tests passed (2,939 Playsim; 500 MapLoader)**.
+Build with warnings treated as errors passed with zero warnings/errors.
+
+The managed box subset does not yet reproduce native compatibility-mode
+diagonal intercepts, edge side tolerances or every ThingCheck top-edge detail.
+Blockmap ordering/start nudging, sector EnterDist, signed ranges, autoaim,
+slopes/portals/3D floors, full AI archives and native executable acceptance
+remain open. Changes remain uncommitted.
+
+## Conversion and audit: native wall endpoint-side classification (2026-10-01)
+
+Audited P_PointOnDivlineSide in p_maputl.h, AddLineIntercepts and
+P_InterceptVector in p_maputl.cpp, and EQUAL_EPSILON in vectors.h. RayLine
+now rejects equal endpoint-side classifications using the native 1/65536
+tolerance and full traversal delta. TraceLineAttack supplies its range as
+the delta scale; line-of-sight already supplies its complete segment delta.
+Parallel detection now uses exact zero rather than an unrelated denominator
+cutoff. Negative intersection parameters are rejected rather than clamped to
+the origin, and segment limits no longer have an artificial epsilon extension.
+
+Added eight regressions covering both wall orientations, the native asymmetric
+endpoint rule, full-delta tolerance scaling, small nonzero denominators and
+intersections just behind the source. Existing combat/visibility tests pass.
+Release validation: **4,003 tests passed (2,930 Playsim; 500 MapLoader)**.
+Build with warnings treated as errors passed with zero warnings/errors.
+
+Remaining traversal differences include blockmap-start nudging, compatibility
+flags, sector EnterDist, signed range, slopes, portals and 3D floors. Native
+autoaim, full AI archives and executable acceptance remain open. Changes
+remain uncommitted.
+
+## Conversion and audit: vertical and parallel wall traversal (2026-10-01)
+
+Audited FPathTraverse::AddLineIntercepts in src/playsim/p_maputl.cpp, which
+skips lines when both endpoints occupy the same side of the trace. Corrected
+RayLine's parallel branch to return no intersection. Previously a purely
+vertical ray (zero horizontal direction) falsely hit every wall at distance
+zero, and collinear travel incorrectly blocked shots. The shared helper also
+serves line-of-sight queries. Actual crossing parameter calculations remain.
+
+Added nine regressions for zero/parallel/collinear rays, offset walls, scaled
+direction parameters and vertical floor/ceiling damage inside a closed room.
+Updated the older collinear-block expectation while retaining its crossing
+endpoint tests. Existing combat and line-of-sight coverage continues to pass.
+Release validation: **3,995 tests passed (2,922 Playsim; 500 MapLoader)**.
+Build with warnings treated as errors passed with zero warnings/errors.
+
+Remaining traversal differences include precise native endpoint-side handling,
+near-parallel tolerances, sector EnterDist, signed range, slopes, portals and
+3D floors. Native autoaim, full AI archives and executable acceptance remain
+open. Changes remain uncommitted.
+
+## Conversion and audit: monster hitscan geometry impacts (2026-10-01)
+
+Audited A_PosAttack, A_SPosAttackInternal and A_CPosAttackInternal in native
+wadsrc/static/zscript/actors/doom/possessed.zs: attacks invoke LineAttack rather
+than an actor-only query. Updated managed native-profile and fallback monster
+hitscan dispatch to retain the shared trace's full impact metadata. Actor hits
+use existing ActorDamage; wall/flat-plane hits use GeometryLineAttack, including
+its shared-health, sky and horizon handling. Existing damage/spread rolls and
+attack timing remain intact; impact handling adds no combat random rolls.
+
+Added seven regressions: real zombieman, shotgun-guy and chaingunner profiles
+damage blocking walls; health-less control maps consume identical random rolls;
+direct monster hitscan covers floor/ceiling impacts, closer actor obstruction
+and horizon immunity. Existing same-species infighting immunity stays active.
+Release validation: **3,986 tests passed (2,913 Playsim; 500 MapLoader)**.
+Build with warnings treated as errors passed with zero warnings/errors.
+
+Native vertical autoaim, actor blood/puff class behavior, signed-range traversal,
+slopes, portals, 3D floors, full AI archives and native executable acceptance
+remain open. Changes remain uncommitted.
+
+## Conversion and audit: shared 3D target tracing (2026-10-01)
+
+Removed the duplicate horizontal-range FindTarget ray-cylinder implementation.
+The existing managed targeting API now delegates to TraceLineAttack, retaining
+its current caller-supplied yaw/pitch offsets and nonplayer baseline pitch.
+Monster hitscan, BFG spray and ACS player-pointer consumers now use the shared
+3D range, vertical ray and flat-plane occlusion behavior. Queries remain
+read-only and return actor hits only. Existing horizontal surface-range and
+actor selection regressions continue to pass.
+
+Native audit: P_LineAttack uses a normalized 3D direction in p_map.cpp; the
+P_AimLineAttack traversal also explicitly checks 3D attack range because callers
+combine it with P_LineAttack. Added eight regressions for elevated and vertical
+target range, ceiling occlusion, wrapped yaw and absent damage/puff/RNG effects.
+Release validation: **3,979 tests passed (2,906 Playsim; 500 MapLoader)**.
+Build with warnings treated as errors passed with zero warnings/errors.
+
+This converts the managed fixed-ray subset, not native vertical autoaim.
+BFG/player-pointer autoaim windows and monster geometry damage remain open;
+callers still select an actor rather than consume full impact metadata.
+Signed-range traversal, slopes, portals, 3D floors, full AI archives and native
+executable acceptance also remain open. Changes remain uncommitted.
+
+## Conversion and audit: strict plane trace range boundaries (2026-10-01)
+
+Follow-up range audit of FTraceInfo::CheckPlane in src/playsim/p_trace.cpp
+confirmed strict native comparisons: hitdist must be greater than EnterDist
+and less than MaxDist. Corrected the managed flat-plane trace to exclude hits
+at the ray origin and at the range endpoint. This closes a real positive-range
+mismatch independently of the still-open signed-range traversal conversion.
+
+Corrected two older vertical endpoint expectations and added two one-Q16-unit
+beyond-endpoint cases. Added eight regressions for the production ACS path
+(floor/ceiling immediately below, at and above the range boundary), geometry
+health, puff TIDs, result/stack behavior and planes at the trace origin.
+Release validation: **3,971 tests passed (2,898 Playsim; 500 MapLoader)**.
+Build with warnings treated as errors passed with zero warnings/errors.
+
+Native EnterDist also tracks sector transitions; the managed flat-plane subset
+still uses SectorAt at each candidate rather than a complete sector traversal.
+Negative-range traversal, slopes, portals and 3D floors remain open, along with
+full AI archives and native executable acceptance. Changes remain uncommitted.
+
+## Conversion and audit: relative attack pitch and signed range findings (2026-10-01)
+
+Closed the internal relative line-attack helper's ordinary-actor pitch gap.
+It now converts Actor.PitchDegrees with the shared BAM conversion for all
+actors, removing a player-only conversion that ignored imported ordinary
+actor pitch and truncated BAM precision. Relative pitch offsets wrap normally.
+Production ACS LineAttack retains its native absolute-angle path.
+
+Added eight regressions for ordinary actors, vertical floor/ceiling attacks,
+wrapped map pitch, offset cancellation, absolute-direction isolation,
+geometry damage, puff TIDs, unchanged source pitch and unchanged combat RNG.
+Release validation: **3,961 tests passed (2,888 Playsim; 500 MapLoader)**.
+Build with warnings treated as errors passed with zero warnings/errors.
+
+Signed-range audit: ACSF_LineAttack forwards any nonzero signed range unchanged.
+Native FTraceInfo traverses Vec * MaxDist and uses signed intercept distances;
+its plane and actor checks do not simply implement a positive reversed ray.
+The managed helper still replaces negative range with a short forward attack.
+That confirmed mismatch remains open pending a faithful signed traversal path,
+including plane behavior; no speculative range change was made in this slice.
+Other open work includes legacy FindTarget tracing, render interpolation,
+full AI archives and native executable acceptance. Changes remain uncommitted.
+
+## Conversion and audit: ACS pitch query normalization (2026-10-01)
+
+Audited PCD_GETACTORPITCH and PitchToACS in src/playsim/p_acs.cpp against
+TAngle::Normalized180, BAMs and Q16 in src/common/utility/vectors.h. Corrected
+GetActorPitch to normalize through BAM, interpret the result as signed, then
+truncate fixed turns toward zero. Raw map pitch remains unchanged on the
+actor. A map pitch of 450 degrees now reads as 16384 (90 degrees), and both
++/-180-degree inputs read as -32768. This also preserves native fractional
+truncation for negative angles rather than arithmetic-shift rounding.
+
+Added fifteen regressions exercising the real VM opcode, stack preservation,
+wrapped angles, signed-short map boundaries, fractional inputs, activator and
+missing-TID lookup, and the map-import-to-query path.
+Release validation: **3,953 tests passed (2,880 Playsim; 500 MapLoader)**.
+Build with warnings treated as errors passed with zero warnings/errors.
+
+Audit scope still includes the internal relative line-attack helper's ordinary
+actor pitch handling and explicit negative attack ranges. Production ACS
+LineAttack uses absolute directions. Render interpolation, full AI archives
+and native executable acceptance remain open. Changes remain uncommitted.
+
+## Conversion and audit: UDMF actor pitch and player-start angles (2026-10-01)
+
+Audited ParseThing, P_SpawnMapThing and SpawnPlayer in the native map loader
+and p_mobj.cpp, plus FPlayerStart in doomdata.h. Added integer pitch parsing,
+native signed-short wrapping in the level builder, and pitch initialization
+for ordinary map actors. Native stores map pitch directly as degrees, so
+wrapped values and angles beyond 180 degrees remain intact.
+
+The audit corrected the preceding roll slice: player-start records retain
+position/yaw only, and SpawnPlayer resets pitch/roll to zero. Managed spawning
+now applies both map angles only to ordinary actors. Corrected the previous
+player-roll regression to require zero. Also removed the artificial +/-180
+archive restore restriction for ordinary actors, which rejected valid map
+pitch values; player pitch validation and invalid-state checks remain.
+
+Added sixteen regressions covering namespaces, omitted pitch, invalid integer
+inputs, signed-short boundaries, players one/two, ordinary actors, unnormalized
+pitch and archive restoration. Updated two old invalid-pitch cases to test the
+actual player limit rather than imposing a non-native ordinary-actor limit.
+Release validation: **3,938 tests passed (2,865 Playsim; 500 MapLoader)**.
+Build with warnings treated as errors passed with zero warnings/errors.
+
+Remaining audit scope includes angle consumers with unnormalized map pitch,
+render interpolation, full AI archives and native executable acceptance.
+Gameplay phases 1-3 remain incomplete. Changes remain uncommitted.
+
+## Conversion and audit: UDMF actor spawn roll (2026-10-01)
+
+Audited ParseThing in src/maploader/udmf.cpp and P_SpawnMapThing in
+src/playsim/p_mobj.cpp. The native roll field is an integer converted to a
+signed short, then applied as degrees when spawning. The managed parser now
+retains roll, the level builder performs the same unchecked signed-short
+conversion, and ActorSpawner initializes roll for players and other actors.
+The native roll case has no namespace restriction; the managed import matches
+that behavior. Existing maps without roll retain zero.
+
+Added eleven regressions for positive/negative and wrapped integer inputs,
+namespace behavior, omitted values, fractional-value rejection and the full
+UDMF-to-actor-to-save/load path for players, monsters and barrels.
+Release validation: **3,922 tests passed (2,858 Playsim; 491 MapLoader)**.
+Build with warnings treated as errors passed with zero warnings/errors.
+
+No remaining findings in this roll-import slice. Thing pitch import, render
+interpolation, full AI archives and native executable acceptance remain open.
+Gameplay phases 1-3 remain incomplete. Changes remain uncommitted.
+
+## Conversion and audit: actor roll persistence and checksum (2026-10-01)
+
+Audited AActor::Serialize in src/playsim/p_mobj.cpp: native saves include
+the actor angles together, including roll. Closed the C# pose archive's roll
+omission with HCSV version 16, preserving exact BAM bits for every actor.
+The bounded roll trailer wraps the existing version 15 geometry-health archive.
+Older archives remain readable and preserve current roll when absent. Partial
+roll snapshots are rejected rather than silently discarding values. Nonzero
+roll contributes to the checksum; existing zero-roll traces stay unchanged.
+
+Added 19 regressions covering exact values, multiple actors, geometry-health
+coexistence, checksum continuation with stationary actors, legacy reads,
+every truncated prefix, malformed sizes/counts and incomplete snapshots.
+Updated the current pitch archive version assertion and explicitly omitted
+roll from the older version-five fixture.
+Release validation: **3,911 tests passed (2,854 Playsim; 484 MapLoader)**.
+Build with warnings treated as errors passed with zero warnings/errors.
+
+Audit limitation: full monster-AI continuation remains outside the existing
+pose archive; a moving-monster continuation fixture exposed unsaved AI state.
+Roll interpolation/rendering and full native executable acceptance remain
+open. HCSV remains a C# simulation archive, not native savegame compatibility.
+Changes remain uncommitted.
+
+## Conversion and audit: native ACS LineAttack result and damage type (2026-10-01)
+
+Follow-up audit of ACSF_LineAttack and CallFunction's final return in
+src/playsim/p_acs.cpp closed the previously documented synthetic hit-result
+gap. The ACS call now returns zero after performing attacks, regardless of
+actor hits; the internal trace helper's hit indicator remains internal.
+Corrected the optional damage-type sentinel: argument zero uses native None
+instead of resolving string-table entry zero. Positive string IDs still resolve
+through the existing local/global ACS string lookup.
+
+Added four regressions for hit/miss return values, preserved stack prefixes,
+actual damage, zero damage-type default and nonzero typed-death selection.
+Corrected the older actor-hit test expecting a synthetic return of one.
+Release validation: **3,892 tests passed (2,835 Playsim; 484 MapLoader)**.
+Build with warnings treated as errors passed with zero warnings/errors.
+
+The angle audit also checked existing Sin/Cos/VectorAngle opcode units; those
+already use fixed turns. Explicit negative attack ranges, puff classes/flags,
+roll archives, interpolation and native executable acceptance remain open.
+Gameplay phases 1-3 remain incomplete.
+
+## Conversion and audit: actor roll ACS units (2026-10-01)
+
+Audited SetActorRoll, ChangeActorRoll and GetActorRoll against their native
+ACSF cases, SetActorRoll, ACSToAngle and AngleToACS in src/playsim/p_acs.cpp.
+Both setters now convert fixed turns into managed BAM. The getter returns
+the normalized unsigned fixed-turn value rather than raw BAM. Negative and
+wrapped inputs retain native circular-angle behavior; fractional BAM precision
+below one ACS unit truncates on readback.
+
+Updated two older tests asserting raw BAM at the ACS boundary. Added nine
+regressions for both setters, signed/wrapped/full-turn values, multiple TIDs,
+activator targeting, untouched unrelated actors, getter truncation, missing
+targets and stack preservation. Interpolation remains outside the headless
+simulation; the optional argument is consumed.
+
+Release validation: **3,888 tests passed (2,831 Playsim; 484 MapLoader)**.
+Build with warnings treated as errors passed with zero warnings/errors.
+Other angle consumers, roll archive coverage, interpolation, autoaim and native
+executable acceptance remain open. Gameplay phases 1-3 remain incomplete.
+
+## Conversion and audit: ChangeActorAngle/Pitch units (2026-10-01)
+
+Audited ACSF_ChangeActorAngle and ACSF_ChangeActorPitch against SetActorAngle,
+SetActorPitch and ACSToAngle in src/playsim/p_acs.cpp. Corrected these CallFunc
+paths to use ACS fixed turns rather than 32-bit BAM inputs. Yaw shifts the
+fixed-turn value into BAM; pitch uses the signed low 16 bits to match native
+Normalized180, including the -180-degree boundary. Existing actor-angle
+opcodes already used these units. All matching TIDs continue to update.
+
+Corrected two older tests that supplied BAM values and asserted the managed
+unit mismatch. Added eight regressions for positive/negative/wrapped yaw and
+pitch, multiple matching TIDs, unchanged unrelated actors, stack consumption
+and native zero result. The optional interpolation argument is consumed, but
+render interpolation is not implemented in this headless simulation.
+
+Release validation: **3,879 tests passed (2,822 Playsim; 484 MapLoader)**.
+Build with warnings treated as errors passed with zero warnings/errors.
+Other ACS angle consumers, interpolation, attack offsets, autoaim and native
+executable acceptance remain open. Gameplay phases 1-3 remain incomplete.
+
+## Conversion and audit: ACS LineAttack directions and sources (2026-10-01)
+
+Audited ACSF_LineAttack in src/playsim/p_acs.cpp and native Q16 angle units.
+The ACS call now converts fixed-turn yaw/pitch to BAM and treats them as
+absolute directions, rather than adding source yaw/pitch. Omitted or zero
+range uses native MISSILERANGE (2048). Nonzero source TIDs fire from every
+matching live actor using a snapshot before attacks can spawn puffs.
+
+The existing internal relative-angle test helper remains available; production
+ACS dispatch explicitly uses absolute angles. Existing synthetic managed hit
+return values and puff behavior are unchanged and are not claimed as native
+return/cosmetic parity. Explicit negative range handling remains separate.
+
+Added eight regressions for cardinal/signed/wrapped yaw, absolute vertical
+pitch, default and explicit-zero range, multi-source geometry damage and
+stack preservation. Release validation: **3,871 tests passed (2,814 Playsim;
+484 MapLoader)**. Build with warnings treated as errors passed with zero
+warnings/errors. Other ACS angle consumers, puff classes/flags, attack offsets,
+native return semantics and executable acceptance remain open.
+Gameplay phases 1-3 remain incomplete.
+
+## Conversion and audit: ACS PickActor arguments (2026-10-01)
+
+Audited ACSF_PickActor and ACSToAngle in src/playsim/p_acs.cpp, with fromQ16
+in src/common/utility/vectors.h. Corrected yaw/pitch conversion from ACS fixed
+turns (65536 per turn) to the managed 32-bit BAM representation. Signed and
+wrapped values now trace in the native direction.
+
+Corrected the optional actor-mask default: an omitted sixth argument uses
+SHOOTABLE, while an explicitly supplied zero selects no actors. This supersedes
+the earlier audit entry describing the managed zero-mask substitution.
+Confirmed native force-TID and return-TID rules, preserving an existing TID
+unless forced, allowing forced clearing and rejecting unforced zero assignment
+to an untagged actor. Arguments consume only their own stack entries.
+
+Added 12 regressions for cardinal/signed/wrapped yaw, vertical pitch, omitted
+versus explicit zero masks, TID flag combinations and stack preservation.
+Release validation: **3,863 tests passed (2,806 Playsim; 484 MapLoader)**.
+Build with warnings treated as errors passed with zero warnings/errors.
+Other ACS angle consumers still need the same units audit. Full actor flags,
+ghost/spectral filtering, attack offsets and native executable acceptance
+remain open. Gameplay phases 1-3 remain incomplete.
+
+## Conversion and audit: represented PickActor flags (2026-10-01)
+
+Audited native actor filtering in src/playsim/p_trace.cpp: requested flags
+match by any overlapping bit, with 0xffffffff accepting every actor. Corrected
+managed filtering, which previously required damage eligibility and treated
+SHOOTABLE as mandatory even when another requested flag matched.
+
+Mapped the existing managed SOLID, SHOOTABLE, NOGRAVITY, FLOAT and MISSILE
+properties to their native primary-flag bits. PickActor can now select solid
+nonshootable objects, floating/no-gravity actors and missiles without applying
+damage. The shared trace retains damage eligibility for ordinary attacks.
+Direct zero masks select no actors; the existing ACS zero-mask default still
+selects SHOOTABLE, as before. Unrepresented flags are not synthesized.
+
+Added ten regressions for mask union/zero/all behavior, nonshootable selection,
+movement flags, missiles, ordinary attack filtering and ACS TID assignment.
+Release validation: **3,851 tests passed (2,794 Playsim; 484 MapLoader)**.
+Build with warnings treated as errors passed with zero warnings/errors.
+Remaining primary flags, ghost/spectral callback filtering, attack origins,
+autoaim, native executable acceptance and broader gameplay parity remain open.
+Gameplay phases 1-3 remain incomplete.
+
+## Conversion and audit: PickActor shared 3D tracing (2026-10-01)
+
+Audited P_LinePickActor in src/playsim/p_map.cpp: native selection uses the
+same normalized pitch/yaw direction and 3D range as attacks. Routed managed
+PickActor through the read-only shared attack trace and removed its duplicate
+horizontal-range actor tracer. Existing actor/wall mask parameters, source
+exclusion and stable actor ordering remain supported. Flat sector planes now
+block actor selection beyond them; selection applies no damage or randomness.
+
+Added six regressions for pitched/vertical range boundaries, unchanged actor
+health, floor obstruction and read-only destructible-plane selection.
+Release validation: **3,841 tests passed (2,784 Playsim; 484 MapLoader)**.
+Build with warnings treated as errors passed with zero warnings/errors.
+FindTarget/autoaim, complete native actor-mask semantics, attack-origin offsets,
+portals, slopes, 3D floors and native executable acceptance remain open.
+Gameplay phases 1-3 remain incomplete.
+
+## Conversion and audit: normalized 3D hitscan range (2026-10-01)
+
+Closed the shared attack trace's horizontal-distance limitation against native
+P_LineAttack in src/playsim/p_map.cpp. Direction now uses
+(cos(pitch)*cos(yaw), cos(pitch)*sin(yaw), -sin(pitch)), making wall, actor and
+flat-plane intersection parameters distances along the normalized 3D ray.
+Removed the attack trace's 89-degree pitch clamp and added true vertical rays.
+Actor intersection now solves the cylinder quadratic with the scaled
+horizontal direction, including the zero-horizontal-direction case.
+
+ACS and player weapon attacks use this shared trace. Existing FindTarget and
+PickActor helpers are unchanged and still require their own range/autoaim
+audits; this entry does not claim all combat tracing has native parity.
+
+Added ten regressions for pitched floor/ceiling range boundaries, exact vertical
+plane distances without horizontal drift, and vertical actor-cylinder range.
+Release validation: **3,835 tests passed (2,778 Playsim; 484 MapLoader)**.
+Build with warnings treated as errors passed with zero warnings/errors.
+Native attack-origin offsets, autoaim, sky identity, slopes, 3D floors,
+geometry radius damage, callbacks and executable acceptance remain open.
+Gameplay phases 1-3 remain incomplete.
+
+## Conversion and audit: direct hitscan plane damage (2026-10-01)
+
+Extended the shared attack trace to flat sector floor/ceiling intersections.
+Candidates use current simulation heights and are accepted only when the
+impact point belongs to that sector through existing SectorAt geometry.
+Nearest wall, plane and actor selection preserves geometry-over-actor ties.
+The returned plane sector/part remains read-only until the attack applies damage.
+
+Converted the flat-plane branch of P_GeometryLineAttack and its vulnerability
+check from src/playsim/p_destructible.cpp. ACS and player weapon attacks now
+damage the selected positive-health floor/ceiling and its shared health group.
+Standard F_SKY1 planes remain immune; custom resolved sky aliases and native
+sky puff behavior are still outside this subset.
+
+Added nine regressions for ACS floor/ceiling impacts, exact height and metadata,
+read-only tracing, player pistol pitch, sky immunity, closer wall/actor
+precedence and range. Release validation: **3,825 tests passed (2,768 Playsim;
+484 MapLoader)**. Build with warnings treated as errors passed with zero
+warnings/errors.
+
+Trace range still follows the existing managed horizontal-distance convention;
+native 3D range and vertical autoaim parity require further work. SectorAt's
+existing polygon limits, slopes, 3D floors, geometry radius damage, callbacks
+and native executable acceptance remain open. Phases 1-3 remain incomplete.
+
+## Conversion and audit: projectile plane geometry damage (2026-10-01)
+
+Converted the flat floor/ceiling portion of P_ProjectileHitPlane from
+src/playsim/p_destructible.cpp. Swept projectile collision now retains the
+winning plane's sector and part, clearing both when a closer actor wins.
+Wall collision precedence remains unchanged. Plane impacts apply separately
+rolled missile damage to positive health and use existing group propagation.
+
+Added conventional F_SKY1 immunity corresponding to P_CheckSectorVulnerable.
+Sky and zero-health planes consume no damage roll. The managed map model
+stores texture names rather than native resolved texture IDs: custom sky
+aliases are not covered, and sky explosion removal remains separate work.
+
+Added seven regressions covering floor/ceiling health, linked groups, exact
+cylinder impact height, damage bounds, sky and zero-health random preservation,
+and closer actor precedence. Release validation: **3,816 tests passed
+(2,759 Playsim; 484 MapLoader)**. Build with warnings treated as errors passed
+with zero warnings/errors.
+
+Hitscan direct plane traces, geometry radius damage, native sky identity and
+removal, slopes, 3D-floor impacts, callbacks and native executable acceptance
+remain open. Gameplay phases 1-3 remain incomplete.
+
+## Conversion and audit: projectile wall geometry damage (2026-10-01)
+
+Converted the managed wall-impact portion of native P_ProjectileHitLinedef
+and its call from P_ExplodeMissile, using src/playsim/p_destructible.cpp and
+src/playsim/p_mobj.cpp. Swept projectile collision now retains the blocking
+line, clearing it when a closer plane or actor collision wins. Wall impacts
+apply geometry damage before existing explosion effects.
+
+Positive opposite-sector floor and ceiling health receive independent
+missile-damage rolls when the cylinder touches the corresponding lower/upper
+wall parts, followed by a separate roll for positive linedef health. The
+native EQUAL_EPSILON value (1/65536) is used. Existing shared health propagation
+handles linked geometry. Impact-side presence and horizon vulnerability checks
+follow the native helper. Geometry with no positive health consumes no rolls.
+
+Added eight regressions covering rocket/plasma/imp/baron wall impacts, random
+damage bounds, linked groups, lower/upper sectors, actor obstruction and open
+boundaries. Release validation: **3,809 tests passed (2,752 Playsim;
+484 MapLoader)**. Build with warnings treated as errors passed with zero
+warnings/errors.
+
+Direct floor/ceiling projectile damage, radius damage to geometry, sky removal,
+slopes, 3D-floor impacts, damage/destruction callbacks and native executable
+acceptance remain open. Managed blast damage still affects actors only.
+Gameplay phases 1-3 remain incomplete.
+
+## Conversion and audit: player weapon wall damage (2026-10-01)
+
+Connected player hitscan/melee weapon dispatch to the shared geometry wall
+damage path. Native source comparison used P_LineAttack in src/playsim/p_map.cpp
+and P_GeometryLineAttack in src/playsim/p_destructible.cpp. HitscanCombat now
+uses the read-only attack trace for both actor and wall impacts, retaining
+damage-before-spread rolls, pellet counts, ammo spending and firing cadence.
+Yaw and pitch spread feed the same trace; closer actors shield geometry.
+
+Pistol, chaingun, shotgun, super shotgun, fist and chainsaw can now damage
+destructible walls and shared groups. Lower/upper wall impacts also reach
+the opposite sector plane through the existing geometry implementation.
+Projectile dispatch still takes its existing separate path.
+
+Added 11 regressions covering all six weapons, group propagation, identical
+random consumption with wall versus open shots, lower/upper sectors, melee
+range, actor obstruction and cooldown/ammo behavior. Release validation:
+**3,801 tests passed (2,744 Playsim; 484 MapLoader)**. Build with warnings
+treated as errors passed with zero warnings/errors.
+
+Direct plane traces, projectile and monster attack geometry damage, puff/sky
+parity, slopes, 3D-floor traces and damage/destruction callbacks remain open.
+Native executable acceptance has not been run. Phases 1-3 remain incomplete.
+
+## Conversion and audit: ACS wall geometry hits (2026-10-01)
+
+Converted the wall portion of P_GeometryLineAttack from
+src/playsim/p_destructible.cpp into the existing ACS LineAttack path.
+CombatTrace now returns the nearest blocking linedef and impact side while
+remaining read-only. ACS applies geometry damage after creating its existing
+puff. Actor hits still win when closer and do not damage the wall behind them;
+wall hits retain the existing managed return value of zero.
+
+Wall damage checks the native vulnerability conditions: Line_Horizon (special
+9) is immune and the impacted side must exist. Positive linedef health takes
+damage through the shared group implementation. Lower/upper wall hits first
+damage the opposite sector's floor/ceiling health, then the linedef, following
+native ordering. Open two-sided boundaries and out-of-range walls are unaffected.
+
+Added 11 regressions covering damage/overkill/nonpositive values, group updates,
+lower and upper walls, horizon and missing-side immunity, open boundaries,
+range, impact-side selection, read-only tracing and actor occlusion. Release
+validation: **3,790 tests passed (2,733 Playsim; 484 MapLoader)**. Build with
+warnings treated as errors passed with zero warnings/errors.
+
+This slice covers ACS wall hits. Direct floor/ceiling intersections still need
+trace support; player weapon and projectile geometry damage, sky handling,
+slopes, 3D-floor traces and destruction callbacks remain open. Native executable
+acceptance has not been run. Gameplay phases 1-3 remain incomplete.
+
+## Conversion and audit: native 3D health group membership (2026-10-01)
+
+Follow-up audit against P_InitHealthGroups, P_SetHealthGroupHealth and
+P_DamageHealthGroup in src/playsim/p_destructible.cpp corrected a membership
+assumption in the earlier geometry-health slice. Native startup registers
+lines and floor/ceiling sector groups, but does not register 3D health groups
+independently. Therefore 3D health alone neither creates a pooled group nor
+contributes to its initial maximum. Local starting values remain unchanged.
+
+Group setters and damage synchronization now visit sector 3D health only when
+that sector's floor or ceiling registered it in the same group. A 3D setter
+can still update an existing group created elsewhere, while its own targeted
+local value changes directly. GetSectorHealth continues to return existing
+pooled health even for a sector outside the group's registered membership,
+matching src/playsim/p_acs.cpp. This distinguishes query lookup from propagation.
+
+Added 11 regressions covering 3D-only maps, existing groups, initial maximum,
+local startup values, setter/damage propagation, queries and save/checksum
+continuation. Release validation: **3,779 tests passed (2,722 Playsim;
+484 MapLoader)**. Build with warnings treated as errors passed with zero
+warnings/errors. Native damage/destruction callbacks, rendered/executable
+acceptance and full 3D-floor geometry remain open. Phases 1-3 remain incomplete.
+
+## Conversion and audit: geometry health persistence (2026-10-01)
+
+Closed the previous slice's managed geometry-health save and checksum gap.
+Native source comparison used src/p_saveg.cpp sector health fields and
+src/playsim/p_destructible.cpp pooled group serialization. HCSV version 15
+adds a bounded health trailer containing each line's health, each sector's
+floor/ceiling/3D health and pooled group IDs/health. Versions 1-14 remain
+readable and preserve current health when no health payload is present.
+The managed format remains distinct from the native serializer.
+
+Restore validates line/sector counts and exact group ID membership before
+clock or geometry mutations. It preserves local and pooled values separately,
+including zero health, instead of rebuilding groups from map defaults.
+The reader rejects truncated sections, invalid lengths, nonpositive and
+duplicate group IDs. Checksums include all local and pooled health values in
+deterministic group order; maps with no geometry health keep their existing
+checksum behavior.
+
+Added 14 regressions for round-trip queries, zero and ungrouped health,
+post-restore damage/checksum continuation, version-14 preservation, independent
+map-count/group mismatches, every health checksum surface, truncation, invalid
+trailer lengths and duplicate IDs. Updated current-version assertions and
+plane-corruption fixture offsets for the new trailer. Release validation:
+**3,768 tests passed (2,711 Playsim; 484 MapLoader)**. Build with warnings
+treated as errors passed with zero warnings/errors.
+
+Native executable acceptance, destruction callbacks/events, dynamic tag and
+group membership changes, full 3D-floor geometry and broader gameplay archive
+coverage remain open. Gameplay phases 1-3 remain incomplete.
+
+## Conversion and audit: geometry health actions (2026-10-01)
+
+Converted native Line_SetHealth (150) and Sector_SetHealth (151) from
+src/playsim/p_lnspec.cpp for Hexen/UDMF map activation and both ACS direct
+and stack special dispatch. Line IDs and sector tags include additional IDs;
+negative health clamps to zero. Sector parts use floor=0, ceiling=1, 3D=2.
+Invalid parts and missing targets retain native success behavior. Sector tag
+zero selects untagged sectors, while line ID -1 remains unset.
+
+Audit against P_SetHealthGroupHealth in src/playsim/p_destructible.cpp found
+that existing managed damage synchronization stopped at lines or the same
+sector part. Added shared group synchronization across all linked lines and
+all linked floor, ceiling and 3D parts; both setters and damage now use it.
+Unknown groups do not get synthesized, matching the native group lookup.
+
+Added 18 regressions for map use/cross activation, ACS continuation, additional
+IDs/tags, clamping, missing targets, invalid parts, tag-zero selection and
+mixed geometry health groups. Release validation: **3,754 tests passed
+(2,697 Playsim; 484 MapLoader)**. Build with warnings treated as errors passed
+with zero warnings/errors.
+
+Geometry health and pooled health are still absent from the managed save
+payload and simulation checksum; save/load parity remains open. Destruction
+callbacks/events and full 3D-floor geometry are also outside this slice.
+Native executable acceptance has not been run. Gameplay phases 1-3 remain
+incomplete.
+
+## Conversion and audit: nested scanner buffer preparation (2026-10-01)
+
+Follow-up audit against FScanner::PrepareScript and the classic quoted-string
+loop found that the managed nested ID scanner omitted native buffer preparation.
+Native parsing strips a leading UTF-8 BOM and appends a final newline (or
+replaces a terminal NUL). The newline becomes part of an unterminated quoted
+token, causing numeric parsing to reject it instead of accepting a final ID.
+Converted that preparation for both line moreids and sector moreids.
+
+Added 12 regressions covering unfinished quoted numbers/MAXINT, terminal NUL,
+BOM, final comments, quoted CRLF and closed quotes. Two cases pass escaped
+quotes through the actual TEXTMAP parser before LevelBuilder, verifying both
+complete and unfinished nested strings end to end.
+
+Release validation: **3,736 tests passed (2,679 Playsim; 484 MapLoader)**.
+The solution build with warnings treated as errors passed with zero warnings
+and errors. Source comparison closes the previously documented quoted EOF
+logic gap; native executable acceptance has not been run. General scanner
+conversion, dynamic tag serialization, mixed thinker ordering, slopes and
+replication remain open. Gameplay phases 1-3 remain incomplete.
+
+## Conversion and audit: nested UDMF ID scanner (2026-10-01)
+
+Audited line and sector moreids against src/maploader/udmf.cpp and the
+classic FScanner implementation in src/common/engine/sc_man.cpp and
+sc_man_scanner.re. Converted comment handling (block, line, semicolon and
+region directives), quoted numeric tokens, punctuation boundaries and native
+signed 64-bit saturation followed by the 32-bit ID cast. Both map ID surfaces
+share the same parser; existing namespace gates and line/sector filtering
+remain in place. Parsing retains the valid prefix at the first invalid token.
+
+Added 21 regression cases through LevelBuilder for both lines and sectors,
+including comments, quotes, escaped quotes, octal/hex numbers, overflow,
+trailing garbage, whitespace and slash boundaries. Release validation:
+**3,724 tests passed (2,679 Playsim; 472 MapLoader)**. The solution build with
+warnings treated as errors passed with zero warnings/errors.
+
+This converts the nested ID-string numeric subset, not the general scripting
+scanner. Malformed quoted-string EOF behavior still needs native acceptance
+comparison. Dynamic tag serialization, mixed thinker ordering, slopes,
+replication and native rendered acceptance remain open. Gameplay phases 1-3
+remain incomplete.
+
+## Conversion and audit: multiple UDMF sector tags (2026-10-01)
+
+Converted sector `moreids` against `src/maploader/udmf.cpp` and native tag
+membership in `src/playsim/p_tags.cpp`. Additional tags use the existing numeric
+prefix parser and ZDoom/ZDoomTranslated/Vavoom namespace gate. Duplicates and
+zero are omitted; unlike line IDs, sector tag -1 is valid. Corrected primary
+UDMF sector IDs being narrowed to short: LevelSector now preserves full integer
+tags, including values beyond 65535. Imported extra tags are read-only map data.
+
+Added distinct stored membership and selector predicates. Zero is never a
+stored tag, while a zero selector finds sectors with no primary or additional
+tags. Shared sector targeting, plane transforms, lighting, terrain/damage,
+destructible health, relevant ACS counts/queries/waits and scroller targeting
+now recognize additional tags. Trigger-side fallback for tag-zero actions in
+TargetSectors remains unchanged.
+
+Audit corrected two scroller edge cases: CopyScroller suppresses copies only
+for actual stored source-tag membership, so tag zero may duplicate on an
+untagged destination; runtime SetScroller scans actual membership before
+creation, so repeated nonzero-rate tag-zero calls append thinkers on untagged
+sectors instead of updating them. This follows native source behavior.
+Static map tags survive simulation copies and same-map archive continuation;
+no save format change was needed.
+
+Added 15 regressions covering namespace gates, negative/zero/deduplicated tags,
+full-width IDs, shared targeting, startup/runtime scrolling, transforms,
+CopyScroller suppression, native tag-zero cases and save/checksum continuation.
+Release validation: **3,703 tests passed (2,679 Playsim; 451 MapLoader)**;
+build has zero warnings/errors. Full FScanner string grammar, dynamic tag
+serialization, mixed thinker ordering, slopes, replication and native rendered
+acceptance remain open. Gameplay phases 1-3 remain incomplete.
+
+## Conversion and audit: multiple UDMF line IDs (2026-10-01)
+
+Converted UDMF linedef `moreids` import and shared line targeting against
+`src/maploader/udmf.cpp`, `FScanner::CheckNumber` in
+`src/common/engine/sc_man.cpp`, and `FTagManager::AddLineID` in
+`src/playsim/p_tags.cpp`. ZDoom, ZDoomTranslated and Vavoom namespaces admit
+additional IDs; Doom/Hexen/Heretic namespaces ignore them. The primary ID is
+retained, zero/unset (-1) entries and duplicates are omitted, and additional
+IDs preserve input order. Numeric-prefix parsing supports decimal, signed,
+hexadecimal, octal and MAXINT tokens and stops at the first invalid token.
+
+LevelLine exposes a shared HasId predicate and read-only imported ID list.
+ACS first/all line lookup, model/offset startup wall scrollers and runtime
+wall/offset/scale actions use additional IDs without duplicating a matched
+line. Simulation copies retain immutable map IDs; archives continue to restore
+thinkers against the same source map without a format change. Unset -1 cannot
+match a line through shared lookup.
+
+Added 16 regressions covering all namespace gates, duplicate/unset/zero
+filtering, numeric forms and prefix termination, shared lookup, both startup
+wall models, runtime wall/texture actions and save/checksum continuation.
+Release validation: **3,688 tests passed (2,673 Playsim; 442 MapLoader)**;
+build has zero warnings/errors. Remaining scope includes multiple sector tags,
+full native FScanner grammar inside moreids strings (comments/quoted tokens
+and extreme 64-bit overflow), dynamic tag-manager serialization, mixed thinker
+ordering, slopes, replication and native rendered acceptance. Gameplay phases
+1-3 remain open.
+
+## Conversion and audit: runtime wall actions and ACS dispatch (2026-10-01)
+
+Converted runtime Scroll_Texture_Both (221) against `LS_Scroll_Texture_Both`
+in `src/playsim/p_lnspec.cpp`: ID zero fails, positive IDs select front walls,
+negative IDs select back walls, X is (left-right)/64 and Y is (down-up)/64.
+Native SetWallScroller supplies all-part rate updates and removes matching
+thinkers when both rates are zero. Existing controllers keep their height
+history and velocity when rates change. Missing IDs succeed without mutation.
+The minimum signed integer ID safely produces no match rather than overflowing.
+
+Wired both Both (221) and Scroll_Wall (52) into direct and stack ACS dispatch,
+reusing map activation logic. Audit corrected Scroll_Wall's ID-zero return and
+preserved native fixed-point rate decoding, nonzero side selection, part masks
+and unset-ID behavior. Full-suite validation exposed legacy synthetic maps
+with Unknown format that use ACS 52 as a Doom exit; their established fallback
+remains intact while declared map formats use the native wall action.
+
+Added 20 regressions covering both actions through all three dispatch routes,
+both sides, native rate signs, invalid/missing IDs, opposing-rate removal and
+controller history/velocity preservation. Release validation: **3,672 tests
+passed (2,668 Playsim; 431 MapLoader)**; build has zero warnings/errors.
+Remaining gaps include multi-ID lines/sectors, mixed thinker ordering, full
+map translation, slopes, replication and native rendered acceptance.
+Gameplay phases 1-3 remain incomplete.
+
+## Conversion and audit: Doom directional wall mappings (2026-10-01)
+
+Converted Doom binary wall specials 48/85 and 422-428 against
+`wadsrc/static/xlat/base.txt`, `wadsrc/static/xlat/defines.i`, and the directional
+branches in `src/maploader/specials.cpp`. SCROLL_UNIT is 64 and native actions
+divide by 64, giving one texture unit per tick: 48 moves +X; 85/422 move -X;
+423/424 move +Y/-Y; 425-428 select all four diagonal sign combinations.
+Translation ignores Hexen arguments and sector tags, scrolls the source front
+wall's texture parts, and retains the native 3D midtexture exclusion.
+
+Cardinal specials retain their raw Doom numbers in the managed simulation for
+compatibility, corresponding to native restoration of translated directional
+specials. Diagonal Both specials are consumed at startup. Hexen/UDMF action
+numbers remain separate. Existing constant thinker handling supports runtime
+rate updates/removal, archive version 14 and checksum continuation without a
+new save format. Source maps remain unchanged across simulation starts.
+
+Added 18 regressions covering every mapping, exact two-tick rates, all parts,
+front-side isolation, special retention/consumption, 3D midtextures, saved
+continuation without duplicates, format separation and runtime update/removal.
+Release validation: **3,652 tests passed (2,648 Playsim; 431 MapLoader)**;
+build has zero warnings/errors. Remaining scope includes full native translation,
+multi-ID lines/sectors, mixed thinker insertion order, slopes, rendering flags,
+replication and native rendered acceptance. Gameplay phases 1-3 remain open.
+
+## Conversion and audit: offset-driven wall scrollers (2026-10-01)
+
+Converted Scroll_Texture_Offsets (225) against `src/maploader/specials.cpp`.
+Rates are negative source middle X offset and positive middle Y offset, divided
+by max(1, argument 3). Argument 0 selects texture parts with native all-part
+defaults; argument 1 selects line IDs or the source wall at zero. Unlike wall
+model scrollers, a nonzero ID includes the source when it matches. Argument 2
+selects displacement/acceleration using the source front-sector height sum.
+Startup samples offsets once and consumes the special on the simulation copy.
+
+Converted Doom 255 and MBF21 1024/1025/1026 mappings from
+`wadsrc/static/xlat/base.txt`: 255 scrolls its own wall with divisor one;
+1024-1026 use the Doom tag as line ID and divisor eight, with constant,
+displacement and acceleration respectively. Audit uncovered dropped binary
+sidedef horizontal offsets and missing top/bottom vertical offsets; Doom
+binary loading now imports both base offsets into all three texture parts.
+
+Partial controlled walls retain their native part masks through ticks, runtime
+rate updates/removal, checksums and archive version 14. New archive kinds
+19-30 represent masks 1-6 with displacement/acceleration pairs; existing all-part
+kinds 17/18 remain unchanged. Version 13 retains existing partial controllers
+while restoring its supported all-part controllers. Target validation rejects
+malformed records before restore mutates the clock.
+
+Added 35 regressions covering rates/divisors, all part masks, controller modes,
+Doom/MBF21 translations, all twelve partial-controller archive combinations,
+runtime updates/removal, legacy saves, source targeting, fixed startup rates,
+invalid targets and binary offset import. Release validation: **3,634 tests
+passed (2,630 Playsim; 431 MapLoader)**; build has zero warnings/errors.
+Remaining scope includes Doom directional wall translations, native multi-ID
+lines, mixed thinker ordering, slopes, rendering/interpolation flags,
+replication and native rendered acceptance. Gameplay phases 1-3 remain open.
+
+## Conversion and audit: UDMF wall accumulation and directional actions (2026-10-01)
+
+Corrected UDMF wall initialization against `src/maploader/udmf.cpp` and the
+CreateScroller default argument in `src/maploader/maploader.h`. Native parsing
+computes per-part selection masks, but its wall creation call omits that mask
+and defaults to all texture parts. Managed initialization now reproduces that
+observed native behavior: each imported entry creates a separate all-part
+thinker, rather than replacing an existing line scroller. UDMF thinkers are
+created before linedef map-start thinkers, matching native load order.
+Imported mask metadata remains intact; this is fidelity to the checked-in
+native creation call, not a claim that native per-part intent is implemented.
+
+Converted constant directional wall actions 100/101/102/103 and map-start
+Scroll_Texture_Both (221) against `src/maploader/specials.cpp`. Directional
+rates use argument 0 divided by 64, and part masks default to all for nonpositive
+or unknown-bit values. Native directional specials are retained for compatibility;
+Both is consumed, creates only for ID zero, and computes X/Y from opposing
+argument differences divided by 64. Doom binary action numbers remain separate.
+Existing version-13 archive/checksum coverage persists these constant thinkers.
+
+Added 20 regressions covering all directions, every valid part mask and defaults,
+combined rates, nonzero-ID startup behavior, Doom format separation, independent
+UDMF/model rate accumulation, native UDMF mask omission, controller retention
+and archive continuation. Release validation: **3,599 tests passed (2,596 Playsim)**;
+build has zero warnings/errors. Remaining scope includes offset-driven wall
+scrollers (225), Doom directional translations, native multi-ID lines, mixed
+controlled/constant tick ordering, slopes, rendering flags, replication and
+native rendered acceptance. Gameplay phases 1-3 remain incomplete.
+
+## Conversion and audit: wall-model scrollers (2026-10-01)
+
+Converted map-start Scroll_Texture_Model (222) for Hexen/UDMF and Doom binary
+specials 218/249/254 from `wadsrc/static/xlat/base.txt`. Audited target selection
+against `MapLoader::SpawnScrollers` in `src/maploader/specials.cpp` and projection
+against the wall-model DScroller constructor in
+`src/playsim/mapthinkers/a_scroll.cpp`. Source linedef direction supplies the
+world-space rate; target linedef direction/length projects it into wall X/Y
+offset motion. Nonzero IDs select other matching lines and exclude the source;
+ID zero scrolls the source wall. All front texture parts scroll, preserving the
+native two-sided 3D midtexture exclusion.
+
+Source front-sector floor-plus-ceiling height drives displacement (Doom 249)
+or acceleration (Doom 218); Doom 254 remains constant. Controlled walls retain
+history/velocity and participate in checksums. Managed archive version 13
+stores those thinkers with sidedef-target validation; version 12 retains
+existing controlled walls. Runtime SetWallScroller updates now touch every
+matching duplicate/controller while preserving history, and zero rates remove
+matching wall thinkers as native does. Invalid controllers, sidedefs and
+zero-length target walls fail explicitly instead of generating nonfinite rates.
+
+Added 21 regression cases and replaced three prior unconverted-Doom assertions.
+Coverage includes cardinal/diagonal projection, self targeting, source exclusion,
+all controller modes, Doom translation, 3D midtextures, duplicates, runtime
+updates/removal, legacy saves, controller archive/checksum continuation and
+invalid saved targets. Release validation: **3,579 tests passed (2,576 Playsim)**;
+build has zero warnings/errors. Remaining gaps include native multi-ID lines,
+mixed thinker insertion order, UDMF/map-start scroller interactions, slopes,
+decal/interpolation rendering flags, replication and native rendered acceptance.
+Gameplay phases 1-3 remain incomplete.
+
+## Conversion and audit: Doom plane scroller translation (2026-10-01)
+
+Converted the plane-scroller subset of native `wadsrc/static/xlat/base.txt`
+for Doom binary maps: 214-217 accelerate, 245-248 use displacement controllers,
+and 250-253 use constant linedef-direction scrolling. Within each group the
+four specials select ceiling texture, floor texture, carry only, and floor
+texture plus carry. Doom line tags select targets, linedef deltas supply rates,
+and controlled modes retain front-sector height history. CopyScroller specials
+352/353/354 translate to ceiling/floor/floor-plus-carry masks 1/2/6. Existing
+plane/carry initialization, copies, saves and checksums handle decoded settings.
+
+Audit found that raw Doom 223/224 were incorrectly consumed as Hexen plane
+scrollers; native defines them as friction and wind. Corrected the format
+boundary so those actions remain intact. Doom wall-model specials 218/249/254
+remain unconverted and are also preserved. Translation is limited to Doom
+binary input and does not reinterpret Hexen/UDMF action numbers. Original
+source lines retain their specials; only simulation copies consume startup
+scrollers. Signed copy masks retain native bit selection, including -1.
+
+Added 27 regressions covering all twelve plane mappings, all three copy
+mappings, format separation, signed copy masks, preserved unrelated specials,
+controller-copy runtime updates and save/checksum continuation. Release
+validation: **3,561 tests passed (2,558 Playsim)**; build has zero warnings/errors.
+Remaining work includes wall-model scrollers, full Doom/UDMF translation,
+friction/wind gameplay, multi-tag sectors, mixed thinker ordering, slopes,
+replication and native rendered acceptance. Gameplay phases 1-3 remain open.
+
+## Conversion and audit: runtime SetScroller updates (2026-10-01)
+
+Converted native tag-wide SetScroller behavior from
+`src/playsim/mapthinkers/a_scroll.cpp` and Scroll_Floor/Scroll_Ceiling runtime
+actions in `src/playsim/p_lnspec.cpp`. Runtime actions update all existing
+thinkers of the selected type whose destination sector has the requested tag.
+Updates preserve duplicate thinkers, controller references, controller height
+history, acceleration velocity and carry affect masks. A zero rate keeps the
+thinker, including accumulated acceleration. If any matching thinker exists,
+native code suppresses creation on other sectors sharing the tag. Only an
+absent type/tag and a nonzero rate creates new constant scrollers.
+
+Managed runtime dispatch now uses that rule rather than replacing scrollers
+per sector. Existing direct single-sector replacement helpers retain their
+separate semantics and have corrected documentation. Controlled plane/carry
+and accelerated carry rates are mutable; archive version 12 and checksums
+already capture their updated values. Audit also corrected initially zero-rate
+carry creation so stationary map-start thinkers remain eligible for updates.
+
+Added 15 regressions covering controller preservation, zero-rate velocity and
+resumption, duplicates, sparse tagged coverage, carry affect masks, initial
+creation, stationary carry thinkers and exact save/checksum continuation.
+Release validation: **3,534 tests passed (2,531 Playsim)**; build has zero
+warnings/errors. Remaining gaps include native multi-tag sectors, mixed
+thinker ordering, sloped controllers, Doom CopyScroller translation,
+replication and native rendered acceptance. Gameplay phases 1-3 remain open.
+
+## Conversion and audit: Sector_CopyScroller (2026-10-01)
+
+Converted map-start Sector_CopyScroller (58) against the discovery pass and
+Scroll_Ceiling/Scroll_Floor branches of `MapLoader::SpawnScrollers` in
+`src/maploader/specials.cpp`. Copy lines are collected before source scrollers,
+independent of map line order. Argument 0 matches the source scroller tag;
+argument 1 bits 1/2/4 select ceiling texture, floor texture and floor carry.
+Unknown bits do not select additional components. Destinations come from the
+copy line's front sidedef. The copy inherits the source rate, controller and
+acceleration, while texture rotation follows the destination sector.
+
+Audit verified native same-tag suppression, original floor mode predicates,
+duplicate copy/source accumulation, copies with no originally tagged sector,
+and the absence of recursive copying. Copy specials are consumed only on the
+simulation copy. Format gating preserves Doom binary special 58; this action
+is recognized only in Hexen/UDMF maps. Invalid front sides/sectors fail
+explicitly. Existing version-12 scroller persistence/checksums cover copied
+thinkers without a new archive format.
+
+Added 24 regression cases, including all selection masks, source/copy ordering,
+destination rotation, inherited displacement/acceleration and archive
+continuation. Release validation: **3,519 tests passed (2,516 Playsim)**;
+build has zero warnings/errors. Remaining scope includes runtime SetScroller
+updates of controlled thinkers, multi-tag sectors, mixed thinker ordering,
+sloped controllers, replication and native rendered acceptance. Native Doom
+352-354 translation into CopyScroller remains outside this managed action.
+Gameplay phases 1-3 remain incomplete.
+
+## Conversion and audit: map-start floor scrolling (2026-10-01)
+
+Corrected Scroll_Floor (223) initialization against
+`src/maploader/specials.cpp`: argument 1 contains controller/direction flags,
+argument 2 selects texture/carry behavior, and arguments 3/4 contain biased
+rates. Bit 4 uses linedef direction instead. Texture scrolling applies when
+mode is not 1; carry applies for every positive mode. Independent map lines
+append thinkers, tag zero selects untagged sectors, and startup consumes the
+special on the simulation copy. Removed unused initialization helpers that
+encoded the runtime argument layout. Runtime action dispatch stays separate.
+
+Generalized controlled ceiling texture thinkers to controlled plane thinkers.
+Floor displacement and acceleration use the same floor-plus-ceiling controller
+height history as native DScroller. Rotation affects texture motion only;
+carry retains world-space direction. Controller flags 2/3 preserve accumulated
+motion when the controller stops and cancel it with opposite displacement.
+
+Managed archive version 12 includes floor controller history/velocity, with
+checksum coverage. Version 11 preserves existing floor controller thinkers;
+ceiling and floor restore inclusion flags independently select replacement.
+Corrected seven existing map-start fixtures that used runtime arguments and
+added 21 regressions for mode predicates, all controller/mode combinations,
+duplicates, direction flags, tag zero, rotation, archive continuation,
+legacy saves, invalid controller references and checksum discrimination.
+
+Release validation: **3,495 tests passed (2,492 Playsim)**; build has zero
+warnings/errors. Remaining scroller conversion includes CopyScroller,
+runtime SetScroller updates of existing controlled thinkers, mixed thinker
+ordering, sloped controllers, replication and native rendered acceptance.
+This does not certify completion of gameplay phases 1-3.
+
+## Conversion and audit: controlled ceiling scrolling (2026-10-01)
+
+Converted map-start Scroll_Ceiling controller flags 1/2/3 against native
+`src/maploader/specials.cpp` and `DScroller::Tick` in
+`src/playsim/mapthinkers/a_scroll.cpp`. The front sidedef selects the controller.
+Floor plus ceiling height changes drive displacement; acceleration accumulates
+before the zero-motion check, preserving scrolling when the controller stops.
+Ceiling texture rotation compensation applies to the resulting motion.
+
+Managed archive version 11 stores controller references, last height and both
+velocity components. Older archives retain existing controlled ceiling thinkers.
+Controller state participates in checksums and invalid references fail before
+restore mutates the simulation clock. Regression coverage verifies all three
+flag combinations, reversing motion, ceiling-height control, save continuation,
+version-10 compatibility and invalid controller input.
+
+Release validation: **3,474 tests passed (2,471 Playsim)**; build passes with
+zero warnings/errors. Remaining gaps include map-start floor scrolling,
+runtime SetScroller updates of existing controlled thinkers, mixed thinker
+insertion ordering, sloped controller planes, replication and native rendered
+acceptance. Gameplay phases 1-3 remain incomplete.
+
 Updated: 2026-09-27. Cumulative baseline: `55f8fa46` (923 tests), including the
 preceding `0a37c839` gameplay, maps/mods and invasion work. The first 1,065 tests
 and conversion work were committed as `d792c54a`; subsequent changes are included
@@ -3610,6 +5381,271 @@ effects with already-overlapping actors, floor direction edge cases and real-map
 parity remain open. Phases 1–3 and original invasion synchronization validation
 remain incomplete.
 
+## Conversion and audit: UDMF wall scale import (2026-10-01)
+
+`UdmfTextMapParser` now reads the six `scalex_*` / `scaley_*` sidedef fields
+for top, mid and bottom textures. `LevelBuilder.FromUdmf` applies them only in
+ZDoom, ZDoomTranslated and Vavoom, following the native Zd/Zdt/Va switch in
+`src/maploader/udmf.cpp`. Missing values default to one. Explicit zero is
+normalized to one, matching native sidedef setters in `src/gamedata/r_defs.h`;
+negative and fractional values are retained directly, without reciprocals.
+
+Audit checked namespace gating, defaults, zero handling and independent part
+axes. Six loader regression cases and one loaded-map/runtime multiplication
+case were added. The latter confirms special 56 multiplies the imported mid
+scale while preserving the top scale. Native uses per-part fields here;
+no shared scale composition is introduced.
+
+Release solution tests: **3,426** passed (**2,427** Playsim, **426** MapLoader).
+Remaining scope includes full transform persistence/replication/checksums,
+native rendered acceptance and multi-ID line tags. Wall scale import and
+runtime actions are covered; this does not finish the renderer or client.
+
+## Integration audit: texture transform checksums and namespace offsets (2026-10-01)
+
+Review found two gaps in the converted texture paths. Only mid-wall Y offsets
+participated in the managed simulation checksum; all other wall and plane
+offsets, scales, mutable/base angles and base Y offsets are now hashed using
+both halves of double values. A field-enumeration regression mutates each
+numeric texture field independently and checks that the diagnostic hash
+changes. This deliberately changes checksum baselines: the 35-tic MAP01 idle
+room is now **251903926**, previously **3995474422**. Its position, health and
+timing assertions still pass. Old and new managed hashes are not comparable.
+
+Native `src/maploader/udmf.cpp` gates all per-part wall offsets on Zd/Zdt/Va.
+The loader previously gated only mid Y; top/mid/bottom per-part offsets now
+share that rule while common offsetx/offsety remain active. Four namespace
+regressions exercise all six offsets.
+
+After updating the intentional baseline, Release solution tests: **3,431**
+passed (**2,428** Playsim, **430** MapLoader). This adds diagnostic coverage,
+not texture replication or save/restore support. Native visual acceptance,
+full transform persistence/replication and multi-ID line tags remain pending.
+
+## Integration audit: independent runtime wall state (2026-10-01)
+
+Review of map copying before persistence work found that `CopyForSimulation`
+copied lines and sectors but shared mutable `LevelSide` instances. Converted
+wall offset/scale actions and scrolling could mutate the source map and other
+simulations started from it. Runtime copies now clone each side and its
+map-load scroll list, retaining all numeric offsets/scales and texture names.
+
+Three regression cases prove actions isolate both a second simulation and
+the source map, scroll ticks do not leak, restart uses source offsets and
+scroll-list edits on a copy do not modify the source. Follow-up review checked
+all mutable side fields: scalar fields copy by value and the only mutable
+collection receives its own list. Release solution tests: **3,434** passed
+(**2,431** Playsim); Release build has zero warnings/errors and the touched
+tracked file passes whitespace checks. This fixes runtime ownership, not
+savegame persistence. Transform saves, replication and native rendering
+acceptance remain open.
+
+## Conversion and audit: wall transform archive (2026-10-01)
+
+The managed HCSV archive now captures/restores all twelve wall offset/scale
+fields as exact double bit patterns. Version **7** adds a wall count and
+96-byte records after the existing random-state footer. Saves without wall
+payload retain version **6**. Readers retain versions 1–6; those older saves
+leave current wall transforms untouched. Version 7 is a managed extension,
+not native savegame compatibility or complete native save conversion.
+
+Audit checked bounds/count arithmetic, truncated records, finite values and
+restore validation. Nonfinite records and payload/count mismatches are
+rejected; current-map wall count is checked before mutation. Six regression
+cases cover exact round-trip, version-6 behavior, every truncation boundary,
+nonfinite wire/state rejection and wrong-count restore isolation. Initial
+tests caught version assertions on saves with no wall payload; preserving
+version 6 for those saves resolved the compatibility regression.
+
+Release solution tests: **3,440** passed (**2,437** Playsim). Release build has
+zero warnings/errors. Remaining archive scope includes plane transforms,
+wall/plane scroller thinker state, actor membership and full gameplay state;
+texture replication and native rendering acceptance also remain pending.
+
+## Conversion and audit: plane transform archive (2026-10-01)
+
+Managed HCSV version **8** adds a count and 96-byte plane transform records
+after the wall section. Records preserve ten double fields (floor/ceiling
+offsets, scales and base Y offsets) and four BAM angles (mutable/base).
+Capture and restore include both plane and wall transforms. Readers retain
+versions 1–7; versions without plane records leave current plane state
+untouched. Explicit states without planes still use versions 6 or 7.
+
+Audit checked count/size bounds before record reads, finite doubles, older
+format behavior and validation before applying wall or plane mutations.
+Current-map plane count must match before restore changes walls or clock.
+Four new cases cover exact mixed wall/plane round-trip, version-7 behavior,
+all truncation boundaries/nonfinite data and count-mismatch isolation.
+Pitch compatibility tests now distinguish current version 8 from a genuine
+legacy pose archive instead of relabeling an extended payload as version 5.
+
+Release solution tests: **3,444** passed (**2,441** Playsim). This is a managed
+archive extension, not native savegame compatibility. Scroller thinkers and
+full gameplay saves remain incomplete; transforms alone do not reproduce
+the future ticking behavior of a restored level. Replication and native
+rendering acceptance remain open.
+
+## Conversion and audit: constant texture scroller archive (2026-10-01)
+
+Managed HCSV version **9** appends ordered constant texture scroller records:
+target index, floor/ceiling or wall part-mask kind, and exact double X/Y rates.
+Capture includes floor/ceiling and sidedef scroller lists. Restore replaces
+those lists when supplied; an explicit empty list clears existing scrollers.
+Older versions leave current lists untouched. Versions 1–8 remain readable;
+explicit states without scroller payload retain older layouts.
+
+Audit checked record lengths/count arithmetic before reads, finite rates,
+valid kinds and current-map target bounds before mutation. Four regression
+cases cover mixed plane/wall continuation over 20 ticks, explicit clearing,
+invalid-target restore isolation, every truncation boundary and nonfinite
+writer rejection. The continuation test compares all wall/plane transform
+records after each tic. Release solution tests: **3,448** passed (**2,445**
+Playsim); Release build has zero warnings/errors.
+
+This covers the currently converted constant texture lists, not all native
+`DScroller` modes. Carry, control-sector and accelerating scrollers, scroller
+rate checksum coverage, full gameplay archives, replication and native
+runtime/rendering acceptance remain open.
+
+## Native carry audit: retained acceleration (2026-10-01)
+
+Review before carry archive work compared control carry ticking with
+`DScroller::Tick` in `src/playsim/mapthinkers/a_scroll.cpp`. Native computes
+controller displacement, adds accumulated velocity, then checks for zero
+motion. Managed code previously skipped zero controller displacement first,
+losing movement from retained acceleration. The early skip is removed;
+exact zero testing now happens after velocity accumulation. This also avoids
+silently dropping small nonzero controller displacement via an epsilon.
+
+Two regressions cover a stopped accelerating controller, reverse displacement
+cancelling accumulated velocity, and a nonaccelerating controller stopping.
+Release solution tests: **3,450** passed (**2,447** Playsim); Release build has
+zero warnings/errors. Carry archive conversion is still pending.
+
+The same review identified another parity gap to resolve before carry saves:
+native controller height is floor-center plus ceiling-center, while managed
+initialization/ticking currently uses their average. Controller scale and
+map-loaded carry expectations must be reviewed together before changing this
+behavior. Full carry parity is not claimed by the acceleration fix.
+
+## Conversion and audit: controller height sum (2026-10-01)
+
+Resolved the controller-height mismatch noted above. Native `DScroller`
+initialization and ticking in `src/playsim/mapthinkers/a_scroll.cpp` use
+`CenterFloor() + CenterCeiling()`. Native map setup in
+`src/maploader/specials.cpp` uses line delta divided by 32 without an
+additional half factor. Managed map initialization and ticks now use the
+floor-plus-ceiling sum, retaining the existing native line-rate calculation.
+
+Direct helper fixtures now supply initial sum 128 rather than average 64;
+8 units of controller floor motion with rate 2 produces 16 units of carry,
+instead of the old incorrect 8. Map-start and activated displacement tests
+were updated together. A new regression checks ceiling-only movement,
+opposite plane motion cancelling and simultaneous motion adding. Retained
+acceleration/reversal coverage also passes with the corrected height unit.
+
+Release solution tests: **3,451** passed (**2,448** Playsim); Release build
+has zero warnings/errors. Audit verified initialization/tick units and both
+map activation paths. Sloped sector-center sampling, carry archive state,
+native runtime comparison and full gameplay saves remain incomplete.
+
+## Conversion and audit: carry scroller archive (2026-10-01)
+
+Managed HCSV version **10** extends scroller records to 56 bytes, retaining
+constant carry rates/affect masks, accelerating base rates and accumulated
+velocity, and control-sector references, last height, rates and velocity.
+These state requirements follow `DScroller::Serialize` and `Tick` in
+`src/playsim/mapthinkers/a_scroll.cpp`; this remains a managed format rather
+than native archive compatibility. Texture and carry lists keep their order.
+
+Capture includes all currently modeled carry lists. Restore replaces carry
+lists only when the payload explicitly includes them, clears transient
+displacement/buffer state, and rebuilds it on the next tic. Older version-9
+texture-only saves preserve existing carry. Versions 1–9 remain readable.
+
+Audit checked record sizes, finite rates/history/velocity, kind and affect
+masks, and target/controller bounds before mutation. Six new regressions
+cover ten-tic continuation for constant, accelerating, displacement and
+accelerating-control carry, version-9 behavior and invalid-controller
+isolation. Existing archive truncation tests also pass on the new record
+size. Release solution tests: **3,457** passed (**2,454** Playsim); Release
+build has zero warnings/errors.
+
+Remaining scope includes scroller rate/history checksum coverage, complete
+actor/mover/ACS gameplay saves, native runtime acceptance, replication and
+unconverted native scroller modes. This establishes the modeled carry
+thinkers' continuation, not full savegame parity.
+
+## Integration audit: scroller future-state checksums (2026-10-01)
+
+The diagnostic checksum now includes ordered constant plane/wall scrollers,
+constant and accelerating carry, and control carry. Each record hashes kind,
+target, X/Y rates, controller index, affect mask, last height and accumulated
+X/Y velocity, with both halves of each double. This closes the gap where
+identical current transforms/buffers could conceal different future motion.
+State fields were reviewed against the version-10 capture schema and native
+`DScroller::Serialize` / `Tick` in `src/playsim/mapthinkers/a_scroll.cpp`.
+
+Four regressions detect rate differences while controllers are stationary,
+affect differences without actors, acceleration-mode differences at rest and
+five ticks of identical diagnostic checksums after a carry archive restore.
+Hashing uses direct fields without allocating save records during each tic.
+The no-scroller idle baseline remains unchanged; hashes for levels with
+scrollers intentionally change and are not comparable to earlier builds.
+
+Release solution tests: **3,461** passed (**2,458** Playsim); Release build
+has zero warnings/errors. Full gameplay archives, replication, native runtime
+acceptance and remaining native scroller modes remain open. A diagnostic
+hash match is supporting evidence, not proof of native engine parity.
+
+## Native action audit: runtime plane scrolling (2026-10-01)
+
+Review against `LS_Scroll_Floor` / `LS_Scroll_Ceiling` in
+`src/playsim/p_lnspec.cpp` found runtime floor scrolling incorrectly treating
+speed low bits as controller flags and mode 3 as accelerating carry. Runtime
+actions now decode X/Y speed divided by 32, enable texture scrolling only in
+modes 0/2, use constant carry for every positive mode, and clear the relevant
+rate otherwise. Runtime tag zero selects untagged sectors without trigger-side
+fallback; missing tags return native success. The floor dispatch's manual
+target check no longer blocks tag-zero ACS calls.
+
+Updated two regressions that encoded the old runtime behavior. Three new
+cases cover tag zero, low speed bits with carry-only texture clearing, mode-3
+constant rate and missing-tag returns. Release solution tests: **3,464**
+passed (**2,461** Playsim); Release build has zero warnings/errors.
+
+Map-start native `src/maploader/specials.cpp` uses a different layout:
+arg1 flags, arg2 floor texture/carry selection, and either line direction or
+biased arg3/arg4 rates. Managed map-start initialization still conflates this
+with runtime action arguments and requires its own conversion and fixture
+updates. Native updates to already-existing controller/accelerating thinkers
+also require review; this change does not establish every SetScroller case.
+
+## Conversion and audit: constant ceiling map-start scrolling (2026-10-01)
+
+Separated constant map-start ceiling setup from runtime `Scroll_Ceiling`,
+following `src/maploader/specials.cpp`. Arg1 bit 4 selects line delta divided
+by 32; otherwise rates use (arg3 - 128)/32 and (arg4 - 128)/32. The resulting
+ceiling rate is (-dx, dy). Tag zero selects untagged sectors. Independent
+map-start lines append thinkers rather than replacing rates, and their setup
+special is consumed on the simulation copy, preserving the source map.
+
+Controller bits 1/2/3 are still unconverted for ceiling textures and now
+raise a specific NotSupportedException instead of starting incorrect
+constant movement. This is an explicit supported-scope boundary; callers
+may need to surface that startup failure in a future usable client.
+
+Six new regression cases cover biased arguments, direction flags, duplicate
+rate summation, source/runtime special isolation, tag zero and rejected
+controller modes. The loaded UDMF rotation fixture now uses the correct
+ceiling map-start arguments. Release solution tests: **3,470** passed
+(**2,467** Playsim); Release build has zero warnings/errors.
+
+Remaining map-start scope includes floor flag/mode conversion, ceiling
+controller/accelerating texture modes and CopyScroller destinations. Existing
+constant thinker archive/checksum paths retain appended ceiling thinkers;
+native runtime/rendering acceptance remains pending.
+
 ### Zero-speed floor activation
 
 Native floor creation accepts zero speed and retains a thinker. Managed
@@ -4918,3 +6954,701 @@ player. Weapons, armor, and `ACSF_GetMaxInventory` are still absent. Tests cover
 pistol-start read and a set/get round trip.
 
 Release `HCDE.Playsim.Tests`: **2,235** passed after this note.
+
+## Audit: CheckWeapon and SetWeapon ACS (2026-09-30)
+
+`CheckWeapon` (223) and `SetWeapon` (224) follow `p_acs.cpp` ready-weapon checks
+and `SetWeapon` script util. Non-players read as no match. Class names use the same
+Doom weapon string table as inventory (`Pistol`, `Shotgun`, …). Ready weapon is
+`PlayerInventory.Selected`; success on set reuses `Use` (pending raise, ammo gate).
+DECORATE class indices, `SetMarineWeapon`, and psprite state are absent.
+
+Release `HCDE.Playsim.Tests`: **2,237** passed after this note.
+
+## Audit: actor-property damage and mass regressions (2026-09-30)
+
+Regression slice only: `APROP_INVULNERABLE` (11) is wired to `Actor.Invulnerable` and
+`ActorDamage.Apply` already honors it for non-forced hits.
+`SetActorProperty_InvulnerableBlocksOrdinaryDamage` sets the flag through ACS then
+damages the imp. `APROP_MASS` (32) set/get round trip is covered. Render, sound,
+and remaining `APROP_*` ids are still absent.
+
+Release `HCDE.Playsim.Tests`: **2,239** passed after this note.
+
+## Audit: health UseInventory and Friendly property (2026-09-30)
+
+`UseInventory` now handles `Health` / `Stimpack` / `Medikit` / `HealthBonus` /
+`Soulsphere` with the same per-type amounts and caps as `PickupCatalog` gifts
+(no inventory item instances; each use applies one dose). Weapons are unchanged.
+`APROP_FRIENDLY` (16) gains an ACS get/set regression on a monster tid.
+
+Armor, keys, and `UseActorInventory` health use remain absent.
+
+Release `HCDE.Playsim.Tests`: **2,242** passed after this note.
+
+## Audit: touching-sector scroll carry (2026-09-30)
+
+`ActorPhysics.ApplySectorScroll` now sums carry from every sector sampled at the
+actor center and at radius on the four cardinals, then averages each axis when
+more than one touched sector contributed a non-zero scroll on that axis (player
+`COMPATF_BOOMSCROLL` monster quirk is not split). Hexen player carry still applies
+per touched sector. `MF8_INSCROLLSEC` thinker marking and full sector node lists
+are absent. `TouchingAdjacentScrollerCarriesWhenRadiusOverlaps` places the player
+in sector 0 with radius overlap into a scrolling sector 1.
+
+Release `HCDE.Playsim.Tests`: **2,243** passed after this note.
+
+## Audit: armor UseInventory and more APROP regressions (2026-09-30)
+
+`UseInventory` now applies `BasicArmor` / `Armor` (green suit to 100 with save
+percent) and `ArmorBonus` (+1 up to 200) without inventory items. `APROP_NOTARGET`
+(19) and `APROP_SPAWNHEALTH` (17) ACS get/set tests join the existing ambush,
+mass, and invulnerable coverage. Mega armor, keys, and `UseActorInventory` armor
+use remain absent.
+
+Release `HCDE.Playsim.Tests`: **2,246** passed after this note.
+
+## Audit: inventory max health, mega armor use, actor step height (2026-09-30)
+
+`CheckInventory` max mode for the `Health` string now uses **200**
+(`MaxHealthBonus`) instead of 100. `UseInventory` adds `MegaArmor` / `GreenArmor`
+with mega/green amounts and save percents. `UseActorInventory` health applies to
+cooperative tid targets. `APROP_MAXSTEPHEIGHT` (44) fixed-raw set/get is covered.
+`ACSF_GetMaxInventory`, DECORATE max amounts, and real inventory items remain absent.
+
+Release `HCDE.Playsim.Tests`: **2,250** passed after this note.
+
+## Audit: NoTarget wake, dropoff height, UseActorInventory armor (2026-09-30)
+
+`NoTargetOnPlayerBlocksMonsterWakeTarget` confirms ACS `APROP_NOTARGET` on the
+activator ties into `OkayToSwitchTarget` / `WakeOnDamage` (imp acquires the player
+without the flag, not after). `APROP_MAXDROPOFFHEIGHT` (45) fixed-raw set/get is
+covered. `UseActorInventory` applies basic armor on a cooperative tid; backpack
+max clip is checked through `GetAmmoCapacity`. Scroll affect masks and
+`ACSF_GetMaxInventory` remain absent.
+
+Release `HCDE.Playsim.Tests`: **2,254** passed after this note (backpack
+`GetAmmoCapacity` test uses `GiveBackpack`, not `HasBackpack` alone).
+
+## Audit: ACSF_GetMaxInventory CallFunc (2026-09-30)
+
+`CallFunc` now handles native function **93** (`ACSF_GetMaxInventory`) with two
+stack args (tid, string id) and returns `CheckInventory` max amounts on the
+resolved actor (tid **0** = activator). Zero-arg invasion `CallFunc` queries
+are unchanged. Other ACS library functions remain absent.
+
+Release `HCDE.Playsim.Tests`: **2,255** passed after this note.
+
+## Audit: carry scroll affect masks (2026-09-30)
+
+`SectorCarryScroll` stores native-style `ScrollCarryAffect` flags (players,
+monsters, static objects). `SumCarryScrollForActor` filters thinkers per actor
+before carry; `SetSectorScroll` / `AppendSectorCarryScroll` default to **All**
+so line **223** behavior is unchanged. Tests cover player-only, monster-only,
+and split affect on one sector. `MF8_INSCROLLSEC` marking and `Scroll_Floor`
+arg-driven affect from map load remain absent.
+
+Release `HCDE.Playsim.Tests`: **2,258** passed after this note.
+
+## Audit: COMPATF_BOOMSCROLL carry averaging (2026-09-30)
+
+`CompatSurface.BoomScroll` mirrors native `COMPATF_BOOMSCROLL`: when set, grounded
+monsters **sum** scroll from multiple touching sectors; players still **average**.
+Default compat keeps averaging for everyone. Split-sector tests park the player
+away so carry moves are not blocked by overlap. `CallFunc_GetMaxInventory` on a
+cooperative tid reads **Health** max (**200**).
+
+Release `HCDE.Playsim.Tests`: **2,262** passed after this note.
+
+## Audit: MF8_INSCROLLSEC and ACSF_DamageActor (2026-09-30)
+
+`Actor.InScrollSector` mirrors native `MF8_INSCROLLSEC`: each tic,
+`MarkInScrollSectorActors` sets it on grounded non-players touching an active
+carry scroller (respecting `ScrollCarryAffect`); players always carry. Monsters
+skip carry when the flag is clear. `CallFunc` function **201** (`ACSF_DamageActor`)
+applies `ActorDamage` with six stack args (target tid, unused ptr, inflictor tid,
+unused ptr, amount, damage-type string). `InternalsVisibleTo` exposes scroll
+internals to playsim tests.
+
+Release `HCDE.Playsim.Tests`: **2,266** passed after this note.
+
+## Audit: CheckClass CallFunc and Backpack use/give (2026-09-30)
+
+`CallFunc` function **200** (`ACSF_CheckClass`) returns whether a spawn class name
+is known to `DoomActorCatalog` (not full DECORATE). `UseInventory` and
+`GiveInventory` accept **Backpack** and call `PlayerInventory.GiveBackpack`.
+DECORATE inventory items, keys via use, and arbitrary `PClass` lookup remain absent.
+
+Release `HCDE.Playsim.Tests`: **2,269** passed after this note.
+
+## Audit: CheckActorClass, TID CallFunc helpers (2026-09-30)
+
+`CallFunc` adds **27** (`ACSF_CheckActorClass`, tid + spawn class name vs
+`DoomActorCatalog`), **46** (`ACSF_UniqueTID`, linear search), and **47**
+(`ACSF_IsTIDUsed`). `GiveInventoryDirect` on **Backpack** is covered. Random
+`UniqueTID` when start is zero and full `PClass` class names remain absent.
+
+Release `HCDE.Playsim.Tests`: **2,273** passed after this note.
+
+## Audit: Backpack take, ACSF_Sqrt, invuln damage (2026-09-30)
+
+`TakeInventory` on **Backpack** calls `PlayerInventory.RemoveBackpack` (caps and ammo
+clamp). `CallFunc` **48** (`ACSF_Sqrt`) returns `floor(sqrt(n))` for non-negative
+ints. `ACSF_DamageActor` respects `APROP_INVULNERABLE` (11) via existing damage
+gates. `ACSF_FixedSqrt` and DECORATE `PClass` damage types remain absent.
+
+Release `HCDE.Playsim.Tests`: **2,276** passed after this note.
+
+## Audit: fixed ACS math CallFunc and invulnerable APROP (2026-09-30)
+
+`CallFunc` adds **49** (`ACSF_FixedSqrt`) and **50** (`ACSF_VectorLength`) using
+16.16 fixed-point conversion (`floor` to ACS). `SetAndGetActorProperty_InvulnerableFlag`
+covers `APROP_INVULNERABLE` (11). HUD clip, `GetActorClass`, and random `UniqueTID`
+remain absent.
+
+Release `HCDE.Playsim.Tests`: **2,279** passed after this note.
+
+## Audit: GetActorClass CallFunc and random UniqueTID (2026-09-30)
+
+`CallFunc` **68** (`ACSF_GetActorClass`) returns a global ACS string id via
+`AcsGlobalStrings` (`DoomPlayer` for players, catalog spawn names for known monsters,
+`None` otherwise). `FindUniqueTID` with start **0** matches native random probing
+(`pr_uniquetid` stream on `AuthoritySimulation`). `strcmp` and full DECORATE class
+names beyond the catalog remain absent.
+
+Release `HCDE.Playsim.Tests`: **2,282** passed after this note.
+
+## Audit: ACS strcmp/stricmp and global string pool ids (2026-09-30)
+
+`CallFunc` **63**/**64** (`ACSF_strcmp` / `ACSF_stricmp`) resolve module and global
+pool strings (`STRPOOL_LIBRARYID_OR` encoding on `GetActorClass` results). Optional
+third arg uses bounded `string.Compare`. HUD clip and `StrLeft` remain absent.
+
+Release `HCDE.Playsim.Tests`: **2,284** passed after this note.
+
+## Audit: ACS string slice and actor flag CallFunc (2026-09-30)
+
+`CallFunc` **65**–**67** (`StrLeft` / `StrRight` / `StrMid`) return global pool
+strings. **75** (`CheckFlag`) and **202** (`SetActorFlag`) cover a small DECORATE-style
+flag name set (`INVULNERABLE`, `AMBUSH`, `FRIENDLY`, `FLOAT`, etc.). Full `FFlagDef`
+tables and HUD clip remain absent.
+
+Release `HCDE.Playsim.Tests`: **2,286** passed after this note.
+
+## Audit: GetWeapon and CheckProximity CallFunc (2026-09-30)
+
+`CallFunc` **69** (`ACSF_GetWeapon`) returns the ready weapon class name in the global
+string pool. **98** (`ACSF_CheckProximity`) counts catalog-matched actors within a
+fixed-point radius (flags / `PClass` iterators absent). `PickActor` and HUD clip
+remain absent.
+
+Release `HCDE.Playsim.Tests`: **2,288** passed after this note.
+
+## Audit: ACS fixed Floor/Round/Ceil CallFunc (2026-09-30)
+
+`CallFunc` **207**–**209** mirror native 16.16 quantization (`& ~0xffff`, half-up
+round, ceil `+ 0x10000`). `StrArg` and map-load `DScroller` thinkers remain absent.
+
+Release `HCDE.Playsim.Tests`: **2,289** passed after this note.
+
+## Audit: GetActorFloorTexture CallFunc (2026-09-30)
+
+`CallFunc` **204** (`ACSF_GetActorFloorTexture`) returns the activator/TID sector
+`FloorPic` in the global string pool. **205** (`GetActorFloorTerrain`) returns an
+empty global string until terrain tables exist. `StrArg` and map-load scroll thinkers
+remain absent.
+
+Release `HCDE.Playsim.Tests`: **2,290** passed after this note.
+
+## Audit: ChangeActorAngle and GetArmorInfo CallFunc (2026-09-30)
+
+`CallFunc` **79** (`ACSF_ChangeActorAngle`) sets BAM angle on tid matches (interpolate
+ignored). **81** (`ACSF_GetArmorInfo`) returns worn `BasicArmor` classname, caps, and
+fixed save percent for players. `DropInventory` and pitch/roll ACS remain absent.
+
+Release `HCDE.Playsim.Tests`: **2,292** passed after this note.
+
+## Audit: ChangeActorPitch CallFunc (2026-09-30)
+
+`CallFunc` **80** (`ACSF_ChangeActorPitch`) maps ACS BAM pitch to `PitchDegrees`
+(normalized ±180°, player clamp unchanged). Interpolation and `GetActorRoll` remain
+absent.
+
+Release `HCDE.Playsim.Tests`: **2,293** passed after this note.
+
+## Audit: DropInventory CallFunc (2026-09-30)
+
+`CallFunc` **82** (`ACSF_DropInventory`) removes the held inventory stack via
+`AcsPlayerInventory.Drop` (no map pickup spawn). Keys, weapons, and ammo use existing
+`Take` paths. `DropItem` and DECORATE `FindInventory` remain absent.
+
+Release `HCDE.Playsim.Tests`: **2,294** passed after this note.
+
+## Audit: GetActorVel ACS CallFunc (2026-09-30)
+
+`CallFunc` **9**–**11** (`GetActorVelX` / `Y` / `Z`) return `DoubleToACS` on
+`VelocityX`/`Y`/`Z` for tid matches. `GetActorRoll` and UDMF line specials remain
+absent.
+
+Release `HCDE.Playsim.Tests`: **2,295** passed after this note.
+
+## Audit: GetActorViewHeight and GetChar CallFunc (2026-09-30)
+
+`CallFunc` **14** (`GetActorViewHeight`) returns fixed `ViewHeight` for players and
+half actor height for monsters. **15** (`GetChar`) reads a module/global string
+code unit. `GetAirSupply` and `SetActorVelocity` remain absent.
+
+Release `HCDE.Playsim.Tests`: **2,297** passed after this note.
+
+## Audit: SetActorVelocity CallFunc (2026-09-30)
+
+`CallFunc` **23** (`ACSF_SetActorVelocity`) applies fixed X/Y/Z to tid matches; non-add
+clears `Velocity*` first (`P_Thing_SetVelocity` without player bob). `CheckActorProperty`
+ACS and map-load scroll thinkers remain absent.
+
+Release `HCDE.Playsim.Tests`: **2,298** passed after this note.
+
+## Audit: CheckActorProperty and GetArmorType CallFunc (2026-09-30)
+
+`CallFunc` **22** (`CheckActorProperty`) compares supported `APROP_*` values via
+`AcsActorProperties.Check`. **19** (`GetArmorType`) returns worn `BasicArmor` amount
+for a player index. String/sound `APROP` checks and DECORATE armor types remain absent.
+
+Release `HCDE.Playsim.Tests`: **2,300** passed after this note.
+
+## Audit: actor roll CallFunc (2026-09-30)
+
+`Actor.Roll` (BAM) plus `CallFunc` **89** (`ChangeActorRoll`) and **90** (`GetActorRoll`).
+`SetActorRoll` interpolation and render-facing roll are absent.
+
+Release `HCDE.Playsim.Tests`: **2,301** passed after this note.
+
+## Audit: CheckActorState and StrArg CallFunc (2026-09-30)
+
+`CallFunc` **99** (`CheckActorState`) matches managed state labels (`Spawn`, `See`,
+`Pain`, `Death`, `Corpse`, `Death.Extreme`) against the actor state table. DECORATE
+`FindStateByString` and custom tables remain absent. **206** (`StrArg`) returns
+`SpawnOptions.StrArgs` entries in the global ACS string pool.
+
+Release `HCDE.Playsim.Tests`: **2,304** passed after this note.
+
+## Audit: PickActor CallFunc (2026-09-30)
+
+`CombatTrace.PickActor` implements a `P_LinePickActor` subset (BAM angle/pitch,
+shootable mask, wall mask). `CallFunc` **83** assigns `ThingId` with
+`PICKAF_FORCETID` / `PICKAF_RETURNTID` behavior. Portals and full `ActorFlags`
+masks remain absent.
+
+Release `HCDE.Playsim.Tests`: **2,305** passed after this note.
+
+## Audit: CanRaiseActor CallFunc (2026-09-30)
+
+`ActorRaise.CanRaise` mirrors archvile resurrection prechecks (corpse frame,
+`RaiseDuration`, `CanOccupy`). `CallFunc` **85** returns 1 when every actor
+for a TID can raise; TID **0** checks the activator only. DECORATE raise states
+beyond the managed table remain absent.
+
+Release `HCDE.Playsim.Tests`: **2,307** passed after this note.
+
+## Audit: DropItem CallFunc (2026-09-30)
+
+`PickupCatalog.TryEditorNumberForDropName` maps ACS inventory class names to Doom
+pickup editor numbers. `ActorDropItem.Drop` spawns tossable pickups with optional
+chance (default 256). `CallFunc` **74** returns the drop count. Custom `amount`
+and non-catalog `PClass` actors remain absent.
+
+Release `HCDE.Playsim.Tests`: **2,308** passed after this note.
+
+## Audit: IsPointerEqual CallFunc (2026-09-30)
+
+`AcsActorPointer.Resolve` implements `AAPTR_DEFAULT`, `NULL`, `TARGET` (monster
+brain), `PLAYER1`–`8`, `FRIENDPLAYER`, and player line-target via `CombatTrace`.
+`CallFunc` **84** compares resolved actors by id. Master, tracer, conversation,
+and client-side pointer barriers remain absent.
+
+Release `HCDE.Playsim.Tests`: **2,310** passed after this note.
+
+## Audit: map-load carry scrollers (2026-09-30)
+
+`ScrollCarryInitialize.ApplyMapLoadScrollers` runs at simulation start and
+`AppendSectorCarryScroll` for each static `Scroll_Floor` line with carry mode
+(`Arg3` &gt; 0). `Scroll_Ceiling` map lines activate only (no ceiling motion).
+Control-sector scroll, texture scroll, and displacement thinkers remain absent.
+
+Release `HCDE.Playsim.Tests`: **2,311** passed after this note.
+
+## Audit: CheckFont CallFunc (2026-09-30)
+
+`AcsHudFonts.Exists` answers `CallFunc` **73** for a fixed set of vanilla/HUD font
+names (`SmallFont`, `BigFont`, `ConsoleFont` / `CONFONT`, etc.). WAD-backed
+`V_GetFont` registration and custom fonts remain absent.
+
+Release `HCDE.Playsim.Tests`: **2,313** passed after this note.
+
+## Audit: line activation CallFunc (2026-09-30)
+
+`AcsLineActivation` packs and applies `SPAC_Cross`, `SPAC_Use`, `SPAC_UseThrough`,
+and `SPAC_UseBack` on linedefs matched by UDMF/Hexen `id` (`LevelLine.Tag`).
+`CallFunc` **76**/**77** set/get activation; optional repeat toggles `LevelLine.Repeat`.
+Monster/projectile activators and full `ML_SPAC` masks remain absent.
+
+Release `HCDE.Playsim.Tests`: **2,314** passed after this note.
+
+## Audit: GetActorPowerupTics and SoundVolume CallFunc (2026-09-30)
+
+`AcsActorPowerups.RemainingTics` backs `CallFunc` **78** for `PowerBuddha` on
+`PlayerPawn` only. **70** (`SoundVolume`) parses tid/channel/volume and returns
+success without changing actor sound channels (audio stack absent).
+
+Release `HCDE.Playsim.Tests`: **2,316** passed after this note.
+
+## Audit: PlayActorSound and SpawnDecal CallFunc (2026-09-30)
+
+`CallFunc` **71** (`PlayActorSound`) and **72** (`SpawnDecal`) accept two to six
+stack arguments and return how many non-destroyed actors match the TID (activator
+when TID is zero). Actor sound selectors, `S_Sound`, and decal spawn are absent.
+
+Release `HCDE.Playsim.Tests`: **2,318** passed after this note.
+
+## Audit: telefog and SetActorRoll CallFunc (2026-09-30)
+
+`Actor.TeleFogSource` / `TeleFogDest` back `CallFunc` **86**/**87** via
+`AcsActorTeleFog` (TID iterator; activator when TID is zero). **88**
+(`SetActorRoll`) and **89** (`ChangeActorRoll`) both set absolute BAM roll;
+optional interpolate is ignored. Teleport fog spawn and roll interpolation are
+absent.
+
+Release `HCDE.Playsim.Tests`: **2,321** passed after this note.
+
+## Audit: DropItem amount CallFunc (2026-09-30)
+
+`CallFunc` **74** third argument sets `Actor.PickupAmount` on tossed catalog
+pickups; `PickupCatalog.TryGive` honors it for ammo and health gifts. Zero keeps
+the catalog default. Non-catalog `PClass` drops remain absent. Managed gameplay
+trace checksum is now **3995474422** (`PickupAmount` mixed into actor save hash).
+
+Release `HCDE.Playsim.Tests`: **2,322** passed after this note.
+
+## Audit: StopSound, SetSectorDamage, SetMusicVolume CallFunc (2026-09-30)
+
+`CallFunc` **62** (`StopSound`) accepts tid/channel stack args and returns success
+without stopping channels (audio absent). **94** (`SetSectorDamage`) shares
+`SectorDamage.ApplyTagged` with line special 214. **97** (`SetMusicVolume`) writes
+fixed volume to `AuthoritySimulation.MusicVolume`. `PlaySound` ACS remains absent.
+
+Release `HCDE.Playsim.Tests`: **2,325** passed after this note.
+
+## Audit: PlaySound, SetSectorTerrain, GetActorFloorTerrain CallFunc (2026-09-30)
+
+`CallFunc` **61** (`PlaySound`) returns TID match count without `S_Sound`. **95**
+(`SetSectorTerrain`) stores floor or ceiling terrain names on tagged
+`LevelSector` rows via `SectorTerrain.ApplyTagged`. **205** (`GetActorFloorTerrain`)
+returns the activator sector `FloorTerrain`. Footstep audio and WAD terrain defs
+remain absent.
+
+Release `HCDE.Playsim.Tests`: **2,327** passed after this note.
+
+## Audit: control-sector carry scroll and SpawnParticle (2026-09-30)
+
+Map-load <c>Scroll_Floor</c> lines with displacement bits (`Arg1` &amp; 3) register
+`ControlSectorCarryScroll` thinkers that add carry from control-sector center-height
+delta each tic. `CallFunc` **96** (`SpawnParticle`) accepts one to sixteen arguments
+and returns success without spawning particles. Accelerative scroll and texture
+`DScroller` modes remain absent.
+
+Release `HCDE.Playsim.Tests`: **2,330** passed after this note.
+
+## Audit: LineAttack, QuakeEx, displacement scroll activation (2026-09-30)
+
+`CallFunc` **60** (`LineAttack`) traces from a TID source with BAM angle/pitch offsets
+and applies catalog damage to the first `PickActor` hit. **91** (`QuakeEx`) accepts eight
+to nineteen arguments and returns success without screen shake. Activated
+`Scroll_Floor` lines with displacement bits register the same control-sector carry
+thinkers as map load via `ScrollCarryInitialize.ApplyControlSectorCarryLine`. Puff
+actors and quake falloff remain absent.
+
+Release `HCDE.Playsim.Tests`: **2,333** passed after this note.
+
+## Audit: CheckSight and Radius_Quake2 CallFunc (2026-10-01)
+
+`CallFunc` **35** (`CheckSight`) mirrors native TID pairing: activator-as-source when
+the source TID is zero, self-visible when the destination TID is zero, and
+`CombatTrace.HasLineOfSight` for each source/destination pair. Water-boundary and
+see-past-block-everything flag bits are accepted but not modeled yet.
+
+`CallFunc` **26** (`Radius_Quake2`) accepts six or more stack arguments and returns
+success without `P_StartQuake` (screen shake stack still absent).
+
+Release `HCDE.Playsim.Tests`: **2,336** passed after this note.
+
+## Audit: accelerative carry scroll and GetPolyobj CallFunc (2026-10-01)
+
+Accelerative `DScroller::sc_carry` now matches native velocity accumulation: each tic
+adds the base rate to `Vdx`/`Vdy` before applying carry. Hexen `Scroll_Floor` **mode 3**
+(map load and line activation) registers accelerative scrollers; displacement
+control-sector lines with **Arg1 bit 2** accumulate control-sector deltas the same way.
+Constant modes 1 and 2 are unchanged. Floor/ceiling texture `DScroller` modes remain absent.
+
+`CallFunc` **33**/**34** (`GetPolyobjX`/`GetPolyobjY`) return `FIXED_MAX` until polyobjects exist.
+
+Release `HCDE.Playsim.Tests`: **2,340** passed after this note.
+
+## Audit: LineAttack puff and CallFunc argc fix (2026-10-01)
+
+`CombatTrace.TraceLineAttack` picks the nearest shootable actor or blocking wall within
+range. `AcsLineAttack` applies damage only to an actor hit, always spawns a short-lived
+`PuffActor` (two tics) at the impact point, and honors optional puff TID (arg 8).
+
+`TryLineAttack` stack layout now matches native ACS: arg 4 puff class name (ignored until
+DECORATE puffs exist), arg 5 damage type, arg 6 range, arg 7 flags, arg 8 puff TID.
+Arg 4 had been misread as damage type.
+
+Puff decals, blood versus puff selection, and DECORATE puff classes remain absent.
+
+Release `HCDE.Playsim.Tests`: **2,341** passed after this note.
+
+## Audit: SetActivator CallFunc and script activator binding (2026-10-01)
+
+`CallFunc` **12** (`SetActivator`) resolves a TID (optional `COPY_AAPTREX` pointer when arg 2 is not
+`AAPTR_DEFAULT`) and stores the actor on the running ACS fiber. **13** (`SetActivatorToTarget`) follows
+native rules: live players use `CombatTrace.FindTarget`; monsters use `MonsterBrain.TargetId`.
+
+`AcsActivatorBinding` carries the mutable activator through `TryInvoke` and `AcsVm` fibers so later
+`CallFunc` calls in the same script see the updated activator. `SetActivatorByNetID` remains absent.
+
+Release `HCDE.Playsim.Tests`: **2,343** passed after this note.
+
+## Audit: GetLineX / GetLineY CallFunc (2026-10-01)
+
+`CallFunc` **300** / **301** (`GetLineX` / `GetLineY`) use `AcsLineActivation.FirstLineFromId` (first
+linedef with matching tag), interpolate along the segment from v1 using arg 2 as a fixed fraction,
+and when arg 3 is non-zero apply a perpendicular offset of `ACSToDouble(arg 3)` using the native
+normal `(delta.Y, -delta.X)`. Missing lines return 0.
+
+Release `HCDE.Playsim.Tests`: **2,345** passed after this note.
+
+## Audit: floor/ceiling texture DScroller (2026-10-01)
+
+`LevelSector` stores floor and ceiling texture scroll offsets. `SectorTextureScroll` thinkers apply
+`sc_floor` / `sc_ceiling` rates each tic. Map-load and activated `Scroll_Floor` lines follow native
+arg3 rules: modes **0** and **2** scroll textures (`-dx`, `dy`); modes **1**/**3** clear texture
+rates and keep carry-only behavior. `Scroll_Ceiling` sets ceiling texture scroll. Sector
+`RotationComp` for scrolling textures and `sc_side` wall scroll remain absent.
+
+Release `HCDE.Playsim.Tests`: **2,348** passed after this note.
+
+## Audit: sc_side wall texture scroll (2026-10-01)
+
+`LevelSide` tracks top/mid/bottom texture offsets. `SideTextureScroll` thinkers mirror native
+`DScroller::sc_side` (per-sidedef rates and `EScrollPos` part masks). `SetWallTextureScroll` /
+`Scroll_Wall` (Hexen action **52**, wired on the UDMF/Hexen activation path only) resolves linedefs
+by tag via `AcsLineActivation.LinesFromId`, picks front/back from arg3, and uses fixed-point args 1–2
+for rates. Mid textures skip when the owning line is two-sided with `ML_3DMIDTEX`. Control-sector and
+accelerative wall scroll remain absent.
+
+Release `HCDE.Playsim.Tests`: **2,350** passed after this note.
+
+## Audit: sector texture RotationComp (2026-10-01)
+
+Floor/ceiling texture scroll now applies native `RotationComp` using `LevelSector.FloorTextureAngle` /
+`CeilingTextureAngle` (BAM). Zero angle leaves scroll deltas unchanged. UDMF angle import and
+`baseAngle` stacking remain absent until map loader sets these fields.
+
+Release `HCDE.Playsim.Tests`: **2,351** passed after this note.
+
+## Audit: GetLineHealth / GetSectorHealth CallFunc (2026-10-01)
+
+`CallFunc` **213** (`GetLineHealth`) returns the first linedef health for a matching tag/id via
+`AcsLineActivation.FirstLineFromId`. **212** (`GetSectorHealth`) reads floor (0), ceiling (1), or 3D
+midtex (2) health on the first tagged sector. `LevelLine` / `LevelSector` carry health fields;
+`FHealthGroup` pooling is not modeled (group ids return 0 until groups exist).
+
+Release `HCDE.Playsim.Tests`: **2,353** passed after this note.
+
+## Audit: destructible health groups (2026-10-01)
+
+`LevelHealthGroups.Build` mirrors `P_InitHealthGroups` startup pooling: lines and sector floor/ceiling/3D
+parts seed shared group health (max when members disagree). `GetLineHealth` / `GetSectorHealth` read
+pooled values when a group id is set. Line/sector damage and group depletion remain absent.
+
+Release `HCDE.Playsim.Tests`: **2,354** passed after this note.
+
+## Audit: GetNetID / SetActivatorByNetID CallFunc (2026-10-01)
+
+`CallFunc` **215** (`GetNetID`) uses `AcsActorTid.SelectFromTid` (tid, index, activator) with optional
+AAPTR arg3, returning `Actor.NetworkId` or **0** (`WorldNetID`) when no actor matches. **216**
+(`SetActivatorByNetID`) resolves `Actor.NetworkId` on the playsim actor list and updates the script
+activator binding. Live `NetworkEntityManager` assignment remains absent.
+
+Release `HCDE.Playsim.Tests`: **2,356** passed after this note.
+
+## Audit: UDMF destructible health and wall scroll import (2026-10-01)
+
+`UdmfTextMapParser` / `LevelBuilder.FromUdmf` now load linedef `health` / `healthgroup`, sector
+`healthfloor` / `healthceiling` / `health3d` and matching group ids, ZDoom sidedef per-part offsets,
+and `xscroll` / per-part scroll keys. Map start applies UDMF wall scroll rates via
+`ScrollCarryInitialize.ApplyUdmfWallScrolls`. `LevelDestructibleDamage` updates line/sector health and
+pooled `HealthGroups` (line/sector death specials and hitscan destructible traces remain absent).
+
+Release `HCDE.Playsim.Tests`: **2,358** passed; `HCDE.MapLoader.Tests`: **402** passed after this note.
+
+## Audit: loaded UDMF floor/ceiling texture rotation (2026-10-01)
+
+`UdmfTextMapParser` imports `rotationfloor` / `rotationceiling` in degrees.
+`LevelBuilder.FromUdmf` normalizes them to a full turn and converts them into
+the existing BAM texture-angle fields, following native
+`src/maploader/udmf.cpp` (`CheckAngle`, `NAME_Rotationfloor`,
+`NAME_Rotationceiling`). Existing `SectorTextureRotation` applies the imported
+angles to scroll rates, matching `src/playsim/mapthinkers/a_scroll.cpp`.
+
+Regression coverage includes missing values, negative angles, wrapped angles,
+fractional angles and a loaded UDMF map ticking floor and ceiling scrollers.
+Base-angle stacking and native runtime/rendering comparison remain pending;
+the managed BAM representation also retains its existing angular quantization.
+
+Release solution tests: **3,341** passed, including **409** MapLoader and
+**2,359** Playsim tests.
+
+## Audit and conversion: runtime sector rotation (2026-10-01)
+
+Initial review compared UDMF import and scroll compensation against native
+`src/maploader/udmf.cpp` and `src/playsim/mapthinkers/a_scroll.cpp`. The covered
+angle cases matched; the remaining conversion gaps were base-angle addition
+and runtime special 185.
+
+`LevelSector` now retains separate floor/ceiling base angles. Scroll compensation
+uses their sum with the mutable rotation, following `sector_t::GetAngle` in
+`src/gamedata/r_defs.h`. Special **185** (`Sector_SetRotation`) replaces mutable
+rotations while preserving bases, following `LS_Sector_SetRotation` in
+`src/playsim/p_lnspec.cpp`. It is wired into Hexen/UDMF map activation and both
+ACS direct/stack special dispatch paths. Doom binary special 185 retains its
+existing crusher meaning.
+
+The follow-up audit checked dispatch, native tag iterator behavior, map-line
+consumption, preservation of bases, and effects on existing scrollers. Tag zero
+selects all untagged sectors, without trigger-side fallback; missing tags still
+return success, matching native. Five new regression cases cover these paths,
+including cancelling base and mutable angles and observing the next scroll tic.
+
+Release solution tests: **3,346** passed (**2,364** Playsim, **409** MapLoader).
+Remaining scope: native base-angle producers such as plane alignment are not
+converted; managed angle precision remains BAM rather than native double;
+sector tags retain the existing single signed-16-bit representation. Visual
+plane transforms still lack complete save/network/checksum coverage and native
+runtime/rendering comparison. These tests do not establish full phase parity.
+
+## Conversion and audit: line-based plane texture alignment (2026-10-01)
+
+Converted Hexen/UDMF specials **183** (`Line_AlignCeiling`) and **184**
+(`Line_AlignFloor`) against `LS_Line_AlignCeiling` / `LS_Line_AlignFloor` in
+`src/playsim/p_lnspec.cpp` and `FLevelLocals::AlignFlat` in
+`src/playsim/p_sectors.cpp`. Matching line IDs select front or back sectors;
+the line direction determines the negative base angle and its first vertex
+determines the perpendicular base Y offset. Back-side alignment reverses the
+offset and adds 180 degrees before negation. Mutable texture rotations and the
+other plane remain unchanged. Both ACS direct and stack paths dispatch these
+actions; Doom binary crusher meanings for 183/184 are preserved.
+
+Follow-up review checked native return/side semantics, angle/offset signs,
+missing targets and integration with existing scrollers. It found the native
+unset line-ID sentinel (-1), which is now explicitly rejected. Twelve new
+regression cases cover floor/ceiling, front/back (including non-boolean nonzero
+side), missing side/ID, direct/stack ACS and base-plus-mutable scroll behavior.
+
+Release solution tests: **3,358** passed, including **2,376** Playsim tests.
+Release build passes with zero warnings/errors. Base Y offsets are retained
+for future rendering; no rendered alignment acceptance is claimed. Multi-ID
+line tags, BAM precision, transform persistence/replication and other
+base-angle producers remain outside this conversion slice.
+
+## Conversion and audit: plane panning (2026-10-01)
+
+Converted specials **186** (`Sector_SetCeilingPanning`) and **187**
+(`Sector_SetFloorPanning`) against `src/playsim/p_lnspec.cpp`. Map activation
+and ACS direct/stack calls replace the selected plane offsets using integer
+plus fractional hundredths. Tag zero selects untagged sectors; missing tags
+return native success. Base alignment and the other plane are preserved, and
+existing scrollers continue from the replacement offset.
+
+UDMF imports `xpanningfloor`, `ypanningfloor`, `xpanningceiling` and
+`ypanningceiling`. Review against `src/maploader/udmf.cpp` found the namespace
+gate missing from this and the earlier rotation import. Both now apply only
+for ZDoom, ZDoomTranslated and Vavoom, matching the native Zd/Zdt/Va mask.
+
+Eight panning regression cases cover replacement, signed and out-of-range
+hundredths, all matching sectors, missing tags, tag zero, both ACS paths and
+loaded-map scrolling. Six namespace cases cover allowed and ignored plane
+fields. Release solution tests: **3,372** passed (**2,384** Playsim and **415**
+MapLoader). Release build has zero warnings/errors. Rendering, transform
+save/network/checksum coverage, plane scale actions and multi-tag sector
+representation remain incomplete; managed tests do not establish native
+runtime visual acceptance.
+
+## Conversion and audit: plane texture scales (2026-10-01)
+
+Converted native specials **170/171** (`Sector_SetCeilingScale2` /
+`Sector_SetFloorScale2`) and **188/189** (`Sector_SetCeilingScale` /
+`Sector_SetFloorScale`) from `src/playsim/p_lnspec.cpp`. Map activation and
+ACS direct/stack dispatch update each selected axis to the reciprocal of its
+nonzero input factor. The Scale2 variants decode signed 16.16 arguments;
+the other variants combine integer plus hundredths. Zero leaves that axis
+unchanged. Tag-zero behavior matches the untagged sector iterator.
+
+UDMF plane scale keys load directly, without inversion, following
+`src/maploader/udmf.cpp`; missing keys default to one. The existing native
+Zd/Zdt/Va namespace gate applies. Audit checked this distinction, action IDs,
+axis argument layout, signed factors, zero axes and plane isolation. Seventeen
+new regression cases cover the four actions via map and both ACS paths, plus
+UDMF values, namespace gating and defaults.
+
+Release solution tests: **3,389** passed (**2,396** Playsim, **420** MapLoader).
+Release build passes with zero warnings/errors. Changed tracked code passes
+the whitespace check. Scale values are retained as plane transform state;
+native rendering acceptance and full transform save/network/checksum coverage
+remain pending. This closes the bounded scale action/import gap, not full
+rendering or phase parity.
+
+## Conversion and audit: wall texture offset action (2026-10-01)
+
+Converted special **53** (`Line_SetTextureOffset`) against
+`LS_Line_SetTextureOffset` in `src/playsim/p_lnspec.cpp`. Hexen/UDMF map
+activation and both ACS special dispatch paths decode signed 16.16 offsets,
+select front/back sidedefs and honor top/mid/bottom mask bits 1/2/4. Bit 8 adds
+instead of replacing. Each axis independently preserves its existing value
+when the native `32767 << 16` sentinel is supplied.
+
+Audit checked part-mask behavior, signed offsets, add versus set, sentinel
+handling and native returns: ID zero or a side outside 0/1 fails; a missing ID
+or missing selected sidedef succeeds without mutation. The native unset ID
+(-1) cannot select lines. Doom binary special 53 is unchanged because the new
+dispatch is confined to the Hexen/UDMF branch.
+
+Fifteen new regression cases exercise all part masks and add modes, front/back
+isolation, direct/stack ACS, the Y sentinel and validation/no-target returns.
+Release solution tests: **3,404** passed (**2,411** Playsim). Release build has
+zero warnings/errors; changed tracked code passes the whitespace check.
+Remaining scope includes wall texture scale action 56, multi-ID line tags,
+complete wall transform persistence/replication and native rendering
+acceptance. This is managed action coverage, not a completed visual client.
+
+## Conversion and audit: wall texture scale action (2026-10-01)
+
+Converted special **56** (`Line_SetTextureScale`) against
+`src/playsim/p_lnspec.cpp` and sidedef scale setters in
+`src/gamedata/r_defs.h`. Map activation and both ACS dispatch paths decode
+signed 16.16 values and select top/mid/bottom parts on front/back sides.
+Bit 8 multiplies existing scales, unlike offset addition. Set mode stores the
+factor directly, without sector-scale inversion. Setter-level audit caught
+and corrected the native zero rule: set mode replaces zero with one, while
+multiply mode can produce zero. Negative factors are retained. The
+`32767 << 16` sentinel preserves each axis independently.
+
+Audit checked IDs, side validation, unset ID, missing targets, part isolation,
+default-one scales and direct versus multiplication semantics. Fifteen new
+regression cases cover every part mask in both modes, signed/zero factors,
+back-side ACS direct/stack calls, the X sentinel and native return behavior.
+Release solution tests: **3,419** passed (**2,426** Playsim). Release build
+passes with zero warnings/errors; changed tracked code passes whitespace
+checks. No native rendered acceptance is claimed. UDMF per-part wall scale
+import, full transform save/network/checksum coverage and multi-ID line tags
+remain incomplete.

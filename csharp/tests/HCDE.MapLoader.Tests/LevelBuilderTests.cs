@@ -3,6 +3,19 @@ namespace HCDE.MapLoader.Tests;
 public class LevelBuilderTests
 {
     [Fact]
+    public void DoomBinaryOffsetsPopulateEveryTexturePart()
+    {
+        var wad = TestWadBuilder.BuildMinimalMapWad("MAP01");
+        Assert.True(BinaryMapDecoder.TryReadMap(wad, "MAP01", out var map, out _, out var error), error);
+        var surface = new BinaryMapSurface([new MapSidedefRecord(-8, 12, "TOP", "BOTTOM", "MID", 0)],
+            map.Surface.Subsectors);
+        var level = LevelBuilder.FromBinary(new BinaryMap(map.Core, map.Geometry, surface, map.Collision, map.Behavior), "MAP01");
+        var side = Assert.Single(level.Sides);
+        Assert.Equal(-8, side.TopTextureOffsetX); Assert.Equal(-8, side.MidTextureOffsetX); Assert.Equal(-8, side.BottomTextureOffsetX);
+        Assert.Equal(12, side.TopTextureOffsetY); Assert.Equal(12, side.MidTextureOffsetY); Assert.Equal(12, side.BottomTextureOffsetY);
+    }
+
+    [Fact]
     public void TryFromWad_BinaryMap_BuildsBlockingLineAndPlayerStart()
     {
         var wad = TestWadBuilder.BuildMinimalMapWad("MAP01");

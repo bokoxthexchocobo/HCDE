@@ -45,14 +45,14 @@ public class CombatTraceTests
     }
 
     [Theory]
-    [InlineData(100, 64, 100, 128)]
-    [InlineData(100, 128, 100, 64)]
-    [InlineData(100, 64, 150, 64)]
-    public void WallEndpointsAndCollinearWallsBlock(double x1, double y1, double x2, double y2)
+    [InlineData(100, 64, 100, 128, 60)]
+    [InlineData(100, 128, 100, 64, 60)]
+    [InlineData(100, 64, 150, 64, 50)]
+    public void WallCrossingsBlockWhileCollinearTravelDoesNot(double x1, double y1, double x2, double y2, int health)
     {
         var sim = Range(new LevelLine { X1 = x1, Y1 = y1, X2 = x2, Y2 = y2, SideBack = -1 });
         Fire(sim);
-        Assert.Equal(60, Target(sim).Health);
+        Assert.Equal(health, Target(sim).Health);
     }
 
     [Theory]

@@ -12,7 +12,7 @@ recorder exists.
 - Map: single sector, player 1 at (32, 64), no lines, no behavior lump
 - Seed: `0x48534445` (`"HCDE"` as little-endian uint)
 - Duration: 35 tics with no player input
-- Recorded fields today: simulation `Checksum` (`2927491796` / `0xae8cd154` as of this scaffold), player position, health, tic count
+- Recorded fields today: simulation `Checksum` (`251903926` after adding texture transform coverage), player position, health, tic count. Earlier hash `3995474422` used a smaller field set and is not comparable.
 
 When native recording lands, capture the same map/seed/duration and compare:
 

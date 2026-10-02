@@ -51,6 +51,26 @@ public static class DoomActorCatalog
         return Definitions.ContainsKey(editorNumber);
     }
 
+    /// <summary>True when <paramref name="editorNumber"/> matches a known spawn class name.</summary>
+    public static bool MatchesClassName(int editorNumber, string? className) =>
+        TryEditorNumberForClassName(className, out var mapped) && mapped == editorNumber;
+
+    /// <summary>Preferred Doom spawn name for a catalog editor number, when known.</summary>
+    public static bool TrySpawnClassName(int editorNumber, out string className)
+    {
+        foreach (var pair in SpawnClassNames)
+        {
+            if (pair.Value == editorNumber && Definitions.ContainsKey(editorNumber))
+            {
+                className = pair.Key;
+                return true;
+            }
+        }
+
+        className = string.Empty;
+        return false;
+    }
+
     public static int MassOf(int editorNumber) => editorNumber switch
     {
         3006 => 50, 3002 or 58 or 3005 or 71 => 400, 64 or 66 => 500,

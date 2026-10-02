@@ -39,6 +39,13 @@ public sealed class AcsVm
     public const int MaximumMapArrays = 4096;
     public const int MaximumLocalSlots = 1_048_576;
     private readonly Dictionary<int, uint> _programHashes = new();
+    private readonly AcsGlobalStrings _globalStrings = new();
+
+    /// <summary>Dynamic ACS string returned by <c>GetActorClass</c> and similar CallFunc entries.</summary>
+    public string GlobalStringAt(int stringId) =>
+        AcsStringIds.IsGlobalPool(stringId)
+            ? _globalStrings.GetByIndex(AcsStringIds.GlobalIndex(stringId))
+            : string.Empty;
 
     public uint Checksum
     {
@@ -249,7 +256,7 @@ public sealed class AcsVm
             if (fiber.TagWait is int tag)
             {
                 // Paused movers still own their plane, just as native floor/ceiling data does.
-                if (sim.Motions.Any(motion => !motion.Completed && sim.Level.Sectors[motion.SectorIndex].Tag == tag)) continue;
+                if (sim.Motions.Any(motion => !motion.Completed && sim.Level.Sectors[motion.SectorIndex].MatchesTag(tag))) continue;
                 fiber.TagWait = null;
             }
             if (fiber.ScriptWaitState != 0)
@@ -428,14 +435,20 @@ public sealed class AcsVm
                 {
                     var argCount = ReadI32(fiber);
                     var function = ReadI32(fiber);
-                    // Only the converted zero-argument invasion queries are supported here.
-                    if (fiber.Done || argCount != 0 || sim.Invasion.QueryAcs(function) is not { } result)
-                    {
-                        fiber.Done = true;
+                    if (fiber.Done)
                         return;
+                    if (argCount == 0 && sim.Invasion.QueryAcs(function) is { } invasionResult)
+                    {
+                        fiber.Stack.Add(invasionResult);
+                        break;
                     }
-                    fiber.Stack.Add(result);
-                    break;
+                    if (AcsCallFunctions.TryInvoke(sim, fiber.Stack, fiber.ActivatorBinding, fiber.StringTable, _globalStrings, function, argCount, out var callResult))
+                    {
+                        fiber.Stack.Add(callResult);
+                        break;
+                    }
+                    fiber.Done = true;
+                    return;
                 }
                 case >= (int)AcsPcode.Add and <= (int)AcsPcode.Ge:
                 case >= (int)AcsPcode.AndLogical and <= (int)AcsPcode.EorBitwise:
@@ -487,6 +500,14 @@ public sealed class AcsVm
                     for (var i = 0; i < stackCount; i++) stackArgs[i] = fiber.Stack[start + i];
                     fiber.Stack.RemoveRange(start, stackCount);
                     var stackResult = LineSpecials.ExecuteExitSpecial(sim, stackSpecial, fiber.Activator is { Destroyed: false } ? fiber.Activator : null)
+                        ?? LineSpecials.ExecuteSectorRotation(sim, stackSpecial, stackArgs[0], stackArgs[1], stackArgs[2])
+                        ?? WallScrollActions.ExecuteAcs(sim, stackSpecial, stackArgs[0], stackArgs[1], stackArgs[2], stackArgs[3], stackArgs[4])
+                        ?? WallTextureOffset.Execute(sim, stackSpecial, stackArgs[0], stackArgs[1], stackArgs[2], stackArgs[3], stackArgs[4])
+                        ?? WallTextureScale.Execute(sim, stackSpecial, stackArgs[0], stackArgs[1], stackArgs[2], stackArgs[3], stackArgs[4])
+                        ?? SectorTextureScale.Execute(sim, stackSpecial, stackArgs[0], stackArgs[1], stackArgs[2], stackArgs[3], stackArgs[4])
+                        ?? SectorTexturePanning.Execute(sim, stackSpecial, stackArgs[0], stackArgs[1], stackArgs[2], stackArgs[3], stackArgs[4])
+                        ?? SectorTextureAlignment.Execute(sim, stackSpecial, stackArgs[0], stackArgs[1])
+                        ?? GeometryHealthActions.Execute(sim, stackSpecial, stackArgs[0], stackArgs[1], stackArgs[2])
                         ?? LineSpecials.ExecuteScriptControl(sim, stackSpecial, stackArgs[0], stackArgs[1], stackArgs[2], stackArgs[3], stackArgs[4], fiber.Activator, fiber.TriggerLine, fiber.BackSide)
                         ?? SectorDamage.ExecuteSpecial(sim, stackSpecial, stackArgs[0], stackArgs[1], stackArgs[2], stackArgs[3], stackArgs[4])
                         ?? LineSpecials.ExecuteDoorSpecial(sim, stackSpecial, stackArgs[0], stackArgs[1], stackArgs[2], stackArgs[3], fiber.TriggerLine)
@@ -518,6 +539,14 @@ public sealed class AcsVm
                     if (!fiber.Done)
                     {
                         var result = LineSpecials.ExecuteExitSpecial(sim, special, fiber.Activator is { Destroyed: false } ? fiber.Activator : null)
+                            ?? LineSpecials.ExecuteSectorRotation(sim, special, args[0], args[1], args[2])
+                            ?? WallScrollActions.ExecuteAcs(sim, special, args[0], args[1], args[2], args[3], args[4])
+                            ?? WallTextureOffset.Execute(sim, special, args[0], args[1], args[2], args[3], args[4])
+                            ?? WallTextureScale.Execute(sim, special, args[0], args[1], args[2], args[3], args[4])
+                            ?? SectorTextureScale.Execute(sim, special, args[0], args[1], args[2], args[3], args[4])
+                            ?? SectorTexturePanning.Execute(sim, special, args[0], args[1], args[2], args[3], args[4])
+                            ?? SectorTextureAlignment.Execute(sim, special, args[0], args[1])
+                            ?? GeometryHealthActions.Execute(sim, special, args[0], args[1], args[2])
                             ?? LineSpecials.ExecuteScriptControl(sim, special, args[0], args[1], args[2], args[3], args[4], fiber.Activator, fiber.TriggerLine, fiber.BackSide)
                             ?? SectorDamage.ExecuteSpecial(sim, special, args[0], args[1], args[2], args[3], args[4])
                             ?? LineSpecials.ExecuteDoorSpecial(sim, special, args[0], args[1], args[2], args[3], fiber.TriggerLine)
@@ -794,6 +823,22 @@ public sealed class AcsVm
                     fiber.Stack.Add(AcsPlayerInventory.UseByTid(sim, useActorTid, fiber.StringTable, useActorStringId));
                     break;
                 }
+                case (int)AcsPcode.CheckWeapon:
+                {
+                    if (fiber.Stack.Count < 1) { fiber.Done = true; return; }
+                    var checkWeaponStringId = Pop(fiber);
+                    if (fiber.Done) break;
+                    fiber.Stack.Add(AcsPlayerInventory.CheckWeapon(fiber.Activator, fiber.StringTable, checkWeaponStringId));
+                    break;
+                }
+                case (int)AcsPcode.SetWeapon:
+                {
+                    if (fiber.Stack.Count < 1) { fiber.Done = true; return; }
+                    var setWeaponStringId = Pop(fiber);
+                    if (fiber.Done) break;
+                    fiber.Stack.Add(AcsPlayerInventory.SetWeapon(fiber.Activator, fiber.StringTable, setWeaponStringId));
+                    break;
+                }
                 case (int)AcsPcode.GetAmmoCapacity:
                 {
                     if (fiber.Stack.Count < 1) { fiber.Done = true; return; }
@@ -880,7 +925,7 @@ public sealed class AcsVm
                         (int)AcsPcode.GetActorFloorZ => Fixed.FromDouble(sim.FloorOf(queriedActor.SectorIndex)).Raw,
                         (int)AcsPcode.GetActorCeilingZ => Fixed.FromDouble(sim.CeilingOf(queriedActor.SectorIndex)).Raw,
                         (int)AcsPcode.GetActorAngle => (int)(queriedActor.Angle.Raw >> 16),
-                        (int)AcsPcode.GetActorPitch => (int)(queriedActor.PitchDegrees * (65536.0 / 360)),
+                        (int)AcsPcode.GetActorPitch => unchecked((int)BamAngle.FromDegrees(queriedActor.PitchDegrees).Raw) / 65536,
                         (int)AcsPcode.GetActorLightLevel => sim.LightOf(queriedActor.SectorIndex),
                         _ => queriedActor.Z.Raw,
                     });
@@ -901,7 +946,7 @@ public sealed class AcsVm
                     if (planeTag == 0) planeSector = ActorPhysics.SectorAt(sim.Level, sectorX, sectorY);
                     else
                         for (var i = 0; i < sim.Level.Sectors.Count; i++)
-                            if (sim.Level.Sectors[i].Tag == planeTag) { planeSector = i; break; }
+                            if (sim.Level.Sectors[i].MatchesTag(planeTag)) { planeSector = i; break; }
                     fiber.Stack.Add(planeSector < 0 ? 0 : Fixed.FromDouble(
                         opcode == (int)AcsPcode.GetSectorFloorZ
                             ? sim.FloorOf(planeSector) : sim.CeilingOf(planeSector)).Raw);
@@ -911,7 +956,7 @@ public sealed class AcsVm
                     if (fiber.Done) break;
                     var lightSector = -1;
                     for (var i = 0; i < sim.Level.Sectors.Count; i++)
-                        if (sim.Level.Sectors[i].Tag == lightTag) { lightSector = i; break; }
+                        if (sim.Level.Sectors[i].MatchesTag(lightTag)) { lightSector = i; break; }
                     fiber.Stack.Add(lightSector < 0 ? -1 : sim.LightOf(lightSector));
                     break;
                 case (int)AcsPcode.IfGoto:
@@ -1095,7 +1140,7 @@ public sealed class AcsVm
             if (tag >= 0)
             {
                 if (actor.SectorIndex < 0 || actor.SectorIndex >= sim.Level.Sectors.Count) continue;
-                if (sim.Level.Sectors[actor.SectorIndex].Tag != tag) continue;
+                if (!sim.Level.Sectors[actor.SectorIndex].MatchesTag(tag)) continue;
             }
             count++;
         }
@@ -1147,7 +1192,8 @@ public sealed class AcsVm
     {
         public Fiber(AcsProgram program, uint codeHash, ReadOnlySpan<int> arguments, bool always, Actor? activator, LevelLine? triggerLine, bool backSide)
         {
-            Activator = activator; TriggerLine = triggerLine; BackSide = backSide;
+            ActivatorBinding = new AcsActivatorBinding { Value = activator };
+            TriggerLine = triggerLine; BackSide = backSide;
             Number = program.Number;
             Always = always;
             CodeHash = codeHash;
@@ -1168,7 +1214,12 @@ public sealed class AcsVm
         public int CodeBaseOffset { get; }
         public int[] JumpPoints { get; }
         public string[] StringTable { get; }
-        public Actor? Activator { get; }
+        public AcsActivatorBinding ActivatorBinding { get; }
+        public Actor? Activator
+        {
+            get => ActivatorBinding.Value;
+            set => ActivatorBinding.Value = value;
+        }
         public LevelLine? TriggerLine { get; }
         public bool BackSide { get; }
         public int Number { get; }

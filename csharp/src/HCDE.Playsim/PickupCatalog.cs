@@ -38,6 +38,45 @@ public static class PickupCatalog
 
     public static bool IsPickup(int doomEdNum) => TryDescribe(doomEdNum, out _);
 
+    /// <summary>Native <c>PClass::FindActor</c> subset for ACS <c>DropItem</c> on catalog pickups.</summary>
+    public static bool TryEditorNumberForDropName(string? typeName, out int doomEdNum)
+    {
+        doomEdNum = 0;
+        if (string.IsNullOrWhiteSpace(typeName))
+            return false;
+        doomEdNum = typeName.Trim() switch
+        {
+            "Clip" or "Bullet" or "AmmoClip" or "Bullets" => Clip,
+            "ClipBox" or "BulletBox" => ClipBox,
+            "Shell" or "Shells" => Shells,
+            "ShellBox" => ShellBox,
+            "RocketAmmo" or "Rocket" => Rocket,
+            "RocketBox" => RocketBox,
+            "Cell" or "Cells" => Cell,
+            "CellPack" => CellPack,
+            "Stimpack" => Stimpack,
+            "Medikit" => Medikit,
+            "HealthBonus" => HealthBonus,
+            "Soulsphere" => Soulsphere,
+            "GreenArmor" or "Armor" => GreenArmor,
+            "MegaArmor" => MegaArmor,
+            "ArmorBonus" => ArmorBonus,
+            "Backpack" => Backpack,
+            "BlueCard" or "BlueSkull" => BlueCard,
+            "RedCard" or "RedSkull" => RedCard,
+            "YellowCard" or "YellowSkull" => YellowCard,
+            "Chainsaw" => Chainsaw,
+            "Shotgun" => Shotgun,
+            "SuperShotgun" => SuperShotgun,
+            "Chaingun" => Chaingun,
+            "RocketLauncher" => RocketLauncher,
+            "PlasmaRifle" or "Plasma" => PlasmaRifle,
+            "BFG9000" or "BFG" => Bfg,
+            _ => 0,
+        };
+        return doomEdNum != 0 && IsPickup(doomEdNum);
+    }
+
     /// <summary>Card and skull of one color are the same key in this port.</summary>
     public static bool IsKey(int doomEdNum) =>
         doomEdNum is BlueCard or BlueSkull or YellowCard or YellowSkull or RedCard or RedSkull;
@@ -59,15 +98,21 @@ public static class PickupCatalog
         return doomEdNum != 0;
     }
 
-    public static bool TryGive(PlayerPawn player, int doomEdNum, bool ignoreSkill = false, bool depleted = false)
+    public static bool TryGive(
+        PlayerPawn player,
+        int doomEdNum,
+        bool ignoreSkill = false,
+        bool depleted = false,
+        int pickupAmount = 0)
     {
         if (!TryDescribe(doomEdNum, out var gift))
             return false;
-        var ammo = ignoreSkill ? gift.Amount : ScaleAmmo(gift.Amount, player);
+        var giftAmount = pickupAmount > 0 ? pickupAmount : gift.Amount;
+        var ammo = ScaleAmmo(giftAmount, player, ignoreSkill);
 
         return gift.Kind switch
         {
-            GiftKind.Health => GiveHealth(player, gift.Amount, gift.Maximum),
+            GiftKind.Health => GiveHealth(player, giftAmount, gift.Maximum),
             GiftKind.ArmorBonus => GiveArmorBonus(player.Inventory),
             GiftKind.GreenArmor => GiveArmor(player.Inventory, PlayerInventory.GreenArmorAmount, PlayerInventory.GreenSavePercent),
             GiftKind.MegaArmor => GiveArmor(player.Inventory, PlayerInventory.MegaArmorAmount, PlayerInventory.MegaSavePercent),
@@ -98,6 +143,20 @@ public static class PickupCatalog
         var extra = player.Simulation?.AmmoFactor ?? 1;
         var scaled = (int)(amount * skillFactor * extra);
         return scaled < 0 ? 0 : scaled;
+    }
+
+    /// <summary>Vanilla Ammo/Weapon.ModifyDropAmount with the default drop factor.</summary>
+    internal static int DropPickupAmount(int doomEdNum, int requestedAmount)
+    {
+        if (!TryDescribe(doomEdNum, out var gift))
+            return requestedAmount;
+        return gift.Kind switch
+        {
+            GiftKind.Ammo => requestedAmount > 0 ? requestedAmount : Math.Max(1, gift.Amount / 2),
+            // Weapon inventory amount does not override its ammo grant.
+            GiftKind.Weapon => gift.Amount / 2,
+            _ => requestedAmount,
+        };
     }
 
     private static bool GiveHealth(PlayerPawn player, int amount, int maximum)

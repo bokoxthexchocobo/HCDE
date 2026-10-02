@@ -111,30 +111,41 @@ public sealed class ProjectileActor : Actor
             var dx = vx / steps; var dy = vy / steps; var dz = vz / steps;
             var fraction = double.PositiveInfinity;
             Actor? victim = null;
+            LevelLine? wall = null;
+            var planeSector = -1;
+            var planePart = -1;
             foreach (var line in sim.Level.Lines)
             {
                 var hit = CapsuleFraction(x, y, dx, dy, line, Radius.ToDouble());
                 if (hit <= 1 && (CombatTrace.BlocksShot(sim, line, z + dz * hit, LevelLine.BlockProjectileFlag)
-                    || CombatTrace.BlocksShot(sim, line, z + dz * hit + Height.ToDouble(), LevelLine.BlockProjectileFlag))) fraction = Math.Min(fraction, hit);
+                    || CombatTrace.BlocksShot(sim, line, z + dz * hit + Height.ToDouble(), LevelLine.BlockProjectileFlag)) && hit < fraction)
+                { fraction = hit; wall = line; }
             }
             var sector = ActorPhysics.SectorAt(sim.Level, x + dx, y + dy);
             if (sector >= 0)
             {
                 var floor = sim.FloorOf(sector); var ceiling = sim.CeilingOf(sector) - Height.ToDouble();
-                if (z + dz < floor) fraction = Math.Min(fraction, dz < 0 ? Math.Clamp((floor - z) / dz, 0, 1) : 0);
-                if (z + dz > ceiling) fraction = Math.Min(fraction, dz > 0 ? Math.Clamp((ceiling - z) / dz, 0, 1) : 0);
+                var plane = double.PositiveInfinity;
+                var part = -1;
+                if (z + dz < floor) { plane = dz < 0 ? Math.Clamp((floor - z) / dz, 0, 1) : 0; part = 0; }
+                if (z + dz > ceiling)
+                {
+                    var hit = dz > 0 ? Math.Clamp((ceiling - z) / dz, 0, 1) : 0;
+                    if (hit < plane) { plane = hit; part = 1; }
+                }
+                if (plane < fraction) { fraction = plane; wall = null; planeSector = sector; planePart = part; }
             }
             foreach (var actor in sim.Actors)
             {
                 if (ReferenceEquals(actor, Owner) || !actor.CanTakeDamage) continue;
                 var hit = CylinderFraction(x, y, z, dx, dy, dz, actor);
                 if (hit < fraction || hit == fraction && victim != null && actor.Id < victim.Id)
-                { fraction = hit; victim = actor; }
+                { fraction = hit; victim = actor; wall = null; planeSector = planePart = -1; }
             }
             if (fraction <= 1)
             {
                 X = Fixed.FromDouble(x + dx * fraction); Y = Fixed.FromDouble(y + dy * fraction); Z = Fixed.FromDouble(z + dz * fraction);
-                Impact(sim, victim); return;
+                Impact(sim, victim, wall, planeSector, planePart); return;
             }
             X = Fixed.FromDouble(x + dx); Y = Fixed.FromDouble(y + dy); Z = Fixed.FromDouble(z + dz);
         }
@@ -193,9 +204,11 @@ public sealed class ProjectileActor : Actor
         return best;
     }
 
-    private void Impact(AuthoritySimulation sim, Actor? victim)
+    private void Impact(AuthoritySimulation sim, Actor? victim, LevelLine? wall, int planeSector, int planePart)
     {
         Destroy(); // Commit removal before damage callbacks can spawn or destroy actors.
+        if (wall is not null) GeometryProjectileImpact.Apply(sim, this, wall);
+        else if (planeSector >= 0) GeometryProjectileImpact.ApplyPlane(sim, this, planeSector, planePart);
         if (victim != null) ActorDamage.Apply(victim, ImpactDamage * (1 + (int)(sim.NextCombatRandom() % 8)), Owner, inflictor: this);
         if (BlastRadius > 0)
         {

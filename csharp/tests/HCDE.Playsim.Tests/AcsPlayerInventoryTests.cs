@@ -149,6 +149,228 @@ public class AcsPlayerInventoryTests
     }
 
     [Fact]
+    public void TakeInventory_RemovesBackpackAndRestoresCaps()
+    {
+        var sim = Room();
+        var player = sim.Players.Single();
+        player.Inventory.GiveBackpack(depleted: true);
+        player.Inventory.Bullets = 300;
+        Assert.Equal(400, player.Inventory.MaxBullets);
+        RunProgram(sim, player, ["Backpack"],
+            (int)AcsPcode.PushNumber, 0,
+            (int)AcsPcode.PushNumber, 1,
+            (int)AcsPcode.TakeInventory);
+        Assert.False(player.Inventory.HasBackpack);
+        Assert.Equal(200, player.Inventory.MaxBullets);
+        Assert.Equal(200, player.Inventory.Bullets);
+    }
+
+    [Fact]
+    public void GiveInventoryDirect_GrantBackpackRaisesAmmoCap()
+    {
+        var sim = Room();
+        var player = sim.Players.Single();
+        RunProgram(sim, player, ["Backpack"],
+            (int)AcsPcode.GiveInventoryDirect, 0, 1);
+        Assert.True(player.Inventory.HasBackpack);
+        Assert.Equal(400, player.Inventory.MaxBullets);
+    }
+
+    [Fact]
+    public void UseInventory_GrantBackpackRaisesAmmoCap()
+    {
+        var sim = Room();
+        var player = sim.Players.Single();
+        Assert.False(player.Inventory.HasBackpack);
+        Assert.Equal(200, player.Inventory.MaxBullets);
+        RunProgram(sim, player, ["Backpack"],
+            (int)AcsPcode.PushNumber, 0,
+            (int)AcsPcode.UseInventory);
+        Assert.True(player.Inventory.HasBackpack);
+        Assert.Equal(400, player.Inventory.MaxBullets);
+    }
+
+    [Fact]
+    public void GetAmmoCapacity_ReadsBackpackClipMax()
+    {
+        var sim = Room();
+        var player = sim.Players.Single();
+        player.Inventory.GiveBackpack(depleted: true);
+        RunProgram(sim, player, ["Clip"],
+            (int)AcsPcode.PushNumber, 0,
+            (int)AcsPcode.GetAmmoCapacity,
+            (int)AcsPcode.PushNumber, 400,
+            (int)AcsPcode.Eq,
+            (int)AcsPcode.IfNotGoto, 48,
+            (int)AcsPcode.Lspec2Direct, 112, 7, 35);
+        Assert.Equal(35, sim.LightOf(0));
+    }
+
+    [Fact]
+    public void CallFunc_GetMaxInventory_ReadsActivatorClipMax()
+    {
+        var sim = Room();
+        var player = sim.Players.Single();
+        player.Inventory.GiveBackpack(depleted: true);
+        RunProgram(sim, player, ["Clip"],
+            (int)AcsPcode.PushNumber, 0,
+            (int)AcsPcode.PushNumber, 0,
+            (int)AcsPcode.CallFunc, 2, 93,
+            (int)AcsPcode.PushNumber, 400,
+            (int)AcsPcode.Eq,
+            (int)AcsPcode.IfNotGoto, 56,
+            (int)AcsPcode.Lspec2Direct, 112, 7, 35);
+        Assert.Equal(35, sim.LightOf(0));
+    }
+
+    [Fact]
+    public void CallFunc_GetMaxInventory_ReadsCoopTidHealthMax()
+    {
+        var sim = TwoPlayerRoom();
+        var target = sim.Players.Last();
+        var activator = sim.Players.First();
+        RunProgram(sim, activator, ["Health"],
+            (int)AcsPcode.PushNumber, 9,
+            (int)AcsPcode.PushNumber, 0,
+            (int)AcsPcode.CallFunc, 2, 93,
+            (int)AcsPcode.PushNumber, 200,
+            (int)AcsPcode.Eq,
+            (int)AcsPcode.IfNotGoto, 56,
+            (int)AcsPcode.Lspec2Direct, 112, 7, 35);
+        Assert.Equal(35, sim.LightOf(0));
+        Assert.Equal(100, target.Health);
+    }
+
+    [Fact]
+    public void UseActorInventory_BasicArmorOnCoopTidTarget()
+    {
+        var sim = TwoPlayerRoom();
+        var target = sim.Players.Last();
+        target.Inventory.Armor = 0;
+        var activator = sim.Players.First();
+        RunProgram(sim, activator, ["BasicArmor"],
+            (int)AcsPcode.PushNumber, 9,
+            (int)AcsPcode.PushNumber, 0,
+            (int)AcsPcode.UseActorInventory);
+        Assert.Equal(100, target.Inventory.Armor);
+        Assert.Equal(0, activator.Inventory.Armor);
+    }
+
+    [Fact]
+    public void UseActorInventory_HealthOnCoopTidTarget()
+    {
+        var sim = TwoPlayerRoom();
+        var target = sim.Players.Last();
+        target.Health = 70;
+        var activator = sim.Players.First();
+        RunProgram(sim, activator, ["Health"],
+            (int)AcsPcode.PushNumber, 9,
+            (int)AcsPcode.PushNumber, 0,
+            (int)AcsPcode.UseActorInventory);
+        Assert.Equal(80, target.Health);
+        Assert.Equal(100, activator.Health);
+    }
+
+    [Fact]
+    public void CheckInventoryDirect_ReadsCurrentHealthAbove100()
+    {
+        var sim = Room();
+        var player = sim.Players.Single();
+        player.Health = 150;
+        RunProgram(sim, player, ["Health"],
+            (int)AcsPcode.CheckInventoryDirect, 0,
+            (int)AcsPcode.PushNumber, 150,
+            (int)AcsPcode.Eq,
+            (int)AcsPcode.IfNotGoto, 40,
+            (int)AcsPcode.Lspec2Direct, 112, 7, 35);
+        Assert.Equal(35, sim.LightOf(0));
+    }
+
+    [Fact]
+    public void UseInventory_MegaArmorRaisesBlueSuit()
+    {
+        var sim = Room();
+        var player = sim.Players.Single();
+        RunProgram(sim, player, ["MegaArmor"],
+            (int)AcsPcode.PushNumber, 0,
+            (int)AcsPcode.UseInventory);
+        Assert.Equal(200, player.Inventory.Armor);
+        Assert.Equal(PlayerInventory.MegaSavePercent, player.Inventory.ArmorSavePercent);
+    }
+
+    [Fact]
+    public void UseInventory_BasicArmorRaisesGreenSuit()
+    {
+        var sim = Room();
+        var player = sim.Players.Single();
+        player.Inventory.Armor = 0;
+        player.Inventory.ArmorSavePercent = 0;
+        RunProgram(sim, player, ["BasicArmor"],
+            (int)AcsPcode.PushNumber, 0,
+            (int)AcsPcode.UseInventory);
+        Assert.Equal(100, player.Inventory.Armor);
+        Assert.Equal(PlayerInventory.GreenSavePercent, player.Inventory.ArmorSavePercent);
+    }
+
+    [Fact]
+    public void UseInventory_HealthStimRestoresActivator()
+    {
+        var sim = Room();
+        var player = sim.Players.Single();
+        player.Health = 80;
+        RunProgram(sim, player, ["Health"],
+            (int)AcsPcode.PushNumber, 0,
+            (int)AcsPcode.UseInventory);
+        Assert.Equal(90, player.Health);
+    }
+
+    [Fact]
+    public void UseInventory_HealthReturnsZeroAtCap()
+    {
+        var sim = Room();
+        var player = sim.Players.Single();
+        player.Health = 100;
+        RunProgram(sim, player, ["Stimpack"],
+            (int)AcsPcode.PushNumber, 0,
+            (int)AcsPcode.UseInventory,
+            (int)AcsPcode.PushNumber, 0,
+            (int)AcsPcode.Eq,
+            (int)AcsPcode.IfNotGoto, 48,
+            (int)AcsPcode.Lspec2Direct, 112, 7, 35);
+        Assert.Equal(35, sim.LightOf(0));
+        Assert.Equal(100, player.Health);
+    }
+
+    [Fact]
+    public void CheckWeapon_MatchesReadyWeaponClassName()
+    {
+        var sim = Room();
+        var player = sim.Players.Single();
+        Assert.Equal(WeaponKind.Pistol, player.Inventory.Selected);
+        RunProgram(sim, player, ["Pistol"],
+            (int)AcsPcode.PushNumber, 0,
+            (int)AcsPcode.CheckWeapon,
+            (int)AcsPcode.PushNumber, 1,
+            (int)AcsPcode.Eq,
+            (int)AcsPcode.IfNotGoto, 48,
+            (int)AcsPcode.Lspec2Direct, 112, 7, 35);
+        Assert.Equal(35, sim.LightOf(0));
+    }
+
+    [Fact]
+    public void SetWeapon_SelectsOwnedWeaponLikeUseInventory()
+    {
+        var sim = Room();
+        var player = sim.Players.Single();
+        player.Inventory.Weapons |= WeaponKind.Shotgun;
+        player.Inventory.Shells = 4;
+        RunProgram(sim, player, ["Shotgun"],
+            (int)AcsPcode.PushNumber, 0,
+            (int)AcsPcode.SetWeapon);
+        Assert.Equal(WeaponKind.Shotgun, player.Inventory.Pending);
+    }
+
+    [Fact]
     public void GetAmmoCapacity_ReturnsPistolStartClipMax()
     {
         var sim = Room();

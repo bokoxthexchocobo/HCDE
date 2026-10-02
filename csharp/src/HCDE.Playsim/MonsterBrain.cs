@@ -218,8 +218,7 @@ public sealed class MonsterBrain(MonsterAttack attack)
                 else if (Attack == MonsterAttack.Fireball) sim.SpawnProjectile(actor, ProjectileKind.ImpBall, target);
                 else
                 {
-                    var hit = CombatTrace.FindTarget(sim, actor, 1024, sim.NextCombatSpread() * 5.625);
-                    if (hit != null) ActorDamage.Apply(hit, 5, actor, inflictor: actor);
+                    FireHitscan(sim, actor, 1024, sim.NextCombatSpread() * 5.625, 0, 5);
                 }
                 AttackCooldown = 25;
                 Mode = MonsterMode.Recovery;
@@ -300,9 +299,16 @@ public sealed class MonsterBrain(MonsterAttack attack)
         {
             var spread = sim.NextCombatSpread() * (22.5 * 255 / 256);
             var damage = 3 * (1 + (int)(sim.NextCombatRandom() % 5));
-            var hit = CombatTrace.FindTarget(sim, actor, 2048, spread, pitch);
-            if (hit != null) ActorDamage.Apply(hit, damage, actor, inflictor: actor);
+            FireHitscan(sim, actor, 2048, spread, pitch, damage);
         }
+    }
+
+    internal static void FireHitscan(AuthoritySimulation sim, Actor source, double range, double spread, double pitch, int damage)
+    {
+        var hit = CombatTrace.TraceLineAttack(sim, source,
+            BamAngle.FromDegrees(source.Angle.ToDegrees() + spread), BamAngle.FromDegrees(pitch), range);
+        if (hit.Victim is { } victim) ActorDamage.Apply(victim, damage, source, inflictor: source);
+        else GeometryLineAttack.Apply(sim, hit, damage);
     }
 
     internal void StopCharge(Actor actor)

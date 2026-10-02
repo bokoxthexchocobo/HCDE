@@ -10,11 +10,11 @@ public class ActorPitchArchiveTests
     [InlineData(1, -89)]
     [InlineData(3001, 120.5)]
     [InlineData(3001, -180)]
-    public void VersionSixRoundTripsActorPitch(int type, double pitch)
+    public void CurrentArchiveRoundTripsActorPitch(int type, double pitch)
     {
         var sim = Room(type); var actor = sim.Actors.Single(); actor.PitchDegrees = pitch;
         var bytes = SimSavegame.Write(sim);
-        Assert.Equal(6, BinaryPrimitives.ReadUInt16LittleEndian(bytes.AsSpan(4)));
+        Assert.Equal(16, BinaryPrimitives.ReadUInt16LittleEndian(bytes.AsSpan(4)));
         Assert.True(SimSavegame.TryRead(bytes, out var state, out var error), error);
         actor.PitchDegrees = 0; sim.RestoreState(state);
         Assert.Equal(pitch, actor.PitchDegrees);
@@ -22,8 +22,8 @@ public class ActorPitchArchiveTests
 
     [Theory]
     [InlineData(1, 90)]
-    [InlineData(3001, 181)]
-    [InlineData(3001, -181)]
+    [InlineData(1, 181)]
+    [InlineData(1, -181)]
     public void InvalidPitchIsRejectedBeforeAnyActorOrClockMutation(int type, int pitch)
     {
         var sim = Room(type); var actor = sim.Actors.Single(); actor.PitchDegrees = 10;
@@ -42,7 +42,12 @@ public class ActorPitchArchiveTests
     public void VersionFiveArchiveRemainsReadable(int type)
     {
         var sim = Room(type); sim.Actors.Single().PitchDegrees = type == 1 ? 30 : 0;
-        var bytes = SimSavegame.Write(sim); BinaryPrimitives.WriteUInt16LittleEndian(bytes.AsSpan(4), 5);
+        var captured = sim.CaptureState();
+        foreach (var pose in captured.Actors) pose.Roll = null;
+        var legacyState = new SimSaveState { Tic = captured.Tic, CombatRandomState = captured.CombatRandomState };
+        legacyState.Actors.AddRange(captured.Actors);
+        legacyState.Sectors.AddRange(captured.Sectors);
+        var bytes = SimSavegame.Write(legacyState); BinaryPrimitives.WriteUInt16LittleEndian(bytes.AsSpan(4), 5);
         Assert.True(SimSavegame.TryRead(bytes, out var state, out var error), error);
         sim.Actors.Single().PitchDegrees = -20; sim.RestoreState(state);
         Assert.Equal(type == 1 ? 30 : 0, sim.Actors.Single().PitchDegrees);

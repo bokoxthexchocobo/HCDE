@@ -80,20 +80,78 @@ public static class ActorPhysics
     {
         if (actor.Destroyed || actor.Floating || !actor.OnGround || actor is ProjectileActor)
             return;
-        var sector = actor.SectorIndex;
-        if (sector < 0 || sector >= sim.SectorScrollX.Length)
+        if (actor is not PlayerPawn && !actor.InScrollSector)
             return;
-        var dx = sim.SectorScrollX[sector];
-        var dy = sim.SectorScrollY[sector];
-        if (actor is PlayerPawn && (uint)sector < (uint)sim.Level.Sectors.Count
-            && HexenSectorScroll.TryGetPlayerCarryDelta(sim.Level.Sectors[sector].Special, out var hexDx, out var hexDy))
-        {
-            dx += hexDx;
-            dy += hexDy;
-        }
-        if (Math.Abs(dx) < 1e-9 && Math.Abs(dy) < 1e-9)
+        if (!TrySectorCarryDelta(sim, actor, out var dx, out var dy))
             return;
         TryMove(sim, actor, actor.X.ToDouble() + dx, actor.Y.ToDouble() + dy, out _);
+    }
+
+    internal static bool TrySectorCarryDelta(AuthoritySimulation sim, Actor actor, out double dx, out double dy)
+    {
+        dx = dy = 0;
+        var radius = actor.Radius.ToDouble();
+        var x = actor.X.ToDouble();
+        var y = actor.Y.ToDouble();
+        var touching = TouchingSectorIndices(sim.Level, x, y, radius);
+        if (touching.Count == 0)
+            return false;
+
+        var countX = 0;
+        var countY = 0;
+        foreach (var sector in touching)
+        {
+            if ((uint)sector >= (uint)sim.SectorScrollX.Length)
+                continue;
+            var (scrollX, scrollY) = sim.SumCarryScrollForActor(sector, actor);
+            if (actor is PlayerPawn && (uint)sector < (uint)sim.Level.Sectors.Count
+                && HexenSectorScroll.TryGetPlayerCarryDelta(sim.Level.Sectors[sector].Special, out var hexDx, out var hexDy))
+            {
+                scrollX += hexDx;
+                scrollY += hexDy;
+            }
+            if (Math.Abs(scrollX) > 1e-9)
+            {
+                dx += scrollX;
+                countX++;
+            }
+            if (Math.Abs(scrollY) > 1e-9)
+            {
+                dy += scrollY;
+                countY++;
+            }
+        }
+
+        var averageMultiSector = actor is PlayerPawn || !sim.Compat.HasFlag(CompatSurface.BoomScroll);
+        if (averageMultiSector)
+        {
+            if (countX > 1)
+                dx /= countX;
+            if (countY > 1)
+                dy /= countY;
+        }
+        return Math.Abs(dx) > 1e-9 || Math.Abs(dy) > 1e-9;
+    }
+
+    /// <summary>Center plus radius samples; native <c>touching_sectorlist</c> subset.</summary>
+    internal static HashSet<int> TouchingSectorIndices(PlayLevel level, double x, double y, double radius)
+    {
+        var sectors = new HashSet<int>();
+        void Sample(double px, double py)
+        {
+            var sector = SectorAt(level, px, py);
+            if (sector >= 0)
+                sectors.Add(sector);
+        }
+        Sample(x, y);
+        if (radius > 0)
+        {
+            Sample(x + radius, y);
+            Sample(x - radius, y);
+            Sample(x, y + radius);
+            Sample(x, y - radius);
+        }
+        return sectors;
     }
 
     internal static void RefreshOnMobj(AuthoritySimulation sim, Actor actor)
@@ -186,7 +244,7 @@ public static class ActorPhysics
             z = floor;
             if (vz < 0) vz = 0;
         }
-        if (!actor.NoGravity && (z > floor || vz != 0)) vz -= Gravity;
+        if (!actor.NoGravity && (z > floor || vz != 0)) vz -= Gravity * actor.GravityFactor;
         z += vz;
         if (z < floor)
         {

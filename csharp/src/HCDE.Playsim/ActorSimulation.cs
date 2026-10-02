@@ -25,10 +25,14 @@ public class Actor : Thinker
     public const int PlayerStartMax = 4;
 
     public uint Id { get; init; }
+    /// <summary>Native <c>GetNetworkID</c>. Assigned by netplay; ACS may query it offline.</summary>
+    public uint NetworkId { get; set; }
     public int DoomEdNum { get; init; }
-    public int ThingId { get; init; }
+    public int ThingId { get; internal set; }
     /// <summary>Native <c>AActor::IsMapActor</c>. Owned inventory items are excluded from ACS thing counts.</summary>
     internal virtual bool IsMapActor => true;
+    internal virtual bool IsBlockmapActor => true;
+    internal virtual double GravityFactor => 1;
     /// <summary>Native <c>TIDtoHate</c>. Teammates share this value; a shooter may hurt or wake actors whose <see cref="ThingId"/> matches.</summary>
     public int TidToHate { get; set; }
     /// <summary>Native <c>MF3_NOTARGET</c>. Wake-up ignores this actor unless <see cref="TidToHate"/> matches its <see cref="ThingId"/> or it is hostile.</summary>
@@ -93,6 +97,8 @@ public class Actor : Thinker
     public bool ActsLikeBridge { get; set; }
     /// <summary>Native <c>MF_ICECORPSE</c>. This actor collides with corpses and can stand on them.</summary>
     public bool IceCorpse { get; set; }
+    /// <summary>Native <c>MF8_INSCROLLSEC</c>. Set each tic for non-players touching an active carry scroller.</summary>
+    public bool InScrollSector { get; set; }
     /// <summary>Native <c>MF6_SHATTERING</c>. A frozen corpse is breaking apart.</summary>
     public bool Shattering { get; set; }
     /// <summary>Native <c>MF7_ICESHATTER</c>. As an inflictor, ice damage does not shatter a frozen corpse.</summary>
@@ -207,6 +213,12 @@ public class Actor : Thinker
     public Fixed PreviousX { get; private set; }
     public Fixed PreviousY { get; private set; }
     public BamAngle Angle { get; set; }
+    /// <summary>Native <c>AActor::Angles.Roll</c> for ACS roll helpers.</summary>
+    public BamAngle Roll { get; set; }
+    /// <summary>Native <c>TeleFogSourceType</c> override from ACS <c>SetActorTeleFog</c>.</summary>
+    public string? TeleFogSource { get; set; }
+    /// <summary>Native <c>TeleFogDestType</c> override from ACS <c>SetActorTeleFog</c>.</summary>
+    public string? TeleFogDest { get; set; }
     private double _pitchDegrees;
     public double PitchDegrees
     {
@@ -291,6 +303,8 @@ public class Actor : Thinker
     public bool IgnoreAmmoSkill { get; set; }
     /// <summary>Native <c>BackpackItem.bDepleted</c>. A tossed backpack raises caps and gives no ammo.</summary>
     public bool Depleted { get; set; }
+    /// <summary>ACS <c>DropItem</c> amount override. Zero uses the catalog default.</summary>
+    public int PickupAmount { get; set; }
     public int DeathCount { get; private set; }
     public uint? LastDamageSourceId { get; internal set; }
     public uint? LastHeardTargetId { get; internal set; }
@@ -1013,6 +1027,11 @@ public static class ActorSpawner
 
             if (actor is PlayerPawn player)
                 player.FullHeight = player.Height.ToDouble();
+            if (!playerStart)
+            {
+                actor.PitchDegrees = thing.Pitch;
+                actor.Roll = BamAngle.FromDegrees(thing.Roll);
+            }
             nextId++;
             actor.ResurrectionHealth = actor.Health;
             if (actor.ResurrectionHealth > 0) actor.GibHealth = -actor.ResurrectionHealth;
@@ -1048,6 +1067,7 @@ public sealed class AuthoritySimulation
     public uint SwitchTargetRandomState { get; private set; }
     /// <summary>Rolls for a deathmatch respawn. Not the native <c>DMSpawn</c> table, and not in the save pose.</summary>
     public uint DmSpawnRandomState { get; set; }
+    private uint _uniqueTidRandomState;
     private uint _strobeRandomState;
     private uint _flickerRandomState;
     private uint _lightFlashRandomState;
@@ -1069,6 +1089,7 @@ public sealed class AuthoritySimulation
         CombatRandomState = unchecked((uint)rngSeed) ^ 0x9e3779b9u;
         SwitchTargetRandomState = unchecked((uint)rngSeed) ^ 0x73776974u;
         DmSpawnRandomState = unchecked((uint)rngSeed) ^ 0x646d7370u;
+        _uniqueTidRandomState = unchecked((uint)rngSeed) ^ 0x756e6974u;
         _strobeRandomState = unchecked((uint)rngSeed) ^ 0x7374726fu;
         _flickerRandomState = unchecked((uint)rngSeed) ^ 0x666c6963u;
         _lightFlashRandomState = unchecked((uint)rngSeed) ^ 0x666c6173u;
@@ -1085,6 +1106,9 @@ public sealed class AuthoritySimulation
         _sectorCarryScrolls = [];
         LightActions.Initialize(this);
         SectorDamage.Initialize(this);
+        HealthGroups = LevelHealthGroups.Build(Level);
+        ScrollCarryInitialize.ApplyUdmfWallScrolls(this);
+        ScrollCarryInitialize.ApplyMapLoadScrollers(this);
         foreach (var actor in _actors)
         {
             actor.Simulation = this;
@@ -1110,6 +1134,7 @@ public sealed class AuthoritySimulation
                     throw new InvalidDataException("acs-enter-script-start-failed");
             }
         }
+        StrArgs = spawnOptions.StrArgs ?? Array.Empty<string>();
         Invasion = new InvasionDirector();
         Rewind = new RewindBuffer();
         ReverbActive = compat.HasFlag(CompatSurface.Eternity)
@@ -1119,6 +1144,9 @@ public sealed class AuthoritySimulation
     }
 
     public PlayLevel Level { get; }
+    internal Dictionary<int, int> HealthGroups { get; }
+    /// <summary>Native command-line str args for ACS <c>StrArg</c>.</summary>
+    public IReadOnlyList<string> StrArgs { get; }
     public ThinkerCollection Thinkers { get; }
     public IReadOnlyList<Actor> Actors => _actors;
     public IEnumerable<PlayerPawn> Players => _actors.OfType<PlayerPawn>();
@@ -1169,6 +1197,8 @@ public sealed class AuthoritySimulation
     public bool SecretExit { get; private set; }
     public bool ReverbActive { get; }
     public bool RewindEnabled { get; set; }
+    /// <summary>Native ACS <c>SetMusicVolume</c> scale. Audio playback is absent.</summary>
+    public double MusicVolume { get; set; } = 1;
     public AcsVm Acs { get; }
     public InvasionDirector Invasion { get; }
     public RewindBuffer Rewind { get; }
@@ -1178,6 +1208,25 @@ public sealed class AuthoritySimulation
     internal double[] SectorScrollX { get; }
     internal double[] SectorScrollY { get; }
     private List<SectorCarryScroll> _sectorCarryScrolls;
+    private readonly List<ControlSectorCarryScroll> _controlCarryScrolls = [];
+    private readonly List<AcceleratingSectorCarryScroll> _acceleratingCarryScrolls = [];
+    private readonly List<SectorCarryScroll> _displacementCarryScrolls = [];
+    private readonly List<SectorTextureScroll> _textureScrolls = [];
+    private readonly List<SideTextureScroll> _sideTextureScrolls = [];
+    private readonly List<ControlPlaneScroll> _controlPlaneScrolls = [];
+    private readonly List<ControlWallScroll> _controlWallScrolls = [];
+
+    internal void AppendSideTextureScroll(int side, double dx, double dy, WallScrollParts parts = WallScrollParts.All) =>
+        _sideTextureScrolls.Add(new SideTextureScroll(side, dx, dy, parts));
+
+    internal void AppendControlWallScroll(int side, int control, double dx, double dy, bool accelerating,
+        WallScrollParts parts = WallScrollParts.All) =>
+        _controlWallScrolls.Add(new ControlWallScroll(side, control, dx, dy,
+            Floors[control] + Ceilings[control], accelerating, parts));
+
+    internal void AppendControlPlaneScroll(int target, int control, double dx, double dy, bool accelerating, SectorTextureScrollPlane plane) =>
+        _controlPlaneScrolls.Add(new ControlPlaneScroll(target, control, dx, dy,
+            Floors[control] + Ceilings[control], accelerating, plane));
     /// <summary>Native <c>netgame</c> for ACS. Client-hosted sessions are absent.</summary>
     public bool IsNetworkGame => false;
     internal List<LightEffect> LightEffects { get; } = [];
@@ -1187,31 +1236,345 @@ public sealed class AuthoritySimulation
     public double FloorOf(int sector) => sector >= 0 && sector < Floors.Length ? Floors[sector] : (short)0;
     public double CeilingOf(int sector) => sector >= 0 && sector < Ceilings.Length ? Ceilings[sector] : (short)0;
 
-    /// <summary>Replace carry scrollers on <paramref name="sector"/> (native <c>SetScroller</c> rate update). Texture and displacement scrollers are absent.</summary>
-    public void SetSectorScroll(int sector, double dx, double dy)
+    /// <summary>Replace constant texture scrollers on one sector. Runtime actions use tag-wide SetScroller semantics.</summary>
+    public void SetSectorTextureScroll(int sector, double dx, double dy, SectorTextureScrollPlane plane)
+    {
+        if ((uint)sector >= (uint)Level.Sectors.Count)
+            return;
+        _textureScrolls.RemoveAll(scroll => scroll.SectorIndex == sector && scroll.Plane == plane);
+        if (dx != 0 || dy != 0)
+            _textureScrolls.Add(new SectorTextureScroll(sector, dx, dy, plane));
+    }
+
+    internal void AppendSectorTextureScroll(int sector, double dx, double dy, SectorTextureScrollPlane plane) =>
+        _textureScrolls.Add(new SectorTextureScroll(sector, dx, dy, plane));
+
+    // Native SetScroller updates every existing thinker of the selected type/tag.
+    // Finding even one suppresses creation on other sectors with that tag.
+    internal void SetTaggedScroller(int tag, double dx, double dy, SectorTextureScrollPlane? plane)
+    {
+        bool Matches(int sector) => Level.Sectors[sector].HasTag(tag);
+        var updated = false;
+        if (plane is { } texturePlane)
+        {
+            for (var i = 0; i < _textureScrolls.Count; i++)
+            {
+                var scroll = _textureScrolls[i];
+                if (scroll.Plane != texturePlane || !Matches(scroll.SectorIndex)) continue;
+                _textureScrolls[i] = scroll with { Dx = dx, Dy = dy };
+                updated = true;
+            }
+            foreach (var scroll in _controlPlaneScrolls)
+            {
+                if (scroll.Plane != texturePlane || !Matches(scroll.Target)) continue;
+                scroll.Dx = dx; scroll.Dy = dy;
+                updated = true;
+            }
+        }
+        else
+        {
+            for (var i = 0; i < _sectorCarryScrolls.Count; i++)
+            {
+                var scroll = _sectorCarryScrolls[i];
+                if (!Matches(scroll.SectorIndex)) continue;
+                _sectorCarryScrolls[i] = scroll with { Dx = dx, Dy = dy };
+                updated = true;
+            }
+            foreach (var scroll in _acceleratingCarryScrolls)
+            {
+                if (!Matches(scroll.SectorIndex)) continue;
+                scroll.BaseDx = dx; scroll.BaseDy = dy;
+                updated = true;
+            }
+            foreach (var scroll in _controlCarryScrolls)
+            {
+                if (!Matches(scroll.TargetSector)) continue;
+                scroll.ScaleX = dx; scroll.ScaleY = dy;
+                updated = true;
+            }
+        }
+        if (updated || dx == 0 && dy == 0) return;
+        for (var sector = 0; sector < Level.Sectors.Count; sector++)
+        {
+            if (!Level.Sectors[sector].MatchesTag(tag)) continue;
+            if (plane is { } targetPlane) AppendSectorTextureScroll(sector, dx, dy, targetPlane);
+            else AppendSectorCarryScroll(sector, dx, dy);
+        }
+    }
+
+    /// <summary>Native <c>SetWallScroller</c> for linedefs with matching id (tag).</summary>
+    public void SetWallTextureScroll(int lineId, int sideChoice, double dx, double dy, WallScrollParts parts)
+    {
+        parts &= WallScrollParts.All;
+        if (parts == 0)
+            return;
+
+        if (dx == 0 && dy == 0)
+        {
+            foreach (var line in AcsLineActivation.LinesFromId(this, lineId))
+                RemoveWallScrollForLine(line, sideChoice, parts);
+            return;
+        }
+
+        foreach (var line in AcsLineActivation.LinesFromId(this, lineId))
+            UpsertWallScrollForLine(line, sideChoice, dx, dy, parts);
+    }
+
+    private void RemoveWallScrollForLine(LevelLine line, int sideChoice, WallScrollParts parts)
+    {
+        var sideIndex = sideChoice == 0 ? line.SideFront : line.SideBack;
+        if (sideIndex < 0)
+            return;
+        _sideTextureScrolls.RemoveAll(scroll => scroll.SideIndex == sideIndex && scroll.Parts == parts);
+        _controlWallScrolls.RemoveAll(scroll => scroll.Side == sideIndex && scroll.Parts == parts);
+    }
+
+    internal void UpsertWallScrollForSide(int sideIndex, double dx, double dy, WallScrollParts parts)
+    {
+        if (sideIndex < 0)
+            return;
+        parts &= WallScrollParts.All;
+        if (parts == 0)
+            return;
+        var updated = false;
+        for (var i = 0; i < _sideTextureScrolls.Count; i++)
+        {
+            var scroll = _sideTextureScrolls[i];
+            if (scroll.SideIndex != sideIndex || scroll.Parts != parts)
+                continue;
+            _sideTextureScrolls[i] = scroll with { Dx = dx, Dy = dy };
+            updated = true;
+        }
+
+        foreach (var scroll in _controlWallScrolls)
+            {
+                if (scroll.Side != sideIndex || scroll.Parts != parts) continue;
+                scroll.Dx = dx; scroll.Dy = dy;
+                updated = true;
+            }
+
+        if (!updated)
+            _sideTextureScrolls.Add(new SideTextureScroll(sideIndex, dx, dy, parts));
+    }
+
+    private void UpsertWallScrollForLine(LevelLine line, int sideChoice, double dx, double dy, WallScrollParts parts)
+    {
+        var sideIndex = sideChoice == 0 ? line.SideFront : line.SideBack;
+        UpsertWallScrollForSide(sideIndex, dx, dy, parts);
+    }
+
+    /// <summary>Replace constant/accelerative carry on one sector. Runtime actions use tag-wide SetScroller semantics.</summary>
+    public void SetSectorScroll(int sector, double dx, double dy, ScrollCarryAffect affect = ScrollCarryAffect.All)
     {
         if ((uint)sector >= (uint)SectorScrollX.Length) return;
         _sectorCarryScrolls.RemoveAll(scroll => scroll.SectorIndex == sector);
+        _acceleratingCarryScrolls.RemoveAll(scroll => scroll.SectorIndex == sector);
         if (dx != 0 || dy != 0)
-            _sectorCarryScrolls.Add(new SectorCarryScroll(sector, dx, dy));
+            _sectorCarryScrolls.Add(new SectorCarryScroll(sector, dx, dy, affect));
+    }
+
+    /// <summary>Replace constant/accelerative carry on one sector with an accelerative scroller.</summary>
+    public void SetAcceleratingSectorScroll(int sector, double baseDx, double baseDy, ScrollCarryAffect affect = ScrollCarryAffect.All)
+    {
+        if ((uint)sector >= (uint)SectorScrollX.Length) return;
+        _sectorCarryScrolls.RemoveAll(scroll => scroll.SectorIndex == sector);
+        _acceleratingCarryScrolls.RemoveAll(scroll => scroll.SectorIndex == sector);
+        if (baseDx == 0 && baseDy == 0)
+            return;
+        _acceleratingCarryScrolls.Add(new AcceleratingSectorCarryScroll(sector, baseDx, baseDy, affect));
+    }
+
+    /// <summary>Map-load accelerative carry (does not clear other scrollers on the sector).</summary>
+    public void AppendAcceleratingSectorCarryScroll(int sector, double baseDx, double baseDy, ScrollCarryAffect affect = ScrollCarryAffect.All)
+    {
+        if ((uint)sector >= (uint)SectorScrollX.Length) return;
+        if (baseDx == 0 && baseDy == 0) return;
+        _acceleratingCarryScrolls.Add(new AcceleratingSectorCarryScroll(sector, baseDx, baseDy, affect));
     }
 
     /// <summary>Add another carry scroller on the sector. Multiple entries sum each tic like separate <c>DScroller</c> thinkers.</summary>
-    public void AppendSectorCarryScroll(int sector, double dx, double dy)
+    public void AppendSectorCarryScroll(int sector, double dx, double dy, ScrollCarryAffect affect = ScrollCarryAffect.All)
     {
         if ((uint)sector >= (uint)SectorScrollX.Length) return;
-        if (dx == 0 && dy == 0) return;
-        _sectorCarryScrolls.Add(new SectorCarryScroll(sector, dx, dy));
+        _sectorCarryScrolls.Add(new SectorCarryScroll(sector, dx, dy, affect));
+    }
+
+    internal void RegisterControlSectorCarry(
+        int targetSector,
+        int controlSector,
+        double scaleX,
+        double scaleY,
+        double lastCenter,
+        bool accelerative = false)
+    {
+        if ((uint)targetSector >= (uint)SectorScrollX.Length || (uint)controlSector >= (uint)Floors.Length)
+            return;
+        _controlCarryScrolls.Add(new ControlSectorCarryScroll(
+            targetSector, controlSector, scaleX, scaleY, lastCenter, accelerative));
+    }
+
+    internal void MarkInScrollSectorActors()
+    {
+        foreach (var actor in _actors)
+            actor.InScrollSector = false;
+        if (_sectorCarryScrolls.Count == 0 && _controlCarryScrolls.Count == 0 && _acceleratingCarryScrolls.Count == 0)
+            return;
+
+        foreach (var actor in _actors)
+        {
+            if (actor.Destroyed || actor.Floating || !actor.OnGround || actor is ProjectileActor or PlayerPawn)
+                continue;
+            var radius = actor.Radius.ToDouble();
+            var x = actor.X.ToDouble();
+            var y = actor.Y.ToDouble();
+            foreach (var sector in ActorPhysics.TouchingSectorIndices(Level, x, y, radius))
+            {
+                foreach (var scroll in _sectorCarryScrolls.Concat(_displacementCarryScrolls))
+                {
+                    if (scroll.SectorIndex != sector)
+                        continue;
+                    if (!SectorCarryScroll.Affects(actor, scroll.Affect))
+                        continue;
+                    if (Math.Abs(scroll.Dx) < 1e-9 && Math.Abs(scroll.Dy) < 1e-9)
+                        continue;
+                    actor.InScrollSector = true;
+                    break;
+                }
+                if (actor.InScrollSector)
+                    break;
+            }
+        }
+    }
+
+    internal (double X, double Y) SumCarryScrollForActor(int sector, Actor actor)
+    {
+        var x = 0.0;
+        var y = 0.0;
+        foreach (var scroll in _sectorCarryScrolls.Concat(_displacementCarryScrolls))
+        {
+            if (scroll.SectorIndex != sector)
+                continue;
+            if (!SectorCarryScroll.Affects(actor, scroll.Affect))
+                continue;
+            x += scroll.Dx;
+            y += scroll.Dy;
+        }
+        return (x, y);
+    }
+
+    internal void ApplySectorTextureScrolls()
+    {
+        foreach (var scroll in _controlPlaneScrolls)
+        {
+            var height = Floors[scroll.Control] + Ceilings[scroll.Control];
+            var delta = height - scroll.LastHeight;
+            scroll.LastHeight = height;
+            var dx = scroll.Dx * delta;
+            var dy = scroll.Dy * delta;
+            if (scroll.Accelerating)
+            {
+                scroll.Vdx += dx; scroll.Vdy += dy;
+                dx = scroll.Vdx; dy = scroll.Vdy;
+            }
+            if (dx == 0 && dy == 0) continue;
+            var sector = Level.Sectors[scroll.Target];
+            var (tx, ty) = SectorTextureRotation.Compensate(sector, scroll.Plane, dx, dy);
+            if (scroll.Plane == SectorTextureScrollPlane.Floor)
+            {
+                sector.FloorTextureOffsetX += tx; sector.FloorTextureOffsetY += ty;
+            }
+            else
+            {
+                sector.CeilingTextureOffsetX += tx; sector.CeilingTextureOffsetY += ty;
+            }
+        }
+        foreach (var scroll in _textureScrolls)
+        {
+            if ((uint)scroll.SectorIndex >= (uint)Level.Sectors.Count)
+                continue;
+            var sector = Level.Sectors[scroll.SectorIndex];
+            var (tdx, tdy) = SectorTextureRotation.Compensate(sector, scroll.Plane, scroll.Dx, scroll.Dy);
+            switch (scroll.Plane)
+            {
+                case SectorTextureScrollPlane.Floor:
+                    sector.FloorTextureOffsetX += tdx;
+                    sector.FloorTextureOffsetY += tdy;
+                    break;
+                case SectorTextureScrollPlane.Ceiling:
+                    sector.CeilingTextureOffsetX += tdx;
+                    sector.CeilingTextureOffsetY += tdy;
+                    break;
+            }
+        }
+    }
+
+    internal void ApplySideTextureScrolls()
+    {
+        foreach (var scroll in _controlWallScrolls)
+        {
+            var height = Floors[scroll.Control] + Ceilings[scroll.Control];
+            var delta = height - scroll.LastHeight;
+            scroll.LastHeight = height;
+            var dx = scroll.Dx * delta; var dy = scroll.Dy * delta;
+            if (scroll.Accelerating)
+            {
+                scroll.Vdx += dx; scroll.Vdy += dy;
+                dx = scroll.Vdx; dy = scroll.Vdy;
+            }
+            if (dx == 0 && dy == 0) continue;
+            WallScrollActions.ApplySideOffsets(Level.Sides[scroll.Side],
+                WallScrollActions.FindLineForSide(Level, scroll.Side), dx, dy, scroll.Parts);
+        }
+        foreach (var scroll in _sideTextureScrolls)
+        {
+            if ((uint)scroll.SideIndex >= (uint)Level.Sides.Count)
+                continue;
+            var side = Level.Sides[scroll.SideIndex];
+            var line = WallScrollActions.FindLineForSide(Level, scroll.SideIndex);
+            WallScrollActions.ApplySideOffsets(side, line, scroll.Dx, scroll.Dy, scroll.Parts);
+        }
     }
 
     internal void RebuildSectorCarryScrolls()
     {
+        _displacementCarryScrolls.Clear();
         Array.Clear(SectorScrollX, 0, SectorScrollX.Length);
         Array.Clear(SectorScrollY, 0, SectorScrollY.Length);
         foreach (var scroll in _sectorCarryScrolls)
         {
             SectorScrollX[scroll.SectorIndex] += scroll.Dx;
             SectorScrollY[scroll.SectorIndex] += scroll.Dy;
+        }
+
+        foreach (var scroll in _controlCarryScrolls)
+        {
+            var center = Floors[scroll.ControlSector] + Ceilings[scroll.ControlSector];
+            var delta = center - scroll.LastCenter;
+            scroll.LastCenter = center;
+            var dx = delta * scroll.ScaleX;
+            var dy = delta * scroll.ScaleY;
+            if (scroll.Accelerative)
+            {
+                scroll.Vdx += dx;
+                scroll.Vdy += dy;
+                dx = scroll.Vdx;
+                dy = scroll.Vdy;
+            }
+
+            if (dx == 0 && dy == 0) continue;
+
+            _displacementCarryScrolls.Add(new SectorCarryScroll(scroll.TargetSector, dx, dy));
+            SectorScrollX[scroll.TargetSector] += dx;
+            SectorScrollY[scroll.TargetSector] += dy;
+        }
+
+        foreach (var scroll in _acceleratingCarryScrolls)
+        {
+            scroll.Vdx += scroll.BaseDx;
+            scroll.Vdy += scroll.BaseDy;
+            _displacementCarryScrolls.Add(new SectorCarryScroll(scroll.SectorIndex, scroll.Vdx, scroll.Vdy, scroll.Affect));
+            SectorScrollX[scroll.SectorIndex] += scroll.Vdx;
+            SectorScrollY[scroll.SectorIndex] += scroll.Vdy;
         }
     }
 
@@ -1247,24 +1610,33 @@ public sealed class AuthoritySimulation
     {
         if (!WeaponDrop || !PickupCatalog.TryWeaponEdNum(player.Inventory.Selected, out var type))
             return;
+        SpawnDroppedPickup(player, type, ignoreAmmoSkill: true);
+    }
+
+    internal bool SpawnDroppedPickup(Actor dropper, int doomEdNum, bool ignoreAmmoSkill = false, int pickupAmount = 0)
+    {
+        if (dropper.Destroyed || !PickupCatalog.IsPickup(doomEdNum))
+            return false;
         var id = _nextActorId;
         _nextActorId = checked(_nextActorId + 1);
         var drop = new Actor
         {
             Id = id,
-            DoomEdNum = type,
-            X = player.X,
-            Y = player.Y,
+            DoomEdNum = doomEdNum,
+            X = dropper.X,
+            Y = dropper.Y,
             Level = Level,
             Solid = false,
             Shootable = false,
-            IgnoreAmmoSkill = true,
+            IgnoreAmmoSkill = ignoreAmmoSkill,
+            PickupAmount = ignoreAmmoSkill ? pickupAmount : PickupCatalog.DropPickupAmount(doomEdNum, pickupAmount),
         };
         drop.RememberPosition();
         drop.Simulation = this;
         ActorPhysics.PlaceOnFloor(this, drop);
         _actors.Add(drop);
         Thinkers.Add(drop, ThinkerStat.Default);
+        return true;
     }
 
     /// <summary>
@@ -1343,6 +1715,12 @@ public sealed class AuthoritySimulation
         return SwitchTargetRandomState;
     }
 
+    internal uint NextUniqueTidRandom()
+    {
+        _uniqueTidRandomState = unchecked(1664525u * _uniqueTidRandomState + 1013904223u);
+        return _uniqueTidRandomState;
+    }
+
     private uint NextDmSpawnRandom()
     {
         DmSpawnRandomState = unchecked(1664525u * DmSpawnRandomState + 1013904223u);
@@ -1350,10 +1728,18 @@ public sealed class AuthoritySimulation
     }
 
     internal double NextCombatSpread() => ((int)(NextCombatRandom() >> 24) - (int)(NextCombatRandom() >> 24)) / 255.0;
+    private double NextIceChunkVelocity() => ((int)(NextCombatRandom() >> 24) - (int)(NextCombatRandom() >> 24)) / 128.0;
 
-    /// <summary>Native <c>A_FreezeDeathChunks</c> when <see cref="Actor.Shattering"/> is already set.</summary>
+    /// <summary>Native <c>A_FreezeDeathChunks</c> moving-corpse delay and debris spawning subset.</summary>
     internal void SpawnIceChunks(Actor corpse)
     {
+        if (corpse.Destroyed) return;
+        if (!corpse.Shattering && (corpse.VelocityX.Raw != 0 || corpse.VelocityY.Raw != 0 || corpse.VelocityZ.Raw != 0))
+        {
+            corpse.States.ForceRemainingTics(105);
+            return;
+        }
+        corpse.VelocityX = corpse.VelocityY = corpse.VelocityZ = default;
         var radius = corpse.Radius.ToDouble();
         var height = corpse.Height.ToDouble();
         var numChunks = Math.Max(4, (int)(radius * height / 32));
@@ -1365,8 +1751,8 @@ public sealed class AuthoritySimulation
         var baseZ = corpse.Z.ToDouble();
         for (var i = spawnCount; i >= 0; i--)
         {
-            var xo = ((NextCombatRandom() % 256) - 128) * radius / 128;
-            var yo = ((NextCombatRandom() % 256) - 128) * radius / 128;
+            var xo = ((int)(NextCombatRandom() % 256) - 128) * radius / 128;
+            var yo = ((int)(NextCombatRandom() % 256) - 128) * radius / 128;
             var zo = (NextCombatRandom() % 256) * height / 255;
             var remainingTics = 70 + (int)(NextCombatRandom() % 64);
             var chunk = new IceChunkActor(remainingTics)
@@ -1379,15 +1765,21 @@ public sealed class AuthoritySimulation
                 Z = Fixed.FromDouble(baseZ + zo),
             };
             _nextActorId = checked(_nextActorId + 1);
-            var spread = NextCombatSpread();
+            chunk.States.Enter(chunk, (int)(NextCombatRandom() % 3));
+            var spread = NextIceChunkVelocity();
             chunk.VelocityX = Fixed.FromDouble(spread);
-            chunk.VelocityY = Fixed.FromDouble(NextCombatSpread());
+            chunk.VelocityY = Fixed.FromDouble(NextIceChunkVelocity());
             chunk.VelocityZ = Fixed.FromDouble(height > 0 ? zo / height * 4 : 0);
-            chunk.RememberPosition();
             ActorPhysics.PlaceOnFloor(this, chunk);
+            chunk.Z = Fixed.FromDouble(baseZ + zo);
+            chunk.OnGround = chunk.Z.ToDouble() <= FloorOf(chunk.SectorIndex);
+            chunk.RememberPosition();
             _actors.Add(chunk);
             Thinkers.Add(chunk, ThinkerStat.Default);
         }
+        corpse.Solid = corpse.Shootable = false;
+        ActorDropItem.DropVanillaDeathItem(this, corpse);
+        corpse.States.Enter(corpse, -1);
     }
 
     // Independent managed stream: lighting must not change weapon damage/spread rolls.
@@ -1413,6 +1805,27 @@ public sealed class AuthoritySimulation
     {
         _strobeRandomState = unchecked(1664525u * _strobeRandomState + 1013904223u);
         return (int)((_strobeRandomState >> 24) & 7) + 1;
+    }
+
+    internal PuffActor SpawnHitscanPuff(double x, double y, double z, int thingId = 0)
+    {
+        var puff = new PuffActor()
+        {
+            Id = _nextActorId,
+            Level = Level,
+            Simulation = this,
+            X = Fixed.FromDouble(x),
+            Y = Fixed.FromDouble(y),
+            Z = Fixed.FromDouble(z),
+            ThingId = thingId,
+        };
+        _nextActorId = checked(_nextActorId + 1);
+        ActorPhysics.PlaceOnFloor(this, puff);
+        puff.Z = Fixed.FromDouble(z);
+        puff.RememberPosition();
+        _actors.Add(puff);
+        Thinkers.Add(puff, ThinkerStat.Default);
+        return puff;
     }
 
     public ProjectileActor SpawnProjectile(Actor owner, ProjectileKind kind, Actor? target = null)
@@ -1491,6 +1904,25 @@ public sealed class AuthoritySimulation
             Exited = Exited,
             SecretExit = SecretExit,
             CombatRandomState = CombatRandomState,
+            Walls = Level.Sides.Select(SimWallTransform.Capture).ToList(),
+            Planes = Level.Sectors.Select(SimPlaneTransform.Capture).ToList(),
+            IncludesCarryScrolls = true,
+            IncludesCeilingControls = true,
+            IncludesFloorControls = true,
+            IncludesWallControls = true,
+            IncludesWallParts = true,
+            GeometryHealth = CaptureGeometryHealth(),
+            TextureScrolls = _textureScrolls.Select(s => new SimTextureScroll(s.SectorIndex, (int)s.Plane, s.Dx, s.Dy))
+                .Concat(_sideTextureScrolls.Select(s => new SimTextureScroll(s.SideIndex, (int)s.Parts + 1, s.Dx, s.Dy)))
+                .Concat(_sectorCarryScrolls.Select(s => new SimTextureScroll(s.SectorIndex, 9, s.Dx, s.Dy, Affect: s.Affect)))
+                .Concat(_acceleratingCarryScrolls.Select(s => new SimTextureScroll(s.SectorIndex, 10, s.BaseDx, s.BaseDy,
+                    Affect: s.Affect, Vdx: s.Vdx, Vdy: s.Vdy)))
+                .Concat(_controlCarryScrolls.Select(s => new SimTextureScroll(s.TargetSector, s.Accelerative ? 12 : 11,
+                    s.ScaleX, s.ScaleY, s.ControlSector, LastHeight: s.LastCenter, Vdx: s.Vdx, Vdy: s.Vdy)))
+                .Concat(_controlPlaneScrolls.Select(s => new SimTextureScroll(s.Target, s.ArchiveKind,
+                    s.Dx, s.Dy, s.Control, LastHeight: s.LastHeight, Vdx: s.Vdx, Vdy: s.Vdy)))
+                .Concat(_controlWallScrolls.Select(s => new SimTextureScroll(s.Side, s.ArchiveKind,
+                    s.Dx, s.Dy, s.Control, LastHeight: s.LastHeight, Vdx: s.Vdx, Vdy: s.Vdy))).ToList(),
         };
         foreach (var actor in _actors.OrderBy(actor => actor.Id))
         {
@@ -1500,6 +1932,9 @@ public sealed class AuthoritySimulation
                 X = actor.X.Raw,
                 Y = actor.Y.Raw,
                 Angle = actor.Angle.Raw,
+                Roll = actor.Roll.Raw,
+                Pickup = PickupCatalog.IsPickup(actor.DoomEdNum)
+                    ? new SimPickupProperties(actor.PickupAmount, actor.IgnoreAmmoSkill, actor.Depleted) : null,
                 Health = actor.Health,
                 Z = actor.Z.Raw,
                 VelocityX = actor.VelocityX.Raw,
@@ -1522,14 +1957,79 @@ public sealed class AuthoritySimulation
     public void RestoreState(SimSaveState state)
     {
         SimSavegame.ValidateSectors(state);
+        SimSavegame.ValidateWalls(state);
+        SimSavegame.ValidatePlanes(state);
+        SimSavegame.ValidateTextureScrolls(state);
+        SimSavegame.ValidatePickups(state);
+        if (state.GeometryHealth is { } savedHealth && (savedHealth.Lines.Count != Level.Lines.Count
+            || savedHealth.Sectors.Count != Level.Sectors.Count || !savedHealth.Groups.Keys.Order().SequenceEqual(HealthGroups.Keys.Order())))
+            throw new InvalidOperationException("Saved geometry health does not match the current map.");
+        if (state.TextureScrolls is { } savedScrolls && savedScrolls.Any(s =>
+            s.Target >= (s.Kind is >= 2 and <= 8 or >= 17 ? Level.Sides.Count : Level.Sectors.Count)
+                || s.Kind >= 11 && s.Control >= Level.Sectors.Count))
+            throw new InvalidOperationException("Saved texture scroller target is outside the current map.");
+        if (state.Planes is { } savedPlanes && savedPlanes.Count != Level.Sectors.Count)
+            throw new InvalidOperationException("Saved plane count does not match the current map.");
+        if (state.Walls is { } savedWalls && savedWalls.Count != Level.Sides.Count)
+            throw new InvalidOperationException("Saved wall count does not match the current map.");
         foreach (var pose in state.Actors)
         {
             var actor = _actors.FirstOrDefault(candidate => candidate.Id == pose.Id);
-            if (actor != null && (pose.WeaponCooldown < 0 || Math.Abs((long)pose.Pitch) > (actor is PlayerPawn ? 89L : 180L) * 65536
+            if (actor != null && (pose.WeaponCooldown < 0 || actor is PlayerPawn && Math.Abs((long)pose.Pitch) > 89L * 65536
                 || pose.HasPhysics && (!actor.States.HasState(pose.State) || pose.StateTics < -1)))
                 throw new InvalidOperationException("Saved actor state is not in the current table.");
         }
         Thinkers.Clock.Restore(state.Tic);
+        if (state.GeometryHealth is { } health)
+        {
+            for (var i = 0; i < Level.Lines.Count; i++) Level.Lines[i].Health = health.Lines[i];
+            for (var i = 0; i < Level.Sectors.Count; i++)
+            {
+                Level.Sectors[i].HealthFloor = health.Sectors[i].Floor;
+                Level.Sectors[i].HealthCeiling = health.Sectors[i].Ceiling;
+                Level.Sectors[i].Health3D = health.Sectors[i].ThreeD;
+            }
+            foreach (var group in health.Groups) HealthGroups[group.Key] = group.Value;
+        }
+        if (state.TextureScrolls is { } scrolls)
+        {
+            _textureScrolls.Clear(); _sideTextureScrolls.Clear();
+            if (state.IncludesCeilingControls) _controlPlaneScrolls.RemoveAll(s => s.Plane == SectorTextureScrollPlane.Ceiling);
+            if (state.IncludesFloorControls) _controlPlaneScrolls.RemoveAll(s => s.Plane == SectorTextureScrollPlane.Floor);
+            if (state.IncludesWallParts) _controlWallScrolls.Clear();
+            else if (state.IncludesWallControls) _controlWallScrolls.RemoveAll(s => s.Parts == WallScrollParts.All);
+            if (state.IncludesCarryScrolls)
+            {
+                _sectorCarryScrolls.Clear(); _acceleratingCarryScrolls.Clear();
+                _controlCarryScrolls.Clear(); _displacementCarryScrolls.Clear();
+                Array.Clear(SectorScrollX); Array.Clear(SectorScrollY);
+            }
+            foreach (var scroll in scrolls)
+                if (scroll.Kind < 2)
+                    _textureScrolls.Add(new SectorTextureScroll(scroll.Target, scroll.Dx, scroll.Dy, (SectorTextureScrollPlane)scroll.Kind));
+                else if (scroll.Kind <= 8)
+                    _sideTextureScrolls.Add(new SideTextureScroll(scroll.Target, scroll.Dx, scroll.Dy, (WallScrollParts)(scroll.Kind - 1)));
+                else if (scroll.Kind == 9)
+                    _sectorCarryScrolls.Add(new SectorCarryScroll(scroll.Target, scroll.Dx, scroll.Dy, scroll.Affect));
+                else if (scroll.Kind == 10)
+                    _acceleratingCarryScrolls.Add(new AcceleratingSectorCarryScroll(scroll.Target, scroll.Dx, scroll.Dy, scroll.Affect)
+                        { Vdx = scroll.Vdx, Vdy = scroll.Vdy });
+                else if (scroll.Kind <= 12)
+                    _controlCarryScrolls.Add(new ControlSectorCarryScroll(scroll.Target, scroll.Control, scroll.Dx, scroll.Dy,
+                        scroll.LastHeight, scroll.Kind == 12) { Vdx = scroll.Vdx, Vdy = scroll.Vdy });
+                else if (scroll.Kind <= 16)
+                    _controlPlaneScrolls.Add(new ControlPlaneScroll(scroll.Target, scroll.Control, scroll.Dx, scroll.Dy,
+                        scroll.LastHeight, scroll.Kind is 14 or 16,
+                        scroll.Kind <= 14 ? SectorTextureScrollPlane.Ceiling : SectorTextureScrollPlane.Floor) { Vdx = scroll.Vdx, Vdy = scroll.Vdy });
+                else
+                    _controlWallScrolls.Add(new ControlWallScroll(scroll.Target, scroll.Control, scroll.Dx, scroll.Dy,
+                        scroll.LastHeight, ControlWallScroll.AccelerationFromKind(scroll.Kind),
+                        ControlWallScroll.PartsFromKind(scroll.Kind)) { Vdx = scroll.Vdx, Vdy = scroll.Vdy });
+        }
+        if (state.Planes is { } planes)
+            for (var i = 0; i < planes.Count; i++) planes[i].Apply(Level.Sectors[i]);
+        if (state.Walls is { } walls)
+            for (var i = 0; i < walls.Count; i++) walls[i].Apply(Level.Sides[i]);
         Exited = state.Exited;
         SecretExit = state.SecretExit;
         if (state.CombatRandomState is { } randomState) CombatRandomState = randomState;
@@ -1543,6 +2043,13 @@ public sealed class AuthoritySimulation
             actor.Angle = new BamAngle(pose.Angle);
             actor.PitchDegrees = new Fixed(pose.Pitch).ToDouble();
             actor.RestoreHealth(pose.Health);
+            if (pose.Roll is { } roll) actor.Roll = new BamAngle(roll);
+            if (pose.Pickup is { } pickup)
+            {
+                actor.PickupAmount = pickup.Amount;
+                actor.IgnoreAmmoSkill = pickup.IgnoreSkill;
+                actor.Depleted = pickup.Depleted;
+            }
             actor.Z = new Fixed(pose.Z);
             actor.VelocityX = new Fixed(pose.VelocityX);
             actor.VelocityY = new Fixed(pose.VelocityY);
@@ -1756,6 +2263,9 @@ public sealed class AuthoritySimulation
         LightEffects.RemoveAll(effect => effect.Tick(this));
         Thinkers.Run();
         RebuildSectorCarryScrolls();
+        ApplySectorTextureScrolls();
+        ApplySideTextureScrolls();
+        MarkInScrollSectorActors();
         foreach (var actor in _actors)
             ActorPhysics.ApplySectorScroll(this, actor);
         _actors.RemoveAll(actor => actor.Destroyed);
@@ -1800,7 +2310,7 @@ public sealed class AuthoritySimulation
                     continue;
                 if (!CirclesOverlap(player, actor))
                     continue;
-                if (!PickupCatalog.TryGive(player, actor.DoomEdNum, actor.IgnoreAmmoSkill, actor.Depleted))
+                if (!PickupCatalog.TryGive(player, actor.DoomEdNum, actor.IgnoreAmmoSkill, actor.Depleted, actor.PickupAmount))
                     continue;
                 taken.Add(actor);
                 if (GameMode == SpawnGameMode.Cooperative && CoopShareKeys && PickupCatalog.IsKey(actor.DoomEdNum))
@@ -1832,6 +2342,15 @@ public sealed class AuthoritySimulation
     }
 
     private void PublishStatus() => StatusLine = Describe();
+
+    private SimGeometryHealth CaptureGeometryHealth()
+    {
+        var health = new SimGeometryHealth();
+        health.Lines.AddRange(Level.Lines.Select(line => line.Health));
+        health.Sectors.AddRange(Level.Sectors.Select(sector => new SimSectorHealth(sector.HealthFloor, sector.HealthCeiling, sector.Health3D)));
+        foreach (var group in HealthGroups) health.Groups.Add(group.Key, group.Value);
+        return health;
+    }
 
     private void RecomputeChecksum()
     {
@@ -1866,6 +2385,23 @@ public sealed class AuthoritySimulation
         hash = Mix(hash, _lightFlashRandomState);
         hash = Mix(hash, _fireFlickerRandomState);
         hash = Mix(hash, Acs.Checksum);
+        if (HealthGroups.Count != 0 || Level.Lines.Any(line => line.Health != 0)
+            || Level.Sectors.Any(sector => sector.HealthFloor != 0 || sector.HealthCeiling != 0 || sector.Health3D != 0))
+        {
+            hash = Mix(hash, 0x4845414cu);
+            foreach (var line in Level.Lines) hash = Mix(hash, unchecked((uint)line.Health));
+            foreach (var sector in Level.Sectors)
+            {
+                hash = Mix(hash, unchecked((uint)sector.HealthFloor));
+                hash = Mix(hash, unchecked((uint)sector.HealthCeiling));
+                hash = Mix(hash, unchecked((uint)sector.Health3D));
+            }
+            foreach (var group in HealthGroups.OrderBy(group => group.Key))
+            {
+                hash = Mix(hash, unchecked((uint)group.Key));
+                hash = Mix(hash, unchecked((uint)group.Value));
+            }
+        }
         foreach (var actor in _actors.OrderBy(actor => actor.Id))
         {
             hash = Mix(hash, actor.Id);
@@ -1877,6 +2413,11 @@ public sealed class AuthoritySimulation
             hash = Mix(hash, unchecked((uint)actor.VelocityY.Raw));
             hash = Mix(hash, unchecked((uint)actor.VelocityZ.Raw));
             hash = Mix(hash, actor.Angle.Raw);
+            if (actor.Roll.Raw != 0)
+            {
+                hash = Mix(hash, 0x524f4c4cu);
+                hash = Mix(hash, actor.Roll.Raw);
+            }
             hash = Mix(hash, unchecked((uint)Fixed.FromDouble(actor.PitchDegrees).Raw));
             hash = Mix(hash, unchecked((uint)actor.States.Current));
             hash = Mix(hash, unchecked((uint)actor.States.RemainingTics));
@@ -1959,6 +2500,7 @@ public sealed class AuthoritySimulation
             hash = Mix(hash, actor.DontDrain ? 1u : 0u);
             hash = Mix(hash, actor.IgnoreAmmoSkill ? 1u : 0u);
             hash = Mix(hash, actor.Depleted ? 1u : 0u);
+            hash = Mix(hash, (uint)actor.PickupAmount);
             hash = Mix(hash, (uint)actor.RaiseDuration);
             hash = Mix(hash, (uint)actor.Mass);
             hash = Mix(hash, actor.NoRadiusDamage ? 1u : 0u);
@@ -2038,6 +2580,8 @@ public sealed class AuthoritySimulation
             }
             if (actor is IceChunkActor chunk)
                 hash = Mix(hash, (uint)chunk.RemainingTics);
+            if (actor is PuffActor puff)
+                hash = Mix(hash, (uint)puff.RemainingTics);
         }
 
         foreach (var line in Level.Lines)
@@ -2050,12 +2594,35 @@ public sealed class AuthoritySimulation
         }
         foreach (var side in Level.Sides)
         {
-            var offsetBits = BitConverter.DoubleToInt64Bits(side.MidTextureOffsetY);
-            hash = Mix(hash, unchecked((uint)offsetBits));
-            hash = Mix(hash, unchecked((uint)(offsetBits >> 32)));
+            hash = MixDouble(hash, side.MidTextureOffsetY);
+            hash = MixDouble(hash, side.MidTextureOffsetX);
+            hash = MixDouble(hash, side.TopTextureOffsetX);
+            hash = MixDouble(hash, side.TopTextureOffsetY);
+            hash = MixDouble(hash, side.BottomTextureOffsetX);
+            hash = MixDouble(hash, side.BottomTextureOffsetY);
+            hash = MixDouble(hash, side.TopTextureScaleX);
+            hash = MixDouble(hash, side.TopTextureScaleY);
+            hash = MixDouble(hash, side.MidTextureScaleX);
+            hash = MixDouble(hash, side.MidTextureScaleY);
+            hash = MixDouble(hash, side.BottomTextureScaleX);
+            hash = MixDouble(hash, side.BottomTextureScaleY);
         }
         foreach (var sector in Level.Sectors)
         {
+            hash = MixDouble(hash, sector.FloorTextureOffsetX);
+            hash = MixDouble(hash, sector.FloorTextureOffsetY);
+            hash = MixDouble(hash, sector.CeilingTextureOffsetX);
+            hash = MixDouble(hash, sector.CeilingTextureOffsetY);
+            hash = MixDouble(hash, sector.FloorTextureScaleX);
+            hash = MixDouble(hash, sector.FloorTextureScaleY);
+            hash = MixDouble(hash, sector.CeilingTextureScaleX);
+            hash = MixDouble(hash, sector.CeilingTextureScaleY);
+            hash = MixDouble(hash, sector.FloorTextureBaseOffsetY);
+            hash = MixDouble(hash, sector.CeilingTextureBaseOffsetY);
+            hash = Mix(hash, sector.FloorTextureAngle);
+            hash = Mix(hash, sector.CeilingTextureAngle);
+            hash = Mix(hash, sector.FloorTextureBaseAngle);
+            hash = Mix(hash, sector.CeilingTextureBaseAngle);
             hash = Mix(hash, unchecked((uint)sector.Special));
             hash = Mix(hash, unchecked((uint)sector.DamageAmount));
             hash = Mix(hash, unchecked((uint)sector.DamageInterval));
@@ -2069,6 +2636,27 @@ public sealed class AuthoritySimulation
             hash = Mix(hash, (uint)sector.FloorPic.Length);
             foreach (var character in sector.FloorPic) hash = Mix(hash, character);
         }
+        foreach (var scroll in _textureScrolls)
+            hash = MixScroll(hash, scroll.SectorIndex, (int)scroll.Plane, scroll.Dx, scroll.Dy);
+        foreach (var scroll in _sideTextureScrolls)
+            hash = MixScroll(hash, scroll.SideIndex, (int)scroll.Parts + 1, scroll.Dx, scroll.Dy);
+        foreach (var scroll in _sectorCarryScrolls)
+            hash = MixScroll(hash, scroll.SectorIndex, 9, scroll.Dx, scroll.Dy, affect: scroll.Affect);
+        foreach (var scroll in _acceleratingCarryScrolls)
+            hash = MixScroll(hash, scroll.SectorIndex, 10, scroll.BaseDx, scroll.BaseDy,
+                affect: scroll.Affect, vdx: scroll.Vdx, vdy: scroll.Vdy);
+        foreach (var scroll in _controlCarryScrolls)
+            hash = MixScroll(hash, scroll.TargetSector, scroll.Accelerative ? 12 : 11, scroll.ScaleX, scroll.ScaleY,
+                scroll.ControlSector, lastHeight: scroll.LastCenter, vdx: scroll.Vdx, vdy: scroll.Vdy);
+
+        foreach (var scroll in _controlPlaneScrolls)
+            hash = MixScroll(hash, scroll.Target, scroll.ArchiveKind, scroll.Dx, scroll.Dy,
+                scroll.Control, lastHeight: scroll.LastHeight, vdx: scroll.Vdx, vdy: scroll.Vdy);
+
+        foreach (var scroll in _controlWallScrolls)
+            hash = MixScroll(hash, scroll.Side, scroll.ArchiveKind, scroll.Dx, scroll.Dy,
+                scroll.Control, lastHeight: scroll.LastHeight, vdx: scroll.Vdx, vdy: scroll.Vdy);
+
         foreach (var floor in Floors)
             hash = Mix(hash, unchecked((uint)Fixed.FromDouble(floor).Raw));
         foreach (var ceiling in Ceilings)
@@ -2099,6 +2687,28 @@ public sealed class AuthoritySimulation
         hash = Mix(hash, Exited ? 1u : 0u);
 
         Checksum = hash;
+    }
+
+    private static uint MixScroll(uint hash, int target, int kind, double dx, double dy,
+        int control = -1, ScrollCarryAffect affect = ScrollCarryAffect.All,
+        double lastHeight = 0, double vdx = 0, double vdy = 0)
+    {
+        hash = Mix(hash, 0x5343524cu);
+        hash = Mix(hash, unchecked((uint)target));
+        hash = Mix(hash, unchecked((uint)kind));
+        hash = MixDouble(hash, dx);
+        hash = MixDouble(hash, dy);
+        hash = Mix(hash, unchecked((uint)control));
+        hash = Mix(hash, (uint)affect);
+        hash = MixDouble(hash, lastHeight);
+        hash = MixDouble(hash, vdx);
+        return MixDouble(hash, vdy);
+    }
+
+    private static uint MixDouble(uint hash, double value)
+    {
+        var bits = BitConverter.DoubleToInt64Bits(value);
+        return Mix(Mix(hash, unchecked((uint)bits)), unchecked((uint)(bits >> 32)));
     }
 
     private static uint Mix(uint hash, uint value) => (hash ^ value) * 16777619u;
