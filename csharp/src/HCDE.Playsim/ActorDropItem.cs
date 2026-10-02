@@ -24,15 +24,18 @@ internal static class ActorDropItem
         var count = 0;
         if (tid == 0)
         {
-            if (activator is { Destroyed: false } && TryDropOne(sim, activator, doomEdNum, amount, chance))
+            if (activator is { Destroyed: false })
+            {
+                TryDropOne(sim, activator, doomEdNum, amount, chance);
                 count++;
+            }
         }
         else
         {
             foreach (var actor in AcsActorTid.AllFromTid(sim, tid).ToArray())
             {
-                if (TryDropOne(sim, actor, doomEdNum, amount, chance))
-                    count++;
+                TryDropOne(sim, actor, doomEdNum, amount, chance);
+                count++;
             }
         }
 

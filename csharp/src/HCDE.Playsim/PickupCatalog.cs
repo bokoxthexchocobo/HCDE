@@ -38,39 +38,63 @@ public static class PickupCatalog
 
     public static bool IsPickup(int doomEdNum) => TryDescribe(doomEdNum, out _);
 
+    /// <summary>Vanilla Doom bonus items carry INVENTORY.ALWAYSPICKUP.</summary>
+    internal static bool AlwaysPickup(int doomEdNum) => doomEdNum is HealthBonus or ArmorBonus;
+
+    /// <summary>Native Actor defaults, with Doom Backpack's height override.</summary>
+    internal static Fixed HeightOf(int doomEdNum) => Fixed.FromInt(doomEdNum == Backpack ? 26 : 16);
+
+    /// <summary>Native PIT_CheckThing horizontal pickup contact uses strict axis bounds.</summary>
+    internal static bool IsWithinHorizontalReach(Actor toucher, Actor pickup)
+    {
+        var reach = toucher.Radius.ToDouble() + pickup.Radius.ToDouble();
+        return Math.Abs(toucher.X.ToDouble() - pickup.X.ToDouble()) < reach
+            && Math.Abs(toucher.Y.ToDouble() - pickup.Y.ToDouble()) < reach;
+    }
+
+    /// <summary>Native P_TouchSpecialThing vertical reach, including both boundaries.</summary>
+    internal static bool IsWithinVerticalReach(Actor toucher, Actor pickup)
+    {
+        var delta = pickup.Z.ToDouble() - toucher.Z.ToDouble();
+        return delta <= toucher.Height.ToDouble() && delta >= Math.Min(-32.0, -pickup.Height.ToDouble());
+    }
+
     /// <summary>Native <c>PClass::FindActor</c> subset for ACS <c>DropItem</c> on catalog pickups.</summary>
     public static bool TryEditorNumberForDropName(string? typeName, out int doomEdNum)
     {
         doomEdNum = 0;
         if (string.IsNullOrWhiteSpace(typeName))
             return false;
-        doomEdNum = typeName.Trim() switch
+        doomEdNum = typeName.Trim().ToUpperInvariant() switch
         {
-            "Clip" or "Bullet" or "AmmoClip" or "Bullets" => Clip,
-            "ClipBox" or "BulletBox" => ClipBox,
-            "Shell" or "Shells" => Shells,
-            "ShellBox" => ShellBox,
-            "RocketAmmo" or "Rocket" => Rocket,
-            "RocketBox" => RocketBox,
-            "Cell" or "Cells" => Cell,
-            "CellPack" => CellPack,
-            "Stimpack" => Stimpack,
-            "Medikit" => Medikit,
-            "HealthBonus" => HealthBonus,
-            "Soulsphere" => Soulsphere,
-            "GreenArmor" or "Armor" => GreenArmor,
-            "MegaArmor" => MegaArmor,
-            "ArmorBonus" => ArmorBonus,
-            "Backpack" => Backpack,
-            "BlueCard" or "BlueSkull" => BlueCard,
-            "RedCard" or "RedSkull" => RedCard,
-            "YellowCard" or "YellowSkull" => YellowCard,
-            "Chainsaw" => Chainsaw,
-            "Shotgun" => Shotgun,
-            "SuperShotgun" => SuperShotgun,
-            "Chaingun" => Chaingun,
-            "RocketLauncher" => RocketLauncher,
-            "PlasmaRifle" or "Plasma" => PlasmaRifle,
+            "CLIP" or "BULLET" or "AMMOCLIP" or "BULLETS" => Clip,
+            "CLIPBOX" or "BULLETBOX" => ClipBox,
+            "SHELL" or "SHELLS" => Shells,
+            "SHELLBOX" => ShellBox,
+            "ROCKETAMMO" or "ROCKET" => Rocket,
+            "ROCKETBOX" => RocketBox,
+            "CELL" or "CELLS" => Cell,
+            "CELLPACK" => CellPack,
+            "STIMPACK" => Stimpack,
+            "MEDIKIT" => Medikit,
+            "HEALTHBONUS" => HealthBonus,
+            "SOULSPHERE" => Soulsphere,
+            "GREENARMOR" or "ARMOR" => GreenArmor,
+            "MEGAARMOR" => MegaArmor,
+            "ARMORBONUS" => ArmorBonus,
+            "BACKPACK" => Backpack,
+            "BLUECARD" => BlueCard,
+            "BLUESKULL" => BlueSkull,
+            "REDCARD" => RedCard,
+            "REDSKULL" => RedSkull,
+            "YELLOWCARD" => YellowCard,
+            "YELLOWSKULL" => YellowSkull,
+            "CHAINSAW" => Chainsaw,
+            "SHOTGUN" => Shotgun,
+            "SUPERSHOTGUN" => SuperShotgun,
+            "CHAINGUN" => Chaingun,
+            "ROCKETLAUNCHER" => RocketLauncher,
+            "PLASMARIFLE" or "PLASMA" => PlasmaRifle,
             "BFG9000" or "BFG" => Bfg,
             _ => 0,
         };
@@ -113,10 +137,10 @@ public static class PickupCatalog
         return gift.Kind switch
         {
             GiftKind.Health => GiveHealth(player, giftAmount, gift.Maximum),
-            GiftKind.ArmorBonus => GiveArmorBonus(player.Inventory),
-            GiftKind.GreenArmor => GiveArmor(player.Inventory, PlayerInventory.GreenArmorAmount, PlayerInventory.GreenSavePercent),
-            GiftKind.MegaArmor => GiveArmor(player.Inventory, PlayerInventory.MegaArmorAmount, PlayerInventory.MegaSavePercent),
-            GiftKind.Ammo => player.Inventory.TryAddAmmo(gift.Ammo, ammo),
+            GiftKind.ArmorBonus => GiveArmorBonus(player.Inventory, giftAmount),
+            GiftKind.GreenArmor => GiveArmor(player.Inventory, giftAmount, PlayerInventory.GreenSavePercent),
+            GiftKind.MegaArmor => GiveArmor(player.Inventory, giftAmount, PlayerInventory.MegaSavePercent),
+            GiftKind.Ammo => GiveAmmo(player.Inventory, gift.Ammo, ammo),
             GiftKind.Key => GiveKey(player.Inventory, gift.Key),
             GiftKind.Weapon => GiveWeapon(player.Inventory, gift.Weapon, gift.Ammo, ammo),
             GiftKind.Backpack => player.Inventory.GiveBackpack(
@@ -167,11 +191,12 @@ public static class PickupCatalog
         return true;
     }
 
-    private static bool GiveArmorBonus(PlayerInventory inventory)
+    private static bool GiveArmorBonus(PlayerInventory inventory, int amount)
     {
         if (inventory.Armor >= PlayerInventory.MaxHealthBonus)
             return false;
-        inventory.Armor = Math.Min(PlayerInventory.MaxHealthBonus, inventory.Armor + 1);
+        inventory.Armor += Math.Min(amount, PlayerInventory.MaxHealthBonus - inventory.Armor);
+        inventory.ArmorMaximum = Math.Max(inventory.ArmorMaximum, PlayerInventory.MaxHealthBonus);
         if (inventory.ArmorSavePercent == 0)
             inventory.ArmorSavePercent = PlayerInventory.GreenSavePercent;
         return true;
@@ -182,6 +207,7 @@ public static class PickupCatalog
         if (inventory.Armor >= amount)
             return false;
         inventory.Armor = amount;
+        inventory.ArmorMaximum = amount;
         inventory.ArmorSavePercent = savePercent;
         // Doom green and mega leave both caps at 0. AbsorbCount stays.
         inventory.MaxAbsorb = 0;
@@ -213,9 +239,20 @@ public static class PickupCatalog
     {
         var owned = inventory.Owns(weapon);
         if (!owned)
+        {
             inventory.Weapons |= weapon;
-        var added = amount > 0 && inventory.TryAddAmmo(ammo, amount);
+            if (!inventory.NeverAutoSwitch) inventory.Pending = weapon;
+        }
+        var added = amount > 0 && GiveAmmo(inventory, ammo, amount);
         return !owned || added;
+    }
+
+    private static bool GiveAmmo(PlayerInventory inventory, AmmoKind ammo, int amount)
+    {
+        var wasEmpty = inventory.Ammo(ammo) == 0;
+        var added = inventory.TryAddAmmo(ammo, amount);
+        if (added && wasEmpty) inventory.CheckAmmoPickupSwitch(ammo);
+        return added;
     }
 
     private static bool TryDescribe(int doomEdNum, out Gift gift)

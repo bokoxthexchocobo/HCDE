@@ -23,7 +23,8 @@ public class DropItemChanceTests
         var sim = Room(); var reference = Room();
         var random = (int)(reference.NextCombatRandom() & 255);
         var expected = random <= chance ? 1 : 0;
-        Assert.Equal(expected, ActorDropItem.Drop(sim, 0, sim.Players.Single(), "Clip", 0, chance));
+        if (expected != 0) for (var i = 0; i < 5; i++) reference.NextCombatRandom();
+        Assert.Equal(1, ActorDropItem.Drop(sim, 0, sim.Players.Single(), "Clip", 0, chance));
         Assert.Equal(expected, sim.Actors.Count(actor => actor.DoomEdNum == PickupCatalog.Clip));
         Assert.Equal(reference.CombatRandomState, sim.CombatRandomState);
     }
@@ -33,6 +34,7 @@ public class DropItemChanceTests
     {
         var sim = Room(); var reference = Room();
         var chance = (int)(reference.NextCombatRandom() & 255);
+        for (var i = 0; i < 5; i++) reference.NextCombatRandom();
         Assert.Equal(1, ActorDropItem.Drop(sim, 0, sim.Players.Single(), "Clip", 0, chance));
         Assert.Equal(reference.CombatRandomState, sim.CombatRandomState);
     }
@@ -49,7 +51,7 @@ public class DropItemChanceTests
     public void EveryTidMatchConsumesItsOwnChanceDraw()
     {
         var sim = Room(); var reference = Room();
-        reference.NextCombatRandom(); reference.NextCombatRandom();
+        for (var i = 0; i < 12; i++) reference.NextCombatRandom();
         Assert.Equal(2, ActorDropItem.Drop(sim, 7, null, "Clip", 0, 255));
         Assert.Equal(2, sim.Actors.Count(actor => actor.DoomEdNum == PickupCatalog.Clip));
         Assert.Equal(reference.CombatRandomState, sim.CombatRandomState);

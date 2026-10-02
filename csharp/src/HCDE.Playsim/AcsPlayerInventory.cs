@@ -25,20 +25,20 @@ internal static class AcsPlayerInventory
 
         if (typeName.Equals("Armor", StringComparison.OrdinalIgnoreCase)
             || typeName.Equals("BasicArmor", StringComparison.OrdinalIgnoreCase))
-            return max ? player.Inventory.Armor : player.Inventory.Armor;
+            return max ? player.Inventory.ArmorMaximum : player.Inventory.Armor;
 
         if (typeName.Equals("Health", StringComparison.OrdinalIgnoreCase))
-            return max ? PlayerInventory.MaxHealthBonus : player.Health;
+            return max ? 100 : player.Health;
 
         if (typeName.Equals("BlueCard", StringComparison.OrdinalIgnoreCase)
             || typeName.Equals("BlueSkull", StringComparison.OrdinalIgnoreCase))
-            return player.Inventory.BlueKey ? 1 : 0;
+            return max || player.Inventory.BlueKey ? 1 : 0;
         if (typeName.Equals("RedCard", StringComparison.OrdinalIgnoreCase)
             || typeName.Equals("RedSkull", StringComparison.OrdinalIgnoreCase))
-            return player.Inventory.RedKey ? 1 : 0;
+            return max || player.Inventory.RedKey ? 1 : 0;
         if (typeName.Equals("YellowCard", StringComparison.OrdinalIgnoreCase)
             || typeName.Equals("YellowSkull", StringComparison.OrdinalIgnoreCase))
-            return player.Inventory.YellowKey ? 1 : 0;
+            return max || player.Inventory.YellowKey ? 1 : 0;
 
         if (typeName.Equals("Clip", StringComparison.OrdinalIgnoreCase)
             || typeName.Equals("Bullet", StringComparison.OrdinalIgnoreCase)
@@ -54,21 +54,10 @@ internal static class AcsPlayerInventory
             || typeName.Equals("Cells", StringComparison.OrdinalIgnoreCase))
             return max ? player.Inventory.MaxCells : player.Inventory.Cells;
 
-        if (typeName.Equals("Shotgun", StringComparison.OrdinalIgnoreCase))
-            return player.Inventory.Owns(WeaponKind.Shotgun) ? 1 : 0;
-        if (typeName.Equals("SuperShotgun", StringComparison.OrdinalIgnoreCase))
-            return player.Inventory.Owns(WeaponKind.SuperShotgun) ? 1 : 0;
-        if (typeName.Equals("Chaingun", StringComparison.OrdinalIgnoreCase))
-            return player.Inventory.Owns(WeaponKind.Chaingun) ? 1 : 0;
-        if (typeName.Equals("RocketLauncher", StringComparison.OrdinalIgnoreCase))
-            return player.Inventory.Owns(WeaponKind.RocketLauncher) ? 1 : 0;
-        if (typeName.Equals("PlasmaRifle", StringComparison.OrdinalIgnoreCase))
-            return player.Inventory.Owns(WeaponKind.Plasma) ? 1 : 0;
-        if (typeName.Equals("BFG9000", StringComparison.OrdinalIgnoreCase)
-            || typeName.Equals("BFG", StringComparison.OrdinalIgnoreCase))
-            return player.Inventory.Owns(WeaponKind.Bfg) ? 1 : 0;
-        if (typeName.Equals("Chainsaw", StringComparison.OrdinalIgnoreCase))
-            return player.Inventory.Owns(WeaponKind.Chainsaw) ? 1 : 0;
+        if (TryWeaponKind(typeName, out var weaponKind))
+            return max || player.Inventory.Owns(weaponKind) ? 1 : 0;
+        if (typeName.Equals("Backpack", StringComparison.OrdinalIgnoreCase))
+            return max || player.Inventory.HasBackpack ? 1 : 0;
 
         return 0;
     }
@@ -145,9 +134,23 @@ internal static class AcsPlayerInventory
         return player.Inventory.Selected == weaponKind ? 1 : 0;
     }
 
-    /// <summary>Native <c>PCD_SETWEAPON</c>; returns 0/1 like <see cref="Use"/>.</summary>
+    /// <summary>Native <c>PCD_SETWEAPON</c>: selecting the ready weapon cancels a pending switch.</summary>
     public static int SetWeapon(Actor? activator, string[] stringTable, int stringId) =>
-        Use(activator, stringTable, stringId);
+        SetWeapon(activator, stringId < 0 || stringId >= stringTable.Length ? null : stringTable[stringId]);
+
+    public static int SetWeapon(Actor? activator, string? typeName)
+    {
+        if (activator is not PlayerPawn { Destroyed: false } player || string.IsNullOrEmpty(typeName)
+            || !TryWeaponKind(typeName, out var weaponKind) || !player.Inventory.Owns(weaponKind))
+            return 0;
+
+        if (player.Inventory.Selected == weaponKind)
+        {
+            player.Inventory.Pending = null;
+            return 1;
+        }
+        return Use(player, typeName);
+    }
 
     public static int Use(Actor? activator, string? typeName)
     {
@@ -167,6 +170,8 @@ internal static class AcsPlayerInventory
             if (player.Inventory.Armor >= armorCap)
                 return 0;
             player.Inventory.Armor = Math.Min(armorCap, player.Inventory.Armor + armorAmount);
+            player.Inventory.ArmorMaximum = typeName.Equals("ArmorBonus", StringComparison.OrdinalIgnoreCase)
+                ? Math.Max(player.Inventory.ArmorMaximum, armorCap) : armorAmount;
             if (player.Inventory.ArmorSavePercent == 0)
                 player.Inventory.ArmorSavePercent = savePercent;
             return 1;
@@ -226,6 +231,21 @@ internal static class AcsPlayerInventory
             return;
 
         var inventory = player.Inventory;
+        if (typeName.Equals("ArmorBonus", StringComparison.OrdinalIgnoreCase))
+        {
+            PickupCatalog.TryGive(player, PickupCatalog.ArmorBonus, pickupAmount: amount);
+            return;
+        }
+        if (typeName.Equals("GreenArmor", StringComparison.OrdinalIgnoreCase)
+            || typeName.Equals("BlueArmor", StringComparison.OrdinalIgnoreCase)
+            || typeName.Equals("MegaArmor", StringComparison.OrdinalIgnoreCase))
+        {
+            var green = typeName.Equals("GreenArmor", StringComparison.OrdinalIgnoreCase);
+            var suitAmount = green ? PlayerInventory.GreenArmorAmount : PlayerInventory.MegaArmorAmount;
+            PickupCatalog.TryGive(player, green ? PickupCatalog.GreenArmor : PickupCatalog.MegaArmor,
+                pickupAmount: checked(suitAmount * amount));
+            return;
+        }
         if (typeName.Equals("Health", StringComparison.OrdinalIgnoreCase))
         {
             player.Health = Math.Min(PlayerInventory.MaxHealthBonus, player.Health + amount);
@@ -254,13 +274,14 @@ internal static class AcsPlayerInventory
 
         if (typeName.Equals("Backpack", StringComparison.OrdinalIgnoreCase))
         {
-            inventory.GiveBackpack();
+            PickupCatalog.TryGive(player, PickupCatalog.Backpack);
             return;
         }
 
         if (TryAmmoKind(typeName, out var ammoKind))
         {
-            inventory.TryAddAmmo(ammoKind, amount);
+            // GiveInventory restores PendingWeapon after the pickup callbacks.
+            inventory.TryAddAmmo(ammoKind, PickupCatalog.ScaleAmmo(amount, player));
             return;
         }
 
@@ -269,7 +290,18 @@ internal static class AcsPlayerInventory
             inventory.Weapons |= weaponKind;
             var definition = WeaponCatalog.Find(weaponKind);
             if (definition?.Ammo is AmmoKind weaponAmmo)
-                inventory.TryAddAmmo(weaponAmmo, amount);
+            {
+                // SetGiveAmount changes inventory count, not Weapon.AmmoGive.
+                var ammoGive = weaponKind switch
+                {
+                    WeaponKind.Pistol or WeaponKind.Chaingun => 20,
+                    WeaponKind.Shotgun or WeaponKind.SuperShotgun => 8,
+                    WeaponKind.RocketLauncher => 2,
+                    WeaponKind.Plasma or WeaponKind.Bfg => 40,
+                    _ => 0,
+                };
+                inventory.TryAddAmmo(weaponAmmo, PickupCatalog.ScaleAmmo(ammoGive, player));
+            }
         }
     }
 

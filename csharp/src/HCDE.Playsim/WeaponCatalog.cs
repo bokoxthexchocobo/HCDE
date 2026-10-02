@@ -6,6 +6,13 @@ public sealed record WeaponDefinition(AmmoKind? Ammo, int AmmoUse, int RefireTic
 /// <summary>Managed firing cadence and ammo rules. Raise and lower gate firing; psprite sprites are not reproduced.</summary>
 public static class WeaponCatalog
 {
+    internal static int SelectionOrder(WeaponKind weapon) => weapon switch
+    {
+        WeaponKind.Plasma => 100, WeaponKind.SuperShotgun => 400, WeaponKind.Chaingun => 700,
+        WeaponKind.Shotgun => 1300, WeaponKind.Pistol => 1900, WeaponKind.Chainsaw => 2200,
+        WeaponKind.RocketLauncher => 2500, WeaponKind.Bfg => 2800, WeaponKind.Fist => 3700,
+        _ => int.MaxValue,
+    };
     public static WeaponDefinition? Find(WeaponKind weapon) => weapon switch
     {
         WeaponKind.Fist => new(null, 0, 22, SpreadDegrees: 5.625),

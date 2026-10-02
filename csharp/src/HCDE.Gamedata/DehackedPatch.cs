@@ -15,6 +15,7 @@ public sealed class DehackedActor
     public int DoomEdNum { get; set; }
     public int OriginalDoomEdNum { get; init; }
     public uint Bits { get; set; }
+    public bool BitsPatched { get; set; }
     public int SeeSound { get; set; }
     public int AttackSound { get; set; }
     public int PainSound { get; set; }
@@ -208,7 +209,10 @@ public static class DehackedPatch
             else if (key.Equals("Missile damage", StringComparison.OrdinalIgnoreCase))
                 actor.MissileDamage = ParseInt(value);
             else if (key.Equals("Bits", StringComparison.OrdinalIgnoreCase))
+            {
                 actor.Bits = (uint)ParseLong(value);
+                actor.BitsPatched = true;
+            }
             else if (key.Equals("ID #", StringComparison.OrdinalIgnoreCase))
                 actor.DoomEdNum = ParseInt(value);
             else if (key.EndsWith(" sound", StringComparison.OrdinalIgnoreCase))

@@ -5,6 +5,12 @@ namespace HCDE.Playsim.Tests;
 
 public class ActorRollArchiveTests
 {
+    private static byte[] WriteRollArchive()
+    {
+        var state = Room().CaptureState();
+        foreach (var pose in state.Actors) pose.ContactFlags = null;
+        return SimSavegame.Write(state);
+    }
     private static AuthoritySimulation Room() => AuthoritySimulation.Start(new PlayLevel
     {
         Sectors = [new LevelSector { CeilingHeight = 128, HealthFloor = 80 }],
@@ -25,7 +31,7 @@ public class ActorRollArchiveTests
         original.Level.Sectors[0].HealthFloor = 17;
         original.Tick();
         var bytes = SimSavegame.Write(original);
-        Assert.Equal(16, BinaryPrimitives.ReadUInt16LittleEndian(bytes.AsSpan(4)));
+        Assert.Equal(18, BinaryPrimitives.ReadUInt16LittleEndian(bytes.AsSpan(4)));
         var restored = Room();
         SimSavegame.Apply(restored, bytes);
         Assert.Equal(roll, restored.Actors[0].Roll.Raw);
@@ -41,7 +47,7 @@ public class ActorRollArchiveTests
     {
         var sim = Room();
         var state = sim.CaptureState();
-        foreach (var pose in state.Actors) pose.Roll = null;
+        foreach (var pose in state.Actors) { pose.Roll = null; pose.ContactFlags = null; }
         var bytes = SimSavegame.Write(state);
         Assert.Equal(15, BinaryPrimitives.ReadUInt16LittleEndian(bytes.AsSpan(4)));
         sim.Actors[0].Roll = new BamAngle(77);
@@ -61,7 +67,7 @@ public class ActorRollArchiveTests
     [Fact]
     public void TruncatedArchivesAreRejected()
     {
-        var bytes = SimSavegame.Write(Room());
+        var bytes = WriteRollArchive();
         for (var length = 0; length < bytes.Length; length++)
             Assert.False(SimSavegame.TryRead(bytes.AsSpan(0, length), out _, out _));
     }
@@ -74,7 +80,7 @@ public class ActorRollArchiveTests
     [InlineData(int.MaxValue)]
     public void InvalidTrailerSizesAreRejected(int size)
     {
-        var bytes = SimSavegame.Write(Room());
+        var bytes = WriteRollArchive();
         BinaryPrimitives.WriteInt32LittleEndian(bytes.AsSpan(bytes.Length - 4), size);
         Assert.False(SimSavegame.TryRead(bytes, out _, out var error));
         Assert.Equal("save-actor-roll-size", error);
@@ -86,7 +92,7 @@ public class ActorRollArchiveTests
     [InlineData(3)]
     public void InvalidTrailerCountsAreRejected(int count)
     {
-        var bytes = SimSavegame.Write(Room());
+        var bytes = WriteRollArchive();
         BinaryPrimitives.WriteInt32LittleEndian(bytes.AsSpan(bytes.Length - 16), count);
         Assert.False(SimSavegame.TryRead(bytes, out _, out var error));
         Assert.Equal("save-actor-roll-count", error);
@@ -95,7 +101,7 @@ public class ActorRollArchiveTests
     [Fact]
     public void ValidTrailerWithWrongActorCountIsRejected()
     {
-        var bytes = SimSavegame.Write(Room());
+        var bytes = WriteRollArchive();
         var shorter = bytes[..^4];
         BinaryPrimitives.WriteInt32LittleEndian(shorter.AsSpan(shorter.Length - 12), 1);
         BinaryPrimitives.WriteInt32LittleEndian(shorter.AsSpan(shorter.Length - 4), 12);

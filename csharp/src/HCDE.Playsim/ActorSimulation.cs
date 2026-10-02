@@ -54,6 +54,12 @@ public class Actor : Thinker
     public int SectorIndex { get; internal set; } = -1;
     public bool OnGround { get; internal set; } = true;
     public bool NoGravity { get; set; }
+    /// <summary>Native MF_PICKUP. Allows movement contact to collect inventory.</summary>
+    public bool CanPickupItems { get; set; }
+    /// <summary>Native MF_SPECIAL. Enables this item's movement-contact pickup.</summary>
+    public bool SpecialPickup { get; set; }
+    internal bool SpawnCanPickupItems { get; set; }
+    internal bool SpawnSpecialPickup { get; set; }
     public bool Floating { get; set; }
     public double FloatSpeed { get; set; } = 4;
     public bool NoRadiusDamage { get; set; }
@@ -481,6 +487,8 @@ public sealed class PlayerPawn : Actor
 {
     public PlayerPawn()
     {
+        CanPickupItems = true;
+        SpawnCanPickupItems = true;
         AllowDropOff = true;
     }
 
@@ -1016,7 +1024,8 @@ public static class ActorSpawner
                     Angle = BamAngle.FromDegrees(thing.Angle),
                     Health = defaults?.Health ?? definition?.Health ?? 30,
                     Radius = defaults == null && definition != null ? Fixed.FromInt(definition.Radius) : RadiusOf(defaults, player: false),
-                    Height = defaults == null && definition != null ? Fixed.FromInt(definition.Height) : HeightOf(defaults),
+                    Height = defaults == null && PickupCatalog.IsPickup(thing.Type) ? PickupCatalog.HeightOf(thing.Type)
+                        : defaults == null && definition != null ? Fixed.FromInt(definition.Height) : HeightOf(defaults),
                     PainChance = defaults?.PainChance ?? definition?.PainChance ?? 256,
                     ChaseSpeed = Math.Clamp((defaults?.Speed ?? definition?.Speed ?? 4) / 4.0, 0, ActorPhysics.MaxMove),
                     NoGravity = definition?.Floating ?? false,
@@ -1033,6 +1042,14 @@ public static class ActorSpawner
                 actor.Roll = BamAngle.FromDegrees(thing.Roll);
             }
             nextId++;
+            actor.SpecialPickup = PickupCatalog.IsPickup(actor.DoomEdNum);
+            if (defaults is { BitsPatched: true })
+            {
+                actor.SpecialPickup = (defaults.Bits & 0x00000001) != 0;
+                actor.CanPickupItems = (defaults.Bits & 0x00000800) != 0;
+            }
+            actor.SpawnCanPickupItems = actor.CanPickupItems;
+            actor.SpawnSpecialPickup = actor.SpecialPickup;
             actor.ResurrectionHealth = actor.Health;
             if (actor.ResurrectionHealth > 0) actor.GibHealth = -actor.ResurrectionHealth;
             actor.Mass = DoomActorCatalog.MassOf(definitionType);
@@ -1191,6 +1208,8 @@ public sealed class AuthoritySimulation
     public double AmmoFactor { get; set; } = 1;
     /// <summary>Native <c>sv_doubleammo</c>. Off until set. Replaces the skill factor with 2.</summary>
     public bool DoubleAmmo { get; set; }
+    /// <summary>Native <c>sv_dropstyle</c>; 0 uses the Doom default, 2 selects the Strife toss.</summary>
+    public int DropStyle { get; set; }
     /// <summary>Native <c>infighting</c> cvar. -1 never, 0 standard Doom, 1 always.</summary>
     public int Infighting { get; set; }
     public bool Exited { get; private set; }
@@ -1630,10 +1649,24 @@ public sealed class AuthoritySimulation
             Shootable = false,
             IgnoreAmmoSkill = ignoreAmmoSkill,
             PickupAmount = ignoreAmmoSkill ? pickupAmount : PickupCatalog.DropPickupAmount(doomEdNum, pickupAmount),
+            SpecialPickup = true,
+            Height = PickupCatalog.HeightOf(doomEdNum),
         };
-        drop.RememberPosition();
         drop.Simulation = this;
         ActorPhysics.PlaceOnFloor(this, drop);
+        var toss = !Compat.HasFlag(CompatSurface.NoTossDrops);
+        var strifeStyle = DropStyle == 2;
+        drop.Z = Fixed.FromDouble(dropper.Z.ToDouble() + (toss ? strifeStyle ? 24 : dropper.Height.ToDouble() / 2 : 0));
+        if (toss)
+        {
+            var mask = strifeStyle ? 7u : 255u;
+            var divisor = strifeStyle ? 1.0 : 256.0;
+            drop.VelocityX = Fixed.FromDouble(((int)(NextCombatRandom() & mask) - (int)(NextCombatRandom() & mask)) / divisor);
+            drop.VelocityY = Fixed.FromDouble(((int)(NextCombatRandom() & mask) - (int)(NextCombatRandom() & mask)) / divisor);
+            if (!strifeStyle) drop.VelocityZ = Fixed.FromDouble(5 + (NextCombatRandom() & 255) / 64.0);
+        }
+        drop.OnGround = drop.Z.ToDouble() <= FloorOf(drop.SectorIndex);
+        drop.RememberPosition();
         _actors.Add(drop);
         Thinkers.Add(drop, ThinkerStat.Default);
         return true;
@@ -1662,6 +1695,8 @@ public sealed class AuthoritySimulation
             Solid = false,
             Shootable = false,
             Depleted = true,
+            SpecialPickup = true,
+            Height = PickupCatalog.HeightOf(PickupCatalog.Backpack),
         };
         drop.RememberPosition();
         drop.Simulation = this;
@@ -1933,6 +1968,7 @@ public sealed class AuthoritySimulation
                 Y = actor.Y.Raw,
                 Angle = actor.Angle.Raw,
                 Roll = actor.Roll.Raw,
+                ContactFlags = (actor.CanPickupItems ? 1 : 0) | (actor.SpecialPickup ? 2 : 0),
                 Pickup = PickupCatalog.IsPickup(actor.DoomEdNum)
                     ? new SimPickupProperties(actor.PickupAmount, actor.IgnoreAmmoSkill, actor.Depleted) : null,
                 Health = actor.Health,
@@ -1961,6 +1997,7 @@ public sealed class AuthoritySimulation
         SimSavegame.ValidatePlanes(state);
         SimSavegame.ValidateTextureScrolls(state);
         SimSavegame.ValidatePickups(state);
+        SimSavegame.ValidateContactFlags(state);
         if (state.GeometryHealth is { } savedHealth && (savedHealth.Lines.Count != Level.Lines.Count
             || savedHealth.Sectors.Count != Level.Sectors.Count || !savedHealth.Groups.Keys.Order().SequenceEqual(HealthGroups.Keys.Order())))
             throw new InvalidOperationException("Saved geometry health does not match the current map.");
@@ -2044,6 +2081,11 @@ public sealed class AuthoritySimulation
             actor.PitchDegrees = new Fixed(pose.Pitch).ToDouble();
             actor.RestoreHealth(pose.Health);
             if (pose.Roll is { } roll) actor.Roll = new BamAngle(roll);
+            if (pose.ContactFlags is { } contactFlags)
+            {
+                actor.CanPickupItems = (contactFlags & 1) != 0;
+                actor.SpecialPickup = (contactFlags & 2) != 0;
+            }
             if (pose.Pickup is { } pickup)
             {
                 actor.PickupAmount = pickup.Amount;
@@ -2158,6 +2200,8 @@ public sealed class AuthoritySimulation
         player.VelocityX = default;
         player.VelocityY = default;
         player.VelocityZ = default;
+        player.CanPickupItems = player.SpawnCanPickupItems;
+        player.SpecialPickup = player.SpawnSpecialPickup;
         player.Health = player.ResurrectionHealth > 0 ? player.ResurrectionHealth : 100;
         ActorPhysics.PlaceOnFloor(this, player);
         player.ClearCommands();
@@ -2302,15 +2346,16 @@ public sealed class AuthoritySimulation
         var taken = new List<Actor>();
         foreach (var player in Players)
         {
-            if (player.IsDead)
+            if (player.IsDead || !player.CanPickupItems)
                 continue;
             foreach (var actor in _actors)
             {
-                if (taken.Contains(actor) || !PickupCatalog.IsPickup(actor.DoomEdNum))
+                if (taken.Contains(actor) || !actor.SpecialPickup || !PickupCatalog.IsPickup(actor.DoomEdNum))
                     continue;
-                if (!CirclesOverlap(player, actor))
+                if (!PickupCatalog.IsWithinHorizontalReach(player, actor) || !PickupCatalog.IsWithinVerticalReach(player, actor))
                     continue;
-                if (!PickupCatalog.TryGive(player, actor.DoomEdNum, actor.IgnoreAmmoSkill, actor.Depleted, actor.PickupAmount))
+                if (!PickupCatalog.TryGive(player, actor.DoomEdNum, actor.IgnoreAmmoSkill, actor.Depleted, actor.PickupAmount)
+                    && !PickupCatalog.AlwaysPickup(actor.DoomEdNum))
                     continue;
                 taken.Add(actor);
                 if (GameMode == SpawnGameMode.Cooperative && CoopShareKeys && PickupCatalog.IsKey(actor.DoomEdNum))
@@ -2332,13 +2377,16 @@ public sealed class AuthoritySimulation
     }
 
     private static bool CirclesOverlap(Actor left, Actor right)
+        => HorizontalCirclesOverlap(left, right)
+            && left.Z.ToDouble() < right.Z.ToDouble() + right.Height.ToDouble()
+            && right.Z.ToDouble() < left.Z.ToDouble() + left.Height.ToDouble();
+
+    private static bool HorizontalCirclesOverlap(Actor left, Actor right)
     {
         var dx = left.X.ToDouble() - right.X.ToDouble();
         var dy = left.Y.ToDouble() - right.Y.ToDouble();
         var reach = left.Radius.ToDouble() + right.Radius.ToDouble();
-        return dx * dx + dy * dy <= reach * reach
-            && left.Z.ToDouble() < right.Z.ToDouble() + right.Height.ToDouble()
-            && right.Z.ToDouble() < left.Z.ToDouble() + left.Height.ToDouble();
+        return dx * dx + dy * dy <= reach * reach;
     }
 
     private void PublishStatus() => StatusLine = Describe();
@@ -2375,6 +2423,7 @@ public sealed class AuthoritySimulation
         hash = Mix(hash, (uint)Skill);
         hash = Mix(hash, unchecked((uint)Fixed.FromDouble(AmmoFactor).Raw));
         hash = Mix(hash, DoubleAmmo ? 1u : 0u);
+        if (DropStyle != 0) hash = Mix(hash, unchecked((uint)DropStyle));
         hash = Mix(hash, unchecked((uint)Infighting));
         hash = Mix(hash, unchecked((uint)Thinkers.Clock.Tic));
         hash = Mix(hash, unchecked((uint)RngSeed));
@@ -2488,6 +2537,21 @@ public sealed class AuthoritySimulation
             hash = Mix(hash, actor.HarmFriends ? 1u : 0u);
             hash = Mix(hash, actor.NoTargetSwitch ? 1u : 0u);
             hash = Mix(hash, actor.NoHatePlayers ? 1u : 0u);
+            if (actor.CanPickupItems != (actor is PlayerPawn))
+            {
+                hash = Mix(hash, 0x5049434bu);
+                hash = Mix(hash, actor.CanPickupItems ? 1u : 0u);
+            }
+            if (actor.SpecialPickup != PickupCatalog.IsPickup(actor.DoomEdNum))
+            {
+                hash = Mix(hash, 0x53504543u);
+                hash = Mix(hash, actor.SpecialPickup ? 1u : 0u);
+            }
+            if (actor is PlayerPawn && (!actor.SpawnCanPickupItems || actor.SpawnSpecialPickup))
+            {
+                hash = Mix(hash, 0x53504346u);
+                hash = Mix(hash, (actor.SpawnCanPickupItems ? 1u : 0u) | (actor.SpawnSpecialPickup ? 2u : 0u));
+            }
             hash = Mix(hash, unchecked((uint)actor.TidToHate));
             hash = Mix(hash, actor.QuickToRetaliate ? 1u : 0u);
             hash = Mix(hash, actor.Friendly ? 1u : 0u);
@@ -2533,6 +2597,11 @@ public sealed class AuthoritySimulation
                 hash = Mix(hash, (uint)player.TurnTicks);
                 hash = Mix(hash, player.TurnHeld ? 1u : 0u);
                 hash = Mix(hash, player.Inventory.Pending is { } pending ? (uint)pending : 0u);
+                if (player.Inventory.ArmorMaximum != 1)
+                {
+                    hash = Mix(hash, 0x414d4158u);
+                    hash = Mix(hash, unchecked((uint)player.Inventory.ArmorMaximum));
+                }
                 hash = Mix(hash, unchecked((uint)Fixed.FromDouble(player.DrainStrength).Raw));
                 hash = Mix(hash, player.Buddha2 ? 1u : 0u);
                 hash = Mix(hash, player.ExtremelyDead ? 1u : 0u);
@@ -2565,6 +2634,7 @@ public sealed class AuthoritySimulation
                     hash = Mix(hash, (uint)spare.MaxFullAbsorb);
                 }
                 hash = Mix(hash, (uint)player.Inventory.Selected);
+                if (player.Inventory.NeverAutoSwitch) hash = Mix(hash, 0x4e535743u);
                 hash = Mix(hash, (uint)player.Inventory.Weapons);
             }
             if (actor.Brain is { } brain)

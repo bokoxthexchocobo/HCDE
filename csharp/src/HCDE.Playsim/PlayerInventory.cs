@@ -37,6 +37,8 @@ public sealed class PlayerInventory
     public const int MegaSavePercent = 50;
 
     public int Armor { get; set; }
+    /// <summary>Native BasicArmor.MaxAmount, retained when armor is depleted.</summary>
+    public int ArmorMaximum { get; set; } = 1;
     public int ArmorSavePercent { get; set; }
     /// <summary>BasicArmor total save cap. 0 means no cap.</summary>
     public int MaxAbsorb { get; set; }
@@ -64,11 +66,14 @@ public sealed class PlayerInventory
     public WeaponKind Selected { get; set; } = WeaponKind.Pistol;
     /// <summary>Native <c>PendingWeapon</c>. Null is <c>WP_NOCHANGE</c>. The ready weapon stays <see cref="Selected"/> until the lower finishes.</summary>
     public WeaponKind? Pending { get; set; }
+    /// <summary>Converted player GetNeverSwitch preference for pickup-triggered switching.</summary>
+    public bool NeverAutoSwitch { get; set; }
 
     /// <summary>Deathmatch pistol start. Cooperative respawn uses <see cref="FilterCoopRespawn"/>.</summary>
     public void ResetToPistolStart()
     {
         Armor = 0;
+        ArmorMaximum = 1;
         ArmorSavePercent = 0;
         MaxAbsorb = 0;
         MaxFullAbsorb = 0;
@@ -104,6 +109,7 @@ public sealed class PlayerInventory
         if (Armor < saveAmount)
         {
             Armor = saveAmount;
+            ArmorMaximum = saveAmount;
             ArmorSavePercent = savePercent;
             MaxAbsorb = maxAbsorb;
             MaxFullAbsorb = maxFullAbsorb;
@@ -130,6 +136,7 @@ public sealed class PlayerInventory
         var spare = _spareArmor[best];
         _spareArmor.RemoveAt(best);
         Armor = spare.SaveAmount;
+        ArmorMaximum = spare.SaveAmount;
         ArmorSavePercent = spare.SavePercent;
         MaxAbsorb = spare.MaxAbsorb;
         MaxFullAbsorb = spare.MaxFullAbsorb;
@@ -221,10 +228,10 @@ public sealed class PlayerInventory
         if (first)
         {
             HasBackpack = true;
-            MaxBullets = 400;
-            MaxShells = 100;
-            MaxRockets = 100;
-            MaxCells = 600;
+            MaxBullets = Math.Max(MaxBullets, 400);
+            MaxShells = Math.Max(MaxShells, 100);
+            MaxRockets = Math.Max(MaxRockets, 100);
+            MaxCells = Math.Max(MaxCells, 600);
         }
         if (!(depleted && first))
         {
@@ -237,22 +244,34 @@ public sealed class PlayerInventory
     }
 
     /// <summary>
-    /// <c>DetachFromOwner</c> for the one backpack. Caps return to the pistol start.
-    /// Ammo above those caps is cut. Ammo under them stays.
+    /// <c>DetachFromOwner</c> resets caps equal to the vanilla backpack maximum.
+    /// Other caps stay unchanged. Ammo above a reset cap is cut.
     /// </summary>
     public bool RemoveBackpack()
     {
         if (!HasBackpack)
             return false;
         HasBackpack = false;
-        MaxBullets = 200;
-        MaxShells = 50;
-        MaxRockets = 50;
-        MaxCells = 300;
-        Bullets = Math.Min(Bullets, MaxBullets);
-        Shells = Math.Min(Shells, MaxShells);
-        Rockets = Math.Min(Rockets, MaxRockets);
-        Cells = Math.Min(Cells, MaxCells);
+        if (MaxBullets == 400)
+        {
+            MaxBullets = 200;
+            Bullets = Math.Min(Bullets, MaxBullets);
+        }
+        if (MaxShells == 100)
+        {
+            MaxShells = 50;
+            Shells = Math.Min(Shells, MaxShells);
+        }
+        if (MaxRockets == 100)
+        {
+            MaxRockets = 50;
+            Rockets = Math.Min(Rockets, MaxRockets);
+        }
+        if (MaxCells == 600)
+        {
+            MaxCells = 300;
+            Cells = Math.Min(Cells, MaxCells);
+        }
         return true;
     }
 
@@ -305,6 +324,16 @@ public sealed class PlayerInventory
         var definition = WeaponCatalog.Find(weapon);
         return Owns(weapon) && definition != null
             && (definition.Ammo is not { } ammo || Ammo(ammo) >= definition.AmmoUse);
+    }
+
+    internal void CheckAmmoPickupSwitch(AmmoKind ammo)
+    {
+        if (NeverAutoSwitch || Pending.HasValue || Selected is not (WeaponKind.Fist or WeaponKind.Pistol)) return;
+        var best = Selected;
+        foreach (var weapon in Cycle)
+            if (WeaponCatalog.Find(weapon)?.Ammo == ammo && CanSelect(weapon)
+                && WeaponCatalog.SelectionOrder(weapon) < WeaponCatalog.SelectionOrder(best)) best = weapon;
+        if (best != Selected) Pending = best;
     }
 
     public int Ammo(AmmoKind kind) => kind switch

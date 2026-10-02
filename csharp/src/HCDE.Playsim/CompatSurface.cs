@@ -16,6 +16,8 @@ public enum CompatSurface
     HexenCrushDefaults = 32,
     /// <summary>Native <c>COMPATF_BOOMSCROLL</c>. Non-players sum multi-sector carry; players still average.</summary>
     BoomScroll = 64,
+    /// <summary>Native <c>COMPATF_NOTOSSDROPS</c>. Drops use source Z without toss velocity.</summary>
+    NoTossDrops = 128,
 }
 
 public static class CompatSurfaceRules

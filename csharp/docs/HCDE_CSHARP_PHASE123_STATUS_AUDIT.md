@@ -1,5 +1,612 @@
 # Gameplay phases 1–3: implementation and completion audit
 
+## Conversion and audit: ACS armor bonus grants (2026-10-02)
+
+Audited ArmorBonus defaults and BasicArmorBonus.SetGiveAmount/Use. Converted
+previously ignored ACS ArmorBonus grants to the shared catalog bonus path.
+Bonus grants now honor explicit amounts, add up to the vanilla 200 cap and
+raise stored armor capacity to at least 200 on success. Active suit protection
+and absorption caps remain unchanged. Full/over-cap armor rejects the bonus
+without changing capacity. Addition uses remaining capacity before adding,
+avoiding overflow for large positive requested counts.
+
+Added six regressions for counts, cap/large input, existing suit protection,
+full armor and explicit catalog amounts. Release validation: **4,501 tests
+passed (3,428 Playsim; 500 MapLoader)**. Warnings-as-errors build passed with
+zero warnings/errors. Touched-file whitespace validation passed.
+
+Remaining gaps include armor skill factors, depleted armor absorption-field
+reset parity, custom bonus counters/alternate semantics, Armor/BasicArmor
+direct grants, full inventory serialization and native executable comparison.
+Changes uncommitted.
+
+## Conversion and audit: ACS armor suit grants (2026-10-02)
+
+Audited GreenArmor/BlueArmor defaults and BasicArmorPickup.SetGiveAmount/Use.
+Converted previously ignored ACS suit grants: GreenArmor grants 100 times
+the requested count, BlueArmor grants 200 times the count, and the existing
+managed MegaArmor spelling is accepted as an alias. Uses the catalog suit
+path for protection percentage, maximum capacity and absorption-cap reset.
+Catalog suit grants now honor explicit pickup amounts. A weaker/equal suit
+leaves the existing suit intact. Count multiplication uses checked arithmetic
+so unrepresentable grants fail explicitly rather than wrap to a default gift.
+
+Added six regressions for class names, count scaling beyond 200, maximum and
+protection values, and weaker-suit rejection. Release validation: **4,495
+tests passed (3,422 Playsim; 500 MapLoader)**. Warnings-as-errors build passed
+with zero warnings/errors. Touched-file whitespace validation passed.
+
+Remaining gaps include Armor alias versus BasicArmor direct-grant behavior,
+armor skill factors, custom armor classes/bonus counters, full inventory
+serialization and native executable comparison. Changes uncommitted.
+
+## Conversion and audit: stored armor maximum (2026-10-02)
+
+Audited BasicArmor default inventory maximum, BasicArmorPickup.Use and
+BasicArmorBonus.Use. Added ArmorMaximum independently of current Armor:
+default one, suit SaveAmount on acquisition or stored-suit promotion, and
+the larger existing/bonus maximum after a successful bonus. Depletion leaves
+the maximum intact. ACS maximum queries now use the stored value instead
+of the remaining armor amount. Pistol-start reset restores the default.
+Converted existing armor-use grants to update this value and included
+nondefault capacity in simulation checksums.
+
+Added four regressions covering green/mega depletion, bonus/suit transitions
+and stored-suit promotion/reset. Release validation: **4,489 tests passed
+(3,416 Playsim; 500 MapLoader)**. Warnings-as-errors build passed with zero
+warnings/errors. Touched-file whitespace validation passed.
+
+Remaining gaps include native ACS Armor/BasicArmor grant semantics, full
+inventory save serialization, cooperative armor filtering lifecycle, custom
+armor bonus counters/alternate semantics and native executable comparison.
+Changes uncommitted.
+
+## Conversion and audit: ACS health and key maximum queries (2026-10-02)
+
+Audited p_acs.cpp CheckInventory, PlayerPawn.GetMaxHealth and native default
+deh.MaxHealth (100), plus Inventory's default MaxAmount (one) inherited by
+Doom keys. Corrected managed maximum-health queries from the bonus cap of
+200 to the supported vanilla normal limit of 100. Current-health queries
+still return actual health, including values above the normal limit.
+Key maximum queries now return one independent of ownership; current key
+queries retain the existing shared-color ownership model.
+
+Added nine regressions covering three current health values and all six
+card/skull classes. Updated the cooperative GetMaxInventory opcode test
+from its incorrect 200 expectation to 100. Release validation: **4,485 tests
+passed (3,412 Playsim; 500 MapLoader)**. Warnings-as-errors build passed with
+zero warnings/errors. Touched-file whitespace validation passed.
+
+Remaining gaps include custom Player.MaxHealth, Dehacked Max Health settings,
+health upgrades, separate card/skull inventory identity, stored BasicArmor
+MaxAmount, removal lifecycle/ClearInventory and native executable comparison.
+Changes uncommitted.
+
+## Conversion and audit: ACS weapon and backpack ownership queries (2026-10-02)
+
+Audited native p_acs.cpp CheckInventory and Inventory's default MaxAmount of
+one. Found managed queries omitted Fist, Pistol and Backpack and reported
+zero maximum for unowned weapons. Converted weapon queries to the existing
+shared weapon-name lookup and added backpack queries. Current counts follow
+ownership; maximum queries return the vanilla default capacity of one even
+when the item is absent.
+
+Added twelve regressions covering all nine vanilla weapons, starting-weapon
+removal/regrant, case-insensitive names and backpack acquisition/removal.
+Release validation: **4,476 tests passed (3,403 Playsim; 500 MapLoader)**.
+Warnings-as-errors build passed with zero warnings/errors. Touched-file
+whitespace validation passed.
+
+Remaining gaps include custom inventory maximums, key/armor/health maximum
+query parity, native ready/pending weapon object removal, ClearInventory
+semantics (currently pistol-start reset) and native executable comparison.
+These removal lifecycle gaps require representing the native no-ready-weapon
+state. Changes uncommitted.
+
+## Conversion and audit: ACS SetWeapon selection semantics (2026-10-02)
+
+Audited ScriptUtil.SetWeapon while examining inventory removal and selection.
+Found managed SetWeapon delegated directly to UseInventory, allowing health,
+armor and backpack use and failing to cancel pending selection for the ready
+weapon. Converted a weapon-only validation path. Owned ready weapons now
+return success and clear Pending even with empty ammo; different owned
+weapons still require sufficient ammo and queue through the existing path.
+Failed requests preserve the current pending selection. ACS opcode wiring
+already calls this helper.
+
+Added ten regressions covering empty ready-weapon cancellation, four invalid
+or nonweapon classes, ownership/ammo gates and invalid string indices.
+Release validation: **4,464 tests passed (3,391 Playsim; 500 MapLoader)**.
+Warnings-as-errors build passed with zero warnings/errors. Touched-file
+whitespace validation passed.
+
+Remaining gaps include custom weapon classes, alternate-fire ammo checks,
+no-ready-weapon representation, removal of ready/pending weapon inventory
+objects and native executable comparison. Changes uncommitted.
+
+## Conversion and audit: backpack capacity preservation (2026-10-02)
+
+Audited BackpackItem.CreateCopy, HandlePickup and DetachFromOwner. Found
+managed first-backpack acquisition overwrote larger ammo capacities and
+removal unconditionally reset every capacity. Converted first acquisition
+to raise each capacity only when below its vanilla backpack maximum.
+Removal now resets/clamps only ammo whose current maximum equals that
+backpack maximum; other capacities and amounts remain unchanged. Repeated
+backpacks continue to add ammo without resetting capacities.
+
+Added five regressions for normal/depleted first acquisition with larger
+limits, mixed limits on removal, a changed limit between repeated pickups
+and ACS grant/removal integration. Release validation: **4,454 tests passed
+(3,381 Playsim; 500 MapLoader)**. Warnings-as-errors build passed with zero
+warnings/errors. Touched-file whitespace validation passed.
+
+Remaining gaps include loading custom ammo Default.MaxAmount and
+BackpackMaxAmount, native inventory object lifetimes, unlimited pickup and
+native executable comparison. This conversion preserves runtime limits in
+the supported vanilla ammo model. Changes uncommitted.
+
+## Conversion and audit: ACS ammo and backpack skill scaling (2026-10-02)
+
+Audited ScriptUtil.GiveInventory, Actor.GiveInventory and Ammo.HandlePickup/
+CreateCopy plus BackpackItem.CreateCopy/HandlePickup. Native ACS grants use
+pickup callbacks with skill scaling; GiveInventory restores the saved pending
+weapon when a ready weapon exists. Found managed direct ammo and backpack
+grants bypassed scaling. Converted direct ammo to ScaleAmmo and backpack
+grants to the existing catalog backpack path. Pending and Selected remain
+unchanged in the managed ready-weapon subset. Requested backpack count does
+not multiply its ammo: each grant runs one pickup callback, as in native code.
+
+Added thirteen regressions covering all five Doom skills, fractional ammo
+factor truncation, DoubleAmmo, zero factor, repeated backpack grants, pending
+preservation and normal/backpack ammo caps. Release validation: **4,449 tests
+passed (3,376 Playsim; 500 MapLoader)**. Warnings-as-errors build passed with
+zero warnings/errors. Touched-file whitespace validation passed.
+
+Remaining gaps include no-ready-weapon and absent-versus-depleted ammo object
+semantics, custom ammo classes, unlimited pickup, native inventory callbacks
+and native executable comparison. The prior section's direct ACS ammo and
+backpack scaling audit is now resolved for the supported vanilla subset.
+Changes uncommitted.
+
+## Conversion and audit: ACS weapon grant ammo (2026-10-02)
+
+Audited ScriptUtil.GiveInventory, Actor.GiveInventory, Inventory.SetGiveAmount,
+Weapon.AddAmmo/PickupForAmmo and vanilla Doom AmmoGive declarations. Found
+that managed ACS weapon grants incorrectly used the requested inventory count
+as ammo. Converted pistol/chaingun to 20 bullets, shotgun/super shotgun to 8
+shells, rocket launcher to 2 rockets and plasma/BFG to 40 cells, with the
+existing skill ammo scaling and caps. Repeated grants use the same default
+ammo amount. The current ready-weapon subset preserves Pending and Selected,
+consistent with native GiveInventory restoring its saved pending weapon.
+
+Audited Backpack.CreateCopy: its direct ammo additions do not call
+CheckWeaponSwitch. Kept the managed backpack path and added coverage for
+empty ammo with better owned weapons. Added nine regressions covering all
+seven ammo-using weapon classes, repeated grants/pending preservation and
+backpack non-switching. Release validation: **4,436 tests passed
+(3,363 Playsim; 500 MapLoader)**. Warnings-as-errors build passed with zero
+warnings/errors. Touched-file whitespace validation passed.
+
+Remaining gaps include native no-ready-weapon acquisition (the managed
+Selected field cannot represent this state), custom weapon AmmoGive and
+replacement classes, deathmatch extra weapon ammo, full ACS inventory object
+semantics and native executable comparison. Direct ACS ammo grants and
+backpack skill scaling still need their own parity audit. Changes uncommitted.
+
+## Conversion and audit: ammo pickup weapon switching (2026-10-02)
+
+Audited Ammo.HandlePickup, Weapon.PickupForAmmo and PlayerPawn.CheckWeaponSwitch/
+BestWeapon, plus vanilla weapon SelectionOrder declarations. Converted ammo
+grants from empty to positive to consider switching when fist/pistol is ready,
+there is no pending weapon and NeverAutoSwitch is false. Selects the best
+owned, usable matching-ammo vanilla weapon with better selection order than
+the ready weapon. Catalog ammo and owned-weapon ammo grants use this path;
+new weapon acquisition retains its attach-style pending selection.
+
+Added ten regressions for matching-ammo selection, super-shotgun/plasma
+priority, never-switch/pending/ready/nonempty gates, insufficient ammo and
+owned weapon grants from empty. Updated the previous owned-weapon regression
+to use nonempty ammo; its old expectation correctly failed after this native
+behavior was converted. Final Release validation: **4,427 tests passed
+(3,354 Playsim; 500 MapLoader)**. Warnings-as-errors build passed with zero
+warnings/errors. Touched-file whitespace validation passed.
+
+Custom selection orders/minimum ammo/weapon flags, backpack/ACS inventory
+grant switching paths, preference import/persistence, weapon-stay behavior,
+native contact ordering/RNG parity and executable acceptance remain open.
+Changes remain uncommitted.
+
+## Conversion and audit: new weapon pickup pending switch (2026-10-02)
+
+Audited Weapon.AttachToOwner in inventory/weapons.zs: a newly attached weapon
+becomes PendingWeapon unless GetNeverSwitch or the weapon's no-auto-switch
+flag blocks it. Converted vanilla catalog new-ownership grants to queue the
+weapon through existing Pending/lower/raise handling, without immediately
+changing Selected. Added NeverAutoSwitch preference to the managed inventory;
+it suppresses automatic selection while preserving ownership/ammo grants.
+Already-owned weapons retain their ammo-only behavior. Nondefault preference
+contributes to checksum without changing default baselines.
+
+Added nine regressions for four weapon types, preference suppression,
+already-owned pickup, pending replacement, end-to-end contact/lower/raise and
+checksum behavior. Release validation: **4,417 tests passed (3,344 Playsim;
+500 MapLoader)**. Warnings-as-errors build passed with zero warnings/errors.
+Touched-file whitespace validation passed.
+
+Custom weapon no-auto-switch flags, ammo-triggered switching and selection
+order, weapon-stay behavior, external player preference import/persistence,
+native contact ordering/RNG parity and executable acceptance remain open.
+Changes remain uncommitted.
+
+## Conversion and audit: patched player contact defaults on rebirth (2026-10-02)
+
+Continued native SpawnPlayer class-default rebirth conversion. Map spawning
+now captures initial PICKUP/SPECIAL defaults after explicit Dehacked bits
+are applied. Successful player rebirth restores those captured defaults,
+replacing the prior hardcoded vanilla reset. Current flag save restoration
+does not overwrite spawn defaults. Nonvanilla player contact defaults also
+contribute to checksum because they affect future rebirth behavior.
+
+Added five regressions for all patched bit combinations through runtime
+mutation, archive restoration, death/rebirth and subsequent collection,
+plus checksum separation when current flags match but rebirth defaults differ.
+Final Release validation: **4,408 tests passed (3,335 Playsim; 500 MapLoader)**.
+Warnings-as-errors build passed with zero warnings/errors. Touched-file
+whitespace validation passed.
+
+Spawn defaults derive from the loaded map/patch and are not serialized as
+standalone class metadata. Custom player classes, other Dehacked flags,
+full player replacement, native contact ordering/RNG parity and executable
+acceptance remain open. Changes remain uncommitted.
+
+## Conversion and audit: explicit Dehacked pickup/contact bits (2026-10-02)
+
+Audited native actor.h MF_SPECIAL (0x1) and MF_PICKUP (0x800), managed numeric
+Dehacked Bits parsing and map actor spawning. Added explicit BitsPatched
+tracking so numeric Bits = 0 is distinct from an omitted Bits field. Map actor
+spawning now imports the two converted contact bits when explicitly patched.
+Patches affecting only health/size retain existing pickup defaults. Existing
+contact checks, ACS controls, checksum and current archive handle these flags.
+
+Added six regressions for all combinations of the two bits, explicit zero,
+collection eligibility, omitted Bits and a remapped catalog pickup with
+SPECIAL cleared. Release validation: **4,403 tests passed (3,330 Playsim;
+500 MapLoader)**. Warnings-as-errors build passed with zero warnings/errors.
+Touched-file whitespace validation passed.
+
+Other Dehacked bits and symbolic expressions, patched player contact defaults
+through rebirth, dropped/replacement class patch inheritance, non-player
+inventory collection, native RNG parity and executable acceptance remain
+open. Changes remain uncommitted.
+
+## Conversion and audit: player respawn contact defaults (2026-10-02)
+
+Audited native G_DoReborn/SpawnPlayer paths in g_game.cpp and PlayerPawn's
+PICKUP class default. Native rebirth uses a newly spawned player actor; the
+managed respawn path reuses the existing actor. Converted successful managed
+rebirth to restore converted contact defaults (PICKUP enabled, SPECIAL
+disabled) before player respawn scripts. Script changes made before death no
+longer suppress item collection after successful rebirth. Blocked respawn
+retains current flags; other flag reset/reconstruction remains outside scope.
+
+Added four regressions covering supported single-player in-place respawn,
+cooperative/deathmatch rebirth and blocked respawn, including collection after
+rebirth. Release validation: **4,397 tests passed (3,324 Playsim; 500 MapLoader)**.
+Warnings-as-errors build passed with zero warnings/errors. Touched-file
+whitespace validation passed.
+
+Custom player class defaults, full actor replacement/other flag defaults,
+native inventory/respawn parity, movement contact ordering, RNG parity and
+executable acceptance remain open. Changes remain uncommitted.
+
+## Conversion and audit: default contact flag restore completion (2026-10-02)
+
+Closed the prior contact-flag archive limitation: CaptureState now records
+PICKUP/SPECIAL for every actor even when values match spawn defaults. Current
+nonempty actor archives therefore use version 18. A save made before scripts
+change flags now restores the saved defaults and permits collection again.
+Legacy archives without contact flags continue preserving current values.
+
+Updated the default-restore regression to verify subsequent collection and
+added an explicit legacy-preservation regression. Updated pitch/roll/pickup
+archive tests for current version 18, and retained explicit older fixtures for
+legacy trailer corruption/compatibility tests. The first targeted run caught
+34 archive assertions relying on the prior version/fixture shape; updated
+those fixtures without weakening their legacy checks. Final full Release
+validation: **4,393 tests passed (3,320 Playsim; 500 MapLoader)**. After the final
+collection assertion, all 3,320 Playsim tests passed again. Warnings-as-errors
+build passed with zero warnings/errors. Touched-file whitespace validation
+passed.
+
+Other actor flags, missing dynamic actor recreation, native archive format,
+Dehacked flag import, native contact ordering/RNG parity and executable
+acceptance remain open. Changes remain uncommitted.
+
+## Conversion and audit: modified pickup/contact flag archive (2026-10-02)
+
+Continued native actor flag persistence conversion (AActor.Serialize flags
+in p_mobj.cpp). Added optional managed archive version 18 for PICKUP/SPECIAL
+contact flags. When any actor differs from its spawn default, capture includes
+both flags for every actor and the trailer preserves the underlying version
+16 or 17 archive. Restore applies flags onto matching actors. Writer/restore
+validation rejects invalid or incomplete flags before mutation; reader checks
+trailer shape, prior version, actor count and unknown bits.
+
+Added seven regressions for changed flags and collection after restore,
+checksum continuation, invalid bits, all truncations and legacy/default
+archive behavior. Release validation: **4,392 tests passed (3,319 Playsim;
+500 MapLoader)**. Warnings-as-errors build passed with zero warnings/errors.
+Touched-file whitespace validation passed.
+
+All-default captures intentionally retain prior archive versions and legacy
+behavior (flags absent from those archives leave current flags unchanged).
+Full actor-flag/native archive parity, missing dynamic actor recreation,
+Dehacked flag import, native movement contact ordering, native RNG parity
+and executable acceptance remain open. Changes remain uncommitted.
+
+## Conversion and audit: native SPECIAL item contact flag (2026-10-02)
+
+Audited MF_SPECIAL pickup gate in PIT_CheckThing and inventory.zs world-item
+special flag handling. Added Actor.SpecialPickup with catalog map/drop and
+depleted backpack defaults enabled. Collection now requires this flag before
+granting or applying always-pickup fallback. Added case-insensitive ACS
+CheckActorFlag/ModActorFlag SPECIAL support. Nondefault flag values contribute
+to checksum while preserving existing default baselines. Direct inventory
+grants retain their separate behavior.
+
+Added five regressions for disabling/re-enabling ammo and bonus contact,
+player/item spawn defaults, dropped weapons/depleted backpacks and checksum
+changes. Release validation: **4,385 tests passed (3,312 Playsim; 500 MapLoader)**.
+Warnings-as-errors build passed with zero warnings/errors. Touched-file
+whitespace validation passed.
+
+General actor flag save persistence (including PICKUP/SPECIAL), Dehacked flag
+import, custom inventory lifecycle, native movement contact ordering, native
+RNG parity and executable acceptance remain open. Changes remain uncommitted.
+
+## Conversion and audit: native PICKUP eligibility flag (2026-10-02)
+
+Audited MF_PICKUP gate in PIT_CheckThing and PlayerPawn's +PICKUP default
+in player.zs. Added Actor.CanPickupItems, enabled by default for players and
+disabled for ordinary actors. Managed player contact collection now requires
+the flag before attempting grants or always-pickup fallback. Added ACS
+CheckActorFlag/ModActorFlag support for case-insensitive PICKUP. Nondefault
+flag values affect checksum while preserving existing default baselines.
+
+Added five regressions for disabling/re-enabling ammo and bonus collection,
+default ordinary actor behavior, destroyed actor flag rejection and checksum
+changes. Release validation: **4,380 tests passed (3,307 Playsim; 500 MapLoader)**.
+Warnings-as-errors build passed with zero warnings/errors. Touched-file
+whitespace validation passed.
+
+Non-player inventory collection, native special-item flags/class restrictions,
+general actor-flag archive persistence (including this flag), native movement
+contact ordering, native RNG parity and executable acceptance remain open.
+Changes remain uncommitted.
+
+## Conversion and audit: always-pickup Doom bonuses (2026-10-02)
+
+Audited INVENTORY.ALWAYSPICKUP on Doom HealthBonus and ArmorBonus and the
+failed-grant fallback in inventory.zs. Converted collection to consume those
+bonus actors even when health/armor is already at or above the cap. Existing
+grant logic preserves current values; ordinary health/armor pickups still
+remain when they offer no benefit. TryGive retains its grant-result contract;
+the collection layer handles the native always-pickup fallback.
+
+Added eight regressions for both bonuses at/above cap and ordinary stimpack,
+medikit, green armor and mega armor rejection at full values. Release
+validation: **4,375 tests passed (3,302 Playsim; 500 MapLoader)**.
+Warnings-as-errors build passed with zero warnings/errors. Touched-file
+whitespace validation passed.
+
+Custom inventory flags/ShouldStay, pickup messages/sounds and item counters,
+weapon pickup switching/stay behavior, native contact ordering, native RNG
+parity and executable acceptance remain open. Changes remain uncommitted.
+
+## Conversion and audit: native catalog pickup heights (2026-10-02)
+
+Audited Actor defaults (Radius 20, Height 16) in actor.zs, DoomKey/armor
+dimensions and Backpack's Height 26 override in doomammo.zs. Converted
+unpatched map catalog pickups, spawned dropped pickups and depleted backpack
+drops from managed generic Height 56 to native pickup heights. Existing map
+Dehacked actor dimensions retain precedence. Pickup radii already use 20.
+This corrects vertical reach and movement geometry for these item actors.
+
+Added seven regressions covering map/drop dimension agreement for ammo,
+weapons, skull keys, health, cell packs and backpacks, plus depleted backpack
+height. Release validation: **4,367 tests passed (3,294 Playsim; 500 MapLoader)**.
+Warnings-as-errors build passed with zero warnings/errors. Touched-file
+whitespace validation passed.
+
+General/custom inventory dimensions, native movement-time pickup contact
+ordering and temporary-height compensation, full dynamic actor restoration,
+native RNG parity and executable acceptance remain open. Changes remain
+uncommitted.
+
+## Conversion and audit: native horizontal pickup contact (2026-10-02)
+
+Audited PIT_CheckThing in p_map.cpp: contact rejects absolute X or Y distance
+greater than or equal to the sum of radii. Converted managed pickup collection
+from inclusive circular overlap to strict square axis contact. This accepts
+native diagonal contacts and rejects equality at either edge. Other collision
+helpers retain their existing behavior; pickup vertical reach remains separate.
+
+Added eleven regressions covering diagonal contact, positive/negative edges,
+one fixed-point unit inside/outside an edge and simulation-level collection.
+Release validation: **4,360 tests passed (3,287 Playsim; 500 MapLoader)**.
+Warnings-as-errors build passed with zero warnings/errors. Touched-file
+whitespace validation passed.
+
+Native movement-time contact ordering/blockmap traversal, the temporary
+height/MaxStepHeight compensation gate before P_TouchSpecialThing, custom
+Touch behavior, native RNG parity and executable acceptance remain open.
+This converts the horizontal contact geometry rather than the complete
+native movement contact pipeline. Changes remain uncommitted.
+
+## Conversion and audit: native pickup vertical reach (2026-10-02)
+
+Audited P_TouchSpecialThing in p_interaction.cpp. Native reach accepts pickup
+Z minus toucher Z from min(-32, -pickup Height) through toucher Height,
+including both endpoints. Managed collection used strict cylinder vertical
+overlap, rejecting the upper endpoint and reachable items below the feet.
+Separated the existing horizontal overlap calculation and applied the native
+vertical reach specifically to pickups; other cylinder-overlap callers retain
+their prior behavior. Dead-player rejection remains in the collection loop.
+
+Added ten regressions for exact inclusive limits, one fixed-point unit beyond
+each limit, tall/zero-height pickups and simulation-level collection. The
+upper boundary regression caught the old strict overlap gate during validation;
+corrected the collection path. Final Release validation: **4,349 tests passed
+(3,276 Playsim; 500 MapLoader)**. Warnings-as-errors build passed with zero
+warnings/errors. Touched-file whitespace validation passed.
+
+Native horizontal/blockmap contact ordering, custom pickup Touch behavior,
+full pickup class properties, native RNG parity and executable acceptance
+remain open. Changes remain uncommitted.
+
+## Conversion and audit: ACS DropItem attempt-count result (2026-10-02)
+
+Audited ACSF_DropItem in p_acs.cpp: cnt increments for each actor passed to
+P_DropItem, independent of chance failure or the returned spawned actor.
+Corrected managed DropItem to report actors processed rather than successful
+pickup spawns. Invalid catalog names and missing activators/TIDs still return
+zero. Existing chance checks and safe multi-actor snapshot iteration remain.
+
+Added six regressions covering multi-TID results across failed, intermediate
+and guaranteed chances, failed activator chance, and the ACS dispatcher result.
+Updated existing chance regression to assert spawn counts separately from the
+attempt result. Corrected test API/stack setup errors during validation.
+Final Release validation: **4,339 tests passed (3,266 Playsim; 500 MapLoader)**.
+Warnings-as-errors build passed with zero warnings/errors. Touched-file
+whitespace validation passed.
+
+Custom class lookup/replacement, native dedicated RNG parity, exact spawn
+clipping/vertical integration and native executable acceptance remain open.
+Changes remain uncommitted.
+
+## Conversion and audit: case-insensitive ACS drop class lookup (2026-10-02)
+
+Audited PClass.FindActor string overloads in common/objects/dobjtype.h and
+FName case normalization in utility/name.cpp. Converted supported catalog
+drop names to invariant case normalization before lookup. Existing aliases
+and whitespace trimming remain supported, and separate skull/card identity
+is preserved. Unknown and empty names still fail lookup.
+
+Added ten regressions, including exhaustive upper/lower-case lookup checks
+for all 39 supported names/aliases, mixed-case ACS spawning, Turkish-culture
+independence and invalid inputs. Release validation: **4,333 tests passed
+(3,260 Playsim; 500 MapLoader)**. Warnings-as-errors build passed with zero
+warnings/errors. Touched-file whitespace validation passed.
+
+General/custom class lookup and replacement, exact native non-ASCII name
+handling, separate card/skull inventory semantics, native RNG parity and
+executable acceptance remain open. Changes remain uncommitted.
+
+## Conversion and audit: ACS dropped key class identity (2026-10-02)
+
+Audited ACSF_DropItem class lookup in p_acs.cpp and separate Blue/Red/Yellow
+Card and Skull classes in Doom doomkeys.zs. Corrected managed drop-name
+mapping: skull requests now spawn their own skull editor type instead of
+the same-color card. Card requests retain their original identity. Managed
+inventory continues its documented shared color-key representation.
+
+Added six regressions covering every card/skull class through ACS drop
+spawning and subsequent collection, checking actor identity and only the
+matching inventory key color. Release validation: **4,323 tests passed
+(3,250 Playsim; 500 MapLoader)**. Warnings-as-errors build passed with zero
+warnings/errors. Touched-file whitespace validation passed.
+
+Native case-insensitive/general class lookup, custom key classes, separate
+card/skull inventory semantics, native RNG parity and executable acceptance
+remain open. Changes remain uncommitted.
+
+## Conversion and audit: native drop style 2 (2026-10-02)
+
+Audited Actor.A_DropItem/TossItem in inventory_util.zs, sv_dropstyle in
+p_enemy.cpp and FRandom.Random2(mask) in common/engine/m_random.h. Added
+simulation DropStyle selection: 0 uses the current Doom default; 2 uses
+source Z + 24, horizontal random2(7) velocities and no vertical toss.
+The native parameter 7 is a mask, not a shift. Style 2 uses four toss draws;
+other styles follow the default branch. NoTossDrops overrides both height
+offset and toss randomness. Explicit style values contribute to checksum;
+the default value preserves the existing idle checksum baseline.
+
+Added nine regressions for exact masked velocities and height, draw counts,
+initial falling, no-toss override, fallback styles and setting/checksum
+behavior through pose restore. Initial validation caught an idle checksum
+baseline change; corrected default checksum handling. Final Release validation:
+**4,317 tests passed (3,244 Playsim; 500 MapLoader)**. Warnings-as-errors build
+passed with zero warnings/errors. Touched-file whitespace validation passed.
+
+DropStyle is a simulation setting like existing server settings; the pose
+archive preserves the current setting rather than serializing it. MAPINFO
+game-default style import, native dedicated RNG streams, class velocity
+defaults, native spawn clipping/vertical integration, dynamic actor restore
+and native executable acceptance remain open. Changes remain uncommitted.
+
+## Conversion and audit: no-toss drop compatibility (2026-10-02)
+
+Audited COMPATF_NOTOSSDROPS branches in Actor.A_DropItem in inventory_util.zs.
+Added managed CompatSurface.NoTossDrops: drops use the source Z without the
+half-height offset or randomized toss. Gravity remains enabled and pickup
+amount adjustment is unchanged. Toss RNG draws are skipped; ACS and vanilla
+death drop chance draws still occur. The existing compatibility checksum
+includes the new flag.
+
+Added six regressions for grounded/elevated/fractional source Z, zero momentum,
+interpolation, draw accounting, ammo amount, vanilla death drops and flag
+composition/checksum. Release validation: **4,308 tests passed (3,235 Playsim;
+500 MapLoader)**. Warnings-as-errors build passed with zero warnings/errors.
+Touched-file whitespace validation passed.
+
+Alternate drop style 2, native compatibility setting import, dedicated RNG
+streams, native spawn clipping/vertical integration, full dynamic actor
+restoration and native executable acceptance remain open. This flag is
+selected through the existing simulation compatibility argument. Changes
+remain uncommitted.
+
+## Conversion and audit: default Doom dropped-pickup toss velocity (2026-10-02)
+
+Audited Actor.TossItem in inventory_util.zs. Converted default style-1 toss:
+horizontal velocity uses two random-byte differences divided by 256 per axis,
+and vertical velocity is 5 plus one random byte divided by 64. Spawning uses
+five draws after any chance draw. Source momentum is not inherited. The
+existing managed gravity path carries the drop through ascent and landing.
+
+Added five regressions for exact formulas, velocity bounds, draw consumption,
+source-momentum independence and invalid pickup rejection. Updated chance
+tests to account for successful toss draws, and the drop-height movement test
+to expect initial ascent before landing. Release validation: **4,302 tests
+passed (3,229 Playsim; 500 MapLoader)**. Warnings-as-errors build passed with
+zero warnings/errors. Touched-file whitespace validation passed.
+
+Dedicated native DropItem RNG sequence parity remains open: this uses the
+managed shared combat generator. Alternate style 2, COMPATF_NOTOSSDROPS,
+native vertical integration/spawn clipping, custom class velocity defaults,
+full dynamic actor restoration and native executable acceptance remain open.
+Changes remain uncommitted.
+
+## Conversion and audit: default Doom dropped-pickup spawn height (2026-10-02)
+
+Audited Actor.A_DropItem in inventory_util.zs and defaultdropstyle = 1 in
+mapinfo/doomcommon.txt. Converted the default Doom height calculation:
+source Z plus half source Height. Managed spawning formerly reset every
+drop to the sector floor. Sector initialization now precedes restoring the
+requested spawn Z, updating grounded status and remembering interpolation
+position. Existing ACS, vanilla shatter and player weapon drop callers use
+this common spawning path. Existing worktree changes were preserved as the
+user-authorized baseline.
+
+Added six regressions covering elevated sources, raised/negative floors,
+zero and fractional heights, interpolation position, gravity eligibility,
+and subsequent falling/landing. Release validation: **4,297 tests passed
+(3,224 Playsim; 500 MapLoader)**. Warnings-as-errors build passed with zero
+warnings/errors. Touched-file whitespace validation passed.
+
+Randomized toss velocities, alternate drop style 2, COMPATF_NOTOSSDROPS,
+native spawn clipping, dedicated DropItem RNG, full dynamic actor restore
+and native executable acceptance remain open. Changes remain uncommitted.
+
 ## Conversion and audit: drop chance boundaries and safe ACS iteration (2026-10-01)
 
 Audited Actor.A_DropItem and TossItem in inventory_util.zs. Native chance

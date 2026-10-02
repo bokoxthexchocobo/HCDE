@@ -5,6 +5,12 @@ namespace HCDE.Playsim.Tests;
 
 public class PickupArchiveTests
 {
+    private static byte[] WritePickupArchive()
+    {
+        var state = Room().CaptureState();
+        foreach (var pose in state.Actors) pose.ContactFlags = null;
+        return SimSavegame.Write(state);
+    }
     private static AuthoritySimulation Room(int type = PickupCatalog.Clip) => AuthoritySimulation.Start(new PlayLevel
     {
         Sectors = [new LevelSector { CeilingHeight = 128 }],
@@ -22,7 +28,7 @@ public class PickupArchiveTests
         pickup.PickupAmount = amount; pickup.IgnoreAmmoSkill = ignoreSkill; pickup.Depleted = depleted;
         original.Tick();
         var bytes = SimSavegame.Write(original);
-        Assert.Equal(17, BinaryPrimitives.ReadUInt16LittleEndian(bytes.AsSpan(4)));
+        Assert.Equal(18, BinaryPrimitives.ReadUInt16LittleEndian(bytes.AsSpan(4)));
         var restored = Room();
         restored.Actors[1].PickupAmount = 99;
         restored.Actors[1].IgnoreAmmoSkill = !ignoreSkill;
@@ -56,7 +62,7 @@ public class PickupArchiveTests
     public void LegacyArchivePreservesExistingPickupProperties()
     {
         var sim = Room(); var state = sim.CaptureState();
-        foreach (var pose in state.Actors) pose.Pickup = null;
+        foreach (var pose in state.Actors) { pose.Pickup = null; pose.ContactFlags = null; }
         var bytes = SimSavegame.Write(state);
         Assert.Equal(16, BinaryPrimitives.ReadUInt16LittleEndian(bytes.AsSpan(4)));
         sim.Actors[1].PickupAmount = 19; sim.Actors[1].IgnoreAmmoSkill = true;
@@ -72,7 +78,7 @@ public class PickupArchiveTests
     [InlineData(0, 12)]
     public void InvalidPickupFieldsAreRejected(int amount, int flags)
     {
-        var bytes = SimSavegame.Write(Room());
+        var bytes = WritePickupArchive();
         BinaryPrimitives.WriteInt32LittleEndian(bytes.AsSpan(bytes.Length - 12), amount);
         BinaryPrimitives.WriteInt32LittleEndian(bytes.AsSpan(bytes.Length - 8), flags);
         Assert.False(SimSavegame.TryRead(bytes, out var state, out var error));
@@ -82,7 +88,7 @@ public class PickupArchiveTests
     [Fact]
     public void TruncatedPickupArchiveIsRejected()
     {
-        var bytes = SimSavegame.Write(Room());
+        var bytes = WritePickupArchive();
         for (var length = 0; length < bytes.Length; length++)
             Assert.False(SimSavegame.TryRead(bytes.AsSpan(0, length), out _, out _));
     }
@@ -105,7 +111,7 @@ public class PickupArchiveTests
     [InlineData(16, "save-pickup-count")]
     public void InvalidTrailerSizeOrCountIsRejected(int size, string expected)
     {
-        var bytes = SimSavegame.Write(Room());
+        var bytes = WritePickupArchive();
         BinaryPrimitives.WriteInt32LittleEndian(bytes.AsSpan(bytes.Length - 4), size);
         Assert.False(SimSavegame.TryRead(bytes, out _, out var error));
         Assert.Equal(expected, error);

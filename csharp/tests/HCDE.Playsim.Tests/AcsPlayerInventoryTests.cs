@@ -233,7 +233,7 @@ public class AcsPlayerInventoryTests
             (int)AcsPcode.PushNumber, 9,
             (int)AcsPcode.PushNumber, 0,
             (int)AcsPcode.CallFunc, 2, 93,
-            (int)AcsPcode.PushNumber, 200,
+            (int)AcsPcode.PushNumber, 100,
             (int)AcsPcode.Eq,
             (int)AcsPcode.IfNotGoto, 56,
             (int)AcsPcode.Lspec2Direct, 112, 7, 35);

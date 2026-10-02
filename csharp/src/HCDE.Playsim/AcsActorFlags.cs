@@ -14,6 +14,8 @@ internal static class AcsActorFlags
         Floating,
         NoGravity,
         NoPain,
+        Pickup,
+        Special,
     }
 
     public static bool TryGet(Actor actor, string? flagName, out bool value)
@@ -81,6 +83,16 @@ internal static class AcsActorFlags
             return true;
         }
 
+        if (flagName.Equals("PICKUP", StringComparison.OrdinalIgnoreCase))
+        {
+            kind = Kind.Pickup;
+            return true;
+        }
+        if (flagName.Equals("SPECIAL", StringComparison.OrdinalIgnoreCase))
+        {
+            kind = Kind.Special;
+            return true;
+        }
         kind = default;
         return false;
     }
@@ -96,6 +108,8 @@ internal static class AcsActorFlags
         Kind.Floating => actor.Floating,
         Kind.NoGravity => actor.NoGravity,
         Kind.NoPain => actor.NoPain,
+        Kind.Pickup => actor.CanPickupItems,
+        Kind.Special => actor.SpecialPickup,
         _ => false,
     };
 
@@ -112,6 +126,8 @@ internal static class AcsActorFlags
             case Kind.Floating: actor.Floating = value; break;
             case Kind.NoGravity: actor.NoGravity = value; break;
             case Kind.NoPain: actor.NoPain = value; break;
+            case Kind.Pickup: actor.CanPickupItems = value; break;
+            case Kind.Special: actor.SpecialPickup = value; break;
         }
     }
 }

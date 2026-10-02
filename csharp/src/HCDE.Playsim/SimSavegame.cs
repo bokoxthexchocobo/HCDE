@@ -24,6 +24,7 @@ public sealed class SimActorPose
     public bool UseHeld { get; init; }
     public uint? Roll { get; internal set; }
     public SimPickupProperties? Pickup { get; internal set; }
+    public int? ContactFlags { get; internal set; }
 }
 
 public sealed class SimSaveState
@@ -62,6 +63,7 @@ public static class SimSavegame
         ValidatePlanes(state);
         ValidateTextureScrolls(state);
         ValidatePickups(state);
+        ValidateContactFlags(state);
         if (state.Actors.Any(actor => actor.Pickup.HasValue) &&
             (state.GeometryHealth is null || state.Actors.Any(actor => !actor.Roll.HasValue)))
             throw new InvalidOperationException("Saved pickup properties require a complete current archive.");
@@ -158,7 +160,7 @@ public static class SimSavegame
             buffer.CopyTo(archive, 0);
             trailer.CopyTo(archive, buffer.Length);
             BinaryPrimitives.WriteUInt16LittleEndian(archive.AsSpan(4), 15);
-            return WritePickups(state, WriteRolls(state, archive));
+            return WriteContactFlags(state, WritePickups(state, WriteRolls(state, archive)));
         }
         return buffer;
     }
@@ -182,6 +184,30 @@ public static class SimSavegame
     {
         if (state.Actors.Any(actor => actor.Pickup is { Amount: < 0 }))
             throw new InvalidOperationException("Saved pickup amount cannot be negative.");
+    }
+
+    internal static void ValidateContactFlags(SimSaveState state)
+    {
+        if (!state.Actors.Any(actor => actor.ContactFlags.HasValue)) return;
+        if (state.GeometryHealth is null || state.Actors.Any(actor => !actor.Roll.HasValue
+            || !actor.ContactFlags.HasValue || actor.ContactFlags.Value is < 0 or > 3))
+            throw new InvalidOperationException("Saved contact flags require a complete current archive.");
+    }
+
+    private static byte[] WriteContactFlags(SimSaveState state, byte[] archive)
+    {
+        if (!state.Actors.Any(actor => actor.ContactFlags.HasValue)) return archive;
+        var size = checked(12 + state.Actors.Count * 4);
+        var bytes = new byte[checked(archive.Length + size)];
+        archive.CopyTo(bytes, 0);
+        var start = archive.Length;
+        BinaryPrimitives.WriteInt32LittleEndian(bytes.AsSpan(start), BinaryPrimitives.ReadUInt16LittleEndian(archive.AsSpan(4)));
+        BinaryPrimitives.WriteInt32LittleEndian(bytes.AsSpan(start + 4), state.Actors.Count);
+        for (var i = 0; i < state.Actors.Count; i++)
+            BinaryPrimitives.WriteInt32LittleEndian(bytes.AsSpan(start + 8 + i * 4), state.Actors[i].ContactFlags!.Value);
+        BinaryPrimitives.WriteInt32LittleEndian(bytes.AsSpan(bytes.Length - 4), size);
+        BinaryPrimitives.WriteUInt16LittleEndian(bytes.AsSpan(4), 18);
+        return bytes;
     }
 
     private static byte[] WritePickups(SimSaveState state, byte[] archive)
@@ -215,6 +241,30 @@ public static class SimSavegame
         }
 
         var version = BinaryPrimitives.ReadUInt16LittleEndian(bytes[4..]);
+        if (version == 18)
+        {
+            var size = BinaryPrimitives.ReadInt32LittleEndian(bytes[^4..]);
+            if (size < 12 || size > bytes.Length - 16 || (size - 12) % 4 != 0)
+            { error = "save-contact-size"; return false; }
+            var start = bytes.Length - size;
+            var prior = BinaryPrimitives.ReadInt32LittleEndian(bytes[start..]);
+            var count = BinaryPrimitives.ReadInt32LittleEndian(bytes[(start + 4)..]);
+            if (prior is not (16 or 17) || count < 0 || count != (size - 12) / 4)
+            { error = "save-contact-header"; return false; }
+            var legacy = bytes[..start].ToArray();
+            BinaryPrimitives.WriteUInt16LittleEndian(legacy.AsSpan(4), (ushort)prior);
+            if (!TryRead(legacy, out state, out error)) return false;
+            if (count != state.Actors.Count)
+            { state = new(); error = "save-contact-count"; return false; }
+            for (var i = 0; i < count; i++)
+            {
+                var flags = BinaryPrimitives.ReadInt32LittleEndian(bytes[(start + 8 + i * 4)..]);
+                if (flags is < 0 or > 3)
+                { state = new(); error = "save-contact-flags"; return false; }
+                state.Actors[i].ContactFlags = flags;
+            }
+            return true;
+        }
         if (version == 17)
         {
             var size = BinaryPrimitives.ReadInt32LittleEndian(bytes[^4..]);
