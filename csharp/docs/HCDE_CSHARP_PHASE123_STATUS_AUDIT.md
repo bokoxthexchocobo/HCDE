@@ -9013,11 +9013,31 @@ mnemonics, missile-bit removal side effects, save/network transport, silent
 teleport paths, destination collision and native engine fixtures remain open.
 Phases 1–3 and invasion synchronization validation remain incomplete.
 
+## DEHACKED extended NOTELEPORT ingestion — 2026-10-03
+
+Converted NOTELEPORT from flag set 1, bit 7 in `wadsrc/static/dehsupp.txt`.
+Native PatchThing replaces only flag sets containing recognized tokens. Added
+separate Bits2 storage/assignment metadata and applied its NOTELEPORT bit during
+actor spawning. An extended-only assignment preserves first-set defaults; later
+numeric first-set assignments preserve the extended flag. Cloned patch records
+retain independent metadata.
+
+Three regressions verify extended-only and mixed assignments through spawning
+and teleport rejection, case-insensitive names, solid/shootable preservation,
+and chained numeric patches without baseline mutation. Full Release suite:
+5,042 passed, zero failed/skipped; Playsim 3,961. Warnings-as-errors build:
+zero warnings/errors; whitespace check passes. No checksum fields changed.
+
+Scope is the first represented flag in the extended set. Other flags2 mnemonics,
+complete native defaults, mixed-set replacement with additional flags, missile-bit
+removal side effects, archive/network transport and native engine fixtures remain
+incomplete. Phases 1–3 and invasion synchronization validation remain open.
+
 ## Validation
 
-- Release solution: **5,039 passed, zero failed/skipped**, 4,116 cases above baseline.
+- Release solution: **5,042 passed, zero failed/skipped**, 4,119 cases above baseline.
   Protocol 15; Gamedata 18; Transport 10; Master 1; RCON 6; MapLoader 500;
-  Playsim 3,958; Client 12; Net.Core 351; Pregame 97; Server 63; Scripting 8.
+  Playsim 3,961; Client 12; Net.Core 351; Pregame 97; Server 63; Scripting 8.
 - The lighting pass initially saw a five-second timeout in
   `Pump_LiveSessionReceivesGuestClientInput`; it passed the targeted rerun and the
   subsequent full solution run. No timeout/test-disabling workaround was added.

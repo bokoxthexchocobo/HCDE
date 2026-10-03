@@ -22,6 +22,8 @@ public sealed class DehackedActor
     public int OriginalDoomEdNum { get; init; }
     public uint Bits { get; set; }
     public bool BitsPatched { get; set; }
+    public uint Bits2 { get; set; }
+    public bool Bits2Patched { get; set; }
     public bool BitsUseStealth { get; set; }
     public bool NoBlockMonsters { get; set; }
     public int SeeSound { get; set; }
@@ -247,6 +249,7 @@ public static class DehackedPatch
                 uint bits = 0;
                 var changed = false;
                 var useStealth = false;
+                var changed2 = false;
                 foreach (var token in value.Split([',', '+', '|', ' ', '\t', '\f', '\r'], StringSplitOptions.RemoveEmptyEntries))
                 {
                     if (token.All(character => character is >= '0' and <= '9' or '-'))
@@ -254,6 +257,8 @@ public static class DehackedPatch
                         bits |= unchecked((uint)ParseDecimalPrefix(token));
                         changed = true;
                     }
+                    else if (token.Equals("NOTELEPORT", StringComparison.OrdinalIgnoreCase))
+                        changed2 = true;
                     else if (SupportedThingBits.TryGetValue(token, out var namedBits))
                     {
                         bits |= namedBits;
@@ -269,6 +274,11 @@ public static class DehackedPatch
                     actor.BitsPatched = true;
                     actor.BitsUseStealth = useStealth;
                     if (!useStealth && (bits & 0x40000000) != 0) actor.NoBlockMonsters = true;
+                }
+                if (changed2)
+                {
+                    actor.Bits2 = 0x80;
+                    actor.Bits2Patched = true;
                 }
             }
             else if (key.Equals("ID #", StringComparison.OrdinalIgnoreCase))
