@@ -9400,11 +9400,29 @@ state, level gravity overrides, projectile-specific physics and full native
 falling cadence remain incomplete. This converts the sector multiplier and
 action, not full gravity parity. Phases 1–3 and invasion validation remain open.
 
+## Conversion and audit: UDMF sector gravity import (2026-10-03)
+
+Converted sector gravity import against `src/maploader/udmf.cpp`: gravity
+defaults to 1 and is accepted only under Zd/Zdt/Va namespace bits. The parser
+retains the numeric value; LevelBuilder imports it for ZDoom,
+ZDoomTranslated and Vavoom, retaining default one for Doom/Hexen/Strife.
+Zero, negative, fractional and values above one are not clamped.
+
+Twelve regressions cover six namespaces, four numeric cases, missing-field
+defaults and simulation copy preservation/source isolation. Full Release
+solution: 5,160 passed, zero failed/skipped; Playsim 4,068; MapLoader 511.
+Release warnings-as-errors build and whitespace checks pass. Imported values
+use the existing sector gravity physics/checksum path added previously.
+This closes UDMF gravity import; sector save/network persistence, level-wide
+gravity overrides, projectile-specific physics, native falling cadence and
+representative native session validation remain incomplete. Phases 1–3 and
+invasion synchronization validation remain open.
+
 ## Validation
 
-- Release solution: **5,148 passed, zero failed/skipped**, 4,225 cases above baseline.
-  Protocol 15; Gamedata 18; Transport 10; Master 1; RCON 6; MapLoader 500;
-  Playsim 4,067; Client 12; Net.Core 351; Pregame 97; Server 63; Scripting 8.
+- Release solution: **5,160 passed, zero failed/skipped**, 4,237 cases above baseline.
+  Protocol 15; Gamedata 18; Transport 10; Master 1; RCON 6; MapLoader 511;
+  Playsim 4,068; Client 12; Net.Core 351; Pregame 97; Server 63; Scripting 8.
 - The lighting pass initially saw a five-second timeout in
   `Pump_LiveSessionReceivesGuestClientInput`; it passed the targeted rerun and the
   subsequent full solution run. No timeout/test-disabling workaround was added.

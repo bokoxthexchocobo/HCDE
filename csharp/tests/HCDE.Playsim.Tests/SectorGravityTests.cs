@@ -44,6 +44,19 @@ public class SectorGravityTests
         first.Tick(); second.Tick(); Assert.NotEqual(first.Checksum, second.Checksum);
         Assert.True(SectorGravity.ExecuteSpecial(first, 216, 99, 2, 0));
     }
+    [Fact]
+    public void ImportedGravitySurvivesSimulationLevelCopyAndKeepsSourceIsolated()
+    {
+        const string text = "namespace = \"ZDoom\"; sector { heightceiling = 128; gravity = 0.25; }";
+        Assert.True(UdmfTextMapParser.TryParse(text, out var map, out var error), error);
+        var level = LevelBuilder.FromUdmf(map, "MAP01");
+        var sim = AuthoritySimulation.Start(level);
+        Assert.Equal(0.25, Assert.Single(sim.Level.Sectors).Gravity);
+        SectorGravity.ExecuteSpecial(sim, 216, 0, 2, 0);
+        Assert.Equal(0.25, Assert.Single(level.Sectors).Gravity);
+        Assert.Equal(2, Assert.Single(sim.Level.Sectors).Gravity);
+    }
+
     private static AuthoritySimulation PhysicsRoom()
     {
         var geometry = GameplayFoundationTests.TwoRooms(0, 128).Level;

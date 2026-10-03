@@ -80,6 +80,7 @@ public sealed class UdmfSector
     public int Leakiness { get; set; }
     public bool HurtMonsters { get; set; }
     public bool HarmInAir { get; set; }
+    public double Gravity { get; set; } = 1;
     public double HeightFloor { get; set; }
     public double HeightCeiling { get; set; }
     public string TextureFloor { get; set; } = "-";
@@ -392,6 +393,7 @@ public static class UdmfTextMapParser
             Leakiness = Int(fields, "leakiness"),
             HurtMonsters = Bool(fields, "hurtmonsters"),
             HarmInAir = Bool(fields, "harminair"),
+            Gravity = Number(fields, "gravity", 1),
             HeightFloor = Number(fields, "heightfloor"),
             HeightCeiling = Number(fields, "heightceiling"),
             TextureFloor = Text(fields, "texturefloor", "-"),

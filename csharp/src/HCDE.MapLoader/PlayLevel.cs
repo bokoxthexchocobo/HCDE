@@ -371,6 +371,7 @@ public static class LevelBuilder
             Leakiness = sector.DamageAmount == 0 ? 0 : unchecked((short)sector.Leakiness),
             HurtMonsters = sector.HurtMonsters,
             HarmInAir = sector.HarmInAir,
+            Gravity = planeTransforms ? sector.Gravity : 1,
             Tag = sector.Id,
             AdditionalTags = planeTransforms ? MoreIds(sector.MoreIds, sector.Id, sector: true) : Array.Empty<int>(),
             HealthFloor = sector.HealthFloor,
