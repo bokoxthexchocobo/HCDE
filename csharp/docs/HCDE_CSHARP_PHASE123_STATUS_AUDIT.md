@@ -10145,11 +10145,32 @@ flag is not yet included in the partial pose archive. Native P_HitFloor terrain
 splashes, full class loading/defaults, slope/portal collisions, full persistence,
 and native gameplay acceptance remain open. Gameplay phases 1–3 remain incomplete.
 
+## Projectile floor flag persistence conversion audit (2026-10-03)
+
+Capture/restore now preserves NoExplodeFloor through an optional version-22
+projectile flag table. The extension wraps supported versions 18–21, requires a
+complete flag table when enabled, and rejects invalid flag bits or malformed
+trailers. Restore validation occurs before clock or actor mutation. Native
+AActor::Serialize in src/playsim/p_mobj.cpp archives flags3, which owns
+MF3_NOEXPLODEFLOOR; this managed archive remains a separate pose format.
+
+All-zero captures retain their existing archive version. Versions 18–21 decode
+with the newly supported flag cleared, while older formats with absent metadata
+retain existing restore behavior. Eleven regressions cover memory/serialized
+set and clear restoration followed by floor contact, invalid bits and trailer
+sizes, incomplete writes, mutation safety, and nesting with a saved Pain timer.
+
+Full Release solution: 5,435 passed, zero failed/skipped; Playsim 4,308.
+Warnings-as-errors build and diff checks pass. Checksum format is unchanged.
+The archive still matches existing actors by id and cannot recreate removed
+projectiles or restore their full lifetime, owner/tracer, or class configuration.
+Full savegames and native invasion acceptance remain open; phases 1–3 are incomplete.
+
 ## Validation
 
-- Release solution: **5,424 passed, zero failed/skipped**, 4,501 cases above baseline.
+- Release solution: **5,435 passed, zero failed/skipped**, 4,512 cases above baseline.
   Protocol 15; Gamedata 29; Transport 10; Master 1; RCON 6; MapLoader 533;
-  Playsim 4,297; Client 12; Net.Core 351; Pregame 97; Server 65; Scripting 8.
+  Playsim 4,308; Client 12; Net.Core 351; Pregame 97; Server 65; Scripting 8.
 - The lighting pass initially saw a five-second timeout in
   `Pump_LiveSessionReceivesGuestClientInput`; it passed the targeted rerun and the
   subsequent full solution run. No timeout/test-disabling workaround was added.

@@ -2178,6 +2178,7 @@ public sealed class AuthoritySimulation
                 FloatFlags = (actor.InFloat ? 1 : 0) | (actor.VerticalFriction ? 2 : 0),
                 DeathFlags = actor.DeathDamageType == "Massacre" ? 1 : 0,
                 PainDeath = actor.Brain?.CapturePainDeath(),
+                ProjectileFlags = actor.NoExplodeFloor ? 1 : 0,
                 Pickup = PickupCatalog.IsPickup(actor.DoomEdNum)
                     ? new SimPickupProperties(actor.PickupAmount, actor.IgnoreAmmoSkill, actor.Depleted) : null,
                 Health = actor.Health,
@@ -2209,6 +2210,7 @@ public sealed class AuthoritySimulation
         SimSavegame.ValidateContactFlags(state);
         SimSavegame.ValidateFloatFlags(state);
         SimSavegame.ValidateDeathFlags(state);
+        SimProjectileFlagArchive.Validate(state);
         SimPainDeathArchive.Validate(state);
         if (state.GeometryHealth is { } savedHealth && (savedHealth.Lines.Count != Level.Lines.Count
             || savedHealth.Sectors.Count != Level.Sectors.Count || !savedHealth.Groups.Keys.Order().SequenceEqual(HealthGroups.Keys.Order())))
@@ -2296,6 +2298,7 @@ public sealed class AuthoritySimulation
             if (pose.PainDeath is { } painDeath && actor.Brain?.CapturePainDeath() != null) actor.Brain.RestorePainDeath(painDeath);
             actor.RestoreHealth(pose.Health);
             if (pose.DeathFlags is { } deathFlags) actor.DeathDamageType = deathFlags == 1 ? "Massacre" : null;
+            if (pose.ProjectileFlags is { } projectileFlags) actor.NoExplodeFloor = (projectileFlags & 1) != 0;
             if (pose.Roll is { } roll) actor.Roll = new BamAngle(roll);
             if (pose.ContactFlags is { } contactFlags)
             {
