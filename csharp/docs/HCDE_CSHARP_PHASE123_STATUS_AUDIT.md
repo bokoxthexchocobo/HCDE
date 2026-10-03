@@ -9887,11 +9887,34 @@ rules; the conversion intentionally does not force damage. Failed-spawn custom
 callbacks, replacements, portals and collision details, full native sessions,
 invasion synchronization acceptance, and phases 1–3 completion remain open.
 
+## Pain Elemental compatibility spawn limit checkpoint (2026-10-03)
+
+Audited native A_PainShootSkull in `painelemental.zs`: default negative limit
+becomes 21 under COMPATF_LIMITPAIN, and the class thinker iterator counts dead
+as well as live Lost Souls. Added managed CompatSurface.LimitPain (256, a
+managed enum value rather than the native wire bit) and a SpawnLostSoul guard
+that rejects when 21 nondestroyed resolved Lost Soul actors already exist.
+The guard follows the ceiling check and precedes actor allocation. Editor ID
+remapping does not bypass it; default compatibility permits additional souls.
+
+Seven regressions cover 20/21/22 boundaries, dead thinkers, remapped IDs,
+destroyed exclusion, and default unlimited behavior. Full Release solution:
+5,346 passed, zero failed/skipped; Playsim 4,221. Release warnings-as-errors
+build and whitespace checks passed; existing trace and invasion server tests
+passed. Existing Compat and actor checksum fields cover the switch/state; no
+checksum schema added.
+
+This implements the built-in Lost Soul compatibility limit through the simulation
+API. Native compatibility bit decoding, MAPINFO/server configuration, explicit
+ZScript action limit arguments, subclass/replacement thinker counting, ceiling
+float response, massacre suppression, and full native sessions remain open.
+Invasion synchronization acceptance and phases 1–3 completion remain open.
+
 ## Validation
 
-- Release solution: **5,339 passed, zero failed/skipped**, 4,416 cases above baseline.
+- Release solution: **5,346 passed, zero failed/skipped**, 4,423 cases above baseline.
   Protocol 15; Gamedata 29; Transport 10; Master 1; RCON 6; MapLoader 533;
-  Playsim 4,214; Client 12; Net.Core 351; Pregame 97; Server 63; Scripting 8.
+  Playsim 4,221; Client 12; Net.Core 351; Pregame 97; Server 63; Scripting 8.
 - The lighting pass initially saw a five-second timeout in
   `Pump_LiveSessionReceivesGuestClientInput`; it passed the targeted rerun and the
   subsequent full solution run. No timeout/test-disabling workaround was added.

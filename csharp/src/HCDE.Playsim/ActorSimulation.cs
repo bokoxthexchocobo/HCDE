@@ -2033,6 +2033,9 @@ public sealed class AuthoritySimulation
     {
         if (parent.SectorIndex >= 0 && parent.Z.ToDouble() + parent.Height.ToDouble() + 8 > CeilingOf(parent.SectorIndex))
             return null;
+        if (Compat.HasFlag(CompatSurface.LimitPain)
+            && _actors.Count(actor => !actor.Destroyed && actor.ClassDoomEdNum == 3006) >= 21)
+            return null;
         var definition = DoomActorCatalog.Find(3006)!;
         var defaults = _dehacked?.Actors.FirstOrDefault(actor => actor.OriginalDoomEdNum == 3006 && actor.Patched);
         var health = defaults?.Health ?? definition.Health;

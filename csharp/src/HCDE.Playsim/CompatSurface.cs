@@ -18,6 +18,8 @@ public enum CompatSurface
     BoomScroll = 64,
     /// <summary>Native <c>COMPATF_NOTOSSDROPS</c>. Drops use source Z without toss velocity.</summary>
     NoTossDrops = 128,
+    /// <summary>Native <c>COMPATF_LIMITPAIN</c>. Pain Elementals stop spawning when 21 Lost Souls exist.</summary>
+    LimitPain = 256,
 }
 
 public static class CompatSurfaceRules
