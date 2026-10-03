@@ -9597,11 +9597,30 @@ closes the bounded AddBot class-default lookup gap, not full class identity
 parity. Phases 1–3, persistence/network/native sessions and invasion
 synchronization validation remain open.
 
+## Conversion and audit: remapped class identity for ice drops (2026-10-03)
+
+Retained resolved original class editor identity on map/dynamic actors and
+used it for the existing vanilla ice-shatter drop subset. Native drop metadata
+belongs to actor classes (for example Clip/Shotgun definitions in
+`wadsrc/static/zscript/actors/doom/possessed.zs`); changing DEHACKED ID # does
+not replace the original class. Remapped Zombieman, ShotgunGuy and ChaingunGuy
+now retain their native drop rather than selecting by requested editor number.
+
+Seven regressions cover all three classes through map and dynamic spawning,
+duplicate-shatter prevention and a remapped Imp without a pickup drop. Full
+Release solution: 5,241 passed, zero failed/skipped; Playsim 4,127. Release
+warnings-as-errors build and whitespace check pass. Class identity contributes
+a conditional checksum marker only when different from DoomEdNum; default
+hashes are preserved. New class identity is not yet archived/replicated.
+Other editor-number runtime lookups (species/pickup/class filters), complete
+class drop metadata and death actions, other factories and native session
+acceptance remain incomplete. Phases 1–3 and invasion validation remain open.
+
 ## Validation
 
-- Release solution: **5,234 passed, zero failed/skipped**, 4,311 cases above baseline.
+- Release solution: **5,241 passed, zero failed/skipped**, 4,318 cases above baseline.
   Protocol 15; Gamedata 18; Transport 10; Master 1; RCON 6; MapLoader 533;
-  Playsim 4,120; Client 12; Net.Core 351; Pregame 97; Server 63; Scripting 8.
+  Playsim 4,127; Client 12; Net.Core 351; Pregame 97; Server 63; Scripting 8.
 - The lighting pass initially saw a five-second timeout in
   `Pump_LiveSessionReceivesGuestClientInput`; it passed the targeted rerun and the
   subsequent full solution run. No timeout/test-disabling workaround was added.

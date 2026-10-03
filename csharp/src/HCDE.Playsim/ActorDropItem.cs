@@ -6,7 +6,7 @@ internal static class ActorDropItem
     internal static void DropVanillaDeathItem(AuthoritySimulation sim, Actor actor)
     {
         if (actor is PlayerPawn) return;
-        var item = actor.DoomEdNum switch
+        var item = actor.ClassDoomEdNum switch
         {
             3004 or 84 => PickupCatalog.Clip,
             9 => PickupCatalog.Shotgun,

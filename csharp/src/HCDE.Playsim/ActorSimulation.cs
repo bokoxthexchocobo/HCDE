@@ -28,6 +28,8 @@ public class Actor : Thinker
     /// <summary>Native <c>GetNetworkID</c>. Assigned by netplay; ACS may query it offline.</summary>
     public uint NetworkId { get; set; }
     public int DoomEdNum { get; init; }
+    internal int DefinitionDoomEdNum { get; set; }
+    internal int ClassDoomEdNum => DefinitionDoomEdNum > 0 ? DefinitionDoomEdNum : DoomEdNum;
     public int ThingId { get; internal set; }
     /// <summary>Native <c>AActor::IsMapActor</c>. Owned inventory items are excluded from ACS thing counts.</summary>
     internal virtual bool IsMapActor => true;
@@ -1104,6 +1106,7 @@ public static class ActorSpawner
                 actor.PitchDegrees = thing.Pitch;
                 actor.Roll = BamAngle.FromDegrees(thing.Roll);
             }
+            actor.DefinitionDoomEdNum = definitionType;
             nextId++;
             actor.SpecialPickup = PickupCatalog.IsPickup(actor.DoomEdNum);
             ApplyPrimaryFlags(actor, defaults, playerStart);
@@ -1826,6 +1829,7 @@ public sealed class AuthoritySimulation
         {
             Id = id,
             DoomEdNum = doomEdNum,
+            DefinitionDoomEdNum = definitionType,
             ThingId = thingId,
             X = Fixed.FromDouble(x),
             Y = Fixed.FromDouble(y),
@@ -2615,6 +2619,11 @@ public sealed class AuthoritySimulation
             hash = Mix(hash, unchecked((uint)actor.States.Current));
             hash = Mix(hash, unchecked((uint)actor.States.RemainingTics));
             hash = Mix(hash, unchecked((uint)actor.Health));
+            if (actor.ClassDoomEdNum != actor.DoomEdNum)
+            {
+                hash = Mix(hash, 0x434C4153u);
+                hash = Mix(hash, unchecked((uint)actor.ClassDoomEdNum));
+            }
             hash = Mix(hash, unchecked((uint)actor.PainChance));
             hash = Mix(hash, unchecked((uint)actor.PainThreshold));
             hash = Mix(hash, unchecked((uint)Fixed.FromDouble(actor.ChaseSpeed).Raw));
