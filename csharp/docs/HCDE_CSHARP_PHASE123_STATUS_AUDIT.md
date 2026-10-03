@@ -10307,11 +10307,29 @@ projectile floor exception, not the full native ordinary-actor dropoff policy.
 Flat swept movement, full class defaults/state timing, savegames and native
 invasion acceptance remain incomplete. Gameplay phases 1–3 remain open.
 
+## Floor-hugger flag persistence conversion audit (2026-10-03)
+
+Capture/restore now preserves FloorHugger and NoDropOff with an optional
+version-26 table over versions 18–25. Bits 0/1 represent the two flags. Nonzero
+tables require complete actor metadata; invalid bits are rejected before restore
+mutation. All-zero captures retain existing formats. Versions 18–25 decode with
+these newly supported flags clear; older missing metadata retains existing
+behavior. Native AActor::Serialize in src/playsim/p_mobj.cpp preserves flags3 and
+flags5, containing MF3_FLOORHUGGER and MF5_NODROPOFF respectively.
+
+Thirteen regressions cover all four bit combinations in memory/serialized saves,
+resumed floor contact, invalid bits, mutation safety, incomplete tables, and
+composition with ceiling/lifetime/pointer extensions. Full Release solution:
+5,520 passed, zero failed/skipped; Playsim 4,393. Warnings-as-errors build and diff
+checks pass. Checksum format is unchanged. Ordinary-actor NoDropOff policy, full
+class/state restoration, actor recreation and native invasion acceptance remain
+open. Gameplay phases 1–3 remain incomplete.
+
 ## Validation
 
-- Release solution: **5,507 passed, zero failed/skipped**, 4,584 cases above baseline.
+- Release solution: **5,520 passed, zero failed/skipped**, 4,597 cases above baseline.
   Protocol 15; Gamedata 29; Transport 10; Master 1; RCON 6; MapLoader 533;
-  Playsim 4,380; Client 12; Net.Core 351; Pregame 97; Server 65; Scripting 8.
+  Playsim 4,393; Client 12; Net.Core 351; Pregame 97; Server 65; Scripting 8.
 - The lighting pass initially saw a five-second timeout in
   `Pump_LiveSessionReceivesGuestClientInput`; it passed the targeted rerun and the
   subsequent full solution run. No timeout/test-disabling workaround was added.
