@@ -89,14 +89,16 @@ public sealed class MonsterBrain(MonsterAttack attack)
         {
             if (actor.OkayToSwitchTarget(source, this))
             {
+                if (actor.Simulation != null)
+                    RememberLastEnemy(actor.Simulation, actor, null);
                 TargetId = source.Id;
                 Threshold = DefThreshold;
             }
         }
         else if (actor.OkayToSwitchTarget(source, this))
         {
-            if (TargetId is { } previous && actor.Simulation != null)
-                RememberLastEnemy(actor.Simulation, previous);
+            if (actor.Simulation != null)
+                RememberLastEnemy(actor.Simulation, actor, TargetId);
             TargetId = source.Id;
             Threshold = DefThreshold;
         }
@@ -105,11 +107,11 @@ public sealed class MonsterBrain(MonsterAttack attack)
             actor.States.Enter(actor, actor.SeeState);
     }
 
-    /// <summary>Native last-enemy update on target switch. <c>TIDtoHate</c> priority over monsters is absent.</summary>
-    internal void RememberLastEnemy(AuthoritySimulation sim, uint previousTargetId)
+    /// <summary>Native damage-retaliation memory: preserve living players, or any living enemy when TIDtoHate is nonzero.</summary>
+    private void RememberLastEnemy(AuthoritySimulation sim, Actor owner, uint? previousTargetId)
     {
         var last = LastEnemyId == null ? null : sim.Actors.FirstOrDefault(actor => actor.Id == LastEnemyId);
-        if (LastEnemyId == null || last is not PlayerPawn || !last.CanTakeDamage)
+        if (last == null || (last is not PlayerPawn && owner.TidToHate == 0) || last.IsDead || last.Destroyed)
             LastEnemyId = previousTargetId;
     }
 

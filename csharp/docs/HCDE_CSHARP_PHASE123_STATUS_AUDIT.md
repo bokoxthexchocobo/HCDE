@@ -7948,11 +7948,38 @@ kill accounting remain outside this change. Representative native engine and
 invasion round/timer/enemy synchronization sessions remain required; phases 1–3
 are not complete.
 
+## Conversion and audit: damage-retaliation enemy memory (2026-10-03)
+
+Converted the last-enemy replacement predicate from `ReactToDamage` in
+`src/playsim/p_interaction.cpp`. A living remembered player is preserved;
+a living remembered monster is also preserved when the owner has a nonzero
+TidToHate. Otherwise a successful retaliation switch remembers the old current
+target, including null. The previous implementation always replaced remembered
+monsters and skipped memory updates entirely when acquiring from a null target.
+The audit also corrected the liveness condition to health rather than damage
+eligibility: a living non-shootable remembered enemy can still be preserved.
+Destroyed references are treated as absent in the managed actor collection.
+
+Ten new regression cases exercise zero, positive and negative hate TIDs, player
+and monster memory, dead remembered players/monsters, acquisition after clearing
+the current target, and a living non-shootable remembered enemy. The initial
+fixtures used same-class monsters, which correctly blocked infighting before
+retaliation; fixtures now use distinct attacker/victim classes. Existing
+last-enemy, resurrection, checksum and invasion cases remain passing.
+
+Full Release suite: 4,746 passed, zero failed/skipped; Playsim 3,673.
+Warnings-as-errors build: zero warnings/errors. No checksum fields were added;
+the managed player idle baseline remains unchanged. This is native source
+comparison and managed regression coverage, not a native session acceptance
+result. Full native hate-target searching, chase/state scheduling, save/network
+AI state and representative invasion sessions remain open; phases 1–3 remain
+incomplete.
+
 ## Validation
 
-- Release solution: **4,736 passed, zero failed/skipped**, 3,813 cases above baseline.
+- Release solution: **4,746 passed, zero failed/skipped**, 3,823 cases above baseline.
   Protocol 15; Gamedata 10; Transport 10; Master 1; RCON 6; MapLoader 500;
-  Playsim 3,663; Client 12; Net.Core 351; Pregame 97; Server 63; Scripting 8.
+  Playsim 3,673; Client 12; Net.Core 351; Pregame 97; Server 63; Scripting 8.
 - The lighting pass initially saw a five-second timeout in
   `Pump_LiveSessionReceivesGuestClientInput`; it passed the targeted rerun and the
   subsequent full solution run. No timeout/test-disabling workaround was added.
