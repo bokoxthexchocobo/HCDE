@@ -218,7 +218,7 @@ public sealed class ProjectileActor : Actor
         {
             foreach (var actor in sim.Actors.ToArray())
             {
-                if (!actor.CanTakeDamage || actor.NoRadiusDamage) continue;
+                if (!actor.IsBlockmapActor || !actor.CanTakeDamage || actor.NoRadiusDamage) continue;
                 var horizontal = Math.Max(0, Math.Sqrt(Math.Pow(actor.X.ToDouble() - X.ToDouble(), 2)
                     + Math.Pow(actor.Y.ToDouble() - Y.ToDouble(), 2)) - actor.Radius.ToDouble());
                 var vertical = Math.Max(0, Math.Max(actor.Z.ToDouble() - Z.ToDouble(), Z.ToDouble() - actor.Z.ToDouble() - actor.Height.ToDouble()));

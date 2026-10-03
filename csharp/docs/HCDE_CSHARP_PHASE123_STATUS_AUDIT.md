@@ -8853,11 +8853,30 @@ save/network membership remain incomplete. Subclasses already excluded from the
 managed blockmap filter inherit these contact exclusions. Native-engine fixtures
 are still needed; phases 1–3 and invasion synchronization validation remain open.
 
+## Blockmap exclusion for rocket and archvile splash — 2026-10-03
+
+Native P_RadiusAttack in `src/playsim/p_map.cpp` enumerates targets using
+FMultiBlockThingsIterator. Converted IsBlockmapActor candidate filtering in the
+managed rocket blast and archvile fire splash loops. Archvile direct target damage
+and vertical thrust remain separate from splash membership.
+
+Four regressions verify registered versus excluded targets during a rocket wall
+impact and archvile attack. The rocket fixture places the target off the missile
+path to isolate splash; the archvile fixture verifies direct damage and thrust
+persist when splash is excluded. Full Release suite: 5,014 passed, zero
+failed/skipped; Playsim 3,933. Warnings-as-errors build: zero warnings/errors;
+whitespace check passes. No checksum fields changed.
+
+Scope is candidate membership, not complete native radius-attack formulas,
+force-radius flags, portal traversal or attack-state cadence. Vertical support,
+pickups, telefragging, blockmap relinking and save/network state remain incomplete.
+Phases 1–3 and representative invasion synchronization validation remain open.
+
 ## Validation
 
-- Release solution: **5,010 passed, zero failed/skipped**, 4,087 cases above baseline.
+- Release solution: **5,014 passed, zero failed/skipped**, 4,091 cases above baseline.
   Protocol 15; Gamedata 18; Transport 10; Master 1; RCON 6; MapLoader 500;
-  Playsim 3,929; Client 12; Net.Core 351; Pregame 97; Server 63; Scripting 8.
+  Playsim 3,933; Client 12; Net.Core 351; Pregame 97; Server 63; Scripting 8.
 - The lighting pass initially saw a five-second timeout in
   `Pump_LiveSessionReceivesGuestClientInput`; it passed the targeted rerun and the
   subsequent full solution run. No timeout/test-disabling workaround was added.

@@ -50,7 +50,7 @@ internal static class ArchvileActions
             };
             foreach (var victim in sim.Actors.ToArray())
             {
-                if (ReferenceEquals(victim, archvile) || !victim.CanTakeDamage || victim.NoRadiusDamage) continue;
+                if (ReferenceEquals(victim, archvile) || !victim.IsBlockmapActor || !victim.CanTakeDamage || victim.NoRadiusDamage) continue;
                 var horizontal = Math.Max(0, Math.Sqrt(Math.Pow(victim.X.ToDouble() - fire.X.ToDouble(), 2)
                     + Math.Pow(victim.Y.ToDouble() - fire.Y.ToDouble(), 2)) - victim.Radius.ToDouble());
                 var vertical = Math.Max(0, Math.Max(victim.Z.ToDouble() - fire.Z.ToDouble(),
