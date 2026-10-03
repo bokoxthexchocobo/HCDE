@@ -222,7 +222,7 @@ public static class ActorPhysics
             var dy = vy / steps;
             if (!TryMove(sim, actor, x + dx, y + dy, out var wall))
             {
-                if (wall != null && actor.CanSlide)
+                if (wall != null && (actor.CanSlide || actor.Blasted) && actor is not ProjectileActor)
                     SlideFromBlock(sim, actor, ref vx, ref vy, steps, x, y, dx, dy);
                 else if (wall != null)
                 {

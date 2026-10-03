@@ -10396,11 +10396,28 @@ Checksum format is unchanged. Blast initiation/collision damage/sliding, full
 native movement timing, actor recreation, full savegames and native invasion
 acceptance remain unfinished. Gameplay phases 1–3 remain incomplete.
 
+## Blasted wall-slide conversion audit (2026-10-03)
+
+Blocked non-projectile actors now select the supported wall-slide path when
+Blasted is set, even without CanSlide. Native P_XYMovement in
+src/playsim/p_mobj.cpp uses MF2_SLIDE or MF2_BLASTED and excludes missiles.
+The existing managed nearest-wall/two-clip slide implementation is reused;
+projectiles retain their impact/movement path. Full stops clear Blasted through
+the previously converted lifecycle, while tangential motion retains it.
+
+Six regressions cover mirrored walls and both tangent directions, compare movement
+with explicit slide actors, verify head-on stop clearing, and resume sliding from
+a serialized blasted pose. Full Release solution: 5,568 passed, zero failed/skipped;
+Playsim 4,441. Warnings-as-errors build and diff checks pass. Archive/checksum
+formats unchanged. Bounding-corner traces, ice bounce, wall-running compatibility,
+push callbacks and blast collision damage remain open, along with full gameplay
+and native invasion acceptance. Phases 1–3 remain incomplete.
+
 ## Validation
 
-- Release solution: **5,562 passed, zero failed/skipped**, 4,639 cases above baseline.
+- Release solution: **5,568 passed, zero failed/skipped**, 4,645 cases above baseline.
   Protocol 15; Gamedata 29; Transport 10; Master 1; RCON 6; MapLoader 533;
-  Playsim 4,435; Client 12; Net.Core 351; Pregame 97; Server 65; Scripting 8.
+  Playsim 4,441; Client 12; Net.Core 351; Pregame 97; Server 65; Scripting 8.
 - The lighting pass initially saw a five-second timeout in
   `Pump_LiveSessionReceivesGuestClientInput`; it passed the targeted rerun and the
   subsequent full solution run. No timeout/test-disabling workaround was added.
