@@ -192,7 +192,7 @@ public sealed class MonsterBrain(MonsterAttack attack)
             Mode = MonsterMode.Pain; WindupTics = 0; _attackTic = -1; return;
         }
         if (_raiseTics > 0) { _raiseTics--; return; }
-        if (ReactionTics > 0) { ReactionTics--; return; }
+        if (ReactionTics != 0) { ReactionTics = unchecked(ReactionTics - 1); return; }
         if (_healTics > 0) { _healTics--; Mode = MonsterMode.Heal; return; }
         var target = sim.Actors.FirstOrDefault(a => a.Id == TargetId && a.CanTakeDamage && !actor.IsFriend(a));
         target ??= sim.Actors.FirstOrDefault(candidate => candidate.Id == actor.LastHeardTargetId && candidate.CanTakeDamage && !actor.IsFriend(candidate)

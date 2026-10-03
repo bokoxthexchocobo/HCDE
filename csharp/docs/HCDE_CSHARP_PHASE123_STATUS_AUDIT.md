@@ -8580,11 +8580,31 @@ extreme geometry, dynamic class spawning or player lifecycle. Source/regression
 self-audit does not replace native invasion sessions or full phases 1–3, which
 remain open. Unrelated workspace edits are preserved.
 
+## Signed monster reaction countdown — 2026-10-03
+
+Native `A_DoChase` in `src/playsim/p_enemy.cpp` decrements any nonzero
+reaction counter. Managed `MonsterBrain.Tick` now uses that signed predicate
+instead of ignoring negative counters. Explicit unchecked subtraction makes
+managed integer wraparound deterministic; it is not a claim about native C++
+signed-overflow semantics.
+
+Four new regression cases cover negative countdown, minimum-integer wraparound,
+actor/brain counter agreement, and target acquisition after clearing the counter.
+The existing resurrection test now expects signed countdown on the first tick
+after raising ends; its assertions that raising preserves reaction time remain.
+Full Release suite: 4,914 passed, zero failed/skipped; Playsim 3,841.
+Warnings-as-errors build: zero warnings/errors.
+
+Scope remains bounded: the managed whole-tick reaction gate still differs from
+native chase action scheduling. Native target acquisition, movement, and missile
+cadence need further conversion. No checksum fields changed. Phases 1–3 and
+representative invasion round/timer/enemy synchronization validation remain open.
+
 ## Validation
 
-- Release solution: **4,910 passed, zero failed/skipped**, 3,987 cases above baseline.
+- Release solution: **4,914 passed, zero failed/skipped**, 3,991 cases above baseline.
   Protocol 15; Gamedata 10; Transport 10; Master 1; RCON 6; MapLoader 500;
-  Playsim 3,837; Client 12; Net.Core 351; Pregame 97; Server 63; Scripting 8.
+  Playsim 3,841; Client 12; Net.Core 351; Pregame 97; Server 63; Scripting 8.
 - The lighting pass initially saw a five-second timeout in
   `Pump_LiveSessionReceivesGuestClientInput`; it passed the targeted rerun and the
   subsequent full solution run. No timeout/test-disabling workaround was added.

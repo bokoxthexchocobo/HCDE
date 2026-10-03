@@ -19,7 +19,7 @@ public class MonsterRaiseReactionTests
             Assert.Equal(reaction, actor.ReactionTime); Assert.Equal(MonsterMode.Raise, actor.Brain.Mode);
         }
         actor.Brain.Tick(sim, actor);
-        Assert.Equal(reaction > 0 ? reaction - 1 : reaction, actor.ReactionTime);
+        Assert.Equal(reaction != 0 ? unchecked(reaction - 1) : reaction, actor.ReactionTime);
     }
 
     [Fact]
