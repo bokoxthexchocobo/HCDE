@@ -163,6 +163,8 @@ public class Actor : Thinker
     public bool Blasted { get; set; }
     public bool Boss { get; set; }
     public bool DontBlast { get; set; }
+    /// <summary>Native MF2_THRUACTORS: skip supported actor contact checks on either participant.</summary>
+    public bool ThruActors { get; set; }
     /// <summary>Native <c>MF4_NOTARGETSWITCH</c>. Wake-up will not pick a new chase target while one is alive.</summary>
     public bool NoTargetSwitch { get; set; }
     /// <summary>Native <c>MF4_NOHATEPLAYERS</c>. <see cref="OkayToSwitchTarget"/> ignores player sources.</summary>
@@ -2819,6 +2821,7 @@ public sealed class AuthoritySimulation
             if (actor.Blasted) hash = Mix(hash, 0x424C5354u);
             if (actor.Boss) hash = Mix(hash, 0x424F5353u);
             if (actor.DontBlast) hash = Mix(hash, 0x44424C53u);
+            if (actor.ThruActors) hash = Mix(hash, 0x54485255u);
             if (actor.SpawnCeiling) hash = Mix(hash, 0x4345494Cu);
             if (actor.NoBlockMonsters) hash = Mix(hash, 0x4E424D4Fu);
             if (actor.NoBlockmap) hash = Mix(hash, 0x4E424D50u);

@@ -10499,11 +10499,34 @@ script collision callbacks, THRUACTORS/THRUSPECIES, typed outgoing damage,
 bleed effects and retry parity remain open. No native runtime acceptance is
 claimed; phases 1–3 and invasion synchronization acceptance remain incomplete.
 
+## Conversion and audit: THRUACTORS contact policy (2026-10-03)
+
+Converted the supported MF2_THRUACTORS actor contact rule against
+`PIT_CheckThing`, `P_TestMobjZ` and the teleport contact check in
+`src/playsim/p_map.cpp`, plus the flag registration in
+`src/scripting/thingdef_data.cpp`. Either participant's flag suppresses
+managed movement contact, blast transfer, occupied-position rejection,
+bridge/rider support and direct projectile impacts. Wall/plane checks
+remain active. ACS accepts case-insensitive THRUACTORS set/query and the
+simulation checksum includes a conditional marker when enabled.
+
+Thirteen new regressions cover mover/target/both blast skips, occupied
+position tests before/after clearing flags, rider and bridge exclusions,
+projectile passage without damage, ACS round trip and wall blocking.
+Release solution: 5,637 passed, zero failed/skipped; Playsim 4,510.
+Warnings-as-errors build and whitespace checks pass.
+
+THRUACTORS save/restore persistence, hitscan/puff policy, telefrag execution,
+THRUSPECIES/THRUBITS, custom actor defaults and full native collision geometry
+remain incomplete. Radius damage is separate from direct projectile contact
+and still applies. No native runtime acceptance is claimed. Phases 1–3 and
+invasion synchronization acceptance remain open.
+
 ## Validation
 
-- Release solution: **5,624 passed, zero failed/skipped**, 4,701 cases above baseline.
+- Release solution: **5,637 passed, zero failed/skipped**, 4,714 cases above baseline.
   Protocol 15; Gamedata 29; Transport 10; Master 1; RCON 6; MapLoader 533;
-  Playsim 4,497; Client 12; Net.Core 351; Pregame 97; Server 65; Scripting 8.
+  Playsim 4,510; Client 12; Net.Core 351; Pregame 97; Server 65; Scripting 8.
 - The lighting pass initially saw a five-second timeout in
   `Pump_LiveSessionReceivesGuestClientInput`; it passed the targeted rerun and the
   subsequent full solution run. No timeout/test-disabling workaround was added.

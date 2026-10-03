@@ -31,7 +31,7 @@ public static class ActorPhysics
     /// <summary>Native rider crush subset. The rider stands on the carrier's top within both radii.</summary>
     public static bool IsStandingOn(Actor carrier, Actor rider)
     {
-        if (ReferenceEquals(carrier, rider) || !rider.BlocksActors) return false;
+        if (ReferenceEquals(carrier, rider) || carrier.ThruActors || rider.ThruActors || !rider.BlocksActors) return false;
         var top = carrier.Z.ToDouble() + carrier.Height.ToDouble();
         if (Math.Abs(rider.Z.ToDouble() - top) > 1) return false;
         var reach = carrier.Radius.ToDouble() + rider.Radius.ToDouble();
@@ -293,7 +293,7 @@ public static class ActorPhysics
     private static double SupportFloor(AuthoritySimulation sim, Actor actor)
     {
         var floor = sim.FloorOf(actor.SectorIndex);
-        if (actor.Floating || actor is ProjectileActor) return floor;
+        if (actor.Floating || actor.ThruActors || actor is ProjectileActor) return floor;
         var player = actor is PlayerPawn;
         var x = actor.X.ToDouble();
         var y = actor.Y.ToDouble();
@@ -302,7 +302,7 @@ public static class ActorPhysics
         var ceiling = actor.SectorIndex >= 0 ? sim.CeilingOf(actor.SectorIndex) : double.PositiveInfinity;
         foreach (var other in sim.Actors)
         {
-            if (ReferenceEquals(actor, other) || !other.IsBlockmapActor) continue;
+            if (ReferenceEquals(actor, other) || other.ThruActors || !other.IsBlockmapActor) continue;
             var corpse = actor.IceCorpse && IsCorpseObstacle(other);
             if ((!other.BlocksActors && !corpse) || (other is PlayerPawn && !other.IsDead)) continue;
             if (!player && !other.ActsLikeBridge && !corpse) continue;
@@ -525,7 +525,7 @@ public static class ActorPhysics
         if (z < sim.FloorOf(sector) || sector >= 0 && z + height > sim.CeilingOf(sector)) return false;
         if (sim.Level.Lines.Any(line => Blocks(sim, actor, line)
             && DistanceSquared(x, y, line.X1, line.Y1, line.X2, line.Y2) < radius * radius)) return false;
-        return !sim.Actors.Any(other => !ReferenceEquals(actor, other) && other.IsBlockmapActor && other.BlocksActors
+        return actor.ThruActors || !sim.Actors.Any(other => !ReferenceEquals(actor, other) && !other.ThruActors && other.IsBlockmapActor && other.BlocksActors
             && z < other.Z.ToDouble() + other.Height.ToDouble() && z + height > other.Z.ToDouble()
             && Math.Pow(x - other.X.ToDouble(), 2) + Math.Pow(y - other.Y.ToDouble(), 2)
                 < Math.Pow(radius + other.Radius.ToDouble(), 2));
@@ -571,14 +571,14 @@ public static class ActorPhysics
         var z = actor.Brain?.Charging == true ? actor.Z.ToDouble() : Math.Max(actor.Z.ToDouble(), sim.FloorOf(sector));
         if (sector >= 0 && (z < sim.FloorOf(sector) || z - actor.Z.ToDouble() > actor.MaxStepHeight.ToDouble()
             || z + actor.Height.ToDouble() > sim.CeilingOf(sector))) return false;
-        if (actor.BlocksActors || actor.Blasted && !actor.IsDead && !actor.Destroyed)
+        if (!actor.ThruActors && (actor.BlocksActors || actor.Blasted && !actor.IsDead && !actor.Destroyed))
         {
             foreach (var other in sim.Actors)
             {
                 var corpse = actor.IceCorpse && IsCorpseObstacle(other);
                 var blastTarget = actor.Blasted && other.Shootable && other.IsMonster
                     && !other.Boss && !other.DontBlast && !other.IsDead && !other.Destroyed;
-                if (ReferenceEquals(actor, other) || !other.IsBlockmapActor
+                if (ReferenceEquals(actor, other) || other.ThruActors || !other.IsBlockmapActor
                     || (!blastTarget && !(actor.BlocksActors && (other.BlocksActors || corpse)))
                     || z >= other.Z.ToDouble() + other.Height.ToDouble()
                     || z + actor.Height.ToDouble() <= other.Z.ToDouble()) continue;
