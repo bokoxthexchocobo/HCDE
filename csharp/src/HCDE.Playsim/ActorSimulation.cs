@@ -95,6 +95,8 @@ public class Actor : Thinker
     internal bool SpawnCanPickupItems { get; set; }
     internal bool SpawnSpecialPickup { get; set; }
     public bool Floating { get; set; }
+    public bool InFloat { get; set; }
+    public bool VerticalFriction { get; set; }
     public double FloatSpeed { get; set; } = 4;
     public bool NoRadiusDamage { get; set; }
     public bool NoSectorDamage { get; set; }
@@ -2032,7 +2034,15 @@ public sealed class AuthoritySimulation
     internal Actor? SpawnLostSoul(Actor parent, Actor? target, double angle, int limit = -1)
     {
         if (parent.SectorIndex >= 0 && parent.Z.ToDouble() + parent.Height.ToDouble() + 8 > CeilingOf(parent.SectorIndex))
+        {
+            if (parent.Floating)
+            {
+                parent.VelocityZ = Fixed.FromDouble(parent.VelocityZ.ToDouble() - 2);
+                parent.InFloat = true;
+                parent.VerticalFriction = true;
+            }
             return null;
+        }
         if (limit < 0 && Compat.HasFlag(CompatSurface.LimitPain)) limit = 21;
         if (limit > 0 && _actors.Count(actor => !actor.Destroyed && actor.ClassDoomEdNum == 3006) >= limit)
             return null;
@@ -2787,6 +2797,12 @@ public sealed class AuthoritySimulation
             hash = Mix(hash, actor.Dropped ? 1u : 0u);
             hash = Mix(hash, unchecked((uint)actor.ReactionTime));
             hash = Mix(hash, actor.ReactionTimeInitialized ? 1u : 0u);
+            if (actor.InFloat || actor.VerticalFriction)
+            {
+                hash = Mix(hash, 0x56465249u);
+                hash = Mix(hash, actor.InFloat ? 1u : 0u);
+                hash = Mix(hash, actor.VerticalFriction ? 1u : 0u);
+            }
             hash = Mix(hash, actor.NoRadiusDamage ? 1u : 0u);
             hash = Mix(hash, actor.NoSectorDamage ? 1u : 0u);
             hash = Mix(hash, actor.ForceSectorDamage ? 1u : 0u);

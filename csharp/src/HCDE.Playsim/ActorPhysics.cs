@@ -200,6 +200,12 @@ public static class ActorPhysics
 
     public static void Step(AuthoritySimulation sim, Actor actor)
     {
+        if (actor.VerticalFriction && !actor.IsDead)
+        {
+            var vertical = actor.VelocityZ.ToDouble();
+            if (Math.Abs(vertical) < 0.25) { actor.VelocityZ = default; actor.VerticalFriction = false; }
+            else actor.VelocityZ = Fixed.FromDouble(vertical * GroundFriction);
+        }
         if (actor.Brain?.Charging == true) { StepCharge(sim, actor); return; }
         var startX = actor.X.ToDouble();
         var startY = actor.Y.ToDouble();
@@ -254,6 +260,7 @@ public static class ActorPhysics
         }
         actor.Z = Fixed.FromDouble(z);
         actor.VelocityZ = Fixed.FromDouble(vz);
+        if (actor.Brain?.Mode == MonsterMode.Chase && (actor.X.ToDouble() != startX || actor.Y.ToDouble() != startY)) actor.InFloat = false;
         FloatTowardTarget(sim, actor);
         FitToSector(sim, actor, carryFloor: false);
         var friction = actor.OnGround ? Math.Clamp(GroundFriction * actor.Friction.ToDouble(), 0, 1) : 1;
@@ -265,7 +272,7 @@ public static class ActorPhysics
 
     private static void FloatTowardTarget(AuthoritySimulation sim, Actor actor)
     {
-        if (!actor.Floating || actor.IsDead || actor.Destroyed || actor.Brain is not { Enabled: true, Charging: false } brain
+        if (!actor.Floating || actor.InFloat || actor.IsDead || actor.Destroyed || actor.Brain is not { Enabled: true, Charging: false } brain
             || !double.IsFinite(actor.FloatSpeed) || actor.FloatSpeed <= 0) return;
         var target = sim.Actors.FirstOrDefault(candidate => candidate.Id == brain.TargetId && candidate.CanTakeDamage);
         if (target == null) return;

@@ -9952,11 +9952,35 @@ execution and mod argument dispatch remain unsupported. Ceiling float response,
 massacre suppression, replacements/subclass counting, native-engine comparisons,
 invasion synchronization acceptance, and phases 1–3 completion remain open.
 
+## Pain Elemental ceiling movement response checkpoint (2026-10-03)
+
+Native `painelemental.zs` rejects spawning above parent Z + height + 8 and,
+for FLOAT parents, subtracts 2 from vertical velocity and sets INFLOAT/VFRICTION.
+Managed spawning now applies this response. ActorPhysics damps living flagged
+actors by 0xe800/65536, stopping and clearing vertical friction only below
+absolute speed 0.25, following `src/playsim/p_mobj.cpp`. InFloat suppresses
+ordinary target-height floating; successful horizontal managed chase movement
+clears it, approximating native P_Move's successful-movement clear.
+
+Nine regressions cover strict ceiling boundary, floating versus nonfloating
+parents, positive/negative friction threshold, movement integration, dead-actor
+exclusion, and flag checksum distinction. Full Release solution: 5,365 passed,
+zero failed/skipped; Playsim 4,238. Release warnings-as-errors build and
+whitespace checks passed; existing trace and invasion server tests passed.
+Added conditional checksum marker 0x56465249 for nondefault InFloat/VerticalFriction
+flags, preserving existing default trace hashes.
+
+Scope is managed movement response. Native chase, blocked floating movement,
+and exact native thinker ordering remain broader conversion work. New flags
+are not added to the existing partial pose archive or network schema. Massacre
+suppression, replacements, full native sessions, invasion synchronization
+acceptance, and phases 1–3 completion remain open.
+
 ## Validation
 
-- Release solution: **5,356 passed, zero failed/skipped**, 4,433 cases above baseline.
+- Release solution: **5,365 passed, zero failed/skipped**, 4,442 cases above baseline.
   Protocol 15; Gamedata 29; Transport 10; Master 1; RCON 6; MapLoader 533;
-  Playsim 4,229; Client 12; Net.Core 351; Pregame 97; Server 65; Scripting 8.
+  Playsim 4,238; Client 12; Net.Core 351; Pregame 97; Server 65; Scripting 8.
 - The lighting pass initially saw a five-second timeout in
   `Pump_LiveSessionReceivesGuestClientInput`; it passed the targeted rerun and the
   subsequent full solution run. No timeout/test-disabling workaround was added.
