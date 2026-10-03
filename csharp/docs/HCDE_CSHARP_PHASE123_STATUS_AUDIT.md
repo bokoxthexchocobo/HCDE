@@ -9456,10 +9456,30 @@ Hexen binary dormant flags, respawn rules and full persistence/network state
 remain incomplete. Native sessions, phases 1–3 and invasion validation remain
 open.
 
+## Conversion and audit: Hexen binary dormant flag (2026-10-03)
+
+Converted Hexen binary thing flag 0x0010 to the managed Dormant spawn property.
+Native `src/doomdata.h` defines MTF_DORMANT as 0x0010; the map flag reaches
+`HandleSpawnFlags` deactivation in `src/playsim/p_mobj.cpp`. HexenLevelDecoder
+passes it through its Hexen namespace intermediate model to the previously
+converted base monster spawn behavior. Doom binary decoding stays separate:
+its bit 0x10 means single-player exclusion, as translated in native
+`src/maploader/maploader.cpp`.
+
+Eight binary WAD regressions cover dormant/ambush combinations in Hexen and
+single-player exclusion/ambush combinations in Doom. Checks preserve Hexen
+TID, special and skill/mode selection. Full Release solution: 5,191 passed,
+zero failed/skipped; Playsim 4,077; MapLoader 533. Release warnings-as-errors
+build and whitespace check pass. No new runtime fields or checksum changes.
+This closes binary dormant import, using prior spawn regressions for runtime
+behavior. Custom class deactivation callbacks, class-flag BeginPlay handling,
+respawn and archive/network parity, native sessions, phases 1–3 and invasion
+validation remain incomplete.
+
 ## Validation
 
-- Release solution: **5,183 passed, zero failed/skipped**, 4,260 cases above baseline.
-  Protocol 15; Gamedata 18; Transport 10; Master 1; RCON 6; MapLoader 525;
+- Release solution: **5,191 passed, zero failed/skipped**, 4,268 cases above baseline.
+  Protocol 15; Gamedata 18; Transport 10; Master 1; RCON 6; MapLoader 533;
   Playsim 4,077; Client 12; Net.Core 351; Pregame 97; Server 63; Scripting 8.
 - The lighting pass initially saw a five-second timeout in
   `Pump_LiveSessionReceivesGuestClientInput`; it passed the targeted rerun and the

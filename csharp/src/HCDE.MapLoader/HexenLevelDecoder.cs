@@ -31,6 +31,7 @@ public static class HexenLevelDecoder
                 Skill1 = (flags & 1) != 0, Skill2 = (flags & 1) != 0, Skill3 = (flags & 2) != 0,
                 Skill4 = (flags & 4) != 0, Skill5 = (flags & 4) != 0,
                 Ambush = (flags & 8) != 0,
+                Dormant = (flags & 16) != 0,
                 Single = (flags & 256) != 0, Coop = (flags & 512) != 0, Dm = (flags & 1024) != 0,
             });
         }
