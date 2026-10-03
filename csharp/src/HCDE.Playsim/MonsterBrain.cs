@@ -134,7 +134,7 @@ public sealed class MonsterBrain(MonsterAttack attack)
 
     internal void Hear(AuthoritySimulation sim, Actor actor, Actor target)
     {
-        if (!Enabled || !actor.CanTakeDamage || !target.CanTakeDamage || TargetId != null
+        if (!Enabled || !actor.CanTakeDamage || !target.CanTakeDamage || actor.IsFriend(target) || TargetId != null
             || actor.Ambush && !CombatTrace.HasLineOfSight(sim, actor, target)) return;
         TargetId = target.Id;
         _lastX = target.X.ToDouble();
@@ -193,8 +193,8 @@ public sealed class MonsterBrain(MonsterAttack attack)
         if (_raiseTics > 0) { _raiseTics--; return; }
         if (ReactionTics > 0) { ReactionTics--; return; }
         if (_healTics > 0) { _healTics--; Mode = MonsterMode.Heal; return; }
-        var target = sim.Actors.FirstOrDefault(a => a.Id == TargetId && a.CanTakeDamage);
-        target ??= sim.Actors.FirstOrDefault(candidate => candidate.Id == actor.LastHeardTargetId && candidate.CanTakeDamage
+        var target = sim.Actors.FirstOrDefault(a => a.Id == TargetId && a.CanTakeDamage && !actor.IsFriend(a));
+        target ??= sim.Actors.FirstOrDefault(candidate => candidate.Id == actor.LastHeardTargetId && candidate.CanTakeDamage && !actor.IsFriend(candidate)
             && (!actor.Ambush || CombatTrace.HasLineOfSight(sim, actor, candidate)));
         target ??= sim.Players.Where(p => p.CanTakeDamage && Distance(actor, p) <= 2048 && CombatTrace.HasLineOfSight(sim, actor, p))
             .OrderBy(p => Distance(actor, p)).ThenBy(p => p.Id).FirstOrDefault();

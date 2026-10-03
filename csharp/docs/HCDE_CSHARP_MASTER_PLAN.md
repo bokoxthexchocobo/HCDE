@@ -21,12 +21,12 @@ This document is the execution plan; that audit remains the detailed record.
 
 ## Verified checkpoint
 
-- Release solution: **4,762 passed; zero failed or skipped**.
+- Release solution: **4,768 passed; zero failed or skipped**.
 - Release build with warnings as errors: zero warnings/errors.
-- Tests by project: Playsim 3,689; MapLoader 500; Net.Core 351; Pregame 97;
+- Tests by project: Playsim 3,695; MapLoader 500; Net.Core 351; Pregame 97;
   Server 63; Protocol 15; Client 12; Gamedata 10; Transport 10; RCON 6; Master 1;
   Scripting 8.
-- Historical baseline: 923 tests at `55f8fa46`; 3,839 additional cases since then.
+- Historical baseline: 923 tests at `55f8fa46`; 3,845 additional cases since then.
 - October sync incorporated four upstream commits through `c367f081`, including
   ACS binding, gameplay parity, pickups/drops and inventory work. The current
   continuation adds read-only actor height/radius property queries and checks,
@@ -54,6 +54,8 @@ This document is the execution plan; that audit remains the detailed record.
   for living targets, including non-shootable actors and nonzero negative values.
   AI ticks now preserve accepted damage-retaliation decisions instead of overriding
   rejection policies with an unconditional last-attacker target.
+  Chase and hearing now reject friends, including targets whose friendship changes
+  during an attack and friends retained in remembered noise.
 - Earlier checkpoints: `0a37c839` gameplay/maps/invasion foundation,
   `55f8fa46` buffered authoritative input, `d792c54a` AI/sector/snapshot work.
 - Native invasion policy compilation was previously verified; a complete native

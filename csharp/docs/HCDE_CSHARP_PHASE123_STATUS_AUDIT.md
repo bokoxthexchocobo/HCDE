@@ -8025,11 +8025,38 @@ native target acquisition, friendship/team/player rules, chase-state scheduling,
 AI save/network state and representative invasion sessions remain unfinished.
 Phases 1–3 are still open.
 
+## Conversion and audit: friendship changes during chase and hearing (2026-10-03)
+
+Compared `A_DoChase` and `A_Look` in `src/playsim/p_enemy.cpp`. Native chase
+drops a target when it becomes a friend (with a separate goal exception);
+native look treats a heard friend as a reason to search for enemies rather than
+attack that friend. The managed chase now filters current targets through the
+existing IsFriend predicate. Immediate hearing and remembered-noise acquisition
+apply the same predicate, preventing a discarded friend from being reacquired
+on the same or later tick. Target loss uses the existing idle path to cancel
+pending attacks. Noise memory itself is retained.
+
+Six new cases cover friendship changes during windup with and without noise
+memory, friendly noise while the brain is enabled/disabled, normal hostile
+noise/chase, and friendly actors with different nonzero FriendPlayer values
+under the existing managed friendship subset. The attack-cancellation cases
+run fifteen ticks and verify the former target takes no damage.
+Full Release solution: 4,768 passed, zero failed/skipped; Playsim 3,695.
+Warnings-as-errors Release build: zero warnings/errors; whitespace check passes.
+Existing hearing, retaliation, resurrection, checksum and invasion tests pass.
+No checksum fields were added; the managed player idle baseline is unchanged.
+
+This is source comparison and managed regression self-audit. Native goal
+exceptions, team/deathmatch friendship, player friendship defaults, friendly
+enemy searches/wandering and complete look/chase scheduling remain incomplete.
+Representative native invasion synchronization sessions and phases 1–3 acceptance
+are still required.
+
 ## Validation
 
-- Release solution: **4,762 passed, zero failed/skipped**, 3,839 cases above baseline.
+- Release solution: **4,768 passed, zero failed/skipped**, 3,845 cases above baseline.
   Protocol 15; Gamedata 10; Transport 10; Master 1; RCON 6; MapLoader 500;
-  Playsim 3,689; Client 12; Net.Core 351; Pregame 97; Server 63; Scripting 8.
+  Playsim 3,695; Client 12; Net.Core 351; Pregame 97; Server 63; Scripting 8.
 - The lighting pass initially saw a five-second timeout in
   `Pump_LiveSessionReceivesGuestClientInput`; it passed the targeted rerun and the
   subsequent full solution run. No timeout/test-disabling workaround was added.
