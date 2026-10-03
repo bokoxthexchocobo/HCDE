@@ -553,6 +553,7 @@ public class PlayerRespawnTests
         forced.AlwaysTelefrag = true;
         var decoration = sim.AddBot(64, 0);
         decoration.Brain = null;
+        decoration.IsMonster = false;
         var overhead = sim.AddBot(64, 0);
         overhead.NoGravity = true;
         overhead.Z = Fixed.FromDouble(player.Height.ToDouble() + 1);

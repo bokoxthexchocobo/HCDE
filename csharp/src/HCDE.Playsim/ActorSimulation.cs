@@ -2321,8 +2321,8 @@ public sealed class AuthoritySimulation
     /// <summary>
     /// <c>P_PlayerStartStomp</c> after a revive. Monsters on the spot are telefragged.
     /// Other players are telefragged only in deathmatch. The overlap is a square of the
-    /// two radii, and the bodies must meet in Z. A monster here is an actor with a
-    /// <see cref="MonsterBrain"/>. Level load does not stomp.
+    /// two radii, and the bodies must meet in Z. Monsters use the native
+    /// <see cref="Actor.IsMonster"/> classification. Level load does not stomp.
     /// </summary>
     private void StompSpawn(PlayerPawn player)
     {
@@ -2335,7 +2335,7 @@ public sealed class AuthoritySimulation
         {
             if (other == player || !other.IsBlockmapActor || !other.Shootable || other.IsDead || other.Destroyed)
                 continue;
-            if (other is not PlayerPawn && other.Brain == null)
+            if (other is not PlayerPawn && !other.IsMonster)
                 continue;
             if (other is PlayerPawn && monstersOnly)
                 continue;

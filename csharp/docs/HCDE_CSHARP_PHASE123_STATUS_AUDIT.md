@@ -8910,11 +8910,31 @@ rider carry/crush enumeration, pickups, relinking and save/network state remain
 incomplete. No unsupported rider change was inferred from the support conversion.
 Phases 1–3 and representative invasion synchronization validation remain open.
 
+## Spawn-stomp native monster classification — 2026-10-03
+
+Resolved the preceding audit finding: native P_PlayerStartStomp in
+`src/playsim/p_map.cpp` uses MF3_ISMONSTER, not AI presence. Managed StompSpawn
+now checks Actor.IsMonster for non-player candidates. Existing blockmap,
+shootability, overlap, game-mode and telefrag-protection checks remain in force.
+Updated the existing decoration fixture to explicitly clear monster classification
+rather than relying on removal of its brain.
+
+Four new full-respawn cases cover every combination of IsMonster and brain
+presence. Flagged bodies are stomped even without brains; unflagged bodies retain
+health even with brains. Full Release solution: 5,025 passed, zero failed/skipped;
+Playsim 3,944. Warnings-as-errors build: zero warnings/errors; whitespace check
+passes. No checksum fields changed.
+
+Scope is spawn-stomp candidate classification. General teleport movement,
+voodoo-doll handling, native monster defaults, rider carrying/crushing, pickups,
+blockmap relinking and save/network state still need conversion or validation.
+Phases 1–3 and representative invasion synchronization validation remain open.
+
 ## Validation
 
-- Release solution: **5,021 passed, zero failed/skipped**, 4,098 cases above baseline.
+- Release solution: **5,025 passed, zero failed/skipped**, 4,102 cases above baseline.
   Protocol 15; Gamedata 18; Transport 10; Master 1; RCON 6; MapLoader 500;
-  Playsim 3,940; Client 12; Net.Core 351; Pregame 97; Server 63; Scripting 8.
+  Playsim 3,944; Client 12; Net.Core 351; Pregame 97; Server 63; Scripting 8.
 - The lighting pass initially saw a five-second timeout in
   `Pump_LiveSessionReceivesGuestClientInput`; it passed the targeted rerun and the
   subsequent full solution run. No timeout/test-disabling workaround was added.
