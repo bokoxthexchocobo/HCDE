@@ -9685,11 +9685,34 @@ WolfensteinSS, projectile defaults, complete actor flags/states/action pointers,
 custom inheritance and projectile groups, native session comparisons, and
 invasion synchronization acceptance remain open. Phases 1–3 remain incomplete.
 
+## Dynamic monster flight and splash defaults checkpoint (2026-10-03)
+
+Audited native Doom defaults in `cacodemon.zs`, `lostsoul.zs`, and
+`painelemental.zs` (+FLOAT/+NOGRAVITY), and `cyberdemon.zs` and
+`spidermaster.zs` (+NORADIUSDMG). Map spawning already applied these catalog
+flags; AddBot discarded them. Dynamic spawning now initializes NoGravity,
+Floating, and NoRadiusDamage from the resolved class catalog before explicit
+DeHackEd overrides, including remapped IDs. Primary Bits overrides still
+replace FLOAT/NOGRAVITY; NORADIUSDMG remains an independent class default.
+
+Twelve regressions cover map/dynamic flag agreement for six classes, parsed
+remappings, primary flag replacement with actual gravity ticks, and nearby
+Archvile splash immunity with direct damage still allowed. Full Release
+solution: 5,284 passed, zero failed/skipped; Playsim 4,159. Release build with
+warnings as errors and whitespace checks passed. Existing trace tests passed.
+No checksum fields were added; existing flag hashing reflects the corrected
+nondefault monster state. Default invasion Zombie spawning flags are unchanged.
+
+Other dynamic catalog defaults, full flying AI and native spawning/collision
+rules, mod flags and state/action behavior, and native-engine acceptance remain
+open. This corrects dynamic class flags, not invasion round/timer/enemy network
+synchronization. Phases 1–3 remain incomplete.
+
 ## Validation
 
-- Release solution: **5,272 passed, zero failed/skipped**, 4,349 cases above baseline.
+- Release solution: **5,284 passed, zero failed/skipped**, 4,361 cases above baseline.
   Protocol 15; Gamedata 29; Transport 10; Master 1; RCON 6; MapLoader 533;
-  Playsim 4,147; Client 12; Net.Core 351; Pregame 97; Server 63; Scripting 8.
+  Playsim 4,159; Client 12; Net.Core 351; Pregame 97; Server 63; Scripting 8.
 - The lighting pass initially saw a five-second timeout in
   `Pump_LiveSessionReceivesGuestClientInput`; it passed the targeted rerun and the
   subsequent full solution run. No timeout/test-disabling workaround was added.

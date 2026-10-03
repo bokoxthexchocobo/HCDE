@@ -1846,6 +1846,9 @@ public sealed class AuthoritySimulation
                 : MonsterBrain.ForType(definitionType) ?? new MonsterBrain(MonsterAttack.Hitscan),
             IsMonster = true,
             Damage = definition?.Damage ?? 0,
+            NoGravity = definition?.Floating ?? false,
+            Floating = definition?.Floating ?? false,
+            NoRadiusDamage = definition?.NoRadiusDamage ?? false,
         };
         if (defaults != null)
         {
