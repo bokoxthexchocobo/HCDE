@@ -1106,7 +1106,7 @@ public static class ActorSpawner
             actor.SpawnSpecialPickup = actor.SpecialPickup;
             actor.ResurrectionHealth = actor.Health;
             if (actor.ResurrectionHealth > 0) actor.GibHealth = -actor.ResurrectionHealth;
-            actor.Mass = DoomActorCatalog.MassOf(definitionType);
+            actor.Mass = defaults is { MassPatched: true } ? defaults.Mass : DoomActorCatalog.MassOf(definitionType);
             actor.RaiseDuration = ArchvileActions.RaiseDuration(definitionType);
             actor.Ambush = thing.Ambush;
             if (defaults is { ReactionTimePatched: true }) actor.ReactionTime = defaults.ReactionTime;

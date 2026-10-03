@@ -8385,11 +8385,32 @@ and player lifecycle rules, complete thing catalogs and state-action scheduling
 remain incomplete. Source/regression self-audit does not replace native invasion
 sessions or complete phase 1–3 acceptance, which remain open.
 
+## Conversion and audit: DEHACKED mass parsing and map initialization (2026-10-03)
+
+Converted Mass assignment from `src/gamedata/d_dehacked.cpp`, which stores the
+parsed signed integer without clamping. Managed patches now track Mass and
+MassPatched, with map spawning using explicit values instead of catalog mass.
+Unrelated patches retain the original class default; chained patch copies retain
+assignment metadata without mutating earlier patch objects.
+
+Six cases cover positive, zero, negative and maximum-int mass, unrelated patches
+and chaining that preserves a value before explicitly resetting it to zero.
+Full Release solution: 4,854 passed, zero failed/skipped; Playsim 3,781.
+Warnings-as-errors build: zero warnings/errors; whitespace check passes. Existing
+patch, actor-property and invasion tests remain passing. Mass already has actor
+checksum and ACS query coverage; no simulation hash fields were added and player
+idle baseline is unchanged.
+
+This converts parsing and map-spawn state, not complete native mass-dependent
+thrust, push/blast behavior, dynamic actor defaults or full DEHACKED catalogs.
+Source/regression self-audit does not replace native invasion sessions or complete
+phase 1–3 acceptance, which remain open.
+
 ## Validation
 
-- Release solution: **4,848 passed, zero failed/skipped**, 3,925 cases above baseline.
+- Release solution: **4,854 passed, zero failed/skipped**, 3,931 cases above baseline.
   Protocol 15; Gamedata 10; Transport 10; Master 1; RCON 6; MapLoader 500;
-  Playsim 3,775; Client 12; Net.Core 351; Pregame 97; Server 63; Scripting 8.
+  Playsim 3,781; Client 12; Net.Core 351; Pregame 97; Server 63; Scripting 8.
 - The lighting pass initially saw a five-second timeout in
   `Pump_LiveSessionReceivesGuestClientInput`; it passed the targeted rerun and the
   subsequent full solution run. No timeout/test-disabling workaround was added.

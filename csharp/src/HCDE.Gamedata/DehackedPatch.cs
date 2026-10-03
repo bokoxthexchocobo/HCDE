@@ -13,6 +13,8 @@ public sealed class DehackedActor
     public bool MissileDamagePatched { get; set; }
     public int ReactionTime { get; set; }
     public bool ReactionTimePatched { get; set; }
+    public int Mass { get; set; }
+    public bool MassPatched { get; set; }
     public int PainChance { get; set; }
     public int DoomEdNum { get; set; }
     public int OriginalDoomEdNum { get; init; }
@@ -215,6 +217,11 @@ public static class DehackedPatch
             {
                 actor.MissileDamage = ParseInt(value);
                 actor.MissileDamagePatched = true;
+            }
+            else if (key.Equals("Mass", StringComparison.OrdinalIgnoreCase))
+            {
+                actor.Mass = ParseInt(value);
+                actor.MassPatched = true;
             }
             else if (key.Equals("Bits", StringComparison.OrdinalIgnoreCase))
             {
