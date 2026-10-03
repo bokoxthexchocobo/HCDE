@@ -21,12 +21,12 @@ This document is the execution plan; that audit remains the detailed record.
 
 ## Verified checkpoint
 
-- Release solution: **4,924 passed; zero failed or skipped**.
+- Release solution: **4,940 passed; zero failed or skipped**.
 - Release build with warnings as errors: zero warnings/errors.
-- Tests by project: Playsim 3,851; MapLoader 500; Net.Core 351; Pregame 97;
+- Tests by project: Playsim 3,867; MapLoader 500; Net.Core 351; Pregame 97;
   Server 63; Protocol 15; Client 12; Gamedata 10; Transport 10; RCON 6; Master 1;
   Scripting 8.
-- Historical baseline: 923 tests at `55f8fa46`; 4,001 additional cases since then.
+- Historical baseline: 923 tests at `55f8fa46`; 4,017 additional cases since then.
 - October sync incorporated four upstream commits through `c367f081`, including
   ACS binding, gameplay parity, pickups/drops and inventory work. The current
   continuation adds read-only actor height/radius property queries and checks,
@@ -286,3 +286,5 @@ git diff --check
 The verified environment uses SDK 10.0.201 targeting net8.0. On a fresh machine,
 restore dependencies before using `--no-restore`. A passing managed suite does
 not substitute for native engine, map/mod or multi-client runtime acceptance.
+
+- Audit follow-up: DEHACKED Thing decimal-prefix parsing and unsigned floating values are converted. Large native dimensions still exceed managed signed 16.16 actor storage and require a representation conversion. Live-session server timeout intermittency remains unresolved.

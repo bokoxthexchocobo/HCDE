@@ -200,63 +200,62 @@ public static class DehackedPatch
         actor.Patched = true;
         foreach (var (key, value) in body)
         {
-            if (System.Numerics.BigInteger.TryParse(value, out var numeric)
-                && (numeric < int.MinValue || numeric > uint.MaxValue))
+            var numeric = ParseThingNumber(value);
+            if (numeric < int.MinValue || numeric > uint.MaxValue)
             {
                 errors.Add($"Thing {actor.Index}: bad numeric constant {value} for {key}.");
                 continue;
             }
             if (key.Equals("Hit points", StringComparison.OrdinalIgnoreCase))
-                actor.Health = ParseInt(value);
+                actor.Health = unchecked((int)numeric);
             else if (key.Equals("Reaction time", StringComparison.OrdinalIgnoreCase))
             {
-                actor.ReactionTime = ParseInt(value);
+                actor.ReactionTime = unchecked((int)numeric);
                 actor.ReactionTimePatched = true;
             }
             else if (key.Equals("Pain chance", StringComparison.OrdinalIgnoreCase))
-                actor.PainChance = unchecked((short)ParseInt(value));
+                actor.PainChance = unchecked((short)numeric);
             else if (key.Equals("Height", StringComparison.OrdinalIgnoreCase))
             {
-                actor.Height = ParseInt(value) / 65536.0;
+                actor.Height = (double)numeric / 65536.0;
                 actor.HeightPatched = true;
             }
             else if (key.Equals("Width", StringComparison.OrdinalIgnoreCase))
             {
-                actor.Radius = ParseInt(value) / 65536.0;
+                actor.Radius = (double)numeric / 65536.0;
                 actor.WidthPatched = true;
             }
             else if (key.Equals("Speed", StringComparison.OrdinalIgnoreCase))
             {
-                var speed = (double)ParseInt(value);
+                var speed = (double)numeric;
                 actor.Speed = Math.Abs(speed) >= 256 ? speed / 65536 : speed;
             }
             else if (key.Equals("Missile damage", StringComparison.OrdinalIgnoreCase))
             {
-                actor.MissileDamage = ParseInt(value);
+                actor.MissileDamage = unchecked((int)numeric);
                 actor.MissileDamagePatched = true;
             }
             else if (key.Equals("Mass", StringComparison.OrdinalIgnoreCase))
             {
-                actor.Mass = ParseInt(value);
+                actor.Mass = unchecked((int)numeric);
                 actor.MassPatched = true;
             }
             else if (key.Equals("Bits", StringComparison.OrdinalIgnoreCase))
             {
-                actor.Bits = (uint)ParseLong(value);
+                actor.Bits = (uint)numeric;
                 actor.BitsPatched = true;
             }
             else if (key.Equals("ID #", StringComparison.OrdinalIgnoreCase))
-                actor.DoomEdNum = ParseInt(value);
+                actor.DoomEdNum = unchecked((int)numeric);
             else if (key.EndsWith(" sound", StringComparison.OrdinalIgnoreCase))
-                AssignSound(actor, key, value);
+                AssignSound(actor, key, unchecked((int)numeric));
             else if (key.EndsWith(" frame", StringComparison.OrdinalIgnoreCase))
-                AssignState(actor, key, ParseInt(value), errors);
+                AssignState(actor, key, unchecked((int)numeric), errors);
         }
     }
 
-    private static void AssignSound(DehackedActor actor, string key, string value)
+    private static void AssignSound(DehackedActor actor, string key, int id)
     {
-        var id = ParseInt(value);
         if (key.StartsWith("Alert", StringComparison.OrdinalIgnoreCase))
             actor.SeeSound = id;
         else if (key.StartsWith("Attack", StringComparison.OrdinalIgnoreCase))
@@ -396,6 +395,18 @@ public static class DehackedPatch
         }
 
         return lines;
+    }
+
+    // PatchThing uses decimal strtoll: stop at the first non-digit; no digits means zero.
+    private static long ParseThingNumber(string value)
+    {
+        var token = value.TrimStart();
+        var end = token.Length > 0 && token[0] is '+' or '-' ? 1 : 0;
+        var digits = end;
+        while (end < token.Length && token[end] is >= '0' and <= '9') end++;
+        if (end == digits) return 0;
+        var number = System.Numerics.BigInteger.Parse(token[..end], System.Globalization.CultureInfo.InvariantCulture);
+        return number > long.MaxValue ? long.MaxValue : number < long.MinValue ? long.MinValue : (long)number;
     }
 
     private static int ParseInt(string value) => (int)ParseLong(value);

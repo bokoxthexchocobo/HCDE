@@ -8619,11 +8619,37 @@ This converts integer range checking only. Native strtoll prefix parsing,
 malformed-token behavior, complete Thing catalog and field coverage remain open.
 Phases 1–3 and representative invasion synchronization validation are incomplete.
 
+## DEHACKED Thing decimal prefixes and floating conversion — 2026-10-03
+
+Native `PatchThing` uses decimal `strtoll`, reads an optional sign and decimal
+prefix, returns zero without digits, and saturates Int64 overflow before its
+32-bit range check. Managed Thing assignments now share this behavior. Integer
+fields narrow explicitly, while Height/Width (`DEHToDouble`) and Speed retain
+valid unsigned values before floating conversion. Other block parsers are unchanged.
+
+Sixteen new cases cover signed suffixes, decimal/exponent/hex-looking tokens,
+missing digits, unsigned narrowing, overflow prefixes preserving prior settings,
+sound/state/pain fields, unsigned floating records, and ordinary fixed dimensions
+and movement speed through spawning. Full final Release suite: 4,940 passed,
+zero failed/skipped; Playsim 3,867. Release warnings-as-errors build: zero
+warnings/errors. No simulation checksum fields changed.
+
+Audit findings remain open: actor dimensions use signed 16.16 storage, so parsed
+native dimensions of 32768 or larger become incorrect at spawning. The unsigned
+floating tests assert parser values only; they do not claim runtime dimension
+parity. Representative large-dimension engine fixtures and representation changes
+are still required. Unicode whitespace/locale equivalence is not established.
+Two earlier full runs each timed out in a different existing DedicatedServerHost
+live-session test (guest input, then bootstrap). All five host tests passed in
+isolation, and the final full solution run passed. Timeout intermittency is not
+root-caused; tests and their timeouts were not changed. Phases 1–3 and invasion
+round/timer/enemy synchronization validation remain incomplete.
+
 ## Validation
 
-- Release solution: **4,924 passed, zero failed/skipped**, 4,001 cases above baseline.
+- Release solution: **4,940 passed, zero failed/skipped**, 4,017 cases above baseline.
   Protocol 15; Gamedata 10; Transport 10; Master 1; RCON 6; MapLoader 500;
-  Playsim 3,851; Client 12; Net.Core 351; Pregame 97; Server 63; Scripting 8.
+  Playsim 3,867; Client 12; Net.Core 351; Pregame 97; Server 63; Scripting 8.
 - The lighting pass initially saw a five-second timeout in
   `Pump_LiveSessionReceivesGuestClientInput`; it passed the targeted rerun and the
   subsequent full solution run. No timeout/test-disabling workaround was added.
