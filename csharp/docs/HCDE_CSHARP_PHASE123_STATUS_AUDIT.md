@@ -9476,11 +9476,31 @@ behavior. Custom class deactivation callbacks, class-flag BeginPlay handling,
 respawn and archive/network parity, native sessions, phases 1–3 and invasion
 validation remain incomplete.
 
+## Conversion and audit: class dormant BeginPlay initialization (2026-10-03)
+
+Converted base `AActor::BeginPlay` dormant normalization from
+`src/playsim/p_mobj.cpp`: clear a class dormant bit, then call base
+deactivation. Shared managed activation logic now serves action calls and
+spawn initialization. Eligible monsters hold fallback frames at -1 or enter
+custom Inactive states. Non-monsters and non-ice dead actors remain clear;
+ice corpses qualify. Combined class/map flags do not enter Inactive twice.
+
+Six regressions cover patched monster spawn with/without map flags, base
+non-monster/dead/ice classification, and one custom Inactive action invocation.
+The older dormant damage fixture now includes COUNTKILL: its numeric Bits=6
+had removed monster classification while expecting monster deactivation.
+Full Release solution: 5,197 passed, zero failed/skipped; Playsim 4,083.
+Release warnings-as-errors build and whitespace checks pass. Existing state/
+Dormant hashes apply. This closes base class-flag initialization, not virtual
+subclass BeginPlay/Deactivate, mod loading, dynamic-spawn initialization,
+respawn/persistence/network parity or native session acceptance. Phases 1–3
+and invasion synchronization validation remain incomplete.
+
 ## Validation
 
-- Release solution: **5,191 passed, zero failed/skipped**, 4,268 cases above baseline.
+- Release solution: **5,197 passed, zero failed/skipped**, 4,274 cases above baseline.
   Protocol 15; Gamedata 18; Transport 10; Master 1; RCON 6; MapLoader 533;
-  Playsim 4,077; Client 12; Net.Core 351; Pregame 97; Server 63; Scripting 8.
+  Playsim 4,083; Client 12; Net.Core 351; Pregame 97; Server 63; Scripting 8.
 - The lighting pass initially saw a five-second timeout in
   `Pump_LiveSessionReceivesGuestClientInput`; it passed the targeted rerun and the
   subsequent full solution run. No timeout/test-disabling workaround was added.

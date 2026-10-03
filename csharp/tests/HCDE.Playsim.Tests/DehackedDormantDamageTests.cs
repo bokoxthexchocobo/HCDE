@@ -12,7 +12,7 @@ public class DehackedDormantDamageTests
     [InlineData(1, DamageFlags.Forced, true)]
     public void DormancyRequiresForcedDamageEvenForTelefrags(int damage, DamageFlags flags, bool hurt)
     {
-        var actor = Spawn(DehackedPatch.Apply("Thing 2\nBits = dormant+6\n"));
+        var actor = Spawn(DehackedPatch.Apply("Thing 2\nBits = dormant+COUNTKILL+6\n"));
         Assert.True(actor.Dormant); var health = actor.Health;
         var attacker = new Actor { Health = 100, Id = 99 };
         ActorDamage.Apply(actor, damage, attacker, flags);
