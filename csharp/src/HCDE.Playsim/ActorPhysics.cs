@@ -294,7 +294,7 @@ public static class ActorPhysics
         var ceiling = actor.SectorIndex >= 0 ? sim.CeilingOf(actor.SectorIndex) : double.PositiveInfinity;
         foreach (var other in sim.Actors)
         {
-            if (ReferenceEquals(actor, other)) continue;
+            if (ReferenceEquals(actor, other) || !other.IsBlockmapActor) continue;
             var corpse = actor.IceCorpse && IsCorpseObstacle(other);
             if ((!other.BlocksActors && !corpse) || (other is PlayerPawn && !other.IsDead)) continue;
             if (!player && !other.ActsLikeBridge && !corpse) continue;

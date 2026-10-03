@@ -8872,11 +8872,30 @@ force-radius flags, portal traversal or attack-state cadence. Vertical support,
 pickups, telefragging, blockmap relinking and save/network state remain incomplete.
 Phases 1–3 and representative invasion synchronization validation remain open.
 
+## Blockmap exclusion for vertical support candidates — 2026-10-03
+
+Native P_CheckOnmobj/P_TestMobjZ in `src/playsim/p_map.cpp` enumerate potential
+support actors through FMultiBlockThingsIterator. Converted the corresponding
+managed SupportFloor candidate filter to require IsBlockmapActor. The rider's
+own exclusion does not suppress finding registered support.
+
+Five regressions verify players and monsters stand on registered bridges but
+not excluded ones, with correct Z and OnMobj, and an excluded monster still
+finds registered bridge support. Full Release solution: 5,019 passed, zero
+failed/skipped; Playsim 3,938. Warnings-as-errors build: zero warnings/errors;
+whitespace check passes. No checksum fields changed.
+
+Scope is managed vertical support discovery, not full native P_TestMobjZ
+semantics. Standing-rider carrying/crush enumeration, telefragging, pickups,
+sector/blockmap relinking and save/network transport still need audit/conversion.
+Native engine fixtures, complete phase 1–3 parity and representative invasion
+round/timer/enemy synchronization validation remain open.
+
 ## Validation
 
-- Release solution: **5,014 passed, zero failed/skipped**, 4,091 cases above baseline.
+- Release solution: **5,019 passed, zero failed/skipped**, 4,096 cases above baseline.
   Protocol 15; Gamedata 18; Transport 10; Master 1; RCON 6; MapLoader 500;
-  Playsim 3,933; Client 12; Net.Core 351; Pregame 97; Server 63; Scripting 8.
+  Playsim 3,938; Client 12; Net.Core 351; Pregame 97; Server 63; Scripting 8.
 - The lighting pass initially saw a five-second timeout in
   `Pump_LiveSessionReceivesGuestClientInput`; it passed the targeted rerun and the
   subsequent full solution run. No timeout/test-disabling workaround was added.
