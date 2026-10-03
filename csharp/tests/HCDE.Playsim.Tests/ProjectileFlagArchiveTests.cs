@@ -16,6 +16,7 @@ public class ProjectileFlagArchiveTests
         var state = sim.CaptureState();
         if (serialized)
         {
+            foreach (var pose in state.Actors) pose.ProjectileLifetime = null;
             var bytes = SimSavegame.Write(state);
             Assert.Equal(enabled ? 22 : 18, BinaryPrimitives.ReadUInt16LittleEndian(bytes.AsSpan(4)));
             Assert.True(SimSavegame.TryRead(bytes, out state, out var error), error);
@@ -30,7 +31,7 @@ public class ProjectileFlagArchiveTests
     [InlineData(2)]
     public void MalformedFlagIsRejected(int flags)
     {
-        var sim = Room(); Shoot(sim).NoExplodeFloor = true; var bytes = SimSavegame.Write(sim);
+        var sim = Room(); Shoot(sim).NoExplodeFloor = true; var bytes = WriteFlagsOnly(sim);
         var size = BinaryPrimitives.ReadInt32LittleEndian(bytes.AsSpan(bytes.Length - 4));
         BinaryPrimitives.WriteInt32LittleEndian(bytes.AsSpan(bytes.Length - size + 8), flags);
         Assert.False(SimSavegame.TryRead(bytes, out var state, out var error));
@@ -73,10 +74,16 @@ public class ProjectileFlagArchiveTests
     [InlineData(0, "save-projectile-size")]
     public void InvalidTrailerSizeIsRejected(int size, string expected)
     {
-        var sim = Room(); Shoot(sim).NoExplodeFloor = true; var bytes = SimSavegame.Write(sim);
+        var sim = Room(); Shoot(sim).NoExplodeFloor = true; var bytes = WriteFlagsOnly(sim);
         BinaryPrimitives.WriteInt32LittleEndian(bytes.AsSpan(bytes.Length - 4), size);
         Assert.False(SimSavegame.TryRead(bytes, out var state, out var error));
         Assert.Equal(expected, error); Assert.Empty(state.Actors);
+    }
+
+    private static byte[] WriteFlagsOnly(AuthoritySimulation sim)
+    {
+        var state = sim.CaptureState(); foreach (var pose in state.Actors) pose.ProjectileLifetime = null;
+        return SimSavegame.Write(state);
     }
 
     private static AuthoritySimulation Room(bool pain = false) => AuthoritySimulation.Start(new PlayLevel {

@@ -2179,6 +2179,8 @@ public sealed class AuthoritySimulation
                 DeathFlags = actor.DeathDamageType == "Massacre" ? 1 : 0,
                 PainDeath = actor.Brain?.CapturePainDeath(),
                 ProjectileFlags = actor.NoExplodeFloor ? 1 : 0,
+                ProjectileLifetime = actor is ProjectileActor { Destroyed: false } projectile
+                    ? new SimProjectileLifetime(projectile.RemainingTics, projectile.Kind) : null,
                 Pickup = PickupCatalog.IsPickup(actor.DoomEdNum)
                     ? new SimPickupProperties(actor.PickupAmount, actor.IgnoreAmmoSkill, actor.Depleted) : null,
                 Health = actor.Health,
@@ -2211,6 +2213,7 @@ public sealed class AuthoritySimulation
         SimSavegame.ValidateFloatFlags(state);
         SimSavegame.ValidateDeathFlags(state);
         SimProjectileFlagArchive.Validate(state);
+        SimProjectileLifetimeArchive.Validate(state);
         SimPainDeathArchive.Validate(state);
         if (state.GeometryHealth is { } savedHealth && (savedHealth.Lines.Count != Level.Lines.Count
             || savedHealth.Sectors.Count != Level.Sectors.Count || !savedHealth.Groups.Keys.Order().SequenceEqual(HealthGroups.Keys.Order())))
@@ -2226,6 +2229,9 @@ public sealed class AuthoritySimulation
         foreach (var pose in state.Actors)
         {
             var actor = _actors.FirstOrDefault(candidate => candidate.Id == pose.Id);
+            if (pose.ProjectileLifetime is { } lifetime &&
+                (actor is not ProjectileActor missile || missile.Destroyed || missile.Kind != lifetime.Kind))
+                throw new InvalidOperationException("Saved projectile lifetime does not match the current actor.");
             if (pose.PainDeath.HasValue && (actor == null || actor.Destroyed || actor.Brain?.CapturePainDeath() == null))
                 throw new InvalidOperationException("Saved Pain Elemental death state does not match the current actor.");
             if (actor != null && (pose.WeaponCooldown < 0 || actor is PlayerPawn && Math.Abs((long)pose.Pitch) > 89L * 65536
@@ -2299,6 +2305,8 @@ public sealed class AuthoritySimulation
             actor.RestoreHealth(pose.Health);
             if (pose.DeathFlags is { } deathFlags) actor.DeathDamageType = deathFlags == 1 ? "Massacre" : null;
             if (pose.ProjectileFlags is { } projectileFlags) actor.NoExplodeFloor = (projectileFlags & 1) != 0;
+            if (pose.ProjectileLifetime is { } savedLifetime && actor is ProjectileActor savedProjectile)
+                savedProjectile.RestoreRemainingTics(savedLifetime.Tics);
             if (pose.Roll is { } roll) actor.Roll = new BamAngle(roll);
             if (pose.ContactFlags is { } contactFlags)
             {

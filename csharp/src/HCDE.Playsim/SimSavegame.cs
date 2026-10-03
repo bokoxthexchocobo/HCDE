@@ -29,6 +29,7 @@ public sealed class SimActorPose
     public int? DeathFlags { get; internal set; }
     public SimPainDeath? PainDeath { get; internal set; }
     public int? ProjectileFlags { get; internal set; }
+    public SimProjectileLifetime? ProjectileLifetime { get; internal set; }
 }
 
 public sealed class SimSaveState
@@ -71,6 +72,7 @@ public static class SimSavegame
         ValidateFloatFlags(state);
         ValidateDeathFlags(state);
         SimProjectileFlagArchive.Validate(state);
+        SimProjectileLifetimeArchive.Validate(state);
         SimPainDeathArchive.Validate(state);
         if (state.Actors.Any(actor => actor.Pickup.HasValue) &&
             (state.GeometryHealth is null || state.Actors.Any(actor => !actor.Roll.HasValue)))
@@ -168,7 +170,8 @@ public static class SimSavegame
             buffer.CopyTo(archive, 0);
             trailer.CopyTo(archive, buffer.Length);
             BinaryPrimitives.WriteUInt16LittleEndian(archive.AsSpan(4), 15);
-            return SimProjectileFlagArchive.Write(state, SimPainDeathArchive.Write(state, WriteDeathFlags(state, WriteFloatFlags(state, WriteContactFlags(state, WritePickups(state, WriteRolls(state, archive)))))));
+            archive = SimProjectileFlagArchive.Write(state, SimPainDeathArchive.Write(state, WriteDeathFlags(state, WriteFloatFlags(state, WriteContactFlags(state, WritePickups(state, WriteRolls(state, archive)))))));
+            return SimProjectileLifetimeArchive.Write(state, archive);
         }
         return buffer;
     }
@@ -299,6 +302,7 @@ public static class SimSavegame
         }
 
         var version = BinaryPrimitives.ReadUInt16LittleEndian(bytes[4..]);
+        if (version == 23) return SimProjectileLifetimeArchive.TryRead(bytes, out state, out error);
         if (version == 22) return SimProjectileFlagArchive.TryRead(bytes, out state, out error);
         if (version == 21) return SimPainDeathArchive.TryRead(bytes, out state, out error);
         if (version == 20)

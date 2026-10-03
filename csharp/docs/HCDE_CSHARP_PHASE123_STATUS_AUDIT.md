@@ -10185,11 +10185,33 @@ unchanged. SKYEXPLODE, sky-wall plane logic, custom sky definitions, explosion
 state timing, projectile recreation/lifetime restoration, and native invasion
 acceptance remain open. Gameplay phases 1–3 remain incomplete.
 
+## Projectile remaining-lifetime archive audit (2026-10-03)
+
+Live projectiles now capture remaining lifetime and projectile kind in an optional
+version-23 archive wrapping versions 18–22. Restore rejects missing/destroyed
+projectiles, ordinary actors, and mismatched kinds before clock/actor mutation.
+Absent legacy records preserve the current countdown. Destroyed actors do not
+capture a lifetime record. Invalid timer ranges, kinds and malformed trailer
+metadata are rejected.
+
+Thirteen new cases cover memory/serialized restore followed by exact expiry,
+1/175-tic boundaries, invalid timers, destroyed/removed actors, ordinary actors,
+kind mismatch and legacy behavior. Previous version-22 flag-layout fixtures
+explicitly omit the new record to retain their coverage of that format.
+Full Release solution: 5,457 passed, zero failed/skipped; Playsim 4,330.
+Warnings-as-errors build and diff checks pass. Checksum format is unchanged.
+
+Native AActor::Serialize in src/playsim/p_mobj.cpp preserves state tics. This change
+preserves the managed 175-tic lifetime policy; it does not implement native missile
+state graphs or death-state timing. Actor membership recreation, owner/tracer and
+class configuration restoration, full savegames and native invasion acceptance
+remain open. Gameplay phases 1–3 remain incomplete.
+
 ## Validation
 
-- Release solution: **5,444 passed, zero failed/skipped**, 4,521 cases above baseline.
+- Release solution: **5,457 passed, zero failed/skipped**, 4,534 cases above baseline.
   Protocol 15; Gamedata 29; Transport 10; Master 1; RCON 6; MapLoader 533;
-  Playsim 4,317; Client 12; Net.Core 351; Pregame 97; Server 65; Scripting 8.
+  Playsim 4,330; Client 12; Net.Core 351; Pregame 97; Server 65; Scripting 8.
 - The lighting pass initially saw a five-second timeout in
   `Pump_LiveSessionReceivesGuestClientInput`; it passed the targeted rerun and the
   subsequent full solution run. No timeout/test-disabling workaround was added.

@@ -10,6 +10,7 @@ public sealed class ProjectileActor : Actor
     public Actor Owner { get; }
     public ProjectileKind Kind { get; }
     public int RemainingTics { get; private set; } = 175;
+    internal void RestoreRemainingTics(int tics) => RemainingTics = tics;
     public uint? TracerTargetId { get; private set; }
     public double Speed => MovementSpeed.ToDouble();
     private double DefaultSpeed => Kind switch
