@@ -7629,11 +7629,37 @@ remain open. Managed arithmetic saturates products outside int range; native
 floating-to-int overflow parity has not been established. This is a source
 review and regression self-audit, not a complete native damage audit.
 
+## ACS melee range and monster range gates (2026-10-03)
+
+Converted `APROP_MeleeRange` (38) signed 16.16 set/get/check state and integrated
+it into managed monster melee decisions, including the attack-time recheck.
+Native `actor.zs` defaults MeleeRange to 64 minus MELEEDELTA (20), hence 44.
+`p_acs.cpp` sets/gets this property directly. Native `P_CheckMeleeRange` in
+`p_enemy.cpp` rejects distance greater than or equal to range plus target radius;
+attacker radius does not contribute. Its vertical separation comparisons are
+strict, so touching vertical boundaries still qualify. Managed range checks now
+follow these rules and require sight and non-friendship.
+
+Eighteen new cases cover signed/fractional/zero property round trips, exact checks,
+one-fixed-unit distance and vertical boundary differences, independence from
+attacker radius, sight/friendship gates, script-enabled melee windup, reducing
+range during windup to cancel damage, resting checksums and missing/destroyed
+actors. Existing monster profile/combat regressions pass. The managed idle hash
+is now 3247430384 because the range enters actor state hashing; position, health
+and tic assertions remain unchanged. Full suite: 4,614 passing tests, zero
+failed/skipped; Release warnings-as-errors build: zero warnings/errors.
+
+Scope: actor property and existing managed melee AI paths. Native goal exceptions,
+SECF_NOATTACK, NOVERTICALMELEERANGE, generalized class overrides, complete chase
+and sight behavior and save/network propagation remain open. Player weapon
+range continues to use its existing weapon dispatch and is not converted by this
+actor-property pass. This is a source review and regression self-audit.
+
 ## Validation
 
-- Release solution: **4,596 passed, zero failed/skipped**, 3,673 cases above baseline.
+- Release solution: **4,614 passed, zero failed/skipped**, 3,691 cases above baseline.
   Protocol 15; Gamedata 10; Transport 10; Master 1; RCON 6; MapLoader 500;
-  Playsim 3,523; Client 12; Net.Core 351; Pregame 97; Server 63; Scripting 8.
+  Playsim 3,541; Client 12; Net.Core 351; Pregame 97; Server 63; Scripting 8.
 - The lighting pass initially saw a five-second timeout in
   `Pump_LiveSessionReceivesGuestClientInput`; it passed the targeted rerun and the
   subsequent full solution run. No timeout/test-disabling workaround was added.

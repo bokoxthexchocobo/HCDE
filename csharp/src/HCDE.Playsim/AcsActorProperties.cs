@@ -16,6 +16,7 @@ internal static class AcsActorProperties
     public const int Mass = 32;
     public const int Height = 35;
     public const int Radius = 36;
+    public const int MeleeRange = 38;
     public const int ViewHeight = 39;
     public const int AttackZOffset = 40;
     public const int DamageMultiplier = 43;
@@ -49,7 +50,7 @@ internal static class AcsActorProperties
         // Native CheckActorProperty rejects unknown properties, even when Get returns zero.
         if (property is not (Health or Ambush or Invulnerable or JumpZ or Gravity or Friendly
             or SpawnHealth or NoTarget or TargetTid or Mass or Height or Radius or ViewHeight or AttackZOffset
-            or MaxStepHeight or MaxDropOffHeight or DamageFactor or DamageMultiplier))
+            or MaxStepHeight or MaxDropOffHeight or DamageFactor or DamageMultiplier or MeleeRange))
             return false;
         var actual = Read(actor, property);
         return IsBoolean(property) ? actual == (value != 0 ? 1 : 0) : actual == value;
@@ -89,6 +90,9 @@ internal static class AcsActorProperties
                 break;
             case DamageMultiplier:
                 actor.DamageMultiplier = new Fixed(value);
+                break;
+            case MeleeRange:
+                actor.MeleeRange = new Fixed(value);
                 break;
             case ViewHeight:
                 if (actor is PlayerPawn viewPlayer)
@@ -137,6 +141,7 @@ internal static class AcsActorProperties
         Mass => actor.Mass,
         Height => actor.Height.Raw,
         Radius => actor.Radius.Raw,
+        MeleeRange => actor.MeleeRange.Raw,
         ViewHeight => actor is PlayerPawn viewPlayer ? viewPlayer.DefaultViewHeight.Raw : 0,
         AttackZOffset => actor is PlayerPawn attackPlayer ? attackPlayer.AttackZOffset.Raw : 0,
         MaxStepHeight => actor.MaxStepHeight.Raw,

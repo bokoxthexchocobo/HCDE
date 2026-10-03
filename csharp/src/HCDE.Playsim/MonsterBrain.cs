@@ -188,9 +188,7 @@ public sealed class MonsterBrain(MonsterAttack attack)
         var dx = _lastX - actor.X.ToDouble();
         var dy = _lastY - actor.Y.ToDouble();
         actor.Angle = BamAngle.FromDegrees(Math.Atan2(dy, dx) * 180 / Math.PI);
-        var melee = Distance(actor, target) <= actor.Radius.ToDouble() + target.Radius.ToDouble() + 24
-            && actor.Z.ToDouble() < target.Z.ToDouble() + target.Height.ToDouble()
-            && target.Z.ToDouble() < actor.Z.ToDouble() + actor.Height.ToDouble();
+        var melee = CheckMeleeRange(actor, target, visible);
         var canAttack = visible && (melee || Attack != MonsterAttack.Melee && Distance(actor, target) <= (_nativeType == 64 ? 896 : 1024));
         if (_profile != null)
         {
@@ -346,6 +344,13 @@ public sealed class MonsterBrain(MonsterAttack attack)
         var travel = Math.Max(1, Math.Sqrt(dx * dx + dy * dy) / 20);
         actor.VelocityZ = Fixed.FromDouble((target.Z.ToDouble() + target.Height.ToDouble() / 2 - actor.Z.ToDouble()) / travel);
     }
+
+    /// <summary>Native P_CheckMeleeRange distance, vertical, friendship and sight gates.</summary>
+    internal static bool CheckMeleeRange(Actor actor, Actor target, bool visible) =>
+        Distance(actor, target) < actor.MeleeRange.ToDouble() + target.Radius.ToDouble()
+        && target.Z.ToDouble() <= actor.Z.ToDouble() + actor.Height.ToDouble()
+        && target.Z.ToDouble() + target.Height.ToDouble() >= actor.Z.ToDouble()
+        && !actor.IsFriend(target) && visible;
 
     private static double Distance(Actor a, Actor b) => Math.Sqrt(
         Math.Pow(a.X.ToDouble() - b.X.ToDouble(), 2) + Math.Pow(a.Y.ToDouble() - b.Y.ToDouble(), 2));

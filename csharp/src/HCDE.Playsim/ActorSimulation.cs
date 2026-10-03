@@ -38,6 +38,8 @@ public class Actor : Thinker
     public Fixed DamageFactor { get; set; } = Fixed.FromInt(1);
     /// <summary>Native DamageMultiply, applied to this source's outgoing ordinary damage.</summary>
     public Fixed DamageMultiplier { get; set; } = Fixed.FromInt(1);
+    /// <summary>Native MeleeRange default: 64 minus MELEEDELTA (20).</summary>
+    public Fixed MeleeRange { get; set; } = Fixed.FromInt(44);
     /// <summary>Native <c>TIDtoHate</c>. Teammates share this value; a shooter may hurt or wake actors whose <see cref="ThingId"/> matches.</summary>
     public int TidToHate { get; set; }
     /// <summary>Native <c>MF3_NOTARGET</c>. Wake-up ignores this actor unless <see cref="TidToHate"/> matches its <see cref="ThingId"/> or it is hostile.</summary>
@@ -2583,6 +2585,7 @@ public sealed class AuthoritySimulation
             hash = Mix(hash, (uint)actor.Gravity.Raw);
             hash = Mix(hash, (uint)actor.DamageFactor.Raw);
             hash = Mix(hash, (uint)actor.DamageMultiplier.Raw);
+            hash = Mix(hash, (uint)actor.MeleeRange.Raw);
             hash = Mix(hash, actor.NoRadiusDamage ? 1u : 0u);
             hash = Mix(hash, actor.NoSectorDamage ? 1u : 0u);
             hash = Mix(hash, actor.ForceSectorDamage ? 1u : 0u);
