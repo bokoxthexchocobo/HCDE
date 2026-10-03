@@ -9930,11 +9930,33 @@ compatibility bitfields or MAPINFO compatibility settings. Custom action limits,
 replacement classes, remaining spawn behavior, native-engine comparisons,
 invasion synchronization acceptance, and phases 1–3 completion remain open.
 
+## Pain Elemental explicit action limits checkpoint (2026-10-03)
+
+Audited native A_PainShootSkull in `painelemental.zs`: an explicit positive
+limit governs thinker counting, zero disables counting, and negative limits
+fall back to 21 only when COMPATF_LIMITPAIN is active. SpawnLostSoul now accepts
+an optional limit (default -1) and applies those rules before allocation. Existing
+built-in attack/death callers retain default compatibility behavior; explicit
+managed calls can override or disable it.
+
+Eight regressions cover explicit thresholds, zero disabling compatibility,
+negative fallback with/without compatibility, positive override above the
+compatibility threshold, and the first spawn under a limit of one. Full Release
+solution: 5,356 passed, zero failed/skipped; Playsim 4,229. Release build with
+warnings as errors and whitespace checks passed. Existing trace, compatibility
+configuration, and invasion server tests passed. No persistent state/checksum
+schema changed.
+
+This converts the spawn helper's action parameter semantics; custom ZScript
+execution and mod argument dispatch remain unsupported. Ceiling float response,
+massacre suppression, replacements/subclass counting, native-engine comparisons,
+invasion synchronization acceptance, and phases 1–3 completion remain open.
+
 ## Validation
 
-- Release solution: **5,348 passed, zero failed/skipped**, 4,425 cases above baseline.
+- Release solution: **5,356 passed, zero failed/skipped**, 4,433 cases above baseline.
   Protocol 15; Gamedata 29; Transport 10; Master 1; RCON 6; MapLoader 533;
-  Playsim 4,221; Client 12; Net.Core 351; Pregame 97; Server 65; Scripting 8.
+  Playsim 4,229; Client 12; Net.Core 351; Pregame 97; Server 65; Scripting 8.
 - The lighting pass initially saw a five-second timeout in
   `Pump_LiveSessionReceivesGuestClientInput`; it passed the targeted rerun and the
   subsequent full solution run. No timeout/test-disabling workaround was added.

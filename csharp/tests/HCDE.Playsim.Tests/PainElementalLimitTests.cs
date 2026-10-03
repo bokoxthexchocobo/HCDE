@@ -37,6 +37,24 @@ public class PainElementalLimitTests
         for (var i = 0; i < 22; i++) sim.AddBot(1000 + i * 50, 500, 3006);
         Assert.NotNull(sim.SpawnLostSoul(parent, null, 0));
     }
+    [Theory]
+    [InlineData(false, 2, 1, true)]
+    [InlineData(false, 2, 2, false)]
+    [InlineData(true, 2, 2, false)]
+    [InlineData(true, 0, 21, true)]
+    [InlineData(true, -2, 21, false)]
+    [InlineData(false, -2, 21, true)]
+    [InlineData(true, 22, 21, true)]
+    [InlineData(true, 1, 0, true)]
+    public void ExplicitActionLimitUsesNativePrecedence(bool compatibility, int limit, int count, bool allowed)
+    {
+        var (sim, parent) = Room(compatibility, false);
+        for (var i = 0; i < count; i++) sim.AddBot(1000 + i * 50, 500, 3006);
+        var before = sim.Actors.Count;
+        var soul = sim.SpawnLostSoul(parent, null, 0, limit);
+        Assert.Equal(allowed, soul != null);
+        Assert.Equal(before + (allowed ? 1 : 0), sim.Actors.Count);
+    }
     private static (AuthoritySimulation, Actor) Room(bool limited, bool remap)
     {
         var sim = AuthoritySimulation.Start(new PlayLevel {

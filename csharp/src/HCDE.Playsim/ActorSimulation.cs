@@ -2029,12 +2029,12 @@ public sealed class AuthoritySimulation
         return projectile;
     }
 
-    internal Actor? SpawnLostSoul(Actor parent, Actor? target, double angle)
+    internal Actor? SpawnLostSoul(Actor parent, Actor? target, double angle, int limit = -1)
     {
         if (parent.SectorIndex >= 0 && parent.Z.ToDouble() + parent.Height.ToDouble() + 8 > CeilingOf(parent.SectorIndex))
             return null;
-        if (Compat.HasFlag(CompatSurface.LimitPain)
-            && _actors.Count(actor => !actor.Destroyed && actor.ClassDoomEdNum == 3006) >= 21)
+        if (limit < 0 && Compat.HasFlag(CompatSurface.LimitPain)) limit = 21;
+        if (limit > 0 && _actors.Count(actor => !actor.Destroyed && actor.ClassDoomEdNum == 3006) >= limit)
             return null;
         var definition = DoomActorCatalog.Find(3006)!;
         var defaults = _dehacked?.Actors.FirstOrDefault(actor => actor.OriginalDoomEdNum == 3006 && actor.Patched);
