@@ -22,6 +22,7 @@ internal static class AcsActorProperties
     public const int Mass = 32;
     public const int Height = 35;
     public const int Radius = 36;
+    public const int ReactionTime = 37;
     public const int MeleeRange = 38;
     public const int ViewHeight = 39;
     public const int AttackZOffset = 40;
@@ -57,7 +58,7 @@ internal static class AcsActorProperties
         // Native CheckActorProperty rejects unknown properties, even when Get returns zero.
         if (property is not (Health or Speed or Damage or Ambush or Invulnerable or JumpZ or Gravity or Friendly
             or SpawnHealth or NoTarget or TargetTid or TracerTid or Mass or Height or Radius or ViewHeight or AttackZOffset
-            or MaxStepHeight or MaxDropOffHeight or DamageFactor or DamageMultiplier or MeleeRange or Friction or NoTrigger or Score or Dropped))
+            or MaxStepHeight or MaxDropOffHeight or DamageFactor or DamageMultiplier or MeleeRange or Friction or NoTrigger or Score or Dropped or ReactionTime))
             return false;
         var actual = Read(actor, property);
         return IsBoolean(property) ? actual == (value != 0 ? 1 : 0) : actual == value;
@@ -126,6 +127,9 @@ internal static class AcsActorProperties
             case Dropped:
                 actor.Dropped = value != 0;
                 break;
+            case ReactionTime:
+                actor.ReactionTime = value;
+                break;
             case Score:
                 actor.Score = value;
                 break;
@@ -162,6 +166,7 @@ internal static class AcsActorProperties
         NoTarget => actor.NoTarget ? 1 : 0,
         NoTrigger => actor.NoTrigger ? 1 : 0,
         Dropped => actor.Dropped ? 1 : 0,
+        ReactionTime => actor.ReactionTime,
         Score => actor.Score,
         SpawnHealth => actor.ResurrectionHealth,
         Mass => actor.Mass,

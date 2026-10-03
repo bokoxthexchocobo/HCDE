@@ -7830,11 +7830,36 @@ ownership transitions, class defaults and save/network marker propagation remain
 open. These behaviors are not represented by IgnoreAmmoSkill and must be converted
 separately; this checkpoint does not claim full dropped-inventory parity.
 
+## ACS reaction time and managed AI counter (2026-10-03)
+
+Converted `APROP_ReactionTime` (37) integer set/get/check. Native `p_acs.cpp`
+assigns and reads actor reactiontime directly; `p_enemy.cpp` blocks missile
+attacks while reactiontime is nonzero. The managed actor property reads/writes
+the existing MonsterBrain reaction countdown when present and stores a counter
+for actors without brains. Thus script changes affect the existing managed
+initial attack delay, and queries observe countdown and damage wake-up clearing.
+
+Eleven regressions cover integer values on player/non-brain and monster actors,
+exact checks, countdown queries with delayed attack start, damage wake-up clearing,
+missing/destroyed targets and non-brain checksum inclusion. Existing wake-up,
+arch-vile raise and AI tests remain passing. The idle hash is now 3861582658 due
+to reaction state inclusion; position/health/tic assertions are unchanged.
+Full suite: 4,710 passed, zero failed/skipped; Release warnings-as-errors build:
+zero warnings/errors. This is a source review and regression self-audit.
+
+Scope: ACS counter access and existing managed monster delay. Native player
+reaction-time movement blocking, negative counter handling, class-specific
+defaults and chase timing remain open. The managed brain still shares this
+counter with raise delay; full native separation and replacing/removing brains
+without losing actor counter state require further conversion. Save/network
+propagation is incomplete. Player counter storage does not imply player movement
+blocking has been implemented.
+
 ## Validation
 
-- Release solution: **4,699 passed, zero failed/skipped**, 3,776 cases above baseline.
+- Release solution: **4,710 passed, zero failed/skipped**, 3,787 cases above baseline.
   Protocol 15; Gamedata 10; Transport 10; Master 1; RCON 6; MapLoader 500;
-  Playsim 3,626; Client 12; Net.Core 351; Pregame 97; Server 63; Scripting 8.
+  Playsim 3,637; Client 12; Net.Core 351; Pregame 97; Server 63; Scripting 8.
 - The lighting pass initially saw a five-second timeout in
   `Pump_LiveSessionReceivesGuestClientInput`; it passed the targeted rerun and the
   subsequent full solution run. No timeout/test-disabling workaround was added.

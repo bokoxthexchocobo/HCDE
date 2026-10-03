@@ -27,6 +27,7 @@ public sealed class MonsterBrain(MonsterAttack attack)
     /// <summary>Native <c>DefThreshold</c>. Wake-up reloads <see cref="Threshold"/> from this value.</summary>
     public int DefThreshold { get; set; } = 100;
     public int ReactionTics { get; private set; } = 10;
+    internal void SetReactionTime(int value) => ReactionTics = value;
     public int AttackCooldown { get; private set; }
     public int WindupTics { get; private set; }
     private double _lastX, _lastY;
