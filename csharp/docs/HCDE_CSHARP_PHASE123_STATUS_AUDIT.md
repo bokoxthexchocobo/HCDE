@@ -8707,11 +8707,31 @@ runtime flag effects still require conversion. Full native movement and AI parit
 is not established by equivalent managed checksums. Phases 1–3, large-dimension
 storage and representative invasion synchronization validation remain incomplete.
 
+## DEHACKED MBF friendliness selector — 2026-10-03
+
+Native `PatchThing` remaps bit 30 to FRIEND unless the Bits assignment includes
+STEALTH; explicitly patched player flag sets force friendliness. Converted the
+FRIEND and STEALTH names from `wadsrc/static/dehsupp.txt`, preserved the selector
+in cloned patch records, and applied the supported friendliness behavior during
+spawning. STEALTH is recognized here only to select the shared-bit interpretation;
+its rendering and stealth AI behavior are not implemented.
+
+Seven regression cases cover named/numeric FRIEND, STEALTH and mixed selectors,
+plain numeric clearing, chained selector preservation/replacement, and patched
+player friendliness. Release solution: 4,975 passed, zero failed/skipped;
+Playsim 3,894. Warnings-as-errors build: zero warnings/errors. Actor friendliness
+already participates in simulation hashing; no hash fields changed.
+
+This is partial MBF friend remapping. Native NOBLOCKMONST side effects, complete
+flag defaults, team/target policy, stealth rendering and native action parity
+remain open. Phases 1–3, large-dimension storage and representative invasion
+round/timer/enemy synchronization validation remain incomplete.
+
 ## Validation
 
-- Release solution: **4,968 passed, zero failed/skipped**, 4,045 cases above baseline.
+- Release solution: **4,975 passed, zero failed/skipped**, 4,052 cases above baseline.
   Protocol 15; Gamedata 18; Transport 10; Master 1; RCON 6; MapLoader 500;
-  Playsim 3,887; Client 12; Net.Core 351; Pregame 97; Server 63; Scripting 8.
+  Playsim 3,894; Client 12; Net.Core 351; Pregame 97; Server 63; Scripting 8.
 - The lighting pass initially saw a five-second timeout in
   `Pump_LiveSessionReceivesGuestClientInput`; it passed the targeted rerun and the
   subsequent full solution run. No timeout/test-disabling workaround was added.

@@ -1109,6 +1109,7 @@ public static class ActorSpawner
                 actor.AllowDropOff = (defaults.Bits & 0x00000400) != 0;
                 actor.Floating = (defaults.Bits & 0x00004000) != 0;
                 actor.Dropped = (defaults.Bits & 0x00020000) != 0;
+                actor.Friendly = playerStart || !defaults.BitsUseStealth && (defaults.Bits & 0x40000000) != 0;
             }
             actor.SpawnCanPickupItems = actor.CanPickupItems;
             actor.SpawnSpecialPickup = actor.SpecialPickup;

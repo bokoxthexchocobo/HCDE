@@ -22,6 +22,7 @@ public sealed class DehackedActor
     public int OriginalDoomEdNum { get; init; }
     public uint Bits { get; set; }
     public bool BitsPatched { get; set; }
+    public bool BitsUseStealth { get; set; }
     public int SeeSound { get; set; }
     public int AttackSound { get; set; }
     public int PainSound { get; set; }
@@ -244,6 +245,7 @@ public static class DehackedPatch
             {
                 uint bits = 0;
                 var changed = false;
+                var useStealth = false;
                 foreach (var token in value.Split([',', '+', '|', ' ', '\t', '\f', '\r'], StringSplitOptions.RemoveEmptyEntries))
                 {
                     if (token.All(character => character is >= '0' and <= '9' or '-'))
@@ -255,6 +257,7 @@ public static class DehackedPatch
                     {
                         bits |= namedBits;
                         changed = true;
+                        useStealth |= token.Equals("STEALTH", StringComparison.OrdinalIgnoreCase);
                     }
                     else
                         errors.Add($"Thing {actor.Index}: unsupported bit mnemonic '{token}'.");
@@ -263,6 +266,7 @@ public static class DehackedPatch
                 {
                     actor.Bits = bits;
                     actor.BitsPatched = true;
+                    actor.BitsUseStealth = useStealth;
                 }
             }
             else if (key.Equals("ID #", StringComparison.OrdinalIgnoreCase))
@@ -426,6 +430,7 @@ public static class DehackedPatch
             ["SPAWNCEILING"] = 256, ["NOGRAVITY"] = 512, ["DROPOFF"] = 1024,
             ["PICKUP"] = 2048, ["FLOAT"] = 16384, ["DROPPED"] = 131072,
             ["COUNTKILL"] = 4194304,
+            ["FRIEND"] = 0x40000000, ["STEALTH"] = 0x40000000,
         };
 
     // Thing/Frame use decimal strtoll/atoll: stop at the first non-digit; no digits means zero.
