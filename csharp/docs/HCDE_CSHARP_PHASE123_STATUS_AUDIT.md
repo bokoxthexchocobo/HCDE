@@ -8079,11 +8079,40 @@ predicate. Full native friendship/team/deathmatch/player defaults, look ordering
 and RNG, stealth/cheat visibility, class flags and complete enemy/hate-TID searches
 remain incomplete. Native invasion sessions and phase 1–3 acceptance remain open.
 
+## Conversion and audit: monster spawn classification (2026-10-03)
+
+Followed up the map-classification concern from the prior acquisition audit.
+Native Monster in `src/scripting/thingdef_properties.cpp` sets MF3_ISMONSTER;
+Doom imp and lost-soul definitions use that property. Supported map monsters
+previously received brains without IsMonster, unlike managed bots. Map spawning
+now initializes classification for supported monster brains. Pain-elemental
+lost-soul spawning sets it explicitly too. Pickups, unknown things and player
+starts remain unclassified by this rule.
+
+Native DEHACKED in `src/gamedata/d_dehacked.cpp` synchronizes ISMONSTER with
+COUNTKILL for non-player actors. Explicit Bits patches now set/clear managed
+IsMonster from bit 0x00400000; non-flag patches preserve class classification.
+This does not convert COUNTKILL accounting or the other native flag mutations.
+
+Eleven new cases cover five map monster types, pickups/unknown things, COUNTKILL
+set/clear, a health-only patch, dynamically spawned souls and a real infighting
+damage interaction. The last case verifies NoInfighting blocks plain-monster
+damage to a classified map monster. Full Release suite: 4,787 passed, zero
+failed/skipped; Playsim 3,714. Warnings-as-errors build: zero warnings/errors;
+whitespace check passes. Existing gameplay/invasion cases remain passing.
+The existing checksum already includes IsMonster; no new checksum fields were
+added and the player-only idle baseline remains unchanged.
+
+This closes supported spawn classification and explicit DEHACKED flag handling,
+not full class inheritance, mod-defined monsters, standard flag restoration,
+COUNTKILL totals, actor-state saves or networking. Native invasion sessions and
+phase 1–3 acceptance remain open.
+
 ## Validation
 
-- Release solution: **4,776 passed, zero failed/skipped**, 3,853 cases above baseline.
+- Release solution: **4,787 passed, zero failed/skipped**, 3,864 cases above baseline.
   Protocol 15; Gamedata 10; Transport 10; Master 1; RCON 6; MapLoader 500;
-  Playsim 3,703; Client 12; Net.Core 351; Pregame 97; Server 63; Scripting 8.
+  Playsim 3,714; Client 12; Net.Core 351; Pregame 97; Server 63; Scripting 8.
 - The lighting pass initially saw a five-second timeout in
   `Pump_LiveSessionReceivesGuestClientInput`; it passed the targeted rerun and the
   subsequent full solution run. No timeout/test-disabling workaround was added.

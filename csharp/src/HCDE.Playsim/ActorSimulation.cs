@@ -1108,6 +1108,9 @@ public static class ActorSpawner
             actor.RaiseDuration = ArchvileActions.RaiseDuration(definitionType);
             actor.Ambush = thing.Ambush;
             actor.Brain = MonsterBrain.ForType(definitionType);
+            actor.IsMonster = !playerStart && (defaults is { BitsPatched: true }
+                ? (defaults.Bits & 0x00400000) != 0
+                : actor.Brain != null);
             actor.RememberPosition();
             thinkers.Add(actor, playerStart ? ThinkerStat.Player : ThinkerStat.Default);
             actors.Add(actor);
@@ -1950,7 +1953,7 @@ public sealed class AuthoritySimulation
             GibHealth = definition.Health > 0 ? -definition.Health : -1,
             PainChance = definition.PainChance, ChaseSpeed = definition.Speed / 4.0,
             NoGravity = true, OnGround = false, SectorIndex = parent.SectorIndex,
-            Floating = true,
+            Floating = true, IsMonster = true,
             Mass = DoomActorCatalog.MassOf(3006),
             Brain = MonsterBrain.ForType(3006), Angle = BamAngle.FromDegrees(angle),
         };
