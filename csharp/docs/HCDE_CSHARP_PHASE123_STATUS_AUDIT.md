@@ -8188,11 +8188,36 @@ death-state scheduling, target-pointer mutation during death, non-shootable targ
 copying, complete friendship/team semantics or engine acceptance. Native invasion
 sessions and complete phases 1–3 remain open.
 
+## Conversion and audit: skull charge reaction preservation (2026-10-03)
+
+Compared `A_SkullAttack` in `wadsrc/static/zscript/actors/doom/lostsoul.zs`
+and `DistanceBySpeed` in `src/playsim/actor.h`. Native charge initiation sets
+skull-flight state and velocity without writing reactiontime. Removed the
+managed StartCharge reset of the actor-owned counter. The existing fixed speed
+20 and vertical velocity denominator max(1, horizontal distance / speed) match
+the reviewed default charge formula; configurable speed and full face-target
+behavior are not converted by this change.
+
+Five new cases cover zero, positive, negative and maximum-int reaction values
+through charge start, a brain tick while charging and charge stop, plus a spawned
+charging soul retaining the current managed initialization value of 10. That
+value is a managed default, not a claim of native class-default parity. Existing
+charge/pain/death, spawn and invasion regressions remain passing.
+Full Release suite: 4,809 passed, zero failed/skipped; Playsim 3,736.
+Warnings-as-errors build: zero warnings/errors; whitespace check passes. No
+checksum fields were added; player idle baseline unchanged.
+
+This closes the charge-start reaction mutation gap. Native class reaction
+initialization, post-impact state cadence, configurable skull speed, sound,
+stealth facing, full charge-state scheduling and network/save coverage remain
+incomplete. Source/regression self-audit does not replace native invasion
+sessions or complete phase 1–3 acceptance, which remain open.
+
 ## Validation
 
-- Release solution: **4,804 passed, zero failed/skipped**, 3,881 cases above baseline.
+- Release solution: **4,809 passed, zero failed/skipped**, 3,886 cases above baseline.
   Protocol 15; Gamedata 10; Transport 10; Master 1; RCON 6; MapLoader 500;
-  Playsim 3,731; Client 12; Net.Core 351; Pregame 97; Server 63; Scripting 8.
+  Playsim 3,736; Client 12; Net.Core 351; Pregame 97; Server 63; Scripting 8.
 - The lighting pass initially saw a five-second timeout in
   `Pump_LiveSessionReceivesGuestClientInput`; it passed the targeted rerun and the
   subsequent full solution run. No timeout/test-disabling workaround was added.

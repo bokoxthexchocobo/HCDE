@@ -361,7 +361,6 @@ public sealed class MonsterBrain(MonsterAttack attack)
     internal void StartCharge(Actor actor, Actor target)
     {
         TargetId = target.Id;
-        ReactionTics = 0;
         Charging = true;
         Mode = MonsterMode.Recovery;
         var dx = target.X.ToDouble() - actor.X.ToDouble(); var dy = target.Y.ToDouble() - actor.Y.ToDouble();
