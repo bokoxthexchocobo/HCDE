@@ -36,6 +36,6 @@ public class ActorTraceEntryOrderingTests
         AcsLineAttack.Attack(sim, source, unchecked((int)yaw.Raw), unchecked((int)pitch.Raw), 7, "None", 256,
             absoluteAngles: true);
         Assert.Equal(health - 7, first.Health);
-        Assert.Equal(30, later.Health);
+        Assert.Equal(20, later.Health);
     }
 }

@@ -142,7 +142,7 @@ public class ArchvileTests
         sim.Tick();
         Assert.Equal(1, sim.Invasion.ActiveMonsters);
         for (var i = 0; i < 9; i++) sim.Tick();
-        Assert.Equal(30, corpse.Health);
+        Assert.Equal(20, corpse.Health);
         Assert.Equal(MonsterMode.Raise, corpse.Brain!.Mode);
         Assert.Equal(InvasionPhase.Wave, sim.Invasion.Phase);
         Assert.Equal(2, sim.Invasion.ActiveMonsters);

@@ -1826,7 +1826,7 @@ public sealed class AuthoritySimulation
         var definitionType = defaults?.OriginalDoomEdNum is > 0 ? defaults.OriginalDoomEdNum : doomEdNum;
         var definition = DoomActorCatalog.Find(definitionType);
         var catalogHealth = definition?.Health;
-        var health = defaults?.Health ?? (doomEdNum == 3004 ? 30 : catalogHealth ?? 30);
+        var health = defaults?.Health ?? catalogHealth ?? 30;
         var bot = new BotPawn
         {
             Id = id,

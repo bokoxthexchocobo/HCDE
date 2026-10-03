@@ -152,7 +152,7 @@ public class InvasionServerTests
         }
         while (host.Simulation.Invasion.Wave == 0) TickAndReceive();
         var enemy = host.Simulation.Actors.OfType<BotPawn>().Single();
-        Assert.Equal(30, world.Actors[enemy.Id].Health);
+        Assert.Equal(20, world.Actors[enemy.Id].Health);
         Assert.Equal(enemy.X.ToDouble(), world.Actors[enemy.Id].PosX, 2);
         uint inputTic = 0;
         for (var shot = 0; shot < 6 && !enemy.IsDead; shot++)
@@ -211,6 +211,6 @@ public class InvasionServerTests
         SimSnapshotPublisher.Publish(sim, store);
         Assert.NotEqual(bot.Id, next.Id);
         Assert.Equal(0, store.Actors[bot.Id].Health);
-        Assert.Equal(30, store.Actors[next.Id].Health);
+        Assert.Equal(20, store.Actors[next.Id].Health);
     }
 }

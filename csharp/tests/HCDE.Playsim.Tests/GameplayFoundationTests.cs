@@ -487,7 +487,7 @@ public class GameplayFoundationTests
         var tic = sim.Thinkers.Clock.Tic;
         ActorPhysics.CrushStandingRiders(sim, platform, 10, tic);
         Assert.Equal(90, player.Health);
-        Assert.Equal(30, platform.Health);
+        Assert.Equal(20, platform.Health);
     }
 
     [Fact]
@@ -571,7 +571,7 @@ public class GameplayFoundationTests
         for (var tic = 0; tic < 4; tic++)
             sim.Tick();
         Assert.Equal(0, dead.Health);
-        Assert.Equal(30, decoration.Health);
+        Assert.Equal(20, decoration.Health);
     }
 
     [Fact]
@@ -1555,13 +1555,13 @@ public class GameplayFoundationTests
         rightBot.PainChance = 0;
         var leftOther = RivalBot(left, 32, 8);
         var rightOther = RivalBot(right, 32, 8);
-        ActorDamage.Apply(leftBot, 10, source: leftOther, inflictor: leftOther);
-        ActorDamage.Apply(leftBot, 10, source: left.Players.Single(), inflictor: left.Players.Single());
+        ActorDamage.Apply(leftBot, 5, source: leftOther, inflictor: leftOther);
+        ActorDamage.Apply(leftBot, 5, source: left.Players.Single(), inflictor: left.Players.Single());
         left.Tick();
         right.Tick();
         Assert.NotEqual(left.Checksum, right.Checksum);
-        ActorDamage.Apply(rightBot, 10, source: rightOther, inflictor: rightOther);
-        ActorDamage.Apply(rightBot, 10, source: right.Players.Single(), inflictor: right.Players.Single());
+        ActorDamage.Apply(rightBot, 5, source: rightOther, inflictor: rightOther);
+        ActorDamage.Apply(rightBot, 5, source: right.Players.Single(), inflictor: right.Players.Single());
         left.Tick();
         right.Tick();
         Assert.Equal(left.Checksum, right.Checksum);

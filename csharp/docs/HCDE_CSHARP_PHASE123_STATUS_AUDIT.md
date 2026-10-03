@@ -9734,11 +9734,41 @@ and pain defaults, so invasion combat timing can change; it does not establish
 native invasion round/timer/network synchronization acceptance. Full native
 spawn rules, mod class behavior, and phases 1–3 completion remain open.
 
+## Dynamic Zombieman native health checkpoint (2026-10-03)
+
+Removed AddBot's legacy 30-health Zombieman exception. Native
+`wadsrc/static/zscript/actors/doom/possessed.zs` declares Health 20, as already
+used by DoomActorCatalog and map spawning. Dynamic Zombies now use 20 health,
+20 resurrection health, and -20 gib health unless explicitly patched.
+Unknown-class generic health remains 30; explicit DeHackEd health overrides
+and resolved remapped identity remain supported.
+
+Audited all fourteen initially failing cases: trace/crush fixtures asserted an
+untouched Zombie remained at 30, invasion snapshots asserted 30 at spawn, and
+resurrection asserted 30 on raise. Updated those native-health expectations.
+The target-memory checksum fixture applied two 10-point hits, killing the now
+20-health subject at different tics; reduced its hits to 5 to retain its intended
+living-target memory/restore scenario. No gameplay damage or snapshot behavior
+was weakened to accommodate the failures.
+
+Four new regressions verify actual death/gib boundaries and explicit text health
+patches with original/remapped editor IDs. Existing server invasion network
+attack, mirrored wave/timer/enemy counts, completion, resurrection live count,
+and tombstone tests all pass with the corrected health. Full Release solution:
+5,307 passed, zero failed/skipped; Playsim 4,182. Release warnings-as-errors
+build and whitespace checks passed; existing trace tests passed.
+
+Existing health/resurrection/gib checksum fields reflect changed dynamic Zombie
+state; checksum schema is unchanged. Combat can now kill invasion Zombies sooner.
+This closes the previous checkpoint's health exception, but does not establish
+native invasion-session parity or resolve all reported synchronization faults.
+Native mod/state behavior, complete spawn rules, and phases 1–3 remain open.
+
 ## Validation
 
-- Release solution: **5,303 passed, zero failed/skipped**, 4,380 cases above baseline.
+- Release solution: **5,307 passed, zero failed/skipped**, 4,384 cases above baseline.
   Protocol 15; Gamedata 29; Transport 10; Master 1; RCON 6; MapLoader 533;
-  Playsim 4,178; Client 12; Net.Core 351; Pregame 97; Server 63; Scripting 8.
+  Playsim 4,182; Client 12; Net.Core 351; Pregame 97; Server 63; Scripting 8.
 - The lighting pass initially saw a five-second timeout in
   `Pump_LiveSessionReceivesGuestClientInput`; it passed the targeted rerun and the
   subsequent full solution run. No timeout/test-disabling workaround was added.
