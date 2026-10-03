@@ -8052,11 +8052,38 @@ enemy searches/wandering and complete look/chase scheduling remain incomplete.
 Representative native invasion synchronization sessions and phases 1–3 acceptance
 are still required.
 
+## Conversion and audit: visual player acquisition friendship (2026-10-03)
+
+Converted the IsFriend rejection in `isTargetablePlayer` from
+`src/playsim/p_enemy.cpp` into managed visual player acquisition. Current-target
+and hearing paths already rejected friends, but the nearest-visible-player
+fallback could reacquire the same friend or select a friend ahead of an eligible
+enemy. The fallback now excludes friends before distance/ID ordering, leaving
+normal sight, range and damage-eligibility checks intact.
+
+Eight cases cover the existing IsFriend subset with zero/matching/different
+FriendPlayer values, selection of a farther hostile player over a nearby friend,
+real noise followed by visible fallback, and a player becoming friendly during
+windup. The latter two run fifteen brain ticks to check reacquisition; the
+friendship-change case also verifies no damage to the former target.
+Fixtures select the map monster by DoomEdNum; map actor IsMonster initialization
+was not assumed by this test and remains a separate class-default audit concern.
+
+Full Release suite: 4,776 passed, zero failed/skipped; Playsim 3,703.
+Warnings-as-errors build: zero warnings/errors; whitespace check passes. Existing
+hearing, chase, resurrection, checksum and invasion cases pass. No checksum
+fields were added and the managed player idle baseline is unchanged.
+
+This closes a bounded acquisition gap under the current managed friendship
+predicate. Full native friendship/team/deathmatch/player defaults, look ordering
+and RNG, stealth/cheat visibility, class flags and complete enemy/hate-TID searches
+remain incomplete. Native invasion sessions and phase 1–3 acceptance remain open.
+
 ## Validation
 
-- Release solution: **4,768 passed, zero failed/skipped**, 3,845 cases above baseline.
+- Release solution: **4,776 passed, zero failed/skipped**, 3,853 cases above baseline.
   Protocol 15; Gamedata 10; Transport 10; Master 1; RCON 6; MapLoader 500;
-  Playsim 3,695; Client 12; Net.Core 351; Pregame 97; Server 63; Scripting 8.
+  Playsim 3,703; Client 12; Net.Core 351; Pregame 97; Server 63; Scripting 8.
 - The lighting pass initially saw a five-second timeout in
   `Pump_LiveSessionReceivesGuestClientInput`; it passed the targeted rerun and the
   subsequent full solution run. No timeout/test-disabling workaround was added.

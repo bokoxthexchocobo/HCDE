@@ -196,7 +196,7 @@ public sealed class MonsterBrain(MonsterAttack attack)
         var target = sim.Actors.FirstOrDefault(a => a.Id == TargetId && a.CanTakeDamage && !actor.IsFriend(a));
         target ??= sim.Actors.FirstOrDefault(candidate => candidate.Id == actor.LastHeardTargetId && candidate.CanTakeDamage && !actor.IsFriend(candidate)
             && (!actor.Ambush || CombatTrace.HasLineOfSight(sim, actor, candidate)));
-        target ??= sim.Players.Where(p => p.CanTakeDamage && Distance(actor, p) <= 2048 && CombatTrace.HasLineOfSight(sim, actor, p))
+        target ??= sim.Players.Where(p => p.CanTakeDamage && !actor.IsFriend(p) && Distance(actor, p) <= 2048 && CombatTrace.HasLineOfSight(sim, actor, p))
             .OrderBy(p => Distance(actor, p)).ThenBy(p => p.Id).FirstOrDefault();
         target ??= TryResumeLastEnemy(sim, actor);
         if (target == null)
