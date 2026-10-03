@@ -10812,11 +10812,34 @@ callbacks, reassignment/null native target pointers and full geometry/runtime
 acceptance remain incomplete. Managed projectile Owner remains immutable.
 Phases 1–3 and invasion synchronization acceptance remain open.
 
+## Conversion and audit: projectile owner-contact persistence (2026-10-03)
+
+Closed HITOWNER pose persistence against native `AActor::Serialize` in
+`src/playsim/p_mobj.cpp` (flags8). Managed poses capture true and false
+values and restore them before resumed projectile contact. Managed archive
+version 35 wraps versions 18–34 with a complete validated boolean table.
+Older saves without the metadata preserve the current flag. No native
+savegame interoperability or projectile recreation is claimed.
+
+Fifteen regressions cover memory/wire owner-contact continuation and damage,
+explicit false restoration, invalid wire/memory flags, size/prior/count
+errors, incomplete all-zero tables, rejection before clock/flag/checksum
+mutation, version 34 preservation and nested ghost/full-mask restoration.
+Version-specific fixtures explicitly omit newer metadata to preserve their
+layout/corruption checks. Full non-incremental Release rebuild: zero warnings/
+errors; 5,834 solution tests passed, zero failed/skipped (Playsim 4,707).
+Whitespace checks pass.
+
+Missile spawn validation, owner pointer reassignment/null native targets,
+bounce/SpecialMissileHit callbacks, custom class defaults and native geometry/
+runtime acceptance remain incomplete. Managed Owner remains immutable.
+Phases 1–3 and invasion synchronization acceptance remain open.
+
 ## Validation
 
-- Release solution: **5,819 passed, zero failed/skipped**, 4,896 cases above baseline.
+- Release solution: **5,834 passed, zero failed/skipped**, 4,911 cases above baseline.
   Protocol 15; Gamedata 29; Transport 10; Master 1; RCON 6; MapLoader 533;
-  Playsim 4,692; Client 12; Net.Core 351; Pregame 97; Server 65; Scripting 8.
+  Playsim 4,707; Client 12; Net.Core 351; Pregame 97; Server 65; Scripting 8.
 - The lighting pass initially saw a five-second timeout in
   `Pump_LiveSessionReceivesGuestClientInput`; it passed the targeted rerun and the
   subsequent full solution run. No timeout/test-disabling workaround was added.

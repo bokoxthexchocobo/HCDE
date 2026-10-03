@@ -97,7 +97,7 @@ public class ThruBitsArchiveTests
     private static byte[] WriteVersion32(AuthoritySimulation sim) => WriteVersion32(sim.CaptureState());
     private static byte[] WriteVersion32(SimSaveState state)
     {
-        foreach (var pose in state.Actors) { pose.GhostFlags = null; pose.NonShootableFlags = null; }
+        foreach (var pose in state.Actors) { pose.GhostFlags = null; pose.NonShootableFlags = null; pose.HitOwnerFlags = null; }
         return SimSavegame.Write(state);
     }
     private static int TrailerStart(byte[] bytes) => bytes.Length - BinaryPrimitives.ReadInt32LittleEndian(bytes.AsSpan(bytes.Length - 4));

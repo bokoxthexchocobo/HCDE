@@ -2222,6 +2222,7 @@ public sealed class AuthoritySimulation
                 ThruBits = new SimThruBits(actor.ThruBits, actor.AllowThruBits),
                 GhostFlags = (actor.Ghost ? 1 : 0) | (actor.ThruGhost ? 2 : 0),
                 NonShootableFlags = actor.NonShootable ? 1 : 0,
+                HitOwnerFlags = actor.HitOwner ? 1 : 0,
                 ProjectileLifetime = actor is ProjectileActor { Destroyed: false } projectile
                     ? new SimProjectileLifetime(projectile.RemainingTics, projectile.Kind) : null,
                 ProjectilePointers = actor is ProjectileActor { Destroyed: false } pointerProjectile
@@ -2270,6 +2271,7 @@ public sealed class AuthoritySimulation
         SimThruBitsArchive.Validate(state);
         SimGhostArchive.Validate(state);
         SimNonShootableArchive.Validate(state);
+        SimHitOwnerArchive.Validate(state);
         SimPainDeathArchive.Validate(state);
         if (state.GeometryHealth is { } savedHealth && (savedHealth.Lines.Count != Level.Lines.Count
             || savedHealth.Sectors.Count != Level.Sectors.Count || !savedHealth.Groups.Keys.Order().SequenceEqual(HealthGroups.Keys.Order())))
@@ -2366,6 +2368,7 @@ public sealed class AuthoritySimulation
             if (pose.DeathFlags is { } deathFlags) actor.DeathDamageType = deathFlags == 1 ? "Massacre" : null;
             if (pose.ProjectileFlags is { } projectileFlags) actor.NoExplodeFloor = (projectileFlags & 1) != 0;
             if (pose.CeilingFlags is { } ceilingFlags) actor.CeilingHugger = ceilingFlags == 1;
+            if (pose.HitOwnerFlags is { } hitOwnerFlags) actor.HitOwner = hitOwnerFlags == 1;
             if (pose.NonShootableFlags is { } nonShootableFlags) actor.NonShootable = nonShootableFlags == 1;
             if (pose.GhostFlags is { } ghostFlags) { actor.Ghost = (ghostFlags & 1) != 0; actor.ThruGhost = (ghostFlags & 2) != 0; }
             if (pose.ThruBits is { } thruBits) { actor.ThruBits = thruBits.Mask; actor.AllowThruBits = thruBits.Enabled; }

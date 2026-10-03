@@ -104,7 +104,7 @@ public class MissileThruSpeciesArchiveTests
     private static byte[] WriteVersion30(AuthoritySimulation sim) => WriteVersion30(sim.CaptureState());
     private static byte[] WriteVersion30(SimSaveState state)
     {
-        foreach (var pose in state.Actors) { pose.ThruSpeciesFlags = null; pose.ThruBits = null; pose.GhostFlags = null; pose.NonShootableFlags = null; }
+        foreach (var pose in state.Actors) { pose.ThruSpeciesFlags = null; pose.ThruBits = null; pose.GhostFlags = null; pose.NonShootableFlags = null; pose.HitOwnerFlags = null; }
         return SimSavegame.Write(state);
     }
     private static int TrailerStart(byte[] bytes) => bytes.Length - BinaryPrimitives.ReadInt32LittleEndian(bytes.AsSpan(bytes.Length - 4));

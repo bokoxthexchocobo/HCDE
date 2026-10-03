@@ -20,7 +20,7 @@ public class NonShootableArchiveTests
         var state = sim.CaptureState();
         if (serialized)
         {
-            var bytes = SimSavegame.Write(state); Assert.Equal(34, BinaryPrimitives.ReadUInt16LittleEndian(bytes.AsSpan(4)));
+            var bytes = WriteVersion34(state); Assert.Equal(34, BinaryPrimitives.ReadUInt16LittleEndian(bytes.AsSpan(4)));
             Assert.True(SimSavegame.TryRead(bytes, out state, out var error), error);
         }
         target.NonShootable = !enabled; sim.RestoreState(state);
@@ -35,7 +35,7 @@ public class NonShootableArchiveTests
     public void InvalidWireFlagRejectsApplyBeforeMutation(int flags)
     {
         var sim = Room(); var actor = sim.AddBot(0, 0); actor.Brain = null;
-        var bytes = SimSavegame.Write(sim);
+        var bytes = WriteVersion34(sim);
         BinaryPrimitives.WriteInt32LittleEndian(bytes.AsSpan(TrailerStart(bytes) + 8), flags);
         actor.NonShootable = true; sim.Tick(); var checksum = sim.Checksum;
         Assert.False(SimSavegame.TryRead(bytes, out var state, out var error));
@@ -52,7 +52,7 @@ public class NonShootableArchiveTests
         var sim = Room(); var actor = sim.AddBot(0, 0); actor.Brain = null;
         var state = sim.CaptureState(); state.Actors[0].NonShootableFlags = flags;
         actor.NonShootable = true; sim.Tick();
-        Assert.Throws<InvalidOperationException>(() => SimSavegame.Write(state));
+        Assert.Throws<InvalidOperationException>(() => WriteVersion34(state));
         Assert.Throws<InvalidOperationException>(() => sim.RestoreState(state));
         Assert.Equal(1, sim.Thinkers.Clock.Tic); Assert.True(actor.NonShootable);
     }
@@ -63,7 +63,7 @@ public class NonShootableArchiveTests
     [InlineData("count")]
     public void MalformedTrailerIsRejected(string field)
     {
-        var sim = Room(); sim.AddBot(0, 0); var bytes = SimSavegame.Write(sim);
+        var sim = Room(); sim.AddBot(0, 0); var bytes = WriteVersion34(sim);
         var offset = field == "size" ? bytes.Length - 4 : TrailerStart(bytes) + (field == "count" ? 4 : 0);
         BinaryPrimitives.WriteInt32LittleEndian(bytes.AsSpan(offset), field == "prior" ? 34 : 0);
         Assert.False(SimSavegame.TryRead(bytes, out _, out var error));
@@ -75,7 +75,7 @@ public class NonShootableArchiveTests
     {
         var sim = Room(); sim.AddBot(0, 0); sim.AddBot(100, 0);
         var state = sim.CaptureState(); state.Actors[1].NonShootableFlags = null;
-        Assert.Throws<InvalidOperationException>(() => SimSavegame.Write(state));
+        Assert.Throws<InvalidOperationException>(() => WriteVersion34(state));
         Assert.Throws<InvalidOperationException>(() => sim.RestoreState(state));
     }
 
@@ -85,7 +85,7 @@ public class NonShootableArchiveTests
     public void Version33PreservesCurrentFlag(bool enabled)
     {
         var sim = Room(); var actor = sim.AddBot(0, 0); var state = sim.CaptureState(); state.Actors[0].NonShootableFlags = null;
-        var bytes = SimSavegame.Write(state); Assert.Equal(33, BinaryPrimitives.ReadUInt16LittleEndian(bytes.AsSpan(4)));
+        var bytes = WriteVersion34(state); Assert.Equal(33, BinaryPrimitives.ReadUInt16LittleEndian(bytes.AsSpan(4)));
         actor.NonShootable = enabled; SimSavegame.Apply(sim, bytes); Assert.Equal(enabled, actor.NonShootable);
     }
 
@@ -94,13 +94,19 @@ public class NonShootableArchiveTests
     {
         var sim = Room(); var actor = sim.AddBot(0, 0);
         actor.NonShootable = actor.Ghost = actor.ThruGhost = actor.AllowThruBits = true;
-        actor.ThruBits = uint.MaxValue; var bytes = SimSavegame.Write(sim);
+        actor.ThruBits = uint.MaxValue; var bytes = WriteVersion34(sim);
         actor.NonShootable = actor.Ghost = actor.ThruGhost = actor.AllowThruBits = false;
         actor.ThruBits = 0; SimSavegame.Apply(sim, bytes);
         Assert.True(actor.NonShootable); Assert.True(actor.Ghost); Assert.True(actor.ThruGhost);
         Assert.True(actor.AllowThruBits); Assert.Equal(uint.MaxValue, actor.ThruBits);
     }
 
+    private static byte[] WriteVersion34(AuthoritySimulation sim) => WriteVersion34(sim.CaptureState());
+    private static byte[] WriteVersion34(SimSaveState state)
+    {
+        foreach (var pose in state.Actors) pose.HitOwnerFlags = null;
+        return SimSavegame.Write(state);
+    }
     private static int TrailerStart(byte[] bytes) => bytes.Length - BinaryPrimitives.ReadInt32LittleEndian(bytes.AsSpan(bytes.Length - 4));
     private static AuthoritySimulation Room() => AuthoritySimulation.Start(new PlayLevel
     { Sectors = [new LevelSector { CeilingHeight = 128 }] });

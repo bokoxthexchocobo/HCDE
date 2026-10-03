@@ -43,6 +43,7 @@ public sealed class SimActorPose
     public SimThruBits? ThruBits { get; internal set; }
     public int? GhostFlags { get; internal set; }
     public int? NonShootableFlags { get; internal set; }
+    public int? HitOwnerFlags { get; internal set; }
 }
 
 public sealed class SimSaveState
@@ -97,6 +98,7 @@ public static class SimSavegame
         SimThruBitsArchive.Validate(state);
         SimGhostArchive.Validate(state);
         SimNonShootableArchive.Validate(state);
+        SimHitOwnerArchive.Validate(state);
         SimPainDeathArchive.Validate(state);
         if (state.Actors.Any(actor => actor.Pickup.HasValue) &&
             (state.GeometryHealth is null || state.Actors.Any(actor => !actor.Roll.HasValue)))
@@ -196,7 +198,7 @@ public static class SimSavegame
             BinaryPrimitives.WriteUInt16LittleEndian(archive.AsSpan(4), 15);
             archive = SimProjectileFlagArchive.Write(state, SimPainDeathArchive.Write(state, WriteDeathFlags(state, WriteFloatFlags(state, WriteContactFlags(state, WritePickups(state, WriteRolls(state, archive)))))));
             archive = SimFloorHuggerArchive.Write(state, SimCeilingHuggerArchive.Write(state, SimProjectilePointerArchive.Write(state, SimProjectileLifetimeArchive.Write(state, archive))));
-            return SimNonShootableArchive.Write(state, SimGhostArchive.Write(state, SimThruBitsArchive.Write(state, SimThruSpeciesArchive.Write(state, SimMissileThruSpeciesArchive.Write(state, SimThruActorsArchive.Write(state, SimBlastEligibilityArchive.Write(state, SimBlastedArchive.Write(state, archive))))))));
+            return SimHitOwnerArchive.Write(state, SimNonShootableArchive.Write(state, SimGhostArchive.Write(state, SimThruBitsArchive.Write(state, SimThruSpeciesArchive.Write(state, SimMissileThruSpeciesArchive.Write(state, SimThruActorsArchive.Write(state, SimBlastEligibilityArchive.Write(state, SimBlastedArchive.Write(state, archive)))))))));
         }
         return buffer;
     }
@@ -327,6 +329,7 @@ public static class SimSavegame
         }
 
         var version = BinaryPrimitives.ReadUInt16LittleEndian(bytes[4..]);
+        if (version == 35) return SimHitOwnerArchive.TryRead(bytes, out state, out error);
         if (version == 34) return SimNonShootableArchive.TryRead(bytes, out state, out error);
         if (version == 33) return SimGhostArchive.TryRead(bytes, out state, out error);
         if (version == 32) return SimThruBitsArchive.TryRead(bytes, out state, out error);
