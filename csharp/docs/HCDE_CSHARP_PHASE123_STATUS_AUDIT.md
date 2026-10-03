@@ -10615,11 +10615,34 @@ THRUBITS, telefrag execution and hitscan/puff policy remain incomplete.
 Native geometry/runtime acceptance and invasion synchronization acceptance
 remain open; phases 1–3 are not complete.
 
+## Conversion and audit: directional species-passage persistence (2026-10-03)
+
+Closed THRUSPECIES pose persistence against native `AActor::Serialize` in
+`src/playsim/p_mobj.cpp` (flags6). Managed poses capture true and false values
+and restore them before resumed contact. Managed archive version 31 wraps
+versions 18–30 with a complete validated boolean table. Older archives
+without the metadata preserve the current flag. This remains a managed
+format, not native savegame interoperability.
+
+Twenty-two regressions cover memory/wire blast passage for inherited
+Baron/Hell Knight species, explicit false restoration, target-only directional
+behavior, occupied positions, bridge support, wire/memory validation,
+size/prior/count rejection, incomplete all-zero tables, rejection before
+clock/flag/checksum mutation, version 30 compatibility and nested restoration
+of THRUSPECIES/MTHRUSPECIES/THRUACTORS/BOSS/DONTBLAST/BLASTED. Existing layout
+fixtures explicitly omit newer metadata to retain their version coverage.
+Full non-incremental Release build: zero warnings/errors. Solution tests:
+5,719 passed, zero failed/skipped (Playsim 4,592). Whitespace checks pass.
+
+Custom species/class ancestry, THRUBITS, telefrag execution, hitscan/puff
+rules, actor recreation and native runtime acceptance remain incomplete.
+Phases 1–3 and invasion synchronization acceptance remain open.
+
 ## Validation
 
-- Release solution: **5,697 passed, zero failed/skipped**, 4,774 cases above baseline.
+- Release solution: **5,719 passed, zero failed/skipped**, 4,796 cases above baseline.
   Protocol 15; Gamedata 29; Transport 10; Master 1; RCON 6; MapLoader 533;
-  Playsim 4,570; Client 12; Net.Core 351; Pregame 97; Server 65; Scripting 8.
+  Playsim 4,592; Client 12; Net.Core 351; Pregame 97; Server 65; Scripting 8.
 - The lighting pass initially saw a five-second timeout in
   `Pump_LiveSessionReceivesGuestClientInput`; it passed the targeted rerun and the
   subsequent full solution run. No timeout/test-disabling workaround was added.
