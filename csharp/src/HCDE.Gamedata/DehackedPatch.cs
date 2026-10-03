@@ -461,6 +461,7 @@ public static class DehackedPatch
         new Dictionary<string, uint>(StringComparer.OrdinalIgnoreCase)
         {
             ["LOGRAV"] = 1, ["NOTELEPORT"] = 0x80, ["CANSLIDE"] = 0x400, ["INVULNERABLE"] = 0x08000000,
+            ["DORMANT"] = 0x10000000,
         };
 
     // Thing/Frame use decimal strtoll/atoll: stop at the first non-digit; no digits means zero.

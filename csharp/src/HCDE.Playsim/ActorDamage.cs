@@ -46,6 +46,7 @@ public static class ActorDamage
             }
             return default;
         }
+        if (target.Dormant && !forced) return default;
         if (!target.CanTakeDamage
             || ((target.Invulnerable || target is PlayerPawn { GodMode: true })
                 && !telefrag && !forced && !flags.HasFlag(DamageFlags.BypassInvulnerability)))

@@ -9088,11 +9088,32 @@ Remaining extended flags, native gravity cadence, archive/network state and
 representative engine fixtures remain open. Phases 1–3 and invasion synchronization
 validation remain incomplete.
 
+## DEHACKED DORMANT damage gate — 2026-10-03
+
+Native P_DamageMobj in `src/playsim/p_interaction.cpp` rejects DORMANT damage
+inside its non-forced branch, including ordinary telefrags. Converted the actor
+flag, DEHACKED extended bit 28 ingestion/spawning, and damage gate after dead-body
+handling. Forced damage bypasses this gate; bypass-invulnerability alone does not.
+The flag has a conditional simulation checksum marker.
+
+Five regression cases cover ordinary/telefrag/bypass/forced hits, rejected damage
+preserving attacker/target state, and extended-set replacement with immutable
+baselines. Final Release suite: 5,061 passed, zero failed/skipped; Playsim 3,980.
+Warnings-as-errors build: zero warnings/errors; whitespace check passes. An earlier
+full run timed out in DedicatedServerHostTests.Pump_LiveSessionReceivesGuestClientInput;
+the final full run passed. Intermittency remains unroot-caused; no timeout or test
+was changed.
+
+Scope is dormancy damage protection, not complete dormant actor behavior. Native
+AI, state timing, activation/deactivation, physics exceptions, flag serialization
+and engine fixtures remain open. Phases 1–3 and representative invasion
+synchronization validation remain incomplete.
+
 ## Validation
 
-- Release solution: **5,056 passed, zero failed/skipped**, 4,133 cases above baseline.
+- Release solution: **5,061 passed, zero failed/skipped**, 4,138 cases above baseline.
   Protocol 15; Gamedata 18; Transport 10; Master 1; RCON 6; MapLoader 500;
-  Playsim 3,975; Client 12; Net.Core 351; Pregame 97; Server 63; Scripting 8.
+  Playsim 3,980; Client 12; Net.Core 351; Pregame 97; Server 63; Scripting 8.
 - The lighting pass initially saw a five-second timeout in
   `Pump_LiveSessionReceivesGuestClientInput`; it passed the targeted rerun and the
   subsequent full solution run. No timeout/test-disabling workaround was added.
