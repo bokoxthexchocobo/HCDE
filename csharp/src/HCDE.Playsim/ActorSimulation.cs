@@ -2169,6 +2169,7 @@ public sealed class AuthoritySimulation
                 Angle = actor.Angle.Raw,
                 Roll = actor.Roll.Raw,
                 ContactFlags = (actor.CanPickupItems ? 1 : 0) | (actor.SpecialPickup ? 2 : 0),
+                FloatFlags = (actor.InFloat ? 1 : 0) | (actor.VerticalFriction ? 2 : 0),
                 Pickup = PickupCatalog.IsPickup(actor.DoomEdNum)
                     ? new SimPickupProperties(actor.PickupAmount, actor.IgnoreAmmoSkill, actor.Depleted) : null,
                 Health = actor.Health,
@@ -2198,6 +2199,7 @@ public sealed class AuthoritySimulation
         SimSavegame.ValidateTextureScrolls(state);
         SimSavegame.ValidatePickups(state);
         SimSavegame.ValidateContactFlags(state);
+        SimSavegame.ValidateFloatFlags(state);
         if (state.GeometryHealth is { } savedHealth && (savedHealth.Lines.Count != Level.Lines.Count
             || savedHealth.Sectors.Count != Level.Sectors.Count || !savedHealth.Groups.Keys.Order().SequenceEqual(HealthGroups.Keys.Order())))
             throw new InvalidOperationException("Saved geometry health does not match the current map.");
@@ -2285,6 +2287,11 @@ public sealed class AuthoritySimulation
             {
                 actor.CanPickupItems = (contactFlags & 1) != 0;
                 actor.SpecialPickup = (contactFlags & 2) != 0;
+            }
+            if (pose.FloatFlags is { } floatFlags)
+            {
+                actor.InFloat = (floatFlags & 1) != 0;
+                actor.VerticalFriction = (floatFlags & 2) != 0;
             }
             if (pose.Pickup is { } pickup)
             {

@@ -9976,11 +9976,34 @@ are not added to the existing partial pose archive or network schema. Massacre
 suppression, replacements, full native sessions, invasion synchronization
 acceptance, and phases 1–3 completion remain open.
 
+## Ceiling movement flag archive checkpoint (2026-10-03)
+
+Closed the preceding checkpoint's pose-archive gap for InFloat/VerticalFriction.
+CaptureState records both flags; RestoreState validates and restores them before
+movement resumes. HCSV version 19 adds a bounded per-actor two-bit trailer only
+when nonzero flags exist, layered over version 18. All-clear current saves retain
+version 18 and reading that version initializes the new flags to zero. Earlier
+archive versions remain readable and leave these absent properties unchanged.
+Nondefault flag writes require complete current actor/contact/geometry metadata.
+
+Seven regressions cover all four flag combinations, next-tic position/velocity
+and checksum agreement after serialized restoration, invalid serialized bits,
+and rejection of invalid in-memory flags before pose mutation. Existing archive
+compatibility tests pass unchanged. Full Release solution: 5,372 passed, zero
+failed/skipped; Playsim 4,245. Release warnings-as-errors build and whitespace
+checks passed; existing trace and invasion server tests passed. No simulation
+checksum changes in this checkpoint. Older readers cannot read version 19.
+
+This remains a partial managed pose archive, not native savegame parity or full
+AI/world rollback. Network flags, complete thinker/AI serialization, native
+movement/callbacks and sessions, invasion synchronization acceptance, and
+phases 1–3 completion remain open.
+
 ## Validation
 
-- Release solution: **5,365 passed, zero failed/skipped**, 4,442 cases above baseline.
+- Release solution: **5,372 passed, zero failed/skipped**, 4,449 cases above baseline.
   Protocol 15; Gamedata 29; Transport 10; Master 1; RCON 6; MapLoader 533;
-  Playsim 4,238; Client 12; Net.Core 351; Pregame 97; Server 65; Scripting 8.
+  Playsim 4,245; Client 12; Net.Core 351; Pregame 97; Server 65; Scripting 8.
 - The lighting pass initially saw a five-second timeout in
   `Pump_LiveSessionReceivesGuestClientInput`; it passed the targeted rerun and the
   subsequent full solution run. No timeout/test-disabling workaround was added.

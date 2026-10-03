@@ -25,6 +25,7 @@ public sealed class SimActorPose
     public uint? Roll { get; internal set; }
     public SimPickupProperties? Pickup { get; internal set; }
     public int? ContactFlags { get; internal set; }
+    public int? FloatFlags { get; internal set; }
 }
 
 public sealed class SimSaveState
@@ -64,6 +65,7 @@ public static class SimSavegame
         ValidateTextureScrolls(state);
         ValidatePickups(state);
         ValidateContactFlags(state);
+        ValidateFloatFlags(state);
         if (state.Actors.Any(actor => actor.Pickup.HasValue) &&
             (state.GeometryHealth is null || state.Actors.Any(actor => !actor.Roll.HasValue)))
             throw new InvalidOperationException("Saved pickup properties require a complete current archive.");
@@ -160,7 +162,7 @@ public static class SimSavegame
             buffer.CopyTo(archive, 0);
             trailer.CopyTo(archive, buffer.Length);
             BinaryPrimitives.WriteUInt16LittleEndian(archive.AsSpan(4), 15);
-            return WriteContactFlags(state, WritePickups(state, WriteRolls(state, archive)));
+            return WriteFloatFlags(state, WriteContactFlags(state, WritePickups(state, WriteRolls(state, archive))));
         }
         return buffer;
     }
@@ -210,6 +212,31 @@ public static class SimSavegame
         return bytes;
     }
 
+    internal static void ValidateFloatFlags(SimSaveState state)
+    {
+        if (!state.Actors.Any(actor => actor.FloatFlags.HasValue)) return;
+        if (state.Actors.All(actor => actor.FloatFlags == 0)) return;
+        if (state.GeometryHealth is null || state.Actors.Any(actor => !actor.ContactFlags.HasValue) || state.Actors.Any(actor => !actor.Roll.HasValue
+            || !actor.FloatFlags.HasValue || actor.FloatFlags.Value is < 0 or > 3))
+            throw new InvalidOperationException("Saved float flags require a complete current archive.");
+    }
+
+    private static byte[] WriteFloatFlags(SimSaveState state, byte[] archive)
+    {
+        if (!state.Actors.Any(actor => actor.FloatFlags is > 0)) return archive;
+        var size = checked(12 + state.Actors.Count * 4);
+        var bytes = new byte[checked(archive.Length + size)];
+        archive.CopyTo(bytes, 0);
+        var start = archive.Length;
+        BinaryPrimitives.WriteInt32LittleEndian(bytes.AsSpan(start), BinaryPrimitives.ReadUInt16LittleEndian(archive.AsSpan(4)));
+        BinaryPrimitives.WriteInt32LittleEndian(bytes.AsSpan(start + 4), state.Actors.Count);
+        for (var i = 0; i < state.Actors.Count; i++)
+            BinaryPrimitives.WriteInt32LittleEndian(bytes.AsSpan(start + 8 + i * 4), state.Actors[i].FloatFlags!.Value);
+        BinaryPrimitives.WriteInt32LittleEndian(bytes.AsSpan(bytes.Length - 4), size);
+        BinaryPrimitives.WriteUInt16LittleEndian(bytes.AsSpan(4), 19);
+        return bytes;
+    }
+
     private static byte[] WritePickups(SimSaveState state, byte[] archive)
     {
         if (!state.Actors.Any(actor => actor.Pickup.HasValue)) return archive;
@@ -241,6 +268,30 @@ public static class SimSavegame
         }
 
         var version = BinaryPrimitives.ReadUInt16LittleEndian(bytes[4..]);
+        if (version == 19)
+        {
+            var size = BinaryPrimitives.ReadInt32LittleEndian(bytes[^4..]);
+            if (size < 12 || size > bytes.Length - 16 || (size - 12) % 4 != 0)
+            { error = "save-float-size"; return false; }
+            var start = bytes.Length - size;
+            var prior = BinaryPrimitives.ReadInt32LittleEndian(bytes[start..]);
+            var count = BinaryPrimitives.ReadInt32LittleEndian(bytes[(start + 4)..]);
+            if (prior != 18 || count < 0 || count != (size - 12) / 4)
+            { error = "save-float-header"; return false; }
+            var legacy = bytes[..start].ToArray();
+            BinaryPrimitives.WriteUInt16LittleEndian(legacy.AsSpan(4), (ushort)prior);
+            if (!TryRead(legacy, out state, out error)) return false;
+            if (count != state.Actors.Count)
+            { state = new(); error = "save-float-count"; return false; }
+            for (var i = 0; i < count; i++)
+            {
+                var flags = BinaryPrimitives.ReadInt32LittleEndian(bytes[(start + 8 + i * 4)..]);
+                if (flags is < 0 or > 3)
+                { state = new(); error = "save-float-flags"; return false; }
+                state.Actors[i].FloatFlags = flags;
+            }
+            return true;
+        }
         if (version == 18)
         {
             var size = BinaryPrimitives.ReadInt32LittleEndian(bytes[^4..]);
@@ -262,6 +313,7 @@ public static class SimSavegame
                 if (flags is < 0 or > 3)
                 { state = new(); error = "save-contact-flags"; return false; }
                 state.Actors[i].ContactFlags = flags;
+                state.Actors[i].FloatFlags = 0;
             }
             return true;
         }
