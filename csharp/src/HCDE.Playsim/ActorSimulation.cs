@@ -73,6 +73,7 @@ public class Actor : Thinker
     public bool HarmFriends { get; set; }
     public double SpawnZOffset { get; init; }
     public bool SpawnCeiling { get; set; }
+    public bool NoTeleport { get; set; }
     public Fixed X { get; set; }
     public Fixed Y { get; set; }
     public Fixed Z { get; set; }
@@ -2624,6 +2625,7 @@ public sealed class AuthoritySimulation
             if (actor.SpawnCeiling) hash = Mix(hash, 0x4345494Cu);
             if (actor.NoBlockMonsters) hash = Mix(hash, 0x4E424D4Fu);
             if (actor.NoBlockmap) hash = Mix(hash, 0x4E424D50u);
+            if (actor.NoTeleport) hash = Mix(hash, 0x4E54454Cu);
             hash = Mix(hash, actor.NoTarget ? 1u : 0u);
             hash = Mix(hash, actor.OnMobj ? 1u : 0u);
             hash = Mix(hash, actor.IsMonster ? 1u : 0u);

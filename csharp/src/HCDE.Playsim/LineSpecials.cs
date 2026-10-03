@@ -843,7 +843,7 @@ public static class LineSpecials
 
     private static bool TeleportActivator(AuthoritySimulation sim, Actor? activator, int target = 0, bool byThingId = false)
     {
-        if (activator == null)
+        if (activator == null || activator.NoTeleport)
             return false;
         var dest = sim.Actors.FirstOrDefault(actor => actor.DoomEdNum == TeleportDestType && !actor.Destroyed
             && (target == 0 || (byThingId ? actor.ThingId == target

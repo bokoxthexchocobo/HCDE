@@ -8991,11 +8991,33 @@ and keep-velocity flags, collision/telefragging and custom teleport destinations
 remain incomplete. Phases 1–3 and representative invasion synchronization
 validation remain open.
 
+## NOTELEPORT actor gate and Doom missile defaults — 2026-10-03
+
+Native EV_Teleport in `src/playsim/p_teleport.cpp` rejects MF2_NOTELEPORT before
+destination selection. Native DEHACKED missile flag handling in
+`src/gamedata/d_dehacked.cpp` documents Doom missiles as NOTELEPORT. Converted
+Actor.NoTeleport, the ordinary line teleport rejection gate, and managed Doom
+projectile defaults. Added a conditional actor checksum marker. Earlier allowed
+missile teleport fixtures now explicitly clear NoTeleport.
+
+Four regressions verify player/monster rejection preserves position, velocity and
+reaction, every managed Doom projectile kind defaults to rejection, and checksum
+participation. Full Release suite: 5,039 passed, zero failed/skipped;
+Playsim 3,958. Warnings-as-errors build: zero warnings/errors; whitespace check
+passes. Existing default player idle hashes remain unchanged; projectile hashes
+now include their new default flag.
+
+Scope is ordinary line-special teleporting. Direct native P_Teleport has different
+flag semantics and is not a separate managed API. DEHACKED flags2 NOTELEPORT
+mnemonics, missile-bit removal side effects, save/network transport, silent
+teleport paths, destination collision and native engine fixtures remain open.
+Phases 1–3 and invasion synchronization validation remain incomplete.
+
 ## Validation
 
-- Release solution: **5,035 passed, zero failed/skipped**, 4,112 cases above baseline.
+- Release solution: **5,039 passed, zero failed/skipped**, 4,116 cases above baseline.
   Protocol 15; Gamedata 18; Transport 10; Master 1; RCON 6; MapLoader 500;
-  Playsim 3,954; Client 12; Net.Core 351; Pregame 97; Server 63; Scripting 8.
+  Playsim 3,958; Client 12; Net.Core 351; Pregame 97; Server 63; Scripting 8.
 - The lighting pass initially saw a five-second timeout in
   `Pump_LiveSessionReceivesGuestClientInput`; it passed the targeted rerun and the
   subsequent full solution run. No timeout/test-disabling workaround was added.

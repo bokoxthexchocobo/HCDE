@@ -39,6 +39,7 @@ public sealed class ProjectileActor : Actor
         DoomEdNum = kind <= ProjectileKind.ImpBall ? 65530 + (int)kind : 65516 + (int)kind;
         // Managed-only class identities, not native spawn indices; keep every identity within ushort.
         Solid = Shootable = false; NoGravity = true; AllowDropOff = true;
+        NoTeleport = true;
         Radius = Fixed.FromInt(kind is ProjectileKind.Plasma or ProjectileKind.ArachnotronPlasma ? 13
             : kind == ProjectileKind.RevenantTracer ? 11 : 6);
         Height = Fixed.FromInt(kind == ProjectileKind.BaronBall ? 16 : 8);
