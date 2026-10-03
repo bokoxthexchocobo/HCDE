@@ -10104,11 +10104,31 @@ This is flat-sector gravity with the existing swept collision model; configurabl
 world gravity, water sinking, slopes, portals, full projectile class defaults,
 and native gameplay acceptance remain open. Gameplay phases 1–3 remain incomplete.
 
+## Projectile sky-removal conversion audit (2026-10-03)
+
+Plane impacts on the supported F_SKY1 texture now remove ordinary missiles before
+geometry damage, rocket radius damage, or BFG spray can run. The previous plane
+health helper skipped sky geometry damage but the projectile still executed its
+explosion effects. Native P_ZMovement in src/playsim/p_mobj.cpp destroys missiles
+on sky floors/ceilings before P_ProjectileHitPlane and P_ExplodeMissile when
+MF3_SKYEXPLODE is absent.
+
+Eight regression cases compare rocket/BFG floor and ceiling contacts on sky and
+stone. Sky contacts preserve target health, plane health, and combat randomness;
+stone contacts retain damage and random draws. The native ceiling penetration
+check remains strict; it was not changed to match the floor endpoint condition.
+
+Full Release solution: 5,413 passed, zero failed/skipped; Playsim 4,286.
+Warnings-as-errors build and diff checks pass. No archive or checksum format change.
+This supports the existing case-insensitive F_SKY1 identity. Custom sky flat
+resolution, SKYEXPLODE class flags, sky-wall handling, explosion state timing,
+and native gameplay acceptance remain open. Gameplay phases 1–3 remain incomplete.
+
 ## Validation
 
-- Release solution: **5,405 passed, zero failed/skipped**, 4,482 cases above baseline.
+- Release solution: **5,413 passed, zero failed/skipped**, 4,490 cases above baseline.
   Protocol 15; Gamedata 29; Transport 10; Master 1; RCON 6; MapLoader 533;
-  Playsim 4,278; Client 12; Net.Core 351; Pregame 97; Server 65; Scripting 8.
+  Playsim 4,286; Client 12; Net.Core 351; Pregame 97; Server 65; Scripting 8.
 - The lighting pass initially saw a five-second timeout in
   `Pump_LiveSessionReceivesGuestClientInput`; it passed the targeted rerun and the
   subsequent full solution run. No timeout/test-disabling workaround was added.

@@ -218,6 +218,13 @@ public sealed class ProjectileActor : Actor
     private void Impact(AuthoritySimulation sim, Actor? victim, LevelLine? wall, int planeSector, int planePart)
     {
         Destroy(); // Commit removal before damage callbacks can spawn or destroy actors.
+        if ((uint)planeSector < (uint)sim.Level.Sectors.Count && planePart is 0 or 1)
+        {
+            var sector = sim.Level.Sectors[planeSector];
+            var texture = planePart == 0 ? sector.FloorPic : sector.CeilingPic;
+            // Native sky contact destroys ordinary missiles before explosion actions.
+            if (string.Equals(texture, "F_SKY1", StringComparison.OrdinalIgnoreCase)) return;
+        }
         if (wall is not null) GeometryProjectileImpact.Apply(sim, this, wall);
         else if (planeSector >= 0) GeometryProjectileImpact.ApplyPlane(sim, this, planeSector, planePart);
         if (victim != null) ActorDamage.Apply(victim, ImpactDamage * (1 + (int)(sim.NextCombatRandom() % 8)), Owner, inflictor: this);
