@@ -8891,11 +8891,30 @@ sector/blockmap relinking and save/network transport still need audit/conversion
 Native engine fixtures, complete phase 1–3 parity and representative invasion
 round/timer/enemy synchronization validation remain open.
 
+## Blockmap exclusion for respawn stomps — 2026-10-03
+
+Native P_PlayerStartStomp in `src/playsim/p_map.cpp` enumerates overlapping
+bodies through FMultiBlockThingsIterator. Converted candidate blockmap membership
+in managed StompSpawn so excluded actors are not telefragged during player revival.
+
+Two full respawn regressions verify registered monsters are killed while excluded
+monsters retain their health, and the player successfully revives in both cases.
+Full Release solution: 5,021 passed, zero failed/skipped; Playsim 3,940.
+Warnings-as-errors build: zero warnings/errors; whitespace check passes.
+No checksum fields changed.
+
+Audit found a separate mismatch: StompSpawn still uses Brain presence for monster
+classification, whereas native P_PlayerStartStomp uses MF3_ISMONSTER. This remains
+an explicit next conversion item. General teleport movement, voodoo-doll handling,
+rider carry/crush enumeration, pickups, relinking and save/network state remain
+incomplete. No unsupported rider change was inferred from the support conversion.
+Phases 1–3 and representative invasion synchronization validation remain open.
+
 ## Validation
 
-- Release solution: **5,019 passed, zero failed/skipped**, 4,096 cases above baseline.
+- Release solution: **5,021 passed, zero failed/skipped**, 4,098 cases above baseline.
   Protocol 15; Gamedata 18; Transport 10; Master 1; RCON 6; MapLoader 500;
-  Playsim 3,938; Client 12; Net.Core 351; Pregame 97; Server 63; Scripting 8.
+  Playsim 3,940; Client 12; Net.Core 351; Pregame 97; Server 63; Scripting 8.
 - The lighting pass initially saw a five-second timeout in
   `Pump_LiveSessionReceivesGuestClientInput`; it passed the targeted rerun and the
   subsequent full solution run. No timeout/test-disabling workaround was added.

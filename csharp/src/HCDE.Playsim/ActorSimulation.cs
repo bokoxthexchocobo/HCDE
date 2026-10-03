@@ -2333,7 +2333,7 @@ public sealed class AuthoritySimulation
         var pTop = pz + player.Height.ToDouble();
         foreach (var other in _actors)
         {
-            if (other == player || !other.Shootable || other.IsDead || other.Destroyed)
+            if (other == player || !other.IsBlockmapActor || !other.Shootable || other.IsDead || other.Destroyed)
                 continue;
             if (other is not PlayerPawn && other.Brain == null)
                 continue;
