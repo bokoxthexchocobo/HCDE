@@ -8427,11 +8427,32 @@ spawning. Source/regression self-audit does not replace native invasion sessions
 or complete phase 1–3 acceptance, which remain open. Unrelated workspace
 line-ending changes were excluded from this checkpoint commit.
 
+## Conversion and audit: DEHACKED solid and shootable bits (2026-10-03)
+
+Converted MF_SOLID (0x00000002) and MF_SHOOTABLE (0x00000004) from native
+`src/playsim/actor.h` and DEHACKED flag assignment in
+`src/gamedata/d_dehacked.cpp`. Explicit Bits patches now set or clear both
+managed fields at map spawn rather than retaining Actor's default true values.
+Unpatched actor initialization is unchanged.
+
+Eight regression cases cover all four flag combinations, real damage with and
+without Shootable, and movement into the actor with and without Solid. Full
+Release solution: 4,869 passed, zero failed/skipped; Playsim 3,796.
+Warnings-as-errors build: zero warnings/errors; whitespace check passes. Existing
+patch, pickup, respawn and invasion tests pass. Both fields already participate
+in checksums; player idle baseline unchanged. Unrelated line-ending changes were
+excluded from this checkpoint.
+
+This closes explicit spawn flag application, not complete native collision,
+class-default inheritance/restoration, player respawn flags or full DEHACKED
+translation. Source/regression self-audit does not replace native invasion
+sessions or complete phase 1–3 acceptance, which remain open.
+
 ## Validation
 
-- Release solution: **4,861 passed, zero failed/skipped**, 3,938 cases above baseline.
+- Release solution: **4,869 passed, zero failed/skipped**, 3,946 cases above baseline.
   Protocol 15; Gamedata 10; Transport 10; Master 1; RCON 6; MapLoader 500;
-  Playsim 3,788; Client 12; Net.Core 351; Pregame 97; Server 63; Scripting 8.
+  Playsim 3,796; Client 12; Net.Core 351; Pregame 97; Server 63; Scripting 8.
 - The lighting pass initially saw a five-second timeout in
   `Pump_LiveSessionReceivesGuestClientInput`; it passed the targeted rerun and the
   subsequent full solution run. No timeout/test-disabling workaround was added.
