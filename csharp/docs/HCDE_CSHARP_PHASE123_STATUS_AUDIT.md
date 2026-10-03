@@ -9835,11 +9835,37 @@ MAPINFO skill definitions, ALWAYSFAST and DF_INSTANT_REACTION settings remain
 unconverted. Full Nightmare behavior (fast states/respawns), native spawn hooks,
 mod actors, native-engine invasion acceptance, and phases 1–3 remain open.
 
+## Pain Elemental Lost Soul patch defaults checkpoint (2026-10-03)
+
+Native `painelemental.zs` A_PainShootSkull spawns a class with its defaults;
+its prestep and movement subdivisions use the spawned class radius, falling
+back to maxmove 16 when radius - 1 is nonpositive. Managed SpawnLostSoul now
+resolves patched Lost Soul defaults by original class 3006, retaining resolved
+class identity when the editor number changes. Health/resurrection/gib values,
+dimensions, speed, pain, mass, damage, reaction, supported primary/extended
+flags, gravity, and dormant initialization use existing converted helpers.
+Nightmare reaction override respects the patched monster classification. Parent
+friend/target inheritance and charge startup retain their existing order.
+Movement subdivisions now use the patched radius and native small-radius fallback.
+
+Seven regressions cover parsed numeric defaults, original/remapped IDs, same
+species identity, prestep distance, zero/unit-radius subdivision, explicit flag
+replacement, and Nightmare reaction precedence. Full Release solution: 5,334
+passed, zero failed/skipped; Playsim 4,209. Release warnings-as-errors build
+and whitespace checks passed; existing trace and invasion server tests passed.
+Existing class/health/flag checksum fields cover corrected state; no schema added.
+
+Scope is supported Lost Soul patch defaults. Replacement classes, full native
+spawn hooks/ceiling placement, complete flags and patched states/actions,
+blocked-spawn death/counter cleanup, and temporary no-teleport behavior during
+prestep remain open. No native-engine comparison session was run. Invasion
+synchronization acceptance and phases 1–3 completion remain open.
+
 ## Validation
 
-- Release solution: **5,327 passed, zero failed/skipped**, 4,404 cases above baseline.
+- Release solution: **5,334 passed, zero failed/skipped**, 4,411 cases above baseline.
   Protocol 15; Gamedata 29; Transport 10; Master 1; RCON 6; MapLoader 533;
-  Playsim 4,202; Client 12; Net.Core 351; Pregame 97; Server 63; Scripting 8.
+  Playsim 4,209; Client 12; Net.Core 351; Pregame 97; Server 63; Scripting 8.
 - The lighting pass initially saw a five-second timeout in
   `Pump_LiveSessionReceivesGuestClientInput`; it passed the targeted rerun and the
   subsequent full solution run. No timeout/test-disabling workaround was added.

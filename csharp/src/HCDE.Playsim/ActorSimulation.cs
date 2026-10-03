@@ -2034,25 +2034,44 @@ public sealed class AuthoritySimulation
         if (parent.SectorIndex >= 0 && parent.Z.ToDouble() + parent.Height.ToDouble() + 8 > CeilingOf(parent.SectorIndex))
             return null;
         var definition = DoomActorCatalog.Find(3006)!;
+        var defaults = _dehacked?.Actors.FirstOrDefault(actor => actor.OriginalDoomEdNum == 3006 && actor.Patched);
+        var health = defaults?.Health ?? definition.Health;
         var soul = new Actor
         {
-            Id = _nextActorId, DoomEdNum = 3006, Level = Level, Simulation = this,
+            Id = _nextActorId, DoomEdNum = defaults?.DoomEdNum ?? 3006, DefinitionDoomEdNum = 3006, Level = Level, Simulation = this,
             X = parent.X, Y = parent.Y, Z = Fixed.FromDouble(parent.Z.ToDouble() + 8),
             Radius = Fixed.FromInt(definition.Radius), Height = Fixed.FromInt(definition.Height),
-            Health = definition.Health, ResurrectionHealth = definition.Health,
-            GibHealth = definition.Health > 0 ? -definition.Health : -1,
+            Health = health, ResurrectionHealth = health,
+            GibHealth = health > 0 ? -health : -1,
             PainChance = definition.PainChance, ChaseSpeed = definition.Speed / 4.0,
             NoGravity = true, OnGround = false, SectorIndex = parent.SectorIndex,
             Floating = true, IsMonster = true, Damage = definition.Damage,
             Mass = DoomActorCatalog.MassOf(3006),
             Brain = MonsterBrain.ForType(3006), Angle = BamAngle.FromDegrees(angle),
         };
-        if (Skill == 4) soul.ReactionTime = 0;
+        if (defaults != null)
+        {
+            soul.Radius = ActorSpawner.RadiusOf(defaults, player: false);
+            soul.Height = ActorSpawner.HeightOf(defaults);
+            soul.ChaseSpeed = Math.Clamp(defaults.Speed / 4.0, 0, ActorPhysics.MaxMove);
+            soul.PainChance = defaults.PainChance;
+        }
+        if (defaults is { ReactionTimePatched: true }) soul.ReactionTime = defaults.ReactionTime;
+        if (defaults is { MassPatched: true }) soul.Mass = defaults.Mass;
+        if (defaults is { MissileDamagePatched: true }) soul.Damage = defaults.MissileDamage;
+        ActorSpawner.ApplyPrimaryFlags(soul, defaults, playerStart: false);
+        soul.Ambush = defaults is { BitsPatched: true } && (defaults.Bits & 0x20) != 0;
+        if (defaults is { BitsPatched: true }) soul.IsMonster = (defaults.Bits & 0x00400000) != 0;
+        soul.SpawnCanPickupItems = soul.CanPickupItems;
+        soul.SpawnSpecialPickup = soul.SpecialPickup;
+        ActorSpawner.ApplyExtendedDefaults(soul, defaults);
+        if (soul.IsMonster && Skill == 4) soul.ReactionTime = 0;
+        ThingActivation.InitializeSpawn(soul, false);
         _nextActorId = checked(_nextActorId + 1);
         var distance = 4 + (parent.Radius.ToDouble() + soul.Radius.ToDouble()) * 1.5;
         var radians = angle * Math.PI / 180;
         var dx = Math.Cos(radians) * distance; var dy = Math.Sin(radians) * distance;
-        var steps = Math.Max(1, (int)(1 + Math.Max(Math.Abs(dx), Math.Abs(dy)) / (definition.Radius - 1)));
+        var steps = Math.Max(1, (int)(1 + Math.Max(Math.Abs(dx), Math.Abs(dy)) / (soul.Radius.ToDouble() > 1 ? soul.Radius.ToDouble() - 1 : 16)));
         var solid = parent.Solid;
         try
         {
