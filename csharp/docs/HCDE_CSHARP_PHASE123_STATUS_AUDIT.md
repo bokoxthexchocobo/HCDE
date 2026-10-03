@@ -9336,11 +9336,33 @@ result ACS variants share dispatch without dedicated new tests. Complete actor
 actions, native session acceptance, phases 1–3 and invasion validation remain
 incomplete.
 
+## Conversion and audit: ThrustThing horizontal impulse (2026-10-03)
+
+Converted special 72's base impulse behavior from `LS_ThrustThing` and
+`ThrustThingHelper` in `src/playsim/p_lnspec.cpp`; MAXMOVE is 30 in
+`src/playsim/p_local.h`. Extended map and ACS direct/stack dispatch add signed
+force in byte-angle direction (360/256 degrees per unit), then clamp each XY
+component to [-30,30] when nolimit is zero. Vertical velocity is preserved.
+Nonzero TIDs target all matches and succeed even when none exist; zero TID
+uses the activator and fails when absent.
+
+Eight regressions cover limits, unlimited motion, opposite/wrapped cardinal
+angles, additive velocity, multiple targets, signed ACS force, activator
+selection and missing-target returns. Full Release solution: 5,135 passed,
+zero failed/skipped; Playsim 4,054. Release warnings-as-errors build and
+whitespace check pass. No new persisted state; existing velocity hashes apply.
+The native LEVEL2_HEXENHACK back-side exception for zero TID remains unconverted
+because the managed level compatibility flag is absent. Fixed-point velocity
+limits and arbitrary-angle numeric parity remain open. New map fixtures use
+Hexen; UDMF shares dispatch. Packed/result ACS variants share dispatch without
+new dedicated tests. Native session acceptance, phases 1–3 and invasion
+validation remain incomplete.
+
 ## Validation
 
-- Release solution: **5,127 passed, zero failed/skipped**, 4,204 cases above baseline.
+- Release solution: **5,135 passed, zero failed/skipped**, 4,212 cases above baseline.
   Protocol 15; Gamedata 18; Transport 10; Master 1; RCON 6; MapLoader 500;
-  Playsim 4,046; Client 12; Net.Core 351; Pregame 97; Server 63; Scripting 8.
+  Playsim 4,054; Client 12; Net.Core 351; Pregame 97; Server 63; Scripting 8.
 - The lighting pass initially saw a five-second timeout in
   `Pump_LiveSessionReceivesGuestClientInput`; it passed the targeted rerun and the
   subsequent full solution run. No timeout/test-disabling workaround was added.
