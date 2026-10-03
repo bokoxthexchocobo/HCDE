@@ -8832,11 +8832,32 @@ membership. Physical collision, projectile contacts, radius damage, relinking
 and save/network transport of this flag still need conversion and native fixture
 validation. Phases 1–3 and invasion synchronization remain incomplete.
 
+## Blockmap exclusion in movement and projectile contacts — 2026-10-03
+
+Native actor position/contact checks in `src/playsim/p_map.cpp` enumerate
+blockmap things via FMultiBlockThingsIterator. Converted corresponding managed
+candidate filters: movement obstacle enumeration, occupancy overlap checks and
+swept projectile direct-contact candidates now require IsBlockmapActor. The
+moving actor's own exclusion does not disable collision against registered targets.
+
+Five new regression cases verify excluded solid targets do not obstruct movement
+or occupancy, excluded movers still collide with registered targets, and traveling
+plasma projectiles skip excluded targets while ordinary targets take damage and
+consume the projectile. Full Release suite: 5,010 passed, zero failed/skipped;
+Playsim 3,929. Warnings-as-errors build: zero warnings/errors; whitespace check
+passes. No checksum fields changed.
+
+Scope is these three candidate enumeration paths. Native sector/blockmap relinking,
+vertical support and rider paths, radius damage, pickups, telefragging and full
+save/network membership remain incomplete. Subclasses already excluded from the
+managed blockmap filter inherit these contact exclusions. Native-engine fixtures
+are still needed; phases 1–3 and invasion synchronization validation remain open.
+
 ## Validation
 
-- Release solution: **5,005 passed, zero failed/skipped**, 4,082 cases above baseline.
+- Release solution: **5,010 passed, zero failed/skipped**, 4,087 cases above baseline.
   Protocol 15; Gamedata 18; Transport 10; Master 1; RCON 6; MapLoader 500;
-  Playsim 3,924; Client 12; Net.Core 351; Pregame 97; Server 63; Scripting 8.
+  Playsim 3,929; Client 12; Net.Core 351; Pregame 97; Server 63; Scripting 8.
 - The lighting pass initially saw a five-second timeout in
   `Pump_LiveSessionReceivesGuestClientInput`; it passed the targeted rerun and the
   subsequent full solution run. No timeout/test-disabling workaround was added.

@@ -517,7 +517,7 @@ public static class ActorPhysics
         if (z < sim.FloorOf(sector) || sector >= 0 && z + height > sim.CeilingOf(sector)) return false;
         if (sim.Level.Lines.Any(line => Blocks(sim, actor, line)
             && DistanceSquared(x, y, line.X1, line.Y1, line.X2, line.Y2) < radius * radius)) return false;
-        return !sim.Actors.Any(other => !ReferenceEquals(actor, other) && other.BlocksActors
+        return !sim.Actors.Any(other => !ReferenceEquals(actor, other) && other.IsBlockmapActor && other.BlocksActors
             && z < other.Z.ToDouble() + other.Height.ToDouble() && z + height > other.Z.ToDouble()
             && Math.Pow(x - other.X.ToDouble(), 2) + Math.Pow(y - other.Y.ToDouble(), 2)
                 < Math.Pow(radius + other.Radius.ToDouble(), 2));
@@ -562,7 +562,7 @@ public static class ActorPhysics
             foreach (var other in sim.Actors)
             {
                 var corpse = actor.IceCorpse && IsCorpseObstacle(other);
-                if (ReferenceEquals(actor, other) || (!other.BlocksActors && !corpse)
+                if (ReferenceEquals(actor, other) || !other.IsBlockmapActor || (!other.BlocksActors && !corpse)
                     || z >= other.Z.ToDouble() + other.Height.ToDouble()
                     || z + actor.Height.ToDouble() <= other.Z.ToDouble()) continue;
                 var reach = radius + other.Radius.ToDouble();
