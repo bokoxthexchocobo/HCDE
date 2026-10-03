@@ -851,18 +851,27 @@ public static class LineSpecials
         if (dest == null)
             return false;
         var aboveFloor = activator.Z.ToDouble() - sim.FloorOf(activator.SectorIndex);
+        var missileSpeed = Math.Sqrt(Math.Pow(activator.VelocityX.ToDouble(), 2) + Math.Pow(activator.VelocityY.ToDouble(), 2));
+        var verticalVelocity = activator.VelocityZ;
         activator.X = dest.X;
         activator.Y = dest.Y;
         activator.Angle = dest.Angle;
         activator.VelocityX = activator.VelocityY = activator.VelocityZ = default;
         ActorPhysics.PlaceOnFloor(sim, activator);
-        if (activator is PlayerPawn && activator.NoGravity && aboveFloor != 0)
+        if (activator is ProjectileActor || activator is PlayerPawn && activator.NoGravity && aboveFloor != 0)
         {
             var floor = sim.FloorOf(activator.SectorIndex);
             var ceiling = sim.CeilingOf(activator.SectorIndex) - activator.Height.ToDouble();
             activator.Z = Fixed.FromDouble(Math.Min(floor + aboveFloor, ceiling));
             activator.OnGround = activator.Z.ToDouble() <= floor;
             activator.OnMobj = false;
+        }
+        if (activator is ProjectileActor)
+        {
+            var radians = activator.Angle.ToDegrees() * Math.PI / 180;
+            activator.VelocityX = Fixed.FromDouble(missileSpeed * Math.Cos(radians));
+            activator.VelocityY = Fixed.FromDouble(missileSpeed * Math.Sin(radians));
+            activator.VelocityZ = verticalVelocity;
         }
         if (activator is PlayerPawn) activator.ReactionTime = 18;
         return true;

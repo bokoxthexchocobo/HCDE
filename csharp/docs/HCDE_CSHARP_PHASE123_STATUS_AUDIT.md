@@ -8970,11 +8970,32 @@ negative below-floor offsets, undersized sectors and destination collision need
 further conversion/validation. Phases 1–3 and representative invasion round,
 timer and enemy synchronization validation remain incomplete.
 
+## Ordinary missile teleport height and velocity — 2026-10-03
+
+Native P_Teleport in `src/playsim/p_teleport.cpp` preserves missile height
+above the source floor, limits its top by destination headroom, records horizontal
+speed and calls VelFromAngle after setting destination yaw. That function in
+`src/playsim/actor.h` changes XY only. Converted this behavior for managed
+ProjectileActor in the ordinary teleport helper, preserving Z velocity and reaction.
+
+Three regressions cover two destination headroom cases, preserved 3-4-5 horizontal
+speed redirected to 90 degrees, unchanged vertical velocity and reaction counter,
+sector/ground state, and failed destination lookup preserving velocity.
+Full Release suite: 5,035 passed, zero failed/skipped; Playsim 3,954.
+Warnings-as-errors build: zero warnings/errors; whitespace check passes.
+No checksum fields changed.
+
+Scope is direct ordinary teleport execution on ProjectileActor. Native NOTELEPORT,
+automatic projectile line activation, MF_MISSILE on other classes, keep-orientation
+and keep-velocity flags, collision/telefragging and custom teleport destinations
+remain incomplete. Phases 1–3 and representative invasion synchronization
+validation remain open.
+
 ## Validation
 
-- Release solution: **5,032 passed, zero failed/skipped**, 4,109 cases above baseline.
+- Release solution: **5,035 passed, zero failed/skipped**, 4,112 cases above baseline.
   Protocol 15; Gamedata 18; Transport 10; Master 1; RCON 6; MapLoader 500;
-  Playsim 3,951; Client 12; Net.Core 351; Pregame 97; Server 63; Scripting 8.
+  Playsim 3,954; Client 12; Net.Core 351; Pregame 97; Server 63; Scripting 8.
 - The lighting pass initially saw a five-second timeout in
   `Pump_LiveSessionReceivesGuestClientInput`; it passed the targeted rerun and the
   subsequent full solution run. No timeout/test-disabling workaround was added.
