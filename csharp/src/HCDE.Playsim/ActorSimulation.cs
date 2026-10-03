@@ -512,6 +512,8 @@ public sealed class PlayerPawn : Actor
     public double CrouchFactor { get; private set; } = 1;
     /// <summary>Native player.viewheight. Standing view is 41, scaled by <see cref="CrouchFactor"/>.</summary>
     public double ViewHeight { get; internal set; } = StandingViewHeight;
+    /// <summary>Native PlayerPawn ViewHeight property, separate from the changing eye height.</summary>
+    public Fixed DefaultViewHeight { get; set; } = Fixed.FromDouble(StandingViewHeight);
     /// <summary>Native <c>MAXBOB</c>.</summary>
     public const double MaxBob = 16;
     /// <summary>Native <c>movebob</c> default.</summary>
@@ -660,7 +662,7 @@ public sealed class PlayerPawn : Actor
         // Leave an externally chosen height alone while the player is not crouching.
         if (Math.Abs(CrouchFactor - before) > 1e-12)
             Height = Fixed.FromDouble(FullHeight * CrouchFactor);
-        ViewHeight = StandingViewHeight * CrouchFactor;
+        ViewHeight = DefaultViewHeight.ToDouble() * CrouchFactor;
     }
 
     private void CrouchMove(int direction)
@@ -679,7 +681,7 @@ public sealed class PlayerPawn : Actor
         var wasCrouched = CrouchFactor != 1;
         CrouchFactor = 1;
         UncrouchLocked = false;
-        if (wasCrouched) ViewHeight = StandingViewHeight;
+        if (wasCrouched) ViewHeight = DefaultViewHeight.ToDouble();
         Height = Fixed.FromDouble(FullHeight);
     }
 
@@ -2225,7 +2227,7 @@ public sealed class AuthoritySimulation
         player.ClearTurnHeld();
         player.WeaponOffsetY = PlayerPawn.WeaponTop;
         player.WeaponLowering = false;
-        player.ViewHeight = PlayerPawn.StandingViewHeight;
+        player.ViewHeight = player.DefaultViewHeight.ToDouble();
         player.PitchDegrees = 0;
         StompSpawn(player);
         StartPlayerScripts(death: false, player);
@@ -2588,6 +2590,7 @@ public sealed class AuthoritySimulation
                 hash = Mix(hash, unchecked((uint)Fixed.FromDouble(player.CrouchFactor).Raw));
                 hash = Mix(hash, unchecked((uint)Fixed.FromDouble(player.FullHeight).Raw));
                 hash = Mix(hash, unchecked((uint)Fixed.FromDouble(player.ViewHeight).Raw));
+                hash = Mix(hash, unchecked((uint)player.DefaultViewHeight.Raw));
                 hash = Mix(hash, unchecked((uint)player.BobTimer));
                 hash = Mix(hash, unchecked((uint)Fixed.FromDouble(player.ViewBobOffset).Raw));
                 hash = Mix(hash, unchecked((uint)Fixed.FromDouble(player.MovementBob).Raw));

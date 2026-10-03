@@ -21,17 +21,18 @@ This document is the execution plan; that audit remains the detailed record.
 
 ## Verified checkpoint
 
-- Release solution: **4,540 passed; zero failed or skipped**.
+- Release solution: **4,553 passed; zero failed or skipped**.
 - Release build with warnings as errors: zero warnings/errors.
-- Tests by project: Playsim 3,467; MapLoader 500; Net.Core 351; Pregame 97;
+- Tests by project: Playsim 3,480; MapLoader 500; Net.Core 351; Pregame 97;
   Server 63; Protocol 15; Client 12; Gamedata 10; Transport 10; RCON 6; Master 1;
   Scripting 8.
-- Historical baseline: 923 tests at `55f8fa46`; 3,617 additional cases since then.
+- Historical baseline: 923 tests at `55f8fa46`; 3,630 additional cases since then.
 - October sync incorporated four upstream commits through `c367f081`, including
   ACS binding, gameplay parity, pickups/drops and inventory work. The current
   continuation adds read-only actor height/radius property queries and checks,
   followed by configurable ACS JumpZ integrated into player jumping and ACS
-  actor gravity integrated into vertical acceleration, including ice defaults.
+  actor gravity integrated into vertical acceleration, including ice defaults,
+  and configurable ACS player view height distinct from changing eye height.
 - Earlier checkpoints: `0a37c839` gameplay/maps/invasion foundation,
   `55f8fa46` buffered authoritative input, `d792c54a` AI/sector/snapshot work.
 - Native invasion policy compilation was previously verified; a complete native

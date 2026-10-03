@@ -7550,11 +7550,35 @@ General class defaults, save/network replication of gravity and representative
 native invasion sessions remain open. Full suite: 4,540 passing tests; Release
 build: zero warnings/errors. This is a source review and regression self-audit.
 
+## ACS configurable player view height (2026-10-03)
+
+Converted `APROP_ViewHeight` (39) set/get/check. Native `p_acs.cpp` writes
+PlayerPawn ViewHeight and the attached player's current view height; getters
+call `player_t::DefaultViewHeight`, which reads the configured pawn property.
+The C# player now separates this default from its changing eye height. Script
+sets immediately update both; managed crouch, uncrouch and respawn eye resets
+use the configured default. Non-player setters are ignored and queries return 0.
+
+Thirteen regressions cover signed/fractional/zero defaults, exact property
+checks, persistence through live ticks, crouch scaling and standing restoration,
+setting while crouched, death eye-height changes, missing/destroyed actors,
+non-player handling and checksum inclusion independent of current eye height.
+The audit also found and fixed an unknown-property check incorrectly succeeding
+for zero: native CheckActorProperty defaults to false. Two of these cases cover
+that correction. The expanded idle checksum is 67100778; its position, health
+and tic assertions are unchanged.
+
+Scope: managed player eye-height integration and ACS property behavior.
+Full native camera interpolation/bob/death behavior, generalized pawn class
+defaults, recreation of pawn properties at respawn and save/network replication
+remain incomplete. Full suite: 4,553 passing tests, zero failed/skipped; Release
+build: zero warnings/errors. This is a source review and regression self-audit.
+
 ## Validation
 
-- Release solution: **4,540 passed, zero failed/skipped**, 3,617 cases above baseline.
+- Release solution: **4,553 passed, zero failed/skipped**, 3,630 cases above baseline.
   Protocol 15; Gamedata 10; Transport 10; Master 1; RCON 6; MapLoader 500;
-  Playsim 3,467; Client 12; Net.Core 351; Pregame 97; Server 63; Scripting 8.
+  Playsim 3,480; Client 12; Net.Core 351; Pregame 97; Server 63; Scripting 8.
 - The lighting pass initially saw a five-second timeout in
   `Pump_LiveSessionReceivesGuestClientInput`; it passed the targeted rerun and the
   subsequent full solution run. No timeout/test-disabling workaround was added.

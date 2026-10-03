@@ -15,6 +15,7 @@ internal static class AcsActorProperties
     public const int Mass = 32;
     public const int Height = 35;
     public const int Radius = 36;
+    public const int ViewHeight = 39;
     public const int MaxStepHeight = 44;
     public const int MaxDropOffHeight = 45;
 
@@ -41,6 +42,11 @@ internal static class AcsActorProperties
     {
         var actor = tid == 0 ? activator : AcsActorTid.SingleFromTid(sim, tid);
         if (actor is null || actor.Destroyed)
+            return false;
+        // Native CheckActorProperty rejects unknown properties, even when Get returns zero.
+        if (property is not (Health or Ambush or Invulnerable or JumpZ or Gravity or Friendly
+            or SpawnHealth or NoTarget or TargetTid or Mass or Height or Radius or ViewHeight
+            or MaxStepHeight or MaxDropOffHeight))
             return false;
         var actual = Read(actor, property);
         return IsBoolean(property) ? actual == (value != 0 ? 1 : 0) : actual == value;
@@ -74,6 +80,13 @@ internal static class AcsActorProperties
                 break;
             case Gravity:
                 actor.Gravity = new Fixed(value);
+                break;
+            case ViewHeight:
+                if (actor is PlayerPawn viewPlayer)
+                {
+                    viewPlayer.DefaultViewHeight = new Fixed(value);
+                    viewPlayer.ViewHeight = viewPlayer.DefaultViewHeight.ToDouble();
+                }
                 break;
             case NoTarget:
                 actor.NoTarget = value != 0;
@@ -110,6 +123,7 @@ internal static class AcsActorProperties
         Mass => actor.Mass,
         Height => actor.Height.Raw,
         Radius => actor.Radius.Raw,
+        ViewHeight => actor is PlayerPawn viewPlayer ? viewPlayer.DefaultViewHeight.Raw : 0,
         MaxStepHeight => actor.MaxStepHeight.Raw,
         MaxDropOffHeight => actor.MaxDropOffHeight.Raw,
         TargetTid => TargetThingId(actor),
