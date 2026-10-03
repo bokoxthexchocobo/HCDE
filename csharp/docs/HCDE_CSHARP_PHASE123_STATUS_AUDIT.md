@@ -9151,11 +9151,28 @@ reentrant native iteration parity, complete dormant action cadence, archive/netw
 state and engine fixtures remain incomplete. Phases 1–3 and representative
 invasion synchronization validation remain open.
 
+## Conversion and audit: teleport line activation side (2026-10-03)
+
+Converted the back-side rejection in native `FLevelLocals::EV_Teleport`
+(`src/playsim/p_teleport.cpp`, side != 0 guard). Doom map specials 39/97 and
+Hexen/UDMF special 70 now reject back-side activation before changing pose,
+velocity, reaction time or consuming a one-shot line. Explicit crossing side
+information takes precedence; callers without it use actor position.
+
+Six regression cases cover all supported map dispatch variants, repeat versus
+one-shot handling, rejected pose preservation, and inferred front/back sides.
+Audit checked the existing crossing path supplies the previous-position side.
+Full Release solution: 5,074 passed, zero failed/skipped; Playsim 3,993.
+Release warnings-as-errors build and whitespace check pass. No checksum state
+fields changed. Unknown-format compatibility dispatch and direct ACS calls
+retain their existing behavior. Teleport collision/telefrag, destination Z,
+full flags and native session validation remain incomplete, as do phases 1–3.
+
 ## Validation
 
-- Release solution: **5,068 passed, zero failed/skipped**, 4,145 cases above baseline.
+- Release solution: **5,074 passed, zero failed/skipped**, 4,151 cases above baseline.
   Protocol 15; Gamedata 18; Transport 10; Master 1; RCON 6; MapLoader 500;
-  Playsim 3,987; Client 12; Net.Core 351; Pregame 97; Server 63; Scripting 8.
+  Playsim 3,993; Client 12; Net.Core 351; Pregame 97; Server 63; Scripting 8.
 - The lighting pass initially saw a five-second timeout in
   `Pump_LiveSessionReceivesGuestClientInput`; it passed the targeted rerun and the
   subsequent full solution run. No timeout/test-disabling workaround was added.

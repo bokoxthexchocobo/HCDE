@@ -172,7 +172,8 @@ public static class LineSpecials
                 (4 or 90, false) => StartDoor(sim, line, line.Tag, true),
                 (11, true) or (52, false) => Exit(sim, false, actor),
                 (51, true) or (124, false) => Exit(sim, true, actor),
-                (39 or 97, false) => TeleportActivator(sim, actor, line.Tag),
+                (39 or 97, false) => !(backSide ?? IsBackSide(line, actor.X.ToDouble(), actor.Y.ToDouble()))
+                    && TeleportActivator(sim, actor, line.Tag),
                 (18 or 69, true) => StartMapFloor(sim, line, line.Tag, FloorTarget.NextHigher),
                 (23 or 60, true) or (38 or 82, false) => StartMapFloor(sim, line, line.Tag, FloorTarget.Lowest),
                 (58 or 92, false) => StartMapFloor(sim, line, line.Tag, FloorTarget.RaiseBy, amount: 24),
@@ -215,7 +216,8 @@ public static class LineSpecials
                 10 or 11 or 12 or 249 => ExecuteDoorSpecial(sim, line.Special, line.Arg0, line.Arg1, line.Arg2, line.Arg3, line) == true,
                 20 or 21 or 22 or 23 or 24 or 25 or 28 or 35 or 36 or 37 or 46 or 62 or 66 or 67 or 68 or 99 or 238 or 239 or 242 or 256 or 257 or 258 or 259 or 260 or 275 or 279 or ScrollFloor or ScrollCeiling => ExecuteFloorSpecial(sim, line.Special,
                     line.Arg0, line.Arg1, line.Arg2, line.Arg3, line.Arg4, line) == true,
-                70 => TeleportActivator(sim, actor, line.Arg0, byThingId: true),
+                70 => !(backSide ?? IsBackSide(line, actor.X.ToDouble(), actor.Y.ToDouble()))
+                    && TeleportActivator(sim, actor, line.Arg0, byThingId: true),
                 130 or 131 => ThingActivation.Execute(sim, actor, line.Arg0, line.Special == 130),
                 80 or 81 or 82 or 226 => ExecuteScriptControl(sim, line.Special, line.Arg0, line.Arg1, line.Arg2, line.Arg3, line.Arg4, actor, line, backSide ?? IsBackSide(line, actor.X.ToDouble(), actor.Y.ToDouble())) == true,
                 243 => Exit(sim, false, actor),
