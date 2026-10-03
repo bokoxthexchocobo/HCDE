@@ -8108,11 +8108,36 @@ not full class inheritance, mod-defined monsters, standard flag restoration,
 COUNTKILL totals, actor-state saves or networking. Native invasion sessions and
 phase 1–3 acceptance remain open.
 
+## Conversion and audit: spawned lost-soul friendship inheritance (2026-10-03)
+
+Compared `A_PainShootSkull` in
+`wadsrc/static/zscript/actors/doom/painelemental.zs` with `CopyFriendliness`
+in `src/playsim/p_mobj.cpp`. Native spawning copies the parent's friendliness
+before starting a skull attack. Managed SpawnLostSoul now copies Friendly,
+FriendPlayer, TidToHate and NoHatePlayers after successful placement and before
+charging. Existing explicit target handling, placement checks and invasion child
+registration remain in place. Targetless spawns also receive the four fields.
+
+Six new cases cover friendly/hostile parents, zero/positive/negative hate TIDs,
+player ownership, targetless children, and actual attack/death action spawning.
+The action cases verify inheritance on the single attack soul and all three
+death-burst souls. Full Release suite: 4,793 passed, zero failed/skipped;
+Playsim 3,720. Warnings-as-errors build: zero warnings/errors; whitespace check
+passes. Existing soul placement/charge and invasion child-count cases pass.
+These fields already participate in actor checksums; no checksum fields were
+added and the player idle baseline is unchanged.
+
+This converts the four currently supported friendliness fields. Native team,
+last-look and additional friendship flags, LastHeard copying, PAF action options,
+class replacements, complete soul limits and death-time friendly-target policy
+remain unfinished. This is a source/regression self-audit; native invasion
+sessions and complete phase 1–3 acceptance remain open.
+
 ## Validation
 
-- Release solution: **4,787 passed, zero failed/skipped**, 3,864 cases above baseline.
+- Release solution: **4,793 passed, zero failed/skipped**, 3,870 cases above baseline.
   Protocol 15; Gamedata 10; Transport 10; Master 1; RCON 6; MapLoader 500;
-  Playsim 3,714; Client 12; Net.Core 351; Pregame 97; Server 63; Scripting 8.
+  Playsim 3,720; Client 12; Net.Core 351; Pregame 97; Server 63; Scripting 8.
 - The lighting pass initially saw a five-second timeout in
   `Pump_LiveSessionReceivesGuestClientInput`; it passed the targeted rerun and the
   subsequent full solution run. No timeout/test-disabling workaround was added.

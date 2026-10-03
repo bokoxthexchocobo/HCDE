@@ -1971,6 +1971,10 @@ public sealed class AuthoritySimulation
                     return null;
         }
         finally { parent.Solid = solid; }
+        soul.Friendly = parent.Friendly;
+        soul.FriendPlayer = parent.FriendPlayer;
+        soul.TidToHate = parent.TidToHate;
+        soul.NoHatePlayers = parent.NoHatePlayers;
         if (target?.CanTakeDamage == true) soul.Brain!.StartCharge(soul, target);
         soul.RememberPosition();
         _actors.Add(soul);
