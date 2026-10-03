@@ -847,6 +847,12 @@ public static class LineSpecials
         return nudged;
     }
 
+    internal static bool? ExecuteTeleportSpecial(AuthoritySimulation sim, int special, int tid, int sectorTag,
+        Actor? activator, bool backSide) => special == 70
+        ? !backSide && activator is { Destroyed: false }
+            && TeleportActivator(sim, activator, tid, byThingId: true, sectorTag: sectorTag)
+        : null;
+
     private static bool TeleportActivator(AuthoritySimulation sim, Actor? activator, int target = 0, bool byThingId = false, int sectorTag = 0)
     {
         if (activator == null || activator.NoTeleport)

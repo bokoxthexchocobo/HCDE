@@ -9189,11 +9189,33 @@ failure remain incomplete; existing zero/zero compatibility is retained.
 Collision/telefrag and full native teleport flags remain open. Phases 1–3
 and representative invasion synchronization validation are still incomplete.
 
+## Conversion and audit: ACS teleport argument dispatch (2026-10-03)
+
+Converted special 70 dispatch for the managed ACS direct and stack special
+families. Native `src/playsim/p_acs.cpp` passes activation actor, trigger side
+and all special arguments to `P_ExecuteSpecial`; `LS_Teleport` in
+`src/playsim/p_lnspec.cpp` uses argument 0 as TID and argument 1 as sector tag.
+Both managed families now call a shared nullable special handler before the
+legacy one-argument fallback. Failed teleports are recognized actions, so a
+missing/destroyed activator or back-side trigger does not stop the script.
+
+Six regressions exercise direct/stack TID/tag intersection, back-side failure,
+null/destroyed activators and a following sector rotation to verify script
+continuation. Full Release solution: 5,085 passed, zero failed/skipped;
+Playsim 4,004. Release warnings-as-errors build and whitespace check pass.
+No new archived or checksum state fields. Existing result-opcode handling
+receives the boolean return; packed direct and result variants are wired
+through the same dispatch but have no new dedicated regressions here.
+Source/destination fog (argument 2), random TID selection, compatibility
+fallbacks, zero/zero behavior, collision/telefrag and native session acceptance
+remain open. This closes the ACS TID/tag/side dispatch gap, not full teleport
+or ACS parity. Phases 1–3 and invasion validation remain incomplete.
+
 ## Validation
 
-- Release solution: **5,079 passed, zero failed/skipped**, 4,156 cases above baseline.
+- Release solution: **5,085 passed, zero failed/skipped**, 4,162 cases above baseline.
   Protocol 15; Gamedata 18; Transport 10; Master 1; RCON 6; MapLoader 500;
-  Playsim 3,998; Client 12; Net.Core 351; Pregame 97; Server 63; Scripting 8.
+  Playsim 4,004; Client 12; Net.Core 351; Pregame 97; Server 63; Scripting 8.
 - The lighting pass initially saw a five-second timeout in
   `Pump_LiveSessionReceivesGuestClientInput`; it passed the targeted rerun and the
   subsequent full solution run. No timeout/test-disabling workaround was added.
