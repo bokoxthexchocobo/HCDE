@@ -9708,11 +9708,37 @@ rules, mod flags and state/action behavior, and native-engine acceptance remain
 open. This corrects dynamic class flags, not invasion round/timer/enemy network
 synchronization. Phases 1–3 remain incomplete.
 
+## Dynamic monster catalog dimensions, speed, and pain checkpoint (2026-10-03)
+
+AddBot now initializes Radius, Height, ChaseSpeed, and PainChance from the
+resolved DoomActorCatalog before applying DeHackEd defaults. This follows the
+existing map spawning conversion and the class defaults in
+`wadsrc/static/zscript/actors/doom`. Previously unpatched dynamic actors used
+generic 20/56 dimensions, speed 4 (managed chase speed 1), and pain chance 256,
+even for large bosses and fast monsters. Explicit patched dimensions, speed,
+and pain values continue to override; unknown classes retain generic fallbacks.
+
+Nineteen regressions cover all eighteen catalog monster classes against explicit
+expected values and map spawning, plus unknown-class fallback behavior. Full
+Release solution: 5,303 passed, zero failed/skipped; Playsim 4,178. Release
+warnings-as-errors build and whitespace checks passed. Existing trace tests
+passed. Existing checksum fields cover the corrected defaults; no schema added.
+
+Audit found a separate legacy dynamic Zombieman health rule (30 rather than
+native/map 20). An initial change to 20 caused fourteen gameplay/server cases
+to fail, including invasion completion, trace fixtures, resurrection, and
+crushing expectations. That health change was reverted in this checkpoint;
+the final complete suite passed. Removing the legacy health rule and auditing
+its callers/fixtures remains outstanding. This checkpoint changes Zombie speed
+and pain defaults, so invasion combat timing can change; it does not establish
+native invasion round/timer/network synchronization acceptance. Full native
+spawn rules, mod class behavior, and phases 1–3 completion remain open.
+
 ## Validation
 
-- Release solution: **5,284 passed, zero failed/skipped**, 4,361 cases above baseline.
+- Release solution: **5,303 passed, zero failed/skipped**, 4,380 cases above baseline.
   Protocol 15; Gamedata 29; Transport 10; Master 1; RCON 6; MapLoader 533;
-  Playsim 4,159; Client 12; Net.Core 351; Pregame 97; Server 63; Scripting 8.
+  Playsim 4,178; Client 12; Net.Core 351; Pregame 97; Server 63; Scripting 8.
 - The lighting pass initially saw a five-second timeout in
   `Pump_LiveSessionReceivesGuestClientInput`; it passed the targeted rerun and the
   subsequent full solution run. No timeout/test-disabling workaround was added.

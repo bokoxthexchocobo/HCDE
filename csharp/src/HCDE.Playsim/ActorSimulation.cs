@@ -1845,6 +1845,10 @@ public sealed class AuthoritySimulation
                 ? new MonsterBrain(MonsterAttack.Hitscan)
                 : MonsterBrain.ForType(definitionType) ?? new MonsterBrain(MonsterAttack.Hitscan),
             IsMonster = true,
+            Radius = definition != null ? Fixed.FromInt(definition.Radius) : Fixed.FromInt(20),
+            Height = definition != null ? Fixed.FromInt(definition.Height) : Fixed.FromInt(56),
+            ChaseSpeed = Math.Clamp((definition?.Speed ?? 4) / 4.0, 0, ActorPhysics.MaxMove),
+            PainChance = definition?.PainChance ?? 256,
             Damage = definition?.Damage ?? 0,
             NoGravity = definition?.Floating ?? false,
             Floating = definition?.Floating ?? false,
