@@ -9379,11 +9379,32 @@ protection is broader than native's current-player identity test. Packed/
 result ACS variants share dispatch without dedicated new tests. Phases 1–3
 and invasion synchronization validation remain incomplete.
 
+## Conversion and audit: Sector_SetGravity action and physics (2026-10-03)
+
+Converted special 216 from `LS_Sector_SetGravity` in
+`src/playsim/p_lnspec.cpp`. Extended map and ACS direct/stack dispatch set
+matching sectors to integer + min(fraction,99)/100; negative fractions are
+not clamped. Missing tags succeed. Added default-one sector gravity to the
+managed level and multiplied it into ordinary falling physics alongside actor
+gravity, consistent with `AActor::GetGravity` in `src/playsim/actorinlines.h`.
+Non-default values enter simulation checksum via their double bits; defaults
+preserve existing hashes.
+
+Six regressions cover fraction cap/negative/zero, tagged map action, untagged
+ACS direct/stack, real-room falling acceleration and checksum divergence.
+Full Release solution: 5,148 passed, zero failed/skipped; Playsim 4,067.
+Release warnings-as-errors build and whitespace checks pass. Physics tests
+use actual room geometry because geometry-free fixtures lose sector identity
+when movement resolves position. UDMF gravity import, save/network sector
+state, level gravity overrides, projectile-specific physics and full native
+falling cadence remain incomplete. This converts the sector multiplier and
+action, not full gravity parity. Phases 1–3 and invasion validation remain open.
+
 ## Validation
 
-- Release solution: **5,142 passed, zero failed/skipped**, 4,219 cases above baseline.
+- Release solution: **5,148 passed, zero failed/skipped**, 4,225 cases above baseline.
   Protocol 15; Gamedata 18; Transport 10; Master 1; RCON 6; MapLoader 500;
-  Playsim 4,061; Client 12; Net.Core 351; Pregame 97; Server 63; Scripting 8.
+  Playsim 4,067; Client 12; Net.Core 351; Pregame 97; Server 63; Scripting 8.
 - The lighting pass initially saw a five-second timeout in
   `Pump_LiveSessionReceivesGuestClientInput`; it passed the targeted rerun and the
   subsequent full solution run. No timeout/test-disabling workaround was added.

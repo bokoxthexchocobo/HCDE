@@ -244,7 +244,8 @@ public static class ActorPhysics
             z = floor;
             if (vz < 0) vz = 0;
         }
-        if (!actor.NoGravity && (z > floor || vz != 0)) vz -= Gravity * actor.Gravity.ToDouble();
+        if (!actor.NoGravity && (z > floor || vz != 0)) vz -= Gravity * actor.Gravity.ToDouble()
+            * ((uint)actor.SectorIndex < (uint)sim.Level.Sectors.Count ? sim.Level.Sectors[actor.SectorIndex].Gravity : 1);
         z += vz;
         if (z < floor)
         {

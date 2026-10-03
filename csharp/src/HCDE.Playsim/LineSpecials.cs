@@ -218,6 +218,7 @@ public static class LineSpecials
                     line.Arg0, line.Arg1, line.Arg2, line.Arg3, line.Arg4, line) == true,
                 70 or 154 => !(backSide ?? IsBackSide(line, actor.X.ToDouble(), actor.Y.ToDouble()))
                     && ExecuteTeleportSpecial(sim, line.Special, line.Arg0, line.Arg1, actor, false) == true,
+                216 => SectorGravity.ExecuteSpecial(sim, 216, line.Arg0, line.Arg1, line.Arg2) == true,
                 132 => ThingRemove.ExecuteSpecial(sim, 132, actor, line.Arg0) == true,
                 72 => ThingThrust.ExecuteSpecial(sim, 72, actor, line.Arg0, line.Arg1, line.Arg2, line.Arg3) == true,
                 128 => ThingThrustZ.ExecuteSpecial(sim, 128, actor, line.Arg0, line.Arg1, line.Arg2, line.Arg3) == true,

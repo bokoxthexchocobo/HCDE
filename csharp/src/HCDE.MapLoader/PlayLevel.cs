@@ -26,6 +26,7 @@ public sealed class LevelSector
     public IReadOnlyList<int> AdditionalTags { get; init; } = Array.Empty<int>();
     public bool HasTag(int tag) => tag != 0 && (Tag == tag || AdditionalTags.Contains(tag));
     public bool MatchesTag(int tag) => tag == 0 ? Tag == 0 && AdditionalTags.Count == 0 : HasTag(tag);
+    public double Gravity { get; set; } = 1;
     public int HealthFloor { get; set; }
     public int HealthCeiling { get; set; }
     public int Health3D { get; set; }

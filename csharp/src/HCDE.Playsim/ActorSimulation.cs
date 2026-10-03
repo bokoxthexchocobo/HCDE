@@ -2820,6 +2820,13 @@ public sealed class AuthoritySimulation
             hash = MixDouble(hash, sector.CeilingTextureScaleY);
             hash = MixDouble(hash, sector.FloorTextureBaseOffsetY);
             hash = MixDouble(hash, sector.CeilingTextureBaseOffsetY);
+            if (sector.Gravity != 1)
+            {
+                hash = Mix(hash, 0x53475256u);
+                var gravityBits = unchecked((ulong)BitConverter.DoubleToInt64Bits(sector.Gravity));
+                hash = Mix(hash, (uint)gravityBits);
+                hash = Mix(hash, (uint)(gravityBits >> 32));
+            }
             hash = Mix(hash, sector.FloorTextureAngle);
             hash = Mix(hash, sector.CeilingTextureAngle);
             hash = Mix(hash, sector.FloorTextureBaseAngle);

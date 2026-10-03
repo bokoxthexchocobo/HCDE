@@ -500,6 +500,7 @@ public sealed class AcsVm
                     for (var i = 0; i < stackCount; i++) stackArgs[i] = fiber.Stack[start + i];
                     fiber.Stack.RemoveRange(start, stackCount);
                     var stackResult = LineSpecials.ExecuteExitSpecial(sim, stackSpecial, fiber.Activator is { Destroyed: false } ? fiber.Activator : null)
+                        ?? SectorGravity.ExecuteSpecial(sim, stackSpecial, stackArgs[0], stackArgs[1], stackArgs[2])
                         ?? ThingRemove.ExecuteSpecial(sim, stackSpecial, fiber.Activator, stackArgs[0])
                         ?? ThingThrust.ExecuteSpecial(sim, stackSpecial, fiber.Activator, stackArgs[0], stackArgs[1], stackArgs[2], stackArgs[3])
                         ?? ThingThrustZ.ExecuteSpecial(sim, stackSpecial, fiber.Activator, stackArgs[0], stackArgs[1], stackArgs[2], stackArgs[3])
@@ -546,6 +547,7 @@ public sealed class AcsVm
                     if (!fiber.Done)
                     {
                         var result = LineSpecials.ExecuteExitSpecial(sim, special, fiber.Activator is { Destroyed: false } ? fiber.Activator : null)
+                            ?? SectorGravity.ExecuteSpecial(sim, special, args[0], args[1], args[2])
                             ?? ThingRemove.ExecuteSpecial(sim, special, fiber.Activator, args[0])
                             ?? ThingThrust.ExecuteSpecial(sim, special, fiber.Activator, args[0], args[1], args[2], args[3])
                             ?? ThingThrustZ.ExecuteSpecial(sim, special, fiber.Activator, args[0], args[1], args[2], args[3])
