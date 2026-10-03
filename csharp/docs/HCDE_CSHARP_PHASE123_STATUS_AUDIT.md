@@ -10522,11 +10522,33 @@ remain incomplete. Radius damage is separate from direct projectile contact
 and still applies. No native runtime acceptance is claimed. Phases 1–3 and
 invasion synchronization acceptance remain open.
 
+## Conversion and audit: THRUACTORS save/restore (2026-10-03)
+
+Closed the previous checkpoint's THRUACTORS persistence gap against native
+`AActor::Serialize` in `src/playsim/p_mobj.cpp` (flags2 serialization).
+Managed poses capture both true and false values and restore them before
+resuming actor contact. Managed archive version 29 wraps versions 18–28
+with a validated per-actor boolean table, including all-zero values.
+Older archives without this metadata preserve the current flag.
+This is managed archive compatibility, not native savegame interoperability.
+
+Seventeen regressions cover memory/wire blast continuation, projectile
+continuation, invalid wire/memory flags, size/prior/count errors, incomplete
+all-zero tables, rejection before clock/flag/checksum mutation, version 28
+preservation and nested BOSS/DONTBLAST/BLASTED restoration. Version-specific
+fixtures omit the newer table explicitly to preserve their corruption and
+layout coverage. Release solution: 5,654 passed, zero failed/skipped;
+Playsim 4,527. Warnings-as-errors Release build and whitespace checks pass.
+
+Hitscan/puff policy, telefrag execution, full actor recreation, native runtime
+savegame acceptance, THRUSPECIES/THRUBITS and custom class defaults remain
+incomplete. Phases 1–3 and invasion synchronization acceptance remain open.
+
 ## Validation
 
-- Release solution: **5,637 passed, zero failed/skipped**, 4,714 cases above baseline.
+- Release solution: **5,654 passed, zero failed/skipped**, 4,731 cases above baseline.
   Protocol 15; Gamedata 29; Transport 10; Master 1; RCON 6; MapLoader 533;
-  Playsim 4,510; Client 12; Net.Core 351; Pregame 97; Server 65; Scripting 8.
+  Playsim 4,527; Client 12; Net.Core 351; Pregame 97; Server 65; Scripting 8.
 - The lighting pass initially saw a five-second timeout in
   `Pump_LiveSessionReceivesGuestClientInput`; it passed the targeted rerun and the
   subsequent full solution run. No timeout/test-disabling workaround was added.

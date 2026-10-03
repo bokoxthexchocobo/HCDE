@@ -22,7 +22,7 @@ public class BlastEligibilityArchiveTests
         var state = sim.CaptureState();
         if (serialized)
         {
-            var bytes = SimSavegame.Write(state);
+            var bytes = WriteVersion28(state);
             Assert.Equal(28, BinaryPrimitives.ReadUInt16LittleEndian(bytes.AsSpan(4)));
             Assert.True(SimSavegame.TryRead(bytes, out state, out var error), error);
         }
@@ -39,7 +39,7 @@ public class BlastEligibilityArchiveTests
     public void ExplicitlyClearedBossDefaultSurvivesSerialization(int type)
     {
         var sim = Room(); var boss = sim.AddBot(0, 0, type); Assert.True(boss.Boss);
-        boss.Boss = false; var bytes = SimSavegame.Write(sim); boss.Boss = true;
+        boss.Boss = false; var bytes = WriteVersion28(sim); boss.Boss = true;
         SimSavegame.Apply(sim, bytes); Assert.False(boss.Boss);
     }
 
@@ -49,7 +49,7 @@ public class BlastEligibilityArchiveTests
     public void InvalidWireFlagsRejectApplyBeforeMutation(int flags)
     {
         var sim = Room(); var actor = sim.AddBot(0, 0); actor.Brain = null;
-        var bytes = SimSavegame.Write(sim); var start = TrailerStart(bytes);
+        var bytes = WriteVersion28(sim); var start = TrailerStart(bytes);
         BinaryPrimitives.WriteInt32LittleEndian(bytes.AsSpan(start + 8), flags);
         actor.Boss = true; sim.Tick(); var checksum = sim.Checksum;
         Assert.False(SimSavegame.TryRead(bytes, out var state, out var error));
@@ -66,7 +66,7 @@ public class BlastEligibilityArchiveTests
         var sim = Room(); var actor = sim.AddBot(0, 0); actor.Brain = null;
         var state = sim.CaptureState(); state.Actors[0].BlastEligibilityFlags = flags;
         actor.DontBlast = true; sim.Tick();
-        Assert.Throws<InvalidOperationException>(() => SimSavegame.Write(state));
+        Assert.Throws<InvalidOperationException>(() => WriteVersion28(state));
         Assert.Throws<InvalidOperationException>(() => sim.RestoreState(state));
         Assert.Equal(1, sim.Thinkers.Clock.Tic); Assert.True(actor.DontBlast);
     }
@@ -77,7 +77,7 @@ public class BlastEligibilityArchiveTests
     [InlineData("count")]
     public void MalformedTrailerIsRejected(string field)
     {
-        var sim = Room(); sim.AddBot(0, 0); var bytes = SimSavegame.Write(sim);
+        var sim = Room(); sim.AddBot(0, 0); var bytes = WriteVersion28(sim);
         var start = TrailerStart(bytes);
         var offset = field == "size" ? bytes.Length - 4 : start + (field == "count" ? 4 : 0);
         BinaryPrimitives.WriteInt32LittleEndian(bytes.AsSpan(offset), field == "prior" ? 28 : 0);
@@ -90,7 +90,7 @@ public class BlastEligibilityArchiveTests
     {
         var sim = Room(); sim.AddBot(0, 0); sim.AddBot(100, 0);
         var state = sim.CaptureState(); state.Actors[1].BlastEligibilityFlags = null;
-        Assert.Throws<InvalidOperationException>(() => SimSavegame.Write(state));
+        Assert.Throws<InvalidOperationException>(() => WriteVersion28(state));
         Assert.Throws<InvalidOperationException>(() => sim.RestoreState(state));
     }
 
@@ -100,7 +100,7 @@ public class BlastEligibilityArchiveTests
         var sim = Room(); var actor = sim.AddBot(0, 0);
         actor.Boss = actor.DontBlast = actor.Blasted = actor.NoDropOff = actor.FloorHugger = true;
         actor.CeilingHugger = actor.NoExplodeFloor = actor.InFloat = true;
-        var bytes = SimSavegame.Write(sim);
+        var bytes = WriteVersion28(sim);
         actor.Boss = actor.DontBlast = actor.Blasted = actor.NoDropOff = actor.FloorHugger = false;
         actor.CeilingHugger = actor.NoExplodeFloor = actor.InFloat = false;
         SimSavegame.Apply(sim, bytes);
@@ -120,6 +120,12 @@ public class BlastEligibilityArchiveTests
         Assert.True(actor.Boss); Assert.True(actor.DontBlast);
     }
 
+    private static byte[] WriteVersion28(AuthoritySimulation sim) => WriteVersion28(sim.CaptureState());
+    private static byte[] WriteVersion28(SimSaveState state)
+    {
+        foreach (var pose in state.Actors) pose.ThruActorsFlags = null;
+        return SimSavegame.Write(state);
+    }
     private static int TrailerStart(byte[] bytes) => bytes.Length - BinaryPrimitives.ReadInt32LittleEndian(bytes.AsSpan(bytes.Length - 4));
     private static AuthoritySimulation Room() => AuthoritySimulation.Start(new PlayLevel
     { Sectors = [new LevelSector { CeilingHeight = 128 }] });
