@@ -12,6 +12,7 @@ internal static class AcsActorProperties
     public const int Gravity = 15;
     public const int Friendly = 16;
     public const int SpawnHealth = 17;
+    public const int Dropped = 18;
     public const int NoTarget = 19;
     public const int Score = 22;
     public const int NoTrigger = 23;
@@ -56,13 +57,13 @@ internal static class AcsActorProperties
         // Native CheckActorProperty rejects unknown properties, even when Get returns zero.
         if (property is not (Health or Speed or Damage or Ambush or Invulnerable or JumpZ or Gravity or Friendly
             or SpawnHealth or NoTarget or TargetTid or TracerTid or Mass or Height or Radius or ViewHeight or AttackZOffset
-            or MaxStepHeight or MaxDropOffHeight or DamageFactor or DamageMultiplier or MeleeRange or Friction or NoTrigger or Score))
+            or MaxStepHeight or MaxDropOffHeight or DamageFactor or DamageMultiplier or MeleeRange or Friction or NoTrigger or Score or Dropped))
             return false;
         var actual = Read(actor, property);
         return IsBoolean(property) ? actual == (value != 0 ? 1 : 0) : actual == value;
     }
 
-    private static bool IsBoolean(int property) => property is Ambush or Invulnerable or Friendly or NoTarget or NoTrigger;
+    private static bool IsBoolean(int property) => property is Ambush or Invulnerable or Friendly or NoTarget or NoTrigger or Dropped;
 
     private static void ApplySet(Actor? actor, int property, int value)
     {
@@ -122,6 +123,9 @@ internal static class AcsActorProperties
             case NoTrigger:
                 actor.NoTrigger = value != 0;
                 break;
+            case Dropped:
+                actor.Dropped = value != 0;
+                break;
             case Score:
                 actor.Score = value;
                 break;
@@ -157,6 +161,7 @@ internal static class AcsActorProperties
         Friendly => actor.Friendly ? 1 : 0,
         NoTarget => actor.NoTarget ? 1 : 0,
         NoTrigger => actor.NoTrigger ? 1 : 0,
+        Dropped => actor.Dropped ? 1 : 0,
         Score => actor.Score,
         SpawnHealth => actor.ResurrectionHealth,
         Mass => actor.Mass,

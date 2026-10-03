@@ -21,12 +21,12 @@ This document is the execution plan; that audit remains the detailed record.
 
 ## Verified checkpoint
 
-- Release solution: **4,689 passed; zero failed or skipped**.
+- Release solution: **4,699 passed; zero failed or skipped**.
 - Release build with warnings as errors: zero warnings/errors.
-- Tests by project: Playsim 3,616; MapLoader 500; Net.Core 351; Pregame 97;
+- Tests by project: Playsim 3,626; MapLoader 500; Net.Core 351; Pregame 97;
   Server 63; Protocol 15; Client 12; Gamedata 10; Transport 10; RCON 6; Master 1;
   Scripting 8.
-- Historical baseline: 923 tests at `55f8fa46`; 3,766 additional cases since then.
+- Historical baseline: 923 tests at `55f8fa46`; 3,776 additional cases since then.
 - October sync incorporated four upstream commits through `c367f081`, including
   ACS binding, gameplay parity, pickups/drops and inventory work. The current
   continuation adds read-only actor height/radius property queries and checks,
@@ -42,6 +42,7 @@ This document is the execution plan; that audit remains the detailed record.
   reads and corrects TargetTID to native query-only behavior, including missiles.
   ACS Speed now feeds player thrust, managed monster chase speed and projectile aim.
   ACS Damage now controls the base used by projectile actor and geometry impacts.
+  ACS Dropped now exposes the marker initialized on spawned pickups.
 - Earlier checkpoints: `0a37c839` gameplay/maps/invasion foundation,
   `55f8fa46` buffered authoritative input, `d792c54a` AI/sector/snapshot work.
 - Native invasion policy compilation was previously verified; a complete native

@@ -7807,11 +7807,34 @@ equivalence and overflow behavior, other missile-damage actions and save/network
 propagation remain open. This property is separate from the actor damage factors
 and does not replace weapon-specific damage rolls.
 
+## ACS dropped marker and pickup initialization (2026-10-03)
+
+Converted `APROP_Dropped` (18) boolean set/get/check to actor Dropped state.
+Native `p_acs.cpp` changes MF_DROPPED directly and normalizes checks to boolean.
+Native inventory code initializes dropped inventory and distinguishes it from
+map pickups. The managed SpawnDroppedPickup path now initializes the marker;
+ordinary map pickups retain false. Changing this flag does not rewrite the
+independent ammo-skill and pickup amount fields.
+
+Ten new cases cover nonzero signed boolean normalization and mismatch checks,
+spawned drop queries with both ammo-skill modes, clearing the flag without
+altering pickup fields, map pickup defaults, missing/destroyed targets and
+resting checksums. Existing pickup/drop regressions pass. The idle hash is now
+315421400 due to marker inclusion; position/health/tic assertions are unchanged.
+Full suite: 4,699 passed, zero failed/skipped; Release warnings-as-errors build:
+zero warnings/errors. Source review and regression self-audit only.
+
+Scope: exposed actor marker and managed drop creation. Native dropped inventory
+weapon-stay, item respawn, crusher destruction, local-drop policy, inventory
+ownership transitions, class defaults and save/network marker propagation remain
+open. These behaviors are not represented by IgnoreAmmoSkill and must be converted
+separately; this checkpoint does not claim full dropped-inventory parity.
+
 ## Validation
 
-- Release solution: **4,689 passed, zero failed/skipped**, 3,766 cases above baseline.
+- Release solution: **4,699 passed, zero failed/skipped**, 3,776 cases above baseline.
   Protocol 15; Gamedata 10; Transport 10; Master 1; RCON 6; MapLoader 500;
-  Playsim 3,616; Client 12; Net.Core 351; Pregame 97; Server 63; Scripting 8.
+  Playsim 3,626; Client 12; Net.Core 351; Pregame 97; Server 63; Scripting 8.
 - The lighting pass initially saw a five-second timeout in
   `Pump_LiveSessionReceivesGuestClientInput`; it passed the targeted rerun and the
   subsequent full solution run. No timeout/test-disabling workaround was added.
