@@ -1109,6 +1109,7 @@ public static class ActorSpawner
             actor.Mass = DoomActorCatalog.MassOf(definitionType);
             actor.RaiseDuration = ArchvileActions.RaiseDuration(definitionType);
             actor.Ambush = thing.Ambush;
+            if (defaults is { ReactionTimePatched: true }) actor.ReactionTime = defaults.ReactionTime;
             actor.Brain = MonsterBrain.ForType(definitionType);
             if (!playerStart) actor.Damage = definition?.Damage ?? 0;
             if (defaults is { MissileDamagePatched: true }) actor.Damage = defaults.MissileDamage;

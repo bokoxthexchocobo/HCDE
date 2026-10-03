@@ -8361,11 +8361,35 @@ damage functions, negative function sentinels and native overflow/RNG parity
 remain unfinished. Source/regression self-audit does not establish native
 invasion sessions or complete phase 1–3 acceptance, which remain open.
 
+## Conversion and audit: explicit DEHACKED reaction time at map spawn (2026-10-03)
+
+Compared Reaction time handling in `src/gamedata/d_dehacked.cpp`, which assigns
+the parsed integer to the actor default's reactiontime. Managed parsing already
+stored the integer but map spawning ignored it. Added ReactionTimePatched metadata
+and apply explicit assignments before monster-brain attachment. This preserves
+explicit zero and negative values through the existing actor-owned initialization
+mechanism while unrelated patches retain the current managed default.
+
+Six cases cover positive/zero/negative values, unrelated health patches, chained
+patch preservation/baseline isolation and a positive counter delaying managed
+acquisition until its countdown ends. The unrelated-patch test uses the existing
+managed default 10; native class-default reaction parity is not claimed.
+Full Release solution: 4,848 passed, zero failed/skipped; Playsim 3,775.
+Warnings-as-errors build: zero warnings/errors; whitespace check passes. Existing
+reaction, patch and invasion cases pass. Reaction state already has checksum
+coverage; no simulation fields were added and player idle baseline unchanged.
+
+This converts explicit assignments for supported map actor patch records.
+Native negative-counter chase behavior, class reaction defaults, dynamic spawn
+and player lifecycle rules, complete thing catalogs and state-action scheduling
+remain incomplete. Source/regression self-audit does not replace native invasion
+sessions or complete phase 1–3 acceptance, which remain open.
+
 ## Validation
 
-- Release solution: **4,842 passed, zero failed/skipped**, 3,919 cases above baseline.
+- Release solution: **4,848 passed, zero failed/skipped**, 3,925 cases above baseline.
   Protocol 15; Gamedata 10; Transport 10; Master 1; RCON 6; MapLoader 500;
-  Playsim 3,769; Client 12; Net.Core 351; Pregame 97; Server 63; Scripting 8.
+  Playsim 3,775; Client 12; Net.Core 351; Pregame 97; Server 63; Scripting 8.
 - The lighting pass initially saw a five-second timeout in
   `Pump_LiveSessionReceivesGuestClientInput`; it passed the targeted rerun and the
   subsequent full solution run. No timeout/test-disabling workaround was added.
