@@ -8645,10 +8645,30 @@ isolation, and the final full solution run passed. Timeout intermittency is not
 root-caused; tests and their timeouts were not changed. Phases 1–3 and invasion
 round/timer/enemy synchronization validation remain incomplete.
 
+## DEHACKED Frame decimal-prefix assignments — 2026-10-03
+
+Native `PatchFrame` in `src/gamedata/d_dehacked.cpp` reads decimal prefixes
+with `atoll`, narrows to signed int, then clamps Duration to [-1, SHRT_MAX].
+Managed Frame numeric assignments now use the shared decimal-prefix helper and
+explicit unchecked narrowing. Thing range validation remains separate and intact.
+
+Eight new regression cases cover signed suffixes, duration clamping after
+unsigned narrowing, non-decimal/malformed tokens, miscellaneous fields, sprite
+number, next-frame index, fullbright subnumber, and immutable chained baselines.
+Release solution: 4,948 passed, zero failed/skipped; Gamedata 18, Playsim 3,867.
+Warnings-as-errors build: zero warnings/errors. No checksum fields changed.
+
+Scope is parser behavior for represented Frame fields. Native action execution,
+full state catalog, frame arguments and MBF21 flags remain incomplete. Int64
+overflow behavior of native atoll and locale-specific whitespace are not claimed
+as portable parity. Large actor dimensions, intermittent live-session timeouts,
+and representative invasion synchronization remain open audit findings.
+Phases 1–3 remain incomplete.
+
 ## Validation
 
-- Release solution: **4,940 passed, zero failed/skipped**, 4,017 cases above baseline.
-  Protocol 15; Gamedata 10; Transport 10; Master 1; RCON 6; MapLoader 500;
+- Release solution: **4,948 passed, zero failed/skipped**, 4,025 cases above baseline.
+  Protocol 15; Gamedata 18; Transport 10; Master 1; RCON 6; MapLoader 500;
   Playsim 3,867; Client 12; Net.Core 351; Pregame 97; Server 63; Scripting 8.
 - The lighting pass initially saw a five-second timeout in
   `Pump_LiveSessionReceivesGuestClientInput`; it passed the targeted rerun and the

@@ -200,7 +200,7 @@ public static class DehackedPatch
         actor.Patched = true;
         foreach (var (key, value) in body)
         {
-            var numeric = ParseThingNumber(value);
+            var numeric = ParseDecimalPrefix(value);
             if (numeric < int.MinValue || numeric > uint.MaxValue)
             {
                 errors.Add($"Thing {actor.Index}: bad numeric constant {value} for {key}.");
@@ -306,7 +306,7 @@ public static class DehackedPatch
         var sprite = state.Sprite;
         foreach (var (key, value) in body)
         {
-            var number = ParseInt(value);
+            var number = unchecked((int)ParseDecimalPrefix(value));
             if (key.Equals("Duration", StringComparison.OrdinalIgnoreCase))
                 tics = Math.Clamp(number, -1, short.MaxValue);
             else if (key.Equals("Unknown 1", StringComparison.OrdinalIgnoreCase))
@@ -397,8 +397,8 @@ public static class DehackedPatch
         return lines;
     }
 
-    // PatchThing uses decimal strtoll: stop at the first non-digit; no digits means zero.
-    private static long ParseThingNumber(string value)
+    // Thing/Frame use decimal strtoll/atoll: stop at the first non-digit; no digits means zero.
+    private static long ParseDecimalPrefix(string value)
     {
         var token = value.TrimStart();
         var end = token.Length > 0 && token[0] is '+' or '-' ? 1 : 0;
