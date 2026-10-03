@@ -171,6 +171,8 @@ public class Actor : Thinker
     public bool ThruSpecies { get; set; }
     public bool Ghost { get; set; }
     public bool ThruGhost { get; set; }
+    /// <summary>Native MF2_NONSHOOTABLE: skip supported direct missile contact.</summary>
+    public bool NonShootable { get; set; }
     public bool AllowThruBits { get; set; }
     public uint ThruBits { get; set; }
     internal bool SharesEnabledThruBits(Actor other) => (ThruBits & other.ThruBits) != 0
@@ -2855,6 +2857,7 @@ public sealed class AuthoritySimulation
             if (actor.ThruSpecies) hash = Mix(hash, 0x54535043u);
             if (actor.Ghost) hash = Mix(hash, 0x47484F53u);
             if (actor.ThruGhost) hash = Mix(hash, 0x54474853u);
+            if (actor.NonShootable) hash = Mix(hash, 0x4E534854u);
             if (actor.AllowThruBits) hash = Mix(hash, 0x41544254u);
             if (actor.ThruBits != 0) { hash = Mix(hash, 0x54424954u); hash = Mix(hash, actor.ThruBits); }
             if (actor.SpawnCeiling) hash = Mix(hash, 0x4345494Cu);
