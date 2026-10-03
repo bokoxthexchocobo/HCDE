@@ -9418,11 +9418,31 @@ gravity overrides, projectile-specific physics, native falling cadence and
 representative native session validation remain incomplete. Phases 1–3 and
 invasion synchronization validation remain open.
 
+## Conversion and audit: UDMF thing gravity and spawn override (2026-10-03)
+
+Converted thing gravity import from `src/maploader/udmf.cpp` (Zd/Zdt only)
+and spawn handling from `src/playsim/p_mobj.cpp`: positive values multiply
+class gravity, negative values replace it with their magnitude, and zero sets
+NOGRAVITY and gravity zero. Nonzero values do not clear existing NOGRAVITY.
+Parser/map defaults are one. Map overrides apply after managed DEHACKED class
+gravity, matching native spawn order.
+
+Fourteen regressions cover six namespaces, absent default, four imported
+spawn values, preservation of floating actor flags, and positive/negative
+composition with patched LOGRAV class gravity. Full Release solution:
+5,174 passed, zero failed/skipped; Playsim 4,075; MapLoader 518. Release
+warnings-as-errors build and whitespace checks pass. Existing actor gravity/
+NOGRAVITY checksums apply. Native full-range double gravity differs from the
+managed signed 16.16 actor representation; extreme values remain a gap.
+Projectile gravity, complete respawn/archive/network handling, class/mod
+loading and native session validation remain incomplete. Phases 1–3 and
+invasion synchronization validation remain open.
+
 ## Validation
 
-- Release solution: **5,160 passed, zero failed/skipped**, 4,237 cases above baseline.
-  Protocol 15; Gamedata 18; Transport 10; Master 1; RCON 6; MapLoader 511;
-  Playsim 4,068; Client 12; Net.Core 351; Pregame 97; Server 63; Scripting 8.
+- Release solution: **5,174 passed, zero failed/skipped**, 4,251 cases above baseline.
+  Protocol 15; Gamedata 18; Transport 10; Master 1; RCON 6; MapLoader 518;
+  Playsim 4,075; Client 12; Net.Core 351; Pregame 97; Server 63; Scripting 8.
 - The lighting pass initially saw a five-second timeout in
   `Pump_LiveSessionReceivesGuestClientInput`; it passed the targeted rerun and the
   subsequent full solution run. No timeout/test-disabling workaround was added.

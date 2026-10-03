@@ -144,6 +144,7 @@ public sealed class LevelThing
 {
     public short Pitch { get; init; }
     public short Roll { get; init; }
+    public double Gravity { get; init; } = 1;
     public int Index { get; init; }
     public double X { get; init; }
     public double Y { get; init; }
@@ -474,6 +475,8 @@ public static class LevelBuilder
         {
             Pitch = unchecked((short)thing.Pitch),
             Roll = unchecked((short)thing.Roll),
+            Gravity = map.Namespace.Equals("ZDoom", StringComparison.OrdinalIgnoreCase)
+                || map.Namespace.Equals("ZDoomTranslated", StringComparison.OrdinalIgnoreCase) ? thing.Gravity : 1,
             Index = index,
             X = thing.X,
             Y = thing.Y,

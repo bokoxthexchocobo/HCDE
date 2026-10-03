@@ -1135,6 +1135,9 @@ public static class ActorSpawner
                 actor.Dormant = (defaults.Bits2 & 0x10000000) != 0;
             }
             if (defaults is { GravityPatched: true }) actor.Gravity = Fixed.FromDouble(defaults.Gravity);
+            if (thing.Gravity < 0) actor.Gravity = Fixed.FromDouble(-thing.Gravity);
+            else if (thing.Gravity > 0) actor.Gravity = Fixed.FromDouble(actor.Gravity.ToDouble() * thing.Gravity);
+            else { actor.Gravity = default; actor.NoGravity = true; }
             actor.Ambush = thing.Ambush || defaults is { BitsPatched: true } && (defaults.Bits & 0x00000020) != 0;
             if (defaults is { ReactionTimePatched: true }) actor.ReactionTime = defaults.ReactionTime;
             actor.Brain = MonsterBrain.ForType(definitionType);

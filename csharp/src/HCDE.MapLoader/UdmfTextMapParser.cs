@@ -108,6 +108,7 @@ public sealed class UdmfSector
 
 public sealed class UdmfThing
 {
+    public double Gravity { get; set; } = 1;
     public int Pitch { get; set; }
     public int Roll { get; set; }
     public double X { get; set; }
@@ -424,6 +425,7 @@ public static class UdmfTextMapParser
         {
             Pitch = Int(fields, "pitch"),
             Roll = Int(fields, "roll"),
+            Gravity = Number(fields, "gravity", 1),
             X = Number(fields, "x"),
             Y = Number(fields, "y"),
             Height = Number(fields, "height"),
