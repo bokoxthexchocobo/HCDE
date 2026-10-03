@@ -4,6 +4,8 @@ namespace HCDE.Playsim;
 
 public readonly record struct SimPickupProperties(int Amount, bool IgnoreSkill, bool Depleted);
 
+public readonly record struct SimThruBits(uint Mask, bool Enabled);
+
 public sealed class SimActorPose
 {
     public uint Id { get; init; }
@@ -38,6 +40,7 @@ public sealed class SimActorPose
     public int? ThruActorsFlags { get; internal set; }
     public int? MissileThruSpeciesFlags { get; internal set; }
     public int? ThruSpeciesFlags { get; internal set; }
+    public SimThruBits? ThruBits { get; internal set; }
 }
 
 public sealed class SimSaveState
@@ -89,6 +92,7 @@ public static class SimSavegame
         SimThruActorsArchive.Validate(state);
         SimMissileThruSpeciesArchive.Validate(state);
         SimThruSpeciesArchive.Validate(state);
+        SimThruBitsArchive.Validate(state);
         SimPainDeathArchive.Validate(state);
         if (state.Actors.Any(actor => actor.Pickup.HasValue) &&
             (state.GeometryHealth is null || state.Actors.Any(actor => !actor.Roll.HasValue)))
@@ -188,7 +192,7 @@ public static class SimSavegame
             BinaryPrimitives.WriteUInt16LittleEndian(archive.AsSpan(4), 15);
             archive = SimProjectileFlagArchive.Write(state, SimPainDeathArchive.Write(state, WriteDeathFlags(state, WriteFloatFlags(state, WriteContactFlags(state, WritePickups(state, WriteRolls(state, archive)))))));
             archive = SimFloorHuggerArchive.Write(state, SimCeilingHuggerArchive.Write(state, SimProjectilePointerArchive.Write(state, SimProjectileLifetimeArchive.Write(state, archive))));
-            return SimThruSpeciesArchive.Write(state, SimMissileThruSpeciesArchive.Write(state, SimThruActorsArchive.Write(state, SimBlastEligibilityArchive.Write(state, SimBlastedArchive.Write(state, archive)))));
+            return SimThruBitsArchive.Write(state, SimThruSpeciesArchive.Write(state, SimMissileThruSpeciesArchive.Write(state, SimThruActorsArchive.Write(state, SimBlastEligibilityArchive.Write(state, SimBlastedArchive.Write(state, archive))))));
         }
         return buffer;
     }
@@ -319,6 +323,7 @@ public static class SimSavegame
         }
 
         var version = BinaryPrimitives.ReadUInt16LittleEndian(bytes[4..]);
+        if (version == 32) return SimThruBitsArchive.TryRead(bytes, out state, out error);
         if (version == 31) return SimThruSpeciesArchive.TryRead(bytes, out state, out error);
         if (version == 30) return SimMissileThruSpeciesArchive.TryRead(bytes, out state, out error);
         if (version == 29) return SimThruActorsArchive.TryRead(bytes, out state, out error);

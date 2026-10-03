@@ -17,7 +17,7 @@ public class ThruSpeciesArchiveTests
         mover.Blasted = true; mover.VelocityX = Fixed.FromInt(3); var state = sim.CaptureState();
         if (serialized)
         {
-            var bytes = SimSavegame.Write(state);
+            var bytes = WriteVersion31(state);
             Assert.Equal(31, BinaryPrimitives.ReadUInt16LittleEndian(bytes.AsSpan(4)));
             Assert.True(SimSavegame.TryRead(bytes, out state, out var error), error);
         }
@@ -32,7 +32,7 @@ public class ThruSpeciesArchiveTests
     public void InvalidWireFlagRejectsApplyBeforeMutation(int flags)
     {
         var sim = Room(); var actor = sim.AddBot(0, 0); actor.Brain = null;
-        var bytes = SimSavegame.Write(sim);
+        var bytes = WriteVersion31(sim);
         BinaryPrimitives.WriteInt32LittleEndian(bytes.AsSpan(TrailerStart(bytes) + 8), flags);
         actor.ThruSpecies = true; sim.Tick(); var checksum = sim.Checksum;
         Assert.False(SimSavegame.TryRead(bytes, out var state, out var error));
@@ -49,7 +49,7 @@ public class ThruSpeciesArchiveTests
         var sim = Room(); var actor = sim.AddBot(0, 0); actor.Brain = null;
         var state = sim.CaptureState(); state.Actors[0].ThruSpeciesFlags = flags;
         actor.ThruSpecies = true; sim.Tick();
-        Assert.Throws<InvalidOperationException>(() => SimSavegame.Write(state));
+        Assert.Throws<InvalidOperationException>(() => WriteVersion31(state));
         Assert.Throws<InvalidOperationException>(() => sim.RestoreState(state));
         Assert.Equal(1, sim.Thinkers.Clock.Tic); Assert.True(actor.ThruSpecies);
     }
@@ -60,7 +60,7 @@ public class ThruSpeciesArchiveTests
     [InlineData("count")]
     public void InvalidTrailerIsRejected(string field)
     {
-        var sim = Room(); sim.AddBot(0, 0); var bytes = SimSavegame.Write(sim);
+        var sim = Room(); sim.AddBot(0, 0); var bytes = WriteVersion31(sim);
         var offset = field == "size" ? bytes.Length - 4 : TrailerStart(bytes) + (field == "count" ? 4 : 0);
         BinaryPrimitives.WriteInt32LittleEndian(bytes.AsSpan(offset), field == "prior" ? 31 : 0);
         Assert.False(SimSavegame.TryRead(bytes, out _, out var error));
@@ -72,7 +72,7 @@ public class ThruSpeciesArchiveTests
     {
         var sim = Room(); sim.AddBot(0, 0); sim.AddBot(100, 0);
         var state = sim.CaptureState(); state.Actors[1].ThruSpeciesFlags = null;
-        Assert.Throws<InvalidOperationException>(() => SimSavegame.Write(state));
+        Assert.Throws<InvalidOperationException>(() => WriteVersion31(state));
         Assert.Throws<InvalidOperationException>(() => sim.RestoreState(state));
     }
 
@@ -82,7 +82,7 @@ public class ThruSpeciesArchiveTests
     public void Version30PreservesCurrentFlag(bool enabled)
     {
         var sim = Room(); var actor = sim.AddBot(0, 0); var state = sim.CaptureState();
-        state.Actors[0].ThruSpeciesFlags = null; var bytes = SimSavegame.Write(state);
+        state.Actors[0].ThruSpeciesFlags = null; var bytes = WriteVersion31(state);
         Assert.Equal(30, BinaryPrimitives.ReadUInt16LittleEndian(bytes.AsSpan(4)));
         actor.ThruSpecies = enabled; SimSavegame.Apply(sim, bytes); Assert.Equal(enabled, actor.ThruSpecies);
     }
@@ -91,7 +91,7 @@ public class ThruSpeciesArchiveTests
     public void RestoredTargetOnlyFlagStillDoesNotGrantPassage()
     {
         var sim = Room(); var mover = sim.AddBot(0, 0); var target = sim.AddBot(50, 0);
-        target.ThruSpecies = true; var bytes = SimSavegame.Write(sim);
+        target.ThruSpecies = true; var bytes = WriteVersion31(sim);
         mover.ThruSpecies = true; target.ThruSpecies = false; SimSavegame.Apply(sim, bytes);
         Assert.False(ActorPhysics.TryMove(sim, mover, 20, 0, out _));
     }
@@ -107,7 +107,7 @@ public class ThruSpeciesArchiveTests
         carrier.Brain = rider.Brain = null; carrier.Height = Fixed.FromInt(16); carrier.ActsLikeBridge = true;
         rider.Z = carrier.Height; rider.OnGround = true; rider.ThruSpecies = enabled;
         var state = sim.CaptureState();
-        if (serialized) Assert.True(SimSavegame.TryRead(SimSavegame.Write(state), out state, out var error), error);
+        if (serialized) Assert.True(SimSavegame.TryRead(WriteVersion31(state), out state, out var error), error);
         rider.ThruSpecies = !enabled; sim.RestoreState(state);
         ActorPhysics.FitToSector(sim, rider); Assert.Equal(enabled ? 0 : 16, rider.Z.ToDouble());
     }
@@ -118,7 +118,7 @@ public class ThruSpeciesArchiveTests
     public void RestoredFlagDeterminesOccupancy(bool enabled)
     {
         var sim = Room(); var mover = sim.AddBot(0, 0); sim.AddBot(0, 0);
-        mover.ThruSpecies = enabled; var bytes = SimSavegame.Write(sim);
+        mover.ThruSpecies = enabled; var bytes = WriteVersion31(sim);
         mover.ThruSpecies = !enabled; SimSavegame.Apply(sim, bytes);
         Assert.Equal(enabled, ActorPhysics.CanOccupy(sim, mover));
     }
@@ -128,13 +128,19 @@ public class ThruSpeciesArchiveTests
     {
         var sim = Room(); var actor = sim.AddBot(0, 0);
         actor.MThruSpecies = actor.ThruSpecies = actor.ThruActors = actor.Boss = actor.DontBlast = actor.Blasted = true;
-        var bytes = SimSavegame.Write(sim);
+        var bytes = WriteVersion31(sim);
         actor.MThruSpecies = actor.ThruSpecies = actor.ThruActors = actor.Boss = actor.DontBlast = actor.Blasted = false;
         SimSavegame.Apply(sim, bytes);
         Assert.True(actor.MThruSpecies); Assert.True(actor.ThruSpecies); Assert.True(actor.ThruActors); Assert.True(actor.Boss);
         Assert.True(actor.DontBlast); Assert.True(actor.Blasted);
     }
 
+    private static byte[] WriteVersion31(AuthoritySimulation sim) => WriteVersion31(sim.CaptureState());
+    private static byte[] WriteVersion31(SimSaveState state)
+    {
+        foreach (var pose in state.Actors) pose.ThruBits = null;
+        return SimSavegame.Write(state);
+    }
     private static int TrailerStart(byte[] bytes) => bytes.Length - BinaryPrimitives.ReadInt32LittleEndian(bytes.AsSpan(bytes.Length - 4));
     private static AuthoritySimulation Room() => AuthoritySimulation.Start(new PlayLevel
     { Sectors = [new LevelSector { CeilingHeight = 256 }] });

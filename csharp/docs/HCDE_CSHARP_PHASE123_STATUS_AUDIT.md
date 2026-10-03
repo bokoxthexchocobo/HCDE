@@ -10661,11 +10661,34 @@ ThruBits is available through the managed actor property; custom class loading
 is not claimed. Radius damage remains separate. Phases 1–3 and invasion
 synchronization acceptance remain open.
 
+## Conversion and audit: passage mask persistence (2026-10-03)
+
+Closed ThruBits/ALLOWTHRUBITS pose persistence against native
+`AActor::Serialize` in `src/playsim/p_mobj.cpp`, which saves flags8 and
+thrubits. Managed poses now capture the uint32 mask and enable boolean,
+including explicit zero/false values. Managed archive version 32 wraps
+versions 18–31 with eight-byte records; mask decoding preserves all 32 bits
+and enabled values accept only 0/1. Older archives preserve current values.
+This is managed archive compatibility, not native savegame interoperability.
+
+Sixteen regressions cover memory/wire blast continuation with zero, disabled,
+enabled and high-bit masks; explicit clearing; invalid wire booleans;
+size/prior/count errors; incomplete all-zero tables; rejection before
+clock/mask/flag/checksum mutation; version 31 preservation and full-mask
+nested contact flag restoration. Version-specific fixtures explicitly omit
+newer metadata to retain their layout/corruption coverage. Full non-incremental
+Release rebuild: zero warnings/errors. Solution tests: 5,747 passed, zero
+failed/skipped (Playsim 4,620). Whitespace checks pass.
+
+Custom property loading/species, hitscan/puff policy, telefrag execution,
+actor recreation and native geometry/runtime acceptance remain incomplete.
+Phases 1–3 and invasion synchronization acceptance remain open.
+
 ## Validation
 
-- Release solution: **5,731 passed, zero failed/skipped**, 4,808 cases above baseline.
+- Release solution: **5,747 passed, zero failed/skipped**, 4,824 cases above baseline.
   Protocol 15; Gamedata 29; Transport 10; Master 1; RCON 6; MapLoader 533;
-  Playsim 4,604; Client 12; Net.Core 351; Pregame 97; Server 65; Scripting 8.
+  Playsim 4,620; Client 12; Net.Core 351; Pregame 97; Server 65; Scripting 8.
 - The lighting pass initially saw a five-second timeout in
   `Pump_LiveSessionReceivesGuestClientInput`; it passed the targeted rerun and the
   subsequent full solution run. No timeout/test-disabling workaround was added.
