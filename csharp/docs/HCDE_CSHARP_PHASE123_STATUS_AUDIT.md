@@ -8930,11 +8930,31 @@ voodoo-doll handling, native monster defaults, rider carrying/crushing, pickups,
 blockmap relinking and save/network state still need conversion or validation.
 Phases 1–3 and representative invasion synchronization validation remain open.
 
+## Ordinary player teleport reaction delay — 2026-10-03
+
+Native P_Teleport in `src/playsim/p_teleport.cpp` sets player reactiontime to
+18 for ordinary orientation-changing teleports, subject to native flag overrides
+and GetTeleportFreezeTime. Converted the default delay after successful managed
+TeleportActivator placement, connecting it to the existing player reaction gate.
+Failed destination lookup and non-player teleportation preserve reaction counters.
+
+Three regressions verify all 18 frozen command tics and subsequent resumed
+movement, failed teleport preservation, and monster counter preservation.
+Full Release solution: 5,028 passed, zero failed/skipped; Playsim 3,947.
+Warnings-as-errors build: zero warnings/errors; whitespace check passes.
+No checksum fields changed.
+
+Scope is the currently represented ordinary teleport helper. Keep-orientation,
+keep-velocity, destination fog options, custom GetTeleportFreezeTime, destination
+collision/telefragging, voodoo-doll identity and native activation cadence remain
+incomplete. This does not establish full teleport parity. Phases 1–3 and
+representative invasion synchronization validation remain open.
+
 ## Validation
 
-- Release solution: **5,025 passed, zero failed/skipped**, 4,102 cases above baseline.
+- Release solution: **5,028 passed, zero failed/skipped**, 4,105 cases above baseline.
   Protocol 15; Gamedata 18; Transport 10; Master 1; RCON 6; MapLoader 500;
-  Playsim 3,944; Client 12; Net.Core 351; Pregame 97; Server 63; Scripting 8.
+  Playsim 3,947; Client 12; Net.Core 351; Pregame 97; Server 63; Scripting 8.
 - The lighting pass initially saw a five-second timeout in
   `Pump_LiveSessionReceivesGuestClientInput`; it passed the targeted rerun and the
   subsequent full solution run. No timeout/test-disabling workaround was added.

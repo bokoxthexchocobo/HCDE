@@ -855,6 +855,7 @@ public static class LineSpecials
         activator.Angle = dest.Angle;
         activator.VelocityX = activator.VelocityY = activator.VelocityZ = default;
         ActorPhysics.PlaceOnFloor(sim, activator);
+        if (activator is PlayerPawn) activator.ReactionTime = 18;
         return true;
     }
 
