@@ -172,10 +172,11 @@ public sealed class MonsterBrain(MonsterAttack attack)
         {
             if (_nativeType == 71 && actor.IsDead && !actor.Destroyed && _deathTics < 32)
             {
-                if (_deathTics == 0) _deathTargetId = TargetId ?? actor.LastDamageSourceId;
+                if (_deathTics == 0) _deathTargetId = TargetId;
                 if (++_deathTics == 32)
                 {
-                    var deathTarget = sim.Actors.FirstOrDefault(candidate => candidate.Id == _deathTargetId && candidate.CanTakeDamage);
+                    var deathTarget = sim.Actors.FirstOrDefault(candidate => candidate.Id == _deathTargetId && !candidate.Destroyed);
+                    if (deathTarget != null && actor.IsFriend(deathTarget)) actor.Friendly = false;
                     foreach (var offset in new[] { 90, 180, 270 })
                         sim.SpawnLostSoul(actor, deathTarget, actor.Angle.ToDegrees() + offset);
                 }

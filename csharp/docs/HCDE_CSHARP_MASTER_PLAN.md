@@ -21,12 +21,12 @@ This document is the execution plan; that audit remains the detailed record.
 
 ## Verified checkpoint
 
-- Release solution: **4,799 passed; zero failed or skipped**.
+- Release solution: **4,804 passed; zero failed or skipped**.
 - Release build with warnings as errors: zero warnings/errors.
-- Tests by project: Playsim 3,726; MapLoader 500; Net.Core 351; Pregame 97;
+- Tests by project: Playsim 3,731; MapLoader 500; Net.Core 351; Pregame 97;
   Server 63; Protocol 15; Client 12; Gamedata 10; Transport 10; RCON 6; Master 1;
   Scripting 8.
-- Historical baseline: 923 tests at `55f8fa46`; 3,876 additional cases since then.
+- Historical baseline: 923 tests at `55f8fa46`; 3,881 additional cases since then.
 - October sync incorporated four upstream commits through `c367f081`, including
   ACS binding, gameplay parity, pickups/drops and inventory work. The current
   continuation adds read-only actor height/radius property queries and checks,
@@ -61,7 +61,9 @@ This document is the execution plan; that audit remains the detailed record.
   DEHACKED COUNTKILL changes set/clear the map actor classification. Spawned souls
   also inherit supported friendship and hate settings from their pain elemental.
   Soul target copying rejects NoTarget/NeverTarget and records valid targets in
-  hearing memory before charging.
+  hearing memory before charging. Pain-elemental death bursts now clear
+  friendliness when the retained target is a friend, and targetless deaths no
+  longer substitute the last damage source.
 - Earlier checkpoints: `0a37c839` gameplay/maps/invasion foundation,
   `55f8fa46` buffered authoritative input, `d792c54a` AI/sector/snapshot work.
 - Native invasion policy compilation was previously verified; a complete native

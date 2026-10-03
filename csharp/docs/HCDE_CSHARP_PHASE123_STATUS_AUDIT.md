@@ -8159,11 +8159,40 @@ charge-state scheduling. Death-time friendship changes, representative native
 invasion sessions and phase 1–3 acceptance remain open. This is source comparison
 and managed regression self-audit.
 
+## Conversion and audit: pain-elemental death friendship and target source (2026-10-03)
+
+Compared `A_PainDie` in `wadsrc/static/zscript/actors/doom/painelemental.zs`
+and `A_SetFriendly` in `wadsrc/static/zscript/actors/actor.zs`. Before spawning
+three souls, a native pain elemental clears friendliness when its target is a
+friend. The managed burst now evaluates the retained target's friendship when
+its delayed death action fires, including a dead target still present in the
+actor collection. Only Friendly changes; ownership and hate fields remain intact
+and pass to all children. A dead parent requires no living kill-total adjustment.
+
+The audit also removed the managed last-damage-source fallback: native spawning
+uses the parent's actual target. The managed death loop retains that target ID
+before clearing normal chase state. A targetless death therefore produces
+uncharging children with no copied target or hearing memory, regardless of damage
+attribution. Destroyed targets remain absent. This cached ID is still a managed
+approximation of the native persistent target pointer during death states.
+
+Five new cases cover living/dead friendly targets, a hostile target, friendship
+changing immediately before the burst and a targetless death with a friendly
+damage source. All three children are checked for inherited policy. Full Release
+suite: 4,804 passed, zero failed/skipped; Playsim 3,731. Warnings-as-errors build:
+zero warnings/errors; whitespace check passes. Existing invasion child-count and
+spawn tests pass. No checksum fields were added; player idle baseline unchanged.
+
+Source comparison and managed regression self-audit do not establish full native
+death-state scheduling, target-pointer mutation during death, non-shootable target
+copying, complete friendship/team semantics or engine acceptance. Native invasion
+sessions and complete phases 1–3 remain open.
+
 ## Validation
 
-- Release solution: **4,799 passed, zero failed/skipped**, 3,876 cases above baseline.
+- Release solution: **4,804 passed, zero failed/skipped**, 3,881 cases above baseline.
   Protocol 15; Gamedata 10; Transport 10; Master 1; RCON 6; MapLoader 500;
-  Playsim 3,726; Client 12; Net.Core 351; Pregame 97; Server 63; Scripting 8.
+  Playsim 3,731; Client 12; Net.Core 351; Pregame 97; Server 63; Scripting 8.
 - The lighting pass initially saw a five-second timeout in
   `Pump_LiveSessionReceivesGuestClientInput`; it passed the targeted rerun and the
   subsequent full solution run. No timeout/test-disabling workaround was added.
