@@ -31,7 +31,8 @@ public class Actor : Thinker
     public int ThingId { get; internal set; }
     /// <summary>Native <c>AActor::IsMapActor</c>. Owned inventory items are excluded from ACS thing counts.</summary>
     internal virtual bool IsMapActor => true;
-    internal virtual bool IsBlockmapActor => true;
+    public bool NoBlockmap { get; set; }
+    internal virtual bool IsBlockmapActor => !NoBlockmap;
     /// <summary>Native actor gravity multiplier; ACS reads/writes signed 16.16 values.</summary>
     public Fixed Gravity { get; set; } = Fixed.FromInt(1);
     /// <summary>Native DamageFactor, applied to incoming ordinary damage before armor.</summary>
@@ -1105,6 +1106,7 @@ public static class ActorSpawner
                 actor.CanPickupItems = (defaults.Bits & 0x00000800) != 0;
                 actor.Solid = (defaults.Bits & 0x00000002) != 0;
                 actor.Shootable = (defaults.Bits & 0x00000004) != 0;
+                actor.NoBlockmap = (defaults.Bits & 0x00000010) != 0;
                 actor.SpawnCeiling = (defaults.Bits & 0x00000100) != 0;
                 actor.NoGravity = (defaults.Bits & 0x00000200) != 0;
                 actor.AllowDropOff = (defaults.Bits & 0x00000400) != 0;
@@ -2621,6 +2623,7 @@ public sealed class AuthoritySimulation
             if (actor.NoAutoOffSkullFly) hash = Mix(hash, 0x534B554Cu);
             if (actor.SpawnCeiling) hash = Mix(hash, 0x4345494Cu);
             if (actor.NoBlockMonsters) hash = Mix(hash, 0x4E424D4Fu);
+            if (actor.NoBlockmap) hash = Mix(hash, 0x4E424D50u);
             hash = Mix(hash, actor.NoTarget ? 1u : 0u);
             hash = Mix(hash, actor.OnMobj ? 1u : 0u);
             hash = Mix(hash, actor.IsMonster ? 1u : 0u);

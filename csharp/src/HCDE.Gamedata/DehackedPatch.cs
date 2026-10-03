@@ -429,6 +429,7 @@ public static class DehackedPatch
         new Dictionary<string, uint>(StringComparer.OrdinalIgnoreCase)
         {
             ["SPECIAL"] = 1, ["SOLID"] = 2, ["SHOOTABLE"] = 4, ["AMBUSH"] = 32,
+            ["NOBLOCKMAP"] = 16,
             ["SPAWNCEILING"] = 256, ["NOGRAVITY"] = 512, ["DROPOFF"] = 1024,
             ["PICKUP"] = 2048, ["FLOAT"] = 16384, ["DROPPED"] = 131072,
             ["COUNTKILL"] = 4194304,

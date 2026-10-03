@@ -8813,11 +8813,30 @@ classes, MBF bounce classification, BLOCKASPLAYER, railing, portals and native
 map-session equivalence remain open. Phases 1–3, large-dimension storage and
 representative invasion synchronization validation remain incomplete.
 
+## DEHACKED NOBLOCKMAP combat picking — 2026-10-03
+
+Converted NOBLOCKMAP bit 4 from `wadsrc/static/dehsupp.txt` to actor NoBlockmap
+state at spawning. The existing IsBlockmapActor combat-trace filter now reflects
+that state; subclass exclusions remain intact. The actor flag adds a conditional
+checksum marker, preserving simulation hashes when unset.
+
+Five new cases verify named/numeric exclusion from CombatTrace.PickActor,
+shootability remaining enabled, replacing Bits restoring participation without
+mutating the baseline, and checksum participation. The fixture source is alive
+and traces through the target's vertical interior. Full Release solution:
+5,005 passed, zero failed/skipped; Playsim 3,924. Warnings-as-errors build:
+zero warnings/errors; whitespace check passes.
+
+Scope is the existing combat actor-picking path, not complete native blockmap
+membership. Physical collision, projectile contacts, radius damage, relinking
+and save/network transport of this flag still need conversion and native fixture
+validation. Phases 1–3 and invasion synchronization remain incomplete.
+
 ## Validation
 
-- Release solution: **5,000 passed, zero failed/skipped**, 4,077 cases above baseline.
+- Release solution: **5,005 passed, zero failed/skipped**, 4,082 cases above baseline.
   Protocol 15; Gamedata 18; Transport 10; Master 1; RCON 6; MapLoader 500;
-  Playsim 3,919; Client 12; Net.Core 351; Pregame 97; Server 63; Scripting 8.
+  Playsim 3,924; Client 12; Net.Core 351; Pregame 97; Server 63; Scripting 8.
 - The lighting pass initially saw a five-second timeout in
   `Pump_LiveSessionReceivesGuestClientInput`; it passed the targeted rerun and the
   subsequent full solution run. No timeout/test-disabling workaround was added.
