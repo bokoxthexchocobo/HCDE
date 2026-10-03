@@ -13,7 +13,7 @@ public class MassacreArchiveTests
         var sim = Room(); var parent = Assert.Single(sim.Actors);
         ActorDamage.Apply(parent, 1000, damageType: massacre ? "Massacre" : null);
         parent.InFloat = parent.VerticalFriction = floating;
-        var bytes = SimSavegame.Write(sim);
+        var bytes = WriteWithoutPainTimer(sim);
         Assert.Equal(massacre ? 20 : floating ? 19 : 18, BinaryPrimitives.ReadUInt16LittleEndian(bytes.AsSpan(4)));
         Assert.True(SimSavegame.TryRead(bytes, out var state, out var error), error);
         parent.Health = parent.ResurrectionHealth; parent.InFloat = parent.VerticalFriction = !floating;
@@ -29,7 +29,7 @@ public class MassacreArchiveTests
     public void InvalidDeathBitsAreRejected(int bits)
     {
         var sim = Room(); ActorDamage.Apply(Assert.Single(sim.Actors), 1000, damageType: "Massacre");
-        var bytes = SimSavegame.Write(sim);
+        var bytes = WriteWithoutPainTimer(sim);
         var size = BinaryPrimitives.ReadInt32LittleEndian(bytes.AsSpan(bytes.Length - 4));
         BinaryPrimitives.WriteInt32LittleEndian(bytes.AsSpan(bytes.Length - size + 8), bits);
         Assert.False(SimSavegame.TryRead(bytes, out var state, out var error));
@@ -42,6 +42,12 @@ public class MassacreArchiveTests
         var state = sim.CaptureState(); state.Actors[0].DeathFlags = 2;
         Assert.Throws<InvalidOperationException>(() => SimSavegame.Write(state));
         Assert.Throws<InvalidOperationException>(() => sim.RestoreState(state)); Assert.Equal(health, parent.Health);
+    }
+    private static byte[] WriteWithoutPainTimer(AuthoritySimulation sim)
+    {
+        var state = sim.CaptureState();
+        foreach (var pose in state.Actors) pose.PainDeath = null;
+        return SimSavegame.Write(state);
     }
     private static AuthoritySimulation Room() => AuthoritySimulation.Start(new PlayLevel {
         Sectors = [new LevelSector { CeilingHeight = 512 }], Things = [new LevelThing { Type = 71 }] });

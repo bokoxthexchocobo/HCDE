@@ -17,6 +17,8 @@ public sealed class MonsterBrain(MonsterAttack attack)
     private int _raiseTics;
     public int RaiseTics => _raiseTics;
     private bool _vileFire;
+    internal SimPainDeath? CapturePainDeath() => _nativeType == 71 ? new(_deathTics, _deathTargetId) : null;
+    internal void RestorePainDeath(SimPainDeath state) { _deathTics = state.Tics; _deathTargetId = state.TargetId; }
     internal bool HasPendingDeathAction => _nativeType == 71 && _deathTics < 32;
     public bool Enabled { get; set; } = true;
     public MonsterAttack Attack { get; } = attack;

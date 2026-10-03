@@ -27,6 +27,7 @@ public sealed class SimActorPose
     public int? ContactFlags { get; internal set; }
     public int? FloatFlags { get; internal set; }
     public int? DeathFlags { get; internal set; }
+    public SimPainDeath? PainDeath { get; internal set; }
 }
 
 public sealed class SimSaveState
@@ -68,6 +69,7 @@ public static class SimSavegame
         ValidateContactFlags(state);
         ValidateFloatFlags(state);
         ValidateDeathFlags(state);
+        SimPainDeathArchive.Validate(state);
         if (state.Actors.Any(actor => actor.Pickup.HasValue) &&
             (state.GeometryHealth is null || state.Actors.Any(actor => !actor.Roll.HasValue)))
             throw new InvalidOperationException("Saved pickup properties require a complete current archive.");
@@ -164,7 +166,7 @@ public static class SimSavegame
             buffer.CopyTo(archive, 0);
             trailer.CopyTo(archive, buffer.Length);
             BinaryPrimitives.WriteUInt16LittleEndian(archive.AsSpan(4), 15);
-            return WriteDeathFlags(state, WriteFloatFlags(state, WriteContactFlags(state, WritePickups(state, WriteRolls(state, archive)))));
+            return SimPainDeathArchive.Write(state, WriteDeathFlags(state, WriteFloatFlags(state, WriteContactFlags(state, WritePickups(state, WriteRolls(state, archive))))));
         }
         return buffer;
     }
@@ -295,6 +297,7 @@ public static class SimSavegame
         }
 
         var version = BinaryPrimitives.ReadUInt16LittleEndian(bytes[4..]);
+        if (version == 21) return SimPainDeathArchive.TryRead(bytes, out state, out error);
         if (version == 20)
         {
             var size = BinaryPrimitives.ReadInt32LittleEndian(bytes[^4..]);

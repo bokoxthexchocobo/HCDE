@@ -2175,6 +2175,7 @@ public sealed class AuthoritySimulation
                 ContactFlags = (actor.CanPickupItems ? 1 : 0) | (actor.SpecialPickup ? 2 : 0),
                 FloatFlags = (actor.InFloat ? 1 : 0) | (actor.VerticalFriction ? 2 : 0),
                 DeathFlags = actor.DeathDamageType == "Massacre" ? 1 : 0,
+                PainDeath = actor.Brain?.CapturePainDeath(),
                 Pickup = PickupCatalog.IsPickup(actor.DoomEdNum)
                     ? new SimPickupProperties(actor.PickupAmount, actor.IgnoreAmmoSkill, actor.Depleted) : null,
                 Health = actor.Health,
@@ -2206,6 +2207,7 @@ public sealed class AuthoritySimulation
         SimSavegame.ValidateContactFlags(state);
         SimSavegame.ValidateFloatFlags(state);
         SimSavegame.ValidateDeathFlags(state);
+        SimPainDeathArchive.Validate(state);
         if (state.GeometryHealth is { } savedHealth && (savedHealth.Lines.Count != Level.Lines.Count
             || savedHealth.Sectors.Count != Level.Sectors.Count || !savedHealth.Groups.Keys.Order().SequenceEqual(HealthGroups.Keys.Order())))
             throw new InvalidOperationException("Saved geometry health does not match the current map.");
@@ -2287,6 +2289,7 @@ public sealed class AuthoritySimulation
             actor.Y = new Fixed(pose.Y);
             actor.Angle = new BamAngle(pose.Angle);
             actor.PitchDegrees = new Fixed(pose.Pitch).ToDouble();
+            if (pose.PainDeath is { } painDeath && actor.Brain?.CapturePainDeath() != null) actor.Brain.RestorePainDeath(painDeath);
             actor.RestoreHealth(pose.Health);
             if (pose.DeathFlags is { } deathFlags) actor.DeathDamageType = deathFlags == 1 ? "Massacre" : null;
             if (pose.Roll is { } roll) actor.Roll = new BamAngle(roll);

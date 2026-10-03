@@ -10043,11 +10043,35 @@ savegames. Full AI/death-timer rollback, actor membership restoration, network
 schema, native-engine sessions, invasion synchronization acceptance, and
 phases 1–3 completion remain open.
 
+## Pain Elemental delayed death archive checkpoint (2026-10-03)
+
+Captured/restored the converted Pain Elemental brain's delayed death counter and
+saved death target. Previously restoring a mid-death pose left the brain at its
+later counter, allowing early bursts or losing the pending action. HCSV version
+21 carries optional per-actor counter/target records over versions 18–20; absent
+records preserve legacy behavior. Counter bounds are 0–32, with -1 reserved for
+no record in the wire trailer. Existing brain checksum already covers this state.
+
+Six regressions verify in-memory and serialized mid-death restoration, exact
+remaining delay, no repeated burst after restoring a completed sequence, invalid
+wire counters, and invalid in-memory state rejected before pose mutation. Updated
+float/death flag archive fixtures to omit the new timer record explicitly so
+their older trailer corruption tests continue targeting the intended versions.
+Full Release solution: 5,392 passed, zero failed/skipped; Playsim 4,265.
+Release warnings-as-errors build and whitespace checks passed; existing archive,
+trace, and invasion server tests passed. Version 21 requires the updated reader.
+
+Scope is the converted Pain Elemental death timer/target on an existing matching
+brain. Full brain mode/target/threshold rollback, mismatch handling, actor
+membership and invasion director restoration remain open, so this is not full
+world rollback or native savegame parity. Native sessions, invasion synchronization
+acceptance, and phases 1–3 completion remain open.
+
 ## Validation
 
-- Release solution: **5,386 passed, zero failed/skipped**, 4,463 cases above baseline.
+- Release solution: **5,392 passed, zero failed/skipped**, 4,469 cases above baseline.
   Protocol 15; Gamedata 29; Transport 10; Master 1; RCON 6; MapLoader 533;
-  Playsim 4,259; Client 12; Net.Core 351; Pregame 97; Server 65; Scripting 8.
+  Playsim 4,265; Client 12; Net.Core 351; Pregame 97; Server 65; Scripting 8.
 - The lighting pass initially saw a five-second timeout in
   `Pump_LiveSessionReceivesGuestClientInput`; it passed the targeted rerun and the
   subsequent full solution run. No timeout/test-disabling workaround was added.
