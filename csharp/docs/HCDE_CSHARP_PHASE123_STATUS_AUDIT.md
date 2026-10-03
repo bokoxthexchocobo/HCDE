@@ -8493,11 +8493,34 @@ or complete DEHACKED flag translation. Source/regression self-audit does not
 replace representative native invasion sessions or complete phases 1–3, which
 remain open.
 
+## Conversion and audit: DEHACKED ceiling spawn placement (2026-10-03)
+
+Converted MF_SPAWNCEILING (0x00000100) from `src/playsim/actor.h` and map
+spawn placement in `src/playsim/p_mobj.cpp`. Explicit Bits patches initialize
+Actor.SpawnCeiling. Initial managed placement uses ceiling minus actor height
+minus map Z offset when enabled; normal floor spawning adds the offset. Gravity
+remains independent. Existing sector fitting and managed coordinate bounds still
+apply after placement.
+
+Six cases cover floor/ceiling origin with zero and positive offsets, a ceiling
+spawn subsequently falling without NOGRAVITY, and checksum distinction/convergence
+for the flag alone. A conditional enabled-flag checksum marker preserves existing
+false-default baselines. Full Release suite: 4,888 passed, zero failed/skipped;
+Playsim 3,815. Warnings-as-errors build: zero warnings/errors; whitespace check
+passes. Existing spawn, patch and invasion cases pass; player idle baseline
+unchanged. Unrelated line-ending edits remain outside this commit.
+
+This is initial map placement for a supported flag, not native ceiling class
+catalogs, slopes/3D floors/portals, dynamic spawn, respawn default restoration or
+full save/network serialization. Native player-specific spawn-height policy and
+extreme coordinate behavior remain unfinished. Source/regression self-audit does
+not replace native invasion sessions or full phases 1–3, which remain open.
+
 ## Validation
 
-- Release solution: **4,882 passed, zero failed/skipped**, 3,959 cases above baseline.
+- Release solution: **4,888 passed, zero failed/skipped**, 3,965 cases above baseline.
   Protocol 15; Gamedata 10; Transport 10; Master 1; RCON 6; MapLoader 500;
-  Playsim 3,809; Client 12; Net.Core 351; Pregame 97; Server 63; Scripting 8.
+  Playsim 3,815; Client 12; Net.Core 351; Pregame 97; Server 63; Scripting 8.
 - The lighting pass initially saw a five-second timeout in
   `Pump_LiveSessionReceivesGuestClientInput`; it passed the targeted rerun and the
   subsequent full solution run. No timeout/test-disabling workaround was added.

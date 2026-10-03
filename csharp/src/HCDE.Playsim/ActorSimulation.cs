@@ -70,6 +70,7 @@ public class Actor : Thinker
     /// <summary>Native <c>MF7_HARMFRIENDS</c>. At standard infighting, this shooter may hurt friendlies.</summary>
     public bool HarmFriends { get; set; }
     public double SpawnZOffset { get; init; }
+    public bool SpawnCeiling { get; set; }
     public Fixed X { get; set; }
     public Fixed Y { get; set; }
     public Fixed Z { get; set; }
@@ -1103,6 +1104,7 @@ public static class ActorSpawner
                 actor.CanPickupItems = (defaults.Bits & 0x00000800) != 0;
                 actor.Solid = (defaults.Bits & 0x00000002) != 0;
                 actor.Shootable = (defaults.Bits & 0x00000004) != 0;
+                actor.SpawnCeiling = (defaults.Bits & 0x00000100) != 0;
                 actor.NoGravity = (defaults.Bits & 0x00000200) != 0;
                 actor.AllowDropOff = (defaults.Bits & 0x00000400) != 0;
                 actor.Floating = (defaults.Bits & 0x00004000) != 0;
@@ -1196,8 +1198,11 @@ public sealed class AuthoritySimulation
         {
             actor.Simulation = this;
             ActorPhysics.PlaceOnFloor(this, actor);
-            actor.Z = Fixed.FromDouble(Math.Clamp(actor.Z.ToDouble() + actor.SpawnZOffset, short.MinValue, short.MaxValue));
-            actor.OnGround = actor.SpawnZOffset <= 0;
+            var spawnZ = actor.SpawnCeiling
+                ? CeilingOf(actor.SectorIndex) - actor.Height.ToDouble() - actor.SpawnZOffset
+                : actor.Z.ToDouble() + actor.SpawnZOffset;
+            actor.Z = Fixed.FromDouble(Math.Clamp(spawnZ, short.MinValue, short.MaxValue));
+            actor.OnGround = actor.SpawnCeiling ? actor.Z.ToDouble() <= FloorOf(actor.SectorIndex) : actor.SpawnZOffset <= 0;
             ActorPhysics.FitToSector(this, actor, carryFloor: false);
             actor.RememberPosition();
         }
@@ -2611,6 +2616,7 @@ public sealed class AuthoritySimulation
             hash = Mix(hash, actor.IceShatter ? 1u : 0u);
             hash = Mix(hash, actor.NeverTarget ? 1u : 0u);
             if (actor.NoAutoOffSkullFly) hash = Mix(hash, 0x534B554Cu);
+            if (actor.SpawnCeiling) hash = Mix(hash, 0x4345494Cu);
             hash = Mix(hash, actor.NoTarget ? 1u : 0u);
             hash = Mix(hash, actor.OnMobj ? 1u : 0u);
             hash = Mix(hash, actor.IsMonster ? 1u : 0u);
