@@ -9358,11 +9358,32 @@ Hexen; UDMF shares dispatch. Packed/result ACS variants share dispatch without
 new dedicated tests. Native session acceptance, phases 1–3 and invasion
 validation remain incomplete.
 
+## Conversion and audit: Thing_Remove actor action (2026-10-03)
+
+Converted special 132 targeting and base removal against `LS_Thing_Remove`
+in `src/playsim/p_lnspec.cpp` and `P_RemoveThing` in
+`src/playsim/p_things.cpp`. Extended map and ACS direct/stack dispatch remove
+all matching non-player world actors, or the activator for TID zero. Targets
+are captured before destruction. PlayerPawn is protected; missing targets
+return success. Destroyed actors are excluded from subsequent TID actions.
+
+Seven regressions cover both map formats, multiple targets, player protection,
+zero-TID direct/stack ACS, continued script execution after removing its own
+activator, and missing-target success. Full Release solution: 5,142 passed,
+zero failed/skipped; Playsim 4,061. Release warnings-as-errors build and
+whitespace check pass. Existing destroyed-state handling applies.
+Native player identity/voodoo dolls, IsMapActor owned-inventory exclusion,
+ClearCounters level statistics, complete actor lifecycle persistence/network
+removal and native session acceptance remain incomplete. Managed PlayerPawn
+protection is broader than native's current-player identity test. Packed/
+result ACS variants share dispatch without dedicated new tests. Phases 1–3
+and invasion synchronization validation remain incomplete.
+
 ## Validation
 
-- Release solution: **5,135 passed, zero failed/skipped**, 4,212 cases above baseline.
+- Release solution: **5,142 passed, zero failed/skipped**, 4,219 cases above baseline.
   Protocol 15; Gamedata 18; Transport 10; Master 1; RCON 6; MapLoader 500;
-  Playsim 4,054; Client 12; Net.Core 351; Pregame 97; Server 63; Scripting 8.
+  Playsim 4,061; Client 12; Net.Core 351; Pregame 97; Server 63; Scripting 8.
 - The lighting pass initially saw a five-second timeout in
   `Pump_LiveSessionReceivesGuestClientInput`; it passed the targeted rerun and the
   subsequent full solution run. No timeout/test-disabling workaround was added.
