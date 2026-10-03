@@ -603,11 +603,10 @@ public static class ActorPhysics
 
     private static bool Blocks(AuthoritySimulation sim, Actor actor, LevelLine line)
     {
-        const int blockFloaters = 0x00040000; // ML_BLOCK_FLOATERS (doomdata.h)
         if (line.BlocksMovement) return true;
-        if ((line.Flags & 2) != 0 && actor is not PlayerPawn and not ProjectileActor
+        if ((line.Flags & LevelLine.BlockMonstersFlag) != 0 && actor is not PlayerPawn and not ProjectileActor
             && !actor.NoBlockMonsters) return true;
-        if (actor.Floating && (line.Flags & blockFloaters) != 0) return true;
+        if (actor.Floating && (line.Flags & LevelLine.BlockFloatersFlag) != 0) return true;
         var front = SideSector(sim.Level, line.SideFront);
         var back = SideSector(sim.Level, line.SideBack);
         if (front < 0 || back < 0) return false;

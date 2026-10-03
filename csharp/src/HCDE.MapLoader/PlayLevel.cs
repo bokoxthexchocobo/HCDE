@@ -92,6 +92,8 @@ public sealed class LevelLine
     public IReadOnlyList<int> AdditionalIds { get; init; } = Array.Empty<int>();
     public bool HasId(int id) => id != -1 && (Tag == id || AdditionalIds.Contains(id));
     public const int BlockingFlag = 1;
+    public const int BlockMonstersFlag = 2;
+    public const int BlockFloatersFlag = 0x00040000;
     public const int TwoSidedFlag = 4;
     public const int BlockSoundFlag = 0x40;
     public const int BlockEverythingFlag = 0x00008000;
@@ -434,6 +436,8 @@ public static class LevelBuilder
             if (source.BlockHitscan) flags |= LevelLine.BlockHitscanFlag;
             if (source.BlockProjectiles) flags |= LevelLine.BlockProjectileFlag;
             if (source.BlockSound) flags |= LevelLine.BlockSoundFlag;
+            if (source.BlockMonsters) flags |= LevelLine.BlockMonstersFlag;
+            if (source.BlockFloaters) flags |= LevelLine.BlockFloatersFlag;
             lines[i] = new LevelLine
             {
                 Index = i,

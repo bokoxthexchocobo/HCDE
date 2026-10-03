@@ -24,6 +24,8 @@ public sealed class UdmfLinedef
     public bool BlockHitscan { get; set; }
     public bool BlockProjectiles { get; set; }
     public bool BlockSound { get; set; }
+    public bool BlockMonsters { get; set; }
+    public bool BlockFloaters { get; set; }
     public bool TwoSided { get; set; }
     public bool PlayerCross { get; set; }
     public bool PlayerUse { get; set; }
@@ -335,6 +337,8 @@ public static class UdmfTextMapParser
             BlockHitscan = Bool(fields, "blockhitscan"),
             BlockProjectiles = Bool(fields, "blockprojectiles"),
             BlockSound = Bool(fields, "blocksound"),
+            BlockMonsters = Bool(fields, "blockmonsters"),
+            BlockFloaters = Bool(fields, "blockfloaters"),
             TwoSided = Bool(fields, "twosided"),
             PlayerCross = Bool(fields, "playercross"),
             PlayerUse = Bool(fields, "playeruse"),

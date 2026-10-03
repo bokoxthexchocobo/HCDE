@@ -8768,11 +8768,33 @@ blockfloaters ingestion, Strife-format remapping, trace-specific predicates,
 MBF21 blocking options and representative native-engine fixtures remain open.
 Phases 1–3 and invasion synchronization validation remain incomplete.
 
+## UDMF monster/floater blocking ingestion — 2026-10-03
+
+Converted `blockmonsters` and `blockfloaters` linedef booleans through
+UdmfTextMapParser and LevelBuilder, following native `src/maploader/udmf.cpp`
+and flag values in `src/doomdata.h`. Actor physics now uses shared LevelLine
+constants for both predicates. These fields previously disappeared during loading.
+
+Six regressions parse ZDoom UDMF linedefs, build their runtime flags and exercise
+actor movement in a two-sector fixture. Coverage includes true/false fields,
+combined flags, friendly monster exemption, floating and no-gravity differences.
+Full Release solution: 4,994 passed, zero failed/skipped; Playsim 3,913.
+Warnings-as-errors build: zero warnings/errors. Whitespace check passes.
+No checksum fields changed; unrelated working-copy line-ending changes remain.
+
+Scope is linedef field ingestion into the existing managed geometry path.
+Native namespace restrictions on blockfloaters are not enforced, consistent with
+other existing extended parser fields; namespace validation remains incomplete.
+The fixture uses parsed linedefs with established room geometry rather than a
+complete native-engine map session. Strife binary remapping, trace predicates,
+MBF21 options and invasion synchronization validation remain open. Phases 1–3
+are incomplete.
+
 ## Validation
 
-- Release solution: **4,988 passed, zero failed/skipped**, 4,065 cases above baseline.
+- Release solution: **4,994 passed, zero failed/skipped**, 4,071 cases above baseline.
   Protocol 15; Gamedata 18; Transport 10; Master 1; RCON 6; MapLoader 500;
-  Playsim 3,907; Client 12; Net.Core 351; Pregame 97; Server 63; Scripting 8.
+  Playsim 3,913; Client 12; Net.Core 351; Pregame 97; Server 63; Scripting 8.
 - The lighting pass initially saw a five-second timeout in
   `Pump_LiveSessionReceivesGuestClientInput`; it passed the targeted rerun and the
   subsequent full solution run. No timeout/test-disabling workaround was added.
