@@ -383,7 +383,7 @@ public static class ActorPhysics
                 actor.Z = previousZ;
                 actor.Brain!.StopCharge(actor);
                 if (victim?.CanTakeDamage == true)
-                    ActorDamage.Apply(victim, 3 * (1 + (int)(sim.NextCombatRandom() % 8)), actor, inflictor: actor);
+                    ActorDamage.Apply(victim, (int)Math.Clamp((long)actor.Damage * (1 + (int)(sim.NextCombatRandom() % 8)), 0, int.MaxValue), actor, inflictor: actor);
                 return;
             }
             actor.OnGround = actor.Z.ToDouble() <= sim.FloorOf(actor.SectorIndex);

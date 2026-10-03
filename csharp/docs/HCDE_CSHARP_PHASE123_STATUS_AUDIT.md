@@ -8310,11 +8310,38 @@ movement and dormant-state scheduling remain incomplete. Source/regression
 self-audit does not establish native engine acceptance. Representative invasion
 sessions and complete phases 1–3 remain open.
 
+## Conversion and audit: actor damage drives skull collisions (2026-10-03)
+
+Compared `AActor::Slam` in `src/playsim/p_mobj.cpp`, skull collision dispatch
+in `src/playsim/p_map.cpp` and LostSoul's Damage 3 definition in
+`wadsrc/static/zscript/actors/doom/lostsoul.zs`. Native slam uses
+GetMissileDamage(7, 1), rather than a hardcoded base. Managed charge collisions
+now multiply Actor.Damage by the existing one-through-eight random roll. The
+catalog tracks Damage (default zero), with LostSoul set to 3. Map spawning, bots
+and pain-elemental children initialize the catalog value. The existing ACS
+Damage property already writes the same actor field.
+
+Five new cases cover default/custom/zero/negative damage through actual charge
+collisions and verify initialization on all three supported spawn paths. Negative
+stored values produce zero damage in the managed no-damage-function subset;
+wide intermediates clamp positive overflow. Native damage-function evaluation,
+negative function sentinels and overflow/RNG stream parity are not established.
+Full Release suite: 4,837 passed, zero failed/skipped; Playsim 3,764.
+Warnings-as-errors build: zero warnings/errors; whitespace check passes. Existing
+charge and invasion cases pass. Actor.Damage already participates in checksums;
+player-only idle baseline unchanged.
+
+This closes the configurable base-damage gap for supported skull collisions.
+DEHACKED missile-damage initialization, mod class defaults, typed Melee damage,
+bleed, dormant/OnlySlamSolid/RetargetAfterSlam flags and full native state-action
+semantics remain incomplete. Source/regression self-audit does not replace native
+invasion sessions or complete phase 1–3 acceptance, which remain open.
+
 ## Validation
 
-- Release solution: **4,832 passed, zero failed/skipped**, 3,909 cases above baseline.
+- Release solution: **4,837 passed, zero failed/skipped**, 3,914 cases above baseline.
   Protocol 15; Gamedata 10; Transport 10; Master 1; RCON 6; MapLoader 500;
-  Playsim 3,759; Client 12; Net.Core 351; Pregame 97; Server 63; Scripting 8.
+  Playsim 3,764; Client 12; Net.Core 351; Pregame 97; Server 63; Scripting 8.
 - The lighting pass initially saw a five-second timeout in
   `Pump_LiveSessionReceivesGuestClientInput`; it passed the targeted rerun and the
   subsequent full solution run. No timeout/test-disabling workaround was added.

@@ -1,7 +1,7 @@
 namespace HCDE.Gamedata;
 
 /// <summary>Default map actor dimensions and health from wadsrc/static/zscript/actors/doom.</summary>
-public sealed record DoomActorDefinition(int EditorNumber, int Health, int Radius, int Height, int Speed, int PainChance, bool Floating = false, bool NoRadiusDamage = false);
+public sealed record DoomActorDefinition(int EditorNumber, int Health, int Radius, int Height, int Speed, int PainChance, bool Floating = false, bool NoRadiusDamage = false, int Damage = 0);
 
 public static class DoomActorCatalog
 {
@@ -36,7 +36,7 @@ public static class DoomActorCatalog
         new(3002,150,30,56,10,180), new(58,150,30,56,10,180),
         new(3005,400,31,56,8,128,true), new(3003,1000,24,64,8,50), new(69,500,24,64,8,50),
         new(64,700,20,56,15,10), new(66,300,20,56,10,100), new(67,600,48,64,8,80),
-        new(68,500,64,64,12,128), new(71,400,31,56,8,128,true), new(3006,100,16,56,8,256,true),
+        new(68,500,64,64,12,128), new(71,400,31,56,8,128,true), new(3006,100,16,56,8,256,true,Damage:3),
         new(16,4000,40,110,16,20,NoRadiusDamage:true), new(7,3000,128,100,12,40,NoRadiusDamage:true),
     }.ToDictionary(definition => definition.EditorNumber);
 

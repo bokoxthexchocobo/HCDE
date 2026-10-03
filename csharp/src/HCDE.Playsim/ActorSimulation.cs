@@ -1110,6 +1110,7 @@ public static class ActorSpawner
             actor.RaiseDuration = ArchvileActions.RaiseDuration(definitionType);
             actor.Ambush = thing.Ambush;
             actor.Brain = MonsterBrain.ForType(definitionType);
+            if (!playerStart) actor.Damage = definition?.Damage ?? 0;
             actor.IsMonster = !playerStart && (defaults is { BitsPatched: true }
                 ? (defaults.Bits & 0x00400000) != 0
                 : actor.Brain != null);
@@ -1787,6 +1788,7 @@ public sealed class AuthoritySimulation
                 ? new MonsterBrain(MonsterAttack.Hitscan)
                 : MonsterBrain.ForType(doomEdNum) ?? new MonsterBrain(MonsterAttack.Hitscan),
             IsMonster = true,
+            Damage = DoomActorCatalog.Find(doomEdNum)?.Damage ?? 0,
         };
         bot.RememberPosition();
         bot.Simulation = this;
@@ -1955,7 +1957,7 @@ public sealed class AuthoritySimulation
             GibHealth = definition.Health > 0 ? -definition.Health : -1,
             PainChance = definition.PainChance, ChaseSpeed = definition.Speed / 4.0,
             NoGravity = true, OnGround = false, SectorIndex = parent.SectorIndex,
-            Floating = true, IsMonster = true,
+            Floating = true, IsMonster = true, Damage = definition.Damage,
             Mass = DoomActorCatalog.MassOf(3006),
             Brain = MonsterBrain.ForType(3006), Angle = BamAngle.FromDegrees(angle),
         };
