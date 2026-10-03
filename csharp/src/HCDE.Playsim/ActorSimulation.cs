@@ -51,11 +51,13 @@ public class Actor : Thinker
     /// <summary>Native MF_DROPPED; independent of ammo skill handling and pickup amount.</summary>
     public bool Dropped { get; set; }
     private int _reactionTime;
-    /// <summary>ACS reaction counter; managed monster brains own the active AI countdown.</summary>
+    private bool _reactionTimeInitialized;
+    internal bool ReactionTimeInitialized => _reactionTimeInitialized;
+    /// <summary>Native actor reaction counter; attached managed brains use this same state.</summary>
     public int ReactionTime
     {
-        get => Brain?.ReactionTics ?? _reactionTime;
-        set { _reactionTime = value; Brain?.SetReactionTime(value); }
+        get => _reactionTime;
+        set { _reactionTime = value; _reactionTimeInitialized = true; }
     }
     /// <summary>Native <c>TIDtoHate</c>. Teammates share this value; a shooter may hurt or wake actors whose <see cref="ThingId"/> matches.</summary>
     public int TidToHate { get; set; }
@@ -241,7 +243,20 @@ public class Actor : Thinker
     /// <summary>Native <c>MF5_DONTDRAIN</c>. A draining player gains nothing from this actor.</summary>
     public bool DontDrain { get; set; }
     internal AuthoritySimulation? Simulation { get; set; }
-    public MonsterBrain? Brain { get; set; }
+    private MonsterBrain? _brain;
+    public MonsterBrain? Brain
+    {
+        get => _brain;
+        set
+        {
+            if (ReferenceEquals(_brain, value)) return;
+            value?.ValidateOwner(this);
+            if (!_reactionTimeInitialized && value != null) ReactionTime = value.ReactionTics;
+            _brain?.DetachOwner(this);
+            _brain = value;
+            _brain?.AttachOwner(this);
+        }
+    }
     public Fixed PreviousX { get; private set; }
     public Fixed PreviousY { get; private set; }
     public BamAngle Angle { get; set; }
@@ -2619,6 +2634,7 @@ public sealed class AuthoritySimulation
             hash = Mix(hash, unchecked((uint)actor.Damage));
             hash = Mix(hash, actor.Dropped ? 1u : 0u);
             hash = Mix(hash, unchecked((uint)actor.ReactionTime));
+            hash = Mix(hash, actor.ReactionTimeInitialized ? 1u : 0u);
             hash = Mix(hash, actor.NoRadiusDamage ? 1u : 0u);
             hash = Mix(hash, actor.NoSectorDamage ? 1u : 0u);
             hash = Mix(hash, actor.ForceSectorDamage ? 1u : 0u);

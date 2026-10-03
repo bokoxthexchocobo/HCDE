@@ -25,6 +25,6 @@ public class ManagedGameplayTraceTests
         Assert.Equal(64, player.Y.ToDouble());
         Assert.Equal(100, player.Health);
         // Includes wall and plane texture transforms in the managed diagnostic hash.
-        Assert.Equal(3861582658u, sim.Checksum); // Includes ReactionTime, Dropped and configurable actor/player properties.
+        Assert.Equal(1449899472u, sim.Checksum); // Includes reaction initialization, Dropped and configurable actor/player properties.
     }
 }

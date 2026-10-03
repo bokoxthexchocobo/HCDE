@@ -7877,11 +7877,37 @@ CheckMoveUpDown, swim/fly paths, full crouch ordering, teleport delay initializa
 class defaults, general freeze flags and save/network state remain incomplete.
 The earlier monster shared raise/reaction-counter limitation also remains open.
 
+## Actor-owned reaction state and brain lifecycle (2026-10-03)
+
+Continued reaction conversion to match native actor-owned reactiontime storage.
+The prior property wrapper stored a stale fallback while MonsterBrain held the
+active counter, so removing/replacing a brain could lose or restore old values.
+Actor now owns the counter; an attached brain reads/writes that same field.
+Detachment snapshots the value only for the detached brain, and replacement
+preserves the actor's current value. Explicit values set before first attachment,
+including zero, take precedence over the existing managed brain default (10).
+One brain cannot be attached simultaneously to two actors; validation precedes
+mutation so a rejected attachment preserves both actors' state.
+
+Nine new regressions cover live countdown through removal/reattachment, replacement,
+explicit zero/negative/positive initial values, existing default initialization,
+shared-brain rejection, isolation after detachment and checksum initialization
+state. Existing ACS, player movement, wake-up and raise tests pass. The explicit
+initialization bit enters hashing because it affects future first attachment;
+idle hash becomes 1449899472, with position/health/tic assertions unchanged.
+Full suite: 4,725 passed, zero failed/skipped; Release warnings-as-errors build:
+zero warnings/errors. Source review and regression self-audit only.
+
+This closes the earlier brain replacement/removal state-loss gap. Managed raise
+delay still shares the reaction counter; native class defaults, chase timing,
+general brain serialization and save/network replication remain open. The retained
+managed default is not claimed to match every native actor class.
+
 ## Validation
 
-- Release solution: **4,716 passed, zero failed/skipped**, 3,793 cases above baseline.
+- Release solution: **4,725 passed, zero failed/skipped**, 3,802 cases above baseline.
   Protocol 15; Gamedata 10; Transport 10; Master 1; RCON 6; MapLoader 500;
-  Playsim 3,643; Client 12; Net.Core 351; Pregame 97; Server 63; Scripting 8.
+  Playsim 3,652; Client 12; Net.Core 351; Pregame 97; Server 63; Scripting 8.
 - The lighting pass initially saw a five-second timeout in
   `Pump_LiveSessionReceivesGuestClientInput`; it passed the targeted rerun and the
   subsequent full solution run. No timeout/test-disabling workaround was added.

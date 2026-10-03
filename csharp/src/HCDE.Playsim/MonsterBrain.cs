@@ -26,8 +26,26 @@ public sealed class MonsterBrain(MonsterAttack attack)
     public int Threshold { get; private set; }
     /// <summary>Native <c>DefThreshold</c>. Wake-up reloads <see cref="Threshold"/> from this value.</summary>
     public int DefThreshold { get; set; } = 100;
-    public int ReactionTics { get; private set; } = 10;
+    private Actor? _owner;
+    private int _unboundReactionTics = 10;
+    public int ReactionTics
+    {
+        get => _owner?.ReactionTime ?? _unboundReactionTics;
+        private set { if (_owner is { } actor) actor.ReactionTime = value; else _unboundReactionTics = value; }
+    }
     internal void SetReactionTime(int value) => ReactionTics = value;
+    internal void ValidateOwner(Actor actor)
+    {
+        if (_owner != null && !ReferenceEquals(_owner, actor))
+            throw new InvalidOperationException("A monster brain cannot be attached to two actors.");
+    }
+    internal void AttachOwner(Actor actor) { ValidateOwner(actor); _owner = actor; }
+    internal void DetachOwner(Actor actor)
+    {
+        if (!ReferenceEquals(_owner, actor)) return;
+        _unboundReactionTics = actor.ReactionTime;
+        _owner = null;
+    }
     public int AttackCooldown { get; private set; }
     public int WindupTics { get; private set; }
     private double _lastX, _lastY;
