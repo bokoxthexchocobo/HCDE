@@ -8790,11 +8790,34 @@ complete native-engine map session. Strife binary remapping, trace predicates,
 MBF21 options and invasion synchronization validation remain open. Phases 1–3
 are incomplete.
 
+## Projectile versus actor movement blockers — 2026-10-03
+
+Native movement in `src/playsim/p_map.cpp` bypasses ordinary actor blocking for
+missiles unless projectile blocking flags apply, before P_IsBlockedByLine.
+Converted the ordinary managed ProjectileActor branch in ActorPhysics: one-sided
+walls and blockeverything still block; blockprojectiles blocks missiles; ordinary
+blocking, blockmonsters and blockfloaters apply to non-projectile actor movement.
+Sector opening/height checks remain shared.
+
+Six new cases verify missile passage through three actor blocker types, refusal
+at projectile/everything blockers, and ordinary actor passage through a projectile
+blocker. Tests exercise the shared movement helper directly, using a floating
+missile to verify that FLOAT alone does not override the projectile exception.
+Full Release solution: 5,000 passed, zero failed/skipped; Playsim 3,919.
+Warnings-as-errors build: zero warnings/errors; whitespace check passes.
+No checksum fields changed.
+
+Scope is shared actor movement/occupancy for the managed projectile class.
+Separate swept projectile travel was not changed. Native MF_MISSILE on other
+classes, MBF bounce classification, BLOCKASPLAYER, railing, portals and native
+map-session equivalence remain open. Phases 1–3, large-dimension storage and
+representative invasion synchronization validation remain incomplete.
+
 ## Validation
 
-- Release solution: **4,994 passed, zero failed/skipped**, 4,071 cases above baseline.
+- Release solution: **5,000 passed, zero failed/skipped**, 4,077 cases above baseline.
   Protocol 15; Gamedata 18; Transport 10; Master 1; RCON 6; MapLoader 500;
-  Playsim 3,913; Client 12; Net.Core 351; Pregame 97; Server 63; Scripting 8.
+  Playsim 3,919; Client 12; Net.Core 351; Pregame 97; Server 63; Scripting 8.
 - The lighting pass initially saw a five-second timeout in
   `Pump_LiveSessionReceivesGuestClientInput`; it passed the targeted rerun and the
   subsequent full solution run. No timeout/test-disabling workaround was added.

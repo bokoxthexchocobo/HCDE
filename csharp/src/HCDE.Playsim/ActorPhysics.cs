@@ -603,10 +603,13 @@ public static class ActorPhysics
 
     private static bool Blocks(AuthoritySimulation sim, Actor actor, LevelLine line)
     {
-        if (line.BlocksMovement) return true;
-        if ((line.Flags & LevelLine.BlockMonstersFlag) != 0 && actor is not PlayerPawn and not ProjectileActor
+        var projectile = actor is ProjectileActor;
+        if (line.OneSided || (line.Flags & LevelLine.BlockEverythingFlag) != 0) return true;
+        if (projectile && (line.Flags & LevelLine.BlockProjectileFlag) != 0) return true;
+        if (!projectile && (line.Flags & LevelLine.BlockingFlag) != 0) return true;
+        if ((line.Flags & LevelLine.BlockMonstersFlag) != 0 && actor is not PlayerPawn && !projectile
             && !actor.NoBlockMonsters) return true;
-        if (actor.Floating && (line.Flags & LevelLine.BlockFloatersFlag) != 0) return true;
+        if (!projectile && actor.Floating && (line.Flags & LevelLine.BlockFloatersFlag) != 0) return true;
         var front = SideSector(sim.Level, line.SideFront);
         var back = SideSector(sim.Level, line.SideBack);
         if (front < 0 || back < 0) return false;
