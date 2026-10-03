@@ -1101,6 +1101,8 @@ public static class ActorSpawner
             {
                 actor.SpecialPickup = (defaults.Bits & 0x00000001) != 0;
                 actor.CanPickupItems = (defaults.Bits & 0x00000800) != 0;
+                actor.NoGravity = (defaults.Bits & 0x00000200) != 0;
+                actor.Dropped = (defaults.Bits & 0x00020000) != 0;
             }
             actor.SpawnCanPickupItems = actor.CanPickupItems;
             actor.SpawnSpecialPickup = actor.SpecialPickup;

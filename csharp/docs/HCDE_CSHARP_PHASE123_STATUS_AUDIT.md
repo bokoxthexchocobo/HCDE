@@ -8406,11 +8406,32 @@ thrust, push/blast behavior, dynamic actor defaults or full DEHACKED catalogs.
 Source/regression self-audit does not replace native invasion sessions or complete
 phase 1–3 acceptance, which remain open.
 
+## Conversion and audit: DEHACKED gravity and dropped bits (2026-10-03)
+
+Compared native actor flag values in `src/playsim/actor.h` and DEHACKED flag
+assignment in `src/gamedata/d_dehacked.cpp`. Explicit Bits patches now initialize
+managed NoGravity from MF_NOGRAVITY (0x00000200) and Dropped from MF_DROPPED
+(0x00020000). Clearing either bit clears the corresponding field. Unpatched
+spawning continues to use class defaults and normal map-item initialization.
+
+Seven new cases cover all four flag combinations, actual falling/no-gravity
+behavior and chained flag clearing without baseline mutation. Full Release
+solution: 4,861 passed, zero failed/skipped; Playsim 3,788. Warnings-as-errors
+build: zero warnings/errors; whitespace check passes. Existing patch, pickup,
+actor-property and invasion tests pass. Both fields already have checksum
+coverage; player idle baseline unchanged.
+
+This converts two supported spawn flags, not the full native DEHACKED flag
+translation, dropped-item lifecycle, monster flag restoration or dynamic class
+spawning. Source/regression self-audit does not replace native invasion sessions
+or complete phase 1–3 acceptance, which remain open. Unrelated workspace
+line-ending changes were excluded from this checkpoint commit.
+
 ## Validation
 
-- Release solution: **4,854 passed, zero failed/skipped**, 3,931 cases above baseline.
+- Release solution: **4,861 passed, zero failed/skipped**, 3,938 cases above baseline.
   Protocol 15; Gamedata 10; Transport 10; Master 1; RCON 6; MapLoader 500;
-  Playsim 3,781; Client 12; Net.Core 351; Pregame 97; Server 63; Scripting 8.
+  Playsim 3,788; Client 12; Net.Core 351; Pregame 97; Server 63; Scripting 8.
 - The lighting pass initially saw a five-second timeout in
   `Pump_LiveSessionReceivesGuestClientInput`; it passed the targeted rerun and the
   subsequent full solution run. No timeout/test-disabling workaround was added.
