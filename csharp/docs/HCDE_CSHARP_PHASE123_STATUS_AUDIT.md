@@ -10591,11 +10591,35 @@ Custom species overrides and class ancestry, hitscan/puff policy,
 THRUSPECIES/THRUBITS and native runtime acceptance remain incomplete.
 Phases 1–3 and invasion synchronization acceptance remain open.
 
+## Conversion and audit: mover species-passage contacts (2026-10-03)
+
+Converted supported MF6_THRUSPECIES against `PIT_CheckThing`,
+`P_TestMobjZ` and the teleport contact check in `src/playsim/p_map.cpp`,
+plus ACS flag registration in `src/scripting/thingdef_data.cpp`.
+The moving actor's flag skips matching supported species during movement,
+blast impacts, occupancy checks and bridge/rider support. The target's flag
+alone does not grant passage. Direct projectile filtering compares the
+missile's species, unlike MTHRUSPECIES which compares its owner's species.
+Case-insensitive ACS set/query and conditional checksum participation are
+implemented. Doom species uses the previously audited supported identities.
+
+Sixteen regressions cover identical/different species, Demon/Spectre and
+Baron/Hell Knight inheritance in both directions, target-only flags,
+directional occupancy/rider/bridge behavior, ordinary blocking after clear,
+missile versus owner identity, ACS and wall blocking. Full non-incremental
+Release rebuild: zero warnings/errors; 5,697 solution tests passed, zero
+failed/skipped (Playsim 4,570). Whitespace checks pass.
+
+THRUSPECIES pose persistence, custom Species overrides/class ancestry,
+THRUBITS, telefrag execution and hitscan/puff policy remain incomplete.
+Native geometry/runtime acceptance and invasion synchronization acceptance
+remain open; phases 1–3 are not complete.
+
 ## Validation
 
-- Release solution: **5,681 passed, zero failed/skipped**, 4,758 cases above baseline.
+- Release solution: **5,697 passed, zero failed/skipped**, 4,774 cases above baseline.
   Protocol 15; Gamedata 29; Transport 10; Master 1; RCON 6; MapLoader 533;
-  Playsim 4,554; Client 12; Net.Core 351; Pregame 97; Server 65; Scripting 8.
+  Playsim 4,570; Client 12; Net.Core 351; Pregame 97; Server 65; Scripting 8.
 - The lighting pass initially saw a five-second timeout in
   `Pump_LiveSessionReceivesGuestClientInput`; it passed the targeted rerun and the
   subsequent full solution run. No timeout/test-disabling workaround was added.
