@@ -7903,11 +7903,34 @@ delay still shares the reaction counter; native class defaults, chase timing,
 general brain serialization and save/network replication remain open. The retained
 managed default is not claimed to match every native actor class.
 
+## Separate raise wait from actor reaction time (2026-10-03)
+
+Continued resurrection timing conversion. Native `AActor::Revive` in `p_mobj.cpp`
+does not replace reactiontime with a raise duration; `p_enemy.cpp` enters the
+corpse's raise state separately. The managed Revive path previously used the
+ACS reaction counter for this wait. MonsterBrain now owns separate RaiseTics,
+included in its checksum. Revive starts that wait without changing reactiontime;
+raising ticks do not decrement reactiontime. After the raise wait completes,
+the existing managed reaction delay resumes. Death and pain paths clear raise
+waiting separately. Existing arch-vile duration assertions now inspect RaiseTics.
+
+Six new cases cover zero/positive/negative reaction preservation throughout raising,
+reaction clearing without bypassing raise wait, death cancellation and independent
+raise checksum state. Existing arch-vile and invasion resurrection regressions
+remain passing. Full suite: 4,731 passed, zero failed/skipped; Release warnings-
+as-errors build: zero warnings/errors. The player-only idle hash remains
+1449899472 because it has no monster brain. Source review and regression self-audit.
+
+This closes the shared raise/reaction-counter gap. Full native raise-frame execution,
+friendliness copying, actor-default restoration, class-specific reaction/chase
+timing and save/network propagation remain open. RaiseTics remains the managed
+duration gate, not a claim of complete native resurrection-state parity.
+
 ## Validation
 
-- Release solution: **4,725 passed, zero failed/skipped**, 3,802 cases above baseline.
+- Release solution: **4,731 passed, zero failed/skipped**, 3,808 cases above baseline.
   Protocol 15; Gamedata 10; Transport 10; Master 1; RCON 6; MapLoader 500;
-  Playsim 3,652; Client 12; Net.Core 351; Pregame 97; Server 63; Scripting 8.
+  Playsim 3,658; Client 12; Net.Core 351; Pregame 97; Server 63; Scripting 8.
 - The lighting pass initially saw a five-second timeout in
   `Pump_LiveSessionReceivesGuestClientInput`; it passed the targeted rerun and the
   subsequent full solution run. No timeout/test-disabling workaround was added.

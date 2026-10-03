@@ -14,6 +14,8 @@ public sealed class MonsterBrain(MonsterAttack attack)
     private int _deathTics;
     private uint? _deathTargetId;
     private int _healTics;
+    private int _raiseTics;
+    public int RaiseTics => _raiseTics;
     private bool _vileFire;
     internal bool HasPendingDeathAction => _nativeType == 71 && _deathTics < 32;
     public bool Enabled { get; set; } = true;
@@ -61,7 +63,7 @@ public sealed class MonsterBrain(MonsterAttack attack)
                 (uint)AttackCooldown, (uint)WindupTics, (uint)_blockedTics, (uint)_previousX.Raw,
                 (uint)_previousY.Raw, (uint)Fixed.FromDouble(_lastX).Raw, (uint)Fixed.FromDouble(_lastY).Raw, Enabled ? 1u : 0u,
                 (uint)_nativeType, unchecked((uint)_attackTic), _separateMelee ? 1u : 0u, Charging ? 1u : 0u,
-                (uint)_deathTics, _deathTargetId ?? 0, (uint)_healTics, _vileFire ? 1u : 0u })
+                (uint)_deathTics, _deathTargetId ?? 0, (uint)_healTics, (uint)_raiseTics, _vileFire ? 1u : 0u })
                 hash = unchecked((hash ^ value) * 16777619u);
             return hash;
         }
@@ -172,16 +174,17 @@ public sealed class MonsterBrain(MonsterAttack attack)
                         sim.SpawnLostSoul(actor, deathTarget, actor.Angle.ToDegrees() + offset);
                 }
             }
-            Mode = MonsterMode.Dead; TargetId = null; WindupTics = 0; _attackTic = -1; return;
+            Mode = MonsterMode.Dead; TargetId = null; WindupTics = 0; _attackTic = -1; _raiseTics = 0; return;
         }
         _deathTics = 0; _deathTargetId = null;
         if (AttackCooldown > 0) AttackCooldown--;
         if (actor.States.Current == actor.PainState)
         {
-            if (Mode == MonsterMode.Raise) ReactionTics = 0;
+            _raiseTics = 0;
             _healTics = 0;
             Mode = MonsterMode.Pain; WindupTics = 0; _attackTic = -1; return;
         }
+        if (_raiseTics > 0) { _raiseTics--; return; }
         if (ReactionTics > 0) { ReactionTics--; return; }
         if (_healTics > 0) { _healTics--; Mode = MonsterMode.Heal; return; }
         var target = sim.Actors.FirstOrDefault(a => a.Id == TargetId && a.CanTakeDamage);
@@ -343,7 +346,7 @@ public sealed class MonsterBrain(MonsterAttack attack)
         StopCharge(actor);
         _deathTics = 0; _deathTargetId = null; _healTics = 0; _vileFire = false;
         TargetId = target.Id;
-        ReactionTics = actor.RaiseDuration;
+        _raiseTics = actor.RaiseDuration;
         AttackCooldown = 0;
         Mode = MonsterMode.Raise;
         actor.LastDamageSourceId = null;

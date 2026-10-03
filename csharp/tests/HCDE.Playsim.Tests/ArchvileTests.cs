@@ -45,7 +45,7 @@ public class ArchvileTests
         Assert.True(corpse.BlocksActors);
         Assert.Equal(MonsterMode.Heal, vile.Brain!.Mode);
         Assert.Equal(MonsterMode.Raise, corpse.Brain!.Mode);
-        Assert.InRange(corpse.Brain.ReactionTics, duration - 1, duration);
+        Assert.InRange(corpse.Brain.RaiseTics, duration - 1, duration);
         Assert.Null(corpse.LastDamageSourceId);
         Assert.Equal(sim.Players.Single().Id, corpse.Brain.TargetId);
         Assert.Equal(1, corpse.DeathCount);
