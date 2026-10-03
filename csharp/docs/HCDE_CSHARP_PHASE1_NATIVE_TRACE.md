@@ -12,7 +12,7 @@ recorder exists.
 - Map: single sector, player 1 at (32, 64), no lines, no behavior lump
 - Seed: `0x48534445` (`"HCDE"` as little-endian uint)
 - Duration: 35 tics with no player input
-- Recorded fields today: simulation `Checksum` (`1508425544` after adding actor NoTrigger), player position, health, tic count. Earlier hashes `3569868298` (friction), `3247430384` (melee range), `352595618` (damage scaling), `42939098` (attack offset), `67100778` (default view height), `1525314970` (actor gravity), `4261759856` (JumpZ), `251903926` (texture transforms) and `3995474422` used smaller field sets and are not comparable.
+- Recorded fields today: simulation `Checksum` (`2118297554` after adding actor Score), player position, health, tic count. Earlier hashes `1508425544` (NoTrigger), `3569868298` (friction), `3247430384` (melee range), `352595618` (damage scaling), `42939098` (attack offset), `67100778` (default view height), `1525314970` (actor gravity), `4261759856` (JumpZ), `251903926` (texture transforms) and `3995474422` used smaller field sets and are not comparable.
 
 When native recording lands, capture the same map/seed/duration and compare:
 

@@ -7705,11 +7705,33 @@ activation and save/network propagation remain incomplete. The shooter flag
 is not substituted for native puff flags. Source review and regression
 self-audit only; representative native invasion validation remains open.
 
+## ACS actor score state (2026-10-03)
+
+Converted `APROP_Score` (22) signed integer set/get/check into actor Score.
+Native `p_acs.cpp` assigns Score directly, returns it without fixed conversion,
+and compares it as an integer. It is separate from player frag statistics.
+Managed ACS writes the activator or all matching TIDs and reads the newest match,
+with the established missing/destroyed actor handling. Dead actors remain eligible
+for score updates; the Health setter's dead-actor restriction does not apply.
+
+Twelve regressions cover zero/positive/negative/full signed integer limits,
+exact checks, non-player dead actors, missing/destroyed reads and writes,
+missing-target checks against zero, all-match TID writes/newest reads,
+independence from player frags and resting checksum inclusion. The expanded
+idle hash is 2118297554; position, health and tic assertions remain unchanged.
+Full suite: 4,652 passed, zero failed/skipped; Release warnings-as-errors build:
+zero warnings/errors. This is a source review and regression self-audit.
+
+Scope: script-owned actor score state. Automatic mode scoring, HUD presentation,
+team score functions, save/network replication and native session comparison
+remain incomplete; actor Score is not used as a substitute for player frags or
+the invasion director's counters.
+
 ## Validation
 
-- Release solution: **4,640 passed, zero failed/skipped**, 3,717 cases above baseline.
+- Release solution: **4,652 passed, zero failed/skipped**, 3,729 cases above baseline.
   Protocol 15; Gamedata 10; Transport 10; Master 1; RCON 6; MapLoader 500;
-  Playsim 3,567; Client 12; Net.Core 351; Pregame 97; Server 63; Scripting 8.
+  Playsim 3,579; Client 12; Net.Core 351; Pregame 97; Server 63; Scripting 8.
 - The lighting pass initially saw a five-second timeout in
   `Pump_LiveSessionReceivesGuestClientInput`; it passed the targeted rerun and the
   subsequent full solution run. No timeout/test-disabling workaround was added.
