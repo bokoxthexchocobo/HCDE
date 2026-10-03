@@ -242,8 +242,23 @@ public static class DehackedPatch
             }
             else if (key.Equals("Bits", StringComparison.OrdinalIgnoreCase))
             {
-                actor.Bits = (uint)numeric;
-                actor.BitsPatched = true;
+                uint bits = 0;
+                var changed = false;
+                foreach (var token in value.Split([',', '+', '|', ' ', '\t', '\f', '\r'], StringSplitOptions.RemoveEmptyEntries))
+                {
+                    if (token.All(character => character is >= '0' and <= '9' or '-'))
+                    {
+                        bits |= unchecked((uint)ParseDecimalPrefix(token));
+                        changed = true;
+                    }
+                    else
+                        errors.Add($"Thing {actor.Index}: unsupported bit mnemonic '{token}'.");
+                }
+                if (changed)
+                {
+                    actor.Bits = bits;
+                    actor.BitsPatched = true;
+                }
             }
             else if (key.Equals("ID #", StringComparison.OrdinalIgnoreCase))
                 actor.DoomEdNum = unchecked((int)numeric);

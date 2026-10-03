@@ -8665,11 +8665,33 @@ as portable parity. Large actor dimensions, intermittent live-session timeouts,
 and representative invasion synchronization remain open audit findings.
 Phases 1–3 remain incomplete.
 
+## DEHACKED combined numeric Bits — 2026-10-03
+
+Native `PatchThing` splits Bits on comma, plus, pipe, space, tab, form-feed and
+carriage return, ORs numeric tokens, and replaces the affected flag set only when
+recognized tokens occur. Managed parsing now combines numeric tokens using the
+native `IsNum` digit/minus predicate and decimal-prefix conversion. Repeated
+assignments replace the prior set. The initial Thing numeric-range gate remains.
+
+Seven new regression cases verify five delimiter forms through spawning,
+solid/shootable/no-gravity effects, unchanged floating, replacement assignments,
+and preservation of existing flags when only an unsupported mnemonic is supplied.
+Unsupported mnemonics now produce diagnostics. Full Release suite: 4,955 passed,
+zero failed/skipped; Playsim 3,874. Warnings-as-errors build: zero warnings/errors.
+No checksum fields changed.
+
+Scope is numeric flag combination and managed supported runtime bits only.
+Named DEHSUPP flag tables, multi-set flags, translation/FRIEND/STEALTH/MBF remaps,
+bounce effects and other native flag semantics remain unconverted. Diagnostics
+for unsupported names are managed reporting rather than native debug output.
+Phases 1–3, large-dimension storage conversion and invasion synchronization
+validation remain incomplete.
+
 ## Validation
 
-- Release solution: **4,948 passed, zero failed/skipped**, 4,025 cases above baseline.
+- Release solution: **4,955 passed, zero failed/skipped**, 4,032 cases above baseline.
   Protocol 15; Gamedata 18; Transport 10; Master 1; RCON 6; MapLoader 500;
-  Playsim 3,867; Client 12; Net.Core 351; Pregame 97; Server 63; Scripting 8.
+  Playsim 3,874; Client 12; Net.Core 351; Pregame 97; Server 63; Scripting 8.
 - The lighting pass initially saw a five-second timeout in
   `Pump_LiveSessionReceivesGuestClientInput`; it passed the targeted rerun and the
   subsequent full solution run. No timeout/test-disabling workaround was added.
