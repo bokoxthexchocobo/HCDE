@@ -9033,11 +9033,31 @@ complete native defaults, mixed-set replacement with additional flags, missile-b
 removal side effects, archive/network transport and native engine fixtures remain
 incomplete. Phases 1–3 and invasion synchronization validation remain open.
 
+## DEHACKED extended invulnerability and set replacement — 2026-10-03
+
+Converted INVULNERABLE from flag set 1, bit 27 in `wadsrc/static/dehsupp.txt`
+through the patch parser and actor spawning. Extended names now combine through
+a separate table and replace the represented second-set values independently
+of numeric first-set assignments, following native PatchThing's per-set updates.
+Replaced the earlier NOTELEPORT-only assignment with accumulated extended bits.
+
+Four regressions cover case-insensitive and mixed assignments, normal damage
+protection with telefrag bypass, replacement clearing earlier extended flags,
+first-set independence and baseline immutability. Full Release suite:
+5,046 passed, zero failed/skipped; Playsim 3,965. Warnings-as-errors build:
+zero warnings/errors; whitespace check passes. Invulnerability already participates
+in simulation hashing; no checksum fields changed.
+
+Scope is NOTELEPORT/INVULNERABLE in the second flag set and existing managed
+damage behavior. Remaining flags2 defaults/mnemonics, native numeric/remapped
+side effects, complete damage parity, flag serialization and representative native
+fixtures remain open. Phases 1–3 and invasion synchronization are incomplete.
+
 ## Validation
 
-- Release solution: **5,042 passed, zero failed/skipped**, 4,119 cases above baseline.
+- Release solution: **5,046 passed, zero failed/skipped**, 4,123 cases above baseline.
   Protocol 15; Gamedata 18; Transport 10; Master 1; RCON 6; MapLoader 500;
-  Playsim 3,961; Client 12; Net.Core 351; Pregame 97; Server 63; Scripting 8.
+  Playsim 3,965; Client 12; Net.Core 351; Pregame 97; Server 63; Scripting 8.
 - The lighting pass initially saw a five-second timeout in
   `Pump_LiveSessionReceivesGuestClientInput`; it passed the targeted rerun and the
   subsequent full solution run. No timeout/test-disabling workaround was added.

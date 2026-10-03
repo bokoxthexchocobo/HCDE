@@ -1122,7 +1122,11 @@ public static class ActorSpawner
             if (actor.ResurrectionHealth > 0) actor.GibHealth = -actor.ResurrectionHealth;
             actor.Mass = defaults is { MassPatched: true } ? defaults.Mass : DoomActorCatalog.MassOf(definitionType);
             actor.RaiseDuration = ArchvileActions.RaiseDuration(definitionType);
-            if (defaults is { Bits2Patched: true }) actor.NoTeleport = (defaults.Bits2 & 0x80) != 0;
+            if (defaults is { Bits2Patched: true })
+            {
+                actor.NoTeleport = (defaults.Bits2 & 0x80) != 0;
+                actor.Invulnerable = (defaults.Bits2 & 0x08000000) != 0;
+            }
             actor.Ambush = thing.Ambush || defaults is { BitsPatched: true } && (defaults.Bits & 0x00000020) != 0;
             if (defaults is { ReactionTimePatched: true }) actor.ReactionTime = defaults.ReactionTime;
             actor.Brain = MonsterBrain.ForType(definitionType);

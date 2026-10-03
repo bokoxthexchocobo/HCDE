@@ -250,6 +250,7 @@ public static class DehackedPatch
                 var changed = false;
                 var useStealth = false;
                 var changed2 = false;
+                uint bits2 = 0;
                 foreach (var token in value.Split([',', '+', '|', ' ', '\t', '\f', '\r'], StringSplitOptions.RemoveEmptyEntries))
                 {
                     if (token.All(character => character is >= '0' and <= '9' or '-'))
@@ -257,8 +258,11 @@ public static class DehackedPatch
                         bits |= unchecked((uint)ParseDecimalPrefix(token));
                         changed = true;
                     }
-                    else if (token.Equals("NOTELEPORT", StringComparison.OrdinalIgnoreCase))
+                    else if (SupportedThingBits2.TryGetValue(token, out var namedBits2))
+                    {
+                        bits2 |= namedBits2;
                         changed2 = true;
+                    }
                     else if (SupportedThingBits.TryGetValue(token, out var namedBits))
                     {
                         bits |= namedBits;
@@ -277,7 +281,7 @@ public static class DehackedPatch
                 }
                 if (changed2)
                 {
-                    actor.Bits2 = 0x80;
+                    actor.Bits2 = bits2;
                     actor.Bits2Patched = true;
                 }
             }
@@ -444,6 +448,12 @@ public static class DehackedPatch
             ["PICKUP"] = 2048, ["FLOAT"] = 16384, ["DROPPED"] = 131072,
             ["COUNTKILL"] = 4194304,
             ["FRIEND"] = 0x40000000, ["STEALTH"] = 0x40000000,
+        };
+
+    private static readonly IReadOnlyDictionary<string, uint> SupportedThingBits2 =
+        new Dictionary<string, uint>(StringComparer.OrdinalIgnoreCase)
+        {
+            ["NOTELEPORT"] = 0x80, ["INVULNERABLE"] = 0x08000000,
         };
 
     // Thing/Frame use decimal strtoll/atoll: stop at the first non-digit; no digits means zero.
