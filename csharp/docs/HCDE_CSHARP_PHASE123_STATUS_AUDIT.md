@@ -10361,11 +10361,29 @@ native touching-floor/dropoff geometry. Blasted, avoidance and spawn-check
 exceptions, slopes/portals and native invasion acceptance remain unfinished.
 Gameplay phases 1–3 remain incomplete.
 
+## BLASTED dropoff exception conversion audit (2026-10-03)
+
+Actor.Blasted now bypasses the supported flat dropoff limit, including NoDropOff,
+following MF2_BLASTED in P_TryMove in src/playsim/p_map.cpp. Actor ticks clear the
+flag after movement when both horizontal velocities are zero, following the
+rest check in AActor::Tick in src/playsim/p_mobj.cpp. The BLASTED name is available
+through managed ACS flag access and an enabled flag adds a conditional checksum
+marker. Wall blocking is still enforced.
+
+Eleven regressions cover dropoff/NoDropOff combinations, both horizontal axes,
+friction stopping motion, wall blocking, ACS access and moving-state checksum.
+Full Release solution: 5,553 passed, zero failed/skipped; Playsim 4,426.
+Warnings-as-errors build and diff checks pass. Archive format unchanged.
+This converts the movement exception and flag lifecycle, not blast initiation,
+collision damage, or native blasted wall sliding. Blasted persistence, native
+XY/Z timing detail, full touching-floor geometry and invasion acceptance remain
+open. Gameplay phases 1–3 remain incomplete.
+
 ## Validation
 
-- Release solution: **5,542 passed, zero failed/skipped**, 4,619 cases above baseline.
+- Release solution: **5,553 passed, zero failed/skipped**, 4,630 cases above baseline.
   Protocol 15; Gamedata 29; Transport 10; Master 1; RCON 6; MapLoader 533;
-  Playsim 4,415; Client 12; Net.Core 351; Pregame 97; Server 65; Scripting 8.
+  Playsim 4,426; Client 12; Net.Core 351; Pregame 97; Server 65; Scripting 8.
 - The lighting pass initially saw a five-second timeout in
   `Pump_LiveSessionReceivesGuestClientInput`; it passed the targeted rerun and the
   subsequent full solution run. No timeout/test-disabling workaround was added.

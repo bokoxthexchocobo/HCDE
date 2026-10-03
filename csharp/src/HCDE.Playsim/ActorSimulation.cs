@@ -159,6 +159,8 @@ public class Actor : Thinker
     public bool FloorHugger { get; set; }
     /// <summary>Native MF5_NODROPOFF: enforces the supported flat dropoff limit and missile floor-hugger exception.</summary>
     public bool NoDropOff { get; set; }
+    /// <summary>Native MF2_BLASTED: bypasses the supported dropoff limit until horizontal motion stops.</summary>
+    public bool Blasted { get; set; }
     /// <summary>Native <c>MF4_NOTARGETSWITCH</c>. Wake-up will not pick a new chase target while one is alive.</summary>
     public bool NoTargetSwitch { get; set; }
     /// <summary>Native <c>MF4_NOHATEPLAYERS</c>. <see cref="OkayToSwitchTarget"/> ignores player sources.</summary>
@@ -543,6 +545,7 @@ public class Actor : Thinker
         {
             if (!Dormant) Brain?.Tick(Simulation, this);
             TickMovement(Simulation);
+            if (VelocityX.Raw == 0 && VelocityY.Raw == 0) Blasted = false;
             SectorDamage.Tick(Simulation, this);
         }
         base.Tick();
@@ -2799,6 +2802,7 @@ public sealed class AuthoritySimulation
             if (actor.CeilingHugger) hash = Mix(hash, 0x43485547u);
             if (actor.FloorHugger) hash = Mix(hash, 0x46485547u);
             if (actor.NoDropOff) hash = Mix(hash, 0x4E44524Fu);
+            if (actor.Blasted) hash = Mix(hash, 0x424C5354u);
             if (actor.SpawnCeiling) hash = Mix(hash, 0x4345494Cu);
             if (actor.NoBlockMonsters) hash = Mix(hash, 0x4E424D4Fu);
             if (actor.NoBlockmap) hash = Mix(hash, 0x4E424D50u);

@@ -560,7 +560,7 @@ public static class ActorPhysics
             if (actor.OnMobj)
                 floorz = Math.Max(actor.Z.ToDouble(), floorz);
             var drop = floorz - sim.FloorOf(sector);
-            if (drop > actor.MaxDropOffHeight.ToDouble())
+            if (drop > actor.MaxDropOffHeight.ToDouble() && !actor.Blasted)
                 return false;
         }
         var z = actor.Brain?.Charging == true ? actor.Z.ToDouble() : Math.Max(actor.Z.ToDouble(), sim.FloorOf(sector));

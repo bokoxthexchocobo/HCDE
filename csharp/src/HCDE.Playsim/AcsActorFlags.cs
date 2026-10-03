@@ -17,6 +17,7 @@ internal static class AcsActorFlags
         CeilingHugger,
         FloorHugger,
         NoDropOff,
+        Blasted,
         NoPain,
         Pickup,
         Special,
@@ -41,6 +42,8 @@ internal static class AcsActorFlags
 
     private static bool TryMap(string flagName, out Kind kind)
     {
+        if (flagName.Equals("BLASTED", StringComparison.OrdinalIgnoreCase))
+        { kind = Kind.Blasted; return true; }
         if (flagName.Equals("FLOORHUGGER", StringComparison.OrdinalIgnoreCase))
         { kind = Kind.FloorHugger; return true; }
         if (flagName.Equals("NODROPOFF", StringComparison.OrdinalIgnoreCase))
@@ -129,6 +132,7 @@ internal static class AcsActorFlags
         Kind.CeilingHugger => actor.CeilingHugger,
         Kind.FloorHugger => actor.FloorHugger,
         Kind.NoDropOff => actor.NoDropOff,
+        Kind.Blasted => actor.Blasted,
         Kind.NoPain => actor.NoPain,
         Kind.Pickup => actor.CanPickupItems,
         Kind.Special => actor.SpecialPickup,
@@ -151,6 +155,7 @@ internal static class AcsActorFlags
             case Kind.CeilingHugger: actor.CeilingHugger = value; break;
             case Kind.FloorHugger: actor.FloorHugger = value; break;
             case Kind.NoDropOff: actor.NoDropOff = value; break;
+            case Kind.Blasted: actor.Blasted = value; break;
             case Kind.NoPain: actor.NoPain = value; break;
             case Kind.Pickup: actor.CanPickupItems = value; break;
             case Kind.Special: actor.SpecialPickup = value; break;
