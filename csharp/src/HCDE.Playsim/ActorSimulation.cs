@@ -74,6 +74,7 @@ public class Actor : Thinker
     public double SpawnZOffset { get; init; }
     public bool SpawnCeiling { get; set; }
     public bool NoTeleport { get; set; }
+    public bool CanSlide { get; set; }
     public Fixed X { get; set; }
     public Fixed Y { get; set; }
     public Fixed Z { get; set; }
@@ -534,6 +535,7 @@ public sealed class PlayerPawn : Actor
 {
     public PlayerPawn()
     {
+        CanSlide = true;
         MovementSpeed = Fixed.FromInt(1);
         CanPickupItems = true;
         SpawnCanPickupItems = true;
@@ -1125,6 +1127,7 @@ public static class ActorSpawner
             if (defaults is { Bits2Patched: true })
             {
                 actor.NoTeleport = (defaults.Bits2 & 0x80) != 0;
+                actor.CanSlide = (defaults.Bits2 & 0x400) != 0;
                 actor.Invulnerable = (defaults.Bits2 & 0x08000000) != 0;
             }
             actor.Ambush = thing.Ambush || defaults is { BitsPatched: true } && (defaults.Bits & 0x00000020) != 0;
@@ -2631,6 +2634,7 @@ public sealed class AuthoritySimulation
             if (actor.NoBlockMonsters) hash = Mix(hash, 0x4E424D4Fu);
             if (actor.NoBlockmap) hash = Mix(hash, 0x4E424D50u);
             if (actor.NoTeleport) hash = Mix(hash, 0x4E54454Cu);
+            if (actor.CanSlide != (actor is PlayerPawn)) hash = Mix(hash, 0x534C4944u);
             hash = Mix(hash, actor.NoTarget ? 1u : 0u);
             hash = Mix(hash, actor.OnMobj ? 1u : 0u);
             hash = Mix(hash, actor.IsMonster ? 1u : 0u);

@@ -453,7 +453,7 @@ public static class DehackedPatch
     private static readonly IReadOnlyDictionary<string, uint> SupportedThingBits2 =
         new Dictionary<string, uint>(StringComparer.OrdinalIgnoreCase)
         {
-            ["NOTELEPORT"] = 0x80, ["INVULNERABLE"] = 0x08000000,
+            ["NOTELEPORT"] = 0x80, ["CANSLIDE"] = 0x400, ["INVULNERABLE"] = 0x08000000,
         };
 
     // Thing/Frame use decimal strtoll/atoll: stop at the first non-digit; no digits means zero.

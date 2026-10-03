@@ -9053,11 +9053,32 @@ damage behavior. Remaining flags2 defaults/mnemonics, native numeric/remapped
 side effects, complete damage parity, flag serialization and representative native
 fixtures remain open. Phases 1–3 and invasion synchronization are incomplete.
 
+## DEHACKED CANSLIDE and actor slide selection — 2026-10-03
+
+Native movement in `src/playsim/p_mobj.cpp` selects slide behavior using
+MF2_SLIDE (with other native exceptions). Converted Actor.CanSlide, player default
+true, and flag-based selection in the managed movement path. CANSLIDE comes from
+flag set 1, bit 10 in `wadsrc/static/dehsupp.txt`; extended replacement assigns it
+independently from the first set. Conditional hashing preserves default hashes.
+
+Six regressions cover named/mixed flags, replacement, defaults, checksum state,
+and a patched monster sliding along a wall. Final full Release suite: 5,052
+passed, zero failed/skipped; Playsim 3,971. Warnings-as-errors build: zero
+warnings/errors; whitespace check passes. One earlier full run timed out at
+InvasionServerTests.HostRoutesNetworkAttacksAndPublishesWaveCompletion; the final
+full run passed. This intermittency is not root-caused and no test was disabled
+or timeout changed.
+
+Scope is slide selection and the existing managed algorithm. Native BLASTED,
+forced sliding, missile exceptions, complete corner tracing/icy bounce, save/network
+flags and representative native-engine fixtures remain open. Phases 1–3 and
+invasion round/timer/enemy synchronization validation remain incomplete.
+
 ## Validation
 
-- Release solution: **5,046 passed, zero failed/skipped**, 4,123 cases above baseline.
+- Release solution: **5,052 passed, zero failed/skipped**, 4,129 cases above baseline.
   Protocol 15; Gamedata 18; Transport 10; Master 1; RCON 6; MapLoader 500;
-  Playsim 3,965; Client 12; Net.Core 351; Pregame 97; Server 63; Scripting 8.
+  Playsim 3,971; Client 12; Net.Core 351; Pregame 97; Server 63; Scripting 8.
 - The lighting pass initially saw a five-second timeout in
   `Pump_LiveSessionReceivesGuestClientInput`; it passed the targeted rerun and the
   subsequent full solution run. No timeout/test-disabling workaround was added.

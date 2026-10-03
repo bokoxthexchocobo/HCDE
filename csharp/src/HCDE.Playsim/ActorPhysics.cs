@@ -216,11 +216,11 @@ public static class ActorPhysics
             var dy = vy / steps;
             if (!TryMove(sim, actor, x + dx, y + dy, out var wall))
             {
-                if (wall != null && actor is PlayerPawn)
+                if (wall != null && actor.CanSlide)
                     SlideFromBlock(sim, actor, ref vx, ref vy, steps, x, y, dx, dy);
                 else if (wall != null)
                 {
-                    // Monsters and missiles do not have MF2_SLIDE. Keep the single clip they already had.
+                    // Actors without MF2_SLIDE keep the existing single clip.
                     var lx = wall.X2 - wall.X1;
                     var ly = wall.Y2 - wall.Y1;
                     var length = lx * lx + ly * ly;
