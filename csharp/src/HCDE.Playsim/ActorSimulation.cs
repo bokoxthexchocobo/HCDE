@@ -46,6 +46,8 @@ public class Actor : Thinker
     public bool NoTrigger { get; set; }
     /// <summary>Native actor Score property; independent of player frag statistics.</summary>
     public int Score { get; set; }
+    /// <summary>Native DamageVal; scripted damage functions are not supported.</summary>
+    public int Damage { get; set; }
     /// <summary>Native <c>TIDtoHate</c>. Teammates share this value; a shooter may hurt or wake actors whose <see cref="ThingId"/> matches.</summary>
     public int TidToHate { get; set; }
     /// <summary>Native <c>MF3_NOTARGET</c>. Wake-up ignores this actor unless <see cref="TidToHate"/> matches its <see cref="ThingId"/> or it is hostile.</summary>
@@ -2599,6 +2601,7 @@ public sealed class AuthoritySimulation
             hash = Mix(hash, actor.NoTrigger ? 1u : 0u);
             hash = Mix(hash, unchecked((uint)actor.Score));
             hash = Mix(hash, unchecked((uint)actor.MovementSpeed.Raw));
+            hash = Mix(hash, unchecked((uint)actor.Damage));
             hash = Mix(hash, actor.NoRadiusDamage ? 1u : 0u);
             hash = Mix(hash, actor.NoSectorDamage ? 1u : 0u);
             hash = Mix(hash, actor.ForceSectorDamage ? 1u : 0u);

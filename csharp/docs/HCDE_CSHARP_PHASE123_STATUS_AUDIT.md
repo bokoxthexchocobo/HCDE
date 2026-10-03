@@ -7779,11 +7779,39 @@ Player TweakSpeeds, inventory speed modifiers, air/water/flying thrust, complete
 signed homing behavior, generalized class defaults and save/network propagation
 remain open. This is a source review and regression self-audit.
 
+## ACS base damage and projectile impact integration (2026-10-03)
+
+Converted `APROP_Damage` (2) integer set/get/check state. Native `SetDamage` in
+`actor.h` replaces DamageVal and clears DamageFunc; `p_acs.cpp` reads it through
+GetMissileDamage(0,1). Native `p_mobj.cpp` returns the base without a random roll
+for this query, while ordinary masked missile impacts multiply by a die roll.
+Managed projectile constructors now initialize actor Damage from existing kind
+defaults, and ImpactDamage reads that state. Existing actor/line/plane impact
+paths therefore consume script-configured bases. Blast-radius and BFG spray
+behavior retain their separate existing rules.
+
+Eleven new cases cover integer property values and checks, zero/configured plasma
+impacts on actors, doubled geometry damage with matching random-stream state,
+missing/destroyed actors and resting checksums. Existing projectile defaults and
+combat/geometry cases pass. Negative DamageVal without DamageFunc is an invalid
+native function encoding: native asserts then returns 0. Managed storage keeps
+the signed value but queries and impacts return 0 rather than executing a missing
+function. This fallback is explicitly tested and is not scripted-function support.
+The expanded idle hash is 3565784442; position/health/tic assertions are unchanged.
+Full suite: 4,689 passed, zero failed/skipped; Release warnings-as-errors build:
+zero warnings/errors. Source review and regression self-audit only.
+
+Scope: integer base damage and existing managed projectile impact paths.
+DamageFunc expressions, generalized class damage defaults, native random-stream
+equivalence and overflow behavior, other missile-damage actions and save/network
+propagation remain open. This property is separate from the actor damage factors
+and does not replace weapon-specific damage rolls.
+
 ## Validation
 
-- Release solution: **4,678 passed, zero failed/skipped**, 3,755 cases above baseline.
+- Release solution: **4,689 passed, zero failed/skipped**, 3,766 cases above baseline.
   Protocol 15; Gamedata 10; Transport 10; Master 1; RCON 6; MapLoader 500;
-  Playsim 3,605; Client 12; Net.Core 351; Pregame 97; Server 63; Scripting 8.
+  Playsim 3,616; Client 12; Net.Core 351; Pregame 97; Server 63; Scripting 8.
 - The lighting pass initially saw a five-second timeout in
   `Pump_LiveSessionReceivesGuestClientInput`; it passed the targeted rerun and the
   subsequent full solution run. No timeout/test-disabling workaround was added.

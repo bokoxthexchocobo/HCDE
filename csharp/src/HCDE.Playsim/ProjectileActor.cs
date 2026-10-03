@@ -19,7 +19,8 @@ public sealed class ProjectileActor : Actor
         ProjectileKind.BaronBall => 15, _ => 10
     };
     // Native Damage is a base multiplied by a random integer from one through eight on impact.
-    public int ImpactDamage => Kind switch
+    public int ImpactDamage => Math.Max(0, Damage);
+    private int DefaultDamage => Kind switch
     {
         ProjectileKind.Rocket or ProjectileKind.CyberRocket => 20,
         ProjectileKind.Plasma or ProjectileKind.ArachnotronPlasma or ProjectileKind.CacodemonBall => 5,
@@ -34,6 +35,7 @@ public sealed class ProjectileActor : Actor
         if (!Enum.IsDefined(kind)) throw new ArgumentOutOfRangeException(nameof(kind));
         Owner = owner; Kind = kind;
         MovementSpeed = Fixed.FromDouble(DefaultSpeed);
+        Damage = DefaultDamage;
         DoomEdNum = kind <= ProjectileKind.ImpBall ? 65530 + (int)kind : 65516 + (int)kind;
         // Managed-only class identities, not native spawn indices; keep every identity within ushort.
         Solid = Shootable = false; NoGravity = true; AllowDropOff = true;
