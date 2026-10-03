@@ -571,12 +571,15 @@ public static class ActorPhysics
         var z = actor.Brain?.Charging == true ? actor.Z.ToDouble() : Math.Max(actor.Z.ToDouble(), sim.FloorOf(sector));
         if (sector >= 0 && (z < sim.FloorOf(sector) || z - actor.Z.ToDouble() > actor.MaxStepHeight.ToDouble()
             || z + actor.Height.ToDouble() > sim.CeilingOf(sector))) return false;
-        if (actor.BlocksActors)
+        if (actor.BlocksActors || actor.Blasted && !actor.IsDead && !actor.Destroyed)
         {
             foreach (var other in sim.Actors)
             {
                 var corpse = actor.IceCorpse && IsCorpseObstacle(other);
-                if (ReferenceEquals(actor, other) || !other.IsBlockmapActor || (!other.BlocksActors && !corpse)
+                var blastTarget = actor.Blasted && other.Shootable && other.IsMonster
+                    && !other.Boss && !other.DontBlast && !other.IsDead && !other.Destroyed;
+                if (ReferenceEquals(actor, other) || !other.IsBlockmapActor
+                    || (!blastTarget && !(actor.BlocksActors && (other.BlocksActors || corpse)))
                     || z >= other.Z.ToDouble() + other.Height.ToDouble()
                     || z + actor.Height.ToDouble() <= other.Z.ToDouble()) continue;
                 var reach = radius + other.Radius.ToDouble();
@@ -589,7 +592,7 @@ public static class ActorPhysics
                     && (before >= reach * reach || after < before - 1e-8)))
                     continue;
                 // PIT_CheckThing transfers horizontal momentum before rejecting a blasted collision.
-                if (actor.Blasted && other.Shootable && other.IsMonster && !other.Boss && !other.DontBlast)
+                if (blastTarget)
                 {
                     other.VelocityX = Fixed.FromDouble(other.VelocityX.ToDouble() + actor.VelocityX.ToDouble());
                     other.VelocityY = Fixed.FromDouble(other.VelocityY.ToDouble() + actor.VelocityY.ToDouble());

@@ -10477,11 +10477,33 @@ Full actor recreation, native runtime savegame acceptance, typed blast damage,
 non-solid collisions and native geometry/retry parity remain incomplete.
 Phases 1–3 and invasion synchronization acceptance remain open.
 
+## Conversion and audit: non-solid blast impacts (2026-10-03)
+
+Extended the live actor collision subset against `PIT_CheckThing` in
+`src/playsim/p_map.cpp`: the native blast branch requires a shootable monster,
+not a solid target or mover. Managed collision traversal now admits eligible
+live non-solid targets and live blasted non-solid movers. Eligible impacts
+still block the attempted move, transfer momentum and apply shared damage.
+Ineligible non-solid targets remain passable; a non-solid mover does not gain
+ordinary solid collision blocking merely because it is blasted.
+
+Thirteen regressions cover all new solid/non-solid combinations, seven
+exclusions (BOSS, DONTBLAST, non-monster, non-shootable, NOBLOCKMAP, dead and
+destroyed), ordinary non-blasted motion, excluded solid targets and exact
+vertical separation. Full solution: 5,624 passed, zero failed/skipped;
+Playsim 4,497. Release warnings-as-errors build and diff checks pass.
+
+This closes live non-solid blast eligibility only. Shootable corpse blast
+behavior, native square overlap versus managed swept cylinder geometry,
+script collision callbacks, THRUACTORS/THRUSPECIES, typed outgoing damage,
+bleed effects and retry parity remain open. No native runtime acceptance is
+claimed; phases 1–3 and invasion synchronization acceptance remain incomplete.
+
 ## Validation
 
-- Release solution: **5,611 passed, zero failed/skipped**, 4,688 cases above baseline.
+- Release solution: **5,624 passed, zero failed/skipped**, 4,701 cases above baseline.
   Protocol 15; Gamedata 29; Transport 10; Master 1; RCON 6; MapLoader 533;
-  Playsim 4,484; Client 12; Net.Core 351; Pregame 97; Server 65; Scripting 8.
+  Playsim 4,497; Client 12; Net.Core 351; Pregame 97; Server 65; Scripting 8.
 - The lighting pass initially saw a five-second timeout in
   `Pump_LiveSessionReceivesGuestClientInput`; it passed the targeted rerun and the
   subsequent full solution run. No timeout/test-disabling workaround was added.
