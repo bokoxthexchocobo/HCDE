@@ -748,28 +748,33 @@ public sealed class PlayerPawn : Actor
         _turnHeld = command.Turn180;
         if (freshTurn)
             TurnTicks = Turn180Ticks;
-        if (TurnTicks > 0)
-        {
-            TurnTicks--;
-            Angle = BamAngle.FromDegrees(Angle.ToDegrees() + 180.0 / Turn180Ticks);
-        }
-        else
-            Angle = new BamAngle(unchecked(Angle.Raw + (uint)(command.YawDelta << 16)));
         PitchDegrees = Math.Clamp(PitchDegrees + command.PitchDelta * (360.0 / 65536), -89, 89);
-        if (Level != null)
+        if (ReactionTime != 0)
+            ReactionTime = unchecked(ReactionTime - 1);
+        else
         {
-            var (dx, dy) = Movement.Thrust(Angle, command.ForwardMove, command.SideMove);
-            VelocityX = Fixed.FromDouble(VelocityX.ToDouble() + dx * MovementSpeed.ToDouble());
-            VelocityY = Fixed.FromDouble(VelocityY.ToDouble() + dy * MovementSpeed.ToDouble());
-        }
-        // CheckJump runs before CheckCrouch. A jump while crouched only stands the player up.
-        var crouched = CrouchFactor < 1;
-        if (command.Jump && crouched)
-            UncrouchLocked = true;
-        else if (command.Jump && OnGround && Level != null)
-        {
-            VelocityZ = JumpZ;
-            OnGround = false;
+            if (TurnTicks > 0)
+            {
+                TurnTicks--;
+                Angle = BamAngle.FromDegrees(Angle.ToDegrees() + 180.0 / Turn180Ticks);
+            }
+            else
+                Angle = new BamAngle(unchecked(Angle.Raw + (uint)(command.YawDelta << 16)));
+            if (Level != null)
+            {
+                var (dx, dy) = Movement.Thrust(Angle, command.ForwardMove, command.SideMove);
+                VelocityX = Fixed.FromDouble(VelocityX.ToDouble() + dx * MovementSpeed.ToDouble());
+                VelocityY = Fixed.FromDouble(VelocityY.ToDouble() + dy * MovementSpeed.ToDouble());
+            }
+            // CheckJump runs before CheckCrouch. A jump while crouched only stands the player up.
+            var crouched = CrouchFactor < 1;
+            if (command.Jump && crouched)
+                UncrouchLocked = true;
+            else if (command.Jump && OnGround && Level != null)
+            {
+                VelocityZ = JumpZ;
+                OnGround = false;
+            }
         }
         ApplyCrouch(command);
 

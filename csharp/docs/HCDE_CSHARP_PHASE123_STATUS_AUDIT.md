@@ -7855,11 +7855,33 @@ without losing actor counter state require further conversion. Save/network
 propagation is incomplete. Player counter storage does not imply player movement
 blocking has been implemented.
 
+## Player reaction-time movement gate (2026-10-03)
+
+Continued the prior reaction-property pass by converting PlayerPawn HandleMovement
+gating from native `player.zs`. Every nonzero reactiontime decrements instead of
+calling MovePlayer/CheckJump/CheckMoveUpDown. Turn180 can arm before this check,
+but movement yaw and turn progress wait. Native PlayerThink calls CheckPitch and
+CheckCrouch separately and still handles weapon/use paths. The C# player now gates
+yaw, thrust and jump while preserving those existing independent paths and physics.
+
+Six new cases cover two-tic countdown and following-tic resumption, negative
+counter decrement and integer wrap, momentum preservation with pitch/crouch,
+turn180 arming/resumption, and attack/use processing during delay. Existing ACS
+reaction-property and movement cases pass. Full suite: 4,716 passed, zero
+failed/skipped; Release warnings-as-errors build: zero warnings/errors.
+No state fields were added; idle hash remains 3861582658. Source review and
+regression self-audit only.
+
+This closes the preceding audit's player yaw/thrust/jump blocking gap. Native
+CheckMoveUpDown, swim/fly paths, full crouch ordering, teleport delay initialization,
+class defaults, general freeze flags and save/network state remain incomplete.
+The earlier monster shared raise/reaction-counter limitation also remains open.
+
 ## Validation
 
-- Release solution: **4,710 passed, zero failed/skipped**, 3,787 cases above baseline.
+- Release solution: **4,716 passed, zero failed/skipped**, 3,793 cases above baseline.
   Protocol 15; Gamedata 10; Transport 10; Master 1; RCON 6; MapLoader 500;
-  Playsim 3,637; Client 12; Net.Core 351; Pregame 97; Server 63; Scripting 8.
+  Playsim 3,643; Client 12; Net.Core 351; Pregame 97; Server 63; Scripting 8.
 - The lighting pass initially saw a five-second timeout in
   `Pump_LiveSessionReceivesGuestClientInput`; it passed the targeted rerun and the
   subsequent full solution run. No timeout/test-disabling workaround was added.
