@@ -1812,8 +1812,9 @@ public sealed class AuthoritySimulation
     {
         var id = _nextActorId;
         _nextActorId = checked(_nextActorId + 1);
+        var defaults = _dehacked?.Actors.FirstOrDefault(actor => actor.DoomEdNum == doomEdNum && actor.Patched);
         var catalogHealth = DoomActorCatalog.Find(doomEdNum)?.Health;
-        var health = doomEdNum == 3004 ? 30 : catalogHealth ?? 30;
+        var health = defaults?.Health ?? (doomEdNum == 3004 ? 30 : catalogHealth ?? 30);
         var bot = new BotPawn
         {
             Id = id,
@@ -1833,7 +1834,9 @@ public sealed class AuthoritySimulation
             IsMonster = true,
             Damage = DoomActorCatalog.Find(doomEdNum)?.Damage ?? 0,
         };
-        var defaults = _dehacked?.Actors.FirstOrDefault(actor => actor.DoomEdNum == doomEdNum && actor.Patched);
+        if (defaults is { ReactionTimePatched: true }) bot.ReactionTime = defaults.ReactionTime;
+        bot.Mass = defaults is { MassPatched: true } ? defaults.Mass : DoomActorCatalog.MassOf(doomEdNum);
+        if (defaults is { MissileDamagePatched: true }) bot.Damage = defaults.MissileDamage;
         ActorSpawner.ApplyExtendedDefaults(bot, defaults);
         ThingActivation.InitializeSpawn(bot, false);
         bot.RememberPosition();

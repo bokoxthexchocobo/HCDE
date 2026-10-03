@@ -9517,11 +9517,32 @@ catalog is not supported or validated. Invasion uses AddBot, but native wave/
 timer/enemy synchronization acceptance remains unverified. Phases 1–3,
 archive/network parity and native session validation remain incomplete.
 
+## Conversion and audit: dynamic numeric class defaults (2026-10-03)
+
+Closed AddBot's bypass of converted DEHACKED class health, reaction time,
+mass and missile damage. Matching patched records now supply health before
+construction and set resurrection/gib baselines consistently with positive
+spawn health. Explicit numeric patch fields are applied after the bot brain
+is assigned so reaction initialization cannot overwrite the patch. Unpatched
+mass uses DoomActorCatalog.MassOf rather than generic Actor mass. This follows
+the class fields converted from `src/gamedata/d_dehacked.cpp`; map spawning
+already consumed them while dynamic spawning did not.
+
+Seven regressions cover five health values (including zero/negative), map/
+dynamic health baseline consistency, reaction countdown and patched mass/
+damage, and unpatched class isolation. Full Release solution: 5,210 passed,
+zero failed/skipped; Playsim 4,096. Release warnings-as-errors build and
+whitespace check pass. Existing hashes apply. Class remapping, dimensions,
+first-set flags, patched frames/actions, other factories and non-positive
+health lifecycle parity remain incomplete. Invasion's AddBot path benefits
+from numeric defaults; native wave/timer/enemy synchronization validation is
+still unverified. Phases 1–3 and persistence/network/native sessions remain open.
+
 ## Validation
 
-- Release solution: **5,203 passed, zero failed/skipped**, 4,280 cases above baseline.
+- Release solution: **5,210 passed, zero failed/skipped**, 4,287 cases above baseline.
   Protocol 15; Gamedata 18; Transport 10; Master 1; RCON 6; MapLoader 533;
-  Playsim 4,089; Client 12; Net.Core 351; Pregame 97; Server 63; Scripting 8.
+  Playsim 4,096; Client 12; Net.Core 351; Pregame 97; Server 63; Scripting 8.
 - The lighting pass initially saw a five-second timeout in
   `Pump_LiveSessionReceivesGuestClientInput`; it passed the targeted rerun and the
   subsequent full solution run. No timeout/test-disabling workaround was added.
