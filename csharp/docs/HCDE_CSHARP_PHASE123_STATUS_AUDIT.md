@@ -8448,11 +8448,33 @@ class-default inheritance/restoration, player respawn flags or full DEHACKED
 translation. Source/regression self-audit does not replace native invasion
 sessions or complete phase 1–3 acceptance, which remain open.
 
+## Conversion and audit: DEHACKED ambush plus map spawn options (2026-10-03)
+
+Compared MF_AMBUSH (0x00000020) in `src/playsim/actor.h`, DEHACKED default
+flag assignment and map spawning in `src/playsim/p_mobj.cpp`. Native map spawn
+adds MF_AMBUSH when MTF_AMBUSH is set; it does not clear an inherited default.
+Managed initialization now ORs the map option with an explicitly patched Ambush
+bit rather than using only the map option. Clearing the patch bit therefore
+cannot suppress an enabled map ambush option.
+
+Six cases cover all map/default combinations and real noise propagation to a
+monster behind a blocking wall. Patched ambush actors retain heard-source memory
+but require sight to acquire it both immediately and on the following brain tick.
+Full Release solution: 4,875 passed, zero failed/skipped; Playsim 3,802.
+Warnings-as-errors build: zero warnings/errors; whitespace check passes. Existing
+hearing, patch and invasion cases pass; player idle baseline unchanged. Unrelated
+line-ending changes remain outside the checkpoint commit.
+
+This is bounded default/spawn-option conversion. Complete native look/chase
+scheduling, class flag restoration, DEHACKED flag translation and advanced
+sound/visibility geometry remain unfinished. Source/regression self-audit does
+not replace native invasion sessions or complete phases 1–3, which remain open.
+
 ## Validation
 
-- Release solution: **4,869 passed, zero failed/skipped**, 3,946 cases above baseline.
+- Release solution: **4,875 passed, zero failed/skipped**, 3,952 cases above baseline.
   Protocol 15; Gamedata 10; Transport 10; Master 1; RCON 6; MapLoader 500;
-  Playsim 3,796; Client 12; Net.Core 351; Pregame 97; Server 63; Scripting 8.
+  Playsim 3,802; Client 12; Net.Core 351; Pregame 97; Server 63; Scripting 8.
 - The lighting pass initially saw a five-second timeout in
   `Pump_LiveSessionReceivesGuestClientInput`; it passed the targeted rerun and the
   subsequent full solution run. No timeout/test-disabling workaround was added.
