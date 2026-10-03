@@ -42,6 +42,21 @@ public class TeleportDestinationSelectionTests
         Assert.Equal(x, player.X); Assert.Equal(70, line.Special);
     }
 
+    [Theory]
+    [InlineData(MapDataFormat.DoomBinary, 39)]
+    [InlineData(MapDataFormat.DoomBinary, 97)]
+    [InlineData(MapDataFormat.HexenBinary, 70)]
+    [InlineData(MapDataFormat.UdmfText, 70)]
+    public void ZeroDestinationArgumentsRejectWithoutPoseOrLineMutation(MapDataFormat format, int special)
+    {
+        var sim = Room(format); var player = Assert.Single(sim.Players);
+        var line = new LevelLine { Special = special, PlayerCross = true };
+        player.ReactionTime = 7; player.VelocityX = Fixed.FromInt(3);
+        Assert.False(LineSpecials.ActivateMapLine(sim, player, line, false, false));
+        Assert.Equal(0, player.X.ToDouble()); Assert.Equal(7, player.ReactionTime);
+        Assert.Equal(3, player.VelocityX.ToDouble()); Assert.Equal(special, line.Special);
+    }
+
     private static AuthoritySimulation Room(MapDataFormat format) => AuthoritySimulation.Start(new PlayLevel
     {
         Format = format, Namespace = "ZDoom",

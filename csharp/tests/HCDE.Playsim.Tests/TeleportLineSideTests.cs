@@ -13,7 +13,7 @@ public class TeleportLineSideTests
     {
         var sim = Room(format);
         var player = Assert.Single(sim.Players);
-        var line = new LevelLine { Special = special, PlayerCross = true };
+        var line = new LevelLine { Special = special, Tag = 7, Arg1 = 7, PlayerCross = true };
         player.ReactionTime = 7;
         player.VelocityX = Fixed.FromInt(3);
         var x = player.X;
@@ -36,14 +36,14 @@ public class TeleportLineSideTests
         var sim = Room(MapDataFormat.HexenBinary);
         var player = Assert.Single(sim.Players);
         player.X = Fixed.FromInt(x);
-        var line = new LevelLine { X1 = 0, Y1 = -64, X2 = 0, Y2 = 64, Special = 70, PlayerCross = true };
+        var line = new LevelLine { X1 = 0, Y1 = -64, X2 = 0, Y2 = 64, Special = 70, Arg1 = 7, PlayerCross = true };
         Assert.Equal(expected, LineSpecials.ActivateMapLine(sim, player, line, false));
     }
 
     private static AuthoritySimulation Room(MapDataFormat format) => AuthoritySimulation.Start(new PlayLevel
     {
         Format = format, Namespace = "ZDoom",
-        Sectors = [new LevelSector { CeilingHeight = 128 }],
+        Sectors = [new LevelSector { Tag = 7, CeilingHeight = 128 }],
         Things = [new LevelThing { Type = 1 }, new LevelThing { Type = LineSpecials.TeleportDestType, X = 200 }],
     });
 }

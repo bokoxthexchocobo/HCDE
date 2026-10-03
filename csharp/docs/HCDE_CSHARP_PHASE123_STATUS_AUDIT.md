@@ -9211,11 +9211,31 @@ fallbacks, zero/zero behavior, collision/telefrag and native session acceptance
 remain open. This closes the ACS TID/tag/side dispatch gap, not full teleport
 or ACS parity. Phases 1–3 and invasion validation remain incomplete.
 
+## Conversion and audit: teleport requires a destination selector (2026-10-03)
+
+Converted the zero-TID/zero-sector-tag failure from native
+`FLevelLocals::SelectTeleDest` in `src/playsim/p_teleport.cpp`: its nonzero
+TID and tag searches fall through to NULL when both are zero. Real Doom map
+specials 39/97 now fail for tag zero; Hexen/UDMF special 70 and ACS direct/
+stack dispatch fail when both selectors are zero. Extended map and ACS paths
+share the same handler. The unknown-format/internal Execute compatibility
+API retains its historical select-first behavior.
+
+Six new regressions verify all supported map formats and direct/stack ACS,
+preserving pose, velocity, reaction counter and line special on failure, and
+continuing the ACS script. Previous line-side fixtures now provide a valid
+sector tag so they test the side rule independently. Full Release solution:
+5,091 passed, zero failed/skipped; Playsim 4,010. Release warnings-as-errors
+build and whitespace checks pass. No new persisted/checksum state.
+Random destination selection, MapSpot/non-solid fallback, fog, collision/
+telefrag, compatibility flags and native session acceptance remain open.
+Phases 1–3 and invasion synchronization validation remain incomplete.
+
 ## Validation
 
-- Release solution: **5,085 passed, zero failed/skipped**, 4,162 cases above baseline.
+- Release solution: **5,091 passed, zero failed/skipped**, 4,168 cases above baseline.
   Protocol 15; Gamedata 18; Transport 10; Master 1; RCON 6; MapLoader 500;
-  Playsim 4,004; Client 12; Net.Core 351; Pregame 97; Server 63; Scripting 8.
+  Playsim 4,010; Client 12; Net.Core 351; Pregame 97; Server 63; Scripting 8.
 - The lighting pass initially saw a five-second timeout in
   `Pump_LiveSessionReceivesGuestClientInput`; it passed the targeted rerun and the
   subsequent full solution run. No timeout/test-disabling workaround was added.

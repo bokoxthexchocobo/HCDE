@@ -173,7 +173,7 @@ public static class LineSpecials
                 (11, true) or (52, false) => Exit(sim, false, actor),
                 (51, true) or (124, false) => Exit(sim, true, actor),
                 (39 or 97, false) => !(backSide ?? IsBackSide(line, actor.X.ToDouble(), actor.Y.ToDouble()))
-                    && TeleportActivator(sim, actor, line.Tag),
+                    && line.Tag != 0 && TeleportActivator(sim, actor, line.Tag),
                 (18 or 69, true) => StartMapFloor(sim, line, line.Tag, FloorTarget.NextHigher),
                 (23 or 60, true) or (38 or 82, false) => StartMapFloor(sim, line, line.Tag, FloorTarget.Lowest),
                 (58 or 92, false) => StartMapFloor(sim, line, line.Tag, FloorTarget.RaiseBy, amount: 24),
@@ -217,7 +217,7 @@ public static class LineSpecials
                 20 or 21 or 22 or 23 or 24 or 25 or 28 or 35 or 36 or 37 or 46 or 62 or 66 or 67 or 68 or 99 or 238 or 239 or 242 or 256 or 257 or 258 or 259 or 260 or 275 or 279 or ScrollFloor or ScrollCeiling => ExecuteFloorSpecial(sim, line.Special,
                     line.Arg0, line.Arg1, line.Arg2, line.Arg3, line.Arg4, line) == true,
                 70 => !(backSide ?? IsBackSide(line, actor.X.ToDouble(), actor.Y.ToDouble()))
-                    && TeleportActivator(sim, actor, line.Arg0, byThingId: true, sectorTag: line.Arg1),
+                    && ExecuteTeleportSpecial(sim, 70, line.Arg0, line.Arg1, actor, false) == true,
                 130 or 131 => ThingActivation.Execute(sim, actor, line.Arg0, line.Special == 130),
                 80 or 81 or 82 or 226 => ExecuteScriptControl(sim, line.Special, line.Arg0, line.Arg1, line.Arg2, line.Arg3, line.Arg4, actor, line, backSide ?? IsBackSide(line, actor.X.ToDouble(), actor.Y.ToDouble())) == true,
                 243 => Exit(sim, false, actor),
@@ -849,7 +849,7 @@ public static class LineSpecials
 
     internal static bool? ExecuteTeleportSpecial(AuthoritySimulation sim, int special, int tid, int sectorTag,
         Actor? activator, bool backSide) => special == 70
-        ? !backSide && activator is { Destroyed: false }
+        ? !backSide && (tid != 0 || sectorTag != 0) && activator is { Destroyed: false }
             && TeleportActivator(sim, activator, tid, byThingId: true, sectorTag: sectorTag)
         : null;
 

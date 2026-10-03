@@ -38,6 +38,20 @@ public class AcsTeleportTests
         Assert.Equal(0x40000000u, sim.Level.Sectors[0].FloorTextureAngle);
     }
 
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public void ZeroTidAndTagRejectWithoutStoppingScript(bool stack)
+    {
+        var sim = Room(); var player = Assert.Single(sim.Players);
+        player.ReactionTime = 7; player.VelocityX = Fixed.FromInt(3);
+        Add(sim, stack ? [3, 0, 3, 0, 5, 70] : [10, 70, 0, 0]);
+        Assert.True(sim.Acs.TryExecute(1, [], player)); sim.Acs.Tick(sim);
+        Assert.Equal(0, player.X.ToDouble()); Assert.Equal(7, player.ReactionTime);
+        Assert.Equal(3, player.VelocityX.ToDouble());
+        Assert.Equal(0x40000000u, sim.Level.Sectors[0].FloorTextureAngle);
+    }
+
     private static void Add(AuthoritySimulation sim, int[] teleport)
     {
         int[] words = [.. teleport, 11, 185, 10, 90, 0, 1];
