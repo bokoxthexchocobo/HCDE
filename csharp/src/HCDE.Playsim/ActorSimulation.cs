@@ -2073,14 +2073,24 @@ public sealed class AuthoritySimulation
         var dx = Math.Cos(radians) * distance; var dy = Math.Sin(radians) * distance;
         var steps = Math.Max(1, (int)(1 + Math.Max(Math.Abs(dx), Math.Abs(dy)) / (soul.Radius.ToDouble() > 1 ? soul.Radius.ToDouble() - 1 : 16)));
         var solid = parent.Solid;
+        var noTeleport = soul.NoTeleport;
         try
         {
             parent.Solid = false;
+            soul.NoTeleport = true;
             for (var i = 0; i < steps; i++)
                 if (!ActorPhysics.TryMove(this, soul, soul.X.ToDouble() + dx / steps, soul.Y.ToDouble() + dy / steps, out _))
+                {
+                    // Native keeps the failed spawn and applies ordinary telefrag damage.
+                    // Do not register this failed child in the managed invasion wave.
+                    ActorDamage.Apply(soul, ActorDamage.TelefragDamage, parent, inflictor: parent);
+                    soul.RememberPosition();
+                    _actors.Add(soul);
+                    Thinkers.Add(soul);
                     return null;
+                }
         }
-        finally { parent.Solid = solid; }
+        finally { parent.Solid = solid; soul.NoTeleport = noTeleport; }
         soul.Friendly = parent.Friendly;
         soul.FriendPlayer = parent.FriendPlayer;
         soul.TidToHate = parent.TidToHate;

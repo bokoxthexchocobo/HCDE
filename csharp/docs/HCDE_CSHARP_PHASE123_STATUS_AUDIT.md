@@ -9861,11 +9861,37 @@ blocked-spawn death/counter cleanup, and temporary no-teleport behavior during
 prestep remain open. No native-engine comparison session was run. Invasion
 synchronization acceptance and phases 1–3 completion remain open.
 
+## Blocked Lost Soul spawn lifecycle checkpoint (2026-10-03)
+
+Audited native A_PainShootSkull in `painelemental.zs`: temporarily clear parent
+solidity and set child NOTELEPORT during prestep; on blocked movement clear
+counters, apply ordinary TELEFRAG_DAMAGE, restore saved flags, and return.
+Managed prestep now sets/restores the teleport flag alongside parent solidity
+in finally. A blocked spawn receives shared ActorDamage telefrag damage with
+its parent as source/inflictor and remains in actors/thinkers rather than being
+silently discarded. The API still returns null to indicate failure and does
+not register a failed child in the managed invasion wave.
+
+Five new regressions cover saved flag combinations, one death transition,
+telefrag health/source attribution, retained actor ticking, and failed-child
+wave membership/victory. Updated the wall-blocking attack fixture to expect a
+dead soul rather than no actor. Full Release solution: 5,339 passed, zero
+failed/skipped; Playsim 4,214. Release warnings-as-errors build and whitespace
+checks passed; existing trace and server invasion tests passed. Existing actor
+state checksum fields include the retained failed spawn; no schema added.
+
+This is the managed lifecycle/counting subset. Native ClearCounters also adjusts
+native kill/item/secret accounting, which the port does not fully represent.
+Unshootable/dormant patched actors can resist ordinary damage through existing
+rules; the conversion intentionally does not force damage. Failed-spawn custom
+callbacks, replacements, portals and collision details, full native sessions,
+invasion synchronization acceptance, and phases 1–3 completion remain open.
+
 ## Validation
 
-- Release solution: **5,334 passed, zero failed/skipped**, 4,411 cases above baseline.
+- Release solution: **5,339 passed, zero failed/skipped**, 4,416 cases above baseline.
   Protocol 15; Gamedata 29; Transport 10; Master 1; RCON 6; MapLoader 533;
-  Playsim 4,209; Client 12; Net.Core 351; Pregame 97; Server 63; Scripting 8.
+  Playsim 4,214; Client 12; Net.Core 351; Pregame 97; Server 63; Scripting 8.
 - The lighting pass initially saw a five-second timeout in
   `Pump_LiveSessionReceivesGuestClientInput`; it passed the targeted rerun and the
   subsequent full solution run. No timeout/test-disabling workaround was added.

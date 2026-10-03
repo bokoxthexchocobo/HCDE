@@ -43,7 +43,9 @@ public class PainElementalTests
         ((List<LevelLine>)sim.Level.Lines).Add(new LevelLine
             { X1 = 50, X2 = 50, Y1 = -200, Y2 = 200, SideBack = -1 });
         for (var i = 0; i < 15; i++) sim.Tick();
-        Assert.Empty(Souls(sim));
+        var failed = Assert.Single(Souls(sim));
+        Assert.True(failed.IsDead); Assert.Equal(1, failed.DeathCount);
+        Assert.False(failed.Brain!.Charging); Assert.False(failed.NoTeleport);
         Assert.True(parent.Solid);
     }
 
