@@ -10769,11 +10769,33 @@ Custom class defaults, MBF bouncers, hitscan/autoaim behavior, actor recreation
 and native geometry/runtime acceptance remain incomplete. Phases 1–3 and
 invasion synchronization acceptance remain open.
 
+## Conversion and audit: solid non-shootable missile blockers (2026-10-03)
+
+Corrected live projectile contact eligibility against `PIT_CheckThing` in
+`src/playsim/p_map.cpp`: a non-SHOOTABLE target returns passage only when
+it is also non-solid. Managed projectile traversal now admits live solid
+blockers even when they cannot take damage. Such contact enters the existing
+impact/explosion path; shared damage eligibility prevents direct damage.
+NONSHOOTABLE remains an explicit passage flag, independent of SHOOTABLE.
+The earlier NONSHOOTABLE matrix now expects solid non-shootable impact,
+correcting the prior unsupported pass-through expectation.
+
+Ten new regressions cover all SOLID/SHOOTABLE combinations, four passage
+exceptions, protection of an enemy behind a solid non-shootable blocker,
+and rocket radius damage after blocker contact. Full non-incremental Release
+rebuild: zero warnings/errors; 5,809 solution tests passed, zero failed/skipped
+(Playsim 4,682). Whitespace checks pass.
+
+This closes live solid blocker eligibility only. Corpse contact, custom
+SpecialMissileHit callbacks, MBF bouncers, native projectile pass height,
+hitscan/autoaim and full geometry/runtime acceptance remain incomplete.
+Phases 1–3 and invasion synchronization acceptance remain open.
+
 ## Validation
 
-- Release solution: **5,799 passed, zero failed/skipped**, 4,876 cases above baseline.
+- Release solution: **5,809 passed, zero failed/skipped**, 4,886 cases above baseline.
   Protocol 15; Gamedata 29; Transport 10; Master 1; RCON 6; MapLoader 533;
-  Playsim 4,672; Client 12; Net.Core 351; Pregame 97; Server 65; Scripting 8.
+  Playsim 4,682; Client 12; Net.Core 351; Pregame 97; Server 65; Scripting 8.
 - The lighting pass initially saw a five-second timeout in
   `Pump_LiveSessionReceivesGuestClientInput`; it passed the targeted rerun and the
   subsequent full solution run. No timeout/test-disabling workaround was added.

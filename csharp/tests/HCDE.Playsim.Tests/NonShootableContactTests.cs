@@ -13,10 +13,11 @@ public class NonShootableContactTests
     {
         var (sim, missile, target) = Setup(); target.Shootable = shootable; target.NonShootable = nonShootable;
         var health = target.Health; sim.Tick();
-        var passes = !shootable || nonShootable;
+        var passes = nonShootable;
         Assert.Equal(!passes, missile.Destroyed);
         if (passes) { Assert.Equal(30, missile.X.ToDouble()); Assert.Equal(health, target.Health); }
-        else Assert.True(target.Health < health);
+        else if (shootable) Assert.True(target.Health < health);
+        else Assert.Equal(health, target.Health);
     }
 
     [Fact]
