@@ -9660,11 +9660,36 @@ at Imp; remapped-family tests supply resolved catalog entries directly and do
 not establish text parser support for these later classes. Phases 1–3 and
 invasion round/timer/enemy synchronization acceptance remain incomplete.
 
+## DeHackEd Doom monster table continuation checkpoint (2026-10-03)
+
+Audited against the 1-based InfoNames order in `wadsrc/static/dehsupp.txt`
+and editor mappings in `wadsrc/static/mapinfo/doomitems.txt`. Extended the
+managed baseline from Thing 12 through Thing 24: Demon, Spectre, Cacodemon,
+BaronOfHell, BaronBall, HellKnight, LostSoul, SpiderMastermind, Arachnotron,
+Cyberdemon, PainElemental, and WolfensteinSS. BaronBall preserves its intervening
+slot with no map editor number; its projectile defaults remain unconverted.
+The eleven monster entries use existing DoomActorCatalog physical and health
+defaults and retain original class identity when a text patch changes ID #.
+
+Eleven catalog/parser regressions verify native indices, defaults, remapping,
+and unchanged baseline entries. Four gameplay regressions verify actual text
+patches reach map and dynamic spawning, health overrides, family immunity, and
+DoHarmSpecies. This closes the preceding checkpoint's parser limitation for
+these families; the older resolved-entry regressions remain valid.
+Full Release solution: 5,272 passed, zero failed/skipped; Playsim 4,147;
+Gamedata 29. Release warnings-as-errors build and whitespace checks passed.
+Existing trace tests passed; no checksum fields or schema were added.
+
+This extends actor table coverage, not full DeHackEd parity. Entries after
+WolfensteinSS, projectile defaults, complete actor flags/states/action pointers,
+custom inheritance and projectile groups, native session comparisons, and
+invasion synchronization acceptance remain open. Phases 1–3 remain incomplete.
+
 ## Validation
 
-- Release solution: **5,257 passed, zero failed/skipped**, 4,334 cases above baseline.
-  Protocol 15; Gamedata 18; Transport 10; Master 1; RCON 6; MapLoader 533;
-  Playsim 4,143; Client 12; Net.Core 351; Pregame 97; Server 63; Scripting 8.
+- Release solution: **5,272 passed, zero failed/skipped**, 4,349 cases above baseline.
+  Protocol 15; Gamedata 29; Transport 10; Master 1; RCON 6; MapLoader 533;
+  Playsim 4,147; Client 12; Net.Core 351; Pregame 97; Server 63; Scripting 8.
 - The lighting pass initially saw a five-second timeout in
   `Pump_LiveSessionReceivesGuestClientInput`; it passed the targeted rerun and the
   subsequent full solution run. No timeout/test-disabling workaround was added.

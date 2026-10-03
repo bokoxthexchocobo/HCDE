@@ -151,6 +151,9 @@ public static class DehackedPatch
             "Player", "Zombieman", "ShotgunGuy", "Archvile", "ArchvileFire",
             "Revenant", "RevenantTracer", "Smoke", "Mancubus", "FatShot",
             "Chaingunner", "Imp",
+            "Demon", "Spectre", "Cacodemon", "BaronOfHell", "BaronBall",
+            "HellKnight", "LostSoul", "SpiderMastermind", "Arachnotron",
+            "Cyberdemon", "PainElemental", "WolfensteinSS",
         ];
         var actors = new DehackedActor[names.Length];
         for (var i = 0; i < names.Length; i++)
@@ -160,8 +163,12 @@ public static class DehackedPatch
                 Index = i + 1,
                 Name = names[i],
                 Health = names[i] == "Player" ? 100 : 30,
-                DoomEdNum = i switch { 0 => 1, 1 => 3004, 2 => 9, 3 => 64, 5 => 66, 8 => 67, 10 => 65, 11 => 3001, _ => -1 },
-                OriginalDoomEdNum = i switch { 0 => 1, 1 => 3004, 2 => 9, 3 => 64, 5 => 66, 8 => 67, 10 => 65, 11 => 3001, _ => -1 },
+                DoomEdNum = i switch { 0 => 1, 1 => 3004, 2 => 9, 3 => 64, 5 => 66, 8 => 67, 10 => 65, 11 => 3001,
+                    12 => 3002, 13 => 58, 14 => 3005, 15 => 3003, 17 => 69,
+                    18 => 3006, 19 => 7, 20 => 68, 21 => 16, 22 => 71, 23 => 84, _ => -1 },
+                OriginalDoomEdNum = i switch { 0 => 1, 1 => 3004, 2 => 9, 3 => 64, 5 => 66, 8 => 67, 10 => 65, 11 => 3001,
+                    12 => 3002, 13 => 58, 14 => 3005, 15 => 3003, 17 => 69,
+                    18 => 3006, 19 => 7, 20 => 68, 21 => 16, 22 => 71, 23 => 84, _ => -1 },
             };
             if (DoomActorCatalog.Find(actors[i].DoomEdNum) is { } definition)
             {
