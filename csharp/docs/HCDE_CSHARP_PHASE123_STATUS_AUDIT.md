@@ -9910,11 +9910,31 @@ ZScript action limit arguments, subclass/replacement thinker counting, ceiling
 float response, massacre suppression, and full native sessions remain open.
 Invasion synchronization acceptance and phases 1–3 completion remain open.
 
+## Server Pain Elemental limit configuration checkpoint (2026-10-03)
+
+Dedicated server command parsing now accepts --limit-pain and combines it with
+existing compatibility settings. Existing DedicatedServerHost wiring forwards
+the resulting CompatSurface to AuthoritySimulation. Updated CLI usage and README
+with the 21-existing-Lost-Soul threshold and default disabled behavior. This
+closes the preceding checkpoint's server command-line configuration gap.
+
+Two integration cases parse a temporary valid map WAD and boot a real server,
+checking default disabled and repeated enabled arguments, preservation of Hexen
+compatibility, and exact simulation compatibility options. Full Release solution:
+5,348 passed, zero failed/skipped; Server 65; Playsim 4,221. Release build with
+warnings as errors and whitespace checks passed. Existing gameplay limit, trace,
+and invasion tests passed. No new simulation fields or checksum schema added.
+
+This exposes the previously converted gameplay rule; it does not decode native
+compatibility bitfields or MAPINFO compatibility settings. Custom action limits,
+replacement classes, remaining spawn behavior, native-engine comparisons,
+invasion synchronization acceptance, and phases 1–3 completion remain open.
+
 ## Validation
 
-- Release solution: **5,346 passed, zero failed/skipped**, 4,423 cases above baseline.
+- Release solution: **5,348 passed, zero failed/skipped**, 4,425 cases above baseline.
   Protocol 15; Gamedata 29; Transport 10; Master 1; RCON 6; MapLoader 533;
-  Playsim 4,221; Client 12; Net.Core 351; Pregame 97; Server 63; Scripting 8.
+  Playsim 4,221; Client 12; Net.Core 351; Pregame 97; Server 65; Scripting 8.
 - The lighting pass initially saw a five-second timeout in
   `Pump_LiveSessionReceivesGuestClientInput`; it passed the targeted rerun and the
   subsequent full solution run. No timeout/test-disabling workaround was added.
