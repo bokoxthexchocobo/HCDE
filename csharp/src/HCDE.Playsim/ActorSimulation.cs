@@ -175,6 +175,7 @@ public class Actor : Thinker
     public bool NonShootable { get; set; }
     /// <summary>Native MF8_HITOWNER: a missile may contact its owner.</summary>
     public bool HitOwner { get; set; }
+    public bool Spectral { get; set; }
     public bool AllowThruBits { get; set; }
     public uint ThruBits { get; set; }
     internal bool SharesEnabledThruBits(Actor other) => (ThruBits & other.ThruBits) != 0
@@ -2867,6 +2868,7 @@ public sealed class AuthoritySimulation
             if (actor.ThruGhost) hash = Mix(hash, 0x54474853u);
             if (actor.NonShootable) hash = Mix(hash, 0x4E534854u);
             if (actor.HitOwner) hash = Mix(hash, 0x484F574Eu);
+            if (actor.Spectral) hash = Mix(hash, 0x53504354u);
             if (actor.AllowThruBits) hash = Mix(hash, 0x41544254u);
             if (actor.ThruBits != 0) { hash = Mix(hash, 0x54424954u); hash = Mix(hash, actor.ThruBits); }
             if (actor.SpawnCeiling) hash = Mix(hash, 0x4345494Cu);

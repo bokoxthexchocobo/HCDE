@@ -10835,11 +10835,34 @@ bounce/SpecialMissileHit callbacks, custom class defaults and native geometry/
 runtime acceptance remain incomplete. Managed Owner remains immutable.
 Phases 1–3 and invasion synchronization acceptance remain open.
 
+## Conversion and audit: spectral missile contact (2026-10-03)
+
+Converted supported MF4_SPECTRAL missile contact against `PIT_CheckThing`
+in `src/playsim/p_map.cpp`, flags in `src/playsim/actor.h` and registration
+in `src/scripting/thingdef_data.cpp`. An ordinary missile skips a shootable
+spectral target; a spectral missile can contact it. Native attack eligibility
+and non-shootable solidity precede spectral passage, so species-immune
+contacts and solid non-shootable targets still stop missiles. Existing
+passage exceptions remain prior filters. Ordinary movement stays solid.
+ACS supports case-insensitive set/query and conditional checksum participation.
+
+Ten regressions cover all spectral flag combinations, solid non-shootable
+blocking, species-immune blocking, ordinary movement, a rear enemy behind
+a skipped spectral target, ghost filtering and ACS. Full non-incremental
+Release rebuild: zero warnings/errors; 5,844 solution tests passed, zero
+failed/skipped (Playsim 4,717). Whitespace checks pass.
+
+SPECTRAL pose persistence, Strife-specific spectral damage semantics,
+custom defaults, bounce/ripper/SpecialMissileHit paths, hitscan/puff behavior
+and native geometry/runtime acceptance remain incomplete. This is direct
+missile contact only; radius damage remains separate. Phases 1–3 and invasion
+synchronization acceptance remain open.
+
 ## Validation
 
-- Release solution: **5,834 passed, zero failed/skipped**, 4,911 cases above baseline.
+- Release solution: **5,844 passed, zero failed/skipped**, 4,921 cases above baseline.
   Protocol 15; Gamedata 29; Transport 10; Master 1; RCON 6; MapLoader 533;
-  Playsim 4,707; Client 12; Net.Core 351; Pregame 97; Server 65; Scripting 8.
+  Playsim 4,717; Client 12; Net.Core 351; Pregame 97; Server 65; Scripting 8.
 - The lighting pass initially saw a five-second timeout in
   `Pump_LiveSessionReceivesGuestClientInput`; it passed the targeted rerun and the
   subsequent full solution run. No timeout/test-disabling workaround was added.

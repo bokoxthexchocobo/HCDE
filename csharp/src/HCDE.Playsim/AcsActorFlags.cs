@@ -28,6 +28,7 @@ internal static class AcsActorFlags
         ThruGhost,
         NonShootable,
         HitOwner,
+        Spectral,
         NoPain,
         Pickup,
         Special,
@@ -52,6 +53,8 @@ internal static class AcsActorFlags
 
     private static bool TryMap(string flagName, out Kind kind)
     {
+        if (flagName.Equals("SPECTRAL", StringComparison.OrdinalIgnoreCase))
+        { kind = Kind.Spectral; return true; }
         if (flagName.Equals("HITOWNER", StringComparison.OrdinalIgnoreCase))
         { kind = Kind.HitOwner; return true; }
         if (flagName.Equals("NONSHOOTABLE", StringComparison.OrdinalIgnoreCase))
@@ -173,6 +176,7 @@ internal static class AcsActorFlags
         Kind.ThruGhost => actor.ThruGhost,
         Kind.NonShootable => actor.NonShootable,
         Kind.HitOwner => actor.HitOwner,
+        Kind.Spectral => actor.Spectral,
         Kind.NoPain => actor.NoPain,
         Kind.Pickup => actor.CanPickupItems,
         Kind.Special => actor.SpecialPickup,
@@ -206,6 +210,7 @@ internal static class AcsActorFlags
             case Kind.ThruGhost: actor.ThruGhost = value; break;
             case Kind.NonShootable: actor.NonShootable = value; break;
             case Kind.HitOwner: actor.HitOwner = value; break;
+            case Kind.Spectral: actor.Spectral = value; break;
             case Kind.NoPain: actor.NoPain = value; break;
             case Kind.Pickup: actor.CanPickupItems = value; break;
             case Kind.Special: actor.SpecialPickup = value; break;
