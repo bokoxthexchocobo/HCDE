@@ -30,7 +30,7 @@ public class CombatTraceMissEndpointTests
         var yawRadians = yaw * Math.PI / 180; var pitchRadians = pitch * Math.PI / 180;
         Assert.Equal(10 + Math.Cos(yawRadians) * Math.Cos(pitchRadians) * range, hit.X, 5);
         Assert.Equal(20 + Math.Sin(yawRadians) * Math.Cos(pitchRadians) * range, hit.Y, 5);
-        Assert.Equal(58 - Math.Sin(pitchRadians) * range, hit.Z, 5);
+        Assert.Equal(66 - Math.Sin(pitchRadians) * range, hit.Z, 5);
         Assert.Null(CombatTrace.PickActor(sim, source, angle, pitchAngle, range));
         Assert.Equal(0, AcsLineAttack.Attack(sim, source, unchecked((int)angle.Raw), unchecked((int)pitchAngle.Raw),
             7, "None", range, puffTid: 42, absoluteAngles: true));

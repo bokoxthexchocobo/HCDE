@@ -18,7 +18,7 @@ public class ActorTraceHeightBoundaryTests
     {
         var sim = Room(); var target = sim.AddBot(100, 0);
         target.Height = new Fixed(28 * 65536 + heightDelta);
-        var hit = CombatTrace.TraceLineAttack(sim, sim.Players.Single(), new BamAngle(0), new BamAngle(0), 256);
+        var hit = CombatTrace.TraceLineAttack(sim, CenterOrigin(sim), new BamAngle(0), new BamAngle(0), 256);
         Assert.Equal(expected, ReferenceEquals(target, hit.Victim));
         if (expected) Assert.Equal(28, hit.Z);
     }
@@ -31,7 +31,7 @@ public class ActorTraceHeightBoundaryTests
     {
         var sim = Room(); var target = sim.AddBot(100, 0);
         target.Z = new Fixed(28 * 65536 + zDelta);
-        Assert.Equal(expected, ReferenceEquals(target, CombatTrace.TraceLineAttack(sim, sim.Players.Single(),
+        Assert.Equal(expected, ReferenceEquals(target, CombatTrace.TraceLineAttack(sim, CenterOrigin(sim),
             new BamAngle(0), new BamAngle(0), 256).Victim));
     }
 
@@ -41,7 +41,7 @@ public class ActorTraceHeightBoundaryTests
     [InlineData(20.0000152587890625, true)]
     public void DescendingRayIncludesActorTopAtExactRange(double range, bool expected)
     {
-        var sim = Room(); var source = sim.Players.Single(); source.Z = Fixed.FromInt(128);
+        var sim = Room(); var source = CenterOrigin(sim); source.Z = Fixed.FromInt(128);
         var target = sim.AddBot(0, 0); target.Z = Fixed.FromInt(80); target.Height = Fixed.FromInt(56);
         var hit = CombatTrace.TraceLineAttack(sim, source, new BamAngle(0), BamAngle.FromDegrees(90), range);
         Assert.Equal(expected, ReferenceEquals(target, hit.Victim));
@@ -53,7 +53,12 @@ public class ActorTraceHeightBoundaryTests
     {
         var sim = Room(); var target = sim.AddBot(100, 0); target.Height = Fixed.FromInt(28);
         var health = target.Health;
-        Assert.Same(target, CombatTrace.PickActor(sim, sim.Players.Single(), new BamAngle(0), new BamAngle(0), 256));
+        Assert.Same(target, CombatTrace.PickActor(sim, CenterOrigin(sim), new BamAngle(0), new BamAngle(0), 256));
         Assert.Equal(health, target.Health);
+    }
+    // These geometry fixtures intentionally trace from the actor center.
+    private static PlayerPawn CenterOrigin(AuthoritySimulation sim)
+    {
+        var player = sim.Players.Single(); player.AttackZOffset = new Fixed(0); return player;
     }
 }

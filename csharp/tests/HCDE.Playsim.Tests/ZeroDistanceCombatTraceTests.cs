@@ -17,7 +17,7 @@ public class ZeroDistanceCombatTraceTests
     [InlineData(0, 0, -29, false)]
     public void ZeroDistanceSelectsOnlyStrictlyContainingBoxAtOriginHeight(int x, int y, int z, bool expected)
     {
-        var sim = Room(); var source = sim.Players.Single(); var target = sim.AddBot(x, y);
+        var sim = Room(); var source = CenterOrigin(sim); var target = sim.AddBot(x, y);
         target.Radius = Fixed.FromInt(16); target.Height = Fixed.FromInt(56); target.Z = Fixed.FromInt(z);
         var random = sim.CombatRandomState; var health = target.Health; var count = sim.Actors.Count;
         var hit = CombatTrace.TraceLineAttack(sim, source, source.Angle, BamAngle.FromDegrees(-45), 0);
@@ -45,7 +45,7 @@ public class ZeroDistanceCombatTraceTests
                 SideFront = 0, SideBack = -1, Health = 100 }],
             Things = [new LevelThing { Type = 1 }],
         });
-        var source = sim.Players.Single(); source.Z = Fixed.FromInt(-28);
+        var source = CenterOrigin(sim); source.Z = Fixed.FromInt(-28);
         Assert.False(CombatTrace.TraceLineAttack(sim, source, source.Angle, BamAngle.FromDegrees(45), 0).Hit);
         Assert.Equal(0, AcsLineAttack.Attack(sim, source, 0, 0, 7, "None", 0));
         Assert.Equal(100, sim.Level.Lines[0].Health); Assert.Equal(100, sim.Level.Sectors[0].HealthFloor);
@@ -56,4 +56,9 @@ public class ZeroDistanceCombatTraceTests
         Sectors = [new LevelSector { CeilingHeight = 128 }],
         Things = [new LevelThing { Type = 1 }],
     });
+    // These geometry fixtures intentionally trace from the actor center.
+    private static PlayerPawn CenterOrigin(AuthoritySimulation sim)
+    {
+        var player = sim.Players.Single(); player.AttackZOffset = new Fixed(0); return player;
+    }
 }

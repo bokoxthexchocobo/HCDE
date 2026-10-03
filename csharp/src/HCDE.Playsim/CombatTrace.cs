@@ -158,7 +158,8 @@ public static class CombatTrace
         var dy = Math.Sin(radians);
         var x = source.X.ToDouble();
         var y = source.Y.ToDouble();
-        var z = source.Z.ToDouble() + source.Height.ToDouble() / 2;
+        var z = source.Z.ToDouble() + source.Height.ToDouble() / 2
+            + (source is PlayerPawn firingPlayer ? firingPlayer.AttackZOffset.ToDouble() * firingPlayer.CrouchFactor : 8);
         var pitchDegrees = pitch.ToDegrees();
         while (pitchDegrees > 180)
             pitchDegrees -= 360;

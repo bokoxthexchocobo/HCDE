@@ -17,7 +17,7 @@ public class HitscanRangeTests
     [InlineData(-45, 150, true)]
     public void PitchedPlaneRangeUsesThreeDimensionalDistance(double pitch, double range, bool expected)
     {
-        var sim = Room(); var player = sim.Players.Single();
+        var sim = Room(); var player = CenterOrigin(sim);
         var hit = CombatTrace.TraceLineAttack(sim, player, player.Angle, BamAngle.FromDegrees(pitch), range);
         Assert.Equal(expected, hit.Hit);
         if (expected)
@@ -37,7 +37,7 @@ public class HitscanRangeTests
     [InlineData(-90, 100.0000152587890625, true)]
     public void VerticalShotsUseExactPlaneDistanceWithoutHorizontalDrift(double pitch, double range, bool expected)
     {
-        var sim = Room(); var player = sim.Players.Single();
+        var sim = Room(); var player = CenterOrigin(sim);
         var hit = CombatTrace.TraceLineAttack(sim, player, player.Angle, BamAngle.FromDegrees(pitch), range);
         Assert.Equal(expected, hit.Hit);
         if (expected) { Assert.Equal(0, hit.X); Assert.Equal(0, hit.Y); }
@@ -48,10 +48,15 @@ public class HitscanRangeTests
     [InlineData(60, true)]
     public void VerticalActorCylinderIntersectionRespectsRange(double range, bool expected)
     {
-        var sim = Room(); var player = sim.Players.Single(); var target = sim.AddBot(0, 0);
+        var sim = Room(); var player = CenterOrigin(sim); var target = sim.AddBot(0, 0);
         target.Z = Fixed.FromInt(80);
         var hit = CombatTrace.TraceLineAttack(sim, player, player.Angle, BamAngle.FromDegrees(-90), range);
         Assert.Equal(expected, hit.Hit);
         if (expected) { Assert.Same(target, hit.Victim); Assert.Equal(80, hit.Z); }
+    }
+    // These geometry fixtures intentionally trace from the actor center.
+    private static PlayerPawn CenterOrigin(AuthoritySimulation sim)
+    {
+        var player = sim.Players.Single(); player.AttackZOffset = new Fixed(0); return player;
     }
 }

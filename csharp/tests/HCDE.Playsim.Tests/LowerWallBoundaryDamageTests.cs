@@ -14,7 +14,7 @@ public class LowerWallBoundaryDamageTests
     public void BlockingWallDamagesBackFloorAtInclusiveBoundary(bool reverse, int zDelta, int floorHealth)
     {
         var sim = Room(reverse);
-        var source = sim.Players.Single(); source.Z = new Fixed(zDelta);
+        var source = CenterOrigin(sim); source.Z = new Fixed(zDelta);
         var hit = CombatTrace.TraceLineAttack(sim, source, source.Angle, new BamAngle(0), 256);
         Assert.Same(sim.Level.Lines[0], hit.Wall);
         Assert.Equal(reverse ? 1 : 0, hit.Side);
@@ -26,7 +26,7 @@ public class LowerWallBoundaryDamageTests
     [Fact]
     public void SharedGroupReceivesFloorThenWallDamageAtBoundary()
     {
-        var sim = Room(false, shared: true); var source = sim.Players.Single();
+        var sim = Room(false, shared: true); var source = CenterOrigin(sim);
         AcsLineAttack.Attack(sim, source, 0, 0, 7, "None", 256);
         Assert.Equal(86, sim.HealthGroups[4]);
         Assert.Equal(86, sim.Level.Sectors[1].HealthFloor);
@@ -44,4 +44,9 @@ public class LowerWallBoundaryDamageTests
             SideFront = 0, SideBack = 1, Flags = LevelLine.BlockHitscanFlag, Health = 100, HealthGroup = shared ? 4 : 0 }],
         Things = [new LevelThing { Type = 1, X = reverse ? 128 : 0, Angle = reverse ? 180 : 0 }],
     });
+    // These geometry fixtures intentionally trace from the actor center.
+    private static PlayerPawn CenterOrigin(AuthoritySimulation sim)
+    {
+        var player = sim.Players.Single(); player.AttackZOffset = new Fixed(0); return player;
+    }
 }

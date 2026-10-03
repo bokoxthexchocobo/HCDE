@@ -25,7 +25,7 @@ public class ActorWallEntryOrderingTests
                 SideFront = 0, SideBack = -1, Health = 100 }],
             Things = [new LevelThing { Type = 1, Angle = reverse ? 180 : 0 }],
         });
-        var source = sim.Players.Single(); var target = sim.AddBot(sign * 80, 0);
+        var source = CenterOrigin(sim); var target = sim.AddBot(sign * 80, 0);
         target.Radius = Fixed.FromInt(60); target.Z = Fixed.FromInt(100); target.Height = Fixed.FromInt(56);
         var pitch = BamAngle.FromDegrees(-45);
         var hit = CombatTrace.TraceLineAttack(sim, source, source.Angle, pitch, 256);
@@ -38,5 +38,10 @@ public class ActorWallEntryOrderingTests
             absoluteAngles: true);
         Assert.Equal(actorFirst ? health - 7 : health, target.Health);
         Assert.Equal(actorFirst ? 100 : 93, sim.Level.Lines[0].Health);
+    }
+    // These geometry fixtures intentionally trace from the actor center.
+    private static PlayerPawn CenterOrigin(AuthoritySimulation sim)
+    {
+        var player = sim.Players.Single(); player.AttackZOffset = new Fixed(0); return player;
     }
 }

@@ -514,6 +514,8 @@ public sealed class PlayerPawn : Actor
     public double ViewHeight { get; internal set; } = StandingViewHeight;
     /// <summary>Native PlayerPawn ViewHeight property, separate from the changing eye height.</summary>
     public Fixed DefaultViewHeight { get; set; } = Fixed.FromDouble(StandingViewHeight);
+    /// <summary>Native PlayerPawn attack height relative to its center.</summary>
+    public Fixed AttackZOffset { get; set; } = Fixed.FromInt(8);
     /// <summary>Native <c>MAXBOB</c>.</summary>
     public const double MaxBob = 16;
     /// <summary>Native <c>movebob</c> default.</summary>
@@ -1873,10 +1875,13 @@ public sealed class AuthoritySimulation
         {
             Id = _nextActorId, Level = Level, Simulation = this,
             X = owner.X, Y = owner.Y,
-            Z = Fixed.FromDouble(owner.Z.ToDouble() + (owner is PlayerPawn ? owner.Height.ToDouble() / 2
+            Z = Fixed.FromDouble(owner.Z.ToDouble() + (owner is PlayerPawn firingPlayer
+                ? owner.Height.ToDouble() / 2 + (firingPlayer.AttackZOffset.ToDouble() - 4) * firingPlayer.CrouchFactor
                 : kind == ProjectileKind.RevenantTracer ? 48 : 32)),
             Angle = owner.Angle,
         };
+        if (owner is PlayerPawn && projectile.Z.ToDouble() < FloorOf(owner.SectorIndex))
+            projectile.Z = Fixed.FromDouble(FloorOf(owner.SectorIndex));
         _nextActorId = checked(_nextActorId + 1);
         projectile.Aim(target);
         _actors.Add(projectile);
@@ -2591,6 +2596,7 @@ public sealed class AuthoritySimulation
                 hash = Mix(hash, unchecked((uint)Fixed.FromDouble(player.FullHeight).Raw));
                 hash = Mix(hash, unchecked((uint)Fixed.FromDouble(player.ViewHeight).Raw));
                 hash = Mix(hash, unchecked((uint)player.DefaultViewHeight.Raw));
+                hash = Mix(hash, unchecked((uint)player.AttackZOffset.Raw));
                 hash = Mix(hash, unchecked((uint)player.BobTimer));
                 hash = Mix(hash, unchecked((uint)Fixed.FromDouble(player.ViewBobOffset).Raw));
                 hash = Mix(hash, unchecked((uint)Fixed.FromDouble(player.MovementBob).Raw));

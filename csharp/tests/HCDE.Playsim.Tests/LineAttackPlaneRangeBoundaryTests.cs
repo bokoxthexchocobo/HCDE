@@ -20,7 +20,7 @@ public class LineAttackPlaneRangeBoundaryTests
         });
         var stack = new List<int> { 987, 0, 0, pitch, 5, 0, 0, range, 0, 19 };
         Assert.True(AcsCallFunctions.TryInvoke(sim, stack,
-            new AcsActivatorBinding { Value = sim.Players.Single() }, [], new AcsGlobalStrings(),
+            new AcsActivatorBinding { Value = CenterOrigin(sim) }, [], new AcsGlobalStrings(),
             AcsCallFunctions.LineAttack, 9, out var result));
         Assert.Equal(0, result);
         Assert.Equal(new[] { 987 }, stack);
@@ -39,9 +39,14 @@ public class LineAttackPlaneRangeBoundaryTests
             Sectors = [new LevelSector { CeilingHeight = 128 }],
             Things = [new LevelThing { Type = 1 }],
         });
-        var player = sim.Players.Single();
+        var player = CenterOrigin(sim);
         player.Z = Fixed.FromInt(height - 28);
         Assert.False(CombatTrace.TraceLineAttack(sim, player, new BamAngle(0),
             new BamAngle(unchecked((uint)(pitch << 16))), 256).Hit);
+    }
+    // These geometry fixtures intentionally trace from the actor center.
+    private static PlayerPawn CenterOrigin(AuthoritySimulation sim)
+    {
+        var player = sim.Players.Single(); player.AttackZOffset = new Fixed(0); return player;
     }
 }

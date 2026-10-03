@@ -7574,11 +7574,40 @@ defaults, recreation of pawn properties at respawn and save/network replication
 remain incomplete. Full suite: 4,553 passing tests, zero failed/skipped; Release
 build: zero warnings/errors. This is a source review and regression self-audit.
 
+## ACS attack height and combat origin audit (2026-10-03)
+
+Converted `APROP_AttackZOffset` (40) set/get/check for player pawns, default 8
+from `wadsrc/static/zscript/actors/player/player.zs`. Native `actorinlines.h`
+scales player attack offsets by crouch factor and returns 8 for other actors.
+Native `p_map.cpp` uses center plus this offset for line attacks and PickActor;
+`p_mobj.cpp` uses center plus AttackOffset(-4) for player missiles and clamps
+the resulting world Z to the sector floor. Managed combat now follows those
+origin rules, and monster hitscan aim accounts for its eight-unit offset.
+Non-player ACS queries still return zero, as explicitly documented in native
+`p_acs.cpp`; that query differs from the non-player combat default.
+
+Sixteen new cases cover signed/fractional property round trips and exact checks,
+default/scripted/crouched origins, missile floor clamping including airborne
+owners, non-player query versus combat behavior, target-height hit changes,
+missing/destroyed targets and checksum inclusion. The first full run exposed
+79 old assertions, including the expanded checksum: geometry fixtures assumed
+center origins. Fifteen fixture classes now explicitly configure zero offsets
+to retain their exact boundary/range setups and assertions; the miss endpoint
+test instead asserts the native default origin. Separate new tests validate the
+eight-unit default and configured origins. No tests were disabled. The managed
+idle checksum is now 42939098, with position/health/tic assertions unchanged.
+
+Scope: flat-sector combat origins and the supported player missile path.
+Floor clipping, slopes/portals/3D floors, complete native autoaim and projectile
+spawn handling, general class defaults and save/network propagation of the
+property remain open. Full suite: 4,569 passed, zero failed/skipped; Release
+build: zero warnings/errors. Source review and regression self-audit only.
+
 ## Validation
 
-- Release solution: **4,553 passed, zero failed/skipped**, 3,630 cases above baseline.
+- Release solution: **4,569 passed, zero failed/skipped**, 3,646 cases above baseline.
   Protocol 15; Gamedata 10; Transport 10; Master 1; RCON 6; MapLoader 500;
-  Playsim 3,480; Client 12; Net.Core 351; Pregame 97; Server 63; Scripting 8.
+  Playsim 3,496; Client 12; Net.Core 351; Pregame 97; Server 63; Scripting 8.
 - The lighting pass initially saw a five-second timeout in
   `Pump_LiveSessionReceivesGuestClientInput`; it passed the targeted rerun and the
   subsequent full solution run. No timeout/test-disabling workaround was added.

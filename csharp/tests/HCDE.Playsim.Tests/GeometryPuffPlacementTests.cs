@@ -12,7 +12,7 @@ public class GeometryPuffPlacementTests
     public void WallPuffOffsetUsesOriginalDirectionEvenForNegativeRange(bool reverse, bool negative)
     {
         var aim = reverse ? -1 : 1; var travel = negative ? -aim : aim;
-        var sim = Room(travel * 64); var source = sim.Players.Single();
+        var sim = Room(travel * 64); var source = CenterOrigin(sim);
         var angle = BamAngle.FromDegrees(reverse ? 180 : 0);
         var range = negative ? -128 : 128;
         var hit = CombatTrace.TraceLineAttack(sim, source, angle, new BamAngle(0), range);
@@ -31,7 +31,7 @@ public class GeometryPuffPlacementTests
     [InlineData(true)]
     public void PlanePuffOffsetIncludesVerticalDirection(bool ceiling)
     {
-        var sim = Room(200); var source = sim.Players.Single(); var pitch = BamAngle.FromDegrees(ceiling ? -45 : 45);
+        var sim = Room(200); var source = CenterOrigin(sim); var pitch = BamAngle.FromDegrees(ceiling ? -45 : 45);
         var hit = CombatTrace.TraceLineAttack(sim, source, source.Angle, pitch, 256);
         Assert.Equal(0, hit.PlaneSector);
         AcsLineAttack.Attack(sim, source, 0, unchecked((int)pitch.Raw), 7, "None", 256, puffTid: 42);
@@ -46,7 +46,7 @@ public class GeometryPuffPlacementTests
     [InlineData(42)]
     public void HorizonStopsTraceWithoutSpawningNormalPuff(int puffTid)
     {
-        var sim = Room(64); sim.Level.Lines[0].Special = 9; var source = sim.Players.Single();
+        var sim = Room(64); sim.Level.Lines[0].Special = 9; var source = CenterOrigin(sim);
         var count = sim.Actors.Count; var random = sim.CombatRandomState;
         var hit = CombatTrace.TraceLineAttack(sim, source, source.Angle, new BamAngle(0), 128);
         Assert.True(hit.Hit); Assert.Same(sim.Level.Lines[0], hit.Wall);
@@ -63,4 +63,9 @@ public class GeometryPuffPlacementTests
             SideFront = 0, SideBack = -1, Health = 100 }],
         Things = [new LevelThing { Type = 1 }],
     });
+    // These geometry fixtures intentionally trace from the actor center.
+    private static PlayerPawn CenterOrigin(AuthoritySimulation sim)
+    {
+        var player = sim.Players.Single(); player.AttackZOffset = new Fixed(0); return player;
+    }
 }

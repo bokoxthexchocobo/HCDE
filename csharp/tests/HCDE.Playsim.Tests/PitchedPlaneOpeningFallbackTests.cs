@@ -34,7 +34,7 @@ public class PitchedPlaneOpeningFallbackTests
                 SideFront = 0, SideBack = 1, Flags = flags, Health = 100 }],
             Things = [new LevelThing { Type = 1, X = reverse ? 128 : 0, Angle = reverse ? 180 : 0 }],
         });
-        var source = sim.Players.Single(); source.Z = Fixed.FromInt(0);
+        var source = CenterOrigin(sim); source.Z = Fixed.FromInt(0);
         var target = sim.AddBot(reverse ? 0 : 128, 0);
         target.Z = Fixed.FromInt(ceiling ? 120 : -112); target.Height = Fixed.FromInt(56);
         target.Radius = Fixed.FromInt(16);
@@ -49,5 +49,10 @@ public class PitchedPlaneOpeningFallbackTests
             7, "None", 256, absoluteAngles: true);
         Assert.Equal(closed ? health : health - 7, target.Health);
         Assert.Equal(closed ? 93 : 100, sim.Level.Lines[0].Health);
+    }
+    // These geometry fixtures intentionally trace from the actor center.
+    private static PlayerPawn CenterOrigin(AuthoritySimulation sim)
+    {
+        var player = sim.Players.Single(); player.AttackZOffset = new Fixed(0); return player;
     }
 }

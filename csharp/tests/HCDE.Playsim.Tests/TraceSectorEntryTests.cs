@@ -27,7 +27,7 @@ public class TraceSectorEntryTests
                     SideFront = 0, SideBack = 1 }],
             Things = [new LevelThing { Type = 1, Angle = reverse ? 180 : 0 }],
         });
-        var source = sim.Players.Single(); source.Z = Fixed.FromInt(0);
+        var source = CenterOrigin(sim); source.Z = Fixed.FromInt(0);
         var target = sim.AddBot(sign * 128, 0); target.Z = Fixed.FromInt(ceiling ? 120 : -112);
         target.Radius = Fixed.FromInt(16); target.Height = Fixed.FromInt(56);
         var pitch = BamAngle.FromDegrees(ceiling ? -45 : 45);
@@ -40,5 +40,10 @@ public class TraceSectorEntryTests
         AcsLineAttack.Attack(sim, source, unchecked((int)source.Angle.Raw), unchecked((int)pitch.Raw),
             7, "None", 256, absoluteAngles: true);
         Assert.Equal(ceiling ? health - 7 : health, target.Health); Assert.Equal(100, sim.Level.Lines[0].Health);
+    }
+    // These geometry fixtures intentionally trace from the actor center.
+    private static PlayerPawn CenterOrigin(AuthoritySimulation sim)
+    {
+        var player = sim.Players.Single(); player.AttackZOffset = new Fixed(0); return player;
     }
 }

@@ -294,7 +294,7 @@ public sealed class MonsterBrain(MonsterAttack attack)
             return;
         }
         var pitch = -Math.Atan2(target.Z.ToDouble() + target.Height.ToDouble() / 2
-            - actor.Z.ToDouble() - actor.Height.ToDouble() / 2, Math.Max(1, Math.Sqrt(dx * dx + dy * dy))) * 180 / Math.PI;
+            - actor.Z.ToDouble() - actor.Height.ToDouble() / 2 - 8, Math.Max(1, Math.Sqrt(dx * dx + dy * dy))) * 180 / Math.PI;
         for (var pellet = 0; pellet < profile.Pellets; pellet++)
         {
             var spread = sim.NextCombatSpread() * (22.5 * 255 / 256);

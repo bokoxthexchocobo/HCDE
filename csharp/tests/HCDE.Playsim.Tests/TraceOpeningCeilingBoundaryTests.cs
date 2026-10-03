@@ -13,7 +13,7 @@ public class TraceOpeningCeilingBoundaryTests
     [InlineData(true, 1, true)]
     public void FarCeilingBoundaryIsInclusiveInBothDirections(bool reverse, int zDelta, bool blocked)
     {
-        var sim = Room(reverse, false); var source = sim.Players.Single(); source.Z = new Fixed(zDelta);
+        var sim = Room(reverse, false); var source = CenterOrigin(sim); source.Z = new Fixed(zDelta);
         var target = sim.AddBot(reverse ? -64 : 192, 0); target.Height = Fixed.FromInt(56);
         var hit = CombatTrace.TraceLineAttack(sim, source, source.Angle, new BamAngle(0), 256);
         Assert.Equal(blocked, hit.Wall is not null);
@@ -26,7 +26,7 @@ public class TraceOpeningCeilingBoundaryTests
     [InlineData(true)]
     public void ExplicitBlockingFlagStillStopsExactBoundaryAndDamagesUpperTier(bool reverse)
     {
-        var sim = Room(reverse, true); var source = sim.Players.Single();
+        var sim = Room(reverse, true); var source = CenterOrigin(sim);
         var hit = CombatTrace.TraceLineAttack(sim, source, source.Angle, new BamAngle(0), 256);
         Assert.Same(sim.Level.Lines[0], hit.Wall);
         GeometryLineAttack.Apply(sim, hit, 7);
@@ -43,4 +43,9 @@ public class TraceOpeningCeilingBoundaryTests
             Flags = blocked ? LevelLine.BlockHitscanFlag : 0, Health = 100 }],
         Things = [new LevelThing { Type = 1, X = reverse ? 128 : 0, Angle = reverse ? 180 : 0 }],
     });
+    // These geometry fixtures intentionally trace from the actor center.
+    private static PlayerPawn CenterOrigin(AuthoritySimulation sim)
+    {
+        var player = sim.Players.Single(); player.AttackZOffset = new Fixed(0); return player;
+    }
 }

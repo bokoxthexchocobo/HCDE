@@ -25,7 +25,7 @@ public class PlaneWallImpactOrderingTests
                 Wall(wallX, 128, wallX, -128), Wall(wallX, -128, -128, -128)],
             Things = [new LevelThing { Type = 1 }],
         });
-        var hit = CombatTrace.TraceLineAttack(sim, sim.Players.Single(), new BamAngle(0), BamAngle.FromDegrees(pitch), 256);
+        var hit = CombatTrace.TraceLineAttack(sim, CenterOrigin(sim), new BamAngle(0), BamAngle.FromDegrees(pitch), 256);
         Assert.True(hit.Hit);
         Assert.Equal(planeFirst, hit.PlaneSector == 0);
         if (planeFirst) Assert.Null(hit.Wall); else Assert.Same(sim.Level.Lines[2], hit.Wall);
@@ -37,4 +37,9 @@ public class PlaneWallImpactOrderingTests
 
     private static LevelLine Wall(double x1, double y1, double x2, double y2) => new()
     { X1 = x1, Y1 = y1, X2 = x2, Y2 = y2, SideFront = 0, SideBack = -1, Health = 100 };
+    // These geometry fixtures intentionally trace from the actor center.
+    private static PlayerPawn CenterOrigin(AuthoritySimulation sim)
+    {
+        var player = sim.Players.Single(); player.AttackZOffset = new Fixed(0); return player;
+    }
 }

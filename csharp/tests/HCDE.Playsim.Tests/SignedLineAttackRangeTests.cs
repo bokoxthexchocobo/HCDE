@@ -12,7 +12,7 @@ public class SignedLineAttackRangeTests
     public void NegativeRangeSelectsBackwardActorAtInclusiveBoxEntry(bool reverse, int distance, bool expected)
     {
         var sign = reverse ? 1 : -1;
-        var sim = Room(reverse); var source = sim.Players.Single();
+        var sim = Room(reverse); var source = CenterOrigin(sim);
         var target = sim.AddBot(sign * distance, 0); target.Radius = Fixed.FromInt(16);
         var health = target.Health;
         var hit = CombatTrace.TraceLineAttack(sim, source, source.Angle, BamAngle.FromDegrees(0), -64);
@@ -40,7 +40,7 @@ public class SignedLineAttackRangeTests
                 Y2 = -sign * 128, SideFront = 0, SideBack = -1, Health = 100 }],
             Things = [new LevelThing { Type = 1, Angle = reverse ? 180 : 0 }],
         });
-        var source = sim.Players.Single();
+        var source = CenterOrigin(sim);
         var hit = CombatTrace.TraceLineAttack(sim, source, source.Angle, new BamAngle(unchecked((uint)(pitch << 16))), -128);
         Assert.Same(sim.Level.Lines[0], hit.Wall); Assert.Equal(-1, hit.PlaneSector);
         Assert.Equal(sign * 60, hit.X, 5); Assert.Equal(pitch < 0 ? -32 : 88, hit.Z, 5);
@@ -57,7 +57,7 @@ public class SignedLineAttackRangeTests
     [InlineData(45, 200)]
     public void NegativeRangeRetainsOriginalPitchForHeightAdjustment(double pitch, int targetZ)
     {
-        var sim = Room(false); var source = sim.Players.Single(); var target = sim.AddBot(-64, 0);
+        var sim = Room(false); var source = CenterOrigin(sim); var target = sim.AddBot(-64, 0);
         target.Z = Fixed.FromInt(targetZ); target.Radius = Fixed.FromInt(256);
         Assert.False(CombatTrace.TraceLineAttack(sim, source, source.Angle, BamAngle.FromDegrees(pitch), -128).Hit);
         Assert.Null(CombatTrace.PickActor(sim, source, source.Angle, BamAngle.FromDegrees(pitch), -128));
@@ -75,5 +75,10 @@ public class SignedLineAttackRangeTests
         Assert.True(AcsCallFunctions.TryInvoke(sim, stack, new AcsActivatorBinding { Value = source },
             [], new AcsGlobalStrings(), AcsCallFunctions.LineAttack, 7, out var result));
         Assert.Equal(0, result); Assert.Equal(new[] { 987 }, stack);
+    }
+    // These geometry fixtures intentionally trace from the actor center.
+    private static PlayerPawn CenterOrigin(AuthoritySimulation sim)
+    {
+        var player = sim.Players.Single(); player.AttackZOffset = new Fixed(0); return player;
     }
 }

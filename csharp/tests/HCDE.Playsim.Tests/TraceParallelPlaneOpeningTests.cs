@@ -41,11 +41,16 @@ public class TraceParallelPlaneOpeningTests
             Lines = [new LevelLine { X1 = 64, Y1 = 128, X2 = 64, Y2 = -128, SideFront = 0, SideBack = 1, Flags = flags }],
             Things = [new LevelThing { Type = 1, X = reverse ? 128 : 0, Angle = reverse ? 180 : 0 }],
         });
-        var source = sim.Players.Single(); source.Z = Fixed.FromInt(0);
+        var source = CenterOrigin(sim); source.Z = Fixed.FromInt(0);
         var target = sim.AddBot(reverse ? -64 : 192, 0); target.Z = Fixed.FromInt(0);
         var hit = CombatTrace.TraceLineAttack(sim, source, source.Angle, new BamAngle(0), 256);
         Assert.Equal(closed, hit.Wall is not null);
         if (closed) Assert.Null(hit.Victim); else Assert.Same(target, hit.Victim);
         Assert.Equal(closed ? null : target, CombatTrace.PickActor(sim, source, source.Angle, new BamAngle(0), 256));
+    }
+    // These geometry fixtures intentionally trace from the actor center.
+    private static PlayerPawn CenterOrigin(AuthoritySimulation sim)
+    {
+        var player = sim.Players.Single(); player.AttackZOffset = new Fixed(0); return player;
     }
 }
