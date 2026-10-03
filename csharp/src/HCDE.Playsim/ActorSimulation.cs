@@ -169,6 +169,10 @@ public class Actor : Thinker
     public bool MThruSpecies { get; set; }
     /// <summary>Native MF6_THRUSPECIES: this mover passes actors of its own supported species.</summary>
     public bool ThruSpecies { get; set; }
+    public bool AllowThruBits { get; set; }
+    public uint ThruBits { get; set; }
+    internal bool SharesEnabledThruBits(Actor other) => (ThruBits & other.ThruBits) != 0
+        && (AllowThruBits || other.AllowThruBits);
     /// <summary>Native <c>MF4_NOTARGETSWITCH</c>. Wake-up will not pick a new chase target while one is alive.</summary>
     public bool NoTargetSwitch { get; set; }
     /// <summary>Native <c>MF4_NOHATEPLAYERS</c>. <see cref="OkayToSwitchTarget"/> ignores player sources.</summary>
@@ -2841,6 +2845,8 @@ public sealed class AuthoritySimulation
             if (actor.ThruActors) hash = Mix(hash, 0x54485255u);
             if (actor.MThruSpecies) hash = Mix(hash, 0x4D545350u);
             if (actor.ThruSpecies) hash = Mix(hash, 0x54535043u);
+            if (actor.AllowThruBits) hash = Mix(hash, 0x41544254u);
+            if (actor.ThruBits != 0) { hash = Mix(hash, 0x54424954u); hash = Mix(hash, actor.ThruBits); }
             if (actor.SpawnCeiling) hash = Mix(hash, 0x4345494Cu);
             if (actor.NoBlockMonsters) hash = Mix(hash, 0x4E424D4Fu);
             if (actor.NoBlockmap) hash = Mix(hash, 0x4E424D50u);

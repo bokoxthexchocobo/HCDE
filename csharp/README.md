@@ -21,7 +21,7 @@ Failed snapshot writes now preserve pending state; armor/pitch replicate;
 buffered Doom weapon selection and flat-sector weapon noise are implemented.
 The continuation converts fractional sector planes, classic ceilings/crushers
 and Doom stair chains, with backward-compatible v6 pose archives including actor pitch.
-**5,719 tests pass; gameplay phases 1–3 remain incomplete.** The audit gives the
+**5,731 tests pass; gameplay phases 1–3 remain incomplete.** The audit gives the
 remaining completion gates. Historical phase numbers below refer to narrower
 tools/protocol/server milestones, not full gameplay conversion.
 

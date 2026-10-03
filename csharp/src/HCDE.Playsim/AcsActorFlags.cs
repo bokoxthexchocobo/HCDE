@@ -23,6 +23,7 @@ internal static class AcsActorFlags
         ThruActors,
         MThruSpecies,
         ThruSpecies,
+        AllowThruBits,
         NoPain,
         Pickup,
         Special,
@@ -47,6 +48,8 @@ internal static class AcsActorFlags
 
     private static bool TryMap(string flagName, out Kind kind)
     {
+        if (flagName.Equals("ALLOWTHRUBITS", StringComparison.OrdinalIgnoreCase))
+        { kind = Kind.AllowThruBits; return true; }
         if (flagName.Equals("THRUSPECIES", StringComparison.OrdinalIgnoreCase))
         { kind = Kind.ThruSpecies; return true; }
         if (flagName.Equals("MTHRUSPECIES", StringComparison.OrdinalIgnoreCase))
@@ -153,6 +156,7 @@ internal static class AcsActorFlags
         Kind.ThruActors => actor.ThruActors,
         Kind.MThruSpecies => actor.MThruSpecies,
         Kind.ThruSpecies => actor.ThruSpecies,
+        Kind.AllowThruBits => actor.AllowThruBits,
         Kind.NoPain => actor.NoPain,
         Kind.Pickup => actor.CanPickupItems,
         Kind.Special => actor.SpecialPickup,
@@ -181,6 +185,7 @@ internal static class AcsActorFlags
             case Kind.ThruActors: actor.ThruActors = value; break;
             case Kind.MThruSpecies: actor.MThruSpecies = value; break;
             case Kind.ThruSpecies: actor.ThruSpecies = value; break;
+            case Kind.AllowThruBits: actor.AllowThruBits = value; break;
             case Kind.NoPain: actor.NoPain = value; break;
             case Kind.Pickup: actor.CanPickupItems = value; break;
             case Kind.Special: actor.SpecialPickup = value; break;

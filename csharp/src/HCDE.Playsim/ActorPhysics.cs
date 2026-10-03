@@ -32,6 +32,7 @@ public static class ActorPhysics
     public static bool IsStandingOn(Actor carrier, Actor rider)
     {
         if (ReferenceEquals(carrier, rider) || carrier.ThruActors || rider.ThruActors
+            || rider.SharesEnabledThruBits(carrier)
             || rider.ThruSpecies && rider.SharesContactSpecies(carrier) || !rider.BlocksActors) return false;
         var top = carrier.Z.ToDouble() + carrier.Height.ToDouble();
         if (Math.Abs(rider.Z.ToDouble() - top) > 1) return false;
@@ -304,6 +305,7 @@ public static class ActorPhysics
         foreach (var other in sim.Actors)
         {
             if (ReferenceEquals(actor, other) || other.ThruActors
+                || actor.SharesEnabledThruBits(other)
                 || actor.ThruSpecies && actor.SharesContactSpecies(other) || !other.IsBlockmapActor) continue;
             var corpse = actor.IceCorpse && IsCorpseObstacle(other);
             if ((!other.BlocksActors && !corpse) || (other is PlayerPawn && !other.IsDead)) continue;
@@ -528,6 +530,7 @@ public static class ActorPhysics
         if (sim.Level.Lines.Any(line => Blocks(sim, actor, line)
             && DistanceSquared(x, y, line.X1, line.Y1, line.X2, line.Y2) < radius * radius)) return false;
         return actor.ThruActors || !sim.Actors.Any(other => !ReferenceEquals(actor, other) && !other.ThruActors && other.IsBlockmapActor && other.BlocksActors
+            && !actor.SharesEnabledThruBits(other)
             && !(actor.ThruSpecies && actor.SharesContactSpecies(other))
             && z < other.Z.ToDouble() + other.Height.ToDouble() && z + height > other.Z.ToDouble()
             && Math.Pow(x - other.X.ToDouble(), 2) + Math.Pow(y - other.Y.ToDouble(), 2)
@@ -582,6 +585,7 @@ public static class ActorPhysics
                 var blastTarget = actor.Blasted && other.Shootable && other.IsMonster
                     && !other.Boss && !other.DontBlast && !other.IsDead && !other.Destroyed;
                 if (ReferenceEquals(actor, other) || other.ThruActors
+                    || actor.SharesEnabledThruBits(other)
                     || actor.ThruSpecies && actor.SharesContactSpecies(other) || !other.IsBlockmapActor
                     || (!blastTarget && !(actor.BlocksActors && (other.BlocksActors || corpse)))
                     || z >= other.Z.ToDouble() + other.Height.ToDouble()

@@ -10638,11 +10638,34 @@ Custom species/class ancestry, THRUBITS, telefrag execution, hitscan/puff
 rules, actor recreation and native runtime acceptance remain incomplete.
 Phases 1–3 and invasion synchronization acceptance remain open.
 
+## Conversion and audit: shared actor passage masks (2026-10-03)
+
+Converted supported ThruBits/ALLOWTHRUBITS contact filtering against
+`PIT_CheckThing`, `P_TestMobjZ` and teleport contact checks in
+`src/playsim/p_map.cpp`, uint32_t ThruBits in `src/playsim/actor.h`, and
+flag registration in `src/scripting/thingdef_data.cpp`. Actors bypass contact
+when their masks share a bit and either participant enables ALLOWTHRUBITS.
+Applied to managed movement/blast, occupied-position, rider/bridge and direct
+projectile paths. Projectile filtering uses its own mask, not its owner's.
+ACS enables/queries the flag; enabled flags and nonzero masks affect checksum.
+
+Twelve regressions cover both enable flags and neither, matching/disjoint/
+zero/multibit/high-bit masks, mask changes restoring occupancy blocking,
+rider/bridge support, projectile-versus-owner masks and ACS round trip.
+Full non-incremental Release rebuild: zero warnings/errors. Solution tests:
+5,731 passed, zero failed/skipped (Playsim 4,604). Whitespace checks pass.
+
+Mask/flag pose persistence, custom actor property import, hitscan/puff rules,
+telefrag execution, native geometry and runtime acceptance remain incomplete.
+ThruBits is available through the managed actor property; custom class loading
+is not claimed. Radius damage remains separate. Phases 1–3 and invasion
+synchronization acceptance remain open.
+
 ## Validation
 
-- Release solution: **5,719 passed, zero failed/skipped**, 4,796 cases above baseline.
+- Release solution: **5,731 passed, zero failed/skipped**, 4,808 cases above baseline.
   Protocol 15; Gamedata 29; Transport 10; Master 1; RCON 6; MapLoader 533;
-  Playsim 4,592; Client 12; Net.Core 351; Pregame 97; Server 65; Scripting 8.
+  Playsim 4,604; Client 12; Net.Core 351; Pregame 97; Server 65; Scripting 8.
 - The lighting pass initially saw a five-second timeout in
   `Pump_LiveSessionReceivesGuestClientInput`; it passed the targeted rerun and the
   subsequent full solution run. No timeout/test-disabling workaround was added.
