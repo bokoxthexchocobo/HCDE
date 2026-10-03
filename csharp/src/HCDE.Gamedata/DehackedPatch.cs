@@ -200,6 +200,12 @@ public static class DehackedPatch
         actor.Patched = true;
         foreach (var (key, value) in body)
         {
+            if (System.Numerics.BigInteger.TryParse(value, out var numeric)
+                && (numeric < int.MinValue || numeric > uint.MaxValue))
+            {
+                errors.Add($"Thing {actor.Index}: bad numeric constant {value} for {key}.");
+                continue;
+            }
             if (key.Equals("Hit points", StringComparison.OrdinalIgnoreCase))
                 actor.Health = ParseInt(value);
             else if (key.Equals("Reaction time", StringComparison.OrdinalIgnoreCase))

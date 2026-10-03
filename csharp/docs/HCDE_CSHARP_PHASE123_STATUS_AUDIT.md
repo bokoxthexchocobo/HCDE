@@ -8600,11 +8600,30 @@ native chase action scheduling. Native target acquisition, movement, and missile
 cadence need further conversion. No checksum fields changed. Phases 1–3 and
 representative invasion round/timer/enemy synchronization validation remain open.
 
+## DEHACKED Thing numeric range validation — 2026-10-03
+
+Native `PatchThing` in `src/gamedata/d_dehacked.cpp` accepts numeric values
+from INT_MIN through UINT_MAX and skips assignments outside that range.
+Managed Thing parsing now reports out-of-range integer assignments and preserves
+previous values and explicit-assignment metadata. Arbitrary-sized integer
+validation also prevents values beyond Int64 from falling back to zero.
+Valid unsigned representations still narrow into signed runtime fields.
+
+Ten new regression cases cover both 32-bit bounds, Int64 extrema and overflow,
+chained-patch preservation, error counts, health/reaction/mass spawning, and
+unchanged collision defaults after rejected Bits assignments. Full Release suite:
+4,924 passed, zero failed/skipped; Playsim 3,851. Warnings-as-errors build:
+zero warnings/errors. No simulation checksum fields changed.
+
+This converts integer range checking only. Native strtoll prefix parsing,
+malformed-token behavior, complete Thing catalog and field coverage remain open.
+Phases 1–3 and representative invasion synchronization validation are incomplete.
+
 ## Validation
 
-- Release solution: **4,914 passed, zero failed/skipped**, 3,991 cases above baseline.
+- Release solution: **4,924 passed, zero failed/skipped**, 4,001 cases above baseline.
   Protocol 15; Gamedata 10; Transport 10; Master 1; RCON 6; MapLoader 500;
-  Playsim 3,841; Client 12; Net.Core 351; Pregame 97; Server 63; Scripting 8.
+  Playsim 3,851; Client 12; Net.Core 351; Pregame 97; Server 63; Scripting 8.
 - The lighting pass initially saw a five-second timeout in
   `Pump_LiveSessionReceivesGuestClientInput`; it passed the targeted rerun and the
   subsequent full solution run. No timeout/test-disabling workaround was added.
