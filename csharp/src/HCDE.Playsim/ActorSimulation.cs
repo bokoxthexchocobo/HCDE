@@ -318,6 +318,8 @@ public class Actor : Thinker
     }
     public ActorStateMachine States { get; } = new();
     public int SpawnState { get; set; } = ActorStateMachine.Spawn;
+    public int ActiveState { get; set; } = -1;
+    public int InactiveState { get; set; } = -1;
     /// <summary>Native See state. A waking monster in <see cref="SpawnState"/> can enter this frame. -1 means absent.</summary>
     public int SeeState { get; set; } = -1;
     public int PainState { get; set; } = ActorStateMachine.Pain;
@@ -2638,6 +2640,12 @@ public sealed class AuthoritySimulation
             if (actor.NoBlockmap) hash = Mix(hash, 0x4E424D50u);
             if (actor.NoTeleport) hash = Mix(hash, 0x4E54454Cu);
             if (actor.Dormant) hash = Mix(hash, 0x444F524Du);
+            if (actor.ActiveState != -1 || actor.InactiveState != -1)
+            {
+                hash = Mix(hash, 0x41435456u);
+                hash = Mix(hash, unchecked((uint)actor.ActiveState));
+                hash = Mix(hash, unchecked((uint)actor.InactiveState));
+            }
             if (actor.CanSlide != (actor is PlayerPawn)) hash = Mix(hash, 0x534C4944u);
             hash = Mix(hash, actor.NoTarget ? 1u : 0u);
             hash = Mix(hash, actor.OnMobj ? 1u : 0u);

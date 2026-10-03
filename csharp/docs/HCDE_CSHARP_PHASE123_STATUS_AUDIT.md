@@ -9131,11 +9131,31 @@ and serialization remain incomplete. DEHACKED DORMANT alone does not automatical
 force all state tics to -1. Phases 1–3 and representative invasion synchronization
 validation remain open.
 
+## Custom monster Active/Inactive state labels — 2026-10-03
+
+Native base Activate/Deactivate in `src/playsim/p_mobj.cpp` enter Active/Inactive
+labels when present before falling back to one/-1 tics. Converted optional managed
+actor label indices, entry through ActorStateMachine, and ACS named-state lookup.
+Repeated activation state calls are no-ops. Snapshot iteration now skips actors
+removed by an earlier target's state action. Labels add a conditional checksum
+marker; defaults preserve existing hashes.
+
+Three regressions verify custom state tics/actions and repeat calls, query lookup,
+removal of a later tagged target during an action, and checksum participation.
+Full Release solution: 5,068 passed, zero failed/skipped; Playsim 3,987.
+Warnings-as-errors build: zero warnings/errors; whitespace check passes.
+
+Scope is configured managed labels and base monster dispatch. Native mod/class
+loading does not yet populate these labels, and subclass activation handlers,
+reentrant native iteration parity, complete dormant action cadence, archive/network
+state and engine fixtures remain incomplete. Phases 1–3 and representative
+invasion synchronization validation remain open.
+
 ## Validation
 
-- Release solution: **5,065 passed, zero failed/skipped**, 4,142 cases above baseline.
+- Release solution: **5,068 passed, zero failed/skipped**, 4,145 cases above baseline.
   Protocol 15; Gamedata 18; Transport 10; Master 1; RCON 6; MapLoader 500;
-  Playsim 3,984; Client 12; Net.Core 351; Pregame 97; Server 63; Scripting 8.
+  Playsim 3,987; Client 12; Net.Core 351; Pregame 97; Server 63; Scripting 8.
 - The lighting pass initially saw a five-second timeout in
   `Pump_LiveSessionReceivesGuestClientInput`; it passed the targeted rerun and the
   subsequent full solution run. No timeout/test-disabling workaround was added.

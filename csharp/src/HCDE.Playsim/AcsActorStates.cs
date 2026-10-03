@@ -22,6 +22,8 @@ internal static class AcsActorStates
     private static IEnumerable<(string Label, int StateIndex)> Labels(Actor actor)
     {
         yield return ("Spawn", actor.SpawnState);
+        if (actor.ActiveState >= 0) yield return ("Active", actor.ActiveState);
+        if (actor.InactiveState >= 0) yield return ("Inactive", actor.InactiveState);
         if (actor.SeeState >= 0)
             yield return ("See", actor.SeeState);
         yield return ("Pain", actor.PainState);
