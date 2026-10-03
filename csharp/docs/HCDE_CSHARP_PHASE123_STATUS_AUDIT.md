@@ -9274,11 +9274,32 @@ complete ACS format/opcode coverage and native session acceptance remain
 incomplete. Packed/result families share dispatch but have no dedicated new
 regressions in this checkpoint. Phases 1–3 and invasion validation remain open.
 
+## Conversion and audit: Thing_Stop special (2026-10-03)
+
+Converted special 19 from native `LS_Thing_Stop` in
+`src/playsim/p_lnspec.cpp`. Hexen/UDMF map dispatch and both ACS special
+families clear actor XYZ velocity for all live matching TIDs, or the activator
+when TID is zero. Return value reports whether a target exists; missing-target
+failure remains a recognized ACS action and does not terminate the script.
+
+Six regressions cover both map formats, multiple matching actors, target
+isolation, zero-TID direct/stack ACS, unchanged health/reaction, and continued
+script execution after missing targets. Audit/build caught the internal API's
+existing FloorLower constant also equals 19, so the new action is confined to
+extended map/ACS dispatch; legacy internal floor behavior is preserved.
+Full Release solution: 5,111 passed, zero failed/skipped; Playsim 4,030.
+Release warnings-as-errors build and whitespace checks pass. Existing velocity
+checksum handling applies; no new state fields. Native separate player bobbing
+velocity has no managed counterpart and remains unconverted. Packed/result
+variants share the dispatcher without dedicated new tests. Native session
+acceptance, complete actor actions, phases 1–3 and invasion validation remain
+incomplete.
+
 ## Validation
 
-- Release solution: **5,105 passed, zero failed/skipped**, 4,182 cases above baseline.
+- Release solution: **5,111 passed, zero failed/skipped**, 4,188 cases above baseline.
   Protocol 15; Gamedata 18; Transport 10; Master 1; RCON 6; MapLoader 500;
-  Playsim 4,024; Client 12; Net.Core 351; Pregame 97; Server 63; Scripting 8.
+  Playsim 4,030; Client 12; Net.Core 351; Pregame 97; Server 63; Scripting 8.
 - The lighting pass initially saw a five-second timeout in
   `Pump_LiveSessionReceivesGuestClientInput`; it passed the targeted rerun and the
   subsequent full solution run. No timeout/test-disabling workaround was added.
