@@ -10325,11 +10325,28 @@ checks pass. Checksum format is unchanged. Ordinary-actor NoDropOff policy, full
 class/state restoration, actor recreation and native invasion acceptance remain
 open. Gameplay phases 1–3 remain incomplete.
 
+## Ordinary-actor NODROPOFF conversion audit (2026-10-03)
+
+The supported flat-ledge movement check now applies when NoDropOff is enabled,
+even when AllowDropOff or Floating would otherwise permit the move. Native
+P_TryMove in src/playsim/p_map.cpp places MF5_NODROPOFF outside the normal
+MF_DROPOFF/MF_FLOAT/MF_MISSILE exceptions. The existing maximum-height boundary
+remains strict, so a drop exactly equal to MaxDropOffHeight is allowed.
+
+Twelve regressions cover flag precedence, the 24/25 boundary, player movement,
+custom maximum heights, serialized flag restoration, and clearing the flag to
+resume travel. Full Release solution: 5,532 passed, zero failed/skipped; Playsim
+4,405. Warnings-as-errors build and diff checks pass. Archive and checksum formats
+are unchanged. This remains current-floor versus destination-floor movement;
+full touching-floor/dropoff geometry, blasted and avoiding-dropoff exceptions,
+missile-spawn checks, slopes/portals and native invasion acceptance remain open.
+Gameplay phases 1–3 remain incomplete.
+
 ## Validation
 
-- Release solution: **5,520 passed, zero failed/skipped**, 4,597 cases above baseline.
+- Release solution: **5,532 passed, zero failed/skipped**, 4,609 cases above baseline.
   Protocol 15; Gamedata 29; Transport 10; Master 1; RCON 6; MapLoader 533;
-  Playsim 4,393; Client 12; Net.Core 351; Pregame 97; Server 65; Scripting 8.
+  Playsim 4,405; Client 12; Net.Core 351; Pregame 97; Server 65; Scripting 8.
 - The lighting pass initially saw a five-second timeout in
   `Pump_LiveSessionReceivesGuestClientInput`; it passed the targeted rerun and the
   subsequent full solution run. No timeout/test-disabling workaround was added.

@@ -157,7 +157,7 @@ public class Actor : Thinker
     public bool CeilingHugger { get; set; }
     /// <summary>Native MF3_FLOORHUGGER: missiles follow destination floors.</summary>
     public bool FloorHugger { get; set; }
-    /// <summary>Native MF5_NODROPOFF; currently supports the missile floor-hugger exception.</summary>
+    /// <summary>Native MF5_NODROPOFF: enforces the supported flat dropoff limit and missile floor-hugger exception.</summary>
     public bool NoDropOff { get; set; }
     /// <summary>Native <c>MF4_NOTARGETSWITCH</c>. Wake-up will not pick a new chase target while one is alive.</summary>
     public bool NoTargetSwitch { get; set; }
