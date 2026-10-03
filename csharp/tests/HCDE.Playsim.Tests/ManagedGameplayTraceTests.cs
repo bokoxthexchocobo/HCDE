@@ -25,6 +25,6 @@ public class ManagedGameplayTraceTests
         Assert.Equal(64, player.Y.ToDouble());
         Assert.Equal(100, player.Health);
         // Includes wall and plane texture transforms in the managed diagnostic hash.
-        Assert.Equal(42939098u, sim.Checksum); // Includes configured attack/view heights, JumpZ and actor gravity.
+        Assert.Equal(352595618u, sim.Checksum); // Includes damage scaling, attack/view heights, JumpZ and gravity.
     }
 }

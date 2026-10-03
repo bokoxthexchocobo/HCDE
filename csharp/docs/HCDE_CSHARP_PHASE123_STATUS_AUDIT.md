@@ -7603,11 +7603,37 @@ spawn handling, general class defaults and save/network propagation of the
 property remain open. Full suite: 4,569 passed, zero failed/skipped; Release
 build: zero warnings/errors. Source review and regression self-audit only.
 
+## ACS damage scaling and armor ordering (2026-10-03)
+
+Converted `APROP_DamageFactor` (24) and `APROP_DamageMultiplier` (43), with signed
+16.16 set/get/check state defaulting to 1. Native `p_acs.cpp` writes DamageFactor
+and DamageMultiply directly. `p_interaction.cpp` multiplies positive damage by
+the source's DamageMultiply, then the target's factor before armor; native
+`AActor::ApplyDamageFactor` in `p_mobj.cpp` truncates the latter result to int.
+Forced hits and ordinary telefrags bypass this scaling. A non-positive scaled
+result cancels damage effects. An inflictor alone does not supply the source
+multiplier. These rules are integrated into the managed damage boundary.
+
+Twenty-seven new regression cases cover signed/fractional/extreme property
+round trips and exact checks, separate truncation order, zero/negative damage
+cancellation, armor ordering, forced/telefrag bypass, source versus inflictor,
+resting checksums, all-match TID writes/newest reads and missing/destroyed actors.
+The idle checksum is now 352595618 because both factors enter actor state hashing;
+position/health/tic assertions remain unchanged. Full suite: 4,596 passing,
+zero failed/skipped; Release warnings-as-errors build: zero warnings/errors.
+
+Scope: the global actor multipliers in the existing managed damage path.
+Typed class DamageFactors, passive/active inventory modifiers, NO_FACTOR and
+NO_ENHANCE flags, self damage factors, LAXTELEFRAGDMG, and save/network propagation
+remain open. Managed arithmetic saturates products outside int range; native
+floating-to-int overflow parity has not been established. This is a source
+review and regression self-audit, not a complete native damage audit.
+
 ## Validation
 
-- Release solution: **4,569 passed, zero failed/skipped**, 3,646 cases above baseline.
+- Release solution: **4,596 passed, zero failed/skipped**, 3,673 cases above baseline.
   Protocol 15; Gamedata 10; Transport 10; Master 1; RCON 6; MapLoader 500;
-  Playsim 3,496; Client 12; Net.Core 351; Pregame 97; Server 63; Scripting 8.
+  Playsim 3,523; Client 12; Net.Core 351; Pregame 97; Server 63; Scripting 8.
 - The lighting pass initially saw a five-second timeout in
   `Pump_LiveSessionReceivesGuestClientInput`; it passed the targeted rerun and the
   subsequent full solution run. No timeout/test-disabling workaround was added.

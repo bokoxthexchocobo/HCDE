@@ -53,6 +53,13 @@ public static class ActorDamage
         var attacker = source ?? inflictor;
         if (attacker != null && !target.CanAttackHurtFrom(attacker))
             return default;
+        if (!forced && !telefrag)
+        {
+            // Native truncates each multiplication separately. Only source, not inflictor, enhances damage.
+            if (source != null) damage = ScaleDamage(damage, source.DamageMultiplier);
+            if (damage > 0) damage = ScaleDamage(damage, target.DamageFactor);
+            if (damage <= 0) return default;
+        }
         var absorbed = 0;
         if (!forced && !flags.HasFlag(DamageFlags.BypassArmor) && !IgnoresArmor(damageType))
         {
@@ -120,6 +127,9 @@ public static class ActorDamage
         Drain(target, source, damage - absorbed);
         return new DamageResult(lost, absorbed, target.IsDead);
     }
+
+    private static int ScaleDamage(int damage, Fixed factor) =>
+        (int)Math.Clamp((long)damage * factor.Raw / 65536, int.MinValue, int.MaxValue);
 
     /// <summary>Electric pain rolls <c>pr_lightning</c> on the flicker stream. Poison howling is absent.</summary>
     private static bool TryEnterPain(Actor target, int painState, string? damageType, bool forcedPain)

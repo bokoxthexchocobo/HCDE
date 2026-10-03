@@ -11,12 +11,14 @@ internal static class AcsActorProperties
     public const int Friendly = 16;
     public const int SpawnHealth = 17;
     public const int NoTarget = 19;
+    public const int DamageFactor = 24;
     public const int TargetTid = 26;
     public const int Mass = 32;
     public const int Height = 35;
     public const int Radius = 36;
     public const int ViewHeight = 39;
     public const int AttackZOffset = 40;
+    public const int DamageMultiplier = 43;
     public const int MaxStepHeight = 44;
     public const int MaxDropOffHeight = 45;
 
@@ -47,7 +49,7 @@ internal static class AcsActorProperties
         // Native CheckActorProperty rejects unknown properties, even when Get returns zero.
         if (property is not (Health or Ambush or Invulnerable or JumpZ or Gravity or Friendly
             or SpawnHealth or NoTarget or TargetTid or Mass or Height or Radius or ViewHeight or AttackZOffset
-            or MaxStepHeight or MaxDropOffHeight))
+            or MaxStepHeight or MaxDropOffHeight or DamageFactor or DamageMultiplier))
             return false;
         var actual = Read(actor, property);
         return IsBoolean(property) ? actual == (value != 0 ? 1 : 0) : actual == value;
@@ -81,6 +83,12 @@ internal static class AcsActorProperties
                 break;
             case Gravity:
                 actor.Gravity = new Fixed(value);
+                break;
+            case DamageFactor:
+                actor.DamageFactor = new Fixed(value);
+                break;
+            case DamageMultiplier:
+                actor.DamageMultiplier = new Fixed(value);
                 break;
             case ViewHeight:
                 if (actor is PlayerPawn viewPlayer)
@@ -121,6 +129,8 @@ internal static class AcsActorProperties
         Invulnerable => actor.Invulnerable ? 1 : 0,
         JumpZ => actor is PlayerPawn jumpPlayer ? jumpPlayer.JumpZ.Raw : 0,
         Gravity => actor.Gravity.Raw,
+        DamageFactor => actor.DamageFactor.Raw,
+        DamageMultiplier => actor.DamageMultiplier.Raw,
         Friendly => actor.Friendly ? 1 : 0,
         NoTarget => actor.NoTarget ? 1 : 0,
         SpawnHealth => actor.ResurrectionHealth,
