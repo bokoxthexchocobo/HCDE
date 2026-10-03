@@ -118,17 +118,17 @@ public sealed class ProjectileActor : Actor
             var x = X.ToDouble(); var y = Y.ToDouble(); var z = Z.ToDouble();
             var dx = vx / steps; var dy = vy / steps; var dz = vz / steps;
             var sector = ActorPhysics.SectorAt(sim.Level, x + dx, y + dy);
-            // P_TryMove keeps ceiling huggers at the destination ceiling during XY travel.
-            if (CeilingHugger && sector >= 0 && sector != huggerSector && (dx != 0 || dy != 0))
+            // P_TryMove gives floor hugging precedence when both hugger flags are set.
+            if ((FloorHugger || CeilingHugger) && sector >= 0 && sector != huggerSector && (dx != 0 || dy != 0))
             {
-                z = sim.CeilingOf(sector) - Height.ToDouble();
+                z = FloorHugger ? sim.FloorOf(sector) : sim.CeilingOf(sector) - Height.ToDouble();
                 Z = Fixed.FromDouble(z);
                 huggerSector = sector;
             }
-            if (NoExplodeFloor && sector >= 0 && z + dz <= sim.FloorOf(sector))
+            if ((NoExplodeFloor || FloorHugger && !NoDropOff) && sector >= 0 && z + dz <= sim.FloorOf(sector))
             {
                 dz = sim.FloorOf(sector) - z;
-                vz = 0; VelocityZ = default;
+                if (NoExplodeFloor) { vz = 0; VelocityZ = default; }
             }
             if (CeilingHugger && sector >= 0 && z + dz > sim.CeilingOf(sector) - Height.ToDouble())
             {
@@ -152,7 +152,7 @@ public sealed class ProjectileActor : Actor
                 var floor = sim.FloorOf(sector); var ceiling = sim.CeilingOf(sector) - Height.ToDouble();
                 var plane = double.PositiveInfinity;
                 var part = -1;
-                if (!NoExplodeFloor && z + dz <= floor)
+                if (!NoExplodeFloor && (!FloorHugger || NoDropOff) && z + dz <= floor)
                 { plane = dz < 0 ? Math.Clamp((floor - z) / dz, 0, 1) : 0; part = 0; }
                 if (!CeilingHugger && z + dz > ceiling)
                 {

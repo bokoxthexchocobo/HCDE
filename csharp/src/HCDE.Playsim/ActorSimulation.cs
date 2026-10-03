@@ -155,6 +155,10 @@ public class Actor : Thinker
     public bool NoExplodeFloor { get; set; }
     /// <summary>Native MF3_CEILINGHUGGER: missiles clamp to the ceiling without exploding.</summary>
     public bool CeilingHugger { get; set; }
+    /// <summary>Native MF3_FLOORHUGGER: missiles follow destination floors.</summary>
+    public bool FloorHugger { get; set; }
+    /// <summary>Native MF5_NODROPOFF; currently supports the missile floor-hugger exception.</summary>
+    public bool NoDropOff { get; set; }
     /// <summary>Native <c>MF4_NOTARGETSWITCH</c>. Wake-up will not pick a new chase target while one is alive.</summary>
     public bool NoTargetSwitch { get; set; }
     /// <summary>Native <c>MF4_NOHATEPLAYERS</c>. <see cref="OkayToSwitchTarget"/> ignores player sources.</summary>
@@ -2786,6 +2790,8 @@ public sealed class AuthoritySimulation
             if (actor.NoAutoOffSkullFly) hash = Mix(hash, 0x534B554Cu);
             if (actor.NoExplodeFloor) hash = Mix(hash, 0x4E45464Cu);
             if (actor.CeilingHugger) hash = Mix(hash, 0x43485547u);
+            if (actor.FloorHugger) hash = Mix(hash, 0x46485547u);
+            if (actor.NoDropOff) hash = Mix(hash, 0x4E44524Fu);
             if (actor.SpawnCeiling) hash = Mix(hash, 0x4345494Cu);
             if (actor.NoBlockMonsters) hash = Mix(hash, 0x4E424D4Fu);
             if (actor.NoBlockmap) hash = Mix(hash, 0x4E424D50u);
