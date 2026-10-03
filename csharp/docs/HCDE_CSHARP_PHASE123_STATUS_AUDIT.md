@@ -7526,11 +7526,35 @@ JumpZ is not yet included in pose archives or network property replication;
 custom class defaults, full jump rules and native movement parity remain open.
 Full suite passes 4,525 tests; Release build has zero warnings/errors.
 
+## ACS configurable actor gravity (2026-10-03)
+
+Converted `APROP_Gravity` (15) set/get/check into signed 16.16 actor state.
+Native `p_acs.cpp` sets the actor multiplier directly and compares its ACS value;
+`actorinlines.h::GetGravity` applies that multiplier unless `MF_NOGRAVITY` is set.
+The managed vertical step now consumes the property. Ice chunks initialize it
+to 0.125, matching `wadsrc/static/zscript/actors/shared/ice.zs`; scripts replace
+this class default rather than multiplying it by another hidden factor.
+
+Fifteen regressions cover exact signed/fractional/extreme ACS values, check
+mismatches, zero/reversed/stronger acceleration, NoGravity, ice default replacement,
+all-match TID writes, newest-match reads, missing/destroyed targets and checksum
+inclusion while resting. Existing ice acceleration tests remain unchanged.
+The expanded checksum changes the managed idle baseline to 1525314970; position,
+health and tic assertions remain unchanged.
+
+Scope: actor multiplier support is complete for this managed property subset.
+Native movement applies Z motion before gravity and has ledge, water, sector and
+level gravity rules beyond the current managed step. This pass preserves the
+existing managed movement order and does not establish full native physics parity.
+General class defaults, save/network replication of gravity and representative
+native invasion sessions remain open. Full suite: 4,540 passing tests; Release
+build: zero warnings/errors. This is a source review and regression self-audit.
+
 ## Validation
 
-- Release solution: **4,525 passed, zero failed/skipped**, 3,602 cases above baseline.
+- Release solution: **4,540 passed, zero failed/skipped**, 3,617 cases above baseline.
   Protocol 15; Gamedata 10; Transport 10; Master 1; RCON 6; MapLoader 500;
-  Playsim 3,452; Client 12; Net.Core 351; Pregame 97; Server 63; Scripting 8.
+  Playsim 3,467; Client 12; Net.Core 351; Pregame 97; Server 63; Scripting 8.
 - The lighting pass initially saw a five-second timeout in
   `Pump_LiveSessionReceivesGuestClientInput`; it passed the targeted rerun and the
   subsequent full solution run. No timeout/test-disabling workaround was added.

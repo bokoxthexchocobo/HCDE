@@ -32,7 +32,8 @@ public class Actor : Thinker
     /// <summary>Native <c>AActor::IsMapActor</c>. Owned inventory items are excluded from ACS thing counts.</summary>
     internal virtual bool IsMapActor => true;
     internal virtual bool IsBlockmapActor => true;
-    internal virtual double GravityFactor => 1;
+    /// <summary>Native actor gravity multiplier; ACS reads/writes signed 16.16 values.</summary>
+    public Fixed Gravity { get; set; } = Fixed.FromInt(1);
     /// <summary>Native <c>TIDtoHate</c>. Teammates share this value; a shooter may hurt or wake actors whose <see cref="ThingId"/> matches.</summary>
     public int TidToHate { get; set; }
     /// <summary>Native <c>MF3_NOTARGET</c>. Wake-up ignores this actor unless <see cref="TidToHate"/> matches its <see cref="ThingId"/> or it is hostile.</summary>
@@ -2568,6 +2569,7 @@ public sealed class AuthoritySimulation
             hash = Mix(hash, (uint)actor.PickupAmount);
             hash = Mix(hash, (uint)actor.RaiseDuration);
             hash = Mix(hash, (uint)actor.Mass);
+            hash = Mix(hash, (uint)actor.Gravity.Raw);
             hash = Mix(hash, actor.NoRadiusDamage ? 1u : 0u);
             hash = Mix(hash, actor.NoSectorDamage ? 1u : 0u);
             hash = Mix(hash, actor.ForceSectorDamage ? 1u : 0u);

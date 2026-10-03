@@ -7,7 +7,6 @@ public sealed class IceChunkActor : Actor
 
     public int RemainingTics => Destroyed ? 0 : States.RemainingTics;
     internal override bool IsBlockmapActor => false;
-    internal override double GravityFactor => 0.125;
 
     internal IceChunkActor(int remainingTics)
     {
@@ -19,6 +18,7 @@ public sealed class IceChunkActor : Actor
         Radius = Fixed.FromInt(3);
         Height = Fixed.FromInt(4);
         Mass = 5;
+        Gravity = Fixed.FromDouble(0.125);
         States.Configure(this, [new ActorFrame(remainingTics, 1, _ => SetFrameDuration()),
             new ActorFrame(remainingTics, 2, _ => SetFrameDuration()),
             new ActorFrame(remainingTics, 3, _ => SetFrameDuration()),
