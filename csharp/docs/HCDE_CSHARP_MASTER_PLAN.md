@@ -21,12 +21,12 @@ This document is the execution plan; that audit remains the detailed record.
 
 ## Verified checkpoint
 
-- Release solution: **4,809 passed; zero failed or skipped**.
+- Release solution: **4,817 passed; zero failed or skipped**.
 - Release build with warnings as errors: zero warnings/errors.
-- Tests by project: Playsim 3,736; MapLoader 500; Net.Core 351; Pregame 97;
+- Tests by project: Playsim 3,744; MapLoader 500; Net.Core 351; Pregame 97;
   Server 63; Protocol 15; Client 12; Gamedata 10; Transport 10; RCON 6; Master 1;
   Scripting 8.
-- Historical baseline: 923 tests at `55f8fa46`; 3,886 additional cases since then.
+- Historical baseline: 923 tests at `55f8fa46`; 3,894 additional cases since then.
 - October sync incorporated four upstream commits through `c367f081`, including
   ACS binding, gameplay parity, pickups/drops and inventory work. The current
   continuation adds read-only actor height/radius property queries and checks,
@@ -64,7 +64,8 @@ This document is the execution plan; that audit remains the detailed record.
   hearing memory before charging. Pain-elemental death bursts now clear
   friendliness when the retained target is a friend, and targetless deaths no
   longer substitute the last damage source. Skull charge initiation preserves
-  actor-owned ReactionTime instead of zeroing it.
+  actor-owned ReactionTime instead of zeroing it. The charge helper now accepts
+  configurable speed with native nonpositive fallback and vertical travel scaling.
 - Earlier checkpoints: `0a37c839` gameplay/maps/invasion foundation,
   `55f8fa46` buffered authoritative input, `d792c54a` AI/sector/snapshot work.
 - Native invasion policy compilation was previously verified; a complete native

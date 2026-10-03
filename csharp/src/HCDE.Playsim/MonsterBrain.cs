@@ -358,17 +358,18 @@ public sealed class MonsterBrain(MonsterAttack attack)
         actor.LastDamageSourceId = null;
     }
 
-    internal void StartCharge(Actor actor, Actor target)
+    internal void StartCharge(Actor actor, Actor target, double skullSpeed = 20)
     {
+        if (skullSpeed <= 0) skullSpeed = 20;
         TargetId = target.Id;
         Charging = true;
         Mode = MonsterMode.Recovery;
         var dx = target.X.ToDouble() - actor.X.ToDouble(); var dy = target.Y.ToDouble() - actor.Y.ToDouble();
         var radians = Math.Atan2(dy, dx);
         actor.Angle = BamAngle.FromDegrees(radians * 180 / Math.PI);
-        actor.VelocityX = Fixed.FromDouble(20 * Math.Cos(radians));
-        actor.VelocityY = Fixed.FromDouble(20 * Math.Sin(radians));
-        var travel = Math.Max(1, Math.Sqrt(dx * dx + dy * dy) / 20);
+        actor.VelocityX = Fixed.FromDouble(skullSpeed * Math.Cos(radians));
+        actor.VelocityY = Fixed.FromDouble(skullSpeed * Math.Sin(radians));
+        var travel = Math.Max(1, Math.Sqrt(dx * dx + dy * dy) / skullSpeed);
         actor.VelocityZ = Fixed.FromDouble((target.Z.ToDouble() + target.Height.ToDouble() / 2 - actor.Z.ToDouble()) / travel);
     }
 
