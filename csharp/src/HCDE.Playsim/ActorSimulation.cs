@@ -340,7 +340,7 @@ public class Actor : Thinker
     public bool NoIceDeath { get; set; }
     /// <summary>Damage type of the hit currently being applied. The setter consumes it.</summary>
     internal string? DamageTypeReceived { get; set; }
-    public string? DeathDamageType { get; private set; }
+    public string? DeathDamageType { get; internal set; }
     /// <summary>Inflictor for the hit currently being applied. The health setter consumes it.</summary>
     internal Actor? DeathInflictor { get; set; }
     private readonly Dictionary<string, int> _typedDeaths = new(StringComparer.Ordinal);
@@ -2174,6 +2174,7 @@ public sealed class AuthoritySimulation
                 Roll = actor.Roll.Raw,
                 ContactFlags = (actor.CanPickupItems ? 1 : 0) | (actor.SpecialPickup ? 2 : 0),
                 FloatFlags = (actor.InFloat ? 1 : 0) | (actor.VerticalFriction ? 2 : 0),
+                DeathFlags = actor.DeathDamageType == "Massacre" ? 1 : 0,
                 Pickup = PickupCatalog.IsPickup(actor.DoomEdNum)
                     ? new SimPickupProperties(actor.PickupAmount, actor.IgnoreAmmoSkill, actor.Depleted) : null,
                 Health = actor.Health,
@@ -2204,6 +2205,7 @@ public sealed class AuthoritySimulation
         SimSavegame.ValidatePickups(state);
         SimSavegame.ValidateContactFlags(state);
         SimSavegame.ValidateFloatFlags(state);
+        SimSavegame.ValidateDeathFlags(state);
         if (state.GeometryHealth is { } savedHealth && (savedHealth.Lines.Count != Level.Lines.Count
             || savedHealth.Sectors.Count != Level.Sectors.Count || !savedHealth.Groups.Keys.Order().SequenceEqual(HealthGroups.Keys.Order())))
             throw new InvalidOperationException("Saved geometry health does not match the current map.");
@@ -2286,6 +2288,7 @@ public sealed class AuthoritySimulation
             actor.Angle = new BamAngle(pose.Angle);
             actor.PitchDegrees = new Fixed(pose.Pitch).ToDouble();
             actor.RestoreHealth(pose.Health);
+            if (pose.DeathFlags is { } deathFlags) actor.DeathDamageType = deathFlags == 1 ? "Massacre" : null;
             if (pose.Roll is { } roll) actor.Roll = new BamAngle(roll);
             if (pose.ContactFlags is { } contactFlags)
             {

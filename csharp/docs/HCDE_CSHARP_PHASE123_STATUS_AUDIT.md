@@ -10020,11 +10020,34 @@ Retained death type is not yet in the partial pose archive/network schema.
 General native typed-death normalization, replacement/mod actions, full native
 sessions, invasion synchronization acceptance, and phases 1–3 remain open.
 
+## Massacre death-state archive checkpoint (2026-10-03)
+
+Closed the preceding checkpoint's retained Massacre pose-archive gap. CaptureState
+records a one-bit death flag; RestoreState validates it before mutation and
+restores the canonical Massacre death type or clears it. HCSV version 20 adds
+a bounded per-actor trailer over version 18 or 19 when any massacre flag is set.
+Ordinary saves retain their existing version; version 18/19 readers initialize
+this newly supported death state to clear. Earlier versions remain readable and
+leave the absent property unchanged. Nonzero flag writes require complete current
+actor metadata. Version 20 requires the updated reader.
+
+Seven regressions cover ordinary/massacre deaths with and without movement flags,
+serialized restore after revival, correct delayed soul spawning/suppression, and
+invalid serialized/in-memory bits rejected before mutation. Full Release solution:
+5,386 passed, zero failed/skipped; Playsim 4,259. Release warnings-as-errors build
+and whitespace checks passed; existing legacy archive, trace, and invasion tests
+passed. No simulation checksum changes in this checkpoint.
+
+This archives the supported Massacre subset, not general typed deaths or native
+savegames. Full AI/death-timer rollback, actor membership restoration, network
+schema, native-engine sessions, invasion synchronization acceptance, and
+phases 1–3 completion remain open.
+
 ## Validation
 
-- Release solution: **5,379 passed, zero failed/skipped**, 4,456 cases above baseline.
+- Release solution: **5,386 passed, zero failed/skipped**, 4,463 cases above baseline.
   Protocol 15; Gamedata 29; Transport 10; Master 1; RCON 6; MapLoader 533;
-  Playsim 4,252; Client 12; Net.Core 351; Pregame 97; Server 65; Scripting 8.
+  Playsim 4,259; Client 12; Net.Core 351; Pregame 97; Server 65; Scripting 8.
 - The lighting pass initially saw a five-second timeout in
   `Pump_LiveSessionReceivesGuestClientInput`; it passed the targeted rerun and the
   subsequent full solution run. No timeout/test-disabling workaround was added.
