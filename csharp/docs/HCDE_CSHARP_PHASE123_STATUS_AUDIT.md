@@ -10124,11 +10124,32 @@ This supports the existing case-insensitive F_SKY1 identity. Custom sky flat
 resolution, SKYEXPLODE class flags, sky-wall handling, explosion state timing,
 and native gameplay acceptance remain open. Gameplay phases 1–3 remain incomplete.
 
+## NOEXPLODEFLOOR projectile conversion audit (2026-10-03)
+
+Actor.NoExplodeFloor now implements the native MF3_NOEXPLODEFLOOR flat-floor
+subset. A projectile clamps its descent to the floor, clears vertical velocity,
+and continues horizontal travel without plane damage or explosion. Ceiling and
+actor collisions still impact, and the managed finite lifetime still expires.
+The flag precedes sky-floor removal, matching P_ZMovement in
+src/playsim/p_mobj.cpp. The native registered name was checked in
+src/scripting/thingdef_data.cpp; managed ACS flag queries/modification now support
+that case-insensitive name. A conditional checksum marker covers enabled flags
+without changing default actor hash streams.
+
+Eleven regression cases cover stone/sky floors with gravity enabled/disabled,
+ceiling impacts, subsequent and same-tic actor impacts, runtime flag clearing,
+finite lifetime, ACS set/query/clear, and checksum differentiation.
+Full Release solution: 5,424 passed, zero failed/skipped; Playsim 4,297.
+Warnings-as-errors build and diff checks pass. Archive format is unchanged; this
+flag is not yet included in the partial pose archive. Native P_HitFloor terrain
+splashes, full class loading/defaults, slope/portal collisions, full persistence,
+and native gameplay acceptance remain open. Gameplay phases 1–3 remain incomplete.
+
 ## Validation
 
-- Release solution: **5,413 passed, zero failed/skipped**, 4,490 cases above baseline.
+- Release solution: **5,424 passed, zero failed/skipped**, 4,501 cases above baseline.
   Protocol 15; Gamedata 29; Transport 10; Master 1; RCON 6; MapLoader 533;
-  Playsim 4,286; Client 12; Net.Core 351; Pregame 97; Server 65; Scripting 8.
+  Playsim 4,297; Client 12; Net.Core 351; Pregame 97; Server 65; Scripting 8.
 - The lighting pass initially saw a five-second timeout in
   `Pump_LiveSessionReceivesGuestClientInput`; it passed the targeted rerun and the
   subsequent full solution run. No timeout/test-disabling workaround was added.

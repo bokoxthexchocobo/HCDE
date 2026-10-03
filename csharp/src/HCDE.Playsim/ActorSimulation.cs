@@ -151,6 +151,8 @@ public class Actor : Thinker
     public bool NeverTarget { get; set; }
     /// <summary>Native MF9_NOAUTOOFFSKULLFLY: zero horizontal velocity does not automatically end a skull charge.</summary>
     public bool NoAutoOffSkullFly { get; set; }
+    /// <summary>Native MF3_NOEXPLODEFLOOR: a missile stops vertically on the floor without exploding.</summary>
+    public bool NoExplodeFloor { get; set; }
     /// <summary>Native <c>MF4_NOTARGETSWITCH</c>. Wake-up will not pick a new chase target while one is alive.</summary>
     public bool NoTargetSwitch { get; set; }
     /// <summary>Native <c>MF4_NOHATEPLAYERS</c>. <see cref="OkayToSwitchTarget"/> ignores player sources.</summary>
@@ -2756,6 +2758,7 @@ public sealed class AuthoritySimulation
             hash = Mix(hash, actor.IceShatter ? 1u : 0u);
             hash = Mix(hash, actor.NeverTarget ? 1u : 0u);
             if (actor.NoAutoOffSkullFly) hash = Mix(hash, 0x534B554Cu);
+            if (actor.NoExplodeFloor) hash = Mix(hash, 0x4E45464Cu);
             if (actor.SpawnCeiling) hash = Mix(hash, 0x4345494Cu);
             if (actor.NoBlockMonsters) hash = Mix(hash, 0x4E424D4Fu);
             if (actor.NoBlockmap) hash = Mix(hash, 0x4E424D50u);

@@ -114,6 +114,12 @@ public sealed class ProjectileActor : Actor
         {
             var x = X.ToDouble(); var y = Y.ToDouble(); var z = Z.ToDouble();
             var dx = vx / steps; var dy = vy / steps; var dz = vz / steps;
+            var sector = ActorPhysics.SectorAt(sim.Level, x + dx, y + dy);
+            if (NoExplodeFloor && sector >= 0 && z + dz <= sim.FloorOf(sector))
+            {
+                dz = sim.FloorOf(sector) - z;
+                vz = 0; VelocityZ = default;
+            }
             var fraction = double.PositiveInfinity;
             Actor? victim = null;
             LevelLine? wall = null;
@@ -126,13 +132,12 @@ public sealed class ProjectileActor : Actor
                     || CombatTrace.BlocksShot(sim, line, z + dz * hit + Height.ToDouble(), LevelLine.BlockProjectileFlag)) && hit < fraction)
                 { fraction = hit; wall = line; }
             }
-            var sector = ActorPhysics.SectorAt(sim.Level, x + dx, y + dy);
             if (sector >= 0)
             {
                 var floor = sim.FloorOf(sector); var ceiling = sim.CeilingOf(sector) - Height.ToDouble();
                 var plane = double.PositiveInfinity;
                 var part = -1;
-                if (z + dz < floor || dz < 0 && z + dz == floor)
+                if (!NoExplodeFloor && (z + dz < floor || dz < 0 && z + dz == floor))
                 { plane = dz < 0 ? Math.Clamp((floor - z) / dz, 0, 1) : 0; part = 0; }
                 if (z + dz > ceiling)
                 {
