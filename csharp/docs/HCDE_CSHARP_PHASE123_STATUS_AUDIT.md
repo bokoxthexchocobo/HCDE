@@ -9812,11 +9812,34 @@ look/chase cadence and generic actor/player defaults are not full native parity.
 Mod class defaults, native sessions, invasion synchronization acceptance, and
 phases 1–3 completion remain open.
 
+## Standard Doom Nightmare instant reaction checkpoint (2026-10-03)
+
+Native `wadsrc/static/mapinfo/doomcommon.txt` Nightmare declares InstantReaction.
+`src/playsim/p_mobj.cpp` spawning clears reactiontime after class defaults when
+InstantReaction is enabled and the actor has ISMONSTER. Standard managed Doom
+skill 4 now applies this spawn override to map actors, AddBot, and spawned Lost
+Souls after class/default/patch initialization. It overrides explicit DeHackEd
+reaction values, preserves counters for actors whose monster classification was
+cleared, and uses existing skill clamping consistently. Charge startup retains
+the cleared counter.
+
+Nine regressions cover ordinary/Nightmare/clamped skills, map and dynamic
+spawning, explicit patch precedence, removed monster classification, and spawned
+charging souls. Full Release solution: 5,327 passed, zero failed/skipped;
+Playsim 4,202. Release warnings-as-errors build and whitespace checks passed.
+Existing trace and server invasion tests passed. Existing skill/reaction checksum
+fields cover this behavior; no new state or schema added.
+
+This maps standard Doom Nightmare by its fixed managed skill index. Custom
+MAPINFO skill definitions, ALWAYSFAST and DF_INSTANT_REACTION settings remain
+unconverted. Full Nightmare behavior (fast states/respawns), native spawn hooks,
+mod actors, native-engine invasion acceptance, and phases 1–3 remain open.
+
 ## Validation
 
-- Release solution: **5,318 passed, zero failed/skipped**, 4,395 cases above baseline.
+- Release solution: **5,327 passed, zero failed/skipped**, 4,404 cases above baseline.
   Protocol 15; Gamedata 29; Transport 10; Master 1; RCON 6; MapLoader 533;
-  Playsim 4,193; Client 12; Net.Core 351; Pregame 97; Server 63; Scripting 8.
+  Playsim 4,202; Client 12; Net.Core 351; Pregame 97; Server 63; Scripting 8.
 - The lighting pass initially saw a five-second timeout in
   `Pump_LiveSessionReceivesGuestClientInput`; it passed the targeted rerun and the
   subsequent full solution run. No timeout/test-disabling workaround was added.

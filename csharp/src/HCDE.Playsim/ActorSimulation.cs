@@ -1130,6 +1130,7 @@ public static class ActorSpawner
             actor.IsMonster = !playerStart && (defaults is { BitsPatched: true }
                 ? (defaults.Bits & 0x00400000) != 0
                 : actor.Brain != null);
+            if (actor.IsMonster && Math.Clamp(spawnOptions?.Skill ?? 2, 0, 4) == 4) actor.ReactionTime = 0;
             ThingActivation.InitializeSpawn(actor, thing.Dormant);
             actor.RememberPosition();
             thinkers.Add(actor, playerStart ? ThinkerStat.Player : ThinkerStat.Default);
@@ -1868,6 +1869,7 @@ public sealed class AuthoritySimulation
         bot.SpawnCanPickupItems = bot.CanPickupItems;
         bot.SpawnSpecialPickup = bot.SpecialPickup;
         ActorSpawner.ApplyExtendedDefaults(bot, defaults);
+        if (bot.IsMonster && Skill == 4) bot.ReactionTime = 0;
         ThingActivation.InitializeSpawn(bot, false);
         bot.RememberPosition();
         bot.Simulation = this;
@@ -2045,6 +2047,7 @@ public sealed class AuthoritySimulation
             Mass = DoomActorCatalog.MassOf(3006),
             Brain = MonsterBrain.ForType(3006), Angle = BamAngle.FromDegrees(angle),
         };
+        if (Skill == 4) soul.ReactionTime = 0;
         _nextActorId = checked(_nextActorId + 1);
         var distance = 4 + (parent.Radius.ToDouble() + soul.Radius.ToDouble()) * 1.5;
         var radians = angle * Math.PI / 180;
