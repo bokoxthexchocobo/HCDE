@@ -102,13 +102,42 @@ This document is the execution plan; that audit remains the detailed record.
 | ACS metadata/addressing | Local/map array metadata codecs, JUMP decoding, bounded relocation, GotoStack, copied program data and module-relative branch bases | Explicit APIs; automatic map integration unfinished |
 | Networking | Input buffering, selected player/invasion replication, snapshot build failure safety, handshake retries/replays and StartGame handling | Implemented subset; scale/loss blockers remain |
 | Invasion | Managed round/timer/enemy regression coverage and selected native policy work | Original runtime symptom not yet signed off |
-| Persistence | Backward-compatible v6 pose archive with fractional sector heights and actor pitch | Pose archive, not a full savegame |
+| Persistence | Managed archives through version 36, including selected actor/contact flags, projectile lifetime/pointers and geometry state | Partial state archive; full actor recreation and complete saves remain open |
 
 Recent audits also corrected malformed ACS directory-count overflow, discarded
 sidedef offsets, clock observation one tic ahead of native ACS, and alignment
 errors exposed by packed-byte instructions. Details and limitations are recorded
 with each change in the status audit.
 
+## Remaining-work review (2026-10-03)
+
+The phase checklist below contains **17 open categories**: five gameplay,
+five combat/AI and seven maps/mods/scripting. Another **six shared categories**
+cover networking and invasion, and **four later product categories** cover
+client/media, complete saves, platform integration and acceptance. These are
+broad, partially implemented categories; their count is not a percentage of
+code remaining or an estimate of development time.
+
+Recent actor contact conversions include ThruActors, species and bit-mask
+passage, ghost contact, NONSHOOTABLE, HITOWNER and SPECTRAL, with managed
+persistence through version 36. They reduce individual parity gaps but do not
+close whole phases. Basic word-format BEHAVIOR registration and OPEN/ENTER
+startup already exist; the phase-3 integration item refers to completing
+metadata, modules, functions, formats and scheduling rather than starting
+that integration from zero.
+
+The largest outstanding acceptance risks are native movement/advanced geometry,
+complete combat state/action and actor-definition execution, ACS/module support,
+large-world and adverse-delivery networking, and reproducing the original
+invasion round/timer/enemy divergence. No complete native engine comparison or
+multi-client invasion sign-off is recorded. Full-product completion additionally
+requires a usable client with rendering/audio and complete save/recreation.
+
+Next priorities remain reproducible native/managed comparison fixtures,
+network delivery/capacity and invasion acceptance, followed by the remaining
+phase parity gaps. A defensible completion estimate requires a finer feature
+inventory and measured native comparison results; 5,863 passing managed tests
+alone cannot establish one.
 ## Remaining work by phase
 
 ### Phase 1 — gameplay foundation
@@ -279,7 +308,7 @@ Run from the repository root (the nested SDK pin is unchanged):
 
 ```powershell
 dotnet test csharp/HCDE.sln -c Release --no-restore --verbosity quiet
-dotnet build csharp/HCDE.sln -c Release --no-restore --verbosity quiet -warnaserror
+dotnet build csharp/HCDE.sln -c Release --no-restore --no-incremental --verbosity quiet -warnaserror
 git diff --check
 ```
 
