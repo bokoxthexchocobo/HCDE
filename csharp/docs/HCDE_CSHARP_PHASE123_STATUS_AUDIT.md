@@ -10705,11 +10705,32 @@ hitscan/puff behavior and native geometry/runtime acceptance remain incomplete.
 Radius damage remains separate from direct missile contact. Phases 1–3 and
 invasion synchronization acceptance remain open.
 
+## Conversion and audit: ghost projectile policy persistence (2026-10-03)
+
+Closed GHOST/THRUGHOST pose persistence against native `AActor::Serialize`
+in `src/playsim/p_mobj.cpp`, which saves flags2/flags3. Managed poses capture
+both flags, including explicit false values, and restore them before resumed
+projectile contacts. Managed archive version 33 wraps versions 18–32 with
+a complete validated two-bit table. Older archives preserve current flags.
+This does not claim native savegame interoperability or actor recreation.
+
+Eighteen regressions cover memory/wire continuation of all ghost/passage
+combinations, explicit clearing, invalid wire/memory bits, size/prior/count
+errors, incomplete all-zero tables, rejection before clock/flag/checksum
+mutation, version 32 preservation and nested full passage-mask/contact flag
+restoration. Existing layout fixtures explicitly omit newer metadata.
+Full non-incremental Release build: zero warnings/errors; 5,775 solution tests
+passed, zero failed/skipped (Playsim 4,648). Whitespace checks pass.
+
+Custom class defaults, MBF bouncers, hitscan/puff policy, actor recreation
+and native geometry/runtime acceptance remain incomplete. Phases 1–3 and
+invasion synchronization acceptance remain open.
+
 ## Validation
 
-- Release solution: **5,757 passed, zero failed/skipped**, 4,834 cases above baseline.
+- Release solution: **5,775 passed, zero failed/skipped**, 4,852 cases above baseline.
   Protocol 15; Gamedata 29; Transport 10; Master 1; RCON 6; MapLoader 533;
-  Playsim 4,630; Client 12; Net.Core 351; Pregame 97; Server 65; Scripting 8.
+  Playsim 4,648; Client 12; Net.Core 351; Pregame 97; Server 65; Scripting 8.
 - The lighting pass initially saw a five-second timeout in
   `Pump_LiveSessionReceivesGuestClientInput`; it passed the targeted rerun and the
   subsequent full solution run. No timeout/test-disabling workaround was added.

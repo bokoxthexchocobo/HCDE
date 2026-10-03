@@ -8,7 +8,7 @@ internal static class LegacyActorArchiveFixture
 
     internal static byte[] Write(SimSaveState state)
     {
-        foreach (var pose in state.Actors) { pose.BlastEligibilityFlags = null; pose.ThruActorsFlags = null; pose.MissileThruSpeciesFlags = null; pose.ThruSpeciesFlags = null; pose.ThruBits = null; }
+        foreach (var pose in state.Actors) { pose.BlastEligibilityFlags = null; pose.ThruActorsFlags = null; pose.MissileThruSpeciesFlags = null; pose.ThruSpeciesFlags = null; pose.ThruBits = null; pose.GhostFlags = null; }
         return SimSavegame.Write(state);
     }
 }

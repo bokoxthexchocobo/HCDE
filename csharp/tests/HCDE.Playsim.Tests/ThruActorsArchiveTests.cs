@@ -117,7 +117,7 @@ public class ThruActorsArchiveTests
     private static byte[] WriteVersion29(AuthoritySimulation sim) => WriteVersion29(sim.CaptureState());
     private static byte[] WriteVersion29(SimSaveState state)
     {
-        foreach (var pose in state.Actors) { pose.MissileThruSpeciesFlags = null; pose.ThruSpeciesFlags = null; pose.ThruBits = null; }
+        foreach (var pose in state.Actors) { pose.MissileThruSpeciesFlags = null; pose.ThruSpeciesFlags = null; pose.ThruBits = null; pose.GhostFlags = null; }
         return SimSavegame.Write(state);
     }
     private static int TrailerStart(byte[] bytes) => bytes.Length - BinaryPrimitives.ReadInt32LittleEndian(bytes.AsSpan(bytes.Length - 4));
