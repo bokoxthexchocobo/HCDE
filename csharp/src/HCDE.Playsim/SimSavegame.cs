@@ -36,6 +36,7 @@ public sealed class SimActorPose
     public int? BlastedFlags { get; internal set; }
     public int? BlastEligibilityFlags { get; internal set; }
     public int? ThruActorsFlags { get; internal set; }
+    public int? MissileThruSpeciesFlags { get; internal set; }
 }
 
 public sealed class SimSaveState
@@ -85,6 +86,7 @@ public static class SimSavegame
         SimBlastedArchive.Validate(state);
         SimBlastEligibilityArchive.Validate(state);
         SimThruActorsArchive.Validate(state);
+        SimMissileThruSpeciesArchive.Validate(state);
         SimPainDeathArchive.Validate(state);
         if (state.Actors.Any(actor => actor.Pickup.HasValue) &&
             (state.GeometryHealth is null || state.Actors.Any(actor => !actor.Roll.HasValue)))
@@ -184,7 +186,7 @@ public static class SimSavegame
             BinaryPrimitives.WriteUInt16LittleEndian(archive.AsSpan(4), 15);
             archive = SimProjectileFlagArchive.Write(state, SimPainDeathArchive.Write(state, WriteDeathFlags(state, WriteFloatFlags(state, WriteContactFlags(state, WritePickups(state, WriteRolls(state, archive)))))));
             archive = SimFloorHuggerArchive.Write(state, SimCeilingHuggerArchive.Write(state, SimProjectilePointerArchive.Write(state, SimProjectileLifetimeArchive.Write(state, archive))));
-            return SimThruActorsArchive.Write(state, SimBlastEligibilityArchive.Write(state, SimBlastedArchive.Write(state, archive)));
+            return SimMissileThruSpeciesArchive.Write(state, SimThruActorsArchive.Write(state, SimBlastEligibilityArchive.Write(state, SimBlastedArchive.Write(state, archive))));
         }
         return buffer;
     }
@@ -315,6 +317,7 @@ public static class SimSavegame
         }
 
         var version = BinaryPrimitives.ReadUInt16LittleEndian(bytes[4..]);
+        if (version == 30) return SimMissileThruSpeciesArchive.TryRead(bytes, out state, out error);
         if (version == 29) return SimThruActorsArchive.TryRead(bytes, out state, out error);
         if (version == 28) return SimBlastEligibilityArchive.TryRead(bytes, out state, out error);
         if (version == 27) return SimBlastedArchive.TryRead(bytes, out state, out error);

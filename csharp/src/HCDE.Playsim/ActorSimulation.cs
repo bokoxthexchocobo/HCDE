@@ -2205,6 +2205,7 @@ public sealed class AuthoritySimulation
                 BlastedFlags = actor.Blasted ? 1 : 0,
                 BlastEligibilityFlags = (actor.Boss ? 1 : 0) | (actor.DontBlast ? 2 : 0),
                 ThruActorsFlags = actor.ThruActors ? 1 : 0,
+                MissileThruSpeciesFlags = actor.MThruSpecies ? 1 : 0,
                 ProjectileLifetime = actor is ProjectileActor { Destroyed: false } projectile
                     ? new SimProjectileLifetime(projectile.RemainingTics, projectile.Kind) : null,
                 ProjectilePointers = actor is ProjectileActor { Destroyed: false } pointerProjectile
@@ -2248,6 +2249,7 @@ public sealed class AuthoritySimulation
         SimBlastedArchive.Validate(state);
         SimBlastEligibilityArchive.Validate(state);
         SimThruActorsArchive.Validate(state);
+        SimMissileThruSpeciesArchive.Validate(state);
         SimPainDeathArchive.Validate(state);
         if (state.GeometryHealth is { } savedHealth && (savedHealth.Lines.Count != Level.Lines.Count
             || savedHealth.Sectors.Count != Level.Sectors.Count || !savedHealth.Groups.Keys.Order().SequenceEqual(HealthGroups.Keys.Order())))
@@ -2344,6 +2346,7 @@ public sealed class AuthoritySimulation
             if (pose.DeathFlags is { } deathFlags) actor.DeathDamageType = deathFlags == 1 ? "Massacre" : null;
             if (pose.ProjectileFlags is { } projectileFlags) actor.NoExplodeFloor = (projectileFlags & 1) != 0;
             if (pose.CeilingFlags is { } ceilingFlags) actor.CeilingHugger = ceilingFlags == 1;
+            if (pose.MissileThruSpeciesFlags is { } missileThruSpeciesFlags) actor.MThruSpecies = missileThruSpeciesFlags == 1;
             if (pose.ThruActorsFlags is { } thruActorsFlags) actor.ThruActors = thruActorsFlags == 1;
             if (pose.BlastEligibilityFlags is { } blastEligibilityFlags)
             {

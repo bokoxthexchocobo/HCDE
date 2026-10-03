@@ -10569,11 +10569,33 @@ hitscan/puff rules, THRUSPECIES/THRUBITS and native geometry/runtime acceptance
 remain incomplete. Radius damage remains separate. Phases 1–3 and invasion
 synchronization acceptance remain open.
 
+## Conversion and audit: missile species-passage persistence (2026-10-03)
+
+Closed MTHRUSPECIES pose persistence against native `AActor::Serialize` in
+`src/playsim/p_mobj.cpp`, which saves flags6. Managed pose capture/restore
+now records enabled and explicitly disabled values. Managed archive version
+30 wraps versions 18–29 with a complete validated boolean table; older saves
+without the table preserve the current flag. This format does not claim
+native savegame interoperability or recreate removed projectile actors.
+
+Fifteen regressions cover memory/wire continuation of Baron/Hell Knight
+species passage, explicit false restoration, malformed flags and
+size/prior/count fields, incomplete all-zero tables, rejection before
+clock/flag/checksum mutation, version 29 preservation and nested contact
+flag restoration. Existing version-specific fixtures omit newer metadata
+to preserve their layout/corruption coverage. Full non-incremental Release
+build: zero warnings/errors. Solution tests: 5,681 passed, zero failed/skipped;
+Playsim 4,554. Whitespace checks pass.
+
+Custom species overrides and class ancestry, hitscan/puff policy,
+THRUSPECIES/THRUBITS and native runtime acceptance remain incomplete.
+Phases 1–3 and invasion synchronization acceptance remain open.
+
 ## Validation
 
-- Release solution: **5,666 passed, zero failed/skipped**, 4,743 cases above baseline.
+- Release solution: **5,681 passed, zero failed/skipped**, 4,758 cases above baseline.
   Protocol 15; Gamedata 29; Transport 10; Master 1; RCON 6; MapLoader 533;
-  Playsim 4,539; Client 12; Net.Core 351; Pregame 97; Server 65; Scripting 8.
+  Playsim 4,554; Client 12; Net.Core 351; Pregame 97; Server 65; Scripting 8.
 - The lighting pass initially saw a five-second timeout in
   `Pump_LiveSessionReceivesGuestClientInput`; it passed the targeted rerun and the
   subsequent full solution run. No timeout/test-disabling workaround was added.

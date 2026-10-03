@@ -123,7 +123,7 @@ public class BlastEligibilityArchiveTests
     private static byte[] WriteVersion28(AuthoritySimulation sim) => WriteVersion28(sim.CaptureState());
     private static byte[] WriteVersion28(SimSaveState state)
     {
-        foreach (var pose in state.Actors) pose.ThruActorsFlags = null;
+        foreach (var pose in state.Actors) { pose.ThruActorsFlags = null; pose.MissileThruSpeciesFlags = null; }
         return SimSavegame.Write(state);
     }
     private static int TrailerStart(byte[] bytes) => bytes.Length - BinaryPrimitives.ReadInt32LittleEndian(bytes.AsSpan(bytes.Length - 4));
