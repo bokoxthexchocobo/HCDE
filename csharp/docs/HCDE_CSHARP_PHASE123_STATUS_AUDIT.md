@@ -8749,11 +8749,30 @@ blocking and complete flags3 patching remain unconverted. Save/network transport
 of this actor flag is not complete. Phases 1–3, large-dimension storage and
 representative invasion synchronization validation remain incomplete.
 
+## Floater-blocking actor movement — 2026-10-03
+
+Native `P_IsBlockedByLine` in `src/playsim/actorinlines.h` independently checks
+MF_FLOAT against ML_BLOCK_FLOATERS (0x00040000 in `src/doomdata.h`). Converted
+this predicate in the shared managed actor movement/occupancy blocking path,
+after unconditional walls and monster blocking. NoGravity alone does not imply
+floating, and NoBlockMonsters does not exempt an actor from floater blocking.
+
+Seven regression cases cover floating versus gravity, friendly exemption
+interaction with combined line flags, unflagged lines, and clearing Floating
+after a refused move without changing position. Full Release solution:
+4,988 passed, zero failed/skipped; Playsim 3,907. Warnings-as-errors build:
+zero warnings/errors. No checksum fields changed.
+
+Scope is existing internal line flag values and actor physics. UDMF named
+blockfloaters ingestion, Strife-format remapping, trace-specific predicates,
+MBF21 blocking options and representative native-engine fixtures remain open.
+Phases 1–3 and invasion synchronization validation remain incomplete.
+
 ## Validation
 
-- Release solution: **4,981 passed, zero failed/skipped**, 4,058 cases above baseline.
+- Release solution: **4,988 passed, zero failed/skipped**, 4,065 cases above baseline.
   Protocol 15; Gamedata 18; Transport 10; Master 1; RCON 6; MapLoader 500;
-  Playsim 3,900; Client 12; Net.Core 351; Pregame 97; Server 63; Scripting 8.
+  Playsim 3,907; Client 12; Net.Core 351; Pregame 97; Server 63; Scripting 8.
 - The lighting pass initially saw a five-second timeout in
   `Pump_LiveSessionReceivesGuestClientInput`; it passed the targeted rerun and the
   subsequent full solution run. No timeout/test-disabling workaround was added.
