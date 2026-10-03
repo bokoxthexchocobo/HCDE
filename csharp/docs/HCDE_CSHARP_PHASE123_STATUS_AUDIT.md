@@ -9315,11 +9315,32 @@ class hooks and native session acceptance remain unverified. Packed/result
 ACS variants share dispatch without new dedicated cases. Phases 1–3 and
 invasion synchronization validation remain incomplete.
 
+## Conversion and audit: ThrustThingZ special (2026-10-03)
+
+Converted special 128 against native `LS_ThrustThingZ` in
+`src/playsim/p_lnspec.cpp`. Extended map dispatch and ACS direct/stack families
+scale signed thrust by 1/4, negate when direction is nonzero, replace vertical
+velocity when argument 3 is zero and add otherwise. Nonzero TIDs select all
+matching live actors and return success even with no matches; TID zero selects
+the activator and fails if absent. Only vertical velocity changes.
+
+Eight regressions cover fractional scaling, both directions, replacement/
+addition with non-boolean arguments, signed ACS thrust, multi-target isolation,
+activator targeting and the asymmetric missing-target returns. Full Release
+solution: 5,127 passed, zero failed/skipped; Playsim 4,046. Release warnings-
+as-errors build and whitespace checks pass. Existing velocity checksum applies.
+Managed signed 16.16 velocity representation still limits extreme argument
+ranges versus native doubles; no full-range parity is claimed. UDMF shares
+the extended map dispatcher, while new map cases use Hexen fixtures. Packed/
+result ACS variants share dispatch without dedicated new tests. Complete actor
+actions, native session acceptance, phases 1–3 and invasion validation remain
+incomplete.
+
 ## Validation
 
-- Release solution: **5,119 passed, zero failed/skipped**, 4,196 cases above baseline.
+- Release solution: **5,127 passed, zero failed/skipped**, 4,204 cases above baseline.
   Protocol 15; Gamedata 18; Transport 10; Master 1; RCON 6; MapLoader 500;
-  Playsim 4,038; Client 12; Net.Core 351; Pregame 97; Server 63; Scripting 8.
+  Playsim 4,046; Client 12; Net.Core 351; Pregame 97; Server 63; Scripting 8.
 - The lighting pass initially saw a five-second timeout in
   `Pump_LiveSessionReceivesGuestClientInput`; it passed the targeted rerun and the
   subsequent full solution run. No timeout/test-disabling workaround was added.
