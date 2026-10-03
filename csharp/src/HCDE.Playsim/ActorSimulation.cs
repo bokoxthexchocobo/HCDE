@@ -139,6 +139,8 @@ public class Actor : Thinker
     public bool IceShatter { get; set; }
     /// <summary>Native <c>MF7_NEVERTARGET</c>. Wake-up will not chase this actor.</summary>
     public bool NeverTarget { get; set; }
+    /// <summary>Native MF9_NOAUTOOFFSKULLFLY: zero horizontal velocity does not automatically end a skull charge.</summary>
+    public bool NoAutoOffSkullFly { get; set; }
     /// <summary>Native <c>MF4_NOTARGETSWITCH</c>. Wake-up will not pick a new chase target while one is alive.</summary>
     public bool NoTargetSwitch { get; set; }
     /// <summary>Native <c>MF4_NOHATEPLAYERS</c>. <see cref="OkayToSwitchTarget"/> ignores player sources.</summary>
@@ -2598,6 +2600,7 @@ public sealed class AuthoritySimulation
             hash = Mix(hash, actor.Shattering ? 1u : 0u);
             hash = Mix(hash, actor.IceShatter ? 1u : 0u);
             hash = Mix(hash, actor.NeverTarget ? 1u : 0u);
+            if (actor.NoAutoOffSkullFly) hash = Mix(hash, 0x534B554Cu);
             hash = Mix(hash, actor.NoTarget ? 1u : 0u);
             hash = Mix(hash, actor.OnMobj ? 1u : 0u);
             hash = Mix(hash, actor.IsMonster ? 1u : 0u);

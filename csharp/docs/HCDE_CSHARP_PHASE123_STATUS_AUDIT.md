@@ -8286,11 +8286,35 @@ transition semantics and complete state scheduling remain unconverted. This is
 bounded source/regression coverage, not native engine acceptance. Full phases
 1–3 and representative native invasion sessions remain open.
 
+## Conversion and audit: no-auto-off skull-flight flag (2026-10-03)
+
+Converted MF9_NOAUTOOFFSKULLFLY from the flag registry in
+`src/scripting/thingdef_data.cpp` and zero-movement handling in
+`src/playsim/p_mobj.cpp`. Actor.NoAutoOffSkullFly defaults false. When true,
+zero horizontal velocity no longer automatically stops managed charging;
+vertical movement continues through the existing charge physics. Pain/death
+and collision cancellation retain their existing behavior.
+
+Six new cases cover stationary/upward/downward charges, pain and death
+cancellation, and checksum distinction/convergence after both simulations receive
+the flag. A conditional checksum marker covers the enabled flag while preserving
+existing checksums for false defaults, consistent with the optional-field pattern
+already used by the simulation. Full Release suite: 4,832 passed, zero
+failed/skipped; Playsim 3,759. Warnings-as-errors build: zero warnings/errors;
+whitespace check passes. Existing charge/invasion regressions pass and player
+idle baseline remains unchanged.
+
+This is a managed actor API and runtime conversion. Native mod flag parsing,
+class-default inheritance/restoration, full save/network serialization, carried
+movement and dormant-state scheduling remain incomplete. Source/regression
+self-audit does not establish native engine acceptance. Representative invasion
+sessions and complete phases 1–3 remain open.
+
 ## Validation
 
-- Release solution: **4,826 passed, zero failed/skipped**, 3,903 cases above baseline.
+- Release solution: **4,832 passed, zero failed/skipped**, 3,909 cases above baseline.
   Protocol 15; Gamedata 10; Transport 10; Master 1; RCON 6; MapLoader 500;
-  Playsim 3,753; Client 12; Net.Core 351; Pregame 97; Server 63; Scripting 8.
+  Playsim 3,759; Client 12; Net.Core 351; Pregame 97; Server 63; Scripting 8.
 - The lighting pass initially saw a five-second timeout in
   `Pump_LiveSessionReceivesGuestClientInput`; it passed the targeted rerun and the
   subsequent full solution run. No timeout/test-disabling workaround was added.

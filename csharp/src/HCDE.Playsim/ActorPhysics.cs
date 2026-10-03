@@ -354,7 +354,7 @@ public static class ActorPhysics
     private static void StepCharge(AuthoritySimulation sim, Actor actor)
     {
         var vx = actor.VelocityX.ToDouble(); var vy = actor.VelocityY.ToDouble(); var vz = actor.VelocityZ.ToDouble();
-        if (vx == 0 && vy == 0)
+        if (vx == 0 && vy == 0 && !actor.NoAutoOffSkullFly)
         {
             actor.Brain!.StopCharge(actor);
             return;

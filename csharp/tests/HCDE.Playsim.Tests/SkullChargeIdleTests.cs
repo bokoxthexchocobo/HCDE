@@ -38,6 +38,52 @@ public class SkullChargeIdleTests
         Assert.True(soul.Brain.Charging);
     }
 
+    [Theory]
+    [InlineData(0)]
+    [InlineData(20)]
+    [InlineData(-20)]
+    public void NoAutoOffFlagPreservesStationaryOrVerticalCharge(int vertical)
+    {
+        var sim = Room();
+        var soul = sim.Actors.Single(actor => actor.DoomEdNum == 3006);
+        soul.NoAutoOffSkullFly = true;
+        soul.Brain!.StartCharge(soul, sim.Players.Single());
+        soul.VelocityX = soul.VelocityY = default;
+        soul.VelocityZ = Fixed.FromInt(vertical);
+        var z = soul.Z.ToDouble();
+        sim.Tick();
+        Assert.True(soul.Brain.Charging);
+        Assert.Equal(z + vertical, soul.Z.ToDouble(), precision: 4);
+    }
+
+    [Theory]
+    [InlineData(true)]
+    [InlineData(false)]
+    public void NoAutoOffFlagDoesNotPreventPainOrDeathCancellation(bool dead)
+    {
+        var sim = Room();
+        var soul = sim.Actors.Single(actor => actor.DoomEdNum == 3006);
+        soul.NoAutoOffSkullFly = true;
+        soul.Brain!.StartCharge(soul, sim.Players.Single());
+        if (dead) soul.Health = 0;
+        else soul.States.Enter(soul, soul.PainState);
+        sim.Tick();
+        Assert.False(soul.Brain.Charging);
+        Assert.Equal(dead ? MonsterMode.Dead : MonsterMode.Pain, soul.Brain.Mode);
+    }
+
+    [Fact]
+    public void NoAutoOffFlagAffectsSimulationChecksum()
+    {
+        var left = Room(); var right = Room();
+        left.Actors.Single(actor => actor.DoomEdNum == 3006).NoAutoOffSkullFly = true;
+        left.Tick(); right.Tick();
+        Assert.NotEqual(left.Checksum, right.Checksum);
+        right.Actors.Single(actor => actor.DoomEdNum == 3006).NoAutoOffSkullFly = true;
+        left.Tick(); right.Tick();
+        Assert.Equal(left.Checksum, right.Checksum);
+    }
+
     private static AuthoritySimulation Room() => AuthoritySimulation.Start(new PlayLevel
     {
         Sectors = [new LevelSector { CeilingHeight = 512 }],
