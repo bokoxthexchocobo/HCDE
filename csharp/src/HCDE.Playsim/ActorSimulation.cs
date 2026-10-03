@@ -1818,7 +1818,9 @@ public sealed class AuthoritySimulation
         var id = _nextActorId;
         _nextActorId = checked(_nextActorId + 1);
         var defaults = _dehacked?.Actors.FirstOrDefault(actor => actor.DoomEdNum == doomEdNum && actor.Patched);
-        var catalogHealth = DoomActorCatalog.Find(doomEdNum)?.Health;
+        var definitionType = defaults?.OriginalDoomEdNum is > 0 ? defaults.OriginalDoomEdNum : doomEdNum;
+        var definition = DoomActorCatalog.Find(definitionType);
+        var catalogHealth = definition?.Health;
         var health = defaults?.Health ?? (doomEdNum == 3004 ? 30 : catalogHealth ?? 30);
         var bot = new BotPawn
         {
@@ -1831,13 +1833,13 @@ public sealed class AuthoritySimulation
             Health = health,
             ResurrectionHealth = health,
             GibHealth = health > 0 ? -health : -1,
-            RaiseDuration = ArchvileActions.RaiseDuration(doomEdNum),
+            RaiseDuration = ArchvileActions.RaiseDuration(definitionType),
             Level = Level,
-            Brain = doomEdNum == 3004
+            Brain = definitionType == 3004
                 ? new MonsterBrain(MonsterAttack.Hitscan)
-                : MonsterBrain.ForType(doomEdNum) ?? new MonsterBrain(MonsterAttack.Hitscan),
+                : MonsterBrain.ForType(definitionType) ?? new MonsterBrain(MonsterAttack.Hitscan),
             IsMonster = true,
-            Damage = DoomActorCatalog.Find(doomEdNum)?.Damage ?? 0,
+            Damage = definition?.Damage ?? 0,
         };
         if (defaults != null)
         {
@@ -1847,7 +1849,7 @@ public sealed class AuthoritySimulation
             bot.PainChance = defaults.PainChance;
         }
         if (defaults is { ReactionTimePatched: true }) bot.ReactionTime = defaults.ReactionTime;
-        bot.Mass = defaults is { MassPatched: true } ? defaults.Mass : DoomActorCatalog.MassOf(doomEdNum);
+        bot.Mass = defaults is { MassPatched: true } ? defaults.Mass : DoomActorCatalog.MassOf(definitionType);
         if (defaults is { MissileDamagePatched: true }) bot.Damage = defaults.MissileDamage;
         ActorSpawner.ApplyPrimaryFlags(bot, defaults, playerStart: false);
         bot.Ambush = defaults is { BitsPatched: true } && (defaults.Bits & 0x20) != 0;

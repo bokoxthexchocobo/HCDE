@@ -9577,11 +9577,31 @@ spawn collision/hooks and other dynamic factories remain incomplete. Invasion
 uses AddBot but native wave/timer/enemy synchronization acceptance is still
 unverified. Phases 1–3, persistence/network and native sessions remain open.
 
+## Conversion and audit: dynamic editor-number class remapping (2026-10-03)
+
+Closed AddBot's use of a remapped editor number as the class behavior key.
+DEHACKED ID # changes editor lookup, while class defaults remain attached to
+the original class (`src/gamedata/d_dehacked.cpp`). Dynamic spawning now uses
+the matching patch's OriginalDoomEdNum for brain, raise duration, catalog
+health/damage and mass, as managed map spawning already does. Requested
+DoomEdNum and ThingId are retained; explicit numeric overrides still win.
+
+Six regressions cover four remapped classes, map/dynamic behavior consistency,
+explicit numeric precedence and isolation of the original editor number from
+the moved patch. Full Release solution: 5,234 passed, zero failed/skipped;
+Playsim 4,120. Release warnings-as-errors build and whitespace check pass.
+Existing actor/brain hashes apply. Runtime paths that still dispatch directly
+on editor number (such as class-specific death/drop behavior), complete
+catalog flags, frames/actions and other factories remain incomplete. This
+closes the bounded AddBot class-default lookup gap, not full class identity
+parity. Phases 1–3, persistence/network/native sessions and invasion
+synchronization validation remain open.
+
 ## Validation
 
-- Release solution: **5,228 passed, zero failed/skipped**, 4,305 cases above baseline.
+- Release solution: **5,234 passed, zero failed/skipped**, 4,311 cases above baseline.
   Protocol 15; Gamedata 18; Transport 10; Master 1; RCON 6; MapLoader 533;
-  Playsim 4,114; Client 12; Net.Core 351; Pregame 97; Server 63; Scripting 8.
+  Playsim 4,120; Client 12; Net.Core 351; Pregame 97; Server 63; Scripting 8.
 - The lighting pass initially saw a five-second timeout in
   `Pump_LiveSessionReceivesGuestClientInput`; it passed the targeted rerun and the
   subsequent full solution run. No timeout/test-disabling workaround was added.
