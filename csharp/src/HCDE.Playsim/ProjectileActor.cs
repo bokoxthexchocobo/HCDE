@@ -11,7 +11,8 @@ public sealed class ProjectileActor : Actor
     public ProjectileKind Kind { get; }
     public int RemainingTics { get; private set; } = 175;
     public uint? TracerTargetId { get; private set; }
-    public double Speed => Kind switch
+    public double Speed => MovementSpeed.ToDouble();
+    private double DefaultSpeed => Kind switch
     {
         ProjectileKind.Rocket or ProjectileKind.CyberRocket or ProjectileKind.MancubusBall => 20,
         ProjectileKind.Plasma or ProjectileKind.Bfg or ProjectileKind.ArachnotronPlasma => 25,
@@ -32,6 +33,7 @@ public sealed class ProjectileActor : Actor
         ArgumentNullException.ThrowIfNull(owner);
         if (!Enum.IsDefined(kind)) throw new ArgumentOutOfRangeException(nameof(kind));
         Owner = owner; Kind = kind;
+        MovementSpeed = Fixed.FromDouble(DefaultSpeed);
         DoomEdNum = kind <= ProjectileKind.ImpBall ? 65530 + (int)kind : 65516 + (int)kind;
         // Managed-only class identities, not native spawn indices; keep every identity within ushort.
         Solid = Shootable = false; NoGravity = true; AllowDropOff = true;
@@ -66,7 +68,7 @@ public sealed class ProjectileActor : Actor
         var horizontalSpeed = Speed / Math.Sqrt(1 + dz * dz);
         VelocityX = Fixed.FromDouble(Math.Cos(radians) * horizontalSpeed);
         VelocityY = Fixed.FromDouble(Math.Sin(radians) * horizontalSpeed);
-        VelocityZ = Fixed.FromDouble(Math.Clamp(dz * horizontalSpeed, -Speed, Speed));
+        VelocityZ = Fixed.FromDouble(Math.Clamp(dz * horizontalSpeed, -Math.Abs(Speed), Math.Abs(Speed)));
     }
 
     internal void RotateYaw(double degrees)

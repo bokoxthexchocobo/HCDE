@@ -85,7 +85,9 @@ public class Actor : Thinker
     public int ResurrectionHealth { get; internal set; }
     public int RaiseDuration { get; internal set; }
     public int Mass { get; set; } = 100;
-    public double ChaseSpeed { get; set; } = 1;
+    /// <summary>Native actor Speed in ACS signed 16.16 units.</summary>
+    public Fixed MovementSpeed { get; set; } = Fixed.FromInt(4);
+    public double ChaseSpeed { get => MovementSpeed.ToDouble() / 4; set => MovementSpeed = Fixed.FromDouble(value * 4); }
     public bool Solid { get; set; } = true;
     public bool Shootable { get; set; } = true;
     public bool Invulnerable { get; set; }
@@ -500,6 +502,7 @@ public sealed class PlayerPawn : Actor
 {
     public PlayerPawn()
     {
+        MovementSpeed = Fixed.FromInt(1);
         CanPickupItems = true;
         SpawnCanPickupItems = true;
         AllowDropOff = true;
@@ -745,8 +748,8 @@ public sealed class PlayerPawn : Actor
         if (Level != null)
         {
             var (dx, dy) = Movement.Thrust(Angle, command.ForwardMove, command.SideMove);
-            VelocityX = Fixed.FromDouble(VelocityX.ToDouble() + dx);
-            VelocityY = Fixed.FromDouble(VelocityY.ToDouble() + dy);
+            VelocityX = Fixed.FromDouble(VelocityX.ToDouble() + dx * MovementSpeed.ToDouble());
+            VelocityY = Fixed.FromDouble(VelocityY.ToDouble() + dy * MovementSpeed.ToDouble());
         }
         // CheckJump runs before CheckCrouch. A jump while crouched only stands the player up.
         var crouched = CrouchFactor < 1;
@@ -2595,6 +2598,7 @@ public sealed class AuthoritySimulation
             hash = Mix(hash, (uint)actor.Friction.Raw);
             hash = Mix(hash, actor.NoTrigger ? 1u : 0u);
             hash = Mix(hash, unchecked((uint)actor.Score));
+            hash = Mix(hash, unchecked((uint)actor.MovementSpeed.Raw));
             hash = Mix(hash, actor.NoRadiusDamage ? 1u : 0u);
             hash = Mix(hash, actor.NoSectorDamage ? 1u : 0u);
             hash = Mix(hash, actor.ForceSectorDamage ? 1u : 0u);

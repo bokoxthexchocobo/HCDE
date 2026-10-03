@@ -7752,11 +7752,38 @@ puff-owner queries, complete native pointer lifetime handling and save/network
 replication remain open. The removed property setter is intentionally unavailable;
 native pointer-changing APIs must be converted separately.
 
+## ACS speed and movement integration (2026-10-03)
+
+Converted `APROP_Speed` (1) signed 16.16 set/get/check to actor MovementSpeed.
+Native `p_acs.cpp` assigns Speed directly. PlayerPawn `player.zs` defaults Speed
+to 1 and multiplies forward/side movement by Speed/256. The managed thrust path
+now applies the property. Existing monster ChaseSpeed is backed by MovementSpeed
+with the prior quarter-scale conversion retained; catalog assignments still use
+that existing conversion. Projectiles initialize MovementSpeed from their kind
+defaults and consume it when aiming or tracking. ACS changes the property without
+immediately replacing current velocity, matching the native setter's scope.
+Projectile pitch clamping uses absolute speed bounds to avoid reversed bounds
+when a script stores a negative value.
+
+Sixteen new cases cover signed/fractional/extreme property round trips and exact
+checks, zero/fractional/positive/negative player thrust, monster scale binding,
+projectile defaults and future aim versus current velocity, missing/destroyed
+targets and resting checksum inclusion. Existing player movement, AI and
+projectile regressions pass. The idle hash is now 3597579456 because speed enters
+actor state hashing; position/health/tic assertions remain unchanged. Full suite:
+4,678 passed, zero failed/skipped; Release build: zero warnings/errors.
+
+Scope: existing managed thrust/chase/projectile paths. Native monster chase timing
+and speed are not fully reproduced by the retained quarter-scale foundation.
+Player TweakSpeeds, inventory speed modifiers, air/water/flying thrust, complete
+signed homing behavior, generalized class defaults and save/network propagation
+remain open. This is a source review and regression self-audit.
+
 ## Validation
 
-- Release solution: **4,662 passed, zero failed/skipped**, 3,739 cases above baseline.
+- Release solution: **4,678 passed, zero failed/skipped**, 3,755 cases above baseline.
   Protocol 15; Gamedata 10; Transport 10; Master 1; RCON 6; MapLoader 500;
-  Playsim 3,589; Client 12; Net.Core 351; Pregame 97; Server 63; Scripting 8.
+  Playsim 3,605; Client 12; Net.Core 351; Pregame 97; Server 63; Scripting 8.
 - The lighting pass initially saw a five-second timeout in
   `Pump_LiveSessionReceivesGuestClientInput`; it passed the targeted rerun and the
   subsequent full solution run. No timeout/test-disabling workaround was added.

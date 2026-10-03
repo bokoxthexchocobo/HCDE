@@ -4,6 +4,7 @@ namespace HCDE.Playsim;
 internal static class AcsActorProperties
 {
     public const int Health = 0;
+    public const int Speed = 1;
     public const int Ambush = 10;
     public const int Invulnerable = 11;
     public const int JumpZ = 12;
@@ -52,7 +53,7 @@ internal static class AcsActorProperties
         if (actor is null || actor.Destroyed)
             return false;
         // Native CheckActorProperty rejects unknown properties, even when Get returns zero.
-        if (property is not (Health or Ambush or Invulnerable or JumpZ or Gravity or Friendly
+        if (property is not (Health or Speed or Ambush or Invulnerable or JumpZ or Gravity or Friendly
             or SpawnHealth or NoTarget or TargetTid or TracerTid or Mass or Height or Radius or ViewHeight or AttackZOffset
             or MaxStepHeight or MaxDropOffHeight or DamageFactor or DamageMultiplier or MeleeRange or Friction or NoTrigger or Score))
             return false;
@@ -76,6 +77,9 @@ internal static class AcsActorProperties
                 break;
             case Ambush:
                 actor.Ambush = value != 0;
+                break;
+            case Speed:
+                actor.MovementSpeed = new Fixed(value);
                 break;
             case Invulnerable:
                 actor.Invulnerable = value != 0;
@@ -138,6 +142,7 @@ internal static class AcsActorProperties
     private static int Read(Actor actor, int property) => property switch
     {
         Health => actor.Health,
+        Speed => actor.MovementSpeed.Raw,
         Ambush => actor.Ambush ? 1 : 0,
         Invulnerable => actor.Invulnerable ? 1 : 0,
         JumpZ => actor is PlayerPawn jumpPlayer ? jumpPlayer.JumpZ.Raw : 0,
