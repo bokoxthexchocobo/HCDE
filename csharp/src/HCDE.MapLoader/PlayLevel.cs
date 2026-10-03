@@ -153,6 +153,7 @@ public sealed class LevelThing
     public int Type { get; init; }
     public short Options { get; init; }
     public bool Ambush { get; init; }
+    public bool Dormant { get; init; }
     public int Id { get; init; }
     public int Special { get; init; }
     public int[] Args { get; init; } = new int[5];
@@ -485,6 +486,7 @@ public static class LevelBuilder
             Type = thing.Type,
             Id = thing.Id,
             Ambush = thing.Ambush,
+            Dormant = thing.Dormant && (planeTransforms || map.Namespace.Equals("Hexen", StringComparison.OrdinalIgnoreCase)),
             Special = thing.Special,
             Args = new[] { thing.Arg0, thing.Arg1, thing.Arg2, thing.Arg3, thing.Arg4 },
             SkillMask = (thing.Skill1 ? 1 : 0) | (thing.Skill2 ? 2 : 0) | (thing.Skill3 ? 4 : 0) | (thing.Skill4 ? 8 : 0) | (thing.Skill5 ? 16 : 0),

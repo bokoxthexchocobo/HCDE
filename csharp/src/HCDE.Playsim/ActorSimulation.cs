@@ -1146,6 +1146,11 @@ public static class ActorSpawner
             actor.IsMonster = !playerStart && (defaults is { BitsPatched: true }
                 ? (defaults.Bits & 0x00400000) != 0
                 : actor.Brain != null);
+            if (thing.Dormant && actor.IsMonster && actor.Health > 0 && !actor.Dormant)
+            {
+                actor.Dormant = true;
+                actor.States.ForceRemainingTics(-1);
+            }
             actor.RememberPosition();
             thinkers.Add(actor, playerStart ? ThinkerStat.Player : ThinkerStat.Default);
             actors.Add(actor);

@@ -9438,11 +9438,29 @@ Projectile gravity, complete respawn/archive/network handling, class/mod
 loading and native session validation remain incomplete. Phases 1–3 and
 invasion synchronization validation remain open.
 
+## Conversion and audit: UDMF dormant spawn flag (2026-10-03)
+
+Converted UDMF dormant import from `src/maploader/udmf.cpp` with native
+Hx/Zd/Zdt/Va namespace gating. Managed live monsters with this map flag now
+start dormant and hold fallback state tics at -1, consistent with map spawn
+`HandleSpawnFlags` calling deactivation in `src/playsim/p_mobj.cpp`. Existing
+Thing_Activate releases the fallback with one tic. Players are unaffected.
+
+Nine regressions cover six namespaces, absent default, imported monster
+state/AI hold and activation release, and player exclusion. Full Release
+solution: 5,183 passed, zero failed/skipped; Playsim 4,077; MapLoader 525.
+Release warnings-as-errors build and whitespace checks pass. Existing Dormant
+checksum handling applies. This covers base monster spawn behavior only;
+custom Inactive state loading/callbacks, class-flag BeginPlay normalization,
+Hexen binary dormant flags, respawn rules and full persistence/network state
+remain incomplete. Native sessions, phases 1–3 and invasion validation remain
+open.
+
 ## Validation
 
-- Release solution: **5,174 passed, zero failed/skipped**, 4,251 cases above baseline.
-  Protocol 15; Gamedata 18; Transport 10; Master 1; RCON 6; MapLoader 518;
-  Playsim 4,075; Client 12; Net.Core 351; Pregame 97; Server 63; Scripting 8.
+- Release solution: **5,183 passed, zero failed/skipped**, 4,260 cases above baseline.
+  Protocol 15; Gamedata 18; Transport 10; Master 1; RCON 6; MapLoader 525;
+  Playsim 4,077; Client 12; Net.Core 351; Pregame 97; Server 63; Scripting 8.
 - The lighting pass initially saw a five-second timeout in
   `Pump_LiveSessionReceivesGuestClientInput`; it passed the targeted rerun and the
   subsequent full solution run. No timeout/test-disabling workaround was added.

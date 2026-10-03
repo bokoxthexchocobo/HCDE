@@ -120,6 +120,7 @@ public sealed class UdmfThing
     public int Special { get; set; }
     public bool Skill1 { get; set; }
     public bool Ambush { get; set; }
+    public bool Dormant { get; set; }
     public bool Skill2 { get; set; }
     public bool Skill3 { get; set; }
     public bool Skill4 { get; set; }
@@ -435,6 +436,7 @@ public static class UdmfTextMapParser
             Special = Int(fields, "special"),
             Skill1 = Bool(fields, "skill1"),
             Ambush = Bool(fields, "ambush"),
+            Dormant = Bool(fields, "dormant"),
             Skill2 = Bool(fields, "skill2"),
             Skill3 = Bool(fields, "skill3"),
             Skill4 = Bool(fields, "skill4"),
