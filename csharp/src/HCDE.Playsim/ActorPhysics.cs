@@ -548,7 +548,12 @@ public static class ActorPhysics
                 DistanceSquared(line.X2, line.Y2, ox, oy, x, y)));
             // Permit actors already touching a wall to move parallel or away from it.
             if ((swept < radius * radius - 1e-8 && (before >= radius * radius || after < before - 1e-8))
-                || LineSlide.Crosses(ox, oy, x, y, line)) { wall = line; return false; }
+                || LineSlide.Crosses(ox, oy, x, y, line))
+            {
+                wall = line;
+                if (actor.Blasted) ActorDamage.Apply(actor, actor.Mass >> 5, damageType: "Melee");
+                return false;
+            }
         }
         var sector = SectorAt(sim.Level, x, y);
         // P_TryMove refuses floorz - dropoffz > MaxDropOffHeight unless MF_DROPOFF, MF_FLOAT, or MF_MISSILE.

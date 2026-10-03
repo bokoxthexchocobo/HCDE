@@ -10413,11 +10413,27 @@ formats unchanged. Bounding-corner traces, ice bounce, wall-running compatibilit
 push callbacks and blast collision damage remain open, along with full gameplay
 and native invasion acceptance. Phases 1–3 remain incomplete.
 
+## Blasted wall-impact damage conversion audit (2026-10-03)
+
+A blocked wall movement attempt now deals Mass >> 5 Melee damage to a Blasted
+actor through the existing damage pipeline. Native wall checks and the failed
+P_TryMove path in src/playsim/p_map.cpp use this scaling/type with no source or
+inflictor. Managed damage factors and invulnerability therefore remain active.
+Ordinary blocked moves and successful blasted moves do not receive this damage.
+
+Eleven regressions cover signed mass/boundaries, invulnerability, incoming damage
+factors, successful movement and non-blasted blocking. Full Release solution:
+5,579 passed, zero failed/skipped; Playsim 4,452. Warnings-as-errors build and diff
+checks pass. Archive/checksum formats unchanged. This is one response per blocked
+managed move attempt; native multi-stage checks/retry counts, push specials,
+actor-to-actor momentum/damage, terrain and full collision timing are unfinished.
+Native invasion acceptance and gameplay phases 1–3 remain open.
+
 ## Validation
 
-- Release solution: **5,568 passed, zero failed/skipped**, 4,645 cases above baseline.
+- Release solution: **5,579 passed, zero failed/skipped**, 4,656 cases above baseline.
   Protocol 15; Gamedata 29; Transport 10; Master 1; RCON 6; MapLoader 533;
-  Playsim 4,441; Client 12; Net.Core 351; Pregame 97; Server 65; Scripting 8.
+  Playsim 4,452; Client 12; Net.Core 351; Pregame 97; Server 65; Scripting 8.
 - The lighting pass initially saw a five-second timeout in
   `Pump_LiveSessionReceivesGuestClientInput`; it passed the targeted rerun and the
   subsequent full solution run. No timeout/test-disabling workaround was added.
