@@ -354,6 +354,11 @@ public static class ActorPhysics
     private static void StepCharge(AuthoritySimulation sim, Actor actor)
     {
         var vx = actor.VelocityX.ToDouble(); var vy = actor.VelocityY.ToDouble(); var vz = actor.VelocityZ.ToDouble();
+        if (vx == 0 && vy == 0)
+        {
+            actor.Brain!.StopCharge(actor);
+            return;
+        }
         var steps = Math.Max(1, (int)Math.Ceiling(Math.Max(Math.Max(Math.Abs(vx), Math.Abs(vy)), Math.Abs(vz)) / 2));
         for (var i = 0; i < steps; i++)
         {

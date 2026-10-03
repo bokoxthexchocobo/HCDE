@@ -8262,11 +8262,35 @@ friendship/team flags, mod dispatch, skull-flight scheduling and save/network
 parity remain incomplete. Representative native invasion sessions and full
 phase 1–3 acceptance remain open; this is source/regression self-audit.
 
+## Conversion and audit: stationary skull-flight termination (2026-10-03)
+
+Compared zero-movement skull-flight handling in `P_XYMovement` in
+`src/playsim/p_mobj.cpp`. Without the native NOAUTOOFFSKULLFLY exception,
+zero horizontal movement clears skull flight and all velocity, then returns
+to chase/idle state. Managed StepCharge now stops charging when both horizontal
+velocity components are exactly zero and uses the existing StopCharge helper to
+clear XYZ velocity and resume managed chase mode.
+
+Four new cases cover zero, upward and downward vertical velocity with no
+horizontal movement, plus the smallest positive fixed-point horizontal velocity
+remaining charged. Tests verify unchanged height, no target damage and charge
+termination. An initial edit to the existing vertically aimed collision test was
+reverted after audit: its charge has horizontal thrust despite overlapping target
+XY positions, so its original damage expectation remains valid and passing.
+Full Release solution: 4,826 passed, zero failed/skipped; Playsim 3,753.
+Warnings-as-errors build: zero warnings/errors; whitespace check passes. Existing
+charge, spawn and invasion cases pass; player idle checksum unchanged.
+
+The native flag exception, carried-sector movement contribution, dormant/SeeState
+transition semantics and complete state scheduling remain unconverted. This is
+bounded source/regression coverage, not native engine acceptance. Full phases
+1–3 and representative native invasion sessions remain open.
+
 ## Validation
 
-- Release solution: **4,822 passed, zero failed/skipped**, 3,899 cases above baseline.
+- Release solution: **4,826 passed, zero failed/skipped**, 3,903 cases above baseline.
   Protocol 15; Gamedata 10; Transport 10; Master 1; RCON 6; MapLoader 500;
-  Playsim 3,749; Client 12; Net.Core 351; Pregame 97; Server 63; Scripting 8.
+  Playsim 3,753; Client 12; Net.Core 351; Pregame 97; Server 63; Scripting 8.
 - The lighting pass initially saw a five-second timeout in
   `Pump_LiveSessionReceivesGuestClientInput`; it passed the targeted rerun and the
   subsequent full solution run. No timeout/test-disabling workaround was added.
