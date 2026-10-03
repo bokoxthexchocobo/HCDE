@@ -9636,11 +9636,35 @@ archive/network handling remain incomplete. This corrects editor remapping
 within the existing species subset, not full species parity. Phases 1–3,
 native sessions and invasion synchronization validation remain open.
 
+## Vanilla Doom monster species ancestry checkpoint (2026-10-03)
+
+Native `AActor::GetSpecies` in `src/playsim/p_mobj.cpp` climbs parents whose
+class defaults have ISMONSTER. `demon.zs` declares Spectre : Demon;
+`bruiser.zs` declares HellKnight : BaronOfHell, with no Species overrides.
+The managed default species now maps resolved Spectre class 58 to Demon 3002
+and Hell Knight 69 to Baron 3003. This affects existing species damage and
+target selection checks while preserving separate class identity for drops
+and other class-specific behavior. Target DoHarmSpecies still bypasses the
+existing default-group projectile immunity; unrelated families remain distinct.
+
+Ten new regression cases cover damage immunity in both directions, the harm
+species override, different-family damage, and map/dynamic resolved remapping.
+Full Release solution: 5,257 passed, zero failed/skipped; Playsim 4,143.
+Release build with warnings as errors and whitespace checks passed. No actor
+fields or checksum format changed; existing trace tests passed.
+
+Scope remains the two built-in Doom monster families. Explicit mod Species,
+custom inheritance, projectile groups, and native-engine session comparisons
+remain open. The DeHackEd text parser's vanilla actor table currently stops
+at Imp; remapped-family tests supply resolved catalog entries directly and do
+not establish text parser support for these later classes. Phases 1–3 and
+invasion round/timer/enemy synchronization acceptance remain incomplete.
+
 ## Validation
 
-- Release solution: **5,247 passed, zero failed/skipped**, 4,324 cases above baseline.
+- Release solution: **5,257 passed, zero failed/skipped**, 4,334 cases above baseline.
   Protocol 15; Gamedata 18; Transport 10; Master 1; RCON 6; MapLoader 533;
-  Playsim 4,133; Client 12; Net.Core 351; Pregame 97; Server 63; Scripting 8.
+  Playsim 4,143; Client 12; Net.Core 351; Pregame 97; Server 63; Scripting 8.
 - The lighting pass initially saw a five-second timeout in
   `Pump_LiveSessionReceivesGuestClientInput`; it passed the targeted rerun and the
   subsequent full solution run. No timeout/test-disabling workaround was added.

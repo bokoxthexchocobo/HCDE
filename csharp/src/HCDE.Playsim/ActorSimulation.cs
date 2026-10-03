@@ -182,9 +182,11 @@ public class Actor : Thinker
         }
         return true;
     }
-    /// <summary>Native species subset for default <c>P_ProjectileImmune</c>. Uses resolved class identity.</summary>
+    /// <summary>Native species subset for default <c>P_ProjectileImmune</c>. Uses resolved class identity and vanilla monster ancestry.</summary>
     public bool IsSameSpecies(Actor other) =>
-        ClassDoomEdNum == other.ClassDoomEdNum && this is not PlayerPawn && other is not PlayerPawn;
+        DefaultSpecies == other.DefaultSpecies && this is not PlayerPawn && other is not PlayerPawn;
+    // GetSpecies climbs monster parents: Spectre : Demon and HellKnight : BaronOfHell.
+    private int DefaultSpecies => ClassDoomEdNum switch { 58 => 3002, 69 => 3003, _ => ClassDoomEdNum };
     /// <summary>Native <c>P_ProjectileImmune</c> default-group subset. Projectile groups are absent.</summary>
     public bool ProjectileImmune(Actor source) =>
         IsSameSpecies(source) && !DoHarmSpecies;
