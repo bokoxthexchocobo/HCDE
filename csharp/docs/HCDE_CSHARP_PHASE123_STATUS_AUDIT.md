@@ -9496,11 +9496,32 @@ subclass BeginPlay/Deactivate, mod loading, dynamic-spawn initialization,
 respawn/persistence/network parity or native session acceptance. Phases 1–3
 and invasion synchronization validation remain incomplete.
 
+## Conversion and audit: dynamic extended class defaults (2026-10-03)
+
+Closed AddBot's bypass of previously converted DEHACKED extended class flags
+and gravity. AuthoritySimulation retains the startup patch catalog; map spawn
+and dynamic bot spawn share extended-default application. Matching patched
+classes provide NOTELEPORT, CANSLIDE, INVULNERABLE, DORMANT and LOGRAV side
+effects. Dynamic dormancy then uses the converted native base BeginPlay rule
+from `src/playsim/p_mobj.cpp`. This follows native class-default inheritance
+for the bounded fields already traced to `src/gamedata/d_dehacked.cpp`.
+
+Six regressions cover each flag, dormant frame hold/activation release,
+invulnerability damage rejection and isolation from an unpatched class.
+Full Release solution: 5,203 passed, zero failed/skipped; Playsim 4,089.
+Release warnings-as-errors build and whitespace check pass. Existing field
+checksums apply. AddBot's remaining first-set flags, class health/dimensions/
+actions/other defaults and other dynamic projectile/pickup/soul factories
+still bypass full class initialization. Runtime mutation of the retained patch
+catalog is not supported or validated. Invasion uses AddBot, but native wave/
+timer/enemy synchronization acceptance remains unverified. Phases 1–3,
+archive/network parity and native session validation remain incomplete.
+
 ## Validation
 
-- Release solution: **5,197 passed, zero failed/skipped**, 4,274 cases above baseline.
+- Release solution: **5,203 passed, zero failed/skipped**, 4,280 cases above baseline.
   Protocol 15; Gamedata 18; Transport 10; Master 1; RCON 6; MapLoader 533;
-  Playsim 4,083; Client 12; Net.Core 351; Pregame 97; Server 63; Scripting 8.
+  Playsim 4,089; Client 12; Net.Core 351; Pregame 97; Server 63; Scripting 8.
 - The lighting pass initially saw a five-second timeout in
   `Pump_LiveSessionReceivesGuestClientInput`; it passed the targeted rerun and the
   subsequent full solution run. No timeout/test-disabling workaround was added.

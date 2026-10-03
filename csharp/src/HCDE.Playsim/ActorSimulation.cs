@@ -1127,14 +1127,7 @@ public static class ActorSpawner
             if (actor.ResurrectionHealth > 0) actor.GibHealth = -actor.ResurrectionHealth;
             actor.Mass = defaults is { MassPatched: true } ? defaults.Mass : DoomActorCatalog.MassOf(definitionType);
             actor.RaiseDuration = ArchvileActions.RaiseDuration(definitionType);
-            if (defaults is { Bits2Patched: true })
-            {
-                actor.NoTeleport = (defaults.Bits2 & 0x80) != 0;
-                actor.CanSlide = (defaults.Bits2 & 0x400) != 0;
-                actor.Invulnerable = (defaults.Bits2 & 0x08000000) != 0;
-                actor.Dormant = (defaults.Bits2 & 0x10000000) != 0;
-            }
-            if (defaults is { GravityPatched: true }) actor.Gravity = Fixed.FromDouble(defaults.Gravity);
+            ApplyExtendedDefaults(actor, defaults);
             if (thing.Gravity < 0) actor.Gravity = Fixed.FromDouble(-thing.Gravity);
             else if (thing.Gravity > 0) actor.Gravity = Fixed.FromDouble(actor.Gravity.ToDouble() * thing.Gravity);
             else { actor.Gravity = default; actor.NoGravity = true; }
@@ -1153,6 +1146,18 @@ public static class ActorSpawner
         }
 
         return actors;
+    }
+
+    internal static void ApplyExtendedDefaults(Actor actor, DehackedActor? defaults)
+    {
+        if (defaults is { Bits2Patched: true })
+        {
+            actor.NoTeleport = (defaults.Bits2 & 0x80) != 0;
+            actor.CanSlide = (defaults.Bits2 & 0x400) != 0;
+            actor.Invulnerable = (defaults.Bits2 & 0x08000000) != 0;
+            actor.Dormant = (defaults.Bits2 & 0x10000000) != 0;
+        }
+        if (defaults is { GravityPatched: true }) actor.Gravity = Fixed.FromDouble(defaults.Gravity);
     }
 
     private static Fixed RadiusOf(DehackedActor? defaults, bool player)
@@ -1175,6 +1180,7 @@ public sealed class AuthoritySimulation
     public uint SwitchTargetRandomState { get; private set; }
     /// <summary>Rolls for a deathmatch respawn. Not the native <c>DMSpawn</c> table, and not in the save pose.</summary>
     public uint DmSpawnRandomState { get; set; }
+    private readonly DehackedPatchResult? _dehacked;
     private uint _uniqueTidRandomState;
     private uint _strobeRandomState;
     private uint _flickerRandomState;
@@ -1187,8 +1193,9 @@ public sealed class AuthoritySimulation
         ThinkerCollection thinkers,
         List<Actor> actors,
         int rngSeed,
-        CompatSurface compat, bool damageExitAllowed, SpawnOptions spawnOptions)
+        CompatSurface compat, bool damageExitAllowed, SpawnOptions spawnOptions, DehackedPatchResult? dehacked)
     {
+        _dehacked = dehacked;
         Level = level;
         Thinkers = thinkers;
         _actors = actors;
@@ -1711,7 +1718,7 @@ public sealed class AuthoritySimulation
         var thinkers = new ThinkerCollection();
         var actors = ActorSpawner.Spawn(level, thinkers, dehacked, spawnOptions).ToList();
         return new AuthoritySimulation(level, thinkers, actors, rngSeed, compat,
-            !noExit || spawnOptions.Mode != SpawnGameMode.Deathmatch, spawnOptions);
+            !noExit || spawnOptions.Mode != SpawnGameMode.Deathmatch, spawnOptions, dehacked);
     }
 
     /// <summary>
@@ -1826,6 +1833,9 @@ public sealed class AuthoritySimulation
             IsMonster = true,
             Damage = DoomActorCatalog.Find(doomEdNum)?.Damage ?? 0,
         };
+        var defaults = _dehacked?.Actors.FirstOrDefault(actor => actor.DoomEdNum == doomEdNum && actor.Patched);
+        ActorSpawner.ApplyExtendedDefaults(bot, defaults);
+        ThingActivation.InitializeSpawn(bot, false);
         bot.RememberPosition();
         bot.Simulation = this;
         ActorPhysics.PlaceOnFloor(this, bot);
