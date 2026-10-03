@@ -10166,11 +10166,30 @@ The archive still matches existing actors by id and cannot recreate removed
 projectiles or restore their full lifetime, owner/tracer, or class configuration.
 Full savegames and native invasion acceptance remain open; phases 1–3 are incomplete.
 
+## Line_Horizon projectile removal conversion audit (2026-10-03)
+
+The projectile impact path now removes ordinary missiles on special-9 horizon
+walls before geometry callbacks, radius damage, or BFG spray. Previously the
+geometry helper skipped horizon damage but explosion effects still ran. Native
+P_ExplodeMissile and missile movement in src/playsim/p_mobj.cpp remove missiles
+on Line_Horizon when MF3_SKYEXPLODE is absent.
+
+Nine regressions compare rocket, BFG and plasma horizon/ordinary wall impacts,
+verify actor collisions before the wall still damage, and compare a BFG spray
+victim against an ordinary-wall control. Horizon hits preserve target health,
+wall health and combat randomness.
+
+Full Release solution: 5,444 passed, zero failed/skipped; Playsim 4,317.
+Warnings-as-errors build and diff checks pass. Archive and checksum formats are
+unchanged. SKYEXPLODE, sky-wall plane logic, custom sky definitions, explosion
+state timing, projectile recreation/lifetime restoration, and native invasion
+acceptance remain open. Gameplay phases 1–3 remain incomplete.
+
 ## Validation
 
-- Release solution: **5,435 passed, zero failed/skipped**, 4,512 cases above baseline.
+- Release solution: **5,444 passed, zero failed/skipped**, 4,521 cases above baseline.
   Protocol 15; Gamedata 29; Transport 10; Master 1; RCON 6; MapLoader 533;
-  Playsim 4,308; Client 12; Net.Core 351; Pregame 97; Server 65; Scripting 8.
+  Playsim 4,317; Client 12; Net.Core 351; Pregame 97; Server 65; Scripting 8.
 - The lighting pass initially saw a five-second timeout in
   `Pump_LiveSessionReceivesGuestClientInput`; it passed the targeted rerun and the
   subsequent full solution run. No timeout/test-disabling workaround was added.

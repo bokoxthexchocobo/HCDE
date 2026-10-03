@@ -223,6 +223,8 @@ public sealed class ProjectileActor : Actor
     private void Impact(AuthoritySimulation sim, Actor? victim, LevelLine? wall, int planeSector, int planePart)
     {
         Destroy(); // Commit removal before damage callbacks can spawn or destroy actors.
+        // P_ExplodeMissile removes ordinary missiles on Line_Horizon without death actions.
+        if (wall?.Special == 9) return;
         if ((uint)planeSector < (uint)sim.Level.Sectors.Count && planePart is 0 or 1)
         {
             var sector = sim.Level.Sectors[planeSector];
