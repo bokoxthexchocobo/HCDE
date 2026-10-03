@@ -139,7 +139,7 @@ public sealed class ProjectileActor : Actor
                 var floor = sim.FloorOf(sector); var ceiling = sim.CeilingOf(sector) - Height.ToDouble();
                 var plane = double.PositiveInfinity;
                 var part = -1;
-                if (!NoExplodeFloor && (z + dz < floor || dz < 0 && z + dz == floor))
+                if (!NoExplodeFloor && z + dz <= floor)
                 { plane = dz < 0 ? Math.Clamp((floor - z) / dz, 0, 1) : 0; part = 0; }
                 if (z + dz > ceiling)
                 {

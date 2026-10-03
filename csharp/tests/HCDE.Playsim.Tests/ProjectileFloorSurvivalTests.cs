@@ -47,7 +47,7 @@ public class ProjectileFloorSurvivalTests
     {
         var sim = Room(); var missile = Shoot(sim); missile.NoExplodeFloor = true;
         missile.VelocityZ = Fixed.FromInt(-10); sim.Tick(); Assert.False(missile.Destroyed);
-        missile.NoExplodeFloor = false; missile.VelocityZ = Fixed.FromInt(-1);
+        missile.NoExplodeFloor = false;
         sim.Tick(); Assert.True(missile.Destroyed); Assert.True(sim.Level.Sectors[0].HealthFloor < 1000);
     }
 

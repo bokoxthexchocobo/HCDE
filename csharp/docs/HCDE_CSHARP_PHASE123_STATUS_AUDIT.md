@@ -10229,11 +10229,30 @@ Warnings-as-errors build and diff checks pass. Checksum format is unchanged.
 Class properties, membership recreation, native missile state timing, full
 savegames and native invasion acceptance remain open. Phases 1–3 are incomplete.
 
+## Stationary projectile floor-contact conversion audit (2026-10-03)
+
+Ordinary projectile floor contact now uses post-movement height <= floor even
+when vertical velocity is zero. Native P_ZMovement in src/playsim/p_mobj.cpp uses
+this condition. Previously a stopped floor missile could remain alive after
+NOEXPLODEFLOOR was cleared, including after restoring a cleared flag. Rising
+missiles whose post-movement height is above the floor continue normally.
+
+Eleven new regression cases cover stationary/rising/falling heights, the floor
+survival flag, memory/serialized cleared-flag restoration and stationary sky
+removal. The existing runtime-clearing regression now verifies zero velocity
+without adding an artificial downward push.
+
+Full Release solution: 5,478 passed, zero failed/skipped; Playsim 4,351.
+Warnings-as-errors build and diff checks pass. Archive and checksum formats are
+unchanged. The swept flat-sector collision model remains a subset; native state
+timing, bounce/terrain effects, full savegames and invasion acceptance remain
+open. Gameplay phases 1–3 remain incomplete.
+
 ## Validation
 
-- Release solution: **5,467 passed, zero failed/skipped**, 4,544 cases above baseline.
+- Release solution: **5,478 passed, zero failed/skipped**, 4,555 cases above baseline.
   Protocol 15; Gamedata 29; Transport 10; Master 1; RCON 6; MapLoader 533;
-  Playsim 4,340; Client 12; Net.Core 351; Pregame 97; Server 65; Scripting 8.
+  Playsim 4,351; Client 12; Net.Core 351; Pregame 97; Server 65; Scripting 8.
 - The lighting pass initially saw a five-second timeout in
   `Pump_LiveSessionReceivesGuestClientInput`; it passed the targeted rerun and the
   subsequent full solution run. No timeout/test-disabling workaround was added.
