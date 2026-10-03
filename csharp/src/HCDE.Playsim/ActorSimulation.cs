@@ -165,6 +165,8 @@ public class Actor : Thinker
     public bool DontBlast { get; set; }
     /// <summary>Native MF2_THRUACTORS: skip supported actor contact checks on either participant.</summary>
     public bool ThruActors { get; set; }
+    /// <summary>Native MF6_MTHRUSPECIES: missiles skip direct contact with their owner's species.</summary>
+    public bool MThruSpecies { get; set; }
     /// <summary>Native <c>MF4_NOTARGETSWITCH</c>. Wake-up will not pick a new chase target while one is alive.</summary>
     public bool NoTargetSwitch { get; set; }
     /// <summary>Native <c>MF4_NOHATEPLAYERS</c>. <see cref="OkayToSwitchTarget"/> ignores player sources.</summary>
@@ -203,6 +205,10 @@ public class Actor : Thinker
         DefaultSpecies == other.DefaultSpecies && this is not PlayerPawn && other is not PlayerPawn;
     // GetSpecies climbs monster parents: Spectre : Demon and HellKnight : BaronOfHell.
     private int DefaultSpecies => ClassDoomEdNum switch { 58 => 3002, 69 => 3003, _ => ClassDoomEdNum };
+    // All supported Doom player starts share DoomPlayer's collision species.
+    // Damage species immunity deliberately excludes players; contact filtering does not.
+    internal bool SharesContactSpecies(Actor other) => this is PlayerPawn
+        ? other is PlayerPawn : other is not PlayerPawn && DefaultSpecies == other.DefaultSpecies;
     /// <summary>Native <c>P_ProjectileImmune</c> default-group subset. Projectile groups are absent.</summary>
     public bool ProjectileImmune(Actor source) =>
         IsSameSpecies(source) && !DoHarmSpecies;
@@ -2825,6 +2831,7 @@ public sealed class AuthoritySimulation
             if (actor.Boss) hash = Mix(hash, 0x424F5353u);
             if (actor.DontBlast) hash = Mix(hash, 0x44424C53u);
             if (actor.ThruActors) hash = Mix(hash, 0x54485255u);
+            if (actor.MThruSpecies) hash = Mix(hash, 0x4D545350u);
             if (actor.SpawnCeiling) hash = Mix(hash, 0x4345494Cu);
             if (actor.NoBlockMonsters) hash = Mix(hash, 0x4E424D4Fu);
             if (actor.NoBlockmap) hash = Mix(hash, 0x4E424D50u);

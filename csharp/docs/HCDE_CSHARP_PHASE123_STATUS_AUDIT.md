@@ -10544,11 +10544,36 @@ Hitscan/puff policy, telefrag execution, full actor recreation, native runtime
 savegame acceptance, THRUSPECIES/THRUBITS and custom class defaults remain
 incomplete. Phases 1–3 and invasion synchronization acceptance remain open.
 
+## Conversion and audit: missile shooter-species passage (2026-10-03)
+
+Converted supported MF6_MTHRUSPECIES direct missile contact against
+`PIT_CheckThing` in `src/playsim/p_map.cpp` and flag registration in
+`src/scripting/thingdef_data.cpp`. A flagged missile skips actors matching
+its owner's species; the target's flag does not grant passage. Contact
+species follows supported Doom identities and Demon/Spectre and Baron/Hell
+Knight ancestry, audited against `AActor::GetSpecies` in
+`src/playsim/p_mobj.cpp`. Supported Doom player starts share contact species;
+existing player damage-immunity exclusions remain separate.
+ACS supports case-insensitive set/query and enabled flags affect checksum.
+
+Twelve regressions cover identical/different monster species, both inherited
+species directions, target-only flags, disabled-flag immune impacts, owner
+rather than missile identity, player contact identity, ACS and floor impact.
+A full non-incremental Release rebuild confirms 5,666 tests pass, zero
+failed/skipped (Playsim 4,539), with zero warnings/errors. Whitespace checks
+pass. Rebuild was required after an incremental run retained the prior test
+assembly count following a source edit.
+
+MTHRUSPECIES pose persistence, custom Species overrides/class ancestry,
+hitscan/puff rules, THRUSPECIES/THRUBITS and native geometry/runtime acceptance
+remain incomplete. Radius damage remains separate. Phases 1–3 and invasion
+synchronization acceptance remain open.
+
 ## Validation
 
-- Release solution: **5,654 passed, zero failed/skipped**, 4,731 cases above baseline.
+- Release solution: **5,666 passed, zero failed/skipped**, 4,743 cases above baseline.
   Protocol 15; Gamedata 29; Transport 10; Master 1; RCON 6; MapLoader 533;
-  Playsim 4,527; Client 12; Net.Core 351; Pregame 97; Server 65; Scripting 8.
+  Playsim 4,539; Client 12; Net.Core 351; Pregame 97; Server 65; Scripting 8.
 - The lighting pass initially saw a five-second timeout in
   `Pump_LiveSessionReceivesGuestClientInput`; it passed the targeted rerun and the
   subsequent full solution run. No timeout/test-disabling workaround was added.

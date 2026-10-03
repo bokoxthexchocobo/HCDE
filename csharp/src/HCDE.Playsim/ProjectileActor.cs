@@ -164,6 +164,7 @@ public sealed class ProjectileActor : Actor
             foreach (var actor in sim.Actors)
             {
                 if (ThruActors || actor.ThruActors || ReferenceEquals(actor, Owner) || !actor.IsBlockmapActor || !actor.CanTakeDamage) continue;
+                if (MThruSpecies && Owner.SharesContactSpecies(actor)) continue;
                 var hit = CylinderFraction(x, y, z, dx, dy, dz, actor);
                 if (hit < fraction || hit == fraction && victim != null && actor.Id < victim.Id)
                 { fraction = hit; victim = actor; wall = null; planeSector = planePart = -1; }
