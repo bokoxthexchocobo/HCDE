@@ -8337,11 +8337,35 @@ bleed, dormant/OnlySlamSolid/RetargetAfterSlam flags and full native state-actio
 semantics remain incomplete. Source/regression self-audit does not replace native
 invasion sessions or complete phase 1–3 acceptance, which remain open.
 
+## Conversion and audit: explicit DEHACKED missile damage at map spawn (2026-10-03)
+
+Compared Missile damage handling in `src/gamedata/d_dehacked.cpp`, which calls
+SetDamage with the parsed integer. The managed parser already stored that value,
+but map spawning ignored it. Added MissileDamagePatched metadata to distinguish
+an explicit assignment (including zero/negative values) from an unrelated patch.
+Map spawning applies explicit values after catalog damage initialization. Chained
+patch copies retain the metadata through the existing actor-copy mechanism.
+
+Five cases cover positive/zero/negative assignments, unrelated patches and
+chaining that preserves a damage assignment before explicitly clearing it to
+zero. Tests verify earlier patch objects remain unchanged. Full Release solution:
+4,842 passed, zero failed/skipped; Playsim 3,769. Warnings-as-errors build: zero
+warnings/errors; whitespace check passes. Existing gameplay, patch and invasion
+cases pass. Actor Damage already has checksum coverage; no simulation hash fields
+were added and the player idle baseline is unchanged.
+
+This converts explicit map-spawn damage for supported DEHACKED actor records.
+The vanilla patch catalog still covers a restricted set of thing numbers;
+full lost-soul/projectile patch records, dynamic class spawning/replacement,
+damage functions, negative function sentinels and native overflow/RNG parity
+remain unfinished. Source/regression self-audit does not establish native
+invasion sessions or complete phase 1–3 acceptance, which remain open.
+
 ## Validation
 
-- Release solution: **4,837 passed, zero failed/skipped**, 3,914 cases above baseline.
+- Release solution: **4,842 passed, zero failed/skipped**, 3,919 cases above baseline.
   Protocol 15; Gamedata 10; Transport 10; Master 1; RCON 6; MapLoader 500;
-  Playsim 3,764; Client 12; Net.Core 351; Pregame 97; Server 63; Scripting 8.
+  Playsim 3,769; Client 12; Net.Core 351; Pregame 97; Server 63; Scripting 8.
 - The lighting pass initially saw a five-second timeout in
   `Pump_LiveSessionReceivesGuestClientInput`; it passed the targeted rerun and the
   subsequent full solution run. No timeout/test-disabling workaround was added.

@@ -10,6 +10,7 @@ public sealed class DehackedActor
     public double Radius { get; set; }
     public double Height { get; set; }
     public int MissileDamage { get; set; }
+    public bool MissileDamagePatched { get; set; }
     public int ReactionTime { get; set; }
     public int PainChance { get; set; }
     public int DoomEdNum { get; set; }
@@ -207,7 +208,10 @@ public static class DehackedPatch
             else if (key.Equals("Speed", StringComparison.OrdinalIgnoreCase))
                 actor.Speed = ParseInt(value);
             else if (key.Equals("Missile damage", StringComparison.OrdinalIgnoreCase))
+            {
                 actor.MissileDamage = ParseInt(value);
+                actor.MissileDamagePatched = true;
+            }
             else if (key.Equals("Bits", StringComparison.OrdinalIgnoreCase))
             {
                 actor.Bits = (uint)ParseLong(value);

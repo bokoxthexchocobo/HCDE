@@ -1111,6 +1111,7 @@ public static class ActorSpawner
             actor.Ambush = thing.Ambush;
             actor.Brain = MonsterBrain.ForType(definitionType);
             if (!playerStart) actor.Damage = definition?.Damage ?? 0;
+            if (defaults is { MissileDamagePatched: true }) actor.Damage = defaults.MissileDamage;
             actor.IsMonster = !playerStart && (defaults is { BitsPatched: true }
                 ? (defaults.Bits & 0x00400000) != 0
                 : actor.Brain != null);
