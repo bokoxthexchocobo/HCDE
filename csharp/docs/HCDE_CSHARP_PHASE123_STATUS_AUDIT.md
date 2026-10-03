@@ -9231,11 +9231,32 @@ Random destination selection, MapSpot/non-solid fallback, fog, collision/
 telefrag, compatibility flags and native session acceptance remain open.
 Phases 1–3 and invasion synchronization validation remain incomplete.
 
+## Conversion and audit: Teleport_NoStop movement behavior (2026-10-03)
+
+Converted special 154's movement semantics from `LS_Teleport_NoStop` in
+`src/playsim/p_lnspec.cpp` and `P_Teleport` in `src/playsim/p_teleport.cpp`.
+Hexen/UDMF map activation and ACS direct/stack families now recognize the
+special. It shares destination TID/tag, side and NOTELEPORT checks with 70,
+sets the exit angle, preserves non-missile XYZ velocity, and leaves the
+player reaction counter unchanged. Native missile handling still redirects
+horizontal speed to the exit angle and preserves vertical velocity even with
+KEEPVELOCITY; the managed implementation follows that exception.
+
+Six regressions exercise map/direct/stack player motion and reaction, missile
+redirection, back-side failure and NOTELEPORT rejection. Full Release
+solution: 5,097 passed, zero failed/skipped; Playsim 4,016. Release warnings-
+as-errors build and whitespace check pass. No new persisted state fields.
+Fog/source-fog suppression argument 2, player FOV/bobbing and virtual hooks,
+random destination choice, fallback classes, collision/telefrag and native
+session acceptance remain incomplete. This is the bounded movement/action
+conversion, not full teleport parity. Phases 1–3 and invasion validation
+remain incomplete.
+
 ## Validation
 
-- Release solution: **5,091 passed, zero failed/skipped**, 4,168 cases above baseline.
+- Release solution: **5,097 passed, zero failed/skipped**, 4,174 cases above baseline.
   Protocol 15; Gamedata 18; Transport 10; Master 1; RCON 6; MapLoader 500;
-  Playsim 4,010; Client 12; Net.Core 351; Pregame 97; Server 63; Scripting 8.
+  Playsim 4,016; Client 12; Net.Core 351; Pregame 97; Server 63; Scripting 8.
 - The lighting pass initially saw a five-second timeout in
   `Pump_LiveSessionReceivesGuestClientInput`; it passed the targeted rerun and the
   subsequent full solution run. No timeout/test-disabling workaround was added.

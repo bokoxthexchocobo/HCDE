@@ -216,8 +216,8 @@ public static class LineSpecials
                 10 or 11 or 12 or 249 => ExecuteDoorSpecial(sim, line.Special, line.Arg0, line.Arg1, line.Arg2, line.Arg3, line) == true,
                 20 or 21 or 22 or 23 or 24 or 25 or 28 or 35 or 36 or 37 or 46 or 62 or 66 or 67 or 68 or 99 or 238 or 239 or 242 or 256 or 257 or 258 or 259 or 260 or 275 or 279 or ScrollFloor or ScrollCeiling => ExecuteFloorSpecial(sim, line.Special,
                     line.Arg0, line.Arg1, line.Arg2, line.Arg3, line.Arg4, line) == true,
-                70 => !(backSide ?? IsBackSide(line, actor.X.ToDouble(), actor.Y.ToDouble()))
-                    && ExecuteTeleportSpecial(sim, 70, line.Arg0, line.Arg1, actor, false) == true,
+                70 or 154 => !(backSide ?? IsBackSide(line, actor.X.ToDouble(), actor.Y.ToDouble()))
+                    && ExecuteTeleportSpecial(sim, line.Special, line.Arg0, line.Arg1, actor, false) == true,
                 130 or 131 => ThingActivation.Execute(sim, actor, line.Arg0, line.Special == 130),
                 80 or 81 or 82 or 226 => ExecuteScriptControl(sim, line.Special, line.Arg0, line.Arg1, line.Arg2, line.Arg3, line.Arg4, actor, line, backSide ?? IsBackSide(line, actor.X.ToDouble(), actor.Y.ToDouble())) == true,
                 243 => Exit(sim, false, actor),
@@ -848,12 +848,12 @@ public static class LineSpecials
     }
 
     internal static bool? ExecuteTeleportSpecial(AuthoritySimulation sim, int special, int tid, int sectorTag,
-        Actor? activator, bool backSide) => special == 70
+        Actor? activator, bool backSide) => special is 70 or 154
         ? !backSide && (tid != 0 || sectorTag != 0) && activator is { Destroyed: false }
-            && TeleportActivator(sim, activator, tid, byThingId: true, sectorTag: sectorTag)
+            && TeleportActivator(sim, activator, tid, byThingId: true, sectorTag: sectorTag, keepVelocity: special == 154)
         : null;
 
-    private static bool TeleportActivator(AuthoritySimulation sim, Actor? activator, int target = 0, bool byThingId = false, int sectorTag = 0)
+    private static bool TeleportActivator(AuthoritySimulation sim, Actor? activator, int target = 0, bool byThingId = false, int sectorTag = 0, bool keepVelocity = false)
     {
         if (activator == null || activator.NoTeleport)
             return false;
@@ -878,7 +878,7 @@ public static class LineSpecials
         activator.X = dest.X;
         activator.Y = dest.Y;
         activator.Angle = dest.Angle;
-        activator.VelocityX = activator.VelocityY = activator.VelocityZ = default;
+        if (!keepVelocity) activator.VelocityX = activator.VelocityY = activator.VelocityZ = default;
         ActorPhysics.PlaceOnFloor(sim, activator);
         if (activator is ProjectileActor || activator is PlayerPawn && activator.NoGravity && aboveFloor != 0)
         {
@@ -895,7 +895,7 @@ public static class LineSpecials
             activator.VelocityY = Fixed.FromDouble(missileSpeed * Math.Sin(radians));
             activator.VelocityZ = verticalVelocity;
         }
-        if (activator is PlayerPawn) activator.ReactionTime = 18;
+        if (activator is PlayerPawn && !keepVelocity) activator.ReactionTime = 18;
         return true;
     }
 
