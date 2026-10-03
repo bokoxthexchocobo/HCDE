@@ -7681,11 +7681,35 @@ save/network propagation remain open. Airborne cases establish preservation of
 the existing managed behavior, not complete native air-friction parity. This is
 a source review and regression self-audit.
 
+## ACS NoTrigger and crossing suppression (2026-10-03)
+
+Converted `APROP_Notrigger` (23) set/get/check to actor NoTrigger state.
+Native `p_acs.cpp` normalizes setter values to MF6_NOTRIGGER and boolean checks
+to nonzero/zero. Native `p_map.cpp` tests this flag before movement crossing
+activation; managed ActivateCrossings now skips flagged actors. A skipped line
+retains its special, so clearing the flag permits later activation. The separate
+use path remains available, matching the native distinction.
+
+Ten regressions cover nonzero signed boolean normalization, exact inverse checks,
+crossing in both directions, preserving/re-enabling a one-shot special, live use
+activation, missing/destroyed actors and checksum inclusion. The use fixture
+initially approached the line from its non-usable back side; correcting its
+position/yaw made it exercise front-side use without altering activation rules.
+The idle hash is now 1508425544 due to NoTrigger state inclusion; position,
+health and tic assertions remain unchanged. Full suite: 4,640 passed, zero
+failed/skipped; Release warnings-as-errors build: zero warnings/errors.
+
+Scope: ACS flag and existing movement crossing path. Native push triggers,
+projectile crossings, puff-specific impact flags, complete non-player map-line
+activation and save/network propagation remain incomplete. The shooter flag
+is not substituted for native puff flags. Source review and regression
+self-audit only; representative native invasion validation remains open.
+
 ## Validation
 
-- Release solution: **4,630 passed, zero failed/skipped**, 3,707 cases above baseline.
+- Release solution: **4,640 passed, zero failed/skipped**, 3,717 cases above baseline.
   Protocol 15; Gamedata 10; Transport 10; Master 1; RCON 6; MapLoader 500;
-  Playsim 3,557; Client 12; Net.Core 351; Pregame 97; Server 63; Scripting 8.
+  Playsim 3,567; Client 12; Net.Core 351; Pregame 97; Server 63; Scripting 8.
 - The lighting pass initially saw a five-second timeout in
   `Pump_LiveSessionReceivesGuestClientInput`; it passed the targeted rerun and the
   subsequent full solution run. No timeout/test-disabling workaround was added.

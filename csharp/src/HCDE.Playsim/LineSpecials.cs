@@ -82,7 +82,7 @@ public static class LineSpecials
     {
         foreach (var actor in sim.Actors)
         {
-            if (actor.IsDead || actor.Destroyed || actor is ProjectileActor)
+            if (actor.IsDead || actor.Destroyed || actor.NoTrigger || actor is ProjectileActor)
                 continue;
             if (actor.PreviousX.Raw == actor.X.Raw && actor.PreviousY.Raw == actor.Y.Raw)
                 continue;
