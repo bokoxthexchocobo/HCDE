@@ -9252,11 +9252,33 @@ session acceptance remain incomplete. This is the bounded movement/action
 conversion, not full teleport parity. Phases 1–3 and invasion validation
 remain incomplete.
 
+## Conversion and audit: ACS Thing_Activate/Deactivate dispatch (2026-10-03)
+
+Converted ACS direct and stack special dispatch for 130/131 to the existing
+managed ThingActivation implementation. Native `LS_Thing_Activate` and
+`LS_Thing_Deactivate` in `src/playsim/p_lnspec.cpp` use only argument 0,
+select the activator for TID zero, and return whether any target was found.
+Native ACS dispatch in `src/playsim/p_acs.cpp` recognizes these actions
+regardless of success. The managed nullable handler now preserves that
+recognized-failure behavior instead of terminating an unsupported stack or
+multi-argument script. Extra arguments are ignored as in the native action.
+
+Eight regressions cover direct/stack activate/deactivate, TID isolation,
+zero-TID activator selection, fallback frame tics, and following-script
+execution after missing targets. Full Release solution: 5,105 passed,
+zero failed/skipped; Playsim 4,024. Release warnings-as-errors build and
+whitespace check pass. No new persisted/checksum state fields.
+This wires the existing base monster activation behavior into ACS; class
+virtual callbacks, activation-type switching flags, mod-loaded custom states,
+complete ACS format/opcode coverage and native session acceptance remain
+incomplete. Packed/result families share dispatch but have no dedicated new
+regressions in this checkpoint. Phases 1–3 and invasion validation remain open.
+
 ## Validation
 
-- Release solution: **5,097 passed, zero failed/skipped**, 4,174 cases above baseline.
+- Release solution: **5,105 passed, zero failed/skipped**, 4,182 cases above baseline.
   Protocol 15; Gamedata 18; Transport 10; Master 1; RCON 6; MapLoader 500;
-  Playsim 4,016; Client 12; Net.Core 351; Pregame 97; Server 63; Scripting 8.
+  Playsim 4,024; Client 12; Net.Core 351; Pregame 97; Server 63; Scripting 8.
 - The lighting pass initially saw a five-second timeout in
   `Pump_LiveSessionReceivesGuestClientInput`; it passed the targeted rerun and the
   subsequent full solution run. No timeout/test-disabling workaround was added.

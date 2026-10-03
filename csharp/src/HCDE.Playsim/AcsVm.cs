@@ -500,6 +500,7 @@ public sealed class AcsVm
                     for (var i = 0; i < stackCount; i++) stackArgs[i] = fiber.Stack[start + i];
                     fiber.Stack.RemoveRange(start, stackCount);
                     var stackResult = LineSpecials.ExecuteExitSpecial(sim, stackSpecial, fiber.Activator is { Destroyed: false } ? fiber.Activator : null)
+                        ?? ThingActivation.ExecuteSpecial(sim, stackSpecial, fiber.Activator, stackArgs[0])
                         ?? LineSpecials.ExecuteTeleportSpecial(sim, stackSpecial, stackArgs[0], stackArgs[1], fiber.Activator, fiber.BackSide)
                         ?? LineSpecials.ExecuteSectorRotation(sim, stackSpecial, stackArgs[0], stackArgs[1], stackArgs[2])
                         ?? WallScrollActions.ExecuteAcs(sim, stackSpecial, stackArgs[0], stackArgs[1], stackArgs[2], stackArgs[3], stackArgs[4])
@@ -540,6 +541,7 @@ public sealed class AcsVm
                     if (!fiber.Done)
                     {
                         var result = LineSpecials.ExecuteExitSpecial(sim, special, fiber.Activator is { Destroyed: false } ? fiber.Activator : null)
+                            ?? ThingActivation.ExecuteSpecial(sim, special, fiber.Activator, args[0])
                             ?? LineSpecials.ExecuteTeleportSpecial(sim, special, args[0], args[1], fiber.Activator, fiber.BackSide)
                             ?? LineSpecials.ExecuteSectorRotation(sim, special, args[0], args[1], args[2])
                             ?? WallScrollActions.ExecuteAcs(sim, special, args[0], args[1], args[2], args[3], args[4])

@@ -3,6 +3,9 @@ namespace HCDE.Playsim;
 /// <summary>Native Thing_Activate/Deactivate base monster state handling.</summary>
 public static class ThingActivation
 {
+    internal static bool? ExecuteSpecial(AuthoritySimulation sim, int special, Actor? activator, int tid) =>
+        special is 130 or 131 ? Execute(sim, activator, tid, special == 130) : null;
+
     public static bool Execute(AuthoritySimulation sim, Actor? activator, int tid, bool activate)
     {
         var targets = tid == 0
