@@ -206,7 +206,7 @@ public static class DehackedPatch
                 actor.ReactionTimePatched = true;
             }
             else if (key.Equals("Pain chance", StringComparison.OrdinalIgnoreCase))
-                actor.PainChance = ParseInt(value);
+                actor.PainChance = unchecked((short)ParseInt(value));
             else if (key.Equals("Height", StringComparison.OrdinalIgnoreCase))
                 actor.Height = ParseInt(value) / 65536.0;
             else if (key.Equals("Width", StringComparison.OrdinalIgnoreCase))

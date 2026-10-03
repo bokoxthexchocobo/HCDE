@@ -8516,11 +8516,32 @@ full save/network serialization. Native player-specific spawn-height policy and
 extreme coordinate behavior remain unfinished. Source/regression self-audit does
 not replace native invasion sessions or full phases 1–3, which remain open.
 
+## Conversion and audit: DEHACKED pain chance signed narrowing (2026-10-03)
+
+Compared Pain chance assignment in `src/gamedata/d_dehacked.cpp`, which casts
+the parsed value to int16_t. Managed parsing now explicitly narrows through an
+unchecked signed short instead of keeping the full int. Spawned actor values
+therefore reflect the native low-sixteen-bit signed representation, such as
+65536 becoming zero and 32768 becoming -32768.
+
+Eight regression cases cover ordinary values, signed boundaries, positive and
+negative wraparound, plus actual damage reactions with 65536 (no pain) and
+65792 (wrapped 256, guaranteed pain in the managed chance gate). Damage itself
+still applies in both cases. Full Release suite: 4,896 passed, zero failed/skipped;
+Playsim 3,823. Warnings-as-errors build: zero warnings/errors; whitespace check
+passes. Existing patch, combat and invasion cases pass. Pain chance already has
+checksum coverage; player idle baseline unchanged.
+
+This is bounded numeric import conversion, not complete native pain-type
+selection, RNG stream parity, state scheduling or DEHACKED catalogs. Source and
+managed regression self-audit do not replace native invasion sessions or full
+phase 1–3 acceptance, which remain open. Unrelated workspace edits are preserved.
+
 ## Validation
 
-- Release solution: **4,888 passed, zero failed/skipped**, 3,965 cases above baseline.
+- Release solution: **4,896 passed, zero failed/skipped**, 3,973 cases above baseline.
   Protocol 15; Gamedata 10; Transport 10; Master 1; RCON 6; MapLoader 500;
-  Playsim 3,815; Client 12; Net.Core 351; Pregame 97; Server 63; Scripting 8.
+  Playsim 3,823; Client 12; Net.Core 351; Pregame 97; Server 63; Scripting 8.
 - The lighting pass initially saw a five-second timeout in
   `Pump_LiveSessionReceivesGuestClientInput`; it passed the targeted rerun and the
   subsequent full solution run. No timeout/test-disabling workaround was added.
