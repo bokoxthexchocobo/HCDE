@@ -9109,11 +9109,33 @@ AI, state timing, activation/deactivation, physics exceptions, flag serializatio
 and engine fixtures remain open. Phases 1–3 and representative invasion
 synchronization validation remain incomplete.
 
+## Monster activation/deactivation fallback — 2026-10-03
+
+Native Activate/Deactivate in `src/playsim/p_mobj.cpp` change dormancy only for
+monsters that are alive or ice corpses. Without custom Active/Inactive labels,
+activation sets one tic and deactivation holds at -1. Converted this fallback in
+ThingActivation and line specials 130/131, including extended map dispatch.
+Tagged targets are snapshotted; zero TID targets the activator. Return values
+reflect whether targets exist, even when a target has no applicable monster action,
+following native `src/playsim/p_lnspec.cpp`. Dormant Actor.Tick skips the separate
+managed brain tick; state and physics processing remain distinct.
+
+Four regressions cover state hold/release and reaction preservation, tagged and
+missing targets, and non-monster/dead target no-op behavior. Full Release suite:
+5,065 passed, zero failed/skipped; Playsim 3,984. Warnings-as-errors build:
+zero warnings/errors; whitespace check passes. No checksum fields changed.
+
+Scope is base monster fallback. Custom Active/Inactive state labels, DoActivateThing
+subclass dispatch, switches/lights, full dormant native physics/state action cadence
+and serialization remain incomplete. DEHACKED DORMANT alone does not automatically
+force all state tics to -1. Phases 1–3 and representative invasion synchronization
+validation remain open.
+
 ## Validation
 
-- Release solution: **5,061 passed, zero failed/skipped**, 4,138 cases above baseline.
+- Release solution: **5,065 passed, zero failed/skipped**, 4,142 cases above baseline.
   Protocol 15; Gamedata 18; Transport 10; Master 1; RCON 6; MapLoader 500;
-  Playsim 3,980; Client 12; Net.Core 351; Pregame 97; Server 63; Scripting 8.
+  Playsim 3,984; Client 12; Net.Core 351; Pregame 97; Server 63; Scripting 8.
 - The lighting pass initially saw a five-second timeout in
   `Pump_LiveSessionReceivesGuestClientInput`; it passed the targeted rerun and the
   subsequent full solution run. No timeout/test-disabling workaround was added.

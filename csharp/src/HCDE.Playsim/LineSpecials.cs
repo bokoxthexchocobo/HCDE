@@ -216,6 +216,7 @@ public static class LineSpecials
                 20 or 21 or 22 or 23 or 24 or 25 or 28 or 35 or 36 or 37 or 46 or 62 or 66 or 67 or 68 or 99 or 238 or 239 or 242 or 256 or 257 or 258 or 259 or 260 or 275 or 279 or ScrollFloor or ScrollCeiling => ExecuteFloorSpecial(sim, line.Special,
                     line.Arg0, line.Arg1, line.Arg2, line.Arg3, line.Arg4, line) == true,
                 70 => TeleportActivator(sim, actor, line.Arg0, byThingId: true),
+                130 or 131 => ThingActivation.Execute(sim, actor, line.Arg0, line.Special == 130),
                 80 or 81 or 82 or 226 => ExecuteScriptControl(sim, line.Special, line.Arg0, line.Arg1, line.Arg2, line.Arg3, line.Arg4, actor, line, backSide ?? IsBackSide(line, actor.X.ToDouble(), actor.Y.ToDouble())) == true,
                 243 => Exit(sim, false, actor),
                 244 => Exit(sim, true, actor),
@@ -485,6 +486,9 @@ public static class LineSpecials
     {
         switch (special)
         {
+            case 130:
+            case 131:
+                return ThingActivation.Execute(sim, activator, tag, special == 130);
             case DoorRaise:
                 return StartDoor(sim, line, tag, closeAfterOpen: true);
             case DoorOpen:

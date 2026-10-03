@@ -522,7 +522,7 @@ public class Actor : Thinker
         States.Tick(this);
         if (!Destroyed && Simulation != null)
         {
-            Brain?.Tick(Simulation, this);
+            if (!Dormant) Brain?.Tick(Simulation, this);
             TickMovement(Simulation);
             SectorDamage.Tick(Simulation, this);
         }
