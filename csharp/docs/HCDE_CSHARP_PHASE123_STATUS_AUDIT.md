@@ -8950,11 +8950,31 @@ collision/telefragging, voodoo-doll identity and native activation cadence remai
 incomplete. This does not establish full teleport parity. Phases 1–3 and
 representative invasion synchronization validation remain open.
 
+## Ordinary flying-player teleport height — 2026-10-03
+
+Native P_Teleport in `src/playsim/p_teleport.cpp` preserves a no-gravity player's
+height above its source floor for ordinary ONFLOORZ teleportation, limiting its
+top to the destination ceiling. Converted this player branch in the managed
+ordinary teleport helper, with updated ground/support state after placement.
+Walking players and non-player actors retain the existing floor placement path.
+
+Four regression cases use two sectors with different floor heights and verify
+preserved relative height, ceiling-limited height, walking player placement and
+non-player placement. Full Release suite: 5,032 passed, zero failed/skipped;
+Playsim 3,951. Warnings-as-errors build: zero warnings/errors; whitespace check
+passes. No checksum fields changed.
+
+Scope is the represented default flying-player branch. Keep-height flags,
+missile teleport height, explicit destination Z, Final Doom compatibility,
+negative below-floor offsets, undersized sectors and destination collision need
+further conversion/validation. Phases 1–3 and representative invasion round,
+timer and enemy synchronization validation remain incomplete.
+
 ## Validation
 
-- Release solution: **5,028 passed, zero failed/skipped**, 4,105 cases above baseline.
+- Release solution: **5,032 passed, zero failed/skipped**, 4,109 cases above baseline.
   Protocol 15; Gamedata 18; Transport 10; Master 1; RCON 6; MapLoader 500;
-  Playsim 3,947; Client 12; Net.Core 351; Pregame 97; Server 63; Scripting 8.
+  Playsim 3,951; Client 12; Net.Core 351; Pregame 97; Server 63; Scripting 8.
 - The lighting pass initially saw a five-second timeout in
   `Pump_LiveSessionReceivesGuestClientInput`; it passed the targeted rerun and the
   subsequent full solution run. No timeout/test-disabling workaround was added.

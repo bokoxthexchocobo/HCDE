@@ -850,11 +850,20 @@ public static class LineSpecials
                 : (uint)actor.SectorIndex < (uint)sim.Level.Sectors.Count && sim.Level.Sectors[actor.SectorIndex].MatchesTag(target))));
         if (dest == null)
             return false;
+        var aboveFloor = activator.Z.ToDouble() - sim.FloorOf(activator.SectorIndex);
         activator.X = dest.X;
         activator.Y = dest.Y;
         activator.Angle = dest.Angle;
         activator.VelocityX = activator.VelocityY = activator.VelocityZ = default;
         ActorPhysics.PlaceOnFloor(sim, activator);
+        if (activator is PlayerPawn && activator.NoGravity && aboveFloor != 0)
+        {
+            var floor = sim.FloorOf(activator.SectorIndex);
+            var ceiling = sim.CeilingOf(activator.SectorIndex) - activator.Height.ToDouble();
+            activator.Z = Fixed.FromDouble(Math.Min(floor + aboveFloor, ceiling));
+            activator.OnGround = activator.Z.ToDouble() <= floor;
+            activator.OnMobj = false;
+        }
         if (activator is PlayerPawn) activator.ReactionTime = 18;
         return true;
     }
