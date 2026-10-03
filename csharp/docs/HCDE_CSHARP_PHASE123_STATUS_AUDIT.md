@@ -10342,11 +10342,30 @@ full touching-floor/dropoff geometry, blasted and avoiding-dropoff exceptions,
 missile-spawn checks, slopes/portals and native invasion acceptance remain open.
 Gameplay phases 1–3 remain incomplete.
 
+## Dropoff support-height and missile-exemption audit (2026-10-03)
+
+The flat dropoff calculation now raises the departure support floor to actor Z
+when OnMobj is set, rather than raising the destination floor and subtracting in
+the wrong direction. The old calculation could allow a rider to leave a tall
+support over a large drop. Projectile actors now explicitly receive the native
+MF_MISSILE exception independently of AllowDropOff, while NoDropOff still forces
+the supported check. Native P_TryMove in src/playsim/p_map.cpp uses ONMOBJ support
+height and the missile exemption.
+
+Ten regression cases cover support-height boundaries, lower-than-floor support,
+non-rider airborne movement and all missile DropOff/NoDropOff combinations.
+Full Release solution: 5,542 passed, zero failed/skipped; Playsim 4,415.
+Warnings-as-errors build and diff checks pass. Archive/checksum formats unchanged.
+This remains a departure-support versus destination-floor approximation, not
+native touching-floor/dropoff geometry. Blasted, avoidance and spawn-check
+exceptions, slopes/portals and native invasion acceptance remain unfinished.
+Gameplay phases 1–3 remain incomplete.
+
 ## Validation
 
-- Release solution: **5,532 passed, zero failed/skipped**, 4,609 cases above baseline.
+- Release solution: **5,542 passed, zero failed/skipped**, 4,619 cases above baseline.
   Protocol 15; Gamedata 29; Transport 10; Master 1; RCON 6; MapLoader 533;
-  Playsim 4,405; Client 12; Net.Core 351; Pregame 97; Server 65; Scripting 8.
+  Playsim 4,415; Client 12; Net.Core 351; Pregame 97; Server 65; Scripting 8.
 - The lighting pass initially saw a five-second timeout in
   `Pump_LiveSessionReceivesGuestClientInput`; it passed the targeted rerun and the
   subsequent full solution run. No timeout/test-disabling workaround was added.

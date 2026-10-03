@@ -553,12 +553,13 @@ public static class ActorPhysics
         var sector = SectorAt(sim.Level, x, y);
         // P_TryMove refuses floorz - dropoffz > MaxDropOffHeight unless MF_DROPOFF, MF_FLOAT, or MF_MISSILE.
         // Flat maps use the current floor against the destination floor. A drop of exactly the limit is allowed.
-        if (sector >= 0 && actor.SectorIndex >= 0 && (actor.NoDropOff || !actor.AllowDropOff && !actor.Floating))
+        if (sector >= 0 && actor.SectorIndex >= 0 &&
+            (actor.NoDropOff || !actor.AllowDropOff && !actor.Floating && actor is not ProjectileActor))
         {
-            var floorz = sim.FloorOf(sector);
+            var floorz = sim.FloorOf(actor.SectorIndex);
             if (actor.OnMobj)
                 floorz = Math.Max(actor.Z.ToDouble(), floorz);
-            var drop = sim.FloorOf(actor.SectorIndex) - floorz;
+            var drop = floorz - sim.FloorOf(sector);
             if (drop > actor.MaxDropOffHeight.ToDouble())
                 return false;
         }
