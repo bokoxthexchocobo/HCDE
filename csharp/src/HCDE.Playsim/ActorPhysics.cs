@@ -255,7 +255,7 @@ public static class ActorPhysics
         actor.VelocityZ = Fixed.FromDouble(vz);
         FloatTowardTarget(sim, actor);
         FitToSector(sim, actor, carryFloor: false);
-        var friction = actor.OnGround ? GroundFriction : 1;
+        var friction = actor.OnGround ? Math.Clamp(GroundFriction * actor.Friction.ToDouble(), 0, 1) : 1;
         actor.VelocityX = Fixed.FromDouble(Math.Abs(vx * friction) < 0.0625 ? 0 : vx * friction);
         actor.VelocityY = Fixed.FromDouble(Math.Abs(vy * friction) < 0.0625 ? 0 : vy * friction);
         CarryStandingRiders(sim, actor, actor.X.ToDouble() - startX, actor.Y.ToDouble() - startY, actor.Z.ToDouble() - startZ, riders);

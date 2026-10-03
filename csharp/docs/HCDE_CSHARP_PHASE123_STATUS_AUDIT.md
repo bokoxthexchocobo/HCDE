@@ -7655,11 +7655,37 @@ and sight behavior and save/network propagation remain open. Player weapon
 range continues to use its existing weapon dispatch and is not converted by this
 actor-property pass. This is a source review and regression self-audit.
 
+## ACS actor friction and ground velocity decay (2026-10-03)
+
+Converted `APROP_Friction` (42) signed 16.16 set/get/check state, default 1
+matching native `actor.zs`. `p_acs.cpp` sets and reads the actor multiplier
+without clamping the stored property. Native `P_GetFriction` in `p_map.cpp`
+multiplies surface friction by the actor property and clamps the effective
+result to [0, 1]; `p_mobj.cpp` multiplies horizontal velocity by that result.
+The managed flat-ground velocity decay now applies the same multiplier/clamp
+to its existing surface constant. Stored negative and above-one values remain
+queryable; they do not reverse or amplify ground velocity.
+
+Sixteen regressions cover exact signed/fractional/extreme property values and
+checks, ground multiplier/clamp limits, both velocity axes, airborne movement,
+missing/destroyed targets, all-match TID writes/newest reads and resting checksum
+inclusion. All existing physics and combat cases pass. The idle checksum is now
+3569868298 due to friction state hashing; position, health and tic assertions
+remain unchanged. Full suite: 4,630 passed, zero failed/skipped; Release build
+with warnings as errors: zero warnings/errors.
+
+Scope: actor property and the current managed ground decay path. Native sector
+and terrain friction selection, friction-dependent movement acceleration,
+water/flying/air-control rules, minimum velocity parity, class overrides and
+save/network propagation remain open. Airborne cases establish preservation of
+the existing managed behavior, not complete native air-friction parity. This is
+a source review and regression self-audit.
+
 ## Validation
 
-- Release solution: **4,614 passed, zero failed/skipped**, 3,691 cases above baseline.
+- Release solution: **4,630 passed, zero failed/skipped**, 3,707 cases above baseline.
   Protocol 15; Gamedata 10; Transport 10; Master 1; RCON 6; MapLoader 500;
-  Playsim 3,541; Client 12; Net.Core 351; Pregame 97; Server 63; Scripting 8.
+  Playsim 3,557; Client 12; Net.Core 351; Pregame 97; Server 63; Scripting 8.
 - The lighting pass initially saw a five-second timeout in
   `Pump_LiveSessionReceivesGuestClientInput`; it passed the targeted rerun and the
   subsequent full solution run. No timeout/test-disabling workaround was added.
