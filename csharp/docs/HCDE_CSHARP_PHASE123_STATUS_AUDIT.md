@@ -8537,11 +8537,33 @@ selection, RNG stream parity, state scheduling or DEHACKED catalogs. Source and
 managed regression self-audit do not replace native invasion sessions or full
 phase 1–3 acceptance, which remain open. Unrelated workspace edits are preserved.
 
+## Conversion and audit: DEHACKED integer/fixed speed decoding (2026-10-03)
+
+Compared native speed rescaling in `src/gamedata/d_dehacked.cpp`: magnitudes
+at least 256 are divided by 65536. Managed patch Speed now stores double and
+normalizes parsed assignments at that threshold, retaining fractional decoded
+speeds rather than feeding a large integer into the spawn speed cap.
+
+Seven cases cover ordinary speed, the 255/256 boundary, whole/fractional fixed
+values and negative threshold behavior, plus fractional spawn speed after an
+unrelated chained patch. Encoded 98304 becomes MovementSpeed 1.5 and the existing
+managed quarter-rate ChaseSpeed 0.375. Full Release solution: 4,903 passed,
+zero failed/skipped; Playsim 3,830. Warnings-as-errors build: zero warnings/errors;
+whitespace check passes. Existing patch, movement and invasion cases pass;
+player idle baseline unchanged.
+
+The conversion covers assignment decoding and fractional storage. Native signed
+movement, speed caps, quarter-rate chase parity, repeated native postprocessing
+of extreme retained values, full actor/projectile patch catalogs and dynamic
+class spawning remain incomplete. Source/regression self-audit does not replace
+native invasion sessions or complete phases 1–3, which remain open. Unrelated
+workspace edits are preserved.
+
 ## Validation
 
-- Release solution: **4,896 passed, zero failed/skipped**, 3,973 cases above baseline.
+- Release solution: **4,903 passed, zero failed/skipped**, 3,980 cases above baseline.
   Protocol 15; Gamedata 10; Transport 10; Master 1; RCON 6; MapLoader 500;
-  Playsim 3,823; Client 12; Net.Core 351; Pregame 97; Server 63; Scripting 8.
+  Playsim 3,830; Client 12; Net.Core 351; Pregame 97; Server 63; Scripting 8.
 - The lighting pass initially saw a five-second timeout in
   `Pump_LiveSessionReceivesGuestClientInput`; it passed the targeted rerun and the
   subsequent full solution run. No timeout/test-disabling workaround was added.

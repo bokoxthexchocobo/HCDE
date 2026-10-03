@@ -6,7 +6,7 @@ public sealed class DehackedActor
     public int Index { get; init; }
     public string Name { get; init; } = "";
     public int Health { get; set; }
-    public int Speed { get; set; }
+    public double Speed { get; set; }
     public double Radius { get; set; }
     public double Height { get; set; }
     public int MissileDamage { get; set; }
@@ -212,7 +212,10 @@ public static class DehackedPatch
             else if (key.Equals("Width", StringComparison.OrdinalIgnoreCase))
                 actor.Radius = ParseInt(value) / 65536.0;
             else if (key.Equals("Speed", StringComparison.OrdinalIgnoreCase))
-                actor.Speed = ParseInt(value);
+            {
+                var speed = (double)ParseInt(value);
+                actor.Speed = Math.Abs(speed) >= 256 ? speed / 65536 : speed;
+            }
             else if (key.Equals("Missile damage", StringComparison.OrdinalIgnoreCase))
             {
                 actor.MissileDamage = ParseInt(value);
