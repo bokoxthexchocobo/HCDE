@@ -8237,11 +8237,36 @@ facing, complete skull-flight scheduling and save/network parity remain open.
 Representative native invasion sessions and full phases 1–3 acceptance remain
 required.
 
+## Conversion and audit: soul target copying independent of damage eligibility (2026-10-03)
+
+Closed the explicitly recorded target-copy restriction from the earlier soul
+audit. `CopyFriendliness` in `src/playsim/p_mobj.cpp` rejects null/NoTarget/
+NeverTarget pointers without testing health, shootability or invulnerability.
+`A_SkullAttack` in `wadsrc/static/zscript/actors/doom/lostsoul.zs` likewise
+requires a target pointer rather than a damageable target. Managed SpawnLostSoul
+now copies an existing, non-destroyed target unless either exclusion flag is set,
+records hearing memory and starts the charge regardless of damage eligibility.
+Destroyed references remain excluded as a managed pointer-lifetime safeguard.
+
+Five new cases cover dead, non-shootable, invulnerable and combined dead/
+non-shootable targets, plus a destroyed target. Accepted cases verify copied
+current/heard IDs, charging and velocity. Full Release solution: 4,822 passed,
+zero failed/skipped; Playsim 3,749. Warnings-as-errors build: zero warnings/errors;
+whitespace check passes. Existing death-burst, exclusion-flag, charge and invasion
+cases remain passing. Existing checksum fields suffice; player idle baseline
+unchanged.
+
+This converts spawn-time target/charge eligibility, not every collision or
+post-charge target-lifetime behavior. Complete native pointers, PAF options,
+friendship/team flags, mod dispatch, skull-flight scheduling and save/network
+parity remain incomplete. Representative native invasion sessions and full
+phase 1–3 acceptance remain open; this is source/regression self-audit.
+
 ## Validation
 
-- Release solution: **4,817 passed, zero failed/skipped**, 3,894 cases above baseline.
+- Release solution: **4,822 passed, zero failed/skipped**, 3,899 cases above baseline.
   Protocol 15; Gamedata 10; Transport 10; Master 1; RCON 6; MapLoader 500;
-  Playsim 3,744; Client 12; Net.Core 351; Pregame 97; Server 63; Scripting 8.
+  Playsim 3,749; Client 12; Net.Core 351; Pregame 97; Server 63; Scripting 8.
 - The lighting pass initially saw a five-second timeout in
   `Pump_LiveSessionReceivesGuestClientInput`; it passed the targeted rerun and the
   subsequent full solution run. No timeout/test-disabling workaround was added.

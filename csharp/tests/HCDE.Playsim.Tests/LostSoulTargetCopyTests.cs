@@ -31,6 +31,37 @@ public class LostSoulTargetCopyTests
         Assert.False(soul.Brain.Charging);
     }
 
+    [Theory]
+    [InlineData(true, false, false)]
+    [InlineData(false, true, false)]
+    [InlineData(false, false, true)]
+    [InlineData(true, true, false)]
+    public void TargetCopyDoesNotRequireDamageEligibility(bool dead, bool nonShootable, bool invulnerable)
+    {
+        var (sim, parent, target) = Room();
+        if (dead) target.Health = 0;
+        if (nonShootable) target.Shootable = false;
+        target.Invulnerable = invulnerable;
+        var soul = sim.SpawnLostSoul(parent, target, 0);
+        Assert.NotNull(soul);
+        Assert.True(soul.Brain!.Charging);
+        Assert.Equal(target.Id, soul.Brain.TargetId);
+        Assert.Equal(target.Id, soul.LastHeardTargetId);
+        Assert.Equal(20, soul.VelocityX.ToDouble());
+    }
+
+    [Fact]
+    public void DestroyedTargetIsNotCopied()
+    {
+        var (sim, parent, target) = Room();
+        target.Destroy();
+        var soul = sim.SpawnLostSoul(parent, target, 0);
+        Assert.NotNull(soul);
+        Assert.False(soul.Brain!.Charging);
+        Assert.Null(soul.Brain.TargetId);
+        Assert.Null(soul.LastHeardTargetId);
+    }
+
     [Fact]
     public void CopiedNoiseCanRestoreTargetAfterChargeStopsAndTargetClears()
     {
