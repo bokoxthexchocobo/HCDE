@@ -9295,11 +9295,31 @@ variants share the dispatcher without dedicated new tests. Native session
 acceptance, complete actor actions, phases 1–3 and invasion validation remain
 incomplete.
 
+## Conversion and audit: Thing_ChangeTID special (2026-10-03)
+
+Converted special 176 against native `LS_Thing_ChangeTID` in
+`src/playsim/p_lnspec.cpp`. Hexen/UDMF map and ACS direct/stack dispatch retag
+all matching actors; old TID zero selects the activator. Missing targets and
+null activators succeed, as in native. New TID zero clears membership; signed
+TIDs are retained. Targets are captured before mutation so every old-TID match
+is visited. Managed lookup scans current actor IDs, so later actions see new
+membership without a separate hash relink.
+
+Eight regressions cover both map formats, multi-target selection, subsequent
+activation using the new TID, direct/stack activator retagging and script
+continuation, missing-target success, zero/signed IDs and checksum divergence.
+Full Release solution: 5,119 passed, zero failed/skipped; Playsim 4,038.
+Release warnings-as-errors build and whitespace checks pass. Existing ThingId
+checksum handling applies. Full TID persistence/network membership, native
+class hooks and native session acceptance remain unverified. Packed/result
+ACS variants share dispatch without new dedicated cases. Phases 1–3 and
+invasion synchronization validation remain incomplete.
+
 ## Validation
 
-- Release solution: **5,111 passed, zero failed/skipped**, 4,188 cases above baseline.
+- Release solution: **5,119 passed, zero failed/skipped**, 4,196 cases above baseline.
   Protocol 15; Gamedata 18; Transport 10; Master 1; RCON 6; MapLoader 500;
-  Playsim 4,030; Client 12; Net.Core 351; Pregame 97; Server 63; Scripting 8.
+  Playsim 4,038; Client 12; Net.Core 351; Pregame 97; Server 63; Scripting 8.
 - The lighting pass initially saw a five-second timeout in
   `Pump_LiveSessionReceivesGuestClientInput`; it passed the targeted rerun and the
   subsequent full solution run. No timeout/test-disabling workaround was added.
