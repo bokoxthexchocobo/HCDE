@@ -182,9 +182,9 @@ public class Actor : Thinker
         }
         return true;
     }
-    /// <summary>Native species subset for default <c>P_ProjectileImmune</c>. Uses <see cref="DoomEdNum"/>.</summary>
+    /// <summary>Native species subset for default <c>P_ProjectileImmune</c>. Uses resolved class identity.</summary>
     public bool IsSameSpecies(Actor other) =>
-        DoomEdNum == other.DoomEdNum && this is not PlayerPawn && other is not PlayerPawn;
+        ClassDoomEdNum == other.ClassDoomEdNum && this is not PlayerPawn && other is not PlayerPawn;
     /// <summary>Native <c>P_ProjectileImmune</c> default-group subset. Projectile groups are absent.</summary>
     public bool ProjectileImmune(Actor source) =>
         IsSameSpecies(source) && !DoHarmSpecies;

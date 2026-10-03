@@ -9616,11 +9616,31 @@ Other editor-number runtime lookups (species/pickup/class filters), complete
 class drop metadata and death actions, other factories and native session
 acceptance remain incomplete. Phases 1–3 and invasion validation remain open.
 
+## Conversion and audit: remapped class species checks (2026-10-03)
+
+Changed the managed default species subset to compare resolved class identity
+rather than editor number. Native `P_ProjectileImmune` in
+`src/playsim/p_map.cpp` uses `GetSpecies`; `AActor::GetSpecies` in
+`src/playsim/p_mobj.cpp` derives a class name when explicit Species is absent.
+An editor-number remap therefore does not itself change the species. Existing
+DoHarmSpecies, player exclusion and infighting/hostility gates are retained.
+
+Six regressions cover three remapped/original class pairs, symmetry and
+projectile immunity, actual damage gating with/without DoHarmSpecies, and
+unrelated classes/players. Full Release solution: 5,247 passed, zero failed/
+skipped; Playsim 4,133. Release warnings-as-errors build and whitespace checks
+pass. Existing class identity checksum applies; no new state fields.
+Explicit Species, monster class inheritance (including related native classes
+sharing ancestor species), projectile groups and complete class identity
+archive/network handling remain incomplete. This corrects editor remapping
+within the existing species subset, not full species parity. Phases 1–3,
+native sessions and invasion synchronization validation remain open.
+
 ## Validation
 
-- Release solution: **5,241 passed, zero failed/skipped**, 4,318 cases above baseline.
+- Release solution: **5,247 passed, zero failed/skipped**, 4,324 cases above baseline.
   Protocol 15; Gamedata 18; Transport 10; Master 1; RCON 6; MapLoader 533;
-  Playsim 4,127; Client 12; Net.Core 351; Pregame 97; Server 63; Scripting 8.
+  Playsim 4,133; Client 12; Net.Core 351; Pregame 97; Server 63; Scripting 8.
 - The lighting pass initially saw a five-second timeout in
   `Pump_LiveSessionReceivesGuestClientInput`; it passed the targeted rerun and the
   subsequent full solution run. No timeout/test-disabling workaround was added.
