@@ -8559,11 +8559,32 @@ class spawning remain incomplete. Source/regression self-audit does not replace
 native invasion sessions or complete phases 1–3, which remain open. Unrelated
 workspace edits are preserved.
 
+## Conversion and audit: explicit DEHACKED dimensions survive spawn (2026-10-03)
+
+Compared Width and Height fixed-point assignment in `src/gamedata/d_dehacked.cpp`.
+The native assignments retain signed values; the managed parser did too, but
+spawn helpers rejected nonpositive dimensions and substituted fallback values.
+Added WidthPatched/HeightPatched metadata and allow explicit values through the
+radius/height helpers, while retaining fallback handling for absent defaults.
+
+Seven cases cover zero, negative and fractional assignments for each dimension,
+unchanged dimensions on the other axis, and explicit zeros surviving a chained
+unrelated patch. Full Release suite: 4,910 passed, zero failed/skipped;
+Playsim 3,837. Warnings-as-errors build: zero warnings/errors; whitespace check
+passes. Existing patch, spawn and invasion tests pass; dimensions already have
+checksum coverage and player idle baseline is unchanged.
+
+This converts value import and initial state, not complete native collision
+semantics for nonpositive dimensions, physical/projectile-pass-height precedence,
+extreme geometry, dynamic class spawning or player lifecycle. Source/regression
+self-audit does not replace native invasion sessions or full phases 1–3, which
+remain open. Unrelated workspace edits are preserved.
+
 ## Validation
 
-- Release solution: **4,903 passed, zero failed/skipped**, 3,980 cases above baseline.
+- Release solution: **4,910 passed, zero failed/skipped**, 3,987 cases above baseline.
   Protocol 15; Gamedata 10; Transport 10; Master 1; RCON 6; MapLoader 500;
-  Playsim 3,830; Client 12; Net.Core 351; Pregame 97; Server 63; Scripting 8.
+  Playsim 3,837; Client 12; Net.Core 351; Pregame 97; Server 63; Scripting 8.
 - The lighting pass initially saw a five-second timeout in
   `Pump_LiveSessionReceivesGuestClientInput`; it passed the targeted rerun and the
   subsequent full solution run. No timeout/test-disabling workaround was added.

@@ -8,7 +8,9 @@ public sealed class DehackedActor
     public int Health { get; set; }
     public double Speed { get; set; }
     public double Radius { get; set; }
+    public bool WidthPatched { get; set; }
     public double Height { get; set; }
+    public bool HeightPatched { get; set; }
     public int MissileDamage { get; set; }
     public bool MissileDamagePatched { get; set; }
     public int ReactionTime { get; set; }
@@ -208,9 +210,15 @@ public static class DehackedPatch
             else if (key.Equals("Pain chance", StringComparison.OrdinalIgnoreCase))
                 actor.PainChance = unchecked((short)ParseInt(value));
             else if (key.Equals("Height", StringComparison.OrdinalIgnoreCase))
+            {
                 actor.Height = ParseInt(value) / 65536.0;
+                actor.HeightPatched = true;
+            }
             else if (key.Equals("Width", StringComparison.OrdinalIgnoreCase))
+            {
                 actor.Radius = ParseInt(value) / 65536.0;
+                actor.WidthPatched = true;
+            }
             else if (key.Equals("Speed", StringComparison.OrdinalIgnoreCase))
             {
                 var speed = (double)ParseInt(value);

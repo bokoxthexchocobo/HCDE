@@ -1134,13 +1134,13 @@ public static class ActorSpawner
 
     private static Fixed RadiusOf(DehackedActor? defaults, bool player)
     {
-        if (defaults != null && defaults.Radius > 0)
+        if (defaults != null && (defaults.WidthPatched || defaults.Radius > 0))
             return Fixed.FromDouble(defaults.Radius);
         return Fixed.FromInt(player ? 16 : 20);
     }
 
     private static Fixed HeightOf(DehackedActor? defaults) =>
-        defaults != null && defaults.Height > 0 ? Fixed.FromDouble(defaults.Height) : Fixed.FromInt(56);
+        defaults != null && (defaults.HeightPatched || defaults.Height > 0) ? Fixed.FromDouble(defaults.Height) : Fixed.FromInt(56);
 }
 
 public sealed class AuthoritySimulation
