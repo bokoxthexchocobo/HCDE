@@ -163,7 +163,7 @@ public sealed class ProjectileActor : Actor
             }
             foreach (var actor in sim.Actors)
             {
-                if (ThruActors || actor.ThruActors || actor.NonShootable || ReferenceEquals(actor, Owner)
+                if (ThruActors || actor.ThruActors || actor.NonShootable || !HitOwner && ReferenceEquals(actor, Owner)
                     || !actor.IsBlockmapActor || (!actor.CanTakeDamage && !actor.BlocksActors)) continue;
                 if (MThruSpecies && Owner.SharesContactSpecies(actor)) continue;
                 if (SharesEnabledThruBits(actor)) continue;

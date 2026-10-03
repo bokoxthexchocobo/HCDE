@@ -10791,11 +10791,32 @@ SpecialMissileHit callbacks, MBF bouncers, native projectile pass height,
 hitscan/autoaim and full geometry/runtime acceptance remain incomplete.
 Phases 1–3 and invasion synchronization acceptance remain open.
 
+## Conversion and audit: projectile owner contact (2026-10-03)
+
+Converted supported MF8_HITOWNER against the owner exclusion in
+`PIT_CheckThing` in `src/playsim/p_map.cpp` and registration in
+`src/scripting/thingdef_data.cpp`. A missile's HITOWNER allows direct contact
+with its owner. The owner's own flag grants no permission. Shared damage
+eligibility still governs owner damage; passage rules can still suppress
+contact. ACS supports case-insensitive set/query and enabled flags affect
+checksum. Default missiles retain owner exclusion.
+
+Ten regressions cover enabled/disabled owner contact, owner-only flag,
+invulnerable owner blocking without damage, five passage exceptions and
+ACS round trip. Full non-incremental Release rebuild: zero warnings/errors;
+5,819 solution tests passed, zero failed/skipped (Playsim 4,692).
+Whitespace checks pass.
+
+HITOWNER pose persistence, missile spawn validation, native bounce/special
+callbacks, reassignment/null native target pointers and full geometry/runtime
+acceptance remain incomplete. Managed projectile Owner remains immutable.
+Phases 1–3 and invasion synchronization acceptance remain open.
+
 ## Validation
 
-- Release solution: **5,809 passed, zero failed/skipped**, 4,886 cases above baseline.
+- Release solution: **5,819 passed, zero failed/skipped**, 4,896 cases above baseline.
   Protocol 15; Gamedata 29; Transport 10; Master 1; RCON 6; MapLoader 533;
-  Playsim 4,682; Client 12; Net.Core 351; Pregame 97; Server 65; Scripting 8.
+  Playsim 4,692; Client 12; Net.Core 351; Pregame 97; Server 65; Scripting 8.
 - The lighting pass initially saw a five-second timeout in
   `Pump_LiveSessionReceivesGuestClientInput`; it passed the targeted rerun and the
   subsequent full solution run. No timeout/test-disabling workaround was added.
