@@ -34,7 +34,7 @@ public class SkullChargeReactionTests
         var soul = sim.SpawnLostSoul(parent, sim.Players.Single(), 0);
         Assert.NotNull(soul);
         Assert.True(soul.Brain!.Charging);
-        Assert.Equal(10, soul.ReactionTime);
+        Assert.Equal(8, soul.ReactionTime);
     }
 
     private static AuthoritySimulation Room() => AuthoritySimulation.Start(new PlayLevel

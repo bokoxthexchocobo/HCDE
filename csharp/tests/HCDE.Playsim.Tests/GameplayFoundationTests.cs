@@ -1999,11 +1999,11 @@ public class GameplayFoundationTests
             new(-1, 0), new(4, 0), new(6, 3), new(-1, 3), new(5, 0),
         }, 0);
         wounded.SetTypedWound("Fire", 4);
-        Assert.Equal(10, wounded.Brain!.ReactionTics);
+        Assert.Equal(8, wounded.Brain!.ReactionTics);
         ActorDamage.Apply(wounded, 10, source: player, inflictor: player, damageType: "Fire");
         Assert.Equal(45, wounded.Health);
         Assert.Equal(4, wounded.States.Current);
-        Assert.Equal(10, wounded.Brain.ReactionTics);
+        Assert.Equal(8, wounded.Brain.ReactionTics);
 
         var other = sim.AddBot(96, 64);
         other.Health = 100;
@@ -2126,7 +2126,7 @@ public class GameplayFoundationTests
         {
             new(-1, 0), new(4, 0), new(6, 3), new(-1, 3), new(7, 3),
         }, 0);
-        Assert.Equal(10, bot.Brain.ReactionTics);
+        Assert.Equal(8, bot.Brain.ReactionTics);
         var player = sim.Players.Single();
         ActorDamage.Apply(bot, 10, source: player, inflictor: player);
         Assert.Equal(0, bot.Brain.ReactionTics);

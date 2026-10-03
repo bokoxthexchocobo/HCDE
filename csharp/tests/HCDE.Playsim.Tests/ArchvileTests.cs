@@ -40,7 +40,7 @@ public class ArchvileTests
         var (sim, vile) = Setup(type);
         var corpse = sim.Actors.Single(actor => actor.DoomEdNum == type);
         corpse.Health = 0;
-        for (var i = 0; i < 11; i++) sim.Tick();
+        for (var i = 0; i < 9; i++) sim.Tick();
         Assert.Equal(health, corpse.Health);
         Assert.True(corpse.BlocksActors);
         Assert.Equal(MonsterMode.Heal, vile.Brain!.Mode);
@@ -81,7 +81,7 @@ public class ArchvileTests
     {
         var (sim, vile) = Setup(3001);
         sim.Actors.Single(actor => actor.DoomEdNum == 3001).Health = 0;
-        for (var i = 0; i < 11; i++) sim.Tick();
+        for (var i = 0; i < 9; i++) sim.Tick();
         Assert.Equal(MonsterMode.Heal, vile.Brain!.Mode);
         vile.PainChance = 256; ActorDamage.Apply(vile, 1); sim.Tick();
         Assert.Equal(MonsterMode.Pain, vile.Brain.Mode);

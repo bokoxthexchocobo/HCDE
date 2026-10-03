@@ -9787,11 +9787,36 @@ establish complete native state execution or RNG parity. Custom patched frames,
 action pointers, full spawn behavior, native invasion sessions, and phases 1–3
 completion remain open.
 
+## Doom monster reaction default checkpoint (2026-10-03)
+
+Native `wadsrc/static/zscript/actors/actor.zs` Default sets Reactiontime 8;
+Doom catalog monsters inherit this value. MonsterBrain.ForType now initializes
+its class-specific unbound reaction counter to 8 instead of generic 10. This
+flows through map, dynamic, and spawned LostSoul brain ownership. Explicit
+actor reaction assignments and DeHackEd overrides retain precedence. Generic
+manually constructed brains keep their legacy 10-tic fallback.
+
+Seven regressions verify representative class factories, map and dynamic
+spawning, countdown behavior, and explicit patch precedence. Updated eight
+legacy failing cases: initial reaction assertions, wound/wake counter assertions,
+and the Archvile resurrection fixture's pre-raise delay (11 to 9 tics), retaining
+its narrow raise-frame bounds. Full Release solution: 5,318 passed, zero
+failed/skipped; Playsim 4,193. Release warnings-as-errors build and whitespace
+checks passed. Existing trace and invasion server tests passed. Existing reaction
+and brain checksum fields capture the corrected state; schema unchanged.
+
+Scope is catalog Doom monster reaction defaults. Native spawning can force
+reactiontime to zero for InstantReaction, ALWAYSFAST, or DF_INSTANT_REACTION
+(`src/playsim/p_mobj.cpp`); those spawn overrides remain unconverted. Managed
+look/chase cadence and generic actor/player defaults are not full native parity.
+Mod class defaults, native sessions, invasion synchronization acceptance, and
+phases 1–3 completion remain open.
+
 ## Validation
 
-- Release solution: **5,311 passed, zero failed/skipped**, 4,388 cases above baseline.
+- Release solution: **5,318 passed, zero failed/skipped**, 4,395 cases above baseline.
   Protocol 15; Gamedata 29; Transport 10; Master 1; RCON 6; MapLoader 533;
-  Playsim 4,186; Client 12; Net.Core 351; Pregame 97; Server 63; Scripting 8.
+  Playsim 4,193; Client 12; Net.Core 351; Pregame 97; Server 63; Scripting 8.
 - The lighting pass initially saw a five-second timeout in
   `Pump_LiveSessionReceivesGuestClientInput`; it passed the targeted rerun and the
   subsequent full solution run. No timeout/test-disabling workaround was added.

@@ -72,7 +72,7 @@ public sealed class MonsterBrain(MonsterAttack attack)
     public static MonsterBrain? ForType(int type)
     {
         if (DoomMonsterAttacks.Find(type) is { } profile)
-            return new(profile.Kind) { _profile = profile, _nativeType = type };
+            return new(profile.Kind) { _profile = profile, _nativeType = type, _unboundReactionTics = 8 };
         return null;
     }
 

@@ -19,11 +19,11 @@ public class DehackedReactionTests
     }
 
     [Fact]
-    public void UnrelatedPatchKeepsExistingManagedReactionDefault()
+    public void UnrelatedPatchKeepsNativeMonsterReactionDefault()
     {
         var patch = DehackedPatch.Apply("Thing 2\nHit points = 88\n");
         Assert.False(patch.Actors.Single(record => record.Index == 2).ReactionTimePatched);
-        Assert.Equal(10, Spawn(patch).ReactionTime);
+        Assert.Equal(8, Spawn(patch).ReactionTime);
     }
 
     [Fact]
