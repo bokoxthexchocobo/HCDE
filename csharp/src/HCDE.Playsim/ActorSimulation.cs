@@ -1160,14 +1160,14 @@ public static class ActorSpawner
         if (defaults is { GravityPatched: true }) actor.Gravity = Fixed.FromDouble(defaults.Gravity);
     }
 
-    private static Fixed RadiusOf(DehackedActor? defaults, bool player)
+    internal static Fixed RadiusOf(DehackedActor? defaults, bool player)
     {
         if (defaults != null && (defaults.WidthPatched || defaults.Radius > 0))
             return Fixed.FromDouble(defaults.Radius);
         return Fixed.FromInt(player ? 16 : 20);
     }
 
-    private static Fixed HeightOf(DehackedActor? defaults) =>
+    internal static Fixed HeightOf(DehackedActor? defaults) =>
         defaults != null && (defaults.HeightPatched || defaults.Height > 0) ? Fixed.FromDouble(defaults.Height) : Fixed.FromInt(56);
 }
 
@@ -1834,6 +1834,13 @@ public sealed class AuthoritySimulation
             IsMonster = true,
             Damage = DoomActorCatalog.Find(doomEdNum)?.Damage ?? 0,
         };
+        if (defaults != null)
+        {
+            bot.Radius = ActorSpawner.RadiusOf(defaults, player: false);
+            bot.Height = ActorSpawner.HeightOf(defaults);
+            bot.ChaseSpeed = Math.Clamp(defaults.Speed / 4.0, 0, ActorPhysics.MaxMove);
+            bot.PainChance = defaults.PainChance;
+        }
         if (defaults is { ReactionTimePatched: true }) bot.ReactionTime = defaults.ReactionTime;
         bot.Mass = defaults is { MassPatched: true } ? defaults.Mass : DoomActorCatalog.MassOf(doomEdNum);
         if (defaults is { MissileDamagePatched: true }) bot.Damage = defaults.MissileDamage;

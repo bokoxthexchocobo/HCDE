@@ -9538,11 +9538,31 @@ health lifecycle parity remain incomplete. Invasion's AddBot path benefits
 from numeric defaults; native wave/timer/enemy synchronization validation is
 still unverified. Phases 1–3 and persistence/network/native sessions remain open.
 
+## Conversion and audit: dynamic physical class defaults (2026-10-03)
+
+Closed AddBot's bypass of converted DEHACKED width, height, speed and pain
+chance fields traced to `src/gamedata/d_dehacked.cpp`. Patched dynamic classes
+reuse map-spawn radius/height helpers, including explicit zero dimensions.
+Speed consumes the parsed value and the same managed nonnegative/max-move
+limit as map spawn. Pain chance retains the parser's signed value.
+
+Ten regressions cover zero/fractional/integer dimensions, integer/fixed speed
+encoding, negative speed and upper limit, and zero/positive/negative pain
+chance. Dynamic values are compared with map actors to verify consistent
+class handling. Full Release solution: 5,220 passed, zero failed/skipped;
+Playsim 4,106. Release warnings-as-errors build and whitespace check pass.
+Existing dimension/speed/pain hashes apply. Unpatched AddBot physical defaults
+remain its compatibility defaults; complete catalog class inheritance, class
+remapping, first-set flags, frames/actions, extreme fixed-point dimensions and
+native movement cadence remain incomplete. Other factories, phases 1–3,
+persistence/network/native sessions and invasion synchronization validation
+remain open.
+
 ## Validation
 
-- Release solution: **5,210 passed, zero failed/skipped**, 4,287 cases above baseline.
+- Release solution: **5,220 passed, zero failed/skipped**, 4,297 cases above baseline.
   Protocol 15; Gamedata 18; Transport 10; Master 1; RCON 6; MapLoader 533;
-  Playsim 4,096; Client 12; Net.Core 351; Pregame 97; Server 63; Scripting 8.
+  Playsim 4,106; Client 12; Net.Core 351; Pregame 97; Server 63; Scripting 8.
 - The lighting pass initially saw a five-second timeout in
   `Pump_LiveSessionReceivesGuestClientInput`; it passed the targeted rerun and the
   subsequent full solution run. No timeout/test-disabling workaround was added.
