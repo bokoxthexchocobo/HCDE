@@ -10747,11 +10747,33 @@ hitscan/autoaim behavior and native geometry/runtime acceptance remain
 incomplete. Radius damage remains separate from direct missile contact.
 Phases 1–3 and invasion synchronization acceptance remain open.
 
+## Conversion and audit: NONSHOOTABLE contact persistence (2026-10-03)
+
+Closed NONSHOOTABLE pose persistence against `AActor::Serialize` in
+`src/playsim/p_mobj.cpp`, which saves flags2. Managed poses capture true and
+false values and restore the contact flag independently of SHOOTABLE.
+Managed archive version 34 wraps versions 18–33 with a complete validated
+boolean table; older saves preserve the current flag. No native savegame
+interoperability or actor recreation is claimed.
+
+Fifteen regressions cover memory/wire missile continuation, explicit false
+restoration, SHOOTABLE independence, invalid wire/memory flags, malformed
+size/prior/count fields, incomplete all-zero tables, rejection before
+clock/flag/checksum mutation, version 33 preservation and nested ghost/full
+passage-mask restoration. Existing version-specific fixtures explicitly omit
+newer metadata to preserve their layout/corruption checks. Full non-incremental
+Release rebuild: zero warnings/errors; 5,799 solution tests passed, zero
+failed/skipped (Playsim 4,672). Whitespace checks pass.
+
+Custom class defaults, MBF bouncers, hitscan/autoaim behavior, actor recreation
+and native geometry/runtime acceptance remain incomplete. Phases 1–3 and
+invasion synchronization acceptance remain open.
+
 ## Validation
 
-- Release solution: **5,784 passed, zero failed/skipped**, 4,861 cases above baseline.
+- Release solution: **5,799 passed, zero failed/skipped**, 4,876 cases above baseline.
   Protocol 15; Gamedata 29; Transport 10; Master 1; RCON 6; MapLoader 533;
-  Playsim 4,657; Client 12; Net.Core 351; Pregame 97; Server 65; Scripting 8.
+  Playsim 4,672; Client 12; Net.Core 351; Pregame 97; Server 65; Scripting 8.
 - The lighting pass initially saw a five-second timeout in
   `Pump_LiveSessionReceivesGuestClientInput`; it passed the targeted rerun and the
   subsequent full solution run. No timeout/test-disabling workaround was added.
