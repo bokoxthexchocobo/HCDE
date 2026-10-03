@@ -194,8 +194,6 @@ public sealed class MonsterBrain(MonsterAttack attack)
         if (ReactionTics > 0) { ReactionTics--; return; }
         if (_healTics > 0) { _healTics--; Mode = MonsterMode.Heal; return; }
         var target = sim.Actors.FirstOrDefault(a => a.Id == TargetId && a.CanTakeDamage);
-        var attacker = sim.Actors.FirstOrDefault(a => a.Id == actor.LastDamageSourceId && a.CanTakeDamage && a.Id != actor.Id);
-        if (attacker != null && attacker is not ProjectileActor) target = attacker;
         target ??= sim.Actors.FirstOrDefault(candidate => candidate.Id == actor.LastHeardTargetId && candidate.CanTakeDamage
             && (!actor.Ambush || CombatTrace.HasLineOfSight(sim, actor, candidate)));
         target ??= sim.Players.Where(p => p.CanTakeDamage && Distance(actor, p) <= 2048 && CombatTrace.HasLineOfSight(sim, actor, p))

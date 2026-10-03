@@ -8000,11 +8000,36 @@ chase-action cadence, state scheduling, conversation/in-chase guards and complet
 goal/invisibility target semantics remain unfinished. Representative native
 invasion round/timer/enemy sessions and phase 1–3 acceptance remain required.
 
+## Conversion and audit: retaliation decisions survive chase ticks (2026-10-03)
+
+Compared `ReactToDamage` in `src/playsim/p_interaction.cpp` and `A_DoChase`
+in `src/playsim/p_enemy.cpp`. Native damage handling accepts or rejects the
+source as a new target through OkayToSwitchTarget; normal chase uses that target.
+The managed Tick previously replaced a valid current target with LastDamageSourceId
+unconditionally, undoing policy rejection on the following tick. Removed this
+redundant override; damage wake-up remains responsible for retaliation targets.
+LastDamageSourceId remains available for death attribution and other consumers.
+
+Seven new cases apply real damage and then tick the brain. They verify that
+threshold, NoTargetSwitch, NoHatePlayers, NeverTarget, NoTarget and friendly-source
+rejections persist, while an accepted switch persists and remembers the prior
+enemy. Each rejection case checks that damage attribution did record the source,
+so it exercises the formerly broken interaction rather than blocked damage.
+Existing chase threshold, retaliation memory, resurrection and invasion cases pass.
+
+Full Release suite: 4,762 passed, zero failed/skipped; Playsim 3,689.
+Warnings-as-errors Release build: zero warnings/errors; whitespace check passes.
+No checksum fields were added, and the player idle baseline remains unchanged.
+This is a native source comparison and managed regression self-audit. Complete
+native target acquisition, friendship/team/player rules, chase-state scheduling,
+AI save/network state and representative invasion sessions remain unfinished.
+Phases 1–3 are still open.
+
 ## Validation
 
-- Release solution: **4,755 passed, zero failed/skipped**, 3,832 cases above baseline.
+- Release solution: **4,762 passed, zero failed/skipped**, 3,839 cases above baseline.
   Protocol 15; Gamedata 10; Transport 10; Master 1; RCON 6; MapLoader 500;
-  Playsim 3,682; Client 12; Net.Core 351; Pregame 97; Server 63; Scripting 8.
+  Playsim 3,689; Client 12; Net.Core 351; Pregame 97; Server 63; Scripting 8.
 - The lighting pass initially saw a five-second timeout in
   `Pump_LiveSessionReceivesGuestClientInput`; it passed the targeted rerun and the
   subsequent full solution run. No timeout/test-disabling workaround was added.
