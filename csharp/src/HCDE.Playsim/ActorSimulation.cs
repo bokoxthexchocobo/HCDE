@@ -1104,6 +1104,8 @@ public static class ActorSpawner
                 actor.Solid = (defaults.Bits & 0x00000002) != 0;
                 actor.Shootable = (defaults.Bits & 0x00000004) != 0;
                 actor.NoGravity = (defaults.Bits & 0x00000200) != 0;
+                actor.AllowDropOff = (defaults.Bits & 0x00000400) != 0;
+                actor.Floating = (defaults.Bits & 0x00004000) != 0;
                 actor.Dropped = (defaults.Bits & 0x00020000) != 0;
             }
             actor.SpawnCanPickupItems = actor.CanPickupItems;

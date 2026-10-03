@@ -8470,11 +8470,34 @@ scheduling, class flag restoration, DEHACKED flag translation and advanced
 sound/visibility geometry remain unfinished. Source/regression self-audit does
 not replace native invasion sessions or complete phases 1–3, which remain open.
 
+## Conversion and audit: DEHACKED float and drop-off movement flags (2026-10-03)
+
+Converted MF_DROPOFF (0x00000400) and MF_FLOAT (0x00004000) from
+`src/playsim/actor.h` and native DEHACKED default flag assignment. Explicit Bits
+patches now initialize AllowDropOff and Floating. Both remain independent of
+MF_NOGRAVITY, rather than inferring gravity suppression from FLOAT.
+
+Seven cases cover all flag combinations and actual movement across a ledge
+that exceeds the normal maximum drop. The initial single-boundary fixture lacked
+closed sector geometry and did not establish the intended drop; it was replaced
+with the existing closed two-room geometry. The corrected fixture rejects the
+ledge without either flag and allows it with DropOff or Float.
+Full Release suite: 4,882 passed, zero failed/skipped; Playsim 3,809.
+Warnings-as-errors build: zero warnings/errors; whitespace check passes. Existing
+movement, patch and invasion cases pass. Existing actor checksum fields cover both
+flags; player idle baseline unchanged. Unrelated line-ending edits are excluded.
+
+This converts flag initialization into existing managed movement semantics,
+not full native floating chase, drop-off navigation, class default restoration
+or complete DEHACKED flag translation. Source/regression self-audit does not
+replace representative native invasion sessions or complete phases 1–3, which
+remain open.
+
 ## Validation
 
-- Release solution: **4,875 passed, zero failed/skipped**, 3,952 cases above baseline.
+- Release solution: **4,882 passed, zero failed/skipped**, 3,959 cases above baseline.
   Protocol 15; Gamedata 10; Transport 10; Master 1; RCON 6; MapLoader 500;
-  Playsim 3,802; Client 12; Net.Core 351; Pregame 97; Server 63; Scripting 8.
+  Playsim 3,809; Client 12; Net.Core 351; Pregame 97; Server 63; Scripting 8.
 - The lighting pass initially saw a five-second timeout in
   `Pump_LiveSessionReceivesGuestClientInput`; it passed the targeted rerun and the
   subsequent full solution run. No timeout/test-disabling workaround was added.
