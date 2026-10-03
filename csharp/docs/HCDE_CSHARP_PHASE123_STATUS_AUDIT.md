@@ -10858,11 +10858,33 @@ and native geometry/runtime acceptance remain incomplete. This is direct
 missile contact only; radius damage remains separate. Phases 1–3 and invasion
 synchronization acceptance remain open.
 
+## Conversion and audit: spectral contact persistence (2026-10-03)
+
+Managed save version 36 now captures and restores SPECTRAL on targets and
+missiles, including explicit false values. Its actor table wraps managed
+versions 18–35. Older saves without the table preserve the current spectral
+flag. Native audit checked actor flags4 serialization in
+src/playsim/p_mobj.cpp; this remains a managed save format, not native save
+interoperability.
+
+Nineteen new regression cases cover all target/missile spectral combinations
+after in-memory and serialized restore, resumed contact and damage, invalid
+flags, malformed trailer size/version/count, incomplete zero tables,
+version-35 compatibility and nested ghost/passage-mask restoration.
+Validation runs before clock or live actor mutation. Earlier archive fixtures
+explicitly omit the newer metadata to retain their original version coverage.
+
+The nonincremental Release rebuild passed with zero warnings/errors.
+All 5,863 solution tests passed, zero failed/skipped (Playsim 4,736).
+Whitespace checks pass. Remaining work includes native Strife spectral damage
+rules, custom actor defaults and callbacks, geometry/runtime acceptance and
+full native save support. Phases 1–3 remain incomplete; invasion round,
+timer and enemy synchronization still require runtime acceptance.
 ## Validation
 
-- Release solution: **5,844 passed, zero failed/skipped**, 4,921 cases above baseline.
+- Release solution: **5,863 passed, zero failed/skipped**, 4,940 cases above baseline.
   Protocol 15; Gamedata 29; Transport 10; Master 1; RCON 6; MapLoader 533;
-  Playsim 4,717; Client 12; Net.Core 351; Pregame 97; Server 65; Scripting 8.
+  Playsim 4,736; Client 12; Net.Core 351; Pregame 97; Server 65; Scripting 8.
 - The lighting pass initially saw a five-second timeout in
   `Pump_LiveSessionReceivesGuestClientInput`; it passed the targeted rerun and the
   subsequent full solution run. No timeout/test-disabling workaround was added.

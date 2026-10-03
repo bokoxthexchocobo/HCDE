@@ -108,7 +108,7 @@ public class GhostArchiveTests
     private static byte[] WriteVersion33(AuthoritySimulation sim) => WriteVersion33(sim.CaptureState());
     private static byte[] WriteVersion33(SimSaveState state)
     {
-        foreach (var pose in state.Actors) { pose.NonShootableFlags = null; pose.HitOwnerFlags = null; }
+        foreach (var pose in state.Actors) { pose.NonShootableFlags = null; pose.HitOwnerFlags = null; pose.SpectralFlags = null; }
         return SimSavegame.Write(state);
     }
     private static int TrailerStart(byte[] bytes) => bytes.Length - BinaryPrimitives.ReadInt32LittleEndian(bytes.AsSpan(bytes.Length - 4));

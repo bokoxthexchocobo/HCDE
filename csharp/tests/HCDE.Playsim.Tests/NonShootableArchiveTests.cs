@@ -104,7 +104,7 @@ public class NonShootableArchiveTests
     private static byte[] WriteVersion34(AuthoritySimulation sim) => WriteVersion34(sim.CaptureState());
     private static byte[] WriteVersion34(SimSaveState state)
     {
-        foreach (var pose in state.Actors) pose.HitOwnerFlags = null;
+        foreach (var pose in state.Actors) { pose.HitOwnerFlags = null; pose.SpectralFlags = null; }
         return SimSavegame.Write(state);
     }
     private static int TrailerStart(byte[] bytes) => bytes.Length - BinaryPrimitives.ReadInt32LittleEndian(bytes.AsSpan(bytes.Length - 4));
