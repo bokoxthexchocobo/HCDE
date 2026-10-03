@@ -1106,21 +1106,7 @@ public static class ActorSpawner
             }
             nextId++;
             actor.SpecialPickup = PickupCatalog.IsPickup(actor.DoomEdNum);
-            if (defaults is { BitsPatched: true })
-            {
-                actor.SpecialPickup = (defaults.Bits & 0x00000001) != 0;
-                actor.CanPickupItems = (defaults.Bits & 0x00000800) != 0;
-                actor.Solid = (defaults.Bits & 0x00000002) != 0;
-                actor.Shootable = (defaults.Bits & 0x00000004) != 0;
-                actor.NoBlockmap = (defaults.Bits & 0x00000010) != 0;
-                actor.SpawnCeiling = (defaults.Bits & 0x00000100) != 0;
-                actor.NoGravity = (defaults.Bits & 0x00000200) != 0;
-                actor.AllowDropOff = (defaults.Bits & 0x00000400) != 0;
-                actor.Floating = (defaults.Bits & 0x00004000) != 0;
-                actor.Dropped = (defaults.Bits & 0x00020000) != 0;
-                actor.Friendly = playerStart || !defaults.BitsUseStealth && (defaults.Bits & 0x40000000) != 0;
-                actor.NoBlockMonsters = defaults.NoBlockMonsters;
-            }
+            ApplyPrimaryFlags(actor, defaults, playerStart);
             actor.SpawnCanPickupItems = actor.CanPickupItems;
             actor.SpawnSpecialPickup = actor.SpecialPickup;
             actor.ResurrectionHealth = actor.Health;
@@ -1146,6 +1132,25 @@ public static class ActorSpawner
         }
 
         return actors;
+    }
+
+    internal static void ApplyPrimaryFlags(Actor actor, DehackedActor? defaults, bool playerStart)
+    {
+        if (defaults is { BitsPatched: true })
+        {
+            actor.SpecialPickup = (defaults.Bits & 0x00000001) != 0;
+            actor.CanPickupItems = (defaults.Bits & 0x00000800) != 0;
+            actor.Solid = (defaults.Bits & 0x00000002) != 0;
+            actor.Shootable = (defaults.Bits & 0x00000004) != 0;
+            actor.NoBlockmap = (defaults.Bits & 0x00000010) != 0;
+            actor.SpawnCeiling = (defaults.Bits & 0x00000100) != 0;
+            actor.NoGravity = (defaults.Bits & 0x00000200) != 0;
+            actor.AllowDropOff = (defaults.Bits & 0x00000400) != 0;
+            actor.Floating = (defaults.Bits & 0x00004000) != 0;
+            actor.Dropped = (defaults.Bits & 0x00020000) != 0;
+            actor.Friendly = playerStart || !defaults.BitsUseStealth && (defaults.Bits & 0x40000000) != 0;
+            actor.NoBlockMonsters = defaults.NoBlockMonsters;
+        }
     }
 
     internal static void ApplyExtendedDefaults(Actor actor, DehackedActor? defaults)
@@ -1844,11 +1849,21 @@ public sealed class AuthoritySimulation
         if (defaults is { ReactionTimePatched: true }) bot.ReactionTime = defaults.ReactionTime;
         bot.Mass = defaults is { MassPatched: true } ? defaults.Mass : DoomActorCatalog.MassOf(doomEdNum);
         if (defaults is { MissileDamagePatched: true }) bot.Damage = defaults.MissileDamage;
+        ActorSpawner.ApplyPrimaryFlags(bot, defaults, playerStart: false);
+        bot.Ambush = defaults is { BitsPatched: true } && (defaults.Bits & 0x20) != 0;
+        if (defaults is { BitsPatched: true }) bot.IsMonster = (defaults.Bits & 0x00400000) != 0;
+        bot.SpawnCanPickupItems = bot.CanPickupItems;
+        bot.SpawnSpecialPickup = bot.SpecialPickup;
         ActorSpawner.ApplyExtendedDefaults(bot, defaults);
         ThingActivation.InitializeSpawn(bot, false);
         bot.RememberPosition();
         bot.Simulation = this;
         ActorPhysics.PlaceOnFloor(this, bot);
+        if (bot.SpawnCeiling)
+        {
+            bot.Z = Fixed.FromDouble(CeilingOf(bot.SectorIndex) - bot.Height.ToDouble());
+            bot.OnGround = bot.Z.ToDouble() <= FloorOf(bot.SectorIndex);
+        }
         _actors.Add(bot);
         Thinkers.Add(bot, ThinkerStat.Default);
         return bot;

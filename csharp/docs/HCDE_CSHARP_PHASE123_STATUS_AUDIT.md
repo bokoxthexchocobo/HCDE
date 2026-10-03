@@ -9558,11 +9558,30 @@ native movement cadence remain incomplete. Other factories, phases 1–3,
 persistence/network/native sessions and invasion synchronization validation
 remain open.
 
+## Conversion and audit: dynamic primary class flags (2026-10-03)
+
+Closed AddBot's bypass of the supported DEHACKED primary flags already traced
+to `src/gamedata/d_dehacked.cpp`. Map and dynamic spawning share collision,
+blockmap, ceiling, gravity, dropoff, floating, pickup, dropped, friendliness
+and NoBlockMonsters assignments. Dynamic ambush and COUNTKILL-derived monster
+classification are applied before dormant initialization. Ceiling-spawn bots
+are placed at destination ceiling minus actor height.
+
+Eight regressions cover six combined flag sets (including cleared flags,
+FRIEND and STEALTH selectors), monster classification versus dormancy/damage,
+and ceiling placement in real geometry. Full Release solution: 5,228 passed,
+zero failed/skipped; Playsim 4,114. Release warnings-as-errors build and
+whitespace check pass. Existing field hashes apply. Full unsupported flag
+sets, class remapping, unpatched catalog inheritance, frames/actions, native
+spawn collision/hooks and other dynamic factories remain incomplete. Invasion
+uses AddBot but native wave/timer/enemy synchronization acceptance is still
+unverified. Phases 1–3, persistence/network and native sessions remain open.
+
 ## Validation
 
-- Release solution: **5,220 passed, zero failed/skipped**, 4,297 cases above baseline.
+- Release solution: **5,228 passed, zero failed/skipped**, 4,305 cases above baseline.
   Protocol 15; Gamedata 18; Transport 10; Master 1; RCON 6; MapLoader 533;
-  Playsim 4,106; Client 12; Net.Core 351; Pregame 97; Server 63; Scripting 8.
+  Playsim 4,114; Client 12; Net.Core 351; Pregame 97; Server 63; Scripting 8.
 - The lighting pass initially saw a five-second timeout in
   `Pump_LiveSessionReceivesGuestClientInput`; it passed the targeted rerun and the
   subsequent full solution run. No timeout/test-disabling workaround was added.
