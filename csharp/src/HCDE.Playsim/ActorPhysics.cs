@@ -588,6 +588,18 @@ public static class ActorPhysics
                     || DistanceSquared(cx, cy, ox, oy, x, y) < reach * reach - 1e-8
                     && (before >= reach * reach || after < before - 1e-8)))
                     continue;
+                // PIT_CheckThing transfers horizontal momentum before rejecting a blasted collision.
+                if (actor.Blasted && other.Shootable && other.IsMonster && !other.Boss && !other.DontBlast)
+                {
+                    other.VelocityX = Fixed.FromDouble(other.VelocityX.ToDouble() + actor.VelocityX.ToDouble());
+                    other.VelocityY = Fixed.FromDouble(other.VelocityY.ToDouble() + actor.VelocityY.ToDouble());
+                    if (Math.Abs(other.VelocityX.ToDouble()) + Math.Abs(other.VelocityY.ToDouble()) > 3)
+                    {
+                        ActorDamage.Apply(other, actor.Mass / 100 + 1, actor, inflictor: actor);
+                        ActorDamage.Apply(actor, (other.Mass / 100 + 1) >> 2, other, inflictor: other);
+                    }
+                    blocker = other; return false;
+                }
                 // P_TryMove lets a grounded player onto a non-player when the top is a legal step
                 // and the head still fits. PIT_CheckThing lets a grounded monster onto MF4_ACTLIKEBRIDGE.
                 // P_TestMobjZ lets MF_ICECORPSE land on a corpse.

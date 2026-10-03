@@ -161,6 +161,8 @@ public class Actor : Thinker
     public bool NoDropOff { get; set; }
     /// <summary>Native MF2_BLASTED: bypasses the supported dropoff limit until horizontal motion stops.</summary>
     public bool Blasted { get; set; }
+    public bool Boss { get; set; }
+    public bool DontBlast { get; set; }
     /// <summary>Native <c>MF4_NOTARGETSWITCH</c>. Wake-up will not pick a new chase target while one is alive.</summary>
     public bool NoTargetSwitch { get; set; }
     /// <summary>Native <c>MF4_NOHATEPLAYERS</c>. <see cref="OkayToSwitchTarget"/> ignores player sources.</summary>
@@ -1141,6 +1143,7 @@ public static class ActorSpawner
             actor.Ambush = thing.Ambush || defaults is { BitsPatched: true } && (defaults.Bits & 0x00000020) != 0;
             if (defaults is { ReactionTimePatched: true }) actor.ReactionTime = defaults.ReactionTime;
             actor.Brain = MonsterBrain.ForType(definitionType);
+            actor.Boss = definitionType is 7 or 16;
             if (!playerStart) actor.Damage = definition?.Damage ?? 0;
             if (defaults is { MissileDamagePatched: true }) actor.Damage = defaults.MissileDamage;
             actor.IsMonster = !playerStart && (defaults is { BitsPatched: true }
@@ -1878,6 +1881,7 @@ public sealed class AuthoritySimulation
         }
         if (defaults is { ReactionTimePatched: true }) bot.ReactionTime = defaults.ReactionTime;
         bot.Mass = defaults is { MassPatched: true } ? defaults.Mass : DoomActorCatalog.MassOf(definitionType);
+        bot.Boss = definitionType is 7 or 16;
         if (defaults is { MissileDamagePatched: true }) bot.Damage = defaults.MissileDamage;
         ActorSpawner.ApplyPrimaryFlags(bot, defaults, playerStart: false);
         bot.Ambush = defaults is { BitsPatched: true } && (defaults.Bits & 0x20) != 0;
@@ -2806,6 +2810,8 @@ public sealed class AuthoritySimulation
             if (actor.FloorHugger) hash = Mix(hash, 0x46485547u);
             if (actor.NoDropOff) hash = Mix(hash, 0x4E44524Fu);
             if (actor.Blasted) hash = Mix(hash, 0x424C5354u);
+            if (actor.Boss) hash = Mix(hash, 0x424F5353u);
+            if (actor.DontBlast) hash = Mix(hash, 0x44424C53u);
             if (actor.SpawnCeiling) hash = Mix(hash, 0x4345494Cu);
             if (actor.NoBlockMonsters) hash = Mix(hash, 0x4E424D4Fu);
             if (actor.NoBlockmap) hash = Mix(hash, 0x4E424D50u);

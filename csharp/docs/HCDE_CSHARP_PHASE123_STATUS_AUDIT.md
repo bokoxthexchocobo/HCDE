@@ -10429,11 +10429,35 @@ managed move attempt; native multi-stage checks/retry counts, push specials,
 actor-to-actor momentum/damage, terrain and full collision timing are unfinished.
 Native invasion acceptance and gameplay phases 1–3 remain open.
 
+## Conversion and audit: blasted actor impacts (2026-10-03)
+
+Converted the supported blocking actor collision branch against
+`src/playsim/p_map.cpp` (`PIT_CheckThing`): transfer horizontal momentum to
+shootable monsters except BOSS/DONTBLAST targets; above the strict summed
+absolute horizontal speed threshold of 3, apply source-mass damage and
+quarter target-mass return damage through the shared damage boundary.
+Added case-insensitive ACS BOSS/DONTBLAST flags and conditional checksum
+markers. Map and dynamic Cyberdemon/SpiderMastermind spawns set BOSS;
+Baron BOSSDEATH does not imply BOSS, matching the Doom ZScript defaults.
+
+Twelve regressions cover the threshold, mass damage, four exclusions, both
+ACS flags, map/dynamic class defaults and species immunity. Audit caught
+species damage suppression: it must not prevent momentum transfer.
+Release solution: 5,591 passed, zero failed/skipped; Playsim 4,464.
+Warnings-as-errors build passes with zero warnings/errors.
+
+This is a source-audited managed collision subset. Native typed outgoing
+DamageType, bleed effects, non-solid shootable collisions, full collision
+geometry/retry counts and fixed-point versus native floating-point behavior
+remain open. BOSS/DONTBLAST mutations are not yet persisted in pose archives.
+No native runtime acceptance or invasion round/timer synchronization signoff
+is claimed; phases 1–3 remain incomplete.
+
 ## Validation
 
-- Release solution: **5,579 passed, zero failed/skipped**, 4,656 cases above baseline.
+- Release solution: **5,591 passed, zero failed/skipped**, 4,668 cases above baseline.
   Protocol 15; Gamedata 29; Transport 10; Master 1; RCON 6; MapLoader 533;
-  Playsim 4,452; Client 12; Net.Core 351; Pregame 97; Server 65; Scripting 8.
+  Playsim 4,464; Client 12; Net.Core 351; Pregame 97; Server 65; Scripting 8.
 - The lighting pass initially saw a five-second timeout in
   `Pump_LiveSessionReceivesGuestClientInput`; it passed the targeted rerun and the
   subsequent full solution run. No timeout/test-disabling workaround was added.
