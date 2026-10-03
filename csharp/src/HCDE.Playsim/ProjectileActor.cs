@@ -112,15 +112,28 @@ public sealed class ProjectileActor : Actor
         TrackTarget(sim);
         var vx = VelocityX.ToDouble(); var vy = VelocityY.ToDouble(); var vz = VelocityZ.ToDouble();
         var steps = Math.Max(1, (int)Math.Ceiling(Math.Max(Math.Max(Math.Abs(vx), Math.Abs(vy)), Math.Abs(vz)) / 2));
+        var huggerSector = -1;
         for (var i = 0; i < steps; i++)
         {
             var x = X.ToDouble(); var y = Y.ToDouble(); var z = Z.ToDouble();
             var dx = vx / steps; var dy = vy / steps; var dz = vz / steps;
             var sector = ActorPhysics.SectorAt(sim.Level, x + dx, y + dy);
+            // P_TryMove keeps ceiling huggers at the destination ceiling during XY travel.
+            if (CeilingHugger && sector >= 0 && sector != huggerSector && (dx != 0 || dy != 0))
+            {
+                z = sim.CeilingOf(sector) - Height.ToDouble();
+                Z = Fixed.FromDouble(z);
+                huggerSector = sector;
+            }
             if (NoExplodeFloor && sector >= 0 && z + dz <= sim.FloorOf(sector))
             {
                 dz = sim.FloorOf(sector) - z;
                 vz = 0; VelocityZ = default;
+            }
+            if (CeilingHugger && sector >= 0 && z + dz > sim.CeilingOf(sector) - Height.ToDouble())
+            {
+                dz = sim.CeilingOf(sector) - Height.ToDouble() - z;
+                if (vz > 0) { vz = 0; VelocityZ = default; }
             }
             var fraction = double.PositiveInfinity;
             Actor? victim = null;
@@ -141,7 +154,7 @@ public sealed class ProjectileActor : Actor
                 var part = -1;
                 if (!NoExplodeFloor && z + dz <= floor)
                 { plane = dz < 0 ? Math.Clamp((floor - z) / dz, 0, 1) : 0; part = 0; }
-                if (z + dz > ceiling)
+                if (!CeilingHugger && z + dz > ceiling)
                 {
                     var hit = dz > 0 ? Math.Clamp((ceiling - z) / dz, 0, 1) : 0;
                     if (hit < plane) { plane = hit; part = 1; }

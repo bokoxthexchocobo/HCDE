@@ -10248,11 +10248,33 @@ unchanged. The swept flat-sector collision model remains a subset; native state
 timing, bounce/terrain effects, full savegames and invasion acceptance remain
 open. Gameplay phases 1–3 remain incomplete.
 
+## CEILINGHUGGER projectile conversion audit (2026-10-03)
+
+Actor.CeilingHugger now exposes the native MF3_CEILINGHUGGER subset through managed
+ACS flag reads/writes. Projectile XY travel positions the missile at its flat
+destination ceiling, then vertical travel clamps upward ceiling contact and
+clears positive vertical velocity without impact. Native references are
+P_TryMove in src/playsim/p_map.cpp and P_ZMovement in src/playsim/p_mobj.cpp;
+the registered flag name is in src/scripting/thingdef_data.cpp. Floor/actor
+impacts remain active. A conditional checksum marker covers the enabled flag.
+
+Ten regressions cover stone/sky ceilings with gravity enabled/disabled, travel
+from a lower spawn, floor and same-tic actor damage, clearing the flag, ACS access
+and checksum differences. The gravity regression allows one signed-16.16 unit
+of the existing subdivision rounding. Ceiling positioning occurs once per
+visited sector per tic to avoid erasing downward velocity on every subdivision.
+
+Full Release solution: 5,488 passed, zero failed/skipped; Playsim 4,361.
+Warnings-as-errors build and diff checks pass. Archive format is unchanged;
+CeilingHugger persistence is still open. Native class defaults, slopes/portals,
+full missile state timing, savegames and invasion acceptance remain open.
+Gameplay phases 1–3 remain incomplete.
+
 ## Validation
 
-- Release solution: **5,478 passed, zero failed/skipped**, 4,555 cases above baseline.
+- Release solution: **5,488 passed, zero failed/skipped**, 4,565 cases above baseline.
   Protocol 15; Gamedata 29; Transport 10; Master 1; RCON 6; MapLoader 533;
-  Playsim 4,351; Client 12; Net.Core 351; Pregame 97; Server 65; Scripting 8.
+  Playsim 4,361; Client 12; Net.Core 351; Pregame 97; Server 65; Scripting 8.
 - The lighting pass initially saw a five-second timeout in
   `Pump_LiveSessionReceivesGuestClientInput`; it passed the targeted rerun and the
   subsequent full solution run. No timeout/test-disabling workaround was added.
