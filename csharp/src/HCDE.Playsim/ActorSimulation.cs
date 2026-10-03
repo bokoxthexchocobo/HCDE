@@ -1975,7 +1975,11 @@ public sealed class AuthoritySimulation
         soul.FriendPlayer = parent.FriendPlayer;
         soul.TidToHate = parent.TidToHate;
         soul.NoHatePlayers = parent.NoHatePlayers;
-        if (target?.CanTakeDamage == true) soul.Brain!.StartCharge(soul, target);
+        if (target?.CanTakeDamage == true && !target.NoTarget && !target.NeverTarget)
+        {
+            soul.LastHeardTargetId = target.Id;
+            soul.Brain!.StartCharge(soul, target);
+        }
         soul.RememberPosition();
         _actors.Add(soul);
         Thinkers.Add(soul);

@@ -8133,11 +8133,37 @@ class replacements, complete soul limits and death-time friendly-target policy
 remain unfinished. This is a source/regression self-audit; native invasion
 sessions and complete phase 1–3 acceptance remain open.
 
+## Conversion and audit: spawned soul target exclusions and memory (2026-10-03)
+
+Compared pain-elemental `A_PainShootSkull` and `AActor::CopyFriendliness`
+(`wadsrc/static/zscript/actors/doom/painelemental.zs`, `src/playsim/p_mobj.cpp`).
+Native copying rejects targets with MF3_NOTARGET or MF7_NEVERTARGET and sets
+LastHeard alongside the accepted target. The managed spawned-soul path now
+checks both supported flags and records LastHeardTargetId before StartCharge.
+Null targets leave both pointers empty. The existing managed CanTakeDamage
+requirement is retained; native copying itself does not require health/shootability,
+so dead/non-shootable target copying and charge behavior still need conversion.
+
+Six new cases cover all four exclusion-flag combinations, a null target and
+normal target recovery from copied hearing memory after stopping the charge and
+clearing the current target. The recovery target is a monster, with the player
+outside visual acquisition range, to ensure the hearing path supplies it.
+Full Release solution: 4,799 passed, zero failed/skipped; Playsim 3,726.
+Warnings-as-errors Release build: zero warnings/errors; whitespace check passes.
+Existing pain-elemental, friendship and invasion cases remain passing. No checksum
+fields were added; the managed player idle baseline remains unchanged.
+
+This closes the exclusion/memory subset, not full native CopyFriendliness,
+PAF action options, team/last-look flags, soul target pointer lifetime or native
+charge-state scheduling. Death-time friendship changes, representative native
+invasion sessions and phase 1–3 acceptance remain open. This is source comparison
+and managed regression self-audit.
+
 ## Validation
 
-- Release solution: **4,793 passed, zero failed/skipped**, 3,870 cases above baseline.
+- Release solution: **4,799 passed, zero failed/skipped**, 3,876 cases above baseline.
   Protocol 15; Gamedata 10; Transport 10; Master 1; RCON 6; MapLoader 500;
-  Playsim 3,720; Client 12; Net.Core 351; Pregame 97; Server 63; Scripting 8.
+  Playsim 3,726; Client 12; Net.Core 351; Pregame 97; Server 63; Scripting 8.
 - The lighting pass initially saw a five-second timeout in
   `Pump_LiveSessionReceivesGuestClientInput`; it passed the targeted rerun and the
   subsequent full solution run. No timeout/test-disabling workaround was added.
