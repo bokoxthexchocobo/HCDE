@@ -10207,11 +10207,33 @@ state graphs or death-state timing. Actor membership recreation, owner/tracer an
 class configuration restoration, full savegames and native invasion acceptance
 remain open. Gameplay phases 1–3 remain incomplete.
 
+## Projectile homing-pointer persistence audit (2026-10-03)
+
+Live projectile captures now include owner identity and nullable tracer identity
+in an optional version-24 extension over version 23. Restore verifies the existing
+projectile owner before mutation and restores the tracer, clearing it when the
+saved target is missing/destroyed. Null targets clear changed targets; absent
+legacy records preserve current pointers. Non-homing projectile tracer records
+and pointer records without lifetime metadata are rejected. The owner is checked,
+not reassigned; actor recreation remains outside this archive.
+
+Native AActor::Serialize in src/playsim/p_mobj.cpp saves target/tracer references.
+Managed homing still uses its existing TrackTarget eligibility/cadence. Ten new
+cases cover memory/serialized resumed homing and targetless travel, missing and
+destroyed targets, owner mismatch atomicity, invalid non-homing targets, malformed
+absent records and legacy preservation. Version-22/23 layout fixtures explicitly
+omit newer records to continue testing their original formats.
+
+Full Release solution: 5,467 passed, zero failed/skipped; Playsim 4,340.
+Warnings-as-errors build and diff checks pass. Checksum format is unchanged.
+Class properties, membership recreation, native missile state timing, full
+savegames and native invasion acceptance remain open. Phases 1–3 are incomplete.
+
 ## Validation
 
-- Release solution: **5,457 passed, zero failed/skipped**, 4,534 cases above baseline.
+- Release solution: **5,467 passed, zero failed/skipped**, 4,544 cases above baseline.
   Protocol 15; Gamedata 29; Transport 10; Master 1; RCON 6; MapLoader 533;
-  Playsim 4,330; Client 12; Net.Core 351; Pregame 97; Server 65; Scripting 8.
+  Playsim 4,340; Client 12; Net.Core 351; Pregame 97; Server 65; Scripting 8.
 - The lighting pass initially saw a five-second timeout in
   `Pump_LiveSessionReceivesGuestClientInput`; it passed the targeted rerun and the
   subsequent full solution run. No timeout/test-disabling workaround was added.

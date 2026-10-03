@@ -16,7 +16,7 @@ public class ProjectileFlagArchiveTests
         var state = sim.CaptureState();
         if (serialized)
         {
-            foreach (var pose in state.Actors) pose.ProjectileLifetime = null;
+            foreach (var pose in state.Actors) { pose.ProjectileLifetime = null; pose.ProjectilePointers = null; }
             var bytes = SimSavegame.Write(state);
             Assert.Equal(enabled ? 22 : 18, BinaryPrimitives.ReadUInt16LittleEndian(bytes.AsSpan(4)));
             Assert.True(SimSavegame.TryRead(bytes, out state, out var error), error);
@@ -82,7 +82,7 @@ public class ProjectileFlagArchiveTests
 
     private static byte[] WriteFlagsOnly(AuthoritySimulation sim)
     {
-        var state = sim.CaptureState(); foreach (var pose in state.Actors) pose.ProjectileLifetime = null;
+        var state = sim.CaptureState(); foreach (var pose in state.Actors) { pose.ProjectileLifetime = null; pose.ProjectilePointers = null; }
         return SimSavegame.Write(state);
     }
 

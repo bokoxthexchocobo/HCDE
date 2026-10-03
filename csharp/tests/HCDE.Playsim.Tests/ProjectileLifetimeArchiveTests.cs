@@ -15,7 +15,7 @@ public class ProjectileLifetimeArchiveTests
         var state = sim.CaptureState();
         if (serialized)
         {
-            var bytes = SimSavegame.Write(state); Assert.Equal(23, BinaryPrimitives.ReadUInt16LittleEndian(bytes.AsSpan(4)));
+            foreach (var pose in state.Actors) pose.ProjectilePointers = null; var bytes = SimSavegame.Write(state); Assert.Equal(23, BinaryPrimitives.ReadUInt16LittleEndian(bytes.AsSpan(4)));
             Assert.True(SimSavegame.TryRead(bytes, out state, out var error), error);
         }
         for (var i = 0; i < 30; i++) sim.Tick();
@@ -30,7 +30,7 @@ public class ProjectileLifetimeArchiveTests
     [InlineData(176)]
     public void MalformedTimerIsRejected(int tics)
     {
-        var sim = Room(); Shoot(sim); var bytes = SimSavegame.Write(sim);
+        var sim = Room(); Shoot(sim); var captured = sim.CaptureState(); foreach (var pose in captured.Actors) pose.ProjectilePointers = null; var bytes = SimSavegame.Write(captured);
         var size = BinaryPrimitives.ReadInt32LittleEndian(bytes.AsSpan(bytes.Length - 4));
         BinaryPrimitives.WriteInt32LittleEndian(bytes.AsSpan(bytes.Length - size + 16), tics);
         Assert.False(SimSavegame.TryRead(bytes, out var state, out var error));
@@ -61,7 +61,7 @@ public class ProjectileLifetimeArchiveTests
     public void LegacyArchivePreservesExistingCountdown()
     {
         var sim = Room(); var missile = Shoot(sim); var state = sim.CaptureState();
-        foreach (var pose in state.Actors) pose.ProjectileLifetime = null;
+        foreach (var pose in state.Actors) { pose.ProjectileLifetime = null; pose.ProjectilePointers = null; }
         Assert.True(SimSavegame.TryRead(SimSavegame.Write(state), out state, out var error), error);
         for (var i = 0; i < 10; i++) sim.Tick(); sim.RestoreState(state);
         Assert.Equal(165, missile.RemainingTics);

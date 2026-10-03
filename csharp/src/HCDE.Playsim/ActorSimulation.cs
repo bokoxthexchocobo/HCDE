@@ -2181,6 +2181,8 @@ public sealed class AuthoritySimulation
                 ProjectileFlags = actor.NoExplodeFloor ? 1 : 0,
                 ProjectileLifetime = actor is ProjectileActor { Destroyed: false } projectile
                     ? new SimProjectileLifetime(projectile.RemainingTics, projectile.Kind) : null,
+                ProjectilePointers = actor is ProjectileActor { Destroyed: false } pointerProjectile
+                    ? new SimProjectilePointers(pointerProjectile.Owner.Id, pointerProjectile.TracerTargetId) : null,
                 Pickup = PickupCatalog.IsPickup(actor.DoomEdNum)
                     ? new SimPickupProperties(actor.PickupAmount, actor.IgnoreAmmoSkill, actor.Depleted) : null,
                 Health = actor.Health,
@@ -2214,6 +2216,7 @@ public sealed class AuthoritySimulation
         SimSavegame.ValidateDeathFlags(state);
         SimProjectileFlagArchive.Validate(state);
         SimProjectileLifetimeArchive.Validate(state);
+        SimProjectilePointerArchive.Validate(state);
         SimPainDeathArchive.Validate(state);
         if (state.GeometryHealth is { } savedHealth && (savedHealth.Lines.Count != Level.Lines.Count
             || savedHealth.Sectors.Count != Level.Sectors.Count || !savedHealth.Groups.Keys.Order().SequenceEqual(HealthGroups.Keys.Order())))
@@ -2229,6 +2232,10 @@ public sealed class AuthoritySimulation
         foreach (var pose in state.Actors)
         {
             var actor = _actors.FirstOrDefault(candidate => candidate.Id == pose.Id);
+            if (pose.ProjectilePointers is { } pointers &&
+                (actor is not ProjectileActor pointerMissile || pointerMissile.Destroyed || pointerMissile.Owner.Id != pointers.OwnerId ||
+                    pointers.TracerTargetId.HasValue && pointerMissile.Kind != ProjectileKind.RevenantTracer))
+                throw new InvalidOperationException("Saved projectile pointers do not match the current actor.");
             if (pose.ProjectileLifetime is { } lifetime &&
                 (actor is not ProjectileActor missile || missile.Destroyed || missile.Kind != lifetime.Kind))
                 throw new InvalidOperationException("Saved projectile lifetime does not match the current actor.");
@@ -2307,6 +2314,9 @@ public sealed class AuthoritySimulation
             if (pose.ProjectileFlags is { } projectileFlags) actor.NoExplodeFloor = (projectileFlags & 1) != 0;
             if (pose.ProjectileLifetime is { } savedLifetime && actor is ProjectileActor savedProjectile)
                 savedProjectile.RestoreRemainingTics(savedLifetime.Tics);
+            if (pose.ProjectilePointers is { } savedPointers && actor is ProjectileActor pointerProjectile)
+                pointerProjectile.RestoreTracerTarget(_actors.Any(a => a.Id == savedPointers.TracerTargetId && !a.Destroyed)
+                    ? savedPointers.TracerTargetId : null);
             if (pose.Roll is { } roll) actor.Roll = new BamAngle(roll);
             if (pose.ContactFlags is { } contactFlags)
             {
