@@ -2190,6 +2190,7 @@ public sealed class AuthoritySimulation
                 ProjectileFlags = actor.NoExplodeFloor ? 1 : 0,
                 CeilingFlags = actor.CeilingHugger ? 1 : 0,
                 FloorHuggerFlags = (actor.FloorHugger ? 1 : 0) | (actor.NoDropOff ? 2 : 0),
+                BlastedFlags = actor.Blasted ? 1 : 0,
                 ProjectileLifetime = actor is ProjectileActor { Destroyed: false } projectile
                     ? new SimProjectileLifetime(projectile.RemainingTics, projectile.Kind) : null,
                 ProjectilePointers = actor is ProjectileActor { Destroyed: false } pointerProjectile
@@ -2230,6 +2231,7 @@ public sealed class AuthoritySimulation
         SimProjectilePointerArchive.Validate(state);
         SimCeilingHuggerArchive.Validate(state);
         SimFloorHuggerArchive.Validate(state);
+        SimBlastedArchive.Validate(state);
         SimPainDeathArchive.Validate(state);
         if (state.GeometryHealth is { } savedHealth && (savedHealth.Lines.Count != Level.Lines.Count
             || savedHealth.Sectors.Count != Level.Sectors.Count || !savedHealth.Groups.Keys.Order().SequenceEqual(HealthGroups.Keys.Order())))
@@ -2326,6 +2328,7 @@ public sealed class AuthoritySimulation
             if (pose.DeathFlags is { } deathFlags) actor.DeathDamageType = deathFlags == 1 ? "Massacre" : null;
             if (pose.ProjectileFlags is { } projectileFlags) actor.NoExplodeFloor = (projectileFlags & 1) != 0;
             if (pose.CeilingFlags is { } ceilingFlags) actor.CeilingHugger = ceilingFlags == 1;
+            if (pose.BlastedFlags is { } blastedFlags) actor.Blasted = blastedFlags == 1;
             if (pose.FloorHuggerFlags is { } floorHuggerFlags)
             {
                 actor.FloorHugger = (floorHuggerFlags & 1) != 0;

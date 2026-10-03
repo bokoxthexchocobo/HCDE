@@ -10379,11 +10379,28 @@ collision damage, or native blasted wall sliding. Blasted persistence, native
 XY/Z timing detail, full touching-floor geometry and invasion acceptance remain
 open. Gameplay phases 1–3 remain incomplete.
 
+## BLASTED persistence conversion audit (2026-10-03)
+
+Capture/restore now preserves Blasted with an optional version-27 flag table over
+versions 18–26. Enabled tables require complete actor metadata; invalid bits are
+rejected before restore mutation. All-zero captures retain existing archive
+versions. Versions 18–26 decode with this newly supported flag cleared; older
+absent metadata preserves current state. Native AActor::Serialize in
+src/playsim/p_mobj.cpp archives flags2, containing MF2_BLASTED.
+
+Nine regressions cover memory/serialized set/clear, restored ledge motion with
+NoDropOff, stationary clearing after restoration, invalid serialized/memory bits,
+mutation safety and incomplete writes. Full Release solution: 5,562 passed, zero
+failed/skipped; Playsim 4,435. Warnings-as-errors build and diff checks pass.
+Checksum format is unchanged. Blast initiation/collision damage/sliding, full
+native movement timing, actor recreation, full savegames and native invasion
+acceptance remain unfinished. Gameplay phases 1–3 remain incomplete.
+
 ## Validation
 
-- Release solution: **5,553 passed, zero failed/skipped**, 4,630 cases above baseline.
+- Release solution: **5,562 passed, zero failed/skipped**, 4,639 cases above baseline.
   Protocol 15; Gamedata 29; Transport 10; Master 1; RCON 6; MapLoader 533;
-  Playsim 4,426; Client 12; Net.Core 351; Pregame 97; Server 65; Scripting 8.
+  Playsim 4,435; Client 12; Net.Core 351; Pregame 97; Server 65; Scripting 8.
 - The lighting pass initially saw a five-second timeout in
   `Pump_LiveSessionReceivesGuestClientInput`; it passed the targeted rerun and the
   subsequent full solution run. No timeout/test-disabling workaround was added.
