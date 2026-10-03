@@ -1130,6 +1130,7 @@ public static class ActorSpawner
                 actor.CanSlide = (defaults.Bits2 & 0x400) != 0;
                 actor.Invulnerable = (defaults.Bits2 & 0x08000000) != 0;
             }
+            if (defaults is { GravityPatched: true }) actor.Gravity = Fixed.FromDouble(defaults.Gravity);
             actor.Ambush = thing.Ambush || defaults is { BitsPatched: true } && (defaults.Bits & 0x00000020) != 0;
             if (defaults is { ReactionTimePatched: true }) actor.ReactionTime = defaults.ReactionTime;
             actor.Brain = MonsterBrain.ForType(definitionType);

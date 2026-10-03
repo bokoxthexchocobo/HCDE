@@ -9074,11 +9074,25 @@ forced sliding, missile exceptions, complete corner tracing/icy bounce, save/net
 flags and representative native-engine fixtures remain open. Phases 1–3 and
 invasion round/timer/enemy synchronization validation remain incomplete.
 
+## DEHACKED LOGRAV quarter-gravity assignment — 2026-10-03
+
+Native PatchThing in `src/gamedata/d_dehacked.cpp` remaps LOGRAV (extended bit 0)
+to Gravity=0.25 and clears the flag bit. Converted this assignment with explicit
+gravity metadata in cloned patch records and application to spawned actors.
+Later extended flag replacement preserves the separate gravity side effect.
+Four new regressions cover ordinary/quarter/no-gravity falling, bit cleanup,
+chained assignment and baseline preservation. Release suite: 5,056 passed,
+zero failed/skipped; Playsim 3,975. Warnings-as-errors build: zero warnings/errors.
+No checksum fields changed; actor gravity already participates in hashing.
+Remaining extended flags, native gravity cadence, archive/network state and
+representative engine fixtures remain open. Phases 1–3 and invasion synchronization
+validation remain incomplete.
+
 ## Validation
 
-- Release solution: **5,052 passed, zero failed/skipped**, 4,129 cases above baseline.
+- Release solution: **5,056 passed, zero failed/skipped**, 4,133 cases above baseline.
   Protocol 15; Gamedata 18; Transport 10; Master 1; RCON 6; MapLoader 500;
-  Playsim 3,971; Client 12; Net.Core 351; Pregame 97; Server 63; Scripting 8.
+  Playsim 3,975; Client 12; Net.Core 351; Pregame 97; Server 63; Scripting 8.
 - The lighting pass initially saw a five-second timeout in
   `Pump_LiveSessionReceivesGuestClientInput`; it passed the targeted rerun and the
   subsequent full solution run. No timeout/test-disabling workaround was added.

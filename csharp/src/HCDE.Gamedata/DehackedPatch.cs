@@ -24,6 +24,8 @@ public sealed class DehackedActor
     public bool BitsPatched { get; set; }
     public uint Bits2 { get; set; }
     public bool Bits2Patched { get; set; }
+    public bool GravityPatched { get; set; }
+    public double Gravity { get; set; } = 1;
     public bool BitsUseStealth { get; set; }
     public bool NoBlockMonsters { get; set; }
     public int SeeSound { get; set; }
@@ -281,7 +283,12 @@ public static class DehackedPatch
                 }
                 if (changed2)
                 {
-                    actor.Bits2 = bits2;
+                    if ((bits2 & 1) != 0)
+                    {
+                        actor.Gravity = 0.25;
+                        actor.GravityPatched = true;
+                    }
+                    actor.Bits2 = bits2 & ~1u;
                     actor.Bits2Patched = true;
                 }
             }
@@ -453,7 +460,7 @@ public static class DehackedPatch
     private static readonly IReadOnlyDictionary<string, uint> SupportedThingBits2 =
         new Dictionary<string, uint>(StringComparer.OrdinalIgnoreCase)
         {
-            ["NOTELEPORT"] = 0x80, ["CANSLIDE"] = 0x400, ["INVULNERABLE"] = 0x08000000,
+            ["LOGRAV"] = 1, ["NOTELEPORT"] = 0x80, ["CANSLIDE"] = 0x400, ["INVULNERABLE"] = 0x08000000,
         };
 
     // Thing/Frame use decimal strtoll/atoll: stop at the first non-digit; no digits means zero.
