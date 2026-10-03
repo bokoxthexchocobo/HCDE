@@ -10270,11 +10270,29 @@ CeilingHugger persistence is still open. Native class defaults, slopes/portals,
 full missile state timing, savegames and invasion acceptance remain open.
 Gameplay phases 1–3 remain incomplete.
 
+## CEILINGHUGGER persistence conversion audit (2026-10-03)
+
+Capture and restoration now preserve CeilingHugger through an optional version-25
+flag table over versions 18–24. Enabled tables require complete actor metadata;
+invalid flag bits and malformed trailers are rejected. Restore validates before
+clock/actor mutation. All-zero captures retain existing archive versions;
+versions 18–24 decode with the newly supported flag cleared, while earlier
+formats leave absent metadata unchanged. Native AActor::Serialize archives flags3
+in src/playsim/p_mobj.cpp, covering MF3_CEILINGHUGGER.
+
+Nine regressions cover memory/serialized set/clear followed by ceiling contact,
+composition with projectile lifetime/pointer records, invalid serialized/memory
+bits, incomplete tables and malformed size. Full Release solution: 5,497 passed,
+zero failed/skipped; Playsim 4,370. Warnings-as-errors build and diff checks pass.
+Checksum format is unchanged. This remains an id-matched partial pose archive;
+class properties, actor recreation, native state timing, full savegames and
+native invasion acceptance remain open. Phases 1–3 remain incomplete.
+
 ## Validation
 
-- Release solution: **5,488 passed, zero failed/skipped**, 4,565 cases above baseline.
+- Release solution: **5,497 passed, zero failed/skipped**, 4,574 cases above baseline.
   Protocol 15; Gamedata 29; Transport 10; Master 1; RCON 6; MapLoader 533;
-  Playsim 4,361; Client 12; Net.Core 351; Pregame 97; Server 65; Scripting 8.
+  Playsim 4,370; Client 12; Net.Core 351; Pregame 97; Server 65; Scripting 8.
 - The lighting pass initially saw a five-second timeout in
   `Pump_LiveSessionReceivesGuestClientInput`; it passed the targeted rerun and the
   subsequent full solution run. No timeout/test-disabling workaround was added.
