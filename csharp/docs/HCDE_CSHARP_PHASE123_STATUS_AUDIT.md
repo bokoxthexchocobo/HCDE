@@ -8687,11 +8687,31 @@ for unsupported names are managed reporting rather than native debug output.
 Phases 1–3, large-dimension storage conversion and invasion synchronization
 validation remain incomplete.
 
+## DEHACKED supported named Bits — 2026-10-03
+
+Converted eleven first-set names from `wadsrc/static/dehsupp.txt`: SPECIAL,
+SOLID, SHOOTABLE, AMBUSH, SPAWNCEILING, NOGRAVITY, DROPOFF, PICKUP, FLOAT,
+DROPPED and COUNTKILL. Lookup is case insensitive; names and numeric tokens OR
+together within the existing Bits assignment path. Unsupported tokens retain
+diagnostics and do not discard recognized tokens.
+
+Thirteen new cases compare lowercase names with numeric equivalents through
+spawning and a simulation tick, verify mixed-name/numeric gameplay properties,
+and preserve recognized names alongside an unknown token. Full Release solution:
+4,968 passed, zero failed/skipped; Playsim 3,887. Warnings-as-errors build:
+zero warnings/errors. No checksum fields changed.
+
+This is the supported first-set subset, not the complete native DEHSUPP table.
+Extended flag sets, native FRIEND/STEALTH/translation/MBF remapping and remaining
+runtime flag effects still require conversion. Full native movement and AI parity
+is not established by equivalent managed checksums. Phases 1–3, large-dimension
+storage and representative invasion synchronization validation remain incomplete.
+
 ## Validation
 
-- Release solution: **4,955 passed, zero failed/skipped**, 4,032 cases above baseline.
+- Release solution: **4,968 passed, zero failed/skipped**, 4,045 cases above baseline.
   Protocol 15; Gamedata 18; Transport 10; Master 1; RCON 6; MapLoader 500;
-  Playsim 3,874; Client 12; Net.Core 351; Pregame 97; Server 63; Scripting 8.
+  Playsim 3,887; Client 12; Net.Core 351; Pregame 97; Server 63; Scripting 8.
 - The lighting pass initially saw a five-second timeout in
   `Pump_LiveSessionReceivesGuestClientInput`; it passed the targeted rerun and the
   subsequent full solution run. No timeout/test-disabling workaround was added.

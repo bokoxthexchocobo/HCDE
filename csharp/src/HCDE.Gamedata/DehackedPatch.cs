@@ -251,6 +251,11 @@ public static class DehackedPatch
                         bits |= unchecked((uint)ParseDecimalPrefix(token));
                         changed = true;
                     }
+                    else if (SupportedThingBits.TryGetValue(token, out var namedBits))
+                    {
+                        bits |= namedBits;
+                        changed = true;
+                    }
                     else
                         errors.Add($"Thing {actor.Index}: unsupported bit mnemonic '{token}'.");
                 }
@@ -411,6 +416,17 @@ public static class DehackedPatch
 
         return lines;
     }
+
+    // First flag-set names whose gameplay effects are represented by ActorSpawner.
+    // Values follow wadsrc/static/dehsupp.txt; extended sets and remapped bits remain separate work.
+    private static readonly IReadOnlyDictionary<string, uint> SupportedThingBits =
+        new Dictionary<string, uint>(StringComparer.OrdinalIgnoreCase)
+        {
+            ["SPECIAL"] = 1, ["SOLID"] = 2, ["SHOOTABLE"] = 4, ["AMBUSH"] = 32,
+            ["SPAWNCEILING"] = 256, ["NOGRAVITY"] = 512, ["DROPOFF"] = 1024,
+            ["PICKUP"] = 2048, ["FLOAT"] = 16384, ["DROPPED"] = 131072,
+            ["COUNTKILL"] = 4194304,
+        };
 
     // Thing/Frame use decimal strtoll/atoll: stop at the first non-digit; no digits means zero.
     private static long ParseDecimalPrefix(string value)
