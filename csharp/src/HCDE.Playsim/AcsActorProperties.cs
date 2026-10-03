@@ -11,6 +11,8 @@ internal static class AcsActorProperties
     public const int NoTarget = 19;
     public const int TargetTid = 26;
     public const int Mass = 32;
+    public const int Height = 35;
+    public const int Radius = 36;
     public const int MaxStepHeight = 44;
     public const int MaxDropOffHeight = 45;
 
@@ -96,6 +98,8 @@ internal static class AcsActorProperties
         NoTarget => actor.NoTarget ? 1 : 0,
         SpawnHealth => actor.ResurrectionHealth,
         Mass => actor.Mass,
+        Height => actor.Height.Raw,
+        Radius => actor.Radius.Raw,
         MaxStepHeight => actor.MaxStepHeight.Raw,
         MaxDropOffHeight => actor.MaxDropOffHeight.Raw,
         TargetTid => TargetThingId(actor),

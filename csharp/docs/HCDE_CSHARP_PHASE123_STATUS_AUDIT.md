@@ -7490,11 +7490,30 @@ Earlier detailed reviews remain relevant: [foundation](HCDE_CSHARP_GAMEPLAY_FOUN
 [command buffering](HCDE_CSHARP_INPUT_BUFFER_AUDIT.md). New default weapon-selection
 and immediate sound-alert coverage supersedes only those specific open items.
 
+## October 3 sync and ACS actor dimensions
+
+Synced four upstream conversion commits through `c367f081`, preserving the local
+line-ending-only changes during fast-forward. Added APROP_Height (35) and
+APROP_Radius (36) to the existing ACS actor-property reader. Audited against
+`src/playsim/p_acs.cpp`: GetActorProperty returns current dimensions as 16.16;
+CheckActorProperty compares that exact value; SetActorProperty has no setter
+for these read-only properties. Existing actor dimension checksums are retained.
+
+Sixteen new regression cases cover fractional/zero/signed stored dimensions,
+ignored setters, missing/destroyed targets, newest matching TID selection,
+lower-stack preservation, and exact/mismatching CheckActorProperty results.
+The initial post-sync no-restore run lacked assets for the new scripting test
+project; root-level dependency restoration resolved that setup issue.
+
+This adds current managed cylinder dimensions to ACS; native geometry, full
+actor-property coverage and in-game invasion validation remain unfinished.
+The master plan checkpoint is refreshed with the current solution counts.
+
 ## Validation
 
-- Release solution: **3,050 passed, zero failed/skipped**, 2,127 cases above baseline.
-  Protocol 15; Gamedata 10; Transport 10; Master 1; RCON 6; MapLoader 396;
-  Playsim 1,991; Client 12; Net.Core 351; Pregame 97; Server 61.
+- Release solution: **4,517 passed, zero failed/skipped**, 3,594 cases above baseline.
+  Protocol 15; Gamedata 10; Transport 10; Master 1; RCON 6; MapLoader 500;
+  Playsim 3,444; Client 12; Net.Core 351; Pregame 97; Server 63; Scripting 8.
 - The lighting pass initially saw a five-second timeout in
   `Pump_LiveSessionReceivesGuestClientInput`; it passed the targeted rerun and the
   subsequent full solution run. No timeout/test-disabling workaround was added.
