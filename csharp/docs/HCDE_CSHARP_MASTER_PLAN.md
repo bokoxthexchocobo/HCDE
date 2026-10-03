@@ -21,12 +21,12 @@ This document is the execution plan; that audit remains the detailed record.
 
 ## Verified checkpoint
 
-- Release solution: **4,731 passed; zero failed or skipped**.
+- Release solution: **4,736 passed; zero failed or skipped**.
 - Release build with warnings as errors: zero warnings/errors.
-- Tests by project: Playsim 3,658; MapLoader 500; Net.Core 351; Pregame 97;
+- Tests by project: Playsim 3,663; MapLoader 500; Net.Core 351; Pregame 97;
   Server 63; Protocol 15; Client 12; Gamedata 10; Transport 10; RCON 6; Master 1;
   Scripting 8.
-- Historical baseline: 923 tests at `55f8fa46`; 3,808 additional cases since then.
+- Historical baseline: 923 tests at `55f8fa46`; 3,813 additional cases since then.
 - October sync incorporated four upstream commits through `c367f081`, including
   ACS binding, gameplay parity, pickups/drops and inventory work. The current
   continuation adds read-only actor height/radius property queries and checks,
@@ -46,7 +46,8 @@ This document is the execution plan; that audit remains the detailed record.
   ReactionTime now reads/writes the existing monster reaction countdown and gates
   player yaw/thrust/jumping while the counter decrements. Reaction state is
   actor-owned and survives brain removal/replacement. Raise animation waits
-  now use a separate counter and no longer overwrite ACS ReactionTime.
+  now use a separate counter and no longer overwrite ACS ReactionTime. Revived
+  monsters copy supported friendship/hate fields and clear targets before raising.
 - Earlier checkpoints: `0a37c839` gameplay/maps/invasion foundation,
   `55f8fa46` buffered authoritative input, `d792c54a` AI/sector/snapshot work.
 - Native invasion policy compilation was previously verified; a complete native

@@ -26,7 +26,11 @@ internal static class ArchvileActions
                 corpse.X.ToDouble() - archvile.X.ToDouble()) * 180 / Math.PI);
             corpse.Health = corpse.ResurrectionHealth;
             corpse.Solid = corpse.Shootable = true;
-            corpse.Brain.Revive(corpse, target);
+            corpse.Friendly = archvile.Friendly;
+            corpse.FriendPlayer = archvile.FriendPlayer;
+            corpse.TidToHate = archvile.TidToHate;
+            corpse.NoHatePlayers = archvile.NoHatePlayers;
+            corpse.Brain.Revive(corpse);
             return true;
         }
         return false;

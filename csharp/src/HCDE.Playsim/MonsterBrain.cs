@@ -341,11 +341,12 @@ public sealed class MonsterBrain(MonsterAttack attack)
         actor.VelocityX = actor.VelocityY = actor.VelocityZ = default;
     }
 
-    internal void Revive(Actor actor, Actor target)
+    internal void Revive(Actor actor)
     {
         StopCharge(actor);
         _deathTics = 0; _deathTargetId = null; _healTics = 0; _vileFire = false;
-        TargetId = target.Id;
+        TargetId = null;
+        LastEnemyId = null;
         _raiseTics = actor.RaiseDuration;
         AttackCooldown = 0;
         Mode = MonsterMode.Raise;

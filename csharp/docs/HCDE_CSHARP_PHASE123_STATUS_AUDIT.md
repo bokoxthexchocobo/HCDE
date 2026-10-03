@@ -7926,11 +7926,33 @@ friendliness copying, actor-default restoration, class-specific reaction/chase
 timing and save/network propagation remain open. RaiseTics remains the managed
 duration gate, not a claim of complete native resurrection-state parity.
 
+## Conversion and audit: resurrection friendship and targets (2026-10-03)
+
+Compared `AActor::Revive`, `CopyFriendliness` in `src/playsim/p_mobj.cpp`
+and arch-vile resurrection in `src/playsim/p_enemy.cpp`. Native resurrection
+calls `CopyFriendliness(self, false)` after clearing the corpse's target.
+The managed path now copies Friendly, FriendPlayer, TidToHate and NoHatePlayers
+from the arch-vile. Revive clears both current and last-enemy targets instead
+of immediately assigning the arch-vile's target. The independent reaction
+counter remains unchanged, and normal target acquisition waits until raising ends.
+
+Five new cases cover hostile-to-friendly, friendly-to-hostile and friendly-to-friendly
+revivals, target acquisition after the raise wait, and reaction-counter retention.
+Existing resurrection and invasion regressions remain passing. Full Release suite:
+4,736 passed, zero failed/skipped; warnings-as-errors build: zero warnings/errors.
+Managed player idle checksum remains 1449899472; no new state fields were added.
+
+This is source comparison and managed regression coverage. Native team/last-look
+fields, additional friendship flags, complete default-flag restoration and native
+kill accounting remain outside this change. Representative native engine and
+invasion round/timer/enemy synchronization sessions remain required; phases 1–3
+are not complete.
+
 ## Validation
 
-- Release solution: **4,731 passed, zero failed/skipped**, 3,808 cases above baseline.
+- Release solution: **4,736 passed, zero failed/skipped**, 3,813 cases above baseline.
   Protocol 15; Gamedata 10; Transport 10; Master 1; RCON 6; MapLoader 500;
-  Playsim 3,658; Client 12; Net.Core 351; Pregame 97; Server 63; Scripting 8.
+  Playsim 3,663; Client 12; Net.Core 351; Pregame 97; Server 63; Scripting 8.
 - The lighting pass initially saw a five-second timeout in
   `Pump_LiveSessionReceivesGuestClientInput`; it passed the targeted rerun and the
   subsequent full solution run. No timeout/test-disabling workaround was added.
