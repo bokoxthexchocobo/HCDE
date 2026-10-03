@@ -7975,11 +7975,36 @@ result. Full native hate-target searching, chase/state scheduling, save/network
 AI state and representative invasion sessions remain open; phases 1–3 remain
 incomplete.
 
+## Conversion and audit: chase threshold target lifetime (2026-10-03)
+
+Converted the threshold-maintenance predicate in `A_DoChase` from
+`src/playsim/p_enemy.cpp`: any nonzero threshold clears when the current target
+is absent or dead, and otherwise decrements. C# previously decremented only
+positive thresholds without checking target lifetime, leaving a retaliation
+lock after a target died or was cleared. Removed/destroyed actors count as absent.
+The liveness check uses health, so a living non-shootable target still counts down.
+Negative thresholds now decrement too; the managed boundary explicitly uses
+unchecked arithmetic for deterministic integer wraparound. Native compiler
+behavior at signed integer overflow is not established by this source audit.
+
+Nine new cases cover positive/zero/negative counters, the managed integer
+boundary, dead and cleared targets allowing an immediate new retaliation,
+a removed target and a living non-shootable target. Existing target-switch,
+retaliation-memory, resurrection, checksum and invasion regressions pass.
+Full Release solution: 4,755 passed, zero failed/skipped; Playsim 3,682.
+Warnings-as-errors Release build: zero warnings/errors; whitespace check passes.
+No checksum fields were added and the player idle baseline is unchanged.
+
+This converts the bounded threshold rule within the managed tick loop. Native
+chase-action cadence, state scheduling, conversation/in-chase guards and complete
+goal/invisibility target semantics remain unfinished. Representative native
+invasion round/timer/enemy sessions and phase 1–3 acceptance remain required.
+
 ## Validation
 
-- Release solution: **4,746 passed, zero failed/skipped**, 3,823 cases above baseline.
+- Release solution: **4,755 passed, zero failed/skipped**, 3,832 cases above baseline.
   Protocol 15; Gamedata 10; Transport 10; Master 1; RCON 6; MapLoader 500;
-  Playsim 3,673; Client 12; Net.Core 351; Pregame 97; Server 63; Scripting 8.
+  Playsim 3,682; Client 12; Net.Core 351; Pregame 97; Server 63; Scripting 8.
 - The lighting pass initially saw a five-second timeout in
   `Pump_LiveSessionReceivesGuestClientInput`; it passed the targeted rerun and the
   subsequent full solution run. No timeout/test-disabling workaround was added.

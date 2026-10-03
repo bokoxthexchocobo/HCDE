@@ -159,7 +159,11 @@ public sealed class MonsterBrain(MonsterAttack attack)
     {
         if (!Enabled) return;
         actor.JustHit = false;
-        if (Threshold > 0) Threshold--;
+        if (Threshold != 0)
+        {
+            var thresholdTarget = sim.Actors.FirstOrDefault(candidate => candidate.Id == TargetId && !candidate.Destroyed);
+            Threshold = thresholdTarget == null || thresholdTarget.IsDead ? 0 : unchecked(Threshold - 1);
+        }
         if (Charging && (actor.IsDead || actor.Destroyed || actor.States.Current == actor.PainState))
             StopCharge(actor);
         if (Charging) return;
