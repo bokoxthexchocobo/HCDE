@@ -132,7 +132,8 @@ public sealed class ProjectileActor : Actor
                 var floor = sim.FloorOf(sector); var ceiling = sim.CeilingOf(sector) - Height.ToDouble();
                 var plane = double.PositiveInfinity;
                 var part = -1;
-                if (z + dz < floor) { plane = dz < 0 ? Math.Clamp((floor - z) / dz, 0, 1) : 0; part = 0; }
+                if (z + dz < floor || dz < 0 && z + dz == floor)
+                { plane = dz < 0 ? Math.Clamp((floor - z) / dz, 0, 1) : 0; part = 0; }
                 if (z + dz > ceiling)
                 {
                     var hit = dz > 0 ? Math.Clamp((ceiling - z) / dz, 0, 1) : 0;
@@ -154,6 +155,11 @@ public sealed class ProjectileActor : Actor
             }
             X = Fixed.FromDouble(x + dx); Y = Fixed.FromDouble(y + dy); Z = Fixed.FromDouble(z + dz);
         }
+        SectorIndex = ActorPhysics.SectorAt(sim.Level, X.ToDouble(), Y.ToDouble());
+        // P_ZMovement moves by the current velocity before FallAndSink applies gravity.
+        if (!NoGravity && Z.ToDouble() > sim.FloorOf(SectorIndex))
+            VelocityZ = Fixed.FromDouble(VelocityZ.ToDouble() - ActorPhysics.Gravity * Gravity.ToDouble()
+                * ((uint)SectorIndex < (uint)sim.Level.Sectors.Count ? sim.Level.Sectors[SectorIndex].Gravity : 1));
     }
 
     private double CylinderFraction(double x, double y, double z, double dx, double dy, double dz, Actor target)

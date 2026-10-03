@@ -10084,11 +10084,31 @@ Warnings-as-errors build and diff checks pass. Archive version and checksum form
 are unchanged. This remains a partial pose archive; actor membership recreation,
 full AI rollback, and native engine/invasion acceptance remain unfinished.
 
+## Projectile gravity conversion and floor-contact audit (2026-10-03)
+
+The separate projectile movement path now applies gravity when NoGravity is
+cleared. It moves with the current vertical velocity, then updates that velocity
+for the next tic, following P_ZMovement/FallAndSink in src/playsim/p_mobj.cpp.
+GetGravity in src/playsim/actorinlines.h confirms the actor/sector multipliers and
+NoGravity suppression; managed gravity 1 corresponds to native default 800 times
+0.00125. The current destination sector is resolved before acceleration.
+
+The audit also fixed descending floor contact at an exact endpoint: missiles now
+impact on that tic rather than waiting for penetration on the next. Eight cases
+cover default/fractional/zero/negative factors, NoGravity suppression, runtime
+factor changes and suppression, sector resolution, and falling floor damage.
+
+Full Release solution: 5,405 passed, zero failed/skipped; Playsim 4,278.
+Warnings-as-errors build and diff checks pass. No archive or hash format change.
+This is flat-sector gravity with the existing swept collision model; configurable
+world gravity, water sinking, slopes, portals, full projectile class defaults,
+and native gameplay acceptance remain open. Gameplay phases 1–3 remain incomplete.
+
 ## Validation
 
-- Release solution: **5,397 passed, zero failed/skipped**, 4,474 cases above baseline.
+- Release solution: **5,405 passed, zero failed/skipped**, 4,482 cases above baseline.
   Protocol 15; Gamedata 29; Transport 10; Master 1; RCON 6; MapLoader 533;
-  Playsim 4,270; Client 12; Net.Core 351; Pregame 97; Server 65; Scripting 8.
+  Playsim 4,278; Client 12; Net.Core 351; Pregame 97; Server 65; Scripting 8.
 - The lighting pass initially saw a five-second timeout in
   `Pump_LiveSessionReceivesGuestClientInput`; it passed the targeted rerun and the
   subsequent full solution run. No timeout/test-disabling workaround was added.
