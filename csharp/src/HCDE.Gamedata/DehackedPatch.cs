@@ -23,6 +23,7 @@ public sealed class DehackedActor
     public uint Bits { get; set; }
     public bool BitsPatched { get; set; }
     public bool BitsUseStealth { get; set; }
+    public bool NoBlockMonsters { get; set; }
     public int SeeSound { get; set; }
     public int AttackSound { get; set; }
     public int PainSound { get; set; }
@@ -267,6 +268,7 @@ public static class DehackedPatch
                     actor.Bits = bits;
                     actor.BitsPatched = true;
                     actor.BitsUseStealth = useStealth;
+                    if (!useStealth && (bits & 0x40000000) != 0) actor.NoBlockMonsters = true;
                 }
             }
             else if (key.Equals("ID #", StringComparison.OrdinalIgnoreCase))

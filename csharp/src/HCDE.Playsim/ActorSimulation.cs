@@ -67,6 +67,7 @@ public class Actor : Thinker
     public bool OnMobj { get; set; }
     /// <summary>Native <c>MF3_ISMONSTER</c>. Infighting-off damage gates apply only between monsters.</summary>
     public bool IsMonster { get; set; }
+    public bool NoBlockMonsters { get; set; }
     /// <summary>Native <c>MF7_HARMFRIENDS</c>. At standard infighting, this shooter may hurt friendlies.</summary>
     public bool HarmFriends { get; set; }
     public double SpawnZOffset { get; init; }
@@ -1110,6 +1111,7 @@ public static class ActorSpawner
                 actor.Floating = (defaults.Bits & 0x00004000) != 0;
                 actor.Dropped = (defaults.Bits & 0x00020000) != 0;
                 actor.Friendly = playerStart || !defaults.BitsUseStealth && (defaults.Bits & 0x40000000) != 0;
+                actor.NoBlockMonsters = defaults.NoBlockMonsters;
             }
             actor.SpawnCanPickupItems = actor.CanPickupItems;
             actor.SpawnSpecialPickup = actor.SpecialPickup;
@@ -2618,6 +2620,7 @@ public sealed class AuthoritySimulation
             hash = Mix(hash, actor.NeverTarget ? 1u : 0u);
             if (actor.NoAutoOffSkullFly) hash = Mix(hash, 0x534B554Cu);
             if (actor.SpawnCeiling) hash = Mix(hash, 0x4345494Cu);
+            if (actor.NoBlockMonsters) hash = Mix(hash, 0x4E424D4Fu);
             hash = Mix(hash, actor.NoTarget ? 1u : 0u);
             hash = Mix(hash, actor.OnMobj ? 1u : 0u);
             hash = Mix(hash, actor.IsMonster ? 1u : 0u);

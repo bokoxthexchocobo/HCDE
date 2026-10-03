@@ -8727,11 +8727,33 @@ flag defaults, team/target policy, stealth rendering and native action parity
 remain open. Phases 1–3, large-dimension storage and representative invasion
 round/timer/enemy synchronization validation remain incomplete.
 
+## Monster-blocking lines and MBF friend exemption — 2026-10-03
+
+Native `PatchThing` grants MF3_NOBLOCKMONST when remapping MBF FRIEND;
+`P_IsBlockedByLine` in `src/playsim/actorinlines.h` checks that exemption after
+unconditional blockers. Converted persistent patch-record side effects and actor
+NoBlockMonsters state. Managed actor physics now checks line bit 2 for non-player,
+non-projectile actors and allows this exemption; ordinary blocking walls still win.
+Removing FRIEND in a later Bits assignment preserves the extended side effect,
+matching the separate native flags3 assignment. The actor exemption has a
+conditional simulation checksum marker, preserving hashes when unset.
+
+Six regression cases cover hostile/friend/stealth crossing, unconditional wall
+precedence, chained removal retaining the side effect, and checksum participation.
+Release solution: 4,981 passed, zero failed/skipped; Playsim 3,900.
+Warnings-as-errors build: zero warnings/errors; whitespace check passes.
+
+Scope is the managed actor movement/occupancy path. Native projectile call-path
+exceptions, trace flags, general COMPATF_NOBLOCKFRIENDS, MBF21 land-monster/player
+blocking and complete flags3 patching remain unconverted. Save/network transport
+of this actor flag is not complete. Phases 1–3, large-dimension storage and
+representative invasion synchronization validation remain incomplete.
+
 ## Validation
 
-- Release solution: **4,975 passed, zero failed/skipped**, 4,052 cases above baseline.
+- Release solution: **4,981 passed, zero failed/skipped**, 4,058 cases above baseline.
   Protocol 15; Gamedata 18; Transport 10; Master 1; RCON 6; MapLoader 500;
-  Playsim 3,894; Client 12; Net.Core 351; Pregame 97; Server 63; Scripting 8.
+  Playsim 3,900; Client 12; Net.Core 351; Pregame 97; Server 63; Scripting 8.
 - The lighting pass initially saw a five-second timeout in
   `Pump_LiveSessionReceivesGuestClientInput`; it passed the targeted rerun and the
   subsequent full solution run. No timeout/test-disabling workaround was added.

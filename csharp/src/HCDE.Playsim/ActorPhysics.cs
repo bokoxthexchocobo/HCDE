@@ -604,6 +604,8 @@ public static class ActorPhysics
     private static bool Blocks(AuthoritySimulation sim, Actor actor, LevelLine line)
     {
         if (line.BlocksMovement) return true;
+        if ((line.Flags & 2) != 0 && actor is not PlayerPawn and not ProjectileActor
+            && !actor.NoBlockMonsters) return true;
         var front = SideSector(sim.Level, line.SideFront);
         var back = SideSector(sim.Level, line.SideBack);
         if (front < 0 || back < 0) return false;
