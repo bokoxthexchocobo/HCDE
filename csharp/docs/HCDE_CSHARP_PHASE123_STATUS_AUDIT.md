@@ -7727,11 +7727,36 @@ team score functions, save/network replication and native session comparison
 remain incomplete; actor Score is not used as a substitute for player frags or
 the invasion director's counters.
 
+## ACS target/tracer pointer properties (2026-10-03)
+
+Added `APROP_TracerTID` (27) reads/checks from managed projectile tracer state.
+Native `p_acs.cpp` reads target/tracer pointers and compares their current TIDs;
+its setter switch has no TargetTID or TracerTID cases. The audit found the prior
+managed TargetTID setter incorrectly redirecting monster AI and removed it.
+The earlier test now seeds the AI target directly and verifies that an ACS write
+cannot change it. Native `p_mobj.cpp` assigns missile target to its source;
+managed projectile TargetTID now reads Owner, while TracerTID reads the homing
+target. Queries resolve current TIDs and return zero for destroyed references.
+
+Ten new regression cases cover projectile target/tracer distinction, ignored
+setters, exact checks, referenced TID changes/destruction, missing/destroyed
+query actors, ordinary missiles without tracers and actors without pointer
+state. Existing monster target/property and projectile regressions pass. No new
+state fields were added, so the managed idle checksum remains 2118297554.
+Full suite: 4,662 passed, zero failed/skipped; Release warnings-as-errors build:
+zero warnings/errors. This is a source review and regression self-audit.
+
+Scope: the existing managed monster AI target and projectile owner/tracer paths.
+General actor target/tracer/master storage, ACS pointer-setting functions,
+puff-owner queries, complete native pointer lifetime handling and save/network
+replication remain open. The removed property setter is intentionally unavailable;
+native pointer-changing APIs must be converted separately.
+
 ## Validation
 
-- Release solution: **4,652 passed, zero failed/skipped**, 3,729 cases above baseline.
+- Release solution: **4,662 passed, zero failed/skipped**, 3,739 cases above baseline.
   Protocol 15; Gamedata 10; Transport 10; Master 1; RCON 6; MapLoader 500;
-  Playsim 3,579; Client 12; Net.Core 351; Pregame 97; Server 63; Scripting 8.
+  Playsim 3,589; Client 12; Net.Core 351; Pregame 97; Server 63; Scripting 8.
 - The lighting pass initially saw a five-second timeout in
   `Pump_LiveSessionReceivesGuestClientInput`; it passed the targeted rerun and the
   subsequent full solution run. No timeout/test-disabling workaround was added.

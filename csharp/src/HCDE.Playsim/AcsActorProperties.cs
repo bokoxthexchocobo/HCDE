@@ -15,6 +15,7 @@ internal static class AcsActorProperties
     public const int NoTrigger = 23;
     public const int DamageFactor = 24;
     public const int TargetTid = 26;
+    public const int TracerTid = 27;
     public const int Mass = 32;
     public const int Height = 35;
     public const int Radius = 36;
@@ -52,7 +53,7 @@ internal static class AcsActorProperties
             return false;
         // Native CheckActorProperty rejects unknown properties, even when Get returns zero.
         if (property is not (Health or Ambush or Invulnerable or JumpZ or Gravity or Friendly
-            or SpawnHealth or NoTarget or TargetTid or Mass or Height or Radius or ViewHeight or AttackZOffset
+            or SpawnHealth or NoTarget or TargetTid or TracerTid or Mass or Height or Radius or ViewHeight or AttackZOffset
             or MaxStepHeight or MaxDropOffHeight or DamageFactor or DamageMultiplier or MeleeRange or Friction or NoTrigger or Score))
             return false;
         var actual = Read(actor, property);
@@ -131,10 +132,6 @@ internal static class AcsActorProperties
             case MaxDropOffHeight:
                 actor.MaxDropOffHeight = Fixed.FromDouble(value / 65536.0);
                 break;
-            case TargetTid:
-                if (actor.Brain is MonsterBrain brain && actor.Simulation is { } sim)
-                    brain.SetTargetThingId(sim, value);
-                break;
         }
     }
 
@@ -162,13 +159,20 @@ internal static class AcsActorProperties
         MaxStepHeight => actor.MaxStepHeight.Raw,
         MaxDropOffHeight => actor.MaxDropOffHeight.Raw,
         TargetTid => TargetThingId(actor),
+        TracerTid => ReferencedThingId(actor, actor is ProjectileActor projectile ? projectile.TracerTargetId : null),
         _ => 0,
     };
 
     private static int TargetThingId(Actor actor)
     {
-        if (actor.Brain is not MonsterBrain brain || brain.TargetId is not { } targetId)
-            return 0;
+        if (actor is ProjectileActor projectile)
+            return projectile.Owner.Destroyed ? 0 : projectile.Owner.ThingId;
+        return ReferencedThingId(actor, actor.Brain?.TargetId);
+    }
+
+    private static int ReferencedThingId(Actor actor, uint? targetId)
+    {
+        if (targetId is null) return 0;
         var target = actor.Simulation?.Actors.FirstOrDefault(candidate => candidate.Id == targetId && !candidate.Destroyed);
         return target?.ThingId ?? 0;
     }

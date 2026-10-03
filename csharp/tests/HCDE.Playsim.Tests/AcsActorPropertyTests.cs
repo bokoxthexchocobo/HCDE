@@ -80,16 +80,17 @@ public class AcsActorPropertyTests
     }
 
     [Fact]
-    public void SetAndGetActorProperty_TargetTidOnMonster()
+    public void GetActorProperty_TargetTidOnMonsterAndSetterIsIgnored()
     {
         var sim = RoomWithImp(playerTid: 3);
         var imp = sim.Actors.First(actor => actor.DoomEdNum == 3001);
         var player = sim.Players.Single();
         Assert.Equal(3, player.ThingId);
+        imp.Brain!.SetTargetThingId(sim, 3);
         Run(sim, player,
             (int)AcsPcode.PushNumber, 5,
             (int)AcsPcode.PushNumber, 26,
-            (int)AcsPcode.PushNumber, 3,
+            (int)AcsPcode.PushNumber, 999,
             (int)AcsPcode.SetActorProperty);
         Assert.Equal(player.Id, imp.Brain!.TargetId);
 
