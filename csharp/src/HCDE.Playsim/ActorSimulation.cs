@@ -299,8 +299,10 @@ public class Actor : Thinker
         {
             var dead = _health <= 0;
             _health = value;
+            if (dead && !IsDead) DeathDamageType = null;
             if (!dead && IsDead)
             {
+                DeathDamageType = string.Equals(DamageTypeReceived, "Massacre", StringComparison.OrdinalIgnoreCase) ? "Massacre" : null;
                 DeathCount++;
                 var death = ChooseDeathState(out var extremeDeath);
                 if (extremeDeath && this is not PlayerPawn && _health >= GibHealth)
@@ -338,6 +340,7 @@ public class Actor : Thinker
     public bool NoIceDeath { get; set; }
     /// <summary>Damage type of the hit currently being applied. The setter consumes it.</summary>
     internal string? DamageTypeReceived { get; set; }
+    public string? DeathDamageType { get; private set; }
     /// <summary>Inflictor for the hit currently being applied. The health setter consumes it.</summary>
     internal Actor? DeathInflictor { get; set; }
     private readonly Dictionary<string, int> _typedDeaths = new(StringComparer.Ordinal);
@@ -2033,6 +2036,7 @@ public sealed class AuthoritySimulation
 
     internal Actor? SpawnLostSoul(Actor parent, Actor? target, double angle, int limit = -1)
     {
+        if (string.Equals(parent.DeathDamageType, "Massacre", StringComparison.OrdinalIgnoreCase)) return null;
         if (parent.SectorIndex >= 0 && parent.Z.ToDouble() + parent.Height.ToDouble() + 8 > CeilingOf(parent.SectorIndex))
         {
             if (parent.Floating)
@@ -2814,6 +2818,12 @@ public sealed class AuthoritySimulation
             hash = Mix(hash, actor.NoSectorDamage ? 1u : 0u);
             hash = Mix(hash, actor.ForceSectorDamage ? 1u : 0u);
             hash = Mix(hash, actor.Ambush ? 1u : 0u);
+            if (!string.IsNullOrEmpty(actor.DeathDamageType))
+            {
+                hash = Mix(hash, 0x444D4F44u);
+                hash = Mix(hash, (uint)actor.DeathDamageType.Length);
+                foreach (var character in actor.DeathDamageType) hash = Mix(hash, character);
+            }
             hash = Mix(hash, actor.LastDamageSourceId ?? 0);
             if (actor is PlayerPawn player)
             {

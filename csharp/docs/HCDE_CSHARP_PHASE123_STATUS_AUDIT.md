@@ -9999,11 +9999,32 @@ AI/world rollback. Network flags, complete thinker/AI serialization, native
 movement/callbacks and sessions, invasion synchronization acceptance, and
 phases 1–3 completion remain open.
 
+## Pain Elemental massacre death suppression checkpoint (2026-10-03)
+
+Native `painelemental.zs` A_PainShootSkull refuses spawning for DamageType
+Massacre. `src/playsim/p_interaction.cpp` preserves Massacre even when falling
+back to an ordinary death state. Managed death transition now retains the
+canonical Massacre death type after ActorDamage clears its transient received
+type. SpawnLostSoul checks that retained value before any spawning response.
+Revival clears it; nonlethal hits never set it. Other persistent typed-death
+semantics are not claimed by this subset.
+
+Seven regressions cover case-insensitive Massacre, ordinary/untyped death bursts,
+nonlethal Massacre followed by ordinary death, revival, and wave-parent victory
+without child registration. Full Release solution: 5,379 passed, zero failed/
+skipped; Playsim 4,252. Release warnings-as-errors build and whitespace checks
+passed; existing trace and invasion server tests passed. Conditional checksum
+marker 0x444D4F44 captures retained death type; default trace hashes remain valid.
+
+Retained death type is not yet in the partial pose archive/network schema.
+General native typed-death normalization, replacement/mod actions, full native
+sessions, invasion synchronization acceptance, and phases 1–3 remain open.
+
 ## Validation
 
-- Release solution: **5,372 passed, zero failed/skipped**, 4,449 cases above baseline.
+- Release solution: **5,379 passed, zero failed/skipped**, 4,456 cases above baseline.
   Protocol 15; Gamedata 29; Transport 10; Master 1; RCON 6; MapLoader 533;
-  Playsim 4,245; Client 12; Net.Core 351; Pregame 97; Server 65; Scripting 8.
+  Playsim 4,252; Client 12; Net.Core 351; Pregame 97; Server 65; Scripting 8.
 - The lighting pass initially saw a five-second timeout in
   `Pump_LiveSessionReceivesGuestClientInput`; it passed the targeted rerun and the
   subsequent full solution run. No timeout/test-disabling workaround was added.
