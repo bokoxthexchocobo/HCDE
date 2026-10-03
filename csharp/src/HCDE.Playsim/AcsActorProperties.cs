@@ -6,6 +6,7 @@ internal static class AcsActorProperties
     public const int Health = 0;
     public const int Ambush = 10;
     public const int Invulnerable = 11;
+    public const int JumpZ = 12;
     public const int Friendly = 16;
     public const int SpawnHealth = 17;
     public const int NoTarget = 19;
@@ -64,6 +65,9 @@ internal static class AcsActorProperties
             case Invulnerable:
                 actor.Invulnerable = value != 0;
                 break;
+            case JumpZ:
+                if (actor is PlayerPawn jumpPlayer) jumpPlayer.JumpZ = new Fixed(value);
+                break;
             case Friendly:
                 actor.Friendly = value != 0;
                 break;
@@ -94,6 +98,7 @@ internal static class AcsActorProperties
         Health => actor.Health,
         Ambush => actor.Ambush ? 1 : 0,
         Invulnerable => actor.Invulnerable ? 1 : 0,
+        JumpZ => actor is PlayerPawn jumpPlayer ? jumpPlayer.JumpZ.Raw : 0,
         Friendly => actor.Friendly ? 1 : 0,
         NoTarget => actor.NoTarget ? 1 : 0,
         SpawnHealth => actor.ResurrectionHealth,

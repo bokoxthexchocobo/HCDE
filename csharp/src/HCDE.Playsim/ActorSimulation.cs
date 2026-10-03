@@ -495,6 +495,7 @@ public sealed class PlayerPawn : Actor
     public const double CrouchSpeed = 1.0 / 12;
     public const double MinimumCrouchFactor = 0.5;
     public const double StandingViewHeight = 41;
+    public Fixed JumpZ { get; set; } = Fixed.FromInt(8);
     /// <summary>Native DeathThink leaves the view here.</summary>
     public const double DeathViewHeight = 6;
     public const double DeathPitchStep = 3;
@@ -736,7 +737,7 @@ public sealed class PlayerPawn : Actor
             UncrouchLocked = true;
         else if (command.Jump && OnGround && Level != null)
         {
-            VelocityZ = Fixed.FromInt(8);
+            VelocityZ = JumpZ;
             OnGround = false;
         }
         ApplyCrouch(command);
@@ -2620,6 +2621,7 @@ public sealed class AuthoritySimulation
                 hash = Mix(hash, (uint)player.Inventory.MaxRockets);
                 hash = Mix(hash, (uint)player.Inventory.MaxCells);
                 hash = Mix(hash, player.Inventory.HasBackpack ? 1u : 0u);
+                hash = Mix(hash, (uint)player.JumpZ.Raw);
                 hash = Mix(hash, (uint)player.Inventory.Armor);
                 hash = Mix(hash, (uint)player.Inventory.ArmorSavePercent);
                 hash = Mix(hash, (uint)player.Inventory.MaxAbsorb);

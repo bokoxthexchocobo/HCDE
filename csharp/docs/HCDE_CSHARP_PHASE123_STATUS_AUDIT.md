@@ -7509,11 +7509,28 @@ This adds current managed cylinder dimensions to ACS; native geometry, full
 actor-property coverage and in-game invasion validation remain unfinished.
 The master plan checkpoint is refreshed with the current solution counts.
 
+## ACS configurable player JumpZ (2026-10-03)
+
+Converted APROP_JumpZ (12) using native get/set cases in `src/playsim/p_acs.cpp`.
+Only PlayerPawn accepts the setter; other actors return zero. Signed 16.16
+values are retained. Player jumping now uses the configured value rather than
+the prior hard-coded eight; default behavior stays eight. JumpZ participates
+in the simulation checksum. Eight regressions cover signed/fractional/zero
+values, player-only behavior, actual jump movement and checksum differences.
+
+Initial integration expectations were corrected to account for current managed
+gravity-before-movement ordering. Adding a checksum field required refreshing
+the managed idle trace from 251903926 to 4261759856; its position and health
+assertions remain unchanged. This is a managed trace, not native acceptance.
+JumpZ is not yet included in pose archives or network property replication;
+custom class defaults, full jump rules and native movement parity remain open.
+Full suite passes 4,525 tests; Release build has zero warnings/errors.
+
 ## Validation
 
-- Release solution: **4,517 passed, zero failed/skipped**, 3,594 cases above baseline.
+- Release solution: **4,525 passed, zero failed/skipped**, 3,602 cases above baseline.
   Protocol 15; Gamedata 10; Transport 10; Master 1; RCON 6; MapLoader 500;
-  Playsim 3,444; Client 12; Net.Core 351; Pregame 97; Server 63; Scripting 8.
+  Playsim 3,452; Client 12; Net.Core 351; Pregame 97; Server 63; Scripting 8.
 - The lighting pass initially saw a five-second timeout in
   `Pump_LiveSessionReceivesGuestClientInput`; it passed the targeted rerun and the
   subsequent full solution run. No timeout/test-disabling workaround was added.
