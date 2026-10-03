@@ -9168,11 +9168,32 @@ fields changed. Unknown-format compatibility dispatch and direct ACS calls
 retain their existing behavior. Teleport collision/telefrag, destination Z,
 full flags and native session validation remain incomplete, as do phases 1–3.
 
+## Conversion and audit: teleport destination sector selection (2026-10-03)
+
+Converted special 70's sector-tag argument from `LS_Teleport` in
+`src/playsim/p_lnspec.cpp`, and the zero-TID tagged-sector ordering in
+`FLevelLocals::SelectTeleDest` (`src/playsim/p_teleport.cpp`). Hexen/UDMF map
+activation now intersects destination TID and sector tag; zero TID searches
+by sector tag. Doom tagged teleport destinations are selected in ascending
+sector order, with actor order preserved within a sector. Additional sector
+tags are honored, and missing tags fail without consuming the line.
+
+Five regressions cover both extended map formats, TID/tag intersection,
+Doom and extended sector ordering, and missing-tag rejection. Full Release
+solution: 5,079 passed, zero failed/skipped; Playsim 3,998. Release build with
+warnings as errors and whitespace check pass. No persisted state was added.
+Audit scope is map dispatch and supported type-14 destinations. Random
+selection for multiple matching TIDs, class-based MapSpot/non-solid fallback,
+compatibility flags, ACS argument dispatch, and native zero-TID/zero-tag
+failure remain incomplete; existing zero/zero compatibility is retained.
+Collision/telefrag and full native teleport flags remain open. Phases 1–3
+and representative invasion synchronization validation are still incomplete.
+
 ## Validation
 
-- Release solution: **5,074 passed, zero failed/skipped**, 4,151 cases above baseline.
+- Release solution: **5,079 passed, zero failed/skipped**, 4,156 cases above baseline.
   Protocol 15; Gamedata 18; Transport 10; Master 1; RCON 6; MapLoader 500;
-  Playsim 3,993; Client 12; Net.Core 351; Pregame 97; Server 63; Scripting 8.
+  Playsim 3,998; Client 12; Net.Core 351; Pregame 97; Server 63; Scripting 8.
 - The lighting pass initially saw a five-second timeout in
   `Pump_LiveSessionReceivesGuestClientInput`; it passed the targeted rerun and the
   subsequent full solution run. No timeout/test-disabling workaround was added.

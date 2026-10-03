@@ -217,7 +217,7 @@ public static class LineSpecials
                 20 or 21 or 22 or 23 or 24 or 25 or 28 or 35 or 36 or 37 or 46 or 62 or 66 or 67 or 68 or 99 or 238 or 239 or 242 or 256 or 257 or 258 or 259 or 260 or 275 or 279 or ScrollFloor or ScrollCeiling => ExecuteFloorSpecial(sim, line.Special,
                     line.Arg0, line.Arg1, line.Arg2, line.Arg3, line.Arg4, line) == true,
                 70 => !(backSide ?? IsBackSide(line, actor.X.ToDouble(), actor.Y.ToDouble()))
-                    && TeleportActivator(sim, actor, line.Arg0, byThingId: true),
+                    && TeleportActivator(sim, actor, line.Arg0, byThingId: true, sectorTag: line.Arg1),
                 130 or 131 => ThingActivation.Execute(sim, actor, line.Arg0, line.Special == 130),
                 80 or 81 or 82 or 226 => ExecuteScriptControl(sim, line.Special, line.Arg0, line.Arg1, line.Arg2, line.Arg3, line.Arg4, actor, line, backSide ?? IsBackSide(line, actor.X.ToDouble(), actor.Y.ToDouble())) == true,
                 243 => Exit(sim, false, actor),
@@ -847,13 +847,23 @@ public static class LineSpecials
         return nudged;
     }
 
-    private static bool TeleportActivator(AuthoritySimulation sim, Actor? activator, int target = 0, bool byThingId = false)
+    private static bool TeleportActivator(AuthoritySimulation sim, Actor? activator, int target = 0, bool byThingId = false, int sectorTag = 0)
     {
         if (activator == null || activator.NoTeleport)
             return false;
-        var dest = sim.Actors.FirstOrDefault(actor => actor.DoomEdNum == TeleportDestType && !actor.Destroyed
-            && (target == 0 || (byThingId ? actor.ThingId == target
-                : (uint)actor.SectorIndex < (uint)sim.Level.Sectors.Count && sim.Level.Sectors[actor.SectorIndex].MatchesTag(target))));
+        var destinations = sim.Actors.Where(actor => actor.DoomEdNum == TeleportDestType && !actor.Destroyed);
+        if (byThingId && target != 0)
+            destinations = destinations.Where(actor => actor.ThingId == target);
+        var tag = byThingId ? sectorTag : target;
+        if (tag != 0)
+        {
+            destinations = destinations.Where(actor => (uint)actor.SectorIndex < (uint)sim.Level.Sectors.Count
+                && sim.Level.Sectors[actor.SectorIndex].MatchesTag(tag));
+            // Native zero-TID searches visit tagged sectors in sector order first.
+            if (!byThingId || target == 0)
+                destinations = destinations.OrderBy(actor => actor.SectorIndex);
+        }
+        var dest = destinations.FirstOrDefault();
         if (dest == null)
             return false;
         var aboveFloor = activator.Z.ToDouble() - sim.FloorOf(activator.SectorIndex);
