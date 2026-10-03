@@ -10067,11 +10067,28 @@ membership and invasion director restoration remain open, so this is not full
 world rollback or native savegame parity. Native sessions, invasion synchronization
 acceptance, and phases 1–3 completion remain open.
 
+## Pain Elemental restore ownership audit (2026-10-03)
+
+Saved death timers now require an existing, surviving actor with a Pain Elemental
+brain before any clock, geometry, or actor mutation. Removed actors and replaced
+or missing brains previously caused the timer to be silently discarded. Legacy
+poses without this optional record retain their existing restore behavior.
+
+Five new regression cases cover missing/replaced brains, destroyed/removed
+parents, and serialized target restoration through the remaining delay into three
+charging Lost Souls. Native target use was checked against A_PainDie and
+A_PainShootSkull in wadsrc/static/zscript/actors/doom/painelemental.zs.
+
+Full Release solution: 5,397 passed, zero failed/skipped; Playsim 4,270.
+Warnings-as-errors build and diff checks pass. Archive version and checksum format
+are unchanged. This remains a partial pose archive; actor membership recreation,
+full AI rollback, and native engine/invasion acceptance remain unfinished.
+
 ## Validation
 
-- Release solution: **5,392 passed, zero failed/skipped**, 4,469 cases above baseline.
+- Release solution: **5,397 passed, zero failed/skipped**, 4,474 cases above baseline.
   Protocol 15; Gamedata 29; Transport 10; Master 1; RCON 6; MapLoader 533;
-  Playsim 4,265; Client 12; Net.Core 351; Pregame 97; Server 65; Scripting 8.
+  Playsim 4,270; Client 12; Net.Core 351; Pregame 97; Server 65; Scripting 8.
 - The lighting pass initially saw a five-second timeout in
   `Pump_LiveSessionReceivesGuestClientInput`; it passed the targeted rerun and the
   subsequent full solution run. No timeout/test-disabling workaround was added.

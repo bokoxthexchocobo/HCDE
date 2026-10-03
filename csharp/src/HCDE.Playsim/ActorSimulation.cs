@@ -2222,6 +2222,8 @@ public sealed class AuthoritySimulation
         foreach (var pose in state.Actors)
         {
             var actor = _actors.FirstOrDefault(candidate => candidate.Id == pose.Id);
+            if (pose.PainDeath.HasValue && (actor == null || actor.Destroyed || actor.Brain?.CapturePainDeath() == null))
+                throw new InvalidOperationException("Saved Pain Elemental death state does not match the current actor.");
             if (actor != null && (pose.WeaponCooldown < 0 || actor is PlayerPawn && Math.Abs((long)pose.Pitch) > 89L * 65536
                 || pose.HasPhysics && (!actor.States.HasState(pose.State) || pose.StateTics < -1)))
                 throw new InvalidOperationException("Saved actor state is not in the current table.");
