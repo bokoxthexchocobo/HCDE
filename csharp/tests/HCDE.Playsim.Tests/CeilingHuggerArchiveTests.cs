@@ -16,7 +16,7 @@ public class CeilingHuggerArchiveTests
         var state = sim.CaptureState();
         if (serialized)
         {
-            var bytes = SimSavegame.Write(state);
+            var bytes = LegacyActorArchiveFixture.Write(state);
             Assert.Equal(enabled ? 25 : 24, BinaryPrimitives.ReadUInt16LittleEndian(bytes.AsSpan(4)));
             Assert.True(SimSavegame.TryRead(bytes, out state, out var error), error);
         }
@@ -31,7 +31,7 @@ public class CeilingHuggerArchiveTests
     [InlineData(2)]
     public void MalformedFlagIsRejected(int flags)
     {
-        var sim = Room(); Shoot(sim).CeilingHugger = true; var bytes = SimSavegame.Write(sim);
+        var sim = Room(); Shoot(sim).CeilingHugger = true; var bytes = LegacyActorArchiveFixture.Write(sim);
         var size = BinaryPrimitives.ReadInt32LittleEndian(bytes.AsSpan(bytes.Length - 4));
         BinaryPrimitives.WriteInt32LittleEndian(bytes.AsSpan(bytes.Length - size + 8), flags);
         Assert.False(SimSavegame.TryRead(bytes, out var state, out var error));
@@ -52,13 +52,13 @@ public class CeilingHuggerArchiveTests
     {
         var sim = Room(); Shoot(sim).CeilingHugger = true; var state = sim.CaptureState();
         state.Actors[0].CeilingFlags = null;
-        Assert.Throws<InvalidOperationException>(() => SimSavegame.Write(state));
+        Assert.Throws<InvalidOperationException>(() => LegacyActorArchiveFixture.Write(state));
     }
 
     [Fact]
     public void MalformedSizeIsRejected()
     {
-        var sim = Room(); Shoot(sim).CeilingHugger = true; var bytes = SimSavegame.Write(sim);
+        var sim = Room(); Shoot(sim).CeilingHugger = true; var bytes = LegacyActorArchiveFixture.Write(sim);
         BinaryPrimitives.WriteInt32LittleEndian(bytes.AsSpan(bytes.Length - 4), int.MaxValue);
         Assert.False(SimSavegame.TryRead(bytes, out var state, out var error));
         Assert.Equal("save-ceiling-hugger-size", error); Assert.Empty(state.Actors);

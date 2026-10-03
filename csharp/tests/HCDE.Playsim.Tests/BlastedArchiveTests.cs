@@ -17,7 +17,7 @@ public class BlastedArchiveTests
         var state = sim.CaptureState();
         if (serialized)
         {
-            var bytes = SimSavegame.Write(state); Assert.Equal(blasted ? 27 : 26, BinaryPrimitives.ReadUInt16LittleEndian(bytes.AsSpan(4)));
+            var bytes = LegacyActorArchiveFixture.Write(state); Assert.Equal(blasted ? 27 : 26, BinaryPrimitives.ReadUInt16LittleEndian(bytes.AsSpan(4)));
             Assert.True(SimSavegame.TryRead(bytes, out state, out var error), error);
         }
         actor.Blasted = !blasted; actor.VelocityX = default; sim.RestoreState(state); sim.Tick();
@@ -30,7 +30,7 @@ public class BlastedArchiveTests
     {
         var sim = GameplayFoundationTests.TwoRooms(0, 128); var actor = sim.AddBot(-64, 80);
         actor.Brain = null; actor.Blasted = true;
-        Assert.True(SimSavegame.TryRead(SimSavegame.Write(sim), out var state, out var error), error);
+        Assert.True(SimSavegame.TryRead(LegacyActorArchiveFixture.Write(sim), out var state, out var error), error);
         actor.Blasted = false; sim.RestoreState(state); Assert.True(actor.Blasted);
         sim.Tick(); Assert.False(actor.Blasted);
     }
@@ -41,7 +41,7 @@ public class BlastedArchiveTests
     public void InvalidSerializedFlagIsRejected(int flags)
     {
         var sim = GameplayFoundationTests.TwoRooms(0, 128); sim.AddBot(-64, 80).Blasted = true;
-        var bytes = SimSavegame.Write(sim); var size = BinaryPrimitives.ReadInt32LittleEndian(bytes.AsSpan(bytes.Length - 4));
+        var bytes = LegacyActorArchiveFixture.Write(sim); var size = BinaryPrimitives.ReadInt32LittleEndian(bytes.AsSpan(bytes.Length - 4));
         BinaryPrimitives.WriteInt32LittleEndian(bytes.AsSpan(bytes.Length - size + 8), flags);
         Assert.False(SimSavegame.TryRead(bytes, out var state, out var error));
         Assert.Equal("save-blasted-flags", error); Assert.Empty(state.Actors);
@@ -62,6 +62,6 @@ public class BlastedArchiveTests
     {
         var sim = GameplayFoundationTests.TwoRooms(0, 128); sim.AddBot(-64, 80).Blasted = true;
         var state = sim.CaptureState(); state.Actors[0].BlastedFlags = null;
-        Assert.Throws<InvalidOperationException>(() => SimSavegame.Write(state));
+        Assert.Throws<InvalidOperationException>(() => LegacyActorArchiveFixture.Write(state));
     }
 }

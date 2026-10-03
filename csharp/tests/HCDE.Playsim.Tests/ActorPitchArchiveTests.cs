@@ -13,7 +13,7 @@ public class ActorPitchArchiveTests
     public void CurrentArchiveRoundTripsActorPitch(int type, double pitch)
     {
         var sim = Room(type); var actor = sim.Actors.Single(); actor.PitchDegrees = pitch;
-        var bytes = SimSavegame.Write(sim);
+        var bytes = LegacyActorArchiveFixture.Write(sim);
         Assert.Equal(18, BinaryPrimitives.ReadUInt16LittleEndian(bytes.AsSpan(4)));
         Assert.True(SimSavegame.TryRead(bytes, out var state, out var error), error);
         actor.PitchDegrees = 0; sim.RestoreState(state);
@@ -47,7 +47,7 @@ public class ActorPitchArchiveTests
         var legacyState = new SimSaveState { Tic = captured.Tic, CombatRandomState = captured.CombatRandomState };
         legacyState.Actors.AddRange(captured.Actors);
         legacyState.Sectors.AddRange(captured.Sectors);
-        var bytes = SimSavegame.Write(legacyState); BinaryPrimitives.WriteUInt16LittleEndian(bytes.AsSpan(4), 5);
+        var bytes = LegacyActorArchiveFixture.Write(legacyState); BinaryPrimitives.WriteUInt16LittleEndian(bytes.AsSpan(4), 5);
         Assert.True(SimSavegame.TryRead(bytes, out var state, out var error), error);
         sim.Actors.Single().PitchDegrees = -20; sim.RestoreState(state);
         Assert.Equal(type == 1 ? 30 : 0, sim.Actors.Single().PitchDegrees);

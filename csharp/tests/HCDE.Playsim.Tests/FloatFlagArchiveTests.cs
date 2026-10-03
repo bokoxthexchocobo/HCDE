@@ -41,13 +41,13 @@ public class FloatFlagArchiveTests
         var state = sim.CaptureState(); state.Actors[0].FloatFlags = 4;
         var before = actor.X;
         Assert.Throws<InvalidOperationException>(() => sim.RestoreState(state)); Assert.Equal(before, actor.X);
-        Assert.Throws<InvalidOperationException>(() => SimSavegame.Write(state));
+        Assert.Throws<InvalidOperationException>(() => LegacyActorArchiveFixture.Write(state));
     }
     private static byte[] WriteWithoutPainTimer(AuthoritySimulation sim)
     {
         var state = sim.CaptureState();
         foreach (var pose in state.Actors) pose.PainDeath = null;
-        return SimSavegame.Write(state);
+        return LegacyActorArchiveFixture.Write(state);
     }
     private static AuthoritySimulation Room() => AuthoritySimulation.Start(new PlayLevel {
         Sectors = [new LevelSector { CeilingHeight = 512 }], Things = [new LevelThing { Type = 71 }] });

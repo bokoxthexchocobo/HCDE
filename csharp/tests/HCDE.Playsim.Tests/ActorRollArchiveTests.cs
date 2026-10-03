@@ -9,7 +9,7 @@ public class ActorRollArchiveTests
     {
         var state = Room().CaptureState();
         foreach (var pose in state.Actors) pose.ContactFlags = null;
-        return SimSavegame.Write(state);
+        return LegacyActorArchiveFixture.Write(state);
     }
     private static AuthoritySimulation Room() => AuthoritySimulation.Start(new PlayLevel
     {
@@ -30,7 +30,7 @@ public class ActorRollArchiveTests
         original.Actors[1].Roll = new BamAngle(123456789);
         original.Level.Sectors[0].HealthFloor = 17;
         original.Tick();
-        var bytes = SimSavegame.Write(original);
+        var bytes = LegacyActorArchiveFixture.Write(original);
         Assert.Equal(18, BinaryPrimitives.ReadUInt16LittleEndian(bytes.AsSpan(4)));
         var restored = Room();
         SimSavegame.Apply(restored, bytes);
@@ -48,7 +48,7 @@ public class ActorRollArchiveTests
         var sim = Room();
         var state = sim.CaptureState();
         foreach (var pose in state.Actors) { pose.Roll = null; pose.ContactFlags = null; }
-        var bytes = SimSavegame.Write(state);
+        var bytes = LegacyActorArchiveFixture.Write(state);
         Assert.Equal(15, BinaryPrimitives.ReadUInt16LittleEndian(bytes.AsSpan(4)));
         sim.Actors[0].Roll = new BamAngle(77);
         SimSavegame.Apply(sim, bytes);
@@ -118,6 +118,6 @@ public class ActorRollArchiveTests
         var state = Room().CaptureState();
         if (omitHealth) state.GeometryHealth = null;
         else state.Actors[0].Roll = null;
-        Assert.Throws<InvalidOperationException>(() => SimSavegame.Write(state));
+        Assert.Throws<InvalidOperationException>(() => LegacyActorArchiveFixture.Write(state));
     }
 }

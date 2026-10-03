@@ -10453,11 +10453,35 @@ remain open. BOSS/DONTBLAST mutations are not yet persisted in pose archives.
 No native runtime acceptance or invasion round/timer synchronization signoff
 is claimed; phases 1–3 remain incomplete.
 
+## Conversion and audit: blast eligibility save/restore (2026-10-03)
+
+Closed the previous checkpoint's BOSS/DONTBLAST pose persistence gap.
+Audited native `AActor::Serialize` in `src/playsim/p_mobj.cpp`, which saves
+flags2/flags3, and their bit definitions in `src/playsim/actor.h`.
+Managed poses now capture and restore both eligibility flags. Version 28
+adds a validated two-bit table over versions 18–27, including all-zero
+values so a saved false can clear a subsequently enabled flag. Existing
+archives without the table preserve current flags/class defaults.
+This is the managed archive format, not native savegame interoperability.
+
+Twenty regressions cover memory/wire restore of all combinations, resumed
+blast collision behavior, explicitly cleared Cyberdemon/SpiderMastermind
+BOSS defaults, invalid flags, size/prior/count errors, rejection before
+clock/flag/checksum mutation, incomplete all-zero tables, legacy preservation
+and nested movement flag extensions. Existing layout/corruption fixtures
+explicitly omit the new metadata to retain their version 5–27 coverage.
+Release solution: 5,611 passed, zero failed/skipped; Playsim 4,484.
+Warnings-as-errors build and whitespace checks pass.
+
+Full actor recreation, native runtime savegame acceptance, typed blast damage,
+non-solid collisions and native geometry/retry parity remain incomplete.
+Phases 1–3 and invasion synchronization acceptance remain open.
+
 ## Validation
 
-- Release solution: **5,591 passed, zero failed/skipped**, 4,668 cases above baseline.
+- Release solution: **5,611 passed, zero failed/skipped**, 4,688 cases above baseline.
   Protocol 15; Gamedata 29; Transport 10; Master 1; RCON 6; MapLoader 533;
-  Playsim 4,464; Client 12; Net.Core 351; Pregame 97; Server 65; Scripting 8.
+  Playsim 4,484; Client 12; Net.Core 351; Pregame 97; Server 65; Scripting 8.
 - The lighting pass initially saw a five-second timeout in
   `Pump_LiveSessionReceivesGuestClientInput`; it passed the targeted rerun and the
   subsequent full solution run. No timeout/test-disabling workaround was added.

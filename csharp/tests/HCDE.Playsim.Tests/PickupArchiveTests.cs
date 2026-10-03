@@ -9,7 +9,7 @@ public class PickupArchiveTests
     {
         var state = Room().CaptureState();
         foreach (var pose in state.Actors) pose.ContactFlags = null;
-        return SimSavegame.Write(state);
+        return LegacyActorArchiveFixture.Write(state);
     }
     private static AuthoritySimulation Room(int type = PickupCatalog.Clip) => AuthoritySimulation.Start(new PlayLevel
     {
@@ -27,7 +27,7 @@ public class PickupArchiveTests
         var original = Room(); var pickup = original.Actors[1];
         pickup.PickupAmount = amount; pickup.IgnoreAmmoSkill = ignoreSkill; pickup.Depleted = depleted;
         original.Tick();
-        var bytes = SimSavegame.Write(original);
+        var bytes = LegacyActorArchiveFixture.Write(original);
         Assert.Equal(18, BinaryPrimitives.ReadUInt16LittleEndian(bytes.AsSpan(4)));
         var restored = Room();
         restored.Actors[1].PickupAmount = 99;
@@ -51,7 +51,7 @@ public class PickupArchiveTests
         var original = Room(PickupCatalog.Backpack);
         original.Actors[1].Depleted = true;
         var restored = Room(PickupCatalog.Backpack);
-        SimSavegame.Apply(restored, SimSavegame.Write(original));
+        SimSavegame.Apply(restored, LegacyActorArchiveFixture.Write(original));
         var player = restored.Players.Single(); var before = player.Inventory.Bullets;
         player.X = restored.Actors[1].X; restored.Tick();
         Assert.True(player.Inventory.HasBackpack);
@@ -63,7 +63,7 @@ public class PickupArchiveTests
     {
         var sim = Room(); var state = sim.CaptureState();
         foreach (var pose in state.Actors) { pose.Pickup = null; pose.ContactFlags = null; }
-        var bytes = SimSavegame.Write(state);
+        var bytes = LegacyActorArchiveFixture.Write(state);
         Assert.Equal(16, BinaryPrimitives.ReadUInt16LittleEndian(bytes.AsSpan(4)));
         sim.Actors[1].PickupAmount = 19; sim.Actors[1].IgnoreAmmoSkill = true;
         SimSavegame.Apply(sim, bytes);
@@ -100,7 +100,7 @@ public class PickupArchiveTests
         Assert.True(original.SpawnDroppedPickup(original.Players.Single(), PickupCatalog.Shotgun));
         Assert.True(restored.SpawnDroppedPickup(restored.Players.Single(), PickupCatalog.Shotgun));
         restored.Actors[^1].PickupAmount = 80;
-        SimSavegame.Apply(restored, SimSavegame.Write(original));
+        SimSavegame.Apply(restored, LegacyActorArchiveFixture.Write(original));
         restored.Tick();
         Assert.Equal(4, restored.Players.Single().Inventory.Shells);
     }
@@ -122,7 +122,7 @@ public class PickupArchiveTests
     {
         var sim = Room(); var state = sim.CaptureState();
         state.Actors[1].Pickup = new(-1, false, false);
-        Assert.Throws<InvalidOperationException>(() => SimSavegame.Write(state));
+        Assert.Throws<InvalidOperationException>(() => LegacyActorArchiveFixture.Write(state));
         Assert.Throws<InvalidOperationException>(() => sim.RestoreState(state));
         Assert.Equal(0, sim.Actors[1].PickupAmount);
     }

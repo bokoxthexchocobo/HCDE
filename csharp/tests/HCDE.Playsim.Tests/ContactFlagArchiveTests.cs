@@ -19,7 +19,7 @@ public class ContactFlagArchiveTests
     {
         var original = Room(); original.Players.Single().CanPickupItems = pickup;
         original.Actors[^1].SpecialPickup = special;
-        var bytes = SimSavegame.Write(original);
+        var bytes = LegacyActorArchiveFixture.Write(original);
         Assert.Equal(18, BinaryPrimitives.ReadUInt16LittleEndian(bytes.AsSpan(4)));
         var restored = Room(); SimSavegame.Apply(restored, bytes);
         Assert.Equal(pickup, restored.Players.Single().CanPickupItems);
@@ -36,7 +36,7 @@ public class ContactFlagArchiveTests
     public void InvalidFlagBitsAreRejected(int flags)
     {
         var sim = Room(); sim.Players.Single().CanPickupItems = false;
-        var bytes = SimSavegame.Write(sim);
+        var bytes = LegacyActorArchiveFixture.Write(sim);
         BinaryPrimitives.WriteInt32LittleEndian(bytes.AsSpan(bytes.Length - 8), flags);
         Assert.False(SimSavegame.TryRead(bytes, out var state, out var error));
         Assert.Equal("save-contact-flags", error); Assert.Empty(state.Actors);
@@ -46,7 +46,7 @@ public class ContactFlagArchiveTests
     public void TruncationsAreRejected()
     {
         var sim = Room(); sim.Players.Single().CanPickupItems = false;
-        var bytes = SimSavegame.Write(sim);
+        var bytes = LegacyActorArchiveFixture.Write(sim);
         for (var length = 0; length < bytes.Length; length++)
             Assert.False(SimSavegame.TryRead(bytes.AsSpan(0, length), out _, out _));
     }
@@ -54,7 +54,7 @@ public class ContactFlagArchiveTests
     [Fact]
     public void CurrentArchiveRestoresDefaultContactFlags()
     {
-        var sim = Room(); var bytes = SimSavegame.Write(sim);
+        var sim = Room(); var bytes = LegacyActorArchiveFixture.Write(sim);
         Assert.Equal(18, BinaryPrimitives.ReadUInt16LittleEndian(bytes.AsSpan(4)));
         sim.Players.Single().CanPickupItems = false; sim.Actors[^1].SpecialPickup = false;
         SimSavegame.Apply(sim, bytes);
@@ -68,7 +68,7 @@ public class ContactFlagArchiveTests
     {
         var sim = Room(); var state = sim.CaptureState();
         foreach (var pose in state.Actors) pose.ContactFlags = null;
-        var bytes = SimSavegame.Write(state);
+        var bytes = LegacyActorArchiveFixture.Write(state);
         Assert.Equal(17, BinaryPrimitives.ReadUInt16LittleEndian(bytes.AsSpan(4)));
         sim.Players.Single().CanPickupItems = false; sim.Actors[^1].SpecialPickup = false;
         SimSavegame.Apply(sim, bytes);

@@ -17,7 +17,7 @@ public class ProjectileFlagArchiveTests
         if (serialized)
         {
             foreach (var pose in state.Actors) { pose.ProjectileLifetime = null; pose.ProjectilePointers = null; }
-            var bytes = SimSavegame.Write(state);
+            var bytes = LegacyActorArchiveFixture.Write(state);
             Assert.Equal(enabled ? 22 : 18, BinaryPrimitives.ReadUInt16LittleEndian(bytes.AsSpan(4)));
             Assert.True(SimSavegame.TryRead(bytes, out state, out var error), error);
         }
@@ -54,7 +54,7 @@ public class ProjectileFlagArchiveTests
     {
         var sim = Room(); Shoot(sim).NoExplodeFloor = true; var state = sim.CaptureState();
         state.Actors[0].ProjectileFlags = null;
-        Assert.Throws<InvalidOperationException>(() => SimSavegame.Write(state));
+        Assert.Throws<InvalidOperationException>(() => LegacyActorArchiveFixture.Write(state));
     }
 
     [Fact]
@@ -63,7 +63,7 @@ public class ProjectileFlagArchiveTests
         var sim = Room(true); var parent = sim.Actors.Single(a => a.DoomEdNum == 71);
         parent.Health = 0; for (var i = 0; i < 10; i++) sim.Tick();
         var missile = Shoot(sim); missile.NoExplodeFloor = true;
-        Assert.True(SimSavegame.TryRead(SimSavegame.Write(sim), out var state, out var error), error);
+        Assert.True(SimSavegame.TryRead(LegacyActorArchiveFixture.Write(sim), out var state, out var error), error);
         Assert.Equal(10, state.Actors.Single(a => a.Id == parent.Id).PainDeath!.Value.Tics);
         missile.NoExplodeFloor = false; parent.Brain!.RestorePainDeath(new(31, null)); sim.RestoreState(state);
         Assert.True(missile.NoExplodeFloor); Assert.Equal(10, parent.Brain.CapturePainDeath()!.Value.Tics);
@@ -83,7 +83,7 @@ public class ProjectileFlagArchiveTests
     private static byte[] WriteFlagsOnly(AuthoritySimulation sim)
     {
         var state = sim.CaptureState(); foreach (var pose in state.Actors) { pose.ProjectileLifetime = null; pose.ProjectilePointers = null; }
-        return SimSavegame.Write(state);
+        return LegacyActorArchiveFixture.Write(state);
     }
 
     private static AuthoritySimulation Room(bool pain = false) => AuthoritySimulation.Start(new PlayLevel {

@@ -40,14 +40,14 @@ public class MassacreArchiveTests
     {
         var sim = Room(); var parent = Assert.Single(sim.Actors); var health = parent.Health;
         var state = sim.CaptureState(); state.Actors[0].DeathFlags = 2;
-        Assert.Throws<InvalidOperationException>(() => SimSavegame.Write(state));
+        Assert.Throws<InvalidOperationException>(() => LegacyActorArchiveFixture.Write(state));
         Assert.Throws<InvalidOperationException>(() => sim.RestoreState(state)); Assert.Equal(health, parent.Health);
     }
     private static byte[] WriteWithoutPainTimer(AuthoritySimulation sim)
     {
         var state = sim.CaptureState();
         foreach (var pose in state.Actors) pose.PainDeath = null;
-        return SimSavegame.Write(state);
+        return LegacyActorArchiveFixture.Write(state);
     }
     private static AuthoritySimulation Room() => AuthoritySimulation.Start(new PlayLevel {
         Sectors = [new LevelSector { CeilingHeight = 512 }], Things = [new LevelThing { Type = 71 }] });

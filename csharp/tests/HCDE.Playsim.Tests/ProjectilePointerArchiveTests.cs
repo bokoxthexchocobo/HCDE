@@ -19,7 +19,7 @@ public class ProjectilePointerArchiveTests
         var state = sim.CaptureState();
         if (serialized)
         {
-            var bytes = SimSavegame.Write(state); Assert.Equal(24, BinaryPrimitives.ReadUInt16LittleEndian(bytes.AsSpan(4)));
+            var bytes = LegacyActorArchiveFixture.Write(state); Assert.Equal(24, BinaryPrimitives.ReadUInt16LittleEndian(bytes.AsSpan(4)));
             Assert.True(SimSavegame.TryRead(bytes, out state, out var error), error);
         }
         sim.Tick(); var angle = missile.Angle; var vz = missile.VelocityZ;
@@ -53,7 +53,7 @@ public class ProjectilePointerArchiveTests
     {
         var sim = Room(); var missile = sim.SpawnProjectile(sim.Players.Single(), ProjectileKind.Plasma);
         var state = sim.CaptureState(); state.Actors.Single(a => a.Id == missile.Id).ProjectilePointers = new(missile.Owner.Id, missile.Owner.Id);
-        Assert.Throws<InvalidOperationException>(() => SimSavegame.Write(state));
+        Assert.Throws<InvalidOperationException>(() => LegacyActorArchiveFixture.Write(state));
         Assert.Throws<InvalidOperationException>(() => sim.RestoreState(state));
     }
 
@@ -61,7 +61,7 @@ public class ProjectilePointerArchiveTests
     public void TracerOnAbsentSerializedRecordIsRejected()
     {
         var sim = Room(); sim.SpawnProjectile(sim.Players.Single(), ProjectileKind.Plasma);
-        var bytes = SimSavegame.Write(sim); var size = BinaryPrimitives.ReadInt32LittleEndian(bytes.AsSpan(bytes.Length - 4));
+        var bytes = LegacyActorArchiveFixture.Write(sim); var size = BinaryPrimitives.ReadInt32LittleEndian(bytes.AsSpan(bytes.Length - 4));
         BinaryPrimitives.WriteUInt32LittleEndian(bytes.AsSpan(bytes.Length - size + 12), 99);
         Assert.False(SimSavegame.TryRead(bytes, out var state, out var error));
         Assert.Equal("save-pointer-state", error); Assert.Empty(state.Actors);
@@ -73,7 +73,7 @@ public class ProjectilePointerArchiveTests
         var sim = Room(); var target = sim.AddBot(800, 200); target.Brain = null;
         var missile = sim.SpawnProjectile(sim.Players.Single(), ProjectileKind.RevenantTracer, target);
         var state = sim.CaptureState(); foreach (var pose in state.Actors) pose.ProjectilePointers = null;
-        Assert.True(SimSavegame.TryRead(SimSavegame.Write(state), out state, out var error), error);
+        Assert.True(SimSavegame.TryRead(LegacyActorArchiveFixture.Write(state), out state, out var error), error);
         missile.RestoreTracerTarget(null); sim.RestoreState(state); Assert.Null(missile.TracerTargetId);
     }
 

@@ -21,7 +21,7 @@ public class FloorHuggerArchiveTests
         var state = sim.CaptureState();
         if (serialized)
         {
-            var bytes = SimSavegame.Write(state); Assert.Equal(flags == 0 ? 24 : 26, BinaryPrimitives.ReadUInt16LittleEndian(bytes.AsSpan(4)));
+            var bytes = LegacyActorArchiveFixture.Write(state); Assert.Equal(flags == 0 ? 24 : 26, BinaryPrimitives.ReadUInt16LittleEndian(bytes.AsSpan(4)));
             Assert.True(SimSavegame.TryRead(bytes, out state, out var error), error);
         }
         missile.FloorHugger = !missile.FloorHugger; missile.NoDropOff = !missile.NoDropOff;
@@ -35,7 +35,7 @@ public class FloorHuggerArchiveTests
     [InlineData(4)]
     public void InvalidSerializedBitsAreRejected(int flags)
     {
-        var sim = Room(); Shoot(sim).FloorHugger = true; var bytes = SimSavegame.Write(sim);
+        var sim = Room(); Shoot(sim).FloorHugger = true; var bytes = LegacyActorArchiveFixture.Write(sim);
         var size = BinaryPrimitives.ReadInt32LittleEndian(bytes.AsSpan(bytes.Length - 4));
         BinaryPrimitives.WriteInt32LittleEndian(bytes.AsSpan(bytes.Length - size + 8), flags);
         Assert.False(SimSavegame.TryRead(bytes, out var state, out var error));
@@ -56,14 +56,14 @@ public class FloorHuggerArchiveTests
     {
         var sim = Room(); Shoot(sim).FloorHugger = true; var state = sim.CaptureState();
         state.Actors[0].FloorHuggerFlags = null;
-        Assert.Throws<InvalidOperationException>(() => SimSavegame.Write(state));
+        Assert.Throws<InvalidOperationException>(() => LegacyActorArchiveFixture.Write(state));
     }
 
     [Fact]
     public void FlagsComposeWithCeilingAndProjectileArchives()
     {
         var sim = Room(); var missile = Shoot(sim); missile.FloorHugger = missile.CeilingHugger = true;
-        Assert.True(SimSavegame.TryRead(SimSavegame.Write(sim), out var state, out var error), error);
+        Assert.True(SimSavegame.TryRead(LegacyActorArchiveFixture.Write(sim), out var state, out var error), error);
         missile.FloorHugger = missile.CeilingHugger = false; missile.NoDropOff = true;
         sim.RestoreState(state); sim.Tick(); Assert.False(missile.Destroyed); Assert.True(missile.CeilingHugger);
         Assert.Equal(0, missile.Z.ToDouble()); Assert.Equal(174, missile.RemainingTics);

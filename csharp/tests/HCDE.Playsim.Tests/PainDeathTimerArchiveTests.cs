@@ -14,7 +14,7 @@ public class PainDeathTimerArchiveTests
         Assert.Equal(10, state.Actors[0].PainDeath!.Value.Tics);
         if (serialized)
         {
-            var bytes = SimSavegame.Write(state); Assert.Equal(21, BinaryPrimitives.ReadUInt16LittleEndian(bytes.AsSpan(4)));
+            var bytes = LegacyActorArchiveFixture.Write(state); Assert.Equal(21, BinaryPrimitives.ReadUInt16LittleEndian(bytes.AsSpan(4)));
             Assert.True(SimSavegame.TryRead(bytes, out state, out var error), error);
         }
         for (var i = 0; i < 10; i++) sim.Tick();
@@ -39,7 +39,7 @@ public class PainDeathTimerArchiveTests
     [InlineData(33)]
     public void InvalidSerializedCounterIsRejected(int tics)
     {
-        var sim = Room(); var bytes = SimSavegame.Write(sim);
+        var sim = Room(); var bytes = LegacyActorArchiveFixture.Write(sim);
         var size = BinaryPrimitives.ReadInt32LittleEndian(bytes.AsSpan(bytes.Length - 4));
         BinaryPrimitives.WriteInt32LittleEndian(bytes.AsSpan(bytes.Length - size + 8), tics);
         Assert.False(SimSavegame.TryRead(bytes, out var state, out var error));
@@ -72,7 +72,7 @@ public class PainDeathTimerArchiveTests
         var parent = sim.Actors.Single(a => a.DoomEdNum == 71); var target = Assert.Single(sim.Players);
         parent.Brain!.SetTargetThingId(sim, 17); parent.Health = 0;
         for (var i = 0; i < 10; i++) sim.Tick();
-        Assert.True(SimSavegame.TryRead(SimSavegame.Write(sim), out var state, out var error), error);
+        Assert.True(SimSavegame.TryRead(LegacyActorArchiveFixture.Write(sim), out var state, out var error), error);
         Assert.Equal(target.Id, state.Actors.Single(a => a.Id == parent.Id).PainDeath!.Value.TargetId);
         parent.Brain.RestorePainDeath(new(31, null)); sim.RestoreState(state);
         for (var i = 0; i < 22; i++) sim.Tick();
