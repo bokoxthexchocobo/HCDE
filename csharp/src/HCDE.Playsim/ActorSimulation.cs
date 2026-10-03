@@ -169,6 +169,8 @@ public class Actor : Thinker
     public bool MThruSpecies { get; set; }
     /// <summary>Native MF6_THRUSPECIES: this mover passes actors of its own supported species.</summary>
     public bool ThruSpecies { get; set; }
+    public bool Ghost { get; set; }
+    public bool ThruGhost { get; set; }
     public bool AllowThruBits { get; set; }
     public uint ThruBits { get; set; }
     internal bool SharesEnabledThruBits(Actor other) => (ThruBits & other.ThruBits) != 0
@@ -2848,6 +2850,8 @@ public sealed class AuthoritySimulation
             if (actor.ThruActors) hash = Mix(hash, 0x54485255u);
             if (actor.MThruSpecies) hash = Mix(hash, 0x4D545350u);
             if (actor.ThruSpecies) hash = Mix(hash, 0x54535043u);
+            if (actor.Ghost) hash = Mix(hash, 0x47484F53u);
+            if (actor.ThruGhost) hash = Mix(hash, 0x54474853u);
             if (actor.AllowThruBits) hash = Mix(hash, 0x41544254u);
             if (actor.ThruBits != 0) { hash = Mix(hash, 0x54424954u); hash = Mix(hash, actor.ThruBits); }
             if (actor.SpawnCeiling) hash = Mix(hash, 0x4345494Cu);

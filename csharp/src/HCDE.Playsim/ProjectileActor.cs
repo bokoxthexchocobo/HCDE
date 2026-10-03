@@ -167,6 +167,7 @@ public sealed class ProjectileActor : Actor
                 if (MThruSpecies && Owner.SharesContactSpecies(actor)) continue;
                 if (SharesEnabledThruBits(actor)) continue;
                 if (ThruSpecies && SharesContactSpecies(actor)) continue;
+                if (ThruGhost && actor.Ghost) continue;
                 var hit = CylinderFraction(x, y, z, dx, dy, dz, actor);
                 if (hit < fraction || hit == fraction && victim != null && actor.Id < victim.Id)
                 { fraction = hit; victim = actor; wall = null; planeSector = planePart = -1; }

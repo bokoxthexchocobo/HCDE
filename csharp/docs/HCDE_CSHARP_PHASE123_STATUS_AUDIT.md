@@ -10684,11 +10684,32 @@ Custom property loading/species, hitscan/puff policy, telefrag execution,
 actor recreation and native geometry/runtime acceptance remain incomplete.
 Phases 1–3 and invasion synchronization acceptance remain open.
 
+## Conversion and audit: projectile ghost passage (2026-10-03)
+
+Converted supported GHOST/THRUGHOST direct projectile contacts against
+`PIT_CheckThing` in `src/playsim/p_map.cpp`, flag definitions in
+`src/playsim/actor.h`, and registration in `src/scripting/thingdef_data.cpp`.
+A missile skips a GHOST target only when the missile has THRUGHOST.
+Reversed flags do not grant passage; ordinary actors still collide with
+solid ghosts. ACS accepts case-insensitive flag set/query and enabled flags
+participate in checksum. No Doom Spectre ghost default is inferred.
+
+Ten regressions cover all four flag combinations, reversed flags, ordinary
+movement blocking, an enemy behind a skipped ghost, floor impacts and both
+ACS flags. Full non-incremental Release rebuild: zero warnings/errors;
+5,757 solution tests passed, zero failed/skipped (Playsim 4,630).
+Whitespace checks pass.
+
+Ghost/ThruGhost pose persistence, custom class defaults, MBF bouncers,
+hitscan/puff behavior and native geometry/runtime acceptance remain incomplete.
+Radius damage remains separate from direct missile contact. Phases 1–3 and
+invasion synchronization acceptance remain open.
+
 ## Validation
 
-- Release solution: **5,747 passed, zero failed/skipped**, 4,824 cases above baseline.
+- Release solution: **5,757 passed, zero failed/skipped**, 4,834 cases above baseline.
   Protocol 15; Gamedata 29; Transport 10; Master 1; RCON 6; MapLoader 533;
-  Playsim 4,620; Client 12; Net.Core 351; Pregame 97; Server 65; Scripting 8.
+  Playsim 4,630; Client 12; Net.Core 351; Pregame 97; Server 65; Scripting 8.
 - The lighting pass initially saw a five-second timeout in
   `Pump_LiveSessionReceivesGuestClientInput`; it passed the targeted rerun and the
   subsequent full solution run. No timeout/test-disabling workaround was added.
