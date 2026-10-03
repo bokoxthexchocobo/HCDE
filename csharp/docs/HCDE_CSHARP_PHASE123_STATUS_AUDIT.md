@@ -9764,11 +9764,34 @@ This closes the previous checkpoint's health exception, but does not establish
 native invasion-session parity or resolve all reported synchronization faults.
 Native mod/state behavior, complete spawn rules, and phases 1–3 remain open.
 
+## Dynamic Zombie class attack profile checkpoint (2026-10-03)
+
+Removed AddBot's Zombieman generic-brain exception. Dynamic original and
+remapped Zombies now use MonsterBrain.ForType with the same converted profile
+as map-spawned Zombies. Native `possessed.zs` Missile states wait 10 tics before
+A_PosAttack, then spend 8 + 8 tics before returning to See. Existing managed
+DoomMonsterAttacks encodes the shot at 10 and sequence end at 26, while the
+previous generic loop used an 8-tic windup. Unknown classes retain the generic
+hitscan fallback; explicit reaction time patches still apply after brain binding.
+
+Four regressions verify map, dynamic, and parsed remapped first-shot timing,
+one shot per sequence, the return to chase, and map/dynamic mode, timing, and
+combat random agreement over 100 tics. Full Release solution: 5,311 passed,
+zero failed/skipped; Playsim 4,186. Release warnings-as-errors build and
+whitespace checks passed. Existing trace and invasion server tests passed.
+No checksum schema changed; existing brain hashing captures the class profile.
+
+This changes dynamic/invasion Zombie combat cadence. The managed brain still
+has its own look/chase cadence and random streams; class-profile use does not
+establish complete native state execution or RNG parity. Custom patched frames,
+action pointers, full spawn behavior, native invasion sessions, and phases 1–3
+completion remain open.
+
 ## Validation
 
-- Release solution: **5,307 passed, zero failed/skipped**, 4,384 cases above baseline.
+- Release solution: **5,311 passed, zero failed/skipped**, 4,388 cases above baseline.
   Protocol 15; Gamedata 29; Transport 10; Master 1; RCON 6; MapLoader 533;
-  Playsim 4,182; Client 12; Net.Core 351; Pregame 97; Server 63; Scripting 8.
+  Playsim 4,186; Client 12; Net.Core 351; Pregame 97; Server 63; Scripting 8.
 - The lighting pass initially saw a five-second timeout in
   `Pump_LiveSessionReceivesGuestClientInput`; it passed the targeted rerun and the
   subsequent full solution run. No timeout/test-disabling workaround was added.

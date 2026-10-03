@@ -1841,9 +1841,7 @@ public sealed class AuthoritySimulation
             GibHealth = health > 0 ? -health : -1,
             RaiseDuration = ArchvileActions.RaiseDuration(definitionType),
             Level = Level,
-            Brain = definitionType == 3004
-                ? new MonsterBrain(MonsterAttack.Hitscan)
-                : MonsterBrain.ForType(definitionType) ?? new MonsterBrain(MonsterAttack.Hitscan),
+            Brain = MonsterBrain.ForType(definitionType) ?? new MonsterBrain(MonsterAttack.Hitscan),
             IsMonster = true,
             Radius = definition != null ? Fixed.FromInt(definition.Radius) : Fixed.FromInt(20),
             Height = definition != null ? Fixed.FromInt(definition.Height) : Fixed.FromInt(56),
