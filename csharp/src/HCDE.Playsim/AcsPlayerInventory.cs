@@ -20,15 +20,39 @@ internal static class AcsPlayerInventory
 
     public static int Count(Actor? activator, string typeName, bool max)
     {
+        if (activator is { Destroyed: false } actor && !string.IsNullOrEmpty(typeName)
+            && typeName.Equals("Health", StringComparison.OrdinalIgnoreCase))
+            return !max ? actor.Health : actor is PlayerPawn healthPlayer ? healthPlayer.EffectiveMaxHealth
+                : actor.ResurrectionHealth;
+
+        if (activator is { Destroyed: false } && !string.IsNullOrEmpty(typeName))
+        {
+            if (typeName.Equals("HealthBonus", StringComparison.OrdinalIgnoreCase)
+                || typeName.Equals("Soulsphere", StringComparison.OrdinalIgnoreCase)
+                || typeName.Equals("MegasphereHealth", StringComparison.OrdinalIgnoreCase))
+                return max ? 200 : 0;
+            if (typeName.Equals("Megasphere", StringComparison.OrdinalIgnoreCase))
+                return max ? 1 : 0;
+            if (TryAmmoBox(typeName, out _, out var boxMaximum))
+                return max ? boxMaximum : 0;
+            if (max && activator is not PlayerPawn)
+            {
+                if (TryCapacityAmmoKind(typeName, out var ammoKind))
+                    return DefaultAmmoMaximum(ammoKind);
+                if (TryWeaponKind(typeName, out _) || TryKeyColor(typeName, out _)
+                    || typeName.Equals("Backpack", StringComparison.OrdinalIgnoreCase)
+                    || typeName.Equals("Armor", StringComparison.OrdinalIgnoreCase)
+                    || typeName.Equals("BasicArmor", StringComparison.OrdinalIgnoreCase))
+                    return 1;
+            }
+        }
+
         if (activator is not PlayerPawn { Destroyed: false } player || string.IsNullOrEmpty(typeName))
             return 0;
 
         if (typeName.Equals("Armor", StringComparison.OrdinalIgnoreCase)
             || typeName.Equals("BasicArmor", StringComparison.OrdinalIgnoreCase))
             return max ? player.Inventory.ArmorMaximum : player.Inventory.Armor;
-
-        if (typeName.Equals("Health", StringComparison.OrdinalIgnoreCase))
-            return max ? 100 : player.Health;
 
         if (typeName.Equals("BlueCard", StringComparison.OrdinalIgnoreCase)
             || typeName.Equals("BlueSkull", StringComparison.OrdinalIgnoreCase))
@@ -40,26 +64,16 @@ internal static class AcsPlayerInventory
             || typeName.Equals("YellowSkull", StringComparison.OrdinalIgnoreCase))
             return max || player.Inventory.YellowKey ? 1 : 0;
 
-        if (typeName.Equals("Clip", StringComparison.OrdinalIgnoreCase)
-            || typeName.Equals("Bullet", StringComparison.OrdinalIgnoreCase)
-            || typeName.Equals("AmmoClip", StringComparison.OrdinalIgnoreCase))
-            return max ? player.Inventory.MaxBullets : player.Inventory.Bullets;
-        if (typeName.Equals("Shell", StringComparison.OrdinalIgnoreCase)
-            || typeName.Equals("Shells", StringComparison.OrdinalIgnoreCase))
-            return max ? player.Inventory.MaxShells : player.Inventory.Shells;
-        if (typeName.Equals("RocketAmmo", StringComparison.OrdinalIgnoreCase)
-            || typeName.Equals("Rockets", StringComparison.OrdinalIgnoreCase))
-            return max ? player.Inventory.MaxRockets : player.Inventory.Rockets;
-        if (typeName.Equals("Cell", StringComparison.OrdinalIgnoreCase)
-            || typeName.Equals("Cells", StringComparison.OrdinalIgnoreCase))
-            return max ? player.Inventory.MaxCells : player.Inventory.Cells;
+        if (TryCapacityAmmoKind(typeName, out var queryAmmo))
+            return max ? MaxAmmo(player.Inventory, queryAmmo) : player.Inventory.Ammo(queryAmmo);
 
         if (TryWeaponKind(typeName, out var weaponKind))
             return max || player.Inventory.Owns(weaponKind) ? 1 : 0;
         if (typeName.Equals("Backpack", StringComparison.OrdinalIgnoreCase))
             return max || player.Inventory.HasBackpack ? 1 : 0;
 
-        return 0;
+        return max ? 0 : player.Inventory.SpareArmor.Count(spare =>
+            spare.ArmorType.Equals(typeName, StringComparison.OrdinalIgnoreCase));
     }
 
     /// <summary>Native <c>PCD_GETAMMOCAPACITY</c> for Doom ammo class names.</summary>
@@ -68,11 +82,11 @@ internal static class AcsPlayerInventory
 
     public static int AmmoCapacity(Actor? activator, string? typeName)
     {
-        if (activator is not PlayerPawn { Destroyed: false } player || string.IsNullOrEmpty(typeName))
+        if (activator is not { Destroyed: false } || string.IsNullOrEmpty(typeName))
             return 0;
-        if (!TryAmmoKind(typeName, out var kind))
+        if (!TryCapacityAmmoKind(typeName, out var kind))
             return 0;
-        return MaxAmmo(player.Inventory, kind);
+        return activator is PlayerPawn player ? MaxAmmo(player.Inventory, kind) : DefaultAmmoMaximum(kind);
     }
 
     /// <summary>Native <c>PCD_SETAMMOCAPACITY</c>. Non-ammo types are ignored.</summary>
@@ -83,12 +97,43 @@ internal static class AcsPlayerInventory
     {
         if (activator is not PlayerPawn { Destroyed: false } player || string.IsNullOrEmpty(typeName))
             return;
-        if (!TryAmmoKind(typeName, out var kind))
+        if (!TryCapacityAmmoKind(typeName, out var kind))
             return;
-        if (capacity < 0)
-            capacity = 0;
         SetMaxAmmo(player.Inventory, kind, capacity);
     }
+
+    private static bool TryCapacityAmmoKind(string typeName, out AmmoKind kind)
+    {
+        if (typeName.Equals("Clip", StringComparison.OrdinalIgnoreCase))
+        { kind = AmmoKind.Bullets; return true; }
+        if (typeName.Equals("Shell", StringComparison.OrdinalIgnoreCase))
+        { kind = AmmoKind.Shells; return true; }
+        if (typeName.Equals("RocketAmmo", StringComparison.OrdinalIgnoreCase))
+        { kind = AmmoKind.Rockets; return true; }
+        if (typeName.Equals("Cell", StringComparison.OrdinalIgnoreCase))
+        { kind = AmmoKind.Cells; return true; }
+        kind = default; return false;
+    }
+
+    private static bool TryAmmoBox(string typeName, out AmmoKind kind, out int maximum)
+    {
+        if (typeName.Equals("ClipBox", StringComparison.OrdinalIgnoreCase))
+        { kind = AmmoKind.Bullets; maximum = 200; return true; }
+        if (typeName.Equals("ShellBox", StringComparison.OrdinalIgnoreCase))
+        { kind = AmmoKind.Shells; maximum = 50; return true; }
+        if (typeName.Equals("RocketBox", StringComparison.OrdinalIgnoreCase))
+        { kind = AmmoKind.Rockets; maximum = 50; return true; }
+        if (typeName.Equals("CellPack", StringComparison.OrdinalIgnoreCase))
+        { kind = AmmoKind.Cells; maximum = 300; return true; }
+        kind = default; maximum = 0; return false;
+    }
+
+    private static int DefaultAmmoMaximum(AmmoKind kind) => kind switch
+    {
+        AmmoKind.Bullets => 200,
+        AmmoKind.Shells or AmmoKind.Rockets => 50,
+        _ => 300,
+    };
 
     private static int MaxAmmo(PlayerInventory inventory, AmmoKind kind) => kind switch
     {
@@ -109,12 +154,19 @@ internal static class AcsPlayerInventory
         }
     }
 
+    public static void ScriptClear(AuthoritySimulation sim, Actor? activator)
+    {
+        if (activator is not null) Clear(activator);
+        else foreach (var player in sim.Players) Clear(player);
+    }
+
     public static void Clear(Actor? activator)
     {
         if (activator is not PlayerPawn { Destroyed: false } player)
             return;
-        player.Inventory.ResetToPistolStart();
+        player.Inventory.ClearInventory();
         player.PowerBuddhaTics = 0;
+        player.DrainStrength = 0;
     }
 
     /// <summary>Native <c>UseInventory</c> / <c>DoUseInv</c> subset: weapon select only.</summary>
@@ -149,41 +201,32 @@ internal static class AcsPlayerInventory
             player.Inventory.Pending = null;
             return 1;
         }
-        return Use(player, typeName);
+        return QueueWeaponUse(player.Inventory, weaponKind);
     }
 
     public static int Use(Actor? activator, string? typeName)
     {
-        if (activator is not PlayerPawn { Destroyed: false } player || string.IsNullOrEmpty(typeName))
+        if (activator is not PlayerPawn { Destroyed: false } player || player.Health <= 0 || string.IsNullOrEmpty(typeName))
             return 0;
 
-        if (TryHealthUse(typeName, out var healAmount, out var healCap))
-        {
-            if (player.Health >= healCap)
-                return 0;
-            player.Health = Math.Min(healCap, player.Health + healAmount);
-            return 1;
-        }
+        if (typeName.Equals("Armor", StringComparison.OrdinalIgnoreCase)
+            || typeName.Equals("BasicArmor", StringComparison.OrdinalIgnoreCase))
+            return 0;
 
-        if (TryArmorUse(typeName, out var armorAmount, out var armorCap, out var savePercent))
-        {
-            if (player.Inventory.Armor >= armorCap)
-                return 0;
-            player.Inventory.Armor = Math.Min(armorCap, player.Inventory.Armor + armorAmount);
-            player.Inventory.ArmorMaximum = typeName.Equals("ArmorBonus", StringComparison.OrdinalIgnoreCase)
-                ? Math.Max(player.Inventory.ArmorMaximum, armorCap) : armorAmount;
-            if (player.Inventory.ArmorSavePercent == 0)
-                player.Inventory.ArmorSavePercent = savePercent;
+        if (player.Inventory.TryUseStoredArmor(typeName))
             return 1;
-        }
-
-        if (typeName.Equals("Backpack", StringComparison.OrdinalIgnoreCase))
-            return player.Inventory.GiveBackpack() ? 1 : 0;
 
         if (!TryWeaponKind(typeName, out var weaponKind))
             return 0;
 
-        var inventory = player.Inventory;
+        if (player.Inventory.Owns(weaponKind) && weaponKind != player.Inventory.Selected)
+            player.Inventory.Pending = weaponKind;
+        // Weapon.Use returns false to retain the weapon, even when it queued a switch.
+        return 0;
+    }
+
+    private static int QueueWeaponUse(PlayerInventory inventory, WeaponKind weaponKind)
+    {
         if (!inventory.Owns(weaponKind))
             return 0;
 
@@ -225,20 +268,66 @@ internal static class AcsPlayerInventory
     public static void Give(Actor? activator, string[] stringTable, int stringId, int amount) =>
         Give(activator, stringId < 0 || stringId >= stringTable.Length ? null : stringTable[stringId], amount);
 
+    public static void ScriptGive(AuthoritySimulation sim, Actor? activator, string[] strings, int id, int amount)
+    {
+        if (activator is not null) Give(activator, strings, id, amount);
+        else foreach (var player in sim.Players) Give(player, strings, id, amount);
+    }
+
+    public static void ScriptTake(AuthoritySimulation sim, Actor? activator, string[] strings, int id, int amount)
+    {
+        if (activator is not null) Take(activator, strings, id, amount);
+        else foreach (var player in sim.Players) Take(player, strings, id, amount);
+    }
+
     public static void Give(Actor? activator, string? typeName, int amount)
     {
-        if (activator is not PlayerPawn { Destroyed: false } player || string.IsNullOrEmpty(typeName) || amount <= 0)
+        if (activator is not { Destroyed: false } || string.IsNullOrEmpty(typeName) || amount <= 0)
             return;
 
+        if (activator is not PlayerPawn player)
+        {
+            if (TryHealthUse(typeName, out _, out _)
+                || typeName.Equals("MegasphereHealth", StringComparison.OrdinalIgnoreCase))
+                PickupCatalog.GiveHealth(activator, amount);
+            return;
+        }
+
         var inventory = player.Inventory;
+        if (TryAmmoBox(typeName, out var boxAmmo, out _))
+        {
+            GiveScriptAmmo(player, boxAmmo, amount);
+            return;
+        }
+        if (typeName.Equals("MegasphereHealth", StringComparison.OrdinalIgnoreCase))
+        {
+            PickupCatalog.GiveHealth(player, amount, 200);
+            return;
+        }
+        if (typeName.Equals("BlueArmorForMegasphere", StringComparison.OrdinalIgnoreCase))
+        {
+            PickupCatalog.GiveArmor(inventory, PickupCatalog.ScaleArmor(checked(200 * amount), player), PlayerInventory.MegaSavePercent,
+                "BlueArmorForMegasphere");
+            return;
+        }
+        if (typeName.Equals("Megasphere", StringComparison.OrdinalIgnoreCase))
+        {
+            PickupCatalog.TryGive(player, PickupCatalog.Megasphere);
+            return;
+        }
+        if (TryHealthUse(typeName, out _, out _) && !typeName.Equals("Health", StringComparison.OrdinalIgnoreCase)
+            && PickupCatalog.TryEditorNumberForDropName(typeName, out var healthPickup))
+        {
+            PickupCatalog.TryGive(player, healthPickup, pickupAmount: amount);
+            return;
+        }
         if (typeName.Equals("ArmorBonus", StringComparison.OrdinalIgnoreCase))
         {
             PickupCatalog.TryGive(player, PickupCatalog.ArmorBonus, pickupAmount: amount);
             return;
         }
         if (typeName.Equals("GreenArmor", StringComparison.OrdinalIgnoreCase)
-            || typeName.Equals("BlueArmor", StringComparison.OrdinalIgnoreCase)
-            || typeName.Equals("MegaArmor", StringComparison.OrdinalIgnoreCase))
+            || typeName.Equals("BlueArmor", StringComparison.OrdinalIgnoreCase))
         {
             var green = typeName.Equals("GreenArmor", StringComparison.OrdinalIgnoreCase);
             var suitAmount = green ? PlayerInventory.GreenArmorAmount : PlayerInventory.MegaArmorAmount;
@@ -248,16 +337,15 @@ internal static class AcsPlayerInventory
         }
         if (typeName.Equals("Health", StringComparison.OrdinalIgnoreCase))
         {
-            player.Health = Math.Min(PlayerInventory.MaxHealthBonus, player.Health + amount);
+            PickupCatalog.GiveHealth(player, amount);
             return;
         }
 
         if (typeName.Equals("Armor", StringComparison.OrdinalIgnoreCase)
             || typeName.Equals("BasicArmor", StringComparison.OrdinalIgnoreCase))
         {
-            inventory.Armor = Math.Min(PlayerInventory.MegaArmorAmount, inventory.Armor + amount);
-            if (inventory.ArmorSavePercent == 0)
-                inventory.ArmorSavePercent = PlayerInventory.GreenSavePercent;
+            // Doom starts with BasicArmor: its HandlePickup rejects direct additions.
+            // The Armor alias uses base BasicArmorPickup, whose SaveAmount is zero.
             return;
         }
 
@@ -278,16 +366,20 @@ internal static class AcsPlayerInventory
             return;
         }
 
-        if (TryAmmoKind(typeName, out var ammoKind))
+        if (TryCapacityAmmoKind(typeName, out var ammoKind))
         {
             // GiveInventory restores PendingWeapon after the pickup callbacks.
-            inventory.TryAddAmmo(ammoKind, PickupCatalog.ScaleAmmo(amount, player));
+            GiveScriptAmmo(player, ammoKind, amount);
             return;
         }
 
         if (TryWeaponKind(typeName, out var weaponKind))
         {
+            var owned = inventory.Owns(weaponKind);
+            if (owned && player.Simulation?.NonDroppedWeaponsStay == true) return;
             inventory.Weapons |= weaponKind;
+            if (!owned && inventory.Selected == 0 && !inventory.NeverAutoSwitch)
+                inventory.Pending = weaponKind;
             var definition = WeaponCatalog.Find(weaponKind);
             if (definition?.Ammo is AmmoKind weaponAmmo)
             {
@@ -300,23 +392,63 @@ internal static class AcsPlayerInventory
                     WeaponKind.Plasma or WeaponKind.Bfg => 40,
                     _ => 0,
                 };
-                inventory.TryAddAmmo(weaponAmmo, PickupCatalog.ScaleAmmo(ammoGive, player));
+                var wasEmpty = inventory.Ammo(weaponAmmo) == 0;
+                var added = inventory.TryAddAmmo(weaponAmmo,
+                    PickupCatalog.ScaleWeaponAmmo(ammoGive, player, owned));
+                if (added && wasEmpty && inventory.Selected == 0)
+                    inventory.CheckAmmoPickupSwitch(weaponAmmo);
             }
         }
+    }
+
+    private static void GiveScriptAmmo(PlayerPawn player, AmmoKind kind, int amount)
+    {
+        var inventory = player.Inventory;
+        var wasEmpty = inventory.Ammo(kind) == 0;
+        var added = inventory.TryAddAmmo(kind, PickupCatalog.ScaleAmmo(amount, player));
+        if (added && wasEmpty && inventory.Selected == 0)
+            inventory.CheckAmmoPickupSwitch(kind);
     }
 
     public static void Take(Actor? activator, string[] stringTable, int stringId, int amount) =>
         Take(activator, stringId < 0 || stringId >= stringTable.Length ? null : stringTable[stringId], amount);
 
-    /// <summary>Native <c>ACSF_DropInventory</c> subset: strip without spawning pickups.</summary>
+    /// <summary>Native <c>ACSF_DropInventory</c> subset with supported inventory tosses.</summary>
     public static bool Drop(Actor? activator, string? typeName)
     {
-        if (activator is not PlayerPawn { Destroyed: false } || string.IsNullOrEmpty(typeName))
+        if (activator is not PlayerPawn { Destroyed: false } player || string.IsNullOrEmpty(typeName))
+            return false;
+        if (typeName.Equals("Health", StringComparison.OrdinalIgnoreCase)
+            || typeName.Equals("Armor", StringComparison.OrdinalIgnoreCase)
+            || typeName.Equals("BasicArmor", StringComparison.OrdinalIgnoreCase)
+            || typeName.Equals("Fist", StringComparison.OrdinalIgnoreCase))
             return false;
         var amount = Count(activator, typeName, max: false);
         if (amount <= 0)
             return false;
-        Take(activator, typeName, TryWeaponKind(typeName, out _) ? 1 : amount);
+        if (TryWeaponKind(typeName, out var tossedWeapon) && activator.Simulation is { } weaponSim
+            && PickupCatalog.TryWeaponEdNum(tossedWeapon, out var weaponEditorNumber))
+        {
+            if (!weaponSim.SpawnDroppedPickup(activator, weaponEditorNumber, inventoryToss: true,
+                suppressWeaponAmmo: true)) return false;
+        }
+        if (TryKeyColor(typeName, out _) && activator.Simulation is { } keySim
+            && PickupCatalog.TryEditorNumberForDropName(typeName, out var keyEditorNumber))
+        {
+            if (!keySim.SpawnDroppedPickup(activator, keyEditorNumber, inventoryToss: true)) return false;
+        }
+        if (typeName.Equals("Backpack", StringComparison.OrdinalIgnoreCase)
+            && activator.Simulation is { } backpackSim)
+        {
+            return backpackSim.DropBackpack(player) is not null;
+        }
+        if (TryCapacityAmmoKind(typeName, out _) && activator.Simulation is { } sim
+            && PickupCatalog.TryEditorNumberForDropName(typeName, out var doomEdNum))
+        {
+            if (!sim.SpawnDroppedPickup(activator, doomEdNum, ignoreAmmoSkill: true, pickupAmount: 1,
+                inventoryToss: true)) return false;
+        }
+        Take(activator, typeName, 1);
         return true;
     }
 
@@ -328,16 +460,14 @@ internal static class AcsPlayerInventory
         var inventory = player.Inventory;
         if (typeName.Equals("Health", StringComparison.OrdinalIgnoreCase))
         {
-            player.Health = Math.Max(1, player.Health - amount);
+            // CheckInventory aliases Health to actor health; TakeInventory does not.
             return;
         }
 
         if (typeName.Equals("Armor", StringComparison.OrdinalIgnoreCase)
             || typeName.Equals("BasicArmor", StringComparison.OrdinalIgnoreCase))
         {
-            inventory.Armor = Math.Max(0, inventory.Armor - amount);
-            if (inventory.Armor == 0)
-                inventory.ArmorSavePercent = 0;
+            inventory.Armor = inventory.Armor <= amount ? 0 : inventory.Armor - amount;
             return;
         }
 
@@ -358,7 +488,7 @@ internal static class AcsPlayerInventory
             return;
         }
 
-        if (TryAmmoKind(typeName, out var ammoKind))
+        if (TryCapacityAmmoKind(typeName, out var ammoKind))
         {
             var take = Math.Min(inventory.Ammo(ammoKind), amount);
             switch (ammoKind)
@@ -371,8 +501,16 @@ internal static class AcsPlayerInventory
             return;
         }
 
-        if (TryWeaponKind(typeName, out var weaponKind) && (inventory.Weapons & weaponKind) != 0)
-            inventory.Weapons &= ~weaponKind;
+        if (TryWeaponKind(typeName, out var weaponKind))
+        {
+            var replaceReady = inventory.Owns(weaponKind) && inventory.Selected == weaponKind
+                && (!inventory.Pending.HasValue || inventory.Pending == weaponKind);
+            inventory.RemoveWeapon(weaponKind);
+            if (replaceReady && inventory.Pending is { } replacement)
+                player.BringUpWeapon(replacement);
+            return;
+        }
+        inventory.TakeStoredArmor(typeName, amount);
     }
 
     private static bool TryKeyColor(string typeName, out PickupCatalog.KeyColor color)
@@ -396,68 +534,6 @@ internal static class AcsPlayerInventory
             return true;
         }
         color = default;
-        return false;
-    }
-
-    private static bool TryAmmoKind(string typeName, out AmmoKind kind)
-    {
-        if (typeName.Equals("Clip", StringComparison.OrdinalIgnoreCase)
-            || typeName.Equals("Bullet", StringComparison.OrdinalIgnoreCase)
-            || typeName.Equals("AmmoClip", StringComparison.OrdinalIgnoreCase))
-        {
-            kind = AmmoKind.Bullets;
-            return true;
-        }
-        if (typeName.Equals("Shell", StringComparison.OrdinalIgnoreCase)
-            || typeName.Equals("Shells", StringComparison.OrdinalIgnoreCase))
-        {
-            kind = AmmoKind.Shells;
-            return true;
-        }
-        if (typeName.Equals("RocketAmmo", StringComparison.OrdinalIgnoreCase)
-            || typeName.Equals("Rockets", StringComparison.OrdinalIgnoreCase))
-        {
-            kind = AmmoKind.Rockets;
-            return true;
-        }
-        if (typeName.Equals("Cell", StringComparison.OrdinalIgnoreCase)
-            || typeName.Equals("Cells", StringComparison.OrdinalIgnoreCase))
-        {
-            kind = AmmoKind.Cells;
-            return true;
-        }
-        kind = default;
-        return false;
-    }
-
-    private static bool TryArmorUse(string typeName, out int amount, out int maximum, out int savePercent)
-    {
-        if (typeName.Equals("Armor", StringComparison.OrdinalIgnoreCase)
-            || typeName.Equals("BasicArmor", StringComparison.OrdinalIgnoreCase)
-            || typeName.Equals("GreenArmor", StringComparison.OrdinalIgnoreCase))
-        {
-            amount = PlayerInventory.GreenArmorAmount;
-            maximum = PlayerInventory.GreenArmorAmount;
-            savePercent = PlayerInventory.GreenSavePercent;
-            return true;
-        }
-        if (typeName.Equals("MegaArmor", StringComparison.OrdinalIgnoreCase))
-        {
-            amount = PlayerInventory.MegaArmorAmount;
-            maximum = PlayerInventory.MegaArmorAmount;
-            savePercent = PlayerInventory.MegaSavePercent;
-            return true;
-        }
-        if (typeName.Equals("ArmorBonus", StringComparison.OrdinalIgnoreCase))
-        {
-            amount = 1;
-            maximum = PlayerInventory.MaxHealthBonus;
-            savePercent = PlayerInventory.GreenSavePercent;
-            return true;
-        }
-        amount = 0;
-        maximum = 0;
-        savePercent = 0;
         return false;
     }
 
@@ -501,34 +577,27 @@ internal static class AcsPlayerInventory
         var player = sim.Players.FirstOrDefault(p => !p.Destroyed && p.PlayerNum == playerNumber);
         if (player is null)
             return 0;
-        if (!typeName.Equals("BasicArmor", StringComparison.OrdinalIgnoreCase)
-            && !typeName.Equals("Armor", StringComparison.OrdinalIgnoreCase))
+        if (!typeName.Equals(player.Inventory.ArmorType, StringComparison.OrdinalIgnoreCase))
             return 0;
-        return player.Inventory.Armor > 0 && player.Inventory.ArmorSavePercent > 0
-            ? player.Inventory.Armor
-            : 0;
+        return player.Inventory.Armor;
     }
 
     /// <summary>Native <c>ACSF_GetArmorInfo</c> subset for worn BasicArmor.</summary>
     public static int ArmorInfo(Actor? activator, int infoKind, AcsGlobalStrings globalStrings)
     {
         if (activator is not PlayerPawn { Destroyed: false } player)
-            return infoKind == 0 ? globalStrings.Add("None") : 0;
+            return 0;
 
         var inventory = player.Inventory;
-        var hasArmor = inventory.Armor > 0 && inventory.ArmorSavePercent > 0;
+        var hasArmor = inventory.Armor != 0;
         return infoKind switch
         {
-            0 => globalStrings.Add(hasArmor ? "BasicArmor" : "None"),
-            1 => hasArmor
-                ? inventory.ArmorSavePercent >= PlayerInventory.MegaSavePercent
-                    ? PlayerInventory.MegaArmorAmount
-                    : PlayerInventory.GreenArmorAmount
-                : 0,
-            2 => hasArmor ? DoubleToAcs(inventory.ArmorSavePercent / 100.0) : 0,
+            0 => globalStrings.Add(hasArmor ? inventory.ArmorType : "None"),
+            1 => hasArmor ? inventory.ArmorMaximum : 0,
+            2 => hasArmor ? DoubleToAcs(PlayerInventory.ArmorSaveFraction(inventory.ArmorSavePercent)) : 0,
             3 => hasArmor ? inventory.MaxAbsorb : 0,
             4 => hasArmor ? inventory.MaxFullAbsorb : 0,
-            5 => hasArmor ? inventory.AbsorbCount : 0,
+            5 => hasArmor ? inventory.ArmorActualSaveAmount : 0,
             _ => 0,
         };
     }
@@ -564,8 +633,7 @@ internal static class AcsPlayerInventory
         if (typeName.Equals("Chaingun", StringComparison.OrdinalIgnoreCase)) { kind = WeaponKind.Chaingun; return true; }
         if (typeName.Equals("RocketLauncher", StringComparison.OrdinalIgnoreCase)) { kind = WeaponKind.RocketLauncher; return true; }
         if (typeName.Equals("PlasmaRifle", StringComparison.OrdinalIgnoreCase)) { kind = WeaponKind.Plasma; return true; }
-        if (typeName.Equals("BFG9000", StringComparison.OrdinalIgnoreCase)
-            || typeName.Equals("BFG", StringComparison.OrdinalIgnoreCase)) { kind = WeaponKind.Bfg; return true; }
+        if (typeName.Equals("BFG9000", StringComparison.OrdinalIgnoreCase)) { kind = WeaponKind.Bfg; return true; }
         if (typeName.Equals("Chainsaw", StringComparison.OrdinalIgnoreCase)) { kind = WeaponKind.Chainsaw; return true; }
         if (typeName.Equals("Fist", StringComparison.OrdinalIgnoreCase)) { kind = WeaponKind.Fist; return true; }
         if (typeName.Equals("Pistol", StringComparison.OrdinalIgnoreCase)) { kind = WeaponKind.Pistol; return true; }

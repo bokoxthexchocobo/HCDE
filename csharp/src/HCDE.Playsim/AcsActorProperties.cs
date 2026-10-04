@@ -137,7 +137,7 @@ internal static class AcsActorProperties
                 if (actor is PlayerPawn attackPlayer) attackPlayer.AttackZOffset = new Fixed(value);
                 break;
             case SpawnHealth:
-                actor.ResurrectionHealth = value;
+                if (actor is PlayerPawn healthPlayer) healthPlayer.MaxHealth = value;
                 break;
             case Mass:
                 actor.Mass = value;
@@ -168,7 +168,7 @@ internal static class AcsActorProperties
         Dropped => actor.Dropped ? 1 : 0,
         ReactionTime => actor.ReactionTime,
         Score => actor.Score,
-        SpawnHealth => actor.ResurrectionHealth,
+        SpawnHealth => actor is PlayerPawn healthPlayer ? healthPlayer.EffectiveMaxHealth : actor.ResurrectionHealth,
         Mass => actor.Mass,
         Height => actor.Height.Raw,
         Radius => actor.Radius.Raw,

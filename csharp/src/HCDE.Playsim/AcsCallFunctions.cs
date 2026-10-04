@@ -1598,16 +1598,12 @@ internal static class AcsCallFunctions
 
         if (tid == 0)
         {
-            if (AcsPlayerInventory.Drop(activator, typeName))
-                result = 1;
+            AcsPlayerInventory.Drop(activator, typeName);
             return true;
         }
 
-        foreach (var actor in AcsActorTid.AllFromTid(sim, tid))
-        {
-            if (AcsPlayerInventory.Drop(actor, typeName))
-                result++;
-        }
+        foreach (var actor in AcsActorTid.AllFromTid(sim, tid).ToArray())
+            AcsPlayerInventory.Drop(actor, typeName);
         return true;
     }
 

@@ -26,6 +26,10 @@ public sealed class SimActorPose
     public bool UseHeld { get; init; }
     public uint? Roll { get; internal set; }
     public SimPickupProperties? Pickup { get; internal set; }
+    public int PickupDelay { get; internal set; }
+    public bool Dropped { get; internal set; }
+    public bool SuppressWeaponPickupAmmo { get; internal set; }
+    public bool? AlwaysPickupOverride { get; internal set; }
     public int? ContactFlags { get; internal set; }
     public int? FloatFlags { get; internal set; }
     public int? DeathFlags { get; internal set; }
@@ -45,6 +49,7 @@ public sealed class SimActorPose
     public int? NonShootableFlags { get; internal set; }
     public int? HitOwnerFlags { get; internal set; }
     public int? SpectralFlags { get; internal set; }
+    public int? PlayerMaxHealth { get; internal set; }
 }
 
 public sealed class SimSaveState
@@ -101,6 +106,8 @@ public static class SimSavegame
         SimNonShootableArchive.Validate(state);
         SimHitOwnerArchive.Validate(state);
         SimSpectralArchive.Validate(state);
+        SimPlayerHealthArchive.Validate(state);
+        SimPickupDelayArchive.Validate(state);
         SimPainDeathArchive.Validate(state);
         if (state.Actors.Any(actor => actor.Pickup.HasValue) &&
             (state.GeometryHealth is null || state.Actors.Any(actor => !actor.Roll.HasValue)))
@@ -200,7 +207,7 @@ public static class SimSavegame
             BinaryPrimitives.WriteUInt16LittleEndian(archive.AsSpan(4), 15);
             archive = SimProjectileFlagArchive.Write(state, SimPainDeathArchive.Write(state, WriteDeathFlags(state, WriteFloatFlags(state, WriteContactFlags(state, WritePickups(state, WriteRolls(state, archive)))))));
             archive = SimFloorHuggerArchive.Write(state, SimCeilingHuggerArchive.Write(state, SimProjectilePointerArchive.Write(state, SimProjectileLifetimeArchive.Write(state, archive))));
-            return SimSpectralArchive.Write(state, SimHitOwnerArchive.Write(state, SimNonShootableArchive.Write(state, SimGhostArchive.Write(state, SimThruBitsArchive.Write(state, SimThruSpeciesArchive.Write(state, SimMissileThruSpeciesArchive.Write(state, SimThruActorsArchive.Write(state, SimBlastEligibilityArchive.Write(state, SimBlastedArchive.Write(state, archive))))))))));
+            return SimPickupDelayArchive.Write(state, SimPlayerHealthArchive.Write(state, SimSpectralArchive.Write(state, SimHitOwnerArchive.Write(state, SimNonShootableArchive.Write(state, SimGhostArchive.Write(state, SimThruBitsArchive.Write(state, SimThruSpeciesArchive.Write(state, SimMissileThruSpeciesArchive.Write(state, SimThruActorsArchive.Write(state, SimBlastEligibilityArchive.Write(state, SimBlastedArchive.Write(state, archive))))))))))));
         }
         return buffer;
     }
@@ -331,6 +338,8 @@ public static class SimSavegame
         }
 
         var version = BinaryPrimitives.ReadUInt16LittleEndian(bytes[4..]);
+        if (version is 38 or 39 or 40 or 41) return SimPickupDelayArchive.TryRead(bytes, out state, out error);
+        if (version == 37) return SimPlayerHealthArchive.TryRead(bytes, out state, out error);
         if (version == 36) return SimSpectralArchive.TryRead(bytes, out state, out error);
         if (version == 35) return SimHitOwnerArchive.TryRead(bytes, out state, out error);
         if (version == 34) return SimNonShootableArchive.TryRead(bytes, out state, out error);

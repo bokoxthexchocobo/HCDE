@@ -167,8 +167,9 @@ public class AcsCallFunctionTests
         var sim = Room();
         var player = sim.Players.Single();
         player.Inventory.Armor = 150;
+        player.Inventory.ArmorType = "GreenArmor";
         player.Inventory.ArmorSavePercent = PlayerInventory.GreenSavePercent;
-        Run(sim, player, ["BasicArmor"],
+        Run(sim, player, ["GreenArmor"],
             (int)AcsPcode.PushNumber, 0,
             (int)AcsPcode.PushNumber, 0,
             (int)AcsPcode.CallFunc, 2, 19,
@@ -254,7 +255,7 @@ public class AcsCallFunctionTests
     }
 
     [Fact]
-    public void CallFunc_DropInventory_StripsActivatorAmmo()
+    public void CallFunc_DropInventory_RemovesOneActivatorAmmo()
     {
         var sim = Room();
         var player = sim.Players.Single();
@@ -263,7 +264,7 @@ public class AcsCallFunctionTests
             (int)AcsPcode.PushNumber, 0,
             (int)AcsPcode.PushNumber, 0,
             (int)AcsPcode.CallFunc, 2, 82);
-        Assert.Equal(0, player.Inventory.Bullets);
+        Assert.Equal(79, player.Inventory.Bullets);
     }
 
     [Fact]

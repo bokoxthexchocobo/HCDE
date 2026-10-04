@@ -329,7 +329,11 @@ public class GameplayFoundationTests
         pistol.WeaponDrop = true;
         var count = pistol.Actors.Count;
         ActorDamage.Apply(pistol.Players.Single(), 1000);
-        Assert.Equal(count, pistol.Actors.Count);
+        Assert.Equal(count + 1, pistol.Actors.Count);
+        var pistolDrop = Assert.Single(pistol.Actors, actor => actor.DoomEdNum == PickupCatalog.Pistol);
+        Assert.True(pistolDrop.IgnoreAmmoSkill);
+        Assert.False(pistolDrop.SuppressWeaponPickupAmmo);
+        Assert.True(pistol.Players.Single().Inventory.Owns(WeaponKind.Pistol));
     }
 
     [Fact]
@@ -3331,6 +3335,10 @@ public class GameplayFoundationTests
         Assert.Equal(20, player.Inventory.Cells);
         Assert.Null(sim.DropBackpack(player));
 
+        drop.VelocityX = default; drop.VelocityY = default; drop.VelocityZ = default;
+        drop.NoGravity = true;
+        for (var i = 0; i < 29; i++) sim.Tick();
+        Assert.False(player.Inventory.HasBackpack);
         sim.Tick();
         Assert.True(player.Inventory.HasBackpack);
         Assert.Equal(400, player.Inventory.MaxBullets);
@@ -3424,7 +3432,7 @@ public class GameplayFoundationTests
         Assert.Equal(1, player.Inventory.Rockets);
 
         sim.AmmoFactor = 0;
-        Assert.False(PickupCatalog.TryGive(player, PickupCatalog.Clip));
+        Assert.True(PickupCatalog.TryGive(player, PickupCatalog.Clip));
         Assert.Equal(65, player.Inventory.Bullets);
     }
 

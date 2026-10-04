@@ -75,7 +75,7 @@ public class Phase5SimulationTests
     }
 
     [Fact]
-    public void BlueCard_SetsTheColorAndASecondKeyStays()
+    public void BlueCard_SetsTheColorAndSinglePlayerConsumesBothKeys()
     {
         var sim = AuthoritySimulation.Start(new PlayLevel
         {
@@ -89,7 +89,7 @@ public class Phase5SimulationTests
         });
         sim.Tick();
         Assert.True(sim.Players.Single().Inventory.BlueKey);
-        Assert.Equal(PickupCatalog.BlueSkull, sim.Actors.Single(actor => actor is not PlayerPawn).DoomEdNum);
+        Assert.Single(sim.Actors);
     }
 
     [Fact]

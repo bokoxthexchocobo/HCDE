@@ -25,14 +25,16 @@ public class SpecialPickupFlagTests
     }
 
     [Fact]
-    public void DroppedItemsAndDepletedBackpacksEnableSpecial()
+    public void DeathDropsEnableSpecialButBackpackTossWaitsForDelay()
     {
         var sim = Room(); var player = sim.Players.Single();
         Assert.False(player.SpecialPickup);
         Assert.True(sim.SpawnDroppedPickup(player, PickupCatalog.Shotgun));
         Assert.True(sim.Actors[^1].SpecialPickup);
         player.Inventory.GiveBackpack(0, 0, 0, 0);
-        Assert.True(sim.DropBackpack(player)!.SpecialPickup);
+        var backpack = sim.DropBackpack(player)!;
+        Assert.False(backpack.SpecialPickup);
+        Assert.Equal(30, backpack.PickupDelay);
     }
 
     [Fact]

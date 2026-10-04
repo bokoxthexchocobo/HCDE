@@ -731,13 +731,14 @@ public sealed class AcsVm
                     fiber.Stack.Add(0);
                     break;
                 case (int)AcsPcode.ClearInventory:
-                    AcsPlayerInventory.Clear(fiber.Activator);
+                    AcsPlayerInventory.ScriptClear(sim, fiber.Activator);
                     break;
                 case (int)AcsPcode.ClearActorInventory:
                 {
                     var clearTid = Pop(fiber);
                     if (fiber.Done) break;
-                    foreach (var actor in AcsActorTid.AllFromTid(sim, clearTid))
+                    if (clearTid == 0) AcsPlayerInventory.ScriptClear(sim, null);
+                    else foreach (var actor in AcsActorTid.AllFromTid(sim, clearTid))
                         AcsPlayerInventory.Clear(actor);
                     break;
                 }
@@ -747,7 +748,7 @@ public sealed class AcsVm
                     var giveAmount = Pop(fiber);
                     var giveStringId = Pop(fiber);
                     if (fiber.Done) break;
-                    AcsPlayerInventory.Give(fiber.Activator, fiber.StringTable, giveStringId, giveAmount);
+                    AcsPlayerInventory.ScriptGive(sim, fiber.Activator, fiber.StringTable, giveStringId, giveAmount);
                     break;
                 }
                 case (int)AcsPcode.GiveInventoryDirect:
@@ -755,7 +756,7 @@ public sealed class AcsVm
                     var giveDirectStringId = ReadI32(fiber);
                     var giveDirectAmount = ReadI32(fiber);
                     if (fiber.Done) break;
-                    AcsPlayerInventory.Give(fiber.Activator, fiber.StringTable, giveDirectStringId, giveDirectAmount);
+                    AcsPlayerInventory.ScriptGive(sim, fiber.Activator, fiber.StringTable, giveDirectStringId, giveDirectAmount);
                     break;
                 }
                 case (int)AcsPcode.TakeInventory:
@@ -764,7 +765,7 @@ public sealed class AcsVm
                     var takeAmount = Pop(fiber);
                     var takeStringId = Pop(fiber);
                     if (fiber.Done) break;
-                    AcsPlayerInventory.Take(fiber.Activator, fiber.StringTable, takeStringId, takeAmount);
+                    AcsPlayerInventory.ScriptTake(sim, fiber.Activator, fiber.StringTable, takeStringId, takeAmount);
                     break;
                 }
                 case (int)AcsPcode.TakeInventoryDirect:
@@ -772,7 +773,7 @@ public sealed class AcsVm
                     var takeDirectStringId = ReadI32(fiber);
                     var takeDirectAmount = ReadI32(fiber);
                     if (fiber.Done) break;
-                    AcsPlayerInventory.Take(fiber.Activator, fiber.StringTable, takeDirectStringId, takeDirectAmount);
+                    AcsPlayerInventory.ScriptTake(sim, fiber.Activator, fiber.StringTable, takeDirectStringId, takeDirectAmount);
                     break;
                 }
                 case (int)AcsPcode.GiveActorInventory:
@@ -782,7 +783,9 @@ public sealed class AcsVm
                     var giveActorStringId = Pop(fiber);
                     var giveActorTid = Pop(fiber);
                     if (fiber.Done) break;
-                    foreach (var actor in AcsActorTid.AllFromTid(sim, giveActorTid))
+                    if (giveActorTid == 0)
+                        AcsPlayerInventory.ScriptGive(sim, null, fiber.StringTable, giveActorStringId, giveActorAmount);
+                    else foreach (var actor in AcsActorTid.AllFromTid(sim, giveActorTid))
                         AcsPlayerInventory.Give(actor, fiber.StringTable, giveActorStringId, giveActorAmount);
                     break;
                 }
@@ -793,7 +796,9 @@ public sealed class AcsVm
                     var takeActorStringId = Pop(fiber);
                     var takeActorTid = Pop(fiber);
                     if (fiber.Done) break;
-                    foreach (var actor in AcsActorTid.AllFromTid(sim, takeActorTid))
+                    if (takeActorTid == 0)
+                        AcsPlayerInventory.ScriptTake(sim, null, fiber.StringTable, takeActorStringId, takeActorAmount);
+                    else foreach (var actor in AcsActorTid.AllFromTid(sim, takeActorTid))
                         AcsPlayerInventory.Take(actor, fiber.StringTable, takeActorStringId, takeActorAmount);
                     break;
                 }

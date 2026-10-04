@@ -26,19 +26,30 @@ public enum AmmoKind
 /// Doom pistol-start inventory. Bullets begin at 50. Fist and pistol are already owned.
 /// </summary>
 /// <summary>One stored <c>BasicArmorPickup</c>. The worn suit is separate.</summary>
-public readonly record struct SpareArmor(int SaveAmount, int SavePercent, int MaxAbsorb, int MaxFullAbsorb);
+public readonly record struct SpareArmor(int SaveAmount, int SavePercent, int MaxAbsorb, int MaxFullAbsorb,
+    string ArmorType = "BasicArmorPickup", bool IgnoreSkill = false);
 
 public sealed class PlayerInventory
 {
+    private readonly PlayerPawn? _owner;
+    public PlayerInventory() { }
+    internal PlayerInventory(PlayerPawn owner) => _owner = owner;
+    private double ArmorFactor => _owner?.Simulation?.ArmorFactor ?? 1;
+
     public const int MaxHealthBonus = 200;
     public const int GreenArmorAmount = 100;
     public const int MegaArmorAmount = 200;
     public const int GreenSavePercent = 33;
+    internal static double ArmorSaveFraction(int percent) =>
+        percent == GreenSavePercent ? 0.33335 : percent / 100.0;
     public const int MegaSavePercent = 50;
 
     public int Armor { get; set; }
     /// <summary>Native BasicArmor.MaxAmount, retained when armor is depleted.</summary>
     public int ArmorMaximum { get; set; } = 1;
+    /// <summary>Native BasicArmor.ActualSaveAmount, independent of absorbed damage.</summary>
+    public int ArmorActualSaveAmount { get; set; }
+    public string ArmorType { get; set; } = "None";
     public int ArmorSavePercent { get; set; }
     /// <summary>BasicArmor total save cap. 0 means no cap.</summary>
     public int MaxAbsorb { get; set; }
@@ -47,7 +58,7 @@ public sealed class PlayerInventory
     /// <summary>Saved so far. A new suit does not clear it.</summary>
     public int AbsorbCount { get; set; }
     private readonly List<SpareArmor> _spareArmor = new();
-    /// <summary>BasicArmorPickup items kept because the worn suit was at least as strong.</summary>
+    /// <summary>BasicArmorPickup items retained when pickup autoactivation fails.</summary>
     public IReadOnlyList<SpareArmor> SpareArmor => _spareArmor;
     public int Bullets { get; set; } = 50;
     public int Shells { get; set; }
@@ -69,11 +80,25 @@ public sealed class PlayerInventory
     /// <summary>Converted player GetNeverSwitch preference for pickup-triggered switching.</summary>
     public bool NeverAutoSwitch { get; set; }
 
+    internal void ClearInventory()
+    {
+        RemoveBackpack();
+        Armor = 0;
+        _spareArmor.Clear();
+        Bullets = Shells = Rockets = Cells = 0;
+        RedKey = BlueKey = YellowKey = false;
+        Weapons = 0;
+        Selected = 0;
+        Pending = null;
+    }
+
     /// <summary>Deathmatch pistol start. Cooperative respawn uses <see cref="FilterCoopRespawn"/>.</summary>
     public void ResetToPistolStart()
     {
         Armor = 0;
         ArmorMaximum = 1;
+        ArmorActualSaveAmount = 0;
+        ArmorType = "None";
         ArmorSavePercent = 0;
         MaxAbsorb = 0;
         MaxFullAbsorb = 0;
@@ -98,24 +123,23 @@ public sealed class PlayerInventory
 
     /// <summary>
     /// Keeps a <c>BasicArmorPickup</c> whose max amount is above 0. A worn amount
-    /// below the save amount uses it now. Otherwise it stays, and the highest save
+    /// at zero uses it now. Otherwise it stays, and the highest save
     /// percent is used when the worn suit reaches 0. Doom green and mega do not
     /// come through here.
     /// </summary>
-    public bool TryKeepArmorPickup(int saveAmount, int savePercent, int maxAbsorb = 0, int maxFullAbsorb = 0)
+    public bool TryKeepArmorPickup(int saveAmount, int savePercent, int maxAbsorb = 0, int maxFullAbsorb = 0,
+        string armorType = "BasicArmorPickup", bool ignoreSkill = false)
     {
         if (saveAmount <= 0) return false;
         savePercent = Math.Clamp(savePercent, 0, 100);
-        if (Armor < saveAmount)
+        var spare = new SpareArmor(saveAmount, savePercent, maxAbsorb, maxFullAbsorb, armorType, ignoreSkill);
+        var scaledAmount = GetSpareSaveAmount(spare);
+        if (Armor <= 0 && Armor < scaledAmount)
         {
-            Armor = saveAmount;
-            ArmorMaximum = saveAmount;
-            ArmorSavePercent = savePercent;
-            MaxAbsorb = maxAbsorb;
-            MaxFullAbsorb = maxFullAbsorb;
+            EquipSpareArmor(spare, scaledAmount);
             return true;
         }
-        _spareArmor.Add(new SpareArmor(saveAmount, savePercent, maxAbsorb, maxFullAbsorb));
+        _spareArmor.Add(spare);
         return true;
     }
 
@@ -128,18 +152,58 @@ public sealed class PlayerInventory
     {
         if (Armor != 0) return;
         ArmorSavePercent = 0;
+        ArmorType = "None";
         if (_spareArmor.Count == 0) return;
         var best = 0;
         for (var i = 1; i < _spareArmor.Count; i++)
             if (_spareArmor[i].SavePercent > _spareArmor[best].SavePercent)
                 best = i;
         var spare = _spareArmor[best];
+        var saveAmount = GetSpareSaveAmount(spare);
+        if (Armor >= saveAmount) return;
         _spareArmor.RemoveAt(best);
-        Armor = spare.SaveAmount;
-        ArmorMaximum = spare.SaveAmount;
+        EquipSpareArmor(spare, saveAmount);
+    }
+
+    internal bool TryUseStoredArmor(string armorType)
+    {
+        var index = _spareArmor.FindIndex(spare => spare.ArmorType.Equals(armorType, StringComparison.OrdinalIgnoreCase));
+        if (index < 0)
+            return false;
+        var spare = _spareArmor[index];
+        var saveAmount = GetSpareSaveAmount(spare);
+        if (Armor >= saveAmount) return false;
+        _spareArmor.RemoveAt(index);
+        EquipSpareArmor(spare, saveAmount);
+        return true;
+    }
+
+    private int GetSpareSaveAmount(SpareArmor spare) => spare.IgnoreSkill
+        ? spare.SaveAmount : PickupCatalog.ScaleArmorAmount(spare.SaveAmount, ArmorFactor);
+
+    private void EquipSpareArmor(SpareArmor spare, int saveAmount)
+    {
+        Armor = saveAmount;
+        ArmorMaximum = saveAmount;
+        ArmorActualSaveAmount = saveAmount;
+        ArmorType = spare.ArmorType;
         ArmorSavePercent = spare.SavePercent;
         MaxAbsorb = spare.MaxAbsorb;
         MaxFullAbsorb = spare.MaxFullAbsorb;
+    }
+
+    internal void TakeStoredArmor(string armorType, int amount)
+    {
+        for (var index = 0; index < _spareArmor.Count && amount > 0;)
+        {
+            if (_spareArmor[index].ArmorType.Equals(armorType, StringComparison.OrdinalIgnoreCase))
+            {
+                _spareArmor.RemoveAt(index);
+                amount--;
+            }
+            else
+                index++;
+        }
     }
 
     /// <summary>
@@ -171,10 +235,7 @@ public sealed class PlayerInventory
         if (loseArmor)
         {
             Armor = 0;
-            ArmorSavePercent = 0;
-            MaxAbsorb = 0;
-            MaxFullAbsorb = 0;
-            AbsorbCount = 0;
+            ArmorSavePercent = GreenSavePercent;
             _spareArmor.Clear();
         }
         if (loseAmmo)
@@ -319,6 +380,22 @@ public sealed class PlayerInventory
         return null;
     }
 
+    internal void RemoveWeapon(WeaponKind weapon)
+    {
+        if (!Owns(weapon)) return;
+        Weapons &= ~weapon;
+        if (Pending == weapon) Pending = null;
+        if (Selected != weapon) return;
+        Selected = 0;
+        if (Pending.HasValue) return;
+        WeaponKind best = 0;
+        foreach (var candidate in Cycle)
+            if (CanSelect(candidate) && (best == 0
+                || WeaponCatalog.SelectionOrder(candidate) < WeaponCatalog.SelectionOrder(best)))
+                best = candidate;
+        if (best != 0) Pending = best;
+    }
+
     private bool CanSelect(WeaponKind weapon)
     {
         var definition = WeaponCatalog.Find(weapon);
@@ -328,11 +405,11 @@ public sealed class PlayerInventory
 
     internal void CheckAmmoPickupSwitch(AmmoKind ammo)
     {
-        if (NeverAutoSwitch || Pending.HasValue || Selected is not (WeaponKind.Fist or WeaponKind.Pistol)) return;
+        if (NeverAutoSwitch || Pending.HasValue || Selected is not (0 or WeaponKind.Fist or WeaponKind.Pistol)) return;
         var best = Selected;
         foreach (var weapon in Cycle)
             if (WeaponCatalog.Find(weapon)?.Ammo == ammo && CanSelect(weapon)
-                && WeaponCatalog.SelectionOrder(weapon) < WeaponCatalog.SelectionOrder(best)) best = weapon;
+                && (best == 0 || WeaponCatalog.SelectionOrder(weapon) < WeaponCatalog.SelectionOrder(best))) best = weapon;
         if (best != Selected) Pending = best;
     }
 
@@ -346,7 +423,7 @@ public sealed class PlayerInventory
 
     public bool TryAddAmmo(AmmoKind kind, int amount)
     {
-        if (amount <= 0)
+        if (amount < 0)
             return false;
 
         var (current, max) = kind switch
@@ -359,7 +436,7 @@ public sealed class PlayerInventory
         if (current >= max)
             return false;
 
-        var next = Math.Min(max, current + amount);
+        var next = (int)Math.Min(max, (long)current + amount);
         switch (kind)
         {
             case AmmoKind.Bullets:

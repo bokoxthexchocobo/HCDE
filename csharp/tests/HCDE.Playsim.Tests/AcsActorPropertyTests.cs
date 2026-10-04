@@ -154,7 +154,7 @@ public class AcsActorPropertyTests
     }
 
     [Fact]
-    public void SetAndGetActorProperty_SpawnHealth()
+    public void SetActorProperty_SpawnHealthIgnoresNonplayer()
     {
         var sim = RoomWithImp();
         var imp = sim.Actors.First(actor => actor.DoomEdNum == 3001);
@@ -164,13 +164,13 @@ public class AcsActorPropertyTests
             (int)AcsPcode.PushNumber, 17,
             (int)AcsPcode.PushNumber, 80,
             (int)AcsPcode.SetActorProperty);
-        Assert.Equal(80, imp.ResurrectionHealth);
+        Assert.Equal(60, imp.ResurrectionHealth);
 
         Run(sim, player,
             (int)AcsPcode.PushNumber, 5,
             (int)AcsPcode.PushNumber, 17,
             (int)AcsPcode.GetActorProperty,
-            (int)AcsPcode.PushNumber, 80,
+            (int)AcsPcode.PushNumber, 60,
             (int)AcsPcode.Eq,
             (int)AcsPcode.IfGoto, 40,
             (int)AcsPcode.Lspec2Direct, 112, 7, 35);

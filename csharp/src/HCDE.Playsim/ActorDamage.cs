@@ -82,7 +82,7 @@ public static class ActorDamage
                     target.MaxAbsorb, target.MaxFullAbsorb, target.AbsorbCount);
                 target.Armor -= absorbed;
                 target.AbsorbCount += absorbed;
-                if (absorbed > 0 && target.Armor == 0)
+                if (target.Armor == 0)
                     target.ArmorSavePercent = 0;
             }
         }
@@ -171,8 +171,9 @@ public static class ActorDamage
 
     /// <summary>
     /// BasicArmor's integer save. <c>MaxFullAbsorb</c> is saved in full before the
-    /// percent. Percent 33 is green armor's <c>damage / 3</c>. Other percents use
-    /// <c>damage * percent / 100</c>. <c>MaxAbsorb</c> caps the running total.
+    /// percent. Percent 33 represents native green armor's 33.335%. Other percents use
+    /// <c>damage * percent / 100</c>. <c>MaxAbsorb</c> caps the running total only
+    /// when damage reaches the remaining full-absorption allowance.
     /// The armor amount caps the save. Both caps at 0 leave the older formula.
     /// </summary>
     internal static int AbsorbArmor(int damage, int armor, int percent, int maxAbsorb, int maxFullAbsorb, int absorbCount)
@@ -180,18 +181,24 @@ public static class ActorDamage
         if (damage <= 0 || armor <= 0) return 0;
         percent = Math.Clamp(percent, 0, 100);
         var full = Math.Max(0, maxFullAbsorb - absorbCount);
-        var saved = damage < full
-            ? damage
-            : full + PercentSave(damage - full, percent);
-        if (maxAbsorb > 0 && saved + absorbCount > maxAbsorb)
-            saved = Math.Max(0, maxAbsorb - absorbCount);
+        int saved;
+        if (damage < full)
+            saved = damage;
+        else
+        {
+            saved = full + PercentSave(damage - full, percent);
+            if (maxAbsorb > 0 && saved + absorbCount > maxAbsorb)
+                saved = Math.Max(0, maxAbsorb - absorbCount);
+        }
         return Math.Min(armor, Math.Max(0, saved));
     }
 
     private static int PercentSave(int damage, int percent)
     {
         if (damage <= 0 || percent <= 0) return 0;
-        return percent == PlayerInventory.GreenSavePercent ? damage / 3 : (int)((long)damage * percent / 100);
+        return percent == PlayerInventory.GreenSavePercent
+            ? (int)(damage * PlayerInventory.ArmorSaveFraction(percent))
+            : (int)((long)damage * percent / 100);
     }
 
     /// <summary>
@@ -215,16 +222,16 @@ public static class ActorDamage
 
     /// <summary>
     /// PowerDrain. The source must be a living player, and the amount is
-    /// <c>int(strength * post-armor damage)</c>, capped at <see cref="PlayerPawn.DrainMaxHealth"/>.
+    /// <c>int(strength * post-armor damage)</c>, limited by the player's maximum health.
     /// </summary>
     private static void Drain(Actor target, Actor? source, int postArmor)
     {
         if (postArmor <= 0 || source is not PlayerPawn player || player.DrainStrength <= 0
             || target.DontDrain || ReferenceEquals(target, player)
-            || player.Health <= 0 || player.Health >= PlayerPawn.DrainMaxHealth)
+            || player.Health <= 0 || player.Health >= player.EffectiveMaxHealth)
             return;
         var amount = (int)(player.DrainStrength * postArmor);
         if (amount <= 0) return;
-        player.Health = Math.Min(PlayerPawn.DrainMaxHealth, player.Health + amount);
+        PickupCatalog.GiveHealth(player, amount);
     }
 }

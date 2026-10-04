@@ -1,5 +1,1474 @@
 # Gameplay phases 1–3: implementation and completion audit
 
+## Conversion and audit: drop ammo factor (2026-10-03)
+
+Converted native Ammo/Weapon.ModifyDropAmount skill DropAmmoFactor into
+simulation configuration. Default -1 retains half-ammo followed by normal
+skill scaling; explicit nonnegative factors truncate the drop amount and
+set IgnoreSkill. Default ammo drops retain their native minimum of one.
+Explicit ammo amounts scale directly; zero grants use the persisted ammo
+suppression flag to avoid falling back to catalog defaults. The existing
+weapon suppression flag now also supports zero-ammo pickups. Inventory tosses
+and player death drops keep their separate explicit-amount behavior.
+An optional checksum marker records the factor; same-simulation restore
+preserves configuration. Invalid factors are rejected.
+
+Added eight regressions for default/custom/zero factors, weapon and ammo
+drops, explicit zero ammo persistence, death-drop bypass, checksum and restore.
+Release validation: **6,449 tests passed (5,322 Playsim; 533 MapLoader)**.
+Warnings-as-errors build passed with zero warnings/errors. Touched-file
+whitespace validation passed. Native skill-definition loading, custom ammo
+DropAmount/DropAmmoFactorMultiplier and secondary weapon ammo remain open.
+Changes uncommitted.
+
+## Conversion and audit: deathmatch weapon ammo bonus (2026-10-03)
+
+Converted Weapon.AddAmmo's Doom deathmatch bonus: first-time weapon
+acquisitions give 5/2 of the base ammo, with integer truncation before skill
+scaling. Duplicate owned weapons follow AddExistingAmmo and receive the
+ordinary amount. Both world pickups and scripted grants share this rule.
+Added NoExtraAmmo for native sv_noextraammo; IgnoreSkill bypasses skill
+scaling while retaining the deathmatch bonus. The setting has an optional
+checksum marker and remains configuration on same-simulation restore.
+
+Added eight regressions covering both acquisition paths, disabled bonus,
+skill scaling, duplicates, IgnoreSkill, checksum and restore. Updated prior
+deathmatch retention expectations. Release validation: **6,441 tests passed
+(5,314 Playsim; 533 MapLoader)**. Warnings-as-errors build passed with zero
+warnings/errors. Touched-file whitespace validation passed. Native cvar
+loading, other game families, custom weapons and secondary ammo remain open.
+Changes uncommitted.
+
+## Conversion and audit: scripted ammo with no ready weapon (2026-10-03)
+
+Audited Weapon.PickupForAmmo, PlayerPawn.CheckWeaponSwitch and
+Actor.GiveInventory's pending-weapon restoration. Scripted base-ammo, ammo-box
+and duplicate-weapon grants now check for an automatic selection when an empty
+ammo pool is replenished and no weapon is ready. Existing ready weapons retain
+their selection; pending selections and NeverAutoSwitch remain respected.
+
+Added six regressions for base ammo, boxes, duplicate weapons, pending
+selection, nonempty ammo and switching preferences. Release validation:
+**6,433 tests passed (5,306 Playsim; 533 MapLoader)**. Warnings-as-errors build
+passed with zero warnings/errors. Touched-file whitespace validation passed.
+Custom weapon selection flags, secondary ammo, non-player inventories and
+native executable comparison remain open. Changes uncommitted.
+
+## Conversion and audit: scripted weapon retention (2026-10-03)
+
+Audited Actor.GiveInventory and Weapon.PickupForAmmo: script-created weapons
+are not dropped, and duplicate owned weapons reject ammo when ShouldStay is
+true. Converted ACS weapon grants to use the same effective retention rule as
+world pickups. First-time grants still acquire the weapon and its normal ammo;
+repeat grants obey cooperative, WeaponStay and AlwaysApplyDmFlags settings.
+Existing selected and pending weapons remain unchanged.
+
+Added seven regressions covering first/repeat grants across game modes and
+settings, grant quantity, and selection preservation. Release validation:
+**6,427 tests passed (5,300 Playsim; 533 MapLoader)**. Warnings-as-errors build
+passed with zero warnings/errors. Touched-file whitespace validation passed.
+Custom weapon ShouldStay overrides, native configuration loading, non-player
+weapon inventory and native executable comparison remain open. Changes
+uncommitted.
+
+## Conversion and audit: weapon retention settings (2026-10-03)
+
+Audited Weapon.ShouldStay's sv_weaponstay/alwaysapplydmflags condition. Added
+WeaponStay and AlwaysApplyDmFlags simulation settings. Non-dropped weapons
+stay when WeaponStay is enabled in any game mode; cooperative automatic
+retention is disabled by AlwaysApplyDmFlags unless WeaponStay is enabled.
+Dropped weapons never stay. Existing owned-weapon ammo rejection follows the
+effective retention rule. Keys retain their independent multiplayer behavior.
+Optional checksum markers distinguish enabled settings without changing default
+inputs; settings remain simulation configuration during same-simulation restore.
+
+Added eleven regressions for mode/setting combinations, dropped weapons in
+three modes, checksum distinction and configuration retention through restore.
+Release validation: **6,420 tests passed (5,293 Playsim; 533 MapLoader)**.
+Warnings-as-errors build passed with zero warnings/errors. Touched-file
+whitespace validation passed. Native cvar/MAPINFO configuration loading,
+custom ShouldStay, separate card/skull ownership, full inventory serialization
+and native executable comparison remain open. Changes uncommitted.
+
+## Conversion and audit: multiplayer pickup retention (2026-10-03)
+
+Audited Key.ShouldStay/HandlePickup and Weapon.ShouldStay/PickupForAmmo.
+Converted multiplayer keys to remain after grants and cooperative non-dropped
+map weapons to remain available to other players. Owned staying weapons reject
+repeat ammo grants. Dropped cooperative weapons and normal deathmatch weapons
+are consumed. AlwaysPickup cannot override ShouldStay retention. Single-player
+key duplicates are consumed, matching native key pickup acceptance.
+
+Added seven regressions for cooperative per-player weapon grants without ammo
+refills, cooperative/deathmatch keys, dropped/deathmatch weapons, AlwaysPickup
+retention and single-player duplicate keys. Updated two older key-retention
+expectations. Release validation: **6,409 tests passed (5,282 Playsim;
+533 MapLoader)**. Warnings-as-errors build passed with zero warnings/errors.
+Touched-file whitespace validation passed. WeaponStay/AlwaysApplyDmFlags
+settings, separate card/skull ownership, custom ShouldStay implementations,
+full inventory serialization and native executable comparison remain open.
+Changes uncommitted.
+
+## Conversion and audit: per-pickup AlwaysPickup overrides (2026-10-03)
+
+Audited Inventory.AlwaysPickup and failed grant consumption. Converted script
+flag access for ALWAYSPICKUP/INVENTORY.ALWAYSPICKUP on supported pickups.
+Collector uses an instance override before catalog defaults: enabled full
+ammo consumes without granting ammo; disabled full health/armor bonus and
+megasphere remain in the world. Non-inventory actors reject the flag.
+
+Optional version-41 lifecycle archives preserve both enabled and disabled
+overrides, validate presence/value encoding, and retain earlier archive support.
+Capture/restore and checksum include explicit overrides. Added seven regressions
+for three default bonus classes, full ammo consumption, both saved values and
+non-inventory rejection. Release validation: **6,402 tests passed (5,275 Playsim;
+533 MapLoader)**. Warnings-as-errors build passed with zero warnings/errors.
+Touched-file whitespace validation passed. Native ShouldStay/custom pickup
+dispatch, reserve armor tosses, full inventory serialization and native
+executable comparison remain open. Changes uncommitted.
+
+## Conversion and audit: script pickup IgnoreSkill access (2026-10-03)
+
+Audited Inventory.IgnoreSkill, runtime flag prefix lookup and Health.TryPickup.
+Converted actor flag access for IGNORESKILL/INVENTORY.IGNORESKILL on supported
+catalog pickups. Scripts can change existing ammo/armor skill bypass metadata;
+non-inventory actors reject the inventory flag. Existing pickup archives and
+checksum inputs preserve changes. Health.TryPickup calls GiveBody without
+checking IgnoreSkill, so health factor behavior stays unchanged.
+
+Added seven regressions for both flag spellings, baby ammo scaling bypass,
+green/bonus armor scaling bypass, health behavior, archive restoration and
+non-inventory rejection. Release validation: **6,395 tests passed (5,268 Playsim;
+533 MapLoader)**. Warnings-as-errors build passed with zero warnings/errors.
+Touched-file whitespace validation passed. Custom inventory classes/flags,
+reserve armor tosses, full inventory serialization and native executable
+comparison remain open. Changes uncommitted.
+
+## Conversion and audit: dropped actor flag persistence (2026-10-03)
+
+Audited managed APROP_Dropped/checksum support and capture/restore omissions.
+Added DROPPED to the case-insensitive actor flag interface and saved poses.
+Optional version-40 lifecycle archives preserve dropped flags for pickups and
+non-pickup actors while retaining earlier delay/ammo-suppression fields.
+Prior versions remain readable and default the unsaved dropped flag to false.
+Changing DROPPED does not change ammo grant suppression, amount or delay.
+
+Added four regressions for flag interface/save/checksum agreement, both boolean
+values, independent grant metadata and destroyed-actor access rejection.
+Updated lifecycle version/unknown-bit expectations. Release validation:
+**6,388 tests passed (5,261 Playsim; 533 MapLoader)**. Warnings-as-errors build
+passed with zero warnings/errors. Touched-file whitespace validation passed.
+Legacy saves cannot reconstruct prior dropped overrides. Custom inventory
+metadata, reserve armor tosses, full inventory serialization and native
+executable comparison remain open. Changes uncommitted.
+
+## Conversion and audit: script override of toss pickup eligibility (2026-10-03)
+
+Audited native DropTime references and Inventory.Tick's SPECIAL restoration.
+Removed the additional managed countdown collection gate: SPECIAL now controls
+collection while the countdown schedules default flag restoration. Scripts can
+enable early pickup without changing DropTime; normal tosses remain inactive
+until expiry. Expiry restores supported catalog eligibility even after a script
+clears SPECIAL, matching the native default flag assignment.
+
+Added five regressions for early ammo/backpack/weapon pickup, expiry restoration
+and saved script override with positive delay. Release validation: **6,384 tests
+passed (5,257 Playsim; 533 MapLoader)**. Warnings-as-errors build passed with
+zero warnings/errors. Touched-file whitespace validation passed. Custom default
+pickup flags, reserve armor toss objects, full inventory serialization and
+native executable comparison remain open. Changes uncommitted.
+
+## Conversion and audit: unified backpack toss lifecycle (2026-10-03)
+
+Audited the remaining public DropBackpack path against native inventory toss
+semantics. Replaced immediate placement/recollection with the shared depleted
+toss path and 30-tic eligibility delay. ACS now calls the same helper, removing
+duplicated spawn/depletion behavior. Spawn occurs before ownership removal so
+a rejected spawn from a destroyed owner preserves its backpack and capacities.
+
+Added two regressions for public/ACS toss/checksum equivalence and failed-spawn
+ownership preservation. Updated existing backpack recollection and SPECIAL
+flag coverage to native delayed behavior. Release validation: **6,379 tests
+passed (5,252 Playsim; 533 MapLoader)**. Warnings-as-errors build passed with
+zero warnings/errors. Touched-file whitespace validation passed. Custom pickup
+dispatch, reserve armor toss objects, full inventory serialization and native
+executable comparison remain open. Changes uncommitted.
+
+## Conversion and audit: death weapon drop chance draw (2026-10-03)
+
+Audited PlayerPawn death-drop A_DropItem call and inventory_util.zs guaranteed
+chance evaluation. Converted supported death weapon drops to consume a chance
+draw before toss motion even for guaranteed chance 256. NoTossDrops consumes
+the chance draw without motion draws; Strife style consumes chance then its
+four horizontal draws. Disabled drops and unsupported fist pickup remain inert.
+Inventory tosses retain their separate deterministic motion path.
+
+Added seven regressions across three seeds, no-toss compatibility, Strife
+style and disabled/fist guards. Release validation: **6,377 tests passed
+(5,250 Playsim; 533 MapLoader)**. Warnings-as-errors build passed with zero
+warnings/errors. Touched-file whitespace validation passed. The managed shared
+combat random stream still differs from native named random streams; exact
+native random bytes and executable comparison remain unverified. Custom
+DropItems/secondary ammo, full inventory serialization and custom reserve
+tosses also remain open. Changes uncommitted.
+
+## Conversion and audit: held ammo in death weapon drops (2026-10-03)
+
+Audited PlayerPawn death-drop AmmoGive1/Ammo1 copying and IgnoreSkill.
+Converted supported death weapon pickups to carry the selected weapon's held
+primary ammo amount. Empty pools use persisted ammo suppression rather than
+falling back to catalog defaults. The corpse retains weapon/ammo inventory;
+recipients receive the stored quantity without skill multiplication, capped
+by their own ammo capacity. Existing pickup fields/save lifecycle flags persist
+both positive and empty grants. Ammo-free weapons retain their existing path.
+
+Added ten regressions for seven ammo-using weapons, recipient baby-skill/capacity
+behavior, empty-pool ownership and positive/zero saved grant restoration.
+Release validation: **6,370 tests passed (5,243 Playsim; 533 MapLoader)**.
+Warnings-as-errors build passed with zero warnings/errors. Touched-file
+whitespace validation passed. Negative scripted ammo amounts are clamped to
+zero; native signed-edge behavior is unverified. Custom DropItems, secondary
+ammo, weapon sisters/states, full inventory serialization and native executable
+comparison remain open. Changes uncommitted.
+
+## Conversion and audit: pistol pickup representation (2026-10-03)
+
+Audited doomitems.txt editor number 5010, Pistol.Spawn/AmmoGive and player
+death-drop SpawnState eligibility. Added the pistol to the managed pickup
+catalog, canonical class lookup and weapon-to-pickup mapping. Map pickups grant
+20 bullets before skill scaling, duplicates supply ammo, and full owned ammo
+leaves the pickup untaken. ACS DropItem resolves Pistol and uses the existing
+half-ammo drop path. ACS inventory toss uses persisted zero-ammo grants and
+delayed recollection. WeaponDrop can now represent a pistol pickup on death.
+
+Added six regressions for normal/baby map pickups, duplicate/full-ammo cases,
+DropItem lookup and pistol toss ammo conservation. Updated the prior death-drop
+test that assumed pistol lacked a pickup state. Release validation:
+**6,360 tests passed (5,233 Playsim; 533 MapLoader)**. Warnings-as-errors build
+passed with zero warnings/errors. Touched-file whitespace validation passed.
+Death-drop ammo still uses managed catalog amounts; native copies held ammo
+from weapon ammo objects, so that separate audit remains open. Custom weapon
+sisters/states, reserve tosses, full inventory serialization and native
+executable comparison also remain open. Changes uncommitted.
+
+## Conversion and audit: zero-ammo weapon toss objects (2026-10-03)
+
+Audited Weapon.CreateTossable's AmmoGive1/2 zeroing. Converted seven supported
+Doom weapon tosses to spawn delayed inventory pickups with per-instance ammo
+suppression before removing ownership. Recollection grants the weapon without
+ammo, including on doubled-ammo skills. Ready-weapon removal reuses immediate
+replacement raising. Normal map/death weapon drops retain their existing ammo
+behavior. Pistol still lacks managed pickup catalog representation.
+
+Added optional version-39 pickup lifecycle flags layered over prior archives;
+version-38 delay archives remain supported. Ammo suppression persists after
+delay expiry and enters checksum/capture/restore. Decoder rejects unknown bits
+and invalid delay/pickup combinations. Added ten regressions for seven weapon
+classes, ammo conservation, ready replacement, post-delay save restoration and
+invalid flags. Release validation: **6,354 tests passed (5,227 Playsim;
+533 MapLoader)**. Warnings-as-errors build passed with zero warnings/errors.
+Touched-file whitespace validation passed. Pistol toss representation, custom
+weapon sisters/states, reserve armor toss objects, full inventory serialization
+and native executable comparison remain open. Changes uncommitted.
+
+## Conversion and audit: ACS key toss objects (2026-10-03)
+
+Audited Inventory.CreateTossable/Actor.DropInventory and native weapon toss
+ammo suppression. Converted supported key drops to spawn the requested Doom
+card/skull pickup class with inventory toss momentum and 30-tic eligibility
+delay before removing key ownership. Missing ownership spawns nothing; other
+key colors remain owned. The shared delay/save/checksum path covers these drops.
+
+Added eight regressions for six key classes, case-insensitive dispatch,
+no-random toss behavior, duplicate rejection, delayed recollection and other
+colors. Release validation: **6,344 tests passed (5,217 Playsim; 533 MapLoader)**.
+Warnings-as-errors build passed with zero warnings/errors. Touched-file
+whitespace validation passed. Key ownership still uses one bit per color, so
+distinct card/skull inventory ownership is not converted. Weapon tosses need
+persisted per-instance zero ammo grants (native Weapon.CreateTossable clears
+AmmoGive1/2); custom reserve tosses, full inventory serialization and native
+executable comparison also remain open. Changes uncommitted.
+
+## Conversion and audit: ACS backpack toss objects (2026-10-03)
+
+Audited BackpackItem.CreateTossable and DetachFromOwner. Converted supported
+ACS backpack drops to spawn a depleted backpack with inventory toss momentum
+and 30-tic pickup delay before removing backpack ownership. Existing detach
+logic reduces standard capacities and clamps ammo while retaining custom
+capacities. Depleted first recollection restores capacity without ammo grants,
+including on baby skill. Missing backpack ownership does not spawn a drop.
+Existing pickup/archive metadata retains depletion and delayed eligibility.
+
+Added four regressions for toss/depletion/detach behavior, delayed recollection,
+custom capacities and saved depletion/countdown restoration. Release validation:
+**6,336 tests passed (5,209 Playsim; 533 MapLoader)**. Warnings-as-errors build
+passed with zero warnings/errors. Touched-file whitespace validation passed.
+The preexisting public DropBackpack helper retains its immediate-placement
+behavior; ACS uses the audited inventory toss path. Weapon/key/custom reserve
+toss objects, full inventory serialization and native executable comparison
+remain open. Changes uncommitted.
+
+## Conversion and audit: toss pickup eligibility and restore validation (2026-10-03)
+
+Audited Inventory.CreateTossable and Tick's DropTime expiry. Converted ammo
+tosses to disable SpecialPickup while delayed and restore supported pickup
+eligibility at expiry after state ticking, while retaining non-solid behavior.
+Destroyed actors do not execute the flag transition. Existing archive contact
+flags preserve the inactive state alongside the version-38 countdown.
+Added pickup-delay validation to direct RestoreState before mutation, matching
+the archive writer/decoder boundary checks.
+
+Added five regressions for 30-tic flag transition, inactive save restoration,
+invalid direct delay values and non-pickup delay rejection. Release validation:
+**6,332 tests passed (5,205 Playsim; 533 MapLoader)**. Warnings-as-errors build
+passed with zero warnings/errors. Touched-file whitespace validation passed.
+Custom pickup default flags, other inventory toss objects, full inventory
+serialization and native executable comparison remain open. Changes uncommitted.
+
+## Conversion and audit: spawned inventory ammo tosses (2026-10-03)
+
+Audited Actor.DropInventory, Inventory.CreateTossable and Ammo.CreateTossable.
+Converted four supported base ammo drops to spawn a one-round pickup before
+removing one unit. Tosses begin at source Z+10, inherit angle and velocity,
+add forward speed 5 and vertical speed 1, bypass random death-drop motion and
+NoTossDrops compatibility, and delay collection for 30 actor ticks. IgnoreSkill
+prevents skill scaling on recollection. TID dispatch snapshots matches before
+spawning to avoid modifying the enumerated actor list.
+
+Added optional version-38 pickup-delay archives with range/count/pickup checks,
+legacy zero-delay defaults, capture/restore and optional checksum input.
+Added seven regressions covering all ammo classes, momentum/random state,
+30-tic collection and single-round conservation on baby skill, save/checksum
+round trips and invalid saved delays. Existing multiple-TID coverage caught
+and verified the enumeration fix. Release validation: **6,327 tests passed
+(5,200 Playsim; 533 MapLoader)**. Warnings-as-errors build passed with zero
+warnings/errors. Touched-file whitespace validation passed. Weapon/key/backpack
+and custom reserve toss objects, native SPECIAL flag transition fidelity,
+full inventory serialization and native executable comparison remain open.
+Changes uncommitted.
+
+## Conversion and audit: ACS drop return semantics (2026-10-03)
+
+Audited p_acs.cpp ACSF_DropInventory and CallFunction's zero return after
+dispatch. Converted the managed call result from a success count to zero,
+including successful activator and multiple-TID drops. Kept TID zero scoped
+to the activator, without the null-activator inventory broadcast used by other
+ACS operations. Nonzero TIDs still dispatch to every matching actor.
+
+Added five regressions covering successful return/argument consumption,
+multiple matching actors, missing activator and invalid class indices.
+Release validation: **6,320 tests passed (5,193 Playsim; 533 MapLoader)**.
+Warnings-as-errors build passed with zero warnings/errors. Touched-file
+whitespace validation passed. DropInventory still strips supported inventory
+without spawning native tossable objects; drop delay/velocity, generic item
+metadata, full inventory serialization and native executable comparison
+remain open. Changes uncommitted.
+
+## Conversion and audit: inventory drop quantity and pickup states (2026-10-03)
+
+Audited Actor.DropInventory's default amt=1 and Inventory.CreateTossable.
+Converted the managed stripping subset to remove one ammo unit or one stored
+suit per call, retaining other copies and depleted ammo capacity. Fist and
+internal BasicArmor/Armor alias drops now reject without removing ownership;
+these supported classes lack a native pickup SpawnState. Health remains inert.
+
+Added nine regressions for four ammo classes, retained reserve copies,
+non-tossable supported classes and last-unit/depleted behavior. Updated the
+existing VM ammo-drop regression to expect 79 remaining from 80.
+Release validation: **6,315 tests passed (5,188 Playsim; 533 MapLoader)**.
+Warnings-as-errors build passed with zero warnings/errors. Touched-file
+whitespace validation passed. This remains a stripping subset: spawned tossable
+objects, drop delay/velocity, item flags/custom SpawnState metadata, exact ACS
+return values, full inventory serialization and native executable comparison
+remain open. Changes uncommitted.
+
+## Conversion and audit: armor removal integer boundaries (2026-10-03)
+
+Audited ScriptUtil.TakeInventory and Inventory.DepleteBy/DepleteOrDestroy.
+Converted BasicArmor/Armor alias removal to compare before subtraction, so
+negative and depleted amounts become zero without signed integer overflow.
+Positive partial removal still subtracts exactly; nonpositive ACS requests
+remain inert. Removal retains worn armor metadata and capacity, matching
+KEEPDEPLETED behavior without invoking damage cleanup or reserve promotion.
+
+Added ten regressions covering negative extremes, zero, partial/equal/full
+removal, maximum positive amounts and rejected request boundaries for both
+supported armor class names. Release validation: **6,306 tests passed
+(5,179 Playsim; 533 MapLoader)**. Warnings-as-errors build passed with zero
+warnings/errors. Touched-file whitespace validation passed. Generic actor
+inventory objects, custom pickup dispatch, full inventory serialization and
+native executable comparison remain open. Changes uncommitted.
+
+## Conversion and audit: reserve armor IgnoreSkill (2026-10-03)
+
+Audited BasicArmorPickup.GetSaveAmount's bIgnoreSkill branch. Added the flag
+to supported reserve pickup metadata and centralized save-amount resolution.
+Initial pickup, explicit use and depletion promotion bypass ArmorFactor for
+flagged suits. Reserve storage retains the flag; replacement checks use the
+unscaled amount. Optional checksum mixing distinguishes flagged reserve items
+while default false preserves existing checksum inputs.
+
+Added eight regressions for initial activation, flag retention, explicit use,
+equal-amount rejection, zero-factor promotion and checksum distinction.
+Release validation: **6,296 tests passed (5,169 Playsim; 533 MapLoader)**.
+Warnings-as-errors build passed with zero warnings/errors. Touched-file
+whitespace validation passed. Generic custom pickup dispatch, reserve stack
+limits, full inventory serialization and native executable comparison remain
+open. Changes uncommitted.
+
+## Conversion and audit: initial reserve pickup scaling (2026-10-03)
+
+Audited BasicArmorPickup.Use/GetSaveAmount initial autoactivation. Connected
+player inventories to their owner so initial empty-armor pickup, explicit use
+and depletion promotion resolve the same simulation ArmorFactor. Standalone
+inventories retain factor 1. Initial successful activation stores scaled worn
+amount/capacity/actual save amount. Nonpositive truncated grants stay in reserve;
+active armor retains unscaled reserve amounts for later use. Shared equipment
+logic now serves pickup and reserve activation without duplicated metadata writes.
+
+Added eight regressions for initial scaling/truncation, metadata, zero/negative
+factor retention, later activation and standalone defaults. Adjusted the prior
+replacement fixture to account for its now-scaled initial armor pickup.
+Release validation: **6,288 tests passed (5,161 Playsim; 533 MapLoader)**.
+Warnings-as-errors build passed with zero warnings/errors. Touched-file
+whitespace validation passed. Generic custom pickup dispatch, reserve IgnoreSkill
+flags, stack limits, full inventory serialization and native executable
+comparison remain open. Changes uncommitted.
+
+## Conversion and audit: reserve armor activation scaling (2026-10-03)
+
+Audited BasicArmorPickup.GetSaveAmount/Use and BasicArmor.AbsorbDamage reserve
+promotion. Converted explicit ACS reserve use and damage-triggered promotion
+to apply simulation ArmorFactor at activation, leaving stored base amounts
+unchanged. Replacement checks use scaled amounts; failed activation retains
+the suit, including zero/negative factors. Successful activation stores scaled
+worn amount, capacity and actual save amount while retaining source metadata.
+
+Added eight regressions covering truncation, scaled replacement checks,
+explicit activation, damage promotion and failed-use retention. Release
+validation: **6,280 tests passed (5,153 Playsim; 533 MapLoader)**.
+Warnings-as-errors build passed with zero warnings/errors. Touched-file
+whitespace validation passed. TryKeepArmorPickup remains an inventory helper
+without owner skill context for its initial empty-armor autoactivation;
+generic custom pickup dispatch, reserve IgnoreSkill flags, stack limits and
+native executable comparison remain open. Changes uncommitted.
+
+## Conversion and audit: skill armor factor (2026-10-03)
+
+Audited BasicArmorPickup/BasicArmorBonus.GetSaveAmount and Use. Added finite
+ArmorFactor launch configuration, default 1, with optional checksum mixing.
+Supported Doom suit/bonus map pickups and ACS grants scale save amount before
+replacement comparisons and truncate toward zero. IgnoreSkill bypasses scaling
+for direct suit/bonus pickups. Megasphere's independently created armor helper
+and its direct ACS grant also scale. Nonpositive bonus amounts are consumed
+without changing worn metadata; bonus capacity remains 200. Skill settings
+remain simulation launch configuration through same-simulation restore.
+
+Added fifteen regressions for scaling/truncation, zero/negative factors,
+scaled replacement, IgnoreSkill, bonus capacity, megasphere helpers, checksum,
+restore and nonfinite rejection. Release validation: **6,272 tests passed
+(5,145 Playsim; 533 MapLoader)**. Warnings-as-errors build passed with zero
+warnings/errors. Touched-file whitespace validation passed. Custom skill
+MAPINFO loading, reserve armor scaling and custom fractional armor remain open.
+Out-of-range products saturate in managed code; native overflow parity and
+native executable comparison are unverified. Changes uncommitted.
+
+## Conversion and audit: storable armor pickup activation (2026-10-03)
+
+Audited BasicArmorPickup.Use(pickup): positive worn armor prevents pickup
+autoactivation when Inventory.MaxAmount is positive, even for a stronger suit.
+Converted TryKeepArmorPickup to retain the new suit whenever worn armor is
+positive. Empty armor still autoactivates; explicit use can replace weaker
+armor, and depletion promotes the reserve through the existing damage path.
+Doom non-storable green/blue armor continues using its separate grant path.
+
+Added six regressions for weaker/equal/stronger worn amounts, metadata
+preservation, explicit use, damage-triggered promotion and empty activation.
+Release validation: **6,257 tests passed (5,130 Playsim; 533 MapLoader)**.
+Warnings-as-errors build passed with zero warnings/errors. Touched-file
+whitespace validation passed. Custom class registration, reserve stack limits,
+skill armor scaling and native executable comparison remain open.
+Changes uncommitted.
+
+## Conversion and audit: native green armor precision (2026-10-03)
+
+Audited doomarmor.zs GreenArmor/ArmorBonus defaults and BasicArmor.AbsorbDamage.
+Converted the managed green armor sentinel (33) to native 0.33335 for damage
+absorption and ACS GetArmorInfo. Scripts now receive fixed-point 21846 rather
+than truncated 33% (21626). Large hits use native floating multiplication
+before integer truncation; other integer protection percentages retain their
+existing behavior. Full-absorption allowance and armor amount caps still apply.
+
+Added ten regressions for pickup-derived script queries, small/large rounding
+boundaries, full allowance, depletion caps and other protection values.
+Release validation: **6,251 tests passed (5,124 Playsim; 533 MapLoader)**.
+Warnings-as-errors build passed with zero warnings/errors. Touched-file
+whitespace validation passed. Arbitrary fractional custom armor metadata,
+armor damage factors and native executable comparison remain open.
+Changes uncommitted.
+
+## Conversion and audit: same-tic weapon removal replacement (2026-10-03)
+
+Audited PlayerPawn.RemoveInventory, PickNewWeapon and BringUpWeapon.
+Converted automatic ready-weapon replacement to begin raising within ACS
+removal, rather than waiting for the next player tick. Extracted the supported
+BringUpWeapon helper for shared no-ready selection behavior. A distinct pending
+weapon is preserved without immediate raising. Removing a weapon that is both
+ready and pending cancels that reference and raises the replacement. Instant
+switch preference places the replacement at ready height immediately.
+
+Added four regressions for normal/instant same-tic raising, matching pending
+removal and distinct pending preservation; updated prior replacement coverage.
+Release validation: **6,241 tests passed (5,114 Playsim; 533 MapLoader)**.
+Warnings-as-errors build passed with zero warnings/errors. Touched-file
+whitespace validation passed. Generic PSprite/refire execution, custom raise
+states and weapon sisters, voodoo pawns and native executable comparison
+remain open. Changes uncommitted.
+
+## Conversion and audit: weapon removal selection lifecycle (2026-10-03)
+
+Audited player_inventory.zs PlayerPawn.RemoveInventory and player.zs
+PickNewWeapon/BestWeapon. Converted supported ACS weapon removal to cancel
+matching pending selection, clear removed ready selection, preserve a distinct
+pending weapon and otherwise queue the best owned usable replacement. Forced
+replacement ignores NeverAutoSwitch, as native PickNewWeapon does. Removing
+the last usable weapon leaves the player unarmed. Unowned removal is inert.
+
+Added five regressions for pending cancellation, priority/ammo replacement,
+pending preservation, last weapon and unowned removal. Release validation:
+**6,237 tests passed (5,110 Playsim; 533 MapLoader)**. Warnings-as-errors build
+passed with zero warnings/errors. Touched-file whitespace validation passed.
+Replacement starts raising on the next managed player tick; native can call
+BringUpWeapon within removal. Exact same-tic handoff, weapon sister objects,
+refire/PSprite lifecycle and native executable comparison remain open.
+Changes uncommitted.
+
+## Conversion and audit: ammo switch without ready weapon (2026-10-03)
+
+Audited PlayerPawn.CheckWeaponSwitch and BestWeapon. Converted ammo pickup
+selection to include the no-ready-weapon state, choosing an owned usable
+weapon matching the ammo by native selection priority. NeverAutoSwitch and
+existing pending selections still prevent switching. Unmatched or insufficient
+ammo does not queue a weapon.
+
+Added five regressions for no-ready selection, shared-ammo priority,
+preference/pending guards and unusable/unmatched weapons. Release validation:
+**6,232 tests passed (5,105 Playsim; 533 MapLoader)**. Warnings-as-errors build
+passed with zero warnings/errors. Touched-file whitespace validation passed.
+The weapon-removal audit remains open: native weapon destruction, reference
+clearing and replacement are not represented fully by ownership bits. Custom
+weapon flags/states, absent versus depleted ammo objects and native executable
+comparison also remain open. Changes uncommitted.
+
+## Conversion and audit: weapon raise without ready weapon (2026-10-03)
+
+Audited PlayerPawn.BringUpWeapon and Weapon.A_Raise. Converted pending weapon
+handoff with no selected weapon to start at the bottom and perform the first
+raise step, skipping the empty lowering cycle. Instant switching makes it
+ready immediately. WeaponReady now requires a selected weapon, preventing
+empty inventory from becoming attack-ready. Existing weapon changes retain
+their lowering/handoff behavior.
+
+Added four regressions for first raise position and 16-tic vanilla readiness,
+instant first selection, empty attack input and existing-weapon lowering.
+Release validation: **6,227 tests passed (5,100 Playsim; 533 MapLoader)**.
+Warnings-as-errors build passed with zero warnings/errors. Touched-file
+whitespace validation passed. Generic PSprite state execution, custom raise
+states/speeds, flashes, sounds and native executable comparison remain open.
+Changes uncommitted.
+
+## Conversion and audit: weapon grants without ready weapon (2026-10-03)
+
+Audited Weapon.AttachToOwner and Actor.GiveInventory's saved pending weapon/
+had-ready-weapon checks. Converted newly owned ACS weapon grants to queue
+selection when no ready weapon exists and NeverAutoSwitch is off. Existing
+ready weapons retain pending selection; duplicate owned weapon grants do not
+simulate reattachment. This allows weapon acquisition after ClearInventory.
+
+Added eight regressions covering four native weapon classes, never-switch,
+existing-ready and duplicate-grant selection preservation, and eventual
+ready state through simulation ticks. Release validation: **6,223 tests
+passed (5,096 Playsim; 533 MapLoader)**. Warnings-as-errors build passed with
+zero warnings/errors. Touched-file whitespace validation passed. Exact
+no-ready-weapon raise timing, weapon sisters/custom classes, no-auto-switch
+item flags and native executable comparison remain open. Changes uncommitted.
+
+## Conversion and audit: clear inventory depletion semantics (2026-10-03)
+
+Audited Actor.ClearInventory, Inventory.DepleteOrDestroy, BasicArmor/Ammo
+KEEPDEPLETED defaults and BackpackItem.DetachFromOwner. Replaced ACS
+pistol-start reset with supported inventory clearing: weapons, keys,
+backpack and stored armor are removed; ammo and worn armor amounts become
+zero; ready weapon becomes none and pending selection clears. Worn armor
+metadata remains intact. Custom ammo capacities survive; standard backpack
+capacities reduce through existing detach logic. Managed drain and Buddha
+powerup effects clear. Deathmatch pistol-start behavior remains separate.
+
+Added three focused regressions for removal, retained armor metadata and
+ammo capacities, and corrected the existing clear-inventory opcode test
+to expect zero bullets. Release validation: **6,215 tests passed (5,088
+Playsim; 533 MapLoader)**. Warnings-as-errors build passed with zero warnings/
+errors. Touched-file whitespace validation passed. Unclearable/undroppable
+custom items, inventory thinker ordering, weapon acquisition after no ready
+weapon, full inventory serialization and native executable comparison remain
+open. Changes uncommitted.
+
+## Conversion and audit: ACS clear inventory broadcast dispatch (2026-10-03)
+
+Audited p_acs.cpp ClearInventory/ClearActorInventory and ScriptUtil's
+null-activator player loop. Converted absent-activator clears and actor clear
+TID zero to affect all managed players. Present activators and nonzero TIDs
+remain isolated; missing nonzero TIDs do not broadcast.
+
+Added five opcode regressions for both broadcast forms, present activator,
+matching TID and missing TID. Release validation: **6,212 tests passed (5,085
+Playsim; 533 MapLoader)**. Warnings-as-errors build passed with zero warnings/
+errors. Touched-file whitespace validation passed. This slice converts
+dispatch only: managed clear still uses pistol-start reset, unlike native
+Actor.ClearInventory depletion/destruction and ready-weapon removal. That
+semantic gap, unclearable/undroppable objects, player-slot lifecycle and
+native executable comparison remain open. Changes uncommitted.
+
+## Conversion and audit: ACS inventory broadcast dispatch (2026-10-03)
+
+Audited p_acs.cpp Give/TakeInventory variants and ScriptUtil null-activator
+player loops. Converted absent-activator stacked/direct give and take opcodes
+to affect all managed players. GiveActorInventory/TakeActorInventory with TID
+zero now use the same broadcast path. Nonzero TIDs continue selecting only
+matching actors; missing nonzero TIDs do not broadcast. Low-level single-actor
+helpers retain their existing null handling.
+
+Added eight opcode regressions covering stacked/direct broadcasts, both TID
+zero operations, missing TID isolation and targeted nonplayer health grants.
+Release validation: **6,207 tests passed (5,080 Playsim; 533 MapLoader)**.
+Warnings-as-errors build passed with zero warnings/errors. Touched-file
+whitespace validation passed. Native player-slot lifecycle, disconnected
+pawns, unsupported inventory classes and native executable comparison remain
+open. Changes uncommitted.
+
+## Conversion and audit: nonplayer ACS health grants (2026-10-03)
+
+Audited ScriptUtil.GiveInventory, Health.TryPickup and p_mobj.cpp P_GiveBody.
+Converted ACS grants of supported health classes for nonplayer activators.
+Requested positive amounts heal up to spawn/resurrection health, ignoring
+item player-health limits and player-only skill scaling. Base grants clamp
+to 65536; dead and over-cap actors remain unchanged. Other nonplayer inventory
+grant paths remain unsupported. Player healing retains its existing path.
+
+Added eleven regressions across six health classes, string dispatch, spawn
+caps, dead/over-cap health, large grants, nonpositive and nonhealth names.
+Release validation: **6,199 tests passed (5,072 Playsim; 533 MapLoader)**.
+Warnings-as-errors build passed with zero warnings/errors. Touched-file
+whitespace validation passed. Nonplayer owned inventory, custom health
+classes, megasphere CustomInventory on nonplayers, negative percentage healing
+and native executable comparison remain open. Changes uncommitted.
+
+## Conversion and audit: drop pickup native class names (2026-10-03)
+
+Audited native actor class lookup and vanilla pickup definitions. Converted
+catalog drop-name lookup to actual supported class names, adding BlueArmor
+and rejecting shorthand ammo/weapon/armor names. Removed whitespace trimming.
+Armor is a native base class, but is no longer incorrectly mapped to GreenArmor;
+spawning that base class remains unsupported by the editor-number catalog.
+Case-insensitive invariant matching remains supported.
+
+Added fourteen regressions for mixed-case BlueArmor spawning, rejected aliases
+and padded names; refreshed supported-name coverage to native classes.
+Release validation: **6,188 tests passed (5,061 Playsim; 533 MapLoader)**.
+Warnings-as-errors build passed with zero warnings/errors. Touched-file
+whitespace validation passed. Base Armor and classes without editor numbers,
+custom class registration, drop helpers and native executable comparison
+remain open. Changes uncommitted.
+
+## Conversion and audit: native blue armor grant class name (2026-10-03)
+
+Audited doomarmor.zs BlueArmor and ScriptUtil.GiveInventory class lookup.
+Removed the unsupported MegaArmor shorthand from ACS armor grants. Native
+BlueArmor remains case-insensitive and scales its SaveAmount by quantity.
+Updated existing parity fixtures to native BlueArmor, including quantity 3
+and lowercase coverage. Catalog map/editor constants are unaffected.
+
+Added five regressions for shorthand rejection at ordinary/extreme quantities,
+string dispatch and preservation of existing armor metadata. Release validation:
+**6,174 tests passed (5,047 Playsim; 533 MapLoader)**. Warnings-as-errors build
+passed with zero warnings/errors. Touched-file whitespace validation passed.
+Drop-name aliases, custom class registration/defaults and native executable
+comparison remain open. Changes uncommitted.
+
+## Conversion and audit: BFG native weapon class name (2026-10-03)
+
+Audited weaponbfg.zs BFG9000 and native ACS inventory/weapon class lookups.
+Removed the unsupported BFG shorthand from the shared ACS weapon matcher.
+It no longer queries, grants, removes, drops, uses or selects BFG9000. Native
+BFG9000 remains case-insensitive. Updated the existing unowned-weapon opcode
+fixture to use the actual native class, preserving its intended coverage.
+
+Added four regressions covering owned shorthand rejection across operations,
+string-table grant rejection and native grant/query/select/remove behavior.
+Release validation: **6,169 tests passed (5,042 Playsim; 533 MapLoader)**.
+Warnings-as-errors build passed with zero warnings/errors. Touched-file
+whitespace validation passed. DropItem class-name shorthand, armor aliases,
+custom class registration and native executable comparison remain open.
+Changes uncommitted.
+
+## Conversion and audit: ammo grant and removal class names (2026-10-03)
+
+Audited ScriptUtil.GiveInventory/TakeInventory class lookup. Converted base
+ammo grants/removals to the shared native class matcher, removing the obsolete
+alias-aware helper. Bullet, AmmoClip, Shells, Rockets and Cells cannot grant
+or remove vanilla ammo. Existing native ammo box grant paths remain separate.
+
+Added nine regressions for rejected aliases, string dispatch, unchanged ammo,
+drop rejection and case-insensitive native grant/removal quantities.
+Release validation: **6,165 tests passed (5,038 Playsim; 533 MapLoader)**.
+Warnings-as-errors build passed with zero warnings/errors. Touched-file
+whitespace validation passed. Custom class registration, drop-name aliases,
+other weapon/armor aliases, nonplayer owned inventory and native executable
+comparison remain open. Changes uncommitted.
+
+## Conversion and audit: ammo inventory query class names (2026-10-03)
+
+Audited native CheckInventory class lookup, whose only built-in aliases are
+Health and Armor. Converted current and maximum ammo queries to use the same
+native class-name matcher as capacity operations. Bullet, AmmoClip, Shells,
+Rockets and Cells no longer resolve to vanilla ammo, including nonplayer
+maximum fallback. Native names remain case-insensitive and use player instance
+counts/capacities. Shared helpers replace the duplicated ammo query branches.
+
+Added nine regressions for unsupported aliases, player/nonplayer queries,
+string dispatch, current counts and signed instance capacities.
+Release validation: **6,156 tests passed (5,029 Playsim; 533 MapLoader)**.
+Warnings-as-errors build passed with zero warnings/errors. Touched-file
+whitespace validation passed. Grant/removal ammo aliases, custom class
+registration, nonplayer owned inventory and native executable comparison
+remain open. Changes uncommitted.
+
+## Conversion and audit: ammo capacity native class names (2026-10-03)
+
+Audited p_acs.cpp capacity class lookup and direct-parent Ammo restriction.
+Converted GetAmmoCapacity/SetAmmoCapacity to accept only the supported native
+Clip, Shell, RocketAmmo and Cell classes. Managed convenience aliases Bullet,
+AmmoClip, Shells, Rockets and Cells now return zero and cannot mutate capacity.
+Native names remain case-insensitive and retain signed instance capacities.
+Other inventory operations retain legacy aliases pending their own audit.
+
+Added nine regressions for rejected aliases, unchanged capacities, nonplayer
+queries, string dispatch and signed native-name capacities. Release validation:
+**6,147 tests passed (5,020 Playsim; 533 MapLoader)**. Warnings-as-errors build
+passed with zero warnings/errors. Touched-file whitespace validation passed.
+Custom class registration, other inventory alias paths, nonplayer capacity
+setters/owned ammo and native executable comparison remain open.
+Changes uncommitted.
+
+## Conversion and audit: nonplayer ammo capacity queries (2026-10-03)
+
+Audited p_acs.cpp PCD_GETAMMOCAPACITY's actor-independent class fallback
+and direct-parent Ammo restriction. Converted nonplayer queries for Clip,
+Shell, RocketAmmo and Cell to their default capacities. Reused the same
+default helper in maximum inventory queries. Player instance capacities and
+signed overrides remain authoritative. Indirect ammo box classes stay rejected.
+
+Added eleven regressions for native ammo names, case-insensitive/string
+dispatch, absent activators, invalid indices, indirect/non-ammo classes and
+player capacity isolation. Release validation: **6,138 tests passed (5,011
+Playsim; 533 MapLoader)**. Warnings-as-errors build passed with zero warnings/
+errors. Touched-file whitespace validation passed. Nonplayer capacity setters
+and owned ammo objects, custom classes/defaults, legacy managed aliases and
+native executable comparison remain open. Changes uncommitted.
+
+## Conversion and audit: nonplayer basic armor maximum queries (2026-10-03)
+
+Audited native CheckInventory Armor alias and BasicArmor/Inventory defaults.
+Converted nonplayer maximum Armor and BasicArmor queries to inherited class
+capacity 1. Current queries still return zero because nonplayer scalar damage
+armor is not an owned inventory object. Player queries retain instance armor
+maximums after depletion. Armor pickup classes retain their default maximum 0.
+
+Added nine regressions for both aliases, case-insensitive/string dispatch,
+missing activators, invalid indices, depleted player capacity isolation and
+five pickup-class defaults. Release validation: **6,127 tests passed (5,000
+Playsim; 533 MapLoader)**. Warnings-as-errors build passed with zero warnings/
+errors. Touched-file whitespace validation passed. Nonplayer owned armor,
+custom pickup capacities, general class metadata and native executable
+comparison remain open. Changes uncommitted.
+
+## Conversion and audit: nonplayer absent inventory maximums (2026-10-03)
+
+Audited native CheckInventory's actor-independent absent-class fallback,
+doomammo.zs capacities and inherited Inventory capacity 1 for supported
+weapons, keys and backpacks. Converted nonplayer maximum queries for these
+supported classes to their defaults. Current counts remain zero because
+managed nonplayers do not yet have owned inventory objects. Player queries
+continue using their current instance capacities, including signed overrides.
+
+Added thirteen regressions covering ammo, weapons, keys, backpacks,
+case-insensitive names, string dispatch, missing activators, unknown names
+and player instance capacity isolation. Release validation: **6,118 tests
+passed (4,991 Playsim; 533 MapLoader)**. Warnings-as-errors build passed with
+zero warnings/errors. Touched-file whitespace validation passed. Nonplayer
+owned inventory, custom class defaults, armor class queries and native
+executable comparison remain open. Changes uncommitted.
+
+## Conversion and audit: ACS ammo box grants and queries (2026-10-03)
+
+Audited doomammo.zs class defaults, Ammo.CreateCopy parent conversion and
+native CheckInventory fallback. Added ACS grants for ClipBox, ShellBox,
+RocketBox and CellPack using requested quantities and ammo skill scaling.
+Grants add parent ammo and preserve pending weapons. Box current counts stay
+zero; maximum queries return inherited class defaults 200/50/50/300, including
+nonplayer activators, independently of backpack capacities. Capacity setters
+continue rejecting these indirect Ammo subclasses. Taking an absent box does
+not remove parent ammo.
+
+Added twelve regressions across all four box classes for grants, queries,
+skill scaling, string dispatch, pending weapon preservation, backpack
+independence, nonpositive quantities and removal/capacity behavior.
+Release validation: **6,105 tests passed (4,978 Playsim; 533 MapLoader)**.
+Warnings-as-errors build passed with zero warnings/errors. Touched-file
+whitespace validation passed. Absent-versus-depleted parent ammo objects,
+custom subclasses/defaults, nonplayer owned inventory and native executable
+comparison remain open. Changes uncommitted.
+
+## Conversion and audit: consumed pickup class maximum queries (2026-10-03)
+
+Audited p_acs.cpp CheckInventory absent-item fallback and vanilla health,
+artifact and Inventory defaults. Converted maximum queries for HealthBonus,
+Soulsphere and MegasphereHealth to 200 and Megasphere to inherited capacity 1.
+These class defaults now work for nonplayer activators too. Current counts
+remain zero because these pickups are consumed rather than retained. Stimpack
+and Medikit retain their native default maximum zero; Health remains the
+special current/maximum actor-health alias.
+
+Added eleven regressions for player/nonplayer queries, case-insensitive names,
+string dispatch, absent activators, post-grant non-retention and invalid names
+or string indices. Release validation: **6,093 tests passed (4,966 Playsim;
+533 MapLoader)**. Warnings-as-errors build passed with zero warnings/errors.
+Touched-file whitespace validation passed. General inventory class metadata,
+custom class overrides, nonplayer owned inventory and native executable
+comparison remain open. Changes uncommitted.
+
+## Conversion and audit: ACS megasphere helper classes (2026-10-03)
+
+Audited doomartifacts.zs helper defaults, Health's ordinary SetGiveAmount,
+BasicArmorPickup.SetGiveAmount and native CheckInventory maximum fallback.
+Converted direct ACS MegasphereHealth grants using the requested health amount
+and explicit 200 limit. Maximum queries report its class default 200, while
+current counts stay zero because the health object is consumed. Converted
+BlueArmorForMegasphere grants with 200 times the requested quantity, 50 percent
+protection and the distinct native source identity. Reused catalog armor logic.
+
+Added nine regressions for health limits, dead/over-cap health, armor scaling,
+metadata, non-retention, nonpositive amounts, unowned use and string dispatch.
+Release validation: **6,082 tests passed (4,955 Playsim; 533 MapLoader)**.
+Warnings-as-errors build passed with zero warnings/errors. Touched-file
+whitespace validation passed. Extreme armor quantity overflow retains the
+existing checked-grant policy; native integer overflow parity, DeHackEd helper
+overrides, nonplayer inventory and native executable comparison remain open.
+Changes uncommitted.
+
+## Conversion and audit: ACS megasphere grants (2026-10-03)
+
+Audited Actor.GiveInventory/SetGiveAmount, CustomInventory.TryPickup and
+Megasphere's Pickup state chain. Converted ACS GiveInventory("Megasphere")
+to run the supported combined health/armor pickup once for positive quantities.
+The requested quantity does not multiply the fixed grants in its state chain.
+The item is not retained as usable inventory, and pending weapons remain intact.
+
+Added seven regressions for positive and nonpositive quantities, string-table
+dispatch, pending weapon preservation, non-retention/use and independently
+full armor. Release validation: **6,073 tests passed (4,946 Playsim;
+533 MapLoader)**. Warnings-as-errors build passed with zero warnings/errors.
+Touched-file whitespace validation passed. Generic CustomInventory state
+execution, absent-item maximum queries, direct grants of helper classes,
+nonplayer inventory, DeHackEd overrides and native executable comparison
+remain open. Changes uncommitted.
+
+## Conversion and audit: megasphere map pickup (2026-10-03)
+
+Audited doomartifacts.zs Megasphere pickup states, MegasphereHealth and
+BlueArmorForMegasphere defaults. Added Doom map pickup 83 and class-name
+lookup for drops. The pickup grants blue armor with its distinct native
+source identity and 200 health subject to skill scaling and the explicit
+200 health limit. Existing higher health/armor remain unchanged. AlwaysPickup
+contact behavior consumes the map actor even when neither grant is needed.
+
+Added eight regressions for combined grants, source metadata, independently
+full health/armor, skill scaling, custom normal-health limits, map contact
+consumption and drop lookup. Release validation: **6,066 tests passed
+(4,939 Playsim; 533 MapLoader)**. Warnings-as-errors build passed with zero
+warnings/errors. Touched-file whitespace validation passed. CustomInventory
+ACS grant/use, DeHackEd megasphere overrides, sounds/messages, animated pickup
+states and native executable comparison remain open. Changes uncommitted.
+
+## Conversion and audit: skill health scaling (2026-10-03)
+
+Audited g_skill.cpp HealthFactor (default 1) and p_mobj.cpp P_GiveBody.
+Added immutable managed SpawnOptions.HealthFactor with finite-value validation
+and checksum coverage. Shared positive health grants across pickups, ACS
+Health and drain: clamp base amount to 65536, scale by the skill factor,
+truncate toward zero, enforce minimum 1, then cap by remaining health room.
+Zero/negative finite factors retain the native minimum heal. Nonfinite inputs
+are rejected; out-of-integer-range scaled values saturate for managed safety
+and are not claimed as native conversion parity.
+
+Added twelve regressions for scaling, truncation, minimum heal, clamp order,
+bonus caps, dead/over-cap health, checksum, same-simulation restoration and
+invalid factors. Release validation: **6,058 tests passed (4,931 Playsim;
+533 MapLoader)**. Warnings-as-errors build passed with zero warnings/errors.
+Touched-file whitespace validation passed. Skill settings remain launch
+configuration, like Skill itself; archives do not transfer the factor between
+simulations. MAPINFO custom skill ingestion, health upgrades, custom OnDrain
+callbacks and native executable comparison remain open. Changes uncommitted.
+
+## Conversion and audit: drain custom health limits (2026-10-03)
+
+Audited p_interaction.cpp PowerDrain and p_mobj.cpp P_GiveBody.
+Converted drain healing to use the player's effective custom maximum rather
+than a fixed 100. Positive healing grants are clamped to 65536 before adding
+and bounded by remaining health capacity, preventing signed addition overflow.
+Over-cap health is preserved; dead sources and DontDrain targets remain excluded.
+
+Added eleven regressions covering positive/default/negative maximum overrides,
+over-cap health, body-grant clamping, near-integer-limit health, post-armor
+damage and exclusions. Release validation: **6,046 tests passed (4,919 Playsim;
+533 MapLoader)**. Warnings-as-errors build passed with zero warnings/errors.
+Touched-file whitespace validation passed. Remaining gaps include OnDrain
+overrides, multiple drain inventory items, out-of-range strength conversion,
+skill health scaling, health upgrades and native executable comparison.
+Changes uncommitted.
+
+## Conversion and audit: player maximum health respawn lifecycle (2026-10-03)
+
+Audited g_game.cpp DoReborn and p_mobj.cpp SpawnPlayer. Native respawn
+constructs a fresh class-default pawn before cooperative inventory transfer.
+Converted managed successful respawn to clear the per-body MaxHealth override.
+Spawn/resurrection health remains independent. The override survives death,
+the respawn wait, NoRespawn blocking and single-player reload requests.
+
+Added eight regressions for positive/negative overrides in cooperative,
+deathmatch and enabled single-player respawn, blocked-to-successful respawn,
+and reload-only behavior. Queries and ordinary healing use the vanilla limit
+after successful respawn even when spawn health differs.
+Release validation: **6,035 tests passed (4,908 Playsim; 533 MapLoader)**.
+Warnings-as-errors build passed with zero warnings/errors. Touched-file
+whitespace validation passed. Custom player class defaults, resurrection
+distinct from respawn, corpse retention/body replacement, health upgrades,
+drain healing and native executable comparison remain open.
+Changes uncommitted.
+
+## Conversion and audit: independent player maximum health (2026-10-03)
+
+Audited p_acs.cpp APROP_SpawnHealth, PlayerPawn.GetMaxHealth and p_mobj.cpp
+P_GetRealMaxHealth/P_GiveBody. Converted player custom MaxHealth to independent
+storage, preserving spawn/resurrection health. Positive overrides govern
+ACS SpawnHealth get/check, maximum Health queries, direct Health grants and
+normal stimpack/medikit healing. Zero/negative overrides use the supported
+vanilla 100 default. Explicit bonus pickup limits remain independent.
+
+Added checksum coverage and optional archive version 37 for signed custom
+maximum values. Default saves retain version 36. Legacy restoration clears
+the override to its default. In-memory and serialized restoration preserve
+custom values; malformed extension sizes and prior versions are rejected.
+
+Added 18 regressions covering property queries, healing limits, over-cap
+health, overflow, explicit bonus limits, checksum, save compatibility and
+malformed extensions. Release validation: **6,027 tests passed (4,900 Playsim;
+533 MapLoader)**. Warnings-as-errors build passed with zero warnings/errors.
+Touched-file whitespace validation passed. Remaining gaps include stamina,
+BonusHealth, MaxPickupHealth, morph rules, skill health scaling, DeHackEd
+maximum-health compatibility, drain healing and native executable comparison.
+Custom maximum lifecycle on death/respawn remains a separate audit item.
+Changes uncommitted.
+
+## Conversion and audit: nonplayer spawn-health boundaries (2026-10-03)
+
+Audited p_acs.cpp APROP_SpawnHealth setter and Actor.GetMaxHealth.
+Native spawn-health writes only apply to players. Converted nonplayer writes
+to leave current and spawn/resurrection health unchanged. Maximum Health
+queries now return the recorded nonplayer spawn health unchanged, including
+zero and negative values, removing the previous positive-only fallback.
+
+Added five boundary regressions and corrected the existing opcode-level imp
+test, which had expected unsupported nonplayer mutation. Release validation:
+**6,009 tests passed (4,882 Playsim; 533 MapLoader)**. Warnings-as-errors
+build passed with zero warnings/errors. Touched-file whitespace validation
+passed. Player custom maximum health still shares the resurrection field;
+its independent storage, getters, health grants and persistence remain open,
+as do custom GetMaxHealth overrides and native executable comparison.
+Changes uncommitted.
+
+## Conversion and audit: nonplayer ACS health queries (2026-10-03)
+
+Audited p_acs.cpp CheckInventory and Actor.GetMaxHealth (SpawnHealth).
+Moved health queries before the managed player inventory gate. Nonplayer
+current queries report actual health, including zero/negative values;
+maximum queries use the managed spawn/resurrection health, with the existing
+plain actor default of 100 when no positive spawn value is recorded. Player
+maximum remains the supported vanilla 100.
+
+Added four regressions for current/spawn health and string-table dispatch.
+Release validation: **6,004 tests passed (4,877 Playsim; 533 MapLoader)**.
+Warnings-as-errors build passed with zero warnings/errors. Touched-file
+whitespace validation passed. Custom GetMaxHealth overrides, zero/negative
+spawn defaults, nonplayer inventory classes and native executable comparison
+remain open. Changes uncommitted.
+
+## Conversion and audit: armor info invalid activators (2026-10-03)
+
+Audited ACSF_GetArmorInfo's early activator/player check. Converted missing
+and nonplayer activators to numeric zero, including class queries. A player
+without active armor still gets the global string None. Invalid activators
+and unknown fields no longer allocate an inappropriate class-result string.
+
+Added five regressions for three invalid-activator fields, player no-armor
+class results and unknown fields. Release validation: **6,000 tests passed
+(4,873 Playsim; 533 MapLoader)**. Warnings-as-errors build passed with zero
+warnings/errors. Touched-file whitespace validation passed. Remaining gaps
+include custom armor objects, exact protection fractions, full inventory
+serialization and native executable comparison. Changes uncommitted.
+
+## Conversion and audit: nonplayer armor counter reset (2026-10-03)
+
+Audited BasicArmor.Tick's owner-independent AbsorbCount reset. Added the
+corresponding reset at managed Actor.Tick, complementing the existing player
+inventory reset. Same-tick hits share the limit; later actor ticks restore
+the allowance without changing armor amount or protection. Reset also runs
+for dead/dormant actors.
+
+Added three regressions for allowance recovery and dead/dormant owners.
+Release validation: **5,995 tests passed (4,868 Playsim; 533 MapLoader)**.
+Warnings-as-errors build passed with zero warnings/errors. Touched-file
+whitespace validation passed. Exact inventory thinker ordering, nonplayer
+inventory objects, custom callbacks and native executable comparison remain
+open. Changes uncommitted.
+
+## Conversion and audit: nonplayer depleted armor cleanup (2026-10-03)
+
+Audited BasicArmor.AbsorbDamage's Amount == 0 cleanup. Removed the managed
+nonplayer path's extra absorbed > 0 gate: ordinary damage clears protection
+on already-depleted armor too. Absorption limits remain stored. Armor-bypass
+and forced damage still skip the armor handler and its cleanup.
+
+Added three regressions for ordinary damage and both bypass flags. Release
+validation: **5,992 tests passed (4,865 Playsim; 533 MapLoader)**.
+Warnings-as-errors build passed with zero warnings/errors. Touched-file
+whitespace validation passed. Nonplayer inventory object identity, spare
+armor promotion, armor tick scheduling and native executable comparison
+remain incomplete. Changes uncommitted.
+
+## Conversion and audit: full armor absorption cap boundary (2026-10-03)
+
+Audited BasicArmor.AbsorbDamage's full-allowance branch. Native applies
+MaxAbsorb only when damage is at/above the remaining full allowance; smaller
+hits bypass that total cap. Moved managed cap handling into the matching
+branch. Armor Amount still caps both branches. Shared calculation applies
+to managed player and nonplayer armor.
+
+Added six regressions for below/equal/above allowance, prior absorption and
+insufficient armor. Release validation: **5,989 tests passed (4,862 Playsim;
+533 MapLoader)**. Warnings-as-errors build passed with zero warnings/errors.
+Touched-file whitespace validation passed. Remaining gaps include exact
+protection fractions, native inventory tick ordering, custom damage factors
+and executable comparison. Changes uncommitted.
+
+## Conversion and audit: armor absorption counter tick reset (2026-10-03)
+
+Audited BasicArmor.Tick, which resets AbsorbCount every inventory tick.
+Converted player Tick to reset the managed armor counter before player
+effects. Damage calls within one tick still share the allowance; later
+ticks restore it. Dead-player ticks also reset retained counters.
+
+Added two regressions for same-tick accumulation/next-tick recovery and dead
+players. Release validation: **5,983 tests passed (4,856 Playsim; 533 MapLoader)**.
+Warnings-as-errors build passed with zero warnings/errors. Touched-file
+whitespace validation passed. Native inventory thinker ordering relative to
+all damage sources, nonplayer armor ticks, custom callbacks and executable
+comparison remain open. Changes uncommitted.
+
+## Conversion and audit: zero-scaled owned weapon ammo (2026-10-03)
+
+Audited Weapon.PickupForAmmo/AddExistingAmmo: eligibility checks positive
+unscaled AmmoGive, then scaling can yield zero while pickup still succeeds
+below capacity. Converted catalog weapon grants to carry ammo eligibility
+separately from the scaled amount. Chainsaw has no ammo grant, including
+when an explicit pickup amount is supplied. Full ammo still rejects an
+owned weapon pickup.
+
+Added eight regressions covering six ammo weapons, chainsaw and full ammo.
+Release validation: **5,981 tests passed (4,854 Playsim; 533 MapLoader)**.
+Warnings-as-errors build passed with zero warnings/errors. Touched-file
+whitespace validation passed. Remaining gaps include weapon-stay rules,
+custom ammo declarations, absent inventory objects, unlimited pickup and
+native executable comparison. Changes uncommitted.
+
+## Conversion and audit: zero-scaled ammo acceptance (2026-10-03)
+
+Audited Ammo.HandlePickup: when below capacity it marks pickup success even
+if scaling yields zero ammo. Converted TryAddAmmo to accept zero grants
+when there is room, preserving the amount; negative grants and full-capacity
+grants still fail. Catalog ammo pickups now follow this acceptance result.
+
+Added five regressions for all ammo classes, negative input and full capacity.
+Corrected the existing zero AmmoFactor pickup expectation. Release validation:
+**5,973 tests passed (4,846 Playsim; 533 MapLoader)**. Warnings-as-errors build
+passed with zero warnings/errors. Touched-file whitespace validation passed.
+Remaining gaps include zero-scaled owned-weapon pickup grants, absent ammo
+object semantics, negative native ammo grants, unlimited pickup and native
+executable comparison. Changes uncommitted.
+
+## Conversion and audit: stored armor removal (2026-10-03)
+
+Audited Actor.TakeInventory's class lookup and item depletion. Added removal
+of matching stored armor copies to the managed fallback, preserving equipped
+BasicArmor and unrelated spares. Removal follows stored order, is
+case-insensitive and stops at the requested count. Existing native-name
+query/removal branches retain precedence. Nonpositive ACS amounts remain
+rejected by the established ScriptUtil-compatible entry gate.
+
+Added four regressions for partial/exact/excessive removal, unrelated and
+worn armor preservation, missing/nonpositive requests and later use.
+Release validation: **5,968 tests passed (4,841 Playsim; 533 MapLoader)**.
+Warnings-as-errors build passed with zero warnings/errors. Touched-file
+whitespace validation passed. Native class registration/stack merging,
+complete drop spawning, custom inventory callbacks and full serialization
+remain incomplete. Changes uncommitted.
+
+## Conversion and audit: stored armor current-count queries (2026-10-03)
+
+Audited native CheckInventory's owned item Amount query and the managed spare
+representation. Added fallback current counts for retained armor source
+classes. Queries are case-insensitive, exclude the equipped BasicArmor
+object and track stored copies after successful use, promotion and reset.
+Existing recognized vanilla query paths retain precedence. Custom maximum
+queries remain zero because this representation has no class MaxAmount.
+
+Added two regressions covering failed/successful use, duplicate retained
+copies, promotion and reset. Release validation: **5,964 tests passed (4,837
+Playsim; 533 MapLoader)**. Warnings-as-errors build passed with zero warnings/
+errors. Touched-file whitespace validation passed. Native class registration,
+stack limits/merging, stored-item removal and full inventory serialization
+remain incomplete. This is current-count coverage of the managed spare
+subset; no complete native inventory parity is claimed. Changes uncommitted.
+
+## Conversion and audit: stored armor ownership and consumption (2026-10-03)
+
+Audited ACS DoUseInv/Actor.UseInventory and BasicArmorPickup.Use. Replaced
+synthetic armor-use grants with case-insensitive stored-suit lookup. A suit
+is consumed only when current armor is below its save amount; failed/dead
+requests retain the stored item. Successful use equips its source, protection,
+capacity and absorption fields through shared promotion logic. Removed the
+unused synthetic armor lookup. Prior grant-parity fixtures now call Give;
+the old unowned MegaArmor use expectation failed and was corrected.
+
+Added five regressions for unowned suit/bonus names, owned successful/failed
+use, consumption and dead-player preservation. Release validation: **5,962
+tests passed (4,835 Playsim; 533 MapLoader)**. Warnings-as-errors build passed
+with zero warnings/errors. Touched-file whitespace validation passed.
+Remaining gaps include loading custom stored classes, infinite inventory,
+bonus counters/alternate armor semantics and native executable comparison.
+Changes uncommitted.
+
+## Conversion and audit: internal armor use (2026-10-03)
+
+Audited BasicArmor and inherited Inventory.Use plus ACS DoUseInv's owned-item
+lookup. Removed synthetic green-suit activation for Armor and BasicArmor.
+Internal BasicArmor has no Use override; the Armor query/removal alias does
+not make it an activatable suit. Added four absent/equipped regressions and
+corrected direct/tid opcode fixtures expecting synthetic grants.
+
+Release validation: **5,957 tests passed (4,830 Playsim; 533 MapLoader)**.
+Warnings-as-errors build passed with zero warnings/errors. Touched-file
+whitespace validation passed. Remaining gaps include actual stored suit
+ownership/consumption, synthetic bonus/suit use paths, custom callbacks,
+full inventory serialization and native executable comparison. Changes uncommitted.
+
+## Conversion and audit: health inventory-use eligibility (2026-10-03)
+
+Audited Doom health classes, Health.TryPickup, inherited Inventory.Use and
+ACS DoUseInv. Health pickups heal during acquisition and do not provide a
+stored use effect. Removed managed Use's synthetic health grants; normal
+pickup and GiveInventory grants remain. Added five class regressions checking
+use before/after a real grant and corrected direct/tid opcode expectations.
+The tid regression caught the old healing expectation on the initial run.
+
+Final Release validation: **5,953 tests passed (4,826 Playsim; 533 MapLoader)**.
+Warnings-as-errors build passed with zero warnings/errors. Touched-file
+whitespace validation passed. Custom persistent HealthPickup items, complete
+armor use ownership/consumption and native executable comparison remain open.
+Changes uncommitted.
+
+## Conversion and audit: backpack inventory use (2026-10-03)
+
+Audited BackpackItem and inherited Inventory.Use (returns false). Removed
+managed Use(Backpack)'s grant/refill behavior. Backpack use now returns zero
+without changing ownership, capacity, ammo or pending selection. Catalog
+pickup and ACS GiveInventory continue to grant backpacks normally.
+
+Added three regressions for absent/owned repeated use and normal ACS grant.
+Corrected the existing opcode test that expected UseInventory to grant a
+backpack. Release validation: **5,948 tests passed (4,821 Playsim; 533
+MapLoader)**. Warnings-as-errors build passed with zero warnings/errors.
+Touched-file whitespace validation passed. Remaining gaps include custom
+inventory Use overrides, health/armor ownership and consumption, complete
+drop semantics and native executable comparison. Changes uncommitted.
+
+## Conversion and audit: Health query versus inventory removal (2026-10-03)
+
+Audited ScriptUtil.TakeInventory and Actor.TakeInventory.FindInventory.
+Health's special actor-health alias exists in CheckInventory, not removal.
+Health pickups are consumed rather than retained in the supported Doom
+inventory. Removed managed Take(Health)'s actor-health subtraction, including
+its incorrect dead-player health increase. Drop(Health) now returns false
+rather than using the health query count as inventory ownership.
+
+Added six regressions for ordinary/bonus/dead health and drop results.
+Release validation: **5,945 tests passed (4,818 Playsim; 533 MapLoader)**.
+Warnings-as-errors build passed with zero warnings/errors. Touched-file
+whitespace validation passed. Remaining gaps include custom persistent health
+inventory objects, complete drop/spawn semantics, full inventory serialization
+and native executable comparison. Changes uncommitted.
+
+## Conversion and audit: ACS health pickup grants (2026-10-03)
+
+Audited Health.TryPickup, Inventory.SetGiveAmount and Doom health defaults.
+Converted previously ignored Stimpack, Medikit, HealthBonus and Soulsphere
+ACS grants through catalog health grants. Requested count replaces Amount;
+it does not multiply the pickup's default healing. Normal health items cap
+at 100, bonus/sphere at 200. Shared catalog health grants now reject dead
+players and clamp positive amounts to 65536 before safe addition.
+
+Added ten regressions for requested amounts, class caps, large counts and
+dead players. Release validation: **5,939 tests passed (4,812 Playsim;
+533 MapLoader)**. Warnings-as-errors build passed with zero warnings/errors.
+Touched-file whitespace validation passed. Remaining gaps include custom
+health limits, skill factors, Dehacked health compatibility and native
+executable comparison. Changes uncommitted.
+
+## Conversion and audit: ACS base health grants (2026-10-03)
+
+Audited Health.TryPickup and P_GiveBody. Corrected managed base Health grants
+to heal living players up to the supported normal Doom maximum of 100,
+preserve existing over-limit health and reject dead players. Positive grant
+amounts clamp to 65536 before addition; remaining-capacity addition prevents
+overflow. The prior 200 cap and dead-player revival were incorrect.
+
+Added seven regressions for ordinary/capped/large grants, full/bonus health
+and zero/negative health. Release validation: **5,929 tests passed (4,802
+Playsim; 533 MapLoader)**. Warnings-as-errors build passed with zero warnings/
+errors. Touched-file whitespace validation passed. Remaining gaps include
+custom health limits/upgrades, health skill factors, native playerstate
+representation, nonplayer inventory and executable comparison. Changes uncommitted.
+
+## Conversion and audit: base ACS armor grants (2026-10-03)
+
+Audited ScriptUtil.GiveInventory's Armor alias, BasicArmorPickup defaults/
+SetGiveAmount and BasicArmor.HandlePickup. Armor resolves to the base pickup
+with zero SaveAmount; direct BasicArmor pickup cannot add to an existing
+BasicArmor object. Doom GiveDefaultInventory supplies that object. Removed
+managed additive grants for these two names in the supported Doom subset.
+Actual suits and bonuses continue through their dedicated grant paths.
+
+Added six regressions for both names with empty, equipped and depleted armor,
+including maximum signed counts. Release validation: **5,922 tests passed
+(4,795 Playsim; 533 MapLoader)**. Warnings-as-errors build passed with zero
+warnings/errors. Touched-file whitespace validation passed. Remaining gaps
+include explicitly removed BasicArmor objects, custom player inventory and
+replacement classes, full inventory serialization and executable comparison.
+Changes uncommitted.
+
+## Conversion and audit: ACS armor depletion retention (2026-10-03)
+
+Audited Actor.TakeInventory and Inventory.DepleteBy/DepleteOrDestroy.
+BasicArmor KEEPDEPLETED sets only Amount to zero. Removed the managed ACS
+take path's extra protection reset. Capacity, source, actual amount,
+absorption fields and stored suits remain intact; taking armor does not run
+the damage depletion/spare-promotion path. Subsequent bonus acquisition uses
+the previously converted depleted-armor initialization.
+
+Added four regressions for both armor names, exact/excessive removal and
+bonus after depletion. Release validation: **5,916 tests passed (4,789 Playsim;
+533 MapLoader)**. Warnings-as-errors build passed with zero warnings/errors.
+Touched-file whitespace validation passed. Remaining gaps include inventory
+object lifetimes, direct armor grants, custom armor callbacks, full inventory
+serialization and native executable comparison. Changes uncommitted.
+
+## Conversion and audit: large ammo grant addition (2026-10-03)
+
+Audited Ammo.HandlePickup's positive overflow saturation followed by capacity
+clamping. Found managed TryAddAmmo could wrap current + amount below zero.
+Converted addition to a wider intermediate before clamping, preserving the
+native capped result for supported nonnegative ammo and positive grants.
+The shared helper covers catalog, ACS, weapon and backpack additions.
+
+Added six regressions for four ammo classes, maximum signed capacity and
+large ACS grants. Release validation: **5,912 tests passed (4,785 Playsim;
+533 MapLoader)**. Warnings-as-errors build passed with zero warnings/errors.
+Touched-file whitespace validation passed. Remaining gaps include overflow
+in skill-factor conversion, unlimited pickup and native per-path overflow
+behavior outside ordinary ammo pickups. Native executable comparison remains
+open. Changes uncommitted.
+
+## Conversion and audit: signed ACS ammo capacity (2026-10-03)
+
+Audited PCD_SETAMMOCAPACITY in p_acs.cpp: native assigns the supplied signed
+MaxAmount without clamping or reducing existing Amount. Removed managed
+negative-capacity clamping. Current ammo remains unchanged when its capacity
+is lowered; ordinary grants fail while current ammo is at/above that limit.
+
+Added six regressions for all four ammo classes with negative capacity,
+maximum queries, unchanged amounts, zero/lower capacities and subsequent
+capacity increases. Release validation: **5,906 tests passed (4,779 Playsim;
+533 MapLoader)**. Warnings-as-errors build passed with zero warnings/errors.
+Touched-file whitespace validation passed. Remaining gaps include absent
+versus depleted ammo inventory objects, native direct-subclass validation,
+full inventory serialization and native executable comparison. Changes uncommitted.
+
+## Conversion and audit: weapon inventory-use results (2026-10-03)
+
+Audited Weapon.Use and ACS DoUseInv. Owned vanilla weapon use queues a
+different ready weapon without checking ammunition, then returns false so
+the weapon is retained. Converted managed Use accordingly. Ready weapon use
+leaves pending selection unchanged. SetWeapon retains its distinct ammo gate
+and success result, and the previously converted dead-player use gate remains.
+
+Added four regressions for empty/nonempty weapon use, ready-weapon pending
+preservation and SetWeapon separation. Release validation: **5,900 tests
+passed (4,773 Playsim; 533 MapLoader)**. Warnings-as-errors build passed with
+zero warnings/errors. Touched-file whitespace validation passed. Remaining
+gaps include powered/sister weapons, native weapon object lifetimes,
+nonweapon inventory ownership/consumption and executable comparison.
+Changes uncommitted.
+
+## Conversion and audit: dead-player inventory-use gate (2026-10-03)
+
+Audited p_acs.cpp DoUseInv and Actor.UseInventory: native rejects health <= 0
+before item effects. Added that gate to managed Use, covering direct and
+tid-dispatched calls. Extracted weapon queue logic so SetWeapon keeps its
+separate native selection rules without inheriting the new use gate.
+
+Added seven regressions for health, armor, backpack and weapon requests at
+zero/negative health plus SetWeapon separation. Release validation: **5,896
+tests passed (4,769 Playsim; 533 MapLoader)**. Warnings-as-errors build passed
+with zero warnings/errors. Touched-file whitespace validation passed.
+Remaining gaps include inventory item ownership/consumption, infinite
+inventory, nonplayer use callbacks and native executable comparison.
+Changes uncommitted.
+
+## Conversion and audit: shared ACS armor-use grant behavior (2026-10-03)
+
+Audited BasicArmorPickup/Bonus.Use and the managed ACS convenience-use path.
+Removed duplicate armor grant logic in favor of catalog grants. Depleted
+bonus use now resets limits/actual amount; active zero-percent armor retains
+metadata. Replacement suit use sets the new protection and clears old
+absorption limits. Added native BlueArmor spelling alongside the existing
+MegaArmor alias. Existing Armor/BasicArmor convenience aliases remain.
+
+Added four regressions. Release validation: **5,889 tests passed (4,762 Playsim;
+533 MapLoader)**. Warnings-as-errors build passed with zero warnings/errors.
+Touched-file whitespace validation passed. Native UseInventory ownership,
+item consumption and dead-player gates remain incomplete: this conversion
+aligns grants within the existing managed convenience subset, not complete
+native inventory-use semantics. Custom classes, armor skill factors and
+native executable comparison remain open. Changes uncommitted.
+
+## Conversion and audit: cooperative armor metadata retention (2026-10-03)
+
+Audited PlayerPawn.FilterCoopRespawnInventory, GiveDefaultInventory and
+BasicArmor.CreateCopy. Default BasicArmor exists and initializes protection
+to the native one-third fallback. Lose-armor replaces Amount and SavePercent
+from that default object; other metadata remains. Converted the supported
+Doom subset to clear amount, restore managed one-third protection, retain
+capacity/source/absorption metadata and discard spares. Lose-everything still
+uses the full pistol-start reset.
+
+Added two regressions and corrected the existing cooperative respawn
+protection expectation, which failed on the first run. Final Release validation:
+**5,885 tests passed (4,758 Playsim; 533 MapLoader)**. Warnings-as-errors build
+passed with zero warnings/errors. Touched-file whitespace validation passed.
+Remaining gaps include exact fractional protection, custom default inventory,
+full inventory serialization and native executable comparison. Changes uncommitted.
+
+## Conversion and audit: spare armor source preservation (2026-10-03)
+
+Audited BasicArmor.AbsorbDamage depletion and spare selection. Converted
+depletion to clear ArmorType before spare promotion. Added source identity
+to SpareArmor and an optional source argument to TryKeepArmorPickup, retaining
+the existing BasicArmorPickup default. Immediate acquisition and promotion
+now retain the supplied class. Nondefault stored identities participate in
+simulation checksums, since they affect future ACS query results.
+
+Added four regressions for depletion without spares, two source identities
+and equal-protection selection ordering. Release validation: **5,883 tests
+passed (4,756 Playsim; 533 MapLoader)**. Warnings-as-errors build passed with
+zero warnings/errors. Touched-file whitespace validation passed. Remaining
+gaps include loading custom armor classes, source-specific damage factors,
+full inventory serialization and native executable comparison. Changes uncommitted.
+
+## Conversion and audit: vanilla armor source identity (2026-10-03)
+
+Audited BasicArmorPickup/Bonus ArmorType assignments and ACS GetArmorType/
+GetArmorInfo. Added stored source identity for GreenArmor, BlueArmor and
+ArmorBonus. Active bonus preserves suit identity; depleted bonus replaces
+it. Generic stored armor uses BasicArmorPickup. Reset clears the identity.
+GetArmorInfo class queries report the source, and GetArmorType matches it
+case-insensitively without a protection-percentage gate. Nondefault identity
+participates in simulation checksums; existing managed armor-use paths set it.
+
+Added four regressions and corrected the GetArmorType opcode fixture to
+use a source class. Release validation: **5,879 tests passed (4,752 Playsim;
+533 MapLoader)**. Warnings-as-errors build passed with zero warnings/errors.
+Touched-file whitespace validation passed. Remaining gaps include custom
+stored-suit identities, direct BasicArmor grants, full inventory serialization,
+exact protection fractions and native executable comparison. Changes uncommitted.
+
+## Conversion and audit: armor actual-save-amount query (2026-10-03)
+
+Audited ACSF_GetArmorInfo field 5 and BasicArmorPickup/BasicArmorBonus.Use.
+Added stored ArmorActualSaveAmount and replaced the incorrect AbsorbCount
+query. Suit acquisition/promotion sets the suit save amount; an active bonus
+preserves it, while a bonus on depleted armor initializes it to 200. Reset
+clears it. Added nondefault actual save amounts to simulation checksums.
+
+Added five regressions for both vanilla suits after amount reduction,
+active bonus versus maximum capacity, depleted bonus and spare promotion/
+reset. Release validation: **5,875 tests passed (4,748 Playsim; 533 MapLoader)**.
+Warnings-as-errors build passed with zero warnings/errors. Touched-file
+whitespace validation passed. Remaining gaps include ArmorType class identity,
+full inventory serialization, exact protection fractions, custom bonus
+counters and native executable comparison. Changes uncommitted.
+
+## Conversion and audit: GetArmorInfo capacity and active gate (2026-10-03)
+
+Audited ACSF_GetArmorInfo in p_acs.cpp. Converted SAVEAMOUNT to read stored
+ArmorMaximum rather than infer 100/200 from protection percentage. Converted
+the active gate to nonzero Armor, matching native Amount rather than requiring
+positive SavePercent. Active zero-percent armor now exposes its capacity and
+absorption fields; depleted armor still returns zero numeric information.
+
+Added four regressions for custom capacities/protection combinations and
+depleted armor versus retained maximum queries. Release validation: **5,870
+tests passed (4,743 Playsim; 533 MapLoader)**. Warnings-as-errors build passed
+with zero warnings/errors. Touched-file whitespace validation passed.
+Remaining gaps include ArmorType class identity, ActualSaveAmount (field 5
+still uses AbsorbCount), precise protection fractions, custom armor semantics
+and native executable comparison. Changes uncommitted.
+
+## Conversion and audit: depleted armor bonus reinitialization (2026-10-03)
+
+Synced main to GitHub commit 9bbae42b before continuing. Audited
+BasicArmorBonus.Use against the catalog grant path. Native reinitializes
+protection and absorption limits when armor Amount is zero, rather than
+when SavePercent is zero. Converted the bonus path to reset depleted armor
+to vanilla bonus protection and clear MaxAbsorb/MaxFullAbsorb. Active armor
+retains those fields, including an explicitly zero protection percentage.
+
+Added three regressions for depleted map/ACS grants and active zero-percent
+armor. Release validation: **5,866 tests passed (4,739 Playsim; 533 MapLoader)**.
+Warnings-as-errors build passed with zero warnings/errors. Touched-file
+whitespace validation passed. Remaining gaps include custom bonus counters,
+armor skill factors, native armor object identity and executable comparison.
+Changes uncommitted.
+
 ## Conversion and audit: ACS armor bonus grants (2026-10-02)
 
 Audited ArmorBonus defaults and BasicArmorBonus.SetGiveAmount/Use. Converted

@@ -398,12 +398,15 @@ public class Actor : Thinker
     public int MaxFullAbsorb { get; set; }
     /// <summary>Saved so far. A new suit does not clear it.</summary>
     public int AbsorbCount { get; set; }
-    /// <summary>Dropped weapons skip the skill ammo factor, matching <c>bIgnoreSkill</c>.</summary>
+    /// <summary>Inventory.bIgnoreSkill for supported ammo and armor pickup grants.</summary>
     public bool IgnoreAmmoSkill { get; set; }
     /// <summary>Native <c>BackpackItem.bDepleted</c>. A tossed backpack raises caps and gives no ammo.</summary>
     public bool Depleted { get; set; }
     /// <summary>ACS <c>DropItem</c> amount override. Zero uses the catalog default.</summary>
     public int PickupAmount { get; set; }
+    public int PickupDelay { get; internal set; }
+    public bool SuppressWeaponPickupAmmo { get; internal set; }
+    public bool? AlwaysPickupOverride { get; internal set; }
     public int DeathCount { get; private set; }
     public uint? LastDamageSourceId { get; internal set; }
     public uint? LastHeardTargetId { get; internal set; }
@@ -562,8 +565,14 @@ public class Actor : Thinker
 
     public override void Tick()
     {
+        AbsorbCount = 0;
         RememberPosition();
         States.Tick(this);
+        if (!Destroyed && PickupDelay > 0 && --PickupDelay == 0)
+        {
+            SpecialPickup = PickupCatalog.IsPickup(DoomEdNum);
+            Solid = false;
+        }
         if (!Destroyed && Simulation != null)
         {
             if (!Dormant) Brain?.Tick(Simulation, this);
@@ -581,6 +590,7 @@ public sealed class PlayerPawn : Actor
 {
     public PlayerPawn()
     {
+        Inventory = new PlayerInventory(this);
         CanSlide = true;
         MovementSpeed = Fixed.FromInt(1);
         CanPickupItems = true;
@@ -592,11 +602,13 @@ public sealed class PlayerPawn : Actor
     public const double MinimumCrouchFactor = 0.5;
     public const double StandingViewHeight = 41;
     public Fixed JumpZ { get; set; } = Fixed.FromInt(8);
+    public int MaxHealth { get; set; }
+    public int EffectiveMaxHealth => MaxHealth > 0 ? MaxHealth : 100;
     /// <summary>Native DeathThink leaves the view here.</summary>
     public const double DeathViewHeight = 6;
     public const double DeathPitchStep = 3;
     public const double DeathTurnStep = 5;
-    /// <summary>Native <c>P_GiveBody</c> cap for drain. Health already above this is left alone.</summary>
+    /// <summary>Vanilla maximum health for drain when there is no custom override.</summary>
     public const int DrainMaxHealth = 100;
     /// <summary>PowerDrain strength. 0 is off. 0.5 is the usual half of the post-armor hit.</summary>
     public double DrainStrength { get; set; }
@@ -655,7 +667,7 @@ public sealed class PlayerPawn : Actor
     private bool _turnHeld;
     internal bool TurnHeld => _turnHeld;
     internal void ClearTurnHeld() => _turnHeld = false;
-    public bool WeaponReady => WeaponOffsetY == WeaponTop && !WeaponLowering;
+    public bool WeaponReady => Inventory.Selected != 0 && WeaponOffsetY == WeaponTop && !WeaponLowering;
 
     public const int CommandQueueCapacity = 128;
     private readonly Queue<PlayerCommand> _commands = new();
@@ -712,7 +724,7 @@ public sealed class PlayerPawn : Actor
         return true;
     }
     public void ClearCommands() => _commands.Clear();
-    public PlayerInventory Inventory { get; } = new();
+    public PlayerInventory Inventory { get; }
     public bool GodMode { get; set; }
     public bool AttackPressed { get; set; }
     public bool UsePressed { get; set; }
@@ -784,6 +796,7 @@ public sealed class PlayerPawn : Actor
 
     public override void Tick()
     {
+        Inventory.AbsorbCount = 0;
         if (PowerBuddhaTics > 0) PowerBuddhaTics--;
         BobTimer++;
         RememberPosition();
@@ -926,8 +939,21 @@ public sealed class PlayerPawn : Actor
     /// <see cref="InstantWeaponSwitch"/> finishes that handoff at <see cref="WeaponTop"/>
     /// in the same tic. Sprites, flash, and bob are not represented.
     /// </summary>
+    internal void BringUpWeapon(WeaponKind weapon)
+    {
+        Inventory.Selected = weapon;
+        Inventory.Pending = null;
+        WeaponLowering = false;
+        WeaponOffsetY = InstantWeaponSwitch ? WeaponTop : WeaponBottom - WeaponMoveSpeed;
+    }
+
     private void AdvanceWeapon()
     {
+        if (Inventory.Selected == 0 && Inventory.Pending is { } firstWeapon)
+        {
+            BringUpWeapon(firstWeapon);
+            return;
+        }
         if (WeaponLowering && InstantWeaponSwitch)
         {
             if (Inventory.Pending is { } instant)
@@ -1264,6 +1290,12 @@ public sealed class AuthoritySimulation
         DamageExitAllowed = damageExitAllowed;
         GameMode = spawnOptions.Mode;
         Skill = Math.Clamp(spawnOptions.Skill, 0, 4);
+        if (!double.IsFinite(spawnOptions.HealthFactor))
+            throw new ArgumentOutOfRangeException(nameof(spawnOptions), "Health factor must be finite.");
+        HealthFactor = spawnOptions.HealthFactor;
+        if (!double.IsFinite(spawnOptions.ArmorFactor))
+            throw new ArgumentOutOfRangeException(nameof(spawnOptions), "Armor factor must be finite.");
+        ArmorFactor = spawnOptions.ArmorFactor;
         Floors = level.Sectors.Select(sector => Fixed.FromDouble(sector.FloorHeight).ToDouble()).ToArray();
         Ceilings = level.Sectors.Select(sector => Fixed.FromDouble(sector.CeilingHeight).ToDouble()).ToArray();
         Lights = level.Sectors.Select(sector => sector.LightLevel).ToArray();
@@ -1335,8 +1367,14 @@ public sealed class AuthoritySimulation
     public bool ForceRespawn { get; set; }
     /// <summary>Native <c>sv_norespawn</c>. Off until set. A buffered press is kept and used once this clears.</summary>
     public bool NoRespawn { get; set; }
-    /// <summary>Native <c>sv_weapondrop</c>. Off until set. Fist and pistol still drop nothing.</summary>
+    /// <summary>Native <c>sv_weapondrop</c>. Off until set. Fist has no pickup.</summary>
     public bool WeaponDrop { get; set; }
+    /// <summary>Native sv_weaponstay: non-dropped weapons stay available.</summary>
+    public bool WeaponStay { get; set; }
+    /// <summary>Native alwaysapplydmflags: use deathmatch weapon retention rules in cooperative play.</summary>
+    public bool AlwaysApplyDmFlags { get; set; }
+    internal bool NonDroppedWeaponsStay =>
+        (GameMode == SpawnGameMode.Cooperative && !AlwaysApplyDmFlags) || WeaponStay;
     /// <summary>Native <c>sv_cooploseinventory</c>. Off until set. Cooperative and single-player respawn only.</summary>
     public bool CoopLoseInventory { get; set; }
     /// <summary>Native <c>sv_cooplosekeys</c>. Drops every key unless <see cref="CoopShareKeys"/> is set.</summary>
@@ -1356,10 +1394,26 @@ public sealed class AuthoritySimulation
     private readonly int[] _deathScripts = [];
     private readonly int[] _respawnScripts = [];
     public int Skill { get; }
+    public double HealthFactor { get; }
+    public double ArmorFactor { get; }
     /// <summary>Native <c>sv_ammofactor</c>. Multiplies the skill ammo factor. 1 leaves the skill value alone.</summary>
     public double AmmoFactor { get; set; } = 1;
     /// <summary>Native <c>sv_doubleammo</c>. Off until set. Replaces the skill factor with 2.</summary>
     public bool DoubleAmmo { get; set; }
+    /// <summary>Native sv_noextraammo: disable the Doom deathmatch bonus for newly acquired weapons.</summary>
+    public bool NoExtraAmmo { get; set; }
+    private double _dropAmmoFactor = -1;
+    /// <summary>Native skill DropAmmoFactor. -1 uses half ammo followed by ordinary skill scaling.</summary>
+    public double DropAmmoFactor
+    {
+        get => _dropAmmoFactor;
+        set
+        {
+            if (!double.IsFinite(value) || (value < 0 && value != -1))
+                throw new ArgumentOutOfRangeException(nameof(value));
+            _dropAmmoFactor = value;
+        }
+    }
     /// <summary>Native <c>sv_dropstyle</c>; 0 uses the Doom default, 2 selects the Strife toss.</summary>
     public int DropStyle { get; set; }
     /// <summary>Native <c>infighting</c> cvar. -1 never, 0 standard Doom, 1 always.</summary>
@@ -1774,20 +1828,28 @@ public sealed class AuthoritySimulation
 
     /// <summary>
     /// <c>sv_weapondrop</c> copy of the ready weapon. The corpse keeps its inventory.
-    /// The pickup uses the catalog amount, not the ammo the player was holding,
-    /// and it ignores the skill ammo factor.
+    /// The pickup copies held primary ammo and ignores the skill ammo factor.
     /// </summary>
     internal void DropSelectedWeapon(PlayerPawn player)
     {
         if (!WeaponDrop || !PickupCatalog.TryWeaponEdNum(player.Inventory.Selected, out var type))
             return;
-        SpawnDroppedPickup(player, type, ignoreAmmoSkill: true);
+        var ammo = WeaponCatalog.Find(player.Inventory.Selected)?.Ammo;
+        var amount = ammo is { } kind ? Math.Max(0, player.Inventory.Ammo(kind)) : 0;
+        // Native A_DropItem evaluates its chance even when 256 guarantees success.
+        NextCombatRandom();
+        SpawnDroppedPickup(player, type, ignoreAmmoSkill: true, pickupAmount: amount,
+            suppressWeaponAmmo: ammo.HasValue && amount == 0);
     }
 
-    internal bool SpawnDroppedPickup(Actor dropper, int doomEdNum, bool ignoreAmmoSkill = false, int pickupAmount = 0)
+    internal bool SpawnDroppedPickup(Actor dropper, int doomEdNum, bool ignoreAmmoSkill = false, int pickupAmount = 0,
+        bool inventoryToss = false, bool depleted = false, bool suppressWeaponAmmo = false)
     {
         if (dropper.Destroyed || !PickupCatalog.IsPickup(doomEdNum))
             return false;
+        var adjustedAmount = ignoreAmmoSkill ? pickupAmount
+            : PickupCatalog.DropPickupAmount(doomEdNum, pickupAmount, DropAmmoFactor);
+        var customDropFactor = !inventoryToss && !ignoreAmmoSkill && DropAmmoFactor != -1;
         var id = _nextActorId;
         _nextActorId = checked(_nextActorId + 1);
         var drop = new Actor
@@ -1799,18 +1861,33 @@ public sealed class AuthoritySimulation
             Level = Level,
             Solid = false,
             Shootable = false,
-            IgnoreAmmoSkill = ignoreAmmoSkill,
+            IgnoreAmmoSkill = ignoreAmmoSkill || customDropFactor,
             Dropped = true,
-            PickupAmount = ignoreAmmoSkill ? pickupAmount : PickupCatalog.DropPickupAmount(doomEdNum, pickupAmount),
+            Depleted = depleted,
+            SuppressWeaponPickupAmmo = suppressWeaponAmmo
+                || customDropFactor && adjustedAmount == 0,
+            PickupAmount = adjustedAmount,
             SpecialPickup = true,
             Height = PickupCatalog.HeightOf(doomEdNum),
         };
         drop.Simulation = this;
         ActorPhysics.PlaceOnFloor(this, drop);
+        if (inventoryToss)
+        {
+            drop.Angle = dropper.Angle;
+            drop.Z = Fixed.FromDouble(dropper.Z.ToDouble() + 10);
+            var radians = dropper.Angle.Raw * (2 * Math.PI / 4294967296.0);
+            drop.VelocityX = Fixed.FromDouble(5 * Math.Cos(radians) + dropper.VelocityX.ToDouble());
+            drop.VelocityY = Fixed.FromDouble(5 * Math.Sin(radians) + dropper.VelocityY.ToDouble());
+            drop.VelocityZ = Fixed.FromDouble(1 + dropper.VelocityZ.ToDouble());
+            drop.PickupDelay = 30;
+            drop.SpecialPickup = false;
+        }
         var toss = !Compat.HasFlag(CompatSurface.NoTossDrops);
         var strifeStyle = DropStyle == 2;
-        drop.Z = Fixed.FromDouble(dropper.Z.ToDouble() + (toss ? strifeStyle ? 24 : dropper.Height.ToDouble() / 2 : 0));
-        if (toss)
+        if (!inventoryToss)
+            drop.Z = Fixed.FromDouble(dropper.Z.ToDouble() + (toss ? strifeStyle ? 24 : dropper.Height.ToDouble() / 2 : 0));
+        if (toss && !inventoryToss)
         {
             var mask = strifeStyle ? 7u : 255u;
             var divisor = strifeStyle ? 1.0 : 256.0;
@@ -1828,35 +1905,17 @@ public sealed class AuthoritySimulation
     /// <summary>
     /// <c>BackpackItem.CreateTossable</c>. The pack leaves the player, the caps fall
     /// back to 200/50/50/300, and ammo above those caps is cut. The tossed thing is
-    /// depleted, so picking it up restores the caps and gives no ammo. There is no
-    /// drop-inventory command; this is the toss. A player who already has a pack
+    /// depleted, so picking it up restores the caps and gives no ammo. Pickup
+    /// eligibility returns after the native 30-tic delay. A player who already has a pack
     /// still receives ammo from a depleted one, matching <c>HandlePickup</c>.
     /// </summary>
     public Actor? DropBackpack(PlayerPawn player)
     {
-        if (!player.Inventory.RemoveBackpack())
+        if (!player.Inventory.HasBackpack || !SpawnDroppedPickup(player, PickupCatalog.Backpack,
+            inventoryToss: true, depleted: true))
             return null;
-        var id = _nextActorId;
-        _nextActorId = checked(_nextActorId + 1);
-        var drop = new Actor
-        {
-            Id = id,
-            DoomEdNum = PickupCatalog.Backpack,
-            X = player.X,
-            Y = player.Y,
-            Level = Level,
-            Solid = false,
-            Shootable = false,
-            Depleted = true,
-            SpecialPickup = true,
-            Height = PickupCatalog.HeightOf(PickupCatalog.Backpack),
-        };
-        drop.RememberPosition();
-        drop.Simulation = this;
-        ActorPhysics.PlaceOnFloor(this, drop);
-        _actors.Add(drop);
-        Thinkers.Add(drop, ThinkerStat.Default);
-        return drop;
+        player.Inventory.RemoveBackpack();
+        return _actors[^1];
     }
 
     public BotPawn AddBot(double x, double y, int doomEdNum = 3004, int thingId = 0)
@@ -2199,6 +2258,7 @@ public sealed class AuthoritySimulation
                 .Concat(_controlWallScrolls.Select(s => new SimTextureScroll(s.Side, s.ArchiveKind,
                     s.Dx, s.Dy, s.Control, LastHeight: s.LastHeight, Vdx: s.Vdx, Vdy: s.Vdy))).ToList(),
         };
+        var includesPlayerMaxHealth = Players.Any(p => p.MaxHealth != 0);
         foreach (var actor in _actors.OrderBy(actor => actor.Id))
         {
             state.Actors.Add(new SimActorPose
@@ -2225,12 +2285,18 @@ public sealed class AuthoritySimulation
                 NonShootableFlags = actor.NonShootable ? 1 : 0,
                 HitOwnerFlags = actor.HitOwner ? 1 : 0,
                 SpectralFlags = actor.Spectral ? 1 : 0,
+                PlayerMaxHealth = includesPlayerMaxHealth
+                    ? actor is PlayerPawn healthPlayer ? healthPlayer.MaxHealth : 0 : null,
                 ProjectileLifetime = actor is ProjectileActor { Destroyed: false } projectile
                     ? new SimProjectileLifetime(projectile.RemainingTics, projectile.Kind) : null,
                 ProjectilePointers = actor is ProjectileActor { Destroyed: false } pointerProjectile
                     ? new SimProjectilePointers(pointerProjectile.Owner.Id, pointerProjectile.TracerTargetId) : null,
                 Pickup = PickupCatalog.IsPickup(actor.DoomEdNum)
                     ? new SimPickupProperties(actor.PickupAmount, actor.IgnoreAmmoSkill, actor.Depleted) : null,
+                PickupDelay = actor.PickupDelay,
+                Dropped = actor.Dropped,
+                SuppressWeaponPickupAmmo = actor.SuppressWeaponPickupAmmo,
+                AlwaysPickupOverride = actor.AlwaysPickupOverride,
                 Health = actor.Health,
                 Z = actor.Z.Raw,
                 VelocityX = actor.VelocityX.Raw,
@@ -2275,6 +2341,8 @@ public sealed class AuthoritySimulation
         SimNonShootableArchive.Validate(state);
         SimHitOwnerArchive.Validate(state);
         SimSpectralArchive.Validate(state);
+        SimPlayerHealthArchive.Validate(state);
+        SimPickupDelayArchive.Validate(state);
         SimPainDeathArchive.Validate(state);
         if (state.GeometryHealth is { } savedHealth && (savedHealth.Lines.Count != Level.Lines.Count
             || savedHealth.Sectors.Count != Level.Sectors.Count || !savedHealth.Groups.Keys.Order().SequenceEqual(HealthGroups.Keys.Order())))
@@ -2412,6 +2480,10 @@ public sealed class AuthoritySimulation
                 actor.IgnoreAmmoSkill = pickup.IgnoreSkill;
                 actor.Depleted = pickup.Depleted;
             }
+            actor.PickupDelay = pose.PickupDelay;
+            actor.Dropped = pose.Dropped;
+            actor.SuppressWeaponPickupAmmo = pose.SuppressWeaponPickupAmmo;
+            actor.AlwaysPickupOverride = pose.AlwaysPickupOverride;
             actor.Z = new Fixed(pose.Z);
             actor.VelocityX = new Fixed(pose.VelocityX);
             actor.VelocityY = new Fixed(pose.VelocityY);
@@ -2423,6 +2495,7 @@ public sealed class AuthoritySimulation
             if (actor is PlayerPawn player)
             {
                 player.ClearCommands(); player.AttackPressed = false; player.UsePressed = false;
+                player.MaxHealth = pose.PlayerMaxHealth ?? 0;
                 player.WeaponCooldown = pose.WeaponCooldown;
                 player.UseHeld = pose.UseHeld;
                 player.BobTimer = state.Tic;
@@ -2522,6 +2595,7 @@ public sealed class AuthoritySimulation
         player.VelocityZ = default;
         player.CanPickupItems = player.SpawnCanPickupItems;
         player.SpecialPickup = player.SpawnSpecialPickup;
+        player.MaxHealth = 0;
         player.Health = player.ResurrectionHealth > 0 ? player.ResurrectionHealth : 100;
         ActorPhysics.PlaceOnFloor(this, player);
         player.ClearCommands();
@@ -2674,10 +2748,17 @@ public sealed class AuthoritySimulation
                     continue;
                 if (!PickupCatalog.IsWithinHorizontalReach(player, actor) || !PickupCatalog.IsWithinVerticalReach(player, actor))
                     continue;
-                if (!PickupCatalog.TryGive(player, actor.DoomEdNum, actor.IgnoreAmmoSkill, actor.Depleted, actor.PickupAmount)
-                    && !PickupCatalog.AlwaysPickup(actor.DoomEdNum))
+                var key = PickupCatalog.IsKey(actor.DoomEdNum);
+                var weapon = PickupCatalog.PickupWeapon(actor.DoomEdNum);
+                var shouldStay = key && GameMode != SpawnGameMode.Single
+                    || weapon != 0 && NonDroppedWeaponsStay && !actor.Dropped;
+                if (shouldStay && weapon != 0 && player.Inventory.Owns(weapon)) continue;
+                if (!PickupCatalog.TryGive(player, actor.DoomEdNum, actor.IgnoreAmmoSkill, actor.Depleted, actor.PickupAmount,
+                    actor.SuppressWeaponPickupAmmo)
+                    && !(key && GameMode == SpawnGameMode.Single)
+                    && (shouldStay || !(actor.AlwaysPickupOverride ?? PickupCatalog.AlwaysPickup(actor.DoomEdNum))))
                     continue;
-                taken.Add(actor);
+                if (!shouldStay) taken.Add(actor);
                 if (GameMode == SpawnGameMode.Cooperative && CoopShareKeys && PickupCatalog.IsKey(actor.DoomEdNum))
                 {
                     foreach (var other in Players)
@@ -2731,6 +2812,16 @@ public sealed class AuthoritySimulation
         hash = Mix(hash, ForceRespawn ? 1u : 0u);
         hash = Mix(hash, NoRespawn ? 1u : 0u);
         hash = Mix(hash, WeaponDrop ? 1u : 0u);
+        if (WeaponStay) hash = Mix(hash, 0x57535459u);
+        if (NoExtraAmmo) hash = Mix(hash, 0x4e455841u);
+        if (DropAmmoFactor != -1)
+        {
+            var bits = unchecked((ulong)BitConverter.DoubleToInt64Bits(DropAmmoFactor));
+            hash = Mix(hash, 0x44414d46u);
+            hash = Mix(hash, (uint)bits);
+            hash = Mix(hash, (uint)(bits >> 32));
+        }
+        if (AlwaysApplyDmFlags) hash = Mix(hash, 0x41444d46u);
         hash = Mix(hash, CoopLoseInventory ? 1u : 0u);
         hash = Mix(hash, CoopLoseKeys ? 1u : 0u);
         hash = Mix(hash, CoopShareKeys ? 1u : 0u);
@@ -2741,6 +2832,20 @@ public sealed class AuthoritySimulation
         hash = Mix(hash, SpawnFarthest ? 1u : 0u);
         hash = Mix(hash, DmSpawnRandomState);
         hash = Mix(hash, (uint)Skill);
+        if (HealthFactor != 1)
+        {
+            var factorBits = unchecked((ulong)BitConverter.DoubleToInt64Bits(HealthFactor));
+            hash = Mix(hash, 0x48464143u);
+            hash = Mix(hash, (uint)factorBits);
+            hash = Mix(hash, (uint)(factorBits >> 32));
+        }
+        if (ArmorFactor != 1)
+        {
+            var factorBits = unchecked((ulong)BitConverter.DoubleToInt64Bits(ArmorFactor));
+            hash = Mix(hash, 0x41524643u);
+            hash = Mix(hash, (uint)factorBits);
+            hash = Mix(hash, (uint)(factorBits >> 32));
+        }
         hash = Mix(hash, unchecked((uint)Fixed.FromDouble(AmmoFactor).Raw));
         hash = Mix(hash, DoubleAmmo ? 1u : 0u);
         if (DropStyle != 0) hash = Mix(hash, unchecked((uint)DropStyle));
@@ -2920,6 +3025,17 @@ public sealed class AuthoritySimulation
             hash = Mix(hash, actor.IgnoreAmmoSkill ? 1u : 0u);
             hash = Mix(hash, actor.Depleted ? 1u : 0u);
             hash = Mix(hash, (uint)actor.PickupAmount);
+            if (actor.SuppressWeaponPickupAmmo) hash = Mix(hash, 0x575a414du);
+            if (actor.AlwaysPickupOverride is { } alwaysPickup)
+            {
+                hash = Mix(hash, 0x41504f56u);
+                hash = Mix(hash, alwaysPickup ? 1u : 0u);
+            }
+            if (actor.PickupDelay != 0)
+            {
+                hash = Mix(hash, 0x5044454cu);
+                hash = Mix(hash, (uint)actor.PickupDelay);
+            }
             hash = Mix(hash, (uint)actor.RaiseDuration);
             hash = Mix(hash, (uint)actor.Mass);
             hash = Mix(hash, (uint)actor.Gravity.Raw);
@@ -2954,6 +3070,11 @@ public sealed class AuthoritySimulation
             if (actor is PlayerPawn player)
             {
                 hash = Mix(hash, (uint)player.WeaponCooldown);
+                if (player.MaxHealth != 0)
+                {
+                    hash = Mix(hash, 0x504d4850u);
+                    hash = Mix(hash, unchecked((uint)player.MaxHealth));
+                }
                 hash = Mix(hash, player.PlayerNum);
                 hash = Mix(hash, player.GodMode ? 1u : 0u);
                 hash = Mix(hash, player.UseHeld ? 1u : 0u);
@@ -3007,6 +3128,17 @@ public sealed class AuthoritySimulation
                 hash = Mix(hash, (uint)player.Inventory.MaxAbsorb);
                 hash = Mix(hash, (uint)player.Inventory.MaxFullAbsorb);
                 hash = Mix(hash, (uint)player.Inventory.AbsorbCount);
+                if (player.Inventory.ArmorType != "None")
+                {
+                    hash = Mix(hash, 0x41545950u);
+                    foreach (var character in player.Inventory.ArmorType)
+                        hash = Mix(hash, character);
+                }
+                if (player.Inventory.ArmorActualSaveAmount != 0)
+                {
+                    hash = Mix(hash, 0x41415341u);
+                    hash = Mix(hash, unchecked((uint)player.Inventory.ArmorActualSaveAmount));
+                }
                 hash = Mix(hash, (uint)player.Inventory.SpareArmor.Count);
                 foreach (var spare in player.Inventory.SpareArmor)
                 {
@@ -3014,6 +3146,13 @@ public sealed class AuthoritySimulation
                     hash = Mix(hash, (uint)spare.SavePercent);
                     hash = Mix(hash, (uint)spare.MaxAbsorb);
                     hash = Mix(hash, (uint)spare.MaxFullAbsorb);
+                    if (spare.IgnoreSkill) hash = Mix(hash, 0x53494753u);
+                    if (spare.ArmorType != "BasicArmorPickup")
+                    {
+                        hash = Mix(hash, 0x53545950u);
+                        foreach (var character in spare.ArmorType)
+                            hash = Mix(hash, character);
+                    }
                 }
                 hash = Mix(hash, (uint)player.Inventory.Selected);
                 if (player.Inventory.NeverAutoSwitch) hash = Mix(hash, 0x4e535743u);

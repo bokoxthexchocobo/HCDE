@@ -7,7 +7,7 @@ public class AcsArmorSuitGrantTests
     [InlineData("GreenArmor", 3, 300, 33)]
     [InlineData("BlueArmor", 1, 200, 50)]
     [InlineData("BlueArmor", 2, 400, 50)]
-    [InlineData("MegaArmor", 1, 200, 50)]
+    [InlineData("BlueArmor", 3, 600, 50)]
     public void SuitGrantUsesScaledSaveAmount(string name, int count, int armor, int percent)
     {
         var player = new PlayerPawn();

@@ -289,7 +289,7 @@ public class PlayerRespawnTests
 
         Assert.False(player.Inventory.RedKey);
         Assert.Equal(0, player.Inventory.Armor);
-        Assert.Equal(0, player.Inventory.ArmorSavePercent);
+        Assert.Equal(PlayerInventory.GreenSavePercent, player.Inventory.ArmorSavePercent);
         Assert.False(player.Inventory.Owns(WeaponKind.Shotgun));
         Assert.True(player.Inventory.Owns(WeaponKind.Pistol));
         Assert.Equal(WeaponKind.Pistol, player.Inventory.Selected);
@@ -637,7 +637,7 @@ public class PlayerRespawnTests
         Assert.True(receiver.IsDead);
         Assert.Equal(60, giver.Inventory.Bullets);
         Assert.Equal(50, receiver.Inventory.Bullets);
-        Assert.Equal(0, sim.Actors.Count(actor => actor.DoomEdNum == PickupCatalog.RedCard));
+        Assert.Equal(1, sim.Actors.Count(actor => actor.DoomEdNum == PickupCatalog.RedCard));
 
         var deathmatch = KeyRoom(SpawnGameMode.Deathmatch);
         deathmatch.CoopShareKeys = true;

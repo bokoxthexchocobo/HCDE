@@ -72,7 +72,7 @@ public class AcsPlayerInventoryTests
     }
 
     [Fact]
-    public void ClearInventory_ResetsActivatorToPistolStart()
+    public void ClearInventory_DepletesActivatorAmmo()
     {
         var sim = Room();
         var player = sim.Players.Single();
@@ -81,7 +81,7 @@ public class AcsPlayerInventoryTests
         RunProgram(sim, player, ["Clip"],
             (int)AcsPcode.ClearInventory,
             (int)AcsPcode.CheckInventoryDirect, 0,
-            (int)AcsPcode.PushNumber, 50,
+            (int)AcsPcode.PushNumber, 0,
             (int)AcsPcode.Eq,
             (int)AcsPcode.IfGoto, 32,
             (int)AcsPcode.Lspec2Direct, 112, 7, 35);
@@ -177,7 +177,7 @@ public class AcsPlayerInventoryTests
     }
 
     [Fact]
-    public void UseInventory_GrantBackpackRaisesAmmoCap()
+    public void UseInventory_DoesNotGrantBackpack()
     {
         var sim = Room();
         var player = sim.Players.Single();
@@ -186,8 +186,8 @@ public class AcsPlayerInventoryTests
         RunProgram(sim, player, ["Backpack"],
             (int)AcsPcode.PushNumber, 0,
             (int)AcsPcode.UseInventory);
-        Assert.True(player.Inventory.HasBackpack);
-        Assert.Equal(400, player.Inventory.MaxBullets);
+        Assert.False(player.Inventory.HasBackpack);
+        Assert.Equal(200, player.Inventory.MaxBullets);
     }
 
     [Fact]
@@ -252,7 +252,7 @@ public class AcsPlayerInventoryTests
             (int)AcsPcode.PushNumber, 9,
             (int)AcsPcode.PushNumber, 0,
             (int)AcsPcode.UseActorInventory);
-        Assert.Equal(100, target.Inventory.Armor);
+        Assert.Equal(0, target.Inventory.Armor);
         Assert.Equal(0, activator.Inventory.Armor);
     }
 
@@ -267,7 +267,7 @@ public class AcsPlayerInventoryTests
             (int)AcsPcode.PushNumber, 9,
             (int)AcsPcode.PushNumber, 0,
             (int)AcsPcode.UseActorInventory);
-        Assert.Equal(80, target.Health);
+        Assert.Equal(70, target.Health);
         Assert.Equal(100, activator.Health);
     }
 
@@ -287,19 +287,19 @@ public class AcsPlayerInventoryTests
     }
 
     [Fact]
-    public void UseInventory_MegaArmorRaisesBlueSuit()
+    public void UseInventory_UnownedMegaArmorDoesNotGrantSuit()
     {
         var sim = Room();
         var player = sim.Players.Single();
         RunProgram(sim, player, ["MegaArmor"],
             (int)AcsPcode.PushNumber, 0,
             (int)AcsPcode.UseInventory);
-        Assert.Equal(200, player.Inventory.Armor);
-        Assert.Equal(PlayerInventory.MegaSavePercent, player.Inventory.ArmorSavePercent);
+        Assert.Equal(0, player.Inventory.Armor);
+        Assert.Equal(0, player.Inventory.ArmorSavePercent);
     }
 
     [Fact]
-    public void UseInventory_BasicArmorRaisesGreenSuit()
+    public void UseInventory_BasicArmorDoesNotGrantSuit()
     {
         var sim = Room();
         var player = sim.Players.Single();
@@ -308,12 +308,12 @@ public class AcsPlayerInventoryTests
         RunProgram(sim, player, ["BasicArmor"],
             (int)AcsPcode.PushNumber, 0,
             (int)AcsPcode.UseInventory);
-        Assert.Equal(100, player.Inventory.Armor);
-        Assert.Equal(PlayerInventory.GreenSavePercent, player.Inventory.ArmorSavePercent);
+        Assert.Equal(0, player.Inventory.Armor);
+        Assert.Equal(0, player.Inventory.ArmorSavePercent);
     }
 
     [Fact]
-    public void UseInventory_HealthStimRestoresActivator()
+    public void UseInventory_HealthDoesNotHealActivator()
     {
         var sim = Room();
         var player = sim.Players.Single();
@@ -321,7 +321,7 @@ public class AcsPlayerInventoryTests
         RunProgram(sim, player, ["Health"],
             (int)AcsPcode.PushNumber, 0,
             (int)AcsPcode.UseInventory);
-        Assert.Equal(90, player.Health);
+        Assert.Equal(80, player.Health);
     }
 
     [Fact]
@@ -453,7 +453,7 @@ public class AcsPlayerInventoryTests
     {
         var sim = Room();
         var player = sim.Players.Single();
-        RunProgram(sim, player, ["BFG"],
+        RunProgram(sim, player, ["BFG9000"],
             (int)AcsPcode.PushNumber, 0,
             (int)AcsPcode.UseInventory,
             (int)AcsPcode.PushNumber, 0,

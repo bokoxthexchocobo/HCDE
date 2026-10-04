@@ -32,6 +32,9 @@ internal static class AcsActorFlags
         NoPain,
         Pickup,
         Special,
+        Dropped,
+        IgnoreSkill,
+        AlwaysPickup,
     }
 
     public static bool TryGet(Actor actor, string? flagName, out bool value)
@@ -39,6 +42,7 @@ internal static class AcsActorFlags
         value = false;
         if (actor.Destroyed || string.IsNullOrEmpty(flagName) || !TryMap(flagName, out var kind))
             return false;
+        if (kind is Kind.IgnoreSkill or Kind.AlwaysPickup && !PickupCatalog.IsPickup(actor.DoomEdNum)) return false;
         value = Read(actor, kind);
         return true;
     }
@@ -47,12 +51,21 @@ internal static class AcsActorFlags
     {
         if (actor.Destroyed || string.IsNullOrEmpty(flagName) || !TryMap(flagName, out var kind))
             return false;
+        if (kind is Kind.IgnoreSkill or Kind.AlwaysPickup && !PickupCatalog.IsPickup(actor.DoomEdNum)) return false;
         Write(actor, kind, set);
         return true;
     }
 
     private static bool TryMap(string flagName, out Kind kind)
     {
+        if (flagName.Equals("ALWAYSPICKUP", StringComparison.OrdinalIgnoreCase)
+            || flagName.Equals("INVENTORY.ALWAYSPICKUP", StringComparison.OrdinalIgnoreCase))
+        { kind = Kind.AlwaysPickup; return true; }
+        if (flagName.Equals("IGNORESKILL", StringComparison.OrdinalIgnoreCase)
+            || flagName.Equals("INVENTORY.IGNORESKILL", StringComparison.OrdinalIgnoreCase))
+        { kind = Kind.IgnoreSkill; return true; }
+        if (flagName.Equals("DROPPED", StringComparison.OrdinalIgnoreCase))
+        { kind = Kind.Dropped; return true; }
         if (flagName.Equals("SPECTRAL", StringComparison.OrdinalIgnoreCase))
         { kind = Kind.Spectral; return true; }
         if (flagName.Equals("HITOWNER", StringComparison.OrdinalIgnoreCase))
@@ -180,6 +193,9 @@ internal static class AcsActorFlags
         Kind.NoPain => actor.NoPain,
         Kind.Pickup => actor.CanPickupItems,
         Kind.Special => actor.SpecialPickup,
+        Kind.Dropped => actor.Dropped,
+        Kind.IgnoreSkill => actor.IgnoreAmmoSkill,
+        Kind.AlwaysPickup => actor.AlwaysPickupOverride ?? PickupCatalog.AlwaysPickup(actor.DoomEdNum),
         _ => false,
     };
 
@@ -214,6 +230,9 @@ internal static class AcsActorFlags
             case Kind.NoPain: actor.NoPain = value; break;
             case Kind.Pickup: actor.CanPickupItems = value; break;
             case Kind.Special: actor.SpecialPickup = value; break;
+            case Kind.Dropped: actor.Dropped = value; break;
+            case Kind.IgnoreSkill: actor.IgnoreAmmoSkill = value; break;
+            case Kind.AlwaysPickup: actor.AlwaysPickupOverride = value; break;
         }
     }
 }

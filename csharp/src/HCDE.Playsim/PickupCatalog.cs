@@ -20,6 +20,7 @@ public static class PickupCatalog
     public const int GreenArmor = 2018;
     public const int MegaArmor = 2019;
     public const int Shotgun = 2001;
+    public const int Pistol = 5010;
     public const int Chaingun = 2002;
     public const int RocketLauncher = 2003;
     public const int PlasmaRifle = 2004;
@@ -35,11 +36,14 @@ public static class PickupCatalog
     public const int RocketBox = 2046;
     public const int SuperShotgun = 82;
     public const int Backpack = 8;
+    public const int Megasphere = 83;
 
     public static bool IsPickup(int doomEdNum) => TryDescribe(doomEdNum, out _);
+    internal static WeaponKind PickupWeapon(int doomEdNum) =>
+        TryDescribe(doomEdNum, out var gift) && gift.Kind == GiftKind.Weapon ? gift.Weapon : 0;
 
     /// <summary>Vanilla Doom bonus items carry INVENTORY.ALWAYSPICKUP.</summary>
-    internal static bool AlwaysPickup(int doomEdNum) => doomEdNum is HealthBonus or ArmorBonus;
+    internal static bool AlwaysPickup(int doomEdNum) => doomEdNum is HealthBonus or ArmorBonus or Megasphere;
 
     /// <summary>Native Actor defaults, with Doom Backpack's height override.</summary>
     internal static Fixed HeightOf(int doomEdNum) => Fixed.FromInt(doomEdNum == Backpack ? 26 : 16);
@@ -65,22 +69,23 @@ public static class PickupCatalog
         doomEdNum = 0;
         if (string.IsNullOrWhiteSpace(typeName))
             return false;
-        doomEdNum = typeName.Trim().ToUpperInvariant() switch
+        doomEdNum = typeName.ToUpperInvariant() switch
         {
-            "CLIP" or "BULLET" or "AMMOCLIP" or "BULLETS" => Clip,
-            "CLIPBOX" or "BULLETBOX" => ClipBox,
-            "SHELL" or "SHELLS" => Shells,
+            "CLIP" => Clip,
+            "CLIPBOX" => ClipBox,
+            "SHELL" => Shells,
             "SHELLBOX" => ShellBox,
-            "ROCKETAMMO" or "ROCKET" => Rocket,
+            "ROCKETAMMO" => Rocket,
             "ROCKETBOX" => RocketBox,
-            "CELL" or "CELLS" => Cell,
+            "CELL" => Cell,
             "CELLPACK" => CellPack,
             "STIMPACK" => Stimpack,
             "MEDIKIT" => Medikit,
             "HEALTHBONUS" => HealthBonus,
             "SOULSPHERE" => Soulsphere,
-            "GREENARMOR" or "ARMOR" => GreenArmor,
-            "MEGAARMOR" => MegaArmor,
+            "MEGASPHERE" => Megasphere,
+            "GREENARMOR" => GreenArmor,
+            "BLUEARMOR" => MegaArmor,
             "ARMORBONUS" => ArmorBonus,
             "BACKPACK" => Backpack,
             "BLUECARD" => BlueCard,
@@ -90,12 +95,13 @@ public static class PickupCatalog
             "YELLOWCARD" => YellowCard,
             "YELLOWSKULL" => YellowSkull,
             "CHAINSAW" => Chainsaw,
+            "PISTOL" => Pistol,
             "SHOTGUN" => Shotgun,
             "SUPERSHOTGUN" => SuperShotgun,
             "CHAINGUN" => Chaingun,
             "ROCKETLAUNCHER" => RocketLauncher,
-            "PLASMARIFLE" or "PLASMA" => PlasmaRifle,
-            "BFG9000" or "BFG" => Bfg,
+            "PLASMARIFLE" => PlasmaRifle,
+            "BFG9000" => Bfg,
             _ => 0,
         };
         return doomEdNum != 0 && IsPickup(doomEdNum);
@@ -105,12 +111,13 @@ public static class PickupCatalog
     public static bool IsKey(int doomEdNum) =>
         doomEdNum is BlueCard or BlueSkull or YellowCard or YellowSkull or RedCard or RedSkull;
 
-    /// <summary>Map thing for a weapon drop. Fist and pistol have no vanilla thing.</summary>
+    /// <summary>Supported Doom map thing for a weapon drop. Fist has no pickup.</summary>
     public static bool TryWeaponEdNum(WeaponKind weapon, out int doomEdNum)
     {
         doomEdNum = weapon switch
         {
             WeaponKind.Chainsaw => Chainsaw,
+            WeaponKind.Pistol => Pistol,
             WeaponKind.Shotgun => Shotgun,
             WeaponKind.SuperShotgun => SuperShotgun,
             WeaponKind.Chaingun => Chaingun,
@@ -127,22 +134,27 @@ public static class PickupCatalog
         int doomEdNum,
         bool ignoreSkill = false,
         bool depleted = false,
-        int pickupAmount = 0)
+        int pickupAmount = 0,
+        bool suppressWeaponAmmo = false)
     {
         if (!TryDescribe(doomEdNum, out var gift))
             return false;
         var giftAmount = pickupAmount > 0 ? pickupAmount : gift.Amount;
         var ammo = ScaleAmmo(giftAmount, player, ignoreSkill);
+        var armor = ScaleArmor(giftAmount, player, ignoreSkill);
 
         return gift.Kind switch
         {
             GiftKind.Health => GiveHealth(player, giftAmount, gift.Maximum),
-            GiftKind.ArmorBonus => GiveArmorBonus(player.Inventory, giftAmount),
-            GiftKind.GreenArmor => GiveArmor(player.Inventory, giftAmount, PlayerInventory.GreenSavePercent),
-            GiftKind.MegaArmor => GiveArmor(player.Inventory, giftAmount, PlayerInventory.MegaSavePercent),
-            GiftKind.Ammo => GiveAmmo(player.Inventory, gift.Ammo, ammo),
+            GiftKind.Megasphere => GiveMegasphere(player),
+            GiftKind.ArmorBonus => GiveArmorBonus(player.Inventory, armor),
+            GiftKind.GreenArmor => GiveArmor(player.Inventory, armor, PlayerInventory.GreenSavePercent, "GreenArmor"),
+            GiftKind.MegaArmor => GiveArmor(player.Inventory, armor, PlayerInventory.MegaSavePercent, "BlueArmor"),
+            GiftKind.Ammo => GiveAmmo(player.Inventory, gift.Ammo, suppressWeaponAmmo ? 0 : ammo),
             GiftKind.Key => GiveKey(player.Inventory, gift.Key),
-            GiftKind.Weapon => GiveWeapon(player.Inventory, gift.Weapon, gift.Ammo, ammo),
+            GiftKind.Weapon => GiveWeapon(player.Inventory, gift.Weapon, gift.Ammo,
+                ScaleWeaponAmmo(giftAmount, player, player.Inventory.Owns(gift.Weapon), ignoreSkill),
+                gift.Amount > 0 && !suppressWeaponAmmo),
             GiftKind.Backpack => player.Inventory.GiveBackpack(
                 ScaleAmmo(10, player, ignoreSkill),
                 ScaleAmmo(4, player, ignoreSkill),
@@ -169,45 +181,92 @@ public static class PickupCatalog
         return scaled < 0 ? 0 : scaled;
     }
 
+    internal static int ScaleWeaponAmmo(int amount, PlayerPawn player, bool owned, bool ignoreSkill = false)
+    {
+        if (!owned && player.Simulation is { GameMode: SpawnGameMode.Deathmatch, NoExtraAmmo: false })
+            amount = (int)Math.Clamp((long)amount * 5 / 2, int.MinValue, int.MaxValue);
+        return ScaleAmmo(amount, player, ignoreSkill);
+    }
+
+    internal static int ScaleArmor(int amount, PlayerPawn player, bool ignoreSkill = false) =>
+        ignoreSkill ? amount : ScaleArmorAmount(amount, player.Simulation?.ArmorFactor ?? 1);
+
+    internal static int ScaleArmorAmount(int amount, double factor) =>
+        (int)Math.Clamp(amount * factor, int.MinValue, int.MaxValue);
+
     /// <summary>Vanilla Ammo/Weapon.ModifyDropAmount with the default drop factor.</summary>
-    internal static int DropPickupAmount(int doomEdNum, int requestedAmount)
+    internal static int DropPickupAmount(int doomEdNum, int requestedAmount, double dropFactor = -1)
     {
         if (!TryDescribe(doomEdNum, out var gift))
             return requestedAmount;
+        var factor = dropFactor == -1 ? 0.5 : dropFactor;
+        int Scale(int amount) => (int)Math.Clamp(amount * factor, 0, int.MaxValue);
         return gift.Kind switch
         {
-            GiftKind.Ammo => requestedAmount > 0 ? requestedAmount : Math.Max(1, gift.Amount / 2),
+            GiftKind.Ammo => requestedAmount > 0
+                ? dropFactor == -1 ? requestedAmount : Scale(requestedAmount)
+                : Math.Max(1, Scale(gift.Amount)),
             // Weapon inventory amount does not override its ammo grant.
-            GiftKind.Weapon => gift.Amount / 2,
+            GiftKind.Weapon => Scale(gift.Amount),
             _ => requestedAmount,
         };
     }
 
-    private static bool GiveHealth(PlayerPawn player, int amount, int maximum)
+    private static bool GiveMegasphere(PlayerPawn player)
     {
-        if (player.Health >= maximum)
+        var armor = GiveArmor(player.Inventory, ScaleArmor(200, player), PlayerInventory.MegaSavePercent, "BlueArmorForMegasphere");
+        var health = GiveHealth(player, 200, 200);
+        return armor || health;
+    }
+
+    internal static bool GiveHealth(Actor actor, int amount)
+    {
+        if (actor is PlayerPawn player) return GiveHealth(player, amount);
+        if (amount <= 0 || actor.Health <= 0 || actor.Health >= actor.ResurrectionHealth)
             return false;
-        player.Health = Math.Min(maximum, player.Health + amount);
+        actor.Health += Math.Min(Math.Min(amount, 65536), actor.ResurrectionHealth - actor.Health);
+        return true;
+    }
+
+    internal static bool GiveHealth(PlayerPawn player, int amount, int maximum = 0)
+    {
+        if (maximum <= 0) maximum = player.EffectiveMaxHealth;
+        if (amount <= 0 || player.Health <= 0 || player.Health >= maximum)
+            return false;
+        var scaled = Math.Min(amount, 65536) * (player.Simulation?.HealthFactor ?? 1);
+        var healing = (int)Math.Clamp(scaled, 1, int.MaxValue);
+        player.Health += Math.Min(healing, maximum - player.Health);
         return true;
     }
 
     private static bool GiveArmorBonus(PlayerInventory inventory, int amount)
     {
+        // Native bonus Use consumes a nonpositive scaled grant without changing armor.
+        if (amount <= 0) return true;
         if (inventory.Armor >= PlayerInventory.MaxHealthBonus)
             return false;
+        if (inventory.Armor <= 0)
+        {
+            inventory.Armor = 0;
+            inventory.ArmorSavePercent = PlayerInventory.GreenSavePercent;
+            inventory.MaxAbsorb = 0;
+            inventory.MaxFullAbsorb = 0;
+            inventory.ArmorActualSaveAmount = PlayerInventory.MaxHealthBonus;
+            inventory.ArmorType = "ArmorBonus";
+        }
         inventory.Armor += Math.Min(amount, PlayerInventory.MaxHealthBonus - inventory.Armor);
         inventory.ArmorMaximum = Math.Max(inventory.ArmorMaximum, PlayerInventory.MaxHealthBonus);
-        if (inventory.ArmorSavePercent == 0)
-            inventory.ArmorSavePercent = PlayerInventory.GreenSavePercent;
         return true;
     }
 
-    private static bool GiveArmor(PlayerInventory inventory, int amount, int savePercent)
+    internal static bool GiveArmor(PlayerInventory inventory, int amount, int savePercent, string armorType)
     {
         if (inventory.Armor >= amount)
             return false;
         inventory.Armor = amount;
         inventory.ArmorMaximum = amount;
+        inventory.ArmorActualSaveAmount = amount;
+        inventory.ArmorType = armorType;
         inventory.ArmorSavePercent = savePercent;
         // Doom green and mega leave both caps at 0. AbsorbCount stays.
         inventory.MaxAbsorb = 0;
@@ -235,7 +294,7 @@ public static class PickupCatalog
         }
     }
 
-    private static bool GiveWeapon(PlayerInventory inventory, WeaponKind weapon, AmmoKind ammo, int amount)
+    private static bool GiveWeapon(PlayerInventory inventory, WeaponKind weapon, AmmoKind ammo, int amount, bool givesAmmo)
     {
         var owned = inventory.Owns(weapon);
         if (!owned)
@@ -243,7 +302,7 @@ public static class PickupCatalog
             inventory.Weapons |= weapon;
             if (!inventory.NeverAutoSwitch) inventory.Pending = weapon;
         }
-        var added = amount > 0 && GiveAmmo(inventory, ammo, amount);
+        var added = givesAmmo && GiveAmmo(inventory, ammo, amount);
         return !owned || added;
     }
 
@@ -259,8 +318,8 @@ public static class PickupCatalog
     {
         gift = doomEdNum switch
         {
-            Stimpack => new Gift(GiftKind.Health, 10, 100),
-            Medikit => new Gift(GiftKind.Health, 25, 100),
+            Stimpack => new Gift(GiftKind.Health, 10, 0),
+            Medikit => new Gift(GiftKind.Health, 25, 0),
             HealthBonus => new Gift(GiftKind.Health, 1, PlayerInventory.MaxHealthBonus),
             Soulsphere => new Gift(GiftKind.Health, 100, PlayerInventory.MaxHealthBonus),
             ArmorBonus => new Gift(GiftKind.ArmorBonus, 1, PlayerInventory.MaxHealthBonus),
@@ -278,6 +337,7 @@ public static class PickupCatalog
             YellowCard or YellowSkull => new Gift(GiftKind.Key, KeyColor.Yellow),
             RedCard or RedSkull => new Gift(GiftKind.Key, KeyColor.Red),
             Chainsaw => new Gift(GiftKind.Weapon, WeaponKind.Chainsaw, AmmoKind.Bullets, 0),
+            Pistol => new Gift(GiftKind.Weapon, WeaponKind.Pistol, AmmoKind.Bullets, 20),
             Shotgun => new Gift(GiftKind.Weapon, WeaponKind.Shotgun, AmmoKind.Shells, 8),
             SuperShotgun => new Gift(GiftKind.Weapon, WeaponKind.SuperShotgun, AmmoKind.Shells, 8),
             Chaingun => new Gift(GiftKind.Weapon, WeaponKind.Chaingun, AmmoKind.Bullets, 20),
@@ -285,6 +345,7 @@ public static class PickupCatalog
             PlasmaRifle => new Gift(GiftKind.Weapon, WeaponKind.Plasma, AmmoKind.Cells, 40),
             Bfg => new Gift(GiftKind.Weapon, WeaponKind.Bfg, AmmoKind.Cells, 40),
             Backpack => new Gift(GiftKind.Backpack, 0, 0),
+            Megasphere => new Gift(GiftKind.Megasphere, 1, 0),
             _ => default,
         };
         return gift.Kind != GiftKind.None;
@@ -301,6 +362,7 @@ public static class PickupCatalog
         Key,
         Weapon,
         Backpack,
+        Megasphere,
     }
 
     public enum KeyColor
