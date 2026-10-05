@@ -148,9 +148,11 @@ public static class CombatTrace
         double range,
         int actorMask = MfShootable,
         int wallMask = LevelLine.BlockEverythingFlag | LevelLine.BlockHitscanFlag,
-        bool requireDamageable = true)
+        bool requireDamageable = true,
+        bool allowDestroyedSource = false,
+        bool allowDeadSource = false)
     {
-        if (!double.IsFinite(range) || source.IsDead || source.Destroyed)
+        if (!double.IsFinite(range) || source.IsDead && !allowDeadSource || source.Destroyed && !allowDestroyedSource)
             return default;
 
         var radians = angle.Raw * (Math.PI / 0x80000000u);

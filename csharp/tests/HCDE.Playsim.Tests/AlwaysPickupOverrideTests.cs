@@ -8,6 +8,7 @@ public class AlwaysPickupOverrideTests
     [InlineData(PickupCatalog.HealthBonus)]
     [InlineData(PickupCatalog.ArmorBonus)]
     [InlineData(PickupCatalog.Megasphere)]
+    [InlineData(PickupCatalog.Soulsphere)]
     public void ClearingDefaultAlwaysPickupLeavesFullCapacityItem(int type)
     {
         var sim = Room(type); var player = sim.Players.Single(); var item = sim.Actors[^1];

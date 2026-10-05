@@ -61,6 +61,7 @@ public sealed class PlayerInventory
     /// <summary>BasicArmorPickup items retained when pickup autoactivation fails.</summary>
     public IReadOnlyList<SpareArmor> SpareArmor => _spareArmor;
     public int Bullets { get; set; } = 50;
+    private int StartingBullets => Math.Clamp(_owner?.Simulation?.DehackedInitialBullets ?? 50, 0, 200);
     public int Shells { get; set; }
     public int Rockets { get; set; }
     public int Cells { get; set; }
@@ -82,6 +83,7 @@ public sealed class PlayerInventory
 
     internal void ClearInventory()
     {
+        _owner?.ClearDamagePowers();
         RemoveBackpack();
         Armor = 0;
         _spareArmor.Clear();
@@ -95,6 +97,7 @@ public sealed class PlayerInventory
     /// <summary>Deathmatch pistol start. Cooperative respawn uses <see cref="FilterCoopRespawn"/>.</summary>
     public void ResetToPistolStart()
     {
+        _owner?.ClearDamagePowers();
         Armor = 0;
         ArmorMaximum = 1;
         ArmorActualSaveAmount = 0;
@@ -104,7 +107,7 @@ public sealed class PlayerInventory
         MaxFullAbsorb = 0;
         AbsorbCount = 0;
         _spareArmor.Clear();
-        Bullets = 50;
+        Bullets = StartingBullets;
         Shells = 0;
         Rockets = 0;
         Cells = 0;
@@ -240,14 +243,14 @@ public sealed class PlayerInventory
         }
         if (loseAmmo)
         {
-            Bullets = 50;
+            Bullets = Math.Min(StartingBullets, MaxBullets);
             Shells = 0;
             Rockets = 0;
             Cells = 0;
         }
         else if (halveAmmo)
         {
-            Bullets = HalveAmmo(Bullets, 50);
+            Bullets = HalveAmmo(Bullets, StartingBullets);
             Shells = HalveAmmo(Shells, 0);
             Rockets = HalveAmmo(Rockets, 0);
             Cells = HalveAmmo(Cells, 0);

@@ -41,7 +41,7 @@ public class IceChunkFrameLifecycleTests
     [Fact]
     public void RestoredFinalFrameDeterminesExpiry()
     {
-        var chunk = new IceChunkActor(133); chunk.States.Restore(3, 2);
+        var chunk = new IceChunkActor(133); chunk.States.Restore(chunk, 3, 2);
         Assert.Equal(2, chunk.RemainingTics); chunk.Tick(); Assert.False(chunk.Destroyed);
         chunk.Tick(); Assert.True(chunk.Destroyed);
     }

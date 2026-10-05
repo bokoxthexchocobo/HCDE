@@ -8,10 +8,11 @@ public static class MapLoadBootstrap
         ReadOnlySpan<byte> wad,
         string mapName,
         GuestWorldStateStore store,
-        out string? rejectReason)
+        out string? rejectReason,
+        BinaryThingFlagFormat thingFlagFormat = BinaryThingFlagFormat.Doom)
     {
         rejectReason = null;
-        if (!LevelBuilder.TryFromWad(wad, mapName, out var map, out rejectReason))
+        if (!LevelBuilder.TryFromWad(wad, mapName, out var map, out rejectReason, thingFlagFormat))
             return false;
         if (map.Sectors.Count > ushort.MaxValue + 1)
         { rejectReason = "map-sector-network-index-limit"; return false; }

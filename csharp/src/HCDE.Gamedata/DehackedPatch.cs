@@ -7,6 +7,7 @@ public sealed class DehackedActor
     public string Name { get; init; } = "";
     public int Health { get; set; }
     public double Speed { get; set; }
+    public bool SpeedPatched { get; set; }
     public double Radius { get; set; }
     public bool WidthPatched { get; set; }
     public double Height { get; set; }
@@ -14,6 +15,12 @@ public sealed class DehackedActor
     public int MissileDamage { get; set; }
     public bool MissileDamagePatched { get; set; }
     public int ReactionTime { get; set; }
+    public int InfightingGroup { get; set; }
+    public bool InfightingGroupPatched { get; set; }
+    public int ProjectileGroup { get; set; }
+    public bool ProjectileGroupPatched { get; set; }
+    public int SplashGroup { get; set; }
+    public bool SplashGroupPatched { get; set; }
     public bool ReactionTimePatched { get; set; }
     public int Mass { get; set; }
     public bool MassPatched { get; set; }
@@ -71,6 +78,17 @@ public sealed class DehackedSound
 
 public sealed class DehackedPatchResult
 {
+    public bool HealthBonusCapPatched { get; init; }
+    public bool NoAutofreeze { get; init; }
+    public int MaxHealth { get; init; } = 100;
+    public int InitialHealth { get; init; } = 100;
+    public int InitialBullets { get; init; } = 50;
+    public int MaxArmor { get; init; } = 200;
+    public int GreenArmorClass { get; init; } = 1;
+    public int BlueArmorClass { get; init; } = 2;
+    public int MaxSoulsphere { get; init; } = 200;
+    public int SoulsphereHealth { get; init; } = 100;
+    public int MegasphereHealth { get; init; } = 200;
     public IReadOnlyList<string> Errors { get; init; } = Array.Empty<string>();
     public IReadOnlyList<DehackedActor> Actors { get; init; } = Array.Empty<DehackedActor>();
     public IReadOnlyList<DehackedState> States { get; init; } = Array.Empty<DehackedState>();
@@ -91,6 +109,17 @@ public static class DehackedPatch
         var states = (baseline?.States ?? CreateVanillaStates(1024)).ToDictionary(state => state.Index, state => state.Copy());
         var sounds = (baseline?.Sounds ?? CreateVanillaSounds()).ToDictionary(sound => sound.Index, sound => sound.Copy());
         var errors = new List<string>();
+        var maxHealth = baseline?.MaxHealth ?? 100;
+        var initialHealth = baseline?.InitialHealth ?? 100;
+        var initialBullets = baseline?.InitialBullets ?? 50;
+        var noAutofreeze = baseline?.NoAutofreeze ?? false;
+        var maxArmor = baseline?.MaxArmor ?? 200;
+        var greenArmorClass = baseline?.GreenArmorClass ?? 1;
+        var blueArmorClass = baseline?.BlueArmorClass ?? 2;
+        var healthBonusCapPatched = baseline?.HealthBonusCapPatched ?? false;
+        var maxSoulsphere = baseline?.MaxSoulsphere ?? 200;
+        var soulsphereHealth = baseline?.SoulsphereHealth ?? 100;
+        var megasphereHealth = baseline?.MegasphereHealth ?? 200;
         var lines = SplitLines(text);
 
         for (var i = 0; i < lines.Count; i++)
@@ -123,6 +152,39 @@ public static class DehackedPatch
 
                 ApplyFrame(state, body, errors);
             }
+            else if (TryHeader(header, "Misc", out _))
+            {
+                // Native PatchMisc changes HealthBonus's default even without a Max Health entry.
+                healthBonusCapPatched = true;
+                foreach (var (key, value) in ReadBody(lines, ref i))
+                {
+                    var setting = key.ToUpperInvariant();
+                    if (setting is not ("NO AUTOFREEZE" or "INITIAL HEALTH" or "INITIAL BULLETS" or "MAX HEALTH" or "MAX ARMOR" or "GREEN ARMOR CLASS" or "BLUE ARMOR CLASS" or "MAX SOULSPHERE" or "SOULSPHERE HEALTH" or "MEGASPHERE HEALTH")) continue;
+                    if (!int.TryParse(value, out var parsed))
+                    {
+                        errors.Add($"Misc {key} is not an integer.");
+                        continue;
+                    }
+                    switch (setting)
+                    {
+                        case "MAX HEALTH": maxHealth = parsed; break;
+                        case "INITIAL HEALTH": initialHealth = parsed; break;
+                        case "INITIAL BULLETS": initialBullets = parsed; break;
+                        case "NO AUTOFREEZE": noAutofreeze = parsed != 0; break;
+                        case "MAX ARMOR": maxArmor = parsed; break;
+                        case "GREEN ARMOR CLASS": greenArmorClass = parsed; break;
+                        case "BLUE ARMOR CLASS": blueArmorClass = parsed; break;
+                        case "MAX SOULSPHERE": maxSoulsphere = parsed; break;
+                        case "SOULSPHERE HEALTH": soulsphereHealth = parsed; break;
+                        case "MEGASPHERE HEALTH": megasphereHealth = parsed; break;
+                    }
+                }
+                if (actors.TryGetValue(1, out var player))
+                {
+                    player.Health = initialHealth;
+                    player.Patched = true;
+                }
+            }
             else if (TryHeader(header, "Sound", out _))
             {
                 ReadBody(lines, ref i);
@@ -137,6 +199,17 @@ public static class DehackedPatch
         return new DehackedPatchResult
         {
             Errors = errors,
+            MaxHealth = maxHealth,
+            InitialHealth = initialHealth,
+            InitialBullets = initialBullets,
+            NoAutofreeze = noAutofreeze,
+            MaxArmor = maxArmor,
+            GreenArmorClass = greenArmorClass,
+            BlueArmorClass = blueArmorClass,
+            HealthBonusCapPatched = healthBonusCapPatched,
+            MaxSoulsphere = maxSoulsphere,
+            SoulsphereHealth = soulsphereHealth,
+            MegasphereHealth = megasphereHealth,
             Actors = actors.Values.OrderBy(actor => actor.Index).ToArray(),
             States = states.Values.OrderBy(state => state.Index).ToArray(),
             Sounds = sounds.Values.OrderBy(sound => sound.Index).ToArray(),
@@ -154,6 +227,8 @@ public static class DehackedPatch
             "Demon", "Spectre", "Cacodemon", "BaronOfHell", "BaronBall",
             "HellKnight", "LostSoul", "SpiderMastermind", "Arachnotron",
             "Cyberdemon", "PainElemental", "WolfensteinSS",
+            "CommanderKeen", "BossBrain", "BossEye", "BossTarget", "SpawnShot", "SpawnFire", "ExplosiveBarrel",
+            "DoomImpBall", "CacodemonBall", "Rocket", "PlasmaBall", "BFGBall", "ArachnotronPlasma",
         ];
         var actors = new DehackedActor[names.Length];
         for (var i = 0; i < names.Length; i++)
@@ -228,6 +303,21 @@ public static class DehackedPatch
             }
             else if (key.Equals("Pain chance", StringComparison.OrdinalIgnoreCase))
                 actor.PainChance = unchecked((short)numeric);
+            else if (key.Equals("Infighting group", StringComparison.OrdinalIgnoreCase))
+            {
+                actor.InfightingGroup = numeric < 0 ? 0 : unchecked((int)numeric);
+                actor.InfightingGroupPatched = true;
+            }
+            else if (key.Equals("Projectile group", StringComparison.OrdinalIgnoreCase))
+            {
+                actor.ProjectileGroup = numeric < 0 ? -1 : unchecked((int)numeric);
+                actor.ProjectileGroupPatched = true;
+            }
+            else if (key.Equals("Splash group", StringComparison.OrdinalIgnoreCase))
+            {
+                actor.SplashGroup = numeric < 0 ? 0 : unchecked((int)numeric);
+                actor.SplashGroupPatched = true;
+            }
             else if (key.Equals("Height", StringComparison.OrdinalIgnoreCase))
             {
                 actor.Height = (double)numeric / 65536.0;
@@ -242,6 +332,7 @@ public static class DehackedPatch
             {
                 var speed = (double)numeric;
                 actor.Speed = Math.Abs(speed) >= 256 ? speed / 65536 : speed;
+                actor.SpeedPatched = true;
             }
             else if (key.Equals("Missile damage", StringComparison.OrdinalIgnoreCase))
             {

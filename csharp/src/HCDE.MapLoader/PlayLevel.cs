@@ -142,6 +142,7 @@ public sealed class LevelLine
 
 public sealed class LevelThing
 {
+    public double Health { get; init; } = 1;
     public short Pitch { get; init; }
     public short Roll { get; init; }
     public double Gravity { get; init; } = 1;
@@ -154,6 +155,7 @@ public sealed class LevelThing
     public short Options { get; init; }
     public bool Ambush { get; init; }
     public bool Dormant { get; init; }
+    public bool Friendly { get; init; }
     public int Id { get; init; }
     public int Special { get; init; }
     public int[] Args { get; init; } = new int[5];
@@ -165,6 +167,9 @@ public sealed class LevelThing
 
 public sealed class PlayLevel
 {
+    public bool HexenHack { get; set; }
+    public bool ActivateOwnDeathSpecials { get; set; }
+    public IReadOnlyList<HCDE.Gamedata.MapInfoDamageType> DamageTypes { get; set; } = Array.Empty<HCDE.Gamedata.MapInfoDamageType>();
     public string MapName { get; init; } = "";
     public MapDataFormat Format { get; init; }
     public string Namespace { get; init; } = "";
@@ -189,12 +194,16 @@ public sealed class PlayLevel
     /// <summary>Copies runtime lines, sectors and sides while sharing immutable map data.</summary>
     public PlayLevel CopyForSimulation() => new()
     {
-        MapName = MapName, Format = Format, Namespace = Namespace, BehaviorData = BehaviorData, HasBehavior = HasBehavior,
+        MapName = MapName, Format = Format, Namespace = Namespace, BehaviorData = BehaviorData, HasBehavior = HasBehavior, HexenHack = HexenHack,
+        ActivateOwnDeathSpecials = ActivateOwnDeathSpecials,
+        DamageTypes = DamageTypes.ToArray(),
         Vertices = Vertices, Sectors = Sectors.Select(sector => sector.Copy()).ToArray(),
         Sides = Sides.Select(side => side.Copy()).ToArray(), Things = Things, Blockmap = Blockmap,
         Lines = Lines.Select(line => line.Copy()).ToList(),
     };
 }
+
+public enum BinaryThingFlagFormat { Doom, Strife }
 
 /// <summary>
 /// Builds a playable level from a decoded binary map or a UDMF text map.
@@ -202,11 +211,18 @@ public sealed class PlayLevel
 /// </summary>
 public static class LevelBuilder
 {
-    public static bool TryFromWad(ReadOnlySpan<byte> wad, string mapName, out PlayLevel level, out string? error)
+    public static bool TryFromWad(ReadOnlySpan<byte> wad, string mapName, out PlayLevel level, out string? error,
+        BinaryThingFlagFormat thingFlagFormat = BinaryThingFlagFormat.Doom)
     {
         level = new PlayLevel { MapName = mapName };
+        if (!Enum.IsDefined(thingFlagFormat))
+        {
+            error = "unsupported-binary-thing-flag-format";
+            return false;
+        }
         if (!MapLumpCatalogReader.TryReadMap(wad, mapName, out var catalog, out error))
             return false;
+        if (!TryReadDeathSpecialPolicy(wad, mapName, out var hexenHack, out var ownDeathSpecials, out var damageTypes, out error)) return false;
 
         if (catalog.Format == MapDataFormat.UdmfText)
         {
@@ -234,17 +250,24 @@ public static class LevelBuilder
             }
 
             level = FromUdmf(udmf, mapName);
+            level.DamageTypes = damageTypes;
+            level.ActivateOwnDeathSpecials = ownDeathSpecials;
             return LevelValidation.TryValidate(level, out error);
         }
 
         if (catalog.TryGetLump(MapLumpKind.Behavior, out _))
         {
-            return HexenLevelDecoder.TryDecode(wad, catalog, out level, out error);
+            if (!HexenLevelDecoder.TryDecode(wad, catalog, out level, out error, hexenHack)) return false;
+            level.DamageTypes = damageTypes;
+            level.ActivateOwnDeathSpecials = ownDeathSpecials;
+            return true;
         }
         if (!BinaryMapDecoder.TryReadMap(wad, mapName, out var binary, out _, out error))
             return false;
 
-        level = FromBinary(binary, mapName);
+        level = FromBinary(binary, mapName, thingFlagFormat);
+        level.DamageTypes = damageTypes;
+        level.ActivateOwnDeathSpecials = ownDeathSpecials;
         if (catalog.TryGetLump(MapLumpKind.Blockmap, out var blockmapLump)
             && WadArchiveReader.TryReadLumpData(wad, blockmapLump.Entry, out var blockmapData, out _)
             && MapBlockmapCodec.TryRead(blockmapData, out var blockmap, out _))
@@ -255,8 +278,35 @@ public static class LevelBuilder
         return LevelValidation.TryValidate(level, out error);
     }
 
-    public static PlayLevel FromBinary(BinaryMap map, string mapName)
+    private static bool TryReadDeathSpecialPolicy(ReadOnlySpan<byte> wad, string mapName, out bool hexenHack, out bool ownDeathSpecials, out IReadOnlyList<HCDE.Gamedata.MapInfoDamageType> damageTypes, out string? error)
     {
+        hexenHack = false;
+        ownDeathSpecials = false;
+        damageTypes = Array.Empty<HCDE.Gamedata.MapInfoDamageType>();
+        var definitions = new Dictionary<string, HCDE.Gamedata.MapInfoDamageType>(StringComparer.OrdinalIgnoreCase);
+        if (!WadArchiveReader.TryReadDirectory(wad, out var entries, out error)) return false;
+        // ZMAPINFO replaces MAPINFO within this archive; later map definitions win.
+        var lumpName = entries.Any(entry => entry.Name.Equals("ZMAPINFO", StringComparison.OrdinalIgnoreCase))
+            ? "ZMAPINFO" : "MAPINFO";
+        foreach (var entry in entries.Where(entry => entry.Name.Equals(lumpName, StringComparison.OrdinalIgnoreCase)))
+        {
+            if (!WadArchiveReader.TryReadLumpData(wad, entry, out var data, out error)) return false;
+            if (!HCDE.Gamedata.MapInfoParser.TryParse(System.Text.Encoding.UTF8.GetString(data), out var info, out error)) return false;
+            foreach (var definition in info.DamageTypes) definitions[definition.Name] = definition;
+            if (info.FindMap(mapName) is { } map)
+            {
+                hexenHack = map.HexenHack;
+                ownDeathSpecials = map.ActivateOwnDeathSpecials;
+            }
+        }
+        damageTypes = definitions.Values.ToArray();
+        return true;
+    }
+
+    public static PlayLevel FromBinary(BinaryMap map, string mapName,
+        BinaryThingFlagFormat thingFlagFormat = BinaryThingFlagFormat.Doom)
+    {
+        if (!Enum.IsDefined(thingFlagFormat)) throw new ArgumentOutOfRangeException(nameof(thingFlagFormat));
         var vertices = map.Geometry.Vertices.Select((vertex, index) => new LevelVertex
         {
             Index = index,
@@ -319,11 +369,15 @@ public static class LevelBuilder
             Angle = thing.Angle,
             Type = thing.Type,
             Options = thing.Options,
-            Ambush = (thing.Options & 8) != 0,
+            Ambush = (thing.Options & (thingFlagFormat == BinaryThingFlagFormat.Strife ? 0x20 : 8)) != 0,
+            // Native Doom loading discards extension flags from bad-editor records.
+            Friendly = thingFlagFormat == BinaryThingFlagFormat.Strife ? (thing.Options & 0x40) != 0
+                : (thing.Options & 0x180) == 0x80,
             SkillMask = ((thing.Options & 1) != 0 ? 3 : 0) | ((thing.Options & 2) != 0 ? 4 : 0) | ((thing.Options & 4) != 0 ? 24 : 0),
-            Single = (thing.Options & 16) == 0,
-            Coop = (thing.Options & 64) == 0,
-            Deathmatch = (thing.Options & 32) == 0,
+            // Native Doom loading leaves MTF_SINGLE set even with BTF_NOTSINGLE.
+            Single = true,
+            Coop = thingFlagFormat == BinaryThingFlagFormat.Strife || (thing.Options & 0x140) != 0x40,
+            Deathmatch = thingFlagFormat == BinaryThingFlagFormat.Strife || (thing.Options & 0x120) != 0x20,
         }).ToArray();
 
         return new PlayLevel
@@ -482,11 +536,15 @@ public static class LevelBuilder
             X = thing.X,
             Y = thing.Y,
             Z = thing.Height,
+            Health = planeTransforms ? thing.Health : 1,
             Angle = thing.Angle,
             Type = thing.Type,
             Id = thing.Id,
             Ambush = thing.Ambush,
             Dormant = thing.Dormant && (planeTransforms || map.Namespace.Equals("Hexen", StringComparison.OrdinalIgnoreCase)),
+            Friendly = planeTransforms ? (thing.StrifeAllySpecifiedLast ? thing.StrifeAlly : thing.Friend)
+                : map.Namespace.Equals("Doom", StringComparison.OrdinalIgnoreCase) ? thing.Friend
+                : map.Namespace.Equals("Strife", StringComparison.OrdinalIgnoreCase) && thing.StrifeAlly,
             Special = thing.Special,
             Args = new[] { thing.Arg0, thing.Arg1, thing.Arg2, thing.Arg3, thing.Arg4 },
             SkillMask = (thing.Skill1 ? 1 : 0) | (thing.Skill2 ? 2 : 0) | (thing.Skill3 ? 4 : 0) | (thing.Skill4 ? 8 : 0) | (thing.Skill5 ? 16 : 0),

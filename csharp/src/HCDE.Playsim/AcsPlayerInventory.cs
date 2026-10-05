@@ -22,15 +22,16 @@ internal static class AcsPlayerInventory
     {
         if (activator is { Destroyed: false } actor && !string.IsNullOrEmpty(typeName)
             && typeName.Equals("Health", StringComparison.OrdinalIgnoreCase))
-            return !max ? actor.Health : actor is PlayerPawn healthPlayer ? healthPlayer.EffectiveMaxHealth
-                : actor.ResurrectionHealth;
+            return max ? actor.GetMaxHealth(false) : actor.Health;
 
         if (activator is { Destroyed: false } && !string.IsNullOrEmpty(typeName))
         {
-            if (typeName.Equals("HealthBonus", StringComparison.OrdinalIgnoreCase)
-                || typeName.Equals("Soulsphere", StringComparison.OrdinalIgnoreCase)
-                || typeName.Equals("MegasphereHealth", StringComparison.OrdinalIgnoreCase))
-                return max ? 200 : 0;
+            if (typeName.Equals("HealthBonus", StringComparison.OrdinalIgnoreCase))
+                return max ? activator.Simulation?.DehackedHealthBonusCapPatched == true ? -1 : 200 : 0;
+            if (typeName.Equals("Soulsphere", StringComparison.OrdinalIgnoreCase))
+                return max ? activator.Simulation?.DehackedMaxSoulsphere ?? 200 : 0;
+            if (typeName.Equals("MegasphereHealth", StringComparison.OrdinalIgnoreCase))
+                return max ? activator.Simulation?.DehackedMegasphereHealth ?? 200 : 0;
             if (typeName.Equals("Megasphere", StringComparison.OrdinalIgnoreCase))
                 return max ? 1 : 0;
             if (TryAmmoBox(typeName, out _, out var boxMaximum))
@@ -49,6 +50,13 @@ internal static class AcsPlayerInventory
 
         if (activator is not PlayerPawn { Destroyed: false } player || string.IsNullOrEmpty(typeName))
             return 0;
+
+        if (typeName.Equals("PowerDamage", StringComparison.OrdinalIgnoreCase))
+            return max || player.PowerDamageTics > 0 ? 1 : 0;
+        if (typeName.Equals("PowerBuddha", StringComparison.OrdinalIgnoreCase))
+            return max || player.PowerBuddhaTics > 0 ? 1 : 0;
+        if (typeName.Equals("PowerProtection", StringComparison.OrdinalIgnoreCase))
+            return max || player.PowerProtectionTics > 0 ? 1 : 0;
 
         if (typeName.Equals("Armor", StringComparison.OrdinalIgnoreCase)
             || typeName.Equals("BasicArmor", StringComparison.OrdinalIgnoreCase))
@@ -293,6 +301,12 @@ internal static class AcsPlayerInventory
             return;
         }
 
+        if (typeName.Equals("PowerDamage", StringComparison.OrdinalIgnoreCase))
+        { player.GivePowerDamage(); return; }
+        if (typeName.Equals("PowerBuddha", StringComparison.OrdinalIgnoreCase))
+        { player.GivePowerBuddha(); return; }
+        if (typeName.Equals("PowerProtection", StringComparison.OrdinalIgnoreCase))
+        { player.GivePowerProtection(); return; }
         var inventory = player.Inventory;
         if (TryAmmoBox(typeName, out var boxAmmo, out _))
         {
@@ -301,7 +315,7 @@ internal static class AcsPlayerInventory
         }
         if (typeName.Equals("MegasphereHealth", StringComparison.OrdinalIgnoreCase))
         {
-            PickupCatalog.GiveHealth(player, amount, 200);
+            PickupCatalog.GiveHealth(player, amount, player.Simulation?.DehackedMegasphereHealth ?? 200);
             return;
         }
         if (typeName.Equals("BlueArmorForMegasphere", StringComparison.OrdinalIgnoreCase))
@@ -330,7 +344,9 @@ internal static class AcsPlayerInventory
             || typeName.Equals("BlueArmor", StringComparison.OrdinalIgnoreCase))
         {
             var green = typeName.Equals("GreenArmor", StringComparison.OrdinalIgnoreCase);
-            var suitAmount = green ? PlayerInventory.GreenArmorAmount : PlayerInventory.MegaArmorAmount;
+            var armorClass = green ? player.Simulation?.DehackedGreenArmorClass ?? 1
+                : player.Simulation?.DehackedBlueArmorClass ?? 2;
+            var suitAmount = unchecked(100 * armorClass);
             PickupCatalog.TryGive(player, green ? PickupCatalog.GreenArmor : PickupCatalog.MegaArmor,
                 pickupAmount: checked(suitAmount * amount));
             return;
@@ -456,6 +472,13 @@ internal static class AcsPlayerInventory
     {
         if (activator is not PlayerPawn { Destroyed: false } player || string.IsNullOrEmpty(typeName) || amount <= 0)
             return;
+
+        if (typeName.Equals("PowerDamage", StringComparison.OrdinalIgnoreCase))
+        { player.PowerDamageTics = 0; return; }
+        if (typeName.Equals("PowerBuddha", StringComparison.OrdinalIgnoreCase))
+        { player.PowerBuddhaTics = 0; return; }
+        if (typeName.Equals("PowerProtection", StringComparison.OrdinalIgnoreCase))
+        { player.PowerProtectionTics = 0; return; }
 
         var inventory = player.Inventory;
         if (typeName.Equals("Health", StringComparison.OrdinalIgnoreCase))

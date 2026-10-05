@@ -11,6 +11,14 @@ public enum DamageFlags
     Forced = 8,
     /// <summary>Native <c>DMG_FOILBUDDHA</c>. Kills a non-player Buddha. Players ignore it.</summary>
     FoilBuddha = 16,
+    /// <summary>Native DMG_NO_FACTOR. Skips the target's damage factor.</summary>
+    NoFactor = 32,
+    /// <summary>Native DMG_FOILINVUL. With an inflictor, bypasses monster invulnerability.</summary>
+    FoilInvulnerability = 64,
+    /// <summary>Native DMG_NO_ENHANCE. Skips active modifiers, preserving DamageMultiplier.</summary>
+    NoEnhance = 128,
+    /// <summary>Native DMG_NO_PROTECT. Skips passive modifiers, preserving DamageFactor.</summary>
+    NoProtect = 256,
 }
 
 public readonly record struct DamageResult(int HealthLost, int ArmorLost, bool Killed);
@@ -29,13 +37,16 @@ public static class ActorDamage
             forced = false;
         // God mode and invulnerability stop ordinary hits. A telefrag goes through both.
         var telefrag = damage >= TelefragDamage;
-        if (damage <= 0)
+        damage = Math.Max(damage, 0);
+        if (damage == 0 && forced)
+            return default;
+        if (target.Spectral && !forced && !telefrag && inflictor is not { Spectral: true })
             return default;
         if (target.IsDead)
         {
             if (!target.Shootable)
                 return default;
-            if (inflictor is { } && string.Equals(damageType, "Ice", StringComparison.Ordinal) && !inflictor.IceShatter)
+            if (inflictor is { } && string.Equals(damageType, "Ice", StringComparison.OrdinalIgnoreCase) && !inflictor.IceShatter)
                 return default;
             if (target.IceCorpse)
             {
@@ -46,23 +57,42 @@ public static class ActorDamage
             }
             return default;
         }
-        if (target.Dormant && !forced) return default;
+        var foilInvulnerability = target is not PlayerPawn && inflictor != null
+            && (inflictor.FoilInvul || flags.HasFlag(DamageFlags.FoilInvulnerability));
         if (!target.CanTakeDamage
             || ((target.Invulnerable || target is PlayerPawn { GodMode: true })
-                && !telefrag && !forced && !flags.HasFlag(DamageFlags.BypassInvulnerability)))
+                && !telefrag && !forced && !foilInvulnerability && !flags.HasFlag(DamageFlags.BypassInvulnerability)))
             return default;
         var attacker = source ?? inflictor;
-        if (attacker != null && !target.CanAttackHurtFrom(attacker))
+        if (inflictor is { PierceArmor: true }) flags |= DamageFlags.BypassArmor;
+        if (target.Brain is { Charging: true })
+            target.VelocityX = target.VelocityY = target.VelocityZ = default;
+        if (target.Dormant && !forced) return default;
+        if (!forced && !telefrag && attacker != null && !target.CanAttackHurtFrom(attacker))
             return default;
         if (!forced && !telefrag)
         {
+            if (inflictor != null)
+            {
+                damage = inflictor.DoSpecialDamage(target, damage, damageType, flags);
+                if (damage < 0) return default;
+            }
             // Native truncates each multiplication separately. Only source, not inflictor, enhances damage.
-            if (source != null) damage = ScaleDamage(damage, source.DamageMultiplier);
-            if (damage > 0) damage = ScaleDamage(damage, target.DamageFactor);
+            if (damage > 0 && source != null) damage = ScaleDamage(damage, source.DamageMultiplier);
+            if (damage > 0 && source != null && !flags.HasFlag(DamageFlags.NoEnhance))
+                damage = source.GetModifiedDamage(damageType, damage, false, inflictor, target, flags);
+            if (damage > 0 && !flags.HasFlag(DamageFlags.NoProtect))
+                damage = target.GetModifiedDamage(damageType, damage, true, inflictor, source, flags);
+            if (damage > 0 && !flags.HasFlag(DamageFlags.NoFactor))
+            {
+                damage = ScaleDamage(damage, target.DamageFactor);
+                if (damage > 0) damage = target.ApplyTypedDamageFactor(damage, damageType);
+            }
+            damage = target.TakeSpecialDamage(inflictor, source, damage, damageType, flags);
             if (damage <= 0) return default;
         }
         var absorbed = 0;
-        if (!forced && !flags.HasFlag(DamageFlags.BypassArmor) && !IgnoresArmor(damageType))
+        if (!forced && !flags.HasFlag(DamageFlags.BypassArmor) && !IgnoresArmor(damageType, target.Simulation))
         {
             if (target is PlayerPawn player)
             {
@@ -86,21 +116,31 @@ public static class ActorDamage
                     target.ArmorSavePercent = 0;
             }
         }
+        // Native armor cancellation keeps armor consumption but stops later damage effects.
+        var healthDamage = telefrag && target is PlayerPawn ? damage : damage - absorbed;
+        if (healthDamage <= 0) return new DamageResult(0, absorbed, false);
         var before = target.Health;
         target.LastDamageSourceId = source?.Id;
         target.DamageTypeReceived = damageType;
         target.DeathInflictor = inflictor;
         // P_DamageMobj subtracts the post-armor remainder and keeps the negative overkill.
         // GetGibHealth is -spawn health. Health equal to that threshold is not an extreme death.
-        var next = (long)before - (damage - absorbed);
+        var next = (long)before - healthDamage;
+        target.DeathDamageAmount = healthDamage;
         // Clamp before assigning Health. The setter enters death as soon as health crosses 0.
-        if (next <= 0 && SurvivesByBuddha(target, damage, flags, inflictor))
+        if (next <= 0 && target is PlayerPawn && SurvivesByBuddha(target, damage, flags, inflictor))
             next = 1;
-        target.Health = (int)Math.Clamp(next, int.MinValue, int.MaxValue);
+        target.SetDamageHealth((int)Math.Clamp(next, int.MinValue, int.MaxValue), source,
+            () =>
+            {
+                Drain(target, source, healthDamage, damageType);
+                return target.Health <= 0 && target is not PlayerPawn && SurvivesByBuddha(target, damage, flags, inflictor)
+                    ? 1 : target.Health;
+            });
         target.DamageTypeReceived = null;
         target.DeathInflictor = null;
         var lost = before - target.Health;
-        var dealt = damage - absorbed;
+        var dealt = healthDamage;
         var forcedPain = inflictor is { ForcePain: true };
         if (!target.IsDead && target.WoundHealth > 0 && target.Health <= target.WoundHealth)
         {
@@ -108,7 +148,6 @@ public static class ActorDamage
             if (wound >= 0)
             {
                 target.States.Enter(target, wound);
-                Drain(target, source, damage - absorbed);
                 return new DamageResult(lost, absorbed, target.IsDead);
             }
         }
@@ -125,7 +164,6 @@ public static class ActorDamage
             target.Brain?.WakeOnDamage(target, source, dealt, forcedPain);
         if (painFlinch && source != null && ShouldMarkJustHit(target, source))
             target.JustHit = true;
-        Drain(target, source, damage - absorbed);
         return new DamageResult(lost, absorbed, target.IsDead);
     }
 
@@ -135,7 +173,7 @@ public static class ActorDamage
     /// <summary>Electric pain rolls <c>pr_lightning</c> on the flicker stream. Poison howling is absent.</summary>
     private static bool TryEnterPain(Actor target, int painState, string? damageType, bool forcedPain)
     {
-        if (!string.Equals(damageType, "Electric", StringComparison.Ordinal))
+        if (!string.Equals(damageType, "Electric", StringComparison.OrdinalIgnoreCase))
         {
             target.States.Enter(target, painState);
             return true;
@@ -165,9 +203,11 @@ public static class ActorDamage
         return chase != null && !target.IsFriend(chase);
     }
 
-    /// <summary>Mapinfo <c>DamageType Drowning</c> is the only <c>NoArmor</c> type in this port.</summary>
-    internal static bool IgnoresArmor(string? damageType) =>
-        string.Equals(damageType, "Drowning", StringComparison.Ordinal);
+    /// <summary>Native DamageTypeDefinition.IgnoreArmor, with built-in Drowning for detached actors.</summary>
+    internal static bool IgnoresArmor(string? damageType, AuthoritySimulation? simulation = null) =>
+        simulation is not null
+            ? !string.IsNullOrEmpty(damageType) && simulation.DamageTypes.Find(damageType)?.NoArmor == true
+            : string.Equals(damageType, "Drowning", StringComparison.OrdinalIgnoreCase);
 
     /// <summary>
     /// BasicArmor's integer save. <c>MaxFullAbsorb</c> is saved in full before the
@@ -221,17 +261,17 @@ public static class ActorDamage
     }
 
     /// <summary>
-    /// PowerDrain. The source must be a living player, and the amount is
+    /// PowerDrain. The source must be a player, and the amount is
     /// <c>int(strength * post-armor damage)</c>, limited by the player's maximum health.
     /// </summary>
-    private static void Drain(Actor target, Actor? source, int postArmor)
+    private static void Drain(Actor target, Actor? source, int postArmor, string? damageType)
     {
+        // Native armor returns before drain when the damage remainder reaches zero.
         if (postArmor <= 0 || source is not PlayerPawn player || player.DrainStrength <= 0
-            || target.DontDrain || ReferenceEquals(target, player)
-            || player.Health <= 0 || player.Health >= player.EffectiveMaxHealth)
+            || target.DontDrain || ReferenceEquals(target, player))
             return;
         var amount = (int)(player.DrainStrength * postArmor);
-        if (amount <= 0) return;
+        amount = player.OnDrain(target, amount, damageType);
         PickupCatalog.GiveHealth(player, amount);
     }
 }

@@ -15,6 +15,8 @@ public sealed class IceChunkActor : Actor
         Solid = false;
         Shootable = false;
         AllowDropOff = true;
+        CannotPush = true;
+        NoTeleport = true;
         Radius = Fixed.FromInt(3);
         Height = Fixed.FromInt(4);
         Mass = 5;

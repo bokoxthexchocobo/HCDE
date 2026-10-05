@@ -93,6 +93,9 @@ public static class DedicatedServerCommandLine
                 case "--deathmatch":
                     options.Deathmatch = true;
                     break;
+                case "--strife-thing-flags":
+                    options.ThingFlagFormat = BinaryThingFlagFormat.Strife;
+                    break;
                 case "--limit-pain":
                     options.Compatibility |= CompatSurface.LimitPain;
                     break;
@@ -231,6 +234,7 @@ public static class DedicatedServerCommandLine
     {
         Console.WriteLine(
             "Usage: hcdeserv --iwad <path> [--map <name>] [--port <port>] [--bind <ipv4>] [--rng-seed <int>]");
+        Console.WriteLine("       [--strife-thing-flags] (Strife binary spawn flags only; not full Strife support)");
         Console.WriteLine("       [--server-name <name>] [--skill <0-255>] [--deathmatch] [--teamplay]");
         Console.WriteLine("       [--limit-pain] (Pain Elementals stop spawning when 21 Lost Souls exist)");
         Console.WriteLine("       [--hexen-crush-defaults] (converted crush/stop defaults only; not full Hexen support)");

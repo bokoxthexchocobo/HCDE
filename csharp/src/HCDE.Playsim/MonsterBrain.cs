@@ -145,6 +145,14 @@ public sealed class MonsterBrain(MonsterAttack attack)
 
     internal void ClearTarget() => TargetId = null;
 
+    internal void SetSpecialTarget(Actor? target) => TargetId = target?.Id;
+
+    internal void ClearResurrectionEnemy(uint corpseId)
+    {
+        if (LastEnemyId == TargetId || LastEnemyId == corpseId) LastEnemyId = null;
+        if (TargetId == corpseId) TargetId = null;
+    }
+
     internal void SetTargetThingId(AuthoritySimulation sim, int thingId)
     {
         if (thingId == 0)
@@ -193,7 +201,7 @@ public sealed class MonsterBrain(MonsterAttack attack)
             _healTics = 0;
             Mode = MonsterMode.Pain; WindupTics = 0; _attackTic = -1; return;
         }
-        if (_raiseTics > 0) { _raiseTics--; return; }
+        if (AdvanceRaiseFrame()) return;
         if (ReactionTics != 0) { ReactionTics = unchecked(ReactionTics - 1); return; }
         if (_healTics > 0) { _healTics--; Mode = MonsterMode.Heal; return; }
         var target = sim.Actors.FirstOrDefault(a => a.Id == TargetId && a.CanTakeDamage && !actor.IsFriend(a));
@@ -346,6 +354,13 @@ public sealed class MonsterBrain(MonsterAttack attack)
         AttackCooldown = 1;
         Mode = MonsterMode.Chase;
         actor.VelocityX = actor.VelocityY = actor.VelocityZ = default;
+    }
+
+    internal bool AdvanceRaiseFrame()
+    {
+        if (_raiseTics <= 0) return false;
+        _raiseTics--;
+        return true;
     }
 
     internal void Revive(Actor actor)

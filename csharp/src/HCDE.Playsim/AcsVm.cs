@@ -506,6 +506,10 @@ public sealed class AcsVm
                         ?? ThingThrustZ.ExecuteSpecial(sim, stackSpecial, fiber.Activator, stackArgs[0], stackArgs[1], stackArgs[2], stackArgs[3])
                         ?? ThingChangeTid.ExecuteSpecial(sim, stackSpecial, fiber.Activator, stackArgs[0], stackArgs[1])
                         ?? ThingStop.ExecuteSpecial(sim, stackSpecial, fiber.Activator, stackArgs[0])
+                        ?? ThingSetSpecial.Execute(sim, stackSpecial, fiber.Activator, stackArgs[0], stackArgs[1], stackArgs[2], stackArgs[3], stackArgs[4])
+                        ?? ThingRaise.Execute(sim, stackSpecial, fiber.Activator, stackArgs[0], stackArgs[1])
+                        ?? ThingDamage.Execute(sim, stackSpecial, fiber.Activator, stackArgs[0], stackArgs[1], stackArgs[2])
+                        ?? HealthActions.Execute(stackSpecial, fiber.Activator, stackArgs[0], stackArgs[1])
                         ?? ThingActivation.ExecuteSpecial(sim, stackSpecial, fiber.Activator, stackArgs[0])
                         ?? LineSpecials.ExecuteTeleportSpecial(sim, stackSpecial, stackArgs[0], stackArgs[1], fiber.Activator, fiber.BackSide)
                         ?? LineSpecials.ExecuteSectorRotation(sim, stackSpecial, stackArgs[0], stackArgs[1], stackArgs[2])
@@ -553,6 +557,10 @@ public sealed class AcsVm
                             ?? ThingThrustZ.ExecuteSpecial(sim, special, fiber.Activator, args[0], args[1], args[2], args[3])
                             ?? ThingChangeTid.ExecuteSpecial(sim, special, fiber.Activator, args[0], args[1])
                             ?? ThingStop.ExecuteSpecial(sim, special, fiber.Activator, args[0])
+                            ?? ThingSetSpecial.Execute(sim, special, fiber.Activator, args[0], args[1], args[2], args[3], args[4])
+                            ?? ThingRaise.Execute(sim, special, fiber.Activator, args[0], args[1])
+                            ?? ThingDamage.Execute(sim, special, fiber.Activator, args[0], args[1], args[2])
+                            ?? HealthActions.Execute(special, fiber.Activator, args[0], args[1])
                             ?? ThingActivation.ExecuteSpecial(sim, special, fiber.Activator, args[0])
                             ?? LineSpecials.ExecuteTeleportSpecial(sim, special, args[0], args[1], fiber.Activator, fiber.BackSide)
                             ?? LineSpecials.ExecuteSectorRotation(sim, special, args[0], args[1], args[2])
@@ -650,6 +658,15 @@ public sealed class AcsVm
                     var type = Pop(fiber);
                     if (fiber.Done) break;
                     fiber.Stack.Add(ThingCount(sim, type, thingTid));
+                    break;
+                }
+                case (int)AcsPcode.SetThingSpecial:
+                {
+                    if (fiber.Stack.Count < 7) { fiber.Done = true; return; }
+                    var arg4 = Pop(fiber); var arg3 = Pop(fiber); var arg2 = Pop(fiber);
+                    var arg1 = Pop(fiber); var arg0 = Pop(fiber);
+                    var actorSpecial = Pop(fiber); var specialTid = Pop(fiber);
+                    ThingSetSpecial.Set(sim, fiber.Activator, specialTid, actorSpecial, [arg0, arg1, arg2, arg3, arg4]);
                     break;
                 }
                 case (int)AcsPcode.ThingCountDirect:
@@ -827,6 +844,17 @@ public sealed class AcsVm
                     fiber.Stack.Add(AcsPlayerInventory.Count(actorInvTarget, fiber.StringTable, actorInvStringId, max: false));
                     break;
                 }
+                case 335: // Native PCD_THINGDAMAGE2 wire ID; legacy enum alias is offset.
+                {
+                    if (fiber.Stack.Count < 3) { fiber.Done = true; return; }
+                    var damageString = Pop(fiber);
+                    var damageAmount = Pop(fiber);
+                    var damageTid = Pop(fiber);
+                    var damageName = damageString >= 0 && damageString < fiber.StringTable.Length
+                        ? fiber.StringTable[damageString] : null;
+                    fiber.Stack.Add(ThingDamage.Apply(sim, fiber.Activator, damageTid, damageAmount, damageName));
+                    break;
+                }
                 case (int)AcsPcode.UseInventory:
                 {
                     if (fiber.Stack.Count < 1) { fiber.Done = true; return; }
@@ -885,6 +913,27 @@ public sealed class AcsVm
                     var setTid = Pop(fiber);
                     if (fiber.Done) break;
                     AcsActorProperties.Set(sim, fiber.Activator, setTid, setProperty, setValue);
+                    break;
+                }
+                case (int)AcsPcode.SetActorState:
+                {
+                    if (fiber.Stack.Count < 3) { fiber.Done = true; return; }
+                    var exactState = Pop(fiber) != 0;
+                    var stateString = Pop(fiber);
+                    var stateTid = Pop(fiber);
+                    var stateName = AcsStringIds.IsGlobalPool(stateString) ? GlobalStringAt(stateString)
+                        : stateString >= 0 && stateString < fiber.StringTable.Length ? fiber.StringTable[stateString] : null;
+                    var targets = stateTid == 0
+                        ? fiber.Activator is { Destroyed: false } stateActivator ? new[] { stateActivator } : Array.Empty<Actor>()
+                        : sim.Actors.Where(actor => !actor.Destroyed && actor.ThingId == stateTid).ToArray();
+                    var changedStates = 0;
+                    foreach (var target in targets)
+                        if (AcsActorStates.TryFindNamedState(target, stateName, exactState, out var stateIndex))
+                        {
+                            target.States.Enter(target, stateIndex);
+                            changedStates++;
+                        }
+                    fiber.Stack.Add(changedStates);
                     break;
                 }
                 case (int)AcsPcode.GetActorProperty:

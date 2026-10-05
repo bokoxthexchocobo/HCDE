@@ -22,6 +22,28 @@ public sealed class ProjectileActor : Actor
     };
     // Native Damage is a base multiplied by a random integer from one through eight on impact.
     public int ImpactDamage => Math.Max(0, Damage);
+    /// <summary>Managed boundary for native DamageFunc; its result is used without impact dice.</summary>
+    public Func<ProjectileActor, int>? DamageExpression { get; set; }
+
+    /// <summary>Native GetMissileDamage calculation; a zero mask does not consume randomness.</summary>
+    public int GetMissileDamage(int mask, int add)
+    {
+        if (DamageExpression is { } expression) return expression(this);
+        if (mask == 0) return unchecked(add * ImpactDamage);
+        var sim = Simulation ?? throw new InvalidOperationException("Random missile damage requires a simulation.");
+        return unchecked(((int)sim.NextCombatRandom() & mask) + add) * ImpactDamage;
+    }
+
+    /// <summary>Managed direct-damage subset of P_DoMissileDamage, including ripper dice.</summary>
+    public DamageResult DoMissileDamage(Actor victim, bool ripper = false)
+    {
+        ArgumentNullException.ThrowIfNull(victim);
+        var damage = ripper ? GetMissileDamage(3, 2) : GetMissileDamage(StrifeDamage ? 3 : 7, 1);
+        if (damage > 0 || ForcePain)
+            return ActorDamage.Apply(victim, damage, Owner, damageType: DamageType, inflictor: this);
+        victim.GiveBody((int)Math.Min(-(long)damage, int.MaxValue));
+        return default;
+    }
     private int DefaultDamage => Kind switch
     {
         ProjectileKind.Rocket or ProjectileKind.CyberRocket => 20,
@@ -113,6 +135,7 @@ public sealed class ProjectileActor : Actor
         var vx = VelocityX.ToDouble(); var vy = VelocityY.ToDouble(); var vz = VelocityZ.ToDouble();
         var steps = Math.Max(1, (int)Math.Ceiling(Math.Max(Math.Max(Math.Abs(vx), Math.Abs(vy)), Math.Abs(vz)) / 2));
         var huggerSector = -1;
+        var ripped = new HashSet<uint>();
         for (var i = 0; i < steps; i++)
         {
             var x = X.ToDouble(); var y = Y.ToDouble(); var z = Z.ToDouble();
@@ -161,6 +184,7 @@ public sealed class ProjectileActor : Actor
                 }
                 if (plane < fraction) { fraction = plane; wall = null; planeSector = sector; planePart = part; }
             }
+            var ripContacts = new List<(Actor Actor, double Fraction)>();
             foreach (var actor in sim.Actors)
             {
                 if (ThruActors || actor.ThruActors || actor.NonShootable || !HitOwner && ReferenceEquals(actor, Owner)
@@ -172,8 +196,28 @@ public sealed class ProjectileActor : Actor
                 // Native checks attack eligibility and non-shootable solidity before SPECTRAL passage.
                 if (actor.Shootable && actor.Spectral && !Spectral && actor.CanAttackHurtFrom(Owner)) continue;
                 var hit = CylinderFraction(x, y, z, dx, dy, dz, actor);
+                if (Rip && actor.CanBeRippedBy(this) && actor.Shootable && actor.CanAttackHurtFrom(Owner))
+                {
+                    if (hit <= 1) ripContacts.Add((actor, hit));
+                    continue;
+                }
                 if (hit < fraction || hit == fraction && victim != null && actor.Id < victim.Id)
                 { fraction = hit; victim = actor; wall = null; planeSector = planePart = -1; }
+            }
+            foreach (var contact in ripContacts.Where(contact => contact.Fraction < fraction)
+                .OrderBy(contact => contact.Fraction).ThenBy(contact => contact.Actor.Id))
+            {
+                if (contact.Actor.Destroyed) continue;
+                if (!ripped.Add(contact.Actor.Id)) continue;
+                X = Fixed.FromDouble(x + dx * contact.Fraction); Y = Fixed.FromDouble(y + dy * contact.Fraction);
+                Z = Fixed.FromDouble(z + dz * contact.Fraction);
+                DoMissileDamage(contact.Actor, ripper: true);
+                if (Destroyed) return;
+                if (contact.Actor.Pushable && !CannotPush)
+                {
+                    contact.Actor.VelocityX = Fixed.FromDouble(contact.Actor.VelocityX.ToDouble() + VelocityX.ToDouble() * contact.Actor.PushFactor);
+                    contact.Actor.VelocityY = Fixed.FromDouble(contact.Actor.VelocityY.ToDouble() + VelocityY.ToDouble() * contact.Actor.PushFactor);
+                }
             }
             if (fraction <= 1)
             {
@@ -203,7 +247,11 @@ public sealed class ProjectileActor : Actor
             enter = Math.Max(0, (-b - Math.Sqrt(disc)) / a);
             leave = Math.Min(1, (-b + Math.Sqrt(disc)) / a);
         }
-        var low = target.Z.ToDouble() - Height.ToDouble(); var high = target.Z.ToDouble() + target.Height.ToDouble();
+        var passHeight = target.ProjectilePassHeight.ToDouble();
+        var clipHeight = passHeight > 0 ? passHeight
+            : passHeight < 0 && Simulation is { } sim && sim.Compat.HasFlag(CompatSurface.MissileClip)
+                ? -passHeight : target.Height.ToDouble();
+        var low = target.Z.ToDouble() - Height.ToDouble(); var high = target.Z.ToDouble() + clipHeight;
         if (dz == 0) { if (z < low || z > high) return double.PositiveInfinity; }
         else
         {
@@ -256,34 +304,22 @@ public sealed class ProjectileActor : Actor
         }
         if (wall is not null) GeometryProjectileImpact.Apply(sim, this, wall);
         else if (planeSector >= 0) GeometryProjectileImpact.ApplyPlane(sim, this, planeSector, planePart);
-        if (victim != null) ActorDamage.Apply(victim, ImpactDamage * (1 + (int)(sim.NextCombatRandom() % 8)), Owner, inflictor: this);
+        if (victim != null)
+            DoMissileDamage(victim, Rip);
         if (BlastRadius > 0)
         {
             foreach (var actor in sim.Actors.ToArray())
             {
-                if (!actor.IsBlockmapActor || !actor.CanTakeDamage || actor.NoRadiusDamage) continue;
+                if (!actor.IsBlockmapActor || !actor.CanTakeDamage || actor.NoRadiusDamage || actor.SplashImmune(this)) continue;
                 var horizontal = Math.Max(0, Math.Sqrt(Math.Pow(actor.X.ToDouble() - X.ToDouble(), 2)
                     + Math.Pow(actor.Y.ToDouble() - Y.ToDouble(), 2)) - actor.Radius.ToDouble());
                 var vertical = Math.Max(0, Math.Max(actor.Z.ToDouble() - Z.ToDouble(), Z.ToDouble() - actor.Z.ToDouble() - actor.Height.ToDouble()));
                 var distance = Math.Sqrt(horizontal * horizontal + vertical * vertical);
                 if (distance >= BlastRadius || !CombatTrace.HasLineOfSight(sim, this, actor)) continue;
-                ActorDamage.Apply(actor, Math.Max(1, BlastRadius - (int)distance), Owner, inflictor: this);
+                ActorDamage.Apply(actor, Math.Max(1, BlastRadius - (int)distance), Owner, damageType: DamageType, inflictor: this);
             }
         }
         if (Kind == ProjectileKind.Bfg)
-        {
-            // A_BFGSpray fans out from the owner's position along the missile's yaw.
-            // Native vertical autoaim and the explosion-state delay remain separate work.
-            for (var ray = 0; ray < 40; ray++)
-            {
-                var yaw = Angle.ToDegrees() - Owner.Angle.ToDegrees() - 45 + 90.0 * ray / 40;
-                var pitch = Owner is PlayerPawn player ? -player.PitchDegrees : 0;
-                var target = CombatTrace.FindTarget(sim, Owner, 1024, yaw, pitch);
-                if (target == null) continue;
-                var damage = 0;
-                for (var die = 0; die < 15; die++) damage += 1 + (int)(sim.NextCombatRandom() % 8);
-                ActorDamage.Apply(target, damage, Owner);
-            }
-        }
+            BfgSprayActions.Apply(sim, this, Owner);
     }
 }

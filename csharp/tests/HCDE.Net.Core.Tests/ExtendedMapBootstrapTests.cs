@@ -1,10 +1,33 @@
 using System.Text;
 using HCDE.MapLoader.Tests;
+using HCDE.MapLoader;
 
 namespace HCDE.Net.Core.Tests;
 
 public class ExtendedMapBootstrapTests
 {
+    [Theory]
+    [InlineData(BinaryThingFlagFormat.Doom)]
+    [InlineData(BinaryThingFlagFormat.Strife)]
+    public void SelectedBinaryFlagFormatSeedsPlayersAndSectors(BinaryThingFlagFormat format)
+    {
+        var store = new GuestWorldStateStore();
+        Assert.True(MapLoadBootstrap.TrySeedGuestWorldState(TestWadBuilder.BuildMinimalMapWad("MAP01"),
+            "MAP01", store, out var error, format), error);
+        Assert.Equal(160, store.Sectors[0].LightLevel);
+        Assert.True(store.Players.ContainsKey(0));
+    }
+
+    [Fact]
+    public void UnsupportedFlagFormatRejectsWithoutSeedingGuestState()
+    {
+        var store = new GuestWorldStateStore();
+        Assert.False(MapLoadBootstrap.TrySeedGuestWorldState(TestWadBuilder.BuildMinimalMapWad("MAP01"),
+            "MAP01", store, out var error, (BinaryThingFlagFormat)99));
+        Assert.Equal("unsupported-binary-thing-flag-format", error);
+        Assert.Empty(store.Players);
+        Assert.Empty(store.Sectors);
+    }
     [Fact]
     public void HexenMapBootstrapsNetworkSectors()
     {

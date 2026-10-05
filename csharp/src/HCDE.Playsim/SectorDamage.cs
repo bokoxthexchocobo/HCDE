@@ -67,14 +67,7 @@ internal static class SectorDamage
         foreach (var sector in simulation.Level.Sectors.Where(sector => sector.MatchesTag(tag)))
         {
             sector.DamageAmount = unchecked((short)amount);
-            sector.DamageType = damageType switch
-            {
-                9 => "BFGSplash", 12 => "Drowning", 13 => "Slime", 14 => "Fire",
-                15 => "Crush", 16 => "Telefrag", 17 => "Falling", 18 => "Suicide",
-                20 => "Exit", 22 => "Melee", 23 => "Railgun", 24 => "Ice",
-                25 => "Disintegrate", 26 => "Poison", 27 => "Electric", 1000 => "Massacre",
-                _ => "None",
-            };
+            sector.DamageType = HealthActions.DamageType(damageType) ?? "None";
             sector.DamageInterval = unchecked((short)interval);
             sector.Leakiness = unchecked((short)leakiness);
             count++;

@@ -29,7 +29,7 @@ public class PuffFrameLifecycleTests
         var puff = new PuffActor();
         puff.Tick(); puff.Tick(); puff.Tick(); puff.Tick();
         var frame = puff.States.Current; var tics = puff.States.RemainingTics;
-        puff.Tick(); puff.Tick(); puff.States.Restore(frame, tics);
+        puff.Tick(); puff.Tick(); puff.States.Restore(puff, frame, tics);
         Assert.Equal(12, puff.RemainingTics);
         for (var tic = 0; tic < 11; tic++) { puff.Tick(); Assert.False(puff.Destroyed); }
         puff.Tick(); Assert.True(puff.Destroyed);

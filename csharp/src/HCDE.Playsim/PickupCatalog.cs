@@ -42,8 +42,8 @@ public static class PickupCatalog
     internal static WeaponKind PickupWeapon(int doomEdNum) =>
         TryDescribe(doomEdNum, out var gift) && gift.Kind == GiftKind.Weapon ? gift.Weapon : 0;
 
-    /// <summary>Vanilla Doom bonus items carry INVENTORY.ALWAYSPICKUP.</summary>
-    internal static bool AlwaysPickup(int doomEdNum) => doomEdNum is HealthBonus or ArmorBonus or Megasphere;
+    /// <summary>Native Doom bonus and sphere defaults carry INVENTORY.ALWAYSPICKUP.</summary>
+    internal static bool AlwaysPickup(int doomEdNum) => doomEdNum is HealthBonus or ArmorBonus or Soulsphere or Megasphere;
 
     /// <summary>Native Actor defaults, with Doom Backpack's height override.</summary>
     internal static Fixed HeightOf(int doomEdNum) => Fixed.FromInt(doomEdNum == Backpack ? 26 : 16);
@@ -139,6 +139,16 @@ public static class PickupCatalog
     {
         if (!TryDescribe(doomEdNum, out var gift))
             return false;
+        var armorClass = doomEdNum == GreenArmor ? player.Simulation?.DehackedGreenArmorClass ?? 1
+            : player.Simulation?.DehackedBlueArmorClass ?? 2;
+        if (doomEdNum is GreenArmor or MegaArmor)
+            gift = new Gift(gift.Kind, unchecked(100 * armorClass), gift.Maximum);
+        if (doomEdNum == Soulsphere)
+            gift = new Gift(GiftKind.Health, player.Simulation?.DehackedSoulsphereHealth ?? 100,
+                player.Simulation?.DehackedMaxSoulsphere ?? 200);
+        if (doomEdNum == HealthBonus && player.Simulation is { DehackedHealthBonusCapPatched: true } simulation)
+            gift = new Gift(GiftKind.Health, gift.Amount, simulation.Compat.HasFlag(CompatSurface.DehHealth)
+                ? simulation.DehackedMaxHealth : unchecked(simulation.DehackedMaxHealth * 2));
         var giftAmount = pickupAmount > 0 ? pickupAmount : gift.Amount;
         var ammo = ScaleAmmo(giftAmount, player, ignoreSkill);
         var armor = ScaleArmor(giftAmount, player, ignoreSkill);
@@ -147,9 +157,9 @@ public static class PickupCatalog
         {
             GiftKind.Health => GiveHealth(player, giftAmount, gift.Maximum),
             GiftKind.Megasphere => GiveMegasphere(player),
-            GiftKind.ArmorBonus => GiveArmorBonus(player.Inventory, armor),
-            GiftKind.GreenArmor => GiveArmor(player.Inventory, armor, PlayerInventory.GreenSavePercent, "GreenArmor"),
-            GiftKind.MegaArmor => GiveArmor(player.Inventory, armor, PlayerInventory.MegaSavePercent, "BlueArmor"),
+            GiftKind.ArmorBonus => GiveArmorBonus(player.Inventory, armor, player.Simulation?.DehackedMaxArmor ?? 200),
+            GiftKind.GreenArmor => GiveArmor(player.Inventory, armor, armorClass == 1 ? PlayerInventory.GreenSavePercent : PlayerInventory.MegaSavePercent, "GreenArmor"),
+            GiftKind.MegaArmor => GiveArmor(player.Inventory, armor, armorClass == 1 ? PlayerInventory.GreenSavePercent : PlayerInventory.MegaSavePercent, "BlueArmor"),
             GiftKind.Ammo => GiveAmmo(player.Inventory, gift.Ammo, suppressWeaponAmmo ? 0 : ammo),
             GiftKind.Key => GiveKey(player.Inventory, gift.Key),
             GiftKind.Weapon => GiveWeapon(player.Inventory, gift.Weapon, gift.Ammo,
@@ -195,6 +205,9 @@ public static class PickupCatalog
         (int)Math.Clamp(amount * factor, int.MinValue, int.MaxValue);
 
     /// <summary>Vanilla Ammo/Weapon.ModifyDropAmount with the default drop factor.</summary>
+    internal static bool UsesDropAmmoFactor(int doomEdNum) =>
+        TryDescribe(doomEdNum, out var gift) && gift.Kind is GiftKind.Ammo or GiftKind.Weapon;
+
     internal static int DropPickupAmount(int doomEdNum, int requestedAmount, double dropFactor = -1)
     {
         if (!TryDescribe(doomEdNum, out var gift))
@@ -215,14 +228,16 @@ public static class PickupCatalog
     private static bool GiveMegasphere(PlayerPawn player)
     {
         var armor = GiveArmor(player.Inventory, ScaleArmor(200, player), PlayerInventory.MegaSavePercent, "BlueArmorForMegasphere");
-        var health = GiveHealth(player, 200, 200);
+        var healthAmount = player.Simulation?.DehackedMegasphereHealth ?? 200;
+        var health = GiveHealth(player, healthAmount, healthAmount);
         return armor || health;
     }
 
     internal static bool GiveHealth(Actor actor, int amount)
     {
         if (actor is PlayerPawn player) return GiveHealth(player, amount);
-        if (amount <= 0 || actor.Health <= 0 || actor.Health >= actor.ResurrectionHealth)
+        if (amount < 0) return GivePercentageHealth(actor, amount, actor.ResurrectionHealth);
+        if (actor.Health <= 0 || actor.Health >= actor.ResurrectionHealth)
             return false;
         actor.Health += Math.Min(Math.Min(amount, 65536), actor.ResurrectionHealth - actor.Health);
         return true;
@@ -230,7 +245,12 @@ public static class PickupCatalog
 
     internal static bool GiveHealth(PlayerPawn player, int amount, int maximum = 0)
     {
-        if (maximum <= 0) maximum = player.EffectiveMaxHealth;
+        var originalMaximum = maximum;
+        if (maximum <= 0) maximum = player.GetMaxHealth(true);
+        else maximum = checked(maximum + player.BonusHealth);
+        if (player.MaxPickupHealth != 0)
+            maximum = originalMaximum > 0 ? Math.Max(originalMaximum, player.MaxPickupHealth) : player.MaxPickupHealth;
+        if (amount < 0) return GivePercentageHealth(player, amount, maximum);
         if (amount <= 0 || player.Health <= 0 || player.Health >= maximum)
             return false;
         var scaled = Math.Min(amount, 65536) * (player.Simulation?.HealthFactor ?? 1);
@@ -239,11 +259,22 @@ public static class PickupCatalog
         return true;
     }
 
-    private static bool GiveArmorBonus(PlayerInventory inventory, int amount)
+    private static bool GivePercentageHealth(Actor actor, int amount, int maximum)
+    {
+        if (actor.Health <= 0) return false;
+        var percent = -(long)Math.Max(amount, -65536);
+        var target = (int)Math.Clamp((long)maximum * percent / 100, 0, int.MaxValue);
+        if (actor.Health >= target) return false;
+        actor.Health = target;
+        return true;
+    }
+
+    private static bool GiveArmorBonus(PlayerInventory inventory, int amount, int maximum)
     {
         // Native bonus Use consumes a nonpositive scaled grant without changing armor.
+        amount = Math.Min(amount, maximum);
         if (amount <= 0) return true;
-        if (inventory.Armor >= PlayerInventory.MaxHealthBonus)
+        if (inventory.Armor >= maximum)
             return false;
         if (inventory.Armor <= 0)
         {
@@ -251,11 +282,11 @@ public static class PickupCatalog
             inventory.ArmorSavePercent = PlayerInventory.GreenSavePercent;
             inventory.MaxAbsorb = 0;
             inventory.MaxFullAbsorb = 0;
-            inventory.ArmorActualSaveAmount = PlayerInventory.MaxHealthBonus;
+            inventory.ArmorActualSaveAmount = maximum;
             inventory.ArmorType = "ArmorBonus";
         }
-        inventory.Armor += Math.Min(amount, PlayerInventory.MaxHealthBonus - inventory.Armor);
-        inventory.ArmorMaximum = Math.Max(inventory.ArmorMaximum, PlayerInventory.MaxHealthBonus);
+        inventory.Armor += Math.Min(amount, maximum - inventory.Armor);
+        inventory.ArmorMaximum = Math.Max(inventory.ArmorMaximum, maximum);
         return true;
     }
 

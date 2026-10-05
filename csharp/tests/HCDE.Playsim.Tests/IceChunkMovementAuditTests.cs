@@ -25,7 +25,7 @@ public class IceChunkMovementAuditTests
     {
         var sim = Room(); var chunk = new IceChunkActor(1) { Simulation = sim, Level = sim.Level,
             Z = Fixed.FromInt(100), VelocityZ = Fixed.FromInt(4) };
-        chunk.States.Restore(3, 1);
+        chunk.States.Restore(chunk, 3, 1);
         chunk.Tick(); Assert.True(chunk.Destroyed); Assert.Equal(100, chunk.Z.ToDouble());
     }
 

@@ -168,7 +168,7 @@ internal static class AcsActorProperties
         Dropped => actor.Dropped ? 1 : 0,
         ReactionTime => actor.ReactionTime,
         Score => actor.Score,
-        SpawnHealth => actor is PlayerPawn healthPlayer ? healthPlayer.EffectiveMaxHealth : actor.ResurrectionHealth,
+        SpawnHealth => actor.GetMaxHealth(false),
         Mass => actor.Mass,
         Height => actor.Height.Raw,
         Radius => actor.Radius.Raw,

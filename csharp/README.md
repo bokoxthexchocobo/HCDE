@@ -21,9 +21,11 @@ Failed snapshot writes now preserve pending state; armor/pitch replicate;
 buffered Doom weapon selection and flat-sector weapon noise are implemented.
 The continuation converts fractional sector planes, classic ceilings/crushers
 and Doom stair chains, with backward-compatible v6 pose archives including actor pitch.
-**5,863 tests pass; gameplay phases 1–3 remain incomplete.** The audit gives the
+**6,493 tests pass; gameplay phases 1–3 remain incomplete.** The audit gives the
 remaining completion gates. Historical phase numbers below refer to narrower
 tools/protocol/server milestones, not full gameplay conversion.
+
+Current review: [full conversion status, 2026-10-04](docs/HCDE_CSHARP_STATUS_2026_10_04.md).
 
 The dedicated server accepts `--limit-pain` to stop Pain Elemental spawning when
 21 Lost Souls exist, including retained dead souls. It is disabled by default.

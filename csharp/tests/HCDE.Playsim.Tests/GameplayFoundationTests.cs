@@ -919,7 +919,7 @@ public class GameplayFoundationTests
 
         var wrongCase = TypedVictim();
         ActorDamage.Apply(wrongCase, 201, damageType: "fire");
-        Assert.Equal(4, wrongCase.States.Current);
+        Assert.Equal(5, wrongCase.States.Current);
 
         var forced = TypedVictim();
         ActorDamage.Apply(forced, 100, damageType: "Extreme");
@@ -2246,6 +2246,7 @@ public class GameplayFoundationTests
         Assert.Equal(4, decoration.States.Current);
 
         var monster = FreezeBody();
+        monster.IsMonster = true;
         monster.Brain = new MonsterBrain(MonsterAttack.Melee);
         ActorDamage.Apply(monster, 201, damageType: "Ice");
         Assert.Equal(6, monster.States.Current);
@@ -2253,7 +2254,7 @@ public class GameplayFoundationTests
         var wrongCase = TypedVictim();
         wrongCase.GenericFreezeDeath = 6;
         ActorDamage.Apply(wrongCase, 201, damageType: "ice");
-        Assert.Equal(4, wrongCase.States.Current);
+        Assert.Equal(6, wrongCase.States.Current);
 
         var fire = TypedVictim();
         fire.GenericFreezeDeath = 6;
@@ -2293,7 +2294,7 @@ public class GameplayFoundationTests
         var wrongCase = PainVictim();
         wrongCase.SetTypedPain("Fire", 4);
         ActorDamage.Apply(wrongCase, 10, damageType: "fire");
-        Assert.Equal(1, wrongCase.States.Current);
+        Assert.Equal(4, wrongCase.States.Current);
     }
 
     [Fact]
@@ -2405,7 +2406,7 @@ public class GameplayFoundationTests
         var absorbed = new Actor { Health = 100, Armor = 100, ArmorSavePercent = 100, PainChance = 0 };
         ActorDamage.Apply(absorbed, 30, inflictor: forcer);
         Assert.Equal(100, absorbed.Health);
-        Assert.Equal(1, absorbed.States.Current);
+        Assert.Equal(0, absorbed.States.Current);
 
         var blocked = new Actor { Health = 100, PainThreshold = 10 };
         ActorDamage.Apply(blocked, 9, inflictor: forcer, flags: DamageFlags.NoPain);

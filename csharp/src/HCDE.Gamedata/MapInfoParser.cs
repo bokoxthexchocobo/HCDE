@@ -17,6 +17,7 @@ public sealed class MapInfoMap
     public string Sky2 { get; set; } = "";
     public double SkySpeed2 { get; set; }
     public bool HexenHack { get; set; }
+    public bool ActivateOwnDeathSpecials { get; set; }
 }
 
 public sealed class MapInfoCluster
@@ -36,6 +37,7 @@ public sealed class MapInfoCluster
 
 public sealed class MapInfoSet
 {
+    public IReadOnlyList<MapInfoDamageType> DamageTypes { get; init; } = Array.Empty<MapInfoDamageType>();
     public IReadOnlyList<MapInfoMap> Maps { get; init; } = Array.Empty<MapInfoMap>();
     public IReadOnlyList<MapInfoCluster> Clusters { get; init; } = Array.Empty<MapInfoCluster>();
 
@@ -45,6 +47,9 @@ public sealed class MapInfoSet
     public MapInfoCluster? FindCluster(int cluster) =>
         Clusters.FirstOrDefault(entry => entry.Cluster == cluster);
 }
+
+public sealed record MapInfoDamageType(string Name, double Factor = 1, bool ReplaceFactor = false,
+    bool NoArmor = false, string Obituary = "");
 
 /// <summary>
 /// ZMAPINFO / MAPINFO subset used to boot a map: lump name, level name, next, secret next, sky, and cluster.
@@ -100,6 +105,7 @@ public static class MapInfoParser
         {
             var maps = new Dictionary<string, MapInfoMap>(StringComparer.OrdinalIgnoreCase);
             var clusters = new Dictionary<int, MapInfoCluster>();
+            var damageTypes = new Dictionary<string, MapInfoDamageType>(StringComparer.OrdinalIgnoreCase);
             error = null;
 
             while (!Eof)
@@ -112,6 +118,11 @@ public static class MapInfoParser
                         set = new MapInfoSet();
                         return false;
                     }
+                }
+                else if (token.Equals("DamageType", StringComparison.OrdinalIgnoreCase))
+                {
+                    if (!TryParseDamageType(damageTypes, out error))
+                    { set = new MapInfoSet(); return false; }
                 }
                 else if (token.Equals("cluster", StringComparison.OrdinalIgnoreCase))
                 {
@@ -134,8 +145,48 @@ public static class MapInfoParser
             set = new MapInfoSet
             {
                 Maps = maps.Values.ToArray(),
+                DamageTypes = damageTypes.Values.ToArray(),
                 Clusters = clusters.Values.OrderBy(cluster => cluster.Cluster).ToArray(),
             };
+            return true;
+        }
+
+        private bool TryParseDamageType(Dictionary<string, MapInfoDamageType> definitions, out string? error)
+        {
+            error = null;
+            if (Eof || Peek("{")) { error = "DamageType is missing a name."; return false; }
+            var nameToken = Take();
+            if (nameToken.StartsWith('"') && !nameToken.EndsWith('"'))
+            { error = "Unterminated DamageType name."; return false; }
+            var name = Unquote(nameToken);
+            if (string.IsNullOrEmpty(name)) { error = "DamageType is missing a name."; return false; }
+            if (!Take("{")) { error = $"DamageType {name} is missing a block."; return false; }
+            double factor = 1;
+            bool replace = false, noArmor = false;
+            var obituary = "";
+            while (!Eof && !Peek("}"))
+            {
+                var property = Take();
+                if (property.Equals("Factor", StringComparison.OrdinalIgnoreCase))
+                {
+                    if (!Take("=") || Eof || !double.TryParse(Take(), NumberStyles.Float, CultureInfo.InvariantCulture, out factor) || !double.IsFinite(factor))
+                    { error = $"Invalid DamageType {name} factor."; return false; }
+                    if (factor == 0) replace = true;
+                }
+                else if (property.Equals("ReplaceFactor", StringComparison.OrdinalIgnoreCase)) replace = true;
+                else if (property.Equals("NoArmor", StringComparison.OrdinalIgnoreCase)) noArmor = true;
+                else if (property.Equals("Obituary", StringComparison.OrdinalIgnoreCase))
+                {
+                    if (!Take("=") || Eof || Peek("}")) { error = $"Invalid DamageType {name} obituary."; return false; }
+                    var value = Take();
+                    if (value.StartsWith('"') && !value.EndsWith('"'))
+                    { error = $"Unterminated DamageType {name} obituary."; return false; }
+                    obituary = Unquote(value);
+                }
+                else { error = $"Unexpected DamageType {name} property {property}."; return false; }
+            }
+            if (!Take("}")) { error = $"Unterminated DamageType {name}."; return false; }
+            definitions[name] = new MapInfoDamageType(name, factor, replace, noArmor, obituary);
             return true;
         }
 
@@ -177,6 +228,7 @@ public static class MapInfoParser
                 LevelName = levelName,
                 LookupLevelName = lookup,
                 HexenHack = hexenHack,
+                ActivateOwnDeathSpecials = hexenHack,
             };
             map.LevelNum = DefaultLevelNum(map.MapName, out var id24);
             map.Id24LevelNum = id24;
@@ -198,7 +250,7 @@ public static class MapInfoParser
             }
             else
             {
-                while (!Eof && !Peek("map") && !Peek("cluster"))
+                while (!Eof && !Peek("map") && !Peek("cluster") && !Peek("DamageType"))
                 {
                     if (!ReadMapProperty(map, clusters, out error))
                         return false;
@@ -223,6 +275,16 @@ public static class MapInfoParser
             }
 
             Optional("=");
+            if (key.Equals("activateowndeathspecials", StringComparison.OrdinalIgnoreCase))
+            {
+                map.ActivateOwnDeathSpecials = true;
+                return true;
+            }
+            if (key.Equals("killeractivatesdeathspecials", StringComparison.OrdinalIgnoreCase))
+            {
+                map.ActivateOwnDeathSpecials = false;
+                return true;
+            }
             if (key.Equals("next", StringComparison.OrdinalIgnoreCase))
             {
                 map.NextMap = ReadNextMap(map.HexenHack);

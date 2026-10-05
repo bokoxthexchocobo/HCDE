@@ -199,6 +199,10 @@ public static class LineSpecials
             repeat = line.Repeat;
             activated = line.Special switch
             {
+                HealthActions.HealThing or HealthActions.DamageThing =>
+                    HealthActions.Execute(line.Special, actor, line.Arg0, line.Arg1) == true,
+                ThingDamage.Special or 133 => ThingDamage.Execute(sim, line.Special, actor, line.Arg0, line.Arg1, line.Arg2) == true,
+                17 => ThingRaise.Execute(sim, line.Special, actor, line.Arg0, line.Arg1) == true,
                 SectorSetRotation => ExecuteSectorRotation(sim, line.Special, line.Arg0, line.Arg1, line.Arg2) == true,
                 WallTextureOffset.Special => WallTextureOffset.Execute(sim, line.Special, line.Arg0, line.Arg1, line.Arg2, line.Arg3, line.Arg4) == true,
                 WallTextureScale.Special => WallTextureScale.Execute(sim, line.Special, line.Arg0, line.Arg1, line.Arg2, line.Arg3, line.Arg4) == true,
@@ -224,6 +228,7 @@ public static class LineSpecials
                 128 => ThingThrustZ.ExecuteSpecial(sim, 128, actor, line.Arg0, line.Arg1, line.Arg2, line.Arg3) == true,
                 176 => ThingChangeTid.ExecuteSpecial(sim, 176, actor, line.Arg0, line.Arg1) == true,
                 19 => ThingStop.ExecuteSpecial(sim, 19, actor, line.Arg0) == true,
+                127 => ThingSetSpecial.Execute(sim, 127, actor, line.Arg0, line.Arg1, line.Arg2, line.Arg3, line.Arg4) == true,
                 130 or 131 => ThingActivation.Execute(sim, actor, line.Arg0, line.Special == 130),
                 80 or 81 or 82 or 226 => ExecuteScriptControl(sim, line.Special, line.Arg0, line.Arg1, line.Arg2, line.Arg3, line.Arg4, actor, line, backSide ?? IsBackSide(line, actor.X.ToDouble(), actor.Y.ToDouble())) == true,
                 243 => Exit(sim, false, actor),

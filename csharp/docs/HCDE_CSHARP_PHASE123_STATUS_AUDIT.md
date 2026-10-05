@@ -1,5 +1,4150 @@
 # Gameplay phases 1–3: implementation and completion audit
 
+## Conversion and audit: ice debris native defaults (2026-10-04)
+
+Audited shared/ice.zs IceChunk defaults and A_IceSetTics. Converted missing
+CANNOTPUSH and NOTELEPORT defaults using existing managed actor behavior.
+Three new regressions verify script-visible flags, teleport rejection without
+motion/timing mutation, and defaults on all freeze-death spawned chunks.
+All 7,887 Release tests pass, including 6,682 Playsim tests. Clean Release
+build passes with zero warnings/errors; diff check passes. Uncommitted.
+
+Remaining verified gaps: IceTics uses the shared combat random stream rather
+than a dedicated native stream; Fire floor terrain quarters lifetime and Ice
+floor terrain doubles it. Managed terrain currently stores names without
+DamageMOD definitions, so these timing adjustments remain unconverted.
+FLOORCLIP, full MOVEWITHSECTOR semantics and IceChunkHead remain open.
+
+## Conversion and audit: Doom decoration frame brightness (2026-10-04)
+
+Converted the 15 Bright decoration definitions in native doomdecorations.zs:
+both tech lamps, Column, EvilEye, FloatingSkull, six torches, Candlestick,
+Candelabra, HeadCandles and BurningBarrel. Supported decoration tables now
+explicitly define ordinary frame brightness as well. GenericCrush and Null
+clear brightness, including suppressed action entries. DeadLostSoul frames
+are explicitly ordinary.
+
+The save regression exposed spawn brightness surviving restoration into a
+crush frame. State restoration now applies explicit frame brightness without
+running actions; legacy unspecified tables retain their previous behavior.
+Updated all internal restore callers, including lifecycle fixtures.
+Twenty new regression cases cover all bright definitions, ordinary frames,
+state changes and saves. All 7,884 Release tests pass, including 6,679
+Playsim tests. Clean Release build passes with zero warnings/errors; diff
+check passes. Changes remain uncommitted.
+
+Boundary: remaining class tables, sprite/frame rendering, native render flag
+serialization and timing modifiers are still incomplete. No full-port claim.
+
+## Conversion and audit: bullet-puff frame brightness (2026-10-04)
+
+Converted BulletPuff Bright frame metadata from doommisc.zs:92 and native
+SetState brightness assignment from p_mobj.cpp into ActorFrame. Explicit
+frame brightness is applied before actions and even under nofunction.
+BulletPuff now defines its bright first frame and three ordinary frames in
+the state table instead of using actions to toggle brightness.
+
+Five new regression cases cover ordering, suppression, zero-tic chains,
+legacy frame compatibility and puff timing. The initial global reset broke
+two resurrection tests; brightness metadata was made optional so legacy
+managed tables preserve existing gameplay brightness until explicitly
+converted. All 7,864 Release tests pass, including 6,659 Playsim tests.
+Clean Release build with warnings as errors passes; diff check passes.
+Changes remain uncommitted.
+
+Boundary: only explicit frame metadata is converted. Full native rendering,
+frame/sprite flags, remaining class tables and GetTics modifiers remain open.
+
+## Conversion and audit: state action suppression (2026-10-04)
+
+Converted the native AActor::SetState nofunction option from
+src/playsim/p_mobj.cpp:856 into ActorStateMachine.Enter. Suppressed entry
+skips frame actions throughout its immediate zero-tic chain, retaining frame
+timing, transitions and removal. Subsequent timed transitions execute actions
+normally. Existing callers retain action execution by default; ACS
+SetActorState continues to execute actions as native code requires.
+
+Four regression tests cover immediate chains, timed successors, removal and
+action redirects. All 7,859 Release tests pass, including 6,654 Playsim tests.
+Changes remain uncommitted. Native rendering/use flags, GetTics modifiers,
+returned-state VM actions and full recursive SetState semantics remain open;
+the managed queued reentrant action model is unchanged.
+
+## Conversion and audit: native state-name resolution (2026-10-04)
+
+Audited src/p_states.cpp FindState and MakeStateNameList against the shared
+managed ACS resolver. Fixed reversed partial matching: a qualified query now
+falls back to its available parent, selecting the longest matching label.
+Converted Burn, Ice, Disintegrate and XDeath aliases plus native dot-token
+normalization. Both CheckActorState and SetActorState use this resolver.
+
+Added 12 resolution regression cases and one executing ACS bytecode case.
+Corrected four existing Null tests that expected the old partial-match bug;
+they now distinguish partial fallback from exact lookup. All 7,855 Release
+tests pass, including 6,650 Playsim tests. Changes remain uncommitted.
+
+The supported label subset remains limited: full inherited/custom label
+graphs, null-state shadowing and native class-specific actions remain open.
+Overall conversion remains incomplete.
+
+## Conversion and audit: ACS SetActorState (2026-10-04)
+
+Converted missing PCD_SETACTORSTATE execution (opcode 336) from native
+p_acs.cpp:10375. The VM consumes TID/string/exact arguments, resolves local
+or dynamic global string names, selects the activator for TID zero or all
+live matching tagged actors, enters supported named states and pushes the
+successful selection count. Shared label resolution now serves both query
+and selection, preventing decoration frame indices from creating false
+labels. Target snapshots tolerate state actions that mutate the actor list;
+destroyed targets are rejected by the resolver.
+
+The initial test bytecode omitted the LSPEC2 instruction before its light
+special; that fixture error was corrected before final validation.
+Seven bytecode regression cases verify Null/GenericCrush selection, false
+Death and missing labels, tagged actor counts, missing activator and stack
+underflow. All 7,842 Release tests pass, including 6,637 Playsim tests.
+Clean Release build with warnings as errors passes with zero warnings/errors;
+git diff --check passes. Changes remain uncommitted.
+
+Audit boundary: named state support remains the managed label subset, not
+full native inherited/custom class label graphs or DeHackEd states. Dynamic
+string resolution is wired but not covered by these new local-string tests.
+Native class-specific actions, rendering and remaining missile/sector rules
+remain open. Overall conversion remains incomplete.
+
+## Conversion and audit: decoration Null state (2026-10-04)
+
+Converted the inherited Actor Null state for supported decoration tables.
+Native actor.zs defines Null as a one-tic frame followed by Stop; managed
+tables append a distinct one-tic removal frame and ACS queries expose Null.
+Existing Spawn/GenericCrush frame indices retain their meanings. Metadata
+is class-derived at spawn, while saved frame/tics restore through the
+existing archive path. Animated/static decorations, map Gibs and
+DeadLostSoul all support this lifecycle boundary.
+
+Five regression cases verify exact/non-exact label queries, one-tic removal,
+destroyed-actor query rejection and saved Null state removal after restore.
+All 7,835 Release tests pass, including 6,630 Playsim tests. Clean Release
+build with warnings as errors passes with zero warnings/errors;
+git diff --check passes. Changes remain uncommitted.
+
+Audit boundary: sprite invisibility (TNT1), general ACS named-state selection,
+full inherited native label identities/custom class overrides, other generic
+Actor states, crusher transitions and remaining script/renderer/missile
+behavior remain open. Overall conversion remains incomplete.
+
+## Conversion and audit: decoration GenericCrush state (2026-10-04)
+
+Converted inherited Actor GenericCrush holding state for supported Doom
+decorations. Native actor.zs defines GenericCrush as an indefinite frame;
+managed state tables now include a distinct holding frame and ACS queries
+expose its label. Native sharedmisc.zs redirects RealGibs Spawn to GenericCrush,
+which map Gibs inherits despite ClearFlags; map Gibs now aliases its Spawn
+index to the crush frame. DeadLostSoul retains normal timed removal unless
+explicitly placed in the crush holding state. State metadata is reconstructed
+by each spawn definition, with frame/tics restored through existing saves.
+
+Five regression cases verify label visibility, indefinite holding and
+archive restoration for animated/static decorations, map Gibs and
+DeadLostSoul, plus the map Gibs Spawn alias. All 7,830 Release tests pass,
+including 6,625 Playsim tests. Clean Release build with warnings as errors
+passes with zero warnings/errors; git diff --check passes. Uncommitted.
+
+Audit boundary: automatic crusher-to-gibs transitions, POL5 sprite rendering,
+full inherited native state identities, class overrides, MOVEWITHSECTOR,
+other generic Actor states and remaining missile effects/RNG remain open.
+This converts a supported state boundary, not full crusher lifecycle parity.
+Overall conversion remains incomplete.
+
+## Conversion and audit: decoration script state labels (2026-10-04)
+
+Fixed an integration regression introduced by decoration timing conversion:
+generic ACS Pain/Death/Corpse label indices overlapped decoration animation
+frames, incorrectly reporting those labels as present. Spawn-only native
+Actor decorations now carry class-derived label visibility and expose Spawn
+without inventing labels from numeric frame positions. Skip_Super dead
+monster classes retain their existing inherited-label path rather than being
+classified as spawn-only. Metadata is reconstructed by the spawn definition,
+so restoring a saved animation frame does not expose false generic labels.
+
+Nine regression cases cover static and two/three/four-frame decorations,
+marine and Gibs definitions, exact/non-exact queries, mid-loop save restoration
+and unchanged living-monster labels. All 7,825 Release tests pass, including
+6,620 Playsim tests. Clean Release build with warnings as errors passes with
+zero warnings/errors; git diff --check passes. Uncommitted.
+
+Native audit: actor.zs provides Spawn/GenericCrush but no generic Pain/Death
+labels; doomdecorations.zs defines Spawn loops. Full native label graphs,
+GenericCrush query support, inherited dead monster state tables and custom
+class/DeHackEd label overrides remain open. This fixes false positive labels
+within the supported subset and does not claim full class script parity.
+Overall conversion remains incomplete.
+
+## Conversion and audit: Doom decoration state timing (2026-10-04)
+
+Converted native state duration loops for sixteen decoration types from
+doomdecorations.zs: lamps and tall/short torches (four 4-tic frames), heart
+column (two 14-tic frames), evil eye (four 6-tic states), floating skull
+(three 6-tic frames), head candles (two 6-tic frames), live stick (6/8),
+solid/non-solid bloody twitch (10/15/8/6) and burning barrel (three 4-tic
+frames). Static supported decorations hold one indefinite spawn state;
+DeadLostSoul retains its separate timed removal. Tables are configured at
+spawn and existing archives restore current frame and remaining duration.
+
+Eighteen regression cases verify exact frame boundaries across two cycles,
+uneven-loop save restoration and static holding. All 7,816 Release tests
+pass, including 6,611 Playsim tests. Clean Release build with warnings as
+errors passes with zero warnings/errors; git diff --check passes.
+Changes remain uncommitted.
+
+Audit boundary: this converts simulation state timing, not sprite/frame
+rendering, BRIGHT flags or native state identities. EvilEye's repeated B
+sprite is not modeled by timing indices. Full native class/DeHackEd state
+tables and override precedence, corpse actions, MOVEWITHSECTOR and remaining
+missile callbacks/effects/RNG remain incomplete. Overall port incomplete.
+
+## Conversion and audit: DeadLostSoul lifecycle (2026-10-04)
+
+Converted DeadLostSoul map decoration defaults and timed removal. Native
+ deadthings.zs redirects Spawn to LostSoul Death+5; lostsoul.zs defines that
+last frame as six tics followed by Stop. The managed state machine now holds
+one six-tic frame then removes the actor, without executing earlier death
+actions. Skip_Super collision defaults use radius 20/height 16 and no
+SOLID/SHOOTABLE, with pass height zero. Collision coverage includes 59 types.
+
+Three regression cases verify exact removal timing, archive restoration
+mid-frame and no earlier death action replay. All 7,798 Release tests pass,
+including 6,593 Playsim tests. Clean Release build with warnings as errors
+passes with zero warnings/errors; git diff --check passes. Uncommitted.
+
+Audit boundary: sprite rendering and native inherited state identity are
+not represented; this is the supported lifecycle equivalent. Full native
+DeadLostSoul/decoration DeHackEd state baselines and custom class overrides,
+other corpse state offsets, animation/lighting, MOVEWITHSECTOR and remaining
+missile callbacks/effects/RNG remain open. Overall conversion incomplete.
+
+## Conversion and audit: dead monster decoration collision defaults (2026-10-04)
+
+Converted collision defaults for DeadZombieMan, DeadShotgunGuy, DeadDoomImp,
+DeadDemon, DeadCacodemon and map-placed Gibs. Native deadthings.zs uses
+Skip_Super for the dead monster classes; sharedmisc.zs defines map Gibs with
+ClearFlags. Their base Actor radius 20/height 16 and non-solid/non-shootable
+flags now replace generic managed defaults. Pass height is zero. Existing
+explicit primary/dimension patch precedence remains intact.
+
+Eight new regression cases verify all six default sets and missile passage,
+map gibs movement flags and separation from living monster behavior.
+All 7,795 Release tests pass, including 6,590 Playsim tests. Clean Release
+build with warnings as errors passes with zero warnings/errors;
+git diff --check passes. Changes remain uncommitted. Collision default
+coverage now includes 58 Doom decoration types.
+
+Audit boundary: inherited death-state offsets, corpse sprites/actions,
+DeadLostSoul removal behavior and GenericCrush state execution are not
+converted by this change. Base native health and full flag/class semantics,
+MOVEWITHSECTOR, animation/lighting, native DeHackEd baselines and missile
+callbacks/effects/RNG remain open. Overall conversion remains incomplete.
+
+## Conversion and audit: marine decoration and stalagmite collision (2026-10-04)
+
+Converted collision defaults for GibbedMarine, GibbedMarineExtra and
+DeadMarine: deadthings.zs defines these from Actor, with inherited radius
+20/height 16 and no SOLID/SHOOTABLE. Added Stalagmite (DoomEdNum 5050),
+with radius 16/height 48 and SOLID without SHOOTABLE. All four have pass
+height zero, so Stalagmite retains full missile clipping height even under
+explicit MissileClip compatibility. Native identities verified in doomitems.
+Explicit DeHackEd override precedence remains in the decoration helper.
+
+Five regression cases verify all marine default sets and passage, and
+Stalagmite collision with/without clipping compatibility. All 7,787 Release
+tests pass, including 6,582 Playsim tests. Clean Release build with warnings
+as errors passes with zero warnings/errors; git diff --check passes.
+Changes remain uncommitted. Collision default coverage includes 52 types.
+
+Audit boundary: marine spawn sprites/states and generic native health are
+not converted here. Dead monster decorations that enter inherited death
+states, shared Gibs, full MOVEWITHSECTOR behavior, animation/lighting and
+native class/DeHackEd baselines remain open. Overall port incomplete.
+
+## Conversion and audit: Doom floor debris defaults (2026-10-04)
+
+Converted ColonGibs, SmallBloodPool and BrainStem collision defaults from
+ doomdecorations.zs:845 onward: radius 20, heights 4/1/4, NOBLOCKMAP and
+non-solid/non-shootable behavior, with pass height zero. Explicit primary
+patch flags keep precedence. Decoration default coverage now includes 48
+types. Seven tests cover defaults/missile passage, grounded floor carrying
+through the existing FitToSector sector-update path and patch precedence.
+The initial test changed floors before thinker movement, causing ordinary
+falling; it was corrected to exercise the actual sector-update boundary.
+All 7,782 Release tests pass, including 6,577 Playsim tests. Clean Release
+build with warnings as errors passes with zero warnings/errors;
+git diff --check passes. Changes remain uncommitted.
+
+Audit boundary: native MOVEWITHSECTOR registration, persistence and complete
+floor-drop rules are not converted. Existing managed grounded carrying
+supports these defaults, but is not native flag parity. Remaining corpse
+classes, animation/lighting, other game catalogs and missile effects/RNG
+remain incomplete. Overall conversion remains incomplete.
+
+## Conversion and audit: Doom stake and burning barrel defaults (2026-10-04)
+
+Converted collision defaults for DeadStick, LiveStick, HeadOnAStick,
+HeadsOnAStick, HeadCandles and BurningBarrel from doomdecorations.zs,
+with identities verified in mapinfo/doomitems.txt. All six use radius 16,
+SOLID without SHOOTABLE and ProjectilePassHeight -16. Heights are 64 for
+DeadStick/LiveStick/HeadsOnAStick, 56 for HeadOnAStick, 42 for HeadCandles
+and 32 for BurningBarrel. Existing explicit DeHackEd override precedence
+continues to apply. BurningBarrel remains decorative and does not take
+ordinary direct missile damage.
+
+Eight new regression cases verify each default set and actual burning
+barrel blocking/passage under explicit clipping compatibility while retaining
+barrel health. All 7,775 Release tests pass, including 6,570 Playsim tests.
+Clean Release build with warnings as errors passes with zero warnings/errors;
+git diff --check passes. Changes remain uncommitted.
+
+Audit boundary: collision default coverage now includes 45 Doom decoration
+types. Blood pools/gibs with MOVEWITHSECTOR, corpse decorations, animation
+and lighting, other game catalogs and complete class/DeHackEd definitions
+remain open. Missile callbacks/effects and native RNG are also incomplete.
+Overall conversion remains incomplete.
+
+## Conversion and audit: Doom hanging decoration defaults (2026-10-04)
+
+Converted sixteen hanging decoration collision default sets from
+wadsrc/static/zscript/actors/doom/doomdecorations.zs: BloodyTwitch, Meat2-5,
+the five inherited non-solid variants and HangNoGuts/HangBNoBrain plus the
+four HangT variants. DoomEdNum mappings follow mapinfo/doomitems.txt.
+They spawn against the ceiling with NOGRAVITY, native heights 52/64/68/84/88
+and radius 16; non-solid variants inherit height/placement but use radius
+20 and clear SOLID. All are non-shootable and have default pass height zero.
+Explicit DeHackEd primary flags override ceiling/gravity/solidity defaults.
+
+Nineteen regression cases verify all default sets, stable ceiling placement
+after ticking, solid/non-solid missile collisions and primary flag patch
+precedence. All 7,767 Release tests pass, including 6,562 Playsim tests.
+Clean Release build with warnings as errors passes with zero warnings/errors;
+git diff --check passes. Changes remain uncommitted.
+
+Audit boundary: converted decoration collision defaults now cover 39 Doom
+types. Animation/lighting, blood pools/corpse decorations, remaining classes,
+native DeHackEd decoration baselines and other game catalogs remain open.
+No full script/class conversion or native binary save compatibility is
+claimed. Overall conversion remains incomplete.
+
+## Conversion and audit: Doom ground decoration defaults (2026-10-04)
+
+Converted fourteen more collision default sets from doomdecorations.zs:
+Candlestick, Candelabra, EvilEye, FloatingSkull, TorchTree, Blue/Green/RedTorch,
+Stalagtite, TechPillar, BigTree and ShortBlue/Green/RedTorch. Identities were
+verified against mapinfo/doomitems.txt. Defaults retain signed pass height
+-16 and native dimensions, including BigTree radius 32/height 108, TechPillar
+height 128 and Candlestick radius 20/height 14 without SOLID. All are
+non-shootable; the other thirteen are solid. Explicit patch precedence is
+preserved by the existing decoration helper.
+
+Sixteen new regression cases cover each default set plus low missile
+collision through the non-solid candlestick versus the solid candelabra.
+All 7,748 Release tests pass, including 6,543 Playsim tests. Clean Release
+build with warnings as errors passes with zero warnings/errors;
+git diff --check passes. Changes remain uncommitted.
+
+Audit boundary: the helper now covers 23 Doom ground decoration types.
+Animation/lighting, hanging decorations, blood pools/corpses and remaining
+classes still require conversion. Other game catalogs, native decoration
+DeHackEd baselines, automatic clipping compatibility and special missile
+callbacks/effects/RNG remain open. Overall conversion remains incomplete.
+
+## Conversion and audit: Doom lamp and column defaults (2026-10-04)
+
+Converted collision-relevant defaults for TechLamp, TechLamp2, Column,
+TallGreenColumn, ShortGreenColumn, TallRedColumn, ShortRedColumn, HeartColumn
+and SkullColumn from doomdecorations.zs:22-185, with DoomEdNum identities
+verified against mapinfo/doomitems.txt. Map spawning now applies native
+radius 16, per-class heights 40/48/52/60/80, signed ProjectilePassHeight -16
+and SOLID without SHOOTABLE. This replaces generic actor defaults for these
+nine decorations and makes the converted clipping path useful on map actors.
+Explicit DeHackEd width/height/primary flags retain precedence; unrelated
+patches do not replace native decoration dimensions.
+
+Thirteen regression cases verify all nine default sets, real spawned-lamp
+missile passage with/without explicit compatibility, and patch precedence.
+All 7,732 Release tests pass, including 6,527 Playsim tests. Clean Release
+build with warnings as errors passes with zero warnings/errors;
+git diff --check passes. Changes remain uncommitted.
+
+Audit boundary: this is the managed Doom actor spawning path. Animation,
+lighting, remaining decoration classes and other game actor catalogs are
+not converted by this change. Full native decoration DeHackEd baseline
+indices/class parsing, automatic clipping compatibility, special missile
+callbacks and remaining missile effects/RNG remain open. Overall conversion
+is still incomplete.
+
+## Conversion and audit: projectile pass height (2026-10-04)
+
+Converted the projectilepassheight collision subset from p_map.cpp:1627-1650.
+Positive values replace the target's clipping height; negative values use
+their absolute height only with the new explicit MissileClip compatibility
+switch. Otherwise actual Height is used. The upper boundary remains
+inclusive, and target physical height is unchanged. Ripper contacts use the
+same clipping rule. Native g_levellocals.h:875 supplies the explicit
+COMPATF_MISSILECLIP policy; automatic Doom/Chex compatibility is not included.
+
+Actor ProjectilePassHeight has conditional checksum contribution, signed
+pose capture/restore, supported Doom resurrection reset and version 61 save
+support. Old archives clear it; default values preserve existing bytes.
+The actor value is stored as managed fixed point, unlike the native double.
+Compatibility remains simulation configuration and must match on restore.
+Ten regression cases cover zero/positive/negative heights, explicit clipping,
+exact upper boundary, taller override, restored ripper composition, poses,
+legacy clearing and recursive trailer rejection. All 7,719 Release tests
+pass, including 6,514 Playsim tests. Clean Release build with warnings as
+errors passes with zero warnings/errors; git diff --check passes. Uncommitted.
+
+Audit boundary: native automatic Doom/Chex/map-format clipping selection,
+class definition ProjectilePassHeight parsing and native decoration defaults
+remain open. Special missile callbacks, ordinary solid actor pushing,
+fast-projectile movement, poison/blood/sounds and dedicated missile RNG are
+still incomplete. Overall conversion is not complete.
+
+## Conversion and audit: ripper momentum transfer (2026-10-04)
+
+Converted the ripper push branch from p_map.cpp:1702-1708. PUSHABLE targets
+receive missile XY velocity multiplied by their PushFactor unless the
+missile has CANNOTPUSH. The existing per-movement ripped-target set prevents
+duplicate transfer across substeps. Native p_mobj.cpp increments pushtime
+per XY movement; the managed local set provides this ordinary pass scope.
+Vertical velocity is unaffected. Default PushFactor is 0.25, verified in
+wadsrc/static/zscript/actors/actor.zs:528. Negative/zero finite factors are
+preserved; non-finite runtime factors are rejected.
+
+Added runtime fields, ACS PUSHABLE/CANNOTPUSH access, conditional checksums,
+pose persistence and supported Doom resurrection reset. Version 60 adds
+push flag bits and a double factor to the rip archive. Older formats clear
+push flags and restore factor 0.25; default rules preserve existing bytes.
+Nine regression cases verify factors and gates, single transfer over many
+substeps, vertical preservation, flag queries, loaded transfer, snapshots,
+legacy clearing and non-finite rejection. All 7,709 Release tests pass,
+including 6,504 Playsim tests. Clean Release build with warnings as errors
+passes with zero warnings/errors; git diff --check passes. Uncommitted.
+
+Audit boundary: ordinary solid-actor/player pushing is not wired, nor are
+push sounds/rumble, wallrun compatibility push timing, fast-projectile
+per-step handling or class definition PushFactor parsing. Native doubles
+are converted into managed fixed-point velocity at the transfer boundary.
+Poison, special missile callbacks, blood/sounds and dedicated missile RNG
+remain open. Overall conversion remains incomplete.
+
+## Conversion and audit: ripper level and boss restrictions (2026-10-04)
+
+Converted native CheckRipLevel (p_map.cpp:1214) and the NOBOSSRIP/BOSS gate
+(p_map.cpp:1695). Positive RipLevelMin/Max are inclusive constraints on
+RipperLevel; zero/negative limits are unrestricted, and contradictory
+positive ranges reject passage. Rejected rips use the existing stopping
+impact path while retaining the missile RIP damage dice. NOBOSSRIP is
+registered in thingdef_data.cpp:249; the three integer fields are exposed
+in vmthunks_actors.cpp:2077-2079.
+
+Added runtime actor fields, qualified/unqualified ACS NOBOSSRIP access,
+conditional checksums, pose persistence and supported Doom resurrection
+reset. Version 59 extends the rip trailer with flag bit 4 and three signed
+integers; version 58 and earlier clear these fields and retain prior bytes
+when defaults are used. New flag masks reject undefined bits.
+
+Fifteen regression cases cover inclusive boundaries, unrestricted negative
+limits, contradictory ranges, all boss/flag combinations, loaded stopping
+behavior, signed snapshot restoration, old format clearing and invalid
+extended bits. All 7,700 Release tests pass, including 6,495 Playsim tests.
+Clean Release build with warnings as errors passes with zero warnings/errors;
+git diff --check passes. Changes remain uncommitted.
+
+Audit boundary: actor class/script definition parsing for these integer
+fields, pushable momentum, fast-projectile per-step ripping, special hit
+callbacks, poison/blood/sounds and dedicated native missile RNG remain open.
+This completes the managed ordinary ripper eligibility rules, not full
+native collision or save binary compatibility. Overall port incomplete.
+
+## Conversion and audit: ordinary ripper collision (2026-10-04)
+
+Converted the ordinary RIP pass-through and DONTRIP stopping behavior from
+p_map.cpp:1693-1717. Ripping contacts are processed in swept contact order
+before blocking impacts. Per-tick target tracking prevents repeated damage
+across movement substeps while allowing another hit on the next tick;
+p_checkposition.h documents this ordinary once-per-tic scope. Owner and
+existing collision passage/attack eligibility rules remain in the path.
+Stopping impacts still use ripper dice because native damage selection
+checks the missile's RIP flag even when the victim rejects ripping.
+
+RIP/DONTRIP have case-insensitive qualified ACS access, checksum markers,
+pose capture/restore, supported Doom resurrection reset and version 58
+save support. Older saves clear both; unknown bits are rejected. Seven
+regression cases cover multiple targets, overlap next tick, DONTRIP dice,
+solid non-shootable obstruction, owner exclusion, save composition and
+loaded behavior, snapshot restoration, legacy clearing and invalid bits.
+All 7,685 Release tests pass, including 6,480 Playsim tests. Clean Release
+build with warnings as errors passes with zero warnings/errors;
+git diff --check passes. Changes remain uncommitted.
+
+Audit boundary: RipLevelMin/Max/RipperLevel, NOBOSSRIP, pushable actor
+momentum, special hit callbacks, fast-projectile per-step ripping, poison,
+blood/sound effects and dedicated native missile RNG remain open. Swept
+contact ordering is the managed collision model, not native blockmap order.
+Full native class defaults/script execution remain incomplete.
+
+## Conversion and audit: shared missile damage helpers (2026-10-04)
+
+Converted the ProjectileActor GetMissileDamage boundary from native
+p_mobj.cpp:3720: parameterized mask/add dice, constant zero-mask evaluation
+without consuming random state, and expression results without dice.
+Converted the direct damage/healing subset of p_map.cpp:1327 into callable
+DoMissileDamage. Ordinary impact now uses this helper. Explicit ripper calls
+use (random & 3) + 2, independent of STRIFEDAMAGE; ordinary calls use the
+existing Strife/ordinary masks and +1. The helper does not destroy the
+missile; the impact caller retains responsibility for its lifecycle.
+
+Ten regression cases cover four mask/add pairs across sixteen seeds, both
+Strife modes with ripper dice, negative/zero/positive expressions, constant
+and expression calls without a simulation, and explicit failure when a
+random calculation lacks a simulation. All 7,678 Release tests pass,
+including 6,473 Playsim tests. Clean Release build with warnings as errors
+passes with zero warnings/errors; git diff --check passes. Uncommitted.
+
+Audit boundary: ripper damage calculation is converted, but ripper collision
+continuation/repeat-hit tracking and RIP flag wiring remain open. Native
+pr_missiledamage is still represented by the managed combat RNG. Poison,
+CAUSEPAIN and full zero-damage FORCEPAIN behavior, blood/sound effects and
+VM DamageFunc persistence are not claimed. The existing managed negative
+base damage clamp remains; native negative DamageVal represents a damage
+function and asserts when that function is absent. Overall port incomplete.
+
+## Conversion and audit: global damage catalog persistence (2026-10-04)
+
+Closed save/snapshot persistence for the managed simulation-local damage
+catalog: Factor, ReplaceFactor and NoArmor now round-trip in version 57.
+Snapshots own a copied catalog; restoration replaces runtime definitions.
+Older archives reconstruct built-in and current level MAPINFO definitions,
+clearing unsaved runtime overrides. Default levels keep existing archive
+bytes. Levels with damage definitions explicitly archive their catalog,
+including a runtime reset to built-in defaults, so loading cannot silently
+reinstate an overridden level definition.
+
+Twelve regression cases cover factor replacement/multiplication and armor
+bypass after load, actor group/flag/power composition, snapshot independence,
+Drowning overrides, explicit resets of level definitions, legacy defaults,
+and malformed names, UTF-8, non-finite values, flags and versions.
+All 7,668 Release tests pass, including 6,463 Playsim tests. Clean Release
+build with warnings as errors passes with zero warnings/errors;
+git diff --check passes. Changes remain uncommitted.
+
+Native audit: src/gamedata/info.cpp:911 supplies NoArmor; lines 945-995 select
+exact actor factors, actor fallback/global replacement and multiplication.
+The native definitions are global MAPINFO configuration; managed archives
+preserve the simulation-local representation, not native binary saves.
+Obituary delivery, full class/script execution, native missile RNG and
+ripper collision/dice remain open. Overall conversion remains incomplete.
+
+## Conversion and audit: actor damage factor persistence (2026-10-04)
+
+Closed the actor damage rule save/snapshot gap: scalar DamageFactor,
+outgoing DamageMultiplier and case-insensitive typed factor tables now
+round-trip. Capture copies the table; restoration replaces it so later
+mutations cannot contaminate a saved pose. Version 56 wraps prior actor
+flag/group/power archives and stores fixed-point scalar values plus named
+double factors. Identity-only actors keep existing archive bytes; older
+archives restore identity scalars and empty tables.
+
+Thirteen regression cases cover loaded exact/fallback/zero/negative damage,
+combined group/flag/power trailers, scalar-only saves, snapshot independence,
+legacy clearing, malformed lengths/counts/versions, invalid UTF-8, NaN and
+case-insensitive duplicate names. All 7,656 Release tests pass, including
+6,451 Playsim tests. Clean Release build with warnings as errors passes with
+zero warnings/errors; git diff --check passes. Changes remain uncommitted.
+
+Native audit: src/gamedata/info.cpp:945-995 selects exact factors before the
+None fallback/global rules and truncates the resulting double product.
+The managed damage path retains its separate scalar and typed truncation
+stages. Native typed factors are class metadata; the managed runtime table
+is archived per actor. This is managed archive compatibility, not native
+binary save compatibility. Global damage catalog persistence, full class
+metadata/script execution, native missile RNG and ripper behavior remain
+open; no claim is made that the overall conversion is complete.
+
+## Conversion and audit: actor group persistence (2026-10-04)
+
+Closed the managed save/snapshot gap for InfightingGroup, ProjectileGroup
+and SplashGroup. Version 55 stores three signed integers per actor and wraps
+existing flag and timed-power archives. Legacy saves clear these fields;
+all-zero groups preserve existing archive bytes. Trailer size, prior version,
+actor count and count arithmetic are validated before restoring values.
+
+Eight regression cases verify flag/power composition, restored projectile
+immunity, independent retaliation suppression, splash immunity, the -1
+projectile sentinel, pose restoration, legacy clearing and malformed data.
+The initial combined behavior fixture was corrected: matching projectile
+groups prevent damage before retaliation can run. All 7,643 Release tests
+pass, including 6,438 Playsim tests. Clean Release build with warnings as
+errors passes with zero warnings/errors; git diff --check passes.
+
+Native audit references: p_interaction.cpp:1763 reads class infighting_group;
+p_map.cpp:1230 reads class projectile_group; p_map.cpp:6340 compares target
+and explosion splash_group. Native values are class metadata, whereas the
+managed actor fields also permit runtime overrides; this archive preserves
+those managed overrides and does not claim native binary compatibility.
+Damage factor persistence, native dedicated missile RNG, ripper behavior,
+and full class/script definition execution remain open. Uncommitted.
+
+## Conversion and audit: STRIFEDAMAGE persistence (2026-10-04)
+
+Converted the remaining actor flag serialization boundary for STRIFEDAMAGE.
+Native p_mobj.cpp serializes flags4 (line 253); the managed pose now captures
+and restores StrifeDamage. Save version 54 adds bit 16 to the actor flag
+trailer and composes with both timed-power trailer formats. Default saves
+retain their existing format, older saves clear the flag, and undefined bits
+are rejected under each version's existing mask.
+
+Four regression cases cover loaded missile dice with/without timed powers,
+pose restoration and legacy clearing, and malformed flag rejection.
+All 7,635 Release tests pass, including 6,430 Playsim tests. The clean Release
+build with warnings treated as errors passes with zero warnings/errors;
+git diff --check passes. Changes remain uncommitted.
+
+Audit boundary: STRIFEDAMAGE persistence is closed. Dedicated native missile
+RNG, ripper collision/dice, custom class/script defaults, damage expression
+serialization, actor group persistence and damage factor persistence remain
+open. Managed archive version 54 is not native binary save compatibility.
+
+## Conversion and audit: STRIFEDAMAGE missile dice (2026-10-04)
+
+Converted MF4_STRIFEDAMAGE registration and native non-ripper missile dice
+selection from thingdef_data.cpp/p_map.cpp. The actor flag selects mask 3
+(multipliers 1..4) instead of mask 7 (1..8). ACS qualified/unqualified access,
+conditional checksum contribution and supported Doom resurrection clearing
+are wired. Damage expression results continue to bypass impact dice.
+
+Four regression cases verify exact dice across sixteen seeds for each mode,
+expression bypass and flag query/clear. All 7,631 Release tests pass, including
+6,426 Playsim tests. A clean Release build with warnings treated as errors
+passes with zero warnings and errors. Changes remain uncommitted.
+
+Audit boundary: flag pose/save persistence, native dedicated missile RNG,
+ripper collision/dice, custom definition defaults and full script execution
+remain open. The managed combat RNG remains the existing random source.
+
+## Conversion and audit: missile damage expression results (2026-10-04)
+
+Converted the DamageFunc result boundary and P_DoMissileDamage healing branch
+from p_mobj.cpp/p_map.cpp. A managed projectile expression returns its amount
+without impact dice. Positive amounts dispatch ordinary damage; nonpositive
+amounts use GiveBody unless ForcePain requests damage dispatch. Existing
+nonexpression base-damage dice remain unchanged.
+
+Four regressions cover exact positive/zero/negative results, healing caps,
+single evaluation and no impact RNG consumption (pain disabled in the fixture).
+All 7,627 Release tests pass, including 6,422 Playsim tests. A clean Release
+build with warnings treated as errors passes with zero warnings and errors.
+Changes remain uncommitted.
+
+Audit correction: a negative DeHackEd base value without DamageFunc is invalid
+in native GetMissileDamage; negative expression results are the healing case.
+Native script expression compilation, callback persistence/checksum, ripper/
+Strife dice, CausePain and full zero-damage pain handling remain open.
+
+## Conversion and audit: missile damage, speed and dimensions from DeHackEd (2026-10-04)
+
+Wired parsed Missile damage, Speed, Width and Height class patches into the
+supported missile spawn path before aiming. Added explicit SpeedPatched metadata
+so a group-only patch does not replace missile speed with generic baseline zero.
+Damage retains the existing impact dice behavior; patched dimensions affect the
+actual collision cylinder. Native field assignments were checked in d_dehacked.cpp.
+
+Six regressions cover integer/fixed-point speed inputs, aim velocity, dimensions,
+zero/positive/negative base damage at direct impact, and unchanged defaults for
+group-only patches. All 7,623 Release tests pass, including 6,418 Playsim tests.
+A clean Release build with warnings treated as errors passes with zero warnings
+and errors. Changes remain uncommitted.
+
+Audit boundary: complete missile class/state/flag patch handling, negative damage
+healing semantics, native fast-speed overrides, custom classes and group save
+persistence remain open. Negative impact damage still follows the existing
+managed zero-damage clamp; native negative-damage parity is not claimed.
+
+## Conversion and audit: projectile class group patch loading (2026-10-04)
+
+Extended managed DeHackEd baseline indices through native dehsupp.txt entry
+37 and wired supported projectile kinds to their native thing indices at
+spawn. Infighting, projectile and splash group patches now reach actual
+missiles, including Rocket/CyberRocket's shared class mapping. Existing radius
+tests now use a parsed rocket-class splash patch instead of manual assignment.
+
+Ten new cases verify all supported missile mappings; patched rocket radius
+tests verify gameplay immunity and direct hits. All 7,617 Release tests pass,
+including 6,412 Playsim tests; focused radius tests also pass after fixture
+integration. A clean Release build with warnings treated as errors passes
+with zero warnings and errors. Changes remain uncommitted.
+
+Audit boundary: newly recognized nonprojectile baseline entries use existing
+generic defaults; complete native actor/state defaults are not claimed. Other
+missile DeHackEd fields, replacement classes, archvile fire defaults and group
+save/pose persistence remain open. This closes group patch delivery for the
+supported projectile spawn path.
+
+## Conversion and audit: MBF21 splash group immunity (2026-10-04)
+
+Converted native radius-attack matching nonzero splash-group immunity from
+p_map.cpp. Projectile blasts and the managed archvile radius loop compare
+victim groups with the explosion actor, independently of the owner. Direct
+projectile hits are unaffected. DeHackEd Splash group parsing normalizes
+negative values to zero; initial actor, bot and lost-soul spawns receive defaults.
+Nonzero splash groups contribute to deterministic checksums.
+
+Five regressions cover matching/different/zero groups, shooter versus explosion
+identity, preserved direct hits and parsed spawn defaults/negative normalization.
+All 7,607 Release tests pass, including 6,402 Playsim tests. A clean Release
+build with warnings treated as errors passes with zero warnings and errors.
+Changes remain uncommitted.
+
+Audit boundary: group pose/save persistence, DeHackEd projectile-class default
+application, replacement archvile fire classes, native diagnostics, custom
+class definitions and full radius flags remain open. Projectiles currently
+accept explicit SplashGroup assignment; projectile-class patch loading is not
+claimed complete.
+
+## Conversion and audit: MBF21 projectile group immunity (2026-10-04)
+
+Converted P_ProjectileImmune group rules from p_map.cpp and Projectile group
+DeHackEd input. Default zero uses species/DoHarmSpecies; nonzero matching groups
+are immune; groupless -1 disables immunity except self-comparison. Negative
+patch values normalize to -1. Initial actor, bot and lost-soul spawn paths
+receive patched defaults and nonzero groups contribute to checksums.
+
+Nine regressions cover default species, DoHarmSpecies, equal/unequal groups,
+groupless/self behavior and parsed spawn damage eligibility. All 7,602 Release
+tests pass, including 6,397 Playsim tests. A clean Release build with warnings
+treated as errors passes with zero warnings and errors. Changes are uncommitted.
+
+Audit boundary: group pose/save persistence, custom class/species definitions,
+projectile contact effects, splash groups and full native group metadata remain
+open. Existing player damage eligibility bypass remains intact; the immunity
+helper itself now uses native species comparison rather than excluding players.
+
+## Conversion and audit: MBF21 infighting groups (2026-10-04)
+
+Converted the native OkayToSwitchTarget nonzero matching infighting-group
+restriction and DeHackEd Infighting group field from p_interaction.cpp and
+d_dehacked.cpp. Patched defaults reach initial actor, bot and lost-soul spawn
+paths. Zero groups do not suppress retaliation; matching nonzero groups do.
+Damage remains independently eligible. Negative patch values normalize to
+zero, matching native normalization. Nonzero groups contribute to checksums.
+
+Four regressions cover parsed spawn defaults, equal/unequal/zero groups,
+damage without retaliation and negative normalization. All 7,593 Release
+tests pass, including 6,388 Playsim tests. A clean Release build with warnings
+treated as errors passes with zero warnings and errors. Changes are uncommitted.
+
+Audit boundary: group save/pose persistence, custom class property loading,
+master/minion relationships, projectile/splash groups and native negative-value
+diagnostic output remain open. This closes the infighting target-switch rule
+and its managed DeHackEd input, not all MBF21 grouping behavior.
+
+## Conversion integration audit: NOINFIGHTSPECIES persistence (2026-10-04)
+
+Closed NOINFIGHTSPECIES capture/restore and binary save gaps. Version 53 adds
+bit 8 to the existing actor flag trailer; older formats retain their previous
+allowed bits and clear this flag on restore. Power timer trailers may wrap
+version 53 without admitting recursive power trailers. Active flags require
+the complete save path rather than being silently omitted.
+
+Four regressions cover fresh restore with/without Buddha timer wrapping,
+post-load damage without same-species retaliation, pose restoration, unchanged
+legacy bytes and invalid bits. All 7,589 Release tests pass, including 6,384
+Playsim tests. A clean Release build with warnings treated as errors passes
+with zero warnings and errors. Changes remain uncommitted.
+
+Audit boundary: native archive compatibility, custom species/defaults and
+infighting groups remain open. Managed flag persistence is now complete for
+this target-switch rule.
+
+## Conversion and audit: NOINFIGHTSPECIES retaliation rule (2026-10-04)
+
+Converted MF7_NOINFIGHTSPECIES from native OkayToSwitchTarget in
+p_interaction.cpp and its thingdef_data.cpp flag registration. The actor flag
+blocks same-species target switching independently of damage eligibility.
+Qualified/unqualified ACS access, conditional checksum contribution and
+supported Doom resurrection default clearing are wired. Species comparisons
+reuse existing native ancestry handling, including Spectre/Demon.
+
+Five regressions cover enabled/disabled same-species retaliation, different
+species, continued damage, ACS query/clear and ancestry. All 7,585 Release
+tests pass, including 6,380 Playsim tests. A clean Release build with warnings
+treated as errors passes with zero warnings and errors. Changes are uncommitted.
+
+Audit boundary: flag save persistence, custom class defaults/species, infighting
+groups and full script definitions remain open. This closes the managed
+retaliation gate, not a general same-species damage immunity rule.
+
+## Conversion integration audit: damage rule checksums (2026-10-04)
+
+Closed the deterministic checksum gap introduced by converted actor-local and
+global damage factors. Authority checksums now include custom catalog factors,
+ReplaceFactor/NoArmor and actor typed factors. Canonical names and sorted
+entries remove case/insertion-order differences; signed zero is normalized.
+Unchanged built-in Drowning and empty actor tables preserve existing streams.
+
+Six regressions cover equivalent rule ordering/case, distinct factors/flags,
+actor factors and built-in redefinition. All 7,580 Release tests pass,
+including 6,375 Playsim tests. A clean Release build with warnings treated as
+errors passes with zero warnings and errors. Changes remain uncommitted.
+
+Audit boundary: this is managed deterministic integration, not a native hash
+format conversion. Catalog/typed-factor save persistence, default restoration,
+arbitrary modifier-chain checksums and full resource ordering remain open.
+
+## Conversion and audit: quoted damage definitions and old-style map boundaries (2026-10-04)
+
+Fixed two gaps found while auditing the new MAPINFO conversion. Damage type
+names and obituary values now strip quoted delimiters as native scanner string
+values do; empty names and unterminated quoted values fail explicitly. Old-style
+map property parsing now stops before a following DamageType declaration.
+The gameplay parsing fixture now uses a quoted name to verify actual lookup.
+
+Five new regressions cover quoted values, old-style boundaries and malformed
+quotes. All 7,574 Release tests pass, including 6,369 Playsim, 590 MapLoader
+and 40 Gamedata tests. A clean Release build with warnings treated as errors
+passes with zero warnings and errors. Changes remain uncommitted.
+
+Audit boundary: full native scanner escape processing, complete MAPINFO grammar,
+multi-archive ordering, obituary display and catalog persistence/checksum remain
+open. This fixes specific parsing regressions, not the entire native scanner.
+
+## Conversion and audit: WAD damage definition startup integration (2026-10-04)
+
+Wired parsed damage definitions from the existing WAD MAPINFO/ZMAPINFO pass
+into PlayLevel, all three map decode branches, simulation copies and authority
+startup. Later selected lumps replace earlier definitions by case-insensitive
+name; existing ZMAPINFO selection supersedes MAPINFO within the archive.
+Startup applies level factors/ReplaceFactor/NoArmor over built-in defaults.
+
+Three regressions cover WAD lump merging, ZMAPINFO selection, simulation copy
+and startup gameplay factor/armor behavior. All 7,569 Release tests pass,
+including 6,369 Playsim and 590 MapLoader tests. A clean Release build with
+warnings treated as errors passes with zero warnings and errors.
+Changes remain uncommitted.
+
+Audit boundary: multi-archive resource ordering, full MAPINFO grammar, obituary
+display, catalog save/checksum and custom factor default restoration remain
+open. This closes automatic definition delivery in the existing single-WAD
+level loading path; it does not claim the full native resource registry.
+
+## Conversion and audit: MAPINFO damage type parsing (2026-10-04)
+
+Converted ParseDamageDefinition from info.cpp into the existing MapInfoParser:
+Factor, ReplaceFactor, NoArmor and Obituary are parsed; zero Factor sets
+ReplaceFactor. Case-insensitive repeated definitions replace the previous
+definition. Unknown properties, invalid factors and incomplete blocks fail.
+DamageTypeCatalog.TryLoadMapInfo applies parsed factor/armor rules only after
+the whole input succeeds, preventing partial catalog mutation.
+
+Six regressions cover parsed gameplay damage/armor, invalid input isolation,
+replacement and implicit zero-factor replacement. All 7,566 Release tests
+pass, including 6,368 Playsim tests. A clean Release build with warnings
+treated as errors passes with zero warnings and errors. Changes are uncommitted.
+
+Audit boundary: automatic WAD lump loading into simulation catalogs, obituary
+display, full MAPINFO grammar, catalog persistence/checksum and native global
+registry interoperability remain open. This closes text parsing and explicit
+catalog loading; automatic archive integration is not yet complete.
+
+## Conversion and audit: damage type NoArmor definitions (2026-10-04)
+
+Converted DamageTypeDefinition.IgnoreArmor lookup from info.cpp and its use
+by native armor.zs into the managed damage type catalog and armor gate.
+Definitions now carry NoArmor; built-in common MAPINFO Drowning is seeded
+with NoArmor and can be redefined. Detached actors retain the existing built-in
+Drowning behavior. Unknown types retain ordinary armor handling. NoArmor does
+not bypass damage factors or other protection stages.
+
+Six regressions cover player/monster armor, enabled/disabled definitions,
+case-insensitive names, Drowning redefinition, and factor composition.
+All 7,560 Release tests pass, including 6,362 Playsim tests. A clean Release
+build with warnings treated as errors passes with zero warnings and errors.
+Changes remain uncommitted.
+
+Audit boundary: MAPINFO parsing, catalog save/checksum, other damage type
+fields, custom armor inventory and native registry interoperability remain
+open. NoArmor currently enters through built-in defaults or the managed API.
+
+## Conversion and audit: global damage factor precedence (2026-10-04)
+
+Converted DamageTypeDefinition GetMobjDamageFactor global factor and
+ReplaceFactor precedence from info.cpp. A simulation-local catalog supplies
+global factors to shared damage handling. Exact actor factors win; otherwise
+global factors multiply a nonnegative None fallback or replace it when marked.
+Without a fallback, the global factor is used directly. Untyped damage does
+not consult global definitions. NoFactor bypasses the combined factor stage.
+
+Eight regressions cover replacement/multiplication, exact overrides, global
+immunity/bypass, case-insensitive lookup, untyped damage, and simulation
+isolation. All 7,554 Release tests pass, including 6,356 Playsim tests. A clean
+Release build with warnings treated as errors passes with zero warnings and
+errors. Changes remain uncommitted.
+
+Audit boundary: MAPINFO definition loading, NoArmor/other damage type fields,
+catalog and typed-factor persistence/checksum, default restoration and native
+global registry interoperability remain open. The catalog must currently be
+configured through its managed API.
+
+## Conversion and audit: typed actor damage factors (2026-10-04)
+
+Converted actor-local named damage factor lookup from GetMobjDamageFactor and
+ApplyDamageFactor in info.cpp/p_mobj.cpp. Shared damage applies the scalar
+factor first, then a case-insensitive exact typed factor or None fallback,
+with separate integer truncation before special damage and armor. Missing
+factors use identity. Negative fallback is ignored; exact factors retain native
+numeric behavior within representable ranges. NoFactor bypasses both stages.
+
+Ten regressions cover lookup, fallback, case, rounding, armor, bypass flags,
+zero immunity and negative factors. All 7,546 Release tests pass, including
+6,348 Playsim tests. A clean Release build with warnings treated as errors
+passes with zero warnings and errors. Changes remain uncommitted.
+
+Audit boundary: global DamageTypeDefinition factors/ReplaceFactor, class
+definition loading, typed-factor save/checksum/default restoration and custom
+script access remain open. Managed overflow saturates; native out-of-range
+conversion equivalence is not claimed. This closes actor-local factor math,
+not the complete global damage type definition system.
+
+## Conversion and audit: power definition duration units (2026-10-04)
+
+Converted native Powerup.Duration normalization from thingdef_properties.cpp:
+nonnegative values are tics, negative values are seconds multiplied by TICRATE.
+Player GivePowerup accepts a supported power kind and definition duration,
+normalizes before granting, then uses the converted additive/refresh rules.
+Existing tic-based grant methods retain their input contract.
+
+Twelve regression cases cover default durations, zero, positive tics, extreme
+values, all supported power grants, additive/forced refresh, and invalid kinds.
+All 7,536 Release tests pass, including 6,338 Playsim tests. A clean Release
+build with warnings treated as errors passes with zero warnings and errors.
+Changes remain uncommitted.
+
+Audit boundary: this converts the property calculation and grant entry point,
+not class-definition parsing or PowerupGiver world pickups. Unrepresentable
+negative durations throw before mutation; native overflow equivalence is not
+claimed. Blend/MaxEffectTics, custom classes, infinite powers and travel remain
+open.
+
+## Conversion and audit: additive and forced power duration refresh (2026-10-04)
+
+Converted finite Powerup.HandlePickup duration merging into a shared helper
+used by player damage, protection and Buddha grants. AdditiveTime adds incoming
+tics before the blink gate; AlwaysPickup permits refresh above the threshold.
+Ordinary refresh never shortens the timer and zero incoming tics do nothing.
+Existing parameterless grant calls preserve their default durations and rules.
+
+Eleven regression cases cover gate boundaries, shorter durations, additive and
+forced refresh through all three grants, ticking, and invalid input/overflow.
+All 7,524 Release tests pass, including 6,326 Playsim tests. A clean Release
+build with warnings treated as errors passes with zero warnings and errors.
+Changes remain uncommitted.
+
+Audit boundary: durations are normalized nonnegative tics; definition duration
+normalization, MaxEffectTics/blend transfer, infinite powers, world pickups and
+travel remain open. Additive overflow throws before mutation rather than
+claiming native integer-overflow equivalence. ACS default grants do not expose
+these custom options yet.
+
+## Conversion and audit: Buddha persistence and death lifecycle (2026-10-04)
+
+Closed missing PowerBuddha pose/binary persistence and inherited native
+Powerup.OwnerDied destruction. The power timer trailer uses version 52 only
+when Buddha is active; version 51 damage/protection archives remain supported.
+Legacy restores clear Buddha and malformed negative timers are rejected.
+Inventory clear and pistol-start now use the same power-slot reset boundary.
+
+Five regressions cover fresh-actor binary restore with all three powers,
+survival after load, changed-timer pose restore, legacy clearing, forced and
+telefrag death removal, and malformed timers. All 7,513 Release tests pass,
+including 6,315 Playsim tests. A clean Release build with warnings treated as
+errors passes with zero warnings and errors. Changes remain uncommitted.
+
+Audit correction: the older same-actor Buddha restore test did not prove timer
+capture; it retained an unchanged runtime value. Explicit timer mutation and
+fresh-actor restore now cover the missing behavior. The older cooperative
+respawn fixture incorrectly expected Buddha to survive death; its expectation
+now follows inherited Powerup.OwnerDied destruction regardless of inventory
+retention. Custom power inventory,
+world pickups, travel, and native archive interoperability remain open.
+
+## Conversion and audit: Buddha inventory access and power bytecode dispatch (2026-10-04)
+
+Converted missing PowerBuddha ACS inventory grant/count/take access using the
+existing native-aligned timer and grant rules. Added actual ACS VM regressions
+for PowerDamage, PowerProtection and PowerBuddha: direct grants and inventory
+queries, TID-targeted actor grants/removal, and Buddha survival until removal.
+This closes the adapter-only test gap recorded in the previous audit.
+
+Seven new cases pass. All 7,508 Release tests pass, including 6,310 Playsim
+tests. A clean Release build with warnings treated as errors passes with zero
+warnings and errors. Changes remain uncommitted.
+
+Audit boundary: PowerBuddha persistence/death policy needs a separate audit;
+world pickups, nonplayer power inventory, custom factors/classes, arbitrary
+inventory ordering and travel remain open. This converts script inventory
+access and verifies real bytecode dispatch, not the full powerup system.
+
+## Conversion and audit: ACS damage power inventory operations (2026-10-04)
+
+Wired PowerDamage and PowerProtection into the existing managed ACS inventory
+adapter: positive GiveInventory grants the default timer, CheckInventory returns
+one while active, maximum queries return one, and positive TakeInventory clears
+the power. Case-insensitive names and existing script broadcast/TID dispatch
+paths use these shared operations. Powerup pickup refresh rules remain in the
+player grant methods; grant amount does not multiply effect duration.
+
+Four regressions cover grants, amount/count distinction, timer queries, damage
+effects, removal, and the adapter's nonpositive guards. All 7,501 Release tests
+pass, including 6,303 Playsim tests. A clean Release build with warnings treated
+as errors passes with zero warnings and errors. Changes are uncommitted.
+
+Audit boundary: these tests exercise the adapter, not new bytecode fixtures.
+World pickups, nonplayer power inventory, custom factors/classes, native class
+lookup/error reporting, full inventory ordering and travel remain open.
+
+## Conversion and audit: damage power removal on death and inventory reset (2026-10-04)
+
+Converted the ordinary Powerup.OwnerDied destruction rule from powerups.zs
+for managed PowerDamage/PowerProtection timer slots. Both timers clear on
+the player death transition, including direct health changes. Player inventory
+clear and pistol-start reset also clear the slots at the inventory boundary.
+This prevents damage/protection effects surviving item removal or respawn.
+
+Six regressions cover ACS inventory clear, pistol start, damage/direct death,
+and cooperative/deathmatch respawn with timer queries and subsequent damage.
+All 7,497 Release tests pass, including 6,299 Playsim tests. A clean Release
+build with warnings treated as errors passes with zero warnings and errors.
+Changes remain uncommitted.
+
+Audit boundary: pickup/ACS grants, travel policy, ownership sounds, protection
+flag transfer, arbitrary inventory ordering, and custom power classes remain
+open. Existing PowerBuddha death behavior was not changed in this conversion.
+
+## Conversion and audit: player damage power persistence (2026-10-04)
+
+Added capture/restore, conditional deterministic checksum contributions, and
+version 51 binary persistence for PowerDamage/PowerProtection timers. The
+trailer preserves the previous archive version, validates size/count/timers,
+and leaves zero-timer archives unchanged. Legacy restores clear both timers.
+Active timers require the complete geometry-backed save path to prevent loss.
+
+Three regressions cover combined power/actor-flag round trips, post-load damage
+and expiration, pose restoration, legacy clearing/default bytes, and malformed
+negative timers. All 7,491 Release tests pass, including 6,293 Playsim tests;
+the persistence tests also pass after tightening write validation. A clean
+Release build with warnings treated as errors has zero warnings and errors.
+Changes remain uncommitted.
+
+Audit boundary: native archive interoperability, custom modifier persistence,
+pickup grants, death/respawn/travel reset policy, and full inventory ordering
+remain open. This closes save and pose restoration for the default player
+damage power timer slots; reset behavior is not yet claimed complete.
+
+## Conversion and audit: player damage power grants and expiration (2026-10-04)
+
+Added player PowerDamage/PowerProtection timers and grant methods using native
+25-second defaults and the Powerup.HandlePickup ordinary refresh threshold.
+Active timers apply the converted default calculations through shared damage
+handling and decrement with player ticks. ACS GetActorPowerupTics recognizes
+both names. Two end-to-end regressions cover grants, non-refresh above the
+blink threshold, refresh at the threshold, damage effects, and expiration.
+All 7,488 Release tests pass, including 6,290 Playsim tests. A clean Release
+build with warnings treated as errors passes with zero warnings and errors.
+Changes remain uncommitted.
+
+Audit boundary: this uses direct managed player grants, not pickup or ACS
+GiveInventory attachment. Save/checksum/travel/death reset support for these
+timers, custom class factors, sounds, protection flag transfer, additive time,
+AlwaysPickup and full inventory ordering remain open. Default timed powers
+run after the explicit modifier chain; arbitrary native inventory order is
+not represented by these player slots.
+
+## Conversion and audit: damage/protection power calculations (2026-10-04)
+
+Converted PowerDamage and PowerProtection ModifyDamage calculations from
+powerups.zs and ApplyDamageFactors/DmgFactors::Apply from vmthunks_actors.cpp
+and info.cpp. Empty factor tables use x4 damage or integer /4 protection;
+populated tables use an exact type, then None fallback, then unchanged damage.
+Names are case-insensitive. Negative factors mean unchanged damage. Damage
+power clamps positive results to at least 1; protection clamps to at least 0.
+Both are concrete nodes in the managed damage modifier chain.
+
+Eleven regressions cover stage selection, defaults, populated factor lookup,
+floors, nonpositive inputs, and shared damage bypass flags. All 7,486 Release
+tests pass, including 6,288 Playsim tests. A clean Release build with warnings
+treated as errors passes with zero warnings and errors. Changes are uncommitted.
+
+Audit boundary: pickup/ACS attachment, power lifetimes, ownership sounds,
+protection flag transfer, class-definition loading, and modifier persistence
+remain open. Managed arithmetic saturates int overflow; equivalence to native
+out-of-range numeric conversion is not claimed. These calculations do not yet
+make the powers available through gameplay pickups.
+
+## Conversion and audit: inventory damage modifier traversal (2026-10-04)
+
+Converted AActor::GetModifiedDamage traversal from p_mobj.cpp into a managed
+InventoryDamageModifier chain used by Actor.GetModifiedDamage. Each callback
+receives the previous result and active/passive context. The next node is
+captured before callback execution, destroyed nodes stop traversal, and zero
+damage does not prematurely stop callbacks. Actors without modifiers preserve
+the previous identity behavior.
+
+Five regressions cover ordering, self-removal, destroyed-node stopping,
+zero-result continuation, and active/passive dispatch through ActorDamage.
+All 7,475 Release tests pass, including 6,277 Playsim tests. A clean Release
+build with warnings treated as errors passes with zero warnings and errors.
+Changes remain uncommitted.
+
+Audit boundary: this is a dedicated managed modifier chain, not a full native
+inventory object graph. Pickup/ACS attachment, power lifetimes, PowerDamage and
+PowerProtection factors, script VM dispatch, angle arguments, and modifier
+save/checksum/default restoration remain open. No built-in power is enabled
+by this traversal conversion alone.
+
+## Conversion and audit: active/passive damage modifier stages (2026-10-04)
+
+Converted the GetModifiedDamage active/passive dispatch boundary and native
+DMG_NO_ENHANCE/DMG_NO_PROTECT gates from p_interaction.cpp into shared damage
+handling. Source DamageMultiplier still runs before enhancement even with
+NoEnhance; target DamageFactor still runs after protection even with NoProtect.
+Positive damage dispatches enhancement on the source and protection on the
+target before TakeSpecialDamage and armor. Forced and ordinary telefrag hits
+retain their existing bypass of these special-damage stages.
+
+Seven regressions check dispatch order, each bypass combination, base scaling,
+armor, source-less protection, and forced/telefrag bypass. All 7,470 Release
+tests pass, including 6,272 Playsim tests. A clean Release build with warnings
+treated as errors passes with zero warnings and errors. Changes are uncommitted.
+
+Audit boundary: the default callback is identity. Native inventory-chain
+ModifyDamage execution, PowerDamage/PowerProtection implementations, angle
+arguments, LAXTELEFRAGDMG, and full script dispatch remain open. This converts
+the shared dispatch and bypass rules, not the full native inventory machinery.
+
+## Conversion and audit: PIERCEARMOR persistence and resurrection (2026-10-04)
+
+Converted PIERCEARMOR capture/restore and binary save persistence using version
+50 and bit 4 of the existing damage-flag trailer. Archives without this flag
+retain their earlier format; old archives clear the property on restore.
+Unsupported flag bits are rejected. Native p_mobj.cpp serializes flags5 and
+Revive restores info->flags5; supported managed Doom resurrection now clears
+the runtime PIERCEARMOR override only when resurrection succeeds.
+
+Five new regression cases cover binary round trips, combined damage flags,
+post-load armor bypass, pose restoration, unchanged default archive bytes,
+legacy clearing, and malformed bits. Four existing resurrection cases now
+also check PIERCEARMOR for ThingRaise/archvile success and blocked attempts.
+All 7,463 Release tests pass, including 6,265 Playsim tests. A clean Release
+build with warnings treated as errors passes with zero warnings and errors.
+Changes remain uncommitted.
+
+Audit boundary: custom class definition loading/default restoration and native
+save interoperability remain open. This closes persistence and supported Doom
+class resurrection for the managed armor-piercing flag.
+
+## Conversion and audit: PIERCEARMOR damage behavior (2026-10-04)
+
+Converted native MF5_PIERCEARMOR into the managed actor property, deterministic
+checksum, damage handling, and qualified/unqualified ACS flag access. Native
+p_interaction.cpp adds DMG_NO_ARMOR when the inflictor has PIERCEARMOR; managed
+damage now adds BypassArmor before callbacks and armor handling. The source's
+flag alone does not bypass armor.
+
+Six regression cases cover player/nonplayer armor absorption with the flag
+enabled/disabled, source versus inflictor ownership, and qualified ACS mutation.
+All 7,458 Release tests pass, including 6,260 Playsim tests. A clean Release build
+with warnings treated as errors passes with zero warnings and errors.
+Changes remain uncommitted.
+
+Audit boundary: save persistence, raise/default restoration, and definition
+loading for this new property remain open. Full script VM behavior, native
+world-link/count bookkeeping, and previously documented BFG gaps remain open.
+
+## Conversion and audit: ACS NOBLOCKMAP dispatch (2026-10-04)
+
+Converted NOBLOCKMAP read/write through the managed ACS flag adapter, including
+Actor-qualified names. Native ModActorFlag unlinks/relinks world lists for this
+flag; the managed model instead dynamically checks IsBlockmapActor in collision
+and contact queries, so changing the existing NoBlockmap property immediately
+changes participation without a cached world-link operation.
+
+Three regressions run through AcsCallFunctions SetActorFlag/CheckFlag, verify
+stack consumption and return values, projectile contact enabled/disabled, and
+the number of actors changed for a shared TID. All 7,452 Release tests pass,
+including 6,254 Playsim tests. A clean Release build with warnings treated as
+errors passes with zero warnings and errors. Changes remain uncommitted.
+
+Audit boundary: native linked-world interoperability, NOSECTOR, count bookkeeping,
+complete script VM behavior, custom definitions/defaults, and BFG gaps remain
+open. This closes NOBLOCKMAP access in the current managed participation model.
+
+## Conversion and audit: qualified ACS actor flag names (2026-10-04)
+
+Converted Actor-qualified flag names through the managed ACS flag adapter.
+Native ModActorFlag splits qualified names and FindFlag selects the named flag
+list with case-insensitive matching (thingdef_properties.cpp/thingdef_data.cpp).
+Supported Actor flags now accept Actor.NAME; Inventory-only names cannot be
+accessed under Actor, and invalid/nested scopes remain rejected.
+
+Nine regression cases verify qualified/unqualified property identity, mixed
+case, wrong named lists, inventory scope separation, and empty suffix rejection
+without mutation. All 7,449 Release tests pass, including 6,251 Playsim tests.
+A clean Release build with warnings treated as errors passes with zero warnings
+and errors. Changes remain uncommitted.
+
+Audit boundary: user-defined flag symbols, full class hierarchy resolution,
+protected flag world-link/count side effects, broader flag coverage, complete
+script execution, and previously documented BFG gaps remain open.
+
+## Conversion and audit: ACS actor-state flags (2026-10-04)
+
+Converted JUSTHIT, ACTLIKEBRIDGE, ICECORPSE, SHATTERING, and NOAUTOOFFSKULLFLY
+through the managed ACS flag adapter, using registrations in thingdef_data.cpp.
+Seven regression cases cover case-insensitive set/query/clear and frozen-corpse
+shattering enabled/disabled through ICECORPSE. All 7,440 Release tests pass,
+including 6,242 Playsim tests. A clean Release build with warnings treated as
+errors passes with zero warnings and errors. Changes remain uncommitted.
+
+Native ModActorFlag audit in thingdef_properties.cpp confirms NOBLOCKMAP/NOSECTOR
+changes require unlink/relink handling and flag mutation can update level count
+bookkeeping. These broader side effects remain open; protected registration
+does not by itself mean ACS mutation is forbidden. The current adapter still
+implements supported property access rather than the complete native routine.
+Custom definitions, complete script execution, and BFG gaps also remain open.
+
+## Conversion and audit: ACS classification and movement-state flags (2026-10-04)
+
+Converted ISMONSTER, NOBLOCKMONST, SPAWNCEILING, DROPOFF, ONMOBJ, and INFLOAT
+through the managed ACS CheckActorFlag/ModActorFlag adapter. Verified native
+spellings and registrations in src/scripting/thingdef_data.cpp. Names map to
+existing classification, movement, and actor-state properties.
+
+Eight regression cases verify case-insensitive set/query/clear for all six
+names and IsMonster's generic freeze eligibility enabled/disabled. All 7,433
+Release tests pass, including 6,235 Playsim tests. A clean Release build with
+warnings treated as errors passes with zero warnings and errors.
+
+Audit boundary: protected flags such as NOBLOCKMAP require native mutation
+semantics and were not added as ordinary setters. Full movement behavior,
+custom definitions/defaults, script execution, and BFG gaps remain open.
+Changes remain uncommitted.
+
+## Conversion and audit: ACS infighting and environment flags (2026-10-04)
+
+Converted HARMFRIENDS, NOTRIGGER, NOSECTORDAMAGE, FORCESECTORDAMAGE,
+DOHARMSPECIES, NOINFIGHTING, and FORCEINFIGHTING through the managed ACS
+CheckActorFlag/ModActorFlag adapter. Verified registrations and native flag
+words in src/scripting/thingdef_data.cpp. Script reads/writes share the existing
+actor gameplay properties and case-insensitive name handling.
+
+Eight regression cases verify set/query/clear for all seven names and the
+DoHarmSpecies projectile-immunity transition. All 7,425 Release tests pass,
+including 6,227 Playsim tests. A clean Release build with warnings treated as
+errors passes with zero warnings and errors. Changes remain uncommitted.
+
+Remaining work includes broader flag coverage, full native infighting and
+environment semantics, custom actor definitions/defaults, full script execution,
+and previously documented BFG gaps.
+
+## Conversion and audit: ACS movement and telefrag flags (2026-10-04)
+
+Converted NOTELEFRAG, ALWAYSTELEFRAG, NOTELEPORT, SLIDESONWALLS, and DORMANT
+access through the managed ACS CheckActorFlag/ModActorFlag adapter. Verified
+native registrations, including SLIDESONWALLS as the MF2_SLIDE alias, in
+src/scripting/thingdef_data.cpp. Script writes use existing gameplay properties.
+
+Eight regression cases cover case-insensitive set/query/clear for all five
+names, Dormant's ordinary/forced damage behavior, and rejection of destroyed
+actors without mutation. All 7,417 Release tests pass, including 6,219 Playsim
+tests. A clean Release build with warnings treated as errors passes with zero
+warnings and errors. Changes remain uncommitted.
+
+Audit boundary: broader native flag coverage, full teleport and movement
+semantics, custom definitions/defaults, complete script execution, and previously
+documented BFG gaps remain open.
+
+## Conversion and audit: ACS targeting policy flags (2026-10-04)
+
+Converted NEVERTARGET, NOTARGETSWITCH, QUICKTORETALIATE, and NOHATEPLAYERS
+through the managed ACS CheckActorFlag/ModActorFlag adapter. Verified native
+registrations in src/scripting/thingdef_data.cpp. Case-insensitive script access
+now reaches the existing actor targeting policy properties.
+
+Six regression cases cover set/query/clear for all four names and player-damage
+retaliation with NoHatePlayers enabled/disabled. Damage remains applied even when
+target acquisition is suppressed. All 7,409 Release tests pass, including 6,211
+Playsim tests. A clean Release build with warnings treated as errors passes with
+zero warnings and errors. Changes remain uncommitted.
+
+Remaining work includes broader native flags, custom definitions/defaults,
+complete targeting and script VM behavior, and previously documented BFG gaps.
+
+## Conversion and audit: ACS drain and splash immunity flags (2026-10-04)
+
+Converted DONTDRAIN and NORADIUSDMG access through the managed ACS
+CheckActorFlag/ModActorFlag adapter. Verified native names and flag words in
+src/scripting/thingdef_data.cpp. Script changes now control the existing drain
+eligibility and projectile radius-damage gates through the same actor properties.
+
+Five regression cases cover case-insensitive set/query/clear, drain immunity
+blocking healing while damage continues, and splash immunity enabled/disabled
+without preventing direct rocket damage. All 7,403 Release tests pass, including
+6,205 Playsim tests. A clean Release build with warnings treated as errors
+passes with zero warnings and errors. Changes remain uncommitted.
+
+Remaining work includes broader native flags, custom definitions/defaults,
+complete ACS/ZScript execution, and previously documented BFG aiming/effect gaps.
+
+## Conversion and audit: ACS ice and extreme-death flags (2026-10-04)
+
+Converted NOICEDEATH, EXTREMEDEATH, NOEXTREMEDEATH, and ICESHATTER access through
+the managed ACS CheckActorFlag/ModActorFlag adapter. Names and native flag words
+were verified in src/scripting/thingdef_data.cpp. Case-insensitive script access
+now reaches the existing death-selection and frozen-corpse behavior.
+
+Eight regression cases cover set/query/clear for all four names, generic freeze
+suppression, inflictor extreme-death selection with/without suppression, and ice
+shatter permission. All 7,398 Release tests pass, including 6,200 Playsim tests.
+A clean Release build with warnings treated as errors passes with zero warnings
+and errors. Changes remain uncommitted.
+
+Remaining gaps include broader native flag coverage, custom definitions/defaults,
+complete script VM semantics, and previously documented BFG aiming/effect work.
+
+## Conversion and audit: ACS pain and Buddha flags (2026-10-04)
+
+Converted BUDDHA, FOILBUDDHA, FORCEPAIN, and PAINLESS access through the managed
+ACS CheckActorFlag/ModActorFlag adapter. Native names and flag ownership were
+verified in src/scripting/thingdef_data.cpp. Script reads/writes now use the
+existing actor properties and native case-insensitive name matching.
+
+Six regression cases verify set/query/clear for all four names, Buddha survival
+followed by FoilBuddha killing, and Painless suppressing ForcePain while damage
+still applies. All 7,390 Release tests pass, including 6,192 Playsim tests.
+A clean Release build with warnings treated as errors passes with zero warnings
+and errors. Changes remain uncommitted.
+
+Audit boundary: additional native actor flags, custom definitions/defaults,
+full script VM behavior, and the outstanding BFG aiming/effect work remain open.
+
+## Conversion and audit: ACS special damage flags (2026-10-04)
+
+Converted FOILINVUL and SPECIALFIREDAMAGE access through the managed ACS
+CheckActorFlag/ModActorFlag adapter, using native registrations in
+src/scripting/thingdef_data.cpp. Case-insensitive names read and modify the
+existing actor properties, so script changes share damage behavior, checksums,
+save persistence, and supported resurrection resets with managed API changes.
+
+Four new regression cases cover both flag names through set/query/clear and
+their monster invulnerability and player fire-death effects. All 7,384 Release
+tests pass, including 6,186 Playsim tests. A clean Release build with warnings
+treated as errors passes with zero warnings and errors.
+
+Audit boundary: broader flag coverage, custom definition/default loading,
+full native script VM semantics, and the previously listed BFG aiming/effect
+gaps remain open. Changes remain uncommitted.
+
+## Conversion and audit: resurrection damage-property defaults (2026-10-04)
+
+Converted missed supported-class resets from native Revive in p_mobj.cpp.
+Successful resurrection restores FoilInvul and SpecialFireDamage to false and
+DamageType to None for the currently supported Doom monster classes. Native
+Revive restores flag words and DamageType but does not reset DeathType; the
+managed override therefore remains intact. Blocked raises leave all values
+unchanged. Both ThingRaise and archvile resurrection share the implementation.
+
+Four regression cases cover both entry points and successful/blocked outcomes,
+DeathType preservation, and restored monster invulnerability protection.
+All 7,380 Release tests pass, including 6,182 Playsim tests. A clean Release
+build with warnings treated as errors passes with zero warnings and errors.
+
+Audit boundary: custom actor-class flag and DamageType defaults require future
+definition loading/default capture; this uses the supported classes' defaults.
+Native full flag restoration, BFG aiming/effects/timing, and script dispatch
+remain broader conversion work. Changes remain uncommitted.
+
+## Conversion and audit: FoilInvul persistence (2026-10-04)
+
+Closed FoilInvul save persistence. Actor poses capture and restore the flag;
+restoring older snapshots defaults it to false. Optional archive version 49
+extends version 48's flag word with FoilInvul, preserving both names and the
+SpecialFireDamage bit. Writers retain earlier formats when FoilInvul is absent;
+readers reject negative and unsupported bits and keep version 48's stricter
+single-bit validation.
+
+Five regression cases cover binary restoration with both damage-type names and
+both special-fire settings, subsequent monster invulnerability bypass, pose
+restoration/old-save clearing, and malformed bits. All 7,376 Release tests pass,
+including 6,178 Playsim tests. A clean Release build with warnings treated as
+errors passes with zero warnings and errors. Changes remain uncommitted.
+
+Remaining gaps include definition loading, raise/default restoration, native
+player thrust behavior, PuffGetsOwner, BFG autoaim/randomness/effects/timing,
+and script dispatch. These remain managed save extensions rather than native
+save-file compatibility.
+
+## Conversion and audit: FoilInvul damage and BFG spray (2026-10-04)
+
+Converted MF3_FOILINVUL and DMG_FOILINVUL from p_interaction.cpp. Actor.FoilInvul
+and DamageFlags.FoilInvulnerability now bypass non-player invulnerability when
+an inflictor exists. Native's null-inflictor rejection and player protection
+remain intact. Replacement BFG sprays map their FoilInvul property to this flag,
+matching weaponbfg.zs. The new actor property participates in the checksum only
+when enabled, preserving default streams.
+
+Six regression cases cover ordinary protected monsters, inflictor bypass,
+protected players, the flag with/without an inflictor, and replacement BFG spray.
+All 7,371 Release tests pass, including 6,173 Playsim tests. A clean Release
+build with warnings treated as errors passes with zero warnings and errors.
+
+Audit boundary: FoilInvul definition loading, save persistence, raise/default
+restoration, native player thrust handling, PuffGetsOwner, vertical autoaim,
+dedicated BFG randomness, effects, timing, and script dispatch remain open.
+Changes remain uncommitted.
+
+## Conversion and audit: replacement BFG spray damage rules (2026-10-04)
+
+Converted supported replacement-spray rules from A_BFGSpray in weaponbfg.zs.
+The action accepts a per-hit spawn callback, consumes the returned spray actor's
+DamageType, filters MThruSpecies against the owner's contact species, and maps
+FoilBuddha to the damage flag. Filtered spray actors are destroyed before damage
+rolls. The selected originator remains inflictor and the owner remains source.
+A null spawn result retains native BFGSplash fallback and skips spray-dependent
+gates. Default calls use BFGSplash properties as before.
+
+Five new cases cover replacement damage type and callback target, species
+filtering/destruction/random preservation, both Buddha outcomes, and failed-spawn
+fallback. All 7,365 Release tests pass, including 6,167 Playsim tests. A clean
+Release build with warnings treated as errors passes with zero warnings and
+errors. Changes remain uncommitted.
+
+Audit boundary: the default spray actor is currently unregistered property data;
+the supplied spawn callback owns actual effect creation/registration. Native
+spray class replacement lookup, PuffGetsOwner, FoilInvul, vertical autoaim,
+dedicated randomness, bleed effects, state timing, and script dispatch remain
+open. This adds the managed per-hit hook and supported damage rules.
+
+## Conversion and audit: BFG spray after origin death (2026-10-04)
+
+Converted dead-origin tracing for BFG spray. Native A_BFGSpray requires an owner
+pointer but does not require a living owner; P_AimLineAttack also has no source
+health gate. Managed combat tracing now has an explicit allowDeadSource option,
+enabled by BfgSprayActions alongside its removed-source allowance. Ordinary
+combat traces keep their existing default rejection of dead sources.
+
+Three regression cases verify spray damage from a dead owner, from a dead
+missile origin, and continued dead-source rejection in ordinary tracing.
+Source attribution remains the owner. All 7,360 Release tests pass, including
+6,162 Playsim tests. A clean Release build with warnings treated as errors
+passes with zero warnings and errors. Changes remain uncommitted.
+
+Remaining BFG boundaries include vertical autoaim, replacement spray actors and
+species gates, dedicated randomness, effects, explosion timing, and script
+dispatch. This closes the dead-origin gap from the prior audit.
+
+## Conversion and audit: BFG spray origin and owner flags (2026-10-04)
+
+Converted BFGF_MISSILEORIGIN and BFGF_HURTSOURCE from weaponbfg.zs and constants.zs.
+The managed action selects the missile or owner as trace origin and inflictor,
+while preserving the owner as damage source and the missile's horizontal yaw.
+Missile-origin rays skip the owner unless HurtSource is set. Added an opt-in
+trace allowance for removed sources so the existing managed projectile-impact
+removal does not suppress the explosion action; ordinary trace defaults remain
+unchanged. Tracing uses neutral pitch as the previous default action did.
+
+Four regression cases verify distinct owner/missile origins, tracing from a
+removed missile, owner protection, and explicitly enabled owner damage.
+All 7,357 Release tests pass, including 6,159 Playsim tests. A clean Release
+build with warnings treated as errors passes with zero warnings and errors.
+
+Audit boundary: replacement spray actors and species gates, native vertical
+autoaim, dead-origin tracing, dedicated BFG randomness, bleed effects, explosion
+timing, and script dispatch remain open. Flags are exposed through the managed
+action API. Changes remain uncommitted.
+
+## Conversion and audit: configurable BFG spray parameters (2026-10-04)
+
+Converted A_BFGSpray's ray-count, damage-count, horizontal spread, distance,
+and fixed-damage parameters from weaponbfg.zs into reusable BfgSprayActions.Apply.
+Native nonpositive ray/damage counts, zero spread, and nonpositive distance
+resolve to their default values. Missing owners skip spray. Nonzero fixed damage
+replaces dice rolls without consuming combat randomness. Projectile impact now
+calls this action with the existing default behavior and damage context.
+
+Four new regression tests verify fixed damage and random preservation, range
+limits, native default normalization, and missing-owner behavior. All 7,353
+Release tests pass, including 6,155 Playsim tests. A clean Release build with
+warnings treated as errors passes with zero warnings and errors.
+
+Audit boundary: replacement spray actors, alternate-origin flags, vertical
+autoaim/range, dedicated BFG random streams, bleed effects, explosion-state
+timing, and script action dispatch remain open. Parameters are currently exposed
+through the managed action API. Changes remain uncommitted.
+
+## Conversion and audit: default BFG spray damage context (2026-10-04)
+
+Converted the default A_BFGSpray damage context from
+wadsrc/static/zscript/actors/doom/weaponbfg.zs. Managed spray now passes
+BFGSplash and the owner as both source and inflictor. Native default originator
+is the owner, and default BFGExtra supplies BFGSplash. Previously managed spray
+passed an unspecified damage type and no inflictor, bypassing the owner's
+special-damage/death-type behavior and failing typed-only BFGSplash targets.
+
+Three regression cases cover BFGSplash acceptance, other-type rejection, and
+the owner's inflictor DeathType override. All 7,349 Release tests pass,
+including 6,151 Playsim tests. A clean Release build with warnings treated as
+errors passes with zero warnings and errors. Changes remain uncommitted.
+
+Audit boundary: replacement spray actors and their flags, alternate missile
+origin, configurable ray parameters, dedicated random streams, vertical autoaim,
+bleed effects, and explosion-state timing remain open. This converts the default
+damage context, not the complete native BFG spray routine.
+
+## Conversion and audit: projectile damage-type consumers (2026-10-04)
+
+Converted direct projectile contact to pass Actor.DamageType, matching native
+P_DoMissileDamage in src/playsim/p_map.cpp. Managed explosion splash now passes
+the same type, matching A_Explode's default self.DamageType resolution in
+wadsrc/static/zscript/actors/attacks.zs. Both paths already retain the projectile
+as inflictor, so DeathType and SpecialFireDamage continue to apply independently.
+
+Three regression cases cover matching and mismatched direct hits on typed-only
+targets and typed splash on a nearby target. All 7,346 Release tests pass,
+including 6,148 Playsim tests. A clean Release build with warnings treated as
+errors passes with zero warnings and errors. Changes remain uncommitted.
+
+Audit boundary: explicit explosion damage-type overrides and explosion action
+flags, definition loading, full BFG spray semantics, projectile reconstruction
+from saves, and the full native state-label hierarchy remain open.
+
+## Conversion and audit: special fire flag persistence (2026-10-04)
+
+Closed the SpecialFireDamage persistence gap. Actor poses now capture and restore
+the flag. Optional archive version 48 extends the death-type trailer with both
+names and a validated per-actor flag; versions 46/47 retain their layouts and
+default the absent flag to false. Configurations without the flag continue to
+use their existing archive format. Restoring older snapshots clears the flag.
+
+Four new regression cases verify binary round-trip followed by restricted
+player fire death, old-save clearing, and rejection of negative or unsupported
+flag values. All 7,343 Release tests pass, including 6,145 Playsim tests. A clean
+Release build with warnings treated as errors passes with zero warnings and
+errors. Changes remain uncommitted.
+
+Audit boundary: actor-definition loading, projectile damage-type consumers,
+alternative-player behavior, and full native state-label hierarchy remain open.
+These are managed archive extensions, not native save-file interoperability.
+
+## Conversion and audit: retained actor DamageType (2026-10-04)
+
+Converted native persistent DamageType behavior from p_interaction.cpp. Lethal
+hits normally assign the resolved inflictor/hit type before death processing;
+suppressed special player fire assignment retains the previous actor type.
+Death selection consumes that persistent value, clears Extreme, and clears
+unsupported types on fallback while preserving Massacre. Surviving hits leave
+the persistent value unchanged. Active values participate in case-folded checksums.
+
+Actor poses capture/restore DamageType. Optional archive version 47 extends the
+existing strict UTF-8 name trailer to carry both DeathType and DamageType.
+Existing Massacre death flags reconstruct the redundant retained type without
+adding a trailer, preserving that archive layout and its validation coverage.
+
+Seven new cases verify retained/replaced fire behavior, fallback cleanup,
+Massacre preservation, surviving hits, and binary restoration of both names.
+All 7,339 Release tests pass, including 6,141 Playsim tests. A clean Release
+build with warnings treated as errors passes with zero warnings and errors.
+
+Remaining gaps include definition loading and projectile damage-type consumers,
+alternative-player actors, SpecialFireDamage save support, and full native
+state-label hierarchy. Changes remain uncommitted.
+
+## Conversion and audit: special fire-death thresholds (2026-10-04)
+
+Added Actor.SpecialFireDamage for native MF5_SPECIALFIREDAMAGE and converted
+the player flame-death thresholds from src/playsim/p_interaction.cpp. For a
+flagged inflictor, Fire death-state selection requires post-armor damage above
+25 and final health above -50. Unflagged/no inflictor and non-player targets
+retain their ordinary Fire selection. The restriction also applies when the
+inflictor's DeathType resolves to Fire. The new flag participates in checksums
+conditionally, preserving existing default streams.
+
+Nine regression cases cover the exact damage/overkill boundaries, ordinary fire,
+monster behavior, post-armor damage, and death-type overrides. All 7,332 Release
+tests pass, including 6,134 Playsim tests. A clean Release build with warnings
+treated as errors passes with zero warnings and errors. Changes remain uncommitted.
+
+Audit boundary: the native actor's persistent DamageType may retain an earlier
+value when special fire assignment is suppressed; managed selection currently
+falls back to an untyped death in this case. Alternative-player actors, definition
+loading, and save serialization of SpecialFireDamage remain open. This converts
+the default-type threshold behavior without claiming the entire native fire path.
+
+## Conversion and audit: DeathType save support (2026-10-04)
+
+Closed the managed DeathType persistence gap from the previous pass. Actor poses
+capture and restore the override, including clearing an existing override when
+restoring an older snapshot. Added optional archive version 46 with bounded
+per-actor UTF-8 names, prior-version recovery, actor-count validation, strict
+encoding validation, and rejection of malformed lengths or trailing data.
+Default/None-only configurations retain their previous archive bytes.
+
+Five regression cases cover cross-instance restoration followed by a typed
+death, old-save/default-byte compatibility, pose restore, malformed length,
+and invalid encoding. All 7,323 Release tests pass, including 6,125 Playsim
+tests. A clean Release build with warnings treated as errors passes with zero
+warnings and errors. Changes remain uncommitted.
+
+Audit boundary: this extends the managed authority pose archive, not native
+save-file interoperability or dynamic actor-class reconstruction. DeathType
+definition loading, full native state-label hierarchy, and special fire-death
+rules remain open.
+
+## Conversion and audit: inflictor DeathType override (2026-10-04)
+
+Added managed Actor.DeathType and converted its consumers from native
+src/playsim/p_mobj.cpp TakeSpecialDamage and src/playsim/p_interaction.cpp's
+death block. Typed-only targets check the inflictor override after the ordinary
+death/no-special-state/Massacre exemptions. Death-state selection and stored
+Massacre propagation use the override; pain, wounds, and drain retain the hit's
+original damage type. Null, empty, and case-insensitive None mean no override.
+
+Active overrides participate in the simulation checksum with case folding;
+None/default configurations leave the existing checksum stream unchanged.
+Seven regression cases cover typed-only acceptance/rejection, None handling,
+case matching, pain context, Massacre exemption, and checksum identity.
+All 7,318 Release tests pass, including 6,120 Playsim tests. A clean Release
+build with warnings treated as errors passes with zero warnings and errors.
+
+Audit boundary: DeathType is currently configured through the managed Actor
+API. Actor-definition loading and cross-instance save serialization of this
+configuration remain open, as do the full native state hierarchy, special fire
+death rules, and complete damage-type definitions. Changes remain uncommitted.
+
+## Conversion and audit: armor cancellation boundary (2026-10-04)
+
+Converted the native post-armor early return in src/playsim/p_interaction.cpp.
+When armor leaves no health damage, managed Apply now preserves armor consumption
+and reports it in DamageResult, then stops before attacker recording, health
+assignment, drain, wound states, pain, and AI wake handling. Player telefrag damage
+still retains its existing native raw-damage behavior.
+
+Two regression cases cover player and non-player armor, checking health,
+consumed armor, unchanged state, and preservation of the previous attacker.
+Corrected an older forced-pain test that expected pain after full absorption.
+All 7,311 Release tests pass, including 6,113 Playsim tests. A clean Release build
+with warnings treated as errors passes with zero warnings and errors.
+
+This closes the post-armor zero-damage side-effect gap identified in the prior
+audit. Other zero-damage paths, native flag variants, drain-power inventory
+selection and sound, inflictor DeathType overrides, and full damage-type
+definitions remain open. Changes remain uncommitted.
+
+## Conversion and audit: Buddha drain stages and armor correction (2026-10-04)
+
+Converted native monster Buddha ordering from src/playsim/p_interaction.cpp:
+drain observes the negative damaged health before monster survival restores it
+to one. Player Buddha still restores health before drain, matching the separate
+native player stage. The health-assignment hook now returns the final health
+before death processing, avoiding a transient death transition for survivors.
+Two new cases verify the different callback health views, exactly one callback,
+source healing, final health one, and no death count.
+
+Audit correction: the earlier drain eligibility pass incorrectly claimed player
+armor permits drain at zero damage. Reading the enclosing player armor block
+shows it returns when damage reaches zero. Restored zero-damage drain suppression
+for players and corrected that regression expectation. This supersedes the
+earlier pass's claim about fully absorbed player hits.
+
+All 7,309 Release tests pass, including 6,111 Playsim tests. A clean Release build
+with warnings treated as errors passes with zero warnings and errors. Changes
+remain uncommitted. Native multiple-drain inventory selection, drain sound,
+full zero-damage early-return side effects, and broader player damage features
+such as voodoo dolls and automatic health use remain open.
+
+## Conversion and audit: drain before death and pain (2026-10-04)
+
+Converted the drain stage ordering from src/playsim/p_interaction.cpp: the
+callback and body grant now run after damage health assignment and before death
+specials, gib-health queries, death-state selection, wound selection, pain, and
+AI wake handling. Added a damage-only health-assignment hook; ordinary Health
+assignments retain their existing lifecycle behavior. Removed the two later
+drain calls so each eligible hit invokes drain once.
+
+Three regressions verify the callback's damaged-health view, unchanged current
+state, zero death count before death handling, final death/pain/wound state, and
+source healing. All 7,307 Release tests pass, including 6,109 Playsim tests.
+A clean Release build with warnings treated as errors passes with zero warnings
+and errors. Changes remain uncommitted.
+
+Audit boundary: Buddha survival is still applied before health assignment and
+drain in managed code; native monster Buddha applies after drain. Native player
+damage differs in its own survival stage. Multiple drain-power inventory
+selection and drain sound are also open. This supersedes the prior pass's
+death/pain ordering gap without claiming complete callback-stage parity.
+
+## Conversion and audit: drain callback eligibility (2026-10-04)
+
+Converted two missed OnDrain eligibility cases from the drain block in
+src/playsim/p_interaction.cpp. A dead player source still receives the callback;
+the body-grant routine independently rejects healing a dead source. Player armor
+can reduce the callback input to zero without suppressing the callback, allowing
+an override to supply a positive grant. Zero damage after monster armor still
+suppresses drain, matching native monster armor's earlier return.
+
+Three new regression tests cover these cases. All 7,304 Release tests pass,
+including 6,106 Playsim tests. A clean Release build with warnings treated as
+errors passes with zero warnings and errors. Changes remain uncommitted.
+
+Audit boundary: native drain runs before death handling, whereas managed drain
+still runs after death-state and pain handling. Complete callback ordering,
+native inventory selection among multiple drain powers, and drain sound remain
+open. Inflictor DeathType overrides, full state-label hierarchy, and damage-type
+definition support are also still conversion gaps.
+
+## Conversion and audit: generic freeze monster classification (2026-10-04)
+
+Converted the missed MF3_ISMONSTER condition in death-state selection from
+src/playsim/p_interaction.cpp. Generic freeze now uses PlayerPawn or IsMonster,
+matching the already-converted special-damage eligibility gate. Previously an
+AI brain incorrectly qualified an ordinary actor, while a monster without a
+brain could accept Ice damage but miss its generic freeze state.
+
+Four regressions cover a monster without a brain, an ordinary actor, an ordinary
+actor with a brain, and NoIceDeath on a monster. Updated the older monster fixture
+to explicitly carry the native monster flag. All 7,301 Release tests pass,
+including 6,103 Playsim tests. A clean Release build passes with zero warnings
+and errors with warnings treated as errors.
+
+Remaining boundaries include full native state-label hierarchy, label-case
+checksum canonicalization, and arbitrary damage-type definitions. This closes
+the freeze classification mismatch; it does not establish a complete port.
+Changes remain uncommitted.
+
+## Conversion and audit: remaining damage-name consumers (2026-10-04)
+
+Converted typed pain states, per-type pain chance, typed wounds, reserved None
+validation, Electric pain branching, Drowning armor bypass, and the Ice corpse
+shatter permission gate to case-insensitive name matching. Native FName identity
+in src/utility/name.cpp folds case; p_interaction.cpp uses NAME_Electric and
+NAME_Ice for these branches. Corrected older pain and drowning test expectations
+that encoded the previous case-sensitive behavior.
+
+Eight new regression cases cover pain frame/chance selection, wound selection,
+reserved-name rejection, drowning armor preservation, and ice shatter permission.
+The full Release suite passes all 7,297 tests (6,099 Playsim). A clean Release
+build with warnings treated as errors passes with zero warnings and errors.
+
+Audit boundary: label-case checksum canonicalization, complete native state-label
+hierarchy, and arbitrary damage-type definitions remain open. This pass converts
+existing managed consumers; it does not establish complete gameplay conversion.
+Changes remain uncommitted.
+
+## Conversion and audit: death damage-name matching (2026-10-04)
+
+Converted case-insensitive death damage-name matching, consistent with native
+FName identity in utility/name.cpp. Typed normal/extreme death maps and special
+Ice/Extreme/Massacre/None checks now use case-insensitive matching. Reserved
+typed registration names are rejected in any casing. Two older regressions
+that expected lowercase Fire/Ice to miss their native states were corrected.
+
+Five new regressions cover mixed-case typed deaths, reserved names and Massacre
+availability. Case normalization for other damage consumers, serialized label
+identity/checksum canonicalization and full native name/state trees remain open.
+
+Release validation: **7,289 tests passed (6,091 Playsim; 588 MapLoader)**.
+Clean warnings-as-errors build passed with zero warnings/errors; whitespace
+checks passed. Changes uncommitted.
+
+## Conversion and audit: telefrag attacker-filter bypass (2026-10-04)
+
+Converted raw telefrag bypass of the managed attacker eligibility filter.
+Friendly and same-species protection no longer cancels telefrag-sized hits,
+consistent with native DamageMobj's raw-damage exception to friendly-fire
+protection. Ordinary hits retain their existing filter. Three regressions
+cover disabled/standard infighting and friendly monsters with telefrag kills.
+
+Native teamdamage scaling, LaxTelefragDamage exceptions, complete source versus
+inflictor placement and ACS/native numeric flag translation remain open. This
+closes the telefrag bypass within the represented shared damage filter.
+
+Release validation: **7,284 tests passed (6,086 Playsim; 588 MapLoader)**.
+Clean warnings-as-errors build passed with zero warnings/errors; whitespace
+checks passed. Changes uncommitted.
+
+## Conversion and audit: target damage-factor bypass (2026-10-04)
+
+Converted native DMG_NO_FACTOR into the managed DamageFlags.NoFactor option.
+Ordinary hits carrying it skip target DamageFactor scaling while retaining
+source enhancement, special callbacks and armor absorption. Managed flag
+values are internal API values, not native numeric flag equivalence.
+Four regressions cover ordinary/bypass factor results, preserved source
+scaling, armor absorption and callback context/replacement behavior.
+
+Native inventory damage modifiers, per-type factor maps, ACS/native flag
+translation and remaining native damage flags remain open. Existing forced
+and raw-telefrag factor bypass paths continue to pass the full suite.
+
+Release validation: **7,281 tests passed (6,083 Playsim; 588 MapLoader)**.
+Clean warnings-as-errors build passed with zero warnings/errors; whitespace
+checks passed. Changes uncommitted.
+
+## Conversion and audit: DoSpecialDamage callback (2026-10-04)
+
+Converted the managed virtual inflictor DoSpecialDamage boundary before
+source/target factors and TakeSpecialDamage. Negative callback results cancel
+the hit; zero proceeds to the target callback; positive results replace input
+damage. Source enhancement now runs only for positive amounts, matching the
+native stage guard. Forced and raw telefrag paths bypass the callback stage.
+The default includes the represented player GodMode rejection for sub-1000
+direct callback inputs, otherwise preserving damage.
+
+Four regressions cover rejection/zero/replacement, factor ordering and forced
+bypass. Native old-style poison effects, GodMode2, callback angle/flag expansion,
+ZScript binding and earlier managed player-invulnerability ordering remain
+open. This supplies the C# callback boundary rather than full native special
+damage effects.
+
+Release validation: **7,277 tests passed (6,079 Playsim; 588 MapLoader)**.
+Clean warnings-as-errors build passed with zero warnings/errors; whitespace
+checks passed. Changes uncommitted.
+
+## Conversion and audit: OnDrain callback and upgraded caps (2026-10-04)
+
+Converted the managed virtual OnDrain boundary before drain's GiveBody grant.
+Overrides receive target, scaled drain amount and damage type, and may replace
+the grant, including native percentage-style negative values. PlayerPawn is
+now extensible so C# player subclasses can override inherited callbacks.
+Removed the premature base-maximum check; shared healing now resolves upgraded
+health and pickup overrides instead of blocking drain at the base cap.
+
+Four regressions cover callback context, zero/positive/percentage replacement
+and healing into BonusHealth above the base maximum. Existing drain/armor tests
+pass. ZScript binding, drain inventory item selection, sounds and callback
+lifecycle changes remain open; player subclass save/factory reconstruction
+is not implemented by making the class extensible.
+
+Release validation: **7,273 tests passed (6,075 Playsim; 588 MapLoader)**.
+Clean warnings-as-errors build passed with zero warnings/errors; whitespace
+checks passed. Changes uncommitted.
+
+## Conversion and audit: player telefrag armor damage (2026-10-04)
+
+Converted native player telefrag post-armor behavior. Armor consumption still
+occurs, but the raw telefrag health damage is retained instead of accepting
+the armor-reduced remainder. Shared dealt-damage/drain handling uses the same
+resolved health damage. Monster armor retains its separate native reduction
+rule; ordinary player hits still subtract armor savings.
+
+Three regressions cover player telefrag armor consumption/full health loss,
+monster reduction and ordinary player armor. High-health fixtures distinguish
+the exact damage amount rather than merely checking a kill. LaxTelefragDamage,
+custom armor callbacks, team damage and broader player cheat ordering remain
+open. Existing forced damage and NoArmor handling remain covered by the suite.
+
+Release validation: **7,269 tests passed (6,071 Playsim; 588 MapLoader)**.
+Clean warnings-as-errors build passed with zero warnings/errors; whitespace
+checks passed. Changes uncommitted.
+
+## Conversion and audit: forced attacker eligibility (2026-10-04)
+
+Converted forced-damage bypass of the managed attacker eligibility filter.
+Ordinary friendly/same-species hits retain their existing protection; effective
+forced hits bypass it, consistent with native DamageMobj's forced protection
+boundary. The existing Buddha2 effective-forced policy remains in place.
+Three regressions cover disabled/standard infighting and friendly monster
+protection, asserting both ordinary rejection and forced health loss.
+
+Native teamdamage scaling, full source/inflictor eligibility placement,
+telefrag exceptions and Buddha2 stage ordering remain open. This corrects
+the forced bypass within the current managed filter rather than claiming full
+native friendly-fire/infighting parity.
+
+Release validation: **7,266 tests passed (6,068 Playsim; 588 MapLoader)**.
+Clean warnings-as-errors build passed with zero warnings/errors; whitespace
+checks passed. Changes uncommitted.
+
+## Conversion and audit: dormant charge damage ordering (2026-10-04)
+
+Corrected the previous charge-velocity conversion against native DamageMobj:
+the velocity reset precedes the dormant rejection. Dormant charging actors
+now lose velocity without losing health, waking or clearing their charge state.
+The supported nonplayer invulnerability rejection still occurs before that
+reset. Three regressions cover positive/zero dormant hits and preserved
+velocity on an invulnerable monster.
+
+This closes dormant ordering for the represented charging state. Native player
+invulnerability/thrust exceptions, standalone MF_SKULLFLY, forced-zero effects
+and general damage thrust remain open.
+
+Release validation: **7,263 tests passed (6,065 Playsim; 588 MapLoader)**.
+Clean warnings-as-errors build passed with zero warnings/errors; whitespace
+checks passed. Changes uncommitted.
+
+## Conversion and audit: charging-actor damage velocity (2026-10-04)
+
+Converted native DamageMobj's skull-flight velocity reset for the represented
+managed charging state. Eligible hits clear all three velocity components
+before attacker eligibility/factors/callbacks; charge state itself remains
+set until its existing state-machine handling clears it. Ordinary stationary
+or moving actors retain their velocity. Existing charge snapshot/checksum
+support is reused.
+
+Three regressions cover positive/zero hits without pain transitions and
+unchanged noncharging velocity. Native standalone MF_SKULLFLY flag handling,
+dormant/invulnerable player thrust ordering and general damage thrust remain
+open. This covers the managed MonsterBrain charging subset only.
+
+Release validation: **7,260 tests passed (6,062 Playsim; 588 MapLoader)**.
+Clean warnings-as-errors build passed with zero warnings/errors; whitespace
+checks passed. Changes uncommitted.
+
+## Conversion and audit: spectral direct-damage eligibility (2026-10-04)
+
+Converted DamageMobj's spectral-target eligibility gate before corpse handling
+and ordinary damage processing. A spectral target rejects ordinary damage
+without a spectral inflictor, including environmental damage. A spectral
+source alone is insufficient. Forced damage and raw telefrag damage bypass
+the gate. Existing spectral projectile collision/pass-through behavior remains
+covered by the full suite; this closes the missing shared direct-damage path.
+
+Seven regressions cover source/inflictor combinations, environmental rejection
+without armor consumption, forced damage and telefrag bypass. Existing spectral
+flag snapshot/checksum support is reused. Full native damage flag expansion,
+zero-damage effects and player/corpse lifecycle parity remain open.
+
+Release validation: **7,257 tests passed (6,059 Playsim; 588 MapLoader)**.
+Clean warnings-as-errors build passed with zero warnings/errors; whitespace
+checks passed. Changes uncommitted.
+
+## Conversion and audit: negative raw damage normalization (2026-10-04)
+
+Converted native DamageMobj's negative-input normalization to zero before
+the supported damage pipeline. Ordinary negative inputs now reach the virtual
+TakeSpecialDamage callback with zero, allowing overrides to supply positive
+damage. Default behavior does not heal or consume armor. Target eligibility
+and invulnerability still precede the callback. DamageThing's separate
+negative-argument healing interpretation remains intact.
+
+Five regressions cover negative/minimum-int inputs, callback replacement,
+unchanged default health/armor and invulnerability. Existing health-special
+tests pass. Forced-zero effects, zero-result pain/thrust, callback lifecycle
+changes, inflictor DeathType and full native callback signatures remain open.
+
+Release validation: **7,250 tests passed (6,052 Playsim; 588 MapLoader)**.
+Clean warnings-as-errors build passed with zero warnings/errors; whitespace
+checks passed. Changes uncommitted.
+
+## Conversion and audit: initially-zero damage callbacks (2026-10-04)
+
+Converted the initially-zero ordinary-hit callback path from native DamageMobj.
+Zero hits now pass the existing target eligibility/invulnerability checks and
+reach TakeSpecialDamage, allowing overrides to supply positive damage.
+Default zero results leave health and armor unchanged. The previous zero-hit
+regression now asserts callback dispatch; two additional regressions verify
+unchanged default health/armor and invulnerability blocking callback dispatch.
+
+This closes initially-zero callback reachability only. Native zero-result
+pain/thrust effects, negative-input normalization, forced-zero behavior and
+corpse effects still need separate conversion. Callback angle/flag expansion,
+inflictor DeathType and ZScript binding remain open.
+
+Release validation: **7,245 tests passed (6,047 Playsim; 588 MapLoader)**.
+Clean warnings-as-errors build passed with zero warnings/errors; whitespace
+checks passed. Changes uncommitted.
+
+## Conversion and audit: zero-factor damage callback ordering (2026-10-04)
+
+Converted p_interaction.cpp's callback ordering for positive hits reduced
+to zero by source/target factors. TakeSpecialDamage now receives zero instead
+of being skipped, allowing an override to replace it with positive damage.
+Default zero results still stop damage. Four regressions cover target/source
+zero factors, zero/positive callback results and the retained managed boundary
+that rejects an initially zero hit. Native initially-zero damage effects remain
+a separate open case.
+
+The lifecycle audit found no destruction guard immediately after the native
+callback, so none was inferred or added. Full callback-driven destruction,
+native angle/flags, inflictor DeathType and ZScript binding remain open.
+This corrects an ordering gap in the prior callback conversion.
+
+Release validation: **7,243 tests passed (6,045 Playsim; 588 MapLoader)**.
+Clean warnings-as-errors build passed with zero warnings/errors; whitespace
+checks passed. Changes uncommitted.
+
+## Conversion and audit: TakeSpecialDamage callback (2026-10-04)
+
+Converted the managed virtual TakeSpecialDamage boundary. The default uses
+the previously converted state-availability gate and returns damage or -1.
+Ordinary damage calls overrides after damage factors and before armor; zero
+or negative callback results stop the health/armor change, while positive
+results replace the amount. Source, inflictor, damage type and managed flags
+are passed through. Forced and telefrag processing bypass this stage.
+
+Five regressions cover rejection, zero/replacement amounts, scaled input,
+context propagation, armor ordering and forced bypass. Native angle argument,
+native flag expansion, ZScript binding, inflictor DeathType and callback-driven
+actor destruction/lifecycle edge cases remain open. This exposes the C#
+callback for the current damage pipeline, not the full VM signature.
+
+Release validation: **7,239 tests passed (6,041 Playsim; 588 MapLoader)**.
+Clean warnings-as-errors build passed with zero warnings/errors; whitespace
+checks passed. Changes uncommitted.
+
+## Conversion and audit: special death-state classification (2026-10-04)
+
+Converted the represented-state subset of native HasSpecialDeathStates from
+p_states.cpp. Available direct typed deaths and Death.Extreme qualify; a
+nested Death.Type.Extreme state alone does not. The damage availability gate
+now uses this method and accepts explicit Extreme damage when Death.Extreme
+exists. This corrects the previous pass's overbroad typed-state enumeration
+and missing extreme-only classification.
+
+Five regressions cover extreme-only filtering, explicit Extreme acceptance,
+nested-only labels and unavailable/direct typed states. Full native label
+trees, inherited/hierarchical state lookup, inflictor DeathType and virtual
+TakeSpecialDamage binding remain open. Classification uses the managed state
+tables rather than claiming complete class-label support.
+
+Release validation: **7,234 tests passed (6,036 Playsim; 588 MapLoader)**.
+Clean warnings-as-errors build passed with zero warnings/errors; whitespace
+checks passed. Changes uncommitted.
+
+## Conversion and audit: typed-death damage availability (2026-10-04)
+
+Converted the supported TakeSpecialDamage death-availability gate into ordinary
+damage processing after damage factors and before armor. Actors with a regular
+death state or no supported typed death states retain ordinary damage acceptance.
+Typed-only actors reject unmatched damage; explicit typed deaths and eligible
+generic Ice fallback accept it. NoAutofreeze and NoIceDeath block that fallback.
+Massacre bypasses the availability check; forced/telefrag paths retain their
+existing bypass of this stage.
+
+Seven regressions cover matching/unmatched types, enabled/disabled generic
+freeze, Massacre, forced damage and normal-death acceptance. This connects the
+previous NoAutofreeze availability consumer for represented actor states.
+Inflictor DeathType override, virtual TakeSpecialDamage callbacks, native
+hierarchical state lookup and complete HasSpecialDeathStates classification
+remain open; this is the bounded managed damage gate, not the full callback API.
+
+Release validation: **7,229 tests passed (6,031 Playsim; 588 MapLoader)**.
+Clean warnings-as-errors build passed with zero warnings/errors; whitespace
+checks passed. Changes uncommitted.
+
+## Conversion and audit: DeHackEd No Autofreeze (2026-10-04)
+
+Converted PatchMisc No Autofreeze parsing and the supported death-state
+selection gate from p_interaction.cpp. Nonzero values disable the generic
+Ice fallback, while explicit typed Ice death states retain priority. Zero
+keeps the existing fallback. Incremental patches preserve the setting,
+malformed integers report errors, and enabled configuration enters checksums.
+
+Six regressions cover enabled/disabled/negative settings, explicit typed death
+precedence, baseline/parser handling and checksum sensitivity. Other native
+NoAutofreeze consumers, including death-state availability queries in p_mobj.cpp,
+remain open; this converts death selection only. Full ZScript/default-class
+binding and portable patch configuration remain open.
+
+Release validation: **7,222 tests passed (6,024 Playsim; 588 MapLoader)**.
+Clean warnings-as-errors build passed with zero warnings/errors; whitespace
+checks passed. Changes uncommitted.
+
+## Conversion and audit: ACS SpawnHealth virtual query (2026-10-04)
+
+Converted APROP_SpawnHealth reads to native p_acs.cpp's GetMaxHealth(false)
+dispatch. Despite its name, this property reports the virtual maximum rather
+than a monster's spawn-health default. CheckActorProperty uses the same read
+path. Existing nonplayer expectations were corrected; the underlying
+SpawnHealth method and GiveBody monster-healing cap remain independent.
+
+Two new regressions cover custom virtual dispatch through get/check and the
+distinct monster query/healing maxima. Existing player property and write
+behavior tests pass. The adjacent DamageThing negative-damage healing rule
+was checked against native code and already matches its supported behavior.
+ZScript binding, full resurrection/death-state synchronization and extreme
+integer semantics remain open.
+
+Release validation: **7,216 tests passed (6,018 Playsim; 588 MapLoader)**.
+Clean warnings-as-errors build passed with zero warnings/errors; whitespace
+checks passed. Changes uncommitted.
+
+## Conversion and audit: HealThing nonpositive caps (2026-10-04)
+
+Converted LS_HealThing's conditional direct-health clamp: after checking
+health below the explicit threshold, only positive maxima clamp the resulting
+health. Negative explicit maxima and zero/negative DeHackEd soul maxima now
+permit the direct addition to exceed that threshold, matching p_lnspec.cpp.
+An argument maximum of zero still selects GiveBody and its dead-actor guard;
+this differs from maximum=1 resolving to a patched zero soul maximum.
+
+Six regressions cover threshold eligibility, additions below/above a negative
+threshold, nonpositive patched soul maxima and the zero-mode dead-player guard.
+This closes the previous nonpositive direct-cap gap. Integer overflow remains
+bounded by the managed int range rather than attempting to reproduce native
+signed overflow. Full player death-state synchronization, voodoo dolls and
+custom callbacks remain open; direct health changes are not full resurrection.
+
+Release validation: **7,214 tests passed (6,016 Playsim; 588 MapLoader)**.
+Clean warnings-as-errors build passed with zero warnings/errors; whitespace
+checks passed. Changes uncommitted.
+
+## Conversion and audit: HealThing soul maximum (2026-10-04)
+
+Converted LS_HealThing's maximum=1 mode to use DeHackEd MaxSoulsphere instead
+of a hard-coded 200. Native p_lnspec.cpp applies this as a direct cap for
+players, independently of BonusHealth, Stamina and MaxPickupHealth; the managed
+path retains that distinction. Other positive explicit maxima remain literal,
+and nonplayers still use GiveBody with their spawn-health cap.
+
+Five regressions cover raised/lowered patch caps, health already above cap,
+upgrade independence, literal maxima and monster healing. Existing line-special
+and ACS health action coverage also passes. Custom actor callbacks, voodoo-doll
+player synchronization and extreme integer/nonpositive direct-cap semantics
+remain open; this conversion changes the supported soul-cap lookup only.
+
+Release validation: **7,208 tests passed (6,010 Playsim; 588 MapLoader)**.
+Clean warnings-as-errors build passed with zero warnings/errors; whitespace
+checks passed. Changes uncommitted.
+
+## Conversion and audit: soul-sphere always-pickup default (2026-10-04)
+
+Converted the missed Soulsphere INVENTORY.ALWAYSPICKUP default from native
+doomartifacts.zs. Contact now consumes a soul sphere at or above its health
+cap without reducing health, through the existing collection path. DeHackEd
+cap changes retain this behavior. The existing explicit flag override can
+still disable unconditional collection and exposes the correct default.
+
+Five regressions cover vanilla/patched caps, over-cap health and disabling
+the default through ACS actor flags. Ordinary health/armor pickup behavior
+continues to pass its existing tests. Custom inventory Use/TryPickup hooks,
+remaining DeHackEd ammo/weapon settings and full class-default integration
+remain open.
+
+Release validation: **7,203 tests passed (6,005 Playsim; 588 MapLoader)**.
+Clean warnings-as-errors build passed with zero warnings/errors; whitespace
+checks passed. Changes uncommitted.
+
+## Conversion and audit: scripted armor class grants (2026-10-04)
+
+Connected ACS GiveInventory GreenArmor/BlueArmor to the converted DeHackEd
+class defaults. Native BasicArmorPickup.SetGiveAmount multiplies SaveAmount
+by the requested count; the managed script path now multiplies the patched
+100-times-class amount instead of vanilla 100/200. Shared pickup handling
+continues to apply armor scaling and the class-dependent absorption rate.
+BlueArmorForMegasphere keeps its independent fixed default.
+
+Four regressions cover case-insensitive script names, patched class amounts,
+multiple suit counts, absorption/actual save metadata and megasphere armor
+independence. This closes a missed script integration path from the armor
+class conversion. Nonpositive suit semantics, fractional native absorption,
+custom inventory behavior and broader DeHackEd settings remain open.
+
+Release validation: **7,198 tests passed (6,000 Playsim; 588 MapLoader)**.
+Clean warnings-as-errors build passed with zero warnings/errors; whitespace
+checks passed. Changes uncommitted.
+
+## Conversion and audit: ACS virtual health maximum (2026-10-04)
+
+Converted native CheckInventory's generic Health maximum dispatch to
+GetMaxHealth(false) for all supported actors. Nonplayer queries now use the
+base virtual maximum (100 unless overridden), rather than SpawnHealth.
+Player queries retain their resolved player maximum and exclude Stamina,
+BonusHealth and MaxPickupHealth. Current-health queries remain direct reads;
+nonplayer GiveBody still caps healing at SpawnHealth, as required by its
+separate native rule.
+
+Corrected the existing nonplayer query expectations against p_acs.cpp and
+actor.h. Two new regressions verify a custom virtual override receives false
+and player upgrades do not affect this query. Existing varied current/spawn
+health and string-table tests now assert the native maximum. This closes the
+previous generic Health query gap. ZScript binding, custom inventory instances
+and broader dynamic class-default handling remain open.
+
+Release validation: **7,194 tests passed (5,996 Playsim; 588 MapLoader)**.
+Clean warnings-as-errors build passed with zero warnings/errors; whitespace
+checks passed. Changes uncommitted.
+
+## Conversion and audit: health inventory default queries (2026-10-04)
+
+Converted ACS CheckInventory/GetMaxInventory health-item default queries to
+use the patched Soulsphere and MegasphereHealth maxima. HealthBonus reports
+the native -1 MaxAmount marker after PatchMisc changes its default; untouched
+defaults still report 200. These queries report class defaults independently
+of player health upgrades and pickup-cap overrides. Counts remain zero for
+these consumed health items. Shared lookup covers both players and monsters.
+
+Four regressions cover case-insensitive names, patched class defaults,
+unpatched bonus defaults, zero counts, player upgrades and monster/string-table
+queries. This closes the preceding health-item query gap. Custom inventory
+instances, broader class-default queries and the existing nonplayer generic
+Health maximum query (which still uses spawn health rather than virtual
+GetMaxHealth) remain open and should be handled separately.
+
+Release validation: **7,192 tests passed (5,994 Playsim; 588 MapLoader)**.
+Clean warnings-as-errors build passed with zero warnings/errors; whitespace
+checks passed. Changes uncommitted.
+
+## Conversion and audit: scripted megasphere health cap (2026-10-04)
+
+Connected ACS GiveInventory's MegasphereHealth path to the converted DeHackEd
+health default, replacing its hard-coded 200 cap. Script grant amounts remain
+additive and explicit; shared healing applies BonusHealth and MaxPickupHealth
+policy. This health-only grant does not supply megasphere armor.
+Four regressions cover raised/lowered caps, BonusHealth, additive grants,
+case-insensitive names and health already above the cap.
+
+Audit correction: current BotPawn derives from Actor and represents a monster
+simulation helper, not a player bot with starting inventory. Applying Initial
+Bullets there would be incorrect. Full player-bot spawning remains unconverted.
+Script maximum-inventory queries still use vanilla health-item defaults;
+dynamic class-default query integration and custom inventory classes remain
+open, alongside the prior start-item edge cases.
+
+Release validation: **7,188 tests passed (5,990 Playsim; 588 MapLoader)**.
+Clean warnings-as-errors build passed with zero warnings/errors; whitespace
+checks passed. Changes uncommitted.
+
+## Conversion and audit: DeHackEd initial bullets (2026-10-04)
+
+Converted PatchMisc Initial Bullets parsing and supported map-player starting
+ammo. Inventory pistol-start resets and cooperative lose-ammo/halve-ammo paths
+now resolve the configured starting amount instead of a literal 50. Grants
+use the supported default bullet capacity and bypass skill ammo multipliers.
+Incremental patches preserve the setting and invalid integers report errors.
+The configuration participates in checksums because it affects future resets.
+Existing inventory snapshots serialize the resulting bullet count.
+
+Three regressions cover lower/higher starting grants, reset/filter paths,
+baseline preservation and malformed input. Initial test failures in ownerless
+inventory fixtures exposed a null-owner assumption; the helper now retains
+the vanilla default for those fixtures and all tests pass. Dynamic bot starts,
+custom start inventory, nonpositive start-item semantics and patched ammo
+capacities remain open; the current managed boundary clamps to 0-200.
+
+Release validation: **7,184 tests passed (5,986 Playsim; 588 MapLoader)**.
+Clean warnings-as-errors build passed with zero warnings/errors; whitespace
+checks passed. Changes uncommitted.
+
+## Conversion and audit: DeHackEd initial player health (2026-10-04)
+
+Converted PatchMisc Initial Health parsing and player class-default updates.
+Each Misc block applies the current initial-health setting to the player
+default, matching native PatchMisc even when the block omits Initial Health.
+Subsequent Thing 1 health patches can override that default. Player starts
+now resolve health from the player class entry for every player number,
+fixing the previous lookup by editor number. Spawn health and existing
+respawn health use that resolved default; maximum healing health remains
+independent. Existing actor health/default checksum tracking covers the result.
+
+Six regressions cover multiple player starts, patch ordering, baseline
+preservation and malformed input. Full player spawn/respawn lifecycle,
+nonpositive initial-health handling, Initial Bullets and cheat settings remain
+open. Armor audit clarification: nonpositive BasicArmorPickup Use distinguishes
+missing inventory from an existing empty armor object; managed inventory does
+not yet represent that distinction, so this remains explicitly unconverted.
+
+Release validation: **7,181 tests passed (5,983 Playsim; 588 MapLoader)**.
+Clean warnings-as-errors build passed with zero warnings/errors; whitespace
+checks passed. Changes uncommitted.
+
+## Conversion and audit: DeHackEd armor classes (2026-10-04)
+
+Converted PatchMisc Green Armor Class and Blue Armor Class parsing and the
+supported catalog pickup defaults. Each suit grants 100 times its configured
+class, before existing armor scaling and explicit pickup amount handling.
+Class 1 selects the managed one-third absorption rule; other classes select
+50 percent, following native PatchMisc. Megasphere armor retains its fixed
+200-point, 50-percent behavior. Incremental patches preserve both classes,
+malformed integers report errors, and nondefault classes enter checksums.
+
+Ten regressions cover suit amounts/absorption, saved armor limit metadata,
+megasphere independence, invalid settings, baseline preservation and each
+class's checksum effect. This closes the previous Green/Blue class-setting
+gap for supported positive suit grants. Native fractional save percentages,
+nonpositive suit Use semantics, custom armor classes and remaining Misc
+start/cheat settings remain open. Patch configuration is not archived.
+
+Release validation: **7,175 tests passed (5,977 Playsim; 588 MapLoader)**.
+Clean warnings-as-errors build passed with zero warnings/errors; whitespace
+checks passed. Changes uncommitted.
+
+## Conversion and audit: DeHackEd armor-bonus maximum (2026-10-04)
+
+Converted PatchMisc Max Armor parsing and BasicArmorBonus's supported cap
+behavior. Bonus grants clip to the patched maximum without reducing existing
+armor above that cap. Fresh bonus armor records the patched actual save limit
+and inventory maximum. Zero/negative caps consume the bonus without increasing
+armor, matching native Use. Megasphere armor stays at its fixed 200-point value.
+Incremental patches preserve the maximum; invalid integers report parser
+errors. Nondefault caps participate in simulation checksums.
+
+Eight regressions cover raised/lowered caps, existing armor above cap,
+nonpositive caps, armor metadata, megasphere independence, baseline/parser
+handling and checksum sensitivity. Custom BasicArmor BonusCount/MaxAllowedAmount
+properties, Green/Blue armor class settings and other Misc settings remain
+open. Nonplayer healing's core amount clamp, spawn-health cap and explicit-cap
+ignore rules were checked against P_GiveBody and are already implemented.
+
+Release validation: **7,165 tests passed (5,967 Playsim; 588 MapLoader)**.
+An initial run failed DedicatedServerHostTests.Pump_BootstrapsLiveSessionAfterStartGameAck;
+the complete rerun passed. This leaves a server-test reliability concern;
+the failure's cause was not established in this conversion pass.
+Clean warnings-as-errors build passed with zero warnings/errors; whitespace
+checks passed. Changes uncommitted.
+
+## Conversion and audit: player pickup-health override (2026-10-04)
+
+Converted P_GetRealMaxHealth's MaxPickupHealth override for supported player
+healing. A nonzero override replaces the computed cap, including health
+upgrades, while a larger positive original item cap wins over the override.
+GetMaxHealth itself remains independent of this pickup policy. Respawn clears
+the field alongside existing health overrides; full native inventory/respawn
+policy remains a separate open area.
+
+Snapshots and checksums include the field. Archive version 45 extends the
+existing actor-state footer to 40-byte records only when this field is nonzero;
+versions 42-44 retain their original layouts and restore a zero override.
+Six regressions cover default/smaller/larger item caps, upgrade precedence,
+archive continuation, malformed footer rejection, legacy restore and checksum
+sensitivity. This closes the preceding MaxPickupHealth audit gap for player
+healing. Morph behavior, custom inventory property binding and nonplayer
+GetMaxHealth/healing parity remain open.
+
+Release validation: **7,157 tests passed (5,959 Playsim; 588 MapLoader)**.
+Clean warnings-as-errors build passed with zero warnings/errors; whitespace
+checks passed. Changes uncommitted.
+
+## Conversion and audit: DeHackEd health-bonus caps (2026-10-04)
+
+Converted native PatchMisc's HealthBonus default transition and doomhealth.zs
+runtime cap selection. Any Misc block marks the bonus cap as patched, including
+an empty block or one without Max Health. Before that transition the vanilla
+cap stays 200, including with DehHealth compatibility. Afterward the cap is
+MaxHealth with compatibility enabled and twice MaxHealth otherwise.
+Incremental patches preserve this marker, which participates in checksums.
+
+The accompanying P_GetRealMaxHealth audit found and converted the shared
+explicit-cap BonusHealth addition: pickup caps include BonusHealth but not
+Stamina. Default healing still includes both upgrades. Eleven regressions
+cover untouched defaults, empty/unrelated Misc blocks, compatibility, clipped
+healing, explicit player-cap independence, baseline preservation, checksum
+sensitivity and sphere caps with upgrades. This closes the previous entry's
+HealthBonus finding. Morph rules, MaxPickupHealth overrides, custom inventory
+classes and other Misc settings remain open. Patch configuration still must
+be supplied when reconstructing a simulation; it is not archived.
+
+Release validation: **7,151 tests passed (5,953 Playsim; 588 MapLoader)**.
+Clean warnings-as-errors build passed with zero warnings/errors; whitespace
+checks passed. Changes uncommitted.
+
+## Conversion and audit: DeHackEd sphere health (2026-10-04)
+
+Converted native PatchMisc's Max Soulsphere, Soulsphere Health and Megasphere
+Health settings. Soul pickups use the patched amount and cap; megaspheres use
+the patched health amount as their cap while retaining fixed 200-point armor,
+matching BlueArmorForMegasphere. Explicit pickup amount overrides remain in
+effect. Incremental patches preserve all three settings, malformed integers
+report parser errors, and nondefault settings enter simulation checksums.
+
+Ten regressions cover additive healing, cap clipping, megasphere armor,
+incremental parsing, malformed values and each setting's checksum effect.
+Audit finding: HealthBonus still needs PatchMisc's runtime cap selection
+(MaxHealth with DehHealth compatibility, twice MaxHealth otherwise), including
+tracking whether Misc has patched its default. Other Misc armor/start/ammo
+settings, automatic compatibility loading and portable patch configuration
+remain open. This is bounded catalog pickup support, not custom inventory
+class-default patching.
+
+Release validation: **7,140 tests passed (5,942 Playsim; 588 MapLoader)**.
+Clean warnings-as-errors build passed with zero warnings/errors; whitespace
+checks passed. Changes uncommitted.
+
+## Conversion and audit: DeHackEd maximum-health fallback (2026-10-04)
+
+Converted Misc Max Health parsing and the player.zs GetMaxHealth fallback.
+Explicit positive player caps take precedence; otherwise the patch cap applies,
+unless DehHealth compatibility selects 100. Upgrade arithmetic still applies
+after this selection. Incremental patches preserve the baseline cap and invalid
+integer values report parser errors. Nondefault patch caps enter the simulation
+checksum because they affect future healing.
+
+Seven regressions cover fallback and compatibility, explicit cap precedence,
+healing, baseline preservation, malformed input and checksum sensitivity.
+Other DeHackEd Misc settings, automatic MAPINFO compatibility loading and
+ZScript binding remain open. Patch configuration is supplied when rebuilding
+a simulation and is not serialized in the save archive.
+
+Release validation: **7,130 tests passed (5,932 Playsim; 588 MapLoader)**.
+Clean warnings-as-errors build passed with zero warnings/errors; whitespace
+checks passed. Changes uncommitted.
+
+## Conversion and audit: player maximum-health upgrades (2026-10-04)
+
+Converted player.zs GetMaxHealth upgrade arithmetic: Stamina and BonusHealth
+are added only when withUpgrades is true. Default healing uses the upgraded
+cap. Both fields participate in snapshots/checksums and archive version 44,
+extending the existing actor-state footer. Older archives remain readable and
+restore zero upgrades. Respawn clears the fields alongside MaxHealth.
+Five regressions cover flag-dependent caps, healing, archive continuation,
+malformed footer rejection, legacy restore and checksum sensitivity.
+Upgrade inventory acquisition, DeHackEd maximum fallback/compatibility,
+ZScript binding and full native respawn inventory policy remain open.
+
+Release validation: **7,123 tests passed (5,925 Playsim; 588 MapLoader)**.
+Clean warnings-as-errors build passed with zero warnings/errors; whitespace
+checks passed.
+Changes uncommitted.
+
+## Conversion and audit: managed GetMaxHealth API and healing (2026-10-04)
+
+Added virtual Actor.GetMaxHealth(bool withUpgrades) with native base default 100,
+and a PlayerPawn override resolving the existing configured maximum. Default
+player healing now calls that method; explicit healing caps retain precedence.
+Five regressions cover base calls, player defaults/custom limits and explicit
+caps. Inventory stamina/upgrade adjustments, class-specific overrides and
+ZScript binding remain open; withUpgrades currently has no additional effect.
+Native skill friendly/monster spawn-health multipliers also remain unconverted.
+
+Release validation: **7,118 tests passed (5,920 Playsim; 588 MapLoader)**.
+Clean warnings-as-errors build passed with zero warnings/errors; whitespace
+checks passed.
+Changes uncommitted.
+
+## Conversion and audit: managed SpawnHealth revival API (2026-10-04)
+
+Added Actor.SpawnHealth over the spawner's captured resurrection health and
+connected revival eligibility and health restoration to it. Three regressions
+verify default, multiplied and absolute map health through damage, same-world
+serialized restoration and subsequent revival. Existing UDMF regressions now
+also check this API. This is the current managed subset: native fallback to
+class defaults and skill friendly/monster health multipliers remain open.
+Archives do not serialize captured spawn defaults, so portable recreation and
+restoring mutated defaults are not covered by these same-world tests.
+
+Release validation: **7,113 tests passed (5,915 Playsim; 588 MapLoader)**.
+Clean warnings-as-errors build passed with zero warnings/errors; whitespace
+checks passed.
+Changes uncommitted.
+
+## Conversion audit fix: damage-death gib query ordering (2026-10-04)
+
+Damage deaths now invoke GetGibHealth before death-special execution and again
+for subsequent state selection, matching native Die's two query locations.
+Two regressions verify callback-visible special clearing and selection using
+the later callback value. Direct health-assignment behavior remains separate.
+The early native wasgibbed-dependent morph/scoring effects are not implemented;
+this addition preserves callback invocation and ordering for supported deaths.
+Full native Die control-flow parity and ZScript binding remain open.
+
+Release validation: **7,110 tests passed (5,912 Playsim; 588 MapLoader)**.
+Clean warnings-as-errors build passed with zero warnings/errors; whitespace
+checks passed.
+Changes uncommitted.
+
+## Conversion and audit: managed virtual GetGibHealth (2026-10-04)
+
+Added virtual Actor.GetGibHealth and connected death-state selection and forced
+extreme-death health adjustment to its result. Base behavior uses the existing
+configured GibHealth; managed subclasses can override it. One value is sampled
+per health death transition to keep selection and adjustment consistent.
+Four regressions cover custom normal/extreme selection, forced extreme health,
+callback count and base configured behavior. Native ZScript binding, exact
+callback invocation timing/count parity and portable subclass recreation remain
+open, as do zero/sub-one spawn death timing and remaining lifecycle behavior.
+
+Release validation: **7,108 tests passed (5,910 Playsim; 588 MapLoader)**.
+Clean warnings-as-errors build passed with zero warnings/errors; whitespace
+checks passed.
+Changes uncommitted.
+
+## Conversion audit fix: spawn-health gib threshold (2026-10-04)
+
+Updated the default gib threshold when nonzero map spawn health changes,
+matching native GetGibHealth's negative SpawnHealth fallback. A threshold
+changed by a spawn callback is retained. Four regressions verify actual normal
+versus extreme death-state selection for multiplied and absolute health,
+including the strict below-threshold boundary. Full virtual GetGibHealth,
+zero/sub-one spawn death timing and portable StartHealth remain open.
+
+Release validation: **7,104 tests passed (5,906 Playsim; 588 MapLoader)**.
+Clean warnings-as-errors build passed with zero warnings/errors; whitespace
+checks passed.
+Changes uncommitted.
+
+## Conversion and audit: nonzero UDMF actor spawn health (2026-10-04)
+
+Converted extended UDMF thing health parsing and map-to-actor forwarding.
+After spawn callbacks, positive values multiply current health and negative
+values set absolute health, with integer truncation. The result becomes managed
+resurrection health, corresponding to native StartHealth/SpawnHealth behavior.
+Four regressions cover default, fractional multiplier, absolute value and zero.
+Zero explicitly reports unsupported delayed spawn death; nonfinite, overflowing
+or sub-one results report unsupported range rather than silently changing timing.
+Native zero/sub-one death timing, complete gib-threshold semantics, player health
+integration and portable StartHealth recreation remain open.
+
+Release validation: **7,100 tests passed (5,902 Playsim; 588 MapLoader)**.
+Clean warnings-as-errors build passed with zero warnings/errors; whitespace
+checks passed.
+Changes uncommitted.
+
+## Conversion audit fix: defense and movement defaults before callbacks (2026-10-04)
+
+Extended spawn default preservation to missing defense and movement masks.
+Managed actors without explicit class masks now capture them before BeginPlay
+changes flags, while explicit catalog/class masks remain authoritative. Three
+regressions verify map/dynamic initialization and actual revival after callback
+mutations, including explicit-mask precedence. Initial test fixtures omitted
+the monster brain required by revival; corrected the fixtures and reran all tests.
+Full class-default reconstruction and portable actor recreation remain open.
+
+Release validation: **7,096 tests passed (5,898 Playsim; 588 MapLoader)**.
+Clean warnings-as-errors build passed with zero warnings/errors; whitespace
+checks passed.
+Changes uncommitted.
+
+## Conversion audit fix: resurrection defaults before spawn callbacks (2026-10-04)
+
+Preserved original radius, height and collision defaults before BeginPlay.
+Simulation setup and bot setup now fill missing defaults without overwriting
+those captured before callbacks. This prevents managed spawn actions from
+replacing the class dimensions/flags subsequently used for revival. Three
+regressions cover map/dynamic paths, callback mutations and explicit defaults.
+Full native class-default reconstruction and portable save recreation remain open.
+
+Release validation: **7,093 tests passed (5,895 Playsim; 588 MapLoader)**.
+Clean warnings-as-errors build passed with zero warnings/errors; whitespace
+checks passed.
+Changes uncommitted.
+
+## Conversion and audit: partial LevelSpawned map stage (2026-10-04)
+
+Added managed LevelSpawned for native map-stage dropped-flag cleanup followed
+by HandleSpawnFlags. Map actor spawning captures the class dropped default
+before BeginPlay; its temporary dropped flag is cleared unless that default
+requires it. Dynamic bot/lost-soul initialization now skips the map-only stage.
+Three regressions verify both class defaults, callback-visible cleanup and
+dynamic-spawn preservation. Native spawn-tic randomization, synchronized flags,
+MAPTHING marker and portable class-default recreation remain open.
+
+Release validation: **7,090 tests passed (5,892 Playsim; 588 MapLoader)**.
+Clean warnings-as-errors build passed with zero warnings/errors; whitespace
+checks passed.
+Changes uncommitted.
+
+## Conversion audit fix: spawn hook inputs and destruction (2026-10-04)
+
+Corrected spawn-hook ordering: decoded map dormancy is stored before BeginPlay,
+and actors destroyed by BeginPlay skip HandleSpawnFlags. This follows native
+map-spawn lifetime gating before LevelSpawned and prevents callbacks/flag
+mutation after removal. Three regressions cover both dormant inputs and
+destruction before flag handling. This fixes the recently converted hooks;
+full native LevelSpawned, health scaling and class reconstruction remain open.
+
+Release validation: **7,087 tests passed (5,889 Playsim; 588 MapLoader)**.
+Clean warnings-as-errors build passed with zero warnings/errors; whitespace
+checks passed.
+Changes uncommitted.
+
+## Conversion and audit: map ambush/friendly lifecycle ordering (2026-10-04)
+
+Moved map ambush and friendliness application into virtual HandleSpawnFlags.
+Ambush now precedes map dormancy callbacks; map friendliness follows them,
+matching native p_mobj.cpp. Class defaults remain intact when flags are absent.
+Three regressions cover callback-visible ordering, preserved defaults and
+override replacement. Existing map allegiance and resurrection coverage passes.
+Native friendly kill accounting, remaining spawn flags, full lifecycle ordering
+and portable recreation of class/spawn defaults remain open.
+
+Release validation: **7,084 tests passed (5,886 Playsim; 588 MapLoader)**.
+Clean warnings-as-errors build passed with zero warnings/errors; whitespace
+checks passed.
+Changes uncommitted.
+
+## Conversion and audit: managed spawn-flag lifecycle hook (2026-10-04)
+
+Added virtual Actor.HandleSpawnFlags for current map-dormancy handling and
+connected it after BeginPlay in existing managed spawn initialization. Managed
+subclasses can now override the map-dormancy stage independently of class
+dormancy. Three regressions cover ordering, map dormancy and override replacement.
+This is a partial native hook conversion: ambush/friendly setup remains in the
+spawner, and standstill, shadow rendering, secret/no-count accounting and other
+native spawn flags remain open. Full native spawn ordering is not claimed.
+
+Release validation: **7,081 tests passed (5,883 Playsim; 588 MapLoader)**.
+Clean warnings-as-errors build passed with zero warnings/errors; whitespace
+checks passed.
+ZScript binding and other conversion gaps remain open. Changes uncommitted.
+
+## Conversion and audit: player BeginPlay standing height (2026-10-04)
+
+Converted PlayerPawn.BeginPlay standing-height initialization into its lifecycle
+override. FullHeight now captures Height after base BeginPlay, matching native
+player.zs ordering, rather than being assigned earlier in the map spawner.
+Three regressions cover custom heights and a base inactive-frame height change.
+Existing crouch and respawn coverage also passes. View-position allocation,
+native player stat-list changes and crouch sprite setup remain open.
+
+Release validation: **7,078 tests passed (5,880 Playsim; 588 MapLoader)**.
+Clean warnings-as-errors build passed with zero warnings/errors; whitespace
+checks passed.
+Full lifecycle ordering, ZScript binding and other conversion gaps remain open.
+Changes uncommitted.
+
+## Conversion and audit: managed Actor.BeginPlay lifecycle hook (2026-10-04)
+
+Converted native base Actor.BeginPlay dormancy handling into a virtual C#
+instance method. Existing map/bot/lost-soul spawn initialization invokes it
+before map dormant handling, enabling managed subclasses to replace or extend
+the behavior. Base handling clears class dormancy before virtual Deactivate(null).
+Four regressions cover ordering, direct base behavior and override replacement.
+This covers current managed spawn paths; full native lifecycle ordering,
+ZScript binding and class-specific BeginPlay implementations remain open.
+
+Release validation: **7,075 tests passed (5,877 Playsim; 588 MapLoader)**.
+Clean warnings-as-errors build passed with zero warnings/errors; whitespace
+checks passed.
+Touch/use integration, non-brain targets and unconverted special families
+remain open. Changes uncommitted.
+
+## Conversion and audit: spawn dormancy virtual callbacks (2026-10-04)
+
+Connected class-default dormancy and map dormant spawn flags to managed virtual
+Deactivate(null), matching native BeginPlay and HandleSpawnFlags. Class dormancy
+is cleared before the first callback; class plus map dormancy invokes both
+callbacks. Spawn initialization does not consume activationtype state flags.
+Four regressions cover every class/map combination, callback count, null trigger,
+first-call state and unchanged switch flags. Existing base monster behavior is
+preserved; full native lifecycle and ZScript class loading remain open.
+
+Release validation: **7,071 tests passed (5,873 Playsim; 588 MapLoader)**.
+Clean warnings-as-errors build passed with zero warnings/errors; whitespace
+checks passed.
+Touch/use integration, ZScript virtual binding, non-brain targets and unconverted
+special families remain open. Changes uncommitted.
+
+## Conversion and audit: managed virtual actor activation (2026-10-04)
+
+Converted Actor.Activate/Deactivate as virtual C# methods with existing native
+base monster handling. Direct Thing_Activate/Deactivate and activation state
+flags now invoke these methods, allowing managed actor subclasses to override
+activation and receive the original trigger. Flag synchronization precedes the
+callback; ThingActs activator selection follows it. Direct base method calls do
+not consume special flags, matching native Activate versus DoActivateThing.
+Five regressions cover both callbacks, trigger identity, ordering and base calls.
+
+Release validation: **7,067 tests passed (5,869 Playsim; 588 MapLoader)**.
+Clean warnings-as-errors build passed with zero warnings/errors; whitespace
+checks passed.
+ZScript virtual binding and class reconstruction remain open; this addition
+supports C# overrides only. Touch/use integration, non-brain targets and
+unconverted special families remain open. Changes uncommitted.
+
+## Conversion and audit: direct thing activation flag synchronization (2026-10-04)
+
+Converted native DoActivateThing/DoDeactivateThing flag synchronization in
+ThingActivation.Execute: matching Activate/Deactivate flags are consumed and
+Switch sets the opposite flag before the base activation call. Opposite-only
+flags remain unchanged. Map spawn initialization still uses the base handler.
+Eight regressions cover direct activator/TID targeting, matching/opposite flags
+and alternating a direct action with Actor.ActivateSpecial.
+
+Release validation: **7,062 tests passed (5,864 Playsim; 588 MapLoader)**.
+Clean warnings-as-errors build passed with zero warnings/errors; whitespace
+checks passed.
+Touch/use integration, virtual callbacks, non-brain targets and unconverted
+special families remain open. Changes uncommitted.
+
+## Conversion and audit: Actor.ActivateSpecial method (2026-10-04)
+
+Added the managed Actor.ActivateSpecial(activator, death = false) instance entry
+point matching the native actor API signature. It uses the owning simulation
+and shared converted dispatcher, allowing managed state-frame actions to call
+the actor method directly. An unbound actor reports the missing simulation
+explicitly. Four regressions cover activator/death forwarding, state-frame
+execution and the unbound-actor error. This is a C# actor API conversion;
+ZScript parsing/VM binding remains open and is not implied by this addition.
+
+Release validation: **7,054 tests passed (5,856 Playsim; 588 MapLoader)**.
+Clean warnings-as-errors build passed with zero warnings/errors; whitespace
+checks passed.
+Touch/use integration, virtual callbacks, non-brain targets and unconverted
+special families remain open. Changes uncommitted.
+
+## Conversion audit fix: cleared activation flags in saves (2026-10-04)
+
+Fixed a state-preservation gap in the converted activation flags. ActivationType
+assignments now mark the actor-special state explicit, including zero after
+consuming a one-shot Activate/Deactivate flag. Previously an actor with no
+special/arguments could omit that cleared state and retain later flag mutations
+when restored. Three regressions cover snapshot restore, serialized restore,
+post-restore activation behavior and explicit zero assignment. Existing archive
+version 42 already represents zero flags, so no new archive format is needed.
+
+Release validation: **7,050 tests passed (5,852 Playsim; 588 MapLoader)**.
+Clean warnings-as-errors build passed with zero warnings/errors; whitespace
+checks passed.
+Touch/use integration, virtual callbacks, non-brain targets and unconverted
+special families remain open. Changes uncommitted.
+
+## Conversion and audit: actor-special wall scrolling (2026-10-04)
+
+Connected actor death and explicit activation to converted Scroll_Wall (52) and
+Scroll_Texture_Both (221), forwarding all five arguments. Six regressions cover
+both entry paths, fixed-point and directional argument decoding, actual wall
+movement, texture part flags, zero-ID failure and special preservation.
+Actor specials use native action numbering, so 52 scrolls walls and does not
+use the legacy synthetic ACS Doom-exit fallback.
+
+Release validation: **7,047 tests passed (5,849 Playsim; 588 MapLoader)**.
+Clean warnings-as-errors build passed with zero warnings/errors; whitespace
+checks passed.
+Touch/use integration, virtual callbacks, non-brain targets and unconverted
+special families remain open. Changes uncommitted.
+
+## Conversion and audit: actor-special teleport dispatch (2026-10-04)
+
+Connected actor death and explicit activation to converted Teleport (70) and
+Teleport_NoStop (154), preserving destination TID/sector-tag arguments and
+selected activator. Eight regressions cover both entry paths, destination and
+angle, velocity/reaction-time policy, ThingActs, missing destinations, null
+activators and NoTeleport failure with ClearSpecial preservation.
+
+Release validation: **7,041 tests passed (5,843 Playsim; 588 MapLoader)**.
+Clean warnings-as-errors build passed with zero warnings/errors; whitespace
+checks passed.
+This shares existing flat-sector teleport limitations; native telefrag/placement,
+portal and additional teleport variants remain open. Other special families,
+touch/use integration, virtual callbacks and non-brain targets remain open.
+Changes uncommitted.
+
+## Conversion and audit: actor-special normal and secret exits (2026-10-04)
+
+Connected actor death and explicit activation to normal/secret exit specials
+243/244 through the existing converted exit policy. Eight regressions cover
+both exits, damage-source versus world activation under deathmatch no-exit,
+activator punishment, secret-exit state and success-dependent explicit clearing.
+Modern damage deaths still clear the actor special after failed exit attempts.
+
+Release validation: **7,033 tests passed (5,835 Playsim; 588 MapLoader)**.
+Clean warnings-as-errors build passed with zero warnings/errors; whitespace
+checks passed.
+Remaining actor-special families, touch/use integration, virtual callbacks and
+non-brain target storage remain open. Changes uncommitted.
+
+## Conversion and audit: actor-special destructible geometry health (2026-10-04)
+
+Connected actor death and explicit activation to Line_SetHealth (150) and
+Sector_SetHealth (151) through the existing converted geometry-health actions.
+Twelve regressions cover both entry paths, negative-health clamping, line health
+groups, all three sector parts, unrelated geometry and native success for missing
+targets/unknown parts. The dispatch addition preserves existing grouped-health
+and archive behavior; it does not add new destructible geometry types.
+
+Release validation: **7,025 tests passed (5,827 Playsim; 588 MapLoader)**.
+Clean warnings-as-errors build passed with zero warnings/errors; whitespace
+checks passed.
+Remaining actor-special families, touch/use integration, virtual callbacks and
+non-brain target storage remain open. Changes uncommitted.
+
+## Conversion and audit: actor-special line texture transforms (2026-10-04)
+
+Connected actor death and explicit activation to floor/ceiling alignment
+(183/184), wall texture offset (53) and wall texture scale (56), using existing
+converted actions. Twelve regressions cover both entry paths, line-ID targeting,
+plane alignment angle/offset, fixed-point wall transforms, part flags and failed
+target preservation under ClearSpecial.
+
+Release validation: **7,013 tests passed (5,815 Playsim; 588 MapLoader)**.
+Clean warnings-as-errors build passed with zero warnings/errors; whitespace
+checks passed.
+Remaining actor-special families, touch/use integration, virtual callbacks and
+non-brain target storage remain open. Changes uncommitted.
+
+## Conversion and audit: actor-special plane texture transforms (2026-10-04)
+
+Connected actor death and explicit activation to floor/ceiling panning (186/187)
+and decimal/fixed-point scaling (170/171/188/189), forwarding all five arguments
+to existing converted actions. Twelve regressions cover both entry paths,
+fractional signed panning, reciprocal scaling, zero-axis preservation and
+unrelated planes/sectors. This closes dispatcher gaps rather than adding new
+rendering or changing the existing texture transform implementations.
+
+Release validation: **7,001 tests passed (5,803 Playsim; 588 MapLoader)**.
+Clean warnings-as-errors build passed with zero warnings/errors; whitespace
+checks passed.
+Remaining actor-special families, touch/use integration, virtual callbacks and
+non-brain target storage remain open. Changes uncommitted.
+
+## Conversion and audit: actor-special sector properties (2026-10-04)
+
+Connected actor death and explicit activation to Sector_SetGravity (216),
+Sector_SetDamage (214) and Sector_SetRotation (185) through their existing
+converted implementations. Eleven regressions cover both entry paths, tagged
+and untagged gravity, native fractional clamping, damage interval/leakiness,
+both texture angles, unrelated sectors and missing-tag success/clearing.
+
+Release validation: **6,989 tests passed (5,791 Playsim; 588 MapLoader)**.
+Clean warnings-as-errors build passed with zero warnings/errors; whitespace
+checks passed.
+Other actor-special families, touch/use integration, virtual callbacks and
+non-brain target storage remain open. Changes uncommitted.
+
+## Conversion and audit: actor-special lighting dispatch (2026-10-04)
+
+Connected actor death and explicit activation to converted lighting specials
+110-117 and 232-234, forwarding all five arguments through LightActions.
+Nine regressions cover tagged raise/lower/change, unrelated sector preservation,
+death versus explicit clearing, missing-tag success and animated fade timing.
+The fade regression initially assumed completion one tick too early; corrected
+it to verify the existing native-compatible initial-tick behavior.
+
+Release validation: **6,978 tests passed (5,780 Playsim; 588 MapLoader)**.
+Clean warnings-as-errors build passed with zero warnings/errors; whitespace
+checks passed.
+Other actor-special families, touch/use integration, virtual callbacks and
+non-brain target storage remain open. Changes uncommitted.
+
+## Conversion and audit: actor-special stair dispatch (2026-10-04)
+
+Closed a missing actor-special dispatch path: death and explicit activation now
+forward stair specials 26/27/31/32/204/217/270/271/272/273 and all five arguments
+to the existing converted stair implementation. Tagged stairs work without a
+trigger line; tag zero correctly fails because no manual sector is available.
+Thirteen regressions cover all ten death-special variants, movement direction,
+actual floor movement, missing tags and success-dependent explicit clearing.
+
+Release validation: **6,969 tests passed (5,771 Playsim; 588 MapLoader)**.
+Clean warnings-as-errors build passed with zero warnings/errors; whitespace
+checks passed.
+Remaining actor-special families, touch/use integration, virtual activation
+callbacks and targets for non-brain actors remain open. Changes uncommitted.
+
+## Conversion and audit: explicit non-death actor-special activation (2026-10-04)
+
+Added managed ActorSpecialActions.ActivateSpecial, sharing the supported special
+dispatcher with damage deaths. Converted Activate/Deactivate/Switch flag
+consumption and alternating state selection using existing base monster
+activation handling. Non-death calls ignore the map death-activator policy,
+preserve specials unless ClearSpecial succeeds, and return the special result
+when a special runs, matching native result replacement. Death calls skip state
+flag consumption. NoDeathSpecial remains a damage-death eligibility filter,
+rather than blocking explicit ActivateSpecial calls.
+
+Eleven regressions cover individual and combined state flags, repeated switches,
+non-death special clearing, activator policy and death flag preservation.
+Release validation: **6,956 tests passed (5,758 Playsim; 588 MapLoader)**.
+Clean warnings-as-errors build passed with zero warnings/errors; whitespace
+checks passed.
+This is an explicit managed activation entry point; native ZScript binding,
+touch/use trigger integration, monster/missile trigger eligibility, virtual
+class activation callbacks and targets for non-brain actors remain open.
+Changes uncommitted.
+
+## Conversion and audit: map death-special activator policy (2026-10-04)
+
+Converted LEVEL_ACTOWNSPECIAL selection for supported actor death specials.
+MAPINFO activateowndeathspecials/killeractivatesdeathspecials set/clear the policy;
+numeric Hexen map definitions enable it by default, matching native g_mapinfo.cpp.
+WAD loading now reads this policy for Doom binary, Hexen binary and supported
+UDMF maps using the existing ZMAPINFO preference and later-definition precedence.
+Selected malformed MAPINFO now fails loading for these formats, rather than
+being ignored on Doom/UDMF paths. Simulation level copies preserve the policy
+and checksums include it. TriggerActs overrides the level policy; ThingActs
+still overrides TriggerActs. Direct decoder/builder calls require explicit
+policy assignment because they do not read archive metadata.
+
+Eleven regressions cover parser defaults, flag precedence, gameplay activator
+selection, copied policy and checksum sensitivity. Release validation: **6,945
+tests passed (5,747 Playsim; 588 MapLoader; 35 Gamedata)**. Clean warnings-as-errors
+build passed with zero warnings/errors; whitespace checks passed. Per-source archive
+precedence after merging, full MAPINFO defaultmap grammar, non-brain targets,
+non-death activation and remaining special families remain open.
+Changes uncommitted.
+
+## Conversion and audit: monster death-special target switching (2026-10-04)
+
+Converted ThingTargets (2) and TriggerTargets (4) for actors with managed monster
+brains. Target assignment occurs before ThingActs selects the special activator,
+matching native p_map.cpp ordering. ThingTargets can clear a target when the
+damage source is null; NoDeathSpecial suppresses both switching and execution.
+TriggerTargets with no trigger safely leaves targets unchanged.
+
+Seven regressions cover individual/combined flags, ThingActs ordering, death
+suppression and null-source target clearing. Release validation: **6,934 tests
+passed (5,742 Playsim; 588 MapLoader)**. Clean warnings-as-errors build passed
+with zero warnings/errors; whitespace checks passed. Target storage for players and other
+non-brain actors remains open, so these flags are only partially converted.
+Persistent native corpse-target semantics, LEVEL_ACTOWNSPECIAL metadata,
+non-death activation and remaining special families also remain open.
+Changes uncommitted.
+
+## Conversion and audit: death-special activator and clearing flags (2026-10-04)
+
+Converted THINGSPEC_ThingActs (1) for supported death specials: the dying actor
+becomes the activator, including null damage sources. As in native p_map.cpp,
+ThingActs still applies when TriggerActs is also set. Converted ClearSpecial
+(32): successful execution clears the special even under original-Hexen policy;
+failed execution retains it under that policy. Modern death clearing is unchanged.
+
+Eight regressions cover activator selection, combined flags, null sources and
+success-dependent clearing. Release validation: **6,927 tests passed (5,735
+Playsim; 588 MapLoader)**. Clean warnings-as-errors build passed with zero
+warnings/errors; whitespace checks passed. Target-switching flags, LEVEL_ACTOWNSPECIAL metadata,
+non-death activation and remaining special families remain open. Changes
+uncommitted.
+
+## Conversion and audit: NoDeathSpecial activation flag (2026-10-04)
+
+Converted native THINGSPEC_NoDeathSpecial (64): lethal damage skips actor-special
+execution and preserves the special when this flag is set, for both modern and
+original-Hexen maps. Actor ActivationType now participates in snapshots and
+checksums. Archive version 43 stores activation flags; version 42 remains readable
+and is still written when activation flags are zero.
+
+Seven regressions cover both map policies, execution suppression, archive
+round trips and checksum sensitivity. Release validation: **6,919 tests passed
+(5,727 Playsim; 588 MapLoader)**. Clean warnings-as-errors build passed with
+zero warnings/errors. Whitespace checks passed. Other activation flags, class
+default loading, remaining special families and complete native Die ordering
+remain open. Changes uncommitted.
+
+## Conversion and audit: actor death-special frame ordering (2026-10-04)
+
+Moved damage-triggered death-special execution inside the health transition,
+before death-state selection and frame actions, matching native Die ordering
+for these supported events. Direct Health assignment retains its separate
+behavior and does not execute the damage death special. Four frame-action
+regressions observe killer effects and modern/original-Hexen special clearing,
+including null sources with TID targeting; a fifth covers direct assignment.
+
+Release validation: **6,912 tests passed (5,720 Playsim; 588 MapLoader)**.
+Clean warnings-as-errors build passed with zero warnings/errors. Whitespace
+checks passed. Complete native Die ordering (counters, death dimensions and
+virtual/event callbacks), activationtype flags and remaining special families
+remain open. Named ACS translation, player bob velocity, scripted class defaults,
+Strife rendering/actions and portable world recreation remain open.
+Changes uncommitted.
+
+## Conversion and audit: supported actor death specials (2026-10-04)
+
+Connected supported actor specials to lethal ActorDamage transitions. Default
+activation uses the damage source as activator; non-monster pickup actors are
+excluded. Modern maps clear the special after attempted execution, including
+missing-target failure; original-Hexen maps retain it. HexenHack now survives
+level copying and affects checksums. Dispatch covers existing thing actions,
+health actions, ACS control and door/floor/ceiling actions.
+
+Seven regressions verify lethal/surviving damage, repeated damage, repeated
+deaths, null killers, pickup exclusion and compatibility checksum sensitivity.
+Release validation: **6,907 tests passed (5,715 Playsim; 588 MapLoader)**.
+Clean warnings-as-errors build passed with zero warnings/errors. Whitespace
+checks passed. Full activationtype flags, level actor-own-special policy, touch/
+use activation and remaining special families are not converted here. Managed
+death-state entry currently precedes this hook, unlike complete native Die
+ordering; script-sensitive state-action ordering remains open. Direct Health
+assignment does not invoke this hook. Named ACS translation, player bob velocity,
+scripted class defaults, Strife rendering/actions and portable recreation remain
+open. Changes uncommitted.
+
+## Conversion and audit: numeric ACS SetThingSpecial opcode (2026-10-04)
+
+Converted numeric PCD_SETTHINGSPECIAL (180): consumes TID, special and five
+arguments in native stack order and assigns all five arguments. Shares targeting
+and state assignment with line special 127, which still changes only three
+arguments. Five regressions cover activator/all matching TIDs/missing targets,
+script continuation and a short stack stopping without partial mutation. The
+new state uses the preceding checksum and archive support.
+
+Release validation: **6,900 tests passed (5,708 Playsim; 588 MapLoader)**.
+Clean warnings-as-errors build passed with zero warnings/errors. Whitespace
+checks passed. Native negative named-ACS special translation and string-name
+interning remain unconverted; this implementation retains numeric values as
+supplied. Actor death/activation special execution hooks, player bob velocity,
+scripted class defaults, Strife actions/render flags, game-family negotiation,
+source-WAD precedence and portable world recreation remain open.
+Changes uncommitted.
+
+## Conversion and audit: Thing_SetSpecial actor state and dispatch (2026-10-04)
+
+Converted native line special 127 Thing_SetSpecial. Actors now retain their
+map special and five arguments; the action changes the special and first three
+arguments while preserving the last two. TID zero selects the activator, other
+TIDs update every live match, and missing targets return true as native code
+does. Connected stack/direct ACS line-special calls and map-line activation.
+Nonzero actor specials/arguments affect checksums. Save extension version 42
+stores all six fields when this state is present, including explicitly cleared
+values; older archives leave this newly represented state unchanged on restore.
+
+Nine regressions cover targeting, argument preservation, ACS forms, map-line
+consumption, checksum sensitivity, save round trips and malformed footer size.
+Release validation: **6,895 tests passed (5,703 Playsim; 588 MapLoader)**.
+Clean warnings-as-errors build passed with zero warnings/errors. Whitespace
+checks passed. This converts state assignment, not actor death/activation
+special execution hooks or the separate five-argument SetThingSpecial opcode.
+Player bob velocity, scripted class defaults, Strife actions/render flags,
+game-family negotiation, source-WAD precedence and portable world recreation
+remain open. Changes uncommitted.
+
+## Conversion and audit: revival preserved state and movement masks (2026-10-04)
+
+Completed shared movement-mask extraction for default capture and checksum
+comparison. Two regression cases verify scripted/archvile revival preserves
+MF9 NoAutoOffSkullFly and render FullBright, matching native Revive's reset
+of actor flag groups 1 through 8 only. This pass audits and consolidates
+preceding conversions; it does not convert new native gameplay behavior.
+
+Release validation: **6,886 tests passed (5,694 Playsim; 588 MapLoader)**.
+Clean warnings-as-errors build passed with zero warnings/errors. Whitespace
+checks passed. Thing_Stop player bob velocity remains unconverted: managed
+bob derives from actor velocity and lacks native player velocity/save state.
+Thing_SetSpecial also lacks managed per-actor special/argument state and
+execution hooks. These require broader state-model work. Scripted class
+defaults, Strife actions/render flags, game-family negotiation, source-WAD
+precedence, portable archives and complete native states remain open.
+Changes uncommitted.
+
+## Conversion and audit: shared revival flag masks (2026-10-04)
+
+Consolidated collision and defense flag masks used by spawn snapshots and
+checksum comparisons into shared helpers, removing duplicated definitions.
+Three regressions verify differing Ambush, Boss and SpawnCeiling revival
+defaults affect checksums when the actors' current flags match. This pass
+hardens preceding conversions; it adds no new native gameplay behavior.
+
+Release validation: **6,884 tests passed (5,692 Playsim; 588 MapLoader)**.
+Clean warnings-as-errors build passed with zero warnings/errors. Whitespace
+checks passed. Native Thing_Stop also clears player bob velocity, which has no
+managed representation yet; that omission remains open. Generalized scripted
+class defaults, Strife actions/render flags, game-family negotiation, source-WAD
+metadata precedence, portable archives and complete native states remain open.
+Changes uncommitted.
+
+## Conversion and audit: revival SpawnCeiling defaults (2026-10-04)
+
+Converted native Revive's MF_SPAWNCEILING class-default restoration through
+the existing collision snapshot and checksum comparison. Map and dynamic bot
+spawns capture the patched default. Eight regressions cover both class values,
+scripted/archvile raises and blocked clearance, verifying initial ceiling spawn
+placement and revival restoring the flag without repositioning the corpse.
+Rejected raises preserve current flags. Generalized class defaults remain open.
+
+Release validation: **6,881 tests passed (5,689 Playsim; 588 MapLoader)**.
+Clean warnings-as-errors build passed with zero warnings/errors. Whitespace
+checks passed. Generalized scripted class defaults, Strife actor actions/render
+flags, automatic game-family negotiation, per-source-WAD metadata precedence,
+portable archives and complete native state actions remain open.
+Changes uncommitted.
+
+## Conversion and audit: revival drain immunity (2026-10-04)
+
+Converted supported monsters' native Revive reset of MF5_DONTDRAIN to the
+class default false. Four scripted/archvile regressions cover successful and
+blocked raises. Damage assertions verify a draining player receives healing
+after revival and explicitly re-enabled immunity prevents further healing.
+Blocked raises preserve the current flag. Custom class defaults remain open.
+
+Release validation: **6,873 tests passed (5,681 Playsim; 588 MapLoader)**.
+Clean warnings-as-errors build passed with zero warnings/errors. Whitespace
+checks passed. Generalized scripted class defaults, Strife actor actions/render
+flags, automatic game-family negotiation, per-source-WAD metadata precedence,
+portable archives and complete native state actions remain open.
+Changes uncommitted.
+
+## Conversion and audit: revival scroller contact state (2026-10-04)
+
+Converted supported monsters' native Revive reset of MF8_INSCROLLSEC.
+Four regressions cover scripted/archvile success and blocked raises preserving
+current state. Carry checks verify stale scroller eligibility clears immediately
+and the normal contact update can restore eligibility and carry movement on an
+active scroller. Generalized custom flag defaults remain unconverted.
+
+Release validation: **6,869 tests passed (5,677 Playsim; 588 MapLoader)**.
+Clean warnings-as-errors build passed with zero warnings/errors. Whitespace
+checks passed. Generalized scripted class defaults, Strife actor actions/render
+flags, automatic game-family negotiation, per-source-WAD metadata precedence,
+portable archives and complete native state actions remain open.
+Changes uncommitted.
+
+## Conversion and audit: revival infighting overrides (2026-10-04)
+
+Converted supported monsters' native Revive restoration of NoInfighting and
+ForceInfighting to their default false values. Eight regressions cover both
+flags, scripted/archvile raises and blocked clearance. Gameplay assertions
+verify normal damage/retaliation resumes after NoInfighting clears, level
+infighting-off blocks damage after ForceInfighting clears, and explicit
+re-enabling restores forced infighting. Custom class defaults remain open.
+
+Release validation: **6,865 tests passed (5,673 Playsim; 588 MapLoader)**.
+Clean warnings-as-errors build passed with zero warnings/errors. Whitespace
+checks passed. Generalized scripted class defaults, Strife actor actions/render
+flags, automatic game-family negotiation, per-source-WAD metadata precedence,
+portable archives and complete native state actions remain open.
+Changes uncommitted.
+
+## Conversion and audit: revival projectile flag defaults (2026-10-04)
+
+Converted supported monsters' native Revive reset of NoExplodeFloor,
+CeilingHugger, FloorHugger, MThruSpecies and HitOwner to their default false
+values. Twenty regressions exercise ACS flag mutation/readback across both
+raise paths and blocked clearance, preserving current flags on rejection.
+These are actor flag resets; this slice does not introduce resurrection for
+projectile classes or generalized custom class defaults. MF9 flags are not
+included because the native Revive routine only resets flag groups through 8.
+
+Release validation: **6,857 tests passed (5,665 Playsim; 588 MapLoader)**.
+Clean warnings-as-errors build passed with zero warnings/errors. Whitespace
+checks passed. Generalized scripted class defaults, Strife actor actions/render
+flags, automatic game-family negotiation, per-source-WAD metadata precedence,
+portable archives and complete native state actions remain open.
+Changes uncommitted.
+
+## Conversion and audit: revival Boss class defaults (2026-10-04)
+
+Converted native Revive's Boss flag class-default restoration through the
+existing defense snapshot and checksum comparison. Map-spawned boss defaults
+are initialized before capture; dynamic bots already use that ordering. Four
+regressions cover scripted/archvile success and blocked raises, with actual
+blast momentum transfer after temporary boss immunity clears. A fifth verifies
+native boss defaults are captured for map actors and dynamic bots. This does
+not add raise states to boss classes that lack them.
+
+Release validation: **6,837 tests passed (5,645 Playsim; 588 MapLoader)**.
+Clean warnings-as-errors build passed with zero warnings/errors. Whitespace
+checks passed. Generalized scripted class defaults, Strife actor actions/render
+flags, automatic game-family negotiation, per-source-WAD metadata precedence,
+portable archives and complete native state actions remain open.
+Changes uncommitted.
+
+## Conversion and audit: revival Ambush class defaults (2026-10-04)
+
+Converted native Revive's MF_AMBUSH class-default restoration. Extended
+defaults now capture patched class Ambush before map overrides, using the
+existing defense snapshot and checksum comparison. Map ambush is applied at
+initial spawn but is not reapplied during revival, matching native Revive's
+friendly-only map override. Eight scripted/archvile regressions cover class
+and map combinations; two verify blocked raises preserve current Ambush.
+
+Release validation: **6,832 tests passed (5,640 Playsim; 588 MapLoader)**.
+Clean warnings-as-errors build passed with zero warnings/errors. Whitespace
+checks passed. Generalized scripted class defaults, Strife actor actions/render
+flags, automatic game-family negotiation, per-source-WAD metadata precedence,
+portable archives and complete native state actions remain open.
+Changes uncommitted.
+
+## Conversion and audit: revival ThruBits enable flag (2026-10-04)
+
+Converted supported monsters' native Revive reset of MF8_ALLOWTHRUBITS to
+the class default false while retaining the ThruBits property. Four regressions
+cover scripted/archvile success and blocked raises preserving the flag. Actual
+occupancy checks verify matching bits block after revival, explicit enablement
+restores pass-through, and the other participant's enablement still applies.
+Generalized custom class defaults remain unconverted.
+
+Release validation: **6,822 tests passed (5,630 Playsim; 588 MapLoader)**.
+Clean warnings-as-errors build passed with zero warnings/errors. Whitespace
+checks passed. Strife actor actions/render flags, automatic game-family
+negotiation, per-source-WAD metadata precedence, portable archives and complete
+native state actions remain open. Changes uncommitted.
+
+## Conversion and audit: revival ice-shatter permission (2026-10-04)
+
+Converted supported monsters' native Revive reset of MF7_ICESHATTER to
+the class default false. Four scripted/archvile regressions cover successful
+and blocked raises, verifying ice hits from revived inflictors preserve frozen
+corpses and explicit re-enabling permits shattering again. Blocked raises
+preserve the current flag. Generalized custom class defaults remain open.
+
+Release validation: **6,818 tests passed (5,626 Playsim; 588 MapLoader)**.
+Clean warnings-as-errors build passed with zero warnings/errors. Whitespace
+checks passed. Strife actor actions/render flags, automatic game-family
+negotiation, per-source-WAD metadata precedence, portable archives and complete
+native state actions remain open. Changes uncommitted.
+
+## Conversion and audit: revival species-damage permission (2026-10-04)
+
+Converted supported monsters' native Revive reset of MF6_DOHARMSPECIES to
+the class default false. Four scripted/archvile regressions cover successful
+and blocked raises, verifying actual same-species damage rejection after
+revival and restored permission when explicitly re-enabled. Blocked raises
+preserve the current flag. Generalized custom class defaults remain open.
+
+Release validation: **6,814 tests passed (5,622 Playsim; 588 MapLoader)**.
+Clean warnings-as-errors build passed with zero warnings/errors. Whitespace
+checks passed. Strife actor actions/render flags, automatic game-family
+negotiation, per-source-WAD metadata precedence, portable archives and complete
+native state actions remain open. Changes uncommitted.
+
+## Conversion and audit: revival temporary float state (2026-10-04)
+
+Converted supported monsters' native Revive reset of temporary MF_INFLOAT
+and the managed VerticalFriction fly-state representation. Four regressions
+cover scripted/archvile success and blocked raises preserving both states.
+Two physics regressions verify revived actors retain vertical momentum without
+the temporary drag, independently of gravity and AI movement. Supported class
+defaults are false; generalized custom flag defaults remain unconverted.
+
+Release validation: **6,810 tests passed (5,618 Playsim; 588 MapLoader)**.
+Clean warnings-as-errors build passed with zero warnings/errors. Whitespace
+checks passed. Strife actor actions/render flags, automatic game-family
+negotiation, per-source-WAD metadata precedence, portable archives and complete
+native state actions remain open. Changes uncommitted.
+
+## Conversion and audit: revival sector-damage flags (2026-10-04)
+
+Converted supported monsters' native Revive restoration of NoSectorDamage
+and ForceSectorDamage to their default false values. Four regressions cover
+scripted/archvile success and blocked raises preserving both flags. Four more
+verify actual floor damage after revival: temporary immunity no longer blocks
+monster-enabled damage, and temporary force no longer bypasses sector opt-in.
+Generalized scripted class defaults for these flags remain unconverted.
+
+Release validation: **6,804 tests passed (5,612 Playsim; 588 MapLoader)**.
+Clean warnings-as-errors build passed with zero warnings/errors. Whitespace
+checks passed. Strife actor actions/render flags, automatic game-family
+negotiation, per-source-WAD metadata precedence, portable archives and complete
+native state actions remain open. Changes uncommitted.
+
+## Conversion and audit: guest bootstrap flag selection (2026-10-04)
+
+Completed explicit binary flag-format forwarding through MapLoadBootstrap.
+Shared loading now rejects undefined enum values rather than silently applying
+Doom interpretation; direct FromBinary throws ArgumentOutOfRangeException.
+Three guest-bootstrap regressions cover both selections preserving seeded
+players/sectors and invalid selection rejecting before any state is seeded.
+This is integration work for the preceding conversion, not an additional
+Strife actor-action conversion. Guest bootstrap does not instantiate monsters.
+
+Release validation: **6,796 tests passed (5,604 Playsim; 588 MapLoader; 354 Net.Core)**.
+Clean warnings-as-errors build passed with zero warnings/errors. Whitespace
+checks passed. Standstill requires native wander/look actions absent from the
+managed brain; shadow/alternate-shadow require absent actor render-style and
+visibility support. Those behaviors remain unconverted, as do automatic
+game-family detection/negotiation, per-source-WAD metadata precedence, portable
+archives and full state actions. Changes uncommitted.
+
+## Conversion and audit: Strife flag selection through startup (2026-10-04)
+
+Connected BinaryThingFlagFormat selection to dedicated-server options and
+HeadlessMapBoot, with --strife-thing-flags exposed in server command-line help.
+Seven startup regressions cover default Doom and selected Strife behavior,
+actual spawned allegiance, headless boot and repeated command-line selection.
+The initial fixture used medium-skill-only flags and failed at the server's
+default skill; corrected it to include all skills before final validation.
+
+Release validation: **6,793 tests passed (5,604 Playsim; 588 MapLoader; 72 Server)**.
+Clean warnings-as-errors build passed with zero warnings/errors. Whitespace
+checks passed. This selects binary spawn flag interpretation only; automatic
+game-family identification, complete Strife actors/render flags and game-family
+network negotiation remain open. Guest bootstrap continues using default Doom
+interpretation and currently seeds sectors/player starts only. Per-source-WAD
+metadata precedence, portable archives and full state actions remain open.
+Changes uncommitted.
+
+## Conversion and audit: explicit Strife binary allegiance and ambush (2026-10-04)
+
+Added BinaryThingFlagFormat.Strife selection to FromBinary and TryFromWad.
+This converts native Strife STF_FRIENDLY (0x0040) and STF_AMBUSH (0x0020),
+ignores Doom's alternate friendly/ambush bits, and keeps cooperative/deathmatch
+inclusion enabled as native Strife conversion does. Bit 0x0100 does not suppress
+Strife allegiance. Existing callers retain Doom interpretation by default.
+Seven WAD-loader regressions cover independent/combined bits and high-bit values.
+
+Release validation: **6,786 tests passed (5,604 Playsim; 588 MapLoader)**.
+Clean warnings-as-errors build passed with zero warnings/errors. Whitespace
+checks passed. Selection is explicit: server/session game-family configuration
+and automatic Strife identification remain unconverted. Strife standstill,
+shadow and alternate-shadow behaviors, its actor catalog, per-source-WAD
+metadata precedence, portable archives and full state actions remain open.
+Changes uncommitted.
+
+## Conversion and audit: native Doom single-player inclusion (2026-10-04)
+
+Resolved the audited Doom binary BTF_NOTSINGLE discrepancy. Native LoadThings
+initializes MTF_SINGLE and leaves its BTF_NOTSINGLE removal commented out;
+native SpawnMapThing then filters by MTF_SINGLE. Managed Doom binary things
+now retain single-player inclusion regardless of bit 0x0010. Updated the
+existing four loader cases to reflect this source behavior and added four
+gameplay cases for ordinary/bad-editor/combined multiplayer flags and a missing
+skill flag. Hexen and UDMF single-player filtering remain format-specific.
+
+Release validation: **6,779 tests passed (5,604 Playsim; 581 MapLoader)**.
+Clean warnings-as-errors build passed with zero warnings/errors. Whitespace
+checks passed. This intentionally changes managed spawning for Doom records
+with bit 0x0010 to match this repository's native engine. Strife binary flags,
+per-source-WAD metadata precedence, portable spawn-default archives and full
+state actions remain open. Changes uncommitted.
+
+## Conversion and audit: Doom bad-editor multiplayer filters (2026-10-04)
+
+Converted the remaining multiplayer filtering portion of native
+BTF_BADEDITORCHECK handling: when bit 0x0100 is present, Doom binary records
+ignore cooperative/deathmatch exclusion bits 0x0040/0x0020. Normal records
+retain both exclusions. Original Options, skill and ambush decoding are retained.
+Seven loader regressions cover combined/individual exclusions and signed flags;
+four gameplay regressions verify actual monster inclusion in both modes.
+
+Release validation: **6,775 tests passed (5,600 Playsim; 581 MapLoader)**.
+Clean warnings-as-errors build passed with zero warnings/errors. Whitespace
+checks passed. Native single-player exclusion is commented out in this source,
+while the managed loader still honors bit 0x0010; that existing discrepancy
+remains open. Strife binary interpretation, per-source-WAD metadata precedence,
+portable spawn-default archives and full state actions remain open.
+Changes uncommitted.
+
+## Conversion and audit: original-Hexen thing compatibility mask (2026-10-04)
+
+Connected existing MapInfoMap.HexenHack parsing to the shared WAD loader for
+Hexen-format maps. Numeric MAPINFO map headers now cause thing flags to be
+masked to 0x7ff before decoding, matching native LEVEL2_HEXENHACK and excluding
+extended friendly allegiance. Named modern headers preserve extended flags.
+ZMAPINFO replaces MAPINFO within the supplied archive; later matching map
+definitions win. Invalid selected metadata returns its parse error. MapLoader
+references the existing Gamedata parser rather than duplicating its grammar.
+
+Eight new WAD-loader regressions cover numeric/named/unrelated definitions,
+definition ordering, ZMAPINFO precedence, repeated lumps and malformed metadata.
+Release validation: **6,764 tests passed (5,596 Playsim; 574 MapLoader)**.
+Clean warnings-as-errors build passed with zero warnings/errors. Whitespace
+checks passed. Native per-source-WAD precedence after flattened archive merging,
+the full MAPINFO grammar and other LEVEL2_HEXENHACK behaviors remain open.
+Strife binary interpretation, generalized bad-editor mode filtering, portable
+spawn-default archives and full state actions remain open. Changes uncommitted.
+
+## Conversion and audit: Hexen binary friendly spawn flag (2026-10-04)
+
+Converted Hexen-format MTF_FRIENDLY (0x2000) decoding through the existing
+ZDoom namespace translation and managed spawn-allegiance path. Eight WAD-loader
+regressions cover absent/set allegiance, independent class/dormant/ambush bits
+and unsigned high-bit records while preserving skill, single-player, TID and
+special fields. Existing spawn and revival tests validate the shared allegiance
+path; this slice adds loader coverage rather than a new Hexen gameplay fixture.
+
+Release validation: **6,756 tests passed (5,596 Playsim; 566 MapLoader)**.
+Clean warnings-as-errors build passed with zero warnings/errors. Whitespace
+checks passed. Native original-Hexen LEVEL2_HEXENHACK masks flags to 0x7ff;
+managed MapInfo.HexenHack is not wired into map loading, so that compatibility
+mask remains unconverted. Strife binary interpretation, generalized bad-editor
+mode filtering, portable spawn-default archives and full state actions remain
+open. Changes uncommitted.
+
+## Conversion and audit: Doom binary friendly spawn flag (2026-10-04)
+
+Converted BTF_FRIENDLY (0x0080) from Doom-format binary thing records into
+managed spawn allegiance. Native BTF_BADEDITORCHECK (0x0100) suppresses this
+extension flag; the managed loader now follows that rule for allegiance while
+preserving the original Options field. Seven loader regressions cover absent,
+set, combined, bad-editor and signed option values. Four gameplay regressions
+cover spawning and scripted/archvile revival, including suppressed allegiance.
+
+Release validation: **6,748 tests passed (5,596 Playsim; 558 MapLoader)**.
+Clean warnings-as-errors build passed with zero warnings/errors. Whitespace
+checks passed. Strife binary flag interpretation, Hexen-format MTF_FRIENDLY and
+its original-Hexen compatibility mask, generalized bad-editor mode filtering,
+portable spawn-default archive recreation and full state actions remain open.
+Changes uncommitted.
+
+## Conversion and audit: UDMF strifeally and allegiance ordering (2026-10-04)
+
+Converted native strifeally parsing and namespace filtering: Strife, ZDoom,
+ZDoomTranslated and Vavoom accept it; Doom and Hexen ignore this key. Where
+both friend and strifeally are accepted, the last assignment in source order
+controls allegiance, including repeated keys. Twelve loader regressions cover
+namespace filtering and ordering; two additional end-to-end regressions cover
+strifeally spawn allegiance through scripted and archvile revival.
+
+Release validation: **6,737 tests passed (5,592 Playsim; 551 MapLoader)**.
+Clean warnings-as-errors build passed with zero warnings/errors. Whitespace
+checks passed. Binary friendly spawn flags, portable spawn-default archive
+recreation and full state actions remain open. Changes uncommitted.
+
+## Conversion and audit: UDMF friend spawn and revival (2026-10-04)
+
+Converted UDMF friend parsing and native namespace filtering: Doom, ZDoom,
+ZDoomTranslated and Vavoom accept it; Hexen and Strife ignore this key. Friendly
+spawn overrides are retained independently of class defaults, applied at spawn
+and scripted revival, and included in the checksum. Archvile allegiance copying
+still overrides them after revival. Six loader regressions and two end-to-end
+spawn/raise regressions cover these paths.
+
+Release validation: **6,723 tests passed (5,590 Playsim; 539 MapLoader)**.
+Clean warnings-as-errors build passed with zero warnings/errors. Whitespace
+checks passed. Strife's separate strifeally key, binary friendly spawn flags,
+portable spawn-default archive recreation and full state actions remain open.
+Changes uncommitted.
+
+## Conversion and audit: resurrection friendliness defaults (2026-10-04)
+
+Converted native Revive's class Friendly flag restoration before archvile
+CopyFriendliness. Six regressions cover patched class defaults, scripted raises
+and friendly/hostile archvile allegiance overriding the restored default. A
+seventh verifies differing revival allegiance defaults affect checksums with
+matching current flags. Native map MTF_FRIENDLY spawn overrides are not yet
+represented by the managed level model; that override remains unconverted.
+
+Release validation: **6,715 tests passed (5,588 Playsim; 533 MapLoader)**.
+Clean warnings-as-errors build passed with zero warnings/errors. Whitespace
+checks passed. Other native defaults, full state actions and portable
+class-default save recreation remain open. Changes uncommitted.
+
+## Conversion and audit: resurrection environment flags (2026-10-04)
+
+Converted supported monsters' native Revive reset of NoTrigger and OnMobj.
+Four regressions cover both paths and clearance failures, including ACS reading
+the restored NoTrigger property immediately after revival. Rejected raises
+preserve both flags. This converts flag restoration only; full non-player
+activation of mapped line specials and generalized class defaults remain open.
+
+Release validation: **6,708 tests passed (5,581 Playsim; 533 MapLoader)**.
+Clean warnings-as-errors build passed with zero warnings/errors. Whitespace
+checks passed. Other native defaults, full state actions and portable
+class-default save recreation remain open. Changes uncommitted.
+
+## Conversion and audit: resurrection monster classification (2026-10-04)
+
+Converted native Revive's IsMonster class flag restoration through the existing
+snapshot and checksum marker. Four regressions cover patched monster/non-monster
+classes through both raise paths, with level Massacre selecting only actors
+whose restored class defaults mark them as monsters. The managed COUNTKILL
+mapping still supplies IsMonster; complete native class flag distinctions
+remain open.
+
+Release validation: **6,704 tests passed (5,577 Playsim; 533 MapLoader)**.
+Clean warnings-as-errors build passed with zero warnings/errors. Whitespace
+checks passed. Other native defaults, full state actions and portable
+class-default save recreation remain open. Changes uncommitted.
+
+## Conversion and audit: resurrection dropped flag defaults (2026-10-04)
+
+Converted native Revive's Dropped class-default restoration using the existing
+flag snapshot. Eight regressions cover patched defaults, both resurrection
+paths and blocked raises preserving the current flag. A ninth verifies checksum
+sensitivity to different revival defaults with identical current Dropped flags.
+
+Release validation: **6,700 tests passed (5,573 Playsim; 533 MapLoader)**.
+Clean warnings-as-errors build passed with zero warnings/errors. Whitespace
+checks passed. Other native defaults, complete state actions and portable
+class-default save recreation remain open. Changes uncommitted.
+
+## Conversion and audit: resurrection friendly-fire permission (2026-10-04)
+
+Converted supported monsters' native Revive reset of HarmFriends. Four
+regressions cover both paths and clearance failures. Successful raises restore
+ally damage blocking at standard infighting; explicitly re-enabling HarmFriends
+then allows damage, verifying the reset rather than an unrelated immunity.
+Rejected raises preserve the flag. Custom class defaults remain unconverted.
+
+Release validation: **6,691 tests passed (5,564 Playsim; 533 MapLoader)**.
+Clean warnings-as-errors build passed with zero warnings/errors. Whitespace
+checks passed. Other native defaults, full state actions and portable
+class-default save recreation remain open. Changes uncommitted.
+
+## Conversion and audit: resurrection pickup flag defaults (2026-10-04)
+
+Converted native Revive's CanPickupItems/SpecialPickup restoration using the
+existing spawn defaults already consumed by player respawn. Eight regressions
+cover all patched combinations through both resurrection paths. Two checksum
+regressions verify non-player spawn pickup defaults participate when they differ
+from current flags, because they now affect future revival behavior.
+
+Release validation: **6,687 tests passed (5,560 Playsim; 533 MapLoader)**.
+Clean warnings-as-errors build passed with zero warnings/errors. Whitespace
+checks passed. Full non-player inventory pickup behavior, other native defaults,
+complete state actions and portable class-default save recreation remain open.
+Changes uncommitted.
+
+## Conversion and audit: resurrection ghost and spectral flags (2026-10-04)
+
+Converted supported monsters' native Revive reset of Ghost, ThruGhost and
+Spectral. Eight regressions cover both paths and blocked raises, independently
+testing ghost and spectral missile passage with direct plasma impacts after
+revival. Rejected raises preserve flags. These collision flags are separate
+from VileGhosts compatibility, which retains crushed dimensions; its existing
+regressions remain passing. Generalized custom class defaults remain unconverted.
+
+Release validation: **6,677 tests passed (5,550 Playsim; 533 MapLoader)**.
+Clean warnings-as-errors build passed with zero warnings/errors. Whitespace
+checks passed. Other native default flags, full state actions and portable
+class-default save recreation remain open. Changes uncommitted.
+
+## Conversion and audit: resurrection death-control flags (2026-10-04)
+
+Converted supported monsters' native Revive reset of NoIceDeath, ExtremeDeath
+and NoExtremeDeath. Four regressions cover both paths and blocked raises,
+including a later lethal Ice hit entering the configured generic freeze-death
+frame after revival clears temporary suppression. Rejected raises preserve
+the flags. Generalized custom class death-control defaults remain unconverted.
+
+Release validation: **6,669 tests passed (5,542 Playsim; 533 MapLoader)**.
+Clean warnings-as-errors build passed with zero warnings/errors. Whitespace
+checks passed. Complete freeze/raise-state actions, remaining default flags
+and portable class-default save recreation remain open. Changes uncommitted.
+
+## Conversion and audit: resurrection bridge flag (2026-10-04)
+
+Converted supported monsters' native Revive reset of ActsLikeBridge. Four
+regressions cover both resurrection paths and clearance failures, showing a
+temporary bridge provides monster support before death but a revived monster
+no longer provides that support. Rejected raises preserve the flag. Supported
+class defaults are false; generalized custom bridge defaults remain unconverted.
+
+Release validation: **6,665 tests passed (5,538 Playsim; 533 MapLoader)**.
+Clean warnings-as-errors build passed with zero warnings/errors. Whitespace
+checks passed. Other native default flags, full state actions and portable
+class-default save recreation remain open. Changes uncommitted.
+
+## Conversion and audit: resurrection missile contact flag (2026-10-04)
+
+Converted supported monsters' native Revive reset of NonShootable. Four
+regressions cover both resurrection paths and clearance failure, including a
+direct plasma collision damaging the revived monster. Projectile fixtures use
+a different-species owner to isolate collision restoration from same-species
+damage immunity. Rejected raises preserve the flag. Generalized custom class
+NonShootable defaults remain unconverted.
+
+Release validation: **6,661 tests passed (5,534 Playsim; 533 MapLoader)**.
+Clean warnings-as-errors build passed with zero warnings/errors. Whitespace
+checks passed. Other native default flags, full state actions and portable
+class-default save recreation remain open. Changes uncommitted.
+
+## Conversion and audit: resurrection ledge prohibition (2026-10-04)
+
+Converted supported monsters' native Revive reset of NoDropOff. Four regressions
+cover both resurrection paths and position failures, showing temporary ledge
+prohibition blocks movement before death and no longer overrides restored class
+drop-off permission after a successful raise. Rejected raises preserve the flag.
+Supported class defaults are false; generalized custom NoDropOff defaults remain
+unconverted.
+
+Release validation: **6,657 tests passed (5,530 Playsim; 533 MapLoader)**.
+Clean warnings-as-errors build passed with zero warnings/errors. Whitespace
+checks passed. Other native default flags, complete state actions and portable
+class-default save recreation remain open. Changes uncommitted.
+
+## Conversion and audit: resurrection blast flags (2026-10-04)
+
+Converted supported monsters' native Revive reset of DontBlast and Blasted.
+Successful raises no longer retain temporary blast immunity or active blast
+collision behavior. Four regressions cover both paths and blocked raises,
+including a revived monster receiving horizontal momentum from a blasted
+actor collision. Supported class defaults are false; generalized custom class
+blast defaults remain unconverted.
+
+Release validation: **6,653 tests passed (5,526 Playsim; 533 MapLoader)**.
+Clean warnings-as-errors build passed with zero warnings/errors. Whitespace
+checks passed. Other native default flags, full state actions and portable
+class-default save recreation remain open. Changes uncommitted.
+
+## Conversion and audit: resurrection spawn-stomp flags (2026-10-04)
+
+Converted supported monsters' native Revive reset of NoTelefrag and
+AlwaysTelefrag. Eight regressions cover both resurrection paths, blocked raises
+preserving flags and cooperative player respawn stomping a revived monster on
+the spawn point. Supported class defaults are false; generalized custom
+class stomp defaults remain unconverted.
+
+Release validation: **6,649 tests passed (5,522 Playsim; 533 MapLoader)**.
+Clean warnings-as-errors build passed with zero warnings/errors. Whitespace
+checks passed. Other native default flags, full state actions and portable
+class-default save recreation remain open. Changes uncommitted.
+
+## Conversion and audit: resurrection target policy defaults (2026-10-04)
+
+Converted supported monsters' native Revive reset of NoTargetSwitch,
+QuickToRetaliate and NoHatePlayers. Reset occurs before archvile friendliness
+copying, preserving the raiser's explicit player-hate policy. Five regressions
+cover both paths, blocked attempts preserving flags, player-damage retaliation
+after revival and the archvile's transferred player-hate exclusion. Generalized
+custom class defaults for these flags remain unconverted.
+
+Release validation: **6,641 tests passed (5,514 Playsim; 533 MapLoader)**.
+Clean warnings-as-errors build passed with zero warnings/errors. Whitespace
+checks passed. Other native flag defaults, complete state actions and portable
+class-default save recreation remain open. Changes uncommitted.
+
+## Conversion and audit: resurrection splash immunity defaults (2026-10-04)
+
+Converted native Revive's NoRadiusDamage class-default restoration using the
+existing defense-default snapshot. Four regressions cover both raise paths and
+clearance failures, including actual archvile splash damage killing the revived
+zombie after temporary immunity is cleared. A fifth verifies checksum sensitivity
+to different revival immunity defaults with matching current flags.
+
+Release validation: **6,636 tests passed (5,509 Playsim; 533 MapLoader)**.
+Clean warnings-as-errors build passed with zero warnings/errors. Whitespace
+checks passed. Other native default flags, complete state actions and portable
+class-default save recreation remain open. Changes uncommitted.
+
+## Conversion and audit: resurrection targetability flags (2026-10-04)
+
+Converted supported monsters' native Revive reset of NoTarget and NeverTarget.
+Successful raises no longer retain temporary untargetability; rejected raises
+preserve both flags. Four regressions cover both resurrection paths and
+clearance failures, including actual damage retaliation selecting the revived
+monster as the enemy. Supported class defaults are false; generalized custom
+class targetability defaults remain unconverted.
+
+Release validation: **6,631 tests passed (5,504 Playsim; 533 MapLoader)**.
+Clean warnings-as-errors build passed with zero warnings/errors. Whitespace
+checks passed. Other native default flags, complete state actions and portable
+class-default save recreation remain open. Changes uncommitted.
+
+## Conversion and audit: resurrection actor pass-through flags (2026-10-04)
+
+Converted supported monsters' native Revive reset of ThruActors and ThruSpecies.
+Successful resurrection restores ordinary actor contact blocking; rejected
+raises preserve the temporary flags. Four regressions cover both resurrection
+paths and clearance failures, including position rejection when a solid player
+occupies the revived monster's position. Supported class defaults are false;
+generalized script-defined pass-through defaults remain unconverted.
+
+Release validation: **6,627 tests passed (5,500 Playsim; 533 MapLoader)**.
+Clean warnings-as-errors build passed with zero warnings/errors. Whitespace
+checks passed. Other native flag defaults, complete state actions and portable
+class-default save recreation remain open. Changes uncommitted.
+
+## Conversion and audit: resurrection damage-control flags (2026-10-04)
+
+Converted supported monsters' native Revive reset of Buddha, FoilBuddha,
+ForcePain, NoPain and Painless flags. Four regressions cover successful and
+blocked raises through both entry points, including actual pain-state entry
+and a lethal ordinary hit after revival. Blocked attempts preserve all five
+flags. Supported class defaults are false; generalized script-defined defaults
+for these flags remain unconverted.
+
+Release validation: **6,623 tests passed (5,496 Playsim; 533 MapLoader)**.
+Clean warnings-as-errors build passed with zero warnings/errors. Whitespace
+checks passed. Other native default flags, full state actions and portable
+class-default save recreation remain open. Changes uncommitted.
+
+## Conversion and audit: resurrection frozen corpse flags (2026-10-04)
+
+Converted supported actors' native Revive reset of MF_ICECORPSE and
+MF6_SHATTERING. Successful revival clears frozen-corpse collision and pending
+shattering flags immediately; rejected raises preserve them. Four regressions
+cover success and clearance failure through Thing_Raise and archvile selection.
+The supported class catalog defaults both flags to false; generalized custom
+class defaults and full freeze-state actions remain unconverted.
+
+Release validation: **6,619 tests passed (5,492 Playsim; 533 MapLoader)**.
+Clean warnings-as-errors build passed with zero warnings/errors. Whitespace
+checks passed. Remaining flag defaults, complete state actions and portable
+class-default save recreation remain open. Changes uncommitted.
+
+## Conversion and audit: resurrection combat hit flag (2026-10-04)
+
+Converted supported actors' native Revive reset of MF_JUSTHIT. Successful
+revival now clears JustHit immediately, including dormant actors whose brain
+updates remain paused. Four regressions cover successful and blocked raises
+through Thing_Raise and archvile selection, verifying rejected attempts preserve
+the flag and dormant revived actors remain clear without an AI update.
+Supported class defaults do not expose a patched JustHit flag; generalized
+script-defined flag defaults remain unconverted.
+
+Release validation: **6,615 tests passed (5,488 Playsim; 533 MapLoader)**.
+Clean warnings-as-errors build passed with zero warnings/errors. Whitespace
+checks passed. Other native flag restoration, full state actions and portable
+class-default save recreation remain open. Changes uncommitted.
+
+## Conversion and audit: resurrection monster-blocking exemption (2026-10-04)
+
+Converted native Revive's NoBlockMonsters class-default restoration. Both
+resurrection paths now restore the patched exemption instead of retaining
+temporary runtime changes. Six movement regressions cover gaining or losing
+permission to cross monster-blocking lines and verify fully blocking lines
+remain blocking. Fixtures preserve the native FRIEND patch side effect while
+removing friendliness, isolating the movement exemption. A seventh regression
+checks checksum sensitivity to differing revival defaults.
+
+Release validation: **6,611 tests passed (5,484 Playsim; 533 MapLoader)**.
+Clean warnings-as-errors build passed with zero warnings/errors. Whitespace
+checks passed. Other flag defaults, full state actions, native blockmap search
+and portable class-default save recreation remain open. Changes uncommitted.
+
+## Conversion and audit: resurrection drop-off defaults (2026-10-04)
+
+Converted native Revive's AllowDropOff class flag restoration. Both resurrection
+paths now discard temporary drop-off permission changes and restore the patched
+class default. Four regressions verify actual movement across a 100-unit ledge
+after Thing_Raise and archvile resurrection, including permission gained and
+lost at revival. A fifth verifies checksum sensitivity to differing revival
+defaults with identical current flags.
+
+Release validation: **6,604 tests passed (5,477 Playsim; 533 MapLoader)**.
+Clean warnings-as-errors build passed with zero warnings/errors. Whitespace
+checks passed. Other native flag defaults, complete raise-state actions,
+blockmap traversal and portable class-default save recreation remain open.
+Changes uncommitted.
+
+## Conversion and audit: resurrection blockmap membership (2026-10-04)
+
+Converted native Revive's NoBlockmap default restoration and excluded current
+non-blockmap actors from archvile corpse selection. Scripted Thing_Raise and
+CanRaise queries still target those actors, matching their direct actor path.
+The managed blockmap predicate reads the restored flag without native linked
+blockmap bookkeeping. Seven regressions cover both resurrection paths, patched
+defaults, skipped attempts preserving velocity and checksum sensitivity.
+
+Release validation: **6,599 tests passed (5,472 Playsim; 533 MapLoader)**.
+Clean warnings-as-errors build passed with zero warnings/errors. Whitespace
+checks passed. Native blockmap traversal order and search bounds, remaining
+default flags, full state actions and portable class-default archive recreation
+remain open. Changes uncommitted.
+
+## Conversion and audit: resurrection teleport and sliding defaults (2026-10-04)
+
+Extended native Revive flag restoration to NoTeleport and CanSlide. The
+existing movement-default snapshot now captures both flags after class patching;
+Thing_Raise and archvile resurrection restore them instead of retaining runtime
+changes. Eight regressions exercise all patched combinations through both paths.
+Two checksum regressions cover differing teleport and sliding revival defaults
+with identical current actor flags.
+
+Release validation: **6,592 tests passed (5,465 Playsim; 533 MapLoader)**.
+Clean warnings-as-errors build passed with zero warnings/errors. Whitespace
+checks passed. Remaining native flag defaults, complete raise-state actions,
+portal geometry and portable class-default save recreation remain open.
+Changes uncommitted.
+
+## Conversion and audit: resurrection gravity and floating defaults (2026-10-04)
+
+Converted the NoGravity/Floating subset of native Revive class flag restoration.
+Defaults are captured after class patching and before map gravity overrides;
+both supported resurrection paths now restore these flags. Eight regressions
+cover all patched combinations through Thing_Raise and archvile resurrection.
+A ninth verifies differing revival defaults affect checksums even when current
+movement flags match. Numeric gravity is preserved, consistent with native
+Revive restoring flags rather than the actor's gravity multiplier.
+
+Release validation: **6,582 tests passed (5,455 Playsim; 533 MapLoader)**.
+Clean warnings-as-errors build passed with zero warnings/errors. Whitespace
+checks passed. Remaining native flag restoration, full raise-state actions
+and portable class-default archive recreation remain open. Changes uncommitted.
+
+## Conversion and audit: dormant resurrection timing (2026-10-04)
+
+Converted dormant raise-timer progression to follow native timed state frames,
+which advance independently of dormant AI. Living dormant actors now advance
+only the managed raise timer; target acquisition and other brain updates stay
+paused. Two regressions cover Thing_Raise and archvile resurrection, checking
+every raise tic and subsequent activation. Existing reaction-counter tests
+remain passing; activation still honors that separate delay.
+
+Release validation: **6,573 tests passed (5,446 Playsim; 533 MapLoader)**.
+Clean warnings-as-errors build passed with zero warnings/errors. Whitespace
+checks passed. Managed raise timing still substitutes for full native raise
+state sequences; script actions, portable brain state archives and other
+revival flag defaults remain open. Changes uncommitted.
+
+## Conversion and audit: resurrection defense flag defaults (2026-10-04)
+
+Converted the Invulnerable/Dormant subset of native Revive flag restoration.
+Defaults are captured after class patching and before map dormancy activation,
+so map spawn dormancy does not become a class revival default. Shared revival
+restores both flags for Thing_Raise and archvile resurrection. Ten regressions
+cover all patched combinations through both paths, map-only dormancy and
+checksum sensitivity with identical current defense flags.
+
+Release validation: **6,571 tests passed (5,444 Playsim; 533 MapLoader)**.
+Clean warnings-as-errors build passed with zero warnings/errors. Whitespace
+checks passed. Other native flag restoration, dormant raise-state timing,
+resurrection hooks and complete class-default world recreation remain open.
+Defaults remain spawn configuration rather than portable archive data.
+Changes uncommitted.
+
+## Conversion and audit: resurrection collision flag defaults (2026-10-04)
+
+Converted the Solid/Shootable subset of native Revive default flag restoration.
+Map actors and spawned bots capture these defaults after class patching;
+revival restores them rather than forcing both flags true. Position validation
+still temporarily treats corpses as solid, matching the native clearance check.
+Eight regressions cover all four patched flag combinations through Thing_Raise
+and archvile resurrection. A ninth checks checksum sensitivity to different
+revival defaults with matching current flags. Optional checksum markers preserve
+unchanged live-actor hashes when revival defaults match current collision flags.
+
+Release validation: **6,561 tests passed (5,434 Playsim; 533 MapLoader)**.
+Clean warnings-as-errors build passed with zero warnings/errors. Whitespace
+checks passed. Other native flag defaults remain unconverted. Collision defaults
+are spawn configuration retained by same-simulation pose restore; complete
+world recreation and portable class-default save loading remain open. Changes
+uncommitted.
+
+## Conversion and audit: resurrection frame eligibility (2026-10-04)
+
+Converted the native GetRaiseState timing gate: held frames are eligible and
+timed frames require explicit CanRaise permission. Added optional CanRaise
+metadata to managed ActorFrame and shared the gate across CanRaise queries,
+Thing_Raise and archvile resurrection. Eligibility no longer depends on the
+generic Corpse state number; custom held death frames and explicitly marked
+early death frames can qualify. Seven regressions cover held/timed frames,
+early permission, rejected attempts preserving velocity and archvile selection
+after a frame transition.
+
+Release validation: **6,552 tests passed (5,425 Playsim; 533 MapLoader)**.
+Clean warnings-as-errors build passed with zero warnings/errors. Whitespace
+checks passed. The managed dead-actor model still substitutes for native
+MF_CORPSE; full actor flag restoration, script state metadata loading,
+resurrection virtual hooks and advanced geometry remain open. Changes
+uncommitted.
+
+## Conversion and audit: friendly archvile resurrection target cleanup (2026-10-04)
+
+Converted native P_CheckForResurrection's friendly raiser target cleanup:
+successful raises clear a current target matching the corpse and clear a
+remembered enemy matching either that corpse or the raiser's previous target.
+Other current targets remain intact. Cleanup occurs only after corpse position
+validation succeeds and applies only to friendly raisers. Five regressions
+cover friendly/hostile raisers, unrelated targets, failed raises and remembered
+corpse enemies created through damage retaliation.
+
+Release validation: **6,545 tests passed (5,418 Playsim; 533 MapLoader)**.
+Clean warnings-as-errors build passed with zero warnings/errors. Whitespace
+checks passed. Native resurrection virtual hooks, full default flag restoration,
+portal/3D-floor geometry and movement-direction search remain open. Changes
+uncommitted.
+
+## Conversion and audit: flat-world resurrection height eligibility (2026-10-04)
+
+Removed the managed 64-unit vertical-distance rejection from archvile corpse
+selection. Native P_CheckForResurrection passes height bounds to portal-group
+collection in FMultiBlockThingsIterator; its actor iteration does not apply
+a vertical-distance filter. Four regressions verify fitting corpses above and
+below the archvile can be raised, while floor and ceiling clearance still
+reject invalid corpse positions.
+
+Release validation: **6,540 tests passed (5,413 Playsim; 533 MapLoader)**.
+Clean warnings-as-errors build passed with zero warnings/errors. Whitespace
+checks passed. Portal groups, 3D-floor separation, native movement-direction
+state and blockmap iteration remain unconverted. Changes uncommitted.
+
+## Conversion and audit: flat-world resurrection sight gate (2026-10-04)
+
+Removed the managed unconditional line-of-sight gate from archvile corpse
+selection. Native resurrection requires sight across portal groups; ordinary
+flat-world corpses use position validation rather than a sight gate. The
+current managed geometry has no portal-group representation. One regression
+places a fitting corpse across a one-sided solid wall and verifies resurrection
+despite blocked sight. Corpse wall/actor clearance validation remains active.
+
+Release validation: **6,536 tests passed (5,409 Playsim; 533 MapLoader)**.
+Warnings-as-errors build passed with zero warnings/errors. Whitespace checks
+passed. Portal-group sight gates, 3D-floor separation and native blockmap search
+remain unconverted. Changes uncommitted.
+
+## Conversion and audit: archvile search speed (2026-10-04)
+
+Converted resurrection search projection from fixed 15-unit displacement to
+absolute actor MovementSpeed, matching native fabs(Speed) scaling. The managed
+direction remains target-based; native movedir/DI_NODIR and blockmap traversal
+are not yet represented. Three regressions cover slow, fast and negative speeds.
+
+Release validation: **6,535 tests passed (5,408 Playsim; 533 MapLoader)**.
+Warnings-as-errors build passed with zero warnings/errors. Whitespace checks
+passed. Native movement-direction state, portal/3D-floor eligibility and
+iteration order remain open. Changes uncommitted.
+
+## Conversion and audit: archvile original-radius reach (2026-10-04)
+
+Converted native corpse selection reach to use the corpse's original class
+radius plus the archvile's current radius. Crushed corpses no longer lose
+selection reach, and enlarged corpses no longer extend it. Two regressions
+exercise zero-radius and oversized corpses at reach boundaries.
+
+Release validation: **6,532 tests passed (5,405 Playsim; 533 MapLoader)**
+on rerun. The initial run failed the previously recorded server bootstrap
+test Pump_BootstrapsLiveSessionAfterStartGameAck; its intermittent failure
+remains unresolved. Gameplay tests passed in both runs.
+Warnings-as-errors build passed with zero warnings/errors. Whitespace checks
+passed. The managed projected search point still uses target direction and
+fixed speed rather than native movedir/speed/blockmap traversal. Portal groups,
+3D-floor selection and native iteration ordering remain open. Changes
+uncommitted.
+
+## Conversion and audit: resurrection default checksums (2026-10-04)
+
+Added checksum coverage for retained resurrection radius/height when they
+differ from current dimensions. Future raise behavior now distinguishes
+otherwise identical actor poses with different defaults. Optional markers
+preserve baseline inputs when defaults equal current dimensions. Added three
+regressions for independent radius/height changes and same-simulation pose
+restore followed by resurrection of a shortened corpse.
+
+Release validation: **6,530 tests passed (5,403 Playsim; 533 MapLoader)**.
+Warnings-as-errors build passed with zero warnings/errors. Whitespace checks
+passed. Defaults remain derived spawn configuration rather than portable save
+data; complete world recreation, custom class defaults and network default
+negotiation remain open. Changes uncommitted.
+
+## Conversion and audit: vile-ghost simulation compatibility (2026-10-04)
+
+Added CompatSurface.VileGhosts and converted archvile resurrection's native
+compatibility dimension branch. Enabled mode quadruples current corpse height
+and retains current radius; disabled mode restores original dimensions.
+Thing_Raise retains its ordinary dimension rules. The existing compatibility
+checksum includes the new bit; actor dimensions already persist in pose saves.
+Multiplication saturates at managed fixed-point bounds.
+
+Three regressions cover zero-height ghosts, nonzero quadrupled height and
+Thing_Raise isolation. Release validation: **6,527 tests passed (5,400 Playsim;
+533 MapLoader)**. Warnings-as-errors build passed with zero warnings/errors.
+Whitespace checks passed. Ghost alpha/render-style changes, native large-value
+precision, compatibility-file loading and complete default flags remain open.
+Changes uncommitted.
+
+## Conversion and audit: archvile original-height clearance (2026-10-04)
+
+Converted native archvile resurrection clearance checking to temporarily use
+original height and solidity while retaining the corpse's current radius.
+Failed checks restore corpse dimensions/solidity; ordinary successful revival
+restores original height/radius through the shared revive helper. Thing_Raise
+and CanRaiseActor continue checking both original dimensions. Two regressions
+cover shortened corpses under low and full-height ceilings.
+
+Release validation: **6,524 tests passed (5,397 Playsim; 533 MapLoader)**.
+Warnings-as-errors build passed with zero warnings/errors. Whitespace checks
+passed. Vile-ghost compatibility, complete default flags, native collision
+precision and custom revive hooks remain open. Changes uncommitted.
+
+## Conversion and audit: Thing_Raise original dimensions (2026-10-04)
+
+Retained original radius and height for map actors and spawned bots. Converted
+CanRaiseActor and Thing_Raise position checks to temporarily use these dimensions
+and solidity, then restore corpse properties. Successful supported resurrection
+restores original dimensions. No-check flag still bypasses collision validation.
+Two regressions exercise shortened corpses below a lowered ceiling, failed-check
+restoration and bypassed resurrection dimension restoration.
+
+Release validation: **6,522 tests passed (5,395 Playsim; 533 MapLoader)**.
+Warnings-as-errors build passed with zero warnings/errors. Whitespace checks
+passed. Original dimensions are derived spawn configuration retained during
+same-simulation restores; complete world recreation is not converted. Native
+archvile ghost compatibility, complete default flags and custom revive hooks
+remain open. Changes uncommitted.
+
+## Conversion and audit: archvile corpse velocity (2026-10-04)
+
+Converted native archvile resurrection velocity semantics: a nearby eligible
+corpse stops horizontal movement before position validation, even when blocked.
+Successful resurrection preserves vertical velocity. Shared supported revive
+processing with Thing_Raise so Brain.Revive's internal velocity reset does not
+erase the native vertical component. Friendliness copying remains archvile
+specific. Two regressions cover successful and blocked attempts.
+
+Release validation: **6,520 tests passed (5,393 Playsim; 533 MapLoader)**.
+Warnings-as-errors build passed with zero warnings/errors. Whitespace checks
+passed. Default dimensions/flags, custom revive hooks, sound and native
+resurrection ordering remain open. Changes uncommitted.
+
+## Conversion and audit: resurrection dispatch integration (2026-10-04)
+
+Applied shared supported corpse eligibility to archvile resurrection, ensuring
+player exclusion matches Thing_Raise and CanRaiseActor. Added six regressions
+executing Thing_Raise through immediate/stack ACS bytecode and Hexen map-line
+activation, including missing targets. Successful one-shot map actions clear
+the special; failed raise actions retain it. This pass primarily closes an
+integration verification gap rather than adding a new native action.
+
+Release validation: **6,518 tests passed (5,391 Playsim; 533 MapLoader)**.
+Warnings-as-errors build passed with zero warnings/errors. Whitespace checks
+passed. Full native default restoration, custom resurrection hooks and native
+runtime comparison remain open. Changes uncommitted.
+
+## Conversion and audit: raise eligibility and vertical velocity (2026-10-04)
+
+Shared supported raise-state eligibility between CanRaiseActor and Thing_Raise,
+including explicit player exclusion. Converted native CanRaiseActor's empty
+fallback success when zero ID has no activator. Audited position bypass flags:
+bit 2 bypasses collision; bit 1 does not. Found that managed Brain.Revive
+cleared vertical velocity, unlike P_Thing_Raise/Actor.Revive; Thing_Raise now
+preserves it while clearing horizontal velocity even after a failed check.
+
+Four regressions cover empty queries, blocked corpses, both flag bits and
+velocity behavior. Release validation: **6,512 tests passed (5,385 Playsim;
+533 MapLoader)**. Warnings-as-errors build passed with zero warnings/errors.
+Whitespace checks passed. Native default dimensions/flags, custom raise hooks
+and direct map/ACS raise integration coverage remain open. Changes uncommitted.
+
+## Conversion and audit: supported Thing_Raise (2026-10-04)
+
+Converted special 17 into map and ACS dispatch for supported monster corpses.
+Zero ID selects the activator; nonzero IDs process matching actors and return
+success if any raises. Eligible resting corpses regain spawn health and enter
+the existing monster raise lifecycle. Horizontal velocity clears before the
+position check. Native RF_NOCHECKPOSITION bit 2 bypasses the check. Players,
+live actors, missing targets and unsupported raise states fail.
+
+Three regressions cover activator/ID resurrection, restored flags and velocity,
+repeat rejection, player exclusion and missing targets. Release validation:
+**6,508 tests passed (5,381 Playsim; 533 MapLoader)**. Warnings-as-errors build
+passed with zero warnings/errors. Whitespace checks passed. Full native default
+flag/dimension restoration, custom raise states, CanResurrect hooks, sound and
+dedicated map/ACS raise integration regressions remain open. Changes uncommitted.
+
+## Conversion and audit: actor and level massacre operations (2026-10-04)
+
+Exposed Actor.Massacre and AuthoritySimulation.Massacre to mirror the native
+operations beyond special dispatch. Level massacre reports actual kills,
+excludes dormant monsters and optionally excludes friendlies with baddies=true.
+Thing_Destroy now uses the shared level operation. Failed actor attempts
+stop without health progress and restore shootability, dormancy and
+invulnerability. Added three regressions for filtering/counts, repeat calls
+and failed-attempt restoration.
+
+Release validation: **6,505 tests passed (5,378 Playsim; 533 MapLoader)**.
+Warnings-as-errors build passed with zero warnings/errors. Whitespace checks
+passed. Native class-filter arguments, thinker mutation ordering and custom
+death callbacks remain open. Changes uncommitted.
+
+## Conversion and audit: global Thing_Destroy massacre (2026-10-04)
+
+Converted special 133's remaining tid=0/tag=0 branch against native
+FLevelLocals.Massacre and AActor.Massacre. Global targeting selects active
+monsters including friendlies, excluding players and dormant monsters.
+Each live target temporarily becomes shootable, non-dormant and vulnerable;
+Massacre telefrag damage repeats while health decreases and remains positive.
+Surviving actors recover original flags. Dead actors are unchanged. The
+unfiltered branch now reports native success and ignores the extreme argument.
+
+Three regressions cover friendly/non-shootable/invulnerable targets, dormant
+and player exclusion, large-health repeat damage and dead-actor flags.
+Release validation: **6,502 tests passed (5,375 Playsim; 533 MapLoader)**.
+Warnings-as-errors build passed with zero warnings/errors. Whitespace checks
+passed. Native thinker mutation order, custom monster death callbacks and
+spawned-monster lifecycle comparison remain open. Changes uncommitted.
+
+## Conversion and audit: targeted Thing_Destroy (2026-10-04)
+
+Converted special 133's targeted branches for ACS and map dispatch. Actor IDs
+and optional sector tags filter shootable actors; tag-only targeting applies
+to all shootable actors in matching sectors. Ordinary destruction applies
+current health as damage, preserving armor/invulnerability behavior. Extreme
+destruction applies TELEFRAG_DAMAGE. Missing targets report success. Target
+snapshots protect iteration from damage callbacks.
+
+Six regressions cover ID/tag filtering and ordinary/extreme invulnerability.
+Release validation: **6,499 tests passed (5,372 Playsim; 533 MapLoader)**.
+Warnings-as-errors build passed with zero warnings/errors. Whitespace checks
+passed. Unfiltered tid=0/tag=0 Massacre is explicitly unsupported and reports
+failure; custom Massacre behavior, native corpse callbacks and dedicated
+Thing_Destroy ACS bytecode acceptance remain open. Changes uncommitted.
+
+## Conversion and full status review: ACS ThingDamage2 (2026-10-04)
+
+Found native wire opcode 335 decoded but missing from AcsVm execution.
+Converted named-type damage and affected-shootable-actor counts using shared
+Thing_Damage targeting. Four bytecode regressions cover zero/missing IDs,
+zero damage and healing. Release validation: **6,493 tests passed (5,366
+Playsim; 533 MapLoader)**. Non-incremental warnings-as-errors build passed
+with zero warnings/errors. Whitespace checks passed. Updated README and added
+[full status report](HCDE_CSHARP_STATUS_2026_10_04.md). Full engine conversion
+and gameplay phase gates remain incomplete. Changes uncommitted.
+
+## Conversion and audit: Thing_Damage action (2026-10-04)
+
+Converted native special 119 Thing_Damage into map and ACS dispatch.
+Nonzero IDs target all matching shootable actors; zero uses the activator.
+Positive damage uses the activator as source and native numeric damage types.
+Nonpositive amounts directly heal up to spawn health without skill scaling;
+zero does not kill. Missing targets still report success, matching the line
+special wrapper. Targets are snapshotted before damage callbacks can spawn
+or remove actors. Healing arithmetic uses overflow-safe intermediates.
+
+Added eight regressions for immediate/stack ACS damage, healing and zero,
+shootability filtering, zero-ID player healing, missing targets and map-line
+one-shot consumption. Release validation: **6,489 tests passed (5,362 Playsim;
+533 MapLoader)**. Warnings-as-errors build passed with zero warnings/errors.
+Whitespace checks passed. The separate ACS ThingDamage opcode, custom damage
+states and full corpse revival behavior remain open. Changes uncommitted.
+
+## Conversion and audit: DamageThing and ACS health dispatch (2026-10-04)
+
+Converted native special 73 DamageThing for maps and ACS. Positive amounts
+use shared damage processing, zero applies TELEFRAG_DAMAGE, and negative
+amounts heal players through GiveBody. Non-player negative damage directly
+raises health up to spawn health, including native revival behavior. Null
+activators fail; existing activators report success regardless of damage result.
+Native numeric damage-type mapping is shared with sector damage. Extreme
+healing arithmetic uses overflow-safe intermediates.
+
+Added eight regressions, including actual immediate and stack ACS bytecode
+for HealThing and DamageThing, healing, lethal zero damage, Massacre type and
+non-player revival. Release validation: **6,481 tests passed (5,354 Playsim;
+533 MapLoader)**. Warnings-as-errors build passed with zero warnings/errors.
+Whitespace checks passed. Custom damage-state selection, corpse lifecycle
+details and DeHackEd health-cap overrides remain open. Changes uncommitted.
+
+## Conversion and audit: HealThing action (2026-10-04)
+
+Converted native line special 248, HealThing, into map-line and both ACS
+special dispatch paths. Default-cap and non-player calls use GiveBody;
+explicit player caps use direct healing without skill scaling. Cap 1 resolves
+to the standard soulsphere maximum of 200. Negative amounts follow the native
+branch-specific behavior. An existing activator reports success even if no
+healing occurs; a null activator fails. Direct arithmetic saturates safely.
+
+Added seven regressions for default/percentage grants, explicit caps,
+negative grants, non-player/null behavior and map activation. Release
+validation: **6,473 tests passed (5,346 Playsim; 533 MapLoader)**.
+Warnings-as-errors build passed with zero warnings/errors. Whitespace checks
+passed. DeHackEd soulsphere maximum overrides and dedicated ACS bytecode
+regressions remain open. Changes uncommitted.
+
+## Conversion and audit: zero health grant result (2026-10-04)
+
+Converted P_GiveBody's non-player zero-amount success semantics. A living
+non-player below spawn health now reports success without changing health.
+At/above spawn health and dead actors report failure. Players continue to
+reject zero amounts, and ACS GiveInventory still rejects nonpositive requests
+before reaching health callbacks. Explicit maximum remains ignored for
+non-players.
+
+Added seven regressions for below/at/above maximum, dead actors, player
+behavior and ACS rejection. Release validation: **6,466 tests passed
+(5,339 Playsim; 533 MapLoader)**. Warnings-as-errors build passed with zero
+warnings/errors. Touched-file whitespace validation passed. Custom health
+definitions, health upgrades, morph rules and voodoo dolls remain open.
+Changes uncommitted.
+
+## Conversion and audit: percentage health grants (2026-10-04)
+
+Converted P_GiveBody's negative-amount percentage branch for players and
+non-player actors. Added Actor.GiveBody using the shared health grant helpers.
+Negative amounts clamp to -65536, compute a truncated percentage of the
+resolved maximum, and raise health only when below that target. Percentages
+above 100 can exceed the ordinary maximum; skill scaling does not apply.
+Players honor explicit maximums, while non-players use spawn health. Dead
+actors are not healed. Large target calculations saturate safely rather than
+reproducing native integer overflow. ACS nonpositive grant rejection remains.
+
+Added seven regressions for percentages, truncation, amount clamp, explicit
+maximum, non-player maximum, dead actors and non-reduction. Release validation:
+**6,459 tests passed (5,332 Playsim; 533 MapLoader)**. Warnings-as-errors build
+passed with zero warnings/errors. Touched-file whitespace validation passed.
+Custom negative health pickup definitions, voodoo dolls, health upgrades and
+non-player zero-amount success semantics remain open. Changes uncommitted.
+
+## Conversion and audit: drop-factor pickup scope (2026-10-04)
+
+Follow-up audit of native Ammo/Weapon.ModifyDropAmount found that the managed
+custom factor incorrectly set IgnoreSkill and ammo suppression on other pickup
+types. Restricted these flags to ammo and weapons using the catalog gift kind.
+Dropped armor retains armor-factor scaling, backpacks retain normal skill
+ammo scaling, and health pickups keep their own behavior.
+
+Added three regressions exercising armor, backpack and health drops with a
+zero drop factor. Release validation: **6,452 tests passed (5,325 Playsim;
+533 MapLoader)**. Warnings-as-errors build passed with zero warnings/errors.
+Touched-file whitespace validation passed. Native skill loading, custom ammo
+properties and secondary weapon ammo remain open. Changes uncommitted.
+
 ## Conversion and audit: drop ammo factor (2026-10-03)
 
 Converted native Ammo/Weapon.ModifyDropAmount skill DropAmmoFactor into

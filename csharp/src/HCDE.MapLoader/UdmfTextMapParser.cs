@@ -108,6 +108,7 @@ public sealed class UdmfSector
 
 public sealed class UdmfThing
 {
+    public double Health { get; set; } = 1;
     public double Gravity { get; set; } = 1;
     public int Pitch { get; set; }
     public int Roll { get; set; }
@@ -121,6 +122,9 @@ public sealed class UdmfThing
     public bool Skill1 { get; set; }
     public bool Ambush { get; set; }
     public bool Dormant { get; set; }
+    public bool Friend { get; set; }
+    public bool StrifeAlly { get; set; }
+    public bool StrifeAllySpecifiedLast { get; set; }
     public bool Skill2 { get; set; }
     public bool Skill3 { get; set; }
     public bool Skill4 { get; set; }
@@ -268,9 +272,12 @@ public static class UdmfTextMapParser
             return true;
         }
 
+        private string? _lastAllegianceKey;
+
         private bool TryReadBlock(out Dictionary<string, Value> fields, out string? error)
         {
             fields = new Dictionary<string, Value>(StringComparer.OrdinalIgnoreCase);
+            _lastAllegianceKey = null;
             error = null;
             if (!Expect('{'))
             {
@@ -315,6 +322,8 @@ public static class UdmfTextMapParser
                     return false;
                 }
 
+                if (key.Equals("friend", StringComparison.OrdinalIgnoreCase)
+                    || key.Equals("strifeally", StringComparison.OrdinalIgnoreCase)) _lastAllegianceKey = key;
                 fields[key] = value;
             }
         }
@@ -422,7 +431,7 @@ public static class UdmfTextMapParser
             Health3DGroup = Int(fields, "health3dgroup"),
         };
 
-        private static UdmfThing ReadThing(Dictionary<string, Value> fields) => new()
+        private UdmfThing ReadThing(Dictionary<string, Value> fields) => new()
         {
             Pitch = Int(fields, "pitch"),
             Roll = Int(fields, "roll"),
@@ -430,6 +439,7 @@ public static class UdmfTextMapParser
             X = Number(fields, "x"),
             Y = Number(fields, "y"),
             Height = Number(fields, "height"),
+            Health = Number(fields, "health", 1),
             Angle = Number(fields, "angle"),
             Type = Int(fields, "type"),
             Id = Int(fields, "id"),
@@ -437,6 +447,9 @@ public static class UdmfTextMapParser
             Skill1 = Bool(fields, "skill1"),
             Ambush = Bool(fields, "ambush"),
             Dormant = Bool(fields, "dormant"),
+            Friend = Bool(fields, "friend"),
+            StrifeAlly = Bool(fields, "strifeally"),
+            StrifeAllySpecifiedLast = string.Equals(_lastAllegianceKey, "strifeally", StringComparison.OrdinalIgnoreCase),
             Skill2 = Bool(fields, "skill2"),
             Skill3 = Bool(fields, "skill3"),
             Skill4 = Bool(fields, "skill4"),

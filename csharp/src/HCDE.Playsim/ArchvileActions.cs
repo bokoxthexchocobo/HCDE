@@ -12,25 +12,27 @@ internal static class ArchvileActions
     internal static bool TryRaise(AuthoritySimulation sim, Actor archvile, Actor target)
     {
         var direction = Math.Atan2(target.Y.ToDouble() - archvile.Y.ToDouble(), target.X.ToDouble() - archvile.X.ToDouble());
-        var x = archvile.X.ToDouble() + Math.Cos(direction) * 15;
-        var y = archvile.Y.ToDouble() + Math.Sin(direction) * 15;
+        var speed = Math.Abs(archvile.MovementSpeed.ToDouble());
+        var x = archvile.X.ToDouble() + Math.Cos(direction) * speed;
+        var y = archvile.Y.ToDouble() + Math.Sin(direction) * speed;
         foreach (var corpse in sim.Actors.OrderBy(actor => actor.Id))
         {
-            if (!corpse.IsDead || corpse.Destroyed || corpse.RaiseDuration <= 0 || corpse.ResurrectionHealth <= 0
-                || corpse.States.Current != ActorStateMachine.Corpse || corpse.Brain == null) continue;
-            var reach = corpse.Radius.ToDouble() + archvile.Radius.ToDouble();
-            if (Math.Abs(corpse.X.ToDouble() - x) > reach || Math.Abs(corpse.Y.ToDouble() - y) > reach
-                || Math.Abs(corpse.Z.ToDouble() - archvile.Z.ToDouble()) > 64
-                || !CombatTrace.HasLineOfSight(sim, archvile, corpse) || !ActorPhysics.CanOccupy(sim, corpse)) continue;
+            if (!corpse.IsBlockmapActor || !ActorRaise.HasRaiseState(corpse)) continue;
+            var reach = (corpse.ResurrectionRadius ?? corpse.Radius).ToDouble() + archvile.Radius.ToDouble();
+            if (Math.Abs(corpse.X.ToDouble() - x) > reach || Math.Abs(corpse.Y.ToDouble() - y) > reach) continue;
+            corpse.VelocityX = corpse.VelocityY = default;
+            if (!ActorRaise.CheckPosition(sim, corpse, heightOnly: true)) continue;
             archvile.Angle = BamAngle.FromDegrees(Math.Atan2(corpse.Y.ToDouble() - archvile.Y.ToDouble(),
                 corpse.X.ToDouble() - archvile.X.ToDouble()) * 180 / Math.PI);
-            corpse.Health = corpse.ResurrectionHealth;
-            corpse.Solid = corpse.Shootable = true;
+            if (archvile.Friendly) archvile.Brain?.ClearResurrectionEnemy(corpse.Id);
+            var ghostCompatibility = sim.Compat.HasFlag(CompatSurface.VileGhosts);
+            if (ghostCompatibility)
+                corpse.Height = new Fixed((int)Math.Clamp((long)corpse.Height.Raw * 4, int.MinValue, int.MaxValue));
+            ActorRaise.ReviveSupported(corpse, restoreDimensions: !ghostCompatibility);
             corpse.Friendly = archvile.Friendly;
             corpse.FriendPlayer = archvile.FriendPlayer;
             corpse.TidToHate = archvile.TidToHate;
             corpse.NoHatePlayers = archvile.NoHatePlayers;
-            corpse.Brain.Revive(corpse);
             return true;
         }
         return false;
@@ -50,7 +52,7 @@ internal static class ArchvileActions
             };
             foreach (var victim in sim.Actors.ToArray())
             {
-                if (ReferenceEquals(victim, archvile) || !victim.IsBlockmapActor || !victim.CanTakeDamage || victim.NoRadiusDamage) continue;
+                if (ReferenceEquals(victim, archvile) || !victim.IsBlockmapActor || !victim.CanTakeDamage || victim.NoRadiusDamage || victim.SplashImmune(fire)) continue;
                 var horizontal = Math.Max(0, Math.Sqrt(Math.Pow(victim.X.ToDouble() - fire.X.ToDouble(), 2)
                     + Math.Pow(victim.Y.ToDouble() - fire.Y.ToDouble(), 2)) - victim.Radius.ToDouble());
                 var vertical = Math.Max(0, Math.Max(victim.Z.ToDouble() - fire.Z.ToDouble(),

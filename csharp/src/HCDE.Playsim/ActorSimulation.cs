@@ -34,11 +34,96 @@ public class Actor : Thinker
     /// <summary>Native <c>AActor::IsMapActor</c>. Owned inventory items are excluded from ACS thing counts.</summary>
     internal virtual bool IsMapActor => true;
     public bool NoBlockmap { get; set; }
+    private int _special;
+    public int Special { get => _special; set { _special = value; SpecialChanged = true; } }
+    public int[] SpecialArgs { get; } = new int[5];
+    internal bool SpecialChanged { get; set; }
+    private int _activationType;
+    public virtual void Activate(Actor? activator) => ThingActivation.Apply(this, true);
+    public virtual void Deactivate(Actor? activator) => ThingActivation.Apply(this, false);
+
+    public virtual void BeginPlay()
+    {
+        if (!Dormant) return;
+        Dormant = false;
+        Deactivate(null);
+    }
+
+    internal bool SpawnDormant { get; set; }
+    internal bool SpawnAmbush { get; set; }
+    public virtual void HandleSpawnFlags()
+    {
+        if (SpawnAmbush) Ambush = true;
+        if (SpawnDormant) Deactivate(null);
+        if (SpawnFriendly) Friendly = true;
+    }
+
+    internal bool SpawnDropped { get; set; }
+    public void LevelSpawned()
+    {
+        if (!SpawnDropped) Dropped = false;
+        HandleSpawnFlags();
+    }
+
+    public bool ActivateSpecial(Actor? activator, bool death = false)
+    {
+        if (Simulation is not { } simulation)
+            throw new InvalidOperationException("Actor special activation requires a simulation.");
+        return ActorSpecialActions.ActivateSpecial(simulation, this, activator, death);
+    }
+
+    public int ActivationType
+    {
+        get => _activationType;
+        set { _activationType = value; SpecialChanged = true; }
+    }
     internal virtual bool IsBlockmapActor => !NoBlockmap;
     /// <summary>Native actor gravity multiplier; ACS reads/writes signed 16.16 values.</summary>
     public Fixed Gravity { get; set; } = Fixed.FromInt(1);
     /// <summary>Native DamageFactor, applied to incoming ordinary damage before armor.</summary>
     public Fixed DamageFactor { get; set; } = Fixed.FromInt(1);
+    private readonly Dictionary<string, double> _damageFactors = new(StringComparer.OrdinalIgnoreCase);
+
+    public void SetDamageFactor(string damageType, double factor)
+    {
+        ArgumentException.ThrowIfNullOrEmpty(damageType);
+        if (!double.IsFinite(factor)) throw new ArgumentOutOfRangeException(nameof(factor));
+        _damageFactors[damageType] = factor;
+    }
+
+    internal Dictionary<string, double> CaptureDamageFactors() => new(_damageFactors, StringComparer.OrdinalIgnoreCase);
+
+    internal void RestoreDamageFactors(IReadOnlyDictionary<string, double>? factors)
+    {
+        _damageFactors.Clear();
+        if (factors is null) return;
+        foreach (var entry in factors) SetDamageFactor(entry.Key, entry.Value);
+    }
+
+    internal uint MixDamageFactorChecksum(uint hash)
+    {
+        if (_damageFactors.Count == 0) return hash;
+        hash = DamageRuleChecksum.Mix(hash, 0x41444641u);
+        hash = DamageRuleChecksum.Mix(hash, (uint)_damageFactors.Count);
+        foreach (var entry in _damageFactors.OrderBy(pair => pair.Key.ToUpperInvariant(), StringComparer.Ordinal))
+            hash = DamageRuleChecksum.Entry(hash, entry.Key, entry.Value);
+        return hash;
+    }
+
+    internal int ApplyTypedDamageFactor(int damage, string? damageType)
+    {
+        var type = string.IsNullOrEmpty(damageType) ? "None" : damageType;
+        if (!_damageFactors.TryGetValue(type, out var factor))
+        {
+            if (type.Equals("None", StringComparison.OrdinalIgnoreCase)) return damage;
+            var hasFallback = _damageFactors.TryGetValue("None", out factor) && factor >= 0;
+            var definition = Simulation?.DamageTypes.Find(type);
+            if (definition is { } global)
+                factor = hasFallback && !global.ReplaceFactor ? factor * global.Factor : global.Factor;
+            else if (!hasFallback) return damage;
+        }
+        return (int)Math.Clamp(damage * factor, int.MinValue, int.MaxValue);
+    }
     /// <summary>Native DamageMultiply, applied to this source's outgoing ordinary damage.</summary>
     public Fixed DamageMultiplier { get; set; } = Fixed.FromInt(1);
     /// <summary>Native MeleeRange default: 64 minus MELEEDELTA (20).</summary>
@@ -106,7 +191,13 @@ public class Actor : Thinker
     /// <summary>Native <c>PainThreshold</c>. A surviving hit below this post-armor amount does not flinch. 0 flinches on any loss.</summary>
     public int PainThreshold { get; set; }
     public int ResurrectionHealth { get; internal set; }
+    public int SpawnHealth() => ResurrectionHealth;
     public int RaiseDuration { get; internal set; }
+    internal Fixed? ResurrectionRadius { get; set; }
+    internal Fixed? ResurrectionHeight { get; set; }
+    internal int? ResurrectionCollisionFlags { get; set; }
+    internal int? ResurrectionDefenseFlags { get; set; }
+    internal int? ResurrectionMovementFlags { get; set; }
     public int Mass { get; set; } = 100;
     /// <summary>Native actor Speed in ACS signed 16.16 units.</summary>
     public Fixed MovementSpeed { get; set; } = Fixed.FromInt(4);
@@ -114,6 +205,35 @@ public class Actor : Thinker
     public bool Solid { get; set; } = true;
     public bool Shootable { get; set; } = true;
     public bool Invulnerable { get; set; }
+    /// <summary>Native MF3_FOILINVUL on a damage inflictor.</summary>
+    public bool FoilInvul { get; set; }
+    /// <summary>Native MF5_PIERCEARMOR on a damage inflictor.</summary>
+    public bool PierceArmor { get; set; }
+    /// <summary>Native MF4_STRIFEDAMAGE missile dice: one through four.</summary>
+    public bool StrifeDamage { get; set; }
+    public bool Rip { get; set; }
+    public bool DontRip { get; set; }
+    public bool NoBossRip { get; set; }
+    public bool Pushable { get; set; }
+    public bool CannotPush { get; set; }
+    private double _pushFactor = 0.25;
+    public double PushFactor
+    {
+        get => _pushFactor;
+        set
+        {
+            if (!double.IsFinite(value)) throw new ArgumentOutOfRangeException(nameof(value));
+            _pushFactor = value;
+        }
+    }
+    public int RipperLevel { get; set; }
+    public int RipLevelMin { get; set; }
+    public int RipLevelMax { get; set; }
+    public Fixed ProjectilePassHeight { get; set; }
+    public bool CanBeRippedBy(Actor projectile) => !DontRip
+        && !(projectile.NoBossRip && Boss)
+        && (RipLevelMin <= 0 || projectile.RipperLevel >= RipLevelMin)
+        && (RipLevelMax <= 0 || projectile.RipperLevel <= RipLevelMax);
     /// <summary>Native <c>MF7_BUDDHA</c>. A killing blow stops at 1 health unless it is a telefrag or forced.</summary>
     public bool Buddha { get; set; }
     /// <summary>Native <c>MF7_FOILBUDDHA</c>. As an inflictor, this kills a non-player Buddha.</summary>
@@ -188,10 +308,17 @@ public class Actor : Thinker
     public bool QuickToRetaliate { get; set; }
     /// <summary>Native <c>MF_FRIENDLY</c>. Used with <see cref="FriendPlayer"/> for <see cref="IsFriend"/>.</summary>
     public bool Friendly { get; set; }
+    internal bool SpawnFriendly { get; set; }
     /// <summary>Native <c>FriendPlayer</c>. 0 means any friendly. 1 is the first player.</summary>
     public int FriendPlayer { get; set; }
     /// <summary>Native <c>MF5_NOINFIGHTING</c>. Wake-up treats infighting as off for this actor.</summary>
     public bool NoInfighting { get; set; }
+    /// <summary>Native MF7_NOINFIGHTSPECIES target-switch restriction.</summary>
+    public bool NoInfightSpecies { get; set; }
+    public int InfightingGroup { get; set; }
+    public int ProjectileGroup { get; set; }
+    public int SplashGroup { get; set; }
+    public bool SplashImmune(Actor explosion) => SplashGroup != 0 && SplashGroup == explosion.SplashGroup;
     /// <summary>Native <c>MF7_FORCEINFIGHTING</c>. Standard infighting applies when the level is set to none.</summary>
     public bool ForceInfighting { get; set; }
     /// <summary>Native <c>MF6_DOHARMSPECIES</c>. Same-species projectile immunity does not apply.</summary>
@@ -222,9 +349,10 @@ public class Actor : Thinker
     // Damage species immunity deliberately excludes players; contact filtering does not.
     internal bool SharesContactSpecies(Actor other) => this is PlayerPawn
         ? other is PlayerPawn : other is not PlayerPawn && DefaultSpecies == other.DefaultSpecies;
-    /// <summary>Native <c>P_ProjectileImmune</c> default-group subset. Projectile groups are absent.</summary>
+    /// <summary>Native <c>P_ProjectileImmune</c> group and default species rules.</summary>
     public bool ProjectileImmune(Actor source) =>
-        IsSameSpecies(source) && !DoHarmSpecies;
+        (ProjectileGroup != -1 || ReferenceEquals(this, source))
+        && (ProjectileGroup == 0 ? SharesContactSpecies(source) && !DoHarmSpecies : ProjectileGroup == source.ProjectileGroup);
     /// <summary>Native <c>CanAttackHurt</c> subset for monster-monster damage.</summary>
     internal bool CanAttackHurtFrom(Actor shooter)
     {
@@ -249,12 +377,16 @@ public class Actor : Thinker
         return true;
     }
 
-    /// <summary>Native <c>OkayToSwitchTarget</c> subset. Master/minion and infighting groups are absent.</summary>
+    /// <summary>Native <c>OkayToSwitchTarget</c> subset. Master/minion class relationships are absent.</summary>
     internal bool OkayToSwitchTarget(Actor other, MonsterBrain brain)
     {
         if (!other.CanTakeDamage || other.Id == Id || other.NeverTarget)
             return false;
         if (NoTargetSwitch && brain.TargetId != null)
+            return false;
+        if (NoInfightSpecies && SharesContactSpecies(other))
+            return false;
+        if (InfightingGroup != 0 && InfightingGroup == other.InfightingGroup)
             return false;
         if (other.NoTarget && (other.ThingId != TidToHate || TidToHate == 0) && !IsHostile(other))
             return false;
@@ -328,37 +460,59 @@ public class Actor : Thinker
     public int Health
     {
         get => _health;
-        set
+        set => SetHealth(value, null, false);
+    }
+
+    internal void SetDamageHealth(int value, Actor? source, Func<int> afterDamage) => SetHealth(value, source, true, afterDamage);
+
+    private void SetHealth(int value, Actor? source, bool executeDeathSpecial, Func<int>? afterDamage = null)
+    {
+        var dead = _health <= 0;
+        _health = value;
+        // Native drain observes the damaged health before death specials and state selection.
+        if (afterDamage != null) _health = afterDamage();
+        if (dead && !IsDead) DeathDamageType = null;
+        if (!dead && IsDead)
         {
-            var dead = _health <= 0;
-            _health = value;
-            if (dead && !IsDead) DeathDamageType = null;
-            if (!dead && IsDead)
+            if (executeDeathSpecial)
             {
-                DeathDamageType = string.Equals(DamageTypeReceived, "Massacre", StringComparison.OrdinalIgnoreCase) ? "Massacre" : null;
-                DeathCount++;
-                var death = ChooseDeathState(out var extremeDeath);
-                if (extremeDeath && this is not PlayerPawn && _health >= GibHealth)
-                    _health = GibHealth - 1;
-                if (States.HasState(death)) States.Enter(this, death);
-                if (this is PlayerPawn player)
-                {
-                    player.ExtremelyDead = extremeDeath;
-                    player.ClearCommands();
-                    player.AttackPressed = false;
-                    player.NoteDeath(Simulation);
-                }
+                var incomingType = ResolveDeathType(DamageTypeReceived, DeathInflictor);
+                if (!(this is PlayerPawn && string.Equals(incomingType, "Fire", StringComparison.OrdinalIgnoreCase)
+                    && DeathInflictor is { SpecialFireDamage: true } && (_health <= -50 || DeathDamageAmount <= 25)))
+                    DamageType = incomingType;
             }
-            else if (dead && !IsDead && States.HasState(SpawnState))
+            // Native Die queries gib health before death specials, then again for state selection.
+            if (executeDeathSpecial) _ = GetGibHealth();
+            DeathDamageType = string.Equals(DamageType, "Massacre", StringComparison.OrdinalIgnoreCase) ? "Massacre" : null;
+            DeathCount++;
+            if (executeDeathSpecial && Simulation is { } deathSimulation)
+                ActorSpecialActions.OnDeath(deathSimulation, this, source);
+            var gibHealth = GetGibHealth();
+            var death = ChooseDeathState(gibHealth, out var extremeDeath);
+            if (extremeDeath && this is not PlayerPawn && _health >= gibHealth)
+                _health = gibHealth - 1;
+            if (States.HasState(death)) States.Enter(this, death);
+            if (this is PlayerPawn player)
             {
-                States.Enter(this, SpawnState);
-                if (this is PlayerPawn revived)
-                    revived.ExtremelyDead = false;
+                player.ClearDamagePowers();
+                player.ExtremelyDead = extremeDeath;
+                player.ClearCommands();
+                player.AttackPressed = false;
+                player.NoteDeath(Simulation);
             }
+        }
+        else if (dead && !IsDead && States.HasState(SpawnState))
+        {
+            States.Enter(this, SpawnState);
+            if (this is PlayerPawn revived)
+                revived.ExtremelyDead = false;
         }
     }
     public ActorStateMachine States { get; } = new();
     public int SpawnState { get; set; } = ActorStateMachine.Spawn;
+    internal bool HasOnlySpawnLabel { get; set; }
+    internal int GenericCrushState { get; set; } = -1;
+    internal int NullState { get; set; } = -1;
     public int ActiveState { get; set; } = -1;
     public int InactiveState { get; set; } = -1;
     /// <summary>Native See state. A waking monster in <see cref="SpawnState"/> can enter this frame. -1 means absent.</summary>
@@ -371,20 +525,29 @@ public class Actor : Thinker
     public int GenericFreezeDeath { get; set; } = -1;
     /// <summary>Native <c>MF4_NOICEDEATH</c>. An Ice kill does not fall back to <see cref="GenericFreezeDeath"/>.</summary>
     public bool NoIceDeath { get; set; }
+    /// <summary>Native inflictor DeathType override. None leaves the hit's damage type unchanged.</summary>
+    public string? DeathType { get; set; }
+    /// <summary>Native MF5_SPECIALFIREDAMAGE. Player flame death requires shallow overkill and damage above 25.</summary>
+    public bool SpecialFireDamage { get; set; }
+    /// <summary>Native persistent actor DamageType, also used by death-state selection.</summary>
+    public string? DamageType { get; set; }
+    internal int DeathDamageAmount { get; set; }
     /// <summary>Damage type of the hit currently being applied. The setter consumes it.</summary>
     internal string? DamageTypeReceived { get; set; }
     public string? DeathDamageType { get; internal set; }
     /// <summary>Inflictor for the hit currently being applied. The health setter consumes it.</summary>
     internal Actor? DeathInflictor { get; set; }
-    private readonly Dictionary<string, int> _typedDeaths = new(StringComparer.Ordinal);
-    private readonly Dictionary<string, int> _typedExtremeDeaths = new(StringComparer.Ordinal);
-    private readonly Dictionary<string, int> _typedPain = new(StringComparer.Ordinal);
-    private readonly Dictionary<string, int> _typedPainChance = new(StringComparer.Ordinal);
-    private readonly Dictionary<string, int> _typedWounds = new(StringComparer.Ordinal);
+    private readonly Dictionary<string, int> _typedDeaths = new(StringComparer.OrdinalIgnoreCase);
+    private readonly Dictionary<string, int> _typedExtremeDeaths = new(StringComparer.OrdinalIgnoreCase);
+    private readonly Dictionary<string, int> _typedPain = new(StringComparer.OrdinalIgnoreCase);
+    private readonly Dictionary<string, int> _typedPainChance = new(StringComparer.OrdinalIgnoreCase);
+    private readonly Dictionary<string, int> _typedWounds = new(StringComparer.OrdinalIgnoreCase);
     /// <summary>Native <c>WoundHealth</c>. A surviving hit at or below this health can enter a typed wound frame.</summary>
     public int WoundHealth { get; set; }
     /// <summary>Native GetGibHealth. A killing blow below this value can enter <see cref="ExtremeDeathState"/>.</summary>
     public int GibHealth { get; set; } = -100;
+    public virtual int GetGibHealth() => GibHealth;
+    public virtual int GetMaxHealth(bool withUpgrades) => 100;
     /// <summary>
     /// BasicArmor amount for a non-player. Players absorb from <see cref="PlayerPawn.Inventory"/> instead.
     /// Spawned monsters start at 0, which is why a bare hit is not reduced.
@@ -419,6 +582,12 @@ public class Actor : Thinker
     public PlayLevel? Level { get; init; }
 
     public bool IsDead => Health <= 0;
+    /// <summary>Native AActor.Massacre: attempt repeated Massacre damage and report whether the actor died.</summary>
+    public bool Massacre() => ThingDamage.Massacre(this);
+    /// <summary>Native GiveBody: negative amounts raise health to a percentage of the resolved maximum.</summary>
+    public bool GiveBody(int amount, int maximum = 0) => this is PlayerPawn player
+        ? PickupCatalog.GiveHealth(player, amount, maximum)
+        : PickupCatalog.GiveHealth(this, amount);
 
     public bool BlocksActors =>
         Solid && !IsDead && !Destroyed && DoomEdNum != LineSpecials.TeleportDestType
@@ -432,12 +601,13 @@ public class Actor : Thinker
     public static bool IsPlayerStart(int type) => type is >= PlayerStartMin and <= PlayerStartMax;
 
     /// <summary>
-    /// <c>Death.Fire</c> or <c>Death.Extreme.Fire</c>. The name match is ordinal.
+    /// <c>Death.Fire</c> or <c>Death.Extreme.Fire</c>. The name match follows native case-insensitive FName identity.
     /// A missing frame falls through. An Ice kill can still use <see cref="GenericFreezeDeath"/>.
     /// </summary>
     public void SetTypedDeath(string damageType, int state, bool extreme = false)
     {
-        if (string.IsNullOrEmpty(damageType) || damageType is "None" or "Extreme")
+        if (string.IsNullOrEmpty(damageType) || damageType.Equals("None", StringComparison.OrdinalIgnoreCase)
+            || damageType.Equals("Extreme", StringComparison.OrdinalIgnoreCase))
             throw new ArgumentException("A typed death needs a damage type other than None or Extreme.", nameof(damageType));
         (extreme ? _typedExtremeDeaths : _typedDeaths)[damageType] = state;
     }
@@ -450,6 +620,37 @@ public class Actor : Thinker
             yield return (entry.Key, entry.Value, true);
     }
 
+    private static string? ResolveDeathType(string? damageType, Actor? inflictor) =>
+        !string.IsNullOrEmpty(inflictor?.DeathType) && !string.Equals(inflictor.DeathType, "None", StringComparison.OrdinalIgnoreCase)
+            ? inflictor.DeathType : damageType;
+
+    internal bool AcceptsSpecialDamage(string? damageType, Actor? inflictor)
+    {
+        if (States.HasState(DeathState)
+            || !HasSpecialDeathStates()
+            || string.Equals(damageType, "Massacre", StringComparison.OrdinalIgnoreCase)) return true;
+        var type = ResolveDeathType(damageType, inflictor);
+        if (string.Equals(type, "Extreme", StringComparison.OrdinalIgnoreCase) && States.HasState(ExtremeDeathState)) return true;
+        if (type is not null && _typedDeaths.TryGetValue(type, out var death) && States.HasState(death)) return true;
+        return string.Equals(type, "Ice", StringComparison.OrdinalIgnoreCase) && !NoIceDeath && Simulation?.DehackedNoAutofreeze != true
+            && (this is PlayerPawn || IsMonster) && States.HasState(GenericFreezeDeath);
+    }
+
+    public virtual int TakeSpecialDamage(Actor? inflictor, Actor? source, int damage, string? damageType, DamageFlags flags) =>
+        AcceptsSpecialDamage(damageType, inflictor) ? damage : -1;
+    public virtual int OnDrain(Actor target, int amount, string? damageType) => amount;
+    /// <summary>Native active/passive inventory damage modifier boundary.</summary>
+    public InventoryDamageModifier? DamageModifiers { get; set; }
+
+    public virtual int GetModifiedDamage(string? damageType, int damage, bool passive, Actor? inflictor, Actor? other, DamageFlags flags) =>
+        InventoryDamageModifier.Apply(DamageModifiers, damage, damageType, passive, inflictor, other, flags);
+
+    public virtual int DoSpecialDamage(Actor target, int damage, string? damageType, DamageFlags flags) =>
+        target is PlayerPawn { GodMode: true } && damage < 1000 ? -1 : damage;
+
+    public bool HasSpecialDeathStates() => States.HasState(ExtremeDeathState)
+        || _typedDeaths.Values.Any(States.HasState);
+
     /// <summary>
     /// Native death-state order. An extreme typed frame wins, then the plain typed
     /// frame, then generic ice freeze, then <see cref="ExtremeDeathState"/>, then <see cref="DeathState"/>.
@@ -458,19 +659,20 @@ public class Actor : Thinker
     /// Ice freeze is not extreme. It applies to a player or a monster, and <see cref="NoIceDeath"/> blocks it.
     /// Inflictor <see cref="ExtremeDeath"/> and <see cref="NoExtremeDeath"/> follow native <c>MF4_*</c> on the inflictor only.
     /// </summary>
-    private int ChooseDeathState(out bool usedExtremeDeath)
+    private int ChooseDeathState(int gibHealth, out bool usedExtremeDeath)
     {
         usedExtremeDeath = false;
-        var type = DamageTypeReceived;
+        var type = DamageType;
         var inflictor = DeathInflictor;
-        var extreme = (_health < GibHealth || inflictor is { ExtremeDeath: true })
+        var extreme = (_health < gibHealth || inflictor is { ExtremeDeath: true })
             && inflictor is not { NoExtremeDeath: true };
-        if (string.Equals(type, "Extreme", StringComparison.Ordinal))
+        if (string.Equals(type, "Extreme", StringComparison.OrdinalIgnoreCase))
         {
             extreme = true;
             type = null;
+            DamageType = null;
         }
-        if (!string.IsNullOrEmpty(type) && !string.Equals(type, "None", StringComparison.Ordinal))
+        if (!string.IsNullOrEmpty(type) && !string.Equals(type, "None", StringComparison.OrdinalIgnoreCase))
         {
             if (extreme && _typedExtremeDeaths.TryGetValue(type, out var extremeState) && States.HasState(extremeState))
             {
@@ -479,10 +681,11 @@ public class Actor : Thinker
             }
             if (_typedDeaths.TryGetValue(type, out var typed) && States.HasState(typed))
                 return typed;
-            if (string.Equals(type, "Ice", StringComparison.Ordinal) && !NoIceDeath
-                && (this is PlayerPawn || Brain != null) && States.HasState(GenericFreezeDeath))
+            if (string.Equals(type, "Ice", StringComparison.OrdinalIgnoreCase) && !NoIceDeath && Simulation?.DehackedNoAutofreeze != true
+                && (this is PlayerPawn || IsMonster) && States.HasState(GenericFreezeDeath))
                 return GenericFreezeDeath;
         }
+        if (!string.Equals(type, "Massacre", StringComparison.OrdinalIgnoreCase)) DamageType = null;
         if (extreme && States.HasState(ExtremeDeathState))
         {
             usedExtremeDeath = true;
@@ -492,14 +695,14 @@ public class Actor : Thinker
     }
 
     /// <summary>
-    /// <c>Pain.Fire</c>. The name match is ordinal. A missing frame uses <see cref="PainState"/>.
+    /// <c>Pain.Fire</c>. The name match follows native case-insensitive FName identity. A missing frame uses <see cref="PainState"/>.
     /// <paramref name="chance"/> replaces <see cref="PainChance"/> for that type only.
     /// Electric flicker uses <see cref="AuthoritySimulation.NextFlickerRandom"/>. Poison howling is absent.
     /// </summary>
-    /// <summary><c>Wound.Fire</c>. The name match is ordinal. A missing frame is ignored.</summary>
+    /// <summary><c>Wound.Fire</c>. The name match follows native case-insensitive FName identity. A missing frame is ignored.</summary>
     public void SetTypedWound(string damageType, int state)
     {
-        if (string.IsNullOrEmpty(damageType) || damageType == "None")
+        if (string.IsNullOrEmpty(damageType) || string.Equals(damageType, "None", StringComparison.OrdinalIgnoreCase))
             throw new ArgumentException("A typed wound needs a damage type other than None.", nameof(damageType));
         _typedWounds[damageType] = state;
     }
@@ -513,7 +716,7 @@ public class Actor : Thinker
     internal int WoundStateFor(string? damageType)
     {
         if (!string.IsNullOrEmpty(damageType)
-            && !string.Equals(damageType, "None", StringComparison.Ordinal)
+            && !string.Equals(damageType, "None", StringComparison.OrdinalIgnoreCase)
             && _typedWounds.TryGetValue(damageType, out var state)
             && States.HasState(state))
             return state;
@@ -522,7 +725,7 @@ public class Actor : Thinker
 
     public void SetTypedPain(string damageType, int state, int? chance = null)
     {
-        if (string.IsNullOrEmpty(damageType) || damageType == "None")
+        if (string.IsNullOrEmpty(damageType) || string.Equals(damageType, "None", StringComparison.OrdinalIgnoreCase))
             throw new ArgumentException("A typed pain needs a damage type other than None.", nameof(damageType));
         _typedPain[damageType] = state;
         if (chance is { } value)
@@ -532,7 +735,7 @@ public class Actor : Thinker
     internal int PainStateFor(string? damageType)
     {
         if (!string.IsNullOrEmpty(damageType)
-            && !string.Equals(damageType, "None", StringComparison.Ordinal)
+            && !string.Equals(damageType, "None", StringComparison.OrdinalIgnoreCase)
             && _typedPain.TryGetValue(damageType, out var state)
             && States.HasState(state))
             return state;
@@ -576,6 +779,7 @@ public class Actor : Thinker
         if (!Destroyed && Simulation != null)
         {
             if (!Dormant) Brain?.Tick(Simulation, this);
+            else if (!IsDead) Brain?.AdvanceRaiseFrame();
             TickMovement(Simulation);
             if (VelocityX.Raw == 0 && VelocityY.Raw == 0) Blasted = false;
             SectorDamage.Tick(Simulation, this);
@@ -586,8 +790,19 @@ public class Actor : Thinker
     protected virtual void TickMovement(AuthoritySimulation sim) => ActorPhysics.Step(sim, this);
 }
 
-public sealed class PlayerPawn : Actor
+public class PlayerPawn : Actor
 {
+    public override int GetMaxHealth(bool withUpgrades) => withUpgrades
+        ? checked(EffectiveMaxHealth + Stamina + BonusHealth) : EffectiveMaxHealth;
+    public int Stamina { get; set; }
+    public int BonusHealth { get; set; }
+    public int MaxPickupHealth { get; set; }
+    public override void BeginPlay()
+    {
+        base.BeginPlay();
+        FullHeight = Height.ToDouble();
+    }
+
     public PlayerPawn()
     {
         Inventory = new PlayerInventory(this);
@@ -603,7 +818,8 @@ public sealed class PlayerPawn : Actor
     public const double StandingViewHeight = 41;
     public Fixed JumpZ { get; set; } = Fixed.FromInt(8);
     public int MaxHealth { get; set; }
-    public int EffectiveMaxHealth => MaxHealth > 0 ? MaxHealth : 100;
+    public int EffectiveMaxHealth => MaxHealth > 0 ? MaxHealth
+        : Simulation is { } sim && !sim.Compat.HasFlag(CompatSurface.DehHealth) ? sim.DehackedMaxHealth : 100;
     /// <summary>Native DeathThink leaves the view here.</summary>
     public const double DeathViewHeight = 6;
     public const double DeathPitchStep = 3;
@@ -685,6 +901,49 @@ public sealed class PlayerPawn : Actor
     public const int PowerBuddhaDuration = 60 * GameTicClock.TicRate;
     /// <summary>Tics of <c>PowerBuddha</c> left. Zero means the item is gone.</summary>
     public int PowerBuddhaTics { get; set; }
+    public const int DamagePowerDuration = 25 * GameTicClock.TicRate;
+    public int PowerDamageTics { get; set; }
+    public int PowerProtectionTics { get; set; }
+
+    internal void ClearDamagePowers()
+    {
+        PowerBuddhaTics = 0;
+        PowerDamageTics = 0;
+        PowerProtectionTics = 0;
+    }
+
+    public void GivePowerDamage(int durationTics = DamagePowerDuration, bool additiveTime = false, bool alwaysPickup = false)
+    {
+        PowerDamageTics = PowerupDuration.Merge(PowerDamageTics, durationTics, additiveTime, alwaysPickup);
+    }
+
+    /// <summary>Grants a supported power with native Powerup.Duration units: negative seconds, otherwise tics.</summary>
+    public void GivePowerup(ManagedPowerupKind kind, int definitionDuration, bool additiveTime = false, bool alwaysPickup = false)
+    {
+        var duration = PowerupDuration.FromDefinition(definitionDuration);
+        switch (kind)
+        {
+            case ManagedPowerupKind.Damage: GivePowerDamage(duration, additiveTime, alwaysPickup); break;
+            case ManagedPowerupKind.Protection: GivePowerProtection(duration, additiveTime, alwaysPickup); break;
+            case ManagedPowerupKind.Buddha: GivePowerBuddha(duration, additiveTime, alwaysPickup); break;
+            default: throw new ArgumentOutOfRangeException(nameof(kind));
+        }
+    }
+
+    public void GivePowerProtection(int durationTics = DamagePowerDuration, bool additiveTime = false, bool alwaysPickup = false)
+    {
+        PowerProtectionTics = PowerupDuration.Merge(PowerProtectionTics, durationTics, additiveTime, alwaysPickup);
+    }
+
+    public override int GetModifiedDamage(string? damageType, int damage, bool passive, Actor? inflictor, Actor? other, DamageFlags flags)
+    {
+        damage = base.GetModifiedDamage(damageType, damage, passive, inflictor, other, flags);
+        if (!passive && PowerDamageTics > 0)
+            damage = new PowerDamage().ModifyDamage(damage, damageType, false, inflictor, other, flags);
+        if (passive && PowerProtectionTics > 0)
+            damage = new PowerProtection().ModifyDamage(damage, damageType, true, inflictor, other, flags);
+        return damage;
+    }
     /// <summary>Native <c>player_t::fragcount</c> for ACS <c>PlayerFrags</c>.</summary>
     public int FragCount { get; set; }
 
@@ -693,12 +952,9 @@ public sealed class PlayerPawn : Actor
     /// item is taken and the timer stays. At or below that line it resets to
     /// <see cref="PowerBuddhaDuration"/>.
     /// </summary>
-    public void GivePowerBuddha()
+    public void GivePowerBuddha(int durationTics = PowerBuddhaDuration, bool additiveTime = false, bool alwaysPickup = false)
     {
-        if (PowerBuddhaTics > PowerBuddhaBlinkThreshold)
-            return;
-        if (PowerBuddhaDuration > PowerBuddhaTics)
-            PowerBuddhaTics = PowerBuddhaDuration;
+        PowerBuddhaTics = PowerupDuration.Merge(PowerBuddhaTics, durationTics, additiveTime, alwaysPickup);
     }
     /// <summary>Compatibility slot for direct input/restore; assignment replaces buffered input.</summary>
     public PlayerCommand Pending
@@ -798,6 +1054,8 @@ public sealed class PlayerPawn : Actor
     {
         Inventory.AbsorbCount = 0;
         if (PowerBuddhaTics > 0) PowerBuddhaTics--;
+        if (PowerDamageTics > 0) PowerDamageTics--;
+        if (PowerProtectionTics > 0) PowerProtectionTics--;
         BobTimer++;
         RememberPosition();
         if (WeaponCooldown > 0) WeaponCooldown--;
@@ -1141,7 +1399,7 @@ public static class ActorSpawner
                     Y = Fixed.FromDouble(thing.Y),
                     ThingId = thing.Id, SpawnZOffset = thing.Z,
                     Angle = BamAngle.FromDegrees(thing.Angle),
-                    Health = defaults?.Health ?? 100,
+                    Health = dehacked?.Actors.FirstOrDefault(actor => actor.Index == 1 && actor.Patched)?.Health ?? 100,
                     Radius = RadiusOf(defaults, player: true),
                     Height = HeightOf(defaults),
                     Level = level,
@@ -1166,8 +1424,6 @@ public static class ActorSpawner
                     Level = level,
                 };
 
-            if (actor is PlayerPawn player)
-                player.FullHeight = player.Height.ToDouble();
             if (!playerStart)
             {
                 actor.PitchDegrees = thing.Pitch;
@@ -1177,20 +1433,31 @@ public static class ActorSpawner
             nextId++;
             actor.SpecialPickup = PickupCatalog.IsPickup(actor.DoomEdNum);
             ApplyPrimaryFlags(actor, defaults, playerStart);
+            DoomDecorationDefaults.Apply(actor, definitionType, defaults);
             actor.SpawnCanPickupItems = actor.CanPickupItems;
             actor.SpawnSpecialPickup = actor.SpecialPickup;
             actor.ResurrectionHealth = actor.Health;
             if (actor.ResurrectionHealth > 0) actor.GibHealth = -actor.ResurrectionHealth;
             actor.Mass = defaults is { MassPatched: true } ? defaults.Mass : DoomActorCatalog.MassOf(definitionType);
             actor.RaiseDuration = ArchvileActions.RaiseDuration(definitionType);
+            actor.Boss = definitionType is 7 or 16;
             ApplyExtendedDefaults(actor, defaults);
+            actor.SpawnDropped = actor.Dropped;
+            actor.SpawnFriendly = thing.Friendly;
+            actor.SpawnAmbush = thing.Ambush;
+            if (thing.Special != 0 || thing.Args.Any(arg => arg != 0))
+            {
+                actor.Special = thing.Special;
+                Array.Copy(thing.Args, actor.SpecialArgs, Math.Min(5, thing.Args.Length));
+            }
             if (thing.Gravity < 0) actor.Gravity = Fixed.FromDouble(-thing.Gravity);
             else if (thing.Gravity > 0) actor.Gravity = Fixed.FromDouble(actor.Gravity.ToDouble() * thing.Gravity);
             else { actor.Gravity = default; actor.NoGravity = true; }
-            actor.Ambush = thing.Ambush || defaults is { BitsPatched: true } && (defaults.Bits & 0x00000020) != 0;
             if (defaults is { ReactionTimePatched: true }) actor.ReactionTime = defaults.ReactionTime;
+            if (defaults is { InfightingGroupPatched: true }) actor.InfightingGroup = defaults.InfightingGroup;
+            if (defaults is { ProjectileGroupPatched: true }) actor.ProjectileGroup = defaults.ProjectileGroup;
+            if (defaults is { SplashGroupPatched: true }) actor.SplashGroup = defaults.SplashGroup;
             actor.Brain = MonsterBrain.ForType(definitionType);
-            actor.Boss = definitionType is 7 or 16;
             if (!playerStart) actor.Damage = definition?.Damage ?? 0;
             if (defaults is { MissileDamagePatched: true }) actor.Damage = defaults.MissileDamage;
             actor.IsMonster = !playerStart && (defaults is { BitsPatched: true }
@@ -1198,6 +1465,17 @@ public static class ActorSpawner
                 : actor.Brain != null);
             if (actor.IsMonster && Math.Clamp(spawnOptions?.Skill ?? 2, 0, 4) == 4) actor.ReactionTime = 0;
             ThingActivation.InitializeSpawn(actor, thing.Dormant);
+            if (thing.Health != 1)
+            {
+                if (thing.Health == 0)
+                    throw new NotSupportedException("Zero spawn health requires delayed spawn death.");
+                var health = thing.Health > 0 ? actor.Health * thing.Health : -thing.Health;
+                if (!double.IsFinite(health) || health < 1 || health > int.MaxValue)
+                    throw new InvalidDataException("Actor spawn health is outside the supported range.");
+                if (actor.GibHealth == -actor.ResurrectionHealth) actor.GibHealth = -(int)health;
+                actor.Health = (int)health;
+                actor.ResurrectionHealth = actor.Health;
+            }
             actor.RememberPosition();
             thinkers.Add(actor, playerStart ? ThinkerStat.Player : ThinkerStat.Default);
             actors.Add(actor);
@@ -1227,6 +1505,7 @@ public static class ActorSpawner
 
     internal static void ApplyExtendedDefaults(Actor actor, DehackedActor? defaults)
     {
+        actor.Ambush = defaults is { BitsPatched: true } && (defaults.Bits & 0x20) != 0;
         if (defaults is { Bits2Patched: true })
         {
             actor.NoTeleport = (defaults.Bits2 & 0x80) != 0;
@@ -1235,7 +1514,19 @@ public static class ActorSpawner
             actor.Dormant = (defaults.Bits2 & 0x10000000) != 0;
         }
         if (defaults is { GravityPatched: true }) actor.Gravity = Fixed.FromDouble(defaults.Gravity);
+        actor.ResurrectionDefenseFlags = DefenseFlagsOf(actor);
+        actor.ResurrectionMovementFlags = MovementFlagsOf(actor);
     }
+
+    internal static int DefenseFlagsOf(Actor actor) => (actor.Invulnerable ? 1 : 0) | (actor.Dormant ? 2 : 0)
+        | (actor.NoRadiusDamage ? 4 : 0) | (actor.Friendly ? 8 : 0) | (actor.Ambush ? 16 : 0) | (actor.Boss ? 32 : 0);
+
+    internal static int MovementFlagsOf(Actor actor) => (actor.NoGravity ? 1 : 0) | (actor.Floating ? 2 : 0)
+        | (actor.NoTeleport ? 4 : 0) | (actor.CanSlide ? 8 : 0) | (actor.AllowDropOff ? 16 : 0);
+
+    internal static int CollisionFlagsOf(Actor actor) => (actor.Solid ? 1 : 0) | (actor.Shootable ? 2 : 0)
+        | (actor.NoBlockmap ? 4 : 0) | (actor.NoBlockMonsters ? 8 : 0) | (actor.Dropped ? 16 : 0)
+        | (actor.IsMonster ? 32 : 0) | (actor.SpawnCeiling ? 64 : 0);
 
     internal static Fixed RadiusOf(DehackedActor? defaults, bool player)
     {
@@ -1250,6 +1541,7 @@ public static class ActorSpawner
 
 public sealed class AuthoritySimulation
 {
+    public DamageTypeCatalog DamageTypes { get; } = new();
     private readonly List<Actor> _actors;
     private uint _nextActorId;
     public uint CombatRandomState { get; private set; }
@@ -1258,6 +1550,16 @@ public sealed class AuthoritySimulation
     /// <summary>Rolls for a deathmatch respawn. Not the native <c>DMSpawn</c> table, and not in the save pose.</summary>
     public uint DmSpawnRandomState { get; set; }
     private readonly DehackedPatchResult? _dehacked;
+    internal int DehackedMaxHealth => _dehacked?.MaxHealth ?? 100;
+    internal int DehackedInitialBullets => _dehacked?.InitialBullets ?? 50;
+    internal bool DehackedNoAutofreeze => _dehacked?.NoAutofreeze ?? false;
+    internal int DehackedMaxArmor => _dehacked?.MaxArmor ?? 200;
+    internal int DehackedGreenArmorClass => _dehacked?.GreenArmorClass ?? 1;
+    internal int DehackedBlueArmorClass => _dehacked?.BlueArmorClass ?? 2;
+    internal bool DehackedHealthBonusCapPatched => _dehacked?.HealthBonusCapPatched ?? false;
+    internal int DehackedMaxSoulsphere => _dehacked?.MaxSoulsphere ?? 200;
+    internal int DehackedSoulsphereHealth => _dehacked?.SoulsphereHealth ?? 100;
+    internal int DehackedMegasphereHealth => _dehacked?.MegasphereHealth ?? 200;
     private uint _uniqueTidRandomState;
     private uint _strobeRandomState;
     private uint _flickerRandomState;
@@ -1274,6 +1576,8 @@ public sealed class AuthoritySimulation
     {
         _dehacked = dehacked;
         Level = level;
+        foreach (var definition in level.DamageTypes)
+            DamageTypes.Define(definition.Name, definition.Factor, definition.ReplaceFactor, definition.NoArmor);
         Thinkers = thinkers;
         _actors = actors;
         _nextActorId = actors.Count == 0 ? 1 : checked(actors.Max(actor => actor.Id) + 1);
@@ -1310,6 +1614,10 @@ public sealed class AuthoritySimulation
         foreach (var actor in _actors)
         {
             actor.Simulation = this;
+            if (actor is PlayerPawn player) player.Inventory.Bullets = Math.Clamp(DehackedInitialBullets, 0, player.Inventory.MaxBullets);
+            actor.ResurrectionRadius ??= actor.Radius;
+            actor.ResurrectionHeight ??= actor.Height;
+            actor.ResurrectionCollisionFlags ??= ActorSpawner.CollisionFlagsOf(actor);
             ActorPhysics.PlaceOnFloor(this, actor);
             var spawnZ = actor.SpawnCeiling
                 ? CeilingOf(actor.SectorIndex) - actor.Height.ToDouble() - actor.SpawnZOffset
@@ -1369,6 +1677,15 @@ public sealed class AuthoritySimulation
     public bool NoRespawn { get; set; }
     /// <summary>Native <c>sv_weapondrop</c>. Off until set. Fist has no pickup.</summary>
     public bool WeaponDrop { get; set; }
+    /// <summary>Native level Massacre subset. Excludes dormant monsters; baddies excludes friendlies.</summary>
+    public int Massacre(bool baddies = false)
+    {
+        var killed = 0;
+        foreach (var actor in _actors.Where(a => !a.Destroyed && a.IsMonster && !a.Dormant
+            && (!baddies || !a.Friendly)).ToArray())
+            if (actor.Massacre()) killed++;
+        return killed;
+    }
     /// <summary>Native sv_weaponstay: non-dropped weapons stay available.</summary>
     public bool WeaponStay { get; set; }
     /// <summary>Native alwaysapplydmflags: use deathmatch weapon retention rules in cooperative play.</summary>
@@ -1849,7 +2166,8 @@ public sealed class AuthoritySimulation
             return false;
         var adjustedAmount = ignoreAmmoSkill ? pickupAmount
             : PickupCatalog.DropPickupAmount(doomEdNum, pickupAmount, DropAmmoFactor);
-        var customDropFactor = !inventoryToss && !ignoreAmmoSkill && DropAmmoFactor != -1;
+        var customDropFactor = !inventoryToss && !ignoreAmmoSkill && DropAmmoFactor != -1
+            && PickupCatalog.UsesDropAmmoFactor(doomEdNum);
         var id = _nextActorId;
         _nextActorId = checked(_nextActorId + 1);
         var drop = new Actor
@@ -1960,6 +2278,9 @@ public sealed class AuthoritySimulation
             bot.PainChance = defaults.PainChance;
         }
         if (defaults is { ReactionTimePatched: true }) bot.ReactionTime = defaults.ReactionTime;
+        if (defaults is { InfightingGroupPatched: true }) bot.InfightingGroup = defaults.InfightingGroup;
+        if (defaults is { ProjectileGroupPatched: true }) bot.ProjectileGroup = defaults.ProjectileGroup;
+        if (defaults is { SplashGroupPatched: true }) bot.SplashGroup = defaults.SplashGroup;
         bot.Mass = defaults is { MassPatched: true } ? defaults.Mass : DoomActorCatalog.MassOf(definitionType);
         bot.Boss = definitionType is 7 or 16;
         if (defaults is { MissileDamagePatched: true }) bot.Damage = defaults.MissileDamage;
@@ -1970,9 +2291,12 @@ public sealed class AuthoritySimulation
         bot.SpawnSpecialPickup = bot.SpecialPickup;
         ActorSpawner.ApplyExtendedDefaults(bot, defaults);
         if (bot.IsMonster && Skill == 4) bot.ReactionTime = 0;
-        ThingActivation.InitializeSpawn(bot, false);
+        ThingActivation.InitializeSpawn(bot, false, mapSpawn: false);
         bot.RememberPosition();
         bot.Simulation = this;
+        bot.ResurrectionRadius ??= bot.Radius;
+        bot.ResurrectionHeight ??= bot.Height;
+        bot.ResurrectionCollisionFlags ??= ActorSpawner.CollisionFlagsOf(bot);
         ActorPhysics.PlaceOnFloor(this, bot);
         if (bot.SpawnCeiling)
         {
@@ -2122,6 +2446,22 @@ public sealed class AuthoritySimulation
         };
         if (owner is PlayerPawn && projectile.Z.ToDouble() < FloorOf(owner.SectorIndex))
             projectile.Z = Fixed.FromDouble(FloorOf(owner.SectorIndex));
+        var patchIndex = kind switch
+        {
+            ProjectileKind.RevenantTracer => 7, ProjectileKind.MancubusBall => 10,
+            ProjectileKind.BaronBall => 17, ProjectileKind.ImpBall => 32,
+            ProjectileKind.CacodemonBall => 33, ProjectileKind.Rocket or ProjectileKind.CyberRocket => 34,
+            ProjectileKind.Plasma => 35, ProjectileKind.Bfg => 36, ProjectileKind.ArachnotronPlasma => 37,
+            _ => 0,
+        };
+        var defaults = _dehacked?.Actors.FirstOrDefault(actor => actor.Index == patchIndex);
+        if (defaults is { InfightingGroupPatched: true }) projectile.InfightingGroup = defaults.InfightingGroup;
+        if (defaults is { ProjectileGroupPatched: true }) projectile.ProjectileGroup = defaults.ProjectileGroup;
+        if (defaults is { SplashGroupPatched: true }) projectile.SplashGroup = defaults.SplashGroup;
+        if (defaults is { MissileDamagePatched: true }) projectile.Damage = defaults.MissileDamage;
+        if (defaults is { SpeedPatched: true }) projectile.MovementSpeed = Fixed.FromDouble(defaults.Speed);
+        if (defaults is { WidthPatched: true }) projectile.Radius = Fixed.FromDouble(defaults.Radius);
+        if (defaults is { HeightPatched: true }) projectile.Height = Fixed.FromDouble(defaults.Height);
         _nextActorId = checked(_nextActorId + 1);
         projectile.Aim(target);
         _actors.Add(projectile);
@@ -2169,6 +2509,9 @@ public sealed class AuthoritySimulation
             soul.PainChance = defaults.PainChance;
         }
         if (defaults is { ReactionTimePatched: true }) soul.ReactionTime = defaults.ReactionTime;
+        if (defaults is { InfightingGroupPatched: true }) soul.InfightingGroup = defaults.InfightingGroup;
+        if (defaults is { ProjectileGroupPatched: true }) soul.ProjectileGroup = defaults.ProjectileGroup;
+        if (defaults is { SplashGroupPatched: true }) soul.SplashGroup = defaults.SplashGroup;
         if (defaults is { MassPatched: true }) soul.Mass = defaults.Mass;
         if (defaults is { MissileDamagePatched: true }) soul.Damage = defaults.MissileDamage;
         ActorSpawner.ApplyPrimaryFlags(soul, defaults, playerStart: false);
@@ -2178,7 +2521,7 @@ public sealed class AuthoritySimulation
         soul.SpawnSpecialPickup = soul.SpecialPickup;
         ActorSpawner.ApplyExtendedDefaults(soul, defaults);
         if (soul.IsMonster && Skill == 4) soul.ReactionTime = 0;
-        ThingActivation.InitializeSpawn(soul, false);
+        ThingActivation.InitializeSpawn(soul, false, mapSpawn: false);
         _nextActorId = checked(_nextActorId + 1);
         var distance = 4 + (parent.Radius.ToDouble() + soul.Radius.ToDouble()) * 1.5;
         var radians = angle * Math.PI / 180;
@@ -2238,6 +2581,8 @@ public sealed class AuthoritySimulation
             Exited = Exited,
             SecretExit = SecretExit,
             CombatRandomState = CombatRandomState,
+            DamageTypes = DamageTypes.Capture(),
+            IncludesDamageTypeDefinitions = Level.DamageTypes.Count != 0,
             Walls = Level.Sides.Select(SimWallTransform.Capture).ToList(),
             Planes = Level.Sectors.Select(SimPlaneTransform.Capture).ToList(),
             IncludesCarryScrolls = true,
@@ -2263,8 +2608,39 @@ public sealed class AuthoritySimulation
         {
             state.Actors.Add(new SimActorPose
             {
+                DeathType = actor.DeathType,
+                SpecialFireDamage = actor.SpecialFireDamage,
+                FoilInvul = actor.FoilInvul,
+                PierceArmor = actor.PierceArmor,
+                NoInfightSpecies = actor.NoInfightSpecies,
+                DamageFactor = actor.DamageFactor.Raw,
+                DamageMultiplier = actor.DamageMultiplier.Raw,
+                DamageFactors = actor.CaptureDamageFactors(),
+                StrifeDamage = actor.StrifeDamage,
+                Rip = actor.Rip,
+                DontRip = actor.DontRip,
+                NoBossRip = actor.NoBossRip,
+                Pushable = actor.Pushable,
+                CannotPush = actor.CannotPush,
+                PushFactor = actor.PushFactor,
+                RipperLevel = actor.RipperLevel,
+                RipLevelMin = actor.RipLevelMin,
+                RipLevelMax = actor.RipLevelMax,
+                ProjectilePassHeight = actor.ProjectilePassHeight.Raw,
+                InfightingGroup = actor.InfightingGroup,
+                ProjectileGroup = actor.ProjectileGroup,
+                SplashGroup = actor.SplashGroup,
+                PowerDamageTics = actor is PlayerPawn damagePlayer ? damagePlayer.PowerDamageTics : 0,
+                PowerProtectionTics = actor is PlayerPawn protectionPlayer ? protectionPlayer.PowerProtectionTics : 0,
+                PowerBuddhaTics = actor is PlayerPawn buddhaPlayer ? buddhaPlayer.PowerBuddhaTics : 0,
+                DamageType = actor.DamageType,
                 Id = actor.Id,
                 X = actor.X.Raw,
+                ActorSpecial = actor.SpecialChanged || actor.Special != 0 || actor.ActivationType != 0 || actor.SpecialArgs.Any(arg => arg != 0)
+                    || actor is PlayerPawn { Stamina: not 0 } || actor is PlayerPawn { BonusHealth: not 0 } || actor is PlayerPawn { MaxPickupHealth: not 0 }
+                    ? new SimActorSpecial(actor.Special, actor.SpecialArgs[0], actor.SpecialArgs[1], actor.SpecialArgs[2], actor.SpecialArgs[3], actor.SpecialArgs[4], actor.ActivationType,
+                        actor is PlayerPawn staminaPlayer ? staminaPlayer.Stamina : 0, actor is PlayerPawn bonusPlayer ? bonusPlayer.BonusHealth : 0,
+                        actor is PlayerPawn pickupPlayer ? pickupPlayer.MaxPickupHealth : 0) : null,
                 Y = actor.Y.Raw,
                 Angle = actor.Angle.Raw,
                 Roll = actor.Roll.Raw,
@@ -2371,6 +2747,15 @@ public sealed class AuthoritySimulation
                 || pose.HasPhysics && (!actor.States.HasState(pose.State) || pose.StateTics < -1)))
                 throw new InvalidOperationException("Saved actor state is not in the current table.");
         }
+        var definitions = state.DamageTypes;
+        if (definitions is null)
+        {
+            var defaults = new DamageTypeCatalog();
+            foreach (var definition in Level.DamageTypes)
+                defaults.Define(definition.Name, definition.Factor, definition.ReplaceFactor, definition.NoArmor);
+            definitions = defaults.Capture();
+        }
+        DamageTypes.Restore(definitions);
         Thinkers.Clock.Restore(state.Tic);
         if (state.GeometryHealth is { } health)
         {
@@ -2431,11 +2816,48 @@ public sealed class AuthoritySimulation
             if (actor == null)
                 continue;
             actor.X = new Fixed(pose.X);
+            if (pose.ActorSpecial is { } actorSpecial)
+            {
+                actor.Special = actorSpecial.Special;
+                actor.ActivationType = actorSpecial.ActivationType;
+                actor.SpecialArgs[0] = actorSpecial.Arg0; actor.SpecialArgs[1] = actorSpecial.Arg1;
+                actor.SpecialArgs[2] = actorSpecial.Arg2; actor.SpecialArgs[3] = actorSpecial.Arg3;
+                actor.SpecialArgs[4] = actorSpecial.Arg4;
+            }
             actor.Y = new Fixed(pose.Y);
             actor.Angle = new BamAngle(pose.Angle);
             actor.PitchDegrees = new Fixed(pose.Pitch).ToDouble();
             if (pose.PainDeath is { } painDeath && actor.Brain?.CapturePainDeath() != null) actor.Brain.RestorePainDeath(painDeath);
             actor.RestoreHealth(pose.Health);
+            actor.DeathType = pose.DeathType;
+            actor.SpecialFireDamage = pose.SpecialFireDamage;
+            actor.FoilInvul = pose.FoilInvul;
+            actor.PierceArmor = pose.PierceArmor;
+            actor.NoInfightSpecies = pose.NoInfightSpecies;
+            actor.DamageFactor = new Fixed(pose.DamageFactor);
+            actor.DamageMultiplier = new Fixed(pose.DamageMultiplier);
+            actor.RestoreDamageFactors(pose.DamageFactors);
+            actor.StrifeDamage = pose.StrifeDamage;
+            actor.Rip = pose.Rip;
+            actor.DontRip = pose.DontRip;
+            actor.NoBossRip = pose.NoBossRip;
+            actor.Pushable = pose.Pushable;
+            actor.CannotPush = pose.CannotPush;
+            actor.PushFactor = pose.PushFactor;
+            actor.RipperLevel = pose.RipperLevel;
+            actor.RipLevelMin = pose.RipLevelMin;
+            actor.RipLevelMax = pose.RipLevelMax;
+            actor.ProjectilePassHeight = new Fixed(pose.ProjectilePassHeight);
+            actor.InfightingGroup = pose.InfightingGroup;
+            actor.ProjectileGroup = pose.ProjectileGroup;
+            actor.SplashGroup = pose.SplashGroup;
+            if (actor is PlayerPawn powerPlayer)
+            {
+                powerPlayer.PowerDamageTics = pose.PowerDamageTics;
+                powerPlayer.PowerProtectionTics = pose.PowerProtectionTics;
+                powerPlayer.PowerBuddhaTics = pose.PowerBuddhaTics;
+            }
+            actor.DamageType = pose.DamageType ?? (pose.DeathFlags == 1 ? "Massacre" : null);
             if (pose.DeathFlags is { } deathFlags) actor.DeathDamageType = deathFlags == 1 ? "Massacre" : null;
             if (pose.ProjectileFlags is { } projectileFlags) actor.NoExplodeFloor = (projectileFlags & 1) != 0;
             if (pose.CeilingFlags is { } ceilingFlags) actor.CeilingHugger = ceilingFlags == 1;
@@ -2490,12 +2912,15 @@ public sealed class AuthoritySimulation
             actor.VelocityZ = new Fixed(pose.VelocityZ);
             actor.OnGround = pose.OnGround;
             actor.SectorIndex = ActorPhysics.SectorAt(Level, actor.X.ToDouble(), actor.Y.ToDouble());
-            if (pose.HasPhysics) actor.States.Restore(pose.State, pose.StateTics);
-            else actor.States.Restore(actor.IsDead ? actor.DeathState : actor.SpawnState, -1);
+            if (pose.HasPhysics) actor.States.Restore(actor, pose.State, pose.StateTics);
+            else actor.States.Restore(actor, actor.IsDead ? actor.DeathState : actor.SpawnState, -1);
             if (actor is PlayerPawn player)
             {
                 player.ClearCommands(); player.AttackPressed = false; player.UsePressed = false;
                 player.MaxHealth = pose.PlayerMaxHealth ?? 0;
+                player.Stamina = pose.ActorSpecial?.Stamina ?? 0;
+                player.BonusHealth = pose.ActorSpecial?.BonusHealth ?? 0;
+                player.MaxPickupHealth = pose.ActorSpecial?.MaxPickupHealth ?? 0;
                 player.WeaponCooldown = pose.WeaponCooldown;
                 player.UseHeld = pose.UseHeld;
                 player.BobTimer = state.Tic;
@@ -2596,6 +3021,9 @@ public sealed class AuthoritySimulation
         player.CanPickupItems = player.SpawnCanPickupItems;
         player.SpecialPickup = player.SpawnSpecialPickup;
         player.MaxHealth = 0;
+        player.Stamina = 0;
+        player.BonusHealth = 0;
+        player.MaxPickupHealth = 0;
         player.Health = player.ResurrectionHealth > 0 ? player.ResurrectionHealth : 100;
         ActorPhysics.PlaceOnFloor(this, player);
         player.ClearCommands();
@@ -2804,7 +3232,40 @@ public sealed class AuthoritySimulation
     private void RecomputeChecksum()
     {
         var hash = 2166136261u;
+        hash = DamageTypes.MixChecksum(hash);
+        if (Level.HexenHack) hash = Mix(hash, 0x48455848u);
+        if (Level.ActivateOwnDeathSpecials) hash = Mix(hash, 0x414F4453u);
         hash = Mix(hash, unchecked((uint)Compat));
+        if (DehackedNoAutofreeze) hash = Mix(hash, 0x44454E46u);
+        if (DehackedInitialBullets != 50)
+        {
+            hash = Mix(hash, 0x44454942u);
+            hash = Mix(hash, unchecked((uint)DehackedInitialBullets));
+        }
+        if (DehackedGreenArmorClass != 1 || DehackedBlueArmorClass != 2)
+        {
+            hash = Mix(hash, 0x44454143u);
+            hash = Mix(hash, unchecked((uint)DehackedGreenArmorClass));
+            hash = Mix(hash, unchecked((uint)DehackedBlueArmorClass));
+        }
+        if (DehackedMaxArmor != 200)
+        {
+            hash = Mix(hash, 0x44454841u);
+            hash = Mix(hash, unchecked((uint)DehackedMaxArmor));
+        }
+        if (DehackedHealthBonusCapPatched) hash = Mix(hash, 0x44454842u);
+        if (DehackedMaxSoulsphere != 200 || DehackedSoulsphereHealth != 100 || DehackedMegasphereHealth != 200)
+        {
+            hash = Mix(hash, 0x44454853u);
+            hash = Mix(hash, unchecked((uint)DehackedMaxSoulsphere));
+            hash = Mix(hash, unchecked((uint)DehackedSoulsphereHealth));
+            hash = Mix(hash, unchecked((uint)DehackedMegasphereHealth));
+        }
+        if (DehackedMaxHealth != 100)
+        {
+            hash = Mix(hash, 0x44454848u);
+            hash = Mix(hash, unchecked((uint)DehackedMaxHealth));
+        }
         hash = Mix(hash, DamageExitAllowed ? 1u : 0u);
         hash = Mix(hash, (uint)GameMode);
         hash = Mix(hash, ReloadRequested ? 1u : 0u);
@@ -2879,6 +3340,13 @@ public sealed class AuthoritySimulation
         foreach (var actor in _actors.OrderBy(actor => actor.Id))
         {
             hash = Mix(hash, actor.Id);
+            if (actor.ActivationType != 0) { hash = Mix(hash, 0x41435454u); hash = Mix(hash, unchecked((uint)actor.ActivationType)); }
+            if (actor.Special != 0 || actor.SpecialArgs.Any(arg => arg != 0))
+            {
+                hash = Mix(hash, 0x41535043u);
+                hash = Mix(hash, unchecked((uint)actor.Special));
+                foreach (var arg in actor.SpecialArgs) hash = Mix(hash, unchecked((uint)arg));
+            }
             hash = Mix(hash, unchecked((uint)actor.ThingId));
             hash = Mix(hash, unchecked((uint)actor.X.Raw));
             hash = Mix(hash, unchecked((uint)actor.Y.Raw));
@@ -2906,7 +3374,35 @@ public sealed class AuthoritySimulation
             hash = Mix(hash, unchecked((uint)Fixed.FromDouble(actor.ChaseSpeed).Raw));
             hash = Mix(hash, (uint)actor.Radius.Raw);
             hash = Mix(hash, (uint)actor.Height.Raw);
+            if (actor.ResurrectionRadius is { } resurrectionRadius && resurrectionRadius != actor.Radius)
+            {
+                hash = Mix(hash, 0x52535244u);
+                hash = Mix(hash, unchecked((uint)resurrectionRadius.Raw));
+            }
+            if (actor.ResurrectionHeight is { } resurrectionHeight && resurrectionHeight != actor.Height)
+            {
+                hash = Mix(hash, 0x52534854u);
+                hash = Mix(hash, unchecked((uint)resurrectionHeight.Raw));
+            }
             hash = Mix(hash, actor.NoGravity ? 1u : 0u);
+            if (actor.ResurrectionMovementFlags is { } movementFlags
+                && movementFlags != ActorSpawner.MovementFlagsOf(actor))
+            {
+                hash = Mix(hash, 0x52534D46u);
+                hash = Mix(hash, unchecked((uint)movementFlags));
+            }
+            if (actor.ResurrectionDefenseFlags is { } defenseFlags
+                && defenseFlags != ActorSpawner.DefenseFlagsOf(actor))
+            {
+                hash = Mix(hash, 0x52534446u);
+                hash = Mix(hash, unchecked((uint)defenseFlags));
+            }
+            if (actor.ResurrectionCollisionFlags is { } collisionFlags
+                && collisionFlags != ActorSpawner.CollisionFlagsOf(actor))
+            {
+                hash = Mix(hash, 0x52534346u);
+                hash = Mix(hash, unchecked((uint)collisionFlags));
+            }
             hash = Mix(hash, actor.LastHeardTargetId ?? 0);
             hash = Mix(hash, actor.Floating ? 1u : 0u);
             hash = Mix(hash, actor.AllowDropOff ? 1u : 0u);
@@ -2918,6 +3414,37 @@ public sealed class AuthoritySimulation
             hash = Mix(hash, unchecked((uint)actor.ExtremeDeathState));
             hash = Mix(hash, unchecked((uint)actor.GenericFreezeDeath));
             hash = Mix(hash, actor.NoIceDeath ? 1u : 0u);
+            if (actor.SpecialFireDamage) hash = Mix(hash, 0x53464952u);
+            if (actor.FoilInvul) hash = Mix(hash, 0x46494E56u);
+            if (actor.PierceArmor) hash = Mix(hash, 0x5041524Du);
+            if (actor.StrifeDamage) hash = Mix(hash, 0x5354444Du);
+            if (actor.Rip) hash = Mix(hash, 0x52495050u);
+            if (actor.DontRip) hash = Mix(hash, 0x444E5250u);
+            if (actor.NoBossRip) hash = Mix(hash, 0x4E425250u);
+            if (actor.ProjectilePassHeight.Raw != 0)
+            { hash = Mix(hash, 0x50504854u); hash = Mix(hash, unchecked((uint)actor.ProjectilePassHeight.Raw)); }
+            if (actor.Pushable) hash = Mix(hash, 0x50555348u);
+            if (actor.CannotPush) hash = Mix(hash, 0x4E505553u);
+            if (actor.PushFactor != 0.25) hash = DamageRuleChecksum.Entry(hash, "PushFactor", actor.PushFactor);
+            if (actor.RipperLevel != 0 || actor.RipLevelMin != 0 || actor.RipLevelMax != 0)
+            {
+                hash = Mix(hash, 0x524C564Cu);
+                hash = Mix(hash, unchecked((uint)actor.RipperLevel));
+                hash = Mix(hash, unchecked((uint)actor.RipLevelMin));
+                hash = Mix(hash, unchecked((uint)actor.RipLevelMax));
+            }
+            if (!string.IsNullOrEmpty(actor.DamageType) && !string.Equals(actor.DamageType, "None", StringComparison.OrdinalIgnoreCase))
+            {
+                hash = Mix(hash, 0x44545941u);
+                hash = Mix(hash, (uint)actor.DamageType.Length);
+                foreach (var character in actor.DamageType) hash = Mix(hash, char.ToUpperInvariant(character));
+            }
+            if (!string.IsNullOrEmpty(actor.DeathType) && !string.Equals(actor.DeathType, "None", StringComparison.OrdinalIgnoreCase))
+            {
+                hash = Mix(hash, 0x44545950u);
+                hash = Mix(hash, (uint)actor.DeathType.Length);
+                foreach (var character in actor.DeathType) hash = Mix(hash, char.ToUpperInvariant(character));
+            }
             foreach (var typed in actor.TypedDeaths())
             {
                 hash = Mix(hash, typed.Extreme ? 1u : 0u);
@@ -3012,11 +3539,25 @@ public sealed class AuthoritySimulation
                 hash = Mix(hash, 0x53504346u);
                 hash = Mix(hash, (actor.SpawnCanPickupItems ? 1u : 0u) | (actor.SpawnSpecialPickup ? 2u : 0u));
             }
+            if (actor is not PlayerPawn && (actor.SpawnCanPickupItems != actor.CanPickupItems
+                || actor.SpawnSpecialPickup != actor.SpecialPickup))
+            {
+                hash = Mix(hash, 0x52535046u);
+                hash = Mix(hash, (actor.SpawnCanPickupItems ? 1u : 0u) | (actor.SpawnSpecialPickup ? 2u : 0u));
+            }
             hash = Mix(hash, unchecked((uint)actor.TidToHate));
             hash = Mix(hash, actor.QuickToRetaliate ? 1u : 0u);
             hash = Mix(hash, actor.Friendly ? 1u : 0u);
+            if (actor.SpawnFriendly) hash = Mix(hash, 0x53504652u);
             hash = Mix(hash, (uint)actor.FriendPlayer);
             hash = Mix(hash, actor.NoInfighting ? 1u : 0u);
+            if (actor.NoInfightSpecies) hash = Mix(hash, 0x4E494653u);
+            if (actor.InfightingGroup != 0)
+            { hash = Mix(hash, 0x49464752u); hash = Mix(hash, unchecked((uint)actor.InfightingGroup)); }
+            if (actor.ProjectileGroup != 0)
+            { hash = Mix(hash, 0x50524752u); hash = Mix(hash, unchecked((uint)actor.ProjectileGroup)); }
+            if (actor.SplashGroup != 0)
+            { hash = Mix(hash, 0x53504752u); hash = Mix(hash, unchecked((uint)actor.SplashGroup)); }
             hash = Mix(hash, actor.ForceInfighting ? 1u : 0u);
             hash = Mix(hash, actor.DoHarmSpecies ? 1u : 0u);
             hash = Mix(hash, actor.NoTelefrag ? 1u : 0u);
@@ -3040,6 +3581,7 @@ public sealed class AuthoritySimulation
             hash = Mix(hash, (uint)actor.Mass);
             hash = Mix(hash, (uint)actor.Gravity.Raw);
             hash = Mix(hash, (uint)actor.DamageFactor.Raw);
+            hash = actor.MixDamageFactorChecksum(hash);
             hash = Mix(hash, (uint)actor.DamageMultiplier.Raw);
             hash = Mix(hash, (uint)actor.MeleeRange.Raw);
             hash = Mix(hash, (uint)actor.Friction.Raw);
@@ -3075,6 +3617,17 @@ public sealed class AuthoritySimulation
                     hash = Mix(hash, 0x504d4850u);
                     hash = Mix(hash, unchecked((uint)player.MaxHealth));
                 }
+                if (player.MaxPickupHealth != 0)
+                {
+                    hash = Mix(hash, 0x4D504855u);
+                    hash = Mix(hash, unchecked((uint)player.MaxPickupHealth));
+                }
+                if (player.Stamina != 0 || player.BonusHealth != 0)
+                {
+                    hash = Mix(hash, 0x48555047u);
+                    hash = Mix(hash, unchecked((uint)player.Stamina));
+                    hash = Mix(hash, unchecked((uint)player.BonusHealth));
+                }
                 hash = Mix(hash, player.PlayerNum);
                 hash = Mix(hash, player.GodMode ? 1u : 0u);
                 hash = Mix(hash, player.UseHeld ? 1u : 0u);
@@ -3108,6 +3661,10 @@ public sealed class AuthoritySimulation
                 hash = Mix(hash, player.Buddha2 ? 1u : 0u);
                 hash = Mix(hash, player.ExtremelyDead ? 1u : 0u);
                 hash = Mix(hash, unchecked((uint)player.PowerBuddhaTics));
+                if (player.PowerDamageTics != 0)
+                { hash = Mix(hash, 0x50444D47u); hash = Mix(hash, unchecked((uint)player.PowerDamageTics)); }
+                if (player.PowerProtectionTics != 0)
+                { hash = Mix(hash, 0x50505254u); hash = Mix(hash, unchecked((uint)player.PowerProtectionTics)); }
                 hash = Mix(hash, unchecked((uint)player.FragCount));
 
                 hash = Mix(hash, player.Inventory.BlueKey ? 1u : 0u);
@@ -3319,10 +3876,10 @@ public static class HeadlessMapBoot
         string mapName,
         out AuthoritySimulation? simulation,
         out string? error,
-        int rngSeed = 0)
+        int rngSeed = 0, BinaryThingFlagFormat thingFlagFormat = BinaryThingFlagFormat.Doom)
     {
         simulation = null;
-        if (!LevelBuilder.TryFromWad(wad, mapName, out var level, out error))
+        if (!LevelBuilder.TryFromWad(wad, mapName, out var level, out error, thingFlagFormat))
             return false;
 
         try

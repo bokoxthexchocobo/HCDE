@@ -44,7 +44,7 @@ public class ArmorRoundingTests
         lower.Inventory.Armor = 100;
         lower.Inventory.ArmorSavePercent = PlayerInventory.GreenSavePercent;
         ActorDamage.Apply(lower, 30, damageType: "drowning");
-        Assert.Equal(90, lower.Inventory.Armor);
+        Assert.Equal(100, lower.Inventory.Armor);
     }
 
     [Fact]

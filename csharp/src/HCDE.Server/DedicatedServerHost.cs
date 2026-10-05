@@ -13,6 +13,7 @@ public sealed class DedicatedServerOptions
     public int Port { get; set; } = 10666;
     public string BindAddress { get; set; } = "0.0.0.0";
     public byte[] IwadBytes { get; set; } = Array.Empty<byte>();
+    public BinaryThingFlagFormat ThingFlagFormat { get; set; } = BinaryThingFlagFormat.Doom;
     public ModResources? Resources { get; set; }
     public bool ReplicateSectorMetadata { get; set; } = true;
     public PregameHostOptions Pregame { get; set; } = new();
@@ -58,7 +59,7 @@ public sealed class DedicatedServerHost : IDisposable, IPregameInboundIntercepto
         HCDE.Gamedata.DehackedPatchResult? patch = null;
         if (options.IwadBytes.Length > 0)
         {
-            if (!LevelBuilder.TryFromWad(options.IwadBytes, mapName, out level, out var mapError))
+            if (!LevelBuilder.TryFromWad(options.IwadBytes, mapName, out level, out var mapError, options.ThingFlagFormat))
                 throw new InvalidDataException($"Cannot load {mapName}: {mapError}");
             WadArchiveReader.TryReadDirectory(options.IwadBytes, out var entries, out _);
             foreach (var entry in entries.Where(entry => entry.Name.Equals("DEHACKED", StringComparison.OrdinalIgnoreCase)))

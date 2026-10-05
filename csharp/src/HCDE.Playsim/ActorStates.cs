@@ -1,6 +1,6 @@
 namespace HCDE.Playsim;
 
-public sealed record ActorFrame(int Tics, int NextState, Action<Actor>? Action = null);
+public sealed record ActorFrame(int Tics, int NextState, Action<Actor>? Action = null, bool CanRaise = false, bool? FullBright = null);
 
 /// <summary>Timed state frames: -1 tics holds; zero tics chains immediately; next -1 removes.</summary>
 public sealed class ActorStateMachine
@@ -18,6 +18,7 @@ public sealed class ActorStateMachine
 
     public int Current { get; private set; } = Spawn;
     public int RemainingTics { get; private set; } = -1;
+    public bool CurrentCanRaise => HasState(Current) && _frames[Current].CanRaise;
 
     public void Configure(Actor actor, IEnumerable<ActorFrame> frames, int initialState)
     {
@@ -33,7 +34,8 @@ public sealed class ActorStateMachine
 
     public bool HasState(int state) => state >= 0 && state < _frames.Length;
 
-    public void Enter(Actor actor, int state)
+    /// <summary>Native SetState nofunction skips actions for this entry's immediate chain.</summary>
+    public void Enter(Actor actor, int state, bool noFunction = false)
     {
         if (state < -1 || state >= _frames.Length)
             throw new ArgumentOutOfRangeException(nameof(state));
@@ -57,7 +59,8 @@ public sealed class ActorStateMachine
                 }
                 var frame = _frames[state];
                 RemainingTics = frame.Tics;
-                frame.Action?.Invoke(actor);
+                if (frame.FullBright is { } fullBright) actor.FullBright = fullBright;
+                if (!noFunction) frame.Action?.Invoke(actor);
                 if (actor.Destroyed) return;
                 if (_queued is { } next) { state = next; continue; }
                 if (RemainingTics != 0) return;
@@ -76,11 +79,12 @@ public sealed class ActorStateMachine
         if (RemainingTics == 0) Enter(actor, _frames[Current].NextState);
     }
 
-    internal void Restore(int state, int tics)
+    internal void Restore(Actor actor, int state, int tics)
     {
         if (!HasState(state) || tics < -1) throw new InvalidOperationException("Saved actor state is not in the current table.");
         Current = state;
         RemainingTics = tics;
+        if (_frames[state].FullBright is { } fullBright) actor.FullBright = fullBright;
     }
 
     /// <summary>Native corpse shatter sets <c>tics</c> to 1 without changing the frame.</summary>

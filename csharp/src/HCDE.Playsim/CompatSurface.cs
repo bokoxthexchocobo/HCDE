@@ -20,6 +20,11 @@ public enum CompatSurface
     NoTossDrops = 128,
     /// <summary>Native <c>COMPATF_LIMITPAIN</c>. Pain Elementals stop spawning when 21 Lost Souls exist.</summary>
     LimitPain = 256,
+    /// <summary>Native COMPATF_VILEGHOSTS: archvile resurrection retains corpse radius and quadruples corpse height.</summary>
+    VileGhosts = 512,
+    DehHealth = 1024,
+    /// <summary>Native COMPATF_MISSILECLIP: negative projectile pass heights use their absolute height.</summary>
+    MissileClip = 2048,
 }
 
 public static class CompatSurfaceRules

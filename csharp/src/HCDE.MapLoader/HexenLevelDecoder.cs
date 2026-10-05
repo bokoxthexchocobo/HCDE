@@ -5,7 +5,7 @@ namespace HCDE.MapLoader;
 /// <summary>Hexen's 20-byte things and 16-byte lines, translated to the managed level model.</summary>
 public static class HexenLevelDecoder
 {
-    public static bool TryDecode(ReadOnlySpan<byte> wad, MapLumpCatalog catalog, out PlayLevel level, out string? error)
+    public static bool TryDecode(ReadOnlySpan<byte> wad, MapLumpCatalog catalog, out PlayLevel level, out string? error, bool hexenHack = false)
     {
         level = new PlayLevel(); error = null;
         if (!Read(wad, catalog, MapLumpKind.Things, out var things, out error)
@@ -24,6 +24,7 @@ public static class HexenLevelDecoder
         {
             var data = things.Slice(offset, 20);
             var flags = U16(data, 12);
+            if (hexenHack) flags &= 0x7ff;
             thingRecords.Add(new UdmfThing {
                 Id = U16(data, 0), X = I16(data, 2), Y = I16(data, 4), Height = I16(data, 6),
                 Angle = U16(data, 8), Type = U16(data, 10), Special = data[14],
@@ -32,6 +33,7 @@ public static class HexenLevelDecoder
                 Skill4 = (flags & 4) != 0, Skill5 = (flags & 4) != 0,
                 Ambush = (flags & 8) != 0,
                 Dormant = (flags & 16) != 0,
+                Friend = (flags & 0x2000) != 0,
                 Single = (flags & 256) != 0, Coop = (flags & 512) != 0, Dm = (flags & 1024) != 0,
             });
         }
@@ -60,6 +62,7 @@ public static class HexenLevelDecoder
                 Id = sector.Tag, TextureFloor = sector.FloorPic, TextureCeiling = sector.CeilingPic }).ToArray(),
         };
         level = LevelBuilder.FromUdmf(map, catalog.MapName, MapDataFormat.HexenBinary);
+        level.HexenHack = hexenHack;
         level.BehaviorData = behavior.ToArray();
         level.HasBehavior = true;
         return LevelValidation.TryValidate(level, out error);

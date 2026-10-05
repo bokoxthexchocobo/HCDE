@@ -101,7 +101,7 @@ public class PlayerRespawnTests
     }
 
     [Fact]
-    public void PowerBuddhaClearsOnAPistolStartAndStaysWhenCoopKeepsInventory()
+    public void PowerBuddhaClearsOnDeathRegardlessOfRespawnInventoryPolicy()
     {
         var deathmatch = StartAt(128, SpawnGameMode.Deathmatch);
         var dropped = Assert.Single(deathmatch.Players);
@@ -117,7 +117,7 @@ public class PlayerRespawnTests
         ActorDamage.Apply(kept, ActorDamage.TelefragDamage);
         PressRespawn(coop);
         Assert.False(kept.IsDead);
-        Assert.Equal(PlayerPawn.PowerBuddhaDuration - GameTicClock.TicRate - 1, kept.PowerBuddhaTics);
+        Assert.Equal(0, kept.PowerBuddhaTics);
 
         var strippedSim = StartAt(32, SpawnGameMode.Cooperative);
         strippedSim.CoopLoseInventory = true;

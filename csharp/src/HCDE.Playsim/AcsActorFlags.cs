@@ -6,6 +6,54 @@ internal static class AcsActorFlags
     private enum Kind
     {
         Invulnerable,
+        StrifeDamage,
+        Rip,
+        DontRip,
+        NoBossRip,
+        Pushable,
+        CannotPush,
+        FoilInvul,
+        SpecialFireDamage,
+        Buddha,
+        FoilBuddha,
+        ForcePain,
+        Painless,
+        NoIceDeath,
+        ExtremeDeath,
+        NoExtremeDeath,
+        IceShatter,
+        DontDrain,
+        NoRadiusDamage,
+        NeverTarget,
+        NoTargetSwitch,
+        QuickToRetaliate,
+        NoHatePlayers,
+        NoTelefrag,
+        AlwaysTelefrag,
+        NoTeleport,
+        CanSlide,
+        Dormant,
+        HarmFriends,
+        NoTrigger,
+        NoSectorDamage,
+        ForceSectorDamage,
+        DoHarmSpecies,
+        NoInfighting,
+        NoInfightSpecies,
+        ForceInfighting,
+        IsMonster,
+        NoBlockMonsters,
+        SpawnCeiling,
+        AllowDropOff,
+        OnMobj,
+        InFloat,
+        JustHit,
+        ActsLikeBridge,
+        IceCorpse,
+        Shattering,
+        NoAutoOffSkullFly,
+        NoBlockmap,
+        PierceArmor,
         NoTarget,
         Ambush,
         Friendly,
@@ -58,6 +106,110 @@ internal static class AcsActorFlags
 
     private static bool TryMap(string flagName, out Kind kind)
     {
+        if (flagName.StartsWith("Actor.", StringComparison.OrdinalIgnoreCase))
+            return TryMapUnqualified(flagName[6..], out kind)
+                && kind is not (Kind.IgnoreSkill or Kind.AlwaysPickup);
+        return TryMapUnqualified(flagName, out kind);
+    }
+
+    private static bool TryMapUnqualified(string flagName, out Kind kind)
+    {
+        if (flagName.Equals("PIERCEARMOR", StringComparison.OrdinalIgnoreCase))
+        { kind = Kind.PierceArmor; return true; }
+        if (flagName.Equals("RIP", StringComparison.OrdinalIgnoreCase))
+        { kind = Kind.Rip; return true; }
+        if (flagName.Equals("PUSHABLE", StringComparison.OrdinalIgnoreCase))
+        { kind = Kind.Pushable; return true; }
+        if (flagName.Equals("CANNOTPUSH", StringComparison.OrdinalIgnoreCase))
+        { kind = Kind.CannotPush; return true; }
+        if (flagName.Equals("NOBOSSRIP", StringComparison.OrdinalIgnoreCase))
+        { kind = Kind.NoBossRip; return true; }
+        if (flagName.Equals("DONTRIP", StringComparison.OrdinalIgnoreCase))
+        { kind = Kind.DontRip; return true; }
+        if (flagName.Equals("STRIFEDAMAGE", StringComparison.OrdinalIgnoreCase))
+        { kind = Kind.StrifeDamage; return true; }
+        if (flagName.Equals("NOBLOCKMAP", StringComparison.OrdinalIgnoreCase))
+        { kind = Kind.NoBlockmap; return true; }
+        if (flagName.Equals("JUSTHIT", StringComparison.OrdinalIgnoreCase))
+        { kind = Kind.JustHit; return true; }
+        if (flagName.Equals("ACTLIKEBRIDGE", StringComparison.OrdinalIgnoreCase))
+        { kind = Kind.ActsLikeBridge; return true; }
+        if (flagName.Equals("ICECORPSE", StringComparison.OrdinalIgnoreCase))
+        { kind = Kind.IceCorpse; return true; }
+        if (flagName.Equals("SHATTERING", StringComparison.OrdinalIgnoreCase))
+        { kind = Kind.Shattering; return true; }
+        if (flagName.Equals("NOAUTOOFFSKULLFLY", StringComparison.OrdinalIgnoreCase))
+        { kind = Kind.NoAutoOffSkullFly; return true; }
+        if (flagName.Equals("ISMONSTER", StringComparison.OrdinalIgnoreCase))
+        { kind = Kind.IsMonster; return true; }
+        if (flagName.Equals("NOBLOCKMONST", StringComparison.OrdinalIgnoreCase))
+        { kind = Kind.NoBlockMonsters; return true; }
+        if (flagName.Equals("SPAWNCEILING", StringComparison.OrdinalIgnoreCase))
+        { kind = Kind.SpawnCeiling; return true; }
+        if (flagName.Equals("DROPOFF", StringComparison.OrdinalIgnoreCase))
+        { kind = Kind.AllowDropOff; return true; }
+        if (flagName.Equals("ONMOBJ", StringComparison.OrdinalIgnoreCase))
+        { kind = Kind.OnMobj; return true; }
+        if (flagName.Equals("INFLOAT", StringComparison.OrdinalIgnoreCase))
+        { kind = Kind.InFloat; return true; }
+        if (flagName.Equals("HARMFRIENDS", StringComparison.OrdinalIgnoreCase))
+        { kind = Kind.HarmFriends; return true; }
+        if (flagName.Equals("NOTRIGGER", StringComparison.OrdinalIgnoreCase))
+        { kind = Kind.NoTrigger; return true; }
+        if (flagName.Equals("NOSECTORDAMAGE", StringComparison.OrdinalIgnoreCase))
+        { kind = Kind.NoSectorDamage; return true; }
+        if (flagName.Equals("FORCESECTORDAMAGE", StringComparison.OrdinalIgnoreCase))
+        { kind = Kind.ForceSectorDamage; return true; }
+        if (flagName.Equals("DOHARMSPECIES", StringComparison.OrdinalIgnoreCase))
+        { kind = Kind.DoHarmSpecies; return true; }
+        if (flagName.Equals("NOINFIGHTING", StringComparison.OrdinalIgnoreCase))
+        { kind = Kind.NoInfighting; return true; }
+        if (flagName.Equals("NOINFIGHTSPECIES", StringComparison.OrdinalIgnoreCase))
+        { kind = Kind.NoInfightSpecies; return true; }
+        if (flagName.Equals("FORCEINFIGHTING", StringComparison.OrdinalIgnoreCase))
+        { kind = Kind.ForceInfighting; return true; }
+        if (flagName.Equals("NOTELEFRAG", StringComparison.OrdinalIgnoreCase))
+        { kind = Kind.NoTelefrag; return true; }
+        if (flagName.Equals("ALWAYSTELEFRAG", StringComparison.OrdinalIgnoreCase))
+        { kind = Kind.AlwaysTelefrag; return true; }
+        if (flagName.Equals("NOTELEPORT", StringComparison.OrdinalIgnoreCase))
+        { kind = Kind.NoTeleport; return true; }
+        if (flagName.Equals("SLIDESONWALLS", StringComparison.OrdinalIgnoreCase))
+        { kind = Kind.CanSlide; return true; }
+        if (flagName.Equals("DORMANT", StringComparison.OrdinalIgnoreCase))
+        { kind = Kind.Dormant; return true; }
+        if (flagName.Equals("NEVERTARGET", StringComparison.OrdinalIgnoreCase))
+        { kind = Kind.NeverTarget; return true; }
+        if (flagName.Equals("NOTARGETSWITCH", StringComparison.OrdinalIgnoreCase))
+        { kind = Kind.NoTargetSwitch; return true; }
+        if (flagName.Equals("QUICKTORETALIATE", StringComparison.OrdinalIgnoreCase))
+        { kind = Kind.QuickToRetaliate; return true; }
+        if (flagName.Equals("NOHATEPLAYERS", StringComparison.OrdinalIgnoreCase))
+        { kind = Kind.NoHatePlayers; return true; }
+        if (flagName.Equals("DONTDRAIN", StringComparison.OrdinalIgnoreCase))
+        { kind = Kind.DontDrain; return true; }
+        if (flagName.Equals("NORADIUSDMG", StringComparison.OrdinalIgnoreCase))
+        { kind = Kind.NoRadiusDamage; return true; }
+        if (flagName.Equals("NOICEDEATH", StringComparison.OrdinalIgnoreCase))
+        { kind = Kind.NoIceDeath; return true; }
+        if (flagName.Equals("EXTREMEDEATH", StringComparison.OrdinalIgnoreCase))
+        { kind = Kind.ExtremeDeath; return true; }
+        if (flagName.Equals("NOEXTREMEDEATH", StringComparison.OrdinalIgnoreCase))
+        { kind = Kind.NoExtremeDeath; return true; }
+        if (flagName.Equals("ICESHATTER", StringComparison.OrdinalIgnoreCase))
+        { kind = Kind.IceShatter; return true; }
+        if (flagName.Equals("BUDDHA", StringComparison.OrdinalIgnoreCase))
+        { kind = Kind.Buddha; return true; }
+        if (flagName.Equals("FOILBUDDHA", StringComparison.OrdinalIgnoreCase))
+        { kind = Kind.FoilBuddha; return true; }
+        if (flagName.Equals("FORCEPAIN", StringComparison.OrdinalIgnoreCase))
+        { kind = Kind.ForcePain; return true; }
+        if (flagName.Equals("PAINLESS", StringComparison.OrdinalIgnoreCase))
+        { kind = Kind.Painless; return true; }
+        if (flagName.Equals("FOILINVUL", StringComparison.OrdinalIgnoreCase))
+        { kind = Kind.FoilInvul; return true; }
+        if (flagName.Equals("SPECIALFIREDAMAGE", StringComparison.OrdinalIgnoreCase))
+        { kind = Kind.SpecialFireDamage; return true; }
         if (flagName.Equals("ALWAYSPICKUP", StringComparison.OrdinalIgnoreCase)
             || flagName.Equals("INVENTORY.ALWAYSPICKUP", StringComparison.OrdinalIgnoreCase))
         { kind = Kind.AlwaysPickup; return true; }
@@ -167,6 +319,54 @@ internal static class AcsActorFlags
     private static bool Read(Actor actor, Kind kind) => kind switch
     {
         Kind.Invulnerable => actor.Invulnerable,
+        Kind.FoilInvul => actor.FoilInvul,
+        Kind.SpecialFireDamage => actor.SpecialFireDamage,
+        Kind.Buddha => actor.Buddha,
+        Kind.FoilBuddha => actor.FoilBuddha,
+        Kind.ForcePain => actor.ForcePain,
+        Kind.Painless => actor.Painless,
+        Kind.NoIceDeath => actor.NoIceDeath,
+        Kind.ExtremeDeath => actor.ExtremeDeath,
+        Kind.NoExtremeDeath => actor.NoExtremeDeath,
+        Kind.IceShatter => actor.IceShatter,
+        Kind.DontDrain => actor.DontDrain,
+        Kind.NoRadiusDamage => actor.NoRadiusDamage,
+        Kind.NeverTarget => actor.NeverTarget,
+        Kind.NoTargetSwitch => actor.NoTargetSwitch,
+        Kind.QuickToRetaliate => actor.QuickToRetaliate,
+        Kind.NoHatePlayers => actor.NoHatePlayers,
+        Kind.NoTelefrag => actor.NoTelefrag,
+        Kind.AlwaysTelefrag => actor.AlwaysTelefrag,
+        Kind.NoTeleport => actor.NoTeleport,
+        Kind.CanSlide => actor.CanSlide,
+        Kind.Dormant => actor.Dormant,
+        Kind.HarmFriends => actor.HarmFriends,
+        Kind.NoTrigger => actor.NoTrigger,
+        Kind.NoSectorDamage => actor.NoSectorDamage,
+        Kind.ForceSectorDamage => actor.ForceSectorDamage,
+        Kind.DoHarmSpecies => actor.DoHarmSpecies,
+        Kind.NoInfighting => actor.NoInfighting,
+        Kind.NoInfightSpecies => actor.NoInfightSpecies,
+        Kind.ForceInfighting => actor.ForceInfighting,
+        Kind.IsMonster => actor.IsMonster,
+        Kind.NoBlockMonsters => actor.NoBlockMonsters,
+        Kind.SpawnCeiling => actor.SpawnCeiling,
+        Kind.AllowDropOff => actor.AllowDropOff,
+        Kind.OnMobj => actor.OnMobj,
+        Kind.InFloat => actor.InFloat,
+        Kind.JustHit => actor.JustHit,
+        Kind.ActsLikeBridge => actor.ActsLikeBridge,
+        Kind.IceCorpse => actor.IceCorpse,
+        Kind.Shattering => actor.Shattering,
+        Kind.NoAutoOffSkullFly => actor.NoAutoOffSkullFly,
+        Kind.NoBlockmap => actor.NoBlockmap,
+        Kind.PierceArmor => actor.PierceArmor,
+        Kind.StrifeDamage => actor.StrifeDamage,
+        Kind.Rip => actor.Rip,
+        Kind.DontRip => actor.DontRip,
+        Kind.NoBossRip => actor.NoBossRip,
+        Kind.Pushable => actor.Pushable,
+        Kind.CannotPush => actor.CannotPush,
         Kind.NoTarget => actor.NoTarget,
         Kind.Ambush => actor.Ambush,
         Kind.Friendly => actor.Friendly,
@@ -204,6 +404,54 @@ internal static class AcsActorFlags
         switch (kind)
         {
             case Kind.Invulnerable: actor.Invulnerable = value; break;
+            case Kind.FoilInvul: actor.FoilInvul = value; break;
+            case Kind.SpecialFireDamage: actor.SpecialFireDamage = value; break;
+            case Kind.Buddha: actor.Buddha = value; break;
+            case Kind.FoilBuddha: actor.FoilBuddha = value; break;
+            case Kind.ForcePain: actor.ForcePain = value; break;
+            case Kind.Painless: actor.Painless = value; break;
+            case Kind.NoIceDeath: actor.NoIceDeath = value; break;
+            case Kind.ExtremeDeath: actor.ExtremeDeath = value; break;
+            case Kind.NoExtremeDeath: actor.NoExtremeDeath = value; break;
+            case Kind.IceShatter: actor.IceShatter = value; break;
+            case Kind.DontDrain: actor.DontDrain = value; break;
+            case Kind.NoRadiusDamage: actor.NoRadiusDamage = value; break;
+            case Kind.NeverTarget: actor.NeverTarget = value; break;
+            case Kind.NoTargetSwitch: actor.NoTargetSwitch = value; break;
+            case Kind.QuickToRetaliate: actor.QuickToRetaliate = value; break;
+            case Kind.NoHatePlayers: actor.NoHatePlayers = value; break;
+            case Kind.NoTelefrag: actor.NoTelefrag = value; break;
+            case Kind.AlwaysTelefrag: actor.AlwaysTelefrag = value; break;
+            case Kind.NoTeleport: actor.NoTeleport = value; break;
+            case Kind.CanSlide: actor.CanSlide = value; break;
+            case Kind.Dormant: actor.Dormant = value; break;
+            case Kind.HarmFriends: actor.HarmFriends = value; break;
+            case Kind.NoTrigger: actor.NoTrigger = value; break;
+            case Kind.NoSectorDamage: actor.NoSectorDamage = value; break;
+            case Kind.ForceSectorDamage: actor.ForceSectorDamage = value; break;
+            case Kind.DoHarmSpecies: actor.DoHarmSpecies = value; break;
+            case Kind.NoInfighting: actor.NoInfighting = value; break;
+            case Kind.NoInfightSpecies: actor.NoInfightSpecies = value; break;
+            case Kind.ForceInfighting: actor.ForceInfighting = value; break;
+            case Kind.IsMonster: actor.IsMonster = value; break;
+            case Kind.NoBlockMonsters: actor.NoBlockMonsters = value; break;
+            case Kind.SpawnCeiling: actor.SpawnCeiling = value; break;
+            case Kind.AllowDropOff: actor.AllowDropOff = value; break;
+            case Kind.OnMobj: actor.OnMobj = value; break;
+            case Kind.InFloat: actor.InFloat = value; break;
+            case Kind.JustHit: actor.JustHit = value; break;
+            case Kind.ActsLikeBridge: actor.ActsLikeBridge = value; break;
+            case Kind.IceCorpse: actor.IceCorpse = value; break;
+            case Kind.Shattering: actor.Shattering = value; break;
+            case Kind.NoAutoOffSkullFly: actor.NoAutoOffSkullFly = value; break;
+            case Kind.NoBlockmap: actor.NoBlockmap = value; break;
+            case Kind.PierceArmor: actor.PierceArmor = value; break;
+            case Kind.StrifeDamage: actor.StrifeDamage = value; break;
+            case Kind.Rip: actor.Rip = value; break;
+            case Kind.DontRip: actor.DontRip = value; break;
+            case Kind.NoBossRip: actor.NoBossRip = value; break;
+            case Kind.Pushable: actor.Pushable = value; break;
+            case Kind.CannotPush: actor.CannotPush = value; break;
             case Kind.NoTarget: actor.NoTarget = value; break;
             case Kind.Ambush: actor.Ambush = value; break;
             case Kind.Friendly: actor.Friendly = value; break;

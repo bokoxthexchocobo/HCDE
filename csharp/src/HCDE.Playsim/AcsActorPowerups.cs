@@ -9,6 +9,10 @@ internal static class AcsActorPowerups
             return 0;
         if (powerName.Equals("PowerBuddha", StringComparison.OrdinalIgnoreCase))
             return player.PowerBuddhaTics;
+        if (powerName.Equals("PowerDamage", StringComparison.OrdinalIgnoreCase))
+            return player.PowerDamageTics;
+        if (powerName.Equals("PowerProtection", StringComparison.OrdinalIgnoreCase))
+            return player.PowerProtectionTics;
         return 0;
     }
 }

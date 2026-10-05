@@ -23,10 +23,10 @@ public class BinaryDormantFlagTests
 
     [Theory]
     [InlineData(2, true, false)]
-    [InlineData(18, false, false)]
+    [InlineData(18, true, false)]
     [InlineData(10, true, true)]
-    [InlineData(26, false, true)]
-    public void DoomBit16StillControlsSinglePlayerExclusion(int flags, bool single, bool ambush)
+    [InlineData(26, true, true)]
+    public void DoomBit16LeavesNativeSinglePlayerInclusionSet(int flags, bool single, bool ambush)
     {
         var wad = TestWadBuilder.BuildMinimalMapWad("MAP01");
         Assert.True(WadArchiveReader.TryReadDirectory(wad, out var entries, out _));
