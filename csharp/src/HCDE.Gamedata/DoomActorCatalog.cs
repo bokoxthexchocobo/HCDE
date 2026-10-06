@@ -55,6 +55,11 @@ public static class DoomActorCatalog
     public static bool MatchesClassName(int editorNumber, string? className) =>
         TryEditorNumberForClassName(className, out var mapped) && mapped == editorNumber;
 
+    /// <summary>Built-in Doom monster class ancestry retained by this catalog.</summary>
+    public static bool IsKindOfClassName(int editorNumber, string? className) =>
+        MatchesClassName(editorNumber, className)
+        || MatchesClassName(editorNumber switch { 58 => 3002, 69 => 3003, _ => 0 }, className);
+
     /// <summary>Preferred Doom spawn name for a catalog editor number, when known.</summary>
     public static bool TrySpawnClassName(int editorNumber, out string className)
     {

@@ -11,6 +11,11 @@ public sealed class MonsterBrain(MonsterAttack attack)
     private int _attackTic = -1;
     private bool _separateMelee;
     public bool Charging { get; private set; }
+    internal void RestoreCharge(bool charging)
+    {
+        Charging = charging;
+        if (charging) Mode = MonsterMode.Recovery;
+    }
     private int _deathTics;
     private uint? _deathTargetId;
     private int _healTics;
@@ -26,8 +31,21 @@ public sealed class MonsterBrain(MonsterAttack attack)
     public uint? TargetId { get; private set; }
     /// <summary>Native <c>lastenemy</c>. Updated when wake-up switches chase targets.</summary>
     public uint? LastEnemyId { get; private set; }
-    /// <summary>Native chase threshold. While positive, <see cref="OkayToSwitchTarget"/> blocks a new target.</summary>
+    /// <summary>Native chase threshold. While nonzero, <see cref="OkayToSwitchTarget"/> blocks a new target.</summary>
     public int Threshold { get; private set; }
+    internal bool HasChaseThresholdOverride { get; private set; }
+    internal void RestoreChaseThreshold(SimChaseThreshold? saved)
+    {
+        Threshold = saved?.Current ?? 0;
+        DefThreshold = saved?.Default ?? 100;
+        HasChaseThresholdOverride = saved.HasValue;
+    }
+    internal void SetChaseThreshold(int threshold, bool setDefault)
+    {
+        HasChaseThresholdOverride = true;
+        if (setDefault) DefThreshold = Math.Max(0, threshold);
+        else Threshold = Math.Max(0, threshold);
+    }
     /// <summary>Native <c>DefThreshold</c>. Wake-up reloads <see cref="Threshold"/> from this value.</summary>
     public int DefThreshold { get; set; } = 100;
     private Actor? _owner;
@@ -84,7 +102,7 @@ public sealed class MonsterBrain(MonsterAttack attack)
         if (actor is PlayerPawn) return;
         if (dealt <= 0 && !forcedPain) return;
         ReactionTics = 0;
-        if (source == null || !source.CanTakeDamage || source.Id == actor.Id) return;
+        if (source == null || source.Destroyed || source.Id == actor.Id) return;
         if (TargetId == source.Id)
             Threshold = DefThreshold;
         else if (TargetId == null)
@@ -122,7 +140,13 @@ public sealed class MonsterBrain(MonsterAttack attack)
     {
         if (LastEnemyId is not { } lastId) return null;
         var last = sim.Actors.FirstOrDefault(candidate => candidate.Id == lastId);
-        if (last == null || !last.CanTakeDamage || actor.IsFriend(last))
+        if (last == null || last.Destroyed)
+        {
+            LastEnemyId = null;
+            return null;
+        }
+        if (last.IsDead) return null;
+        if (actor.IsFriend(last))
         {
             LastEnemyId = null;
             return null;
@@ -138,12 +162,19 @@ public sealed class MonsterBrain(MonsterAttack attack)
     {
         if (!Enabled || !actor.CanTakeDamage || !target.CanTakeDamage || actor.IsFriend(target) || TargetId != null
             || actor.Ambush && !CombatTrace.HasLineOfSight(sim, actor, target)) return;
+        if (actor.States.Current == actor.SpawnState) Threshold = 0;
         TargetId = target.Id;
         _lastX = target.X.ToDouble();
         _lastY = target.Y.ToDouble();
+        if (actor.States.Current == actor.SpawnState && actor.States.HasState(actor.SeeState))
+            actor.States.Enter(actor, actor.SeeState);
     }
 
     internal void ClearTarget() => TargetId = null;
+
+    internal void ClearActionTargets() { TargetId = null; LastEnemyId = null; }
+    internal void RestoreTargetMemory(SimTargetMemory memory)
+    { TargetId = memory.Target; LastEnemyId = memory.LastEnemy; }
 
     internal void SetSpecialTarget(Actor? target) => TargetId = target?.Id;
 
@@ -177,7 +208,6 @@ public sealed class MonsterBrain(MonsterAttack attack)
         if (Charging && (actor.IsDead || actor.Destroyed || actor.States.Current == actor.PainState))
             StopCharge(actor);
         if (Charging) return;
-        actor.VelocityX = actor.VelocityY = default;
         if (actor.IsDead || actor.Destroyed)
         {
             if (_nativeType == 71 && actor.IsDead && !actor.Destroyed && _deathTics < 32)
@@ -193,6 +223,7 @@ public sealed class MonsterBrain(MonsterAttack attack)
             }
             Mode = MonsterMode.Dead; TargetId = null; WindupTics = 0; _attackTic = -1; _raiseTics = 0; return;
         }
+        actor.VelocityX = actor.VelocityY = default;
         _deathTics = 0; _deathTargetId = null;
         if (AttackCooldown > 0) AttackCooldown--;
         if (actor.States.Current == actor.PainState)
@@ -204,7 +235,7 @@ public sealed class MonsterBrain(MonsterAttack attack)
         if (AdvanceRaiseFrame()) return;
         if (ReactionTics != 0) { ReactionTics = unchecked(ReactionTics - 1); return; }
         if (_healTics > 0) { _healTics--; Mode = MonsterMode.Heal; return; }
-        var target = sim.Actors.FirstOrDefault(a => a.Id == TargetId && a.CanTakeDamage && !actor.IsFriend(a));
+        var target = sim.Actors.FirstOrDefault(a => a.Id == TargetId && !a.IsDead && !a.Destroyed && !actor.IsFriend(a));
         target ??= sim.Actors.FirstOrDefault(candidate => candidate.Id == actor.LastHeardTargetId && candidate.CanTakeDamage && !actor.IsFriend(candidate)
             && (!actor.Ambush || CombatTrace.HasLineOfSight(sim, actor, candidate)));
         target ??= sim.Players.Where(p => p.CanTakeDamage && !actor.IsFriend(p) && Distance(actor, p) <= 2048 && CombatTrace.HasLineOfSight(sim, actor, p))
@@ -216,6 +247,8 @@ public sealed class MonsterBrain(MonsterAttack attack)
         }
         if (TargetId != target.Id) { WindupTics = 0; _attackTic = -1; }
         TargetId = target.Id;
+        if (actor.States.Current == actor.SpawnState && actor.States.HasState(actor.SeeState))
+            actor.States.Enter(actor, actor.SeeState);
         if (_nativeType == 64 && _attackTic < 0 && ArchvileActions.TryRaise(sim, actor, target))
         {
             _healTics = 29; Mode = MonsterMode.Heal; return;
@@ -226,7 +259,8 @@ public sealed class MonsterBrain(MonsterAttack attack)
         var dy = _lastY - actor.Y.ToDouble();
         actor.Angle = BamAngle.FromDegrees(Math.Atan2(dy, dx) * 180 / Math.PI);
         var melee = CheckMeleeRange(actor, target, visible);
-        var canAttack = visible && (melee || Attack != MonsterAttack.Melee && Distance(actor, target) <= (_nativeType == 64 ? 896 : 1024));
+        var canAttack = SectorAllowsAttacks(actor) && visible
+            && (melee || Attack != MonsterAttack.Melee && Distance(actor, target) <= (_nativeType == 64 ? 896 : 1024));
         if (_profile != null)
         {
             if (_attackTic >= 0)
@@ -346,6 +380,9 @@ public sealed class MonsterBrain(MonsterAttack attack)
         else GeometryLineAttack.Apply(sim, hit, damage);
     }
 
+    // Die clears MF_SKULLFLY without applying the collision/pain charge reset.
+    internal void ClearDeathCharge() => Charging = false;
+
     internal void StopCharge(Actor actor)
     {
         Charging = false;
@@ -391,11 +428,16 @@ public sealed class MonsterBrain(MonsterAttack attack)
     }
 
     /// <summary>Native P_CheckMeleeRange distance, vertical, friendship and sight gates.</summary>
-    internal static bool CheckMeleeRange(Actor actor, Actor target, bool visible) =>
-        Distance(actor, target) < actor.MeleeRange.ToDouble() + target.Radius.ToDouble()
-        && target.Z.ToDouble() <= actor.Z.ToDouble() + actor.Height.ToDouble()
-        && target.Z.ToDouble() + target.Height.ToDouble() >= actor.Z.ToDouble()
+    internal static bool CheckMeleeRange(Actor actor, Actor target, bool visible, double range = -1) =>
+        SectorAllowsAttacks(actor) && Distance(actor, target)
+            < (range < 0 ? actor.MeleeRange.ToDouble() : range) + target.Radius.ToDouble()
+        && (actor.NoVerticalMeleeRange || (target.Z.ToDouble() <= actor.Z.ToDouble() + actor.Height.ToDouble()
+            && target.Z.ToDouble() + target.Height.ToDouble() >= actor.Z.ToDouble()))
         && !actor.IsFriend(target) && visible;
+
+    private static bool SectorAllowsAttacks(Actor actor) => actor.Level is not { } level
+        || actor.SectorIndex < 0 || actor.SectorIndex >= level.Sectors.Count
+        || !level.Sectors[actor.SectorIndex].NoAttack;
 
     private static double Distance(Actor a, Actor b) => Math.Sqrt(
         Math.Pow(a.X.ToDouble() - b.X.ToDouble(), 2) + Math.Pow(a.Y.ToDouble() - b.Y.ToDouble(), 2));

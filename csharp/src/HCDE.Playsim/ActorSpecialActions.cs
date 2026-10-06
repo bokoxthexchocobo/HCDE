@@ -27,7 +27,21 @@ public static class ActorSpecialActions
         if ((thing.ActivationType & 1) != 0 || death && sim.Level.ActivateOwnDeathSpecials && (thing.ActivationType & 128) == 0) trigger = thing;
         var special = thing.Special;
         var args = thing.SpecialArgs.ToArray();
-        result = ThingStop.ExecuteSpecial(sim, special, trigger, args[0])
+        result = ExecuteSpecial(sim, trigger, special, args);
+        if (death && !sim.Level.HexenHack || (thing.ActivationType & 32) != 0 && result) thing.Special = 0;
+        return result;
+    }
+
+    public static bool CallSpecial(Actor actor, int special, int arg0 = 0, int arg1 = 0,
+        int arg2 = 0, int arg3 = 0, int arg4 = 0)
+    {
+        var sim = actor.Simulation ?? throw new InvalidOperationException("Calling a special requires a simulation.");
+        return ExecuteSpecial(sim, actor, special, [arg0, arg1, arg2, arg3, arg4]);
+    }
+
+    private static bool ExecuteSpecial(AuthoritySimulation sim, Actor? trigger, int special, int[] args)
+    {
+        return ThingStop.ExecuteSpecial(sim, special, trigger, args[0])
             ?? ThingThrust.ExecuteSpecial(sim, special, trigger, args[0], args[1], args[2], args[3])
             ?? ThingThrustZ.ExecuteSpecial(sim, special, trigger, args[0], args[1], args[2], args[3])
             ?? ThingSetSpecial.Execute(sim, special, trigger, args[0], args[1], args[2], args[3], args[4])
@@ -56,7 +70,5 @@ public static class ActorSpecialActions
             ?? LineSpecials.ExecuteCeilingSpecial(sim, special, args[0], args[1], args[2], args[3], args[4], null)
             ?? LineSpecials.ExecuteStairSpecial(sim, special, args[0], args[1], args[2], args[3], args[4], null)
             ?? false;
-        if (death && !sim.Level.HexenHack || (thing.ActivationType & 32) != 0 && result) thing.Special = 0;
-        return result;
     }
 }

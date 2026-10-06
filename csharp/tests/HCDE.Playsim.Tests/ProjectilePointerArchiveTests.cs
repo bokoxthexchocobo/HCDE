@@ -49,12 +49,14 @@ public class ProjectilePointerArchiveTests
     }
 
     [Fact]
-    public void NonHomingMissileCannotRestoreTracer()
+    public void NonHomingMissileCanRestoreAssignedTracer()
     {
         var sim = Room(); var missile = sim.SpawnProjectile(sim.Players.Single(), ProjectileKind.Plasma);
         var state = sim.CaptureState(); state.Actors.Single(a => a.Id == missile.Id).ProjectilePointers = new(missile.Owner.Id, missile.Owner.Id);
-        Assert.Throws<InvalidOperationException>(() => LegacyActorArchiveFixture.Write(state));
-        Assert.Throws<InvalidOperationException>(() => sim.RestoreState(state));
+        var bytes = LegacyActorArchiveFixture.Write(state);
+        Assert.True(SimSavegame.TryRead(bytes, out var restored, out var error), error);
+        sim.RestoreState(restored);
+        Assert.Equal(missile.Owner.Id, missile.TracerTargetId);
     }
 
     [Fact]

@@ -11,7 +11,7 @@ public class HexenLevelTests
     [InlineData(3, false, false, false)]
     [InlineData(4, false, false, false)]
     [InlineData(5, false, false, false)]
-    [InlineData(6, false, true, true)]
+    [InlineData(6, false, false, true)]
     [InlineData(7, false, false, false)]
     public void ActivationMaskMatchesNativeSpac(int activation, bool cross, bool use, bool through)
     {

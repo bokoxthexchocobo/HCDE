@@ -41,7 +41,7 @@ public class DynamicMonsterClassFlagTests
         Assert.Equal(flying, actor.NoGravity); Assert.Equal(flying, actor.Floating);
         actor.Z = Fixed.FromInt(32); actor.OnGround = false;
         sim.Tick();
-        Assert.Equal(flying ? 32 : 31, actor.Z.ToDouble());
+        Assert.Equal(32, actor.Z.ToDouble());
         Assert.Equal(flying ? 0 : -1, actor.VelocityZ.ToDouble());
     }
     [Theory]

@@ -116,7 +116,7 @@ public static class CombatTrace
             ? distance : double.PositiveInfinity;
     }
 
-    private static double ActorBoxEntry(double rx, double ry, double radius, double dx, double dy, double range)
+    internal static double ActorBoxEntry(double rx, double ry, double radius, double dx, double dy, double range)
     {
         var fronts = 0;
         double Edge(double x1, double y1, double x2, double y2)

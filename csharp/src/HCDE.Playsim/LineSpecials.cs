@@ -75,8 +75,21 @@ public static class LineSpecials
     private const int DoorSpeed = 8;
     private const int DoorWaitTics = 5;
 
-    private static bool IsBackSide(LevelLine line, double x, double y) =>
-        (line.X2 - line.X1) * (y - line.Y1) - (line.Y2 - line.Y1) * (x - line.X1) > 0;
+    internal static bool IsBackSide(LevelLine line, double x, double y, bool vanilla = false)
+    {
+        var dx = line.X2 - line.X1;
+        var dy = line.Y2 - line.Y1;
+        if (!vanilla && (line.Flags & LevelLine.CompatSideFlag) == 0)
+            return dx * (y - line.Y1) - dy * (x - line.X1) > 1.0 / 65536;
+        if (dx == 0) return x <= line.X1 ? dy > 0 : dy < 0;
+        if (dy == 0) return y <= line.Y1 ? dx < 0 : dx > 0;
+        // Native vanilla classification deliberately retains fixed-point imprecision.
+        var xOffset = Fixed.FromDouble(x - line.X1).Raw;
+        var yOffset = Fixed.FromDouble(y - line.Y1).Raw;
+        var left = unchecked((int)(((long)(int)(dy * 256) * xOffset) >> 16));
+        var right = unchecked((int)(((long)yOffset * (int)(dx * 256)) >> 16));
+        return right >= left;
+    }
 
     public static void ActivateCrossings(AuthoritySimulation sim)
     {
@@ -94,49 +107,78 @@ public static class LineSpecials
                 if (!LineSlide.Crosses(actor.PreviousX.ToDouble(), actor.PreviousY.ToDouble(), actor.X.ToDouble(), actor.Y.ToDouble(), line))
                     continue;
 
-                ActivateMapLine(sim, actor, line, use: false, backSide: IsBackSide(line, actor.PreviousX.ToDouble(), actor.PreviousY.ToDouble()));
+                ActivateMapLine(sim, actor, line, use: false, backSide: IsBackSide(line, actor.PreviousX.ToDouble(), actor.PreviousY.ToDouble(), sim.Compat.HasFlag(CompatSurface.PointOnLine)));
             }
         }
     }
 
     public static void ActivateUses(AuthoritySimulation sim)
     {
-        foreach (var player in sim.Actors.OfType<PlayerPawn>())
+        foreach (var player in sim.Actors.OfType<PlayerPawn>().ToArray())
         {
             if (!player.UsePressed || player.IsDead || player.Destroyed) continue;
             player.UsePressed = false;
             // P_UseLines traces yaw for Player.UseRange (64). Portals are not applied.
-            var range = double.IsFinite(player.UseRange) ? Math.Max(0, player.UseRange) : 0;
-            if (range <= 0) continue;
+            var range = double.IsFinite(player.UseRange) ? Math.Abs(player.UseRange) : 0;
+            if (!double.IsFinite(player.UseRange)) continue;
             var radians = player.Angle.ToDegrees() * Math.PI / 180;
+            var direction = player.UseRange < 0 ? -1 : 1;
             var x = player.X.ToDouble();
             var y = player.Y.ToDouble();
-            var hits = sim.Level.Lines.Select(line => (Line: line, Distance: CombatTrace.RayLine(
-                x, y, Math.Cos(radians), Math.Sin(radians), line)))
-                .Where(hit => hit.Distance <= range).OrderBy(hit => hit.Distance);
+            var hits = sim.Level.Lines.Select(line => (Line: (LevelLine?)line, Thing: (Actor?)null, Distance: CombatTrace.RayLine(
+                x, y, Math.Cos(radians) * direction, Math.Sin(radians) * direction, line, range)))
+                .Concat(sim.Actors.Where(actor => actor != player && !actor.Destroyed && !actor.NoBlockmap).Select(actor =>
+                    (Line: (LevelLine?)null, Thing: (Actor?)actor, Distance: CombatTrace.ActorBoxEntry(
+                        actor.X.ToDouble() - x, actor.Y.ToDouble() - y, actor.Radius.ToDouble(),
+                        Math.Cos(radians) * direction, Math.Sin(radians) * direction, range))))
+                .Where(hit => double.IsFinite(hit.Distance) && hit.Distance <= range).OrderBy(hit => hit.Distance).ToArray();
             foreach (var hit in hits)
             {
-                var back = IsBackSide(hit.Line, x, y);
+                if (hit.Thing is { } thing)
+                {
+                    if (!thing.Destroyed && thing.UseSpecial && ActorSpecialActions.ActivateSpecial(sim, thing, player)) break;
+                    if (!thing.Destroyed && thing.Used(player)) break;
+                    continue;
+                }
+                if (hit.Line is null) continue;
+                var back = IsBackSide(hit.Line, x, y, sim.Compat.HasFlag(CompatSurface.PointOnLine));
+                var consumes = back || (sim.Compat.HasFlag(CompatSurface.UseBlocking)
+                    ? !hit.Line.UseThrough : hit.Line.PlayerUse || !hit.Line.UseThrough);
                 // The back side activates only with SPAC_UseBack. UseBack-only lines ignore the front.
-                var usable = back ? hit.Line.PlayerUseBack : !hit.Line.PlayerUseBack || hit.Line.PlayerUse;
+                var usable = back ? hit.Line.PlayerUseBack : !hit.Line.PlayerUseBack || hit.Line.PlayerUse || hit.Line.UseThrough;
                 if (!usable)
                 {
-                    if (BlocksUse(sim, player, hit.Line)) break;
+                    if (BlocksUse(sim, hit.Line)) break;
                     continue;
                 }
                 if (ActivateMapLine(sim, player, hit.Line, use: true, backSide: back))
                 {
-                    // SPAC_Use and SPAC_UseBack eat the use. SPAC_UseThrough keeps tracing.
-                    if (back || !hit.Line.UseThrough) break;
+                    // Back use consumes; front precedence depends on use-blocking compatibility.
+                    if (consumes) break;
                     continue;
                 }
-                if (BlocksUse(sim, player, hit.Line)) break;
+                // A recognized use trigger consumes traversal even when its action fails.
+                if (hit.Line.Special != 0 && (hit.Line.PlayerUseBack || hit.Line.PlayerUse || hit.Line.UseThrough))
+                {
+                    if (consumes) break;
+                    continue;
+                }
+                if (BlocksUse(sim, hit.Line)) break;
             }
         }
     }
 
-    private static bool BlocksUse(AuthoritySimulation sim, PlayerPawn player, LevelLine line) =>
-        CombatTrace.BlocksShot(sim, line, player.Z.ToDouble() + player.Height.ToDouble() / 2);
+    private static bool BlocksUse(AuthoritySimulation sim, LevelLine line)
+    {
+        if (line.Special != 0 && sim.Compat.HasFlag(CompatSurface.UseBlocking)) return true;
+        if (line.OneSided || (line.Flags & (LevelLine.BlockUseFlag | LevelLine.BlockEverythingFlag)) != 0) return true;
+        var sides = sim.Level.Sides;
+        if ((uint)line.SideFront >= (uint)sides.Count || (uint)line.SideBack >= (uint)sides.Count) return true;
+        var front = sides[line.SideFront].Sector; var back = sides[line.SideBack].Sector;
+        if ((uint)front >= (uint)sim.Floors.Length || (uint)back >= (uint)sim.Floors.Length) return true;
+        // Native blocked-use traversal checks opening range, not the player's trace height.
+        return Math.Min(sim.Ceilings[front], sim.Ceilings[back]) <= Math.Max(sim.Floors[front], sim.Floors[back]);
+    }
 
     /// <summary>Dispatch map numbers in their own namespace; Execute remains the internal action API.</summary>
     public static bool ActivateMapLine(AuthoritySimulation sim, Actor actor, LevelLine line, bool use, bool? backSide = null)
@@ -172,7 +214,7 @@ public static class LineSpecials
                 (4 or 90, false) => StartDoor(sim, line, line.Tag, true),
                 (11, true) or (52, false) => Exit(sim, false, actor),
                 (51, true) or (124, false) => Exit(sim, true, actor),
-                (39 or 97, false) => !(backSide ?? IsBackSide(line, actor.X.ToDouble(), actor.Y.ToDouble()))
+                (39 or 97, false) => !(backSide ?? IsBackSide(line, actor.X.ToDouble(), actor.Y.ToDouble(), sim.Compat.HasFlag(CompatSurface.PointOnLine)))
                     && line.Tag != 0 && TeleportActivator(sim, actor, line.Tag),
                 (18 or 69, true) => StartMapFloor(sim, line, line.Tag, FloorTarget.NextHigher),
                 (23 or 60, true) or (38 or 82, false) => StartMapFloor(sim, line, line.Tag, FloorTarget.Lowest),
@@ -195,7 +237,8 @@ public static class LineSpecials
         }
         else
         {
-            if (use ? !line.PlayerUse : !line.PlayerCross) return false;
+            var allowsUse = backSide == true ? line.PlayerUseBack : line.PlayerUse || line.UseThrough;
+            if (use ? !allowsUse : !line.PlayerCross) return false;
             repeat = line.Repeat;
             activated = line.Special switch
             {
@@ -220,7 +263,7 @@ public static class LineSpecials
                 10 or 11 or 12 or 249 => ExecuteDoorSpecial(sim, line.Special, line.Arg0, line.Arg1, line.Arg2, line.Arg3, line) == true,
                 20 or 21 or 22 or 23 or 24 or 25 or 28 or 35 or 36 or 37 or 46 or 62 or 66 or 67 or 68 or 99 or 238 or 239 or 242 or 256 or 257 or 258 or 259 or 260 or 275 or 279 or ScrollFloor or ScrollCeiling => ExecuteFloorSpecial(sim, line.Special,
                     line.Arg0, line.Arg1, line.Arg2, line.Arg3, line.Arg4, line) == true,
-                70 or 154 => !(backSide ?? IsBackSide(line, actor.X.ToDouble(), actor.Y.ToDouble()))
+                70 or 154 => !(backSide ?? IsBackSide(line, actor.X.ToDouble(), actor.Y.ToDouble(), sim.Compat.HasFlag(CompatSurface.PointOnLine)))
                     && ExecuteTeleportSpecial(sim, line.Special, line.Arg0, line.Arg1, actor, false) == true,
                 216 => SectorGravity.ExecuteSpecial(sim, 216, line.Arg0, line.Arg1, line.Arg2) == true,
                 132 => ThingRemove.ExecuteSpecial(sim, 132, actor, line.Arg0) == true,
@@ -230,7 +273,7 @@ public static class LineSpecials
                 19 => ThingStop.ExecuteSpecial(sim, 19, actor, line.Arg0) == true,
                 127 => ThingSetSpecial.Execute(sim, 127, actor, line.Arg0, line.Arg1, line.Arg2, line.Arg3, line.Arg4) == true,
                 130 or 131 => ThingActivation.Execute(sim, actor, line.Arg0, line.Special == 130),
-                80 or 81 or 82 or 226 => ExecuteScriptControl(sim, line.Special, line.Arg0, line.Arg1, line.Arg2, line.Arg3, line.Arg4, actor, line, backSide ?? IsBackSide(line, actor.X.ToDouble(), actor.Y.ToDouble())) == true,
+                80 or 81 or 82 or 226 => ExecuteScriptControl(sim, line.Special, line.Arg0, line.Arg1, line.Arg2, line.Arg3, line.Arg4, actor, line, backSide ?? IsBackSide(line, actor.X.ToDouble(), actor.Y.ToDouble(), sim.Compat.HasFlag(CompatSurface.PointOnLine))) == true,
                 243 => Exit(sim, false, actor),
                 244 => Exit(sim, true, actor),
                 40 or 41 or 42 or 43 or 44 or 45 or 47 or 69 or 97 or 104 or 168 or 192 or 193 or 194 or 195 or 196 or 197 or 198 or 199 or 252 or 253 or 254 or 255 or 262 or 263 or 264 or 265 or 266 or 267 or 276 or 280 => ExecuteCeilingSpecial(sim, line.Special,
@@ -884,7 +927,7 @@ public static class LineSpecials
         if (dest == null)
             return false;
         var aboveFloor = activator.Z.ToDouble() - sim.FloorOf(activator.SectorIndex);
-        var missileSpeed = Math.Sqrt(Math.Pow(activator.VelocityX.ToDouble(), 2) + Math.Pow(activator.VelocityY.ToDouble(), 2));
+        var missileSpeed = activator.VelXYToSpeed();
         var verticalVelocity = activator.VelocityZ;
         activator.X = dest.X;
         activator.Y = dest.Y;
@@ -901,12 +944,11 @@ public static class LineSpecials
         }
         if (activator is ProjectileActor)
         {
-            var radians = activator.Angle.ToDegrees() * Math.PI / 180;
-            activator.VelocityX = Fixed.FromDouble(missileSpeed * Math.Cos(radians));
-            activator.VelocityY = Fixed.FromDouble(missileSpeed * Math.Sin(radians));
+            activator.VelFromAngle(missileSpeed);
             activator.VelocityZ = verticalVelocity;
         }
         if (activator is PlayerPawn && !keepVelocity) activator.ReactionTime = 18;
+        activator.ClearInterpolation();
         return true;
     }
 

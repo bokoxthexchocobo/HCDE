@@ -26,7 +26,7 @@ public class DehackedMovementFlagTests
     {
         var sim = Room(bits);
         var actor = Assert.Single(sim.Actors);
-        Assert.Equal(expected, ActorPhysics.TryMove(sim, actor, 40, 0, out _));
+        Assert.Equal(expected, ActorPhysics.TryMove(sim, actor, 1, 0, out _));
     }
 
     private static AuthoritySimulation Room(int bits)

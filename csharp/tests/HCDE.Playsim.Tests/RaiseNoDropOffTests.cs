@@ -20,7 +20,7 @@ public class RaiseNoDropOffTests
         }, dehacked: DehackedPatch.Apply("Thing 2\nBits = SOLID + SHOOTABLE + COUNTKILL + DROPOFF\n"));
         var corpse = Assert.Single(sim.Actors);
         corpse.NoDropOff = true;
-        Assert.False(ActorPhysics.TryMove(sim, corpse, 40, 0, out _));
+        Assert.False(ActorPhysics.TryMove(sim, corpse, 1, 0, out _));
         corpse.Health = 0;
         corpse.States.Enter(corpse, ActorStateMachine.Corpse);
         if (blocked) sim.Ceilings[corpse.SectorIndex] = 10;
@@ -28,6 +28,6 @@ public class RaiseNoDropOffTests
             ? ArchvileActions.TryRaise(sim, new Actor { X = Fixed.FromInt(-60) }, new Actor { X = Fixed.FromInt(500) })
             : ThingRaise.Execute(sim, 17, corpse, 0, 0) == true);
         Assert.Equal(blocked, corpse.NoDropOff);
-        if (!blocked) Assert.True(ActorPhysics.TryMove(sim, corpse, 40, 0, out _));
+        if (!blocked) Assert.True(ActorPhysics.TryMove(sim, corpse, 1, 0, out _));
     }
 }

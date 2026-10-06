@@ -235,9 +235,9 @@ internal static class AcsCallFunctions
             case SpawnDecal:
                 return TrySpawnDecal(sim, stack, scriptActivator, argCount, out result);
             case CheckProximity:
-                return TryCheckProximity(sim, stack, scriptActivator, stringTable, argCount, out result);
+                return TryCheckProximity(sim, stack, scriptActivator, stringTable, globalStrings, argCount, out result);
             case CheckActorState:
-                return TryCheckActorState(sim, stack, scriptActivator, stringTable, argCount, out result);
+                return TryCheckActorState(sim, stack, scriptActivator, stringTable, globalStrings, argCount, out result);
             case StrCmp:
             case StrICmp:
                 return TryStringCompare(stack, stringTable, globalStrings, function == StrICmp, argCount, out result);
@@ -670,6 +670,7 @@ internal static class AcsCallFunctions
         List<int> stack,
         Actor? activator,
         string[] stringTable,
+        AcsGlobalStrings globalStrings,
         int argCount,
         out int result)
     {
@@ -682,39 +683,16 @@ internal static class AcsCallFunctions
         var classStringId = stack[start + 1];
         var distanceFixed = stack[start + 2];
         var required = argCount > 3 ? stack[start + 3] : 1;
+        var flags = argCount > 4 ? stack[start + 4] : 0;
+        var pointerSelector = argCount > 5 ? stack[start + 5] : 0;
         stack.RemoveRange(start, argCount);
 
         var actor = ResolveActor(sim, tid, activator);
-        if (actor is null || required <= 0)
+        if (actor is null)
             return true;
 
-        var className = classStringId >= 0 && classStringId < stringTable.Length ? stringTable[classStringId] : null;
-        if (!DoomActorCatalog.TryEditorNumberForClassName(className, out var editorNumber))
-            return true;
-
-        var radius = AcsToDouble(distanceFixed);
-        if (radius < 0)
-            radius = 0;
-        var radiusSq = radius * radius;
-        var ax = actor.X.ToDouble();
-        var ay = actor.Y.ToDouble();
-        var found = 0;
-        foreach (var other in sim.Actors)
-        {
-            if (other.Destroyed || other == actor)
-                continue;
-            if (other.DoomEdNum != editorNumber)
-                continue;
-            var dx = other.X.ToDouble() - ax;
-            var dy = other.Y.ToDouble() - ay;
-            if (dx * dx + dy * dy > radiusSq)
-                continue;
-            found++;
-            if (found >= required)
-                break;
-        }
-
-        result = found >= required ? 1 : 0;
+        var className = AcsStringIds.Lookup(classStringId, stringTable, globalStrings);
+        result = ActorProximity.Check(actor, className, AcsToDouble(distanceFixed), required, flags, pointerSelector) ? 1 : 0;
         return true;
     }
 
@@ -723,6 +701,7 @@ internal static class AcsCallFunctions
         List<int> stack,
         Actor? activator,
         string[] stringTable,
+        AcsGlobalStrings globalStrings,
         int argCount,
         out int result)
     {
@@ -740,7 +719,7 @@ internal static class AcsCallFunctions
         if (actor is null)
             return true;
 
-        var stateName = stateStringId >= 0 && stateStringId < stringTable.Length ? stringTable[stateStringId] : null;
+        var stateName = AcsStringIds.Lookup(stateStringId, stringTable, globalStrings);
         result = AcsActorStates.HasNamedState(actor, stateName, exact) ? 1 : 0;
         return true;
     }

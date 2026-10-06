@@ -9,7 +9,7 @@ public class PlayerAcquisitionFriendshipTests
     [InlineData(1, 0, false)]
     [InlineData(0, 2, false)]
     [InlineData(1, 1, false)]
-    [InlineData(1, 2, true)]
+    [InlineData(1, 2, false)]
     public void VisualAcquisitionUsesExistingFriendshipPredicate(int ownerPlayer, int targetPlayer, bool expectedTarget)
     {
         var sim = Room();

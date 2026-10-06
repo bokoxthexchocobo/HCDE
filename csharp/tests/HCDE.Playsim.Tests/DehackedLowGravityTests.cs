@@ -17,7 +17,7 @@ public class DehackedLowGravityTests
         actor.Brain!.Enabled = false; actor.Z = Fixed.FromInt(32); actor.OnGround = false;
         sim.Tick();
         Assert.Equal(expectedVelocity, actor.VelocityZ.ToDouble());
-        Assert.Equal(32 + expectedVelocity, actor.Z.ToDouble());
+        Assert.Equal(32, actor.Z.ToDouble());
     }
 
     [Fact]

@@ -29,10 +29,7 @@ internal static class ArchvileActions
             if (ghostCompatibility)
                 corpse.Height = new Fixed((int)Math.Clamp((long)corpse.Height.Raw * 4, int.MinValue, int.MaxValue));
             ActorRaise.ReviveSupported(corpse, restoreDimensions: !ghostCompatibility);
-            corpse.Friendly = archvile.Friendly;
-            corpse.FriendPlayer = archvile.FriendPlayer;
-            corpse.TidToHate = archvile.TidToHate;
-            corpse.NoHatePlayers = archvile.NoHatePlayers;
+            ActorPropertyActions.CopySupportedFriendship(corpse, archvile);
             return true;
         }
         return false;

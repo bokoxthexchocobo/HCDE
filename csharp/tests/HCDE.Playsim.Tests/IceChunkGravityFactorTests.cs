@@ -30,7 +30,7 @@ public class IceChunkGravityFactorTests
         var sim = Room(); var actor = sim.AddBot(64, 0);
         actor.Z = Fixed.FromInt(100); actor.VelocityZ = Fixed.FromInt(4); actor.OnGround = false;
         ActorPhysics.Step(sim, actor);
-        Assert.Equal(3, actor.VelocityZ.ToDouble()); Assert.Equal(103, actor.Z.ToDouble());
+        Assert.Equal(3, actor.VelocityZ.ToDouble()); Assert.Equal(104, actor.Z.ToDouble());
     }
 
     [Fact]

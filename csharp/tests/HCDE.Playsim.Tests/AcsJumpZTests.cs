@@ -25,8 +25,8 @@ public class AcsJumpZTests
         var sim = Room(); var player = sim.Players.Single();
         Run(sim, player, [3, 0, 3, 12, 3, velocity * 65536, 245, 1]);
         sim.QueueCommand(0, new PlayerCommand { Jump = true }); sim.Tick();
-        Assert.Equal(velocity - 1, player.VelocityZ.ToDouble()); // Current physics applies gravity before movement.
-        Assert.Equal(velocity - 1, player.Z.ToDouble());
+        Assert.Equal(velocity - 1, player.VelocityZ.ToDouble());
+        Assert.Equal(velocity, player.Z.ToDouble()); // Native movement precedes gravity.
     }
 
     [Fact]

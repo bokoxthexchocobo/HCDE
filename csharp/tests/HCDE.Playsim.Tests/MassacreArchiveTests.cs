@@ -46,7 +46,8 @@ public class MassacreArchiveTests
     private static byte[] WriteWithoutPainTimer(AuthoritySimulation sim)
     {
         var state = sim.CaptureState();
-        foreach (var pose in state.Actors) pose.PainDeath = null;
+        // Keep this fixture at its historical version; movement overrides have a later archive.
+        foreach (var pose in state.Actors) { pose.PainDeath = null; pose.MovementActionFlags = null; }
         return LegacyActorArchiveFixture.Write(state);
     }
     private static AuthoritySimulation Room() => AuthoritySimulation.Start(new PlayLevel {

@@ -17,7 +17,7 @@ public class PlayerReactionMovementTests
         }
         sim.QueueCommand(0, command); sim.Tick();
         Assert.Equal(BamAngle.FromDegrees(90).Raw, player.Angle.Raw);
-        Assert.Equal(1, player.Y.ToDouble()); Assert.Equal(7, player.Z.ToDouble());
+        Assert.Equal(1, player.Y.ToDouble()); Assert.Equal(8, player.Z.ToDouble());
     }
 
     [Theory]

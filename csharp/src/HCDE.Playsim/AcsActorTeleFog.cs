@@ -8,8 +8,7 @@ internal static class AcsActorTeleFog
         var count = 0;
         foreach (var actor in Enumerate(sim, tid, activator))
         {
-            actor.TeleFogSource = source;
-            actor.TeleFogDest = dest;
+            ActorPropertyActions.SetTeleFog(actor, source, dest);
             count++;
         }
 
@@ -21,7 +20,7 @@ internal static class AcsActorTeleFog
         var count = 0;
         foreach (var actor in Enumerate(sim, tid, activator))
         {
-            (actor.TeleFogSource, actor.TeleFogDest) = (actor.TeleFogDest, actor.TeleFogSource);
+            ActorPropertyActions.SwapTeleFog(actor);
             count++;
         }
 

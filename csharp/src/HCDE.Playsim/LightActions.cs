@@ -117,6 +117,7 @@ internal static class LightActions
         for (var sector = 0; sector < sim.Level.Sectors.Count; sector++)
         {
             if (!sim.Level.Sectors[sector].MatchesTag(tag)) continue;
+            sim.HasLightOverride = true;
             var start = Math.Clamp(upper, short.MinValue, short.MaxValue);
             sim.Lights[sector] = (short)start;
             sim.LightEffects.Add(new LightEffect
@@ -165,6 +166,8 @@ internal static class LightActions
 
     internal static bool Stop(AuthoritySimulation sim, int tag)
     {
+        if (sim.LightEffects.Any(effect => sim.Level.Sectors[effect.Sector].MatchesTag(tag)))
+            sim.HasLightAnimationOverride = true;
         sim.LightEffects.RemoveAll(effect => sim.Level.Sectors[effect.Sector].MatchesTag(tag));
         return true;
     }
@@ -177,6 +180,7 @@ internal static class LightActions
         for (var sector = 0; sector < sim.Level.Sectors.Count; sector++)
         {
             if (!sim.Level.Sectors[sector].MatchesTag(tag)) continue;
+            sim.HasLightOverride = true;
             long light = action switch
             {
                 LightAction.Raise => (long)sim.LightOf(sector) + value,

@@ -27,6 +27,9 @@ public class DehackedCeilingSpawnTests
         actor.Brain!.Enabled = false;
         Assert.False(actor.NoGravity);
         sim.Tick();
+        Assert.Equal(72, actor.Z.ToDouble());
+        Assert.True(actor.VelocityZ.Raw < 0);
+        sim.Tick();
         Assert.True(actor.Z.ToDouble() < 72);
     }
 

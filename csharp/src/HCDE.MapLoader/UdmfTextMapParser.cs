@@ -20,11 +20,15 @@ public sealed class UdmfLinedef
     public int Id { get; set; }
     public bool Blocking { get; set; }
     public bool BlockEverything { get; set; }
+    public bool BlockUse { get; set; }
     public bool BlockSight { get; set; }
     public bool BlockHitscan { get; set; }
     public bool BlockProjectiles { get; set; }
     public bool BlockSound { get; set; }
     public bool BlockMonsters { get; set; }
+    public bool BlockPlayers { get; set; }
+    public bool BlockLandMonsters { get; set; }
+    public bool JumpOver { get; set; }
     public bool BlockFloaters { get; set; }
     public bool TwoSided { get; set; }
     public bool PlayerCross { get; set; }
@@ -80,6 +84,7 @@ public sealed class UdmfSector
     public int Leakiness { get; set; }
     public bool HurtMonsters { get; set; }
     public bool HarmInAir { get; set; }
+    public bool NoAttack { get; set; }
     public double Gravity { get; set; } = 1;
     public double HeightFloor { get; set; }
     public double HeightCeiling { get; set; }
@@ -345,11 +350,15 @@ public static class UdmfTextMapParser
             Id = Int(fields, "id"),
             Blocking = Bool(fields, "blocking"),
             BlockEverything = Bool(fields, "blockeverything"),
+            BlockUse = Bool(fields, "blockuse"),
             BlockSight = Bool(fields, "blocksight"),
             BlockHitscan = Bool(fields, "blockhitscan"),
             BlockProjectiles = Bool(fields, "blockprojectiles"),
             BlockSound = Bool(fields, "blocksound"),
             BlockMonsters = Bool(fields, "blockmonsters"),
+            BlockPlayers = Bool(fields, "blockplayers"),
+            BlockLandMonsters = Bool(fields, "blocklandmonsters"),
+            JumpOver = Bool(fields, "jumpover"),
             BlockFloaters = Bool(fields, "blockfloaters"),
             TwoSided = Bool(fields, "twosided"),
             PlayerCross = Bool(fields, "playercross"),
@@ -404,6 +413,7 @@ public static class UdmfTextMapParser
             Leakiness = Int(fields, "leakiness"),
             HurtMonsters = Bool(fields, "hurtmonsters"),
             HarmInAir = Bool(fields, "harminair"),
+            NoAttack = Bool(fields, "noattack"),
             Gravity = Number(fields, "gravity", 1),
             HeightFloor = Number(fields, "heightfloor"),
             HeightCeiling = Number(fields, "heightceiling"),

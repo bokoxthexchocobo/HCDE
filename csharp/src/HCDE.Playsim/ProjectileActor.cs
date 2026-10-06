@@ -100,7 +100,7 @@ public sealed class ProjectileActor : Actor
 
     internal void RotateYaw(double degrees)
     {
-        var speed = Math.Sqrt(Math.Pow(VelocityX.ToDouble(), 2) + Math.Pow(VelocityY.ToDouble(), 2));
+        var speed = VelXYToSpeed();
         var radians = Angle.Raw * Math.PI / 0x80000000u + degrees * Math.PI / 180;
         Angle = BamAngle.FromDegrees(radians * 180 / Math.PI);
         VelocityX = Fixed.FromDouble(Math.Cos(radians) * speed);
@@ -109,18 +109,16 @@ public sealed class ProjectileActor : Actor
 
     private void TrackTarget(AuthoritySimulation sim)
     {
-        if (Kind != ProjectileKind.RevenantTracer || (sim.Thinkers.Clock.Tic & 3) != 0) return;
-        var target = sim.Actors.FirstOrDefault(actor => actor.Id == TracerTargetId && actor.CanTakeDamage);
+        if (Kind != ProjectileKind.RevenantTracer || (sim.Thinkers.Clock.Tic & 3) != 0 || Speed == 0) return;
+        var target = sim.Actors.FirstOrDefault(actor => actor.Id == TracerTargetId && !actor.IsDead && !actor.Destroyed);
         if (target == null) return;
-        var dx = target.X.ToDouble() - X.ToDouble(); var dy = target.Y.ToDouble() - Y.ToDouble();
-        var desired = Math.Atan2(dy, dx) * 180 / Math.PI;
+        var desired = AngleTo(target);
         var current = Angle.Raw * 180.0 / 0x80000000u;
-        var delta = (desired - current + 540) % 360 - 180;
+        var delta = Normalize180(desired - current);
         RotateYaw(Math.Clamp(delta, -16.875, 16.875));
-        var radians = Angle.Raw * Math.PI / 0x80000000u;
-        VelocityX = Fixed.FromDouble(Math.Cos(radians) * Speed);
-        VelocityY = Fixed.FromDouble(Math.Sin(radians) * Speed);
-        var travel = Math.Max(1, Math.Sqrt(dx * dx + dy * dy) / Speed);
+        VelFromAngle();
+        if (FloorHugger || CeilingHugger) return;
+        var travel = DistanceBySpeed(target, Speed);
         // A_Tracer's small-target branch uses the missile's height, matching DoTracer2.
         var aimZ = target.Z.ToDouble() + (target.Height.ToDouble() >= 56 ? 40 : Height.ToDouble() * 2 / 3);
         var desiredZ = (aimZ - Z.ToDouble()) / travel;
@@ -321,5 +319,11 @@ public sealed class ProjectileActor : Actor
         }
         if (Kind == ProjectileKind.Bfg)
             BfgSprayActions.Apply(sim, this, Owner);
+    }
+
+    internal void ExplodeForAction()
+    {
+        var sim = Simulation ?? throw new InvalidOperationException("Projectile explosion requires a simulation.");
+        if (!Destroyed) Impact(sim, null, null, -1, -1);
     }
 }

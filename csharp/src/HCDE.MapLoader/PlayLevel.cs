@@ -22,6 +22,7 @@ public sealed class LevelSector
     public bool DamageEndsLevel { get; set; }
     public bool HurtMonsters { get; init; }
     public bool HarmInAir { get; init; }
+    public bool NoAttack { get; init; }
     public int Tag { get; init; }
     public IReadOnlyList<int> AdditionalTags { get; init; } = Array.Empty<int>();
     public bool HasTag(int tag) => tag != 0 && (Tag == tag || AdditionalTags.Contains(tag));
@@ -93,13 +94,18 @@ public sealed class LevelLine
     public IReadOnlyList<int> AdditionalIds { get; init; } = Array.Empty<int>();
     public bool HasId(int id) => id != -1 && (Tag == id || AdditionalIds.Contains(id));
     public const int BlockingFlag = 1;
+    public const int CompatSideFlag = 0x00000800;
     public const int BlockMonstersFlag = 2;
+    public const int BlockPlayersFlag = 0x00004000;
+    public const int BlockLandMonstersFlag2 = 1;
     public const int BlockFloatersFlag = 0x00040000;
+    public const int RailingFlag = 0x00020000;
     public const int TwoSidedFlag = 4;
     public const int BlockSoundFlag = 0x40;
     public const int BlockEverythingFlag = 0x00008000;
     public const int BlockHitscanFlag = 0x08000000;
     public const int BlockSightFlag = 0x04000000;
+    public const int BlockUseFlag = 0x02000000;
     public const int BlockProjectileFlag = 0x01000000;
     public const int RepeatSpecialFlag = 512;
     public const int MidTex3DFlag = 0x00200000;
@@ -113,6 +119,7 @@ public sealed class LevelLine
     public double X2 { get; init; }
     public double Y2 { get; init; }
     public int Flags { get; init; }
+    public int Flags2 { get; init; }
     public int SideFront { get; init; }
     public int SideBack { get; init; }
     public int Special { get; set; }
@@ -426,6 +433,7 @@ public static class LevelBuilder
             DamageInterval = sector.DamageAmount == 0 ? 0 : Math.Max(1, (int)unchecked((short)sector.DamageInterval)),
             Leakiness = sector.DamageAmount == 0 ? 0 : unchecked((short)sector.Leakiness),
             HurtMonsters = sector.HurtMonsters,
+            NoAttack = sector.NoAttack,
             HarmInAir = sector.HarmInAir,
             Gravity = planeTransforms ? sector.Gravity : 1,
             Tag = sector.Id,
@@ -490,12 +498,15 @@ public static class LevelBuilder
             if (source.Blocking)
                 flags |= LevelLine.BlockingFlag;
             if (source.BlockEverything) flags |= LevelLine.BlockEverythingFlag;
+            if (source.BlockUse) flags |= LevelLine.BlockUseFlag;
             if (source.BlockSight) flags |= LevelLine.BlockSightFlag;
             if (source.BlockHitscan) flags |= LevelLine.BlockHitscanFlag;
             if (source.BlockProjectiles) flags |= LevelLine.BlockProjectileFlag;
             if (source.BlockSound) flags |= LevelLine.BlockSoundFlag;
             if (source.BlockMonsters) flags |= LevelLine.BlockMonstersFlag;
+            if (source.BlockPlayers) flags |= LevelLine.BlockPlayersFlag;
             if (source.BlockFloaters) flags |= LevelLine.BlockFloatersFlag;
+            if (source.JumpOver) flags |= LevelLine.RailingFlag;
             lines[i] = new LevelLine
             {
                 Index = i,
@@ -506,6 +517,7 @@ public static class LevelBuilder
                 X2 = v2.X,
                 Y2 = v2.Y,
                 Flags = flags,
+                Flags2 = source.BlockLandMonsters ? LevelLine.BlockLandMonstersFlag2 : 0,
                 SideFront = source.SideFront,
                 SideBack = source.SideBack,
                 Special = source.Special,
@@ -517,9 +529,9 @@ public static class LevelBuilder
                 Arg3 = source.Arg3,
                 Arg4 = source.Arg4,
                 PlayerCross = source.PlayerCross,
-                PlayerUse = source.PlayerUse,
+                PlayerUse = source.PlayerUse && !source.PassUse,
                 PlayerUseBack = source.PlayerUseBack,
-                UseThrough = source.PassUse,
+                UseThrough = source.PlayerUse && source.PassUse,
                 Repeat = source.RepeatSpecial,
                 Health = source.Health,
                 HealthGroup = source.HealthGroup,

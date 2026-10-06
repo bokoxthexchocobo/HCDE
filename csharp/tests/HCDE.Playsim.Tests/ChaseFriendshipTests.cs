@@ -51,6 +51,14 @@ public class ChaseFriendshipTests
             owner.FriendPlayer = 1; other.FriendPlayer = 2;
         }
         owner.Brain!.Hear(sim, owner, other);
+        if (bothFriendlyWithDifferentOwners)
+        {
+            Assert.Null(owner.Brain.TargetId);
+            owner.Brain.Tick(sim, owner);
+            Assert.Null(owner.Brain.TargetId);
+            Assert.Equal(MonsterMode.Idle, owner.Brain.Mode);
+            return;
+        }
         Assert.Equal(other.Id, owner.Brain.TargetId);
         owner.Brain.Tick(sim, owner);
         Assert.Equal(other.Id, owner.Brain.TargetId);

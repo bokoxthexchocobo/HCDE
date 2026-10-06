@@ -28,8 +28,10 @@ public class DehackedGravityDropTests
         actor.Brain!.Enabled = false;
         var z = actor.Z.ToDouble();
         sim.Tick();
-        Assert.Equal(falls, actor.Z.ToDouble() < z);
+        Assert.Equal(z, actor.Z.ToDouble());
         Assert.Equal(falls, actor.VelocityZ.Raw < 0);
+        sim.Tick();
+        Assert.Equal(falls, actor.Z.ToDouble() < z);
     }
 
     [Fact]

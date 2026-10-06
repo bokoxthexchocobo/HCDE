@@ -86,6 +86,7 @@ public sealed class SimulationCommandSink : IClientInputCommandSink
             WeaponSelections = selections,
             ForwardMove = command.ForwardMove,
             SideMove = command.SideMove,
+            UpMove = command.UpMove,
             YawDelta = command.Yaw,
             PitchDelta = command.Pitch,
             Attack = (command.Buttons & 1u) != 0, // BT_ATTACK in src/d_event.h

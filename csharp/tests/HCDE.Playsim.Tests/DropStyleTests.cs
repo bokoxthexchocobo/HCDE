@@ -27,7 +27,9 @@ public class DropStyleTests
         Assert.Equal(Fixed.FromInt(x), drop.VelocityX); Assert.Equal(Fixed.FromInt(y), drop.VelocityY);
         Assert.Equal(default, drop.VelocityZ); Assert.False(drop.OnGround);
         Assert.Equal(reference.CombatRandomState, sim.CombatRandomState);
-        source.X = Fixed.FromInt(200); sim.Tick(); Assert.True(drop.Z.ToDouble() < 64);
+        source.X = Fixed.FromInt(200); sim.Tick(); Assert.Equal(64, drop.Z.ToDouble());
+        Assert.True(drop.VelocityZ.Raw < 0);
+        sim.Tick(); Assert.True(drop.Z.ToDouble() < 64);
     }
 
     [Fact]

@@ -25,6 +25,14 @@ public enum CompatSurface
     DehHealth = 1024,
     /// <summary>Native COMPATF_MISSILECLIP: negative projectile pass heights use their absolute height.</summary>
     MissileClip = 2048,
+    /// <summary>Native COMPATF_USEBLOCKING: use-through takes precedence and other special lines block use.</summary>
+    UseBlocking = 4096,
+    /// <summary>Native COMPATF2_POINTONLINE: activation sides use the vanilla classifier.</summary>
+    PointOnLine = 8192,
+    /// <summary>Native COMPATF_NOBLOCKFRIENDS: friendly actors bypass monster-blocking line flags.</summary>
+    NoBlockFriends = 16384,
+    /// <summary>Native COMPATF2_RAILING: railing floors apply only from the high side.</summary>
+    Railing = 32768,
 }
 
 public static class CompatSurfaceRules

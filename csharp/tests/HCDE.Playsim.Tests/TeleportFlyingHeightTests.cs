@@ -24,5 +24,19 @@ public class TeleportFlyingHeightTests
         Assert.Equal(expected, actor.Z.ToDouble());
         Assert.Equal(expected == 64, actor.OnGround);
         Assert.False(actor.OnMobj);
+        Assert.Equal(actor.X, actor.PreviousX); Assert.Equal(actor.Y, actor.PreviousY);
+        Assert.Equal(actor.Z, actor.PreviousZ);
+        Assert.Equal(actor.PosPlusZ(0), actor.InterpolatedPosition(0.5));
+    }
+
+    [Fact]
+    public void ClearInterpolationResetsPositionHistoryAndPreservesVelocity()
+    {
+        var actor = new Actor { VelocityX = Fixed.FromInt(7), Angle = BamAngle.FromDegrees(37) };
+        actor.SetXYZ(10, 20, 30); actor.RememberPosition(); actor.SetXYZ(-5, 50, 100);
+        actor.ClearInterpolation();
+        Assert.Equal((-5.0, 50.0, 100.0), actor.InterpolatedPosition(0));
+        Assert.Equal(actor.PosPlusZ(0), actor.InterpolatedPosition(0.5));
+        Assert.Equal(7, actor.VelocityX.ToDouble()); Assert.Equal(BamAngle.FromDegrees(37), actor.Angle);
     }
 }

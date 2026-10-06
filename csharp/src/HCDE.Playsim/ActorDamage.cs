@@ -155,13 +155,18 @@ public static class ActorDamage
         var painState = target.PainStateFor(damageType);
         // MF6_FORCEPAIN skips the threshold and the pain roll. MF5_NOPAIN, MF5_PAINLESS, and DMG_NO_PAIN still block.
         var painless = target.NoPain || inflictor is { Painless: true } || flags.HasFlag(DamageFlags.NoPain);
-        var painFlinch = !target.IsDead && !painless && target.States.HasState(painState)
+        var painFlinch = !target.IsDead && !painless && target.Brain?.Charging != true
+            && target.States.HasState(painState)
             && (forcedPain || (lost > 0 && dealt >= target.PainThreshold
                 && (painChance >= 256 || painChance > 0 && target.Simulation != null
                     && target.Simulation.NextCombatRandom() % 256 < painChance)))
             && TryEnterPain(target, painState, damageType, forcedPain);
         if (!target.IsDead)
+        {
+            if (target is not PlayerPawn && (dealt > 0 || forcedPain))
+                target.ReactionTime = 0;
             target.Brain?.WakeOnDamage(target, source, dealt, forcedPain);
+        }
         if (painFlinch && source != null && ShouldMarkJustHit(target, source))
             target.JustHit = true;
         return new DamageResult(lost, absorbed, target.IsDead);

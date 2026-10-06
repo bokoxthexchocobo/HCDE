@@ -10,8 +10,7 @@ internal static class SimProjectilePointerArchive
     {
         if (!state.Actors.Any(a => a.ProjectilePointers.HasValue)) return;
         if (state.Actors.Any(a => a.ProjectilePointers is { } p &&
-            (p.OwnerId == 0 || p.TracerTargetId == 0 || !a.ProjectileLifetime.HasValue ||
-                p.TracerTargetId.HasValue && a.ProjectileLifetime.Value.Kind != ProjectileKind.RevenantTracer)))
+            (p.OwnerId == 0 || p.TracerTargetId == 0 || !a.ProjectileLifetime.HasValue)))
             throw new InvalidOperationException("Invalid projectile pointer archive.");
     }
 
@@ -52,7 +51,7 @@ internal static class SimProjectilePointerArchive
             var owner = BinaryPrimitives.ReadUInt32LittleEndian(bytes[(start + 8 + i * 8)..]);
             var tracer = BinaryPrimitives.ReadUInt32LittleEndian(bytes[(start + 12 + i * 8)..]);
             if (owner == 0 && tracer != 0 || owner != 0 &&
-                (!state.Actors[i].ProjectileLifetime.HasValue || tracer != 0 && state.Actors[i].ProjectileLifetime!.Value.Kind != ProjectileKind.RevenantTracer))
+                !state.Actors[i].ProjectileLifetime.HasValue)
             { state = new(); error = "save-pointer-state"; return false; }
             state.Actors[i].ProjectilePointers = owner == 0 ? null : new(owner, tracer == 0 ? null : tracer);
         }

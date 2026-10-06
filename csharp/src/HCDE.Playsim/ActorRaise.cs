@@ -6,7 +6,7 @@ internal static class ActorRaise
     internal static bool HasRaiseState(Actor actor) =>
         !actor.Destroyed
         && actor is not PlayerPawn
-        && actor.IsDead
+        && actor.Corpse
         && actor.RaiseDuration > 0
         && actor.SpawnHealth() > 0
         && (actor.States.RemainingTics == -1 || actor.States.CurrentCanRaise)
@@ -35,6 +35,9 @@ internal static class ActorRaise
             corpse.Radius = corpse.ResurrectionRadius ?? corpse.Radius;
         }
         corpse.Health = corpse.SpawnHealth();
+        corpse.Killed = false;
+        corpse.Corpse = false;
+        corpse.Invisible = false;
         var collisionFlags = corpse.ResurrectionCollisionFlags ?? 3;
         corpse.Solid = (collisionFlags & 1) != 0;
         corpse.Shootable = (collisionFlags & 2) != 0;
@@ -67,6 +70,7 @@ internal static class ActorRaise
         corpse.Rip = corpse.DontRip = corpse.NoBossRip = false;
         corpse.RipperLevel = corpse.RipLevelMin = corpse.RipLevelMax = 0;
         corpse.Pushable = corpse.CannotPush = false;
+        corpse.NoVerticalMeleeRange = false;
         corpse.PushFactor = 0.25;
         corpse.ProjectilePassHeight = default;
         corpse.SpecialFireDamage = false;

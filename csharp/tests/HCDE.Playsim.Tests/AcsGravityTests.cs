@@ -36,8 +36,8 @@ public class AcsGravityTests
         actor.NoGravity = noGravity; actor.Z = Fixed.FromInt(100); actor.OnGround = false;
         actor.VelocityZ = Fixed.FromInt(4);
         ActorPhysics.Step(sim, actor);
-        var expected = 4 - (noGravity ? 0 : gravity);
-        Assert.Equal(expected, actor.VelocityZ.ToDouble()); Assert.Equal(100 + expected, actor.Z.ToDouble());
+        var expected = noGravity ? 4 * ActorPhysics.FlyingFriction : 4 - gravity;
+        Assert.Equal(expected, actor.VelocityZ.ToDouble()); Assert.Equal(104, actor.Z.ToDouble());
     }
 
     [Fact]

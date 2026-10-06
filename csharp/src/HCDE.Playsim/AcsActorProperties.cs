@@ -83,12 +83,14 @@ internal static class AcsActorProperties
                 break;
             case Speed:
                 actor.MovementSpeed = new Fixed(value);
+                actor.HasTuningOverride = true;
                 break;
             case Damage:
                 actor.Damage = value;
                 break;
             case Invulnerable:
                 actor.Invulnerable = value != 0;
+                actor.HasDefensePropertyOverride = true;
                 break;
             case JumpZ:
                 if (actor is PlayerPawn jumpPlayer) jumpPlayer.JumpZ = new Fixed(value);
@@ -98,6 +100,7 @@ internal static class AcsActorProperties
                 break;
             case Gravity:
                 actor.Gravity = new Fixed(value);
+                actor.HasGravityOverride = true;
                 break;
             case DamageFactor:
                 actor.DamageFactor = new Fixed(value);
@@ -141,6 +144,7 @@ internal static class AcsActorProperties
                 break;
             case Mass:
                 actor.Mass = value;
+                actor.HasDefensePropertyOverride = true;
                 break;
             case MaxStepHeight:
                 actor.MaxStepHeight = Fixed.FromDouble(value / 65536.0);

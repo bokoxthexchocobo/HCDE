@@ -55,12 +55,13 @@ public class FloatingMonsterTests
     [Theory]
     [InlineData(false)]
     [InlineData(true)]
-    public void DeadOrDisabledMonsterDoesNotFloat(bool dead)
+    public void DeathAiClearsTargetButDisabledAiRetainsFloatingMovement(bool dead)
     {
         var (sim, monster, player) = Setup(3005);
         Acquire(sim, monster); player.Z = Fixed.FromInt(200);
         if (dead) monster.Health = 0; else monster.Brain!.Enabled = false;
-        sim.Tick(); Assert.Equal(0, monster.Z.ToDouble());
+        sim.Tick(); Assert.Equal(dead ? 0 : 4, monster.Z.ToDouble());
+        if (dead) Assert.Null(monster.Brain!.TargetId);
     }
 
     private static void Acquire(AuthoritySimulation sim, Actor monster)

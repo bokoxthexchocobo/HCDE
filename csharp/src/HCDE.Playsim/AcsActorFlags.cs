@@ -6,12 +6,15 @@ internal static class AcsActorFlags
     private enum Kind
     {
         Invulnerable,
+        UseSpecial,
         StrifeDamage,
         Rip,
         DontRip,
         NoBossRip,
         Pushable,
         CannotPush,
+        NoVerticalMeleeRange,
+        Killed,
         FoilInvul,
         SpecialFireDamage,
         Buddha,
@@ -53,6 +56,7 @@ internal static class AcsActorFlags
         Shattering,
         NoAutoOffSkullFly,
         NoBlockmap,
+        Invisible,
         PierceArmor,
         NoTarget,
         Ambush,
@@ -61,6 +65,12 @@ internal static class AcsActorFlags
         Shootable,
         Floating,
         NoGravity,
+        Fly,
+        NoFriction,
+        Corpse,
+        DontCorpse,
+        Falling,
+        DontFall,
         NoExplodeFloor,
         CeilingHugger,
         FloorHugger,
@@ -114,6 +124,12 @@ internal static class AcsActorFlags
 
     private static bool TryMapUnqualified(string flagName, out Kind kind)
     {
+        if (flagName.Equals("USESPECIAL", StringComparison.OrdinalIgnoreCase))
+        { kind = Kind.UseSpecial; return true; }
+        if (flagName.Equals("NOVERTICALMELEERANGE", StringComparison.OrdinalIgnoreCase))
+        { kind = Kind.NoVerticalMeleeRange; return true; }
+        if (flagName.Equals("KILLED", StringComparison.OrdinalIgnoreCase))
+        { kind = Kind.Killed; return true; }
         if (flagName.Equals("PIERCEARMOR", StringComparison.OrdinalIgnoreCase))
         { kind = Kind.PierceArmor; return true; }
         if (flagName.Equals("RIP", StringComparison.OrdinalIgnoreCase))
@@ -130,6 +146,8 @@ internal static class AcsActorFlags
         { kind = Kind.StrifeDamage; return true; }
         if (flagName.Equals("NOBLOCKMAP", StringComparison.OrdinalIgnoreCase))
         { kind = Kind.NoBlockmap; return true; }
+        if (flagName.Equals("INVISIBLE", StringComparison.OrdinalIgnoreCase))
+        { kind = Kind.Invisible; return true; }
         if (flagName.Equals("JUSTHIT", StringComparison.OrdinalIgnoreCase))
         { kind = Kind.JustHit; return true; }
         if (flagName.Equals("ACTLIKEBRIDGE", StringComparison.OrdinalIgnoreCase))
@@ -291,6 +309,18 @@ internal static class AcsActorFlags
             kind = Kind.Floating;
             return true;
         }
+        if (flagName.Equals("DONTFALL", StringComparison.OrdinalIgnoreCase))
+        { kind = Kind.DontFall; return true; }
+        if (flagName.Equals("FALLING", StringComparison.OrdinalIgnoreCase))
+        { kind = Kind.Falling; return true; }
+        if (flagName.Equals("DONTCORPSE", StringComparison.OrdinalIgnoreCase))
+        { kind = Kind.DontCorpse; return true; }
+        if (flagName.Equals("CORPSE", StringComparison.OrdinalIgnoreCase))
+        { kind = Kind.Corpse; return true; }
+        if (flagName.Equals("NOFRICTION", StringComparison.OrdinalIgnoreCase))
+        { kind = Kind.NoFriction; return true; }
+        if (flagName.Equals("FLY", StringComparison.OrdinalIgnoreCase))
+        { kind = Kind.Fly; return true; }
         if (flagName.Equals("NOGRAVITY", StringComparison.OrdinalIgnoreCase))
         {
             kind = Kind.NoGravity;
@@ -318,6 +348,7 @@ internal static class AcsActorFlags
 
     private static bool Read(Actor actor, Kind kind) => kind switch
     {
+        Kind.UseSpecial => actor.UseSpecial,
         Kind.Invulnerable => actor.Invulnerable,
         Kind.FoilInvul => actor.FoilInvul,
         Kind.SpecialFireDamage => actor.SpecialFireDamage,
@@ -360,6 +391,7 @@ internal static class AcsActorFlags
         Kind.Shattering => actor.Shattering,
         Kind.NoAutoOffSkullFly => actor.NoAutoOffSkullFly,
         Kind.NoBlockmap => actor.NoBlockmap,
+        Kind.Invisible => actor.Invisible,
         Kind.PierceArmor => actor.PierceArmor,
         Kind.StrifeDamage => actor.StrifeDamage,
         Kind.Rip => actor.Rip,
@@ -367,6 +399,8 @@ internal static class AcsActorFlags
         Kind.NoBossRip => actor.NoBossRip,
         Kind.Pushable => actor.Pushable,
         Kind.CannotPush => actor.CannotPush,
+        Kind.NoVerticalMeleeRange => actor.NoVerticalMeleeRange,
+        Kind.Killed => actor.Killed,
         Kind.NoTarget => actor.NoTarget,
         Kind.Ambush => actor.Ambush,
         Kind.Friendly => actor.Friendly,
@@ -374,6 +408,12 @@ internal static class AcsActorFlags
         Kind.Shootable => actor.Shootable,
         Kind.Floating => actor.Floating,
         Kind.NoGravity => actor.NoGravity,
+        Kind.Fly => actor.Fly,
+        Kind.NoFriction => actor.NoFriction,
+        Kind.Corpse => actor.Corpse,
+        Kind.DontCorpse => actor.DontCorpse,
+        Kind.Falling => actor.Falling,
+        Kind.DontFall => actor.DontFall,
         Kind.NoExplodeFloor => actor.NoExplodeFloor,
         Kind.CeilingHugger => actor.CeilingHugger,
         Kind.FloorHugger => actor.FloorHugger,
@@ -403,9 +443,10 @@ internal static class AcsActorFlags
     {
         switch (kind)
         {
-            case Kind.Invulnerable: actor.Invulnerable = value; break;
+            case Kind.Invulnerable: actor.Invulnerable = value; actor.HasDefensePropertyOverride = true; break;
             case Kind.FoilInvul: actor.FoilInvul = value; break;
             case Kind.SpecialFireDamage: actor.SpecialFireDamage = value; break;
+            case Kind.UseSpecial: actor.UseSpecial = value; break;
             case Kind.Buddha: actor.Buddha = value; break;
             case Kind.FoilBuddha: actor.FoilBuddha = value; break;
             case Kind.ForcePain: actor.ForcePain = value; break;
@@ -419,7 +460,7 @@ internal static class AcsActorFlags
             case Kind.NeverTarget: actor.NeverTarget = value; break;
             case Kind.NoTargetSwitch: actor.NoTargetSwitch = value; break;
             case Kind.QuickToRetaliate: actor.QuickToRetaliate = value; break;
-            case Kind.NoHatePlayers: actor.NoHatePlayers = value; break;
+            case Kind.NoHatePlayers: actor.NoHatePlayers = value; actor.HasFriendshipOverride = true; break;
             case Kind.NoTelefrag: actor.NoTelefrag = value; break;
             case Kind.AlwaysTelefrag: actor.AlwaysTelefrag = value; break;
             case Kind.NoTeleport: actor.NoTeleport = value; break;
@@ -444,7 +485,8 @@ internal static class AcsActorFlags
             case Kind.IceCorpse: actor.IceCorpse = value; break;
             case Kind.Shattering: actor.Shattering = value; break;
             case Kind.NoAutoOffSkullFly: actor.NoAutoOffSkullFly = value; break;
-            case Kind.NoBlockmap: actor.NoBlockmap = value; break;
+            case Kind.NoBlockmap: ActorPropertyActions.ChangeLinkFlags(actor, value ? 1 : 0); break;
+            case Kind.Invisible: actor.Invisible = value; break;
             case Kind.PierceArmor: actor.PierceArmor = value; break;
             case Kind.StrifeDamage: actor.StrifeDamage = value; break;
             case Kind.Rip: actor.Rip = value; break;
@@ -452,13 +494,21 @@ internal static class AcsActorFlags
             case Kind.NoBossRip: actor.NoBossRip = value; break;
             case Kind.Pushable: actor.Pushable = value; break;
             case Kind.CannotPush: actor.CannotPush = value; break;
+            case Kind.NoVerticalMeleeRange: actor.NoVerticalMeleeRange = value; break;
+            case Kind.Killed: actor.Killed = value; break;
             case Kind.NoTarget: actor.NoTarget = value; break;
             case Kind.Ambush: actor.Ambush = value; break;
-            case Kind.Friendly: actor.Friendly = value; break;
-            case Kind.Solid: actor.Solid = value; break;
-            case Kind.Shootable: actor.Shootable = value; break;
-            case Kind.Floating: actor.Floating = value; break;
-            case Kind.NoGravity: actor.NoGravity = value; break;
+            case Kind.Friendly: ActorPropertyActions.SetFriendly(actor, value); break;
+            case Kind.Solid: actor.Solid = value; actor.HasMovementActionOverride = true; break;
+            case Kind.Shootable: actor.Shootable = value; actor.HasDefensePropertyOverride = true; break;
+            case Kind.Floating: actor.Floating = value; actor.HasMovementActionOverride = true; break;
+            case Kind.DontFall: actor.DontFall = value; break;
+            case Kind.Falling: actor.Falling = value; break;
+            case Kind.DontCorpse: actor.DontCorpse = value; break;
+            case Kind.Corpse: actor.Corpse = value; break;
+            case Kind.NoFriction: actor.NoFriction = value; break;
+            case Kind.Fly: actor.Fly = value; break;
+            case Kind.NoGravity: actor.NoGravity = value; actor.HasMovementActionOverride = true; break;
             case Kind.NoExplodeFloor: actor.NoExplodeFloor = value; break;
             case Kind.CeilingHugger: actor.CeilingHugger = value; break;
             case Kind.FloorHugger: actor.FloorHugger = value; break;
@@ -472,7 +522,7 @@ internal static class AcsActorFlags
             case Kind.AllowThruBits: actor.AllowThruBits = value; break;
             case Kind.Ghost: actor.Ghost = value; break;
             case Kind.ThruGhost: actor.ThruGhost = value; break;
-            case Kind.NonShootable: actor.NonShootable = value; break;
+            case Kind.NonShootable: actor.NonShootable = value; actor.HasDefensePropertyOverride = true; break;
             case Kind.HitOwner: actor.HitOwner = value; break;
             case Kind.Spectral: actor.Spectral = value; break;
             case Kind.NoPain: actor.NoPain = value; break;

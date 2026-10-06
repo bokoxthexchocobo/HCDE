@@ -40,18 +40,19 @@ public class LostSoulTests
     [Theory]
     [InlineData(false)]
     [InlineData(true)]
-    public void PainAndDeathCancelChargeAndVerticalVelocity(bool kill)
+    public void DamageStopsChargeWithoutPainAndDeathEntersDeadMode(bool kill)
     {
         var (sim, soul, _) = Setup();
         Windup(sim, soul);
         for (var i = 0; i < 10; i++) sim.Tick();
         Assert.True(soul.Brain!.Charging);
         ActorDamage.Apply(soul, kill ? 1000 : 1);
+        Assert.NotEqual(soul.PainState, soul.States.Current);
         sim.Tick();
         Assert.False(soul.Brain.Charging);
         Assert.Equal(default, soul.VelocityX);
         Assert.Equal(default, soul.VelocityZ);
-        Assert.Equal(kill ? MonsterMode.Dead : MonsterMode.Pain, soul.Brain.Mode);
+        Assert.Equal(kill ? MonsterMode.Dead : MonsterMode.Chase, soul.Brain.Mode);
     }
 
     [Fact]

@@ -60,6 +60,11 @@ public sealed class PlayerInventory
     private readonly List<SpareArmor> _spareArmor = new();
     /// <summary>BasicArmorPickup items retained when pickup autoactivation fails.</summary>
     public IReadOnlyList<SpareArmor> SpareArmor => _spareArmor;
+    internal void RestoreSpareArmor(IReadOnlyList<SpareArmor>? spares)
+    {
+        _spareArmor.Clear();
+        if (spares is not null) _spareArmor.AddRange(spares);
+    }
     public int Bullets { get; set; } = 50;
     private int StartingBullets => Math.Clamp(_owner?.Simulation?.DehackedInitialBullets ?? 50, 0, 200);
     public int Shells { get; set; }

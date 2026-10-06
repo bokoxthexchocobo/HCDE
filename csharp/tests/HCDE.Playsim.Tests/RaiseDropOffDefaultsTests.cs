@@ -21,7 +21,7 @@ public class RaiseDropOffDefaultsTests
             ? ArchvileActions.TryRaise(sim, new Actor { X = Fixed.FromInt(-60) }, new Actor { X = Fixed.FromInt(500) })
             : ThingRaise.Execute(sim, 17, corpse, 0, 2) == true);
         Assert.Equal(dropOff, corpse.AllowDropOff);
-        Assert.Equal(dropOff, ActorPhysics.TryMove(sim, corpse, 40, 0, out _));
+        Assert.Equal(dropOff, ActorPhysics.TryMove(sim, corpse, 1, 0, out _));
     }
 
     [Fact]

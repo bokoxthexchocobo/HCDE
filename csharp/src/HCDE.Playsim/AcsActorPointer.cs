@@ -29,9 +29,11 @@ internal static class AcsActorPointer
         if (origin is { Destroyed: false })
         {
             if ((selector & Target) != 0)
-                return ActorFromId(sim, origin.Brain?.TargetId);
-            if ((selector & Master) != 0 || (selector & Tracer) != 0)
-                return null;
+                return origin is ProjectileActor missile ? ActorFromId(sim, missile.Owner.Id) : ActorFromId(sim, origin.Brain?.TargetId);
+            if ((selector & Master) != 0)
+                return ActorFromId(sim, origin.MasterId);
+            if ((selector & Tracer) != 0)
+                return origin is ProjectileActor tracer ? ActorFromId(sim, tracer.TracerTargetId) : null;
             if ((selector & FriendPlayer) != 0)
                 return origin.FriendPlayer > 0 ? PlayerByNum(sim, origin.FriendPlayer - 1) : null;
             if ((selector & LineTarget) != 0)

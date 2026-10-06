@@ -42,17 +42,24 @@ public class ActorRollArchiveTests
         Assert.Equal(original.Checksum, restored.Checksum);
     }
 
-    [Fact]
-    public void LegacyArchivePreservesCurrentRoll()
+    [Theory]
+    [InlineData(77u)]
+    [InlineData(0x80000000u)]
+    [InlineData(uint.MaxValue)]
+    public void LegacyArchiveRestoresDefaultRoll(uint laterRoll)
     {
         var sim = Room();
         var state = sim.CaptureState();
         foreach (var pose in state.Actors) { pose.Roll = null; pose.ContactFlags = null; }
         var bytes = LegacyActorArchiveFixture.Write(state);
         Assert.Equal(15, BinaryPrimitives.ReadUInt16LittleEndian(bytes.AsSpan(4)));
-        sim.Actors[0].Roll = new BamAngle(77);
+        sim.Actors[0].Roll = new BamAngle(laterRoll);
         SimSavegame.Apply(sim, bytes);
-        Assert.Equal(77u, sim.Actors[0].Roll.Raw);
+        Assert.Equal(0u, sim.Actors[0].Roll.Raw);
+        var fresh = Room(); SimSavegame.Apply(fresh, bytes);
+        Assert.Equal(fresh.Checksum, sim.Checksum);
+        Assert.Equal(SimSavegame.Write(fresh), SimSavegame.Write(sim));
+        sim.Tick(); fresh.Tick(); Assert.Equal(fresh.Checksum, sim.Checksum);
     }
 
     [Fact]

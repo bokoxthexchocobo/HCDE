@@ -11,11 +11,9 @@ internal static class ThingRaise
         var raised = false;
         foreach (var corpse in targets)
         {
-            if (!ActorRaise.HasRaiseState(corpse)) continue;
-            corpse.VelocityX = corpse.VelocityY = default;
-            if ((flags & 2) == 0 && !ActorRaise.CheckPosition(sim, corpse)) continue;
-            ActorRaise.ReviveSupported(corpse);
-            raised = true;
+            // A null line-special activator cannot transfer friendliness.
+            raised |= ActorRaiseActions.RaiseActor(activator ?? corpse, corpse,
+                activator is null ? flags & ~1 : flags);
         }
         return raised;
     }

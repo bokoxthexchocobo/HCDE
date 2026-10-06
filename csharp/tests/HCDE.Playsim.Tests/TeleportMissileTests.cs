@@ -5,6 +5,29 @@ namespace HCDE.Playsim.Tests;
 public class TeleportMissileTests
 {
     [Theory]
+    [InlineData(0, 5, 0)]
+    [InlineData(180, -5, 0)]
+    [InlineData(270, 0, -5)]
+    public void TeleportUsesExistingHorizontalSpeedAtDestinationYaw(short yaw, double x, double y)
+    {
+        var sim = AuthoritySimulation.Start(new PlayLevel
+        {
+            Sectors = [new LevelSector { CeilingHeight = 256 }],
+            Things = [new LevelThing { Type = LineSpecials.TeleportDestType, X = 200, Angle = yaw }],
+        });
+        var missile = new ProjectileActor(new Actor(), ProjectileKind.ImpBall)
+        {
+            NoTeleport = false, Z = Fixed.FromInt(32), SectorIndex = 0,
+            MovementSpeed = Fixed.FromInt(99), VelocityX = Fixed.FromInt(-3),
+            VelocityY = Fixed.FromInt(4), VelocityZ = Fixed.FromDouble(-2.5),
+        };
+        Assert.True(LineSpecials.Execute(sim, missile, LineSpecials.Teleport, 0));
+        Assert.Equal(x, missile.VelocityX.ToDouble()); Assert.Equal(y, missile.VelocityY.ToDouble());
+        Assert.Equal(-2.5, missile.VelocityZ.ToDouble()); Assert.Equal(5, missile.VelXYToSpeed());
+        Assert.Equal(missile.PosPlusZ(0), missile.InterpolatedPosition(0.5));
+    }
+
+    [Theory]
     [InlineData(128, 96)]
     [InlineData(80, 72)]
     public void MissileTeleportPreservesHeightAndVerticalVelocityAndRedirectsHorizontalSpeed(short ceiling, int expectedZ)

@@ -27,7 +27,7 @@ public class GameplayFoundationTests
         var player = sim.Players.Single();
         sim.QueueCommand(0, new PlayerCommand { Jump = true });
         sim.Tick();
-        Assert.Equal(7, player.Z.ToDouble());
+        Assert.Equal(8, player.Z.ToDouble());
         Assert.False(player.OnGround);
         sim.QueueCommand(0, new PlayerCommand { Jump = true });
         sim.Tick();
@@ -148,6 +148,7 @@ public class GameplayFoundationTests
     {
         var sim = TwoRooms(-48, 128);
         var player = sim.Players.Single();
+        player.Radius = Fixed.FromInt(1);
         player.X = Fixed.FromInt(-1);
         player.VelocityX = Fixed.FromInt(4);
         sim.Tick();
@@ -160,11 +161,12 @@ public class GameplayFoundationTests
     {
         var sim = TwoRooms(-24, 128);
         var player = sim.Players.Single();
+        player.Radius = Fixed.FromInt(1);
         player.X = Fixed.FromInt(-1);
         player.VelocityX = Fixed.FromInt(4);
         sim.Tick();
         Assert.Equal(1, player.SectorIndex);
-        Assert.Equal(-1, player.Z.ToDouble());
+        Assert.Equal(0, player.Z.ToDouble());
         Assert.False(player.OnGround);
         for (var i = 0; i < 10; i++) sim.Tick();
         Assert.Equal(-24, player.Z.ToDouble());
@@ -1131,7 +1133,7 @@ public class GameplayFoundationTests
     [Fact]
     public void LevelInfightingOffBlocksMonsterDamageUnlessHostile()
     {
-        var sim = Room();
+        var sim = Room(mode: SpawnGameMode.Deathmatch);
         sim.Infighting = -1;
         var victim = sim.AddBot(64, 64);
         victim.Health = 100;
@@ -1269,7 +1271,7 @@ public class GameplayFoundationTests
     [Fact]
     public void OpposingFriendliesRetaliateWhenInfightingIsOff()
     {
-        var sim = Room();
+        var sim = Room(mode: SpawnGameMode.Deathmatch);
         sim.Infighting = -1;
         var left = sim.AddBot(64, 64);
         left.Health = 100;
@@ -1478,7 +1480,7 @@ public class GameplayFoundationTests
     }
 
     [Fact]
-    public void DeadLastEnemyIsClearedWithoutResumingChase()
+    public void DeadLastEnemyIsRetainedWithoutResumingChase()
     {
         var sim = Room();
         var bot = sim.AddBot(64, 64);
@@ -1497,7 +1499,7 @@ public class GameplayFoundationTests
         bot.Brain.Enabled = true;
         sim.Tick();
         Assert.Null(bot.Brain!.TargetId);
-        Assert.Null(bot.Brain.LastEnemyId);
+        Assert.Equal(other.Id, bot.Brain.LastEnemyId);
         Assert.Equal(MonsterMode.Idle, bot.Brain.Mode);
     }
 
@@ -2879,9 +2881,9 @@ public class GameplayFoundationTests
         SimSavegame.Apply(sim, saved);
         Assert.Equal(-150, player.Health);
         Assert.Equal(ActorStateMachine.Death, player.States.Current);
-        // The pose does not store the death view, so another dead tic keeps the lower value.
-        Assert.Equal(view - 1, player.ViewHeight, 3);
-        Assert.NotEqual(checksum, sim.Checksum);
+        // Loading restores the saved eye height instead of retaining later death tics.
+        Assert.Equal(view, player.ViewHeight, 3);
+        Assert.Equal(checksum, sim.Checksum);
     }
 
     private static ActorFrame[] DeathFrames() =>
@@ -3522,11 +3524,11 @@ public class GameplayFoundationTests
         Things = new[] { new LevelThing { Type = 1 } }.Concat(extras).ToArray(),
     }, spawnOptions: new SpawnOptions(Skill: skill));
 
-    private static AuthoritySimulation Room(short ceiling = 128) => AuthoritySimulation.Start(new PlayLevel
+    private static AuthoritySimulation Room(short ceiling = 128, SpawnGameMode mode = SpawnGameMode.Single) => AuthoritySimulation.Start(new PlayLevel
     {
         Sectors = new[] { new LevelSector { CeilingHeight = ceiling, Tag = 1 } },
         Things = new[] { new LevelThing { Type = 1 } },
-    });
+    }, spawnOptions: new SpawnOptions(Mode: mode));
 
     internal static AuthoritySimulation TwoRooms(short floor, short ceiling) => AuthoritySimulation.Start(new PlayLevel
     {
