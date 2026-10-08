@@ -25,6 +25,8 @@ public class Thinker
 
     public virtual void PostBeginPlay() => PostBeginCount++;
 
+    public virtual void CallPostBeginPlay() => PostBeginPlay();
+
     public virtual void Tick() => TickCount++;
 }
 
@@ -107,7 +109,7 @@ public sealed class ThinkerCollection
                 }
 
                 node.JustSpawned = false;
-                node.PostBeginPlay();
+                node.CallPostBeginPlay();
             }
 
             if (!node.Destroyed && _ticked.Add(node))
@@ -144,7 +146,7 @@ public sealed class ThinkerCollection
         thinker.InList = true;
     }
 
-    private void Remove(Thinker thinker)
+    internal void Remove(Thinker thinker)
     {
         if (!thinker.InList)
             return;

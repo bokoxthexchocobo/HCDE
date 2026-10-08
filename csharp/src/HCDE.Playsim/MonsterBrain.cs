@@ -232,6 +232,7 @@ public sealed class MonsterBrain(MonsterAttack attack)
             _healTics = 0;
             Mode = MonsterMode.Pain; WindupTics = 0; _attackTic = -1; return;
         }
+        if (actor.RaiseState >= 0 && actor.States.Current == actor.RaiseState) return;
         if (AdvanceRaiseFrame()) return;
         if (ReactionTics != 0) { ReactionTics = unchecked(ReactionTics - 1); return; }
         if (_healTics > 0) { _healTics--; Mode = MonsterMode.Heal; return; }
@@ -332,7 +333,7 @@ public sealed class MonsterBrain(MonsterAttack attack)
         if (_nativeType == 64)
         {
             if (shot == 0) _vileFire = true;
-            else if (visible) ArchvileActions.Attack(sim, actor, target, _vileFire);
+            else ArchvileActions.Attack(sim, actor, target, _vileFire);
             return;
         }
         if (_nativeType == 3006)
@@ -348,7 +349,7 @@ public sealed class MonsterBrain(MonsterAttack attack)
         if (_separateMelee || Attack == MonsterAttack.Melee || melee && profile.MeleeDice > 0)
         {
             if (melee && visible) ActorDamage.Apply(target,
-                (1 + (int)(sim.NextCombatRandom() % (uint)profile.MeleeDice)) * profile.MeleeMultiplier, actor, inflictor: actor);
+                (1 + (int)(sim.NextCombatRandom() % (uint)profile.MeleeDice)) * profile.MeleeMultiplier, actor, damageType: "Melee", inflictor: actor);
             return;
         }
         if (profile.Projectile is { } kind)
@@ -376,7 +377,7 @@ public sealed class MonsterBrain(MonsterAttack attack)
     {
         var hit = CombatTrace.TraceLineAttack(sim, source,
             BamAngle.FromDegrees(source.Angle.ToDegrees() + spread), BamAngle.FromDegrees(pitch), range);
-        if (hit.Victim is { } victim) ActorDamage.Apply(victim, damage, source, inflictor: source);
+        if (hit.Victim is { } victim) ActorDamage.Apply(victim, damage, source, damageType: "Hitscan", inflictor: source);
         else GeometryLineAttack.Apply(sim, hit, damage);
     }
 
@@ -406,7 +407,7 @@ public sealed class MonsterBrain(MonsterAttack attack)
         _deathTics = 0; _deathTargetId = null; _healTics = 0; _vileFire = false;
         TargetId = null;
         LastEnemyId = null;
-        _raiseTics = actor.RaiseDuration;
+        _raiseTics = actor.RaiseState >= 0 ? 0 : actor.RaiseDuration;
         AttackCooldown = 0;
         Mode = MonsterMode.Raise;
         actor.LastDamageSourceId = null;
@@ -418,22 +419,20 @@ public sealed class MonsterBrain(MonsterAttack attack)
         TargetId = target.Id;
         Charging = true;
         Mode = MonsterMode.Recovery;
-        var dx = target.X.ToDouble() - actor.X.ToDouble(); var dy = target.Y.ToDouble() - actor.Y.ToDouble();
-        var radians = Math.Atan2(dy, dx);
-        actor.Angle = BamAngle.FromDegrees(radians * 180 / Math.PI);
-        actor.VelocityX = Fixed.FromDouble(skullSpeed * Math.Cos(radians));
-        actor.VelocityY = Fixed.FromDouble(skullSpeed * Math.Sin(radians));
-        var travel = Math.Max(1, Math.Sqrt(dx * dx + dy * dy) / skullSpeed);
+        actor.Angle = BamAngle.FromDegrees(actor.AngleTo(target));
+        actor.VelFromAngle(skullSpeed);
+        var travel = actor.DistanceBySpeed(target, skullSpeed);
         actor.VelocityZ = Fixed.FromDouble((target.Z.ToDouble() + target.Height.ToDouble() / 2 - actor.Z.ToDouble()) / travel);
     }
 
     /// <summary>Native P_CheckMeleeRange distance, vertical, friendship and sight gates.</summary>
     internal static bool CheckMeleeRange(Actor actor, Actor target, bool visible, double range = -1) =>
-        SectorAllowsAttacks(actor) && Distance(actor, target)
+        Distance(actor, target)
             < (range < 0 ? actor.MeleeRange.ToDouble() : range) + target.Radius.ToDouble()
+        && (actor.GoalId == target.Id || SectorAllowsAttacks(actor)
         && (actor.NoVerticalMeleeRange || (target.Z.ToDouble() <= actor.Z.ToDouble() + actor.Height.ToDouble()
             && target.Z.ToDouble() + target.Height.ToDouble() >= actor.Z.ToDouble()))
-        && !actor.IsFriend(target) && visible;
+        && !actor.IsFriend(target) && visible);
 
     private static bool SectorAllowsAttacks(Actor actor) => actor.Level is not { } level
         || actor.SectorIndex < 0 || actor.SectorIndex >= level.Sectors.Count

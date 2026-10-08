@@ -65,7 +65,7 @@ internal static class DoomDecorationDefaults
         {
             actor.GenericCrushState = 1;
             actor.NullState = 2;
-            actor.States.Configure(actor, [new ActorFrame(6, -1, FullBright: false),
+            actor.States.ConfigureSpawn(actor, [new ActorFrame(6, -1, FullBright: false),
                 new ActorFrame(-1, 1, FullBright: false), new ActorFrame(1, -1, FullBright: false)], ActorStateMachine.Spawn);
         }
         else
@@ -96,6 +96,6 @@ internal static class DoomDecorationDefaults
             .Append(new ActorFrame(1, -1, FullBright: false));
         // Native map Gibs aliases Spawn to the inherited GenericCrush frame.
         actor.SpawnState = definitionType == 24 ? actor.GenericCrushState : ActorStateMachine.Spawn;
-        actor.States.Configure(actor, frames, actor.SpawnState);
+        actor.States.ConfigureSpawn(actor, frames, actor.SpawnState);
     }
 }

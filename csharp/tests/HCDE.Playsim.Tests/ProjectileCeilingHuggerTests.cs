@@ -25,7 +25,8 @@ public class ProjectileCeilingHuggerTests
     public void FloorStillExplodes()
     {
         var sim = Room(); var missile = Shoot(sim); missile.CeilingHugger = true;
-        missile.Z = Fixed.FromInt(2); missile.VelocityZ = Fixed.FromInt(-10);
+        // The native vertical missile nudge first makes horizontal movement snap to the ceiling.
+        missile.Z = Fixed.FromInt(2); missile.VelocityZ = Fixed.FromInt(-200);
         sim.Tick(); Assert.True(missile.Destroyed); Assert.True(sim.Level.Sectors[0].HealthFloor < 1000);
     }
 

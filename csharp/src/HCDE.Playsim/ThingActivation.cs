@@ -24,7 +24,7 @@ public static class ThingActivation
         return targets.Length != 0;
     }
 
-    internal static void InitializeSpawn(Actor actor, bool mapDormant, bool mapSpawn = true)
+    internal static void InitializeSpawn(Actor actor, bool mapDormant, bool mapSpawn = true, Func<uint>? mapSpawnRandom = null)
     {
         actor.SpawnDormant = mapDormant;
         actor.ResurrectionRadius ??= actor.Radius;
@@ -34,7 +34,7 @@ public static class ThingActivation
         actor.ResurrectionMovementFlags ??= ActorSpawner.MovementFlagsOf(actor);
         actor.BeginPlay();
         if (actor.Destroyed) return;
-        if (mapSpawn) actor.LevelSpawned();
+        if (mapSpawn) actor.LevelSpawned(mapSpawnRandom);
     }
 
     internal static void Apply(Actor actor, bool activate)

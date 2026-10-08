@@ -21,6 +21,8 @@ public static class HitscanCombat
             return true;
         }
         var melee = weapon is WeaponKind.Fist or WeaponKind.Chainsaw;
+        var range = melee ? player.MeleeRange.ToDouble() + 20
+            + (weapon == WeaponKind.Chainsaw ? 1.0 / Fixed.Unit : 0) : HitscanRange;
         for (var pellet = 0; pellet < definition.Pellets; pellet++)
         {
             // GunShot / A_FireShotgun2 / A_Punch / A_Saw roll damage before spread.
@@ -31,8 +33,21 @@ public static class HitscanCombat
             var pitchSpread = weapon == WeaponKind.SuperShotgun ? sim.NextCombatSpread() * (7.097 * 255 / 256) : 0;
             var hit = CombatTrace.TraceLineAttack(sim, player,
                 BamAngle.FromDegrees(player.Angle.ToDegrees() + spread),
-                BamAngle.FromDegrees(player.PitchDegrees + pitchSpread), melee ? MeleeRange : HitscanRange);
-            if (hit.Victim is { } target) ActorDamage.Apply(target, damage, player, inflictor: player);
+                BamAngle.FromDegrees(player.PitchDegrees + pitchSpread), range);
+            if (hit.Victim is { } target)
+            {
+                var facing = BamAngle.FromDegrees(player.AngleTo(target));
+                ActorDamage.Apply(target, damage, player, damageType: melee ? "Melee" : "Hitscan", inflictor: player);
+                if (weapon == WeaponKind.Fist) player.Angle = facing;
+                else if (weapon == WeaponKind.Chainsaw)
+                {
+                    var difference = Actor.Normalize180(facing.ToDegrees() - player.Angle.ToDegrees());
+                    var angle = difference < 0
+                        ? difference < -4.5 ? facing.ToDegrees() + 90.0 / 21 : player.Angle.ToDegrees() - 4.5
+                        : difference > 4.5 ? facing.ToDegrees() - 90.0 / 21 : player.Angle.ToDegrees() + 4.5;
+                    player.Angle = BamAngle.FromDegrees(angle);
+                }
+            }
             else GeometryLineAttack.Apply(sim, hit, damage);
         }
         return true;

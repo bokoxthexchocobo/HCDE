@@ -86,7 +86,7 @@ internal static class AcsActorProperties
                 actor.HasTuningOverride = true;
                 break;
             case Damage:
-                actor.Damage = value;
+                actor.SetDamage(value);
                 break;
             case Invulnerable:
                 actor.Invulnerable = value != 0;
@@ -159,7 +159,7 @@ internal static class AcsActorProperties
     {
         Health => actor.Health,
         Speed => actor.MovementSpeed.Raw,
-        Damage => Math.Max(0, actor.Damage),
+        Damage => actor is ProjectileActor missile ? missile.GetMissileDamage(0, 1) : Math.Max(0, actor.Damage),
         Ambush => actor.Ambush ? 1 : 0,
         Invulnerable => actor.Invulnerable ? 1 : 0,
         JumpZ => actor is PlayerPawn jumpPlayer ? jumpPlayer.JumpZ.Raw : 0,

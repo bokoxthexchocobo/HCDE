@@ -17,14 +17,13 @@ public sealed class PuffActor : Actor
         Radius = Fixed.FromInt(20);
         Height = Fixed.FromInt(16);
         Mass = 5;
-        States.Configure(this, [new ActorFrame(firstFrameTics, 1, FullBright: true),
+        States.ConfigureSpawn(this, [new ActorFrame(firstFrameTics, 1, FullBright: true),
             new ActorFrame(4, 2, FullBright: false), new ActorFrame(4, 3, FullBright: false),
             new ActorFrame(4, -1, FullBright: false)], 0);
     }
 
     internal int RemainingTics => Destroyed ? 0 : (3 - States.Current) * 4 + States.RemainingTics;
 
-    internal override bool IsMapActor => false;
     internal override bool IsBlockmapActor => false;
 
 }

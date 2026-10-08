@@ -29,12 +29,14 @@ public class IceChunkFrameLifecycleTests
             Things = [new LevelThing { Type = 1 }],
         });
         var chunk = new IceChunkActor(1) { Simulation = sim, Level = sim.Level };
+        var control = AuthoritySimulation.Start(new PlayLevel());
         for (var frame = 1; frame < 4; frame++)
         {
             var random = sim.CombatRandomState;
             chunk.States.ForceRemainingTics(1); chunk.Tick();
             Assert.Equal(frame, chunk.States.Current); Assert.False(chunk.Destroyed);
-            Assert.InRange(chunk.RemainingTics, 70, 133); Assert.NotEqual(random, sim.CombatRandomState);
+            Assert.InRange(chunk.RemainingTics, 70, 133); Assert.Equal(random, sim.CombatRandomState);
+            Assert.Equal(control.NextIceTics(), chunk.RemainingTics);
         }
     }
 

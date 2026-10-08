@@ -7,13 +7,17 @@ internal static class ActorRaise
         !actor.Destroyed
         && actor is not PlayerPawn
         && actor.Corpse
-        && actor.RaiseDuration > 0
-        && actor.SpawnHealth() > 0
+        && (actor.RaiseState >= 0 ? actor.GetRaiseState().HasValue : actor.RaiseDuration > 0)
+        && (actor.RaiseState >= 0 || actor.SpawnHealth() > 0)
         && (actor.States.RemainingTics == -1 || actor.States.CurrentCanRaise)
-        && actor.Brain != null;
+        && (actor.RaiseState >= 0 || actor.Brain != null);
 
     public static bool CanRaise(AuthoritySimulation sim, Actor actor) =>
         HasRaiseState(actor) && CheckPosition(sim, actor);
+
+    internal static bool CanResurrect(Actor? raiser, Actor? corpse) =>
+        raiser != null && raiser.CanResurrect(corpse, false)
+        && (corpse == null || ReferenceEquals(raiser, corpse) || corpse.CanResurrect(raiser, true));
 
     internal static bool CheckPosition(AuthoritySimulation sim, Actor actor, bool heightOnly = false)
     {
@@ -34,7 +38,9 @@ internal static class ActorRaise
             corpse.Height = corpse.ResurrectionHeight ?? corpse.Height;
             corpse.Radius = corpse.ResurrectionRadius ?? corpse.Radius;
         }
-        corpse.Health = corpse.SpawnHealth();
+        // Native Revive assigns health without running a state action mid-restoration.
+        corpse.RestoreHealth(corpse.SpawnHealth());
+        corpse.DeathDamageType = null;
         corpse.Killed = false;
         corpse.Corpse = false;
         corpse.Invisible = false;
@@ -116,12 +122,24 @@ internal static class ActorRaise
         corpse.MThruSpecies = false;
         corpse.HitOwner = false;
         corpse.NoInfighting = false;
+        corpse.AlwaysFast = corpse.NeverFast = false;
+        corpse.Synchronized = false;
+        corpse.HandleNoDelay = false;
         corpse.NoInfightSpecies = false;
         corpse.ForceInfighting = false;
         corpse.InScrollSector = false;
         corpse.DontDrain = false;
-        corpse.Brain!.Revive(corpse);
+        corpse.Brain?.Revive(corpse);
+        corpse.LastDamageSourceId = null;
         corpse.VelocityZ = verticalVelocity;
+        corpse.OnRevive();
+        corpse.Simulation?.NotifyActorRevived(corpse);
+    }
+
+    internal static void EnterRaiseState(Actor corpse, int? raiseState)
+    {
+        var state = raiseState ?? corpse.SpawnState;
+        if (corpse.States.HasState(state)) corpse.States.Enter(corpse, state);
     }
 
     public static bool CanRaiseAll(AuthoritySimulation sim, int tid, Actor? activator)

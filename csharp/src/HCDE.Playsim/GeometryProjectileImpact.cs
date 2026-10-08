@@ -11,7 +11,7 @@ internal static class GeometryProjectileImpact
         var health = part == 0 ? sector.HealthFloor : sector.HealthCeiling;
         var texture = part == 0 ? sector.FloorPic : sector.CeilingPic;
         if (health <= 0 || string.Equals(texture, "F_SKY1", StringComparison.OrdinalIgnoreCase)) return;
-        var damage = missile.ImpactDamage * (1 + (int)(sim.NextCombatRandom() % 8));
+        var damage = missile.GetMissileDamage(missile.StrifeDamage ? 3 : 7, 1);
         LevelDestructibleDamage.DamageSectorPart(sim, sector, part, damage);
     }
 
@@ -22,7 +22,7 @@ internal static class GeometryProjectileImpact
         var impactSide = side == 0 ? line.SideFront : line.SideBack;
         var otherSide = side == 0 ? line.SideBack : line.SideFront;
         if ((uint)impactSide >= (uint)sim.Level.Sides.Count || line.Special == 9) return;
-        int Damage() => missile.ImpactDamage * (1 + (int)(sim.NextCombatRandom() % 8));
+        int Damage() => missile.GetMissileDamage(missile.StrifeDamage ? 3 : 7, 1);
         if ((uint)otherSide < (uint)sim.Level.Sides.Count)
         {
             var sectorIndex = sim.Level.Sides[otherSide].Sector;

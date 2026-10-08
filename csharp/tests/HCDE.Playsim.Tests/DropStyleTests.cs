@@ -18,8 +18,8 @@ public class DropStyleTests
     public void StyleTwoUsesFixedOffsetAndMaskedHorizontalVelocity(int seed)
     {
         var sim = Room(seed); var reference = Room(seed); sim.DropStyle = 2;
-        var x = (int)(reference.NextCombatRandom() & 7) - (int)(reference.NextCombatRandom() & 7);
-        var y = (int)(reference.NextCombatRandom() & 7) - (int)(reference.NextCombatRandom() & 7);
+        var x = (int)(reference.NextDropItemByte() & 7) - (int)(reference.NextDropItemByte() & 7);
+        var y = (int)(reference.NextDropItemByte() & 7) - (int)(reference.NextDropItemByte() & 7);
         var source = sim.Players.Single(); source.Z = Fixed.FromInt(40); source.Height = Fixed.FromInt(80);
         Assert.True(sim.SpawnDroppedPickup(source, PickupCatalog.Clip));
         var drop = Assert.Single(sim.Actors, actor => actor.DoomEdNum == PickupCatalog.Clip);

@@ -24,7 +24,7 @@ public class DormantBeginPlayTests
     [InlineData(true, 0, true)]
     public void BeginPlayClearsClassFlagBeforeBaseDeactivation(bool monster, int health, bool ice)
     {
-        var actor = new Actor { IsMonster = monster, Health = health, IceCorpse = ice, Dormant = true };
+        var actor = new Actor { IsMonster = monster, Health = health, IceCorpse = ice, Dormant = true, Synchronized = true };
         actor.States.Configure(actor, [new ActorFrame(5, 0)], 0);
         ThingActivation.InitializeSpawn(actor, false);
         Assert.Equal(ice, actor.Dormant);
@@ -34,7 +34,7 @@ public class DormantBeginPlayTests
     [Fact]
     public void CustomInactiveStateRunsOnceWhenClassAndMapBothRequestDormancy()
     {
-        var actor = new Actor { IsMonster = true, Dormant = true, InactiveState = 1 };
+        var actor = new Actor { IsMonster = true, Dormant = true, InactiveState = 1, Synchronized = true };
         var actions = 0;
         actor.States.Configure(actor, [new ActorFrame(5, 0), new ActorFrame(3, 1, _ => actions++)], 0);
         ThingActivation.InitializeSpawn(actor, true);

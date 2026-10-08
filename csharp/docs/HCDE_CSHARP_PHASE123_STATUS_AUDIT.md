@@ -1,5 +1,840 @@
 # Gameplay phases 1–3: implementation and completion audit
 
+## Phase 1 freeze-death timer and represented flags (2026-10-08)
+
+- Completed the interrupted A_FreezeDeath timer/flag subset (wadsrc/static/zscript/actors/shared/ice.zs:101 onward). ActorFreezeActions.FreezeDeath can be bound to represented state actions, sets Solid, Shootable, IceCorpse, and Pushable, and assigns 75 plus two low-byte draws. It requires an attached simulation and fails before mutation otherwise.
+- Native named stream uses the script spelling freezedeath, CRC32 0x9ee1e1b9, with existing native PCG/SplitMix initialization. It is isolated from combat, IceTics, and FreezeDeathChunks and participates in checksum coverage. Corrected the initial implementation's differently capitalized stream name during audit.
+- Conditional archive version 117 retains the full stream state and per-pose IceCorpse flags, validates trailer size, prior version, actor count, and boolean payloads, and restores without replaying state actions. Older archives reseed the stream and retain preceding behavior when no explicit IceCorpse metadata exists. Existing timer, solid/shootable, and pushable serialization is reused.
+- Seven regressions cover repeated native-formula timer selection/state-action binding, represented flags, random isolation, fresh-world save/timer/flag continuation, older-save stream reset, detached-action failure, and malformed trailer/header/count/flags. Full Release suite passes all 10,039 tests, including 8,813 Playsim tests. Clean Release rebuild with warnings as errors passes with zero warnings/errors; git diff --check passes.
+- Boundary: this is an explicit action subset, not complete A_FreezeDeath or automatic state-table import. NoBlood/Telestomp/CanPass/SlidesOnWalls/Crashed, default height restoration, render style/stealth, sound, player counters, and monster special dispatch remain unconverted here. Terrain scaling, player ice heads, general dynamic reconstruction, multi-archive game defaults/includes, native BSP/3D floors, remaining state tables, registry/resurrection/pathfinding gaps, and paired native-runtime certification remain open. Phase 1 remains incomplete.
+
+
+## Phase 1 MAPINFO game-default drop style import (2026-10-07)
+
+- Converted the represented DefaultDropStyle integer property from FMapInfoParser::ParseGameInfo (src/gamedata/gi.cpp:260 onward, property at 427). Native bundled Doom defaults use 1 and Strife uses 2 (wadsrc/static/mapinfo/doomcommon.txt:46 and strife.txt:46). MapInfoParser now reads GameInfo blocks and reports malformed represented values or unterminated blocks.
+- Carried optional defaults through LevelBuilder's existing single-WAD MAPINFO/ZMAPINFO selection, all three represented map formats, and PlayLevel.CopyForSimulation. Later specified values win; blocks omitting the property preserve earlier values. Existing ZMAPINFO-over-MAPINFO selection remains in force.
+- Simulation startup uses an explicit SpawnOptions override, otherwise the loaded level default, otherwise style 1. SpawnOptions.DefaultDropStyle is now nullable to distinguish omission from an explicit override. Existing resolved height/momentum behavior and checksum integration are reused; configuration remains external to saves.
+- Added fourteen regression cases: eight parser/value/error cases, three WAD metadata precedence/copy cases, and three parsed-level startup/override cases. Full Release suite passes all 10,032 tests, including 8,806 Playsim tests. Clean Release rebuild with warnings as errors passes with zero warnings/errors; git diff --check passes.
+- Boundary: this imports represented metadata from the supplied WAD; bundled game-default loading across resource archives, MAPINFO includes, full GameInfo semantics, custom/conversation drops, full freeze initialization, terrain scaling, player ice heads, general dynamic reconstruction, native BSP/3D floors, remaining state tables, event registry, resurrection gaps, patrol/pathfinding, and paired native-runtime certification remain open. Unrepresented GameInfo properties are skipped within this subset parser. Phase 1 remains incomplete; changes are uncommitted.
+
+
+## Phase 1 configured game-default drop style conversion (2026-10-07)
+
+- Converted default-style resolution used by Actor.TossItem and A_DropItem (wadsrc/static/zscript/actors/inventory_util.zs:620-679). DropStyle 0 now resolves through SpawnOptions.DefaultDropStyle instead of always selecting Doom-style tossing; explicit styles retain precedence. The default configuration remains style 1.
+- Both spawn height and toss momentum use the resolved style. Non-default game configuration participates in the simulation checksum. Game defaults remain external configuration, consistent with existing skill options; no archive format change is required.
+- Added five regression cases covering Doom/Strife defaults, both explicit overrides, height and momentum equivalence, named random continuation, same-world save application, and checksum differentiation.
+- Full Release suite passes all 10,018 tests, including 8,803 Playsim tests. Clean Release rebuild with warnings as errors passes with zero warnings/errors; git diff --check passes.
+- Boundary: native gameinfo/MAPINFO default-style import remains unconverted; callers must supply the represented configuration. Custom/conversation drops, full freeze initialization, terrain scaling, player ice heads, general dynamic reconstruction, native BSP/3D floors, remaining state tables, event registry, resurrection gaps, patrol/pathfinding, and paired native-runtime certification remain open. Phase 1 remains incomplete; changes are uncommitted.
+
+
+## Phase 1 native DropItem toss stream integration (2026-10-07)
+
+- Converted remaining toss randomness in SpawnDroppedPickup to the shared native DropItem stream, matching Actor.TossItem (wadsrc/static/zscript/actors/inventory_util.zs:620-636) and A_DropItem ordering (645-679). Normal tossing consumes two low-byte differences for horizontal velocity and one byte for vertical velocity; Strife-style tossing masks horizontal bytes by 7 and does not draw vertical randomness.
+- Preserved existing spawn heights, both represented drop styles, inventory toss behavior, and NoTossDrops compatibility. Probability and momentum now advance one native stream, leaving combat randomness untouched for these paths. Existing version 116 state persistence covers combined draw continuation without a format change.
+- Added three integration cases for normal, Strife, and disabled tossing, verifying native-formula velocity/height, probability-before-momentum order, combat isolation, next draw, and save continuation. Updated existing chance/toss/style references to use DropItem rather than combat draws.
+- Full Release suite passes all 10,013 tests, including 8,798 Playsim tests. Clean Release rebuild with warnings as errors passes with zero warnings/errors; git diff --check passes.
+- Boundary: automatic gameinfo drop-style import, actor replacement/custom inventory/conversation drops, full freeze initialization, terrain scaling, player ice heads, general dynamic reconstruction, native BSP/3D floors, remaining state tables, event registry, resurrection gaps, patrol/pathfinding, and paired native-runtime certification remain open. Prior managed toss sequences intentionally change to the native named stream. Phase 1 remains incomplete; changes are uncommitted.
+
+## Phase 1 native DropItem probability stream conversion (2026-10-07)
+
+- Converted A_DropItem probability selection (wadsrc/static/zscript/actors/inventory_util.zs:645-647), reached by P_DropItem (src/playsim/p_enemy.cpp:3204 onward). ActorDropItem now uses the native named DropItem stream instead of combat randomness, retaining the inclusive byte <= chance comparison and draws for guaranteed drops.
+- Native PCG/SplitMix initialization uses DropItem CRC32 0x2d1fda00 and the simulation seed. Conditional archive version 116 saves its full stream state with size/header validation, integrates checksum coverage, and resets to the seeded stream when loading older archives. Invalid classes and missing droppers still skip probability draws.
+- Added six regression cases: five probability thresholds with 64 named draws each and combat isolation under NoTossDrops, plus invalid-class no-draw and save continuation/older-save reset. Updated thirteen preceding chance/result/compatibility cases to reflect the separated stream while retaining existing toss-draw expectations.
+- Full Release suite passes all 10,010 tests, including 8,795 Playsim tests. Clean Release rebuild with warnings as errors passes with zero warnings/errors; git diff --check passes.
+- Boundary: native DropItem toss momentum remains on the prior managed combat path and is not sequence-certified here. Custom/conversation drops, full freeze initialization, terrain scaling, ice heads, general dynamic reconstruction, native BSP/3D floors, remaining state tables, event registry, resurrection gaps, patrol/pathfinding, and paired native-runtime certification remain open. Existing saves retain current objects/timers but subsequent probability draws use the newly seeded native stream. Phase 1 remains incomplete; changes are uncommitted.
+
+## Phase 1 native unblocking action and freeze-shatter correction (2026-10-07)
+
+- Converted represented A_NoBlocking behavior from A_Unblock (src/playsim/a_action.cpp:87 onward; VM thunk src/scripting/vmthunks_actors.cpp:1740). ActorUnblockActions.NoBlocking clears Solid while preserving Shootable, supports optional represented vanilla death drops, skips player drops, and leaves actor removal/state transitions to callers.
+- Fixed freeze shattering incorrectly clearing Shootable along with Solid. SpawnIceChunks now uses the shared unblocking action before its final Null-state transition. Updated existing removal/Null-callback assertions to reflect native shootability preservation.
+- Reused ActorDropItem for existing vanilla metadata; detached actors without represented drop metadata can unblock, while a requested supported drop requires an attached simulation and fails explicitly if absent. Conversation drops, custom drop chains, and stealth rendering are not represented.
+- Added six regression cases covering both initial shootability values and preservation of death flags, optional drops on/off, player inventory/random isolation, and detached actors without drops. Existing frozen-corpse and dropped-ammo tests continue to pass.
+- Full Release suite passes all 10,004 tests, including 8,789 Playsim tests. Clean Release rebuild with warnings as errors passes with zero warnings/errors; git diff --check passes.
+- Boundary: full A_FreezeDeath initialization, native drop probability streams/conversation metadata, ice sounds, boss-death handling, player ice heads, terrain scaling, general dynamic actor reconstruction, native BSP/3D floors, remaining tables/use-mask import, event registry, resurrection gaps, patrol/pathfinding, and paired native-runtime certification remain open. No archive format change is required. Phase 1 remains incomplete; changes are uncommitted.
+
+## Phase 1 freeze-shatter Null-state transition conversion (2026-10-07)
+
+- Converted the final SetStateLabel('null') transition in A_FreezeDeathChunks (wadsrc/static/zscript/actors/shared/ice.zs:202 onward) using the represented actor NullState label. Shattering now enters a valid configured Null frame after debris creation and existing unblocking/drop work, instead of always removing the corpse immediately. Actors without a represented Null destination retain immediate removal.
+- The normal state-entry path handles destination duration, action callbacks, returned-state redirects, immediate chains, eligibility checks, and eventual removal. No save format change is required; configured state tables remain external to the pose archive.
+- Added four regression cases covering timed/holding Null frames, callback ordering after debris/unblocking, exactly-once entry actions, returned-state redirects, and missing-label removal. Existing ordinary ice shatter removal tests continue to pass.
+- Full Release suite passes all 9,998 tests, including 8,783 Playsim tests. Clean Release rebuild with warnings as errors passes with zero warnings/errors; git diff --check passes.
+- Boundary: native generalized state-label resolution and VM context, icebreak audio, boss-death handling, chunk replacement classes, player ice heads, terrain scaling, general dynamic actor reconstruction, native BSP/3D floors, remaining tables/use-mask import, event registry, resurrection gaps, patrol/pathfinding, and paired native-runtime certification remain open. Phase 1 remains incomplete; changes are uncommitted.
+
+## Phase 1 native FreezeDeathChunks randomness conversion (2026-10-07)
+
+- Converted the named FreezeDeathChunks random stream used for count jitter, position bytes, selected starting frame, and horizontal velocity in A_FreezeDeathChunks (wadsrc/static/zscript/actors/shared/ice.zs:154-166). Native PCG/SplitMix initialization uses CRC32 0xd9e163db and the simulation seed. Chunk creation no longer advances combat randomness.
+- Added native bounded rejection sampling to NativeStateRandom, matching GenRand32BoundExclusive (src/common/engine/m_random.h:78-120). Single-value inclusive ranges skip draws, matching GenRand32MinMaxInclusive. Position draws use the low byte, and random2 velocity subtracts two low-byte draws (m_random.h:166-170), replacing the previous managed high-byte combat draws.
+- Added conditional archive version 115 with full 64-bit stream continuation, size/header validation, checksum coverage, and initial seeded reset for older saves. Existing current chunk timers restore unchanged; subsequent creation now follows the native stream. This intentionally changes debris patterns and later combat sequences from the previous managed implementation.
+- Added six regression cases covering seeded byte selection/fixed-range skipping, full per-chunk draw order and combat isolation, rejection of low values before modulo, save continuation/older-save reset, and malformed header/size rejection. Updated preceding combat-isolation and lifecycle-trailer tests for the new outer archive. Generator initialization remains covered by prior native-formula vectors; no paired native runtime trace is claimed.
+- Full Release suite passes all 9,994 tests, including 8,779 Playsim tests. Clean Release rebuild with warnings as errors passes with zero warnings/errors; git diff --check passes.
+- Boundary: chunk replacement classes, IceChunkHead/player viewpoint behavior, terrain fire/ice scaling, general dynamic actor reconstruction, native BSP/3D floors, remaining state tables/use-mask import, event registry, resurrection gaps, patrol/pathfinding, and paired native-runtime certification remain open. Phase 1 remains incomplete; changes are uncommitted.
+
+## Phase 1 reconstructed ice-chunk sector placement fix (2026-10-07)
+
+- Fixed reconstructed chunks retaining the default sector index after saved coordinates were applied. Restore now derives IceChunkActor.SectorIndex using the existing ActorPhysics.SectorAt geometry lookup after restoring X/Y. It preserves saved Z, velocities, OnGround, state, and timer without floor placement, actions, or random draws.
+- Audited creation placement, which already calls PlaceOnFloor and derives the sector. Native world linking occurs in ConstructActor (src/playsim/p_mobj.cpp:5510), with post-load relinking at p_mobj.cpp:435; the managed fix reuses its existing geometry lookup rather than introducing a second sector resolver.
+- Added two multi-sector regression cases, saving before and after startup. Chunks in an elevated sector with different gravity retain sector identity, Z, support status, and timers after fresh-world reconstruction; save bytes match before ticking, and checksum/save bytes match the source after the next tick.
+- Full Release suite passes all 9,988 tests, including 8,773 Playsim tests. Clean Release rebuild with warnings as errors passes with zero warnings/errors; git diff --check passes. Initial fixture compilation and default back-side definitions were corrected before passing verification.
+- Boundary: these cases cover enclosed two-sector geometry, not native BSP/3D-floor reconstruction or every dynamic actor. Native FreezeDeathChunks creation randomness, terrain scaling, other actor reconstruction, remaining actor state tables/use-mask import, event registry, resurrection gaps, patrol/pathfinding, and paired native-runtime certification remain open. No archive format change is needed. Phase 1 remains incomplete; changes are uncommitted.
+
+## Phase 1 dynamic ice-chunk save reconstruction (2026-10-07)
+
+- Fixed the fresh-world ice-chunk loading gap found in the preceding audit. Conditional archive version 114 adds per-pose chunk identity and JustSpawned metadata, with size/header/count/presence/value validation. Existing native-derived IceChunk defaults and fixed initial frame construction are reused; pose application restores state/tics without executing actions or advancing random streams.
+- Restore validates marked identities and frame indices before mutation, rejects collisions with non-chunk actors and duplicate marked identities, recreates missing/destroyed chunk objects, and restores startup status so completed startup/events do not replay. The thinker removal primitive is now internal for reconstruction cleanup.
+- Archives carrying chunk lifecycle metadata define the saved chunk set, including an empty set after expiry. Restore removes extra chunks, links recreated chunks into thinker lists, and advances the actor identity allocator beyond restored identities. Older archives without lifecycle metadata retain their existing compatibility behavior and cannot recreate missing chunks.
+- Upgraded the previously limited existing-world creation test to fresh-world reconstruction. Added six regression cases covering completed startup and matching next-tick checksum/save bytes, empty-set cleanup and identity allocation safety, rejection of a player identity collision before mutation, and malformed size/header/lifecycle payloads. The original fresh-world timer and IceTics continuation test now passes.
+- Full Release suite passes all 9,986 tests, including 8,771 Playsim tests. Clean Release rebuild with warnings as errors passes with zero warnings/errors; git diff --check passes. The initial compile failure from private thinker removal was resolved by exposing that existing primitive internally.
+- Boundary: reconstruction is implemented for represented IceChunkActor, not general dynamic actors or IceChunkHead. These regressions cover a single-sector map; multi-sector placement and native thinker ordering are not certified. Native FreezeDeathChunks creation randomness, terrain scaling, remaining actor state tables/use-mask import, event registry, resurrection gaps, patrol/pathfinding, and paired native-runtime certification remain open. Phase 1 remains incomplete; changes are uncommitted.
+
+## Phase 1 ice-debris initial timing parity fix (2026-10-07)
+
+- Audited native A_FreezeDeathChunks creation ordering (wadsrc/static/zscript/actors/shared/ice.zs:157-168) against IceChunk Spawn metadata (line 59). Newly created chunks start with the fixed 10-tic frame; selecting their starting state then executes A_IceSetTics and draws the actual duration from IceTics.
+- Removed the redundant managed combat draw that previously assigned a randomized constructor duration immediately overwritten by selected-state entry. SpawnIceChunks now constructs with 10 tics and uses the already converted IceTics action once per chunk. This intentionally changes subsequent managed combat draws following shattering.
+- Added three regression cases: two seeds verifying exactly one ordered IceTics duration per chunk and no extra combat timing draws, plus timer/stream restoration for chunks already present in the world without replaying state actions. The combat draw accounting checks remaining managed coordinates, state selection, and velocity draws; it does not certify the unconverted FreezeDeathChunks stream.
+- Audit finding: a fresh simulation does not recreate saved dynamic ice chunks. RestoreState applies actor poses to existing matching identities; the new save test therefore covers an existing world only. Fresh-world dynamic actor reconstruction remains a concrete outstanding conversion gap, and is not claimed as passing here.
+- Full Release suite passes all 9,980 tests, including 8,765 Playsim tests. Clean Release rebuild with warnings as errors passes with zero warnings/errors; git diff --check passes.
+- Boundary: native FreezeDeathChunks creation randomness, terrain fire/ice scaling, dynamic actor reconstruction, remaining actor state tables/use-mask import, event registry, fresh-thinker lifecycle, resurrection gaps, patrol/pathfinding, and paired native-runtime certification remain open. Phase 1 remains incomplete; changes are uncommitted.
+
+## Phase 1 native IceTics stream conversion (2026-10-07)
+
+- Converted the dedicated random[IceTics](70,133) selection used by IceChunk.A_IceSetTics (wadsrc/static/zscript/actors/shared/ice.zs:42-45). Named initialization uses CRC32 0x17f81aa5, the simulation seed, and the converted native PCG/SplitMix generator. NativeRandom delegates to GenRand32MinMaxInclusive (src/common/scripting/backend/codegen.cpp:6224-6226); the fixed 64-value range has rejection threshold zero and is exactly 70 + GenRand32() % 64 (src/common/engine/m_random.h:78-150).
+- Ice chunk successor frame actions now use the separate IceTics stream instead of combat randomness. Existing supplied initial durations and detached chunk lifecycle behavior are preserved. Other debris creation draws retain their existing managed paths.
+- Added conditional archive version 113 with full 64-bit stream state, recursive size/header validation, checksum coverage, and seeded reset when restoring older saves. Current frame duration remains restored directly without another action or draw.
+- Added five regression cases covering an independently calculated native-formula reference vector, isolation from combat/state/map timing, shared stream ordering between chunks, full-width save continuation and older-save reset, and malformed trailer/header rejection. Updated two existing successor-timing expectations to assert the new stream and combat isolation. Vectors are mathematical checks, not native-runtime traces.
+- Full Release suite passes all 9,977 tests, including 8,762 Playsim tests. Clean Release rebuild with warnings as errors passes with zero warnings/errors; git diff --check passes.
+- Boundary: terrain fire/ice scaling in A_IceSetTics is still missing because managed terrain support currently stores names rather than terrain DamageMOD definitions. Initial debris timing/creation streams, remaining actor state tables and use-mask import, native event registry, fresh-thinker archive lifecycle, resurrection gaps, patrol/pathfinding, and paired native-runtime certification remain open. Older saves retain their current frame timers but future ice frame draws now use the seeded native stream. Phase 1 remains incomplete; changes are uncommitted.
+
+## Phase 1 built-in spawn initialization integration (2026-10-07)
+
+- Audited all managed production States.Configure call sites. Routed represented Doom decoration tables (including the DeadLostSoul final death frame and Gibs Spawn alias), BulletPuff, and IceChunk constructor tables through ConfigureSpawn, matching direct native initial-state assignment in ConstructActor (src/playsim/p_mobj.cpp:5490-5501).
+- Built-in initial frames now use the converted spawn path: no initial action execution, no immediate chaining or skill scaling, metadata brightness initialization, and pending NoDelay support. Ordinary subsequent entries retain normal action execution. Map decorations still apply converted map-spawn duration randomization afterward; runtime puffs/chunks retain their supplied initial durations.
+- Added five integration cases covering three decoration identities with initial state/brightness/duration and save restoration, puff first-to-second frame transition, and ice chunk initial action suppression with combat RNG isolation followed by successor action timing. Existing chunk selection, debris lifetime, puff lifecycle, decoration timing, and archive tests continue to pass.
+- Full Release suite passes all 9,972 tests, including 8,757 Playsim tests. Clean Release rebuild with warnings as errors passes with zero warnings/errors; git diff --check passes.
+- Boundary: this integrates already represented built-in tables, not all native actor states. Ice chunk action randomness retains the existing managed combat stream; native dedicated debris streams, remaining state tables and use-mask import, class-default synchronization import, native event-handler registry, fresh-thinker archive lifecycle, resurrection gaps, patrol/pathfinding, and paired native-runtime certification remain open. Phase 1 remains incomplete; changes are uncommitted.
+
+## Phase 1 actor state-use eligibility conversion (2026-10-07)
+
+- Converted the SUF_ACTOR eligibility gate in AActor::SetState (src/playsim/p_mobj.cpp:887-893). ActorFrame now exposes ActorUsable metadata, defaulting true for existing managed tables. Entry to a forbidden frame records a trace error, clears the current state, and destroys the actor before selecting duration, changing brightness, or invoking actions.
+- The shared entry path enforces eligibility for ordinary and suppressed entries, zero-tic successors, returned-action destinations, and CheckNoDelay returned-state transitions. Direct spawn initialization retains the native ConstructActor behavior, which assigns the initial state directly without this SetState gate (p_mobj.cpp:5490 onward).
+- Added six regression cases covering normal/suppressed entry ordering and RNG isolation, immediate-chain action suppression at a forbidden successor, returned-state destruction, NoDelay destruction reporting, and spawn initialization followed by a checked timed entry.
+- Full Release suite passes all 9,967 tests, including 8,752 Playsim tests. Clean Release rebuild with warnings as errors passes with zero warnings/errors; git diff --check passes.
+- Boundary: actor eligibility is configurable managed metadata; native state-use mask parsing/import, weapon/overlay state eligibility, remaining built-in state tables, class-default synchronization import, native event-handler registry, fresh-thinker archive lifecycle, resurrection gaps, patrol/pathfinding, and paired native-runtime certification remain open. No new save format is needed; matching state-table configuration remains required. Phase 1 remains incomplete; changes are uncommitted.
+
+## Phase 1 map-spawn frame randomization conversion (2026-10-07)
+
+- Converted AActor::LevelSpawned positive initial duration randomization (src/playsim/p_mobj.cpp:5711-5716): tics become 1 + random % tics unless Synchronized is set. Zero/holding durations and runtime spawn initialization do not draw. Randomization precedes existing map spawn flag handling.
+- Added the independent native SpawnMapThing PCG stream (p_mobj.cpp:101), using name CRC32 0x46c478d0 and native FRandom byte output (src/common/engine/m_random.h:73-76). AuthoritySimulation.Start supplies the stream during map actor construction, before simulation attachment, and transfers its advanced state into the simulation. Standalone positive-duration map spawning requires a supplied random provider or attached simulation and fails explicitly otherwise.
+- Added Synchronized actor state and case-insensitive, Actor-qualified ACS flag access. Conditional archive version 112 saves the full stream state and per-actor synchronization flag, validates size/header/count/value before application, resets absent fields for older saves, and integrates conditional checksum coverage. Represented revival clears synchronization with other represented class-default flags.
+- Added fourteen regression cases covering an independent native-formula byte vector, positive durations including durations above 255, skipped draws, runtime/detached paths, ACS flag access, save continuation/older-save reset, four malformed archive mutations, and actual map creation of two animated decorations with ordered draws and restored continuation. Reference vectors are mathematical checks, not native-runtime traces.
+- The first run exposed map callback timing before simulation attachment; map creation now supplies the stream directly. Decoration timing tests now distinguish randomized initial duration from subsequent full frame durations; detached dormancy fixtures use Synchronized to retain their intended fixed-duration assertions.
+- Full Release suite passes all 9,961 tests, including 8,746 Playsim tests. Clean Release rebuild with warnings as errors passes with zero warnings/errors; git diff --check passes.
+- Boundary: built-in animated decorations use the converted map path, but remaining native state tables, native class-default synchronization import, event-handler registry, fresh-thinker archive lifecycle, client object lifecycle, resurrection gaps, patrol/pathfinding, and paired native-runtime certification remain open. Phase 1 remains incomplete; changes are uncommitted.
+
+## Phase 1 actor post-startup lifecycle conversion (2026-10-07)
+
+- Converted native AActor::PostBeginPlay pending NoDelay setup (src/playsim/p_mobj.cpp:5825-5834) into the managed actor override. Fresh actors now arm HandleNoDelay through their existing thinker lifecycle before the first tick; dormant actors retain it until active processing.
+- Added the CallPostBeginPlay dispatch surface and changed ThinkerCollection to call it, matching native thinker dispatch (src/playsim/dthinker.cpp:729,774,894 onward). Actor dispatch invokes the virtual startup hook before WorldThingSpawned notification, matching AActor::CallPostBeginPlay (p_mobj.cpp:5837 onward). An override that omits its base hook still receives the event but does not inherit base NoDelay setup.
+- Added AuthoritySimulation.WorldThingSpawned using the established managed actor-event pattern. Exceptions propagate: hook failure skips notification, and notification failure prevents the first tick. Notification destruction is respected by the existing thinker destruction check.
+- Added six regression cases covering event/action/first-tick ordering, exactly-once startup and notification, override dispatch without base, hook failure, event destruction, event failure, and dormancy-delayed NoDelay processing.
+- Full Release suite passes all 9,947 tests, including 8,732 Playsim tests. Clean Release rebuild with warnings as errors passes with zero warnings/errors; git diff --check passes.
+- Boundary: this is managed lifecycle/event wiring, not the native event-handler registry or VM. Native previous-angle/render-light startup work, ObjectFlags spawned-state representation, and fresh-thinker archive lifecycle are not certified here. Built-in state tables, map-spawn duration randomization, client object lifecycle, remaining resurrection gaps, patrol/pathfinding, and paired native-runtime certification remain open. Phase 1 remains incomplete; changes are uncommitted.
+
+## Phase 1 configured spawn-state initialization conversion (2026-10-07)
+
+- Converted native spawn-state initialization (src/playsim/p_mobj.cpp:5490-5501) into ActorStateMachine.ConfigureSpawn. Spawn keeps the selected frame and its unscaled, optionally randomized duration without calling actions or following zero-tic successors. FullBright is set from frame metadata, and HandleNoDelay is armed as in native spawn completion (p_mobj.cpp:5828).
+- Extracted shared unscaled duration selection from ActorFrame.GetTics. Ordinary state entry retains fast/slow scaling; spawn initialization uses the same server/client random stream selection without skill scaling. Both configuration paths share state-table validation.
+- Connected configured spawning to existing CheckNoDelay processing and pending-action save support. Loading preserves current duration and pending action without executing initialization or drawing again; no new archive format is required.
+- Added six regression cases: fast and slow spawn-versus-entry timing, zero-tic frames with and without NoDelay, one random draw with unscaled duration and pending-action save restoration, and holding-frame action suppression/brightness reset.
+- Full Release suite passes all 9,941 tests, including 8,726 Playsim tests. Clean Release rebuild with warnings as errors passes with zero warnings/errors; git diff --check passes. An initial test compilation error from an incorrect named argument was corrected before the passing full run.
+- Boundary: this provides native spawn semantics for configured managed actors; built-in native state tables and their factory integration, sprite/skin initialization, client object lifecycle, remaining resurrection gaps, patrol/pathfinding, and paired native-runtime certification remain open. Phase 1 remains incomplete; changes are uncommitted.
+
+## Phase 1 client-side StateTics timing conversion (2026-10-07)
+
+- Converted the separate client frame-timing stream from GetClientSideTics (src/gamedata/info.h:143-149), pr_csstatetics (src/gamedata/info.cpp:49), and FCRandom (src/common/engine/m_random.h:221-225). NativeStateRandom now accepts the named-stream CRC; ClientsideStateTics uses CRC32 0xac77feb9 with the simulation seed and native PCG/SplitMix initialization.
+- Added virtual Actor.IsClientSide and routed ranged frame durations through the client stream for client actors before fast/slow scaling. Client draws do not advance the saved server StateTics stream or combat random stream.
+- Matched native random archive lifecycle: StaticClearRandom initializes both stream lists (m_random.cpp:231-243), while save writing includes only RNGList (287-307), and reading resets streams before restoring saved entries (320 onward). Client timing state is omitted from managed saves/checksums and reset from the existing simulation seed on load; no archive version change is needed.
+- Added four regression cases covering a fixed native-formula reference vector, 64 ranged frame draws with and without fast scaling, server/combat stream isolation, unchanged save bytes after client draws, and load reset. The reference vector was independently calculated from the native formula and zlib CRC32, not captured from a native runtime.
+- Full Release suite passes all 9,935 tests, including 8,720 Playsim tests. Clean Release rebuild with warnings as errors passes with zero warnings/errors; git diff --check passes.
+- Boundary: client classification is exposed through managed overrides; native ObjectFlags (src/common/objects/dobject.h:350), network object lifecycle, and built-in client actor classes are not imported. Matching simulation seed/configuration remains required for restoration. Built-in state tables, remaining resurrection gaps, patrol/pathfinding, and paired native-runtime certification remain open. Phase 1 remains incomplete; changes are uncommitted.
+
+## Phase 1 native StateTics PCG conversion (2026-10-07)
+
+- Replaced the temporary StateTics LCG with native FRandom PCG-XSH-RR (src/common/engine/m_random.h:68-76). Converted named-stream initialization from FRandom::Init and SplitMix64Iteration (m_random.cpp:254-277), using the native StateTics name CRC32 0xedd97674 and the supplied simulation seed.
+- NativeStateRandom implements 64-bit state advancement and rotated 32-bit output. Only the frame-timing stream changes; combat, jump, lighting, and other random streams retain their prior implementations. Initial stream reset and checksum coverage now preserve both state halves.
+- Upgraded conditional stream archive writing to version 111 with a 16-byte trailer containing the full 64-bit state. Version 110 remains readable by zero-extending its saved 32-bit value; this migrates its state but intentionally does not preserve the preceding LCG sequence. Existing frame timers still restore without rerolling.
+- Added five regression cases: three fixed vectors for seed zero, 42, and UINT_MAX, checking four outputs and final state; two archive cases checking high state bits, byte-identical reserialization, next-draw continuation, and malformed size/header rejection. Reference vectors were independently calculated in Python from the native PCG/SplitMix constants and zlib CRC32; they are not a paired native-runtime trace.
+- Full Release suite passes all 9,931 tests, including 8,716 Playsim tests. Clean Release rebuild with warnings as errors passes with zero warnings/errors; git diff --check passes.
+- Boundary: full gameplay RNG seeding/lifecycle synchronization and paired native-runtime certification remain open. Version-110 continuation changes with generator migration. Client-side StateTics, other native RNG streams, built-in state metadata, remaining resurrection gaps, and patrol/pathfinding remain open. Phase 1 remains incomplete; changes are uncommitted.
+
+## Phase 1 random state-frame duration conversion (2026-10-07)
+
+- Audited NoDelay tick placement (src/playsim/p_mobj.cpp:5137-5142), confirming the converted check precedes state cycling. Converted the next missing timing calculation: native FState::GetTics (src/gamedata/info.h:135-141) adds an inclusive TicRange offset from the StateTics stream before fast/slow scaling; TicRange is uint16 metadata.
+- Added validated TicRange frame metadata and integrated random duration selection into frame entry. Zero range does not draw. Random timing requires an attached simulation and fails explicitly otherwise. Added an isolated managed 32-bit StateTics stream, avoiding interference with combat or jump draws.
+- Added conditional archive version 110 for stream state, recursive size/header validation, checksum coverage, and reset to the simulation's seeded initial stream when loading an older save. Current frame timers restore directly without drawing again.
+- Added five regression cases covering small/large ranges, 64 draws per range scenario, fast scaling after random selection, combat/jump isolation, save continuation, older-save reset, zero-range behavior, invalid metadata, and detached timing failure.
+- Full Release suite passes all 9,926 tests, including 8,711 Playsim tests. Clean Release rebuild with warnings as errors passes with zero warnings/errors; git diff --check passes.
+- Boundary: the stream uses the established managed LCG convention, not native FRandom sequence certification. Client-side StateTics streams, built-in random/Fast/Slow frame metadata, native spawn initialization, remaining resurrection gaps, patrol/pathfinding, and paired native-runtime certification remain open. Phase 1 remains incomplete; changes are uncommitted.
+
+## Phase 1 CheckNoDelay action conversion (2026-10-07)
+
+- Converted native CheckNoDelay (src/playsim/p_mobj.cpp:5200-5224): dormant actors retain the pending flag; active checks consume it before invoking the current NoDelay frame action. Returned states enter normally, and action destruction stops processing.
+- Added NoDelay frame metadata, Actor.HandleNoDelay and callable CheckNoDelay, and integrated the check before normal managed state ticking. Configure supports suppressed initial entry and arms pending processing for that path; ordinary configured entry keeps its existing immediate action behavior. Deferred actions run without resetting frame tics or brightness.
+- Added conditional archive version 109 for the pending flag, with existing boolean-trailer size/header/count/value validation. Capture/restore, older-save reset, conditional checksum coverage, and represented revival flag reset are integrated.
+- Added six regression cases covering flagged/unflagged frames, exactly-once action calls, unchanged tics/brightness, dormancy, automatic active ticks, returned states, destruction, invalid returned state propagation, save retention without replay, older-save reset, and revival reset.
+- Full Release suite passes all 9,921 tests, including 8,706 Playsim tests. Clean Release rebuild with warnings as errors passes with zero warnings/errors; git diff --check passes.
+- Boundary: built-in native spawn-state tables and their automatic suppressed initialization are not imported; the converted path is available to configured managed actors. Native state-action VM context, random/client-side durations, built-in Fast/Slow metadata, remaining resurrection gaps, patrol/pathfinding, and paired native-runtime certification remain open. Phase 1 remains incomplete; changes are uncommitted.
+
+## Phase 1 configurable fast and slow skill timing conversion (2026-10-07)
+
+- Converted missing skill-property inputs for native isFast/isSlow (src/playsim/p_mobj.cpp:5842-5852). The frame timing calculation now receives configurable simulation FastMonsters and SlowMonsters settings rather than only a hardcoded Nightmare query.
+- Added immutable SpawnOptions settings and exposed the effective values on AuthoritySimulation. FastMonsters defaults to represented Doom Nightmare behavior when omitted; explicit false disables it on Nightmare, and explicit true enables it on other skills. SlowMonsters defaults false. AlwaysFast/NeverFast retain native precedence, while NeverFast permits slow scaling when the frame is slow flagged.
+- Included non-default effective timing configuration in simulation checksums without changing default checksum input. Configuration remains external to saves, consistent with other represented skill settings; restore requires matching options and frame tables.
+- Added seven regression cases covering defaults, custom fast mode, Nightmare fast disable, slow mode, combined mode precedence, actor overrides, and matching save continuation without repeat scaling or action entry.
+- Full Release suite passes all 9,915 tests, including 8,700 Playsim tests. Clean Release rebuild with warnings as errors passes with zero warnings/errors; git diff --check passes.
+- Boundary: this accepts supplied skill properties but does not parse arbitrary MAPINFO skill definitions. Built-in Fast/Slow frame metadata, random/client-side frame durations, NoDelay spawn actions, remaining resurrection gaps, patrol/pathfinding, and paired native-runtime certification remain open. Phase 1 remains incomplete; changes are uncommitted.
+
+## Phase 1 AlwaysFast and NeverFast conversion (2026-10-07)
+
+- Converted native isFast override precedence (src/playsim/p_mobj.cpp:5842-5847): AlwaysFast wins, then NeverFast blocks, then skill FastMonsters supplies the fallback. Managed fallback remains represented Doom Nightmare skill 4.
+- Added actor flags, shared ACS CheckActorFlag/ModActorFlag mappings including Actor-qualified case-insensitive names, and integration with existing frame timing. Included non-default flags in checksums and reset to represented false class defaults during revival.
+- Added conditional archive version 108 for the two flag bits, with size/header/count/presence/value validation and older-save reset. Saves without overrides retain their prior version.
+- Added ten regression cases covering all flag combinations on ordinary and Nightmare skills, ACS changes/query, actual fast-frame entry duration, save restoration and byte-identical reserialization, older-save and revival reset, and invalid bits rejected before mutation.
+- Full Release suite passes all 9,908 tests, including 8,693 Playsim tests. Clean Release rebuild with warnings as errors passes with zero warnings/errors; git diff --check passes.
+- Boundary: native class default flags and arbitrary skill FastMonsters/SlowMonsters properties are not imported. Built-in Fast/Slow frame metadata, random/client-side durations, NoDelay spawn actions, remaining resurrection gaps, patrol/pathfinding, and paired native-runtime certification remain open. Phase 1 remains incomplete; changes are uncommitted.
+
+## Phase 1 fast and slow state-frame timing conversion (2026-10-07)
+
+- Converted the native GetTics frame timing calculation (src/playsim/p_mobj.cpp:834-845): fast flagged frames use tics - (tics >> 1); otherwise slow flagged frames use tics << 1. Fast scaling takes precedence when both conditions apply.
+- Added Fast/Slow frame metadata and ActorFrame.GetTics, integrated into every state entry before actions, including suppressed entry and immediate chains. Added virtual Actor.IsFast/IsSlow queries. The base fast query follows represented Doom Nightmare skill 4 (wadsrc/static/mapinfo/doomcommon.txt:218-221); base slow is false because custom slow skill properties are not represented. Existing frame metadata defaults leave current built-in durations unchanged.
+- Added eleven regression cases covering even/odd/single-tic durations, slow scaling, precedence, flagged versus inactive modes, holding frames, action-observed durations, suppressed actions, restored timers without repeat scaling, and native fast -1 duration becoming a zero-tic chain.
+- Full Release suite passes all 9,898 tests, including 8,683 Playsim tests. Clean Release rebuild with warnings as errors passes with zero warnings/errors; git diff --check passes.
+- Boundary: AlwaysFast/NeverFast actor flags, arbitrary skill FastMonsters/SlowMonsters properties, client-side alternative frame tics, and native built-in Fast/Slow frame-table metadata remain unconverted. Frame metadata and virtual implementations are class configuration and must match on restore. NoDelay spawn actions, remaining resurrection gaps, patrol/pathfinding, and paired native-runtime certification remain open. Phase 1 remains incomplete; changes are uncommitted.
+
+## Phase 1 runtime full-bright save conversion (2026-10-07)
+
+- Closed a runtime brightness save gap found in the actor-state audit. Native actor serialization includes renderflags (src/playsim/p_mobj.cpp:223), independently of the current frame. Managed saves previously restored only frame brightness and lost action/electric-reaction overrides.
+- Added conditional managed archive version 107 for FullBrightFlag overrides relative to the current frame default, supporting both true and false values. Saves without overrides keep their prior format. Simulation restoration applies the saved override after state restoration; absent overrides reset to the matching frame default rather than retaining stale runtime brightness. Existing checksum already includes the runtime flag.
+- Reader validates trailer size, prior version, count, presence, and boolean values before application. Added seven regression cases covering bright/dark overrides, fresh matching restoration and byte-identical reserialization, next-frame entry resetting brightness, older-save reset, and three malformed trailers rejected before mutation.
+- Full Release suite passes all 9,887 tests, including 8,672 Playsim tests. Clean Release rebuild with warnings as errors passes with zero warnings/errors; git diff --check passes.
+- Boundary: only represented FullBright is converted; other native render flags and native archive compatibility remain open. Frame tables must match on restore. General script dispatch, remaining resurrection gaps, patrol/pathfinding, and paired native-runtime certification remain open. Phase 1 remains incomplete; changes are uncommitted.
+
+## Phase 1 IsMapActor surface and puff counting conversion (2026-10-07)
+
+- Audited native AActor::IsMapActor (src/playsim/p_mobj.cpp:818-822): only inventory objects with a live owner are excluded. Bullet puffs are non-inventory actors, so their lack of collision/blockmap membership does not exclude them from this query.
+- Converted the internal query property to callable public virtual Actor.IsMapActor and updated ACS ThingCount to use it. Removed the incorrect PuffActor exclusion; puffs retain their existing collision/blockmap behavior. Existing ACS health and destruction filters remain applied independently.
+- Added three regression cases for direct puff map-actor versus collision queries and ACS programs counting live versus destroyed puffs after a line attack.
+- Full Release suite passes all 9,880 tests, including 8,665 Playsim tests. Clean Release rebuild with warnings as errors passes with zero warnings/errors; git diff --check passes.
+- Boundary: inventory ownership and its native destruction read barrier are not represented by this base implementation. Custom managed subclasses may override the query. General script VM dispatch, native class-name/editor-number mappings, remaining resurrection gaps, patrol/pathfinding, and paired native-runtime certification remain open. Phase 1 remains incomplete; changes are uncommitted.
+
+## Phase 1 WorldThingRevived notification conversion (2026-10-07)
+
+- Converted the missing revival notification boundary from native AActor::Revive (src/playsim/p_mobj.cpp:8780-8785). Native dispatches WorldThingRevived after OnRevive and before the caller transfers friendship or enters Raise.
+- Added AuthoritySimulation.WorldThingRevived as a managed event and invoked it through the shared revival helper immediately after OnRevive. Attached actors notify their simulation; detached helper calls have no world to notify. Both resurrection callers share this ordering. Subscriber exceptions propagate rather than reporting successful completion.
+- Added five regression cases for configured/legacy destination ordering, event actor identity and restored fields, hook mutations visible to the event, hook failure suppressing notification, subscriber failure preventing destination entry, and queries/blocked raises producing no event.
+- Full Release suite passes all 9,877 tests, including 8,662 Playsim tests. Clean Release rebuild with warnings as errors passes with zero warnings/errors; git diff --check passes.
+- Boundary: this supplies a managed notification surface, not the native event-handler registry, VM dispatch, networking, or serialization of subscribers. Kill-counter/poison integrations, full default-flag restoration, built-in Raise frames, multi-frame Raise/chase integration, legacy eligibility differences, patrol/pathfinding, and paired native-runtime certification remain open. Phase 1 remains incomplete; changes are uncommitted.
+
+## Phase 1 configured Raise spawn-health eligibility conversion (2026-10-07)
+
+- Closed the positive-spawn-health restriction for explicit Raise states. Native GetRaiseState (src/playsim/p_mobj.cpp:8717-8735) and P_Thing_Raise (src/playsim/p_things.cpp:437-481) do not impose this gate. Native SpawnHealth (p_mobj.cpp:8686-8702) permits zero and preserves non-monster default health directly; Revive assigns its result without a death-state transition.
+- ActorRaise now accepts eligible configured Raise states regardless of captured spawn health. Existing raw revival assignment preserves that value, clears corpse bookkeeping, and enters the configured destination. IsDead remains the independent health query, so accepted zero/negative-health revival does not claim positive health. The legacy duration fallback retains its positive-health requirement.
+- Added six regression cases for both resurrection routes with zero, negative, and positive captured health on non-monster defaults. Verify eligibility, destination actions and friendship, exact restored health, independent IsDead/corpse state, and save restoration without replaying actions.
+- Full Release suite passes all 9,872 tests, including 8,657 Playsim tests. Clean Release rebuild with warnings as errors passes with zero warnings/errors; git diff --check passes.
+- Boundary: managed SpawnHealth remains captured spawn health rather than recalculating native skill/friendliness adjustments dynamically. Built-in Raise frame tables, legacy eligibility differences, full default-flag restoration, multi-frame Raise/chase integration, native script dispatch, kill-counter/poison/event integrations, patrol/pathfinding, and paired native-runtime certification remain open. Phase 1 remains incomplete; changes are uncommitted.
+
+## Phase 1 OnRevive virtual hook conversion (2026-10-07)
+
+- Converted the actor OnRevive hook from native AActor::Revive (src/playsim/p_mobj.cpp:8780-8783) and its empty default implementation (wadsrc/static/zscript/actors/actor.zs:682-683). Native ordering invokes it after restoration and before caller friendship transfer and destination-state entry.
+- Added virtual Actor.OnRevive with a no-op default and invoked it at the end of shared ReviveSupported, after represented actor/brain fields, source bookkeeping, and vertical velocity are restored. Both resurrection routes use this helper. Hook mutations remain visible to subsequent destination actions, and hook exceptions propagate.
+- Added five regression cases covering configured and legacy destination ordering, restored fields and brain state, health/velocity mutations, permission veto skipping the hook, eligibility queries without callbacks, and callback failure without destination entry. Tests exercise managed subclass overrides; shared-helper integration covers both callers.
+- Full Release suite passes all 9,866 tests, including 8,651 Playsim tests. Clean Release rebuild with warnings as errors passes with zero warnings/errors; git diff --check passes.
+- Boundary: native VM override dispatch and WorldThingRevived event integration remain unconverted. Native kill-counter increments, poison reset, full default-flag restoration, built-in Raise frame tables, multi-frame Raise/chase integration, and positive-spawn-health eligibility differences remain open. Patrol/pathfinding and paired native-runtime certification remain open. Phase 1 remains incomplete; changes are uncommitted.
+
+## Phase 1 two-sided resurrection permission conversion (2026-10-07)
+
+- Converted native P_CanResurrect (src/playsim/p_enemy.cpp:2777-2818) and the default CanResurrect hook (wadsrc/static/zscript/actors/actor.zs:677-680). The raiser receives the active check first; the corpse receives the passive check only after active acceptance. Self resurrection checks once; null raisers reject.
+- Added virtual Actor.CanResurrect with native default acceptance and a shared permission helper. ActorRaiseActions and ArchvileActions invoke it after their position check and before revival, friendship changes, or destination-state entry. Position bypass skips geometry only. CanRaise remains a geometric eligibility query, matching its native separation from permission.
+- Added seven regression cases covering active/passive acceptance and veto, call order and short-circuit, self/null cases, both routes vetoing before restoration while preserving native horizontal-velocity clearing, and blocked position skipping hooks versus bypass still respecting veto.
+- Full Release suite passes all 9,861 tests, including 8,646 Playsim tests. Clean Release rebuild with warnings as errors passes with zero warnings/errors; git diff --check passes.
+- Boundary: this provides managed virtual hooks, not native script VM dispatch or serialization of override implementations. Positive captured spawn health remains required. Built-in Raise frame tables, full default-flag restoration, multi-frame Raise/chase integration, OnRevive hooks, poison/event integrations, patrol/pathfinding, and paired native-runtime certification remain open. Phase 1 remains incomplete; changes are uncommitted.
+
+## Phase 1 brain-independent configured resurrection conversion (2026-10-07)
+
+- Closed the monster-brain eligibility restriction for actors with an explicit Raise state. Native GetRaiseState (src/playsim/p_mobj.cpp:8717-8735) requires a corpse, eligible frame, non-player class, and Raise label; native Revive (8738-8785) has no monster-brain requirement.
+- ActorRaise now permits eligible explicit Raise states without a brain, while retaining the brain requirement for the legacy duration fallback. ReviveSupported resets a brain only when present and clears LastDamageSourceId independently so brainless destination actions do not inherit stale managed damage-source bookkeeping.
+- Added six regression cases covering both resurrection routes with Brain null, inactive monster flag and zero legacy duration, destination action health/friendship/source state, save restoration without replay and continuing frame tics, absent/invalid Raise states, occupied-space rejection, and explicit position bypass.
+- Full Release suite passes all 9,854 tests, including 8,639 Playsim tests. Clean Release rebuild with warnings as errors passes with zero warnings/errors; git diff --check passes.
+- Boundary: positive captured spawn health remains required. Native class defaults still govern restored monster/collision flags; an inactive current monster flag does not change those defaults. Built-in Raise frame tables still use duration-based raising and the legacy Spawn fallback. Full default-flag restoration, multi-frame Raise/chase integration, virtual revive hooks, poison/event integrations, patrol/pathfinding, and paired native-runtime certification remain open. Phase 1 remains incomplete; changes are uncommitted.
+
+## Phase 1 legacy resurrection friendship ordering conversion (2026-10-07)
+
+- Closed the legacy fallback action ordering gap identified in the previous audit. Native P_Thing_Raise (src/playsim/p_things.cpp:473-481) and archvile raising (src/playsim/p_enemy.cpp:2961-2965) revive first, copy friendship, then enter the destination state.
+- Removed all state entry from ActorRaise.ReviveSupported. Both resurrection callers now use a shared destination-entry helper after their friendship transfer. Configured Raise states and the legacy Spawn fallback follow the same ordering; direct revival restores represented fields without running state actions or changing render brightness.
+- Added seven regression cases: four raise-action flag combinations, two archvile cases, and direct revival without entry. Verify destination actions see Friendly, FriendPlayer, TidToHate, and NoHatePlayers values after transfer, including no-transfer behavior. Strengthened all four preceding route/state ordering cases to require final friendship during the action.
+- Full Release suite passes all 9,848 tests, including 8,633 Playsim tests. Clean Release rebuild with warnings as errors passes with zero warnings/errors; git diff --check passes.
+- Boundary: built-in Raise frame tables still use duration-based raising and the legacy Spawn fallback. Full native default-flag restoration, multi-frame Raise/chase integration, non-brain resurrection, virtual revive hooks, poison/event integrations, patrol/pathfinding, and paired native-runtime certification remain open. Phase 1 remains incomplete; changes are uncommitted.
+
+## Phase 1 revival health and action ordering conversion (2026-10-07)
+
+- Closed the intermediate Spawn-state entry identified in the preceding Raise-state audit. Native AActor::Revive assigns health directly while restoring actor defaults (src/playsim/p_mobj.cpp:8738-8772); P_Thing_Raise then transfers friendship and enters Raise (src/playsim/p_things.cpp:473-481).
+- ActorRaise.ReviveSupported now reuses the existing raw health restoration helper and explicitly clears managed death-type bookkeeping. Configured Raise states no longer execute a Spawn action during partial restoration. Existing duration-based monsters retain a Spawn fallback, now entered after represented defaults, brain state, and vertical velocity have been restored.
+- Added six regression cases covering both resurrection routes with configured and legacy states, destination-action count, restored health/corpse/killed/defense/collision fields, brain mode, preserved vertical velocity, friendship before configured Raise actions, blocked raises with no actions, and ordinary Health assignment retaining its Spawn transition.
+- Full Release suite passes all 9,841 tests, including 8,626 Playsim tests. Clean Release rebuild with warnings as errors passes with zero warnings/errors; git diff --check passes.
+- Boundary: legacy built-in monsters still use duration-based raising with a Spawn fallback, rather than converted native Raise frame tables. Legacy fallback actions still precede caller friendship transfer. Full native default-flag restoration, multi-frame Raise/chase integration, non-brain resurrection, virtual revive hooks, poison/event integrations, patrol/pathfinding, and paired native-runtime certification remain open. Phase 1 remains incomplete; changes are uncommitted.
+
+## Phase 1 configured Raise-state conversion (2026-10-07)
+
+- Converted AActor::GetRaiseState eligibility from src/playsim/p_mobj.cpp:8717-8735: corpse flag, terminal tics or current-frame CanRaise, exclusion of players, and a valid Raise label. The query itself does not require a monster brain or positive current health.
+- Added the represented RaiseState index and the Raise label to shared ACS state lookup. Explicit invalid indices reject resurrection instead of falling back to a legacy duration. Added conditional checksum coverage for configured Raise identity.
+- Wired both ActorRaiseActions and ArchvileActions to capture the eligible state before revival and enter it after restoration and friendship transfer, matching native P_Thing_Raise ordering (src/playsim/p_things.cpp:437-481). Configured states use their own tics instead of the additional legacy raise timer; brain chase waits while the configured entry frame is current.
+- Added eleven regression cases covering query gates, brain-independent lookup, player exclusion, both resurrection routes, action timing/brightness/friendship, save restoration without replaying actions, continued frame timing after restore, label queries, and invalid-state rejection. Corrected an initial archvile test fixture whose raiser was outside resurrection reach; final full suite passes.
+- Full Release suite passes all 9,835 tests, including 8,620 Playsim tests. Clean Release rebuild with warnings as errors passes with zero warnings/errors; git diff --check passes.
+- Boundary: built-in monster Raise frame tables still use legacy duration behavior. Revival remains restricted to supported brain-backed actors with positive spawn health; its health setter still enters Spawn before an explicit Raise state. General multi-frame Raise/chase integration, virtual OnRevive hooks, and full native default-flag restoration remain open. State labels are class configuration and require matching state tables on restore. Patrol/pathfinding, scripting dispatch, native save-format compatibility, and paired native-runtime certification remain open. Phase 1 remains incomplete; changes are uncommitted.
+
+## Phase 1 default state-frame brightness conversion (2026-10-07)
+
+- Closed the general state-entry brightness gap identified in the electric-pain audit. Native AActor::SetState (src/playsim/p_mobj.cpp:897) replaces RF_FULLBRIGHT with the destination frame's brightness before running its action. Managed frames with omitted brightness previously retained the actor's old flag.
+- ActorStateMachine.Enter now treats omitted frame brightness as false and assigns brightness on every entry, including suppressed actions and immediate chains. Actions can still change brightness until the next entry. Restore remains distinct from entry and preserves runtime brightness on frames without an explicit brightness value.
+- Added eight regression cases covering omitted/false/true values before actions, suppressed actions, zero-tic and returned-state chains, timed action brightness, and restore versus entry. Initial full suite exposed three assertions encoding the previous carry-forward behavior; updated the default-frame test and both resurrection-route assertions to the native entry rule. The subsequent full suite passes.
+- Full Release suite passes all 9,824 tests, including 8,609 Playsim tests. Clean Release rebuild with warnings as errors passes with zero warnings/errors; git diff --check passes.
+- Audit boundaries: Thing_SetGoal requires missing patrol-point and chase-goal support; general patrol/pathfinding remains unconverted. Revival still represents raise animation through brain timing rather than native Raise-state pointers. General scripting dispatch, named random streams, native save-format compatibility, and paired native-runtime certification remain open. Phase 1 remains incomplete; changes are uncommitted.
+
+## Phase 1 goal-reference lifetime conversion (2026-10-07)
+
+- Audited native GC::ReadBarrier (src/common/objects/dobjgc.h:137-145) and DObject::Destroy (src/common/objects/dobject.cpp:306-323). Reading an object reference clears it once destruction marks the object; zero health alone does not invalidate the reference.
+- Added the equivalent read barrier to Actor.GoalId. Attached actors clear goals that are destroyed or no longer resolve in their simulation, including during save capture. Detached actors retain IDs until a simulation can resolve them. Existing goal archive version 106 needs no format change.
+- Added five regression cases covering destruction before/after actor-list removal, save capture without a preceding getter, dead-goal retention and save restoration, destruction after restore, and unresolved attached versus detached IDs.
+- Full Release suite passes all 9,816 tests, including 8,601 Playsim tests. Clean Release rebuild with warnings as errors passes with zero warnings/errors; git diff --check passes.
+- Boundary: this closes goal-reference destruction cleanup. Patrol/pathfinding, goal movement, other object-reference barriers, general script dispatch, native save-format compatibility, and paired native-runtime certification remain open. Phase 1 remains incomplete; changes are uncommitted.
+
+## Phase 1 melee goal-target shortcut and goal archive (2026-10-07)
+
+- Closed the goal-target shortcut found in the preceding melee audit. Native P_CheckMeleeRange (src/playsim/p_enemy.cpp:253-291) accepts a target equal to goal after the strict distance gate, before NoAttack, vertical overlap, friendship, and sight checks.
+- Added Actor.GoalId as the represented native goal reference, with zero normalized to null, and implemented the shortcut in the shared MonsterBrain melee calculation used by actor queries, jump actions, and monster behavior. Ordinary targets retain all existing attack gates.
+- Native actor serialization includes goal (src/playsim/p_mobj.cpp:288). Added conditional managed archive version 106 using the existing reference-trailer convention; capture/restore goal identity, clear omitted goals from older saves, and include goal identity in checksums. Reader validates size, prior version, count, presence, and absent-reference payload before mutation.
+- Added eight regression cases covering strict near/equal/far distance with all attack gates blocked, goal behavior after save, matching fresh restore, mixed/absent references, older-save reset, zero normalization, byte-identical reserialization, three malformed trailers, and checksum sensitivity.
+- Full Release suite passes all 9,811 tests, including 8,596 Playsim tests. Clean Release rebuild with warnings as errors passes with zero warnings/errors; git diff --check passes.
+- Boundary: this converts goal identity and melee arrival acceptance, not patrol/pathfinding, goal movement, actor-destruction pointer cleanup, or general script dispatch. Portal-relative distance, native save-format compatibility, and paired native-runtime certification remain open. Phase 1 remains incomplete; changes are uncommitted.
+
+## Phase 1 Actor.CheckMeleeRange surface integration (2026-10-07)
+
+- Added the missing callable Actor.CheckMeleeRange method corresponding to src/playsim/p_enemy.cpp:253-298. Reuses existing ActorJumpActions target resolution, sight checks, and MonsterBrain range logic; this round integrates an already-converted calculation rather than adding another geometry implementation.
+- Added nine regression cases covering negative-range fallback, explicit zero, strict radius-adjusted boundary, absent/friendly targets, vertical overlap and NoVerticalMeleeRange after save, sector NoAttack, blocked sight, and unchanged combat randomness/range. Corrected initial test setup that attempted to mutate init-only map fields; gates are now supplied during map construction.
+- Full Release suite passes all 9,803 tests, including 8,588 Playsim tests. Clean Release rebuild with warnings as errors passes with zero warnings/errors; git diff --check passes.
+- Native audit gap: the pl == actor->goal shortcut returns true after the distance gate, before NoAttack, vertical, friendship, and sight checks. Managed goal pointers are absent, so that behavior remains unconverted. Portal-relative distance/sight and general script dispatch also remain open. Phase 1 remains incomplete; changes are uncommitted.
+
+## Phase 1 electric pain brightness without animation (2026-10-07)
+
+- Audited native TriggerPainChance (src/playsim/p_interaction.cpp:1010-1031) together with AActor::SetState brightness assignment (src/playsim/p_mobj.cpp:897). A successful lightning reaction changes full-bright through entering a pain state; when no pain state exists it does not clear the existing brightness.
+- Corrected the managed electric helper to clear brightness only when entering a valid pain state. Failed lightning reactions continue to set full-bright and consume the additional monster draw. Both Actor.TriggerPainChance and damage reactions share this correction.
+- Added four regression cases across 64 seeds each, covering initially bright actors, present/missing animations, direct calls, and zero-damage ForcePain. Check brightness, state, action return value, and subsequent lightning random value. Existing dark-actor electric tests remain passing.
+- Full Release suite passes all 9,794 tests, including 8,579 Playsim tests. Clean Release rebuild with warnings as errors passes with zero warnings/errors; git diff --check passes.
+- Boundary: general state-frame full-bright defaults, sound/howl actions, native named random streams, scripting dispatch, and paired native-runtime certification remain open. Phase 1 remains incomplete; changes are uncommitted.
+
+## Phase 1 actor IsSentient query conversion (2026-10-07)
+
+- Converted the missing AActor::IsSentient query from src/playsim/p_mobj.cpp:8804-8807: positive health plus a See state. The managed query uses a valid represented See-state index; it does not infer sentience from IsMonster, Brain, brain enablement, or dormancy.
+- Added nine regression cases for positive/zero/negative health, present/missing/out-of-range state indices, monster/brain/dormancy independence, and dynamic death/health restoration. The query has no mutation, state entry, or random draw.
+- Full Release suite passes all 9,790 tests, including 8,575 Playsim tests. Clean Release rebuild with warnings as errors passes with zero warnings/errors; git diff --check passes.
+- Boundary: native state pointers are represented as managed indices. Native touchy-object arming, crushing, and falling detonation callers remain unconverted; this round supplies the actor query without claiming those gameplay paths. General script dispatch, named random streams, and paired native-runtime certification remain open. Phase 1 remains incomplete; changes are uncommitted.
+
+## Phase 1 TriggerPainChance actor helper conversion (2026-10-07)
+
+- Converted the missing Actor.TriggerPainChance helper from src/playsim/p_interaction.cpp:990-1058. The direct action gates only NoPain/dead actors, resolves typed pain chances, skips the ordinary roll when forced, and returns whether a pain animation was entered. It does not apply damage, wake/retarget, or mark JustHit.
+- Reuses the converted ordinary pain roll and electric branch. Missing-animation electric calls can still set full-bright and consume lightning/howl draws but return false, preserving the native direct-action flinched result rather than the damage reaction's just-hit result.
+- Added eight regression cases for forced action gating, missing animation, invulnerability independence, dead actors, typed zero/guaranteed chances with exact combat advancement, and electric return/random behavior over 64 spaced seeds for each animation case. Health, reaction timer, source recording, and JustHit remain unchanged by direct calls.
+- Full Release suite passes all 9,781 tests, including 8,566 Playsim tests. Clean Release rebuild with warnings as errors passes with zero warnings/errors; git diff --check passes.
+- Boundary: this adds the callable managed actor helper; general ZScript/DECORATE VM dispatch remains unfinished. PoisonCloud/howl audio, native independent random sequences, detached probabilistic behavior, and paired native-runtime certification remain open. Phase 1 remains incomplete; changes are uncommitted.
+
+## Phase 1 JustHit save conversion (2026-10-07)
+
+- Closed the JustHit save gap found in the preceding source-free pain audit. Native MF_JUSTHIT is part of serialized actor flags (src/playsim/p_mobj.cpp:250). Managed actor capture now includes a true JustHit flag and restoration clears omitted flags, including older archives, rather than retaining later runtime changes.
+- Added conditional managed archive version 105 after constant-damage version 104. Reuses the existing per-actor trailer convention and validates size, prior version, count, presence markers, and boolean payloads before Apply. Unchanged saves with no JustHit flags retain the prior format; managed saves are not native-format compatible.
+- Added five regression cases for mixed actor flags, fresh matching simulation restore, older-save reset, byte-identical reserialization, and four malformed trailer cases. Reinstated all three source-free forced-pain friend-target save checks that exposed the original gap; they now pass.
+- Full Release suite passes all 9,773 tests, including 8,558 Playsim tests. Clean Release rebuild with warnings as errors passes with zero warnings/errors; git diff --check passes.
+- Boundary: native named random streams, unsupported damage flags and scripting dispatch, native audio, and paired native-runtime certification remain open. This closes the JustHit archive gap; Phase 1 remains incomplete. Changes are uncommitted.
+
+## Phase 1 sourceless pain JustHit conversion (2026-10-07)
+
+- Converted the missing source-null MF_JUSTHIT behavior from native ReactToDamage (src/playsim/p_interaction.cpp:958-962). Native does not require a source to mark a successful pain reaction; it checks whether the current target equals the source, is absent, or is not a friend.
+- Removed the extra managed non-null-source gate and made the shared friend-target predicate accept a nullable source. Source-free pain can mark JustHit while leaving attack-source recording and target acquisition unchanged; chasing a friend still suppresses the new mark.
+- Added five regression cases for ordinary sourceless damage with/without a pain animation and zero-damage ForcePain with absent, hostile, and friendly chase targets.
+- Audit finding: JustHit participates in the checksum but is not captured/restored by managed saves. An additional save assertion exposed this independent gap; removed that assertion from the reaction tests and explicitly retained the save conversion as open work. No save support is claimed by this round.
+- Final full Release suite passes all 9,768 tests, including 8,553 Playsim tests. Clean Release rebuild with warnings as errors passes with zero warnings/errors; git diff --check passes.
+- Boundary: JustHit archive support, native named random-stream isolation, CausePain/AllowPain, audio, and paired native-runtime certification remain open. Phase 1 remains incomplete; changes are uncommitted.
+
+## Phase 1 ordinary pain chance edge draws (2026-10-07)
+
+- Converted the missing ordinary pain roll at impossible and guaranteed chances. Native TriggerPainChance (src/playsim/p_interaction.cpp:1008) evaluates pr_damagemobj() < painchance whenever ForcePain is false; chance zero and chance >=256 still consume a draw. Managed RollPainChance now follows this evaluation for attached actors instead of short-circuiting those chances.
+- Existing ForcePain, NoPain/Painless/DMG_NO_PAIN, threshold, charging, and damage-cancellation gates continue to control whether the pain roll occurs. Detached actors retain deterministic guaranteed-chance behavior because they have no simulation random source.
+- Added ten cases covering negative/zero/1/128/255/256/1000 chances and suppressed/threshold/forced gates, checking exact random advancement and reaction outcome. Initial full verification identified four existing expected-random-state failures: the fixed-damage BFG spray now expects its target's pain draw, and three positive skull-slam factor cases expect a pain draw after damage dice. Zero-factor cancellation still consumes no pain draw.
+- Final full Release suite passes all 9,763 tests, including 8,548 Playsim tests. Clean Release rebuild with warnings as errors passes with zero warnings/errors; git diff --check passes.
+- Boundary: native pr_damagemobj is a named independent stream; this conversion still uses the established shared managed combat stream. Draw eligibility/count is converted, but native random sequences and isolation are not certified. Typed override plumbing is reused; PoisonCloud, audio, and standalone action dispatch remain open. Phase 1 remains incomplete; changes are uncommitted.
+
+## Phase 1 missing pain-state reaction conversion (2026-10-07)
+
+- Converted native TriggerPainChance behavior when no Pain state exists (src/playsim/p_interaction.cpp:990-1047). Native sets its ordinary just-hit result before finding the animation; Electric still rolls lightning, can set full-bright, and consumes the monster howl draw without an animation.
+- Removed the managed pre-reaction state-existence gate. Animation entry alone now checks whether the state exists. Renamed the local result/helper to painReaction/TryReactToPain to reflect that the result represents native hit reaction rather than necessarily an animation.
+- Added five regression cases: zero/positive forced ordinary pain with JustHit and no animation, electric reactions across 64 seeds for each monster/nonmonster case with exact subsequent lightning values, and NoPain suppression. Existing forced-electric and zero-damage regression suites continue to pass.
+- Final full Release suite passes all 9,753 tests, including 8,538 Playsim tests. Clean Release rebuild with warnings as errors passes with zero warnings/errors; git diff --check passes.
+- Boundary: script TriggerPainChance returns whether an animation flinched, while the damage reaction uses native just-hit semantics; standalone action dispatch remains unconverted. Ordinary pain random-stream parity at zero/maximum chance, PoisonCloud howl, native audio, and paired native-runtime certification remain open. Phase 1 remains incomplete; changes are uncommitted.
+
+## Phase 1 forced electric pain lightning rolls (2026-10-07)
+
+- Audited native TriggerPainChance in src/playsim/p_interaction.cpp:990-1047. ForcePain bypasses the ordinary pain-chance roll, but Electric still requires pr_lightning() < 96 to flinch. A failed lightning roll sets full-bright; monsters consume a second lightning draw for their howl chance.
+- Removed the managed forced-electric guaranteed-flinch shortcut and preserved the additional monster draw. The actual howl sound remains unsupported; preserving its draw prevents later lightning/flicker behavior from diverging solely because the sound boundary is absent.
+- Updated the existing forced-electric regression to expect the native bright branch for its selected seed. Added four parameterized tests with 64 spaced seeds each, covering zero/positive damage and monster/nonmonster targets; verify health, pain/full-bright outcome, untouched combat randomness, and subsequent lightning stream value. Initial adjacent seeds exercised only one branch; spaced seeds now assert that both branches are covered.
+- Full Release suite passes all 9,748 tests, including 8,533 Playsim tests. Clean Release rebuild with warnings as errors passes with zero warnings/errors; git diff --check passes.
+- Boundary: sounds, PoisonCloud howl randomness, full native TriggerPainChance action dispatch/return semantics, missing-state behavior, and independent native random-generator certification remain open. This uses the existing managed flicker stream representing lightning. Phase 1 remains incomplete; changes are uncommitted.
+
+## Phase 1 zero-damage missile forced pain (2026-10-07)
+
+- Converted the missing zero-damage ForcePain reaction path. Native P_DoMissileDamage (src/playsim/p_map.cpp:1338) invokes damage handling for ForcePain even at zero; P_DamageMobj preserves original zero through modifiers, and ReactToDamage forces pain and wakeup (src/playsim/p_interaction.cpp:858, 1261, 907-928).
+- Extracted the existing managed reaction block into a shared helper. The zero path enters it only with ForcePain, exactly zero final damage, and zero damage entering modifiers. Positive damage reduced to zero remains canceled; armor cancellation still returns before reactions. Existing invulnerability, dormancy, attack eligibility, and pain-suppression gates remain effective.
+- Added seven regression cases covering expression-zero pain and wakeup, NoPain/Painless/DMG_NO_PAIN, invulnerability, dormancy, and constant-zero missile dice without an additional forced-pain roll. Initial test setup errors were corrected: random constant damage requires a simulation, and same-species monsters can block attacks before pain handling.
+- Final full Release suite passes all 9,744 tests, including 8,529 Playsim tests. Existing armor/modifier cancellation regressions pass. Clean Release rebuild with warnings as errors passes with zero warnings/errors; git diff --check passes.
+- Boundary: CausePain, AllowPain, broader fake-pain handling, native player feedback/sounds, and paired native-runtime certification remain open. Zero pain-only hits do not record a managed health-loss source or drain health. Phase 1 remains incomplete; changes are uncommitted.
+
+## Phase 1 constant actor damage save conversion (2026-10-07)
+
+- Converted missing constant DamageVal save state, matching the native serialized damage field in src/playsim/p_mobj.cpp:248. Map actors, runtime bots, projectiles, and spawned Lost Souls now capture their patched spawn damage baseline; changed values are captured and restored, while omitted fields in older archives reset to that baseline.
+- Added conditional managed archive version 104, layered after existing version 103. Per-actor presence plus signed 32-bit value preserves zero and the full integer range. Size, prior version, count, and marker validation reject malformed data before Apply mutates actors. Existing unchanged saves retain their previous version.
+- Added eleven regression cases covering signed/zero/extreme constants, default neighbor reset, older archive reset, patched projectile defaults, monster defaults, byte-identical reserialization, loaded damage calculation/random state, and three malformed trailer cases. Corrected an initial test helper compile error that used the static patch parser as a parameter type.
+- Full Release suite passes all 9,737 tests, including 8,522 Playsim tests. Clean Release rebuild with warnings as errors passes with zero warnings/errors; git diff --check passes.
+- Boundary: DamageExpression delegates/function identity are not serialized or replaced by this constant-only field. Expression save/restore requires the unfinished scripting integration. Negative constant values are preserved as actor state; native GetMissileDamage asserts without a damage function for negative constants, and this change does not certify their impact semantics. Managed archive format is not native-compatible; paired native-runtime parity remains open. Phase 1 is incomplete; changes are uncommitted.
+
+## Phase 1 projectile size save integration (2026-10-07)
+
+- Closed the projectile custom-radius save gap recorded in the preceding ledge audit. Native AActor serialization includes radius and height (src/playsim/p_mobj.cpp:241-243). Managed projectile spawning now records its radius/height baseline after DeHackEd dimension patches, allowing the existing actor-size archive to detect direct runtime changes and restore omitted dimensions to the actual spawn defaults.
+- Reused existing size capture, validation, serialization, restoration, and baseline checksum behavior; no new archive version or duplicate format was added. Matching projectile instances are still required by RestoreState.
+- Added thirteen regression cases: all ten projectile kinds preserve fractional runtime radius/height, reset an omitted neighbor to its spawn size, and restore an older/default-size archive with byte-identical reserialization. Three patched-baseline cases cover explicit zero, fractional, and signed dimensions without substituting class defaults.
+- Removed the matching-radius workaround from ProjectileLedgeGravityTests; saved falling motion now continues with matching position, velocity, and lifetime after dimensions are restored automatically.
+- Full Release suite passes all 9,726 tests, including 8,511 Playsim tests. Clean Release rebuild with warnings as errors passes with zero warnings/errors; git diff --check passes.
+- Boundary: managed archives are not native save-format compatible, and paired native-runtime certification remains open. General projectile spawning during restoration, unsupported actor state, slopes, water, and portals remain outside this change. Phase 1 remains incomplete; changes are uncommitted.
+
+## Phase 1 projectile ledge gravity (2026-10-07)
+
+- Converted the resting-floor first-acceleration rule from AActor::FallAndSink, src/playsim/p_mobj.cpp:3354-3375, into ProjectileActor movement. Capture the old flat-sector floor before movement; double actor-times-sector gravity only when vertical velocity is zero, the destination floor is lower, and the missile remains exactly at its old floor height. Vertical displacement still precedes gravity.
+- Added ten regression cases for ledge departure, airborne rest, rising/falling motion, disabled/zero/negative/fractional gravity, and saved continuation with normal subsequent acceleration.
+- Initial fixtures required correction: falling at floor height can hit the ledge during managed swept movement; the falling case now starts above the floor. RestoreState requires a matching spawned projectile and matching custom radius. Gravity changes for saved continuation use ActorPropertyActions.Gravity so the existing movement-action archive records the flag override.
+- Final full Release suite passes all 9,713 tests, including 8,498 Playsim tests. Clean Release rebuild with warnings as errors passes with zero warnings/errors. git diff --check passes.
+- Remaining audit gaps: this conversion covers flat-sector floors. Native water sinking, slopes, 3D floors, portals, and native horizontal-before-vertical collision ordering remain open. Custom radius is not restored by this archive and must currently match the instantiated actor. Full native-runtime parity is not certified. Phase 1 remains incomplete; changes are uncommitted.
+
+## Phase 1 vertical missile damage-presence movement (2026-10-07)
+
+- Converted the AActor::Tick vertical missile nudge from src/playsim/p_mobj.cpp:4970: when both horizontal velocities are zero and IsZeroDamage is false, call VelFromAngle(MinVel) before movement. Native actor.h:802 and common/utility/vectors.h:59 define MinVel as 1/65536.
+- Uses the existing virtual damage-presence query without evaluating DamageExpression or consuming combat randomness. Constant zero without an expression remains vertical; an expression returning zero still enables the nudge. Existing horizontal velocity is preserved.
+- Added nine regression cases covering constant zero/positive/negative damage, a zero-returning expression, cardinal and diagonal yaw, vertical displacement, lifetime, and existing one-unit horizontal velocity.
+- The first full run exposed an existing ceiling-hugger floor-impact fixture that assumed no horizontal movement. Audited p_map.cpp:2423-2430: native horizontal movement snaps huggers to their surface first. Updated the fixture's downward speed so it still verifies a subsequent floor impact after the ceiling snap. The corrected full run passes all 9,703 tests, including 8,488 Playsim tests.
+- Clean Release rebuild with warnings as errors passes with zero warnings and zero errors; git diff --check passes.
+- Boundary: native double velocities are represented with managed fixed-point rounding, particularly at diagonal yaw; this is not paired native-runtime numerical certification. Full native missile movement, portals, slopes, and unsupported flags remain open. Phase 1 is incomplete. Changes are uncommitted.
+
+## Conversion and audit: Phase 1 rocket blast distance and falloff (2026-10-07)
+
+Converted represented modern non-circular rocket radius damage using native
+GetRadiusDamage (src/playsim/p_map.cpp:6130-6201,6377-6384). Rocket/cyber-rocket
+blasts now use square horizontal surface distance, combined vertical separation,
+and truncate the complete scaled damage. Removed the circular distance and
+minimum-one-damage fallback, which incorrectly damaged victims with less than
+one calculated damage point. Extracted RadiusDamageGeometry.Distance and reused
+it for the already converted archvile path to keep distance semantics consistent.
+Doom Rocket's A_Explode has no OLDRADIUSDMG flag (weaponrlaunch.zs).
+
+Two new kind regression cases each cover eight scenarios: signed diagonals,
+vertical separation, above-range targets, fractional falloff, exact radius edge,
+full damage and sub-one-point falloff. They verify damage-source attribution,
+missile removal and unchanged combat RNG. Existing rocket swept impacts, blast
+eligibility and archvile tests pass. Full Release suite: 9,694 passed, including
+8,479 Playsim tests. Clean Release rebuild with warnings as errors: zero warnings
+and errors. Whitespace check passed. No archive format change.
+
+Boundary: this is the represented modern formula, not complete P_RadiusAttack.
+OLDRADIUSDMG victim/bomb compatibility, RadiusDamageFactor, splash/thrust/geometry
+flags, portal-aware distances and paired native-runtime certification remain
+open. Phase 1 remains incomplete; changes uncommitted.
+
+## Conversion and audit: Phase 1 archvile blast radius and falloff (2026-10-07)
+
+Converted represented non-circular GetRadiusDamage distance and falloff
+(src/playsim/p_map.cpp:6130-6201) for archvile blasts: horizontal distance uses
+max(abs(dx),abs(dy)) minus victim radius, combines vertical surface separation,
+then truncates blastDamage * (1 - distance / blastRadius). This replaces circular
+horizontal distance and early integer-distance rounding. A_VileAttack now accepts
+independent blast damage/radius (archvile.zs:149,166). A_Explode's nonpositive-radius
+fallback to damage is included (wadsrc/static/zscript/actors/attacks.zs:591-603).
+
+Ten regression cases cover diagonal victims in both signs, vertical separation,
+fractional falloff truncation, independent damage/radius, exact radius boundary,
+zero/negative radius fallback and zero blast damage. Defaults retain the target's
+20 direct plus 62 blast damage. Full Release suite: 9,692 passed, including 8,477
+Playsim tests, on the final full rerun. An earlier run failed the intermittent
+DedicatedServerHostTests.Pump_BootstrapsLiveSessionAfterStartGameAck; no server
+code changed. Clean Release rebuild with warnings as errors: zero warnings and
+errors. Whitespace check passed. No archive format change.
+
+Boundary: this converts the represented modern non-circular formula locally,
+not the complete P_RadiusAttack system. Negative damage metadata fallback,
+old-radius compatibility, actor RadiusDamageFactor, splash/thrust/geometry flags,
+persistent fire replacements and complete ZScript dispatch remain open.
+Paired runtime certification remains open. Phase 1 remains incomplete;
+changes uncommitted.
+
+## Conversion and audit: Phase 1 archvile direct damage and thrust parameters (2026-10-07)
+
+Converted represented A_VileAttack initialdmg, thrust, damagetype and
+VAF_DMGTYPEAPPLYTODIRECT (bit 1) parameters
+(wadsrc/static/zscript/actors/doom/archvile.zs:149-170; constants.zs:54).
+The helper now accepts custom initial damage, signed finite thrust, a supplied
+blast damage type and the flag applying that type to the initial hit. Default
+brain attacks retain initial damage 20, thrust 1, Fire blast and unspecified
+direct damage. Launch remains thrust * 1000 / max(1, target.Mass).
+Nonfinite thrust is rejected before mutation under the managed numeric contract.
+
+Fifteen regression cases cover typed/untyped direct damage, Ice blast immunity
+and half resistance, fire presence/absence, custom initial damage, negative/zero/
+fractional/double thrust, positive/zero/negative mass, and rejection of NaN and
+both infinities before mutation. Existing default attack and sight tests pass.
+Full Release suite: 9,682 passed, including 8,467 Playsim tests. Clean Release
+rebuild with warnings as errors: zero warnings and errors. Whitespace check
+passed. No archive format change; these are action invocation arguments.
+
+Boundary: custom arguments are available at the internal managed helper, not
+complete ZScript/VM dispatch. Blast damage/radius parameters, DONTTHRUST,
+persistent fire replacements, complete native radius semantics, sound/bleed
+and paired runtime certification remain open. Phase 1 remains incomplete;
+changes uncommitted.
+
+## Conversion and audit: Phase 1 archvile attack facing and sight gate (2026-10-07)
+
+Converted A_VileAttack's represented action-local FaceTarget then CheckSight
+sequence (wadsrc/static/zscript/actors/doom/archvile.zs:149-166). The attack helper
+now faces the captured target and clears Ambush through the existing facing
+helper, then stops before direct damage, blast or launch if sight is blocked.
+The brain always dispatches the attack action at its shot tic so facing still
+occurs when blocked. Previously helper calls relied on the caller's sight/yaw.
+Fire placement now uses target.Vec3Angle(-24, yaw, 0), matching the native call
+and removing duplicated coordinate math.
+
+Four regression cases cover blocked/open sight with/without fire, initial yaw
+opposite the target, Ambush clearing, unchanged pitch, exact health loss, preserved
+vertical velocity when blocked and damage-source attribution. Existing delayed
+archvile attack, broken-sight and Fire context cases pass. Full Release suite:
+9,667 passed, including 8,452 Playsim tests. Clean Release rebuild with warnings
+as errors: zero warnings and errors. Whitespace check passed. No archive change.
+
+Boundary: complete native FaceTarget flags/portal transformations, persistent
+fire actors/replacements, custom attack parameters, DONTTHRUST, sounds/bleed and
+paired runtime certification remain open. Phase 1 remains incomplete;
+changes uncommitted.
+
+## Conversion and audit: Phase 1 archvile blast damage context (2026-10-07)
+
+Converted default A_VileAttack blast context
+(wadsrc/static/zscript/actors/doom/archvile.zs:149-170). Radius damage now uses
+Fire and the represented fire actor as inflictor; the archvile remains the damage
+source. The initial 20-point hit retains its native default unspecified type.
+Previously the radius path supplied neither Fire nor the fire inflictor, ignoring
+Fire factors and incorrectly inheriting attacker properties for damage filtering.
+
+Nine regression cases cover Fire immunity/half/ordinary/double factors with and
+without fire after archive restore, exact direct-plus-blast health loss, unchanged
+vertical launch, retained damage-source attribution, and a spectral target hit
+by a spectral archvile whose ordinary fire blast must remain blocked.
+Full Release suite: 9,663 passed, including 8,448 Playsim tests. Clean Release
+rebuild with warnings as errors: zero warnings and errors. Whitespace check
+passed. No archive format change.
+
+Boundary: persistent fire actors/replacements, custom A_VileAttack arguments,
+VAF_DMGTYPEAPPLYTODIRECT, DONTTHRUST, full native radius damage flags/formulas,
+sounds/bleed traces and paired runtime certification remain open.
+Phase 1 remains incomplete; changes uncommitted.
+
+## Conversion and audit: Phase 1 melee-range archive restoration (2026-10-07)
+
+Closed the preceding audit's persistence gap for represented MeleeRange.
+Capture/restore and conditional managed archive version 103 now preserve signed
+16.16 range values for every actor. Records carry per-actor presence; omitted
+records restore the currently represented class default of 44, including older
+archives and mixed custom/default actor saves. This preserves the existing ACS
+property (src/playsim/p_acs.cpp:4349-4350,4467) and converted weapon reach after load.
+Archives without custom range retain their previous version/bytes.
+
+Eleven regression cases cover signed/zero/fractional/int-limit byte round trips
+into a fresh simulation, byte equality, legacy default cleanup, absent records
+alongside custom ones, loaded fist/chainsaw extended reach, and rejected size,
+prior-version and presence-marker corruption without applying mutations.
+Corrected malformed-test exception expectations to the existing Apply contract.
+Full Release suite: 9,654 passed, including 8,439 Playsim tests. An earlier run
+also failed DedicatedServerHostTests.Pump_BootstrapsLiveSessionAfterStartGameAck;
+the full rerun passed with no server code changes. Clean Release rebuild with
+warnings as errors: zero warnings and errors. Whitespace check passed.
+
+Boundary: version 103 is a managed format extension, not native save compatibility.
+Future class-specific MeleeRange defaults will need captured spawn baselines;
+currently all represented actors start at 44. Full double-precision native range,
+custom action flags, portal traces and paired runtime certification remain open.
+Phase 1 remains incomplete; changes uncommitted.
+
+## Conversion and audit: Phase 1 player melee reach property integration (2026-10-07)
+
+Converted default fist/chainsaw range calculation from the player's MeleeRange
+property plus native MELEEDELTA (20), with native epsilon (1/65536) added for the
+chainsaw. References: wadsrc/static/zscript/actors/doom/weaponfist.zs:88 and
+weaponchainsaw.zs:87. Previously HitscanCombat always traced 64 units, ignoring
+the existing ACS MeleeRange property. Bullet range still uses PLAYERMISSILERANGE.
+The public 64-unit constant remains the ordinary default, not the firing source.
+
+Seven regression cases exercise ACS set/get followed by actual firing: shortened,
+extended and fractional fist/chainsaw reach, plus pistol range independence.
+They also verify ammo consumption and cooldowns. Existing default melee, facing
+and blocked-trace tests pass. Full Release suite: 9,643 passed, including 8,428
+Playsim tests. Clean Release rebuild with warnings as errors: zero warnings and
+errors. Whitespace check passed. No archive format change.
+
+Audit finding: custom MeleeRange is not currently captured/restored in managed
+actor poses; persistence remains open and these tests cover runtime changes.
+Custom A_Saw range/flags, full autoaim, portal traces and paired native-runtime
+certification remain open. Phase 1 remains incomplete; changes uncommitted.
+
+## Conversion and audit: Phase 1 default chainsaw hit-facing behavior (2026-10-07)
+
+Converted the default A_Saw hit-turn rule
+(wadsrc/static/zscript/actors/doom/weaponchainsaw.zs:171-193). Signed shortest-angle
+difference selects the native branches: larger differences leave yaw 90/21 degrees
+short of the target, while differences within 4.5 degrees turn by 4.5 degrees,
+including the native positive turn for zero difference. Direction is captured
+before damage; turning follows a traced hit even if invulnerability blocks damage.
+Misses retain yaw. Existing fist direct-facing behavior remains separate.
+
+Nine regression cases cover both signs, close/far differences, zero difference,
+wraparound in both directions, invulnerable hits, saved/restored yaw and misses.
+Full Release suite: 9,636 passed, including 8,421 Playsim tests. Clean Release
+rebuild with warnings as errors: zero warnings and errors. Whitespace check
+passed. No archive format change.
+
+Boundary: this represents default turning only. SF_NOTURN/custom A_Saw flags,
+pull-in/JustAttacked, sounds, lifesteal, light changes and complete puff behavior
+remain open. Managed BAM/fixed-point precision and portal-free direction are not
+full double/portal native equivalence. Paired runtime certification remains open.
+Phase 1 remains incomplete; changes uncommitted.
+
+## Conversion and audit: Phase 1 fist hit-facing behavior (2026-10-07)
+
+Converted native A_Punch's target-hit facing update
+(wadsrc/static/zscript/actors/doom/weaponfist.zs:93-98). A successful fist trace
+now sets player yaw toward the traced target after damage, even when
+invulnerability prevents health loss. The direction is captured before damage
+callbacks, matching the native trace's angleFromSource snapshot. Misses keep yaw.
+Pitch remains unchanged. The represented flat-world AngleTo helper supplies the
+direction; other weapons retain existing facing behavior.
+
+Five regression cases cover positive/negative lateral target offsets, ordinary
+and invulnerable hits, saved/restored resulting yaw, unchanged pitch and a miss.
+Existing player weapon context, ammo and firing tests also pass. Full Release
+suite: 9,627 passed, including 8,412 Playsim tests. Clean Release rebuild with
+warnings as errors: zero warnings and errors. Whitespace check passed.
+No archive format change.
+
+Boundary: punch sound, PowerStrength damage boost, complete autoaim/puff flags,
+portal-transformed trace angles and paired native-runtime certification remain
+open. Phase 1 remains incomplete; changes uncommitted.
+
+## Conversion and audit: Phase 1 player weapon damage context (2026-10-07)
+
+Converted the explicit native damage context in HitscanCombat's actor-hit path:
+fist/chainsaw use Melee, pistol/chaingun/shotgun/super-shotgun use Hitscan.
+Native references: wadsrc/static/zscript/actors/doom/weaponfist.zs:91,
+weaponchainsaw.zs:105, weaponpistol.zs GunShot and weaponssg.zs:116. The managed
+path previously supplied unspecified damage, bypassing typed resistance or
+immunity. Actor persistent DamageType does not replace the native explicit type.
+Projectile dispatch and geometry damage paths retain their existing behavior.
+
+Six regression cases cover all six weapons, each with typed immunity/double
+damage, paired ordinary hits, restored typed factors, unrelated immunity and
+attacker DamageType, exact combat RNG, ammo expenditure and cooldown agreement.
+Full Release suite: 9,622 passed, including 8,407 Playsim tests. Clean Release
+rebuild with warnings as errors: zero warnings and errors. Whitespace check
+passed. No archive format change.
+
+Boundary: complete native puff replacement/type overrides, melee action flags,
+vertical autoaim, native random-stream equivalence and paired runtime
+certification remain open. Phase 1 remains incomplete; changes uncommitted.
+
+## Conversion and audit: Phase 1 monster hitscan damage context (2026-10-07)
+
+Converted explicit Hitscan damage type in the shared MonsterBrain.FireHitscan
+actor-hit path, matching native A_PosAttack/A_SPosAttack/A_CPosAttack
+(wadsrc/static/zscript/actors/doom/possessed.zs:295,312,346). Zombieman,
+shotgun guy, chaingunner, Wolfenstein SS and spider mastermind bullets now honor
+Hitscan factors rather than using unspecified damage. The existing shared
+fallback bullet path also receives Hitscan context. Geometry handling is unchanged.
+
+Five new profile regression cases each exercise immunity and double damage,
+paired ordinary damage, archive restore during windup, an unrelated Melee immunity
+and attacker Melee DamageType, native first-shot timing, exact combat RNG state
+and absence of projectile fallback. Full Release suite: 9,616 passed, including
+8,401 Playsim tests. Clean Release rebuild with warnings as errors: zero warnings
+and errors. Whitespace check passed. No archive format change.
+
+Boundary: full native autoaim, puff replacement, damage-event integration and
+native random stream equivalence remain open. Custom/fallback bullet behavior
+has no complete native certification. Paired runtime certification remains open.
+Phase 1 remains incomplete; changes uncommitted.
+
+## Conversion and audit: Phase 1 Doom monster melee damage context (2026-10-07)
+
+Converted the explicit Melee damage type for the shared represented Doom monster
+melee profile path. Native references: wadsrc/static/zscript/actors/doom/
+demon.zs:113, doomimp.zs:134, bruiser.zs:181, cacodemon.zs:129 and revenant.zs:185.
+Demon/spectre bites, imp claws, baron/hell-knight claws, cacodemon bites and
+revenant punches now honor typed Melee factors instead of unspecified damage.
+The actor's persistent DamageType does not replace the native explicit type.
+
+Seven new regression cases exercise all seven types, each with Melee factors
+zero/half/two, paired ordinary-damage runs, archived factors during windup,
+unrelated Fire immunity and attacker Fire type, native action timing, unchanged
+combat RNG and no projectile fallback. The first fixture was exactly at the
+strict melee-range boundary; moving it inside that boundary corrected the test.
+Full Release suite: 9,611 passed, including 8,396 Playsim tests. Clean Release
+rebuild with warnings as errors: zero warnings and errors. Whitespace check
+passed. No archive format change.
+
+Boundary: unsupported/custom monster fallback attacks are unchanged. Sounds,
+bleed traces, full native action/state dispatch and paired native-runtime
+certification remain open. Phase 1 remains incomplete; changes uncommitted.
+
+## Conversion and audit: Phase 1 skull-charge launch helper integration (2026-10-07)
+
+Wired the represented A_SkullAttack launch sequence through AngleTo,
+VelFromAngle and DistanceBySpeed (wadsrc/static/zscript/actors/doom/lostsoul.zs:
+115-125). Horizontal velocity now follows the stored facing angle, as the
+native action's VelFromAngle call does, rather than using a separate pre-storage
+angle. Removed duplicate direction and travel-time math. Explicit skull speed
+and the nonpositive default of 20 remain independent of class MovementSpeed.
+
+Six regression cases cover all four quadrants at speed 20,000, an ordinary
+non-cardinal direction, coincident targets, vertical center aim, class-speed
+independence and charge target/state. One numeric regression asserts raw X
+velocity 586171805 for direction (1,2) at speed 20,000; the old pre-storage
+calculation produced 586171804. Existing speed, short-distance, charge archive
+and collision tests pass. Full Release suite: 9,604 passed, including 8,389
+Playsim tests. Clean Release rebuild with warnings as errors: zero warnings and
+errors. Whitespace check passed. No archive format change.
+
+Boundary: native stores double angles/velocities while the managed model stores
+BAM angles and fixed-point velocities; this aligns the represented call sequence,
+not full floating-point native equivalence. Attack sound, complete FaceTarget
+flags/portal behavior and paired runtime certification remain open.
+Phase 1 remains incomplete; changes uncommitted.
+
+## Conversion and audit: Phase 1 skull-slam damage context and dormancy gate (2026-10-07)
+
+Converted two represented AActor::Slam rules (src/playsim/p_mobj.cpp:3770-3805):
+charge collision damage now uses the Melee damage type rather than an unspecified
+one, and dormant charging actors skip damage and its random roll after their
+charge is stopped. The actor's persistent DamageType does not replace the native
+explicit Melee context. Existing charge stop and constant-damage dice remain.
+
+Six regression cases cover Melee factors zero/half/one/two after byte archive
+restoration, an unrelated Fire immunity plus attacker Fire DamageType, exact
+damage and combat RNG advancement, and dormant collision before/after save.
+All cases verify stopped charge and zero velocity. Full Release suite: 9,598
+passed, including 8,383 Playsim tests. Clean Release rebuild with warnings as
+errors: zero warnings and errors. Whitespace check passed. No archive change.
+
+Boundary: this is not complete Slam conversion. ONLYSLAMSOLID, custom Slam/See/
+Idle state selection, dormant infinite state duration, bleed traces and general
+actor damage-function execution remain open. Existing negative constant-damage
+clamping and overflow saturation are not paired native parity. Paired runtime
+certification remains open. Phase 1 remains incomplete; changes uncommitted.
+
+## Conversion and audit: Phase 1 geometry missile-damage helper integration (2026-10-07)
+
+Converted native destructible geometry projectile damage call sites
+(src/playsim/p_destructible.cpp:730,735,742,774,779). Wall and plane impacts now
+use GetMissileDamage(StrifeDamage ? 3 : 7,1), including upper/lower wall parts.
+This replaces duplicated eight-sided dice that ignored StrifeDamage and damage
+expressions. Existing geometry eligibility and health-group handling are retained.
+
+Fifteen regression cases cover wall/floor/ceiling: six test normal/Strife dice
+across 16 seeds and exact combat RNG advancement; nine test signed, zero and
+positive expression results with one evaluation per part and no damage dice.
+Nonpositive geometry damage retains existing no-health-change behavior. Existing
+swept wall, upper/lower sector-part and geometry group tests also pass.
+Full Release suite: 9,592 passed, including 8,377 Playsim tests. Clean Release
+rebuild with warnings as errors: zero warnings and errors. Whitespace check
+passed. No archive format change.
+
+Boundary: slopes, 3D floors, complete native vulnerability checks, damage events
+and general VM damage-function execution remain open; delegate serialization
+and paired native-runtime certification remain open. Phase 1 remains incomplete;
+changes uncommitted.
+
+## Conversion and audit: Phase 1 ACS projectile damage-expression integration (2026-10-07)
+
+Converted native ACS APROP_Damage call-site behavior (src/playsim/p_acs.cpp:4196,
+4420,4525). Writes now call SetDamage, clearing projectile expressions. Reads and
+checks now use GetMissileDamage(0,1) for projectiles, evaluating their expression
+without consuming damage dice. Previously writes left stale expressions active
+and reads/checks returned the constant base instead of the expression result.
+
+Five new regression cases execute ACS bytecode: two verify that writes clear
+expressions before swept actor impacts; three verify signed/zero/positive
+expression results in get/check operations, exact invocation counts, mismatch
+checks and unchanged combat RNG. A failed impact fixture initially had the
+player blocking its target; moving the player corrected the fixture.
+Full Release suite: 9,577 passed, including 8,362 Playsim tests. Clean Release
+rebuild with warnings as errors: zero warnings and errors. An initial rebuild
+was started before tests finished and hit a testhost file lock; the sequential
+rebuild passed. Whitespace check passed. No archive format change.
+
+Boundary: general native VM DamageFunc execution and delegate serialization
+remain open. Non-projectile negative constant reads retain their existing zero
+fallback; native asserts for negative DamageVal without a function, so this
+fallback is not paired parity. Phase 1 remains incomplete; changes uncommitted.
+
+## Conversion and audit: Phase 1 projectile damage-expression method integration (2026-10-07)
+
+Audit found that the previous constant-damage conversion overlooked the existing
+ProjectileActor.DamageExpression boundary. Converted native SetDamage's function
+reset and IsZeroDamage's function-presence check (src/playsim/actor.h:1460-1469)
+through projectile overrides, including calls through an Actor reference.
+SetDamage now clears the expression; IsZeroDamage never invokes it and returns
+false whenever an expression exists, even if that expression would return zero.
+
+Six regression cases cover zero/nonzero constants with zero, negative and
+positive expression results, no expression evaluation during the query, clearing
+through an Actor reference, and subsequent constant GetMissileDamage results.
+Full Release suite: 9,572 passed, including 8,357 Playsim tests. Clean Release
+rebuild with warnings as errors: zero warnings and errors. Whitespace check passed.
+No archive format change.
+
+This corrects the preceding entry's statement that damage functions were absent:
+projectile delegates are supported, while general native VM DamageFunc execution
+and delegate serialization remain open. Bounce/missile movement integration and
+paired native-runtime certification remain open. Phase 1 remains incomplete;
+changes uncommitted.
+
+## Conversion and audit: Phase 1 constant-damage actor methods (2026-10-07)
+
+Converted SetDamage and IsZeroDamage for the represented constant-damage model
+(src/playsim/actor.h:1460-1469). The setter preserves the complete signed int
+range, including negative values; only exactly zero passes the query. Both
+methods use the existing Damage property, with no archive format change.
+
+Five regression cases cover zero, positive, negative and both integer limits,
+subsequent changes through the setter/property, and unchanged actor health.
+Full Release suite: 9,566 passed, including 8,351 Playsim tests. Clean Release
+rebuild with warnings as errors: zero warnings and errors. Whitespace check
+passed. The test invocation emitted a nested SDK lookup diagnostic for pinned
+8.0.423 (installed SDKs are 9.0.313 and 10.0.201), but built and ran every test
+project successfully and exited zero; the independent clean build also passed.
+
+Boundary: native SetDamage also clears DamageFunc, and IsZeroDamage requires
+that function to be absent. Scripted damage functions are not represented;
+VM exposure, bounce/missile call-site integration and paired native-runtime
+certification remain open. Phase 1 remains incomplete; changes uncommitted.
+
 
 ## Conversion and audit: Phase 1 friendship game-mode gate (2026-10-06)
 

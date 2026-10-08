@@ -32,9 +32,10 @@ public class NoTossDropsTests
     [Fact]
     public void AcsDropStillConsumesChanceDrawWhenTossIsDisabled()
     {
-        var sim = Room(); var reference = Room(); reference.NextCombatRandom();
+        var sim = Room(); var reference = Room(); reference.NextDropItemByte();
         Assert.Equal(1, ActorDropItem.Drop(sim, 0, sim.Players.Single(), "Clip", 0, 256));
         Assert.Equal(reference.CombatRandomState, sim.CombatRandomState);
+        Assert.Equal(reference.NextDropItemByte(), sim.NextDropItemByte());
     }
 
     [Fact]

@@ -21,7 +21,7 @@ public class DropItemResultTests
         var sim = Room(); var reference = Room();
         var expectedDrops = 0;
         for (var i = 0; i < 2; i++)
-            if ((reference.NextCombatRandom() & 255) <= chance) expectedDrops++;
+            if ((reference.NextDropItemByte()) <= chance) expectedDrops++;
         Assert.Equal(2, ActorDropItem.Drop(sim, 7, null, "Clip", 0, chance));
         Assert.Equal(expectedDrops, sim.Actors.Count(actor => actor.DoomEdNum == PickupCatalog.Clip));
         Assert.Equal(reference.CombatRandomState, sim.CombatRandomState);

@@ -7,7 +7,7 @@ public class RaisePreservedStateTests
     [Theory]
     [InlineData(false)]
     [InlineData(true)]
-    public void RevivalPreservesFlagGroupNineAndRenderState(bool archvile)
+    public void RevivalPreservesFlagGroupNineAndAppliesEnteredFrameBrightness(bool archvile)
     {
         var sim = AuthoritySimulation.Start(new PlayLevel
         {
@@ -21,6 +21,6 @@ public class RaisePreservedStateTests
         Assert.True(archvile ? ArchvileActions.TryRaise(sim, new Actor(), sim.Players.Single())
             : ThingRaise.Execute(sim, 17, corpse, 0, 2) == true);
         Assert.True(corpse.NoAutoOffSkullFly);
-        Assert.True(corpse.FullBright);
+        Assert.False(corpse.FullBright);
     }
 }

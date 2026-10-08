@@ -175,6 +175,7 @@ public sealed class LevelThing
 public sealed class PlayLevel
 {
     public bool HexenHack { get; set; }
+    public int? DefaultDropStyle { get; set; }
     public bool ActivateOwnDeathSpecials { get; set; }
     public IReadOnlyList<HCDE.Gamedata.MapInfoDamageType> DamageTypes { get; set; } = Array.Empty<HCDE.Gamedata.MapInfoDamageType>();
     public string MapName { get; init; } = "";
@@ -202,6 +203,7 @@ public sealed class PlayLevel
     public PlayLevel CopyForSimulation() => new()
     {
         MapName = MapName, Format = Format, Namespace = Namespace, BehaviorData = BehaviorData, HasBehavior = HasBehavior, HexenHack = HexenHack,
+        DefaultDropStyle = DefaultDropStyle,
         ActivateOwnDeathSpecials = ActivateOwnDeathSpecials,
         DamageTypes = DamageTypes.ToArray(),
         Vertices = Vertices, Sectors = Sectors.Select(sector => sector.Copy()).ToArray(),
@@ -229,7 +231,7 @@ public static class LevelBuilder
         }
         if (!MapLumpCatalogReader.TryReadMap(wad, mapName, out var catalog, out error))
             return false;
-        if (!TryReadDeathSpecialPolicy(wad, mapName, out var hexenHack, out var ownDeathSpecials, out var damageTypes, out error)) return false;
+        if (!TryReadDeathSpecialPolicy(wad, mapName, out var hexenHack, out var ownDeathSpecials, out var damageTypes, out var defaultDropStyle, out error)) return false;
 
         if (catalog.Format == MapDataFormat.UdmfText)
         {
@@ -257,6 +259,7 @@ public static class LevelBuilder
             }
 
             level = FromUdmf(udmf, mapName);
+            level.DefaultDropStyle = defaultDropStyle;
             level.DamageTypes = damageTypes;
             level.ActivateOwnDeathSpecials = ownDeathSpecials;
             return LevelValidation.TryValidate(level, out error);
@@ -265,6 +268,7 @@ public static class LevelBuilder
         if (catalog.TryGetLump(MapLumpKind.Behavior, out _))
         {
             if (!HexenLevelDecoder.TryDecode(wad, catalog, out level, out error, hexenHack)) return false;
+            level.DefaultDropStyle = defaultDropStyle;
             level.DamageTypes = damageTypes;
             level.ActivateOwnDeathSpecials = ownDeathSpecials;
             return true;
@@ -273,6 +277,7 @@ public static class LevelBuilder
             return false;
 
         level = FromBinary(binary, mapName, thingFlagFormat);
+        level.DefaultDropStyle = defaultDropStyle;
         level.DamageTypes = damageTypes;
         level.ActivateOwnDeathSpecials = ownDeathSpecials;
         if (catalog.TryGetLump(MapLumpKind.Blockmap, out var blockmapLump)
@@ -285,8 +290,9 @@ public static class LevelBuilder
         return LevelValidation.TryValidate(level, out error);
     }
 
-    private static bool TryReadDeathSpecialPolicy(ReadOnlySpan<byte> wad, string mapName, out bool hexenHack, out bool ownDeathSpecials, out IReadOnlyList<HCDE.Gamedata.MapInfoDamageType> damageTypes, out string? error)
+    private static bool TryReadDeathSpecialPolicy(ReadOnlySpan<byte> wad, string mapName, out bool hexenHack, out bool ownDeathSpecials, out IReadOnlyList<HCDE.Gamedata.MapInfoDamageType> damageTypes, out int? defaultDropStyle, out string? error)
     {
+        defaultDropStyle = null;
         hexenHack = false;
         ownDeathSpecials = false;
         damageTypes = Array.Empty<HCDE.Gamedata.MapInfoDamageType>();
@@ -299,6 +305,7 @@ public static class LevelBuilder
         {
             if (!WadArchiveReader.TryReadLumpData(wad, entry, out var data, out error)) return false;
             if (!HCDE.Gamedata.MapInfoParser.TryParse(System.Text.Encoding.UTF8.GetString(data), out var info, out error)) return false;
+            if (info.DefaultDropStyle is { } style) defaultDropStyle = style;
             foreach (var definition in info.DamageTypes) definitions[definition.Name] = definition;
             if (info.FindMap(mapName) is { } map)
             {

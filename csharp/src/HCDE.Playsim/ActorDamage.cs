@@ -77,6 +77,7 @@ public static class ActorDamage
                 damage = inflictor.DoSpecialDamage(target, damage, damageType, flags);
                 if (damage < 0) return default;
             }
+            var originalModifierDamage = damage;
             // Native truncates each multiplication separately. Only source, not inflictor, enhances damage.
             if (damage > 0 && source != null) damage = ScaleDamage(damage, source.DamageMultiplier);
             if (damage > 0 && source != null && !flags.HasFlag(DamageFlags.NoEnhance))
@@ -89,7 +90,12 @@ public static class ActorDamage
                 if (damage > 0) damage = target.ApplyTypedDamageFactor(damage, damageType);
             }
             damage = target.TakeSpecialDamage(inflictor, source, damage, damageType, flags);
-            if (damage <= 0) return default;
+            if (damage <= 0)
+            {
+                if (damage == 0 && originalModifierDamage == 0 && inflictor is { ForcePain: true })
+                    return ReactToDamage(target, source, inflictor, flags, damageType, 0, 0, 0);
+                return default;
+            }
         }
         var absorbed = 0;
         if (!forced && !flags.HasFlag(DamageFlags.BypassArmor) && !IgnoresArmor(damageType, target.Simulation))
@@ -141,6 +147,12 @@ public static class ActorDamage
         target.DeathInflictor = null;
         var lost = before - target.Health;
         var dealt = healthDamage;
+        return ReactToDamage(target, source, inflictor, flags, damageType, lost, absorbed, dealt);
+    }
+
+    private static DamageResult ReactToDamage(Actor target, Actor? source, Actor? inflictor,
+        DamageFlags flags, string? damageType, int lost, int absorbed, int dealt)
+    {
         var forcedPain = inflictor is { ForcePain: true };
         if (!target.IsDead && target.WoundHealth > 0 && target.Health <= target.WoundHealth)
         {
@@ -155,19 +167,17 @@ public static class ActorDamage
         var painState = target.PainStateFor(damageType);
         // MF6_FORCEPAIN skips the threshold and the pain roll. MF5_NOPAIN, MF5_PAINLESS, and DMG_NO_PAIN still block.
         var painless = target.NoPain || inflictor is { Painless: true } || flags.HasFlag(DamageFlags.NoPain);
-        var painFlinch = !target.IsDead && !painless && target.Brain?.Charging != true
-            && target.States.HasState(painState)
+        var painReaction = !target.IsDead && !painless && target.Brain?.Charging != true
             && (forcedPain || (lost > 0 && dealt >= target.PainThreshold
-                && (painChance >= 256 || painChance > 0 && target.Simulation != null
-                    && target.Simulation.NextCombatRandom() % 256 < painChance)))
-            && TryEnterPain(target, painState, damageType, forcedPain);
+                && RollPainChance(target, painChance)))
+            && TryReactToPain(target, painState, damageType);
         if (!target.IsDead)
         {
             if (target is not PlayerPawn && (dealt > 0 || forcedPain))
                 target.ReactionTime = 0;
             target.Brain?.WakeOnDamage(target, source, dealt, forcedPain);
         }
-        if (painFlinch && source != null && ShouldMarkJustHit(target, source))
+        if (painReaction && ShouldMarkJustHit(target, source))
             target.JustHit = true;
         return new DamageResult(lost, absorbed, target.IsDead);
     }
@@ -175,34 +185,52 @@ public static class ActorDamage
     private static int ScaleDamage(int damage, Fixed factor) =>
         (int)Math.Clamp((long)damage * factor.Raw / 65536, int.MinValue, int.MaxValue);
 
+    private static bool RollPainChance(Actor target, int chance) => target.Simulation is { } simulation
+        ? simulation.NextCombatRandom() % 256 < chance
+        : chance >= 256;
+
+    internal static bool TriggerPainChance(Actor target, string? damageType, bool forcedPain)
+    {
+        if (target.NoPain || target.Health < 1) return false;
+        if (!forcedPain && !RollPainChance(target, target.PainChanceFor(damageType))) return false;
+        var state = target.PainStateFor(damageType);
+        var hasAnimation = target.States.HasState(state);
+        return TryReactToPain(target, state, damageType) && hasAnimation;
+    }
+
     /// <summary>Electric pain rolls <c>pr_lightning</c> on the flicker stream. Poison howling is absent.</summary>
-    private static bool TryEnterPain(Actor target, int painState, string? damageType, bool forcedPain)
+    private static bool TryReactToPain(Actor target, int painState, string? damageType)
     {
         if (!string.Equals(damageType, "Electric", StringComparison.OrdinalIgnoreCase))
         {
-            target.States.Enter(target, painState);
+            if (target.States.HasState(painState)) target.States.Enter(target, painState);
             return true;
         }
         if (target.Simulation == null)
         {
-            target.States.Enter(target, painState);
+            if (target.States.HasState(painState)) target.States.Enter(target, painState);
             return true;
         }
-        if (forcedPain || target.Simulation.NextFlickerRandom() < 96)
+        if (target.Simulation.NextFlickerRandom() < 96)
         {
-            target.FullBright = false;
-            target.States.Enter(target, painState);
+            if (target.States.HasState(painState))
+            {
+                target.FullBright = false;
+                target.States.Enter(target, painState);
+            }
             return true;
         }
         target.FullBright = true;
+        // Native monster electrocution consumes another lightning draw for the howl.
+        if (target.IsMonster) target.Simulation.NextFlickerRandom();
         return false;
     }
 
     /// <summary>Native <c>MF_JUSTHIT</c> gate. Teamplay and designated teams are absent.</summary>
-    private static bool ShouldMarkJustHit(Actor target, Actor source)
+    private static bool ShouldMarkJustHit(Actor target, Actor? source)
     {
         if (target.Brain is not { } brain) return true;
-        if (brain.TargetId == source.Id) return true;
+        if (brain.TargetId == source?.Id) return true;
         if (brain.TargetId == null) return true;
         var chase = target.Simulation?.Actors.FirstOrDefault(actor => actor.Id == brain.TargetId);
         return chase != null && !target.IsFriend(chase);

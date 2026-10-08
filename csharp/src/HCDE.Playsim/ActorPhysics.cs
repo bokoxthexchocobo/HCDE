@@ -435,8 +435,8 @@ public static class ActorPhysics
             {
                 actor.Z = previousZ;
                 actor.Brain!.StopCharge(actor);
-                if (victim?.CanTakeDamage == true)
-                    ActorDamage.Apply(victim, (int)Math.Clamp((long)actor.Damage * (1 + (int)(sim.NextCombatRandom() % 8)), 0, int.MaxValue), actor, inflictor: actor);
+                if (!actor.Dormant && victim?.CanTakeDamage == true)
+                    ActorDamage.Apply(victim, (int)Math.Clamp((long)actor.Damage * (1 + (int)(sim.NextCombatRandom() % 8)), 0, int.MaxValue), actor, damageType: "Melee", inflictor: actor);
                 return;
             }
             actor.OnGround = actor.Z.ToDouble() <= sim.FloorOf(actor.SectorIndex);

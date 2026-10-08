@@ -1204,7 +1204,7 @@ public sealed class AcsVm
         var count = 0;
         foreach (var actor in sim.Actors)
         {
-            if (actor.Destroyed || actor.Health <= 0 || !actor.IsMapActor) continue;
+            if (actor.Destroyed || actor.Health <= 0 || !actor.IsMapActor()) continue;
             if (type > 0 && actor.DoomEdNum != type) continue;
             if (tid != 0 && actor.ThingId != tid) continue;
             if (tag >= 0)

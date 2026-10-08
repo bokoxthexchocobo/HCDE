@@ -71,6 +71,9 @@ internal static class AcsActorFlags
         DontCorpse,
         Falling,
         DontFall,
+        AlwaysFast,
+        NeverFast,
+        Synchronized,
         NoExplodeFloor,
         CeilingHugger,
         FloorHugger,
@@ -311,6 +314,12 @@ internal static class AcsActorFlags
         }
         if (flagName.Equals("DONTFALL", StringComparison.OrdinalIgnoreCase))
         { kind = Kind.DontFall; return true; }
+        if (flagName.Equals("ALWAYSFAST", StringComparison.OrdinalIgnoreCase))
+        { kind = Kind.AlwaysFast; return true; }
+        if (flagName.Equals("NEVERFAST", StringComparison.OrdinalIgnoreCase))
+        { kind = Kind.NeverFast; return true; }
+        if (flagName.Equals("SYNCHRONIZED", StringComparison.OrdinalIgnoreCase))
+        { kind = Kind.Synchronized; return true; }
         if (flagName.Equals("FALLING", StringComparison.OrdinalIgnoreCase))
         { kind = Kind.Falling; return true; }
         if (flagName.Equals("DONTCORPSE", StringComparison.OrdinalIgnoreCase))
@@ -414,6 +423,9 @@ internal static class AcsActorFlags
         Kind.DontCorpse => actor.DontCorpse,
         Kind.Falling => actor.Falling,
         Kind.DontFall => actor.DontFall,
+        Kind.AlwaysFast => actor.AlwaysFast,
+        Kind.NeverFast => actor.NeverFast,
+        Kind.Synchronized => actor.Synchronized,
         Kind.NoExplodeFloor => actor.NoExplodeFloor,
         Kind.CeilingHugger => actor.CeilingHugger,
         Kind.FloorHugger => actor.FloorHugger,
@@ -503,6 +515,9 @@ internal static class AcsActorFlags
             case Kind.Shootable: actor.Shootable = value; actor.HasDefensePropertyOverride = true; break;
             case Kind.Floating: actor.Floating = value; actor.HasMovementActionOverride = true; break;
             case Kind.DontFall: actor.DontFall = value; break;
+            case Kind.AlwaysFast: actor.AlwaysFast = value; break;
+            case Kind.NeverFast: actor.NeverFast = value; break;
+            case Kind.Synchronized: actor.Synchronized = value; break;
             case Kind.Falling: actor.Falling = value; break;
             case Kind.DontCorpse: actor.DontCorpse = value; break;
             case Kind.Corpse: actor.Corpse = value; break;

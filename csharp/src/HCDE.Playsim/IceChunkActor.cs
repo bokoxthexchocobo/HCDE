@@ -21,7 +21,7 @@ public sealed class IceChunkActor : Actor
         Height = Fixed.FromInt(4);
         Mass = 5;
         Gravity = Fixed.FromDouble(0.125);
-        States.Configure(this, [new ActorFrame(remainingTics, 1, _ => SetFrameDuration()),
+        States.ConfigureSpawn(this, [new ActorFrame(remainingTics, 1, _ => SetFrameDuration()),
             new ActorFrame(remainingTics, 2, _ => SetFrameDuration()),
             new ActorFrame(remainingTics, 3, _ => SetFrameDuration()),
             new ActorFrame(remainingTics, -1, _ => SetFrameDuration())], 0);
@@ -30,6 +30,6 @@ public sealed class IceChunkActor : Actor
     private void SetFrameDuration()
     {
         if (Simulation is { } sim)
-            States.ForceRemainingTics(70 + (int)(sim.NextCombatRandom() % 64));
+            States.ForceRemainingTics(sim.NextIceTics());
     }
 }

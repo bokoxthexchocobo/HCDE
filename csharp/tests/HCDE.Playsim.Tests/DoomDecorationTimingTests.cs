@@ -24,6 +24,8 @@ public class DoomDecorationTimingTests
     public void NativeFrameDurationsLoopExactly(int type, params int[] durations)
     {
         var sim = Room(type); var actor = sim.Actors.Single();
+        Assert.InRange(actor.States.RemainingTics, 1, durations[0]);
+        actor.States.Enter(actor, 0);
         for (var cycle = 0; cycle < 2; cycle++)
             for (var frame = 0; frame < durations.Length; frame++)
             {
@@ -37,7 +39,8 @@ public class DoomDecorationTimingTests
     [Fact]
     public void SaveRestoresUnevenLoopMidFrame()
     {
-        var sim = Room(49); for (var i = 0; i < 13; i++) sim.Tick();
+        var sim = Room(49); var initialTics = sim.Actors.Single().States.RemainingTics;
+        for (var i = 0; i < initialTics + 3; i++) sim.Tick();
         Assert.True(SimSavegame.TryRead(SimSavegame.Write(sim), out var state, out var error), error);
         var restored = Room(49); restored.RestoreState(state);
         var actor = restored.Actors.Single(); Assert.Equal(1, actor.States.Current); Assert.Equal(12, actor.States.RemainingTics);

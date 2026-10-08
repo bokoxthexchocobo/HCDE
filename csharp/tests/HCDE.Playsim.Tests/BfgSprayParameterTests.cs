@@ -5,13 +5,13 @@ namespace HCDE.Playsim.Tests;
 public class BfgSprayParameterTests
 {
     [Fact]
-    public void FixedDamageIgnoresRollCountAndDoesNotConsumeRandom()
+    public void FixedDamageIgnoresRollCountAndConsumesOnlyTargetPainRoll()
     {
         var (sim, owner, target, missile) = Setup();
-        var random = sim.CombatRandomState;
+        var (prediction, _, _, _) = Setup(); prediction.NextCombatRandom();
         BfgSprayActions.Apply(sim, missile, owner, numRays: 1, damageCount: 100, fixedDamage: 25);
         Assert.Equal(975, target.Health);
-        Assert.Equal(random, sim.CombatRandomState);
+        Assert.Equal(prediction.CombatRandomState, sim.CombatRandomState);
     }
 
     [Fact]

@@ -25,6 +25,14 @@ public sealed class ProjectileActor : Actor
     /// <summary>Managed boundary for native DamageFunc; its result is used without impact dice.</summary>
     public Func<ProjectileActor, int>? DamageExpression { get; set; }
 
+    public override void SetDamage(int damage)
+    {
+        base.SetDamage(damage);
+        DamageExpression = null;
+    }
+
+    public override bool IsZeroDamage() => base.IsZeroDamage() && DamageExpression == null;
+
     /// <summary>Native GetMissileDamage calculation; a zero mask does not consume randomness.</summary>
     public int GetMissileDamage(int mask, int add)
     {
@@ -130,6 +138,10 @@ public sealed class ProjectileActor : Actor
     {
         if (--RemainingTics <= 0) { Destroy(); return; }
         TrackTarget(sim);
+        // Native AActor::Tick nudges vertical damaging missiles before collision movement.
+        if (VelocityX.Raw == 0 && VelocityY.Raw == 0 && !IsZeroDamage())
+            VelFromAngle(1.0 / Fixed.Unit);
+        var oldFloor = sim.FloorOf(ActorPhysics.SectorAt(sim.Level, X.ToDouble(), Y.ToDouble()));
         var vx = VelocityX.ToDouble(); var vy = VelocityY.ToDouble(); var vz = VelocityZ.ToDouble();
         var steps = Math.Max(1, (int)Math.Ceiling(Math.Max(Math.Max(Math.Abs(vx), Math.Abs(vy)), Math.Abs(vz)) / 2));
         var huggerSector = -1;
@@ -227,8 +239,12 @@ public sealed class ProjectileActor : Actor
         SectorIndex = ActorPhysics.SectorAt(sim.Level, X.ToDouble(), Y.ToDouble());
         // P_ZMovement moves by the current velocity before FallAndSink applies gravity.
         if (!NoGravity && Z.ToDouble() > sim.FloorOf(SectorIndex))
-            VelocityZ = Fixed.FromDouble(VelocityZ.ToDouble() - ActorPhysics.Gravity * Gravity.ToDouble()
-                * ((uint)SectorIndex < (uint)sim.Level.Sectors.Count ? sim.Level.Sectors[SectorIndex].Gravity : 1));
+        {
+            var gravity = ActorPhysics.Gravity * Gravity.ToDouble()
+                * ((uint)SectorIndex < (uint)sim.Level.Sectors.Count ? sim.Level.Sectors[SectorIndex].Gravity : 1);
+            var leavingFloor = VelocityZ.Raw == 0 && oldFloor > sim.FloorOf(SectorIndex) && Z.ToDouble() == oldFloor;
+            VelocityZ = Fixed.FromDouble(VelocityZ.ToDouble() - (leavingFloor ? gravity + gravity : gravity));
+        }
     }
 
     private double CylinderFraction(double x, double y, double z, double dx, double dy, double dz, Actor target)
@@ -309,12 +325,10 @@ public sealed class ProjectileActor : Actor
             foreach (var actor in sim.Actors.ToArray())
             {
                 if (!actor.IsBlockmapActor || !actor.CanTakeDamage || actor.NoRadiusDamage || actor.SplashImmune(this)) continue;
-                var horizontal = Math.Max(0, Math.Sqrt(Math.Pow(actor.X.ToDouble() - X.ToDouble(), 2)
-                    + Math.Pow(actor.Y.ToDouble() - Y.ToDouble(), 2)) - actor.Radius.ToDouble());
-                var vertical = Math.Max(0, Math.Max(actor.Z.ToDouble() - Z.ToDouble(), Z.ToDouble() - actor.Z.ToDouble() - actor.Height.ToDouble()));
-                var distance = Math.Sqrt(horizontal * horizontal + vertical * vertical);
+                var distance = RadiusDamageGeometry.Distance(this, actor);
                 if (distance >= BlastRadius || !CombatTrace.HasLineOfSight(sim, this, actor)) continue;
-                ActorDamage.Apply(actor, Math.Max(1, BlastRadius - (int)distance), Owner, damageType: DamageType, inflictor: this);
+                var damage = (int)(BlastRadius * (1 - distance / BlastRadius));
+                if (damage > 0) ActorDamage.Apply(actor, damage, Owner, damageType: DamageType, inflictor: this);
             }
         }
         if (Kind == ProjectileKind.Bfg)

@@ -37,6 +37,7 @@ public sealed class MapInfoCluster
 
 public sealed class MapInfoSet
 {
+    public int? DefaultDropStyle { get; init; }
     public IReadOnlyList<MapInfoDamageType> DamageTypes { get; init; } = Array.Empty<MapInfoDamageType>();
     public IReadOnlyList<MapInfoMap> Maps { get; init; } = Array.Empty<MapInfoMap>();
     public IReadOnlyList<MapInfoCluster> Clusters { get; init; } = Array.Empty<MapInfoCluster>();
@@ -106,6 +107,7 @@ public static class MapInfoParser
             var maps = new Dictionary<string, MapInfoMap>(StringComparer.OrdinalIgnoreCase);
             var clusters = new Dictionary<int, MapInfoCluster>();
             var damageTypes = new Dictionary<string, MapInfoDamageType>(StringComparer.OrdinalIgnoreCase);
+            int? defaultDropStyle = null;
             error = null;
 
             while (!Eof)
@@ -118,6 +120,11 @@ public static class MapInfoParser
                         set = new MapInfoSet();
                         return false;
                     }
+                }
+                else if (token.Equals("GameInfo", StringComparison.OrdinalIgnoreCase))
+                {
+                    if (!TryParseGameInfo(ref defaultDropStyle, out error))
+                    { set = new MapInfoSet(); return false; }
                 }
                 else if (token.Equals("DamageType", StringComparison.OrdinalIgnoreCase))
                 {
@@ -144,10 +151,39 @@ public static class MapInfoParser
 
             set = new MapInfoSet
             {
+                DefaultDropStyle = defaultDropStyle,
                 Maps = maps.Values.ToArray(),
                 DamageTypes = damageTypes.Values.ToArray(),
                 Clusters = clusters.Values.OrderBy(cluster => cluster.Cluster).ToArray(),
             };
+            return true;
+        }
+
+        private bool TryParseGameInfo(ref int? defaultDropStyle, out string? error)
+        {
+            error = null;
+            if (!Take("{")) { error = "GameInfo is missing a block."; return false; }
+            while (!Eof && !Peek("}"))
+            {
+                var property = Take();
+                if (property.Equals("DefaultDropStyle", StringComparison.OrdinalIgnoreCase))
+                {
+                    if (!Take("=") || !TryTakeInt(out var style))
+                    { error = "Invalid GameInfo DefaultDropStyle."; return false; }
+                    defaultDropStyle = style;
+                }
+                else if (Peek("{"))
+                {
+                    if (!SkipBrace(out error)) return false;
+                }
+                else
+                {
+                    if (!Take("=") || Eof || Peek("}"))
+                    { error = $"Invalid GameInfo property {property}."; return false; }
+                    SkipValue();
+                }
+            }
+            if (!Take("}")) { error = "Unterminated GameInfo."; return false; }
             return true;
         }
 

@@ -12,7 +12,7 @@ public class IceShatterCorpseRemovalTests
         var sim = Room(); var corpse = sim.AddBot(100, 0); corpse.Shattering = forced;
         if (forced) corpse.VelocityX = Fixed.FromInt(2);
         sim.SpawnIceChunks(corpse);
-        Assert.True(corpse.Destroyed); Assert.False(corpse.Solid); Assert.False(corpse.Shootable);
+        Assert.True(corpse.Destroyed); Assert.False(corpse.Solid); Assert.True(corpse.Shootable);
         Assert.Equal(-1, corpse.States.Current);
         var count = sim.Actors.OfType<IceChunkActor>().Count(); Assert.True(count >= 25);
         var random = sim.CombatRandomState;

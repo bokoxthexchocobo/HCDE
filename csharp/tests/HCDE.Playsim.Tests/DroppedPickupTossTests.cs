@@ -18,9 +18,9 @@ public class DroppedPickupTossTests
     public void DefaultTossUsesNativeVelocityFormulasAndFiveDraws(int seed)
     {
         var sim = Room(seed); var reference = Room(seed);
-        var x = ((int)(reference.NextCombatRandom() & 255) - (int)(reference.NextCombatRandom() & 255)) / 256.0;
-        var y = ((int)(reference.NextCombatRandom() & 255) - (int)(reference.NextCombatRandom() & 255)) / 256.0;
-        var z = 5 + (reference.NextCombatRandom() & 255) / 64.0;
+        var x = ((int)(reference.NextDropItemByte() & 255) - (int)(reference.NextDropItemByte() & 255)) / 256.0;
+        var y = ((int)(reference.NextDropItemByte() & 255) - (int)(reference.NextDropItemByte() & 255)) / 256.0;
+        var z = 5 + (reference.NextDropItemByte() & 255) / 64.0;
         var source = sim.Players.Single();
         source.VelocityX = Fixed.FromInt(20); source.VelocityZ = Fixed.FromInt(-30);
         Assert.True(sim.SpawnDroppedPickup(source, PickupCatalog.Clip));

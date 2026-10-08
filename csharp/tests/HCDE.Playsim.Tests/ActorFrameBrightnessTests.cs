@@ -29,11 +29,11 @@ public class ActorFrameBrightnessTests
     }
 
     [Fact]
-    public void LegacyFramesPreserveGameplayBrightness()
+    public void DefaultFramesClearGameplayBrightnessOnEntry()
     {
         var actor = new Actor { FullBright = true };
         actor.States.Enter(actor, ActorStateMachine.Spawn);
-        Assert.True(actor.FullBright);
+        Assert.False(actor.FullBright);
     }
 
     [Fact]

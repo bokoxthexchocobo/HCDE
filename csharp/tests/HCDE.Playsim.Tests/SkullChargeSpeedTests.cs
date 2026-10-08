@@ -3,6 +3,30 @@ namespace HCDE.Playsim.Tests;
 public class SkullChargeSpeedTests
 {
     [Theory]
+    [InlineData(1, 2, 20000)]
+    [InlineData(-1, 2, 20000)]
+    [InlineData(1, -2, 20000)]
+    [InlineData(-1, -2, 20000)]
+    [InlineData(3, 7, 20)]
+    [InlineData(0, 0, 20)]
+    public void LaunchVelocityUsesStoredFacingAndNativeTravelHelpers(int x, int y, double speed)
+    {
+        var soul = new Actor { Brain = MonsterBrain.ForType(3006), Z = Fixed.FromInt(8),
+            MovementSpeed = Fixed.FromInt(99), VelocityZ = Fixed.FromInt(-5) };
+        var target = new Actor { Id = 2, X = Fixed.FromInt(x), Y = Fixed.FromInt(y),
+            Z = Fixed.FromInt(40), Height = Fixed.FromInt(20) };
+        soul.Brain!.StartCharge(soul, target, speed);
+        var expected = Actor.AngleToVector(soul.Angle.ToDegrees(), speed);
+        Assert.Equal(Fixed.FromDouble(expected.X), soul.VelocityX);
+        Assert.Equal(Fixed.FromDouble(expected.Y), soul.VelocityY);
+        Assert.Equal(Fixed.FromDouble(42 / soul.DistanceBySpeed(target, speed)), soul.VelocityZ);
+        Assert.Equal(Fixed.FromInt(99), soul.MovementSpeed);
+        Assert.Equal(target.Id, soul.Brain.TargetId); Assert.True(soul.Brain.Charging);
+        if (x == 1 && y == 2 && speed == 20000)
+            Assert.Equal(586171805, soul.VelocityX.Raw);
+    }
+
+    [Theory]
     [InlineData(10, 10)]
     [InlineData(40, 40)]
     [InlineData(0, 20)]

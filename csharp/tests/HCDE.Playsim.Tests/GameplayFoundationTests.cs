@@ -2092,8 +2092,8 @@ public class GameplayFoundationTests
 
         var forced = ShockedBot(SeededRoom(brightSeed));
         ActorDamage.Apply(forced, 10, damageType: "Electric", inflictor: new Actor { ForcePain = true });
-        Assert.Equal(4, forced.States.Current);
-        Assert.False(forced.FullBright);
+        Assert.Equal(0, forced.States.Current);
+        Assert.True(forced.FullBright);
     }
 
     [Fact]

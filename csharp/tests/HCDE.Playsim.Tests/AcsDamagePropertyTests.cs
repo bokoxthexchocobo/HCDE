@@ -7,6 +7,47 @@ public class AcsDamagePropertyTests
 {
     [Theory]
     [InlineData(0)]
+    [InlineData(7)]
+    public void ScriptDamageWriteClearsExpressionBeforeSweptImpact(int damage)
+    {
+        var sim = Room(); var owner = sim.AddBot(-200, 0); owner.Brain = null;
+        sim.Players.Single().Y = Fixed.FromInt(200);
+        var target = sim.AddBot(30, 0, 3001); target.Brain = null;
+        target.Health = 1000; target.NoPain = true;
+        var missile = sim.SpawnProjectile(owner, ProjectileKind.Plasma);
+        var calls = 0; missile.DamageExpression = _ => { calls++; return 99; };
+        Set(sim, missile, damage);
+        Assert.Null(missile.DamageExpression);
+        missile.X = missile.Y = default; missile.Z = Fixed.FromInt(20);
+        missile.VelocityX = Fixed.FromInt(30); missile.VelocityY = missile.VelocityZ = default;
+        missile.Tick();
+        Assert.True(missile.Destroyed); Assert.Equal(0, calls);
+        var lost = 1000 - target.Health;
+        if (damage == 0) Assert.Equal(0, lost);
+        else { Assert.InRange(lost, damage, damage * 8); Assert.Equal(0, lost % damage); }
+    }
+
+    [Theory]
+    [InlineData(-7)]
+    [InlineData(0)]
+    [InlineData(9)]
+    public void ScriptDamageGetAndCheckEvaluateExpressionWithoutDice(int result)
+    {
+        var sim = Room(); var missile = sim.SpawnProjectile(sim.Players.Single(), ProjectileKind.Plasma);
+        var calls = 0; missile.DamageExpression = _ => { calls++; return result; };
+        var random = sim.CombatRandomState;
+        Run(sim, missile, [3, 7, 3, 0, 3, 2, 246, 3, result, 19, 5, 112, 1]);
+        Assert.Equal(1, sim.LightOf(0)); Assert.Equal(1, calls);
+        Run(sim, missile, [3, 7, 3, 0, 3, 2, 3, result, 351, 3, 22, 5, 112, 1]);
+        Assert.Equal(1, sim.LightOf(0)); Assert.Equal(2, calls);
+        Run(sim, missile, [3, 7, 3, 0, 3, 2, 3, result ^ 1, 351, 3, 22, 5, 112, 1]);
+        Assert.Equal(0, sim.LightOf(0)); Assert.Equal(3, calls);
+        Assert.Equal(random, sim.CombatRandomState);
+        Assert.NotNull(missile.DamageExpression);
+    }
+
+    [Theory]
+    [InlineData(0)]
     [InlineData(1)]
     [InlineData(123)]
     [InlineData(int.MaxValue)]

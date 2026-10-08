@@ -21,28 +21,30 @@ public class DropItemChanceTests
     public void ChanceUsesInclusiveNativeThresholdAndAlwaysConsumesDraw(int chance)
     {
         var sim = Room(); var reference = Room();
-        var random = (int)(reference.NextCombatRandom() & 255);
+        var random = (int)(reference.NextDropItemByte());
         var expected = random <= chance ? 1 : 0;
-        if (expected != 0) for (var i = 0; i < 5; i++) reference.NextCombatRandom();
+        if (expected != 0) for (var i = 0; i < 5; i++) reference.NextDropItemByte();
         Assert.Equal(1, ActorDropItem.Drop(sim, 0, sim.Players.Single(), "Clip", 0, chance));
         Assert.Equal(expected, sim.Actors.Count(actor => actor.DoomEdNum == PickupCatalog.Clip));
         Assert.Equal(reference.CombatRandomState, sim.CombatRandomState);
+        Assert.Equal(reference.NextDropItemByte(), sim.NextDropItemByte());
     }
 
     [Fact]
     public void RandomValueEqualToChanceSucceeds()
     {
         var sim = Room(); var reference = Room();
-        var chance = (int)(reference.NextCombatRandom() & 255);
-        for (var i = 0; i < 5; i++) reference.NextCombatRandom();
+        var chance = (int)(reference.NextDropItemByte());
+        for (var i = 0; i < 5; i++) reference.NextDropItemByte();
         Assert.Equal(1, ActorDropItem.Drop(sim, 0, sim.Players.Single(), "Clip", 0, chance));
         Assert.Equal(reference.CombatRandomState, sim.CombatRandomState);
+        Assert.Equal(reference.NextDropItemByte(), sim.NextDropItemByte());
     }
 
     [Fact]
     public void ZeroChanceCanSucceedWhenRandomByteIsZero()
     {
-        var seed = Enumerable.Range(0, 65536).First(candidate => (Room(candidate).NextCombatRandom() & 255) == 0);
+        var seed = Enumerable.Range(0, 65536).First(candidate => (Room(candidate).NextDropItemByte()) == 0);
         var sim = Room(seed);
         Assert.Equal(1, ActorDropItem.Drop(sim, 0, sim.Players.Single(), "Clip", 0, 0));
     }
@@ -51,10 +53,12 @@ public class DropItemChanceTests
     public void EveryTidMatchConsumesItsOwnChanceDraw()
     {
         var sim = Room(); var reference = Room();
-        for (var i = 0; i < 12; i++) reference.NextCombatRandom();
+        for (var i = 0; i < 10; i++) reference.NextDropItemByte();
+        reference.NextDropItemByte(); reference.NextDropItemByte();
         Assert.Equal(2, ActorDropItem.Drop(sim, 7, null, "Clip", 0, 255));
         Assert.Equal(2, sim.Actors.Count(actor => actor.DoomEdNum == PickupCatalog.Clip));
         Assert.Equal(reference.CombatRandomState, sim.CombatRandomState);
+        Assert.Equal(reference.NextDropItemByte(), sim.NextDropItemByte());
     }
 
     [Fact]

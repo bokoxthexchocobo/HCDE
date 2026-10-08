@@ -9,15 +9,18 @@ public static class ActorRaiseActions
     {
         if ((flags & ~3) != 0) throw new ArgumentOutOfRangeException(nameof(flags));
         if (target is null || !ActorRaise.HasRaiseState(target)) return false;
+        var raiseState = target.GetRaiseState();
         var sim = target.Simulation ?? throw new InvalidOperationException("Resurrection requires a simulation.");
         target.VelocityX = target.VelocityY = default;
         if ((flags & 2) == 0 && !ActorRaise.CheckPosition(sim, target)) return false;
+        if (!ActorRaise.CanResurrect(raiser, target)) return false;
         ActorRaise.ReviveSupported(target);
         if ((flags & 1) != 0)
         {
             // Copy the friendship fields represented by the managed actor model.
             ActorPropertyActions.CopySupportedFriendship(target, raiser);
         }
+        ActorRaise.EnterRaiseState(target, raiseState);
         return true;
     }
 

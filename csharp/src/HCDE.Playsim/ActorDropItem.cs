@@ -3,7 +3,7 @@ namespace HCDE.Playsim;
 /// <summary>Native <c>P_DropItem</c> subset for ACS <c>DropItem</c>.</summary>
 internal static class ActorDropItem
 {
-    internal static void DropVanillaDeathItem(AuthoritySimulation sim, Actor actor)
+    internal static void DropVanillaDeathItem(AuthoritySimulation? sim, Actor actor)
     {
         if (actor is PlayerPawn) return;
         var item = actor.ClassDoomEdNum switch
@@ -13,7 +13,7 @@ internal static class ActorDropItem
             65 => PickupCatalog.Chaingun,
             _ => 0,
         };
-        if (item != 0) TryDropOne(sim, actor, item, 0, 256);
+        if (item != 0) TryDropOne(sim ?? throw new InvalidOperationException("Actor death drops require a simulation."), actor, item, 0, 256);
     }
 
     public static int Drop(AuthoritySimulation sim, int tid, Actor? activator, string? typeName, int amount, int chance)
@@ -44,7 +44,7 @@ internal static class ActorDropItem
 
     private static bool TryDropOne(AuthoritySimulation sim, Actor dropper, int doomEdNum, int amount, int chance)
     {
-        if ((sim.NextCombatRandom() & 255) > chance)
+        if (sim.NextDropItemByte() > chance)
             return false;
         return sim.SpawnDroppedPickup(dropper, doomEdNum, pickupAmount: amount > 0 ? amount : 0);
     }

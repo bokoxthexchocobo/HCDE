@@ -59,6 +59,18 @@ public class HexenBinaryFriendTests
         return MapsModsTests.Wad(lumps.ToArray());
     }
 
+    [Theory]
+    [InlineData("MAPINFO", "GameInfo { DefaultDropStyle = 1 }", 1)]
+    [InlineData("MAPINFO", "GameInfo { titlepage = \"TITLEPIC\" }", 2)]
+    [InlineData("ZMAPINFO", "GameInfo { DefaultDropStyle = 1 }", 1)]
+    public void GameDefaultLoadsWithLumpPrecedence(string name, string text, int expected)
+    {
+        var wad = WithMapInfo(("MAPINFO", "GameInfo { DefaultDropStyle = 2 }"), (name, text));
+        Assert.True(LevelBuilder.TryFromWad(wad, "MAP01", out var level, out var error), error);
+        Assert.Equal(expected, level.DefaultDropStyle);
+        Assert.Equal(expected, level.CopyForSimulation().DefaultDropStyle);
+    }
+
     [Fact]
     public void DamageDefinitionsLoadAndLaterLumpsReplaceThem()
     {
