@@ -8,7 +8,7 @@ internal static class SimSizeArchive
 {
     internal static void Validate(SimSaveState state)
     {
-        if (state.Actors.Any(actor => actor.Size is { } tuning && (!double.IsFinite(tuning.FullHeight) || tuning.FullHeight < 0 || tuning.RadiusRaw < 0 || tuning.HeightRaw < 0)))
+        if (state.Actors.Any(actor => actor.Size is { } tuning && (!double.IsFinite(tuning.FullHeight) || tuning.FullHeight < 0 || tuning.RadiusRaw < 0)))
             throw new InvalidOperationException("Invalid saved actor size.");
     }
 
@@ -46,11 +46,11 @@ internal static class SimSizeArchive
         for (var i = 0; i < count; i++)
         {
             var item = trailer[(8 + i * 20)..]; var present = BinaryPrimitives.ReadInt32LittleEndian(item);
-            var speed = BinaryPrimitives.ReadInt32LittleEndian(item[4..]);
+            var radius = BinaryPrimitives.ReadInt32LittleEndian(item[4..]);
             var floating = BinaryPrimitives.ReadInt64LittleEndian(item[8..]);
-            var pain = BinaryPrimitives.ReadInt32LittleEndian(item[16..]);
-            if (speed < 0 || pain < 0 || BitConverter.Int64BitsToDouble(floating) < 0 || present is not (0 or 1) || !double.IsFinite(BitConverter.Int64BitsToDouble(floating))
-                || present == 0 && (speed != 0 || floating != 0 || pain != 0))
+            var height = BinaryPrimitives.ReadInt32LittleEndian(item[16..]);
+            if (radius < 0 || BitConverter.Int64BitsToDouble(floating) < 0 || present is not (0 or 1) || !double.IsFinite(BitConverter.Int64BitsToDouble(floating))
+                || present == 0 && (radius != 0 || floating != 0 || height != 0))
             { error = "save-size-value"; return false; }
         }
         var legacy = bytes[..start].ToArray();

@@ -23,11 +23,26 @@ public class FlyingHorizontalFrictionTests
     }
 
     [Fact]
-    public void ActiveFlightIgnoresGroundFrictionMultiplier()
+    public void ActiveFlightAppliesActorFrictionMultiplier()
     {
         var sim = Room(); var player = sim.Players.Single(); player.Fly = true; player.NoGravity = true;
         player.Friction = Fixed.FromDouble(0.25); player.VelocityX = Fixed.FromInt(4);
-        sim.Tick(); Assert.Equal(4 * ActorPhysics.FlyingFriction, player.VelocityX.ToDouble());
+        sim.Tick(); Assert.Equal(ActorPhysics.FlyingFriction, player.VelocityX.ToDouble());
+    }
+
+    [Theory]
+    [InlineData(0.25, 32.0 / 2048)]
+    [InlineData(2, 602.3529411764706 / 2048)]
+    public void FlightAccelerationUsesMultipliedFrictionAndResumesFromSave(double multiplier, double scale)
+    {
+        var sim = Room(); var player = sim.Players.Single(); player.Fly = player.NoGravity = true;
+        player.Z = Fixed.FromInt(64); player.OnGround = false; player.Friction = Fixed.FromDouble(multiplier);
+        var restored = Room(); SimSavegame.Apply(restored, SimSavegame.Write(sim));
+        sim.QueueCommand(0, new PlayerCommand { ForwardMove = 8192 });
+        restored.QueueCommand(0, new PlayerCommand { ForwardMove = 8192 });
+        sim.Tick(); restored.Tick(); Assert.Equal(Fixed.FromDouble(scale), player.X);
+        Assert.Equal(sim.Checksum, restored.Checksum);
+        Assert.Equal(SimSavegame.Write(sim), SimSavegame.Write(restored));
     }
 
     [Fact]

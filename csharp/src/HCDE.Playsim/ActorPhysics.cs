@@ -23,6 +23,39 @@ namespace HCDE.Playsim;
 /// </summary>
 public static class ActorPhysics
 {
+    internal static double TerrainMovementScale(AuthoritySimulation sim, Actor actor)
+    {
+        var flying = actor.Fly && actor.NoGravity;
+        var terrain = !actor.NoGravity && actor.Z.ToDouble() <= sim.FloorOf(actor.SectorIndex)
+            ? sim.Level.FloorTerrainDefinition(actor.SectorIndex) : null;
+        var friction = terrain is { Friction: > 0 } ? terrain.Friction : GroundFriction;
+        var factor = terrain is { Friction: > 0 } ? terrain.MoveFactor : 2048 / 65536.0;
+        if (flying) { friction = FlyingFriction; factor = 2048 / 65536.0; }
+        if (actor.Friction.Raw != 65536)
+        {
+            friction = Math.Clamp(friction * actor.Friction.ToDouble(), 0, 1);
+            factor = FrictionToMoveFactor(friction);
+        }
+        if (friction < GroundFriction)
+        {
+            var x = actor.VelocityX.ToDouble(); var y = actor.VelocityY.ToDouble();
+            var speed = Math.Sqrt(x * x + y * y);
+            const double threshold = 15000 / 65536.0;
+            factor *= speed > threshold * 4 ? 8 : speed > threshold * 2 ? 4 : speed > threshold ? 2 : 1;
+        }
+        return factor / (2048 / 65536.0);
+    }
+
+    /// <summary>Native P_GetFriction conversion after an actor friction multiplier.</summary>
+    internal static double FrictionToMoveFactor(double friction)
+    {
+        var raw = friction * 65536;
+        var factor = friction >= GroundFriction
+            ? ((0x10092 - raw) * 1024) / 4352 + 568
+            : ((raw - 0xDB34) * 10) / 0x80;
+        return Math.Max(32, factor) / 65536;
+    }
+
     public const double GroundFriction = 0xE800 / 65536.0;
     public const double FlyingFriction = 0xEB00 / 65536.0;
     public const double Gravity = 1;
@@ -250,6 +283,9 @@ public static class ActorPhysics
         var floor = SupportFloor(sim, actor);
         var z = actor.Z.ToDouble();
         var vz = actor.VelocityZ.ToDouble();
+        var airbornePlayer = actor is PlayerPawn && z > floor && !actor.OnMobj && !(actor.Fly && actor.NoGravity);
+        var hitTerrainFloor = !actor.OnGround && floor == sim.FloorOf(actor.SectorIndex)
+            && z > floor && vz < 0 && z + vz <= floor;
         if (actor.OnGround && z < floor && floor - z <= actor.MaxStepHeight.ToDouble())
         {
             z = floor;
@@ -271,20 +307,27 @@ public static class ActorPhysics
         // P_ZMovement advances with the current velocity before FallAndSink changes it.
         if (!landedOnActor && !actor.NoGravity && z > floor)
         {
-            var gravity = Gravity * actor.Gravity.ToDouble()
+            var gravity = Gravity * (sim.LevelGravity / 800) * actor.Gravity.ToDouble()
                 * ((uint)actor.SectorIndex < (uint)sim.Level.Sectors.Count ? sim.Level.Sectors[actor.SectorIndex].Gravity : 1);
             // FallAndSink doubles only the first acceleration from rest off the previous floor.
             vz -= vz == 0 && oldFloor > floor && z == oldFloor ? gravity + gravity : gravity;
         }
         actor.Z = Fixed.FromDouble(z);
         actor.VelocityZ = Fixed.FromDouble(vz);
+        if (hitTerrainFloor && !landedOnActor) TerrainDamage.Land(sim, actor);
         if (actor.Brain?.Mode == MonsterMode.Chase && (actor.X.ToDouble() != startX || actor.Y.ToDouble() != startY)) actor.InFloat = false;
         FloatTowardTarget(sim, actor);
         if (!landedOnActor && actor is PlayerPawn && actor.NoGravity && actor.Z.ToDouble() > floor)
             actor.VelocityZ = Fixed.FromDouble(actor.VelocityZ.ToDouble() * FlyingFriction);
         FitToSector(sim, actor, carryFloor: false);
-        var friction = actor.Fly && actor.NoGravity ? FlyingFriction
-            : actor.OnGround ? Math.Clamp(GroundFriction * actor.Friction.ToDouble(), 0, 1) : 1;
+        var groundFriction = GroundFriction;
+        if (!actor.NoGravity && actor.Z.ToDouble() <= sim.FloorOf(actor.SectorIndex)
+            && sim.Level.FloorTerrainDefinition(actor.SectorIndex) is { Friction: > 0 } terrain)
+            groundFriction = terrain.Friction;
+        var friction = actor.Fly && actor.NoGravity ? Math.Clamp(FlyingFriction * actor.Friction.ToDouble(), 0, 1)
+            : actor.OnGround ? Math.Clamp(groundFriction * actor.Friction.ToDouble(), 0, 1) : 1;
+        if (airbornePlayer)
+            friction = sim.AirControl is > (1.0 / 256) and { } control ? control * -0.0941 + 1.0004 : 1;
         var ledgeSliding = false;
         if ((actor.Corpse || actor.Falling) && (Math.Abs(vx) > 0.25 || Math.Abs(vy) > 0.25))
         {
@@ -294,7 +337,7 @@ public static class ActorPhysics
         var skipFriction = actor is ProjectileActor || actor.NoFriction || ledgeSliding;
         var appliesFriction = actor.OnGround || actor.Fly && actor.NoGravity;
         var hasMovementInput = actor is PlayerPawn player && player.HasMovementInput;
-        var stop = !skipFriction && appliesFriction && !hasMovementInput
+        var stop = !airbornePlayer && !skipFriction && appliesFriction && !hasMovementInput
             && Math.Abs(vx) < 0.0625 && Math.Abs(vy) < 0.0625;
         actor.VelocityX = Fixed.FromDouble(stop ? 0 : skipFriction ? vx : vx * friction);
         actor.VelocityY = Fixed.FromDouble(stop ? 0 : skipFriction ? vy : vy * friction);

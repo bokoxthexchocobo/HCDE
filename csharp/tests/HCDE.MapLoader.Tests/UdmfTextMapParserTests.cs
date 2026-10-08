@@ -2,6 +2,19 @@ namespace HCDE.MapLoader.Tests;
 
 public class UdmfTextMapParserTests
 {
+    [Theory]
+    [InlineData("ZDoom", true)]
+    [InlineData("ZDoomTranslated", true)]
+    [InlineData("Doom", false)]
+    public void SilentSectorFlagIsImportedForExtendedNamespaces(string mapNamespace, bool enabled)
+    {
+        var text = "namespace = \"" + mapNamespace + "\"; sector { silent = true; heightceiling = 128; }";
+        Assert.True(UdmfTextMapParser.TryParse(text, out var map, out var error), error);
+        Assert.True(map.Sectors[0].Silent);
+        var level = LevelBuilder.FromUdmf(map, "MAP01");
+        Assert.Equal(enabled, level.Sectors[0].Silent);
+    }
+
     [Fact]
     public void TryParse_ReadsDoomNamespaceSquare()
     {

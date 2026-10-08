@@ -199,7 +199,7 @@ internal static class AcsCallFunctions
             case CheckSight:
                 return TryCheckSight(sim, stack, scriptActivator, argCount, out result);
             case CheckActorProperty:
-                return TryCheckActorProperty(sim, stack, scriptActivator, argCount, out result);
+                return TryCheckActorProperty(sim, stack, scriptActivator, stringTable, globalStrings, argCount, out result);
             case GetMaxInventory:
                 return TryGetMaxInventory(sim, stack, scriptActivator, stringTable, argCount, out result);
             case DamageActor:
@@ -221,15 +221,15 @@ internal static class AcsCallFunctions
             case LineAttack:
                 return TryLineAttack(sim, stack, scriptActivator, stringTable, globalStrings, argCount, out result);
             case PlaySound:
-                return TryPlaySound(sim, stack, scriptActivator, argCount, out result);
+                return TryPlaySound(sim, stack, scriptActivator, stringTable, globalStrings, argCount, out result);
             case StopSound:
-                return TryStopSound(stack, argCount, out result);
+                return TryStopSound(sim, stack, scriptActivator, argCount, out result);
             case GetActorClass:
                 return TryGetActorClass(sim, stack, scriptActivator, globalStrings, argCount, out result);
             case GetWeapon:
                 return TryGetWeapon(scriptActivator, globalStrings, out result);
             case SoundVolume:
-                return TrySoundVolume(stack, argCount, out result);
+                return TrySoundVolume(sim, stack, scriptActivator, argCount, out result);
             case PlayActorSound:
                 return TryPlayActorSound(sim, stack, scriptActivator, argCount, out result);
             case SpawnDecal:
@@ -390,6 +390,8 @@ internal static class AcsCallFunctions
         AuthoritySimulation sim,
         List<int> stack,
         Actor? activator,
+        string[] stringTable,
+        AcsGlobalStrings globalStrings,
         int argCount,
         out int result)
     {
@@ -403,7 +405,16 @@ internal static class AcsCallFunctions
         var value = stack[start + 2];
         stack.RemoveRange(start, argCount);
 
-        result = AcsActorProperties.Check(sim, activator, tid, property, value) ? 1 : 0;
+        if (property is >= 5 and <= 9)
+        {
+            var actor = tid == 0 ? activator : AcsActorTid.SingleFromTid(sim, tid);
+            if (actor is { Destroyed: false })
+            {
+                var name = actor.ActorSounds.GetValueOrDefault((ActorSoundType)(property - 5)) ?? "";
+                result = name.Equals(AcsStringIds.Lookup(value, stringTable, globalStrings), StringComparison.OrdinalIgnoreCase) ? 1 : 0;
+            }
+        }
+        else result = AcsActorProperties.Check(sim, activator, tid, property, value) ? 1 : 0;
         return true;
     }
 
@@ -980,14 +991,22 @@ internal static class AcsCallFunctions
         return true;
     }
 
-    private static bool TrySoundVolume(List<int> stack, int argCount, out int result)
+    private static bool TrySoundVolume(AuthoritySimulation sim, List<int> stack, Actor? activator, int argCount, out int result)
     {
         result = 1;
         if (argCount < 3 || stack.Count < argCount)
             return false;
 
         var start = stack.Count - argCount;
+        var tid = stack[start];
+        var channel = stack[start + 1];
+        var volume = stack[start + 2] / 65536f;
         stack.RemoveRange(start, argCount);
+        IEnumerable<Actor> targets = tid == 0
+            ? activator is { Destroyed: false } ? new[] { activator } : Array.Empty<Actor>()
+            : AcsActorTid.AllFromTid(sim, tid);
+        foreach (var actor in targets)
+            sim.QueueSoundRequest(new(actor.Id, "", channel, 0, volume, false, 0, false, ChangeVolume: true));
         return true;
     }
 
@@ -1125,6 +1144,8 @@ internal static class AcsCallFunctions
         AuthoritySimulation sim,
         List<int> stack,
         Actor? activator,
+        string[] stringTable,
+        AcsGlobalStrings globalStrings,
         int argCount,
         out int result)
     {
@@ -1134,20 +1155,41 @@ internal static class AcsCallFunctions
 
         var start = stack.Count - argCount;
         var tid = stack[start];
+        var sound = AcsStringIds.Lookup(stack[start + 1], stringTable, globalStrings);
+        var channel = argCount > 2 ? stack[start + 2] : 4;
+        var volume = argCount > 3 ? stack[start + 3] / 65536f : 1;
+        var loop = argCount > 4 && stack[start + 4] != 0;
+        var attenuation = argCount > 5 ? stack[start + 5] / 65536f : 1;
+        var local = argCount > 6 && stack[start + 6] != 0;
         stack.RemoveRange(start, argCount);
 
         result = CountAcsTidTargets(sim, tid, activator);
+        if (!string.IsNullOrEmpty(sound))
+        {
+            IEnumerable<Actor> targets = tid == 0
+                ? activator is { Destroyed: false } ? new[] { activator } : Array.Empty<Actor>()
+                : AcsActorTid.AllFromTid(sim, tid);
+            foreach (var target in targets)
+                sim.QueueSoundRequest(new(target.Id, sound, channel & 7, channel & ~7, volume, loop, attenuation, local));
+        }
         return true;
     }
 
-    private static bool TryStopSound(List<int> stack, int argCount, out int result)
+    private static bool TryStopSound(AuthoritySimulation sim, List<int> stack, Actor? activator, int argCount, out int result)
     {
         result = 1;
         if (argCount < 1 || stack.Count < argCount)
             return false;
 
         var start = stack.Count - argCount;
+        var tid = stack[start];
+        var channel = argCount > 1 ? stack[start + 1] : 4;
         stack.RemoveRange(start, argCount);
+        IEnumerable<Actor> targets = tid == 0
+            ? activator is { Destroyed: false } ? new[] { activator } : Array.Empty<Actor>()
+            : AcsActorTid.AllFromTid(sim, tid);
+        foreach (var actor in targets)
+            sim.QueueSoundRequest(new(actor.Id, "", channel, 0, 0, false, 0, false, Stop: true));
         return true;
     }
 
@@ -1230,10 +1272,21 @@ internal static class AcsCallFunctions
 
         var start = stack.Count - argCount;
         var tid = stack[start];
-        _ = stack[start + 1];
+        var soundType = (ActorSoundType)stack[start + 1];
+        var channel = argCount > 2 ? stack[start + 2] : 4;
+        var volume = argCount > 3 ? stack[start + 3] / 65536f : 1;
+        var loop = argCount > 4 && stack[start + 4] != 0;
+        var attenuation = argCount > 5 ? stack[start + 5] / 65536f : 1;
+        var local = argCount > 6 && stack[start + 6] != 0;
         stack.RemoveRange(start, argCount);
 
         result = CountAcsTidTargets(sim, tid, activator);
+        IEnumerable<Actor> targets = tid == 0
+            ? activator is { Destroyed: false } ? new[] { activator } : Array.Empty<Actor>()
+            : AcsActorTid.AllFromTid(sim, tid);
+        foreach (var actor in targets)
+            if (actor.ActorSounds.TryGetValue(soundType, out var sound) && !string.IsNullOrEmpty(sound))
+                sim.QueueSoundRequest(new(actor.Id, sound, channel & 7, channel & ~7, volume, loop, attenuation, local));
         return true;
     }
 

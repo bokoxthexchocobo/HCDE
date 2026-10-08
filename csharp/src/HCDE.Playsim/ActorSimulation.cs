@@ -26,6 +26,8 @@ public class Actor : Thinker
     public const int PlayerStartMax = 4;
 
     public uint Id { get; init; }
+    public IReadOnlyDictionary<ActorSoundType, string> ActorSounds { get; set; }
+        = new Dictionary<ActorSoundType, string>();
     /// <summary>Native <c>GetNetworkID</c>. Assigned by netplay; ACS may query it offline.</summary>
     public uint NetworkId { get; set; }
     public int DoomEdNum { get; init; }
@@ -1108,6 +1110,7 @@ public class Actor : Thinker
             TickMovement(Simulation);
             if (VelocityX.Raw == 0 && VelocityY.Raw == 0) Blasted = false;
             SectorDamage.Tick(Simulation, this);
+            TerrainDamage.Tick(Simulation, this);
         }
         base.Tick();
     }
@@ -1460,6 +1463,12 @@ public class PlayerPawn : Actor
             {
                 var (dx, dy) = Movement.Thrust(Angle, command.ForwardMove, command.SideMove);
                 var thrustScale = MovementSpeed.ToDouble() * CrouchFactor;
+                if (Simulation is { } movementSimulation)
+                    thrustScale *= ActorPhysics.TerrainMovementScale(movementSimulation, this);
+                if (!OnGround && !NoGravity && (Simulation?.AirControl ?? Level.AirControl) is { } airControl)
+                {
+                    thrustScale *= airControl;
+                }
                 if (NoGravity && PitchDegrees != 0 && !ClassicFlight)
                 {
                     var pitch = PitchDegrees * Math.PI / 180;
@@ -1923,6 +1932,12 @@ public static class ActorSpawner
 
 public sealed class AuthoritySimulation
 {
+    private double? _airControlOverride;
+    private double? _levelGravityOverride;
+    public double LevelGravity => _levelGravityOverride ?? Level.LevelGravity;
+    public void SetLevelGravity(int fixedValue) => _levelGravityOverride = fixedValue / 65536.0;
+    public double? AirControl => _airControlOverride ?? Level.AirControl;
+    public void SetAirControl(int fixedValue) => _airControlOverride = fixedValue / 65536.0;
     public event Action<Actor>? WorldThingRevived;
 
     public event Action<Actor>? WorldThingSpawned;
@@ -1989,6 +2004,10 @@ public sealed class AuthoritySimulation
     {
         _dehacked = dehacked;
         Level = level;
+        if (!double.IsFinite(level.LevelGravity))
+            throw new ArgumentOutOfRangeException(nameof(level), "Level gravity must be finite.");
+        if (level.AirControl is { } airControl && !double.IsFinite(airControl))
+            throw new ArgumentOutOfRangeException(nameof(level), "Air control must be finite.");
         foreach (var definition in level.DamageTypes)
             DamageTypes.Define(definition.Name, definition.Factor, definition.ReplaceFactor, definition.NoArmor);
         Thinkers = thinkers;
@@ -2080,6 +2099,15 @@ public sealed class AuthoritySimulation
     }
 
     public PlayLevel Level { get; }
+    private readonly List<SimulationSoundRequest> _soundRequests = new();
+    public IReadOnlyList<SimulationSoundRequest> PendingSoundRequests => _soundRequests.AsReadOnly();
+    internal void QueueSoundRequest(SimulationSoundRequest request) => _soundRequests.Add(request);
+    public SimulationSoundRequest[] DrainSoundRequests()
+    {
+        var requests = _soundRequests.ToArray();
+        _soundRequests.Clear();
+        return requests;
+    }
     internal Dictionary<int, int> HealthGroups { get; }
     /// <summary>Native command-line str args for ACS <c>StrArg</c>.</summary>
     public IReadOnlyList<string> StrArgs { get; }
@@ -3087,6 +3115,8 @@ public sealed class AuthoritySimulation
             IceTicsRandomState = _hasIceTicsRandomState ? _iceTicsRandomState : null,
             IncludesIceChunkLifecycle = _hasIceChunkLifecycle,
             FreezeChunksRandomState = _hasFreezeChunksRandomState ? _freezeChunksRandomState : null,
+            AirControlOverride = _airControlOverride,
+            LevelGravityOverride = _levelGravityOverride,
             FreezeDeathRandomState = _hasFreezeDeathRandomState ? _freezeDeathRandomState : null,
             DropItemRandomState = _hasDropItemRandomState ? _dropItemRandomState : null,
             Tic = Thinkers.Clock.Tic,
@@ -3120,6 +3150,7 @@ public sealed class AuthoritySimulation
         {
             state.Actors.Add(new SimActorPose
             {
+                ActorSounds = new Dictionary<ActorSoundType, string>(actor.ActorSounds),
                 DeathType = actor.DeathType,
                 SpecialFireDamage = actor.SpecialFireDamage,
                 FoilInvul = actor.FoilInvul,
@@ -3136,6 +3167,7 @@ public sealed class AuthoritySimulation
                 FullBrightFlag = actor.FullBright != actor.States.CurrentFullBright ? actor.FullBright ? 1 : 0 : null,
                 GoalPointer = actor.GoalId.HasValue ? new SimGoalPointer(actor.GoalId) : null,
                 Killed = actor.Killed,
+                SlideFlag = actor.CanSlide != ((actor.ResurrectionMovementFlags.GetValueOrDefault() & 8) != 0) ? (actor.CanSlide ? 1 : 0) : null,
                 MovementActionFlags = ActorMovementSave.Capture(actor),
                 SkullChargeFlag = actor.Brain?.Charging == true ? 1 : null,
                 ReactionTime = actor.ReactionTime != actor.SpawnReactionTime.GetValueOrDefault()
@@ -3164,6 +3196,7 @@ public sealed class AuthoritySimulation
                     || actor.Friendly != (actor.SpawnFriendly || (actor.ResurrectionDefenseFlags.GetValueOrDefault() & 8) != 0)
                     ? new SimFriendship(actor.FriendPlayer, actor.TidToHate, actor.Friendly, actor.NoHatePlayers) : null,
                 GravityRaw = actor.HasGravityOverride || actor.Gravity.Raw != 65536 ? actor.Gravity.Raw : null,
+                FrictionRaw = actor.Friction.Raw != 65536 ? actor.Friction.Raw : null,
                 DefenseProperties = ActorDefenseSave.Capture(actor),
                 SpriteOrientation = actor.HasSpriteOrientationOverride || actor.SpriteAngle != 0 || actor.SpriteRotation != 0
                     ? new SimSpriteOrientation(actor.SpriteAngle, actor.SpriteRotation) : null,
@@ -3278,6 +3311,11 @@ public sealed class AuthoritySimulation
 
     public void RestoreState(SimSaveState state)
     {
+        SimActorSoundArchive.Validate(state);
+        if (state.LevelGravityOverride is { } gravity && !double.IsFinite(gravity))
+            throw new InvalidOperationException("Invalid saved level gravity.");
+        if (state.AirControlOverride is { } control && !double.IsFinite(control))
+            throw new InvalidOperationException("Invalid saved air control.");
         SimSavegame.ValidateSectors(state);
         SimLightArchive.Validate(state);
         SimLightAnimationArchive.Validate(state);
@@ -3291,6 +3329,7 @@ public sealed class AuthoritySimulation
         SimSavegame.ValidatePickups(state);
         SimSavegame.ValidateContactFlags(state);
         SimSavegame.ValidateFloatFlags(state);
+        SimSlideFlagArchive.Validate(state);
         SimSavegame.ValidateDeathFlags(state);
         SimMovementActionArchive.Validate(state);
         SimDefensePropertiesArchive.Validate(state);
@@ -3400,6 +3439,8 @@ public sealed class AuthoritySimulation
         _hasFreezeDeathRandomState = state.FreezeDeathRandomState.HasValue;
         _dropItemRandomState = state.DropItemRandomState ?? _initialDropItemRandomState;
         _hasDropItemRandomState = state.DropItemRandomState.HasValue;
+        _airControlOverride = state.AirControlOverride;
+        _levelGravityOverride = state.LevelGravityOverride;
         Thinkers.Clock.Restore(state.Tic);
         if (state.GeometryHealth is { } health)
         {
@@ -3523,6 +3564,7 @@ public sealed class AuthoritySimulation
             var memory = pose.TargetMemory ?? default;
             actor.Brain?.RestoreTargetMemory(memory);
             actor.LastHeardTargetId = memory.LastHeard;
+            actor.CanSlide = pose.SlideFlag is { } slide ? slide != 0 : (actor.ResurrectionMovementFlags.GetValueOrDefault() & 8) != 0;
             actor.HasMovementActionOverride = pose.MovementActionFlags.HasValue;
             actor.Brain?.RestoreCharge(pose.SkullChargeFlag == 1);
             if (pose.ReactionTime is { } reactionTime)
@@ -3607,6 +3649,7 @@ public sealed class AuthoritySimulation
             actor.DontCorpse = pose.DontCorpseFlag == 1;
             actor.Corpse = pose.CorpseFlag is { } corpseFlag ? corpseFlag == 1 : actor.IsDead;
             actor.HasTeleFogOverride = pose.TeleFog.HasValue;
+            actor.ActorSounds = new Dictionary<ActorSoundType, string>(pose.ActorSounds);
             actor.TeleFogSource = pose.TeleFog?.Source;
             actor.TeleFogDest = pose.TeleFog?.Destination;
             var tuning = pose.Tuning ?? actor.SpawnTuning ?? new SimActorTuning(Fixed.FromInt(4).Raw, 4, 0);
@@ -3630,6 +3673,7 @@ public sealed class AuthoritySimulation
             }
             actor.Brain?.RestoreChaseThreshold(pose.ChaseThreshold);
             actor.Gravity = new Fixed(pose.GravityRaw ?? 65536);
+            actor.Friction = new Fixed(pose.FrictionRaw ?? 65536);
             if (pose.MovementActionFlags is { } movementActionFlags)
             {
                 actor.Solid = (movementActionFlags & 1) != 0;
@@ -4048,6 +4092,55 @@ public sealed class AuthoritySimulation
     {
         var hash = 2166136261u;
         hash = DamageTypes.MixChecksum(hash);
+        if (_levelGravityOverride.HasValue || LevelGravity != 800)
+        {
+            hash = Mix(hash, 0x4c475241u); hash = MixDouble(hash, LevelGravity);
+        }
+        if (AirControl is { } airControl)
+        {
+            hash = Mix(hash, 0x41495243u);
+            hash = MixDouble(hash, airControl);
+        }
+        if (Level.TerrainSplashes.Count != 0)
+        {
+            hash = Mix(hash, 0x5453504cu);
+            foreach (var splash in Level.TerrainSplashes)
+            {
+                hash = Mix(hash, (uint)splash.Length);
+                foreach (var character in splash) hash = Mix(hash, char.ToUpperInvariant(character));
+            }
+        }
+        if (Level.FloorTerrainMappings.Count != 0 || Level.DefaultTerrain.Length != 0)
+        {
+            hash = Mix(hash, 0x5445524du);
+            hash = Mix(hash, (uint)Level.DefaultTerrain.Length);
+            foreach (var character in Level.DefaultTerrain) hash = Mix(hash, char.ToUpperInvariant(character));
+            foreach (var floor in Level.FloorTerrainMappings)
+            {
+                hash = Mix(hash, (uint)floor.Texture.Length);
+                foreach (var character in floor.Texture) hash = Mix(hash, char.ToUpperInvariant(character));
+                hash = Mix(hash, (uint)floor.Terrain.Length);
+                foreach (var character in floor.Terrain) hash = Mix(hash, char.ToUpperInvariant(character));
+            }
+        }
+        if (Level.TerrainDefinitions.Count != 0)
+        {
+            hash = Mix(hash, 0x54455244u);
+            foreach (var terrain in Level.TerrainDefinitions)
+            {
+                hash = Mix(hash, (uint)terrain.Name.Length);
+                foreach (var character in terrain.Name) hash = Mix(hash, char.ToUpperInvariant(character));
+                hash = Mix(hash, (uint)terrain.DamageType.Length);
+                foreach (var character in terrain.DamageType) hash = Mix(hash, char.ToUpperInvariant(character));
+                hash = Mix(hash, unchecked((uint)terrain.DamageAmount));
+                hash = Mix(hash, unchecked((uint)terrain.DamageTimeMask));
+                hash = Mix(hash, terrain.DamageOnLand ? 1u : 0u);
+                hash = MixDouble(hash, terrain.Friction);
+                hash = MixDouble(hash, terrain.MoveFactor);
+                hash = Mix(hash, (uint)terrain.Splash.Length);
+                foreach (var character in terrain.Splash) hash = Mix(hash, char.ToUpperInvariant(character));
+            }
+        }
         if (Level.HexenHack) hash = Mix(hash, 0x48455848u);
         if (Level.ActivateOwnDeathSpecials) hash = Mix(hash, 0x414F4453u);
         hash = Mix(hash, unchecked((uint)Compat));
@@ -4450,6 +4543,17 @@ public sealed class AuthoritySimulation
             hash = Mix(hash, (uint)actor.Gravity.Raw);
             hash = Mix(hash, (uint)actor.DamageFactor.Raw);
             hash = actor.MixDamageFactorChecksum(hash);
+            if (actor.ActorSounds.Count != 0)
+            {
+                hash = Mix(hash, 0x41534E44u);
+                hash = Mix(hash, (uint)actor.ActorSounds.Count);
+                foreach (var (type, name) in actor.ActorSounds.OrderBy(pair => pair.Key))
+                {
+                    hash = Mix(hash, (uint)type);
+                    hash = Mix(hash, (uint)name.Length);
+                    foreach (var character in name) hash = Mix(hash, character);
+                }
+            }
             hash = Mix(hash, (uint)actor.DamageMultiplier.Raw);
             hash = Mix(hash, (uint)actor.MeleeRange.Raw);
             if (actor.NoVerticalMeleeRange) hash = Mix(hash, 0x4E564D52u);

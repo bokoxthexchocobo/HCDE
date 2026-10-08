@@ -30,6 +30,17 @@ public sealed class IceChunkActor : Actor
     private void SetFrameDuration()
     {
         if (Simulation is { } sim)
-            States.ForceRemainingTics(sim.NextIceTics());
+        {
+            var tics = sim.NextIceTics();
+            var sector = ActorPhysics.SectorAt(sim.Level, X.ToDouble(), Y.ToDouble());
+            if ((uint)sector < (uint)sim.Level.Sectors.Count)
+            {
+                var type = sim.Level.FloorTerrainDamageType(sector);
+                if (string.Equals(type, "Fire", StringComparison.OrdinalIgnoreCase)
+                    || string.Equals(type, "Lava", StringComparison.OrdinalIgnoreCase)) tics >>= 2;
+                else if (string.Equals(type, "Ice", StringComparison.OrdinalIgnoreCase)) tics <<= 1;
+            }
+            States.ForceRemainingTics(tics);
+        }
     }
 }

@@ -7,6 +7,36 @@ namespace HCDE.Client.Tests;
 public class Phase4ClientTests
 {
     [Fact]
+    public void GamePauseFreezesSimulationAndAudioWithoutQueuingCommandsOrDemoPcm()
+    {
+        var host = ClientHost.DemoRoom(); var checksum = host.Simulation.Checksum;
+        var player = host.Simulation.Players.Single(); var x = player.X;
+        var channel = host.Audio.PlayChannel(new short[] { 100, 200 });
+        host.GamePaused = true;
+        Assert.True(host.Audio.Paused);
+        for (var count = 0; count < 3; count++) host.Tick(new PlayerCommand { ForwardMove = 50 });
+        Assert.Equal(checksum, host.Simulation.Checksum); Assert.Equal(x, player.X);
+        Assert.Equal(new short[] { 0, 0, 0, 0 }, host.LastMix); Assert.True(host.Audio.IsPlaying(channel));
+        host.GamePaused = false; host.Tick(default);
+        Assert.False(host.Audio.Paused); Assert.Equal(x, player.X);
+        Assert.Equal(new short[] { 1100, 1200, 1000, 1000 }, host.LastMix);
+    }
+
+    [Fact]
+    public void GamePauseContinuesExemptAudioAndStopsScriptAdvancement()
+    {
+        var host = ClientHost.DemoRoom();
+        host.ZScript.Add(new ZsProgram { Name = "hurt", Code = Code(ZsOpcode.LoadImm, 10, ZsOpcode.CallNative, ZsNative.DamagePlayer, ZsOpcode.Return) });
+        Assert.True(host.ZScript.Start("hurt"));
+        host.Audio.PlayChannel(new short[] { 50, 60, 70, 80 }, noPause: true);
+        host.GamePaused = true; host.Tick(default);
+        Assert.Equal(100, host.Simulation.Players.Single().Health);
+        Assert.Equal(new short[] { 50, 60, 70, 80 }, host.LastMix);
+        host.GamePaused = false; host.Tick(default);
+        Assert.Equal(90, host.Simulation.Players.Single().Health);
+    }
+
+    [Fact]
     public void SoftwareView_PaintsTheWallInFrontAndCeilingAboveIt()
     {
         var host = ClientHost.DemoRoom();

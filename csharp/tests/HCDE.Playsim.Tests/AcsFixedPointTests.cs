@@ -51,7 +51,6 @@ public class AcsFixedPointTests
 
     [Theory]
     [InlineData(269)] // SETCAMERATOTEXTURE, not FIXEDMUL.
-    [InlineData(138)] // SETGRAVITY, not arithmetic.
     public void AdjacentUnsupportedOpcodesDoNotExecuteArithmetic(int opcode)
     {
         Assert.Equal(128, Run(3, 65536, 3, 65536, opcode, 10, 112, 7, 35, 1).LightOf(0));

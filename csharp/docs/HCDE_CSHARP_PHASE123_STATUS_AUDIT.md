@@ -1,5 +1,857 @@
 # Gameplay phases 1–3: implementation and completion audit
 
+## Phase 1 actor disappearance sound detachment and cutoff (2026-10-08)
+
+- Converted actor disappearance cleanup: source removal stops looped channels, including virtual loops; one-shots detach and continue at the retained position by default. ClientHost.SoundCutoffCompatibility stops one-shots as well. Mixer detachment clears source actor identity so detached sounds cannot gain the actor-channel restart exemption.
+- Source cleanup now runs before listener selection, so removing the last listener does not leave orphaned loops. Actor ownership/query entries are removed while detached one-shot mixer channels remain until sample completion.
+- Native audit: src/sound/s_doomsound.cpp:788-790 passes SoundPos to RelinkSound unless COMPATF2_SOUNDCUTOFF is enabled; src/doomdef.h:224 defines the compatibility bit. SoundEngine::RelinkSound in src/common/audio/sound/s_sound.cpp:986 onward converts one-shots with a position into SOURCE_Unattached and stops loops or sounds without a detachment position.
+- Five new regression cases cover one-shot continuation, cutoff, loop stop, cleanup without a listener and virtual-loop removal. Updated an earlier actor-follow regression that incorrectly expected a destroyed actor's loop to continue. Full Release suite passes 10,613 tests (8,929 Playsim, 757 MapLoader, 211 Gamedata, 151 Client). Clean Release rebuild with warnings as errors passes with zero warnings/errors; git diff --check passes.
+- Boundary: managed detachment uses the last observed source position at client cleanup, not a destruction-time native callback. Relinking to another live actor, compatibility config import, backend timing/eviction and paired runtime certification remain unfinished. Phase 1 remains incomplete; changes are uncommitted.
+
+
+## Phase 1 magic-silence actor sound compatibility (2026-10-08)
+
+- Converted the represented actor behavior of COMPATF_MAGICSILENCE through ClientHost.MagicSilenceCompatibility (default false). Actor playback uses weapon channel 1; actor stop and volume changes address all owned channels, and actor playing/no-stop checks ignore the requested channel. Local unpositioned request checks retain their channel matching.
+- Native audit: src/doomdef.h:189 defines the compatibility bit; VerifyActorSound in src/sound/s_doomsound.cpp:553-557 forces CHAN_WEAPON; S_StopSound at 736 and S_ChangeActorSoundVolume at 801 use channel -1; S_IsActorPlayingSomething at 845-849 uses CHAN_AUTO. S_PlaySoundPitch at 689 onward delegates actor no-stop checks but checks local SOURCE_None channels separately.
+- Five regression cases cover enabled/disabled channel routing, queries and stops over previously existing channels, no-stop across actor channels, and volume changes over all actor channels. Full Release suite passes 10,608 tests (8,929 Playsim, 757 MapLoader, 211 Gamedata, 146 Client). Clean Release rebuild with warnings as errors passes with zero warnings/errors; git diff --check passes.
+- Boundary: global compatibility configuration import, sector/polyobject sound sources, camera listeners, backend timing/eviction and paired runtime certification remain unfinished. Explicit overlap behavior is retained; changing compatibility does not migrate existing channels. Phase 1 remains incomplete; changes are uncommitted.
+
+
+## Phase 1 UDMF silent sectors and actor sound admission (2026-10-08)
+
+- Converted UDMF sector silent metadata into LevelSector.Silent for the represented extended namespaces. ClientHost rejects new actor playback in silent sectors before resource decoding and before local ACS playback. Stop/volume operations and existing channels retain their previous behavior; the flag governs admission.
+- Native audit: src/maploader/udmf.cpp:1773 gates extended sector properties to Zd/Zdt/Va; 1927-1928 maps silent to SECF_SILENT. VerifyActorSound in src/sound/s_doomsound.cpp:541-543 rejects actors in silent sectors before maybe-local compatibility checks. Managed direct actor playback and request consumption use the simulation's authoritative sector index.
+- Six regression cases cover ZDoom/ZDoomTranslated import and Doom exclusion, ordinary and local ACS request suppression, and direct loop rejection before decoding an invalid resource archive.
+- Full Release suite passes 10,603 tests (8,929 Playsim, 757 MapLoader, 211 Gamedata, 141 Client). Clean Release rebuild with warnings as errors passes with zero warnings/errors; git diff --check passes.
+- Audit correction: silent-pickup compatibility is exposed through native compat_silentpickup in src/d_main.cpp:917, not a native MAPINFO property. No invented map directive was added; global configuration import remains unfinished. Other boundaries include camera listener semantics, magic-silence compatibility, sector sound origins, runtime mutation/save persistence for sector flags, backend eviction/timing and paired runtime certification. Phase 1 remains incomplete; changes are uncommitted.
+
+
+## Phase 1 maybe-local pickup sound compatibility (2026-10-08)
+
+- Converted request flag 16 (CHANF_MAYBE_LOCAL / CHANF_PICKUP). ClientHost now accepts the flag and suppresses nonlistener requests when SilentPickupCompatibility is enabled; with the default disabled, playback retains actor ownership and normal positioning. This flag does not turn sounds into unpositioned local channels.
+- Native audit: src/common/audio/sound/i_soundinternal.h defines modifier 16 and its pickup alias; VerifyActorSound in src/sound/s_doomsound.cpp:545-551 checks COMPATF_SILENTPICKUP and rejects actors that are not the listener. The represented first-player listener convention remains in use.
+- Three regression cases cover disabled compatibility for another player, enabled compatibility suppressing another player, and enabled compatibility preserving listener playback. The unsupported-flag regression now uses the still-unconverted area flag 128.
+- Full Release suite passes 10,597 tests (8,929 Playsim, 754 MapLoader, 211 Gamedata, 138 Client). Clean Release rebuild with warnings as errors passes with zero warnings/errors; git diff --check passes.
+- Boundary: importing silent-pickup compatibility from map/config metadata, camera listener semantics, silent sectors, magic-silence compatibility, area/sector sounds, backend eviction/timing and paired native-runtime certification remain unfinished. The compatibility switch is an explicit client setting. Phase 1 remains incomplete; changes are uncommitted.
+
+
+## Phase 1 singular-blocked loop admission and restart (2026-10-08)
+
+- Converted singular-blocked loop admission: duplicates keep virtual channel handles instead of disappearing, while duplicate one-shots still return no handle. Shared singular checks compare resolved requested identity against every retained channel's original identity, including virtual channels.
+- Native audit: src/common/audio/sound/s_sound.cpp:486-512 marks singular duplicates evicted and preserves loops; CheckSingular at 802 onward includes all channels and compares OrgID. RestartChannel at 657 checks only the resolved SNDINFO bSingular flag, not request-only CHANF_SINGULAR. Managed channels retain that definition flag for restart.
+- Preserved the native self-check quirk: a virtual direct sound defined singular can count its own original identity and remain blocked after the first sound stops. An alias with a different original name can resume once the matching direct identity disappears. A request-only singular loop does not repeat that definition check on restart. These are source-backed behaviors, not corrected heuristics.
+- Three regression cases cover retained handles and explicit stop/replacement, native direct self-blocking, request-only restoration, and alias original-identity behavior. Full Release suite passes 10,594 tests (8,929 Playsim, 754 MapLoader, 211 Gamedata, 135 Client). Clean Release rebuild with warnings as errors passes with zero warnings/errors; git diff --check passes.
+- Boundary: priority/backend eviction, absolute-time resumption offsets, forgettable flags, native defaults/ID validation, sound-channel save persistence and paired runtime certification remain unfinished. Restoration remains at managed buffer boundaries. Phase 1 remains incomplete; changes are uncommitted.
+
+
+## Phase 1 near-limit virtual loops and restoration (2026-10-08)
+
+- Converted near-limit admission for looped sounds: blocked loops now retain a live, controllable channel handle without producing samples or consuming a near-limit slot. Mixer buffers retry waiting loops in creation order; restored loops use current source positions and the existing attenuation/range calculation. Ordinary paused loops wait, while NoPause loops may resume and advance.
+- Extracted shared CheckSoundLimit logic for initial admission and restoration. Initial actor-channel restarts retain the existing exemption; restoration supplies no restart identity, matching the native call. ClientHost ownership and source updates remain active because virtual handles still report IsPlaying.
+- Native audit: src/common/audio/sound/s_sound.cpp:504-512 preserves blocked loops instead of dropping them; RestartChannel around 681-697 rechecks current position and near limits; RestoreEvictedChannel at 1212 onward recurses through the channel list before restarting, restoring older channels first. CheckSoundLimit skips evicted channels. This implements the represented near-limit lifecycle, not all native eviction reasons or backend timing.
+- Six new regression cases cover silent handle retention, no sample advancement while blocked, release after stop/completion, oldest-first restoration, movement outside the range, stopping virtual handles, and paused/NoPause restoration. Full Release suite passes 10,591 tests (8,929 Playsim, 754 MapLoader, 211 Gamedata, 132 Client). Clean Release rebuild with warnings as errors passes with zero warnings/errors; git diff --check passes.
+- Boundary: singular-blocked loops still use earlier suppression; priority/backend eviction, absolute-time resumption offsets, forgettable flags, native defaults/ID validation, sound-channel save persistence and paired runtime certification remain unfinished. Restoration occurs at managed buffer boundaries and starts blocked loops at sample zero. Phase 1 remains incomplete; changes are uncommitted.
+
+
+## Phase 1 positioned one-shot sound near limits (2026-10-08)
+
+- Converted nearby admission limits for positioned actor one-shot playback. Mixer channels retain resolved sound identity and source actor/entity-channel metadata; limits count matching resolved sounds within the inherited squared range divided by the smaller attenuation. Nonpositive attenuation makes the range infinite. Source position and listener exemption are supplied by ClientHost before admission.
+- Native audit: src/common/audio/sound/s_sound.cpp:432-451 inherits NearLimit/LimitRange only while the owner limit is negative; 492-509 exempts unpositioned/listener sources and checks admission; CheckSoundLimit at 831 onward counts resolved sound IDs, allows a same-source/channel restart, and scales the squared range by min(existing attenuation, requested attenuation). Managed traversal checks newest channels first, matching native channel-list insertion order.
+- Nine regression cases cover inclusive distance boundary, out-of-range admission, zero and fractional attenuation, aliases sharing resolved identity, same-channel restarts, unpositioned/listener exemptions, ClientHost integration with replacement, explicit alias limit zero, and default limit release on sample completion.
+- Full Release suite passes 10,585 tests (8,929 Playsim, 754 MapLoader, 211 Gamedata, 126 Client). Clean Release rebuild with warnings as errors passes with zero warnings/errors; git diff --check passes.
+- Boundary: looped admission is deliberately deferred until virtual eviction/resumption exists; existing loops still count toward one-shot admission. Native forgettable/evicted channel flags, moving-source portal transforms, native sound defaults/ID validation, mounted archives and paired runtime certification remain unfinished. Phase 1 remains incomplete; changes are uncommitted.
+
+
+## Phase 1 actor sound state checksum integration (2026-10-08)
+
+- Added actor sound metadata to the managed simulation checksum. A conditional marker, entry count, numeric selector, name length, and exact name characters cover all represented overrides. Sorting selectors makes dictionary insertion order irrelevant; actors without overrides retain the prior checksum contribution.
+- Native audit: src/playsim/p_acs.cpp:4287-4288 mutates actor sound properties; 4487-4489 exposes their names and 4744-4752 selects sounds for playback. These fields affect observable behavior and therefore belong in represented state consistency checks. This is managed checksum coverage, not a claim of native checksum algorithm parity. Exact stored names are retained rather than normalized.
+- Three regressions detect name/selector changes, establish insertion-order independence and binary save/restore checksum stability, and distinguish explicit empty overrides from absent entries while checking legacy restoration.
+- Full Release suite passes 10,576 tests (8,929 Playsim, 754 MapLoader, 211 Gamedata, 117 Client). Clean Release rebuild with warnings as errors passes with zero warnings/errors; git diff --check passes.
+- Boundary: native class/Dehacked sound defaults, sound-ID validation, remaining sound behavior, transient channel/request persistence, and paired native-runtime certification remain unfinished. Phase 1 remains incomplete; changes are uncommitted.
+
+
+## Phase 1 actor sound metadata persistence (2026-10-08)
+
+- Converted actor sound-name persistence for all eleven represented selectors. Snapshots and restored actors own dictionary copies; conditional managed archive version 122 stores names in deterministic selector order while saves without overrides retain their previous format. Legacy saves clear overrides.
+- Native audit: src/playsim/p_mobj.cpp actor serialization includes seesound and attacksound at lines 301-302. The managed archive preserves represented sound-name overrides; native binary save compatibility is not claimed.
+- Reader rejects invalid selectors, duplicate selectors, malformed UTF-8, invalid lengths, inconsistent actor counts, and trailing data. Restore validates before mutation; writing sound overrides without geometry state now fails explicitly instead of silently dropping them.
+- Three regressions cover snapshot ownership, save/restore and deterministic rewriting, legacy clearing, corrupt selectors, invalid snapshots, and unsupported save state. Full Release suite passes 10,573 tests (8,926 Playsim, 754 MapLoader, 211 Gamedata, 117 Client). Clean Release rebuild with warnings as errors passes with zero warnings/errors.
+- Boundary: actor sound checksum integration, native class/Dehacked defaults, sound-ID validation, transient request/channel persistence, remaining sound behavior and paired native-runtime certification remain unfinished. Phase 1 remains incomplete; changes are uncommitted.
+
+
+## Phase 1 ACS actor sound-property comparisons (2026-10-08)
+
+- Converted CheckActorProperty for sound properties 5-9, selecting the live activator or single TID target, resolving module/global string IDs, and comparing original configured names case-insensitively. Missing/destroyed targets return zero. Existing numeric/boolean property handling remains delegated to AcsActorProperties.
+- Native audit: DLevelScript::CheckActorProperty in src/playsim/p_acs.cpp:4509-4517 returns zero for missing actors; 4569-4582 selects sound names and compares stricmp against the supplied string. Empty/unconfigured names use the represented empty-string convention; native sound-ID validation remains separate.
+- Five regressions cover every sound property with matching case variants, mismatched names, module/global strings, destroyed targets, and stack argument consumption. Full Release suite passes 10,570 tests (8,923 Playsim, 754 MapLoader, 211 Gamedata, 117 Client). Clean Release rebuild with warnings as errors passes with zero warnings/errors; git diff --check passes.
+- Boundary: native class/Dehacked default import, actor sound savegame/checksum persistence, sound-ID validation, null activators, native return parity, defaults/RNG, remaining flags, near limits, eviction, mounted archives, stereo/backend fidelity, and paired native-runtime certification remain unfinished. Phase 1 remains incomplete; changes are uncommitted.
+
+
+## Phase 1 ACS actor sound-name properties (2026-10-08)
+
+- Converted SetActorProperty/GetActorProperty sound properties 5-9 (see, attack, pain, death, active) in AcsVm. Set resolves module/global string IDs and updates live activator/TID target metadata by copying the dictionary. Get returns a global ACS string for the selected actor's configured name, or native-style zero for missing actors.
+- Native audit: p_acs.cpp:4081-4085 assigns property IDs, 4279-4298 resolves setter names, and 4487-4491 returns names through GlobalACSStrings. This represents logical names rather than native S_FindSound ID validation; invalid string lookup currently stores an empty name.
+- Five regression cases set each sound property, retrieve its global string, and pass that result to PlaySound to verify usable playback request names. Full Release suite passes 10,565 tests (8,918 Playsim, 754 MapLoader, 211 Gamedata, 117 Client). Clean Release rebuild with warnings as errors passes with zero warnings/errors; git diff --check passes.
+- Boundary: CheckActorProperty sound comparison, native class/Dehacked default import, sound-ID validation, savegame/checksum metadata persistence, null activators, native return parity, defaults/RNG, remaining flags, near limits, eviction, mounted archives, stereo/backend fidelity, and paired native-runtime certification remain unfinished. Phase 1 remains incomplete; changes are uncommitted.
+
+
+## Phase 1 represented ACS PlayActorSound selection (2026-10-08)
+
+- Replaced PlayActorSound's argument-discarding stub with configured per-actor sound selection and existing ordered playback requests. Added ActorSoundType values See through Push in native selector order and explicit ActorSounds metadata. Selected names carry channel masking/flags, fixed-point volume/attenuation, looping, and local values to the client queue.
+- Native audit: p_acs.cpp:4725-4757 defines actor sound selectors and field selection; 6079-6126 shares optional playback arguments and target iteration with PlaySound. Unknown or unconfigured selectors emit no sound; the existing represented target-count return remains preserved.
+- Four ACS regressions cover see/death/push selectors, default channel, actor identity, and unknown selector silence. Full Release suite passes 10,560 tests (8,913 Playsim, 754 MapLoader, 211 Gamedata, 117 Client). Clean Release rebuild with warnings as errors passes with zero warnings/errors; git diff --check passes.
+- Boundary: ActorSounds must be configured explicitly; native class/Dehacked defaults, ACS actor sound properties, savegame/checksum metadata, and default restoration are not converted. Null activators, native return/sound-ID parity, remaining flags, defaults/RNG, near limits, eviction, mounted archives, stereo/backend fidelity, and paired native-runtime certification remain unfinished. Phase 1 remains incomplete; changes are uncommitted.
+
+
+## Phase 1 ACS active sound-volume conversion (2026-10-08)
+
+- Converted ACS SoundVolume argument extraction into ordered volume-change requests for live activator/TID targets, retaining fixed-point volume and unmasked channel. Client consumption updates every matching owned actor channel; exactly -1 selects all actor channels, distinct from StopSound's any-negative rule. Local unpositioned sounds have no actor ownership and remain excluded.
+- Mixer channels retain original PCM with mutable volume rather than destructively scaling samples at queue time. Existing initial volume and signed rounding behavior remain represented; TrySetChannelVolume validates finite values and clamps to [0,1]. Active changes replace initial gain, independently of distance gain, allowing silence and restoration.
+- Native audit: p_acs.cpp:6150-6174 defines SoundVolume arguments and target iteration; s_sound.cpp:1023-1044 clamps volume and updates matching source/entity channels or -1. Two regressions cover original-sample restoration, clamping/invalid values, live silent loops, and ACS play-then-volume request output.
+- Full Release suite passes 10,556 tests (8,909 Playsim, 754 MapLoader, 211 Gamedata, 117 Client). Clean Release rebuild with warnings as errors passes with zero warnings/errors; git diff --check passes.
+- Boundary: native return-value parity, null activators, local source volume controls, backend rounding/filter fidelity, sound defaults/RNG, remaining flags, near limits, eviction, mounted archives, stereo output, and paired native-runtime certification remain unfinished. Phase 1 remains incomplete; changes are uncommitted.
+
+
+## Phase 1 client game-pause integration (2026-10-08)
+
+- Added explicit ClientHost.GamePaused control that synchronizes mixer pause and gates simulation/ZScripting advancement and command queuing. Rendering, sound request consumption, listener updates, and exempt audio mixing continue. Paused ticks no longer enqueue demo PCM, avoiding accumulated demo playback on resume.
+- Native audit: src/common/audio/sound/s_sound.cpp:1817 onward distinguishes native pause/background behavior and existing sound pause exemptions. The represented simulation has no general pause state, so this is a local client control rather than full native pause/network/background policy. Direct mixer Paused remains independently available.
+- Two regressions cover unchanged simulation checksum/player coordinates during pause, discarded paused input, saved audio progression, no demo backlog, exempt audio, and deferred ZScript health changes until resume. Full Release suite passes 10,554 tests (8,909 Playsim, 754 MapLoader, 211 Gamedata, 115 Client). Clean Release rebuild with warnings as errors passes with zero warnings/errors; git diff --check passes.
+- Boundary: menu/application-focus wiring, multiplayer pause rules, pause serialization, background sound/music policy, UI savegame semantics, native playback ordering, eviction, remaining flags, defaults/RNG, near limits, stereo/backend fidelity, and paired native-runtime certification remain unfinished. Phase 1 remains incomplete; changes are uncommitted.
+
+
+## Phase 1 mixer pause and playback exemptions (2026-10-08)
+
+- Converted mixer pause state independently of mute. Ordinary active channels produce no samples and retain progress while paused; NoPause channels continue. Added optional noPause/force controls to WAD playback and noPause to direct PCM channels. Paused ordinary WAD one-shots return no handle, while looping/forced requests can queue for resume.
+- Converted explicit UI=32, NOPAUSE=64, and FORCE=65536 through ACS and actor/local client playback. UI/NOPAUSE exempt playback from pausing; FORCE bypasses start suppression but does not exempt the resulting channel. Native audit: s_sound.cpp:560-575 suppresses paused one-shots unless UI/NOPAUSE/FORCE and forwards UI/NOPAUSE backend exemption; i_soundinternal.h defines flag values.
+- Six regression cases cover saved sample progress, exempt direct PCM, ordinary paused ACS suppression, UI/NOPAUSE audible output, and forced/looped playback on resume. Full Release suite passes 10,552 tests (8,909 Playsim, 754 MapLoader, 211 Gamedata, 113 Client). Clean Release rebuild with warnings as errors passes with zero warnings/errors; git diff --check passes.
+- Boundary: pause state is explicit, not automatically tied to menus/game pause. Raw PCM still queues during pause; demo tick PCM also queues and resumes. UI savegame semantics, native replacement ordering, eviction/restart, remaining flags, defaults/RNG, near limits, stereo/backend fidelity, and paired native-runtime certification remain unfinished. Phase 1 remains incomplete; changes are uncommitted.
+
+
+## Phase 1 listener-height sound flag conversion (2026-10-08)
+
+- Converted CHANF_LISTENERZ=8 through ACS request playback and optional combined actor playback/source binding. Flagged actor sources use the selected listener's vertical audio coordinate while retaining actor horizontal coordinates, both at initial binding and subsequent client ticks. Source lifecycle cleanup removes the height binding alongside channel ownership.
+- Native audit: i_soundinternal.h defines LISTENERZ=8; DoomSoundEngine::CalcPosVel at src/sound/s_doomsound.cpp:1198-1201 replaces pos.Y with listenpos.Z when the camera exists. Represented selection uses the first simulation player rather than native camera ownership.
+- Two integration cases compare flagged/unflagged ACS looping sources with large vertical separation, verify horizontal attenuation, and change actor height during playback. Full Release suite passes 10,546 tests (8,909 Playsim, 754 MapLoader, 211 Gamedata, 107 Client). Clean Release rebuild with warnings as errors passes with zero warnings/errors; git diff --check passes.
+- Boundary: arbitrary mixer listener updates and detached actor continuation do not retain a dynamic listener-height flag; current conversion covers live actor-bound client updates. Remaining flags, camera/local-view selection, defaults/RNG, native sound-ID/return behavior, near limits, eviction, mounted archives, stereo/backend fidelity, and paired native-runtime certification remain unfinished. Phase 1 remains incomplete; changes are uncommitted.
+
+
+## Phase 1 explicit singular sound flag conversion (2026-10-08)
+
+- Converted CHANF_SINGULAR=131072 through ACS request consumption, combined actor playback, and both mixer WAD playback overloads. Caller singular combines with final sound SNDINFO singular settings using the existing global resolved-sound/original-channel check. Suppressed playback returns success with no handle and leaves active channels unchanged.
+- Native audit: i_soundinternal.h defines CHANF_SINGULAR as 0x20000; StartSound at src/common/audio/sound/s_sound.cpp:486-489 combines final sfx bSingular with the caller flag and CheckSingular. This reuses the represented check rather than claiming full native eviction parity.
+- Three regression cases cover explicit actor and local singular requests across different entity channels, preservation of existing sample progression, stopped sounds allowing replay, and overload forwarding. Full Release suite passes 10,544 tests (8,909 Playsim, 754 MapLoader, 211 Gamedata, 105 Client). Clean Release rebuild with warnings as errors passes with zero warnings/errors; git diff --check passes.
+- Boundary: suppressed looping channels are not retained as native evicted virtual channels. Remaining flags, near limits, camera/local-view selection, defaults/RNG, native sound-ID/return parity, source-null handling, mounted archives, stereo/backend fidelity, and paired native-runtime certification remain unfinished. Phase 1 remains incomplete; changes are uncommitted.
+
+
+## Phase 1 explicit ACS sound flag conversion (2026-10-08)
+
+- Converted supported high channel bits LOOP=256, NOSTOP=4096, OVERLAP=8192, and LOCAL=16384 using named SimulationSoundFlags. Explicit LOOP sets looping without implicitly adding NOSTOP; the separate ACS looping argument continues to imply both. Explicit LOCAL uses the existing local-view filtering path. Unsupported remaining bits still report errors.
+- Added optional overlap to combined actor playback. Overlap preserves existing same-channel sounds; subsequent nonoverlap replacement stops every owned same-actor/channel sound rather than just one indexed handle. Native audit: i_soundinternal.h:42-55 defines flag values, s_doomsound.cpp:690-704 handles NOSTOP/local, and s_sound.cpp:542-556 replaces matching channels unless overlap is set.
+- Three regressions cover explicit NOSTOP versus LOOP restart behavior and overlapping sounds followed by full same-channel replacement. Full Release suite passes 10,541 tests (8,909 Playsim, 754 MapLoader, 211 Gamedata, 102 Client). Clean Release rebuild with warnings as errors passes with zero warnings/errors; git diff --check passes.
+- Boundary: other high flags, silent-sector/current-level checks, camera/local-view selection, native return/sound-ID parity, source-null behavior, defaults/RNG, mounted archives, near limits, eviction, stereo/backend fidelity, and paired native-runtime certification remain unfinished. Phase 1 remains incomplete; changes are uncommitted.
+
+
+## Phase 1 shared actor sound-playing identity conversion (2026-10-08)
+
+- Unified playing-sound identity registration for direct combined actor playback and client-consumed ACS playback. ACS looping NOSTOP checks now recognize direct actor sounds and preserve their handle/sample progression. Added IsActorSoundPlaying using actor identity, explicit channel or channel-zero wildcard, and original case-insensitive logical name.
+- Replacement, explicit actor stop, and destroyed-source detachment remove playing identity. Completed/external-stopped handles cannot satisfy queries; client request processing prunes them. Native audit: IsSourcePlayingSomething in src/common/audio/sound/s_sound.cpp:1155-1168 matches source, channel-zero wildcard, and original sound ID rather than alias endpoint.
+- One integration regression covers a direct loop followed by ACS looping playback, retained handle/progression, channel and actor isolation, case-insensitive names, alias-original identity, explicit stop, and completion. Full Release suite passes 10,538 tests (8,909 Playsim, 754 MapLoader, 211 Gamedata, 99 Client). Clean Release rebuild with warnings as errors passes with zero warnings/errors; git diff --check passes.
+- Boundary: arbitrary raw mixer channels or later manual source binding do not populate logical/entity identity. High flags, local camera selection, complete source lifecycle compatibility, native sound-ID/return behavior, defaults/RNG, near limits, eviction, stereo/backend fidelity, and paired native-runtime certification remain unfinished. Phase 1 remains incomplete; changes are uncommitted.
+
+
+## Phase 1 ACS looping NOSTOP request behavior (2026-10-08)
+
+- Converted repeated-loop request suppression for client-consumed actor and local ACS sounds. Request handles retain original logical name, entity channel, and actor or unpositioned source identity. A looping request skips playback if that original sound is already active on the matching source/channel; requested channel zero searches every channel. Finished/stopped handles are pruned and permit playback again.
+- Native audit: p_acs.cpp:6120-6123 adds LOOP and NOSTOP for looping; S_PlaySoundPitch in s_doomsound.cpp:690-704 checks existing actor/unpositioned sounds before playback. IsSourcePlayingSomething in s_sound.cpp:1155-1168 matches original sound and treats channel zero as wildcard. Represented names compare case-insensitively without resolving aliases again.
+- Two actor/local integration cases cover channel-zero wildcard against an existing body-channel loop, preservation of sample progression without restart/overlap, and restarting after StopAllChannels. Full Release suite passes 10,537 tests (8,909 Playsim, 754 MapLoader, 211 Gamedata, 98 Client). Clean Release rebuild with warnings as errors passes with zero warnings/errors; git diff --check passes.
+- Boundary: this handles the explicit ACS looping argument, not all high channel flags. Existing sounds started outside ACS consumption are not in the request identity registry; complete native NOSTOP query parity remains unfinished. Camera/local view, source-null behavior, defaults/RNG, near limits, eviction, stereo/backend fidelity, and paired native-runtime certification remain unfinished. Phase 1 remains incomplete; changes are uncommitted.
+
+
+## Phase 1 local ACS sound filtering conversion (2026-10-08)
+
+- Verification note: an intermediate full-suite run failed DedicatedServerHostTests.Pump_BootstrapsLiveSessionAfterStartGameAck; the final full-suite rerun passed all tests. No server changes were made; the intermittent failure remains an audit observation.
+
+- Converted the explicit local argument on ACS sound requests. Local sounds from the selected first-player listener play through unpositioned mixer playback with attenuation zero; other actors' local requests are filtered without an error. These sounds have no actor position/ownership binding and are not affected by actor StopSound.
+- Native audit: S_PlaySoundPitch at src/sound/s_doomsound.cpp:685-706 filters CheckLocalView and calls unpositioned S_SoundPitch with ATTN_NONE; S_SoundPitch at 443-446 uses SOURCE_None. Native source-none playback is excluded from actor replacement in s_sound.cpp:542. Camera/local-view ownership beyond the represented first player remains unfinished.
+- Two integration cases execute local ACS bytecode and cover listener playback without rolloff defaults, remote actor filtering, empty error reports, and lack of actor sound ownership. Full Release suite passes 10,535 tests (8,909 Playsim, 754 MapLoader, 211 Gamedata, 96 Client). Clean Release rebuild with warnings as errors passes with zero warnings/errors; git diff --check passes.
+- Boundary: high channel flags still fail explicitly; local channel metadata/NOSTOP deduplication, camera view selection, silent sector/level validation, native return/sound-ID behavior, defaults/RNG, near limits, eviction, stereo/backend fidelity, and paired native-runtime certification remain unfinished. Phase 1 remains incomplete; changes are uncommitted.
+
+
+## Phase 1 ACS StopSound client conversion (2026-10-08)
+
+- Converted ACS StopSound into ordered stop requests targeting live activator/TID actors, with default body channel 4 or the supplied unmasked channel. The same simulation queue now carries play and stop requests, preserving emission order into configured client ticks.
+- Added client sound ownership for auto and explicit channels. StopActorSound stops matching actor/entity-channel handles; any negative channel stops all owned handles for that actor. Replacement removes prior ownership; destroyed/missing sources detach ownership when retaining positioned continuation. Native audit: p_acs.cpp:6128-6149 defines ACS stop arguments/targets; s_sound.cpp:914-929 matches source and channel or any negative channel.
+- Two integration regressions cover actual ACS default-channel stop after play in the same queue, no residual playback, channel-zero overlap stopping, other-channel retention, all-channel stop, other-actor isolation, and repeated stop. Full Release suite passes 10,533 tests (8,909 Playsim, 754 MapLoader, 211 Gamedata, 94 Client). Clean Release rebuild with warnings as errors passes with zero warnings/errors; git diff --check passes.
+- Boundary: existing represented ACS return values remain retained. Stop requests still wait for archive configuration along with play requests. Null activator behavior, native cutoff/magic-silence compatibility, local/high flags and loop NOSTOP behavior, sound RNG/defaults, mounted archives, near limits, eviction, stereo/backend fidelity, and paired native-runtime certification remain unfinished. Phase 1 remains incomplete; changes are uncommitted.
+
+
+## Phase 1 actor entity-channel replacement (2026-10-08)
+
+- Converted nonzero actor entity-channel replacement in combined client playback and wired ACS request channel values into it. Successful positioned playback on channels 1-7 stops the preceding tracked sound for that actor/channel and removes its source binding. Channel zero remains auto overlap; other actor/channel keys are independent. Completed handles are pruned when playback succeeds.
+- Native audit: src/common/audio/sound/s_sound.cpp:532-556 sets overlap for actor CHAN_AUTO and replaces matching source/entity channels. s_soundinternal.h:169-179 defines channels 0-7. The represented API validates this range, queues/binds the replacement before stopping the prior sound, and preserves prior playback on failure/no handle; native paused/silent replacement ordering parity is not claimed.
+- Two regressions cover matching-channel replacement, distinct-channel retention, auto overlap, invalid channel rejection, and silent missing-resource requests preserving prior playback. Full Release suite passes 10,531 tests (8,909 Playsim, 754 MapLoader, 211 Gamedata, 92 Client). Clean Release rebuild with warnings as errors passes with zero warnings/errors; git diff --check passes.
+- Boundary: ACS StopSound, local/high flags including native loop NOSTOP semantics, eviction, actor destruction channel ownership, automatic sound RNG providers, game defaults, mounted archives, near limits, stereo/backend fidelity, and paired native-runtime certification remain unfinished. Phase 1 remains incomplete; changes are uncommitted.
+
+
+## Phase 1 client consumption of ACS sound requests (2026-10-08)
+
+- Connected queued ACS PlaySound requests to ClientHost playback after simulation/scripting and before positioning/mixing. TrySetSoundArchive validates and owns a supplied WAD copy. Until configured, requests remain pending; configured ticks drain them exactly once and use the simulation level's sound metadata.
+- Supported requests use combined actor playback with volume, looping, and attenuation. Listener-owned requests use unpositioned attenuation zero, matching native positioned-path exclusion for listener sounds. Unsupported high channel flags/local requests and playback failures are reported in LastSoundRequestErrors rather than silently played with altered semantics. Native audit: p_acs.cpp:6079-6126 emits sound calls; s_sound.cpp:584-592 selects positioned playback only with positive attenuation and a positioned source.
+- Two integration regressions execute ACS bytecode through AcsVm and verify pending-before-configuration behavior, copied archive bytes, audible output, no replay on later ticks, unsupported flags without playback, and invalid archive errors. Full Release suite passes 10,529 tests (8,909 Playsim, 754 MapLoader, 211 Gamedata, 90 Client). Clean Release rebuild with warnings as errors passes with zero warnings/errors; git diff --check passes.
+- Boundary: this is supported-request playback, not complete ACS sound parity. Entity-channel replacement/StopSound, local/high-flag behavior, automatic sound RNG providers, game defaults, native sound-ID/return semantics, mounted archives, near limits, eviction, stereo/backend fidelity, and paired native-runtime certification remain unfinished. Phase 1 remains incomplete; changes are uncommitted.
+
+
+## Phase 1 ACS PlaySound request emission (2026-10-08)
+
+- Converted ACS PlaySound argument extraction into transient simulation sound requests for live activator/TID targets. Module/global string lookup resolves names; default body channel 4, low three channel bits, remaining flags, fixed-point volume/attenuation, looping, and local settings are retained. Invalid/empty string lookup emits no request.
+- Added immutable SimulationSoundRequest and explicit pending/drain APIs. Draining returns ordered owned requests and clears the transient queue; it is not serialized or included in gameplay checksums. Native audit: src/playsim/p_acs.cpp:6079-6126 defines string lookup, defaults, target iteration, channel masking, and optional values; s_soundinternal.h defines CHAN_BODY as 4.
+- Extended the existing activator-count test to verify default request data and single-consumption draining. One new regression checks optional fixed-point values, flags, looping, and local metadata. Full Release suite passes 10,527 tests (8,909 Playsim, 754 MapLoader, 211 Gamedata, 88 Client). Clean Release rebuild with warnings as errors passes with zero warnings/errors; git diff --check passes.
+- Boundary: client queue consumption remains unfinished, so ACS requests are not yet audible. Existing represented target-count return behavior is retained rather than claiming native return-value parity. Native sound-ID validation, null-activator unpositioned playback, combined loop/local flags, source-channel replacement, StopSound, local filtering, RNG/default initialization, and paired native-runtime certification remain unfinished. Phase 1 remains incomplete; changes are uncommitted.
+
+
+## Phase 1 combined actor sound playback operation (2026-10-08)
+
+- Added ClientHost.TryPlayActorWadSound to validate an actor/listener, resolve/decode/queue a WAD sound, and bind it for movement in one operation. Missing/silent resources return success with no handle; failed spatial binding removes the queued channel before returning an error. Volume, attenuation, looping, selection provider, and explicit pitch flow to existing playback.
+- Reused Actor.SoundPos for native audio axis mapping rather than duplicating coordinate conversion. Native audit: src/sound/s_doomsound.cpp:610 starts SOURCE_Actor sounds, actor.h:1548-1553 supplies SoundPos, and the existing actor binding path tracks positions during ticks.
+- Audit finding: AcsCallFunctions.TryPlaySound currently only counts TID targets and consumes arguments; TryStopSound also remains a represented stub. There is no simulation audio-event queue to bridge to the client yet. This combined playback entry point is preparation for that conversion, not a claim that ACS sounds now play.
+- Two integration regressions cover combined queuing/binding, subsequent actor movement, looping, missing resources, invalid actor rejection, and failed positioning without residual audio. Full Release suite passes 10,526 tests (8,908 Playsim, 754 MapLoader, 211 Gamedata, 88 Client). Clean Release rebuild with warnings as errors passes with zero warnings/errors; git diff --check passes.
+- Boundary: gameplay/ACS event emission and consumption, stop/channel replacement, automatic pitch RNG providers, source/listener identity rules, defaults, near limits, eviction, stereo/backend fidelity, and paired native-runtime certification remain unfinished. Phase 1 remains incomplete; changes are uncommitted.
+
+
+## Phase 1 client actor sound-source tracking (2026-10-08)
+
+- Added ClientHost.TryBindAudioSource to associate an active positioned channel with a live simulation actor ID. Bind validation requires a live actor, player listener, and successful initial spatial update. Client ticks refresh actor X/Z/Y coordinates after simulation/scripting before listener refresh and mixing.
+- Stopped/completed bindings are removed. Missing/destroyed actors detach the association while preserving the last tracked positioned sound. Native audit: DoomSoundEngine::CalcPosVel at src/sound/s_doomsound.cpp:1139-1156 obtains actor coordinates in audio axis order; S_RelinkSound at 785-790 permits positioned continuation when an actor disappears. Native compatibility cutoff, final destruction-position capture, portals, and velocity are not claimed.
+- One integration regression covers live binding, actor movement through partial gain/silence/full gain, destruction retaining the prior position, continued looping, stopped channel cleanup, and invalid actor/channel errors. Full Release suite passes 10,524 tests (8,908 Playsim, 754 MapLoader, 211 Gamedata, 86 Client). Clean Release rebuild with warnings as errors passes with zero warnings/errors; git diff --check passes.
+- Boundary: bindings are explicit and do not yet originate from gameplay sound events. Native source-channel replacement, source/listener identity rules, camera selection, cutoff compatibility, near limits, eviction, stereo/backend/RNG fidelity, and paired native-runtime certification remain unfinished. Phase 1 remains incomplete; changes are uncommitted.
+
+
+## Phase 1 client player listener wiring (2026-10-08)
+
+- Connected ClientHost ticks to positioned audio updates after simulation and scripting and before mixing. The current first player supplies actor-origin coordinates in native audio X/Z/Y axis order. AudioListenerPosition exposes the last successful listener position; no player leaves it null and skips positioned updates.
+- Native audit: S_SetListener in src/sound/s_doomsound.cpp:857-885 uses listenactor->SoundPos; src/playsim/actor.h:1548-1553 swaps Y/Z and uses actor origin rather than eye height. The represented client currently has one selected first-player listener, not native camera/environment selection.
+- Listener update failures surface as InvalidOperationException with the mixer error rather than silently mixing stale spatial gain. One client-tick integration regression covers post-tick player coordinates, distance gain combined with existing demo PCM, player relocation, and output saturation.
+- Full Release suite passes 10,523 tests (8,908 Playsim, 754 MapLoader, 211 Gamedata, 85 Client). Clean Release rebuild with warnings as errors passes with zero warnings/errors; git diff --check passes.
+- Boundary: sound sources still use retained explicit coordinates and are not automatically bound to moving actors. Native camera selection, invalid-listener behavior, underwater/environment handling, velocity, stereo panning, game defaults, near limits, eviction, backend/RNG fidelity, and paired native-runtime certification remain unfinished. Existing demo tick audio remains present. Phase 1 remains incomplete; changes are uncommitted.
+
+
+## Phase 1 retained sources and listener updates (2026-10-08)
+
+- Positioned channels now retain source coordinates. TryUpdateListenerPosition recalculates every retained source against one supplied listener position using existing distance/rolloff logic. Direct distance updates detach the stored position, allowing explicit scalar or unpositioned playback again. Completed/stopped channels naturally leave the update set.
+- Listener updates restore all prior gains if any channel calculation fails, preventing partial listener movement. Nonfinite listener coordinates fail explicitly. Each update uses the channel-owned curve; one-call custom overrides remain transient. Native audit: src/common/audio/sound/s_sound.cpp:1262-1281 updates active positioned channels from the current listener before backend updates. This represented API uses retained fixed coordinates rather than native source ownership/CalcPosVel.
+- Two regression cases cover multiple retained sources, listener movement, unpositioned audio, scalar detachment, and atomic gain preservation when a later channel overflows. Full Release suite passes 10,522 tests (8,908 Playsim, 754 MapLoader, 211 Gamedata, 84 Client). Clean Release rebuild with warnings as errors passes with zero warnings/errors; git diff --check passes.
+- Boundary: ClientHost currently mixes demo audio and does not automatically bind gameplay actors or the player listener. Automatic source movement, source ownership, stereo panning, near limits, eviction, mounted archive defaults/curves, native backend/RNG fidelity, and paired native-runtime certification remain unfinished. Phase 1 remains incomplete; changes are uncommitted.
+
+
+## Phase 1 explicit source/listener position conversion (2026-10-08)
+
+- Added TrySetChannelPosition to calculate three-dimensional Euclidean separation from supplied source and listener coordinates and reuse the existing channel distance/curve update. All axes contribute; coincident positions produce zero distance. Custom curve overrides remain available without duplicating gain selection.
+- Native audit: UpdateSoundParams3D in src/common/audio/sound/oalsound.cpp:1736-1758 computes source-minus-listener squared length before evaluating rolloff. The represented float vector distance preserves scalar separation; native backend near-zero relative-source handling, coordinate handedness, panning, and velocity effects are outside this mono API.
+- Nonfinite positions and float-distance overflow fail explicitly before changing channel gain. Missing channels reuse the existing audio-channel-missing error. Four regression cases cover translated 3-4-5 separation, listener coincidence, vertical separation, invalid/overflowing coordinates preserving prior playback, and completed channels.
+- Full Release suite passes 10,520 tests (8,908 Playsim, 754 MapLoader, 211 Gamedata, 82 Client). Clean Release rebuild with warnings as errors passes with zero warnings/errors; git diff --check passes.
+- Boundary: callers still supply position updates explicitly. Automatic actor/listener tracking, source ownership, stereo panning, default initialization, mounted archive sound curves, near limits, eviction, native backend/RNG fidelity, and paired native-runtime certification remain unfinished. Phase 1 remains incomplete; changes are uncommitted.
+
+
+## Phase 1 SNDCURVE resource and playback conversion (2026-10-08)
+
+- Converted WAD SNDCURVE loading with reverse case-insensitive directory lookup, including directory index zero and later resource precedence. Shared named-lump lookup now serves both sound resources and sound curves. Missing/empty curves remain empty for the native Doom fallback; selected malformed data fails explicitly.
+- Custom WAD playback loads and owns the curve bytes on its channel, so later distance updates use the resource automatically and cannot observe caller WAD mutation. A nonempty explicit update curve still overrides the retained resource. Native audit: src/sound/s_doomsound.cpp:283-291 loads all SNDCURVE bytes; src/common/audio/sound/s_sound.cpp:1322-1326 uses the resource or exponential fallback.
+- Five regression cases cover later case-insensitive selection, copied bytes, missing/empty resources, malformed selected lumps, and resource-driven playback with explicit override. Full Release suite passes 10,516 tests (8,908 Playsim, 754 MapLoader, 211 Gamedata, 78 Client). Clean Release rebuild with warnings as errors passes with zero warnings/errors; git diff --check passes.
+- Boundary: loading is per custom playback from a supplied single WAD, rather than native global initialization across mounted archives. Automatic source/listener positioning, game-specific defaults, stereo panning, near limits, eviction, backend/RNG fidelity, and paired native-runtime certification remain unfinished. Phase 1 remains incomplete; changes are uncommitted.
+
+
+## Phase 1 represented distance gain playback conversion (2026-10-08)
+
+- Connected SoundRolloffCalculator to PCM mixing through explicit TrySetChannelDistance updates. Positive attenuation scales supplied distance before evaluating the retained channel curve. Nonpositive attenuation bypasses the curve, and null distance restores unpositioned gain one. Gain changes leave source samples intact, including silent looping channels that become audible again.
+- Native audit: oalsound.cpp:1476 and 1758 evaluate GetRolloff with distance times DistanceScale; s_sound.cpp:584-592 selects positioned playback only with positive attenuation. The represented mono backend clamps calculated gain to [0,1] and rounds signed samples before existing saturation; native OpenAL filtering, reference-distance floor, and panning equivalence are not claimed.
+- Invalid distance, missing channel/rolloff, scaled-distance overflow, and calculator argument failures return explicit errors before replacing prior gain. Custom curve bytes are consumed synchronously during the update. Direct PCM needs explicit rolloff metadata for positioned updates, which its current API does not supply.
+- Five regression cases cover scaled linear gain, distant silence and loop restoration, zero/negative attenuation bypass, custom curve gain/clamping, invalid updates preserving prior gain, missing completed channels, and direct PCM behavior. Full Release suite passes 10,511 tests (8,908 Playsim, 750 MapLoader, 211 Gamedata, 77 Client). Clean Release rebuild with warnings as errors passes with zero warnings/errors; git diff --check passes.
+- Boundary: this converts scalar distance gain application, not automatic spatial gameplay. Source/listener positioning, stereo panning, custom curve resource loading, game defaults, near limits, eviction, backend/RNG fidelity, and paired native-runtime certification remain unfinished. Phase 1 remains incomplete; changes are uncommitted.
+
+
+## Phase 1 rolloff distance curve conversion (2026-10-08)
+
+- Converted native GetRolloff to SoundRolloffCalculator, including minimum/maximum boundary order, linear interpolation, Doom exponential falloff, logarithmic inverse-distance falloff without a maximum cutoff, and custom byte curve indexing with the native divisor 127. Empty custom curves use Doom falloff; missing rolloff returns zero.
+- Native audit: src/common/audio/sound/s_sound.cpp:1296-1327 and i_soundinternal.h:139-144. The native union uses the represented MaxDistance field as RolloffFactor for logarithmic curves. Signed/reversed ranges retain native branch order. Nonfinite inputs or undefined logarithmic gain fail explicitly; custom index rounding is bounded to the last valid byte for memory safety.
+- Ten regression cases cover boundaries, logarithmic factor/cutoff behavior, exponential fallback, custom byte values including values above 127, missing/reversed settings, and invalid calculations. Full Release suite passes 10,506 tests (8,908 Playsim, 750 MapLoader, 211 Gamedata, 72 Client). Clean Release rebuild with warnings as errors passes with zero warnings/errors; git diff --check passes.
+- Boundary: the curve calculator is converted but not yet applied to mixer channel samples. Custom curve resource loading, spatial source/listener integration, game-specific defaults, near limits, eviction, native backend/RNG fidelity, and paired native-runtime certification remain unfinished. Phase 1 remains incomplete; changes are uncommitted.
+
+
+## Phase 1 caller-forced rolloff conversion (2026-10-08)
+
+- Converted optional caller-forced rolloff on both WAD playback overloads. A nonzero minimum overrides the inherited sound record before global fallback, including signed negative values; a zero minimum leaves inherited/global selection intact. Native audit: StartSound in src/common/audio/sound/s_sound.cpp:474-483 applies this precedence.
+- Nonfinite caller distances fail explicitly with audio-rolloff-invalid before resolution or queuing. This validation is a represented API boundary beyond the native pointer check. Immutable records are retained on active channels; existing callers remain compatible through the appended optional parameter.
+- Six regression cases cover positive/negative override precedence, zero preserving inherited values, zero allowing global fallback, overload forwarding, and invalid minimum/maximum without queued audio. Full Release suite passes 10,496 tests (8,908 Playsim, 750 MapLoader, 201 Gamedata, 72 Client). Clean Release rebuild with warnings as errors passes with zero warnings/errors; git diff --check passes.
+- Boundary: rolloff remains channel metadata; spatial application, game-specific default initialization, listener/source wiring, near limits, eviction, other SNDINFO directives, native RNG/backend fidelity, and paired native-runtime certification remain unfinished. Phase 1 remains incomplete; changes are uncommitted.
+
+
+## Phase 1 channel rolloff inheritance conversion (2026-10-08)
+
+- Converted sound-channel rolloff selection from requested sound through represented resolution steps. A zero minimum distance permits inheritance independently of near-limit/pitch inheritance; positive and negative nonzero minima retain the current record. Consecutive random headers follow the existing native step visitor, avoiding intermediate-header overrides and extra selection draws.
+- Missing or zero-minimum sound rolloff falls back to the configured global record. Active channels retain immutable snapshots and expose them through TryGetChannelRolloff; expired channels return false, and direct PCM or unconfigured defaults expose null. Native audit: StartSound in src/common/audio/sound/s_sound.cpp:442-485 selects linked rolloff and global fallback.
+- Five regression cases cover zero/positive/negative minima, independence from explicit near limits, global fallback, snapshots after global replacement, direct PCM, channel completion, and nested random selection with exact draw count. Full Release suite passes 10,490 tests (8,908 Playsim, 750 MapLoader, 201 Gamedata, 66 Client). Clean Release rebuild with warnings as errors passes with zero warnings/errors; git diff --check passes.
+- Boundary: rolloff remains retained channel metadata; spatial mixing, game-specific default initialization, caller-forced rolloff overrides, source/listener wiring, near limits, eviction, other SNDINFO directives, native RNG/backend fidelity, and paired native-runtime certification remain unfinished. Phase 1 remains incomplete; changes are uncommitted.
+
+
+## Phase 1 SNDINFO rolloff metadata conversion (2026-10-08)
+
+- Converted $rolloff for logical sounds and the global * entry, including linear, log, custom, and the default Doom type. Optional type omission retains the existing entry type, and signed finite minimum/maximum values remain represented without clamping. Native audit: src/sound/s_advsound.cpp:1062-1105 defines the directive and preserves the existing record type when omitted.
+- Immutable rolloff records survive successive SNDINFO resources, all represented map-loading paths, and simulation copies. Invalid or incomplete directive values fail explicitly. The unsupported-directive regression now uses the still-unconverted $ambient directive.
+- Nine regression cases cover all type forms, continued parsing with omitted type, global persistence, malformed values, WAD loading, and simulation copying. Full Release suite passes 10,485 tests (8,908 Playsim, 750 MapLoader, 201 Gamedata, 61 Client). Clean Release rebuild with warnings as errors passes with zero warnings/errors; git diff --check passes.
+- Boundary: rolloff parsing and retention are converted; sound-channel rolloff inheritance, global fallback, and spatial application remain unfinished. Other SNDINFO directives, near/source limits, eviction, device/gameplay wiring, native RNG/backend fidelity, and paired native-runtime certification remain unfinished. Phase 1 remains incomplete; changes are uncommitted.
+
+
+## Phase 1 represented channel attenuation calculation (2026-10-08)
+
+- Converted effective attenuation calculation and retention on mixer channels. Caller attenuation multiplies each visited random-header entry step and the final resolved sound's setting; ordinary alias settings and skipped consecutive random headers do not contribute. Native audit: ResolveSound multiplies random-header attenuation at src/common/audio/sound/s_sound.cpp:354, StartSound multiplies resolved sfx attenuation at 466 and retains DistanceScale at 625.
+- WAD playback accepts optional caller attenuation and exposes active channel scale via TryGetChannelDistanceScale. Finite signed values remain represented; invalid/nonfinite accumulated scale fails without queuing. Direct PCM channels retain scale one. Completed/stopped channels no longer expose scale.
+- Five regression cases cover alias/final precedence, consecutive random-header skipping, caller multiplication, zero/negative values, stopped channel queries, and invalid inputs. Full Release suite passes 10,476 tests (8,908 Playsim, 749 MapLoader, 193 Gamedata, 61 Client). Clean Release rebuild with warnings as errors passes with zero warnings/errors; git diff --check passes.
+- Boundary: DistanceScale is retained channel metadata, not yet applied to spatial mixing. Positions/listener/rolloff, near limits, source ownership, device/gameplay wiring, native RNG/backend fidelity, and paired native-runtime certification remain unfinished. Phase 1 remains incomplete; changes are uncommitted.
+
+
+## Phase 1 nested random sound pitch inheritance audit (2026-10-08)
+
+- Closed the previously recorded consecutive-random pitch inheritance gap. Native ResolveSound calls PickReplacement, which follows consecutive random headers within one step (src/common/audio/sound/s_sound.cpp:347-359 and 1665-1673). Represented resolution now visits the original header and selected nonrandom endpoint for playback inheritance while still selecting every group with one draw and retaining cycle checks.
+- Alias transitions reset the consecutive-random step, so an alias between groups preserves the next group's explicit-limit/pitch inheritance. This matches StartSound's per-resolution-step inherited pitch updates at 435-455. Intermediate nested groups no longer incorrectly override inherited defaults simply because they appear on the selected path.
+- Two regression cases cover consecutive nested groups with conflicting pitch/limit defaults and exact draw counts, plus alias-separated groups whose explicit pitch defaults must remain effective. Full Release suite passes 10,471 tests (8,908 Playsim, 749 MapLoader, 193 Gamedata, 56 Client). Clean Release rebuild with warnings as errors passes with zero warnings/errors; git diff --check passes.
+- Boundary: selected-path pitch inheritance is represented; attenuation, near/source limits, eviction, audio device/gameplay wiring, native RNG/backend fidelity, other SNDINFO directives, and paired native-runtime certification remain unfinished. Phase 1 remains incomplete; changes are uncommitted.
+
+
+## Phase 1 automatic SNDINFO pitch playback integration (2026-10-08)
+
+- Connected SoundPitchCalculator to mixer playback when explicit pitch is absent. Resolver traversal records the selected logical path without repeating random selection. Represented inherited DefPitch/DefPitchMax follow negative NearLimit links; explicit nonnegative limits retain original pitch defaults, while PitchMask comes from the resolved sound. Native audit: StartSound at src/common/audio/sound/s_sound.cpp:435-455 copies pitch defaults when inherited limits follow links, then CalcPitch at 565 uses resolved mask and inherited defaults.
+- Positive explicit pitch bypasses automatic calculation and pitch draws. Automatic variation requires externally supplied float/byte providers and reports missing providers before queuing; invalid provider draws retain calculator exceptions. Ordinary defaults remain pitch one without draws. Native SoundPitch RNG compatibility is not claimed.
+- Three regression cases cover inherited alias pitch versus explicit-limit retention, positive explicit override without draws, required random provider, one ranged draw, and calculated output duration. Full Release suite passes 10,469 tests (8,908 Playsim, 749 MapLoader, 193 Gamedata, 54 Client). Clean Release rebuild with warnings as errors passes with zero warnings/errors; git diff --check passes.
+- Boundary: consecutive nested random-group inheritance needs further auditing because native PickReplacement can skip intermediate groups while the represented selected path records them. Attenuation, near/source limits, eviction, device/gameplay wiring, native RNG/backend fidelity, and paired native-runtime certification remain unfinished. Phase 1 remains incomplete; changes are uncommitted.
+
+
+## Phase 1 explicit playback pitch conversion (2026-10-08)
+
+- Added positive explicit pitch to WAD playback and pitch-aware PCM conversion. Source progression combines source rate, mixer rate, and pitch; output duration uses ceiling sample count with interpolation/final-sample hold. Pitch one retains existing conversion behavior, and faster/slower pitch changes both duration and repeating buffer length.
+- Native audit: SoundEngine uses positive explicit spitch before CalcPitch at src/common/audio/sound/s_sound.cpp:565 and passes pitch to its backend. C# implements this represented positive override through offline PCM conversion rather than claiming OpenAL filter equivalence. Invalid/nonfinite/nonpositive explicit values fail before queuing; native nonpositive fallback to calculated pitch remains outside this explicit-only API.
+- Five regression cases cover faster/slower pitch, combined rate/pitch conversion, invalid values, decoded WAD looping at altered pitch, stopping, and invalid playback without a handle. Full Release suite passes 10,466 tests (8,908 Playsim, 749 MapLoader, 193 Gamedata, 51 Client). Clean Release rebuild with warnings as errors passes with zero warnings/errors; git diff --check passes.
+- Boundary: automatic SNDINFO pitch calculation/inheritance is not yet connected to playback; default explicit pitch remains one. Dynamic pitch, attenuation, eviction/near limits, device/gameplay wiring, backend/RNG matching, and paired native-runtime certification remain unfinished. Phase 1 remains incomplete; changes are uncommitted.
+
+
+## Phase 1 represented singular sound admission (2026-10-08)
+
+- Converted represented singular admission into WAD mixer playback. SoundResourceResolver.TryResolveNamed returns the final logical identity without additional random draws; mixer channels retain their originally requested identity. Resolved Singular settings check active original identities before decoding/queuing duplicate playback.
+- Native audit: StartSound uses resolved sfx Singular and CheckSingular(sound_id) at src/common/audio/sound/s_sound.cpp:486; CheckSingular compares active OrgID at 802-806, while channel creation stores original org_id at 617. C# preserves this alias identity distinction, including aliases not matching one another unless an active direct original identity matches the resolved sound. Suppressed requests return success with no new handle. Native eviction/restart representation remains outside this admission subset.
+- Two regression cases cover direct duplicate suppression, looping lifetime, stop/completion readmission, resolved alias/original identity, and retained active channels. Full Release suite passes 10,461 tests (8,908 Playsim, 749 MapLoader, 193 Gamedata, 46 Client). Clean Release rebuild with warnings as errors passes with zero warnings/errors; git diff --check passes.
+- Boundary: singular admission is represented, but evicted-channel retention/restart, explicit singular flags, near limits/source channels, pitch/attenuation, device/gameplay wiring, native RNG/backend fidelity, and paired native-runtime certification remain unfinished. Phase 1 remains incomplete; changes are uncommitted.
+
+
+## Phase 1 represented looping mixer channels (2026-10-08)
+
+- Converted optional whole-buffer looping for PlayChannel and both TryPlayWadSound overloads. Loop cursors wrap within/across buffers, stay active until explicitly stopped, and retain mute progression; non-looped channels still retire independently. Empty PCM never creates a looping channel. Long arithmetic prevents cursor-addition overflow before modulo.
+- Native audit: SoundEngine forwards CHANF_LOOP as SNDF_LOOP in src/common/audio/sound/s_sound.cpp:573 and 671 and retains looping lifetimes during channel handling. C# represents whole-buffer repetition through its mono PCM mixer. Existing API calls preserve default one-shot behavior.
+- Five regression cases cover within/across-buffer wrap, mute/unmute and zero buffers, one-shot overlap/retirement, empty looping input, stop-all/selective stopping, and decoded WAD looping. Full Release suite passes 10,459 tests (8,908 Playsim, 749 MapLoader, 193 Gamedata, 44 Client). Clean Release rebuild with warnings as errors passes with zero warnings/errors; git diff --check passes.
+- Boundary: custom loop points/tags, eviction/restart/source ownership, pitch/attenuation, singular/near limits, gameplay/device output, native RNG/backend fidelity, and paired native-runtime certification remain unfinished. Phase 1 remains incomplete; changes are uncommitted.
+
+
+## Phase 1 represented mixer channel handles and stopping (2026-10-08)
+
+- Added PlayChannel handles, IsPlaying, StopChannel, and StopAllChannels to represented mono PCM playback. Handles are unique per queued channel and do not recycle; completed/stopped/foreign handles cannot stop unrelated channels. Stopping one channel retains other cursors, while stop-all immediately clears remaining audio.
+- Added a handle-returning TryPlayWadSound overload; existing calls retain their interface. Silent/empty/failed playback returns Guid.Empty, and successful decoded audio exposes its active lifetime. Native audit: SoundEngine::StopAllChannels at src/common/audio/sound/s_sound.cpp:963 and StopChannel at 1420 manage active channel retirement; C# represents that lifecycle without backend/source channel ownership.
+- Four new regression cases cover selective stop with continued cursors, completion/stale handles, muted stop-all, empty PCM and foreign handles. Existing WAD decode/mix test now checks returned channel lifetime. Full Release suite passes 10,454 tests (8,908 Playsim, 749 MapLoader, 193 Gamedata, 39 Client). Clean Release rebuild with warnings as errors passes with zero warnings/errors; git diff --check passes.
+- Boundary: handle lifecycle is represented but source/entity channel replacement, looping, pitch/attenuation, singular/near limits, device/event wiring, native RNG/backend fidelity, and paired native-runtime certification remain unfinished. Phase 1 remains incomplete; changes are uncommitted.
+
+
+## Phase 1 SNDINFO playback volume application (2026-10-08)
+
+- Connected requested logical-sound Volume settings to AudioMixer.TryPlayWadSound. Native SoundEngine::StartSound at src/common/audio/sound/s_sound.cpp:424-430 multiplies caller volume by the original sound's setting, clamps to one, and returns before resolving links for nonpositive gain. C# follows that precedence, preserves optional caller volume, skips random draws for silence, and scales converted PCM before queuing.
+- Alias target volume does not replace original request volume. Finite input validation rejects invalid caller/manual settings before queuing. Integer PCM uses signed midpoint-away rounding; native backend gain/filter precision is not claimed byte-identical.
+- Seven regression cases cover caller/setting multiplication, high/zero/negative gains, alias-volume precedence, no random draws for silence, and invalid-volume failures without queued output. Full Release suite passes 10,450 tests (8,908 Playsim, 749 MapLoader, 193 Gamedata, 35 Client). Clean Release rebuild with warnings as errors passes with zero warnings/errors; git diff --check passes.
+- Boundary: playback API now applies represented volume, but pitch/attenuation, channel/singular controls, actor event/device output wiring, dynamic volume changes, native backend filtering/RNG compatibility, and paired native-runtime certification remain unfinished. Phase 1 remains incomplete; changes are uncommitted.
+
+
+## Phase 1 represented client PCM sample-rate conversion (2026-10-08)
+
+- Added PcmResampler and connected decoded WAD sounds to mixer-rate PCM conversion. Source/target rates determine duration with ceiling output length; linear interpolation uses integer sample positions, signed rounding, and final-sample hold. Matching rates copy samples unchanged; invalid rates and unsupported output lengths fail explicitly.
+- Native backend audit: OpenALSoundRenderer::LoadSoundRaw at src/common/audio/sound/oalsound.cpp:1105-1141 supplies source frequency to OpenAL. This C# conversion supplies a functional mono mixer equivalent for different rates, not a byte-identical port of the backend resampling filter; anti-alias filtering and native renderer fidelity remain open. Existing mismatch regression now verifies successful conversion instead of rejection.
+- Six new regression cases cover up/downsampling, fractional ratios and duration, signed rounding, equal-rate copying, empty PCM, and invalid rates. Full Release suite passes 10,443 tests (8,908 Playsim, 749 MapLoader, 193 Gamedata, 28 Client). Clean Release rebuild with warnings as errors passes with zero warnings/errors; git diff --check passes.
+- Boundary: conversion currently materializes entire buffers; streaming resampling/filter quality, pitch/settings application, gameplay sound-event/device wiring, channel/singular controls, other encodings, and paired native-runtime certification remain unfinished. Phase 1 remains incomplete; changes are uncommitted.
+
+
+## Phase 1 client PCM channel continuation (2026-10-08)
+
+- Converted represented mixer channel lifetime from one-buffer queuing to sample cursors. Partial Mix calls retain remaining PCM; completed channels retire independently, and newly queued channels begin at the next buffer while existing channels continue. Zero-sized buffers do not consume audio; invalid buffer counts fail before changing cursors.
+- Native lifecycle audit: SoundEngine retains active channels until ChannelEnded/SoundDone and ReturnChannel (src/common/audio/sound/s_sound.cpp:1335 and 1386 onward). C# now retains represented PCM until exhausted rather than discarding every channel after one buffer. Muted buffers advance cursors by their duration and emit zeros, preserving remaining sound for unmute. Existing sample-copy/clamping behavior remains intact.
+- Five regression cases cover partial buffer continuation, completion/silence, zero buffers, mute/unmute progression, new-channel overlap, and invalid-buffer isolation. Full Release suite passes 10,437 tests (8,908 Playsim, 749 MapLoader, 193 Gamedata, 22 Client). Clean Release rebuild with warnings as errors passes with zero warnings/errors; git diff --check passes.
+- Boundary: this is represented mono PCM lifetime, not the full native channel/backend system. Resampling, looping/stopping handles, channel/singular limits, settings application, gameplay sound events/device output, and paired native-runtime certification remain unfinished. Phase 1 remains incomplete; changes are uncommitted.
+
+
+## Phase 1 decoded WAD sounds connected to client mixer (2026-10-08)
+
+- Added AudioMixer.TryPlayWadSound to connect represented logical/alias/random WAD resource lookup and DMX decoding to existing PCM queuing/mixing. Missing/empty sounds are silent; malformed data and unsupported formats propagate explicit errors. Queued samples are copied by existing Play behavior, preserving source-data isolation and mute/clamping behavior.
+- Native audit: OpenALSoundRenderer::LoadSoundRaw in src/common/audio/sound/oalsound.cpp:1105-1141 supplies the decoded resource frequency to the audio backend. The C# mixer currently accepts decoded sounds only when their rate matches its configured rate; mismatches return audio-sample-rate-conversion-required before queuing rather than changing playback speed. Invalid mixer rates fail explicitly for nonempty decoded audio.
+- Five regression cases cover alias/random paths into mixed PCM, source isolation, rate mismatch without queued output, matching custom rates/mute, missing resources, and unsupported encoding failures. Full Release suite passes 10,432 tests (8,908 Playsim, 749 MapLoader, 193 Gamedata, 17 Client). Clean Release rebuild with warnings as errors passes with zero warnings/errors; git diff --check passes.
+- Boundary: this produces PCM through the mixer API; gameplay sound-event wiring/device output, resampling, pitch/volume/attenuation application, persistent channel playback, singular/limit admission, other encodings, and paired native-runtime certification remain unfinished. Phase 1 remains incomplete; changes are uncommitted.
+
+
+## Phase 1 Doom DMX sound decoding (2026-10-08)
+
+- Converted represented DMX type-3 mono unsigned 8-bit sound decoding from SoundEngine::LoadSound in src/common/audio/sound/s_sound.cpp:758-775. Decoder reads little-endian rate/count, uses 11025 Hz for zero rate, retains declared samples including padding, and ignores trailing bytes. Samples convert to signed 16-bit PCM without discarding native padding.
+- SoundResourceResolver.TryReadDoomSound connects represented logical/alias/random resource lookup to the decoder. Missing or explicitly empty resources return no decoded sound; unsupported encodings and malformed lengths fail explicitly rather than silently returning successful audio. Negative counts are rejected, strengthening the represented input validation beyond native signed-length dispatch.
+- Seven regression cases cover default/explicit rates, unsigned conversion boundaries, invalid counts, padding/trailing bytes, header-only/unsupported inputs, aliased WAD decode, and missing-resource behavior. Full Release suite passes 10,427 tests (8,908 Playsim, 749 MapLoader, 193 Gamedata). Clean Release rebuild with warnings as errors passes with zero warnings/errors; git diff --check passes.
+- Boundary: PCM decoding is available but mixer/playback/resampling integration is unfinished. Native VOC/raw/general format fallbacks, resource namespaces, channel/singular handling, RNG compatibility, and paired native-runtime certification remain open. Phase 1 remains incomplete; changes are uncommitted.
+
+
+## Phase 1 single-WAD sound resource reads (2026-10-08)
+
+- Added SoundResourceResolver.TryReadWadResource to resolve represented aliases/random choices and read selected short-name WAD resources. Last matching directory entry wins case-insensitively, including index zero. Existing archive/lump validation handles malformed data. The found output distinguishes a present empty lump from an absent resource; missing/explicit empty resources return no data, representing native unbound sound behavior.
+- Native audit: S_AddSound uses CheckNumForFullName with normal short-name fallback (src/sound/s_advsound.cpp:410-413; src/common/filesystem/source/filesystem.cpp:554-584). This implementation reads single-WAD directory short names; full resource paths are explicitly rejected rather than truncated. Namespace-aware lookup and multi-container behavior remain outside the represented API.
+- Seven regression cases cover index-zero resources, last-definition precedence, case-insensitive lookup through aliases, missing versus empty resources, invalid selected data, random-group resource selection, and unsupported full paths. Full Release suite passes 10,420 tests (8,908 Playsim, 742 MapLoader, 193 Gamedata). Clean Release rebuild with warnings as errors passes with zero warnings/errors; git diff --check passes.
+- Boundary: the API reads raw bytes; sound decoding, namespace filtering, native resource registration, playback, channel/singular admission, native RNG compatibility, and paired native-runtime certification remain unfinished. Phase 1 remains incomplete; changes are uncommitted.
+
+
+## Phase 1 tentative sound registration and unbound resolution (2026-10-08)
+
+- Converted explicit IsTentative sound registration state against SoundEngine::FindSoundTentative at src/common/audio/sound/s_sound.cpp:1575-1583. Alias/random forward targets and setting-only logical names register as tentative with zero pitch mask. Later ordinary/alias/random owner definitions clear tentative state while preserving existing settings/masks. Continuation retains prior-result isolation.
+- SoundResourceResolver now returns an empty resource for registered unbound tentative sounds, representing native negative-lump placeholders, while unknown logical names remain explicit errors. WAD loading and simulation copies already retain the immutable setting records. Header defaults audit confirmed tentative NearLimit defaults to 2 (s_soundinternal.h:423), matching the represented default; no count-default change was needed.
+- Five regression cases cover setting-only and alias/random target registration, later binding, zero-mask retention under new global defaults, previous-result isolation, cross-lump WAD binding, unknown-name distinction, and simulation copies. Full Release suite passes 10,413 tests (8,908 Playsim, 736 MapLoader, 193 Gamedata). Clean Release rebuild with warnings as errors passes with zero warnings/errors; git diff --check passes.
+- Boundary: tentative IDs/native sound allocation and physical resource existence checks are not converted; empty-resource resolution represents silence but does not play audio. Player reservations, channel/singular admission, other directives, native RNG matching, and paired native-runtime certification remain unfinished. Phase 1 remains incomplete; changes are uncommitted.
+
+
+## Phase 1 global SNDINFO pitch defaults and forward registration (2026-10-08)
+
+- Converted $pitchshiftrange with clamping/mask semantics from src/sound/s_advsound.cpp:1031-1035. CurrentPitchMask continues across parser inputs/SNDINFO lumps, starts at zero for fresh parsing, and applies only to newly registered ordinary/alias/random owners. Redefinitions preserve existing masks, matching S_AddSound's unchanged mask at 455 and AddSoundLump's initial assignment in src/common/audio/sound/s_sound.cpp:1558.
+- Native forward-target audit converted zero-mask registration for alias targets and random choices, matching FindSoundTentative at 1575-1583. A later resource definition retains that zero mask instead of incorrectly inheriting the current global default. Existing per-sound settings similarly retain masks. WAD loading and simulation copies carry the resulting settings.
+- Seven regression cases cover global clamp boundaries, cross-input state and previous-result isolation, unchanged redefinitions, alias/random owner inheritance, tentative target masks, malformed directives, WAD continuation, and simulation copies. Full Release suite passes 10,408 tests (8,908 Playsim, 735 MapLoader, 189 Gamedata). Clean Release rebuild with warnings as errors passes with zero warnings/errors; git diff --check passes.
+- Boundary: tentative registration is represented for pitch masks; native tentative sound IDs, resource lookup and default-limit distinctions remain open. Sound RNG compatibility, channel/singular admission, other directives, audio decoding/playback, and paired native-runtime certification remain unfinished. Phase 1 remains incomplete; changes are uncommitted.
+
+
+## Phase 1 represented sound pitch calculation (2026-10-08)
+
+- Converted native CalcPitch from src/common/audio/sound/s_sound.cpp:369-386 into SoundPitchCalculator. Positive DefPitch overrides shift settings; positive distinct maxima interpolate with one supplied float draw, including descending ranges. Otherwise enabled nonzero masks use two ordered byte draws in (128 - maskedFirst + maskedSecond) / 128. Disabled variation and fixed pitches do not draw.
+- Calculator consumes existing immutable sound settings and is exercised with WAD-loaded pitch metadata. Required random providers, invalid float draws, nonfinite manual pitch settings, and out-of-range masks fail explicitly. Random providers are external; native SoundPitch stream sequence/state compatibility is not claimed.
+- Eleven new regression cases cover fixed precedence, equal/absent maxima, ascending/descending interpolation and draw counts, masked byte order, disabled variation, invalid draws, and missing providers. Full Release suite passes 10,401 tests (8,908 Playsim, 734 MapLoader, 183 Gamedata). Clean Release rebuild with warnings as errors passes with zero warnings/errors; git diff --check passes.
+- Boundary: calculation API is available but audio playback and actor-specified pitch overrides are not wired. Global pitchshift defaults, player sounds, singular/channel admission, native RNG stream persistence, resource decoding/playback, and paired native-runtime certification remain unfinished. Phase 1 remains incomplete; changes are uncommitted.
+
+
+## Phase 1 SNDINFO singular and per-sound pitch settings (2026-10-08)
+
+- Converted $singular, $pitchshift, and $pitchset per-logical-sound metadata against src/sound/s_advsound.cpp:989-1029. Singular marks persist; shift amounts clamp to 0..7 and produce (1 << shift) - 1 masks. PitchSet retains finite signed float values and optional maximum; a later PitchSet without maximum resets that maximum to zero, while preserving other settings.
+- Immutable sound setting records carry these fields through existing parser continuation, cross-lump WAD accumulation, all represented map loaders, and simulation copies. Missing operands/malformed/nonfinite pitches fail explicitly. Resource redefinitions retain per-sound pitch/singular settings, matching represented native S_AddSound behavior.
+- Ten regression cases cover mask clamp boundaries, singular retention, explicit and omitted maxima, signed pitches, previous-result isolation, malformed inputs, WAD loading, and simulation copies. Full Release suite passes 10,390 tests (8,908 Playsim, 734 MapLoader, 172 Gamedata). Clean Release rebuild with warnings as errors passes with zero warnings/errors; git diff --check passes.
+- Boundary: singular admission and pitch calculation/playback remain unconverted; global $pitchshiftrange and tentative/default pitch-mask registration are still open. Player sounds, other directives, audio decoding/playback, RNG compatibility, and paired native-runtime certification remain unfinished. Phase 1 remains incomplete; changes are uncommitted.
+
+
+## Phase 1 SNDINFO sound limit metadata (2026-10-08)
+
+- Converted $limit logical-name channel-count [distance] against src/sound/s_advsound.cpp:973-986. Counts clamp to 0..255; optional signed distances square into float range metadata; absent distances preserve existing range. Existing settings continuation/WAD loading/simulation copying carry immutable NearLimit/LimitRange fields.
+- Native audit also converted alias/random inherited-limit markers (-1) and ordinary redefinition reset to count 2/range 256 squared, matching S_AddSound at 448-453, SI_Alias at 969, and AddRandomSound. Volume/attenuation remain retained. Nonfinite/overflowing distances are rejected by the represented subset. Earlier unsupported-directive tests now use still-unconverted $rolloff.
+- Eight regression cases cover count clamps, signed squared distances, optional-range retention, inherited-limit reset, continuation isolation, malformed values, cross-lump WAD loading, and simulation copies. Full Release suite passes 10,380 tests (8,908 Playsim, 733 MapLoader, 163 Gamedata). Clean Release rebuild with warnings as errors passes with zero warnings/errors; git diff --check passes.
+- Boundary: metadata is not yet applied to channel admission or playback; tentative sound default distinctions, player reserves, singular sounds, other directives, native RNG compatibility, and paired native-runtime certification remain unfinished. Phase 1 remains incomplete; changes are uncommitted.
+
+
+## Phase 1 SNDINFO volume and attenuation metadata (2026-10-08)
+
+- Converted $volume and $attenuation into immutable per-logical-sound settings, matching src/sound/s_advsound.cpp:1038-1060. Represented finite float values preserve signed values and values above one without clamping; missing settings default to one. Updates change only the supplied setting, retain case-insensitive identity, and survive resource/alias/random redefinitions and parser continuation.
+- WAD loading accumulates settings across SNDINFO inputs and retains them in all represented PlayLevel loading branches. Simulation copies receive independent setting dictionaries; immutable records are shared safely. Missing names/values and malformed/nonfinite float inputs fail explicitly without partial parse output.
+- Seven regression cases cover signed/unclamped settings, default values, redefinitions, previous-result isolation, malformed/missing/nonfinite values, cross-lump replacement, WAD loading, and simulation copies. Full Release suite passes 10,372 tests (8,908 Playsim, 732 MapLoader, 156 Gamedata). Clean Release rebuild with warnings as errors passes with zero warnings/errors; git diff --check passes.
+- Boundary: settings are retained metadata and are not yet applied during sound playback. Native tentative sound registration, alias/random attenuation and volume application, channel limits/player sounds, other directives, resource decoding/playback, and paired native-runtime certification remain unfinished. Nonfinite values are rejected by the represented subset. Phase 1 remains incomplete; changes are uncommitted.
+
+
+## Phase 1 recursive sound integrity disabling (2026-10-08)
+
+- Converted represented alias/random graph integrity checks and disabling against S_CheckSound/S_CheckIntegrity in src/sound/s_advsound.cpp:257-342. SoundIntegrity.Apply checks reachability back to each definition across all choices, records every cycle member before mutation, then replaces broken links/groups with explicit empty resources. Definitions that merely lead into cycles remain intact, matching native owner-specific checks and batch disabling. Iterative traversal avoids recursive stack growth.
+- WAD loading runs integrity checks after all SNDINFO inputs have accumulated, allowing later definitions to repair earlier self links. PlayLevel exposes DisabledSounds diagnostics and simulation copies retain them. Missing targets remain unresolved rather than being classified as recursive definitions; reserved player semantics remain outside this graph subset.
+- Four regression cases cover mutual/self cycles, incoming aliases, all random branches, incoming groups, idempotence, simulation-source isolation, cross-lump repair, automatic WAD disabling, retained diagnostics, and resolution to empty resources. Full Release suite passes 10,365 tests (8,908 Playsim, 731 MapLoader, 150 Gamedata). Clean Release rebuild with warnings as errors passes with zero warnings/errors; git diff --check passes.
+- Boundary: disabling uses empty-resource metadata rather than native sound ID zero. Native missing-resource placeholders, player reserves, random RNG compatibility, channel/attenuation semantics, audio decoding/playback, other SNDINFO directives, and paired native-runtime certification remain unfinished. Phase 1 remains incomplete; changes are uncommitted.
+
+
+## Phase 1 represented random sound resource selection (2026-10-08)
+
+- Converted random sound choice indexing into SoundResourceResolver with a caller-supplied nonnegative integer draw. Native SoundEngine::PickReplacement in src/common/audio/sound/s_sound.cpp:1665-1673 uses rand() modulo choice count and follows nested random groups. The resolver now selects with that modulo rule and continues through represented groups/aliases to a final resource; duplicate entries preserve weighting and direct/alias-only/missing sounds do not consume draws.
+- Explicit error handling covers absent random providers, negative values, empty manually supplied groups, missing selected targets, and repeated names in the selected path. These defensive errors do not implement native integrity disabling. The no-provider overload retains selection-required behavior. The WAD-loaded group regression now exercises selection after a simulation copy.
+- Nine new regression cases cover modulo boundaries and duplicates, nested group/alias draw counts, no draws for direct/missing sounds, selected cycles, and negative draws. Full Release suite passes 10,361 tests (8,908 Playsim, 727 MapLoader, 150 Gamedata). Clean Release rebuild with warnings as errors passes with zero warnings/errors; git diff --check passes.
+- Boundary: random values are supplied by the caller; platform C rand sequence/state compatibility is not claimed. Native full-graph integrity/disabling, player sounds, attenuation/channel semantics, resource decoding, audio playback, and paired native-runtime certification remain unfinished. Phase 1 remains incomplete; changes are uncommitted.
+
+
+## Phase 1 SNDINFO random sound group metadata (2026-10-08)
+
+- Converted $random owner { choices } metadata against src/sound/s_advsound.cpp:1108 onward. Choice order and duplicate entries are retained in read-only lists; single-choice groups become aliases, while empty groups replace prior mappings with an empty resource. Subsequent ordinary mappings, aliases, and random definitions replace earlier groups. Continuation copies retained group lists independently.
+- Scanner now separates adjacent braces, allowing owner{A B}. WAD loading accumulates random groups across SNDINFO inputs and retains them in each represented PlayLevel loading branch; simulation copies clone both dictionaries and choice lists. SoundResourceResolver explicitly reports sound-random-selection-required for groups rather than reporting a missing resource or selecting without a random stream.
+- Nine regression cases cover duplicate/ordered choices, single/empty groups, continuation isolation, replacement by resources/aliases/empty groups, malformed blocks, WAD loading, independent simulation copies, and explicit selection-required errors. Earlier unsupported-directive tests now use still-unconverted $limit. Full Release suite passes 10,352 tests (8,908 Playsim, 718 MapLoader, 150 Gamedata). Clean Release rebuild with warnings as errors passes with zero warnings/errors; git diff --check passes.
+- Boundary: random choice execution and its native RNG, recursive group integrity/disabling, sound limits/player semantics, resource decoding/playback, other directives, and paired native-runtime certification remain unfinished. Empty groups use an explicit empty-resource representation of native unbound sound metadata. Phase 1 remains incomplete; changes are uncommitted.
+
+
+## Phase 1 logical sound alias resource resolution (2026-10-08)
+
+- Added SoundResourceResolver for represented PlayLevel logical mappings and alias chains. It follows links iteratively to the final resource, retains explicit empty resource names, detects repeated case-insensitive names, and returns explicit cycle/missing-target errors without changing loaded metadata. WAD-loaded cross-lump chains are exercised through the existing alias loading regression.
+- Native audit: SoundEngine::ResolveSound in src/common/audio/sound/s_sound.cpp:347 follows alias links; FindSoundTentative at 1575 permits forward targets. S_CheckSound/S_CheckIntegrity in src/sound/s_advsound.cpp:257-342 reports recursive definitions and disables broken sounds. This C# API follows represented links but surfaces errors rather than executing native sound disabling or silent playback. Missing-target placeholders/resource loading remain outside the converted resolver.
+- Ten new regression cases cover direct/chained case-insensitive resolution, simulation copies, missing/dangling targets, self/mutual/prefixed loops, explicit empty resources, non-mutating failures, and a 10,000-link chain without recursion. Full Release suite passes 10,343 tests (8,908 Playsim, 717 MapLoader, 142 Gamedata). Clean Release rebuild with warnings as errors passes with zero warnings/errors; git diff --check passes.
+- Boundary: resolver API is available but audio playback is not wired. Native integrity disabling, lump existence/decoding, random groups, player sound/channel semantics, other SNDINFO directives, and paired native-runtime certification remain unfinished. Phase 1 remains incomplete; changes are uncommitted.
+
+
+## Phase 1 SNDINFO sound alias metadata (2026-10-08)
+
+- Converted $alias name/target metadata against SI_Alias in src/sound/s_advsound.cpp:955 onward. Forward references remain logical targets. Alias definitions replace direct resources; subsequent ordinary sound mappings clear alias links, matching S_AddSound's represented reassignment behavior at 435 onward. Case-insensitive tables continue across inputs without mutating previous parse results.
+- WAD loading accumulates alias metadata with ordinary mappings and music defaults. All represented map-loading branches retain SoundAliases on PlayLevel; simulation copies receive independent dictionaries. Aliases do not affect each lump's ordinary mapping assignment convention. Missing alias operands and malformed assignment syntax fail explicitly.
+- Eight regression cases cover resource/alias replacement, forward chains and continuation isolation, missing/malformed operands, cross-lump replacement, WAD loading without MAPINFO, and simulation copying. Full Release suite passes 10,333 tests (8,908 Playsim, 707 MapLoader, 142 Gamedata). Clean Release rebuild with warnings as errors passes with zero warnings/errors; git diff --check passes.
+- Boundary: alias links are retained metadata; runtime alias resolution, cycle/missing-target handling, native sound channel limits/player compatibility, random groups, other directives, audio playback, and paired native-runtime certification remain unfinished. Unsupported directives still fail loading explicitly. Phase 1 remains incomplete; changes are uncommitted.
+
+
+## Phase 1 SNDINFO logical sound mapping conversion (2026-10-08)
+
+- Converted ordinary logical-name/resource mappings alongside $map music into SndInfoData. Slash-separated logical names, quoted names/resources, optional assignment syntax, case-insensitive replacements, and continuation copies are represented. The music-only API delegates to the shared parser. Native mapping handling at src/sound/s_advsound.cpp:1308 onward establishes assignment syntax from the first mapping in each lump; the converted parser resets that convention per input and rejects malformed mixed syntax.
+- WAD loading accumulates both music and sound mappings across SNDINFO lumps. All represented map formats retain SoundDefinitions on PlayLevel; simulation copies receive independent case-insensitive dictionaries. This removes the previous loading rejection for ordinary logical sound mappings mixed with music defaults.
+- Seven regression cases cover plain/assignment syntax, slash names, case-insensitive replacement, continuation isolation, per-lump assignment reset, empty resources, missing/mixed mappings, mixed sound/music WAD loading, and independent simulation copies. Full Release suite passes 10,325 tests (8,908 Playsim, 706 MapLoader, 135 Gamedata). Clean Release rebuild with warnings as errors passes with zero warnings/errors; git diff --check passes.
+- Boundary: metadata maps logical names to resource strings; native sound-lump lookup, reserved-player reassignment checks, $alias/$random and other directives, conditionals/includes, escaped-string fidelity, audio playback, and paired native-runtime certification remain open. Unsupported directives still fail loading explicitly. Phase 1 remains incomplete; changes are uncommitted.
+
+
+## Phase 1 automatic WAD SNDINFO map music loading (2026-10-08)
+
+- LevelBuilder now reads SNDINFO lumps in archive order, accumulates converted $map entries, and supplies the resulting table to each selected MAPINFO/ZMAPINFO parse. Defaults apply at map headers before explicit body music, independent of the physical ordering of SNDINFO versus MAPINFO lumps. Native S_ParseSndInfo traverses loaded entries and SI_Map replaces nonzero numbered music entries (src/sound/s_advsound.cpp:582 onward and 871 onward); MAPINFO applies them at header completion (src/gamedata/g_mapinfo.cpp:2434 onward).
+- Eight regression cases cover Doom/Hexen/UDMF loading, later SNDINFO replacement, ignored map zero, literal colon names, inherited order and simulation copies, explicit body/empty music, header lookup before levelnum overrides, ZMAPINFO precedence, and malformed/unsupported SNDINFO loading failures.
+- Full Release suite passes 10,318 tests (8,908 Playsim, 705 MapLoader, 129 Gamedata). Clean Release rebuild with warnings as errors passes with zero warnings/errors; git diff --check passes.
+- Boundary: WAD loading now rejects SNDINFO content outside the converted $map subset instead of ignoring it. General sound aliases/directives/conditionals/includes and escaped-string fidelity remain unconverted; ordinary full-game SNDINFO compatibility is not claimed. Without an explicit matching MAPINFO map header this path does not synthesize music-bearing map metadata. Built-in defaults, multiple archives, audio playback, and paired native-runtime certification remain open. Phase 1 remains incomplete; changes are uncommitted.
+
+
+## Phase 1 SNDINFO map music parser and MAPINFO header integration (2026-10-08)
+
+- Converted the standalone SNDINFO $map subset against src/sound/s_advsound.cpp:871 onward: signed nonzero map numbers retain literal music resource names, map zero is ignored, later assignments replace earlier entries, and continuation copies prior results. Comments and plain quoted resources are supported; unsupported directives and malformed input fail explicitly without partial output.
+- MapInfoParser accepts an optional parsed music table and applies matching defaults by standard map-name level number before map body properties, matching src/gamedata/g_mapinfo.cpp:2434-2440. This replaces inherited music names but retains inherited order; explicit body music overrides it. A later levelnum property does not change the header lookup. SNDINFO colon suffixes remain literal names, unlike MAPINFO ParseMusic orders.
+- Eleven regression cases cover replacement, zero/negative numbers, comments, explicit empty resources, continuation isolation, malformed/unsupported input, inherited order, body precedence, and header-number lookup. Full Release suite passes 10,310 tests (8,908 Playsim, 697 MapLoader, 129 Gamedata). Clean Release rebuild with warnings as errors passes with zero warnings/errors; git diff --check passes.
+- Boundary: this is a standalone parser and explicit MAPINFO API integration. Automatic WAD SNDINFO loading, general sound aliases/directives/conditionals/includes, escaped-string scanner fidelity, built-in music defaults, audio playback, and paired native-runtime certification remain open. Phase 1 remains incomplete; changes are uncommitted.
+
+
+## Phase 1 map CD music metadata (2026-10-08)
+
+- Converted map cdtrack/cdid fields and propagation into PlayLevel and simulation copies. Native map options at src/gamedata/g_mapinfo.cpp:1314-1325 read a signed track and hexadecimal disc identifier; src/g_level.cpp:2012-2013 copies them into level locals. DefaultMap inheritance and cross-lump map continuation retain the values.
+- Reused the existing cluster CD identifier validation through a shared helper. Represented disc IDs accept complete unsigned 32-bit hexadecimal strings with optional 0x; signed tracks preserve zero and negative values. Native strtoul partial-string, sign, and overflow behavior remains outside this validated subset.
+- Seven regression cases cover inherited defaults, explicit negative/zero/max-ID overrides, later unrelated definitions, simulation copies, and malformed tracks/IDs. Full Release suite passes 10,299 tests (8,908 Playsim, 697 MapLoader, 118 Gamedata). Clean Release rebuild with warnings as errors passes with zero warnings/errors; git diff --check passes.
+- Audit identified SNDINFO $map music defaults as another missing path; it remains unconverted. Built-in game music defaults, CD/audio playback, gameplay transition/finale execution, and paired native-runtime certification remain open. Phase 1 remains incomplete; changes are uncommitted.
+
+
+## Phase 1 GameInfo intermission music fallback loading (2026-10-08)
+
+- Converted GameInfo intermissionMusic into an immutable resource/order pair, preserved across parser continuation and unrelated later GameInfo blocks. Native GAMEINFOKEY_MUSIC at src/gamedata/gi.cpp:246 and its intermissionMusic registration at 406 require a quoted string and parse colon orders with integer-prefix semantics; the new property follows that syntax and rejects separate numeric orders.
+- WAD loading now retains the accumulated game intermission music on PlayLevel for all represented formats, including when no matching map definition exists. Simulation copies retain it. The one-argument ResolveIntermissionMusic uses this loaded fallback after destination-specific and nonempty map music, matching src/g_level.cpp:2523-2531. The explicit-default overload remains available.
+- Ten regression cases cover ZMAPINFO precedence, cross-lump preservation, destination/local/game precedence, explicit empty destination music, simulation copying, signed/non-numeric colon orders, explicit empty game resources, previous-result isolation, and malformed syntax. Full Release suite passes 10,292 tests (8,908 Playsim, 690 MapLoader, 118 Gamedata). Clean Release rebuild with warnings as errors passes with zero warnings/errors; git diff --check passes.
+- Boundary: built-in game music defaults, audio playback, gameplay transition/finale execution, multiple-archive loading, and paired native-runtime certification remain open. Phase 1 remains incomplete; changes are uncommitted.
+
+
+## Phase 1 destination-specific intermission music (2026-10-08)
+
+- Converted MAPINFO mapintermusic destination/resource/order entries against src/gamedata/g_mapinfo.cpp:1285-1294. Case-insensitive destination tables inherit through map defaults and parser continuation with independent copies; malformed destination/comma/resource/order inputs fail explicitly.
+- PlayLevel retains the table during all represented WAD loading paths and independently copies it for simulation. ResolveIntermissionMusic mirrors src/g_level.cpp:2523-2531: destination entry first (including an empty resource), nonempty map intermusic next, otherwise a supplied game default. Returned resource/order pairs are immutable.
+- Eight regression cases cover destination precedence, explicit empty overrides, inherited table isolation between maps and simulation copies, local fallback, game-default fallback, and malformed input. Full Release suite passes 10,282 tests (8,908 Playsim, 686 MapLoader, 112 Gamedata). Clean Release rebuild with warnings as errors passes with zero warnings/errors; git diff --check passes.
+- Boundary: game defaults are supplied to the resolver; GameInfo intermissionMusic parsing and automatic fallback propagation, built-in defaults, audio changes, gameplay transition/finale execution, and paired native-runtime certification remain unfinished. Phase 1 remains incomplete; changes are uncommitted.
+
+
+## Phase 1 playable-level music metadata propagation (2026-10-08)
+
+- Converted map music/resource order propagation into PlayLevel for Doom binary, Hexen binary, and UDMF loading. Simulation copies retain map and intermission music names/orders. Loading reuses the selected accumulated MAPINFO map, preserving DefaultMap inheritance, ZMAPINFO precedence, and cross-lump continuation.
+- Native audit: src/g_level.cpp:2056-2057 copies map music/order into level locals; SetInterMusic at 2523 onward reads map intermission music/order from retained map metadata. C# now retains those resources on the playable level; it does not execute audio changes.
+- Added four regression cases: three map formats exercise inherited music, ZMAPINFO precedence, later unrelated definitions, and simulation copies; absent MAPINFO leaves resources unspecified. Full Release suite passes 10,274 tests (8,908 Playsim, 678 MapLoader, 112 Gamedata). Clean Release rebuild with warnings as errors passes with zero warnings/errors; git diff --check passes.
+- Boundary: audio playback, per-destination mapintermusic, GameInfo intermission fallback, built-in music defaults, transition/finale execution, and paired native-runtime certification remain open. Phase 1 remains incomplete. Changes are uncommitted.
+
+
+## Phase 1 map music metadata and GameInfo order audit (2026-10-08)
+
+- Converted represented map music/intermusic properties and orders using native ParseMusic (src/gamedata/g_mapinfo.cpp:1273 onward). Modern colon/comma and legacy bare-order forms share existing parsing; DefaultMap/AddDefaultMap and parser continuation preserve these fields through map copies.
+- Audit corrected GameInfo finale music syntax: GAMEINFOKEY_MUSIC (src/gamedata/gi.cpp:246 onward) reads a string with optional colon suffix, not separate map-style numeric orders. GameInfo parsing now restricts separate-order consumption and the earlier continuation fixture uses native colon syntax.
+- Added four regression cases for map/intermission music orders, inherited legacy defaults, missing resources, and invalid numeric orders. Full Release suite passes all 10,270 tests, including 8,908 Playsim, 674 MapLoader, and 112 Gamedata tests. Clean Release rebuild with warnings as errors passes with zero warnings/errors; git diff --check passes.
+- Boundary: this converts MapInfoMap metadata; PlayLevel music propagation and audio playback remain unfinished. Gameplay transition/finale execution, built-in game defaults, localization/multiple archives, other recorded conversion gaps, and paired native-runtime certification remain open. Phase 1 remains incomplete; changes are uncommitted.
+
+
+## Phase 1 GameInfo finale-resource fallback (2026-10-08)
+
+- Converted GameInfo finaleMusic/finaleFlat metadata (src/gamedata/gi.cpp:377-378) with shared music-order parsing and continuation across parser inputs. Missing resources/invalid orders fail explicitly; later supplied defaults replace earlier values without mutating previous parse results.
+- Explicit exit presentation now falls back to GameInfo finale music/order and backdrop when its destination record lacks those fields, matching src/g_level.cpp:1041-1047. Defined map resources retain precedence, including explicit empty resources and native backdrop-first empty music semantics.
+- Added seven regression cases for fallback/override/backdrop-only merge, cross-input defaults, and malformed values. Full Release suite passes all 10,266 tests, including 8,908 Playsim, 674 MapLoader, and 108 Gamedata tests. Clean Release rebuild with warnings as errors passes with zero warnings/errors; git diff --check passes.
+- Boundary: built-in game-default resource bundles, gameplay transition execution, audio/rendering/endgame controllers, localization/multiple archives, other recorded conversion gaps, and paired native-runtime certification remain open. This supplies resolver metadata rather than executing a finale. Phase 1 remains incomplete; changes are uncommitted.
+
+
+## Phase 1 cluster CD presentation metadata (2026-10-08)
+
+- Converted cluster cdtrack and cdid fields from src/gamedata/g_mapinfo.cpp:965-975. Track values use signed integers; disc IDs accept full unsigned 32-bit hex with optional 0x prefix. Invalid/overflowing IDs fail explicitly instead of native strtoul prefix/overflow fallback. Explicit cluster redefinitions reset both fields.
+- Transition results carry CD track/id: entry uses destination metadata; exit fallback uses source track and destination disc ID as native g_level.cpp:1063-1076 does. Explicit per-map text selects track -1 and disc ID zero.
+- Added seven regression cases for modern/legacy signed track and hex ID forms, resets, invalid values, and entry/exit disc selection. Full Release suite passes all 10,259 tests, including 8,908 Playsim, 671 MapLoader, and 104 Gamedata tests. Clean Release rebuild with warnings as errors passes with zero warnings/errors; git diff --check passes.
+- Boundary: metadata only; CD/audio playback, game-default finale resources, gameplay transition execution/rendering, localization/multiple archives, other recorded conversion gaps, and paired native-runtime certification remain open. Phase 1 remains incomplete; changes are uncommitted.
+
+
+## Phase 1 cluster music-order conversion (2026-10-08)
+
+- Converted cluster music order metadata and shared ParseMusic behavior (src/gamedata/g_mapinfo.cpp:839-854,941-945). Colon suffixes use signed integer prefixes with leading whitespace; comma integer and legacy bare integer orders are supported. Missing resources/invalid comma orders fail explicitly.
+- Per-map textmusic reuses the same helper, closing its missing legacy bare-order behavior. Selected cluster transitions now carry MusicOrder alongside music identity; cluster copies and explicit reset use existing metadata semantics.
+- Added six regression cases for colon/comma/legacy numeric order forms, signed values and suffix parsing, and malformed resources/orders. Full Release suite passes all 10,252 tests, including 8,908 Playsim, 669 MapLoader, and 99 Gamedata tests. Clean Release rebuild with warnings as errors passes with zero warnings/errors; git diff --check passes.
+- Boundary: audio playback, CD track/id metadata, overflow behavior of native atoi, game-default finale resources, gameplay transition execution/rendering, localization/multiple archives, other recorded conversion gaps, and paired native-runtime certification remain open. Phase 1 remains incomplete; changes are uncommitted.
+
+
+## Phase 1 per-map exit presentation resources (2026-10-08)
+
+- Converted textmusic/textflat/textpic destination metadata from src/gamedata/g_mapinfo.cpp:780-855,1583-1608. Text, music, and backdrop merge independently; flat/pic replace picture state for per-map exits. Music supports colon orders and comma integer orders. Backdrop-first creation preserves native explicit empty music behavior.
+- Transition resolution returns selected backdrop/picture/music/order metadata. Records without defined text suppress cluster fallback, matching g_level.cpp:1039-1055. Existing explicit empty-text suppression and default/copy behavior remain in place.
+- Added six regression cases for resource ordering/independent merge, picture/flat replacement, both music-order forms, resource-only suppression, and malformed resources/orders. Full Release suite passes all 10,246 tests, including 8,908 Playsim, 669 MapLoader, and 93 Gamedata tests. Clean Release rebuild with warnings as errors passes with zero warnings/errors; git diff --check passes.
+- Boundary: game-default finale music/backdrops, cluster music orders, audio/rendering and gameplay transition execution, endgame/cutscene selection, localization/multi-archive resources, other recorded conversion gaps, and paired native-runtime certification remain open. Phase 1 remains incomplete; changes are uncommitted.
+
+
+## Phase 1 per-map exit-text conversion (2026-10-08)
+
+- Converted modern MAPINFO exittext destination, text parsing, including literal lists and lookup references (src/gamedata/g_mapinfo.cpp:754-777,1574-1580). Case-insensitive destination records copy independently through defaults and successive parser inputs; later definitions replace earlier text/lookup state.
+- Connected explicit exit text to transition resolution before cluster selection, following src/g_level.cpp:1031-1055. Normal/Secret keys take precedence over a destination key; explicit empty text suppresses fallback. Explicit text applies despite same-cluster or NoClusterText suppression; deathmatch still excludes this presentation path.
+- Added eight regression cases for destination/normal/secret precedence, lookup, empty suppression, list/default-copy behavior, and malformed inputs. Full Release suite passes all 10,240 tests, including 8,908 Playsim, 666 MapLoader, and 90 Gamedata tests. Clean Release rebuild with warnings as errors passes with zero warnings/errors; git diff --check passes.
+- Boundary: per-map exit music/backdrop and game-default presentation resources remain absent; explicit exit text currently returns neutral background/music metadata. Gameplay transition execution, endgame/cutscene/rendering, localization/multi-archive resources, other recorded conversion gaps, and paired native-runtime certification remain open. Phase 1 remains incomplete; changes are uncommitted.
+
+
+## Phase 1 cluster transition text selection (2026-10-08)
+
+- Converted the represented normal map-to-map cluster-text selection from src/g_level.cpp:1057-1079. Destination entry text takes precedence over source exit text; same-cluster, deathmatch, and source NoClusterText transitions produce no cluster text. Added noclustertext parsing so defaults/copies preserve the native flag (g_mapinfo.cpp:2029).
+- ClusterTextResolver.TryResolveTransition connects selection to the preceding single-WAD literal/lookup/lump resolver and returns immutable selected cluster/text/background/picture/music metadata. Empty backgrounds select the native black-screen marker. Missing map metadata fails explicitly; empty cluster text returns no presentation.
+- Added five regression cases for entry precedence/exit fallback, suppression/deathmatch, WAD entry content, same-cluster suppression, and missing map validation. Full Release suite passes all 10,232 tests, including 8,908 Playsim, 662 MapLoader, and 86 Gamedata tests. Clean Release rebuild with warnings as errors passes with zero warnings/errors; git diff --check passes.
+- Boundary: selection/resolution is a MapLoader API, not an implemented gameplay transition/finale controller. Explicit per-map exit text, endgame sequences, cutscenes, timing/renderer/audio, native CD metadata, localization and multi-archive resources, other recorded conversion gaps, and paired native-runtime certification remain open. Phase 1 remains incomplete; changes are uncommitted.
+
+
+## Phase 1 single-WAD cluster text resolution (2026-10-08)
+
+- Converted the text-selection subset of F_StartFinale (src/intermission/intermission_parse.cpp:887-907) into ClusterTextResolver.TryResolve: text-in-lump takes precedence over lookup, literal text remains literal, lookup references retain the dollar prefix for later localization, and missing lumps produce native Unknown text lump text.
+- Uses existing WAD directory/data validation, reverse-order case-insensitive lump resolution, and native greater-than-zero lump-index eligibility. Text truncates at its first NUL byte as GetStringFromLump does (src/common/utility/cmdlib.cpp:1086-1091). Resolution does not mutate cluster metadata; invalid archives surface errors. UTF-8 is used for represented text.
+- Added five regression cases for duplicate lump precedence/NUL truncation, literal/lookup/lump priority, missing lumps, invalid archives, and empty text. Full Release suite passes all 10,227 tests, including 8,908 Playsim, 657 MapLoader, and 86 Gamedata tests. Clean Release rebuild with warnings as errors passes with zero warnings/errors; git diff --check passes.
+- Boundary: the resolver is available through the MapLoader API; a finale controller/rendering and transition wiring remain unconverted. String-table/IWAD localization, non-UTF-8 text encodings, multi-archive/full-path lookup, game-default bundles/includes, compressed ACS modules, other recorded gameplay gaps, and paired native-runtime certification remain open. Phase 1 remains incomplete; changes are uncommitted.
+
+
+## Phase 1 cluster presentation metadata conversion (2026-10-08)
+
+- Converted AllowIntermission, EnterTextIsLump, and ExitTextIsLump cluster flags from native ParseCluster (src/gamedata/g_mapinfo.cpp:960-986). These flags take no value and no longer fall through generic skipping, which could consume the following property's name. Existing copies preserve them; explicit cluster redefinitions reset them.
+- Corrected finale picture metadata: native pic sets CLUSTER_FINALEPIC while flat only replaces the referenced resource (g_mapinfo.cpp:946-956). A later flat therefore preserves picture mode until an explicit cluster reset, rather than clearing it.
+- Added six regression cases for modern/legacy flag parsing without swallowing adjacent text properties, copy/reset isolation, and flat/pic ordering. Full Release suite passes all 10,222 tests, including 8,908 Playsim, 652 MapLoader, and 86 Gamedata tests. Clean Release rebuild with warnings as errors passes with zero warnings/errors; git diff --check passes.
+- Boundary: these are metadata conversions; finale presentation, text-lump content loading, string-table/IWAD localization, game-default bundles/includes/multiple archives, compressed ACS modules, other recorded gameplay gaps, and paired native-runtime certification remain open. Phase 1 remains incomplete; changes are uncommitted.
+
+
+## Phase 1 cluster text-list conversion (2026-10-08)
+
+- Converted represented cluster name/entertext/exittext parsing from ParseLookupName (src/gamedata/g_mapinfo.cpp:676-737): modern braced literal lists join with newlines without a trailing newline, lookup comma label selects a string-table reference, and dollar-prefixed references remain supported. Legacy unbraced literal text remains a single value.
+- Missing values, missing lookup labels, and trailing/empty list entries now fail explicitly instead of accepting closing braces or commas as text. Native known-mod trailing-comma compatibility is not enabled in this subset.
+- Added four regression cases covering multiline literal text, lookup comma labels/dollar references, and malformed text/list/lookup inputs. Full Release suite passes all 10,216 tests, including 8,908 Playsim, 652 MapLoader, and 80 Gamedata tests. Clean Release rebuild with warnings as errors passes with zero warnings/errors; git diff --check passes.
+- Boundary: string-table localization, text-is-lump loading/finale presentation, compatibility exceptions, game-default bundles/includes/multiple archives, compressed ACS modules, other recorded gameplay gaps, and paired native-runtime certification remain open. Phase 1 remains incomplete; changes are uncommitted.
+
+
+## Phase 1 legacy cluster definitions and reset parity (2026-10-08)
+
+- Converted clusterdef alias and unbraced cluster properties. Native ParseCluster resets a cluster before an explicit redefinition (src/gamedata/g_mapinfo.cpp:888-902); managed parsing now replaces represented cluster metadata instead of retaining omitted fields. Implicit map references continue using EnsureCluster without reset.
+- Fixed legacy map/default termination: cluster is a property inside unbraced map/default bodies, while clusterdef starts a separate definition. This allows old Hexen map cluster references without accidentally replacing the referenced cluster.
+- Added four regression cases for legacy text/lookup/music/hub and map references, explicit reset across inputs with previous-result isolation, invalid cluster numbers, and unterminated blocks. Full Release suite passes all 10,212 tests, including 8,908 Playsim, 652 MapLoader, and 76 Gamedata tests. Clean Release rebuild with warnings as errors passes with zero warnings/errors; git diff --check passes.
+- Boundary: native localization tables, game-default bundles, includes/multiple archive loading, unsupported cluster properties and finale presentation, compressed ACS modules, other recorded gameplay gaps, and paired native-runtime certification remain open. Phase 1 remains incomplete; changes are uncommitted.
+
+
+## Phase 1 MAPINFO finalization parity (2026-10-08)
+
+- Converted secondary-sky fallback after map properties, matching src/gamedata/g_mapinfo.cpp:2686-2690: the native -NOFLAT- sentinel selects the primary sky. The managed empty/unset second sky also uses this fallback; explicit secondary skies remain intact. Only sky identity is copied, as native does, leaving separate sky speeds unchanged.
+- Converted SetLevelNum ownership (g_mapinfo.cpp:2602-2613): latest definitions clear matching numbers from earlier maps and clear explicit-map ID24 special numbering. Parser continuation copies ensure previous parse results remain unchanged when later lumps claim a number.
+- Added four regression cases for absent/sentinel/explicit second skies and duplicate number ownership across inputs. Full Release suite passes all 10,208 tests, including 8,908 Playsim, 652 MapLoader, and 72 Gamedata tests. Clean Release rebuild with warnings as errors passes with zero warnings/errors; git diff --check passes.
+- Boundary: sky rendering itself is not added here; game-default bundles, includes/multiple archive loading, unsupported MAPINFO properties, compressed ACS modules, other recorded gameplay gaps, and paired native-runtime certification remain open. Phase 1 remains incomplete; changes are uncommitted.
+
+
+## Phase 1 legacy MAPINFO defaults and Hexen header policy (2026-10-08)
+
+- Converted unbraced DefaultMap/AddDefaultMap parsing for represented properties. Legacy definitions end at the next map/cluster/damage/default/game definition or end of input; braced blocks retain explicit termination checks. Default replacement and extension share existing copy/continuation semantics.
+- Audit corrected numeric Hexen header behavior: native ParseMapHeader applies LEVEL_ACTOWNSPECIAL after copying defaults (src/gamedata/g_mapinfo.cpp:2329-2375). Managed numeric headers now do likewise, including after empty or killer-activates defaults; explicit map-body killeractivatesdeathspecials still overrides the header.
+- Added six regression cases for unbraced defaults/extension/reset and header/default/body ordering. Full Release suite passes all 10,204 tests, including 8,908 Playsim, 652 MapLoader, and 68 Gamedata tests. Clean Release rebuild with warnings as errors passes with zero warnings/errors; git diff --check passes.
+- Boundary: game-default bundles, includes/multiple archive loading, unsupported MAPINFO properties, compressed ACS modules, other recorded gameplay gaps, and paired native-runtime certification remain open. Phase 1 remains incomplete; changes are uncommitted.
+
+
+## Phase 1 MAPINFO continuation across lumps (2026-10-08)
+
+- Converted parser continuation for represented metadata using an optional prior MapInfoSet. DefaultMap/AddDefaultMap now inherit across successive parser inputs, preserving native reset/extension semantics. Prior maps, clusters, damage definitions, and game drop defaults also continue; maps/clusters/default templates are copied so later changes and failed parses do not mutate earlier results.
+- LevelBuilder carries this state through selected MAPINFO or ZMAPINFO lumps in archive order. Existing selected-map overrides and ZMAPINFO precedence remain in place. This closes the separate-lump gravity/air-control inheritance boundary from the preceding round.
+- Added three regression cases covering continuation and failure isolation, plus WAD AddDefaultMap extension versus DefaultMap reset across lumps. Full Release suite passes all 10,198 tests, including 8,908 Playsim, 652 MapLoader, and 62 Gamedata tests. Clean Release rebuild with warnings as errors passes with zero warnings/errors; git diff --check passes.
+- Boundary: multiple archive/game-default bundles, includes, old unbraced defaults, unsupported MAPINFO properties, compressed ACS modules, other recorded gameplay gaps, and paired native-runtime certification remain open. Phase 1 remains incomplete; changes are uncommitted.
+
+
+## Phase 1 represented MAPINFO default inheritance (2026-10-08)
+
+- Converted braced defaultmap/adddefaultmap inheritance for represented map fields, following src/gamedata/g_mapinfo.cpp:2670-2685. DefaultMap replaces the parser's defaults; AddDefaultMap extends them. Later map headers copy the defaults before explicit properties, so subsequent default changes cannot mutate earlier map definitions.
+- Gravity, air control, sky/transition/cluster and represented death-special properties share the existing property reader. Map header identity/name/format and derived ID24 numbering remain per-map; inherited nonzero level numbers survive. Malformed default blocks and invalid supported properties fail explicitly.
+- Added five regression cases covering replacement/extension/explicit override and earlier-map isolation, malformed blocks, and loaded-map gravity/air-control plus copy preservation. Full Release suite passes all 10,195 tests, including 8,908 Playsim, 650 MapLoader, and 61 Gamedata tests. Clean Release rebuild with warnings as errors passes with zero warnings/errors; git diff --check passes.
+- Boundary: this handles braced defaults within one parser input. Native game-default bundles, defaults carried across separate metadata lumps/archives, old unbraced default definitions, includes, and unsupported MAPINFO properties remain outside the subset. Compressed ACS modules remain rejected by the existing binder. Other recorded gameplay gaps and paired native-runtime certification remain open. Phase 1 remains incomplete; changes are uncommitted.
+
+
+## Phase 1 MAPINFO level-gravity loading (2026-10-08)
+
+- Converted MAPINFO gravity and nogravity properties (src/gamedata/g_mapinfo.cpp:1349-1359). Numeric gravity accepts finite signed values; nogravity records the native maximum-double sentinel. During loading, zero/absent gravity selects default 800 and the sentinel selects zero, matching src/g_level.cpp:2028-2033 at the represented 35 Hz rate. Later properties replace earlier ones.
+- Added level gravity configuration/copying to all represented WAD loading paths. Simulation gravity selects the runtime ACS override first, then map configuration; existing version 121 save restoration now resets absent overrides to map settings rather than hardcoded 800. Nonfinite configuration is rejected at construction, and effective nondefault gravity participates in checksums.
+- Added nine regression cases for native zero/nogravity/signed and property-order semantics, malformed values, and configured falling plus older-save fallback. Full Release suite passes all 10,190 tests, including 8,908 Playsim, 649 MapLoader, and 57 Gamedata tests. Clean Release rebuild with warnings as errors passes with zero warnings/errors; git diff --check passes.
+- Boundary: server-variable customization/callbacks, defaultmap inheritance, native water/gravity movement ordering, compressed ACS direct aliases, other recorded gameplay gaps, and paired native-runtime certification remain open. Phase 1 remains incomplete; changes are uncommitted.
+
+
+## Phase 1 ACS level-gravity conversion (2026-10-08)
+
+- Converted stack/direct PCD_SETGRAVITY from src/playsim/p_acs.cpp:9600-9608. Signed fixed-point operands set level gravity without clamping; malformed operands stop before mutation. Falling physics combines level gravity/800 with existing actor and sector multipliers, matching actorinlines.h:105-108 and native sv_gravity default 800.
+- Added checksum coverage and conditional save version 121 for runtime level gravity. Trailer validation covers size, prior version, and finite values; older saves reset to default 800. In-memory restore rejects nonfinite values before mutation, and writes require represented geometry state.
+- Added five regression cases for zero/fractional/negative gravity, stack/direct dispatch, fresh-save falling/checksum/byte continuation, truncated operands, older-save reset, and malformed nonfinite trailers. Removed one obsolete unsupported-opcode case for now-converted SETGRAVITY. Full Release suite passes all 10,181 tests, including 8,907 Playsim and 644 MapLoader tests. Clean Release rebuild with warnings as errors passes with zero warnings/errors; git diff --check passes.
+- Boundary: MAPINFO/server level-gravity configuration, compressed direct aliases, native water/gravity movement ordering, other recorded gameplay gaps, and paired native-runtime certification remain open. Phase 1 remains incomplete; changes are uncommitted.
+
+
+## Phase 1 ACS runtime air-control conversion (2026-10-08)
+
+- Converted stack and direct PCD_SETAIRCONTROL handlers from src/playsim/p_acs.cpp:9610-9620, interpreting signed fixed-point operands as value/65536 without MAPINFO's zero sentinel. Existing VM operand-error handling prevents malformed/truncated instructions from mutating air control.
+- Added a simulation runtime override consumed by player thrust, derived air friction, and checksums. External level configuration remains the fallback. Conditional save version 120 persists overrides in a validated fixed-size trailer, rejects nonfinite values/invalid versions or sizes, and resets to map configuration when older saves lack the override. In-memory restoration checks finite values before mutation; writing requires represented geometry state.
+- Added five regression cases for stack/direct, zero/fractional/negative values, fresh-save movement/checksum/byte continuation, truncated direct operands, older-save reset, and nonfinite trailer rejection. Full Release suite passes all 10,177 tests, including 8,903 Playsim and 644 MapLoader tests. Clean Release rebuild with warnings as errors passes with zero warnings/errors; git diff --check passes.
+- Boundary: compressed/native module decoding remains within the existing binder subset; opcode alias 328 is not treated as an air-control instruction. Server-variable callbacks, defaultmap inheritance, native bob/water/3D-floor behavior, other recorded gameplay gaps, and paired native-runtime certification remain open. Phase 1 remains incomplete; changes are uncommitted.
+
+
+## Phase 1 player air-friction conversion (2026-10-08)
+
+- Converted AirControlChanged's derived friction formula (src/g_level.cpp:2115-2125): control at or below 1/256 yields one; higher values yield control * -0.0941 + 1.0004 without extra clamping. Derivation uses the configured value, avoiding redundant saved state.
+- Converted represented player falling friction from P_XYMovement (src/playsim/p_mobj.cpp:2817-2834). Airborne eligibility is captured before vertical landing, excludes actor support and active flight, and applies only to player horizontal momentum. Existing projectile/NoFriction gates remain; airborne momentum bypasses the ground stop threshold. Ground and flight select their existing friction.
+- Added seven regression cases covering threshold/formula, horizontal displacement before damping, grounded/flight exclusions, and tiny airborne velocity. Existing air-control save-continuation coverage also passes with the new damping. Full Release suite passes all 10,172 tests, including 8,898 Playsim and 644 MapLoader tests. Clean Release rebuild with warnings as errors passes with zero warnings/errors; git diff --check passes.
+- Boundary: water/noclip eligibility, native separate player bob momentum, runtime ACS/server callbacks, full horizontal-versus-vertical movement ordering, other recorded gameplay gaps, and paired native-runtime certification remain open. Null external air control retains undamped legacy behavior. Phase 1 remains incomplete; changes are uncommitted.
+
+
+## Phase 1 loaded-map air-control default correction (2026-10-08)
+
+- Native audit found MAPINFO aircontrol zero is an inheritance sentinel during level initialization, not explicit disabled air control (src/g_level.cpp:1993,2034-2037). Converted this selection in LevelBuilder: WAD-loaded levels default to 1/256, the native sv_aircontrol initial value (src/playsim/p_user.cpp:1574), and nonzero map values override it.
+- Maps without metadata or with omitted/zero aircontrol now receive that native initial default through all represented WAD loading paths. Later complete map definitions reset an earlier map air-control override to default when the property is omitted. Directly constructed PlayLevel configuration retains explicit zero and nullable legacy behavior; native runtime ACS zero behavior remains a separate unfinished path.
+- Corrected the earlier zero-value loading regression and added three cases for omitted properties, signed nonzero overrides, and absent MAPINFO with copy preservation. Full Release suite passes all 10,165 tests, including 8,891 Playsim and 644 MapLoader tests. Clean Release rebuild with warnings as errors passes with zero warnings/errors; git diff --check passes.
+- Boundary: server-variable customization/change callbacks, defaultmap inheritance, runtime ACS SetAirControl, AirControlChanged air friction, bob scaling, water and 3D-floor handling, other recorded gameplay gaps, and paired native-runtime certification remain open. Phase 1 remains incomplete; changes are uncommitted.
+
+
+## Phase 1 MAPINFO air-control loading (2026-10-08)
+
+- Converted the aircontrol map property from native DEFINE_MAP_OPTION(aircontrol) (src/gamedata/g_mapinfo.cpp:1361 onward), using finite invariant-culture floating values in both represented MAPINFO syntaxes. Zero and signed values remain explicit values; malformed/nonfinite values fail parsing.
+- LevelBuilder now carries selected-map air control through Doom binary, Hexen binary, and represented UDMF loading, with existing ZMAPINFO-over-MAPINFO and later-map-definition precedence. Other-map definitions do not replace the selected map's value. Level configuration is assignable during loading and continues to copy/checksum through the preceding movement conversion.
+- Added nine regression cases: six property syntax/value/error cases and three WAD precedence/copy cases. Full Release suite passes all 10,162 tests, including 8,891 Playsim, 641 MapLoader, and 54 Gamedata tests. Clean Release rebuild with warnings as errors passes with zero warnings/errors; git diff --check passes.
+- Boundary: native server/default air-control selection, defaultmap inheritance, runtime ACS SetAirControl, air friction/bob factors, water/3D-floor eligibility, other recorded gameplay gaps, and paired native-runtime certification remain open. Missing map aircontrol retains null/previous managed movement. Phase 1 remains incomplete; changes are uncommitted.
+
+
+## Phase 1 configured player air-control conversion (2026-10-08)
+
+- Converted the thrust portion of PlayerPawn.ApplyAirControl and its MovePlayer eligibility (wadsrc/static/zscript/actors/player/player.zs:1341-1345,1387-1392). Explicit level AirControl multiplies the movement factor after friction conversion only when the pawn is airborne and gravity is enabled. Grounded and no-gravity/flight thrust remain unaffected.
+- Added optional immutable level configuration, simulation-copy preservation, finite-value validation at simulation construction, and configuration checksum coverage. Existing velocity/pose saves resume with matching external level configuration; no archive format change is required.
+- Added seven regression cases for zero/fractional/amplified air control, grounded and no-gravity exclusions, copy/checksum and fresh-save continuation, and nonfinite input rejection. Full Release suite passes all 10,153 tests, including 8,891 Playsim and 638 MapLoader tests. Clean Release rebuild with warnings as errors passes with zero warnings/errors; git diff --check passes.
+- Boundary: this converts explicitly supplied level configuration only. Null retains previous managed air movement; native server/default/MAPINFO air-control selection and runtime ACS SetAirControl remain unconverted. Native bob-factor scaling, water eligibility, air friction, other recorded terrain/gameplay gaps, and paired native-runtime certification remain open. Phase 1 remains incomplete; changes are uncommitted.
+
+
+## Phase 1 no-gravity terrain eligibility and airborne actor factor (2026-10-08)
+
+- Converted the represented no-gravity exclusion in native P_GetFriction's terrain branch (src/playsim/p_map.cpp:696 onward). Grounded actors with NoGravity now use ordinary friction rather than floor terrain for damping and thrust; active flight continues to select flying friction. Actor friction multipliers remain effective independently of terrain eligibility.
+- Removed the airborne early return that bypassed native actor-friction movement-factor recalculation. Nonflight airborne actors now select the ordinary base factor and apply their actor multiplier plus strict mud speed boosts, while remaining unaffected by floor-terrain metadata. Airborne coasting remains undamped as before; this does not implement native air-control scaling.
+- Added five regression cases for grounded no-gravity terrain exclusion, minimum/clamped actor factors while airborne, save continuation, and terrain acceleration resuming when gravity is restored. Corrected the earlier grounded terrain-damping fixture to leave gravity enabled, reflecting native eligibility.
+- Full Release suite passes all 10,146 tests, including 8,884 Playsim and 638 MapLoader tests. Clean Release rebuild with warnings as errors passes with zero warnings/errors; git diff --check passes.
+- Boundary: noclip and variable-friction toggles, water/3D-floor/touching-sector selection, native air control and bob factors, monster compatibility movement, other recorded conversion gaps, and paired native-runtime certification remain open. Phase 1 remains incomplete; changes are uncommitted.
+
+
+## Phase 1 flight actor-friction conversion (2026-10-08)
+
+- Converted the remaining represented flight branch of native P_GetFriction (src/playsim/p_map.cpp:665-667,747-751): active flight selects FRICTION_FLY and the original movement factor, then applies actor friction, clamps it, and recalculates the movement factor when the multiplier differs from one. Terrain factors remain excluded during active flight.
+- Horizontal flight damping now uses the multiplied/clamped flying friction. Player flight acceleration uses the same native recalculation and existing strict mud speed thresholds. Default-multiplier flight behavior is preserved; pitched forward movement continues to share the converted thrust scale.
+- Corrected the earlier flight regression that expected actor friction to be ignored, and added two acceleration cases covering minimum factor and clamped ice factor with fresh-save checksum/byte continuation. Version 119 friction persistence from the preceding conversion supports this without another format change.
+- Full Release suite passes all 10,141 tests, including 8,879 Playsim and 638 MapLoader tests. Clean Release rebuild with warnings as errors passes with zero warnings/errors; git diff --check passes.
+- Boundary: native variable-friction toggles, noclip/no-gravity terrain eligibility, airborne nonflight multiplier behavior, water/3D-floor/touching-sector selection, air control/bobbing, monster compatibility movement, other recorded conversion gaps, and paired native-runtime certification remain open. Phase 1 remains incomplete; changes are uncommitted.
+
+
+## Phase 1 actor friction acceleration and save correction (2026-10-08)
+
+- Audit found P_GetFriction recalculates movement factor after multiplying and clamping actor friction (src/playsim/p_map.cpp:747-751). Converted this missing grounded player behavior, including FrictionToMoveFactor's greater-than-or-equal ice boundary and minimum factor (p_spec.cpp:799 onward). Default actor friction preserves the preceding terrain factor; modified friction recalculates it before mud speed boosts.
+- Save continuation exposed actor Friction being checksummed but omitted from archives. Added conditional version 119 friction trailer, preserving signed fixed-point values, validating presence/count/size/prior-version fields, and restoring default one from older saves. Existing geometry-required validation covers the new pose field. No change to ordinary save versions when friction is default.
+- Added five regression cases for zero/mud/clamped ice acceleration, terrain factor replacement with fresh-save continuation, older-save reset, and malformed trailer presence rejection. Full Release suite passes all 10,139 tests, including 8,877 Playsim and 638 MapLoader tests. Clean Release rebuild with warnings as errors passes with zero warnings/errors; git diff --check passes.
+- Monster audit: native P_Move terrain friction requires COMPATF_MBFMONSTERMOVE and its collision-tested displacement/momentum path (src/playsim/p_enemy.cpp:528-615). Current managed chase steering does not implement that compatibility path, so monster terrain acceleration remains open. Flight actor-multiplier acceleration, water/3D-floor/touching-sector selection, native air control/bobbing, other recorded conversion gaps, and paired native-runtime certification remain open. Phase 1 remains incomplete; changes are uncommitted.
+
+
+## Phase 1 terrain player acceleration conversion (2026-10-08)
+
+- Connected terrain movement factors to represented player forward/side thrust, following P_GetMoveFactor (src/playsim/p_map.cpp:771-799), its GetFriction script binding (src/scripting/vmthunks_actors.cpp:1094 onward), and PlayerPawn.MovePlayer (wadsrc/static/zscript/actors/player/player.zs:1385-1409). Existing command scaling is multiplied by movement factor relative to native ORIG_FRICTION_FACTOR, preserving ordinary movement.
+- Mud factors use horizontal speed and strict native thresholds 15000/65536, twice that, and four times that; factors increase by 2, 4, or 8 above those thresholds. Ice retains its parsed factor without mud boosts. Terrain acceleration applies only at the represented sector floor; airborne, elevated support, and active flight use existing movement. Speed/crouch scaling and pitched forward thrust retain the shared thrust scale.
+- Added ten regression cases: seven exact/beyond speed-threshold cases, airborne and active-flight side movement, and fresh-save continuation with forward/side commands. Existing level metadata and velocity saves suffice; no archive changes are needed.
+- Full Release suite passes all 10,134 tests, including 8,872 Playsim and 638 MapLoader tests. Clean Release rebuild with warnings as errors passes with zero warnings/errors; git diff --check passes.
+- Boundary: native air-control/bob-factor integration, sector friction overrides, touching-sector minimum selection, water and 3D-floor friction, and monster friction acceleration remain outside this subset. Other recorded terrain/gameplay conversion gaps and paired native-runtime certification remain open. Phase 1 remains incomplete; changes are uncommitted.
+
+
+## Phase 1 terrain friction conversion (2026-10-08)
+
+- Converted TERRAIN friction parsing from src/gamedata/p_terrain.cpp:484-506, including native scale/clamp arithmetic, ice versus ordinary movement-factor formulas, and minimum movement factor. Defaults remain zero; modify preserves metadata and ordinary redefinition resets it. Invalid/nonfinite inputs fail explicitly.
+- Applied nonzero terrain friction to represented actors contacting their sector floor, following the flat-floor subset of GetFriction/P_GetFriction (src/playsim/p_sectors.cpp:1141-1157 and p_map.cpp:733-744). Zero remains the native default-friction sentinel. Existing flight, airborne movement, actor friction multiplier, projectile/NoFriction, and corpse ledge policies remain in place. Terrain friction does not apply to elevated actor support.
+- Friction and movement-factor metadata participate in level checksums; existing level copying and pose saves require no format change. Added ten regression cases for parser clamping/formulas/modify/reset/invalid inputs, grounded versus airborne/flight damping, configuration checksums, and fresh-save continuation.
+- Full Release suite passes all 10,124 tests, including 8,862 Playsim and 638 MapLoader tests. Clean Release rebuild with warnings as errors passes with zero warnings/errors; git diff --check passes.
+- Boundary: movement factor is parsed but is not yet applied to player acceleration. Sector friction overrides, minimum-friction selection across touching sectors, water/deep-water and 3D-floor friction remain outside this subset. Foot clipping, protection items, splash effects, broader TERRAIN constructs, other recorded conversion gaps, and paired native-runtime certification remain unfinished. Phase 1 remains incomplete; changes are uncommitted.
+
+
+## Phase 1 terrain landing damage and splash identity (2026-10-08)
+
+- Converted represented DamageOnLand and terrain splash references, with empty named splash definitions retained across TERRAIN lumps. Unknown splash references emit trace diagnostics and resolve to no splash at parse time. Modify preserves these fields; ordinary redefinition resets them.
+- Converted the flat-floor player landing damage branch of P_HitWater (src/playsim/p_mobj.cpp:7500 onward): a valid splash, DamageOnLand, nonzero amount, and nonzero time AND mask result are required. This impact branch remains independent of periodic NoSectorDamage policy and uses existing typed damage handling. Physics excludes actor landings and elevated support floors.
+- Splash identity and landing metadata are loaded in all represented map formats, copied into simulation levels, and included in checksums. Existing airborne pose and clock saves resume impact damage without an archive format change.
+- Added seven regression cases covering splash/flag/mask eligibility, scheduled-tick damage without double impact, fresh-save continuation, and parser modify/reset behavior. Full Release suite passes all 10,114 tests, including 8,858 Playsim and 632 MapLoader tests. Clean Release rebuild with warnings as errors passes with zero warnings/errors; git diff --check passes.
+- Boundary: only empty splash identity blocks are supported; nonempty splash effect definitions still fail explicitly. Splash particles/audio, water-level contact, 3D-floor terrain resolution, protection items, and the broader TERRAIN parser remain unfinished. Paired native-runtime certification and the other recorded conversion gaps remain open. Phase 1 remains incomplete; changes are uncommitted.
+
+
+## Phase 1 TERRAIN periodic damage conversion (2026-10-08)
+
+- Converted damageamount and damagetimemask definition fields (src/gamedata/p_terrain.cpp:204-207), with native defaults 0 and 31 and existing modify/reset semantics. Parser preserves signed damage amounts and accepts nonnegative signed-int time masks; invalid values fail explicitly. Mask -1/negative is rejected rather than permitting an invalid damage period.
+- Added represented flat-floor P_ActorOnSpecialFlat periodic damage (src/playsim/p_spec.cpp:645-679), reached during actor ticks after sector damage as in p_mobj.cpp:5123-5128. Eligibility follows checkForSpecialSector (src/playsim/p_spec.h:91): players, opted-in monsters, or forced actors, with ForceSectorDamage overriding NoSectorDamage. Floor contact is required independently of the sector's HarmInAir policy.
+- Tick cadence uses modulo DamageTimeMask + 1, not a bit-mask test; widened period arithmetic avoids signed overflow. Existing typed damage/armor/lifecycle helpers are reused. Definitions participate in checksum coverage; health, typed factors, and shared tick clock already persist, requiring no save format change.
+- Added twelve regression cases: four parser/default/modify/reset/invalid-field cases and eight gameplay cadence, monster eligibility, floor-contact, typed-factor, and fresh-save continuation cases. Full Release suite passes all 10,107 tests, including 8,852 Playsim tests and 631 MapLoader tests. Clean Release rebuild with warnings as errors passes with zero warnings/errors; git diff --check passes.
+- Boundary: terrain AllowProtection/PowerIronFeet, DamageOnLand, water-level contact, splashes/audio, friction/footclip/steps, conditionals, texture ID/existence validation, and native 3D-floor terrain resolution remain unconverted. Unsupported TERRAIN properties still report load errors. Other freeze/class/state/ice-head/dynamic reconstruction/multi-archive/negative-radius/registry/resurrection/pathfinding gaps and paired native-runtime certification remain open. Phase 1 remains incomplete; changes are uncommitted.
+
+
+## Phase 1 TERRAIN floor mappings and default terrain (2026-10-08)
+
+- Converted represented floor [optional] texture terrain and defaultterrain directives from native ParseFloor/ParseDefault (src/gamedata/p_terrain.cpp:616-668), plus None/Null mapping reset fallback (src/gamedata/p_terrain.h:42-50). TerrainDefinitionParser.TryParseData retains definitions, floor mappings, and defaults across lumps; the definitions-only API remains available.
+- Added name-based floor mappings/default terrain to PlayLevel loading/copying. Lookup selects an explicit sector floor override, then a matching floor texture mapping, then the default for absent/None/Null mappings. Ice-chunk timing uses the shared lookup. Unknown mapping references emit trace diagnostics and select default terrain; unknown default references emit diagnostics and select neutral terrain, reflecting native parse-time fallback rather than forward-reference binding.
+- Mapping/default configuration participates in the simulation checksum. Existing timers and sector-override archives remain unchanged; callers reload matching level metadata on restore. Later texture mappings replace earlier ones case-insensitively.
+- Added thirteen regression cases: ten mapping/default/override/copy/lump-continuation/error cases, one WAD mapping/default load case, and two parsed-mapping gameplay timer/checksum cases. Full Release suite passes all 10,095 tests, including 8,844 Playsim tests and 627 MapLoader tests. Clean Release rebuild with warnings as errors passes with zero warnings/errors; git diff --check passes.
+- Boundary: mappings use names without native texture ID/alias/existence checks; optional is parsed but missing-texture diagnostics/skip rules require the unconverted texture manager. Splash blocks, conditionals, additional terrain properties/effects, native floor-sector/3D-floor resolution, other freeze flags/rendering/audio/player counters, full class/state defaults, ice heads, general dynamic reconstruction, multi-archive loading/includes, negative radius/standing heights, registry/resurrection/pathfinding gaps, and paired native-runtime certification remain open. Unsupported TERRAIN constructs still return explicit load errors. Phase 1 remains incomplete; changes are uncommitted.
+
+
+## Phase 1 TERRAIN damage-type definition loading (2026-10-08)
+
+- Converted the damage-type subset of native ParseTerrain and ParseDamage (src/gamedata/p_terrain.cpp:410-475). TerrainDefinitionParser reads terrain name blocks, optional modify, and damagetype; ordinary redefinitions reset represented fields while modify preserves earlier definitions. Lava normalizes to Fire. Names and keywords are case-insensitive, with quoted names/types and line/block comments supported.
+- LevelBuilder loads TERRAIN lumps in archive order before existing map metadata selection, accumulating modify/replacement semantics across lumps. Definitions are attached for Doom binary, Hexen binary, and represented UDMF paths, copied into simulation levels, and consumed by preceding ice-chunk timing/checksum integration. No archive format change is needed; terrain definitions remain map configuration.
+- Added fifteen regression cases: eleven parser/alias/redefinition/comment/error cases, three WAD loading/precedence/copy/error cases, and one parsed-definition gameplay timer case. Full Release suite passes all 10,082 tests, including 8,842 Playsim tests and 616 MapLoader tests. Clean Release rebuild with warnings as errors passes with zero warnings/errors; git diff --check passes.
+- Compatibility boundary: this is a narrow definition parser, not full TERRAIN support. Unsupported properties/directives (including floor mappings, splash blocks, conditionals, default terrain, and other terrain effects) now report explicit load failure rather than being ignored. WADs with those constructs remain unsupported; existing supplied-definition APIs remain available. Texture-to-terrain mapping and native floor-sector/3D-floor resolution remain open.
+- Other freeze flags, rendering/stealth/audio/player counters, full class/state defaults, ice heads, general dynamic reconstruction, multi-archive loading/includes, negative radius/standing heights, registry/resurrection/pathfinding gaps, and paired native-runtime certification remain open. Phase 1 remains incomplete; changes are uncommitted.
+
+
+## Phase 1 ice-chunk floor terrain timing (2026-10-08)
+
+- Converted the fire/ice duration branches in IceChunk.A_IceSetTics (wadsrc/static/zscript/actors/shared/ice.zs:42-54). The existing native IceTics draw is followed by Fire quartering (right shift by 2), Ice doubling (left shift by 1), or unchanged timing for other damage types. Lava is treated as Fire, matching native terrain ParseDamage (src/gamedata/p_terrain.cpp:467 onward).
+- Added external LevelTerrainDefinition metadata retained through PlayLevel.CopyForSimulation. Explicit sector FloorTerrain overrides resolve against case-insensitive definition names, with later matching definitions winning; terrain names alone do not imply damage types. Chunk timing resolves the flat sector at its current coordinates, covering initial selected-frame entry before SectorIndex is assigned.
+- External terrain definitions participate in the simulation checksum. Existing sector terrain metadata, chunk timer/lifecycle archives, and IceTics stream persistence are reused without a save format change; callers must supply the same terrain configuration when loading.
+- Added eight regression cases covering Fire/Lava/Ice/other/no-damage creation scaling, successor frame scaling, named-stream draw equality, fresh-world save continuation, lookup without an assigned sector, name/type separation, and configuration checksum/copy behavior. Full Release suite passes all 10,067 tests, including 8,841 Playsim tests. Clean Release rebuild with warnings as errors passes with zero warnings/errors; git diff --check passes.
+- Boundary: TERRAIN lump parser/loading, texture-to-terrain mappings/default terrain, native floor-sector/3D-floor terrain resolution, generalized terrain damage/splashes/footsteps remain unconverted. Other freeze flags, rendering/stealth, audio, player counters, full class/state defaults, ice heads, general dynamic reconstruction, multi-archive game defaults/includes, negative radius/standing heights, registry/resurrection/pathfinding gaps, and paired native-runtime certification remain open. Phase 1 remains incomplete; changes are uncommitted.
+
+
+## Phase 1 freeze-death wall sliding and runtime slide persistence (2026-10-08)
+
+- Converted bSlidesOnWalls = true in A_FreezeDeath (wadsrc/static/zscript/actors/shared/ice.zs:107) through existing CanSlide/MF2_SLIDE behavior (src/playsim/actor.h:178). Frozen actors now select the represented wall-slide path instead of stopping at a wall. Existing physics and checksum handling are reused.
+- Audited a related persistence gap: runtime CanSlide changes were neither captured nor restored. Added conditional archive version 118 for true/false overrides relative to represented spawn movement defaults, including direct/ACS changes outside freezing. Capture distinguishes explicit false from omitted metadata; restoration resets omitted values to spawn defaults, preserving default player sliding.
+- Archive validates flag values, prior version, count, and trailer size before restoration; geometry-state guards cover the new pose metadata. Existing archives continue to load and reset slide state to represented class defaults. No default-state action is replayed.
+- Added six regression cases: two opposite wall tangents after freeze/fresh-world load with position/checksum continuation, runtime true override/older-save reset, explicit false player override/default reset, and malformed prior-version/flag payloads. Full Release suite passes all 10,059 tests, including 8,833 Playsim tests. Clean Release rebuild with warnings as errors passes with zero warnings/errors; git diff --check passes.
+- Boundary: native generalized wall/portal/BSP/3D-floor collision remains uncertified. Additional freeze flags (NoBlood, Telestomp, CanPass, Crashed), rendering/stealth, audio, player counters, full class/state defaults, terrain scaling, player ice heads, general dynamic reconstruction, multi-archive game defaults/includes, negative radius/standing heights, registry/resurrection/pathfinding gaps, and paired native-runtime certification remain open. Phase 1 remains incomplete; changes are uncommitted.
+
+
+## Phase 1 signed actor height save parity (2026-10-08)
+
+- Resolved the preceding freeze-default-height save limitation. Native actor serialization stores Height directly (src/playsim/p_mobj.cpp:243), without the managed nonnegative current-height restriction. SimSizeArchive now preserves the full signed HeightRaw range in write/read/restore paths; the existing version 75 signed integer encoding requires no format change.
+- Retained validation for negative radius, negative/nonfinite player standing height, malformed presence/count/header/size, and nonzero absent-record payloads. Renamed misleading local radius/height variables in the reader for clarity. Negative current height is accepted only as represented data, without clamping or changing action parameter semantics.
+- Added three signed-height regression cases (-1, -65536, int.MinValue) covering fresh-world save equality, subsequent checksum continuation, and older-save reset to spawn height. Upgraded the negative DeHackEd freeze-height case to verify successful fresh-world dimension/timer persistence. Replaced the obsolete negative-height malformed case with absent-record payload rejection.
+- Full Release suite passes all 10,053 tests, including 8,827 Playsim tests. Clean Release rebuild with warnings as errors passes with zero warnings/errors; git diff --check passes.
+- Boundary: this certifies represented signed current-height persistence, not full native geometry behavior for unusual dimensions. Negative radius/standing-height support remains absent. Additional freeze flags, rendering/stealth, audio, player counters, full native class/state defaults, terrain scaling, player ice heads, general dynamic reconstruction, multi-archive game defaults/includes, native BSP/3D floors, registry/resurrection/pathfinding gaps, and paired native-runtime certification remain open. Phase 1 remains incomplete; changes are uncommitted.
+
+
+## Phase 1 freeze-death default height restoration (2026-10-08)
+
+- Converted Height = Default.Height in A_FreezeDeath (wadsrc/static/zscript/actors/shared/ice.zs:108 onward) for actors with represented spawn metadata. ActorFreezeActions reuses retained ResurrectionHeight, restoring height after timer/flags and before monster special dispatch. Current radius, player FullHeight, and other dimensions remain untouched, matching the height-only native assignment.
+- Existing class defaults/DeHackEd spawn-height metadata and size archives are reused; no new configuration or archive format is introduced. Attached synthetic actors lacking represented default height retain their current height; general native class-default import remains incomplete.
+- Added five regression cases: zero/fractional/negative patched default heights with runtime radius preservation, player standing height versus runtime FullHeight, and a special activation hook observing restored height. Zero and positive patched cases verify fresh-world save dimensions/timer and archive equality. Negative default height is restored in memory, but existing SimSizeArchive validation explicitly rejects saving a negative size override; that pre-existing limitation remains covered rather than silently clamped.
+- Full Release suite passes all 10,050 tests, including 8,824 Playsim tests. Clean Release rebuild with warnings as errors passes with zero warnings/errors; git diff --check passes.
+- Boundary: additional freeze flags, render style/stealth, audio, player counters, full native class/state defaults, terrain scaling, player ice heads, general dynamic reconstruction, multi-archive game defaults/includes, native BSP/3D floors, registry/resurrection/pathfinding gaps, negative size archive support, and paired native-runtime certification remain open. Phase 1 remains incomplete; changes are uncommitted.
+
+
+## Phase 1 freeze-death monster special dispatch (2026-10-08)
+
+- Converted the remaining monster-special branch of A_FreezeDeath (wadsrc/static/zscript/actors/shared/ice.zs:101 onward), using ActorSpecialActions.CallSpecial for native A_CallSpecial semantics (wadsrc/static/zscript/actors/actor.zs:1295). After existing timer/flag initialization, non-player monsters with a nonzero special call it with all five stored arguments and self as activator, then clear the special.
+- Reused the represented special dispatcher instead of generic death activation: the direct call does not apply death-activation routing, Hexen retention, or activation-mask suppression. Clearing occurs after the call, including when the special installs a replacement special. Players and non-monsters retain their stored specials.
+- Added six regression cases covering both Doom/Hexen clearing, exactly-once execution, direct self activation, player/non-monster exclusions, post-call replacement clearing, and fresh-world save restoration without replay. Existing special/timer/flag archives are reused; no save format change is required.
+- Full Release suite passes all 10,045 tests, including 8,819 Playsim tests. Clean Release rebuild with warnings as errors passes with zero warnings/errors; git diff --check passes.
+- Boundary: the existing dispatcher covers represented specials only. Full A_FreezeDeath remains incomplete: additional native flags, default height, render style/stealth, sound, player counters, and automatic native state-table import are still absent. Terrain scaling, player ice heads, general dynamic reconstruction, multi-archive game defaults/includes, native BSP/3D floors, remaining tables/registry/resurrection/pathfinding gaps, and paired native-runtime certification remain open. Phase 1 remains incomplete; this round's changes are uncommitted.
+
+
 ## Phase 1 freeze-death timer and represented flags (2026-10-08)
 
 - Completed the interrupted A_FreezeDeath timer/flag subset (wadsrc/static/zscript/actors/shared/ice.zs:101 onward). ActorFreezeActions.FreezeDeath can be bound to represented state actions, sets Solid, Shootable, IceCorpse, and Pushable, and assigns 75 plus two low-byte draws. It requires an attached simulation and fails before mutation otherwise.

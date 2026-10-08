@@ -2,6 +2,55 @@ namespace HCDE.MapLoader.Tests;
 
 public class LevelBuilderTests
 {
+    [Theory]
+    [InlineData(0)]
+    [InlineData(1)]
+    [InlineData(2)]
+    public void SndInfoMusicLoadsBeforeMapInfoAcrossFormats(int format)
+    {
+        var original = format == 1 ? HexenLevelTests.HexenWad()
+            : TestWadBuilder.BuildMinimalMapWad("MAP01", udmfTextMap: format == 2);
+        Assert.True(WadArchiveReader.TryReadDirectory(original, out var entries, out var error), error);
+        var lumps = entries.Select(entry => (entry.Name,
+            original.AsSpan((int)entry.FilePosition, (int)entry.Size).ToArray())).ToList();
+        lumps.Add(("MAPINFO", System.Text.Encoding.UTF8.GetBytes("defaultmap { music = INHERITED, 5 } map MAP01 One { }")));
+        lumps.Add(("SNDINFO", System.Text.Encoding.UTF8.GetBytes("$map 1 OLD")));
+        lumps.Add(("SNDINFO", System.Text.Encoding.UTF8.GetBytes("$map 0 IGNORED $map 1 \"TRACK:3\"")));
+        Assert.True(LevelBuilder.TryFromWad(MapsModsTests.Wad(lumps.ToArray()), "MAP01", out var level, out error), error);
+        Assert.Equal("TRACK:3", level.Music); Assert.Equal(5, level.MusicOrder);
+        Assert.Equal(level.Music, level.CopyForSimulation().Music);
+    }
+
+    [Theory]
+    [InlineData(0)]
+    [InlineData(1)]
+    [InlineData(2)]
+    public void MapMusicLoadsAcrossFormatsAndCopies(int format)
+    {
+        var original = format == 1 ? HexenLevelTests.HexenWad()
+            : TestWadBuilder.BuildMinimalMapWad("MAP01", udmfTextMap: format == 2);
+        Assert.True(WadArchiveReader.TryReadDirectory(original, out var entries, out var error), error);
+        var lumps = entries.Select(entry => (entry.Name,
+            original.AsSpan((int)entry.FilePosition, (int)entry.Size).ToArray())).ToList();
+        lumps.Add(("MAPINFO", System.Text.Encoding.UTF8.GetBytes("map MAP01 One { music = OLD intermusic = OLDINT }")));
+        lumps.Add(("ZMAPINFO", System.Text.Encoding.UTF8.GetBytes("defaultmap { music = \"TRACK:2\" intermusic = INTER, 3 } map MAP01 One { }")));
+        lumps.Add(("ZMAPINFO", System.Text.Encoding.UTF8.GetBytes("map MAP02 Two { music = OTHER }")));
+        Assert.True(LevelBuilder.TryFromWad(MapsModsTests.Wad(lumps.ToArray()), "MAP01", out var level, out error), error);
+        foreach (var loaded in new[] { level, level.CopyForSimulation() })
+        {
+            Assert.Equal("TRACK", loaded.Music); Assert.Equal(2, loaded.MusicOrder);
+            Assert.Equal("INTER", loaded.IntermissionMusic); Assert.Equal(3, loaded.IntermissionMusicOrder);
+        }
+    }
+
+    [Fact]
+    public void MissingMapInfoLeavesMusicUnspecified()
+    {
+        Assert.True(LevelBuilder.TryFromWad(TestWadBuilder.BuildMinimalMapWad("MAP01"), "MAP01", out var level, out var error), error);
+        Assert.Equal("", level.Music); Assert.Equal(0, level.MusicOrder);
+        Assert.Equal("", level.IntermissionMusic); Assert.Equal(0, level.IntermissionMusicOrder);
+    }
+
     [Fact]
     public void DoomBinaryOffsetsPopulateEveryTexturePart()
     {

@@ -46,7 +46,7 @@ public class ActorSizeSaveTests
     [InlineData(4, int.MaxValue)]
     [InlineData(8, 2)]
     [InlineData(12, -1)]
-    [InlineData(24, -1)]
+    [InlineData(8, 0)]
     public void MalformedSizeTrailerIsRejected(int offset, int value)
     {
         var sim = Room(); ActorPropertyActions.SetSize(sim.AddBot(0, 0), 12, 30);
@@ -63,6 +63,23 @@ public class ActorSizeSaveTests
         state.Actors.Single().Size = new(1, double.NaN, 1); actor.Health = 42;
         Assert.Throws<InvalidOperationException>(() => SimSavegame.Write(state));
         Assert.Throws<InvalidOperationException>(() => sim.RestoreState(state)); Assert.Equal(42, actor.Health);
+    }
+
+    [Theory]
+    [InlineData(-1)]
+    [InlineData(-65536)]
+    [InlineData(int.MinValue)]
+    public void SignedCurrentHeightRoundTripsAndOlderSaveRestoresDefault(int heightRaw)
+    {
+        var source = Room(); var actor = source.AddBot(0, 0);
+        var spawnHeight = actor.Height; var older = SimSavegame.Write(source);
+        actor.Height = new Fixed(heightRaw); source.Tick();
+        var saved = SimSavegame.Write(source); var restored = Room(); var loaded = restored.AddBot(0, 0);
+        SimSavegame.Apply(restored, saved);
+        Assert.Equal(heightRaw, loaded.Height.Raw);
+        Assert.Equal(saved, SimSavegame.Write(restored));
+        restored.Tick(); source.Tick(); Assert.Equal(source.Checksum, restored.Checksum);
+        SimSavegame.Apply(restored, older); Assert.Equal(spawnHeight, loaded.Height);
     }
 
     private static AuthoritySimulation Room() => AuthoritySimulation.Start(new PlayLevel

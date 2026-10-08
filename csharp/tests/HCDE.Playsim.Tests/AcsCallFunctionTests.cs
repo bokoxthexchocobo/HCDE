@@ -5,6 +5,70 @@ namespace HCDE.Playsim.Tests;
 
 public class AcsCallFunctionTests
 {
+    [Theory]
+    [InlineData(5)]
+    [InlineData(6)]
+    [InlineData(7)]
+    [InlineData(8)]
+    [InlineData(9)]
+    public void CheckActorSoundPropertyComparesModuleAndGlobalNames(int property)
+    {
+        var sim = Room(); var actor = sim.Players.Single();
+        actor.ActorSounds = new Dictionary<ActorSoundType, string> { [(ActorSoundType)(property - 5)] = "World/Sound" };
+        var globals = new AcsGlobalStrings(); var globalId = globals.Add("WORLD/SOUND");
+        foreach (var (stringId, expected) in new[] { (0, 1), (1, 0), (globalId, 1) })
+        {
+            var stack = new List<int> { 123, 0, property, stringId };
+            Assert.True(AcsCallFunctions.TryInvoke(sim, stack, new() { Value = actor }, ["world/sound", "different"],
+                globals, AcsCallFunctions.CheckActorProperty, 3, out var result));
+            Assert.Equal(expected, result); Assert.Equal(new[] { 123 }, stack);
+        }
+        actor.Destroy();
+        Assert.True(AcsCallFunctions.TryInvoke(sim, new List<int> { 0, property, 0 }, new() { Value = actor }, ["world/sound"],
+            globals, AcsCallFunctions.CheckActorProperty, 3, out var missing));
+        Assert.Equal(0, missing);
+    }
+
+    [Theory]
+    [InlineData(5)]
+    [InlineData(6)]
+    [InlineData(7)]
+    [InlineData(8)]
+    [InlineData(9)]
+    public void ActorSoundPropertiesSetAndGetNamesForPlayback(int property)
+    {
+        var sim = Room(); var actor = sim.Players.Single();
+        Run(sim, actor, ["configured"],
+            (int)AcsPcode.PushNumber, 0, (int)AcsPcode.PushNumber, property,
+            (int)AcsPcode.PushNumber, 0, (int)AcsPcode.SetActorProperty,
+            (int)AcsPcode.PushNumber, 0,
+            (int)AcsPcode.PushNumber, 0, (int)AcsPcode.PushNumber, property, (int)AcsPcode.GetActorProperty,
+            (int)AcsPcode.CallFunc, 2, 61);
+        Assert.Equal("configured", actor.ActorSounds[(ActorSoundType)(property - 5)]);
+        Assert.Equal("configured", Assert.Single(sim.PendingSoundRequests).Sound);
+    }
+
+    [Theory]
+    [InlineData(0)]
+    [InlineData(3)]
+    [InlineData(10)]
+    [InlineData(99)]
+    public void PlayActorSoundSelectsActorMetadata(int selector)
+    {
+        var sim = Room(); var actor = sim.Players.Single();
+        actor.ActorSounds = new Dictionary<ActorSoundType, string>
+        { [ActorSoundType.See] = "see", [ActorSoundType.Death] = "death", [ActorSoundType.Push] = "push" };
+        Run(sim, actor, [], (int)AcsPcode.PushNumber, 0, (int)AcsPcode.PushNumber, selector,
+            (int)AcsPcode.CallFunc, 2, 71);
+        if (selector == 99) Assert.Empty(sim.PendingSoundRequests);
+        else
+        {
+            var request = Assert.Single(sim.DrainSoundRequests());
+            Assert.Equal(actor.ActorSounds[(ActorSoundType)selector], request.Sound);
+            Assert.Equal(actor.Id, request.ActorId); Assert.Equal(4, request.Channel);
+        }
+    }
+
     [Fact]
     public void CallFunc_FixedSqrt_ReturnsFixedPointRoot()
     {
@@ -475,6 +539,29 @@ public class AcsCallFunctionTests
             (int)AcsPcode.IfNotGoto, 48,
             (int)AcsPcode.Lspec2Direct, 112, 7, 35);
         Assert.Equal(35, sim.LightOf(0));
+        var request = Assert.Single(sim.DrainSoundRequests());
+        Assert.Equal(player.Id, request.ActorId); Assert.Equal("world/doom/sounds", request.Sound);
+        Assert.Equal(4, request.Channel); Assert.Equal(1, request.Volume); Assert.Equal(1, request.Attenuation);
+        Assert.False(request.Loop); Assert.False(request.Local); Assert.Empty(sim.DrainSoundRequests());
+    }
+
+    [Fact]
+    public void CallFunc_PlaySound_QueuesOptionalArgumentsInNativeUnits()
+    {
+        var sim = Room(); var player = sim.Players.Single();
+        Run(sim, player, ["sound"],
+            (int)AcsPcode.PushNumber, 0,
+            (int)AcsPcode.PushNumber, 0,
+            (int)AcsPcode.PushNumber, 19,
+            (int)AcsPcode.PushNumber, 32768,
+            (int)AcsPcode.PushNumber, 1,
+            (int)AcsPcode.PushNumber, 131072,
+            (int)AcsPcode.PushNumber, 1,
+            (int)AcsPcode.CallFunc, 7, 61);
+        var request = Assert.Single(sim.PendingSoundRequests);
+        Assert.Equal(3, request.Channel); Assert.Equal(16, request.Flags);
+        Assert.Equal(0.5f, request.Volume); Assert.Equal(2f, request.Attenuation);
+        Assert.True(request.Loop); Assert.True(request.Local);
     }
 
     [Fact]

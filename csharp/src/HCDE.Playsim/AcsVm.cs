@@ -297,6 +297,22 @@ public sealed class AcsVm
             var opcode = ReadI32(fiber);
             switch (opcode)
             {
+                case (int)AcsPcode.SetGravity:
+                    var levelGravity = Pop(fiber);
+                    if (!fiber.Done) sim.SetLevelGravity(levelGravity);
+                    break;
+                case (int)AcsPcode.SetGravityDirect:
+                    var directGravity = ReadI32(fiber);
+                    if (!fiber.Done) sim.SetLevelGravity(directGravity);
+                    break;
+                case (int)AcsPcode.SetAirControl:
+                    var airControl = Pop(fiber);
+                    if (!fiber.Done) sim.SetAirControl(airControl);
+                    break;
+                case (int)AcsPcode.SetAirControlDirect:
+                    var directAirControl = ReadI32(fiber);
+                    if (!fiber.Done) sim.SetAirControl(directAirControl);
+                    break;
                 case (int)AcsPcode.Nop:
                     break;
                 case (int)AcsPcode.PushByte:
@@ -912,7 +928,20 @@ public sealed class AcsVm
                     var setProperty = Pop(fiber);
                     var setTid = Pop(fiber);
                     if (fiber.Done) break;
-                    AcsActorProperties.Set(sim, fiber.Activator, setTid, setProperty, setValue);
+                    if (setProperty is >= 5 and <= 9)
+                    {
+                        var soundName = AcsStringIds.Lookup(setValue, fiber.StringTable, _globalStrings);
+                        var targets = setTid == 0
+                            ? fiber.Activator is { Destroyed: false } soundActivator ? new[] { soundActivator } : Array.Empty<Actor>()
+                            : sim.Actors.Where(actor => !actor.Destroyed && actor.ThingId == setTid).ToArray();
+                        foreach (var target in targets)
+                        {
+                            var sounds = new Dictionary<ActorSoundType, string>(target.ActorSounds);
+                            sounds[(ActorSoundType)(setProperty - 5)] = soundName;
+                            target.ActorSounds = sounds;
+                        }
+                    }
+                    else AcsActorProperties.Set(sim, fiber.Activator, setTid, setProperty, setValue);
                     break;
                 }
                 case (int)AcsPcode.SetActorState:
@@ -942,7 +971,13 @@ public sealed class AcsVm
                     var getProperty = Pop(fiber);
                     var getTid = Pop(fiber);
                     if (fiber.Done) break;
-                    fiber.Stack.Add(AcsActorProperties.Get(sim, fiber.Activator, getTid, getProperty));
+                    if (getProperty is >= 5 and <= 9)
+                    {
+                        var target = getTid == 0 ? fiber.Activator : AcsActorTid.SingleFromTid(sim, getTid);
+                        fiber.Stack.Add(target is null || target.Destroyed ? 0 : _globalStrings.Add(
+                            target.ActorSounds.GetValueOrDefault((ActorSoundType)(getProperty - 5)) ?? ""));
+                    }
+                    else fiber.Stack.Add(AcsActorProperties.Get(sim, fiber.Activator, getTid, getProperty));
                     break;
                 }
                 case (int)AcsPcode.PlayerNumber:
