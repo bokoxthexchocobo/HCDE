@@ -29,17 +29,53 @@ public static class ActorDamage
     /// <summary>Native <c>TELEFRAG_DAMAGE</c>. A hit this large kills through ordinary Buddha.</summary>
     public const int TelefragDamage = 1_000_000;
 
+    /// <summary>Native P_PoisonDamage bypasses armor and ordinary hit reactions.</summary>
+    public static DamageResult ApplyPoisonDamage(PlayerPawn target, int damage, Actor? source = null, bool playPainSound = true)
+    {
+        if (target.Health <= 0) return default;
+        var telefrag = damage >= TelefragDamage && !target.LaxTelefragDamage;
+        if (target.GodMode2 || target.NoDamage || !telefrag && (target.Invulnerable || target.GodMode)) return default;
+        if (target.Simulation is { } simulation)
+            damage = (int)Math.Clamp(damage * simulation.SkillDamageFactor * simulation.PlayerDamageFactor, 0, int.MaxValue);
+        damage = target.GetModifiedDamage(target.PoisonDamageType, damage, true, null, source, DamageFlags.None);
+        if (damage > 0) damage = ScaleDamage(damage, target.DamageFactor);
+        if (damage > 0) damage = target.ApplyTypedDamageFactor(damage, target.PoisonDamageType);
+        if (damage <= 0) return default;
+        AutoUseEmergencyHealth(target, damage);
+        var before = target.Health;
+        var next = (long)before - damage;
+        if (next < 50 && target.Simulation is { GameMode: not SpawnGameMode.Deathmatch, DisableAutoHealth: false } strifeSimulation)
+            next = target.Inventory.AutoUseStrifePoisonHealth(before, damage, PickupCatalog.ResolveHealthMaximum(target), strifeSimulation.HealthFactor);
+        if (next <= 0 && SurvivesByBuddha(target, telefrag ? TelefragDamage : 0, DamageFlags.None, null)) next = 1;
+        target.LastDamageSourceId = source?.Id;
+        target.DeathDamageAmount = damage;
+        target.DamageTypeReceived = target.PoisonDamageType;
+        // P_PoisonDamage selects its stored type directly, bypassing ordinary inflictor overrides.
+        target.DeathInflictor = null;
+        try { target.SetDamageHealth((int)Math.Clamp(next, int.MinValue, int.MaxValue), source, () => target.Health); }
+        finally { target.DamageTypeReceived = null; target.DeathInflictor = null; }
+        if (!target.IsDead && playPainSound && (target.Simulation?.Thinkers.Clock.Tic ?? 0) % 64 == 0)
+        {
+            var state = target.PainStateFor(target.PoisonPainType);
+            if (target.States.HasState(state))
+            {
+                var previous = target.PainDamageTypeContext;
+                target.PainDamageTypeContext = target.PoisonPainType;
+                try { target.States.Enter(target, state); }
+                finally { target.PainDamageTypeContext = previous; }
+            }
+        }
+        return new(before - target.Health, 0, target.IsDead);
+    }
+
     public static DamageResult Apply(Actor target, int damage, Actor? source = null, DamageFlags flags = DamageFlags.None, string? damageType = null, Actor? inflictor = null)
     {
         var forced = flags.HasFlag(DamageFlags.Forced);
-        // CF_BUDDHA2 clears DMG_FORCED before invulnerability and armor.
-        if (target is PlayerPawn { Buddha2: true })
-            forced = false;
         // God mode and invulnerability stop ordinary hits. A telefrag goes through both.
         var telefrag = damage >= TelefragDamage;
+        var reducible = !telefrag || target.LaxTelefragDamage;
         damage = Math.Max(damage, 0);
-        if (damage == 0 && forced)
-            return default;
+        var originalDamage = damage;
         if (target.Spectral && !forced && !telefrag && inflictor is not { Spectral: true })
             return default;
         if (target.IsDead)
@@ -59,10 +95,14 @@ public static class ActorDamage
         }
         var foilInvulnerability = target is not PlayerPawn && inflictor != null
             && (inflictor.FoilInvul || flags.HasFlag(DamageFlags.FoilInvulnerability));
-        if (!target.CanTakeDamage
-            || ((target.Invulnerable || target is PlayerPawn { GodMode: true })
-                && !telefrag && !forced && !foilInvulnerability && !flags.HasFlag(DamageFlags.BypassInvulnerability)))
-            return default;
+        if (!target.CanTakeDamage) return default;
+        if (ReferenceEquals(target, source) && reducible)
+            damage = ScaleDamage(damage, target.SelfDamageFactor);
+        if ((target.Invulnerable || target is PlayerPawn { GodMode: true })
+            && !telefrag && !forced && !foilInvulnerability && !flags.HasFlag(DamageFlags.BypassInvulnerability))
+            return (target is not PlayerPawn || target.NoDamage && target is not PlayerPawn { GodMode: true })
+                && IsFakePain(target, inflictor, originalDamage)
+                ? ReactToDamage(target, source, inflictor, flags, damageType, 0, 0, 0, originalDamage) : default;
         var attacker = source ?? inflictor;
         if (inflictor is { PierceArmor: true }) flags |= DamageFlags.BypassArmor;
         if (target.Brain is { Charging: true })
@@ -70,8 +110,15 @@ public static class ActorDamage
         if (target.Dormant && !forced) return default;
         if (!forced && !telefrag && attacker != null && !target.CanAttackHurtFrom(attacker))
             return default;
-        if (!forced && !telefrag)
+        if (!forced && reducible)
         {
+            if (damage > 1 && target.Simulation is { } skillSimulation)
+            {
+                var factor = target is PlayerPawn ? skillSimulation.PlayerDamageFactor
+                    : target.Friendly ? skillSimulation.FriendlyDamageFactor : skillSimulation.MonsterDamageFactor;
+                var scaled = target is PlayerPawn ? damage * skillSimulation.SkillDamageFactor * factor : damage * factor;
+                damage = (int)Math.Clamp(scaled, 0, int.MaxValue);
+            }
             if (inflictor != null)
             {
                 damage = inflictor.DoSpecialDamage(target, damage, damageType, flags);
@@ -89,14 +136,32 @@ public static class ActorDamage
                 damage = ScaleDamage(damage, target.DamageFactor);
                 if (damage > 0) damage = target.ApplyTypedDamageFactor(damage, damageType);
             }
+            if (damage < 0) return default;
             damage = target.TakeSpecialDamage(inflictor, source, damage, damageType, flags);
             if (damage <= 0)
             {
-                if (damage == 0 && originalModifierDamage == 0 && inflictor is { ForcePain: true })
-                    return ReactToDamage(target, source, inflictor, flags, damageType, 0, 0, 0);
+                if (damage == 0 && (IsFakePain(target, inflictor, originalDamage)
+                    || originalModifierDamage == 0))
+                    return ReactToDamage(target, source, inflictor, flags, damageType, 0, 0, 0, originalDamage);
                 return default;
             }
         }
+        // Native clears DMG_FORCED at the player protection boundary, after special damage.
+        if (target is PlayerPawn && target.Simulation is { } sectorSimulation
+            && target.SectorIndex >= 0 && target.SectorIndex < sectorSimulation.Level.Sectors.Count
+            && sectorSimulation.Level.Sectors[target.SectorIndex].DamageEndsLevel && damage >= target.Health)
+            damage = target.Health - 1;
+        if (target is PlayerPawn protectedPlayer && (protectedPlayer.GodMode2 || protectedPlayer.Buddha2 || protectedPlayer.NoDamage))
+        {
+            forced = false;
+            flags &= ~DamageFlags.Forced;
+            if (protectedPlayer.GodMode2) return default;
+            if (!telefrag && (protectedPlayer.Invulnerable || protectedPlayer.GodMode)
+                && !flags.HasFlag(DamageFlags.BypassInvulnerability))
+                return default;
+        }
+        if (target.NoDamage && !forced)
+            return ReactToDamage(target, source, inflictor, flags, damageType, 0, 0, 0, originalDamage);
         var absorbed = 0;
         if (!forced && !flags.HasFlag(DamageFlags.BypassArmor) && !IgnoresArmor(damageType, target.Simulation))
         {
@@ -123,18 +188,28 @@ public static class ActorDamage
             }
         }
         // Native armor cancellation keeps armor consumption but stops later damage effects.
-        var healthDamage = telefrag && target is PlayerPawn ? damage : damage - absorbed;
-        if (healthDamage <= 0) return new DamageResult(0, absorbed, false);
+        var healthDamage = telefrag && !target.LaxTelefragDamage && target is PlayerPawn ? damage : damage - absorbed;
+        if (healthDamage <= 0) return IsFakePain(target, inflictor, originalDamage) || forced
+            ? ReactToDamage(target, source, inflictor, flags, damageType, 0, absorbed, 0, originalDamage)
+            : new DamageResult(0, absorbed, false);
+        if (!forced && (!telefrag || target.LaxTelefragDamage) && target is PlayerPawn emergencyPlayer)
+            AutoUseEmergencyHealth(emergencyPlayer, healthDamage);
         var before = target.Health;
+        if (target is PlayerPawn flashPlayer)
+            flashPlayer.DamageCount = (int)Math.Min(100L, (long)flashPlayer.DamageCount + healthDamage);
         target.LastDamageSourceId = source?.Id;
+        if (target is PlayerPawn damagedPlayer) damagedPlayer.LastDamageType = damageType;
         target.DamageTypeReceived = damageType;
         target.DeathInflictor = inflictor;
         // P_DamageMobj subtracts the post-armor remainder and keeps the negative overkill.
         // GetGibHealth is -spawn health. Health equal to that threshold is not an extreme death.
         var next = (long)before - healthDamage;
+        if (!forced && next is > 0 and < 50 && target is PlayerPawn strifePlayer
+            && target.Simulation is { GameMode: not SpawnGameMode.Deathmatch, DisableAutoHealth: false } strifeSimulation)
+            next = strifePlayer.Inventory.AutoUseStrifeHealth((int)next, PickupCatalog.ResolveHealthMaximum(strifePlayer), strifeSimulation.HealthFactor);
         target.DeathDamageAmount = healthDamage;
         // Clamp before assigning Health. The setter enters death as soon as health crosses 0.
-        if (next <= 0 && target is PlayerPawn && SurvivesByBuddha(target, damage, flags, inflictor))
+        if (next <= 0 && target is PlayerPawn && SurvivesByBuddha(target, telefrag ? TelefragDamage : damage, flags, inflictor))
             next = 1;
         target.SetDamageHealth((int)Math.Clamp(next, int.MinValue, int.MaxValue), source,
             () =>
@@ -147,13 +222,18 @@ public static class ActorDamage
         target.DeathInflictor = null;
         var lost = before - target.Health;
         var dealt = healthDamage;
-        return ReactToDamage(target, source, inflictor, flags, damageType, lost, absorbed, dealt);
+        return ReactToDamage(target, source, inflictor, flags, damageType, lost, absorbed, dealt, originalDamage);
     }
 
     private static DamageResult ReactToDamage(Actor target, Actor? source, Actor? inflictor,
-        DamageFlags flags, string? damageType, int lost, int absorbed, int dealt)
+        DamageFlags flags, string? damageType, int lost, int absorbed, int dealt, int originalDamage)
     {
+        // Native player protection rejects reactions before wound-state selection.
+        if (target is PlayerPawn player && (player.GodMode2 || player.NoPain
+            || player.GodMode && dealt < TelefragDamage))
+            return new DamageResult(lost, absorbed, target.IsDead);
         var forcedPain = inflictor is { ForcePain: true };
+        var fakePain = IsFakePain(target, inflictor, originalDamage);
         if (!target.IsDead && target.WoundHealth > 0 && target.Health <= target.WoundHealth)
         {
             var wound = target.WoundStateFor(damageType);
@@ -163,30 +243,37 @@ public static class ActorDamage
                 return new DamageResult(lost, absorbed, target.IsDead);
             }
         }
-        var painChance = target.PainChanceFor(damageType);
-        var painState = target.PainStateFor(damageType);
+        var painType = !string.IsNullOrEmpty(inflictor?.PainType)
+            && !string.Equals(inflictor.PainType, "None", StringComparison.OrdinalIgnoreCase)
+            ? inflictor.PainType : damageType;
+        var painChance = target.PainChanceFor(painType);
+        var painState = target.PainStateFor(painType);
         // MF6_FORCEPAIN skips the threshold and the pain roll. MF5_NOPAIN, MF5_PAINLESS, and DMG_NO_PAIN still block.
         var painless = target.NoPain || inflictor is { Painless: true } || flags.HasFlag(DamageFlags.NoPain);
         var painReaction = !target.IsDead && !painless && target.Brain?.Charging != true
-            && (forcedPain || (lost > 0 && dealt >= target.PainThreshold
+            && (target is PlayerPawn || target.Simulation?.NoMonsterPain != true)
+            && (forcedPain || ((dealt > 0 || fakePain) && dealt >= target.PainThreshold
                 && RollPainChance(target, painChance)))
-            && TryReactToPain(target, painState, damageType);
+            && TryReactToPain(target, painState, painType);
         if (!target.IsDead)
         {
-            if (target is not PlayerPawn && (dealt > 0 || forcedPain))
+            if (target is not PlayerPawn && (dealt > 0 || forcedPain || fakePain))
                 target.ReactionTime = 0;
-            target.Brain?.WakeOnDamage(target, source, dealt, forcedPain);
+            target.Brain?.WakeOnDamage(target, source, dealt, forcedPain || fakePain);
         }
         if (painReaction && ShouldMarkJustHit(target, source))
             target.JustHit = true;
         return new DamageResult(lost, absorbed, target.IsDead);
     }
 
+    private static bool IsFakePain(Actor target, Actor? inflictor, int originalDamage) =>
+        (target.AllowPain || target.NoDamage) && originalDamage > 0 || inflictor is { CausePain: true };
+
     private static int ScaleDamage(int damage, Fixed factor) =>
         (int)Math.Clamp((long)damage * factor.Raw / 65536, int.MinValue, int.MaxValue);
 
     private static bool RollPainChance(Actor target, int chance) => target.Simulation is { } simulation
-        ? simulation.NextCombatRandom() % 256 < chance
+        ? simulation.NextPainChanceByte() < chance
         : chance >= 256;
 
     internal static bool TriggerPainChance(Actor target, string? damageType, bool forcedPain)
@@ -198,12 +285,23 @@ public static class ActorDamage
         return TryReactToPain(target, state, damageType) && hasAnimation;
     }
 
-    /// <summary>Electric pain rolls <c>pr_lightning</c> on the flicker stream. Poison howling is absent.</summary>
+    /// <summary>Electric and poison cloud pain use independent native random streams.</summary>
     private static bool TryReactToPain(Actor target, int painState, string? damageType)
+    {
+        var previous = target.PainDamageTypeContext;
+        target.PainDamageTypeContext = damageType;
+        try { return ReactToPain(target, painState, damageType); }
+        finally { target.PainDamageTypeContext = previous; }
+    }
+
+    private static bool ReactToPain(Actor target, int painState, string? damageType)
     {
         if (!string.Equals(damageType, "Electric", StringComparison.OrdinalIgnoreCase))
         {
             if (target.States.HasState(painState)) target.States.Enter(target, painState);
+            if (string.Equals(damageType, "PoisonCloud", StringComparison.OrdinalIgnoreCase)
+                && target.IsMonster && target.Simulation is { } simulation && simulation.NextPoisonDamageByte() < 128)
+                ActorSoundActions.Howl(target);
             return true;
         }
         if (target.Simulation == null)
@@ -221,8 +319,7 @@ public static class ActorDamage
             return true;
         }
         target.FullBright = true;
-        // Native monster electrocution consumes another lightning draw for the howl.
-        if (target.IsMonster) target.Simulation.NextFlickerRandom();
+        if (target.IsMonster && target.Simulation.NextFlickerRandom() < 128) ActorSoundActions.Howl(target);
         return false;
     }
 
@@ -274,13 +371,15 @@ public static class ActorDamage
             : (int)((long)damage * percent / 100);
     }
 
-    /// <summary>
-    /// <c>MF7_BUDDHA</c> and a live <c>PowerBuddha</c> leave health at 1. Telefrag
-    /// damage and <see cref="DamageFlags.Forced"/> still kill those two.
-    /// <see cref="DamageFlags.FoilBuddha"/> and an inflictor with
-    /// <c>MF7_FOILBUDDHA</c> kill a non-player only. A null inflictor does not.
-    /// <c>CF_BUDDHA2</c> also survives a telefrag and forced damage.
-    /// </summary>
+    private static void AutoUseEmergencyHealth(PlayerPawn target, int damage)
+    {
+        if (damage < target.Health || target.Simulation is not { } simulation
+            || !simulation.AutoUseHealth && simulation.GameMode != SpawnGameMode.Deathmatch) return;
+        var gain = target.Inventory.AutoUseHealth(damage - target.Health + 1, simulation.AutoUseHealth);
+        if (gain > 0) target.Health = (int)Math.Min(int.MaxValue, (long)target.Health + gain);
+    }
+
+    /// <summary>Ordinary Buddha is defeated by forced damage and telefrags; Buddha2 survives both.</summary>
     private static bool SurvivesByBuddha(Actor target, int damage, DamageFlags flags, Actor? inflictor)
     {
         if (target is PlayerPawn { Buddha2: true })
@@ -300,11 +399,12 @@ public static class ActorDamage
     private static void Drain(Actor target, Actor? source, int postArmor, string? damageType)
     {
         // Native armor returns before drain when the damage remainder reaches zero.
-        if (postArmor <= 0 || source is not PlayerPawn player || player.DrainStrength <= 0
+        if (postArmor <= 0 || source is not PlayerPawn player || player.EffectiveDrainStrength <= 0
             || target.DontDrain || ReferenceEquals(target, player))
             return;
-        var amount = (int)(player.DrainStrength * postArmor);
+        var amount = (int)(player.EffectiveDrainStrength * postArmor);
         amount = player.OnDrain(target, amount, damageType);
-        PickupCatalog.GiveHealth(player, amount);
+        if (PickupCatalog.GiveHealth(player, amount) && player.Simulation is not null)
+            ActorSoundActions.StartSound(player, "*drainhealth", channel: 3);
     }
 }

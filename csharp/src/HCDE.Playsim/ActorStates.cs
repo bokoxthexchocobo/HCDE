@@ -34,9 +34,14 @@ public sealed class ActorStateMachine
     public const int Corpse = 3;
     private ActorFrame[] _frames =
     {
-        new(-1, Spawn), new(4, Spawn), new(6, Corpse), new(-1, Corpse),
+        new(-1, Spawn), new(4, Spawn, ActorSoundActions.Pain), new(6, Corpse, ActorSoundActions.DefaultDeathSound), new(-1, Corpse),
     };
     private bool _entering;
+    internal void SetSpawnFullBright(Actor actor, bool fullBright)
+    {
+        _frames[Spawn] = _frames[Spawn] with { FullBright = fullBright };
+        if (Current == Spawn) actor.FullBright = fullBright;
+    }
     private int? _queued;
 
     public int Current { get; private set; } = Spawn;

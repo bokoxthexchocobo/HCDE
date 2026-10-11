@@ -14,7 +14,7 @@ public class StrifeMissileDamageTests
             var (sim, missile, target) = Setup(seed);
             Assert.True(AcsActorFlags.TrySet(missile, "Actor.STRIFEDAMAGE", strife));
             var (prediction, _, _) = Setup(seed);
-            var random = prediction.NextCombatRandom();
+            var random = prediction.NextMissileDamageByte();
             var expected = 5 * (1 + (int)(random & (strife ? 3u : 7u)));
             missile.Tick();
             Assert.Equal(expected, 1000 - target.Health);

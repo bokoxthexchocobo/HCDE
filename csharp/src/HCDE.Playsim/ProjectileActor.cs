@@ -9,6 +9,16 @@ public sealed class ProjectileActor : Actor
 {
     public Actor Owner { get; }
     public ProjectileKind Kind { get; }
+    internal IReadOnlyDictionary<ActorSoundType, string> DefaultActorSounds { get; set; }
+        = new Dictionary<ActorSoundType, string>();
+
+    internal Dictionary<ActorSoundType, string> CaptureSounds()
+    {
+        if (ActorSounds.Count == DefaultActorSounds.Count &&
+            ActorSounds.All(pair => DefaultActorSounds.TryGetValue(pair.Key, out var value) && value == pair.Value)) return new();
+        if (ActorSounds.Count == 0) return DefaultActorSounds.Keys.ToDictionary(key => key, _ => "");
+        return new(ActorSounds);
+    }
     public int RemainingTics { get; private set; } = 175;
     internal void RestoreRemainingTics(int tics) => RemainingTics = tics;
     public uint? TracerTargetId { get; private set; }
@@ -34,12 +44,10 @@ public sealed class ProjectileActor : Actor
     public override bool IsZeroDamage() => base.IsZeroDamage() && DamageExpression == null;
 
     /// <summary>Native GetMissileDamage calculation; a zero mask does not consume randomness.</summary>
-    public int GetMissileDamage(int mask, int add)
+    public override int GetMissileDamage(int mask, int add)
     {
         if (DamageExpression is { } expression) return expression(this);
-        if (mask == 0) return unchecked(add * ImpactDamage);
-        var sim = Simulation ?? throw new InvalidOperationException("Random missile damage requires a simulation.");
-        return unchecked(((int)sim.NextCombatRandom() & mask) + add) * ImpactDamage;
+        return base.GetMissileDamage(mask, add);
     }
 
     /// <summary>Managed direct-damage subset of P_DoMissileDamage, including ripper dice.</summary>
@@ -47,8 +55,12 @@ public sealed class ProjectileActor : Actor
     {
         ArgumentNullException.ThrowIfNull(victim);
         var damage = ripper ? GetMissileDamage(3, 2) : GetMissileDamage(StrifeDamage ? 3 : 7, 1);
-        if (damage > 0 || ForcePain)
+        if (damage > 0 || ForcePain || CausePain)
+        {
+            if (ripper && ActorSounds.TryGetValue(ActorSoundType.Rip, out var sound) && !string.IsNullOrEmpty(sound))
+                ActorSoundActions.StartSound(this, sound, channel: 4, attenuation: 1.001f);
             return ActorDamage.Apply(victim, damage, Owner, damageType: DamageType, inflictor: this);
+        }
         victim.GiveBody((int)Math.Min(-(long)damage, int.MaxValue));
         return default;
     }
@@ -66,14 +78,37 @@ public sealed class ProjectileActor : Actor
         ArgumentNullException.ThrowIfNull(owner);
         if (!Enum.IsDefined(kind)) throw new ArgumentOutOfRangeException(nameof(kind));
         Owner = owner; Kind = kind;
+        var (seeSound, deathSound) = kind switch
+        {
+            ProjectileKind.Rocket or ProjectileKind.CyberRocket => ("weapons/rocklf", "weapons/rocklx"),
+            ProjectileKind.Plasma => ("weapons/plasmaf", "weapons/plasmax"),
+            ProjectileKind.Bfg => ("", "weapons/bfgx"),
+            ProjectileKind.ImpBall => ("imp/attack", "imp/shotx"),
+            ProjectileKind.BaronBall => ("baron/attack", "baron/shotx"),
+            ProjectileKind.CacodemonBall => ("caco/attack", "caco/shotx"),
+            ProjectileKind.ArachnotronPlasma => ("baby/attack", "baby/shotx"),
+            ProjectileKind.MancubusBall => ("fatso/attack", "fatso/shotx"),
+            ProjectileKind.RevenantTracer => ("skeleton/attack", "skeleton/tracex"),
+            _ => throw new ArgumentOutOfRangeException(nameof(kind)),
+        };
+        var sounds = new Dictionary<ActorSoundType, string> { [ActorSoundType.Death] = deathSound };
+        if (seeSound.Length != 0) sounds[ActorSoundType.See] = seeSound;
+        ActorSounds = sounds;
+        DefaultActorSounds = new Dictionary<ActorSoundType, string>(sounds);
+        States.SetSpawnFullBright(this, true);
+        RenderStyle = kind is ProjectileKind.Rocket or ProjectileKind.CyberRocket
+            ? ActorRenderStyle.Normal : ActorRenderStyle.FromNative(7);
+        Alpha = kind is ProjectileKind.Plasma or ProjectileKind.Bfg or ProjectileKind.ArachnotronPlasma ? 0.75 : 1;
+        DefaultRenderStyle = RenderStyle;
+        DefaultAlpha = Alpha;
         MovementSpeed = Fixed.FromDouble(DefaultSpeed);
         Damage = DefaultDamage;
         DoomEdNum = kind <= ProjectileKind.ImpBall ? 65530 + (int)kind : 65516 + (int)kind;
         // Managed-only class identities, not native spawn indices; keep every identity within ushort.
         Solid = Shootable = false; NoGravity = true; AllowDropOff = true;
         NoTeleport = true;
-        Radius = Fixed.FromInt(kind is ProjectileKind.Plasma or ProjectileKind.ArachnotronPlasma ? 13
-            : kind == ProjectileKind.RevenantTracer ? 11 : 6);
+        Radius = Fixed.FromInt(kind is ProjectileKind.Plasma or ProjectileKind.ArachnotronPlasma or ProjectileKind.Bfg ? 13
+            : kind is ProjectileKind.RevenantTracer or ProjectileKind.Rocket or ProjectileKind.CyberRocket ? 11 : 6);
         Height = Fixed.FromInt(kind == ProjectileKind.BaronBall ? 16 : 8);
     }
 
@@ -106,9 +141,9 @@ public sealed class ProjectileActor : Actor
         VelocityZ = Fixed.FromDouble(Math.Clamp(dz * horizontalSpeed, -Math.Abs(Speed), Math.Abs(Speed)));
     }
 
-    internal void RotateYaw(double degrees)
+    internal void RotateYaw(double degrees, bool useMovementSpeed = false)
     {
-        var speed = VelXYToSpeed();
+        var speed = useMovementSpeed ? Speed : VelXYToSpeed();
         var radians = Angle.Raw * Math.PI / 0x80000000u + degrees * Math.PI / 180;
         Angle = BamAngle.FromDegrees(radians * 180 / Math.PI);
         VelocityX = Fixed.FromDouble(Math.Cos(radians) * speed);
@@ -118,12 +153,27 @@ public sealed class ProjectileActor : Actor
     private void TrackTarget(AuthoritySimulation sim)
     {
         if (Kind != ProjectileKind.RevenantTracer || (sim.Thinkers.Clock.Tic & 3) != 0 || Speed == 0) return;
+        Trace(16.875);
+    }
+
+    /// <summary>Managed A_Tracer2 steering and vertical adjustment, without periodic A_Tracer gating.</summary>
+    public void Trace(double turnAngle)
+    {
+        if (!double.IsFinite(turnAngle)) throw new ArgumentOutOfRangeException(nameof(turnAngle));
+        var sim = Simulation ?? throw new InvalidOperationException("Tracer steering requires an attached simulation.");
+        if (Speed == 0 || Destroyed) return;
         var target = sim.Actors.FirstOrDefault(actor => actor.Id == TracerTargetId && !actor.IsDead && !actor.Destroyed);
-        if (target == null) return;
+        if (target == null || !CanSeek(target)) return;
         var desired = AngleTo(target);
         var current = Angle.Raw * 180.0 / 0x80000000u;
         var delta = Normalize180(desired - current);
-        RotateYaw(Math.Clamp(delta, -16.875, 16.875));
+        if (delta != 0)
+        {
+            var next = current + (delta < 0 ? -turnAngle : turnAngle);
+            var remaining = Normalize180(desired - next);
+            if (delta < 0 ? remaining > 0 : remaining < 0) next = desired;
+            Angle = BamAngle.FromDegrees(next);
+        }
         VelFromAngle();
         if (FloorHugger || CeilingHugger) return;
         var travel = DistanceBySpeed(target, Speed);
@@ -320,6 +370,14 @@ public sealed class ProjectileActor : Actor
         else if (planeSector >= 0) GeometryProjectileImpact.ApplyPlane(sim, this, planeSector, planePart);
         if (victim != null)
             DoMissileDamage(victim, Rip);
+        if (ActorSounds.TryGetValue(ActorSoundType.Death, out var deathSound) && deathSound.Length != 0)
+        {
+            var position = SoundPos();
+            sim.QueueSoundRequest(new SimulationSoundRequest(Id, deathSound, 2, 0, 1, false,
+                FullVolumeDeath ? 0 : 1, false, DetachedOrigin:
+                new SimulationSoundOrigin(position.X, position.Y, position.Z,
+                    planeSector >= 0 ? planeSector : ActorPhysics.SectorAt(sim.Level, X.ToDouble(), Y.ToDouble()))), immediate: true);
+        }
         if (BlastRadius > 0)
         {
             foreach (var actor in sim.Actors.ToArray())

@@ -4,6 +4,18 @@ namespace HCDE.Playsim.Tests;
 
 public class FreezeDeathSpecialTests
 {
+    [Fact]
+    public void FreezeDeathQueuesNativeBodyChannelSound()
+    {
+        var sim = Room(); var monster = sim.Actors.Single(actor => actor.IsMonster);
+        ActorFreezeActions.FreezeDeath(monster);
+        var request = Assert.Single(sim.PendingSoundRequests);
+        Assert.Equal(monster.Id, request.ActorId); Assert.Equal("misc/freeze", request.Sound);
+        Assert.Equal(4, request.Channel); Assert.Equal(0, request.Flags);
+        Assert.Equal(1, request.Volume); Assert.Equal(1, request.Attenuation);
+        Assert.False(request.Loop); Assert.False(request.Local);
+    }
+
     [Theory]
     [InlineData(false)]
     [InlineData(true)]

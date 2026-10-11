@@ -5,6 +5,13 @@ public enum ManagedPowerupKind
     Damage,
     Protection,
     Buddha,
+    InfiniteAmmo,
+    Drain,
+    Regeneration,
+    DoubleFiringSpeed,
+    HighJump,
+    Prosperity,
+    Spread,
 }
 
 /// <summary>Native Powerup.HandlePickup duration rules for finite managed powers.</summary>

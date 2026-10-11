@@ -24,6 +24,8 @@ public class FloatingMonsterTests
     {
         var (sim, monster, player) = Setup(3005);
         Acquire(sim, monster);
+        monster.Brain!.Enabled = false;
+        monster.X = default;
         player.X = Fixed.FromInt(84); monster.Z = default;
         sim.Tick(); Assert.Equal(0, monster.Z.ToDouble()); // Distance equals 3 * (28 - 0).
         player.X = Fixed.FromInt(83);

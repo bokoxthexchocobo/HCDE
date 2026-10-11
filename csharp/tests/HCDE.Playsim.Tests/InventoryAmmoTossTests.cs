@@ -54,7 +54,7 @@ public class InventoryAmmoTossTests
         sim.Tick();
         var drop = Assert.Single(sim.Actors, a => a.DoomEdNum == PickupCatalog.Clip);
         var bytes = SimSavegame.Write(sim);
-        Assert.Equal(40, BinaryPrimitives.ReadUInt16LittleEndian(bytes.AsSpan(4)));
+        Assert.Equal(165, BinaryPrimitives.ReadUInt16LittleEndian(bytes.AsSpan(4)));
         Assert.True(SimSavegame.TryRead(bytes, out var state, out var error), error);
         var checksum = sim.Checksum;
         drop.PickupDelay = 0;
@@ -68,8 +68,10 @@ public class InventoryAmmoTossTests
     {
         var sim = Room(); AcsPlayerInventory.Drop(sim.Players.Single(), "Clip");
         var bytes = SimSavegame.Write(sim);
-        var size = BinaryPrimitives.ReadInt32LittleEndian(bytes.AsSpan(bytes.Length - 4));
-        var start = bytes.Length - size;
+        var outerSize = BinaryPrimitives.ReadInt32LittleEndian(bytes.AsSpan(bytes.Length - 4));
+        var innerEnd = bytes.Length - outerSize;
+        var size = BinaryPrimitives.ReadInt32LittleEndian(bytes.AsSpan(innerEnd - 4));
+        var start = innerEnd - size;
         BinaryPrimitives.WriteInt32LittleEndian(bytes.AsSpan(start + 12), 31);
         Assert.False(SimSavegame.TryRead(bytes, out _, out var error));
         Assert.Equal("save-pickup-delay-value", error);

@@ -40,7 +40,7 @@ public class ArchvileTests
         var (sim, vile) = Setup(type);
         var corpse = sim.Actors.Single(actor => actor.DoomEdNum == type);
         corpse.Health = 0;
-        for (var i = 0; i < 9; i++) sim.Tick();
+        PrepareCorpseAndRaise(sim, vile);
         Assert.Equal(health, corpse.Health);
         Assert.True(corpse.BlocksActors);
         Assert.Equal(MonsterMode.Heal, vile.Brain!.Mode);
@@ -81,7 +81,7 @@ public class ArchvileTests
     {
         var (sim, vile) = Setup(3001);
         sim.Actors.Single(actor => actor.DoomEdNum == 3001).Health = 0;
-        for (var i = 0; i < 9; i++) sim.Tick();
+        PrepareCorpseAndRaise(sim, vile);
         Assert.Equal(MonsterMode.Heal, vile.Brain!.Mode);
         vile.PainChance = 256; ActorDamage.Apply(vile, 1); sim.Tick();
         Assert.Equal(MonsterMode.Pain, vile.Brain.Mode);
@@ -136,18 +136,29 @@ public class ArchvileTests
                 new LevelThing { Type = 9001, X = 50 }, new LevelThing { Type = 9001, X = 300 }],
             Sectors = [new LevelSector { CeilingHeight = 512 }],
         });
+        var vile = sim.Actors.Single(actor => actor.DoomEdNum == 64);
+        vile.Brain!.Enabled = false;
         sim.Invasion.Enabled = true; sim.Invasion.Configure(1, 0, 35); sim.Tick();
         var corpse = sim.Actors.OfType<BotPawn>().First();
         corpse.Health = 0;
         sim.Tick();
         Assert.Equal(1, sim.Invasion.ActiveMonsters);
-        for (var i = 0; i < 9; i++) sim.Tick();
+        PrepareCorpseAndRaise(sim, vile);
         Assert.Equal(20, corpse.Health);
         Assert.Equal(MonsterMode.Raise, corpse.Brain!.Mode);
         Assert.Equal(InvasionPhase.Wave, sim.Invasion.Phase);
         Assert.Equal(2, sim.Invasion.ActiveMonsters);
         Assert.Equal(2, sim.Invasion.Spawned);
         Assert.Equal(0, sim.Invasion.Cleared);
+    }
+
+    private static void PrepareCorpseAndRaise(AuthoritySimulation sim, Actor vile)
+    {
+        // Let death frames settle before enabling the resurrection actor.
+        vile.Brain!.Enabled = false;
+        for (var i = 0; i < 8; i++) sim.Tick();
+        vile.Brain.Enabled = true;
+        sim.Tick();
     }
 
     private static void Windup(AuthoritySimulation sim, Actor vile)

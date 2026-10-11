@@ -8,8 +8,12 @@ public sealed class AudioMixer
     private sealed class Channel(short[] samples, bool loop, string? originalSound, float distanceScale, HCDE.Gamedata.SoundRolloff? rolloff, byte[] curve, bool noPause, float volume)
     {
         public Guid Id { get; } = Guid.NewGuid();
-        public short[] Samples { get; } = samples;
+        public short[] Samples { get; set; } = samples;
+        public short[]? OriginalSamples { get; set; }
+        public int OriginalRate { get; set; }
+        public float Pitch { get; set; } = 1;
         public int Position { get; set; }
+        public double PositionFraction { get; set; }
         public bool Loop { get; } = loop;
         public bool NoPause { get; } = noPause;
         public float Volume { get; set; } = volume;
@@ -26,6 +30,7 @@ public sealed class AudioMixer
         public float LimitRange { get; set; }
         public bool Virtual { get; set; }
         public bool DefinedSingular { get; set; }
+        public bool ListenerHeight { get; set; }
     }
 
     private readonly List<Channel> _channels = new();
@@ -35,15 +40,17 @@ public sealed class AudioMixer
     public bool Paused { get; set; }
 
     public bool TryPlayWadSound(ReadOnlySpan<byte> wad, HCDE.MapLoader.PlayLevel level, string sound,
-        out string? error, Func<int>? nextRandom = null, float volume = 1, bool loop = false, float? pitch = null, bool pitched = true, Func<byte>? nextPitchByte = null, Func<float>? nextPitchFloat = null, float attenuation = 1, HCDE.Gamedata.SoundRolloff? forcedRolloff = null, bool singular = false, bool noPause = false, bool force = false)
-        => TryPlayWadSound(wad, level, sound, out _, out error, nextRandom, volume, loop, pitch, pitched, nextPitchByte, nextPitchFloat, attenuation, forcedRolloff, singular, noPause, force);
+        out string? error, Func<int>? nextRandom = null, float volume = 1, bool loop = false, float? pitch = null, bool pitched = true, Func<byte>? nextPitchByte = null, Func<float>? nextPitchFloat = null, float attenuation = 1, HCDE.Gamedata.SoundRolloff? forcedRolloff = null, bool singular = false, bool noPause = false, bool force = false, float startTime = 0)
+        => TryPlayWadSound(wad, level, sound, out _, out error, nextRandom, volume, loop, pitch, pitched, nextPitchByte, nextPitchFloat, attenuation, forcedRolloff, singular, noPause, force, startTime: startTime);
 
     public bool TryPlayWadSound(ReadOnlySpan<byte> wad, HCDE.MapLoader.PlayLevel level, string sound,
         out Guid channelId, out string? error, Func<int>? nextRandom = null, float volume = 1, bool loop = false, float? pitch = null, bool pitched = true, Func<byte>? nextPitchByte = null, Func<float>? nextPitchFloat = null, float attenuation = 1, HCDE.Gamedata.SoundRolloff? forcedRolloff = null, bool singular = false, bool noPause = false, bool force = false,
-        System.Numerics.Vector3? sourcePosition = null, uint? sourceActorId = null, int entityChannel = 0, bool listenerSource = false)
+        System.Numerics.Vector3? sourcePosition = null, uint? sourceActorId = null, int entityChannel = 0, bool listenerSource = false, float startTime = 0)
     {
         channelId = Guid.Empty;
         error = null;
+        if (!float.IsFinite(startTime) || loop && startTime < 0) { error = "audio-start-time-invalid"; return false; }
+        startTime = Math.Max(0, startTime);
         if (sourcePosition is { } position && (!float.IsFinite(position.X) || !float.IsFinite(position.Y) || !float.IsFinite(position.Z)))
         { error = "audio-position-invalid"; return false; }
         if (forcedRolloff is not null && (!float.IsFinite(forcedRolloff.MinDistance) || !float.IsFinite(forcedRolloff.MaxDistance))) { error = "audio-rolloff-invalid"; return false; }
@@ -93,6 +100,10 @@ public sealed class AudioMixer
         }
         var effectivePitch = pitch ?? HCDE.Gamedata.SoundPitchCalculator.Calculate(pitchSettings, pitched, nextPitchByte, nextPitchFloat);
         var samples = PcmResampler.Convert(decoded.Samples, decoded.SampleRate, SampleRate, effectivePitch);
+        var duration = (double)decoded.Samples.Length / decoded.SampleRate;
+        var offset = loop && duration > 0 ? startTime % duration : Math.Min(startTime, duration);
+        var initialPosition = (int)Math.Min(samples.Length, Math.Floor(offset * SampleRate / effectivePitch));
+        if (!loop && initialPosition == samples.Length) return true;
         var rolloff = settings?.Rolloff;
         foreach (var name in path.Skip(1))
             if (rolloff is null || rolloff.MinDistance == 0)
@@ -108,6 +119,10 @@ public sealed class AudioMixer
         if (channelId != Guid.Empty)
         {
             var queued = _channels[^1];
+            queued.OriginalSamples = decoded.Samples.ToArray();
+            queued.OriginalRate = decoded.SampleRate;
+            queued.Pitch = effectivePitch;
+            queued.Position = samples.Length > 0 ? initialPosition % samples.Length : 0;
             queued.ResolvedSound = resolvedSound;
             queued.SourcePosition = sourcePosition;
             queued.SourceActorId = sourceActorId;
@@ -135,6 +150,54 @@ public sealed class AudioMixer
     }
 
     public bool IsPlaying(Guid channelId) => _channels.Any(channel => channel.Id == channelId);
+
+    public int GetSoundPlayingCount(string? sound = null, int entityChannel = -1)
+        => _channels.Count(channel => (entityChannel == -1 || channel.EntityChannel == entityChannel) &&
+            (sound is null || string.Equals(channel.OriginalSound, sound, StringComparison.OrdinalIgnoreCase)));
+
+    public bool IsUnpositionedSoundPlaying(int entityChannel = 0, string? sound = null)
+        => IsNonActorSoundPlaying(false, entityChannel, sound);
+
+    public bool IsPositionedSoundPlaying(int entityChannel = 0, string? sound = null)
+        => IsNonActorSoundPlaying(true, entityChannel, sound);
+
+    private bool IsNonActorSoundPlaying(bool positioned, int entityChannel, string? sound)
+        => _channels.Any(channel => channel.SourceActorId is null && channel.SourcePosition.HasValue == positioned &&
+            (entityChannel == 0 || channel.EntityChannel == entityChannel) &&
+            (sound is null || string.Equals(channel.OriginalSound, sound, StringComparison.OrdinalIgnoreCase)));
+
+    public int StopSoundByName(string sound)
+    {
+        ArgumentNullException.ThrowIfNull(sound);
+        return _channels.RemoveAll(channel => string.Equals(channel.OriginalSound, sound, StringComparison.OrdinalIgnoreCase));
+    }
+
+    public int StopUnpositionedSound(int entityChannel = 0, string? sound = null)
+        => _channels.RemoveAll(channel => channel.SourceActorId is null && channel.SourcePosition is null &&
+            (entityChannel == 0 || channel.EntityChannel == entityChannel) &&
+            (sound is null || string.Equals(channel.OriginalSound, sound, StringComparison.OrdinalIgnoreCase)));
+
+    internal void ReplacePositionedChannel(System.Numerics.Vector3 position, int entityChannel, Guid replacement)
+        => _channels.RemoveAll(channel => channel.Id != replacement && channel.SourceActorId is null &&
+            channel.SourcePosition == position && channel.EntityChannel == entityChannel);
+
+    public bool TrySetChannelPitch(Guid channelId, float pitch, out string? error)
+    {
+        error = null;
+        if (!float.IsFinite(pitch)) { error = "audio-pitch-invalid"; return false; }
+        var channel = _channels.FirstOrDefault(candidate => candidate.Id == channelId);
+        if (channel is null) { error = "audio-channel-missing"; return false; }
+        if (channel.OriginalSamples is null) { error = "audio-channel-pitch-unsupported"; return false; }
+        var effective = Math.Max(0.0001f, pitch);
+        var samples = PcmResampler.Convert(channel.OriginalSamples, channel.OriginalRate, SampleRate, effective);
+        var precisePosition = Math.Min(samples.Length, (channel.Position + channel.PositionFraction) * channel.Pitch / effective);
+        var position = (int)Math.Floor(precisePosition);
+        channel.Samples = samples;
+        channel.Pitch = effective;
+        channel.Position = channel.Loop && samples.Length > 0 ? position % samples.Length : position;
+        channel.PositionFraction = precisePosition - position;
+        return true;
+    }
 
     public bool IsChannelVirtual(Guid channelId) => _channels.Any(channel => channel.Id == channelId && channel.Virtual);
 
@@ -166,14 +229,24 @@ public sealed class AudioMixer
 
     public bool StopChannel(Guid channelId) => _channels.RemoveAll(channel => channel.Id == channelId) != 0;
 
-    public bool DetachChannelSource(Guid channelId, bool cutoff = false)
+    public bool DetachChannelSource(Guid channelId, bool cutoff = false, System.Numerics.Vector3? sourcePosition = null)
     {
         var channel = _channels.FirstOrDefault(channel => channel.Id == channelId);
         if (channel is null) return false;
         if (cutoff || channel.Loop) return StopChannel(channelId);
+        if (sourcePosition is { } position) channel.SourcePosition = position;
         channel.SourceActorId = null;
         return true;
     }
+
+    internal void RelinkChannelSource(Guid channelId, uint actorId)
+    {
+        var channel = _channels.First(channel => channel.Id == channelId);
+        channel.SourceActorId = actorId;
+    }
+
+    internal void SetChannelListenerHeight(Guid channelId, bool enabled)
+        => _channels.First(channel => channel.Id == channelId).ListenerHeight = enabled;
 
     public bool TrySetChannelVolume(Guid channelId, float volume, out string? error)
     {
@@ -214,12 +287,18 @@ public sealed class AudioMixer
         { error = "audio-position-invalid"; return false; }
         var positioned = _channels.Where(channel => channel.SourcePosition.HasValue).ToArray();
         var gains = positioned.Select(channel => channel.DistanceGain).ToArray();
+        var positions = positioned.Select(channel => channel.SourcePosition).ToArray();
         for (var index = 0; index < positioned.Length; index++)
         {
             var channel = positioned[index];
-            if (TrySetChannelPosition(channel.Id, channel.SourcePosition!.Value, listener, out error)) continue;
+            var source = channel.SourcePosition!.Value;
+            if (channel.ListenerHeight) source.Y = listener.Y;
+            if (TrySetChannelPosition(channel.Id, source, listener, out error)) continue;
             for (var restore = 0; restore < positioned.Length; restore++)
+            {
                 positioned[restore].DistanceGain = gains[restore];
+                positioned[restore].SourcePosition = positions[restore];
+            }
             return false;
         }
         return true;

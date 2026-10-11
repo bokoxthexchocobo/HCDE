@@ -30,7 +30,7 @@ public class RipperCollisionTests
     {
         var (_, missile, target) = Setup(); target.DontRip = true;
         var (prediction, _, _) = Setup();
-        var expected = 5 * (2 + (int)(prediction.NextCombatRandom() & 3));
+        var expected = 5 * (2 + (int)(prediction.NextMissileDamageByte() & 3));
         missile.Tick(); Assert.True(missile.Destroyed); Assert.Equal(1000 - expected, target.Health);
     }
 

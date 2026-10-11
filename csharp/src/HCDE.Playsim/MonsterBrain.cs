@@ -3,6 +3,18 @@ namespace HCDE.Playsim;
 public enum MonsterAttack { Melee, Hitscan, Fireball }
 public enum MonsterMode { Idle, Chase, Windup, Recovery, Pain, Dead, Heal, Raise }
 
+[Flags]
+public enum MonsterChaseFlags
+{
+    None = 0,
+    NoPlayActive = 2,
+    NightmareFast = 4,
+    DontMove = 16,
+    NoDirectionTurn = 64,
+    StopIfBlocked = 256,
+    DontLookAllAround = 1024,
+}
+
 /// <summary>Deterministic managed look/chase/attack loop; specialized native actions remain separate.</summary>
 public sealed class MonsterBrain(MonsterAttack attack)
 {
@@ -22,6 +34,76 @@ public sealed class MonsterBrain(MonsterAttack attack)
     private int _raiseTics;
     public int RaiseTics => _raiseTics;
     private bool _vileFire;
+    private bool _inChase;
+    internal SimRepeatAttack? CaptureLostSoulAttack() => _nativeType == 3006 && _attackTic >= 0
+        ? new(_nativeType, _attackTic, TargetId, Mode, WindupTics, AttackCooldown) : null;
+    internal void RestoreLostSoulAttack(SimRepeatAttack? saved)
+    {
+        if (_nativeType != 3006) return;
+        if (saved is { } s)
+        {
+            if (s.NativeType != 3006) throw new InvalidOperationException("Lost soul attack profile mismatch.");
+            _attackTic = s.AttackTic; TargetId = s.TargetId; Mode = s.Mode;
+            WindupTics = s.WindupTics; AttackCooldown = s.Cooldown; _separateMelee = false;
+        }
+        else if (_attackTic >= 0)
+        { _attackTic = -1; WindupTics = 0; AttackCooldown = 0; Mode = MonsterMode.Idle; }
+    }
+    internal SimRepeatAttack? CaptureArchvileAttack() => _nativeType == 64 && _attackTic >= 0
+        ? new(_nativeType, _attackTic, TargetId, Mode, WindupTics, AttackCooldown, FireExists: _vileFire) : null;
+    internal void RestoreArchvileAttack(SimRepeatAttack? saved)
+    {
+        if (_nativeType != 64) return;
+        if (saved is { } s)
+        {
+            if (s.NativeType != 64) throw new InvalidOperationException("Archvile attack profile mismatch.");
+            _attackTic = s.AttackTic; TargetId = s.TargetId; Mode = s.Mode;
+            WindupTics = s.WindupTics; AttackCooldown = s.Cooldown; _vileFire = s.FireExists; _separateMelee = false;
+        }
+        else if (_attackTic >= 0)
+        { _attackTic = -1; TargetId = null; Mode = MonsterMode.Idle; WindupTics = 0; AttackCooldown = 0; _vileFire = false; }
+    }
+    internal SimRepeatAttack? CaptureRevenantAttack() => _nativeType == 66 && _attackTic >= 0
+        ? new(_nativeType, _attackTic, TargetId, Mode, WindupTics, AttackCooldown, _separateMelee) : null;
+    internal void RestoreRevenantAttack(SimRepeatAttack? saved)
+    {
+        if (_nativeType != 66) return;
+        if (saved is { } s)
+        {
+            if (s.NativeType != 66) throw new InvalidOperationException("Revenant attack profile mismatch.");
+            _attackTic = s.AttackTic; TargetId = s.TargetId; Mode = s.Mode;
+            WindupTics = s.WindupTics; AttackCooldown = s.Cooldown; _separateMelee = s.SeparateMelee;
+        }
+        else if (_attackTic >= 0)
+        { _attackTic = -1; TargetId = null; Mode = MonsterMode.Idle; WindupTics = 0; AttackCooldown = 0; _separateMelee = false; }
+    }
+    internal SimRepeatAttack? CaptureRepeatAttack() => _nativeType is 65 or 7 or 84 && _attackTic >= 0
+        ? new(_nativeType, _attackTic, TargetId, Mode, WindupTics, AttackCooldown) : null;
+    internal SimRepeatAttack? CaptureProfileAttack() => _profile != null
+        && _nativeType is not (65 or 7 or 84 or 64 or 66 or 3006) && _attackTic >= 0
+        ? new(_nativeType, _attackTic, TargetId, Mode, WindupTics, AttackCooldown) : null;
+    internal void RestoreProfileAttack(SimRepeatAttack? saved)
+    {
+        if (_profile == null || _nativeType is 65 or 7 or 84 or 64 or 66 or 3006) return;
+        if (saved is { } s)
+        {
+            if (s.NativeType != _nativeType) throw new InvalidOperationException("Attack profile mismatch.");
+            _attackTic = s.AttackTic; TargetId = s.TargetId; Mode = s.Mode;
+            WindupTics = s.WindupTics; AttackCooldown = s.Cooldown; _separateMelee = false;
+        }
+        else if (_attackTic >= 0) { _attackTic = -1; TargetId = null; Mode = MonsterMode.Idle; WindupTics = 0; AttackCooldown = 0; }
+    }
+    internal void RestoreRepeatAttack(SimRepeatAttack? saved)
+    {
+        if (_nativeType is not (65 or 7 or 84)) return;
+        if (saved is { } s)
+        {
+            if (s.NativeType != _nativeType) throw new InvalidOperationException("Repeat attack profile mismatch.");
+            _attackTic = s.AttackTic; TargetId = s.TargetId; Mode = s.Mode;
+            WindupTics = s.WindupTics; AttackCooldown = s.Cooldown; _separateMelee = false;
+        }
+        else { _attackTic = -1; TargetId = null; Mode = MonsterMode.Idle; WindupTics = 0; AttackCooldown = 0; }
+    }
     internal SimPainDeath? CapturePainDeath() => _nativeType == 71 ? new(_deathTics, _deathTargetId) : null;
     internal void RestorePainDeath(SimPainDeath state) { _deathTics = state.Tics; _deathTargetId = state.TargetId; }
     internal bool HasPendingDeathAction => _nativeType == 71 && _deathTics < 32;
@@ -160,12 +242,13 @@ public sealed class MonsterBrain(MonsterAttack attack)
 
     internal void Hear(AuthoritySimulation sim, Actor actor, Actor target)
     {
-        if (!Enabled || !actor.CanTakeDamage || !target.CanTakeDamage || actor.IsFriend(target) || TargetId != null
+        if (!Enabled || !actor.CanTakeDamage || !target.CanTakeDamage || target is PlayerPawn { NoTarget: true } || actor.IsFriend(target) || TargetId != null
             || actor.Ambush && !CombatTrace.HasLineOfSight(sim, actor, target)) return;
         if (actor.States.Current == actor.SpawnState) Threshold = 0;
         TargetId = target.Id;
         _lastX = target.X.ToDouble();
         _lastY = target.Y.ToDouble();
+        if (actor.States.Current == actor.SpawnState) ActorSoundActions.SeeSound(actor);
         if (actor.States.Current == actor.SpawnState && actor.States.HasState(actor.SeeState))
             actor.States.Enter(actor, actor.SeeState);
     }
@@ -173,6 +256,11 @@ public sealed class MonsterBrain(MonsterAttack attack)
     internal void ClearTarget() => TargetId = null;
 
     internal void ClearActionTargets() { TargetId = null; LastEnemyId = null; }
+    internal void ForgetDestroyedActor(uint id)
+    {
+        if (TargetId == id) TargetId = null;
+        if (LastEnemyId == id) LastEnemyId = null;
+    }
     internal void RestoreTargetMemory(SimTargetMemory memory)
     { TargetId = memory.Target; LastEnemyId = memory.LastEnemy; }
 
@@ -196,15 +284,28 @@ public sealed class MonsterBrain(MonsterAttack attack)
         TargetId = target?.Id;
     }
 
-    public void Tick(AuthoritySimulation sim, Actor actor)
+    public void Tick(AuthoritySimulation sim, Actor actor, MonsterChaseFlags flags = MonsterChaseFlags.None,
+        bool useMelee = true, bool useMissile = true, bool nightmareFast = false)
+    {
+        if ((flags & ~(MonsterChaseFlags.NoPlayActive | MonsterChaseFlags.NightmareFast | MonsterChaseFlags.DontMove | MonsterChaseFlags.NoDirectionTurn | MonsterChaseFlags.StopIfBlocked | MonsterChaseFlags.DontLookAllAround)) != 0)
+            throw new NotSupportedException("The requested native chase flags are not yet supported.");
+        if (_inChase) return;
+        _inChase = true;
+        try { TickCore(sim, actor, flags, useMelee, useMissile,
+            nightmareFast || (flags & MonsterChaseFlags.NightmareFast) != 0); }
+        finally { _inChase = false; }
+    }
+
+    private void TickCore(AuthoritySimulation sim, Actor actor, MonsterChaseFlags flags, bool useMelee, bool useMissile, bool nightmareFast)
     {
         if (!Enabled) return;
-        actor.JustHit = false;
         if (Threshold != 0)
         {
             var thresholdTarget = sim.Actors.FirstOrDefault(candidate => candidate.Id == TargetId && !candidate.Destroyed);
             Threshold = thresholdTarget == null || thresholdTarget.IsDead ? 0 : unchecked(Threshold - 1);
         }
+        if (nightmareFast && sim.FastMonsters && actor.States.RemainingTics > 3)
+            actor.States.SetTics(Math.Max(3, actor.States.RemainingTics - actor.States.RemainingTics / 2));
         if (Charging && (actor.IsDead || actor.Destroyed || actor.States.Current == actor.PainState))
             StopCharge(actor);
         if (Charging) return;
@@ -234,12 +335,37 @@ public sealed class MonsterBrain(MonsterAttack attack)
         }
         if (actor.RaiseState >= 0 && actor.States.Current == actor.RaiseState) return;
         if (AdvanceRaiseFrame()) return;
-        if (ReactionTics != 0) { ReactionTics = unchecked(ReactionTics - 1); return; }
+        if (ReactionTics != 0) ReactionTics = unchecked(ReactionTics - 1);
         if (_healTics > 0) { _healTics--; Mode = MonsterMode.Heal; return; }
-        var target = sim.Actors.FirstOrDefault(a => a.Id == TargetId && !a.IsDead && !a.Destroyed && !actor.IsFriend(a));
+        if (_attackTic >= 0 && _profile?.RefireTic is >= 0)
+        {
+            var attackTarget = sim.Actors.FirstOrDefault(a => a.Id == TargetId && !a.Destroyed);
+            if (attackTarget == null || attackTarget.IsDead)
+            {
+                TickProfile(sim, actor, attackTarget, false, false);
+                return;
+            }
+        }
+        var previousTargetId = TargetId;
+        // HCDE rechecks the cheat during pursuit, clearing memory as well as the current target.
+        if (sim.Actors.Any(candidate => candidate.Id == TargetId && candidate.Id != actor.GoalId
+            && candidate is PlayerPawn { NoTarget: true }))
+        {
+            TargetId = null;
+            LastEnemyId = null;
+            actor.LastHeardTargetId = null;
+            Threshold = 0;
+            WindupTics = 0;
+            _attackTic = -1;
+        }
+        var target = sim.Actors.FirstOrDefault(a => a.Id == TargetId && !a.Destroyed
+            && (a.Id == actor.GoalId || !a.IsDead && !actor.IsFriend(a)));
         target ??= sim.Actors.FirstOrDefault(candidate => candidate.Id == actor.LastHeardTargetId && candidate.CanTakeDamage && !actor.IsFriend(candidate)
+            && candidate is not PlayerPawn { NoTarget: true }
             && (!actor.Ambush || CombatTrace.HasLineOfSight(sim, actor, candidate)));
-        target ??= sim.Players.Where(p => p.CanTakeDamage && !actor.IsFriend(p) && Distance(actor, p) <= 2048 && CombatTrace.HasLineOfSight(sim, actor, p))
+        target ??= sim.Players.Where(p => p.CanTakeDamage && !p.NoTarget && !actor.IsFriend(p)
+                && ((flags & MonsterChaseFlags.DontLookAllAround) == 0 || InAcquisitionView(actor, p))
+                && CombatTrace.HasLineOfSight(sim, actor, p))
             .OrderBy(p => Distance(actor, p)).ThenBy(p => p.Id).FirstOrDefault();
         target ??= TryResumeLastEnemy(sim, actor);
         if (target == null)
@@ -248,6 +374,8 @@ public sealed class MonsterBrain(MonsterAttack attack)
         }
         if (TargetId != target.Id) { WindupTics = 0; _attackTic = -1; }
         TargetId = target.Id;
+        if (previousTargetId != target.Id && actor.States.Current == actor.SpawnState)
+            ActorSoundActions.SeeSound(actor);
         if (actor.States.Current == actor.SpawnState && actor.States.HasState(actor.SeeState))
             actor.States.Enter(actor, actor.SeeState);
         if (_nativeType == 64 && _attackTic < 0 && ArchvileActions.TryRaise(sim, actor, target))
@@ -258,10 +386,32 @@ public sealed class MonsterBrain(MonsterAttack attack)
         if (visible) { _lastX = target.X.ToDouble(); _lastY = target.Y.ToDouble(); }
         var dx = _lastX - actor.X.ToDouble();
         var dy = _lastY - actor.Y.ToDouble();
-        actor.Angle = BamAngle.FromDegrees(Math.Atan2(dy, dx) * 180 / Math.PI);
+        if ((flags & MonsterChaseFlags.NoDirectionTurn) == 0)
+            actor.Angle = BamAngle.FromDegrees(Math.Atan2(dy, dx) * 180 / Math.PI);
         var melee = CheckMeleeRange(actor, target, visible);
-        var canAttack = SectorAllowsAttacks(actor) && visible
-            && (melee || Attack != MonsterAttack.Melee && Distance(actor, target) <= (_nativeType == 64 ? 896 : 1024));
+        var meleeAttack = melee && useMelee && (_profile is null || _profile.MeleeDice > 0);
+        var pursuingGoal = target.Id == actor.GoalId;
+        if (pursuingGoal)
+        {
+            WindupTics = 0;
+            _attackTic = -1;
+        }
+        var attackVisible = !pursuingGoal && SectorAllowsAttacks(actor) && visible;
+        var missileEnabled = useMissile && Attack != MonsterAttack.Melee;
+        var retaliate = false;
+        if (attackVisible && !meleeAttack && missileEnabled && AttackCooldown == 0
+            && _attackTic < 0 && WindupTics == 0 && actor.JustHit)
+        {
+            actor.JustHit = false;
+            retaliate = !actor.Friendly || !target.IsDead && !actor.IsFriend(target);
+        }
+        var canAttack = attackVisible
+            && (meleeAttack || missileEnabled && (retaliate || WindupTics > 0 || ReactionTics == 0
+                && InOrdinaryMissileRange(actor, target)
+                && !HitFriend(sim, actor, target)));
+        if (canAttack && meleeAttack && AttackCooldown == 0 && _attackTic < 0 && WindupTics == 0
+            && actor.ActorSounds.TryGetValue(ActorSoundType.Attack, out var attackSound) && !string.IsNullOrEmpty(attackSound))
+            ActorSoundActions.PlayWeaponSound(actor, attackSound);
         if (_profile != null)
         {
             if (_attackTic >= 0)
@@ -273,7 +423,15 @@ public sealed class MonsterBrain(MonsterAttack attack)
             {
                 _attackTic = 0;
                 _vileFire = false;
-                _separateMelee = melee && _profile.MeleeShotTic >= 0;
+                _separateMelee = meleeAttack && _profile.MeleeShotTic >= 0;
+                if ((_separateMelee ? _profile.MeleeFaceTics : _profile.FaceTics)?.Contains(0) == true)
+                    ActorOrientationActions.Face(actor, target);
+                if (_nativeType == 66 && _separateMelee)
+                    ActorSoundActions.PlayWeaponSound(actor, "skeleton/swing");
+                if (_nativeType == 67)
+                    ActorSoundActions.PlayWeaponSound(actor, "fatso/raiseguns");
+                if (_nativeType == 64)
+                    ActorSoundActions.StartSound(actor, "vile/start", channel: 2);
                 WindupTics = _separateMelee ? _profile.MeleeShotTic : _profile.Shots[0];
                 Mode = MonsterMode.Windup;
                 return;
@@ -284,7 +442,7 @@ public sealed class MonsterBrain(MonsterAttack attack)
             if (!canAttack) WindupTics = 0;
             else if (--WindupTics == 0)
             {
-                if (melee) ActorDamage.Apply(target, 10, actor, inflictor: actor);
+                if (meleeAttack) ActorDamage.Apply(target, 10, actor, inflictor: actor);
                 else if (Attack == MonsterAttack.Fireball) sim.SpawnProjectile(actor, ProjectileKind.ImpBall, target);
                 else
                 {
@@ -301,35 +459,56 @@ public sealed class MonsterBrain(MonsterAttack attack)
         }
         Mode = MonsterMode.Chase;
         // Local obstacle steering. This is not a navigation mesh or native P_NewChaseDir.
-        if (actor.X == _previousX && actor.Y == _previousY) _blockedTics++;
-        else _blockedTics = 0;
-        _previousX = actor.X; _previousY = actor.Y;
-        var radians = Math.Atan2(dy, dx);
-        if (_blockedTics > 2) radians += (actor.Id % 2 == 0 ? 1 : -1) * Math.PI / 4;
-        if (dx * dx + dy * dy > 1 && !melee)
+        if ((flags & MonsterChaseFlags.DontMove) == 0)
         {
-            actor.VelocityX = Fixed.FromDouble(Math.Cos(radians) * actor.ChaseSpeed);
-            actor.VelocityY = Fixed.FromDouble(Math.Sin(radians) * actor.ChaseSpeed);
+            if (actor.X == _previousX && actor.Y == _previousY) _blockedTics++;
+            else _blockedTics = 0;
+            _previousX = actor.X; _previousY = actor.Y;
+            var radians = Math.Atan2(dy, dx);
+            if (_blockedTics > 2 && (flags & MonsterChaseFlags.StopIfBlocked) == 0)
+                radians += (actor.Id % 2 == 0 ? 1 : -1) * Math.PI / 4;
+            if (dx * dx + dy * dy > 1 && !melee)
+            {
+                actor.VelocityX = Fixed.FromDouble(Math.Cos(radians) * actor.ChaseSpeed);
+                actor.VelocityY = Fixed.FromDouble(Math.Sin(radians) * actor.ChaseSpeed);
+            }
         }
+        if ((flags & MonsterChaseFlags.NoPlayActive) == 0 && sim.NextChaseByte() < 3)
+            ActorSoundActions.PlayActiveSound(actor);
     }
 
-    private void TickProfile(AuthoritySimulation sim, Actor actor, Actor target, bool melee, bool visible)
+    private bool CheckProfileRefire(AuthoritySimulation sim, Actor actor, Actor? target, bool visible)
+    {
+        if (target != null && HitFriend(sim, actor, target)) return false;
+        if (target != null) ActorOrientationActions.Face(actor, target);
+        return sim.CheckCPosRefire(visible, _nativeType is 7 or 68 ? (byte)10 : (byte)40);
+    }
+
+    private void TickProfile(AuthoritySimulation sim, Actor actor, Actor? target, bool melee, bool visible)
     {
         var profile = _profile!;
         _attackTic++;
         WindupTics = Math.Max(0, (_separateMelee ? profile.MeleeShotTic : profile.Shots[0]) - _attackTic);
         var end = _separateMelee ? profile.MeleeEndTic : profile.EndTic;
+        if (!_separateMelee && _attackTic == profile.RefireTic
+            && !CheckProfileRefire(sim, actor, target, visible))
+        {
+            _attackTic = -1; AttackCooldown = 1; Mode = MonsterMode.Chase; return;
+        }
         if (_attackTic >= end)
         {
-            if (!_separateMelee && profile.RepeatFrom >= 0 && visible)
+            if (!_separateMelee && profile.RepeatFrom >= 0
+                && (profile.RefireTic >= 0 || visible))
                 _attackTic = profile.RepeatFrom;
             else { _attackTic = -1; AttackCooldown = 1; Mode = MonsterMode.Chase; return; }
         }
+        if (target != null && (_separateMelee ? profile.MeleeFaceTics : profile.FaceTics)?.Contains(_attackTic) == true)
+            ActorOrientationActions.Face(actor, target);
         var shot = _separateMelee ? (_attackTic == profile.MeleeShotTic ? 0 : -1) : Array.IndexOf(profile.Shots, _attackTic);
-        if (shot < 0) return;
+        if (shot < 0 || target == null) return;
         Mode = MonsterMode.Recovery;
         var dx = target.X.ToDouble() - actor.X.ToDouble(); var dy = target.Y.ToDouble() - actor.Y.ToDouble();
-        actor.Angle = BamAngle.FromDegrees(Math.Atan2(dy, dx) * 180 / Math.PI);
+        ActorOrientationActions.Face(actor, target);
         if (_nativeType == 64)
         {
             if (shot == 0) _vileFire = true;
@@ -338,7 +517,7 @@ public sealed class MonsterBrain(MonsterAttack attack)
         }
         if (_nativeType == 3006)
         {
-            StartCharge(actor, target);
+            ActorSkullActions.SkullAttack(actor);
             return;
         }
         if (_nativeType == 71)
@@ -346,31 +525,90 @@ public sealed class MonsterBrain(MonsterAttack attack)
             sim.SpawnLostSoul(actor, target, actor.Angle.ToDegrees());
             return;
         }
-        if (_separateMelee || Attack == MonsterAttack.Melee || melee && profile.MeleeDice > 0)
+        if (_separateMelee || Attack == MonsterAttack.Melee || profile.MeleeShotTic < 0 && melee && profile.MeleeDice > 0)
         {
-            if (melee && visible) ActorDamage.Apply(target,
-                (1 + (int)(sim.NextCombatRandom() % (uint)profile.MeleeDice)) * profile.MeleeMultiplier, actor, damageType: "Melee", inflictor: actor);
+            if (melee && visible)
+            {
+                var damage = _nativeType == 66 ? sim.NextSkelFistDamage()
+                    : _nativeType is 3002 or 58 ? sim.NextSargAttackDamage()
+                    : _nativeType == 3001 ? sim.NextTroopAttackDamage()
+                    : _nativeType == 3005 ? sim.NextHeadAttackDamage()
+                    : _nativeType is 3003 or 69 ? sim.NextBruisAttackDamage()
+                    : (1 + (int)(sim.NextCombatRandom() % (uint)profile.MeleeDice)) * profile.MeleeMultiplier;
+                if (_nativeType == 66) ActorSoundActions.PlayWeaponSound(actor, "skeleton/melee");
+                if (_nativeType == 3001) ActorSoundActions.PlayWeaponSound(actor, "imp/melee");
+                if (_nativeType is 3003 or 69) ActorSoundActions.PlayWeaponSound(actor, "baron/melee");
+                if (_nativeType == 3005 && actor.ActorSounds.TryGetValue(ActorSoundType.Attack, out var attackSound)
+                    && !string.IsNullOrEmpty(attackSound))
+                    ActorSoundActions.PlayWeaponSound(actor, attackSound);
+                ActorDamage.Apply(target, damage, actor, damageType: "Melee", inflictor: actor);
+            }
             return;
         }
         if (profile.Projectile is { } kind)
         {
             if (_nativeType == 67)
             {
+                if (shot < 2)
+                    actor.Angle = BamAngle.FromDegrees(actor.Angle.ToDegrees() + (shot == 0 ? 11.25 : -11.25));
                 // SpawnMissile aims at the target; the second shot receives the extra yaw deviation.
                 var offsets = shot switch { 0 => new[] { 0d, 11.25 }, 1 => new[] { 0d, -11.25 }, _ => new[] { -5.625, 5.625 } };
-                foreach (var offset in offsets) sim.SpawnProjectile(actor, kind, target).RotateYaw(offset);
+                foreach (var offset in offsets)
+                {
+                    var missile = sim.SpawnProjectile(actor, kind, target);
+                    if (offset != 0) missile.RotateYaw(offset, useMovementSpeed: true);
+                }
             }
             else sim.SpawnProjectile(actor, kind, target);
             return;
         }
         var pitch = -Math.Atan2(target.Z.ToDouble() + target.Height.ToDouble() / 2
             - actor.Z.ToDouble() - actor.Height.ToDouble() / 2 - 8, Math.Max(1, Math.Sqrt(dx * dx + dy * dy))) * 180 / Math.PI;
+        if (_nativeType == 3004)
+        {
+            ActorSoundActions.PlayWeaponSound(actor, "grunt/attack");
+            var attack = sim.NextPosAttackShot();
+            FireHitscan(sim, actor, 2048, attack.Spread, pitch, attack.Damage);
+            return;
+        }
+        if (_nativeType is 65 or 84)
+        {
+            if (actor.ActorSounds.TryGetValue(ActorSoundType.Attack, out var sound) && !string.IsNullOrEmpty(sound))
+                ActorSoundActions.PlayWeaponSound(actor, sound);
+            var attack = sim.NextCPosAttackShot();
+            FireHitscan(sim, actor, 2048, attack.Spread, pitch, attack.Damage);
+            return;
+        }
+        if (_nativeType is 9 or 7)
+        {
+            if (actor.ActorSounds.TryGetValue(ActorSoundType.Attack, out var sound) && !string.IsNullOrEmpty(sound))
+                ActorSoundActions.PlayWeaponSound(actor, sound);
+            for (var pellet = 0; pellet < 3; pellet++)
+            {
+                var attack = sim.NextSPosAttackPellet();
+                FireHitscan(sim, actor, 2048, attack.Spread, pitch, attack.Damage);
+            }
+            return;
+        }
         for (var pellet = 0; pellet < profile.Pellets; pellet++)
         {
             var spread = sim.NextCombatSpread() * (22.5 * 255 / 256);
             var damage = 3 * (1 + (int)(sim.NextCombatRandom() % 5));
             FireHitscan(sim, actor, 2048, spread, pitch, damage);
         }
+    }
+
+    internal static bool HitFriend(AuthoritySimulation sim, Actor source, Actor target)
+    {
+        if (!source.Friendly) return false;
+        var dx = target.X.ToDouble() - source.X.ToDouble();
+        var dy = target.Y.ToDouble() - source.Y.ToDouble();
+        var distance = Math.Sqrt(dx * dx + dy * dy);
+        var pitch = -Math.Atan2(target.Z.ToDouble() + target.Height.ToDouble() / 2
+            - source.Z.ToDouble() - source.Height.ToDouble() / 2 - 8, Math.Max(1, distance)) * 180 / Math.PI;
+        var hit = CombatTrace.TraceLineAttack(sim, source, BamAngle.FromDegrees(Math.Atan2(dy, dx) * 180 / Math.PI),
+            BamAngle.FromDegrees(pitch), distance, requireDamageable: false).Victim;
+        return hit != null && hit != target && source.IsFriend(hit);
     }
 
     internal static void FireHitscan(AuthoritySimulation sim, Actor source, double range, double spread, double pitch, int damage)
@@ -419,6 +657,10 @@ public sealed class MonsterBrain(MonsterAttack attack)
         TargetId = target.Id;
         Charging = true;
         Mode = MonsterMode.Recovery;
+        if (actor.ActorSounds.TryGetValue(ActorSoundType.Attack, out var attackSound)
+            && !string.IsNullOrEmpty(attackSound))
+            ActorSoundActions.StartSound(actor, attackSound, channel: 2);
+        actor.Ambush = false;
         actor.Angle = BamAngle.FromDegrees(actor.AngleTo(target));
         actor.VelFromAngle(skullSpeed);
         var travel = actor.DistanceBySpeed(target, skullSpeed);
@@ -437,6 +679,22 @@ public sealed class MonsterBrain(MonsterAttack attack)
     private static bool SectorAllowsAttacks(Actor actor) => actor.Level is not { } level
         || actor.SectorIndex < 0 || actor.SectorIndex >= level.Sectors.Count
         || !level.Sectors[actor.SectorIndex].NoAttack;
+
+    private static bool InAcquisitionView(Actor actor, Actor target)
+    {
+        if (Distance(actor, target) <= actor.MeleeRange.ToDouble() + actor.Radius.ToDouble()) return true;
+        var angle = Math.Atan2(target.Y.ToDouble() - actor.Y.ToDouble(), target.X.ToDouble() - actor.X.ToDouble()) * 180 / Math.PI;
+        return Math.Abs(Math.IEEERemainder(angle - actor.Angle.ToDegrees(), 360)) <= 90;
+    }
+
+    private bool InOrdinaryMissileRange(Actor actor, Actor target)
+    {
+        var distance = Distance(actor, target);
+        // Native range properties apply after the melee-state distance adjustments.
+        if (_nativeType == 64) return distance - 64 - 128 <= 896;
+        if (_nativeType == 66 && distance - 64 < 196) return false;
+        return true;
+    }
 
     private static double Distance(Actor a, Actor b) => Math.Sqrt(
         Math.Pow(a.X.ToDouble() - b.X.ToDouble(), 2) + Math.Pow(a.Y.ToDouble() - b.Y.ToDouble(), 2));

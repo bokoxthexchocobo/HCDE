@@ -12,14 +12,16 @@ public class DynamicZombieAttackTests
         var (sim, actor) = Range(dynamicSpawn, remap);
         for (var tic = 0; tic < 20 && actor.Brain!.Mode != MonsterMode.Windup; tic++) sim.Tick();
         Assert.Equal(MonsterMode.Windup, actor.Brain!.Mode); Assert.Equal(10, actor.Brain.WindupTics);
-        var random = sim.CombatRandomState;
+        var combat = sim.CombatRandomState;
+        var random = sim.CaptureState().PosAttackRandomState;
         for (var tic = 1; tic < 10; tic++) sim.Tick();
-        Assert.Equal(random, sim.CombatRandomState);
-        sim.Tick(); Assert.NotEqual(random, sim.CombatRandomState);
+        Assert.Equal(random, sim.CaptureState().PosAttackRandomState);
+        sim.Tick(); Assert.NotEqual(random, sim.CaptureState().PosAttackRandomState);
+        Assert.Equal(combat, sim.CombatRandomState);
         Assert.Equal(MonsterMode.Recovery, actor.Brain.Mode);
-        random = sim.CombatRandomState;
+        random = sim.CaptureState().PosAttackRandomState;
         for (var tic = 11; tic < 26; tic++) sim.Tick();
-        Assert.Equal(random, sim.CombatRandomState); // Only one shot per attack.
+        Assert.Equal(random, sim.CaptureState().PosAttackRandomState); // Only one shot per attack.
         sim.Tick(); Assert.Equal(MonsterMode.Chase, actor.Brain.Mode);
     }
     [Fact]
@@ -32,6 +34,7 @@ public class DynamicZombieAttackTests
             Assert.Equal(mapped.Brain!.Mode, spawned.Brain!.Mode);
             Assert.Equal(mapped.Brain.WindupTics, spawned.Brain.WindupTics);
             Assert.Equal(map.CombatRandomState, dynamicSim.CombatRandomState);
+            Assert.Equal(map.CaptureState().PosAttackRandomState, dynamicSim.CaptureState().PosAttackRandomState);
             Assert.Equal(map.Players.Single().Health, dynamicSim.Players.Single().Health);
         }
     }

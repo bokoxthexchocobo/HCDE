@@ -13,6 +13,20 @@ internal static class AcsActorPowerups
             return player.PowerDamageTics;
         if (powerName.Equals("PowerProtection", StringComparison.OrdinalIgnoreCase))
             return player.PowerProtectionTics;
+        if (powerName.Equals("PowerInfiniteAmmo", StringComparison.OrdinalIgnoreCase))
+            return player.PowerInfiniteAmmoTics;
+        if (powerName.Equals("PowerDoubleFiringSpeed", StringComparison.OrdinalIgnoreCase))
+            return player.PowerDoubleFiringSpeedTics;
+        if (powerName.Equals("PowerHighJump", StringComparison.OrdinalIgnoreCase))
+            return player.PowerHighJumpTics;
+        if (powerName.Equals("PowerProsperity", StringComparison.OrdinalIgnoreCase))
+            return player.PowerProsperityTics;
+        if (powerName.Equals("PowerSpread", StringComparison.OrdinalIgnoreCase))
+            return player.PowerSpreadTics;
+        if (powerName.Equals("PowerRegeneration", StringComparison.OrdinalIgnoreCase))
+            return player.PowerRegenerationTics;
+        if (powerName.Equals("PowerDrain", StringComparison.OrdinalIgnoreCase))
+            return player.PowerDrainTics;
         return 0;
     }
 }

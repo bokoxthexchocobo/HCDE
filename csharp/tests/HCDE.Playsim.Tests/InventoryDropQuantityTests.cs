@@ -1,3 +1,5 @@
+using HCDE.MapLoader;
+
 namespace HCDE.Playsim.Tests;
 
 public class InventoryDropQuantityTests
@@ -9,7 +11,7 @@ public class InventoryDropQuantityTests
     [InlineData("Cell")]
     public void AmmoDropRemovesOneUnitAndRetainsCapacity(string type)
     {
-        var player = new PlayerPawn();
+        var player = Room().Players.Single();
         player.Inventory.Bullets = 0;
         AcsPlayerInventory.Give(player, type, 5);
         var maximum = AcsPlayerInventory.Count(player, type, true);
@@ -19,14 +21,14 @@ public class InventoryDropQuantityTests
     }
 
     [Fact]
-    public void ReserveDropRemovesOnlyFirstMatchingCopy()
+    public void UnsupportedReserveDropRetainsAllCopies()
     {
         var player = new PlayerPawn();
         player.Inventory.Armor = 100;
         player.Inventory.TryKeepArmorPickup(80, 50, armorType: "Reserve");
         player.Inventory.TryKeepArmorPickup(60, 50, armorType: "Reserve");
-        Assert.True(AcsPlayerInventory.Drop(player, "Reserve"));
-        Assert.Equal(60, player.Inventory.SpareArmor.Single().SaveAmount);
+        Assert.False(AcsPlayerInventory.Drop(player, "Reserve"));
+        Assert.Equal(2, player.Inventory.SpareArmor.Count);
         Assert.Equal(100, player.Inventory.Armor);
     }
 
@@ -46,11 +48,28 @@ public class InventoryDropQuantityTests
     [Fact]
     public void LastAmmoUnitDropsButDepletedPoolDoesNot()
     {
-        var player = new PlayerPawn();
+        var player = Room().Players.Single();
         player.Inventory.Bullets = 1;
         Assert.True(AcsPlayerInventory.Drop(player, "Clip"));
         Assert.Equal(0, player.Inventory.Bullets);
         Assert.False(AcsPlayerInventory.Drop(player, "Clip"));
         Assert.Equal(200, player.Inventory.MaxBullets);
     }
+
+    [Theory]
+    [InlineData("Clip")]
+    [InlineData("Shell")]
+    [InlineData("RocketAmmo")]
+    [InlineData("Cell")]
+    public void DetachedActorCannotLoseAmmoThroughFailedDrop(string type)
+    {
+        var player = new PlayerPawn();
+        AcsPlayerInventory.Give(player, type, 5);
+        var before = AcsPlayerInventory.Count(player, type, false);
+        Assert.False(AcsPlayerInventory.Drop(player, type));
+        Assert.Equal(before, AcsPlayerInventory.Count(player, type, false));
+    }
+
+    private static AuthoritySimulation Room() => AuthoritySimulation.Start(new PlayLevel
+    { Sectors = [new LevelSector { CeilingHeight = 128 }], Things = [new LevelThing { Type = 1 }] });
 }

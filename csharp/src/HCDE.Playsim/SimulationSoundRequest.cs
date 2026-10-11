@@ -13,7 +13,13 @@ public enum SimulationSoundFlags
     Overlap = 8192,
     Local = 16384,
     Singular = 131072,
+    NoRumble = 524288,
 }
 
+public readonly record struct SimulationSoundOrigin(float X, float Y, float Z, int SectorIndex);
+
 public sealed record SimulationSoundRequest(uint ActorId, string Sound, int Channel, int Flags,
-    float Volume, bool Loop, float Attenuation, bool Local, bool Stop = false, bool ChangeVolume = false);
+    float Volume, bool Loop, float Attenuation, bool Local, bool Stop = false, bool ChangeVolume = false,
+    int? StopChannelMax = null, float? Pitch = null, float StartTime = 0, bool ChangePitch = false,
+    bool OnlyIfChannelFree = false, SimulationSoundOrigin? DetachedOrigin = null,
+    bool OnlyIfSoundNotPlaying = false, bool NonPositional = false);

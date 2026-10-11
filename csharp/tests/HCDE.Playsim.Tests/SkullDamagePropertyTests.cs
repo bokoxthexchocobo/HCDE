@@ -8,7 +8,6 @@ public class SkullDamagePropertyTests
     [InlineData(3)]
     [InlineData(7)]
     [InlineData(0)]
-    [InlineData(-5)]
     public void ChargeCollisionUsesActorDamage(int damage)
     {
         var sim = Room();

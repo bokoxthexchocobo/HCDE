@@ -30,11 +30,12 @@ public class ZeroMissileForcePainTests
         var missile = sim.SpawnProjectile(source, ProjectileKind.Plasma); missile.SetDamage(0); missile.ForcePain = true;
         var target = new Actor { Health = 100, PainChance = 0 };
         var prediction = AuthoritySimulation.Start(new HCDE.MapLoader.PlayLevel());
-        prediction.NextCombatRandom();
+        prediction.NextMissileDamageByte();
         var health = target.Health;
         missile.DoMissileDamage(target);
         Assert.Equal(health, target.Health); Assert.Equal(1, target.States.Current);
         Assert.Equal(prediction.CombatRandomState, sim.CombatRandomState);
+        Assert.Equal(prediction.CaptureState().MissileDamageRandomState, sim.CaptureState().MissileDamageRandomState);
     }
 
     [Theory]

@@ -1,8 +1,20 @@
 namespace HCDE.Gamedata;
 
+public enum DehackedRenderStyle
+{
+    None = 0, Normal = 1, Fuzzy = 2, SoulTrans = 3, OptFuzzy = 4,
+    Translucent = 6, Add = 7, Shaded = 8,
+}
+
 public sealed class DehackedActor
 {
-    internal DehackedActor Copy() => (DehackedActor)MemberwiseClone();
+    internal DehackedActor Copy()
+    {
+        var copy = (DehackedActor)MemberwiseClone();
+        copy.SoundNameOverrides = new Dictionary<int, string>(SoundNameOverrides);
+        return copy;
+    }
+    public Dictionary<int, string> SoundNameOverrides { get; private set; } = new();
     public int Index { get; init; }
     public string Name { get; init; } = "";
     public int Health { get; set; }
@@ -27,10 +39,15 @@ public sealed class DehackedActor
     public int PainChance { get; set; }
     public int DoomEdNum { get; set; }
     public int OriginalDoomEdNum { get; init; }
+    public DehackedRenderStyle? RenderStyle { get; set; }
+    public double? Alpha { get; set; }
+    public bool? Invisible { get; set; }
     public uint Bits { get; set; }
     public bool BitsPatched { get; set; }
     public uint Bits2 { get; set; }
     public bool Bits2Patched { get; set; }
+    public bool FullVolumeSounds { get; set; }
+    public bool FullVolumeSoundsPatched { get; set; }
     public bool GravityPatched { get; set; }
     public double Gravity { get; set; } = 1;
     public bool BitsUseStealth { get; set; }
@@ -286,15 +303,36 @@ public static class DehackedPatch
     private static void ApplyThing(DehackedActor actor, IReadOnlyList<(string Key, string Value)> body, List<string> errors)
     {
         actor.Patched = true;
+        var oldShadow = actor.BitsPatched ? (actor.Bits & 0x40000) != 0 : actor.OriginalDoomEdNum == 58;
+        var hadStyle = false;
+        var hadTranslucency = false;
         foreach (var (key, value) in body)
         {
+            if (key.Equals("Render Style", StringComparison.OrdinalIgnoreCase))
+            {
+                var name = value.Trim();
+                if (name.StartsWith("STYLE_", StringComparison.OrdinalIgnoreCase) && name.Length > 6 && char.IsLetter(name[6]) &&
+                    Enum.TryParse<DehackedRenderStyle>(name[6..], true, out var style) && Enum.IsDefined(style))
+                {
+                    actor.RenderStyle = style;
+                    hadStyle = true;
+                }
+                else errors.Add($"Thing {actor.Index}: unknown render style '{value}'.");
+                continue;
+            }
             var numeric = ParseDecimalPrefix(value);
             if (numeric < int.MinValue || numeric > uint.MaxValue)
             {
                 errors.Add($"Thing {actor.Index}: bad numeric constant {value} for {key}.");
                 continue;
             }
-            if (key.Equals("Hit points", StringComparison.OrdinalIgnoreCase))
+            if (key.Equals("Translucency", StringComparison.OrdinalIgnoreCase))
+            {
+                actor.Alpha = (double)numeric / 65536;
+                actor.RenderStyle = DehackedRenderStyle.Translucent;
+                hadStyle = hadTranslucency = true;
+            }
+            else if (key.Equals("Hit points", StringComparison.OrdinalIgnoreCase))
                 actor.Health = unchecked((int)numeric);
             else if (key.Equals("Reaction time", StringComparison.OrdinalIgnoreCase))
             {
@@ -346,17 +384,31 @@ public static class DehackedPatch
             }
             else if (key.Equals("Bits", StringComparison.OrdinalIgnoreCase))
             {
+                actor.FullVolumeSounds = false;
+                actor.FullVolumeSoundsPatched = true;
                 uint bits = 0;
                 var changed = false;
                 var useStealth = false;
                 var changed2 = false;
                 uint bits2 = 0;
+                uint renderBits = 0;
+                var changedRender = false;
                 foreach (var token in value.Split([',', '+', '|', ' ', '\t', '\f', '\r'], StringSplitOptions.RemoveEmptyEntries))
                 {
                     if (token.All(character => character is >= '0' and <= '9' or '-'))
                     {
                         bits |= unchecked((uint)ParseDecimalPrefix(token));
                         changed = true;
+                    }
+                    else if (token.Equals("FULLVOLSOUNDS", StringComparison.OrdinalIgnoreCase))
+                        actor.FullVolumeSounds = true;
+                    else if (token.Equals("TRANSLUC25", StringComparison.OrdinalIgnoreCase) ||
+                        token.Equals("TRANSLUC50", StringComparison.OrdinalIgnoreCase) ||
+                        token.Equals("TRANSLUC75", StringComparison.OrdinalIgnoreCase))
+                    {
+                        renderBits |= token.Equals("TRANSLUC25", StringComparison.OrdinalIgnoreCase) ? 2u :
+                            token.Equals("TRANSLUC50", StringComparison.OrdinalIgnoreCase) ? 4u : 8u;
+                        changedRender = true;
                     }
                     else if (SupportedThingBits2.TryGetValue(token, out var namedBits2))
                     {
@@ -374,10 +426,26 @@ public static class DehackedPatch
                 }
                 if (changed)
                 {
+                    if ((bits & 0x80000000u) != 0)
+                    {
+                        bits &= ~0x80000000u;
+                        renderBits |= 2;
+                        changedRender = true;
+                    }
                     actor.Bits = bits;
                     actor.BitsPatched = true;
                     actor.BitsUseStealth = useStealth;
                     if (!useStealth && (bits & 0x40000000) != 0) actor.NoBlockMonsters = true;
+                }
+                if (changedRender)
+                {
+                    if ((renderBits & 7) != 0)
+                    {
+                        actor.Alpha = (renderBits & 1) != 0 ? 0.25 : (renderBits & 2) != 0 ? 0.5 : 0.75;
+                        actor.RenderStyle = DehackedRenderStyle.Translucent;
+                        hadTranslucency = true;
+                    }
+                    actor.Invisible = (renderBits & 8) != 0;
                 }
                 if (changed2)
                 {
@@ -393,14 +461,33 @@ public static class DehackedPatch
             else if (key.Equals("ID #", StringComparison.OrdinalIgnoreCase))
                 actor.DoomEdNum = unchecked((int)numeric);
             else if (key.EndsWith(" sound", StringComparison.OrdinalIgnoreCase))
-                AssignSound(actor, key, unchecked((int)numeric));
+                AssignSound(actor, key, unchecked((int)numeric), value);
             else if (key.EndsWith(" frame", StringComparison.OrdinalIgnoreCase))
                 AssignState(actor, key, unchecked((int)numeric), errors);
         }
+        var shadow = actor.BitsPatched ? (actor.Bits & 0x40000) != 0 : actor.OriginalDoomEdNum == 58;
+        if (shadow != oldShadow)
+        {
+            if (!hadStyle) actor.RenderStyle = shadow ? DehackedRenderStyle.OptFuzzy : DehackedRenderStyle.Normal;
+            if (shadow && !hadTranslucency) actor.Alpha = 0.5;
+        }
     }
 
-    private static void AssignSound(DehackedActor actor, string key, int id)
+    private static void AssignSound(DehackedActor actor, string key, int id, string value)
     {
+        var selector = key.StartsWith("Alert", StringComparison.OrdinalIgnoreCase) ? 0
+            : key.StartsWith("Attack", StringComparison.OrdinalIgnoreCase) ? 1
+            : key.StartsWith("Pain", StringComparison.OrdinalIgnoreCase) ? 2
+            : key.StartsWith("Death", StringComparison.OrdinalIgnoreCase) ? 3
+            : key.StartsWith("Action", StringComparison.OrdinalIgnoreCase) ? 4 : -1;
+        var text = value.Trim();
+        var numericStart = text.Length > 0 && (char.IsAsciiDigit(text[0]) ||
+            text.Length > 1 && text[0] is '+' or '-' && char.IsAsciiDigit(text[1]));
+        if (selector >= 0)
+        {
+            if (!numericStart && text.Length != 0) actor.SoundNameOverrides[selector] = text;
+            else actor.SoundNameOverrides.Remove(selector);
+        }
         if (key.StartsWith("Alert", StringComparison.OrdinalIgnoreCase))
             actor.SeeSound = id;
         else if (key.StartsWith("Attack", StringComparison.OrdinalIgnoreCase))
@@ -551,6 +638,7 @@ public static class DehackedPatch
             ["NOBLOCKMAP"] = 16,
             ["SPAWNCEILING"] = 256, ["NOGRAVITY"] = 512, ["DROPOFF"] = 1024,
             ["PICKUP"] = 2048, ["FLOAT"] = 16384, ["DROPPED"] = 131072,
+            ["SHADOW"] = 262144, ["TRANSLUCENT"] = 0x80000000u,
             ["COUNTKILL"] = 4194304,
             ["FRIEND"] = 0x40000000, ["STEALTH"] = 0x40000000,
         };

@@ -57,7 +57,7 @@ public class InventoryWeaponTossTests
         drop.X = Fixed.FromInt(500); drop.VelocityX = default;
         for (var i = 0; i < 30; i++) sim.Tick();
         var bytes = SimSavegame.Write(sim);
-        Assert.Equal(40, BinaryPrimitives.ReadUInt16LittleEndian(bytes.AsSpan(4)));
+        Assert.Equal(165, BinaryPrimitives.ReadUInt16LittleEndian(bytes.AsSpan(4)));
         Assert.True(SimSavegame.TryRead(bytes, out var state, out var error), error);
         var checksum = sim.Checksum;
         drop.SuppressWeaponPickupAmmo = false;
@@ -79,8 +79,10 @@ public class InventoryWeaponTossTests
         AcsPlayerInventory.Give(player, "Shotgun", 1);
         AcsPlayerInventory.Drop(player, "Shotgun");
         var bytes = SimSavegame.Write(sim);
-        var size = BinaryPrimitives.ReadInt32LittleEndian(bytes.AsSpan(bytes.Length - 4));
-        BinaryPrimitives.WriteInt32LittleEndian(bytes.AsSpan(bytes.Length - size + 12), 256);
+        var outerSize = BinaryPrimitives.ReadInt32LittleEndian(bytes.AsSpan(bytes.Length - 4));
+        var innerEnd = bytes.Length - outerSize;
+        var size = BinaryPrimitives.ReadInt32LittleEndian(bytes.AsSpan(innerEnd - 4));
+        BinaryPrimitives.WriteInt32LittleEndian(bytes.AsSpan(innerEnd - size + 12), 256);
         Assert.False(SimSavegame.TryRead(bytes, out _, out _));
     }
 

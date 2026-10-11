@@ -6,6 +6,38 @@ namespace HCDE.Playsim.Tests;
 public class AcsDamagePropertyTests
 {
     [Theory]
+    [InlineData(-7)]
+    [InlineData(0)]
+    [InlineData(19)]
+    public void OrdinaryActorScriptGetAndCheckEvaluateFunctionWithoutDice(int result)
+    {
+        var sim = Room(); var actor = sim.AddBot(400, 0); actor.Brain = null;
+        actor.Damage = -1; var calls = 0;
+        actor.DamageFunction = self => { Assert.Same(actor, self); calls++; return result; };
+        var random = sim.CombatRandomState;
+        Run(sim, actor, [3, 7, 3, 0, 3, 2, 246, 3, result, 19, 5, 112, 1]);
+        Assert.Equal(1, sim.LightOf(0)); Assert.Equal(1, calls);
+        Run(sim, actor, [3, 7, 3, 0, 3, 2, 3, result, 351, 3, 22, 5, 112, 1]);
+        Assert.Equal(1, sim.LightOf(0)); Assert.Equal(2, calls);
+        Assert.Equal(random, sim.CombatRandomState);
+        Assert.Null(sim.CaptureState().MissileDamageRandomState);
+    }
+
+    [Theory]
+    [InlineData(0)]
+    [InlineData(7)]
+    public void OrdinaryActorScriptWriteClearsFunctionAndReadUsesConstant(int damage)
+    {
+        var sim = Room(); var actor = sim.AddBot(400, 0); actor.Brain = null;
+        actor.DamageFunction = _ => throw new InvalidOperationException("Cleared function must not run.");
+        Set(sim, actor, damage);
+        Assert.Null(actor.DamageFunction);
+        Assert.Equal(damage, AcsActorProperties.Get(sim, actor, 0, AcsActorProperties.Damage));
+        Assert.True(AcsActorProperties.Check(sim, actor, 0, AcsActorProperties.Damage, damage));
+        Assert.Null(sim.CaptureState().MissileDamageRandomState);
+    }
+
+    [Theory]
     [InlineData(0)]
     [InlineData(7)]
     public void ScriptDamageWriteClearsExpressionBeforeSweptImpact(int damage)
@@ -54,7 +86,15 @@ public class AcsDamagePropertyTests
     [InlineData(-1)]
     public void ScriptSetGetCheckUseIntegerBaseDamage(int value)
     {
-        var sim = Room(); var actor = sim.Players.Single(); var expected = Math.Max(0, value);
+        var sim = Room(); var actor = sim.Players.Single(); var expected = value;
+        if (value < 0)
+        {
+            Set(sim, actor, value);
+            Assert.Equal(value, actor.Damage);
+            Assert.Throws<NotSupportedException>(() => AcsActorProperties.Get(sim, actor, 0, AcsActorProperties.Damage));
+            Assert.Throws<NotSupportedException>(() => AcsActorProperties.Check(sim, actor, 0, AcsActorProperties.Damage, 0));
+            return;
+        }
         Run(sim, actor, [3, 0, 3, 2, 3, value, 245,
             3, 7, 3, 0, 3, 2, 246, 3, expected, 19, 5, 112, 1]);
         Assert.Equal(value, actor.Damage); Assert.Equal(1, sim.LightOf(0));

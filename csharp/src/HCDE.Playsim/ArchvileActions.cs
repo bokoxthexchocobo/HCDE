@@ -40,12 +40,16 @@ internal static class ArchvileActions
 
     internal static void Attack(AuthoritySimulation sim, Actor archvile, Actor target, bool fireExists,
         int initialDamage = 20, double thrust = 1, string? damageType = "Fire", int flags = 0,
-        int blastDamage = 70, int blastRadius = 70)
+        int blastDamage = 70, int blastRadius = 70, string sound = "vile/stop")
     {
+        ArgumentNullException.ThrowIfNull(sound);
         if (!double.IsFinite(thrust)) throw new ArgumentOutOfRangeException(nameof(thrust));
         if (blastRadius <= 0) blastRadius = blastDamage;
         ActorOrientationActions.Face(archvile, target);
         if (!CombatTrace.HasLineOfSight(sim, archvile, target)) return;
+        if (!archvile.Destroyed && sound.Length > 0)
+            sim.QueueSoundRequest(new SimulationSoundRequest(archvile.Id, sound, 1, 0, 1,
+                false, 1, false), immediate: true);
         // VAF_DMGTYPEAPPLYTODIRECT applies the supplied type to the initial hit too.
         ActorDamage.Apply(target, initialDamage, archvile, damageType: (flags & 1) != 0 ? damageType : null, inflictor: archvile);
         if (fireExists && blastRadius > 0)
@@ -64,6 +68,7 @@ internal static class ArchvileActions
                     ActorDamage.Apply(victim, (int)(blastDamage * (1 - distance / blastRadius)), archvile, damageType: damageType, inflictor: fire);
             }
         }
-        target.VelocityZ = Fixed.FromDouble(thrust * 1000.0 / Math.Max(1, target.Mass));
+        if (!target.DontThrust)
+            target.VelocityZ = Fixed.FromDouble(thrust * 1000.0 / Math.Max(1, target.Mass));
     }
 }

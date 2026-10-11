@@ -29,11 +29,13 @@ public class AcsReactionTimeTests
     public void CounterDelaysAttackAndQueryTracksCountdown()
     {
         var sim = Room(); var actor = Monster(sim); actor.ChaseSpeed = 0;
+        sim.Players.Single().X = Fixed.FromInt(400);
+        actor.Brain = new MonsterBrain(MonsterAttack.Hitscan);
         Set(sim, actor, 3);
         for (var expected = 2; expected >= 0; expected--)
         {
             sim.Tick(); Assert.Equal(expected, actor.ReactionTime);
-            Assert.NotEqual(MonsterMode.Windup, actor.Brain!.Mode);
+            Assert.Equal(expected == 0 ? MonsterMode.Windup : MonsterMode.Chase, actor.Brain!.Mode);
             Run(sim, actor, [3, 7, 3, 0, 3, 37, 246, 3, expected, 19, 5, 112, 1]);
             Assert.Equal(1, sim.LightOf(0));
         }

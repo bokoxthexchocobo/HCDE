@@ -35,9 +35,10 @@ public class TriggerPainChanceActionTests
         var actor = sim.AddBot(100, 0); actor.Brain = null;
         actor.PainChance = chance == 0 ? 256 : 0; actor.ReactionTime = 12;
         actor.SetTypedPain("Ice", 1, chance);
-        prediction.NextCombatRandom();
+        prediction.NextPainChanceByte();
         Assert.Equal(chance == 256, actor.TriggerPainChance("ice"));
         Assert.Equal(prediction.CombatRandomState, sim.CombatRandomState);
+        Assert.Equal(prediction.CaptureState().PainChanceRandomState, sim.CaptureState().PainChanceRandomState);
         Assert.False(actor.JustHit); Assert.Equal(12, actor.ReactionTime);
     }
 

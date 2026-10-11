@@ -6,6 +6,8 @@ internal static class AcsActorProperties
     public const int Health = 0;
     public const int Speed = 1;
     public const int Damage = 2;
+    public const int Alpha = 3;
+    public const int RenderStyle = 4;
     public const int Ambush = 10;
     public const int Invulnerable = 11;
     public const int JumpZ = 12;
@@ -56,7 +58,7 @@ internal static class AcsActorProperties
         if (actor is null || actor.Destroyed)
             return false;
         // Native CheckActorProperty rejects unknown properties, even when Get returns zero.
-        if (property is not (Health or Speed or Damage or Ambush or Invulnerable or JumpZ or Gravity or Friendly
+        if (property is not (Health or Speed or Damage or Alpha or RenderStyle or Ambush or Invulnerable or JumpZ or Gravity or Friendly
             or SpawnHealth or NoTarget or TargetTid or TracerTid or Mass or Height or Radius or ViewHeight or AttackZOffset
             or MaxStepHeight or MaxDropOffHeight or DamageFactor or DamageMultiplier or MeleeRange or Friction or NoTrigger or Score or Dropped or ReactionTime))
             return false;
@@ -73,6 +75,12 @@ internal static class AcsActorProperties
 
         switch (property)
         {
+            case Alpha:
+                actor.Alpha = value / 65536.0;
+                break;
+            case RenderStyle:
+                if (ActorRenderStyle.TryFromAcs(value, out var style)) actor.RenderStyle = style;
+                break;
             case Health:
                 if (actor.Health <= 0)
                     return;
@@ -159,7 +167,9 @@ internal static class AcsActorProperties
     {
         Health => actor.Health,
         Speed => actor.MovementSpeed.Raw,
-        Damage => actor is ProjectileActor missile ? missile.GetMissileDamage(0, 1) : Math.Max(0, actor.Damage),
+        Damage => actor.GetMissileDamage(0, 1),
+        Alpha => unchecked((int)Math.Round(actor.Alpha * 65536, MidpointRounding.ToEven)),
+        RenderStyle => actor.RenderStyle.ToAcs(),
         Ambush => actor.Ambush ? 1 : 0,
         Invulnerable => actor.Invulnerable ? 1 : 0,
         JumpZ => actor is PlayerPawn jumpPlayer ? jumpPlayer.JumpZ.Raw : 0,

@@ -33,12 +33,12 @@ public class ActorVisibilityActionTests
     }
 
     [Fact]
-    public void ResurrectionRestoresSupportedClassVisibilityDefault()
+    public void ResurrectionPreservesHiddenRenderState()
     {
         var sim = Room(); var actor = sim.AddBot(200, 0, 3004);
         actor.Health = 0; actor.States.Enter(actor, ActorStateMachine.Corpse);
         ActorPropertyActions.HideThing(actor);
-        Assert.True(ActorRaiseActions.RaiseSelf(actor)); Assert.False(actor.Invisible);
+        Assert.True(ActorRaiseActions.RaiseSelf(actor)); Assert.True(actor.Invisible);
     }
 
     [Theory]

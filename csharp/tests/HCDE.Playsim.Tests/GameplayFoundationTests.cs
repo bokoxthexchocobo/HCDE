@@ -1830,7 +1830,7 @@ public class GameplayFoundationTests
     }
 
     [Fact]
-    public void JustHitMarksAPainFlinchAndClearsOnTheNextBrainTick()
+    public void JustHitMarksAPainFlinchAndSurvivesThePainBrainTick()
     {
         var sim = Room();
         var bot = sim.AddBot(64, 64);
@@ -1842,7 +1842,7 @@ public class GameplayFoundationTests
         Assert.True(bot.JustHit);
         bot.Brain.Enabled = true;
         sim.Tick();
-        Assert.False(bot.JustHit);
+        Assert.True(bot.JustHit);
 
         var distracted = sim.AddBot(96, 64);
         distracted.Health = 100;

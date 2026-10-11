@@ -30,7 +30,9 @@ public class NativeMonsterReactionDefaultTests
         for (var tic = 1; tic <= initial; tic++)
         {
             actor.Brain!.Tick(sim, actor);
-            Assert.Equal(initial - tic, actor.ReactionTime); Assert.Null(actor.Brain.TargetId);
+            Assert.Equal(initial - tic, actor.ReactionTime);
+            Assert.Equal(sim.Players.Single().Id, actor.Brain.TargetId);
+            Assert.Equal(tic == initial ? MonsterMode.Windup : MonsterMode.Chase, actor.Brain.Mode);
         }
         actor.Brain!.Tick(sim, actor); Assert.Equal(sim.Players.Single().Id, actor.Brain.TargetId);
     }

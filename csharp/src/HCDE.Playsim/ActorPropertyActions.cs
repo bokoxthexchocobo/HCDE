@@ -6,6 +6,51 @@ public static class ActorPropertyActions
     public static void HideThing(Actor actor) => actor.Invisible = true;
     public static void UnhideThing(Actor actor) => actor.Invisible = false;
 
+    public static void SetRenderStyle(Actor actor, double alpha, int mode)
+    {
+        if (!double.IsFinite(alpha)) throw new ArgumentOutOfRangeException(nameof(alpha));
+        actor.Alpha = Math.Clamp(alpha, 0, 1);
+        actor.RenderStyle = ActorRenderStyle.FromNative(mode);
+    }
+
+    public static void FadeIn(Actor actor, double amount = 0.1, int flags = 0)
+        => Fade(actor, amount, flags, true);
+
+    public static void FadeOut(Actor actor, double amount = 0.1, int flags = 1)
+        => Fade(actor, amount, flags, false);
+
+    private static void Fade(Actor actor, double amount, int flags, bool fadeIn)
+    {
+        if (!double.IsFinite(amount)) throw new ArgumentOutOfRangeException(nameof(amount));
+        if (amount == 0) amount = 0.1;
+        var alpha = actor.Alpha + (fadeIn ? amount : -amount);
+        if (!double.IsFinite(alpha)) throw new ArgumentOutOfRangeException(nameof(amount));
+        var finished = fadeIn ? alpha >= 1 : alpha <= 0;
+        if (finished && (flags & 2) != 0) alpha = fadeIn ? 1 : 0;
+        actor.RenderStyle = actor.RenderStyle with { Flags = (byte)(actor.RenderStyle.Flags & ~2) };
+        actor.Alpha = alpha;
+        if (finished && (flags & 1) != 0) RemoveFadedActor(actor);
+    }
+
+    public static void FadeTo(Actor actor, double target, double amount = 0.1, int flags = 0)
+    {
+        if (!double.IsFinite(target)) throw new ArgumentOutOfRangeException(nameof(target));
+        if (!double.IsFinite(amount)) throw new ArgumentOutOfRangeException(nameof(amount));
+        var alpha = actor.Alpha;
+        if (alpha > target) alpha = Math.Max(target, alpha - amount);
+        else if (alpha < target) alpha = Math.Min(target, alpha + amount);
+        if (!double.IsFinite(alpha)) throw new ArgumentOutOfRangeException(nameof(amount));
+        if ((flags & 2) != 0) alpha = Math.Clamp(alpha, 0, 1);
+        actor.RenderStyle = actor.RenderStyle with { Flags = (byte)(actor.RenderStyle.Flags & ~2) };
+        actor.Alpha = alpha;
+        if (alpha == target && (flags & 1) != 0) RemoveFadedActor(actor);
+    }
+
+    private static void RemoveFadedActor(Actor actor)
+    {
+        if (actor is not PlayerPawn && actor.IsMapActor()) actor.Destroy();
+    }
+
     public static bool SinkMobj(Actor actor, double speed)
     {
         if (!double.IsFinite(speed)) throw new ArgumentOutOfRangeException(nameof(speed));

@@ -25,6 +25,19 @@ public sealed class DedicatedServerOptions
     public string VersionLabel { get; set; } = "hcdeserv-csharp";
     public string GitHash { get; set; } = "";
     public byte Skill { get; set; } = 3;
+    public double PlayerDamageFactor { get; set; } = 1;
+    public double SkillDamageFactor { get; set; } = 1;
+    public double MonsterDamageFactor { get; set; } = 1;
+    public double FriendlyDamageFactor { get; set; } = 1;
+    public bool NoMonsterPain { get; set; }
+    public bool DisableAutoHealth { get; set; }
+    public bool StrifeHealthPickups { get; set; }
+    public bool RavenHealthPickups { get; set; }
+    public bool UnlimitedHealthPickups { get; set; }
+    public bool InfiniteHealthItemUse { get; set; }
+    public bool InfiniteStoredInventoryUse { get; set; }
+    public bool InfiniteAmmo { get; set; }
+    public int DefaultInventoryMaximum { get; set; } = 25;
     public byte GameMode { get; set; }
     public string GameModeName { get; set; } = "Co-op";
     public bool Deathmatch { get; set; }
@@ -94,7 +107,17 @@ public sealed class DedicatedServerHost : IDisposable, IPregameInboundIntercepto
             Simulation = AuthoritySimulation.Start(level, options.Pregame.Session.MapLoad.RngSeed, patch,
                 compat: options.Compatibility,
                 spawnOptions: new SpawnOptions(Math.Clamp((int)options.Skill, 0, 4),
-                    options.Deathmatch ? SpawnGameMode.Deathmatch : SpawnGameMode.Cooperative), noExit: options.NoExit);
+                    options.Deathmatch ? SpawnGameMode.Deathmatch : SpawnGameMode.Cooperative,
+                    PlayerDamageFactor: options.PlayerDamageFactor, MonsterDamageFactor: options.MonsterDamageFactor,
+                    FriendlyDamageFactor: options.FriendlyDamageFactor, NoMonsterPain: options.NoMonsterPain,
+                    SkillDamageFactor: options.SkillDamageFactor, DisableAutoHealth: options.DisableAutoHealth,
+                    StrifeHealthPickups: options.StrifeHealthPickups,
+                    UnlimitedHealthPickups: options.UnlimitedHealthPickups,
+                    DefaultInventoryMaximum: options.DefaultInventoryMaximum,
+                    RavenHealthPickups: options.RavenHealthPickups,
+                    InfiniteHealthItemUse: options.InfiniteHealthItemUse,
+                    InfiniteStoredInventoryUse: options.InfiniteStoredInventoryUse,
+                    InfiniteAmmo: options.InfiniteAmmo), noExit: options.NoExit);
             if (options.GameMode == 4)
                 Simulation.Invasion.Configure(options.InvasionWaves, options.InvasionCountdownTics, options.InvasionIntermissionTics);
         }

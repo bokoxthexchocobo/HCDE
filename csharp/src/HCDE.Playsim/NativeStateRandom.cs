@@ -2,6 +2,13 @@ namespace HCDE.Playsim;
 
 internal static class NativeStateRandom
 {
+    internal static (double Spread, int Damage) NextHitscanShot(ref ulong state)
+    {
+        var first = (int)(Next(ref state) & 255);
+        var second = (int)(Next(ref state) & 255);
+        return ((first - second) * (22.5 / 256), (1 + (int)NextBounded(ref state, 5)) * 3);
+    }
+
     internal static ulong Seed(uint seed, uint nameCrc = 0xedd97674u)
     {
         // The default name CRC is the native "StateTics" stream.

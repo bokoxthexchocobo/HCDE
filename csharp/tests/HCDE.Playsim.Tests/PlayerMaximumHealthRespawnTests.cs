@@ -5,6 +5,22 @@ namespace HCDE.Playsim.Tests;
 public class PlayerMaximumHealthRespawnTests
 {
     [Theory]
+    [InlineData(SpawnGameMode.Single, false, false)]
+    [InlineData(SpawnGameMode.Cooperative, false, false)]
+    [InlineData(SpawnGameMode.Deathmatch, false, false)]
+    [InlineData(SpawnGameMode.Cooperative, true, false)]
+    [InlineData(SpawnGameMode.Single, false, true)]
+    public void RespawnClearsLastDamageTypeOnlyWhenPlayerIsReborn(SpawnGameMode mode, bool blocked, bool reload)
+    {
+        var sim = Room(mode); sim.NoRespawn = blocked; sim.AllowSinglePlayerRespawn = !reload;
+        var player = sim.Players.Single(); ActorDamage.Apply(player, 1000, damageType: "Fire");
+        Assert.Equal("Fire", player.LastDamageType);
+        PressRespawn(sim);
+        if (blocked || reload) Assert.Equal("Fire", player.LastDamageType);
+        else { Assert.Null(player.LastDamageType); Assert.Equal(0, player.DeathDamageAmount); Assert.False(player.IsDead); }
+    }
+
+    [Theory]
     [InlineData(SpawnGameMode.Cooperative, 250)]
     [InlineData(SpawnGameMode.Cooperative, -7)]
     [InlineData(SpawnGameMode.Deathmatch, 250)]

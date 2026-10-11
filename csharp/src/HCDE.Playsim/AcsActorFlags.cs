@@ -20,6 +20,10 @@ internal static class AcsActorFlags
         Buddha,
         FoilBuddha,
         ForcePain,
+        CausePain,
+        AllowPain,
+        NoDamage,
+        LaxTelefragDamage,
         Painless,
         NoIceDeath,
         ExtremeDeath,
@@ -57,6 +61,12 @@ internal static class AcsActorFlags
         NoAutoOffSkullFly,
         NoBlockmap,
         Invisible,
+        CantSeek,
+        SpawnSoundSource,
+        DontThrust,
+        DontSeekInvisible,
+        Shadow,
+        MinVisible,
         PierceArmor,
         NoTarget,
         Ambush,
@@ -67,6 +77,11 @@ internal static class AcsActorFlags
         NoGravity,
         Fly,
         NoFriction,
+        RetargetAfterSlam,
+        OnlySlamSolid,
+        FullVolumeActive,
+        FullVolumeSee,
+        FullVolumeDeath,
         Corpse,
         DontCorpse,
         Falling,
@@ -103,7 +118,7 @@ internal static class AcsActorFlags
         value = false;
         if (actor.Destroyed || string.IsNullOrEmpty(flagName) || !TryMap(flagName, out var kind))
             return false;
-        if (kind is Kind.IgnoreSkill or Kind.AlwaysPickup && !PickupCatalog.IsPickup(actor.DoomEdNum)) return false;
+        if (kind is Kind.IgnoreSkill or Kind.AlwaysPickup && !PickupCatalog.IsPickup(actor.DoomEdNum, actor.Simulation?.RavenHealthPickups ?? false)) return false;
         value = Read(actor, kind);
         return true;
     }
@@ -112,7 +127,7 @@ internal static class AcsActorFlags
     {
         if (actor.Destroyed || string.IsNullOrEmpty(flagName) || !TryMap(flagName, out var kind))
             return false;
-        if (kind is Kind.IgnoreSkill or Kind.AlwaysPickup && !PickupCatalog.IsPickup(actor.DoomEdNum)) return false;
+        if (kind is Kind.IgnoreSkill or Kind.AlwaysPickup && !PickupCatalog.IsPickup(actor.DoomEdNum, actor.Simulation?.RavenHealthPickups ?? false)) return false;
         Write(actor, kind, set);
         return true;
     }
@@ -151,6 +166,18 @@ internal static class AcsActorFlags
         { kind = Kind.NoBlockmap; return true; }
         if (flagName.Equals("INVISIBLE", StringComparison.OrdinalIgnoreCase))
         { kind = Kind.Invisible; return true; }
+        if (flagName.Equals("CANTSEEK", StringComparison.OrdinalIgnoreCase))
+        { kind = Kind.CantSeek; return true; }
+        if (flagName.Equals("SPAWNSOUNDSOURCE", StringComparison.OrdinalIgnoreCase))
+        { kind = Kind.SpawnSoundSource; return true; }
+        if (flagName.Equals("DONTTHRUST", StringComparison.OrdinalIgnoreCase))
+        { kind = Kind.DontThrust; return true; }
+        if (flagName.Equals("DONTSEEKINVISIBLE", StringComparison.OrdinalIgnoreCase))
+        { kind = Kind.DontSeekInvisible; return true; }
+        if (flagName.Equals("SHADOW", StringComparison.OrdinalIgnoreCase))
+        { kind = Kind.Shadow; return true; }
+        if (flagName.Equals("MINVISIBLE", StringComparison.OrdinalIgnoreCase))
+        { kind = Kind.MinVisible; return true; }
         if (flagName.Equals("JUSTHIT", StringComparison.OrdinalIgnoreCase))
         { kind = Kind.JustHit; return true; }
         if (flagName.Equals("ACTLIKEBRIDGE", StringComparison.OrdinalIgnoreCase))
@@ -328,6 +355,24 @@ internal static class AcsActorFlags
         { kind = Kind.Corpse; return true; }
         if (flagName.Equals("NOFRICTION", StringComparison.OrdinalIgnoreCase))
         { kind = Kind.NoFriction; return true; }
+        if (flagName.Equals("FULLVOLACTIVE", StringComparison.OrdinalIgnoreCase))
+        { kind = Kind.FullVolumeActive; return true; }
+        if (flagName.Equals("RETARGETAFTERSLAM", StringComparison.OrdinalIgnoreCase))
+        { kind = Kind.RetargetAfterSlam; return true; }
+        if (flagName.Equals("CAUSEPAIN", StringComparison.OrdinalIgnoreCase))
+        { kind = Kind.CausePain; return true; }
+        if (flagName.Equals("ALLOWPAIN", StringComparison.OrdinalIgnoreCase))
+        { kind = Kind.AllowPain; return true; }
+        if (flagName.Equals("NODAMAGE", StringComparison.OrdinalIgnoreCase))
+        { kind = Kind.NoDamage; return true; }
+        if (flagName.Equals("LAXTELEFRAGDMG", StringComparison.OrdinalIgnoreCase))
+        { kind = Kind.LaxTelefragDamage; return true; }
+        if (flagName.Equals("ONLYSLAMSOLID", StringComparison.OrdinalIgnoreCase))
+        { kind = Kind.OnlySlamSolid; return true; }
+        if (flagName.Equals("FULLVOLSEE", StringComparison.OrdinalIgnoreCase))
+        { kind = Kind.FullVolumeSee; return true; }
+        if (flagName.Equals("FULLVOLDEATH", StringComparison.OrdinalIgnoreCase))
+        { kind = Kind.FullVolumeDeath; return true; }
         if (flagName.Equals("FLY", StringComparison.OrdinalIgnoreCase))
         { kind = Kind.Fly; return true; }
         if (flagName.Equals("NOGRAVITY", StringComparison.OrdinalIgnoreCase))
@@ -364,6 +409,10 @@ internal static class AcsActorFlags
         Kind.Buddha => actor.Buddha,
         Kind.FoilBuddha => actor.FoilBuddha,
         Kind.ForcePain => actor.ForcePain,
+        Kind.CausePain => actor.CausePain,
+        Kind.AllowPain => actor.AllowPain,
+        Kind.NoDamage => actor.NoDamage,
+        Kind.LaxTelefragDamage => actor.LaxTelefragDamage,
         Kind.Painless => actor.Painless,
         Kind.NoIceDeath => actor.NoIceDeath,
         Kind.ExtremeDeath => actor.ExtremeDeath,
@@ -401,6 +450,12 @@ internal static class AcsActorFlags
         Kind.NoAutoOffSkullFly => actor.NoAutoOffSkullFly,
         Kind.NoBlockmap => actor.NoBlockmap,
         Kind.Invisible => actor.Invisible,
+        Kind.CantSeek => actor.CantSeek,
+        Kind.SpawnSoundSource => actor.SpawnSoundSource,
+        Kind.DontThrust => actor.DontThrust,
+        Kind.DontSeekInvisible => actor.DontSeekInvisible,
+        Kind.Shadow => actor.Shadow,
+        Kind.MinVisible => actor.MinVisible,
         Kind.PierceArmor => actor.PierceArmor,
         Kind.StrifeDamage => actor.StrifeDamage,
         Kind.Rip => actor.Rip,
@@ -419,6 +474,11 @@ internal static class AcsActorFlags
         Kind.NoGravity => actor.NoGravity,
         Kind.Fly => actor.Fly,
         Kind.NoFriction => actor.NoFriction,
+        Kind.FullVolumeActive => actor.FullVolumeActive,
+        Kind.RetargetAfterSlam => actor.RetargetAfterSlam,
+        Kind.OnlySlamSolid => actor.OnlySlamSolid,
+        Kind.FullVolumeSee => actor.FullVolumeSee,
+        Kind.FullVolumeDeath => actor.FullVolumeDeath,
         Kind.Corpse => actor.Corpse,
         Kind.DontCorpse => actor.DontCorpse,
         Kind.Falling => actor.Falling,
@@ -447,7 +507,7 @@ internal static class AcsActorFlags
         Kind.Special => actor.SpecialPickup,
         Kind.Dropped => actor.Dropped,
         Kind.IgnoreSkill => actor.IgnoreAmmoSkill,
-        Kind.AlwaysPickup => actor.AlwaysPickupOverride ?? PickupCatalog.AlwaysPickup(actor.DoomEdNum),
+        Kind.AlwaysPickup => actor.AlwaysPickupOverride ?? PickupCatalog.AlwaysPickup(actor.DoomEdNum, actor.Simulation?.StrifeHealthPickups ?? false),
         _ => false,
     };
 
@@ -462,6 +522,10 @@ internal static class AcsActorFlags
             case Kind.Buddha: actor.Buddha = value; break;
             case Kind.FoilBuddha: actor.FoilBuddha = value; break;
             case Kind.ForcePain: actor.ForcePain = value; break;
+            case Kind.CausePain: actor.CausePain = value; break;
+            case Kind.AllowPain: actor.AllowPain = value; break;
+            case Kind.NoDamage: actor.NoDamage = value; break;
+            case Kind.LaxTelefragDamage: actor.LaxTelefragDamage = value; break;
             case Kind.Painless: actor.Painless = value; break;
             case Kind.NoIceDeath: actor.NoIceDeath = value; break;
             case Kind.ExtremeDeath: actor.ExtremeDeath = value; break;
@@ -499,6 +563,12 @@ internal static class AcsActorFlags
             case Kind.NoAutoOffSkullFly: actor.NoAutoOffSkullFly = value; break;
             case Kind.NoBlockmap: ActorPropertyActions.ChangeLinkFlags(actor, value ? 1 : 0); break;
             case Kind.Invisible: actor.Invisible = value; break;
+            case Kind.CantSeek: actor.CantSeek = value; break;
+            case Kind.SpawnSoundSource: actor.SpawnSoundSource = value; break;
+            case Kind.DontThrust: actor.DontThrust = value; break;
+            case Kind.DontSeekInvisible: actor.DontSeekInvisible = value; break;
+            case Kind.Shadow: actor.Shadow = value; break;
+            case Kind.MinVisible: actor.MinVisible = value; break;
             case Kind.PierceArmor: actor.PierceArmor = value; break;
             case Kind.StrifeDamage: actor.StrifeDamage = value; break;
             case Kind.Rip: actor.Rip = value; break;
@@ -522,6 +592,11 @@ internal static class AcsActorFlags
             case Kind.DontCorpse: actor.DontCorpse = value; break;
             case Kind.Corpse: actor.Corpse = value; break;
             case Kind.NoFriction: actor.NoFriction = value; break;
+            case Kind.FullVolumeActive: actor.FullVolumeActive = value; break;
+            case Kind.RetargetAfterSlam: actor.RetargetAfterSlam = value; break;
+            case Kind.OnlySlamSolid: actor.OnlySlamSolid = value; break;
+            case Kind.FullVolumeSee: actor.FullVolumeSee = value; break;
+            case Kind.FullVolumeDeath: actor.FullVolumeDeath = value; break;
             case Kind.Fly: actor.Fly = value; break;
             case Kind.NoGravity: actor.NoGravity = value; actor.HasMovementActionOverride = true; break;
             case Kind.NoExplodeFloor: actor.NoExplodeFloor = value; break;

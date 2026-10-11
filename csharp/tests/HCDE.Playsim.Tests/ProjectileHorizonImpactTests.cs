@@ -23,10 +23,11 @@ public class ProjectileHorizonImpactTests
         {
             Assert.Equal(10000, owner.Health); Assert.Equal(10000, target.Health);
             Assert.Equal(1000, sim.Level.Lines[0].Health); Assert.Equal(random, sim.CombatRandomState);
+            Assert.Null(sim.CaptureState().MissileDamageRandomState);
         }
         else
         {
-            Assert.True(sim.Level.Lines[0].Health < 1000); Assert.NotEqual(random, sim.CombatRandomState);
+            Assert.True(sim.Level.Lines[0].Health < 1000); Assert.NotNull(sim.CaptureState().MissileDamageRandomState);
             if (kind == ProjectileKind.Rocket) Assert.True(target.Health < 10000);
         }
     }

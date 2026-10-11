@@ -40,11 +40,15 @@ public class ProjectileLifetimeArchiveTests
     [Theory]
     [InlineData(false)]
     [InlineData(true)]
-    public void DestroyedOrRemovedProjectileRejectsRestore(bool remove)
+    public void DestroyedOrRemovedProjectileIsReconstructed(bool remove)
     {
         var sim = Room(); var missile = Shoot(sim); var state = sim.CaptureState();
-        missile.Destroy(); if (remove) sim.Tick(); var tic = sim.Thinkers.Clock.Tic;
-        Assert.Throws<InvalidOperationException>(() => sim.RestoreState(state)); Assert.Equal(tic, sim.Thinkers.Clock.Tic);
+        missile.Destroy(); if (remove) sim.Tick();
+        sim.RestoreState(state);
+        var restored = Assert.Single(sim.Actors.OfType<ProjectileActor>());
+        Assert.NotSame(missile, restored); Assert.Equal(missile.Id, restored.Id);
+        Assert.False(restored.Destroyed); Assert.Equal(175, restored.RemainingTics);
+        Assert.Equal(state.Tic, sim.Thinkers.Clock.Tic);
     }
 
     [Fact]

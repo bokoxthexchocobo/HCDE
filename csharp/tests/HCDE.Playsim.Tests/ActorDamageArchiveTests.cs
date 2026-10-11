@@ -47,9 +47,10 @@ public class ActorDamageArchiveTests
         var sim = Room(); Missile(sim).SetDamage(19); var bytes = SimSavegame.Write(sim);
         var loaded = Room(); var restored = Missile(loaded); SimSavegame.Apply(loaded, bytes);
         var prediction = Room(); Missile(prediction);
-        var expected = ((int)prediction.NextCombatRandom() & 7) + 1;
+        var expected = ((int)prediction.NextMissileDamageByte() & 7) + 1;
         Assert.Equal(expected * 19, restored.GetMissileDamage(7, 1));
         Assert.Equal(prediction.CombatRandomState, loaded.CombatRandomState);
+        Assert.Equal(prediction.CaptureState().MissileDamageRandomState, loaded.CaptureState().MissileDamageRandomState);
     }
 
     [Fact]

@@ -9,6 +9,13 @@ public class AcsPowerInventoryDispatchTests
     [InlineData("PowerDamage", 875)]
     [InlineData("PowerProtection", 875)]
     [InlineData("PowerBuddha", 2100)]
+    [InlineData("PowerInfiniteAmmo", 1050)]
+    [InlineData("PowerDrain", 2100)]
+    [InlineData("PowerRegeneration", 4200)]
+    [InlineData("PowerDoubleFiringSpeed", 1400)]
+    [InlineData("PowerHighJump", 0)]
+    [InlineData("PowerProsperity", 4200)]
+    [InlineData("PowerSpread", 1050)]
     public void ActorGrantAndTakeTargetTid(string name, int duration)
     {
         var sim = Room();
@@ -27,6 +34,13 @@ public class AcsPowerInventoryDispatchTests
     [InlineData("PowerDamage")]
     [InlineData("PowerProtection")]
     [InlineData("PowerBuddha")]
+    [InlineData("PowerInfiniteAmmo")]
+    [InlineData("PowerDrain")]
+    [InlineData("PowerRegeneration")]
+    [InlineData("PowerDoubleFiringSpeed")]
+    [InlineData("PowerHighJump")]
+    [InlineData("PowerProsperity")]
+    [InlineData("PowerSpread")]
     public void DirectGrantAndInventoryQueryExecuteInVm(string name)
     {
         var sim = Room();

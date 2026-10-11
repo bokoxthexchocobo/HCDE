@@ -33,7 +33,7 @@ public class SkullChargePainGateTests
         Assert.NotEqual(soul.PainState, soul.States.Current);
         soul.Brain.StopCharge(soul);
         ActorDamage.Apply(soul, 1);
-        Assert.NotEqual(randomState, sim.CombatRandomState);
+        Assert.Equal(randomState, sim.CombatRandomState); Assert.NotNull(sim.CaptureState().PainChanceRandomState);
     }
 
     private static Actor Soul(AuthoritySimulation sim) => sim.Actors.Single(a => a.DoomEdNum == 3006);

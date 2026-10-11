@@ -21,7 +21,14 @@ public class Thinker
     public int PostBeginCount { get; private set; }
     public int TickCount { get; private set; }
 
-    public void Destroy() => Destroyed = true;
+    public void Destroy()
+    {
+        if (Destroyed) return;
+        Destroyed = true;
+        OnDestroy();
+    }
+
+    protected virtual void OnDestroy() { }
 
     public virtual void PostBeginPlay() => PostBeginCount++;
 

@@ -17,7 +17,7 @@ public class PainChanceEdgeRollTests
         var sim = Room(); var prediction = Room();
         var target = sim.AddBot(100, 0); target.Brain = null; target.PainChance = chance;
         var initial = target.States.Current; var health = target.Health;
-        var succeeds = prediction.NextCombatRandom() % 256 < chance;
+        var succeeds = prediction.NextPainChanceByte() < chance;
         ActorDamage.Apply(target, 1);
         Assert.Equal(health - 1, target.Health);
         Assert.Equal(succeeds ? target.PainState : initial, target.States.Current);

@@ -75,6 +75,7 @@ public class ChaseFriendshipTests
                 new LevelThing { Type = 3001, Id = 7, X = 128 }],
         });
         var owner = sim.Actors.Single(actor => actor.DoomEdNum == 3004);
+        sim.Players.Single().NoTarget = true;
         var other = sim.Actors.Single(actor => actor.DoomEdNum == 3001);
         owner.ReactionTime = 0;
         other.Brain!.Enabled = false;

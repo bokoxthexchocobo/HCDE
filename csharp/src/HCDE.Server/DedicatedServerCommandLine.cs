@@ -90,8 +90,51 @@ public static class DedicatedServerCommandLine
 
                     options.Skill = skill;
                     break;
+                case "--player-damage-factor":
+                case "--skill-damage-factor":
+                case "--monster-damage-factor":
+                case "--friendly-damage-factor":
+                    if (!TryReadArg(args, ref i, out var factorText)
+                        || !double.TryParse(factorText, System.Globalization.NumberStyles.Float,
+                            System.Globalization.CultureInfo.InvariantCulture, out var factor)
+                        || !double.IsFinite(factor) || factor < 0)
+                    { error = $"{arg} requires a finite nonnegative number"; return false; }
+                    if (arg == "--skill-damage-factor") options.SkillDamageFactor = factor;
+                    else if (arg == "--player-damage-factor") options.PlayerDamageFactor = factor;
+                    else if (arg == "--monster-damage-factor") options.MonsterDamageFactor = factor;
+                    else options.FriendlyDamageFactor = factor;
+                    break;
                 case "--deathmatch":
                     options.Deathmatch = true;
+                    break;
+                case "--no-monster-pain":
+                    options.NoMonsterPain = true;
+                    break;
+                case "--disable-auto-health":
+                    options.DisableAutoHealth = true;
+                    break;
+                case "--strife-health-pickups":
+                    options.StrifeHealthPickups = true;
+                    break;
+                case "--raven-health-pickups":
+                    options.RavenHealthPickups = true;
+                    break;
+                case "--unlimited-health-pickups":
+                    options.UnlimitedHealthPickups = true;
+                    break;
+                case "--infinite-health-item-use":
+                    options.InfiniteHealthItemUse = true;
+                    break;
+                case "--infinite-stored-inventory-use":
+                    options.InfiniteStoredInventoryUse = true;
+                    break;
+                case "--infinite-ammo":
+                    options.InfiniteAmmo = true;
+                    break;
+                case "--inventory-max":
+                    if (!TryReadArg(args, ref i, out var inventoryMaxText) || !int.TryParse(inventoryMaxText, out var inventoryMax) || inventoryMax <= 0)
+                    { error = "--inventory-max requires a positive integer"; return false; }
+                    options.DefaultInventoryMaximum = inventoryMax;
                     break;
                 case "--strife-thing-flags":
                     options.ThingFlagFormat = BinaryThingFlagFormat.Strife;
@@ -236,6 +279,17 @@ public static class DedicatedServerCommandLine
             "Usage: hcdeserv --iwad <path> [--map <name>] [--port <port>] [--bind <ipv4>] [--rng-seed <int>]");
         Console.WriteLine("       [--strife-thing-flags] (Strife binary spawn flags only; not full Strife support)");
         Console.WriteLine("       [--server-name <name>] [--skill <0-255>] [--deathmatch] [--teamplay]");
+        Console.WriteLine("       [--player-damage-factor <number>] [--monster-damage-factor <number>] [--friendly-damage-factor <number>]");
+        Console.WriteLine("       [--skill-damage-factor <number>] (multiply player damage before the server factor)");
+        Console.WriteLine("       [--no-monster-pain] (suppress non-player pain reactions while preserving wakeup)");
+        Console.WriteLine("       [--disable-auto-health] (disable Strife automatic health-item use)");
+        Console.WriteLine("       [--strife-health-pickups] (store Strife health items for map things 2011, 2012, and 83)");
+        Console.WriteLine("       [--raven-health-pickups] (store Raven health artifacts for map things 82 and 32)");
+        Console.WriteLine("       [--unlimited-health-pickups] (allow matching stored health stacks to exceed their pickup limits)");
+        Console.WriteLine("       [--infinite-health-item-use] (retain stored health items after successful manual or Strife use)");
+        Console.WriteLine("       [--infinite-stored-inventory-use] (retain supported stored health and armor items after use)");
+        Console.WriteLine("       [--infinite-ammo] (fire and select owned weapons without consuming ammo)");
+        Console.WriteLine("       [--inventory-max N] (default stored health limit: 25; Heretic uses 16)");
         Console.WriteLine("       [--limit-pain] (Pain Elementals stop spawning when 21 Lost Souls exist)");
         Console.WriteLine("       [--hexen-crush-defaults] (converted crush/stop defaults only; not full Hexen support)");
         Console.WriteLine("       [--file <WAD-or-PK3>] (repeat in load order; later maps override earlier maps)");

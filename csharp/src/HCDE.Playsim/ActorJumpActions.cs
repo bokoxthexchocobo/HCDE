@@ -62,23 +62,15 @@ public static class ActorJumpActions
         return ActorProximity.Check(actor, className, distance, count, flags, pointerSelector) ? destination : null;
     }
 
-    public static int? JumpIfInTargetInventory(Actor actor, string itemType, int amount, int destination,
+    public static int? JumpIfInTargetInventory(Actor actor, string? itemType, int amount, int destination,
         int forwardPointer = 0)
     {
         var target = ResolveSubject(actor, AcsActorPointer.Target);
         return target is null ? null : JumpIfInventory(target, itemType, amount, destination, forwardPointer);
     }
 
-    public static int? JumpIfInventory(Actor actor, string itemType, int amount, int destination, int pointerSelector = 0)
-    {
-        var subject = ResolveSubject(actor, pointerSelector);
-        if (subject is null || subject.Destroyed || string.IsNullOrEmpty(itemType)
-            || itemType.Equals("Health", StringComparison.OrdinalIgnoreCase)) return null;
-        var count = AcsPlayerInventory.Count(subject, itemType, max: false);
-        if (count <= 0) return null;
-        var required = amount > 0 ? amount : AcsPlayerInventory.Count(subject, itemType, max: true);
-        return count >= required ? destination : null;
-    }
+    public static int? JumpIfInventory(Actor actor, string? itemType, int amount, int destination, int pointerSelector = 0)
+        => ActorInventoryActions.CheckInventory(actor, itemType, amount, pointerSelector) ? destination : null;
 
     public static bool CheckArmorType(Actor actor, string armorType, int amount = 1)
         => actor is PlayerPawn { Destroyed: false } player

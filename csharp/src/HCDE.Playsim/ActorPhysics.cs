@@ -411,7 +411,7 @@ public static class ActorPhysics
         other.Corpse && !other.Destroyed && other.Solid
         && other.DoomEdNum != LineSpecials.TeleportDestType
         && other.DoomEdNum != InvasionDirector.SpawnSpotType
-        && !PickupCatalog.IsPickup(other.DoomEdNum);
+        && !PickupCatalog.IsPickup(other.DoomEdNum, other.Simulation?.RavenHealthPickups ?? false);
 
     /// <summary>Snaps grounded actors to sector and mobj support. Call carriers before riders.</summary>
     public static void FitToSector(AuthoritySimulation sim, Actor actor, bool carryFloor = true, bool sectorPinchCrush = false)
@@ -450,7 +450,7 @@ public static class ActorPhysics
         var vx = actor.VelocityX.ToDouble(); var vy = actor.VelocityY.ToDouble(); var vz = actor.VelocityZ.ToDouble();
         if (vx == 0 && vy == 0 && !actor.NoAutoOffSkullFly)
         {
-            actor.Brain!.StopCharge(actor);
+            ActorSkullActions.StopStationaryCharge(actor);
             return;
         }
         var steps = Math.Max(1, (int)Math.Ceiling(Math.Max(Math.Max(Math.Abs(vx), Math.Abs(vy)), Math.Abs(vz)) / 2));
@@ -474,12 +474,10 @@ public static class ActorPhysics
             }
             Actor? victim = null;
             if (actor.Z.ToDouble() < floor
-                || !TryMove(sim, actor, actor.X.ToDouble() + vx / steps, actor.Y.ToDouble() + vy / steps, out _, out victim))
+                || !TryMove(sim, actor, actor.X.ToDouble() + vx / steps, actor.Y.ToDouble() + vy / steps, out _, out victim, invokeSlam: true))
             {
                 actor.Z = previousZ;
-                actor.Brain!.StopCharge(actor);
-                if (!actor.Dormant && victim?.CanTakeDamage == true)
-                    ActorDamage.Apply(victim, (int)Math.Clamp((long)actor.Damage * (1 + (int)(sim.NextCombatRandom() % 8)), 0, int.MaxValue), actor, damageType: "Melee", inflictor: actor);
+                if (victim == null) actor.Brain!.StopCharge(actor);
                 return;
             }
             actor.OnGround = actor.Z.ToDouble() <= sim.FloorOf(actor.SectorIndex);
@@ -763,7 +761,8 @@ public static class ActorPhysics
         return !other.Shootable || !other.Spectral || missile.Spectral;
     }
 
-    private static bool TryMove(AuthoritySimulation sim, Actor actor, double x, double y, out LevelLine? wall, out Actor? blocker)
+    private static bool TryMove(AuthoritySimulation sim, Actor actor, double x, double y, out LevelLine? wall, out Actor? blocker,
+        bool invokeSlam = false)
     {
         wall = null;
         blocker = null;
@@ -817,15 +816,17 @@ public static class ActorPhysics
             || z + actor.Height.ToDouble() > opening.Ceiling)) return false;
         if (!actor.ThruActors && (actor.BlocksActors || actor.Blasted && !actor.IsDead && !actor.Destroyed))
         {
-            foreach (var other in sim.Actors)
+            IReadOnlyList<Actor> contacts = invokeSlam ? sim.Actors.ToArray() : sim.Actors;
+            foreach (var other in contacts)
             {
                 var corpse = actor.IceCorpse && IsCorpseObstacle(other);
+                var chargeContact = actor.Brain?.Charging == true && (other.Solid || other.Shootable || other.SpecialPickup);
                 var blastTarget = actor.Blasted && other.Shootable && other.IsMonster
                     && !other.Boss && !other.DontBlast && !other.IsDead && !other.Destroyed;
                 if (ReferenceEquals(actor, other) || other.ThruActors
                     || actor.SharesEnabledThruBits(other)
                     || actor.ThruSpecies && actor.SharesContactSpecies(other) || !other.IsBlockmapActor
-                    || (!blastTarget && !(actor.BlocksActors && (other.BlocksActors || corpse)))
+                    || (!chargeContact && !blastTarget && !(actor.BlocksActors && (other.BlocksActors || corpse)))
                     || z >= other.Z.ToDouble() + other.Height.ToDouble()
                     || z + actor.Height.ToDouble() <= other.Z.ToDouble()) continue;
                 var reach = radius + other.Radius.ToDouble();
@@ -837,6 +838,13 @@ public static class ActorPhysics
                     || DistanceSquared(cx, cy, ox, oy, x, y) < reach * reach - 1e-8
                     && (before >= reach * reach || after < before - 1e-8)))
                     continue;
+                if (invokeSlam && actor.Brain?.Charging == true)
+                {
+                    var pass = actor.Slam(other);
+                    if (actor.Destroyed || actor.IsDead) { blocker = other; return false; }
+                    if (pass) continue;
+                    blocker = other; return false;
+                }
                 // PIT_CheckThing transfers horizontal momentum before rejecting a blasted collision.
                 if (blastTarget)
                 {

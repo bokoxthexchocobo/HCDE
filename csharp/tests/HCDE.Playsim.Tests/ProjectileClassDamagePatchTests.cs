@@ -29,10 +29,17 @@ public class ProjectileClassDamagePatchTests
         Assert.Equal(damage, missile.Damage);
         missile.X = missile.Y = default; missile.Z = Fixed.FromInt(20);
         missile.VelocityX = Fixed.FromInt(30); missile.VelocityY = missile.VelocityZ = default;
+        if (damage < 0)
+        {
+            Assert.Throws<NotSupportedException>(() => missile.Tick());
+            Assert.Equal(1000, target.Health);
+            Assert.Null(sim.CaptureState().MissileDamageRandomState);
+            return;
+        }
         missile.Tick();
         Assert.True(missile.Destroyed);
         var lost = 1000 - target.Health;
-        if (damage <= 0) Assert.Equal(0, lost);
+        if (damage == 0) Assert.Equal(0, lost);
         else { Assert.InRange(lost, damage, damage * 8); Assert.Equal(0, lost % damage); }
     }
 
@@ -42,7 +49,7 @@ public class ProjectileClassDamagePatchTests
         var sim = Room("Thing 34\nSplash group = 7\n");
         var rocket = sim.SpawnProjectile(sim.Players.Single(), ProjectileKind.Rocket);
         Assert.Equal(20, rocket.Speed); Assert.Equal(20, rocket.Damage);
-        Assert.Equal(6, rocket.Radius.ToDouble()); Assert.Equal(8, rocket.Height.ToDouble());
+        Assert.Equal(11, rocket.Radius.ToDouble()); Assert.Equal(8, rocket.Height.ToDouble());
     }
 
     private static AuthoritySimulation Room(string patch) => AuthoritySimulation.Start(new PlayLevel

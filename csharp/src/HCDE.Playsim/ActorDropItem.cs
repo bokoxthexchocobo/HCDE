@@ -18,15 +18,16 @@ internal static class ActorDropItem
 
     public static int Drop(AuthoritySimulation sim, int tid, Actor? activator, string? typeName, int amount, int chance)
     {
-        if (!PickupCatalog.TryEditorNumberForDropName(typeName, out var doomEdNum))
+        if (!PickupCatalog.TryEditorNumberForDropName(typeName, out var doomEdNum, sim.StrifeHealthPickups, sim.RavenHealthPickups))
             return 0;
+        var ravenHealthArtifact = sim.RavenHealthPickups && doomEdNum is 82 or 32;
 
         var count = 0;
         if (tid == 0)
         {
             if (activator is { Destroyed: false })
             {
-                TryDropOne(sim, activator, doomEdNum, amount, chance);
+                TryDropOne(sim, activator, doomEdNum, amount, chance, ravenHealthArtifact);
                 count++;
             }
         }
@@ -34,7 +35,7 @@ internal static class ActorDropItem
         {
             foreach (var actor in AcsActorTid.AllFromTid(sim, tid).ToArray())
             {
-                TryDropOne(sim, actor, doomEdNum, amount, chance);
+                TryDropOne(sim, actor, doomEdNum, amount, chance, ravenHealthArtifact);
                 count++;
             }
         }
@@ -42,10 +43,10 @@ internal static class ActorDropItem
         return count;
     }
 
-    private static bool TryDropOne(AuthoritySimulation sim, Actor dropper, int doomEdNum, int amount, int chance)
+    private static bool TryDropOne(AuthoritySimulation sim, Actor dropper, int doomEdNum, int amount, int chance, bool ravenHealthArtifact = false)
     {
         if (sim.NextDropItemByte() > chance)
             return false;
-        return sim.SpawnDroppedPickup(dropper, doomEdNum, pickupAmount: amount > 0 ? amount : 0);
+        return sim.SpawnDroppedPickup(dropper, doomEdNum, pickupAmount: amount > 0 ? amount : 0, ravenHealthArtifact: ravenHealthArtifact);
     }
 }

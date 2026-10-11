@@ -18,7 +18,7 @@ public class StrifeDamageArchiveTests
         var (restored, loaded, target) = Setup(); restored.RestoreState(state);
         Assert.True(loaded.StrifeDamage);
         var (prediction, _, _) = Setup();
-        var expected = 5 * (1 + (int)(prediction.NextCombatRandom() & 3u));
+        var expected = 5 * (1 + (int)(prediction.NextMissileDamageByte() & 3u));
         loaded.Tick(); Assert.Equal(expected, 1000 - target.Health);
         Assert.Equal(powers ? 2100 : 0, restored.Players.Single().PowerBuddhaTics);
     }

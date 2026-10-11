@@ -21,7 +21,7 @@ public class DamageExitTests
         if (!exits)
         {
             for (var i = 0; i < 32; i++) sim.Tick();
-            Assert.True(player.IsDead); Assert.False(sim.Exited);
+            Assert.False(player.IsDead); Assert.Equal(1, player.Health); Assert.False(sim.Exited);
         }
     }
 

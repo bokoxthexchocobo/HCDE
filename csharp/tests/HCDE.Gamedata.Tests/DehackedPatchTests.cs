@@ -3,6 +3,30 @@ namespace HCDE.Gamedata.Tests;
 public class DehackedPatchTests
 {
     [Fact]
+    public void FullVolumeSoundsMnemonicIsLayeredAndClearedByReplacementBits()
+    {
+        var first = DehackedPatch.Apply("Thing 2\nBits = FULLVOLSOUNDS + SOLID\n");
+        Assert.Empty(first.Errors); var actor = first.Actors.Single(entry => entry.Index == 2);
+        Assert.True(actor.FullVolumeSounds); Assert.True(actor.FullVolumeSoundsPatched);
+        var untouched = DehackedPatch.Apply("Thing 2\nHit points = 70\n", first);
+        Assert.True(untouched.Actors.Single(entry => entry.Index == 2).FullVolumeSounds);
+        var cleared = DehackedPatch.Apply("Thing 2\nBits = SOLID\n", first);
+        Assert.Empty(cleared.Errors); Assert.False(cleared.Actors.Single(entry => entry.Index == 2).FullVolumeSounds);
+        Assert.True(actor.FullVolumeSounds);
+    }
+
+    [Fact]
+    public void NamedActorSoundsSurviveLayeringAndNumericAssignmentClearsName()
+    {
+        var first = DehackedPatch.Apply("Thing 2\nAlert sound = monsters/see\nPain sound = monsters/pain\n");
+        Assert.Empty(first.Errors);
+        var actor = first.Actors.Single(entry => entry.Index == 2);
+        Assert.Equal("monsters/see", actor.SoundNameOverrides[0]); Assert.Equal("monsters/pain", actor.SoundNameOverrides[2]);
+        var second = DehackedPatch.Apply("Thing 2\nAlert sound = 12\n", first);
+        Assert.Empty(second.Errors); Assert.False(second.Actors.Single(entry => entry.Index == 2).SoundNameOverrides.ContainsKey(0));
+        Assert.Equal("monsters/see", actor.SoundNameOverrides[0]);
+    }
+    [Fact]
     public void Apply_PatchesThingWidthHeightSpeedAndSounds()
     {
         const string text = """

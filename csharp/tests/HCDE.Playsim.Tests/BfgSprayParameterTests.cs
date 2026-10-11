@@ -8,7 +8,7 @@ public class BfgSprayParameterTests
     public void FixedDamageIgnoresRollCountAndConsumesOnlyTargetPainRoll()
     {
         var (sim, owner, target, missile) = Setup();
-        var (prediction, _, _, _) = Setup(); prediction.NextCombatRandom();
+        var (prediction, _, _, _) = Setup(); prediction.NextPainChanceByte();
         BfgSprayActions.Apply(sim, missile, owner, numRays: 1, damageCount: 100, fixedDamage: 25);
         Assert.Equal(975, target.Health);
         Assert.Equal(prediction.CombatRandomState, sim.CombatRandomState);

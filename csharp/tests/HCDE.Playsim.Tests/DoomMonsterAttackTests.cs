@@ -63,7 +63,7 @@ public class DoomMonsterAttackTests
     [InlineData(ProjectileKind.ImpBall, 10, 6, 8, 3)]
     [InlineData(ProjectileKind.BaronBall, 15, 6, 16, 8)]
     [InlineData(ProjectileKind.CacodemonBall, 10, 6, 8, 5)]
-    [InlineData(ProjectileKind.CyberRocket, 20, 6, 8, 20)]
+    [InlineData(ProjectileKind.CyberRocket, 20, 11, 8, 20)]
     [InlineData(ProjectileKind.ArachnotronPlasma, 25, 13, 8, 5)]
     [InlineData(ProjectileKind.MancubusBall, 20, 6, 8, 8)]
     [InlineData(ProjectileKind.RevenantTracer, 10, 11, 8, 10)]

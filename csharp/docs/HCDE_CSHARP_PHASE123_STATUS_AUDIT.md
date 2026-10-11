@@ -1,5 +1,2555 @@
 # Gameplay phases 1–3: implementation and completion audit
 
+## 2026-10-10 - Native non-actor playing queries and local NOSTOP
+
+- Converted SOURCE_None and SOURCE_Unattached subsets of SoundEngine::IsSourcePlayingSomething into mixer/client IsUnpositionedSoundPlaying and IsPositionedSoundPlaying. Channel zero queries all channels; other channel values match exactly. Optional sound names select any sound or case-insensitive original requested names.
+- Queries use actual mixer source ownership/position, so detached one-shots become positioned query matches while detached loops stop. They include direct mixer playback that has no client ownership record.
+- Audit found local NOSTOP checked only host records, missing direct SOURCE_None playback. Local duplicate guarding now uses the unpositioned mixer query; actor duplicate guarding and direct global StartSound behavior remain separate. Native references: SoundEngine::IsSourcePlayingSomething and S_PlaySoundPitch local branch.
+- Added four cases covering detached source classification, channel/name queries, source-specific stopping/completion and direct-mixer local NOSTOP with magic-silence off/on. Existing source and compatibility suites pass.
+- Validation: Release solution tests pass, 12,423 total (10,537 Playsim, 325 Client). Full Release rebuild with warnings as errors passes with zero warnings/errors; whitespace check passes.
+- Remaining scope: sector/polyobject sources, numeric sound ID lookup and text-script binding, negative loop offsets, full projectile death-state timing/cutoff behavior and other native backend policies. Positioned queries cover all unattached origins, matching native query source scope; they are not exact-position queries.
+
+## 2026-10-10 - Named and unpositioned native sound stops
+
+- Converted the named-sound subsets of SoundEngine::StopSoundID and StopSound(channel, sound_id) (src/common/audio/sound/s_sound.cpp:870/892) into AudioMixer operations and ClientHost wrappers.
+- StopSoundByName removes matching original requested sound names across all supported source types. StopUnpositionedSound selects only channels with neither actor ownership nor a position, uses native channel zero as all channels, and optionally filters the original sound name. Positioned and actor-bound playback are preserved by that source-specific stop.
+- Added four multi-source regression cases covering any/named sound selection, auto/body channel filtering, case folding, repeated no-op stops, retained actor/positioned handles, global counts and final named cleanup. Full solution tests and a client-only rerun after assertion cleanup pass.
+- Validation: Release solution tests pass, 12,419 total (10,537 Playsim, 321 Client). Full Release rebuild with warnings as errors passes with zero warnings/errors; whitespace check passes.
+- Remaining scope: numeric sound ID lookup, sector/polyobject source identities and text-script bindings, negative loop offsets, full projectile death-state timing/cutoff behavior and other backend channel policies. Host ownership records for globally stopped channels are cleaned by existing lifecycle maintenance; all queries already filter removed mixer handles.
+
+## 2026-10-10 - Native non-positional global StartSound
+
+- Converted the named-sound subset of DObject.S_StartSound/S_SoundPitch (src/sound/s_doomsound.cpp) into ActorSoundActions.StartGlobalSound with an explicit NonPositional request discriminator. Playback uses no actor or position and requires no listener actor. Named loops/one-shots, volume, pitch and supported start offsets flow into existing mixer controls.
+- Native SOURCE_None bypasses actor-local view, silent-sector and silent-pickup gates. Client now models that direct path separately, without turning ordinary missing actor requests into global playback. Native actor NOSTOP prechecks are not applied to this direct global entry point.
+- Tests found the shared non-positional/local playback branch omitted the mixer entity channel. It now records the requested channel so global query counts use native channel identity.
+- Added six cases for loop/one-shot and zero/LOCAL/MAYBE_LOCAL flags with no listener actor, silent sector and silent-pickup compatibility enabled. Tests verify actual audio, retained channel counts, completion and loop continuation. Existing actor/positioned playback tests pass.
+- Validation: Release solution tests pass, 12,415 total (10,537 Playsim, 317 Client). Full Release rebuild with warnings as errors passes with zero warnings/errors; whitespace check passes.
+- Remaining scope: sector/polyobject source identities, numeric sound IDs and text-script bindings, negative loop offsets, full projectile death-state timing/cutoff behavior and other native backend channel policies. No persistent save format change for this transient request discriminator.
+
+## 2026-10-10 - Positioned start-sound local flag routing
+
+- Continued native StartSoundAt conversion by correcting LOCAL and MAYBE_LOCAL routing. Native S_StartSoundAt calls SoundEngine::StartSound with SOURCE_Unattached directly; actor-local view checks in S_PlaySoundPitch and silent-pickup checks in actor sound verification do not apply to that source path.
+- Client consumption now applies actor-local and silent-pickup gates only to requests without an explicit positioned origin. Positioned requests also bypass preliminary actor lookup for silent-sector checks; their explicit origin sector remains checked during positioned playback where applicable. Actor-source behavior is preserved.
+- Added six client cases for LOCAL, MAYBE_LOCAL and combined flags with silent-pickup compatibility off/on. Each verifies audible positioned loop playback, retained body-channel count, no actor ownership and no playback errors. Existing actor-local and silent-pickup regression tests pass.
+- Validation: Release solution tests pass, 12,409 total (10,537 Playsim, 311 Client). Full Release rebuild with warnings as errors passes with zero warnings/errors; whitespace check passes.
+- Remaining scope: sector/polyobject identities and source queries, numeric sound IDs and text-script binding, negative loop offsets, full projectile death-state timing/cutoff behavior and other native backend channel policies. This completes the inspected positioned local-flag gate mismatch, not full sound-engine parity.
+
+## 2026-10-10 - Native positioned sound channel replacement
+
+- Converted SOURCE_Unattached channel replacement from SoundEngine::StartSound (src/common/audio/sound/s_sound.cpp:539). Successful positioned playback replaces older unattached channels only when their exact three-coordinate position and nonzero entity channel match, unless CHANF_OVERLAP is set. Channel zero permits concurrent playback.
+- Mixer replacement excludes actor-bound channels even at the same position and retains the newly queued channel. Client applies replacement after successful resource playback and position setup, preserving prior sounds when creation fails or yields no channel. Detached former actor one-shots participate as positioned sources.
+- Added eight client regression cases across same/different position, overlap on/off and auto/body channels; each verifies retained/replaced handles, source-type separation and global sound counts.
+- Validation: Release solution tests pass, 12,403 total (10,537 Playsim, 305 Client). Full Release rebuild with warnings as errors passes with zero warnings/errors; whitespace check passes.
+- Remaining scope: positioned local-flag semantics and other native channel policies, sector/polyobject identities, numeric sound IDs and text-script bindings, negative loop offsets, full projectile death-state timing/cutoff behavior. Failure timing relative to native backend allocation is not claimed identical.
+
+## 2026-10-10 - Native positioned StartSoundAt and loop playback
+
+- Converted the named-sound subset of S_StartSoundAt (src/sound/s_doomsound.cpp:480) into ActorSoundActions.StartSoundAt. It queues an unattached origin with native (x,z,y) audio coordinate mapping, channel/flags, volume, attenuation, explicit positive pitch and supported start offsets. Finite input checks prevent invalid mixer coordinates and parameters.
+- Audit found positioned playback incorrectly called DetachChannelSource, whose actor-removal contract stops loops. Positioned channels now begin without actor ownership and bypass detachment, preserving loops. Explicit origin requests take precedence over actor lookup, preventing an unrelated reused actor ID from redirecting positioned playback; actor-only magic-silence channel coercion no longer affects this path.
+- Generic StartSoundAt requests do not carry a silent-sector actor association, matching native SOURCE_Unattached routing. Existing projectile/spawn fallbacks retain their explicit sector suppression contracts.
+- Added four end-to-end client cases for loop/one-shot playback with magic-silence off/on, exact coordinate mapping, generic playback in a silent sector, global channel counts, lack of actor ownership and second-tick loop retention/completion.
+- Validation: Release solution tests pass, 12,395 total (10,537 Playsim, 297 Client). Full Release rebuild with warnings as errors passes with zero warnings/errors; whitespace check passes.
+- Remaining scope: positioned same-origin channel replacement/NOSTOP and local-flag semantics, sector/polyobject identities, numeric sound IDs and text-script bindings, negative loop offsets, full projectile death-state timing/cutoff behavior. The completed positioned slice covers named one-shots/loops and current mixer controls, not all native channel policies.
+
+## 2026-10-10 - Native null-destination sound relinking
+
+- Converted the null-destination actor-source path of SoundEngine::RelinkSound (src/common/audio/sound/s_sound.cpp:985) and S_RelinkSound into ClientHost.TryRelinkActorSounds. A null destination converts retained one-shots to fixed-position playback, stops loops, and honors SoundCutoffCompatibility while leaving the source actor alive.
+- Extracted the existing actor-destruction detachment logic into a shared helper used by both explicit relinking and destruction. Ownership/channel/query records are removed; retained positioned sounds remain visible to global mixer queries. Existing actor-to-actor relinking retains its behavior.
+- Added five regressions covering all loop/cutoff combinations, released actor ownership, global positioned counts, actual mixer output and completion, repeated no-op detachment, and unknown-source rejection without disturbing unrelated playback. Existing source destruction, relink transfer and invalid-destination cases pass.
+- Validation: Release solution tests pass, 12,391 total (10,537 Playsim, 293 Client). Full Release rebuild with warnings as errors passes with zero warnings/errors; whitespace check passes.
+- Remaining scope: sector/polyobject source identities and queries, numeric sound IDs and text-script bindings, full projectile death-state timing and cutoff compatibility. Native null source pointers are not represented by the managed actor-ID API; missing IDs return an explicit source error.
+
+## 2026-10-10 - Global retained sound-playing count
+
+- Converted the SOURCE_Any count-query subset of native SoundEngine::GetSoundPlayingInfo into AudioMixer.GetSoundPlayingCount and exposed it through ClientHost. Counts use original requested sound names, optional any-sound selection, exact entity-channel filtering and channel -1 for all channels.
+- Global queries inspect retained mixer channels rather than actor ownership records. Positioned sounds that continue after source removal therefore remain counted, while actor-source queries correctly return zero. Cutoff compatibility, playback completion and shutdown remove those channels from the global result.
+- Added two end-to-end cases for cutoff off/on, covering sound-name case folding, channel zero versus body channel, unknown sound, raw PCM any-sound counting, detached playback, completion and shutdown.
+- Validation: Release solution tests pass, 12,386 total (10,537 Playsim, 288 Client). Full Release rebuild with warnings as errors passes with zero warnings/errors; whitespace check passes.
+- Scope: this is a global query across the sources supported by the current mixer. Sector/polyobject-specific source identities, numeric sound ID semantics and text-script bindings remain pending, as do full projectile death-state timing and its cutoff behavior. Unnamed raw PCM channels participate only in any-sound queries.
+
+## 2026-10-10 - Native actor sound-playing count query
+
+- Converted the actor-source subset of SoundEngine::GetSoundPlayingInfo (src/common/audio/sound/s_sound.cpp) into ClientHost.GetActorSoundPlayingCount. Optional sound-name filtering models the any-sound branch; channel -1 counts all channels, while channel 0 remains an exact channel for the count query. Counts include overlapping retained channels and exclude completed/detached source playback.
+- Extended IsActorSoundPlaying with an optional sound name and routed its boolean result through the count query. Its legacy query retains channel-zero and magic-silence all-channel semantics from S_IsActorPlayingSomething; these compatibility rules do not broaden the native count query.
+- Added two client regression cases with magic-silence on/off, covering overlaps, case-insensitive names, exact channel filtering, any sound, source separation, unknown actor and source removal. Existing shutdown test caught an attempted disposed-query exception; retained the established false/zero query result after shutdown.
+- Validation: Release solution tests pass, 12,384 total (10,537 Playsim, 286 Client). Full Release rebuild with warnings as errors passes with zero warnings/errors; whitespace check passes.
+- Remaining scope: count queries for sector/polyobject/global sources and text-script bindings; numeric sound ID semantics, full projectile death-state timing and cutoff compatibility remain pending. This is actor-source query coverage, not full native sound-engine parity.
+
+## 2026-10-10 - Native Howl and push-sound query guards
+
+- Continued native action conversion by correcting AActor::Howl and AActor::PlayPushSound against src/playsim/p_mobj.cpp. Both native actions call S_IsActorPlayingSomething for the configured body sound, then S_Sound with zero flags; the managed versions previously substituted CHANF_NOSTOP.
+- Both actions now emit zero flags with OnlyIfSoundNotPlaying, retaining normal attenuation, body channel, immediate consumption, missing-sound suppression, and source identity. Existing client guard logic handles normal channel scope and magic-silence all-channel queries separately from playback flags.
+- Added six end-to-end client cases for both actions: matching-channel suppression, different-channel playback, and magic-silence suppression. Existing completion/restart client tests still pass. Updated push-action and poison/electric howl assertions to verify zero flags and the explicit query guard without changing their random-stream expectations.
+- Validation: Release solution tests pass, 12,382 total (10,537 Playsim, 284 Client). Full Release rebuild with warnings as errors passes with zero warnings/errors; whitespace check passes.
+- Remaining scope: full text-script binding/custom class flag defaults, numeric sound IDs, negative loop offsets, full native projectile death-state timing and cutoff compatibility. No archive version change for these transient request flags.
+
+## 2026-10-10 - Native legacy loop-sound guard
+
+- Audit against A_PlaySoundEx (src/playsim/p_actionfunctions.cpp:681) found the managed legacy loop path incorrectly encoded LOOP | NOSTOP. Native separately checks S_IsActorPlayingSomething before starting with CHANF_LOOP alone.
+- Converted the distinct query contract into OnlyIfSoundNotPlaying on simulation requests. Client duplicate suppression applies this guard independently of NOSTOP, retaining actor identity, sound name, channel-zero/all-channel scope, and magic-silence all-channel behavior. Modern sound actions retain their existing flags and guard behavior.
+- Updated nine existing legacy slot/attenuation cases to verify native LOOP-only flags and the explicit guard. Added three client cases for matching-channel suppression, different-channel playback, and magic-silence suppression without restarting the original sound. Mixer assertions use a quieter original channel so clipping does not hide a duplicate.
+- Validation: Release solution tests pass, 12,376 total (10,537 Playsim, 278 Client). Full Release rebuild with warnings as errors passes with zero warnings/errors; whitespace check passes.
+- Remaining scope: text-script binding/custom class flag defaults, numeric sound IDs, negative loop offsets, full projectile death-state timing and associated cutoff compatibility. No save format change is required for transient playback requests.
+
+## 2026-10-10 - SPAWNSOUNDSOURCE actor flag and persistence
+
+- Added Actor.SpawnSoundSource and ACS actor-flag read/write support, including Actor.SPAWNSOUNDSOURCE normalization. PlaySpawnSound now reads the actor flag by default while retaining an explicit routing override.
+- Automatic projectile construction accepts spawnSoundSource and sets the flag before the shared launch action; enabled launches use the owner's weapon channel, disabled launches retain the missile voice channel. Reconstructed projectiles restore their saved flag without playing launch audio.
+- Added optional version-188 archive trailer with strict flag/header/count/size checks, capture/restore validation and conditional checksum contribution. Unflagged archives retain their previous format; legacy restore clears the runtime flag. Native Revive restores primary class flags, so supported resurrection resets this flag to its current false class default.
+- Native references: actor.h MF_SPAWNSOUNDSOURCE, thingdef_data.cpp flag registration, p_mobj.cpp P_PlaySpawnSound and AActor::Revive. Native internal flag bits are not assumed to be equivalent to Dehacked Bits encodings.
+- Added eight regressions for automatic routing, ACS flag access, reconstructed projectile byte/checksum round trips and quiet restore, default action owner/position routing, legacy restore/checksum changes, and malformed trailer rejection.
+- Validation: Release solution tests pass, 12,373 total (10,537 Playsim). Full Release rebuild with warnings as errors passes with zero warnings/errors; whitespace check passes.
+- Remaining scope: custom class flag defaults and text-script binding, numeric sound IDs, full projectile death-state timing and associated cutoff compatibility. Supported built-in projectile class defaults remain false; owner flags are not inherited by missiles.
+
+## 2026-10-10 - Native projectile spawn-sound routing action
+
+- Converted P_PlaySpawnSound (src/playsim/p_mobj.cpp:7880) into ActorSoundActions.PlaySpawnSound. Default routing emits missile SeeSound on CHAN_VOICE; source routing emits it on the supplied spawner's CHAN_WEAPON; absent spawner uses a positioned CHAN_WEAPON request with normal attenuation and volume.
+- Positioned fallback resolves the spawn sector and suppresses sound in SECF_SILENT sectors before queueing. Missing SeeSound remains silent. Cross-simulation spawner routing is explicitly rejected rather than sending sound to another world.
+- Automatic supported projectile creation now calls the shared action for its existing default route; saved projectile reconstruction remains quiet. Positioned requests reuse the converted client detached-origin playback path.
+- Added seven regressions covering the four source/spawner combinations, exact fallback origin and sector, native channel/volume/attenuation, silent-sector fallback, missing sound/destroyed source, and cross-world rejection.
+- Validation: Release solution tests pass, 12,365 total (10,529 Playsim); full Release rebuild with warnings as errors passes with zero warnings/errors; whitespace check passes.
+- Scope limitation: source routing is an explicit action argument. MF_SPAWNSOUNDSOURCE actor flag exposure, save/checksum persistence, class defaults and script binding are still pending; automatic launch currently retains the native unflagged route. Numeric sound IDs and full native projectile death-state timing remain pending.
+
+## 2026-10-10 - Projectile impact audio reaches the client
+
+- Continued C# conversion through client playback: projectile impact requests now carry an optional sound-position and sector snapshot. Client playback accepts that explicit origin when the actor has already been removed and creates a positioned, detached sound rather than rejecting the request as audio-source-actor-missing.
+- Native audit references: P_ExplodeMissile plays DeathSound before the native death-state transition; S_RelinkSound converts removed actor sounds to positioned playback. This bridges the managed immediate-removal model without claiming native death-state timing parity.
+- Impact-sector audit found projectile movement can return on collision before updating SectorIndex. Snapshot uses the contacted plane sector or resolves the impact coordinates for other contacts, preserving silent-sector suppression.
+- Added four end-to-end client cases covering immediate/delayed sound-archive availability and normal/silent sectors. Cases verify source removal, exact delayed origin, audible mixer output, silent mixer output, consumed requests, and absence of playback errors. Existing missing-source errors remain intact for requests without an explicit origin.
+- Validation: Release solution tests pass, 12,358 total (10,522 Playsim, 275 Client); full Release rebuild with warnings as errors passes with zero warnings/errors; whitespace check passes.
+- Remaining scope: SPAWNSOUNDSOURCE owner/position routing, numeric sound IDs, full projectile death-state timing and its sound-cutoff compatibility behavior. This is a completed client impact playback slice, not full Phase 1 completion.
+
+## 2026-10-10 - Automatic projectile launch and impact sounds
+
+- Converted the supported projectile spawn and explosion sound paths against native P_PlaySpawnSound and P_ExplodeMissile: new launches emit SeeSound on CHAN_VOICE with normal attenuation; impact emits DeathSound on CHAN_VOICE, with FullVolumeDeath selecting no attenuation. BFG's absent launch sound stays silent.
+- Save reconstruction does not emit launch sounds. Sky and Line_Horizon removal suppress impact sound; named Dehacked overrides and explicit silence remain supported.
+- Audit found post-save projectile removal retained the later allocation counter, changing replay sound actor IDs. Restore now reclaims only the contiguous discarded projectile tail, preserving other actor identity reservations and existing ice-chunk safety.
+- Added 16 regression cases for all ten projectile launch classes, reconstruction silence, impact attenuation and replay, sky removal, explicit silence, launch identity replay, and patched sound names. Existing melee and rip sound assertions now isolate their intended source from automatic launch requests.
+- Validation: Release solution tests pass, 12,354 total (10,522 Playsim); full Release rebuild with warnings as errors passes with zero warnings/errors; whitespace check passes.
+- Remaining scope: SPAWNSOUNDSOURCE owner/position routing and silent-sector rules, numeric sound ID resolution, full native projectile death-state timing, and client audio consumption. Actor identity replay is limited to discarded projectile IDs at the allocation tail; this does not establish a general saved allocator contract or full Phase 1 completion.
+
+## 2026-10-10 - Phase 1 projectile sound defaults and named patch overrides
+
+- Converted native SeeSound and DeathSound metadata for all ten represented projectile kinds, using the Doom projectile Default blocks in weaponrlaunch.zs, weaponplasma.zs, weaponbfg.zs, doomimp.zs, bruiser.zs, cacodemon.zs, fatso.zs, revenant.zs and arachnotron.zs. BFGBall intentionally has no SeeSound; its death slot is weapons/bfgx. Existing managed sound actions can now resolve projectile death slots.
+- SpawnProjectileCore now merges named Dehacked sound overrides into native projectile slots instead of ignoring them, and records the resulting class/patch baseline for reconstruction. Numeric sound-ID resolution remains outside this slice.
+- Projectile sound capture omits unchanged baselines and restores omitted records from the current class/patch. Explicit runtime dictionaries are saved as overrides; an empty runtime dictionary is represented by empty baseline-slot strings to retain silence. Projectile sound checksums ignore empty slot names, preserving checksum equivalence across silent archive replay. Explicit saved dictionaries win over reconstructed defaults.
+- Added 11 regressions spanning all ten native name mappings, baseline omission, destroyed-projectile reconstruction, existing death-sound action emission, named patch overrides, explicit runtime sound overrides, silence, byte-stable save replay and checksum replay.
+- Initial validation exposed 57 older archive tests because serializing unchanged native sound dictionaries added an unnecessary outer version 122 wrapper. Baseline-relative capture resolved those failures without weakening existing corruption tests. Final validation: all 12,338 solution tests pass (10,506 Playsim); Release rebuild with warnings as errors passes with zero warnings/errors; whitespace check passes.
+- Remaining: automatic native launch/explosion sound emission is still absent and is not claimed by metadata conversion. Numeric Dehacked sound IDs, native frame/death-state sequencing, client rendering, textual bindings, custom DEHSUPP mappings, full removal statistics and missile probability remain open. Older saves without sound records now restore corrected native sound defaults. Phase 1 is not complete.
+
+## 2026-10-10 - Phase 1 projectile BRIGHT flight state conversion
+
+- Converted native BRIGHT flight-frame metadata for all ten represented projectile kinds. Projectile construction now marks its managed spawn frame full-bright through the existing state model, making both current actor brightness and state-default brightness agree. This preserves the existing managed flight timing and action behavior.
+- Compared Doom flight states in weaponrlaunch.zs:85, weaponplasma.zs:83, weaponbfg.zs:174, doomimp.zs:109, bruiser.zs:156, cacodemon.zs:103, fatso.zs:107, revenant.zs:111 and arachnotron.zs:105. CyberRocket represents the native Rocket class for this default.
+- Added ten regressions spanning every projectile kind: spawn brightness, unchanged owner brightness, omitted default brightness records, explicit unlit overrides, binary reconstruction of destroyed projectiles, restoration of defaults and continued flight brightness. Existing state/save support retains overrides without new archive fields or versions.
+- Validation: all 12,327 solution tests pass (10,495 Playsim); Release rebuild with warnings as errors passes with zero warnings/errors; whitespace check passes.
+- Remaining: this converts flight brightness metadata, not native sprite animation, frame durations, death/explosion state chains or client lighting/rendering. Projectile launch/death sound defaults and emission also remain unaudited conversion work. Textual bindings, custom DEHSUPP mappings, full removal statistics, native state sequencing and missile probability remain open. Phase 1 is not complete.
+
+## 2026-10-10 - Phase 1 Rocket and BFG native collision radius conversion
+
+- Closed the projectile dimension mismatches recorded in the preceding audit. Rocket and CyberRocket now use native Rocket radius 11 (weaponrlaunch.zs:70); BFG uses BFGBall radius 13 (weaponbfg.zs:159). These constructor defaults feed swept actor/wall collision, spawn-size baselines and save reconstruction. Other projectile dimensions are unchanged.
+- Added 12 regressions covering native radii, omitted-size restoration, destroyed-projectile reconstruction, explicit runtime radius 6 overrides, fixed-point Dehacked Width overrides for Rocket/CyberRocket/BFG, and offset actor collisions replayed after binary restore. A target missed by radius 6 is now hit by the native wider projectile cylinder.
+- Updated two earlier tests that incorrectly treated radius 6 as the Rocket/CyberRocket native default. Existing patch, projectile movement, geometry and archive coverage passes with the corrected dimensions.
+- Validation: all 12,317 solution tests pass (10,485 Playsim); Release rebuild with warnings as errors passes with zero warnings/errors; whitespace check passes. No save layout changes: explicit saved sizes win, while absent-size records restore corrected current class defaults. Cross-revision impact timing may therefore change for older absent-size saves, as expected from this native parity correction.
+- Remaining: other native class properties and spawning details still need audit; client rendering, textual bindings, custom DEHSUPP mappings, full removal statistics, native state sequencing and missile probability remain open. Phase 1 is not complete.
+
+## 2026-10-10 - Phase 1 projectile render defaults and patch integration
+
+- Converted represented projectile render defaults from the Doom actor definitions: Imp/Baron/Cacodemon/Mancubus/Revenant projectiles use Add at alpha 1; player plasma, Arachnotron plasma and BFG balls use Add at alpha 0.75. Rocket/CyberRocket retain inherited Normal at alpha 1. Sources include doomimp.zs:101, bruiser.zs:147, cacodemon.zs:95, fatso.zs:99, revenant.zs:106, weaponplasma.zs:74, arachnotron.zs:97, weaponbfg.zs:166 and weaponrlaunch.zs:66.
+- Wired resolved Dehacked render style, alpha, invisible and SHADOW values into SpawnProjectileCore, including the path used to reconstruct destroyed/missing saved projectiles. Constructor and patch values now establish restore baselines. Projectile class behavior no longer silently ignores converted patch render properties.
+- Projectile saves emit version 187 render records only for deviations from their reconstructed class/patch baseline. This preserves existing default projectile save layouts, while retaining explicit Normal/alpha-one overrides of additive defaults. Existing nonprojectile render capture remains unchanged. Older absent render records restore corrected projectile defaults; explicit saved render properties still win.
+- Added 13 regressions: all ten projectile kinds verify spawn, absent-record restoration, destroyed-projectile reconstruction and explicit Normal overrides; three patched plasma cases verify translucency, SHADOW, invisibility, targeting and reconstruction.
+- Initial full validation exposed 61 older archive tests relying on their tested trailer remaining outermost; baseline-relative projectile render capture resolved those failures without weakening corruption checks. Final validation: all 12,305 solution tests pass (10,473 Playsim); Release rebuild with warnings as errors passes with zero warnings/errors; whitespace check passes.
+- Remaining: ZDOOMTRANS rendering preferences and client rendering, other visual actors, textual bindings, custom DEHSUPP mappings, native state sequencing and missile probability remain open. The class audit also found separate dimension mismatches: managed Rocket/CyberRocket radius is 6 versus native Rocket 11, and managed BFG radius is 6 versus native BFGBall 13. These need a dedicated collision/default conversion pass. Phase 1 is not complete.
+
+## 2026-10-10 - Phase 1 render-style and fade action conversion
+
+- Converted managed ActorPropertyActions.SetRenderStyle, FadeIn, FadeOut and FadeTo from src/playsim/p_actionfunctions.cpp:1538,1563,1598,1631. SetRenderStyle clamps alpha and uses native style enum indices, distinct from ACS indices. Added all 19 native presets, with invalid native enum values resolving to None as renderstyle.h does.
+- FadeIn/Out convert zero amount to 0.1, permit negative steps, clear only STYLEF_Alpha1, and apply clamp/remove flags at their respective completion boundaries. FadeTo stops overshoot at its target, preserves zero-step behavior, clamps before testing removal equality and accepts targets outside zero through one. Finite input and computed-value guards reject unsupported nonfinite values before mutation.
+- Converted represented P_RemoveThing guards from src/playsim/p_things.cpp:422: protected player and non-map actors retain their object while fading; ordinary map actors use the existing destruction/observer notification path. Full native level-statistic ClearCounters behavior and alternate player bodies are not claimed converted by this slice.
+- Added 31 regressions covering completion flags, negative/zero steps, target overshoot, clamp/removal ordering, native-vs-ACS style indices, invalid enum fallback, managed state-frame actions, targeting after opacity removal, save/replay and protected removal. Actions are available to managed state-table delegates; textual action binding remains open.
+- Validation: all 12,292 solution tests pass (10,460 Playsim); Release rebuild with warnings as errors passes with zero warnings/errors; whitespace check passes. Existing save version 187 handles faded styles and alpha without layout changes.
+- Remaining: textual action binding, client rendering, full removal statistics, custom DEHSUPP mappings, other class defaults, native state sequencing and missile probability remain open. Phase 1 is not complete.
+
+## 2026-10-10 - Phase 1 ACS alpha and render-style conversion
+
+- Converted APROP_Alpha (3) and APROP_RenderStyle (4) through managed ACS SetActorProperty, GetActorProperty and CheckActorProperty. Existing VM dispatch now reaches these properties for activators and matching TIDs. Alpha writes retain signed 16.16 values without opacity clamping; reads use native ties-to-even rounding from p_acs.cpp:606 and common/utility/m_fixed.h:34.
+- Added all 14 explicit ACS legacy render-style mappings from p_acs.cpp:4129, including Stencil, TranslucentStencil, Shadow, Subtract, AddStencil and AddShaded. ACS indices differ from native enum/Dehacked indices: translucent/add/shaded are 64/65/66; add-stencil/add-shaded are 6/7. Presets match common/engine/renderstyle.cpp:35.
+- Invalid ACS style writes preserve current style. Styles outside the supported legacy ACS table read as Normal; null/missing actors keep existing zero/false behavior. Save version 187 preserves properties and targeting responds immediately to ACS writes. Native rendering effects associated with style flags are not claimed implemented.
+- Added 25 regressions covering all 14 indices, get/check, binary save replay, matching-TID alpha writes, unclamped fixed-point values, custom-style fallback, invalid writes, ties-to-even boundaries and an actual ACS bytecode execution changing seeker visibility.
+- Validation: all 12,261 solution tests pass (10,429 Playsim); Release rebuild with warnings as errors passes with zero warnings/errors; whitespace check passes.
+- Remaining: modern blend styles have no defined entry in the native legacy ACS index table and are handled by managed Normal fallback rather than reproducing native out-of-bounds table access. Extreme externally assigned alpha beyond representable ACS range is not covered by parity tests. Textual actor-definition bindings, client rendering, custom DEHSUPP mappings, other class defaults, state sequencing and missile probability remain open. Phase 1 is not complete.
+
+## 2026-10-10 - Phase 1 resurrection render visibility parity fix
+
+- Closed the renderflags lifecycle mismatch identified in the preceding audit. ActorRaise.ReviveSupported now retains current Invisible state instead of clearing it. Native AActor::Revive (src/playsim/p_mobj.cpp:8738) resets primary actor flag sets, health and damage/target/poison state, but does not assign renderflags. The default OnRevive hook is empty (wadsrc/static/zscript/actors/actor.zs:683).
+- The common helper change applies to self-raise, Thing_Raise and archvile resurrection. Current render style and alpha remain preserved, including runtime visibility overrides of Dehacked invisible class defaults. DONTSEEKINVISIBLE targeting therefore continues to reject raised invisible targets; ordinary seekers retain their existing behavior.
+- Added 18 regressions spanning all three raise paths, visible/invisible state, successful/blocked raises, pre-raise save replay, post-raise saves, and patched invisible defaults with explicit runtime overrides. Updated the earlier ActorVisibilityActionTests resurrection expectation to native render-state preservation. Existing primary seek-flag reset coverage remains passing.
+- Validation: all 12,236 solution tests pass (10,404 Playsim); Release rebuild with warnings as errors passes with zero warnings/errors; whitespace check passes. No archive layout changes were needed.
+- Remaining: custom OnRevive hooks and full native renderflags are not claimed implemented. ACS/textual render-property bindings, custom DEHSUPP mappings, other class render defaults, client rendering, state sequencing and missile probability remain open; Phase 1 is not complete.
+
+## 2026-10-10 - Phase 1 Dehacked translucency bits conversion and audit
+
+- Converted the repository's native TRANSLUC25, TRANSLUC50 and TRANSLUC75 mnemonics, plus Boom TRANSLUCENT and numeric primary bit 31, into render properties for map and dynamic spawns. Numeric Boom bit 31 is consumed rather than retained as an actor primary flag.
+- Native table audit found legacy names do not match their apparent percentages: dehsupp.txt:1099 maps TRANSLUC25 to render bit 1 (mask 2), TRANSLUC50 to bit 2 (mask 4), and TRANSLUC75 to bit 3 (mask 8). d_dehacked.cpp:1801 consequently assigns alpha 0.5, alpha 0.75, and RF_INVISIBLE respectively. Preserved those exact repository semantics. Boom TRANSLUCENT remaps to mask 2, yielding alpha 0.5. Combined translucency masks use native low-bit precedence.
+- Render-group updates explicitly set or clear invisibility, while ordinary primary Bits updates leave existing invisibility intact. Extended translucency marks hadTranslucency but does not mark hadStyle, preserving the native end-of-section SHADOW fallback and explicit Render Style ordering.
+- Added patch-model invisibility and applied it through existing actor visibility state/save handling. Binary save replay retains alpha, style and invisibility; ordinary actor flags remain untouched by render-only mnemonics. Cloned patch baselines remain unchanged.
+- Added 12 regressions covering the three mnemonics, combinations, named/signed/unsigned Boom values, spawning, targeting, binary replay, primary-bit consumption, SHADOW/style precedence and group-specific invisibility clearing.
+- Validation: all 12,218 solution tests pass (10,386 Playsim); Release rebuild with warnings as errors passes with zero warnings/errors; whitespace check passes.
+- Remaining: custom DEHSUPP mappings, client drawing, ACS/textual property bindings and other class render defaults remain open. Native Revive does not reset renderflags, whereas the current managed resurrection helper clears Invisible; that newly identified lifecycle mismatch needs a dedicated conversion/regression pass. Phase 1 remains incomplete, along with broader state sequencing and missile probability gaps.
+
+## 2026-10-10 - Phase 1 Dehacked render properties conversion and audit
+
+- Converted Thing Render Style and Translucency fields into patch model values and map/dynamic actor render defaults. Translucency uses native fixed-point division by 65536 without clamping stored alpha, and selects translucent style. Render Style resolves the eight case-insensitive STYLE_ names in wadsrc/static/dehsupp.txt:1139; unknown names produce patch diagnostics without replacing a valid prior style.
+- Added native preset mappings for None, Normal, Fuzzy, SoulTrans, OptFuzzy, Translucent, Add and Shaded against src/common/engine/renderstyle.cpp:35. SoulTrans and Shaded retain their native flags; client effects from those flags are not claimed implemented here.
+- Audited native field precedence at src/gamedata/d_dehacked.cpp:1306,1366,1853. Field order is preserved. Per-section SHADOW transitions select fallback styles only if that section supplied no valid style, and set alpha 0.5 only when entering SHADOW without explicit translucency. Moved transition resolution into the patch reader so repeated Thing sections and cloned baselines preserve native precedence.
+- Actor spawn and legacy restoration baselines now receive resolved patch properties. Existing version 187 archives preserve current overrides without a new layout.
+- Added 17 regressions covering all eight native patch names, targeting visibility, map/dynamic spawn values, binary replay, fixed-point values outside zero through one, field order, explicit-style/SHADOW precedence, repeated sections, baseline immutability and invalid style diagnostics. Corrected an initial additive-alpha-zero test expectation against the native visibility predicate.
+- Validation: all 12,206 solution tests pass (10,374 Playsim); Release rebuild with warnings as errors passes with zero warnings/errors; whitespace check passes.
+- Remaining: extended translucency bit mnemonics, custom DEHSUPP style tables, ACS/textual actor-definition property bindings, other class render defaults and client drawing remain open. Phase 1 is not complete; broader native state sequencing and missile probability gaps remain documented below.
+
+## 2026-10-10 - Phase 1 Spectre render defaults conversion and audit
+
+- Converted Spectre class defaults to OptFuzzy with alpha 0.5 for map and dynamic spawns, using demon.zs:81 and the native preset table in src/common/engine/renderstyle.cpp:35. Corrected the managed Normal preset to native source/inverse-source factors with Alpha1, rather than its previously visibility-equivalent one/zero factors.
+- Converted the represented Dehacked SHADOW transition behavior from src/gamedata/d_dehacked.cpp:1853: enabling shadow selects OptFuzzy and alpha 0.5; disabling native Spectre shadow selects Normal while retaining alpha 0.5. Explicit Render Style/Translucency patch fields and extended translucency bits remain unconverted and are not covered by this default path.
+- Added class render baselines for legacy pose restoration. Version 187 continues writing non-normal values explicitly, and now also records normal/alpha-one overrides of non-normal class defaults. No archive layout changed. Older archives lacking render properties now restore corrected class defaults; archives with explicit properties retain their saved values.
+- Audited native AActor::Revive at p_mobj.cpp:8738: it resets actor flag sets but does not reset RenderStyle or Alpha. Managed resurrection therefore preserves runtime render properties; added save/replay regression coverage for that behavior.
+- Added 7 regressions covering native presets, map/dynamic defaults, named SHADOW patches, Spectre shadow removal, legacy restoration, explicit normal overrides and resurrection replay.
+- Validation: all 12,189 solution tests pass (10,357 Playsim); Release rebuild with warnings as errors passes with zero warnings/errors; whitespace check passes.
+- Remaining: render defaults for other classes, Dehacked explicit style/translucency parsing, textual actor-definition/ACS property bindings and client drawing integration remain open. Phase 1 is not complete; the broader native state sequencing and missile probability gaps remain recorded below.
+
+## 2026-10-10 - Phase 1 stored actor render visibility conversion
+
+- Converted actor RenderStyle and finite Alpha state into the managed actor model. CanSeek now evaluates the target's stored render properties under DONTSEEKINVISIBLE, alongside CANTSEEK, SHADOW, INVISIBLE and MINVISIBLE. Direct Trace and periodic Revenant tracing use this gate automatically.
+- Compared targeting against src/playsim/p_mobj.cpp:2311 and visibility against src/common/engine/renderstyle.cpp:79. Normal style forces alpha one; translucent alpha zero and STYLEOP_None reject seeking; fuzzy styles remain visible. The explicit-style helper retains its supplied-style behavior.
+- Added optional save version 187 wrapping versions 15 through 186, pose capture/restore, conditional checksum state, and pre-apply validation of blend operations, alpha factors and finite alpha. Legacy saves restore normal style and alpha one. Values outside zero through one remain stored, with native visibility clamping applied only during evaluation.
+- Added 10 regressions covering direct/periodic trace replay, normal/translucent/none/fuzz visibility, seeking flag gates, legacy defaults, checksum distinction, invalid alpha setters and corrupted save trailers.
+- Validation: 12,182 solution tests pass (10,350 Playsim); Release rebuild with warnings as errors passes with zero warnings/errors; whitespace check passes.
+- Remaining: class-specific render defaults (including Spectre OptFuzzy/alpha), textual actor-definition and ACS render-property bindings, and client drawing integration are not claimed converted by this slice. Phase 1 remains open, alongside native state sequencing, missile probability and other previously recorded gaps.
+
+## Phase 1 native render-style visibility predicate conversion (2026-10-10)
+
+- Native audit: src/common/engine/renderstyle.cpp FRenderStyle::IsVisible rejects None, checks source/destination blend factors for Add and ReverseSubtract after alpha clamping/Alpha1, and treats other operations as visible. Native GetAlpha maps pixel-dependent factors to 0.5. CanSeek uses this predicate under DONTSEEKINVISIBLE.
+- Converted the predicate into immutable ActorRenderStyle with native operation/factor values, Normal and Translucent presets, alpha clamping and Alpha1 handling. Added explicit style/alpha-aware Actor.CanSeek overload that combines the predicate with existing targeting flags. Non-finite alpha is rejected when evaluating the predicate.
+- Added 27 regressions covering alpha boundaries, all nine represented operations, all ten alpha factors, forced opacity, destination-factor visibility, and seekability interaction with DONTSEEKINVISIBLE/CANTSEEK.
+- Verification: full Release solution suite passes 12,172 tests (10,340 Playsim), with no failures or skips. Full non-incremental warning-as-error Release build succeeds with zero warnings/errors.
+- Integration limitation: actors do not yet store/archive render style and alpha, so automatic tracer tracking still uses the flag-only CanSeek path. This pass supplies the converted calculation and explicit API; automatic render-style targeting, rendering and class-default binding remain unfinished.
+- DONTTHRUST audit: other native uses are ordinary damage kickback, radius thrust, quake and game-specific actions. Their surrounding algorithms need broader conversion; the completed archvile restriction is not claimed to cover them.
+- Remaining: actor render-style storage/save/integration, shadow rendering/facing effects, tracer visuals, full native state-action execution, fast-state timing, refire sight/trace parity and missile probability. Phase 1 is incomplete.
+
+## Phase 1 archvile DONTTHRUST launch restriction conversion (2026-10-10)
+
+- Native audit: archvile.zs A_VileAttack applies direct/blast damage and sound before checking targ.bDontThrust to gate its upward velocity assignment. Managed attack code always assigned launch velocity.
+- Added Actor.DontThrust, case-insensitive ACS DONTTHRUST access, and the archvile launch restriction. A flagged target retains its current vertical velocity while still receiving damage and sound; the supplied thrust parameter remains effective for unflagged targets.
+- Added pose capture/restore, conditional checksum hashing and optional outer SimDontThrustArchive version 186 around prior versions 15 through 185. Reader validates trailer/header/count/flags before state application. Legacy defaults are false; successful resurrection resets the runtime flag to the currently supported class default.
+- Added six regressions covering direct/blast damage with flag on/off, supplied thrust, sound preservation, binary/pose saves, legacy/checksum behavior and corrupt-data rejection. Extended twelve existing resurrection cases to verify success resets and blocked attempts preserve DONTTHRUST, including save/load replay.
+- Verification: full Release solution suite passes 12,145 tests (10,313 Playsim), with no failures or skips. Full non-incremental warning-as-error Release build succeeds with zero warnings/errors.
+- Remaining: other native DONTTHRUST call sites and non-false custom class defaults, render-style/alpha visibility, shadow rendering/facing effects, tracer visual effects, full native state-action execution, fast-state timing, refire sight/trace parity and missile probability. Phase 1 is incomplete.
+
+## Phase 1 resurrection seekability flag reset conversion (2026-10-10)
+
+- Native audit: AActor::Revive in src/playsim/p_mobj.cpp restores flags and flags2 through flags8 from class defaults. The recently converted CANTSEEK, DONTSEEKINVISIBLE and MINVISIBLE runtime flags were not reset by the managed resurrection helper.
+- Converted reset of those three flags after successful resurrection, matching the false defaults of currently represented supported classes. Existing Shadow baseline restoration remains intact, including the spectre default. Resets occur only after resurrection eligibility/position checks; blocked attempts retain current flags.
+- Added twelve regressions across zombie/spectre, self-raise/Thing_Raise/archvile paths and successful/blocked attempts. Each case replays after binary save/load and verifies runtime flag preservation before retry; successful cases also verify the resulting CanSeek behavior.
+- Verification: full Release solution suite passes 12,139 tests (10,307 Playsim), with no failures or skips. Full non-incremental warning-as-error Release build succeeds with zero warnings/errors.
+- Remaining: non-false custom class defaults for these new flags, render-style/alpha visibility, shadow rendering/facing effects, tracer visual effects, full native state-action execution, fast-state timing, refire sight/trace parity and missile probability. Phase 1 is incomplete.
+
+## Phase 1 native shadow defaults and Dehacked binding conversion (2026-10-10)
+
+- Native audit: demon.zs Spectre defaults include SHADOW; actor.h defines MF_SHADOW as 0x00040000. Native AActor::Revive in p_mobj.cpp restores primary flags from class defaults.
+- Converted spectre shadow defaults and numeric/named Dehacked SHADOW binding for map and dynamic monster spawns. Patched primary flags replace the native class shadow default, allowing patches to clear spectre shadow or add it to other classes.
+- Retained the spawn/class shadow baseline for resurrection and legacy restoration. Packed visibility pose capture now includes explicit zero when runtime shadow clears a true baseline, preserving that override in version 185 without a new archive layout. Checksum covers the baseline as well as runtime state because it changes future resurrection behavior.
+- Added eight regressions covering native spectre/ordinary defaults, numeric and named patches, patch clearing, map/dynamic spawns, runtime save overrides in both directions, legacy baseline restoration, resurrection defaults and checksum baseline distinction.
+- Verification: full Release solution suite passes 12,127 tests (10,295 Playsim), with no failures or skips. Full non-incremental warning-as-error Release build succeeds with zero warnings/errors.
+- Compatibility note: older saves without explicit shadow data now restore the corrected native/patch class baseline; an unpatched spectre therefore restores shadow=true. Rendering and native shadow-facing spread remain unconverted despite the targeting flag now being correct.
+- Remaining: render-style/alpha visibility, shadow rendering/facing effects, other visibility class defaults, tracer visual effects, full native state-action execution, fast-state timing, refire sight/trace parity and missile probability. Phase 1 is incomplete.
+
+## Phase 1 shadow/minimum-visibility seek restrictions conversion (2026-10-10)
+
+- Native audit: src/playsim/p_mobj.cpp CanSeek includes MF_SHADOW and MF8_MINVISIBLE alongside RF_INVISIBLE under the seeker's DONTSEEKINVISIBLE gate. Managed actors previously lacked both target flags.
+- Added Actor.Shadow and Actor.MinVisible, case-insensitive ACS SHADOW/MINVISIBLE access, and both restrictions in the shared CanSeek predicate. They affect direct and periodic tracer steering while retaining unconditional CANTSEEK rejection. They do not yet implement shadow facing spread or render effects.
+- Added packed pose visibility flags (bit 0 Shadow, bit 1 MinVisible), separate conditional checksum contributions and optional outer SimSeekVisibilityArchive version 185 around prior versions 15 through 184. Reader validates size/header/count and values -1 through 3 before applying state. Legacy saves restore false; custom/native class default and Dehacked shadow binding remain unconverted.
+- Added ten regression cases covering all four visibility-bit combinations with DONTSEEKINVISIBLE on/off, ACS access, direct/periodic steering, pose/binary persistence, distinct checksums, legacy defaults, and corrupt high-bit rejection without applying state.
+- Verification: full Release solution suite passes 12,119 tests (10,287 Playsim), with no failures or skips. Full non-incremental warning-as-error Release build succeeds with zero warnings/errors.
+- Remaining: render-style/alpha visibility, shadow rendering/facing effects and class defaults, tracer visual effects, generic non-projectile tracer action binding, full native state-action execution, fast-state timing, refire sight/trace parity and missile probability. Phase 1 is incomplete.
+
+## Phase 1 DONTSEEKINVISIBLE represented visibility conversion (2026-10-10)
+
+- Native audit: AActor::CanSeek in src/playsim/p_mobj.cpp rejects invisible targets only when the seeking actor has MF2_DONTSEEKINVISIBLE; CANTSEEK remains an unconditional target restriction. The native invisible predicate also includes shadow, minimum visibility and render style/alpha.
+- Added Actor.DontSeekInvisible and its CanSeek restriction for the existing managed Invisible state. Direct and periodic tracer actions reuse this gate. Added case-insensitive ACS DONTSEEKINVISIBLE read/write support; existing CANTSEEK behavior remains authoritative.
+- Added pose capture/restore, conditional checksum hashing and optional outer SimDontSeekInvisibleArchive version 184 wrapping prior versions 15 through 183. Reader validates trailer size/header/count/values before state application. Legacy saves reset the new flag to false; no custom class default binding is claimed.
+- Added ten regression cases covering all flag/visibility/direct-periodic combinations, ACS access, pose and binary saves, legacy defaults/checksum changes, combined Invisible/CANTSEEK/new flag archives, and corrupt flag rejection without applying state.
+- Verification: full Release solution suite passes 12,109 tests (10,277 Playsim), with no failures or skips. Full non-incremental warning-as-error Release build succeeds with zero warnings/errors.
+- Remaining: native shadow, minimum visibility and render-style/alpha portions of CanSeek, tracer visual effects, generic non-projectile tracer action binding, full native state-action execution, fast-state timing, refire sight/trace parity and missile probability. Phase 1 is incomplete.
+
+## Phase 1 CANTSEEK targeting flag conversion (2026-10-10)
+
+- Native audit: src/playsim/p_mobj.cpp AActor::CanSeek rejects a target with MF5_CANTSEEK before conditional invisible-target checks. DoTracer2 uses that gate before changing yaw or velocity.
+- Added Actor.CantSeek and the supported CanSeek target gate, wired into direct ProjectileActor.Trace and periodic revenant tracking. Added case-insensitive ACS CANTSEEK read/write support. The flag blocks steering without clearing the tracer reference or stopping ordinary projectile movement.
+- Added pose capture/restore, conditional checksum hashing and optional outer SimCantSeekArchive version 183 wrapping prior versions 15 through 182. The reader validates size, prior version, count and flags before restoring the inner state. Legacy saves reset this newly supported flag to false. No custom native class defaults or textual flag binding are claimed.
+- Added six regression cases covering ACS access, true/false flags with direct/periodic steering, pose and binary persistence, legacy defaults/checksum distinction, and corrupt flag rejection without applying state.
+- Verification: full Release solution suite passes 12,099 tests (10,267 Playsim), with no failures or skips. Full non-incremental warning-as-error Release build succeeds with zero warnings/errors.
+- Remaining: DONTSEEKINVISIBLE and native shadow/minimum-visibility/render-style checks, tracer visual effects, generic non-projectile tracer action binding, full native state-action execution, fast-state timing, refire sight/trace parity and missile probability. Phase 1 is incomplete.
+
+## Phase 1 configurable tracer steering action conversion (2026-10-10)
+
+- Native audit: src/playsim/p_actionfunctions.cpp DoTracer2 implements signed turn-angle steering with overshoot correction, configured-speed horizontal velocity, hugger suppression and one-eighth vertical adjustment. A_Tracer2 calls it directly with its parameter; A_Tracer calls it with 16.875 degrees after periodic gating. Existing managed periodic steering covered the fixed-angle path but omitted the configurable action boundary.
+- Added public ProjectileActor.Trace(turnAngle), a managed projectile subset of A_Tracer2, and reused it for periodic revenant steering. Direct calls bypass the periodic clock gate, use the native signed-angle/overshoot algorithm, preserve target health/zero-speed gates, and retain horizontal and vertical velocity rules. Non-finite angles are rejected before mutation.
+- Added four parameter regression cases (zero, positive, oversized and negative), each verifying angle, horizontal speed, vertical adjustment and binary save/load replay. Existing target health, hugger, zero-speed and revenant attack regressions remain passing.
+- Verification: full Release solution suite passes 12,093 tests (10,261 Playsim), with no failures or skips. Full non-incremental warning-as-error Release build succeeds with zero warnings/errors.
+- Audit finding: native CanSeek rejects CANTSEEK targets and conditionally invisible targets for DONTSEEKINVISIBLE missiles; those flags are not currently converted. Smoke/puff emission and generic non-projectile actor tracer action binding also remain open. This action does not claim full native CanSeek or A_Tracer visual parity.
+- Remaining: broader projectile spawn/collision parity, full native state-action execution, fast-state timing, ordinary chase yaw during attacks, refire sight/trace parity and missile probability. Phase 1 is incomplete.
+
+## Phase 1 mancubus deviated missile velocity conversion (2026-10-10)
+
+- Native audit: fatso.zs calls missile.VelFromAngle only on the second missile of volleys one/two and both missiles of volley three. The implementation in src/playsim/actor.h sets horizontal velocity from configured Speed and yaw, preserving vertical velocity. Managed RotateYaw previously retained the aimed horizontal speed, producing different trajectories for elevated targets.
+- Added an explicit configured-speed option to projectile yaw rotation and selected it for the deviated mancubus missiles. Undeviated missiles retain their initial aimed velocities. Other yaw rotation callers retain existing behavior, including revenant tracking, which requires a separate native audit.
+- Added three elevated-target volley regressions verifying configured horizontal speed on deviated missiles, retained aimed speed on undeviated missiles, and unchanged vertical velocity. Existing volley angle and save/load velocity regressions remain passing.
+- Verification: full Release solution suite passes 12,089 tests (10,257 Playsim), with no failures or skips. Full non-incremental warning-as-error Release build succeeds with zero warnings/errors.
+- Remaining: broader missile spawn/collision and revenant tracking parity, full native state-action execution, fast-state timing, ordinary chase yaw during attack frames, refire sight/trace parity, stealth/shadow effects and missile probability. Phase 1 is incomplete.
+
+## Phase 1 mancubus volley actor-angle conversion (2026-10-10)
+
+- Native audit: fatso.zs defines FATSPREAD as 90/8. A_FatAttack1 faces then adds FATSPREAD to the actor angle; A_FatAttack2 faces then subtracts it; A_FatAttack3 only faces. SpawnMissile aims at the target independently, with additional projectile deviations applied afterward. Managed projectile offsets matched but actor-angle deviations were missing.
+- Converted actor yaw changes at the first two volley boundaries, retaining the existing target-aimed projectile offsets (0/+11.25, 0/-11.25, and -5.625/+5.625 degrees). Third volley leaves the actor facing the target. The following scheduled face action resets the first two deviations as defined by the native frame sequence.
+- Added six regression cases covering actor and projectile angles for all three volleys and binary save/load before each volley reproducing actor yaw and projectile velocities. Existing actor pose and attack progress archives cover these values without new fields.
+- Verification: full Release solution suite passes 12,086 tests (10,254 Playsim), with no failures or skips. Full non-incremental warning-as-error Release build succeeds with zero warnings/errors.
+- Remaining: projectile spawn/collision and native VelFromAngle parity beyond these yaw boundaries, full native state-action execution, fast-state timing, ordinary chase yaw during attack frames, refire sight/trace parity, stealth/shadow effects and missile probability. Phase 1 is incomplete.
+
+## Phase 1 archvile blast sound parameter conversion (2026-10-10)
+
+- Native audit: archvile.zs A_VileAttack accepts snd defaulting to "vile/stop", faces the target, rejects blocked sight, then starts the sound on CHAN_WEAPON before applying damage.
+- Converted the sound parameter and default in the shared managed attack helper. It queues the same immediate weapon-channel request used by the actor sound implementation through the explicitly supplied simulation, preserving existing helper support for detached actors. Empty sound suppresses emission; null is rejected before action side effects.
+- Strengthened all four sight/fire combinations to check sound suppression and channel/flags/volume/attenuation. Added two custom/empty sound cases and extended both archvile attack save regressions to verify the blast sound is reproduced exactly once after loading.
+- Verification: full Release solution suite passes 12,080 tests (10,248 Playsim), with no failures or skips. Full non-incremental warning-as-error Release build succeeds with zero warnings/errors.
+- Remaining: native fire actor state execution and fire-effect sounds, textual action binding, fast-state timing, ordinary chase yaw during attack frames, refire sight/trace parity, stealth/shadow effects and missile probability. Phase 1 is incomplete.
+
+## Phase 1 archvile attack-start sound conversion (2026-10-10)
+
+- Native audit: archvile.zs A_VileStart emits the fixed sound "vile/start" on CHAN_VOICE at Missile entry. The managed profile omitted this sound.
+- Added the entry sound using the shared actor sound implementation, with voice channel 2, default flags, volume 1 and attenuation 1. The entry facing and sound execute within the same managed entry tick; the generic scheduler still groups native zero-duration entry actions rather than executing a complete native state chain.
+- Added three regressions for entry facing and sound settings, single emission during the initial windup, binary save/load without replaying the start sound, and suppression when missile attacks are disabled.
+- Verification: full Release solution suite passes 12,078 tests (10,246 Playsim), with no failures or skips. Full non-incremental warning-as-error Release build succeeds with zero warnings/errors.
+- Additional audit finding: native A_VileAttack accepts a sound parameter defaulting to "vile/stop" and emits it on CHAN_WEAPON after the sight check and before damage. The managed shared attack helper still omits that parameter and sound. Native fire actor sounds (vile/firestrt and subsequent effects) also require further conversion with fire actor state execution.
+- Remaining: full native state-action execution, fast-state timing, ordinary chase yaw during attack frames, refire sight/trace parity, stealth/shadow effects and missile probability. Phase 1 is incomplete.
+
+## Phase 1 mancubus raise-guns sound conversion (2026-10-10)
+
+- Native audit: fatso.zs A_FatRaise calls A_FaceTarget followed by A_StartSound("fatso/raiseguns", CHAN_WEAPON). The managed profile already converted entry facing but omitted the sound.
+- Added the native fixed sound at mancubus attack entry after facing, using the existing weapon-channel sound helper. This preserves channel 1, default flags, volume 1 and attenuation 1. It does not substitute the configurable actor AttackSound for the native fixed name.
+- Added three regressions covering entry facing plus sound parameters, one-shot emission throughout the pre-shot windup, binary save/load without replaying the entry sound, and suppression when missile attacks are disabled. Existing profile attack save tests remain passing.
+- Verification: full Release solution suite passes 12,075 tests (10,243 Playsim), with no failures or skips. Full non-incremental warning-as-error Release build succeeds with zero warnings/errors.
+- Remaining: full native state-action execution and textual action binding, fast-state timing, ordinary chase yaw during attack frames, refire sight/trace parity, stealth/shadow effects and missile probability. Phase 1 is incomplete.
+
+## Phase 1 arachnotron native refire conversion (2026-10-10)
+
+- Native audit: arachnotron.zs enters A_SpidRefire at tic 28 after its 20-tic windup and two four-tic frames, then repeats from tic 20 at tic 29. The shared implementation in spidermaster.zs rejects HitFriend before facing and draws Random[CPosRefire] with threshold 10 before checking target health/sight. Managed arachnotron repetition previously only checked visibility at sequence end.
+- Added arachnotron RefireTic 28 and the shared threshold-10 decision. Generalized dead/missing-target attack progression to profiles with a native refire boundary, preserving target references until the action decides continuation. Friend rejection, facing, random continuation and the one-tic repeat delay now follow the converted shared action ordering.
+- Kept arachnotron progress in its existing ProfileAttack archive, including null target references; no new archive type or actor field is needed. Added ten regression cases: four missing/destroyed-target cases, two dead-target cases, friend rejection, facing side effects, exact random draw timing, and save/load after a successful refire decision without another draw. Existing before-decision save tests now include arachnotron.
+- Verification: full Release solution suite passes 12,072 tests (10,240 Playsim), with no failures or skips. Full non-incremental warning-as-error Release build succeeds with zero warnings/errors.
+- Compatibility limitation: saves from older code at arachnotron attack tic 28 cannot distinguish the prior pending visibility check from the newly completed native refire decision. Cross-revision migration at this boundary is not claimed.
+- Remaining: refire sight flags and full native trace/portal parity, fast-state timing, ordinary chase yaw during attack frames, full native state-action execution, stealth/shadow effects and missile probability. Phase 1 is incomplete.
+
+## Phase 1 native refire state-entry timing conversion (2026-10-10)
+
+- Closed the one-tic timing discrepancy identified in the previous audit for chaingunner, spider mastermind and Wolf SS. Native possessed.zs and spidermaster.zs enter their one-tic refire states at attack tics 18, 28 and 34, respectively; their sequence ends remain 19, 29 and 35.
+- Added explicit RefireTic profile metadata. The scheduler now performs friend rejection, facing and the random continuation decision at state entry. Rejection returns to Chase immediately; continuation waits the native one-tic duration before jumping to RepeatFrom, without a second decision or random draw.
+- Updated existing random, dead/missing target, friend obstruction and facing tests to assert the native decision boundary. Added three binary save/load regressions after a successful decision to verify the one-tic pause and absence of a duplicate random draw.
+- Verification: full Release solution suite passes 12,062 tests (10,230 Playsim), with no failures or skips. Full non-incremental warning-as-error Release build succeeds with zero warnings/errors.
+- Save compatibility limitation: current-version round trips preserve the corrected timeline through existing attack progress. Saves produced by the earlier implementation exactly at tics 18/28/34 have no marker distinguishing a pending old decision from a completed new decision; cross-revision migration at those boundaries is not covered or claimed.
+- Remaining: arachnotron refire action handling, fast-state timing, ordinary chase yaw during attack frames, full native state-action execution, stealth/shadow effects and missile probability. Phase 1 is incomplete.
+
+## Phase 1 repeating hitscan refire facing conversion (2026-10-10)
+
+- Native audit: A_CPosRefire in possessed.zs and A_SpidRefire in spidermaster.zs first reject HitFriend, then call A_FaceTarget before consuming Random[CPosRefire]. Managed repeat decisions previously omitted this facing action.
+- Converted this action ordering for chaingunner, Wolf SS and spider mastermind. Refire now turns toward an existing target and clears runtime Ambush through the shared facing action, preserving pitch. Friend rejection still occurs before facing and before the random draw; missing targets retain the existing random continuation behavior.
+- Added three regression cases isolating refire facing with NoDirectionTurn. Strengthened all three friend-obstruction regressions to verify Ambush remains set when the refire action is rejected. Existing missing/dead-target and refire save tests also pass.
+- Verification: full Release solution suite passes 12,059 tests (10,227 Playsim), with no failures or skips. Full non-incremental warning-as-error Release build succeeds with zero warnings/errors.
+- Timing finding: the managed refire decision currently executes at the sequence EndTic (19/29/35), while the native refire state action executes one tic earlier (18/28/34). This pass converts facing semantics at the existing decision boundary; that timing discrepancy and arachnotron refire handling remain open.
+- Remaining: fast-state duration changes, ordinary chase yaw during attack frames, full native state-action execution, stealth/shadow effects and missile probability. Phase 1 is incomplete.
+
+## Phase 1 remaining Doom profile facing schedules conversion (2026-10-10)
+
+- Converted the remaining supported Doom profile facing schedules: lost soul, pain elemental, archvile, Wolf SS, demon, spectre, baron, hell knight, arachnotron, spider mastermind and mancubus. Native references are their actor state tables under wadsrc/static/zscript/actors/doom; mancubus entry A_FatRaise also calls A_FaceTarget.
+- Facing now executes at native normal-speed frame boundaries through the shared facing action, including Wolf SS tics 0, 10 and 24 and the mancubus intermediate frames. It clears runtime Ambush even when ordinary chase turning is disabled. Existing attack progress and runtime Ambush archives cover the scheduling inputs; this pass adds no archive fields.
+- Added 23 regression cases for the eleven profile entries and twelve intermediate boundaries, and updated existing shot-facing expectations to account for earlier entry facing. Existing revenant save/restore facing regressions remain in the full suite; no new per-profile save round-trip coverage is claimed.
+- Verification: full Release solution suite passes 12,056 tests (10,224 Playsim), with no failures or skips. Full non-incremental warning-as-error Release build succeeds with zero warnings/errors.
+- Remaining: fast-state duration changes, ordinary chase yaw during attack frames, full native state-action execution (including mancubus raise-guns sound), stealth/shadow effects, missile probability and repeat-state parity remain open. Phase 1 is incomplete.
+
+## Phase 1 runtime ambush archive conversion (2026-10-10)
+
+- Closed the runtime Ambush save gap identified by the revenant facing audit. Actor pose capture now records changes relative to map/class spawn defaults; restore applies the saved flag or restores that baseline for legacy saves.
+- Added optional outer SimAmbushArchive version 182, wrapping prior versions 15 through 181 only when a runtime override exists. Each actor stores -1 for its default or 0/1 for an override. Reader validates trailer size, prior version, actor count and every flag before applying the inner save; write/pose restore validate flag values and geometry requirements.
+- Baseline includes map SpawnAmbush and patched class ambush defaults retained in ResurrectionDefenseFlags. Existing current-value checksum hashing already covers this flag; no duplicate checksum field is added.
+- Added five archive regressions for both directions of runtime changes, both legacy map-default cases and corrupt flag rejection without changing live state. Strengthened both revenant facing save tests to require Ambush restoration instead of manually setting it after loading.
+- Verification: full Release solution suite passes 12,033 tests (10,201 Playsim). Full non-incremental warning-as-error Release build succeeds with zero warnings/errors.
+- Remaining: other profile facing schedules, ordinary chase yaw during attacks, full native state-action execution, stealth/shadow effects and missile probability remain open. Phase 1 is incomplete.
+
+## Phase 1 native revenant facing timelines conversion (2026-10-10)
+
+- Native audit: wadsrc/static/zscript/actors/doom/revenant.zs defines distinct facing entries: melee at tics 0 and 6, missile at tics 0 and 20. The managed scheduler previously only faced during its shot dispatch.
+- Added separate MeleeFaceTics metadata alongside FaceTics and selected the schedule from existing SeparateMelee attack progress. Revenant melee and missile entry/intermediate facing actions now invoke the converted shared action at their respective boundaries. No new attack-progress archive field is needed.
+- Added seven regression cases for both attack entries, both intermediate boundaries, both save/restore boundaries and exclusion of the melee boundary from the missile timeline. Tests use NoDirectionTurn to isolate scheduled facing from managed chase yaw changes.
+- Verification: full Release solution suite passes 12,028 tests (10,196 Playsim). Full non-incremental warning-as-error Release build succeeds with zero warnings/errors.
+- Audit finding: runtime Ambush changes are not currently captured/restored by the managed actor archive. Save tests restore attack progress and yaw, then explicitly set Ambush before verifying its next scheduled clearing; they do not claim Ambush persistence. This archive gap remains open.
+- Remaining: other profile facing schedules, ordinary chase yaw updates during attack frames, full state-action execution, stealth/shadow effects and native missile probability remain unconverted. Phase 1 is incomplete.
+
+## Phase 1 native profile windup facing timing conversion (2026-10-10)
+
+- Native audit: Doom possessed, doomimp, cacodemon and cyberdemon ZScript state tables invoke A_FaceTarget when entering selected windup frames, before their shot actions. Managed profile dispatch previously delayed the facing side effects until a shot fired.
+- Added immutable FaceTics metadata to supported attack profiles. Zombie, shotgun, chaingunner, imp, cacodemon and cyberdemon profiles face on attack entry; imp also faces at tic 8, cacodemon at tic 5, and cyberdemon at tics 18 and 42. Dispatch reuses ActorOrientationActions.Face and existing attack progress; no new archive state is required.
+- Added ten regression cases covering all six entry actions, three intermediate frame boundaries and a non-facing frame. Updated prior shot-facing assertions to account for the newly converted earlier actions. Existing attack/save suites continue passing.
+- Verification: full Release solution suite passes 12,021 tests (10,189 Playsim). Full non-incremental warning-as-error Release build succeeds with zero warnings/errors.
+- Remaining: other profiles and separate revenant melee/missile facing timelines remain to convert. Managed ordinary chase yaw assignment can still run between attack frames unless NoDirectionTurn is requested; tests isolate scheduled facing with that flag. Full state-action scheduling, stealth/shadow effects, autoaim and missile probability remain open. Phase 1 is incomplete.
+
+## Phase 1 native profile attack-facing side effect conversion (2026-10-10)
+
+- Native audit: wadsrc/static/zscript/actors/doom/possessed.zs PosAttack, SPosAttack and CPosAttack actions invoke A_FaceTarget. src/playsim/p_enemy.cpp A_Face clears MF_AMBUSH before updating orientation. Managed MonsterBrain profile shot dispatch previously assigned yaw directly and missed this side effect.
+- Routed profile attack-facing through the existing converted ActorOrientationActions.Face action instead of duplicating angle math. This preserves default pitch behavior and clears ambush when a profile shot/action executes. Existing action validation and orientation rules are reused; no new save fields are required.
+- Added nine regression cases covering zombie, shotgun, chaingun, Wolfenstein SS, spider and imp attacks, default pitch preservation, disabled attacks and goal pursuit. Existing attack/save/random-stream tests remain passing.
+- Verification: full Release solution suite passes 12,011 tests (10,179 Playsim). Full non-incremental warning-as-error Release build succeeds with zero warnings/errors.
+- Remaining: native state tables can invoke FaceTarget during pre-shot windup frames, while the managed profile scheduler currently invokes it at the shot/action dispatch. Full state-action timing, stealth/shadow facing effects, aim-line autoaim and native missile probability remain open. Phase 1 is incomplete.
+
+## Phase 1 native uncapped ordinary missile selection conversion (2026-10-10)
+
+- Native audit: src/playsim/p_enemy.cpp P_CheckMissileRange rejects distant targets only when maxtargetrange is positive. The later distance calculation influences missile probability rather than imposing a universal range cap. Managed profiles still imposed a 1024-unit cutoff after the prior archvile/revenant corrections.
+- Removed the artificial ordinary missile-selection cap for supported classes without a maximum target range and generic managed attacks. Preserved the archvile maximum and revenant close-range restriction, reaction timer, friend obstruction, sight, goal and action-enable gates.
+- Added ten regression cases spanning the 1024/1025 boundary and 4096-unit targets for zombie, imp, revenant and cyberdemon profiles, generic hitscan/fireball actions, disabled missiles and nonzero reaction counters. Existing profile-specific range regressions continue to pass.
+- Verification: full Release solution suite passes 12,002 tests (10,170 Playsim). Full non-incremental warning-as-error Release build succeeds with zero warnings/errors.
+- Remaining: missile selection still lacks the native distance probability, MissileChanceMult, MinMissileChance, skill aggressiveness and CheckMissileRange random stream. Removing a false hard rejection does not establish equivalent native attack frequency. Generic hitscan and individual attack trace ranges also remain separate parity work. Configurable range properties, complete chase ordering, patrol navigation and eight-direction movement remain open; Phase 1 is incomplete.
+
+## Phase 1 native archvile and revenant missile distance gates conversion (2026-10-10)
+
+- Native audit: src/playsim/p_enemy.cpp P_CheckMissileRange subtracts 64 units from world distance, then another 128 if the class has no MeleeState, before checking MaxTargetRange and MeleeThreshold. Native archvile defaults specify MaxTargetRange 896; revenant defaults specify MeleeThreshold 196.
+- Converted the fixed native profile gates: archvile ordinary missile selection accepts world distances through 1088 inclusive, and revenant ordinary missiles are rejected below 260 world units. Disabling melee selection does not remove the revenant class's native melee state or its close-range missile restriction. JUSTHIT retaliation retains precedence over both properties.
+- Added twelve regression cases around both strict boundaries, retaliation bypass and revenant melee preservation. Updated the missile branch of the revenant attack-save fixture to use 500 units rather than relying on non-native close-range missile selection; archive assertions still pass unchanged.
+- Verification: full Release solution suite passes 11,992 tests (10,160 Playsim). Full non-incremental warning-as-error Release build succeeds with zero warnings/errors.
+- Remaining: these are fixed supported-class defaults, not general configurable MaxTargetRange/MeleeThreshold properties. The ordinary 1024-unit managed range cap for other profiles, missile probability/multiplier/aggressiveness and native CheckMissileRange RNG remain unconverted. Full chase ordering, patrol navigation and eight-direction movement remain open; Phase 1 is incomplete.
+
+## Phase 1 native first-missile friend obstruction gate conversion (2026-10-10)
+
+- Native audit: src/playsim/p_enemy.cpp P_CheckMissileRange rejects ordinary missile selection when a friendly actor's P_HitFriend trace finds an intervening friend. This check follows the JUSTHIT retaliation override. Managed MonsterBrain previously used its equivalent HitFriend helper only for native refire, allowing the initial ordinary attack through an ally.
+- Converted ordinary missile selection to reuse the existing HitFriend trace. Melee selection, already selected windup/profile execution and hostile JUSTHIT retaliation retain their existing precedence. No new actor flags, random streams or archive fields are needed.
+- Added ten regression cases covering zombie/imp profiles with each shooter/blocker friendship combination, attack resumption when the ally moves aside, retaliation precedence and generic hitscan/fireball selection. Existing refire tests continue to pass.
+- Verification: full Release solution suite passes 11,980 tests (10,148 Playsim). Full non-incremental warning-as-error Release build succeeds with zero warnings/errors.
+- Remaining: this reuses the managed target-center attack trace; native autoaim and full portal-aware trace parity remain separate gaps. Friendly-target random defection, ordinary missile probability, complete native chase scheduling, patrol navigation and eight-direction movement remain open. Phase 1 is incomplete.
+
+## Phase 1 native hostile missile retaliation conversion (2026-10-10)
+
+- Native audit: src/playsim/p_enemy.cpp P_CheckMissileRange checks sector attack permission and sight before consuming MF_JUSTHIT. Retaliation against a hostile target succeeds before the reactiontime and ordinary distance checks. Managed MonsterBrain previously cleared JustHit unconditionally before checking attacks.
+- Converted hostile missile retaliation and conditional flag consumption. Pain, disabled AI, missing target, goals, disabled missile selection, melee selection, no-attack sectors and blocked sight no longer discard an unused retaliation flag. Existing JustHit save/checksum support requires no new archive fields.
+- Generic windup already selected now continues independently of the missile reaction/range selection gate, preventing a retaliation attack from cancelling on the next tick. Native profile attack execution already continues independently of that selection gate.
+- Added twelve regression cases covering hostile/friendly hunters against hostile targets at ordinary and long distance, deferred selection gates, blocked sight restoration, melee precedence, no-attack sectors and generic attack completion while reactiontime remains nonzero. Updated the older pain-tick clearing expectation to native flag retention.
+- Verification: full Release solution suite passes 11,970 tests (10,138 Playsim). Full non-incremental warning-as-error Release build succeeds with zero warnings/errors.
+- Remaining: friendly-target random defection and its native RNG stream remain unsupported; managed current-target filtering still rejects friends. Ordinary missile probability, independent state scheduling, complete chase ordering, patrol navigation and eight-direction movement remain open. Phase 1 remains incomplete.
+
+## Phase 1 native chase reaction attack gate conversion (2026-10-10)
+
+- Native audit: src/playsim/p_enemy.cpp A_DoChase decrements nonzero reactiontime without returning; melee selection is independent of reactiontime, while P_CheckMissileRange rejects a nonzero counter. Managed MonsterBrain previously returned immediately after decrement, freezing acquisition, movement, resurrection checks and active-sound draws as well as attacks.
+- Converted the ordinary managed chase counter to continue after decrement and gate missile selection on the resulting zero value. Melee eligibility remains independent. Signed decrement and wraparound behavior are preserved; the transition from one to zero permits missile selection on that call.
+- Added nine regression cases for movement/acquisition during positive and negative counters, integer wraparound, zero-boundary missile selection, melee attack kinds and explicitly disabled melee. Updated existing signed/default/Dehacked/ACS timing expectations and active-sound expectations to match native semantics.
+- Physics-only scroll and floating fixtures now disable AI explicitly instead of relying on reaction time to prevent horizontal movement. Resurrection fixtures explicitly let corpse death frames settle before enabling the archvile, preserving their intended raise-state assertions.
+- Verification: full Release solution suite passes 11,958 tests (10,126 Playsim). Full non-incremental warning-as-error Release build succeeds with zero warnings/errors.
+- Remaining: this converts the ordinary reaction gate, not the complete native chase action. Native JUSTHIT missile overrides, separate state-action scheduling, pain/raise/charge counter ordering, probabilistic missile selection, goal patrol workflow and eight-direction movement still require work. Phase 1 remains incomplete.
+
+## Phase 1 native chase goal attack suppression conversion (2026-10-10)
+
+- Native audit: src/playsim/p_enemy.cpp A_DoChase goal handling at line 2576 bypasses attack selection when target equals goal. The managed loop previously allowed both generic and native profile attacks against retained goals.
+- Converted the assigned-goal attack gate in MonsterBrain. Generic windup and native profile windup are cleared when their target becomes the goal, so the managed combined chase/attack scheduler cannot continue firing against it. Movement and active-sound processing continue normally.
+- Added ten regression cases: close/ranged zombie and imp profiles, close demon profile, each generic attack kind, and generic/profile windup cancellation with attack resumption after clearing GoalId. Health and projectile assertions verify the suppressed attacks cause no damage or missile spawn.
+- Verification: full Release solution suite passes 11,949 tests (10,117 Playsim). Full non-incremental warning-as-error Release build succeeds with zero warnings/errors.
+- Scope limitation: native attack states execute independently of A_DoChase, while the managed scheduler combines them; cancellation on goal assignment is the managed adaptation tested here. Patrol arrival, linked goals, waits, PatrolSpecial execution and CHASEGOAL behavior remain unconverted. Native invisibility/look parameters and eight-direction movement remain open; Phase 1 is incomplete.
+
+## Phase 1 native chase goal retention correction (2026-10-10)
+
+- Native audit: src/playsim/p_enemy.cpp A_DoChase excludes the assigned goal from the health/friendship target rejection at line 2472. Managed MonsterBrain previously rejected every dead or friendly current target, including its goal.
+- Converted current-target retention to preserve assigned goals through health and friendship changes while continuing to reject destroyed actors and ordinary dead/friendly targets. Goal identity uses the existing GoalId field; no new archive state is introduced.
+- Added eight regression cases covering each health/friendship combination for goals and ordinary targets, destroyed goal rejection, and rejection after GoalId changes. Attack actions are disabled in these retention tests to isolate this native gate.
+- Verification: full Release solution suite passes 11,939 tests (10,107 Playsim). Full non-incremental warning-as-error Release build succeeds with zero warnings/errors.
+- Remaining: native goal arrival, path advancement, waiting, CHASEGOAL and associated attack restrictions are not completed by this retention change. Native invisibility detection, configurable look parameters, player iteration order and full eight-direction movement also remain open. Phase 1 remains incomplete.
+
+## Phase 1 HCDE NoTarget pursuit and sound acquisition correction (2026-10-10)
+
+- Native audit: src/playsim/p_enemy.cpp A_DoChase explicitly drops an acquired player with CF_NOTARGET unless it is the actor's goal, clearing target, lastenemy, LastHeard and threshold. Sound-based look acquisition also rejects protected players. This HCDE behavior differs from the older ZDoom expectation in a managed regression test.
+- Converted MonsterBrain pursuit recheck and memory clearing, with attack cancellation, plus direct Hear and remembered-sound player acquisition checks. Preserved the existing-goal exception.
+- Added four regression cases for remembered noise, direct hearing, active attack cancellation and reacquisition after protection clears, and the goal exception. Corrected the prior acquired-player retention test to match HCDE.
+- Verification: full Release solution suite passes 11,931 tests (10,099 Playsim); full non-incremental warning-as-error Release build succeeds with zero warnings/errors; whitespace check passes.
+- Remaining: native invisibility detection and random acquisition gates, configurable look parameters, player iteration order, full eight-direction movement and other previously listed Phase 1 gaps remain open. No completion claim or new remaining-LOC estimate.
+
+## Phase 1 native long-range chase acquisition correction (2026-10-10)
+
+- Native reference: src/playsim/p_enemy.cpp P_IsVisible uses maxdist zero for default look parameters; isTargetablePlayer retains shootability, friendship, no-target, health and sight checks.
+- Audit found an artificial 2048-unit player-acquisition cap in the managed chase loop. Removed it to match native default sight acquisition. Existing visibility and restricted-facing gates still apply; acquiring a distant player does not bypass attack-range restrictions.
+- Validation: seven new regression cases cover the former boundary, distances through 16000 units, restricted-facing behavior and no-target exclusion. Friendship test fixture now explicitly marks its unrelated distant player no-target instead of relying on the removed cap. All 11,927 Release tests pass, including 10,095 Playsim tests. Warning-as-error Release build and whitespace audit verified.
+- Remaining scope: native invisibility detection, look parameter min/max distance overrides, player slot selection order, fear/direction behavior and other unsupported chase flags. Save version 181 stays current. Phase 1 remains incomplete.
+
+## Phase 1 chase direction-turn suppression conversion (2026-10-10)
+
+- Native reference: CHF_NODIRECTIONTURN = 64 and A_DoChase direction-turn gate in src/playsim/p_enemy.cpp.
+- Added the flag to managed validation and gated chase-facing updates. Target selection and movement continue while the actor retains its angle; DontMove and NoPlayActive combinations remain supported. Suppression is per-call and does not affect a later ordinary chase call. Attack-specific facing actions remain independent.
+- Validation: five new regression cases; all 11,920 Release tests pass, including 10,088 Playsim tests. Test setup was corrected to clear initial reaction delay before checking target acquisition. Warning-as-error Release build and whitespace audit verified.
+- Remaining scope: managed movement still uses direct-target steering rather than the native eight-direction movement table and 45-degree turning. This adds suppression to the existing steering path; native direction selection, strafing, fear and other unsupported chase flags remain open. Save version 181 stays current. Phase 1 remains incomplete.
+
+## Phase 1 native chase nightmare-fast flag integration (2026-10-10)
+
+- Native references: CHF_NIGHTMAREFAST = 4 in src/playsim/p_enemy.cpp and wadsrc/static/zscript/constants.zs; A_Chase forwards this flag to A_DoChase.
+- Added NightmareFast to the managed chase flag enum and validation mask. The native flag and A_ExtChase option now share the same FastMonsters-gated state-timer implementation. Supported combined flags retain their behavior; the option remains per-call and does not affect subsequent ordinary chase.
+- Unsupported flag combinations still fail before changing the current state timer. No save-format change was needed; existing state timing persistence remains in use.
+- Validation: nine new regression cases; all 11,915 Release tests pass, including 10,083 Playsim tests. Warning-as-error Release build and whitespace audit verified.
+- Remaining scope: other unsupported chase flags, native fear/direction logic, default gameinfo nightmarefast binding and custom action importer integration. Phase 1 remains incomplete.
+
+## Phase 1 extended chase nightmare-fast timing conversion (2026-10-10)
+
+- Native references: src/scripting/vmthunks_actors.cpp A_ExtChase forwards nightmarefast; src/playsim/p_enemy.cpp A_DoChase shortens current state tics when nightmarefast and SKILLP_FastMonsters are both enabled.
+- Removed the unsupported-option exception and passed the per-action option through the managed chase loop. Remaining state times above three become ceiling-half, with a minimum of three. Short states and infinite -1 states remain unchanged. The existing FastMonsters configuration supplies the skill gate.
+- Timing changes use the existing state timer without state re-entry or repeated action execution. The per-call option does not persist or globally alter ordinary chase. Existing state save/checksum handling already carries the resulting remaining time; save version 181 stays current.
+- Validation: 11 new regression cases; all 11,906 Release tests pass, including 10,074 Playsim tests. Warning-as-error Release build and whitespace audit verified.
+- Remaining scope: broader native chase direction/fear behavior, unsupported chase flags, native default gameinfo nightmarefast binding and custom action importer integration. Phase 1 remains incomplete.
+
+## Phase 1 PowerSpread inventory conversion (2026-10-10)
+
+- Native reference: wadsrc/static/zscript/actors/inventory/powerups.zs PowerSpread duration -30. Search of src and native ZScript found only its declaration and distinct Spread subclass, with no firing-behavior consumer.
+- Converted the 1050-tic player inventory marker: native refresh rules, expiration, definition duration units, grant/check/set/take/clear, untossable behavior, ACS grants/counts/timer queries, capture/restore and checksum. No extra pellets or weapon-spread changes were invented.
+- Save version 181 extends the finite-power trailer with spread duration while preserving prosperity and preceding timers/strengths. Legacy formats restore absent spread to zero. Negative durations fail before restore mutation.
+- Validation: eight new regression cases; all 11,895 Release tests pass, including 10,063 Playsim tests. Warning-as-error Release build and whitespace audit verified. A generated local-variable naming collision was fixed before validation passed.
+- Remaining scope: distinct Spread subclass identity, definition importer and world giver mappings, generalized inventory lifecycle and other powerups. Phase 1 remains incomplete.
+
+## Phase 1 PowerProsperity inventory conversion (2026-10-10)
+
+- Native reference: wadsrc/static/zscript/actors/inventory/powerups.zs PowerProsperity declares duration -120 and no effect override; source search found no additional PowerProsperity gameplay consumer in this native tree.
+- Converted the 4200-tic player inventory marker with native refresh rules, expiration, GivePowerup definition units, inventory give/check/set/take/clear, untossable behavior, ACS grants/counts/timer queries and deterministic checksum state. No healing, health-limit or damage behavior was invented.
+- Save version 180 extends the finite-power trailer with prosperity duration, retaining all preceding timers and custom strengths. Prior formats restore the absent marker to zero. Invalid durations fail before restore mutation.
+- Validation: eight new regression cases; all 11,887 Release tests pass, including 10,055 Playsim tests. Warning-as-error Release build and whitespace audit verified.
+- Remaining scope: distinct Prosperity alias/subclass object identity, definition importer and world giver mappings, non-player inventory and exact independent thinker lifecycle. Other unconverted powerups and Phase 1 work remain open.
+
+## Phase 1 configurable regeneration strength conversion (2026-10-10)
+
+- Native reference: PowerRegeneration.DoEffect calls Owner.GiveBody(int(Strength)) every 32 map ticks; Powerup.HandlePickup refreshes duration without transferring strength.
+- Converted configurable regeneration strength, including truncation toward zero and negative percentage-health grants through the existing health helper. Sounds occur only when health increases. Same-class refreshes preserve held strength; expiration, take, clear and reset restore default five.
+- Save version 179 preserves custom regeneration strength alongside custom drain/high-jump strengths and finite timers. Prior saves default to five. Checksums include strength. Nonfinite or out-of-int-range strength values are rejected before grant or restore mutation rather than relying on undefined native integer conversion.
+- Validation: nine new regression cases; all 11,879 Release tests pass, including 10,047 Playsim tests. Warning-as-error Release build and whitespace audit verified.
+- Remaining scope: definition importer binding, distinct inventory subclasses, world giver mappings, aliases, non-player inventory effects and independent inventory thinker ordering. Phase 1 remains incomplete.
+
+## Phase 1 configurable PowerDrain strength conversion (2026-10-10)
+
+- Native references: PowerDrain default strength 0.5, Powerup.HandlePickup duration-only refresh, and src/playsim/p_interaction.cpp post-armor drain strength calculation.
+- Added configurable finite PowerDrain strength. Positive strengths scale post-armor damage with integer truncation; nonpositive strengths do not drain. Same-class refresh preserves the held strength. Expiration resumes the existing direct DrainStrength setting, while take/clear/reset restore the next item's default strength.
+- Save version 178 preserves custom drain strength alongside high-jump strength and all finite timers. Legacy saves default item strength to 0.5. Nonfinite grant inputs and binary/in-memory saved strengths are rejected before mutation; checksum includes double-precision strength.
+- Validation: nine new regression cases; all 11,870 Release tests pass, including 10,038 Playsim tests. Warning-as-error Release build and whitespace audit verified.
+- Remaining scope: native maximum-efficiency selection among multiple distinct drain objects/subclasses, definition importer binding, world giver mappings and generalized inventory lifecycle. The direct DrainStrength setting remains a compatibility fallback when no timed item is active. Phase 1 remains incomplete.
+
+## Phase 1 configurable high-jump strength conversion (2026-10-10)
+
+- Native references: PowerHighJump default strength 2; player CheckJump selects positive factors; Powerup.HandlePickup refreshes duration without transferring Strength.
+- Added finite configurable strength to GivePowerHighJump, supporting both timed and zero-duration presence. Positive factors multiply JumpZ; zero and negative factors leave the normal jump impulse unchanged. Existing vertical velocity remains additive.
+- Same-class refreshes preserve the held item's strength, including default name-based grants. Expiration, take, clear and reset restore the default strength for the next item. Nonfinite input is rejected before grant mutation.
+- Save version 177 preserves double-precision custom strength alongside duration and pending-removal presence. Legacy formats default strength to two. Invalid binary or in-memory strengths fail before restore mutation. Checksums distinguish strengths even with equal timers.
+- Validation: nine new regression cases; all 11,861 Release tests pass, including 10,029 Playsim tests. Warning-as-error Release build and whitespace audit verified.
+- Remaining scope: maximum strength selection among distinct high-jump subclasses/objects, definition importer binding, aliases, world giver mappings and exact independent inventory thinker ordering. This supports one represented high-jump item with configurable strength; Phase 1 remains incomplete.
+
+## Phase 1 zero-duration high-jump inventory conversion (2026-10-10)
+
+- Native references: PowerHighJump strength 2 with no default duration, Powerup.CreateCopy, HandlePickup zero-duration acceptance, and Tick destruction in wadsrc/static/zscript/actors/inventory/powerups.zs.
+- Added a separate pending-removal presence flag for the default zero-duration high-jump item. Name-based ACS and actor inventory grants now succeed; held count is one while remaining-tic queries correctly return zero. The managed owner tick uses the effect then removes transient presence, without assigning an arbitrary duration.
+- Repeated zero-duration grants preserve an existing finite timer, including above the blinking threshold. Explicit timed grants replace pending removal. Take, set-to-zero, clear and death/reset paths remove transient presence; tossing remains unsupported as native powers are untossable.
+- Save version 176 preserves pending-removal presence alongside all finite timers and checksum state. Prior formats restore the absent flag as false. Binary flags outside 0/1 are rejected before restore mutation.
+- Validation: eight added regression cases plus an updated former unsupported-grant test; all 11,852 Release tests pass, including 10,020 Playsim tests. Warning-as-error Release build and whitespace audit verified.
+- Remaining scope: generalized inventory object identities and independent thinker ordering, custom high-jump strengths and maximum selection among multiple objects, aliases and world giver mappings. Pending removal uses the managed owner-tick lifecycle rather than reproducing every native inventory thinker ordering. Phase 1 remains incomplete.
+
+## Phase 1 timed high-jump actor inventory integration (2026-10-10)
+
+- Audit found explicitly timed PowerHighJump missing from ActorInventoryActions managed-power classification. Converted actor take, target/family take and existing-item set handling to the existing native powerup amount rules.
+- Existing-item set does not refresh its timer; setting zero removes it, unchanged amount reports false, and unsupported multi-count storage throws before mutation. Family take now recognizes high jump and preserves the calling sibling.
+- Name-based creation remains unsupported because the base native item has zero duration and requires transient inventory object presence. Actor GiveInventory and absent-item positive SetInventory explicitly return false rather than report a successful grant or invent a duration. Explicit-duration GivePowerHighJump remains supported.
+- Validation: four new regression cases; all 11,844 Release tests pass, including 10,012 Playsim tests. Warning-as-error Release build and whitespace audit verified.
+- Remaining scope: zero-duration object lifecycle and default name-based grants, aliases, custom strengths and maximum selection among multiple held objects. No new save format was needed; version 175 remains current. Phase 1 remains incomplete.
+
+## Phase 1 explicitly timed PowerHighJump conversion (2026-10-10)
+
+- Native references: wadsrc/static/zscript/actors/inventory/powerups.zs PowerHighJump strength 2 and Powerup lifecycle; wadsrc/static/zscript/actors/player/player.zs CheckJump inventory-strength loop.
+- Converted default-strength high-jump effects for explicitly supplied positive durations via GivePowerHighJump and GivePowerup definition units. Ground jumping multiplies JumpZ by two before adding it to existing vertical velocity. Flight behavior stays at three units. The last active owner tick applies the effect before expiration.
+- Added native duration refresh/additive rules, ACS count/timer queries and removal, untossable behavior, inventory clear/reset, capture/restore and checksum participation.
+- Save version 175 extends the finite-power trailer with the high-jump timer. Existing finite-power timers retain their order; prior formats restore absent high-jump effects to zero. Negative saved durations fail before restore mutation.
+- Validation: ten new regression cases; all 11,840 Release tests pass, including 10,008 Playsim tests. Warning-as-error Release build and whitespace audit verified.
+- Remaining scope: PowerHighJump has no native default duration declaration. Its zero-duration object presence until thinker removal is not represented by the finite timer model, so no arbitrary default grant duration was added. Name-based grants and ActorInventoryActions mutation integration remain open, alongside aliases/custom strengths and maximum selection among multiple inventory objects. This is explicitly timed default-strength support; Phase 1 remains incomplete.
+
+## Phase 1 native player jump sound conversion (2026-10-10)
+
+- Native reference: wadsrc/static/zscript/actors/player/player.zs CheckJump, successful grounded jump A_StartSound("*jump", CHAN_BODY).
+- Audit found the ground-jump impulse and gates already converted but the native sound dispatch missing. Added the jump sound through the existing actor sound queue on channel 4, preserving volume, attenuation, actor identity and sound lifecycle handling.
+- Grounded jumps emit even when configured JumpZ is zero or negative, matching the native jump branch. Flight, crouch-only uncrouching, airborne repeat attempts, cooldown-blocked jumps and absent jump input remain silent.
+- Validation: eight new regression cases; all 11,830 Release tests pass, including 9,998 Playsim tests. Warning-as-error Release build and whitespace audit verified.
+- Remaining jump scope: PowerHighJump inventory-strength selection is still missing. Native prediction-cheat sound suppression has no corresponding managed authoritative simulation mode. This change converts only the sound dispatch in the existing authoritative ground-jump path; it does not complete the powerup or Phase 1 conversion.
+
+## Phase 1 PowerDoubleFiringSpeed cadence conversion (2026-10-10)
+
+- Native references: wadsrc/static/zscript/actors/inventory/powerups.zs default duration -40; wadsrc/static/zscript/actors/player/player.zs DPSprite.Tick extra decrement; src/playsim/p_pspr.cpp default PSPF_POWDOUBLE flags.
+- Converted the default finite player item with 1400-tic duration and native refresh rules. Managed weapon cooldowns receive one additional decrement while active, including cooldowns begun before pickup. Odd cooldowns round up in elapsed ticks; cooldowns cannot underflow. Expiration resumes normal countdown. Ammo cost and the initial cooldown remain unchanged.
+- Integrated inventory grant/check/set/take/clear and untossable behavior, ACS grants/counts/timer queries, definition duration units, capture/restore, and checksum state.
+- Save version 174 extends the finite-power trailer with firing-speed duration while retaining infinite-ammo, drain, and regeneration timers. Prior formats retain their layouts and restore absent speed effects to zero. Cooldown and power restore together; invalid durations fail before mutation.
+- Validation: 12 new regression cases; all 11,822 Release tests pass, including 9,990 Playsim tests. Warning-as-error Release build and whitespace audit verified.
+- Audit result: no additional defects found in the supported cooldown path. This is managed firing-cadence support, not full native psprite state reproduction: custom state durations, per-layer bPowDouble flags, raise/lower state timing, aliases/subclasses and world giver mappings remain open. Phase 1 remains incomplete.
+
+## Phase 1 PowerRegeneration conversion (2026-10-10)
+
+- Native references: wadsrc/static/zscript/actors/inventory/powerups.zs PowerRegeneration and Powerup.Tick; src/playsim/p_mobj.cpp owner inventory DoEffect dispatch.
+- Converted default player PowerRegeneration: 4200-tic duration, five-health GiveBody equivalent every 32 map ticks, maximum-health and health-factor handling through the existing health grant helper, and CHAN_ITEM regenerate sound only after successful healing. Dead players are not revived. The last active tick applies its effect before expiration.
+- Integrated native duration refresh rules, GivePowerup definition units, inventory give/check/set/take/clear, untossable behavior, ACS grants/counts/timer queries, capture/restore, and deterministic checksum state.
+- Save version 173 extends the finite-power trailer with regeneration alongside drain and infinite-ammo timers. Versions 171/172 retain their layouts; absent regeneration restores to zero. Restored map time preserves healing cadence. Negative durations fail before restore mutation.
+- Validation: 12 new regression cases; all 11,810 Release tests pass (9,978 Playsim). Warning-as-error Release build and whitespace audit verified. A test assertion was corrected to distinguish regeneration sounds from unrelated death sounds.
+- Audit result: no additional defects found in the supported default player powerup path. Custom strengths/subclasses, non-player inventory effects, world giver mappings, generic inventory object lifecycle, and unconverted systems remain open. Phase 1 remains incomplete.
+
+## Phase 1 timed PowerDrain conversion (2026-10-10)
+
+- Native reference: wadsrc/static/zscript/actors/inventory/powerups.zs, PowerDrain default strength 0.5 and duration -60 seconds.
+- Converted the finite PowerDrain item: 2100-tic default duration, native power refresh rules, half of post-armor damage healing, expiration, inventory grant/check/set/take/clear, untossable behavior, and ACS inventory/timer queries.
+- Added capture/restore and checksum participation. Save version 172 carries both PowerDrain and PowerInfiniteAmmo timers; version 171 and older saves clear the absent drain timer. Invalid durations are rejected before restore mutation. Combined saves retain signed ammo capacities.
+- Compatibility: the existing direct DrainStrength setting remains available; an active default PowerDrain item uses strength 0.5, and expiration restores the direct setting's effect.
+- Validation: nine added regression cases; full Release suite passes 11,798 tests. Release warning-as-error build and whitespace audit verified for this change.
+- Remaining scope: custom PowerDrain subclasses/strength values, generic inventory object identity and callbacks, world powerup-giver mappings, and broader unconverted systems remain open. This entry does not declare Phase 1 complete.
+
+## Phase 1 PowerInfiniteAmmo ACS timer integration (2026-10-10)
+
+Closed an integration omission found while auditing the new PowerInfiniteAmmo item: AcsActorPowerups.RemainingTics now exposes its timer to ACSF_GetActorPowerupTics. Native p_acs.cpp:6422 resolves one actor by TID and returns the held power item's EffectTics. Queries now return the actual finite timer rather than zero, with existing case-insensitive lookup and missing/destroyed receiver guards. Server infinite-ammo configuration alone does not imply a held power item or timer.
+
+Added PowerInfiniteAmmo to existing VM grant/check and TID-targeted grant/take parity theories, verifying the new item is wired through real ACS execution. Generic custom power classes, nonplayer power inventory, zero-duration object presence and imported powerup-giver world pickups remain unfinished.
+
+Validation: seven additional regressions cover ACS timer calls for activator, selected player TID and missing TID, unchanged timers after queries, case-insensitive names, server setting/item distinction, destroyed/missing owners, direct grant/count and TID grant/removal. Full Release suite passes 11,789 tests (9,957 Playsim; 100 Server); clean no-incremental warning-as-error build passes with zero warnings/errors; whitespace check passes.
+
+## Phase 1 finite PowerInfiniteAmmo item (2026-10-10)
+
+Converted the represented PowerInfiniteAmmo item from powerups.zs:1895 with native default duration -30 seconds (1,050 tics). PlayerPawn owns its timer and shared HasInfiniteAmmo combines the item with the server setting. Ammo sufficiency/consumption and protected actor TakeInventory now honor either source. Added managed definition-duration support, inventory count/grant/set/take/family recognition, untossable behavior, clearing, per-tic expiration and conditional checksum contribution. Duplicate grants reuse existing native finite-power duration merging and near-expiration refresh rules.
+
+Save version 171 adds an outer duration trailer around the existing save archive, preserving all previous inventory/version layouts when the item is absent. Captures and restores timers in memory and binary saves; older saves reset the timer to zero. Negative durations and malformed trailer lengths/counts are rejected before mutation. Full simulation geometry is required for an active saved item.
+
+Audit: native Weapon.CheckAmmo/DepleteAmmo and Actor.TakeInventory check PowerInfiniteAmmo presence alongside sv_infiniteammo. This closes the finite represented item gap; zero-duration held-object presence, nonplayer native inventory, custom InitEffect/EndEffect callbacks, imported class definitions and world powerup-giver pickups remain unfinished.
+
+Validation: seven new regressions cover native duration, duplicate/near-expiration grants, expiration and empty firing, inventory set/check/take/drop, protected depletion, clearing versus server setting, binary/legacy restore, invalid binary/direct snapshots, definition units and checksum distinction. Full Release suite passes 11,782 tests (9,950 Playsim; 100 Server); clean no-incremental warning-as-error build passes with zero warnings/errors; whitespace check passes.
+
+## Phase 1 infinite ammo setting and protected depletion (2026-10-10)
+
+Converted the native sv_infiniteammo setting for represented Doom weapon behavior. SpawnOptions.InfiniteAmmo reaches AuthoritySimulation and dedicated-server options via --infinite-ammo. Shared inventory ammo sufficiency handles firing consumption, automatic/priority selection, ACS SetWeapon and reload checks. Enabled weapons fire from empty pools without consumption. TIF_NOTAKEINFINITE (flag 1) returns false and retains ammo; ordinary explicit takes and non-ammo removal retain their normal behavior. Conditional checksum tagging distinguishes enabled settings while preserving default checksums.
+
+Audit against Weapon.CheckAmmo, DepleteAmmo, PlayerPawn.BestWeapon and Actor.TakeInventory confirms setting behavior and flag scope. Pickup quantities/capacities remain unchanged. Configuration remains a startup option and is not serialized or network-replicated as a mutable setting; restores retain the receiving simulation's configuration. PowerInfiniteAmmo item support, alternate/custom weapon ammo modes, author MinSelAmmo limits and generic native inventory objects remain unfinished.
+
+Validation: six Playsim and two dedicated-server regressions cover empty weapon firing, unchanged pools, ordinary/protected removal, non-ammo flag scope, reload/selection, checksum distinction, restore behavior and CLI-to-host configuration. Full Release suite passes 11,775 tests (9,943 Playsim; 100 Server); clean no-incremental warning-as-error build passes with zero warnings/errors; whitespace check passes.
+
+## Phase 1 callable actor inventory clearing (2026-10-10)
+
+Added ActorInventoryActions.ClearInventory as the public actor callback entry point for represented player clearing, reusing the existing ACS implementation. This closes a callable helper gap; existing represented clear logic was already converted. Clears held health, spare armor, ammo, keys, weapons and represented damage powers; detaches backpack capacity and clears ready/pending weapons. Health remains unchanged. Depleted worn armor retains absorption metadata and custom ammo capacities remain intact.
+
+Audit against Actor.ClearInventory in inventory_util.zs confirms native DepleteOrDestroy and ready/pending weapon reset. Native per-item Undroppable/Unclearable flags, custom destruction callbacks, nonplayer held inventory, arbitrary inventory object graphs and textual binding remain unfinished. This helper is limited to represented player items and does not claim generic inventory clearing support.
+
+Validation: four regressions cover actor callback and frame preservation, cooperative owner isolation, full represented inventory/power clearing, depleted armor metadata/custom capacity retention, save/restore, and destroyed/nonplayer guards. Full Release suite passes 11,767 tests (9,937 Playsim); clean no-incremental warning-as-error build passes with zero warnings/errors; whitespace check passes.
+
+## Phase 1 failed inventory toss preservation (2026-10-10)
+
+Closed the standalone ACS drop parity gap recorded by the previous audit. Shared Drop now always requires a successful pickup spawn before inventory depletion. Removed the requireSpawn switch and the detached-actor depletion fallback; public actor and ACS routes use the same behavior. Unsupported reserve armor remains held because its custom pickup class cannot yet be spawned. Existing valid ammo tests now run through real simulation tosses rather than testing depletion without a pickup.
+
+Audit against Actor.DropInventory and Inventory.CreateTossable confirms that a failed drop is not equivalent to TakeInventory. Detached actors have no world spawn route in this managed model and now fail without removing inventory. The prior standalone fallback limitation is resolved. Custom toss class definitions, inventory object reuse, callbacks and nonplayer held inventory remain unfinished.
+
+Validation: added four detached ammo preservation regressions; updated five valid ammo cases to use simulation actors and updated unsupported reserve armor expectation to retain both copies. Full Release suite passes 11,763 tests (9,933 Playsim); clean no-incremental warning-as-error build passes with zero warnings/errors; whitespace check passes.
+
+## Phase 1 ACS untossable inventory parity (2026-10-10)
+
+Corrected the ACS drop path exposed by the quantity-aware actor conversion. PowerDamage, PowerBuddha and PowerProtection are explicitly untossable, matching Powerup.CreateTossable returning null. Drops cannot clear their effects or report success. For attached live simulation actors, shared drop handling now requires a successfully spawned pickup before depleting inventory; unsupported custom spare armor is retained rather than silently removed. Existing represented ammo/weapon/key/backpack/health spawn routes are unchanged.
+
+Audit against Powerup.CreateTossable (powerups.zs:202), Actor.DropInventory and ACSF_DropInventory confirms native removal follows successful toss creation. The standalone managed ACS depletion fallback remains for detached actors under existing unit-level contracts; it is a remaining parity gap, while the public actor helper always requires a spawn. Custom spare armor toss definitions/object identity, callbacks and nonplayer inventory are still unfinished.
+
+Validation: five new regressions cover all represented powerups, unchanged effect durations and actor counts, retained unsupported live spare armor, actor callback result/frame preservation and power duration after save/restore. Full Release suite passes 11,759 tests (9,929 Playsim); clean no-incremental warning-as-error build passes with zero warnings/errors; whitespace check passes.
+
+## Phase 1 quantity-aware actor inventory tosses (2026-10-10)
+
+Converted requested-quantity Actor.DropInventory behavior into ActorInventoryActions.DropInventory for represented tossable items. Shared ACS drop handling now accepts a quantity (existing callers still default to one). Native CreateTossable clamps nonzero requests to 1..held Amount; zero fails. Ammo and named health pickups spawn that exact clamped quantity and deplete it only after successful spawn. Existing toss momentum, 30-tic eligibility delay, ignore-skill ammo recovery and archive behavior are reused. Native single-count weapons/keys/backpack retain their established routes.
+
+Audit against inventory_util.zs:303 and Inventory.CreateTossable:792 confirms clamp and removal behavior. The actor helper requires an actual world spawn: detached receivers, unsupported custom armor routes and untossable powerups fail without inventory removal. The old standalone ACS depletion fallback is preserved for existing regression coverage and remains a native parity gap; requireSpawn is enabled for the new actor helper. Native object identity reuse, arbitrary item toss callbacks, custom classes and nonplayer inventory remain unfinished. Return type reports success rather than returning a native Inventory object.
+
+Validation: eight new regressions cover partial/full/negative quantity clamps, archive round trips, health stack quantities without healing even under infinite-use settings, callback toss and exact delayed ammo recovery, zero/failed spawn preservation and untossable powerup retention. Full Release suite passes 11,754 tests (9,924 Playsim); clean no-incremental warning-as-error build passes with zero warnings/errors; whitespace check passes.
+
+## Phase 1 callable actor inventory use (2026-10-10)
+
+Added public ActorInventoryActions.UseInventory for represented named held items, exposing native Actor.UseInventory behavior to C# actor state callbacks. Reuses the existing ACS use implementation instead of duplicating health, stored armor, weapon-use side effects and infinite-use handling. This closes a callable actor-helper gap; the underlying represented item use logic was already converted.
+
+Audit against inventory_util.zs:271, HealthPickup.Use, BasicArmorPickup.Use and Weapon.Use confirms dead/missing/destroyed owner guards, failed use without consumption, successful single-item consumption, infinite inventory retention, and weapon selection returning false while retaining ownership. Worn armor and ordinary ammo remain unusable. Native Inventory object references, custom Use overrides, armor bonus metadata/stack boundaries, nonplayer held inventory, powered sister weapons and textual binding remain unfinished.
+
+Validation: seven regressions cover state callback healing and frame preservation, save/restore after consumption, infinite use, stored armor activation and unsuccessful reuse, ammo-free weapon switch with false result, dead/destroyed owners and unusable classes. Full Release suite passes 11,746 tests (9,916 Playsim); clean no-incremental warning-as-error build passes with zero warnings/errors; whitespace check passes.
+
+## Phase 1 signed ammo capacity persistence (2026-10-10)
+
+Closed the save/restore gap identified during actor ammo-capacity conversion. Native SetAmmoCapacity assigns signed Inventory.MaxAmount directly. SimAmmoArchive now accepts signed capacities in in-memory snapshots and writes version 170 when any parent ammo capacity is negative. Version 170 uses the complete version 169 weapon/phase/bob/turn layout, with presence markers even when weapon entries are absent. Nonnegative-capacity saves keep their existing version selection and bytes.
+
+Audit: readers for versions 165 through 169 retain nonnegative capacity validation, while version 170 accepts signed capacities. Held ammo counts remain nonnegative for every version. Invalid archives are rejected before simulation mutation. The old negative-capacity save limitation is resolved; exact-class box inventory, custom classes, nonplayer inventory and signed held-ammo pickup behavior remain unfinished.
+
+Validation: six new regressions cover all four parent capacities at int.MinValue, binary and in-memory restore, held quantities and blocked pickup behavior, rejection of signed capacities under an older version, and rejection of negative held ammo before mutation. Full Release suite passes 11,739 tests (9,909 Playsim); clean no-incremental warning-as-error build passes with zero warnings/errors; whitespace check passes.
+
+## Phase 1 actor ammo capacity helpers (2026-10-10)
+
+Converted Actor.GetAmmoCapacity and SetAmmoCapacity from wadsrc/static/zscript/actors/inventory_util.zs:841 into public ActorInventoryActions helpers. Parent ammo queries/assignments reuse the existing ACS capacity model. Assignment changes MaxAmount without clamping held quantity; signed capacities are preserved at runtime. Ammo-box queries return the exact class default rather than the player's parent pool capacity. Missing/invalid classes and destroyed receivers are guarded.
+
+Audit: native FindInventory uses exact class lookup. Pickup boxes normalize to parent ammo, so a box query uses its own default even after backpack or custom parent capacity changes. Native box assignment creates an item and may trigger pickup side effects; the current model cannot retain an exact box object, so supported box assignments throw NotSupportedException before mutation. Nonplayer mutable inventory, custom classes/replacements, and negative-capacity save encoding remain unconverted. Signed runtime assignment retains existing ACS behavior; the save archive still requires nonnegative capacities.
+
+Validation: ten regressions cover all parent pools and box defaults, quantities remaining above lowered/signed capacities, state callbacks, blocked full grants, invalid/destroyed subjects, and explicit unsupported box assignment. Full Release suite passes 11,733 tests (9,903 Playsim). Clean no-incremental warning-as-error build passes with zero warnings/errors after waiting for the test process to release its files; whitespace check passes.
+
+## Phase 1 direct actor ammo grants (2026-10-10)
+
+Converted Actor.GiveAmmo from wadsrc/static/zscript/actors/inventory_util.zs into ActorInventoryActions.GiveAmmo for the eight represented Doom ammo classes. Supplied quantities replace class pickup defaults; zero remains zero. Reuses PickupCatalog ammo handling for skill scaling, caps, pickup result, and existing weapon-switch behavior. Base and box classes feed the same parent ammo pool. Unsupported classes and destroyed/nonplayer receivers return false.
+
+Audit against Ammo.HandlePickup/CreateCopy confirms quantity assignment, parent normalization, skill scaling once, successful zero grants below capacity, and failed grants at capacity. Native signed negative pickup stacks cannot be represented by the current nonnegative inventory model: negative requests throw NotSupportedException before mutation. Native unlimited pickup, overflow edge cases, replacement classes, nonplayer inventory, and textual binding remain unconverted.
+
+Validation: twelve new regressions cover all eight classes, exact supplied quantities, zero/full/capped grants, state callback skill scaling, invalid receivers/classes, and explicit negative-quantity rejection. Full Release suite passes 11,723 tests (9,893 Playsim); clean no-incremental warning-as-error build passes with zero warnings/errors.
+
+## Phase 1 inventory jump integration audit (2026-10-10)
+
+Audit of wadsrc/static/zscript/actors/checks.zs:113 confirms A_JumpIfInventory and A_JumpIfInTargetInventory were already converted in ActorJumpActions. Rewired JumpIfInventory to the shared ActorInventoryActions.CheckInventory helper instead of duplicating quantity/max logic. Target forwarding still starts from the target and the returned state is entered on the caller. Nullable item names now accurately describe the supported missing-class behavior. No duplicate action API was retained.
+
+Added six integration regressions for immediate returned-state transitions and destination callbacks, failed/full thresholds preserving frame timing, target-relative master forwarding, missing/destroyed inventory owners, state index zero, and existing invalid-state validation. Original nine inventory jump regressions are preserved. Full Release suite passes 11,711 tests (9,881 Playsim); clean no-incremental warning-as-error build passes with zero warnings/errors. Native class/label import and depleted-object presence remain unfinished; this pass integrates existing converted actions rather than claiming new native actions were ported.
+
+## Phase 1 represented actor inventory threshold checks (2026-10-10)
+
+Converted native Actor.CheckInventory from wadsrc/static/zscript/actors/inventory_util.zs:731 into ActorInventoryActions.CheckInventory for represented held player inventory. Positive thresholds compare held quantity; nonpositive thresholds compare against the represented item maximum. Pointer selection, missing receivers, destroyed players, and absent inventory are guarded. Immediate health classes are excluded because native FindInventory does not expose the synthetic health count returned by ACS. Queries preserve inventory and powerup duration and can run from actor state callbacks.
+
+Audit: shared ACS class lookup and capacities are reused. Native checks depend on inventory-object presence; zero-count held objects (including zero-maximum depleted armor), separate card/skull identities, custom class defaults, and nonplayer inventory remain outside this represented subset. This is callable C# conversion; textual action binding and native inventory object import remain unfinished.
+
+Validation: added six regressions covering quantity/full capacity, negative thresholds, held health maximum, immediate health exclusion, pointer-selected state callbacks, missing subjects and destroyed receivers. Full Release suite passes 11,705 tests (9,875 Playsim); clean no-incremental warning-as-error build passes with zero warnings and errors.
+
+## Phase 1 represented powerup absolute inventory setters (2026-10-10)
+
+Converted ActorInventoryActions.SetInventory for PowerDamage, PowerProtection, and PowerBuddha in the finite timer-backed model. Missing-power nonpositive requests succeed without creation; positive requests activate the default effect. Existing single amount returns false. Nonpositive held requests use shared removal. Ordinary held growth clamps to the represented single item and reports success without replenishing EffectTics. Existing beyondMax growth above one throws NotSupportedException before mutation rather than losing native multi-count state.
+
+Audited inventory_util.zs SetInventory and powerups.zs CreateCopy: inventory Amount and effect duration are separate, so changing held Amount does not repeat activation or replenish the timer. Five regression cases cover the three default powers, absent/equal/clamped return rules, default activation, retained near-expiry duration, signed depletion, unsupported multi-count rejection, master-pointer state callback, invalid receivers, unrelated-power/health preservation, and save restoration.
+
+Full Release suite: 11,699 passed (Playsim 9,869; Server 98; Client 271), no failures/skips. Clean Release build with warnings treated as errors: zero warnings/errors. Diff whitespace check passed. No save format changes. Changes remain uncommitted.
+
+Scope limitation: finite active timers represent single ownership. Native item presence at zero duration, multi-count powers, InitEffect/EndEffect callbacks, colormap lifecycle, custom flags/classes and nonplayer ownership remain unconverted.
+
+Remaining: native powerup object lifecycle/multi-count representation/custom grants, independent key identities/multi-count representation/cooperative sharing, weapon/backpack multi-count representation and custom reload/priority/lifecycle rules, infinite ammo setting/powerup and protected depletion, unlimited ammo pickups and native numeric edge cases, armor object creation and native stack boundaries/merging/callbacks, general CustomInventory execution, textual binding, custom metadata/import/replacements, nonplayer stored inventory, runtime option replication/persistence, native psprite/state graphs and bob styles, separate persistent player/HUD health, other controls/freeze restrictions, visuals/statistics, game identification, and wider Phase 1 conversion.
+
+## Phase 1 managed powerup inventory state grants (2026-10-10)
+
+Converted ActorInventoryActions.GiveInventory, GiveToTarget, GiveToChildren, and GiveToSiblings for PowerDamage, PowerProtection, and PowerBuddha. Grants share existing managed duration helpers and native default durations. Inventory count does not multiply effect time. Existing active powers above the blink threshold reject the incoming pickup; at or below the threshold the timer is replenished. Family counts reflect eligible pickups rather than only class ownership.
+
+Audited powerups.zs Powerup.HandlePickup/CreateCopy and the three default duration declarations, plus inventory_util.zs DoGiveInventory. The native above-threshold branch handles the incoming item without marking PickupGood, so actor action success must be false even though HandlePickup itself returns true. Five regression cases cover all three powers, quantity normalization and nonmultiplication, threshold boundary success/failure, target state callback, invalid receiver guards, family counts, and save restoration. The initial ammo numeric audit confirmed zero-sized pool grants were already covered by the existing implementation/tests.
+
+Full Release suite: 11,694 passed (Playsim 9,864; Server 98; Client 271), no failures/skips. Clean Release build with warnings treated as errors: zero warnings/errors. Diff whitespace check passed. No save format changes. Changes remain uncommitted.
+
+Scope limitation: this covers default finite timer-backed powers. Native power objects, InitEffect/EndEffect callbacks, custom metadata, additive/always-pickup class flags, zero-duration item presence, colormap lifecycle and nonplayer power inventory remain unconverted.
+
+Remaining: native powerup object lifecycle and setters/custom grants, independent key identities/multi-count representation/cooperative sharing, weapon/backpack multi-count representation and custom reload/priority/lifecycle rules, infinite ammo setting/powerup and protected depletion, unlimited ammo pickups and native numeric edge cases, armor object creation and native stack boundaries/merging/callbacks, general CustomInventory execution, textual binding, custom metadata/import/replacements, nonplayer stored inventory, runtime option replication/persistence, native psprite/state graphs and bob styles, separate persistent player/HUD health, other controls/freeze restrictions, visuals/statistics, game identification, and wider Phase 1 conversion.
+
+## Phase 1 immediate Doom armor inventory setters (2026-10-10)
+
+Converted ActorInventoryActions.SetInventory creation for GreenArmor, BlueArmor, ArmorBonus, and BlueArmorForMegasphere. Nonpositive missing-pickup requests succeed without changing worn armor. Positive requests preserve native default SaveAmount rather than multiplying it by inventory count, and ignore skill armor scaling as required by SetInventory creation. ArmorBonus retains its one-point default and cap. beyondMax does not override pickup strength or its use limits. Existing worn BasicArmor setters remain separate.
+
+Audited inventory_util.zs SetInventory Amount/IgnoreSkill creation semantics and armor.zs BasicArmorPickup/BasicArmorBonus Use and SaveAmount behavior. Six new regression cases cover all four names, quantity and armor-factor isolation, nonpositive no-op requests, failed weaker/equal suit pickups, full bonus cap, metadata preservation, target-pointer state callback, null/nonplayer/destroyed guards, and save restoration.
+
+Full Release suite: 11,689 passed (Playsim 9,859; Server 98; Client 271), no failures/skips. Clean Release build with warnings treated as errors: zero warnings/errors. Diff whitespace check passed. No save format changes. Changes remain uncommitted.
+
+Scope limitation: immediate built-in armor pickups are modeled through worn armor, not retained native pickup objects. Custom stored suits, nonplayer armor ownership, native class replacement/import, bonus metadata and depletion callbacks remain outside this conversion.
+
+Remaining: custom armor setters and class metadata/object lifecycle, independent key identities/multi-count representation/cooperative sharing, weapon/backpack multi-count representation and custom reload/priority/lifecycle rules, powerup object lifecycle and state grants/setters, infinite ammo setting/powerup and protected depletion, unlimited ammo pickups and native numeric edge cases, native stack boundaries/merging/callbacks, general CustomInventory execution, textual binding, custom metadata/import/replacements, nonplayer stored inventory, runtime option replication/persistence, native psprite/state graphs and bob styles, separate persistent player/HUD health, other controls/freeze restrictions, visuals/statistics, game identification, and wider Phase 1 conversion.
+
+## Phase 1 nonplayer immediate health inventory setters (2026-10-10)
+
+Extended ActorInventoryActions.SetInventory's immediate-health creation path to supported nonplayer actors. Health, Stimpack, Medikit, HealthBonus, Soulsphere, and MegasphereHealth now assign requested healing through Actor.GiveBody after pointer selection. Stored inventory remains player-only. Nonpositive requests retain native missing-item success, while positive requests obey living-health and spawn-health limits. Null and destroyed receivers fail before mutation.
+
+Audited health.zs Health.TryPickup, inventory_util.zs SetInventory, and p_mobj.cpp P_GiveBody. Native monsters ignore the pickup's max parameter and player health-factor scaling, clamp healing input to 65,536, and heal only to spawn health. Eight new regression cases cover all six names, direct requested amounts, player-factor isolation, oversized healing and spawn cap, full/dead failures, missing-item nonpositive success, target-pointer state callback, save restoration, null/destroyed guards, and continued rejection of nonplayer stored-health inventory.
+
+Full Release suite: 11,683 passed (Playsim 9,853; Server 98; Client 271), no failures/skips. Clean Release build with warnings treated as errors: zero warnings/errors. Diff whitespace check passed. No save format changes. Changes remain uncommitted.
+
+Scope limitation: custom health classes/replacements, generic pickup callbacks and counters, separate persistent player/HUD health, and nonplayer stored inventory remain unconverted. This uses the established managed spawn-health representation and built-in six-class routing.
+
+Remaining: custom health setters and class metadata, independent key identities/multi-count representation/cooperative sharing, weapon/backpack multi-count representation and custom reload/priority/lifecycle rules, powerup object lifecycle and state grants/setters, infinite ammo setting/powerup and protected depletion, unlimited ammo pickups and native numeric edge cases, armor object creation and native stack boundaries/merging/callbacks, general CustomInventory execution, textual binding, custom metadata/import/replacements, nonplayer stored inventory, runtime option replication/persistence, native psprite/state graphs and bob styles, separate persistent player/HUD health, other controls/freeze restrictions, visuals/statistics, game identification, and wider Phase 1 conversion.
+
+## Phase 1 immediate health inventory state setters (2026-10-10)
+
+Converted ActorInventoryActions.SetInventory for Health, Stimpack, Medikit, HealthBonus, Soulsphere, and MegasphereHealth. These immediate pickups do not remain held: nonpositive requests succeed without healing, and positive creation assigns requested healing directly instead of multiplying the class's default pickup amount. Shared GiveBody applies health factor, health limits, bonus/override rules, dead-player guards and failed-healing return behavior. beyondMax does not bypass health pickup caps because the native missing-item branch still performs a pickup.
+
+Audited inventory_util.zs SetInventory's missing-item Amount assignment and health.zs Health.TryPickup's GiveBody(Amount, MaxAmount). Eight regression cases cover all six names, direct quantity versus pickup defaults, nonpositive requests, cap behavior, beyondMax isolation, failed full/dead healing, health-factor behavior, master-pointer state callback, invalid receiver guards, and save restoration.
+
+Full Release suite: 11,675 passed (Playsim 9,845; Server 98; Client 271), no failures/skips. Clean Release build with warnings treated as errors: zero warnings/errors. Diff whitespace check passed. No save format changes. Changes remain uncommitted.
+
+Scope limitation: setters currently dispatch to represented player inventory. Native nonplayer Health pickup ownership/creation, custom health class metadata and replacement, generic pickup callbacks and counters remain unconverted. Native pickup subclasses outside the six named classes are not implied.
+
+Remaining: immediate health setters for nonplayers/custom classes, independent key identities/multi-count representation/cooperative sharing, weapon/backpack multi-count representation and custom reload/priority/lifecycle rules, powerup object lifecycle and state grants/setters, infinite ammo setting/powerup and protected depletion, unlimited ammo pickups and native numeric edge cases, armor object creation and native stack boundaries/merging/callbacks, general CustomInventory execution, textual binding, custom metadata/import/replacements, nonplayer stored inventory, runtime option replication/persistence, native psprite/state graphs and bob styles, separate persistent player/HUD health, other controls/freeze restrictions, visuals/statistics, game identification, and wider Phase 1 conversion.
+
+## Phase 1 represented Doom key absolute inventory setters (2026-10-10)
+
+Converted ActorInventoryActions.SetInventory for the six Doom key names in the existing color-based single-ownership representation. Missing-key nonpositive requests succeed without mutation; positive requests use the shared pickup catalog. Equal held amount one returns false. Nonpositive held requests deplete through the shared removal action. Normal held increases clamp to one and report success without repeating pickup. Existing beyondMax growth above one throws NotSupportedException before mutation because key storage is boolean.
+
+Audited inventory_util.zs SetInventory's creation/depletion/limit branches and inv_misc.zs Key pickup behavior. Eight regression cases cover all six names, case-insensitive creation, absent/equal/clamped return rules, integer-boundary depletion, unsupported multi-count rejection, unrelated-color/ammo/health preservation, master-pointer state callback, null/nonplayer/destroyed guards, and save restoration.
+
+Full Release suite: 11,667 passed (Playsim 9,837; Server 98; Client 271), no failures/skips. Clean Release build with warnings treated as errors: zero warnings/errors. Diff whitespace check passed. No save format changes. Changes remain uncommitted.
+
+Scope limitation: card/skull names still share each color bit. Independent native identities, simultaneous same-color card/skull ownership, multi-count keys, custom inheritance and cooperative sharing remain unconverted. This entry covers existing represented keys, not complete native key-object parity.
+
+Remaining: independent key identities/multi-count representation/cooperative sharing, weapon/backpack multi-count representation and custom reload/priority/lifecycle rules, powerup object lifecycle and state grants/setters, infinite ammo setting/powerup and protected depletion, unlimited ammo pickups and native numeric edge cases, armor object creation and native stack boundaries/merging/callbacks, general CustomInventory execution, textual binding, custom metadata/import/replacements, nonplayer stored inventory, runtime option replication/persistence, native psprite/state graphs and bob styles, separate persistent player/HUD health, other controls/freeze restrictions, visuals/statistics, game identification, and wider Phase 1 conversion.
+
+## Phase 1 single Doom weapon absolute inventory setters (2026-10-10)
+
+Converted ActorInventoryActions.SetInventory for the nine represented Doom weapon classes. Missing-weapon nonpositive requests succeed without creating ownership; positive requests create through the pickup path with native IgnoreSkill behavior. Existing amount one returns false. Nonpositive held requests use shared removal and ready/pending replacement; normal growth clamps to single ownership and returns success without repeated ammo. Existing held beyondMax growth above one throws NotSupportedException before mutation because weapon ownership is a bitset.
+
+Audited inventory_util.zs SetInventory existing/missing branches, its IgnoreSkill assignment, and the previously audited weapon pickup/depletion paths. Twelve regression cases cover all nine names, case-insensitive creation, absent/equal/clamped return rules, ammo preservation during existing-item updates and depletion, skill-independent creation, unsupported multi-count rejection, ready-weapon replacement, state callback master selection, invalid receiver guards, and save restoration.
+
+Full Release suite: 11,659 passed (Playsim 9,829; Server 98; Client 271), no failures/skips. Clean Release build with warnings treated as errors: zero warnings/errors. Diff whitespace check passed. No save format changes. Changes remain uncommitted.
+
+Scope limitation: weapon ownership remains single-item. Native multi-count weapon stacks, custom pickup metadata/classes, sister weapon lifecycle, nonplayer ownership and arbitrary psprite callbacks remain unconverted. Existing-stack requests that cannot be represented fail explicitly.
+
+Remaining: weapon/backpack multi-count representation and custom reload/priority/lifecycle rules, powerup object lifecycle and state grants/setters, infinite ammo setting/powerup and protected depletion, unlimited ammo pickups and native numeric edge cases, independent key identities and cooperative sharing, armor object creation and native stack boundaries/merging/callbacks, general CustomInventory execution, textual binding, custom metadata/import/replacements, nonplayer stored inventory, runtime option replication/persistence, native psprite/state graphs and bob styles, separate persistent player/HUD health, other controls/freeze restrictions, visuals/statistics, game identification, and wider Phase 1 conversion.
+
+## Phase 1 single backpack absolute inventory setter (2026-10-10)
+
+Converted ActorInventoryActions.SetInventory for the represented single Doom backpack. Missing-pack nonpositive requests succeed without changes; positive requests create a pack through the existing pickup path with native IgnoreSkill behavior. An unchanged held amount of one returns false. Nonpositive held requests remove the pack and reset eligible capacities; ordinary increases clamp to one and return success without giving ammo again. Existing-pack beyondMax growth above one throws NotSupportedException before mutation because the boolean ownership model cannot represent native multi-count stacks.
+
+Audited inventory_util.zs SetInventory existing/missing branches and its bIgnoreSkill assignment, plus BackpackItem creation/depletion semantics. Six regression cases cover absent no-op success, creation, unchanged/clamped return rules, no duplicate ammo from existing-item increases, unsupported multi-count rejection, skill-independent creation, signed depletion/capacity reset/ammo clamp, target master state callback, invalid receiver guards, and save restoration.
+
+Full Release suite: 11,647 passed (Playsim 9,817; Server 98; Client 271), no failures/skips. Clean Release build with warnings treated as errors: zero warnings/errors. Diff whitespace check passed. No save format changes. Changes remain uncommitted.
+
+Scope limitation: backpack ownership is still boolean. Native beyond-maximum held counts, custom backpack classes and ammo enumeration, inventory callbacks, and nonplayer ownership remain unconverted. Unsupported existing-stack growth is surfaced explicitly rather than silently losing its requested amount.
+
+Remaining: backpack multi-count representation, weapon state setters and custom reload/priority/lifecycle rules, powerup object lifecycle and state grants/setters, infinite ammo setting/powerup and protected depletion, unlimited ammo pickups and native numeric edge cases, independent key identities and cooperative sharing, armor object creation and native stack boundaries/merging/callbacks, general CustomInventory execution, textual binding, custom metadata/import/replacements, nonplayer stored inventory, runtime option replication/persistence, native psprite/state graphs and bob styles, separate persistent player/HUD health, other controls/freeze restrictions, visuals/statistics, game identification, and wider Phase 1 conversion.
+
+## Phase 1 primary weapon reload check actions (2026-10-10)
+
+Converted native A_CheckReload and A_CheckRailReload as ActorInventoryActions.CheckReload/CheckRailReload for represented primary-fire Doom weapons. Insufficient ammo for the ready weapon's actual firing cost invokes the converted priority fallback; sufficient ammo and melee weapons preserve selection. No ammo is consumed by the check. The rail alias shares the same implementation. Missing-ready/nonplayer/destroyed receivers are safely ignored within the managed representation.
+
+Audited weapons.zs A_CheckReload/A_CheckRailReload/CheckAmmo and player.zs BestWeapon/PickNewWeapon. Five regression cases cover the BFG's 40-cell boundary, preservation with sufficient ammo, no usable replacement, melee and missing-ready states, the rail alias in an actor state callback, save restoration during lowering, and completion of the full switch cycle to a ready replacement weapon without ammo consumption.
+
+Full Release suite: 11,641 passed (Playsim 9,811; Server 98; Client 271), no failures/skips. Clean Release build with warnings treated as errors: zero warnings/errors. Diff whitespace check passed. No save format changes. Changes remain uncommitted.
+
+Scope limitation: alternate fire, optional/both-ammo flags, custom firing costs and MinSelAmmo, infinite ammo settings/powerups, powered sister weapons, native weapon callbacks and arbitrary psprite graphs remain unconverted. This is the existing built-in primary-fire subset.
+
+Remaining: custom reload/priority/weapon lifecycle rules, powerup object lifecycle and state grants/setters, backpack/weapon state setters, infinite ammo setting/powerup and protected depletion, unlimited ammo pickups and native numeric edge cases, independent key identities and cooperative sharing, armor object creation and native stack boundaries/merging/callbacks, general CustomInventory execution, textual binding, custom metadata/import/replacements, nonplayer stored inventory, runtime option replication/persistence, native psprite/state graphs and bob styles, separate persistent player/HUD health, other controls/freeze restrictions, visuals/statistics, game identification, and wider Phase 1 conversion.
+
+## Phase 1 priority weapon selection fallback (2026-10-10)
+
+Converted SWF_SELECTPRIORITY (flag 1) in ActorInventoryActions.SelectWeapon. Owned named weapons retain precedence and named selection rules. Missing/null names with the flag choose the highest-priority usable represented weapon, queue lowering when a weapon is ready, or bring it up immediately when no weapon is ready. Fallback reports success even when no usable weapon exists, preserving selection in that case. Unknown flag bits fail explicitly. Extracted the existing best-selectable-weapon scan for reuse by removal and fallback.
+
+Audited inventory_util.zs A_SelectWeapon and player.zs BestWeapon/PickNewWeapon/DropWeapon. Despite the nearby A_SelectWeapon comment, the executed fallback calls BestWeapon, which checks ammo; the conversion follows that implementation. Four regressions cover empty-ammo exclusion, named precedence without ammo, no-ready immediate raising, no-usable successful return, save restoration of lowering/pending state, and unsupported flags. Existing named selection and removal tests remain passing.
+
+Full Release suite: 11,636 passed (Playsim 9,806; Server 98; Client 271), no failures/skips. Clean Release build with warnings treated as errors: zero warnings/errors. Diff whitespace check passed. No save format changes. Changes remain uncommitted.
+
+Scope limitation: managed built-in priorities and ammo rules are used. Native custom MinSelAmmo, optional ammo, powered sister weapons, inventory-order ties, switch restrictions and deselection callbacks, and arbitrary psprite graphs remain unconverted.
+
+Remaining: custom priority/weapon lifecycle rules, powerup object lifecycle and state grants/setters, backpack/weapon state setters, infinite ammo setting/powerup and protected depletion, unlimited ammo pickups and native numeric edge cases, independent key identities and cooperative sharing, armor object creation and native stack boundaries/merging/callbacks, general CustomInventory execution, textual binding, custom metadata/import/replacements, nonplayer stored inventory, runtime option replication/persistence, native psprite/state graphs and bob styles, separate persistent player/HUD health, other controls/freeze restrictions, visuals/statistics, game identification, and wider Phase 1 conversion.
+
+## Phase 1 named weapon selection state action (2026-10-10)
+
+Converted the default named-weapon form of native A_SelectWeapon as ActorInventoryActions.SelectWeapon. Owned supported Doom weapon names select Pending without requiring ammunition or positive health. Selecting the ready weapon succeeds while preserving any existing pending switch, matching the native action rather than ACS SetWeapon's separate cancellation behavior. Missing, unknown, null, nonplayer, or destroyed receivers fail without changing selection. Selection does not consume weapons or ammo.
+
+Audited inventory_util.zs A_SelectWeapon's named-item branch and compared existing ACS SetWeapon/Use behavior. Six regression cases cover living/zero/negative health, ammo-free selection, case-insensitive class lookup, ready-weapon pending preservation, ownership and invalid receiver guards, a real actor state callback, and save restoration.
+
+Full Release suite: 11,632 passed (Playsim 9,802; Server 98; Client 271), no failures/skips. Clean Release build with warnings treated as errors: zero warnings/errors. Diff whitespace check passed. No save format changes. Changes remain uncommitted.
+
+Scope limitation: SWF_SELECTPRIORITY fallback is not exposed by this method and remains unconverted. Custom weapon class identity/import/replacement, native sister weapons, and arbitrary psprite state execution remain outside the existing managed weapon representation.
+
+Remaining: priority weapon selection fallback, powerup object lifecycle and state grants/setters, backpack/weapon state setters, infinite ammo setting/powerup and protected depletion, unlimited ammo pickups and native numeric edge cases, independent key identities and cooperative sharing, armor object creation and native stack boundaries/merging/callbacks, general CustomInventory execution, textual binding, custom metadata/import/replacements, nonplayer stored inventory, runtime option replication/persistence, native psprite/state graphs and bob styles, separate persistent player/HUD health, other controls/freeze restrictions, visuals/statistics, game identification, and wider Phase 1 conversion.
+
+## Phase 1 managed powerup inventory state removal (2026-10-10)
+
+Converted ActorInventoryActions.TakeInventory, TakeFromTarget, TakeFromChildren, and TakeFromSiblings for PowerDamage, PowerBuddha, and PowerProtection. Removal reuses existing ACS timer-backed power depletion, returns whether the power was active, and preserves unrelated powers. Zero/signed/extreme quantities remove the represented single power. Infinite stored inventory use and the ammo-only TIF_NOTAKEINFINITE flag do not protect these powers from explicit removal.
+
+Audited native inventory_util.zs TakeInventory, generic inventory depletion, and powerups.zs OnDestroy/EndEffect. Six new regression cases cover the three names, quantity boundaries, case-insensitive lookup, unrelated-power and health preservation, inactive return values, target state callback with secondary master selection, null/nonplayer/destroyed guards, family receiver counts and caller exclusion, and save restoration. Managed removal immediately clears the corresponding existing gameplay timer.
+
+Full Release suite: 11,626 passed (Playsim 9,796; Server 98; Client 271), no failures/skips. Clean Release build with warnings treated as errors: zero warnings/errors. Diff whitespace check passed. No save format changes. Changes remain uncommitted.
+
+Scope limitation: managed powers are timers rather than native inventory objects. Native EndEffect callbacks, colormap cleanup, custom power classes/metadata, and separate object-presence versus duration semantics remain unconverted. This converts removal of currently active represented powers, not generic native powerup lifecycle parity.
+
+Remaining: powerup object lifecycle and state grants/setters, backpack/weapon state setters, infinite ammo setting/powerup and protected depletion, unlimited ammo pickups and native numeric edge cases, independent key identities and cooperative sharing, armor object creation and native stack boundaries/merging/callbacks, general CustomInventory execution, textual binding, custom metadata/import/replacements, nonplayer stored inventory, runtime option replication/persistence, native psprite/state graphs and bob styles, separate persistent player/HUD health, other controls/freeze restrictions, visuals/statistics, game identification, and wider Phase 1 conversion.
+
+## Phase 1 Doom backpack inventory state grants and removal (2026-10-10)
+
+Converted ActorInventoryActions backpack grants and removal for self, target, children, and siblings. Grants reuse the existing Doom backpack pickup path: the first pack raises represented ammo capacities and supplies ammo, later packs supply ammo, and full-pool duplicates still succeed. Inventory grant counts do not multiply backpack ammo. Removal reuses RemoveBackpack, reports prior ownership, resets only capacities equal to native backpack maxima, preserves custom capacities, and clamps ammo only when its capacity is reset. Zero/signed/extreme removal quantities remove the represented single pack.
+
+Audited inventory_util.zs DoGiveInventory/TakeInventory and ammo.zs BackpackItem.CreateCopy/HandlePickup/DetachFromOwner. Seven new regression cases cover grant quantity normalization/nonmultiplication, duplicate full-pool success, signed/extreme removals, custom-capacity preservation, ammo clamping, real target state callback, family selection/counts, null/nonplayer/destroyed guards, and save restoration. Shared pointer/family dispatch and existing ACS behavior remain intact.
+
+Full Release suite: 11,620 passed (Playsim 9,790; Server 98; Client 271), no failures/skips. Clean Release build with warnings treated as errors: zero warnings/errors. Diff whitespace check passed. No save format changes. Changes remain uncommitted.
+
+Scope limitation: this covers the existing single Doom backpack and four built-in ammo pools. Native enumeration of custom ammo classes, backpack inheritance/depletion callbacks, nonplayer inventory objects, and unlimited pickup settings remain unconverted.
+
+Remaining: backpack/weapon state setters and native inventory-object lifecycle, infinite ammo setting/powerup and protected depletion, unlimited ammo pickups and native numeric edge cases, independent key identities and cooperative sharing, armor object creation and native stack boundaries/merging/callbacks, general CustomInventory execution, textual binding, custom metadata/import/replacements, nonplayer stored inventory, runtime option replication/persistence, native psprite/state graphs and bob styles, separate persistent player/HUD health, other controls/freeze restrictions, visuals/statistics, game identification, and wider Phase 1 conversion.
+
+## Phase 1 Doom weapon inventory state grants (2026-10-10)
+
+Converted ActorInventoryActions.GiveInventory, GiveToTarget, GiveToChildren, and GiveToSiblings for all nine represented Doom weapon classes. Shared ACS class recognition and the existing weapon pickup path preserve single ownership, ammo supply, duplicate pickup success/failure, capacity limits, scaling, and pending selection. Fist grants reuse the no-ammo weapon ownership helper. Weapon.Amount does not multiply AmmoGive; quantity is intentionally independent of the represented single-weapon ownership and built-in ammo grant.
+
+Audited inventory_util.zs DoGiveInventory and weapons.zs HandlePickup/PickupForAmmo/AttachToOwner/AddAmmo/AddExistingAmmo/ShouldStay. Native new-weapon attachment grants its ammo and selects the weapon subject to switch preferences; duplicate weapons provide ammo when eligible. Eleven regression cases cover all nine names, nonmultiplying quantities, duplicate full-pool/no-ammo failure, target state callback with secondary master selection, zero/negative quantities, duplicate ammo grants, null/nonplayer/destroyed guards, family counts/caller exclusion/unrelated players, and save restoration.
+
+Full Release suite: 11,613 passed (Playsim 9,783; Server 98; Client 271), no failures/skips. Clean Release build with warnings treated as errors: zero warnings/errors. Diff whitespace check passed. No save format changes. Changes remain uncommitted.
+
+Scope limitation: this exposes the existing managed pickup model. Native sister weapons, custom multi-count weapon stacks and lifecycle callbacks, weapon class replacement/import, arbitrary psprite graphs, nonplayer weapon ownership, unlimited pickup settings, and wider native numeric/pickup edge semantics remain unconverted.
+
+Remaining: weapon state setters and native weapon-object lifecycle, infinite ammo setting/powerup and protected depletion, unlimited ammo pickups and native numeric edge cases, independent key identities and cooperative sharing, armor object creation and native stack boundaries/merging/callbacks, general CustomInventory execution, textual binding, custom metadata/import/replacements, nonplayer stored inventory, runtime option replication/persistence, native psprite/state graphs and bob styles, separate persistent player/HUD health, other controls/freeze restrictions, visuals/statistics, game identification, and wider Phase 1 conversion.
+
+## Phase 1 Doom weapon inventory state removal (2026-10-10)
+
+Converted ActorInventoryActions.TakeInventory, TakeFromTarget, TakeFromChildren, and TakeFromSiblings for the nine represented Doom weapon classes, including Fist and Pistol. Shared ACS weapon class recognition and removal preserve ammo, cancel a removed pending weapon, and reuse existing ready-weapon replacement behavior. Return values reflect ownership before removal. Zero, signed, and oversized quantities remove the represented single weapon; the ammo-only TIF_NOTAKEINFINITE flag does not protect weapons.
+
+Audited inventory_util.zs TakeInventory/DoTakeInventory, generic inventory depletion, and weapons.zs destruction. Twelve new regression cases cover all nine class names and quantity boundaries, case-insensitive lookup, ammo preservation, ready/pending removal, state callback target selection, null/nonplayer/destroyed guards, family counts/caller exclusion/unrelated players, and save restoration. Existing script removal and weapon toss behavior remain passing.
+
+Full Release suite: 11,602 passed (Playsim 9,772; Server 98; Client 271), no failures/skips. Clean Release build with warnings treated as errors: zero warnings/errors. Diff whitespace check passed. No save format changes. Changes remain uncommitted.
+
+Scope limitation: this exposes the existing managed single-ownership and replacement model. Native sister weapon destruction, multi-count weapon stacks, custom weapon inventory callbacks, arbitrary psprite graphs, and nonplayer weapon ownership remain unconverted; no complete native weapon-object parity is claimed.
+
+Remaining: weapon state grants/setters and native weapon-object lifecycle, infinite ammo setting/powerup and protected depletion, unlimited ammo pickups and native numeric edge cases, independent key identities and cooperative sharing, armor object creation and native stack boundaries/merging/callbacks, general CustomInventory execution, textual binding, custom metadata/import/replacements, nonplayer stored inventory, runtime option replication/persistence, native psprite/state graphs and bob styles, separate persistent player/HUD health, other controls/freeze restrictions, visuals/statistics, game identification, and wider Phase 1 conversion.
+
+## Phase 1 Doom ammo inventory state grants (2026-10-10)
+
+Converted ActorInventoryActions.GiveInventory, GiveToTarget, GiveToChildren, and GiveToSiblings for Clip, Shell, RocketAmmo, Cell and their ClipBox, ShellBox, RocketBox, CellPack pickup subclasses. Native DoGiveInventory assigns the requested quantity rather than multiplying the pickup's default ammo amount; nonpositive requests become one. Grants reuse the existing Doom pickup path for ammo scaling, capacity limits, full-pool failure, parent-pool routing, and empty-pool weapon switching. Shared ACS ammo recognition and pickup editor mapping avoid separate class catalogs.
+
+Audited inventory_util.zs DoGiveInventory and ammo.zs HandlePickup/CreateCopy: state grants retain skill scaling, unlike ignored-skill script grant paths. Eleven regression cases cover all eight names, requested quantity versus pickup defaults, zero/negative requests, skill scaling, capacity/full-pool behavior, state callback target/master selection, null/nonplayer/destroyed guards, family counts and caller exclusion, and unrelated players.
+
+Full Release suite: 11,590 passed (Playsim 9,760; Server 98; Client 271), no failures/skips. Clean Release build with warnings treated as errors: zero warnings/errors. Diff whitespace check passed. No save format changes. Changes remain uncommitted.
+
+Scope limitation: this reuses the existing managed scaling and pickup subsystem. Unlimited ammo pickup settings, full native numeric overflow/scaling semantics, custom ammo inheritance, native missing inventory-object creation, and nonplayer ammo ownership remain unconverted. The eight built-in class routes do not imply a general native class interpreter.
+
+Remaining: infinite ammo setting/powerup and protected depletion, unlimited ammo pickups and native numeric edge cases, independent key identities and cooperative sharing, armor object creation and native stack boundaries/merging/callbacks, general CustomInventory execution, textual binding, custom metadata/import/replacements, nonplayer stored inventory, runtime option replication/persistence, native psprite/state graphs and bob styles, separate persistent player/HUD health, other controls/freeze restrictions, visuals/statistics, game identification, and wider Phase 1 conversion.
+
+## Phase 1 Doom ammo absolute inventory setter (2026-10-10)
+
+Converted ActorInventoryActions.SetInventory for the represented Clip, Shell, RocketAmmo, and Cell pools. Equal requests return false. Nonpositive requests deplete through shared state-action removal and return whether positive ammo existed. Decreases retain the requested quantity even when it remains above capacity. Increases clamp to the current pool capacity unless beyondMax is explicit; the native successful return is retained when a clamp leaves the original amount unchanged. Capacity, other ammo pools, and owned weapons remain intact.
+
+Audited inventory_util.zs SetInventory's existing-object branches and ammo KEEPDEPLETED semantics. The managed player representation has persistent ammo pools; native absent-object creation/pickup branches and custom ammo identity remain outside this conversion. Six new regression cases cover all four pools, unchanged values, clamped increases, maximum bypass and integer boundaries, decreases from over-capacity amounts, depleted return values, changed capacities, unrelated pool/weapon preservation, state callback master selection, null/nonplayer/destroyed guards, unsupported box names, and save restoration.
+
+Full Release suite: 11,579 passed (Playsim 9,749; Server 98; Client 271), no failures/skips. Clean Release build with warnings treated as errors: zero warnings/errors. Diff whitespace check passed. No save format changes. Changes remain uncommitted.
+
+Remaining: ammo state grants, infinite ammo setting/powerup and protected depletion, native absent inventory-object creation and custom ammo classes, independent key identities and cooperative sharing, armor object creation and native stack boundaries/merging/callbacks, general CustomInventory execution, textual binding, custom metadata/import/replacements, nonplayer stored inventory, runtime option replication/persistence, native psprite/state graphs and bob styles, separate persistent player/HUD health, other controls/freeze restrictions, visuals/statistics, game identification, and wider Phase 1 conversion.
+
+## Phase 1 Doom ammo inventory state removal (2026-10-10)
+
+Converted ActorInventoryActions.TakeInventory, TakeFromTarget, TakeFromChildren, and TakeFromSiblings for Clip, Shell, RocketAmmo, and Cell. Shared the existing ACS capacity-ammo class mapping and depletion helper. Zero removes the represented pool, signed quantities use their magnitude, oversized requests deplete to zero, and return values reflect positive pre-removal ammo. Depleted pools retain capacity and weapon ownership. Pickup-only ammo box names are not treated as held pool names.
+
+Audited inventory_util.zs TakeInventory's return/depletion rules, inventory.zs DepleteBy/DepleteOrDestroy, and ammo.zs KEEPDEPLETED. Eight new regression cases cover all four pools, signed/zero/extreme quantities, case-insensitive lookup, capacity and unrelated-pool preservation, state callback target/master selection, null/nonplayer/destroyed guards, unsupported box names, family receiver counts and caller exclusion, and depleted ammo save restoration.
+
+Full Release suite: 11,573 passed (Playsim 9,743; Server 98; Client 271), no failures/skips. Clean Release build with warnings treated as errors: zero warnings/errors. Diff whitespace check passed. No save format changes. Changes remain uncommitted.
+
+Scope limitation: this converts depletion with infinite ammo disabled. The simulation does not yet represent sv_infiniteammo or PowerInfiniteAmmo, so TIF_NOTAKEINFINITE cannot protect ammo under those unconverted settings. Custom ammo classes, inheritance, nonplayer inventory objects, and generic depletion callbacks remain unconverted.
+
+Remaining: infinite ammo setting/powerup and protected depletion, ammo grants/setters in state actions, independent key identities and cooperative sharing, armor object creation and native stack boundaries/merging/callbacks, general CustomInventory execution, textual binding, custom metadata/import/replacements, nonplayer stored inventory, runtime option replication/persistence, native psprite/state graphs and bob styles, separate persistent player/HUD health, other controls/freeze restrictions, visuals/statistics, game identification, and wider Phase 1 conversion.
+
+## Phase 1 key inventory state removal (2026-10-10)
+
+Converted the existing managed Doom key subset for ActorInventoryActions.TakeInventory, TakeFromTarget, TakeFromChildren, and TakeFromSiblings. Key class recognition shares the existing grant catalog. Removal reuses ACS key counting/depletion, returns true only for a held key, and preserves unrelated colors. Zero, signed, and oversized quantities remove the represented single key. Infinite stored inventory use and the ammo-only TIF_NOTAKEINFINITE flag do not prevent explicit key removal.
+
+Audited inventory_util.zs TakeInventory, inventory.zs DepleteBy/DepleteOrDestroy, and Doom key class declarations. Nine regression cases cover all six Doom names and quantity boundaries, target state callbacks with secondary master selection, null/nonplayer/destroyed guards, family ownership counts and caller exclusion, unrelated players, save restoration, and granting a removed key again. Shared pointer/family dispatch remains in use.
+
+Full Release suite: 11,565 passed (Playsim 9,735; Server 98; Client 271), no failures/skips. Clean Release build with warnings treated as errors: zero warnings/errors. Diff whitespace check passed. No save format changes. Changes remain uncommitted.
+
+Scope limitation: the managed inventory still merges card/skull names by color. This removal conversion follows that existing representation; exact native class identity, simultaneous same-color card/skull ownership, key inheritance and cooperative sharing are not claimed.
+
+Remaining: independent key identities and cooperative sharing, armor object creation and native stack boundaries/merging/callbacks, general CustomInventory execution, textual binding, custom metadata/import/replacements, nonplayer stored inventory, runtime option replication/persistence, native psprite/state graphs and bob styles, separate persistent player/HUD health, other controls/freeze restrictions, visuals/statistics, game identification, and wider Phase 1 conversion.
+
+## Phase 1 worn armor absolute inventory setter (2026-10-10)
+
+Converted ActorInventoryActions.SetInventory for the existing player BasicArmor representation and managed Armor alias. Equal amounts return false. Nonpositive requested amounts deplete existing armor through the shared removal action; decreases retain the requested amount even when it remains above the maximum. Increases clamp to ArmorMaximum unless beyondMax is explicit, and retain the native successful return even when clamping leaves the previous amount unchanged. Armor absorption metadata and stored spares remain intact.
+
+Audited inventory_util.zs SetInventory's existing-item branches and BasicArmor KEEPDEPLETED semantics. The managed player model has a persistent worn-armor slot; this conversion covers that existing slot rather than native missing-object creation or nonplayer armor ownership. Eight regression cases cover equal/decreasing/zero/negative/increasing amounts, explicit maximum bypass, over-maximum decreases and subsequent increases, state callback master selection, save restoration, null/nonplayer/destroyed guards, and protection/spare preservation.
+
+Full Release suite: 11,556 passed (Playsim 9,726; Server 98; Client 271), no failures/skips. Clean Release build with warnings treated as errors: zero warnings/errors. Diff whitespace check passed. No save format changes. Changes remain uncommitted.
+
+Remaining: armor object creation and native stack boundaries/merging/callbacks, general CustomInventory execution, textual binding, custom metadata/import/replacements, nonplayer stored inventory, independent card/skull identity and cooperative sharing, runtime option replication/persistence, native psprite/state graphs and bob styles, separate persistent player/HUD health, other controls/freeze restrictions, visuals/statistics, game identification, and wider Phase 1 conversion.
+
+## Phase 1 stored armor inventory state removal (2026-10-10)
+
+Converted the existing managed stored-armor subset for ActorInventoryActions.TakeInventory, TakeFromTarget, TakeFromChildren, and TakeFromSiblings. Held spare metadata identifies supported class names without inventing a custom class registry. Zero removes the represented held quantity, negative quantities use their magnitude, and positive quantities remove that many represented units. Removal reports whether a unit was consumed. Worn armor, health, and other spare classes remain unchanged. InfiniteStoredInventoryUse and the ammo-only TIF_NOTAKEINFINITE flag do not block explicit armor removal.
+
+Audited inventory_util.zs TakeInventory's pointer-independent depletion and return behavior, inventory.zs DepleteBy/DepleteOrDestroy, and armor.zs BasicArmorPickup use. Reused the existing ACS stored-armor removal helper, adding its consumed-count result without changing ACS quantity behavior. Shared family dispatch now recognizes held spare classes. Seven new regression cases cover signed/zero/extreme quantities, case-insensitive lookup, missing classes, target state callbacks and secondary pointer selection, null/destroyed receivers, family selection and caller exclusion, explicit consumption under infinite use, and save restoration.
+
+Full Release suite: 11,548 passed (Playsim 9,718; Server 98; Client 271), no failures/skips. Clean Release build with warnings treated as errors: zero warnings/errors. Diff whitespace check passed. No save format changes. Changes remain uncommitted.
+
+Scope limitation: managed SpareArmor stores individual units in a flat list. Native FindInventory selects an inventory object and depletes its Amount stack; exact native stack boundaries, merging, heterogeneous same-class metadata, class inheritance, and custom depletion callbacks remain unconverted. This entry claims the existing represented unit-removal subset, not complete native inventory-object parity.
+
+Remaining: native armor stack representation and callbacks, general CustomInventory execution, textual binding, custom metadata/import/replacements, nonplayer stored inventory, independent card/skull identity and cooperative sharing, runtime option replication/persistence, native psprite/state graphs and bob styles, separate persistent player/HUD health, other controls/freeze restrictions, visuals/statistics, game identification, and wider Phase 1 conversion.
+
+## Phase 1 worn armor inventory state removal (2026-10-10)
+
+Converted worn BasicArmor depletion for ActorInventoryActions.TakeInventory, TakeFromTarget, TakeFromChildren, and TakeFromSiblings, including the existing managed Armor alias. Zero removes all armor, negative quantities use their magnitude, and oversized quantities deplete to zero. Actions report whether positive armor existed before depletion. Null/destroyed/nonplayer receivers do not change inventory. The ammo-only TIF_NOTAKEINFINITE flag does not protect armor.
+
+Audited native inventory_util.zs TakeInventory, inventory.zs DepleteBy/DepleteOrDestroy, and armor.zs BasicArmor's KEEPDEPLETED flag. Depletion preserves absorption metadata and stored spare suits; it does not heal or automatically promote a spare. Reused existing pointer and family selection rather than duplicating dispatch. Six new regression cases cover quantity boundaries, case-insensitive class lookup, metadata/spare preservation, real state callback target selection, depleted return values, null/destroyed guards, and children/sibling selection.
+
+Full Release suite: 11,541 passed (Playsim 9,711; Server 98; Client 271), no failures/skips. Clean Release build with warnings treated as errors: zero warnings/errors. Diff whitespace check passed. No save format or startup option changes. Changes remain uncommitted.
+
+Remaining: stored armor state-action removal and generic depletion callbacks, general CustomInventory execution, textual binding, custom metadata/import/replacements, nonplayer stored inventory, independent card/skull identity and cooperative sharing, runtime option replication/persistence, native psprite/state graphs and bob styles, separate persistent player/HUD health, other controls/freeze restrictions, visuals/statistics, game identification, and wider Phase 1 conversion.
+
+## Phase 1 infinite stored armor use and server wiring (2026-10-10)
+
+Converted the supported stored-armor subset of native infinite inventory use. SpawnOptions.InfiniteStoredInventoryUse retains stored armor after successful manual use and automatic best-suit promotion, and also enables the previously converted health-item retention. Failed armor use preserves its item and reports failure. The health-only option remains scoped to health. Pickup-time armor activation and explicit removal keep their prior behavior; Raven emergency health consumption still uses its native direct depletion path.
+
+Audited inventory_util.zs UseInventory and armor.zs BasicArmor.AbsorbDamage's Owner.UseInventory(best) promotion against managed manual/promotion helpers. Dedicated server options, startup construction, --infinite-stored-inventory-use parsing and help expose the supported health/armor subset explicitly. Broader-option checksum participation distinguishes it from health-only use. No generic custom inventory support is implied.
+
+Five new simulation cases cover enabled/disabled manual armor consumption, failed full-armor reuse, repeated best-suit promotion without consuming weaker or stronger spares, health-only isolation/checksum distinction, and retained health use after save restoration. Two real-host integration cases use an ACS UseInventory program to verify command-line-to-gameplay armor behavior. Full Release suite: 11,535 passed (Playsim 9,705; Server 98; Client 271), no failures/skips. Clean Release build with warnings treated as errors: zero warnings/errors. Diff whitespace check passed. No archive changes; startup configuration must be supplied consistently on restore.
+
+Remaining: generic custom infinite inventory, runtime setting replication/persistence, native psprite/state graphs and bob styles, independent card/skull identity and cooperative sharing, general CustomInventory execution, other inventory actions/callbacks, textual binding, nonplayer stored inventory, custom metadata/import/replacements, separate persistent player/HUD health, other controls/freeze restrictions, visuals/statistics, game identification, and wider Phase 1 conversion. Changes remain uncommitted.
+
+## Phase 1 dedicated server infinite health use configuration (2026-10-10)
+
+Completed dedicated server startup wiring for the converted infinite health-item use behavior. DedicatedServerOptions.InfiniteHealthItemUse flows into SpawnOptions, and --infinite-health-item-use enables it from the command line. Help describes retained items after successful manual/Strife use. Default remains disabled. This health-only option does not imply generic sv_infiniteinventory support, unlimited pickup stacking, or infinite Raven emergency healing.
+
+Audited option parsing, host simulation construction, default values, and the distinction from UnlimitedHealthPickups. Two real-host integration cases boot a temporary WAD with the flag absent/present and verify successful manual healing, expected consumption/retention, and unchanged stored health pickup limits. Existing simulation/manual/Strife/Raven behavior tests remain passing.
+
+Full Release suite: 11,528 passed (Playsim 9,700; Server 96; Client 271), no failures/skips. Clean Release build with warnings treated as errors: zero warnings/errors. Diff whitespace check passed. No archive changes. Runtime setting replication/persistence and other inventory infinite-use classes remain outside this startup configuration conversion.
+
+Remaining: generic infinite inventory, runtime settings, native psprite/state graphs and bob styles, independent card/skull identity and cooperative sharing, general CustomInventory execution, other inventory actions/callbacks, textual binding, nonplayer stored inventory, custom metadata/import/replacements, separate persistent player/HUD health, other controls/freeze restrictions, visuals/statistics, game identification, and wider Phase 1 conversion. Changes remain uncommitted.
+
+## Phase 1 infinite health item use (2026-10-10)
+
+Converted the health-item subset of native infinite inventory use through explicit SpawnOptions.InfiniteHealthItemUse. Successful manual health use heals but retains its stack when enabled; failed healing still reports failure and does not consume. Strife mode-3 auto-use can reuse the selected held item until its health threshold, while retaining native failed-healing termination. Raven emergency mode-1/2 use continues to consume stacks because native AutoUseHealthInfo decrements Amount directly rather than calling Actor.UseInventory. The option is separate from UnlimitedHealthPickups, which governs pickup stacking rather than consumption.
+
+Audited inventory_util.zs UseInventory's post-Use sv_infiniteinventory branch and player_inventory.zs AutoUseStrifeHealth/AutoUseHealthInfo paths. Added option checksum participation with default behavior unchanged. Five new cases cover enabled/disabled manual depletion, full-health failed use, repeated single-item Strife healing with stack save restoration, Raven emergency depletion, and configuration checksum distinction.
+
+Full Release suite: 11,526 passed (Playsim 9,700; Server 94; Client 271), no failures/skips. Clean Release build with warnings treated as errors: zero warnings/errors. Diff whitespace check passed. No archive layout changes. Configuration is an explicit simulation startup option; server CLI exposure, runtime setting replication/persistence, and generic armor/other inventory infinite use remain unconverted.
+
+Remaining: generic infinite inventory and server configuration, native psprite/state graphs and bob styles, independent card/skull identity and cooperative sharing, general CustomInventory execution, other inventory actions/callbacks, textual binding, nonplayer stored inventory, custom metadata/import/replacements, separate persistent player/HUD health, other controls/freeze restrictions, visuals/statistics, game identification, and wider Phase 1 conversion. Changes remain uncommitted.
+
+## Phase 1 turn-control save restoration (2026-10-10)
+
+Converted capture/restoration of the managed 180-degree turn countdown and held-button latch. Nondefault turn saves use version 169, extending the composed player weapon/bob records. Restore sets both fields directly, preserving the distinction between an active turn and a fresh button press. Omitted turn state restores zero countdown and a released latch. Existing yaw, reaction-time, weapon, bob, ammo and key state remain in their existing save paths; queued commands continue to be cleared on load.
+
+Audited PlayerPawn freshTurn detection, Turn180Ticks duration, reaction-time gate, yaw suppression during a turn, checksum participation, and restore sequencing. Countdown values outside 0..Turn180Ticks and latch values other than zero/one reject before mutation. Version-169 turn records compose with prior bob and weapon fields; prior versions remain readable with default turn state. Earlier readers cannot load new turn-state saves.
+
+Five new cases cover a held turn restored and continued by a held command without countdown restart (with normal yaw ignored), default save clearing a later active turn, and three malformed countdown/latch values rejected without mutation. Full Release suite: 11,521 passed (Playsim 9,695; Server 94; Client 271), no failures/skips. Clean Release build with warnings treated as errors: zero warnings/errors. Diff whitespace check passed.
+
+Remaining: general native psprite firing/state graphs and bob styles, independent card/skull identity and cooperative sharing, general CustomInventory execution, other inventory actions/callbacks, textual binding, nonplayer stored inventory, custom metadata/import/replacements, separate persistent player/HUD health, other controls/freeze restrictions, visuals/statistics, game identification, and wider Phase 1 conversion. Changes remain uncommitted.
+
+## Phase 1 view and weapon bob save restoration (2026-10-10)
+
+Converted exact restoration of BobTimer, view bob offset, movement bob, and weapon bob X/Y. Nondefault bob saves use version 168, extending weapon records with the timer and four finite double values. Captured records are restored directly and skip the old UpdateViewBob recomputation that could overwrite the saved phase. Canonical timer equal to level tic and zero offsets remain omitted, retaining previous layouts; older records use the existing recomputation fallback. Mixed weapon records within a bob archive receive explicit timer/offset values.
+
+Audited managed UpdateViewBob/UpdateWeaponBob, player ticking, checksum contributions and restore cleanup, with native p_user.cpp BobTimer advancement/copy/serialization references. BobTimer is preserved as a signed integer, allowing its existing wrap behavior; nonfinite offsets reject before application. Version-168 records also preserve prior weapon phase, ownership, pending and ammo fields. Earlier readers cannot load bob-state saves. This covers the implemented normal bob model, not unconverted native bob styles or custom psprite state graphs.
+
+Five regression cases cover exact saved timer/offset restoration, comparison with a control restored simulation and matching next-tic checksum, and rejection of NaN in each of the four bob values without mutation. Full Release suite: 11,516 passed (Playsim 9,690; Server 94; Client 271), no failures/skips. Clean Release build with warnings treated as errors: zero warnings/errors. Diff whitespace check passed.
+
+Remaining: general native psprite firing/state graphs and bob styles, turn-control/latch restoration, independent card/skull identity and cooperative sharing, general CustomInventory execution, other inventory actions/callbacks, textual binding, nonplayer stored inventory, custom metadata/import/replacements, separate persistent player/HUD health, controls/freeze restrictions, visuals/statistics, game identification, and wider Phase 1 conversion. Changes remain uncommitted.
+
+## Phase 1 weapon determinism checksum omissions (2026-10-10)
+
+Audit found that two recently converted weapon states were absent or ambiguous in the managed determinism checksum. AttackPressed now contributes a conditional tag, and PendingWeapon zero (no weapon) contributes a separate tag from null (no change). These states can affect firing or switch continuation and must not compare equal merely because the previous checksum representation omitted the distinction. Default idle/no-change checksums retain their prior representation; no archive layout changes.
+
+Two new regressions verify that each state produces a distinct recomputed checksum and that save restoration preserves both the field and its checksum. Tests recompute through captured-state restoration because the public Checksum is cached rather than updated by direct field writes. Existing weapon phase continuation tests remain passing. Full Release suite: 11,511 passed (Playsim 9,685; Server 94; Client 271), no failures/skips. Clean Release build with warnings treated as errors: zero warnings/errors. Diff whitespace check passed.
+
+This increment completes missed checksum wiring for the converted weapon save behavior; it does not claim a new native weapon state interpreter. Remaining: native psprite firing/state graphs, view/weapon bob restoration, independent card/skull identity and cooperative sharing, general CustomInventory execution, other inventory actions/callbacks, textual binding, nonplayer stored inventory, custom metadata/import/replacements, separate persistent player/HUD health, controls/freeze restrictions, visuals/statistics, game identification, and wider Phase 1 conversion. Changes remain uncommitted.
+
+## Phase 1 managed weapon phase save restoration (2026-10-10)
+
+Converted capture/restoration of weapon vertical offset, lowering phase, instant-switch mode, and attack latch alongside weapon inventory. Nondefault phase saves use version 167, extending version-166 weapon records with bounded height and flags. Versions 165/166 remain readable with ready-phase defaults. Omitted canonical weapon state restores height 32 and clears lowering/instant/attack. Existing firing cooldown remains encoded by the base save format; restoration does not invoke weapon actions or reset that cooldown.
+
+Audited PlayerPawn AdvanceWeapon, BringUpWeapon, WeaponReady, capture predicates, and restore sequencing. New continuation regressions exposed command cleanup overwriting the restored attack latch; moved latch restoration to that cleanup boundary. Height outside the supported 32..128 switch range and unknown flag bits reject before mutation. Version-167 records preserve inventory selection, nullable pending, and ammo composition. Earlier readers cannot load these phase saves. This covers the current managed switch/cooldown model, not arbitrary native psprite state graphs or custom offsets outside that range.
+
+Five new cases cover normal and instant lower continuation on the next tic, restored cooldown/latch/phase, omitted ready defaults, and malformed height/flags without mutation. One initial full-suite run also reported a network invasion test failure; the subsequent final full run passed that test and all other projects after the restore-order fix. Full Release suite: 11,509 passed (Playsim 9,683; Server 94; Client 271), no failures/skips. Clean Release build with warnings treated as errors: zero warnings/errors. Diff whitespace check passed.
+
+Remaining: general native psprite firing/state graph conversion, independent card/skull identity and cooperative sharing, general CustomInventory execution, other inventory actions/callbacks, textual binding, nonplayer stored inventory, custom metadata/import/replacements, separate persistent player/HUD health, controls/freeze restrictions, visuals/statistics, game identification, and wider Phase 1 conversion. Changes remain uncommitted.
+
+## Phase 1 player weapon inventory save restoration (2026-10-10)
+
+Converted capture/restore of managed weapon ownership, selected weapon, and nullable pending selection. Changed weapon inventory uses version 166, extending the ammo trailer with bounded per-actor weapon records. Null pending (native no-change) is encoded separately from zero (no weapon). Canonical fist/pistol ownership, selected pistol, and null pending remain omitted and restore explicitly from defaults. Restore assigns inventory values without triggering pickup grants, ammo scaling, or weapon-switch callbacks. Ammo/key/health trailers remain composable; versions through 165 retain their reader support and existing layouts.
+
+Audited supported WeaponKind bitmask and pending-selection conventions against archive validation and restoration. Ownership rejects unknown bits; selected/pending values must be zero or a single supported weapon bit. Invalid negative pending sentinels, presence flags, framing and actor counts reject before application. Historical saves without weapon inventory cannot recover unencoded ownership and now use canonical defaults. Builds lacking version 166 cannot load changed-weapon saves.
+
+Seven new regression cases cover ownership and selected chainsaw restoration with pending no-change/no-weapon/shotgun, ammo co-restoration, default inventory clearing later changes, and malformed ownership/selection/pending rejection without mutation. Full Release suite: 11,504 passed (Playsim 9,678; Server 94; Client 271), no failures/skips. Clean Release build with warnings treated as errors: zero warnings/errors. Diff whitespace check passed.
+
+Remaining: weapon animation/firing state and offsets restoration (inventory selection alone does not claim complete mid-animation replay), independent card/skull identity and cooperative sharing, general CustomInventory execution, other inventory actions/callbacks, textual binding, nonplayer stored inventory, custom metadata/import/replacements, separate persistent player/HUD health, controls/freeze restrictions, visuals/statistics, game identification, and wider Phase 1 conversion. Changes remain uncommitted.
+
+## Phase 1 canonical ammo restoration semantics (2026-10-10)
+
+Closed the default-ammo restoration gap from the previous entry. Capture deliberately omits only canonical Doom ammo (50 bullets, zero other pools, capacities 200/50/50/300, no backpack); restore now applies exactly those values for an omitted record instead of retaining mutable live inventory. Changed records continue to restore explicitly. This works for full binary saves and in-memory captured state, including mixed default/changed cooperative players. Key ownership and stored health restoration remain independent.
+
+Audited CaptureAmmo's omission predicate against restore fallback and pistol-start initialization. Canonical omitted values must stay 50 bullets even when DeHackEd changes starting bullets; patched starting values other than 50 are already captured explicitly. Older saves that never encoded ammo cannot recover historical quantities, so this establishes canonical defaults for missing records rather than guessing from current runtime state or patched startup values. That intentional legacy behavior supersedes the preceding entry's retain-current-ammo policy. No new archive version or layout changes.
+
+Four new regression cases cover full default restoration of pools/capacities/backpack while retaining saved keys/health items, in-memory default state restoration, mixed cooperative owners, and canonical bullets under patched starting defaults. Full Release suite: 11,497 passed (Playsim 9,671; Server 94; Client 271), no failures/skips. Clean Release build with warnings treated as errors: zero warnings/errors. Diff whitespace check passed.
+
+Remaining: weapon ownership/selection saves, independent card/skull identity and cooperative sharing, general CustomInventory execution, other inventory actions/callbacks, textual binding, nonplayer stored inventory, custom metadata/import/replacements, separate persistent player/HUD health, controls/freeze restrictions, visuals/statistics, game identification, and wider Phase 1 conversion. Changes remain uncommitted.
+
+## Phase 1 changed player ammo inventory save restoration (2026-10-10)
+
+Converted save capture/restoration for nondefault player ammo quantities, all four maximum capacities, and backpack ownership. Version 165 wraps the prior save (including key/health version 164 when present) with bounded per-actor ammo records. Restore assigns recorded values directly without pickup callbacks, skill scaling, or backpack capacity multiplication. Negative quantities/capacities, invalid presence/backpack flags, malformed framing/counts, and mismatched actor counts are rejected. Above-cap nonnegative quantities remain representable for scripted inventory state. Validation requires full simulation metadata before applying captured ammo.
+
+Four new regression cases cover changed ammo/capacity/backpack restoration alongside keys and health items, and three malformed-field rejection cases without mutation. Updated four existing toss/archive checks to locate the nested pickup trailer under the new ammo wrapper; delay, suppression flags, malformed-value errors, and checksum assertions remain passing.
+
+Compatibility/scope: unchanged canonical pistol-start ammo is omitted to retain existing archive layouts. Old archives and omitted default records do not restore ammo they never encoded; they retain current ammo. Complete restoration from a saved default inventory therefore remains a gap, as does weapon ownership/selection persistence. Version-165 ammo saves require the new reader. Existing versions remain readable. This entry claims changed-ammo restoration only.
+
+Full Release suite: 11,493 passed (Playsim 9,667; Server 94; Client 271), no failures/skips. Clean Release build with warnings treated as errors: zero warnings/errors. Diff whitespace check passed.
+
+Remaining: default inventory restoration policy, weapon ownership/selection saves, independent card/skull identity and cooperative sharing, general CustomInventory execution, other inventory actions/callbacks, textual binding, nonplayer stored inventory, custom metadata/import/replacements, separate persistent player/HUD health, controls/freeze restrictions, visuals/statistics, game identification, and wider Phase 1 conversion. Changes remain uncommitted.
+
+## Phase 1 player key ownership save restoration (2026-10-10)
+
+Closed the managed key ownership restoration gap identified by the preceding audit. Capture now records the existing three-color ownership mask per actor; restore sets every player key flag explicitly, including clearing flags absent from the saved mask. Full simulation saves with any held key use version 164, extending the existing health inventory trailer with bounded key masks alongside named health stacks. Keyless saves retain their prior version and decode absent ownership as zero. Pre-164 saves contain no key ownership to recover, so restoring them clears current keys rather than inferring historical ownership.
+
+Audited capture/restore and archive decode boundaries. Key masks outside 0..7, incomplete records, invalid counts, and invalid trailer framing are rejected before state application. Nonzero key ownership requires full simulation save metadata. Existing health inventory versions 162/163 remain readable and their layouts are unchanged. Builds without the version-164 reader cannot load saves containing keys. Card/skull identity remains merged by color; this archive persists the supported model rather than claiming native class identity conversion.
+
+Six new regressions cover blue/red/yellow/all-key combinations restored after reset alongside named health stacks, keyless legacy clearing, and invalid-mask rejection without mutation. Full Release suite: 11,489 passed (Playsim 9,663; Server 94; Client 271), no failures/skips. Clean Release build with warnings treated as errors: zero warnings/errors. Diff whitespace check passed.
+
+Remaining: independent card/skull identity and cooperative sharing, broader inventory save coverage, general CustomInventory execution, other inventory actions/callbacks, textual binding, nonplayer stored inventory, custom metadata/import/replacements, separate persistent player/HUD health, controls/freeze restrictions, visuals/statistics, game identification, and wider Phase 1 conversion. Changes remain uncommitted.
+
+## Phase 1 Doom key grant state actions (2026-10-10)
+
+Converted BlueCard/BlueSkull, RedCard/RedSkull, and YellowCard/YellowSkull grants into managed inventory actions using existing named-class routing and key ownership effects. Requested quantities do not multiply ownership. Target and family grants reuse established pointer selection and affected-owner counts. Native Key.HandlePickup reports successful duplicate pickups in single-player; the action now retains that return behavior, while multiplayer duplicate grants report false. Nonplayer key ownership remains unsupported.
+
+Audited inventory/inv_misc.zs Key.HandlePickup and doom/doomkeys.zs class defaults with inventory_util.zs grant wrappers. Also confirmed BasicArmorPickup's zero default storage maximum means standard Doom armor does not require a failed-use storage fallback. Nine new key cases cover six class names, duplicate multiplayer behavior, case-insensitive names, actual target state callback execution, nonpositive quantity defaults, family successful-owner counts, sibling exclusion, unrelated/destroyed recipients, and successful single-player duplicate returns.
+
+Audit limitations: managed inventory combines card and skull ownership by color, unlike native separate classes. A save/reset/restore check exposed that current save handling does not restore reset key ownership; this is an outstanding conversion gap, not a passing restoration claim. The key action tests cover live ownership only. Custom ActorFrame tables are also not established as persistent native script state by these tests.
+
+Full Release suite: 11,483 passed (Playsim 9,657; Server 94; Client 271), no failures/skips. Clean Release build with warnings treated as errors: zero warnings/errors. Diff whitespace check passed. No archive/configuration changes.
+
+Remaining: key save restoration, independent card/skull identity and cooperative sharing, general CustomInventory execution, other inventory actions/callbacks, textual binding, nonplayer stored inventory, custom metadata/import/replacements, separate persistent player/HUD health, controls/freeze restrictions, visuals/statistics, game identification, and wider Phase 1 conversion. Changes remain uncommitted.
+
+## Phase 1 standard armor grant actions and quantity correction (2026-10-10)
+
+Converted GreenArmor, BlueArmor, and ArmorBonus grant state actions using the existing Doom class pickup effects. State grants retain fixed class SaveAmount regardless of requested inventory quantity, apply patched armor classes and skill factor, honor bonus maximums, preserve worn protection when adding bonuses, and count successful player owners through family actions. Nonplayer armor remains unsupported explicitly.
+
+Audit found and corrected the preceding BlueArmorForMegasphere action conversion's quantity multiplication. DoGiveInventory assigns Inventory.Amount; BasicArmorPickup/BasicArmorBonus GetSaveAmount reads SaveAmount without multiplying Amount. Only the separately used SetGiveAmount callback multiplies SaveAmount for ACS grants. BlueArmorForMegasphere state grants now retain 200 protection for quantity two rather than 400. Updated the existing regression accordingly; ACS quantity scaling remains unchanged. Audited inventory_util.zs DoGiveInventory, armor.zs CreateCopy/GetSaveAmount/SetGiveAmount, and doomarmor.zs defaults. This entry supersedes the prior entry's armor quantity claim.
+
+Six new regression cases cover all three fixed protection amounts, patched green/blue class defaults with armor skill factor, failed inferior grants, patched armor bonus maximum with retained protection, and family player success versus unsupported monster subjects. Full Release suite: 11,474 passed (Playsim 9,648; Server 94; Client 271), no failures/skips. Clean Release build with warnings treated as errors: zero warnings/errors. Diff whitespace check passed. No archive/configuration changes.
+
+Remaining: general CustomInventory execution, other inventory classes/actions and callbacks, textual ZScript/DECORATE binding, nonplayer armor/stored inventory, custom armor semantics/metadata/import/replacements, separate persistent player/HUD health, controls/freeze restrictions, visuals/statistics, game identification, and wider Phase 1 conversion. Changes remain uncommitted.
+
+## Phase 1 Megasphere component grant actions (2026-10-10)
+
+Converted MegasphereHealth and BlueArmorForMegasphere into the managed inventory grant actions. Health grants multiply the patched MegasphereHealth default amount by normalized action quantity and use its patched explicit maximum. Armor grants normalize nonpositive quantities to one, multiply the fixed 200 save amount, apply the existing armor skill factor, and preserve fixed 50-percent protection and BlueArmorForMegasphere identity independently of patched BlueArmor class. Family selection recognizes both helper classes, with the existing successful-owner count behavior.
+
+Audited doomartifacts.zs MegasphereHealth defaults, BlueArmorForMegasphere defaults and native Megasphere Pickup's two action sequence against the managed health/armor helpers. Six new cases cover an actual two-step ActorFrame target sequence, full-health/full-armor false returns, default/negative/multiple armor quantities, patched health action multiplication versus ACS requested-amount behavior, patched blue armor independence, and save restoration. The general CustomInventory pickup-state interpreter and Megasphere class grant wrapper remain unconverted; the regression explicitly executes its two component actions through managed frames.
+
+Full Release suite: 11,468 passed (Playsim 9,642; Server 94; Client 271), no failures/skips. Clean Release build with warnings treated as errors: zero warnings/errors. Diff whitespace check passed. No archive/configuration changes.
+
+Remaining: CustomInventory pickup execution and other inventory classes/actions, use callbacks, textual ZScript/DECORATE binding, nonplayer stored armor/inventory and voodoo dolls, custom class metadata/import/replacements, separate persistent player/HUD health, controls/freeze restrictions, visuals/statistics, game identification, and wider Phase 1 conversion. Changes remain uncommitted.
+
+## Phase 1 bonus and sphere health grant actions (2026-10-10)
+
+Converted HealthBonus and Soulsphere into the managed immediate health grant actions. Grants multiply class default healing by normalized quantities and pass explicit class maxima to GiveBody. Soulsphere uses patched amount and maximum defaults; HealthBonus uses patched max-health compatibility rules. Shared DoomHealthDefaults now serves both map pickup effects and state grants, preventing divergent patch behavior. Player bonus health and pickup maximum overrides continue through the existing GiveBody maximum resolver. Nonplayer recipients retain native monster health limits through the same actor helper.
+
+Audited doomhealth.zs HealthBonus.TryPickup, doomartifacts.zs Soulsphere defaults, and inventory_util.zs DoGiveInventory. Six new regressions cover explicit caps, failed full-health grants, multiplied sphere healing, bonus maximums, patched sphere world/action agreement, and both patched HealthBonus compatibility modes. Existing immediate, family, stored-health, and world pickup suites remain passing.
+
+Full Release suite: 11,462 passed (Playsim 9,636; Server 94; Client 271), no failures/skips. Clean Release build with warnings treated as errors: zero warnings/errors. Diff whitespace check passed. No archive/configuration changes.
+
+Remaining: other inventory classes/actions including Megasphere composite effects, use callbacks, textual ZScript/DECORATE binding, nonplayer stored inventory and voodoo dolls, custom class metadata/import/replacements, separate persistent player/HUD health, controls/freeze restrictions, visuals/statistics, game identification, and wider Phase 1 conversion. Changes remain uncommitted.
+
+## Phase 1 immediate health inventory grant actions (2026-10-10)
+
+Extended the managed inventory grant actions to immediate Health, Stimpack, and Medikit classes. Native DoGiveInventory multiplies the Health class default amount by the normalized action quantity, unlike stored HealthPickup quantities. Grants now reuse GiveHealth for players and nonplayer actors, preserve signed 32-bit multiplication and negative-percentage healing behavior, and return actual healing success. Family grants can heal monster recipients and count successful recipients. Named Stimpack/Medikit class effects remain independent of Strife editor-number remapping; MedicalKit continues to grant a stored item.
+
+Audited inventory_util.zs DoGiveInventory, inventory/health.zs Health.TryPickup and default amount, and doom/doomhealth.zs Stimpack/Medikit defaults against the shared health helper. Eight new cases cover class defaults and quantity multiplication, nonpositive action quantity normalization, full-health failure, overflow to percentage healing, monster-specific maximums, successful family counts, actual target state callbacks, health skill factor, Strife class identity versus stored kit behavior, and dead-player rejection. Initial verification caught two incorrect test expectations (overflow arithmetic and monster default health); corrected them against actual signed arithmetic and actor health limits before rerunning the suite.
+
+Full Release suite: 11,456 passed (Playsim 9,630; Server 94; Client 271), no failures/skips. Clean Release build with warnings treated as errors: zero warnings/errors. Diff whitespace check passed. No archive/configuration changes.
+
+Remaining: other immediate health classes such as HealthBonus/Soulsphere and custom maxima, other inventory classes/actions, use callbacks, textual ZScript/DECORATE binding, nonplayer stored inventory and voodoo dolls, metadata/import/replacements, separate persistent player/HUD health, controls/freeze restrictions, visuals/statistics, game identification, and wider Phase 1 conversion. Changes remain uncommitted.
+
+## Phase 1 health inventory grant state actions (2026-10-10)
+
+Converted the supported HealthPickup subset of native A_GiveInventory, A_GiveToTarget, A_GiveToChildren, and A_GiveToSiblings. Nonpositive action quantities normalize to one item, successful pickups return true, and capped existing stacks return false. Target grants resolve the optional receiver pointer from the caller's target. Family grants reuse shared selection with the removal actions, count successful owners, and exclude the caller from siblings. The existing pickup grant helper preserves native new-stack limits, unlimited existing-stack behavior, game-default Raven maxima, canonical names, and inventory order without healing the player immediately.
+
+Audited inventory_util.zs DoGiveInventory and all four grant wrappers against the HealthPickup catalog and pickup helper. These supported classes derive from HealthPickup rather than immediate Health, so quantities are assigned directly; native Health amount multiplication and generic inventory ownership remain outside this subset. Refactored family iteration into a shared operation helper without changing removal selection semantics.
+
+Seven new regression cases cover default/negative/positive/extreme quantities, native caps and failed full-stack returns, actual target state callback execution, target-relative master selection, unsupported/null selections, successful-owner family counts, sibling exclusion, destroyed owners, unlimited existing-stack grants, Raven game-default limits, and save/restore. Full Release suite: 11,448 passed (Playsim 9,622; Server 94; Client 271), no failures/skips. Clean Release build with warnings treated as errors: zero warnings/errors. Diff whitespace check passed. No archive/configuration changes.
+
+Remaining: immediate Health and other inventory action classes, use callbacks, textual ZScript/DECORATE binding, nonplayer inventory and voodoo dolls, custom class metadata/import/replacements, separate persistent player/HUD health, controls/freeze restrictions, visuals/statistics, game identification, and wider Phase 1 conversion. Changes remain uncommitted.
+
+## Phase 1 health inventory family removal actions (2026-10-10)
+
+Converted the supported health subset of native A_TakeFromChildren and A_TakeFromSiblings into ActorInventoryActions. Child selection matches MasterId to the caller. Sibling selection requires an existing master, matches that master's children, and excludes the caller. Selected owners use the existing native-style action depletion rules, and the return value counts successful owners rather than items removed. Destroyed actors, nonplayer subjects without managed inventory, and owners missing the item do not contribute. Unknown/null health classes return zero without mutation; valid family selection requires an attached simulation.
+
+Audited inventory_util.zs family loops and DoTakeInventory's direct receiver path against the shared managed removal helper. Reused the existing family-action snapshot iteration convention and pointer resolver. Four new regressions cover actual child ActorFrame callback execution, multiple owner counts, zero depletion and repeat calls, unrelated owners, unsupported monster subjects, sibling caller exclusion, negative quantities, missing/destroyed masters, destroyed/empty owners, and unattached simulation failures.
+
+Full Release suite: 11,441 passed (Playsim 9,615; Server 94; Client 271), no failures/skips. Clean Release build with warnings treated as errors: zero warnings/errors. Diff whitespace check passed. No archive/configuration changes.
+
+Remaining: inventory grants/use callbacks, textual ZScript/DECORATE binding, nonplayer inventory and voodoo dolls, custom inventory metadata/import/replacements, separate persistent player/HUD health, controls/freeze restrictions, visuals/statistics, game identification, and wider Phase 1 conversion. Changes remain uncommitted.
+
+## Phase 1 health inventory removal state actions (2026-10-10)
+
+Converted the supported health subset of native A_TakeInventory and A_TakeFromTarget into ActorInventoryActions. State action removal uses absolute negative quantities and removes the whole first matching stack for zero, matching Actor.TakeInventory and Inventory.DepleteBy. Positive quantities deplete only that first stack. Return values indicate whether a positive held stack was found and taken. TIF_NOTAKEINFINITE does not protect health items because native protection applies only to Ammo. Unsupported flag bits are rejected explicitly. Existing ACS TakeInventory retains its separate nonpositive-quantity no-op behavior.
+
+Audited inventory_util.zs DoTakeInventory, TakeInventory, A_TakeFromTarget, constants.zs TIF_NOTAKEINFINITE, inventory.zs DepleteBy, and scriptutil.zs ACS removal guard. The target wrapper first resolves the caller target, then resolves the optional receiver pointer from that target; missing targets cannot be bypassed with a numbered-player selector. Shared pointer resolution now serves the setter and removal actions.
+
+Eight new regression cases cover zero, negative, positive and extreme quantities, actual ActorFrame target callback execution, first-stack-only removal, secondary master selection, missing target behavior, unsupported classes/flags, null/destroyed subjects, and retained ACS no-op semantics. Full Release suite: 11,437 passed (Playsim 9,611; Server 94; Client 271), no failures/skips. Clean Release build with warnings treated as errors: zero warnings/errors. Diff whitespace check passed. No archive/configuration changes.
+
+Remaining: children/sibling inventory action variants, grants/use callbacks, textual ZScript/DECORATE binding, nonplayer inventory and voodoo dolls, custom inventory metadata/import/replacements, separate persistent player/HUD health, controls/freeze restrictions, visuals/statistics, game identification, and wider Phase 1 conversion. Changes remain uncommitted.
+
+## Phase 1 health inventory state action (2026-10-10)
+
+Converted the supported health subset of native A_SetInventory into ActorInventoryActions.SetInventory. ActorFrame callbacks can invoke the action with self/default or native pointer selectors, and the selected managed player receives the absolute inventory operation and beyondMax override. Null names, null/missing/destroyed subjects, unknown classes, and nonplayer inventory subjects return false without mutation. Pointer resolution reuses AcsActorPointer; nondefault resolution requires an attached simulation, matching the other managed state action helpers.
+
+Audited inventory_util.zs A_SetInventory against the managed setter and ActorFrame callback execution. Five new regression cases cover actual target state callback execution, unchanged-result/removal semantics, master and numbered-player selection with maximum override, failed selections/classes, and unattached default versus explicit pointer selection. Player health and caller frame remain unchanged. Native voodoo-doll redirection is not represented by the current managed player model; generic monster inventory, textual ZScript/DECORATE action binding, and custom class replacement remain conversion gaps. This entry establishes a callable managed state action, not a textual script interpreter.
+
+Full Release suite: 11,429 passed (Playsim 9,603; Server 94; Client 271), no failures/skips. Clean Release build with warnings treated as errors: zero warnings/errors. Diff whitespace check passed. No archive/configuration changes.
+
+Remaining: other inventory actions and callbacks, textual action binding, nonplayer inventory and voodoo dolls, class metadata/import/replacements, separate persistent player/HUD health, controls/freeze restrictions, visuals/statistics, game identification, and wider Phase 1 conversion. Changes remain uncommitted.
+
+## Phase 1 absolute health inventory setter (2026-10-10)
+
+Converted native Actor.SetInventory stack behavior for the supported named health classes into PlayerInventory.SetHealthPickup. Existing stacks report false for unchanged amounts, remove on nonpositive requests, reduce directly without imposing a maximum, and clamp increases unless beyondMax is set. The unlimited pickup option does not replace this explicit setter override. New stacks use the existing pickup creation path and its maximum even when beyondMax is requested. Missing known classes with nonpositive amounts report success; unsupported classes report failure. Only the first matching stack is changed, and setting inventory never heals the player.
+
+Audited inventory_util.zs SetInventory and Inventory.CreateCopy against the grant and removal helpers. Seven regression cases cover absolute counts, case-insensitive lookup, unchanged return values, zero/negative removal, first-stack ownership, unlimited versus explicit override, reduction of over-limit stacks, new-stack caps, unknown classes, and save/restore. This converts the inventory API; A_SetInventory action dispatch remains unconverted, and this entry does not claim that scripts can invoke it.
+
+Full Release suite: 11,424 passed (Playsim 9,598; Server 94; Client 271), no failures/skips. Total was recalculated from all 12 test projects; the preceding entry's 11,418 total was one too high (actual prior total 11,417). Clean Release build with warnings treated as errors: zero warnings/errors. Diff whitespace check passed. No archive/configuration changes.
+
+Remaining: actor action dispatch, scripted inventory callbacks, custom class metadata/maxima/import, persistent separate player/HUD health, controls/freeze restrictions, visuals/statistics, game identification, other inventory behavior, and wider Phase 1 conversion. Changes remain uncommitted.
+
+## Phase 1 Strife poison selected-stack lifetime (2026-10-10)
+
+Audit found a missing part of native AutoUseStrifeHealth's nested loops. When poison left transient player health negative, the managed first-use safety step returned to stack selection after consuming one item. Native code continues using the already selected stack until the 50-health threshold, item depletion, or failed GiveBody. Because native selection compares healing against stack amount, early reselection could change both healing and which items were consumed.
+
+Converted that selected-stack lifetime into an inner consumption loop shared by ordinary and poison Strife use. Retains the one-use check for initially nonpositive player health and stops when mirrored actor health is nonpositive; a surviving first use continues the same stack. Only exhaustion returns to selection. Audited player_inventory.zs AutoUseStrifeHealth nested loops and existing poison health mirroring.
+
+Three new regression cases all failed against the previous implementation and pass after the change. They cover two amount-threshold reselection boundaries and continuation to a second stack only after depletion. Full Release suite: 11,418 passed (Playsim 9,591; Server 94; Client 271), no failures/skips. Clean Release build with warnings treated as errors: zero warnings/errors. Diff whitespace check passed. No archive/configuration changes.
+
+Remaining: scripted inventory Use/Deplete callbacks, persistent separate player/HUD health, controls/freeze restrictions, class metadata/import/replacements, visuals/pickup effects/statistics, game identification, other inventory behavior, and wider Phase 1 conversion. Changes remain uncommitted.
+
+## Phase 1 Raven health artifact drops and tosses (2026-10-10)
+
+Converted class routing for ArtiHealth/ArtiSuperHealth world drops under RavenHealthPickups. Named inventory tosses now spawn one artifact before removing one held item, reuse native-style toss movement and 30-tic pickup delay, and support save/restore plus re-collection. ACS DropItem spawns requested artifact quantities without taking held inventory. The existing shared health-item toss boundary now supports either explicit Strife or Raven mapping.
+
+Audit identified editor number 82's inherited Doom weapon ammo-drop scaling. Named Raven artifact routes explicitly bypass ammo quantity scaling and weapon-specific suppression; Doom SuperShotgun routes remain rejected in Raven mapping. Custom healing/mode metadata remains unsupported and preserves held inventory on failure. Audited HealthPickup.CreateTossable's health copy and one-item clamp, Inventory.CreateTossable, Actor.DropInventory movement, and native editor mappings.
+
+Six regression cases cover both artifact tosses with save/delay/re-collection, both quantity-bearing script drops and retained held inventory, and unsupported mapping/custom metadata retention. Existing Doom drop conflict regression remains passing. Full Release suite: 11,415 passed (Playsim 9,588; Server 94; Client 271), no failures/skips. Clean Release build with warnings treated as errors: zero warnings/errors. Diff whitespace check passed. No archive changes.
+
+Remaining: custom tossed health metadata, independent world class identity/replacements, gameinfo/MAPINFO import, Raven visuals/floatbob and pickup effects/statistics, controls/freeze restrictions, sounds/UI/callbacks, other game inventory, persistent separate player/HUD health, and wider Phase 1 conversion. Changes remain uncommitted.
+
+## Phase 1 Raven health world pickups (2026-10-10)
+
+Converted the shared Heretic/Hexen health editor mappings: 82 ArtiHealth and 32 ArtiSuperHealth, selected by SpawnOptions.RavenHealthPickups/server --raven-health-pickups. Contact stores capped named artifacts rather than granting a Doom SuperShotgun for 82. Pickup classification now respects the selection through spawning, collision/damage exclusions, ACS pickup flag guards, capture/restore defaults, and checksums. Full stacks leave the world actor available; inventory removal permits later collection. Default Doom behavior remains unchanged. Strife/Raven health selections are mutually exclusive.
+
+Audited the editor-number blocks in Heretic/Hexen MAPINFO separately from spawn-number blocks (24/25 are spawn IDs, not editor numbers). Existing --inventory-max selects the game-dependent artifact cap; callers still choose 16 for Heretic and 25 for Hexen. Raven world drop conversion is incomplete: conflicting Doom weapon drops are rejected rather than spawning health artifacts under remapped number 82.
+
+Eight new regression cases cover both world pickups and inventory save restore, both full-cap world actors across restore/recollection, default Doom shotgun behavior, classification/checksum distinction, conflicting selection rejection, and unsupported Doom drop preservation. Existing server limit integration also verifies Raven selection. Full Release suite: 11,409 passed (Playsim 9,582; Server 94; Client 271), no failures/skips. Final clean Release build with warnings treated as errors: zero warnings/errors. Diff whitespace check passed. No archive change; startup selection must match when restoring.
+
+Remaining: Raven class-based world drops/tosses, full game/class identification and MAPINFO import, sprite/state presentation and floatbob, pickup statistics/flash/sounds/callbacks, other Raven map actors, custom metadata/replacements, controls/freeze restrictions, separate persistent player/HUD health, and wider Phase 1 conversion. This is health pickup gameplay, not full Heretic/Hexen support. Changes remain uncommitted.
+
+## Phase 1 Raven health artifacts and default inventory limits (2026-10-10)
+
+Converted ArtiHealth (25 health, emergency mode 1) and ArtiSuperHealth (100 health, emergency mode 2) into named grant/count/use support using the existing shared health inventory and save boundaries. Their caps resolve from SpawnOptions.DefaultInventoryMaximum, default 25, with server --inventory-max selecting a positive limit. Native Heretic uses 16 and Hexen/Doom use 25. Explicit Strife class limits remain independent. Nondefault configuration contributes to simulation checksums.
+
+Audited ravenartifacts.zs, HealthPickup's Inventory.DefMaxAmount, thingdef_properties.cpp's gameinfo.definventorymaxamount resolver, and Heretic/Hexen/Doom MAPINFO defaults. Existing emergency healing now receives real named flask/urn grants, retaining group priority and ordinary/poison integration. World drops remain unsupported because no Raven actor mappings have been converted.
+
+Fourteen regression cases cover both artifacts at both native limits, manual use and save restore, ordinary/poison emergency priority, explicit Strife caps and checksum distinction, invalid simulation limits, server integration for 16/25, and malformed/missing command-line limits. Full Release suite: 11,401 passed (Playsim 9,574; Server 94; Client 271), no failures/skips. Clean Release build with warnings treated as errors: zero warnings/errors. Diff whitespace check passed. No archive change; startup default-limit selection must be recreated by callers.
+
+Remaining: automatic gameinfo/MAPINFO import, Raven world pickup/drop mappings and visuals, full class identity/replacements/custom metadata, callbacks, general inventory DefMaxAmount conversion, runtime configuration replication, controls/freeze restrictions, sounds/UI, separate player/HUD health, and wider Phase 1 conversion. Changes remain uncommitted.
+
+## Phase 1 unlimited matching health pickups (2026-10-10)
+
+Converted the sv_unlimited_pickup matching-stack behavior for supported health inventory into SpawnOptions.UnlimitedHealthPickups and server --unlimited-health-pickups. New stacks remain clamped by native CreateCopy defaults; existing matching stacks may exceed MaxAmount when enabled, using overflow-safe saturation at int.MaxValue. Default false preserves capped grants. Maximum inventory queries retain their native class defaults. World contact can now collect a supported health item despite a full matching stack when unlimited mode is selected.
+
+Audited inventory.zs CreateCopy and HandlePickup plus the native sv_unlimited_pickup CVAR declaration. The option is intentionally scoped to supported health items; this does not implement unlimited ammunition, weapons, or general inventory. Supported health world actors do not use ShouldStay; other class-specific staying behavior remains outside this subset. Configuration participates in simulation checksums and is passed through dedicated server startup.
+
+Seven new regression cases cover all three Strife health classes, initial cap versus matching over-cap grant, overflow saturation, unchanged maximum queries, save/restore of over-cap quantities, world contact at cap, checksum distinction, and enabled/default server integration. Full Release suite: 11,387 passed (Playsim 9,566; Server 88; Client 271), no failures/skips. Clean Release build with warnings treated as errors: zero warnings/errors. Diff whitespace check passed. No archive change; startup selection must be recreated by the caller.
+
+Remaining: runtime/server-info replication of configuration, general unlimited inventory behavior, dynamic class metadata/replacements, Raven defaults, independent world class identities, visuals/callbacks, automatic game identification, freeze restrictions, sounds/UI, separate player/HUD health, and wider Phase 1 conversion. Changes remain uncommitted.
+
+## Phase 1 class-based grant versus editor-number routing (2026-10-10)
+
+Audit found that ACS grants for Doom Stimpack, Medikit, and Megasphere inherited Strife map-number remapping when StrifeHealthPickups was enabled. Converted the missing distinction into PickupCatalog.TryGiveDoomClass, the existing Doom class-effect boundary independent of editor mappings. Public TryGive remains the map/world pickup entry point and delegates to this shared implementation after optional Strife remapping. All ACS Doom catalog grants now call the class boundary, including bonus/armor/backpack paths, preserving one implementation of their effects.
+
+Native scriptutil.zs resolves a class name and calls GiveInventory; MAPINFO editor-number mappings do not replace that class identity. Verified Doom health/artifact class declarations and confirmed no ACS TryGive world-routing calls remain. Six regression cases cover Doom Stimpack/Medikit/Megasphere in both mapping selections, coexisting Doom class grants and Strife map pickups with save restore, and stack/direct opcode dispatch with case-insensitive names.
+
+Validation: full Release suite 11,380 passed (Playsim 9,561; Server 86; Client 271), no failures/skips. Clean Release build with warnings treated as errors: zero warnings/errors. Diff whitespace check passed. No archive/checksum schema changes.
+
+Remaining: independent class identity for overlapping world actors, custom class registry/replacements and metadata, Strife presentation/callbacks, Raven inventory defaults, game identification, freeze restrictions, sounds/UI, persistent separate player/HUD health, and wider Phase 1 conversion. Conflicting Doom world drops under Strife mapping remain explicitly unsupported. Changes remain uncommitted.
+
+## Phase 1 Strife health drops and inventory tosses (2026-10-10)
+
+Converted known Strife health class-name routing for world drops under StrifeHealthPickups. ACS DropInventory now tosses one default MedPatch, MedicalKit, or SurgeryKit, spawns it before decrementing held inventory, and uses existing native-style toss velocity/height and 30-tic pickup delay. The dropped quantity and delay survive save/restore and re-collection grants the stored item. ACS DropItem creates requested quantities without taking held inventory. Custom healing/mode metadata and unsupported routing fail without removing items.
+
+Audited health.zs CreateTossable, inventory.zs CreateTossable (its clamp of the overridden -1 argument yields one), and inventory_util.zs DropInventory. Shared-number conflicts are explicit: Doom Stimpack/Medikit/Megasphere names are rejected by Strife world-drop routing until separate class-based world actors are available; they cannot silently create Strife health inventory.
+
+Seven new regression cases cover all three tosses with delay/save/restore/re-collection, quantity-bearing script DropItem, unsupported Doom selection/custom healing retention, and conflicting Doom-name rejection. Full Release suite: 11,374 passed (Playsim 9,555; Server 86; Client 271), no failures/skips. Fixed three test-analyzer findings from the initial clean build; focused seven-case rerun passed. Final clean Release build with warnings treated as errors: zero warnings/errors. Diff whitespace check passed. No archive change.
+
+Remaining: custom dropped health metadata, dynamic class import/replacements, independent class-based actor identity for overlapping editor numbers, Strife visuals/callbacks, automatic game identification, other game inventories, freeze restrictions, sounds/UI, persistent separate player/HUD health, and wider Phase 1 conversion. Shared-number handling in other class-based grant/drop paths still requires audit. Changes remain uncommitted.
+
+## Phase 1 Strife health world-pickup mapping (2026-10-10)
+
+Converted optional Strife mapping for health map actors: 2011 MedPatch, 2012 MedicalKit, and 83 SurgeryKit, as defined by native mapinfo/strife.txt. SpawnOptions.StrifeHealthPickups selects this numeric gameplay subset; default false preserves Doom mappings. Pickup contact now grants capped named inventory amounts instead of immediate Doom health/armor. Full matching stacks leave the actor on the map; successful pickup consumes the world actor. Explicit PickupAmount overrides item quantity. SurgeryKit does not inherit Doom Megasphere's unconditional pickup default, including ACS flag queries.
+
+Dedicated server --strife-health-pickups passes the setting through startup; configuration contributes a conditional checksum tag. Selection is explicit because Strife shares Doom editor numbers and thing-flag format alone does not identify the game. Audited native Strife editor mappings/item defaults and inventory pickup-cap behavior.
+
+Ten new regression cases cover contact and save restore for all three items, full-cap retention then collection for all three, default Doom healing, configuration checksum distinction, and server option/default integration. Full Release suite: 11,367 passed (Playsim 9,548; Server 86; Client 271), no failures/skips. Clean Release build with warnings treated as errors: zero warnings/errors. Diff whitespace check passed. No save format change; callers must recreate the simulation with the same startup selection.
+
+Remaining: automatic IWAD/game identification, full MAPINFO/class import and replacements, Strife sprite/state presentation, other Strife map-number mappings, world drop/toss class routing, custom metadata and callbacks, unlimited pickup, controls/freeze restrictions, sounds/UI, persistent separate player/HUD health, and wider Phase 1 conversion. This converts health pickup gameplay, not full Strife game support. Changes remain uncommitted.
+
+## Phase 1 Strife health script grants and stack limits (2026-10-10)
+
+Converted native MedPatch, MedicalKit, and SurgeryKit health defaults into a small managed HealthPickupCatalog: respectively 10/20/mode-3, 25/15/mode-3, and -100/5/manual-only (health/maximum/automatic mode). ACS GiveInventory now stores these items instead of ignoring their class names. Maximum inventory queries return their native defaults even before ownership. Grants merge matching class names and healing values, cap quantities with overflow-safe arithmetic, reject a full matching stack, and prepend new stacks to match native AddInventory order. Same-class stacks with distinct healing values remain separate. Grants do not immediately heal the owner.
+
+Audited strifeitems.zs defaults, health.zs HandlePickup, inventory.zs CreateCopy/HandlePickup, inventory_util.zs AddInventory/GiveInventory, and scriptutil.zs GiveInventory. Seven new regression cases cover native metadata/caps for all three classes, case-insensitive merges and ordering, distinct healing values, overflow-sized requests, depleted stack replenishment, save/restore followed by automatic/manual use, and stack/direct script grant opcodes.
+
+Validation: full Release suite 11,357 passed (Playsim 9,540; Server 84; Client 271), no failures/skips. Clean Release build with warnings treated as errors: zero warnings/errors. Diff whitespace check passed. Existing named-item archive version 163 carries the grants without a new format.
+
+Remaining: dynamic class import/replacements and custom MaxAmount overrides, Raven game-dependent defaults, unlimited-pickup configuration, world pickup actors/drops, generic custom health grants, scripted callbacks, controls/freeze restrictions, sounds/UI, separate persistent player/HUD health, and wider Phase 1 conversion. Raw AddHealthPickup remains a metadata injection API; capped grants use GiveHealthPickup. Changes remain uncommitted.
+
+## Phase 1 named health-item script removal (2026-10-10)
+
+Converted named HealthPickup removal through PlayerInventory.TakeHealthPickup and the existing ACS TakeInventory boundary. Matches the first class-name stack case-insensitively, subtracts at most that stack's amount, and removes an exhausted stack. Excess requests do not continue into a second same-class stack. Script nonpositive amounts remain no-ops. Removal does not heal or use the item. Existing stack/direct opcodes and missing-activator broadcasts reach this shared boundary.
+
+Audit found that adding named health counting exposed a success-shaped DropInventory fallback without a spawned world pickup. Named health drops now explicitly fail and preserve inventory until tossable actor definitions are converted. Audited scriptutil.zs TakeInventory's amount guard/broadcast, inventory_util.zs TakeInventory's FindInventory selection, and inventory.zs DepleteBy/DepleteOrDestroy.
+
+Nine regression cases cover partial/full/excess removal, nonpositive script amounts, first-stack isolation and anonymous item retention, missing class names, both script opcode forms with cooperative broadcast/save restore, and unsupported drop preservation. Full Release suite: 11,350 passed (Playsim 9,533; Server 84; Client 271), no failures/skips. Clean Release build with warnings treated as errors: zero warnings/errors. Diff whitespace check passed. No archive format changes.
+
+Remaining: native class import/default metadata, named Give operations and maximum stack limits, CheckInventory(max), pickup stacking and world drops, custom DepleteOrDestroy callbacks, player controls/freeze restrictions, sounds/UI, persistent separate player/HUD health, and wider Phase 1 conversion. Changes remain uncommitted.
+
+## Phase 1 named health inventory and script use (2026-10-10)
+
+Converted optional class-name identity for managed HealthPickupStack items. AddHealthPickup accepts TypeName; named count/use lookups are case-insensitive and select the first matching stack, matching native FindInventory rather than merging distinct healing amounts. Existing ACS CheckInventory and UseInventory paths now count/use stored named health items; successful manual healing consumes one item, failed healing retains it. Existing UseActorInventory routing delegates to this same Use boundary.
+
+Named items contribute their identity to simulation checksums and persist in conditional save version 163 with bounded, strict UTF-8 names. Anonymous-only saves retain the exact version-162 layout. Reader supports both versions and legacy restores clear names naturally. Invalid lengths, empty names, malformed UTF-8, truncated fields, and invalid numeric metadata are rejected. No class registry or pickup importer is implied by caller-supplied names.
+
+Audited against health.zs HandlePickup/Use and p_acs.cpp CheckInventory/DoUseInv. Eight new regression cases cover case-insensitive script count/use, failed/full-health SurgeryKit use, named/anonymous save round trips and legacy format, first-stack behavior, malformed name lengths, and identity checksum differences. Full Release suite: 11,341 passed (Playsim 9,524; Server 84; Client 271), no failures/skips. Clean Release build with warnings treated as errors: zero warnings/errors. Diff whitespace check passed.
+
+Remaining: native class import/validation, maximum stack amounts and CheckInventory(max), pickup stacking, named Give/Take/Drop operations, player controls, freeze restrictions, scripted callbacks, sounds/UI, persistent separate player/HUD health, and wider Phase 1 conversion. Older builds cannot read version-163 named archives. Changes remain uncommitted.
+
+## Phase 1 percentage-based stored health items (2026-10-10)
+
+Converted manual-only negative HealthPickup values, including Strife SurgeryKit's Health -100. Numeric stored items now accept negative health with mode 0; manual UseHealthPickup delegates to existing GiveBody percentage healing, which raises health to a percentage of the resolved maximum rather than adding health. Skill HealthFactor does not alter this percentage path. Failed use retains the item; successful use consumes one. Writer validation and version-162 reader preserve these values through save/restore.
+
+Audited strifeitems.zs SurgeryKit defaults (Health -100, no AutoUse override), health.zs HealthPickup.Use, and p_mobj.cpp P_GiveBody negative-value handling. Nine regression cases cover 50/100-percent healing, MaxPickupHealth, upgraded maximum, skill-factor independence, failed reuse, save/restore, ordinary/poison automatic exclusion, and explicit rejection of negative-health automatic modes including malformed archive reads.
+
+Validation: full Release suite 11,333 passed (Playsim 9,516; Server 84; Client 271), no failures/skips. Clean Release build with warnings treated as errors: zero warnings/errors. Diff whitespace check passed.
+
+Archive layout/version remain unchanged; older managed builds rejecting negative stored health cannot read these new stacks. Custom negative-health automatic modes remain explicitly unsupported. SurgeryKit class identity, stack limit 5, actor pickup/import, ACS/player controls, frozen restrictions, callbacks, sounds/UI, and persistent separate player/HUD health remain incomplete. This converts numeric SurgeryKit-style healing, not the entire native item class. Changes remain uncommitted.
+
+## Phase 1 manual-only HealthPickup mode (2026-10-10)
+
+Converted the native HealthPickup default autousemode 0 into the managed numeric inventory. AddHealthPickup now defaults to manual-only mode; inventory, save writer validation, and version-162 reader accept modes 0 through 3. Positive health and amount remain required. Invalid input now reports its actual parameter. Mode-0 items use the existing manual GiveBody path and remain excluded from emergency mode-1/2 collection and Strife mode-3 use.
+
+Audited health.zs HealthPickup defaults and Use alongside player_inventory.zs automatic collectors. Six new regression cases cover manual use after save/restore, ordinary and poison lethal damage with automatic-use skill enabled, both direct automatic collectors, and invalid inventory/save modes. Full Release suite: 11,324 passed (Playsim 9,507; Server 84; Client 271), no failures/skips. Clean Release build with warnings treated as errors: zero warnings/errors. Diff whitespace check passed.
+
+Archive layout and version remain unchanged; previously valid saves remain readable. Older managed builds that reject mode 0 cannot read newly written manual-only stacks. Remaining: class identity/import and stacking rules, ACS/player controls, frozen-use restrictions, scripted Use/Deplete callbacks, sounds/UI flashes, persistent separate player/HUD health, and wider Phase 1 conversion. Numeric manual-only behavior is implemented; full native inventory integration remains incomplete. Changes remain uncommitted.
+
+## Phase 1 numeric health-item use and pickup-limit parity (2026-10-10)
+
+Converted HealthPickup.Use's numeric behavior into PlayerInventory.UseHealthPickup(index), using the existing owner GiveBody boundary. Successful use decrements one item and removes an exhausted stack; rejected healing preserves the amount. Dead/destroyed owners and ownerless inventories cannot consume items; invalid indices report an argument error. AutoUseMode does not restrict manual numeric use.
+
+Audit found that ordinary and poison Strife automatic use bypassed MaxPickupHealth. Extracted the existing pickup maximum resolution into shared PickupCatalog.ResolveHealthMaximum and routed both paths through it. Preserves upgraded class maximum, explicit item maximum plus bonus health, and MaxPickupHealth override semantics. Audited against health.zs HealthPickup.Use and p_mobj.cpp P_GetRealMaxHealth/P_GiveBody. No persistent fields or archive changes.
+
+Seven new regression cases cover all three automatic-use modes used manually, skill scaling and pickup caps, rejected use, exhausted stack removal, dead/ownerless inventory, invalid indices, and both automatic damage paths with overridden caps. Full Release suite: 11,318 passed (Playsim 9,501; Server 84; Client 271), no failures/skips. Clean Release build with warnings treated as errors: zero warnings/errors. Diff whitespace check passed.
+
+Remaining: class-name inventory identity/import, ACS and player-control wiring for health-item use, totally-frozen/time-freeze restrictions, inventory callbacks, use sounds/UI flash, persistent separate player/HUD health, and wider Phase 1 conversion. The numeric use API is implemented; complete native UseInventory behavior is not. Changes remain uncommitted.
+
+## Phase 1 poison Strife health-item ordering (2026-10-10)
+
+Converted numeric mode-3 Strife item use in P_PoisonDamage ordering. Emergency mode-1/2 healing still occurs first. The shared Strife helper now tracks transient player and actor health separately: poison lowers player health, successful GiveBody mirrors the healed value to actor health, then poison subtracts damage from actor health. With no successful item use, actor health receives only the original subtraction. An initially lethal player-health value can attempt one item while actor health is alive; if that item leaves mirrored actor health nonpositive, further GiveBody calls stop. Buddha is evaluated after the final actor subtraction. Deathmatch and DisableAutoHealth skip mode-3 use.
+
+Audited against p_interaction.cpp P_PoisonDamage, p_mobj.cpp P_GiveBody, and player_inventory.zs AutoUseStrifeHealth. Preserves the native second-subtraction quirk instead of simplifying poison to ordinary damage healing. Existing ordinary Strife use delegates to the same helper with initially synchronized health. No persistent fields or savegame version change.
+
+Seven new regression cases cover nonlethal use, rescue from negative player health, failed lethal healing with one consumed item, the 50-health threshold, disabled use, deathmatch, and Buddha. Full Release suite: 11,311 passed (Playsim 9,494; Server 84; Client 271), no failures/skips. Clean Release build with warnings treated as errors: zero warnings/errors. Diff whitespace check passed.
+
+Remaining: persistent independent player/HUD health and its save/replication surfaces, alternative player inventories, scripted Use/Deplete callbacks and class import, runtime CVAR configuration/replication, and the wider Phase 1 conversion. This completes numeric poison actor-health ordering, not full native player-health or inventory parity. Changes remain uncommitted.
+
+## Phase 1 automatic-health server configuration (2026-10-10)
+
+Converted the sv_disableautohealth behavior into SpawnOptions.DisableAutoHealth and immutable AuthoritySimulation configuration. Default false preserves existing behavior. Ordinary damage's Strife mode-3 automatic healing checks the setting; mode-1/2 emergency inventory healing remains independent, matching player_inventory.zs. Enabled suppression contributes a conditional simulation checksum tag, preserving existing default checksums.
+
+DedicatedServerOptions and --disable-auto-health now pass the setting through server startup to gameplay; command-line help describes its Strife scope. Audited the native CVAR declaration in p_interaction.cpp and the sole guard in player_inventory.zs AutoUseStrifeHealth. Two server integration cases exercise default/disabled startup and item consumption, including repeated option parsing; one simulation regression verifies differing configuration checksums.
+
+Validation: full Release suite 11,304 passed (Playsim 9,487; Server 84; Client 271), no failures or skips. Clean Release build with warnings treated as errors passed with zero warnings/errors; diff whitespace check passed.
+
+Remaining: runtime CVAR changes, native configuration persistence/server-info replication, poison's separate player/actor health ordering, scripted inventory Use/Deplete callbacks, and class import. Startup configuration is converted; full native CVAR and inventory integration remains incomplete. Phase 1 is not complete. Changes remain uncommitted.
+
+## Phase 1 Strife health-item use after ordinary damage (2026-10-10)
+
+Converted numeric mode-3 health-item use after ordinary damage leaves a living player below 50 health, outside deathmatch and forced damage. Applies HealthFactor with truncation/minimum one, the native 65536 item-health cap, and upgraded maximum health. Consumes the chosen stack until the threshold, maximum, or depletion. Preserves the native AutoUseStrifeHealth selection quirk that compares healing against the previously selected stack's amount. ClearInventory now clears retained health pickups as well.
+
+Audited against player_inventory.zs AutoUseStrifeHealth, health.zs HealthPickup.Use, p_mobj.cpp P_GiveBody, and p_interaction.cpp ordinary/poison ordering. Eight new regression cases cover thresholds, dead health, stack selection, scaling/capping, forced damage, and deathmatch. Full Release suite: 11,301 passed (Playsim 9,486; Client 271), no failures or skips. Clean Release build with warnings treated as errors passed.
+
+Incomplete: sv_disableautohealth configuration, poison's separate native player/actor health ordering, inventory Use/Deplete callbacks and class import, alternative health inventories, and remaining Phase 1 conversion. Numeric stack support does not establish full native inventory parity. Changes remain uncommitted.
+
+## Phase 1 ordinary damage emergency healing (2026-10-10)
+
+- Converted ordinary player damage auto-use gating from src/playsim/p_interaction.cpp. Emergency health selection runs after armor reduces damage and before health subtraction, only for lethal remainders when the skill setting or deathmatch allows it. Forced hits and ordinary raw telefrags skip healing; LaxTelefrag permits reduced hits to heal.
+- Extracted the shared emergency-healing boundary used by ordinary and poison damage, retaining the native difference that poison does not exclude raw telefrags at this stage. Reuses the prior stored-item algorithm and archive without format changes.
+- Seven new cases cover lethal/nonlethal armor remainders, forced hits, raw/Lax telefrags, deathmatch mode-2 selection, disabled skill and protected hits. Tests verify consumed amounts, health, armor losses and post-armor flash count.
+- Validation: all 11,293 solution tests pass (9,478 Playsim, 271 Client); clean Release rebuild passes with zero warnings/errors; diff whitespace check passes.
+- Scope: ordinary and poison emergency healing are wired for managed numeric health stacks. Native HealthPickup imports/pickup/VM integration, deplete/destroy callbacks, Strife mode-3 healing, alternative-player linkage, MAPINFO skill import, poison callers, teammate scaling and replication remain incomplete. Phase 1 remains incomplete; changes are uncommitted.
+
+## Phase 1 emergency health items for poison damage (2026-10-10)
+
+- Converted AutoUseHealth group selection and AutoUseHealthInfo consumption from player_inventory.zs: mode 1 is skill-gated, mode 2 is the fallback, combined use requires sufficient total healing and the skill setting, largest per-item health wins, and ceiling division consumes only enough items. Mode 3 is excluded from this emergency path.
+- Added validated managed HealthPickupStack storage and PlayerInventory.AutoUseHealth. Added immutable SpawnOptions.AutoUseHealth (default false), included in checksums. Lethal poison damage invokes emergency healing when the skill setting or deathmatch permits it, before health subtraction. Inventory reset clears stored health items.
+- Conditional save wrapper 162 persists stack health/amount/mode with validation and legacy clearing. Captured/restored stacks participate in checksums. Existing default archives remain unchanged.
+- Eight new regression cases cover group priority, combined/insufficient healing, largest-item ordering, mode 3 exclusion, poison survival, stack save round trip/legacy clear/corruption, invalid stack rejection, inventory reset and disabled skill behavior.
+- Validation: all 11,286 solution tests pass (9,471 Playsim, 271 Client); clean Release rebuild passes with zero warnings/errors; diff whitespace check passes.
+- Scope: managed emergency-item algorithm and poison integration are converted. Native HealthPickup class/import/pickup/VM integration, item deplete/destroy callbacks, ordinary-damage auto-use wiring, MAPINFO skill import, Strife mode 3 healing, alternative-player linkage, poison callers, teammate scaling and replication remain incomplete. Health items currently enter through AddHealthPickup; they retain numerical stack metadata rather than native inventory objects. Phase 1 remains incomplete; changes are uncommitted.
+
+## Phase 1 poison death type correction (2026-10-10)
+
+- Audit found ApplyPoisonDamage incorrectly supplied the source as an ordinary death-type inflictor. That let source.DeathType override the saved poison type, or source.SpecialFireDamage suppress a Fire death. Native P_PoisonDamage assigns the stored poison type directly before CallDie rather than using P_DamageMobj inflictor selection.
+- Corrected the managed death-type context to use the stored poison type without ordinary inflictor overrides. Source still passes into damage/death processing and LastDamageSourceId for attribution. No save format changes.
+- Five new regression cases cover Fire/Ice type conflicts, special-fire source flags, unmatched poison type ordinary fallback and absent-poisoner behavior. Tests also check source attribution and no ordinary damage flash.
+- Validation: all 11,278 solution tests pass (9,463 Playsim, 271 Client); clean Release rebuild passes with zero warnings/errors; diff whitespace check passes.
+- Scope: stored poison death-type selection is corrected. Auto-use healing, alternative-player linkage, complete native Die inflictor callbacks, application callers, teammate scaling and replication remain incomplete. Phase 1 remains incomplete; changes are uncommitted.
+
+## Phase 1 archived poison palette toggle (2026-10-10)
+
+- Converted native PF_POISON selection into ClientHost.PoisonPaletteFlash and ClientViewPreferences.PoisonPaletteFlash. Default false matches paletteflash=0 in src/g_statusbar/shared_sbar.cpp. Both software and recorded hardware views pass the setting to the previously converted poison blend.
+- Preference capture, JSON restore and configured-host startup/shutdown persistence now include the toggle. Older JSON archives omit it and retain continuous poison tint. Does not change authoritative counters or gameplay save formats.
+- Three new regression cases cover toggling in both rendering paths and backward-compatible preference defaults. Extended the existing filesystem lifecycle test to verify persistence across host restart. Rendering tests verify expected palette pixels, restoration of continuous pixels and unchanged saves.
+- Validation: all 11,273 solution tests pass (9,458 Playsim, 271 Client); clean Release rebuild passes with zero warnings/errors; diff whitespace check passes.
+- Scope: poison palette selection and its managed persistence are converted. Native config syntax, other palette flags/blend layers, native GPU output, healing, poison application callers, teammate scaling and replication remain incomplete. Existing per-overlay RGB quantization limitation remains. Phase 1 remains incomplete; changes are uncommitted.
+
+## Phase 1 poison view tint and counter ordering (2026-10-10)
+
+- Audit found managed living ticks called CheckPoison before damagecount fade. Native player.zs fades damagecount first; corrected the order and added an observing virtual-hook regression.
+- Converted poison tint formulas from src/rendering/2d/v_blend.cpp into SoftwarePoisonBlend, including count cap 64 and continuous/default versus PF_POISON stepped palette branches. Default continuous tint now follows pain blending in both managed software and recorded hardware views.
+- Eleven new regression cases cover continuous/palette tint values, the cap, invalid counters without pixel mutation, combined pain/poison rendering in both paths, unchanged gameplay saves and counter-before-poison ordering.
+- Validation: all 11,270 solution tests pass (9,458 Playsim, 268 Client); clean Release rebuild passes with zero warnings/errors; diff whitespace check passes.
+- Scope: default poison view tint and standalone palette formula are converted. Host/archived PF_POISON selection is not wired yet. Managed RGB frames quantize each overlay; native combined floating blend/GPU output can differ in low-order channel rounding. Other blend layers, native GPU output, healing, poison callers, teammate scaling and replication remain incomplete. Phase 1 remains incomplete; changes are uncommitted.
+
+## Phase 1 periodic player poison damage (2026-10-10)
+
+- Converted CheckPoison cadence from player.zs and core P_PoisonDamage behavior from src/playsim/p_interaction.cpp. Living ticks invoke the virtual check; every 16 map-clock tics a positive counter loses five (floored at zero) and still attempts the final one-point dose. Stored source IDs resolve to current, non-destroyed actors.
+- Added separate ActorDamage.ApplyPoisonDamage: raw telefrag protection classification, skill/server scaling even for one point, passive inventory and scalar/typed target factors, armor bypass, Buddha survival, death handling and typed pain entry at 64-tic boundaries. Does not apply source amplifiers, ordinary damage counter accumulation or ordinary hit reactions.
+- Twelve new cases cover cadence/final dose, living tick integration, protected counter decay, armor/flash isolation, one-point scaling, typed factors, pain timing/suppression and raw telefrag/Buddha2 behavior. No save format changes; uses previously archived poison state.
+- Validation: all 11,259 solution tests pass (9,457 Playsim, 258 Client); clean Release rebuild passes with zero warnings/errors; diff whitespace check passes.
+- Scope: core living-player poison damage/fade is converted. Native auto-use healing, alternative-player linkage and exact special flame-death selection remain incomplete, as do teammate scaling, VM/projectile application callers, poison rendering and replication. Managed map/level timing uses the existing thinker clock. Phase 1 remains incomplete; changes are uncommitted.
+
+## Phase 1 player poison application and metadata (2026-10-10)
+
+- Converted the protection/accumulation/type-capture portion of P_PoisonPlayer from src/playsim/p_interaction.cpp into PlayerPawn.ApplyPoison. GodMode, GodMode2, Invulnerable and NoDamage reject poison; positive amounts accumulate to 100 without immediate health damage. Nonpositive amounts succeed without replacing state.
+- Stores source actor ID and copies poison damage/pain type names at application time, including PainType-to-DamageType fallback and absent-poisoner clearing. Metadata clears on rebirth, participates in checksums and capture/restore, and uses conditional archive version 161 with strict UTF-8 decoding and legacy reset.
+- Eight new regression cases cover four protections, accumulation/overflow cap, no immediate damage, copied type stability, fallback/null poisoner, nonpositive amounts, source/type save round trip, legacy reset and corrupted UTF-8 rejection.
+- Validation: all 11,247 solution tests pass (9,445 Playsim, 258 Client); clean Release rebuild passes with zero warnings/errors; diff whitespace check passes.
+- Scope: managed application API and metadata persistence are converted. Native teammate/teamdamage scaling, VM and projectile callers, periodic poison damage/fade, poison rendering and replication remain incomplete. Source IDs are retained as metadata; no periodic source resolution/damage runs yet. Phase 1 remains incomplete; changes are uncommitted.
+
+## Phase 1 poison counter death lifecycle (2026-10-10)
+
+- Converted native player.poisoncount death fade and rebirth reset from wadsrc/static/zscript/actors/player/player.zs. Missing/self attackers fade every death tic; distinct attackers fade only when the pre-turn angle is within ten degrees. Zero stays zero. Added bounded PlayerPawn.PoisonCount (0..100).
+- Captured/restored the counter and included nonzero values in checksums. Conditional save wrapper version 160 stores per-actor counters, validates range and count, and preserves default archives. Legacy saves clear the counter; invalid snapshots are rejected before restoration mutates state.
+- Nine new cases cover angle boundaries, missing/self attackers, zero floor, save round trip, legacy reset, corrupted archive rejection, setter validation and cooperative rebirth reset.
+- Validation: all 11,239 solution tests pass (9,437 Playsim, 258 Client); clean Release rebuild passes with zero warnings/errors; diff whitespace check passes.
+- Scope: poison counter storage, death fading and rebirth reset are converted. P_PoisonPlayer application, poison source/type tracking, periodic living-player poison damage/fade, poison rendering and replication remain incomplete. This counter alone does not apply poisoning or deal poison damage. Phase 1 remains incomplete; changes are uncommitted.
+
+## Phase 1 launcher view preference wiring (2026-10-10)
+
+- Added optional LauncherSelection.ViewPreferencesPath and --view-preferences parsing, argument generation and CLI help. Missing/blank option values fail explicitly. Omitting the option retains existing generated arguments and in-memory preference defaults.
+- Added LauncherPlan.CreateHost for an already-created authoritative simulation, transferring selected view dimensions, renderer and settings-file path into ClientHost. Configured hosts use the prior load/save lifecycle; no gameplay save changes.
+- Seven new regression cases cover paths containing spaces, missing/blank/next-option values, omitted-path behavior and selection-to-host settings loading, renderer/dimensions and shutdown persistence.
+- Validation: all 11,230 solution tests pass (9,428 Playsim, 258 Client); clean Release rebuild passes with zero warnings/errors; diff whitespace check passes.
+- Scope: launcher selection/parser/host construction integration is complete. Program.Main still prints a launch plan instead of loading a WAD and running a playable client. Default config location, native config import, class-property import, GPU rendering, other blend layers and replication remain incomplete. Phase 1 remains incomplete; changes are uncommitted.
+
+## Phase 1 view settings file lifecycle (2026-10-10)
+
+- Added ClientViewPreferences.LoadFile/SaveFile and optional ClientHost viewPreferencesPath. Configured hosts load preferences on construction and save on disposal. Missing files use defaults; malformed files, missing parent directories and access/write errors propagate. Existing callers without a path retain in-memory behavior.
+- Saves validate before writing, write to a unique sibling temporary file and move over the destination, with temporary-file cleanup after failure. Startup parses before event subscriptions. Disposal releases subscriptions/audio even when saving fails, while retaining the error.
+- Six filesystem regression tests cover shutdown/startup persistence, unchanged gameplay saves, malformed-file preservation, invalid-setting rejection before replacement, failed replacement cleanup, missing directory errors and disposal after a failed save.
+- Validation: all 11,223 solution tests pass (9,428 Playsim, 251 Client); clean Release rebuild passes with zero warnings/errors; diff whitespace check passes.
+- Scope: automatic preference lifecycle is available for hosts given an explicit file path. Default config location and launcher option wiring, native config syntax/import, class-property import, GPU rendering, other blend layers and counter replication remain incomplete. JSON format remains separate from gameplay saves. Phase 1 remains incomplete; changes are uncommitted.
+
+## Phase 1 pain view preference archive (2026-10-10)
+
+- Added ClientViewPreferences JSON archive and ClientHost capture/apply integration for blood fade strength, smoothing enablement and smoothing strength. Converts local archive semantics of blood_fade_scalar (v_blend.cpp) and r_view_pain_smooth/r_view_pain_smooth_strength (r_view_pain_smooth.cpp) using a separate managed settings representation.
+- Missing fields retain native defaults. Imported smoothing strength clamps to 0..1; invalid/nonfinite values and unknown fields are rejected. Host application validates the full settings object before mutation, preventing partial updates. Does not alter gameplay save formats.
+- Nine regression cases cover archive round trip, default values, clamping, malformed/unknown settings, atomic rejection and gameplay save isolation. Gameplay restore also verifies existing LastDamageType and DamageCount persistence while preserving view preferences.
+- Validation: all 11,217 solution tests pass (9,428 Playsim, 245 Client); clean Release rebuild passes with zero warnings/errors; diff whitespace check passes.
+- Scope: explicit settings archive/capture/apply API is complete. Automatic startup/shutdown file persistence and native config-file import remain unimplemented; JSON is not native config syntax. Class-property import, GPU rendering, other blend layers and counter replication remain incomplete. Phase 1 remains incomplete; changes are uncommitted.
+
+## Phase 1 typed and inherited player pain colors (2026-10-10)
+
+- Converted native GetPainFlash fallback from player.zs and reverse registration/class-ancestor lookup from src/playsim/p_user.cpp. Managed player classes can provide ordered PlayerPainFlash metadata and override DamageFade; later matching child registrations take precedence. Zero color falls back to DamageFade; nonzero transparent colors remain transparent.
+- Lookup uses existing persistent PlayerPawn.LastDamageType, which represents the received damage type between hits. Actor.DamageTypeReceived is only a temporary death callback context in managed code and is cleared after damage, so it cannot drive subsequent rendered frames. No new per-instance saved state or archive version.
+- Seven new regression cases cover typed/case-insensitive matching, unrelated-class rejection, child precedence, zero/unmatched fallback, transparent color preservation, default colors and inflictor PainType independence.
+- Validation: all 11,208 solution tests pass (9,428 Playsim, 236 Client); clean Release rebuild passes with zero warnings/errors; diff whitespace check passes.
+- Scope: managed class metadata lookup and fallback are converted and consumed by both existing rendering paths. Native DECORATE/ZScript property import and registration pipeline, class reconstruction on restore, GPU rendering, archived preferences, other blend layers and counter replication remain incomplete. Phase 1 remains incomplete; changes are uncommitted.
+
+## Phase 1 recorded hardware pain blend integration (2026-10-10)
+
+- Audit found ClientHost.UseHardware omitted the player pain blend after its recorded scene blit. Added the existing native-derived blend at that point, including GetPainFlash color, blood fade strength and smoothing preferences. Native reference: V_AddPlayerBlend/V_CalcBlend in src/rendering/2d/v_blend.cpp.
+- Reuses SoftwarePainBlend so both managed rendering paths share calculation order, opacity cap and color handling. RecordedHardwareDevice remains a CPU-backed quad recorder; this does not implement native GPU rendering.
+- Six new regression cases cover zero/ordinary/smoothed/half/disabled flashes, blending over world and background pixels, repeated frames without accumulation, unchanged damage counters/saves while paused, and rendering without a player.
+- Validation: all 11,201 solution tests pass (9,421 Playsim, 236 Client); clean Release rebuild passes with zero warnings/errors; diff whitespace check passes.
+- Scope: recorded renderer pain integration is complete. Native GPU backend and blend submission, archived preferences, class DamageFade/PainFlashes import, other blend layers and damage-counter replication remain incomplete. Phase 1 remains incomplete; changes are uncommitted.
+
+## Phase 1 software pain smoothing (2026-10-10)
+
+- Converted the stateless smoothstep/linear interpolation from src/r_view_pain_smooth.cpp and ratio application from src/rendering/2d/v_blend.cpp. Uses native float arithmetic and truncates before applying blood fade strength and the opacity cap. Smoothing uses the raw counter even when the pain color is translucent.
+- Added ClientHost.SmoothPain (default false) and PainSmoothStrength (default 0.6), wired through SoftwareView. Finite strength clamps to 0..1 like the native setting; nonfinite values are explicitly rejected. No authoritative state or save format changes.
+- Nine new regression cases cover disabled/zero strength, zero/peak damage, smoothing-before-fade truncation, opacity cap, translucent color ordering, settings validation and unchanged saves after rendering.
+- Validation: all 11,195 solution tests pass (9,421 Playsim, 230 Client); clean Release rebuild passes with zero warnings/errors; diff whitespace check passes.
+- Scope: existing native software pain smoothing behavior is converted. Archived rendering preference persistence, hardware blending, class DamageFade/PainFlashes import, other blend layers and damage-counter replication remain incomplete. Phase 1 remains incomplete; changes are uncommitted.
+
+## Phase 1 software pain fade strength (2026-10-10)
+
+- Converted blood_fade_scalar ordering from src/rendering/2d/v_blend.cpp: multiply the native curve result, truncate, then cap opacity at 175. Default strength remains one; zero suppresses the flash.
+- Added ClientHost.BloodFadeScalar and passed it through SoftwareView into SoftwarePainBlend. This is a local rendering preference and does not change authoritative damage counters or saves.
+- Eight new regression cases cover zero/half/double strength, scaling before the cap, rejection of negative/nonfinite values without pixel mutation, disabled view integration and host preference validation.
+- Validation: all 11,186 solution tests pass (9,421 Playsim, 221 Client); clean Release rebuild passes with zero warnings/errors; diff whitespace check passes.
+- Scope: software fade strength is converted. Managed preference accepts finite nonnegative values, whereas the native float cvar has no validation callback. Archived preference persistence, smoothing, class DamageFade/PainFlashes import, hardware blending, other blend layers and network counter replication remain incomplete. Phase 1 remains incomplete; changes are uncommitted.
+
+## Phase 1 custom pain color hook (2026-10-10)
+
+- Converted the virtual PlayerPawn.GetPainFlash rendering hook and ARGB opacity ordering from native player scripts and `src/rendering/2d/v_blend.cpp`. Managed hook defaults to the existing red flash and can be overridden by managed player classes.
+- SoftwareView invokes the hook; SoftwarePainBlend scales the damage counter by color alpha before the native curve and blends all RGB channels. Transparent color suppresses the flash.
+- Three new regression cases cover transparent/full/partial green color and native opacity-before-curve behavior.
+- Validation: all 11,178 solution tests pass (9,421 Playsim, 213 Client); clean Release rebuild passes with zero warnings/errors; diff whitespace check passes.
+- Scope: virtual managed color selection/rendering is converted. Native class DamageFade property import and damage-type/ancestor PainFlashes registration, VM overrides, smoothing/preferences and replication remain incomplete. This class color hook is not new per-instance saved state. Phase 1 remains incomplete; changes are uncommitted.
+
+## Phase 1 software-view damage flash (2026-10-10)
+
+- Converted the DamageToAlpha curve and 175 maximum pain blend from `src/rendering/2d/v_blend.cpp` for the managed software view. Added SoftwarePainBlend and applied the red flash after drawing world columns using the local simulation player's DamageCount.
+- Rendering reads the authoritative counter without mutating it. Zero counter preserves existing pixels. Uses integer RGB blending in the existing software frame representation.
+- Five new cases cover native curve values, maximum cap, view integration and unchanged authoritative save state.
+- Validation: all 11,175 solution tests pass (9,421 Playsim, 210 Client); clean Release rebuild passes with zero warnings/errors; diff whitespace check passes.
+- Scope: default red software pain flash is converted. Native custom DamageFade/damage-type colors, fade scalar/smoothing preferences, other blend layers, hardware rendering and network counter replication remain incomplete. Phase 1 remains incomplete; changes are uncommitted.
+
+## Phase 1 damage counter lifecycle resets (2026-10-10)
+
+- Converted native player damagecount resets on rebirth (`src/playsim/p_mobj.cpp`) and freeze death (`wadsrc/static/zscript/actors/shared/ice.zs`). Successful managed respawn and FreezeDeath now clear the counter.
+- Three new regression cases cover cooperative/deathmatch rebirth and freeze-death reset retained through save restoration.
+- Validation: all 11,170 solution tests pass (9,421 Playsim); clean Release rebuild passes with zero warnings/errors; diff whitespace check passes.
+- Scope: existing counter lifecycle is converted. Visual flash rendering/replication, poison/bonus counters, native VM and full player linkage remain incomplete. Phase 1 remains incomplete; changes are uncommitted.
+
+## Phase 1 dead player damage fade (2026-10-10)
+
+- Converted native death-view damagecount fade from `wadsrc/static/zscript/actors/player/player.zs` into the existing WatchKiller path. Counter fades with no distinct attacker, or when the view is within ten degrees of the attacker before turning; other views preserve the counter while turning.
+- Six new cases cover facing/near-facing/outside-threshold/far-facing killers and missing/self attackers. Adjusted the outside-threshold test to 10.01 degrees because managed BAM encoding rounds nominal ten degrees slightly below the threshold.
+- Final full suite passes all 11,167 tests (9,418 Playsim); clean Release rebuild passes with zero warnings/errors; diff whitespace check passes.
+- Scope: damage counter death fade is converted. Poison counter fade, visual flash rendering/replication and full native player/VM linkage remain incomplete. Phase 1 remains incomplete; changes are uncommitted.
+
+## Phase 1 player damage counter (2026-10-10)
+
+- Converted native player damagecount accumulation in `src/playsim/p_interaction.cpp`: add post-armor damage, capped at 100. Added living-player per-tic fade after thinker processing based on `wadsrc/static/zscript/actors/player/player.zs`.
+- Added bounded PlayerPawn.DamageCount, conditional checksum, snapshot capture/validated restore and conditional save archive 159. Malformed archive values outside 0..100 are rejected; legacy restore clears the counter.
+- Two new regression cases verify armor accumulation/capping/living fade and save/legacy restoration. Updated delayed player pain archive expectations for the new counter wrapper.
+- Final verification: all 11,161 solution tests pass (9,412 Playsim); clean Release rebuild passes with zero warnings/errors; diff whitespace check passes.
+- Scope: counter state and living fade are converted. Renderer/replication integration and native dead-player attacker-view fade remain unfinished. Native VM, skill import, timed poison and player/team linkage remain incomplete. Phase 1 is incomplete; changes are uncommitted.
+
+## Phase 1 initially zero ordinary damage reactions (2026-10-10)
+
+- Converted the initially-zero modifier distinction in native DamageMobj/P_DamageMobj in `src/playsim/p_interaction.cpp`: olddam zero is allowed through the reaction boundary, where a typed wound can be selected without pain flags.
+- Managed ordinary zero damage (including negative input clamped to zero) now enters reactions after special callbacks when the modifier input was already zero. Positive damage cancelled/reduced by callbacks retains its existing cancellation behavior.
+- Four new regression cases cover zero/clamped-negative wound selection and zero/negative special callback cancellation of positive damage.
+- Validation: all 11,159 solution tests pass (9,410 Playsim); clean Release rebuild passes with zero warnings/errors; diff whitespace check passes.
+- Audit also identified unconverted player damagecount accumulation/fade and rendering integration; deferred as a separate coherent conversion. Native VM, timed poison, skill import and player/team linkage remain incomplete. Phase 1 remains incomplete; changes are uncommitted.
+
+## Phase 1 end-level sector survival cap (2026-10-10)
+
+- Converted native player SECF_ENDLEVEL damage capping from `src/playsim/p_interaction.cpp`: damage at or above current health is capped to health minus one at the player protection boundary, before armor. Uses existing managed DamageEndsLevel sector metadata.
+- Four new cases cover ordinary/forced/telefrag lethal player hits and non-player exclusion. Corrected the existing disabled deathmatch exit test: NoExit prevents exit but does not remove native survival protection.
+- Initial compile caught the sector collection Count/Length mismatch, corrected before final verification. Final full suite passes all 11,155 tests (9,406 Playsim). Clean Release rebuild passes with zero warnings/errors; diff whitespace check passes.
+- Remaining native VM, timed poison, skill import and player/team linkage work is incomplete. Phase 1 remains incomplete; changes are uncommitted.
+
+## Phase 1 zero forced-damage wound reactions (2026-10-10)
+
+- Converted the remaining forced-zero reaction entry in native P_DamageMobj/ReactToDamage in `src/playsim/p_interaction.cpp`: nonnegative forced results enter the reaction boundary, where typed wounds are selected before pain eligibility.
+- Managed zero forced damage now reaches wound selection even without CausePain/ForcePain. Negative input clamped to zero follows the same rule; player NoPain protection still rejects the reaction before wound selection.
+- Four new regression cases cover player/nonplayer typed wounds, clamped negative damage, and player NoPain suppression. Existing ordinary full armor cancellation coverage still passes.
+- Validation: all 11,151 solution tests pass (9,402 Playsim); clean Release rebuild passes with zero warnings/errors; diff whitespace check passes.
+- Remaining native VM, skill import, timed poison and team/player linkage work is incomplete. Phase 1 remains incomplete; changes are uncommitted.
+
+## Phase 1 native pain chance random stream (2026-10-10)
+
+- Converted ordinary pain chance from the shared combat RNG to native pr_damagemobj named ActorTakeDamage in `src/playsim/p_interaction.cpp`, using the existing native PCG implementation and name CRC 0xdae49b5a.
+- Added conditional checksum and snapshot state plus save archive 158. Pain rolls remain independent of combat, missile damage, electric flicker and poison howling; legacy restore resets the new stream.
+- Added two named-sequence/save-restoration tests and updated prior combat-stream expectations in pain, skull, BFG and projectile tests. Delayed player pain saves now include the pain RNG wrapper; malformed-wrapper coverage remains explicit.
+- Initial runs exposed obsolete shared-stream and archive-version expectations. Corrected the expectations and a misplaced test-version edit; final full rerun passes all 11,147 solution tests (9,398 Playsim). Clean Release rebuild passes with zero warnings/errors; diff whitespace check passes.
+- Scope: native pain randomness is converted. Full native VM behavior, timed poison, skill-definition import and player/team linkage remain incomplete. Phase 1 remains incomplete; changes are uncommitted.
+
+## Phase 1 dedicated server skill factor selection (2026-10-10)
+
+- Audited native baby-skill DamageFactor in `wadsrc/static/mapinfo/doomcommon.txt` and completed dedicated-server startup selection for the converted separate skill factor.
+- Added DedicatedServerOptions.SkillDamageFactor and --skill-damage-factor parsing, finite nonnegative validation, usage help and simulation construction wiring. Default remains one pending skill-definition import.
+- Expanded the parsed map-boot integration test to verify independent skill/server factors and added two invalid skill-factor regression cases.
+- Validation: all 11,145 solution tests pass (9,396 Playsim, 82 Server); clean Release rebuild passes with zero warnings/errors; diff whitespace check passes.
+- Scope: explicit startup skill factor selection is usable; automatic native skill/MAPINFO definition import and runtime changes remain incomplete. This is configuration wiring for converted behavior, not completion of the skill parser. Phase 1 remains incomplete; changes are uncommitted.
+
+## Phase 1 separate skill and server player factors (2026-10-10)
+
+- Converted the distinct native SKILLP_DamageFactor and sv_damagefactorplayer multiplication order in `src/playsim/p_interaction.cpp`: damage times skill times server, with a single final integer truncation.
+- Added immutable SpawnOptions/AuthoritySimulation.SkillDamageFactor, default one, finite nonnegative validation and exact-double conditional checksum participation. PlayerDamageFactor now represents the server factor; existing configuration retains behavior with the default skill factor.
+- Six new cases verify combined multiplication without intermediate truncation, one-point exception, forced bypass, non-player exclusion and invalid skill factor rejection.
+- Validation: all 11,143 solution tests pass (9,396 Playsim); clean Release rebuild passes with zero warnings/errors; diff whitespace check passes.
+- Scope: host-configured distinct factors are converted. Skill-definition import and dedicated-server skill-factor selection remain missing, as do timed poison scaling and runtime mutation. Immutable configuration must match save restoration. Phase 1 is incomplete; changes are uncommitted.
+
+## Phase 1 dedicated server monster pain configuration (2026-10-10)
+
+- Completed startup wiring for the converted native skill NoPain behavior: DedicatedServerOptions.NoMonsterPain reaches SpawnOptions and AuthoritySimulation. Added --no-monster-pain parsing and usage help.
+- Two map-boot integration cases verify the default and enabled setting, including repeated argument handling, real damage, non-player pain suppression and preserved wakeup.
+- Validation: all 11,137 solution tests pass (9,390 Playsim, 80 Server); clean Release rebuild passes with zero warnings/errors; diff whitespace check passes.
+- Scope: dedicated server startup configuration is usable. Native skill-definition import and runtime setting changes remain missing. Existing immutable simulation configuration must match when restoring saves. Phase 1 is incomplete; changes are uncommitted.
+
+## Phase 1 dedicated server damage factor configuration (2026-10-10)
+
+- Wired managed player, non-player and friendly damage factors through DedicatedServerOptions into simulation construction. Added startup arguments --player-damage-factor, --monster-damage-factor and --friendly-damage-factor, with invariant numeric parsing, finite nonnegative validation, explicit errors and usage help.
+- Five new server regression cases cover actual parsed map boot/gameplay factor selection and invalid values. Defaults remain one.
+- Validation: all 11,135 solution tests pass (9,390 Playsim, 78 Server); clean Release rebuild passes with zero warnings/errors, followed by a successful incremental build after usage help addition; diff whitespace check passes.
+- Scope: startup configuration is usable. Native runtime cvar mutation, separate skill/server player factors, skill-definition import, timed poison scaling and client setting replication remain incomplete. Phase 1 remains incomplete; changes are uncommitted.
+
+## Phase 1 non-player damage scaling (2026-10-10)
+
+- Converted native sv_damagefactormobj and sv_damagefactorfriendly selection in `src/playsim/p_interaction.cpp`. Non-player targets select the factor by their Friendly flag, before special damage callbacks; the rule also applies to nonmonster actors.
+- Added immutable SpawnOptions/AuthoritySimulation.MonsterDamageFactor and FriendlyDamageFactor, default one, with finite nonnegative validation and conditional exact-double checksum participation. Player factor selection remains separate.
+- Ten new regression cases cover friendly/ordinary selection, truncation, one-point exception, forced bypass, raw/lax telefrags, and invalid configurations.
+- Validation: all 11,130 solution tests pass (9,390 Playsim); clean Release rebuild passes with zero warnings/errors; diff whitespace check passes.
+- Scope: host-configured scaling is converted; server cvar activation and skill-definition import remain missing. Immutable factors belong to simulation construction, with matching configuration required for save restoration. Timed poison, team damage and native VM/player linkage remain incomplete. Phase 1 is incomplete; changes are uncommitted.
+
+## Phase 1 player skill damage scaling (2026-10-10)
+
+- Converted native player scaling before special damage callbacks in `src/playsim/p_interaction.cpp`: only input damage above one is scaled; forced hits bypass scaling; raw telefrags bypass unless LaxTelefragDamage is enabled.
+- Added immutable SpawnOptions/AuthoritySimulation.PlayerDamageFactor (combined skill/server factor), default one. Finite nonnegative configuration is enforced. Conditional checksum records exact double bits; scaled positive damage truncates and saturates to the managed integer range.
+- Eight new regression cases cover one-point damage, truncation/callback input ordering, forced bypass, raw/lax telefrags, and invalid factor rejection.
+- Validation: all 11,120 solution tests pass (9,380 Playsim); clean Release rebuild passes with zero warnings/errors; diff whitespace check passes.
+- Scope: host-configured combined player scaling is converted. Native skill-definition import and separate server cvar wiring, monster/friendly scaling, and timed poison scaling remain missing. As with Skill/FastMonsters, this immutable option belongs to simulation construction and save restoration requires matching configuration. Phase 1 is incomplete; changes remain uncommitted.
+
+## Phase 1 skill-level pain suppression (2026-10-10)
+
+- Converted native SKILLP_NoPain gating in ReactToDamage from `src/playsim/p_interaction.cpp`. Added immutable SpawnOptions/AuthoritySimulation.NoMonsterPain configuration, default false, with conditional checksum participation.
+- Non-player damage pain is suppressed before chance/random draws, including ForcePain and PoisonCloud howling. Damage, wakeup and retaliation continue. Player damage pain and direct TriggerPainChance actions retain native behavior.
+- Five regression cases cover player/non-player ordinary and forced pain, retaliation/wakeup, combat/poison draw suppression, and direct pain action eligibility.
+- Validation: all 11,112 solution tests pass (9,372 Playsim); clean Release rebuild passes with zero warnings/errors; diff whitespace check passes.
+- Scope: host-configured skill behavior is converted. GAMEINFO skill import remains missing. Like existing immutable Skill/FastMonsters configuration, this option belongs to simulation construction and is not overridden by save restoration; restore requires the intended configuration. Native VM, team damage and player linkage remain incomplete. Phase 1 remains incomplete; changes are uncommitted.
+
+## Phase 1 PoisonCloud pain howling (2026-10-09)
+
+- Converted native TriggerPainChance PoisonCloud monster howling from `src/playsim/p_interaction.cpp`: after a successful pain decision/state entry, monsters draw pr_poison and howl below 128, using the configured body-channel NoStop sound.
+- Added the independent native PoisonDamage PCG stream (name CRC 0x15ba5b61), conditional checksum state, snapshot capture/restore, and conditional save archive 157. Legacy saves reset the stream to its initial seed; combat and electric flicker streams remain independent.
+- Five new regression cases exercise multiple seeds with/without a configured howl, nonmonster and NoPain draw suppression, byte-identical save round trips, next-draw restoration, legacy reset and malformed prior-version rejection.
+- Validation: all 11,107 solution tests pass (9,367 Playsim); clean Release rebuild passes with zero warnings/errors; diff whitespace check passes.
+- Scope: PoisonCloud pain reaction is converted; timed player poisoning, poison inventory interactions, native VM overrides and skill-level monster pain suppression remain incomplete. Phase 1 is incomplete; changes remain uncommitted.
+
+## Phase 1 Buddha pain at one health (2026-10-09)
+
+- Audited native ReactToDamage in `src/playsim/p_interaction.cpp`: pain wakeup is based on positive resulting damage, not the amount of health lost after Buddha survival protection.
+- Converted the managed pain eligibility check to use post-armor damage. Actors already at one health under ordinary Buddha or PowerBuddha can now enter pain on a damaging hit while reporting zero health lost.
+- Five regression cases cover player/monster Buddha, player PowerBuddha, pain threshold suppression, and NoPain suppression with monster wakeup.
+- Validation: all 11,102 solution tests pass (9,362 Playsim); clean Release rebuild passes with zero warnings/errors; diff whitespace check passes.
+- Remaining scope: skill-level monster pain suppression, native VM overrides, team damage, thrust and full player/inventory linkage remain incomplete. Phase 1 is incomplete; changes are uncommitted.
+
+## Phase 1 zero forced-damage side effects (2026-10-09)
+
+- Audited native DamageMobj and P_DamageMobj in `src/playsim/p_interaction.cpp`: zero/negative-clamped forced hits still run corpse ice checks and skull-flight momentum cancellation, and nonnegative results enter the reaction boundary.
+- Removed the managed early return for zero forced damage. Added forced-only ForcePain handling for a zero health remainder; ordinary full armor cancellation continues to suppress later effects.
+- Six new cases cover zero/negative-clamped forced pain, NoPain suppression with wakeup, charge momentum cancellation without health loss, and frozen corpse ice-shatter permission.
+- Initial validation exposed three regressions from applying the remainder pain change to ordinary armor cancellation. Restricted the new branch to forced hits; the full rerun passes all 11,097 solution tests (9,357 Playsim).
+- Clean Release rebuild passes with zero warnings/errors; diff whitespace check passes. Remaining native VM, skill pain, thrust/team damage and player linkage gaps are unchanged. Phase 1 is incomplete; changes are uncommitted.
+
+## Phase 1 protected player damage reactions (2026-10-09)
+
+- Converted the native player guard at the beginning of `ReactToDamage` in `src/playsim/p_interaction.cpp`: GodMode2 and player NoPain reject reactions; ordinary GodMode rejects reactions below the telefrag damage threshold. This guard precedes wound selection and force/fake pain handling.
+- Fixed the managed zero-damage modifier route that could trigger CausePain/ForcePain for a GodMode2 player before the later health protection boundary. Ordinary forced damage still removes health while protected player pain reactions are suppressed.
+- Four new regression cases cover zero-damage modifier reactions with CausePain/ForcePain and forced pain under ordinary GodMode or player NoPain.
+- Validation: all 11,091 solution tests pass (9,351 Playsim); clean Release rebuild passes with zero warnings/errors; diff whitespace check passes.
+- Scope: converts the existing managed player reaction path. Native VM reaction overrides, skill-level monster pain suppression, player thrust, team damage and voodoo linkage remain incomplete. Phase 1 remains incomplete; changes are uncommitted.
+
+## Phase 1 ordinary GodMode persistence (2026-10-09)
+
+- Audited native player cheat serialization in `src/playsim/p_user.cpp` (cheats) and CF_GODMODE protection in `src/playsim/p_interaction.cpp`. Managed ordinary GodMode participated in damage/checksum but was missing from snapshot/save capture and restore.
+- Added PlayerGodMode pose state, snapshot capture/restore, and conditional save archive version 156 wrapping prior versions 15 through 155. Default false preserves the previous archive version; legacy restore resets the field. Existing GodMode checksum participation remains intact.
+- Six new regression cases cover ordinary protection after load, forced damage/telefrag bypass after load, byte-identical round trips, snapshot restore, legacy reset, malformed boolean and recursive prior-version rejection.
+- Validation: all 11,087 solution tests pass (9,347 Playsim); clean Release rebuild passes with zero warnings/errors; diff whitespace check passes.
+- Remaining scope: native cheat command activation, full player cheat/voodoo linkage, team damage and native VM inventory behavior remain incomplete. Phase 1 remains incomplete; changes are uncommitted.
+
+## Phase 1 player Buddha2 persistence (2026-10-09)
+
+- Audited native `hasBuddha` and player protection in `src/playsim/p_interaction.cpp`. Managed Buddha2 already implemented ultimate lethal-hit protection, but its state was absent from snapshot/save capture and restore.
+- Added PlayerBuddha2 pose state, snapshot capture/restore, and conditional save archive version 155 wrapping prior versions 15 through 154. Existing checksum already includes Buddha2. Default false preserves the previous archive format; legacy restore now resets the field.
+- Added six regression cases verifying restored protection against lethal ordinary/forced damage and forced telefrags, snapshot restoration, legacy reset, byte-identical save round trips, and malformed flag/prior-version rejection.
+- Validation: all 11,081 solution tests pass (9,341 Playsim); clean Release rebuild passes with zero warnings/errors; diff whitespace check passes.
+- Remaining scope: native cheat activation, full player cheat/voodoo linkage, team damage scaling, and native inventory/VM integration remain incomplete. This converts persistence for the existing effective managed Buddha2 state. Phase 1 is incomplete; changes remain uncommitted.
+
+## Phase 1 player GodMode2 protection (2026-10-09)
+
+- Converted the missing CF_GODMODE2 player protection from native `src/playsim/p_interaction.cpp`: the player protection boundary clears forced damage and blocks health/armor loss even for raw telefrags.
+- Added PlayerPawn.GodMode2, conditional checksum participation, snapshot capture/restore, and conditional save archive version 154. Default false leaves older archive versions unchanged; legacy restore resets the field. Malformed boolean payloads are rejected.
+- Six regression cases cover ordinary/forced damage, ordinary/forced telefrags, ordinary GodMode remaining vulnerable to telefrags, snapshot/save round trips, malformed payloads, and legacy reset.
+- Validation: all 11,075 solution tests pass (9,335 Playsim); clean Release rebuild passes with zero warnings/errors; diff whitespace check passes.
+- Scope: host-configured managed cheat state is implemented. Native cheat-command activation, voodoo player linkage, team damage scaling, and native player thrust options remain outside this conversion. Phase 1 remains incomplete; changes are uncommitted.
+
+## Phase 1 player forced-damage protection ordering (2026-10-09)
+
+- Converted the native player protection boundary in `src/playsim/p_interaction.cpp`: Buddha2 and player NoDamage clear forced damage after special damage checks, before player protection and armor.
+- Moved the managed flag clearing to that boundary. Forced hits now skip spectral/dormant rejection and damage callbacks/factors before protected-player armor. Buddha2 rechecks player invulnerability/GodMode after forced is cleared and continues to survive lethal hits.
+- Supersedes the previous early-clear implementation and its callback expectation. Updated those two regression cases and added five cases for spectral/dormant targets, armor, invulnerability/GodMode, and lethal survival.
+- Validation: all 11,069 solution tests pass (9,329 Playsim); clean Release rebuild passes with zero warnings/errors; diff whitespace check passes.
+- Remaining scope: team damage scaling, native player thrust/invulnerability options, GodMode2, and full inventory/native VM behavior are not certified. Existing managed NoDamage pain reaction remains a separate compatibility boundary. Phase 1 is incomplete; changes are uncommitted.
+
+## Phase 1 managed Buddha2 damage flag consistency (2026-10-09)
+
+- Audited native `src/playsim/p_interaction.cpp` player protection: CF_BUDDHA2 removes DMG_FORCED from the effective flags.
+- Fixed the managed protection path to clear DamageFlags.Forced as well as its cached boolean. Damage callbacks now receive consistent effective flags; unrelated NoPain and NoEnhance flags remain intact.
+- Added two regression cases covering Buddha2 callbacks and ordinary forced hits bypassing callbacks.
+- Validation: all 11,064 solution tests pass (9,324 Playsim); clean Release rebuild passes with zero warnings/errors; diff whitespace check passes.
+- Scope: this repairs the existing managed early protection boundary. Native clears forced flags later, after special modifiers and team damage; exact native ordering remains outstanding. Phase 1 is incomplete. Changes remain uncommitted.
+
+## Phase 1 managed health-drain strength persistence (2026-10-09)
+
+- Closed a managed save omission: PlayerPawn.DrainStrength already influences damage/healing and checksums but was absent from actor snapshots and archives. Capture/restore now preserves the effective strength. Legacy saves without the field reset it to zero instead of retaining later live state. Loading config does not invoke OnDrain or replay health-grant audio.
+- Added conditional managed archive version 153 wrapping versions 15-152, storing each actor's effective player strength as an IEEE double (non-players capture zero). Strict finite-value/length/count/prior-version checks reject malformed data; snapshot validation rejects nonfinite strengths before mutation. Geometry is required for metadata, and zero strength retains the existing archive. Native binary save compatibility is not claimed.
+- Native context: p_interaction.cpp DamageMobj selects the maximum positive Strength among PowerDrain inventory entries and multiplies post-armor damage by that strength before OnDrain/body grant. Preserving the represented effective strength is necessary for equivalent managed healing continuation. Native power inventory identity, item selection and full power lifecycle are still unfinished.
+- Seven regressions cover exact fractional/amplified values, byte-identical archive restoration and resulting healing/audio, no load-time sound, snapshot and legacy reset behavior, and NaN/positive-infinity/negative-infinity archive/snapshot rejection without live mutation. Full Release suite passes 11,062 tests (9,322 Playsim). Clean Release rebuild with warnings as errors passes with zero warnings/errors; git diff --check passes.
+- Boundary: native maximum-strength inventory selection and full power persistence, specialized poison/player damage routes and broader callback/cancellation ordering, skill-specific pain suppression, blood effects, generic brainless charging, class/function import and serialization, full archvile fire actors and complete actor reconstruction/brain history remain unfinished. Phase 1 remains incomplete; changes are uncommitted.
+
+
+## Phase 1 successful health-drain sound (2026-10-09)
+
+- Converted the missing PowerDrain success sound. After the managed OnDrain callback, a successful body grant emits *drainhealth from the attached source player on CHAN_ITEM (3), flags 0, volume 1 and normal attenuation. Capped health, dead sources and rejected/zero grants remain silent; existing self and DontDrain exclusions remain unchanged. Detached managed actors can still perform health-only calls without requiring an audio simulation.
+- Native audit: p_interaction.cpp DamageMobj computes drain from post-armor damage, calls virtual OnDrain, then emits S_Sound(source, CHAN_ITEM, 0, "*drainhealth", 1, ATTN_NORM) only when P_GiveBody succeeds. This occurs before target death-state entry. The managed grant return value now controls sound emission at the same represented point.
+- Eight regressions cover successful ordinary and negative percentage grants, capped/dead/zero cases, self/DontDrain exclusions, channel/flags/volume/attenuation and observation of the healed source and queued sound before a target death action. Existing drain callback/maximum-health/ordering tests remain passing. Full Release suite passes 11,055 tests (9,315 Playsim). Clean Release rebuild with warnings as errors passes with zero warnings/errors; git diff --check passes. No archive format change is needed.
+- Boundary: native inventory selection of maximum PowerDrain strength and complete power persistence, specialized poison/player damage routes and broader callback/cancellation ordering, skill-specific pain suppression, blood effects, generic brainless charging, class/function import and serialization, full archvile fire actors and complete actor reconstruction/brain history remain unfinished. Phase 1 remains incomplete; changes are uncommitted.
+
+
+## Phase 1 lax telefrag damage reduction (2026-10-09)
+
+- Converted LAXTELEFRAGDMG for managed actors, ACS flags, snapshots/checksums and default resurrection reset. Flagged targets allow telefrag-sized hits through self scaling and ordinary damage modifiers/callbacks, and players retain post-armor damage instead of restoring the pre-armor amount. Forced damage still skips ordinary modifiers/callbacks. Raw telefrag identity remains separate for existing invulnerability/spectral and player Buddha decisions.
+- Native audit: p_interaction.cpp DamageMobj admits MF7_LAXTELEFRAGDMG through SelfDamageFactor and ordinary special/modifier gates, and allows player armor's newdam to replace raw damage under that flag. Player Buddha uses the original telefragDamage boolean even after reduction. Managed player Buddha handling now explicitly preserves that raw identity. Native team-damage reductions and specialized damage routes remain outside this change.
+- Added conditional managed archive version 152 wrapping versions 15-151 with strict boolean/size/count/prior-version checks. Flag metadata requires geometry; absent flags retain the prior archive. Legacy fixtures clear the property. Native class-property import remains unfinished.
+- Eight regressions cover flagged/default self and target factor reductions, player callback/armor reduction, forced callback bypass, original-hit player Buddha behavior, ACS flag access, byte-identical save restoration and malformed flag rejection. Full Release suite passes 11,047 tests (9,307 Playsim). Clean Release rebuild with warnings as errors passes with zero warnings/errors; git diff --check passes.
+- Boundary: team-damage scaling, specialized poison/player damage routes and broader callback/cancellation ordering, skill-specific pain suppression, blood effects, generic brainless charging, class/function import and serialization, full archvile fire actors and complete actor reconstruction/brain history remain unfinished. Phase 1 remains incomplete; changes are uncommitted.
+
+
+## Phase 1 self-damage factor (2026-10-09)
+
+- Converted Actor.SelfDamageFactor with a default of one. Damage whose source is the target scales before ordinary source/target modifiers and armor, with integer truncation. Inflictor identity alone does not activate it. Forced damage and NoFactor still apply self scaling; ordinary telefrag-sized hits bypass it. The factor uses the existing managed Fixed representation and saturated integer scaling, rather than claiming arbitrary native double precision or overflow parity.
+- Native audit: p_interaction.cpp DamageMobj tests target == source and scales with SelfDamageFactor before invulnerability and ordinary modifiers, outside the DMG_FORCED/DMG_NO_FACTOR gates. It bypasses self scaling for raw telefrag-sized damage unless MF7_LAXTELEFRAGDMG is set. That flag remains unconverted; represented actors follow the default telefrag branch. The original raw amount remains available for telefrag/fake-pain decisions.
+- Added snapshots/checksums and conditional managed archive version 151 wrapping versions 15-150. The trailer stores one raw fixed factor per actor, validates size/count/prior version, and requires geometry. Factors equal to one retain the prior archive; legacy actor poses default to one. Native class/property import remains unfinished.
+- Eight regressions cover zero/fractional/amplified self damage, Forced/NoFactor behavior, source/target factor and armor ordering, distinct source versus inflictor, default telefrag bypass, byte-identical save restoration, restored damage behavior and invalid prior-version rejection. Full Release suite passes 11,039 tests (9,299 Playsim). Clean Release rebuild with warnings as errors passes with zero warnings/errors; git diff --check passes.
+- Boundary: LAXTELEFRAGDMG, specialized poison/player damage routes and broader callback/cancellation ordering, skill-specific pain suppression, blood effects, generic brainless charging, class/function import and serialization, full archvile fire actors and complete actor reconstruction/brain history remain unfinished. Phase 1 remains incomplete; changes are uncommitted.
+
+
+## Phase 1 negative modifier callback cancellation (2026-10-09)
+
+- Converted a missed native cancellation gate in ActorDamage.Apply: negative results from active/passive modifiers or damage factoring now stop before TakeSpecialDamage. A target callback can no longer replace cancelled damage with a positive amount. Zero results still reach that callback, preserving the existing supported replacement path.
+- Native audit: p_interaction.cpp DamageMobj calls CallTakeSpecialDamage only when damage >= 0 after source/target modifiers and factors. Its later negative check cancels all effects. The previous managed unconditional call permitted overrides to revive an already cancelled hit. Added the same nonnegative callback gate without changing forced/telefrag bypass paths.
+- Four regressions cover active/source and passive/target negative modifiers, both with and without AllowPain/NoDamage/CausePain/ForcePain flags. They verify callback suppression, downstream modifier order, unchanged health/armor/reaction/state and no attacker recording. Existing zero-after-factor replacement tests remain passing. Full Release suite passes 11,031 tests (9,291 Playsim). Clean Release rebuild with warnings as errors passes with zero warnings/errors; git diff --check passes.
+- Boundary: specialized poison/player damage routes and broader callback/cancellation ordering, skill-specific pain suppression, blood effects, generic brainless charging, class/function import and serialization, full archvile fire actors and complete actor reconstruction/brain history remain unfinished. No archive format change is needed. Phase 1 remains incomplete; changes are uncommitted.
+
+
+## Phase 1 NoDamage health protection and pain (2026-10-09)
+
+- Converted NODAMAGE for managed actors, ACS flags, snapshots/checksums and default resurrection reset. Ordinary hits retain health and armor while positive original damage permits normal fake-pain reactions/wake-up. Forced damage bypasses NoDamage for non-player actors; PlayerPawn NoDamage clears the forced flag and retains protection, including telefrag-sized hits. Invulnerable protected players can react, while ordinary god mode suppresses their blocked-hit pain.
+- Native audit: p_interaction.cpp isFakePain includes target MF5_NODAMAGE with originaldamage > 0. DamageMobj sets damage to zero under NODAMAGE when not forced; player-specific protection clears DMG_FORCED and blocks NODAMAGE regardless of telefrag threshold. ReactToDamage separately suppresses player god-mode reactions. The managed normal damage/pain boundary follows these represented rules; negative special-damage cancellation remains a hard stop.
+- Added conditional managed archive version 150 wrapping versions 15-149 with one validated boolean per actor. Geometry is required for metadata, and saves with no flag retain the existing archive. Strict length/count/prior-version/boolean checks and legacy fixture clearing follow existing flag archives. Native class-property import remains unfinished.
+- Thirteen regressions cover player/non-player ordinary, forced and telefrag-sized hits; armor preservation; zero-hit suppression; NoPain wake-up; negative special-damage cancellation; player invulnerability versus god mode; ACS flags; byte-identical save restoration; and malformed boolean rejection. Full Release suite passes 11,027 tests (9,287 Playsim). Clean Release rebuild with warnings as errors passes with zero warnings/errors; git diff --check passes.
+- Boundary: specialized poison/player damage routes and broader callback/cancellation ordering, skill-specific pain suppression, blood effects, generic brainless charging, class/function import and serialization, full archvile fire actors and complete actor reconstruction/brain history remain unfinished. Phase 1 remains incomplete; changes are uncommitted.
+
+
+## Phase 1 AllowPain original-hit reactions (2026-10-09)
+
+- Converted ALLOWPAIN for managed actors, ACS flags, snapshots/checksums and default resurrection reset. ActorDamage now preserves the original normalized hit amount through reaction dispatch. A target with AllowPain receives fake-pain wake-up/normal pain eligibility only for an originally positive hit, including zero outcomes from monster invulnerability, damage factors and armor. CausePain remains eligible independently of original amount. Threshold/chance and pain suppressors remain active; negative special-damage cancellation still stops all reactions.
+- Native audit: p_interaction.cpp isFakePain tests target MF7_ALLOWPAIN with originaldamage > 0, or inflictor MF7_CAUSEPAIN. ReactToDamage uses that result for wake-up and threshold-gated TriggerPainChance; P_DamageMobj passes the original requested damage alongside the final nonnegative result. Managed callbacks retain both values so factoring to zero cannot erase AllowPain eligibility.
+- Added conditional managed archive version 149 wrapping versions 15-148, with strict boolean/count/size/prior-version checks. Metadata requires geometry and absent flags retain the previous archive. Legacy fixtures clear AllowPain. Native class-property import remains outside the managed configuration boundary.
+- Ten regressions cover factor/armor/invulnerability zero-result reactions, originally zero/negative input rejection, NoPain wake-up without animation, chance/threshold gates, negative callback cancellation, ACS flag access, byte-identical save restoration and malformed flag rejection. Full Release suite passes 11,014 tests (9,274 Playsim). Clean Release rebuild with warnings as errors passes with zero warnings/errors; git diff --check passes.
+- Boundary: native NODAMAGE, skill-specific pain suppression and broader cancellation ordering, poison/blood effects, generic brainless charging, class/function import and serialization, full archvile fire actors and complete actor reconstruction/brain history remain unfinished. Phase 1 remains incomplete; changes are uncommitted.
+
+
+## Phase 1 inflictor PainType override (2026-10-09)
+
+- Converted Actor.PainType as an inflictor override for reaction pain chance, pain state and pain-effect context. Null, empty and case-insensitive None preserve the incoming hit type. The hit's damage factors, armor handling, wound selection and death type retain the incoming damage type; only the pain path uses the override. Existing typed pain fallback and electric reaction helpers receive that selected pain type.
+- Native audit: p_interaction.cpp ReactToDamage selects Wound using modName first, then inside the pain gate replaces modName with non-None inflictor->PainType before TriggerPainChance. The override does not rewrite DamageMobj's damage type. Managed selection follows this distinction; native skill suppression and broader cancellation ordering remain separate gaps.
+- Added PainType to actor snapshots/checksums/default resurrection reset and conditional managed archive version 148. The UTF-8 name trailer wraps versions 15-147, validates lengths/counts/strict UTF-8, and preserves null versus empty. Geometry is required when the property is present. Legacy fixtures clear the property; archives without it remain unchanged. Native class/property import is not added, and host configuration remains necessary.
+- Seven regressions cover custom/case-insensitive override, None/empty/null fallback, damage-factor and armor separation, override-specific pain chance, original-type wound priority, byte-identical save restoration and malformed UTF-8 rejection. Full Release suite passes 11,004 tests (9,264 Playsim). Clean Release rebuild with warnings as errors passes with zero warnings/errors; git diff --check passes.
+- Boundary: native ALLOWPAIN/NODAMAGE, skill-specific pain suppression, broader damage-cancellation ordering, poison/blood effects, generic brainless charging, class/function import and serialization, full archvile fire actors and complete actor reconstruction/brain history remain unfinished. Phase 1 remains incomplete; changes are uncommitted.
+
+
+## Phase 1 CausePain impact and reaction support (2026-10-09)
+
+- Converted the missing CAUSEPAIN flag for managed actors/projectiles, ACS flag get/set, snapshots, checksums and default resurrection reset. Projectile impacts with CausePain enter the damage branch even for zero/negative expression results, including ripper sound, rather than healing. CausePain wakes targets and permits normal pain rolls at the existing threshold; unlike ForcePain it does not bypass threshold or chance. NoPain/Painless/DMG_NO_PAIN continue to suppress pain while wake-up remains possible.
+- Native audit: p_map.cpp P_DoMissileDamage includes MF7_CAUSEPAIN in its damage branch. p_interaction.cpp isFakePain tests the inflictor flag; ReactToDamage uses fake pain for wake-up, while ForcePain alone bypasses the threshold/chance. The outer P_DamageMobj calls ReactToDamage for nonnegative DamageMobj results, including zero from monster invulnerability, factoring or armor cancellation. These represented CausePain zero-result paths now react without health loss and preserve absorbed armor. Negative special-damage cancellation remains a hard stop.
+- Added conditional managed archive version 147 wrapping prior versions 15-146 with one validated boolean per actor. The existing archive remains unchanged when CausePain is absent. Geometry is required for metadata preservation; legacy archive fixtures clear the new flag. Strict prior-version, length, count and boolean checks follow existing flag archives.
+- Ten regressions cover zero-damage threshold/chance, NoPain/Painless wake-up, target acquisition, negative-expression non-healing with ripper sound, monster invulnerability/factor/armor zero-result reactions, ACS access, byte-identical save restoration and malformed boolean rejection. Full Release suite passes 10,997 tests (9,257 Playsim). Clean Release rebuild with warnings as errors passes with zero warnings/errors; git diff --check passes.
+- Boundary: native ALLOWPAIN/NODAMAGE and PainType handling, skill-specific pain suppression, broader damage-cancellation ordering, poison/blood effects, generic brainless charging, class/function import and serialization, full archvile fire actors and complete actor reconstruction/brain history remain unfinished. This is the represented CausePain conversion, not certification of the entire native damage pipeline. Phase 1 remains incomplete; changes are uncommitted.
+
+
+## Phase 1 configured ripper impact sound (2026-10-09)
+
+- Converted configured RipSound emission in ProjectileActor.DoMissileDamage. Ripper impacts entering the positive-damage or ForcePain branch emit on the projectile body channel (4), volume 1, flags 0 and idle attenuation 1.001 before damage callbacks. Non-ripper, healing and ordinary zero-damage branches do not emit. Missing/empty sound configuration remains silent.
+- Native audit: p_map.cpp P_DoMissileDamage emits SoundVar(NAME_RipSound) with CHAN_BODY and ATTN_IDLE before P_DamageMobj inside the damage branch. s_soundinternal.h defines ATTN_IDLE as 1.001f. The unconverted CausePain branch remains a separate limitation.
+- Appended ActorSoundType.Rip while preserving existing numeric sound identities. Existing keyed sound snapshot/checksum/archive paths carry the configuration; the archive reader now derives its entry limit from the enum instead of a hardcoded eleven. The keyed binary layout/version is unchanged; older readers that do not know the Rip key cannot read saves containing that key. Native sound/class property import remains incomplete.
+- Six regressions cover ripper/non-ripper positive impacts, zero/healing suppression, zero ForcePain emission, sound-before-damage callback ordering and byte-identical save restoration with all twelve sound slots. Full Release suite passes 10,987 tests (9,247 Playsim). Clean Release rebuild with warnings as errors passes with zero warnings/errors; git diff --check passes. An initial full run failed the five-second server bootstrap test; its isolated rerun and full-suite rerun both passed. No server code was changed; the intermittent failure remains recorded.
+- Boundary: native CausePain/poison/blood effects, generic brainless charging, exact contact/state ordering, class/function import and serialization, full archvile fire actors and complete actor reconstruction/brain history remain unfinished. Phase 1 remains incomplete; changes are uncommitted.
+
+
+## Phase 1 projectile shared damage validation (2026-10-09)
+
+- Closed a missed projectile branch in the actor damage conversion: ProjectileActor.GetMissileDamage now delegates constant and ordinary DamageFunction calculation to Actor.GetMissileDamage after checking its typed DamageExpression. Negative stored values with no function explicitly fail rather than silently becoming zero; rejection occurs before MissileDamage random consumption. Positive/zero constants keep the shared native dice calculation, and configured negative function results retain the existing healing path.
+- Native audit: p_mobj.cpp AActor::GetMissileDamage calculates nonnegative DamageVal directly or with masked dice, and requires DamageFunc for negative stored values (asserting when absent). d_dehacked.cpp stores Missile damage through SetDamage, which clears the function. p_map.cpp P_DoMissileDamage gives body for nonpositive computed damage when pain flags do not select the damage path. C# reports the invalid functionless state with NotSupportedException rather than reproducing a native assertion.
+- Four added regressions cover negative stored values (-1 and int.MinValue), direct/masked queries, impacts and ACS reads/checks without health changes or random draws, and negative healing results through both managed function forms followed by SetDamage clearing them. Updated the existing negative DeHackEd projectile patch regression, which had encoded the silent clamp. Full Release suite passes 10,981 tests (9,241 Playsim, 757 MapLoader, 213 Gamedata, 205 Client). Clean Release rebuild with warnings as errors passes with zero warnings/errors; git diff --check passes.
+- Boundary: typed managed DamageExpression remains the first configured function form; damage-function import and serialization remain incomplete. ImpactDamage retains its nonnegative convenience value, but no longer determines GetMissileDamage. Native bleed/pain-flag coverage, generic brainless charging, exact contact/state ordering, full archvile fire actors and complete actor reconstruction/brain history remain unfinished. No archive format change is needed. Phase 1 remains incomplete; changes are uncommitted.
+
+
+## Phase 1 ordinary actor default Slam support (2026-10-09)
+
+- Removed the managed monster-brain requirement from default Actor.Slam. Ordinary actors now clear all velocity components, apply eligible melee damage through virtual GetMissileDamage, and select Slam/See/Idle/Spawn through the existing state path. Actors with a brain retain the existing charge cancellation. OnlySlamSolid pass-through still occurs before velocity clearing; dead actors stop without damage/state entry, and dormant actors enter idle with tics held at -1.
+- Native audit: p_mobj.cpp AActor::Slam clears skull-fly/velocity and performs damage/state selection without requiring a monster brain. The OnlySlamSolid gate precedes cancellation, and the health/dormancy gates precede damage. This change converts direct default calls for ordinary actors; it does not add a generic skull-fly flag or brainless charging physics.
+- Four new regressions cover ordinary active, dormant and dead actors, velocity reset, damage-function evaluation, selected states, dormant held tics, no MissileDamage random draw for configured functions, and OnlySlamSolid pass-through retaining velocity. Full Release suite passes 10,977 tests (9,237 Playsim, 757 MapLoader, 213 Gamedata, 205 Client). Clean Release rebuild with warnings as errors passes with zero warnings/errors; git diff --check passes. No archive version change is needed.
+- Boundary: generic brainless skull-fly support, bleed effects, exact state/contact ordering, native VM/class/damage-function import and serialization, full archvile fire actors and complete actor reconstruction/brain history remain unfinished. Phase 1 remains incomplete; changes are uncommitted.
+
+
+## Phase 1 ACS ordinary actor damage-function reads (2026-10-09)
+
+- Closed a wiring gap from ordinary actor DamageFunction conversion: ACS APROP_Damage now calls virtual GetMissileDamage(0,1) for all actors, rather than evaluating expressions only for projectiles and clamping ordinary actor constants. CheckActorProperty uses the same read path. Script writes already call virtual SetDamage, clearing configured functions.
+- Native audit: p_acs.cpp GetActorProperty APROP_Damage returns actor->GetMissileDamage(0,1); CheckActorProperty compares the fetched value. SetActorProperty calls SetDamage, whose actor.h implementation stores DamageVal and clears DamageFunc. Native negative DamageVal with no DamageFunc asserts in GetMissileDamage; C# explicitly reports that unsupported case instead of returning zero.
+- Five added regressions execute ACS get/check bytecode for negative, zero and positive ordinary actor function results, verify one evaluation per query and no random draws, and cover script writes clearing functions for zero/positive constants. Updated the existing negative-constant test to assert explicit unsupported reads/checks. Full Release suite passes 10,973 tests (9,233 Playsim, 757 MapLoader, 213 Gamedata, 205 Client). Clean Release rebuild with warnings as errors passes with zero warnings/errors; git diff --check passes.
+- Boundary: damage-function code/save identity and native VM import remain unfinished; this change wires existing managed functions into script queries. Bleed effects, exact state/contact ordering, generic brainless skull-fly support, full archvile fire actors and complete actor reconstruction/brain history remain unfinished. No archive version change is needed. Phase 1 remains incomplete; changes are uncommitted.
+
+
+## Phase 1 stationary skull charge state completion (2026-10-09)
+
+- Converted the missing stationary skull-fly state transition. With zero horizontal velocity and NoAutoOffSkullFly unset, charge/velocity reset now enters See for a non-dormant actor when available, otherwise SetIdle (Idle then Spawn). Dormant actors enter idle and hold remaining tics at -1. No damage or MissileDamage draw occurs.
+- Native audit: p_mobj.cpp P_XYMovement's move.isZero branch clears MF_SKULLFLY/velocity, selects See or SetIdle for active actors, and SetIdle plus tics=-1 for dormant actors. It does not select Slam or honor RetargetAfterSlam in this branch. Managed tests configure both to ensure they do not override the stationary See/Idle selection. Native carrying-sector scroll contributions remain outside this change.
+- Five new regressions cover See/Idle priority with and without See, dormant held frames, entry actions, no damage/random draw, saved stationary-charge replay and NoAutoOffSkullFly bypass. Existing zero/tiny horizontal motion and pain/death charge tests remain passing. Full Release suite passes 10,968 tests (9,228 Playsim, 757 MapLoader, 213 Gamedata, 205 Client). Clean Release rebuild with warnings as errors passes with zero warnings/errors; git diff --check passes. Existing frame/charge archives require no version change.
+- Boundary: native carrying-sector movement and exact state scheduling, bleed effects, VM override/class/damage-function import and serialization, generic brainless skull-fly support, full archvile fire actors and complete actor reconstruction/brain history remain unfinished. State label definitions remain host configuration. Phase 1 remains incomplete; changes are uncommitted.
+
+
+## Phase 1 virtual slam callback mutation safety (2026-10-09)
+
+- Audited the preceding virtual Slam conversion and fixed two managed callback hazards. Charge contact traversal now snapshots actor references for each movement query so an override may spawn actors without invalidating a List enumerator. After each override, traversal stops if the charger died or was destroyed, even when its return value requests pass-through. Ordinary non-slam movement keeps its existing traversal.
+- Two regressions exercise overrides that spawn a distant actor, with and without destroying the charger. They verify no enumeration failure, successful spawn, continued movement for the living charger, no movement through the contact for the destroyed charger, and no default damage/random draw.
+- Native context: p_map.cpp calls the virtual CallSlam during contact traversal, and p_mobj.cpp explicitly anticipates actors dying during damage callbacks. These fixes make managed callback execution safe; snapshotting a managed actor list does not certify native blockmap iterator ordering. Newly spawned actors are considered in subsequent movement queries rather than added to the current snapshot.
+- Full Release suite passes 10,963 tests (9,223 Playsim, 757 MapLoader, 213 Gamedata, 205 Client). Clean Release rebuild with warnings as errors passes with zero warnings/errors; git diff --check passes. No archive format change is needed.
+- Boundary: exact callback/contact ordering, native VM override import, custom subclass save reconstruction, bleed effects, generic brainless skull-fly support, damage-function serialization/import, full archvile fire actors and complete actor reconstruction/brain history remain unfinished. Phase 1 remains incomplete; changes are uncommitted.
+
+
+## Phase 1 virtual Slam collision dispatch (2026-10-09)
+
+- Added public virtual Actor.Slam and moved represented charge actor-collision dispatch into the contact traversal. A true override result continues checking remaining contacts/movement; false stops the attempted movement. Default handling returns false after the existing charge/damage/state response. Wall cancellation retains its separate path, and unrelated fit/movement checks do not invoke slam callbacks.
+- Moved OnlySlamSolid's pass-through decision into default Slam before charge clearing, so direct calls receive the same behavior and custom overrides can replace it. Default Slam still requires a managed monster brain; generic brainless native skull-fly support remains outside this implementation.
+- Native audit: p_map.cpp PIT_CheckThing calls CallSlam and returns its boolean; p_mobj.cpp CallSlam invokes a virtual override or AActor::Slam. AActor::Slam returns true for the OnlySlamSolid gate and false after its normal response. C# virtual dispatch follows this represented decision; native VM override import is not added.
+- Three new regressions exercise custom pass-through and stop overrides during movement with victim identity, charge state, resulting position and no default damage/random draw, plus direct default OnlySlamSolid behavior. Existing skull/slam/flag/damage/state/save tests pass. Full Release suite passes 10,961 tests (9,221 Playsim, 757 MapLoader, 213 Gamedata, 205 Client). Clean Release rebuild with warnings as errors passes with zero warnings/errors; git diff --check passes.
+- Boundary: custom subclass construction/save identity, native VM override import, generic brainless skull-fly support, bleed effects, full contact ordering and exact scheduling, native class/damage-function import, full archvile fire actors and complete actor reconstruction/brain history remain unfinished. No new archive version; custom behavior must be configured by the host. Phase 1 remains incomplete; changes are uncommitted.
+
+
+## Phase 1 ordinary actor damage functions (2026-10-09)
+
+- Added managed Actor.DamageFunction support to GetMissileDamage, using the function's returned integer without mask/add dice. SetDamage clears the function; IsZeroDamage no longer classifies a function-bearing actor as constant zero. Lost-soul slam and beta-skull damage automatically use this path through the shared actor helper.
+- ProjectileActor retains its existing typed DamageExpression priority, supports inherited DamageFunction when no typed expression is set, and clears both forms through SetDamage. No new native actor class or script compiler is introduced.
+- Native audit: p_mobj.cpp GetMissileDamage invokes DamageFunc for native function-backed DamageVal and returns its result without pr_missiledamage draws. The managed delegate is an explicit representation boundary, following the existing projectile expression model. Negative constant damage without a configured function remains explicitly unsupported.
+- Five regressions cover negative, zero and positive function results, one evaluation with actor identity, execution without simulation, SetDamage/IsZeroDamage behavior, function-driven slam health loss with no MissileDamage draw, and projectile expression/function priority and clearing. Full Release suite passes 10,958 tests (9,218 Playsim, 757 MapLoader, 213 Gamedata, 205 Client). Clean Release rebuild with warnings as errors passes with zero warnings/errors; git diff --check passes.
+- Boundary: delegate code/closures are not serialized, reconstructed or included in deterministic checksums, matching the existing projectile expression limitation. Native DamageFunc VM execution/import and save identity remain unfinished. Virtual Slam/bleed effects, full class import/exact scheduling, archvile fire actors, actor reconstruction/brain history and paired runtime certification remain incomplete. Phase 1 remains incomplete; changes are uncommitted.
+
+
+## Phase 1 OnlySlamSolid charge contact gate (2026-10-09)
+
+- Converted actor OnlySlamSolid, including ACS query/modification, snapshot restore and checksum contribution. Charge contact now includes represented solid, shootable and special-pickup actors rather than only ordinary blocking actors. With OnlySlamSolid set, non-solid unshootable contacts are skipped before charge cancellation, damage dice or state selection. Solid or shootable contacts still complete a slam.
+- Added conditional managed archive 146 with one strict boolean byte per actor, wrapping versions 15-145. Geometry is required when metadata is present. Legacy absent data clears a later flag, and historical fixtures omit it. Readers reject malformed flags, sizes, prior versions and record counts.
+- Native audit: p_map.cpp PIT_CheckThing permits contacts with MF_SOLID/MF_SPECIAL/MF_SHOOTABLE (or TOUCHY) before CallSlam. p_mobj.cpp AActor::Slam returns true before clearing skull-fly when OnlySlamSolid is set and the victim is neither solid nor shootable. Managed charge movement applies that pass-through gate while retaining existing through-actor/species/bits and vertical checks. Native TOUCHY handling and exact collision geometry are not added here.
+- Four regressions cover flag-off special contact stopping charge, flag-on pass-through with no damage draw, solid-only and shootable-only stopping contacts, script access, saved flag restoration including absent legacy metadata, and malformed boolean rejection. Full Release suite passes 10,953 tests (9,213 Playsim, 757 MapLoader, 213 Gamedata, 205 Client). Clean Release rebuild with warnings as errors passes with zero warnings/errors; git diff --check passes.
+- Boundary: virtual Slam overrides and bleed effects, native TOUCHY/pickup contact ordering, ordinary actor DamageFunc, native class import and exact scheduling, full archvile fire actors, complete actor reconstruction/brain history and paired runtime certification remain unfinished. State label definitions remain external configuration. Phase 1 remains incomplete; changes are uncommitted.
+
+
+## Phase 1 RetargetAfterSlam flag (2026-10-09)
+
+- Converted actor RetargetAfterSlam behavior and ACS flag query/modification, including Actor.RETARGETAFTERSLAM spelling. A surviving collision with no custom Slam state skips See when the flag is set, calling SetIdle (Idle then Spawn). Custom Slam priority remains intact; setting the flag does not itself clear target memory or alter collision damage.
+- Added snapshot capture/restore, conditional checksum contribution and managed archive 145 with one strict boolean byte per actor, wrapping versions 15-144. Geometry is required when the flag is present. Legacy absent metadata clears a later runtime flag; historical fixtures omit it. Readers validate size, prior version, record count and flag range 0/1.
+- Native audit: p_mobj.cpp AActor::Slam enters See only when SeeState exists and MF8_RETARGETAFTERSLAM is unset, otherwise SetIdle. The converted branch follows that selection; full idle target acquisition still depends on the configured state actions.
+- Four regressions cover custom Idle and Spawn fallback with a configured See state, custom Slam priority, script access, flag save/load, malformed boolean rejection, legacy reset and checksum contribution. Full Release suite passes 10,949 tests (9,209 Playsim, 757 MapLoader, 213 Gamedata, 205 Client). Clean Release rebuild with warnings as errors passes with zero warnings/errors; git diff --check passes.
+- Boundary: OnlySlamSolid, virtual Slam and bleed effects, ordinary actor DamageFunc, native class import and exact scheduling, full archvile fire actors, complete actor reconstruction/brain history and paired runtime certification remain unfinished. State label definitions remain external configuration. Phase 1 remains incomplete; changes are uncommitted.
+
+
+## Phase 1 custom Slam and Idle state labels (2026-10-09)
+
+- Added managed actor SlamState and IdleState configuration, defaulting to absent (-1), and reusable SetIdle with the native no-function option. Slam completion now prefers a valid Slam frame over See; when See is absent it calls SetIdle, which prefers Idle over Spawn. Dormant collision calls SetIdle and retains its forced -1 tics. Nondefault label configuration contributes to the simulation checksum.
+- Native audit: p_mobj.cpp AActor::Slam checks FindState(Slam), then See unless RetargetAfterSlam, then SetIdle. SetIdle checks FindState(Idle) then Spawn and forwards nofunction to SetState. This change implements custom label priority and idle action suppression; RetargetAfterSlam and virtual Slam overrides remain unconverted.
+- Six additional regressions cover custom Slam priority over See/Idle, custom Idle fallback, dormant Idle priority, collision entry actions, charge-save replay with matching target health/state, and SetIdle with/without entry actions. Full Release suite passes 10,945 tests (9,205 Playsim, 757 MapLoader, 213 Gamedata, 205 Client). Clean Release rebuild with warnings as errors passes with zero warnings/errors; git diff --check passes.
+- Save boundary: existing frame archives retain current state/tics. SlamState/IdleState are state-table configuration like SeeState; this change does not serialize or reconstruct label definitions. Loading requires compatible configured actor state tables and labels; runtime label edits are not rolled back by saves. No new archive version is introduced.
+- Boundary: RetargetAfterSlam/OnlySlamSolid flags, virtual Slam and bleed effects, ordinary actor DamageFunc, native definition import and exact scheduling, full archvile fire actors, complete actor reconstruction/brain history and paired runtime certification remain unfinished. Phase 1 remains incomplete; changes are uncommitted.
+
+
+## Phase 1 lost-soul slam See/Spawn transitions (2026-10-09)
+
+- Added represented actor-collision slam completion in ActorSkullActions and wired charge movement to it. It clears charge/velocity, preserves named MissileDamage and Melee source/inflictor behavior, then enters a valid See state or falls back to Spawn for a surviving actor. Entry actions execute through the existing state machine. It does not overwrite a dead/destroyed attacker's state after target damage callbacks.
+- Dormant actor collisions skip damage, enter represented Spawn idle fallback and force remaining tics to -1. Wall-only charge cancellation retains its existing path; this change concerns actor slam completion.
+- Native audit: p_mobj.cpp AActor::Slam selects Slam, then See unless RetargetAfterSlam, then SetIdle after damage if the attacker survived. Dormant slam calls SetIdle and sets tics=-1. SetIdle selects Idle then Spawn. C# currently represents See/Spawn, so this change implements that default-label subset; custom Slam/Idle labels, RetargetAfterSlam and virtual Slam overrides are not claimed.
+- Four new regressions cover See and missing-See fallback selection, frame entry actions/timing, dormant Spawn selection with and without See, no damage/random draw and held-frame save/load continuation. Full Release suite passes 10,939 tests (9,199 Playsim, 757 MapLoader, 213 Gamedata, 205 Client). Clean Release rebuild with warnings as errors passes with zero warnings/errors; git diff --check passes. Existing frame archive stores the resulting state/tics without a new archive version.
+- Boundary: custom Slam/Idle labels and flags, bleed tracing, ordinary actor DamageFunc, full native class import, exact state/collision scheduling, full archvile fire actors, complete actor reconstruction/brain history and paired runtime certification remain unfinished. Phase 1 remains incomplete; changes are uncommitted.
+
+
+## Phase 1 lost-soul collision MissileDamage integration (2026-10-09)
+
+- Converted represented lost-soul actor collision damage to Actor.GetMissileDamage(7,1), using the new named MissileDamage stream instead of shared combat dice. It preserves Melee damage type and charging actor source/inflictor, and applies the native alive/non-dormant gate. Solid unshootable actor collisions now consume a damage draw too; damage application still respects the victim's damage eligibility. Wall-only collisions make no actor damage draw.
+- Native audit: p_map.cpp calls CallSlam for skull-flying actor collisions. p_mobj.cpp AActor::Slam clears skull-fly/velocity, then for a living non-dormant actor calculates GetMissileDamage(7,1) and calls P_DamageMobj with Melee. The represented path follows that damage calculation; native virtual Slam overrides, OnlySlamSolid, bleed tracing and Slam/See/Idle state selection remain outside this change.
+- Four new regressions cover zero damage, positive damage, solid unshootable targets, named stream state, shared-combat isolation and save/load collision replay, plus explicit rejection of negative ordinary actor damage without a native damage function. Removed the former negative-damage case that silently clamped to zero. Existing melee-factor/pain tests now predict MissileDamage separately from shared pain draws; dormant save tests assert no named draw.
+- Full Release suite passes 10,935 tests (9,195 Playsim, 757 MapLoader, 213 Gamedata, 205 Client). Clean Release rebuild with warnings as errors passes with zero warnings/errors; git diff --check passes. No new archive version is needed; version 144 already persists the named stream.
+- Audit resolution: represented lost-soul collision dice now use native-named randomness. Native DamageFunc support, virtual Slam/state/bleed behavior, full class import, full archvile fire actors, complete actor reconstruction/brain history and paired runtime certification remain unfinished. Phase 1 remains incomplete; changes are uncommitted.
+
+
+## Phase 1 named MissileDamage random stream (2026-10-09)
+
+- Converted Actor.GetMissileDamage and ProjectileActor.GetMissileDamage constant dice to dedicated native-named MissileDamage randomness. The stream uses name CRC 0x333cfa17 and existing native PCG/SplitMix initialization; each nonzero-mask calculation consumes one low-byte draw. Mask-zero and projectile damage-expression paths do not draw. This reaches beta-skull direct damage, represented projectile impacts, ripper/Strife dice and geometry impact helpers.
+- Added used-state tracking, snapshot capture/restore, checksum contribution and conditional managed archive 144 with a 16-byte RNG trailer wrapping versions 15-143. Absent legacy metadata resets the stream to its initial seed. Geometry is required when stream metadata is present; historical fixtures omit it.
+- Native audit: p_mobj.cpp pr_missiledamage is named MissileDamage and GetMissileDamage applies ((draw & mask) + add) * DamageVal. m_random.h operator() returns GenRand32() & 255; m_random.cpp seeds by name CRC through SplitMix/PCG. The managed implementation follows those represented calculations. This intentionally changes prior managed shared-combat dice sequences.
+- Two new regressions verify stream seed/byte-mask calculation, save/checksum continuation, legacy reset, malformed prior-version rejection and no draws for constant/expression paths. Existing actor/projectile/geometry/Strife/ripper/zero-damage/horizon regressions now predict the named stream and retain shared-combat checks where applicable. Full Release suite passes 10,932 tests (9,192 Playsim, 757 MapLoader, 213 Gamedata, 205 Client). Clean Release rebuild with warnings as errors passes with zero warnings/errors; git diff --check passes.
+- Audit resolution: GetMissileDamage's named-stream gap is closed for represented callers. Lost-soul charge collision still uses its separate existing shared-combat calculation and needs its own native audit. Ordinary actor DamageFunc, native class/state import, full archvile fire actors, complete actor reconstruction/brain history and paired runtime certification remain unfinished. Phase 1 remains incomplete; changes are uncommitted.
+
+
+## Phase 1 BetaSkullAttack state action (2026-10-09)
+
+- Converted public C# ActorSkullActions.BetaSkullAttack for managed state tables. It skips missing/destroyed targets and matching species before sound, facing or random draws; otherwise it emits configured AttackSound on weapon channel 1, faces the target and applies direct damage with attacker as source/inflictor and default damage type. It does not start a skull charge or change velocity.
+- Added virtual Actor.GetMissileDamage for nonnegative constant actor damage, including mask-zero calculation without simulation/random draws. ProjectileActor overrides retain existing damage-expression and impact-damage behavior. Unsupported negative ordinary actor damage throws explicitly instead of inventing a native DamageFunc.
+- Native audit: lostsoul.zs A_BetaSkullAttack performs the species guard, weapon sound, A_FaceTarget, GetMissileDamage(7,1) and DamageMobj with None. p_mobj.cpp uses the named MissileDamage random stream. This implementation retains the existing managed shared CombatRandom stream; paired native random equivalence is not claimed. BetaSkull class/default-state import is not added by exposing this action.
+- Five regressions cover ActorFrame execution, damage range/multiples, weapon sound, facing/ambush clearing, no charge/velocity mutation, missing and same-species targets with no random draw, managed save/load replay, zero-mask calculation and explicit unsupported negative damage. Full Release suite passes 10,930 tests (9,190 Playsim, 757 MapLoader, 213 Gamedata, 205 Client). Clean Release rebuild with warnings as errors passes with zero warnings/errors; git diff --check passes.
+- Boundary: named MissileDamage stream conversion, ordinary actor DamageFunc support, automatic native class/sound/state import, complete native facing/stealth and collision scheduling, full archvile fire actors, full actor reconstruction/brain history and paired runtime certification remain unfinished. Phase 1 remains incomplete; changes are uncommitted.
+
+
+## Phase 1 SkullAttack state action and ambush clearing (2026-10-09)
+
+- Added public C# ActorSkullActions.SkullAttack for managed state tables. It resolves the actor's target, returns without mutation for missing/destroyed targets, validates finite configured speed and delegates to shared charge entry. Normal lost-soul profile attacks now use this action. Nonpositive speed retains the native fallback of 20. Supported charge actors require an attached simulation and managed monster brain; unsupported brainless actors are not silently approximated.
+- Fixed shared charge entry to clear Ambush when facing the target. Native audit: lostsoul.zs A_SkullAttack invokes A_FaceTarget after setting bSkullfly and starting the configured voice sound; actor.zs delegates to native A_Face, whose p_enemy.cpp implementation clears MF_AMBUSH. Default max_pitch 270 leaves pitch unchanged; existing AngleTo/VelFromAngle/DistanceBySpeed calculations are retained.
+- Six regressions execute the action from an ActorFrame, cover configured and nonpositive speeds, charging, ambush clearing, pitch preservation and voice sound, missing/destroyed targets leaving velocity/ambush unchanged, and invalid speed rejection before charge mutation. Full Release suite passes 10,925 tests (9,185 Playsim, 757 MapLoader, 213 Gamedata, 205 Client). Clean Release rebuild with warnings as errors passes with zero warnings/errors; git diff --check passes.
+- Boundary: generic brainless SkullAttack actors, native stealth visibility changes from facing, automatic sound-default import, native looping sprite states and exact collision scheduling, full archvile fire actors, full actor reconstruction and brain history, and paired runtime certification remain unfinished. Phase 1 remains incomplete; changes are uncommitted.
+
+
+## Phase 1 lost-soul charge attack sound (2026-10-09)
+
+- Converted the missing configured AttackSound emission in managed StartCharge. It now requests the sound on voice channel 2 after setting the charging flag and before facing/assigning velocity, matching lostsoul.zs A_SkullAttack. Shared charge entry covers normal lost-soul profile attacks and spawned souls. Missing/empty configured sound emits no request and leaves charge behavior intact.
+- Native audit: A_SkullAttack calls A_StartSound(AttackSound, CHAN_VOICE) without special flags or attenuation overrides. Managed requests use normal volume/attenuation, no flags and no channel-free guard. FullVolumeActive/See/Death do not alter this attack request. Automatic class sound-default import remains a separate gap; tests supply configured attack sound metadata.
+- Four regressions verify configured sound identity, actor/channel/flags/volume/attenuation, no sound during windup, saved windup continuation emitting at charge entry, active charge restore emitting no duplicate, and absent/empty sound behavior. Full Release suite passes 10,919 tests (9,179 Playsim, 757 MapLoader, 213 Gamedata, 205 Client). Clean Release rebuild with warnings as errors passes with zero warnings/errors; git diff --check passes.
+- Audit resolution: the represented lost-soul charge attack sound gap is closed. Native looping sprite states, exact collision/state scheduling, full archvile fire actors, complete actor reconstruction, complete brain/chase history and checksum continuation, and paired native runtime certification remain unfinished. Phase 1 remains incomplete; changes are uncommitted.
+
+
+## Phase 1 lost-soul attack windup and charge saves (2026-10-09)
+
+- Added C# snapshot/save persistence for lost-soul attack progress, target, mode, windup and cooldown. Existing skull-charge flags and physics already persisted active charging and velocity; the missing attack progress now restores alongside them without reexecuting charge entry. Legacy absent metadata clears later active attack progress without resetting saved velocity.
+- Added conditional managed archive 143 wrapping versions 15-142 with 24-byte per-actor records. Readers validate profile 3006, represented tic bounds 0-10, mode, windup, cooldown, record counts and zero absent-entry padding. Active metadata requires geometry; historical archive fixtures explicitly omit the new field.
+- Native audit: lostsoul.zs Missile has ten tics of facing before A_SkullAttack. That action sets bSkullfly, faces its target and assigns horizontal and vertical velocity. Managed charging freezes the attack counter at entry; this change retains that represented state. Native looping sprite states, attack sound emission and complete collision/state scheduling equivalence are outside this change.
+- Two new regressions save before and during charge, mutate the runtime through StopCharge, restore the saved progress/flag and replay charge entry/continuation with matching velocity. They also verify normal stopping and rejection of an out-of-range saved attack tic. Full Release suite passes 10,915 tests (9,175 Playsim, 757 MapLoader, 213 Gamedata, 205 Client). Clean Release rebuild with warnings as errors passes with zero warnings/errors; git diff --check passes.
+- Boundary: full archvile fire actors, native lost-soul sound/state/collision parity, missing owner graphs and other dynamic actor reconstruction, exact allocator rollback, complete brain/chase history and checksum continuation, and paired runtime certification remain unfinished. Phase 1 remains incomplete; changes are uncommitted.
+
+
+## Phase 1 archvile active attack saves (2026-10-09)
+
+- Added snapshot/save persistence for active archvile attack position, target, mode, windup, cooldown and the managed fire-exists flag. Restore resumes attack progress without replaying fire-stage entry. Absent legacy data clears active archvile attack progress.
+- Added conditional managed archive 142 wrapping versions 15-141 with 28-byte per-actor records. Readers validate profile 64, tic 0-93, windup 0-10, mode, nonnegative cooldown, fire flag 0/1 and agreement with the represented fire stage at tic 10. Absent-entry padding must be zero; active metadata requires geometry.
+- Native audit: archvile.zs A_VileTarget creates an ArchvileFire actor and links tracer pointers; A_VileAttack uses that actor for the blast. This change persists the existing managed fire flag and represented blast/thrust behavior. It does not implement the native fire actor, its sounds or its pointer graph, and does not claim native binary save compatibility.
+- Two new regressions save before and after the managed fire stage and replay through attack damage. They verify restored progress, player health, upward thrust and combat random continuation; malformed fire flags reject. Full Release suite passes 10,913 tests (9,173 Playsim, 757 MapLoader, 213 Gamedata, 205 Client). Clean Release rebuild with warnings as errors passes with zero warnings/errors; git diff --check passes.
+- Boundary: full archvile fire actors, lost-soul charge progress, destroyed/missing owner graphs, other dynamic actor reconstruction, exact allocator rollback, complete brain/chase history and checksum continuation, native state scheduling and paired runtime certification remain unfinished. Phase 1 remains incomplete; changes are uncommitted.
+
+
+## Phase 1 saved projectile reconstruction (2026-10-09)
+
+- Added reconstruction of missing/destroyed saved projectiles when lifetime/kind and owner-pointer metadata are available. Restore validates saved identity, unique record, physics/state, projectile kind and live owner before mutation. It creates a replacement with the saved ID through shared projectile spawn setup, retaining Dehacked defaults, then applies existing saved pose, lifetime and tracer-pointer state.
+- Refactored projectile spawning to accept a saved identity internally without changing normal public spawning. Restored actors register with the actor/thinker lists; no attack or firing action is replayed. Wrong kind on an existing live missile and invalid timers remain rejected. Missing owner reconstruction is outside this change.
+- Three new regressions cover ImpBall, RevenantTracer and CyberRocket reconstruction: replacement identity, owner/kind, position/velocity, tracer target, lifetime and subsequent thinker execution. Two existing destroyed/removed projectile tests now assert successful reconstruction instead of the previous rejection. Full Release suite passes 10,911 tests (9,171 Playsim, 757 MapLoader, 213 Gamedata, 205 Client). Clean Release rebuild with warnings as errors passes with zero warnings/errors; git diff --check passes.
+- Boundary: destroyed/missing owner graphs, historical projectile records without owner metadata, other dynamic actor categories, exact allocator rollback, archvile/lost-soul special state, full brain history/checksum continuation and paired native runtime certification remain unfinished. Phase 1 remains incomplete; changes are uncommitted.
+
+
+## Phase 1 later-projectile removal on save restore (2026-10-09)
+
+- Fixed the preceding audit finding: restoring a geometry-bearing managed snapshot/save now destroys and removes live projectiles whose actor IDs are absent from the saved actor list. Saved projectiles remain intact. Cleanup removes thinker entries and delivers normal destruction notification, following the existing ice-chunk reconciliation pattern after validation. No archive version change is needed.
+- Two new regressions verify removal of later projectiles while retaining the saved projectile, destruction notification, no subsequent thinker motion, unique IDs for replacement projectiles and invalid snapshots rejecting before actor removal. Existing revenant melee/missile continuation tests now load into the same simulation and pass, including matching projectile counts.
+- Full Release suite passes 10,908 tests (9,168 Playsim, 757 MapLoader, 213 Gamedata, 205 Client). Clean Release rebuild with warnings as errors passes with zero warnings/errors; git diff --check passes.
+- Audit resolution: later-projectile retention during represented same-instance restore is closed. This is managed save reconciliation, not a new native gameplay action. Missing saved projectiles are still not recreated; other dynamic actor categories and the actor ID allocator are not rolled back. Geometry-less historical snapshots retain existing behavior.
+- Boundary: complete actor-set reconstruction, archvile fire state, lost-soul charges, complete brain/chase history/checksum continuation, native geometry/state scheduling and paired runtime certification remain unfinished. Phase 1 remains incomplete; changes are uncommitted.
+
+
+## Phase 1 revenant separate melee/missile attack saves (2026-10-09)
+
+- Added snapshot/save persistence for active revenant attack position and separate melee selection. Restore retains target, mode, windup and cooldown and resumes the selected branch without reentering the melee swing action. Legacy absent data clears active revenant attack progress.
+- Added conditional managed archive 141 wrapping versions 15-140 with 28-byte per-actor records. Readers validate melee flag 0/1, profile 66, branch-specific tic/windup bounds, mode, cooldown and absent-entry padding. Active data requires geometry. Native binary save compatibility is not claimed.
+- Native audit: revenant.zs has distinct Melee and Missile sequences; managed profile fist timing is tic 12/end 18 versus missile tic 10/end 30. Save data now preserves the branch instead of reconstructing it from current distance.
+- Three regressions load into a fresh simulation and cover melee hits, targets leaving melee range and missile-only entry. Eight subsequent action ticks reproduce attack progress, health, named/shared random states, sound requests and projectile count without replaying skeleton/swing. Malformed branch flags reject. Full Release suite passes 10,906 tests (9,166 Playsim, 757 MapLoader, 213 Gamedata, 205 Client). Clean Release rebuild with warnings as errors passes with zero warnings/errors; git diff --check passes.
+- Audit finding: restoring an earlier save into the same simulation leaves projectiles spawned after the save. The new missile test uses a fresh simulation to isolate attack resume; actor-set reconciliation remains an open restore gap, not validated same-instance rollback.
+- Boundary: actor-set reconciliation, archvile fire state, lost-soul charges, complete brain/chase history/checksum continuation, native geometry/state scheduling and paired runtime certification remain unfinished. Phase 1 remains incomplete; changes are uncommitted.
+
+
+## Phase 1 additional profile attack save continuation (2026-10-09)
+
+- Added snapshot/save attack-position persistence for represented demon/spectre, imp, baron/hell knight, cacodemon, zombieman, shotgun guy, cyberdemon, arachnotron, mancubus and pain elemental profiles. Captures native profile, attack tic, target pointer, mode, windup and cooldown. Separate revenant melee, archvile fire and lost-soul charge profiles remain excluded because they need additional state.
+- Added conditional managed archive 140 wrapping versions 15-139, reusing the validated 24-byte actor attack record with profile-derived tic/windup bounds and null target encoding. Active data requires geometry. Historical fixture generation clears the new field. Native binary save compatibility is not claimed.
+- Twelve regressions save during attack windup and compare twelve subsequent action ticks before/after load: attack position, player health, relevant named/shared random states and sound requests. The broader audit caught and fixed absent-attack restore clearing resurrection Raise mode; absent data now resets only active attacks on these profiles. Existing resurrection regressions pass.
+- Full Release suite passes 10,903 tests (9,163 Playsim, 757 MapLoader, 213 Gamedata, 205 Client). Clean Release rebuild with warnings as errors passes with zero warnings/errors; git diff --check passes.
+- Boundary: revenant separate attack selection, archvile fire state, lost-soul charges, complete brain/chase history/checksum continuation, full projectile lifecycle certification, native geometry/state scheduling and paired runtime certification remain unfinished. Phase 1 remains incomplete; changes are uncommitted.
+
+
+## Phase 1 managed brain enabled-state persistence (2026-10-09)
+
+- Fixed a managed continuation gap: disabled monster brains previously reverted to enabled on snapshot/save restore. Capture now records BrainDisabled for any disabled brain, and restore applies the saved control after restoring active repeat progress. Absent legacy data defaults to enabled.
+- Added conditional managed archive 139 wrapping versions 15-138, with one validated boolean byte per actor and checked size/count/prior-version metadata. Disabled-state saves require geometry. Historical fixture generation clears this new field. This preserves the existing managed Enabled control; no new native actor action or native binary save compatibility is claimed.
+- Four regressions cover paused active chaingunner/spider/SS sequences through save/load, thirty calls without attack or firing-stream advancement while disabled, advancement after enabling, a disabled nonrepeat brain snapshot, legacy enabled default and malformed flag rejection. Full Release suite passes 10,891 tests (9,151 Playsim, 757 MapLoader, 213 Gamedata, 205 Client). Clean Release rebuild with warnings as errors passes with zero warnings/errors; git diff --check passes.
+- Boundary: complete monster brain persistence/checksum continuation, nonrepeat attack positions, chase history, native sight/aiming geometry, exact state scheduling and paired runtime certification remain unfinished. Phase 1 remains incomplete; changes are uncommitted.
+
+
+## Phase 1 destroyed-target memory cleanup and refire integration (2026-10-09)
+
+- Added managed destruction cleanup for matching monster TargetId/LastEnemyId and actor LastHeardTargetId before ActorDestroyed notification. Unrelated references remain unchanged. Clearing target memory preserves active repeat attack progress, allowing the existing missing-target refire gate to run without shot sound, damage or firing random draws.
+- Native audit: src/common/objects/dobject.cpp DObject::Destroy invokes destruction callbacks then marks OF_EuthanizeMe, with object/GC machinery handling destruction and references. Managed actor IDs are not native GC pointers; this change explicitly clears represented target memory at notification time. Exact native callback/GC timing and other pointer categories are not claimed.
+- Seven additional regressions cover destroyed targets for all three repeat profiles with continue/stop outcomes and save/load replay, plus matching target/last-enemy/last-heard cleanup before notification and preservation of unrelated references. Full Release suite passes 10,887 tests (9,147 Playsim, 757 MapLoader, 213 Gamedata, 205 Client). Clean Release rebuild with warnings as errors passes with zero warnings/errors; git diff --check passes.
+- Boundary: broader actor pointer cleanup, native GC/destruction timing, complete monster brain persistence/checksum continuation, native sight/aiming geometry, exact state scheduling and paired runtime certification remain unfinished. Phase 1 remains incomplete; changes are uncommitted.
+
+
+## Phase 1 missing-target repeat attack progression (2026-10-09)
+
+- Converted represented chaingunner, spider mastermind and Wolfenstein SS active sequences to continue ticking with a missing target until their refire action. Shots without a target skip sound, firing randomness and damage; refire still consumes its named stream and applies threshold 40/10. Destroyed targets resolve as absent for this path.
+- Extended archive 138 null-target encoding/validation so such active sequences save and restore without inventing a target. Zero target ID decodes as null; explicit nonnull zero IDs remain invalid. Existing dead-target behavior is retained.
+- Native audit: possessed.zs A_CPosAttackInternal and A_SPosAttackInternal perform firing only inside their target guard. A_CPosRefire and spidermaster.zs A_SpidRefire test missing targets only after the random threshold gate, allowing low rolls to continue. Managed no-target ticks preserve the sequence rather than reacquiring/canceling before the decision.
+- Six regressions cover all three profiles with continuing/stopping outcomes, missing-target shot suppression, no premature refire draw, shared native random state and identical decisions after save/load. Full Release suite passes 10,880 tests (9,140 Playsim, 757 MapLoader, 213 Gamedata, 205 Client). Clean Release rebuild with warnings as errors passes with zero warnings/errors; git diff --check passes.
+- Boundary: destroyed-target cleanup integration, complete monster brain persistence/checksum continuation, native sight flags, full aiming geometry, exact state scheduling and paired runtime certification remain unfinished. Phase 1 remains incomplete; changes are uncommitted.
+
+
+## Phase 1 active repeat attack save continuation (2026-10-09)
+
+- Added snapshot/save persistence for active chaingunner, spider mastermind and Wolfenstein SS repeat attack progress: native profile, attack tic, target pointer, mode, windup and cooldown. Restore reattaches progress to the existing matching brain; absent legacy data clears active progress for these profiles. Transient chase reentrancy is not saved.
+- Added conditional managed archive 138 wrapping versions 15-137, with 24-byte entries per actor and a checked size/count/header trailer. Active data requires geometry. Readers validate profile, attack bounds, target sentinel, mode, windup/cooldown and absent-entry padding; writer rejects invalid active data. Native binary save compatibility is not claimed.
+- Extended all six dead-target refire regressions to save before the decision, restore and reproduce the continuation/stop result and refire random state. One new regression verifies snapshot attack-position restoration, archive version, malformed attack-tic rejection and legacy reset. Full Release suite passes 10,874 tests (9,134 Playsim, 757 MapLoader, 213 Gamedata, 205 Client). Clean Release rebuild with warnings as errors passes with zero warnings/errors; git diff --check passes.
+- Audit resolution: the previously identified attack-position save gap is closed for these active repeat profiles and tested at their dead-target refire boundaries. Complete monster brain persistence is still open: other profiles, last-enemy/threshold/chase history, inactive modes and broader checksum continuation need separate coverage. Missing/destroyed target handling, full native aiming/sight geometry, state scheduling and paired runtime certification remain unfinished. Phase 1 remains incomplete; changes are uncommitted.
+
+
+## Phase 1 live dead-target repeat attack retention (2026-10-09)
+
+- Converted live dead-target retention during represented chaingunner, spider mastermind and Wolfenstein SS attack sequences. An existing non-destroyed dead target remains attached while the sequence advances to its refire action. The existing native random gate then allows continuation below the type threshold or returns to chase otherwise, rather than acquisition dropping the target before the decision.
+- Native audit: possessed.zs A_CPosRefire and spidermaster.zs A_SpidRefire test target health only when their random roll reaches the threshold. Attack actions accept an existing target pointer regardless of health. Managed retention is limited to these active repeat profiles; missing/destroyed targets retain earlier handling.
+- Six regressions cover all three profiles with continuing and stopping seed outcomes, dead-target retention over multiple attack ticks, no refire draw before the boundary and native shared-stream state after the decision. Full Release suite passes 10,873 tests (9,133 Playsim, 757 MapLoader, 213 Gamedata, 205 Client). Clean Release rebuild with warnings as errors passes with zero warnings/errors; git diff --check passes.
+- Audit finding: managed save/restore does not preserve the monster brain attack position/target sequence, so resuming this exact attack across a save is not supported. Named random streams persist independently, but that does not establish attack-sequence save continuity. This broader persistence gap remains open.
+- Boundary: monster brain sequence persistence, missing/destroyed target behavior, full native auto-aim geometry, sight flags, exact state scheduling and paired runtime certification remain unfinished. Phase 1 remains incomplete; changes are uncommitted.
+
+
+## Phase 1 represented refire friend-in-line gate (2026-10-09)
+
+- Converted represented HitFriend ordering at chaingunner, spider mastermind and Wolfenstein SS repeat boundaries. Friendly shooters trace toward their target; a first intervening shootable actor that IsFriend recognizes stops repeating before any CPosRefire random draw. Hostile shooters and nonfriend first victims do not trigger this gate. Managed trace respects its existing wall/plane blocking.
+- Native audit: src/playsim/p_enemy.cpp P_HitFriend only runs for MF_FRIENDLY with a target, aims toward that target up to its 2D distance, and checks whether the first aimed actor differs from the target and IsFriend returns true. Native A_CPosRefire and A_SpidRefire perform this check before facing and random decisions. Managed implementation uses the existing pitched combat trace aimed at target center rather than full native P_AimLineAttack slope selection.
+- Seven regressions cover all three repeat profiles stopping without refire consumption, friendly versus hostile shooters, nonfriend intervening victims, off-line friends and first friendly victims. Full Release suite passes 10,867 tests (9,127 Playsim, 757 MapLoader, 213 Gamedata, 205 Client). Clean Release rebuild with warnings as errors passes with zero warnings/errors; git diff --check passes.
+- Boundary: full native auto-aim geometry/slope window, portals and 3D floors, missing/dead target refire behavior, native sight flags, exact state scheduling and paired runtime certification remain unfinished. This is the represented friend gate, not complete native P_HitFriend parity. Phase 1 remains incomplete; changes are uncommitted.
+
+
+## Phase 1 Wolfenstein SS shared firing/refire streams (2026-10-09)
+
+- Converted represented Wolfenstein SS shots from generic shared-combat rolls to native CPosAttack randomness shared with chaingunners. Each shot emits configured Attack sound on CHAN_WEAPON. Its repeat boundary now uses the shared CPosRefire gate with continuation threshold 40. Existing archives persist both streams; no new archive version is needed.
+- Native audit: wadsrc/static/zscript/actors/doom/possessed.zs WolfensteinSS Missile states face for 20 tics, call A_CPosAttack, face for another six after the four-tic shot state, call A_CPosAttack again, then A_CPosRefire before returning to Missile+1. Existing managed profile shots at tics 20/30 and repeat boundary 35 are retained. Shared action random/visibility behavior is reused.
+- Six regressions cover pre-shot/first-shot/between-shot/second-shot boundaries, configured weapon-channel sound count, shared CPosAttack sequence and isolation from PosAttack/SPosAttack/shared combat, refire-boundary consumption, save continuation for both shared streams and disabled firing consuming neither. Full Release suite passes 10,860 tests (9,120 Playsim, 757 MapLoader, 213 Gamedata, 205 Client). Clean Release rebuild with warnings as errors passes with zero warnings/errors; git diff --check passes.
+- Boundary: native HitFriend checks, missing/dead target refire behavior, sight flags, default sound-property import, exact native state scheduling, full aiming/trace geometry and paired runtime certification remain unfinished. Phase 1 remains incomplete; changes are uncommitted.
+
+
+## Phase 1 spider mastermind shared firing/refire streams (2026-10-09)
+
+- Converted represented spider mastermind volleys to the existing native SPosAttack stream, shared with shotgun guys. Each volley draws three pellets and emits the configured Attack sound once on CHAN_WEAPON. Converted its represented repeat boundary to the shared CPosRefire stream with continuation threshold 10; chaingunner threshold remains 40.
+- Native audit: wadsrc/static/zscript/actors/doom/spidermaster.zs Missile states call A_SPosAttackUseAtkSound twice, followed by A_SpidRefire. A_SpidRefire uses Random[CPosRefire](0,255) >= 10 before target health/sight checks. Native possessed.zs A_SPosAttackInternal supplies the shared three-pellet SPosAttack rolls. Existing managed archives 135/137 persist both shared streams; no new archive version is needed.
+- Four regressions cover initial one/two volleys, three-pellet stream advancement per volley, configured weapon-channel sounds, isolation from CPosAttack/shared combat, threshold 10 across 256 draws, repeat-boundary consumption and save continuation for both shared streams. Full Release suite passes 10,854 tests (9,114 Playsim, 757 MapLoader, 213 Gamedata, 205 Client). Clean Release rebuild with warnings as errors passes with zero warnings/errors; git diff --check passes.
+- Boundary: native HitFriend checks, missing/dead target refire behavior, sight flags, default sound-property import, exact native state scheduling, other hitscan profiles, full aiming/trace geometry and paired runtime certification remain unfinished. Phase 1 remains incomplete; changes are uncommitted.
+
+
+## Phase 1 represented chaingunner refire random gate (2026-10-09)
+
+- Converted the represented chaingunner repeat-boundary gate to native CPosRefire randomness: CRC32("CPosRefire") 0x59106a10. A low-byte roll below 40 allows continued firing despite lost sight; otherwise the managed visibility predicate decides continuation. Visible repeat boundaries still consume a roll. Shot randomness remains separate in CPosAttack.
+- Added snapshot capture/restore, conditional checksum hashing and managed save archive 137 wrapping versions 15-136. Its 16-byte trailer validates size/prior version; legacy snapshots reset the initial stream. Stream-bearing saves require geometry. Native binary save compatibility is not claimed.
+- Native audit: wadsrc/static/zscript/actors/doom/possessed.zs A_CPosRefire checks HitFriend first, faces the target, then checks Random[CPosRefire](0,255) >= 40 before testing target existence/health/sight. This change converts the random/visibility gate at the managed profile repeat boundary. It does not implement the preceding native HitFriend test or native retention of missing/dead targets; current managed acquisition handles those earlier.
+- Four regressions cover visible/hidden threshold behavior across 256 draws, consumption even when visible, independence from shot/shared-combat streams, drawing only at the repeat boundary, thirty-two-decision save continuation, checksum restoration, legacy reset and malformed trailer size rejection. Full Release suite passes 10,850 tests (9,110 Playsim, 757 MapLoader, 213 Gamedata, 205 Client). Clean Release rebuild with warnings as errors passes with zero warnings/errors; git diff --check passes.
+- Boundary: HitFriend trace checks, missing/dead target refire behavior, native sight flags, exact native state scheduling, other hitscan streams, aiming geometry and paired runtime certification remain unfinished. Phase 1 remains incomplete; changes are uncommitted.
+
+
+## Phase 1 named chaingunner shot stream and configured firing sound (2026-10-09)
+
+- Converted represented chaingunner firing spread/damage to native CPosAttack randomness: CRC32("CPosAttack") 0xc1b064ac. Each shot uses two low-byte Random2 draws at 22.5/256 and unbiased bounded (1-5)*3 damage through the shared native hitscan helper. Added configured Attack sound on CHAN_WEAPON before every shot. Other enemy firing streams remain independent.
+- Added snapshot capture/restore, conditional checksum hashing and managed save archive 136 wrapping versions 15-135. Its 16-byte trailer validates size/prior version; legacy snapshots reset the initial stream. Stream-bearing saves require geometry. Native binary save compatibility is not claimed.
+- Native audit: wadsrc/static/zscript/actors/doom/possessed.zs ChaingunGuy fires A_CPosAttack twice in its initial sequence. A_CPosAttackInternal starts the supplied sound and uses Random2[CPosAttack] followed by Random[CPosAttack](1,5). A_CPosRefire uses a distinct CPosRefire stream and remains outside this conversion.
+- Five regressions cover firing versus disabled admission, configured weapon-channel sound, initial two-shot stream advancement and sound count, native draw order/state, shared-combat and PosAttack/SPosAttack isolation, sixteen-shot save continuation, checksum restoration, legacy reset and malformed prior-version rejection. Full Release suite passes 10,846 tests (9,106 Playsim, 757 MapLoader, 213 Gamedata, 205 Client). Clean Release rebuild with warnings as errors passes with zero warnings/errors; git diff --check passes.
+- Boundary: CPosRefire randomness/decisions, stealth visibility response, native default sound import, Dehacked hard-coded sound action routing, other hitscan streams, full aiming/trace geometry, bullet puff effects, complete state scheduling and paired runtime certification remain unfinished. Phase 1 remains incomplete; changes are uncommitted.
+
+
+## Phase 1 named shotgun guy pellet stream and configured firing sound (2026-10-09)
+
+- Converted represented shotgun guy volleys to native SPosAttack randomness: CRC32("SPosAttack") 0xe61ee544. Three pellets each draw two low bytes for Random2 spread at 22.5/256 followed by unbiased bounded (1-5)*3 damage. Added configured Attack sound on CHAN_WEAPON once before the volley. Extracted the shared native hitscan draw helper and retained independent PosAttack/SPosAttack states.
+- Added snapshot capture/restore, conditional checksum hashing and managed save archive 135 wrapping versions 15-134. Its 16-byte trailer validates size/prior version; legacy snapshots reset the initial stream. Stream-bearing saves require geometry. Native binary save compatibility is not claimed.
+- Native audit: wadsrc/static/zscript/actors/doom/possessed.zs ShotgunGuy enters A_SPosAttackUseAtkSound, which starts AttackSound then A_SPosAttackInternal fires three pellets using SPosAttack. The separate Dehacked A_SPosAttack hard-coded sound variant is not wired by this change.
+- Four regressions cover firing versus disabled admission, three-pellet stream advancement, one configured weapon-channel sound, native draw order/state, shared-combat and PosAttack isolation, sixteen-pellet save continuation, checksum restoration, legacy reset and malformed prior-version rejection. Full Release suite passes 10,841 tests (9,101 Playsim, 757 MapLoader, 213 Gamedata, 205 Client). Clean Release rebuild with warnings as errors passes with zero warnings/errors; git diff --check passes.
+- Boundary: native default sound-property import, Dehacked action variant routing, other hitscan streams, full AimLineAttack/LineAttack geometry, bullet puff effects, complete state scheduling and paired runtime certification remain unfinished. Phase 1 remains incomplete; changes are uncommitted.
+
+
+## Phase 1 named zombieman hitscan stream and firing sound (2026-10-09)
+
+- Converted represented zombieman hitscan spread and damage to native PosAttack randomness: CRC32("PosAttack") 0xb1bea4d7. Each shot draws two low bytes for Random2 spread multiplied by 22.5/256, then unbiased bounded (1-5)*3 damage. Added grunt/attack on CHAN_WEAPON before the shot. Other hitscan types retain existing behavior.
+- Added snapshot capture/restore, conditional checksum hashing and managed save archive 134 wrapping versions 15-133. Its 16-byte trailer validates size/prior version; legacy snapshots reset the initial stream. Stream-bearing saves require geometry. Native binary save compatibility is not claimed.
+- Native audit: wadsrc/static/zscript/actors/doom/possessed.zs A_PosAttack faces its target, obtains aim slope, plays grunt/attack, draws Random2[PosAttack] followed by Random[PosAttack](1,5), then fires LineAttack. src/common/engine/m_random.h Random2 subtracts two low-byte draws. Managed targeting/trace geometry remains its existing approximation.
+- Four new regressions cover firing versus disabled admission, weapon-channel sound, native draw order/state and shared-combat isolation, sixteen-shot save continuation, checksum restoration, legacy reset and malformed prior-version rejection. Existing map/dynamic/remapped zombieman timing tests now track PosAttack consumption at tic 10, single-shot cadence and map/dynamic stream parity. Full Release suite passes 10,837 tests (9,097 Playsim, 757 MapLoader, 213 Gamedata, 205 Client). Clean Release rebuild with warnings as errors passes with zero warnings/errors; git diff --check passes.
+- Boundary: other hitscan streams, full native AimLineAttack/LineAttack geometry, bullet puff effects, complete state scheduling and paired runtime certification remain unfinished. Phase 1 remains incomplete; changes are uncommitted.
+
+
+## Phase 1 shared baron/hell knight melee stream and hit sound (2026-10-09)
+
+- Converted represented baron and hell knight melee damage from shared combat randomness to their shared native pr_bruisattack stream: CRC32("pr_bruisattack") 0x0b85c748, unbiased bounded (1-8)*10. Added baron/melee on CHAN_WEAPON before in-range damage. Leaving range and distant missile attacks consume no melee randomness and emit no melee hit sound.
+- Added snapshot capture/restore, conditional checksum hashing and managed save archive 133 wrapping versions 15-132. Its 16-byte trailer validates size and prior version; legacy snapshots reset the initial stream. Saves carrying stream state require geometry. Native binary save compatibility is not claimed.
+- Native audit: wadsrc/static/zscript/actors/doom/bruiser.zs uses A_BruisAttack for both classes. The shared action checks melee range, draws random[pr_bruisattack](1,8)*10, starts baron/melee on CHAN_WEAPON and damages the target; otherwise it spawns BaronBall.
+- Eight regressions cover both classes hitting/leaving range, distant projectile creation without melee stream/sound, interleaved attacks sharing one stream, bounds/multiples, sixteen-draw save continuation, checksum restoration, shared-combat isolation, legacy reset and malformed trailer size rejection. Full Release suite passes 10,833 tests (9,093 Playsim, 757 MapLoader, 213 Gamedata, 205 Client). Clean Release rebuild with warnings as errors passes with zero warnings/errors; git diff --check passes.
+- Boundary: remaining monster attack random streams, complete native attack scheduling, TraceBleed and paired runtime certification remain unfinished. Phase 1 remains incomplete; changes are uncommitted.
+
+
+## Phase 1 named cacodemon melee damage stream and hit sound (2026-10-09)
+
+- Converted represented cacodemon bite damage from shared combat randomness to native pr_headattack: CRC32("pr_headattack") 0xd7c9c8ab, unbiased bounded (1-6)*10. Added configured Attack sound on CHAN_WEAPON at an in-range bite before damage. Existing chase melee-entry sound remains distinct; leaving range suppresses the later hit sound and random draw.
+- Added snapshot capture/restore, conditional checksum hashing and managed save archive 132 wrapping versions 15-131. Its 16-byte trailer validates size and prior version; legacy snapshots reset the initial stream. Saves carrying stream state require geometry. Native binary save compatibility is not claimed.
+- Native audit: wadsrc/static/zscript/actors/doom/cacodemon.zs A_HeadAttack checks melee range, draws random[pr_headattack](1,6)*10, starts AttackSound on CHAN_WEAPON and damages the target; otherwise it spawns CacodemonBall. Managed projectile dispatch remains separate from melee execution.
+- Four regressions cover hits, targets leaving range, actual distant projectile creation without melee stream/sound, bounds/multiples, sixteen-draw save continuation, checksum restoration, shared-combat isolation, legacy reset and malformed trailer size rejection. Full Release suite passes 10,825 tests (9,085 Playsim, 757 MapLoader, 213 Gamedata, 205 Client). Clean Release rebuild with warnings as errors passes with zero warnings/errors; git diff --check passes.
+- Boundary: remaining monster attack random streams, complete native attack scheduling, TraceBleed and paired runtime certification remain unfinished. Phase 1 remains incomplete; changes are uncommitted.
+
+
+## Phase 1 named imp melee damage stream and hit sound (2026-10-09)
+
+- Converted represented imp melee damage from the shared combat roll to native pr_troopattack randomness: CRC32("pr_troopattack") 0x83af1235, unbiased bounded (1-8)*3. Added missing imp/melee sound on the weapon channel before damage. Out-of-range execution and distant missile attacks consume no melee randomness and emit no melee sound.
+- Added snapshot capture/restore, conditional checksum hashing and managed save archive 131 wrapping versions 15-130. Its 16-byte trailer validates size and prior version; legacy snapshots reset the initial stream. Stream-bearing saves require geometry. Native binary save compatibility is not claimed.
+- Native audit: wadsrc/static/zscript/actors/doom/doomimp.zs:125-146 checks melee range, draws random[pr_troopattack](1,8)*3, starts imp/melee on CHAN_WEAPON and damages the target; the other branch spawns DoomImpBall. Managed projectile dispatch remains separate from melee execution.
+- Four regressions cover hits, targets leaving range, actual distant projectile creation without melee stream/sound, bounds/multiples, sixteen-draw save continuation, checksum restoration, shared-combat isolation, legacy reset and malformed trailer size rejection. Full Release suite passes 10,821 tests (9,081 Playsim, 757 MapLoader, 213 Gamedata, 205 Client). Clean Release rebuild with warnings as errors passes with zero warnings/errors; git diff --check passes.
+- Boundary: remaining monster attack random streams, complete native attack scheduling, TraceBleed and paired runtime certification remain unfinished. Phase 1 remains incomplete; changes are uncommitted.
+
+
+## Phase 1 named demon/spectre melee damage random stream (2026-10-09)
+
+- Converted represented demon and spectre melee damage from the shared combat roll to native pr_sargattack randomness. The PCG helper seeds with CRC32("pr_sargattack") 0x96b7cfed and draws an unbiased bounded value for (1-10)*4. Only in-range melee execution consumes this stream.
+- Added snapshot capture/restore, conditional checksum hashing and managed save archive 130 wrapping versions 15-129. Its 16-byte trailer validates size and prior version; legacy snapshots reset the initial stream. Saves carrying stream state require geometry. Native binary save compatibility is not claimed.
+- Native audit: wadsrc/static/zscript/actors/doom/demon.zs A_SargAttack checks melee range before random[pr_sargattack](1,10)*4 and DamageMobj. Native inclusive bounded sampling uses rejection sampling, matching the managed helper for this range.
+- Five regressions cover demon/spectre in-range hits and targets leaving range, damage bounds/multiples, sixteen-draw save continuation, checksum restoration, shared-combat isolation, legacy reset and malformed trailer size rejection. Full Release suite passes 10,817 tests (9,077 Playsim, 757 MapLoader, 213 Gamedata, 205 Client). Clean Release rebuild with warnings as errors passes with zero warnings/errors; git diff --check passes.
+- Boundary: remaining monster attack random streams, complete native attack scheduling, trace bleeding and paired runtime certification remain unfinished. Phase 1 remains incomplete; changes are uncommitted.
+
+
+## Phase 1 named SkelFist damage random stream (2026-10-09)
+
+- Converted revenant fist damage from the shared managed combat roll to the native named SkelFist stream. The existing PCG helper seeds with CRC32("SkelFist") 0x99c25fa8 and draws an unbiased bounded value for (1-10)*6. Only in-range fist execution consumes the stream; victim pain handling retains its separate existing draws.
+- Added snapshot capture/restore, conditional checksum hashing and managed save archive 129 wrapping versions 15-128. The 16-byte trailer validates size/prior version; legacy snapshots reset the initial stream. Saves carrying stream state require geometry. Native binary save compatibility is not claimed.
+- Native audit: wadsrc/static/zscript/actors/doom/revenant.zs A_SkelFist uses random[SkelFist](1,10)*6 after CheckMeleeRange. src/common/engine/m_random.h implements inclusive ranges through bounded exclusive rejection sampling, matching NativeStateRandom.NextBounded for this range.
+- One new regression verifies damage bounds/multiples, sixteen-draw save continuation, checksum restoration, shared-combat isolation, legacy reset and malformed prior-version rejection. Existing fist integration coverage now verifies stream consumption only on in-range hits. Full Release suite passes 10,812 tests (9,072 Playsim, 757 MapLoader, 213 Gamedata, 205 Client). Clean Release rebuild with warnings as errors passes with zero warnings/errors; git diff --check passes.
+- Boundary: complete native stream-consumption parity, remaining monster attack streams, trace bleeding and paired runtime certification remain unfinished. Phase 1 remains incomplete; changes are uncommitted.
+
+
+## Phase 1 revenant melee sounds and separate attack dispatch (2026-10-09)
+
+- Converted missing skeleton/swing emission when entering the represented revenant melee sequence and skeleton/melee emission before an in-range successful fist damage attempt. Both use the weapon channel with default flags, normal volume and attenuation. Leaving melee range suppresses the hit sound and damage while retaining the earlier swing sound.
+- Audit caught a preexisting profile-dispatch bug: a revenant missile sequence could perform melee merely because the target was close. Dynamic shared-action melee fallback now applies only to profiles without a separate melee sequence; revenant missile entry reaches its projectile branch. Imp/baron/cacodemon shared attack behavior is retained.
+- Native audit: wadsrc/static/zscript/actors/doom/revenant.zs:56-65 separates melee and missile state sequences; A_SkelWhoosh at lines 168-172 faces the target and starts skeleton/swing, and A_SkelFist at lines 175-186 starts skeleton/melee only inside CheckMeleeRange before DamageMobj. Existing managed melee profile timing places the fist at tic 12.
+- Three new regressions cover swing/hit emission, a target moving out of range and missile-only entry excluding melee sounds. Existing configured attack-sound coverage now distinguishes the general entry sound from the additional revenant swing. Full Release suite passes 10,811 tests (9,071 Playsim, 757 MapLoader, 213 Gamedata, 205 Client). Clean Release rebuild with warnings as errors passes with zero warnings/errors; git diff --check passes.
+- Boundary: dedicated SkelFist random stream, trace bleeding, complete native state scheduling and paired runtime certification remain unfinished. Damage continues using the existing managed combat stream. Phase 1 remains incomplete; changes are uncommitted.
+
+
+## Phase 1 available attack-state admission and melee entry sound (2026-10-09)
+
+- Audit corrected extended-chase melee admission for represented profiles without melee states. Enabling melee alone no longer admits hitscan attacks for zombiemen/shotgunners. Melee-only profiles do not gain missile attacks; profiles with both retain independent state admission. Profile-less managed brains retain their existing synthetic melee behavior.
+- Converted configured Attack sound emission on admitted melee entry, on CHAN_WEAPON with flags zero, volume 1 and normal attenuation. Ongoing windup calls do not repeat this entry sound; missile-only admission does not emit it.
+- Native audit: src/scripting/vmthunks_actors.cpp A_ExtChase passes enabled state pointers or null, and src/playsim/p_enemy.cpp:2663-2669 requires a nonnull meleestate before emitting AttackSound and entering it. Doom demon/revenant state tables distinguish melee-only and separate melee/missile states. Managed profiles use their melee damage metadata to represent availability.
+- Eight regressions cover ranged-only, melee-only and mixed profiles, configured weapon-channel melee sound, missile exclusion and no repeated entry emission during windup. Full Release suite passes 10,808 tests (9,068 Playsim, 757 MapLoader, 213 Gamedata, 205 Client). Clean Release rebuild with warnings as errors passes with zero warnings/errors; git diff --check passes.
+- Boundary: full state-label availability/import and native attack chance/cadence remain unfinished. Shared native attack actions can themselves choose melee at execution time even when entered from a missile state; per-call admission does not disable that action logic. Paired runtime certification is not claimed. Phase 1 remains incomplete; changes are uncommitted.
+
+
+## Phase 1 represented ExtChase attack controls (2026-10-09)
+
+- Converted ActorChaseActions.ExtChase with independent melee/missile admission and active-sound control. Managed MonsterBrain.Tick accepts per-call attack controls; close-range missile admission remains available when melee is disabled, and both disabled retain chase movement. Separate profile melee selection respects the melee control. Existing calls default both attacks enabled. Unsupported nightmare-fast timing rejects explicitly.
+- Native audit: src/scripting/vmthunks_actors.cpp:1661-1676 implements A_ExtChase by passing MeleeState or null and MissileState or null independently into A_DoChase, plus playactive/nightmarefast. Managed ExtChase maps playactive to the existing NoPlayActive flag and reuses the represented attack profiles and chase guard.
+- Six regressions exercise all close-range attack combinations and distant melee-only/missile-only admission through the new action, including no active-sound random consumption when playActive is false. Full Release suite passes 10,800 tests (9,060 Playsim, 757 MapLoader, 213 Gamedata, 205 Client). Clean Release rebuild with warnings as errors passes with zero warnings/errors; git diff --check passes.
+- Boundary: complete native state-label resolution, missile chance decisions, attack-frame cadence and nightmare-fast timing remain unfinished. This is represented managed attack admission, not complete native A_DoChase parity. Paired runtime certification is not claimed. Phase 1 remains incomplete; changes are uncommitted.
+
+
+## Phase 1 represented StopIfBlocked steering control (2026-10-09)
+
+- Converted the represented CHF_STOPIFBLOCKED movement-response control with native value 256. Managed chase no longer applies its local sideways steering after repeated stationary ticks when this flag is supplied. Clearing the per-call flag restores obstacle steering immediately. Forward intent and the existing physics collision checks remain separate.
+- Native audit: src/playsim/p_enemy.cpp:2734 suppresses the blocked P_SmartMove fallback to P_NewChaseDir with CHF_STOPIFBLOCKED, and line 2751 likewise gates another direction change. Managed MonsterBrain uses local steering rather than native P_NewChaseDir, so this conversion controls that corresponding response without claiming native movecount or direction parity.
+- Three regressions cover default sideways steering, flag-driven suppression, clearing the flag and unchanged NoPlayActive random-stream exclusion. Full Release suite passes 10,794 tests (9,054 Playsim, 757 MapLoader, 213 Gamedata, 205 Client). Clean Release rebuild with warnings as errors passes with zero warnings/errors; git diff --check passes.
+- Boundary: native post-attack movecount reset, random direction expiry, terrain/portal movement and full P_SmartMove remain unfinished. Paired native runtime certification is not claimed. Phase 1 remains incomplete; changes are uncommitted.
+
+
+## Phase 1 managed chase reentrancy guard (2026-10-09)
+
+- Converted the missing native in-chase guard on MonsterBrain.Tick. Recursive calls during synchronous actions return without advancing AI or drawing randomness. A transient guard wraps the managed tick and clears in finally on normal returns or propagated callback exceptions. The guard is execution state, not save metadata.
+- Native audit: src/playsim/p_enemy.cpp:2402-2406 returns when MF7_INCHASE is already set and marks the actor before chase processing; native branches clear it before exiting. Managed sound actions synchronously notify SoundRequestsReady, so reentrant calls previously could perform another chase evaluation in the same execution. Managed finally handles exceptions as well as early returns without swallowing failures.
+- Two regressions exercise reentry from an immediate idle-sound callback, confirm only one notification/request and unchanged random state during the recursive call, and prove a thrown callback clears the guard so the next tick draws normally. Full Release suite passes 10,791 tests (9,051 Playsim, 757 MapLoader, 213 Gamedata, 205 Client). Clean Release rebuild with warnings as errors passes with zero warnings/errors; git diff --check passes.
+- Boundary: native A_Look/goal interactions with INCHASE, complete action scheduling, invisibility detection and paired runtime certification remain unfinished. The managed guard covers the entire represented brain tick rather than reproducing every native flag consumer. Phase 1 remains incomplete; changes are uncommitted.
+
+
+## Phase 1 NoTarget visual player acquisition gate (2026-10-09)
+
+- Converted the missed NoTarget gate on fresh managed visual player acquisition. Protected players are filtered before facing and line-of-sight work and before nearest-player ordering. Clearing protection makes a player eligible on the next search. Existing target retention remains separate, preserving its previous behavior.
+- Native audit: src/playsim/p_enemy.cpp isTargetablePlayer rejects CF_NOTARGET before health/visibility checks. Native existing-target chase handling and new player search are separate. The represented PlayerPawn.NoTarget property already participates in managed flag/script and snapshot behavior; this slice adds its missing visual acquisition consumer.
+- Three regressions cover all-around and restricted-look rejection, no chase-stream draw during targetless idle, reacquisition after clearing protection and retention of an existing player target. Full Release suite passes 10,789 tests (9,049 Playsim, 757 MapLoader, 213 Gamedata, 205 Client). Clean Release rebuild with warnings as errors passes with zero warnings/errors; git diff --check passes.
+- Boundary: invisibility/ghost detection randomness, full native enemy/TID acquisition, heard-target semantics, chase cadence and paired runtime certification remain unfinished. Phase 1 remains incomplete; changes are uncommitted.
+
+
+## Phase 1 restricted chase player acquisition (2026-10-09)
+
+- Converted the represented CHF_DONTLOOKALLAROUND control with native value 1024. New player acquisition uses the front 180 degrees, including the exact side boundaries; players within melee range plus the looking actor's radius remain eligible behind the actor. Existing chase targets remain eligible without a new facing check. Default all-around acquisition is unchanged.
+- Native audit: src/playsim/p_enemy.cpp:2532 and 2706 pass the inverse of CHF_DONTLOOKALLAROUND into P_LookForPlayers. P_IsVisible at lines 1288-1308 selects 180-degree FOV, rejects absolute angle differences above 90 degrees and exempts distances at most lookee->meleerange + lookee->radius. Managed acquisition applies this geometry before its existing line-of-sight check.
+- Seven regressions cover front, both side boundaries, distant rear rejection, exact close-range inclusion, just-outside exclusion and retaining an already acquired rear target. The close-boundary fixture explicitly sets radius/melee range rather than assuming actor defaults. Full Release suite passes 10,786 tests (9,046 Playsim, 757 MapLoader, 213 Gamedata, 205 Client). Clean Release rebuild with warnings as errors passes with zero warnings/errors; git diff --check passes.
+- Boundary: full native look parameters, portal-relative angles, enemy/TID acquisition and better-target selection remain unfinished. Existing heard-target and remembered-enemy paths retain their separate managed behavior. Native chase cadence and paired runtime certification are not claimed. Phase 1 remains incomplete; changes are uncommitted.
+
+
+## Phase 1 represented chase movement and active-sound controls (2026-10-09)
+
+- Converted per-call NoPlayActive and DontMove controls on managed MonsterBrain.Tick using native flag values 2 and 16. Default calls preserve current behavior. NoPlayActive skips both the active-sound attempt and its Chase random draw. DontMove skips local chase steering while preserving target/facing and sound handling; the managed tick already clears horizontal velocity before chase processing. Unsupported chase flag bits reject before actor or stream mutation.
+- Native audit: src/playsim/p_enemy.cpp:2268-2281 defines CHF_NOPLAYACTIVE and CHF_DONTMOVE. A_Chase/A_DoChaseNative convert these bits to playactive/dontmove arguments. A_DoChase conditionally runs chase movement, and its final playactive short-circuit guards pr_chase() < 3. These controls apply to the represented managed chase path, not full native movecount or attack-state semantics.
+- Five regressions cover all four flag combinations, independent movement/sound behavior, skipped stream consumption and rejection of unsupported bits before mutation. Full Release suite passes 10,779 tests (9,039 Playsim, 757 MapLoader, 213 Gamedata, 205 Client). Clean Release rebuild with warnings as errors passes with zero warnings/errors; git diff --check passes.
+- Boundary: native chase state-action cadence, movecount bookkeeping, remaining chase flags and complete attack/charge behavior remain unfinished. Flags are per-call action inputs rather than persisted actor metadata. Paired native runtime certification is not claimed. Phase 1 remains incomplete; changes are uncommitted.
+
+
+## Phase 1 script-accessible full-volume sound flags (2026-10-09)
+
+- Converted missing FULLVOLACTIVE, FULLVOLSEE and FULLVOLDEATH names in the existing ACS actor-flag mapping. Case-insensitive names and the existing Actor. qualification now read/write the represented actor properties through CheckActorFlag/ModActorFlag support. Playback, snapshot, checksum and save persistence reuse the previously converted fields.
+- Native audit: src/scripting/thingdef_data.cpp registers FULLVOLACTIVE and FULLVOLDEATH as AActor flags3 entries at lines 174/183 and FULLVOLSEE as an AActor flags8 entry at line 318. Native PlayActiveSound, A_Scream and A_Look use these flags for full-volume attenuation. No new archive version is needed.
+- Three regressions cover mixed-case/unqualified and Actor.-qualified lookup, initial false values, setting, save/load restoration, zero attenuation when enabled and idle/normal attenuation after clearing. Full Release suite passes 10,774 tests (9,034 Playsim, 757 MapLoader, 213 Gamedata, 205 Client). Clean Release rebuild with warnings as errors passes with zero warnings/errors; git diff --check passes.
+- Boundary: complete native actor-property import, native chase cadence, player skin substitution and paired runtime certification remain unfinished. Phase 1 remains incomplete; changes are uncommitted.
+
+
+## Phase 1 managed chase idle-sound trigger (2026-10-09)
+
+- Connected PlayActiveSound to the end of managed MonsterBrain chase movement. A Chase stream byte below 3 attempts idle sound; the helper retains voice-channel admission and attenuation rules. Reaction waits, pain/death, targetless idle and attack/windup early returns do not reach this draw. The draw occurs even when ActiveSound is absent, matching the native ordering of the chance test before the helper's sound check.
+- Added a separately seeded Chase PCG stream using the existing NativeStateRandom implementation and CRC32("Chase") 0x573c149d. Snapshot capture/restore, conditional checksum hashing and managed archive 128 preserve it. The conditional 16-byte trailer validates size/prior version and wraps versions 15-127. Legacy snapshots reset the initial seed; geometry-free saves reject populated stream state.
+- Native audit: src/playsim/p_enemy.cpp declares pr_chase("Chase") at line 56 and attempts actor->PlayActiveSound when playactive and pr_chase() < 3 after movement at lines 2757-2760. This conversion attaches that represented trigger to managed chase ticks; full native P_DoChase branches, flags, other Chase draws and native state-action cadence are not reproduced.
+- Two regressions exercise chase emission with a controlled stream state, save/load continuation across eight subsequent draws, reaction-wait exclusion and legacy clearing. Historical archive fixtures omit the new stream to retain their format-specific coverage. Full Release suite passes 10,771 tests (9,031 Playsim, 757 MapLoader, 213 Gamedata, 205 Client). Clean Release rebuild with warnings as errors passes with zero warnings/errors; git diff --check passes.
+- Boundary: native chase scheduling and movement/attack selection, complete named-stream consumption parity, action-table import and paired native runtime certification remain unfinished. Phase 1 remains incomplete; changes are uncommitted.
+
+
+## Phase 1 idle PlayActiveSound and FullVolumeActive persistence (2026-10-09)
+
+- Converted the missing PlayActiveSound helper separately from A_ActiveSound. Configured active sounds emit on the voice channel with flags zero and idle attenuation 1.001, or zero attenuation when FullVolumeActive is set. A new managed request admission field OnlyIfChannelFree checks for any active sound on that actor channel before playback, retaining the existing MagicSilence compatibility behavior. A_ActiveSound continues its existing replacement semantics.
+- Converted FullVolumeActive snapshot capture/restore, conditional checksum hashing and conditional managed save archive 127 wrapping versions 15-126. Boolean trailer validation checks bounds, previous version, record count and values before restoration. Legacy state clears the flag; metadata-bearing saves require geometry. Native binary save compatibility is not claimed.
+- Native audit: src/playsim/p_mobj.cpp AActor::PlayActiveSound requires a valid ActiveSound and no sound playing on CHAN_VOICE, and selects ATTN_NONE for MF3_FULLVOLACTIVE otherwise ATTN_IDLE. src/common/audio/sound/s_soundinternal.h:186 defines ATTN_IDLE as 1.001f. The managed request guard is a playback admission instruction rather than a native sound flag.
+- Two Playsim regressions exercise full-volume/default attenuation, snapshot/save round trips, malformed boolean rejection, geometry requirement and legacy clearing. Two client PCM regressions verify that matching and different voice sounds both block idle emission, playback resumes after completion and another body sound does not block it. Full Release suite passes 10,769 tests (9,029 Playsim, 757 MapLoader, 213 Gamedata, 205 Client). Clean Release rebuild with warnings as errors passes with zero warnings/errors; git diff --check passes.
+- Boundary: complete native idle AI scheduling/random draws, native flag/action-table import, player skin substitution and paired runtime certification remain unfinished. The helper is available to managed actor states; this entry does not claim full native idle AI invocation. Phase 1 remains incomplete; changes are uncommitted.
+
+
+## Phase 1 combined sound and unblock actions (2026-10-09)
+
+- Converted missing ScreamAndUnblock and ActiveAndUnblock actions by composing the existing Scream/ActiveSound actions with NoBlocking in native order. Sound emission occurs before clearing solidity and executing the default vanilla death-drop policy. Missing sounds still unblock; player actions do not drop inventory. The wrappers are callable from managed actor states.
+- Native audit: wadsrc/static/zscript/actors/actor.zs:1099-1100 defines A_ScreamAndUnblock as A_Scream followed by A_NoBlocking and A_ActiveAndUnblock as A_ActiveSound followed by A_NoBlocking. The same file defaults A_NoBlocking's drop argument to true at line 1287. Existing managed NoBlocking implements represented solidity clearing and vanilla drop handling.
+- Six new regressions verify immediate emission while still solid and before drops, one vanilla item drop, preserved shootability, no destruction, missing-sound behavior and player drop exclusion. Full Release suite passes 10,765 tests (9,027 Playsim, 757 MapLoader, 213 Gamedata, 203 Client). Clean Release rebuild with warnings as errors passes with zero warnings/errors; the final unblock tests pass after an assertion-style cleanup. git diff --check passes.
+- Boundary: complete native action-table import, class-defined/custom inventory drop behavior, skin sound resolution and paired native runtime certification remain unfinished. Phase 1 remains incomplete; changes are uncommitted.
+
+
+## Phase 1 represented PlayPushSound action (2026-10-09)
+
+- Converted the missing PlayPushSound actor action using the existing ActorSoundType.Push data. Configured names emit immediately on the body channel at normal volume/attenuation; absent or empty names do not emit. The existing managed NoStop request guard preserves an already playing matching original sound and allows replacing a different body sound or restarting after completion.
+- Native audit: src/playsim/p_mobj.cpp AActor::PlayPushSound reads SoundVar(NAME_PushSound), queries S_IsActorPlayingSomething(this, CHAN_BODY, push), and emits flags zero at volume 1/ATTN_NORM only when not already playing. Managed NoStop is a client admission hint implementing that query; it does not imply native loop or rumble flags.
+- Three state-action regressions cover absent, empty and configured sound requests. One client PCM regression verifies continuation without restart, replay after completion and replacement of another body sound. Full Release suite passes 10,759 tests (9,021 Playsim, 757 MapLoader, 213 Gamedata, 203 Client). Clean Release rebuild with warnings as errors passes with zero warnings/errors; git diff --check passes.
+- Boundary: full native push movement invocation, action-table import, skin sound resolution and paired native runtime certification remain unfinished. The converted action is available to managed actor states; this entry does not claim full pushable-object physics. Phase 1 remains incomplete; changes are uncommitted.
+
+
+## Phase 1 untyped death-sound suffix correction (2026-10-09)
+
+- Audit found a missed native distinction: death variant lookup always tries name-extendedname, including the native None name, whereas A_Pain explicitly skips typed lookup for NAME_None. Converted PlayerScream to try registered -None death variants before their base names. Null, empty and case-insensitive None managed damage memory normalize to the native None name; other damage types retain their existing suffix behavior.
+- Native evidence: src/sound/s_advsound.cpp:1717-1731 unconditionally builds the extended name before base fallback; src/playsim/p_user.cpp:1484-1504 passes LastDamageType.GetChars() to that helper. src/utility/name.cpp:78 and src/namedef.h:36-37 establish name zero as None. src/playsim/p_enemy.cpp:3237 explicitly gates pain's typed lookup on LastDamageType != NAME_None.
+- Six regressions cover None suffix precedence for wimpy/crazy/extreme/gibbed/normal death, null/empty/mixed-case representation, base fallback and unchanged untyped pain selection. Full Release suite passes 10,755 tests (9,018 Playsim, 757 MapLoader, 213 Gamedata, 202 Client). Clean Release rebuild with warnings as errors passes with zero warnings/errors; git diff --check passes.
+- Boundary: full player class/gender/skin sound substitution, automatic falling-settings import and paired native runtime certification remain unfinished. Phase 1 remains incomplete; changes are uncommitted.
+
+
+## Phase 1 falling player death splat selection (2026-10-09)
+
+- Converted the represented A_PlayerScream fast-fall branch: when FallingDeathSplatEnabled is set and vertical velocity is at most -39, registered *splat precedes wimpy/overkill sounds and uses the body channel. Splat does not use damage-type suffixes. Configured actor Death sounds still bypass this branch. Missing splat continues variant lookup while retaining body-channel selection and native channel stops.
+- Native audit: src/playsim/p_user.cpp:1474-1518 combines shifted level flags with dmflags, tests DF_FORCE_FALLINGZD/DF_FORCE_FALLINGHX, selects *splat through S_FindSkinnedSound and sets CHAN_BODY even before checking sound validity. src/doomdef.h:99-100 defines these two falling damage flags. Managed FallingDeathSplatEnabled exposes their combined boolean condition and participates in conditional simulation checksum hashing.
+- Six new regressions cover the exact -39 threshold, faster/slower falls, disabled gate, missing untyped splat despite a typed splat registration, body-channel stops and configured death override. Full Release suite passes 10,749 tests (9,012 Playsim, 757 MapLoader, 213 Gamedata, 202 Client). Clean Release rebuild with warnings as errors passes with zero warnings/errors; git diff --check passes.
+- Boundary: automatic native level/dmflags import and falling damage calculations remain unfinished. The gate is caller-configured, defaults false and follows existing runtime gameplay-option ownership rather than becoming actor save metadata. Native skin substitution and paired runtime certification are not claimed. Phase 1 remains incomplete; changes are uncommitted.
+
+
+## Phase 1 delayed death-hit amount persistence (2026-10-09)
+
+- Converted DeathDamageAmount snapshot capture/restore, conditional checksum hashing and managed save archive version 126. Delayed player death actions retain their hit-size input after restoration, preserving wimpy versus overkill sound selection. Successful player respawn clears the amount for the new life; legacy snapshots restore zero.
+- The conditional archive wraps versions 15-125 and stores signed per-actor amounts. Readers validate trailer bounds, prior version, record count and exact size before applying values. Saves with nonzero amounts require geometry state. Native binary save compatibility is not claimed.
+- Native audit follows src/playsim/p_interaction.cpp special1 damage assignment and src/playsim/p_user.cpp A_PlayerScream hit-size selection. This field represents the managed death-hit input, not every native use of special1.
+- Two new regressions cover delayed wimpy/crazy selection after save/load, checksum changes, legacy clearing and rejected geometry-free saves. Existing respawn coverage now checks amount clearing. Historical archive fixtures explicitly omit this newer field to preserve older format validation. Full Release suite passes 10,743 tests (9,006 Playsim, 757 MapLoader, 213 Gamedata, 202 Client). Clean rebuild with warnings as errors passes with zero warnings/errors; git diff --check passes.
+- Boundary: falling splat/game-mode gates, native skin resolution, complete native special1 semantics and native action-table import remain unfinished. Paired runtime certification is not claimed. Phase 1 remains incomplete; changes are uncommitted.
+
+
+## Phase 1 represented player death scream selection (2026-10-09)
+
+- Converted represented A_PlayerScream selection and wired default player death frames to it while retaining A_Scream for monsters. Configured Death names take precedence and use normal voice attenuation. Otherwise registered variants select wimpydeath for hits below 10, crazydeath at health -50 through -99, then xdeath/gibbed for overkill, and normal death fallback. Damage-type suffixes are tried before base names using persistent player damage memory. Pain and death now reuse registry-name lookup.
+- Native audit: src/playsim/p_user.cpp A_PlayerScream uses these precedence and health/damage thresholds, changes gibbed fallback to CHAN_BODY, stops slots other than weapon/voice when using body, and emits NoRumble with normal attenuation. src/playsim/p_interaction.cpp:1527 assigns native special1 from damage; managed DeathDamageAmount represents the hit amount during immediate death execution.
+- Six regressions cover wimpy/crazy/extreme/gibbed/typed normal selection, selected channel stops and configured death override independent of boss/full-volume flags. Full Release suite passes 10,741 tests (9,004 Playsim, 757 MapLoader, 213 Gamedata, 202 Client). Clean Release rebuild with warnings as errors passes with zero warnings/errors; git diff --check passes.
+- Boundary: falling splat/game-mode gates, native skin resolution, complete special1 persistence for delayed death frames and native action-table import remain unfinished. Selection uses represented registry names, not full native skin sound IDs. Paired runtime certification is not claimed. Phase 1 remains incomplete; changes are uncommitted.
+
+
+## Phase 1 player damage-memory respawn lifecycle and armor audit (2026-10-09)
+
+- Converted the missed LastDamageType reset during successful player rebirth. Managed respawn now clears the remembered type with other player defaults before restoring health. NoRespawn and single-player reload branches return before this reset, preserving the dead player's memory until actual rebirth.
+- Native audit: src/g_game.cpp PlayerReborn destroys/reconstructs player_t and preserves a selected set of fields, excluding LastDamageType; src/playsim/d_player.h:421 defaults it to NAME_None. src/playsim/p_interaction.cpp's player armor branch returns when post-armor damage is nonpositive, and invulnerability returns before the LastDamageType assignment at line 1447. Existing managed assignment after those gates already matches these represented cases and required no movement.
+- Eight new regressions cover successful single/cooperative/deathmatch respawn, blocked respawn, reload-only behavior, invulnerable and fully absorbed hit preservation, and forced-hit replacement. Full Release suite passes 10,735 tests (8,998 Playsim, 757 MapLoader, 213 Gamedata, 202 Client). Clean Release rebuild with warnings as errors passes with zero warnings/errors; git diff --check passes.
+- Boundary: complete native damage acceptance, voodoo/alternative pawn sharing, player skin sound substitution and paired runtime certification remain unfinished. Phase 1 remains incomplete; changes are uncommitted.
+
+
+## Phase 1 persistent player damage memory for delayed pain (2026-10-09)
+
+- Converted represented player LastDamageType memory on accepted health damage. Player pain sound selection uses immediate scoped damage context when present, otherwise persistent memory, so delayed state actions retain damage-specific variants. Untyped health damage clears the remembered type. Snapshot capture/restore and conditional checksum hashing include the field; legacy state restores clear it.
+- Added conditional managed save archive version 125 wrapping versions 15-124. Per-actor nullable UTF-8 names preserve absent versus empty state. The reader validates trailer bounds, previous version, record lengths/count, strict UTF-8 and exact trailer consumption; malformed input rejects. Metadata-bearing saves require geometry rather than silently losing the field. Native binary save compatibility is not claimed.
+- Native audit: src/playsim/p_interaction.cpp:1447 records player LastDamageType before later pain handling; src/playsim/p_enemy.cpp:3235 reads persistent player LastDamageType when A_Pain executes. This slice records accepted managed health damage, without claiming every native zero-damage/armor-cancelled branch.
+- Two new regressions cover delayed pain after save restoration, checksum-only type changes, untyped damage clearing, legacy clearing and malformed trailer rejection. Existing immediate pain regressions now expect persistent damage-specific playback on later direct actions. Full Release suite passes 10,727 tests (8,990 Playsim, 757 MapLoader, 213 Gamedata, 202 Client). Clean Release rebuild with warnings as errors passes with zero warnings/errors; git diff --check passes.
+- Boundary: alternative pawns, player skin substitution, full native damage acceptance/armor edge cases, sound registry/default resources and paired runtime certification remain unfinished. Phase 1 remains incomplete; changes are uncommitted.
+
+
+## Phase 1 live pitch position precision correction (2026-10-09)
+
+- Audit found repeated pitch changes before mixing lost playback position through successive integer rounding. Mixer channels now retain the fractional position across pitch timeline conversions, so changing from pitch 1 to 2 and back preserves the next source sample. Original sample buffers remain the resampling source; one-shot completion cleanup is unchanged.
+- Native audit: OpenALSoundRenderer::ChannelPitch in src/common/audio/sound/oalsound.cpp updates AL_PITCH without seeking or restarting the source. Managed code still uses offline resampling rather than OpenAL, but this correction removes avoidable position loss when changing pitch repeatedly without rendering intervening audio.
+- Two regressions exercise eight pitch round trips after consuming one sample, checking the next sample for loops and one-shots and ensuring one-shot playback leaves the active channel index after completion. Full Release suite passes 10,725 tests (8,988 Playsim, 757 MapLoader, 213 Gamedata, 202 Client). Clean Release rebuild with warnings as errors passes with zero warnings/errors; git diff --check passes.
+- Boundary: rendered sample interpolation and offsets are still quantized to the managed PCM timeline; native backend interpolation, virtual-channel timing, automatic sound RNG and paired runtime certification remain unfinished. Phase 1 remains incomplete; changes are uncommitted.
+
+
+## Phase 1 live actor sound pitch changes (2026-10-09)
+
+- Converted A_SoundPitch through immediate actor requests and exact owned-channel selection. MagicSilence does not expand pitch changes. Mixer channels retain owned original decoded samples/rate; each pitch change resamples from that source and translates the current position into the new playback timeline. This avoids repeatedly resampling previously transformed data. Playback uses a minimum pitch of 0.0001; nonfinite input and missing request pitch surface explicit errors.
+- Native audit: src/sound/s_doomsound.cpp:810 forwards channel directly to ChangeSoundPitch, unlike volume's compatibility expansion. src/common/audio/sound/s_sound.cpp:1060 matches source and exact entity channel, while SetPitch clamps backend pitch to at least 0.0001. Managed channels store the effective clamped pitch for timeline conversion; native raw pitch metadata is not reproduced.
+- Three regressions cover sample position preservation and restoration from original samples, nonfinite rejection/minimum clamp and state-driven exact channel changes with MagicSilence both off and on. Full Release suite passes 10,723 tests (8,988 Playsim, 757 MapLoader, 213 Gamedata, 200 Client). Clean Release rebuild with warnings as errors passes with zero warnings/errors; git diff --check passes.
+- Additional backend audit: oalsound.cpp:1361/1533 forwards signed loop remainders to AL_SEC_OFFSET and returns null after an OpenAL error. Negative loops remain rejected explicitly by managed admission rather than inventing wrapping behavior.
+- Boundary: live pitch requires WAD-decoded source samples; raw PCM channels report unsupported. Source position conversion has integer-sample precision, each active WAD sound retains another source buffer, and native backend interpolation/virtual-channel timing remains uncertified. Automatic pitch RNG providers, native action-table import and paired runtime certification remain unfinished. Phase 1 remains incomplete; changes are uncommitted.
+
+
+## Phase 1 negative one-shot offset clamping and mixer API completion (2026-10-09)
+
+- Converted the remaining negative one-shot startTime clamp to zero in actor sound actions and mixer admission. Nonfinite offsets still reject. Negative loop offsets remain explicitly unsupported in actions and rejected by direct mixer admission. Added the optional startTime argument to the convenience mixer overload, forwarding it unchanged to the channel-returning overload.
+- Native audit: src/common/audio/sound/s_sound.cpp:578 uses clamp(startTime,0,sfxlength) for one-shot playback and fmodf for loops. Managed one-shot negative input now matches that native clamp; negative loop/backend semantics are intentionally not inferred.
+- Two regressions verify positioned/local action playback starts at the first sample for negative offsets, the convenience mixer overload does likewise, and negative loop attempts fail before queueing. Full Release suite passes 10,720 tests (8,988 Playsim, 757 MapLoader, 213 Gamedata, 197 Client). Clean Release rebuild with warnings as errors passes with zero warnings/errors; git diff --check passes.
+- Boundary: negative loop offsets, live pitch mutation, virtual-channel native timing, automatic pitch RNG providers, native action-table import and paired runtime certification remain unfinished. Phase 1 remains incomplete; changes are uncommitted.
+
+
+## Phase 1 actor sound start offsets (2026-10-09)
+
+- Converted nonnegative finite StartSound startTime through simulation requests, positioned/local client dispatch and the mixer. Loop offsets wrap by source duration; one-shot offsets clamp at the source end and completed starts emit no channel. Initial PCM position converts source seconds through the effective pitch, preserving the represented resampling timeline. Negative/nonfinite offsets reject explicitly.
+- Native audit: src/common/audio/sound/s_sound.cpp:578 obtains source duration, wraps looping offsets with fmodf and clamps one-shot offsets before backend playback. Managed conversion supports nonnegative inputs only; native negative one-shot clamp behavior and backend-specific negative loop handling are not claimed. Native interpolation/backend seek precision is not represented by offline PCM resampling.
+- Five playback regressions cover one-shot seek, loop wrapping, local loop seek, beyond-end completion and pitch-adjusted source time. Prior unsupported-offset assertion now verifies nonfinite rejection. Full Release suite passes 10,718 tests (8,988 Playsim, 757 MapLoader, 213 Gamedata, 195 Client). Clean Release rebuild with warnings as errors passes with zero warnings/errors; git diff --check passes.
+- Boundary: live pitch mutation, virtual-channel native timing, automatic pitch RNG providers, native action-table import and paired runtime certification remain unfinished. Phase 1 remains incomplete; changes are uncommitted.
+
+
+## Phase 1 explicit pitch in actor sound playback (2026-10-09)
+
+- Converted explicit pitch forwarding through StartSound, PlaySound and non-equivalent StartSoundIfNotSame. Sound requests now carry an optional pitch; both positioned and local client paths forward it to the existing mixer resampler. Positive finite values override pitch, while zero/negative values select automatic pitch. Nonfinite values reject explicitly. Start offsets remain unsupported and raise a clear error.
+- Native audit: src/sound/s_doomsound.cpp:714 forwards pitch to S_PlaySoundPitch; src/common/audio/sound/s_sound.cpp:565 selects spitch when positive, otherwise CalcPitch. Managed forwarding uses the existing offline PCM resampling support; no native backend interpolation or live pitch-change parity is claimed.
+- Six new regression cases cover core and legacy state actions with local and positioned pitched loop output, and zero/negative automatic selection. Updated prior unsupported-pitch assertions to reject nonfinite input instead. Full Release suite passes 10,713 tests (8,988 Playsim, 757 MapLoader, 213 Gamedata, 190 Client). Clean Release rebuild with warnings as errors passes with zero warnings/errors; git diff --check passes.
+- Boundary: live A_SoundPitch changes, start offsets, automatic pitch RNG providers in client request handling, native action-table import and paired runtime certification remain unfinished. Phase 1 remains incomplete; changes are uncommitted.
+
+
+## Phase 1 tentative sound identity and pain lookup (2026-10-09)
+
+- Converted the missed registered-but-tentative identity behavior by including represented SoundSettings names in sound identity and damage-specific pain-name lookup. Tentative entries no longer collapse to NO_SOUND during equivalence, and a registered tentative health-band variant takes precedence over generic damage fallback. Resource resolution retains its established empty-resource behavior.
+- Native audit: src/common/audio/sound/s_sound.cpp:1575 creates a sound entry with lump -1 and bTentative when FindSoundTentative encounters an unknown name. FindSound retrieves registered IDs; S_AreSoundsEquivalent compares IDs, and A_Pain checks S_FindSound identity rather than resource availability. Managed registry lookup now includes its existing settings-backed tentative entries.
+- Two regressions cover aliases resolving to tentative identities, tentative versus unknown and distinct tentative identities, and case-insensitive player pain selection of a tentative health variant over a concrete generic fallback. Full Release suite passes 10,707 tests (8,986 Playsim, 757 MapLoader, 213 Gamedata, 186 Client). Clean Release rebuild with warnings as errors passes with zero warnings/errors; git diff --check passes.
+- Boundary: full native global/reserved sound registry, player skin substitution, persistent delayed pain memory, pitch/start offsets, native action-table import and paired runtime certification remain unfinished. Phase 1 remains incomplete; changes are uncommitted.
+
+
+## Phase 1 shared NO_SOUND equivalence behavior (2026-10-09)
+
+- Converted the missed shared no-sound identity rule in StartSoundIfNotSame. Two names absent from represented definitions/aliases/random headers now compare equal; empty and None names likewise map to no-sound. Known identities remain distinct from no-sound and can emit normally. This prevents spurious requests when both names are unknown.
+- Native audit: src/common/audio/sound/s_sound.cpp:1464 returns NO_SOUND for missing names or NAME_None. src/sound/s_advsound.cpp:1617 checks equal IDs before rejecting invalid IDs, so NO_SOUND compared with NO_SOUND returns true. Managed comparison now preserves this ordering for the represented registry.
+- Five state-action regression cases cover distinct unknown names, unknown versus None, None versus empty and known versus unknown/None. Full Release suite passes 10,705 tests (8,984 Playsim, 757 MapLoader, 213 Gamedata, 186 Client). Clean Release rebuild with warnings as errors passes with zero warnings/errors; git diff --check passes.
+- Boundary: the supplied level registry is still partial; native tentative/global reserved sound IDs and player skin substitution remain unfinished. Pitch/start offsets, native action-table import and paired runtime certification are not claimed. Phase 1 remains incomplete; changes are uncommitted.
+
+
+## Phase 1 legacy named-slot play and stop actions (2026-10-09)
+
+- Converted A_PlaySoundEx and A_StopSoundEx using native Auto/Weapon/Voice/Item/Body/SoundSlot5-7 channel mapping. Unknown slots fall back to Auto for play and do nothing for stop; Auto stop likewise does nothing. Names compare case-insensitively. Play attenuation -1 maps to static scale 3, 1/2 to none, and all other values to normal scale 1.
+- Native audit: src/playsim/p_actionfunctions.cpp:681 maps legacy attenuation and slots, and only starts a looping copy when its actor/channel/sound query is not already playing. Managed LOOP plus NOSTOP request flags represent that guard through the existing client admission path; NOSTOP is a protocol hint here, not an extra native playback flag. The following A_StopSoundEx implementation only forwards valid non-Auto slots. src/namedef.h:120 defines the ordered channels; s_soundinternal.h defines ATTN_STATIC as 3.
+- Nine regressions cover every native slot, invalid slot handling, case-insensitive input, all attenuation branches, loop/dedup request metadata and exact stop selection. Full Release suite passes 10,700 tests (8,979 Playsim, 757 MapLoader, 213 Gamedata, 186 Client). Clean Release rebuild with warnings as errors passes with zero warnings/errors; git diff --check passes.
+- Boundary: full native sound-ID/default resource lookup, action-table import, pitch/start offsets, poison-cloud howling and paired runtime certification remain unfinished. Phase 1 remains incomplete; changes are uncommitted.
+
+
+## Phase 1 sound equivalence case-insensitive metadata correction (2026-10-09)
+
+- Audit found the newly converted alias comparison inherited the supplied dictionary comparer. Mixed-case aliases could therefore incorrectly emit a sound when level metadata used ordinary case-sensitive dictionaries. Corrected alias, random-header and definition identity lookup to compare logical names explicitly with OrdinalIgnoreCase while preserving stored names and random-header boundaries.
+- Native audit: src/common/audio/sound/s_sound.cpp:1464 resolves logical sound names through FName and SoundMap; src/sound/s_advsound.cpp:1617 compares dereferenced sound IDs rather than original spelling. The managed correction preserves native logical-name identity independently of container comparer choice.
+- Two regressions run mixed-case alias chains against definition and random-header targets from ordinary dictionaries, verifying state-action suppression and distinct-name emission. Full Release suite passes 10,691 tests (8,970 Playsim, 757 MapLoader, 213 Gamedata, 186 Client). Clean Release rebuild with warnings as errors passes with zero warnings/errors; git diff --check passes.
+- Boundary: global sound-ID validity, reserved player skin equivalence, native sound action-table import and paired runtime certification remain unfinished. This correction is scoped to represented sound equivalence; other resource lookup paths still use their established metadata dictionaries. Phase 1 remains incomplete; changes are uncommitted.
+
+
+## Phase 1 StartSoundIfNotSame logical identity comparison (2026-10-09)
+
+- Converted A_StartSoundIfNotSame for represented logical names and aliases. Equal names or alias chains reaching the same named identity suppress emission; distinct named definitions remain distinct even when mapped to the same lump. Random headers are compared without selecting a random child. Alias cycles raise an explicit error. Non-equivalent sounds use the shared supported StartSound path.
+- Native audit: src/scripting/vmthunks_actors.cpp:198 invokes S_AreSoundsEquivalent, not a currently-playing channel query. src/sound/s_advsound.cpp:1617 dereferences aliases, preserves random headers and additionally resolves reserved player skin sounds. Managed code implements the name/alias/random identity portion; player skin equivalence remains unfinished. The initial playing-sound interpretation was corrected before verification and no request/client protocol extension was retained.
+- Added a regression covering case-insensitive equal names, alias chains, distinct names sharing one resource, random header identity and explicit cycle rejection. Full Release suite passes 10,689 tests (8,968 Playsim, 757 MapLoader, 213 Gamedata, 186 Client). Clean Release rebuild with warnings as errors passes with zero warnings/errors; git diff --check passes.
+- Boundary: global sound-ID validation and reserved player skin substitution, pitch/start offsets, native action-table import and paired runtime certification remain unfinished. Phase 1 remains incomplete; changes are uncommitted.
+
+
+## Phase 1 legacy A_PlaySound state wrapper (2026-10-09)
+
+- Converted A_PlaySound through the shared StartSound path, including weapons/pistol and body-channel defaults. Looping adds LOOP plus NOSTOP, local adds LOCAL, then channel low three bits are separated from packed flags. Volume, attenuation and pitch arguments retain the core path's validation and explicit unsupported-pitch rejection.
+- Native audit: wadsrc/static/zscript/actors/actor.zs:1309 declares defaults; src/sound/s_doomsound.cpp:719 combines looping/local flags and forwards channel & 7 and channel & ~7 to A_StartSound. Managed code preserves this legacy packed-channel behavior without applying it to the newer StartSound action.
+- Three new regression cases cover default and custom state requests, preserved packed NoPause flag, LOOP/NOSTOP/LOCAL composition, unsupported pitch rejection, loop playback position preservation and listener-only local admission. Full Release suite passes 10,688 tests (8,967 Playsim, 757 MapLoader, 213 Gamedata, 186 Client). Clean Release rebuild with warnings as errors passes with zero warnings/errors; git diff --check passes.
+- Boundary: pitch/start offsets, full native sound registry and action-table import, poison-cloud howling and paired runtime certification remain unfinished. Phase 1 remains incomplete; changes are uncommitted.
+
+
+## Phase 1 core A_StartSound state action (2026-10-09)
+
+- Converted the represented A_StartSound parameter path into ActorSoundActions.StartSound: body channel default, flags zero, volume/attenuation one, immediate request dispatch and exact supplied parameters. PlayWeaponSound now reuses this shared path. Empty names and destroyed sources emit nothing; null names and nonfinite volume/attenuation reject explicitly.
+- Native audit: wadsrc/static/zscript/actors/actor.zs:1310 supplies these defaults; src/sound/s_doomsound.cpp:714 forwards channel, flags, volume, attenuation, pitch and start time to S_PlaySoundPitch. Managed playback supports existing request flags, local/no-stop admission and source ownership; nonzero pitch/startTime explicitly raise NotSupportedException rather than being silently discarded.
+- Added regression coverage for default and custom state-action requests, combined local/loop/no-stop flags and unsupported or invalid parameter rejection. Existing weapon-channel playback regressions pass through the shared implementation. Full Release suite passes 10,685 tests (8,966 Playsim, 757 MapLoader, 213 Gamedata, 184 Client). Clean Release rebuild with warnings as errors passes with zero warnings/errors; git diff --check passes.
+- Boundary: this is the supported core parameter path, not complete A_StartSound parity. Pitch/start offsets, unsupported native channel flags, full sound registry/action-table import and paired runtime certification remain unfinished. Phase 1 remains incomplete; changes are uncommitted.
+
+
+## Phase 1 configured weapon-sound state action (2026-10-09)
+
+- Converted A_PlayWeaponSound into ActorSoundActions.PlayWeaponSound. Supplied nonempty logical names dispatch immediately on weapon channel 1, flags zero, volume one, with normal attenuation unless fullVolume requests none. The default is normal attenuation. Destroyed sources or empty sound names emit nothing; null names raise an argument error and active execution requires an attached simulation.
+- Native audit: wadsrc/static/zscript/actors/actor.zs:1314 implements the legacy weapon helper with A_StartSound on CHAN_WEAPON, flags zero, volume one and fullvol selecting ATTN_NONE versus ATTN_NORM. The managed helper represents this wrapper without claiming a full A_StartSound conversion.
+- Three regressions cover state-driven weapon-channel replacement, survival of a separate body-channel sound, normal versus full-volume output at distance, empty/destroyed silence and null rejection. Initial playback fixture incorrectly used an unstarted zero-volume body sound; corrected it to an audible quarter-volume sound without changing production admission behavior. Full Release suite passes 10,684 tests (8,965 Playsim, 757 MapLoader, 213 Gamedata, 184 Client). Clean Release rebuild with warnings as errors passes with zero warnings/errors; git diff --check passes.
+- Boundary: generic A_StartSound pitch/start-time support, native weapon action-table import/default resources, poison-cloud howling and paired runtime certification remain unfinished. This supplies a configured state delegate, without replacing existing weapon-fire sound scheduling. Phase 1 remains incomplete; changes are uncommitted.
+
+
+## Phase 1 actor sound-volume state action (2026-10-09)
+
+- Converted A_SoundVolume into ActorSoundActions.SoundVolume with immediate dispatch through represented volume-change requests. Finite input is clamped to zero through one; nonfinite input raises a clear argument error. Explicit channel values are preserved, destroyed actors emit nothing and execution requires an attached simulation.
+- Native audit: wadsrc/static/zscript/actors/actor.zs:1312 requires slot and volume. src/scripting/vmthunks_actors.cpp:160 forwards both to S_ChangeActorSoundVolume; src/sound/s_doomsound.cpp:799 maps the slot to -1 under MagicSilence. src/common/audio/sound/s_sound.cpp:1023 clamps volume and changes matching source channels or all channels for -1. Managed client behavior already represents these channel-selection rules.
+- Four playback regressions cover voice-only selection, unmasked channel 10, explicit all-channel -1 and MagicSilence expansion. Each executes from a state delegate, checks rendered samples after negative-volume muting and above-one restoration, and verifies NaN rejection without queued requests. Full Release suite passes 10,681 tests (8,964 Playsim, 757 MapLoader, 213 Gamedata, 182 Client). Clean Release rebuild with warnings as errors passes with zero warnings/errors; git diff --check passes.
+- Boundary: native double-to-float precision is represented by the existing float request API; pitch actions, native action-table import, poison-cloud howling and paired runtime certification remain unfinished. Phase 1 remains incomplete; changes are uncommitted.
+
+
+## Phase 1 actor channel-range and all-sound stopping (2026-10-09)
+
+- Converted A_StopSounds and A_StopAllSounds into actor state actions with immediate dispatch. The sound request adds an optional range endpoint; existing single-channel requests retain their behavior. ClientHost shares owned-channel cleanup between single and range stopping, removing mixer channels and source/listener-height/sound-owner indexes consistently.
+- Native audit: src/common/audio/sound/s_sound.cpp:938 makes (0,0) stop all channels, swaps reversed bounds and otherwise selects inclusive entity-channel bounds for the same source. src/sound/s_doomsound.cpp:747 forwards range stops directly, without the MagicSilence expansion applied by single-channel S_StopSound. Managed range requests preserve this distinction and do not mask channel values.
+- Five client regressions execute range/all stopping from state delegates: inclusive selection, reversed bounds, single-channel range under MagicSilence, all-channel sentinel and an unmasked out-of-range interval. Each verifies another actor remains playing. Full Release suite passes 10,677 tests (8,964 Playsim, 757 MapLoader, 213 Gamedata, 178 Client). Clean Release rebuild with warnings as errors passes with zero warnings/errors; git diff --check passes.
+- Boundary: pitch actions, native action-table import, poison-cloud howling and paired runtime certification remain unfinished. Sound channels themselves are not saved by this slice. Phase 1 remains incomplete; changes are uncommitted.
+
+
+## Phase 1 actor stop-sound state action and howl playback audit (2026-10-09)
+
+- Converted native A_StopSound into ActorSoundActions.StopSound, with voice channel 2 as its default and an explicit overload preserving the supplied channel without masking. State delegates dispatch stop requests immediately through the existing client channel ownership and MagicSilence compatibility handling. Destroyed actors emit nothing; explicit actions require an attached simulation.
+- Native audit: wadsrc/static/zscript/actors/actor.zs:1315 declares CHAN_VOICE as the default. src/scripting/vmthunks_actors.cpp:133 forwards the exact slot to S_StopSound. src/sound/s_doomsound.cpp:734 changes it to all channels only under MagicSilence compatibility. Native Howl at src/playsim/p_mobj.cpp:3753 checks whether its configured body-channel sound is already playing before starting another copy.
+- Four client regressions cover default voice stop, explicit body stop, unmasked channel 10 leaving voice/body playback intact, and Howl retaining its current sample position then restarting after completion. Full Release suite passes 10,672 tests (8,964 Playsim, 757 MapLoader, 213 Gamedata, 173 Client). Clean Release rebuild with warnings as errors passes with zero warnings/errors; git diff --check passes.
+- Boundary: A_StopSounds channel ranges, pitch actions, native action-table import, poison-cloud howling and paired runtime certification remain unfinished. Phase 1 remains incomplete; changes are uncommitted.
+
+
+## Phase 1 electric monster howl emission (2026-10-09)
+
+- Converted configured Actor.Howl emission and connected it to the electrocution branch: non-flinching monsters use the already represented second lightning draw, howling when it is below 128. No new RNG draws were introduced. Empty configured names remain silent; destroyed actors do not emit requests.
+- Native audit: src/playsim/p_interaction.cpp:1023 gates monster Howl on pr_lightning below 128. src/playsim/p_mobj.cpp:3753 looks up HowlSound and plays on CHAN_BODY with flags zero, volume one and normal attenuation only when that sound is not already playing there. Managed requests use NoStop as the existing client protocol hint for same-source/body-channel sound deduplication; it is not a native Howl playback flag.
+- Two regression cases sweep 64 seeds each with and without configured Howl metadata, checking emission against the predicted native threshold, request parameters and the next lightning draw. Existing forced electric pain regressions continue passing. Full Release suite passes 10,668 tests (8,964 Playsim, 757 MapLoader, 213 Gamedata, 169 Client). Clean Release rebuild with warnings as errors passes with zero warnings/errors; git diff --check passes.
+- Boundary: poison-cloud howling and its separate random stream, native default Howl metadata/resources and paired runtime certification remain unfinished. Backend deduplication uses the existing managed actor sound index. Phase 1 remains incomplete; changes are uncommitted.
+
+
+## Phase 1 immediate player damage-specific pain fallback (2026-10-09)
+
+- Converted the immediate A_Pain damage-name fallback: try the health-band name plus damage suffix, then *pain plus damage suffix, then the base health-band name. Represented logical name existence is case-insensitive across level definitions, aliases and random group headers. None or absent damage types use the base selection.
+- Pain reaction scopes the incoming damage type around state entry and restores the previous context in finally, covering ordinary damage and direct TriggerPainChance without leaking a suffix into later unrelated actions or saves. This context is transient; delayed frame actions and persistent native player LastDamageType are not represented by this slice.
+- Native audit: src/playsim/p_enemy.cpp:3235 onward tries damage-specific health sound with S_FindSound, generic damage sound, then base health sound. Managed lookup uses supplied level metadata rather than the full native global sound table; skin substitution, alternative pawn routing and native rumble remain unfinished.
+- Four new regression cases cover case-insensitive specific lookup, generic fallback, missing variant fallback, transient context clearing and alias precedence over a generic random header. Full Release suite passes 10,666 tests (8,962 Playsim, 757 MapLoader, 213 Gamedata, 169 Client). Clean Release rebuild with warnings as errors passes with zero warnings/errors; git diff --check passes.
+- Boundary: persistent damage memory for delayed pain states, full sound registry/default resources and paired runtime certification remain unfinished. Phase 1 remains incomplete; changes are uncommitted.
+
+
+## Phase 1 player pain health-band logical sound selection (2026-10-09)
+
+- Converted the base player branch of A_Pain into the default managed pain-frame action. Attached players select *pain25 below 25 health, *pain50 below 50, *pain75 below 75, otherwise *pain100; requests use voice channel 2, NoRumble, full volume and normal attenuation. Player selection takes precedence over monster Pain metadata. Destroyed players emit nothing.
+- Native audit: src/playsim/p_enemy.cpp:3217 onward implements these strict health thresholds, damage-type lookup fallback and player rumble callback before S_Sound. This slice represents base logical name selection only; damage-specific lookup, alternative pawn routing, skin resolution and rumble callbacks remain unfinished.
+- Initial full-suite verification exposed 25 standalone damage-model failures caused by requiring a simulation for newly enabled player audio. Corrected the action to leave standalone player state/damage calculations valid without an audio queue. Added a regression for this supported detached context; existing damage tests now pass unchanged.
+- Nine new cases cover all threshold edges, player override precedence, request parameters, destroyed-player silence and standalone pain-state entry. Full Release suite passes 10,662 tests (8,958 Playsim, 757 MapLoader, 213 Gamedata, 169 Client). Clean Release rebuild with warnings as errors passes with zero warnings/errors; git diff --check passes.
+- Boundary: native resources/skin substitution and the remaining player pain branches are not certified; unresolved logical sound names still require configured client resources. Phase 1 remains incomplete; changes are uncommitted.
+
+
+## Phase 1 sight sound integration with managed target acquisition (2026-10-09)
+
+- Connected ActorSoundActions.SeeSound to managed MonsterBrain sight acquisition and accepted hearing wake-up while in the spawn state. Emission occurs before entering the see frame. Tick compares the previous target before fallback resolution, including last-enemy resumption, so retained targets do not replay alerts every chase tick even when no SeeState is configured.
+- Native audit: src/playsim/p_enemy.cpp A_Look converges player/heard-target acquisition at seeyou, emits configured SeeSound with boss/full-volume attenuation and then enters SeeState. src/playsim/p_interaction.cpp ReactToDamage enters SeeState without this sound emission; managed damage wake-up remains unchanged.
+- Four regression cases cover sight/hearing acquisition, sound-before-state ordering, non-boss full-volume attenuation, no repeated alert for retained targets or absent SeeState, and silence without targets or after damage retaliation. Full Release suite passes 10,653 tests (8,949 Playsim, 757 MapLoader, 213 Gamedata, 169 Client). Clean Release rebuild with warnings as errors passes with zero warnings/errors; git diff --check passes.
+- Boundary: this wires sound into the existing deterministic managed acquisition loop; complete native A_Look state timing, patrol goals, conversation gates, player-selection/facing rules, class sound defaults and paired runtime certification remain unfinished. Phase 1 remains incomplete; changes are uncommitted.
+
+
+## Phase 1 full-volume see sound metadata and emission (2026-10-09)
+
+- Converted FullVolumeSee actor metadata and the configured sight-sound emission portion of native A_Look into ActorSoundActions.SeeSound. Nonempty See names emit immediate voice-channel requests with flags zero, volume one and attenuation zero for Boss or FullVolumeSee, otherwise normal attenuation. The helper is available to represented state actions; automatic target acquisition and native goal/reaction-time handling are not converted by this slice.
+- Dehacked FULLVOLSOUNDS now applies both see and death flags through the existing map actor, bot and lost-soul defaults helper. Capture/restore and conditional checksum hashing include the see flag. Conditional managed archive version 124 wraps versions 15 through 123 with validated actor count and boolean entries, preserving prior formats when the flag is absent and retaining independently stored death metadata. Native binary save compatibility is not claimed.
+- Native audit: src/playsim/p_enemy.cpp:2039 selects full-volume sight sound for MF2_BOSS or MF8_FULLVOLSEE, using CHAN_VOICE, flags zero, volume one and ATTN_NONE versus ATTN_NORM. src/gamedata/d_dehacked.cpp:4106 sets both full-volume flags; the prior Bits replacement clearing behavior remains represented.
+- Four new regression cases cover normal/boss/full-volume sight request parameters, flag-only checksum changes, combined see/death save round trip, legacy clearing, unsupported geometry rejection and malformed flag rejection. Existing Dehacked spawning regression now asserts both flags. Full Release suite passes 10,649 tests (8,945 Playsim, 757 MapLoader, 213 Gamedata, 169 Client). Clean Release rebuild with warnings as errors passes with zero warnings/errors; git diff --check passes.
+- Boundary: automatic sight AI/state-table import, class defaults, numeric sound IDs/resources and paired runtime certification remain unfinished. Phase 1 remains incomplete; changes are uncommitted.
+
+
+## Phase 1 Dehacked FULLVOLSOUNDS death flag import (2026-10-09)
+
+- Converted the FULLVOLSOUNDS mnemonic into represented Dehacked full-volume sound metadata and applied its death flag through map actor, bot and lost-soul spawning defaults. Layered patches preserve the setting when Bits is absent and clear it when a replacement Bits assignment omits FULLVOLSOUNDS.
+- Native audit: src/gamedata/d_dehacked.cpp:1217 dispatches FULLVOLSOUNDS through deprecated flags; SetFullVol at line 4106 sets both full-volume see and death flags. The Bits parser calls ClearBits2Stuff at line 1490, which clears both flags before assigning replacement bits. This slice implements the death half; full-volume see sound playback remains unfinished.
+- Added regressions for patch layering/replacement and spawned non-boss death attenuation, flag-only checksum changes and save restoration. Full Release suite passes 10,645 tests (8,941 Playsim, 757 MapLoader, 213 Gamedata, 169 Client). Clean Release rebuild with warnings as errors passes with zero warnings/errors; git diff --check passes.
+- Boundary: native class defaults, numeric sound ID resolution, full-volume see playback, remaining sound actions and paired runtime certification remain unfinished. Phase 1 remains incomplete; changes are uncommitted.
+
+
+## Phase 1 FullvolDeath actor metadata and persistence (2026-10-09)
+
+- Converted represented FullvolDeath into Actor.FullVolumeDeath and A_Scream attenuation selection alongside Boss. Snapshots capture/restore the flag, legacy state defaults clear it, and the managed checksum includes a conditional flag marker.
+- Added conditional managed save archive version 123 wrapping older archives, including sound-name version 122. The trailer stores one validated boolean per actor, previous version and count; invalid flags/counts/lengths/versions reject. Saves without this flag preserve previous versions, and unsupported nongometry states fail instead of losing metadata.
+- Native audit: wadsrc/static/zscript/actors/actor.zs:1741 selects ATTN_NONE when bBoss or bFullvolDeath is true. This implements the missing second condition; managed binary format compatibility with native saves is not claimed.
+- One combined regression covers flag snapshot/save restoration, checksum stability, version 123, non-boss zero attenuation, legacy clearing and invalid trailer rejection. Full Release suite passes 10,643 tests (8,940 Playsim, 757 MapLoader, 212 Gamedata, 169 Client). Clean Release rebuild with warnings as errors passes with zero warnings/errors; git diff --check passes.
+- Boundary: class/Dehacked FullvolDeath flag import and spawning defaults, native sound IDs/resources, remaining sound actions and paired runtime certification remain unfinished. New actors default false until metadata is supplied; no native class defaults were invented. Phase 1 remains incomplete; changes are uncommitted.
+
+
+## Phase 1 extreme-death scream state action (2026-10-09)
+
+- Converted A_XScream logical sound selection into ActorSoundActions.XScream: players request *gibbed, other actors request misc/gibbed, on voice channel 2 with NoRumble, full volume and normal attenuation. Immediate dispatch starts configured sounds before zero-tic state chains remove their source.
+- Native audit: wadsrc/static/zscript/actors/actor.zs:1744 onward selects player Sound("*gibbed") versus Sound("misc/gibbed") and invokes A_StartSound on CHAN_VOICE with CHANF_NORUMBLE. Managed selection preserves the unresolved logical player name; native skin substitution is not claimed.
+- Three regression cases cover player/monster request selection and parameters, state action invocation, and playback continuation after immediate source removal. Full Release suite passes 10,642 tests (8,939 Playsim, 757 MapLoader, 212 Gamedata, 169 Client). Clean Release rebuild with warnings as errors passes with zero warnings/errors; git diff --check passes.
+- Boundary: player skin/class logical sound resolution, vanilla defaults/resources, native extreme-death state-table import and paired runtime certification remain unfinished. The action is available to represented state delegates; no unimported default extreme-death state was invented. Phase 1 remains incomplete; changes are uncommitted.
+
+
+## Phase 1 configured active sound state action (2026-10-09)
+
+- Converted A_ActiveSound into ActorSoundActions.ActiveSound. Configured nonempty Active names emit immediate voice-channel requests with NoRumble, full volume and normal attenuation. The delegate can execute directly from ActorFrame actions without adding random sound emissions to unrelated state transitions.
+- Native audit: wadsrc/static/zscript/actors/actor.zs:1749 onward tests ActiveSound and invokes A_StartSound on CHAN_VOICE with CHANF_NORUMBLE and default volume/attenuation. Existing client voice-channel replacement and admission rules handle playback.
+- Three regression cases cover timed state invocation, empty-name silence, request metadata, prior voice-channel replacement and client sample output. Full Release suite passes 10,639 tests (8,937 Playsim, 757 MapLoader, 212 Gamedata, 168 Client). Clean Release rebuild with warnings as errors passes with zero warnings/errors; git diff --check passes.
+- Boundary: importing native actor state action tables and random AI active-sound scheduling, vanilla class defaults, remaining sound actions and paired runtime certification remain unfinished. This conversion exposes the action through the represented state delegate system; it does not fabricate default AI call sites. Phase 1 remains incomplete; changes are uncommitted.
+
+
+## Phase 1 configured death sound action (2026-10-09)
+
+- Converted represented A_Scream into ActorSoundActions.Scream and attached it to the default death frame. Configured Death names emit immediate voice-channel requests with NoRumble, full volume and normal attenuation, or zero attenuation for represented bosses. Missing/empty names and destroyed actors do not emit.
+- Client requests now accept native NoRumble (0x80000). The represented backend has no rumble output, so accepting this disabling hint needs no device side effect; enabling rumble remains unconverted.
+- Native audit: wadsrc/static/zscript/actors/actor.zs:1737 onward starts DeathSound on CHAN_VOICE with CHANF_DEFAULT|CHANF_NORUMBLE and selects ATTN_NONE for bBoss or bFullvolDeath. Native FullvolDeath metadata is not represented by this change.
+- Three regression cases cover ordinary/boss request attenuation, state-frame invocation and full-volume boss playback beyond the normal rolloff range. Full Release suite passes 10,636 tests (8,935 Playsim, 757 MapLoader, 212 Gamedata, 167 Client). Clean Release rebuild with warnings as errors passes with zero warnings/errors; git diff --check passes.
+- Boundary: FullvolDeath metadata, vanilla class defaults, extreme/player-specific death actions, custom Dehacked state action import and paired runtime certification remain unfinished. Phase 1 remains incomplete; changes are uncommitted.
+
+
+## Phase 1 configured non-player pain sound action (2026-10-09)
+
+- Converted represented non-player A_Pain into ActorSoundActions.Pain and attached it to the default pain frame. Configured nonempty Pain sound names emit an immediate voice-channel (2) request at full volume/normal attenuation. Missing/empty names and destroyed actors produce no playback; player health/skin selection is explicitly excluded.
+- Native audit: src/playsim/p_enemy.cpp:3217 onward branches to player-specific health/skin selection, then at 3263-3266 starts a non-player valid PainSound on CHAN_VOICE with flags zero and ATTN_NORM. The conversion emits from the state action rather than automatically from every pain chance roll.
+- Three regression cases cover configured and empty pain metadata, default state-frame invocation, request parameters, actor ownership and end-to-end client sample playback. Full Release suite passes 10,633 tests (8,933 Playsim, 757 MapLoader, 212 Gamedata, 166 Client). Clean Release rebuild with warnings as errors passes with zero warnings/errors; git diff --check passes.
+- Boundary: player pain selection, native sound-ID validity, vanilla class defaults, custom Dehacked state action import, remaining sound actions and paired runtime certification remain unfinished. Phase 1 remains incomplete; changes are uncommitted.
+
+
+## Phase 1 ice-shatter sound and immediate action dispatch (2026-10-09)
+
+- Converted misc/icebreak emission on body channel 4 after the moving-corpse delay guard and velocity reset, before shard spawning and corpse removal. Immediate SoundRequestsReady notification lets configured ClientHost instances consume gameplay action sounds while their source actors still exist. Freeze-death uses the same immediate path; ordinary queued ACS handling is unchanged.
+- Native audit: wadsrc/static/zscript/actors/shared/ice.zs:138 onward returns early for moving nonshattering corpses, resets velocity, starts misc/icebreak, then spawns shards and later destroys the corpse. Starting playback before destruction permits the existing destruction callback to detach the one-shot correctly.
+- Client disposal unsubscribes the immediate dispatch signal. Without a configured archive/consumer, requests remain queued as before; late consumption after actor destruction remains outside this represented path.
+- One end-to-end regression damages a frozen corpse, verifies immediate request consumption before removal, and checks detached ice-break sample playback. Existing freeze-death tests remain passing. Full Release suite passes 10,630 tests (8,931 Playsim, 757 MapLoader, 212 Gamedata, 165 Client). Clean Release rebuild with warnings as errors passes with zero warnings/errors; git diff --check passes.
+- Boundary: built-in resources, multiple client consumers, unconfigured-archive action delivery, remaining gameplay sound actions, player ice-head effects and paired runtime certification remain unfinished. Phase 1 remains incomplete; changes are uncommitted.
+
+
+## Phase 1 automatic freeze-death sound emission (2026-10-09)
+
+- Converted A_FreezeDeath sound emission into the transient simulation request stream: misc/freeze, body channel 4, full volume, normal attenuation and no loop/local flags. The request is emitted after timer/corpse/height changes and before monster death-special execution, following native action ordering.
+- Native audit: wadsrc/static/zscript/actors/shared/ice.zs:101 onward implements A_FreezeDeath and calls A_StartSound("misc/freeze", CHAN_BODY) after restoring default height/render style and before special handling. Existing client sound admission, compatibility and archive decoding apply automatically.
+- Two regressions verify complete request metadata and end-to-end action-to-client sample playback. Full Release suite passes 10,629 tests (8,931 Playsim, 757 MapLoader, 212 Gamedata, 164 Client). Clean Release rebuild with warnings as errors passes with zero warnings/errors; git diff --check passes.
+- Boundary: built-in sound-definition/resource mounting, remaining gameplay sound actions, native corpse/render/player effects and paired runtime certification remain unfinished. Missing sound resources retain the represented silent behavior. Phase 1 remains incomplete; changes are uncommitted.
+
+
+## Phase 1 named Dehacked actor sound overrides (2026-10-09)
+
+- Converted named Alert/Attack/Pain/Death/Action sound assignments in Dehacked Thing blocks into preserved selector/name overrides. Layered patch copies own their dictionaries; a later numeric assignment removes an earlier named override while retaining the existing numeric field handling.
+- Applied represented named defaults to map-spawned actors, spawned bots and spawned lost souls using a shared helper. Actors own their metadata copies; the existing actor sound save/checksum support covers these names.
+- Native audit: src/gamedata/d_dehacked.cpp around 1602-1627 calls DehFindSound for numeric input, falls back to S_FindSound for nonnumeric names, and assigns the five actor sound fields. The managed numeric-prefix distinction preserves the parser's existing decimal-prefix behavior.
+- Two regressions cover named patch layering, numeric replacement, baseline dictionary isolation, all five spawned actor entries and actor ownership independence. Full Release suite passes 10,627 tests (8,930 Playsim, 757 MapLoader, 212 Gamedata, 163 Client). Clean Release rebuild with warnings as errors passes with zero warnings/errors; git diff --check passes.
+- Boundary: native numeric sound-ID mapping, S_FindSound validation/canonicalization, vanilla/class sound defaults, automatic action sound emission and paired runtime certification remain unfinished. The current synthetic numeric sound table is not used to fabricate logical defaults. Phase 1 remains incomplete; changes are uncommitted.
+
+
+## Phase 1 level-exit audio reset (2026-10-09)
+
+- Converted the represented level-exit audio boundary: the first MarkExited notification clears queued sound requests and resets client channels/ownership. Later actor playback requests are discarded while Exited is true; direct actor playback returns no handle and the demonstration PCM no longer restarts after exit. Restore to an active snapshot can resume normal playback.
+- Client disposal removes the level-exit subscription alongside restore/destruction callbacks. Repeated exit marking does not duplicate cleanup notifications and retains existing SecretExit assignment behavior.
+- Native audit: src/g_level.cpp:1163-1168 completes the level, calls S_StopAllChannels, and stops level sequences before intermission setup. The managed MarkExited boundary represents completion earlier in the simplified transition flow; native scheduling/intermission behavior is not claimed.
+- Three regression cases cover normal/secret exit cleanup, raw and actor loops, exactly one notification, post-exit actor rejection, and pending/later ACS request removal. Full Release suite passes 10,625 tests (8,929 Playsim, 757 MapLoader, 211 Gamedata, 163 Client). Clean Release rebuild with warnings as errors passes with zero warnings/errors; git diff --check passes.
+- Boundary: intermission/music/sequence playback, precise native transition timing, saved playback restoration, compatibility config import and paired runtime certification remain unfinished. Phase 1 remains incomplete; changes are uncommitted.
+
+
+## Phase 1 stale audio cleanup after simulation restore (2026-10-09)
+
+- Added a successful StateRestored notification after actor/support restoration and checksum recomputation. The transient sound request queue clears at that point. ClientHost clears playback and source/ownership records through the shared audio reset helper while retaining the configured archive for subsequent playback.
+- Restore validation failures before mutation do not emit the notification or clear active audio. Client disposal unsubscribes both destruction and restore callbacks.
+- Native audit: sound reset stops all channels in SoundEngine::Init/Clear and level completion at src/g_level.cpp:1164. This change prevents unsaved managed channels and future-timeline requests from surviving snapshot restoration; native serialized channel restoration parity is explicitly not claimed.
+- Two regressions cover old loop/request removal, retained archive usability, and preservation of active playback when sound-state validation rejects restoration. Full Release suite passes 10,622 tests (8,929 Playsim, 757 MapLoader, 211 Gamedata, 160 Client). Clean Release rebuild with warnings as errors passes with zero warnings/errors; git diff --check passes.
+- Boundary: restoring saved playback channels, rollback/replay audio policy, full transactional restore on failures after mutation, compatibility config import and paired runtime certification remain unfinished. Phase 1 remains incomplete; changes are uncommitted.
+
+
+## Phase 1 client audio shutdown lifecycle (2026-10-09)
+
+- Converted represented audio shutdown into idempotent ClientHost disposal: all mixer channels stop, actor ownership and position records clear, the archive reference releases, and the simulation destruction subscription is removed. Playback, binding, relinking, archive configuration and ticks reject disposed hosts. The client executable now scopes its host with using so shutdown runs on exit.
+- Native audit: SoundEngine::Shutdown in src/common/audio/sound/s_sound.cpp:94 onward calls StopAllChannels before freeing channel resources. Clear and Init also stop playback. Managed disposal covers represented mixer/client resources and event lifetime; native backend resource parity is not claimed.
+- One regression verifies owned/raw loop shutdown, repeated disposal, cleared actor playing queries, rejected ticking/playback and safe later actor destruction. Full Release suite passes 10,620 tests (8,929 Playsim, 757 MapLoader, 211 Gamedata, 158 Client). Clean Release rebuild with warnings as errors passes with zero warnings/errors; git diff --check passes.
+- Boundary: backend resource teardown, map-transition reset semantics, compatibility configuration import, camera/portal positioning and paired runtime certification remain unfinished. Phase 1 remains incomplete; changes are uncommitted.
+
+
+## Phase 1 detached listener-height sounds (2026-10-09)
+
+- Converted retention of the listener-height modifier in mixer channel metadata. Actor binding sets or clears the modifier explicitly; detached one-shots continue updating their effective vertical position from the listener after actor ownership has been removed. Relinked channels retain the modifier as well.
+- Native audit: actor detachment in SoundEngine::RelinkSound retains channel flags while changing source type to SOURCE_Unattached. src/sound/s_doomsound.cpp:1198-1201 applies CHANF_LISTENERZ after source position calculation. The managed channel now preserves the same distinction between source ownership and positioning flags.
+- Listener update rollback now restores source positions as well as gains if a later channel fails, preventing partial height updates from leaking into near-limit calculations.
+- Two regression cases compare detached playback with and without the flag as listener height changes in both directions. Full Release suite passes 10,619 tests (8,929 Playsim, 757 MapLoader, 211 Gamedata, 157 Client). Clean Release rebuild with warnings as errors passes with zero warnings/errors; git diff --check passes.
+- Boundary: camera/portal positioning, client subscription lifetime management, compatibility config import, backend timing/eviction and paired runtime certification remain unfinished. Phase 1 remains incomplete; changes are uncommitted.
+
+
+## Phase 1 destruction-time actor sound callback (2026-10-09)
+
+- Converted the native automatic relink call into an idempotent Thinker destruction hook, Actor notification through AuthoritySimulation.ActorDestroyed, and ClientHost sound cleanup subscription. Owned loops stop synchronously; one-shots detach at current Actor.SoundPos rather than the previous client update. Sound cutoff still stops both.
+- Native call-site audit: the current source tree calls S_RelinkSound automatically from AActor::OnDestroy in src/playsim/p_mobj.cpp:5995 with a null destination. No automatic live-destination relink caller was found. The managed live-destination API remains explicit; the destruction path is now wired.
+- Two new regression cases verify current-position detachment despite movement since the last client update, removal of old actor ownership, immediate loop stop before a client tick, and exactly one notification for repeated destruction.
+- Full Release suite passes 10,617 tests (8,929 Playsim, 757 MapLoader, 211 Gamedata, 155 Client). Clean Release rebuild with warnings as errors passes with zero warnings/errors; git diff --check passes.
+- Boundary: native complete OnDestroy world/inventory cleanup is not claimed; this hook covers sound lifecycle only. Listener-height behavior on detached sources, client subscription lifetime management, compatibility config import, backend timing/eviction and paired runtime certification remain unfinished. Phase 1 remains incomplete; changes are uncommitted.
+
+
+## Phase 1 actor-to-actor sound relinking (2026-10-09)
+
+- Converted represented live-destination sound relinking through ClientHost.TryRelinkActorSounds. Active source handles retain samples, progress, loop/virtual state and channel metadata while mixer source identity, client position bindings and actor ownership/query records transfer to the destination. Destination sounds are not replaced merely because their entity channels match.
+- Destination validation precedes mutation; invalid/destroyed destinations report audio-destination-actor-missing. Relinked sources follow their new actor on subsequent client updates and survive removal of the old actor.
+- Native audit: SoundEngine::RelinkSound in src/common/audio/sound/s_sound.cpp:986 onward changes Source when a non-null destination is supplied, without restarting or replacing channels. S_RelinkSound in src/sound/s_doomsound.cpp:788-790 delegates actor relinking. Managed metadata follows this source-pointer behavior across playback queries and stop ownership.
+- Two regression cases cover transfer alongside an existing destination channel, survival after old-source destruction, stopping both destination-owned sounds, and invalid-destination failure without changing source ownership. Full Release suite passes 10,615 tests (8,929 Playsim, 757 MapLoader, 211 Gamedata, 153 Client). Clean Release rebuild with warnings as errors passes with zero warnings/errors; git diff --check passes.
+- Boundary: automatic native gameplay relink call sites are not yet connected to this client API; source position changes take effect at the next client update. Destruction-time callbacks, compatibility config import, backend timing/eviction and paired runtime certification remain unfinished. Phase 1 remains incomplete; changes are uncommitted.
+
+
 ## Phase 1 actor disappearance sound detachment and cutoff (2026-10-08)
 
 - Converted actor disappearance cleanup: source removal stops looped channels, including virtual loops; one-shots detach and continue at the retained position by default. ClientHost.SoundCutoffCompatibility stops one-shots as well. Mixer detachment clears source actor identity so detached sounds cannot gain the actor-channel restart exemption.

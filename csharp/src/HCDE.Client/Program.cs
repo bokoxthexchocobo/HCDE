@@ -6,14 +6,14 @@ public static class Program
     {
         if (args.Length == 0 || args[0] is "--help" or "-h")
         {
-            Console.WriteLine("Usage: hcde --iwad <path> --map <name> [--skill 1-5] [--width n] [--height n] [--renderer software|hardware]");
+            Console.WriteLine("Usage: hcde --iwad <path> --map <name> [--skill 1-5] [--width n] [--height n] [--renderer software|hardware] [--view-preferences <path>]");
             Console.WriteLine("       hcde --self-test");
             return args.Length == 0 ? 2 : 0;
         }
 
         if (args[0] == "--self-test")
         {
-            var host = ClientHost.DemoRoom();
+            using var host = ClientHost.DemoRoom();
             host.Tick(default);
             host.Frame.Get(host.Frame.Width / 2, host.Frame.Height / 2, out var r, out var g, out var b);
             Console.WriteLine("center={0},{1},{2} tic={3}", r, g, b, host.Simulation.Thinkers.Clock.Tic);

@@ -18,12 +18,13 @@ public class SkullSlamDamageContextTests
         soul.DamageType = "Fire"; soul.Damage = 8;
         soul.Brain!.StartCharge(soul, target);
         var bytes = SimSavegame.Write(sim); SimSavegame.Apply(sim, bytes);
-        var baseDamage = 8 * (1 + (int)(prediction.NextCombatRandom() & 7));
-        if ((int)(baseDamage * factor) > 0) prediction.NextCombatRandom();
+        var baseDamage = 8 * (1 + (int)(prediction.NextMissileDamageByte() & 7));
+        if ((int)(baseDamage * factor) > 0) prediction.NextPainChanceByte();
         for (var i = 0; i < 10 && soul.Brain.Charging; i++) soul.Tick();
         Assert.False(soul.Brain.Charging);
         Assert.Equal(1000 - (int)(baseDamage * factor), target.Health);
         Assert.Equal(prediction.CombatRandomState, sim.CombatRandomState);
+        Assert.Equal(prediction.CaptureState().MissileDamageRandomState, sim.CaptureState().MissileDamageRandomState);
         Assert.Equal(default, soul.VelocityX); Assert.Equal(default, soul.VelocityY);
         Assert.Equal(default, soul.VelocityZ);
     }
@@ -41,6 +42,7 @@ public class SkullSlamDamageContextTests
         for (var i = 0; i < 10 && soul.Brain.Charging; i++) soul.Tick();
         Assert.False(soul.Brain.Charging); Assert.Equal(100, target.Health);
         Assert.Equal(random, sim.CombatRandomState);
+        Assert.Null(sim.CaptureState().MissileDamageRandomState);
         Assert.Equal(default, soul.VelocityX); Assert.Equal(default, soul.VelocityY);
         Assert.Equal(default, soul.VelocityZ);
     }

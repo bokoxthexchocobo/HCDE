@@ -8,26 +8,29 @@ public class MonsterSignedReactionTests
     [InlineData(-1, -2)]
     [InlineData(-5, -6)]
     [InlineData(int.MinValue, int.MaxValue)]
-    public void NegativeReactionCountsDownWithoutAcquiringTarget(int initial, int expected)
+    public void NegativeReactionCountsDownWhileAcquiringTarget(int initial, int expected)
     {
         var (sim, monster) = Room();
         monster.ReactionTime = initial;
         monster.Brain!.Tick(sim, monster);
         Assert.Equal(expected, monster.ReactionTime);
         Assert.Equal(expected, monster.Brain.ReactionTics);
-        Assert.Null(monster.Brain.TargetId);
+        Assert.Equal(sim.Players.Single().Id, monster.Brain.TargetId);
+        Assert.Equal(MonsterMode.Chase, monster.Brain.Mode);
     }
 
     [Fact]
-    public void ClearingNegativeReactionAllowsManagedTargetAcquisition()
+    public void ClearingNegativeReactionAllowsMissileAttack()
     {
         var (sim, monster) = Room();
         monster.ReactionTime = -5;
         monster.Brain!.Tick(sim, monster);
-        Assert.Null(monster.Brain.TargetId);
+        Assert.Equal(sim.Players.Single().Id, monster.Brain.TargetId);
+        Assert.Equal(MonsterMode.Chase, monster.Brain.Mode);
         monster.ReactionTime = 0;
         monster.Brain.Tick(sim, monster);
         Assert.Equal(sim.Players.Single().Id, monster.Brain.TargetId);
+        Assert.Equal(MonsterMode.Windup, monster.Brain.Mode);
     }
 
     private static (AuthoritySimulation Sim, Actor Monster) Room()

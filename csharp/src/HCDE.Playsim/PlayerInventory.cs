@@ -31,6 +31,166 @@ public readonly record struct SpareArmor(int SaveAmount, int SavePercent, int Ma
 
 public sealed class PlayerInventory
 {
+    private readonly List<HealthPickupStack> _healthPickups = new();
+    public IReadOnlyList<HealthPickupStack> HealthPickups => _healthPickups;
+    /// <summary>Use one numeric HealthPickup stack item; failed healing leaves its amount unchanged.</summary>
+    public bool UseHealthPickup(int index)
+    {
+        if ((uint)index >= (uint)_healthPickups.Count) throw new ArgumentOutOfRangeException(nameof(index));
+        var item = _healthPickups[index];
+        if (_owner is null || _owner.Destroyed || !_owner.GiveBody(item.Health)) return false;
+        if (_owner.Simulation?.InfiniteHealthItemUse == true) return true;
+        if (item.Amount == 1) _healthPickups.RemoveAt(index);
+        else _healthPickups[index] = item with { Amount = item.Amount - 1 };
+        return true;
+    }
+    public int CountHealthPickup(string typeName)
+    {
+        ArgumentException.ThrowIfNullOrEmpty(typeName);
+        return _healthPickups.FirstOrDefault(item => string.Equals(item.TypeName, typeName, StringComparison.OrdinalIgnoreCase)).Amount;
+    }
+
+    public bool UseHealthPickup(string typeName)
+    {
+        ArgumentException.ThrowIfNullOrEmpty(typeName);
+        var index = _healthPickups.FindIndex(item => string.Equals(item.TypeName, typeName, StringComparison.OrdinalIgnoreCase));
+        return index >= 0 && UseHealthPickup(index);
+    }
+
+    public int TakeHealthPickup(string typeName, int amount)
+    {
+        ArgumentException.ThrowIfNullOrEmpty(typeName);
+        if (amount <= 0) return 0;
+        var index = _healthPickups.FindIndex(item => string.Equals(item.TypeName, typeName, StringComparison.OrdinalIgnoreCase));
+        if (index < 0) return 0;
+        var item = _healthPickups[index];
+        var taken = Math.Min(amount, item.Amount);
+        if (taken == item.Amount) _healthPickups.RemoveAt(index);
+        else _healthPickups[index] = item with { Amount = item.Amount - taken };
+        return taken;
+    }
+
+    /// <summary>Native Actor.SetInventory rules for supported named health items.</summary>
+    public bool SetHealthPickup(string typeName, int amount, bool beyondMax = false)
+    {
+        ArgumentException.ThrowIfNullOrEmpty(typeName);
+        if (!HealthPickupCatalog.TryFind(typeName, out var definition, _owner?.Simulation?.DefaultInventoryMaximum ?? 25)) return false;
+        var index = _healthPickups.FindIndex(item => string.Equals(item.TypeName, typeName, StringComparison.OrdinalIgnoreCase));
+        if (index < 0) return amount <= 0 || GiveHealthPickup(typeName, amount);
+        var item = _healthPickups[index];
+        if (amount == item.Amount) return false;
+        if (amount <= 0) _healthPickups.RemoveAt(index);
+        else if (amount < item.Amount) _healthPickups[index] = item with { Amount = amount };
+        else _healthPickups[index] = item with { Amount = beyondMax ? amount : Math.Min(amount, definition.Maximum) };
+        return true;
+    }
+
+    public bool GiveHealthPickup(string typeName, int amount)
+    {
+        ArgumentException.ThrowIfNullOrEmpty(typeName);
+        if (amount <= 0 || !HealthPickupCatalog.TryFind(typeName, out var definition, _owner?.Simulation?.DefaultInventoryMaximum ?? 25)) return false;
+        var index = _healthPickups.FindIndex(item => item.Health == definition.Health
+            && string.Equals(item.TypeName, definition.TypeName, StringComparison.OrdinalIgnoreCase));
+        if (index >= 0)
+        {
+            var item = _healthPickups[index];
+            var unlimited = _owner?.Simulation?.UnlimitedHealthPickups ?? false;
+            if (!unlimited && item.Amount >= definition.Maximum) return false;
+            _healthPickups[index] = item with { Amount = (int)Math.Min(unlimited ? int.MaxValue : definition.Maximum, (long)item.Amount + amount) };
+        }
+        else
+            _healthPickups.Insert(0, new(definition.Health, Math.Min(amount, definition.Maximum), definition.AutoUseMode, definition.TypeName));
+        return true;
+    }
+
+    public void AddHealthPickup(int health, int amount, int autoUseMode = 0, string? typeName = null)
+    {
+        if (health == 0 || health < 0 && autoUseMode != 0) throw new ArgumentOutOfRangeException(nameof(health));
+        if (amount <= 0) throw new ArgumentOutOfRangeException(nameof(amount));
+        if (autoUseMode is < 0 or > 3) throw new ArgumentOutOfRangeException(nameof(autoUseMode));
+        if (typeName is not null) ArgumentException.ThrowIfNullOrEmpty(typeName);
+        _healthPickups.Add(new(health, amount, autoUseMode, typeName));
+    }
+    internal void RestoreHealthPickups(IReadOnlyList<HealthPickupStack>? items)
+    {
+        _healthPickups.Clear(); if (items is not null) _healthPickups.AddRange(items);
+    }
+    public int AutoUseStrifeHealth(int health, int maximum, double healthFactor = 1)
+        => AutoUseStrifeHealthCore(health, maximum, healthFactor, health).Health;
+
+    internal long AutoUseStrifePoisonHealth(int before, int damage, int maximum, double healthFactor)
+    {
+        var result = AutoUseStrifeHealthCore(before - damage, maximum, healthFactor, before);
+        // GiveBody mirrors healed player health to the actor before P_PoisonDamage subtracts again.
+        return result.Used ? (long)result.Health - damage : (long)before - damage;
+    }
+
+    private (int Health, bool Used) AutoUseStrifeHealthCore(int health, int maximum, double healthFactor, int actorHealth)
+    {
+        if (!double.IsFinite(healthFactor)) throw new ArgumentOutOfRangeException(nameof(healthFactor));
+        var used = false;
+        while (actorHealth > 0 && health < 50 && health < maximum)
+        {
+            var index = -1; var threshold = 0;
+            for (var i = 0; i < _healthPickups.Count; i++)
+                if (_healthPickups[i].AutoUseMode == 3 && _healthPickups[i].Health > threshold)
+                {
+                    index = i;
+                    // Native AutoUseStrifeHealth compares healing against the previous stack's amount.
+                    threshold = _healthPickups[i].Amount;
+                }
+            if (index < 0) break;
+            while (actorHealth > 0 && health < 50 && health < maximum)
+            {
+                var item = _healthPickups[index];
+                var gain = (int)Math.Clamp(Math.Min(item.Health, 65536) * healthFactor, 1, int.MaxValue);
+                var count = (int)Math.Min(item.Amount, ((long)Math.Min(50, maximum) - health + gain - 1) / gain);
+                // A first use that leaves mirrored actor health nonpositive prevents further GiveBody calls.
+                if (health <= 0) count = 1;
+                health = (int)Math.Min(maximum, health + (long)count * gain);
+                actorHealth = health;
+                used = true;
+                if (_owner?.Simulation?.InfiniteHealthItemUse == true) continue;
+                if (count == item.Amount)
+                {
+                    _healthPickups.RemoveAt(index);
+                    break;
+                }
+                _healthPickups[index] = item with { Amount = item.Amount - count };
+            }
+        }
+        return (health, used);
+    }
+    public int AutoUseHealth(int required, bool skillUse)
+    {
+        if (required <= 0) return 0;
+        long Total(int mode) => _healthPickups.Where(i => i.AutoUseMode == mode).Sum(i => (long)i.Health * i.Amount);
+        var first = Total(1); var second = Total(2);
+        var useFirst = skillUse && first >= required;
+        var useSecond = !useFirst && second >= required;
+        var combine = !useFirst && !useSecond && skillUse && first + second >= required;
+        if (!useFirst && !useSecond && !combine) return 0;
+        long remaining = required; long saved = 0;
+        void Consume(int mode)
+        {
+            while (remaining > 0)
+            {
+                var index = -1; var largest = 0;
+                for (var i = 0; i < _healthPickups.Count; i++)
+                    if (_healthPickups[i].AutoUseMode == mode && _healthPickups[i].Health > largest)
+                    { index = i; largest = _healthPickups[i].Health; }
+                if (index < 0) break;
+                var item = _healthPickups[index];
+                var count = (int)Math.Min(item.Amount, (remaining + largest - 1) / largest);
+                var gain = (long)count * largest; remaining -= gain; saved += gain;
+                if (count == item.Amount) _healthPickups.RemoveAt(index);
+                else _healthPickups[index] = item with { Amount = item.Amount - count };
+            }
+        }
+        if (useFirst || combine) Consume(1);
+        if (useSecond || combine) Consume(2);
+        return (int)Math.Min(int.MaxValue, saved);
+    }
     private readonly PlayerPawn? _owner;
     public PlayerInventory() { }
     internal PlayerInventory(PlayerPawn owner) => _owner = owner;
@@ -88,6 +248,7 @@ public sealed class PlayerInventory
 
     internal void ClearInventory()
     {
+        _healthPickups.Clear();
         _owner?.ClearDamagePowers();
         RemoveBackpack();
         Armor = 0;
@@ -102,6 +263,7 @@ public sealed class PlayerInventory
     /// <summary>Deathmatch pistol start. Cooperative respawn uses <see cref="FilterCoopRespawn"/>.</summary>
     public void ResetToPistolStart()
     {
+        _healthPickups.Clear();
         _owner?.ClearDamagePowers();
         Armor = 0;
         ArmorMaximum = 1;
@@ -169,7 +331,7 @@ public sealed class PlayerInventory
         var spare = _spareArmor[best];
         var saveAmount = GetSpareSaveAmount(spare);
         if (Armor >= saveAmount) return;
-        _spareArmor.RemoveAt(best);
+        if (_owner?.Simulation?.InfiniteStoredInventoryUse != true) _spareArmor.RemoveAt(best);
         EquipSpareArmor(spare, saveAmount);
     }
 
@@ -181,7 +343,7 @@ public sealed class PlayerInventory
         var spare = _spareArmor[index];
         var saveAmount = GetSpareSaveAmount(spare);
         if (Armor >= saveAmount) return false;
-        _spareArmor.RemoveAt(index);
+        if (_owner?.Simulation?.InfiniteStoredInventoryUse != true) _spareArmor.RemoveAt(index);
         EquipSpareArmor(spare, saveAmount);
         return true;
     }
@@ -200,18 +362,21 @@ public sealed class PlayerInventory
         MaxFullAbsorb = spare.MaxFullAbsorb;
     }
 
-    internal void TakeStoredArmor(string armorType, int amount)
+    internal int TakeStoredArmor(string armorType, int amount)
     {
+        var taken = 0;
         for (var index = 0; index < _spareArmor.Count && amount > 0;)
         {
             if (_spareArmor[index].ArmorType.Equals(armorType, StringComparison.OrdinalIgnoreCase))
             {
                 _spareArmor.RemoveAt(index);
                 amount--;
+                taken++;
             }
             else
                 index++;
         }
+        return taken;
     }
 
     /// <summary>
@@ -396,19 +561,25 @@ public sealed class PlayerInventory
         if (Selected != weapon) return;
         Selected = 0;
         if (Pending.HasValue) return;
+        var best = BestSelectableWeapon();
+        if (best != 0) Pending = best;
+    }
+
+    internal WeaponKind BestSelectableWeapon()
+    {
         WeaponKind best = 0;
         foreach (var candidate in Cycle)
             if (CanSelect(candidate) && (best == 0
                 || WeaponCatalog.SelectionOrder(candidate) < WeaponCatalog.SelectionOrder(best)))
                 best = candidate;
-        if (best != 0) Pending = best;
+        return best;
     }
 
     private bool CanSelect(WeaponKind weapon)
     {
         var definition = WeaponCatalog.Find(weapon);
         return Owns(weapon) && definition != null
-            && (definition.Ammo is not { } ammo || Ammo(ammo) >= definition.AmmoUse);
+            && (definition.Ammo is not { } ammo || HasAmmoForUse(ammo, definition.AmmoUse));
     }
 
     internal void CheckAmmoPickupSwitch(AmmoKind ammo)
@@ -466,8 +637,9 @@ public sealed class PlayerInventory
 
     public bool TrySpendAmmo(AmmoKind kind, int amount)
     {
-        if (amount <= 0 || Ammo(kind) < amount)
+        if (amount <= 0 || !HasAmmoForUse(kind, amount))
             return false;
+        if (_owner?.HasInfiniteAmmo == true) return true;
 
         switch (kind)
         {
@@ -487,4 +659,7 @@ public sealed class PlayerInventory
 
         return true;
     }
+
+    internal bool HasAmmoForUse(AmmoKind kind, int amount) =>
+        _owner?.HasInfiniteAmmo == true || Ammo(kind) >= amount;
 }

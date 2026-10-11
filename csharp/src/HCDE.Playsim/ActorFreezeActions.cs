@@ -2,7 +2,7 @@ namespace HCDE.Playsim;
 
 public static class ActorFreezeActions
 {
-    /// <summary>A_FreezeDeath timer and represented corpse flags. Rendering, audio,
+    /// <summary>A_FreezeDeath timer, sound request and represented corpse flags. Rendering,
     /// additional native flags and player effects remain absent. Height restoration
     /// uses represented spawn defaults when available.</summary>
     public static void FreezeDeath(Actor actor)
@@ -12,6 +12,8 @@ public static class ActorFreezeActions
         actor.Solid = actor.Shootable = actor.IceCorpse = actor.Pushable = true;
         actor.CanSlide = true;
         actor.Height = actor.ResurrectionHeight ?? actor.Height;
+        if (actor is PlayerPawn player) player.DamageCount = 0;
+        sim.QueueSoundRequest(new SimulationSoundRequest(actor.Id, "misc/freeze", 4, 0, 1, false, 1, false), immediate: true);
         if (actor is not PlayerPawn && actor.IsMonster && actor.Special != 0)
         {
             ActorSpecialActions.CallSpecial(actor, actor.Special, actor.SpecialArgs[0], actor.SpecialArgs[1],

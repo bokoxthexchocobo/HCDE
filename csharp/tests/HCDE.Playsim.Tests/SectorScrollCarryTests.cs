@@ -360,7 +360,7 @@ public class SectorScrollCarryTests
     {
         var sim = Room(hexenSpecial: HexenSectorScroll.NorthSlow);
         var player = sim.Players.Single();
-        var bot = sim.AddBot(96, 64);
+        var bot = sim.AddBot(96, 64); bot.Brain!.Enabled = false;
         var startY = player.Y.ToDouble();
         var botStartY = bot.Y.ToDouble();
         sim.Tick();
@@ -393,7 +393,7 @@ public class SectorScrollCarryTests
     public void GroundedMonsterMovesWithSectorScroll()
     {
         var sim = Room();
-        var bot = sim.AddBot(96, 64);
+        var bot = sim.AddBot(96, 64); bot.Brain!.Enabled = false;
         var startX = bot.X.ToDouble();
         sim.SetSectorScroll(0, 2, 1);
         sim.Tick();
@@ -406,7 +406,7 @@ public class SectorScrollCarryTests
     {
         var sim = Room();
         var player = sim.Players.Single();
-        var bot = sim.AddBot(96, 64);
+        var bot = sim.AddBot(96, 64); bot.Brain!.Enabled = false;
         var playerStart = player.X.ToDouble();
         var botStart = bot.X.ToDouble();
         sim.SetSectorScroll(0, 4, 0, ScrollCarryAffect.Players);
@@ -420,7 +420,7 @@ public class SectorScrollCarryTests
     {
         var sim = Room();
         var player = sim.Players.Single();
-        var bot = sim.AddBot(96, 64);
+        var bot = sim.AddBot(96, 64); bot.Brain!.Enabled = false;
         var playerStart = player.X.ToDouble();
         var botStart = bot.X.ToDouble();
         sim.SetSectorScroll(0, 4, 0, ScrollCarryAffect.Monsters);
@@ -434,7 +434,7 @@ public class SectorScrollCarryTests
     {
         var sim = Room();
         var player = sim.Players.Single();
-        var bot = sim.AddBot(96, 64);
+        var bot = sim.AddBot(96, 64); bot.Brain!.Enabled = false;
         sim.AppendSectorCarryScroll(0, 2, 0, ScrollCarryAffect.Players);
         sim.AppendSectorCarryScroll(0, 3, 0, ScrollCarryAffect.Monsters);
         var playerStart = player.X.ToDouble();
@@ -451,7 +451,7 @@ public class SectorScrollCarryTests
         var player = sim.Players.Single();
         player.X = Fixed.FromDouble(-32);
         ActorPhysics.PlaceOnFloor(sim, player);
-        var bot = sim.AddBot(96, 64);
+        var bot = sim.AddBot(96, 64); bot.Brain!.Enabled = false;
         bot.X = Fixed.FromDouble(55);
         bot.Y = Fixed.FromDouble(64);
         ActorPhysics.PlaceOnFloor(sim, bot);
@@ -469,7 +469,7 @@ public class SectorScrollCarryTests
         var player = sim.Players.Single();
         player.X = Fixed.FromDouble(-32);
         ActorPhysics.PlaceOnFloor(sim, player);
-        var bot = sim.AddBot(96, 64);
+        var bot = sim.AddBot(96, 64); bot.Brain!.Enabled = false;
         bot.X = Fixed.FromDouble(55);
         bot.Y = Fixed.FromDouble(64);
         ActorPhysics.PlaceOnFloor(sim, bot);
@@ -597,7 +597,7 @@ public class SectorScrollCarryTests
     public void MonstersIgnoreCarryScrollWithoutInScrollSecFlag()
     {
         var sim = Room();
-        var bot = sim.AddBot(96, 64);
+        var bot = sim.AddBot(96, 64); bot.Brain!.Enabled = false;
         bot.InScrollSector = false;
         sim.SetSectorScroll(0, 4, 0);
         var startX = bot.X.ToDouble();
@@ -612,7 +612,7 @@ public class SectorScrollCarryTests
     public void TickSetsInScrollSecOnMonstersTouchingCarryScroller()
     {
         var sim = Room();
-        var bot = sim.AddBot(96, 64);
+        var bot = sim.AddBot(96, 64); bot.Brain!.Enabled = false;
         sim.SetSectorScroll(0, 3, 0);
         Assert.False(bot.InScrollSector);
         sim.Tick();

@@ -54,7 +54,7 @@ internal static class SimActorSoundArchive
         {
             if (trailer.Length - offset < 4) return false;
             var entries = BinaryPrimitives.ReadInt32LittleEndian(trailer[offset..]); offset += 4;
-            if (entries < 0 || entries > 11) return false;
+            if (entries < 0 || entries > Enum.GetValues<ActorSoundType>().Length) return false;
             var sounds = new Dictionary<ActorSoundType, string>();
             for (var entry = 0; entry < entries; entry++)
             {

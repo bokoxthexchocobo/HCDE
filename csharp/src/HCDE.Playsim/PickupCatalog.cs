@@ -38,12 +38,13 @@ public static class PickupCatalog
     public const int Backpack = 8;
     public const int Megasphere = 83;
 
-    public static bool IsPickup(int doomEdNum) => TryDescribe(doomEdNum, out _);
+    public static bool IsPickup(int doomEdNum, bool ravenHealth = false) => TryDescribe(doomEdNum, out _) || ravenHealth && doomEdNum == 32;
     internal static WeaponKind PickupWeapon(int doomEdNum) =>
         TryDescribe(doomEdNum, out var gift) && gift.Kind == GiftKind.Weapon ? gift.Weapon : 0;
 
     /// <summary>Native Doom bonus and sphere defaults carry INVENTORY.ALWAYSPICKUP.</summary>
-    internal static bool AlwaysPickup(int doomEdNum) => doomEdNum is HealthBonus or ArmorBonus or Soulsphere or Megasphere;
+    internal static bool AlwaysPickup(int doomEdNum, bool strifeHealth = false) =>
+        !(strifeHealth && doomEdNum == Megasphere) && doomEdNum is HealthBonus or ArmorBonus or Soulsphere or Megasphere;
 
     /// <summary>Native Actor defaults, with Doom Backpack's height override.</summary>
     internal static Fixed HeightOf(int doomEdNum) => Fixed.FromInt(doomEdNum == Backpack ? 26 : 16);
@@ -64,11 +65,25 @@ public static class PickupCatalog
     }
 
     /// <summary>Native <c>PClass::FindActor</c> subset for ACS <c>DropItem</c> on catalog pickups.</summary>
-    public static bool TryEditorNumberForDropName(string? typeName, out int doomEdNum)
+    public static bool TryEditorNumberForDropName(string? typeName, out int doomEdNum, bool strifeHealth = false, bool ravenHealth = false)
     {
         doomEdNum = 0;
         if (string.IsNullOrWhiteSpace(typeName))
             return false;
+        if (ravenHealth)
+        {
+            if (typeName.Equals("ArtiHealth", StringComparison.OrdinalIgnoreCase)) { doomEdNum = 82; return true; }
+            if (typeName.Equals("ArtiSuperHealth", StringComparison.OrdinalIgnoreCase)) { doomEdNum = 32; return true; }
+            if (typeName.Equals("SuperShotgun", StringComparison.OrdinalIgnoreCase)) return false;
+        }
+        if (strifeHealth && HealthPickupCatalog.TryFind(typeName, out var healthDefinition))
+        {
+            doomEdNum = healthDefinition.TypeName switch { "MedPatch" => Stimpack, "MedicalKit" => Medikit, "SurgeryKit" => Megasphere, _ => 0 };
+            return doomEdNum != 0;
+        }
+        if (strifeHealth && (typeName.Equals("Stimpack", StringComparison.OrdinalIgnoreCase)
+            || typeName.Equals("Medikit", StringComparison.OrdinalIgnoreCase)
+            || typeName.Equals("Megasphere", StringComparison.OrdinalIgnoreCase))) return false;
         doomEdNum = typeName.ToUpperInvariant() switch
         {
             "CLIP" => Clip,
@@ -137,18 +152,31 @@ public static class PickupCatalog
         int pickupAmount = 0,
         bool suppressWeaponAmmo = false)
     {
+        if (player.Simulation is { RavenHealthPickups: true } && doomEdNum is 82 or 32)
+            return player.Inventory.GiveHealthPickup(doomEdNum == 82 ? "ArtiHealth" : "ArtiSuperHealth", pickupAmount > 0 ? pickupAmount : 1);
+        if (player.Simulation is { StrifeHealthPickups: true })
+        {
+            var typeName = doomEdNum switch { Stimpack => "MedPatch", Medikit => "MedicalKit", Megasphere => "SurgeryKit", _ => null };
+            if (typeName is not null) return player.Inventory.GiveHealthPickup(typeName, pickupAmount > 0 ? pickupAmount : 1);
+        }
+        return TryGiveDoomClass(player, doomEdNum, ignoreSkill, depleted, pickupAmount, suppressWeaponAmmo);
+    }
+
+    /// <summary>Supported Doom class pickup effects, independent of game-specific editor-number mappings.</summary>
+    internal static bool TryGiveDoomClass(PlayerPawn player, int doomEdNum, bool ignoreSkill = false,
+        bool depleted = false, int pickupAmount = 0, bool suppressWeaponAmmo = false)
+    {
         if (!TryDescribe(doomEdNum, out var gift))
             return false;
         var armorClass = doomEdNum == GreenArmor ? player.Simulation?.DehackedGreenArmorClass ?? 1
             : player.Simulation?.DehackedBlueArmorClass ?? 2;
         if (doomEdNum is GreenArmor or MegaArmor)
             gift = new Gift(gift.Kind, unchecked(100 * armorClass), gift.Maximum);
-        if (doomEdNum == Soulsphere)
-            gift = new Gift(GiftKind.Health, player.Simulation?.DehackedSoulsphereHealth ?? 100,
-                player.Simulation?.DehackedMaxSoulsphere ?? 200);
-        if (doomEdNum == HealthBonus && player.Simulation is { DehackedHealthBonusCapPatched: true } simulation)
-            gift = new Gift(GiftKind.Health, gift.Amount, simulation.Compat.HasFlag(CompatSurface.DehHealth)
-                ? simulation.DehackedMaxHealth : unchecked(simulation.DehackedMaxHealth * 2));
+        if (gift.Kind == GiftKind.Health)
+        {
+            var health = DoomHealthDefaults(player, doomEdNum);
+            gift = new Gift(GiftKind.Health, health.Amount, health.Maximum);
+        }
         var giftAmount = pickupAmount > 0 ? pickupAmount : gift.Amount;
         var ammo = ScaleAmmo(giftAmount, player, ignoreSkill);
         var armor = ScaleArmor(giftAmount, player, ignoreSkill);
@@ -233,6 +261,17 @@ public static class PickupCatalog
         return armor || health;
     }
 
+    internal static (int Amount, int Maximum) DoomHealthDefaults(Actor actor, int doomEdNum)
+    {
+        if (doomEdNum == Soulsphere)
+            return (actor.Simulation?.DehackedSoulsphereHealth ?? 100, actor.Simulation?.DehackedMaxSoulsphere ?? 200);
+        if (doomEdNum == HealthBonus && actor.Simulation is { DehackedHealthBonusCapPatched: true } sim)
+            return (1, sim.Compat.HasFlag(CompatSurface.DehHealth) ? sim.DehackedMaxHealth : unchecked(sim.DehackedMaxHealth * 2));
+        if (!TryDescribe(doomEdNum, out var gift) || gift.Kind != GiftKind.Health)
+            throw new ArgumentOutOfRangeException(nameof(doomEdNum));
+        return (gift.Amount, gift.Maximum);
+    }
+
     internal static bool GiveHealth(Actor actor, int amount)
     {
         if (actor is PlayerPawn player) return GiveHealth(player, amount);
@@ -245,11 +284,7 @@ public static class PickupCatalog
 
     internal static bool GiveHealth(PlayerPawn player, int amount, int maximum = 0)
     {
-        var originalMaximum = maximum;
-        if (maximum <= 0) maximum = player.GetMaxHealth(true);
-        else maximum = checked(maximum + player.BonusHealth);
-        if (player.MaxPickupHealth != 0)
-            maximum = originalMaximum > 0 ? Math.Max(originalMaximum, player.MaxPickupHealth) : player.MaxPickupHealth;
+        maximum = ResolveHealthMaximum(player, maximum);
         if (amount < 0) return GivePercentageHealth(player, amount, maximum);
         if (amount <= 0 || player.Health <= 0 || player.Health >= maximum)
             return false;
@@ -257,6 +292,16 @@ public static class PickupCatalog
         var healing = (int)Math.Clamp(scaled, 1, int.MaxValue);
         player.Health += Math.Min(healing, maximum - player.Health);
         return true;
+    }
+
+    internal static int ResolveHealthMaximum(PlayerPawn player, int maximum = 0)
+    {
+        var originalMaximum = maximum;
+        if (maximum <= 0) maximum = player.GetMaxHealth(true);
+        else maximum = checked(maximum + player.BonusHealth);
+        if (player.MaxPickupHealth != 0)
+            maximum = originalMaximum > 0 ? Math.Max(originalMaximum, player.MaxPickupHealth) : player.MaxPickupHealth;
+        return maximum;
     }
 
     private static bool GivePercentageHealth(Actor actor, int amount, int maximum)
@@ -325,7 +370,7 @@ public static class PickupCatalog
         }
     }
 
-    private static bool GiveWeapon(PlayerInventory inventory, WeaponKind weapon, AmmoKind ammo, int amount, bool givesAmmo)
+    internal static bool GiveWeapon(PlayerInventory inventory, WeaponKind weapon, AmmoKind ammo, int amount, bool givesAmmo)
     {
         var owned = inventory.Owns(weapon);
         if (!owned)
@@ -337,7 +382,7 @@ public static class PickupCatalog
         return !owned || added;
     }
 
-    private static bool GiveAmmo(PlayerInventory inventory, AmmoKind ammo, int amount)
+    internal static bool GiveAmmo(PlayerInventory inventory, AmmoKind ammo, int amount)
     {
         var wasEmpty = inventory.Ammo(ammo) == 0;
         var added = inventory.TryAddAmmo(ammo, amount);

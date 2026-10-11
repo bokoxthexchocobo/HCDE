@@ -17,10 +17,11 @@ public class GeometryMissileDamageHelperTests
         {
             var (sim, missile) = Setup(seed); var (prediction, _) = Setup(seed);
             missile.StrifeDamage = strife;
-            var expected = 5 * (1 + ((int)prediction.NextCombatRandom() & (strife ? 3 : 7)));
+            var expected = 5 * (1 + ((int)prediction.NextMissileDamageByte() & (strife ? 3 : 7)));
             Hit(sim, missile, part);
             Assert.Equal(1000 - expected, Health(sim, part));
             Assert.Equal(prediction.CombatRandomState, sim.CombatRandomState);
+        Assert.Equal(prediction.CaptureState().MissileDamageRandomState, sim.CaptureState().MissileDamageRandomState);
         }
     }
 

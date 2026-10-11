@@ -43,7 +43,6 @@ internal static class ActorRaise
         corpse.DeathDamageType = null;
         corpse.Killed = false;
         corpse.Corpse = false;
-        corpse.Invisible = false;
         var collisionFlags = corpse.ResurrectionCollisionFlags ?? 3;
         corpse.Solid = (collisionFlags & 1) != 0;
         corpse.Shootable = (collisionFlags & 2) != 0;
@@ -58,6 +57,12 @@ internal static class ActorRaise
         corpse.NoRadiusDamage = (defenseFlags & 4) != 0;
         corpse.Friendly = (defenseFlags & 8) != 0 || corpse.SpawnFriendly;
         corpse.Ambush = (defenseFlags & 16) != 0;
+        corpse.Shadow = corpse.DefaultShadow;
+        corpse.CantSeek = false;
+        corpse.SpawnSoundSource = false;
+        corpse.DontThrust = false;
+        corpse.DontSeekInvisible = false;
+        corpse.MinVisible = false;
         corpse.Boss = (defenseFlags & 32) != 0;
         var movementFlags = corpse.ResurrectionMovementFlags ?? 0;
         corpse.NoGravity = (movementFlags & 1) != 0;
@@ -81,7 +86,12 @@ internal static class ActorRaise
         corpse.ProjectilePassHeight = default;
         corpse.SpecialFireDamage = false;
         corpse.DamageType = null;
+        corpse.PainType = null;
         corpse.ForcePain = false;
+        corpse.CausePain = false;
+        corpse.AllowPain = false;
+        corpse.NoDamage = false;
+        corpse.LaxTelefragDamage = false;
         corpse.NoPain = false;
         corpse.Painless = false;
         corpse.ThruActors = false;

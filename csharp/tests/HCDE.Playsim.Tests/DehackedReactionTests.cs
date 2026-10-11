@@ -38,7 +38,7 @@ public class DehackedReactionTests
     }
 
     [Fact]
-    public void PatchedReactionControlsManagedAcquisitionDelay()
+    public void PatchedReactionControlsMissileDelayWithoutBlockingAcquisition()
     {
         var sim = AuthoritySimulation.Start(new PlayLevel
         {
@@ -46,10 +46,12 @@ public class DehackedReactionTests
             Things = [new LevelThing { Type = 1, X = 400 }, new LevelThing { Type = 3004 }],
         }, dehacked: DehackedPatch.Apply("Thing 2\nReaction time = 2\n"));
         var actor = sim.Actors.Single(candidate => candidate.DoomEdNum == 3004);
-        actor.Brain!.Tick(sim, actor); actor.Brain.Tick(sim, actor);
-        Assert.Equal(0, actor.ReactionTime);
-        Assert.Null(actor.Brain.TargetId);
+        actor.Brain!.Tick(sim, actor);
+        Assert.Equal(sim.Players.Single().Id, actor.Brain.TargetId);
+        Assert.Equal(MonsterMode.Chase, actor.Brain.Mode);
         actor.Brain.Tick(sim, actor);
+        Assert.Equal(0, actor.ReactionTime);
+        Assert.Equal(MonsterMode.Windup, actor.Brain.Mode);
         Assert.Equal(sim.Players.Single().Id, actor.Brain.TargetId);
     }
 

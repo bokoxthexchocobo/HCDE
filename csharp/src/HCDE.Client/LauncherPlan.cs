@@ -12,6 +12,7 @@ public sealed class LauncherSelection
     public int Width { get; init; } = 320;
     public int Height { get; init; } = 200;
     public bool SoftwareRenderer { get; init; } = true;
+    public string? ViewPreferencesPath { get; init; }
 }
 
 public static class LauncherPlan
@@ -42,6 +43,11 @@ public static class LauncherPlan
             return false;
         }
 
+        if (selection.ViewPreferencesPath is not null && string.IsNullOrWhiteSpace(selection.ViewPreferencesPath))
+        {
+            error = "view-preferences-path";
+            return false;
+        }
         error = null;
         return true;
     }
@@ -50,7 +56,7 @@ public static class LauncherPlan
     {
         if (!TryValidate(selection, out var error))
             throw new InvalidOperationException(error);
-        return
+        string[] args =
         [
             "--iwad", selection.IwadPath,
             "--map", selection.MapName,
@@ -59,6 +65,14 @@ public static class LauncherPlan
             "--height", selection.Height.ToString(),
             "--renderer", selection.SoftwareRenderer ? "software" : "hardware",
         ];
+        return selection.ViewPreferencesPath is { } path ? [.. args, "--view-preferences", path] : args;
+    }
+
+    public static ClientHost CreateHost(LauncherSelection selection, HCDE.Playsim.AuthoritySimulation simulation)
+    {
+        if (!TryValidate(selection, out var error)) throw new InvalidOperationException(error);
+        return new ClientHost(simulation, selection.Width, selection.Height, selection.ViewPreferencesPath)
+        { UseHardware = !selection.SoftwareRenderer };
     }
 
     public static bool TryParse(string[] args, out LauncherSelection selection, out string? error)
@@ -71,10 +85,19 @@ public static class LauncherPlan
         var width = 320;
         var height = 200;
         var software = true;
+        string? preferencesPath = null;
         for (var i = 0; i < args.Length; i++)
         {
             switch (args[i])
             {
+                case "--view-preferences":
+                    if (!Take(args, ref i, out preferencesPath) || string.IsNullOrWhiteSpace(preferencesPath)
+                        || preferencesPath.StartsWith("--", StringComparison.Ordinal))
+                    {
+                        error = "view-preferences-path";
+                        return false;
+                    }
+                    break;
                 case "--iwad":
                     if (!Take(args, ref i, out iwad))
                     {
@@ -138,6 +161,7 @@ public static class LauncherPlan
             Width = width,
             Height = height,
             SoftwareRenderer = software,
+            ViewPreferencesPath = preferencesPath,
         };
         return TryValidate(selection, out error);
     }

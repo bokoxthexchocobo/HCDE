@@ -14,9 +14,10 @@ public class MissileDamageHelperTests
         for (var seed = 1; seed <= 16; seed++)
         {
             var (sim, missile, _) = Setup(seed); var (prediction, _, _) = Setup(seed);
-            var random = mask == 0 ? 0 : (int)prediction.NextCombatRandom();
+            var random = mask == 0 ? 0 : (int)prediction.NextMissileDamageByte();
             Assert.Equal(((random & mask) + add) * 5, missile.GetMissileDamage(mask, add));
             Assert.Equal(prediction.CombatRandomState, sim.CombatRandomState);
+        Assert.Equal(prediction.CaptureState().MissileDamageRandomState, sim.CaptureState().MissileDamageRandomState);
         }
     }
 
@@ -27,10 +28,11 @@ public class MissileDamageHelperTests
     {
         var (sim, missile, target) = Setup(7); missile.StrifeDamage = strife;
         var (prediction, _, _) = Setup(7);
-        var expected = 5 * (2 + (int)(prediction.NextCombatRandom() & 3));
+        var expected = 5 * (2 + (int)(prediction.NextMissileDamageByte() & 3));
         Assert.Equal(expected, missile.DoMissileDamage(target, ripper: true).HealthLost);
         Assert.Equal(1000 - expected, target.Health); Assert.False(missile.Destroyed);
         Assert.Equal(prediction.CombatRandomState, sim.CombatRandomState);
+        Assert.Equal(prediction.CaptureState().MissileDamageRandomState, sim.CaptureState().MissileDamageRandomState);
     }
 
     [Theory]
