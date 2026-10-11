@@ -42,8 +42,9 @@ public class LauncherViewPreferencesTests
         var path = Path.Combine(Path.GetTempPath(), "hcde-launch-view-" + Guid.NewGuid().ToString("N") + ".json");
         try
         {
+            File.WriteAllBytes(path + ".wad", [80,87,65,68,0,0,0,0,12,0,0,0]);
             new ClientViewPreferences { SmoothPain = true, BloodFadeScalar = 0.5 }.SaveFile(path);
-            var args = LauncherPlan.BuildArgs(new() { IwadPath = "doom.wad", ViewPreferencesPath = path,
+            var args = LauncherPlan.BuildArgs(new() { IwadPath = path + ".wad", ViewPreferencesPath = path,
                 Width = 64, Height = 48, SoftwareRenderer = false });
             Assert.True(LauncherPlan.TryParse(args, out var selection, out var error), error);
             var sim = AuthoritySimulation.Start(new PlayLevel { Sectors = [new LevelSector { CeilingHeight = 128 }],
@@ -57,6 +58,6 @@ public class LauncherViewPreferencesTests
             }
             Assert.Equal(0.75, ClientViewPreferences.LoadFile(path).BloodFadeScalar);
         }
-        finally { if (File.Exists(path)) File.Delete(path); }
+        finally { if (File.Exists(path)) File.Delete(path); File.Delete(path + ".wad"); }
     }
 }

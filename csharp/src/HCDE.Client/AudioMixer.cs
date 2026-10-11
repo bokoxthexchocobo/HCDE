@@ -45,10 +45,11 @@ public sealed class AudioMixer
 
     public bool TryPlayWadSound(ReadOnlySpan<byte> wad, HCDE.MapLoader.PlayLevel level, string sound,
         out Guid channelId, out string? error, Func<int>? nextRandom = null, float volume = 1, bool loop = false, float? pitch = null, bool pitched = true, Func<byte>? nextPitchByte = null, Func<float>? nextPitchFloat = null, float attenuation = 1, HCDE.Gamedata.SoundRolloff? forcedRolloff = null, bool singular = false, bool noPause = false, bool force = false,
-        System.Numerics.Vector3? sourcePosition = null, uint? sourceActorId = null, int entityChannel = 0, bool listenerSource = false, float startTime = 0)
+        System.Numerics.Vector3? sourcePosition = null, uint? sourceActorId = null, int entityChannel = 0, bool listenerSource = false, float startTime = 0, bool overlap = true)
     {
         channelId = Guid.Empty;
         error = null;
+        sound = HCDE.MapLoader.SoundResourceResolver.GetCanonicalSoundName(level, sound);
         if (!float.IsFinite(startTime) || loop && startTime < 0) { error = "audio-start-time-invalid"; return false; }
         startTime = Math.Max(0, startTime);
         if (sourcePosition is { } position && (!float.IsFinite(position.X) || !float.IsFinite(position.Y) || !float.IsFinite(position.Z)))
@@ -56,17 +57,19 @@ public sealed class AudioMixer
         if (forcedRolloff is not null && (!float.IsFinite(forcedRolloff.MinDistance) || !float.IsFinite(forcedRolloff.MaxDistance))) { error = "audio-rolloff-invalid"; return false; }
         if (!float.IsFinite(attenuation)) { error = "audio-attenuation-invalid"; return false; }
         if (pitch is { } explicitPitch && (!float.IsFinite(explicitPitch) || explicitPitch <= 0)) { error = "audio-pitch-invalid"; return false; }
-        var settingVolume = level.SoundSettings.TryGetValue(sound, out var settings) ? settings.Volume : 1;
+        var settings = HCDE.MapLoader.SoundResourceResolver.GetSoundSettings(level, sound);
+        var settingVolume = settings?.Volume ?? 1;
         if (!float.IsFinite(volume) || !float.IsFinite(settingVolume))
         { error = "audio-volume-invalid"; return false; }
         var gain = Math.Min(volume * settingVolume, 1);
         if (gain <= 0) return true;
         var path = new List<string>();
         if (!HCDE.MapLoader.SoundResourceResolver.TryResolveNamed(level, sound, nextRandom, out _, out var resolvedSound, out error, path.Add)) return false;
-        var definedSingular = level.SoundSettings.TryGetValue(resolvedSound, out var resolvedSettings) && resolvedSettings.Singular;
+        var resolvedSettings = HCDE.MapLoader.SoundResourceResolver.GetSoundSettings(level, resolvedSound);
+        var definedSingular = resolvedSettings?.Singular == true;
         var distanceScale = attenuation;
         foreach (var name in path)
-            if (level.RandomSoundGroups.ContainsKey(name) && level.SoundSettings.TryGetValue(name, out var groupSettings))
+            if (level.RandomSoundGroups.ContainsKey(name) && HCDE.MapLoader.SoundResourceResolver.GetSoundSettings(level, name) is { } groupSettings)
                 distanceScale *= groupSettings.Attenuation;
         distanceScale *= resolvedSettings?.Attenuation ?? 1;
         if (!float.IsFinite(distanceScale)) { error = "audio-attenuation-invalid"; return false; }
@@ -75,7 +78,7 @@ public sealed class AudioMixer
         var inherited = settings ?? new HCDE.Gamedata.SndInfoSoundSettings();
         foreach (var name in path.Skip(1))
             if (inherited.NearLimit < 0)
-                inherited = level.SoundSettings.TryGetValue(name, out var nextSettings) ? nextSettings : new HCDE.Gamedata.SndInfoSoundSettings();
+                inherited = HCDE.MapLoader.SoundResourceResolver.GetSoundSettings(level, name) ?? new HCDE.Gamedata.SndInfoSoundSettings();
         var nearLimit = !listenerSource && sourcePosition.HasValue ? inherited.NearLimit : 0;
         var blocked = singularBlocked;
         if (nearLimit > 0)
@@ -88,6 +91,11 @@ public sealed class AudioMixer
         if (!HCDE.MapLoader.SoundResourceResolver.TryReadDoomSound(wad, level, resolvedSound, out var decoded, out error)) return false;
         if (decoded is null || decoded.Samples.Length == 0) return true;
         if (SampleRate <= 0) { error = "audio-mixer-sample-rate-invalid"; return false; }
+        if (!overlap && entityChannel != 0)
+        {
+            if (sourceActorId is { } actorId) ReplaceActorChannel(actorId, entityChannel, Guid.Empty);
+            else if (sourcePosition is { } origin) ReplacePositionedChannel(origin, entityChannel, Guid.Empty);
+        }
         if (Paused && !loop && !noPause && !force) return true;
         var pitchSettings = (resolvedSettings ?? new HCDE.Gamedata.SndInfoSoundSettings()) with
         { DefPitch = inherited.DefPitch, DefPitchMax = inherited.DefPitchMax };
@@ -107,7 +115,7 @@ public sealed class AudioMixer
         var rolloff = settings?.Rolloff;
         foreach (var name in path.Skip(1))
             if (rolloff is null || rolloff.MinDistance == 0)
-                rolloff = level.SoundSettings.GetValueOrDefault(name)?.Rolloff;
+                rolloff = HCDE.MapLoader.SoundResourceResolver.GetSoundSettings(level, name)?.Rolloff;
         if (forcedRolloff is not null && forcedRolloff.MinDistance != 0)
             rolloff = forcedRolloff;
         if (rolloff is null || rolloff.MinDistance == 0)
@@ -151,12 +159,33 @@ public sealed class AudioMixer
 
     public bool IsPlaying(Guid channelId) => _channels.Any(channel => channel.Id == channelId);
 
+    public bool TryGetSoundLengthMilliseconds(ReadOnlySpan<byte> wad, HCDE.MapLoader.PlayLevel level, string sound,
+        out uint length, out string? error)
+        => HCDE.MapLoader.SoundResourceResolver.TryGetSoundLengthMilliseconds(wad, level, sound, out length, out error);
+
     public int GetSoundPlayingCount(string? sound = null, int entityChannel = -1)
         => _channels.Count(channel => (entityChannel == -1 || channel.EntityChannel == entityChannel) &&
             (sound is null || string.Equals(channel.OriginalSound, sound, StringComparison.OrdinalIgnoreCase)));
 
     public bool IsUnpositionedSoundPlaying(int entityChannel = 0, string? sound = null)
         => IsNonActorSoundPlaying(false, entityChannel, sound);
+
+    public int GetActorSoundPlayingCount(uint actorId, string? sound = null, int entityChannel = -1)
+        => _channels.Count(channel => channel.SourceActorId == actorId &&
+            (entityChannel == -1 || channel.EntityChannel == entityChannel) &&
+            (sound is null || string.Equals(channel.OriginalSound, sound, StringComparison.OrdinalIgnoreCase)));
+
+    public int StopActorSound(uint actorId, int entityChannel)
+        => _channels.RemoveAll(channel => channel.SourceActorId == actorId &&
+            (entityChannel < 0 || channel.EntityChannel == entityChannel));
+
+    public int StopActorSounds(uint actorId, int channelMin, int channelMax)
+    {
+        var all = channelMin == 0 && channelMax == 0;
+        if (channelMax < channelMin) (channelMin, channelMax) = (channelMax, channelMin);
+        return _channels.RemoveAll(channel => channel.SourceActorId == actorId &&
+            (all || channel.EntityChannel >= channelMin && channel.EntityChannel <= channelMax));
+    }
 
     public bool IsPositionedSoundPlaying(int entityChannel = 0, string? sound = null)
         => IsNonActorSoundPlaying(true, entityChannel, sound);
@@ -172,6 +201,13 @@ public sealed class AudioMixer
         return _channels.RemoveAll(channel => string.Equals(channel.OriginalSound, sound, StringComparison.OrdinalIgnoreCase));
     }
 
+    public int StopActorSoundByName(uint actorId, string sound)
+    {
+        ArgumentNullException.ThrowIfNull(sound);
+        return _channels.RemoveAll(channel => channel.SourceActorId == actorId &&
+            string.Equals(channel.OriginalSound, sound, StringComparison.OrdinalIgnoreCase));
+    }
+
     public int StopUnpositionedSound(int entityChannel = 0, string? sound = null)
         => _channels.RemoveAll(channel => channel.SourceActorId is null && channel.SourcePosition is null &&
             (entityChannel == 0 || channel.EntityChannel == entityChannel) &&
@@ -180,6 +216,10 @@ public sealed class AudioMixer
     internal void ReplacePositionedChannel(System.Numerics.Vector3 position, int entityChannel, Guid replacement)
         => _channels.RemoveAll(channel => channel.Id != replacement && channel.SourceActorId is null &&
             channel.SourcePosition == position && channel.EntityChannel == entityChannel);
+
+    internal void ReplaceActorChannel(uint actorId, int entityChannel, Guid replacement)
+        => _channels.RemoveAll(channel => channel.Id != replacement && channel.SourceActorId == actorId &&
+            channel.EntityChannel == entityChannel);
 
     public bool TrySetChannelPitch(Guid channelId, float pitch, out string? error)
     {
@@ -196,6 +236,24 @@ public sealed class AudioMixer
         channel.Pitch = effective;
         channel.Position = channel.Loop && samples.Length > 0 ? position % samples.Length : position;
         channel.PositionFraction = precisePosition - position;
+        return true;
+    }
+
+    public bool TrySetActorSoundPitch(uint actorId, int entityChannel, float pitch, out int changed,
+        out string? error, string? sound = null)
+    {
+        changed = 0; error = null;
+        if (!float.IsFinite(pitch)) { error = "audio-pitch-invalid"; return false; }
+        var selected = _channels.Where(channel => channel.SourceActorId == actorId &&
+            (sound is null ? channel.EntityChannel == entityChannel :
+                string.Equals(channel.OriginalSound, sound, StringComparison.OrdinalIgnoreCase))).ToArray();
+        if (selected.Any(channel => channel.OriginalSamples is null))
+        { error = "audio-channel-pitch-unsupported"; return false; }
+        foreach (var channel in selected)
+        {
+            if (!TrySetChannelPitch(channel.Id, pitch, out error)) return false;
+            changed++;
+        }
         return true;
     }
 
@@ -245,6 +303,24 @@ public sealed class AudioMixer
         channel.SourceActorId = actorId;
     }
 
+    internal Guid[] GetActorSoundChannels(uint actorId)
+        => _channels.Where(channel => channel.SourceActorId == actorId).Select(channel => channel.Id).ToArray();
+
+    internal void UpdateActorSoundOrigin(uint actorId, System.Numerics.Vector3 origin, System.Numerics.Vector3? listener)
+    {
+        foreach (var channel in _channels)
+        {
+            if (channel.SourceActorId != actorId) continue;
+            var position = origin;
+            if (channel.ListenerHeight && listener is { } listenerPosition) position.Y = listenerPosition.Y;
+            channel.SourcePosition = position;
+        }
+    }
+
+    internal (Guid Handle, uint ActorId, bool ListenerHeight)[] GetActorSoundSources()
+        => _channels.Where(channel => channel.SourceActorId.HasValue)
+            .Select(channel => (channel.Id, channel.SourceActorId!.Value, channel.ListenerHeight)).ToArray();
+
     internal void SetChannelListenerHeight(Guid channelId, bool enabled)
         => _channels.First(channel => channel.Id == channelId).ListenerHeight = enabled;
 
@@ -255,6 +331,21 @@ public sealed class AudioMixer
         var channel = _channels.FirstOrDefault(channel => channel.Id == channelId);
         if (channel is null) { error = "audio-channel-missing"; return false; }
         channel.Volume = Math.Clamp(volume, 0, 1);
+        return true;
+    }
+
+    public bool TrySetActorSoundVolume(uint actorId, int entityChannel, float volume, out int changed, out string? error)
+    {
+        changed = 0;
+        error = null;
+        if (!float.IsFinite(volume)) { error = "audio-volume-invalid"; return false; }
+        var clamped = Math.Clamp(volume, 0, 1);
+        foreach (var channel in _channels)
+        {
+            if (channel.SourceActorId != actorId || entityChannel != -1 && channel.EntityChannel != entityChannel) continue;
+            channel.Volume = clamped;
+            changed++;
+        }
         return true;
     }
 
@@ -280,7 +371,7 @@ public sealed class AudioMixer
         return true;
     }
 
-    public bool TryUpdateListenerPosition(System.Numerics.Vector3 listener, out string? error)
+    public bool TryUpdateListenerPosition(System.Numerics.Vector3 listener, out string? error, bool listenerAvailable = true)
     {
         error = null;
         if (!float.IsFinite(listener.X) || !float.IsFinite(listener.Y) || !float.IsFinite(listener.Z))
@@ -292,7 +383,7 @@ public sealed class AudioMixer
         {
             var channel = positioned[index];
             var source = channel.SourcePosition!.Value;
-            if (channel.ListenerHeight) source.Y = listener.Y;
+            if (channel.ListenerHeight && listenerAvailable) source.Y = listener.Y;
             if (TrySetChannelPosition(channel.Id, source, listener, out error)) continue;
             for (var restore = 0; restore < positioned.Length; restore++)
             {

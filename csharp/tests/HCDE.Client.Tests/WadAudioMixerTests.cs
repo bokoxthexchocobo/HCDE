@@ -5,6 +5,647 @@ namespace HCDE.Client.Tests;
 
 public class WadAudioMixerTests
 {
+    [Fact]
+    public void ClientSoundLengthUsesConfiguredArchiveReturnsSecondsAndSurvivesRestore()
+    {
+        var level = new PlayLevel { Things = [new LevelThing { Type = 1 }],
+            SoundAliases = new Dictionary<string, string> { ["alias"] = "sound" },
+            SoundDefinitions = new Dictionary<string, string> { ["sound"] = "DSPISTOL", ["missing"] = "ABSENT" } };
+        level.RandomSoundGroups = new Dictionary<string, IReadOnlyList<string>> { ["group"] = new[] { "missing", "alias" } };
+        using var host = new ClientHost(HCDE.Playsim.AuthoritySimulation.Start(level));
+        Assert.True(host.TrySetSoundArchive(Wad(1000), out var error), error);
+        foreach (var sound in new[] { "SOUND", "alias", "group" })
+        {
+            Assert.True(host.TryGetSoundLength(sound, out var seconds, out error), error);
+            Assert.Equal(0.002, seconds);
+        }
+        var snapshot = host.Simulation.CaptureState(); host.Simulation.RestoreState(snapshot);
+        Assert.True(host.TryGetSoundLength("alias", out var duration, out error), error);
+        Assert.Equal(0.002, duration); Assert.Equal(0, host.GetSoundPlayingCount());
+        Assert.True(host.TryGetSoundLength("unknown", out duration, out error), error); Assert.Equal(0, duration);
+    }
+
+    [Fact]
+    public void ClientSoundLengthReportsMissingArchiveAndCorruptSoundWithoutPlayback()
+    {
+        var level = Level();
+        var host = new ClientHost(HCDE.Playsim.AuthoritySimulation.Start(level));
+        Assert.False(host.TryGetSoundLength("sound", out var seconds, out var error));
+        Assert.Equal(0, seconds); Assert.Equal("audio-sound-archive-missing", error);
+        var wad = Wad(1000); wad[12] = 2;
+        Assert.True(host.TrySetSoundArchive(wad, out error), error);
+        Assert.False(host.TryGetSoundLength("sound", out seconds, out error));
+        Assert.Equal(0, seconds); Assert.Equal("sound-format-unsupported", error);
+        Assert.Equal(0, host.GetSoundPlayingCount());
+        host.Dispose();
+        Assert.Throws<ObjectDisposedException>(() => host.TryGetSoundLength("sound", out _, out _));
+    }
+
+    [Theory]
+    [InlineData("sound")]
+    [InlineData("alias")]
+    [InlineData("group")]
+    public void DifferentlyCasedSoundSettingsApplyVolumePitchAndRolloff(string sound)
+    {
+        var level = Level();
+        level.RandomSoundGroups = new Dictionary<string, IReadOnlyList<string>> { ["group"] = new[] { "alias" } };
+        var rolloff = new HCDE.Gamedata.SoundRolloff(HCDE.Gamedata.SoundRolloffType.Linear, 10, 20);
+        level.SoundSettings = new Dictionary<string, HCDE.Gamedata.SndInfoSoundSettings>
+            { ["SOUND"] = new(Volume: 0.5f, DefPitch: 2, Rolloff: rolloff),
+              ["ALIAS"] = new(Volume: 0.5f, DefPitch: 2, Rolloff: rolloff),
+              ["GROUP"] = new(Volume: 0.5f, DefPitch: 2, Rolloff: rolloff) };
+        var mixer = new AudioMixer();
+        Assert.True(mixer.TryPlayWadSound(Wad(11025), level, sound, out var handle, out var error,
+            nextRandom: () => 0, loop: true), error);
+        Assert.True(mixer.TryGetChannelRolloff(handle, out var actual)); Assert.Equal(rolloff, actual);
+        Assert.Equal(new short[] { -16384, -16384 }, mixer.Mix(2));
+        Assert.True(mixer.TryGetSoundLengthMilliseconds(Wad(1000), level, sound, out var duration, out error), error);
+        Assert.Equal(2u, duration);
+    }
+
+    [Theory]
+    [InlineData("SOUND")]
+    [InlineData("AlIaS")]
+    [InlineData("GROUP")]
+    public void CanonicalSoundNamesResolveAcrossCaseSensitiveMappings(string sound)
+    {
+        var level = Level();
+        level.SoundAliases = new Dictionary<string, string> { ["alias"] = "SOUND" };
+        level.RandomSoundGroups = new Dictionary<string, IReadOnlyList<string>> { ["group"] = new[] { "ALIAS" } };
+        level.SoundSettings = new Dictionary<string, HCDE.Gamedata.SndInfoSoundSettings>
+            { ["sound"] = new(Volume: 0.5f), ["alias"] = new(Volume: 0.5f), ["group"] = new(Volume: 0.5f) };
+        var mixer = new AudioMixer();
+        Assert.True(mixer.TryGetSoundLengthMilliseconds(Wad(1000), level, sound, out var duration, out var error), error);
+        Assert.Equal(2u, duration);
+        Assert.True(mixer.TryPlayWadSound(Wad(11025), level, sound, out _, out error, nextRandom: () => 0), error);
+        Assert.Equal(1, mixer.GetSoundPlayingCount(sound.ToLowerInvariant()));
+        Assert.Equal(-16384, mixer.Mix(1)[0]);
+    }
+
+    [Theory]
+    [InlineData("unknown", 0)]
+    [InlineData("empty", 0)]
+    [InlineData("nested", 2)]
+    public void DurationQueriesHandleInvalidNamesAndNestedOrEmptyRandomGroups(string sound, uint expected)
+    {
+        var level = Level();
+        level.RandomSoundGroups = new Dictionary<string, IReadOnlyList<string>>
+            { ["empty"] = Array.Empty<string>(), ["inner"] = new[] { "unknown", "alias" },
+              ["nested"] = new[] { "empty", "inner", "unknown" } };
+        var mixer = new AudioMixer();
+        Assert.True(mixer.TryGetSoundLengthMilliseconds(Wad(1000), level, sound, out var length, out var error), error);
+        Assert.Equal(expected, length); Assert.Null(error);
+        Assert.Equal(0, mixer.GetSoundPlayingCount());
+        Assert.False(HCDE.MapLoader.SoundResourceResolver.TryResolve(level, "unknown", out _, out error));
+        Assert.Equal("sound-resource-missing: unknown", error);
+    }
+
+    [Theory]
+    [InlineData("sound", 2)]
+    [InlineData("alias", 2)]
+    [InlineData("group", 2)]
+    [InlineData("missing", 0)]
+    public void SoundLengthResolvesAliasesAndLongestRandomChoiceWithoutPlayback(string sound, uint expected)
+    {
+        var level = Level();
+        level.RandomSoundGroups = new Dictionary<string, IReadOnlyList<string>>
+            { ["group"] = new[] { "missing", "alias", "alias" } };
+        var mixer = new AudioMixer();
+        Assert.True(mixer.TryGetSoundLengthMilliseconds(Wad(1000), level, sound, out var length, out var error), error);
+        Assert.Equal(expected, length); Assert.Equal(0, mixer.GetSoundPlayingCount());
+    }
+
+    [Fact]
+    public void SoundLengthRejectsRandomAliasCycleAndBadEncoding()
+    {
+        var level = Level();
+        level.RandomSoundGroups = new Dictionary<string, IReadOnlyList<string>> { ["group"] = new[] { "alias" } };
+        level.SoundAliases = new Dictionary<string, string> { ["alias"] = "group" };
+        var mixer = new AudioMixer();
+        Assert.False(mixer.TryGetSoundLengthMilliseconds(Wad(1000), level, "group", out var length, out var error));
+        Assert.Equal(0u, length); Assert.Equal("sound-length-cycle", error);
+        var wad = Wad(1000); wad[12] = 2;
+        Assert.False(mixer.TryGetSoundLengthMilliseconds(wad, Level(), "sound", out length, out error));
+        Assert.Equal(0u, length); Assert.Equal("sound-format-unsupported", error);
+    }
+
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public void RestoreReconcilesAudioCameraAndKeepsConsolePlayer(bool cameraInSnapshot)
+    {
+        var level = new PlayLevel { Things = [new LevelThing { Type = 1 }, new LevelThing { Type = 2, X = 20 }] };
+        using var host = new ClientHost(HCDE.Playsim.AuthoritySimulation.Start(level));
+        host.GamePaused = true;
+        Assert.True(host.TrySetAudioConsolePlayer(1, out var error), error);
+        HCDE.Playsim.Actor? camera = cameraInSnapshot ? host.Simulation.AddBot(50, 0) : null;
+        var snapshot = host.Simulation.CaptureState();
+        camera ??= host.Simulation.AddBot(50, 0);
+        Assert.True(host.TrySetAudioListener(camera.Id, out error), error);
+        host.Tick(default); Assert.Equal(50, host.AudioListenerPosition!.Value.X);
+        if (!cameraInSnapshot) camera.Destroy();
+        host.Simulation.RestoreState(snapshot);
+        Assert.Null(host.AudioListenerPosition);
+        host.Tick(default); Assert.Equal(cameraInSnapshot ? 50 : 20, host.AudioListenerPosition!.Value.X);
+    }
+
+    [Fact]
+    public void LevelExitClearsReportedAudioListenerPosition()
+    {
+        using var host = ClientHost.DemoRoom();
+        host.GamePaused = true;
+        host.Tick(default); Assert.NotNull(host.AudioListenerPosition);
+        host.Simulation.MarkExited(false);
+        Assert.Null(host.AudioListenerPosition); Assert.Equal(0, host.GetSoundPlayingCount());
+        host.Tick(default); Assert.Null(host.AudioListenerPosition);
+    }
+
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public void AudioConsolePlayerSelectionRoutesLocalViewAndPreservesSelectionOnError(bool inertCamera)
+    {
+        var level = new PlayLevel { Things = [new LevelThing { Type = 1 },
+            new LevelThing { Type = 2, X = 20 }, new LevelThing { Type = 14, X = 50 }],
+            SoundDefinitions = new Dictionary<string, string> { ["sound"] = "DSPISTOL" } };
+        using var host = new ClientHost(HCDE.Playsim.AuthoritySimulation.Start(level));
+        var first = host.Simulation.Players.Single(p => p.PlayerNum == 0);
+        var selected = host.Simulation.Players.Single(p => p.PlayerNum == 1);
+        Assert.True(host.TrySetSoundArchive(Wad(11025), out var error), error);
+        Assert.True(host.TrySetAudioConsolePlayer(1, out error), error);
+        if (inertCamera)
+            Assert.True(host.TrySetAudioListener(host.Simulation.Actors.Single(a => a.DoomEdNum == 14).Id, out error), error);
+        HCDE.Playsim.ActorSoundActions.StartSound(first, "sound", 4, HCDE.Playsim.SimulationSoundFlags.Local);
+        Assert.Equal(0, host.GetSoundPlayingCount());
+        HCDE.Playsim.ActorSoundActions.StartSound(selected, "sound", 4, HCDE.Playsim.SimulationSoundFlags.Local);
+        Assert.Equal(1, host.GetSoundPlayingCount());
+        host.Audio.StopAllChannels();
+        Assert.False(host.TrySetAudioConsolePlayer(200, out error));
+        Assert.Equal("audio-console-player-missing", error);
+        HCDE.Playsim.ActorSoundActions.StartSound(selected, "sound", 4, HCDE.Playsim.SimulationSoundFlags.Local);
+        Assert.Equal(1, host.GetSoundPlayingCount());
+        host.Audio.StopAllChannels();
+        selected.Destroy();
+        HCDE.Playsim.ActorSoundActions.StartSound(first, "sound", 4, HCDE.Playsim.SimulationSoundFlags.Local);
+        Assert.Equal(0, host.GetSoundPlayingCount());
+        Assert.True(host.TrySetAudioConsolePlayer(null, out error), error);
+        HCDE.Playsim.ActorSoundActions.StartSound(first, "sound", 4, HCDE.Playsim.SimulationSoundFlags.Local);
+        Assert.Equal(1, host.GetSoundPlayingCount()); Assert.Empty(host.LastSoundRequestErrors);
+    }
+
+    [Fact]
+    public void AudioConsolePlayerSelectionSetsDefaultListenerPosition()
+    {
+        var level = new PlayLevel { Things = [new LevelThing { Type = 1 }, new LevelThing { Type = 2, X = 20 }] };
+        using var host = new ClientHost(HCDE.Playsim.AuthoritySimulation.Start(level));
+        host.GamePaused = true;
+        Assert.True(host.TrySetAudioConsolePlayer(1, out var error), error);
+        host.Tick(default); Assert.Equal(20, host.AudioListenerPosition!.Value.X);
+        host.Simulation.Players.Single(p => p.PlayerNum == 1).Destroy();
+        host.Tick(default); Assert.Null(host.AudioListenerPosition);
+        Assert.True(host.TrySetAudioConsolePlayer(null, out error), error);
+        host.Tick(default); Assert.Equal(0, host.AudioListenerPosition!.Value.X);
+    }
+
+    [Theory]
+    [InlineData(14, false, true)]
+    [InlineData(3004, false, false)]
+    [InlineData(14, true, false)]
+    public void PlayerLocalSoundsRemainAudibleThroughInertCameraOnly(int cameraType, bool destroyed, bool audible)
+    {
+        var level = new PlayLevel { Things = [new LevelThing { Type = 1 }, new LevelThing { Type = cameraType }],
+            SoundDefinitions = new Dictionary<string, string> { ["sound"] = "DSPISTOL" } };
+        using var host = new ClientHost(HCDE.Playsim.AuthoritySimulation.Start(level));
+        var player = host.Simulation.Players.Single(); var camera = host.Simulation.Actors.Single(a => a.Id != player.Id);
+        Assert.True(host.TrySetSoundArchive(Wad(11025), out var error), error);
+        Assert.True(host.TrySetAudioListener(camera.Id, out error), error);
+        if (destroyed) camera.Destroy();
+        HCDE.Playsim.ActorSoundActions.StartSound(player, "sound", 4, HCDE.Playsim.SimulationSoundFlags.Local);
+        Assert.Equal(audible ? 1 : 0, host.GetSoundPlayingCount());
+        Assert.Equal(audible ? -32768 : 0, host.Audio.Mix(1)[0]);
+        Assert.Empty(host.LastSoundRequestErrors);
+    }
+
+    [Fact]
+    public void SelectedAudioCameraControlsDistanceAndCanResetToPlayer()
+    {
+        var level = new PlayLevel { Things = [new LevelThing { Type = 1 }],
+            SoundDefinitions = new Dictionary<string, string> { ["sound"] = "DSPISTOL" },
+            GlobalSoundRolloff = new(HCDE.Gamedata.SoundRolloffType.Linear, 10, 20) };
+        using var host = new ClientHost(HCDE.Playsim.AuthoritySimulation.Start(level));
+        host.GamePaused = true;
+        var source = host.Simulation.AddBot(20, 0); var camera = host.Simulation.AddBot(20, 0);
+        Assert.True(host.TryPlayActorWadSound(Wad(11025), level, "sound", source.Id, out _, out var error,
+            loop: true, noPause: true, entityChannel: 4), error);
+        host.Tick(default); Assert.Equal(0, host.LastMix[0]);
+        Assert.True(host.TrySetAudioListener(camera.Id, out error), error);
+        host.Tick(default); Assert.Equal(-32768, host.LastMix[0]);
+        Assert.Equal(20, host.AudioListenerPosition!.Value.X);
+        Assert.False(host.TrySetAudioListener(uint.MaxValue, out error));
+        Assert.Equal("audio-listener-actor-missing", error);
+        host.Tick(default); Assert.Equal(-32768, host.LastMix[0]);
+        camera.Destroy(); host.Tick(default);
+        Assert.Null(host.AudioListenerPosition); Assert.Equal(0, host.LastMix[0]);
+        Assert.True(host.TrySetAudioListener(null, out error), error);
+        host.Tick(default); Assert.NotNull(host.AudioListenerPosition); Assert.Equal(0, host.LastMix[0]);
+    }
+
+    [Fact]
+    public void LocalSoundRequestsFollowSelectedCamera()
+    {
+        var level = new PlayLevel { Things = [new LevelThing { Type = 1 }],
+            SoundDefinitions = new Dictionary<string, string> { ["sound"] = "DSPISTOL" } };
+        using var host = new ClientHost(HCDE.Playsim.AuthoritySimulation.Start(level));
+        var camera = host.Simulation.AddBot(20, 0); var player = host.Simulation.Players.Single();
+        Assert.True(host.TrySetSoundArchive(Wad(11025), out var error), error);
+        Assert.True(host.TrySetAudioListener(camera.Id, out error), error);
+        HCDE.Playsim.ActorSoundActions.StartSound(player, "sound", 4, HCDE.Playsim.SimulationSoundFlags.Local);
+        Assert.Equal(0, host.GetSoundPlayingCount());
+        HCDE.Playsim.ActorSoundActions.StartSound(camera, "sound", 4, HCDE.Playsim.SimulationSoundFlags.Local);
+        Assert.Equal(1, host.GetSoundPlayingCount());
+        Assert.Equal(-32768, host.Audio.Mix(1)[0]); Assert.Empty(host.LastSoundRequestErrors);
+    }
+
+    [Theory]
+    [InlineData(5, 20, true)]
+    [InlineData(20, 5, false)]
+    public void NearbySoundLimitReadsActorMovementBeforeNextAudioTick(int initial, int moved, bool starts)
+    {
+        var level = new PlayLevel { Things = [new LevelThing { Type = 1 }],
+            SoundDefinitions = new Dictionary<string, string> { ["sound"] = "DSPISTOL" },
+            SoundSettings = new Dictionary<string, HCDE.Gamedata.SndInfoSoundSettings>
+                { ["sound"] = new(NearLimit: 1, LimitRange: 100) },
+            GlobalSoundRolloff = new(HCDE.Gamedata.SoundRolloffType.Linear, 10, 100) };
+        using var host = new ClientHost(HCDE.Playsim.AuthoritySimulation.Start(level));
+        var source = host.Simulation.AddBot(initial, 0); var target = host.Simulation.AddBot(0, 0);
+        Assert.True(host.TryPlayActorWadSound(Wad(11025), level, "sound", source.Id, out var original,
+            out var error, loop: true, entityChannel: 4), error);
+        source.X = HCDE.Playsim.Fixed.FromInt(moved);
+        Assert.True(host.TryPlayActorWadSound(Wad(11025), level, "sound", target.Id, out var next,
+            out error, entityChannel: 4), error);
+        Assert.Equal(starts, next != Guid.Empty);
+        Assert.True(host.Audio.IsPlaying(original));
+        Assert.Equal(starts ? 2 : 1, host.GetSoundPlayingCount("sound"));
+    }
+
+    [Theory]
+    [InlineData(false, false, 4, false)]
+    [InlineData(false, true, 4, true)]
+    [InlineData(false, false, 0, true)]
+    [InlineData(true, false, 4, false)]
+    [InlineData(true, true, 4, true)]
+    public void PausedOneShotReplacesSelectedChannelBeforeSuppression(bool positioned, bool overlap,
+        int channel, bool survives)
+    {
+        using var host = ClientHost.DemoRoom(); var actor = host.Simulation.Players.Single();
+        var origin = positioned ? new HCDE.Playsim.SimulationSoundOrigin(1, 2, 3, -1)
+            : (HCDE.Playsim.SimulationSoundOrigin?)null;
+        Assert.True(host.TryPlayActorWadSound(Wad(11025), Level(), "sound", actor.Id, out var original,
+            out var error, loop: true, attenuation: 0, entityChannel: channel, detachedOrigin: origin), error);
+        host.Audio.Paused = true;
+        Assert.True(host.TryPlayActorWadSound(Wad(11025), Level(), "alias", actor.Id, out var suppressed,
+            out error, attenuation: 0, entityChannel: channel, overlap: overlap, detachedOrigin: origin), error);
+        Assert.Equal(Guid.Empty, suppressed); Assert.Equal(survives, host.Audio.IsPlaying(original));
+        host.Audio.Paused = false;
+        Assert.Equal(survives ? -32768 : 0, host.Audio.Mix(1)[0]);
+    }
+
+    [Theory]
+    [InlineData(4, false, false, false)]
+    [InlineData(4, true, false, true)]
+    [InlineData(0, false, false, true)]
+    [InlineData(1, false, true, false)]
+    public void ActorPlaybackReplacesDirectMixerChannelsWithNativeOverlapRules(int channel, bool overlap,
+        bool magic, bool survives)
+    {
+        using var host = ClientHost.DemoRoom();
+        var actor = host.Simulation.Players.Single();
+        var level = Level();
+        Assert.True(host.Audio.TryPlayWadSound(Wad(11025), level, "sound", out var first, out var error,
+            loop: true, attenuation: 0, sourceActorId: actor.Id, entityChannel: channel), error);
+        Assert.True(host.Audio.TryPlayWadSound(Wad(11025), level, "sound", out var second, out error,
+            loop: true, attenuation: 0, sourceActorId: actor.Id, entityChannel: channel), error);
+        Assert.True(host.Audio.TryPlayWadSound(Wad(11025), level, "sound", out var otherActor, out error,
+            loop: true, attenuation: 0, sourceActorId: actor.Id + 1, entityChannel: channel), error);
+        Assert.True(host.Audio.TryPlayWadSound(Wad(11025), level, "sound", out var otherChannel, out error,
+            loop: true, attenuation: 0, sourceActorId: actor.Id, entityChannel: 2), error);
+        host.MagicSilenceCompatibility = magic;
+        Assert.True(host.TryPlayActorWadSound(Wad(11025), level, "alias", actor.Id, out var replacement,
+            out error, loop: true, attenuation: 0, entityChannel: magic ? 4 : channel, overlap: overlap), error);
+        Assert.Equal(survives, host.Audio.IsPlaying(first)); Assert.Equal(survives, host.Audio.IsPlaying(second));
+        Assert.True(host.Audio.IsPlaying(replacement)); Assert.True(host.Audio.IsPlaying(otherActor));
+        Assert.True(host.Audio.IsPlaying(otherChannel));
+        Assert.Equal(survives ? 4 : 2, host.GetActorSoundPlayingCount(actor.Id));
+    }
+
+    [Theory]
+    [InlineData(false, false)]
+    [InlineData(false, true)]
+    [InlineData(true, false)]
+    [InlineData(true, true)]
+    public void PositionalStartsWithoutListenerUseZeroOriginAndKeepSourceHeight(bool positioned, bool listenerHeight)
+    {
+        var level = new PlayLevel { Things = [new LevelThing { Type = 1 }],
+            SoundDefinitions = new Dictionary<string, string> { ["sound"] = "DSPISTOL" },
+            GlobalSoundRolloff = new(HCDE.Gamedata.SoundRolloffType.Linear, 10, 20) };
+        using var host = new ClientHost(HCDE.Playsim.AuthoritySimulation.Start(level));
+        var source = host.Simulation.AddBot(0, 0); source.Z = HCDE.Playsim.Fixed.FromInt(15);
+        host.Simulation.Players.Single().Destroy();
+        Assert.True(host.TryPlayActorWadSound(Wad(11025), level, "sound", source.Id, out var handle,
+            out var error, loop: true, listenerHeight: listenerHeight, entityChannel: 4,
+            detachedOrigin: positioned ? new HCDE.Playsim.SimulationSoundOrigin(0, 15, 0, -1) : null), error);
+        Assert.NotEqual(Guid.Empty, handle);
+        Assert.Equal(-16384, host.Audio.Mix(1)[0]);
+        Assert.Equal(positioned ? 0 : 1, host.GetActorSoundPlayingCount(source.Id));
+        Assert.Equal(positioned, host.IsPositionedSoundPlaying(4));
+        Assert.True(host.Audio.StopChannel(handle));
+        Assert.True(host.TrySetSoundArchive(Wad(11025), out error), error);
+        HCDE.Playsim.ActorSoundActions.StartSoundAt(host.Simulation, 0, 0, 15, "sound", 4,
+            HCDE.Playsim.SimulationSoundFlags.Loop | HCDE.Playsim.SimulationSoundFlags.ListenerZ);
+        Assert.Empty(host.LastSoundRequestErrors); Assert.Equal(-16384, host.Audio.Mix(1)[0]);
+    }
+
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public void MissingListenerUpdatesActorSourcesAgainstNativeZeroOrigin(bool listenerHeight)
+    {
+        var level = new PlayLevel { Things = [new LevelThing { Type = 1, X = 0, Y = 0 }],
+            SoundDefinitions = new Dictionary<string, string> { ["sound"] = "DSPISTOL" },
+            GlobalSoundRolloff = new(HCDE.Gamedata.SoundRolloffType.Linear, 10, 20) };
+        using var host = new ClientHost(HCDE.Playsim.AuthoritySimulation.Start(level));
+        host.GamePaused = true;
+        var source = host.Simulation.AddBot(15, 0);
+        Assert.True(host.Audio.TryPlayWadSound(Wad(11025), level, "sound", out var handle, out var error,
+            loop: true, noPause: true, sourceActorId: source.Id, entityChannel: 4), error);
+        Assert.True(host.TryBindAudioSource(handle, source.Id, out error, listenerHeight), error);
+        host.Simulation.Players.Single().Destroy();
+        host.Tick(default); Assert.Null(host.AudioListenerPosition); Assert.Equal(-16384, host.LastMix[0]);
+        source.X = HCDE.Playsim.Fixed.FromInt(20);
+        host.Tick(default); Assert.Equal(0, host.LastMix[0]);
+        source.X = HCDE.Playsim.Fixed.FromInt(0); source.Z = HCDE.Playsim.Fixed.FromInt(20);
+        host.Tick(default); Assert.Equal(0, host.LastMix[0]);
+        source.Z = HCDE.Playsim.Fixed.FromInt(0);
+        host.Tick(default); Assert.Equal(-32768, host.LastMix[0]);
+        Assert.True(host.Audio.IsPlaying(handle));
+    }
+
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public void DirectMixerSourcesFollowActorMovementAndRelinkedDestination(bool paused)
+    {
+        var level = new PlayLevel { Things = [new LevelThing { Type = 1, X = 0, Y = 0 }],
+            SoundDefinitions = new Dictionary<string, string> { ["sound"] = "DSPISTOL" },
+            GlobalSoundRolloff = new(HCDE.Gamedata.SoundRolloffType.Linear, 10, 20) };
+        using var host = new ClientHost(HCDE.Playsim.AuthoritySimulation.Start(level));
+        host.GamePaused = paused;
+        var source = host.Simulation.AddBot(15, 0);
+        Assert.True(host.Audio.TryPlayWadSound(Wad(11025), level, "sound", out var handle, out var error,
+            loop: true, noPause: true, sourceActorId: source.Id, entityChannel: 4), error);
+        host.Tick(default);
+        Assert.Equal(paused ? -16384 : -15384, host.LastMix[0]);
+        source.X = HCDE.Playsim.Fixed.FromInt(20);
+        host.Tick(default); Assert.Equal(paused ? 0 : 1000, host.LastMix[0]);
+        var target = host.Simulation.Players.Single();
+        Assert.True(host.TryRelinkActorSounds(source.Id, target.Id, out var moved, out error), error);
+        Assert.Equal(1, moved);
+        host.Tick(default); Assert.Equal(paused ? -32768 : -31768, host.LastMix[0]);
+        Assert.True(host.Audio.IsPlaying(handle));
+        Assert.Equal(1, host.GetActorSoundPlayingCount(target.Id));
+    }
+
+    [Theory]
+    [InlineData(false, false, false)]
+    [InlineData(false, true, false)]
+    [InlineData(true, false, false)]
+    [InlineData(false, false, true)]
+    [InlineData(false, true, true)]
+    [InlineData(true, false, true)]
+    public void DirectMixerActorSoundsDetachOnRelinkOrDestruction(bool loop, bool cutoff, bool destroy)
+    {
+        using var host = ClientHost.DemoRoom();
+        host.SoundCutoffCompatibility = cutoff;
+        var actor = host.Simulation.AddBot(100, 0);
+        Assert.True(host.Audio.TryPlayWadSound(Wad(11025), Level(), "sound", out var handle, out var error,
+            loop: loop, attenuation: 0, sourceActorId: actor.Id, entityChannel: 4), error);
+        Assert.True(host.Audio.TryPlayWadSound(Wad(11025), Level(), "sound", out var unrelated, out error,
+            loop: true, sourceActorId: host.Simulation.Players.First().Id, entityChannel: 4), error);
+        if (destroy) actor.Destroy();
+        else
+        {
+            Assert.True(host.TryRelinkActorSounds(actor.Id, null, out var count, out error), error);
+            Assert.Equal(1, count);
+            Assert.True(host.TryRelinkActorSounds(actor.Id, null, out count, out error), error);
+            Assert.Equal(0, count);
+        }
+        Assert.Equal(0, host.GetActorSoundPlayingCount(actor.Id));
+        Assert.Equal(!loop && !cutoff, host.Audio.IsPlaying(handle));
+        Assert.Equal(!loop && !cutoff, host.IsPositionedSoundPlaying(4, "sound"));
+        Assert.True(host.Audio.IsPlaying(unrelated));
+    }
+
+    [Fact]
+    public void DirectMixerRelinkTransfersAllChannelsAndDestinationDestructionStopsLoops()
+    {
+        using var host = ClientHost.DemoRoom();
+        var source = host.Simulation.AddBot(100, 0); var target = host.Simulation.AddBot(200, 0);
+        foreach (var channel in new[] { 2, 4 })
+            Assert.True(host.Audio.TryPlayWadSound(Wad(11025), Level(), "sound", out _, out var error,
+                loop: true, attenuation: 0, sourceActorId: source.Id, entityChannel: channel), error);
+        Assert.True(host.Audio.TryPlayWadSound(Wad(11025), Level(), "sound", out var existing, out var otherError,
+            loop: true, attenuation: 0, sourceActorId: target.Id, entityChannel: 4), otherError);
+        Assert.False(host.TryRelinkActorSounds(source.Id, uint.MaxValue, out var moved, out otherError));
+        Assert.Equal(0, moved); Assert.Equal("audio-destination-actor-missing", otherError);
+        Assert.Equal(2, host.GetActorSoundPlayingCount(source.Id));
+        Assert.True(host.TryRelinkActorSounds(source.Id, target.Id, out moved, out otherError), otherError);
+        Assert.Equal(2, moved); Assert.Equal(0, host.GetActorSoundPlayingCount(source.Id));
+        Assert.Equal(3, host.GetActorSoundPlayingCount(target.Id));
+        source.Destroy(); Assert.Equal(3, host.GetActorSoundPlayingCount(target.Id));
+        target.Destroy(); Assert.False(host.Audio.IsPlaying(existing)); Assert.Equal(0, host.GetSoundPlayingCount());
+    }
+
+    [Fact]
+    public void BindingUnownedPlaybackEstablishesActorOwnershipForQueriesAndDestruction()
+    {
+        using var host = ClientHost.DemoRoom();
+        var actor = host.Simulation.AddBot(100, 0);
+        Assert.True(host.Audio.TryPlayWadSound(Wad(11025), Level(), "sound", out var handle, out var playbackError,
+            loop: true, attenuation: 0), playbackError);
+        Assert.True(host.TryBindAudioSource(handle, actor.Id, out var error), error);
+        Assert.Equal(1, host.GetActorSoundPlayingCount(actor.Id));
+        Assert.False(host.IsPositionedSoundPlaying());
+        actor.Destroy(); Assert.False(host.Audio.IsPlaying(handle));
+    }
+
+    [Theory]
+    [InlineData(0, false, 1)]
+    [InlineData(4, false, 1)]
+    [InlineData(-2, false, 3)]
+    [InlineData(4, true, 3)]
+    public void DirectActorChannelsParticipateInQueriesAndChannelStops(int channel, bool magic, int stopped)
+    {
+        var level = new PlayLevel { Things = [new LevelThing { Type = 1 }],
+            SoundDefinitions = new Dictionary<string, string> { ["sound"] = "DSPISTOL" } };
+        using var host = new ClientHost(HCDE.Playsim.AuthoritySimulation.Start(level));
+        var actor = host.Simulation.Players.Single();
+        foreach (var slot in new[] { 0, 2, 4 })
+            Assert.True(host.Audio.TryPlayWadSound(Wad(11025), level, "sound", out _, out var error,
+                loop: true, sourceActorId: actor.Id, entityChannel: slot), error);
+        Assert.True(host.Audio.TryPlayWadSound(Wad(11025), level, "sound", out var unrelated, out var otherError,
+            loop: true, sourceActorId: actor.Id + 1, entityChannel: 4), otherError);
+        host.MagicSilenceCompatibility = magic;
+        Assert.Equal(3, host.GetActorSoundPlayingCount(actor.Id, "SOUND"));
+        Assert.Equal(1, host.GetActorSoundPlayingCount(actor.Id, entityChannel: 0));
+        Assert.True(host.IsActorSoundPlaying(actor.Id, 0, "SOUND"));
+        Assert.False(host.IsActorSoundPlaying(actor.Id, 0, "missing"));
+        Assert.Equal(stopped, host.StopActorSound(actor.Id, channel));
+        Assert.Equal(3 - stopped, host.GetActorSoundPlayingCount(actor.Id));
+        Assert.True(host.Audio.IsPlaying(unrelated));
+    }
+
+    [Theory]
+    [InlineData(4, 2, false, 2)]
+    [InlineData(4, 2, true, 2)]
+    [InlineData(0, 0, false, 3)]
+    [InlineData(0, 0, true, 3)]
+    [InlineData(8, 10, false, 0)]
+    public void DirectActorRangeStopsUseNativeBounds(int minimum, int maximum, bool magic, int stopped)
+    {
+        using var host = ClientHost.DemoRoom();
+        var actor = host.Simulation.Players.First();
+        foreach (var slot in new[] { 0, 2, 4 })
+            Assert.True(host.Audio.TryPlayWadSound(Wad(11025), Level(), "sound", out _, out var error,
+                loop: true, sourceActorId: actor.Id, entityChannel: slot), error);
+        Assert.True(host.Audio.TryPlayWadSound(Wad(11025), Level(), "sound", out var unrelated, out var otherError,
+            loop: true, entityChannel: 4), otherError);
+        host.MagicSilenceCompatibility = magic;
+        Assert.Equal(stopped, host.StopActorSounds(actor.Id, minimum, maximum));
+        Assert.Equal(3 - stopped, host.GetActorSoundPlayingCount(actor.Id));
+        Assert.True(host.Audio.IsPlaying(unrelated));
+    }
+
+    [Fact]
+    public void ActorLoopDuplicateGuardSeesDirectMixerPlayback()
+    {
+        var level = new PlayLevel { Things = [new LevelThing { Type = 1 }],
+            SoundDefinitions = new Dictionary<string, string> { ["sound"] = "DSPISTOL" } };
+        using var host = new ClientHost(HCDE.Playsim.AuthoritySimulation.Start(level));
+        var actor = host.Simulation.Players.Single();
+        Assert.True(host.TrySetSoundArchive(Wad(11025), out var error), error);
+        Assert.True(host.Audio.TryPlayWadSound(Wad(11025), level, "sound", out var handle, out error,
+            loop: true, attenuation: 0, sourceActorId: actor.Id, entityChannel: 4), error);
+        QueueAcsSound(host, actor, 4, loop: true);
+        host.Tick(default);
+        Assert.Equal(1, host.GetActorSoundPlayingCount(actor.Id));
+        Assert.True(host.Audio.IsPlaying(handle));
+        Assert.Empty(host.LastSoundRequestErrors);
+    }
+
+    [Theory]
+    [InlineData(false, -12288)]
+    [InlineData(true, -4096)]
+    public void ActorVolumeActionIncludesDirectMixerChannels(bool magic, int expected)
+    {
+        var level = new PlayLevel { Things = [new LevelThing { Type = 1 }],
+            SoundDefinitions = new Dictionary<string, string> { ["sound"] = "DSPISTOL" } };
+        using var host = new ClientHost(HCDE.Playsim.AuthoritySimulation.Start(level));
+        var actor = host.Simulation.Players.Single(); var other = host.Simulation.AddBot(100, 0);
+        Assert.True(host.TrySetSoundArchive(Wad(11025), out var error), error);
+        foreach (var channel in new[] { 4, 5 })
+            Assert.True(host.Audio.TryPlayWadSound(Wad(11025), level, "sound", out _, out error,
+                loop: true, volume: 0.25f, attenuation: 0, sourceActorId: actor.Id, entityChannel: channel), error);
+        Assert.True(host.Audio.TryPlayWadSound(Wad(11025), level, "sound", out _, out error,
+            loop: true, volume: 0.125f, attenuation: 0, sourceActorId: other.Id, entityChannel: 4), error);
+        host.MagicSilenceCompatibility = magic;
+        HCDE.Playsim.ActorSoundActions.SoundVolume(actor, 4, 0);
+        Assert.Empty(host.LastSoundRequestErrors);
+        Assert.Equal(expected, host.Audio.Mix(1)[0]);
+    }
+
+    [Fact]
+    public void ActorVolumeSelectionClampsAndRejectsInvalidVolumeBeforeMutation()
+    {
+        var mixer = new AudioMixer();
+        Assert.True(mixer.TryPlayWadSound(Wad(11025), Level(), "sound", out _, out var error,
+            loop: true, volume: 0.25f, sourceActorId: 1, entityChannel: 4), error);
+        Assert.False(mixer.TrySetActorSoundVolume(1, -1, float.NaN, out var changed, out error));
+        Assert.Equal(0, changed); Assert.Equal("audio-volume-invalid", error);
+        Assert.Equal(-8192, mixer.Mix(1)[0]);
+        Assert.True(mixer.TrySetActorSoundVolume(1, 5, 0, out changed, out error), error);
+        Assert.Equal(0, changed);
+        Assert.True(mixer.TrySetActorSoundVolume(1, 4, -1, out changed, out error), error);
+        Assert.Equal(1, changed); Assert.Equal(0, mixer.Mix(1)[0]);
+        Assert.True(mixer.TrySetActorSoundVolume(1, -1, 2, out changed, out error), error);
+        Assert.Equal(1, changed); Assert.Equal(-32768, mixer.Mix(1)[0]);
+    }
+
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public void NamedActorStopIgnoresChannelAndPreservesOtherSources(bool magic)
+    {
+        var level = new PlayLevel { Things = [new LevelThing { Type = 1 }],
+            SoundDefinitions = new Dictionary<string, string> { ["sound"] = "DSPISTOL", ["other"] = "DSPISTOL" } };
+        using var host = new ClientHost(HCDE.Playsim.AuthoritySimulation.Start(level));
+        var actor = host.Simulation.Players.Single(); var other = host.Simulation.AddBot(100, 0);
+        Assert.True(host.TrySetSoundArchive(Wad(11025), out var error), error);
+        for (var channel = 4; channel <= 6; channel++)
+            Assert.True(host.TryPlayActorWadSound(Wad(11025), level, channel == 6 ? "other" : "sound", actor.Id,
+                out _, out error, loop: true, attenuation: 0, entityChannel: channel), error);
+        Assert.True(host.TryPlayActorWadSound(Wad(11025), level, "sound", other.Id, out var otherHandle,
+            out error, loop: true, attenuation: 0, entityChannel: 4), error);
+        Assert.True(host.TryPlayActorWadSound(Wad(11025), level, "sound", 0, out var positioned,
+            out error, loop: true, attenuation: 0, entityChannel: 4,
+            detachedOrigin: new HCDE.Playsim.SimulationSoundOrigin(1, 2, 3, -1)), error);
+        host.MagicSilenceCompatibility = magic;
+        HCDE.Playsim.ActorSoundActions.StopSound(actor, 6, "SOUND");
+        Assert.Empty(host.LastSoundRequestErrors);
+        Assert.Equal(0, host.GetActorSoundPlayingCount(actor.Id, "sound"));
+        Assert.Equal(1, host.GetActorSoundPlayingCount(actor.Id, "other"));
+        Assert.True(host.Audio.IsPlaying(otherHandle)); Assert.True(host.Audio.IsPlaying(positioned));
+        Assert.Equal(0, host.StopActorSound(actor.Id, 4, "missing"));
+        Assert.Equal(1, host.StopActorSound(actor.Id, 4, "other"));
+        Assert.Equal(2, host.GetSoundPlayingCount());
+    }
+
+    [Theory]
+    [InlineData(null, 1)]
+    [InlineData("SOUND", 2)]
+    [InlineData("missing", 0)]
+    public void NativeActorPitchSelectorUsesExactChannelOrSoundAcrossChannels(string? sound, int expected)
+    {
+        var level = new PlayLevel { Things = [new LevelThing { Type = 1 }],
+            SoundDefinitions = new Dictionary<string, string> { ["sound"] = "DSPISTOL", ["other"] = "DSPISTOL" } };
+        using var host = new ClientHost(HCDE.Playsim.AuthoritySimulation.Start(level));
+        var actor = host.Simulation.Players.Single(); var other = host.Simulation.AddBot(100, 0);
+        for (var channel = 4; channel <= 6; channel++)
+            Assert.True(host.TryPlayActorWadSound(Wad(11025), level, channel == 6 ? "other" : "sound", actor.Id,
+                out _, out var error, loop: true, attenuation: 0, entityChannel: channel), error);
+        Assert.True(host.TryPlayActorWadSound(Wad(11025), level, "sound", other.Id, out _, out var otherError,
+            loop: true, attenuation: 0, entityChannel: 4), otherError);
+        Assert.True(host.Audio.TrySetActorSoundPitch(actor.Id, 4, 2, out var changed, out otherError, sound), otherError);
+        Assert.Equal(expected, changed);
+        Assert.False(host.Audio.TrySetActorSoundPitch(actor.Id, 4, float.NaN, out changed, out otherError, sound));
+        Assert.Equal(0, changed); Assert.Equal("audio-pitch-invalid", otherError);
+        Assert.Equal(3, host.GetActorSoundPlayingCount(actor.Id)); Assert.Equal(1, host.GetActorSoundPlayingCount(other.Id));
+    }
+
+    [Fact]
+    public void NamedActorPitchActionReachesClientAndChangesLoopSamples()
+    {
+        var level = new PlayLevel { Things = [new LevelThing { Type = 1 }],
+            SoundDefinitions = new Dictionary<string, string> { ["sound"] = "DSPISTOL" } };
+        using var host = new ClientHost(HCDE.Playsim.AuthoritySimulation.Start(level));
+        Assert.True(host.TrySetSoundArchive(Wad(11025), out var error), error);
+        var actor = host.Simulation.Players.Single();
+        Assert.True(host.TryPlayActorWadSound(Wad(11025), level, "sound", actor.Id, out _, out error,
+            loop: true, attenuation: 0, entityChannel: 5), error);
+        HCDE.Playsim.ActorSoundActions.SoundPitch(actor, 4, 2, "sound");
+        host.Tick(default); Assert.Empty(host.LastSoundRequestErrors);
+        Assert.Equal((short)-31768, host.LastMix[0]); Assert.Equal((short)-31768, host.LastMix[1]);
+    }
+
     [Theory]
     [InlineData(false)]
     [InlineData(true)]

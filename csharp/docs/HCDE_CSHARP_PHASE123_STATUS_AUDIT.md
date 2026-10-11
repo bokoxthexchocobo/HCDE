@@ -1,5 +1,1537 @@
 # Gameplay phases 1–3: implementation and completion audit
 
+## 2026-10-11 - Search-path configuration ingestion
+
+- Converted the single-line search-section parsing subset of FConfigFile::ReadConfig into VmSearchPathConfiguration. Case-insensitive section/key lookup, duplicate entries and repeated sections, leading/trailing ASCII whitespace, full-line # and // comments, literal quotes/inline comment text, first equals delimiter, missing closing section brackets, and empty values are retained. Entries preceding a section surface InvalidDataException instead of a native false return.
+- Added --search-config, selection validation, help, and argument round trips. CreateHost reads IWADSearch.Directories Path/RecursivePath and FileSearch.Directories Path/RecursivePath/PathList. File entries preserve configured order; IWAD paths group normal before recursive, matching native collection. Explicit launcher paths precede configured paths. Relative values remain relative to the process working directory.
+- Audited src/common/utility/configfile.cpp ReadConfig, src/d_iwad.cpp CollectSearchPaths, and BaseFileSearch. Native semicolon lines are not comments; inline text and quotes remain part of values. Multiline values are explicitly rejected, including in unrelated sections, to prevent their body from being mistaken for search entries.
+- Added three parser/option cases and converted companion startup integration to read a real configuration file. Release suite: 13,609 passed (Client: 654). Final parser/startup rerun: 4 passed. Clean Release build with warnings as errors: zero warnings/errors. Diff whitespace check passed.
+- Remaining: multiline config values, config encoding/BOM and embedded-NUL parity, automatic config location/default population, other engine settings, Unix home expansion, storefront discovery, host/join selection, and native filesystem enumeration/failure parity. Search-section ingestion is implemented; the full native configuration system is not converted.
+
+## 2026-10-11 - Ordered file-search entries and PathList conversion
+
+- Converted native BaseFileSearch ordered Path/RecursivePath/PathList handling into VmFileSearchPaths and companion lookup. PathList expands environment variables before platform-separator splitting, skips empty elements, then expands each resulting path again. Empty explicit model Path values follow Windows NicePath dot behavior; unset expansions disappear.
+- Added OrderedFileSearchPaths and --search-path / --search-recursive-path / --search-path-list launcher options, validation, help, round trips, and CreateHost wiring. Existing grouped file-search options remain compatible and are searched before ordered entries when mixed.
+- Audited src/common/utility/findfile.cpp and cmdlib.cpp. Interleaved ordered entries retain priority, resolving the prior grouped-list limitation for callers using the new model. Added five cases for expansion, interleaved priority and round trips, and missing/blank values; startup integration now exercises ordered recursive discovery.
+- Release suite: 13,606 passed (Client: 651). Clean Release build with warnings as errors: zero warnings/errors. Whitespace check passed.
+- Remaining: parsing native configuration files into this model is not implemented. Unix tilde expansion, storefront discovery, host/join selection, native enumeration/failure parity, and full startup behavior remain outstanding. This converts configuration-entry semantics and exposes them through launcher arguments; it does not claim configuration-file ingestion is complete.
+
+## 2026-10-11 - Windows search-path environment expansion
+
+- Converted native ExpandEnvVars dollar-token grammar into VmSearchPathExpansion: ASCII letters/digits/underscore consume the complete name, progdir matches without case, missing/empty variables disappear, dollar signs without a name remain literal, and substituted values are not recursively expanded. Null input returns empty. Percent and braced variable syntax remain literal, matching native behavior.
+- Wired expansion at CreateHost discovery time for normal/recursive IWAD and companion file-search paths. Paths expanding to empty are omitted as native CollectSearchPaths/BaseFileSearch do; launcher arguments retain original variable expressions for round trips.
+- Audited src/common/utility/cmdlib.cpp ExpandEnvVars and Windows NicePath. Added ten cases for grammar, unset variables, program-directory expansion, literal syntax, and nonrecursive values. Startup support test now finds its nested archive using a unique environment variable and restores it afterward.
+- Release suite: 13,601 passed (Client: 646). Clean Release build with warnings as errors: zero warnings/errors. Whitespace check passed.
+- Scope: Windows NicePath branch only. Launcher validation intentionally rejects blank directory arguments rather than implementing native Windows empty-string-to-dot behavior. Unix current/named-user tilde expansion, configuration-file reading, interleaved search entries, PathList splitting, storefront discovery, and host/join selection remain outstanding. Program directory uses the managed executable base directory.
+
+## 2026-10-11 - Companion file-search conversion
+
+- Converted configured normal/recursive lookup branches of BaseFileSearch for IWADINFO Load companions. Program-directory-first colon entries and direct lookup precede configured paths; normal searches accept files or resource directories, recursive searches accept files only. Existing extension fallback, warnings, callback overrides, and deduplication remain intact.
+- Added separate FileSearchDirectories/RecursiveFileSearchDirectories launcher selections and repeated --file-search-dir/--file-recursive-dir arguments, validation, help, round trips, and CreateHost wiring. These are distinct from native IWADSearch paths.
+- Audited src/d_iwad.cpp Load processing and src/common/utility/findfile.cpp BaseFileSearch against the implementation. Native path concatenation retains the entire requested name; unprefixed Load entries retain their selected-IWAD directory prefix rather than falling back to a basename in another folder.
+- Added three cases covering normal/recursive priority, recursive file-only behavior, and repeated/missing/blank argument values. Strengthened startup integration to discover a colon companion recursively and verify game/companion/mod order and duplicate removal. Release suite: 13,591 passed (Client: 636). Clean Release build with warnings as errors: zero warnings/errors.
+- Remaining differences: native configuration permits interleaved Path/RecursivePath entries; launcher lists group normal paths before recursive paths. Configuration-file reading, PathList/environment/NicePath expansion, storefront discovery, native enumeration ordering and failure handling, and host/join selection remain unfinished. Recursive traversal excludes reparse points and propagates filesystem errors. This is a concrete lookup conversion, not completion of the native startup pipeline.
+
+## 2026-10-11 - Support archive search-path conversion
+
+- Converted the remaining normal/recursive support-file lookup branch from FIWadManager::IWADPathFileSearch and RecursiveFileExists into VmIwadSupportResource. Normal paths precede recursive roots; each recursive root is checked before descendant directories, and relative support names retain their directory components.
+- Connected launcher IWAD search directories to support discovery while preserving adjacent-game lookup first, support-before-IWAD loading, the disable option, and the resolver network-game gate.
+- Added nested-relative-name/root/normal-priority coverage and strengthened the startup integration test to discover support in a nested configured library. Full Release suite: 13,588 passed (Client: 633); final support-focused rerun: 3 passed. Clean Release build with warnings as errors: zero warnings/errors. Diff whitespace check passed.
+- Audit limits: native filesystem enumeration order is platform-dependent; C# excludes reparse points to avoid directory cycles and surfaces enumeration failures. Adjacent-game priority remains a launcher policy. Native configuration/environment expansion, storefront search paths, companion search-path integration, and host/join launcher selection remain outstanding; this does not complete the native IWAD manager.
+
+## 2026-10-11 - Configurable IWAD dependency search directories
+
+- Converted normal and recursive directory search routing for Required IWAD discovery, using the existing archive candidate scanner and identifier. Selected-game directory retains priority, followed by configured normal directories and recursive directories; duplicate candidate paths are removed before opening.
+- Launcher selections, repeated --iwad-search-dir / --iwad-recursive-dir arguments, validation, argument round trips, help, and CreateHost dependency resolution are connected.
+- Audited against src/d_iwad.cpp CollectSearchPaths and AddIWADCandidates. This is dependency discovery integration, not completion of the native IWAD manager. Configuration-file reading, NicePath/environment expansion, distributor/storefront discovery, picker behavior, and configured support/companion resource searches remain outstanding. Missing/inaccessible configured directories surface filesystem errors rather than silently skipping native ScanDirectory failures.
+- Four new test cases verify recursion, normal/adjacent priority, repeated option round trips, and missing/blank option values. Release suite: 13,587 passed (Client: 632). Clean Release build with warnings as errors: zero warnings/errors.
+
+## 2026-10-11 - Native IWAD candidate scanning
+
+Converted FIWadManager::AddIWADCandidates into VmIwadCandidateScanner.Scan. It enumerates visible files, selects special .iwad/.ipk3/.ipk7 extensions case-insensitively, and matches catalog NAMES against leaf filenames case-insensitively. Directory entries are excluded. Native duplicate additions when a special-extension filename also appears in NAMES are preserved by the scanner; dependency resolution deduplicates paths before opening candidates. The scanner supports explicit recursive traversal and returns readonly results without inspecting file contents.
+
+VmIwadRequiredResource now uses candidate scanning beside the selected game instead of constructing paths only from catalog NAMES. Self-described base packages can therefore satisfy a self-described expansion's Required record with no external catalog or explicit dependency path. Candidate order follows filesystem enumeration rather than prior catalog-name iteration, matching native discovery.
+
+Audit references: src/d_iwad.cpp AddIWADCandidates and fs_findfile.cpp DoScanDirectory hidden-file handling. Regression covers all special extensions, known-name case matching, special/known duplicate candidates, unknown WAD exclusion, directories with archive-like names, discovery with an exclusively locked payload, recursive traversal, hidden-file exclusion and missing-directory failure. Existing package startup tests now verify automatic embedded dependency discovery plus explicit resolver behavior. Full Release suite: 13,583 tests passed. Clean sequential Release rebuild with warnings treated as errors: zero warnings/errors. Whitespace validation passed.
+
+Remaining limits: reparse points are skipped to prevent recursive link traversal; native platform scan behavior may differ. Enumeration errors propagate rather than native boolean failure/partial-list behavior. Launcher dependency discovery currently uses only the selected game's directory; configured recursive/storefront search paths are not wired. Selected-record catalog conflict reuse, shared resource metadata, engine-core discovery, ZScript declaration compilation/execution and documented archive/codepage/directory gaps remain unfinished.
+
+## 2026-10-11 - Required package dependencies
+
+Extended Required resolution from WAD-only scanning to shared archive identification. VmIwadRequiredResource.Resolve checks all nonempty catalog NAMES in local catalog order, or an explicit candidate. Ordinary candidates use IdentifyArchive; special .iwad/.ipk3/.ipk7 candidates read embedded metadata and reuse a catalog definition with the same case-sensitive display name, following CheckIWADInfo. Required name matching remains exact. ResolveWad remains as a forwarding compatibility method. Automatically discovered candidates with InvalidDataException failures are diagnosed and skipped; explicit candidates propagate the failure.
+
+LauncherPlan now uses the general resolver and permits --required-iwad without an external catalog for a special-format selected game. This allows a self-described expansion and self-described base package to load in native required-before-selected order. Explicit catalogs remain necessary for ordinary candidates whose identities are not embedded. Existing companion/support/deletion ordering is preserved.
+
+Audit references: src/d_iwad.cpp ValidateIWADs dispatch, CheckIWADInfo name-conflict reuse and IdentifyVersion Required matching/insertion. Regression covers catalog-discovered PK3 dependencies, explicit embedded IPK3 dependencies with no external catalog, malformed automatically scanned PAK candidate diagnostics, explicit malformed dependency failure, option round-trip, source versions/order and selected-game include precedence, plus a mismatched embedded dependency name. Existing WAD dependency tests remain passing. Full Release suite: 13,580 tests passed. Clean sequential Release rebuild with warnings treated as errors: zero warnings/errors. Whitespace validation passed.
+
+Remaining limits: automatic candidate discovery is still local catalog NAMES, not native configured recursive/storefront or special-extension directory scanning. IO/codec exceptions outside InvalidDataException propagate. Selected special-record catalog conflict reuse, dependency chains, shared resource metadata, engine-core discovery, ZScript declaration compilation/execution and documented archive/codepage/directory gaps remain unfinished.
+
+## 2026-10-11 - Catalog identification across archive formats
+
+Extended native ScanIWAD matching to package archives through VmIwadIdentifier.IdentifyArchive and VmArchiveScriptLoader.ReadResourceNames. The shared archive pipeline enumerates processed full names and native eight-byte short names without parsing scripts or decoding ordinary payloads. Known filesystem namespace paths contribute basename short names; unknown folders contribute empty short names plus their full path. maps/ full paths still supply map identifiers to the converted matcher. WAD enumeration includes names outside the global namespace. IdentifyArchive ignores IWAD-specific deletion rules because native identification precedes deletion.
+
+LauncherPlan's external-catalog path now identifies selected archives using this shared name enumeration instead of requiring a WAD directory. Existing embedded special-package parsing remains unchanged. Shared NativeShortName extraction also serves deletion matching. This closes external catalog identification for supported archive formats; required-dependency discovery is still WAD-only.
+
+Audit references: src/d_iwad.cpp ScanIWAD's all-entry short-name/map-name scan and filesystem.cpp FileInfo namespace/short-name construction. Regression covers ZIP map/sprite/global names, unknown-folder exclusion, malformed text payloads not decoded, unrelated ZScript include errors not parsed, WAD non-global names, identification before deletion, and real catalog package startup selecting generated filters. Other formats share existing registration branches but do not yet have dedicated identification fixtures. Full Release suite: 13,578 tests passed. Clean sequential Release rebuild with warnings treated as errors: zero warnings/errors. Whitespace validation passed.
+
+Remaining limits: embedded archives and 7z's mandatory first-entry validation may require decompression during enumeration. Exact Unicode/codepage and hidden WAD namespace-name behavior are not fully audited. Package dependencies, native global-catalog conflict reuse, configured discovery/search, shared resource metadata, engine-core discovery, ZScript declaration compilation/execution and documented archive/directory gaps remain unfinished.
+
+## 2026-10-11 - Embedded IPK3/IPK7 game metadata
+
+Connected native special-package IWADINFO loading through ReadEmbeddedArchive and the shared archive pipeline. VmArchiveScriptLoader.ReadGlobalText selects the last matching global short-name entry, reusing archive codecs, bounds/checksum checks, namespace visibility, common-folder stripping, filters, embedded-container expansion and disposal. It decodes only the selected text resource and does not parse ZSCRIPT versions/includes. Existing LoadAll behavior now delegates to the same private LoadCore with ZSCRIPT root discovery; default source-loading behavior remains verified by the full suite.
+
+LauncherPlan automatically parses embedded metadata for case-insensitive .iwad/.ipk3/.ipk7 extensions without an external catalog. Metadata lookup enables native reserved/default-block processing with no active game filters. Identified definition metadata then drives the existing startup filters/deletion/support/companion flow. Explicit external catalogs retain their earlier WAD requirement-matching behavior.
+
+Audit references: src/d_iwad.cpp ValidateIWADs special extensions and CheckIWADInfo's global IWADINFO lookup with GetReserved. Regression tests real generated ZIP and LZMA2 7z packages, common-folder metadata, startup DeleteLumps, last global-name selection, exclusion of unmatched game-filter definitions, independence from invalid/missing ZScript includes, missing metadata, strict UTF-8 failure and short-name validation. Existing WAD embedded metadata tests still pass. Full Release suite: 13,575 tests passed. Clean sequential Release rebuild with warnings treated as errors: zero warnings/errors. Whitespace validation passed.
+
+Remaining work: external-catalog requirement matching for non-WAD archives, native global-catalog name-conflict reuse, embedded-record dependencies, configured discovery/search, shared resource metadata, engine-core discovery, ZScript declaration compilation/execution and documented archive/codepage/directory gaps remain unfinished.
+
+## 2026-10-11 - Embedded IWADINFO result mode and special WAD startup
+
+Converted ParseIWadInfo's result-mode behavior into ParseSingle. The first IWAD is parsed; a second IWAD emits the native multiple-record warning and stops before reading its body. NAMES/ORDER and other top-level blocks are rejected in result mode; full catalog mode remains available. ReadEmbeddedWad finds the last global IWADINFO using converted WAD namespace visibility, validates the selected lump bounds, decodes strict UTF-8 and parses a single record. Missing/invalid definitions fail explicitly.
+
+LauncherPlan now automatically uses embedded metadata for case-insensitive .iwad extensions when no external catalog is selected. As native CheckIWADInfo does, it trusts the embedded definition rather than requiring MustContain matches. Generated filters, DeleteLumps and companion/support loading use that definition. An explicitly selected catalog retains the existing requirement-matching path. Ordinary .wad startup behavior remains unchanged. An older generic WAD fixture used the special .iwad extension without metadata; renamed its fixture extension to .game.wad and added dedicated special-format tests.
+
+Audit references: src/d_iwad.cpp ParseIWadInfo result mode, CheckIWADInfo and ValidateIWADs special-extension dispatch. Tests cover malformed later IWAD bodies being ignored, warning callback failure propagation, NAMES/ORDER rejection, empty/malformed catalogs, last global definition precedence over hidden namespace entries, special-file startup deletion, trust of embedded MustContain metadata, and missing metadata failures. Full Release suite: 13,572 tests passed. Clean sequential Release rebuild with warnings treated as errors: zero warnings/errors. Whitespace validation passed.
+
+Remaining limits: special .ipk3/.ipk7 embedded metadata extraction is not converted yet. Native global-catalog name-conflict reuse, configured discovery and embedded-record Required dependency discovery remain incomplete. Explicit external catalogs override embedded parsing here. Strict UTF-8 decoding differs from native codepage behavior. Shared resource metadata, core discovery, ZScript declaration compilation/execution and documented archive/directory gaps remain unfinished.
+
+## 2026-10-11 - Native IWADINFO numeric metadata
+
+Converted FScanner::GetNumber's numeric behavior for IWADINFO priority and startup numeric properties. VmIwadInfoNumber parses decimal, leading-zero octal, signed hexadecimal and case-sensitive MAXINT, then follows native strtoll signed-64-bit saturation and unchecked signed-32-bit narrowing. Parser properties now retain normalized decimal values rather than source numeric spellings. GetNumber's unusual empty quoted token acceptance is preserved; leading ASCII whitespace is accepted, while trailing characters/whitespace, malformed prefixes and invalid octal digits are rejected. The native scanner defaults NoOctals false for ParseIWadInfo.
+
+Audit references: src/common/engine/sc_man.cpp GetNumber/mystrtoll, sc_man.h NoOctals default and src/d_iwad.cpp numeric IWADINFO properties. Regression covers radix/sign handling, MAXINT case, quoted whitespace/empty input, integer wrap, signed-64-bit overflow saturation, invalid octal/hex/binary values and both startup properties and IWAD filename priorities. Full Release suite: 13,570 tests passed. Clean sequential Release rebuild with warnings treated as errors: zero warnings/errors. Whitespace validation passed.
+
+Remaining work: numeric startup/picker metadata is parsed but not fully applied. Scanner-wide numeric expressions/symbol lookup are outside this IWADINFO conversion. Shared resource deletion, sprite/font renaming, broader configuration/search, core-archive catalog discovery, non-WAD identification, automatic engine-core discovery, ZScript declaration compilation/execution and documented archive/codepage/directory gaps remain unfinished.
+
+## 2026-10-11 - DeleteLumps across script archive formats
+
+Extended converted global short-name deletion across all script archive registration branches. Renamed the newly introduced DeletedWadGlobalLumps/deletedWadGlobalLumps options to DeletedGlobalLumps/deletedGlobalLumps, reflecting their broader scope. The common IsDeletedShortName helper compares catalog entries case-sensitively against the native eight-byte ASCII-uppercased UTF-8 short-name representation. WAD global entries remain absent from lookup; full-path archives retain their full-name resource registration while suppressing matching short-name registration and ZSCRIPT root discovery. Directory, PAK and 7z share this registration branch; GRP/RFF/HOG/MVL, SSI and raw resources also use the helper.
+
+Audit references: src/d_main.cpp RenameSprites clears only shortName.String[0] for matching ns_global entries, leaving full names intact; filesystem.cpp CheckNumForFullName independently searches full names. Therefore a deleted child.txt may still be included by that exact full path, while CHILD short-name lookup falls back to an earlier archive. A deleted zscript.txt remains includable by full filename but is no longer discovered as a root. Namespace-path entries without global short-name registration are unaffected.
+
+New regression covers ZIP/GRP/HOG/MVL short-lookup fallback and full-path preservation, root suppression, a deleted root included by full filename, and directory full-path preservation. Existing WAD deletion/startup tests remain passing. Other registration branches are covered by existing archive tests but do not yet have dedicated deletion fixtures. Full Release suite: 13,554 tests passed. Clean sequential Release rebuild with warnings treated as errors: zero warnings/errors. Whitespace validation passed.
+
+Remaining work: native archive identity discovery is still WAD-only at launcher startup, and deletion is not wired into shared audio/map/graphics consumers. Embedded-container IWAD-range propagation, sprite/font renaming, broader search/configuration, core-archive catalog discovery, automatic engine-core discovery, ZScript declaration compilation/execution and documented archive/codepage/directory gaps remain unfinished.
+
+## 2026-10-11 - IWAD DeleteLumps in WAD script loading
+
+Converted the global-short-name DeleteLumps branch of native RenameSprites into the WAD script-resource registration path. VmScriptArchive accepts optional DeletedWadGlobalLumps; LoadPaths accepts per-absolute-path deletion lists, and ClientHost startup forwards them. LauncherPlan attaches the selected catalog record's DeleteLumps to both the required and selected IWAD paths. Core/support/companion/mod paths receive no rules. Matching uses native ASCII uppercase eight-byte WAD short names against case-sensitive untruncated catalog strings. Deleted global entries are excluded from root discovery and short-name include resolution; earlier archives remain available as fallback. Input archive bytes are not modified.
+
+Audit reference: src/d_main.cpp RenameSprites ns_global branch restricts deletion to GetIwadNum through GetMaxIwadNum and clears the short name. Converted WAD entries have no full-name lookup, so omitting registration matches that lookup effect. Existing namespace visibility checks run first. Rules on non-WAD archives fail explicitly instead of silently claiming support.
+
+Regression covers root deletion, case-sensitive catalog names, byte preservation, untouched mod roots, include fallback and missing-include diagnostics, and actual catalog startup with required/selected roots removed while support/mod roots retain expected container indexes. Initial missing-include assertion used the wrong exception type; corrected to the established VmScriptIncludeException without changing runtime behavior. Full Release suite: 13,548 tests passed. Clean sequential Release rebuild with warnings treated as errors: zero warnings/errors. Whitespace validation passed.
+
+Limits: this change applies to WAD script loading, not yet to shared audio/map/graphics resource consumers. Non-WAD short-name deletion/full-name preservation, sprite/font renaming, core-archive catalog discovery, broader search configuration, non-WAD identification, automatic engine-core discovery, ZScript declaration compilation/execution and documented archive/codepage/directory gaps remain unfinished.
+
+## 2026-10-11 - Optional support-WAD startup loading
+
+Converted native SupportWAD selection into VmIwadSupportResource.Resolve. It searches supplied IWAD directories in order, returns the first existing file, permits missing support resources, and suppresses automatic support loading when disabled or in network mode. LauncherPlan uses the selected IWAD directory and connects LoadSupportWad (default true) / --no-support-wad through parsing/build/help. Identified support resources load after the core slot and before required/selected IWADs; selected-game filtering remains based on the selected record. Explicit ScriptPaths continue loading when automatic support loading is disabled.
+
+Audit references: src/d_iwad.cpp IdentifyVersion support-WAD block and IWADPathFileSearch; native i_loadsupportwad defaults true and excludes host/join variants from automatic loading. The resolver's network gate is tested, but LauncherPlan has no host/join role model yet and represents local startup only. Ordered search directories are supported by the resolver; configured recursive/storefront paths are not discovered by this launcher.
+
+Regression confirms missing resources, directory search priority, enabled/disabled/network gates, absent SupportWAD metadata, actual startup version/container order, IWAD override of a support include, CLI round-trip and explicit-resource loading while automatic support loading is disabled. Full Release suite: 13,545 tests passed. Clean sequential Release rebuild with warnings treated as errors: zero warnings/errors. Whitespace validation passed.
+
+Remaining work: wire network launch roles and broader IWAD search configuration; native optional archive-open behavior may differ for malformed support archives, which the current converted loader rejects. DeleteLumps, core-archive catalog discovery, non-WAD identification, automatic engine-core discovery, ZScript declaration compilation/execution and documented archive/codepage/directory gaps remain unfinished.
+
+## 2026-10-11 - Required IWAD validation and startup ordering
+
+Converted the native Required dependency name check and required-before-selected loading into VmIwadRequiredResource.ResolveWad and LauncherPlan.CreateHost. With an explicit IWADINFO catalog, a selected record declaring Required must identify a matching base WAD before startup proceeds. Names match the native case-sensitive display-name comparison, not Autoname or file basename. Default discovery scans existing .wad names from catalog NAMES beside the selected IWAD in catalog order, skipping missing or malformed WAD candidates. --required-iwad / RequiredIwadPath permits an explicit candidate elsewhere and still validates its contents/name. Invalid/missing explicit files surface errors; a dependency supplied to a record without Required is rejected.
+
+Startup order is core/reserved-core, required IWAD, selected IWAD, companions, then mods. Selected-game filters remain based on the selected record. No-Required records retain previous ordering. RequiredIwadPath requires IwadInfoPath; option parsing/build/help are connected.
+
+Audit references: src/d_iwad.cpp IdentifyVersion dependency validation and insertion before selected IWAD. Regression checks same-directory discovery, missing/malformed candidates, exact name/case validation, explicit renamed candidate and argument round-trip, absent dependency failure, no-dependency misuse, explicit missing file errors, loaded versions/container order and selected-game include precedence. Full Release suite: 13,543 tests passed. Clean sequential Release rebuild with warnings treated as errors: zero warnings/errors. Whitespace validation passed.
+
+Remaining limits: dependency candidates are WAD-only and local NAMES discovery is a subset of native configured/storefront recursive discovery. Read errors propagate instead of native unreadable-candidate filtering. Dependency chains/cycles are not resolved recursively (native check also selects a single dependency). SupportWAD/DeleteLumps, configured resource search paths, core-archive catalog discovery, non-WAD identification, automatic engine-core discovery, ZScript declaration compilation/execution and documented archive/codepage/directory gaps remain unfinished.
+
+## 2026-10-11 - IWADINFO companion resource startup loading
+
+Converted the IdentifyVersion Load loop into VmIwadCompanionResources.Resolve and connected the identified record to LauncherPlan.CreateHost. Ordinary Load names are prefixed by the selected IWAD directory; colon-prefixed names use program-directory-first search. The default resolver supports filesystem files/directories and current-directory fallback. Extensionless ordinary requests retry with .wad. The resolver accepts a search callback for additional lookup policy and a warning callback; failures in callbacks propagate. Missing resources report diagnostics and are omitted; empty resource names fail explicitly rather than indexing an empty native string.
+
+Startup order is core/reserved-core, IWAD, companion resources in catalog order, then user inputs. Repeated resource paths are deduplicated across the startup plan after full-path/slash normalization with case-insensitive comparison. This follows native D_AddFile's duplicate prevention, while also merging equivalent relative/absolute paths more aggressively than native lexical comparisons. Native colon search misses are quiet; the C# resolver deliberately diagnoses them.
+
+Audit references: src/d_iwad.cpp IdentifyVersion Load loop and src/common/utility/findfile.cpp BaseFileSearch/D_AddFile. Regression confirms program-first callback mode, same-directory requests, extension fallback, missing-resource warnings, duplicates, invalid empty names, callback exception propagation, and real startup source/container order. A later mod overrides a companion include and a companion repeated in ScriptPaths loads once. Full Release suite: 13,542 tests passed. Clean sequential Release rebuild with warnings treated as errors: zero warnings/errors. Whitespace validation passed.
+
+Remaining work: native configured recursive/environment-expanded search paths and Unix case-insensitive fallback are not in the default resolver. SupportWAD/Required/DeleteLumps metadata, core-archive catalog discovery, non-WAD identification, automatic engine-core discovery, ZScript declaration compilation/execution and documented archive/codepage/directory gaps remain unfinished.
+
+## 2026-10-11 - IWADINFO catalog parser and identified startup filters
+
+Converted catalog parsing from FIWadManager::ParseIWadInfo into VmIwadInfoParser. It preserves ordered IWAD records, identification requirements, NAMES (including the native initial empty entry), ORDER, scalar metadata, appended list properties, bare flags, optional IWADName priority and paired BannerColors. It defaults omitted Game to Doom and empty MapInfo to mapinfo/mindefaults.txt. Keywords/games/compatibility names are case-insensitive; unknown keywords and malformed structure fail with IWADINFO offset context. Scanner supports line/block comments, quoted strings, escaped quotes and quoted CRLF normalization. Entries and property lists are readonly snapshots.
+
+Added IwadInfoPath / --iwad-info parsing, validation, argument round-trip and help. LauncherPlan.CreateHost reads an explicitly selected catalog, identifies the selected WAD, and supplies its game/Autoname to converted startup filtering. Explicit GameType/IwadFilter still take precedence, with caller GameTypeFilters appended as overrides. An unmatched WAD fails before constructing/subscribing a host. No catalog option preserves prior behavior.
+
+Native audit references: src/d_iwad.cpp ParseIWadInfo and ScanIWAD, src/d_main.h FIWADInfo defaults, sc_man_scanner.re classic quoted strings. Tests embed the repository's actual wadsrc_extra/static/iwadinfo.txt and identify ordinary Doom II with MAP01, checking generated legacy filter identity. Additional regression covers repeated scalar/list properties, default metadata, comments, flags, malformed records, startup filtering, explicit override and unmatched-WAD failure. Full Release suite: 13,537 tests passed. Clean sequential Release rebuild with warnings treated as errors: zero warnings/errors. Whitespace validation passed.
+
+Limits: this parses full catalog mode, not native result mode that ignores later IWAD blocks. Blank/missing display names are rejected for the identifier model, stricter than native. Numeric metadata currently accepts decimal integers only. Banner colors and compatibility/startup metadata are retained as text rather than resolved/applied; startup Load/Required/DeleteLumps and picker ordering are not wired. Catalog discovery from engine archives, non-WAD identification, automatic engine-core discovery, ZScript declaration compilation/execution and documented archive/codepage/directory gaps remain unfinished. Program.Main still prints the validated launcher plan.
+
+## 2026-10-11 - Native IWAD requirement matching
+
+Converted FIWadManager::ScanIWAD's identification algorithm into VmIwadIdentifier.Identify. Definitions are checked in catalog order, with the first complete MustContain set winning. Resource short names match case-insensitively; full names beginning maps/ additionally contribute everything after that prefix up to the first dot, including native nested-path behavior. Identification checks every resource regardless of namespace. IdentifyWad adapts the existing WAD directory reader and surfaces malformed directory errors. Immutable VmIwadDefinition snapshots carry game type and Autoname for the converted startup filter builder.
+
+Audit reference: src/d_iwad.cpp ScanIWAD. The C# implementation deliberately uses a set instead of the native int bitmask: duplicate requirements remain satisfied by one matching name, while more than 31 requirements work without undefined native shift behavior. Each scan starts fresh, avoiding native stale mask state on zero-entry scans. Empty requirements match even an empty archive. OrdinalIgnoreCase is used; exact native Unicode/codepage case behavior remains outside verified parity.
+
+Regressions cover ordered specific/generic matching, incomplete definitions, case-insensitive and duplicate names, map filenames with multiple dots/no extension/nested paths, unrelated prefixes, repeated/empty scans, defensive snapshots, 40 requirements, non-global WAD names, malformed/truncated directories, and identified game metadata feeding legacy filter construction. Full Release suite: 13,524 tests passed. Clean sequential Release rebuild with warnings treated as errors: zero warnings/errors. Whitespace validation passed.
+
+Remaining work: parse/load native IWADINFO catalogs and feed resource names from non-WAD archives, then connect identification to automatic launcher startup. This new identifier is callable infrastructure; LauncherPlan still requires explicit game identity. Engine-core discovery, ZScript declaration compilation/execution and documented archive/codepage/directory parity gaps remain unfinished.
+
+## 2026-10-11 - Native startup game-filter construction
+
+Converted D_InitGame's blanket game-family filter construction into VmStartupGameFilters.Build. Doom/Chex select DoomStrifeChex and DoomChex families; Strife selects DoomStrifeChex; Heretic/Hexen select Raven. The specific game filter follows, then the IWAD filter and the legacy Doom alias. Game names and enum values match native gametype.h and gi.cpp. The native alias rule intentionally preserves case-sensitive substring detection and fixed-offset slicing, including unusual non-prefix matches. Missing IWAD identity retains the native empty filter entry internally; invalid game values fail explicitly.
+
+LauncherSelection now accepts GameType and IwadFilter, with --game-type and --iwad-filter parsing/build/help support. CreateHost generates native filters and appends caller-supplied GameTypeFilters as later overrides. Existing selections without GameType preserve their previous behavior. IwadFilter requires a game type; numeric enum strings, missing type values and invalid selections are rejected.
+
+Regression covers all five game families, ordered filters, empty identity, legacy suffixes and case sensitivity, invalid values, launcher round-trip, startup legacy override selection, custom override priority, and shared Doom/Chex family selection. Full Release suite: 13,517 tests passed. Clean sequential Release rebuild with warnings treated as errors: zero warnings/errors. Whitespace validation passed.
+
+Remaining work: game and IWAD identification are still caller-supplied rather than discovered from native IWADINFO/configuration. Engine-core discovery, ZScript declaration compilation/execution and documented archive/codepage/directory parity gaps remain. Program.Main still prints the validated launcher plan.
+
+## 2026-10-11 - Startup archive blocking and embedding rules
+
+Connected native archive resource rules through LauncherSelection, argument parsing/building, LauncherPlan.CreateHost and ClientHost construction. Repeated --script-block patterns and --script-embed archive-entry names preserve caller order. Invalid empty/missing values report script-block or script-embed. Selected nested archives now participate in startup source discovery; custom blocking patterns also apply recursively to their entries. Existing default options remain empty and do not select additional embedded archives.
+
+Native audit references: resourcefile.cpp CheckEmbedded uses case-insensitive exact entry-name matching for configured embeddings; PostProcessArchive eliminates blocked entries before common-folder and game-filter processing. The converted loader already implements these operations; this change closes their missing startup connection. This is startup integration of converted behavior, not a new archive decoder or ZScript compiler.
+
+Regression verifies argument round-trip, case-insensitive selection of a nested ZIP with an arbitrary extension, both outer and inner version roots, unselected nested archives remaining ordinary resources, recursive root blocking, and missing/blank option rejection. Full Release suite: 13,507 tests passed. Clean sequential Release rebuild with warnings treated as errors: zero warnings/errors. Whitespace validation passed.
+
+Remaining work: derive game/resource rules from native configuration automatically, discover engine-core archives automatically, complete ZScript declaration compilation/execution, and resolve documented archive/codepage/directory parity gaps. Program.Main still prints the validated launcher plan.
+
+## 2026-10-11 - Startup game-filter integration
+
+Connected the converted archive filtering pipeline to host startup. LauncherSelection.GameTypeFilters forwards through LauncherPlan.CreateHost and the ClientHost constructor to LoadPaths. Repeated --game-filter options preserve order; --game-filters enables processing with an empty list. BuildArgs and TryParse preserve the distinction between null (disabled processing) and an empty enabled list. Blank/missing filter values report game-filter. Help text documents the options.
+
+Native audit reference: resourcefile.cpp PostProcessArchive null-filter gate and hierarchical game-prefix selection. Regression verifies a doom.id startup include resolves the specific override after its doom parent, launcher round-trip preserves the selected filters, enabled-empty filtering remains enabled after round-trip, and omitted options remain null. Existing startup/core/IWAD tests remain passing.
+
+Full Release suite: 13,504 tests passed. Clean sequential Release rebuild with warnings treated as errors: zero warnings/errors. Whitespace validation passed.
+
+Remaining work: derive filters from native game configuration automatically, connect startup blocked-name/embedding rules, discover engine-core archives automatically, and finish ZScript declaration compilation/execution. Archive/codepage/directory parity gaps remain; Program.Main still prints the validated launcher plan.
+
+## 2026-10-11 - Explicit engine-core startup loading
+
+Added LauncherSelection.CoreScriptPath and --core-script-file parsing/build/help integration. When supplied, host startup loads the real core archive in container zero, followed by IWAD and additional scripts. When absent, the prior reserved empty engine slot remains. Missing or malformed explicit core paths fail normally rather than reverting to the placeholder. Empty/missing option values report core-script-path.
+
+Audit reference: native core-container include override guard converted in VmScriptSourceLoader. Regression checks option round-trip, core/IWAD container indexes and source versions, successful core include lookup, rejection of a later matching mod full-path include, retained existing host sources after failure, and missing explicit core files. Initial fixture used a WAD short name that does not replace a ZIP full-path entry; corrected to a matching ZIP full path, preserving established lookup precedence.
+
+Full Release suite: 13,503 tests passed. Clean sequential Release rebuild with warnings treated as errors: zero warnings/errors. Whitespace validation passed.
+
+Remaining gaps: engine-core discovery is explicit rather than automatic; embedded containers inside the core archive still use expanded container indexes. Startup filter configuration, archive/codepage/directory parity and ZScript declaration compilation/execution remain unfinished. Program.Main still prints a validated launcher plan rather than running a game session.
+
+## 2026-10-11 - IWAD script startup ordering
+
+LauncherPlan.CreateHost now loads the selected IWAD before additional ScriptPaths, rather than leaving IWAD sources out of startup. Startup reserves an empty container-zero slot using a valid empty WAD; IWAD and subsequent inputs begin at indexes one and two. This prevents applying the native engine-core include override guard to ordinary IWAD roots. LoadPaths and the ClientHost constructor expose optional reserveCoreContainer, defaulting false for existing direct callers. Engine-core resource discovery itself is still absent; the reserved slot supplies no scripts and is not a missing-file fallback.
+
+Audit reference: VmScriptSourceLoader's converted container-zero guard from native zcc_parser.cpp and archive caller-order lookup. Regression loads an IWAD root including CHILD and a later mod's replacement CHILD, checking resulting source text and container indexes. Existing launcher startup/preferences tests now use actual temporary IWAD fixtures; invalid source startup still fails before subscriptions. Full Release suite: 13,502 tests passed. Clean sequential Release rebuild with warnings treated as errors: zero warnings/errors. Whitespace validation passed.
+
+Remaining work: locate/load real engine-core scripts in container zero, wire startup filters and resource configuration, finish source declaration compilation/execution, and close archive/codepage/directory parity gaps. The headless Program still prints validated launch arguments rather than creating a game session.
+
+## 2026-10-11 - Launcher script-source startup integration
+
+Connected converted archive/path source loading to host startup. ClientHost accepts optional ordered scriptPaths and loads all sources before preferences, simulation event subscriptions and runtime initialization. LauncherSelection exposes ScriptPaths; repeated --script-file options parse/build in caller order and feed LauncherPlan.CreateHost. Help text includes the option. Invalid/missing option values report script-path; source-loading errors abort construction without retaining a partially subscribed host.
+
+Regression checks launcher argument round-trip, constructor loading from a real WAD, loaded version metadata, missing-include startup failure and preservation of an existing host's sources after that failure. Full Release suite: 13,501 tests passed. Clean sequential Release rebuild with warnings treated as errors: zero warnings/errors. Whitespace validation passed.
+
+Scope limits: only explicitly selected script inputs load automatically; IWAD/core resource discovery is not yet connected to this source list. Program.Main still validates/prints the headless launcher selection rather than running a game session. Source text is collected but ZScript declarations are not compiled or executed. Startup filtering/configuration and remaining archive/codepage parity require further conversion.
+
+## 2026-10-11 - File-path script dispatch and ZIP fixture audit
+
+Added VmArchiveScriptLoader.LoadPaths and ClientHost.LoadVmScriptPaths to connect filesystem input paths to the converted archive readers. File paths become byte-backed Auto inputs; directory paths use the lazy Directory reader. Paths resolve to absolute names, preserve caller ordering and forward filters, embeddings, filename checks and warning callbacks. Missing/unreadable files and invalid paths propagate errors. Client-host publication remains atomic: sources are assigned only after every root/include has loaded successfully.
+
+Audit reference: native resourcefile.cpp container dispatch and directory-backed loading. Added a mixed WAD/ZIP/directory path regression with ordered root versions and invalid/missing-path checks. Added independent 7-Zip 26.01 LZMA ZIP and ZipCrypto fixtures; LZMA nested include extraction and exclusion/diagnostics for two genuinely encrypted files pass. Fixture reproduction is documented in Fixtures/README.md.
+
+Full Release suite: 13,500 tests passed. Clean sequential Release rebuild with warnings treated as errors: zero warnings/errors. Whitespace validation passed.
+
+Remaining differences: file containers are fully buffered in memory rather than native file-reader backing; startup does not automatically invoke this API. XZ/shrink/implode ZIP fixtures, AES-specific dispatch, codepage parity, directory scan/link behavior and native malformed-container fallback remain gaps. ZScript declarations still are not compiled or executed.
+
+## 2026-10-11 - ZIP compression allowlist and diagnostics conversion
+
+Converted native file_zip.cpp's compression allowlist and encrypted-entry exclusion. ZIP script registration accepts stored, deflate, LZMA, BZip2, implode (managed Explode), shrink and XZ methods. Other methods are omitted before normal postprocessing; encrypted accepted-method entries are also omitted. Diagnostics report archive, entry and reason, using optional archiveWarning or standard error. The archive loader, PK3 wrapper and client host expose the callback; callback failures propagate.
+
+Regression patches local/central ZIP headers to Deflate64 (supported by the managed decoder but excluded natively) and encryption flags. Both cases produce one diagnostic and no root, without decoding the excluded payload. Warning callback errors remain visible. Existing ordinary/BZip2 ZIP, filtering and embedded regressions pass. Full Release suite: 13,498 tests passed. Clean sequential Release rebuild with warnings treated as errors passed with zero warnings/errors. Whitespace validation passed.
+
+Remaining differences: diagnostics name the mapped compression type rather than native numeric method; AES ZIP metadata can expose a mapped underlying method. LZMA/XZ/shrink/implode and real encrypted ZIP fixtures still need coverage. Filename/codepage, malformed-container fallback, directory scan/link parity and ZScript compilation/execution remain unfinished.
+
+## 2026-10-11 - ZIP BZip2 decoding conversion
+
+Replaced the standard ZIP decoder in the script archive pipeline with the pinned managed archive decoder already used for 7z. Native file_zip.cpp supports BZip2, LZMA and legacy methods beyond ordinary deflate/stored ZIPs. Requested roots/includes and embedded ZIP entries now use checksum-aware extraction with decoded-length validation. Existing sorting, normalization, filters and embedded dispatch remain intact. Encrypted entries are excluded as native Open does. ArchiveException is translated to InvalidDataException with the original exception retained, preserving the existing malformed-ZIP API contract.
+
+Added an independent BZip2 ZIP fixture generated by 7-Zip 26.01 with a script root, nested include and directory record. Automatic dispatch, BZip2 nested include decoding and root filtering pass. Fixture regeneration is documented. All existing ZIP regressions pass after correcting the decoder exception-type change. Full Release suite: 13,496 tests passed. Clean sequential Release rebuild with warnings treated as errors: zero warnings/errors. Whitespace validation passed.
+
+Remaining differences: the managed decoder's method set is not constrained to the native allowlist; unsupported-method exclusions and encrypted-entry diagnostics lack exact parity. LZMA/XZ/shrink/implode and encrypted ZIPs still need dedicated fixtures. ZIP filename codepages and malformed-container fallback remain gaps, as does ZScript compilation/execution.
+
+## 2026-10-11 - 7z checksum validation conversion
+
+Converted requested-entry extraction to the decoder's checksum-aware WriteTo operation with CheckCrc enabled. This verifies available entry checksums in addition to existing decoded-length validation, matching the native 7z SDK's extraction-integrity requirement. Native reference: SzArEx_Extract / F7ZFile::Open/Read in file_7z.cpp. First-entry validation still precedes filters; later entries retain lazy extraction.
+
+Added a regression that changes a stored LZMA2 literal from version 4.13 to 4.12 without damaging its compression structure. The CRC mismatch is rejected, including when the root is blocked, proving first-entry validation cannot be bypassed. Added a separate encrypted-header archive generated by 7-Zip 26.01 with public fixture password; loading without password fails. Fixture generation is documented alongside the existing solid archive.
+
+All 13,495 Release tests passed. Clean sequential Release rebuild with warnings treated as errors passed with zero warnings/errors. Whitespace validation passed. Remaining gaps include data-only encryption, absent-checksum archives, alternate compression methods and damaged shared solid blocks. Managed errors still propagate instead of native fallback to raw; directory/codepage parity and ZScript compilation/execution remain unfinished.
+
+## 2026-10-11 - Solid 7z parity and first-entry reuse
+
+Converted first-entry validation into a reusable decoded payload: VmSevenZipArchiveReader retains the bytes required by the native Open compression check and serves those bytes if that file is requested later. Other entries keep on-demand decoding. This avoids decoding the validation entry twice while retaining native validation-before-filter ordering. Native reference: C7zArchive's extraction cache and F7ZFile::Open/Read in file_7z.cpp.
+
+Added an independent 281-byte fixture generated with installed 7-Zip 26.01. Listing confirms Solid = +, Blocks = 1, LZMA2, five files plus a directory. Regression checks reverse-order includes within the shared block, multiple root versions, repeated file access across roots, automatic dispatch and ZIP-embedded solid loading. Fixture is embedded in the test assembly; tests do not invoke 7-Zip. Fixture contents/regeneration are documented in Fixtures/README.md.
+
+All 13,493 Release tests passed. Clean sequential Release rebuild with warnings treated as errors passed with zero warnings/errors. Whitespace validation passed.
+
+Remaining coverage: encrypted inputs, alternate compression methods, CRC failures and damaged solid-block behavior still lack dedicated fixtures. Solid extraction can decode multiple files sharing a block, even when only one is requested. Filename/codepage, directory scan/link and malformed-container fallback parity plus ZScript compilation/execution remain unfinished.
+
+## 2026-10-11 - Directory oversized-file warning parity
+
+Converted native FDirectory::AddDirectory's oversized-file behavior: files longer than int.MaxValue produce a warning and are omitted instead of failing the entire load. VmArchiveScriptLoader.LoadAll and ClientHost.LoadVmScriptArchives expose an optional directoryWarning callback; without a callback, warnings go to standard error. Native ordering is preserved: backup exclusions and filenamecheck precede size inspection. Warning callback failures propagate; requested includes omitted because of size still report missing-source errors through normal resolution.
+
+Audit reference: src/common/filesystem/source/file_directory.cpp's entry.Length > 0x7fffffff check and warning/continue branch. Existing directory and archive regressions remain passing. Full Release suite: 13,492 tests passed. Clean sequential Release rebuild with warnings treated as errors: zero warnings/errors. Whitespace validation passed. No over-2-GB file fixture was added, so the warning branch is source-audited rather than directly exercised by the suite.
+
+Remaining gaps: inaccessible-directory scan reporting and reparse-point behavior differ from native; codepage parity, malformed-container fallback, solid/encrypted 7z coverage and ZScript compilation/execution remain unfinished.
+
+## 2026-10-11 - Automatic archive dispatch conversion and probe audit
+
+Added VmScriptArchiveFormat.Auto as an appended enum value and the optional default for VmScriptArchive.Format. Byte-backed inputs can now dispatch through native-style format probes before script registration; explicit formats retain their existing validation. Directory inputs still require an explicit Directory format.
+
+Audited shared detection against resourcefile.cpp dispatch and CheckWad/Zip/7Z/Pak/GRP/RFF/SSI/Hog/Mvl/WHRes. Corrected minimum signature thresholds (WAD/PAK/GRP 12, ZIP local header 30, RFF 16), moved GRP after PAK and SSI ahead of HOG/MVL, and removed empty-ZIP end-record detection because native CheckZip accepts only PK 03 04. Short unrecognized signatures and empty ZIPs fall through to raw lumps; full recognized malformed containers still fail explicitly rather than native log-and-fallback behavior.
+
+Regression loads automatically detected WAD/ZIP/GRP roots, verifies short PACK text falls back to raw ZSCRIPT, accepts an empty ZIP as a non-root raw resource, and checks explicit PAK validation still rejects the same short signature. Full Release suite: 13,492 tests passed. Focused dispatch regression rerun after GRP threshold correction passed. Clean sequential Release rebuild with warnings treated as errors: zero warnings/errors. Whitespace validation passed.
+
+Remaining limits: recognized-container open failures do not automatically fall back to raw, solid/encrypted 7z coverage is incomplete, filename/codepage and directory parity gaps remain, and ZScript compilation/execution is unfinished.
+
+## 2026-10-11 - On-demand 7z decoding parity
+
+Replaced eager 7z payload extraction with entry callbacks retained through script loading. VmSevenZipArchiveReader owns its archive/input until the loader's finally cleanup; requested roots/includes and selected embedded archives decode their payloads on demand. PAK and directory payload paths continue through the shared registration pipeline. Constructor failures release the input stream and preserve the original error.
+
+Native audit reference: F7ZFile::Open and Read in file_7z.cpp. The first non-directory entry is decoded before filters as the native compression support check requires. Later entries are decoded only when selected; errors propagate instead of becoming empty successful sources. Archive callbacks are not exposed in the returned immutable source sets.
+
+New regression constructs independent LZMA2 entries and damages the unused entry's compression control byte. Ordinary loading and root exclusion succeed without decoding the damaged entry; explicitly selecting it as an embedded input raises a decoder error. Existing compressed/filter/embedded tests still pass. Full Release suite: 13,491 tests passed. Clean sequential Release rebuild with warnings treated as errors passed with zero warnings/errors. Whitespace validation passed.
+
+Remaining coverage gaps: solid archives may decode shared blocks containing multiple entries; alternate compression methods, encryption and CRC-specific failures lack dedicated fixtures. Header metadata still loads eagerly and the native first-file check requires extraction. Filename/codepage and directory parity gaps plus ZScript compilation/execution remain unfinished.
+
+## 2026-10-11 - Managed 7z script loading
+
+Added pinned SharpCompress 0.50.5 dependency and converted 7z script input using its managed SevenZipArchive decoder. Native reference: file_7z.cpp Open/Read and resourcefile.cpp dispatch. Managed parsing checks the six-byte signature/minimum header, skips directory/unnamed entries, decodes file payloads, validates supported sizes and extracted lengths, and sends names/data through the existing full-path sorting/filter/namespace/embedding pipeline. Embedded format detection recognizes 7z ahead of structural SSI/WHRES probes, matching native dispatch priority.
+
+Regression builds a real LZMA2 7z archive with a directory entry, root, nested include and game-filter override. Direct loading, filtered loading, ZIP-embedded 7z recognition and truncated-header rejection pass. Full Release suite: 13,490 tests passed. Focused 7z regression rerun after dispatch-order correction passed. Clean sequential Release rebuild with warnings treated as errors: zero warnings/errors. Whitespace validation passed.
+
+Remaining differences: this first reader eagerly extracts all file entries, whereas native reads on demand after checking the first entry. Solid archives, alternate compression methods, damaged CRCs and encrypted inputs lack dedicated fixtures. Managed decoder failures propagate rather than native log-and-fallback behavior. Directory/codepage parity and ZScript compilation/execution remain incomplete.
+
+Decoder reference: https://github.com/adamhathcock/sharpcompress/blob/0.50.5/docs/API.md
+
+## 2026-10-11 - Directory filename-check callback conversion
+
+Converted the native LumpFilterInfo.filenamecheck hook from FDirectory::AddDirectory in file_directory.cpp. VmArchiveScriptLoader.LoadAll and ClientHost.LoadVmScriptArchives now accept optional directoryFilenameCheck(name, physicalPath). Directory enumeration invokes it after backup/cache exclusions and before size validation or content reads, passing a lowercase leaf filename and the original physical path. Returning false omits the entry; callback exceptions propagate. The existing lazy-read path and non-directory archive behavior are preserved.
+
+Regression checks normalized callback names, physical path spelling, backup omission before callbacks, exclusion of all roots, missing includes caused by exclusions, and callback exception propagation. Full Release suite: 13,489 tests passed. Clean sequential Release rebuild with warnings treated as errors passed with zero warnings/errors. Whitespace validation passed.
+
+7z inspection confirmed native loading delegates to the bundled 7z decoder; the managed client has no existing decoder dependency. No 7z implementation was added in this batch. Remaining work includes selecting/integrating a managed 7z decoder, filename codepage parity, directory reparse-point/oversize handling and ZScript compilation/execution.
+
+## 2026-10-11 - WHRES numbered include conversion
+
+Converted Witchaven/TekWar WHRES resource access for script includes from file_whres.cpp. The reader checks the native 8192-byte minimum and trailing 4096-byte directory, scans at most 341 triples, follows native sequential block validation and zero terminators, and names records archive-basename/0000 onward. Data positions are block numbers multiplied by 4096; names normalize through the shared loader. WHRES has no ZSCRIPT roots and does not invoke archive postprocessing; it provides numbered full-path include resources to roots in other containers.
+
+Added explicit WHRES format and structural WHRES detection before raw-lump fallback for embedded archive inputs. Native CheckWHRes unusually compares block offsets plus byte lengths; this detection rule and unsigned arithmetic are preserved. Managed payload reads separately validate widened block-to-byte offsets and ensure data does not enter the trailing directory, rejecting malformed ranges accepted by native detection.
+
+Regression coverage includes multiple aligned payloads, basename and numbered path resolution, no-root behavior, invalid block sequence, minimum archive size, and out-of-data-area payload bounds. Full Release suite: 13,488 passing tests. Clean sequential Release rebuild with warnings treated as errors passed with zero warnings/errors. Whitespace validation passed.
+
+Remaining limits: embedded WHRES structural recognition has no dedicated regression fixture; general WHRES audio/resource mounting remains separate from script include loading. 7z input, legacy filename encodings, directory callback/link parity and ZScript compilation/execution remain unfinished.
+
+## 2026-10-11 - Lazy directory script reads
+
+Closed the eager-read gap identified in the previous directory conversion audit. VmDirectoryArchiveReader now enumerates relative names and original physical file paths without opening file contents. Archive sorting, filtering and lookup retain these paths; only selected script roots/includes and selected embedded archives open their payloads. PAK continues to use in-memory bytes through a shared payload representation. Read failures propagate rather than becoming successful empty sources.
+
+Native reference: FDirectory::AddDirectory and FDirectory::GetEntryReader in file_directory.cpp. Managed loading now mirrors native on-demand content access while preserving original filesystem spelling separately from normalized lookup names. Selected files are still read fully as strict UTF-8 script text; enumeration still reads file metadata.
+
+Regression holds an unused file open with exclusive sharing: ordinary directory script loading succeeds, including that file raises IOException, and blocking the script root prevents content reads. Existing directory/filter/include and archive tests remain passing. Full Release suite: 13,486 tests passed. Clean sequential Release rebuild with warnings treated as errors: zero warnings/errors. Whitespace validation passed.
+
+Remaining differences: reparse points are skipped; oversized files/inaccessible directories fail rather than native logging/skipping; native filenamecheck callbacks are not exposed. Filesystem content can change between enumeration and a requested read, as with native directory entry readers. Remaining conversion includes WHRES/7z inputs, legacy filename encodings and ZScript compilation/execution.
+
+## 2026-10-11 - Directory-backed script input conversion
+
+Converted directory-backed script input from file_directory.cpp and fs_findfile.cpp. VmScriptArchiveFormat.Directory interprets Name as a filesystem directory path (Data may be an empty array). Scanning recurses, preserves physical paths for reads, registers normalized relative names, skips hidden entries and filename substrings .orig/.bak/.cache, and reuses the full-path archive pipeline for UTF-8 sorting, filters, namespaces, exclusions and embedded archive detection. Container names use an absolute normalized directory path with a trailing slash, matching native directory naming.
+
+Regression coverage exercises nested full-path includes, game-filter selection and exclusion, backup/cache omission, rereading edited files on a subsequent load, and missing-directory exceptions. Full Release suite: 13,485 tests passed. Clean sequential Release rebuild with warnings treated as errors: zero warnings/errors. Whitespace validation passed.
+
+Audit differences: managed directory reads eagerly copy every accepted file rather than native lazy entry reads, increasing memory use and causing unreadable unused files to fail loading. Reparse points are skipped to avoid recursive link cycles; native link behavior is platform-dependent. Inaccessible directories and oversized files fail explicitly rather than native logging/skipping. Native filenamecheck callbacks are not exposed. These limitations remain before full directory parity can be claimed.
+
+Remaining conversion work includes WHRES/7z script inputs, legacy filename codepages, general resource mounting, and ZScript compilation/execution.
+
+## 2026-10-11 - SSI script archive conversion
+
+Converted SSI version 1/2 parsing from src/common/filesystem/source/file_ssi.cpp. SSI has no magic: header detection validates version and length-prefixed, zero-padded metadata strings (32 bytes, optional version-2 12 bytes, and three 70-byte fields). Payloads begin after the 254/267-byte header and 121-byte records. Filename lengths clamp to 12 bytes; each entry also registers the native alias produced by swapping the final and third-final name bytes.
+
+Added explicit SSI script loading and structural detection for embedded SSI archives. Native uppercase case-sensitive .GRP substring detection is applied to both original names and aliases before normalization, allowing reversed .PRG names to expose embedded GRPs. SSI preserves directory order and bypasses PK3/PAK postprocessing. Negative counts/lengths, truncated directories, out-of-bounds payloads, and names shorter than three bytes are rejected explicitly; the last restriction avoids native out-of-bounds alias swapping on malformed names.
+
+Regression fixtures cover both SSI versions, alias include lookup, duplicate root registration, reversed-extension embedded GRP expansion, ZIP-embedded SSI detection, truncated payloads and invalid header padding. Initial test fixtures incorrectly assumed two-letter extension reversal; fixtures were corrected to the native three-byte swap. Full Release suite: 13,484 passing tests. Clean sequential Release rebuild with warnings treated as errors passed with zero warnings/errors. Whitespace validation passed.
+
+Remaining limits: strict UTF-8 names do not support legacy codepages. SSI reading serves script sources rather than general resource mounting. WHRES, 7z and directory-backed script loading remain to be assessed/converted; ZScript compilation/execution is still incomplete.
+
+## 2026-10-11 - MVL script archive conversion
+
+Converted Descent 2 MVL reading from src/common/filesystem/source/file_mvl.cpp. Managed parsing checks DMVL magic and the native 20-byte minimum, reads the little-endian entry count, locates payloads after the 8-byte header and 17-byte directory records, and preserves directory order. Each record contains a 13-byte name field (native uses only its first 12 bytes) and a 32-bit payload length; payloads follow contiguously.
+
+Added explicit MVL script loading and embedded MVL signature detection through the shared archive loader. Native OpenMvl does not invoke archive postprocessing, so managed MVL registration bypasses PK3/PAK filters and sorting. Directory-size and cumulative payload bounds use widened arithmetic before span construction; truncated or overflowing inputs produce InvalidDataException. Archive input bytes remain unchanged.
+
+Regression coverage: multiple roots in nonalphabetical directory order, short-name includes, normalized source names, direct and ZIP-embedded loading, 13th name-byte truncation, unchanged inputs, truncated payloads, oversized directory counts and uint.MaxValue entry sizes. All 13,482 Release tests passed. Clean sequential Release rebuild with warnings treated as errors passed with zero warnings/errors. Whitespace validation passed.
+
+Remaining limits: legacy filename codepages are unsupported; this reader serves script sources rather than general resource mounting. SSI, WHRES, 7z and directory-backed script loading remain to be assessed/converted, and ZScript compilation/execution remains incomplete.
+
+## 2026-10-11 - HOG script archive conversion
+
+Converted Descent HOG reading from src/common/filesystem/source/file_hog.cpp. The managed reader checks DHF magic and the native 20-byte minimum, scans interleaved 13-byte name / little-endian 32-bit length / payload records, preserves record order, and mirrors native truncation of names to 12 bytes. Trailing fragments shorter than the 13-byte name field are ignored as in native scanning.
+
+Added explicit HOG script loading and signature recognition for embedded HOG archives. HOG joins the existing sequential archive registration path; filters and embedded expansion inside HOG are bypassed because native OpenHog does not invoke PostProcessArchive. Payloads are copied without changing input bytes. Widened range checks reject payloads outside the archive, and incomplete four-byte length fields raise InvalidDataException rather than relying on native short-read behavior.
+
+Regression fixture checks out-of-alphabetical-order roots, short-name include resolution, ZIP-embedded HOG detection, tolerated 12-byte trailing fragments, truncated payloads/record headers, and uint.MaxValue payload lengths. Full Release suite: 13,480 passing tests. Sequential clean Release rebuild with warnings treated as errors: zero warnings/errors. Whitespace validation passed.
+
+Remaining limits: HOG filename decoding uses strict UTF-8 rather than legacy codepages. General non-script resource mounting remains separate; MVL, SSI, WHRES, 7z, and directory-backed script inputs remain to be assessed/converted. Script source loading still does not compile or execute ZScript declarations.
+
+## 2026-10-11 - RFF script archive conversion
+
+Converted Blood RFF reading from file_rff.cpp and METHOD_RFFCRYPT in files_decompress.cpp. The managed reader handles the 16-byte header and 48-byte directory records, decrypts directory bytes with the low byte of directory offset plus half the byte index, reconstructs name.extension, and decrypts only the first 256 payload bytes when flag 0x10 is set. Directory and payload ranges use widened bounds checks; caller archive bytes remain unchanged.
+
+Added explicit RFF script loading and RFF signature detection for embedded archives. RFF retains directory order and bypasses PK3/PAK postprocessing, matching native OpenRFF's ignored filter argument. The header check uses native CheckRFF's RFF 0x1a magic rather than the conflicting 0x18 comment. Version fields are ignored as in native code.
+
+Regression fixtures exercise encrypted and stored scripts longer than 256 bytes, exact decrypted text, normalized names, direct and ZIP-embedded loading, immutable inputs, truncated directories, and oversized entry counts. Full Release suite: 13,479 tests passed. The initial rebuild overlapped active tests and encountered file locks; a sequential rebuild after test completion passed with zero warnings/errors. Whitespace validation passed.
+
+Remaining limits: strict UTF-8 filename handling does not cover legacy codepages; numeric RFF resource IDs are not exposed by the script-source API. General resource/audio RFF mounting and ZScript compilation/execution remain outside this converted script reader.
+
+## 2026-10-11 - PAK script archive conversion
+
+Converted native PACK archive parsing to C#: 12-byte header, little-endian directory offset/length, 64-byte entries, NUL-terminated 56-byte names, and positioned payloads. Directory record counts retain native floor division. Explicit bounds validation rejects truncated directories and overflowing payload ranges.
+
+PAK script loading reuses full-path normalization, UTF-8 sorting, compatibility exclusions, blocked patterns, common-folder stripping, game filters, namespace handling, and embedded archive expansion. Shared signature detection now recognizes embedded PAK archives from ZIP or PAK containers, alongside WAD, ZIP, GRP, and raw lumps.
+
+Audit reference: src/common/filesystem/source/file_pak.cpp and the existing converted archive postprocessing helpers. Regression covers a real binary PAK, direct and ZIP-embedded root loading, truncated directories, and overflowing payload lengths. Full Release suite: 13,477 passing tests. Clean Release rebuild with warnings treated as errors: zero warnings/errors. Whitespace check passed.
+
+Remaining limits: strict UTF-8 names do not yet cover legacy filename codepages; PAK-specific sorting/filter/include combinations lack dedicated regression fixtures. Source loading still does not compile or execute ZScript declarations or automatically load them at startup. Conversion remains incomplete.
+
+## 2026-10-11 - GRP script archive conversion
+
+- Converted KenSilverman GRP headers, little-endian directory counts/sizes, twelve-byte NUL-terminated filenames and contiguous entry payloads. Added directory/payload bounds validation before registration.
+- GRP resources retain native directory order, normalized full names and global extension-stripped short names. Explicit GRP archives and signature-detected nested GRPs share root/include resolution and container semantics with existing formats.
+- Native evidence: file_grp.cpp CheckGRP and OpenGrp, filesystem.cpp full-name resource registration. GRP directories are not alphabetically reordered or passed through ZIP filters.
+- Two integration tests cover ordered script versions, short-name includes, normalized source identity, embedded GRP loading and truncated directory/payload rejection.
+- Verification: all 13,476 solution tests pass (Client 521); full Release rebuild with warnings as errors passes with zero warnings and errors; whitespace check passes.
+- Remaining scope: legacy GRP filename codepages, other native archive formats, full Unicode case folding and parser/compiler/linker remain unfinished. Managed GRP loading currently copies each validated entry payload.
+
+## 2026-10-11 - Byte-oriented full-path query matching
+
+- Converted full-name script catalog lookup keys to UTF-8 bytes with ASCII case folding, replacing StringComparer.OrdinalIgnoreCase. Archive entry normalization remains separate from query matching; query Unicode is neither composed nor lowercased.
+- Native evidence: filesystem.cpp CheckNumForFullName uses MakeHash over raw query bytes and strnicmp against stored names. The managed Unicode-aware comparer previously accepted non-ASCII case pairs that native byte hashing does not equate.
+- Two integration tests cover ASCII case-insensitive path lookup, rejection of uppercase accented query spelling against normalized lowercase entries and rejection of decomposed query text against composed entry names.
+- Verification: all 13,474 solution tests pass (Client 519); full Release rebuild with warnings as errors passes with zero warnings and errors; whitespace check passes.
+- Remaining scope: locale-sensitive non-ASCII byte comparison, full archive-entry Unicode case folding, native legacy encodings, extra archive formats and compilation/linking remain unfinished. This separates normalized resource names from native-style lookup queries.
+
+## 2026-10-11 - Embedded single-lump format fallback
+
+- Converted unknown embedded content to RawLump instead of assuming every non-WAD payload is ZIP. Signature-recognized WAD and ZIP resources retain their archive readers; other data uses native standalone basename/short-name registration.
+- Native evidence: resourcefile.cpp DoOpenResourceFile tries archive readers before CheckLump, which always succeeds; file_lump.cpp exposes one global resource with its basename. Managed ZIP detection also accepts empty ZIP signatures; recognized corrupt archives remain explicit errors rather than attempting native reader-failure fallback.
+- Two integration tests cover embedded text becoming a ZSCRIPT root and embedded raw content resolving includes across containers. Updated earlier unknown-binary rejection expectations to native raw fallback behavior.
+- Verification: all 13,472 solution tests pass (Client 517); full Release rebuild with warnings as errors passes with zero warnings and errors; whitespace check passes.
+- Remaining scope: native archive formats beyond WAD/ZIP, recognized-reader failure fallback, full Unicode case folding, parser/compiler/linker and automatic startup invocation remain unfinished.
+
+## 2026-10-11 - Standalone single-lump resource conversion
+
+- Added explicit RawLump archive format for standalone resource files. Native basename extraction retains extensions, filename normalization precedes resource registration and global short names remove the final extension using the shared eight-byte rules.
+- Raw files participate in full-name lookup, global short-name fallback, ordered ZSCRIPT root enumeration and shared container override protection. Data is decoded only when requested as script text, allowing unrelated binary files to remain resources.
+- Native evidence: file_lump.cpp OpenLump and CheckLump plus filesystem.cpp LumpRecord full-name/global short-name registration. Standalone files are not passed through ZIP game-filter preprocessing.
+- Two integration tests cover path/basename extraction, raw root versions, includes via both lookup forms, container order, exact-name overrides, core protection and unused invalid UTF-8 binary content.
+- Verification: all 13,470 solution tests pass (Client 515); full Release rebuild with warnings as errors passes with zero warnings and errors; whitespace check passes.
+- Remaining scope: automatic raw-lump fallback for unknown embedded formats, legacy resource encodings, full Unicode case folding and source compilation/linking remain unfinished. RawLump currently requires explicit format selection.
+
+## 2026-10-11 - Explicit nested archive embeddings
+
+- Converted caller-defined embedding lists across shared archive loader, PK3 adapter and client host. Exact case-insensitive names are matched after preprocessing, copied on entry and validated for null elements.
+- Embedded content now chooses WAD from IWAD/PWAD signatures and otherwise opens ZIP/PK3, allowing nested PK3 archives and further embedded WADs while preserving depth-first container insertion and parent-qualified identities. Entries marked embedded are unavailable as ordinary script files.
+- Native evidence: resourcefile.cpp CheckEmbedded checks lfi->embeddings after automatic WAD recognition; filesystem.cpp AddFile recursively opens embedded content through resource format detection. Managed explicit lists can be supplied independently of game filters.
+- Two integration tests cover nested PK3/WAD order, host forwarding, case-insensitive embedding names, post-filter names, blocked candidates and malformed nested input.
+- Verification: all 13,468 solution tests pass (Client 513); full Release rebuild with warnings as errors passes with zero warnings and errors; whitespace check passes.
+- Remaining scope: embedded formats other than WAD/ZIP, native fallback raw-lump archives, full Unicode case folding, parser/compiler/linker and automatic startup invocation remain unfinished. Nested ZIP decompression currently follows framework resource limits rather than native archive limits.
+
+## 2026-10-11 - Project-folder embedded WAD recognition
+
+- Converted native project-folder embedded WAD recognition: project.pk3 can contain project/child.wad as an embedded resource. Parent basenames use slash/backslash separation and last-extension removal, matching ExtractBaseName; comparisons are case-insensitive.
+- Embedded recognition follows folder stripping and game-filter selection. Other folders, deeper project subdirectories and names with an earlier .wad occurrence remain ordinary resources, matching native CheckEmbedded's first-occurrence test.
+- Native evidence: resourcefile.cpp IsFileInFolder, ExtractBaseName and CheckEmbedded, with filesystem.cpp AddFile container ordering retained from the prior conversion.
+- Added seven integration cases for archive path/case forms, exact embedded source identities, rejected folder/depth/suffix cases and a selected game filter exposing a project-folder WAD.
+- Verification: all 13,466 solution tests pass (Client 511); full Release rebuild with warnings as errors passes with zero warnings and errors; whitespace check passes.
+- Remaining scope: explicit embedding lists, nested formats other than WAD, full Unicode case folding, source compilation/linking and automatic startup integration remain unfinished.
+
+## 2026-10-11 - Root-level embedded WAD script loading
+
+- Converted root-level embedded WAD discovery and loading from PK3 archives after preprocessing. Embedded bytes are read as archives rather than script text; embedded entries are excluded from ordinary filename lookup.
+- Embedded containers load immediately after their parent in normalized archive order and before subsequent caller archives. Source identities include parent:child.wad:lump, and shared container indices preserve native override checks.
+- Native evidence: resourcefile.cpp CheckEmbedded recognizes a first .wad occurrence at filename end; filesystem.cpp AddFile appends embedded resources after parent records and recursively loads them with colon-qualified names.
+- Two integration tests cover parent/embedded/later root ordering and versions, container identities, core override protection and malformed embedded WAD rejection. Initial full run exposed short three-character filenames being mistaken for missing .wad suffixes; added a minimum-length guard and reran successfully.
+- Verification: all 13,459 solution tests pass (Client 504); full Release rebuild with warnings as errors passes with zero warnings and errors; whitespace check passes.
+- Remaining scope: native project-folder embedded WAD recognition, explicit embedding lists and other nested archive formats remain unfinished. Full Unicode case folding and declaration compilation/linking remain incomplete.
+
+## 2026-10-11 - Native wildcard backtracking and branch stopping
+
+- Converted wildcard-prefix alternatives by replacing endpoint-based matching with native ordered matching. Stars try zero-byte consumption first, then retry the complete remaining pattern after consuming each additional byte.
+- Alternative branches retain their first partial match; suffix failure advances to the next branch rather than retrying a longer match within the same branch. This fixes complex wildcard-branch behavior from the preceding partial conversion and removes the unsupported wildcard-prefix restriction.
+- Native evidence: wildcards.hpp match star handling and match_alt partial branch/suffix sequence. Escapes, byte sets, nesting and malformed groups retain existing behavior.
+- Added four integration cases for star/question prefixes and branch stopping: (a*|x)c does not match abc, while (a*|ab)c does. Initial verification found an escaped-character source generation error; fixed it before rerunning the full suite.
+- Verification: all 13,457 solution tests pass (Client 502); Release rebuild with warnings as errors passes with zero warnings and errors; whitespace check passes.
+- Remaining scope: recursive wildcard matching can be expensive for adversarial patterns, consistent with the native backtracking approach. Embedded archives, full Unicode case folding and source compilation/linking remain unfinished.
+
+## 2026-10-11 - Grouped wildcard alternatives with fixed prefixes
+
+- Converted ordered wildcard alternative matching for groups with fixed literal/set prefixes, including nested and empty branches. Branches match partially before their suffix is tested; a failed suffix advances to the next branch.
+- Native evidence: wildcards.hpp match_alt first matches a branch with partial=true, then matches the remainder from its consumed position. Group scanning skips escaped bytes and character sets.
+- Added four integration cases for first/second branch selection, nested groups and empty-branch suffix failure. Existing unsupported-case coverage now targets alternatives after wildcard prefixes, which still require native prefix backtracking conversion.
+- Verification: all 13,453 solution tests pass (Client 498); Release rebuild with warnings as errors passes with zero warnings and errors; whitespace check passes.
+- Scope limitations: alternatives after wildcard prefixes explicitly remain unsupported. Partial matching uses the earliest accepted endpoint; complex wildcard branches need further native comparison. Embedded archives, full Unicode case folding and compilation/linking remain unfinished.
+
+## 2026-10-11 - Wildcard alternative recognition boundaries
+
+- Converted native recognition of balanced alternative groups before rejecting currently unsupported branch matching. Unmatched opening parentheses and ordinary closing parentheses are now literal bytes instead of unconditional errors.
+- Group detection tracks nested parentheses and skips escaped bytes and valid character sets, following wildcards.hpp is_alt. Parentheses inside sets or escaped closing parentheses do not close an alternative.
+- Added four integration cases for literal unmatched parentheses, escaped closes and closes inside sets. Initial suite run exposed an incorrectly written set fixture; corrected it to a valid literal-close member case and reran the full suite successfully.
+- Verification: all 13,449 solution tests pass (Client 494); full Release rebuild with warnings as errors passes with zero warnings and errors; whitespace check passes.
+- Remaining scope: actual grouped alternative matching remains explicitly unsupported. Native match_alt uses partial branch matching whose stopping behavior must be preserved; simple pattern expansion would not establish parity. Embedded archives, Unicode case folding and compilation/linking remain unfinished.
+
+## 2026-10-11 - Wildcard terminal escapes and byte edge cases
+
+- Converted native terminal-backslash semantics: a trailing escape consumes no input instead of raising a managed argument exception. Native wildcards.hpp match checks pattern EOF before its escape branch; matching still requires the filename to be fully consumed.
+- Added seven integration cases covering matching/nonmatching terminal escapes, unclosed sets as literals, closing brackets as first set members, escaped opening brackets and one-versus-two question marks over a two-byte UTF-8 character.
+- Corrected the earlier trailing-escape error expectation. Unsupported alternatives remain explicit errors; no broad exception handling was added.
+- Verification: all 13,445 solution tests pass (Client 490); full Release rebuild with warnings as errors passes with zero warnings and errors; whitespace check passes.
+- Remaining scope: wildcard alternatives, embedded archives, full Unicode case folding and declaration compilation/linking remain unfinished.
+
+## 2026-10-11 - Native wildcard character sets
+
+- Converted wildcard byte sets and leading ! negation in caller-defined archive exclusions. Sets consume exactly one UTF-8 byte; hyphens and backslashes are literal members, matching native behavior rather than regex range/escape rules.
+- Native audit: wildcards.hpp is_set, set_end and match_set require a first member before the closing bracket and compare each member directly. Invalid/unclosed sets fall back to literal pattern characters. Alternatives remain explicitly unsupported.
+- Added five integration cases for inclusive/negated membership and literal hyphen semantics; updated the previous unsupported-syntax assertion to target alternatives.
+- Verification: all 13,438 solution tests pass (Client 483); complete Release rebuild with warnings as errors passes with zero warnings and errors; whitespace check passes.
+- Remaining scope: wildcard alternatives, trailing-escape native parity, embedded archives, full Unicode case folding and source compilation/linking remain unfinished.
+
+## 2026-10-11 - Configurable basic archive exclusion patterns
+
+- Converted basic native wildcard semantics for caller-supplied PK3 exclusions: case-sensitive full-name matching, * spanning arbitrary bytes including separators, ? matching one UTF-8 byte and backslash escaping. Matching entries are hidden before wrapper detection and game selection.
+- Added optional blockedPatterns to shared loader, PK3 adapter and client host. Patterns are copied and validated before archive loading; defaults remain unchanged. Custom patterns can be applied independently of game filter activation.
+- Native evidence: resourcefile.cpp blockednames loop and wildcards.hpp basic card definitions. Native extended sets and alternatives remain unconverted; unsupported syntax and trailing escapes raise explicit exceptions rather than silently mis-matching.
+- Added three integration cases for star/question/exact patterns, case sensitivity, unsupported extended syntax and malformed escapes.
+- Verification: all 13,433 solution tests pass (Client 478); full Release rebuild with warnings as errors passes with zero warnings and errors; whitespace check passes.
+- Remaining scope: extended wildcard sets/alternatives, embedded archives, full Unicode case folding and compilation/linking. This is a partial wildcard conversion with explicit unsupported cases.
+
+## 2026-10-11 - Native compatibility archive exclusions
+
+- Converted zandronum.pk3 core override exclusions in the shared PK3 script catalog, independent of game filter activation. Archive leaf detection recognizes slash, backslash and colon separators with case-insensitive basename comparison.
+- Matching mapinfo/ and zscript/ prefixes and the native exact blocked name list lose lookup names before wrapper-folder detection and filter selection. Other archive names and unlisted extensions remain unaffected.
+- Native evidence: resourcefile.cpp IsPathSep, IsArchiveNamed, IsZandronumCompatCoreOverride and PostProcessArchive's unconditional compatibility branch.
+- Added six integration cases for archive-name forms, filter-independent root exclusions, exact basename matching, unlisted root extensions and missing full-path include diagnostics.
+- Verification: all 13,430 solution tests pass (Client 475); full Release rebuild with warnings as errors passes with zero warnings and errors; whitespace check passes.
+- Remaining scope: caller-defined wildcard rules, embedded archives, full Unicode case folding and source compilation/linking remain unfinished. This is native archive compatibility parity, not a complete startup pipeline.
+
+## 2026-10-11 - Native default blocked-file rules
+
+- Converted the default archive blocked-name patterns from d_main.cpp GetReserved: *.bat, *.exe, __macosx/*, */__macosx/* and *~. Matching normalized entries lose their lookup names before common-folder stripping and game selection.
+- Fixed wrapper detection being obstructed by executables, backup files and MacOS metadata. Blocked entries cannot become roots or include candidates, including those inside selected game filters. Null filter mode retains existing unfiltered behavior.
+- Native audit: resourcefile.cpp PostProcessArchive blockednames handling precedes directory sorting and FindCommonFolder. Empty-name entries are skipped by folder detection; their relative sort positions do not affect remaining visible entries.
+- Added seven integration cases covering each default pattern, uppercase extensions, executable short-name roots, filtered include rejection and wrapper detection after exclusions.
+- Verification: all 13,424 solution tests pass (Client 469); full Release rebuild with warnings as errors passes with zero warnings and errors; whitespace check passes.
+- Remaining scope: caller-defined wildcard patterns, archive-specific compatibility exclusions, embedded archives, full Unicode case folding and compilation/linking remain unfinished. Default blocking is converted; arbitrary wildcard matching is not introduced.
+
+## 2026-10-11 - PK3 common-folder stripping
+
+- Converted native common wrapper-folder detection before game-type filtering. Filter-enabled archives can expose nested ZSCRIPT roots and relative includes after stripping the common prefix; null filter mode retains prior unfiltered names.
+- Preserved native deep-prefix-to-top-folder fallback, required definition-prefix/suffix detection, reserved folder entries, root filter/ exclusion and refusal to strip unrelated directory trees.
+- Native evidence: resourcefile.cpp FindCommonFolder and PostProcessArchive preprocessing order; d_main.cpp GetReserved supplies the converted reservedFolders and requiredPrefixes lists.
+- Added five integration cases covering wrapped roots/includes, filtering after stripping, deep-prefix fallback and reserved/root-filter/unshared-folder protection.
+- Verification: all 13,417 solution tests pass (Client 462); full Release rebuild with warnings as errors passes with zero warnings and errors; whitespace check passes.
+- Remaining scope: blocked filename patterns, archive-specific compatibility rules, embedded archives, full Unicode case folding, parser/compiler/linker and automatic startup remain unfinished. Blocking patterns must precede common-folder detection for full preprocessing parity.
+
+## 2026-10-11 - PK3 game-type filter conversion
+
+- Converted optional game-type filtering in the shared archive loader, PK3 adapter and client host. Matching filter/<game>/ entries move after ordinary entries and lose their filter prefix; dotted game names apply general prefixes before specific ones. Previously selected entries are excluded from subsequent selection.
+- Unmatched filter entries are hidden when filtering is enabled. Null preserves existing unfiltered mode; an empty filter list enables hiding without selecting a game. Caller filter strings are copied and null elements rejected.
+- Native evidence: resourcefile.cpp PostProcessArchive gameTypeFilter loop, FilterLumps and JunkLeftoverFilters. Preserved move-to-end ordering, which determines root enumeration and override precedence.
+- Two integration tests cover general/specific roots, later override selection, unmatched filters, null versus empty behavior and forwarding through host/PK3 entry points.
+- Verification: all 13,412 solution tests pass (Client 457); full Release rebuild with warnings as errors passes with zero warnings and errors; whitespace check passes.
+- Remaining scope: common-folder stripping, blocked filename patterns, archive-specific compatibility rules, embedded archives, full Unicode case folding and compilation/linking remain unfinished. This implements game-type filter selection, not the entire native archive preprocessing pipeline.
+
+## 2026-10-11 - PK3 namespace-aware encoded full-name lookup
+
+- Converted native PK3 namespace classification for encoded-name rewriting. Recognized flats/textures/hires/sprites/voxels/colormaps/acs/voices/patches/graphics/sounds/music paths now apply the same encoded resource-name rules as global entries. Arbitrary hidden directories keep original names.
+- Fixed the previous adapter's overly narrow global-only rewrite condition. Namespace entries remain available by full path, excluded from global short-name fallback and ZSCRIPT root enumeration.
+- Native evidence: filesystem.cpp LumpRecord directory namespace mapping immediately precedes its ns_hidden exclusion and encoded-ID rewrite branch. Full-name lookup does not require global namespace, whereas FindLump and include short-name fallback do.
+- Added thirteen integration cases covering every native directory prefix, encoded full-path include lookup, exclusion of nested ZSCRIPT roots and exclusion of namespaced resources from global fallback.
+- Verification: all 13,410 solution tests pass (Client 455); full Release rebuild with warnings as errors passes with zero warnings and errors; whitespace check passes.
+- Remaining scope: general namespace/resource-ID metadata APIs, full Unicode case folding, archive filters, embedded archives and declaration compilation/linking remain unfinished.
+
+## 2026-10-11 - Encoded resource-name effects on PK3 scripts
+
+- Converted native encoded-ID name removal for global PK3 entries before short-name registration and script root recognition. Catalog sorting still uses original normalized entry names, matching native preprocessing order.
+- Native audit found unusual literal behavior in filesystem.cpp LumpRecord: find_last_of(".{") identifies the last individual dot or brace, then numeric scanning begins two bytes later. Preserved those offsets instead of silently correcting native code. For zscript.{12}, the exposed name is zscript.; names with trailing extensions remain unchanged in the checked cases.
+- Hidden script-directory entries bypass removal as native ns_hidden entries do. Actual resource-ID metadata is not exposed by this source-only catalog; known graphics/audio namespace metadata remains outside this change.
+- Two integration tests cover encoded root discovery, rewritten full-name includes, extension-bearing names and hidden-directory names.
+- Verification: all 13,397 solution tests pass (Client 442); full Release rebuild with warnings as errors passes with zero warnings and errors; whitespace check passes.
+- Remaining scope: numeric resource-ID APIs, special PK3 namespace metadata, full Unicode case folding, archive filters, embedded archives and compilation/linking remain unfinished.
+
+## 2026-10-11 - Byte-sized PK3 short-name lookup
+
+- Converted shared catalog short-name keys to eight UTF-8 bytes, ASCII uppercase and zero padding, preserving truncation even across multibyte characters. Fallback eligibility now uses UTF-8 byte count rather than managed character count.
+- Full-path lookup still precedes fallback and accepts longer names. WAD candidates use the same short-name keys; root recognition uses the same eight-byte representation.
+- Native evidence: filesystem.cpp UpperCopy copies and uppercases at most eight bytes; CheckNumForFullName gates fallback with strlen(name) <= 8; PK3 base names are extension-stripped before UpperCopy.
+- Two integration tests cover a four-accented-character eight-byte prefix resolving a longer filename, rejection of a nine-byte fallback request and successful exact full-name lookup for that same nine-byte name.
+- Verification: all 13,395 solution tests pass (Client 440); full Release rebuild with warnings as errors passes with zero warnings and errors; whitespace check passes.
+- Remaining scope: native locale-sensitive non-ASCII byte toupper and legacy WAD encoding are not modeled. Full Unicode case folding, archive filters, embedded archives and declaration compilation/linking remain unfinished.
+
+## 2026-10-11 - PK3 Unicode composition and UTF-8 entry ordering
+
+- Converted canonical composition of PK3 entry names and native UTF-8 byte sorting in the shared script archive loader. Lowercase names are composed to NFC and path separators normalized once before catalog construction.
+- Native evidence: unicode.cpp tolower_normalize uses UTF8PROC_COMPOSE with CASEFOLD; resourcefile.cpp NormalizeFileName fixes separators and entrycmp compares normalized UTF-8 using strcmp. Managed UTF-16 ordinal sorting previously reversed private-use BMP versus supplementary characters.
+- Two integration tests verify the root-order difference and decomposed accented filenames with backslash separators resolving through their composed full paths.
+- Verification: all 13,393 solution tests pass (Client 438); full Release rebuild with warnings as errors passes with zero warnings and errors; whitespace check passes.
+- Scope limitation: full Unicode case folding remains unfinished; ToLowerInvariant does not implement utf8proc's multi-character case folds. Legacy filename encoding, Unicode-version differences, byte-sized short names, archive filters, embedded archives and compilation/linking remain incomplete. This closes composition and ordering gaps without claiming full filename parity.
+
+## 2026-10-11 - Native version keyword and whitespace scanning
+
+- Converted version-header trivia to native byte-range control whitespace through ASCII space. Leading nonbreaking/em spaces no longer expose a version directive; unsupported Unicode separators following version are not skipped.
+- Converted keyword identifier scanning to native ASCII letters, digits and underscore. Non-ASCII suffixes now terminate the native version token and produce invalid version arguments instead of silently falling back to version 2.3.
+- Native evidence: sc_man_scanner.re WSP, L and D definitions and keyword recognition; zcc_parser.cpp initial TK_Version check followed by MustGetString. Existing underscore-suffixed identifiers still use the legacy baseline.
+- Added six test cases for leading Unicode whitespace, Unicode argument separators/suffixes, control whitespace and ordinary identifier suffixes.
+- Verification: all 13,391 solution tests pass (Scripting 865); full Release rebuild with warnings as errors passes with zero warnings and errors; whitespace check passes.
+- Remaining scope: full lexical/parser validation, declaration compilation/linking, automatic startup invocation and resource filter/embedded archive behavior remain unfinished.
+
+## 2026-10-11 - Native include token and whitespace rules
+
+- Converted native include keyword prefix recognition: #included, #include1 and #include_suffix now expose an invalid include argument rather than being silently ignored by the focused scanner. Removed the incorrect managed identifier-boundary restriction.
+- Converted native scanner whitespace to byte-range control characters through ASCII space, replacing char.IsWhiteSpace. Nonbreaking space and em space no longer separate the include keyword from its required string constant; NUL, tab, vertical tab, form feed and CR remain accepted trivia.
+- Native evidence: src/common/engine/sc_man_scanner.re WSP definition and '#include' token rule, plus zcc-parse.lemon include_def requiring a string_constant.
+- Added five test cases covering invalid suffixes, unsupported Unicode separators, native control separators and adjacent quoted include path fragments. Corrected the earlier #included test expectation; invalid scans leave queues unchanged.
+- Verification: all 13,385 solution tests pass (Scripting 859); complete Release rebuild with warnings as errors passes with zero warnings and errors; whitespace check passes.
+- Remaining scope: full lexical/parser validation and code compilation/linking are unfinished. The focused scanner does not validate arbitrary declarations or recover native parser diagnostics.
+
+## 2026-10-11 - Native name-constant lexical rules
+
+- Converted the distinct single-quoted name-constant rules into the managed include scanner. Backslashes do not escape a name's terminating apostrophe, and LF inside a name constant is rejected. Double-quoted string escaping remains unchanged.
+- Native evidence: src/common/engine/sc_man_scanner.re lines 234-238: string constants allow backslash-quote pairs, whereas name constants exclude apostrophes and LF without an escape alternative.
+- Fixed premature consumption of subsequent include text when a valid name ends with a backslash. Added four test cases for correct quote termination, quoted directive suppression, LF/CRLF rejection and unterminated names; malformed sources leave include queues unchanged.
+- Verification: all 13,380 solution tests pass (Scripting 854); complete Release rebuild with warnings as errors passes with zero warnings and errors; whitespace check passes.
+- Remaining scope: complete native lexer/parser behavior, declaration compilation/linking, automatic startup invocation, archive filters and embedded archives. Include scanning is still a focused source-loading stage.
+
+## 2026-10-11 - Native script scanner input preparation
+
+- Converted FScanner::PrepareScript buffer preparation into shared VmScriptText.Prepare: remove a leading UTF-8 BOM only when content follows, ensure a terminal newline, and replace a final NUL with newline rather than appending after it.
+- Wired preparation into both managed version reading and include extraction without modifying retained archive source text. This fixes terminal-NUL unquoted versions and EOF region-comment handling in version detection.
+- Native audit evidence: src/common/engine/sc_man.cpp PrepareScript lines 211-234; sc_man_scanner.re region and line-comment patterns require a newline. No newline normalization is introduced inside source content.
+- Added eight test cases for empty input, existing CRLF, BOM-only versus BOM-prefixed content, terminal NUL, EOF regions and preserved include line numbers.
+- Verification: all 13,376 solution tests pass (Scripting 850); full Release rebuild with warnings as errors passes with zero warnings and errors; whitespace check passes.
+- Remaining scope: complete lexical/parser validation, compilation/linking, automatic startup invocation, archive filters, embedded archives and Unicode resource parity. The focused include scanner still does not validate declarations or generate executable code.
+
+## 2026-10-11 - Client integration for converted script source loading
+
+- Added ClientHost.LoadVmScriptArchives and readonly VmScriptSources. Client callers can load an ordered mixed WAD/PK3 resource set and retain root versions, source identities and resolved include text.
+- Complete loading precedes publication: missing includes, archive failures and unsupported versions propagate while preserving the prior source snapshot. Empty loads clear the current snapshot; disposal releases host references and rejects new loads. Simulation restore keeps source metadata intact.
+- Two integration tests cover mixed sources, readonly results, independence from input archive bytes, successful replacement, include/version failure preservation, simulation restore and disposal.
+- Native audit boundary: src/scripting/thingdef.cpp ParseScripts enumerates roots, parses and compiles each. This client entry integrates the converted source-loading stage only; it does not parse declarations, compile sources or link them into the VM. Atomic replacement is a managed host lifecycle choice.
+- Verification: all 13,368 solution tests pass (Client 436); complete Release rebuild with warnings as errors passes with zero warnings and errors; whitespace check passes.
+- Remaining scope: automatic startup invocation, parser/compiler/linker integration, archive filters, embedded archives, Unicode parity and native resource diagnostics. Script source loading is callable through the host, but loaded text is not yet executable code.
+
+## 2026-10-11 - WAD namespace visibility for script resources
+
+- Converted native WAD marker-block visibility for script catalog construction in both single-root and shared mixed-archive loaders. Non-global roots and short-name include candidates are excluded before overrides are registered.
+- Shared VmWadScriptVisibility handles S/F/C/A/TX/V/HI/VX blocks, single-letter doubled markers, consecutive duplicate markers, unmatched ends, starts extending to EOF and the native under-eight-byte sprite exception. Skin WADs containing S_SKIN-prefixed entries hide all script resources.
+- Native audit: file_wad.cpp Open namespace setup order, IsMarker, SetNamespace and SkinHack; filesystem.cpp FindLump and CheckNumForName restrict script root enumeration and include short-name fallback to global entries. F_END-only potential-flat flags do not change namespace visibility.
+- Added twelve test cases covering each namespace, doubled sprite markers, single-root/all-root consistency, hidden later include candidates, malformed blocks, short sprite exceptions and skin archives.
+- Verification: all 13,366 solution tests pass (Client 434); complete Release rebuild with warnings as errors passes with zero warnings and errors; whitespace check passes.
+- Scope: this converts script visibility only. Namespace diagnostics, flat texture flags, skin map warnings, general resource namespace APIs, game filters, embedded archives, Unicode parity, compilation/linking and startup integration remain unfinished.
+
+## 2026-10-11 - Correct WAD short-name-only resource lookup
+
+- Audit found and fixed a mistake in the prior shared catalog: WAD entries were registered as full names. Native filesystem.cpp LumpRecord (RESFF_SHORTNAME branch) sets LongName to empty; WAD includes resolve only through CheckNumForFullName's global short-name fallback.
+- Removed WAD full-name registrations. A PK3 exact full-name match now wins over a later WAD short-name match; without an exact match, later global short names win across formats. Single-root WAD lookup now rejects slash/dot-containing and over-eight-character fallback names after stripping one leading slash.
+- Corrected two prior regression expectations and added a dotted-WAD-name rejection test. Core override tests now distinguish PK3 exact-name protection from extension-stripped fallback that a later WAD can override.
+- Initial full-suite run exposed the stale core-override expectation; corrected the fixture against native lookup rules, then all 13,354 solution tests passed (Client 422). Full Release rebuild with warnings as errors passes with zero warnings and errors.
+- This entry supersedes the previous entry's claim that WAD resources participate in exact full-name matching. Namespace marker conversion remains pending after this correctness repair; archive filters, compilation/linking and startup integration remain incomplete.
+
+## 2026-10-11 - Shared WAD/PK3 script resource catalog
+
+- Converted mixed archive script source loading through VmArchiveScriptLoader.LoadAll with explicit archive formats and a single ordered container index space. Includes can cross WAD and PK3 boundaries while preserving root versions, source identities and core container protection.
+- WAD and PK3 LoadAll entry points now delegate to the shared catalog, eliminating duplicate PK3 implementation. The single-root WAD entry point remains compatible.
+- Audited lookup against native filesystem.cpp CheckNumForFullName: full-name matches take precedence over global short-name fallback even when a later archive offers an extension-stripped short-name match. Later exact matches override earlier exact matches.
+- Added three integration tests for cross-format nested includes, exact-name versus fallback precedence, later exact overrides, core override rejection in both format directions and invalid format rejection.
+- Verification: all 13,353 solution tests pass (Client 421); full Release rebuild with warnings as errors passes with zero warnings and errors.
+- Remaining scope: WAD namespace markers, game filters/common-folder stripping, embedded archives, encoded resource IDs, Unicode normalization/order parity, legacy ZIP compression, full compilation/linking and startup integration. Mixed ordinary source loading is implemented; native filesystem parity is not complete.
+
+## 2026-10-11 - Ordinary PK3 ZScript source loading
+
+- Added VmPk3ScriptLoader.LoadAll for ordered in-memory ZIP/PK3 archives. Sources are read through ZipArchive without extracting files; archive handles and input streams are disposed on success and failure.
+- Converted alphabetical root enumeration, global eight-character extension-stripped root names, full-path case-insensitive includes, one-leading-slash lookup, global short-name fallback, later archive overrides, independent root include sessions and container-based core override protection. Only referenced sources are decoded as strict UTF-8.
+- Native evidence: resourcefile.cpp NormalizeFileName and PostProcessArchive (filename normalization and sorting); filesystem.cpp LumpRecord name/namespace mapping, CheckNumForFullName and FindLump; zcc_parser.cpp include lookup and core container check.
+- Three integration tests cover compressed archives, nested relative includes, case-insensitive paths, root ordering, short-name fallback, hidden nested roots, missing paths, malformed archives and core overrides.
+- Verification: all 13,350 solution tests pass (Client 418); complete Release rebuild with warnings as errors passes with zero warnings and errors.
+- Remaining scope: mixed WAD/PK3 catalogs, game filters/common-folder stripping, embedded archives, encoded resource IDs, Unicode normalization/UTF-8 byte ordering parity and native legacy compression formats. Full compilation/linking and startup integration remain unfinished. This is an ordinary unfiltered PK3 source adapter, not a complete native filesystem replacement.
+
+## 2026-10-11 - Script resource leading-slash lookup parity
+
+- Converted native full-name lookup's single leading-slash removal in the managed WAD script catalog, including explicit root lookup and include resolution.
+- Native evidence: src/common/filesystem/source/filesystem.cpp, CheckNumForFullName (line 560), removes exactly one slash before case-insensitive matching; src/common/scripting/frontend/zcc_parser.cpp resolves includes through this lookup and then checks the source container.
+- Added integration coverage for case-insensitive slash-prefixed includes, slash-prefixed root selection, doubled-slash missing-resource diagnostics, and core override rejection through LoadAll. Diagnostic paths retain their original spelling and container identities are preserved.
+- Verification: all 13,347 solution tests pass (Client 415); full Release rebuild with warnings as errors passes with zero warnings and errors.
+- Remaining scope: PK3 resources, native namespace lookup, full parser/compiler and linking remain unfinished. This change closes a WAD lookup behavior gap; it does not complete general resource loading.
+
+## 2026-10-11 - All WAD script roots in load order
+
+Converted ZSCRIPT enumeration from src/scripting/thingdef.cpp:414-417 to VmWadScriptLoader.LoadAll. The adapter preserves each root's original directory entry, container identity, version, and include session rather than resolving every root to the final override. Roots traverse archive/directory order, including duplicates within one archive. Includes continue using the shared last-resource lookup catalog. Empty root sets return an empty read-only result. Single selected-root loading remains available and shares the catalog/read implementation.
+
+Audit: two new integration tests verify multiple archives, repeated roots in one WAD, independent versions/container identities, immutable result collections, compatibility of selected-root loading, independent repeated includes, and empty archive/root collections. All 13,345 Release solution tests pass (842 scripting, 413 client). Full Release rebuild with warnings as errors passes with zero warnings/errors; whitespace validation passes.
+
+Remaining scope: PK3 full-path resources/namespaces, full script compilation and namespace/symbol linking, startup integration, native ABI, typed frame lifecycle, named native/variadic binding, printf/error buffers, console/debugger events, and JIT. LoadAll enumerates source sets; it does not execute the native compile/link stages.
+
+## 2026-10-11 - WAD script source adapter
+
+Connected the converted include source loader to existing WadArchiveReader via HCDE.Client.VmWadScriptLoader. Ordered named WAD resources form a case-insensitive catalog; later entries/archives replace earlier lookup results. Selected script lumps decode as strict UTF-8 and carry archive-qualified source names and original container indices. The default root is ZSCRIPT; root version, nested discovery, missing diagnostics, and core-override checks reuse the scripting implementation. Binary non-script lumps are not decoded. Invalid WAD directory/data and missing roots surface explicit exceptions.
+
+Audit: two integration tests construct actual WAD byte streams and verify case-insensitive includes, later resource precedence, source text/version/container identity, core override rejection, missing include diagnostics, missing roots, and malformed WAD rejection. All 13,343 Release solution tests pass (842 scripting, 411 client). Full Release rebuild with warnings as errors passes with zero warnings/errors; whitespace validation passes.
+
+Limits: WAD names are limited to eight characters and do not provide PK3 directory paths. This adapter loads one selected root using the current lookup catalog; full native per-container root enumeration/namespaces and PK3 lookup are unconverted. Strict UTF-8 rejects malformed source bytes instead of silently replacing them. Source compilation, native ABI, typed frame lifecycle, named native/variadic binding, printf/error buffers, console/debugger events, and JIT remain open.
+
+## 2026-10-11 - Accumulated missing include diagnostics
+
+Closed the immediate-failure gap in source loading against src/common/scripting/frontend/zcc_parser.cpp:483-486 and 512-515. Missing includes now record VmScriptIncludeError entries and traversal continues through other discovered sources. At completion VmScriptIncludeException reports the native error-count/root summary and a copied read-only diagnostic list with paths and first source locations. Duplicate missing paths remain suppressed by the shared queue. Core override and resolver/validation failures still terminate immediately and are not reclassified as missing includes.
+
+Audit: two new regression tests verify accumulated root/nested missing diagnostics in discovery order, retained first-reference locations, no duplicate reports, immutable error lists, continued resolution after missing files, and immediate termination on a subsequent fatal core override. Existing missing-source assertion now checks the structured exception. All 13,341 Release solution tests pass (842 scripting). Full Release rebuild with warnings as errors passes with zero warnings/errors; whitespace validation passes.
+
+Remaining scope: archive adapter, full parser diagnostics and source compilation, include grammar/version integration, named native/variadic binding, native ABI, typed frame lifecycle, printf/error buffers, console/debugger events, and JIT. Error accumulation covers missing include resources; it is not a full compiler diagnostic framework.
+
+## 2026-10-11 - Include source loading pass
+
+Converted the include lookup/traversal and core-override guard from src/common/scripting/frontend/zcc_parser.cpp:480-500 into VmScriptSourceLoader.Load. A caller-provided full-path resolver supplies immutable source text/name/container records. The pass discovers root and nested includes through the converted queue, retains discovery order and first-reference diagnostics, and returns a read-only source set with the root compatibility version. Container-zero roots reject nonzero-container include replacements. Resolver exceptions propagate; missing resources produce an explicit source-line diagnostic. All state belongs to one load operation.
+
+Audit: three new tests cover nested traversal/cycle suppression/order, inherited root version, read-only results, missing include source locations, allowed/core override resource cases, failure propagation, repeated-session isolation, invalid containers, and unsupported root versions. All 13,339 Release solution tests pass (840 scripting). Full Release rebuild with warnings as errors passes with zero warnings/errors; whitespace validation passes.
+
+Limits: native missing-include errors accumulate while this managed pass fails immediately. Native resource lookup remains injected because the existing WAD reader does not expose full-name/multi-container script lookup. Included declarations are discovered, not parsed or compiled. Full compiler/include grammar validation, archive adapter, named native/variadic binding, native ABI, typed frame lifecycle, printf/error buffers, console/debugger events, and JIT remain open.
+
+## 2026-10-11 - Source include extraction and queue integration
+
+Converted the include_def/string_constant source slice from src/common/scripting/frontend/zcc-parse.lemon:195 and 1958-1974. VmScriptIncludes.Extract locates global #include directives, concatenates adjacent quoted constants, records first-string source lines, and reuses archive-relative resolution. Comments, quoted strings/name constants, and region lines are skipped. Native token string contents are retained without inventing escape decoding. VmScriptIncludeQueue.AddSource extracts the full source before registering, so malformed source does not partially modify the queue.
+
+Audit: seven new cases cover adjacent string concatenation, source lines, comments/quoted fake directives, directive token boundaries, missing/unterminated strings, nonglobal includes, malformed trailing comments, relative queue integration, and duplicate suppression. All 13,336 Release solution tests pass (837 scripting). Full Release rebuild with warnings as errors passes with zero warnings/errors; whitespace validation passes.
+
+Remaining scope: full language tokenization/grammar validation, archive lookup and core override checks, compiler integration, inherited include parse-version behavior, named native/variadic binding, native ABI, typed frame lifecycle, printf/error buffers, console/debugger events, and JIT. This is an include-discovery scanner; it does not validate or compile other script declarations.
+
+## 2026-10-11 - Script include discovery queue
+
+Converted AddInclude deduplication and discovery-order traversal from src/common/scripting/frontend/zcc_parser.cpp:89-100 and 480-500 to VmScriptIncludeQueue. Registration reuses converted archive-relative path resolution, records the first source name/line, and deduplicates resolved paths with ordinal case-sensitive comparison matching FString equality. Includes discovered while draining append after already pending entries. Processed paths remain registered to suppress cycles. Clear resets paths, locations, and traversal position for a new compilation. Queue state is instance-owned instead of native globals.
+
+Audit: three new regression tests cover resolved alias deduplication, case distinctions, first location retention, dynamic discovery ordering, cyclic suppression, clearing, and invalid input without partial registration. All 13,329 Release solution tests pass (830 scripting). Full Release rebuild with warnings as errors passes with zero warnings/errors; whitespace validation passes.
+
+Remaining scope: source include extraction, archive lookup/core override checks, compiler integration, full version/scanner behavior, named native/variadic binding, native ABI, typed frame lifecycle, printf/error buffers, console/debugger events, and JIT. This queue exposes registration/consumption primitives; no source loader or compiler is claimed complete.
+
+## 2026-10-11 - Archive-relative script include paths
+
+Converted ResolveIncludePath from src/common/scripting/frontend/zcc_parser.cpp:38-86 to VmScriptIncludes.ResolvePath. Resolves only initial ./ or ../ markers against the archive path after the last colon, strips one leading ./, and consumes leading parent markers. Preserves native top-level behavior, original-path fallback when ascent exceeds root, leading slash when nested includes reach root, and literal embedded parent components/backslashes. No filesystem path normalization is introduced.
+
+Audit: twelve regression cases cover nested/current/parent/root/excess ascent, top-level archive and folder sources, source names without archive separators, unchanged absolute include names, internal parent markers, backslashes, and null input validation. All 13,326 Release solution tests pass (827 scripting). Full Release rebuild with warnings as errors passes with zero warnings/errors; whitespace validation passes.
+
+Remaining scope: source include extraction, native include queue deduplication/traversal, archive lookup/core-override checks, compiler integration, full version/scanner behavior, named native/variadic binding, native ABI, typed frame lifecycle, printf/error buffers, console/debugger events, and JIT. This converts archive path resolution only; it does not load or compile included sources.
+
+## 2026-10-11 - Native version numeric component rules
+
+Converted additional strtoull/strtoll header behavior from src/common/scripting/frontend/zcc_parser.cpp:448-463. VmScriptVersion now accepts ASCII leading whitespace, explicit plus signs, negative zero, and empty decimal components where native conversion leaves the delimiter unchanged and yields zero. It rejects trailing text/whitespace, sign-only components, ordinary negative values, and ushort saturation without numeric overflow. Audit verified VersionInfo fields in sc_man.h:34: major/minor are uint16 and revision is uint32. Revisions above int16 max wrap through the native cast; these are explicitly rejected because their uint32 results cannot fit System.Version's signed components.
+
+Verification: eleven new cases cover accepted signs/whitespace/empty components and rejected negatives, trailing whitespace, huge values, and wrapped revisions. All 13,314 Release solution tests pass (815 scripting). Full Release rebuild with warnings as errors passes with zero warnings/errors; whitespace validation passes.
+
+Remaining limits: obscure negative unsigned-major wrap cases, wrapped revision preservation, full scanner/include/compiler integration, named native/variadic binding, native ABI, typed frame lifecycle, printf/error buffers, console/debugger events, and JIT. Wrapped revisions fail explicitly rather than silently selecting incorrect compatibility rules.
+
+## 2026-10-11 - Version scanner regions and quoted boundaries
+
+Converted native region-line skipping (src/common/engine/sc_man_scanner.re:83,311) and classic quoted-string escape/CRLF handling (sc_man_scanner.re:484-502) in VmScriptVersion. Region directives ending in LF are trivia before both keyword and version value. Escaped quotes remain within quoted tokens instead of accidentally ending numeric validation at a valid prefix. CRLF inside quoted tokens normalizes to LF. Audit also found and fixed a managed out-of-range search on the shortest trailing semicolon comment: line-comment scanning now starts one character after the marker.
+
+Verification: eight regression cases cover region lines, CRLF region headers, regions before the value, escaped-quote suffix/unterminated strings, and one-character/empty-line semicolon comments. All 13,303 Release solution tests pass (804 scripting). Full Release rebuild with warnings as errors passes with zero warnings/errors; whitespace validation passes.
+
+Remaining scope: native numeric sign/whitespace/clamping/int16 edge cases, full scanner/tokenization, includes/compiler integration, named native/variadic binding, native ABI, typed frame lifecycle, printf/error buffers, console/debugger events, and JIT. Region lines without a terminating newline are intentionally not skipped, matching the inspected native rule.
+
+## 2026-10-11 - Unquoted script version tokens
+
+Closed the unquoted version-token gap in VmScriptVersion.Read. Native zcc_parser.cpp:447 uses MustGetString, which invokes the classic scanner (src/common/engine/sc_man.cpp:454; sc_man_scanner.re:306-322), not a quoted-only parser. Managed discovery now accepts unquoted numeric tokens, stops at classic punctuation/comment starts, and recognizes semicolon comments while seeking the version string. Embedded ordinary slashes remain part of the token and therefore fail numeric validation. Existing quoted behavior remains covered.
+
+Audit: nine new cases cover unquoted two/three-component versions, trailing semicolons/braces, adjacent block comments, classic semicolon comments before values, invalid suffix/slash tokens, missing strings, and invalid punctuation. All 13,295 Release solution tests pass (796 scripting). Full Release rebuild with warnings as errors passes with zero warnings/errors; whitespace validation passes.
+
+Remaining scanner limits: quoted escape decoding, region directives, native numeric sign/whitespace/clamping/int16 behavior, and full tokenization remain unconverted. Includes, compiler call-site propagation, named native/variadic binding, native ABI, typed frame lifecycle, printf/error buffers, console/debugger events, and JIT remain open. Semicolon trivia is limited to the native classic-string phase after the version keyword.
+
+## 2026-10-11 - Leading script version discovery
+
+Converted the supported quoted version-header path of src/common/scripting/frontend/zcc_parser.cpp:439-474 to VmScriptVersion.Read. Reads only the leading directive after whitespace/comments/BOM, recognizes two or three decimal components, normalizes omitted revision to zero, and returns the native 2.3 compatibility baseline when no directive leads the source. Optional maximumVersion rejects unsupported newer declarations. The discovered call-site version can be passed to named binding; tests demonstrate the 4.12/4.13 behavior boundary.
+
+Audit: twelve new cases cover leading headers, comments/BOM, non-leading directives, missing declarations, malformed components/quotes/comments, supported-version normalization, newer-version rejection, and binding integration. All 13,286 Release solution tests pass (787 scripting). Full Release rebuild with warnings as errors passes with zero warnings/errors; whitespace validation passes.
+
+Limits: this is a focused quoted-header reader, not a replacement for the native scanner. Native unquoted tokens, escape handling, strtoll sign/whitespace edge cases, and int16 overflow behavior are not replicated; managed decimal validation is stricter. Empty source returns the 2.3 managed baseline. Includes, archive script discovery, and automatic compiler call-site propagation remain open, along with named native/variadic binding, ABI, typed frame lifecycle, printf/error buffers, console/debugger events, and JIT.
+
+## 2026-10-11 - Version-aware named argument ordering
+
+Converted pre-4.13 named argument restrictions from src/common/scripting/backend/codegen.cpp:9829 and 9907-9935. RunNamedFunction accepts an optional script Version; null retains modern relaxed behavior. Before version 4.13, named arguments must target optional slots and cannot move backward from the current argument position. Positional continuation, skipped optional defaults, and missing required checks remain shared with modern binding. ClientHost forwards the script version.
+
+Audit: five new cases cover the exact 4.12/4.13 boundary, required positional compatibility, forward optional skips, positional continuation, backward/repeated optional name rejection, omitted required arguments, and host propagation. All 13,274 Release solution tests pass (775 scripting, 409 client). Full Release rebuild with warnings as errors passes with zero warnings/errors; whitespace validation passes.
+
+Remaining scope: named native/variadic binding and function-pointer restrictions, automatic script version discovery, compiler expression coercion/emission and implicit receivers, native ABI, typed frame lifecycle, printf/error-buffer semantics, console/debugger events, and JIT remain unconverted. The caller currently supplies the compatibility version explicitly.
+
+## 2026-10-11 - Relaxed named script argument binding
+
+Converted fixed script argument reordering from src/common/scripting/backend/codegen.cpp:9868-9970 with the version >= 4.13 relaxed rules. VmScriptFunction accepts copied logical parameter names, matched case-insensitively to model native FName identity. RunNamedFunction and ClientHost.RunVmNamedFunction bind names, advance following positional arguments from the named slot, and fill skipped optional parameters from logical trailing defaults. Later assignments overwrite previously assigned slots, matching native OrderedArgs rather than imposing speculative duplicate rejection. Logical vectors bind before register expansion; existing script entry handles type checks and execution.
+
+Audit: four new tests cover required argument reordering, skipped defaults, case-insensitive names, parameter-name copying, positional continuation, repeated-name replacement, vector width/signed zero, unknown/missing/overflow arguments, invalid definitions, and disposed client-host entry. All 13,269 Release solution tests pass (771 scripting, 408 client). Full Release rebuild with warnings as errors passes with zero warnings/errors; whitespace validation passes.
+
+Remaining scope: pre-4.13 named ordering restrictions, named native/variadic call binding and function-pointer restrictions, compiler expression coercion/emission, implicit receiver arguments, native ABI, typed frame lifecycle, printf/error-buffer semantics, console/debugger events, and JIT remain unconverted. This entry operates on already-evaluated managed values; it is not a complete source compiler.
+
+## 2026-10-11 - Variadic hidden register metadata
+
+Converted FunctionCallEmitter::EmitCall's hidden variadic register type parameter (src/common/scripting/backend/vmbuilder.cpp:1173) and PARAM_VA_POINTER consumption (vm/vm.h:832). VmNativeParameters.PackVariadicArguments expands logical vectors into float slots and appends a byte-array pointer with all visible argument bank codes. ReadVariadicTypes validates and snapshots the type list for managed consumers, excluding the hidden pointer. One of the managed 256 parameter slots is reserved for metadata. Direct and bytecode callbacks can consume the same layout. This does not implement the source compiler or printf consumers.
+
+Audit: three new tests cover exact type bytes, vector expansion/signed zero, object identity, empty argument lists, read-only type snapshots, direct and bytecode entry, malformed metadata, invalid scalar codes, and 255/256 visible-slot limits. Full Release solution tests pass: 13,265 total (768 scripting). Full Release rebuild with warnings as errors passes with zero warnings/errors; whitespace validation passes.
+
+Correction to earlier named-argument investigation: named argument binding DOES exist in src/common/scripting/backend/codegen.cpp around 9868-9941, including rejection of names in the variadic tail. Earlier searches of frontend/core missed the backend implementation. Named binding remains unconverted and is now a confirmed follow-up target. Remaining scope also includes variadic prototype integration/consumers, compiler emission, native ABI, typed frame lifecycle, printf/error-buffer semantics, console/debugger events, and JIT.
+
+## 2026-10-11 - Native object and class parameter checks
+
+Converted PARAM_OBJECT_AT/PARAM_CLASS_AT and their NOT_NULL variants (src/common/scripting/vm/vm.h:852-856) to VmNativeParameters.ReadObject/RequireObject and ReadClass/RequireClass. Object checks preserve derived instance identity while rejecting descriptors and boxed value types. Class checks require a Type class descriptor descending from the requested managed base. Nullable forms return null; required forms preserve native X_READ_NIL and named parameter context. Shared pointer-bank validation is reused. Native debug assertions are represented as explicit managed argument exceptions in all builds; native DObject and PClass hierarchy checks are represented by managed class inheritance, not native object validity/GC state.
+
+Audit: four new test cases cover base/derived identity, optional/required null, unrelated and reversed inheritance, invalid descriptors and base types, boxed objects, callback abort frames, successful bytecode returns, and propagation of type errors. All 13,262 Release solution tests pass (765 scripting). Full Release rebuild with warnings as errors passes with zero warnings/errors; whitespace validation passes.
+
+Remaining scope: variadic metadata, compiler prototype/default emission, native DObject validity/GC state, native ABI binding, typed frame lifecycle, printf/error-buffer semantics, console/debugger events, and JIT remain unconverted. Vector ADDROF rejection remains consistent with the native interpreter.
+
+## 2026-10-11 - Named native null parameter checks
+
+Converted PARAM_POINTER_NOT_NULL/NullParam (src/common/scripting/vm/vm.h:850 and vmframe.cpp:865) to VmNativeParameters.RequirePointer. Non-null pointers preserve managed identity, including class descriptors. Null object values raise VmAbortException with X_READ_NIL and the native 'In function parameter <name>' context. Existing callback CALL handling adds native and script frames; direct native entry propagates the exception. Invalid managed helper inputs surface argument exceptions.
+
+Audit: three new tests cover pointer/class identity, exact abort reason/context/message, invalid helper inputs, nested script and direct entry, successful pointer return, and client-host propagation. All 13,258 Release solution tests pass (761 scripting, 407 client). Full Release rebuild with warnings as errors passes with zero warnings/errors; whitespace validation passes.
+
+Native parity clarification: vector ADDROF is explicitly unimplemented in native vmexec.h:819-822 and terminates with I_Error. The managed rejection remains intentional; a vector-reference extension would be new behavior, not conversion of an existing native interpreter implementation. Remaining conversion scope includes variadic metadata, object/class inheritance checks, compiler prototype/default emission, native ABI, typed frame lifecycle, printf/error-buffer semantics, console/debugger events, and JIT.
+
+## 2026-10-11 - Scalar out parameter prototypes
+
+Converted scalar VARF_Out register metadata from VMFunction::CreateRegUse (src/common/scripting/vm/vmframe.cpp:102). VmNativePrototype accepts positional out flags: non-pointer scalar parameters occupy one object slot carrying a live VmRegisterReference; pointer/object parameters keep native pointer behavior. Matching reference type is validated before callback execution and when defining defaults. This adds managed pointee type checking beyond native register-bank assertions. Missing flags default to false; supplied flag arrays are consumed at definition time. Vector out definitions explicitly fail because a contiguous vector reference view is not yet implemented.
+
+Audit: four new cases verify integer/float/string reference writeback at register 255, wrong reference bank rejection, null reference rejection at direct entry, defensive flag copying, native pointer behavior, and invalid flag/default/vector-out definitions. All 13,255 Release solution tests pass (759 scripting). Full Release rebuild with warnings as errors passes with zero warnings/errors; whitespace validation passes.
+
+Remaining scope: vector out memory views, variadic hidden type arrays, automatic compiler prototype/default emission, native ABI binding, typed frame lifecycle, printf/error-buffer semantics, console/debugger events, and JIT remain unconverted. Scalar references use managed live views rather than native raw addresses.
+
+## 2026-10-11 - Fixed native callback prototypes
+
+Converted fixed parameter register metadata from VMFunction::CreateRegUse (src/common/scripting/vm/vmframe.cpp:71) to immutable VmNativePrototype. Typed callbacks optionally declare scalar/vector parameter types; vectors flatten to float slots. Direct, defaulted, and bytecode entry validate count and register types before callback invocation. Defaults are checked against full positional types at definition time. Legacy callbacks without prototypes retain prior behavior. Native debug-only parameter assertions are represented as managed safety faults in all configurations; this is an intentional safety difference.
+
+Audit: three new tests cover vector flattening, signature copying, valid direct/defaulted/bytecode calls, wrong bank/count rejection before invocation, and invalid default/type/capacity definitions. Final full Release suite passes all 13,251 tests (755 scripting). Initial run had one failure in DedicatedServerHostTests.Pump_LiveSessionReceivesGuestClientInput; isolated rerun and subsequent full suite both pass without changes. This remains a possible live-session test intermittency, not a confirmed root cause. Full Release rebuild with warnings as errors passes with zero warnings/errors; whitespace validation passes.
+
+Remaining scope: variadic hidden type arrays and ref/out prototype flags, automatic compiler prototype/default emission, native ABI binding, typed frame lifecycle, printf/error-buffer semantics, console/debugger events, and JIT remain unconverted. VmNativePrototype covers fixed typed callbacks only; integer-only legacy callbacks retain their existing bank checks.
+
+## 2026-10-11 - Native callback default arguments
+
+Converted VMCallWithDefaults (src/common/scripting/vm/vmframe.cpp:745) for managed typed/integer callbacks with explicit RunNativeFunctionWithDefaults and client-host entry points. Definitions copy complete default argument arrays; typed vectors expand to native scalar slots, and string defaults snapshot their text. Missing arguments append defaults by full flattened index, preserving explicit values and extra supplied arguments. Ordinary direct entry and bytecode CALL continue without automatic defaults. Managed input lists are copied rather than resized in place; capacity remains limited to 256 slots.
+
+Audit: four new regression tests verify omitted/explicit/vector defaults, integer default array copying, extra arguments, unchanged ordinary and bytecode calls, null/default-capacity rejection before invocation, client-host behavior, and disposed-host rejection. All 13,248 Release solution tests pass (752 scripting, 406 client). Full Release rebuild with warnings as errors passes with zero warnings/errors; whitespace validation passes.
+
+Remaining scope: compiler generation of callback prototype/default arrays, native ABI binding, printf/error-buffer semantics, console/debugger events, typed frame lifecycle, source metadata emission, and JIT remain unconverted. Default arrays here are complete positional arrays, matching native DefaultArgs indexing; script trailing-default signatures remain a separate managed definition format.
+
+## 2026-10-11 - Direct converted native function entry
+
+Converted the native branch of VMCall (src/common/scripting/vm/vmframe.cpp:695) to VmExec.RunNativeFunction for typed and integer callbacks, with ClientHost.RunVmNativeFunction integration. Callbacks receive copied read-only argument containers and requested result capacity. Logical vectors expand into scalar float argument slots. Returned results preserve integer, floating-point, string, object identity/null, and vector values. Direct entry accepts fewer returned values than requested capacity, matching native VMCall's actual return count rather than bytecode CALL's exact RESULT-count requirement. Null/nil callback results or excess return values produce InvalidCall; arguments retain the managed 256-slot safety limit. Direct intentional abort and ordinary CLR exceptions propagate, matching the native entry's absence of CALL's abort catch.
+
+Audit: four new tests cover typed argument expansion and all result banks, signed zero, variable result counts, invalid callback output, parameter capacity before invocation, exception identity propagation, client-host integration, and disposed-host rejection. All 13,244 Release solution tests pass (749 scripting, 405 client). Full Release rebuild with warnings as errors passes with zero warnings/errors; whitespace validation passes.
+
+Remaining scope: native callback prototype/default binding, printf/error-buffer semantics, console/debugger events, compiler source metadata emission, native ABI binding, typed frame lifecycle, and JIT remain unconverted. Direct callbacks use managed result lists in place of native VMReturn pointers.
+
+## 2026-10-11 - Converted native callback aborts
+
+Converted CALL's native CVMAbortException catch path (src/common/scripting/vm/vmexec.h:887) for typed and integer callbacks. VmAbortException explicitly carries a native reason and rendered context. CALL catches only this exception, returns ScriptAbort with the original reason/context, and adds a read-only native function frame. Enclosing scripts append source frames during unwinding. VmAbortFrame.IsNative distinguishes native frames so text matches native 'Called from <name>' lines without inventing source locations. Unrelated CLR exceptions propagate unchanged; no broad catch or silent recovery is introduced.
+
+Audit: four new cases cover typed/integer callback aborts, reason/context/message propagation, native-to-script frame ordering, zero/one requested returns, raw-bytecode native frames, repeat execution isolation, and identity-preserving propagation of ordinary callback exceptions. All 13,240 Release solution tests pass (746 scripting). Full Release rebuild with warnings as errors passes with zero warnings/errors. Whitespace validation passes.
+
+Remaining scope: direct native callback entry outside bytecode CALL, native printf/buffer semantics, console print-once behavior and debugger events, compiler source metadata emission, native ABI binding, typed frame lifecycle, and JIT remain unconverted. VmAbortException represents an intentional converted VM abort; CLR failures are not reclassified.
+
+## 2026-10-11 - Scope abort supplemental context
+
+Converted FScopeBarrier::ValidateCall supplemental diagnostics (src/common/scripting/core/scopebarrier.cpp:218) into SCOPE abort results. Typed and integer callbacks now accept optional printable names, matching script function names. A rejected call records the native message identifying target scope, function, and calling context. Native side names include data, ui, play, virtualscope, clearscope, and unknown. AbortContext survives nested unwinding and both result APIs. VmAbortDiagnostics.FormatMessage accepts already-rendered context and preserves native X_OTHER spacing, including the distinction between absent and empty context for other reasons.
+
+Audit: eight new cases cover native context spacing, unknown reasons, and scope rejection for script/typed/integer functions with exact names and nested propagation. Callback guards verify rejected callbacks never execute. Existing scope matrix still verifies valid behavior and rejection reason. All 13,236 Release solution tests pass (742 scripting). Full Release rebuild with warnings as errors passes with zero warnings/errors; whitespace validation passes.
+
+Remaining scope: printf-style formatting and native 1024-byte error-buffer truncation, console print-once/debugger events, callback exception framing, compiler metadata emission, native ABI, typed frame lifecycle, and JIT remain unconverted. Context here is managed preformatted text; native raw byte strings and truncation are not claimed equivalent.
+
+## 2026-10-11 - Abort reason messages and stack text
+
+Converted CVMAbortException reason text (src/common/scripting/vm/vmframe.cpp:764) and interpreter source-frame formatting (src/common/scripting/vm/vmexec.h:2012) to VmAbortDiagnostics. VmResult and VmMultiResult expose computed AbortMessage and AbortStackTrace properties. All eight native reason codes and unknown ushort reasons retain native wording; X_OTHER retains the prefix with no reason suffix. Stack text preserves leaf-to-caller ordering, unknown source line -1, invariant decimal formatting, LF endings, and a trailing newline per frame. Computed diagnostics preserve existing result equality and do not create mutable global trace state.
+
+Audit: ten new test cases exercise all reason codes, unknown reason 65535, THROW propagation through single/multiple result APIs, stack text and ordering, empty frames, invalid formatter input, and absence of messages on successful/managed validation results. All 13,228 Release solution tests pass (734 scripting). Full Release rebuild with warnings as errors passes with zero warnings/errors. Whitespace validation passes.
+
+Remaining scope: native printf-style supplemental context and 1024-byte error-buffer truncation, console print-once behavior, debugger events, callback exception frames, compiler source metadata generation, native ABI, typed frame lifecycle, and JIT remain unconverted. This conversion formats the native base reason and existing script frames only; it does not reclassify managed safety faults as native abort codes.
+
+## 2026-10-11 - Script abort source frames
+
+Converted native ExecScriptFunc abort unwinding (src/common/scripting/vm/vmexec.h:2012) to structured VmAbortFrame records. Script definitions now retain printable function names and source filenames. Each script frame appends its current instruction and PCToLine result on ScriptAbort, preserving leaf-to-caller ordering and the original abort reason. CALL positions remain at the calling instruction while a child unwinds, matching native CALL handling. Single-result, multi-result, direct function, and client-host execution preserve these read-only frames. Unnamed scripts record empty names and source line -1 when metadata is absent. Raw bytecode has no invented script identity. Successful execution and managed validation faults have no abort frames.
+
+Audit: three new tests cover nested ordering, exact instruction/source locations, result propagation, read-only frame lists, repeated execution isolation, missing metadata, null metadata rejection, and client-host implicit null-memory aborts. Existing child-abort coverage now also checks its frame. All 13,218 Release solution tests pass (724 scripting, 404 client); full Release rebuild with warnings as errors passes with zero warnings/errors. Whitespace validation passes.
+
+Remaining scope: compiler source metadata emission, native callback abort exception framing, formatted abort messages/console notification/debugger exception events, typed frame lifecycle, native ABI binding, and JIT remain unconverted. CLR callback exceptions continue to propagate without broad catch or reclassification.
+
+## 2026-10-11 - Script source line lookup
+
+Converted VMScriptFunction::PCToLine (src/common/scripting/vm/vmframe.cpp:255) to VmScriptFunction.GetSourceLine with immutable copied VmStatementInfo metadata. Preserves native single-entry behavior, strict following-boundary lookup, duplicate instruction boundaries, and the native -1 result at or beyond the last boundary of multi-entry tables. Managed definitions reject negative or descending statement positions before execution.
+
+Audit: two regression tests cover boundaries, duplicate positions, empty/single tables, defensive copying, and invalid table ordering. Release solution tests pass: 13,215 total (722 scripting). Full Release rebuild with warnings as errors passes with zero warnings/errors.
+
+Scope: explicit source metadata and lookup are converted; compiler emission and automatic fault stack traces remain open. Named-argument support was investigated but no native implementation was established, so no speculative named-argument API was added. Other compiler/binder, typed frame lifecycle, native ABI, and JIT gaps remain.
+
+## 2026-10-11 - Vector script signatures and defaults
+
+- Converted explicit vector2/vector3/vector4 script signature lowering to consecutive scalar float parameter slots. Higher-level function entry validates logical vector widths and expands components; bytecode CALL continues consuming the native-style flattened argument list. Vector defaults remain logical values until entry.
+- Audited native vector PARAM expansion and VMFillParams sequential floating-register assignment. Ordered components reach the callee's float bank, while CALL argument counts describe flattened slots. Total expanded slot capacity is checked at function definition time.
+- Added four regression cases covering all vector widths, direct/defaulted/nested bytecode equivalence, signed zero, logical width mismatch, invalid flattened input at logical entry, wrong default widths and expanded capacity.
+- Validation: all 13,213 Release solution tests passed (Scripting 720); full non-incremental Release build with warnings treated as errors passed with zero warnings/errors. Diff whitespace validation passed.
+- Remaining scope: signatures and defaults are explicitly supplied managed declarations, not source compiler-generated prototypes. Named/variadic arguments, script-defined classes, typed frame constructors/destructors and automatic native ABI binding remain unconverted.
+
+## 2026-10-11 - Function entry and trailing argument defaults
+
+- Converted higher-level script function execution with validated trailing defaults through VmExec.RunFunction and ClientHost.RunVmFunction. Omitted trailing arguments are filled, explicitly supplied arguments retain precedence, and typed results/abort codes use existing frame execution.
+- Audited native vmframe.cpp default-filling wrapper: default filling belongs to the external call helper rather than bytecode CALL. Bytecode calls retain complete argument-count requirements. Default lists are copied, types/counts validated and string values frozen at function definition time.
+- Added four regression cases covering omitted and supplied arguments, copied default maps, required/extra/wrong-type arguments, invalid defaults, bytecode CALL separation, client entry and disposed-host rejection.
+- Validation: all 13,209 Release solution tests passed (Scripting 716, Client 403); full non-incremental Release build with warnings treated as errors passed with zero warnings/errors. Diff whitespace validation passed.
+- Remaining scope: defaults are explicit trailing typed values, not compiler-generated default arrays, named/variadic argument processing or automatic native ABI binding. Script-defined classes, source compilation and typed frame constructors/destructors remain unconverted.
+
+## 2026-10-11 - Nested script bytecode calls
+
+- Converted CALL/CALL_K script-function execution using immutable VmScriptFunction definitions. Each call initializes independent integer/float/string/object register banks from declared scalar argument types, uses private frame extra-space and preserves the caller's registers and pending parameter stack.
+- Audited native VMFillParams in vmexec.cpp and ScriptCall routing in vmexec.h. Arguments enter sequential registers within their own banks; typed/vector returns flow through caller RESULT descriptors. Child faults and abort codes propagate, virtual slots and SCOPE accept script functions, and constants/code are copied at definition time.
+- Added five regression cases covering mixed scalar parameters/multi-results, nested calls, independent frame memory, copied bytecode, argument mismatch, abort propagation, virtual-to-script dispatch and aggregate instruction-budget enforcement.
+- Validation: all 13,205 Release solution tests passed (Scripting 713); full non-incremental Release build with warnings treated as errors passed with zero warnings/errors. Diff whitespace validation passed.
+- Managed execution limits: the 256-instruction budget is shared across nested bytecode calls and call depth is limited to 64. These are managed safety limits rather than native execution limits.
+- Remaining scope: script signatures currently describe flattened scalar arguments only. Source compiler/binder, default/variadic arguments, script-defined classes, typed frame constructors/destructors and automatic native ABI binding remain unconverted. Retained managed register references do not reproduce native frame lifetime.
+
+## 2026-10-11 - Sparse virtual overrides and appended slots
+
+- Converted managed virtual table assembly with explicit sparse slot overrides and contiguous appended methods. Class tables build in inheritance order, copy parent storage, preserve untouched slots and propagate completed overrides to descendants. Existing full tables remain supported.
+- Audited native zcc_compile.cpp virtual slot replacement and Virtuals.Push behavior. Existing indices retain their slot; new indices append. Managed registration rejects gaps, negative/unencodable indices and unsupported methods, and copies override maps before assembly.
+- Added three regression cases covering override/append/inherit-to-grandchild call execution, unsorted declarations, copied override maps, untouched slots, parent isolation, explicit null replacement and invalid slots/methods.
+- Validation: all 13,200 Release solution tests passed (Scripting 708); full non-incremental Release build with warnings treated as errors passed with zero warnings/errors. Diff whitespace validation passed.
+- Remaining scope: slot numbers are explicitly supplied; source compiler resolution of method names, signatures, override qualifiers and access flags remains unconverted. Nested script frames, class metadata field inheritance, compiler scope analysis and automatic native function binding also remain.
+
+## 2026-10-11 - Inherited managed virtual tables
+
+- Converted base-table inheritance for runtime classes explicitly registered through metadata allocations or scopes. Classes lacking a supplied virtual table copy the nearest available ancestor table; explicit tables remain complete authoritative tables, including empty arrays.
+- Audited zcc_compile.cpp native parent Virtuals copying during class compilation. Derived-class VTBL lookup now resolves inherited callbacks without callers duplicating full tables. Caller arrays are copied, unknown runtime classes still fault, and method identity is retained.
+- Added two regression cases covering multilevel inheritance, nearest overrides, registration order, scope-only registration, explicit empty tables, unknown derived classes, caller-array mutation and complete inherited lookup/call execution.
+- Validation: all 13,197 Release solution tests passed (Scripting 705); full non-incremental Release build with warnings treated as errors passed with zero warnings/errors. Diff whitespace validation passed.
+- Remaining scope: explicit tables represent completed tables; compiler-driven sparse overrides/new virtual slot assignment and script-defined class registration remain unconverted. Metadata field inheritance, nested script frames, compiler scope analysis and automatic native function binding also remain.
+
+## 2026-10-11 - Live string callback parameter parity
+
+- Replaced ordinary string-register PARAM snapshots with live managed string-register views. VmValue.String reads the captured register index; public string factories and constant parameters remain stable values.
+- Audited vmexec.h:763-773 and VMValue(const FString*) in vm.h: native string parameters retain a pointer to register storage. Changes after PARAM and through scalar ADDROF aliases during a callback are now visible, closing the immutable-string snapshot gap recorded in earlier audits.
+- Added two regression cases covering source changes before/during CALL, by-reference aliases, stable constants, embedded NUL, last registers and distinct captured register indices.
+- Validation: all 13,195 Release solution tests passed (Scripting 703); full non-incremental Release build with warnings treated as errors passed with zero warnings/errors. Diff whitespace validation passed.
+- Remaining scope: string views and scalar references retain managed backing storage if callbacks retain them; native frame-address lifetime is not reproduced. Nested script frames, compiler scope analysis, inherited table construction and automatic native class/function binding remain unconverted.
+
+## 2026-10-11 - Runtime call scope checks
+
+- Converted SCOPE (99) using explicit per-runtime-class PlainData/UI/Play scope registration in VmClassMetadata. A selects the receiver, C selects the function constant, and B - 1 supplies the caller context.
+- Audited vmexec.h:850-858 and scopebarrier.cpp ValidateCall. PlainData receivers permit all contexts; UI/Play receivers require matching context. Rejection reports native X_OTHER (abort 0), null receivers report X_READ_NIL (1), and receiver runtime class overrides declared base scope.
+- Added four regression cases covering all class scopes and context values, successful SCOPE-to-CALL execution, derived scope selection, null receivers, missing scopes/constants, invalid functions and invalid registration. Missing managed class scopes are explicit InvalidClass faults.
+- Validation: all 13,193 Release solution tests passed (Scripting 701); full non-incremental Release build with warnings treated as errors passed with zero warnings/errors. Diff whitespace validation passed.
+- Remaining scope: runtime checks use explicitly registered scope metadata. Compiler-side field/method scope analysis, native diagnostic text, automatic class/function binding and nested script frames remain unconverted. SCOPE does not independently invoke or automatically wrap CALL, matching native instruction separation.
+
+## 2026-10-11 - Virtual method slot lookup
+
+- Converted VTBL (98) using copied per-runtime-class virtual tables in VmClassMetadata. Slot C selects a managed callback or explicit null; destination/base aliasing is supported and retrieved methods feed CALL directly through existing client catalog wiring.
+- Audited vmexec.h:834-849: lookup uses the object's actual class, not its declared base. Null sources produce read-nil abort 1. Missing tables/out-of-range slots return managed InvalidCall instead of native invalid-virtual exceptions/assertions. Explicit null slots remain null and later CALL rejects them.
+- Added three regression cases covering derived overrides, receiver argument preservation, last registers and aliasing, table ownership, null slots, missing derived tables, invalid slots and registration validation.
+- Validation: all 13,189 Release solution tests passed (Scripting 697); full non-incremental Release build with warnings treated as errors passed with zero warnings/errors. Diff whitespace validation passed.
+- Remaining scope: virtual tables are explicitly supplied managed slot arrays. Native inherited table construction, script-defined class/method registration, scope checks, nested script frames and automatic native function binding remain unconverted.
+
+## 2026-10-11 - Scalar register-reference callback arguments
+
+- Converted PARAM ADDROF selectors 32-35 for integer, float, string and object registers. VmRegisterReference provides live type-checked register access through a managed object argument; writes update the original register bank and independently passed aliases observe the same storage.
+- Audited native PARAM ADDROF handlers: BC selects the full register index, scalar addresses become pointer arguments, and reads remain live after PARAM execution. Invalid indices fault before pushing. Managed assignment checks reject null values and type changes without modifying registers; vector ADDROF remains unsupported as in native execution.
+- Added five regression cases covering all scalar banks, last registers, source updates after parameter push, duplicate aliases, writeback, signed zero, embedded NUL, object identity and invalid assignment/index checks.
+- Validation: all 13,186 Release solution tests passed (Scripting 694); full non-incremental Release build with warnings treated as errors passed with zero warnings/errors. Diff whitespace validation passed.
+- Remaining scope: references are safe managed accessors, not raw register addresses/native ABI pointers. Retaining a reference keeps its managed register storage alive; native frame lifetime semantics are not reproduced. Ordinary string parameters still capture immutable values. Nested script frames, virtual dispatch, scope checks and automatic native function binding remain unconverted.
+
+## 2026-10-11 - Vector callback result descriptors
+
+- Converted RESULT vector selectors 9/17/65 to typed two/three/four-component callback results. VmValue vector factories preserve ordered double components; CALL validates full destination spans before invoking callbacks and writes components in descriptor order.
+- Audited native FillReturns/SetReturn vector handling: each vector consumes one return slot while occupying consecutive floating registers. Integer registers at the same indices remain independent. All callback result types and counts are validated before register updates; unsupported descriptor flags remain explicit faults.
+- Added eight regression cases covering all vector widths, final valid/invalid register spans, mixed vector/integer multi-results, signed zero/infinity/NaN, overlapping destinations, width mismatches and unsupported flags.
+- Validation: all 13,181 Release solution tests passed (Scripting 689); full non-incremental Release build with warnings treated as errors passed with zero warnings/errors. Diff whitespace validation passed.
+- Remaining scope: scalar by-reference parameters, nested script frames, virtual dispatch, scope checks and automatic native function binding remain unconverted. Managed callback values do not expose native VMReturn storage addresses or native ABI unions.
+
+## 2026-10-11 - Vector and nil callback parameters
+
+- Converted PARAM vector selectors 9/17/65 to expansion into two/three/four ordered floating-point callback arguments. Components are captured when PARAM executes, and CALL counts flattened slots. Full source spans and total parameter capacity are validated before pushing.
+- Audited vmexec.h vector PARAM handlers and VMValue default construction. Nil selector 128 ignores BC and produces an explicit managed Nil value. Native untyped VMValue stores a zero/null union for nil; managed callbacks retain its explicit type distinction. Unsupported vector constant/by-reference selectors still fault.
+- Added seven regression cases covering all vector widths, final valid register spans, component order, signed zero/infinity/NaN, source mutation after parameter capture, invalid spans, unsupported forms and nil versus null-object arguments.
+- Validation: all 13,173 Release solution tests passed (Scripting 681); full non-incremental Release build with warnings treated as errors passed with zero warnings/errors. Diff whitespace validation passed.
+- Remaining scope: vector result descriptors, scalar by-reference parameters, nested script frames, virtual dispatch, scope checks and automatic native function binding remain unconverted. Nil is supported as a managed typed callback argument, not a native ABI union exposed to host functions.
+
+## 2026-10-11 - Typed scalar callback parameters and results
+
+- Extended PARAM and CALL/RESULT to typed integer, floating-point, string and object registers/constants. Added VmValue and VmFunction with explicit scalar types; existing VmIntegerFunction callbacks retain integer-only compatibility.
+- Audited native PARAM and FillReturns operand layouts: PARAM uses A selector and BC index; RESULT uses B type and C destination, ignoring A. Shared register numbers retain independent banks; object references and null pointers preserve identity. Entire callback result lists are type-validated before destination updates.
+- Added four regression cases covering all scalar register/constant forms, mixed typed returns, last destinations, signed zero, embedded NUL strings, object identity/null, incorrect return types, missing constants and integer callback type rejection before invocation.
+- Validation: all 13,166 Release solution tests passed (Scripting 674); full non-incremental Release build with warnings treated as errors passed with zero warnings/errors. Diff whitespace validation passed.
+- Remaining scope: vector/nil/by-reference parameters and vector result descriptors, nested script frames, virtual dispatch, scope checks and automatic native function binding remain unconverted. Managed string arguments are immutable value snapshots rather than native FString register-address views.
+
+## 2026-10-11 - Integer callback parameters, calls and results
+
+- Converted PARAM/PARAMI/CALL/CALL_K/RESULT (94-97, 100) for managed integer callbacks represented by VmIntegerFunction. PARAM uses native A type and BC index for integer registers/constants; PARAMI sign-extends the packed 24-bit immediate.
+- Audited vmexec.h PARAM, CALL and FillReturns handlers: calls consume only the trailing B arguments, preserve earlier pending arguments, request C results, write integer RESULT destinations encoded in B/C and skip descriptors afterward. A in RESULT is ignored. Standalone RESULT, malformed descriptors and incorrect callback counts fault explicitly.
+- Added five regression cases covering register/constant call targets, mixed parameter forms, negative immediate boundary, multiple returns, preserved pending arguments, zero returns, descriptor validation before callback effects, range faults, count mismatches and propagated callback exceptions.
+- Validation: all 13,162 Release solution tests passed (Scripting 670); full non-incremental Release build with warnings treated as errors passed with zero warnings/errors. Diff whitespace validation passed.
+- Remaining scope: callbacks are managed integer functions, not native VMFunction ABI or nested script bytecode frames. Float/string/object/vector/nil and by-reference parameters/results, virtual dispatch, scope checks and automatic function binding remain unconverted. Parameter capacity is a fixed managed limit of 256 rather than native function MaxParam metadata.
+
+## 2026-10-11 - Runtime class metadata access
+
+- Converted META (11) using VmClassMetadata, a copied map from actual C# runtime classes to managed byte/string/reference metadata allocations or explicit null. Optional catalog wiring reaches Run, RunWithReturns and ClientHost.RunVm.
+- Audited vmexec.h:133-142: metadata comes from the object's actual class, not a caller's base-class descriptor. Null sources report X_READ_NIL (1); source/destination aliasing and ignored C are preserved. Unregistered classes and unsupported source types return InvalidClass instead of silently selecting base metadata.
+- Added five regression cases covering derived-class selection, address arithmetic and metadata reads, shared allocation identity, explicit null metadata, copied map ownership, invalid sources/descriptors/allocations and client integration.
+- Validation: all 13,157 Release solution tests passed (Scripting 665, Client 402); full non-incremental Release build with warnings treated as errors passed with zero warnings and errors. Diff whitespace validation passed.
+- Remaining scope: metadata is explicitly registered managed storage, not automatic native PClass layout/inheritance initialization or script-defined class registration. Typed frame storage, automatic actor-field binding, native collector transformations and VM calls remain unconverted.
+
+## 2026-10-11 - Frame extra-space pointer execution
+
+- Converted LFP (10): it loads the current execution's extra-space allocation into the object/address register, ignoring B/C as native does. Added optional frameExtraSpace sizing to Run, RunWithReturns and ClientHost.RunVm; existing callers retain their default behavior.
+- Audited vmexec.h:115-118 and vmframe.cpp frame initialization. A positive size allocates isolated zeroed byte storage once per execution; repeated LFP operations share it. Missing space reports InvalidFrame, replacing the native assertion with an explicit managed fault; negative sizes are rejected at the API boundary.
+- Added four regression cases covering repeated LFP, pointer addition and memory round trips, last address register, ignored operands, isolation across Run/RunWithReturns, absent/negative space, bounds and client entry-point integration.
+- Validation: all 13,152 Release solution tests passed (Scripting 661, Client 401); full non-incremental Release build with warnings treated as errors passed with zero warnings and errors. Diff whitespace validation passed.
+- Remaining scope: this is byte extra-space for standalone VM executions. Native typed extra-space constructors/destructors, function metadata-derived sizing, nested call frames, class META storage and native VM call integration remain unconverted.
+
+## 2026-10-11 - Managed address dereference integration
+
+- Connected VmMemoryPointer to every implemented memory handler: integer/scalar/vector loads and stores, bit operations, string fields, reference fields and character-pointer string loads. Shared resolution combines the address offset with the instruction byte offset while retaining the underlying allocation.
+- Audited represented native base-plus-offset addressing. Bit operations use the pointer position without treating their immediate mask as an offset. Combined negative, oversized and overflowing addresses fault before memory mutation; valid negative instruction offsets can move a positive pointer back into range.
+- Added seven regression cases, including loops comparing all numeric forms with direct allocation execution, complete pointer-add/store/load flows, offset string/reference/C-string fields and long-boundary overflow checks. Existing native null-access behavior and SO_R barrier-only behavior are retained.
+- Validation: all 13,148 Release solution tests passed (Scripting 658); full non-incremental Release build with warnings treated as errors passed with zero warnings and errors. Diff whitespace validation passed.
+- Remaining scope: managed pointer wrappers now dereference supported allocations, closing the preceding audit gap. Raw native addresses, native collector transformations, frame/meta pointers, automatic actor-field binding and native VM calls remain unconverted. Managed dereferences require nonnegative offsets representable by the backing storage.
+
+## 2026-10-11 - Managed address arithmetic
+
+- Converted ADDA_RR/ADDA_RK/SUBA (237-239) using VmMemoryPointer, which retains allocation identity and a signed byte offset. Addition supports managed byte/string/reference allocations, source/destination aliasing and null preservation. Subtraction preserves the low 32 bits of the byte difference within one allocation.
+- Audited native vmexec.h:1910-1928. Pointer equality now compares allocation and offset, so independently represented identical addresses compare equal. Unlike raw native arithmetic, managed addition faults on signed offset overflow and subtraction rejects unrelated allocations.
+- Added five regression cases covering both addition forms, positive/negative/zero and out-of-buffer offsets, aliasing, null preservation, subtraction truncation, address equality, missing constants, unsupported allocations and overflow.
+- Validation: all 13,141 Release solution tests passed (Scripting 651); full non-incremental Release build with warnings treated as errors passed with zero warnings/errors. Diff whitespace validation passed.
+- Remaining scope: VmMemoryPointer arithmetic and equality are represented, but dereferencing these address wrappers through memory opcodes is not yet connected. Existing memory operations still accept direct allocations. Native raw addresses, frame/meta pointers, automatic field binding and VM calls remain unconverted.
+
+## 2026-10-11 - Character-pointer string memory loads
+
+- Converted LCS/LCS_R (39-40) using existing VmObjectMemory fields containing managed strings or null. Constant/register offsets select the pointer field; copying stops at the first NUL and a null pointee produces an empty string.
+- Audited vmexec.h:228-236 and FString::operator=(const char*) in zstring.cpp:251-275. A null memory base still reports X_READ_NIL (1), while a stored null pointer is valid. Missing fields/constants and invalid base/pointee types fault explicitly.
+- Added four regression cases covering both addressing forms, last registers and bank independence, null/empty values, first/embedded NUL, Unicode, unchanged fields, missing/negative/overflowing offsets and wrong base/pointee types.
+- Validation: all 13,136 Release solution tests passed (Scripting 646); full non-incremental Release build with warnings treated as errors passed with zero warnings and errors. Diff whitespace validation passed.
+- Remaining scope: these loads use managed strings in explicit reference fields, not raw char addresses or arbitrary native byte encodings. Raw address arithmetic, frame/meta pointers, automatic native field binding and native VM calls remain unconverted.
+
+## 2026-10-11 - Managed object and pointer field instructions
+
+- Converted LO/LO_R/LP/LP_R (29-32), SP/SP_R/SO/SO_R (60-63) using VmObjectMemory, initialized reference fields keyed by explicit VM byte offsets. Managed assignments preserve object identity and allow stored null references; field maps are copied on construction.
+- Audited native vmexec.h: null bases produce read/write abort codes 1/2, operand banks and constant/register byte offsets match. Native SO_R only invokes the write barrier on the existing field and does not assign B; the conversion deliberately preserves this quirk. CLR-managed references provide lifetime tracking instead of invoking native collector barriers.
+- Added 17 regression cases covering all eight opcodes, identity and stored nulls, base/destination aliasing, last registers, untouched fields, copied map ownership, missing/negative/overflowing field offsets, wrong storage, null bases, missing constants and invalid maps.
+- Validation: all 13,132 Release solution tests passed (Scripting 642); full non-incremental Release build with warnings treated as errors passed with zero warnings and errors. Diff whitespace validation passed.
+- Remaining scope: managed reference slots do not implement raw pointer values, native DObject collector flags/read-barrier transformations or automatic actor-field layout binding. Character-pointer string loads, raw address arithmetic, frame/meta pointers and native VM calls remain unconverted.
+
+## 2026-10-11 - Managed string-field memory instructions
+
+- Converted LS/LS_R (27-28) and SS/SS_R (58-59) using VmStringMemory: initialized string fields keyed by explicit VM byte offsets. Construction copies the field map, rejects negative offsets and null values, and writes only existing fields.
+- Audited against native vmexec.h string load/store handlers. Loads copy the selected string into the string register; stores copy the source string into the selected field. Constant and integer-register offsets retain native operand banks. Null reads/writes report abort codes 1/2; invalid storage, missing fields and missing constants fault explicitly.
+- Added seven regression cases covering both addressing forms, last registers and bank independence, empty strings, embedded NUL, Unicode, map ownership, preservation of other fields, invalid offsets and storage, null bases and constructor validation.
+- Validation: all 13,115 Release solution tests passed (Scripting 625); full non-incremental Release build with warnings treated as errors passed with zero warnings and errors. Diff whitespace validation passed.
+- Remaining scope: VmStringMemory is an explicit managed field adapter, not raw FString layout or automatic actor-field binding. Native uninitialized FString storage is excluded by construction. Character-pointer string loads, object/pointer memory instructions, raw address arithmetic and native VM call integration remain unconverted.
+
+## 2026-10-11 - Bit-field memory VM instructions
+
+- Converted LBIT (47) and SBIT (76) over managed byte buffers. C is an immediate byte mask, not a constant index or offset. Loads normalize any matching bit to 1; stores set masked bits for any nonzero integer and clear them for zero, preserving all other bits and bytes.
+- Audited against vmexec.h:378-381 and 589-598. Both instructions access byte zero and validate memory even when the mask is zero. Null reads report X_READ_NIL (1), null writes report X_WRITE_NIL (2); managed invalid objects and empty buffers return explicit faults.
+- Added four regression cases with loops across mask/value combinations, including high-bit and multi-bit masks, zero masks, negative truth values, source/destination register-number overlap across banks, store/read integration, unchanged surrounding bytes, null/invalid objects and empty buffers.
+- Validation: all 13,108 Release solution tests passed (Scripting 618); full non-incremental Release build with warnings treated as errors passed with zero warnings and errors. Diff whitespace validation passed.
+- Remaining scope: raw native memory and field bindings, object/string memory instructions and native VM call integration remain unconverted. Numeric and bit-field memory execution currently uses caller-provided managed byte buffers.
+
+## 2026-10-11 - Scalar floating-point memory-load VM instructions
+
+- Converted LSP, LSP_R, LDP and LDP_R (opcodes 23-26) to managed byte-buffer execution. Constant or integer-register byte offsets select single-precision values widened to double or double-precision values preserved directly.
+- Audited native vmexec.h and vmops.h: operand banks, byte widths and X_READ_NIL (abort code 1) match represented behavior. Little-endian reads permit unaligned offsets; invalid managed objects, missing constants and negative/partial/overflowing ranges return explicit faults before access.
+- Added eight regression cases covering all four forms, last destination register, offset-register bank independence, exact precision, signed zero, finite extremes, single and double subnormals, NaN, infinities, unchanged source bytes and invalid reads.
+- Validation: all 13,104 Release solution tests passed (Scripting 614). Full non-incremental Release build with warnings treated as errors passed with zero warnings and errors; diff whitespace validation passed.
+- Remaining scope: raw native memory and field bindings, bit-field memory instructions, string/object storage and native VM call integration remain unconverted. Cross-platform NaN payload/sign behavior is not verified.
+
+## 2026-10-11 - Vector memory-load VM instructions
+
+- Converted LV2/LV3/LV4 and LFV2/LFV3/LFV4, including constant and register-offset forms (opcodes 33-38 and 41-46). Managed byte buffers supply ordered double components or single components widened to double.
+- Audited against native vmexec.h and vmops.h: destination register spans, byte addressing, component widths and read-nil abort code 1 match represented native behavior. Little-endian reads permit unaligned offsets; managed bounds validate the whole vector before reading or assigning components.
+- Added 24 regression cases covering all twelve forms, exact component order and precision, single widening, signed zero, infinities, NaN, last valid destination spans, invalid spans, offset-register bank independence, unchanged source bytes, invalid objects, null reads, missing constants and negative/partial/overflowing offsets.
+- Validation: all 13,096 Release solution tests passed (Scripting 606). Full non-incremental Release build with warnings treated as errors passed with zero warnings and errors; diff whitespace validation passed.
+- Remaining scope: managed byte buffers do not represent raw native pointers or field layouts. Scalar floating-point loads, bit-field memory instructions, string/object storage and native VM call integration remain unconverted. Cross-platform NaN payload/sign behavior is not verified.
+
+## 2026-10-11 - Vector memory-store VM instructions
+
+- Converted SV2/SV3/SV4 and SFV2/SFV3/SFV4, including all register-offset forms (opcodes 64-75). Managed byte buffers receive two, three or four consecutive components in native order, preserving double precision or narrowing each component to float.
+- Audited native vmexec.h and vmops.h: source floating-register spans, byte offsets, component widths, sequential writes and X_WRITE_NIL (abort code 2) match the represented native behavior. Little-endian writes support unaligned offsets on the current target.
+- Added 24 regression cases across all twelve opcodes. Coverage includes last valid source register spans, invalid source spans, ordered components, rounding, signed zero, overflow/underflow, infinities, NaN, surrounding bytes, invalid destinations, missing constants and negative/partial/overflowing offsets. Managed range checks validate the entire instruction before mutating memory.
+- Validation: all 13,072 Release solution tests passed (Scripting 582); full non-incremental Release build with warnings treated as errors passed with zero warnings/errors. Diff whitespace validation passed.
+- Remaining scope: raw native memory and field bindings, string/object stores, vector loads, bit-field memory instructions and native VM call integration remain unconverted. Float narrowing NaN payloads and non-default native rounding modes are not verified.
+
+## 2026-10-11 - Floating-point memory-store VM instructions
+
+- Converted SSP, SSP_R, SDP and SDP_R (opcodes 54-57) to managed byte-buffer execution. Constant and integer-register offsets address bytes; the floating register supplies the value. Single stores narrow double to float, while double stores preserve all 64 bits.
+- Audited against src/common/scripting/vm/vmexec.h and vmops.h. Writes support unaligned offsets and little-endian encoding on the current target. Null destinations report native X_WRITE_NIL (abort code 2); invalid managed memory, missing constants and invalid ranges fault before any mutation.
+- Added eight regression cases across all four opcodes, including midpoint rounding, overflow to infinity, underflow, negative zero, infinities, NaN, last floating register, untouched surrounding bytes, negative/partial/overflowing offsets and null/invalid destinations.
+- Validation: all 13,048 Release solution tests passed (Scripting 558). Full non-incremental Release build with warnings treated as errors passed with zero warnings and errors; diff whitespace validation passed.
+- Remaining scope: raw native memory, object and string field storage, vector memory stores and native call integration remain unconverted. NaN payload behavior when narrowing and non-default native floating-point rounding modes are not verified.
+
+## 2026-10-11 - Integer memory-store VM instructions
+
+- Converted native SB, SB_R, SH, SH_R, SW and SW_R (opcodes 48-53) to C# execution over managed byte buffers. Constant and register offsets select byte positions; writes preserve the native low 8/16/32 bits and support unaligned addresses.
+- Audited against src/common/scripting/vm/vmexec.h:384-412 and vmops.h. Null destinations report native X_WRITE_NIL (abort code 2); little-endian encoding matches the current target. Managed invalid objects, missing constants and out-of-range writes return explicit faults before changing any bytes.
+- Added 12 regression cases covering all six forms, negative values, truncation, untouched surrounding bytes, offset bounds and overflow, null destinations, invalid objects and missing offset constants.
+- Validation: full Release solution tests passed (13,040 tests; Scripting 550), and a full non-incremental Release build with warnings treated as errors passed with zero warnings and errors. Diff whitespace validation passed.
+- Remaining scope: these instructions operate on caller-provided managed byte buffers. Raw native addresses, field bindings, floating/vector memory stores, pointer arithmetic and native CALL/PARAM/RESULT integration remain unconverted.
+
+## 2026-10-11 - Integer memory-load VM instructions
+
+- Converted byte-buffer execution of LB/LB_R, LH/LH_R, LW/LW_R, LBU/LBU_R and LHU/LHU_R (13..22). Managed byte-array references provide the memory base; integer constants/registers provide byte offsets.
+- Native audit verifies signed extension versus unsigned widening, byte/halfword/word widths, source reads before integer destination writes and null-source X_READ_NIL reason 1. Managed loads use explicit little-endian decoding to match the targeted native platform and permit unaligned buffer offsets.
+- Bounds validation uses wide offset arithmetic and exposes MemoryRange; non-buffer references expose InvalidMemory. These safeguards replace unsafe native address access for malformed inputs.
+- Added twenty regression cases covering all ten forms, high-bit values, unaligned offsets, destination/offset-register aliasing, negative/overflowing/past-end offsets, null buffers, invalid references and missing offset constants.
+- Validation: all 13,028 Release solution tests pass (538 Scripting, 400 Client). Full Release rebuild with warnings as errors passes with zero warnings/errors; whitespace check passes.
+- Scope boundary: memory bases are managed byte buffers, not native addresses or object fields. Stores, floating/vector loads, address arithmetic, class metadata, registries, native calls and full text-script binding remain open, alongside existing parsing/math/gameplay/audio gaps.
+
+## 2026-10-11 - Managed runtime class descriptor lookup
+
+- Converted CLSS (12) for managed object instances. It obtains the actual runtime class descriptor, preserving derived type information and source/destination aliasing; its result can feed the represented DYNCASTC instructions.
+- Native audit verifies DObject.GetClass and null-source X_READ_NIL abort reason 1. Managed descriptor/value-type inputs expose InvalidClass rather than treating them as native DObject storage.
+- Added four regression cases covering runtime derived descriptors, both destination layouts, class-lookup-to-descendant-cast execution, null abort and invalid descriptor/value-type inputs.
+- Validation: all 13,008 Release solution tests pass (518 Scripting, 400 Client). Full Release rebuild with warnings as errors passes with zero warnings/errors; whitespace check passes.
+- Scope boundary: descriptors remain managed Type values. Native script-defined class identity and META storage, fields, registries, raw memory, native calls and full text-script binding remain open, alongside existing parsing/math/gameplay/audio gaps.
+
+## 2026-10-11 - Managed class dynamic VM casts
+
+- Converted managed-class execution for DYNCAST_R/K (86/87) and DYNCASTC_R/K (88/89). Managed Type descriptors represent already-converted C# classes: object forms test instance compatibility and class forms test descendant compatibility, retaining source identity on success and producing null otherwise.
+- Native audit verifies source-null short-circuit behavior, constant target validation and source/target reads before destination replacement. Invalid/non-class managed descriptors expose InvalidClass rather than unsafe reinterpretation.
+- Added eight regression cases covering all four forms, base/exact/unrelated targets, source/target destination aliasing, typed nulls, invalid descriptors/interfaces and missing target constants.
+- Validation: all 13,004 Release solution tests pass (514 Scripting, 400 Client). Full Release rebuild with warnings as errors passes with zero warnings/errors; whitespace check passes.
+- Scope boundary: Type descriptors cover converted managed classes only. Native PClass/DObject and dynamically declared script classes require their own class registry/metadata integration; these instructions do not complete that conversion.
+- Remaining scope: class metadata, registries, raw memory, native calls and full text-script binding. Existing parsing/math/gameplay/audio gaps remain open.
+
+## 2026-10-11 - Managed object-reference VM returns
+
+- Converted native pointer-type RET register/constant forms for managed object references (type 3 and constant flag 4). VmResult exposes HasObjectValue independently of ObjectValue so a returned null reference remains distinguishable from numeric or nil returns; VmCode.RetObject encodes both forms.
+- Native SetReturn audit verifies constant indexes, immediate reference capture before subsequent register replacement and ignored unrequested return slots. Multi-result execution preserves object identity in each requested slot without cloning referenced objects.
+- Added six regression cases covering both sources with null/present references, typed-null discrimination, nonfinal multiple-slot reference capture, missing constants, ignored results and the final register index. Removed the old unsupported-pointer-return theory row now that managed object returns are supported.
+- Validation: all 12,996 Release solution tests pass (506 Scripting, 400 Client). Full Release rebuild with warnings as errors passes with zero warnings/errors; whitespace check passes.
+- Scope boundary: these results represent managed object references, not arbitrary native addresses. Pointer arithmetic/memory, dynamic casts, native class metadata, registries, native calls and full text-script binding remain open, alongside existing parsing/math/gameplay/audio gaps.
+
+## 2026-10-11 - Managed object-reference VM instructions
+
+- Converted the managed-object subset of LKP/LKP_R (5/9), MOVEA (80), EQA_R/K (240/241), NULLCHECK (242) and CASTB_A (23). Added a separate 256-entry reference bank and optional typed object constants to both VM execution APIs and ClientHost.RunVm.
+- Native audit verifies identity rather than value equality, full 16-bit/indexed constant selection, both branch polarities, null Boolean conversion and NULLCHECK abort reason X_WRITE_NIL=2. Null defaults remain null; indexed loads validate a wide intermediate before access.
+- Added seven regression cases covering distinct equal-valued objects, both comparison forms/polarities, moves, null/present Boolean and null checks, full-width/indexed loads, invalid indexes, missing constants and malformed taken branches.
+- Validation: all 12,991 Release solution tests pass (501 Scripting, 400 Client). Full Release rebuild with warnings as errors passes with zero warnings/errors; whitespace check passes.
+- Scope boundary: managed reference identity models object pointers only. Raw native addresses, pointer arithmetic/memory, object returns, dynamic casts and native class/field metadata remain unconverted; this is not a complete native pointer implementation.
+- Remaining scope: registries, native calls and full text-script binding. Existing parsing/math/gameplay/audio gaps remain open.
+
+## 2026-10-11 - Client archive-backed VM color integration
+
+- Wired client configured-archive X11R6RGB loading into the represented native bytecode executor through ClientHost.RunVm. Added the Client-to-Scripting project reference and retained typed constant pools/requested return counts.
+- Native resource precedence audit uses the last matching WAD lump; duplicate name precedence inside that resource remains first-match. Archive changes replace or clear the catalog atomically; invalid resource reads/parsing retain the previous configured archive/catalog. Disposal clears the catalog and rejects subsequent execution.
+- Added two integration tests covering duplicate resource selection, named cast execution, catalog persistence across simulation restore, replacement with a catalog-free archive, malformed-resource rejection, previous-state preservation and disposed-host execution.
+- Validation: all 12,984 Release solution tests pass (400 Client, 494 Scripting). Dependencies restored after the new project reference; full Release rebuild with warnings as errors passes with zero warnings/errors; whitespace check passes.
+- Integration boundary: RunVm executes already-encoded bytecode. The existing text-script/custom client VM path is not yet bound to this native executor. Archive aggregation across multiple WADs and native warning/partial malformed-color behavior remain open.
+- Remaining scope: name/sound registries, objects, memory access, native calls and full text-script binding. Existing parsing/math/gameplay/audio gaps remain open.
+
+## 2026-10-11 - X11 color catalog and VM name resolution
+
+- Converted valid X11R6RGB resource parsing into VmColorCatalog: decimal RGB components, comment/blank lines, names containing spaces and first-entry precedence. CAST_S2Co now accepts this catalog through both execution APIs, resolves names first and falls back to numeric parsing like native V_GetColor.
+- Audit verifies case-insensitive lookup, exact name spacing and C-string null termination. Managed catalog parsing rejects malformed/missing/out-of-range components with FormatException instead of native warning/partial-resource behavior. Non-ASCII locale case-fold differences remain unverified.
+- Added six regression cases covering named lookup, duplicate precedence, numeric-looking names taking precedence, multiword names, null termination, numeric fallback, both return APIs, absent catalogs and malformed resource data.
+- Validation: all 12,982 Release solution tests pass (494 Scripting). Full Release rebuild with warnings as errors passes with zero warnings/errors; whitespace check passes.
+- Integration limitation: the caller must supply parsed X11R6RGB data; automatic active-archive loading is not yet wired into the native-script execution path.
+- Remaining scope: name/sound registries, objects, memory access, native calls and full text-script binding. Existing parsing/math/gameplay/audio gaps remain open.
+
+## 2026-10-11 - Numeric string-to-color VM cast slice
+
+- Converted numeric CAST_S2Co (12) behavior from V_GetColorFromString: #RGB nibble expansion, #RRGGBB, plain six-digit hex and spaced hexadecimal components, including native two-character component truncation, missing components and embedded-null termination.
+- Native audit verifies malformed HTML lengths become black and whitespace-delimited single digits expand to repeated nibbles. Added fifteen regression cases covering numeric formats, uppercase, truncation, whitespace, missing components, malformed lengths, nulls and invalid inputs.
+- Explicit limitation: full V_GetColor first resolves names using archive X11R6RGB data, which is not supplied to this execution API. This conversion covers the numeric/no-archive slice. Invalid parsed digits expose InvalidColor rather than reproducing native diagnostics/fallback behavior; named-color resolution and unusual strtol prefix forms remain open.
+- Validation: all 12,976 Release solution tests pass (488 Scripting). Full Release rebuild with warnings as errors passes with zero warnings/errors; whitespace check passes.
+- Remaining scope: archive-backed color/name/sound casts, objects, memory access, native calls and full text-script binding. Existing parsing/math/gameplay/audio gaps remain open.
+
+## 2026-10-11 - Native VM THROW abort instruction
+
+- Converted THROW (103) to an immediate ScriptAbort result with the full unsigned BC abort reason exposed as AbortCode. Both single-result and multiple-result APIs preserve the reason; aborted execution exposes no captured return values.
+- Native audit found the opcode comments describe object exceptions for A=0/1, but these execution branches are disabled with #if 0. Actual native execution always invokes ThrowAbortException with BC, independent of A; managed behavior follows the active implementation.
+- Added five regression cases covering four selector values across ten abort reasons, full 16-bit encoding, immediate termination before a following return, propagation through multiple-result execution and discarded partial returns.
+- Validation: all 12,961 Release solution tests pass (473 Scripting). Full Release rebuild with warnings as errors passes with zero warnings/errors; whitespace check passes.
+- Remaining exception scope: native diagnostic text/stack traces and caller integration. Object throw/catch behavior is disabled in the audited native interpreter and is not claimed as converted.
+- Remaining conversion scope: registry/archive-backed casts, objects, memory access, native calls and full text-script binding. Existing parsing/math/gameplay/audio gaps remain open.
+
+## 2026-10-11 - Multiple requested VM return values
+
+- Converted native RET/RETI requested-count handling through RunWithReturns and VmMultiResult, supporting 0..128 caller-requested typed result slots. Existing Run overloads retain their single-result API using the same execution core.
+- Native audit verifies slot selection by A without RET_FINAL, immediate capture, ignored slots beyond numret and final count min(final slot + 1, numret). Nil returns expose no results. Captured scalar/string/vector values remain independent of later register changes; faulted execution exposes no partial values.
+- Added seven regression cases covering requested counts zero through four, mixed typed slots, vector values, overwritten slots, faults after capture, invalid requested counts and nil return behavior.
+- Validation: all 12,956 Release solution tests pass (468 Scripting). Full Release rebuild with warnings as errors passes with zero warnings/errors; whitespace check passes.
+- API limitation: requested slots not written by bytecode start as integer zero, rather than carrying caller-provided native return storage. Full CALL/PARAM/RESULT integration and native declared return-type enforcement remain open.
+- Remaining scope: registry/archive-backed casts, objects, memory access, native calls and full text-script binding. Existing parsing/math/gameplay/audio gaps remain open.
+
+## 2026-10-11 - Packed color-to-string VM cast
+
+- Converted CAST_Co2S (14) from native DoCast: extracts packed RGB bytes and formats lowercase two-digit hexadecimal components separated by spaces. Alpha is ignored and source integer bits remain intact.
+- Added six regression cases covering zero, byte order, lowercase digits, leading zeros, all bits set and nonzero alpha, including source/destination bank aliasing.
+- Audit of remaining casts confirms S2N/N2S require the native name registry, S2So/So2S require sound IDs/engine lookup and S2Co requires archive-backed X11 color names through V_GetColor. These dependencies are not exposed in this VM slice and remain open rather than assigning stand-in IDs.
+- Validation: all 12,949 Release solution tests pass (461 Scripting). Full Release rebuild with warnings as errors passes with zero warnings/errors; whitespace check passes.
+- Remaining scope: registry/archive-backed casts, multiple-result calls, objects, memory access, native calls and full text-script binding. Existing parsing/math/gameplay/audio gaps remain open.
+
+## 2026-10-11 - String-to-floating VM cast
+
+- Converted CAST_S2F (9), audited against FString.ToDouble calling strtod. Managed parsing consumes ASCII whitespace/sign and valid decimal or hexadecimal numeric prefixes, preserves incomplete-exponent prefix behavior, stops before trailing text/nulls and returns zero when no numeric prefix exists.
+- Supports inf/infinity and nan forms, decimal overflow and hexadecimal binary exponents. Hexadecimal conversion accumulates an integer significand and rounds nearest-even directly at normal/subnormal double precision, preserving signed zero and avoiding intermediate significand overflow.
+- Added eighteen regression cases covering decimal/hex prefixes, fractional notation, incomplete exponents, trailing/null text, infinity/NaN, overflow, minimum subnormal and midpoint underflow/rounding, negative zero and source-bank preservation.
+- Validation: all 12,943 Release solution tests pass (455 Scripting). Full Release rebuild with warnings as errors passes with zero warnings/errors; whitespace check passes.
+- Remaining parsing limits: native locale decimal separators, NaN payload/sign bits, non-default rounding modes and extremely long hexadecimal literals with cancelling exponents are not established as equivalent (exponent accumulation saturates at magnitude 100000). Raw-byte fidelity also remains open.
+- Remaining conversion scope: name/sound/object casts, multiple-result calls, objects, memory access, native calls and full text-script binding. Existing math/gameplay/audio gaps remain open.
+
+## 2026-10-11 - Native nonfinal return slot handling
+
+- Converted missing RET/RETI result-slot behavior for this executor's single requested return value. Native execution copies slot zero before reaching the final instruction; later register changes must not alter the captured value. Higher return slots are ignored when numret=1, including their unused operand data.
+- Audit fixed previous managed behavior that discarded nonfinal values and treated any final return as slot zero. Scalar integer/float/string and vector results now capture immutable pending values; final higher-slot instructions return the captured requested slot, while subsequent slot-zero writes replace it. Falling off bytecode still faults.
+- Added seven regression cases covering all six represented register return types, changed source banks after capture, ignored higher-slot operands, immediate capture/overwrite and missing final returns.
+- Validation: all 12,925 Release solution tests pass (437 Scripting). Full Release rebuild with warnings as errors passes with zero warnings/errors; whitespace check passes.
+- Remaining scope: exposing multiple requested result slots and function-call integration, floating string parsing, name/sound/object casts, raw-byte fidelity, objects, memory access, native calls and full text-script binding. Existing math/gameplay/audio gaps remain open.
+
+## 2026-10-11 - Native string-to-integer cast
+
+- Converted CAST_S2I (8) from native DoCast/FString.ToLong, which calls strtoll with base zero then narrows to VM_SWORD.
+- Parser preserves ASCII whitespace/sign handling, decimal/octal/hex base detection, numeric prefix consumption, embedded-null termination, zero for absent digits, signed 64-bit saturation and low-32-bit narrowing. Source string remains intact when destination uses the same numbered integer register.
+- Added seventeen regression cases covering all bases, incomplete prefixes, trailing text, signs, empty/invalid input, embedded nulls, high-bit narrowing, both saturation bounds, very long input and non-ASCII whitespace. Locale-specific strtoll extensions remain unverified.
+- Validation: all 12,918 Release solution tests pass (430 Scripting). Full Release rebuild with warnings as errors passes with zero warnings/errors; whitespace check passes.
+- Remaining scope: floating string parsing, name/sound/object casts, raw-byte fidelity and locale behavior, multiple-result calls, objects, memory access, native calls and full text-script binding. Bundled/fast math reproducibility and existing gameplay/audio gaps remain open.
+
+## 2026-10-11 - Floating and vector string casts
+
+- Converted CAST_F2S (6), CAST_V22S (16) and CAST_V32S (17), preserving native %.5f component formatting and vector parentheses/comma-space punctuation. Native CAST_V42S is declared but has no DoCast implementation; managed execution remains unsupported for that selector.
+- Formatting decomposes IEEE double bits and rounds the exact scaled rational value to five decimals with nearest-even ties, preserving negative zero, subnormals and large finite values without exponent notation. Uses invariant decimal punctuation. NaN/infinity use nan/inf/-inf; native platform-specific NaN signs/spelling, locale and non-default floating rounding modes remain unverified.
+- Added fourteen regression cases covering scalar formatting, both exact binary midpoint directions, large values, non-finite values, negative zero/subnormals, both vector casts, punctuation, source/destination bank aliasing and invalid vector source ranges.
+- Validation: all 12,901 Release solution tests pass (413 Scripting). Full Release rebuild with warnings as errors passes with zero warnings/errors; whitespace check passes.
+- Remaining scope: string parsing/name/sound/object casts, raw-byte fidelity and locale behavior, multiple-result calls, objects, memory access, native calls and full text-script binding. Bundled/fast math reproducibility and existing gameplay/audio gaps remain open.
+
+## 2026-10-11 - Integer-to-string and string Boolean casts
+
+- Converted native CAST_I2S (1), CAST_U2S (3) and CASTB_S (24) selectors. Signed/unsigned decimal formatting uses invariant culture and reinterprets unsigned storage bits before formatting.
+- Native audit verifies integer formats %d/%u and string Boolean conversion via stored FString length greater than zero. Text content is not parsed: strings containing zero, false or embedded null bytes remain true when nonempty. Source/destination bank aliasing preserves the source value.
+- Added eleven regression cases covering signed bounds, unsigned high-bit values, zero, empty/numeric/Boolean-looking/embedded-null/Unicode strings and preservation of the separate source bank.
+- Validation: all 12,887 Release solution tests pass (399 Scripting). Full Release rebuild with warnings as errors passes with zero warnings/errors; whitespace check passes.
+- Remaining scope: floating/vector-to-string formatting, string parsing/name/sound/object casts, raw-byte fidelity and locale case-fold behavior, multiple-result calls, objects, memory access, native calls and full text-script binding. Bundled/fast math reproducibility and existing gameplay/audio gaps remain open.
+
+## 2026-10-11 - String VM comparison instruction
+
+- Converted CMPS (109): equality/less-than/less-or-equal method flags 0/2/4, constant operand flags 8/16, case-fold flag 32 and expected branch polarity bit 0. Typed constants and invalid comparison methods fault explicitly.
+- Native audit verifies FString comparison uses strcmp/stricmp. Managed comparison orders UTF-8 bytes, stops at embedded nulls and folds ASCII uppercase bytes for the case-insensitive path. This avoids managed UTF-16 ordering and Unicode case-folding differences. Non-ASCII locale-dependent stricmp behavior and arbitrary non-UTF-8 native bytes remain unverified.
+- Added eight regression cases covering all four operand-source combinations across nine string scenarios, all methods, both folding modes and both polarities; missing constant forms, invalid methods and malformed taken branches are checked. Scenarios include prefixes, empty strings, embedded nulls and Unicode byte-order versus UTF-16-order differences.
+- Validation: all 12,876 Release solution tests pass (388 Scripting). Full Release rebuild with warnings as errors passes with zero warnings/errors; whitespace check passes.
+- Remaining scope: string/numeric/vector casts, raw-byte fidelity and locale case-fold behavior, multiple-result calls, objects, memory access, native calls and full text-script binding. Bundled/fast math reproducibility and existing gameplay/audio gaps remain open.
+
+## 2026-10-11 - Basic string VM instructions and returns
+
+- Converted LKS (4), LKS_R (8), MOVES (79), CONCAT (107) and LENS (108), plus native register/constant string RET forms (type 2 / constant flag 4). Added an independent empty-initialized string register bank, typed constant pool and VmResult.StringValue; existing execution overloads remain available.
+- Native audit verifies full 16-bit constant loads, indexed register B + unsigned C selection, concatenation operand reads before destination assignment and FString byte-count length. Managed valid Unicode text uses UTF-8 byte counts, including embedded nulls; arbitrary native non-UTF-8 bytes and malformed UTF-16 are not established as equivalent.
+- Added eight regression cases covering load/move/concatenation/return, register-bank separation, ASCII/Unicode/embedded-null lengths, default empty strings, full-width loads, missing or overflowing indexes and constant returns. Removed the former unsupported-string-return theory row now that type 2 is implemented.
+- Validation: all 12,868 Release solution tests pass (380 Scripting). Full Release rebuild with warnings as errors passes with zero warnings/errors; whitespace check passes.
+- Remaining scope: string comparisons/casts and raw-byte fidelity, multiple-result calls, objects, memory access, native calls and full text-script binding. Bundled/fast math reproducibility and existing gameplay/audio gaps remain open.
+
+## 2026-10-11 - Numeric scalar and vector return forms
+
+- Converted missing numeric RET operand forms using native SetReturn and vm.h flags: typed integer/floating constants and register/constant 2D, 3D and 4D vectors (including quaternion storage). Vector results expose immutable component-count and X/Y/Z/W values through VmResult.VectorValue.
+- Native audit verifies REGT_KONST=4, floating type=1 and vector flags 8/16/64. Return decoding validates supported type combinations and complete register/constant ranges. Existing scalar integer/floating return APIs remain covered; unsupported string/pointer/address forms still fault explicitly.
+- Added thirteen regression cases covering all six vector source/size combinations, both scalar constant forms, unsupported flags, missing constants, register overflow and the last valid 4D register range. Added VmCode.RetVector encoding with size validation.
+- Validation: all 12,861 Release solution tests pass (373 Scripting). Full Release rebuild with warnings as errors passes with zero warnings/errors; whitespace check passes.
+- Remaining scope: multiple-result return slots and function-call integration, vector/string/object casts, strings, objects, memory access, native calls and full text-script binding. Bundled/fast math reproducibility and existing gameplay/audio gaps remain open.
+
+## 2026-10-11 - Quaternion VM multiplication and conjugation
+
+- Converted MULQV3_RR (234), MULQQ_RR (235) and CONJQ (236) using consecutive X/Y/Z/W double registers and native quaternion.h expressions.
+- Native audit verifies quaternion multiplication operand order and vector rotation as q * (vectorQuaternion * conjugate(q)), without implicit normalization. Conjugation negates X/Y/Z and retains W. Input/output temporaries preserve native exact and partial register-range overlap behavior.
+- Added fourteen regression cases covering multiplication components, 180-degree vector rotation, conjugation, exact/partial overlap on both operand ranges, invalid register ranges and unnormalized quaternion scaling.
+- Validation: all 12,848 Release solution tests pass (360 Scripting). Full Release rebuild with warnings as errors passes with zero warnings/errors; whitespace check passes.
+- Remaining scope: vector/quaternion return and cast integration, strings, objects, memory access, native calls and full text-script binding. Bundled/fast math reproducibility and existing gameplay/audio gaps remain open.
+
+## 2026-10-11 - Vector VM equality and cross products
+
+- Converted seven native instructions: EQV2_R/K (209/210), CROSSV_RR (215), EQV3_R/K (221/222) and EQV4_R/K (232/233). Constant equality forms execute their native contiguous floating constant-pool representation even though opcode comments describe them as unused by compilation.
+- Native audit verifies equality checks every component, exact IEEE equality or absolute difference strictly below 1/65536 when CMP_APPROX is set, then branches using A bit 0. Register/constant vector ranges are validated before comparison.
+- Cross products compute all three temporaries before writing, preserving native results for both exact and partial destination/source overlap. All three vector ranges are checked before evaluation.
+- Added seventeen regression cases covering all six equality forms with component-by-component differences, epsilon boundary, NaN/infinity, both modes/polarities, malformed jumps and invalid ranges, plus four cross-product overlap arrangements and invalid cross-product ranges.
+- Validation: all 12,834 Release solution tests pass (346 Scripting). Full Release rebuild with warnings as errors passes with zero warnings/errors; whitespace check passes.
+- Remaining scope: quaternion instructions, vector return/cast integration, string/object casts, strings, objects, memory access, native calls and full text-script binding. Bundled/fast math reproducibility and existing gameplay/audio gaps remain open.
+
+## 2026-10-11 - Vector scalar arithmetic and lengths
+
+- Converted fifteen native instructions: MULVF2_RR/RK, DIVVF2_RR/RK, LENV2 (204..208), corresponding 3D forms (216..220) and 4D forms (227..231).
+- Native audit verifies scalar register/constant selection is captured before component writes and vector writes remain sequential for overlapping ranges. Vector division intentionally permits IEEE zero division, unlike native scalar DIVF, yielding signed infinity or NaN. Length uses the native sum-of-squares expression and square root, retaining overflow behavior rather than substituting a scaled norm.
+- Register ranges and typed constants are validated before execution. Added twenty-four regression cases covering all scaling/length forms, every result component, source/destination bounds, missing constants, both zero signs, scalar overlap capture and length overflow.
+- Validation: all 12,817 Release solution tests pass (329 Scripting). Full Release rebuild with warnings as errors passes with zero warnings/errors; whitespace check passes.
+- Remaining scope: vector equality and cross products; string/object casts, strings, objects, memory access, native calls and full text-script binding. Bundled/fast math reproducibility and existing gameplay/audio gaps remain open.
+
+## 2026-10-11 - Basic 2D, 3D and 4D vector VM operations
+
+- Converted fifteen instructions: MOVEV2/3/4 (81..83), NEGV2/ADDV2_RR/SUBV2_RR/DOTV2_RR (200..203), corresponding 3D forms (211..214) and 4D forms (223..226). Vectors occupy consecutive double registers; dot products return a scalar in the floating bank.
+- Native audit verifies component-order writes for moves, negation, addition and subtraction, including partially overlapping register ranges. Dot products read all inputs before writing the result and accumulate products in native left-to-right order.
+- Added RegisterRange faults for vector source/destination ranges extending beyond the 256-register bank, replacing unsafe access/assertion behavior for malformed bytecode.
+- Added thirty-three regression cases covering all fifteen instructions, all output components, exact destination/source aliasing, invalid source/destination/right-operand ranges and partial-overlap sequencing.
+- Validation: all 12,793 Release solution tests pass (305 Scripting). Full Release rebuild with warnings as errors passes with zero warnings/errors; whitespace check passes.
+- Remaining scope: vector scalar multiplication/division, lengths, equality and cross products; string/object casts, strings, objects, memory access, native calls and full text-script binding. Bundled/fast math reproducibility and existing gameplay/audio gaps remain open.
+
+## 2026-10-11 - Numeric VM casts and Boolean normalization
+
+- Converted numeric execution of CAST (84) and CASTB (85): native selectors I2F=0, U2F=2, F2I=4, F2U=5, CASTB_I=21 and CASTB_F=22. String/object selectors remain explicitly unsupported through InvalidCast.
+- Native audit verifies unsigned integer casts reinterpret the stored 32-bit pattern; floating integer casts truncate toward zero; unsigned results preserve their 32 bits in signed storage. Boolean casts normalize any nonzero value to 1, including floating NaN/infinity, while both signed zeros produce 0.
+- Managed floating-to-integer conversion validates the truncated value before casting and reports Overflow for non-finite/out-of-range values. Native C++ has no portable defined result for these cases. Fractional values whose truncated result fits remain valid, including -0.9 to unsigned zero.
+- Added thirty-one regression cases covering signed/unsigned boundaries, fractional truncation, separate numeric register banks, in-place Boolean normalization, both zero signs, NaN/infinity and invalid or unsupported selectors.
+- Validation: all 12,760 Release solution tests pass (272 Scripting). Full Release rebuild with warnings as errors passes with zero warnings/errors; whitespace check passes.
+- Remaining scope: string/object cast selectors, vectors, strings, objects, memory access, native calls and full text-script binding. Bundled/fast math reproducibility and existing gameplay/audio gaps remain open.
+
+## 2026-10-11 - Floating VM functions and atan2
+
+- Converted ATAN2 (190) and FLOP (191), including all twenty-four native FLOP selectors from vmintern.h: absolute/negation, exponential/logarithms, square root, ceiling/floor, radian/degree trigonometry, hyperbolic functions and rounding.
+- Native audit verifies atan2(B,C) returns degrees, degree inverse functions multiply by 180/pi and degree forward functions convert inputs by pi/180. ROUND uses halfway-away-from-zero rather than the managed default midpoint policy. Destination aliasing reads source values before assignment.
+- Invalid selectors produce InvalidFloatFunction instead of the native assertion/fallback. Valid domain errors retain NaN/infinity math results. Math functions use System.Math; bit-for-bit matching against native bundled c_* functions or optional fast trigonometry is not established.
+- Added thirty-four regression cases covering every selector, both rounding midpoint signs, degree/radian units, all atan2 quadrants, destination aliasing, invalid selectors and NaN domain results.
+- Validation: all 12,729 Release solution tests pass (241 Scripting). Full Release rebuild with warnings as errors passes with zero warnings/errors; whitespace check passes.
+- Remaining scope: numeric casts, vectors, strings, objects, memory access, native calls and full text-script binding. Bundled/fast math reproducibility and existing gameplay/audio gaps remain open.
+
+## 2026-10-11 - Native floating VM comparisons
+
+- Converted all eight scalar floating comparison instructions EQF_R/K, LTF_RR/RK/KR and LEF_RR/RK/KR (192..199), with typed constant selection/validation and existing comparison-followed-by-jump execution.
+- Native audit verifies CMP_APPROX = 32 and EQUAL_EPSILON = 1/65536. Approximate equality uses absolute difference strictly below epsilon; less-than uses difference strictly below negative epsilon; native approximate less-than-or-equal uses difference at or below negative epsilon, not a positive tolerance. The implementation preserves that rule explicitly.
+- Exact comparison retains IEEE NaN/infinity and signed-zero behavior. Approximate comparisons retain native subtraction behavior, including false approximate equality for identical infinities. Expected-result polarity is selected by A bit 0 independently of the approximate flag.
+- Added twenty-one regression cases: eight forms each exercise ten operand scenarios, both exact/approximate modes and both branch polarities; five constant forms reject missing typed constants and eight taken-branch forms reject malformed jump instructions.
+- Validation: all 12,695 Release solution tests pass (207 Scripting). Full Release rebuild with warnings as errors passes with zero warnings/errors; whitespace check passes.
+- Remaining scope: floating functions, numeric casts, vectors, strings, objects, memory access, native calls and full text-script binding. Bundled math bit reproducibility and existing gameplay/audio gaps remain open.
+
+## 2026-10-11 - Floating VM modulo, power and min/max
+
+- Converted ten native instructions MODF_RR/RK/KR, POWF_RR/RK/KR, MINF_RR/RK and MAXF_RR/RK (180..189), sharing typed constant validation and operand selection with the existing numeric executor.
+- Native audit: vmexec.cpp defines modulo as a - floor(a/b)*b; managed execution reproduces that expression rather than C# remainder. Both zero signs abort modulo with DivisionByZero. Min/max use native comparison/selection expressions, preserving right-operand selection for ties, signed zeros and unordered NaN comparisons.
+- Power uses Math.Pow with native operand order and permits zero exponents/bases and non-finite/domain results. Native g_pow can select either platform pow or bundled c_pow; bit-for-bit reproducibility against bundled math is not established and remains an explicit limitation.
+- Added twenty-four regression cases covering all ten forms, negative modulo operands, fractional/negative powers, source/destination aliasing, zero denominators, missing constants, both NaN operand positions, signed-zero ties and non-finite results.
+- Validation: all 12,674 Release solution tests pass (186 Scripting). Full Release rebuild with warnings as errors passes with zero warnings/errors; whitespace check passes.
+- Remaining scope: floating functions/comparisons and bundled math reproducibility, numeric casts, vectors, strings, objects, memory access, native calls and full text-script binding; existing gameplay/audio gaps remain open.
+
+## 2026-10-11 - Double-precision VM loads and basic arithmetic
+
+- Converted thirteen native instructions: LKF/LKF_R (3/7), MOVEF (78), ADDF_RR/RK, SUBF_RR/RK/KR, MULF_RR/RK and DIVF_RR/RK/KR (170..179). Added a separate 256-entry double register bank and typed floating constant pool; existing two-argument integer execution remains available.
+- RET now supports the native scalar floating register type (1), exposed through nullable VmResult.FloatValue and VmCode.RetFloat. Integer result behavior remains covered by the existing suite. Multi-result calls and vector return flags remain outside this slice.
+- Native audit verifies constant-left/right selection and source reads before destination writes. Division rejects both positive and negative zero as native execution does; arithmetic otherwise retains IEEE NaN/infinity results. Constant loads validate full 16-bit indexes and indexed loads use wide checked range validation.
+- Added twenty-four regression cases covering all ten arithmetic forms, fractional operand order, destination aliasing, both zero signs, missing typed constants, full-width/indexed loads, move/return behavior, separate numeric register banks and non-finite results. Distinct zero signs are constructed by bit pattern to avoid duplicate theory data.
+- Validation: all 12,650 Release solution tests pass (162 Scripting). Full Release rebuild with warnings as errors passes with zero warnings/errors; whitespace check passes.
+- Remaining scope: floating remainder/power/min/max/functions/comparisons, numeric casts, vectors, strings, objects, memory access, native calls and full text-script binding; existing gameplay/audio gaps remain open.
+
+## 2026-10-11 - Native indexed integer loads, jumps and bounds
+
+- Converted LK_R (6), TESTN (91), IJMP (93) and BOUND/BOUND_K/BOUND_R (104..106) from native vmexec.h. Indexed loads select constant[register B + unsigned C], including destination aliasing; negative tests compare the register against the negative unsigned 16-bit BC magnitude.
+- Audit finding: the IJMP opcode comment describes an additional signed BC offset, but native execution ignores BC, selects the jump at pc + register A + 1 and applies that instruction's signed 24-bit displacement. The managed implementation follows execution and rejects absent/non-jump entries with BadJump.
+- Bounds checks preserve native negative-index and exclusive-upper-limit rejection, exposing ArrayBounds through the existing managed fault result. Constant bounds use the full unsigned 16-bit BC index. Indexed loads validate indexes using a wide intermediate; malformed/overflowing indexes produce ConstantRange instead of unsafe native access.
+- Added twenty-one regression cases covering source/destination aliasing, invalid/overflowing constant indexes, negative-test magnitudes, jump-table selection and malformed entries, all bounds operand forms and full-width constant indexes.
+- Validation: all Release solution tests pass (12,626 cases, including 138 Scripting). Full Release rebuild with warnings as errors passes with zero warnings/errors; whitespace check passes.
+- Remaining scope: float/string/object operations, memory access, native calls and full text-script binding; existing ambient, camera, audio backend and projectile timing gaps remain open.
+
+## 2026-10-11 - Native integer VM comparison variants
+
+- Converted eleven missing native comparison instructions from vmops.h/vmexec.h: EQ_K, LT_RK/KR, LE_RK/KR, LTU_RR/RK/KR and LEU_RR/RK/KR (157..169 alongside existing forms). All fourteen native integer comparison operand variants now execute in the represented VM slice.
+- Shared execution selects register/constant operands from B/C, validates constant indexes, preserves signed versus unsigned ordering and uses the existing native-style comparison/jump handling for both expected-result polarities.
+- Added thirty-one regression cases covering all eleven new instructions, negative/high-bit operands, both branch polarities, missing constants and required following jump instructions.
+- Validation: all 12,605 Release solution tests pass (10,537 Playsim, 398 Client, 117 Scripting). Full Release rebuild with warnings as errors passes with zero warnings/errors; whitespace check passes.
+- Remaining scope: other VM operations, float/string/object/native calls and full text-script binding; existing ambient, camera, audio backend and projectile timing gaps remain open.
+
+## 2026-10-11 - Complete represented integer VM shift variants
+
+- Converted six missing native shift instructions from vmops.h/vmexec.h: SLL_RI, SLL_KR, SRL_RR, SRL_KR, SRA_RR and SRA_KR (111..118 alongside existing forms). All nine native integer shift operand variants now execute in the represented VM slice.
+- Shared execution distinguishes immediate/register counts and register/constant sources. Logical right shifts zero-fill; arithmetic right shifts preserve the sign; left shifts preserve the low 32-bit result. Constant B indexes are checked before access and invalid counts use the existing managed ShiftRange fault policy. Native invalid register shifts are not portable C++ behavior.
+- Added twenty-one cases covering all six new forms, negative source values, count 31, destination aliasing, invalid register/immediate counts and missing constants. Existing shift cases remain green.
+- Validation: all 12,574 Release solution tests pass (10,537 Playsim, 398 Client, 86 Scripting). Full Release rebuild with warnings as errors passes with zero warnings/errors; whitespace check passes.
+- Remaining scope: integer comparisons and other VM operations, float/string/object/native calls and full text-script binding; existing ambient, camera, audio backend and projectile timing gaps remain open.
+
+## 2026-10-11 - Native integer VM bitwise constants and min/max
+
+- Converted eleven instructions from native vmops.h/vmexec.h: AND_RK, OR_RK, XOR_RK and signed/unsigned MIN/MAX register/register and register/constant forms (opcodes 140, 142, 144..152).
+- Bitwise forms preserve all 32 bits. Signed min/max compares signed integers; unsigned forms compare uint interpretations and return the selected original bit pattern. Constant C indexes are validated before reading or mutating destination registers.
+- Added eighteen regressions covering all eleven instructions, negative/high-bit operands, destination/source aliasing and invalid constants for all seven constant forms. Existing shift and arithmetic suites pass.
+- Validation: all 12,553 Release solution tests pass (10,537 Playsim, 398 Client, 65 Scripting). Full Release rebuild with warnings as errors passes with zero warnings/errors; whitespace check passes.
+- Remaining scope: further integer VM instructions, floating-point/string/object operations, native calls and text-script compilation/binding. Existing ambient, camera, audio backend and projectile timing gaps remain open.
+
+## 2026-10-11 - Native VM division and remainder variants
+
+- Converted ten integer opcodes from vmops.h / vmexec.h: signed DIV_RK, DIV_KR, MOD_RK and MOD_KR plus unsigned DIVU_RR/RK/KR and MODU_RR/RK/KR, using native opcode numbers 128..138 alongside existing signed register forms.
+- Shared execution selects constant operands by B/C encoding, validates indexes before division, rejects zero denominators and preserves unsigned 32-bit bit patterns in signed storage. Signed quotient overflow follows the existing managed Overflow fault policy; native C++ uses raw signed arithmetic and does not define a portable overflow result.
+- Added thirty regression cases covering signed truncation/remainder sign, unsigned high-bit operands, constant-left/right/register variants, destination aliasing, divide-by-zero, invalid constant indexes and signed minimum divided by -1.
+- Validation: all 12,535 Release solution tests pass (10,537 Playsim, 398 Client, 47 Scripting). Full Release rebuild with warnings as errors passes with zero warnings/errors; whitespace check passes.
+- Remaining scope: additional integer opcodes, floats/strings/objects/native calls and full text-script compilation/binding. Duration-driven ambient actors, broader audio backend behavior and projectile timing remain open.
+
+## 2026-10-11 - Native integer VM constant arithmetic
+
+- Converted SUB_RK, SUB_KR and MUL_RK from src/common/scripting/vm/vmexec.h:1148 into HCDE.Scripting.VmExec with native vmops.h opcode numbers 123, 124 and 126.
+- Constant-right subtraction/multiplication read the C constant index; constant-left subtraction reads B and preserves operand order. Operations use the existing 32-bit unchecked arithmetic policy. Invalid constant indexes return ConstantRange before register mutation, consistent with managed VM fault handling.
+- Added nine regression cases covering noncommutative operand order, multiplication, signed boundary wraparound, destination/source aliasing and missing constants for all three instructions.
+- Validation: all 12,505 Release solution tests pass (10,537 Playsim, 398 Client, 17 Scripting). Full Release rebuild with warnings as errors passes with zero warnings/errors; whitespace check passes.
+- Audit also found native duration-driven ambient activation has no represented C# ambient actor yet; it was not approximated through an unrelated VM callback. Remaining scripting scope includes further VM opcodes, floats/strings/objects/native calls and actual text-script compilation/binding. Existing audio, camera, portal and projectile gaps remain open.
+
+## 2026-10-11 - Client sound length in seconds
+
+- Converted the seconds-returning client query subset of native DObject S_GetLength (src/sound/s_advsound.cpp:395), which divides S_GetMSLength by 1000.0.
+- Added ClientHost.TryGetSoundLength using the configured sound archive and simulation level mappings. It reuses the converted duration resolver without starting playback or drawing random choices, returns zero for unknown names and exposes explicit missing-archive/decoding errors. Disposed hosts reject the query consistently with other client operations.
+- Added two regressions covering named/alias/random seconds, archive retention after state restore, missing names, unconfigured archive, corrupt sound and disposed-host rejection. Tests verify no mixer channels are created.
+- Validation: all 12,496 Release solution tests pass (10,537 Playsim, 398 Client). Full Release rebuild with warnings as errors passes with zero warnings/errors; whitespace check passes.
+- Remaining scope: actual text-script/native VM binding and numeric/player-specific sound IDs for S_GetLength. Existing ZScriptVm remains a limited integer-only stand-in; this change does not claim a full script implementation. Other formats, camera script/save integration, portal/Doppler audio, sector/polyobject controls and projectile death timing remain open.
+
+## 2026-10-11 - Case-insensitive settings across sound mappings
+
+- Continued native logical sound-name parity by removing case-sensitive dictionary dependence from settings and individual mapping lookup. Shared named-value lookup uses exact lookup first, then ordinal case-insensitive matching; alias/definition/random resolution and duration recursion use it consistently.
+- Added shared GetSoundSettings and applied it to mixer volume, resolved singular/attenuation, random-group attenuation, inherited near-limit/pitch settings and alias-chain rolloff selection. Tentative sound resolution also uses the shared settings lookup.
+- Added three direct/alias/random regressions with lowercase logical definitions and uppercase settings keys. Tests verify actual volume/pitch PCM, selected rolloff and unchanged duration semantics.
+- Validation: all 12,494 Release solution tests pass (10,537 Playsim, 396 Client). Full Release rebuild with warnings as errors passes with zero warnings/errors; whitespace check passes.
+- Remaining scope: conflicting duplicate logical keys within custom case-sensitive dictionaries need explicit validation/normalization. Numeric sound IDs/player-specific resolution/script binding, other audio formats, camera script/save integration, portal/Doppler audio, sector/polyobject controls, negative loop offsets and projectile death timing remain open.
+
+## 2026-10-11 - Canonical logical sound names
+
+- Audited the represented named-sound resolution path and found mixed-case requests/links failed when callers supplied case-sensitive mapping dictionaries. Added shared GetCanonicalSoundName lookup using ordinal case-insensitive logical-name matching.
+- Playback resolution canonicalizes each alias/random step, duration recursion canonicalizes each visited name, and mixer startup canonicalizes the requested name before settings and channel identity selection. Case-insensitive cycle detection remains intact, and existing random-header visit semantics remain unchanged.
+- Added three mixed-case direct/alias/random cases using case-sensitive mappings and uppercase link targets. Tests verify duration, PCM volume settings and case-insensitive playing counts.
+- Validation: all 12,491 Release solution tests pass (10,537 Playsim, 393 Client). Full Release rebuild with warnings as errors passes with zero warnings/errors; whitespace check passes.
+- Remaining scope: inconsistent casing across independently supplied settings/mapping dictionaries and conflicting duplicate logical keys require separate configuration normalization. Numeric sound IDs/player-specific query binding, other audio formats, camera script/save integration, portal/Doppler audio, sector/polyobject controls and projectile death timing remain open.
+
+## 2026-10-11 - Invalid sound duration and recursive group semantics
+
+- Converted the invalid-ID zero-duration branch of SoundEngine::GetMSLength into the named query subset. Unregistered names now return a successful zero duration, including invalid choices inside random groups, instead of inheriting playback's missing-name error.
+- Added three cases covering unregistered names, empty random groups and nested groups containing invalid/missing choices. Recursive queries retain maximum-duration selection without playback or random draws. Playback resolution still reports an unknown sound explicitly; corruption and recursion-cycle errors retain their existing handling.
+- Validation: all 12,488 Release solution tests pass (10,537 Playsim, 390 Client). Full Release rebuild with warnings as errors passes with zero warnings/errors; whitespace check passes.
+- Remaining scope: numeric ID/player-specific duration binding and other audio formats; camera script/save integration, portal/Doppler sound, sector/polyobject controls, negative looping offsets and projectile death timing. Naming behavior still follows configured mapping comparers, requiring a separate canonical-name audit.
+
+## 2026-10-11 - Native sound duration query
+
+- Converted the represented named Doom-sound subset of SoundEngine::GetMSLength (src/common/audio/sound/s_sound.cpp:1616). SoundResourceResolver and AudioMixer expose TryGetSoundLengthMilliseconds without starting playback or consuming random-choice providers.
+- Queries resolve aliases recursively and inspect every random-group choice, returning the longest duration. Decoded sample count/rate determines integer milliseconds; missing resources return zero. Active recursion cycles and unsupported/corrupt encoding return explicit errors with zero result. Duplicate choices do not count as cycles.
+- Added five regression cases covering direct sounds, aliases, random groups with missing/repeated choices, missing resources, mixed alias/random cycles and encoding errors. Mixer channel counts remain unchanged.
+- Validation: all 12,485 Release solution tests pass (10,537 Playsim, 387 Client). Full Release rebuild with warnings as errors passes with zero warnings/errors after rerunning an initial build that overlapped the still-exiting test process and encountered file locks; whitespace check passes.
+- Remaining scope: numeric sound IDs, player-specific sound resolution, non-Doom audio formats and script binding for the query; automatic camera script/save integration, portal/Doppler audio, sector/polyobject controls, negative looping offsets and projectile death timing remain open.
+
+## 2026-10-11 - Reconcile audio listener lifecycle after restore and exit
+
+- Audited the newly converted console-player/camera audio selectors against existing StateRestored and LevelExited cleanup. Found reset cleared playback but retained reported listener coordinates and unavailable camera selection.
+- Reset now clears AudioListenerPosition and discards selected cameras absent from the restored live actors, preserving valid cameras and console-player configuration. Level exit clears camera selection and later ticks keep the reported listener absent instead of repopulating it from exited actors.
+- Added three cases covering valid-camera restore, destroyed-camera restore with fallback to the selected second player, and immediate/post-tick level-exit listener cleanup. Tests verify paused listener coordinates and retained console-player selection.
+- Validation: all 12,480 Release solution tests pass (10,537 Playsim, 382 Client). Full Release rebuild with warnings as errors passes with zero warnings/errors; whitespace check passes.
+- Remaining scope: full native camera save/script integration, input/render console-player selection, portal/Doppler audio, numeric sound IDs/script binding, sector/polyobject controls, negative looping offsets and projectile death timing. This fixes client lifecycle integration for the converted audio selectors, not native camera serialization.
+
+## 2026-10-11 - Explicit console player for client audio
+
+- Converted console-player identity selection for the audio client subset of native AActor::CheckLocalView and camera listener setup. Added TrySetAudioConsolePlayer with player-number validation; null resets to the existing first-live-player default.
+- Default audio listener and local-view checks now use the chosen console player. Explicit audio camera selection remains independent. Invalid selection preserves prior state, while a destroyed selected player does not silently switch local audio ownership to another player.
+- Added three regression cases covering two-player local sound routing, inert-camera player exception with the selected console pawn, invalid selection without mutation, player disappearance, reset and listener coordinates.
+- Validation: all 12,477 Release solution tests pass (10,537 Playsim, 379 Client). Full Release rebuild with warnings as errors passes with zero warnings/errors; whitespace check passes.
+- Remaining scope: gameplay/render/input console-player selection, automatic camera-changing script/save integration, portal/Doppler audio, numeric sound IDs/full script binding, sector/polyobject controls, negative looping offsets and projectile death timing. This API controls audio ownership only; no full multiplayer client integration is claimed.
+
+## 2026-10-11 - Native local-view exception for inert cameras
+
+- Converted the local sound admission rule from AActor::CheckLocalView (src/playsim/p_mobj.cpp:1321), called by S_PlaySoundPitch. A selected camera actor is local; the console player's pawn also remains local when viewing through an actor that is neither a player pawn nor a monster.
+- Audit found selected-camera equality alone incorrectly suppressed player-local sounds through inert map cameras. Client local request filtering now uses a dedicated native-rule helper, requiring an active console player and camera. Destroyed/missing cameras reject local requests; global non-positional requests retain their independent path.
+- Added three regressions covering inert-camera admission, monster-camera rejection and destroyed-camera rejection, with channel counts and actual PCM assertions. Existing player-camera and camera-source local playback tests remain green.
+- Validation: all 12,474 Release solution tests pass (10,537 Playsim, 376 Client). Full Release rebuild with warnings as errors passes with zero warnings/errors; whitespace check passes.
+- Remaining scope: explicit console-player selection/multiplayer local-view policies, automatic camera-changing script/save integration, portal/Doppler audio, numeric sound IDs/full script binding, sector/polyobject controls, negative loop offsets and projectile death timing. The client still uses its first live player as the console-player stand-in.
+
+## 2026-10-11 - Explicit audio camera selection
+
+- Converted the client-side listener selection subset of native S_SetListener / DoomSoundEngine::CalcPosVel, which follows the active camera rather than always using the player pawn.
+- Added ClientHost.TrySetAudioListener with validated actor selection and null reset to the default player. Positional startup, binding, immediate sound requests, nearby-origin refresh and tick updates use the shared selector. Invalid selections preserve the previous listener; a destroyed selected actor yields the existing missing-listener fallback.
+- Local playback and silent-pickup listener comparisons now use the selected actor. This supports the current single-listener client model; full multiplayer/native CheckLocalView rules and script-driven camera switching remain separate work.
+- Added two regressions covering camera-relative PCM attenuation, selection failure without mutation, destroyed-camera zero-origin fallback, reset to player, and local requests admitted only for the selected camera.
+- Validation: all 12,471 Release solution tests pass (10,537 Playsim, 373 Client). Full Release rebuild with warnings as errors passes with zero warnings/errors; whitespace check passes.
+- Remaining scope: automatic integration with native camera-changing script commands/save state, multiplayer local-view semantics, portal/Doppler audio, numeric sound IDs/full script binding, sector/polyobject controls, negative loop offsets and projectile death timing.
+
+## 2026-10-11 - Nearby sound rejection uses current actor origins
+
+- Converted the live actor-position aspect of SoundEngine::CheckSoundLimit (src/common/audio/sound/s_sound.cpp:825), which calls CalcPosVel on existing channels before comparing distance.
+- Audit found client starts could compare a new source against stale existing actor positions from the last audio tick. Before actor/positioned client playback checks, live actor mixer origins now refresh from current SoundPos, respecting channel listener-height flags and missing-listener height behavior.
+- Origin refresh updates source positions only; attenuation/listener processing remains in the normal updater. Existing original channel handles, ownership and playback positions remain intact when a new one-shot is rejected by the nearby limit.
+- Added two regression cases moving an existing actor into/out of the limit radius between audio ticks. Tests verify suppression/admission, original handle retention and resulting sound counts without requiring a tick to refresh positions first.
+- Validation: all 12,469 Release solution tests pass (10,537 Playsim, 371 Client). Full Release rebuild with warnings as errors passes with zero warnings/errors; whitespace check passes.
+- Remaining scope: standalone mixer callers supply their own current positions; native camera selection, portal/Doppler audio, numeric sound IDs/full script binding, sector/polyobject controls, negative loop offsets, backend-failure ordering and projectile death-state timing remain open.
+
+## 2026-10-11 - Paused one-shot replacement ordering
+
+- Converted the native StartSound ordering where source/channel replacement precedes paused one-shot suppression (src/common/audio/sound/s_sound.cpp:540). Actor and positioned client starts now request mixer replacement before the pause gate; a suppressed new sound can therefore stop existing playback on the selected channel.
+- Added an optional overlap argument to the handle-returning mixer playback API. Existing direct mixer callers keep overlap by default; the client explicitly supplies its native overlap policy. Replacement selects actual actor ownership or an exact positioned origin, while channel zero and overlap retain existing sounds.
+- Client consumption cleans stopped ownership records even when the new sound returns an empty handle. Existing loop, UI/no-pause/force and decode/resource guards continue to pass.
+- Added five paused actor/positioned cases verifying old-handle state, empty new handles and post-unpause PCM, including explicit overlap and auto-channel retention.
+- Validation: all 12,467 Release solution tests pass (10,537 Playsim, 369 Client). Full Release rebuild with warnings as errors passes with zero warnings/errors; whitespace check passes.
+- Remaining scope: native replacement ordering for other rejected/backend-failed starts, full numeric sound/script binding, native camera selection, portal/Doppler audio, sector/polyobject controls, negative looping offsets and projectile death-state timing. Direct mixer API overlap defaults preserve existing callers rather than imposing client replacement policy globally.
+
+## 2026-10-11 - Actor channel replacement includes direct mixer playback
+
+- Converted actor source/channel replacement selection from SoundEngine::StartSound (src/common/audio/sound/s_sound.cpp:540) into an internal mixer operation. A successful non-overlapping, non-auto actor start replaces every existing channel with the same actor source and entity channel, excluding the new handle.
+- Audit found replacement previously selected only host ownership records. Direct mixer sounds now stop alongside host-created sounds. Existing auto-channel overlap, explicit overlap and magic-silence channel coercion remain in place; other actors and channels survive. Stopped host ownership records are cleaned through the shared helper.
+- Added four cases covering multiple direct sounds on one actor channel, explicit overlap, auto-channel behavior and magic-silence replacement on the coerced channel. Tests verify handle retention and actual source-aware counts.
+- Validation: all 12,462 Release solution tests pass (10,537 Playsim, 364 Client). Full Release rebuild with warnings as errors passes with zero warnings/errors; whitespace check passes.
+- Remaining scope: native replacement timing for paused/rejected/backend-failed starts, native camera selection, portal/Doppler audio, numeric sound IDs/full script binding, sector/polyobject controls, negative looping offsets and projectile death timing. Replacement still occurs after successful client channel setup, preserving existing failure safety.
+
+## 2026-10-11 - Positional sound starts without a listener
+
+- Converted missing-listener startup/binding behavior from the native StartSound and DoomSoundEngine::CalcPosVel path. Actor and positioned sources may start without a current listener and calculate distance against the zero origin, consistent with ongoing positional updates.
+- Removed the client-only audio-listener-missing rejection from actor/positioned playback and source binding. Listener selection excludes destroyed actors; listener-height flags preserve source height when no listener exists. Actor source validation, silent sectors, local-only routing, attenuation errors and failed-channel cleanup retain their existing policies.
+- Added four actor/positioned and listener-height off/on cases. Tests verify successful handles, PCM attenuation against the fallback origin, source query classification and immediate StartSoundAt action-to-client playback without a listener.
+- Validation: all 12,458 Release solution tests pass (10,537 Playsim, 360 Client). Full Release rebuild with warnings as errors passes with zero warnings/errors; whitespace check passes.
+- Remaining scope: native camera selection, portal displacement/Doppler, numeric sound IDs/full script binding, sector/polyobject sound sources, negative loop offsets and projectile death timing. Actor playback replacement selection still needs direct-mixer parity review.
+
+## 2026-10-11 - Missing-listener positional audio fallback
+
+- Converted the no-camera positional fallback from DoomSoundEngine::CalcPosVel and S_SetListener in src/sound/s_doomsound.cpp: sound calculations use the zero origin when no listener exists, while listener validity remains absent.
+- Audit found ClientHost skipped positional updates entirely without a listener, retaining stale attenuation. The updater now refreshes actor sources and positioned channels against the zero origin, keeps AudioListenerPosition null and excludes destroyed listener actors even when paused before simulation cleanup.
+- AudioMixer.TryUpdateListenerPosition accepts listener availability so listener-height override applies only when a listener is present. Existing calls retain their default behavior; missing-listener actor positions preserve actual vertical separation.
+- Added two regression cases with listener-height off/on: destroy the listener while paused, move the retained actor horizontally and vertically, verify changing PCM attenuation and recovery at the fallback origin. Existing disappearance, listener-height and direct movement tests pass.
+- Validation: all 12,454 Release solution tests pass (10,537 Playsim, 356 Client). Full Release rebuild with warnings as errors passes with zero warnings/errors; whitespace check passes.
+- Remaining scope: sound-start/binding policy without a listener, native camera selection, portal displacement, Doppler, numeric sound IDs/full script binding, sector/polyobject controls, negative loop offsets and projectile death timing. This converts ongoing positional updates after listener loss.
+
+## 2026-10-11 - Direct mixer actor sources track movement
+
+- Converted direct actor-source discovery into the client sound updater. AudioMixer exposes an internal snapshot of channel handles, actor identities and listener-height flags; ClientHost synchronizes position tracking before source cleanup and listener updates each tick.
+- Actor-owned mixer sounds now follow SoundPos without requiring host playback/binding first. The updater retains existing error reporting, listener-height behavior, paused processing and actor disappearance cleanup. Relinked channels follow the destination rather than retaining the old actor's position. Native reference: DoomSoundEngine::CalcPosVel in src/sound/s_doomsound.cpp.
+- Added two paused/unpaused regression cases that verify actual PCM attenuation at near/far positions and full-volume playback after relinking to the listener. Updated the direct-loop duplicate fixture to request zero attenuation explicitly; its level has no rolloff definition, and newly active position updates correctly reject attenuated playback without one.
+- Validation: all 12,452 Release solution tests pass (10,537 Playsim, 354 Client). Full Release rebuild with warnings as errors passes with zero warnings/errors; whitespace check passes.
+- Remaining scope: native portal displacement, velocity/Doppler and listener fallback behavior; numeric sound IDs, full script binding, sector/polyobject source controls, negative looping offsets and full projectile death-state timing.
+
+## 2026-10-11 - Direct actor mixer channels follow relink and destruction
+
+- Audited native SoundEngine::RelinkSound in src/common/audio/sound/s_sound.cpp. Non-null destinations transfer source identity without replacing destination channels; null destinations retain one-shots as positioned sounds and stop loops. Existing cutoff compatibility additionally stops detached one-shots.
+- Converted client relink and destruction selection to actual mixer actor-channel snapshots. Direct mixer playback now transfers/detaches alongside host-created playback, with retained one-shots using the actor's final SoundPos. Relinked channels join client position tracking and existing host ownership/query records are updated when present.
+- Audit also found TryBindAudioSource assigned host position tracking without mixer source identity. Successful binding now establishes mixer actor ownership, making source queries and lifecycle controls agree.
+- Added eight cases covering direct null relink/destruction, loops and cutoff, repeated no-op detachment, unrelated source retention, invalid destination without mutation, multi-channel transfer retaining destination playback, destination destruction and binding previously unowned playback.
+- Validation: all 12,450 Release solution tests pass (10,537 Playsim, 352 Client). Full Release rebuild with warnings as errors passes with zero warnings/errors; whitespace check passes.
+- Remaining scope: direct mixer channels not bound/relinked through the host do not yet automatically track actor movement each tick. Numeric sound IDs, full script binding, sector/polyobject controls, negative looping offsets and full projectile death-state timing remain open.
+
+## 2026-10-11 - Actor queries and channel stops select mixer sources
+
+- Converted actor channel/range stop selection into AudioMixer.StopActorSound and StopActorSounds, matching native SoundEngine::StopSound and StopActorSounds. Negative single-channel stops select all actor channels; range bounds swap when reversed; range 0..0 selects all and ignores magic-silence expansion.
+- Audit found host-record selection missed direct actor-owned mixer playback. Actor playing counts now select actual mixer SourceActorId, original requested sound names and channels. Actor query channel zero retains native any-channel semantics; count channel zero remains exact. Native query reference: SoundEngine::IsSourcePlayingSomething, src/common/audio/sound/s_sound.cpp:1155.
+- Client channel/range stops delegate to the mixer and immediately remove stopped host records. Named actor stops also use this cleanup. Actor duplicate/free-channel guards now use source-aware queries; local free-channel checks use the existing unpositioned mixer query.
+- Added ten regression cases covering direct playback queries, case-insensitive sound selection, channel zero, negative channel stops, compatibility expansion, reversed/empty/all ranges, unrelated source retention and action-to-client loop duplicate suppression.
+- Validation: all 12,442 Release solution tests pass (10,537 Playsim, 344 Client). Full Release rebuild with warnings as errors passes with zero warnings/errors; whitespace check passes.
+- Remaining scope: numeric sound IDs, full script binding, sector/polyobject controls, negative looping offsets and projectile death-state timing/cutoff behavior. Direct mixer actor channels still need a separate lifecycle/relink audit; these changes cover query/stop/duplicate selection.
+
+## 2026-10-11 - Actor volume control uses mixer source ownership
+
+- Converted actor channel selection from SoundEngine::ChangeSoundVolume (src/common/audio/sound/s_sound.cpp:1023) into AudioMixer.TrySetActorSoundVolume. Selection matches actual actor source ownership and exact entity channel, with -1 selecting every channel; finite volume clamps to 0..1.
+- Audit found client volume requests selected only host bookkeeping, missing actor channels started directly in the mixer. Client request consumption now delegates to the source-aware mixer operation, preserving native S_ChangeActorSoundVolume magic-silence expansion.
+- Added three regression cases covering immediate action-to-client handling, direct mixer channels, compatibility off/on, other actor isolation, no-match counts, invalid volume rejection before mutation and negative/over-one clamping. Assertions verify resulting PCM samples.
+- Validation: all 12,432 Release solution tests pass (10,537 Playsim, 334 Client). Full Release rebuild with warnings as errors passes with zero warnings/errors; whitespace check passes.
+- Remaining scope: numeric sound IDs and full text-script binding, sector/polyobject source controls, negative looping offsets and full projectile death-state timing/cutoff behavior.
+
+## 2026-10-11 - Native named actor sound-stop selector
+
+- Converted the sound-ID selection branch of SoundEngine::StopSound(source type, source, channel, sound ID) into named actor stop support. With a supplied sound name, matching original names on the selected actor stop across channels; without a name, existing channel/negative-channel behavior remains intact.
+- AudioMixer.StopActorSoundByName operates on actual actor-owned mixer channels. ClientHost.StopActorSound accepts the selector, and ActorSoundActions.StopSound carries it through immediate request consumption. Named selection ignores channel and magic-silence channel expansion, matching native selection precedence.
+- Added two multi-source cases with magic-silence off/on. Tests cover action-to-client stops, case folding, another configured actor sound retained, other actor and positioned handles retained, missing-name no-op, returned stop counts and global counts.
+- Validation: Release solution tests pass, 12,429 total (10,537 Playsim, 331 Client). Full Release rebuild with warnings as errors passes with zero warnings/errors; whitespace check passes.
+- Remaining scope: numeric sound IDs and text-script binding, sector/polyobject source controls, negative loop offsets and full projectile death-state timing/cutoff behavior. Ownership record cleanup for mixer-level named stops follows existing lifecycle maintenance; query results filter stopped handles immediately.
+
+## 2026-10-11 - Native actor pitch changes selected by sound
+
+- Converted the named-sound selection branch of SoundEngine::ChangeSoundPitch (src/common/audio/sound/s_sound.cpp:1061). Mixer TrySetActorSoundPitch selects an actor's exact channel when no name is supplied, or every channel with the matching original sound name when a name is supplied, ignoring the channel parameter for that branch.
+- ActorSoundActions.SoundPitch accepts an optional sound selector, and client request consumption delegates to the mixer source-aware operation. Existing exact-channel action behavior and lack of magic-silence expansion are retained. Selection includes retained actor mixer channels rather than relying only on host ownership bookkeeping.
+- Invalid pitch and unsupported selected raw PCM channels are rejected before batch mutation. Existing per-channel resampling preserves playback position and clamps nonpositive pitch consistently with supported native backend behavior.
+- Added four cases covering exact/named/no-match selection, source isolation, invalid pitch, retained channel counts and named action-to-client loop sample changes. Existing exact-channel, pitch-state and playback-position suites pass.
+- Validation: Release solution tests pass, 12,427 total (10,537 Playsim, 329 Client); full Release rebuild with warnings as errors passes with zero warnings/errors. Whitespace check passes.
+- Remaining scope: numeric sound IDs and text-script binding, sector/polyobject sound sources, negative loop offsets and full projectile death-state timing/cutoff behavior. This is the actor-source named pitch selector, not every source type's pitch control.
+
 ## 2026-10-10 - Native non-actor playing queries and local NOSTOP
 
 - Converted SOURCE_None and SOURCE_Unattached subsets of SoundEngine::IsSourcePlayingSomething into mixer/client IsUnpositionedSoundPlaying and IsPositionedSoundPlaying. Channel zero queries all channels; other channel values match exactly. Optional sound names select any sound or case-insensitive original requested names.

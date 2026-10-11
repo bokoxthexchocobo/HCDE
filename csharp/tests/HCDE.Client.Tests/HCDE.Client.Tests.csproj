@@ -17,6 +17,12 @@
 
   <ItemGroup>
     <Using Include="Xunit" />
+    <EmbeddedResource Include="../../../wadsrc_extra/static/iwadinfo.txt" LogicalName="native-iwadinfo.txt" />
+    <EmbeddedResource Include="Fixtures/scripts-solid.7z" />
+    <EmbeddedResource Include="Fixtures/scripts-encrypted.7z" />
+    <EmbeddedResource Include="Fixtures/scripts-bzip2.zip" />
+    <EmbeddedResource Include="Fixtures/scripts-lzma.zip" />
+    <EmbeddedResource Include="Fixtures/scripts-encrypted.zip" />
   </ItemGroup>
 
   <ItemGroup>

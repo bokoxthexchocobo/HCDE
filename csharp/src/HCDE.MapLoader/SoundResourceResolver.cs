@@ -3,6 +3,63 @@ namespace HCDE.MapLoader;
 /// <summary>Resolves represented logical sound mappings without loading or playing audio.</summary>
 public static class SoundResourceResolver
 {
+    private static bool TryGetNamedValue<T>(IReadOnlyDictionary<string, T> values, string name, out T value)
+    {
+        if (values.TryGetValue(name, out value!)) return true;
+        foreach (var pair in values)
+        {
+            if (!pair.Key.Equals(name, StringComparison.OrdinalIgnoreCase)) continue;
+            value = pair.Value;
+            return true;
+        }
+        value = default!;
+        return false;
+    }
+
+    public static HCDE.Gamedata.SndInfoSoundSettings? GetSoundSettings(PlayLevel level, string sound)
+        => TryGetNamedValue(level.SoundSettings, sound, out var settings) ? settings : null;
+
+    public static string GetCanonicalSoundName(PlayLevel level, string sound)
+    {
+        foreach (var name in level.SoundAliases.Keys.Concat(level.SoundDefinitions.Keys)
+            .Concat(level.RandomSoundGroups.Keys).Concat(level.SoundSettings.Keys))
+            if (name.Equals(sound, StringComparison.OrdinalIgnoreCase)) return name;
+        return sound;
+    }
+
+    public static bool TryGetSoundLengthMilliseconds(ReadOnlySpan<byte> wad, PlayLevel level, string sound,
+        out uint length, out string? error)
+        => TryGetSoundLengthMilliseconds(wad, level, sound, new HashSet<string>(StringComparer.OrdinalIgnoreCase), out length, out error);
+
+    private static bool TryGetSoundLengthMilliseconds(ReadOnlySpan<byte> wad, PlayLevel level, string sound,
+        HashSet<string> visiting, out uint length, out string? error)
+    {
+        length = 0;
+        error = null;
+        sound = GetCanonicalSoundName(level, sound);
+        if (!visiting.Add(sound)) { error = "sound-length-cycle"; return false; }
+        try
+        {
+            if (TryGetNamedValue(level.RandomSoundGroups, sound, out var choices))
+            {
+                foreach (var choice in choices)
+                {
+                    if (!TryGetSoundLengthMilliseconds(wad, level, choice, visiting, out var duration, out error))
+                    { length = 0; return false; }
+                    length = Math.Max(length, duration);
+                }
+                return true;
+            }
+            if (TryGetNamedValue(level.SoundAliases, sound, out var alias))
+                return TryGetSoundLengthMilliseconds(wad, level, alias, visiting, out length, out error);
+            if (!TryGetNamedValue(level.SoundDefinitions, sound, out _) && GetSoundSettings(level, sound) is null) return true;
+            if (!TryReadDoomSound(wad, level, sound, out var decoded, out error)) return false;
+            if (decoded is not null) length = (uint)((ulong)decoded.Samples.Length * 1000 / (uint)decoded.SampleRate);
+            return true;
+        }
+        finally { visiting.Remove(sound); }
+    }
+
     public static bool TryReadSoundCurve(ReadOnlySpan<byte> wad, out byte[] curve, out string? error)
     {
         curve = [];
@@ -69,26 +126,27 @@ public static class SoundResourceResolver
         var selectedByRandom = false;
         while (true)
         {
+            current = GetCanonicalSoundName(level, current);
             if (!visited.Add(current))
             {
                 error = $"sound-alias-cycle: {current}";
                 return false;
             }
             // Native PickReplacement skips consecutive random headers in one resolution step.
-            if (!selectedByRandom || !level.RandomSoundGroups.ContainsKey(current)) visitSound?.Invoke(current);
-            if (level.SoundAliases.TryGetValue(current, out var target))
+            if (!selectedByRandom || !TryGetNamedValue(level.RandomSoundGroups, current, out _)) visitSound?.Invoke(current);
+            if (TryGetNamedValue(level.SoundAliases, current, out var target))
             {
                 current = target;
                 selectedByRandom = false;
                 continue;
             }
-            if (level.SoundDefinitions.TryGetValue(current, out var value))
+            if (TryGetNamedValue(level.SoundDefinitions, current, out var value))
             {
                 resource = value;
                 resolvedSound = current;
                 return true;
             }
-            if (level.RandomSoundGroups.TryGetValue(current, out var choices))
+            if (TryGetNamedValue(level.RandomSoundGroups, current, out var choices))
             {
                 if (nextRandom is null)
                 {
@@ -110,7 +168,7 @@ public static class SoundResourceResolver
                 selectedByRandom = true;
                 continue;
             }
-            if (level.SoundSettings.TryGetValue(current, out var settings) && settings.IsTentative)
+            if (GetSoundSettings(level, current) is { IsTentative: true })
             {
                 resolvedSound = current;
                 return true;

@@ -1,5 +1,6 @@
 using HCDE.MapLoader;
 using HCDE.Playsim;
+using HCDE.Scripting;
 
 namespace HCDE.Client;
 
@@ -7,6 +8,7 @@ public sealed class ClientHost : IDisposable
 {
     public const uint HardwareWall = 0x00B42828;
     private bool _disposed;
+    private IReadOnlyList<VmScriptSourceSet> _vmScriptSources = Array.Empty<VmScriptSourceSet>();
     private readonly string? _viewPreferencesPath;
 
     public void Dispose()
@@ -25,6 +27,8 @@ public sealed class ClientHost : IDisposable
             Simulation.SoundRequestsReady -= ConsumeSoundRequests;
             ResetAudioState();
             _soundArchive = null;
+            _vmColorCatalog = null;
+            _vmScriptSources = Array.Empty<VmScriptSourceSet>();
         }
     }
 
@@ -36,10 +40,15 @@ public sealed class ClientHost : IDisposable
         _actorSoundChannels.Clear();
         _soundOwners.Clear();
         _playingSounds.Clear();
+        AudioListenerPosition = null;
+        if (Simulation.Exited || _audioListenerActorId is { } cameraId &&
+            !Simulation.Actors.Any(actor => actor.Id == cameraId && !actor.Destroyed))
+            _audioListenerActorId = null;
     }
 
-    public ClientHost(AuthoritySimulation simulation, int width = 32, int height = 32, string? viewPreferencesPath = null)
+    public ClientHost(AuthoritySimulation simulation, int width = 32, int height = 32, string? viewPreferencesPath = null, IReadOnlyList<string>? scriptPaths = null, bool reserveCoreContainer = false, IReadOnlyList<string>? gameTypeFilters = null, IReadOnlyList<string>? blockedPatterns = null, IReadOnlyList<string>? embeddings = null, IReadOnlyDictionary<string, IReadOnlyList<string>>? deletedGlobalLumps = null)
     {
+        _vmScriptSources = scriptPaths is null ? Array.Empty<VmScriptSourceSet>() : VmArchiveScriptLoader.LoadPaths(scriptPaths, gameTypeFilters: gameTypeFilters, blockedPatterns: blockedPatterns, embeddings: embeddings, reserveCoreContainer: reserveCoreContainer, deletedGlobalLumps: deletedGlobalLumps);
         // Parse before subscribing to simulation events so failed loads cannot retain the host.
         var preferences = viewPreferencesPath is null ? null : ClientViewPreferences.LoadFile(viewPreferencesPath);
         _viewPreferencesPath = viewPreferencesPath is null ? null : Path.GetFullPath(viewPreferencesPath);
@@ -106,19 +115,149 @@ public sealed class ClientHost : IDisposable
     }
     public short[] LastMix { get; private set; } = Array.Empty<short>();
     public System.Numerics.Vector3? AudioListenerPosition { get; private set; }
+    private uint? _audioListenerActorId;
+    private byte? _audioConsolePlayer;
+
+    public bool TrySetAudioConsolePlayer(byte? playerNum, out string? error)
+    {
+        ObjectDisposedException.ThrowIf(_disposed, this);
+        error = null;
+        if (playerNum.HasValue && !Simulation.Players.Any(player => player.PlayerNum == playerNum && !player.Destroyed))
+        { error = "audio-console-player-missing"; return false; }
+        _audioConsolePlayer = playerNum;
+        return true;
+    }
+
+    private PlayerPawn? GetAudioConsolePlayer()
+        => Simulation.Players.FirstOrDefault(player => !player.Destroyed &&
+            (!_audioConsolePlayer.HasValue || player.PlayerNum == _audioConsolePlayer.Value));
+
+    public bool TrySetAudioListener(uint? actorId, out string? error)
+    {
+        ObjectDisposedException.ThrowIf(_disposed, this);
+        error = null;
+        if (actorId.HasValue && !Simulation.Actors.Any(actor => actor.Id == actorId && !actor.Destroyed))
+        { error = "audio-listener-actor-missing"; return false; }
+        _audioListenerActorId = actorId;
+        return true;
+    }
+
+    private Actor? GetAudioListener()
+        => _audioListenerActorId is { } actorId
+            ? Simulation.Actors.FirstOrDefault(actor => actor.Id == actorId && !actor.Destroyed)
+            : GetAudioConsolePlayer();
+
+    private bool IsLocalAudioView(uint actorId)
+    {
+        var player = GetAudioConsolePlayer();
+        var camera = GetAudioListener();
+        if (player is null || camera is null) return false;
+        return camera.Id == actorId || player.Id == actorId && camera is not PlayerPawn && !camera.IsMonster;
+    }
     private readonly Dictionary<Guid, uint> _audioSources = new();
     private readonly HashSet<Guid> _listenerHeightSources = new();
     private readonly Dictionary<(uint ActorId, int Channel), Guid> _actorSoundChannels = new();
     private readonly Dictionary<Guid, (uint ActorId, int Channel)> _soundOwners = new();
     private readonly Dictionary<Guid, (uint? ActorId, int Channel, string Sound)> _playingSounds = new();
     private byte[]? _soundArchive;
+    private VmColorCatalog? _vmColorCatalog;
     public IReadOnlyList<string> LastSoundRequestErrors { get; private set; } = Array.Empty<string>();
 
     public bool TrySetSoundArchive(ReadOnlySpan<byte> wad, out string? error)
     {
         ObjectDisposedException.ThrowIf(_disposed, this);
-        if (!WadArchiveReader.TryReadDirectory(wad, out _, out error)) return false;
+        if (!WadArchiveReader.TryReadDirectory(wad, out var entries, out error)) return false;
+        VmColorCatalog? catalog = null;
+        for (var index = entries.Length - 1; index >= 0; index--)
+        {
+            if (!entries[index].Name.Equals("X11R6RGB", StringComparison.OrdinalIgnoreCase)) continue;
+            if (!WadArchiveReader.TryReadLumpData(wad, entries[index], out var data, out error)) return false;
+            try { catalog = VmColorCatalog.Parse(System.Text.Encoding.UTF8.GetString(data)); }
+            catch (FormatException) { error = "vm-color-catalog-invalid"; return false; }
+            break;
+        }
         _soundArchive = wad.ToArray();
+        _vmColorCatalog = catalog;
+        return true;
+    }
+
+    public IReadOnlyList<VmScriptSourceSet> VmScriptSources => _vmScriptSources;
+
+    public void LoadVmScriptPaths(IReadOnlyList<string> paths, Version? maximumVersion = null,
+        IReadOnlyList<string>? gameTypeFilters = null, IReadOnlyList<string>? blockedPatterns = null,
+        IReadOnlyList<string>? embeddings = null, Func<string, string, bool>? directoryFilenameCheck = null,
+        Action<string>? directoryWarning = null, Action<string>? archiveWarning = null)
+    {
+        ObjectDisposedException.ThrowIf(_disposed, this);
+        var sources = VmArchiveScriptLoader.LoadPaths(paths, maximumVersion, gameTypeFilters, blockedPatterns,
+            embeddings, directoryFilenameCheck, directoryWarning, archiveWarning);
+        _vmScriptSources = sources;
+    }
+
+    public void LoadVmScriptArchives(IReadOnlyList<VmScriptArchive> archives, Version? maximumVersion = null,
+        IReadOnlyList<string>? gameTypeFilters = null, IReadOnlyList<string>? blockedPatterns = null,
+        IReadOnlyList<string>? embeddings = null, Func<string, string, bool>? directoryFilenameCheck = null, Action<string>? directoryWarning = null, Action<string>? archiveWarning = null)
+    {
+        ObjectDisposedException.ThrowIf(_disposed, this);
+        // Publish only after every root and include has loaded successfully.
+        var sources = VmArchiveScriptLoader.LoadAll(archives, maximumVersion, gameTypeFilters, blockedPatterns, embeddings, directoryFilenameCheck, directoryWarning, archiveWarning);
+        _vmScriptSources = sources;
+    }
+
+    public VmMultiResult RunVm(ReadOnlySpan<int> code, ReadOnlySpan<int> constants,
+        ReadOnlySpan<double> floatConstants, ReadOnlySpan<string> stringConstants, int requestedReturns = 1,
+        IReadOnlyList<object?>? objectConstants = null, int frameExtraSpace = 0, VmClassMetadata? classMetadata = null)
+    {
+        ObjectDisposedException.ThrowIf(_disposed, this);
+        return VmExec.RunWithReturns(code, constants, floatConstants, stringConstants, requestedReturns, _vmColorCatalog, objectConstants, frameExtraSpace, classMetadata);
+    }
+
+    public VmMultiResult RunVmFunction(VmScriptFunction function, IReadOnlyList<VmValue> arguments,
+        int requestedReturns = 1, VmClassMetadata? classMetadata = null)
+    {
+        ObjectDisposedException.ThrowIf(_disposed, this);
+        return VmExec.RunFunction(function, arguments, requestedReturns, _vmColorCatalog, classMetadata);
+    }
+
+    public VmMultiResult RunVmNativeFunction(VmFunction function, IReadOnlyList<VmValue> arguments, int requestedReturns = 1)
+    {
+        ObjectDisposedException.ThrowIf(_disposed, this);
+        return VmExec.RunNativeFunction(function, arguments, requestedReturns);
+    }
+
+    public VmMultiResult RunVmNativeFunction(VmIntegerFunction function, IReadOnlyList<int> arguments, int requestedReturns = 1)
+    {
+        ObjectDisposedException.ThrowIf(_disposed, this);
+        return VmExec.RunNativeFunction(function, arguments, requestedReturns);
+    }
+
+    public VmMultiResult RunVmNativeFunctionWithDefaults(VmFunction function, IReadOnlyList<VmValue> arguments, int requestedReturns = 1)
+    {
+        ObjectDisposedException.ThrowIf(_disposed, this);
+        return VmExec.RunNativeFunctionWithDefaults(function, arguments, requestedReturns);
+    }
+
+    public VmMultiResult RunVmNativeFunctionWithDefaults(VmIntegerFunction function, IReadOnlyList<int> arguments, int requestedReturns = 1)
+    {
+        ObjectDisposedException.ThrowIf(_disposed, this);
+        return VmExec.RunNativeFunctionWithDefaults(function, arguments, requestedReturns);
+    }
+
+    public VmMultiResult RunVmNamedFunction(VmScriptFunction function, IReadOnlyList<VmCallArgument> arguments,
+        int requestedReturns = 1, VmClassMetadata? classMetadata = null, Version? scriptVersion = null)
+    {
+        ObjectDisposedException.ThrowIf(_disposed, this);
+        return VmExec.RunNamedFunction(function, arguments, requestedReturns, _vmColorCatalog, classMetadata, scriptVersion);
+    }
+
+    public bool TryGetSoundLength(string sound, out double seconds, out string? error)
+    {
+        ObjectDisposedException.ThrowIf(_disposed, this);
+        seconds = 0;
+        if (_soundArchive is null) { error = "audio-sound-archive-missing"; return false; }
+        if (!Audio.TryGetSoundLengthMilliseconds(_soundArchive, Simulation.Level, sound, out var milliseconds, out error))
+            return false;
+        seconds = milliseconds / 1000.0;
         return true;
     }
 
@@ -138,24 +277,22 @@ public sealed class ClientHost : IDisposable
             if (request.ChangePitch)
             {
                 if (request.Pitch is not { } pitch) { errors.Add($"audio-pitch-missing: {request.ActorId}"); continue; }
-                foreach (var (handle, owner) in _soundOwners)
-                    if (owner.ActorId == request.ActorId && owner.Channel == request.Channel && Audio.IsPlaying(handle))
-                        if (!Audio.TrySetChannelPitch(handle, pitch, out var pitchError))
-                            errors.Add($"{pitchError}: {request.ActorId}");
+                if (!Audio.TrySetActorSoundPitch(request.ActorId, request.Channel, pitch, out _, out var pitchError,
+                    request.Sound.Length == 0 ? null : request.Sound))
+                    errors.Add($"{pitchError}: {request.ActorId}");
                 continue;
             }
             if (request.ChangeVolume)
             {
-                foreach (var (handle, owner) in _soundOwners)
-                    if (owner.ActorId == request.ActorId && (MagicSilenceCompatibility || owner.Channel == request.Channel || request.Channel == -1) && Audio.IsPlaying(handle))
-                        if (!Audio.TrySetChannelVolume(handle, request.Volume, out var volumeError))
-                            errors.Add($"{volumeError}: {request.ActorId}");
+                if (!Audio.TrySetActorSoundVolume(request.ActorId, MagicSilenceCompatibility ? -1 : request.Channel,
+                    request.Volume, out _, out var volumeError))
+                    errors.Add($"{volumeError}: {request.ActorId}");
                 continue;
             }
             if (request.Stop)
             {
                 if (request.StopChannelMax is { } maximum) StopActorSounds(request.ActorId, request.Channel, maximum);
-                else StopActorSound(request.ActorId, request.Channel);
+                else StopActorSound(request.ActorId, request.Channel, request.Sound.Length == 0 ? null : request.Sound);
                 continue;
             }
             const int supported = (int)(SimulationSoundFlags.ListenerZ | SimulationSoundFlags.MaybeLocal | SimulationSoundFlags.Loop | SimulationSoundFlags.NoStop | SimulationSoundFlags.Overlap | SimulationSoundFlags.Local | SimulationSoundFlags.Singular | SimulationSoundFlags.Ui | SimulationSoundFlags.NoPause | SimulationSoundFlags.Force | SimulationSoundFlags.NoRumble);
@@ -164,7 +301,7 @@ public sealed class ClientHost : IDisposable
                 errors.Add($"audio-request-flags-unsupported: {request.Sound}");
                 continue;
             }
-            var listener = Simulation.Players.FirstOrDefault();
+            var listener = GetAudioListener();
             var sourceActor = !request.NonPositional && request.DetachedOrigin is null
                 ? Simulation.Actors.FirstOrDefault(actor => actor.Id == request.ActorId && !actor.Destroyed) : null;
             if (sourceActor is not null && IsInSilentSector(sourceActor)) continue;
@@ -175,17 +312,15 @@ public sealed class ClientHost : IDisposable
             var loop = request.Loop || (request.Flags & (int)SimulationSoundFlags.Loop) != 0;
             var noStop = request.Loop || (request.Flags & (int)SimulationSoundFlags.NoStop) != 0;
             var singular = (request.Flags & (int)SimulationSoundFlags.Singular) != 0;
-            var sourceId = local ? (uint?)null : request.ActorId;
-            if (request.OnlyIfChannelFree && _playingSounds.Any(pair => Audio.IsPlaying(pair.Key) &&
-                pair.Value.ActorId == sourceId && (request.Channel == 0 || !local && MagicSilenceCompatibility || pair.Value.Channel == request.Channel))) continue;
+            if (request.OnlyIfChannelFree && (local
+                ? Audio.IsUnpositionedSoundPlaying(request.Channel)
+                : IsActorSoundPlaying(request.ActorId, request.Channel))) continue;
             if (!request.NonPositional && (noStop || request.OnlyIfSoundNotPlaying) && (local
                 ? Audio.IsUnpositionedSoundPlaying(request.Channel, request.Sound)
-                : _playingSounds.Any(pair => Audio.IsPlaying(pair.Key) &&
-                pair.Value.ActorId == sourceId && (request.Channel == 0 || !local && MagicSilenceCompatibility || pair.Value.Channel == request.Channel) &&
-                pair.Value.Sound.Equals(request.Sound, StringComparison.OrdinalIgnoreCase)))) continue;
+                : IsActorSoundPlaying(request.ActorId, request.Channel, request.Sound))) continue;
             if (local)
             {
-                if (!request.NonPositional && listener?.Id != request.ActorId) continue;
+                if (!request.NonPositional && !IsLocalAudioView(request.ActorId)) continue;
                 if (!Audio.TryPlayWadSound(_soundArchive, Simulation.Level, request.Sound, out var localHandle,
                     out var localError, volume: request.Volume, loop: loop, pitch: request.Pitch, startTime: request.StartTime,
                     entityChannel: request.Channel, attenuation: 0, singular: singular, noPause: (request.Flags & 96) != 0, force: (request.Flags & 65536) != 0))
@@ -224,14 +359,17 @@ public sealed class ClientHost : IDisposable
         if ((uint)sectorIndex < (uint)Simulation.Level.Sectors.Count && Simulation.Level.Sectors[sectorIndex].Silent)
         { error = null; return true; }
         if (actor is not null && MagicSilenceCompatibility) entityChannel = 1;
-        var listener = Simulation.Players.FirstOrDefault();
-        if (listener is null) { error = "audio-listener-missing"; return false; }
+        var listener = GetAudioListener();
         var position = actor is not null ? SoundPosition(actor) :
             new System.Numerics.Vector3(detachedOrigin!.Value.X, detachedOrigin.Value.Y, detachedOrigin.Value.Z);
-        if (listenerHeight) position.Y = SoundPosition(listener).Y;
+        if (listenerHeight && listener is not null) position.Y = SoundPosition(listener).Y;
+        foreach (var source in Simulation.Actors.Where(source => !source.Destroyed))
+            Audio.UpdateActorSoundOrigin(source.Id, SoundPosition(source), listener is null ? null : SoundPosition(listener));
         if (!Audio.TryPlayWadSound(wad, level, sound, out var queued, out error,
             nextRandom, volume, loop, pitch, attenuation: attenuation, singular: singular, noPause: noPause, force: force,
-            sourcePosition: position, sourceActorId: actor?.Id, entityChannel: entityChannel, listenerSource: actor == listener, startTime: startTime)) return false;
+            sourcePosition: position, sourceActorId: actor?.Id, entityChannel: entityChannel, listenerSource: actor == listener,
+            startTime: startTime, overlap: overlap)) return false;
+        RemoveStoppedSoundRecords();
         if (queued == Guid.Empty) return true;
         if (actor is not null && !TryBindAudioSource(queued, actorId, out error, listenerHeight))
         {
@@ -240,7 +378,8 @@ public sealed class ClientHost : IDisposable
         }
         if (actor is null)
         {
-            if (!Audio.TrySetChannelPosition(queued, position, SoundPosition(listener), out error))
+            if (!Audio.TrySetChannelPosition(queued, position,
+                listener is null ? System.Numerics.Vector3.Zero : SoundPosition(listener), out error))
             {
                 Audio.StopChannel(queued);
                 return false;
@@ -255,14 +394,8 @@ public sealed class ClientHost : IDisposable
         if (entityChannel != 0 && !overlap)
         {
             var key = (actorId, entityChannel);
-            foreach (var previous in _soundOwners.Where(pair => pair.Value == key).Select(pair => pair.Key).ToArray())
-            {
-                Audio.StopChannel(previous);
-                _audioSources.Remove(previous);
-                _listenerHeightSources.Remove(previous);
-                _soundOwners.Remove(previous);
-                _playingSounds.Remove(previous);
-            }
+            Audio.ReplaceActorChannel(actorId, entityChannel, queued);
+            RemoveStoppedSoundRecords();
             _actorSoundChannels[key] = queued;
         }
         channelId = queued;
@@ -273,9 +406,7 @@ public sealed class ClientHost : IDisposable
 
     public int GetActorSoundPlayingCount(uint actorId, string? sound = null, int entityChannel = -1)
     {
-        return _playingSounds.Count(pair => Audio.IsPlaying(pair.Key) && pair.Value.ActorId == actorId &&
-            (entityChannel == -1 || pair.Value.Channel == entityChannel) &&
-            (sound is null || pair.Value.Sound.Equals(sound, StringComparison.OrdinalIgnoreCase)));
+        return Audio.GetActorSoundPlayingCount(actorId, sound, entityChannel);
     }
 
     public int GetSoundPlayingCount(string? sound = null, int entityChannel = -1)
@@ -295,26 +426,26 @@ public sealed class ClientHost : IDisposable
     public bool IsActorSoundPlaying(uint actorId, int entityChannel, string? sound = null)
         => GetActorSoundPlayingCount(actorId, sound, MagicSilenceCompatibility || entityChannel == 0 ? -1 : entityChannel) != 0;
 
-    public int StopActorSound(uint actorId, int entityChannel)
+    public int StopActorSound(uint actorId, int entityChannel, string? sound = null)
     {
         if (MagicSilenceCompatibility) entityChannel = -1;
-        return StopOwnedSounds(actorId, channel => entityChannel < 0 || channel == entityChannel);
+        var stopped = sound is not null ? Audio.StopActorSoundByName(actorId, sound) : Audio.StopActorSound(actorId, entityChannel);
+        RemoveStoppedSoundRecords();
+        return stopped;
     }
 
     public int StopActorSounds(uint actorId, int channelMin, int channelMax)
     {
-        var all = channelMin == 0 && channelMax == 0;
-        if (channelMax < channelMin) (channelMin, channelMax) = (channelMax, channelMin);
-        return StopOwnedSounds(actorId, channel => all || channel >= channelMin && channel <= channelMax);
+        var stopped = Audio.StopActorSounds(actorId, channelMin, channelMax);
+        RemoveStoppedSoundRecords();
+        return stopped;
     }
 
-    private int StopOwnedSounds(uint actorId, Func<int, bool> matches)
+    private void RemoveStoppedSoundRecords()
     {
-        var stopped = 0;
-        foreach (var (handle, owner) in _soundOwners.ToArray())
+        foreach (var handle in _soundOwners.Keys.ToArray())
         {
-            if (owner.ActorId != actorId || !matches(owner.Channel)) continue;
-            if (Audio.StopChannel(handle)) stopped++;
+            if (Audio.IsPlaying(handle)) continue;
             _audioSources.Remove(handle);
             _listenerHeightSources.Remove(handle);
             _soundOwners.Remove(handle);
@@ -322,7 +453,6 @@ public sealed class ClientHost : IDisposable
         }
         foreach (var key in _actorSoundChannels.Where(pair => !Audio.IsPlaying(pair.Value)).Select(pair => pair.Key).ToArray())
             _actorSoundChannels.Remove(key);
-        return stopped;
     }
 
     public bool TryBindAudioSource(Guid channelId, uint actorId, out string? error, bool listenerHeight = false)
@@ -330,13 +460,13 @@ public sealed class ClientHost : IDisposable
         ObjectDisposedException.ThrowIf(_disposed, this);
         var actor = Simulation.Actors.FirstOrDefault(actor => actor.Id == actorId && !actor.Destroyed);
         if (actor is null) { error = "audio-source-actor-missing"; return false; }
-        var listener = Simulation.Players.FirstOrDefault();
-        if (listener is null) { error = "audio-listener-missing"; return false; }
+        var listener = GetAudioListener();
         var sourcePosition = SoundPosition(actor);
-        var listenerPosition = SoundPosition(listener);
-        if (listenerHeight) sourcePosition.Y = listenerPosition.Y;
+        var listenerPosition = listener is null ? System.Numerics.Vector3.Zero : SoundPosition(listener);
+        if (listenerHeight && listener is not null) sourcePosition.Y = listenerPosition.Y;
         if (!Audio.TrySetChannelPosition(channelId, sourcePosition, listenerPosition, out error)) return false;
         Audio.SetChannelListenerHeight(channelId, listenerHeight);
+        Audio.RelinkChannelSource(channelId, actorId);
         _audioSources[channelId] = actorId;
         if (listenerHeight) _listenerHeightSources.Add(channelId);
         else _listenerHeightSources.Remove(channelId);
@@ -357,9 +487,8 @@ public sealed class ClientHost : IDisposable
         }
         if (!Simulation.Actors.Any(actor => actor.Id == toActorId && !actor.Destroyed))
         { error = "audio-destination-actor-missing"; return false; }
-        foreach (var (handle, actorId) in _audioSources.ToArray())
+        foreach (var handle in Audio.GetActorSoundChannels(fromActorId))
         {
-            if (actorId != fromActorId || !Audio.IsPlaying(handle)) continue;
             Audio.RelinkChannelSource(handle, toActorId.Value);
             _audioSources[handle] = toActorId.Value;
             if (_soundOwners.TryGetValue(handle, out var owner))
@@ -382,10 +511,9 @@ public sealed class ClientHost : IDisposable
     {
         var detached = 0;
         var position = SoundPosition(actor);
-        foreach (var (handle, actorId) in _audioSources.ToArray())
+        foreach (var handle in Audio.GetActorSoundChannels(actor.Id))
         {
-            if (actorId != actor.Id) continue;
-            if (Audio.IsPlaying(handle)) detached++;
+            detached++;
             Audio.DetachChannelSource(handle, SoundCutoffCompatibility, position);
             _audioSources.Remove(handle);
             _listenerHeightSources.Remove(handle);
@@ -440,6 +568,12 @@ public sealed class ClientHost : IDisposable
             ZScript.Tick(Simulation);
         }
         ConsumeSoundRequests();
+        foreach (var source in Audio.GetActorSoundSources())
+        {
+            _audioSources[source.Handle] = source.ActorId;
+            if (source.ListenerHeight) _listenerHeightSources.Add(source.Handle);
+            else _listenerHeightSources.Remove(source.Handle);
+        }
         foreach (var (channel, actorId) in _audioSources.ToArray())
         {
             var actor = Simulation.Actors.FirstOrDefault(actor => actor.Id == actorId && !actor.Destroyed);
@@ -450,24 +584,22 @@ public sealed class ClientHost : IDisposable
             _soundOwners.Remove(channel);
             _playingSounds.Remove(channel);
         }
-        var listener = Simulation.Players.FirstOrDefault();
-        if (listener is not null)
+        var listener = Simulation.Exited ? null : GetAudioListener();
         {
-            var position = SoundPosition(listener);
+            var position = listener is null ? System.Numerics.Vector3.Zero : SoundPosition(listener);
             foreach (var (channel, actorId) in _audioSources.ToArray())
             {
                 var actor = Simulation.Actors.FirstOrDefault(actor => actor.Id == actorId && !actor.Destroyed);
                 if (actor is null) continue;
                 var sourcePosition = SoundPosition(actor);
-                if (_listenerHeightSources.Contains(channel)) sourcePosition.Y = position.Y;
+                if (listener is not null && _listenerHeightSources.Contains(channel)) sourcePosition.Y = position.Y;
                 if (!Audio.TrySetChannelPosition(channel, sourcePosition, position, out var sourceError))
                     throw new InvalidOperationException($"Audio source update failed: {sourceError}");
             }
-            if (!Audio.TryUpdateListenerPosition(position, out var error))
+            if (!Audio.TryUpdateListenerPosition(position, out var error, listener is not null))
                 throw new InvalidOperationException($"Audio listener update failed: {error}");
-            AudioListenerPosition = position;
+            AudioListenerPosition = listener is null ? null : position;
         }
-        else AudioListenerPosition = null;
         if (UseHardware)
         {
             Frame.Clear(0, 0, 0);

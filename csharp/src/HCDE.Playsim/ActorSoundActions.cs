@@ -114,12 +114,12 @@ public static class ActorSoundActions
         StartSound(actor, sound, channel, SimulationSoundFlags.NoRumble);
     }
 
-    public static void SoundPitch(Actor actor, int channel, float pitch)
+    public static void SoundPitch(Actor actor, int channel, float pitch, string? sound = null)
     {
         if (!float.IsFinite(pitch)) throw new ArgumentOutOfRangeException(nameof(pitch));
         if (actor.Destroyed) return;
         var sim = actor.Simulation ?? throw new InvalidOperationException("Changing actor sound pitch requires an attached simulation.");
-        sim.QueueSoundRequest(new SimulationSoundRequest(actor.Id, "", channel, 0, 0, false, 0, false,
+        sim.QueueSoundRequest(new SimulationSoundRequest(actor.Id, sound ?? "", channel, 0, 0, false, 0, false,
             Pitch: pitch, ChangePitch: true), immediate: true);
     }
 
@@ -231,11 +231,11 @@ public static class ActorSoundActions
 
     public static void StopSound(Actor actor) => StopSound(actor, 2);
 
-    public static void StopSound(Actor actor, int channel)
+    public static void StopSound(Actor actor, int channel, string? sound = null)
     {
         if (actor.Destroyed) return;
         var sim = actor.Simulation ?? throw new InvalidOperationException("Stopping actor sounds requires an attached simulation.");
-        sim.QueueSoundRequest(new SimulationSoundRequest(actor.Id, "", channel, 0, 0, false, 0, false, Stop: true), immediate: true);
+        sim.QueueSoundRequest(new SimulationSoundRequest(actor.Id, sound ?? "", channel, 0, 0, false, 0, false, Stop: true), immediate: true);
     }
 
     public static void Howl(Actor actor)

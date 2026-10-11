@@ -11,6 +11,11 @@
 
   <ItemGroup>
     <ProjectReference Include="..\HCDE.Playsim\HCDE.Playsim.csproj" />
+    <ProjectReference Include="..\HCDE.Scripting\HCDE.Scripting.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="SharpCompress" Version="0.50.5" />
   </ItemGroup>
 
 </Project>
