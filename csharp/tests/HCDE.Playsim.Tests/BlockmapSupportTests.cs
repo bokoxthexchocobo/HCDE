@@ -18,7 +18,7 @@ public class BlockmapSupportTests
         });
         var bridge = Assert.Single(sim.Actors);
         bridge.Height = Fixed.FromInt(24); bridge.ActsLikeBridge = true; bridge.NoBlockmap = excluded;
-        Actor rider = monster ? new Actor { Health = 100, Solid = true } : new PlayerPawn();
+        Actor rider = monster ? new Actor { Health = 100, Solid = true, CanPass = true, IsMonster = true } : new PlayerPawn();
         rider.SectorIndex = 0; rider.OnGround = true;
         ActorPhysics.FitToSector(sim, rider);
         Assert.Equal(excluded ? 0 : 24, rider.Z.ToDouble());
@@ -34,7 +34,7 @@ public class BlockmapSupportTests
             Things = [new LevelThing { Type = 3004 }],
         });
         var bridge = Assert.Single(sim.Actors); bridge.Height = Fixed.FromInt(24); bridge.ActsLikeBridge = true;
-        var rider = new Actor { Health = 100, Solid = true, NoBlockmap = true, SectorIndex = 0, OnGround = true };
+        var rider = new Actor { Health = 100, Solid = true, CanPass = true, IsMonster = true, NoBlockmap = true, SectorIndex = 0, OnGround = true };
         ActorPhysics.FitToSector(sim, rider);
         Assert.Equal(24, rider.Z.ToDouble());
         Assert.True(rider.OnMobj);

@@ -33,6 +33,8 @@ public enum CompatSurface
     NoBlockFriends = 16384,
     /// <summary>Native COMPATF2_RAILING: railing floors apply only from the high side.</summary>
     Railing = 32768,
+    /// <summary>Native COMPATF_NO_PASSMOBJ: disables actor-top support and stepping.</summary>
+    NoPassMobj = 65536,
 }
 
 public static class CompatSurfaceRules

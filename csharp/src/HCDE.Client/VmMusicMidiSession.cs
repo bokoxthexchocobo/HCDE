@@ -100,7 +100,8 @@ public sealed class VmMusicMidiSession : IDisposable
             }
             else if (!device.CanHandleSysex && source is not VmMusicMusSource && source is not VmMusicMidsSource)
                 throw new NotSupportedException("MIDI source does not support SysEx suppression.");
-            ready = Startup.Start(maximumTime, device.CanHandleSysex, musicVolume, relativeVolume, masterVolume, liveLoops);
+            ready = Startup.Start(maximumTime, device.CanHandleSysex, musicVolume, relativeVolume, masterVolume, liveLoops,
+                repeatSong: repeatSong);
             startingStream = false;
             callbacksEnabled = ready;
             while (ready && startupCompletions > 0)

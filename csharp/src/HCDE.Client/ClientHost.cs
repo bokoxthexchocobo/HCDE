@@ -323,7 +323,10 @@ public sealed class ClientHost : IDisposable
             if (request.OnlyIfChannelFree && (local
                 ? Audio.IsUnpositionedSoundPlaying(request.Channel)
                 : IsActorSoundPlaying(request.ActorId, request.Channel))) continue;
-            if (!request.NonPositional && (noStop || request.OnlyIfSoundNotPlaying) && (local
+            if (!request.NonPositional && request.OnlyIfSoundNotPlaying && (local
+                ? Audio.IsUnpositionedSoundPlaying(request.CheckAllSoundChannels ? 0 : request.Channel, request.Sound)
+                : IsActorSoundPlaying(request.ActorId, request.CheckAllSoundChannels ? 0 : request.Channel, request.Sound))) continue;
+            if (!request.NonPositional && noStop && (local
                 ? Audio.IsUnpositionedSoundPlaying(request.Channel, request.Sound)
                 : IsActorSoundPlaying(request.ActorId, request.Channel, request.Sound))) continue;
             if (local)

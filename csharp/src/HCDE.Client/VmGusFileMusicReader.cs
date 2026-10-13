@@ -31,7 +31,8 @@ public sealed class VmGusFileMusicReader : IVmMusicBankReader
 
     public (byte[]? Data, string Name) Open(string? name)
     {
-        if (name is null) return (File.ReadAllBytes(configurationPath), basePath + "timidity.cfg");
+        // Native callback filenames are relative to this reader's base directory.
+        if (name is null) return (File.ReadAllBytes(configurationPath), "timidity.cfg");
         return Paths.Lookup(name, candidate =>
         {
             var path = VmMusicPatchPaths.IsAbsolute(candidate) ? candidate : basePath + candidate;

@@ -2,6 +2,14 @@ namespace HCDE.Playsim;
 
 public static class ActorSoundActions
 {
+    public static void CrushPain(Actor actor)
+    {
+        if (actor.Invulnerable || actor.Dormant
+            || !actor.ActorSounds.TryGetValue(ActorSoundType.CrushPain, out var sound)
+            || string.IsNullOrEmpty(sound) || sound.Equals("None", StringComparison.OrdinalIgnoreCase)) return;
+        StartSoundCore(actor, sound, 2, 0, 1, 1, 0, 0, onlyIfSoundNotPlaying: true, checkAllSoundChannels: true);
+    }
+
     public static void StartGlobalSound(AuthoritySimulation sim, string sound, int channel = 4,
         SimulationSoundFlags flags = 0, float volume = 1, float attenuation = 1, float pitch = 0, float startTime = 0)
     {
@@ -188,7 +196,8 @@ public static class ActorSoundActions
     }
 
     private static void StartSoundCore(Actor actor, string sound, int channel, SimulationSoundFlags flags,
-        float volume, float attenuation, float pitch, float startTime, bool onlyIfSoundNotPlaying = false)
+        float volume, float attenuation, float pitch, float startTime, bool onlyIfSoundNotPlaying = false,
+        bool checkAllSoundChannels = false)
     {
         ArgumentNullException.ThrowIfNull(sound);
         if (!float.IsFinite(volume)) throw new ArgumentOutOfRangeException(nameof(volume));
@@ -202,7 +211,7 @@ public static class ActorSoundActions
         var sim = actor.Simulation ?? throw new InvalidOperationException("Starting actor sounds requires an attached simulation.");
         sim.QueueSoundRequest(new SimulationSoundRequest(actor.Id, sound, channel, (int)flags, volume,
             false, attenuation, false, Pitch: pitch > 0 ? pitch : null, StartTime: startTime,
-            OnlyIfSoundNotPlaying: onlyIfSoundNotPlaying), immediate: true);
+            OnlyIfSoundNotPlaying: onlyIfSoundNotPlaying, CheckAllSoundChannels: checkAllSoundChannels), immediate: true);
     }
 
     public static void PlayWeaponSound(Actor actor, string sound, bool fullVolume = false)

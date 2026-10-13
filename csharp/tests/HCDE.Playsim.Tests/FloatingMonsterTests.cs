@@ -37,10 +37,12 @@ public class FloatingMonsterTests
     {
         var (sim, monster, player) = Setup(3005);
         Acquire(sim, monster);
+        monster.Brain!.Enabled = false;
+        monster.X = default;
         monster.Z = Fixed.FromInt(200);
         sim.Tick(); Assert.Equal(196, monster.Z.ToDouble());
         monster.Z = Fixed.FromInt(455); player.Z = Fixed.FromInt(490);
-        player.X = Fixed.FromInt(60);
+        player.X = Fixed.FromInt(80);
         sim.Tick(); Assert.Equal(456, monster.Z.ToDouble());
     }
 

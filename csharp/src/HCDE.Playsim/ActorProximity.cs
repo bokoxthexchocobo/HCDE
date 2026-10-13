@@ -17,11 +17,11 @@ public static class ActorProximity
         int flags, int pointerSelector, bool counting)
     {
         const int ancestor = 1, lessOrEqual = 2, noZ = 4, countDead = 8, deadOnly = 16, exact = 32,
-            setTarget = 64, farthest = 512, closest = 1024, setOnPointer = 2048, checkSight = 4096;
+            setTarget = 64, setMaster = 128, setTracer = 256, farthest = 512, closest = 1024, setOnPointer = 2048, checkSight = 4096;
         const int supported = ancestor | lessOrEqual | noZ | countDead | deadOnly | exact | setTarget
-            | farthest | closest | setOnPointer | checkSight;
+            | setMaster | setTracer | farthest | closest | setOnPointer | checkSight;
         if ((flags & ~supported) != 0)
-            throw new NotSupportedException("Proximity master/tracer-changing flags are not implemented.");
+            throw new NotSupportedException("Unsupported proximity flags.");
         var sim = actor.Simulation
             ?? throw new InvalidOperationException("Actor proximity checks require a simulation.");
         var reference = AcsActorPointer.Resolve(sim, actor, pointerSelector);
@@ -32,9 +32,8 @@ public static class ActorProximity
         if (!actorClass && !playerClass && !className.Equals("DoomPlayer", StringComparison.OrdinalIgnoreCase)
             && !DoomActorCatalog.TryEditorNumberForClassName(className, out _)) return 0;
         var changesTarget = (flags & setTarget) != 0;
+        var changesPointer = (flags & (setTarget | setMaster | setTracer)) != 0;
         var targetOwner = (flags & setOnPointer) != 0 ? reference : actor;
-        if (changesTarget && targetOwner.Brain is null)
-            throw new NotSupportedException("Proximity target mutation requires a managed monster brain.");
         var distancePreference = (flags & (closest | farthest)) != 0;
         Actor? selected = null;
         var nearer = distance; var farther = 0.0;
@@ -52,7 +51,7 @@ public static class ActorProximity
             if (!ActorJumpActions.CheckIfCloser(reference, other, distance, (flags & noZ) != 0)) continue;
             if ((flags & checkSight) != 0 && !CombatTrace.HasLineOfSight(sim, other, reference)) continue;
             if (other.Killed ? (flags & (countDead | deadOnly)) == 0 : (flags & deadOnly) != 0) continue;
-            if (changesTarget)
+            if (changesPointer)
             {
                 var dx = other.X.ToDouble() - reference.X.ToDouble();
                 var dy = other.Y.ToDouble() - reference.Y.ToDouble();
@@ -67,10 +66,15 @@ public static class ActorProximity
             if (!counting && found > count)
             {
                 result = (flags & (lessOrEqual | exact)) == 0 ? 1 : 0;
-                if (!(changesTarget && distancePreference)) break;
+                if (!(changesPointer && distancePreference)) break;
             }
         }
-        if (changesTarget && selected is not null) targetOwner.Brain!.SetSpecialTarget(selected);
+        if (selected is not null)
+        {
+            if (changesTarget) targetOwner.SetTargetPointer(selected);
+            if ((flags & setMaster) != 0) targetOwner.MasterId = selected.Id;
+            if ((flags & setTracer) != 0) targetOwner.TracerId = selected.Id;
+        }
         if (counting) return found;
         if (found == count) return 1;
         if (found < count) return (flags & lessOrEqual) != 0 && (flags & exact) == 0 ? 1 : 0;

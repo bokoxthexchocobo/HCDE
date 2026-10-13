@@ -35,8 +35,9 @@ public sealed class VmMusicOutputStream
     public void Stop()
     {
         if (Stream is null) return;
-        Stream.Stop();
-        Stream.Dispose();
+        var stream = Stream;
         Stream = null;
+        try { stream.Stop(); }
+        finally { stream.Dispose(); }
     }
 }

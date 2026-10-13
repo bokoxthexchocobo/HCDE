@@ -34,8 +34,6 @@ public static class ActorJumpActions
             if (blocker is not null)
             {
                 var setter = (flags & 16) != 0 ? subject : actor;
-                if ((flags & 2) != 0) ActorPointerActions.RequireWritable(setter, AcsActorPointer.Target);
-                if ((flags & 8) != 0) ActorPointerActions.RequireWritable(setter, AcsActorPointer.Tracer);
                 // Native CheckBlock writes raw references without chain verification.
                 if ((flags & 2) != 0) ActorPointerActions.Assign(sim, setter, AcsActorPointer.Target, blocker, 3);
                 if ((flags & 4) != 0) ActorPointerActions.Assign(sim, setter, AcsActorPointer.Master, blocker, 3);
@@ -176,9 +174,8 @@ public static class ActorJumpActions
         {
             target = (flags & checkMaster) != 0 ? ResolveSubject(actor, AcsActorPointer.Master)
                 : (flags & checkTracer) != 0 || actor is ProjectileActor && (flags & projectile) != 0
-                    ? actor is ProjectileActor missile
-                        && (missile.Kind == ProjectileKind.RevenantTracer || (flags & checkTracer) != 0)
-                            ? sim.Actors.FirstOrDefault(candidate => !candidate.Destroyed && candidate.Id == missile.TracerTargetId)
+                    ? (flags & checkTracer) != 0 || actor is ProjectileActor { Kind: ProjectileKind.RevenantTracer }
+                            ? ResolveSubject(actor, AcsActorPointer.Tracer)
                             : null
                     : ResolveSubject(actor, AcsActorPointer.Target);
             if (target is not null && (flags & deadNoJump) != 0 && target.Health <= 0) return null;

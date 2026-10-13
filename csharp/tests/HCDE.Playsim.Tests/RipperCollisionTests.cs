@@ -47,9 +47,9 @@ public class RipperCollisionTests
     public void OwnerRemainsExcluded()
     {
         var (_, missile, target) = Setup();
-        missile.Owner.X = Fixed.FromInt(10); missile.Owner.Health = 1000;
+        Assert.IsAssignableFrom<Actor>(missile.Owner).X = Fixed.FromInt(10); Assert.IsAssignableFrom<Actor>(missile.Owner).Health = 1000;
         missile.DamageExpression = _ => 7; missile.Tick();
-        Assert.Equal(1000, missile.Owner.Health); Assert.Equal(993, target.Health);
+        Assert.Equal(1000, Assert.IsAssignableFrom<Actor>(missile.Owner).Health); Assert.Equal(993, target.Health);
     }
 
     [Fact]
@@ -80,6 +80,50 @@ public class RipperCollisionTests
         Assert.True(SimSavegame.TryRead(legacy, out var state, out error), error);
         sim.RestoreState(state); Assert.False(missile.Rip); Assert.False(target.DontRip);
         Assert.Equal(legacy, SimSavegame.Write(sim));
+    }
+
+    [Theory]
+    [InlineData(7, false, true)]
+    [InlineData(0, false, false)]
+    [InlineData(-7, false, false)]
+    [InlineData(7, true, true)]
+    [InlineData(0, true, true)]
+    [InlineData(-7, true, true)]
+    public void StoppedRipperRetainsDamageBranchSoundAtImpact(int damage, bool causePain, bool sounds)
+    {
+        var (sim, missile, target) = Setup(); target.DontRip = true; target.Health = 20;
+        missile.CausePain = causePain; missile.DamageExpression = _ => damage;
+        missile.ActorSounds = new Dictionary<ActorSoundType, string> { [ActorSoundType.Rip] = "custom/rip" };
+        sim.DrainSoundRequests();
+        missile.Tick();
+        Assert.True(missile.Destroyed);
+        var requests = sim.DrainSoundRequests();
+        if (!sounds) Assert.Empty(requests);
+        else
+        {
+            var request = Assert.Single(requests);
+            Assert.Equal("custom/rip", request.Sound); Assert.Equal(missile.Id, request.ActorId);
+            Assert.Equal(4, request.Channel); Assert.Equal(1.001f, request.Attenuation);
+            Assert.Equal(1, request.Volume);
+            var origin = Assert.IsType<SimulationSoundOrigin>(request.DetachedOrigin);
+            var position = missile.SoundPos();
+            Assert.Equal(position.X, origin.X); Assert.Equal(position.Y, origin.Y);
+            Assert.Equal(position.Z, origin.Z);
+        }
+        Assert.Equal(damage > 0 ? 20 - damage : causePain ? 20 : 20 - damage, target.Health);
+    }
+
+    [Theory]
+    [InlineData("")]
+    [InlineData("None")]
+    [InlineData("nOnE")]
+    public void RipperNoSoundIdentityDoesNotQueuePlayback(string sound)
+    {
+        var (sim, missile, target) = Setup();
+        missile.ActorSounds = new Dictionary<ActorSoundType, string> { [ActorSoundType.Rip] = sound };
+        missile.DamageExpression = _ => 7; sim.DrainSoundRequests();
+        missile.DoMissileDamage(target, ripper: true);
+        Assert.Empty(sim.DrainSoundRequests()); Assert.Equal(993, target.Health);
     }
 
     private static (AuthoritySimulation Sim, ProjectileActor Missile, Actor Target) Setup()

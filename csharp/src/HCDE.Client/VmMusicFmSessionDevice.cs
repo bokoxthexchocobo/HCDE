@@ -43,7 +43,8 @@ public interface IVmMusicAdlRenderer : IVmMusicFmRenderer, IVmMusicAdlConfigurat
 public interface IVmMusicOpnRenderer : IVmMusicFmRenderer, IVmMusicOpnConfigurationDevice { }
 
 // Borrows an initialized renderer. The caller serializes session and audio access.
-public sealed class VmMusicFmSessionDevice : IVmMusicMidiSessionDevice, IDisposable
+public sealed class VmMusicFmSessionDevice : IVmMusicAudioSessionDevice, IVmMusicIntegerSettingsDevice,
+    IVmMusicNumberSettingsDevice, IVmMusicStringSettingsDevice
 {
     private readonly IVmMusicFmMidiDevice midi;
     private readonly IVmMusicFmAudioDevice audio;

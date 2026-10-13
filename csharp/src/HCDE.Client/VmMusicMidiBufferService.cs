@@ -53,6 +53,8 @@ public sealed class VmMusicMidiBufferService
     private readonly IVmMusicMidiBufferDevice device;
     private readonly uint[][] buffers;
     private bool started;
+    private bool validateLoopDuration;
+    private bool loopAdvancedTime;
     public int BufferNumber { get; private set; }
     public VmMusicMidiEndState EndState { get; private set; }
 
@@ -87,7 +89,10 @@ public sealed class VmMusicMidiBufferService
                 }
                 playback.RequestRestart();
             }
+            var restarted = playback.RestartPending;
             written = playback.Fill(buffers[BufferNumber], maximumTime, paused, canHandleSysex);
+            if (validateLoopDuration && looping && !paused)
+                ObserveLoopDuration(buffers[BufferNumber].AsSpan(0, written), restarted);
         }
         error = device.Prepare(BufferNumber, buffers[BufferNumber].AsMemory(0, written));
         if (error != 0) return error;
@@ -97,22 +102,48 @@ public sealed class VmMusicMidiBufferService
         return error;
     }
 
-    public VmMusicMidiPrimeResult Prime(uint maximumTime, bool canHandleSysex)
+    public VmMusicMidiPrimeResult Prime(uint maximumTime, bool canHandleSysex, bool allowShortSong = false,
+        bool looping = false)
     {
         if (started) throw new InvalidOperationException("MIDI service has already started.");
         started = true;
+        validateLoopDuration = allowShortSong && looping;
         playback.RequestRestart();
         for (var i = 0; i < 2; i++)
         {
-            if (!playback.RestartPending && playback.SourceDone)
+            var stopping = !playback.RestartPending && playback.SourceDone;
+            if (stopping && !allowShortSong)
                 return new(VmMusicMidiPrimeStatus.ShortSong);
-            var written = playback.Fill(buffers[BufferNumber], maximumTime, false, canHandleSysex);
+            if (stopping && looping)
+            {
+                playback.RequestRestart();
+                stopping = false;
+            }
+            var restarted = playback.RestartPending;
+            var written = stopping ? VmMusicMidiControlBuffers.WriteStop(buffers[BufferNumber])
+                : playback.Fill(buffers[BufferNumber], maximumTime, false, canHandleSysex);
+            if (validateLoopDuration)
+                ObserveLoopDuration(buffers[BufferNumber].AsSpan(0, written), restarted);
             var error = device.Prepare(BufferNumber, buffers[BufferNumber].AsMemory(0, written));
             if (error != 0) return new(VmMusicMidiPrimeStatus.DeviceError, error);
             error = device.StreamOutSync(BufferNumber);
             if (error != 0) return new(VmMusicMidiPrimeStatus.DeviceError, error);
+            if (stopping) EndState = VmMusicMidiEndState.StopQueued;
             BufferNumber ^= 1;
         }
         return new(VmMusicMidiPrimeStatus.Ready);
+    }
+
+    private void ObserveLoopDuration(ReadOnlySpan<uint> events, bool restarted)
+    {
+        if (restarted) loopAdvancedTime = false;
+        for (var offset = 0; offset < events.Length;)
+        {
+            if (events[offset] != 0) { loopAdvancedTime = true; break; }
+            var word = events[offset + 2];
+            offset += 3 + (word >= 0x80000000 ? (int)(((word & 0xffffff) + 3) / 4) : 0);
+        }
+        if (playback.SourceDone && !loopAdvancedTime)
+            throw new InvalidDataException("A repeating MIDI song must advance playback time.");
     }
 }

@@ -18,6 +18,54 @@ public class VmMusicMidiBufferServiceTests
 
     private static VmMusicSmfPlaybackSource Source() => new(VmMusicSmf.Serialize(120, 500000, [new(0, 0x643c90)]));
 
+    [Theory]
+    [InlineData(0)]
+    [InlineData(1)]
+    public void LoopDurationIsTrackedAcrossBuffersAndResetForEachRestart(uint firstDelay)
+    {
+        using var source = new VmMusicSmfPlaybackSource(VmMusicSmf.Serialize(120, 500000,
+            new[] { new VmMusicSmfEvent(firstDelay, 0x643c90) }
+                .Concat(Enumerable.Repeat(new VmMusicSmfEvent(0, 0x01c0), 300))));
+        var service = new VmMusicMidiBufferService(new(source), new Device(), 169);
+        Assert.Equal(VmMusicMidiPrimeStatus.Ready, service.Prime(600000, false, true, true).Status);
+        void Drain()
+        {
+            for (var i = 0; i < 100; i++) Assert.Equal(0, service.Service(600000, false, true, false));
+        }
+        if (firstDelay == 0) Assert.Throws<InvalidDataException>(Drain);
+        else Drain();
+    }
+
+    [Fact]
+    public void PausedBufferTimeDoesNotMakeZeroDurationSongValid()
+    {
+        using var source = new VmMusicSmfPlaybackSource(VmMusicSmf.Serialize(120, 500000,
+            Enumerable.Repeat(new VmMusicSmfEvent(0, 0x01c0), 300)));
+        var service = new VmMusicMidiBufferService(new(source), new Device(), 169);
+        service.Prime(600000, false, true, true);
+        Assert.Equal(0, service.Service(600000, true, true, false));
+        Assert.Throws<InvalidDataException>(() =>
+        {
+            for (var i = 0; i < 100; i++) service.Service(600000, false, true, false);
+        });
+    }
+
+    [Fact]
+    public void OptedInShortSongQueuesStopAndDoesNotRefillCompletedSource()
+    {
+        using var source = Source();
+        var device = new Device();
+        var service = new VmMusicMidiBufferService(new(source), device);
+        Assert.Equal(VmMusicMidiPrimeStatus.Ready, service.Prime(600000, false, true).Status);
+        Assert.Equal(new[] { "prepare:0", "sync:0", "prepare:1", "sync:1" }, device.Calls);
+        var expected = new uint[99];
+        VmMusicMidiControlBuffers.WriteStop(expected);
+        Assert.Equal(expected, device.Packets[1]);
+        Assert.Equal(VmMusicMidiEndState.StopQueued, service.EndState);
+        Assert.Equal(0, service.Service(600000, false, false, false));
+        Assert.Equal(4, device.Calls.Count);
+    }
+
     [Fact]
     public void PrimeQueuesTwoBuffersSynchronouslyWithoutUnprepare()
     {

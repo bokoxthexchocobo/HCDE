@@ -40,7 +40,7 @@ public class RaiseBridgeFlagTests
 
     private static Actor Rider(Actor support) => new()
     {
-        X = support.X, Y = support.Y, SectorIndex = 0, OnGround = true,
+        X = support.X, Y = support.Y, SectorIndex = 0, OnGround = true, CanPass = true, IsMonster = true,
         MaxStepHeight = Fixed.FromInt(64),
     };
 }

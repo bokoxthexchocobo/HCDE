@@ -60,6 +60,12 @@ internal static class AcsActorFlags
         Shattering,
         NoAutoOffSkullFly,
         NoBlockmap,
+        NoSector,
+        MoveWithSector,
+        CanPass,
+        DontOverlap,
+        NoLiftDrop,
+        RelativeToFloor,
         Invisible,
         CantSeek,
         SpawnSoundSource,
@@ -162,6 +168,18 @@ internal static class AcsActorFlags
         { kind = Kind.DontRip; return true; }
         if (flagName.Equals("STRIFEDAMAGE", StringComparison.OrdinalIgnoreCase))
         { kind = Kind.StrifeDamage; return true; }
+        if (flagName.Equals("NOLIFTDROP", StringComparison.OrdinalIgnoreCase))
+        { kind = Kind.NoLiftDrop; return true; }
+        if (flagName.Equals("RELATIVETOFLOOR", StringComparison.OrdinalIgnoreCase))
+        { kind = Kind.RelativeToFloor; return true; }
+        if (flagName.Equals("CANPASS", StringComparison.OrdinalIgnoreCase))
+        { kind = Kind.CanPass; return true; }
+        if (flagName.Equals("DONTOVERLAP", StringComparison.OrdinalIgnoreCase))
+        { kind = Kind.DontOverlap; return true; }
+        if (flagName.Equals("MOVEWITHSECTOR", StringComparison.OrdinalIgnoreCase))
+        { kind = Kind.MoveWithSector; return true; }
+        if (flagName.Equals("NOSECTOR", StringComparison.OrdinalIgnoreCase))
+        { kind = Kind.NoSector; return true; }
         if (flagName.Equals("NOBLOCKMAP", StringComparison.OrdinalIgnoreCase))
         { kind = Kind.NoBlockmap; return true; }
         if (flagName.Equals("INVISIBLE", StringComparison.OrdinalIgnoreCase))
@@ -448,7 +466,13 @@ internal static class AcsActorFlags
         Kind.IceCorpse => actor.IceCorpse,
         Kind.Shattering => actor.Shattering,
         Kind.NoAutoOffSkullFly => actor.NoAutoOffSkullFly,
+        Kind.NoSector => actor.NoSector,
         Kind.NoBlockmap => actor.NoBlockmap,
+        Kind.MoveWithSector => actor.MoveWithSector,
+        Kind.CanPass => actor.CanPass,
+        Kind.DontOverlap => actor.DontOverlap,
+        Kind.NoLiftDrop => actor.NoLiftDrop,
+        Kind.RelativeToFloor => actor.RelativeToFloor,
         Kind.Invisible => actor.Invisible,
         Kind.CantSeek => actor.CantSeek,
         Kind.SpawnSoundSource => actor.SpawnSoundSource,
@@ -561,6 +585,12 @@ internal static class AcsActorFlags
             case Kind.IceCorpse: actor.IceCorpse = value; break;
             case Kind.Shattering: actor.Shattering = value; break;
             case Kind.NoAutoOffSkullFly: actor.NoAutoOffSkullFly = value; break;
+            case Kind.NoSector: ActorPropertyActions.ChangeLinkFlags(actor, sector: value ? 1 : 0); break;
+            case Kind.NoLiftDrop: actor.NoLiftDrop = value; break;
+            case Kind.RelativeToFloor: actor.RelativeToFloor = value; break;
+            case Kind.CanPass: actor.CanPass = value; break;
+            case Kind.DontOverlap: actor.DontOverlap = value; break;
+            case Kind.MoveWithSector: actor.MoveWithSector = value; break;
             case Kind.NoBlockmap: ActorPropertyActions.ChangeLinkFlags(actor, value ? 1 : 0); break;
             case Kind.Invisible: actor.Invisible = value; break;
             case Kind.CantSeek: actor.CantSeek = value; break;

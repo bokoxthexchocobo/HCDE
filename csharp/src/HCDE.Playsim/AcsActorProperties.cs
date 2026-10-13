@@ -193,15 +193,15 @@ internal static class AcsActorProperties
         MaxStepHeight => actor.MaxStepHeight.Raw,
         MaxDropOffHeight => actor.MaxDropOffHeight.Raw,
         TargetTid => TargetThingId(actor),
-        TracerTid => ReferencedThingId(actor, actor is ProjectileActor projectile ? projectile.TracerTargetId : null),
+        TracerTid => ReferencedThingId(actor, actor.TracerId),
         _ => 0,
     };
 
     private static int TargetThingId(Actor actor)
     {
         if (actor is ProjectileActor projectile)
-            return projectile.Owner.Destroyed ? 0 : projectile.Owner.ThingId;
-        return ReferencedThingId(actor, actor.Brain?.TargetId);
+            return projectile.Owner is { Destroyed: false } owner ? owner.ThingId : 0;
+        return ReferencedThingId(actor, actor.TargetId);
     }
 
     private static int ReferencedThingId(Actor actor, uint? targetId)

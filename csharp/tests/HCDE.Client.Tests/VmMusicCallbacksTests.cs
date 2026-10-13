@@ -15,6 +15,7 @@ public class VmMusicCallbacksTests
         Assert.Throws<ObjectDisposedException>(() => first.OpenFile(null));
         Assert.Throws<ObjectDisposedException>(() => second.AddPath("patches"));
         Assert.Throws<ObjectDisposedException>(() => callbacks.OpenBank(null, VmMusicBankFormat.Gus));
+        Assert.Throws<ObjectDisposedException>(() => callbacks.CreateWildMidiCache());
     }
 
     [Fact]
@@ -37,12 +38,16 @@ public class VmMusicCallbacksTests
             { "bank.cfg" => 0, "patches/piano.pat" => 1, _ => -1 }, index => [(byte)index]);
         using var handle = callbacks.OpenBank("bank.cfg", VmMusicBankFormat.None)!;
         Assert.Equal(new byte[] { 0 }, handle.OpenFile(null).Data);
+        var bankReader = Assert.IsAssignableFrom<IVmMusicBankReader>(handle);
+        Assert.Equal(new byte[] { 0 }, bankReader.Open(null).Data);
         handle.AddPath("patches");
         Assert.Equal(new byte[] { 1 }, handle.OpenFile("piano.pat").Data);
         handle.Dispose();
         handle.Dispose();
         Assert.Throws<ObjectDisposedException>(() => handle.OpenFile(null));
         Assert.Throws<ObjectDisposedException>(() => handle.AddPath("other"));
+        Assert.Throws<ObjectDisposedException>(() => bankReader.Open(null));
+        Assert.Throws<ObjectDisposedException>(() => bankReader.Paths);
         Assert.Null(callbacks.OpenBank(null, VmMusicBankFormat.Gus));
     }
 }

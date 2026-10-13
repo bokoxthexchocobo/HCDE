@@ -4,6 +4,49 @@ namespace HCDE.Playsim.Tests;
 
 public class ActorClearTargetActionTests
 {
+    [Theory]
+    [InlineData(0)]
+    [InlineData(1)]
+    [InlineData(2)]
+    public void ClearTargetHandlesGeneralAndProjectilePointersAndSavedClears(int kind)
+    {
+        var sim = Room(); var player = sim.Players.Single(); var target = sim.AddBot(100, 0);
+        Actor actor = kind switch
+        {
+            0 => player,
+            1 => sim.AddBot(0, 0),
+            _ => sim.SpawnProjectile(player, ProjectileKind.RevenantTracer, target)
+        };
+        if (kind == 1) actor.Brain = null;
+        actor.SetTargetPointer(target); actor.MasterId = target.Id; actor.TracerId = target.Id;
+        actor.LastHeardTargetId = target.Id;
+        var before = SimSavegame.Write(sim);
+        ActorPropertyActions.ClearTarget(actor);
+        Assert.Null(actor.TargetId); Assert.Null(actor.LastHeardTargetId);
+        Assert.Equal(target.Id, actor.MasterId); Assert.Equal(target.Id, actor.TracerId);
+        var cleared = SimSavegame.Write(sim);
+        Assert.True(SimSavegame.TryRead(cleared, out var state, out var error), error);
+        actor.SetTargetPointer(target); actor.LastHeardTargetId = target.Id;
+        sim.RestoreState(state);
+        Assert.Null(actor.TargetId); Assert.Null(actor.LastHeardTargetId);
+        Assert.Equal(cleared, SimSavegame.Write(sim));
+        SimSavegame.Apply(sim, before);
+        Assert.Equal(target.Id, actor.TargetId); Assert.Equal(target.Id, actor.LastHeardTargetId);
+        Assert.Equal(before, SimSavegame.Write(sim));
+    }
+
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public void ClearLastHeardPreservesGeneralAndProjectileTargets(bool projectile)
+    {
+        var sim = Room(); var player = sim.Players.Single(); var target = sim.AddBot(100, 0);
+        Actor actor = projectile ? sim.SpawnProjectile(player, ProjectileKind.Plasma) : player;
+        actor.SetTargetPointer(target); actor.LastHeardTargetId = target.Id;
+        ActorPropertyActions.ClearLastHeard(actor);
+        Assert.Equal(target.Id, actor.TargetId); Assert.Null(actor.LastHeardTargetId);
+    }
+
     [Fact]
     public void ClearTargetClearsCurrentRememberedAndHeardActors()
     {

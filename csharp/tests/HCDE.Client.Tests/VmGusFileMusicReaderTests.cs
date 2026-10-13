@@ -15,7 +15,7 @@ public class VmGusFileMusicReaderTests
             File.WriteAllBytes(Path.Combine(last, name), [2]);
             var reader = new VmGusFileMusicReader(name, [first, last]);
             Assert.Equal(new byte[] { 2 }, reader.Open(null).Data);
-            Assert.Equal(last.Replace('\\', '/') + "/timidity.cfg", reader.Open(null).Name);
+            Assert.Equal("timidity.cfg", reader.Open(null).Name);
             var patches = Directory.CreateDirectory(Path.Combine(last, "patches")).FullName;
             File.WriteAllBytes(Path.Combine(patches, "piano.pat"), [0, 255]);
             reader.Paths.Add("patches");

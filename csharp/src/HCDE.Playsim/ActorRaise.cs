@@ -47,6 +47,9 @@ internal static class ActorRaise
         corpse.Solid = (collisionFlags & 1) != 0;
         corpse.Shootable = (collisionFlags & 2) != 0;
         corpse.NoBlockmap = (collisionFlags & 4) != 0;
+        corpse.NoSector = (collisionFlags & 128) != 0;
+        corpse.CanPass = (collisionFlags & 256) != 0;
+        corpse.DontOverlap = false;
         corpse.NoBlockMonsters = (collisionFlags & 8) != 0;
         corpse.Dropped = (collisionFlags & 16) != 0;
         corpse.IsMonster = (collisionFlags & 32) != 0;
@@ -81,6 +84,8 @@ internal static class ActorRaise
         corpse.Rip = corpse.DontRip = corpse.NoBossRip = false;
         corpse.RipperLevel = corpse.RipLevelMin = corpse.RipLevelMax = 0;
         corpse.Pushable = corpse.CannotPush = false;
+        corpse.MoveWithSector = false;
+        corpse.NoLiftDrop = corpse.RelativeToFloor = false;
         corpse.NoVerticalMeleeRange = false;
         corpse.PushFactor = 0.25;
         corpse.ProjectilePassHeight = default;

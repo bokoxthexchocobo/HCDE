@@ -34,7 +34,7 @@ public class ThruActorsTests
     [InlineData(false)]
     public void EitherFlagDisablesRiderContact(bool carrierFlag)
     {
-        var carrier = new Actor(); var rider = new Actor { Z = carrier.Height };
+        var carrier = new Actor { CanPass = true }; var rider = new Actor { Z = carrier.Height };
         Assert.True(ActorPhysics.IsStandingOn(carrier, rider));
         carrier.ThruActors = carrierFlag; rider.ThruActors = !carrierFlag;
         Assert.False(ActorPhysics.IsStandingOn(carrier, rider));

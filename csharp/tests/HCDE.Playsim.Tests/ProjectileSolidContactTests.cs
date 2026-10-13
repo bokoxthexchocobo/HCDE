@@ -58,6 +58,60 @@ public class ProjectileSolidContactTests
         sim.Tick(); Assert.True(rocket.Destroyed); Assert.True(nearby.Health < health);
     }
 
+    [Theory]
+    [InlineData(false, false, false)]
+    [InlineData(true, false, true)]
+    [InlineData(false, true, true)]
+    [InlineData(true, true, true)]
+    public void ZeroHealthNonCorpseContactUsesFlags(bool solid, bool shootable, bool stops)
+    {
+        var (sim, missile, target) = Setup();
+        target.Health = 0; target.Corpse = false; target.Solid = solid; target.Shootable = shootable;
+        var evaluations = 0;
+        missile.DamageExpression = _ => { evaluations++; return 7; };
+        var before = SimSavegame.Write(sim);
+        Assert.Equal(stops ? 2 : (int?)null, ActorJumpActions.CheckBlock(missile, 2, xOffset: 20));
+        Assert.Equal(before, SimSavegame.Write(sim));
+        missile.Tick();
+        Assert.Equal(stops, missile.Destroyed);
+        Assert.Equal(shootable ? 1 : 0, evaluations);
+    }
+
+    [Theory]
+    [InlineData(false, false)]
+    [InlineData(false, true)]
+    [InlineData(true, false)]
+    [InlineData(true, true)]
+    public void BlockedImpactEvaluatesDamageOnlyForEligibleShootableTarget(bool shootable, bool canHarm)
+    {
+        var (_, missile, target) = Setup();
+        target.Shootable = shootable;
+        target.ProjectileGroup = canHarm ? -1 : 7;
+        Assert.IsAssignableFrom<Actor>(missile.Owner).ProjectileGroup = 7;
+        var evaluations = 0;
+        missile.DamageExpression = _ => { evaluations++; return 7; };
+        missile.Tick();
+        Assert.True(missile.Destroyed);
+        Assert.Equal(shootable && canHarm ? 1 : 0, evaluations);
+    }
+
+    [Theory]
+    [InlineData(false, false)]
+    [InlineData(false, true)]
+    [InlineData(true, false)]
+    [InlineData(true, true)]
+    public void RipperCorpsePassageRequiresCorpseAndNotShootable(bool corpse, bool shootable)
+    {
+        var (_, missile, target) = Setup();
+        target.Corpse = corpse; target.Shootable = shootable;
+        missile.Rip = true; target.DontRip = true;
+        var evaluations = 0;
+        missile.DamageExpression = _ => { evaluations++; return 7; };
+        missile.Tick();
+        Assert.Equal(!corpse || shootable, missile.Destroyed);
+        Assert.Equal(shootable ? 1 : 0, evaluations);
+    }
+
     private static (AuthoritySimulation, ProjectileActor, Actor) Setup()
     {
         var sim = AuthoritySimulation.Start(new PlayLevel { Sectors = [new LevelSector { CeilingHeight = 128 }] });

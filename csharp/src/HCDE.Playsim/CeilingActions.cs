@@ -112,8 +112,8 @@ internal static class CeilingActions
         var next = direction > 0 ? Math.Min(target, current + speed) : Math.Max(target, current - speed);
         if (next < current)
         {
-            var blocked = sim.Actors.Where(actor => actor.BlocksActors && actor.SectorIndex == motion.SectorIndex
-                && actor.Z.ToDouble() + actor.Height.ToDouble() > next).ToArray();
+            var blocked = sim.Actors.Where(actor => actor.IsSectorMoverActor && ActorPhysics.BlocksSectorGeometry(actor) && ActorPhysics.TouchesSector(sim, actor, motion.SectorIndex)
+                && ActorPhysics.BlocksLoweringCeiling(sim, actor, next)).ToArray();
             if (blocked.Length > 0)
             {
                 if (crushDamage >= 0 && (sim.Thinkers.Clock.Tic & 3) == 0)
@@ -122,8 +122,9 @@ internal static class CeilingActions
                     foreach (var actor in blocked)
                     {
                         actor.MarkMoverCrush(tic);
-                        ActorDamage.Apply(actor, crushDamage);
-                        ActorPhysics.CrushStandingRiders(sim, actor, crushDamage, tic);
+                        ActorDamage.Apply(actor, crushDamage, damageType: "Crush");
+                        if (crushDamage > 0) ActorSoundActions.CrushPain(actor);
+                        ActorPhysics.CrushStandingRiders(sim, actor, crushDamage, tic, "Crush");
                     }
                 }
                 // Native MoveCeiling completes a destination-clamped leg even when
@@ -135,6 +136,8 @@ internal static class CeilingActions
             }
         }
         sim.Ceilings[motion.SectorIndex] = Fixed.FromDouble(next).ToDouble();
+        if (next < current) ActorPhysics.ApplyCeilingLower(sim, motion.SectorIndex);
+        else if (next > current) ActorPhysics.ApplyCeilingRaise(sim, motion.SectorIndex, next - current);
         if (next != target) return false;
         return FinishLeg(motion);
     }

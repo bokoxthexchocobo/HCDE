@@ -24,6 +24,13 @@ public sealed class VmMusicCallbacks : IDisposable
 
     public string ExpandPath(string? path) => VmSearchPathExpansion.ExpandEnvironment(path);
 
+    // Dispose caches and their renderers before shutting down this callback provider.
+    public VmMusicWildMidiResourceCache CreateWildMidiCache()
+    {
+        ObjectDisposedException.ThrowIf(disposed, this);
+        return new(name => OpenBank(name, VmMusicBankFormat.Gus));
+    }
+
     public VmMusicReaderHandle? OpenBank(string? name, VmMusicBankFormat allowed)
     {
         ObjectDisposedException.ThrowIf(disposed, this);
@@ -42,7 +49,7 @@ public sealed class VmMusicCallbacks : IDisposable
     }
 }
 
-public sealed class VmMusicReaderHandle : IDisposable
+public sealed class VmMusicReaderHandle : IVmMusicBankReader, IDisposable
 {
     private readonly IVmMusicBankReader reader;
     private bool disposed;
@@ -50,6 +57,17 @@ public sealed class VmMusicReaderHandle : IDisposable
 
     internal VmMusicReaderHandle(IVmMusicBankReader reader, Action<VmMusicReaderHandle>? closed = null)
     { this.reader = reader; this.closed = closed; }
+
+    VmMusicPatchPaths IVmMusicBankReader.Paths
+    {
+        get
+        {
+            ObjectDisposedException.ThrowIf(disposed, this);
+            return reader.Paths;
+        }
+    }
+
+    (byte[]? Data, string Name) IVmMusicBankReader.Open(string? name) => OpenFile(name);
 
     public (byte[]? Data, string Name) OpenFile(string? name)
     {

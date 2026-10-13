@@ -60,6 +60,7 @@ public static class VmMusicEmidi
         var filter = new Filter(division, technology);
         ulong ticks = 0;
         var loopStart = 0;
+        ulong loopTicks = 0;
         var remaining = -1;
         var controlSteps = 0;
         for (var index = 0; index < track.Events.Count; index++)
@@ -87,7 +88,7 @@ public static class VmMusicEmidi
                 {
                     case 116:
                         var count = ClampLoopCount(second == 0 ? 0 : second + 1, loopLimit);
-                        if (count != 1) { loopStart = index + 1; remaining = count == 0 ? 0 : count - 1; }
+                        if (count != 1) { loopStart = index + 1; remaining = count == 0 ? 0 : count - 1; loopTicks = ticks; }
                         loopControl = true;
                         break;
                     case 117:
@@ -96,6 +97,9 @@ public static class VmMusicEmidi
                             if (remaining == 0 && !looping) finish = true;
                             else
                             {
+                                if (looping && remaining == 0 && ticks == loopTicks)
+                                    throw new InvalidDataException("An infinite EMIDI loop must advance playback time.");
+                                loopTicks = ticks;
                                 if (remaining > 0 && --remaining == 0) remaining = -1;
                                 jump = loopStart;
                             }

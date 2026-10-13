@@ -52,7 +52,7 @@ public class ActorZBlockerTests
     public void OwnerCollisionRequiresHitOwner(bool hitOwner)
     {
         var (sim, missile, target) = Setup(); target.X = Fixed.FromInt(200);
-        missile.X = missile.Owner.X; missile.HitOwner = hitOwner;
+        missile.X = Assert.IsAssignableFrom<Actor>(missile.Owner).X; missile.HitOwner = hitOwner;
         Assert.Equal(hitOwner ? missile.Owner : null, ActorPhysics.FindZBlocker(sim, missile));
     }
 

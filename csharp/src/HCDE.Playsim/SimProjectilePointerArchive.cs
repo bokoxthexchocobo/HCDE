@@ -2,6 +2,7 @@ using System.Buffers.Binary;
 
 namespace HCDE.Playsim;
 
+/// <summary>Projectile references; an owner ID of zero represents a cleared target.</summary>
 public readonly record struct SimProjectilePointers(uint OwnerId, uint? TracerTargetId);
 
 internal static class SimProjectilePointerArchive
@@ -10,7 +11,7 @@ internal static class SimProjectilePointerArchive
     {
         if (!state.Actors.Any(a => a.ProjectilePointers.HasValue)) return;
         if (state.Actors.Any(a => a.ProjectilePointers is { } p &&
-            (p.OwnerId == 0 || p.TracerTargetId == 0 || !a.ProjectileLifetime.HasValue)))
+            (p.TracerTargetId == 0 || !a.ProjectileLifetime.HasValue)))
             throw new InvalidOperationException("Invalid projectile pointer archive.");
     }
 
@@ -25,6 +26,7 @@ internal static class SimProjectilePointerArchive
         for (var i = 0; i < state.Actors.Count; i++)
         {
             var pointers = state.Actors[i].ProjectilePointers;
+            if (pointers?.OwnerId == 0) pointers = null;
             BinaryPrimitives.WriteUInt32LittleEndian(bytes.AsSpan(start + 8 + i * 8), pointers?.OwnerId ?? 0);
             BinaryPrimitives.WriteUInt32LittleEndian(bytes.AsSpan(start + 12 + i * 8), pointers?.TracerTargetId ?? 0);
         }

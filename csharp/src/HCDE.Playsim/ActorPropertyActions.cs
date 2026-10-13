@@ -71,10 +71,16 @@ public static class ActorPropertyActions
 
     public static void ChangeLinkFlags(Actor actor, int blockmap = -1, int sector = -1)
     {
-        if (sector != -1) throw new NotSupportedException("Native sector-link membership is not yet modeled.");
-        if (blockmap == -1) return;
-        actor.NoBlockmap = blockmap != 0;
-        actor.HasBlockmapOverride = true;
+        if (blockmap != -1)
+        {
+            actor.NoBlockmap = blockmap != 0;
+            actor.HasBlockmapOverride = true;
+        }
+        if (sector != -1)
+        {
+            actor.NoSector = sector != 0;
+            actor.HasSectorOverride = true;
+        }
     }
 
     public static void SetFriendly(Actor actor, bool value)
@@ -210,13 +216,12 @@ public static class ActorPropertyActions
                 ?? throw new InvalidOperationException("Chase threshold pointer selection requires a simulation."),
                 actor, pointerSelector);
         if (subject is null || subject.Destroyed) return;
-        var brain = subject.Brain
-            ?? throw new NotSupportedException("Chase thresholds require a managed monster brain.");
-        brain.SetChaseThreshold(threshold, setDefault);
+        subject.SetChaseThreshold(threshold, setDefault);
     }
 
     public static void ClearTarget(Actor actor)
     {
+        actor.SetTargetPointer(null);
         actor.Brain?.ClearActionTargets();
         actor.LastHeardTargetId = null;
         actor.HasTargetMemoryOverride = true;

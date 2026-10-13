@@ -47,7 +47,7 @@ public class VmGusResourceMusicReaderTests
             return resources.GetValueOrDefault(name);
         });
         Assert.Equal(new byte[] { 0, 255 }, reader.Open(null).Data);
-        Assert.Equal("music/timidity.cfg", reader.Open(null).Name);
+        Assert.Equal("timidity.cfg", reader.Open(null).Name);
         reader.Paths.Add("patches");
         Assert.Equal(new byte[] { 17 }, reader.Open("PIANO.PAT").Data);
         Assert.Equal("patches/PIANO.PAT", reader.Open("PIANO.PAT").Name);

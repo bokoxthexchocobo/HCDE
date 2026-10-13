@@ -48,7 +48,8 @@ public sealed class VmGusResourceMusicReader : IVmMusicBankReader
 
     public (byte[]? Data, string Name) Open(string? name)
     {
-        if (name is null) return (openConfiguration(), basePath + "timidity.cfg");
+        // Native callbacks name the root relative to this reader's base directory.
+        if (name is null) return (openConfiguration(), "timidity.cfg");
         return Paths.Lookup(name, candidate => VmMusicPatchPaths.IsAbsolute(candidate)
             ? null : openResource(basePath + candidate));
     }

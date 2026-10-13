@@ -1,5 +1,2028 @@
 # Gameplay phases 1–3: implementation and completion audit
 
+## 2026-10-13 - Post-callback missile solidity conversion
+
+Audited the preceding SpecialMissileHit integration and converted post-callback nonshootable/nonsolid passage. A callback that clears both flags now permits travel when the attack is eligible; previously the pre-callback contact candidate was still treated as a blocker. CanAttackHurtFrom is evaluated after callback/owner handling and reused for solidity passage, spectral passage and ripping. Attack immunity still blocks before the nonshootable solidity check, matching native ordering.
+
+Native audit: src/playsim/p_map.cpp around 1661-1693 calls SpecialMissileHit first, rejects immune attacks, then returns not-SOLID for a not-SHOOTABLE target before spectral/ripper checks. Eight regression cases cover callback changes to every SOLID/SHOOTABLE combination with eligible and immune attacks, asserting travel, direct-damage expression invocation and target health.
+
+Validation: all 15,787 Release tests pass (Playsim 11,091; Client 2,265). Remaining gaps include native callback/blockmap ordering and contact-position timing, full ZScript callback binding/persistence, actor bounces and reflection, new-style projectile poison, blood effects, exact movement sampling and portals/3D floors. No native runtime differential or live gameplay/audio-device validation was performed. Changes remain local and uncommitted.
+
+## 2026-10-13 - Managed SpecialMissileHit collision callback
+
+Converted the SpecialMissileHit callback boundary into Actor and ordinary projectile travel. The virtual method defaults to -1 and supports a managed callback function. Return 0 stops travel without direct missile damage, return 1 allows passage, and other values continue normal handling. Invocation follows generic DONTOVERLAP, NONSHOOTABLE, ghost, missile-species, ripper-corpse and height checks, and precedes owner immunity, attack eligibility, shootability, spectral handling and ripping/direct damage. Contact iteration snapshots the actor collection so callback spawning does not invalidate enumeration, and missile removal ends movement without a second impact.
+
+Native audit: src/playsim/p_mobj.cpp:3830 implements the script-side virtual with default -1; src/playsim/p_map.cpp around 1661 dispatches 0/1/default after height checks and before owner/CanAttackHurt. Twelve regression cases cover result values, damage-expression counts, owner/spectral versus earlier passage flags, DONTOVERLAP precedence, missile removal and actor spawning. Existing projectile tests remain green.
+
+Validation: all 15,779 Release tests pass (Playsim 11,083; Client 2,265). This provides a managed callback boundary, not full ZScript VM binding or delegate serialization. Native blockmap callback order, callback contact-position timing, zero-damage actor bounces, reflective behavior, new-style poison, blood effects, exact movement sampling and portals/3D floors remain gaps. No native runtime differential, live gameplay or physical audio-device validation was performed. Changes remain local and uncommitted.
+
+## 2026-10-13 - General Actor missile-damage action conversion
+
+Converted the native missile-damage action boundary from ProjectileActor-only to Actor. Actor.DoMissileDamage delegates to shared ActorMissileDamage, retaining actor-driven RIP capture, explicit-mode compatibility, virtual GetMissileDamage, healing, pain flags and rip playback. Ordinary actors resolve their target pointer as the damage source after damage-function evaluation; projectiles retain Owner attribution. Existing projectile expression dispatch and detached impact sounds use the shared implementation.
+
+Native audit: src/playsim/p_map.cpp P_DoMissileDamage takes AActor* self, and its native action binding uses PARAM_SELF_PROLOGUE(AActor). Source attribution reads self->target at P_DamageMobj after damage evaluation, so callback pointer changes affect attribution. Nine regression cases cover ordinary actor RIP/STRIFEDAMAGE dice, random-stream progression, rip sound, negative/zero/positive damage functions, null target and callback-updated target attribution. All existing projectile damage, sound and travel tests remain green.
+
+Validation: all 15,767 Release tests pass (Playsim 11,071; Client 2,265). This closes the general managed Actor action exposure gap from earlier entries. Remaining gaps include new-style projectile poison, blood effects, scripted missile-hit callbacks, exact native movement sampling/blocker ordering, portals/3D floors and native runtime differential coverage. No live gameplay or physical audio-device validation was performed. Changes remain local and uncommitted.
+
+## 2026-10-13 - Simultaneous projectile height and square-bound contact audit
+
+Audited the preceding square-bound conversion and fixed a false-positive collision at a combined XY/Z boundary. Vertical clipping could collapse an otherwise open horizontal overlap interval to its excluded edge, after which the final inclusive interval test incorrectly accepted the contact. ActorContactFraction now rechecks strict XY overlap when the resulting interval is a single instant. Genuine overlapping intervals and native inclusive missile-height boundaries remain supported.
+
+Native audit: src/playsim/p_map.cpp:1426-1428 requires strict XY overlap independently of later height clipping, so vertical eligibility cannot turn an excluded horizontal edge into a blocker. Eight new regression cases exercise height entry exactly at horizontal exit and height exit exactly at horizontal entry, plus nearby real contacts, with CANPASS enabled and disabled. This corrects the managed sweep intersection; it does not claim exact native movement sampling parity.
+
+Validation: all 15,758 Release tests pass (Playsim 11,062; Client 2,265). Remaining gaps include native movement sampling/blocker order, scripted missile-hit callbacks, new-style projectile poison, blood effects, general Actor missile-damage action exposure, portals/3D floors and native runtime differential coverage. No live gameplay validation was performed. Changes remain local and uncommitted.
+
+## 2026-10-13 - Square projectile actor contact bounds
+
+Converted projectile actor contact from circular XY intersections to strict square bounds using swept axis intervals. Diagonal actor overlaps now collide, while paths merely touching a square edge do not. The shared ActorContactFraction path applies to ordinary direct hits, ripping contacts and the height-independent DONTOVERLAP rejection. Existing vertical clipping and wall/plane collision paths remain in place.
+
+Native audit: src/playsim/p_map.cpp:1426-1428 rejects actor contacts when either absolute XY difference is at least the sum of actor radii. Ten regression cases cover diagonal contacts on either side, exact positive/negative axis boundaries, high-speed contacts and edge-parallel travel, plus ripping and vertically separated DONTOVERLAP contacts. Existing projectile travel and sound tests remain green. This closes the circular-versus-square actor footprint gap recorded in prior entries, while the managed continuous sweep/substep timing still differs from native movement sampling.
+
+Validation: all 15,750 Release tests pass (Playsim 11,054; Client 2,265). Remaining gaps include exact native movement sampling/blocker ordering, script missile-hit callbacks, projectile poison and blood effects, general Actor missile-damage action exposure, portals/3D floors and native runtime differential coverage. No live gameplay or physical audio-device validation was performed. Changes remain local and uncommitted.
+
+## 2026-10-13 - Actor-driven missile damage action
+
+Converted the default DoMissileDamage action to derive ripping from the projectile's RIP flag instead of defaulting to false. The single-argument entry captures RIP before evaluating the damage expression and delegates to the existing explicit-mode overload. Travel rip contacts and impact damage now call this actor-driven entry. Explicit managed mode calls remain compatible.
+
+Native audit: src/playsim/p_map.cpp P_DoMissileDamage captures const bool ripper from self flags before poison/damage evaluation, selects ripping dice before STRIFEDAMAGE and uses that captured mode for rip sounds. Six regression cases cover all RIP/STRIFEDAMAGE combinations across sixteen seeds, exact missile random-stream progression, save/restore replay and sounds, plus expression callbacks flipping RIP after entry. Existing explicit-mode helper tests remain green.
+
+Validation: all 15,740 Release tests pass (Playsim 11,044; Client 2,265). Remaining gaps include new-style projectile poison, blood effects, general non-projectile Actor exposure of the native action, scripted missile-hit callbacks, square actor contact/native blocker ordering, portals/3D floors and native runtime differential coverage. No live gameplay or physical audio-device validation was performed. Changes remain local and uncommitted.
+
+## 2026-10-13 - Stopped ripper impact sound conversion
+
+Converted the missing stopped-ripper sound path. Managed impact removes the missile before direct-damage callbacks, so the previous live-actor StartSound call suppressed the native rip sound on DONTRIP collisions. PlayRipSound now retains a detached sound origin at contact for removed missiles while continuing to use actor playback for live ripping. Both paths treat empty and case-insensitive None sound identities as silent. Channel BODY (4), unit volume, and idle attenuation (1.001) are retained.
+
+Native audit: src/playsim/p_map.cpp P_DoMissileDamage emits RipSound before P_DamageMobj when computed damage is positive or FORCEPAIN/CAUSEPAIN selects the damage branch; zero/negative damage otherwise takes GiveBody without rip sound. Nine new cases cover stopped-ripper positive/zero/negative damage with and without CAUSEPAIN, detached playback origin and metadata, and silent sound identities. Fixture corrections use the engine's audio coordinate mapping and health below the healing maximum.
+
+Validation: all 15,734 Release tests pass (Playsim 11,038; Client 2,265). New-style missile poison metadata/application, blood effects, script missile-hit callbacks, collision geometry/blocker ordering, native runtime differential tests and live gameplay/audio-device checks remain gaps. Changes remain local and uncommitted.
+
+## 2026-10-13 - Projectile flag-based contact and damage eligibility
+
+Converted projectile travel candidate eligibility from health-based CanTakeDamage/BlocksActors to native SOLID/SHOOTABLE flag checks after generic exclusions. Zero-health non-corpse solid actors now stop missiles. Added the native RIP plus CORPSE plus not-SHOOTABLE passage rule before missile clipping. Removed redundant generic exclusions from the later missile branch. Direct impact damage now requires SHOOTABLE and CanAttackHurtFrom before evaluating GetMissileDamage; blocking without damage still runs the existing explosion path.
+
+Native audit: src/playsim/p_map.cpp:1400 onward filters generic actor flags; lines 1616 onward allow rippers through nonshootable corpses; the owner/CanAttackHurt and SHOOTABLE gates precede P_DoMissileDamage around lines 1670-1720. Twelve regression cases cover zero-health flag combinations with nonmutating CheckBlock probes, shootability/attack eligibility versus damage-expression invocation, and corpse/shootable combinations with DONTRIP. Existing rocket explosion and spectral contact tests continue to pass.
+
+Validation: all 15,725 Release tests pass (Playsim 11,029; Client 2,265). Remaining gaps include scripted SpecialMissileHit callbacks, player-specific projectile clipping, reflective behavior, native square actor bounds and blocker ordering, FromPMove, portals/3D floors and native runtime differential coverage. No live gameplay validation was performed. Changes remain local and uncommitted.
+
+## 2026-10-13 - Generic missile height-passage ordering
+
+Converted generic PASSMOBJ/bridge height clearance ahead of missile-specific pass-height clipping in position probes and travel. Shared MissileUsesActorHeightPassage retains NO_PASSMOBJ and ripper/DONTRIP/NOBOSSRIP gating. Ordinary obstacles allow exact physical top/bottom clearance; special pickups retain strict separation. Travel intersects the generic physical-height interval with the missile clip-height interval, preserving combined DONTOVERLAP early blocking.
+
+Native audit: src/playsim/p_map.cpp:1493-1513 returns early for generic height clearance before the projectilepassheight and missile damage branches. Seven regression cases cover physical top equality, overlap just below it, bridge eligibility, disabled eligibility, compatibility, ripping passage and DONTRIP. Tests check nonmutating probes and actual travel/damage. The fixture explicitly allows same-species harm so damage assertions measure contact rather than infighting restrictions.
+
+Validation: all 15,713 Release tests pass (Playsim 11,017; Client 2,265). Remaining gaps include swept circular versus native square XY actor contact, script collision callbacks, native blocker ordering, full FromPMove behavior, portals/3D floors and native runtime differential coverage. Live gameplay validation was not performed. Changes remain local and uncommitted.
+
+## 2026-10-13 - Projectile DONTOVERLAP travel integration
+
+Converted the combined DONTOVERLAP early-block branch into projectile travel and extracted MissileOverlapBlocks for shared probe/travel eligibility. Generic self/destroyed/blockmap, THRUACTORS, thru-bits and THRUSPECIES exclusions precede this branch. Eligible overlaps stop travel regardless of vertical separation, before owner, NONSHOOTABLE, ghost, missile-species and spectral passage checks. This early rejection does not invoke direct missile damage; existing explosion actions still run.
+
+Native audit: src/playsim/p_map.cpp:1400-1513 performs generic exclusions before the PASSMOBJ/bridge, compatibility and ripper-gated DONTOVERLAP rejection, preceding missile damage handling. Ten new regression cases cover travel above targets, CANPASS/bridge eligibility, NO_PASSMOBJ, ordinary rippers and DONTRIP, plus early blocking before nonshootable, ghost, spectral and owner passage. Target health remains unchanged in these plasma collision tests.
+
+Validation: all 15,706 Release tests pass (Playsim 11,010; Client 2,265). Nonincremental warnings-as-errors Release build succeeds with zero warnings/errors. Whitespace checks pass. Managed travel still uses swept circular XY collision rather than native square actor bounds; full generic height-clearance ordering, callbacks, native blocker order, boss-ripper differential coverage, FromPMove, non-Doom defaults, portals and 3D floors remain gaps. No native runtime differential or live gameplay validation was performed. Changes remain local and uncommitted.
+
+## 2026-10-13 - Projectile DONTOVERLAP position probes
+
+Converted combined DONTOVERLAP into the generic pre-missile portion of MissileBlocksPosition. With CANPASS or bridge eligibility and compatibility permitting, combined flags block before missile pass-height/exclusion handling. Rippers bypass this pre-branch unless DONTRIP or NOBOSSRIP/BOSS activates it. Special pickup obstacles retain their separate branch.
+
+Native audit: src/playsim/p_map.cpp:1493-1513 gates the generic overlap branch by PASSMOBJ/bridge, NO_PASSMOBJ and ripper restrictions, then returns unblocking for combined DONTOVERLAP before missile-specific clipping. The current non-player stationary missile probe has no player unblocking scope. Six regression cases cover CANPASS/bridge eligibility, no eligibility, compatibility precedence, ripper passage and DONTRIP, with byte-exact no-mutation checks and save restoration.
+
+Validation: all 15,696 Release tests pass (Playsim 11,000; Client 2,265); nonincremental warnings-as-errors Release build succeeds with zero warnings/errors; whitespace checks pass. Actual projectile travel/callback integration, full generic pre-missile height clearance, boss-ripper differential coverage, full FromPMove and non-Doom DONTOVERLAP defaults remain gaps. Custom Grind, corpse/touchy effects, recursive stacks, cached bounds/history, portals/3D floors, pickup activation, player clipping and blocker ordering remain outstanding. No native runtime differential or live gameplay validation was performed. Changes remain local and uncommitted.
+
+## 2026-10-13 - DONTOVERLAP stepping and stationary player unblocking
+
+Audited the preceding DONTOVERLAP conversion and closed two paths: combined flags now prevent the ordinary ground-step allowance from bypassing their restriction, and stationary player position/CheckBlock probes use native unblocking when height passage is eligible. NO_PASSMOBJ still disables that branch; non-player probes retain their existing non-FromPMove behavior. Movement away from existing overlap remains handled separately.
+
+Native audit: src/playsim/p_map.cpp sets unblocking for unchanged player/FromPMove XY and returns that result for combined DONTOVERLAP before ordinary collision/step handling. Eight regression cases cover player/monster stepping with both/single flags and stationary player/non-player probes with compatibility enabled/disabled, including byte-exact no-mutation checks.
+
+Validation: all 15,690 Release tests pass (Playsim 10,994; Client 2,265); nonincremental warnings-as-errors Release build succeeds with zero warnings/errors; whitespace checks pass. Full FromPMove semantics, DONTOVERLAP class defaults and missile/ripper integration, custom Grind, corpse/touchy behavior, blood effects, recursive stacks, native cached bounds/history, portals/3D floors, player clipping and blocker ordering remain gaps. No native runtime differential or live gameplay validation was performed. Changes remain local and uncommitted.
+
+## 2026-10-13 - DONTOVERLAP actor flag and optional archive
+
+Converted runtime DONTOVERLAP exposure through actor flags, checksum, snapshot/restore and the shared ordinary actor height-clearance helper. Both actors must have the flag to suppress ordinary over/under clearance; a single flag does not. Existing moving-away handling is retained, including the player unblocking subset, and special pickup obstacles retain their separate strict-height rule.
+
+Added optional SimDontOverlapArchive version 195 around existing formats 15-194, including nested CANPASS overrides. Unflagged saves keep their existing format; old saves restore the current modeled false default. Validation rejects malformed flag values before restore. Current modeled resurrection resets the runtime flag to the supported Doom class default.
+
+Native audit: src/playsim/p_map.cpp:1507-1513 checks the combined MF3_DONTOVERLAP flags and returns the native unblocking result instead of normal height clearance. Nine regression cases cover all flag pairs, ACS reads/writes, position/CheckBlock no-mutation probes, actual movement, player moving-away versus deeper overlap, nested archive round-trip, checksum change, deterministic tick continuation, old-format defaults, malformed flags and resurrection.
+
+Validation: all 15,682 Release tests pass (Playsim 10,986; Client 2,265); nonincremental warnings-as-errors Release build succeeds with zero warnings/errors; whitespace checks pass. Exact native unblocking/FromPMove semantics, class-specific non-Doom DONTOVERLAP defaults and missile/ripper integration remain gaps. Custom Grind, corpse/touchy behavior, blood effects, plane rollback/full-tic bridge poses, recursive stacks, cached bounds/history, portals/3D floors, pickup activation, player clipping and blocker ordering remain outstanding. No native runtime differential or live gameplay validation was performed. Changes remain local and uncommitted.
+
+## 2026-10-13 - CrushPain no-sound sentinel
+
+Converted empty/case-insensitive None handling for configured CrushPain sound names. The helper now omits playback requests for these no-sound values rather than sending None to client sound lookup. This follows the existing C# sound identity convention in ActorSoundActions and the native P_DoCrunch NO_SOUND exclusion.
+
+Four regression cases cover empty, None, none and NONE values with no queued playback. Native corpse grinding was also audited: DONTGIB/NOBLOOD, custom Crush state, generic crush sprite availability, blood translation and gib replacement affect behavior; current actor metadata is insufficient to claim that entire branch converted.
+
+Validation: all 15,673 Release tests pass (Playsim 10,977; Client 2,265); nonincremental warnings-as-errors Release build succeeds with zero warnings/errors; whitespace checks pass. Corpse/gib and armed-touchy Grind, blood effects, custom callbacks, exact plane rollback/full-tic bridge poses, recursive stacks, cached bounds/history, portals/3D floors, pickup activation, DONTOVERLAP, player clipping and blocker ordering remain gaps. No native runtime differential or live gameplay validation was performed. Changes remain local and uncommitted.
+
+## 2026-10-13 - Case-insensitive typed rider crush handling
+
+Audited the preceding typed rider conversion and corrected its case-sensitive Crush comparison. CrushStandingRiders now computes a single ordinal case-insensitive damage-type match for default Grind shootability and CrushPain. This agrees with native name-based damage types and the existing case-insensitive Actor damage-factor dictionary.
+
+Expanded the two rider cases to six, adding lowercase and uppercase Crush names for shootable/non-shootable riders. All variants verify health, CrushPain requests and crush-tick marking. No damage-type spelling is rewritten or other caller behavior changed.
+
+Validation: all 15,669 Release tests pass (Playsim 10,973; Client 2,265); nonincremental warnings-as-errors Release build succeeds with zero warnings/errors; whitespace checks pass. Custom Grind, corpse/gib and touchy handling, blood effects, exact plane rollback/full-tic bridge poses, recursive stacks, cached bounds/history, portals/3D floors, pickup activation, DONTOVERLAP, player clipping and blocker ordering remain gaps. No native runtime differential or live gameplay validation was performed. Changes remain local and uncommitted.
+
+## 2026-10-13 - Typed rider crush default Grind gate
+
+Converted the default non-shootable Grind exclusion into typed Crush propagation through CrushStandingRiders. Non-shootable riders are skipped before crush-tick marking, damage and CrushPain; other damage-type callers retain existing behavior. Physical carrying eligibility is unchanged.
+
+Native audit: src/playsim/p_mobj.cpp Grind returns false for ordinary non-shootable actors; src/playsim/p_map.cpp P_DoCrunch returns immediately on false before effects or nofit marking. Two regression cases compare shootable/non-shootable riders, health, configured CrushPain requests and MoverCrushTic.
+
+Validation: all 15,665 Release tests pass (Playsim 10,969; Client 2,265); nonincremental warnings-as-errors Release build succeeds with zero warnings/errors; whitespace checks pass. This applies the ordinary default gate; corpse/gib and armed-touchy branches, custom Grind callbacks, recursive stacks, cached bounds/history, full-tic bridge poses, portals/3D floors, pickup activation, DONTOVERLAP, player clipping and blocker ordering remain gaps. No native runtime differential or live gameplay validation was performed. Changes remain local and uncommitted.
+
+## 2026-10-13 - Default Grind non-shootable exclusion
+
+Converted the default Grind shootability gate into BlocksSectorGeometry: ordinary actors must be shootable to count as modeled sector crunch obstructions. Bridges retain their separate immovable obstruction path. Ceiling, door, raised-floor and stationary pinch consumers share the predicate.
+
+Native audit: src/playsim/p_mobj.cpp Grind returns false for nonsolid/noclip and non-shootable ordinary actors after corpse/touchy handling; P_DoCrunch returns before setting nofit when CallGrind returns false. PIT_FloorRaise separately handles bridges before crunch. Four regression cases cover shootable/non-shootable floor and ceiling obstruction, preserving health in non-crushing motions.
+
+Validation: all 15,663 Release tests pass (Playsim 10,967; Client 2,265); nonincremental warnings-as-errors Release build succeeds with zero warnings/errors; whitespace checks pass. This converts the ordinary default eligibility subset; custom Grind callbacks, corpse/gib and armed-touchy behavior remain unsupported. Blood effects, plane rollback/full-tic bridge poses, recursive stacks, cached bounds/history, portals/3D floors, pickup activation, DONTOVERLAP, player clipping and blocker ordering remain gaps. No native runtime differential or live gameplay validation was performed. Changes remain local and uncommitted.
+
+## 2026-10-13 - Stationary pinch solidity independent of health
+
+Converted FitToSector's stationary sector-pinch eligibility to BlocksSectorGeometry. Solid non-corpse actors now reach the existing typed crush/sound path independently of health, consistent with moving ceiling/floor obstruction. Damage eligibility itself remains in ActorDamage, so zero-health actors are not damaged further by this conversion.
+
+Native audit: P_DoCrunch separates crush effects/sound from damage return value and has no direct positive-health gate; native position validity uses solidity. This aligns the existing C# stationary pinch subset while Grind/corpse crunch semantics remain unconverted. Three regression cases cover living solid, zero-health solid and zero-health nonsolid pinch events, including configured CrushPain requests and health outcomes.
+
+Validation: all 15,659 Release tests pass (Playsim 10,963; Client 2,265); nonincremental warnings-as-errors Release build succeeds with zero warnings/errors; whitespace checks pass. Native Grind/corpse callbacks, blood effects and actor metadata, exact plane rollback/full-tic bridge poses, recursive stacks, cached bounds/history, portals/3D floors, pickup activation, DONTOVERLAP, player clipping and blocker ordering remain gaps. No native runtime differential or live gameplay validation was performed. Changes remain local and uncommitted.
+
+## 2026-10-13 - CrushPain cross-channel playback query
+
+Converted the native actor-wide sound query for CrushPain. SimulationSoundRequest now carries optional CheckAllSoundChannels metadata; CrushPain sets it with OnlyIfSoundNotPlaying. ClientHost honors that query separately from channel-scoped NoStop and legacy conditional sounds. CrushPain is exposed through ActorSoundActions for direct use and mixer verification.
+
+Native audit: src/playsim/p_map.cpp P_DoCrunch uses S_GetSoundPlayingInfo(actor, sound), and src/sound/s_doomsound.cpp forwards an actor/sound query without a channel. Two mixer cases verify suppression with the same sound already playing on voice or another channel. An initial generic all-channel change broke three legacy/body sound cases; the final explicit metadata approach preserves those existing scopes and all tests pass. Request metadata is transient; no save format change is required.
+
+Validation: all 15,656 Release tests pass (Client 2,265; Playsim 10,960); nonincremental warnings-as-errors Release build succeeds with zero warnings/errors; whitespace checks pass. Tests exercise mixer playback state, not a physical audio device. Native Grind callbacks, crunch effects, plane rollback/full-tic bridge poses, recursive stacks, cached bounds/history, portals/3D floors, pickup activation, DONTOVERLAP, player clipping and blocker ordering remain gaps. No native runtime differential or live gameplay validation was performed. Changes remain local and uncommitted.
+
+## 2026-10-13 - CANPASS legacy class-default audit correction
+
+Verified that ResurrectionCollisionFlags are captured from spawned class defaults and are not serialized as historical collision-default records. RestoreState restores absent CanPassFlag from DefaultCanPass on the reconstructed actor. Therefore the repeatedly listed 'legacy class-default migration' gap was unsupported for this path and is superseded by this audit correction. No runtime migration change was needed.
+
+Added three regression cases for zombie, cacodemon and lost-soul classes: save a corpse in an archive whose version is below 194 (no CANPASS override trailer), reconstruct the simulation/class defaults, restore after clearing the runtime flag, and verify resurrection restores CANPASS from rebuilt defaults. Existing override tests cover explicit current-format flags.
+
+Validation: all 15,654 Release tests pass (Playsim 10,960); nonincremental warnings-as-errors Release build succeeds with zero warnings/errors; whitespace checks pass. This slice adds audit/test coverage rather than new runtime behavior. It verifies generated pre-194-format archives, not historical external save fixtures or changed class definitions across engine releases. Remaining gaps include native Grind callbacks, crunch effects, plane rollback/full-tic bridge poses, recursive stacks, cached bounds/history, portals/3D floors, pickup activation, DONTOVERLAP, player clipping and blocker ordering. No native runtime differential or live gameplay validation was performed. Changes remain local and uncommitted.
+
+## 2026-10-13 - Configured crusher pain sound
+
+Converted configured ActorSoundType.CrushPain playback into floor/ceiling crusher, stationary pinch and typed rider crush paths. Positive-damage crusher events request the sound on voice channel 2 with normal volume/attenuation and OnlyIfSoundNotPlaying. Invulnerable/dormant actors and absent sound definitions are excluded; existing sound request infrastructure performs playback-side deduplication.
+
+Native audit: src/playsim/p_map.cpp P_DoCrunch plays CrushPainSound under the invulnerability/dormancy exclusion, on CHAN_VOICE, only if that sound is not playing. Four regression cases cover floor/ceiling playback, request channel/dedup flag, and invulnerable/dormant suppression. Corrected the test setup to replace the read-only sound dictionary through its setter before successful verification.
+
+Validation: all 15,651 Release tests pass (Playsim 10,957); nonincremental warnings-as-errors Release build succeeds with zero warnings/errors; whitespace checks pass. Actual audio-device playback was not exercised. Grind callbacks, crunch blood effects, exact plane rollback/full-tic bridge poses, recursive stacks, cached bounds/history, portals/3D floors, pickup activation, DONTOVERLAP, player clipping, blocker ordering and legacy class-default migration remain gaps. No native runtime differential or live gameplay validation was performed. Changes remain local and uncommitted.
+
+## 2026-10-13 - Sector crusher damage type
+
+Converted raised-floor and ceiling crusher damage calls to the native Crush damage type, including propagated standing-rider damage. These paths previously supplied no type, bypassing Crush-specific damage factors. Existing stationary pinch damage already used Crush. Bridge obstruction damage exclusions remain.
+
+Native audit: src/playsim/p_map.cpp P_DoCrunch calls P_DamageMobj with NAME_Crush. Four regression cases verify immunity and half damage from Crush-specific factors under floor and ceiling crushers. Existing crusher cases without typed factors continue to pass.
+
+Validation: all 15,647 Release tests pass (Playsim 10,953); nonincremental warnings-as-errors Release build succeeds with zero warnings/errors; whitespace checks pass. The initial bridge-position audit confirmed remaining plane rollback/full-tic behavior is separate from this damage conversion. Native Grind callbacks, crunch effects/sounds, recursive stacks, cached bounds/history, low-headroom pose parity, portals/3D floors, full-tic dead riders, pickup activation, DONTOVERLAP, player clipping, blocker ordering and legacy class-default migration remain gaps. No native runtime differential or live gameplay validation was performed. Changes remain local and uncommitted.
+
+## 2026-10-13 - Raised-floor bridge obstruction skips crunch damage
+
+Converted the bridge early-return damage distinction in raised-floor crush handling. ACTLIKEBRIDGE blockers no longer receive floor-crush marking/damage or propagate that damage to riders through the blocked-actor loop. Obstruction and existing StopOnCrush/continuing floor-motion policy are retained.
+
+Native audit: src/playsim/p_map.cpp PIT_FloorRaise sets nofit and returns immediately for an intersecting bridge, before P_PushUp/P_DoCrunch. Two regression cases cover stop/continue modes, bridge and rider health preservation, and the resulting existing floor-motion behavior.
+
+Validation: all 15,643 Release tests pass (Playsim 10,949); nonincremental warnings-as-errors Release build succeeds with zero warnings/errors; whitespace checks pass. Native plane rollback and full-tic bridge position preservation remain separate gaps; this slice converts damage eligibility only. Recursive push/crunch, cached bounds/history, low-headroom pose parity, portals/3D floors, full-tic dead riders, pickup activation, DONTOVERLAP, callbacks, player clipping, blocker ordering and legacy class-default migration remain outstanding. No native runtime differential or live gameplay validation was performed. Changes remain local and uncommitted.
+
+## 2026-10-13 - Raised-floor immovable bridge obstruction
+
+Converted raised-floor obstruction for ACTLIKEBRIDGE actors independently of headroom. A solid eligible bridge obstructs when the raised geometric support floor changes and reaches its base; a bridge above the new floor remains clear. Existing obstruction/crush policies consume the result.
+
+Native audit: src/playsim/p_map.cpp PIT_FloorRaise returns when floorz is unchanged, then sets nofit and returns without moving an ACTLIKEBRIDGE actor intersecting the raised floor. Three regression cases cover bridge versus ordinary actor with ample headroom and an airborne bridge above the raised floor. This establishes non-crushing obstruction; full native bridge crushing and post-fit behavior remain separate gaps.
+
+Validation: all 15,641 Release tests pass (Playsim 10,947); nonincremental warnings-as-errors Release build succeeds with zero warnings/errors; whitespace checks pass. Exact native push/crunch and recursive stack behavior, cached bounds/history, low-headroom pose parity, portals/3D floors, full-tic dead riders, pickup activation, DONTOVERLAP, callbacks, player clipping, blocker ordering and legacy class-default migration remain outstanding. No native runtime differential or live gameplay validation was performed. Changes remain local and uncommitted.
+
+## 2026-10-13 - Raised-floor obstruction independent of health
+
+Converted raised-floor blocker enumeration to BlocksSectorGeometry, matching the preceding ceiling/door conversion. Solid non-corpse actors now obstruct an insufficient-headroom floor raise independently of health; nonsolid actors remain excluded. Existing crush and stop policies are unchanged.
+
+Native audit: src/playsim/p_map.cpp PIT_FloorRaise moves floor-intersecting actors and uses P_PushUp validity without an upfront positive-health gate; solidity-based contact remains distinct from later crunch/damage policy. This applies the audited solidity rule to the existing C# obstruction subset, not full native push-stack semantics. Three regression cases cover living solid, zero-health solid and zero-health nonsolid blockers.
+
+Validation: all 15,638 Release tests pass (Playsim 10,944); nonincremental warnings-as-errors Release build succeeds with zero warnings/errors; whitespace checks pass. Corpse/crunch behavior, exact native P_PushUp/intersector validity, recursive stacks, cached bounds/history, low-headroom pose parity, portals/3D floors, full-tic dead riders, pickup activation, DONTOVERLAP, callbacks, player clipping, blocker ordering and legacy class-default migration remain gaps. No native runtime differential or live gameplay validation was performed. Changes remain local and uncommitted.
+
+## 2026-10-13 - Ceiling and door obstruction independent of health
+
+Converted lowering-ceiling and closing-door blocker enumeration to BlocksSectorGeometry, which combines existing BlocksActors with IsSolidNonCorpseObstacle. Zero-health solid actors with CORPSE cleared now stop these sector motions rather than disappearing from obstruction checks. Floor-raise enumeration and damage eligibility remain unchanged.
+
+Native audit: native position blocking uses MF_SOLID rather than health, and sector ceiling movement depends on position/push validity. This applies the already-audited solidity distinction to the existing C# ceiling/door obstruction subset; exact native P_PushDown/intersector behavior remains unconverted. Four regression cases cover solid/nonsolid zero-health actors obstructing ceiling and closing-door movement.
+
+Validation: all 15,635 Release tests pass (Playsim 10,941); nonincremental warnings-as-errors Release build succeeds with zero warnings/errors; whitespace checks pass. Remaining gaps include raised-floor health-based enumeration, corpse/crush policies, recursive stacks, cached bounds/history, low-headroom pose parity, portals/3D floors, full-tic dead riders, pickup activation, DONTOVERLAP, callbacks, player clipping, blocker ordering and legacy class-default migration. No native runtime differential or live gameplay validation was performed. Changes remain local and uncommitted.
+
+## 2026-10-13 - Zero-health non-corpse ceiling overlap recovery
+
+Converted the modeled rising-ceiling overlap recovery gate to accept BlocksActors or IsSolidNonCorpseObstacle. Solid CANPASS actors with CORPSE cleared now recover from actor overlaps regardless of health. Nonsolid actors remain excluded and crush damage policies are unchanged.
+
+Native audit: src/playsim/p_map.cpp PIT_CeilingRaise conditions recovery on PASSMOBJ, failed position validity, ceiling space and P_TestMobjZ, without a direct health gate. The preceding solidity conversions establish the corresponding modeled position blocker condition. Three regression cases cover living solid, zero-health solid and zero-health nonsolid recovery.
+
+Validation: all 15,631 Release tests pass (Playsim 10,937); nonincremental warnings-as-errors Release build succeeds with zero warnings/errors; whitespace checks pass. Exact native isgood/P_AdjustFloorCeil semantics remain a gap; this fixes the health gate within the existing overlap subset. Corpse/crush policies, cached bounds/history, low-headroom pose parity, portals/3D floors, recursive stacks, full-tic dead riders, pickup activation, DONTOVERLAP, callbacks, player clipping, blocker ordering and legacy class-default migration remain outstanding. No native runtime differential or live gameplay validation was performed. Changes remain local and uncommitted.
+
+## 2026-10-13 - Non-corpse mover solidity independent of health
+
+Converted ordinary TryMove mover contact eligibility to use BlocksActors or IsSolidNonCorpseObstacle. Zero-health solid movers with CORPSE cleared now collide with actor obstacles rather than bypassing contacts because of health. The outer contact scan and inner pair gate share the same solidMover value; blasted, charge and corpse-specific handling remain separate.
+
+Native audit: src/playsim/p_map.cpp:1757-1759 ordinary solid collision checks the mover MF_SOLID flag rather than health. Three regression cases cover living solid, zero-health solid and zero-health nonsolid movers, checking movement success and unchanged/moved X.
+
+Validation: all 15,628 Release tests pass (Playsim 10,934); nonincremental warnings-as-errors Release build succeeds with zero warnings/errors; whitespace checks pass. A transient SDK lookup diagnostic appeared during the test invocation, but the solution test command completed successfully and the subsequent clean build passed. Remaining gaps include corpse mover and crush policies, full-tic dead rider support, recursive stacks, native cached bounds/history, low-headroom pose parity, portals/3D floors, pickup activation, DONTOVERLAP, callbacks, player clipping, blocker ordering and legacy class-default migration. No native runtime differential or live gameplay validation was performed. Changes remain local and uncommitted.
+
+## 2026-10-13 - Non-corpse rider solidity independent of health
+
+Converted CanCarryRider to recognize solid non-corpse riders independently of health, reusing IsSolidNonCorpseObstacle. Zero-health actors with CORPSE cleared can now participate in modeled rider selection and carrying. Existing corpse/ICECORPSE, blockmap, contact and pair gates remain; damage eligibility is unchanged.
+
+Native audit: src/playsim/p_map.cpp P_FindAboveIntersectors checks candidate MF_SOLID and separate CORPSE/SPECIAL flags rather than health. Three regression cases cover living solid, zero-health solid and zero-health nonsolid riders, verifying selection, actual horizontal carry and byte-exact no-mutation exclusion.
+
+Validation: all 15,625 Release tests pass (Playsim 10,931); nonincremental warnings-as-errors Release build succeeds with zero warnings/errors; whitespace checks pass. Mover-side health gates, full-tic dead rider support and recursive stack movement remain gaps. Native cached bounds/history, low-headroom pose parity, portals/3D floors, pickup activation, DONTOVERLAP, callbacks, player clipping, blocker ordering and legacy class-default migration remain outstanding. No native runtime differential or live gameplay validation was performed. Changes remain local and uncommitted.
+
+## 2026-10-13 - Ordinary non-corpse solidity independent of health
+
+Generalized the preceding solid-bridge predicate to IsSolidNonCorpseObstacle. Ordinary solid non-destroyed actors with CORPSE cleared now qualify as obstacles independently of health in support-floor selection, ordinary position probes and horizontal movement. Existing marker/pickup class exclusions remain; corpse-specific and projectile paths are not generalized by this change.
+
+Native audit: src/playsim/p_map.cpp:1757 determines ordinary blocking using MF_SOLID, and P_TestMobjZ likewise checks solidity with separate CORPSE/SPECIAL exclusions rather than health. Three regression cases cover living solid, zero-health solid and zero-health nonsolid ordinary actors through position probes, CheckBlock and movement.
+
+Validation: all 15,622 Release tests pass (Playsim 10,928); nonincremental warnings-as-errors Release build succeeds with zero warnings/errors; whitespace checks pass. Mover/rider health-based eligibility and full corpse contact semantics remain separate gaps. Native cached bounds/history, low-headroom pose parity, portals/3D floors, recursive stacks, full-tic dead riders, pickup activation, DONTOVERLAP, callbacks, player clipping, blocker ordering and legacy class-default migration remain outstanding. No native runtime differential or live gameplay validation was performed. Changes remain local and uncommitted.
+
+## 2026-10-13 - Solid bridge horizontal contact independent of health
+
+Converted ordinary movement and position probes to include solid non-destroyed ACTLIKEBRIDGE obstacles with CORPSE cleared even when health is zero. Extracted IsSolidBridge and reused it in SupportFloor, FindPositionBlocker and TryMove so their bridge eligibility agrees. Existing height passage, compatibility and contact exclusions remain.
+
+Native audit: src/playsim/p_map.cpp:1757 determines ordinary solid contact from MF_SOLID rather than health; bridge floor promotion likewise checks solidity. Three regression cases cover living solid, zero-health solid and zero-health nonsolid bridges through position probes, CheckBlock and actual movement.
+
+Validation: all 15,619 Release tests pass (Playsim 10,925); nonincremental warnings-as-errors Release build succeeds with zero warnings/errors; whitespace checks pass. Generic non-bridge health-based contacts remain a separate gap. Other gaps include native cached bounds/history, low-headroom pose parity, portals/3D floors, recursive stacks, full-tic dead riders, pickup activation, DONTOVERLAP, callbacks, player clipping, blocker ordering and legacy class-default migration. No native runtime differential or live gameplay validation was performed. Changes remain local and uncommitted.
+
+## 2026-10-13 - Bridge standing support uses flags rather than health
+
+Converted support-floor bridge eligibility to recognize solid non-destroyed bridges with CORPSE cleared even when health is zero. Added the independent CORPSE exclusion for ordinary riders, including living actors with that flag set; ICECORPSE riders retain their exception. Support-floor eligibility now agrees more closely with the existing flag-based Z-blocker probe.
+
+Native audit: src/playsim/p_map.cpp bridge promotion checks MF_SOLID/ACTLIKEBRIDGE rather than positive health, while P_TestMobjZ excludes MF_CORPSE unless the rider has MF_ICECORPSE. Four regression cases independently vary bridge health and CORPSE state, checking standing ONMOBJ/OnGround. The living-CORPSE case exposed and drove the second exclusion fix.
+
+Validation: all 15,616 Release tests pass (Playsim 10,922); nonincremental warnings-as-errors Release build succeeds with zero warnings/errors; whitespace checks pass. Horizontal movement's health-based contact eligibility remains separate, along with native cached bounds/history, exact low-headroom pose, portals/3D floors, recursive stacks, full-tic dead riders, pickup activation, DONTOVERLAP, callbacks, player clipping, blocker ordering and legacy class-default migration. No native runtime differential or live gameplay validation was performed. Changes remain local and uncommitted.
+
+## 2026-10-13 - Monster bridge exception without CANPASS
+
+Converted native bridge floor promotion independently of mover CANPASS. Eligible gravity-bound, non-floating, non-charging monsters can step onto and receive support from ACTLIKEBRIDGE actors even with CANPASS disabled. Ordinary actor support retains its flag requirement; NO_PASSMOBJ still disables the bridge exception.
+
+Native audit: src/playsim/p_map.cpp:1445-1450 gates monster bridge floor promotion on compatibility, FLOAT/MISSILE/SKULLFLY/NOGRAVITY, ISMONSTER, solidity and step height, but not MF2_PASSMOBJ. This corrects the earlier overbroad CANPASS stepping gate. Added two enabled/disabled support cases and updated the existing four-way stepping test to assert the native monster bridge exception while preserving player ordinary-actor requirements.
+
+Validation: all 15,612 Release tests pass (Playsim 10,918); nonincremental warnings-as-errors Release build succeeds with zero warnings/errors; whitespace checks pass. Exact native bridge floor-probe integration, swept contact geometry, projectile callbacks, cached bounds/history, low-headroom pose parity, portals/3D floors, recursive stacks, full-tic dead riders, pickup activation, DONTOVERLAP, player clipping, blocker ordering and legacy class-default migration remain gaps. No native runtime differential or live gameplay validation was performed. Changes remain local and uncommitted.
+
+## 2026-10-13 - Charging actor bridge-step exclusion
+
+Converted the MF_SKULLFLY bridge-walking exclusion into the modeled charging state. SupportFloor no longer promotes charging actors onto higher support tops, and TryMove's bridge-step allowance excludes charging monsters. Actors already standing on top retain the existing support subset; dedicated charge movement and slam handling remain independent.
+
+Native audit: src/playsim/p_map.cpp:1445 excludes MF_SKULLFLY from bridge floor promotion. Four regression cases cover charging/noncharging movement and charging floor overlap versus existing standing support.
+
+Validation: all 15,610 Release tests pass (Playsim 10,916); nonincremental warnings-as-errors Release build succeeds with zero warnings/errors; whitespace checks pass. Exact native bridge floor-probe integration and swept contact geometry remain gaps, alongside projectile callbacks, cached bounds/history, low-headroom pose parity, portals/3D floors, recursive stacks, full-tic dead riders, pickup activation, DONTOVERLAP, player clipping, blocker ordering and legacy class-default migration. No native runtime differential or live gameplay validation was performed. Changes remain local and uncommitted.
+
+## 2026-10-13 - Strict square bridge support bounds
+
+Converted the remaining circular ground-support contact bounds in SupportFloor to strict independent X/Y overlap. Grounded monster bridge support and the frozen-corpse support subset now use the same modeled square bounds as standing support and native actor probes. Exact radius-sum edges remain excluded.
+
+Native audit: src/playsim/p_map.cpp:1426-1427 applies square actor bounds before bridge floor promotion; P_TestMobjZ uses the same radius-sum exclusion. Four regression cases cover positive/negative diagonal bridge corners and exact X/Y edges, checking final Z and ONMOBJ.
+
+Validation: all 15,606 Release tests pass (Playsim 10,912); nonincremental warnings-as-errors Release build succeeds with zero warnings/errors; whitespace checks pass. Swept horizontal contact geometry, charging and exact bridge floor-probe details remain gaps, alongside projectile callbacks, cached bounds/history, low-headroom pose parity, portals/3D floors, recursive stacks, full-tic dead riders, pickup activation, DONTOVERLAP, player clipping, blocker ordering and legacy class-default migration. No native runtime differential or live gameplay validation was performed. Changes remain local and uncommitted.
+
+## 2026-10-13 - ISMONSTER bridge ground-step gate
+
+Converted the native ISMONSTER requirement into non-player bridge ground stepping and higher-top support-floor promotion. Non-monster CANPASS actors still land from above and retain existing standing support. The frozen-corpse subset remains independently eligible.
+
+Native audit: src/playsim/p_map.cpp:1448 requires MF3_ISMONSTER for bridge floor promotion, after floating/missile/charging/no-gravity exclusions. Four regression cases cover monster/non-monster horizontal stepping and non-monster ground overlap versus landing from above. Updated BlockmapSupportTests and RaiseBridgeFlagTests generic fixtures to set their intended monster flag explicitly; six old cases initially exposed that missing fixture qualification.
+
+Validation: all 15,602 Release tests pass (Playsim 10,908); nonincremental warnings-as-errors Release build succeeds with zero warnings/errors; whitespace checks pass. Charging and exact bridge floor-probe details remain gaps, along with projectile callbacks, cached bounds/history, exact low-headroom pose, portals/3D floors, recursive stacks, full-tic dead riders, pickup activation, DONTOVERLAP, player clipping, blocker ordering and legacy class-default migration. No native runtime differential or live gameplay validation was performed. Changes remain local and uncommitted.
+
+## 2026-10-13 - Non-player NOGRAVITY bridge-step restriction
+
+Converted the NOGRAVITY exclusion for modeled monster ground stepping onto bridges. TryMove's bridge-step allowance requires gravity; SupportFloor avoids promoting no-gravity non-player actors onto higher bridge tops. Existing standing/landing support remains enabled, and the frozen-corpse support subset remains independent.
+
+Native audit: src/playsim/p_map.cpp:1445 excludes MF_NOGRAVITY from bridge walking alongside FLOAT/MISSILE/SKULLFLY, while the common PASSMOBJ on-mobj landing branch does not. Four regression cases cover ordinary/no-gravity movement and grounded overlap versus existing standing support. Existing floating/no-gravity landing cases continue to pass.
+
+Validation: all 15,598 Release tests pass (Playsim 10,904); nonincremental warnings-as-errors Release build succeeds with zero warnings/errors; whitespace checks pass. Other native bridge eligibility and charging distinctions remain gaps, along with projectile callbacks, cached bounds/history, exact low-headroom pose, portals/3D floors, recursive stacks, full-tic dead riders, pickup activation, DONTOVERLAP, player clipping, blocker ordering and legacy class-default migration. No native runtime differential or live gameplay validation was performed. Changes remain local and uncommitted.
+
+## 2026-10-13 - Floating standing support versus ground steps
+
+Audited the preceding floating-landing conversion and corrected an unintended ground-step path: SupportFloor now ignores higher actor tops for floating actors, while retaining tops they already stand above/on. Floating landing remains enabled through the common predicted on-mobj branch; grounded stationary floaters are no longer promoted onto a bridge by FitToSector or initial Step support-floor adjustment.
+
+Native audit: src/playsim/p_map.cpp:1445 excludes MF_FLOAT from bridge walking while src/playsim/p_mobj.cpp permits PASSMOBJ floating landing. Three regression cases cover floor overlap versus existing standing support through FitToSector/Step and byte-exact grounded save continuation.
+
+Validation: all 15,594 Release tests pass (Playsim 10,900); nonincremental warnings-as-errors Release build succeeds with zero warnings/errors; whitespace checks pass. Other no-gravity/charging step distinctions, projectile callbacks, native cached bounds/history, exact low-headroom pose, portals/3D floors, recursive stacks, full-tic dead riders, pickup activation, DONTOVERLAP, player clipping, blocker ordering and legacy class-default migration remain gaps. No native runtime differential or live gameplay validation was performed. Changes remain local and uncommitted.
+
+## 2026-10-13 - Floating actor CANPASS landing
+
+Converted the common CANPASS/SPECIAL support path for floating non-projectile actors. Removed the floating exclusions from landing, support-floor selection and ONMOBJ refresh. Target floating adjustment is not reapplied after a blocker is found, matching the native distinction between the on-mobj branch and ordinary P_ZMovement. Ground stepping retains its existing floating restriction.
+
+Native audit: src/playsim/p_mobj.cpp:5008 invokes P_CheckOnmobj for PASSMOBJ/SPECIAL without an MF_FLOAT exclusion; ordinary P_ZMovement runs only when no blocker is found. Five new cases cover floating landing with CANPASS enabled/disabled, gravity/no-gravity combinations, and byte-exact save continuation. Existing float-target fixtures overlapped collision bounds or moved during target acquisition; moved targets outside contact while retaining the strict float-distance gate and disabled chase movement for the plane-only fixture.
+
+Validation: all 15,591 Release tests pass (Playsim 10,897); nonincremental warnings-as-errors Release build succeeds with zero warnings/errors; whitespace checks pass. Full projectile/bounce callbacks, native cached bounds/history, exact full-tic low-headroom pose, portals/3D floors, recursive stacks, full-tic dead riders, pickup activation, DONTOVERLAP, player clipping, blocker ordering and legacy class-default migration remain gaps. No native runtime differential or live gameplay validation was performed. Changes remain local and uncommitted.
+
+## 2026-10-13 - Native legal-step snap eligibility
+
+Removed the extra C# landing headroom gate. A predicted eligible actor blocker now permits top snapping when its rise is within MaxStepHeight, independent of whether the rider fits at that top. Existing FitToSector subsequently clips against the modeled touching ceiling. Excessive-step overlaps retain the preceding unsnapped vertical-stop behavior. This supersedes the prior guarded landing-headroom decision.
+
+Native audit: src/playsim/p_mobj.cpp:5024-5035 gates SetZ(onmo->Top()) on MaxStepHeight alone. Two new player/non-player low-ceiling tests verify legal-step snapping followed by current C# ceiling fit. Updated the two touching-ceiling expected poses and save-continuation assertion to the resulting clipped Z; interior landings remain unchanged.
+
+Validation: all 15,586 Release tests pass (Playsim 10,892); nonincremental warnings-as-errors Release build succeeds with zero warnings/errors; whitespace checks pass. The snap eligibility is converted; exact native full-tic low-headroom pose still needs differential validation because C# always applies its sector-fit pass afterward. Cached bounds/history, portals/3D floors, recursive stacks, full-tic dead riders, pickup activation, DONTOVERLAP, callbacks, player clipping, blocker ordering and legacy class-default migration remain gaps. No native runtime differential or live gameplay validation was performed. Changes remain local and uncommitted.
+
+## 2026-10-13 - Touching-sector landing headroom consistency
+
+Converted the existing landing headroom check to SectorSupportCeiling instead of the actor's center-sector ceiling. The flat-sector landing decision now agrees with CheckOnMobj predicted clipping and RefreshOnMobj at two-sided boundaries. Low adjacent ceilings prevent C# top snapping while retaining vertical blocking and ONMOBJ; interior landings still snap normally.
+
+Native audit: P_FakeZMovement uses cached ceilingz; native on-mobj snapping itself does not contain this C# headroom gate. This slice fixes geometry consistency inside the existing C# guarded snapping subset, not exact native low-headroom snap parity. Three regression cases cover touching versus interior landing and byte-exact save continuation.
+
+Validation: all 15,584 Release tests pass (Playsim 10,890); nonincremental warnings-as-errors Release build succeeds with zero warnings/errors; whitespace checks pass. Native cached bounds, exact low-headroom snapping, portals/3D floors, recursive stacks, full-tic dead riders, pickup activation, DONTOVERLAP, callbacks, player clipping, blocker ordering and legacy class-default migration remain gaps. No native runtime differential or live gameplay validation was performed. Changes remain local and uncommitted.
+
+## 2026-10-13 - Touching-sector fake Z probe bounds
+
+Converted CheckOnMobj predicted-Z clipping and player no-gravity bob floor eligibility to use the existing FlatOpening floor/ceiling rather than center-sector planes alone. Actors crossing a two-sided boundary now account for the adjacent raised floor or lowered ceiling during support probing. The probe still restores the original Z in its finally block.
+
+Native audit: src/playsim/p_map.cpp P_FakeZMovement uses actor floorz/ceilingz for clipping and bob eligibility. FlatOpening supplies the modeled flat touching-sector bounds; it does not reproduce the native cached history, portals or 3D floors. Four regression cases compare boundary-crossing and interior probes for raised floors and lowered ceilings, including byte-exact no-mutation checks.
+
+Validation: all 15,581 Release tests pass (Playsim 10,887); nonincremental warnings-as-errors Release build succeeds with zero warnings/errors; whitespace checks pass. Full cached floorz/ceilingz semantics, main landing headroom consistency, portals/3D floors, recursive stacks, full-tic dead rider support, pickup activation, DONTOVERLAP, callbacks, player clipping, blocker ordering and legacy class-default migration remain gaps. No native runtime differential or live gameplay validation was performed. Changes remain local and uncommitted.
+
+## 2026-10-13 - Corpse rider frozen-carrier exception
+
+Converted the native corpse-rider directionality into CanCarryRider. CORPSE riders require an ICECORPSE carrier. Dead solid corpse riders may now qualify through the existing IsCorpseObstacle helper instead of being rejected solely by BlocksActors' health requirement. The prior corpse-carrier/frozen-rider support restriction remains independently applied.
+
+Native audit: src/playsim/p_map.cpp P_FindAboveIntersectors excludes corpse candidates unless the initiating carrier has MF_ICECORPSE, and checks solidity rather than positive health. Four regression cases cover corpse riders with positive/zero health on ordinary/frozen carriers, excluded no-mutation carrying and actual horizontal carrying of eligible living/dead solid corpses.
+
+Validation: all 15,577 Release tests pass (Playsim 10,883); nonincremental warnings-as-errors Release build succeeds with zero warnings/errors; whitespace checks pass. This converts eligibility in the existing top-contact subset; full recursive intersectors, dead rider full-tic support, native overlap-depth and crush policies remain gaps. Pickup activation, low-headroom snapping, cached blocker history/floorz, DONTOVERLAP, floating/projectile support, callbacks, player clipping, blocker ordering and legacy class-default migration remain outstanding. No native runtime differential or live gameplay validation was performed. Changes remain local and uncommitted.
+
+## 2026-10-13 - Special obstacle strict height clearance
+
+Converted the SPECIAL obstacle height-boundary distinction into shared ClearsActorHeight used by ordinary TryMove contacts and FindPositionBlocker. Ordinary obstacles allow exact top/bottom clearance; special obstacles require strict separation. CANPASS/bridge eligibility and NO_PASSMOBJ precedence remain in the shared eligibility gate. Projectile-specific pass-height behavior is unchanged.
+
+Native audit: src/playsim/p_map.cpp:1499-1511 uses strict greater/less comparisons for MF_SPECIAL obstacles and inclusive comparisons for ordinary actors. Four regression cases cover top and bottom boundary contact for ordinary/special solid actors through position probes, CheckBlock and actual movement.
+
+Validation: all 15,573 Release tests pass (Playsim 10,879); nonincremental warnings-as-errors Release build succeeds with zero warnings/errors; whitespace checks pass. Full pickup activation, DONTOVERLAP, recursive stacks and dead/frozen riders, low-headroom snapping, cached blocker history/floorz, floating/projectile support, callbacks, player clipping, blocker ordering and legacy class-default migration remain gaps. No native runtime differential or live gameplay validation was performed. Changes remain local and uncommitted.
+
+## 2026-10-13 - Blockmap rider eligibility
+
+Converted rider blockmap membership into CanCarryRider. NOBLOCKMAP riders are excluded from selection, crush propagation and captured-rider carrying. Eligibility uses IsBlockmapActor rather than inspecting the flag directly, preserving specialized actor behavior.
+
+Native audit: src/playsim/p_map.cpp P_FindAboveIntersectors/P_FindBelowIntersectors enumerate FMultiBlockThingsIterator; src/playsim/p_maputl.cpp only links actors without MF_NOBLOCKMAP into blockmap chains. Three regression cases cover linked/unlinked selection and crush, plus byte-exact no-mutation carrying after a captured rider leaves the blockmap.
+
+Validation: all 15,569 Release tests pass (Playsim 10,875); nonincremental warnings-as-errors Release build succeeds with zero warnings/errors; whitespace checks pass. Full recursive stack and actual dead/frozen rider behavior remain gaps, alongside pickup contacts, low-headroom snapping, cached blocker history/floorz, DONTOVERLAP, floating/projectile support, callbacks, player clipping, blocker ordering and legacy class-default migration. No native runtime differential or live gameplay validation was performed. Changes remain local and uncommitted.
+
+## 2026-10-13 - Corpse carrier frozen-rider exception
+
+Converted the CORPSE carrier exclusion and ICECORPSE rider exception into CanCarryRider. Ordinary riders no longer qualify on corpse carriers; frozen riders retain the existing solid-corpse support subset. Selection, crush propagation and captured-rider carrying now share that condition, including carriers becoming corpses after capture.
+
+Native audit: src/playsim/p_map.cpp P_TestMobjZ ignores MF_CORPSE support obstacles unless the probing actor has MF_ICECORPSE. This extends the already-converted standing/landing condition to the C# top-contact rider helper; native recursive intersector directionality is still separate. Five regression cases cover all corpse/frozen combinations, crush behavior, no-mutation carrying for excluded pairs and corpse flag changes after capture.
+
+Validation: all 15,566 Release tests pass (Playsim 10,872); nonincremental warnings-as-errors Release build succeeds with zero warnings/errors; whitespace checks pass. Remaining gaps include recursive stack and corpse directionality beyond top contact, actual dead/frozen rider participation, full pickup contacts, exact low-headroom snapping, cached blocker history/floorz, DONTOVERLAP, floating/projectile support, callbacks, player clipping, blocker ordering and legacy class-default migration. No native runtime differential or live gameplay validation was performed. Changes remain local and uncommitted.
+
+## 2026-10-13 - Special rider bridge restriction
+
+Converted the SPECIAL rider bridge requirement into CanCarryRider. SpecialPickup riders only qualify on ACTLIKEBRIDGE carriers, so selection, crush propagation and captured-rider carrying agree with the existing standing/landing support restriction. A bridge losing ACTLIKEBRIDGE after capture cannot carry its former special rider.
+
+Native audit: src/playsim/p_map.cpp:2163 excludes non-bridge support blockers for MF_SPECIAL probing actors. This applies support eligibility to the C# top-contact rider subset; native recursive stack collection and full pickup behavior remain separate. Three regression cases cover bridge/non-bridge eligibility and crush behavior, byte-exact no-mutation carry on a non-bridge, and bridge-flag removal after capture.
+
+Validation: all 15,561 Release tests pass (Playsim 10,867); nonincremental warnings-as-errors Release build succeeds with zero warnings/errors; whitespace checks pass. Remaining gaps include recursive stacks and corpse directionality, full pickup contacts, exact low-headroom snapping, cached blocker history/floorz, DONTOVERLAP, floating/projectile support, callbacks, player clipping, blocker ordering and legacy class-default migration. No native runtime differential or live gameplay validation was performed. Changes remain local and uncommitted.
+
+## 2026-10-13 - Captured rider eligibility refresh
+
+Extracted the existing rider collision eligibility into CanCarryRider, shared by IsStandingOn and CarryStandingRiders. Captured riders are now rechecked for THRUACTORS on either actor, directional THRUSPECIES, enabled shared thru-bits, rider solidity/liveness and the existing carrier and pair gates before movement. Geometry is intentionally not rechecked against the carrier's new position after its movement.
+
+Native audit: src/playsim/p_map.cpp P_TestMobjZ filters THRUACTORS, enabled thru-bits and directional THRUSPECIES; native stack collection requires solidity and pair qualification. This makes the existing C# captured-rider subset consistently honor its support exclusions, rather than claiming full native push-stack conversion. Four regression cases change carrier/rider THRUACTORS, matching rider THRUSPECIES or rider solidity after capture, then verify byte-exact no-mutation carrying.
+
+Validation: all 15,558 Release tests pass (Playsim 10,864); nonincremental warnings-as-errors Release build succeeds with zero warnings/errors; whitespace checks pass. Recursive intersectors, overlap-depth handling, corpse/special directionality, pickup contacts, low-headroom snapping, cached blocker history/floorz, DONTOVERLAP, floating/projectile support, callbacks, player clipping, blocker ordering and legacy class-default migration remain gaps. No native runtime differential or live gameplay validation was performed. Changes remain local and uncommitted.
+
+## 2026-10-13 - Rider pair CANPASS or monster eligibility
+
+Converted the pair eligibility gate into modeled rider selection and carrying: at least one actor must have CANPASS or ISMONSTER. IsStandingOn and therefore crush propagation exclude unqualified pairs; CarryStandingRiders rechecks qualification after capture. Existing solid/special, contact exclusions and strict square bounds remain.
+
+Native audit: src/playsim/p_map.cpp P_FindAboveIntersectors and P_FindBelowIntersectors skip pairs when neither actor has MF2_PASSMOBJ nor MF3_ISMONSTER. Five cases cover the unqualified pair and each of the four qualifying flags, including crush behavior and byte-exact no-mutation carry for the unqualified case. Updated the ThruActorsTests generic-actor fixture to explicitly qualify its intended rider pair with CANPASS.
+
+Validation: all 15,554 Release tests pass (Playsim 10,860); nonincremental warnings-as-errors Release build succeeds with zero warnings/errors; whitespace checks pass. Full native recursive intersectors and overlap-depth handling remain unconverted. Other gaps include carrier/rider corpse and special directionality, pickup contacts, low-headroom snapping, cached blocker history/floorz, DONTOVERLAP, floating/projectile support, callbacks, player clipping, blocker ordering, and legacy class-default migration. No native runtime differential or live gameplay validation was performed. Changes remain local and uncommitted.
+
+## 2026-10-13 - Strict square rider contact bounds
+
+Converted IsStandingOn XY bounds from an inclusive radial-distance test to independent strict X/Y overlap. Diagonal corner overlaps now participate in modeled rider carrying and crush propagation; exact radius-sum edges are excluded. Existing vertical tolerance and eligibility filters remain.
+
+Native audit: src/playsim/p_map.cpp P_FindAboveIntersectors and P_FindBelowIntersectors reject contacts when either absolute X or Y separation is greater than or equal to the radius sum. Six regression cases cover positive/negative corners, exact edges, crush behavior, actual corner rider movement and byte-exact save continuation.
+
+Validation: all 15,549 Release tests pass (Playsim 10,855); nonincremental warnings-as-errors Release build succeeds with zero warnings/errors; whitespace checks pass. Native recursive push-stack semantics, overlap-depth collection and other eligibility remain gaps; this converts bounds in the existing top-contact rider subset. Horizontal pickup contacts, low-headroom snapping, cached blocker history/floorz, DONTOVERLAP, floating/projectile support, callbacks, player clipping, blocker ordering, and legacy class-default migration remain outstanding. No native runtime differential or live gameplay validation was performed. Changes remain local and uncommitted.
+
+## 2026-10-13 - Solid carrier eligibility
+
+Converted carrier solidity into the modeled rider-selection and carrying helpers. IsStandingOn now requires a solid, non-destroyed carrier; CrushStandingRiders inherits that exclusion. CarryStandingRiders rechecks these carrier conditions so a carrier losing solidity after capture cannot move its former riders.
+
+Native audit: src/playsim/p_map.cpp P_FindAboveIntersectors and P_FindBelowIntersectors return immediately when the initiating actor lacks MF_SOLID. This applies the solidity requirement to the C# top-contact subset; it does not implement native recursive intersectors. Three regression cases cover solid/nonsolid selection and crush behavior, byte-exact no-mutation carry for nonsolid carriers, and solidity loss after rider capture.
+
+Validation: all 15,543 Release tests pass (Playsim 10,849); nonincremental warnings-as-errors Release build succeeds with zero warnings/errors; whitespace checks pass. Other carrier/rider eligibility, native square bounds and full push-stack semantics remain gaps, alongside horizontal pickup contacts, low-headroom snapping, cached blocker history/floorz, DONTOVERLAP, floating/projectile support, callbacks, player clipping, blocker ordering, and legacy class-default migration. No native runtime differential or live gameplay validation was performed. Changes remain local and uncommitted.
+
+## 2026-10-13 - Special carrier rider exclusion
+
+Converted the SPECIAL support exclusion into the modeled rider selection/carrying helpers. IsStandingOn excludes SpecialPickup carriers, preventing their use in captured rider lists and CrushStandingRiders. CarryStandingRiders also rejects carriers that became special after rider capture, without moving the riders or mutating their state.
+
+Native audit: src/playsim/p_map.cpp P_TestMobjZ excludes SPECIAL support blockers; native stack collection likewise excludes SPECIAL actors. This extends that support eligibility to the existing C# carrying subset, rather than implementing the full native push stack. Three regression cases cover normal/special carrier selection and crush behavior, plus a carrier changed to special after capture with byte-exact no-mutation verification.
+
+Validation: all 15,540 Release tests pass (Playsim 10,846); nonincremental warnings-as-errors Release build succeeds with zero warnings/errors; whitespace checks pass. Other carrier/rider eligibility and full native push-stack semantics remain gaps. Horizontal pickup contacts, exact low-headroom snapping, cached blocker history/floorz, DONTOVERLAP, floating/projectile support, callbacks, player clipping, blocker ordering, and legacy class-default migration remain outstanding. No native runtime differential or live gameplay validation was performed. Changes remain local and uncommitted.
+
+## 2026-10-13 - Special pickup support exclusion for all riders
+
+Converted the native SPECIAL blocker exclusion into SupportFloor for non-player riders as well as players. SpecialPickup actors cannot provide standing support even when also ACTLIKEBRIDGE, matching the existing FindZBlocker exclusion. This fixes inconsistent standing versus landing eligibility.
+
+Native audit: src/playsim/p_map.cpp:2145 excludes MF_SPECIAL blockers independently of rider type before bridge-specific pickup-rider checks. Three regression cases cover player/non-player standing, shared Z-blocker agreement, restore-time ONMOBJ refresh, and byte-exact tick continuation. The save test asserts support state rather than an immediate falling pose because other existing rider movement can affect velocity/position.
+
+Validation: all 15,537 Release tests pass (Playsim 10,843); nonincremental warnings-as-errors Release build succeeds with zero warnings/errors; whitespace checks pass. Horizontal pickup contacts and carrier/rider exclusions remain separate conversion gaps, alongside exact low-headroom snapping, cached blocker history/floorz, DONTOVERLAP, floating/projectile support, callbacks, player clipping, blocker ordering, recursive stacks, and legacy class-default migration. No native runtime differential or live gameplay validation was performed. Changes remain local and uncommitted.
+
+## 2026-10-13 - Insufficient-headroom ONMOBJ refresh
+
+Converted geometry-derived ONMOBJ refresh for stationary unsnapped overlaps with insufficient support-top headroom. The fallback now accepts an excessive step or insufficient headroom, rather than requiring excessive step and sufficient headroom. Existing CANPASS/SPECIAL, compatibility, player-contact, and floating/projectile exclusions remain.
+
+Native audit: src/playsim/p_mobj.cpp:5064-5068 sets MF2_ONMOBJ in the non-bounce blocker branch without a headroom condition. Strengthened four preceding vertical-stop tests with ONMOBJ assertions and added two cases covering legal-height but headroom-obstructed support, immediate save restoration, deterministic tick continuation, and clearing on blocker movement or CANPASS removal.
+
+Validation: all 15,534 Release tests pass (Playsim 10,840); nonincremental warnings-as-errors Release build succeeds with zero warnings/errors; whitespace checks pass. Exact native top snapping under insufficient headroom remains unconverted; this slice covers blocker state within the current sector-fit model. Native cached blocker history/floorz, floor-level stationary blockers, DONTOVERLAP, pickup contacts, floating/projectile support, callbacks, player clipping, blocker ordering, recursive stacks, and legacy class-default migration remain outstanding. No native runtime differential or live gameplay validation was performed. Changes remain local and uncommitted.
+
+## 2026-10-13 - Insufficient-headroom blocker vertical stop
+
+Converted vertical stopping independently of support-top headroom. A modeled CANPASS/SPECIAL actor with a predicted blocker now clears vertical velocity and skips ordinary gravity even when the blocker top plus rider height exceeds the sector ceiling. Headroom remains a condition for C# top snapping, preserving the current sector-fit subset.
+
+Native audit: src/playsim/p_mobj.cpp:5064-5068 sets ONMOBJ and Vel.Z=0 in the non-bounce blocker branch without a top-headroom gate. Four regression cases cover player/non-player rising/falling overlap where the actor fits at its current Z but cannot stand on the blocker top.
+
+Validation: all 15,532 Release tests pass (Playsim 10,838); nonincremental warnings-as-errors Release build passes with zero warnings/errors; whitespace checks pass. Native snapping/ONMOBJ under insufficient headroom remain gaps; this slice converts vertical stopping only. Cached blocker history/floorz, DONTOVERLAP, pickup contacts, floating/projectile support, callbacks, player clipping, native blocker ordering, recursive stacks, and legacy class-default migration remain outstanding. No native runtime differential or live gameplay validation was performed. Changes remain local and uncommitted.
+
+## 2026-10-13 - Unsnapped blocker ONMOBJ refresh
+
+Converted ONMOBJ recomputation for the supported excessive-step blocker subset. RefreshOnMobj now recognizes a stationary vertical overlap when an eligible CANPASS/SPECIAL actor cannot legally snap to the blocker top, the blocker fits the modeled headroom, and NO_PASSMOBJ is disabled. This preserves the state through FitToSector and existing restore-time refresh, while removing it when the blocker or eligibility changes. No archive extension is required.
+
+Native audit: src/playsim/p_mobj.cpp sets MF2_ONMOBJ and clears Vel.Z in the non-bounce blocker branch independently of MaxStepHeight top snapping. Expanded the five preceding excessive-step tests with ONMOBJ assertions, including save continuation, and added two cases for blocker movement and CANPASS removal.
+
+Validation: all 15,528 Release tests pass (Playsim 10,834); nonincremental warnings-as-errors Release build succeeds with zero warnings/errors; whitespace checks pass. This remains a geometry-derived subset rather than preservation of native cached BlockingMobj history. Floor-level stationary blockers, cached floorz, floating/projectile overlaps, native headroom differences, callbacks, DONTOVERLAP, pickup contacts, player clipping, exact blocker ordering, recursive stacks, and legacy class-default migration remain gaps. No native runtime differential or live gameplay validation was performed. Changes remain local and uncommitted.
+
+## 2026-10-13 - Excessive-step actor blocker vertical stop
+
+Separated modeled actor-blocker detection from legal top snapping. An eligible on-mobj blocker now stops vertical velocity and suppresses ordinary gravity even when its top exceeds MaxStepHeight. Only legal steps snap Z to the support top. Terrain impact and flying friction also follow blocker detection rather than successful snapping.
+
+Native audit: src/playsim/p_mobj.cpp checks MaxStepHeight only around SetZ(onmo->Top()), while the common non-bounce blocker branch sets Vel.Z to zero independently. Five cases cover player/non-player positive/negative velocities against an excessive step and deterministic save continuation. Existing headroom, compatibility and floating/projectile exclusions remain.
+
+Validation: all 15,526 Release tests pass (Playsim 10,832); nonincremental warnings-as-errors Release build passes with zero warnings/errors; whitespace checks pass. Native ONMOBJ state for unsnapped overlaps remains unconverted: C# recomputes OnMobj from support-floor geometry, so this slice establishes vertical stopping rather than full overlap-state parity. Other gaps include cached floorz/stationary BlockingMobj, DONTOVERLAP, pickup contacts, generic pre-missile clearance, floating/projectile support, callbacks, player clipping, native blocker ordering, recursive stacks, and legacy class-default migration. No native runtime differential or live gameplay validation was performed. Changes remain local and uncommitted.
+
+## 2026-10-13 - Floor-level vertical actor support
+
+Converted the on-mobj branch trigger from above-sector-floor only to nonzero vertical velocity or a Z position different from the sector floor. Eligible CANPASS/SPECIAL actors at floor height now probe predicted support while rising or falling, matching the native vertical-motion condition. Existing compatibility, headroom, maximum-step, floating/projectile, and player-contact exclusions remain.
+
+Native audit: src/playsim/p_mobj.cpp:5005 enters vertical movement when Vel.Z is nonzero, BlockingMobj exists, or Z differs from cached floorz, then invokes P_CheckOnmobj. This slice converts the velocity and modeled sector-height cases; cached floorz and stationary BlockingMobj behavior remain gaps.
+
+Added five cases for player/non-player floor-level positive/negative velocity and deterministic save continuation. All 15,521 Release tests pass (Playsim 10,827); nonincremental warnings-as-errors Release build succeeds with zero warnings/errors; whitespace checks pass. Remaining gaps include cached floorz/stationary BlockingMobj, excessive-step overlap, DONTOVERLAP, pickup contacts, generic pre-missile clearance, floating/projectile support, bounce/bump callbacks, player clipping policy, native blocker ordering, recursive stacks, and legacy class-default migration. No native runtime differential or live gameplay validation was performed. Changes remain local and uncommitted.
+
+## 2026-10-13 - CANPASS and bridge over/under eligibility
+
+Converted ordinary actor height-passage eligibility into a shared CanPassActorHeight predicate used by TryMove and FindPositionBlocker. Vertical separation now permits passage only when the mover has CANPASS or the obstacle is ACTLIKEBRIDGE, and NO_PASSMOBJ is disabled. This fixes unconditionally allowing actors without CANPASS through ordinary actors at separate heights. The projectile-specific pass-height branch remains independent as established by the preceding audit.
+
+Native audit: src/playsim/p_map.cpp:1493 explicitly permits PASSMOBJ or obstacle ACTLIKEBRIDGE before over/under clearance, with the compatibility exclusion. Added six cases covering absent/present CANPASS, bridge exceptions, combined eligibility, and compatibility precedence. Each checks ordinary position probes, CheckBlock, unchanged probe save state, and actual movement.
+
+Validation: all 15,516 Release tests pass (Playsim 10,822); nonincremental warnings-as-errors Release build succeeds with zero warnings/errors; whitespace checks pass. Remaining gaps include DONTOVERLAP, pickup contacts, the generic pre-missile height branch, floating/projectile support, bounce/bump callbacks, floor-level/excessive-step overlap, player clipping policy, native blocker ordering, recursive stacks, and legacy class-default migration. No native runtime differential or live gameplay validation was performed. Changes remain local and uncommitted.
+
+## 2026-10-13 - Projectile compatibility audit correction
+
+Audited the projectile position branch before applying the ordinary NO_PASSMOBJ rule. Native src/playsim/p_map.cpp:1628-1652 independently applies missile projectilepassheight and strict over/under clearance after the generic PASSMOBJ branch. These missile checks are not disabled by COMPATF_NO_PASSMOBJ. Existing MissileBlocksPosition already implements this behavior; no runtime conversion was needed for this interaction. Earlier entries describing projectile compatibility as an undifferentiated missing gate were too broad.
+
+Added six regression cases with NoPassMobj enabled covering positive pass height, inclusive top boundary, negative pass height with MissileClip enabled/disabled, and ordinary target-height clearance. Probes preserve byte-exact saved state. This slice adds audit/test coverage rather than new runtime behavior.
+
+Validation: all 15,510 Release tests pass (Playsim 10,816); nonincremental warnings-as-errors Release build succeeds with zero warnings/errors; whitespace checks pass. Remaining projectile gaps concern the generic pre-missile PASSMOBJ branch, DONTOVERLAP/bridge eligibility, callbacks and full movement integration; the strict missile-specific pass-height fallback itself is verified. Other gaps remain for pickup compatibility, floating support, floor-level/excessive-step overlap, player clipping policy, native blocker ordering, recursive stacks, and legacy class-default migration. No native runtime differential or live gameplay validation was performed. Changes remain local and uncommitted.
+
+## 2026-10-13 - NO_PASSMOBJ ordinary position probes
+
+Converted NoPassMobj vertical-separation handling into the shared FindPositionBlocker ordinary-actor branch. HasPositionBlocker and the square-bounds CheckBlock action now report solid ordinary blockers across separated Z ranges when compatibility is enabled. Existing THRUACTORS, blockmap, species/bits, solidity, and XY bounds still apply. The projectile-specific MissileBlocksPosition branch is unchanged and remains a separate conversion gap.
+
+Native audit: src/playsim/p_map.cpp PIT_CheckThing gates PASSMOBJ/bridge over/under clearance on COMPATF_NO_PASSMOBJ. Six regression cases verify above/below probing with compatibility enabled/disabled, both position/action surfaces, unchanged saved state after probing, and THRUACTORS/NoBlockmap exclusions. Corrected an initially misnamed test helper before successful verification.
+
+Validation: all 15,504 Release tests pass (Playsim 10,810); nonincremental warnings-as-errors Release build succeeds with zero warnings/errors; whitespace checks pass. Remaining gaps include projectile and pickup compatibility, default-mode CANPASS/bridge eligibility, DONTOVERLAP, floating/projectile support, bounce/bump callbacks, floor-level/excessive-step overlap, player clipping policy, native blocker ordering, recursive stacks, and legacy class-default migration. No native runtime differential or live gameplay validation was performed. Changes remain local and uncommitted.
+
+## 2026-10-13 - NO_PASSMOBJ horizontal over/under blocking
+
+Converted the compatibility-controlled vertical separation exemption in ordinary TryMove actor contacts. With NoPassMobj enabled, a solid actor blocks the mover's horizontal path even when their Z ranges are separate; without it, existing over/under clearance is preserved. Existing THRUACTORS, species/bits, blockmap, solidity, and moving-away checks still apply.
+
+Native audit: src/playsim/p_map.cpp:1493 only permits PASSMOBJ/bridge over/under clearance when COMPATF_NO_PASSMOBJ is disabled. Six regression cases cover above/below paths in both modes, THRUACTORS support exclusion, and NoBlockmap exclusion.
+
+Validation: all 15,498 Release tests pass (Playsim 10,804); nonincremental warnings-as-errors Release build passes with zero warnings/errors; whitespace checks pass. Remaining compatibility gaps include standalone position probes, projectile-specific collision and pickup contact handling, default-mode CANPASS/bridge eligibility, and DONTOVERLAP. Broader gaps remain for floating/projectile support, bounce/bump callbacks, floor-level and excessive-step overlap, player clipping policy, exact blocker ordering, recursive stacks, and legacy class-default migration. No native runtime differential or live gameplay validation was performed. Changes remain local and uncommitted.
+
+## 2026-10-13 - NO_PASSMOBJ support compatibility gates
+
+Added CompatSurface.NoPassMobj (65536) and converted its gates into the modeled actor-top landing, support-floor, and grounded stepping paths. The switch suppresses CANPASS and SPECIAL support without modifying actor flags. The immutable simulation compatibility mask already participates in checksums; save continuation uses the destination simulation's configured compatibility, consistent with existing switches.
+
+Native audit: src/playsim/p_mobj.cpp:5008 disables the common P_CheckOnmobj branch under COMPATF_NO_PASSMOBJ; src/playsim/p_map.cpp gates PASSMOBJ/bridge handling and player step handling. Six regression cases cover player/monster/special landing suppression, player/monster step refusal, and deterministic save continuation with CANPASS unchanged.
+
+Validation: all 15,492 Release solution tests pass (Playsim 10,798); nonincremental warnings-as-errors Release build succeeds with zero warnings/errors; whitespace checks pass. This is the support/step subset: full NO_PASSMOBJ over/under horizontal blocking, native collision probes and bridge exceptions remain unconverted. Other gaps include floating/projectile support, bounce/bump callbacks, floor-level and excessive-step overlap, player clipping policy, exact blocker ordering, recursive stacks, and legacy class-default migration. No native runtime differential or live gameplay validation was performed. Changes remain local and uncommitted.
+
+## 2026-10-13 - Upward actor-support probing
+
+Removed the descending-only velocity gate from the modeled CANPASS/SPECIAL on-mobj branch. Eligible non-floating, non-projectile actors now probe predicted Z overlap even while moving upward, recovering to a support top and clearing vertical velocity when the existing step/headroom checks permit it. Actors moving clear above the support retain ordinary Z movement and gravity.
+
+Native audit: src/playsim/p_mobj.cpp:5008 invokes P_CheckOnmobj independent of velocity sign; the negative-velocity condition is specific to PlayerLandedOnThing impact handling, not support eligibility. Five regression cases cover player/non-player upward overlap and clearance plus deterministic save continuation.
+
+Validation: all 15,486 Release solution tests pass (Playsim 10,792). Nonincremental warnings-as-errors Release build succeeds with zero warnings/errors; whitespace checks pass. Remaining gaps include floor-level and excessive-step overlap handling, floating/projectile support, native bounce/bump callbacks, NO_PASSMOBJ compatibility, player clipping policy, exact blocker ordering, recursive stacks, and legacy class-default migration. No native runtime differential or live gameplay validation was performed. Changes remain local and uncommitted.
+
+## 2026-10-13 - Non-player landing on player supports
+
+Converted living-player support for the modeled non-player CANPASS landing branch. Landing eligibility no longer rejects PlayerPawn supports for non-player riders, and support-floor selection retains that landing across subsequent steps. Player-to-player support remains under the existing exclusion. CANPASS, bridge-only special pickups, pass-through flags, headroom, and the existing non-player ground-step rules still apply.
+
+Native audit: src/playsim/p_map.cpp P_TestMobjZ only invokes P_ShouldPassThroughPlayer when the probing actor is a player; it does not categorically reject player supports for monsters. src/playsim/p_mobj.cpp applies common PASSMOBJ landing and zero vertical velocity to non-player actors. Added four regression cases for enabled/disabled CANPASS, a THRUACTORS player support, and byte-exact save continuation.
+
+Validation: all 15,481 Release tests pass (Playsim 10,787); nonincremental warnings-as-errors Release build passes with zero warnings/errors; whitespace checks pass. Remaining gaps include native player-to-player clipping policy, NO_PASSMOBJ compatibility, floating/projectile and upward landing, bounce/bump callbacks, excessive-step overlap handling, native blocker ordering, recursive actor stacks, and legacy class-default migration. No native runtime differential or live gameplay validation was performed. Changes remain local and uncommitted.
+
+## 2026-10-13 - Non-player CANPASS actor landing
+
+Converted the existing falling on-mobj branch from player-only CANPASS eligibility to all modeled non-floating, non-projectile CANPASS actors. Non-player actors can land on ordinary solid non-player actors and retain standing support on subsequent steps. Standing support uses the native square XY overlap so corner landings are retained. Monster ground stepping remains restricted to bridges or the existing frozen-corpse subset; special pickups retain their bridge-only exception.
+
+Native audit: src/playsim/p_mobj.cpp:5008 gates the common P_CheckOnmobj branch on PASSMOBJ or SPECIAL, with only view-height and player-impact handling inside player-specific branches. src/playsim/p_map.cpp P_TestMobjZ uses independent absolute X/Y radius checks. The C# conversion preserves existing headroom, descending velocity, floating/projectile, and player-support exclusions rather than claiming full native parity.
+
+Added five regression cases: non-player CANPASS enabled/disabled landing, square-corner support, ordinary-actor ground-step refusal, and deterministic save continuation. All 15,477 Release tests pass (Playsim 10,783); nonincremental warnings-as-errors Release build succeeds with zero warnings/errors; whitespace checks pass. Remaining gaps include NO_PASSMOBJ compatibility, floating/projectile and upward landing, bounce and bump callbacks, living-player support for non-player riders, excessive-step overlap behavior, exact blocker ordering, recursive stacks, and legacy class-default migration. No native runtime differential or live gameplay validation was performed. Changes remain local and uncommitted.
+
+## 2026-10-13 - Special actor bridge landing
+
+Converted the MF_SPECIAL exception into the modeled actor-support paths: special pickup actors can land and stand on ACTLIKEBRIDGE actors even without CANPASS. Support-floor selection and the falling on-mobj branch agree; ordinary actors cannot support a special pickup, matching the existing native Z-blocker exclusion. The exception does not change CANPASS itself or ordinary actor stepping.
+
+Native source audit: src/playsim/p_mobj.cpp:5008 permits P_CheckOnmobj for MF2_PASSMOBJ or MF_SPECIAL; src/playsim/p_map.cpp:2163 excludes non-bridge blockers for MF_SPECIAL. Existing FindZBlocker already implements that exclusion. Added five cases covering player and non-player special actors, bridge versus ordinary support, zero landing velocity, unchanged CANPASS, and byte-exact save continuation.
+
+Validation: all 15,472 Release solution tests pass (Playsim 10,778). Nonincremental warnings-as-errors Release build passes with zero warnings/errors; whitespace checks pass. Remaining gaps include NO_PASSMOBJ compatibility, general non-player CANPASS landing, floating/projectile landing and bounce callbacks, excessive-step overlap handling, exact blocker ordering, recursive stacks, and legacy class-default migration. No native runtime differential or live gameplay validation was performed. Changes remain local and uncommitted.
+
+## 2026-10-13 - CANPASS stepping and actor-support gates
+
+Converted CANPASS/MF2_PASSMOBJ eligibility into the modeled ordinary stepping and support paths. Grounded player steps onto actors and monster steps onto bridges now require CANPASS; support-floor selection skips actor tops when the flag is disabled; the modeled falling-player on-mobj branch is likewise gated. Solid actor properties remain unchanged by the flag.
+
+Native source audit: p_mobj.cpp gates P_CheckOnmobj with MF2_PASSMOBJ or MF_SPECIAL and compatibility; native player/Monster defaults and frozen-actor defaults enable CANPASS. This slice applies the explicit flag to the existing C# support subset, not the complete native collision implementation.
+
+Added nine CanPassSupportTests cases covering player/monster step enable/disable, standing support, falling-player landing, solidity preservation, and deterministic disabled-flag save continuation. Updated RaiseBridgeFlagTests, IceCorpseSupportFlagTests, and BlockmapSupportTests generic-actor fixtures to explicitly enable CANPASS, preserving their intended native monster/frozen/support setup rather than depending on implicit support eligibility.
+
+Validation: Release solution tests pass 15,467/15,467 (Playsim 10,773); nonincremental warnings-as-errors Release build succeeds with zero warnings/errors. Remaining work includes the MF_SPECIAL and NO_PASSMOBJ compatibility exceptions, non-player landing expansion, exact native collision/blocker ordering, bounce-driven defaults, legacy class-default migration, recursive actor stacks, full-tic buried positions, projectile sector movement, portal/3D-floor propagation, cached floorz, view/interpolation, and fake-floor triggers. No native runtime differential or live gameplay validation was performed. Changes remain local and uncommitted.
+
+## 2026-10-13 - Dehacked PASSMOBJ class defaults
+
+Converted the Dehacked PASSMOBJ mnemonic into supported secondary actor bits (0x1000), matching bit 12/group 1 in wadsrc/static/dehsupp.txt. ApplyExtendedDefaults now applies that bit to CanPass whenever secondary bits are patched, including clearing the class flag when a replacement secondary mask omits it. Actor actions retain the native CANPASS spelling registered in src/scripting/thingdef_data.cpp.
+
+Spawned class defaults flow through the existing collision-default capture, ceiling overlap recovery, resurrection, snapshot/restore, and checksum logic. No new archive format is required; runtime CANPASS overrides continue using version 194 while patched defaults need no override record.
+
+Added ten DehackedCanPassTests cases covering mnemonic casing/combinations, class-default capture, enabled/disabled recovery, resurrection, save/override/baseline restoration, and replacement-patch independence. Corrected the new parser assertion to select by one-based Thing index rather than zero-based array position.
+
+Validation: Release solution tests pass 15,458/15,458 (Playsim 10,764); nonincremental warnings-as-errors Release build succeeds with zero warnings/errors. Remaining CANPASS work includes ordinary stepping/support consumers, bounce-driven defaults, exact native collision/blocker ordering, and legacy class-default archive migration. Recursive actor-stack handling, full-tic buried positions, projectile sector movement, portals/3D floors, cached floorz, view/interpolation, and fake-floor triggers remain gaps. No native runtime differential or live gameplay validation was performed. Changes remain local and uncommitted.
+
+## 2026-10-13 - Explicit CANPASS flag and generalized ceiling recovery
+
+Added the native MF2_PASSMOBJ action flag under its registered name CANPASS (src/scripting/thingdef_data.cpp). Supported players and Doom monster classes receive enabled defaults, based on player.zs and native Monster setup in thingdef_properties.cpp; ordinary Actor instances default disabled. Map-spawn, bot, and resurrection defaults now include the flag.
+
+Ceiling overlap recovery now uses CanPass instead of a player-type gate, allowing supported monsters and explicitly enabled actors to recover through the existing overlap checks. Added case-insensitive ACS/action reads and writes, snapshot/restore/checksum support, and an optional version-194 flag archive. Default saves retain their existing archive version; overrides round-trip and baseline restoration resets the flag. Collision-default capture includes CANPASS for resurrection.
+
+Added nine CanPassTests cases covering enabled/disabled player and bot recovery, flag lookup, default saves and override/legacy restoration, ordinary/player/monster defaults, resurrection, invalid archive values, and recursive prior-version rejection. The resurrection test exposed and corrected an omitted map-spawn default assignment.
+
+Validation: Release solution tests pass 15,448/15,448 (Playsim 10,754); nonincremental warnings-as-errors Release build succeeds with zero warnings/errors. CANPASS is wired into ceiling recovery; remaining consumers such as all ordinary stepping/support paths, bounce-driven defaults, Dehacked secondary flags, and old class-default archive migration still require audit/conversion. Exact P_AdjustFloorCeil isgood semantics, native blocker ordering, recursive actor stacks, full-tic buried positions, projectile sector movement, portal/3D-floor propagation, cached floorz, view/interpolation, and fake-floor triggers remain gaps. No native runtime differential or live gameplay validation was performed. Changes remain local and uncommitted.
+
+## 2026-10-13 - Player overlap recovery on rising ceilings
+
+Converted the currently modeled player-support subset of PIT_CeilingRaise overlap recovery from src/playsim/p_map.cpp. When a sector-linked solid player overlaps a supporting actor whose base is at/below the player's base, and the player's top is strictly below the new ceiling, recovery moves it to the support top capped by new ceiling minus height. Existing FindZBlocker collision filtering supplies overlap detection, and velocity is preserved.
+
+The NOLIFTDROP check now belongs to the buried-actor branch rather than the entire ceiling-raise visitor, matching native branch ordering: it does not suppress overlap recovery. Bridge/sector/mover eligibility still excludes the actor before either recovery branch. Both ceiling thinkers and opening doors use this path.
+
+Added 11 CeilingRaiseOverlapTests cases covering doors/ceilings, NOLIFTDROP branch independence, new-ceiling cap, pass-through exclusions, blockers above the player, multiple overlapping supports, bridge/sector exclusion, and byte-exact save continuation.
+
+Validation: Release solution tests pass 15,439/15,439 (Playsim 10,745); nonincremental warnings-as-errors Release build succeeds with zero warnings/errors. This is a supported player subset: an explicit PASSMOBJ flag/default model, exact P_AdjustFloorCeil/P_CheckPosition isgood semantics, native blocker ordering, and recovery for other actor classes remain gaps. Recursive actor-stack pushing, full-tic buried positions, projectile sector movement, portal/3D-floor/link propagation, cached floorz, view/interpolation, and fake-floor triggers remain unconverted. No native runtime differential or live gameplay validation was performed. Changes remain local and uncommitted.
+
+## 2026-10-13 - Sector FLOORDROP defaults and UDMF dropactors
+
+Converted native SECF_FLOORDROP map loading and lowering-floor carry. src/maploader/maploader.cpp enables the flag for binary maps without BEHAVIOR; src/maploader/udmf.cpp enables defaults for Doom/Heretic/Strife namespaces and accepts dropactors in extended namespaces. LevelSector now carries immutable DropActors metadata; binary Doom building enables it, Hexen decoding leaves it disabled, and FromUdmf honors the namespace/default rules. Simulation copies preserve the flag.
+
+The floor-drop path receives the moving sector's flag and bypasses the nine-unit speed gate when enabled, retaining the native proximity-to-floor requirement. NOSECTOR exclusion and actor carry flags remain enforced. No save extension is required because this is immutable map metadata retained by the simulation's loaded level.
+
+Added 18 tests: eleven UDMF namespace/default/override cases, two binary Doom/Hexen load-and-copy cases, and five Playsim loaded-map movement/save cases. The gameplay fixture includes the required UDMF skill/mode flags for its player start.
+
+Validation: Release solution tests pass 15,428/15,428 (Playsim 10,734; MapLoader 770); nonincremental warnings-as-errors Release build succeeds with zero warnings/errors. Remaining work includes actor stacks and PASSMOBJ overlap recovery, full-tic buried positions, native portal/3D-floor lists and linked-sector propagation, projectile movement, actor-definition defaults, cached floorz/initial fall acceleration, view/interpolation updates, and fake-floor triggers. Synthetic PlayLevel sectors use their explicitly configured DropActors value; namespace defaults are assigned by the level builders. No native runtime differential or live gameplay validation was performed. Changes remain local and uncommitted.
+
+## 2026-10-13 - Adjacent touching-sector mover traversal
+
+Converted the flat-sector touching-actor traversal subset used by native P_ChangeSector in src/playsim/p_map.cpp. Shared TouchesSector uses the existing square-bounds/line-crossing geometry rather than actor center alone. Ceiling/door obstruction, floor obstruction/crushing, floor carry, ceiling push-down, and ceiling-raise recovery now include actors crossing a neighboring sector boundary. NOSECTOR and NOBLOCKMAP/MOVEWITHSECTOR eligibility is unchanged.
+
+Floor obstruction predicts movement from the actor's current geometric support opening, so raising an adjacent lower plane does not shift a relative actor until it becomes support. Ceiling movement helpers likewise retain the actor's center sector when recomputing combined openings. Actors are visited once per mover, independent of how many boundary lines they cross. Zero-length synthetic lines are excluded from touching membership; the existing signed-speed stair regression exposed that edge case during the audit.
+
+Added eight TouchingSectorMoverTests cases covering adjacent ceiling/door/floor obstruction, actors outside boundary reach, adjacent crush damage, lowering support until another sector takes over, and relative raise support changes.
+
+Validation: Release solution tests pass 15,410/15,410 (Playsim 10,729); nonincremental warnings-as-errors Release build succeeds with zero warnings/errors. Remaining work includes native portal/3D-floor touching lists and linked-sector propagation, actor stacks and PASSMOBJ overlap recovery, full-tic buried positions, projectile movement, actor-definition defaults, SECF_FLOORDROP, cached floorz/initial fall acceleration, view/interpolation updates, and fake-floor triggers. No native runtime differential or live gameplay validation was performed. Changes remain local and uncommitted.
+
+## 2026-10-13 - Rising-ceiling buried-actor recovery
+
+Converted the supported PIT_CeilingRaise buried-actor branch from src/playsim/p_map.cpp. Eligible non-projectile actors below the geometric floor recover only when their top reaches the prior ceiling and NOLIFTDROP is clear. Recovery sets Z to the floor, capped by new ceiling minus height when headroom remains insufficient. Bridge actors are excluded; hanging actors are not carried upward. Vertical velocity is preserved.
+
+Wired ApplyCeilingRaise into both ceiling thinkers and opening doors, using actual accepted plane travel for the old-ceiling contact boundary. NOSECTOR and NOBLOCKMAP/MOVEWITHSECTOR eligibility remains enforced. No save format change was needed.
+
+Added 15 CeilingRaiseRecoveryTests cases covering door/ceiling recovery, old-ceiling contact equality, insufficient new headroom, actor flags and mover eligibility, stationary hanging actors, shortened final arrival, velocity preservation, and deterministic save continuation.
+
+Validation: Release solution tests pass 15,402/15,402 (Playsim 10,721); nonincremental warnings-as-errors Release build succeeds with zero warnings/errors. This converts the mover-stage rule; general thinker/post-mover FitToSector still clamps below-floor actors and does not yet retain native buried positions across a full tic. Remaining work includes PASSMOBJ overlap recovery, recursive P_PushDown/P_PushUp stacks, adjacent touching-sector traversal, projectile movement, actor-definition defaults, SECF_FLOORDROP, cached floorz/initial fall acceleration, view/interpolation updates, and fake-floor triggers. No native runtime differential or live gameplay validation was performed. Changes remain local and uncommitted.
+
+## 2026-10-13 - Lowering-ceiling push-down versus obstruction
+
+Converted the supported flat-sector PIT_CeilingLower push-down behavior from src/playsim/p_map.cpp. An airborne actor whose top intersects a lowering ceiling is pushed down when its height fits above the geometric floor; this contact alone no longer blocks a ceiling/door or causes crush damage. True insufficient headroom still obstructs/crushes, and ACTLIKEBRIDGE still obstructs rather than being pushed. Accepted ceiling/door movement updates eligible non-projectile actor Z immediately while preserving vertical velocity.
+
+Shared BlocksLoweringCeiling now drives both ceiling and closing-door obstruction queries. ApplyCeilingLower applies only sector mover actors, preserving NOSECTOR and NOBLOCKMAP/MOVEWITHSECTOR eligibility. Native PIT_CeilingRaise was also inspected: neither native ceiling path has a RELATIVETOFLOOR carry branch, correcting the earlier audit's vague ceiling-relative follow-up wording.
+
+Added 13 CeilingPushDownTests cases covering non-crushing/crushing ceiling and door contact, sector/blockmap eligibility, bridge obstruction, insufficient and exact headroom, vertical velocity preservation, and deterministic save continuation.
+
+Validation: Release solution tests pass 15,387/15,387 (Playsim 10,706); nonincremental warnings-as-errors Release build succeeds with zero warnings/errors. Remaining parity work includes recursive P_PushDown/P_PushUp actor stacks, adjacent touching-sector traversal, PIT_CeilingRaise buried-actor and PASSMOBJ recovery, projectile movement, actor-definition defaults, SECF_FLOORDROP, cached floorz/initial fall acceleration, view/interpolation updates, and fake-floor triggers. No native runtime differential or live gameplay validation was performed. Changes remain local and uncommitted.
+
+## 2026-10-13 - RELATIVETOFLOOR rising-floor movement and obstruction
+
+Converted the airborne no-gravity RELATIVETOFLOOR branch of PIT_FloorRaise in src/playsim/p_map.cpp. Eligible actors above the new floor move by the geometric floor delta; NOLIFTDROP and vertical velocity do not suppress this native rising-floor branch. Actors intersecting the new floor retain the ordinary floor-fit behavior.
+
+Added a shared predicted actor Z calculation to the raising-floor obstruction/crush query so relative movement into the ceiling is detected before committing the plane. Accepted movements apply the relative shift using the support opening captured before the plane changes. NOSECTOR and NOBLOCKMAP/MOVEWITHSECTOR eligibility still applies, and rolled-back/blocked movement leaves actor height unchanged.
+
+Added 14 RelativeFloorRaiseTests cases covering flag/velocity combinations, sector/blockmap exclusions and the mover exception, predicted ceiling obstruction, crushing and stop policies, floor-intersection precedence, and byte-exact save continuation. Existing floor, platform/rider, and archive tests remain green.
+
+Validation: Release solution tests pass 15,374/15,374 (Playsim 10,693); nonincremental warnings-as-errors Release build succeeds with zero warnings/errors. Remaining parity work includes full native P_PushUp actor-stack handling, adjacent touching-sector traversal, ceiling-relative paths, actor-definition defaults, SECF_FLOORDROP, projectile floor movement, cached floorz/initial fall acceleration, view/interpolation updates, and fake-floor triggers. No native runtime differential or live gameplay validation was performed. Changes remain local and uncommitted.
+
+## 2026-10-13 - NOLIFTDROP and RELATIVETOFLOOR lowering-floor carry
+
+Converted the NOLIFTDROP and RELATIVETOFLOOR branches of PIT_FloorDrop in src/playsim/p_map.cpp. Stationary no-gravity actors on the old floor require NOLIFTDROP to be clear to follow it. Airborne no-gravity actors with RELATIVETOFLOOR retain their offset as the floor lowers, including actors with vertical velocity; NOLIFTDROP suppresses this branch. Gravity actors keep the existing speed/MOVEWITHSECTOR rules. Native flag registrations were checked in src/scripting/thingdef_data.cpp.
+
+Added actor properties, case-insensitive ACS/action flag reads and writes, snapshot/restore/checksum support, and supported-class resurrection defaults. Optional version-193 FloorCarry archive stores the two-bit mask; old saves retain their format and clear these flags on restore. The audit corrected the new archive's prior-version upper bound and added tests rejecting same/future prior versions.
+
+Added 21 FloorCarryFlagTests cases covering native branch ordering, link/bridge exclusions, independent and combined flag saves, legacy checksum restoration, invalid bit masks and prior versions, resurrection reset, and deterministic relative-carry save continuation.
+
+Validation: Release solution tests pass 15,360/15,360 (Playsim 10,679); nonincremental warnings-as-errors Release build succeeds with zero warnings/errors. Remaining work includes RELATIVETOFLOOR on rising floors and ceiling paths, actor-definition defaults, adjacent touched-sector traversal, SECF_FLOORDROP, projectile floor movement, cached floorz/initial fall acceleration, view/interpolation updates, and fake-floor triggers. No native differential runtime or live gameplay validation was performed. Changes remain local and uncommitted.
+
+## 2026-10-13 - Native flat-sector floor-drop carry
+
+Converted the supported PIT_FloorDrop carry rules from src/playsim/p_map.cpp: stationary gravity actors follow ordinary drops strictly below nine units when they are close enough to the new floor; MOVEWITHSECTOR bypasses that distance/speed gate; stationary no-gravity actors follow only when standing at the old floor. ACTLIKEBRIDGE actors stay in place. NOSECTOR and NOBLOCKMAP/MOVEWITHSECTOR eligibility remains enforced.
+
+LineSpecials captures actors' geometric support floors before lowering a plane, then applies carry against the updated opening. Actual plane travel, including a shortened final step, supplies moveamt, matching src/playsim/mapthinkers/dsectoreffect.cpp. The end-of-tic fit no longer unconditionally carries grounded actors down, so uncarrried actors become airborne; rising floors and mobj support continue through the existing fit clamps.
+
+Added 17 FloorDropCarryTests cases covering the 8/9/16-unit boundary, flag combinations, shortened final arrival, sector/blockmap exclusion, bridges, airborne gravity/no-gravity actors, nonzero vertical velocity, and deterministic save/restore continuation. Existing rising-platform/rider tests continue passing.
+
+Validation: Release solution tests pass 15,339/15,339 (Playsim 10,658); nonincremental warnings-as-errors Release build succeeds with zero warnings/errors. Remaining parity work includes adjacent touching-sector traversal, SECF_FLOORDROP, NOLIFTDROP, RELATIVETOFLOOR, projectile floor-drop handling, cached native floorz/initial fall acceleration, view/interpolation updates, and fake-floor triggers. This is the supported flat-sector carry slice, not full native sector movement. No native differential runtime or live gameplay validation was performed. Changes remain local and uncommitted.
+
+## 2026-10-13 - MOVEWITHSECTOR mover eligibility
+
+Converted the native sector-change eligibility rule from src/playsim/p_map.cpp: sector-linked NOBLOCKMAP actors are skipped unless MF5_MOVEWITHSECTOR is enabled. Shared IsSectorMoverActor now applies to ceiling obstruction/crush, raising floors, closing doors, and stationary sector-pinch damage. NOSECTOR retains precedence.
+
+Added the actor MoveWithSector property and case-insensitive ACS/action MOVEWITHSECTOR flag reads/writes. Added checksum coverage, snapshot/restore validation, and an optional version-192 save trailer; saves without this flag retain their previous format, and restoring old saves clears it. Resurrection resets the flag to the currently supported classes' default (false).
+
+Added 18 MoveWithSectorTests cases: ceiling/floor/door eligibility combinations, ceiling crush and stationary-pinch combinations, flag lookup, byte-exact save round trip and legacy checksum restoration, invalid archive flag rejection, and resurrection reset.
+
+Validation: Release solution tests pass 15,322/15,322 (Playsim 10,641); nonincremental warnings-as-errors Release build succeeds with zero warnings/errors. Native source audit identified remaining adjacent touching-sector traversal and PIT_FloorDrop special carry behavior (including MOVEWITHSECTOR); this slice implements mover eligibility, not full floor-drop semantics or class-definition parsing. No native runtime differential or live gameplay validation was performed. Changes remain local and uncommitted.
+
+## 2026-10-13 - Sector-linked mover obstruction and crushing
+
+Converted the native NOSECTOR membership gate into the C# ceiling, raising-floor, closing-door, and stationary sector-pinch paths. Unlinked actors no longer obstruct sector movers or receive their crush damage; ordinary geometry fitting and blockmap collision remain available.
+
+Native audit: src/playsim/p_maputl.cpp LinkToWorld excludes MF_NOSECTOR actors from sector/touching-sector lists. src/playsim/p_map.cpp sector-change traversal visits touching_thinglist, with a separate MF_NOBLOCKMAP / MF5_MOVEWITHSECTOR eligibility rule. This slice implements the NOSECTOR gate only; adjacent touched-sector traversal and the MOVEWITHSECTOR exception remain follow-up parity work.
+
+Added SectorLinkMoverTests with 10 linked/unlinked cases covering non-damaging ceiling obstruction, ceiling crush damage, floor obstruction, closing-door reversal, and stationary sector-pinch damage. The stationary test advances to tic four to avoid the existing initial-tic mover-damage suppression.
+
+Validation: Release solution tests pass 15,304/15,304 (Playsim 10,623); nonincremental warnings-as-errors Release build passes with zero warnings/errors. No native differential runtime or live gameplay validation was performed. Changes remain local and uncommitted.
+
+## 2026-10-13 - Dehacked NOSECTOR defaults and resurrection conversion
+
+Converted named Dehacked NOSECTOR parsing (primary bit 8), numeric-bit actor initialization, and class collision-default capture. Added the sector flag to managed resurrection defaults using internal bit 128; existing internal collision bits retain their values. Native p_mobj.cpp AActor::Revive restores class flags and relinks when NOBLOCKMAP/NOSECTOR differ. Managed scripted and archvile resurrection now restore the class sector flag and dynamic membership accordingly.
+
+Updated sector override capture/restoration to compare with the class default. Default NOSECTOR actors no longer emit unnecessary sector-link override records, while explicit clears remain serialized. Restoring a baseline save uses the captured class sector default instead of always relinking. Existing archive formats are reused.
+
+Added ten regression cases for numeric and named flag initialization, retained shootability/blockmap participation, class-default save capture, scripted and archvile resurrection with both class flag values, byte-exact restored saves, baseline/checksum restoration, explicit overrides, and replacement patch isolation.
+
+Follow-up physics audit: native p_map.cpp sector plane changes iterate touching_thinglist, which excludes NOSECTOR actors through p_maputl.cpp linking. Managed CeilingActions blocking queries and ActorPhysics.FitToSector sector-pinch crushing still use actor/sector geometry without sector-link gating. These remain concrete parity gaps for the next conversion slice; renderer sector-list consumption also remains unfinished.
+
+Validation: all 15,294 Release tests pass (10,613 Playsim; 2,263 Client); nonincremental Release build with warnings as errors passes with zero warnings/errors; diff whitespace check passes. Native executable differential testing and live gameplay were not performed. Changes remain local and uncommitted.
+
+## 2026-10-13 - Sector-link action and scroll exclusion conversion
+
+Converted the previously rejected sector argument of A_ChangeLinkFlags. Audited actor.zs: blockmap and sector arguments change independently, with -1 leaving each flag unchanged. Added NoSector/IsSectorLinked actor state, dynamic AuthoritySimulation.SectorActors membership queries, and ACS NOSECTOR lookup/change support. Sector unlinking retains blockmap collision and the actor's geometric SectorIndex.
+
+Audited p_maputl.cpp sector-link construction and p_mobj.cpp carry-scroll gating. Unlinked actors now skip carry scrolling and scroll-sector marking. Audited p_acs.cpp ThingCount: native sector-tag counts use actor iterators and Sector, rather than the sector thinglist, so managed ACS counting retains its existing behavior.
+
+Added optional version-191 sector-link archive trailers with explicit default clears, value/geometry validation, restoration, and checksum participation. Saves without sector overrides retain their previous format. Baseline restores clear later overrides. This converts action-driven sector membership and scrolling; native renderer sector-list consumption, all touching-sector consumers, and Dehacked NOSECTOR default/resurrection handling still require separate parity work.
+
+Added six regression cases covering zero/nonzero sector arguments, membership, collision independence, serialized byte-exact restoration, player/monster scrolling exclusion and relinking, ACS flag mutation, and baseline/checksum restoration. Updated the former unsupported-sector assertion to check independent simultaneous blockmap/sector assignment.
+
+Validation: all 15,284 Release tests pass (10,603 Playsim; 2,263 Client); nonincremental Release build with warnings as errors succeeds with zero warnings/errors; diff whitespace check passes. Native executable differential testing and live rendering were not performed. Changes remain local and uncommitted.
+
+## 2026-10-13 - General actor chase threshold conversion
+
+Converted A_SetChaseThreshold for selected actors without monster brains. Native src/playsim/p_actionfunctions.cpp writes either threshold or DefThreshold on any resolved actor, independently, clamping negatives to zero; actor.zs supplies the default DefThreshold of 100. Removed the managed brain-only rejection and added general actor storage with shared current/default access, capture, restoration, and action assignment. Existing monster-brain state and wake-up behavior remain authoritative for monsters.
+
+Reused SimChaseThreshold and its existing archive format. General threshold values participate in save restoration and deterministic checksums; baseline saves reset later assignments to current 0/default 100. No new archive version is needed. Explicit assignments remain represented by the existing optional record.
+
+Added ten regression cases for player, brainless-actor, and projectile thresholds: negative and maximum integer clamping, independent current/default values, serialized byte-exact round trips, baseline restoration and checksum restoration, and tracer/null pointer selection. Replaced the old unsupported-general-storage expectation with a working independent-value assertion. Existing monster threshold, wake-up, retaliation, and save tests pass.
+
+Validation: all 15,278 Release tests pass (10,597 Playsim; 2,263 Client); nonincremental Release build with warnings as errors succeeds with zero warnings/errors; diff whitespace check passes. Native executable differential testing was not performed. Remaining managed action gaps include sector-link membership and player orientation interpolation. Changes remain local and uncommitted.
+
+## 2026-10-13 - ClearTarget integration gap repair
+
+Audited wadsrc/static/zscript/actors/actor.zs A_ClearTarget: it clears target, lastheard, and lastenemy, leaving master and tracer unchanged. The managed action still only cleared monster-brain targets after general target storage and nullable projectile owners were converted. This allowed player, brainless-actor, and projectile targets to survive ClearTarget.
+
+Connected ClearTarget to the shared target setter before clearing brain target/enemy memory and sound memory. It now clears general target storage and projectile ownership as well. Existing target-memory override marking and nullable projectile archives preserve explicitly cleared pointers. ClearLastHeard continues to preserve combat pointers.
+
+Added five regression cases: clearing/restoring player, brainless-actor, and projectile target state; preserving master/tracer pointers; restoring both cleared and populated serialized states byte-exactly; and checking that ClearLastHeard preserves player/projectile targets. Existing monster target/enemy-memory clearing tests pass.
+
+Validation: all 15,268 Release tests pass (10,587 Playsim; 2,263 Client); nonincremental Release build with warnings as errors passes with zero warnings/errors; diff whitespace check passes. Native executable differential testing was not performed. Remaining action gaps include chase thresholds on actors without monster brains, sector-link membership, and player orientation interpolation. Changes remain local and uncommitted.
+
+## 2026-10-13 - KillMissiles action conversion
+
+Converted the previously rejected KILS_KILLMISSILES flag for KillTarget, KillMaster, KillTracer, KillChildren, and KillSiblings. Audited native DoKill in src/playsim/p_actionfunctions.cpp: filters precede explosion; invulnerability and Buddha block missile explosion unless their corresponding foil flags are supplied; NoDamage always blocks that explosion branch. KILS_NOMONSTERS skips health damage but must not skip the missile explosion branch.
+
+Replaced the old damage-flag-only wrapper with shared victim selection and native kill sequencing. Class/species exclusion and either-filter rules are applied once before either operation. Eligible missiles use their existing explosion path, including direct/radius damage, sounds, and BFG behavior; ordinary kill damage retains armor/factor bypass and foil flags. Family iteration snapshots matching live actors and rechecks destruction before processing each victim.
+
+Added fifteen regression cases covering protection/foil/NoDamage combinations, all five kill selectors, class exclusion filters before explosion, and rocket radius damage attributed to the owner. Existing ordinary-target/family kill protection and filter tests also pass.
+
+Validation: all 15,263 Release tests pass (10,582 Playsim; 2,263 Client); nonincremental Release build with warnings as errors succeeds with zero warnings/errors; diff whitespace check passes. Native executable differential testing and live gameplay were not performed. Remaining managed action gaps include sector-link membership and player orientation interpolation; broader conversion completion is not implied. Changes remain local and uncommitted.
+
+## 2026-10-13 - Nullable projectile owners and target-chain guard conversion
+
+Converted cleared projectile target pointers and missile-to-missile ownership assignment. Owner is now nullable; target lookup, ACS TargetTid, checksum capture, species filtering, direct damage, radius damage, aim initialization, and reconstruction handle missing owners. BFG spray already explicitly returns when no owner exists. Ownerless damage carries a null source, and clearing ownership removes former-owner collision immunity. Live non-null assignment still validates simulation membership.
+
+Converted native VerifyTargetChain from src/playsim/actorptrselect.cpp: pointer actions walk missile-only target chains, clear the receiving missile's target on either an immediate or downstream cycle, and honor PTROP_UNSAFETARGET (bit 1). Non-missile links terminate the guard. Proximity and block-check assignment retain native raw-pointer behavior. The managed guard recognizes ProjectileActor missile identities; native actor.h isMissile also recognizes native missile defaults.
+
+Added optional version-190 nullable projectile-pointer trailers with explicit presence, owner, and tracer fields. The version-24 inner archive retains its historical zero-owner absent-record semantics; nullable records are supplied by the new outer trailer. Saves without cleared projectile owners retain their prior format. Readers reject malformed presence/data and non-projectile records. Existing saves remain readable.
+
+Save restoration validates ownership references before mutation, reconstructs all missing saved missiles before restoring their links, and can restore nullable owners or unsafe cyclic owner chains even when both missiles were destroyed. Existing tracer behavior and byte-exact serialization round trips are preserved.
+
+Added eleven regression cases: ownerless existing/reconstructed save restoration with a retained tracer; safe/unsafe cycle flags; downstream cycles; reconstruction of both sides of an unsafe cycle; ownerless damage and species-filtered movement; malformed nullable archive markers; former-owner collision damage; ownerless rocket and BFG explosions. Updated the former unsupported-clear expectation to verify rearrangement from original pointers, and existing owner-required test fixtures now explicitly verify non-null owners.
+
+Validation: all 15,248 Release tests pass (10,567 Playsim; 2,263 Client); nonincremental Release build with warnings as errors passes with zero warnings/errors; diff whitespace check passes. Native executable differential testing and a live game session were not performed. This closes the explicitly unsupported owner-clear and projectile ownership-chain gaps from the prior slice; broader conversion completeness is not implied. Changes remain local and uncommitted.
+
+## 2026-10-13 - Live non-projectile owner reassignment conversion
+
+Converted projectile target assignment to live non-projectile owners through shared pointer actions, proximity SETTARGET, and block-check assignment. ProjectileActor.Owner is now mutable through validated internal assignment. The new owner must be alive in the same simulation. Existing combat, collision immunity, species filtering, blast attribution, BFG spray, ACS target lookup, and checksum consumers continue to read Owner, so reassignment reaches those surfaces without duplicated ownership state.
+
+Audited src/playsim/actorptrselect.cpp ASSIGN_AAPTR and VerifyTargetChain: native target assignment is writable, while missile ownership chains require separate cycle handling. This slice explicitly rejects cleared owners and missile-to-missile assignment; those remain conversion gaps rather than silent fallbacks.
+
+Converted save restoration from owner-equality rejection to live saved-owner validation and restoration. Existing projectile pointer archives already encode owner identity, so no archive version change was needed. Missing/destroyed saved owners and owners absent from the saved actor list are rejected before mutation. Reconstruction uses the saved owner as before; existing missiles now restore that owner too. Historical archive owner-chain restoration remains unchanged.
+
+Added four regression cases covering direct damage attribution after reassignment, byte-exact save round trips for existing and reconstructed projectiles, proximity ownership assignment, and unsupported clear failure before master/tracer mutation. Updated pointer transfer coverage to verify owner reassignment. The damage fixture uses distinct monster species to avoid existing same-species immunity.
+
+Validation: all 15,237 Release tests pass (10,556 Playsim; 2,263 Client); nonincremental Release build with warnings as errors succeeds with zero warnings/errors; diff whitespace check passes. Native executable differential testing was not performed. Remaining: nullable projectile owners and missile target-chain verification, including unsafe-target semantics. Changes remain local and uncommitted.
+
+## 2026-10-13 - General non-projectile target pointer conversion
+
+Converted target-pointer storage and assignment for actors without monster brains, including player pawns. Native actorptrselect.cpp assigns toActor->target without requiring a monster brain. Managed Actor.TargetId now exposes the existing monster target, projectile owner, or general stored target. Pointer actions and proximity SETTARGET use one setter; ACS target selection and TargetTid use the shared lookup. Monster brains retain their existing target storage and behavior.
+
+Reused the existing SimTargetMemory archive rather than adding another format. General targets participate in capture, restoration, and deterministic checksums. Restoring an older save clears general target state; unchanged saves keep their prior representation. Explicit cleared targets are retained through the existing override marker.
+
+Regression coverage adds general target proximity assignment, target-to-tracer transfer self-reference suppression, original-pointer rearrangement, byte-exact save round trips, and legacy-save restoration. Updated the old unsupported-player-target expectation to validate the converted behavior.
+
+Validation: all 15,233 Release tests pass (10,552 Playsim; 2,263 Client); nonincremental Release build with warnings as errors passes with zero warnings/errors; diff whitespace check passes. Native executable differential testing was not performed. Remaining conversion gap: projectile target reassignment still requires converting mutable projectile owner handling across combat attribution and save restoration; it remains explicitly unsupported. Changes remain local and uncommitted.
+
+## 2026-10-13 - General actor tracer pointer conversion
+
+Converted tracer storage from a projectile-only capability to the shared managed Actor model. Projectile TracerTargetId remains an alias with its existing seeking and archive representation. General actors now support proximity SETTRACER, pointer transfer/rearrangement, block-check tracer assignment, ACS tracer selection/TracerTid, and explicit tracer LOS selection. Native audit: src/playsim/actorptrselect.cpp reads origin->tracer and assigns toActor->tracer without a projectile restriction; src/playsim/p_things.cpp assigns proximity tracers to self or the selected reference.
+
+Added optional version-189 tracer-pointer archive trailers for non-projectile actors, including explicit cleared pointers, validation of presence markers, restoration, and deterministic checksum participation. Older saves clear general tracer state; saves with no general tracer overrides retain their existing bytes. Projectile pointer archives are unchanged.
+
+Regression coverage includes original-pointer rearrangement, block-probe position restoration, proximity assignment and byte-exact save round trips, general pointer transfer, destroyed-pointer lookup, legacy restoration/checksum behavior, and malformed archive rejection. Updated three former unsupported-tracer expectations to verify converted behavior; added three tests.
+
+Validation: all 15,231 Release tests pass (10,550 Playsim; 2,263 Client); nonincremental Release build with warnings as errors passes with zero warnings/errors; diff whitespace check passes. Native executable differential testing was not performed. Remaining conversion work includes general writable target storage outside monster brains; projectile owner target assignment remains explicitly unsupported. Changes remain local and uncommitted.
+
+## 2026-10-13 - Proximity tracer assignment for managed projectiles
+
+Converted CPXF_SETTRACER (256) from P_Thing_CheckProximity for actors with the existing managed projectile tracer representation. Candidate selection, closest/farthest scanning and CPXF_SETONPTR now include tracer mutations. Combined master/tracer flags write the same selected actor. Existing projectile tracer storage, pointer resolution, hashing and save/restore are reused. Validation rejects unsupported owners before any combined pointer mutation.
+
+Five regression cases cover closest/farthest choice, direct/reference owner assignment, combined master/tracer mutation, byte-identical save/restore after tracer replacement, and rejection of player tracer assignment without a partial master write. General non-projectile tracer storage remains a conversion gap; this pass does not claim support for tracer assignment on all actor types.
+
+Validation: all 15,228 Release solution tests passed (10,547 Playsim; 2,263 Client). Nonincremental warnings-as-errors Release build passed with zero warnings and errors. Native differential execution was not performed. Changes remain local and uncommitted.
+
+## 2026-10-13 - Proximity master-pointer assignment conversion
+
+Converted CPXF_SETMASTER (128) in ActorProximity from native P_Thing_CheckProximity in src/playsim/p_things.cpp and flag definitions in p_local.h. Previously managed proximity checks rejected this flag. Pointer selection now runs for either target or master assignment, retains closest/farthest scans beyond count thresholds, and writes MasterId on the caller or selected reference according to CPXF_SETONPTR. Target assignment still uses the existing monster-brain integration; master assignment also works on players without a brain. Counting and boolean checks share the implementation and existing ACS/action entry points.
+
+Five regression cases cover closest/farthest selection, caller/reference assignment through a master selector, counting-side mutation, and preservation of existing pointers when nothing matches. Native mutation occurs after scanning whenever a candidate is selected, independently of comparison result. Tracer assignment remains explicitly unsupported pending a general actor tracer representation; no claim of full proximity-pointer conversion is made.
+
+Validation: all 15,223 Release solution tests passed (10,542 Playsim; 2,263 Client). Nonincremental warnings-as-errors Release build passed with zero warnings and errors. Native differential execution was not performed. Changes remain local and uncommitted.
+
+## 2026-10-13 - Fixed-point PCM length bounds before allocation
+
+Audited native unsigned sample positions and ten-bit fractional conversion in gus_pat.cpp and wildmidi_lib.cpp. Sample lengths above 4,194,303 decoded samples cannot be represented after the native ten-bit shift. Managed ToMixerSample already rejected these lengths, but decoding could allocate and publish oversized PCM first; ping-pong expansion could additionally exceed the range even when the original length fit.
+
+All PCM output allocations now share a decoded-length check before allocating their short sample buffers, including plain/reverse, forward ping-pong and reverse ping-pong decoding. This moves the existing managed bound earlier into converted loading behavior and prevents publication of unusable decoded lengths. Native wraparound for oversized lengths remains intentionally rejected.
+
+Added five regression cases for oversized eight/sixteen-bit plain samples and expansion overflow in forward, eight-bit reverse and sixteen-bit reverse ping-pong paths. Existing exact PCM ordering, native quirks, concrete patch playback and loop tests pass.
+
+Validation: all 15,218 Release solution tests passed (2,263 Client). Nonincremental warnings-as-errors Release build passed with zero warnings and errors. This is an audit-driven boundary correction in converted PCM code; no additional native routine was translated in this pass. Native differential execution and live audio playback were not performed. Changes remain local and uncommitted.
+
+## 2026-10-13 - Zero pitch divisor rejected during GUS patch loading
+
+Audited native GUS increment-divisor calculation in gus_pat.cpp and its use in wildmidi_lib.cpp get_inc. The native unsigned calculation can produce zero from a zero root frequency, integer truncation for a tiny frequency, or multiplication wrapping. Managed note preparation already rejected zero divisors, but malformed samples could previously pass header parsing and instrument preloading, deferring the error until playback.
+
+VmMusicWildMidiGusSampleHeader.Parse now rejects zero calculated divisors before publishing the sample. Preserves existing native-width arithmetic for nonzero results. Three regression cases exercise zero, truncated and wrapped results, failed patch publication, and successful retry with a corrected root. Existing placeholder fixtures that omitted root frequency were corrected to valid values without changing their original test purpose.
+
+Validation: all 15,213 Release solution tests passed (2,258 Client). Nonincremental warnings-as-errors Release build passed with zero warnings and errors. This is an audit-driven reliability correction in converted code, not an additional native module translation. Native differential execution and live audio playback were not performed. Changes remain local and uncommitted.
+
+## 2026-10-13 - Sixteen-bit reverse ping-pong conversion with native repairs
+
+Implemented signed and unsigned sixteen-bit reverse ping-pong PCM conversion using the shared bounded reverse expansion. Audited native convert_16srp/convert_16urp, convert_16sp and both eight-bit reverse variants in libraries/ZMusic/thirdparty/wildmidi/gus_pat.cpp. The sixteen-bit reverse routines have inverted read-pointer comparisons and omit the byte-to-sample shifts performed by the forward sixteen-bit routines. Managed conversion intentionally repairs those defects: it traverses complete decoded samples, mirrors the loop, preserves contiguous sixteen-bit tails and emits sample-unit length/loop metadata.
+
+This is an inference about intended behavior from adjacent working routines, not bit-for-bit compatibility with undefined native traversal. Eight-bit signed tail spacing remains unchanged. Misaligned loop byte offsets, incomplete samples and unsafe loop boundaries fail explicitly. The previous unsupported sixteen-bit path is removed.
+
+Two new cases verify signed/unsigned normalization with nonzero high and low bytes, exact reverse loop ordering, guard samples, mode bits, fraction and fixed-point metadata. Both also load a complete GUS patch through the concrete renderer and generate nonzero finite audio. Extended invalid-input checks cover incomplete sixteen-bit data and both loop endpoint alignments.
+
+Validation: all 15,210 Release solution tests passed (2,255 Client). Nonincremental warnings-as-errors Release build passed with zero warnings and errors. Native differential execution and live audio playback were not performed. Changes remain local and uncommitted.
+
+## 2026-10-13 - Eight-bit reverse ping-pong PCM conversion
+
+Converted native convert_8srp and convert_8urp from libraries/ZMusic/thirdparty/wildmidi/gus_pat.cpp into VmMusicWildMidiPcmDecoder. These signed and unsigned eight-bit reverse ping-pong paths previously threw an explicit unsupported exception. Conversion now reverses the source traversal, expands the mirrored loop, preserves native loop metadata/fraction and normalizes modes. The signed native routine advances its final output pointer twice, leaving zero-spaced tail samples; this defined in-buffer behavior is preserved separately from the unsigned routine.
+
+Managed bounds checks reject native do/while boundary cases that cannot terminate safely and signed tails that would exceed allocated sample storage. Sixteen-bit reverse ping-pong remains explicitly unsupported: the native routines use inverted pointer comparisons in their traversal loops and cannot be transcribed safely without establishing intended behavior. No claim of complete reverse ping-pong coverage is made.
+
+Added two regression cases covering signed/unsigned PCM, exact mirrored ordering, their distinct tail spacing, guard samples, length, loop endpoints, fraction and mixer fixed-point bounds. Extended rejection checks for unsafe endpoint/tail cases and the remaining sixteen-bit gap.
+
+Validation: all 15,208 Release solution tests passed (2,253 Client). Nonincremental warnings-as-errors Release build passed with zero warnings and errors. Native differential execution and live audio playback were not performed. Changes remain local and uncommitted.
+
+## 2026-10-13 - Original envelope mode retained for keep=env
+
+Corrected envelope conversion ordering for keep=env on originally unenveloped GUS samples. Native gus_pat.cpp decodes envelope defaults according to the original sample mode before wildmidi_lib.cpp load_sample applies keep=env and configured overrides. Managed code previously replaced Header.Modes first and then decoded using that final mode, incorrectly consuming unused envelope bytes and potentially rejecting zero-rate bytes in valid unenveloped patches.
+
+VmMusicWildMidiGusPatchSample now retains optional EnvelopeSourceModes when configured patches are loaded. Conversion uses the original mode when envelopes are enabled, retains final-mode fallback when envelopes are removed, and applies configured level/time overrides afterward. Unconfigured samples keep existing behavior. This repairs a missed native ordering detail in the conversion.
+
+Two regression cases cover originally unenveloped patches with zero and nonzero unused rate bytes. They verify forced envelope mode, native default targets/rates, configured level/time overrides, and terminal envelope rate. Existing percussion, patch-47, native-envelope, and renderer tests also pass.
+
+Validation: all 15,206 Release solution tests passed (2,251 Client). Nonincremental warnings-as-errors Release build passed with zero warnings and errors. Native differential execution and live audio playback were not performed. Changes remain local and uncommitted.
+
+## 2026-10-13 - Fresh channel state on renderer playback restart
+
+Found and fixed a restart-state defect in VmMusicWildMidiManagedRenderer.ResetPlayback: channel PitchAdjust and NonRegistered persisted after prior playback even though notes, reverb, and other channel fields were reset. Subsequent notes could therefore retain an old pitch bend when the borrowed renderer was reopened by VmMusicWildMidiSessionDevice.Open.
+
+Audited native _mdi construction, Init_MDI and do_sysex_gm_reset in libraries/ZMusic/thirdparty/wildmidi/wildmidi_lib.cpp. Native construction zeroes all channel storage before the shared reset. Managed playback restart now clears those two fields before applying the existing reset, reproducing fresh construction while retaining loaded resources. Native SysEx reset intentionally does not clear these fields; its converted behavior is unchanged.
+
+Two regression cases failed before the fix and pass afterward: direct ResetPlayback and session Close/Open. Tests first establish that a pitch-bent voice renders differently, then verify restarted PCM exactly matches a fresh renderer and previous voices are cleared. NRPN selection is also seeded before restarting; its reset follows the audited native zero-initialization rule.
+
+Validation: all 15,204 Release solution tests passed (2,249 Client). Nonincremental warnings-as-errors Release build passed with zero warnings and errors. Native differential execution and live audio playback were not performed. This is a behavior correction in converted synthesis code; changes remain local and uncommitted.
+
+## 2026-10-13 - Source-driven preloading for cached callback banks
+
+Added VmMusicWildMidiResourceCache.CreateRendererForSource to connect native-style MIDI instrument discovery to the shared configuration/resource cache, including application-supplied packaged bank readers. This closes the cached counterpart of the direct resource/source factory gap. The entry point validates cache state and arguments before scanning the borrowed source, then reuses existing renderer initialization, precaching and reader leases.
+
+Audited MIDISource::PrecacheData in libraries/ZMusic/source/midisources/midisource.cpp and WildMIDIDevice::PrecacheInstruments in libraries/ZMusic/source/mididevices/music_wildmidi_mididevice.cpp. Discovery scans a single iteration and packed instrument IDs feed bank/drum/program selection through the already converted helpers. This change is integration of converted behavior rather than translation of an additional native algorithm.
+
+Two regression cases use callback resources without disk files: successful program-1 discovery loads its patch before playback and generates nonzero PCM after cache clear; missing program-1 resources fail during initialization without disposing the still-cached reader. Clearing then disposes that reader exactly once, proving the failed renderer lease was released. Both paths leave the source rewound and usable.
+
+Validation: all 15,202 Release solution tests passed (2,247 Client). Nonincremental warnings-as-errors Release build passed with zero warnings and errors. Native differential execution and live audio playback were not performed. Changes remain local and uncommitted.
+
+## 2026-10-13 - Song instrument discovery for resource banks
+
+Added VmMusicWildMidiFactory.CreateResourceForSource to connect existing MIDI instrument discovery and rewind behavior to configuration-file or signature-detected ZIP bank creation. Previously the direct source convenience factory supported only plain files. The new integration reuses CreateFromResource and its owned-reader initialization/cleanup rather than duplicating parsing or renderer logic. Existing file-only entry point remains available.
+
+Audited native WildMIDI configuration source handling (one include name, per-include directory and bank state) and native WildMIDIDevice construction/instrument precaching in libraries/ZMusic. No configuration-directive conversion gap was found in the inspected branches. This pass adds missing managed resource/source wiring, not a new synthesis algorithm.
+
+Two archive regression cases verify discovered program playback produces nonzero PCM, the archive stays owned until renderer disposal, missing discovered patches fail during factory initialization and release the archive, and the borrowed source remains rewound and usable. ZIP content is detected in a .bank file rather than relying on its extension.
+
+Validation: all 15,200 Release solution tests passed (2,245 Client). Nonincremental warnings-as-errors Release build passed with zero warnings and zero errors. Native differential execution and live audio playback were not performed. Changes remain local and uncommitted.
+
+## 2026-10-13 - ZIP bank disk fallback resource bounds
+
+Audited native FZipPatReader::OpenFile in src/common/audio/music/i_soundfont.cpp: application ZIP banks intentionally fall back to disk after archive lookup. Preserved that behavior and the separate strict archive-reader policy.
+
+Fixed VmGusZipMusicReader disk fallback to enforce maximumResourceBytes, checking file length before allocation and bounding copied bytes if the file grows during reading. Both input and temporary output streams close on failure. This extends the managed archive resource safeguard to disk resources; it is a reliability correction in converted code, not a newly translated native module.
+
+Added two regression cases covering zero and nonzero limits, exact-limit acceptance, oversized rejection, exclusive reopening after rejection, successful subsequent reads, and strict-reader exclusion of disk fallback.
+
+Validation: full Release solution tests passed (15,198 total; 2,243 Client). Nonincremental Release build with warnings as errors passed with zero warnings and zero errors. Native differential execution and live audio playback were not performed. Changes remain local and uncommitted.
+
+## 2026-10-13 - Disk bank callback relative configuration paths
+
+- Audited VmGusFileMusicReader against native FPatchSetReader and SoundFontWrapperInterface after correcting packaged resource paths. The file reader also embedded its base directory in the root filename; relative configuration paths then doubled that prefix during include resolution, while absolute paths hid the error.
+- Corrected the file reader's root filename to reader-relative timidity.cfg, preserving actual configuration selection, last fallback-directory precedence and absolute-resource opening. Updated the earlier test that encoded the incorrect filename.
+- Added two integration cases through VmMusicCallbacks.CreateWildMidiCache covering relative and absolute configuration paths, nested includes, cache clear before loading a previously unused patch, and nonzero decoded GUS audio. Existing file-reader fallback and direct absolute-access tests also pass.
+- Full Release solution tests: 15,196 passed (2,241 Client tests). Nonincremental warnings-as-errors Release build: zero warnings/errors; whitespace validation completed. Changes remain local and uncommitted.
+- This completes the equivalent native-parity path correction for disk bank callbacks. Application/output backend registration, callback/thread coordination, final partial output/reverb-tail policy and native differential audio verification remain outstanding.
+
+## 2026-10-13 - Packaged configuration base-directory correction
+
+- Audited nested resource configurations against native FLumpPatchSetReader and SoundFontWrapperInterface. Native root callback filename is timidity.cfg, relative to the reader's own base directory. Managed VmGusResourceMusicReader instead returned the base directory in that filename, causing WildMIDI include resolution to prepend it a second time.
+- Corrected the root name to timidity.cfg while retaining indexed root resource reopening and base-relative resource lookup. Nested includes now return reader-relative names, preserving their own subdirectory when resolving patches. Updated the earlier reader test that encoded the incorrect root name.
+- Added three integration cases covering forward-slash, backslash and deeper configuration directories through the application callback/cache bridge. Verifies no duplicated prefix, include discovery, a previously unused program patch loaded after cache clear, and actual decoded GUS audio.
+- Full Release solution tests: 15,194 passed (2,239 Client tests). Nonincremental warnings-as-errors Release build and whitespace validation completed. Changes remain local and uncommitted.
+- This is a native-parity correction to already converted resource reading. Live output/application registration, callback/thread coordination, final partial output/reverb-tail policy and native differential audio verification remain outstanding.
+
+## 2026-10-13 - Application callback handle to WildMIDI cache bridge
+
+- VmMusicReaderHandle now implements IVmMusicBankReader with guarded resource opening and search-path access, preserving existing callback handle tracking and idempotent disposal. Added VmMusicCallbacks.CreateWildMidiCache to connect the concrete cache to application indexed resources and catalog selection with the GUS format filter.
+- Audited native configuration.cpp ClientOpenSoundFont wrapper and i_music.cpp SF_OpenFile/SF_AddToSearchPath/SF_Close callback adapters. Reuses existing callback ownership; callback provider shutdown closes tracked handles, so caches and renderers must be disposed first. This ordering is documented at the new factory.
+- Added an integration case from indexed application resources through the cached WAVE renderer factory, verifying configuration-index stability, case-insensitive reuse, relative includes and nonzero GUS patch output after cache clear. Extended handle tests to cover the bank-reader interface and disposed provider factory guard.
+- Full Release solution tests: 15,191 passed (2,236 Client tests). Nonincremental warnings-as-errors Release build: zero warnings/errors; whitespace validation completed. Changes remain local and uncommitted.
+- Completes missing interface wiring between converted resource callbacks and concrete synth factories. Real output/application registration, callback/thread coordination, final partial output/reverb-tail policy and native differential audio verification remain outstanding.
+
+## 2026-10-13 - Cached WildMIDI application bank-reader resources
+
+- Added optional bank-reader callback to VmMusicWildMidiResourceCache. Tries application resources before disk probing, reusing LoadBank for configuration/includes/lazy patches. Callback returning null permits existing file/archive fallback; a supplied bank's parsing errors propagate without disk fallback.
+- Audited native WildMidi_SetupConfig ClientOpenSoundFont-before-disk ordering. Callback-supplied readers transfer ownership to the cache; IDisposable readers close on failed parsing or final lease release. Existing cache reuse and exception-safe replacement remain intact. Non-disposable readers are retained through catalog callbacks.
+- Added three regression cases covering packaged resource includes and real GUS patch output without disk access, case-insensitive reuse and lazy loading after cache clear with two renderers, failed supplied configuration closing its reader while preserving the previous entry, and null callback falling back to a disk archive.
+- Full Release solution tests: 15,190 passed (2,235 Client tests). Nonincremental warnings-as-errors Release build: zero warnings/errors; whitespace validation completed. Changes remain local and uncommitted.
+- Completes the missing native application-reader lookup path in the concrete cache. Host must supply its resource lookup callback and keep external resource data available during playback. Application/output backend registration, callback/thread coordination, final partial output/reverb-tail policy and native differential audio verification remain outstanding.
+
+## 2026-10-13 - Synth host playback statistics
+
+- Added optional IVmMusicStatisticsDevice capability implemented by the concrete WildMIDI session device and connected GetStatistics through VmMusicSynthStreamPlayback. Existing playback-state diagnostics can now query the managed host directly.
+- Audited native MIDIStreamer::GetStats and MIDIDevice::GetStats: delegates to active device statistics, reports No MIDI device in use. when closed, and This MIDI device does not have any stats. for devices without statistics. WildMIDI retains the converted padded voice count; disposed managed hosts reject access explicitly.
+- Added two integration cases covering actual GUS voice activation, paused voice count through playback state, closed-device diagnostics before host cleanup and disposed guards. Extended ADL/OPN host tests to verify the native default statistics message.
+- Full Release solution tests: 15,187 passed (2,232 Client tests). Nonincremental warnings-as-errors Release build: zero warnings/errors; whitespace validation completed. Changes remain local and uncommitted.
+- Completes missing diagnostic forwarding around converted device behavior. Application/output backend registration, callback/thread coordination, final partial output/reverb-tail policy and native differential audio verification remain outstanding; no live audio execution was performed.
+
+## 2026-10-13 - Synth host numeric and string runtime controls
+
+- Added optional numeric/string settings capabilities implemented by VmMusicFmSessionDevice, and connected ChangeNumber/ChangeString through VmMusicSynthStreamPlayback. Completes host access to the existing converted FM gain and custom-bank controls. Unsupported capabilities/settings return false; null arguments and disposed host access fail explicitly.
+- Audited native ADL/OPN ChangeSettingNum and ChangeSettingString. Forwarding preserves backend gain calculation, case-sensitive setting names and custom-bank reload behavior without modifying song/replay output gain. Existing integer toggles remain the way to enable a newly selected custom bank.
+- Added two integration cases covering ADL and OPN gain changes affecting subsequent output callbacks, bank filename changes and reloads, unknown options, null/disposed guards and owned renderer cleanup. Extended WildMIDI host coverage to verify unsupported numeric/string capabilities return false.
+- Full Release solution tests: 15,185 passed (2,230 Client tests). Nonincremental warnings-as-errors Release build and whitespace validation completed. Changes remain local and uncommitted.
+- This completes missing runtime host wiring around converted device controls. Actual FM rendering in these integration tests uses the existing test renderer; no live audio or native differential execution was performed. Application/output backend registration, callback/thread coordination and final partial output/reverb-tail policy remain outstanding.
+
+## 2026-10-13 - Resolved song settings to synth stream startup
+
+- Added VmMusicSynthStreamPlayback.StartConfigured accepting the existing resolved resource settings. Passes the resolved device into normal selection and forwards the song argument string to device creation, including fallback-selected devices. Explicit resource volume bypasses replay-gain lookup; absent volume obtains gain before allocation and applies it before the first output callback.
+- Audited native music.cpp resource device/volume lookup before ZMusic_OpenSong and the separate FillStream song gain. Uses existing startup/session cleanup and gain validation; MIDI channel volume remains in VmMusicMidiPlayOptions. ModulePlayer applies to module playback, not this MIDI-only entry point.
+- Added nine regression cases covering resource-map resolution through real decoded GUS audio, explicit mute/attenuation/amplification, replay-gain fallback and ordering, bank/device forwarding, invalid explicit/calculated gain before allocation, and propagated lookup failure without device allocation.
+- Full Release solution tests: 15,183 passed (2,228 Client tests). Nonincremental warnings-as-errors Release build and whitespace validation completed. Changes remain local and uncommitted.
+- Completes missing integration of converted resource settings with synth stream startup. Replay-gain lookup and actual sound output remain supplied by the host. Global application registration, callback/thread coordination, final partial output/reverb-tail policy and native differential audio verification remain outstanding.
+
+## 2026-10-13 - Configured synth playback routing
+
+- Added VmMusicSynthDeviceFactory.CreateConfiguredRouter connecting per-song argument strings to FM device callbacks and concrete cached WildMIDI resource creation during normal playback. Empty WildMIDI arguments select the configured default; nonempty arguments select the song-specific file/archive. Cache remains borrowed by the router and retained resources are owned through renderer leases.
+- Audited native music_midi.cpp device dispatch passing Args to ADL, OPN and WildMIDI plus WildMidi_SetupConfig default selection. Reuses existing device fallback, configured resources, sample-rate normalization and session ownership. Missing configuration errors remain explicit rather than invoking unrelated FM fallback, preserving the documented managed exception policy.
+- Added five regression cases covering default/override archives through VmMusicMidiPlay, fallback from unavailable FluidSynth to WildMIDI, nonzero decoded patch audio after cache disposal, archive release after session disposal, configuration failure without FM allocation, and argument forwarding to ADL/OPN without opening WildMIDI resources.
+- Full Release solution tests: 15,174 passed (2,219 Client tests). Nonincremental warnings-as-errors Release build and whitespace validation completed. Changes remain local and uncommitted.
+- This connects existing conversion components into configured normal playback. Application resource-settings resolution and actual output/backend registration, callback/thread coordination, final partial output/reverb-tail policy and native differential audio verification remain outstanding.
+
+## 2026-10-13 - Normal FM playback per-song bank arguments
+
+- Completed missing ADL/OPN playback-router wiring: VmMusicFmDeviceFactory.CreateRouter now accepts optional bankArgument and resolveBank parameters and forwards them to the existing configured device constructors. Existing callers retain their defaults.
+- Audited native CreateADLMIDIDevice and CreateOPNMIDIDevice: per-song arguments override configured custom banks, named banks resolve with the appropriate WOPL/WOPN format, and ADL digit-prefixed arguments select built-in banks. Reuses the converted resolver without mutating shared configuration records; resolution precedes allocation.
+- Added five regression cases covering normal VmMusicMidiPlay startup for both FM backends with named bank overrides, bank format and ordering, preserved shared configurations, renderer ownership cleanup, ADL numeric parsing, and resolver failures before allocation.
+- Full Release solution tests: 15,169 passed (2,214 Client tests). Nonincremental warnings-as-errors Release build and whitespace validation completed. Changes remain local and uncommitted.
+- This closes a normal-playback integration gap around already converted native bank handling. Host registration still must pass resource-specific arguments. Real audio/backend registration, callback/thread coordination, final partial output/reverb tails and native differential audio verification remain outstanding.
+
+## 2026-10-13 - Shared WildMIDI archive configuration lifetime
+
+- Added VmMusicWildMidiResourceCache and CreateCachedResourceWaveFactory, completing concrete caching for automatic file/archive resources. Reuses the latest parsed configuration case-insensitively and the existing strict archive loader and bounded signature detection.
+- Cache and renderers each retain an ownership lease. Clear, replacement and cache disposal release only the cache's lease; active renderers can still lazily load patches. The last owner closes the archive, including after failed renderer precaching. Cache disposal is idempotent and later use fails explicitly.
+- Audited native WildMidi_SetupConfig/LoadInstruments shared instrument ownership and Instruments destructor closing sfreader. Failed configuration replacement preserves the prior successful entry, retaining the existing managed exception-safe difference from native failure invalidation. Rendering and cache access remain host-serialized.
+- Added six regression cases covering cache clear/disposal before lazy loading, case-insensitive reuse across renderer lifetimes and sample rates, failed/successful replacement, archive handle release, failed precache cleanup, and file configuration overrides through the cached WAVE factory.
+- Full Release solution tests: 15,164 passed (2,209 Client tests). Nonincremental warnings-as-errors Release build and whitespace validation completed. Changes remain local and uncommitted.
+- Resolves shared archive-reader caching/lifetime from previous audits. Remaining scope: application/audio backend registration, callback/thread coordination, final partial output/reverb-tail policy, and native differential audio verification. Native path quirks and managed failure-handling differences remain documented.
+
+## 2026-10-13 - Synth host initial song gain integration
+
+- Connected an optional initial outputVolume to VmMusicSynthStreamPlayback.Start. Callers can supply the amplitude from their existing song/replay-gain state; it is assigned before output creation and any synchronous startup callback. Existing callers default to unity and runtime OutputVolume updates remain supported.
+- Audited native music.cpp FillStream, CheckReplayGain and S_CreateStream: native song amplitude exists before stream startup and multiplies floating output independently of MIDI channel volume. Reused the converted sample gain layer; no duplicate multiplication of MIDI play volume and no clamping of valid amplification above unity.
+- Rejects negative/nonfinite initial gain before allocating a device or starting playback.
+- Added five regression cases: actual decoded GUS patch audio verifies first-callback mute, attenuation and amplification; four invalid gains verify that no device is allocated.
+- Full Release solution tests: 15,158 passed (2,203 Client tests). Nonincremental warnings-as-errors Release build and whitespace validation completed.
+- Remaining scope: application registration must supply the song gain and audio backend; shared archive caching, final partial output/reverb tails, real audio/thread coordination and native differential audio verification. This pass completes missing host wiring around converted behavior; no new native synthesizer module was translated. Changes remain local and uncommitted.
+
+## 2026-10-13 - Live EMIDI loop time-progress protection
+
+- Audited native midisource_smf.cpp controllers 116-119 against both managed event-generation paths. The native loop restoration has no zero-duration protection; the managed event-count guard also missed infinite loops that continuously yield notes without advancing time.
+- Added playback-time checks when restoring infinite local and global loops in VmMusicEmidi and VmMusicEmidiSchedule. Malformed loops now raise InvalidDataException; MIDI session startup closes the device on failure. Finite zero-duration loops retain their existing behavior.
+- Global scheduling validates the executing track, preserving pending format-2 tracks and existing timed-loop/export behavior.
+- Added five regression cases covering local/global single-track session cleanup, finite zero-duration completion, and format-1/format-2 global rejection.
+- Validation: all 15,153 Release tests pass (2,198 Client tests); nonincremental Release build with warnings treated as errors; whitespace check. No live audio or native differential execution performed. This is a robustness improvement to already converted playback code, not a newly translated native module.
+
+## 2026-10-13 - Multi-buffer zero-duration repeat protection
+
+- Replaced per-buffer repeat duration validation with whole-cycle time tracking. The managed audio repeat path resets duration tracking when a song restarts, accumulates positive event deltas across its buffers, and rejects a completed cycle that never advanced time before submitting its final buffer.
+- Audited the existing event queue completion loop: callbacks can refill immediately while no audio frames are consumed, so a zero-duration repeated source can stall rendering. Whole-cycle validation handles sources too large for the previous single-buffer guard. Paused output delays do not count as song time; legacy device paths remain unchanged.
+- Added three regression cases using a 300-event SMF and small buffers: zero-duration multi-buffer loops fail explicitly, a valid duration in the first buffer survives zero-delay terminal buffers and multiple restarts, and pause delays cannot mask an invalid loop.
+- Full Release solution tests: 15,148 passed (2,193 client tests). Changes remain local and uncommitted.
+- Resolves the prior audit's multi-buffer zero-duration repeat limitation for the opted-in managed audio path. Remaining scope: live-loop event-source stall handling, real audio/thread registration, shared archive caching, final partial output/reverb tails and native differential audio verification.
+
+## 2026-10-13 - Repeating short-song managed audio startup
+
+- Extended managed audio short-song priming to whole-song repeat: restart the source for the second initial buffer rather than submitting stop controls. Subsequent completion-driven refills use the existing restart lifecycle. Passed repeat intent from MIDI session through startup to buffer priming.
+- Audited native music_midi.cpp initial short-song rejection and ServiceEvent loop restart. Supporting repeating short songs is an intentional managed audio improvement; legacy MIDI devices and live-loop startup retain their existing paths.
+- Added duration validation for a complete restarted loop fitting in one buffer on this opt-in path. Rejects zero-tick loops before submission to avoid immediate refill spinning; long-song terminal buffers are not incorrectly treated as complete loops. Multi-buffer zero-duration sequences are not covered by this guard.
+- Added two regression tests: repeating short SMF playback remains active across sustained renders/refills without stop state; zero-duration short loop throws explicitly and closes the device. Existing MUS/MIDS live startup and legacy buffer-loop tests also pass.
+- Full Release solution tests: 15,145 passed (2,190 client tests). Changes remain local and uncommitted.
+- Remaining scope: multi-buffer zero-duration loop protection, live audio/thread registration, archive caching, final partial output/reverb tails and native differential audio validation.
+
+## 2026-10-13 - Synth host gain, runtime settings and callback failure cleanup
+
+- Added a shared integer-settings capability implemented by FM and WildMIDI session devices, and forwarded settings through VmMusicSynthStreamPlayback. Unknown capabilities/options return false; invalid options propagate renderer errors.
+- Exposed dynamic OutputVolume through the converted output fill layer, separate from MIDI channel volume. Validates finite nonnegative gain at the managed host boundary. Audited against native music.cpp FillStream gain application and reused existing sample multiplication.
+- Callback exceptions now clear the destination and mark rendering ended, preventing partially consumed events from resuming. Host update exceptions attempt output/session cleanup and aggregate cleanup errors with the original failure.
+- Added two regression tests for callback failure, silence on retry, subsequent host cleanup and real GUS patch output muting/restoration through dynamic gain. Extended existing bridge tests with settings forwarding, unknown options, invalid gain and disposed-state guards. Full Release solution tests: 15,143 passed (2,188 client tests).
+- Remaining scope: real audio backend and thread registration, initialization of host replay gain from application state, shared archive caching, looping short songs, final partial output/reverb tails and native differential audio validation. Changes remain local and uncommitted.
+
+## 2026-10-13 - Synth session to output-stream host bridge
+
+- Added VmMusicSynthStreamPlayback connecting managed audio session startup to the existing VmMusicStreamPlayback output callback interface. Owns the MIDI session and output stream, borrows the source, forwards pause, drains completion through callbacks and closes on host Update after end-of-stream.
+- Audited native music.cpp FillStream and S_CreateStream float format, callback return handling and output creation. Reuses converted format and fill logic, including clearing the callback destination when rendering ends. Missing output backend is an explicit managed startup error; no real sound-device implementation is provided.
+- Callback failures mark the bridge ended to prevent replaying partially consumed requests. Startup cleanup attempts both output and session cleanup. Fixed VmMusicOutputStream.Stop to clear ownership and dispose even when backend Stop throws.
+- Added three tests covering immediate startup callbacks, stream metadata, pause silence, completion cleanup and owned renderer disposal, unavailable output backend cleanup, and stop failure disposal with no repeat cleanup. Full Release solution tests: 15,141 passed (2,186 client tests).
+- Remaining scope: real audio backend registration and thread coordination, host settings/gain integration, archive caching, looping short songs, final partial output/reverb tails and native differential audio verification. Changes remain local and uncommitted.
+
+## 2026-10-13 - WildMIDI normal playback router and renderer ownership
+
+- Added VmMusicSynthDeviceFactory.CreateRouter for FM and concrete WildMIDI playback devices, connecting the existing selection/fallback and VmMusicMidiPlay lifecycle to managed WildMIDI renderer factories. The WildMIDI allocator can use converted file, archive or catalog factories.
+- Added optional renderer ownership to WildMIDI session devices. Router-created devices release their renderer after session cleanup, including retained archive readers; directly constructed devices still borrow their renderer. Construction failure releases the newly allocated renderer.
+- Audited native music_midi.cpp WildMIDI construction and fallback order. Reuses the converted fallback chain for explicitly unavailable backends. Managed configuration and programming errors propagate rather than being treated as unavailable backends, an existing intentional difference from native broad runtime_error fallback.
+- Added two integration tests covering selection through the normal play entry point, fallback from unavailable FluidSynth/Timidity to WildMIDI, settings forwarding, short-song completion, renderer disposal and explicit configuration failure propagation. Full Release solution tests: 15,138 passed (2,183 client tests).
+- Remaining scope: application/audio backend registration, shared archive caching, native path quirks, live sound output, looping short songs, final partial output/reverb tails and native differential audio verification. Changes remain local and uncommitted.
+
+## 2026-10-13 - WildMIDI session runtime controls and statistics
+
+- Connected ChangeInteger and GetStatistics to the concrete WildMIDI session device, reusing the converted settings and output helpers. Open playback sessions can now change reverb/resampling and report native-style padded voice counts.
+- Audited music_wildmidi_mididevice.cpp ChangeSettingInt and GetStats: preserves case-insensitive option names, unknown-option non-handling and integer multiplication before renderer option validation. Invalid values remain explicit managed exceptions. New session methods reject closed/disposed access, consistent with managed FM runtime controls.
+- Reviewed cached configuration failure boundaries: catalog reuse concerns successful parsing; lazy patch loading still fails explicitly during renderer/session initialization. No speculative cache invalidation was added for these patch errors.
+- Added two regression tests covering setting recognition, enabling/disabling options, statistics formatting, unknown/null/invalid arguments, closed/disposed guards, reopening and borrowed renderer ownership. Full Release solution tests: 15,136 passed (2,181 client tests).
+- Remaining scope: host registration and settings forwarding, archive cache ownership, live audio hosting, looping short songs, final partial output/reverb tail policy and native differential audio validation. Changes remain local and uncommitted.
+
+## 2026-10-13 - Concrete WildMIDI file catalog caching
+
+- Added VmMusicWildMidiCatalogCache and CreateCachedFileWaveFactory to connect configuration reuse to the concrete managed renderer. Reuses the latest successfully loaded catalog by case-insensitive configuration name; explicit Clear forces a fresh parse. Cache access and rendering remain host-serialized.
+- Audited native WildMidi_SetupConfig loadedConfig comparison and LoadInstruments shared ownership. Managed reload publishes the next catalog only after successful parsing; a failed load preserves the previous cache entry, an intentional exception-safe difference from native failure invalidation. Renderer sample ownership remains reference-counted independently of catalog caching.
+- Added three regression tests covering case-insensitive reuse, explicit invalidation, failed replacement, file factory reuse after configuration edits and simultaneous renderers at different sample rates. The remaining renderer continues producing audio after the first releases its samples; the final disposal frees samples.
+- Full Release solution tests: 15,134 passed (2,179 client tests). Changes remain local and uncommitted.
+- Remaining scope: shared archive-reader caching/lifetime, host registration, native path quirks, live audio hosting, looping short songs, final partial output/reverb tails and native differential audio. The cached factory accepts file configurations; automatic file/archive selection remains in the uncached factory.
+
+## 2026-10-13 - Native ZIP duplicate entry lookup correction
+
+- Audited FZipFile::FindEntry in libraries/ZMusic/source/zmusic/file_zip.cpp: native returns the first case-insensitive matching entry. Corrected strict WildMIDI archive lookup, which previously selected the last duplicate. Existing non-strict reader callers retain their prior last-match behavior.
+- Added three regression cases covering strict/non-strict duplicate selection and the owned archive factory selecting the first valid default configuration over a later conflicting entry, with archive handle release verified.
+- Directory audit: wildmidi_lib.cpp resolves configuration directories and dir directives by concatenating names; it does not call add_search_path. Native ZipPatReader only attempts non-default resources through its search paths and has no direct archive fallback. Managed strict reader deliberately supports direct archive names so include/patch loading works. This source-level native limitation remains an explicit behavior difference; full archive path parity is not claimed.
+- Full Release solution tests: 15,131 passed (2,176 client tests). Changes remain local and uncommitted.
+- Remaining scope: a documented policy for other native path quirks, shared configuration caching, host registration, live audio hosting, looping short songs, final partial output/reverb tails and native differential audio verification.
+
+## 2026-10-13 - WildMIDI automatic archive detection and extraction bounds
+
+- Added CreateFromResource with the native PK local-file-header signature check and connected CreateWaveFactory to it. File configurations and ZIP banks now share the same export factory, including default/override selection and owned archive lifetime, independent of filename extension.
+- Audited native WildMidi_SetupConfig header probing. Managed detection closes the probe stream before loading. Invalid ZIP inputs or missing archive default config fail explicitly rather than retrying them as text configurations; native may fall back to its file-system reader.
+- Added a configurable ZIP resource byte limit, defaulting to the WildMIDI native 0x1fffffff ceiling. Checks declared uncompressed entry size before extraction and bounds writes during extraction, retaining encrypted-entry rejection and CRC checking. Disk fallback behavior for existing non-strict callers remains unchanged.
+- Added three regression cases covering automatic ZIP export using a .bank filename and entry sizes above/exactly at a small test limit. Existing file configuration and archive export tests also pass. Full Release solution tests: 15,128 passed (2,173 client tests).
+- Remaining scope: native archive directory precedence, shared config caching, host registration, live audio hosting, looping short songs, final partial output/reverb tails and native differential audio verification. Changes remain local and uncommitted.
+
+## 2026-10-13 - Owned WildMIDI archive renderer and export factories
+
+- Added CreateFromArchive and CreateArchiveWaveFactory. The renderer owns the ZIP reader after successful initialization, retaining access for lazy instrument loads and releasing the reader after sample resources on disposal. Failed configuration/initialization closes the reader and preserves initialization and cleanup errors if both fail.
+- Added optional archive-only lookup to VmGusZipMusicReader, used by the new factories. Disables disk fallback and rejects absolute resource requests, matching these native ZipPatReader restrictions. Existing callers retain the previous fallback default. Reader disposal now closes its backing stream even if archive disposal fails.
+- Audited against native fileio.h ZipPatReader default timidity.cfg, archive-contained lookup and lifetime, plus music_wildmidi_mididevice.cpp archive setup. Native directory search precedence and archive entry limits are not claimed fully equivalent.
+- Added two tests for strict lookup and archive WAVE export with exclusive archive reopening. Extended existing tests with owned archive playback producing nonzero audio and explicit missing default configuration failure. Full Release solution tests: 15,125 passed (2,170 client tests).
+- Resolves the previous borrowed-reader requirement for callers using the new factories. Remaining scope: automatic file/archive detection, native directory search and size limits, shared config caching, application host registration, live audio integration, looping short songs and native differential audio. Changes remain local and uncommitted.
+
+## 2026-10-13 - WildMIDI bank-reader configuration bridge
+
+- Added VmMusicWildMidiConfigLoader.LoadBank to load a bank reader's default configuration, includes and lazy patch resources into the converted catalog. Uses returned resource names for include-relative paths and preserves the existing Latin-1 configuration decoding and limits.
+- Reuses VmGusZipMusicReader for archive data, including case-insensitive normalized entry lookup and CRC checks. The loader borrows the reader; callers must keep it open while renderers can load patches. No archive extraction or unnecessary PCM loading during parsing.
+- Audited native ZipPatReader in libraries/ZMusic/source/zmusic/fileio.h. Native requires timidity.cfg and searches archive paths; the reused managed reader additionally permits disk fallback. This is an existing managed-reader behavior difference, not full native ZIP parity. Native ZIP directory search integration remains to be reconciled.
+- Added two regression tests covering archive default config, a relative include, lazy GUS patch loading with case differences, nonzero rendered audio, patch release and exclusive archive reopening after reader disposal; missing default configuration fails explicitly. Full Release solution tests: 15,123 passed (2,168 client tests).
+- Remaining scope: an owned archive renderer/export factory, strict archive-only lookup and native path behavior, application host registration, shared configuration caching, live audio hosting and native differential audio. Changes remain local and uncommitted.
+
+## 2026-10-13 - Configured WildMIDI WAVE factory
+
+- Added VmMusicWildMidiFactory.CreateWaveFactory to connect the shared export dispatcher directly to the converted file configuration loader and renderer. Uses the command's Soundfont argument as an optional WildMIDI configuration override; null or empty selects the configured default. Applies requested sample rate normalization, enhanced resampling and reverb through existing initialization.
+- Audited native WildMidi_SetupConfig and CreateWildMIDIDevice argument forwarding, default configuration selection and instrument loading. This managed factory supports file configurations only; native archive readers and global configuration caching are not reproduced here.
+- Explicitly rejects another synth's request before configuration I/O. Missing override files propagate as errors rather than falling back silently. Each export gets its own renderer and catalog and releases them through the existing export lifetime.
+- Added four regression cases: null/empty default, valid override with the default file absent, missing override and incompatible device rejection. Real SMF/GUS exports verify nonzero audio, normalized WAVE rate and closed patch file handles. Full Release solution tests: 15,121 passed (2,166 client tests).
+- Remaining scope: application host registration, archive readers, native shared configuration cache behavior, other synth backends, live audio integration, looping short songs, final partial output/reverb tails and native differential audio validation. Changes remain local and uncommitted.
+
+## 2026-10-13 - Shared FM and WildMIDI console export dispatcher
+
+- Added VmMusicSynthWaveDump.CreateRouter for default and explicit ADL, OPN and WildMIDI selection. Resolves default -1 to a validated configured synth and forwards the resolved device ID and remaining request to the existing owned exporter.
+- Added ConfigureSynthWaveExport console overloads for opened sources and music resources. A single writewave configuration now supports both converted FM and WildMIDI paths, sharing source lookup, saved playback restoration, cancellation and cleanup behavior.
+- Audited native i_music.cpp writewave selection and music_midi.cpp device construction routing. Preserves the existing command's system-MIDI-to-FluidSynth choice; this limited dispatcher reports FluidSynth and other unimplemented exports as unsupported rather than silently substituting a backend. Backend fallback chains are not claimed as converted by this change.
+- Added five regression cases covering each explicit supported selection, unavailable/default and unsupported backends, and resource console export resolving its configured WildMIDI default and restoring playback. Full Release solution tests: 15,117 passed (2,162 client tests).
+- Remaining scope: application host registration and real FM backend allocation, additional synth dispatch implementations, live audio hosting, looping short songs, final partial output/reverb tail policy and native differential audio. Changes remain local and uncommitted.
+
+## 2026-10-13 - WildMIDI console export routing
+
+- Added ConfigureWildMidiWaveExport overloads for opened MIDI sources and music resources. The console now connects writewave to the managed WildMIDI exporter, using the existing source factory and command parsing, including '*' current-song lookup before stopping music.
+- Audited src/common/audio/music/i_music.cpp writewave synth selection, saved playback state and restoration. Reuses the converted command lifecycle so the saved name, order and loop state are restored after export and exceptions.
+- Added explicit rejection of another synth's device ID in the dedicated WildMIDI dumper before renderer allocation. Default -1 and explicit WildMIDI 6 are accepted; this dedicated route is not a multi-synth dispatcher.
+- Added three regression cases covering resource lookup ordering, synth/config argument forwarding, short-song export, renderer disposal, restoration after missing configuration, and incompatible synth rejection without allocation. Full Release solution tests: 15,112 passed (2,157 client tests).
+- Remaining scope: application host registration of this configuration hook, a multi-synth console dispatcher, live audio backend integration, looping short songs, end-of-song partial output/reverb tails and native differential audio verification. Changes are local and uncommitted.
+
+## 2026-10-13 - Managed audio short-song startup correction
+
+- Audited native musicformats/music_midi.cpp initial buffer submission: native deliberately refuses songs that cannot fill both initial buffers. Preserved that default for general MIDI devices and looping sessions.
+- Extended buffer priming with an optional short-song path: submit the song in the first buffer and the existing stop controls and delay in the second, marking StopQueued only after successful submission. Completion callbacks then drain the queued buffers without refilling the exhausted source.
+- Enabled this intentional managed behavior change for non-looping IVmMusicAudioSessionDevice playback, including FM and WildMIDI WAVE export. The session suppresses the new path when repeating a song; live-loop startup also retains existing behavior.
+- Added regression coverage for stop packet content, queue order and no post-completion refills. WildMIDI WAVE tests now cover both a short and longer song, with nonzero audio and patch cleanup. Updated FM lifecycle coverage to require successful short-song playback and renderer disposal. Full Release solution tests: 15,109 passed (2,154 client tests).
+- Resolves the previous audit's short-song limitation for non-looping managed audio sessions. Looping short songs, end-of-song partial output/reverb tail policy, console routing, live audio hosting and native differential audio remain outstanding. Changes are local and uncommitted.
+
+## 2026-10-13 - WildMIDI offline WAVE export integration
+
+- Added IVmMusicAudioSessionDevice to share the existing MIDI session and float stereo audio contract across FM and WildMIDI. Extracted the existing WAVE dump execution into a shared implementation; the FM public entry point remains compatible.
+- Added VmMusicWildMidiWaveDump and WriteWildMidiWave command integration. Export borrows the MIDI source, owns the factory-created renderer and output file, uses the renderer's normalized sample rate, and releases the session before renderer disposal.
+- Audited native music_wavewriter_mididevice.cpp: export writes complete float stereo requests only while ServiceStream returns true. The managed implementation reuses the existing corresponding writer and cancellation handling rather than duplicating its output loop.
+- Added two tests: real SMF plus GUS patch produces nonzero WAVE data at the normalized rate and releases loaded patch ownership; pre-cancellation avoids renderer allocation and file creation. Full Release solution tests: 15,107 passed (2,152 client tests).
+- Audit limitation discovered during testing: existing two-buffer startup returns ShortSong if the source finishes before the second initial buffer, including the shared WAVE path. Tests cover a source spanning both initial buffers. This short-song behavior is not resolved here. Native differential audio, final partial block/reverb tail policy, console device routing and live audio hosting remain outstanding. Changes are local and uncommitted.
+
+## 2026-10-13 - WildMIDI audio stream contract and clock audit
+
+- Extended the managed WildMIDI session device with stream-format reporting and byte-buffer rendering, reusing the converted soft-synth float stereo format and frame alignment checks. This exposes the audio-host contract without introducing an audio backend.
+- Fixed a session integration gap: renderer synthesis and event scheduling could use different sample rates. The renderer now exposes its actual SampleRate; a new session constructor derives its clock from that value and the existing explicit-rate constructor rejects mismatches. This also preserves the factory fallback to 44100 for invalid requested rates.
+- Audited native music_softsynth_mididevice.cpp GetStreamInfoEx and constructor rate normalization, and music_wildmidi_mididevice.cpp constructor renderer setup. Native uses the same normalized SampleRate for timing and synthesis.
+- Added two regression tests covering factory fallback, stream metadata, mismatched-clock rejection, paused byte-buffer silence and incomplete stereo frame rejection. Release solution tests: 15,105 passed (2,150 client tests).
+- Remaining scope: engine device registration, real audio backend hosting, end-of-song tail policy, and native differential audio validation. No native or live audio equivalence claimed. Changes remain local and uncommitted.
+
+## 2026-10-13 - WildMIDI playback session integration
+
+- Added VmMusicWildMidiSessionDevice to connect the managed WildMIDI renderer to VmMusicMidiSession, including source instrument precaching, prepared buffers, completion-driven refills, tempo, PPQN timing, pause, stop, and close. Reuses the existing managed soft-synth scheduling implementation through the WildMIDI event adapter with unity output gain.
+- Added renderer playback reset on session open so a borrowed renderer starts with cleared voices, reverb history, and reset channels. Adapter disposal leaves renderer ownership with the caller.
+- Audited native music_wildmidi_mididevice.cpp instrument packing and event forwarding, and music_softsynth_mididevice.cpp software-synth technology reporting. Reset-on-open is an explicit managed lifecycle choice; native WildMIDI OpenRenderer is a no-op.
+- Added two tests covering a real SMF source through startup, buffer completion and playback exhaustion, pause silence, closed-device cleanup, and borrowed renderer ownership. Full Release solution tests: 15,103 passed; strengthened playback exhaustion assertion also passed in the focused two-test run.
+- Remaining scope: engine device registration and live audio hosting, native differential audio verification, end-of-song reverb tail policy, and SMPTE timing (currently rejected explicitly). This integration does not establish complete engine or native audio parity. Changes remain local and uncommitted.
+
+## 2026-10-13 - WildMIDI timed event queue adapter
+
+Added WildMidiEventQueue to connect the existing converted packed MIDI event/tick scheduler to WildMIDI rendering. It borrows the renderer, forwards all channel event kinds and SysEx, translates pitch-bend MSB/LSB interface order back to MIDI wire order, and renders with scheduler gain one because WildMIDI already applies its own output gain. Tempo changes and fractional timing use the existing queue. When the queue is empty, Render still invokes the renderer so active voices/reverb tails continue. PPQN division is supported; SMPTE is explicitly rejected.
+
+Audit: reused FmEventQueue and FmStreamEvents instead of duplicating event parsing/timing. Existing native-derived scheduler completion behavior and buffer ownership are retained. WildMIDI short and long events forward through its existing converted dispatcher. This is a managed adapter, not a complete engine session or automatic source buffer pump. Caller serializes submission and rendering and retains renderer ownership.
+
+Two new tests cover delayed note-on/off at exact audio-frame boundaries, unchanged output gain, packed pitch bend byte order, SysEx bytes, buffer completion, continued audio after queue exhaustion, unsupported SMPTE, and odd stereo buffers. Full Release solution suite: 15,101 passed, zero failed/skipped (Client: 2,146). Nonincremental Release build with warnings treated as errors: zero warnings/errors. Whitespace check passed.
+
+Remaining: MIDI source/session buffer pumping into this queue, engine device registry/archive integration, full native cleanup equivalence, additional tempo/chunk integration coverage, native differential fixtures, and live hardware audio validation. Changes remain local and uncommitted.
+
+## 2026-10-13 - WildMIDI MIDI-source instrument discovery integration
+
+Added Factory.CreateForSource and CreateFileForSource to connect the existing converted MIDI/MUS instrument scanner to configured renderer creation and precaching. Discovery completes before renderer allocation; concrete configured creation then loads the discovered packed instrument list. Source ownership remains with the caller. Existing scanner restart/loop-limit behavior is retained rather than duplicated or changed.
+
+Audited native music_midi.cpp MIDIStreamer::StartPlayback ordering: source PrecacheData supplies MIDI PrecacheInstruments before source StartPlayback. This integration implements discovery and renderer precache, not source playback scheduling or the full MIDIStreamer. The converted scanner retains native cross-product bank/instrument discovery and rewinds sources. Factory cleanup releases acquired patches on later loading failures.
+
+Two new tests use real serialized SMF playback sources to verify automatic default/banked/drum patch resource discovery, source rewind/single-pass scan behavior, two active voices and nonzero output, caller-owned source retention after renderer disposal, and discovered-load failure releasing default ownership while preserving source usability. Full Release solution suite: 15,099 passed, zero failed/skipped (Client: 2,144). Nonincremental Release build with warnings treated as errors: zero warnings/errors. Whitespace check passed.
+
+Remaining: MIDI event scheduling into audio frames, engine device registry/archive wiring, full native cleanup equivalence, remaining parity audits, native differential fixtures, and live hardware audio validation. This batch connects previously converted discovery and precache behavior through a concrete startup API. Changes remain local and uncommitted.
+
+## 2026-10-13 - WildMIDI configured startup instrument precache
+
+Connected the existing translated packed-instrument precache workflow to concrete configured/file renderer factories. Callers may provide a packed instrument list; factory initializes renderer settings, precaches the list, and returns only after loading succeeds. The existing bank/drum unpacking and patch ownership helpers handle loading and deduplication. A precache failure disposes the renderer and releases previously acquired default and additional patch references; initialization/cleanup error preservation follows existing factory behavior.
+
+Playback audit: native note-on and program change select existing sample data rather than lazily loading resources. Configured startup previously loaded only the default patch, leaving other declared bank/drum samples empty unless callers manually loaded them. This integration supplies that missing startup step while retaining explicit instrument-list control rather than loading every declaration. Default behavior without a supplied list remains unchanged. Engine MIDI parsing must still provide the list through this entry point.
+
+Two new tests verify packed bank/drum IDs load correct resources once, program/bank changes and drum note-on create two playable voices with nonzero output, disposal frees all acquired patch samples/reference counts, and a later missing patch releases earlier acquisitions. Full Release solution suite: 15,097 passed, zero failed/skipped (Client: 2,142). Nonincremental Release build with warnings treated as errors: zero warnings/errors. Whitespace check passed.
+
+Remaining: engine device registry/archive/MIDI-list wiring, complete native cleanup equivalence, remaining parity audits, native executable differential fixtures, and live audio validation. This batch is concrete managed integration of previously converted precache logic. Changes remain local and uncommitted.
+
+## 2026-10-13 - WildMIDI configured renderer factory and disk integration
+
+Added Factory.CreateConfigured and CreateFromFile as concrete managed startup entry points. They normalize unsupported requested rates to 44100, construct the renderer from catalog lookup/loading callbacks, pass catalog reverb settings automatically, and initialize enhanced-resampling/reverb options. Returned renderers own device patch references; failed option initialization disposes the renderer and preserves both initialization and cleanup errors if both fail. Existing generic cached factory remains available.
+
+Audit: startup composes the converted configuration/resource loader and renderer rather than requiring callers to wire callbacks and room settings manually. Filesystem includes and lazy patch loading use the existing bounded reader. The catalog remains captured through renderer callbacks. This is managed integration, not a claim that the engine-wide native device registry/archive cache has been replaced. Existing native license header remains retained on the factory.
+
+Three new tests include actual temporary configuration/include/patch files, note-on and nonzero output with reverb enabled, exclusive patch-file access while rendering, release of Loaded/UseCount on renderer disposal, fallback sample-rate construction, enhanced/reverb initialization, missing configuration, and missing default patch with no acquired ownership. Full final Release solution suite: 15,095 passed, zero failed/skipped (Client: 2,140). Nonincremental Release build with warnings treated as errors: zero warnings/errors. Whitespace check passed.
+
+Remaining: engine device registry/archive wiring, complete native failure-cleanup equivalence, outstanding behavioral parity audits, native executable differential fixtures, and live hardware audio validation. Changes remain local and uncommitted.
+
+## 2026-10-13 - WildMIDI renderer reverb integration
+
+Connected room-configured reverb to ManagedRenderer and DeviceResources output. The renderer constructs per-instance room state using optional supplied settings or native defaults and now supports reverb option bit 4. DeviceResources.Render mixes integer samples, processes reverb, then converts with existing float output gain; RenderDry delegates with no reverb. Processing continues when no voices remain, allowing delay/filter tails. Only requested frames are processed; extra output elements remain untouched.
+
+Audited wildmidi_lib.cpp SetOption and ComputeOutput. Native log-volume option takes precedence over reverb reset via else-if; managed reverb state resets on a reverb-mask change only when the log-volume mask is absent. Reset retains delay cursors as implemented previously. Geometry retains the documented corrections from the preceding batch, so audio is not claimed bit-identical to flawed native room initialization. Caller must explicitly pass catalog.Reverb to use configured settings; existing constructor callers receive defaults.
+
+Two new tests exercise wet/dry resource output, opposite-channel tail after clearing voices, reset silence, output-tail preservation, configured renderer construction, option enable/disable and combined changes, and invalid masks. Updated the prior unavailable-reverb test to verify enabled silence. Full Release solution suite: 15,092 passed, zero failed/skipped (Client: 2,137). Nonincremental Release build with warnings treated as errors: zero warnings/errors. Whitespace check passed.
+
+Remaining: complete engine startup/device/archive wiring, native cleanup equivalence, additional option-transition/native differential coverage, and live audio validation. Reverb is now available through the managed renderer; no native executable differential or hardware audio test was performed. Changes remain local and uncommitted.
+
+## 2026-10-13 - WildMIDI corrected reverb room initialization
+
+Converted room geometry into ReverbRoom.Create, connecting configured room/listener positions to speaker paths, eight reflection points, round-trip feedback paths, coefficient generation, and ReverbDelay construction. Speaker placement, reflective coordinates, direct-path subtraction, speed of sound 340.29, and integer delay truncation follow reverb.cpp. The factory snapshots settings into constructed state. Native licensing is retained.
+
+Intentional corrections: speaker-distance calculations use the reflection index rather than the native reused filter index. Delay ring lengths include maximum delay plus one so the longest scheduled slot is reachable; native allocates size+1 but processes modulo size, leaving that slot unreachable and allowing cursor discontinuity. Negative floating-point residual path differences clamp to zero. This corrected geometry is not claimed bit-identical to the flawed native initialization. Existing delay/filter processing order remains unchanged.
+
+Two new tests verify a room-configured impulse produces delayed output, uninterrupted/chunked processing agrees, silence remains silent, and 1/100 meter rooms initialize/process safely at 11025/44100/65535 Hz with boundary listener positions. Invalid rate validation is covered. Full Release solution suite: 15,090 passed, zero failed/skipped (Client: 2,135). Nonincremental Release build with warnings treated as errors: zero warnings/errors. Whitespace check passed.
+
+Scope: configured room processing now exists as a standalone processor; managed renderer still rejects enabling reverb until integration. Remaining renderer integration, archive/engine audio integration, native cleanup equivalence and outstanding behavioral audit. No native executable differential or live audio validation. Changes remain local and uncommitted.
+
+## 2026-10-13 - WildMIDI reverb coefficient generation
+
+Converted reverb.cpp six-band peaking EQ coefficient construction into ReverbCoefficients.Create. It accepts eight round-trip reflection distances, calculates frequency/surface/air absorption terms in double precision, and truncates five coefficients per band to native fixed-point integers scaled by 1024. Reflection surface groups and native 125-4000 Hz frequencies are preserved. Input rate/distances and representability are validated. Coefficients can be consumed by the converted filter/delay constructors. Native licensing is retained.
+
+Geometry audit finding: _WM_init_reverb loops over reflection index j but calculates speaker offsets and SPL_DST/SPR_DST using i; i begins at zero then remains six after the inner coefficient loop. Later reflections therefore repeatedly update index six instead of their own index, including repeated distance subtraction. This native behavior needs a deliberate correction or compatibility policy before room geometry is wired into validated delay buffers. This batch converts the independent coefficient block, not that flawed geometry loop.
+
+Three new tests cover surface symmetry/group distinctions, equal input-history/feedback numerators, zero-input filter integration, distance-dependent absorption, sample-rate response, and invalid dimensions/rates/nonfinite distances. Full Release solution suite: 15,088 passed, zero failed/skipped (Client: 2,133). Nonincremental Release build with warnings treated as errors: zero warnings/errors. Whitespace check passed. Transcendental calculations have no native executable differential fixtures yet.
+
+Remaining: room geometry/delay initialization and native indexing discrepancy, renderer reverb integration, archive/engine audio integration, and full native cleanup equivalence. No live audio validation. Changes remain local and uncommitted.
+
+## 2026-10-13 - WildMIDI reverb delay processing
+
+Converted _WM_do_reverb delay scheduling into ReverbDelay and connected it to ReverbFilter. Each frame schedules left/right speaker reflections into four points on each delay buffer, reads and clears current outputs, adds filtered wet values, then schedules opposite-channel feedback from the resulting mixed frame. Speaker and feedback cursors advance modulo their respective buffer sizes. Reset clears delay samples and filter histories while preserving cursors, matching _WM_reset_reverb. Constructor validates and snapshots initial positions; odd stereo buffers fail before state advances. Native licensing is retained.
+
+Audited reverb.cpp processing order, division by 64 for speaker/feedback input, per-filter wet contribution, opposite-channel routing, and reset behavior. Managed unchecked arithmetic preserves defined wrap behavior rather than claiming equivalence for native signed overflow. Room geometry, coefficient generation, and renderer integration are still unconverted.
+
+Three new tests cover immediate speaker reflection, wet-output feedback, stereo chunk equivalence, reset/restart, malformed frames, and invalid buffer sizes. Initial impulse expectations were corrected to account for four contributions and division by eight; final full Release solution suite: 15,085 passed, zero failed/skipped (Client: 2,130). Nonincremental Release build with warnings treated as errors: zero warnings/errors. Whitespace check passed.
+
+Scope: processing accepts explicitly supplied coefficients and delay positions. It is not yet a room-configured reverb or enabled in the renderer. Remaining: geometry/coefficient construction, renderer integration, archive/engine audio integration, and full native cleanup equivalence. No native executable differential or live audio validation. Changes remain local and uncommitted.
+
+## 2026-10-13 - WildMIDI reverb filter recurrence
+
+Converted the filter recurrence from reverb.cpp _WM_do_reverb into ReverbFilter. Eight reflections each contain six parallel filters with five fixed-point coefficients and independent two-sample input/output histories for each stereo channel. Process applies native integer products/sums, division by 1024, per-filter contribution division by eight, and accumulated wet output. Reset clears histories as in _WM_reset_reverb. Constructor validates coefficient dimensions and copies them so external mutation cannot change processing unexpectedly. The native reverb license header is retained.
+
+Audit: every band receives the same channel reflection sample; outputs are not chained between bands. Input/output histories shift after calculation, with subtraction of both feedback terms. Integer division truncates toward zero. Managed unchecked arithmetic defines wrap behavior where native signed overflow is undefined; no clipping is introduced. The returned values are wet additions intended for the future full delay processor.
+
+Three new tests verify parallel-band accumulation and per-band truncation, signed stereo impulse histories with both feedback terms, coefficient snapshot ownership, reset/restart, and invalid coefficient dimensions. Full Release solution suite: 15,082 passed, zero failed/skipped (Client: 2,127). Nonincremental Release build with warnings treated as errors: zero warnings/errors. Whitespace check passed.
+
+Scope: this converts filter processing and history reset only. Delay buffers/scheduling, room geometry/coefficient construction, full reverb reset, and renderer integration remain unfinished; renderer still rejects enabling reverb. Archive/engine audio integration and full native cleanup equivalence also remain. No native executable differential or live audio verification. Changes remain local and uncommitted.
+
+## 2026-10-13 - WildMIDI reverb configuration settings
+
+Converted reverb_room_width, reverb_room_length, reverb_listener_posx and reverb_listener_posy directives into catalog-shared ReverbSettings, including native defaults 16.875/22.5/8.4375/16.875. Room dimensions clamp to 1-100 meters; X outside width falls back to width/2; native Y compares against width and falls back to length*0.75. Room changes do not retroactively reposition listeners. Directive names are case-insensitive; existing decimal/exponent-prefix parsing preserves float storage. Includes share settings. The translated settings file retains native licensing.
+
+Audited wildmidi_lib.cpp reverb configuration branches and wildmidi_lib.h defaults. Preserved the Y width-comparison quirk, including fallback values that can exceed width. Values must begin with ASCII digits; malformed values raise InvalidDataException without mutation. Numeric overflow to positive infinity clamps dimensions or triggers listener fallback as native float comparisons do. C atof hexadecimal grammar and native clamp-warning logging remain outside this conversion.
+
+Three new tests cover defaults, room clamps, exponent overflow, decimal suffixes, listener boundary/fallback behavior, lack of retroactive adjustment, shared included state, malformed input, and unhandled directives. Full Release solution suite: 15,079 passed, zero failed/skipped (Client: 2,124). Nonincremental Release build with warnings treated as errors: zero warnings/errors. Whitespace check passed.
+
+Scope: this completes the four configuration settings, not reverb DSP. Managed renderer still rejects enabling audio reverb. Remaining work includes reverb processing/integration, archive/engine audio integration, complete native cleanup equivalence, and outstanding behavioral audit. No native executable differential or live audio validation. Changes remain local and uncommitted.
+
+## 2026-10-13 - WildMIDI release-fix directive compatibility
+
+Converted the guspat_editor_author_cant_read_so_fix_release_time_for_me directive into shared catalog FixRelease state. Directive names are case-insensitive, enabling is sticky, and extra tokens are ignored as in the native branch. Included configurations share this state without changing parent bank/path selection.
+
+Audit finding: wildmidi_lib.cpp sets fix_release, but the sole occurrence in gus_pat.cpp is inside a comment immediately before the unconditional release-rate repair block. The native header initializes the field to zero. Managed GusEnvelopes already repairs release rates unconditionally, so this change accepts and stores the directive without gating repair or adding a different playback effect. This is configuration compatibility, not new release processing.
+
+Two new tests cover included/case-insensitive directive handling, sticky shared state, preserved parent bank, and identical repaired envelope targets/rates with and without the directive. Full Release solution suite: 15,076 passed, zero failed/skipped (Client: 2,121). Nonincremental Release build with warnings treated as errors: zero warnings/errors. Whitespace check passed.
+
+Remaining: reverb configuration and processing, archive/engine audio integration, full native cleanup equivalence, and outstanding native/managed behavioral audit. No native executable differential or live audio validation. Changes remain local and uncommitted.
+
+## 2026-10-13 - WildMIDI automatic amplification metadata
+
+Converted auto_amp and auto_amp_with_amp directives and native load_sample peak calculation. Catalog-wide settings are shared by included configuration files; enabling combination is sticky even after subsequent auto_amp directives. Sample loading scans decoded PCM up to DataLength, excluding guard samples, across every sample. Positive peak wins ties and uses (32767 << 10) / maximum; negative peak uses (32768 << 10) / -minimum. Combination multiplies existing amplification by the integer factor then shifts ten bits. Loaded catalog patches skip recalculation, preserving native loading behavior. The translated helper retains the native license header.
+
+Audited wildmidi_lib.cpp directive branches and load_sample automatic amplification block. This native repository only stores computed amplification metadata; neither PCM nor mixer applies that value, and managed code retains that behavior. Silent/empty patches cause native division by zero; managed code raises InvalidDataException. Combined signed multiplication beyond int range is rejected explicitly rather than reproducing undefined overflow. Failures occur before samples or adjusted metadata are published; managed Loaded stays false, unlike native setting loaded before loading.
+
+Three new tests cover positive, negative and equal peaks, unchanged decoded PCM, configured percentage combination, included shared settings, sticky combination, no recalculation for loaded patches, silent data, and multiplication overflow. Full Release solution suite: 15,074 passed, zero failed/skipped (Client: 2,119). Nonincremental Release build with warnings treated as errors: zero warnings/errors. Whitespace check passed.
+
+Remaining: release-fix configuration directive, reverb, archive/engine audio integration, full native cleanup equivalence, and remaining native/managed behavioral audit. No native executable differential or live audio validation. Changes remain local and uncommitted.
+
+## 2026-10-13 - WildMIDI configured envelope times
+
+Converted env_time0 through env_time5 from configuration into sample snapshots and voice envelope rates. Values use shared invariant decimal/exponent prefix parsing with float storage, case-insensitive option names, last-value wins, and native limits of 1.47 through 45000 milliseconds inclusive. Catalog validates and snapshots six optional times. Loaded samples retain independent time snapshots across configuration replacements. Envelope conversion applies time overrides after patch-47 copying and only for effective envelope-enabled samples, using native integer conversion of 4194303.0 / ((float)sampleRate * (time / 1000.0)). Stage 6 remains unchanged.
+
+Audited wildmidi_lib.cpp env_time syntax/range branch and load_sample rate override. Native malformed/range-invalid options log and continue or clear the override flag; managed configuration rejects them before replacing metadata. Decimal/exponent syntax is supported; hexadecimal C atof grammar remains unconverted. Reused the numeric-prefix parser for levels and times. Updated unsupported-option tests because env_time is now implemented.
+
+Two new tests cover case/suffix/exponent parsing, repeated values, both timing limits, three supported output rates, target/time composition after patch-47 adjustment, preserved stage 6, prepared voice rates, invalid options retaining the prior declaration, and replacement/reload resets. Full Release solution suite: 15,071 passed, zero failed/skipped (Client: 2,116). Nonincremental Release build with warnings treated as errors: zero warnings/errors. Whitespace check passed.
+
+Remaining: automatic amplification, reverb, archive/engine audio integration, and complete native cleanup equivalence. No native executable differential or live audio verification. Changes remain local and uncommitted.
+
+## 2026-10-13 - WildMIDI configured envelope levels
+
+Converted env_level0 through env_level5 into configuration, patch metadata snapshots, sample conversion, and voice initialization. Option names are case-insensitive; decimal/exponent prefixes with trailing text are supported using invariant parsing. Values convert through double to float, then native target calculation 16448 * (int)(255.0 * level), preserving float rounding and integer truncation. Repeated stage options use the last value. Catalog registration validates and copies six target overrides; loaded samples receive independent read-only snapshots so later declarations affect only reloads.
+
+Audited wildmidi_lib.cpp env_level syntax/range branch and load_sample target assignment. Overrides apply only when the effective sample has SAMPLE_ENVELOPE, after patch-47 release copies; rates and stage 6 remain unchanged. Native malformed/range-invalid options log and continue or clear override flags; managed parsing rejects the declaration without replacing existing metadata. Managed parsing supports decimal/exponent forms, not the full platform-dependent C atof grammar (hexadecimal float prefixes remain outside this scope). Levels must begin with an ASCII digit as in the native syntax guard.
+
+Two new tests cover casing, decimal suffixes/exponents, zero/one/quarter/half targets, repeated values, patch-47 ordering, rate/stage-6 preservation, prepared voice propagation, malformed/range-invalid values, immutable loaded snapshots, and replacement/reload reset. Full Release solution suite: 15,069 passed, zero failed/skipped (Client: 2,114). Nonincremental Release build with warnings treated as errors: zero warnings/errors. Whitespace check passed.
+
+Remaining: configured envelope times, automatic amplification, reverb, archive/engine audio integration, and complete native cleanup equivalence. No native executable differential or live audio validation. Changes remain local and uncommitted.
+
+## 2026-10-13 - WildMIDI configured amplification metadata
+
+Converted amp= options into patch configuration metadata. Names are case-insensitive, values use native-style ASCII decimal prefixes, repeated options use the last value, and integer scaling is (percent << 10) / 100. Default/replacement amplification is 1024. Values exceeding the safe signed left-shift range are rejected before configuration mutation; direct configured registration rejects negative scaled values. Existing note/keep/remove options compose with amplification.
+
+Audit finding: this repository's wildmidi_lib.cpp stores patch amp in configuration and calculates automatic amplification in load_sample, but there is no later read applying amp to PCM or mixer volume. The managed implementation therefore preserves amplification as metadata and does not introduce an audio scaling effect. Automatic amplification directives/calculation remain unconverted. Native malformed amp values log and continue; managed parsing fails explicitly without replacing the declaration. Signed atoi/left-shift overflow is explicitly rejected.
+
+Three new tests cover casing/suffixes, integer truncation, repeated values, zero, replacement defaults, safe maximum, malformed/overflowing input preserving metadata, and zero-amplification metadata leaving decoded PCM unchanged. Updated unsupported-option tests to use still-unconverted envelope time options. Full Release solution suite: 15,067 passed, zero failed/skipped (Client: 2,112). Nonincremental Release build with warnings treated as errors: zero warnings/errors. Whitespace check passed.
+
+Remaining: automatic amplification, configured envelope time/level overrides, reverb, archive/engine audio integration, and complete native cleanup equivalence. No native executable differential or live audio validation. Changes remain local and uncommitted.
+
+## 2026-10-13 - WildMIDI patch-47 release envelope adjustment
+
+Converted the native load_sample special case for exact patch ID 47 and nonlooping samples. Loaded samples record whether release stages 3-5 must copy stage 2. ConvertEnvelope applies the copies to converted integer targets/rates rather than rewriting raw encoded bytes, preserving native ordering after encoded-rate repair and conversion. Stage 6 remains untouched. Voice initialization already consumes this conversion, so the behavior reaches playback state. Effective sample modes determine loop eligibility after patch load processing.
+
+Audited wildmidi_lib.cpp load_sample patchid == 47 block: it copies env_target[2] and env_rate[2] into indices 3, 4, 5 only when SAMPLE_LOOP is absent. Banked ID 303 and percussion ID 175 do not match exact ID 47. Future configured envelope time/level overrides must apply after this adjustment, as they do in native code. Existing native license headers remain present.
+
+Two new tests verify converted target/rate copies, preserved stage 6, prepared voice propagation, and exclusion of looping, banked, and percussion variants. Full Release solution suite: 15,064 passed, zero failed/skipped (Client: 2,109). Nonincremental Release build with warnings treated as errors: zero warnings/errors. Whitespace check passed.
+
+Remaining: amplification/automatic amplification, configured envelope time/level overrides, archive/engine audio integration, full native failure-cleanup equivalence, and reverb. No native executable differential or live audio validation. Changes remain local and uncommitted.
+
+## 2026-10-13 - WildMIDI keep/remove sample modes
+
+Converted case-insensitive keep=loop, keep=env, remove=sustain, and remove=clamped patch options into configuration registration and sample loading. Keep/remove masks accumulate per declaration and reset on replacement. Configured catalog registration validates supported mask bits. InstrumentPatch.Load applies modes after PCM decoding: percussion clears loop/envelope unless retained, remove flags clear sustain/clamped, and keep=env forces envelope on both melodic and percussion samples. The effective mode is written to both sample header and PCM metadata, connecting envelope preparation and mixer loop behavior consistently. Native licensing is retained in the patch file containing translated mode logic.
+
+Audited wildmidi_lib.cpp option branches and load_sample mode processing at lines 1203-1243. keep=loop preserves an existing loop and does not create one; keep=env explicitly creates the envelope flag. Samples and loaded/reference state survive metadata replacement; changed options apply only upon a later sample reload. Applying effective decoded modes also avoids reintroducing decoder-cleared unsigned/reverse encoding flags through header metadata.
+
+Three new tests cover drum defaults versus melodic preservation, combined keep/remove options with casing, header/PCM agreement, forced envelope, and replacement/reset/reload semantics. Full Release solution suite: 15,062 passed, zero failed/skipped (Client: 2,107). Nonincremental Release build with warnings treated as errors: zero warnings/errors. Whitespace check passed.
+
+Remaining: amplification/automatic amplification, envelope time/level overrides, native patch-47 envelope adjustment, archive and engine audio integration, full native cleanup equivalence, and reverb. Forced-envelope patches with invalid encoded envelope data may still fail envelope conversion; no native executable differential or live audio verification was performed. Changes remain local and uncommitted.
+
+## 2026-10-13 - WildMIDI configured note overrides
+
+Converted note= patch options into ConfigReader registration and the existing managed instrument/voice pitch path. Option names are case-insensitive; values use shared ASCII decimal-prefix parsing, and repeated note options use the last value. Defaults remain zero, meaning no override. Native unsigned-char assignment is preserved by wrapping parsed integers to a byte (for example 328 becomes 72). Values that wrap to 128-255 are explicitly rejected because managed playback supports MIDI notes 0-127. All options validate before replacing an existing declaration.
+
+Audited wildmidi_lib.cpp note= branch, common.h unsigned-char patch note field, get_inc patch pitch override, and percussion sample-selection override. Existing managed preparation already applies configured note to playback pitch while retaining event-note-based melodic sample selection. Native malformed note options log and continue; managed configuration throws InvalidDataException without committing a replacement. Native atoi overflow remains explicitly rejected. Other patch options still throw NotSupportedException.
+
+Three new tests cover case-insensitive options, decimal suffixes, last-option wins, byte wrapping, zero/default semantics, drum declarations, malformed and overflowing values, unsupported mixed options preserving previous metadata, and a loaded patch's configured pitch reaching voice preparation and its sample increment. Full Release solution suite: 15,059 passed, zero failed/skipped (Client: 2,104). Nonincremental Release build with warnings treated as errors: zero warnings/errors. Whitespace check passed.
+
+Remaining patch options include amplification, envelope overrides, keep/remove flags and their sample processing. Archive/engine audio integration, native failure-cleanup equivalence, and reverb remain unfinished. No native executable differential or live audio verification. Changes remain local and uncommitted.
+
+## 2026-10-13 - WildMIDI configuration byte/resource loading
+
+Added ConfigLoader.Load and LoadFile to produce a populated managed catalog from configuration resources or the existing bounded filesystem reader. The resource callback returns both bytes and the actual filename, matching native _WM_BufferFile returning config_file_s for directory resolution. Nested includes load through the same callback and start independent reader state using each returned filename. Patch reads remain lazy through the supplied patch-resource callback. The filesystem entry point uses the current OS drive-path rules and existing file-size validation. Byte decoding uses Latin1 as an explicit one-byte-to-character mapping, preserving arbitrary byte names without UTF-8 replacement; it does not claim host filesystem encoding equivalence for non-ASCII native names.
+
+Audit found and corrected ConfigPaths initialization: native config-file directory extraction considers backslashes only under _WIN32, whereas the previous managed helper did so on every platform. Unix now uses the last forward slash only. The native absolute-resource macro still recognizes either leading separator, as retained by ResolveResource. Loading returns a catalog only after complete successful parsing; exceptions propagate and the newly created catalog is not exposed on failure. The lower-level reader still preserves prior entries on failure. The managed depth limit is 64 nested includes (65 resources counting the root).
+
+Three new tests cover actual filenames returned by resource callbacks, nested filename rebasing, patch read paths, byte-preserving non-ASCII names, Unix backslash handling, missing resources, and recursion bounds. Full Release solution suite: 15,056 passed, zero failed/skipped (Client: 2,101). Nonincremental Release build with warnings treated as errors: zero warnings/errors. Whitespace check passed. LoadFile composes the previously tested filesystem reader; no additional disk integration or live audio test was performed in this batch.
+
+Remaining: patch options and playback application, concrete archive integration, engine startup/audio integration, full native cleanup equivalence for lower-level reader failures, and reverb. No native executable differential. Changes remain local and uncommitted.
+
+## 2026-10-13 - WildMIDI source includes
+
+Converted the LoadConfig source branch into the managed configuration reader. An optional configuration-text resource callback reads included resources. Relative include names concatenate with the current parent directory; absolute paths and native Windows drive specifications bypass it. Extracted ConfigPaths.ResolveResource to share resolution without adding a .pat extension. Every included file creates fresh bank and directory state while sharing the catalog and resource callback, preserving parent state after return and allowing included patch declarations to replace earlier definitions.
+
+Audited against wildmidi_lib.cpp source path concatenation and recursive LoadConfig invocation, plus its function-local patchid/config_dir initialization. Missing source arguments throw InvalidDataException; missing resources throw FileNotFoundException carrying the resolved name; callback exceptions propagate. Existing callers without a callback receive an explicit unsupported-source error. Added a managed limit of 64 nested includes to prevent unbounded recursion; native source has no equivalent bound. Previously registered declarations still remain after a later include failure; full native FreePatches failure cleanup is not yet converted.
+
+Four new tests cover nested relative includes, directory overrides, independent child bank state, parent state restoration, exact resource names without patch suffixes, absolute drive paths, shared catalog replacement, malformed/missing resources, exception propagation, and recursive include termination. Full Release solution suite: 15,053 passed, zero failed/skipped (Client: 2,098). Nonincremental Release build with warnings treated as errors: zero warnings/errors. Whitespace check passed.
+
+Remaining: patch options and playback application, concrete configuration byte/file loading and encoding, archive resolution, full failure cleanup, reverb, and host audio integration. Includes are available through the callback-based reader, not yet wired into a complete engine startup path. No native executable differential or live audio validation. Changes remain local and uncommitted.
+
+## 2026-10-13 - WildMIDI duplicate configuration declarations
+
+Converted native same-ID patch replacement into managed catalog configuration registration. RegisterConfigured now updates the resolved filename and note setting on the existing patch object instead of rejecting duplicate declarations. Basic config declarations reset the note override to zero. Distinct bank IDs stay independent. Direct Register retains duplicate rejection for callers that require unique registration.
+
+Source audit: wildmidi_lib.cpp LoadConfig duplicate branches reset filename, amp, and note, then reset envelope override flags and keep/remove masks; they do not reset first_sample, loaded, or inuse_count. Managed replacement preserves sample collection identity, Loaded, UseCount, and the patch object referenced by channels/device ownership. Subsequent LoadSamples skips rereading while Loaded remains true; after samples are freed the updated filename is read. The internal note update validates before changing metadata, and filename resolution completes before catalog mutation. Amplification/envelope/keep/remove configuration remains unconverted and is still rejected by the basic reader.
+
+Three new tests cover last-declaration filename selection through actual catalog reads, bank isolation, default note reset, loaded sample and reference preservation, deferred resource replacement, and invalid replacement retaining original filename/note. Updated the reader duplicate test to assert supported replacement and identity preservation. Full Release solution suite: 15,049 passed, zero failed/skipped (Client: 2,094). Nonincremental Release build with warnings treated as errors: zero warnings/errors. Whitespace check passed.
+
+Remaining: patch options and playback application, source includes, resource/file loading entry point, archive resolution, full native failure cleanup, reverb, and host audio integration. No native executable differential or live audio validation. Changes remain local and uncommitted.
+
+## 2026-10-13 - WildMIDI basic configuration reader and patch declarations
+
+Converted basic LoadConfig line dispatch into VmMusicWildMidiConfigReader, composing the native-compatible tokenizer, bank state, directory resolution, and managed instrument catalog. It accepts CR/LF/CRLF, final lines without terminators, empty/comment lines, bank/drumset/dir directives, and numeric patch declarations without options. A declaration registers the resolved patch filename under the masked instrument ID. Added nonmutating ConfigBank.ResolveInstrument so registration failures do not commit instrument selection. The translated reader retains the native license header.
+
+Audited against wildmidi_lib.cpp LoadConfig line splitting, bank/drumset/dir branches, numeric patch identification and filename handling. Native option parsing and duplicate replacement remain unconverted: options and other directives throw NotSupportedException; duplicates retain catalog ArgumentException behavior and preserve the original patch. The reader truncates at embedded NUL as an explicit managed input rule; native buffer scanning around embedded NUL is not claimed equivalent. Successful earlier lines remain registered if a later line fails, unlike native global FreePatches cleanup. This is a basic managed reader, not yet a drop-in complete LoadConfig implementation.
+
+Four new tests cover mixed line endings, bank/drumset IDs, directory changes, resolved resource reads, declaration failures, unsupported options/includes, duplicate preservation, embedded NUL, and parsed default-patch loading through the managed renderer to an active voice. Final Release solution suite: 15,046 passed, zero failed/skipped (Client: 2,091). Nonincremental Release build with warnings treated as errors: zero warnings/errors. Whitespace check passed.
+
+Remaining configuration work: patch options and their playback application, duplicate replacement, source includes, resource/file loading entry point, archive resolution, and full failure cleanup semantics. Reverb and host audio integration remain unfinished. No native executable differential or live audio verification. Changes remain local and uncommitted.
+
+## 2026-10-13 - WildMIDI configuration directories and patch filenames
+
+Converted native configuration path behavior into VmMusicWildMidiConfigPaths and connected it to InstrumentCatalog.RegisterConfigured. Initial directories use the last slash or backslash in the configuration filename. Case-insensitive dir directives replace the directory directly and append a slash only when neither separator is present. Relative patch names concatenate with that directory; absolute names retain their paths. Windows drive-spec handling is explicitly selected to reproduce the native platform branch. Existing .pat suffixes retain their casing; other names receive .pat. No host path normalization changes resource names.
+
+Audit against libraries/ZMusic/thirdparty/wildmidi/wildmidi_lib.cpp path macros, initial config_dir extraction, dir branch, and patch filename branch. Native suffix checking can read before the beginning of filenames shorter than four characters; managed EndsWith safely defines those cases. Missing dir arguments fail without replacing the prior directory. Existing tokenizer quote/comment quirks are retained. The translated file retains the native license header; catalog wiring is managed integration.
+
+Validation: four new tests exercise mixed separators, config-relative paths, one-character filenames, case-insensitive suffixes, parent segments, absolute paths, Windows versus Unix drive specifications, directory replacement, malformed directives, and the actual resource name read through the catalog. Full Release solution suite: 15,042 passed, zero failed/skipped (Client: 2,087). After strengthening the short-name assertion, all four focused tests passed again. Nonincremental Release build with warnings treated as errors: zero warnings/errors. Whitespace check passed.
+
+Scope: directory and filename resolution is available to callers; full configuration file dispatch, numeric patch declarations/options, duplicate declaration replacement, source includes/archive handling, and reverb remain unfinished. RegisterConfigured retains existing catalog duplicate rejection. No native executable differential or live audio validation. Changes remain local and uncommitted.
+
+## 2026-10-13 - WildMIDI configuration bank and instrument selection
+
+Converted the native LoadConfig bank/drumset branches and numeric instrument-ID selection into VmMusicWildMidiConfigBank. The state starts at zero, consumes the existing native-compatible tokenizer, recognizes directive names without case sensitivity, parses ASCII decimal prefixes, masks banks to eight bits and instruments to seven bits, preserves the drum flag during instrument selection, and clears previous instrument/drum bits when selecting a melodic bank. Selected IDs can be passed directly to the managed instrument catalog.
+
+Source audit: libraries/ZMusic/thirdparty/wildmidi/wildmidi_lib.cpp lines 621, 745-770, and 874-876. Native atoi signed overflow has undefined behavior; managed parsing explicitly rejects numbers outside the signed integer range before mutating selection. Malformed bank directives surface InvalidDataException. Unknown directives return false for a future configuration dispatcher. The native license header is retained.
+
+Validation: four new tests cover directive casing, numeric suffixes, wrapping, melodic/drum transitions, successive instrument selection, catalog lookup, unhandled lines, malformed input, overflow, and the maximum native signed integer. Full Release solution suite: 15,038 passed, zero failed/skipped (Client: 2,083). Nonincremental Release build with warnings treated as errors: zero warnings/errors. Whitespace check passed.
+
+Scope: this converts bank and instrument selection state; configuration file dispatch, instrument filenames/options, includes, directory/archive resolution, and reverb remain unfinished. No native executable comparison or live audio validation was performed. Changes remain local and uncommitted.
+
+## 2026-10-13 - Native configuration line tokenization
+
+Converted WM_LC_Tokenize_Line into VmMusicWildMidiConfigTokens.Tokenize. It retains native space/tab boundaries, quote-controlled whitespace, quote-start handling, embedded NUL termination and comment scanning behavior while replacing pointer token views with managed strings. Native licensing is retained.
+
+Source audit: native quote handling toggles state without deleting quotes, so a token beginning inside quotes excludes its opening quote but retains its closing quote. Hash scanning stops even inside quotes and does not NUL-terminate an in-progress token, retaining the rest of that token's backing line. Both quirks are preserved explicitly. Empty quoted strings produce no token. This is a native-compatible tokenizer, not a conventional quoted-string parser.
+
+Validation: four new cases cover whitespace/comments, quote quirks, hash behavior inside active/quoted tokens, embedded NUL and empty lines/quotes. All 15,034 Release solution tests passed (2,079 Client tests). Nonincremental warning-as-error Release build passed with zero warnings/errors. Whitespace validation passed.
+
+Remaining scope: configuration directives/catalog registration and source includes, archive readers, reverse ping-pong transforms, reverb, native differential fixtures and audio-host integration remain unfinished. No live audio validation was performed. Changes remain local and uncommitted.
+
+## 2026-10-13 - Filesystem patch reads and constructor cleanup
+
+Added VmMusicWildMidiFileReader.Read as a concrete catalog resource callback. It opens read-only, checks native maximum file size before allocating, reads the exact payload and disposes the stream. Managed patch parsing uses explicit byte spans, so the native extra zero terminator is unnecessary. Fixed renderer construction to release acquired default patch references if subsequent channel initialization fails, then rethrow the original initialization error.
+
+Source audit: compared native file_io.cpp open/length/allocation/read/close behavior and maximum size 0x1fffffff. Missing files and short reads raise explicit managed exceptions instead of native logging/null or unchecked reads. This filesystem adapter does not implement archive/resource-namespace resolution. Cleanup invokes the concrete nonthrowing sample-release path; injected lookup errors no longer strand default patch references.
+
+Validation: three new cases cover exact file bytes and exclusive reopening after the read, missing-file errors, and failed channel initialization releasing the acquired patch while retaining the original error. All 15,030 Release solution tests passed (2,075 Client tests). Nonincremental warning-as-error Release build passed with zero warnings/errors. Whitespace validation passed.
+
+Remaining scope: configuration parsing/archive resource readers, reverse ping-pong transforms, reverb, native differential fixtures and audio-host integration remain unfinished. No live audio validation was performed. Changes remain local and uncommitted.
+
+## 2026-10-13 - Resource-backed catalog and default instrument initialization
+
+Added a registered instrument catalog mapping exact IDs to concrete patches/resource names and injected resource reads. It parses GUS data on demand, avoids reloading loaded patches, rejects foreign patch instances and preserves unloaded state on read failure. Connected renderer initialization to the native default instrument-zero precache before channel reset.
+
+Audit: compared native file buffering failure/size limit (0x1fffffff) and Init_MDI default load ordering. Catalog registration is managed integration, not the still-unconverted WildMIDI configuration parser. Missing resources throw FileNotFoundException instead of native error logging/null. File-size validation occurs after the injected reader returns bytes; readers should also impose limits before allocation. Existing bank fallback remains in patch-loading helpers rather than exact catalog lookup.
+
+Validation: two new cases cover resource name/read count, default renderer load, repeat precache, note insertion, reference release, missing files/foreign patches and exact lookup misses. All 15,027 Release solution tests passed (2,072 Client tests). Nonincremental warning-as-error Release build passed with zero warnings/errors. Whitespace validation passed.
+
+Remaining scope: configuration parsing and concrete filesystem/archive reader, reverse ping-pong transforms, reverb, native differential fixtures and audio-host integration remain unfinished. No live audio validation was performed. Changes remain local and uncommitted.
+
+## 2026-10-13 - Renderer master/logarithmic volume and nonzero audio fixtures
+
+Connected renderer master-volume storage and logarithmic-volume option to short-event preparation, controller/pressure volume updates and SysEx/all-channel adjustments. SetMasterVolume uses the converted native lookup. SetOption now accepts the native option bits 1-7, rejects zero/unknown masks and invalid setting bits, and recalculates linked/replay volumes when the log bit is selected. Unimplemented reverb remains an explicit error before option mutation.
+
+Source audit: compared native SetOption mask checks, log-volume adjustment ordering and SetMasterVolume storage-only behavior. Preserved the all-channel sentinel adjustment quirk and deferred recalculation after master-volume changes. The managed master scalar is per renderer whereas the native library stores a global scalar; this ownership difference avoids cross-renderer state but is not global-state parity.
+
+Validation: three new cases render nonzero finite audio from a synthetic decoded GUS patch in linear/logarithmic volume modes, verify silent new voices at zero master volume and malformed option rejection. All 15,025 Release solution tests passed (2,070 Client tests). Nonincremental warning-as-error Release build passed with zero warnings/errors. Whitespace validation passed.
+
+Remaining scope: real instrument corpus/native differential fixtures, resource/configuration-backed catalog, reverse ping-pong transforms, reverb and audio-host integration remain unfinished. Synthetic output is verified; live audio playback is not. Changes remain local and uncommitted.
+
+## 2026-10-13 - Concrete managed WildMIDI renderer assembly
+
+Added VmMusicWildMidiManagedRenderer implementing IVmMusicWildMidiRenderer and IDisposable. It owns channel state and device resources, initializes native-style channel defaults, connects raw short/SysEx events, instrument precaching and stereo float output, and exposes linked voice count. Decoded patch lookup and resource loading are injected. Enhanced interpolation is selectable; requesting unimplemented reverb throws explicitly before changing interpolation state.
+
+Audit: connects previously converted helpers and confirms native GetVoiceCount counts linked entries regardless of Active. SysEx reset volume traversal preserves the existing native all-channel sentinel behavior. This class is managed integration rather than line-for-line native ownership. It currently fixes master volume at 1024 and uses linear volume tables; native logarithmic/master-volume options still require wiring. Callers must load required instruments before notes; automatic resource loading is not provided by lookup. Disposal releases voices/patch references and clears channel patch references.
+
+Validation: three new cases cover interface initialization, short/SysEx events and silence/statistics, explicit unavailable reverb errors, and disposal guards on every renderer entry point. All 15,022 Release solution tests passed (2,067 Client tests). Nonincremental warning-as-error Release build passed with zero warnings/errors. Whitespace validation passed.
+
+Remaining scope: nonzero real-instrument renderer fixtures, master/log-volume options, resource/configuration-backed catalog, reverse ping-pong transforms, reverb and audio-host integration remain unfinished. No native executable differential or live audio validation was performed. Changes remain local and uncommitted.
+
+## 2026-10-13 - Raw MIDI short-event dispatch
+
+Converted Renderer::ShortEvent command/channel decoding into VmMusicWildMidiShortEvents.Dispatch. All seven native channel command families connect to persistent note-on/off, poly/channel pressure, controllers, program selection and 14-bit pitch bend. Program and channel-pressure events ignore their unused second parameter. Unsupported command families return false; malformed used MIDI data fields throw explicitly.
+
+Source audit: compared native command masks, low-nibble channel selection, one-byte events, pitch packing and supported controller delegation. The native license is retained. Managed dispatch returns a handled/effective result rather than native void and imposes MIDI range checks for used fields. It accepts channel state and decoded instrument lookup from the host; resource/configuration catalog and renderer ownership are not supplied by this helper.
+
+Validation: three new cases cover a raw-message sequence through selected patch, note creation, pressure, pitch and zero-velocity release; controller state and ignored parameters; unsupported commands and malformed data. All 15,019 Release solution tests passed (2,064 Client tests). Nonincremental warning-as-error Release build passed with zero warnings/errors. Whitespace validation passed.
+
+Remaining scope: concrete renderer ownership and long-event integration, resource-backed instrument catalog, reverse ping-pong transforms, reverb and audio-host integration remain unfinished. No native executable differential or live audio validation was performed. Changes remain local and uncommitted.
+
+## 2026-10-13 - Persistent pitch-bend and controller integration
+
+Connected persistent note-table PitchBend and Control methods to converted channel/controller helpers, sample-increment calculation and stereo volume traversal. Pitch bend updates matching linked voices; volume controllers recompute active and queued-replay volume using each velocity. Pedal/controller release uses the same persistent voice list. Managed event/rate validation runs before helper mutation.
+
+Audit: reused previously audited native controller and pitch paths. Confirmed native channel-sound-off marks linked voices inactive and clears replay without removing them from the mixer list; the existing converted controller preserves that unusual behavior. Pitch bend likewise does not traverse queued replay increments. MIDI dispatch itself still needs to select these methods from raw events.
+
+Validation: three new cases cover actual pitch increments with channel/replay isolation, volume updates for differing voice/replay velocities, pedal release and invalid pitch rejection. All 15,016 Release solution tests passed (2,061 Client tests). Nonincremental warning-as-error Release build passed with zero warnings/errors. Whitespace validation passed.
+
+Remaining scope: resource-backed instrument catalog, raw renderer MIDI dispatch, reverse ping-pong transforms, reverb and audio-host integration remain unfinished. No native executable differential or live audio validation was performed. Changes remain local and uncommitted.
+
+## 2026-10-13 - Persistent voice pressure event integration
+
+Connected polyphonic Aftertouch and ChannelPressure methods to the persistent note table, converted pressure helpers and concrete stereo volume calculation. Polyphonic events select the active native-style slot and update its queued replay. Channel pressure traverses matching linked voices and updates their replays. Invalid MIDI pressure fails before voice mutation.
+
+Source audit: checked native do_aftertouch slot precedence, inactive-note return, velocity replacement and replay volume updates, together with the previously audited channel-pressure helper. Preserved the native absence of assignment to channel.Pressure. Existing native licensing remains retained. These methods consume decoded event fields; raw MIDI renderer dispatch is still unimplemented.
+
+Validation: three new cases cover active/replay pressure and actual mix-volume updates, channel isolation and retained channel state, inactive notes and invalid pressure. All 15,013 Release solution tests passed (2,058 Client tests). Nonincremental warning-as-error Release build passed with zero warnings/errors. Whitespace validation passed.
+
+Remaining scope: resource-backed instrument catalog, full renderer event dispatch, reverse ping-pong transforms, reverb and audio-host integration remain unfinished. No native executable differential or live audio validation was performed. Changes remain local and uncommitted.
+
+## 2026-10-13 - Device dry stereo float rendering
+
+Connected device-owned note state to both managed interpolation/mixing paths and the converted final float output scaling through VmMusicWildMidiDeviceResources.RenderDry. It renders exactly the requested stereo frames, preserves the destination tail, handles zero-frame requests and silence, and returns pooled integer scratch storage in a finally block. Disposal and buffer/range checks happen before mixing.
+
+Audit: confirms mixing precedes final conversion and native gain is applied once. This is managed render-pipeline integration, explicitly dry output with no reverb. Voice state may advance before a later mixer failure; rendering is not transactional. Device operations require caller serialization. The host must not expose this method as reverb-enabled output until the reverb stage exists.
+
+Validation: four new cases cover exact float samples for both interpolation paths, gain-once behavior, voice exhaustion, silence, zero frames, destination tails, malformed buffers and disposed devices. All 15,010 Release solution tests passed (2,055 Client tests). Nonincremental warning-as-error Release build passed with zero warnings/errors. Whitespace validation passed.
+
+Remaining scope: resource/configuration-backed catalog, reverse ping-pong transforms, reverb, complete renderer event dispatch and audio-host integration remain unfinished. No native executable differential or live audio validation was performed. Changes remain local and uncommitted.
+
+## 2026-10-13 - Device voice and patch resource teardown
+
+Added note-table Clear to deactivate both persistent slots, drop queued replays, sample bindings and envelope arrays, and reset suppression/envelope state for subsequent reuse. Added VmMusicWildMidiDeviceResources to own note state and loaded patch references; disposal clears voices before invoking the converted last-reference patch release, is idempotent, and rejects subsequent patch loading.
+
+Audit: compared native freeMDI reference decrement/last-user sample cleanup. Managed binding cleanup is necessary because sample references otherwise outlive cleared patch storage. This resource owner is integration code and does not yet own native-equivalent reverb, mixer buffers or audio callbacks. Caller serialization is required; externally retained Notes remains reusable even after owner disposal, so renderer methods must guard disposal when integrated.
+
+Validation: three new cases cover active/queued binding cleanup and note reuse, shared patches across two devices through final release, idempotent disposal and rejected post-disposal loads. All 15,006 Release solution tests passed (2,051 Client tests). Nonincremental warning-as-error Release build passed with zero warnings/errors. Whitespace validation passed.
+
+Remaining scope: resource-file/configuration-backed catalog, reverse ping-pong transforms, reverb and concrete renderer/audio-host integration remain unfinished. No native executable differential or live audio validation was performed. Changes remain local and uncommitted.
+
+## 2026-10-13 - Concrete decoded patches and channel instrument binding
+
+Added VmMusicWildMidiInstrumentPatch implementing the existing patch reference-count contract and a decoded-instrument interface. Load connects GUS patch parsing to concrete patch storage; FreeSamples clears sample storage while preserving instrument identity/pitch. Note preparation now has an overload resolving the melodic instrument directly from channel.Patch and percussion instruments through the typed lookup callback. Existing program changes and reference-count release can use the concrete patch without separate instrument mapping.
+
+Audit: checked compatibility with converted program-change, bank lookup, patch-loading and last-reference release helpers. New patch storage is managed integration code rather than a line-for-line native resource owner. Failed parsing leaves the previous instrument intact and propagates the error. Unsupported melodic patch types fail explicitly. Callers remain responsible for serialized loading/release and resource-file access; retained bound voice samples remain managed references until those voices are discarded.
+
+Validation: three new cases exercise program selection through patch preparation/note insertion/mixing, failed reload preservation, and patch load/use-count/last-reference sample release. All 15,003 Release solution tests passed (2,048 Client tests). Nonincremental warning-as-error Release build passed with zero warnings/errors. Whitespace validation passed.
+
+Remaining scope: resource-file/configuration-backed instrument catalog, active voice teardown during device disposal, reverse ping-pong transforms, reverb and concrete renderer/audio-host integration remain unfinished. No native executable differential or live audio validation was performed. Changes remain local and uncommitted.
+
+## 2026-10-13 - Note-on instrument and sample preparation
+
+Converted native note-on instrument/sample preparation into VmMusicWildMidiNotePreparation.Prepare. Melodic events use the supplied selected instrument; percussion performs banked note-or-128 lookup with the existing bank-zero fallback. Sample selection uses the native frequency table and range helper, then connects to converted voice initialization. Exposed NoteFrequency from the existing exact native table instead of duplicating it.
+
+Source audit: follows do_note_on melodic versus percussion pitch selection, integer frequency division by 100, missing-patch/sample handling and get_inc patch-note override. Melodic sample selection uses played pitch even when playback increment uses a patch override; percussion selection uses the override when nonzero. Native license retained. The caller resolves the channel's selected melodic instrument and may use this preparation helper as the persistent note table callback.
+
+Validation: two new cases cover melodic selection versus patch pitch, percussion bank fallback and override-based sample selection. All 15,000 Release solution tests passed (2,045 Client tests). Nonincremental warning-as-error Release build passed with zero warnings/errors. Whitespace validation passed.
+
+Remaining scope: resource-backed instrument ownership and channel-patch binding, reverse ping-pong transforms, reverb and concrete renderer/audio-host integration remain unfinished. No native executable differential or live audio validation was performed. Changes remain local and uncommitted.
+
+## 2026-10-13 - Persistent note table and MIDI note dispatch
+
+Added VmMusicWildMidiNoteTable with the native two-slot, sixteen-channel, 128-note layout. NoteOn connects preparation to existing slot selection and reused-state initialization. Zero velocity dispatches NoteOff before sample preparation. Missing prepared samples return false without inserting voices; prepared identity must match the event. NoteOff selects the active slot through the converted native release helper.
+
+Source audit: follows native do_note_on zero-velocity ordering, channel/note table indexing and existing primary/secondary replay semantics. Native licensing retained. Managed MIDI range/identity guards surface invalid input. Slots start with their channel/note identity for managed control traversal; native inactive slot identity was zero until initialized, and inactive slots are not inserted in the managed mixer list.
+
+Validation: three new cases cover zero-velocity callback bypass, repeated retrigger through both persistent slots and replay activation, independent channels and missing samples. All 14,998 Release solution tests passed (2,043 Client tests). Nonincremental warning-as-error Release build passed with zero warnings/errors. Whitespace validation passed.
+
+Remaining scope: concrete instrument/sample preparation, resource-backed loading, reverse ping-pong transforms, reverb and renderer/audio-host integration remain unfinished. No native executable differential or live audio validation was performed. Changes remain local and uncommitted.
+
+## 2026-10-13 - Reused voice initialization and bound sample mixing
+
+Connected prepared voice state to native-style reusable slots through VmMusicWildMidiVoiceInitialization.Start. The selector inserts or schedules a slot; Start resets native note-on state, transfers pitch/envelope/volume/hold metadata and binds the new sample without changing slot activation. Envelope arrays are now replaceable for slot reuse. The mixer has an overload that resolves samples from voice bindings, surfacing missing bindings explicitly.
+
+Source audit: compared native post-selection assignments and activation ownership. Old fading voices retain their old samples while replay destinations receive new bindings. Duplicate suppression leaves bindings untouched. Prepared state must be separate from slots and include all envelope stages before selection mutates the list. Prepared envelope arrays are transferred by reference; callers must treat the prepared result as consumed and not mutate it after Start. Native licenses remain retained.
+
+Validation: five new cases cover stale-state reset and insertion, bound mixer progression, retrigger sample separation and replay activation, duplicate suppression, invalid prepared state before insertion and unbound mixer errors. All 14,995 Release solution tests passed (2,040 Client tests). The final nonincremental warning-as-error Release build passed with zero warnings and zero errors. Whitespace validation passed.
+
+Remaining scope: MIDI note-on instrument/sample selection and zero-velocity dispatch, persistent note tables/resource-backed instruments, reverse ping-pong transforms, reverb and concrete renderer/audio-host integration remain unfinished. No native executable differential or live audio validation was performed. Changes remain local and uncommitted; no push was requested.
+
+## 2026-10-13 - WildMIDI two-slot duplicate-note and replay selection
+
+Converted do_note_on's primary/secondary slot-selection block into VmMusicWildMidiNoteSlots.Select. Inactive pairs append and activate the primary voice. An active slot either suppresses a duplicate or schedules the other slot as replay, moving the current voice to stage six with its own terminal rate. The selected destination is returned for subsequent initialization; suppression returns null explicitly.
+
+Source audit: preserved native suppression conditions, HOLD_OFF bit handling, primary-slot precedence, list append order and the native quirk of consulting primary metadata even when only the secondary is active. Retained native licensing. Missing terminal rates and identical slot references throw before scheduling mutation. The caller must provide valid note-table/list state and initialize the destination after successful selection; this helper does not yet copy prepared state into reused slots or bind their samples.
+
+Validation: seven new cases cover inactive insertion, both replay branches through lifecycle replacement, both primary-metadata suppression branches, held-off retrigger, and malformed terminal rates. All 14,990 Release solution tests passed (2,035 Client tests). The nonincremental warning-as-error Release build passed with zero warnings and zero errors. Whitespace validation passed.
+
+Remaining scope: end-to-end note-on sample selection and reused-slot initialization/sample binding, resource-backed instruments, reverse ping-pong transforms, reverb and concrete renderer/audio-host integration remain unfinished. No native executable differential or live audio validation was performed. Changes remain local and uncommitted; no push was requested.
+
+## 2026-10-13 - WildMIDI voice initialization from decoded patch samples
+
+Converted do_note_on's state initialization into VmMusicWildMidiVoiceInitialization.Create, returning a prepared voice plus its mixer sample. It connects PCM bounds, envelope conversion, note/channel identity, velocity, patch note, sample divisor and pitch increment, initial attack rate/zero level, normalized sample modes, channel hold and stereo volume. Fresh voices remain inactive until list insertion or replay activation; each receives independent converted envelope arrays.
+
+Source audit: compared native assignments following note-table selection. Preserved zero position, initial envelope stage/level, unset deferred note-off/replay, channel hold and pitch/volume helpers. The native license is retained. This helper receives an already selected sample; native instrument/sample lookup and duplicate-note table selection are not implemented here. Zero velocity is rejected at this layer because the eventual MIDI event handler must dispatch it as note-off. Invalid MIDI ranges and malformed sample/envelope data surface explicitly.
+
+Validation: four new cases cover native initial state, pitch override/channel bend, prepared-voice mixer progression and independent envelope storage, and invalid event ranges. All 14,983 Release solution tests passed (2,028 Client tests). The nonincremental warning-as-error Release build passed with zero warnings and zero errors. Whitespace validation passed.
+
+Remaining scope: note-on event selection, note-table insertion/duplicate/replay allocation, resource-backed instrument loading, reverse ping-pong transforms, reverb and concrete renderer/audio-host integration remain unfinished. No native executable differential or live audio validation was performed. Changes remain local and uncommitted; no push was requested.
+
+## 2026-10-13 - GUS envelope conversion and release-rate repairs
+
+Converted native GUS envelope targets, increments and release-rate repair branches into VmMusicWildMidiGusEnvelopes.Convert and connected it through GusPatchSample.ConvertEnvelope. The exact 256-entry native float timing table is retained, as are float sample-rate/time multiplication before double division, integer truncation, target scaling by 16448, non-envelope full-scale defaults and the final zero-target release stage. Release rates 3-5 are repaired using native branches without mutating retained raw header bytes.
+
+Source audit: compared the native timing table, active release-rate repair block and six-stage conversion plus stage six. Retained native license. Accepted output sample rates follow the existing managed WildMIDI factory range. Zero-time rates throw explicitly instead of native division-by-zero followed by undefined floating-to-integer conversion. The native zero-increment fallback is retained; its diagnostic warning is not wired to a host logger, and factory-range positive timing entries do not exercise that path.
+
+Validation: nine new cases cover exact target/rate constants, all six distinct release-rate permutations, non-envelope behavior and invalid envelope data. Corrected an initially inaccurate hand-calculated test rate to 65322 after verifying native arithmetic ordering. All 14,979 Release solution tests passed (2,024 Client tests). The nonincremental warning-as-error Release build passed with zero warnings and zero errors. Whitespace validation passed.
+
+Remaining scope: resource-backed instrument/patch loading, voice allocation, reverse ping-pong transforms, reverb and concrete renderer/audio-host integration remain unfinished. Envelope conversion is callable from decoded patch samples but is not yet connected to note initialization. Equal-time repair branch fixtures and native executable differential/live audio validation remain gaps. Changes remain local and uncommitted; no push was requested.
+
+## 2026-10-13 - GUS patch framing and multi-sample reader
+
+Converted native patch framing/traversal into VmMusicWildMidiGusPatchReader.Read. The reader validates the full 22-byte GF1PATCH100/GF1PATCH110 signatures, minimum 239-byte framing header, and native single-instrument/layer limits. It follows the sample count at offset 198, parses each 96-byte sample header, decodes its declared payload, and advances using encoded byte length rather than expanded PCM length. Samples expose decoded PCM, parsed metadata, retained envelope rate/level bytes, and the existing mixer-bound adapter.
+
+Source audit: compared native signature memcmp, limits at offsets 82/151, sample count, initial offset 239, header increment 96, saved payload byte count and final traversal increment. Confirmed raw envelope offsets 37 and 43. Retained native acceptance of zero counts and trailing data. The gus_pat.cpp license is retained. Explicit bounds checks prevent truncated-header/payload reads. Raw envelope bytes are copied independently of the patch input; native release-rate repairs and envelope conversion are not yet applied.
+
+Validation: seven new cases cover both signatures, ordered multi-sample payload traversal, retained envelope bytes/input independence, decoded mixer bounds, empty/trailing-data behavior, short headers/payloads, invalid signatures and unsupported structures. All 14,970 Release solution tests passed (2,015 Client tests). The nonincremental warning-as-error Release build passed with zero warnings and zero errors. Whitespace validation passed.
+
+Remaining scope: envelope-rate conversion and release-rate repairs, resource-backed patch loading, reverse ping-pong transforms, note allocation, reverb and concrete renderer/audio-host integration remain unfinished. This reader is not yet a complete playable instrument loader. No native executable differential or live audio validation was performed. Changes remain local and uncommitted; no push was requested.
+
+## 2026-10-13 - GUS sample header parsing and PCM connection
+
+Converted native GUS sample metadata extraction into VmMusicWildMidiGusSampleHeader.Parse. It reads the 96-byte header's byte length, loop offsets/fraction, sample rate, frequency bounds/root and modes. The pitch increment divisor follows the native unsigned expression ((root * 512) / rate) * 2, preserving division truncation and uint multiplication behavior. Reversed loop bounds are normalized with a fractional-nibble swap before PCM conversion. Decode restricts input to the declared payload length and connects the parsed header to existing forward/reverse/ping-pong decoding and fixed-point mixer conversion.
+
+Source audit: compared gus_pat.cpp metadata offsets, 96-byte header advancement, increment-divisor expression and loop-bound normalization. Retained the native license. Short headers, zero rates and truncated payloads throw explicitly. Frequency ranges are retained without imposing new ordering requirements. Envelope bytes are not converted by this parser; this remains a sample metadata component, not the full patch loader.
+
+Validation: four new cases cover native offsets/divisor, reversed loop normalization through decoder and mixer bounds, reverse sample mode, extra payload exclusion, and malformed headers/rate/payload. All 14,963 Release solution tests passed (2,008 Client tests). The nonincremental warning-as-error Release build passed with zero warnings and zero errors. Whitespace validation passed.
+
+Remaining scope: whole-patch framing/loading and envelope-rate conversion, reverse ping-pong transforms, note allocation, reverb and concrete renderer/audio-host integration remain unfinished. No native executable differential or live audio validation was performed. Changes remain local and uncommitted; no push was requested.
+
+## 2026-10-13 - Decoded PCM to fixed-point mixer bounds
+
+Converted gus_pat.cpp's final sample-bound transformation into VmMusicWildMidiPcmDecoder.ToMixerSample. Decoded integer sample lengths and loop positions become ten-bit fixed-point bounds; the low fractional nibble supplies loop-start fractions and the high nibble supplies loop-end fractions in 64-unit steps. Loop size is computed after fractional insertion. The returned VmMusicWildMidiSampleData retains the decoded array without copying and can feed either managed mixer path.
+
+Source audit: compared final loop_start/loop_end shift-and-OR expressions, subsequent unsigned loop-size subtraction, and data-length shift. Reverse decoding's swapped fraction metadata flows through this conversion unchanged. Native license remains retained. Managed validation rejects unrepresentable lengths, missing guard samples, invalid integer bounds, and zero/negative or out-of-sample active loops instead of allowing unsafe mixer access. The validation is stricter than the native loader; fixed-point arithmetic is equivalent for accepted bounds. Nonlooping fractional loop metadata remains preserved.
+
+Validation: six new cases cover zero/mixed/maximum fraction nibbles, reverse metadata, decoded PCM rendering through mixer bounds, shared sample storage, and invalid lengths/guards/loops. All 14,959 Release solution tests passed (2,004 Client tests). The nonincremental warning-as-error Release build passed with zero warnings and zero errors. Whitespace validation passed.
+
+Remaining scope: GUS patch parsing/loading, reversed header-bound normalization, reverse ping-pong transforms, note allocation, reverb and concrete renderer/audio-host integration remain unfinished. The bounds conversion is now implemented; a host still needs to call it during patch loading. No native executable differential or live audio validation was performed. Changes remain local and uncommitted; no push was requested.
+
+## 2026-10-13 - Forward ping-pong PCM expansion
+
+Converted forward ping-pong expansion for signed/unsigned 8-bit and 16-bit PCM in VmMusicWildMidiPcmDecoder.Decode. Expanded samples preserve the native endpoint sequence, reflected segment, repeated forward segment, tail, two zero guard samples, adjusted loop bounds and unchanged fractional metadata. DecodeForward retains its original transform rejection contract.
+
+Source audit: compared convert_8sp, convert_8up, convert_16sp and convert_16up. Preserved the convert_16up quirk that normalizes unsigned PCM but retains SAMPLE_UNSIGNED metadata; the other unsigned ping-pong converter clears that flag. Expansion uses managed indexed copies in place of native pointer writes. Native license remains retained. Unsafe zero-prefix, short-loop, missing-endpoint and misaligned 16-bit cases throw explicitly. Reverse ping-pong remains unsupported: inspected native reverse routines include unsafe pointer conditions/extra pointer advancement, requiring separate treatment rather than copying undefined behavior.
+
+Validation: five new cases cover all four forward formats, expanded endpoint order, signedness, adjusted loop/data lengths, fractional metadata, native mode flags, and malformed/unsupported boundary cases. All 14,953 Release solution tests passed (1,998 Client tests). The final nonincremental warning-as-error Release build passed with zero warnings and zero errors. Whitespace validation passed.
+
+Remaining scope: reverse ping-pong conversion, patch parsing/loading, fixed-point loop metadata integration, note allocation, reverb and concrete renderer/audio-host integration remain unfinished. No native executable differential or live audio validation was performed. Changes remain local and uncommitted; no push was requested.
+
+## 2026-10-13 - WildMIDI reverse PCM conversion and fractional metadata
+
+Extended VmMusicWildMidiPcmDecoder with Decode for forward and reverse signed/unsigned 8-bit and 16-bit PCM. The existing DecodeForward keeps its original transform rejection contract and delegates common decoding to Decode. Reverse data is written in reverse sample order while retaining the two zero guard samples. The decoded result now carries LoopFraction metadata, preserved for forward samples and nibble-swapped for reverse samples.
+
+Source audit: compared convert_8sr, convert_8ur, convert_16sr, and convert_16ur in gus_pat.cpp. Preserved mirrored byte loop offsets before the 16-bit right shift, fractional nibble swapping, removal of reverse/unsigned flags, other mode flags, and signedness normalization. Native licensing remains retained. Ping-pong conversion still fails explicitly; bounds/payload validation remains in place.
+
+Validation: six new cases cover reversed signed/unsigned samples in both bit depths, guard samples, odd byte-offset mirroring before truncation, fractional metadata transformation/preservation, retained mode flags, and unsupported/invalid inputs. All 14,948 Release solution tests passed (1,993 Client tests). The nonincremental warning-as-error Release build passed with zero warnings and zero errors. Whitespace validation passed.
+
+Remaining scope: ping-pong transforms, GUS patch parsing/loading and fractional-to-fixed-point bounds, note allocation, reverb, and concrete renderer/audio-host integration remain unfinished. No native executable differential or live audio validation was performed. Changes remain local and uncommitted; no push was requested.
+
+## 2026-10-13 - WildMIDI forward PCM sample decoding
+
+Converted gus_pat.cpp's convert_8s, convert_8u, convert_16s, and convert_16u into VmMusicWildMidiPcmDecoder.DecodeForward. It returns signed-short sample storage with the native two zero guard samples, sample count, converted loop offsets, and normalized mode bits. Unsigned formats flip the sign bit; 16-bit input is little-endian and byte loop offsets shift right by one, including native truncation of odd offsets. Eight-bit samples retain native scaling by 256.
+
+Source audit: compared all four forward converters, allocation sizes, unsigned-bit clearing, and offset conversion. The gus_pat.cpp license header is retained. The decoded result uses integer sample units; patch loading must subsequently apply fractional loop metadata and ten-bit fixed-point conversion before constructing mixer bounds. Empty/truncated payloads and invalid bounds throw explicitly instead of native out-of-bounds behavior. Reverse and ping-pong modes throw an explicit unsupported-mode error and are not silently decoded as forward samples.
+
+Validation: eight new cases cover signed/unsigned endpoints in both bit depths, zero guard samples, little-endian ordering, odd byte offsets, feeding decoded PCM into the linear interpolation helper, unsupported transforms, and malformed payload/bounds. All 14,942 Release solution tests passed (1,987 Client tests). The nonincremental warning-as-error Release build passed with zero warnings and zero errors. Whitespace validation passed.
+
+Remaining scope: reverse/ping-pong sample transforms, GUS patch parsing/loading and fractional loop metadata, note allocation, reverb, and concrete renderer/audio-host integration remain unfinished. No native executable differential or live audio validation was performed. Changes remain local and uncommitted; no push was requested.
+
+## 2026-10-13 - WildMIDI Gaussian and Newton enhanced interpolation
+
+Converted init_gauss and WM_Mix_Gauss interpolation into VmMusicWildMidiGaussianInterpolation. The managed implementation lazily initializes the 1,024 fractional-position Gaussian coefficient rows with order 34, plus the native Newton coefficient recurrence/signs. It selects the reduced Newton window near sample boundaries and the 35-sample Gaussian window in the interior. The existing stereo mixer now accepts an optional enhancedResampling flag and uses matching enhanced sample-exhaustion behavior; the default remains linear.
+
+Source audit: compared native coefficient construction, sine-product ordering, boundary window selection, Newton nested evaluation, envelope multiplication before the final int conversion, and stereo integer scaling. Retained the native license. Lazy initialization publishes complete tables safely. Guard/window failures throw explicitly. Floating-point library differences may affect the last bits; native executable differential comparison was not available, so bit-exact native equivalence is not claimed.
+
+Validation: seven new cases cover beginning/end Newton windows with linear-ramp fixtures, interior Gaussian interpolation at an integer position, enhanced mixer exhaustion/silence, and missing boundary guard rejection. All 14,934 Release solution tests passed (1,979 Client tests). The nonincremental warning-as-error Release build passed with zero warnings and zero errors. Whitespace validation passed.
+
+Remaining scope: both managed resampling paths now exist with caller-provided decoded samples, but patch/sample decoding, note-on/replay allocation, reverb, and concrete renderer/audio-host integration remain unfinished. Noninteger interior Gaussian differential fixtures and live audio validation remain gaps. Changes remain local and uncommitted; no push was requested.
+
+## 2026-10-13 - WildMIDI linear interpolation and stereo mixer
+
+Converted WM_Mix_Linear's interpolation and integer stereo accumulation into VmMusicWildMidiLinearMixer. The mixer resolves signed-short sample data and fixed-point bounds for each voice, renders the current sample, then invokes the converted position/envelope/lifecycle path. Replays and successor voices are processed in the same frame after completion, and empty lists produce silence. Output remains the native integer stereo mix for the existing final float conversion helper.
+
+Source audit: checked ten fractional position bits, signed-short sample storage, interpolation division before envelope scaling, stereo volume scaling, and mix-before-advance ordering. Preserved integer truncation, inclusive loop-end behavior, no clipping, and same-frame replay accumulation. Managed unchecked multiply/add operations model wrapping arithmetic; native signed-overflow behavior is not portable and no executable differential comparison was performed. Required interpolation guard samples and complete stereo output frames are validated explicitly. The native license is retained.
+
+Validation: eight new cases cover fractional interpolation, negative integer rounding, stereo scaling, same-frame replay mixing, loop wrapping across frames, silence, and invalid buffers. An initially incorrect negative-rounding test expectation was corrected after tracing native division order. All 14,927 Release solution tests passed (1,972 Client tests). The nonincremental warning-as-error Release build passed with zero warnings and zero errors. Whitespace validation passed.
+
+Remaining scope: this is a usable managed linear mixing core with caller-provided decoded sample data, not a complete synthesizer. Gaussian interpolation, sample decoding, note-on/replay allocation, reverb, and concrete renderer/audio-host integration remain unfinished. Sample providers must supply valid bounds/guard samples and valid acyclic replay relationships. No live audio validation was performed. Changes remain local and uncommitted; no push was requested.
+
+## 2026-10-13 - WildMIDI sample position and loop advancement
+
+Converted native sample-position progression into VmMusicWildMidiSamplePosition.Advance, added uint SamplePosition to the managed voice state, and introduced fixed-point sample bounds. VmMusicWildMidiVoiceLifecycle.AdvanceSample now connects sample exhaustion to voice completion/replay replacement before envelope progression; continuing samples advance the existing envelope helper.
+
+Source audit: compared both WM_Mix_Linear and WM_Mix_Gauss position blocks and verified unsigned-int sample/bound fields in wildmidi/common.h. Preserved 32-bit unsigned addition, strict position > loop_end wrapping, modulo overshoot, and the Gaussian mixer's additional loop-end gate on nonlooping exhaustion. SampleIncrement remains the existing ulong API but is narrowed to native uint width during position advancement. Malformed zero-size loops throw before position mutation instead of native modulo-by-zero. Native licensing is retained.
+
+Validation: nine new cases cover inclusive loop boundaries, multi-loop overshoot, differing linear/Gaussian exhaustion gates, unsigned position wraparound, exhaustion-before-envelope ordering with replay replacement, continuing envelope progression, and zero-size rejection. All 14,919 Release solution tests passed (1,964 Client tests). The nonincremental warning-as-error Release build passed with zero warnings and zero errors. Whitespace validation passed.
+
+Remaining scope: the host must invoke advancement after mixing the current sample. Actual interpolation/sample mixing, sample decoding, note-on/replay allocation, reverb, and concrete renderer/audio-host integration remain unfinished. No native executable differential or live audio validation was performed. Changes remain local and uncommitted; no push was requested.
+
+## 2026-10-13 - WildMIDI voice completion and replay lifecycle
+
+Converted the native mixer's shared END_THIS_NOTE behavior into VmMusicWildMidiVoiceLifecycle.Complete using the managed ordered voice list. Completion removes a voice or replaces it in place with its queued replay, marks the old voice inactive, activates a replay, and returns the next voice to process. AdvanceEnvelope connects the previously converted envelope completion signal to this lifecycle and returns the cursor for same-frame processing: unchanged after completion and incremented after a continuing envelope.
+
+Source audit: compared with wildmidi_lib.cpp's native removal/replay block. Preserved head/middle/tail ordering, the old voice's replay reference, replay state, and same-frame processing of replacement/successor voices. The native linked-list representation is replaced by an IList; a mutable list with unique voice entries and valid replay links is required. Read-only lists and invalid indices throw before active-state mutation. The native license header is retained.
+
+Validation: eight new tests cover removal and replay replacement at all three list positions, envelope-to-lifecycle integration and cursor behavior, and invalid/read-only list rejection. All 14,910 Release solution tests passed (1,955 Client tests). The nonincremental Release warning-as-error build passed with zero warnings and zero errors. Whitespace validation passed.
+
+Remaining scope: sample exhaustion may call Complete, but sample-position advancement/mixing is still unconverted and there is no concrete mixer host invoking this lifecycle yet. Note-on/replay allocation, sample decoding, reverb, concrete renderer and audio-host integration remain unfinished. No native executable differential or live audio validation was performed. Changes remain local and uncommitted; no push was requested.
+
+## 2026-10-13 - WildMIDI envelope progression and deferred note release
+
+Converted the native mixer envelope-step logic into VmMusicWildMidiEnvelope.Advance. Each step advances and clamps the envelope level, selects the next stage and rate, consumes deferred attack-stage note-off through the existing release helper, preserves pedal hold and sustain ordering, handles clamped release, and stops looping at a nonzero final target. Zero final targets and stage six return an explicit completion signal for the future mixer lifecycle implementation.
+
+Source audit: compared against the linear mixer envelope block and the Gaussian mixer's deferred-release/rate selection. Preserved zero-increment early exit, sustain precedence over clamped mode, and recomputation of the increment after deferred release. The native license header is retained. Managed malformed state throws explicitly; unchecked level arithmetic follows the existing state representation and does not establish cross-platform native overflow equivalence.
+
+Validation: nine new cases cover attack overshoot/deferred release, pedal hold, sustain/clamped combinations, both terminal stages, nonzero release targets, and stopped/in-progress envelopes. All 14,902 Release solution tests passed (1,947 Client tests). The nonincremental Release warning-as-error build completed with zero warnings and zero errors. Whitespace validation passed.
+
+Remaining scope: this helper is converted code, but sample mixing, voice-list removal/replay replacement, sample decoding, reverb, and concrete renderer/audio-host integration remain unfinished. No native executable differential or live audio validation was performed. Changes remain local and uncommitted; no push was requested in this turn.
+
+## 2026-10-13 - WildMIDI voice volume assignment and master-volume conversion
+
+Connected converted note-volume calculation to mutable voice MixVolume state via VmMusicWildMidiNoteVolume.Adjust. Native channel-index clamping to fifteen is preserved, including all-channel sentinel values; the helper requires sixteen channel states. Converted Renderer::SetMasterVolume lookup into MasterVolume(byte), selecting the linear table entry after clamping to 127. The returned value must be stored by renderer-level master state; this batch does not introduce native global master-volume storage.
+
+Two integration tests connect channel volume mutation through voice/replay traversal into stored mix volumes with different velocities, and verify all-channel sentinel clamping plus master-volume table endpoints. Native's sentinel behavior deliberately uses the last channel state rather than each voice's own channel. Existing native license retained.
+
+Full Release solution tests pass: 14,893 total, including 1,938 Client. Clean nonincremental Release warning-as-error build passes with zero warnings/errors; whitespace validation passes.
+
+Scope: volume assignment and master lookup are connected/converted. Live renderer callback installation and MIDI event wiring, note-on/replay allocation, deferred mixer release progression, sample decoding, mixing/reverb, concrete renderer/session integration, reader ownership, production audio integration, threaded callbacks, SMPTE timing, unusual EMIDI loops, native executable differential testing, and real-device validation remain unfinished or unverified. No commit or push was made.
+
+## 2026-10-13 - WildMIDI per-note volume calculation conversion
+
+Converted AdjustNoteVolumes arithmetic from thirdparty wildmidi_lib.cpp into VmMusicWildMidiNoteVolume.Compute, returning typed left/right mix volumes. Exact native linear, logarithmic and pan tables are embedded with original license. Integer velocity/expression/volume indexing, signed balance/pan offset and clamping, master-volume divisor four, float table precision, double power calculation, and final integer truncation are preserved. The helper receives the selected channel state directly; native channel-index clamping remains a caller concern.
+
+Three regression cases cover linear/logarithmic center symmetry, zero velocity/master silence, fixed hard-left/right output 256/0, and native equivalence of pan zero/one. Out-of-table combined volume explicitly throws instead of reproducing native out-of-bounds memory access. Native executable differential verification and broader intermediate-volume vectors remain unverified. No mixer/voice field assignment is included in this pure computation helper.
+
+Full Release solution tests pass: 14,891 total, including 1,936 Client. Clean nonincremental Release warning-as-error build passes with zero warnings/errors; whitespace validation passes.
+
+Scope: per-note volume arithmetic/tables are newly converted. Voice/channel callback wiring, master-volume setup, live MIDI event wiring, note-on/replay allocation, deferred mixer release progression, sample decoding, mixing/reverb, concrete renderer/session integration, reader ownership, production audio integration, threaded callbacks, SMPTE timing, unusual EMIDI loops, native executable differential testing, and real-device validation remain unfinished or unverified. No commit or push was made.
+
+## 2026-10-13 - WildMIDI channel-volume voice traversal conversion
+
+Converted Renderer::AdjustChannelVolumes from thirdparty wildmidi_lib.cpp into VmMusicWildMidiChannelVolume.Adjust. Channels zero through fifteen filter supplied linked voices; values above fifteen through native byte maximum adjust every voice. The original channel argument is forwarded unchanged, including sentinel 16, as native AdjustNoteVolumes clamps it itself. Each voice is adjusted before its direct replay; Active is not checked. Original native license retained.
+
+Five regression cases cover channel filtering, all-channel sentinels 16/255, inactive entries and replay ordering, volume-controller integration after channel mutation, and adjustment exception identity before replay processing. The existing controller callback can use the converted traversal, while per-note volume math remains supplied by the host. Negative or non-byte channel selectors are explicitly rejected.
+
+Full Release solution tests pass: 14,888 total, including 1,933 Client. Clean nonincremental Release warning-as-error build passes with zero warnings/errors; whitespace validation passes.
+
+Scope: channel-volume traversal is newly converted. AdjustNoteVolumes arithmetic/tables, live MIDI event wiring, note-on/replay allocation, deferred mixer release progression, sample decoding, mixing/reverb, concrete renderer/session integration, reader ownership, production audio integration, threaded callbacks, SMPTE timing, unusual EMIDI loops, native executable differential testing, and real-device validation remain unfinished or unverified. No commit or push was made.
+
+## 2026-10-13 - WildMIDI SysEx recognition and routing conversion
+
+Converted Renderer::LongEvent from thirdparty wildmidi_lib.cpp into VmMusicWildMidiSystemExclusive.Handle and connected recognized messages to managed drum-track/channel-reset handlers. Roland framing/manufacturer/device/model/address checks precede checksum verification. Drum parts map native part zero to channel nine, parts one through nine to zero through eight, and remaining parts unchanged. Exact GM and Yamaha reset byte sequences use the shared reset handler. Unknown/truncated/bad-checksum messages return unhandled without channel mutation. Original third-party license retained.
+
+Eight regression cases cover all three reset formats, four drum-part mapping boundaries, checksum rejection, truncation and unknown messages. The checksum intentionally preserves native 128-minus-low-seven-bits behavior, including the zero-sum edge yielding 128 rather than masking to zero. Accumulating modulo 128 avoids sum overflow without changing checksum results. The parser requires sixteen nonnull channel states. A test analyzer warning was fixed; final validation is clean.
+
+Full Release solution tests pass: 14,883 total, including 1,928 Client. Clean nonincremental Release warning-as-error build passes with zero warnings/errors; whitespace validation passes.
+
+Scope: SysEx recognition/routing is newly converted and connected to managed reset/drum policy. Concrete renderer event dispatch, actual volume calculation, note-on/replay allocation, deferred mixer release progression, sample decoding, mixing/reverb, renderer/session integration, reader ownership, production audio integration, threaded callbacks, SMPTE timing, unusual EMIDI loops, native executable differential testing, and real-device validation remain unfinished or unverified. No commit or push was made.
+
+## 2026-10-13 - WildMIDI drum switching and GM channel reset conversion
+
+Converted do_sysex_roland_drum_track and do_sysex_gm_reset from thirdparty wildmidi_lib.cpp into patch-lookup SetDrumTrack and ResetChannels. Positive drum-track values enable percussion/clear patch; zero or negative values select melodic mode and default patch zero without changing bank. GM reset initializes all sixteen channels with native defaults and default patches except channel index nine. Volume adjustment receives native all-channel sentinel 16 before index nine is marked percussion. Native NonRegistered and PitchAdjust are preserved because GM reset does not assign them. Roland/Yamaha reset helpers share this GM behavior in native; SysEx parsing/routing remains unfinished.
+
+Four regression cases cover drum enable/disable values, default patch lookup, bank preservation, all-channel defaults, fifteen default patch lookups, callback ordering, and preserved parameter/pitch-adjust fields. Managed reset requires exactly sixteen nonnull states before mutation. Existing native license retained.
+
+Full Release solution tests pass: 14,875 total, including 1,920 Client. Clean nonincremental Release warning-as-error build passes with zero warnings/errors; whitespace validation passes.
+
+Scope: drum-switch and channel-reset policy are newly converted. SysEx identification/dispatch, actual volume calculation, live MIDI event wiring, note-on/replay allocation, deferred mixer release progression, sample decoding, mixing/reverb, concrete renderer/session integration, reader ownership, production audio integration, threaded callbacks, SMPTE timing, unusual EMIDI loops, native executable differential testing, and real-device validation remain unfinished or unverified. No commit or push was made.
+
+## 2026-10-13 - WildMIDI sample increment calculation conversion
+
+Converted Renderer::get_inc from thirdparty wildmidi_lib.cpp into VmMusicWildMidiSampleIncrement.Compute, with the exact native frequency table extracted into the managed source and original third-party license retained. Patch-note override precedes note-id low-seven-bit selection. Pitch-adjusted cents clamp to 0-12700, then frequency-table lookup/octave shift and integer rate/sample divisor operations preserve native calculation order. Extreme managed pitch adjustments clamp without overflowing the addition. Invalid rates/divisors surface explicit exceptions rather than dividing by zero.
+
+Added patch-note and increment-divisor metadata to managed voice state and a pitch-bend overload that uses the converted calculation without a host compute callback. Four regression cases cover a fixed middle-C increment, channel-bit masking, patch override, octave/cent changes, extreme clamping, invalid divisors, and integrated pitch-bend computation. Concrete sample decoding must populate the divisor and patch-note metadata. Native unsigned-long platform overflow is not emulated; supported factory sample rates and normal sample divisors are the target domain.
+
+Full Release solution tests pass: 14,871 total, including 1,916 Client. Clean nonincremental Release warning-as-error build passes with zero warnings/errors; whitespace validation passes.
+
+Scope: sample increment math is newly converted and integrated with managed pitch bend. Actual volume calculation, live MIDI dispatch wiring, note-on/replay allocation, deferred mixer release progression, sample decoding, mixing/reverb, concrete renderer/session integration, reader ownership, production audio integration, threaded callbacks, SMPTE timing, unusual EMIDI loops, native executable differential testing, and real-device validation remain unfinished or unverified. No commit or push was made.
+
+## 2026-10-13 - WildMIDI pitch-bend conversion
+
+Converted Renderer::do_pitch from thirdparty wildmidi_lib.cpp into VmMusicWildMidiPitchBend.Apply. Pitch data minus 0x2000 narrows to signed short; pitch-range multiplication divides by 8192 for negative pitch and 8191 otherwise, with native truncation toward zero. Matching linked voices have sample increments recalculated after channel state changes. Native does not check Active or separately traverse Replay pointers here; both behaviors are preserved. Note state now stores an unsigned sample increment. Original native license retained.
+
+Six regression cases cover minimum/center/maximum bend, tiny positive/negative truncation, channel isolation, inactive matching voices, unchanged detached replay increments, and increment exception propagation preserving prior voice increment while channel state remains updated. The callback must implement native get_inc and retains responsibility for sample/frequency tables; this batch does not convert that calculation.
+
+Full Release solution tests pass: 14,867 total, including 1,912 Client. Clean nonincremental Release warning-as-error build passes with zero warnings/errors; whitespace validation passes.
+
+Scope: pitch-bend state/voice update policy is newly converted. get_inc frequency calculation, actual volume calculation, live MIDI dispatch wiring, note-on/replay allocation, deferred mixer release progression, sample decoding, mixing/reverb, concrete renderer/session integration, reader ownership, production audio integration, threaded callbacks, SMPTE timing, unusual EMIDI loops, native executable differential testing, and real-device validation remain unfinished or unverified. No commit or push was made.
+
+## 2026-10-13 - WildMIDI channel-pressure conversion
+
+Converted Renderer::do_channel_pressure from thirdparty wildmidi_lib.cpp into VmMusicWildMidiAftertouch.ApplyChannelPressure. Matching channel voices are processed in supplied native linked-list order, with byte-narrowed pressure assigned before volume adjustment and direct replay adjustment immediately afterward. Native channel-pressure handling does not check Active or update channel.pressure; both behaviors are preserved. Polyphonic and channel pressure now share the private voice/replay adjustment helper. Existing native license retained.
+
+Three regression cases verify channel isolation, inactive voice/replay processing, pressure narrowing/order, adjustment exception propagation before later mutation, and channel validation before mutation. Existing polyphonic aftertouch tests continue passing after helper extraction. Actual volume adjustment and live voice enumeration are host-supplied.
+
+Full Release solution tests pass: 14,861 total, including 1,906 Client. Clean nonincremental Release warning-as-error build passes with zero warnings/errors; whitespace validation passes.
+
+Scope: channel-pressure policy is newly converted. Actual volume calculation, live MIDI dispatch wiring, note-on/replay allocation, deferred mixer release progression, sample decoding, mixing/reverb, concrete renderer/session integration, reader ownership, production audio integration, threaded callbacks, SMPTE timing, unusual EMIDI loops, native executable differential testing, and real-device validation remain unfinished or unverified. No commit or push was made.
+
+## 2026-10-13 - WildMIDI program change conversion
+
+Converted Renderer::do_patch from thirdparty wildmidi_lib.cpp into VmMusicWildMidiPatchLookup.ChangeProgram. Melodic channels combine the current bank and raw program value, narrow to ushort, and use the converted exact/bank-zero lookup; lookup miss clears the selected patch. Percussion channels instead narrow the program to byte and change bank without touching selected patch or invoking lookup. Channel state now carries a typed selected patch reference. Existing native license retained.
+
+Three regression cases verify melodic bank/fallback order and clearing on miss, percussion bank narrowing with no lookup/patch mutation, and lookup exception identity with prior patch retained. Selecting a patch does not load samples or increment device patch use counts; those remain separate native operations. Live program-change MIDI dispatch remains to be installed.
+
+Full Release solution tests pass: 14,858 total, including 1,903 Client. Clean nonincremental Release warning-as-error build passes with zero warnings/errors; whitespace validation passes.
+
+Scope: program selection policy is newly converted and connected to managed channel/patch state. Actual volume adjustment, channel/voice MIDI dispatch wiring, note-on/replay allocation, sample decoding, mixing/reverb, concrete renderer/session integration, reader ownership, production audio integration, threaded callbacks, SMPTE timing, unusual EMIDI loops, native executable differential testing, and real-device validation remain unfinished or unverified. No commit or push was made.
+
+## 2026-10-13 - WildMIDI channel and voice controller dispatch integration
+
+Connected controller 64 hold, 120 sound-off, and 123 notes-off into a voice-aware overload of VmMusicWildMidiChannelControls.Apply, matching Renderer::ShortEvent's native control routing. Other controls reuse the existing channel dispatcher. Channel state now carries percussion mode, used for native notes-off exclusion. Dependencies/channel bounds are validated before dispatch. Unknown controllers remain unhandled; voice commands do not invoke channel-volume adjustment.
+
+Two integration tests exercise pedal-down, host-provided new-note hold inheritance, notes-off marking, pedal-up envelope release, sound-off deactivation, drum exclusion, basic volume delegation, and unknown-controller behavior. Native license remains in the source. This batch connects already converted handlers into one reusable dispatcher; it does not implement new-note allocation or live MIDI message parsing.
+
+Full Release solution tests pass: 14,855 total, including 1,900 Client. Clean nonincremental Release warning-as-error build passes with zero warnings/errors; whitespace validation passes.
+
+Scope: managed control dispatch is connected. Actual volume adjustment, live channel/voice MIDI event wiring, note-on/replay allocation and hold inheritance, deferred mixer release progression, sample decoding, mixing/reverb, concrete renderer/session integration, reader ownership, production audio integration, threaded callbacks, SMPTE timing, unusual EMIDI loops, native executable differential testing, and real-device validation remain unfinished or unverified. No commit or push was made.
+
+## 2026-10-13 - WildMIDI hold-pedal conversion
+
+Converted do_control_channel_hold from thirdparty wildmidi_lib.cpp into VmMusicWildMidiNoteRelease.HoldPedal. Values above 63 set channel hold without modifying existing voices. Pedal-up clears hold for all matching voices; HOLD_OFF voices release at clamped stage five or default stage four, bypassing sustain priority. Non-envelope pending releases stop looping and clear increment. Other channels, IsOff, and already-later envelope stages are preserved. Existing native license retained.
+
+Five regression cases cover pedal threshold and existing-voice behavior, sustain/clamped priority, release direction, pending non-envelope loop termination, unmarked held voices clearing hold without release, and channel isolation. Managed input/array checks surface invalid state; callbacks and MIDI controller routing are not introduced by this helper. Channel hold changes before per-voice processing as native.
+
+Full Release solution tests pass: 14,853 total, including 1,898 Client. Clean nonincremental Release warning-as-error build passes with zero warnings/errors; whitespace validation passes.
+
+Scope: hold-pedal policy is newly converted. Actual volume adjustment, channel/voice MIDI dispatch wiring, note-on/replay allocation and hold inheritance, deferred mixer release progression, sample decoding, mixing/reverb, concrete renderer/session integration, reader ownership, production audio integration, threaded callbacks, SMPTE timing, unusual EMIDI loops, native executable differential testing, and real-device validation remain unfinished or unverified. No commit or push was made.
+
+## 2026-10-13 - WildMIDI all-notes-off conversion
+
+Converted do_control_channel_notes_off from thirdparty wildmidi_lib.cpp into VmMusicWildMidiNoteRelease.NotesOff. Percussion channels return without processing voices. Matching held voices gain HOLD_OFF; matching unheld envelope voices before stage five enter stage five with target-directed increment. Native behavior deliberately differs from individual note-off: sustain priority and initial-stage deferral are not used, Active is not checked, and non-envelope loops remain unchanged. Native license retained.
+
+Four regression cases cover stage-five direction/equality and sustain bypass, inactive voice handling, held/non-envelope/channel isolation, percussion exclusion, and no regression of later stages. Managed channel and required sample-array validation surfaces invalid input. The host supplies voice enumeration and routes the MIDI controller; this helper is not yet installed in a live renderer.
+
+Full Release solution tests pass: 14,848 total, including 1,893 Client. Clean nonincremental Release warning-as-error build passes with zero warnings/errors; whitespace validation passes.
+
+Scope: all-notes-off policy is newly converted. Hold-pedal handling, actual volume adjustment, channel/voice MIDI dispatch wiring, note-on/replay allocation, sample decoding, mixing/reverb, concrete renderer/session integration, reader ownership, production audio integration, threaded callbacks, SMPTE timing, unusual EMIDI loops, native executable differential testing, and real-device validation remain unfinished or unverified. No commit or push was made.
+
+## 2026-10-13 - WildMIDI controller reset and sound-off conversion
+
+Converted do_control_channel_controllers_off into controller 121 of the managed channel dispatcher, and do_control_channel_sound_off into VmMusicWildMidiNoteRelease.SoundOff. Reset restores expression/pressure 127, registered parameter 0xFFFF, pitch range 200, zero pitch/adjustment/hold, then adjusts volumes once. Native bank/volume/balance/pan and nonregistered mode are preserved. Channel state includes the added reset fields; pitch adjustment uses long to retain native signed-long range. SoundOff deactivates matching channel voices and clears their replay pointers without changing detached replay state.
+
+Three regression cases verify reset callback ordering and preserved fields, sound-off channel isolation/replay detachment, and invalid-channel validation before mutation. Native license retained. The host supplies the native linked-voice order as an enumerable; MIDI routing to SoundOff remains a host responsibility. Sound-off intentionally does not perform note-release envelope processing.
+
+Full Release solution tests pass: 14,844 total, including 1,889 Client. Clean nonincremental Release warning-as-error build passes with zero warnings/errors; whitespace validation passes.
+
+Scope: controller reset and sound-off policy are newly converted. Hold/notes-off, actual volume adjustment, channel/voice MIDI dispatch wiring, note-on/replay allocation, sample decoding, mixing/reverb, concrete renderer/session integration, reader ownership, production audio integration, threaded callbacks, SMPTE timing, unusual EMIDI loops, native executable differential testing, and real-device validation remain unfinished or unverified. No commit or push was made.
+
+## 2026-10-13 - WildMIDI parameter selection and data stepping conversion
+
+Converted nonregistered/registered parameter fine/coarse selection and data increment/decrement handlers from thirdparty wildmidi_lib.cpp into the existing channel controller dispatcher. Controllers 98/100 retain native 0x3F80 fine-selection mask and switch nonregistered mode; 99/101 preserve low seven bits and shift the incoming coarse value. Native unsigned-short narrowing is retained. Controllers 96/97 step pitch range only for selected registered parameter zero, respecting native upper 0x3FFF and lower zero conditions; incoming controller value does not change step size.
+
+Five regression cases verify fine/coarse masks and both modes, parameter-zero selection followed by coarse/fine data entry, stepping, bounds, and disabling pitch edits by switching nonregistered mode. These handlers do not call volume adjustment. Native license remains in the expanded source file.
+
+Full Release solution tests pass: 14,841 total, including 1,886 Client. Clean nonincremental Release warning-as-error build passes with zero warnings/errors; whitespace validation passes.
+
+Scope: parameter selection/data stepping are newly converted and wired into the managed controller helper. Hold, controller reset/sound-off/notes-off, actual volume adjustment, channel/MIDI dispatch wiring, note-on/replay allocation, sample decoding, mixing/reverb, concrete renderer/session integration, reader ownership, production audio integration, threaded callbacks, SMPTE timing, unusual EMIDI loops, native executable differential testing, and real-device validation remain unfinished or unverified. No commit or push was made.
+
+## 2026-10-13 - WildMIDI basic channel controller conversion
+
+Converted bank select, channel volume/balance/pan/expression, and coarse/fine pitch-range data-entry handlers from thirdparty wildmidi_lib.cpp into VmMusicWildMidiChannelControls and typed channel state. Controller numbers follow standard/native dispatch. Byte/signed-byte/short narrowing is preserved. Volume-related state changes precede one channel-volume adjustment callback. Bank and pitch-range changes do not trigger that callback. Data entry only changes pitch range when registered parameter zero is selected and nonregistered mode is off.
+
+Eight regression cases cover all four volume controls and signed/unsigned narrowing, bank selection and unknown controls, coarse/fine component preservation with short overflow, and both parameter-selection exclusion conditions. Native license retained. State defaults are zero as a DTO, not renderer startup defaults; the host must initialize channel state. Unknown controls are unhandled so additional native handlers can be installed later.
+
+Full Release solution tests pass: 14,836 total, including 1,881 Client. Clean nonincremental Release warning-as-error build passes with zero warnings/errors; whitespace validation passes.
+
+Scope: basic controller state transitions are newly converted. Hold, parameter selection, controller reset and other handlers, actual volume adjustment, channel/MIDI dispatch wiring, note-on/replay allocation, sample decoding, mixing/reverb, concrete renderer/session integration, reader ownership, production audio integration, threaded callbacks, SMPTE timing, unusual EMIDI loops, native executable differential testing, and real-device validation remain unfinished or unverified. No commit or push was made.
+
+## 2026-10-13 - WildMIDI polyphonic aftertouch conversion
+
+Converted Renderer::do_aftertouch from thirdparty wildmidi_lib.cpp into VmMusicWildMidiAftertouch.Apply. The existing note state now includes byte velocity and a replay reference. Active primary voice is preferred, otherwise active secondary; inactive voices remain untouched. Pressure narrows to unsigned byte before volume adjustment. The selected voice is adjusted first, then its direct replay voice regardless of replay Active state, matching native ordering. Native third-party license retained.
+
+Four regression cases cover primary/secondary selection, byte narrowing of oversized/negative pressure, replay propagation and ordering, inactive no-op, and adjustment exception identity with replay still unchanged. Volume callbacks are not swallowed; selected velocity remains changed if adjustment throws, matching operation order. Channel/note table access and actual AdjustNoteVolumes calculation remain host responsibilities.
+
+Full Release solution tests pass: 14,828 total, including 1,873 Client. Clean nonincremental Release warning-as-error build passes with zero warnings/errors; whitespace validation passes.
+
+Scope: aftertouch voice mutation/dispatch is newly converted, not the volume/mixer implementation. Note-on/replay allocation, channel/table integration, sample decoding, mixing/reverb, concrete renderer/session integration, reader ownership, production audio integration, threaded callbacks, SMPTE timing, unusual EMIDI loops, native executable differential testing, and real-device validation remain unfinished or unverified. No commit or push was made.
+
+## 2026-10-13 - WildMIDI note-off voice routing conversion
+
+Converted do_note_off from thirdparty wildmidi_lib.cpp into VmMusicWildMidiNoteRelease.NoteOff. The host supplies the channel/note's primary and secondary voice states; primary wins when active, otherwise secondary is selected. Inactive voices and nonlooping percussion are unhandled without state mutation. Envelope stage zero marks IsOff for deferred release, preserving the native short-note audibility fix. Other voices call the converted release helper with the selected voice's envelope arrays. Active state and sample envelope arrays are now represented in the note state.
+
+Four regression cases verify primary priority, secondary fallback, inactive/percussion exclusions, looping percussion acceptance, initial-envelope deferral, and subsequent release using selected sample targets/rates. No channel/table indexing or velocity interpretation is introduced by this helper; those remain renderer responsibilities. Existing native license retained.
+
+Full Release solution tests pass: 14,824 total, including 1,869 Client. Clean nonincremental Release warning-as-error build passes with zero warnings/errors; whitespace validation passes.
+
+Scope: native note-off selection/deferral policy is converted and connected to envelope release. Voice-table allocation and MIDI event dispatch into it, deferred release during mixer progression, note-on/replay behavior, sample decoding, mixing/reverb, concrete renderer/session integration, reader ownership, production audio integration, threaded callbacks, SMPTE timing, unusual EMIDI loops, native executable differential testing, and real-device validation remain unfinished or unverified. No commit or push was made.
+
+## 2026-10-13 - WildMIDI note-release envelope conversion
+
+Converted do_note_off_extra from thirdparty wildmidi_lib.cpp into VmMusicWildMidiNoteRelease with an explicit mutable note-release state. Native license retained and sample flags verified against common.h. Non-envelope voices stop looping and clear envelope increment; held envelope voices mark HOLD_OFF. Sustain selects stage 3 before clamped stage 5, otherwise stage 4. Release does not regress a voice already at/past its release stage; increment direction follows the strict envelope-level/target comparison.
+
+Six regression cases cover sustain/clamped/default and combined-flag priority, held voices, non-envelope loop removal while preserving other flags, equal-target positive rate, and already-released stages. Managed array capacity checks occur before state mutation when a stage transition needs sample data. Integer negation uses unchecked arithmetic. This is the release helper only; do_note_off routing, percussion rules, and initial-envelope deferral are not included.
+
+Full Release solution tests pass: 14,820 total, including 1,865 Client. Clean nonincremental Release warning-as-error build passes with zero warnings/errors; whitespace validation passes.
+
+Scope: note-release envelope policy is newly converted. Note-on/off routing, voice-table/mixer wiring, sample decoding, mixing/reverb, concrete renderer/session integration, reader ownership, production audio integration, threaded callbacks, SMPTE timing, unusual EMIDI loops, native executable differential testing, and real-device validation remain unfinished or unverified. No commit or push was made.
+
+## 2026-10-13 - WildMIDI device patch reference release conversion
+
+Converted the patch-reference portion of thirdparty wildmidi_lib.cpp freeMDI into VmMusicWildMidiPatchLoading.Release. Every device-list entry decrements its patch use count, including duplicate bank-fallback references. Sample cleanup occurs only at zero, followed by clearing Loaded. Shared patches remain loaded for other devices. The typed patch contract now permits the loaded-state update. Concrete sample memory release is supplied by the host callback.
+
+Three tests verify duplicate reference balancing and one free, shared patches surviving until the last device release, empty-list repeat safety, and cleanup exception identity. Managed entries are removed before calling sample cleanup so a subsequent release cannot decrement that reference twice; later entries remain pending on failure. A failed sample cleanup leaves Loaded unchanged and requires separate host recovery for that patch; it is not silently retried. This callback failure policy is a managed extension to native nonthrowing free calls.
+
+Full Release solution tests pass: 14,814 total, including 1,859 Client. Clean nonincremental Release warning-as-error build passes with zero warnings/errors; whitespace validation passes.
+
+Scope: device patch-reference release policy is converted, not the entire freeMDI lifecycle. Concrete sample decoding/freeing, note/reverb/mix-buffer disposal, mixing, reader ownership, renderer/session wiring, production audio integration, threaded callbacks, SMPTE timing, unusual EMIDI loops, native executable differential testing, and real-device validation remain unfinished or unverified. No commit or push was made.
+
+## 2026-10-13 - WildMIDI patch loading state conversion
+
+Converted Instruments::load_patch from thirdparty wildmidi_lib.cpp into VmMusicWildMidiPatchLoading with a typed patch contract and explicit result enum. Device-list duplicate checks precede lookup; unloaded patches request sample loading, exactly -1 means failure, and patches without samples are excluded. Successful patches are appended and their use count incremented. Existing patch lookup supplies bank fallback. Third-party copyright/license retained.
+
+Six regression cases cover successful loading and duplicate suppression, -1 rejection versus another negative result, missing samples, missing patch, throwing decoder, and repeated bank fallback. The native duplicate check compares requested ID against stored patch ID: a bank fallback can therefore append the same patch again and increment its use count again. This quirk is preserved. Results expose native early-return reasons without adding logging in the reusable layer. Caller callbacks must maintain coherent Loaded/HasSamples state.
+
+Full Release solution tests pass: 14,811 total, including 1,856 Client. Clean nonincremental Release warning-as-error build passes with zero warnings/errors; whitespace validation passes.
+
+Scope: patch loading orchestration is converted; actual sample decoding, patch release/use-count decrement lifecycle, mixing/reverb, concrete renderer wiring, reader ownership, session routing, production audio integration, threaded callbacks, SMPTE timing, unusual EMIDI loops, native executable differential testing, and real-device validation remain unfinished or unverified. No commit or push was made.
+
+## 2026-10-13 - WildMIDI patch identifier and sample selection conversion
+
+Converted Renderer::LoadInstrument identifier packing, Instruments::get_patch_data bank fallback policy, and get_sample_data selection from thirdparty wildmidi_lib.cpp into VmMusicWildMidiPatchLookup. Original third-party copyright/license retained. Instrument IDs narrow to unsigned 16 bits after bank shift, raw instrument OR, and nonzero percussion flag. Exact patch lookup precedes bank-zero fallback while preserving the low byte/percussion bit. The host exact-lookup callback must represent a consistent patch collection; native empty buckets return immediately while the abstract helper may perform an additional unsuccessful lookup.
+
+Sample selection preserves native strict frequency bounds, frequency-zero first sample, first-sample default, and last eligible sample fallback when no range contains the frequency. Eleven regression cases cover ID narrowing and nonboolean percussion values, lookup order and bank-zero miss, frequency zero, exact low/high edges and gaps. Helpers do not load patch bytes or update native patch use counts.
+
+Full Release solution tests pass: 14,805 total, including 1,850 Client. Clean nonincremental Release warning-as-error build passes with zero warnings/errors; whitespace validation passes.
+
+Scope: patch lookup and sample selection policy are newly converted but require concrete instrument/mixer wiring. Patch decoding/loading and use-count lifecycle, mixing, reverb, reader ownership, WildMIDI session routing, production audio integration, threaded callbacks, SMPTE timing, unusual EMIDI loops, native executable differential testing, and real-device validation remain unfinished or unverified. No commit or push was made.
+
+## 2026-10-13 - WildMIDI integer mixer output conversion
+
+Converted the post-mix integer-to-float loop from thirdparty wildmidi_lib.cpp Renderer::ComputeOutput into VmMusicWildMidiMixerOutput.Convert. The original third-party copyright/license header is retained. Each signed integer is converted to float before multiplication by 1.3f/32768f, preserving WildMIDI's boost without clipping. The helper writes only produced samples and leaves the remaining destination unchanged. Complete stereo frames and sufficient output capacity are validated before mutation.
+
+Three tests cover positive/negative full-scale and boosted values, zero and half-scale, destination tail preservation, extreme integer conversion, finite results, odd/undersized buffer rejection, and empty input. This helper belongs after integer mixing and reverb; it is not applied by the existing renderer forwarding wrapper, which expects already converted float output. Concrete renderer integration must apply conversion exactly once.
+
+Full Release solution tests pass: 14,794 total, including 1,839 Client. Clean nonincremental Release warning-as-error build passes with zero warnings/errors; whitespace validation passes.
+
+Scope: only final mixer sample conversion is newly converted. Integer mixing, reverb, concrete renderer integration, reader resource ownership, instrument decoding, WildMIDI session routing, production audio integration, threaded callbacks, SMPTE timing, unusual EMIDI loops, native executable differential testing, and real-device validation remain unfinished or unverified. No commit or push was made.
+
+## 2026-10-13 - WildMIDI renderer construction conversion
+
+Added VmMusicWildMidiFactory.Create to connect the converted instrument cache and startup settings in native WildMIDIDevice constructor order. Requested rates in 11025-65535 are accepted; rates outside that inclusive interval use 44100, matching SoftSynthMIDIDevice construction. Instruments are loaded before renderer allocation, then both startup option flags are applied together. The caller owns the returned renderer and its implementation must retain the instrument dependency. Configuration selection remains an explicit preceding host step.
+
+Six regression cases cover inclusive rate boundaries and just-outside fallback, reader/sample-rate forwarding, configuration loading before allocation, startup options, caller ownership on success, initialization failure cleanup, and simultaneous initialization/disposal errors. Cleanup catches preserve original exceptions or aggregate both errors; cached instruments remain available after renderer failure. Null renderer allocation is explicitly unavailable. Native license retained.
+
+Full Release solution tests pass: 14,791 total, including 1,836 Client. Clean nonincremental Release warning-as-error build passes with zero warnings/errors; whitespace validation passes.
+
+Scope: renderer construction orchestration is converted, not the renderer/mixer itself. Concrete allocators and reader resource ownership, instrument decoding, WildMIDI session routing, production audio integration, threaded callbacks, SMPTE timing, unusual EMIDI loops, native executable differential testing, and real-device validation remain unfinished or unverified. No commit or push was made.
+
+## 2026-10-13 - WildMIDI configuration reader selection conversion
+
+Converted WildMidi_SetupConfig selection logic into instrument-cache SetupConfiguration. Empty arguments select the configured default; loaded-name comparison ignores case. Client reader lookup precedes filesystem probing. Existing files with the exact four-byte ZIP local-header signature try a valid ZIP reader, falling back to a filesystem reader when unavailable/rejected. Successful selection installs the pending reader/name; failures preserve prior pending state and report the native diagnostic text.
+
+Four regression cases cover default/client precedence, already-loaded case-insensitive skipping, valid ZIP selection, rejected ZIP fallback, and missing configuration state preservation. Host callbacks supply prefix bytes and reader implementations; openValidZip must return only validated readers and release rejected native resources. Native fixed 80-byte diagnostic truncation is intentionally not reproduced; the managed diagnostic includes the full name. Exceptions from callbacks propagate.
+
+Full Release solution tests pass: 14,785 total, including 1,830 Client. Clean nonincremental Release warning-as-error build passes with zero warnings/errors; whitespace validation passes.
+
+Scope: configuration selection policy is converted and connected to the cache. Concrete reader callback wiring and resource ownership, instrument decoding, renderer allocation, WildMIDI mixer/session routing, production audio integration, threaded callbacks, SMPTE timing, unusual EMIDI loops, native executable differential testing, and real-device validation remain unfinished or unverified. No commit or push was made.
+
+## 2026-10-13 - WildMIDI instrument cache loading conversion
+
+Converted WildMIDIDevice.LoadInstruments state transitions into VmMusicWildMidiInstrumentCache with a typed LoadConfiguration contract. Pending reader/name, loaded configuration, and cached instruments mirror native configuration state. Allocation receives the device sample rate, clears the pending reader only after success, and loads configuration with a null name. Cached instruments are reused and configuration loading is called on every acquisition. Negative configuration results clear the cache and loaded name and raise the native diagnostic. Native copyright/license retained.
+
+Four tests cover reader transfer and sample-rate forwarding, cache reuse, failed configuration/reset/recovery, constructor exception identity and retained pending reader/name, and replacement while earlier references remain alive. Allocation exceptions preserve native assignment ordering. Positive sample rates and nonnull factory results are explicitly required by the managed API. Strong references preserve earlier borrowers but do not implement native shared_ptr destruction or unmanaged resource disposal. Instrument implementations must retain their reader dependencies; host access is serialized.
+
+Full Release solution tests pass: 14,781 total, including 1,826 Client. Clean nonincremental Release warning-as-error build passes with zero warnings/errors; whitespace validation passes.
+
+Scope: instrument-cache loading policy is newly converted. Concrete instrument decoding, reader resource ownership/disposal, setup-config reader selection, renderer allocation, WildMIDI mixer/session routing, production audio integration, threaded callbacks, SMPTE timing, unusual EMIDI loops, native executable differential testing, and real-device validation remain unfinished or unverified. No commit or push was made.
+
+## 2026-10-13 - WildMIDI event/output device wrapper conversion
+
+Converted WildMIDIDevice HandleEvent, HandleLongEvent, ComputeOutput, and GetStats into VmMusicWildMidiOutput with a typed IVmMusicWildMidiRenderer extending the settings contract. Native license retained. Short events forward status and both parameters unchanged; long events forward the exact span including framing. Output forwards stereo frame count with a bounded writable span, adding managed negative/count/capacity validation before renderer mutation. Statistics use invariant decimal formatting with native minimum width three.
+
+Audited music_wildmidi_mididevice.cpp and thirdparty wildmidi_lib.cpp ComputeOutput. Gain conversion, mixing, and reverb belong inside the renderer implementation; the wrapper adds no second gain or clipping. Five regression cases verify raw event forwarding, exact SysEx data, output bounds/frame count, no clipping, invalid buffer rejection, and statistics widths. Maximum int statistics fit native's 20-byte buffer.
+
+Full Release solution tests pass: 14,777 total, including 1,822 Client. Clean nonincremental Release warning-as-error build passes with zero warnings/errors; whitespace validation passes.
+
+Scope: native device forwarding methods are converted, but the WildMIDI mixer, concrete renderer binding, instrument-loading lifecycle, session routing and audio host integration remain unfinished. Threaded callbacks, SMPTE timing, unusual EMIDI loops, native executable differential testing, and real-device validation remain unfinished or unverified. No commit or push was made.
+
+## 2026-10-13 - WildMIDI settings and instrument precache conversion
+
+Converted WildMIDIDevice constructor option setup, PrecacheInstruments, and ChangeSettingInt from libraries/ZMusic/source/mididevices/music_wildmidi_mididevice.cpp into VmMusicWildMidiSettings and a typed renderer-facing interface. Native copyright/license is retained. Initial setup updates resampling/reverb together with masks 2/4 verified against wildmidi_lib.h. Runtime names use case-insensitive matching and native mask-times-integer behavior; unknown names return unhandled without mutation.
+
+Audited instrument packing: bank is bits 7-13, instrument bits 0-6, and the drum argument uses the complete unsigned shift by 14, including bit 15 as native. Order and duplicates are preserved. Eight regression cases cover every initial flag combination, packed boundary fields, duplicate preload requests, case-insensitive names, negative/nonboolean values, unchecked integer narrowing, and unknown-name rejection. Overflow behavior follows the existing managed unchecked arithmetic convention; native signed multiplication overflow is not a portable guarantee.
+
+Full Release solution tests pass: 14,772 total, including 1,817 Client. Clean nonincremental Release warning-as-error build passes with zero warnings/errors; whitespace validation passes.
+
+Scope: this is newly converted WildMIDI device policy, not a working synthesizer. Concrete renderer bindings, instrument configuration/loading ownership, WildMIDI session routing/audio generation, production host wiring, threaded callbacks, SMPTE timing, unusual EMIDI loops, native executable differential testing, and real-device validation remain unfinished or unverified. No commit or push was made.
+
+## 2026-10-13 - WAVE command source cleanup failure preservation
+
+Closed the source-disposal limitation documented in the preceding audit. WriteWave now owns source cleanup explicitly around a private opened-source command helper. Unknown-synth early exits, normal completion, and command failure all dispose exactly once. If command processing fails and source cleanup also fails, an AggregateException retains both; nested export/restoration aggregates remain available to Flatten. Cleanup-only failure propagates unchanged. Successful cleanup preserves the original exception through rethrow. No exception is silently swallowed.
+
+Three regression cases cover dump plus source-disposal failure, dump/restoration/disposal failure together, and cleanup-only failure after successful dump/restoration. Existing tests continue to cover early rejection cleanup and saved playback restoration. This batch hardens converted C# lifetime handling; it does not convert a new native subsystem.
+
+Full Release solution tests pass: 14,764 total, including 1,809 Client. Clean nonincremental Release warning-as-error build passes with zero warnings/errors; whitespace validation passes.
+
+Scope: this guarantee applies to command-owned source disposal, not every nested file/device cleanup path. Production host/resource wiring, concrete synthesizer bindings, production audio routing, threaded callbacks, SMPTE timing, unusual EMIDI loops, native executable differential testing, and real-device validation remain unfinished or unverified. No commit or push was made.
+
+## 2026-10-13 - WAVE export failure and restoration audit
+
+Found and fixed two exception-path gaps in converted VmMusicWaveExport.WriteWave. Stopping playback now occurs inside the protected restoration region, so a partial stop failure still attempts to restore the saved song. If export/stop/reporting fails and restoration also throws, AggregateException preserves the original failure followed by the restoration failure. A single original error retains its identity and stack through rethrow; restoration-only failures remain unwrapped. The catches propagate errors rather than swallowing them.
+
+Four regression cases verify stop failure with successful/failed restoration, simultaneous dump/restoration failures, restoration failure after successful dump, saved playback arguments, and source disposal. This is managed failure-handling hardening of converted code, not a newly converted native subsystem. Native command behavior lacks these exception guarantees. Existing unknown-synth and missing-source early exits remain before playback stop.
+
+Full Release solution tests pass: 14,761 total, including 1,806 Client. Clean nonincremental Release warning-as-error build passes with zero warnings/errors; whitespace validation passes.
+
+Scope: source Dispose failures can still replace an in-flight command exception through standard using semantics; this batch does not claim otherwise. Production host/resource wiring, concrete synthesizer bindings, production audio routing, threaded callbacks, SMPTE timing, unusual EMIDI loops, native executable differential testing, and real-device validation remain unfinished or unverified. No commit or push was made.
+
+## 2026-10-13 - FM WAVE resource loader integration
+
+Added a resource-backed VmMusicConsole.ConfigureFmWaveExport overload. It connects namespace/full-name lookup, byte reading, the managed MIDI source factory, and the existing FM export registration. Current-song '*' resolution reads live playback state when the command runs. Dependency validation occurs before replacing the command handler; the explicit source-opener overload remains available.
+
+Audited GetMIDISource and writewave in src/common/audio/music/i_music.cpp. Source resolution and decoding precede stopping playback, preserving '*' behavior even when stop clears the current name. Three regression cases verify namespace/full-name ordering, managed SMF decoding through real WAVE file creation, saved name/order/loop restoration arguments, renderer release, and missing/non-MIDI diagnostics before stop, allocation, or restoration. Existing shared command usage, synth selection, and cancellation paths are reused.
+
+Full Release solution tests pass: 14,757 total, including 1,802 Client. Clean nonincremental Release warning-as-error build passes with zero warnings/errors; whitespace validation passes.
+
+Scope: FM export registration now supports managed resource loading without a host-supplied decoder. Production host registration/resource callbacks and concrete synthesizer allocator bindings are still required. Production audio routing, threaded callbacks, SMPTE timing, unusual EMIDI loops, native executable differential testing, and real-device validation remain unfinished or unverified. No commit or push was made.
+
+## 2026-10-13 - Managed MIDI resource export console integration
+
+Added VmMusicConsole.ConfigureMidiExport to connect writemidi dispatch to the converted resource loader, managed source factory, SMF conversion, and file writer. Namespace lookup precedes full-name fallback; '*' resolves using the playback state's current name at command execution. Registration validates callbacks before replacing the handler. Constructor-supplied handlers remain supported. Existing loader diagnostics and factory error reporting are reused.
+
+Audited against GetMIDISource and UNSAFE_CCMD(writemidi) in src/common/audio/music/i_music.cpp. Export uses loop limit one and does not stop or change current playback. It retains the previously documented managed correction that writes argv[2], the requested destination, rather than native argv[1]. Two regression tests exercise uppercase dispatcher routing, current-song resolution, namespace/full-name fallback, real managed decoding and output re-parsing, preservation of song/name/order/loop state, and invalid-arity reporting before resource access.
+
+Full Release solution tests pass: 14,754 total, including 1,799 Client. Clean nonincremental Release warning-as-error build passes with zero warnings/errors; whitespace validation passes.
+
+Scope: reusable console MIDI export now accepts host resource callbacks and performs managed source conversion. Production host registration/resource wiring, concrete synthesizer bindings, production audio routing, threaded callbacks, SMPTE timing, unusual EMIDI loops, native executable differential testing, and real-device validation remain unfinished or unverified. No commit or push was made.
+
+## 2026-10-13 - FM WAVE export console registration
+
+Added VmMusicConsole.ConfigureFmWaveExport to register the converted FM WAVE export path with the existing case-insensitive writewave dispatcher. Registration validates dependencies before replacing the command handler and reuses the console playback state, stop callback, and reporting callback. Source opening, renderer allocation, restoration, error text, and cancellation are supplied by the host. Existing constructor-provided export handlers remain supported.
+
+Audited the dispatcher-to-export integration. Two new regression tests execute WRITEWAVE through the console into the owning ADL request factory, verify numeric bank selection, produce a real WAVE file, restore saved playback, and release the renderer exactly once. Invalid command arity retains shared usage reporting without opening a source, stopping playback, or allocating a renderer; unknown commands remain unhandled.
+
+Full Release solution tests pass: 14,752 total, including 1,797 Client. Clean nonincremental Release warning-as-error build passes with zero warnings/errors; whitespace validation passes.
+
+Scope: the reusable C# console now has FM export registration. Production host setup must still call it with concrete ADL/OPN allocator bindings. Concrete synthesizer bindings, production audio routing, threaded callbacks, SMPTE timing, unusual EMIDI loops, native executable differential testing, and real-device validation remain unfinished or unverified. No commit or push was made.
+
+## 2026-10-13 - FM bank argument integration and WAVE request factory
+
+Installed VmMusicFmBankArguments in owning CreateAdl/CreateOpn factories before allocation. Optional explicit bank arguments and format-specific resolvers now reach actual renderer initialization, including configured-name resolution when no override is given. Resolver exceptions occur before allocating a renderer. Added CreateWaveFactory to interpret ADL/OPN VmMusicWaveRequest device and soundfont arguments and supply the existing command/file-dump bridge with an owning allocator delegate. Default device selection is explicit and restricted to supported FM kinds; other synth requests fail rather than silently selecting a different renderer.
+
+Audited factory argument precedence and native fixed ADL/OPN rate. The requested WAVE sample rate remains overridden by native 44,100 Hz FM allocation; the resulting device reports that actual rate. Three regression cases verify format-specific bank resolution before allocation for ADL/OPN, resolved paths reaching renderer bank loading, requested-rate behavior, default ADL numeric bank selection, and rejection of unsupported device kinds.
+
+Full Release solution tests pass: 14,750 total, including 1,795 Client. Clean nonincremental Release warning-as-error build passes with zero warnings/errors; whitespace validation passes.
+
+Scope: bank preprocessing now reaches both owning factories and WAVE request allocation. Production command registration and concrete ADL/OPN allocator bindings remain unfinished, alongside production audio routing, threaded callbacks, SMPTE timing, unusual EMIDI loops, native executable differential testing, and real-device validation. No commit or push was made.
+
+## 2026-10-13 - ADL/OPN factory bank argument resolution conversion
+
+Converted CreateADLMIDIDevice/CreateOPNMIDIDevice bank argument preprocessing into VmMusicFmBankArguments. Explicit nonempty arguments override configured custom-bank names; absent/empty arguments use configured names only when custom banks are enabled. ADL arguments beginning with an ASCII digit select a built-in bank from the decimal prefix and disable custom-bank selection, preserving GENMIDI configuration. Native strtoll saturation and unchecked int narrowing are reproduced for oversized indices. OPN always treats numeric-looking arguments as names.
+
+Named banks pass through an optional resolver with exact WOPL/WOPN format restrictions. Without a resolver the literal name is used. Null resolution disables custom banks and clears the name; nonnull resolution enables them, including an empty returned string as native. Immutable configuration copies leave shared defaults untouched. Resolver exceptions propagate.
+
+Seven regression cases cover ADL numeric prefixes, trailing text and overflow/narrowing, format-specific named resolution, numeric OPN names, resolver miss, configured/explicit precedence, disabled bank preservation, immutability, and resolver exceptions. Full Release solution tests pass: 14,747 total, including 1,792 Client. Clean nonincremental Release warning-as-error build passes with zero warnings/errors; whitespace validation passes.
+
+Scope: native factory bank preprocessing is converted but not yet installed in router/command allocator delegates. Console registration already supports a writewave handler; production renderer allocation and registration remain unfinished. Concrete synthesizer bindings, production audio routing, threaded callbacks, SMPTE timing, unusual EMIDI loops, native executable differential testing, and real-device validation remain unfinished or unverified. No commit or push was made.
+
+## 2026-10-13 - FM writewave command bridge and startup audit
+
+Added VmMusicWaveExport.WriteFmWave to connect the converted writewave argument/state-restoration logic directly to VmMusicFmWaveDump. Existing parsing, synth selection, source ownership, stop-before-dump, and saved playback restoration remain shared with WriteWave. Parsed device/soundfont/output/subsong/rate requests reach the supplied FM allocator; cancellation is forwarded. This adds a callable command integration point without duplicating parser or restoration behavior.
+
+Audited startup/cleanup edges through three regression cases. A full parsed command creates a real finalized WAVE file, forwards the complete request, restores saved playback name/order/loop state, and releases the renderer. Renderer startup reset failure preserves the original exception, restores playback, releases the renderer, and leaves the output header provisional. Invalid subsong is rejected before allocation and does not overwrite an existing destination. Temporary files are removed after tests.
+
+Full Release solution tests pass: 14,740 total, including 1,785 Client. Clean nonincremental Release warning-as-error build passes with zero warnings/errors; whitespace validation passes.
+
+Scope: converted command parsing now has an FM file-dump bridge. It still requires application command registration, a concrete renderer allocator, and appropriate handling of requested device/bank arguments by that allocator. Concrete synthesizer bindings, production audio routing, threaded callbacks, SMPTE timing, unusual EMIDI loops, native executable differential testing, and real-device validation remain unfinished or unverified. No commit or push was made.
+
+## 2026-10-13 - FM WAVE request-to-file orchestration conversion
+
+Converted MIDIStreamer::DumpWave orchestration into VmMusicFmWaveDump.Write. It borrows a MIDI source, validates the requested subsong before allocating, passes the full VmMusicWaveRequest to a supplied owning-FM-device factory, creates the requested output file, starts a nonrepeating finite-loop session, renders through VmMusicWaveWriter, and finalizes sizes. Device/session/output are released before returning. The actual configured renderer sample rate determines the WAVE header; request sample-rate/device/soundfont interpretation belongs to the supplied factory, retaining ADL/OPN fixed native rate behavior when using their converted factories.
+
+Audited native source/subsong setup, output lifetime, and finalization sequence. Short-song startup finalizes an empty file and returns false under the existing managed startup contract. Failures abort writer finalization before cleanup; original render exceptions propagate and source ownership remains external. The new helper can be used as the existing writewave command's dumper delegate but no production command backend has been installed. Cancellation is checked before allocation and between rendering requests.
+
+Two real-file regression cases verify request forwarding, finalized RIFF/data sizes, source restartability and exactly-once renderer disposal, plus a render failure leaving provisional size fields and releasing the renderer. Temporary test files are removed. Full Release solution tests pass: 14,737 total, including 1,782 Client. Clean nonincremental Release warning-as-error build passes with zero warnings/errors; whitespace validation passes.
+
+Scope: callable FM request/session/render/file orchestration is converted. Production command/device allocator installation and concrete synthesizer bindings remain unfinished, alongside production audio routing, threaded callbacks, SMPTE timing, unusual EMIDI loops, native executable differential testing, and real-device validation. No commit or push was made.
+
+## 2026-10-13 - MIDI WAVE rendering loop conversion
+
+Converted MIDIWaveWriter::Resume into VmMusicWaveWriter.RenderUntilEnd with a span-based renderer callback. Each request contains the native 4,096 float samples (2,048 stereo frames). Only requests returning true are written; the final false-return request is discarded even if it contains samples, preserving native behavior. Successful completion finalizes the WAVE header. Added cancellation between render requests. Rendering, writing, or cancellation failures propagate and mark output failed so Dispose cannot finalize an incomplete dump as successful.
+
+Audited native buffer size and while-condition ordering. Four regression cases cover exact successful request sizes/payload order and excluded final output, a renderer failure after partial writing with unchanged provisional header, cancellation before callback invocation, and complete SMF source/session/owning FM adapter rendering into a finalized WAVE stream with renderer release through session Update. Full Release solution tests pass: 14,735 total, including 1,780 Client. Clean nonincremental Release warning-as-error build passes with zero warnings/errors; whitespace validation passes.
+
+Scope: WAVE rendering-loop and stream serialization now operate together through a managed FM renderer. The caller owns session cleanup and output stream selection; file-path command integration remains unfinished. Concrete synthesizer bindings, production audio routing, threaded callbacks, SMPTE timing, unusual EMIDI loops, native executable differential testing, and real-device validation remain unfinished or unverified. No commit or push was made.
+
+## 2026-10-13 - Streaming WAVE writing and finalization conversion
+
+Converted MIDIWaveWriter provisional header writing, sample-output writes, and CloseFile size finalization into VmMusicWaveWriter. The writer accepts an empty writable/seekable stream, writes native provisional zero chunk sizes, encodes stereo float samples through VmMusicWaveFile in bounded 16,384-byte chunks, and tracks successfully written data bytes. Complete rewrites the finalized header with converted native sizes, restores position to the payload end, and flushes. Complete and Dispose are idempotent; ownership is explicit through leaveOpen, defaulting to borrowed output.
+
+Audited native file offsets and write-failure paths. Managed output validates stereo-frame counts and 32-bit RIFF capacity before writing; failed writes/finalization poison the writer so incomplete output cannot subsequently be finalized as successful. Stream exceptions propagate, and disposal still releases owned output after errors. Invalid caller frame counts do not poison an otherwise usable writer. The caller must not independently seek or write the borrowed stream while the writer is active.
+
+Four regression cases cover provisional/finalized sizes, consecutive writes and preserved payload bytes, chunk-spanning encoding, owned/borrowed stream disposal, failed writes with original exception and rejected finalization, and invalid frames/nonempty destinations. Full Release solution tests pass: 14,731 total, including 1,776 Client. Clean nonincremental Release warning-as-error build passes with zero warnings/errors; whitespace validation passes.
+
+Scope: WAVE output stream writing/finalization is converted. Native Resume rendering/dump-loop orchestration and file-path command integration remain unfinished, along with concrete synthesizer bindings, production audio routing, threaded callbacks, SMPTE timing, unusual EMIDI loops, native executable differential testing, and real-device validation. No commit or push was made.
+
+## 2026-10-13 - MIDI WAVE file format conversion
+
+Converted MIDIWaveWriter constructor format fields and CloseFile finalized chunk sizes into VmMusicWaveFile.WriteHeader. The 68-byte header uses WAVE_FORMAT_EXTENSIBLE, stereo 32-bit float samples, eight-byte block alignment, valid bits 32, channel mask 3, and the IEEE-float subformat GUID. RIFF size is data bytes plus 60, and the data size occupies offset 64. Numeric fields use explicit little-endian encoding. WriteSamples serializes exact float bits without clipping, including negative zero, independent of host byte order.
+
+Audited native FmtChunk layout and header/finalization offsets. Managed robustness changes reject incomplete stereo data, short destinations, invalid rates, and 32-bit chunk/byte-rate overflow before output mutation. This helper writes a finalized header; provisional header writing, file seeking/finalization, stream ownership, and the native Resume dump loop are not yet wired.
+
+Four regression cases cover exact native header bytes for empty/nonempty payloads, bounded header writes, invalid/overflow inputs without mutation, little-endian unclipped sample bits, and sample capacity/frame validation. Full Release solution tests pass: 14,727 total, including 1,772 Client. Clean nonincremental Release warning-as-error build passes with zero warnings/errors; whitespace validation passes. Preserved the existing audit file content.
+
+Scope: WAVE binary format and sample encoding are converted. File-output orchestration, concrete synthesizer bindings, production audio routing, threaded callbacks, SMPTE timing, unusual EMIDI loops, native executable differential testing, and real-device validation remain unfinished or unverified. No commit or push was made.
+
 ## 2026-10-13 - FM factory routing into MIDI selection and fallback
 
 Connected the native ADL/OPN device creation branches to the managed MIDI selection pipeline through VmMusicFmDeviceFactory.CreateRouter. The returned factory delegate creates configured owning ADL/OPN adapters from typed allocator delegates and routes other kinds to an optional existing device factory. Missing allocators/backends report the existing explicit unavailable exception; invalid/default kinds fail and an invalid null result from an external factory remains a programming error. Existing VmMusicMidiDeviceCreation retains fallback ordering and VmMusicMidiPlay transfers selected device ownership to the session.

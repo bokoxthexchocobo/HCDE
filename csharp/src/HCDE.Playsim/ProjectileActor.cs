@@ -4,10 +4,18 @@ namespace HCDE.Playsim;
 
 public enum ProjectileKind { Rocket, Plasma, Bfg, ImpBall, BaronBall, CacodemonBall, CyberRocket, ArachnotronPlasma, MancubusBall, RevenantTracer }
 
-/// <summary>Traveling cylinder projectiles with swept impacts and finite lifetime.</summary>
+/// <summary>Traveling projectiles with square actor contacts, swept impacts and finite lifetime.</summary>
 public sealed class ProjectileActor : Actor
 {
-    public Actor Owner { get; }
+    public Actor? Owner { get; private set; }
+    internal void ReassignOwner(Actor? owner)
+    {
+        if (owner is not null && (owner.Destroyed || Simulation is { } sim &&
+            (owner.Simulation != sim || !sim.Actors.Contains(owner))))
+            throw new InvalidOperationException("Projectile ownership requires a live actor in the same simulation.");
+        Owner = owner;
+    }
+    internal void OwnerFromSave(Actor? owner) => Owner = owner;
     public ProjectileKind Kind { get; }
     internal IReadOnlyDictionary<ActorSoundType, string> DefaultActorSounds { get; set; }
         = new Dictionary<ActorSoundType, string>();
@@ -21,7 +29,7 @@ public sealed class ProjectileActor : Actor
     }
     public int RemainingTics { get; private set; } = 175;
     internal void RestoreRemainingTics(int tics) => RemainingTics = tics;
-    public uint? TracerTargetId { get; private set; }
+    public uint? TracerTargetId { get => TracerId; private set => TracerId = value; }
     internal void RestoreTracerTarget(uint? targetId) => TracerTargetId = targetId;
     public double Speed => MovementSpeed.ToDouble();
     private double DefaultSpeed => Kind switch
@@ -50,20 +58,6 @@ public sealed class ProjectileActor : Actor
         return base.GetMissileDamage(mask, add);
     }
 
-    /// <summary>Managed direct-damage subset of P_DoMissileDamage, including ripper dice.</summary>
-    public DamageResult DoMissileDamage(Actor victim, bool ripper = false)
-    {
-        ArgumentNullException.ThrowIfNull(victim);
-        var damage = ripper ? GetMissileDamage(3, 2) : GetMissileDamage(StrifeDamage ? 3 : 7, 1);
-        if (damage > 0 || ForcePain || CausePain)
-        {
-            if (ripper && ActorSounds.TryGetValue(ActorSoundType.Rip, out var sound) && !string.IsNullOrEmpty(sound))
-                ActorSoundActions.StartSound(this, sound, channel: 4, attenuation: 1.001f);
-            return ActorDamage.Apply(victim, damage, Owner, damageType: DamageType, inflictor: this);
-        }
-        victim.GiveBody((int)Math.Min(-(long)damage, int.MaxValue));
-        return default;
-    }
     private int DefaultDamage => Kind switch
     {
         ProjectileKind.Rocket or ProjectileKind.CyberRocket => 20,
@@ -73,9 +67,8 @@ public sealed class ProjectileActor : Actor
     };
     public int BlastRadius => Kind is ProjectileKind.Rocket or ProjectileKind.CyberRocket ? 128 : 0;
 
-    public ProjectileActor(Actor owner, ProjectileKind kind)
+    public ProjectileActor(Actor? owner, ProjectileKind kind)
     {
-        ArgumentNullException.ThrowIfNull(owner);
         if (!Enum.IsDefined(kind)) throw new ArgumentOutOfRangeException(nameof(kind));
         Owner = owner; Kind = kind;
         var (seeSound, deathSound) = kind switch
@@ -127,7 +120,7 @@ public sealed class ProjectileActor : Actor
             {
                 // P_SpawnMissileXYZ derives the direction from the source, then lowers
                 // shots whose spawn offset would put them above the destination.
-                var sourceZ = Owner.Z.ToDouble() + (Kind == ProjectileKind.RevenantTracer ? 16 : 0);
+                var sourceZ = (Owner?.Z.ToDouble() ?? Z.ToDouble()) + (Kind == ProjectileKind.RevenantTracer ? 16 : 0);
                 vertical = target.Z.ToDouble() - sourceZ;
                 var offset = Z.ToDouble() - sourceZ;
                 if (offset >= target.Height.ToDouble()) vertical += target.Height.ToDouble() - offset;
@@ -245,18 +238,41 @@ public sealed class ProjectileActor : Actor
                 if (plane < fraction) { fraction = plane; wall = null; planeSector = sector; planePart = part; }
             }
             var ripContacts = new List<(Actor Actor, double Fraction)>();
-            foreach (var actor in sim.Actors)
+            foreach (var actor in sim.Actors.ToArray())
             {
-                if (ThruActors || actor.ThruActors || actor.NonShootable || !HitOwner && ReferenceEquals(actor, Owner)
-                    || !actor.IsBlockmapActor || (!actor.CanTakeDamage && !actor.BlocksActors)) continue;
-                if (MThruSpecies && Owner.SharesContactSpecies(actor)) continue;
-                if (SharesEnabledThruBits(actor)) continue;
-                if (ThruSpecies && SharesContactSpecies(actor)) continue;
+                if (ReferenceEquals(actor, this) || actor.Destroyed || ThruActors || actor.ThruActors
+                    || !actor.IsBlockmapActor || SharesEnabledThruBits(actor)
+                    || ThruSpecies && SharesContactSpecies(actor)) continue;
+                // PIT_CheckThing rejects this overlap before missile passage and damage checks.
+                if ((actor.Solid || actor.Shootable) && ActorPhysics.MissileOverlapBlocks(sim, this, actor))
+                {
+                    var overlapHit = ActorContactFraction(x, y, z, dx, dy, dz, actor, ignoreHeight: true);
+                    if (overlapHit < fraction)
+                    { fraction = overlapHit; victim = null; wall = null; planeSector = planePart = -1; }
+                    continue;
+                }
+                if (actor.NonShootable || !(actor.Solid || actor.Shootable)) continue;
+                if (MThruSpecies && Owner?.SharesContactSpecies(actor) == true) continue;
                 if (ThruGhost && actor.Ghost) continue;
+                if (Rip && actor.Corpse && !actor.Shootable) continue;
+                var hit = ActorContactFraction(x, y, z, dx, dy, dz, actor);
+                if (hit > 1 || hit > fraction) continue;
+                var specialHit = SpecialMissileHit(actor);
+                if (Destroyed) return;
+                if (specialHit == 1 || actor.Destroyed) continue;
+                if (specialHit == 0)
+                {
+                    if (hit < fraction)
+                    { fraction = hit; victim = null; wall = null; planeSector = planePart = -1; }
+                    continue;
+                }
+                if (!HitOwner && ReferenceEquals(actor, Owner)) continue;
+                var canHurt = actor.CanAttackHurtFrom(Owner);
+                // Callback mutations take effect here; attack immunity blocks before solidity passage.
+                if (canHurt && !actor.Shootable && !actor.Solid) continue;
                 // Native checks attack eligibility and non-shootable solidity before SPECTRAL passage.
-                if (actor.Shootable && actor.Spectral && !Spectral && actor.CanAttackHurtFrom(Owner)) continue;
-                var hit = CylinderFraction(x, y, z, dx, dy, dz, actor);
-                if (Rip && actor.CanBeRippedBy(this) && actor.Shootable && actor.CanAttackHurtFrom(Owner))
+                if (actor.Shootable && actor.Spectral && !Spectral && canHurt) continue;
+                if (Rip && actor.CanBeRippedBy(this) && actor.Shootable && canHurt)
                 {
                     if (hit <= 1) ripContacts.Add((actor, hit));
                     continue;
@@ -271,7 +287,7 @@ public sealed class ProjectileActor : Actor
                 if (!ripped.Add(contact.Actor.Id)) continue;
                 X = Fixed.FromDouble(x + dx * contact.Fraction); Y = Fixed.FromDouble(y + dy * contact.Fraction);
                 Z = Fixed.FromDouble(z + dz * contact.Fraction);
-                DoMissileDamage(contact.Actor, ripper: true);
+                DoMissileDamage(contact.Actor);
                 if (Destroyed) return;
                 if (contact.Actor.Pushable && !CannotPush)
                 {
@@ -297,19 +313,39 @@ public sealed class ProjectileActor : Actor
         }
     }
 
-    private double CylinderFraction(double x, double y, double z, double dx, double dy, double dz, Actor target)
+    private double ActorContactFraction(double x, double y, double z, double dx, double dy, double dz, Actor target,
+        bool ignoreHeight = false)
     {
         var reach = Radius.ToDouble() + target.Radius.ToDouble();
         var rx = x - target.X.ToDouble(); var ry = y - target.Y.ToDouble();
-        var a = dx * dx + dy * dy; var b = rx * dx + ry * dy; var c = rx * rx + ry * ry - reach * reach;
         double enter = 0, leave = 1;
-        if (a == 0) { if (c > 0) return double.PositiveInfinity; }
-        else
+        // PIT_CheckThing requires strict overlap on both axes, including diagonal contacts.
+        bool ClipAxis(double offset, double movement)
         {
-            var disc = b * b - a * c;
-            if (disc < 0) return double.PositiveInfinity;
-            enter = Math.Max(0, (-b - Math.Sqrt(disc)) / a);
-            leave = Math.Min(1, (-b + Math.Sqrt(disc)) / a);
+            if (movement == 0) return Math.Abs(offset) < reach;
+            var first = (-reach - offset) / movement; var last = (reach - offset) / movement;
+            enter = Math.Max(enter, Math.Min(first, last));
+            leave = Math.Min(leave, Math.Max(first, last));
+            return enter < leave;
+        }
+        if (!ClipAxis(rx, dx) || !ClipAxis(ry, dy)) return double.PositiveInfinity;
+        if (ignoreHeight) return enter <= leave ? enter : double.PositiveInfinity;
+        if (Simulation is { } simulation && ActorPhysics.MissileUsesActorHeightPassage(simulation, this, target))
+        {
+            var bottom = target.Z.ToDouble() - Height.ToDouble();
+            var top = target.Z.ToDouble() + target.Height.ToDouble();
+            if (dz == 0)
+            {
+                if (target.SpecialPickup ? z < bottom || z > top : z <= bottom || z >= top)
+                    return double.PositiveInfinity;
+            }
+            else
+            {
+                var first = (bottom - z) / dz; var last = (top - z) / dz;
+                enter = Math.Max(enter, Math.Min(first, last));
+                leave = Math.Min(leave, Math.Max(first, last));
+                if (!target.SpecialPickup && enter >= leave) return double.PositiveInfinity;
+            }
         }
         var passHeight = target.ProjectilePassHeight.ToDouble();
         var clipHeight = passHeight > 0 ? passHeight
@@ -322,7 +358,11 @@ public sealed class ProjectileActor : Actor
             var t1 = (low - z) / dz; var t2 = (high - z) / dz;
             enter = Math.Max(enter, Math.Min(t1, t2)); leave = Math.Min(leave, Math.Max(t1, t2));
         }
-        return enter <= leave ? enter : double.PositiveInfinity;
+        if (enter > leave) return double.PositiveInfinity;
+        // Height clipping can reduce the interval to an excluded XY edge.
+        if (enter == leave && (Math.Abs(rx + dx * enter) >= reach || Math.Abs(ry + dy * enter) >= reach))
+            return double.PositiveInfinity;
+        return enter;
     }
 
     private static double CapsuleFraction(double x, double y, double dx, double dy, LevelLine line, double radius)
@@ -368,8 +408,8 @@ public sealed class ProjectileActor : Actor
         }
         if (wall is not null) GeometryProjectileImpact.Apply(sim, this, wall);
         else if (planeSector >= 0) GeometryProjectileImpact.ApplyPlane(sim, this, planeSector, planePart);
-        if (victim != null)
-            DoMissileDamage(victim, Rip);
+        if (victim is { Shootable: true } && victim.CanAttackHurtFrom(Owner))
+            DoMissileDamage(victim);
         if (ActorSounds.TryGetValue(ActorSoundType.Death, out var deathSound) && deathSound.Length != 0)
         {
             var position = SoundPos();

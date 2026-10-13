@@ -49,6 +49,7 @@ internal static class VmMusicEmidiSchedule
         internal int LoopPosition;
         internal uint LoopDelay;
         internal int LoopCount = -1;
+        internal ulong LoopPlayedTime;
         internal bool Finished = source.Events.Count == 0;
         internal bool LoopFinished;
 
@@ -58,12 +59,16 @@ internal static class VmMusicEmidiSchedule
             LoopDelay = Delay;
             LoopCount = count == 0 ? 0 : count - 1;
             LoopFinished = Finished;
+            LoopPlayedTime = PlayedTime;
         }
 
-        internal void Restore(bool looping)
+        internal void Restore(bool looping, bool validateDuration = true)
         {
             if (LoopCount < 0) return;
             if (LoopCount == 0 && !looping) { Finished = true; return; }
+            if (validateDuration && looping && LoopCount == 0 && !LoopFinished && PlayedTime == LoopPlayedTime)
+                throw new InvalidDataException("An infinite EMIDI loop must advance playback time.");
+            LoopPlayedTime = PlayedTime;
             if (LoopCount > 0 && --LoopCount == 0) LoopCount = -1;
             Position = LoopPosition;
             Delay = LoopDelay;
@@ -127,7 +132,7 @@ internal static class VmMusicEmidiSchedule
                         track.Restore(looping);
                         break;
                     case 119 when value == 127:
-                        foreach (var state in tracks) state.Restore(looping);
+                        foreach (var state in tracks) state.Restore(looping, state == track);
                         break;
                 }
             }

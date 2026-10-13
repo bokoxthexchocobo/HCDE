@@ -20,7 +20,7 @@ public class IceCorpseSupportFlagTests
         support.Corpse = corpseFlag; support.Solid = true; support.Height = Fixed.FromInt(16);
         var mover = new Actor
         {
-            IceCorpse = true, Solid = true, OnGround = true, SectorIndex = 0,
+            IceCorpse = true, Solid = true, OnGround = true, SectorIndex = 0, CanPass = true,
             Height = Fixed.FromInt(56), Radius = Fixed.FromInt(20)
         };
         ActorPhysics.Step(sim, mover);

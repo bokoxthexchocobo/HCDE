@@ -636,6 +636,7 @@ public static class DehackedPatch
         {
             ["SPECIAL"] = 1, ["SOLID"] = 2, ["SHOOTABLE"] = 4, ["AMBUSH"] = 32,
             ["NOBLOCKMAP"] = 16,
+            ["NOSECTOR"] = 8,
             ["SPAWNCEILING"] = 256, ["NOGRAVITY"] = 512, ["DROPOFF"] = 1024,
             ["PICKUP"] = 2048, ["FLOAT"] = 16384, ["DROPPED"] = 131072,
             ["SHADOW"] = 262144, ["TRANSLUCENT"] = 0x80000000u,
@@ -647,7 +648,7 @@ public static class DehackedPatch
         new Dictionary<string, uint>(StringComparer.OrdinalIgnoreCase)
         {
             ["LOGRAV"] = 1, ["NOTELEPORT"] = 0x80, ["CANSLIDE"] = 0x400, ["INVULNERABLE"] = 0x08000000,
-            ["DORMANT"] = 0x10000000,
+            ["DORMANT"] = 0x10000000, ["PASSMOBJ"] = 0x1000,
         };
 
     // Thing/Frame use decimal strtoll/atoll: stop at the first non-digit; no digits means zero.

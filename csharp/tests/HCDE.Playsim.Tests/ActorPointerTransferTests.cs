@@ -58,14 +58,15 @@ public class ActorPointerTransferTests
     }
 
     [Fact]
-    public void ProjectileTracerAssignmentAndUnsupportedOwnerAssignment()
+    public void ProjectileTracerAndOwnerAssignment()
     {
         var sim = Room(); var caller = sim.AddBot(0, 0); var target = sim.AddBot(200, 0);
         var projectile = sim.SpawnProjectile(sim.Players.Single(), ProjectileKind.Rocket);
         caller.MasterId = projectile.Id; caller.Brain!.SetSpecialTarget(target);
         ActorPointerActions.TransferPointer(caller, recipientSelector: AcsActorPointer.Master, recipientField: AcsActorPointer.Tracer);
         Assert.Equal(target.Id, projectile.TracerTargetId);
-        Assert.Throws<NotSupportedException>(() => ActorPointerActions.TransferPointer(caller, recipientSelector: AcsActorPointer.Master));
+        ActorPointerActions.TransferPointer(caller, recipientSelector: AcsActorPointer.Master);
+        Assert.Same(target, projectile.Owner);
         Assert.Equal(target.Id, projectile.TracerTargetId);
     }
 

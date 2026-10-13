@@ -40,12 +40,13 @@ public class ActorPointerRearrangeTests
     }
 
     [Fact]
-    public void UnsupportedTracerWriteFailsBeforeOtherWrites()
+    public void GeneralTracerRearrangementReadsOriginalTarget()
     {
         var sim = Room(); var actor = sim.AddBot(0, 0); var target = sim.AddBot(100, 0); actor.Brain!.SetSpecialTarget(target);
-        Assert.Throws<NotSupportedException>(() => ActorPointerActions.RearrangePointers(actor,
-            AcsActorPointer.Null, AcsActorPointer.Target, AcsActorPointer.Target));
-        Assert.Equal(target.Id, actor.Brain.TargetId); Assert.Null(actor.MasterId);
+        ActorPointerActions.RearrangePointers(actor,
+            AcsActorPointer.Null, AcsActorPointer.Target, AcsActorPointer.Target);
+        Assert.Null(actor.Brain.TargetId); Assert.Equal(target.Id, actor.MasterId);
+        Assert.Equal(target.Id, actor.TracerId);
     }
 
     [Fact]

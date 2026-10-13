@@ -38,10 +38,36 @@ public static class VmMusicFmDeviceFactory
 {
     public const int NativeSampleRate = 44100;
 
+    public static Func<VmMusicWaveRequest, VmMusicFmSessionDevice> CreateWaveFactory<TAdl, TOpn>(
+        Func<int, TAdl?>? allocateAdl, Func<int, TOpn?>? allocateOpn,
+        VmMusicAdlConfiguration adlConfiguration, VmMusicOpnConfiguration opnConfiguration,
+        VmMusicStartupData resources, VmMusicMidiDeviceKind defaultDevice,
+        Func<string, VmMusicBankFormat, string?>? resolveBank = null)
+        where TAdl : class, IVmMusicAdlRenderer, IDisposable
+        where TOpn : class, IVmMusicOpnRenderer, IDisposable
+    {
+        ArgumentNullException.ThrowIfNull(adlConfiguration);
+        ArgumentNullException.ThrowIfNull(opnConfiguration);
+        ArgumentNullException.ThrowIfNull(resources);
+        if (defaultDevice is not (VmMusicMidiDeviceKind.Adl or VmMusicMidiDeviceKind.Opn))
+            throw new ArgumentOutOfRangeException(nameof(defaultDevice));
+        return request => (request.Device == -1 ? defaultDevice : (VmMusicMidiDeviceKind)request.Device) switch
+        {
+            VmMusicMidiDeviceKind.Adl => allocateAdl is null
+                ? throw new VmMusicMidiDeviceUnavailableException("ADL renderer backend is unavailable.")
+                : CreateAdl(allocateAdl, adlConfiguration, resources, request.Soundfont, resolveBank),
+            VmMusicMidiDeviceKind.Opn => allocateOpn is null
+                ? throw new VmMusicMidiDeviceUnavailableException("OPN renderer backend is unavailable.")
+                : CreateOpn(allocateOpn, opnConfiguration, resources, request.Soundfont, resolveBank),
+            _ => throw new NotSupportedException("This WAVE factory supports ADL and OPN devices only.")
+        };
+    }
+
     public static Func<VmMusicMidiDeviceKind, IVmMusicMidiSessionDevice> CreateRouter<TAdl, TOpn>(
         Func<int, TAdl?>? allocateAdl, Func<int, TOpn?>? allocateOpn,
         VmMusicAdlConfiguration adlConfiguration, VmMusicOpnConfiguration opnConfiguration,
-        VmMusicStartupData resources, Func<VmMusicMidiDeviceKind, IVmMusicMidiSessionDevice>? otherDevices = null)
+        VmMusicStartupData resources, Func<VmMusicMidiDeviceKind, IVmMusicMidiSessionDevice>? otherDevices = null,
+        string? bankArgument = null, Func<string, VmMusicBankFormat, string?>? resolveBank = null)
         where TAdl : class, IVmMusicAdlRenderer, IDisposable
         where TOpn : class, IVmMusicOpnRenderer, IDisposable
     {
@@ -52,10 +78,10 @@ public static class VmMusicFmDeviceFactory
         {
             VmMusicMidiDeviceKind.Adl => allocateAdl is null
                 ? throw new VmMusicMidiDeviceUnavailableException("ADL renderer backend is unavailable.")
-                : CreateAdl(allocateAdl, adlConfiguration, resources),
+                : CreateAdl(allocateAdl, adlConfiguration, resources, bankArgument, resolveBank),
             VmMusicMidiDeviceKind.Opn => allocateOpn is null
                 ? throw new VmMusicMidiDeviceUnavailableException("OPN renderer backend is unavailable.")
-                : CreateOpn(allocateOpn, opnConfiguration, resources),
+                : CreateOpn(allocateOpn, opnConfiguration, resources, bankArgument, resolveBank),
             _ when !Enum.IsDefined(kind) || kind == VmMusicMidiDeviceKind.Default =>
                 throw new ArgumentOutOfRangeException(nameof(kind)),
             _ => otherDevices is null
@@ -65,20 +91,24 @@ public static class VmMusicFmDeviceFactory
     }
 
     public static VmMusicFmSessionDevice CreateAdl<T>(Func<int, T?> allocate,
-        VmMusicAdlConfiguration configuration, VmMusicStartupData resources)
+        VmMusicAdlConfiguration configuration, VmMusicStartupData resources, string? bankArgument = null,
+        Func<string, VmMusicBankFormat, string?>? resolveBank = null)
         where T : class, IVmMusicAdlRenderer, IDisposable
     {
         ArgumentNullException.ThrowIfNull(configuration);
         ArgumentNullException.ThrowIfNull(resources);
+        configuration = VmMusicFmBankArguments.ResolveAdl(configuration, bankArgument, resolveBank);
         return Create(allocate, renderer => VmMusicFmSessionDevice.CreateAdl(renderer, NativeSampleRate, configuration, resources), "ADL");
     }
 
     public static VmMusicFmSessionDevice CreateOpn<T>(Func<int, T?> allocate,
-        VmMusicOpnConfiguration configuration, VmMusicStartupData resources)
+        VmMusicOpnConfiguration configuration, VmMusicStartupData resources, string? bankArgument = null,
+        Func<string, VmMusicBankFormat, string?>? resolveBank = null)
         where T : class, IVmMusicOpnRenderer, IDisposable
     {
         ArgumentNullException.ThrowIfNull(configuration);
         ArgumentNullException.ThrowIfNull(resources);
+        configuration = VmMusicFmBankArguments.ResolveOpn(configuration, bankArgument, resolveBank);
         return Create(allocate, renderer => VmMusicFmSessionDevice.CreateOpn(renderer, NativeSampleRate, configuration, resources), "OPN");
     }
 

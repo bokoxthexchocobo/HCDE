@@ -13,8 +13,8 @@ public sealed class VmMusicConsole<TSong> where TSong : class
     private readonly Func<int>? nextRandom;
     private readonly Action<IReadOnlyList<string>>? setReplayGain;
     private readonly Action<IReadOnlyList<string>>? testMusicVolume;
-    private readonly Action<IReadOnlyList<string>>? writeMidi;
-    private readonly Action<IReadOnlyList<string>>? writeWave;
+    private Action<IReadOnlyList<string>>? writeMidi;
+    private Action<IReadOnlyList<string>>? writeWave;
     private readonly Action? listMidiDevices;
 
     public VmMusicConsole(VmMusicPlaybackState<TSong> state, VmMusicPlaylist playlist, Func<bool> enabled,
@@ -46,6 +46,109 @@ public sealed class VmMusicConsole<TSong> where TSong : class
         this.writeWave = writeWave;
         this.listMidiDevices = listMidiDevices;
         playlistCommands = new(playlist, activatePlaylist, report);
+    }
+
+    public void ConfigureMidiExport(Func<string, int> findMusicNamespace, Func<string, int> findFullName,
+        Func<int, byte[]?> readResource)
+    {
+        ArgumentNullException.ThrowIfNull(findMusicNamespace);
+        ArgumentNullException.ThrowIfNull(findFullName);
+        ArgumentNullException.ThrowIfNull(readResource);
+        var factory = new VmMusicMidiSourceFactory();
+        writeMidi = arguments => VmMusicMidiExport.WriteMidiFile(arguments,
+            name => VmMusicMidiSource.Open(name, state.Name, findMusicNamespace, findFullName,
+                readResource, factory.Create, () => factory.LastError, report),
+            () => factory.LastError, report);
+    }
+
+    public void ConfigureFmWaveExport(int preferredDevice, Func<string, int> findMusicNamespace,
+        Func<string, int> findFullName, Func<int, byte[]?> readResource,
+        Func<VmMusicWaveRequest, VmMusicFmSessionDevice> createDevice,
+        Func<string, int, bool, bool, bool> restoreMusic,
+        CancellationToken cancellationToken = default)
+    {
+        ArgumentNullException.ThrowIfNull(findMusicNamespace);
+        ArgumentNullException.ThrowIfNull(findFullName);
+        ArgumentNullException.ThrowIfNull(readResource);
+        var factory = new VmMusicMidiSourceFactory();
+        ConfigureFmWaveExport(preferredDevice,
+            name => VmMusicMidiSource.Open(name, state.Name, findMusicNamespace, findFullName,
+                readResource, factory.Create, () => factory.LastError, report),
+            createDevice, restoreMusic, () => factory.LastError, cancellationToken);
+    }
+
+    public void ConfigureFmWaveExport(int preferredDevice, Func<string, IVmMusicSmfSource?> openSource,
+        Func<VmMusicWaveRequest, VmMusicFmSessionDevice> createDevice,
+        Func<string, int, bool, bool, bool> restoreMusic, Func<string> lastError,
+        CancellationToken cancellationToken = default)
+    {
+        ArgumentNullException.ThrowIfNull(openSource);
+        ArgumentNullException.ThrowIfNull(createDevice);
+        ArgumentNullException.ThrowIfNull(restoreMusic);
+        ArgumentNullException.ThrowIfNull(lastError);
+        writeWave = arguments => VmMusicWaveExport.WriteFmWave(state, arguments, preferredDevice,
+            openSource, stopMusic, createDevice, restoreMusic, lastError, report, cancellationToken);
+    }
+
+    public void ConfigureWildMidiWaveExport(int preferredDevice, Func<string, int> findMusicNamespace,
+        Func<string, int> findFullName, Func<int, byte[]?> readResource,
+        Func<VmMusicWaveRequest, VmMusicWildMidiManagedRenderer> createRenderer,
+        Func<string, int, bool, bool, bool> restoreMusic,
+        CancellationToken cancellationToken = default)
+    {
+        ArgumentNullException.ThrowIfNull(findMusicNamespace);
+        ArgumentNullException.ThrowIfNull(findFullName);
+        ArgumentNullException.ThrowIfNull(readResource);
+        var factory = new VmMusicMidiSourceFactory();
+        ConfigureWildMidiWaveExport(preferredDevice,
+            name => VmMusicMidiSource.Open(name, state.Name, findMusicNamespace, findFullName,
+                readResource, factory.Create, () => factory.LastError, report),
+            createRenderer, restoreMusic, () => factory.LastError, cancellationToken);
+    }
+
+    public void ConfigureWildMidiWaveExport(int preferredDevice, Func<string, IVmMusicSmfSource?> openSource,
+        Func<VmMusicWaveRequest, VmMusicWildMidiManagedRenderer> createRenderer,
+        Func<string, int, bool, bool, bool> restoreMusic, Func<string> lastError,
+        CancellationToken cancellationToken = default)
+    {
+        ArgumentNullException.ThrowIfNull(openSource);
+        ArgumentNullException.ThrowIfNull(createRenderer);
+        ArgumentNullException.ThrowIfNull(restoreMusic);
+        ArgumentNullException.ThrowIfNull(lastError);
+        writeWave = arguments => VmMusicWaveExport.WriteWildMidiWave(state, arguments, preferredDevice,
+            openSource, stopMusic, createRenderer, restoreMusic, lastError, report, cancellationToken);
+    }
+
+    public void ConfigureSynthWaveExport(int preferredDevice, Func<string, IVmMusicSmfSource?> openSource,
+        VmMusicMidiDeviceKind defaultDevice,
+        Func<VmMusicWaveRequest, VmMusicFmSessionDevice>? createFm,
+        Func<VmMusicWaveRequest, VmMusicWildMidiManagedRenderer>? createWildMidi,
+        Func<string, int, bool, bool, bool> restoreMusic, Func<string> lastError,
+        CancellationToken cancellationToken = default)
+    {
+        ArgumentNullException.ThrowIfNull(openSource);
+        ArgumentNullException.ThrowIfNull(restoreMusic);
+        ArgumentNullException.ThrowIfNull(lastError);
+        var dump = VmMusicSynthWaveDump.CreateRouter(defaultDevice, createFm, createWildMidi, cancellationToken);
+        writeWave = arguments => VmMusicWaveExport.WriteWave(state, arguments, preferredDevice,
+            openSource, stopMusic, dump, restoreMusic, lastError, report);
+    }
+
+    public void ConfigureSynthWaveExport(int preferredDevice, Func<string, int> findMusicNamespace,
+        Func<string, int> findFullName, Func<int, byte[]?> readResource,
+        VmMusicMidiDeviceKind defaultDevice,
+        Func<VmMusicWaveRequest, VmMusicFmSessionDevice>? createFm,
+        Func<VmMusicWaveRequest, VmMusicWildMidiManagedRenderer>? createWildMidi,
+        Func<string, int, bool, bool, bool> restoreMusic, CancellationToken cancellationToken = default)
+    {
+        ArgumentNullException.ThrowIfNull(findMusicNamespace);
+        ArgumentNullException.ThrowIfNull(findFullName);
+        ArgumentNullException.ThrowIfNull(readResource);
+        var factory = new VmMusicMidiSourceFactory();
+        ConfigureSynthWaveExport(preferredDevice,
+            name => VmMusicMidiSource.Open(name, state.Name, findMusicNamespace, findFullName,
+                readResource, factory.Create, () => factory.LastError, report),
+            defaultDevice, createFm, createWildMidi, restoreMusic, () => factory.LastError, cancellationToken);
     }
 
     // Input is already tokenized and includes the command name at index zero.

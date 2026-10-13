@@ -56,12 +56,13 @@ public class ActorProximityTests
     }
 
     [Fact]
-    public void SightFlagChecksOcclusionAndUnsupportedFlagsFailExplicitly()
+    public void SightFlagChecksOcclusionAndGeneralTargetAssignment()
     {
         var sim = Room(blocked: true); sim.AddBot(80, 0, 3001); var player = sim.Players.Single();
         Assert.True(ActorProximity.Check(player, "DoomImp", 100));
         Assert.False(ActorProximity.Check(player, "DoomImp", 100, flags: 4096));
-        Assert.Throws<NotSupportedException>(() => ActorProximity.Check(player, "DoomImp", 100, flags: 64));
+        Assert.True(ActorProximity.Check(player, "DoomImp", 100, flags: 64));
+        Assert.Equal(sim.Actors.Single(a => a.ClassDoomEdNum == 3001).Id, player.TargetId);
         Assert.False(ActorProximity.Check(player, "Unknown", 100, count: 0));
         Assert.False(ActorProximity.Check(player, "DoomImp", 0, count: 0));
     }

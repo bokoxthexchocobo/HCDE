@@ -160,6 +160,18 @@ public class VmMusicEmidiLoopTests
 
     [Theory]
     [InlineData(1)]
+    [InlineData(2)]
+    public void ZeroDurationLiveGlobalLoopRejectsOutputWithoutTimeProgress(int format)
+    {
+        using var source = new VmMusicSmfPlaybackSource(Multitrack((ushort)format,
+            [new(0, 0x0076b0), new(0, 0x403c90), new(0, 0x7f77b0)],
+            [new(1, 0x403d91)]));
+        source.StartPlayback(true, 0);
+        Assert.Throws<InvalidDataException>(() => source.MakeEvents(new uint[24], uint.MaxValue));
+    }
+
+    [Theory]
+    [InlineData(1)]
     [InlineData(3)]
     public void FormatTwoGlobalExportRepeatsCurrentTrackAndPreservesLaterDelay(int limit)
     {

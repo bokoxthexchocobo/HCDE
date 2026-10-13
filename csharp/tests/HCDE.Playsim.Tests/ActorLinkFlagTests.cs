@@ -44,11 +44,12 @@ public class ActorLinkFlagTests
     }
 
     [Fact]
-    public void UnsupportedSectorChangeFailsBeforeBlockmapWrite()
+    public void SectorAndBlockmapFlagsChangeIndependently()
     {
         var sim = Room(); var actor = sim.AddBot(200, 0);
-        Assert.Throws<NotSupportedException>(() => ActorPropertyActions.ChangeLinkFlags(actor, 1, 0));
-        Assert.False(actor.NoBlockmap); Assert.False(actor.HasBlockmapOverride);
+        ActorPropertyActions.ChangeLinkFlags(actor, 1, 0);
+        Assert.True(actor.NoBlockmap); Assert.True(actor.HasBlockmapOverride);
+        Assert.False(actor.NoSector); Assert.True(actor.HasSectorOverride);
     }
 
     [Theory]

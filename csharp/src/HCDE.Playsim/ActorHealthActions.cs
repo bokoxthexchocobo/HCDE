@@ -16,35 +16,52 @@ public static class ActorHealthActions
 
     public static void KillTarget(Actor actor, string? damageType = null, int flags = 0,
         int sourceSelector = 0, int inflictorSelector = 0, string? classFilter = null, string? speciesFilter = null)
-        => Kill(flags, damageFlags => DamageTarget(actor, 0, damageType, damageFlags, sourceSelector, inflictorSelector, classFilter, speciesFilter));
+        => KillRelated(actor, AcsActorPointer.Target, false, false, damageType, flags, sourceSelector, inflictorSelector, classFilter, speciesFilter);
 
     public static void KillMaster(Actor actor, string? damageType = null, int flags = 0,
         int sourceSelector = 0, int inflictorSelector = 0, string? classFilter = null, string? speciesFilter = null)
-        => Kill(flags, damageFlags => DamageMaster(actor, 0, damageType, damageFlags, sourceSelector, inflictorSelector, classFilter, speciesFilter));
+        => KillRelated(actor, AcsActorPointer.Master, false, false, damageType, flags, sourceSelector, inflictorSelector, classFilter, speciesFilter);
 
     public static void KillTracer(Actor actor, string? damageType = null, int flags = 0,
         int sourceSelector = 0, int inflictorSelector = 0, string? classFilter = null, string? speciesFilter = null)
-        => Kill(flags, damageFlags => DamageTracer(actor, 0, damageType, damageFlags, sourceSelector, inflictorSelector, classFilter, speciesFilter));
+        => KillRelated(actor, AcsActorPointer.Tracer, false, false, damageType, flags, sourceSelector, inflictorSelector, classFilter, speciesFilter);
 
     public static void KillChildren(Actor actor, string? damageType = null, int flags = 0,
         int sourceSelector = 0, int inflictorSelector = 0, string? classFilter = null, string? speciesFilter = null)
-        => Kill(flags, damageFlags => DamageChildren(actor, 0, damageType, damageFlags, sourceSelector, inflictorSelector, classFilter, speciesFilter));
+        => KillRelated(actor, AcsActorPointer.Default, true, false, damageType, flags, sourceSelector, inflictorSelector, classFilter, speciesFilter);
 
     public static void KillSiblings(Actor actor, string? damageType = null, int flags = 0,
         int sourceSelector = 0, int inflictorSelector = 0, string? classFilter = null, string? speciesFilter = null)
-        => Kill(flags, damageFlags => DamageSiblings(actor, 0, damageType, damageFlags, sourceSelector, inflictorSelector, classFilter, speciesFilter));
+        => KillRelated(actor, AcsActorPointer.Default, true, true, damageType, flags, sourceSelector, inflictorSelector, classFilter, speciesFilter);
 
-    private static void Kill(int flags, Action<int> applyDamage)
+    private static void KillRelated(Actor origin, int selector, bool family, bool siblings,
+        string? damageType, int flags, int sourceSelector, int inflictorSelector,
+        string? classFilter, string? speciesFilter)
     {
         if ((flags & ~127) != 0) throw new ArgumentOutOfRangeException(nameof(flags));
-        if ((flags & 2) != 0) throw new NotSupportedException("KillMissiles requires native no-damage projectile flags.");
-        if ((flags & 4) != 0) return;
-        var damageFlags = 4 | (flags & 1);
-        if ((flags & 8) != 0) damageFlags |= 16;
-        if ((flags & 16) != 0) damageFlags |= 64;
-        if ((flags & 32) != 0) damageFlags |= 128;
-        if ((flags & 64) != 0) damageFlags |= 256;
-        applyDamage(damageFlags);
+        var selected = Subject(origin, siblings ? AcsActorPointer.Master : selector);
+        if (selected is null) return;
+        var source = Subject(origin, sourceSelector); var inflictor = Subject(origin, inflictorSelector);
+        IEnumerable<Actor> victims = [selected];
+        if (family)
+        {
+            var sim = origin.Simulation ?? throw new InvalidOperationException("Family kill requires a simulation.");
+            victims = sim.Actors.Where(target => !target.Destroyed && target.MasterId == selected.Id
+                && (!siblings || target != origin)).ToArray();
+        }
+        foreach (var victim in victims)
+        {
+            if (victim.Destroyed || !ActorActionFilters.Matches(victim, classFilter, speciesFilter,
+                (flags & 16) != 0, (flags & 32) != 0, (flags & 64) != 0)) continue;
+            if (victim is ProjectileActor missile && (flags & 2) != 0 && !victim.NoDamage
+                && (!victim.Invulnerable || (flags & 1) != 0) && (!victim.Buddha || (flags & 8) != 0))
+                missile.ExplodeForAction();
+            if ((flags & 4) != 0) continue;
+            var damageFlags = DamageFlags.BypassArmor | DamageFlags.NoFactor;
+            if ((flags & 1) != 0) damageFlags |= DamageFlags.BypassInvulnerability;
+            if ((flags & 8) != 0) damageFlags |= DamageFlags.FoilBuddha;
+            ActorDamage.Apply(victim, victim.Health, source, damageFlags, damageType, inflictor);
+        }
     }
 
     public static void DamageTracer(Actor actor, int amount, string? damageType = null, int flags = 0,

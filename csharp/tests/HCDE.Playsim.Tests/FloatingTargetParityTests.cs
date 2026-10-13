@@ -76,7 +76,7 @@ public class FloatingTargetParityTests
     private static (AuthoritySimulation Sim, Actor Actor, Actor Target) Setup()
     {
         var sim = AuthoritySimulation.Start(new PlayLevel { Sectors = [new LevelSector { CeilingHeight = 256 }] });
-        var actor = sim.AddBot(0, 0, 3005); var target = sim.AddBot(50, 0);
+        var actor = sim.AddBot(0, 0, 3005); var target = sim.AddBot(64, 0);
         actor.Z = Fixed.FromInt(56); target.Z = Fixed.FromInt(100);
         actor.Brain!.SetSpecialTarget(target); actor.Brain.Enabled = false;
         return (sim, actor, target);

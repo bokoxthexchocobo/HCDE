@@ -628,8 +628,8 @@ public static class LineSpecials
             else if (floor > target)
                 floor = Math.Max(target, floor - motion.Speed);
             var reachedDestination = floor == target;
-            if (door && motion.Closing && sim.Actors.Any(actor => actor.BlocksActors
-                && actor.SectorIndex == motion.SectorIndex && actor.Z.ToDouble() + actor.Height.ToDouble() > floor))
+            if (door && motion.Closing && sim.Actors.Any(actor => actor.IsSectorMoverActor && ActorPhysics.BlocksSectorGeometry(actor)
+                && ActorPhysics.TouchesSector(sim, actor, motion.SectorIndex) && ActorPhysics.BlocksLoweringCeiling(sim, actor, floor)))
             {
                 if (!reachedDestination)
                 {
@@ -640,8 +640,12 @@ public static class LineSpecials
             }
             if (!door && floor > sim.Floors[motion.SectorIndex])
             {
-                var blocked = sim.Actors.Where(actor => actor.BlocksActors && actor.SectorIndex == motion.SectorIndex
-                    && Math.Max(actor.Z.ToDouble(), floor) + actor.Height.ToDouble() > sim.Ceilings[motion.SectorIndex]).ToArray();
+                var blocked = sim.Actors.Where(actor => actor.IsSectorMoverActor && ActorPhysics.BlocksSectorGeometry(actor) && ActorPhysics.TouchesSector(sim, actor, motion.SectorIndex)
+                    && (actor.ActsLikeBridge && floor > ActorPhysics.SectorSupportFloor(sim, actor)
+                            && actor.Z.ToDouble() <= floor
+                        || ActorPhysics.RaisedFloorActorZ(actor, ActorPhysics.SectorSupportFloor(sim, actor),
+                        Math.Max(ActorPhysics.SectorSupportFloor(sim, actor), floor))
+                        + actor.Height.ToDouble() > ActorPhysics.SectorSupportCeiling(sim, actor))).ToArray();
                 if (blocked.Length > 0)
                 {
                     if (motion.CrushDamage > 0 || motion.CrushWithoutDamage)
@@ -651,9 +655,11 @@ public static class LineSpecials
                             var tic = sim.Thinkers.Clock.Tic;
                             foreach (var actor in blocked)
                             {
+                                if (actor.ActsLikeBridge) continue;
                                 actor.MarkMoverCrush(tic);
-                                ActorDamage.Apply(actor, motion.CrushDamage);
-                                ActorPhysics.CrushStandingRiders(sim, actor, motion.CrushDamage, tic);
+                                ActorDamage.Apply(actor, motion.CrushDamage, damageType: "Crush");
+                                if (motion.CrushDamage > 0) ActorSoundActions.CrushPain(actor);
+                                ActorPhysics.CrushStandingRiders(sim, actor, motion.CrushDamage, tic, "Crush");
                             }
                         }
                         if (motion.StopOnCrush)
@@ -677,8 +683,31 @@ public static class LineSpecials
                     }
                 }
             }
-            if (door) sim.Ceilings[motion.SectorIndex] = floor;
-            else sim.Floors[motion.SectorIndex] = floor;
+            if (door)
+            {
+                var oldCeiling = sim.Ceilings[motion.SectorIndex];
+                sim.Ceilings[motion.SectorIndex] = floor;
+                if (floor < oldCeiling) ActorPhysics.ApplyCeilingLower(sim, motion.SectorIndex);
+                else if (floor > oldCeiling) ActorPhysics.ApplyCeilingRaise(sim, motion.SectorIndex, floor - oldCeiling);
+            }
+            else
+            {
+                var oldFloor = sim.Floors[motion.SectorIndex];
+                var moving = floor != oldFloor
+                    ? sim.Actors.Where(actor => !actor.Destroyed && actor is not ProjectileActor
+                        && ActorPhysics.TouchesSector(sim, actor, motion.SectorIndex))
+                        .Select(actor => (Actor: actor, Floor: ActorPhysics.SectorSupportFloor(sim, actor))).ToArray()
+                    : [];
+                sim.Floors[motion.SectorIndex] = floor;
+                foreach (var entry in moving)
+                {
+                    if (floor < oldFloor)
+                        ActorPhysics.ApplyFloorDrop(sim, entry.Actor, entry.Floor, oldFloor - floor,
+                            sim.Level.Sectors[motion.SectorIndex].DropActors);
+                    else
+                        ActorPhysics.ApplyRelativeFloorRaise(sim, entry.Actor, entry.Floor);
+                }
+            }
 
             if (!reachedDestination)
                 continue;

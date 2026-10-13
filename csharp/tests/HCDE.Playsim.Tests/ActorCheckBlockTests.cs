@@ -177,11 +177,12 @@ public class ActorCheckBlockTests
     }
 
     [Fact]
-    public void UnsupportedTracerPreventsEarlierPointerWritesAndRestoresProbe()
+    public void GeneralTracerReceivesBlockerAndRestoresProbe()
     {
-        var sim = Room(); var caller = sim.AddBot(0, 0); sim.AddBot(100, 0);
-        Assert.Throws<NotSupportedException>(() => ActorJumpActions.CheckBlock(caller, 2, 2 | 4 | 8, xOffset: 100));
-        Assert.Null(caller.MasterId); Assert.Null(caller.Brain!.TargetId); Assert.Equal(default, caller.X);
+        var sim = Room(); var caller = sim.AddBot(0, 0); var blocker = sim.AddBot(100, 0);
+        Assert.Equal(2, ActorJumpActions.CheckBlock(caller, 2, 2 | 4 | 8, xOffset: 100));
+        Assert.Equal(blocker.Id, caller.MasterId); Assert.Equal(blocker.Id, caller.Brain!.TargetId);
+        Assert.Equal(blocker.Id, caller.TracerId); Assert.Equal(default, caller.X);
     }
 
     [Theory]

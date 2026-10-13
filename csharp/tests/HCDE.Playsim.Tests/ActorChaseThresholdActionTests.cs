@@ -44,9 +44,12 @@ public class ActorChaseThresholdActionTests
     }
 
     [Fact]
-    public void UnsupportedBrainStorageFailsExplicitly()
+    public void GeneralActorStoresCurrentAndDefaultSeparately()
     {
-        Assert.Throws<NotSupportedException>(() => ActorPropertyActions.SetChaseThreshold(new Actor(), 1));
+        var actor = new Actor();
+        ActorPropertyActions.SetChaseThreshold(actor, 1);
+        ActorPropertyActions.SetChaseThreshold(actor, 27, true);
+        Assert.Equal(1, actor.ChaseThreshold); Assert.Equal(27, actor.DefaultChaseThreshold);
     }
 
     private static AuthoritySimulation Room() => AuthoritySimulation.Start(new PlayLevel

@@ -38,6 +38,16 @@ public class Actor : Thinker
     /// <summary>Native <c>AActor::IsMapActor</c> for represented non-inventory actors.</summary>
     public virtual bool IsMapActor() => true;
     public bool NoBlockmap { get; set; }
+    public bool NoSector { get; set; }
+    internal bool HasSectorOverride { get; set; }
+    public bool IsSectorLinked => !Destroyed && !NoSector;
+    public bool CanPass { get; set; }
+    public bool DontOverlap { get; set; }
+    internal bool DefaultCanPass => this is PlayerPawn || (ResurrectionCollisionFlags.GetValueOrDefault() & 256) != 0;
+    public bool MoveWithSector { get; set; }
+    public bool NoLiftDrop { get; set; }
+    public bool RelativeToFloor { get; set; }
+    internal bool IsSectorMoverActor => IsSectorLinked && (!NoBlockmap || MoveWithSector);
     public bool CantSeek { get; set; }
     public bool SpawnSoundSource { get; set; }
     public bool DontThrust { get; set; }
@@ -97,6 +107,36 @@ public class Actor : Thinker
     public virtual void Activate(Actor? activator) => ThingActivation.Apply(this, true);
     public virtual void Deactivate(Actor? activator) => ThingActivation.Apply(this, false);
     public Func<Actor, bool>? UseAction { get; set; }
+    internal uint? StoredTargetId { get; set; }
+    private SimChaseThreshold? _chaseThreshold;
+    public int ChaseThreshold => Brain?.Threshold ?? _chaseThreshold?.Current ?? 0;
+    public int DefaultChaseThreshold => Brain?.DefThreshold ?? _chaseThreshold?.Default ?? 100;
+    internal SimChaseThreshold? CaptureChaseThreshold() => Brain is { } brain
+        ? brain.HasChaseThresholdOverride || brain.Threshold != 0 || brain.DefThreshold != 100
+            ? new SimChaseThreshold(brain.Threshold, brain.DefThreshold) : null
+        : _chaseThreshold;
+    internal void SetChaseThreshold(int threshold, bool setDefault)
+    {
+        if (Brain is { } brain) { brain.SetChaseThreshold(threshold, setDefault); return; }
+        _chaseThreshold = setDefault ? new(ChaseThreshold, Math.Max(0, threshold))
+            : new(Math.Max(0, threshold), DefaultChaseThreshold);
+    }
+    internal void RestoreChaseThreshold(SimChaseThreshold? saved)
+    {
+        _chaseThreshold = Brain is null ? saved : null;
+        Brain?.RestoreChaseThreshold(saved);
+    }
+    public uint? TargetId => this is ProjectileActor projectile ? projectile.Owner?.Id : Brain?.TargetId ?? StoredTargetId;
+    internal void SetTargetPointer(Actor? target)
+    {
+        if (this is ProjectileActor projectile) { projectile.ReassignOwner(target); return; }
+        if (Brain is { } brain) brain.SetSpecialTarget(target);
+        else StoredTargetId = target?.Id;
+        HasTargetMemoryOverride = true;
+    }
+    private uint? _tracerId;
+    public uint? TracerId { get => _tracerId; set { _tracerId = value == 0 ? null : value; HasTracerOverride = true; } }
+    internal bool HasTracerOverride { get; set; }
     private uint? _masterId;
     public uint? MasterId { get => _masterId; set { _masterId = value == 0 ? null : value; HasMasterOverride = true; } }
     internal bool HasMasterOverride { get; set; }
@@ -357,6 +397,9 @@ public class Actor : Thinker
     /// <summary>Native DamageVal; projectiles may also supply a damage expression.</summary>
     public int Damage { get; set; }
     public Func<Actor, int>? DamageFunction { get; set; }
+    public Func<Actor, Actor, int>? SpecialMissileHitFunction { get; set; }
+    /// <summary>Native callback: 0 blocks, 1 passes, other values use ordinary missile handling.</summary>
+    public virtual int SpecialMissileHit(Actor victim) => SpecialMissileHitFunction?.Invoke(this, victim) ?? -1;
     internal int? SpawnDamage { get; set; }
     /// <summary>Native SetDamage; projectile overrides also clear their damage expression.</summary>
     public virtual void SetDamage(int damage)
@@ -364,6 +407,9 @@ public class Actor : Thinker
     /// <summary>Native IsZeroDamage; projectile overrides also check for a damage expression.</summary>
     public virtual bool IsZeroDamage() => Damage == 0 && DamageFunction == null;
     public virtual bool Slam(Actor victim) => ActorSkullActions.Slam(this, victim);
+    /// <summary>Native P_DoMissileDamage action, using this actor's RIP flag and target pointer.</summary>
+    public DamageResult DoMissileDamage(Actor victim) => ActorMissileDamage.Apply(this, victim, Rip);
+    public DamageResult DoMissileDamage(Actor victim, bool ripper) => ActorMissileDamage.Apply(this, victim, ripper);
     public virtual int GetMissileDamage(int mask, int add)
     {
         if (DamageFunction is { } function) return function(this);
@@ -659,9 +705,9 @@ public class Actor : Thinker
         (ProjectileGroup != -1 || ReferenceEquals(this, source))
         && (ProjectileGroup == 0 ? SharesContactSpecies(source) && !DoHarmSpecies : ProjectileGroup == source.ProjectileGroup);
     /// <summary>Native <c>CanAttackHurt</c> subset for monster-monster damage.</summary>
-    internal bool CanAttackHurtFrom(Actor shooter)
+    internal bool CanAttackHurtFrom(Actor? shooter)
     {
-        if (this is PlayerPawn || shooter is PlayerPawn) return true;
+        if (shooter is null || this is PlayerPawn || shooter is PlayerPawn) return true;
         var sim = Simulation;
         if (sim == null) return true;
         var infight = sim.GetInfightLevel(this);
@@ -1197,6 +1243,7 @@ public class PlayerPawn : Actor
     {
         Inventory = new PlayerInventory(this);
         CanSlide = true;
+        CanPass = true;
         MovementSpeed = Fixed.FromInt(1);
         CanPickupItems = true;
         SpawnCanPickupItems = true;
@@ -2112,6 +2159,7 @@ public static class ActorSpawner
     internal static void ApplyPrimaryFlags(Actor actor, DehackedActor? defaults, bool playerStart)
     {
         actor.DontFall = actor.ClassDoomEdNum == 3006;
+        actor.CanPass = playerStart || DoomActorCatalog.Find(actor.ClassDoomEdNum) is not null;
         actor.Shadow = defaults is { BitsPatched: true } ? (defaults.Bits & 0x00040000) != 0 : actor.ClassDoomEdNum == 58;
         actor.DefaultShadow = actor.Shadow;
         var nativeShadow = actor.ClassDoomEdNum == 58;
@@ -2129,6 +2177,7 @@ public static class ActorSpawner
             actor.Solid = (defaults.Bits & 0x00000002) != 0;
             actor.Shootable = (defaults.Bits & 0x00000004) != 0;
             actor.NoBlockmap = (defaults.Bits & 0x00000010) != 0;
+            actor.NoSector = (defaults.Bits & 0x00000008) != 0;
             actor.SpawnCeiling = (defaults.Bits & 0x00000100) != 0;
             actor.NoGravity = (defaults.Bits & 0x00000200) != 0;
             actor.AllowDropOff = (defaults.Bits & 0x00000400) != 0;
@@ -2144,6 +2193,7 @@ public static class ActorSpawner
         actor.Ambush = defaults is { BitsPatched: true } && (defaults.Bits & 0x20) != 0;
         if (defaults is { Bits2Patched: true })
         {
+            actor.CanPass = (defaults.Bits2 & 0x1000) != 0;
             actor.NoTeleport = (defaults.Bits2 & 0x80) != 0;
             actor.CanSlide = (defaults.Bits2 & 0x400) != 0;
             actor.Invulnerable = (defaults.Bits2 & 0x08000000) != 0;
@@ -2164,7 +2214,7 @@ public static class ActorSpawner
 
     internal static int CollisionFlagsOf(Actor actor) => (actor.Solid ? 1 : 0) | (actor.Shootable ? 2 : 0)
         | (actor.NoBlockmap ? 4 : 0) | (actor.NoBlockMonsters ? 8 : 0) | (actor.Dropped ? 16 : 0)
-        | (actor.IsMonster ? 32 : 0) | (actor.SpawnCeiling ? 64 : 0);
+        | (actor.IsMonster ? 32 : 0) | (actor.SpawnCeiling ? 64 : 0) | (actor.NoSector ? 128 : 0) | (actor.CanPass ? 256 : 0);
 
     internal static Fixed RadiusOf(DehackedActor? defaults, bool player)
     {
@@ -2453,6 +2503,11 @@ public sealed class AuthoritySimulation
     public IReadOnlyList<string> StrArgs { get; }
     public ThinkerCollection Thinkers { get; }
     public IReadOnlyList<Actor> Actors => _actors;
+    public IEnumerable<Actor> SectorActors(int sectorIndex)
+    {
+        if ((uint)sectorIndex >= (uint)Level.Sectors.Count) throw new ArgumentOutOfRangeException(nameof(sectorIndex));
+        return _actors.Where(actor => actor.IsSectorLinked && actor.SectorIndex == sectorIndex);
+    }
     public IEnumerable<PlayerPawn> Players => _actors.OfType<PlayerPawn>();
     public int RngSeed { get; }
     public uint Checksum { get; private set; }
@@ -2786,7 +2841,7 @@ public sealed class AuthoritySimulation
 
         foreach (var actor in _actors)
         {
-            if (actor.Destroyed || actor.Floating || !actor.OnGround || actor is ProjectileActor or PlayerPawn)
+            if (actor.Destroyed || actor.NoSector || actor.Floating || !actor.OnGround || actor is ProjectileActor or PlayerPawn)
                 continue;
             var radius = actor.Radius.ToDouble();
             var x = actor.X.ToDouble();
@@ -3398,17 +3453,17 @@ public sealed class AuthoritySimulation
     public ProjectileActor SpawnProjectile(Actor owner, ProjectileKind kind, Actor? target = null, bool spawnSoundSource = false)
         => SpawnProjectileCore(owner, kind, target, null, spawnSoundSource);
 
-    private ProjectileActor SpawnProjectileCore(Actor owner, ProjectileKind kind, Actor? target, uint? savedId, bool spawnSoundSource = false)
+    private ProjectileActor SpawnProjectileCore(Actor? owner, ProjectileKind kind, Actor? target, uint? savedId, bool spawnSoundSource = false)
     {
         var projectile = new ProjectileActor(owner, kind)
         {
             Id = savedId ?? _nextActorId, Level = Level, Simulation = this,
             SpawnSoundSource = spawnSoundSource,
-            X = owner.X, Y = owner.Y,
-            Z = Fixed.FromDouble(owner.Z.ToDouble() + (owner is PlayerPawn firingPlayer
+            X = owner?.X ?? default, Y = owner?.Y ?? default,
+            Z = Fixed.FromDouble((owner?.Z.ToDouble() ?? 0) + (owner is PlayerPawn firingPlayer
                 ? owner.Height.ToDouble() / 2 + (firingPlayer.AttackZOffset.ToDouble() - 4) * firingPlayer.CrouchFactor
                 : kind == ProjectileKind.RevenantTracer ? 48 : 32)),
-            Angle = owner.Angle,
+            Angle = owner?.Angle ?? default,
         };
         if (owner is PlayerPawn && projectile.Z.ToDouble() < FloorOf(owner.SectorIndex))
             projectile.Z = Fixed.FromDouble(FloorOf(owner.SectorIndex));
@@ -3639,6 +3694,11 @@ public sealed class AuthoritySimulation
                 AmbushFlag = actor.Ambush != actor.DefaultAmbush ? actor.Ambush ? 1 : 0 : null,
                 CantSeekFlag = actor.CantSeek ? 1 : null,
                 SpawnSoundSourceFlag = actor.SpawnSoundSource ? 1 : null,
+                MoveWithSectorFlag = actor.MoveWithSector ? 1 : null,
+                CanPassFlag = actor.CanPass != actor.DefaultCanPass ? actor.CanPass ? 1 : 0 : null,
+                DontOverlapFlag = actor.DontOverlap ? 1 : null,
+                FloorCarryFlags = actor.NoLiftDrop || actor.RelativeToFloor
+                    ? (actor.NoLiftDrop ? 1 : 0) | (actor.RelativeToFloor ? 2 : 0) : null,
                 RenderProperties = actor is not ProjectileActor && (actor.RenderStyle != ActorRenderStyle.Normal || actor.Alpha != 1)
                     || actor.RenderStyle != actor.DefaultRenderStyle || actor.Alpha != actor.DefaultAlpha
                     ? new SimActorRenderProperties(actor.RenderStyle, actor.Alpha) : null,
@@ -3683,6 +3743,7 @@ public sealed class AuthoritySimulation
                     && actor.AllowDropOff != ((dropOffDefaults & 16) != 0)
                     ? actor.AllowDropOff ? 1 : 0 : null,
                 UseSpecialFlag = actor.HasUseSpecialOverride ? actor.UseSpecial ? 1 : 0 : null,
+                TracerPointer = actor is not ProjectileActor && actor.HasTracerOverride ? new SimTracerPointer(actor.TracerId) : null,
                 MasterPointer = actor.HasMasterOverride ? new SimMasterPointer(actor.MasterId) : null,
                 FloorClip = actor.HasFloorClipOverride ? actor.FloorClip : null,
                 InvisibleFlag = actor.HasVisibilityOverride ? actor.Invisible ? 1 : 0 : null,
@@ -3697,6 +3758,9 @@ public sealed class AuthoritySimulation
                 Crouch = actor is PlayerPawn crouchPlayer ? SimCrouchArchive.Capture(crouchPlayer) : null,
                 MonsterBlockingFlag = actor.NoBlockMonsters != ((actor.ResurrectionCollisionFlags.GetValueOrDefault() & 8) != 0)
                     ? actor.NoBlockMonsters ? 1 : 0 : null,
+                SectorLinkFlag = actor.HasSectorOverride
+                    || actor.NoSector != ((actor.ResurrectionCollisionFlags.GetValueOrDefault() & 128) != 0)
+                    ? actor.NoSector ? 1 : 0 : null,
                 BlockmapFlag = actor.HasBlockmapOverride || actor.ResurrectionCollisionFlags is { } blockmapDefaults
                     && actor.NoBlockmap != ((blockmapDefaults & 4) != 0) ? actor.NoBlockmap ? 1 : 0 : null,
                 Friendship = actor.HasFriendshipOverride || actor.NoHatePlayers
@@ -3721,12 +3785,10 @@ public sealed class AuthoritySimulation
                     actor is PlayerPawn sizedPlayer ? sizedPlayer.FullHeight : 0, actor.Height.Raw) : null,
                 TeleFog = actor.HasTeleFogOverride || actor.TeleFogSource is not null || actor.TeleFogDest is not null
                     ? new SimTeleFog(actor.TeleFogSource, actor.TeleFogDest) : null,
-                ChaseThreshold = actor.Brain is { } brain && (brain.HasChaseThresholdOverride
-                    || brain.Threshold != 0 || brain.DefThreshold != 100)
-                    ? new SimChaseThreshold(brain.Threshold, brain.DefThreshold) : null,
-                TargetMemory = actor.HasTargetMemoryOverride || actor.Brain?.TargetId is not null
+                ChaseThreshold = actor.CaptureChaseThreshold(),
+                TargetMemory = actor.HasTargetMemoryOverride || actor.TargetId is not null && actor is not ProjectileActor
                     || actor.Brain?.LastEnemyId is not null || actor.LastHeardTargetId is not null
-                    ? new SimTargetMemory(actor.Brain?.TargetId, actor.Brain?.LastEnemyId, actor.LastHeardTargetId) : null,
+                    ? new SimTargetMemory(actor is ProjectileActor ? actor.Brain?.TargetId : actor.TargetId, actor.Brain?.LastEnemyId, actor.LastHeardTargetId) : null,
                 WornArmorType = actor is PlayerPawn armorPlayer
                     && (armorPlayer.Inventory.ArmorType != "None" || armorPlayer.Inventory.Armor != 0)
                     ? armorPlayer.Inventory.ArmorType : null,
@@ -3836,7 +3898,7 @@ public sealed class AuthoritySimulation
                 ProjectileLifetime = actor is ProjectileActor { Destroyed: false } projectile
                     ? new SimProjectileLifetime(projectile.RemainingTics, projectile.Kind) : null,
                 ProjectilePointers = actor is ProjectileActor { Destroyed: false } pointerProjectile
-                    ? new SimProjectilePointers(pointerProjectile.Owner.Id, pointerProjectile.TracerTargetId) : null,
+                    ? new SimProjectilePointers(pointerProjectile.Owner?.Id ?? 0, pointerProjectile.TracerTargetId) : null,
                 Pickup = PickupCatalog.IsPickup(actor.DoomEdNum, RavenHealthPickups)
                     ? new SimPickupProperties(actor.PickupAmount, actor.IgnoreAmmoSkill, actor.Depleted) : null,
                 PickupDelay = actor.PickupDelay,
@@ -3928,6 +3990,10 @@ public sealed class AuthoritySimulation
         SimAmbushArchive.Validate(state);
         SimCantSeekArchive.Validate(state);
         SimSpawnSoundSourceArchive.Validate(state);
+        SimMoveWithSectorArchive.Validate(state);
+        SimFloorCarryArchive.Validate(state);
+        SimCanPassArchive.Validate(state);
+        SimDontOverlapArchive.Validate(state);
         SimActorRenderArchive.Validate(state);
         SimDontThrustArchive.Validate(state);
         SimDontSeekInvisibleArchive.Validate(state);
@@ -3949,20 +4015,25 @@ public sealed class AuthoritySimulation
             throw new InvalidOperationException("Saved plane count does not match the current map.");
         if (state.Walls is { } savedWalls && savedWalls.Count != Level.Sides.Count)
             throw new InvalidOperationException("Saved wall count does not match the current map.");
+        // All saved missiles are reconstructed before their ownership links are restored.
+        bool SavedOwnerAvailable(uint id) => id == 0 || state.Actors.Any(pose => pose.Id == id)
+            && (_actors.Any(candidate => candidate.Id == id && !candidate.Destroyed)
+                || state.Actors.Any(pose => pose.Id == id && pose.ProjectileLifetime.HasValue)
+                    && !_actors.Any(candidate => candidate.Id == id && candidate is not ProjectileActor));
         foreach (var pose in state.Actors)
         {
             var actor = _actors.FirstOrDefault(candidate => candidate.Id == pose.Id);
             var reconstructProjectile = pose.ProjectileLifetime.HasValue && (actor == null || actor.Destroyed);
             if (reconstructProjectile && (pose.ProjectilePointers is not { } savedPointers
-                || !_actors.Any(candidate => candidate.Id == savedPointers.OwnerId && !candidate.Destroyed)
-                || !state.Actors.Any(candidate => candidate.Id == savedPointers.OwnerId)
+                || !SavedOwnerAvailable(savedPointers.OwnerId)
                 || pose.Id == 0 || pose.Id == uint.MaxValue || !pose.HasPhysics
                 || state.Actors.Count(item => item.Id == pose.Id) != 1
                 || actor != null && actor is not ProjectileActor))
                 throw new InvalidOperationException("Saved projectile cannot be reconstructed with its owner.");
             if (reconstructProjectile)
             {
-                var owner = _actors.Single(candidate => candidate.Id == pose.ProjectilePointers!.Value.OwnerId && !candidate.Destroyed);
+                var owner = pose.ProjectilePointers!.Value.OwnerId == 0 ? null
+                    : _actors.FirstOrDefault(candidate => candidate.Id == pose.ProjectilePointers!.Value.OwnerId && !candidate.Destroyed);
                 var prototype = new ProjectileActor(owner, pose.ProjectileLifetime!.Value.Kind);
                 if (pose.WeaponCooldown < 0 || !prototype.States.HasState(pose.State))
                     throw new InvalidOperationException("Saved projectile state is not in the current table.");
@@ -3972,7 +4043,7 @@ public sealed class AuthoritySimulation
                 || actor is not null && actor is not IceChunkActor || state.Actors.Count(item => item.Id == pose.Id) != 1))
                 throw new InvalidOperationException("Saved ice chunk does not match a valid chunk identity or state.");
             if (pose.ProjectilePointers is { } pointers &&
-                !reconstructProjectile && (actor is not ProjectileActor pointerMissile || pointerMissile.Destroyed || pointerMissile.Owner.Id != pointers.OwnerId))
+                !reconstructProjectile && (actor is not ProjectileActor pointerMissile || pointerMissile.Destroyed || !SavedOwnerAvailable(pointers.OwnerId)))
                 throw new InvalidOperationException("Saved projectile pointers do not match the current actor.");
             if (pose.ProjectileLifetime is { } lifetime &&
                 !reconstructProjectile && (actor is not ProjectileActor missile || missile.Destroyed || missile.Kind != lifetime.Kind))
@@ -4128,7 +4199,8 @@ public sealed class AuthoritySimulation
             var existing = _actors.FirstOrDefault(candidate => candidate.Id == pose.Id);
             if (existing is { Destroyed: false }) continue;
             if (existing != null) { Thinkers.Remove(existing); _actors.Remove(existing); }
-            var owner = _actors.Single(candidate => candidate.Id == pose.ProjectilePointers!.Value.OwnerId && !candidate.Destroyed);
+            var owner = pose.ProjectilePointers!.Value.OwnerId == 0 ? null
+                    : _actors.FirstOrDefault(candidate => candidate.Id == pose.ProjectilePointers!.Value.OwnerId && !candidate.Destroyed);
             SpawnProjectileCore(owner, pose.ProjectileLifetime!.Value.Kind, null, pose.Id);
         }
         foreach (var pose in state.Actors.Where(pose => pose.IceChunkLifecycle.HasValue))
@@ -4200,11 +4272,15 @@ public sealed class AuthoritySimulation
             actor.Synchronized = pose.SynchronizedFlag == 1;
             actor.AlwaysFast = (pose.FastModeFlags.GetValueOrDefault() & 1) != 0;
             actor.NeverFast = (pose.FastModeFlags.GetValueOrDefault() & 2) != 0;
+            actor.NoSector = pose.SectorLinkFlag is { } sectorLink ? sectorLink != 0
+                : (actor.ResurrectionCollisionFlags.GetValueOrDefault() & 128) != 0;
+            actor.HasSectorOverride = pose.SectorLinkFlag.HasValue;
             actor.GoalId = pose.GoalPointer?.ActorId;
             actor.Killed = pose.Killed;
             actor.HasTargetMemoryOverride = pose.TargetMemory.HasValue;
             var memory = pose.TargetMemory ?? default;
             actor.Brain?.RestoreTargetMemory(memory);
+            if (actor.Brain is null && actor is not ProjectileActor) actor.StoredTargetId = memory.Target;
             actor.LastHeardTargetId = memory.LastHeard;
             actor.CanSlide = pose.SlideFlag is { } slide ? slide != 0 : (actor.ResurrectionMovementFlags.GetValueOrDefault() & 8) != 0;
             actor.HasMovementActionOverride = pose.MovementActionFlags.HasValue;
@@ -4219,6 +4295,11 @@ public sealed class AuthoritySimulation
                 actor.AllowDropOff = (dropOffDefaults & 16) != 0;
             actor.UseSpecial = pose.UseSpecialFlag == 1;
             actor.HasUseSpecialOverride = pose.UseSpecialFlag.HasValue;
+            if (actor is not ProjectileActor)
+            {
+                actor.TracerId = pose.TracerPointer?.ActorId;
+                actor.HasTracerOverride = pose.TracerPointer.HasValue;
+            }
             actor.MasterId = pose.MasterPointer?.ActorId;
             actor.HasMasterOverride = pose.MasterPointer.HasValue;
             actor.FloorClip = pose.FloorClip ?? 0;
@@ -4227,6 +4308,11 @@ public sealed class AuthoritySimulation
             actor.Ambush = pose.AmbushFlag is { } ambush ? ambush != 0 : actor.DefaultAmbush;
             actor.CantSeek = pose.CantSeekFlag == 1;
             actor.SpawnSoundSource = pose.SpawnSoundSourceFlag == 1;
+            actor.MoveWithSector = pose.MoveWithSectorFlag == 1;
+            actor.CanPass = pose.CanPassFlag is { } canPass ? canPass != 0 : actor.DefaultCanPass;
+            actor.DontOverlap = pose.DontOverlapFlag == 1;
+            actor.NoLiftDrop = (pose.FloorCarryFlags.GetValueOrDefault() & 1) != 0;
+            actor.RelativeToFloor = (pose.FloorCarryFlags.GetValueOrDefault() & 2) != 0;
             actor.RenderStyle = pose.RenderProperties?.Style ?? actor.DefaultRenderStyle;
             actor.Alpha = pose.RenderProperties?.Alpha ?? actor.DefaultAlpha;
             actor.DontThrust = pose.DontThrustFlag == 1;
@@ -4333,7 +4419,7 @@ public sealed class AuthoritySimulation
                 if (actor.ResurrectionDefenseFlags is { } defenseDefaults)
                     actor.Invulnerable = (defenseDefaults & 1) != 0;
             }
-            actor.Brain?.RestoreChaseThreshold(pose.ChaseThreshold);
+            actor.RestoreChaseThreshold(pose.ChaseThreshold);
             actor.Gravity = new Fixed(pose.GravityRaw ?? 65536);
             actor.Friction = new Fixed(pose.FrictionRaw ?? 65536);
             if (pose.MovementActionFlags is { } movementActionFlags)
@@ -4438,8 +4524,12 @@ public sealed class AuthoritySimulation
             if (pose.ProjectileLifetime is { } savedLifetime && actor is ProjectileActor savedProjectile)
                 savedProjectile.RestoreRemainingTics(savedLifetime.Tics);
             if (pose.ProjectilePointers is { } savedPointers && actor is ProjectileActor pointerProjectile)
+            {
+                pointerProjectile.OwnerFromSave(savedPointers.OwnerId == 0 ? null
+                    : _actors.Single(a => a.Id == savedPointers.OwnerId && !a.Destroyed));
                 pointerProjectile.RestoreTracerTarget(_actors.Any(a => a.Id == savedPointers.TracerTargetId && !a.Destroyed)
                     ? savedPointers.TracerTargetId : null);
+            }
             actor.Roll = new BamAngle(pose.Roll ?? 0);
             if (pose.ContactFlags is { } contactFlags)
             {
@@ -4718,7 +4808,7 @@ public sealed class AuthoritySimulation
         // Carriers before riders so <see cref="ActorPhysics.SupportFloor"/> sees updated mobj tops.
         foreach (var actor in _actors.Where(actor => actor is not ProjectileActor)
             .OrderBy(actor => actor.OnMobj ? 1 : 0).ThenBy(actor => actor.Id))
-            ActorPhysics.FitToSector(this, actor, sectorPinchCrush: true);
+            ActorPhysics.FitToSector(this, actor, carryFloor: false, sectorPinchCrush: true);
         Acs.Tick(this, levelTic);
         Invasion.Tick(this);
         if (RewindEnabled)
@@ -5122,6 +5212,14 @@ public sealed class AuthoritySimulation
                 hash = Mix(hash, unchecked((uint)collisionFlags));
             }
             hash = Mix(hash, actor.LastHeardTargetId ?? 0);
+            if (actor.Brain is null && (actor.ChaseThreshold != 0 || actor.DefaultChaseThreshold != 100))
+            {
+                hash = Mix(hash, 0x43544852u);
+                hash = Mix(hash, unchecked((uint)actor.ChaseThreshold));
+                hash = Mix(hash, unchecked((uint)actor.DefaultChaseThreshold));
+            }
+            if (actor.Brain is null && actor is not ProjectileActor && actor.TargetId is { } targetId)
+            { hash = Mix(hash, 0x54415247u); hash = Mix(hash, targetId); }
             hash = Mix(hash, actor.Floating ? 1u : 0u);
             hash = Mix(hash, actor.AllowDropOff ? 1u : 0u);
             hash = Mix(hash, unchecked((uint)actor.MaxDropOffHeight.Raw));
@@ -5266,6 +5364,7 @@ public sealed class AuthoritySimulation
             if (actor.SpawnCeiling) hash = Mix(hash, 0x4345494Cu);
             if (actor.NoBlockMonsters) hash = Mix(hash, 0x4E424D4Fu);
             if (actor.NoBlockmap) hash = Mix(hash, 0x4E424D50u);
+            if (actor.NoSector) hash = Mix(hash, 0x4E534543u);
             if (actor.Invisible) hash = Mix(hash, 0x494E5649u);
             if (actor.FloorClip != 0) { hash = Mix(hash, 0x46434C50u); hash = MixDouble(hash, actor.FloorClip); }
             if (actor.NoTeleport) hash = Mix(hash, 0x4E54454Cu);
@@ -5281,6 +5380,11 @@ public sealed class AuthoritySimulation
             hash = Mix(hash, actor.OnMobj ? 1u : 0u);
             hash = Mix(hash, actor.IsMonster ? 1u : 0u);
             if (actor.UseSpecial) hash = Mix(hash, 0x55535043u);
+            if (actor is not ProjectileActor && actor.TracerId is { } tracerId)
+            {
+                hash = Mix(hash, 0x54524352u);
+                hash = Mix(hash, tracerId);
+            }
             if (actor.MasterId is { } masterId) { hash = Mix(hash, 0x4d415354u); hash = Mix(hash, masterId); }
             if (actor.GoalId is { } goalId) { hash = Mix(hash, 0x474f414cu); hash = Mix(hash, goalId); }
             hash = Mix(hash, actor.HarmFriends ? 1u : 0u);
@@ -5385,6 +5489,11 @@ public sealed class AuthoritySimulation
             hash = Mix(hash, actor.Ambush ? 1u : 0u);
             if (actor.CantSeek) hash = Mix(hash, 0x43534545u);
             if (actor.SpawnSoundSource) hash = Mix(hash, 0x5353504Eu);
+            if (actor.MoveWithSector) hash = Mix(hash, 0x4D575343u);
+            if (actor.DontOverlap) hash = Mix(hash, 0x444F564Cu);
+            if (actor.CanPass != actor.DefaultCanPass) { hash = Mix(hash, 0x43415053u); hash = Mix(hash, actor.CanPass ? 1u : 0u); }
+            if (actor.NoLiftDrop) hash = Mix(hash, 0x4E4C4450u);
+            if (actor.RelativeToFloor) hash = Mix(hash, 0x52464C52u);
             if (actor.DontThrust) hash = Mix(hash, 0x44544852u);
             if (actor.RenderStyle != ActorRenderStyle.Normal || actor.Alpha != 1)
             {
@@ -5575,7 +5684,7 @@ public sealed class AuthoritySimulation
             }
             if (actor is ProjectileActor projectile)
             {
-                hash = Mix(hash, projectile.Owner.Id);
+                hash = Mix(hash, projectile.Owner?.Id ?? 0);
                 hash = Mix(hash, (uint)projectile.Kind);
                 hash = Mix(hash, (uint)projectile.RemainingTics);
                 hash = Mix(hash, projectile.TracerTargetId ?? 0);

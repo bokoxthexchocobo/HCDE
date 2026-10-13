@@ -58,6 +58,54 @@ public class MissileDamageHelperTests
         missile.DamageExpression = _ => -7; Assert.Equal(-7, missile.GetMissileDamage(7, 1));
     }
 
+    [Theory]
+    [InlineData(false, false)]
+    [InlineData(false, true)]
+    [InlineData(true, false)]
+    [InlineData(true, true)]
+    public void DefaultDamageActionUsesActorFlagsAndReplaysFromSave(bool rip, bool strife)
+    {
+        for (var seed = 1; seed <= 16; seed++)
+        {
+            var (sim, missile, target) = Setup(seed);
+            missile.Rip = rip; missile.StrifeDamage = strife;
+            missile.ActorSounds = new Dictionary<ActorSoundType, string> { [ActorSoundType.Rip] = "custom/rip" };
+            var bytes = SimSavegame.Write(sim);
+            var (prediction, _, _) = Setup(seed);
+            var random = prediction.NextMissileDamageByte();
+            var expected = 5 * ((random & (rip || strife ? 3 : 7)) + (rip ? 2 : 1));
+            for (var pass = 0; pass < 2; pass++)
+            {
+                sim.DrainSoundRequests();
+                Assert.Equal(expected, missile.DoMissileDamage(target).HealthLost);
+                Assert.Equal(1000 - expected, target.Health);
+                Assert.Equal(prediction.CaptureState().MissileDamageRandomState,
+                    sim.CaptureState().MissileDamageRandomState);
+                var sounds = sim.DrainSoundRequests();
+                if (rip) Assert.Equal("custom/rip", Assert.Single(sounds).Sound);
+                else Assert.Empty(sounds);
+                SimSavegame.Apply(sim, bytes);
+            }
+        }
+    }
+
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public void DamageActionCapturesRipFlagBeforeExpressionCallback(bool rip)
+    {
+        var (sim, missile, target) = Setup(7); missile.Rip = rip;
+        missile.ActorSounds = new Dictionary<ActorSoundType, string> { [ActorSoundType.Rip] = "custom/rip" };
+        missile.DamageExpression = actor => { actor.Rip = !rip; return 7; };
+        sim.DrainSoundRequests();
+        Assert.Equal(7, missile.DoMissileDamage(target).HealthLost);
+        Assert.Equal(!rip, missile.Rip);
+        var sounds = sim.DrainSoundRequests();
+        if (rip) Assert.Equal("custom/rip", Assert.Single(sounds).Sound);
+        else Assert.Empty(sounds);
+        Assert.Null(sim.CaptureState().MissileDamageRandomState);
+    }
+
     private static (AuthoritySimulation Sim, ProjectileActor Missile, Actor Target) Setup(int seed)
     {
         var sim = AuthoritySimulation.Start(new PlayLevel { Sectors = [new LevelSector { CeilingHeight = 128 }] }, rngSeed: seed);

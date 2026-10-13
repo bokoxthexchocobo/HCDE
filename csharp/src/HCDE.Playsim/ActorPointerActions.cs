@@ -9,8 +9,6 @@ public static class ActorPointerActions
         var writeTarget = newTarget is AcsActorPointer.Master or AcsActorPointer.Tracer or AcsActorPointer.Null;
         var writeMaster = newMaster is AcsActorPointer.Target or AcsActorPointer.Tracer or AcsActorPointer.Null;
         var writeTracer = newTracer is AcsActorPointer.Target or AcsActorPointer.Master or AcsActorPointer.Null;
-        if (writeTarget) RequireWritable(actor, AcsActorPointer.Target);
-        if (writeTracer) RequireWritable(actor, AcsActorPointer.Tracer);
         // Native rearrangement always reads the original three pointers before any write.
         var target = AcsActorPointer.Resolve(sim, actor, AcsActorPointer.Target);
         var master = AcsActorPointer.Resolve(sim, actor, AcsActorPointer.Master);
@@ -41,17 +39,8 @@ public static class ActorPointerActions
         Assign(sim, recipient, field, value, flags);
     }
 
-    internal static void RequireWritable(Actor actor, int field)
-    {
-        if (field == AcsActorPointer.Target && actor.Brain is null)
-            throw new NotSupportedException("Target assignment requires a managed monster brain; projectile owners are immutable.");
-        if (field == AcsActorPointer.Tracer && actor is not ProjectileActor)
-            throw new NotSupportedException("Tracer assignment requires a managed projectile.");
-    }
-
     internal static void Assign(AuthoritySimulation sim, Actor recipient, int field, Actor? value, int flags)
     {
-        RequireWritable(recipient, field);
         switch (field)
         {
             case AcsActorPointer.Master:
@@ -59,16 +48,24 @@ public static class ActorPointerActions
                 if ((flags & 2) == 0) VerifyMasterChain(sim, recipient);
                 break;
             case AcsActorPointer.Target:
-                var brain = recipient.Brain
-                    ?? throw new NotSupportedException("Target assignment requires a managed monster brain; projectile owners are immutable.");
-                brain.SetSpecialTarget(value);
-                recipient.HasTargetMemoryOverride = true;
+                recipient.SetTargetPointer(value);
+                if ((flags & 1) == 0) VerifyTargetChain(sim, recipient);
                 break;
             case AcsActorPointer.Tracer:
-                if (recipient is not ProjectileActor projectile)
-                    throw new NotSupportedException("Tracer assignment requires a managed projectile.");
-                projectile.RestoreTracerTarget(value?.Id);
+                recipient.TracerId = value?.Id;
                 break;
+        }
+    }
+
+    private static void VerifyTargetChain(AuthoritySimulation sim, Actor actor)
+    {
+        if (actor is not ProjectileActor missile) return;
+        var seen = new HashSet<uint> { actor.Id };
+        var next = AcsActorPointer.Resolve(sim, actor, AcsActorPointer.Target);
+        while (next is ProjectileActor)
+        {
+            if (!seen.Add(next.Id)) { missile.ReassignOwner(null); return; }
+            next = AcsActorPointer.Resolve(sim, next, AcsActorPointer.Target);
         }
     }
 

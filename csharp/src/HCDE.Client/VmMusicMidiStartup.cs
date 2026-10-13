@@ -69,7 +69,8 @@ public sealed class VmMusicMidiStartup
     }
 
     public bool Start(uint maximumTime, bool canHandleSysex,
-        float musicVolume = 1, float relativeVolume = 1, float masterVolume = 1, bool liveLoops = false)
+        float musicVolume = 1, float relativeVolume = 1, float masterVolume = 1, bool liveLoops = false,
+        bool allowShortSong = true, bool repeatSong = false)
     {
         if (started) throw new InvalidOperationException("MIDI startup has already been attempted.");
         started = true;
@@ -83,7 +84,10 @@ public sealed class VmMusicMidiStartup
             Lifecycle.MusicVolumeChanged(musicVolume, relativeVolume, masterVolume);
             playback.VolumeUpdates.OutputVolume(playback.Channels.MasterVolume, device.FakeVolume);
             device.InitializePlayback();
-            var result = Buffers.Prime(maximumTime, canHandleSysex);
+            // Managed audio devices can drain or repeat a song shorter than both initial buffers.
+            var result = Buffers.Prime(maximumTime, canHandleSysex,
+                allowShortSong: allowShortSong && device is IVmMusicAudioSessionDevice && !liveLoops,
+                looping: repeatSong);
             if (result.Status == VmMusicMidiPrimeStatus.ShortSong) return false;
             Check(result.Error, "Initial MIDI stream output failed");
             streamStarting?.Invoke();

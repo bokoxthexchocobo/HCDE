@@ -2,6 +2,46 @@ namespace HCDE.Client.Tests;
 
 public class VmMusicMidiExportTests
 {
+    [Fact]
+    public void RegisteredManagedExportResolvesCurrentSongAndWritesReadableMidiWithoutStoppingPlayback()
+    {
+        var path = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString("N") + ".mid");
+        var song = new object();
+        var state = new VmMusicPlaybackState<object>("current", song, 2, true);
+        var bytes = VmMusicSmf.Serialize(120, 500000, [new VmMusicSmfEvent(1, 0x643c90)]);
+        var lookups = new List<string>();
+        var console = new VmMusicConsole<object>(state, new([]), () => true, (_, _) => false,
+            _ => Assert.Fail("unexpected stop"), _ => { }, _ => Assert.Fail("unexpected report"));
+        console.ConfigureMidiExport(name => { lookups.Add(name); return -1; },
+            name => { Assert.Equal("current", name); return 3; },
+            index => { Assert.Equal(3, index); return bytes; });
+        try
+        {
+            Assert.True(console.TryExecute(["WRITEMIDI", "*", path]));
+            using var exported = new VmMusicSmfPlaybackSource(File.ReadAllBytes(path));
+            Assert.Equal(120, exported.Division);
+            Assert.Equal(new[] { "current" }, lookups);
+            Assert.Same(song, state.Song);
+            Assert.Equal("current", state.Name);
+            Assert.Equal(2, state.BaseOrder);
+            Assert.True(state.Loop);
+        }
+        finally { File.Delete(path); }
+    }
+
+    [Fact]
+    public void RegisteredManagedExportReportsUsageBeforeResourceLookup()
+    {
+        var reports = new List<string>();
+        var console = new VmMusicConsole<object>(new("current", null), new([]), () => true,
+            (_, _) => false, _ => Assert.Fail("unexpected stop"), _ => { }, reports.Add);
+        console.ConfigureMidiExport(_ => throw new InvalidOperationException("unexpected lookup"),
+            _ => throw new InvalidOperationException("unexpected fallback"),
+            _ => throw new InvalidOperationException("unexpected read"));
+        Assert.True(console.TryExecute(["writemidi"]));
+        Assert.StartsWith("Usage: writemidi", Assert.Single(reports));
+    }
+
     private sealed class Source : IDisposable
     {
         public bool Disposed { get; private set; }

@@ -690,6 +690,27 @@ public class WadAudioMixerTests
     }
 
     [Theory]
+    [InlineData(2)]
+    [InlineData(4)]
+    public void CrushPainFindsPlaybackAcrossChannels(int existingChannel)
+    {
+        var level = new PlayLevel { Things = [new LevelThing { Type = 1 }],
+            Sectors = [new LevelSector { CeilingHeight = 64 }],
+            SoundDefinitions = new Dictionary<string, string> { ["sound"] = "DSPISTOL" } };
+        using var host = new ClientHost(HCDE.Playsim.AuthoritySimulation.Start(level));
+        var actor = host.Simulation.Players.Single();
+        actor.ActorSounds = new Dictionary<HCDE.Playsim.ActorSoundType, string>(actor.ActorSounds)
+        { [HCDE.Playsim.ActorSoundType.CrushPain] = "sound" };
+        Assert.True(host.TrySetSoundArchive(Wad(11025), out var error), error);
+        Assert.True(host.TryPlayActorWadSound(Wad(11025), level, "sound", actor.Id, out var original,
+            out error, loop: true, attenuation: 0, entityChannel: existingChannel), error);
+        HCDE.Playsim.ActorSoundActions.CrushPain(actor);
+        host.Tick(default);
+        Assert.Empty(host.LastSoundRequestErrors); Assert.True(host.Audio.IsPlaying(original));
+        Assert.Equal(1, host.GetActorSoundPlayingCount(actor.Id, "sound"));
+    }
+
+    [Theory]
     [InlineData(0, null, 3)]
     [InlineData(4, null, 2)]
     [InlineData(0, "SOUND", 2)]

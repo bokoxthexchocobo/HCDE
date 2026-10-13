@@ -24,6 +24,7 @@ public sealed class LevelSector
     public bool HarmInAir { get; init; }
     public bool NoAttack { get; init; }
     public bool Silent { get; init; }
+    public bool DropActors { get; init; }
     public int Tag { get; init; }
     public IReadOnlyList<int> AdditionalTags { get; init; } = Array.Empty<int>();
     public bool HasTag(int tag) => tag != 0 && (Tag == tag || AdditionalTags.Contains(tag));
@@ -477,6 +478,7 @@ public static class LevelBuilder
         {
             Index = index,
             FloorHeight = sector.FloorHeight,
+            DropActors = true,
             CeilingHeight = sector.CeilingHeight,
             LightLevel = sector.LightLevel,
             Special = sector.Special,
@@ -588,6 +590,10 @@ public static class LevelBuilder
             HurtMonsters = sector.HurtMonsters,
             NoAttack = sector.NoAttack,
             Silent = planeTransforms && sector.Silent,
+            DropActors = planeTransforms ? sector.DropActors.GetValueOrDefault()
+                : map.Namespace.Equals("Doom", StringComparison.OrdinalIgnoreCase)
+                    || map.Namespace.Equals("Heretic", StringComparison.OrdinalIgnoreCase)
+                    || map.Namespace.Equals("Strife", StringComparison.OrdinalIgnoreCase),
             HarmInAir = sector.HarmInAir,
             Gravity = planeTransforms ? sector.Gravity : 1,
             Tag = sector.Id,
