@@ -29,6 +29,7 @@ public sealed class ClientHost : IDisposable
             _soundArchive = null;
             _vmColorCatalog = null;
             _vmScriptSources = Array.Empty<VmScriptSourceSet>();
+            MusicCallbacks.Dispose();
         }
     }
 
@@ -46,11 +47,13 @@ public sealed class ClientHost : IDisposable
             _audioListenerActorId = null;
     }
 
-    public ClientHost(AuthoritySimulation simulation, int width = 32, int height = 32, string? viewPreferencesPath = null, IReadOnlyList<string>? scriptPaths = null, bool reserveCoreContainer = false, IReadOnlyList<string>? gameTypeFilters = null, IReadOnlyList<string>? blockedPatterns = null, IReadOnlyList<string>? embeddings = null, IReadOnlyDictionary<string, IReadOnlyList<string>>? deletedGlobalLumps = null)
+    public ClientHost(AuthoritySimulation simulation, int width = 32, int height = 32, string? viewPreferencesPath = null, IReadOnlyList<string>? scriptPaths = null, bool reserveCoreContainer = false, IReadOnlyList<string>? gameTypeFilters = null, IReadOnlyList<string>? blockedPatterns = null, IReadOnlyList<string>? embeddings = null, IReadOnlyDictionary<string, IReadOnlyList<string>>? deletedGlobalLumps = null, VmSearchPathConfiguration? musicConfiguration = null)
     {
         _vmScriptSources = scriptPaths is null ? Array.Empty<VmScriptSourceSet>() : VmArchiveScriptLoader.LoadPaths(scriptPaths, gameTypeFilters: gameTypeFilters, blockedPatterns: blockedPatterns, embeddings: embeddings, reserveCoreContainer: reserveCoreContainer, deletedGlobalLumps: deletedGlobalLumps);
         // Parse before subscribing to simulation events so failed loads cannot retain the host.
         var preferences = viewPreferencesPath is null ? null : ClientViewPreferences.LoadFile(viewPreferencesPath);
+        MusicBanks = musicConfiguration is null ? Array.Empty<VmMusicBank>() : VmMusicBankCatalog.Discover(musicConfiguration);
+        MusicCallbacks = new VmMusicCallbacks(MusicBanks);
         _viewPreferencesPath = viewPreferencesPath is null ? null : Path.GetFullPath(viewPreferencesPath);
         Simulation = simulation;
         simulation.ActorDestroyed += OnActorDestroyed;
@@ -65,6 +68,11 @@ public sealed class ClientHost : IDisposable
     }
 
     public AuthoritySimulation Simulation { get; }
+    public IReadOnlyList<VmMusicBank> MusicBanks { get; }
+    public VmMusicCallbacks MusicCallbacks { get; }
+    public VmMusicVolume MusicVolume { get; } = new();
+    public VmMusicEnableState MusicEnablement { get; } = new();
+    public float EffectiveMusicVolume => MusicVolume.DigitalLevel(Simulation.MusicVolume);
     public SoftwareFrame Frame { get; }
     public AudioMixer Audio { get; }
     public ZScriptVm ZScript { get; }

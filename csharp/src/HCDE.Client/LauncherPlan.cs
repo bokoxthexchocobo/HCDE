@@ -8,6 +8,9 @@ public sealed class LauncherSelection
 {
     public string IwadPath { get; init; } = "";
     public string? SearchPathConfigPath { get; init; }
+    public bool DiscoverSearchPathConfig { get; init; }
+    public bool LoadMusicBanks { get; init; }
+    public bool NoMusic { get; init; }
     public IReadOnlyList<VmFileSearchPath> OrderedFileSearchPaths { get; init; } = Array.Empty<VmFileSearchPath>();
     public string? CoreScriptPath { get; init; }
     public IReadOnlyList<string>? GameTypeFilters { get; init; }
@@ -156,6 +159,9 @@ public static class LauncherPlan
         if (selection.RequiredIwadPath is { } requiredPath) output.AddRange(["--required-iwad", requiredPath]);
         foreach (var directory in selection.FileSearchDirectories) output.AddRange(["--file-search-dir", directory]);
         if (selection.SearchPathConfigPath is { } searchConfig) output.AddRange(["--search-config", searchConfig]);
+        if (selection.DiscoverSearchPathConfig) output.Add("--discover-search-config");
+        if (selection.LoadMusicBanks) output.Add("--music-banks");
+        if (selection.NoMusic) output.Add("--no-music");
         foreach (var entry in selection.OrderedFileSearchPaths)
             output.AddRange([entry.Kind switch
             {
@@ -184,6 +190,18 @@ public static class LauncherPlan
         string? supportPath = null;
         var deletedLumps = new Dictionary<string, IReadOnlyList<string>>(StringComparer.OrdinalIgnoreCase);
         var iwadExtension = Path.GetExtension(selection.IwadPath).ToLowerInvariant();
+        var resolvedConfig = selection.SearchPathConfigPath;
+        if (resolvedConfig is null && selection.DiscoverSearchPathConfig)
+        {
+            if (!OperatingSystem.IsWindows()) throw new PlatformNotSupportedException("Automatic search configuration discovery currently supports Windows");
+            resolvedConfig = VmSearchConfigurationDiscovery.FindWindows(AppContext.BaseDirectory,
+                Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments));
+        }
+        var configured = resolvedConfig is { } configPath
+            ? VmSearchPathConfiguration.ReadFile(configPath) : new VmSearchPathConfiguration([], []);
+        if (selection.DiscoverSearchPathConfig && OperatingSystem.IsWindows())
+            configured = configured.WithWindowsLegacySearchMigration().WithWindowsDefaults();
+
         if (selection.IwadInfoPath is not null || iwadExtension is ".iwad" or ".ipk3" or ".ipk7")
         {
             var wadBytes = File.ReadAllBytes(selection.IwadPath);
@@ -201,8 +219,6 @@ public static class LauncherPlan
                 catalog = new([embedded], [], [identified.Name]);
             }
             var entry = catalog.Entries.First(entry => ReferenceEquals(entry.Definition, identified));
-            var configured = selection.SearchPathConfigPath is { } configPath
-                ? VmSearchPathConfiguration.Parse(File.ReadAllText(configPath)) : new VmSearchPathConfiguration([], []);
             var configIwads = VmFileSearchPaths.Expand(configured.IwadPaths);
             var iwadDirectories = VmSearchPathExpansion.ExpandDirectories(selection.IwadSearchDirectories)
                 .Concat(configIwads.Where(path => path.Kind == VmFileSearchPathKind.Path).Select(path => path.Value)).ToArray();
@@ -236,8 +252,8 @@ public static class LauncherPlan
         return new ClientHost(simulation, selection.Width, selection.Height, selection.ViewPreferencesPath, paths,
             reserveCoreContainer: selection.CoreScriptPath is null, gameTypeFilters: filters,
             blockedPatterns: selection.BlockedScriptPatterns, embeddings: selection.EmbeddedScriptArchives,
-            deletedGlobalLumps: deletedLumps)
-        { UseHardware = !selection.SoftwareRenderer };
+            deletedGlobalLumps: deletedLumps, musicConfiguration: selection.LoadMusicBanks ? configured : null)
+        { UseHardware = !selection.SoftwareRenderer, MusicEnablement = { NoMusic = selection.NoMusic } };
     }
 
     public static bool TryParse(string[] args, out LauncherSelection selection, out string? error)
@@ -262,6 +278,9 @@ public static class LauncherPlan
         string? requiredIwadPath = null;
         var fileDirectories = new List<string>();
         string? searchConfigPath = null;
+        var discoverSearchConfig = false;
+        var loadMusicBanks = false;
+        var noMusic = false;
         var orderedPaths = new List<VmFileSearchPath>();
         var recursiveFileDirectories = new List<string>();
         var loadSupportWad = true;
@@ -271,6 +290,16 @@ public static class LauncherPlan
         {
             switch (args[i])
             {
+                case "--no-music":
+                case "-nomusic":
+                    noMusic = true;
+                    break;
+                case "--music-banks":
+                    loadMusicBanks = true;
+                    break;
+                case "--discover-search-config":
+                    discoverSearchConfig = true;
+                    break;
                 case "--search-config":
                     if (!Take(args, ref i, out searchConfigPath) || string.IsNullOrWhiteSpace(searchConfigPath)
                         || searchConfigPath.StartsWith("--", StringComparison.Ordinal))
@@ -468,6 +497,9 @@ public static class LauncherPlan
             RecursiveIwadSearchDirectories = recursiveDirectories.AsReadOnly(),
             FileSearchDirectories = fileDirectories.AsReadOnly(),
             SearchPathConfigPath = searchConfigPath,
+            DiscoverSearchPathConfig = discoverSearchConfig,
+            LoadMusicBanks = loadMusicBanks,
+            NoMusic = noMusic,
             OrderedFileSearchPaths = orderedPaths.AsReadOnly(),
             RecursiveFileSearchDirectories = recursiveFileDirectories.AsReadOnly(),
             LoadSupportWad = loadSupportWad,
