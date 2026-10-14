@@ -111,6 +111,16 @@ public static class ActorInventoryActions
         if (string.IsNullOrEmpty(typeName)) return false;
         var subject = Resolve(actor, pointerSelector);
         if (subject is null || subject.Destroyed) return false;
+        if (typeName.Equals("MaxHealthBonus", StringComparison.OrdinalIgnoreCase))
+            return amount <= 0 || PickupCatalog.GiveMaxHealthBonus(subject, amount);
+        if (typeName.Equals("UpgradeStamina", StringComparison.OrdinalIgnoreCase))
+            return amount <= 0 || ActorPickupActions.UpgradeStamina(subject, amount);
+        if (typeName.Equals("HealthFillup", StringComparison.OrdinalIgnoreCase))
+            return amount <= 0 || ActorPickupActions.HealthFillup(subject);
+        if (typeName.Equals("UpgradeAccuracy", StringComparison.OrdinalIgnoreCase))
+            return amount <= 0 || ActorPickupActions.UpgradeAccuracy(subject);
+        if (ActorPickupActions.IsDoorToken(typeName))
+            return amount <= 0 || ActorPickupActions.UseDoorToken(subject, typeName);
         if (ImmediateHealthAmount(typeName) != 0)
         {
             // Immediate health never remains held; setter creation assigns Amount directly.
@@ -231,6 +241,24 @@ public static class ActorInventoryActions
     private static bool Give(Actor? receiver, string? typeName, int amount, int pointerSelector)
     {
         if (receiver is null || string.IsNullOrEmpty(typeName)) return false;
+        if (typeName.Equals("Berserk", StringComparison.OrdinalIgnoreCase))
+            return Resolve(receiver, pointerSelector) is PlayerPawn berserkPlayer
+                && PickupCatalog.TryGiveDoomClass(berserkPlayer, PickupCatalog.Berserk);
+        if (typeName.Equals("MaxHealthBonus", StringComparison.OrdinalIgnoreCase))
+            return Resolve(receiver, pointerSelector) is { Destroyed: false } bonusReceiver
+                && PickupCatalog.GiveMaxHealthBonus(bonusReceiver, Math.Max(1, amount));
+        if (typeName.Equals("UpgradeStamina", StringComparison.OrdinalIgnoreCase))
+            return Resolve(receiver, pointerSelector) is { Destroyed: false } staminaReceiver
+                && ActorPickupActions.UpgradeStamina(staminaReceiver, Math.Max(1, amount));
+        if (typeName.Equals("HealthFillup", StringComparison.OrdinalIgnoreCase))
+            return Resolve(receiver, pointerSelector) is { Destroyed: false } fillReceiver
+                && ActorPickupActions.HealthFillup(fillReceiver);
+        if (typeName.Equals("UpgradeAccuracy", StringComparison.OrdinalIgnoreCase))
+            return Resolve(receiver, pointerSelector) is { Destroyed: false } accuracyReceiver
+                && ActorPickupActions.UpgradeAccuracy(accuracyReceiver);
+        if (ActorPickupActions.IsDoorToken(typeName))
+            return Resolve(receiver, pointerSelector) is { Destroyed: false } doorReceiver
+                && ActorPickupActions.UseDoorToken(doorReceiver, typeName);
         var healthAmount = ImmediateHealthAmount(typeName);
         var megaArmor = typeName.Equals("BlueArmorForMegasphere", StringComparison.OrdinalIgnoreCase);
         var armorEditor = ArmorEditorNumber(typeName);
@@ -245,6 +273,8 @@ public static class ActorInventoryActions
         if (IsManagedPowerup(typeName))
         {
             if (subject is not PlayerPawn powerPlayer) return false;
+            if (typeName.Equals("PowerStrength", StringComparison.OrdinalIgnoreCase))
+            { powerPlayer.GivePowerStrength(); return true; }
             // Zero-duration incoming powers are accepted without refreshing an existing item's timer.
             if (typeName.Equals("PowerHighJump", StringComparison.OrdinalIgnoreCase))
             { powerPlayer.GivePowerHighJump(); return true; }
@@ -327,6 +357,10 @@ public static class ActorInventoryActions
         "STIMPACK" => 10,
         "MEDIKIT" => 25,
         "HEALTHBONUS" => 1,
+        "MAXHEALTHBONUS" => 1,
+        "UPGRADESTAMINA" => 1,
+        "UPGRADEACCURACY" => 1,
+        "HEALTHFILLUP" => 1,
         "SOULSPHERE" => 100,
         "MEGASPHEREHEALTH" => 200,
         _ => 0,
@@ -363,6 +397,7 @@ public static class ActorInventoryActions
                 && !AcsPlayerInventory.TryCapacityAmmoKind(typeName, out _)
                 && AmmoEditorNumber(typeName) == 0
                 && !AcsPlayerInventory.TryWeaponKind(typeName, out _)
+                && !ActorPickupActions.IsDoorToken(typeName)
                 && !IsBackpack(typeName)
                 && !IsManagedPowerup(typeName)
                 && !IsWornArmor(typeName)
@@ -434,7 +469,8 @@ public static class ActorInventoryActions
     private static bool IsBackpack(string typeName) => typeName.Equals("Backpack", StringComparison.OrdinalIgnoreCase);
 
     private static bool IsManagedPowerup(string typeName) =>
-        typeName.Equals("PowerDamage", StringComparison.OrdinalIgnoreCase)
+        typeName.Equals("PowerStrength", StringComparison.OrdinalIgnoreCase)
+        || typeName.Equals("PowerDamage", StringComparison.OrdinalIgnoreCase)
         || typeName.Equals("PowerBuddha", StringComparison.OrdinalIgnoreCase)
         || typeName.Equals("PowerInfiniteAmmo", StringComparison.OrdinalIgnoreCase)
         || typeName.Equals("PowerHighJump", StringComparison.OrdinalIgnoreCase)

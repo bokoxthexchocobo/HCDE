@@ -175,6 +175,7 @@ public class CombatAiTests
             new LevelThing { Type = 1 }, new LevelThing { Type = 2, X = -100 }, new LevelThing { Type = 3002, X = 160 },
         }});
         var monster = sim.Actors.Single(a => a.DoomEdNum == 3002);
+        monster.LastLookPlayerNumber = 63; // Start with slot zero so this test exercises death retargeting.
         for (var i = 0; i < 145; i++) sim.Tick();
         var first = sim.Players.First();
         Assert.True(monster.X.ToDouble() < 160);

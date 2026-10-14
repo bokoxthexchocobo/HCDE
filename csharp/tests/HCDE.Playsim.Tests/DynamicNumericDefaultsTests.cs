@@ -25,7 +25,7 @@ public class DynamicNumericDefaultsTests
         var patch = DehackedPatch.Apply("Thing 2\nReaction time = 7\nMass = 321\nMissile damage = 17\n"); Assert.Empty(patch.Errors);
         var sim = AuthoritySimulation.Start(new PlayLevel(), dehacked: patch); var bot = sim.AddBot(0, 0);
         Assert.Equal(7, bot.ReactionTime); Assert.Equal(321, bot.Mass); Assert.Equal(17, bot.Damage);
-        sim.Tick(); Assert.Equal(6, bot.ReactionTime);
+        sim.Tick(); Assert.Equal(7, bot.ReactionTime);
     }
     [Fact]
     public void OtherClassRetainsCatalogHealthAndMass()

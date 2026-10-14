@@ -31,6 +31,7 @@ public class AcsReactionTimeTests
         var sim = Room(); var actor = Monster(sim); actor.ChaseSpeed = 0;
         sim.Players.Single().X = Fixed.FromInt(400);
         actor.Brain = new MonsterBrain(MonsterAttack.Hitscan);
+        actor.SetTargetPointer(sim.Players.Single());
         Set(sim, actor, 3);
         for (var expected = 2; expected >= 0; expected--)
         {

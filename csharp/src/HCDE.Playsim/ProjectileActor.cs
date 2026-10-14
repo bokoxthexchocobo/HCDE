@@ -7,7 +7,16 @@ public enum ProjectileKind { Rocket, Plasma, Bfg, ImpBall, BaronBall, CacodemonB
 /// <summary>Traveling projectiles with square actor contacts, swept impacts and finite lifetime.</summary>
 public sealed class ProjectileActor : Actor
 {
-    public Actor? Owner { get; private set; }
+    private Actor? _owner;
+    public Actor? Owner
+    {
+        get
+        {
+            if (_owner is { Destroyed: true }) _owner = null;
+            return _owner;
+        }
+        private set => _owner = value;
+    }
     internal void ReassignOwner(Actor? owner)
     {
         if (owner is not null && (owner.Destroyed || Simulation is { } sim &&
@@ -189,6 +198,7 @@ public sealed class ProjectileActor : Actor
         var steps = Math.Max(1, (int)Math.Ceiling(Math.Max(Math.Max(Math.Abs(vx), Math.Abs(vy)), Math.Abs(vz)) / 2));
         var huggerSector = -1;
         var ripped = new HashSet<uint>();
+        var doRipping = Rip;
         for (var i = 0; i < steps; i++)
         {
             var x = X.ToDouble(); var y = Y.ToDouble(); var z = Z.ToDouble();
@@ -213,6 +223,7 @@ public sealed class ProjectileActor : Actor
             }
             var fraction = double.PositiveInfinity;
             Actor? victim = null;
+            Actor? hitActor = null;
             LevelLine? wall = null;
             var planeSector = -1;
             var planePart = -1;
@@ -248,7 +259,7 @@ public sealed class ProjectileActor : Actor
                 {
                     var overlapHit = ActorContactFraction(x, y, z, dx, dy, dz, actor, ignoreHeight: true);
                     if (overlapHit < fraction)
-                    { fraction = overlapHit; victim = null; wall = null; planeSector = planePart = -1; }
+                    { fraction = overlapHit; victim = null; hitActor = actor; wall = null; planeSector = planePart = -1; }
                     continue;
                 }
                 if (actor.NonShootable || !(actor.Solid || actor.Shootable)) continue;
@@ -263,7 +274,7 @@ public sealed class ProjectileActor : Actor
                 if (specialHit == 0)
                 {
                     if (hit < fraction)
-                    { fraction = hit; victim = null; wall = null; planeSector = planePart = -1; }
+                    { fraction = hit; victim = null; hitActor = actor; wall = null; planeSector = planePart = -1; }
                     continue;
                 }
                 if (!HitOwner && ReferenceEquals(actor, Owner)) continue;
@@ -272,13 +283,13 @@ public sealed class ProjectileActor : Actor
                 if (canHurt && !actor.Shootable && !actor.Solid) continue;
                 // Native checks attack eligibility and non-shootable solidity before SPECTRAL passage.
                 if (actor.Shootable && actor.Spectral && !Spectral && canHurt) continue;
-                if (Rip && actor.CanBeRippedBy(this) && actor.Shootable && canHurt)
+                if (doRipping && actor.CanBeRippedBy(this) && actor.Shootable && canHurt)
                 {
                     if (hit <= 1) ripContacts.Add((actor, hit));
                     continue;
                 }
                 if (hit < fraction || hit == fraction && victim != null && actor.Id < victim.Id)
-                { fraction = hit; victim = actor; wall = null; planeSector = planePart = -1; }
+                { fraction = hit; victim = hitActor = actor; wall = null; planeSector = planePart = -1; }
             }
             foreach (var contact in ripContacts.Where(contact => contact.Fraction < fraction)
                 .OrderBy(contact => contact.Fraction).ThenBy(contact => contact.Actor.Id))
@@ -298,7 +309,7 @@ public sealed class ProjectileActor : Actor
             if (fraction <= 1)
             {
                 X = Fixed.FromDouble(x + dx * fraction); Y = Fixed.FromDouble(y + dy * fraction); Z = Fixed.FromDouble(z + dz * fraction);
-                Impact(sim, victim, wall, planeSector, planePart); return;
+                Impact(sim, victim, wall, planeSector, planePart, hitActor); return;
             }
             X = Fixed.FromDouble(x + dx); Y = Fixed.FromDouble(y + dy); Z = Fixed.FromDouble(z + dz);
         }
@@ -394,23 +405,41 @@ public sealed class ProjectileActor : Actor
         return best;
     }
 
-    private void Impact(AuthoritySimulation sim, Actor? victim, LevelLine? wall, int planeSector, int planePart)
+    private void Impact(AuthoritySimulation sim, Actor? victim, LevelLine? wall, int planeSector, int planePart,
+        Actor? hitActor = null)
     {
-        Destroy(); // Commit removal before damage callbacks can spawn or destroy actors.
-        // P_ExplodeMissile removes ordinary missiles on Line_Horizon without death actions.
-        if (wall?.Special == 9) return;
+        // Native geometry damage precedes explosion removal and motion cleanup.
+        if (wall is not null) GeometryProjectileImpact.Apply(sim, this, wall);
+        else if (planeSector >= 0) GeometryProjectileImpact.ApplyPlane(sim, this, planeSector, planePart);
+        if (Destroyed) return;
+        if (victim is { Shootable: true } && victim.CanAttackHurtFrom(Owner))
+            ActorMissileDamage.Apply(this, victim, Rip,
+                detachRipSound: !ExplodeCount || ChaseThreshold >= DefaultChaseThreshold - 1);
+        if (Destroyed) return;
+        if (ExplodeCount)
+        {
+            SetChaseThreshold(unchecked(ChaseThreshold + 1), setDefault: false);
+            if (ChaseThreshold < DefaultChaseThreshold) return;
+        }
+        ClearImpactMotion();
+        var pointerTarget = hitActor ?? victim;
+        if (pointerTarget is { Destroyed: false })
+        {
+            if (HitTarget) SetTargetPointer(pointerTarget);
+            if (HitMaster) MasterId = pointerTarget.Id;
+            if (HitTracer) TracerId = pointerTarget.Id;
+        }
+        // SKYEXPLODE permits death handling on sky and horizon contacts.
+        if (!SkyExplode && wall?.Special == 9) { Destroy(); return; }
         if ((uint)planeSector < (uint)sim.Level.Sectors.Count && planePart is 0 or 1)
         {
             var sector = sim.Level.Sectors[planeSector];
             var texture = planePart == 0 ? sector.FloorPic : sector.CeilingPic;
             // Native sky contact destroys ordinary missiles before explosion actions.
-            if (string.Equals(texture, "F_SKY1", StringComparison.OrdinalIgnoreCase)) return;
+            if (!SkyExplode && string.Equals(texture, "F_SKY1", StringComparison.OrdinalIgnoreCase)) { Destroy(); return; }
         }
-        if (wall is not null) GeometryProjectileImpact.Apply(sim, this, wall);
-        else if (planeSector >= 0) GeometryProjectileImpact.ApplyPlane(sim, this, planeSector, planePart);
-        if (victim is { Shootable: true } && victim.CanAttackHurtFrom(Owner))
-            DoMissileDamage(victim);
-        if (ActorSounds.TryGetValue(ActorSoundType.Death, out var deathSound) && deathSound.Length != 0)
+        if (ActorSounds.TryGetValue(ActorSoundType.Death, out var deathSound) && !string.IsNullOrEmpty(deathSound)
+            && !deathSound.Equals("None", StringComparison.OrdinalIgnoreCase))
         {
             var position = SoundPos();
             sim.QueueSoundRequest(new SimulationSoundRequest(Id, deathSound, 2, 0, 1, false,
@@ -431,6 +460,13 @@ public sealed class ProjectileActor : Actor
         }
         if (Kind == ProjectileKind.Bfg)
             BfgSprayActions.Apply(sim, this, Owner);
+        Destroy();
+    }
+
+    private void ClearImpactMotion()
+    {
+        VelocityX = VelocityY = VelocityZ = default;
+        Shootable = false;
     }
 
     internal void ExplodeForAction()

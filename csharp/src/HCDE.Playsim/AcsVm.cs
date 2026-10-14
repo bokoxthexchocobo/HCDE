@@ -522,6 +522,9 @@ public sealed class AcsVm
                         ?? ThingThrustZ.ExecuteSpecial(sim, stackSpecial, fiber.Activator, stackArgs[0], stackArgs[1], stackArgs[2], stackArgs[3])
                         ?? ThingChangeTid.ExecuteSpecial(sim, stackSpecial, fiber.Activator, stackArgs[0], stackArgs[1])
                         ?? ThingStop.ExecuteSpecial(sim, stackSpecial, fiber.Activator, stackArgs[0])
+                        ?? ThingHate.ExecuteSpecial(sim, stackSpecial, fiber.Activator, stackArgs[0], stackArgs[1], stackArgs[2])
+                        ?? NoiseAlertSpecial.ExecuteSpecial(sim, stackSpecial, fiber.Activator, stackArgs[0], stackArgs[1])
+                        ?? ThingSetGoal.ExecuteSpecial(sim, stackSpecial, stackArgs[0], stackArgs[1], stackArgs[2], stackArgs[3])
                         ?? ThingSetSpecial.Execute(sim, stackSpecial, fiber.Activator, stackArgs[0], stackArgs[1], stackArgs[2], stackArgs[3], stackArgs[4])
                         ?? ThingRaise.Execute(sim, stackSpecial, fiber.Activator, stackArgs[0], stackArgs[1])
                         ?? ThingDamage.Execute(sim, stackSpecial, fiber.Activator, stackArgs[0], stackArgs[1], stackArgs[2])
@@ -573,6 +576,9 @@ public sealed class AcsVm
                             ?? ThingThrustZ.ExecuteSpecial(sim, special, fiber.Activator, args[0], args[1], args[2], args[3])
                             ?? ThingChangeTid.ExecuteSpecial(sim, special, fiber.Activator, args[0], args[1])
                             ?? ThingStop.ExecuteSpecial(sim, special, fiber.Activator, args[0])
+                            ?? ThingHate.ExecuteSpecial(sim, special, fiber.Activator, args[0], args[1], args[2])
+                            ?? NoiseAlertSpecial.ExecuteSpecial(sim, special, fiber.Activator, args[0], args[1])
+                            ?? ThingSetGoal.ExecuteSpecial(sim, special, args[0], args[1], args[2], args[3])
                             ?? ThingSetSpecial.Execute(sim, special, fiber.Activator, args[0], args[1], args[2], args[3], args[4])
                             ?? ThingRaise.Execute(sim, special, fiber.Activator, args[0], args[1])
                             ?? ThingDamage.Execute(sim, special, fiber.Activator, args[0], args[1], args[2])
@@ -928,19 +934,9 @@ public sealed class AcsVm
                     var setProperty = Pop(fiber);
                     var setTid = Pop(fiber);
                     if (fiber.Done) break;
-                    if (setProperty is >= 5 and <= 9)
-                    {
-                        var soundName = AcsStringIds.Lookup(setValue, fiber.StringTable, _globalStrings);
-                        var targets = setTid == 0
-                            ? fiber.Activator is { Destroyed: false } soundActivator ? new[] { soundActivator } : Array.Empty<Actor>()
-                            : sim.Actors.Where(actor => !actor.Destroyed && actor.ThingId == setTid).ToArray();
-                        foreach (var target in targets)
-                        {
-                            var sounds = new Dictionary<ActorSoundType, string>(target.ActorSounds);
-                            sounds[(ActorSoundType)(setProperty - 5)] = soundName;
-                            target.ActorSounds = sounds;
-                        }
-                    }
+                    if (AcsActorStringProperties.IsSupported(setProperty))
+                        AcsActorStringProperties.Set(sim, fiber.Activator, setTid, setProperty,
+                            AcsStringIds.Lookup(setValue, fiber.StringTable, _globalStrings));
                     else AcsActorProperties.Set(sim, fiber.Activator, setTid, setProperty, setValue);
                     break;
                 }
@@ -971,11 +967,10 @@ public sealed class AcsVm
                     var getProperty = Pop(fiber);
                     var getTid = Pop(fiber);
                     if (fiber.Done) break;
-                    if (getProperty is >= 5 and <= 9)
+                    if (AcsActorStringProperties.IsSupported(getProperty))
                     {
-                        var target = getTid == 0 ? fiber.Activator : AcsActorTid.SingleFromTid(sim, getTid);
-                        fiber.Stack.Add(target is null || target.Destroyed ? 0 : _globalStrings.Add(
-                            target.ActorSounds.GetValueOrDefault((ActorSoundType)(getProperty - 5)) ?? ""));
+                        var name = AcsActorStringProperties.Get(sim, fiber.Activator, getTid, getProperty);
+                        fiber.Stack.Add(name is null ? 0 : _globalStrings.Add(name));
                     }
                     else fiber.Stack.Add(AcsActorProperties.Get(sim, fiber.Activator, getTid, getProperty));
                     break;

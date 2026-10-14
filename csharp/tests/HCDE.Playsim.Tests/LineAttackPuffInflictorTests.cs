@@ -13,7 +13,7 @@ public class LineAttackPuffInflictorTests
         Attack(sim, source);
         Assert.Equal(state, target.States.Current);
         Assert.Equal(source.Id, target.LastDamageSourceId);
-        Assert.Same(source, Assert.Single(sim.Actors.OfType<PuffActor>()).DamageSource);
+        Assert.Empty(sim.Actors.OfType<PuffActor>());
     }
 
     [Fact]
@@ -41,7 +41,7 @@ public class LineAttackPuffInflictorTests
     public void PuffRetainsDamageSourceForActorAndGeometryHits(bool geometry)
     {
         var sim = Room(geometry); var source = sim.Players.Single();
-        if (!geometry) sim.AddBot(100, 0);
+        if (!geometry) sim.AddBot(100, 0).Invulnerable = true;
         Attack(sim, source);
         var puff = Assert.Single(sim.Actors.OfType<PuffActor>());
         Assert.Same(source, puff.DamageSource);

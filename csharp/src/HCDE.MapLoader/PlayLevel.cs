@@ -151,6 +151,13 @@ public sealed class LevelLine
 
 public sealed class LevelThing
 {
+    public int Score { get; init; }
+    public int? RenderStyle { get; init; }
+    public double Alpha { get; init; } = -1;
+    public double ScaleX { get; init; }
+    public double ScaleY { get; init; }
+    public int FloatBobPhase { get; init; } = -1;
+    public int FriendlySeeBlocks { get; init; } = -1;
     public double Health { get; init; } = 1;
     public short Pitch { get; init; }
     public short Roll { get; init; }
@@ -176,6 +183,7 @@ public sealed class LevelThing
 
 public sealed class PlayLevel
 {
+    public uint PickupColor { get; set; } = 0xd7ba45;
     /// <summary>Terrain damage-type definitions loaded from the supported TERRAIN subset.</summary>
     public IReadOnlyList<LevelTerrainDefinition> TerrainDefinitions { get; set; } = Array.Empty<LevelTerrainDefinition>();
     public IReadOnlyList<LevelFloorTerrain> FloorTerrainMappings { get; set; } = Array.Empty<LevelFloorTerrain>();
@@ -199,6 +207,7 @@ public sealed class PlayLevel
     public double? AirControl { get; set; }
     public double LevelGravity { get; set; } = 800;
     public IReadOnlyDictionary<string, string> SoundDefinitions { get; set; } = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+    public IReadOnlyList<HCDE.Gamedata.SndInfoPlayerSound> PlayerSounds { get; set; } = Array.Empty<HCDE.Gamedata.SndInfoPlayerSound>();
     public IReadOnlyDictionary<string, string> SoundAliases { get; set; } = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
     public IReadOnlyDictionary<string, IReadOnlyList<string>> RandomSoundGroups { get; set; } = new Dictionary<string, IReadOnlyList<string>>(StringComparer.OrdinalIgnoreCase);
     public IReadOnlyList<string> DisabledSounds { get; set; } = Array.Empty<string>();
@@ -248,12 +257,14 @@ public sealed class PlayLevel
     {
         MapName = MapName, Format = Format, Namespace = Namespace, BehaviorData = BehaviorData, HasBehavior = HasBehavior, HexenHack = HexenHack,
         DefaultDropStyle = DefaultDropStyle,
+        PickupColor = PickupColor,
         AirControl = AirControl,
         LevelGravity = LevelGravity,
         RandomSoundGroups = RandomSoundGroups.ToDictionary(pair => pair.Key, pair => (IReadOnlyList<string>)Array.AsReadOnly(pair.Value.ToArray()), StringComparer.OrdinalIgnoreCase),
         GlobalSoundRolloff = GlobalSoundRolloff,
         DisabledSounds = DisabledSounds.ToArray(),
         SoundSettings = new Dictionary<string, HCDE.Gamedata.SndInfoSoundSettings>(SoundSettings, StringComparer.OrdinalIgnoreCase),
+        PlayerSounds = PlayerSounds.ToArray(),
         SoundAliases = new Dictionary<string, string>(SoundAliases, StringComparer.OrdinalIgnoreCase),
         SoundDefinitions = new Dictionary<string, string>(SoundDefinitions, StringComparer.OrdinalIgnoreCase),
         Music = Music, MusicOrder = MusicOrder,
@@ -292,7 +303,7 @@ public static class LevelBuilder
         }
         if (!MapLumpCatalogReader.TryReadMap(wad, mapName, out var catalog, out error))
             return false;
-        if (!TryReadDeathSpecialPolicy(wad, mapName, out var hexenHack, out var ownDeathSpecials, out var damageTypes, out var defaultDropStyle, out var terrains, out var airControl, out var levelGravity, out var selectedMap, out var gameIntermissionMusic, out var soundDefinitions, out var soundAliases, out var randomSoundGroups, out var soundSettings, out var globalSoundRolloff, out error)) return false;
+        if (!TryReadDeathSpecialPolicy(wad, mapName, out var hexenHack, out var ownDeathSpecials, out var damageTypes, out var defaultDropStyle, out var terrains, out var airControl, out var levelGravity, out var selectedMap, out var gameIntermissionMusic, out var pickupColor, out var soundDefinitions, out var soundAliases, out var randomSoundGroups, out var soundSettings, out var playerSounds, out var globalSoundRolloff, out error)) return false;
 
         if (catalog.Format == MapDataFormat.UdmfText)
         {
@@ -328,10 +339,11 @@ public static class LevelBuilder
             level.AirControl = airControl;
             level.LevelGravity = levelGravity;
             ApplyMusicMetadata(level, selectedMap, gameIntermissionMusic);
+            level.PickupColor = pickupColor;
             level.SoundDefinitions = soundDefinitions;
             level.SoundAliases = soundAliases;
             level.RandomSoundGroups = randomSoundGroups;
-            level.SoundSettings = soundSettings;
+            level.SoundSettings = soundSettings; level.PlayerSounds = playerSounds;
             level.GlobalSoundRolloff = globalSoundRolloff;
             level.DisabledSounds = SoundIntegrity.Apply(level);
             level.DamageTypes = damageTypes;
@@ -350,10 +362,11 @@ public static class LevelBuilder
             level.AirControl = airControl;
             level.LevelGravity = levelGravity;
             ApplyMusicMetadata(level, selectedMap, gameIntermissionMusic);
+            level.PickupColor = pickupColor;
             level.SoundDefinitions = soundDefinitions;
             level.SoundAliases = soundAliases;
             level.RandomSoundGroups = randomSoundGroups;
-            level.SoundSettings = soundSettings;
+            level.SoundSettings = soundSettings; level.PlayerSounds = playerSounds;
             level.GlobalSoundRolloff = globalSoundRolloff;
             level.DisabledSounds = SoundIntegrity.Apply(level);
             level.DamageTypes = damageTypes;
@@ -372,10 +385,11 @@ public static class LevelBuilder
         level.AirControl = airControl;
         level.LevelGravity = levelGravity;
         ApplyMusicMetadata(level, selectedMap, gameIntermissionMusic);
+            level.PickupColor = pickupColor;
         level.SoundDefinitions = soundDefinitions;
         level.SoundAliases = soundAliases;
         level.RandomSoundGroups = randomSoundGroups;
-        level.SoundSettings = soundSettings;
+        level.SoundSettings = soundSettings; level.PlayerSounds = playerSounds;
         level.GlobalSoundRolloff = globalSoundRolloff;
         level.DisabledSounds = SoundIntegrity.Apply(level);
         level.DamageTypes = damageTypes;
@@ -390,7 +404,7 @@ public static class LevelBuilder
         return LevelValidation.TryValidate(level, out error);
     }
 
-    private static bool TryReadDeathSpecialPolicy(ReadOnlySpan<byte> wad, string mapName, out bool hexenHack, out bool ownDeathSpecials, out IReadOnlyList<HCDE.Gamedata.MapInfoDamageType> damageTypes, out int? defaultDropStyle, out LevelTerrainData terrains, out double? airControl, out double levelGravity, out HCDE.Gamedata.MapInfoMap? selectedMap, out HCDE.Gamedata.MapInfoMusic gameIntermissionMusic, out IReadOnlyDictionary<string, string> soundDefinitions, out IReadOnlyDictionary<string, string> soundAliases, out IReadOnlyDictionary<string, IReadOnlyList<string>> randomSoundGroups, out IReadOnlyDictionary<string, HCDE.Gamedata.SndInfoSoundSettings> soundSettings, out HCDE.Gamedata.SoundRolloff? globalSoundRolloff, out string? error)
+    private static bool TryReadDeathSpecialPolicy(ReadOnlySpan<byte> wad, string mapName, out bool hexenHack, out bool ownDeathSpecials, out IReadOnlyList<HCDE.Gamedata.MapInfoDamageType> damageTypes, out int? defaultDropStyle, out LevelTerrainData terrains, out double? airControl, out double levelGravity, out HCDE.Gamedata.MapInfoMap? selectedMap, out HCDE.Gamedata.MapInfoMusic gameIntermissionMusic, out uint pickupColor, out IReadOnlyDictionary<string, string> soundDefinitions, out IReadOnlyDictionary<string, string> soundAliases, out IReadOnlyDictionary<string, IReadOnlyList<string>> randomSoundGroups, out IReadOnlyDictionary<string, HCDE.Gamedata.SndInfoSoundSettings> soundSettings, out IReadOnlyList<HCDE.Gamedata.SndInfoPlayerSound> playerSounds, out HCDE.Gamedata.SoundRolloff? globalSoundRolloff, out string? error)
     {
         terrains = new LevelTerrainData(Array.Empty<LevelTerrainDefinition>(), Array.Empty<LevelFloorTerrain>());
         defaultDropStyle = null;
@@ -398,7 +412,9 @@ public static class LevelBuilder
         levelGravity = 800;
         selectedMap = null;
         gameIntermissionMusic = new("");
+        pickupColor = 0xd7ba45;
         globalSoundRolloff = null;
+        playerSounds = Array.Empty<HCDE.Gamedata.SndInfoPlayerSound>();
         soundSettings = new Dictionary<string, HCDE.Gamedata.SndInfoSoundSettings>(StringComparer.OrdinalIgnoreCase);
         randomSoundGroups = new Dictionary<string, IReadOnlyList<string>>(StringComparer.OrdinalIgnoreCase);
         soundAliases = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
@@ -408,6 +424,13 @@ public static class LevelBuilder
         damageTypes = Array.Empty<HCDE.Gamedata.MapInfoDamageType>();
         var definitions = new Dictionary<string, HCDE.Gamedata.MapInfoDamageType>(StringComparer.OrdinalIgnoreCase);
         if (!WadArchiveReader.TryReadDirectory(wad, out var entries, out error)) return false;
+        IReadOnlyDictionary<string, uint>? colorNames = null;
+        var colorTables = entries.Where(entry => entry.Name.Equals("X11R6RGB", StringComparison.OrdinalIgnoreCase)).ToArray();
+        if (colorTables.Length != 0)
+        {
+            if (!WadArchiveReader.TryReadLumpData(wad, colorTables[^1], out var colorData, out error)) return false;
+            if (!HCDE.Gamedata.NativeColorParser.TryReadNames(System.Text.Encoding.UTF8.GetString(colorData), out colorNames, out error)) return false;
+        }
         var sndInfo = new HCDE.Gamedata.SndInfoData(new Dictionary<int, string>(), soundDefinitions);
         foreach (var entry in entries.Where(entry => entry.Name.Equals("SNDINFO", StringComparison.OrdinalIgnoreCase)))
         {
@@ -419,6 +442,7 @@ public static class LevelBuilder
             randomSoundGroups = parsed.RandomGroups;
             soundSettings = parsed.Settings;
             globalSoundRolloff = parsed.GlobalRolloff;
+            playerSounds = parsed.PlayerSounds;
         }
         foreach (var entry in entries.Where(entry => entry.Name.Equals("TERRAIN", StringComparison.OrdinalIgnoreCase)))
         {
@@ -433,9 +457,10 @@ public static class LevelBuilder
         foreach (var entry in entries.Where(entry => entry.Name.Equals(lumpName, StringComparison.OrdinalIgnoreCase)))
         {
             if (!WadArchiveReader.TryReadLumpData(wad, entry, out var data, out error)) return false;
-            if (!HCDE.Gamedata.MapInfoParser.TryParse(System.Text.Encoding.UTF8.GetString(data), out var info, out error, accumulated, sndInfo.MapMusic)) return false;
+            if (!HCDE.Gamedata.MapInfoParser.TryParse(System.Text.Encoding.UTF8.GetString(data), out var info, out error, accumulated, sndInfo.MapMusic, colorNames)) return false;
             accumulated = info;
             gameIntermissionMusic = info.IntermissionMusic;
+            pickupColor = info.PickupColor ?? pickupColor;
             if (info.DefaultDropStyle is { } style) defaultDropStyle = style;
             foreach (var definition in info.DamageTypes) definitions[definition.Name] = definition;
             if (info.FindMap(mapName) is { } map)
@@ -700,6 +725,15 @@ public static class LevelBuilder
 
         var things = map.Things.Select((thing, index) => new LevelThing
         {
+            Score = thing.Score,
+            RenderStyle = thing.RenderStyle,
+            Alpha = thing.Alpha,
+            ScaleX = thing.ScaleX,
+            ScaleY = thing.ScaleY,
+            FloatBobPhase = map.Namespace.Equals("ZDoom", StringComparison.OrdinalIgnoreCase)
+                || map.Namespace.Equals("ZDoomTranslated", StringComparison.OrdinalIgnoreCase) ? thing.FloatBobPhase : -1,
+            FriendlySeeBlocks = map.Namespace.Equals("ZDoom", StringComparison.OrdinalIgnoreCase)
+                || map.Namespace.Equals("ZDoomTranslated", StringComparison.OrdinalIgnoreCase) ? thing.FriendlySeeBlocks : -1,
             Pitch = unchecked((short)thing.Pitch),
             Roll = unchecked((short)thing.Roll),
             Gravity = map.Namespace.Equals("ZDoom", StringComparison.OrdinalIgnoreCase)

@@ -157,7 +157,7 @@ public class CombatTraceTests
     }
 
     private static LevelThing Thing(short type, short x) => new() { Type = type, X = x, Y = 64 };
-    private static Actor Target(AuthoritySimulation sim) => sim.Actors.Single(a => a is not PlayerPawn and not ProjectileActor);
+    private static Actor Target(AuthoritySimulation sim) => sim.Actors.Single(a => a.DoomEdNum == 3001);
     private static LevelLine Wall(int x, bool twoSided = false, int flags = 0) => new()
     {
         X1 = x, Y1 = 0, X2 = x, Y2 = 128, SideFront = 0, SideBack = twoSided ? 1 : -1, Flags = flags,

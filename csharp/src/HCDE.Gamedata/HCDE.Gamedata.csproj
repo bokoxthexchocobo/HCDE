@@ -6,4 +6,7 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <EmbeddedResource Include="..\..\..\wadsrc\static\x11r6rgb.txt" LogicalName="HCDE.Gamedata.X11R6RGB" />
+  </ItemGroup>
 </Project>

@@ -62,6 +62,7 @@ public sealed class MapInfoCluster
 
 public sealed class MapInfoSet
 {
+    public uint? PickupColor { get; init; }
     public MapInfoMusic IntermissionMusic { get; init; } = new("");
     public string FinaleMusic { get; init; } = "";
     public int FinaleMusicOrder { get; init; }
@@ -95,9 +96,10 @@ public static class MapInfoParser
 {
     public const int TicRate = 35;
 
-    public static bool TryParse(string text, out MapInfoSet set, out string? error, MapInfoSet? previous = null, IReadOnlyDictionary<int, string>? mapMusic = null)
+    public static bool TryParse(string text, out MapInfoSet set, out string? error, MapInfoSet? previous = null,
+        IReadOnlyDictionary<int, string>? mapMusic = null, IReadOnlyDictionary<string, uint>? colorNames = null)
     {
-        var parser = new Parser(text);
+        var parser = new Parser(text, colorNames);
         return parser.TryParse(out set, out error, previous, mapMusic);
     }
 
@@ -135,7 +137,12 @@ public static class MapInfoParser
         private readonly List<string> _tokens = new();
         private int _index;
 
-        public Parser(string text) => Tokenize(text ?? string.Empty);
+        private readonly IReadOnlyDictionary<string, uint>? _colorNames;
+        public Parser(string text, IReadOnlyDictionary<string, uint>? colorNames)
+        {
+            _colorNames = colorNames;
+            Tokenize(text ?? string.Empty);
+        }
 
         public bool TryParse(out MapInfoSet set, out string? error, MapInfoSet? previous, IReadOnlyDictionary<int, string>? mapMusic)
         {
@@ -150,6 +157,7 @@ public static class MapInfoParser
             var finaleOrder = previous?.FinaleMusicOrder ?? 0;
             var finaleFlat = previous?.FinaleFlat ?? "";
             var intermissionMusic = previous?.IntermissionMusic ?? new MapInfoMusic("");
+            var pickupColor = previous?.PickupColor;
             MapInfoMap? defaults = previous?.Defaults?.Copy();
             error = null;
 
@@ -179,7 +187,7 @@ public static class MapInfoParser
                 }
                 else if (token.Equals("GameInfo", StringComparison.OrdinalIgnoreCase))
                 {
-                    if (!TryParseGameInfo(ref defaultDropStyle, ref finaleMusic, ref finaleOrder, ref finaleFlat, ref intermissionMusic, out error))
+                    if (!TryParseGameInfo(ref defaultDropStyle, ref finaleMusic, ref finaleOrder, ref finaleFlat, ref intermissionMusic, ref pickupColor, out error))
                     { set = new MapInfoSet(); return false; }
                 }
                 else if (token.Equals("DamageType", StringComparison.OrdinalIgnoreCase))
@@ -210,6 +218,7 @@ public static class MapInfoParser
             {
                 Defaults = defaults?.Copy(),
                 IntermissionMusic = intermissionMusic,
+                PickupColor = pickupColor,
                 FinaleMusic = finaleMusic, FinaleMusicOrder = finaleOrder, FinaleFlat = finaleFlat,
                 DefaultDropStyle = defaultDropStyle,
                 Maps = maps.Values.ToArray(),
@@ -220,14 +229,22 @@ public static class MapInfoParser
         }
 
         private bool TryParseGameInfo(ref int? defaultDropStyle, ref string finaleMusic,
-            ref int finaleOrder, ref string finaleFlat, ref MapInfoMusic intermissionMusic, out string? error)
+            ref int finaleOrder, ref string finaleFlat, ref MapInfoMusic intermissionMusic, ref uint? pickupColor, out string? error)
         {
             error = null;
             if (!Take("{")) { error = "GameInfo is missing a block."; return false; }
             while (!Eof && !Peek("}"))
             {
                 var property = Take();
-                if (property.Equals("DefaultDropStyle", StringComparison.OrdinalIgnoreCase))
+                if (property.Equals("PickupColor", StringComparison.OrdinalIgnoreCase))
+                {
+                    if (!Take("=") || Eof || !PeekToken().StartsWith('"'))
+                    { error = "Invalid GameInfo PickupColor string."; return false; }
+                    if (!NativeColorParser.TryParse(Unquote(Take()), out var color, _colorNames))
+                    { error = "Unsupported GameInfo PickupColor."; return false; }
+                    pickupColor = color;
+                }
+                else if (property.Equals("DefaultDropStyle", StringComparison.OrdinalIgnoreCase))
                 {
                     if (!Take("=") || !TryTakeInt(out var style))
                     { error = "Invalid GameInfo DefaultDropStyle."; return false; }

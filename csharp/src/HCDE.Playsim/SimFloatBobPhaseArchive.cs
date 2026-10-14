@@ -6,14 +6,14 @@ internal static class SimFloatBobPhaseArchive
 {
     internal static void Validate(SimSaveState state)
     {
-        if (state.Actors.Any(actor => actor.FloatBobPhase is { } phase && (uint)phase > 63))
+        if (state.Actors.Any(actor => actor.FloatBobPhase is { } phase && (uint)phase > 255))
             throw new InvalidOperationException("Invalid saved float bob phase.");
     }
 
     internal static byte[] Write(SimSaveState state, byte[] archive)
     {
         Validate(state);
-        if (!state.Actors.Any(actor => actor.FloatBobPhase.HasValue)) return archive;
+        if (!state.Actors.Any(actor => actor.FloatBobPhase.HasValue) || state.Actors.Any(actor => actor.FloatBobPhase > 63)) return archive;
         var size = checked(12 + state.Actors.Count * 8);
         var result = new byte[checked(archive.Length + size)];
         archive.CopyTo(result, 0);

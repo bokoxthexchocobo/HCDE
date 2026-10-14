@@ -66,9 +66,6 @@ public sealed class ThinkerCollection
 
     public void ChangeStatNum(Thinker thinker, int statNum)
     {
-        var justSpawned = thinker.JustSpawned;
-        Remove(thinker);
-        thinker.JustSpawned = justSpawned;
         Add(thinker, statNum);
     }
 
@@ -96,6 +93,17 @@ public sealed class ThinkerCollection
         for (var node = _thinkers[statNum]; node != null; node = node.Next)
             list.Add(node);
         return list;
+    }
+
+    internal IReadOnlyList<Thinker> SnapshotOrder()
+    {
+        var result = new List<Thinker>();
+        for (var stat = 0; stat <= ThinkerStat.MaxStatNum; stat++)
+        {
+            for (var node = _thinkers[stat]; node != null; node = node.Next) result.Add(node);
+            for (var node = _fresh[stat]; node != null; node = node.Next) result.Add(node);
+        }
+        return result;
     }
 
     private int TickList(Thinker?[] table, int stat, Thinker?[]? destination)

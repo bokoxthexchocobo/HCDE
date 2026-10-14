@@ -6,6 +6,134 @@ namespace HCDE.Client.Tests;
 public class WadAudioMixerTests
 {
     [Fact]
+    public void PresentMalformedPlayerResourceReportsDecodeErrorInsteadOfFallingBack()
+    {
+        var level = new PlayLevel { PlayerSounds = [new("base", 0, "*test", "absent"), new("custom", 0, "*test", "broken")],
+            SoundDefinitions = new Dictionary<string, string> { ["absent"] = "ABSENT", ["broken"] = "DSPISTOL" } };
+        var wad = Wad(11025); BinaryPrimitives.WriteUInt16LittleEndian(wad.AsSpan(12), 1);
+        var mixer = new AudioMixer();
+        Assert.False(mixer.TryPlayWadSound(wad, level, "*test", out _, out var error, playerSoundClass: "custom"));
+        Assert.Equal("sound-format-unsupported", error);
+    }
+
+    [Theory]
+    [InlineData(false, false)]
+    [InlineData(true, false)]
+    [InlineData(false, true)]
+    [InlineData(true, true)]
+    public void PlayerResourceFallbackPreservesIntentionalSilenceAndOrdinaryAliases(bool alias, bool silent)
+    {
+        Assert.True(HCDE.Gamedata.SndInfoMapMusicParser.TryParseData(
+            "$playersound base male *test DSPISTOL\n$playersound custom male *test " + (silent ? "DSEMPTY" : "ABSENT")
+            + "\n$alias entry *test", out var sounds, out var error), error);
+        var level = new PlayLevel { Sectors = [new LevelSector { CeilingHeight = 128 }],
+            Things = [new LevelThing { Type = 1 }], SoundDefinitions = sounds.Sounds,
+            SoundAliases = sounds.Aliases, SoundSettings = sounds.Settings, PlayerSounds = sounds.PlayerSounds };
+        using var host = new ClientHost(HCDE.Playsim.AuthoritySimulation.Start(level));
+        Assert.True(host.TrySetSoundArchive(Wad(11025), out error), error);
+        var player = host.Simulation.Players.Single(); player.SoundClass = "custom";
+        HCDE.Playsim.ActorSoundActions.StartSound(player, alias ? "entry" : "*test", 2);
+        host.Tick(default); Assert.Empty(host.LastSoundRequestErrors);
+        Assert.Equal(silent ? (short)1000 : (short)-31768, host.LastMix[0]);
+    }
+
+    [Theory]
+    [InlineData(false, false)]
+    [InlineData(true, false)]
+    [InlineData(false, true)]
+    [InlineData(true, true)]
+    public void PlayerSoundClassChangesDecodedPlaybackAndSurvivesRestore(bool customClass, bool local)
+    {
+        Assert.True(HCDE.Gamedata.SndInfoMapMusicParser.TryParseData(
+            "$playersound player male *test ABSENT\n$playeralias custom male *test custom/test\ncustom/test DSPISTOL",
+            out var sounds, out var error), error);
+        var level = new PlayLevel { Sectors = [new LevelSector { CeilingHeight = 128 }],
+            Things = [new LevelThing { Type = 1 }], SoundDefinitions = sounds.Sounds,
+            SoundAliases = sounds.Aliases, SoundSettings = sounds.Settings, PlayerSounds = sounds.PlayerSounds };
+        using var host = new ClientHost(HCDE.Playsim.AuthoritySimulation.Start(level));
+        Assert.True(host.TrySetSoundArchive(Wad(11025), out error), error);
+        var player = host.Simulation.Players.Single(); player.SoundClass = customClass ? "CUSTOM" : null;
+        var saved = HCDE.Playsim.SimSavegame.Write(host.Simulation, true);
+        void Play() => HCDE.Playsim.ActorSoundActions.StartSound(player, "*test", 2,
+            local ? HCDE.Playsim.SimulationSoundFlags.Local : 0);
+        Play(); host.Tick(default); Assert.Empty(host.LastSoundRequestErrors);
+        Assert.Equal(customClass ? (short)-31768 : (short)1000, host.LastMix[0]);
+        var expected = host.LastMix.ToArray(); HCDE.Playsim.SimSavegame.Apply(host.Simulation, saved);
+        Play(); host.Tick(default); Assert.Equal(expected, host.LastMix);
+    }
+
+    [Theory]
+    [InlineData(false, false, false, true)]
+    [InlineData(true, false, false, false)]
+    [InlineData(false, true, false, true)]
+    [InlineData(true, true, false, false)]
+    [InlineData(false, false, true, false)]
+    public void InventoryUseSoundFollowsConsoleOwnershipRatherThanCamera(bool remoteUser, bool remoteCamera, bool paused, bool audible)
+    {
+        var level = new PlayLevel {
+            Sectors = [new LevelSector { CeilingHeight = 128 }],
+            Things = [new LevelThing { Type = 1 }, new LevelThing { Type = 2, X = 20 }],
+            SoundDefinitions = new Dictionary<string, string> { ["misc/invuse"] = "DSPISTOL" },
+            GlobalSoundRolloff = new(MinDistance: 1, MaxDistance: 1000)
+        };
+        using var host = new ClientHost(HCDE.Playsim.AuthoritySimulation.Start(level));
+        Assert.True(host.TrySetSoundArchive(Wad(11025), out var error), error);
+        var console = host.Simulation.Players.First(); var remote = host.Simulation.Players.Last();
+        Assert.True(host.TrySetAudioConsolePlayer(console.PlayerNum, out error), error);
+        if (remoteCamera) Assert.True(host.TrySetAudioListener(remote.Id, out error), error);
+        host.GamePaused = paused;
+        var user = remoteUser ? remote : console; user.Health = 40;
+        Assert.True(user.Inventory.GiveHealthPickup("MedPatch", 1));
+        Assert.True(HCDE.Playsim.ActorInventoryActions.UseInventory(user, "MedPatch"));
+        host.Tick(default);
+        Assert.Empty(host.LastSoundRequestErrors);
+        if (paused) Assert.All(host.LastMix, sample => Assert.Equal((short)0, sample));
+        else Assert.Equal(audible, host.LastMix.Any(sample => sample != 1000));
+    }
+
+    [Theory]
+    [InlineData(2014, "misc/health_pkup")]
+    [InlineData(2015, "misc/armor_pkup")]
+    [InlineData(2007, "misc/ammo_pkup")]
+    [InlineData(5, "misc/k_pkup")]
+    public void PickupSoundInheritancePreservesIndependentSndinfoAliases(int type, string name)
+    {
+        var level = new PlayLevel {
+            Sectors = [new LevelSector { CeilingHeight = 128 }],
+            Things = [new LevelThing { Type = 1 }, new LevelThing { Type = type }],
+            SoundDefinitions = new Dictionary<string, string> { ["custom"] = "DSPISTOL" },
+            SoundAliases = new Dictionary<string, string> { [name] = "custom" }
+        };
+        using var host = new ClientHost(HCDE.Playsim.AuthoritySimulation.Start(level));
+        Assert.True(host.TrySetSoundArchive(Wad(11025), out var error), error); host.Tick(default);
+        Assert.Empty(host.LastSoundRequestErrors); Assert.Equal((short)-31768, host.LastMix[0]);
+    }
+
+    [Theory]
+    [InlineData(true, true, -32768)]
+    [InlineData(true, false, 0)]
+    [InlineData(false, true, 0)]
+    [InlineData(false, false, 0)]
+    public void OnlyLocalPickupSoundsAreAutomaticallyPauseExempt(bool pickup, bool localCollector, short expected)
+    {
+        var level = new PlayLevel {
+            Sectors = [new LevelSector { CeilingHeight = 128 }],
+            Things = [new LevelThing { Type = 1 }, new LevelThing { Type = 2 }, new LevelThing { Type = 2014, X = 500 }],
+            SoundDefinitions = new Dictionary<string, string> { ["sound"] = "DSPISTOL" }
+        };
+        using var host = new ClientHost(HCDE.Playsim.AuthoritySimulation.Start(level));
+        Assert.True(host.TrySetSoundArchive(Wad(11025), out var error), error); host.GamePaused = true;
+        var source = localCollector ? host.Simulation.Players.First() : host.Simulation.Players.Last();
+        var item = host.Simulation.Actors.Single(a => a.DoomEdNum == 2014); item.NoAttenPickupSound = true;
+        item.ActorSounds = new Dictionary<HCDE.Playsim.ActorSoundType, string> { [HCDE.Playsim.ActorSoundType.Pickup] = "sound" };
+        var saved = HCDE.Playsim.SimSavegame.Write(host.Simulation, true);
+        if (pickup) HCDE.Playsim.ActorPickupActions.PlayPickupSound(item, source);
+        else HCDE.Playsim.ActorSoundActions.StartSound(source, "sound", 3, HCDE.Playsim.SimulationSoundFlags.MaybeLocal, attenuation: 0);
+        host.Tick(default); Assert.Empty(host.LastSoundRequestErrors); Assert.Equal(expected, host.LastMix[0]);
+        Assert.Equal(saved, HCDE.Playsim.SimSavegame.Write(host.Simulation, true));
+    }
+
+    [Fact]
     public void ClientSoundLengthUsesConfiguredArchiveReturnsSecondsAndSurvivesRestore()
     {
         var level = new PlayLevel { Things = [new LevelThing { Type = 1 }],

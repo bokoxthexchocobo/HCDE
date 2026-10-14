@@ -10,6 +10,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <InternalsVisibleTo Include="HCDE.Client.Tests" />
     <ProjectReference Include="..\HCDE.Playsim\HCDE.Playsim.csproj" />
     <ProjectReference Include="..\HCDE.Scripting\HCDE.Scripting.csproj" />
   </ItemGroup>

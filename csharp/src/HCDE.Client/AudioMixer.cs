@@ -45,7 +45,8 @@ public sealed class AudioMixer
 
     public bool TryPlayWadSound(ReadOnlySpan<byte> wad, HCDE.MapLoader.PlayLevel level, string sound,
         out Guid channelId, out string? error, Func<int>? nextRandom = null, float volume = 1, bool loop = false, float? pitch = null, bool pitched = true, Func<byte>? nextPitchByte = null, Func<float>? nextPitchFloat = null, float attenuation = 1, HCDE.Gamedata.SoundRolloff? forcedRolloff = null, bool singular = false, bool noPause = false, bool force = false,
-        System.Numerics.Vector3? sourcePosition = null, uint? sourceActorId = null, int entityChannel = 0, bool listenerSource = false, float startTime = 0, bool overlap = true)
+        System.Numerics.Vector3? sourcePosition = null, uint? sourceActorId = null, int entityChannel = 0, bool listenerSource = false, float startTime = 0, bool overlap = true,
+        string? playerSoundClass = null)
     {
         channelId = Guid.Empty;
         error = null;
@@ -64,7 +65,16 @@ public sealed class AudioMixer
         var gain = Math.Min(volume * settingVolume, 1);
         if (gain <= 0) return true;
         var path = new List<string>();
-        if (!HCDE.MapLoader.SoundResourceResolver.TryResolveNamed(level, sound, nextRandom, out _, out var resolvedSound, out error, path.Add)) return false;
+        HashSet<string>? resources = null;
+        if (level.PlayerSounds.Count > 0)
+        {
+            if (!HCDE.MapLoader.WadArchiveReader.TryReadDirectory(wad, out var entries, out error)) return false;
+            resources = entries.Select(entry => entry.Name).ToHashSet(StringComparer.OrdinalIgnoreCase);
+        }
+        if (!HCDE.MapLoader.SoundResourceResolver.TryResolveNamed(level, sound, nextRandom, out _, out var resolvedSound,
+            out error, path.Add, playerSoundClass, playerSoundAvailable: resources is null ? null
+                : target => HCDE.MapLoader.SoundResourceResolver.IsPlayerSoundAvailable(level, target, resources))) return false;
+        if (resolvedSound.Length == 0) return true;
         var resolvedSettings = HCDE.MapLoader.SoundResourceResolver.GetSoundSettings(level, resolvedSound);
         var definedSingular = resolvedSettings?.Singular == true;
         var distanceScale = attenuation;

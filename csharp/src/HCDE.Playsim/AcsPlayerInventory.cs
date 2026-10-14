@@ -30,6 +30,14 @@ internal static class AcsPlayerInventory
                 return healthDefinition.Maximum;
             if (typeName.Equals("HealthBonus", StringComparison.OrdinalIgnoreCase))
                 return max ? activator.Simulation?.DehackedHealthBonusCapPatched == true ? -1 : 200 : 0;
+            if (typeName.Equals("MaxHealthBonus", StringComparison.OrdinalIgnoreCase))
+                return max ? 50 : 0;
+            if (typeName.Equals("UpgradeStamina", StringComparison.OrdinalIgnoreCase))
+                return max ? 100 : 0;
+            if (typeName.Equals("HealthFillup", StringComparison.OrdinalIgnoreCase))
+                return max ? 1 : 0;
+            if (typeName.Equals("UpgradeAccuracy", StringComparison.OrdinalIgnoreCase)) return max ? 1 : 0;
+            if (ActorPickupActions.IsDoorToken(typeName)) return max ? 1 : 0;
             if (typeName.Equals("Soulsphere", StringComparison.OrdinalIgnoreCase))
                 return max ? activator.Simulation?.DehackedMaxSoulsphere ?? 200 : 0;
             if (typeName.Equals("MegasphereHealth", StringComparison.OrdinalIgnoreCase))
@@ -67,6 +75,8 @@ internal static class AcsPlayerInventory
             return max || player.HasPowerHighJump ? 1 : 0;
         if (typeName.Equals("PowerProsperity", StringComparison.OrdinalIgnoreCase))
             return max || player.PowerProsperityTics > 0 ? 1 : 0;
+        if (typeName.Equals("PowerStrength", StringComparison.OrdinalIgnoreCase))
+            return max || player.HasPowerStrength ? 1 : 0;
         if (typeName.Equals("PowerSpread", StringComparison.OrdinalIgnoreCase))
             return max || player.PowerSpreadTics > 0 ? 1 : 0;
         if (typeName.Equals("PowerRegeneration", StringComparison.OrdinalIgnoreCase))
@@ -237,11 +247,13 @@ internal static class AcsPlayerInventory
             || typeName.Equals("BasicArmor", StringComparison.OrdinalIgnoreCase))
             return 0;
 
-        if (player.Inventory.TryUseStoredArmor(typeName))
+        if (player.Inventory.TryUseStoredArmor(typeName) || player.Inventory.UseHealthPickup(typeName))
+        {
+            // PlayerPawn.UseInventory plays the inherited Inventory.UseSound after successful use.
+            player.Simulation?.QueueSoundRequest(new SimulationSoundRequest(player.Id, "misc/invuse", 3, 0,
+                1, false, 1, false, ConsolePlayerOnly: true), immediate: true);
             return 1;
-
-        if (player.Inventory.UseHealthPickup(typeName))
-            return 1;
+        }
 
         if (!TryWeaponKind(typeName, out var weaponKind))
             return 0;
@@ -312,6 +324,16 @@ internal static class AcsPlayerInventory
         if (activator is not { Destroyed: false } || string.IsNullOrEmpty(typeName) || amount <= 0)
             return;
 
+        if (typeName.Equals("MaxHealthBonus", StringComparison.OrdinalIgnoreCase))
+        { PickupCatalog.GiveMaxHealthBonus(activator, amount); return; }
+        if (typeName.Equals("UpgradeStamina", StringComparison.OrdinalIgnoreCase))
+        { ActorPickupActions.UpgradeStamina(activator, amount); return; }
+        if (typeName.Equals("HealthFillup", StringComparison.OrdinalIgnoreCase))
+        { ActorPickupActions.HealthFillup(activator); return; }
+        if (typeName.Equals("UpgradeAccuracy", StringComparison.OrdinalIgnoreCase))
+        { ActorPickupActions.UpgradeAccuracy(activator); return; }
+        if (ActorPickupActions.IsDoorToken(typeName))
+        { ActorPickupActions.UseDoorToken(activator, typeName); return; }
         if (activator is not PlayerPawn player)
         {
             if (TryHealthUse(typeName, out _, out _)
@@ -320,6 +342,8 @@ internal static class AcsPlayerInventory
             return;
         }
 
+        if (typeName.Equals("Berserk", StringComparison.OrdinalIgnoreCase))
+        { PickupCatalog.TryGiveDoomClass(player, PickupCatalog.Berserk); return; }
         if (typeName.Equals("PowerDamage", StringComparison.OrdinalIgnoreCase))
         { player.GivePowerDamage(); return; }
         if (typeName.Equals("PowerBuddha", StringComparison.OrdinalIgnoreCase))
@@ -336,6 +360,8 @@ internal static class AcsPlayerInventory
         { player.GivePowerProsperity(); return; }
         if (typeName.Equals("PowerSpread", StringComparison.OrdinalIgnoreCase))
         { player.GivePowerSpread(); return; }
+        if (typeName.Equals("PowerStrength", StringComparison.OrdinalIgnoreCase))
+        { player.GivePowerStrength(); return; }
         if (typeName.Equals("PowerRegeneration", StringComparison.OrdinalIgnoreCase))
         { player.GivePowerRegeneration(); return; }
         if (typeName.Equals("PowerDrain", StringComparison.OrdinalIgnoreCase))
@@ -482,15 +508,15 @@ internal static class AcsPlayerInventory
             || typeName.Equals("PowerDoubleFiringSpeed", StringComparison.OrdinalIgnoreCase)
             || typeName.Equals("PowerHighJump", StringComparison.OrdinalIgnoreCase)
             || typeName.Equals("PowerProsperity", StringComparison.OrdinalIgnoreCase)
+            || typeName.Equals("PowerStrength", StringComparison.OrdinalIgnoreCase)
             || typeName.Equals("PowerSpread", StringComparison.OrdinalIgnoreCase)
             || typeName.Equals("PowerRegeneration", StringComparison.OrdinalIgnoreCase)
             || typeName.Equals("PowerDrain", StringComparison.OrdinalIgnoreCase)
             || typeName.Equals("PowerProtection", StringComparison.OrdinalIgnoreCase))
             return false;
         var held = Count(activator, typeName, max: false);
-        if (held <= 0 || amount == 0)
+        if (held <= 0)
             return false;
-        amount = Math.Clamp(amount, 1, held);
         if (player.Inventory.CountHealthPickup(typeName) > 0)
         {
             if (player.Simulation is not { } healthSim
@@ -498,12 +524,19 @@ internal static class AcsPlayerInventory
                 || !PickupCatalog.TryEditorNumberForDropName(typeName, out var healthEditorNumber,
                     healthSim.StrifeHealthPickups, healthSim.RavenHealthPickups)) return false;
             var item = player.Inventory.HealthPickups.First(stack => string.Equals(stack.TypeName, typeName, StringComparison.OrdinalIgnoreCase));
-            if (item.Health != definition.Health || item.AutoUseMode != definition.AutoUseMode) return false;
-            if (!healthSim.SpawnDroppedPickup(player, healthEditorNumber, pickupAmount: amount, inventoryToss: true,
-                ravenHealthArtifact: healthSim.RavenHealthPickups)) return false;
-            player.Inventory.TakeHealthPickup(typeName, amount);
+            var tossedMode = item.Amount == 1 ? item.AutoUseMode : definition.AutoUseMode;
+            if (item.Health < 0 && tossedMode != 0)
+                throw new NotSupportedException("Negative healing with automatic use requires signed health autouse support.");
+            // HealthPickup.CreateTossable ignores its argument and calls Super.CreateTossable(-1).
+            if (!healthSim.SpawnDroppedPickup(player, healthEditorNumber, pickupAmount: 1, inventoryToss: true,
+                ravenHealthArtifact: healthSim.RavenHealthPickups,
+                healthOverride: item.Health == definition.Health ? null : item.Health,
+                autoUseOverride: tossedMode == definition.AutoUseMode ? null : tossedMode)) return false;
+            player.Inventory.TakeHealthPickup(typeName, 1);
             return true;
         }
+        if (amount == 0) return false;
+        amount = Math.Clamp(amount, 1, held);
         var spawned = false;
         if (TryWeaponKind(typeName, out var tossedWeapon) && activator.Simulation is { } weaponSim
             && PickupCatalog.TryWeaponEdNum(tossedWeapon, out var weaponEditorNumber))
@@ -556,6 +589,8 @@ internal static class AcsPlayerInventory
         { player.PowerProsperityTics = 0; return; }
         if (typeName.Equals("PowerSpread", StringComparison.OrdinalIgnoreCase))
         { player.PowerSpreadTics = 0; return; }
+        if (typeName.Equals("PowerStrength", StringComparison.OrdinalIgnoreCase))
+        { player.PowerStrengthTics = 0; return; }
         if (typeName.Equals("PowerRegeneration", StringComparison.OrdinalIgnoreCase))
         { player.PowerRegenerationTics = 0; player.PowerRegenerationStrength = 5; return; }
         if (typeName.Equals("PowerDrain", StringComparison.OrdinalIgnoreCase))

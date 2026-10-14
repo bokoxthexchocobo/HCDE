@@ -26,6 +26,6 @@ public class ManagedGameplayTraceTests
         Assert.Equal(100, player.Health);
         // Includes wall and plane texture transforms in the managed diagnostic hash.
         Assert.True(player.NoBlockMonsters);
-        Assert.Equal(2908602831u, sim.Checksum); // Includes the native player NOBLOCKMONST default.
+        Assert.Equal(1749568638u, sim.Checksum); // Includes native default GibHealth sentinel metadata.
     }
 }

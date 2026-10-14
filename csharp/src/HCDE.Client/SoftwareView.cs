@@ -21,7 +21,8 @@ public static class SoftwareView
     public const double FovRadians = Math.PI / 2;
 
     public static void Draw(AuthoritySimulation sim, SoftwareFrame frame, double bloodFadeScalar = 1,
-        bool smoothPain = false, float smoothStrength = 0.6f, bool poisonPaletteFlash = false)
+        bool smoothPain = false, float smoothStrength = 0.6f, bool poisonPaletteFlash = false,
+        double powerupFadeScalar = 1, double pickupFadeScalar = 1)
     {
         var horizon = frame.Height / 2;
         for (var y = 0; y < frame.Height; y++)
@@ -66,8 +67,7 @@ public static class SoftwareView
             for (var y = top; y < top + column; y++)
                 frame.Plot(x, y, WallR, WallG, WallB);
         }
-        SoftwarePainBlend.Apply(frame, player.DamageCount, player.GetPainFlash(), bloodFadeScalar, smoothPain, smoothStrength);
-        SoftwarePoisonBlend.Apply(frame, player.PoisonCount, poisonPaletteFlash);
+        SoftwarePlayerBlend.Apply(frame, player, bloodFadeScalar, smoothPain, smoothStrength, poisonPaletteFlash, powerupFadeScalar, pickupFadeScalar);
     }
 
     internal static bool TryHit(double ox, double oy, double dx, double dy, LevelLine line, out double distance)

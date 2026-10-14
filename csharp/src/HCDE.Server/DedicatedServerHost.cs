@@ -43,6 +43,12 @@ public sealed class DedicatedServerOptions
     public bool Deathmatch { get; set; }
     /// <summary>Suppress damaging-floor and actor-triggered ordinary map exits in deathmatch.</summary>
     public bool NoExit { get; set; }
+    public bool EnableRewind { get; set; }
+    public float RewindIntervalSeconds { get; set; } = 1;
+    public int RewindDepth { get; set; } = 10;
+    public int RewindMaxMegabytes { get; set; } = 32;
+    public bool EnableLagCompensation { get; set; }
+    public int LagCompensationMaxAgeTics { get; set; } = 12;
     public bool Teamplay { get; set; }
     public CompatSurface Compatibility { get; set; } = CompatSurface.None;
     public string RconPassword { get; set; } = "";
@@ -65,6 +71,7 @@ public sealed class DedicatedServerHost : IDisposable, IPregameInboundIntercepto
 
     public DedicatedServerHost(DedicatedServerOptions options)
     {
+        ValidateRewindOptions(options);
         _options = options;
         var mapName = string.IsNullOrWhiteSpace(options.Pregame.Session.MapLoad.MapName)
             ? MapLoaderConstants.DefaultMapName : options.Pregame.Session.MapLoad.MapName;
@@ -118,12 +125,30 @@ public sealed class DedicatedServerHost : IDisposable, IPregameInboundIntercepto
                     InfiniteHealthItemUse: options.InfiniteHealthItemUse,
                     InfiniteStoredInventoryUse: options.InfiniteStoredInventoryUse,
                     InfiniteAmmo: options.InfiniteAmmo), noExit: options.NoExit);
+            Simulation.Rewind.CaptureIntervalSeconds = options.RewindIntervalSeconds;
+            Simulation.Rewind.Capacity = options.RewindDepth;
+            Simulation.Rewind.MemoryLimitBytes = options.RewindMaxMegabytes * 1024L * 1024;
+            Simulation.Rewind.LagCompensationEnabled = options.EnableLagCompensation;
+            Simulation.Rewind.MaxLagCompensationAgeTics = options.LagCompensationMaxAgeTics;
+            Simulation.RewindEnabled = options.EnableRewind;
             if (options.GameMode == 4)
                 Simulation.Invasion.Configure(options.InvasionWaves, options.InvasionCountdownTics, options.InvasionIntermissionTics);
         }
 
         if (Simulation != null && !string.IsNullOrEmpty(options.RconPassword))
             _rcon = new InEngineRconServer(options.RconPassword, Simulation, options.RconPort);
+    }
+
+    private static void ValidateRewindOptions(DedicatedServerOptions options)
+    {
+        if (!float.IsFinite(options.RewindIntervalSeconds) || options.RewindIntervalSeconds is < 0.25f or > 30f)
+            throw new ArgumentOutOfRangeException(nameof(options.RewindIntervalSeconds));
+        if (options.RewindDepth is < 1 or > 64)
+            throw new ArgumentOutOfRangeException(nameof(options.RewindDepth));
+        if (options.RewindMaxMegabytes is < 1 or > 512)
+            throw new ArgumentOutOfRangeException(nameof(options.RewindMaxMegabytes));
+        if (options.LagCompensationMaxAgeTics is < 1 or > GameTicClock.TicRate * 2)
+            throw new ArgumentOutOfRangeException(nameof(options.LagCompensationMaxAgeTics));
     }
 
     public int RconPort => _rcon?.Port ?? 0;
@@ -153,7 +178,7 @@ public sealed class DedicatedServerHost : IDisposable, IPregameInboundIntercepto
             _liveSession = session;
             SyncLiveClients(_liveSession);
             if (Simulation != null)
-                _liveSession.SetClientInputSink(new SimulationCommandSink(Simulation));
+                _liveSession.SetClientInputSink(new SimulationCommandSink(Simulation, _options.Pregame.Session.GameInfo.TicDup));
         }
 
         if (Simulation != null && _options.GameMode == 4 && _liveSession != null)

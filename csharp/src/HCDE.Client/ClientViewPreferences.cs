@@ -8,6 +8,8 @@ namespace HCDE.Client;
 public sealed record ClientViewPreferences
 {
     public double BloodFadeScalar { get; init; } = 1;
+    public double PowerupFadeScalar { get; init; } = 1;
+    public double PickupFadeScalar { get; init; } = 1;
     public bool SmoothPain { get; init; }
     public bool PoisonPaletteFlash { get; init; }
     public float PainSmoothStrength { get; init; } = 0.6f;
@@ -54,6 +56,10 @@ public sealed record ClientViewPreferences
 
     internal void Validate()
     {
+        if (!double.IsFinite(PickupFadeScalar) || PickupFadeScalar < 0)
+            throw new ArgumentOutOfRangeException(nameof(PickupFadeScalar));
+        if (!double.IsFinite(PowerupFadeScalar) || PowerupFadeScalar < 0)
+            throw new ArgumentOutOfRangeException(nameof(PowerupFadeScalar));
         if (!double.IsFinite(BloodFadeScalar) || BloodFadeScalar < 0)
             throw new ArgumentOutOfRangeException(nameof(BloodFadeScalar));
         if (!float.IsFinite(PainSmoothStrength))

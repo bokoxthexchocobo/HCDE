@@ -17,7 +17,7 @@ public class SpawnHealthGibThresholdTests
             Things = [new LevelThing { Type = 3004, Health = health }],
         });
         var actor = Assert.Single(sim.Actors);
-        Assert.Equal(-actor.Health, actor.GibHealth);
+        Assert.Equal(-actor.Health, actor.GetGibHealth());
         actor.DeathState = 1; actor.ExtremeDeathState = 2;
         actor.States.Configure(actor, [new ActorFrame(-1, 0), new ActorFrame(-1, 1), new ActorFrame(-1, 2)], 0);
         ActorDamage.Apply(actor, damage, null);

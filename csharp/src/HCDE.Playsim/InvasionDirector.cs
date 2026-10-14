@@ -69,6 +69,26 @@ public sealed class InvasionDirector
             Spawned++;
     }
 
+    internal SimInvasionState? CaptureState()
+    {
+        if (!Enabled && Phase == InvasionPhase.Waiting && Wave == 0 && Cooldown == 0
+            && Spawned == 0 && ActiveMonsters == 0 && MaxWaves == 0 && CountdownTics == 0
+            && IntermissionTics == WaveGapTics && SpawnSpotCount == 0 && _waveActors.Count == 0) return null;
+        return new(Enabled, Phase, Wave, Cooldown, Spawned, ActiveMonsters, MaxWaves, CountdownTics,
+            IntermissionTics, SpawnSpotCount, _waveActors.Order().ToArray());
+    }
+
+    internal void RestoreState(SimInvasionState? saved)
+    {
+        Enabled = saved?.Enabled ?? false; Phase = saved?.Phase ?? InvasionPhase.Waiting;
+        Wave = saved?.Wave ?? 0; Cooldown = saved?.Cooldown ?? 0;
+        Spawned = saved?.Spawned ?? 0; ActiveMonsters = saved?.ActiveMonsters ?? 0;
+        MaxWaves = saved?.MaxWaves ?? 0; CountdownTics = saved?.CountdownTics ?? 0;
+        IntermissionTics = saved?.IntermissionTics ?? WaveGapTics; SpawnSpotCount = saved?.SpawnSpotCount ?? 0;
+        _waveActors.Clear();
+        if (saved is not null) foreach (var id in saved.WaveActors) _waveActors.Add(id);
+    }
+
     public void Configure(int maxWaves, int countdownTics, int intermissionTics)
     {
         if (maxWaves < 0 || countdownTics < 0 || intermissionTics < 0)

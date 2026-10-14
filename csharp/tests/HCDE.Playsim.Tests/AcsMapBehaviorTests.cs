@@ -64,7 +64,11 @@ public class AcsMapBehaviorTests
         Assert.Equal(0, sim.Acs.RunningCount);
         Assert.Equal(160, sim.LightOf(0));
 
+        int? scriptsAtDeathState = null;
+        player.States.Configure(player, [new(-1, 0), new(-1, 1, _ => scriptsAtDeathState = sim.Acs.RunningCount)], 0);
+        player.DeathState = 1;
         ActorDamage.Apply(player, 1000);
+        Assert.Equal(1, scriptsAtDeathState);
         Assert.Equal(1, sim.Acs.RunningCount);
         sim.Tick();
         Assert.Equal(20, sim.LightOf(0));

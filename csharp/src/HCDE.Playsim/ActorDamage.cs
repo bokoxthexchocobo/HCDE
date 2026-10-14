@@ -51,8 +51,9 @@ public static class ActorDamage
         target.DeathDamageAmount = damage;
         target.DamageTypeReceived = target.PoisonDamageType;
         // P_PoisonDamage selects its stored type directly, bypassing ordinary inflictor overrides.
-        target.DeathInflictor = null;
-        try { target.SetDamageHealth((int)Math.Clamp(next, int.MinValue, int.MaxValue), source, () => target.Health); }
+        target.DeathInflictor = source;
+        try { target.SetDamageHealth((int)Math.Clamp(next, int.MinValue, int.MaxValue), source, () => target.Health,
+            useInflictorDeathType: false); }
         finally { target.DamageTypeReceived = null; target.DeathInflictor = null; }
         if (!target.IsDead && playPainSound && (target.Simulation?.Thinkers.Clock.Tic ?? 0) % 64 == 0)
         {
@@ -80,7 +81,7 @@ public static class ActorDamage
             return default;
         if (target.IsDead)
         {
-            if (!target.Shootable)
+            if (!target.Shootable && !target.Vulnerable)
                 return default;
             if (inflictor is { } && string.Equals(damageType, "Ice", StringComparison.OrdinalIgnoreCase) && !inflictor.IceShatter)
                 return default;
@@ -121,6 +122,11 @@ public static class ActorDamage
             }
             if (inflictor != null)
             {
+                if (inflictor.Spectral && !inflictor.IsPuff
+                    && (target is PlayerPawn
+                        ? target.Simulation?.GameMode != SpawnGameMode.Deathmatch && inflictor.FriendPlayer > 0
+                        : target.Spectral && inflictor.FriendPlayer == 0 && !target.IsHostile(inflictor)))
+                    return default;
                 damage = inflictor.DoSpecialDamage(target, damage, damageType, flags);
                 if (damage < 0) return default;
             }
@@ -211,15 +217,21 @@ public static class ActorDamage
         // Clamp before assigning Health. The setter enters death as soon as health crosses 0.
         if (next <= 0 && target is PlayerPawn && SurvivesByBuddha(target, telefrag ? TelefragDamage : damage, flags, inflictor))
             next = 1;
-        target.SetDamageHealth((int)Math.Clamp(next, int.MinValue, int.MaxValue), source,
-            () =>
-            {
-                Drain(target, source, healthDamage, damageType);
-                return target.Health <= 0 && target is not PlayerPawn && SurvivesByBuddha(target, damage, flags, inflictor)
-                    ? 1 : target.Health;
-            });
-        target.DamageTypeReceived = null;
-        target.DeathInflictor = null;
+        try
+        {
+            target.SetDamageHealth((int)Math.Clamp(next, int.MinValue, int.MaxValue), source,
+                () =>
+                {
+                    Drain(target, source, healthDamage, damageType);
+                    return target.Health <= 0 && target is not PlayerPawn && SurvivesByBuddha(target, damage, flags, inflictor)
+                        ? 1 : target.Health;
+                });
+        }
+        finally
+        {
+            target.DamageTypeReceived = null;
+            target.DeathInflictor = null;
+        }
         var lost = before - target.Health;
         var dealt = healthDamage;
         return ReactToDamage(target, source, inflictor, flags, damageType, lost, absorbed, dealt, originalDamage);

@@ -18,7 +18,7 @@ public class RevenantAttackSaveTests
         var attack = monster.Brain!.CaptureRevenantAttack();
         Assert.NotNull(attack); Assert.Equal(melee, attack!.Value.SeparateMelee);
         if (leavesRange) sim.Players.Single().X = Fixed.FromInt(500);
-        var bytes = SimSavegame.Write(sim); Assert.Equal(141, BinaryPrimitives.ReadUInt16LittleEndian(bytes.AsSpan(4)));
+        var bytes = SimSavegame.Write(sim); Assert.True(ArchiveLayerFixture.TrailerStart(bytes, 141) >= 16);
         sim.DrainSoundRequests();
         for (var i = 0; i < 8; i++) ActorChaseActions.ExtChase(monster, melee, true, playActive: false);
         var expected = sim.CaptureState(); var health = sim.Players.Single().Health;
@@ -34,9 +34,9 @@ public class RevenantAttackSaveTests
         Assert.Equal(sounds, sim.DrainSoundRequests()); Assert.DoesNotContain(sounds, r => r.Sound == "skeleton/swing");
         Assert.Equal(melee && !leavesRange, health < 100);
         Assert.Equal(melee ? 0 : 1, projectiles);
-        var size = BinaryPrimitives.ReadInt32LittleEndian(bytes.AsSpan(bytes.Length - 4));
+        var start = ArchiveLayerFixture.TrailerStart(bytes, 141);
         var index = expected.Actors.FindIndex(a => a.Id == monster.Id);
-        BinaryPrimitives.WriteInt32LittleEndian(bytes.AsSpan(bytes.Length - size + 8 + index * 28 + 24), 2);
+        BinaryPrimitives.WriteInt32LittleEndian(bytes.AsSpan(start + 8 + index * 28 + 24), 2);
         Assert.False(SimSavegame.TryRead(bytes, out _, out var error)); Assert.Equal("save-revenantattack-state", error);
     }
 

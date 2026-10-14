@@ -23,6 +23,12 @@ internal static class AcsActorFlags
         CausePain,
         AllowPain,
         NoDamage,
+        Vulnerable,
+        MVisBlocked,
+        SeeInvisible,
+        NoSightCheck,
+        HuntPlayers,
+        ChaseGoal,
         LaxTelefragDamage,
         Painless,
         NoIceDeath,
@@ -32,6 +38,7 @@ internal static class AcsActorFlags
         DontDrain,
         NoRadiusDamage,
         NeverTarget,
+        SeeFriendlyMonsters,
         NoTargetSwitch,
         QuickToRetaliate,
         NoHatePlayers,
@@ -55,6 +62,9 @@ internal static class AcsActorFlags
         OnMobj,
         InFloat,
         JustHit,
+        JustAttacked,
+        InCombat,
+        NoSplashAlert,
         ActsLikeBridge,
         IceCorpse,
         Shattering,
@@ -64,10 +74,17 @@ internal static class AcsActorFlags
         MoveWithSector,
         CanPass,
         DontOverlap,
+        ExplodeCount,
+        SkyExplode,
+        HitTarget,
+        HitMaster,
+        HitTracer,
         NoLiftDrop,
         RelativeToFloor,
         Invisible,
         CantSeek,
+        NoBlood,
+        IsPuff,
         SpawnSoundSource,
         DontThrust,
         DontSeekInvisible,
@@ -117,6 +134,9 @@ internal static class AcsActorFlags
         Dropped,
         IgnoreSkill,
         AlwaysPickup,
+        PickupQuiet,
+        NoScreenFlash,
+        NoAttenPickupSound,
     }
 
     public static bool TryGet(Actor actor, string? flagName, out bool value)
@@ -124,7 +144,7 @@ internal static class AcsActorFlags
         value = false;
         if (actor.Destroyed || string.IsNullOrEmpty(flagName) || !TryMap(flagName, out var kind))
             return false;
-        if (kind is Kind.IgnoreSkill or Kind.AlwaysPickup && !PickupCatalog.IsPickup(actor.DoomEdNum, actor.Simulation?.RavenHealthPickups ?? false)) return false;
+        if (kind is Kind.IgnoreSkill or Kind.AlwaysPickup or Kind.PickupQuiet or Kind.NoScreenFlash or Kind.NoAttenPickupSound && !PickupCatalog.IsPickup(actor.DoomEdNum, actor.Simulation?.RavenHealthPickups ?? false)) return false;
         value = Read(actor, kind);
         return true;
     }
@@ -133,7 +153,7 @@ internal static class AcsActorFlags
     {
         if (actor.Destroyed || string.IsNullOrEmpty(flagName) || !TryMap(flagName, out var kind))
             return false;
-        if (kind is Kind.IgnoreSkill or Kind.AlwaysPickup && !PickupCatalog.IsPickup(actor.DoomEdNum, actor.Simulation?.RavenHealthPickups ?? false)) return false;
+        if (kind is Kind.IgnoreSkill or Kind.AlwaysPickup or Kind.PickupQuiet or Kind.NoScreenFlash or Kind.NoAttenPickupSound && !PickupCatalog.IsPickup(actor.DoomEdNum, actor.Simulation?.RavenHealthPickups ?? false)) return false;
         Write(actor, kind, set);
         return true;
     }
@@ -142,7 +162,7 @@ internal static class AcsActorFlags
     {
         if (flagName.StartsWith("Actor.", StringComparison.OrdinalIgnoreCase))
             return TryMapUnqualified(flagName[6..], out kind)
-                && kind is not (Kind.IgnoreSkill or Kind.AlwaysPickup);
+                && kind is not (Kind.IgnoreSkill or Kind.AlwaysPickup or Kind.PickupQuiet or Kind.NoScreenFlash or Kind.NoAttenPickupSound);
         return TryMapUnqualified(flagName, out kind);
     }
 
@@ -176,6 +196,16 @@ internal static class AcsActorFlags
         { kind = Kind.CanPass; return true; }
         if (flagName.Equals("DONTOVERLAP", StringComparison.OrdinalIgnoreCase))
         { kind = Kind.DontOverlap; return true; }
+        if (flagName.Equals("EXPLOCOUNT", StringComparison.OrdinalIgnoreCase))
+        { kind = Kind.ExplodeCount; return true; }
+        if (flagName.Equals("SKYEXPLODE", StringComparison.OrdinalIgnoreCase))
+        { kind = Kind.SkyExplode; return true; }
+        if (flagName.Equals("HITTARGET", StringComparison.OrdinalIgnoreCase))
+        { kind = Kind.HitTarget; return true; }
+        if (flagName.Equals("HITMASTER", StringComparison.OrdinalIgnoreCase))
+        { kind = Kind.HitMaster; return true; }
+        if (flagName.Equals("HITTRACER", StringComparison.OrdinalIgnoreCase))
+        { kind = Kind.HitTracer; return true; }
         if (flagName.Equals("MOVEWITHSECTOR", StringComparison.OrdinalIgnoreCase))
         { kind = Kind.MoveWithSector; return true; }
         if (flagName.Equals("NOSECTOR", StringComparison.OrdinalIgnoreCase))
@@ -192,10 +222,20 @@ internal static class AcsActorFlags
         { kind = Kind.DontThrust; return true; }
         if (flagName.Equals("DONTSEEKINVISIBLE", StringComparison.OrdinalIgnoreCase))
         { kind = Kind.DontSeekInvisible; return true; }
+        if (flagName.Equals("ISPUFF", StringComparison.OrdinalIgnoreCase))
+        { kind = Kind.IsPuff; return true; }
+        if (flagName.Equals("NOBLOOD", StringComparison.OrdinalIgnoreCase))
+        { kind = Kind.NoBlood; return true; }
         if (flagName.Equals("SHADOW", StringComparison.OrdinalIgnoreCase))
         { kind = Kind.Shadow; return true; }
         if (flagName.Equals("MINVISIBLE", StringComparison.OrdinalIgnoreCase))
         { kind = Kind.MinVisible; return true; }
+        if (flagName.Equals("NOSPLASHALERT", StringComparison.OrdinalIgnoreCase))
+        { kind = Kind.NoSplashAlert; return true; }
+        if (flagName.Equals("INCOMBAT", StringComparison.OrdinalIgnoreCase))
+        { kind = Kind.InCombat; return true; }
+        if (flagName.Equals("JUSTATTACKED", StringComparison.OrdinalIgnoreCase))
+        { kind = Kind.JustAttacked; return true; }
         if (flagName.Equals("JUSTHIT", StringComparison.OrdinalIgnoreCase))
         { kind = Kind.JustHit; return true; }
         if (flagName.Equals("ACTLIKEBRIDGE", StringComparison.OrdinalIgnoreCase))
@@ -246,6 +286,8 @@ internal static class AcsActorFlags
         { kind = Kind.Dormant; return true; }
         if (flagName.Equals("NEVERTARGET", StringComparison.OrdinalIgnoreCase))
         { kind = Kind.NeverTarget; return true; }
+        if (flagName.Equals("SEEFRIENDLYMONSTERS", StringComparison.OrdinalIgnoreCase))
+        { kind = Kind.SeeFriendlyMonsters; return true; }
         if (flagName.Equals("NOTARGETSWITCH", StringComparison.OrdinalIgnoreCase))
         { kind = Kind.NoTargetSwitch; return true; }
         if (flagName.Equals("QUICKTORETALIATE", StringComparison.OrdinalIgnoreCase))
@@ -276,6 +318,15 @@ internal static class AcsActorFlags
         { kind = Kind.FoilInvul; return true; }
         if (flagName.Equals("SPECIALFIREDAMAGE", StringComparison.OrdinalIgnoreCase))
         { kind = Kind.SpecialFireDamage; return true; }
+        if (flagName.Equals("QUIET", StringComparison.OrdinalIgnoreCase)
+            || flagName.Equals("INVENTORY.QUIET", StringComparison.OrdinalIgnoreCase))
+        { kind = Kind.PickupQuiet; return true; }
+        if (flagName.Equals("NOSCREENFLASH", StringComparison.OrdinalIgnoreCase)
+            || flagName.Equals("INVENTORY.NOSCREENFLASH", StringComparison.OrdinalIgnoreCase))
+        { kind = Kind.NoScreenFlash; return true; }
+        if (flagName.Equals("NOATTENPICKUPSOUND", StringComparison.OrdinalIgnoreCase)
+            || flagName.Equals("INVENTORY.NOATTENPICKUPSOUND", StringComparison.OrdinalIgnoreCase))
+        { kind = Kind.NoAttenPickupSound; return true; }
         if (flagName.Equals("ALWAYSPICKUP", StringComparison.OrdinalIgnoreCase)
             || flagName.Equals("INVENTORY.ALWAYSPICKUP", StringComparison.OrdinalIgnoreCase))
         { kind = Kind.AlwaysPickup; return true; }
@@ -381,6 +432,18 @@ internal static class AcsActorFlags
         { kind = Kind.CausePain; return true; }
         if (flagName.Equals("ALLOWPAIN", StringComparison.OrdinalIgnoreCase))
         { kind = Kind.AllowPain; return true; }
+        if (flagName.Equals("NOSIGHTCHECK", StringComparison.OrdinalIgnoreCase))
+        { kind = Kind.NoSightCheck; return true; }
+        if (flagName.Equals("CHASEGOAL", StringComparison.OrdinalIgnoreCase))
+        { kind = Kind.ChaseGoal; return true; }
+        if (flagName.Equals("HUNTPLAYERS", StringComparison.OrdinalIgnoreCase))
+        { kind = Kind.HuntPlayers; return true; }
+        if (flagName.Equals("SEEINVISIBLE", StringComparison.OrdinalIgnoreCase))
+        { kind = Kind.SeeInvisible; return true; }
+        if (flagName.Equals("MVISBLOCKED", StringComparison.OrdinalIgnoreCase))
+        { kind = Kind.MVisBlocked; return true; }
+        if (flagName.Equals("VULNERABLE", StringComparison.OrdinalIgnoreCase))
+        { kind = Kind.Vulnerable; return true; }
         if (flagName.Equals("NODAMAGE", StringComparison.OrdinalIgnoreCase))
         { kind = Kind.NoDamage; return true; }
         if (flagName.Equals("LAXTELEFRAGDMG", StringComparison.OrdinalIgnoreCase))
@@ -429,6 +492,12 @@ internal static class AcsActorFlags
         Kind.ForcePain => actor.ForcePain,
         Kind.CausePain => actor.CausePain,
         Kind.AllowPain => actor.AllowPain,
+        Kind.NoSightCheck => actor.NoSightCheck,
+        Kind.HuntPlayers => actor.HuntPlayers,
+        Kind.ChaseGoal => actor.ChaseGoal,
+        Kind.Vulnerable => actor.Vulnerable,
+        Kind.SeeInvisible => actor.SeeInvisible,
+        Kind.MVisBlocked => actor.MVisBlocked,
         Kind.NoDamage => actor.NoDamage,
         Kind.LaxTelefragDamage => actor.LaxTelefragDamage,
         Kind.Painless => actor.Painless,
@@ -439,6 +508,7 @@ internal static class AcsActorFlags
         Kind.DontDrain => actor.DontDrain,
         Kind.NoRadiusDamage => actor.NoRadiusDamage,
         Kind.NeverTarget => actor.NeverTarget,
+        Kind.SeeFriendlyMonsters => actor.SeeFriendlyMonsters,
         Kind.NoTargetSwitch => actor.NoTargetSwitch,
         Kind.QuickToRetaliate => actor.QuickToRetaliate,
         Kind.NoHatePlayers => actor.NoHatePlayers,
@@ -462,6 +532,9 @@ internal static class AcsActorFlags
         Kind.OnMobj => actor.OnMobj,
         Kind.InFloat => actor.InFloat,
         Kind.JustHit => actor.JustHit,
+        Kind.JustAttacked => actor.JustAttacked,
+        Kind.InCombat => actor.InCombat,
+        Kind.NoSplashAlert => actor.NoSplashAlert,
         Kind.ActsLikeBridge => actor.ActsLikeBridge,
         Kind.IceCorpse => actor.IceCorpse,
         Kind.Shattering => actor.Shattering,
@@ -471,9 +544,16 @@ internal static class AcsActorFlags
         Kind.MoveWithSector => actor.MoveWithSector,
         Kind.CanPass => actor.CanPass,
         Kind.DontOverlap => actor.DontOverlap,
+        Kind.ExplodeCount => actor.ExplodeCount,
+        Kind.SkyExplode => actor.SkyExplode,
+        Kind.HitTarget => actor.HitTarget,
+        Kind.HitMaster => actor.HitMaster,
+        Kind.HitTracer => actor.HitTracer,
         Kind.NoLiftDrop => actor.NoLiftDrop,
         Kind.RelativeToFloor => actor.RelativeToFloor,
         Kind.Invisible => actor.Invisible,
+        Kind.IsPuff => actor.IsPuff,
+        Kind.NoBlood => actor.NoBlood,
         Kind.CantSeek => actor.CantSeek,
         Kind.SpawnSoundSource => actor.SpawnSoundSource,
         Kind.DontThrust => actor.DontThrust,
@@ -530,6 +610,9 @@ internal static class AcsActorFlags
         Kind.Pickup => actor.CanPickupItems,
         Kind.Special => actor.SpecialPickup,
         Kind.Dropped => actor.Dropped,
+        Kind.PickupQuiet => actor.PickupQuiet,
+        Kind.NoScreenFlash => actor.NoScreenFlash,
+        Kind.NoAttenPickupSound => actor.NoAttenPickupSound,
         Kind.IgnoreSkill => actor.IgnoreAmmoSkill,
         Kind.AlwaysPickup => actor.AlwaysPickupOverride ?? PickupCatalog.AlwaysPickup(actor.DoomEdNum, actor.Simulation?.StrifeHealthPickups ?? false),
         _ => false,
@@ -548,6 +631,12 @@ internal static class AcsActorFlags
             case Kind.ForcePain: actor.ForcePain = value; break;
             case Kind.CausePain: actor.CausePain = value; break;
             case Kind.AllowPain: actor.AllowPain = value; break;
+            case Kind.NoSightCheck: actor.NoSightCheck = value; break;
+            case Kind.HuntPlayers: actor.HuntPlayers = value; break;
+            case Kind.ChaseGoal: actor.ChaseGoal = value; break;
+            case Kind.Vulnerable: actor.Vulnerable = value; break;
+            case Kind.SeeInvisible: actor.SeeInvisible = value; break;
+            case Kind.MVisBlocked: actor.MVisBlocked = value; break;
             case Kind.NoDamage: actor.NoDamage = value; break;
             case Kind.LaxTelefragDamage: actor.LaxTelefragDamage = value; break;
             case Kind.Painless: actor.Painless = value; break;
@@ -558,6 +647,7 @@ internal static class AcsActorFlags
             case Kind.DontDrain: actor.DontDrain = value; break;
             case Kind.NoRadiusDamage: actor.NoRadiusDamage = value; break;
             case Kind.NeverTarget: actor.NeverTarget = value; break;
+            case Kind.SeeFriendlyMonsters: actor.SeeFriendlyMonsters = value; break;
             case Kind.NoTargetSwitch: actor.NoTargetSwitch = value; break;
             case Kind.QuickToRetaliate: actor.QuickToRetaliate = value; break;
             case Kind.NoHatePlayers: actor.NoHatePlayers = value; actor.HasFriendshipOverride = true; break;
@@ -581,6 +671,9 @@ internal static class AcsActorFlags
             case Kind.OnMobj: actor.OnMobj = value; break;
             case Kind.InFloat: actor.InFloat = value; break;
             case Kind.JustHit: actor.JustHit = value; break;
+            case Kind.JustAttacked: actor.JustAttacked = value; break;
+            case Kind.InCombat: actor.InCombat = value; break;
+            case Kind.NoSplashAlert: actor.NoSplashAlert = value; break;
             case Kind.ActsLikeBridge: actor.ActsLikeBridge = value; break;
             case Kind.IceCorpse: actor.IceCorpse = value; break;
             case Kind.Shattering: actor.Shattering = value; break;
@@ -590,6 +683,11 @@ internal static class AcsActorFlags
             case Kind.RelativeToFloor: actor.RelativeToFloor = value; break;
             case Kind.CanPass: actor.CanPass = value; break;
             case Kind.DontOverlap: actor.DontOverlap = value; break;
+            case Kind.ExplodeCount: actor.ExplodeCount = value; break;
+            case Kind.SkyExplode: actor.SkyExplode = value; break;
+            case Kind.HitTarget: actor.HitTarget = value; break;
+            case Kind.HitMaster: actor.HitMaster = value; break;
+            case Kind.HitTracer: actor.HitTracer = value; break;
             case Kind.MoveWithSector: actor.MoveWithSector = value; break;
             case Kind.NoBlockmap: ActorPropertyActions.ChangeLinkFlags(actor, value ? 1 : 0); break;
             case Kind.Invisible: actor.Invisible = value; break;
@@ -597,6 +695,8 @@ internal static class AcsActorFlags
             case Kind.SpawnSoundSource: actor.SpawnSoundSource = value; break;
             case Kind.DontThrust: actor.DontThrust = value; break;
             case Kind.DontSeekInvisible: actor.DontSeekInvisible = value; break;
+            case Kind.IsPuff: actor.IsPuff = value; break;
+            case Kind.NoBlood: actor.NoBlood = value; break;
             case Kind.Shadow: actor.Shadow = value; break;
             case Kind.MinVisible: actor.MinVisible = value; break;
             case Kind.PierceArmor: actor.PierceArmor = value; break;
@@ -649,6 +749,9 @@ internal static class AcsActorFlags
             case Kind.Pickup: actor.CanPickupItems = value; break;
             case Kind.Special: actor.SpecialPickup = value; break;
             case Kind.Dropped: actor.Dropped = value; break;
+            case Kind.PickupQuiet: actor.PickupQuiet = value; break;
+            case Kind.NoScreenFlash: actor.NoScreenFlash = value; break;
+            case Kind.NoAttenPickupSound: actor.NoAttenPickupSound = value; break;
             case Kind.IgnoreSkill: actor.IgnoreAmmoSkill = value; break;
             case Kind.AlwaysPickup: actor.AlwaysPickupOverride = value; break;
         }

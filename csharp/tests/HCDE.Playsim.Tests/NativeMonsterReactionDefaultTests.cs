@@ -27,6 +27,7 @@ public class NativeMonsterReactionDefaultTests
         var actor = sim.AddBot(0, 0);
         var initial = patched ? 3 : 8;
         Assert.Equal(initial, actor.ReactionTime);
+        actor.SetTargetPointer(sim.Players.Single());
         for (var tic = 1; tic <= initial; tic++)
         {
             actor.Brain!.Tick(sim, actor);

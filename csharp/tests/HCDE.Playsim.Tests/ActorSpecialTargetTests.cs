@@ -17,7 +17,8 @@ public class ActorSpecialTargetTests
         victim.ActivationType = activation;
         ActorDamage.Apply(victim, 1000, killer);
         var suppressed = (activation & 64) != 0;
-        Assert.Equal(!suppressed && (activation & 2) != 0 ? killer.Id : (uint?)null, victim.Brain!.TargetId);
+        // Die assigns the killer before optional special target changes or suppression.
+        Assert.Equal(killer.Id, victim.Brain!.TargetId);
         Assert.Equal(!suppressed && (activation & 4) != 0 ? victim.Id : (uint?)null, killer.Brain!.TargetId);
     }
 

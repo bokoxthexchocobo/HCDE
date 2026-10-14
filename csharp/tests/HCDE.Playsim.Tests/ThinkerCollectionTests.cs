@@ -2,6 +2,33 @@ namespace HCDE.Playsim.Tests;
 
 public class ThinkerCollectionTests
 {
+    [Theory]
+    [InlineData(-1, false)]
+    [InlineData(128, false)]
+    [InlineData(-1, true)]
+    [InlineData(128, true)]
+    public void ChangeStatNum_InvalidGroupPreservesMembershipAndOrder(int statNum, bool established)
+    {
+        var log = new List<string>();
+        var world = new ThinkerCollection();
+        var first = new LoggingThinker("first", log);
+        var second = new LoggingThinker("second", log);
+        world.Add(first);
+        world.Add(second);
+        if (established) world.Run();
+        log.Clear();
+
+        Assert.Throws<ArgumentOutOfRangeException>(() => world.ChangeStatNum(first, statNum));
+
+        Assert.Equal(ThinkerStat.Default, first.StatNum);
+        Assert.Equal(!established, first.JustSpawned);
+        world.Run();
+        Assert.Equal(new[] { "first", "second" }, log);
+        Assert.Equal(1, first.PostBeginCount);
+        Assert.Equal(established ? 2 : 1, first.TickCount);
+        Assert.Equal(new Thinker[] { first, second }, world.ThinkersIn(ThinkerStat.Default));
+    }
+
     [Fact]
     public void Run_TicksLowerStatsBeforeHigherStats()
     {

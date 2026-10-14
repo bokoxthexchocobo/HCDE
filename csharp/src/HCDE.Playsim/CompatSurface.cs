@@ -35,6 +35,8 @@ public enum CompatSurface
     Railing = 32768,
     /// <summary>Native COMPATF_NO_PASSMOBJ: disables actor-top support and stepping.</summary>
     NoPassMobj = 65536,
+    /// <summary>Native COMPATF_SOUNDTARGET: look reads sector noise rather than per-actor LastHeard.</summary>
+    SoundTarget = 131072,
 }
 
 public static class CompatSurfaceRules

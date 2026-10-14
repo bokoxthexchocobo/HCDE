@@ -48,6 +48,7 @@ internal static class AcsActorStates
         if (actor.InactiveState >= 0) yield return ("Inactive", actor.InactiveState);
         if (actor.SeeState >= 0)
             yield return ("See", actor.SeeState);
+        if (actor.HealState >= 0) yield return ("Heal", actor.HealState);
         yield return ("Pain", actor.PainState);
         if (actor.RaiseState >= 0) yield return ("Raise", actor.RaiseState);
         yield return ("Death", actor.DeathState);

@@ -41,8 +41,7 @@ public class RavenHealthDropTests
 
     [Theory]
     [InlineData(false, 25)]
-    [InlineData(true, 99)]
-    public void UnsupportedModeOrCustomMetadataCannotLoseInventory(bool raven, int health)
+    public void UnsupportedModeCannotLoseInventory(bool raven, int health)
     {
         var sim = Room(raven); var player = sim.Players.Single(); player.Inventory.AddHealthPickup(health, 2, 1, "ArtiHealth");
         Assert.False(AcsPlayerInventory.Drop(player, "ArtiHealth"));

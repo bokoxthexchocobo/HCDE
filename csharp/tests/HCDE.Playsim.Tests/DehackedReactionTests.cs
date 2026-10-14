@@ -50,6 +50,8 @@ public class DehackedReactionTests
         Assert.Equal(sim.Players.Single().Id, actor.Brain.TargetId);
         Assert.Equal(MonsterMode.Chase, actor.Brain.Mode);
         actor.Brain.Tick(sim, actor);
+        Assert.Equal(1, actor.ReactionTime);
+        actor.Brain.Tick(sim, actor);
         Assert.Equal(0, actor.ReactionTime);
         Assert.Equal(MonsterMode.Windup, actor.Brain.Mode);
         Assert.Equal(sim.Players.Single().Id, actor.Brain.TargetId);

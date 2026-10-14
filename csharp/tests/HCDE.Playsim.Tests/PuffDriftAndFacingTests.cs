@@ -23,6 +23,7 @@ public class PuffDriftAndFacingTests
         var source = sim.Players.Single(); var angle = BamAngle.FromDegrees(yaw);
         var radians = yaw * Math.PI / 180; var sign = negative ? -1 : 1;
         var target = sim.AddBot(sign * 64 * Math.Cos(radians), sign * 64 * Math.Sin(radians));
+        target.Invulnerable = true;
         var health = target.Health;
         Assert.Equal(1, AcsLineAttack.Attack(sim, source, unchecked((int)angle.Raw), 0, 7, "None",
             negative ? -128 : 128, puffTid: 42, absoluteAngles: true));
@@ -33,6 +34,6 @@ public class PuffDriftAndFacingTests
         var x = puff.X; var y = puff.Y; var z = puff.Z;
         puff.Tick();
         Assert.Equal(x, puff.X); Assert.Equal(y, puff.Y); Assert.Equal(z.ToDouble() + 1, puff.Z.ToDouble());
-        Assert.Equal(1, puff.VelocityZ.ToDouble()); Assert.Equal(health - 7, target.Health);
+        Assert.Equal(1, puff.VelocityZ.ToDouble()); Assert.Equal(health, target.Health);
     }
 }

@@ -95,9 +95,25 @@ public sealed class ClientHost : IDisposable
             ? value : throw new ArgumentOutOfRangeException(nameof(value));
     }
     public bool SilentPickupCompatibility { get; set; }
+    private double _powerupFadeScalar = 1;
+    private double _pickupFadeScalar = 1;
+    public double PickupFadeScalar
+    {
+        get => _pickupFadeScalar;
+        set => _pickupFadeScalar = double.IsFinite(value) && value >= 0
+            ? value : throw new ArgumentOutOfRangeException(nameof(value));
+    }
+    public double PowerupFadeScalar
+    {
+        get => _powerupFadeScalar;
+        set => _powerupFadeScalar = double.IsFinite(value) && value >= 0
+            ? value : throw new ArgumentOutOfRangeException(nameof(value));
+    }
     public ClientViewPreferences CaptureViewPreferences() => new()
     {
         BloodFadeScalar = BloodFadeScalar,
+        PowerupFadeScalar = PowerupFadeScalar,
+        PickupFadeScalar = PickupFadeScalar,
         SmoothPain = SmoothPain,
         PoisonPaletteFlash = PoisonPaletteFlash,
         PainSmoothStrength = PainSmoothStrength,
@@ -109,6 +125,8 @@ public sealed class ClientHost : IDisposable
         ArgumentNullException.ThrowIfNull(preferences);
         preferences.Validate();
         BloodFadeScalar = preferences.BloodFadeScalar;
+        PowerupFadeScalar = preferences.PowerupFadeScalar;
+        PickupFadeScalar = preferences.PickupFadeScalar;
         SmoothPain = preferences.SmoothPain;
         PoisonPaletteFlash = preferences.PoisonPaletteFlash;
         PainSmoothStrength = preferences.PainSmoothStrength;
@@ -282,6 +300,7 @@ public sealed class ClientHost : IDisposable
             _playingSounds.Remove(handle);
         foreach (var request in Simulation.DrainSoundRequests())
         {
+            if (request.ConsolePlayerOnly && GetAudioConsolePlayer()?.Id != request.ActorId) continue;
             if (request.ChangePitch)
             {
                 if (request.Pitch is not { } pitch) { errors.Add($"audio-pitch-missing: {request.ActorId}"); continue; }
@@ -320,6 +339,8 @@ public sealed class ClientHost : IDisposable
             var loop = request.Loop || (request.Flags & (int)SimulationSoundFlags.Loop) != 0;
             var noStop = request.Loop || (request.Flags & (int)SimulationSoundFlags.NoStop) != 0;
             var singular = (request.Flags & (int)SimulationSoundFlags.Singular) != 0;
+            var noPause = (request.Flags & (int)(SimulationSoundFlags.Ui | SimulationSoundFlags.NoPause)) != 0
+                || request.PickupSound && IsLocalAudioView(request.ActorId);
             if (request.OnlyIfChannelFree && (local
                 ? Audio.IsUnpositionedSoundPlaying(request.Channel)
                 : IsActorSoundPlaying(request.ActorId, request.Channel))) continue;
@@ -334,7 +355,8 @@ public sealed class ClientHost : IDisposable
                 if (!request.NonPositional && !IsLocalAudioView(request.ActorId)) continue;
                 if (!Audio.TryPlayWadSound(_soundArchive, Simulation.Level, request.Sound, out var localHandle,
                     out var localError, volume: request.Volume, loop: loop, pitch: request.Pitch, startTime: request.StartTime,
-                    entityChannel: request.Channel, attenuation: 0, singular: singular, noPause: (request.Flags & 96) != 0, force: (request.Flags & 65536) != 0))
+                    entityChannel: request.Channel, attenuation: 0, singular: singular, noPause: noPause, force: (request.Flags & 65536) != 0,
+                    playerSoundClass: sourceActor is PlayerPawn { SoundClass: { Length: > 0 } localClass } ? localClass : "player"))
                 {
                     errors.Add($"{localError}: {request.Sound}");
                     continue;
@@ -346,7 +368,7 @@ public sealed class ClientHost : IDisposable
             if (!TryPlayActorWadSound(_soundArchive, Simulation.Level, request.Sound, request.ActorId,
                 out _, out var error, loop, request.Volume, attenuation, pitch: request.Pitch, startTime: request.StartTime, entityChannel: request.Channel,
                 overlap: (request.Flags & (int)SimulationSoundFlags.Overlap) != 0, singular: singular,
-                listenerHeight: (request.Flags & (int)SimulationSoundFlags.ListenerZ) != 0, noPause: (request.Flags & 96) != 0, force: (request.Flags & 65536) != 0,
+                listenerHeight: (request.Flags & (int)SimulationSoundFlags.ListenerZ) != 0, noPause: noPause, force: (request.Flags & 65536) != 0,
                 detachedOrigin: request.DetachedOrigin))
                 errors.Add($"{error}: {request.Sound}");
         }
@@ -379,7 +401,8 @@ public sealed class ClientHost : IDisposable
         if (!Audio.TryPlayWadSound(wad, level, sound, out var queued, out error,
             nextRandom, volume, loop, pitch, attenuation: attenuation, singular: singular, noPause: noPause, force: force,
             sourcePosition: position, sourceActorId: actor?.Id, entityChannel: entityChannel, listenerSource: actor == listener,
-            startTime: startTime, overlap: overlap)) return false;
+            startTime: startTime, overlap: overlap,
+            playerSoundClass: actor is PlayerPawn { SoundClass: { Length: > 0 } soundClass } ? soundClass : "player")) return false;
         RemoveStoppedSoundRecords();
         if (queued == Guid.Empty) return true;
         if (actor is not null && !TryBindAudioSource(queued, actorId, out error, listenerHeight))
@@ -619,14 +642,13 @@ public sealed class ClientHost : IDisposable
             Hardware.Blit(Frame);
             if (player is not null)
             {
-                SoftwarePainBlend.Apply(Frame, player.DamageCount, player.GetPainFlash(),
-                    BloodFadeScalar, SmoothPain, PainSmoothStrength);
-                SoftwarePoisonBlend.Apply(Frame, player.PoisonCount, PoisonPaletteFlash);
+                SoftwarePlayerBlend.Apply(Frame, player, BloodFadeScalar, SmoothPain, PainSmoothStrength,
+                    PoisonPaletteFlash, PowerupFadeScalar, PickupFadeScalar);
             }
         }
         else
         {
-            SoftwareView.Draw(Simulation, Frame, BloodFadeScalar, SmoothPain, PainSmoothStrength, PoisonPaletteFlash);
+            SoftwareView.Draw(Simulation, Frame, BloodFadeScalar, SmoothPain, PainSmoothStrength, PoisonPaletteFlash, PowerupFadeScalar, PickupFadeScalar);
         }
 
         if (!GamePaused && !Simulation.Exited) Audio.Play(new short[] { 1000, 1000, 1000, 1000 });

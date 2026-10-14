@@ -29,6 +29,7 @@ public class PlayerAcquisitionFriendshipTests
         var monster = sim.Actors.Single(actor => actor.DoomEdNum == 3004);
         var players = sim.Players.OrderBy(player => player.X.Raw).ToArray();
         monster.Friendly = players[0].Friendly = true;
+        players[1].Friendly = false;
         monster.Brain!.Tick(sim, monster);
         Assert.Equal(players[1].Id, monster.Brain.TargetId);
     }

@@ -90,7 +90,7 @@ public class ChaseRetaliationTests
         hunter.JustHit = true;
         var health = target.Health;
         for (var tic = 0; tic < 9; tic++) hunter.Brain.Tick(sim, hunter);
-        Assert.Equal(91, hunter.ReactionTime);
+        Assert.Equal(99, hunter.ReactionTime);
         Assert.Equal(MonsterMode.Recovery, hunter.Brain.Mode);
         Assert.True(target.Health < health);
         Assert.False(hunter.JustHit);

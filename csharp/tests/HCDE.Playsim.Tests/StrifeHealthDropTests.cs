@@ -41,8 +41,7 @@ public class StrifeHealthDropTests
 
     [Theory]
     [InlineData(false, 10)]
-    [InlineData(true, 99)]
-    public void UnsupportedRoutingOrCustomHealingPreservesInventory(bool strife, int health)
+    public void UnsupportedRoutingPreservesInventory(bool strife, int health)
     {
         var sim = Room(strife); var player = sim.Players.Single(); player.Inventory.AddHealthPickup(health, 2, 3, "MedPatch");
         Assert.False(AcsPlayerInventory.Drop(player, "MedPatch"));

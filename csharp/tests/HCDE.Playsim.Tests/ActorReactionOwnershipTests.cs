@@ -8,6 +8,7 @@ public class ActorReactionOwnershipTests
     public void RemovingBrainKeepsLiveCountdownAndReattachingKeepsActorState()
     {
         var sim = Room(); var actor = Monster(sim); var brain = actor.Brain!;
+        actor.SetTargetPointer(sim.Players.Single());
         actor.ReactionTime = 3; sim.Tick(); Assert.Equal(2, actor.ReactionTime);
         actor.Brain = null; Assert.Equal(2, actor.ReactionTime); Assert.Equal(2, brain.ReactionTics);
         actor.ReactionTime = 7; actor.Brain = brain; Assert.Equal(7, brain.ReactionTics);
@@ -19,6 +20,7 @@ public class ActorReactionOwnershipTests
     {
         var sim = Room(); var actor = Monster(sim); actor.ReactionTime = 123;
         actor.Brain = new MonsterBrain(MonsterAttack.Melee);
+        actor.SetTargetPointer(sim.Players.Single());
         Assert.Equal(123, actor.ReactionTime); Assert.Equal(123, actor.Brain.ReactionTics);
         sim.Tick(); Assert.Equal(122, actor.ReactionTime);
     }

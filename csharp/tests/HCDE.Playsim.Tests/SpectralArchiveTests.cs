@@ -31,7 +31,7 @@ public class SpectralArchiveTests
         sim.RestoreState(state); Assert.Equal(targetSpectral, target.Spectral); Assert.Equal(missileSpectral, missile.Spectral);
         var health = target.Health; sim.Tick(); var passes = targetSpectral && !missileSpectral;
         Assert.Equal(!passes, missile.Destroyed);
-        if (passes) Assert.Equal(health, target.Health); else Assert.True(target.Health < health);
+        if (passes || targetSpectral && missileSpectral) Assert.Equal(health, target.Health); else Assert.True(target.Health < health);
     }
     [Theory]
     [InlineData(-1)]

@@ -62,4 +62,28 @@ public class ProjectileGeometryDamageTests
         for (var i = 0; i < 8; i++) sim.Tick();
         Assert.Equal(1000, sim.Level.Lines[0].Health);
     }
+
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public void GeometryDamageCallbackPrecedesProjectileRemovalAndMotionCleanup(bool plane)
+    {
+        var sim = Room(); sim.Level.Sectors[0].HealthFloor = 1000;
+        var missile = sim.SpawnProjectile(sim.Players.Single(), ProjectileKind.Plasma);
+        missile.X = missile.Y = default; missile.Z = Fixed.FromInt(plane ? 1 : 20);
+        missile.VelocityX = Fixed.FromInt(plane ? 2 : 80);
+        missile.VelocityY = default; missile.VelocityZ = Fixed.FromInt(plane ? -10 : 0);
+        var calls = 0;
+        missile.DamageExpression = actor =>
+        {
+            Assert.False(actor.Destroyed);
+            Assert.Equal(plane ? 2 : 80, actor.VelocityX.ToDouble());
+            Assert.Equal(plane ? -10 : 0, actor.VelocityZ.ToDouble());
+            calls++; return 7;
+        };
+        missile.Tick();
+        Assert.Equal(1, calls); Assert.True(missile.Destroyed);
+        Assert.Equal(993, plane ? sim.Level.Sectors[0].HealthFloor : sim.Level.Lines[0].Health);
+        Assert.Equal(0, missile.VelocityX.Raw); Assert.Equal(0, missile.VelocityZ.Raw);
+    }
 }

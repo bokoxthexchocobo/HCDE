@@ -8,11 +8,13 @@ public class MonsterSignedReactionTests
     [InlineData(-1, -2)]
     [InlineData(-5, -6)]
     [InlineData(int.MinValue, int.MaxValue)]
-    public void NegativeReactionCountsDownWhileAcquiringTarget(int initial, int expected)
+    public void NegativeReactionIsPreservedAtAcquisitionThenCountsDown(int initial, int expected)
     {
         var (sim, monster) = Room();
         monster.ReactionTime = initial;
         monster.Brain!.Tick(sim, monster);
+        Assert.Equal(initial, monster.ReactionTime);
+        monster.Brain.Tick(sim, monster);
         Assert.Equal(expected, monster.ReactionTime);
         Assert.Equal(expected, monster.Brain.ReactionTics);
         Assert.Equal(sim.Players.Single().Id, monster.Brain.TargetId);

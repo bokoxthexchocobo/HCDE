@@ -20,6 +20,7 @@ public class ChaseGoalAttackTests
             hunter.Brain!.Tick(sim, hunter, MonsterChaseFlags.NoPlayActive);
             Assert.Equal(MonsterMode.Chase, hunter.Brain.Mode);
             Assert.Equal(0, hunter.Brain.WindupTics);
+            if (hunter.GoalId is null) { Assert.Null(hunter.TargetId); break; }
         }
         Assert.Equal(health, target.Health);
         Assert.Empty(sim.Actors.OfType<ProjectileActor>());
@@ -36,7 +37,8 @@ public class ChaseGoalAttackTests
         hunter.ReactionTime = 0;
         hunter.Brain.SetTargetThingId(sim, target.ThingId);
         hunter.GoalId = target.Id;
-        for (var tic = 0; tic < 12; tic++) hunter.Brain.Tick(sim, hunter, MonsterChaseFlags.NoPlayActive);
+        hunter.Brain.Tick(sim, hunter, MonsterChaseFlags.NoPlayActive);
+        Assert.Null(hunter.GoalId); Assert.Null(hunter.TargetId);
         Assert.Equal(MonsterMode.Chase, hunter.Brain.Mode);
         Assert.Equal(0, hunter.Brain.WindupTics);
     }

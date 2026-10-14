@@ -9,7 +9,7 @@ public class SoundPropagationTests
             Sectors = Enumerable.Range(0, count).Select(index => new LevelSector { Index = index, CeilingHeight = 128 }).ToArray(),
             Sides = Enumerable.Range(0, count).Select(index => new LevelSide { Sector = index }).ToArray(),
             Lines = edges.Select(edge => new LevelLine { SideFront = edge.From, SideBack = edge.To,
-                Flags = edge.Block ? LevelLine.BlockSoundFlag : 0 }).ToArray(),
+                Flags = LevelLine.TwoSidedFlag | (edge.Block ? LevelLine.BlockSoundFlag : 0) }).ToArray(),
         });
 
     [Fact]

@@ -40,6 +40,7 @@ public class LostSoulFriendshipTests
     {
         var (sim, parent) = Room();
         SetPolicy(parent);
+        sim.Players.Single().Friendly = false;
         parent.Brain!.SetTargetThingId(sim, 3);
         if (death) parent.Health = 0;
         for (var i = 0; i < (death ? 32 : 16); i++) sim.Tick();

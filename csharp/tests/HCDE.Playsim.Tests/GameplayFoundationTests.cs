@@ -233,20 +233,20 @@ public class GameplayFoundationTests
     }
 
     [Fact]
-    public void DeathRestoresStandingHeight()
+    public void DeathClearsCrouchWithoutRestoringLivingHeight()
     {
         var sim = Room();
         var player = sim.Players.Single();
-        var standing = player.Height.ToDouble();
         for (var i = 0; i < 6; i++)
         {
             sim.QueueCommand(0, new PlayerCommand { Crouch = true });
             sim.Tick();
         }
 
+        var deathHeight = player.Height.ToDouble() * 0.25;
         ActorDamage.Apply(player, 1000);
         sim.Tick();
-        Assert.Equal(standing, player.Height.ToDouble(), 3);
+        Assert.Equal(deathHeight, player.Height.ToDouble(), 3);
         Assert.Equal(1, player.CrouchFactor, 3);
     }
 
@@ -970,7 +970,7 @@ public class GameplayFoundationTests
     [Fact]
     public void ChaseThresholdBlocksTargetSwitchUntilItCountsDown()
     {
-        var sim = Room();
+        var sim = Room(noAttack: true);
         var bot = sim.AddBot(64, 64);
         bot.Health = 100;
         bot.Brain!.Enabled = false;
@@ -987,7 +987,7 @@ public class GameplayFoundationTests
         Assert.Equal(other.Id, bot.Brain.TargetId);
 
         bot.Brain.Enabled = true;
-        for (var tic = 0; tic < 100; tic++)
+        for (var tic = 0; tic < 128 && bot.Brain.Threshold != 0; tic++)
             sim.Tick();
         Assert.Equal(0, bot.Brain.Threshold);
         bot.Brain.Enabled = false;
@@ -1583,8 +1583,9 @@ public class GameplayFoundationTests
     {
         var left = Room();
         var right = Room();
-        left.AddBot(8, 8).TidToHate = 11;
+        var leftBot = left.AddBot(8, 8); leftBot.TidToHate = 11;
         var rightBot = right.AddBot(8, 8);
+        leftBot.Dormant = rightBot.Dormant = true;
         left.Tick();
         right.Tick();
         Assert.NotEqual(left.Checksum, right.Checksum);
@@ -1885,6 +1886,7 @@ public class GameplayFoundationTests
         ally.Friendly = true;
         ally.FriendPlayer = 1;
         var player = sim.Players.Single();
+        player.Friendly = false;
         ActorDamage.Apply(victim, 10, source: ally, inflictor: ally);
         Assert.Null(victim.Brain.TargetId);
         ActorDamage.Apply(victim, 10, source: player, inflictor: player);
@@ -1894,7 +1896,7 @@ public class GameplayFoundationTests
     [Fact]
     public void JustHitHonorsFriendlyChaseTargets()
     {
-        var sim = Room();
+        var sim = Room(noAttack: true);
         var bot = sim.AddBot(64, 64);
         bot.Health = 100;
         bot.Brain!.Enabled = false;
@@ -1917,7 +1919,7 @@ public class GameplayFoundationTests
         rival.Brain!.Enabled = false;
         bot.Brain.DefThreshold = 0;
         bot.Brain.Enabled = true;
-        for (var tic = 0; tic < 100; tic++)
+        for (var tic = 0; tic < 128 && bot.Brain.Threshold != 0; tic++)
             sim.Tick();
         bot.Brain.Enabled = false;
         ActorDamage.Apply(bot, 10, source: rival, inflictor: rival);
@@ -1934,6 +1936,7 @@ public class GameplayFoundationTests
         var right = Room();
         var leftBot = left.AddBot(8, 8);
         var rightBot = right.AddBot(8, 8);
+        leftBot.Brain!.Enabled = rightBot.Brain!.Enabled = false;
         leftBot.Friendly = true;
         leftBot.FriendPlayer = 1;
         left.Tick();
@@ -3524,9 +3527,9 @@ public class GameplayFoundationTests
         Things = new[] { new LevelThing { Type = 1 } }.Concat(extras).ToArray(),
     }, spawnOptions: new SpawnOptions(Skill: skill));
 
-    private static AuthoritySimulation Room(short ceiling = 128, SpawnGameMode mode = SpawnGameMode.Single) => AuthoritySimulation.Start(new PlayLevel
+    private static AuthoritySimulation Room(short ceiling = 128, SpawnGameMode mode = SpawnGameMode.Single, bool noAttack = false) => AuthoritySimulation.Start(new PlayLevel
     {
-        Sectors = new[] { new LevelSector { CeilingHeight = ceiling, Tag = 1 } },
+        Sectors = new[] { new LevelSector { CeilingHeight = ceiling, Tag = 1, NoAttack = noAttack } },
         Things = new[] { new LevelThing { Type = 1 } },
     }, spawnOptions: new SpawnOptions(Mode: mode));
 

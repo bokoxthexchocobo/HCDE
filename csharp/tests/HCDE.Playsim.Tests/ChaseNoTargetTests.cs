@@ -47,6 +47,7 @@ public class ChaseNoTargetTests
         var (sim, hunter, player) = Room();
         hunter.Brain!.Hear(sim, hunter, player);
         hunter.GoalId = player.Id;
+        player.X = Fixed.FromInt(512);
         player.NoTarget = true;
         hunter.Brain.Tick(sim, hunter, useMelee: false, useMissile: false);
         Assert.Equal(player.Id, hunter.Brain.TargetId);

@@ -12,7 +12,8 @@ internal static class AcsLineAttack
         string? damageType,
         double range,
         int puffTid = 0,
-        bool absoluteAngles = false)
+        bool absoluteAngles = false,
+        bool noRandomPuffZ = false)
     {
         if (source is not { Destroyed: false })
             return 0;
@@ -28,24 +29,12 @@ internal static class AcsLineAttack
         GeometryLineAttack.Apply(sim, trace, damage);
         if (trace.Victim is null)
         {
-            if (trace.Wall?.Special != 9)
-            {
-                var yawRadians = angle.ToDegrees() * Math.PI / 180;
-                var pitchRadians = pitch.ToDegrees() * Math.PI / 180;
-                var horizontal = Math.Cos(pitchRadians);
-                var puff = sim.SpawnHitscanPuff(trace.X - 4 * horizontal * Math.Cos(yawRadians),
-                    trace.Y - 4 * horizontal * Math.Sin(yawRadians), trace.Z + 4 * Math.Sin(pitchRadians), puffTid);
-                puff.Radius = new Fixed(1);
-                puff.Angle = new BamAngle(unchecked(angle.Raw + 0x80000000u));
-                puff.DamageSource = source;
-            }
+            LineAttackImpact.SpawnGeometryPuff(sim, source, trace, angle, pitch, puffTid, noRandomPuffZ);
             return 0;
         }
 
-        var actorPuff = sim.SpawnHitscanPuff(trace.X, trace.Y, trace.Z, puffTid);
-        actorPuff.Angle = new BamAngle(unchecked(angle.Raw + 0x80000000u));
-        actorPuff.DamageSource = source;
-        ActorDamage.Apply(trace.Victim, damage, source, DamageFlags.None, damageType ?? "None", actorPuff);
+        LineAttackImpact.ApplyActorDamage(sim, source, trace.Victim, trace, angle, damage,
+            damageType ?? "None", melee: false, puffTid, noRandomPuffZ);
         return 1;
     }
 

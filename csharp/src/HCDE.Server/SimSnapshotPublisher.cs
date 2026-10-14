@@ -64,11 +64,19 @@ public static class SimSnapshotPublisher
     }
 }
 
-public sealed class SimulationCommandSink : IClientInputCommandSink
+public sealed class SimulationCommandSink : IClientInputCommandSink, IClientInputViewTicSink
 {
     private readonly AuthoritySimulation _simulation;
+    private readonly int _ticDup;
 
-    public SimulationCommandSink(AuthoritySimulation simulation) => _simulation = simulation;
+    public SimulationCommandSink(AuthoritySimulation simulation, int ticDup = 1)
+    {
+        _simulation = simulation;
+        _ticDup = ticDup;
+    }
+
+    public bool TryApplyClientViewTic(int clientSlot, uint sequenceAck) => sequenceAck <= int.MaxValue
+        && _simulation.Rewind.TryRecordClientViewTic(clientSlot, (int)sequenceAck, _ticDup);
 
     public bool ApplyCommand(
         int clientSlot,

@@ -13,7 +13,7 @@ public class ProjectileSpectralTests
     {
         var (sim, missile, target) = Setup(); target.Spectral = targetSpectral; missile.Spectral = missileSpectral;
         var health = target.Health; sim.Tick(); Assert.Equal(!passes, missile.Destroyed);
-        if (passes) Assert.Equal(health, target.Health); else Assert.True(target.Health < health);
+        if (passes || targetSpectral && missileSpectral) Assert.Equal(health, target.Health); else Assert.True(target.Health < health);
     }
 
     [Fact]

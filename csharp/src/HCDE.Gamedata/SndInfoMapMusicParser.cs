@@ -5,6 +5,7 @@ namespace HCDE.Gamedata;
 
 public enum SoundRolloffType { Doom, Linear, Log, Custom }
 public sealed record SoundRolloff(SoundRolloffType Type = SoundRolloffType.Doom, float MinDistance = 0, float MaxDistance = 0);
+public sealed record SndInfoPlayerSound(string ClassName, int Gender, string Slot, string Target);
 
 public sealed record SndInfoSoundSettings(float Volume = 1, float Attenuation = 1, int NearLimit = 2, float LimitRange = 65536,
     bool Singular = false, int PitchMask = 0, float DefPitch = 0, float DefPitchMax = 0, bool IsTentative = false,
@@ -12,6 +13,9 @@ public sealed record SndInfoSoundSettings(float Volume = 1, float Attenuation = 
 
 public sealed record SndInfoData(IReadOnlyDictionary<int, string> MapMusic, IReadOnlyDictionary<string, string> Sounds)
 {
+    public IReadOnlyList<SndInfoPlayerSound> PlayerSounds { get; init; } = Array.Empty<SndInfoPlayerSound>();
+    public IReadOnlyList<string> PlayerReservedSlots { get; init; } = Array.Empty<string>();
+    public IReadOnlyDictionary<string, string> PlayerCompatibilityTargets { get; init; } = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
     public int CurrentPitchMask { get; init; }
     public SoundRolloff? GlobalRolloff { get; init; }
     public IReadOnlyDictionary<string, SndInfoSoundSettings> Settings { get; init; } = new Dictionary<string, SndInfoSoundSettings>(StringComparer.OrdinalIgnoreCase);
@@ -37,11 +41,17 @@ public static class SndInfoMapMusicParser
         var sounds = previous is null ? new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
             : new Dictionary<string, string>(previous.Sounds, StringComparer.OrdinalIgnoreCase);
         var aliases = new Dictionary<string, string>(previous?.Aliases ?? new Dictionary<string, string>(), StringComparer.OrdinalIgnoreCase);
+        var compatibility = new Dictionary<string, string>(previous?.PlayerCompatibilityTargets ?? new Dictionary<string, string>(), StringComparer.OrdinalIgnoreCase);
         var settings = new Dictionary<string, SndInfoSoundSettings>(previous?.Settings ?? new Dictionary<string, SndInfoSoundSettings>(), StringComparer.OrdinalIgnoreCase);
         var currentPitchMask = previous?.CurrentPitchMask ?? 0;
         var globalRolloff = previous?.GlobalRolloff;
+        var playerSounds = previous?.PlayerSounds.ToList() ?? new List<SndInfoPlayerSound>();
+        var reserves = new HashSet<string>(previous?.PlayerReservedSlots ?? Array.Empty<string>(), StringComparer.OrdinalIgnoreCase);
+        reserves.UnionWith(playerSounds.Select(p => p.Slot));
+        bool IsPlayerReserve(string name) => reserves.Contains(name);
         var groups = new Dictionary<string, IReadOnlyList<string>>(StringComparer.OrdinalIgnoreCase);
         foreach (var pair in previous?.RandomGroups ?? new Dictionary<string, IReadOnlyList<string>>()) groups[pair.Key] = Array.AsReadOnly(pair.Value.ToArray());
+        bool IsRandomCompatibility(string name) => compatibility.ContainsKey(name) && groups.ContainsKey(name);
         data = new(new Dictionary<int, string>(), new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase));
         error = null;
         var tokens = new List<string>();
@@ -58,6 +68,90 @@ public static class SndInfoMapMusicParser
         bool? assignments = null;
         for (var index = 0; index < tokens.Count;)
         {
+            if (tokens[index].Equals("$registered", StringComparison.OrdinalIgnoreCase)
+                || tokens[index].Equals("$edfoverride", StringComparison.OrdinalIgnoreCase))
+            {
+                index++;
+                continue;
+            }
+            if (tokens[index].Equals("$archivepath", StringComparison.OrdinalIgnoreCase))
+            {
+                if (index + 1 >= tokens.Count || tokens[index + 1].StartsWith('$')
+                    || tokens[index + 1] is "=" or "{" or "}")
+                { error = "SNDINFO archive path requires a path."; return false; }
+                // Native consumes the legacy path but does not use it for resource lookup.
+                index += 2;
+                continue;
+            }
+            if (tokens[index].Equals("$playersound", StringComparison.OrdinalIgnoreCase)
+                || tokens[index].Equals("$playersounddup", StringComparison.OrdinalIgnoreCase)
+                || tokens[index].Equals("$playercompat", StringComparison.OrdinalIgnoreCase)
+                || tokens[index].Equals("$playeralias", StringComparison.OrdinalIgnoreCase))
+            {
+                var directive = tokens[index++];
+                var alias = !directive.Equals("$playersound", StringComparison.OrdinalIgnoreCase);
+                var duplicate = directive.Equals("$playersounddup", StringComparison.OrdinalIgnoreCase);
+                var compat = directive.Equals("$playercompat", StringComparison.OrdinalIgnoreCase);
+                if (tokens.Count - index < 4 || tokens.Skip(index).Take(4).Any(t => t.StartsWith('$') || t is "=" or "{" or "}"))
+                { error = "SNDINFO player sound requires class, gender, slot and target."; return false; }
+                var className = Unquote(tokens[index++]); var genderName = Unquote(tokens[index++]);
+                var slot = Unquote(tokens[index++]); var target = Unquote(tokens[index++]);
+                var gender = genderName.ToLowerInvariant() switch { "male" => 0, "female" => 1, "other" => 2, _ => -1 };
+                if (gender < 0 || className.Length == 0 || slot.Length == 0 || target.Length == 0)
+                { error = "Invalid SNDINFO player sound class, gender, slot or target."; return false; }
+                if (sounds.ContainsKey(slot) || aliases.ContainsKey(slot) || groups.ContainsKey(slot))
+                { error = "SNDINFO player slot already names an ordinary sound."; return false; }
+                reserves.Add(slot);
+                settings.TryAdd(slot, new SndInfoSoundSettings(IsTentative: true));
+                if (duplicate || compat)
+                {
+                    var lookupSlot = compat ? slot : target;
+                    if (!(duplicate && slot.Equals(target, StringComparison.OrdinalIgnoreCase))
+                        && !IsPlayerReserve(lookupSlot))
+                    { error = "SNDINFO duplicate target is not a player sound."; return false; }
+                    var entries = playerSounds.Where(p => p.ClassName.Equals(className, StringComparison.OrdinalIgnoreCase)).ToArray();
+                    if (entries.Length == 0 && playerSounds.Count > 0)
+                        entries = playerSounds.Where(p => p.ClassName.Equals(playerSounds[0].ClassName, StringComparison.OrdinalIgnoreCase)).ToArray();
+                    var selectedGender = entries.Any(p => p.Gender == gender) ? gender : entries.Select(p => p.Gender).DefaultIfEmpty(0).Min();
+                    // During parsing native lookup skips unavailable-slot/resource fallback and captures the sound ID now.
+                    var selected = entries.FirstOrDefault(p => p.Gender == selectedGender
+                        && p.Slot.Equals(lookupSlot, StringComparison.OrdinalIgnoreCase))?.Target ?? "";
+                    if (compat)
+                    {
+                        if (IsRandomCompatibility(target))
+                        { error = "Redefining a random player compatibility sound is unsupported."; return false; }
+                        if (IsPlayerReserve(target))
+                        { error = "SNDINFO compatibility name is reserved for players."; return false; }
+                        if (compatibility.TryGetValue(target, out var priorTarget) && priorTarget.Length != 0)
+                        {
+                            // S_AddSound clears the old captured sound before SI_PlayerCompat installs its new link.
+                            sounds[priorTarget] = "";
+                            aliases.Remove(priorTarget); groups.Remove(priorTarget);
+                            ResetInheritedLimit(settings, priorTarget);
+                        }
+                        compatibility[target] = selected;
+                        sounds.Remove(target); groups.Remove(target);
+                        aliases.Remove(target);
+                        if (selected.Length == 0) sounds[target] = "";
+                        else aliases[target] = selected;
+                        settings.TryAdd(target, new SndInfoSoundSettings(PitchMask: currentPitchMask));
+                        continue;
+                    }
+                    target = selected;
+                }
+                if (!alias)
+                {
+                    var playerResource = target;
+                    target = $"__player/{className}/{gender}/{slot}";
+                    sounds[target] = playerResource;
+                    settings.TryAdd(target, new SndInfoSoundSettings(PitchMask: currentPitchMask));
+                }
+                var prior = playerSounds.FindIndex(p => p.ClassName.Equals(className, StringComparison.OrdinalIgnoreCase)
+                    && p.Gender == gender && p.Slot.Equals(slot, StringComparison.OrdinalIgnoreCase));
+                var definition = new SndInfoPlayerSound(className, gender, slot, target);
+                if (prior < 0) playerSounds.Add(definition); else playerSounds[prior] = definition;
+                continue;
+            }
             if (tokens[index].Equals("$rolloff", StringComparison.OrdinalIgnoreCase))
             {
                 index++;
@@ -160,6 +254,10 @@ public static class SndInfoMapMusicParser
                 if (index + 2 >= tokens.Count || tokens[index + 1].StartsWith('$') || tokens[index + 1] is "=" or "{" or "}" || tokens[index + 2] != "{")
                 { error = "SNDINFO $random requires a name and choice block."; return false; }
                 var owner = Unquote(tokens[index + 1]);
+                if (IsRandomCompatibility(owner))
+                { error = "Redefining a random player compatibility sound is unsupported."; return false; }
+                if (IsPlayerReserve(owner))
+                { error = "Sounds that are reserved for players cannot be reassigned."; return false; }
                 settings.TryAdd(owner, new SndInfoSoundSettings(PitchMask: currentPitchMask));
                 index += 3;
                 var choices = new List<string>();
@@ -173,6 +271,28 @@ public static class SndInfoMapMusicParser
                 }
                 if (index >= tokens.Count) { error = "Unterminated SNDINFO random group."; return false; }
                 index++;
+                if (compatibility.TryGetValue(owner, out var capturedTarget))
+                {
+                    if (capturedTarget.Length == 0)
+                    { error = "Silent-target random compatibility replacement is unsupported."; return false; }
+                    // S_AddSound clears the captured target, but SI_Random changes the compatibility owner itself.
+                    sounds[capturedTarget] = "";
+                    aliases.Remove(capturedTarget); groups.Remove(capturedTarget);
+                    ResetInheritedLimit(settings, capturedTarget);
+                    if (choices.Count == 1)
+                    {
+                        aliases[owner] = choices[0];
+                        compatibility[owner] = choices[0];
+                        settings[owner] = settings[owner] with { NearLimit = -1 };
+                    }
+                    else if (choices.Count > 1)
+                    {
+                        aliases.Remove(owner); sounds.Remove(owner);
+                        groups[owner] = choices.AsReadOnly();
+                        settings[owner] = settings[owner] with { NearLimit = -1 };
+                    }
+                    continue;
+                }
                 sounds.Remove(owner); aliases.Remove(owner); groups.Remove(owner);
                 ResetInheritedLimit(settings, owner);
                 if (choices.Count == 0) sounds[owner] = "";
@@ -187,6 +307,15 @@ public static class SndInfoMapMusicParser
                     || tokens[index + 1] == "=" || tokens[index + 2] == "=")
                 { error = "SNDINFO $alias requires a name and target."; return false; }
                 var name = Unquote(tokens[index + 1]);
+                if (IsRandomCompatibility(name))
+                { error = "Redefining a random player compatibility sound is unsupported."; return false; }
+                if (IsPlayerReserve(name))
+                { error = "Sounds that are reserved for players cannot be reassigned."; return false; }
+                if (compatibility.TryGetValue(name, out var aliasTarget))
+                {
+                    if (aliasTarget.Length == 0) { error = "Replacing a silent player compatibility target is unsupported."; return false; }
+                    name = aliasTarget;
+                }
                 settings.TryAdd(name, new SndInfoSoundSettings(PitchMask: currentPitchMask));
                 ResetInheritedLimit(settings, name);
                 settings[name] = (settings.GetValueOrDefault(name) ?? new SndInfoSoundSettings()) with { NearLimit = -1 };
@@ -208,6 +337,15 @@ public static class SndInfoMapMusicParser
                 if (index >= tokens.Count || tokens[index].StartsWith('$') || tokens[index] == "=")
                 { error = "SNDINFO sound mapping is missing a resource."; return false; }
                 name = Unquote(name);
+                if (IsRandomCompatibility(name))
+                { error = "Redefining a random player compatibility sound is unsupported."; return false; }
+                if (IsPlayerReserve(name))
+                { error = "Sounds that are reserved for players cannot be reassigned."; return false; }
+                if (compatibility.TryGetValue(name, out var resourceTarget))
+                {
+                    if (resourceTarget.Length == 0) { error = "Replacing a silent player compatibility target is unsupported."; return false; }
+                    name = resourceTarget;
+                }
                 settings.TryAdd(name, new SndInfoSoundSettings(PitchMask: currentPitchMask));
                 ResetInheritedLimit(settings, name);
                 sounds[name] = Unquote(tokens[index++]);
@@ -223,7 +361,7 @@ public static class SndInfoMapMusicParser
             if (number != 0) result[number] = resource;
             index += 3;
         }
-        data = new(result, sounds) { Aliases = aliases, RandomGroups = groups, Settings = settings, CurrentPitchMask = currentPitchMask, GlobalRolloff = globalRolloff };
+        data = new(result, sounds) { PlayerReservedSlots = reserves.ToArray(), PlayerCompatibilityTargets = compatibility, PlayerSounds = playerSounds.ToArray(), Aliases = aliases, RandomGroups = groups, Settings = settings, CurrentPitchMask = currentPitchMask, GlobalRolloff = globalRolloff };
         return true;
     }
 

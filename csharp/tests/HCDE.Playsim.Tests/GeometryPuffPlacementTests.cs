@@ -21,7 +21,7 @@ public class GeometryPuffPlacementTests
             puffTid: 42, absoluteAngles: true));
         var puff = Assert.Single(sim.Actors.OfType<PuffActor>());
         Assert.Equal(travel * 64 - aim * 4, puff.X.ToDouble(), 5);
-        Assert.Equal(0, puff.Y.ToDouble(), 5); Assert.Equal(28, puff.Z.ToDouble(), 5);
+        Assert.Equal(0, puff.Y.ToDouble(), 5); Assert.Equal(28 + 15 / 64.0, puff.Z.ToDouble(), 5);
         Assert.Equal(1, puff.Radius.Raw); Assert.Equal(42, puff.ThingId);
         Assert.Equal(93, sim.Level.Lines[0].Health);
     }
@@ -37,7 +37,7 @@ public class GeometryPuffPlacementTests
         AcsLineAttack.Attack(sim, source, 0, unchecked((int)pitch.Raw), 7, "None", 256, puffTid: 42);
         var puff = Assert.Single(sim.Actors.OfType<PuffActor>());
         Assert.Equal(hit.X - 4 / Math.Sqrt(2), puff.X.ToDouble(), 4);
-        Assert.Equal(hit.Z + (ceiling ? -1 : 1) * 4 / Math.Sqrt(2), puff.Z.ToDouble(), 4);
+        Assert.Equal(hit.Z + (ceiling ? -1 : 1) * 4 / Math.Sqrt(2) + 15 / 64.0, puff.Z.ToDouble(), 4);
         Assert.Equal(1, puff.Radius.Raw); Assert.Equal(42, puff.ThingId);
     }
 
@@ -52,6 +52,7 @@ public class GeometryPuffPlacementTests
         Assert.True(hit.Hit); Assert.Same(sim.Level.Lines[0], hit.Wall);
         AcsLineAttack.Attack(sim, source, 0, 0, 7, "None", 128, puffTid);
         Assert.Empty(sim.Actors.OfType<PuffActor>()); Assert.Equal(count, sim.Actors.Count);
+        Assert.Null(sim.CaptureState().PuffRandomState);
         Assert.Equal(random, sim.CombatRandomState); Assert.Equal(100, sim.Level.Lines[0].Health);
     }
 

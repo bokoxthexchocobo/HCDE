@@ -85,6 +85,27 @@ public class SpecialMissileHitTests
         Assert.Equal(canHarm && shootable ? 993 : 1000, target.Health);
     }
 
+    [Theory]
+    [InlineData(false, false)]
+    [InlineData(true, false)]
+    [InlineData(false, true)]
+    [InlineData(true, true)]
+    public void MovementCapturesRippingButDamageUsesCurrentFlag(bool initialRip, bool dontRip)
+    {
+        var (sim, missile, target) = Setup();
+        missile.Rip = initialRip; target.DontRip = dontRip;
+        missile.ActorSounds = new Dictionary<ActorSoundType, string> { [ActorSoundType.Rip] = "custom/rip" };
+        missile.SpecialMissileHitFunction = (self, _) => { self.Rip = !initialRip; return -1; };
+        missile.DamageExpression = _ => 7;
+        sim.DrainSoundRequests();
+        missile.Tick();
+        Assert.Equal(!initialRip || dontRip, missile.Destroyed);
+        Assert.Equal(!initialRip, missile.Rip); Assert.Equal(993, target.Health);
+        var sounds = sim.DrainSoundRequests();
+        if (!initialRip) Assert.Equal("custom/rip", Assert.Single(sounds).Sound);
+        else Assert.Empty(sounds);
+    }
+
     private static (AuthoritySimulation, ProjectileActor, Actor) Setup()
     {
         var sim = AuthoritySimulation.Start(new PlayLevel { Sectors = [new LevelSector { CeilingHeight = 128 }] });

@@ -43,6 +43,16 @@ internal static class ActorRaise
         corpse.DeathDamageType = null;
         corpse.Killed = false;
         corpse.Corpse = false;
+        corpse.Vulnerable = false;
+        corpse.MVisBlocked = false;
+        corpse.SeeInvisible = false;
+        corpse.NoBlood = corpse.DefaultNoBlood;
+        corpse.IsPuff = corpse.DefaultIsPuff;
+        corpse.DontCorpse = false;
+        corpse.DontFall = corpse.ClassDoomEdNum == 3006;
+        corpse.FullVolumeDeath = corpse.DefaultFullVolumeDeath;
+        corpse.FullVolumeSee = corpse.DefaultFullVolumeSee;
+        corpse.FullVolumeActive = false;
         var collisionFlags = corpse.ResurrectionCollisionFlags ?? 3;
         corpse.Solid = (collisionFlags & 1) != 0;
         corpse.Shootable = (collisionFlags & 2) != 0;
@@ -50,6 +60,9 @@ internal static class ActorRaise
         corpse.NoSector = (collisionFlags & 128) != 0;
         corpse.CanPass = (collisionFlags & 256) != 0;
         corpse.DontOverlap = false;
+        corpse.ExplodeCount = false;
+        corpse.SkyExplode = false;
+        corpse.HitTarget = corpse.HitMaster = corpse.HitTracer = false;
         corpse.NoBlockMonsters = (collisionFlags & 8) != 0;
         corpse.Dropped = (collisionFlags & 16) != 0;
         corpse.IsMonster = (collisionFlags & 32) != 0;
@@ -58,7 +71,7 @@ internal static class ActorRaise
         corpse.Invulnerable = (defenseFlags & 1) != 0;
         corpse.Dormant = (defenseFlags & 2) != 0;
         corpse.NoRadiusDamage = (defenseFlags & 4) != 0;
-        corpse.Friendly = (defenseFlags & 8) != 0 || corpse.SpawnFriendly;
+        corpse.Friendly = corpse.DefaultFriendly;
         corpse.Ambush = (defenseFlags & 16) != 0;
         corpse.Shadow = corpse.DefaultShadow;
         corpse.CantSeek = false;
@@ -74,6 +87,9 @@ internal static class ActorRaise
         corpse.CanSlide = (movementFlags & 8) != 0;
         corpse.AllowDropOff = (movementFlags & 16) != 0;
         corpse.JustHit = false;
+        corpse.JustAttacked = false;
+        corpse.InCombat = false;
+        corpse.NoSplashAlert = false;
         corpse.IceCorpse = false;
         corpse.Shattering = false;
         corpse.Buddha = false;
@@ -103,9 +119,13 @@ internal static class ActorRaise
         corpse.ThruSpecies = false;
         corpse.NoTarget = false;
         corpse.NeverTarget = false;
+        corpse.SeeFriendlyMonsters = false;
         corpse.NoTargetSwitch = false;
         corpse.QuickToRetaliate = false;
         corpse.NoHatePlayers = false;
+        corpse.NoSightCheck = false;
+        corpse.HuntPlayers = false;
+        corpse.ChaseGoal = false;
         corpse.NoTelefrag = false;
         corpse.AlwaysTelefrag = false;
         corpse.DontBlast = false;
@@ -144,6 +164,15 @@ internal static class ActorRaise
         corpse.ForceInfighting = false;
         corpse.InScrollSector = false;
         corpse.DontDrain = false;
+        corpse.SetTargetPointer(null);
+        corpse.StoredTargetId = null;
+        if (corpse is PlayerPawn player)
+        {
+            player.PoisonCount = 0;
+            player.PoisonSourceId = null;
+            player.PoisonDamageType = null;
+            player.PoisonPainType = null;
+        }
         corpse.Brain?.Revive(corpse);
         corpse.LastDamageSourceId = null;
         corpse.VelocityZ = verticalVelocity;

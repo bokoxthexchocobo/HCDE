@@ -10,8 +10,8 @@ public static class ActorSpecialActions
 
     public static bool ActivateSpecial(AuthoritySimulation sim, Actor thing, Actor? trigger, bool death = false)
     {
-        if ((thing.ActivationType & 2) != 0) thing.Brain?.SetSpecialTarget(trigger);
-        if ((thing.ActivationType & 4) != 0 && trigger != null) trigger.Brain?.SetSpecialTarget(thing);
+        if ((thing.ActivationType & 2) != 0) thing.SetTargetPointer(trigger);
+        if ((thing.ActivationType & 4) != 0 && trigger != null) trigger.SetTargetPointer(thing);
         var result = false;
         if (!death && (thing.ActivationType & (256 | 512 | 1024)) != 0)
         {
@@ -42,6 +42,9 @@ public static class ActorSpecialActions
     private static bool ExecuteSpecial(AuthoritySimulation sim, Actor? trigger, int special, int[] args)
     {
         return ThingStop.ExecuteSpecial(sim, special, trigger, args[0])
+            ?? ThingHate.ExecuteSpecial(sim, special, trigger, args[0], args[1], args[2])
+            ?? NoiseAlertSpecial.ExecuteSpecial(sim, special, trigger, args[0], args[1])
+            ?? ThingSetGoal.ExecuteSpecial(sim, special, args[0], args[1], args[2], args[3])
             ?? ThingThrust.ExecuteSpecial(sim, special, trigger, args[0], args[1], args[2], args[3])
             ?? ThingThrustZ.ExecuteSpecial(sim, special, trigger, args[0], args[1], args[2], args[3])
             ?? ThingSetSpecial.Execute(sim, special, trigger, args[0], args[1], args[2], args[3], args[4])

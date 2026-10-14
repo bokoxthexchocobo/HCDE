@@ -3,6 +3,48 @@ namespace HCDE.MapLoader;
 /// <summary>Resolves represented logical sound mappings without loading or playing audio.</summary>
 public static class SoundResourceResolver
 {
+    public static bool TryResolvePlayerSound(PlayLevel level, string sound, string className,
+        out string resolved, out string? error, int gender = 0, Func<string, bool>? isAvailable = null)
+    {
+        if (gender is < 0 or > 2) throw new ArgumentOutOfRangeException(nameof(gender));
+        resolved = sound; error = null;
+        var definitions = level.PlayerSounds;
+        if (definitions.Count == 0) return true;
+        var visited = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        while (true)
+        {
+            var slot = resolved;
+            if (!definitions.Any(p => p.Slot.Equals(slot, StringComparison.OrdinalIgnoreCase))) return true;
+            if (!visited.Add(slot)) { error = "sound-player-alias-cycle"; return false; }
+            HCDE.Gamedata.SndInfoPlayerSound? Find(string name)
+            {
+                var entries = definitions.Where(p => p.ClassName.Equals(name, StringComparison.OrdinalIgnoreCase)).ToArray();
+                if (entries.Length == 0) return null;
+                var selectedGender = entries.Any(p => p.Gender == gender) ? gender : entries.Min(p => p.Gender);
+                bool Matches(HCDE.Gamedata.SndInfoPlayerSound p) => p.Slot.Equals(slot, StringComparison.OrdinalIgnoreCase)
+                    && (isAvailable?.Invoke(p.Target) ?? true);
+                return entries.FirstOrDefault(p => p.Gender == selectedGender && Matches(p))
+                    ?? (selectedGender != 0 ? entries.FirstOrDefault(p => p.Gender == 0 && Matches(p)) : null);
+            }
+            var definition = Find(className) ?? Find(definitions[0].ClassName);
+            if (definition is null) { resolved = ""; return true; }
+            resolved = definition.Target;
+        }
+    }
+
+    /// <summary>Native player lookup considers linked sounds available without picking random replacements.</summary>
+    public static bool IsPlayerSoundAvailable(PlayLevel level, string target, IReadOnlySet<string> resources)
+    {
+        if (TryGetNamedValue(level.SoundAliases, target, out _)
+            || TryGetNamedValue(level.RandomSoundGroups, target, out _)
+            || level.PlayerSounds.Any(p => p.Slot.Equals(target, StringComparison.OrdinalIgnoreCase))) return true;
+        if (!TryGetNamedValue(level.SoundDefinitions, target, out var resource)) return false;
+        // DSEMPTY is intentionally silent. Unsupported resource paths must reach the decoder's explicit error.
+        return resource.Equals("DSEMPTY", StringComparison.OrdinalIgnoreCase)
+            || resource.Length > 8 || resource.Contains('/') || resource.Contains('\\')
+            || resources.Contains(resource);
+    }
+
     private static bool TryGetNamedValue<T>(IReadOnlyDictionary<string, T> values, string name, out T value)
     {
         if (values.TryGetValue(name, out value!)) return true;
@@ -116,7 +158,8 @@ public static class SoundResourceResolver
         => TryResolveNamed(level, sound, nextRandom, out resource, out _, out error);
 
     public static bool TryResolveNamed(PlayLevel level, string sound, Func<int>? nextRandom,
-        out string resource, out string resolvedSound, out string? error, Action<string>? visitSound = null)
+        out string resource, out string resolvedSound, out string? error, Action<string>? visitSound = null,
+        string? playerSoundClass = null, int playerGender = 0, Func<string, bool>? playerSoundAvailable = null)
     {
         resource = "";
         resolvedSound = "";
@@ -134,6 +177,14 @@ public static class SoundResourceResolver
             }
             // Native PickReplacement skips consecutive random headers in one resolution step.
             if (!selectedByRandom || !TryGetNamedValue(level.RandomSoundGroups, current, out _)) visitSound?.Invoke(current);
+            if (level.PlayerSounds.Any(p => p.Slot.Equals(current, StringComparison.OrdinalIgnoreCase)))
+            {
+                if (!TryResolvePlayerSound(level, current, playerSoundClass ?? "player", out current, out error,
+                    playerGender, playerSoundAvailable)) return false;
+                if (current.Length == 0) return true;
+                selectedByRandom = false;
+                continue;
+            }
             if (TryGetNamedValue(level.SoundAliases, current, out var target))
             {
                 current = target;

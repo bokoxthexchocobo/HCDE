@@ -18,7 +18,7 @@ public class LostSoulAttackSaveTests
         Assert.Equal(charging, skull.Brain!.Charging);
         var saved = skull.Brain.CaptureLostSoulAttack(); Assert.NotNull(saved);
         var bytes = SimSavegame.Write(sim);
-        Assert.Equal(143, BinaryPrimitives.ReadUInt16LittleEndian(bytes.AsSpan(4)));
+        Assert.True(ArchiveLayerFixture.TrailerStart(bytes, 143) >= 16);
         for (var i = 0; i < 12; i++) ActorChaseActions.ExtChase(skull, false, true, playActive: false);
         Assert.True(skull.Brain.Charging);
         var expected = skull.Brain.CaptureLostSoulAttack();
@@ -35,9 +35,9 @@ public class LostSoulAttackSaveTests
         Assert.Null(skull.Brain.CaptureLostSoulAttack());
         Assert.False(skull.Brain.Charging);
         Assert.Equal(0, skull.VelocityX.Raw);
-        var size = BinaryPrimitives.ReadInt32LittleEndian(bytes.AsSpan(bytes.Length - 4));
+        var start = ArchiveLayerFixture.TrailerStart(bytes, 143);
         var index = sim.CaptureState().Actors.FindIndex(a => a.Id == skull.Id);
-        BinaryPrimitives.WriteInt32LittleEndian(bytes.AsSpan(bytes.Length - size + 8 + index * 24 + 4), 11);
+        BinaryPrimitives.WriteInt32LittleEndian(bytes.AsSpan(start + 8 + index * 24 + 4), 11);
         Assert.False(SimSavegame.TryRead(bytes, out _, out var error));
         Assert.Equal("save-lostsoulattack-state", error);
     }

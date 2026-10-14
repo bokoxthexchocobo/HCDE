@@ -19,9 +19,11 @@ public class UdmfActorSpawnHealthTests
     }
 
     [Fact]
-    public void ZeroHealthExplicitlyReportsUnconvertedDelayedDeath()
+    public void ZeroHealthDefersDeathUntilFirstTick()
     {
-        Assert.Throws<NotSupportedException>(() => AuthoritySimulation.Start(new PlayLevel
-        { Sectors = [new LevelSector { CeilingHeight = 128 }], Things = [new LevelThing { Type = 3004, Health = 0 }] }));
+        var sim = AuthoritySimulation.Start(new PlayLevel
+        { Sectors = [new LevelSector { CeilingHeight = 128 }], Things = [new LevelThing { Type = 3004, Health = 0 }] });
+        var actor = sim.Actors.Single(); Assert.Equal(0, actor.Health); Assert.Equal(0, actor.DeathCount);
+        sim.Tick(); Assert.Equal(1, actor.DeathCount); Assert.True(actor.Killed);
     }
 }

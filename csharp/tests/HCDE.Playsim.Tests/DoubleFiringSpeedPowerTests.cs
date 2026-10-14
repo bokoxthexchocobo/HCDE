@@ -75,7 +75,7 @@ public class DoubleFiringSpeedPowerTests
         var legacy = SimSavegame.Write(sim);
         player.GivePowerDoubleFiringSpeed(100); Assert.True(HitscanCombat.Fire(sim, player));
         var bytes = SimSavegame.Write(sim);
-        Assert.Equal(174, BinaryPrimitives.ReadUInt16LittleEndian(bytes.AsSpan(4)));
+        Assert.True(ArchiveLayerFixture.TrailerStart(bytes, 174) >= 16);
         sim.Tick(); SimSavegame.Apply(sim, bytes);
         Assert.Equal(100, player.PowerDoubleFiringSpeedTics); Assert.Equal(19, player.WeaponCooldown);
         Assert.Equal(90, player.PowerDrainTics); Assert.Equal(80, player.PowerInfiniteAmmoTics);

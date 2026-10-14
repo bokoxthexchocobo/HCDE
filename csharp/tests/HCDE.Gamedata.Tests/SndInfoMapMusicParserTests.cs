@@ -3,6 +3,33 @@ namespace HCDE.Gamedata.Tests;
 public class SndInfoMapMusicParserTests
 {
     [Theory]
+    [InlineData("$registered")]
+    [InlineData("$EDFOVERRIDE")]
+    [InlineData("$archivepath sounds/legacy")]
+    [InlineData("$archivepath \"legacy sounds\"")]
+    public void LegacyDirectivesPreserveMappingsAndSubsequentParsing(string directive)
+    {
+        Assert.True(SndInfoMapMusicParser.TryParseData("$pitchshiftrange 3 first ORIGINAL", out var first, out var error), error);
+        Assert.True(SndInfoMapMusicParser.TryParseData(directive + "\nsecond NEXT $map 1 TRACK", out var next, out error, first), error);
+        Assert.Equal("ORIGINAL", next.Sounds["first"]);
+        Assert.Equal("NEXT", next.Sounds["second"]);
+        Assert.Equal("TRACK", next.MapMusic[1]);
+        Assert.Equal(7, next.Settings["second"].PitchMask);
+        Assert.Single(first.Sounds);
+    }
+
+    [Theory]
+    [InlineData("$archivepath")]
+    [InlineData("$archivepath $registered")]
+    [InlineData("$archivepath {")]
+    [InlineData("$archivepath =")]
+    public void MissingLegacyArchivePathRejectsExplicitly(string text)
+    {
+        Assert.False(SndInfoMapMusicParser.TryParseData(text, out _, out var error));
+        Assert.Equal("SNDINFO archive path requires a path.", error);
+    }
+
+    [Theory]
     [InlineData("", SoundRolloffType.Doom)]
     [InlineData("linear", SoundRolloffType.Linear)]
     [InlineData("log", SoundRolloffType.Log)]

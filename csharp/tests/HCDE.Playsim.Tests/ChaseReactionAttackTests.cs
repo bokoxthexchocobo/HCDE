@@ -62,6 +62,7 @@ public class ChaseReactionAttackTests
         var hunter = new Actor { Simulation = sim, Brain = new MonsterBrain(attack), ReactionTime = 0,
             MeleeRange = Fixed.FromInt(64) };
         hunter.States.Configure(hunter, [new(-1, 0)], 0);
+        hunter.SetTargetPointer(sim.Players.Single());
         return (sim, hunter, sim.Players.Single());
     }
 }

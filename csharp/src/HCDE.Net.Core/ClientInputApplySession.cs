@@ -76,7 +76,9 @@ public static class ClientInputApplySession
 
         clientState.SequenceAck = (int)header.SequenceAck;
         clientState.ConsistencyAck = (int)header.ConsistencyAck;
-        result = new ClientInputApplyResult(commandsApplied, missingSequence, missingConsistency, inputGapResynced);
+        var viewTicRecorded = sink is IClientInputViewTicSink viewSink
+            && viewSink.TryApplyClientViewTic(clientSlot, header.SequenceAck);
+        result = new ClientInputApplyResult(commandsApplied, missingSequence, missingConsistency, inputGapResynced, viewTicRecorded);
         return true;
     }
 

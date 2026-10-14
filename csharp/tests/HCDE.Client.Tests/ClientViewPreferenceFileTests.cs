@@ -22,11 +22,13 @@ public sealed class ClientViewPreferenceFileTests : IDisposable
             Assert.Equal(new ClientViewPreferences(), host.CaptureViewPreferences());
             host.BloodFadeScalar = 0.25; host.SmoothPain = true; host.PainSmoothStrength = 0.9f;
             host.PoisonPaletteFlash = true;
+            host.PickupFadeScalar = 0.4;
         }
         using var next = new ClientHost(sim, viewPreferencesPath: SettingsPath);
         Assert.Equal(0.25, next.BloodFadeScalar); Assert.True(next.SmoothPain);
         Assert.Equal(0.9f, next.PainSmoothStrength);
         Assert.True(next.PoisonPaletteFlash);
+        Assert.Equal(0.4, next.PickupFadeScalar);
         Assert.Equal(before, SimSavegame.Write(sim));
         Assert.Single(Directory.GetFiles(_directory));
     }

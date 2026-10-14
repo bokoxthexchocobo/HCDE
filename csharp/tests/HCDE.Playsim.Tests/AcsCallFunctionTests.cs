@@ -587,7 +587,7 @@ public class AcsCallFunctionTests
             AcsCallFunctions.LineAttack, 4, out var hit));
         Assert.Equal(0, hit);
         Assert.True(imp.Health < health);
-        Assert.Contains(sim.Actors, actor => actor is PuffActor);
+        Assert.DoesNotContain(sim.Actors, actor => actor is PuffActor);
     }
 
     [Fact]

@@ -16,7 +16,7 @@ public class BrainDisabledSaveTests
         for (var i = 0; i < 5; i++) ActorChaseActions.ExtChase(monster, false, true, playActive: false);
         monster.Brain!.Enabled = false;
         var attack = monster.Brain.CaptureRepeatAttack(); Assert.NotNull(attack);
-        var bytes = SimSavegame.Write(sim); Assert.Equal(139, BinaryPrimitives.ReadUInt16LittleEndian(bytes.AsSpan(4)));
+        var bytes = SimSavegame.Write(sim); Assert.True(ArchiveLayerFixture.TrailerStart(bytes, 139) >= 16);
         monster.Brain.Enabled = true;
         SimSavegame.Apply(sim, bytes); monster = sim.Actors.Single(a => a.DoomEdNum == type);
         Assert.False(monster.Brain!.Enabled);

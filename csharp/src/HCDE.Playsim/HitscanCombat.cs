@@ -14,41 +14,48 @@ public static class HitscanCombat
         if (definition == null || !player.Inventory.Owns(weapon)) return false;
         if (definition.Ammo is { } ammo && !player.Inventory.TrySpendAmmo(ammo, definition.AmmoUse)) return false;
         player.WeaponCooldown = definition.RefireTics;
-        SoundPropagation.Alert(sim, player);
+        ActorNoiseActions.WeaponAlert(player);
+        if (weapon == WeaponKind.Chainsaw)
+        {
+            ChainsawActions.Attack(player);
+            return true;
+        }
         if (definition.Projectile is { } projectile)
         {
             sim.SpawnProjectile(player, projectile);
             return true;
         }
-        var melee = weapon is WeaponKind.Fist or WeaponKind.Chainsaw;
-        var range = melee ? player.MeleeRange.ToDouble() + 20
-            + (weapon == WeaponKind.Chainsaw ? 1.0 / Fixed.Unit : 0) : HitscanRange;
+        var melee = weapon == WeaponKind.Fist;
+        var range = melee ? player.MeleeRange.ToDouble() + 20 : HitscanRange;
         for (var pellet = 0; pellet < definition.Pellets; pellet++)
         {
-            // GunShot / A_FireShotgun2 / A_Punch / A_Saw roll damage before spread.
-            var damage = melee ? 2 * (1 + (int)(sim.NextCombatRandom() % 10))
+            // Native weapon actions roll damage before spread.
+            var damage = melee ? sim.NextPunchDamage()
                 : 5 * (1 + (int)(sim.NextCombatRandom() % 3));
-            var spreadScale = weapon == WeaponKind.Chainsaw ? 1 : 255.0 / 256;
-            var spread = definition.SpreadDegrees == 0 ? 0 : sim.NextCombatSpread() * definition.SpreadDegrees * spreadScale;
+            if (melee && player.HasPowerStrength) damage = unchecked(damage * 10);
+            var spread = melee ? sim.NextPunchSpread()
+                : definition.SpreadDegrees == 0 ? 0 : sim.NextCombatSpread() * definition.SpreadDegrees * (255.0 / 256);
             var pitchSpread = weapon == WeaponKind.SuperShotgun ? sim.NextCombatSpread() * (7.097 * 255 / 256) : 0;
-            var hit = CombatTrace.TraceLineAttack(sim, player,
-                BamAngle.FromDegrees(player.Angle.ToDegrees() + spread),
-                BamAngle.FromDegrees(player.PitchDegrees + pitchSpread), range);
+            var angle = BamAngle.FromDegrees(player.Angle.ToDegrees() + spread);
+            var pitch = BamAngle.FromDegrees(player.PitchDegrees + pitchSpread);
+            var hit = !melee && sim.Rewind.TryTraceHistoricalHitscan(sim, player, angle, pitch, range, out var historicalHit)
+                ? historicalHit : CombatTrace.TraceLineAttack(sim, player, angle, pitch, range);
             if (hit.Victim is { } target)
             {
                 var facing = BamAngle.FromDegrees(player.AngleTo(target));
-                ActorDamage.Apply(target, damage, player, damageType: melee ? "Melee" : "Hitscan", inflictor: player);
-                if (weapon == WeaponKind.Fist) player.Angle = facing;
-                else if (weapon == WeaponKind.Chainsaw)
+                LineAttackImpact.ApplyActorDamage(sim, player, target, hit, angle, damage,
+                    melee ? "Melee" : "Hitscan", melee: weapon == WeaponKind.Fist);
+                if (weapon == WeaponKind.Fist)
                 {
-                    var difference = Actor.Normalize180(facing.ToDegrees() - player.Angle.ToDegrees());
-                    var angle = difference < 0
-                        ? difference < -4.5 ? facing.ToDegrees() + 90.0 / 21 : player.Angle.ToDegrees() - 4.5
-                        : difference > 4.5 ? facing.ToDegrees() - 90.0 / 21 : player.Angle.ToDegrees() + 4.5;
-                    player.Angle = BamAngle.FromDegrees(angle);
+                    ActorSoundActions.StartSound(player, "*fist", channel: 1);
+                    player.Angle = facing;
                 }
             }
-            else GeometryLineAttack.Apply(sim, hit, damage);
+            else
+            {
+                GeometryLineAttack.Apply(sim, hit, damage);
+                LineAttackImpact.SpawnGeometryPuff(sim, player, hit, angle, pitch, melee: weapon == WeaponKind.Fist);
+            }
         }
         return true;
     }

@@ -13,7 +13,7 @@ public class PainElementalPatchedSoulTests
         var sim = Room(patch); var parent = sim.Actors.Single(a => a.DoomEdNum == 71);
         var soul = sim.SpawnLostSoul(parent, sim.Players.Single(), 0)!;
         Assert.NotNull(soul); Assert.Equal(editorId, soul.DoomEdNum);
-        Assert.Equal(235, soul.Health); Assert.Equal(235, soul.ResurrectionHealth); Assert.Equal(-235, soul.GibHealth);
+        Assert.Equal(235, soul.Health); Assert.Equal(235, soul.ResurrectionHealth); Assert.Equal(-235, soul.GetGibHealth());
         Assert.Equal(12, soul.Radius.ToDouble()); Assert.Equal(40, soul.Height.ToDouble());
         Assert.Equal(3, soul.ChaseSpeed); Assert.Equal(45, soul.PainChance);
         Assert.Equal(123, soul.Mass); Assert.Equal(9, soul.Damage); Assert.Equal(17, soul.ReactionTime);

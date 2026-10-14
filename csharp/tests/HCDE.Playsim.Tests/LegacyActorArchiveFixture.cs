@@ -10,6 +10,7 @@ internal static class LegacyActorArchiveFixture
     {
         state.Lights = null;
         state.JumpRandomState = null;
+        state.ActorDieRandomState = null;
         state.LightAnimation = null;
         state.ChaseRandomState = null;
         state.MissileDamageRandomState = null;

@@ -5,6 +5,28 @@ namespace HCDE.Playsim.Tests;
 public class SynchronizedStairTests
 {
     [Theory]
+    [InlineData(false, 0)]
+    [InlineData(true, 0)]
+    [InlineData(false, 4)]
+    [InlineData(true, 4)]
+    public void SignedUnevenStairSpeedSurvivesSavedContinuation(bool down, int reset)
+    {
+        var sim = Room(down ? -32 : 32);
+        Assert.True(Activate(sim, Trigger(down, reset: reset)));
+        Assert.Contains(sim.Motions, m => m.Speed < 0);
+        var saved = SimSavegame.Write(sim, true);
+        var floors = new List<double[]>();
+        for (var i = 0; i < 12; i++) { sim.Tick(); floors.Add([sim.FloorOf(0), sim.FloorOf(1), sim.FloorOf(2)]); }
+        var expected = SimSavegame.Write(sim, true);
+        SimSavegame.Apply(sim, saved);
+        for (var i = 0; i < 12; i++)
+        {
+            sim.Tick(); Assert.Equal(floors[i], new[] { sim.FloorOf(0), sim.FloorOf(1), sim.FloorOf(2) });
+        }
+        Assert.Equal(expected, SimSavegame.Write(sim, true));
+    }
+
+    [Theory]
     [InlineData(217, 1)]
     [InlineData(270, -1)]
     [InlineData(273, 1)]

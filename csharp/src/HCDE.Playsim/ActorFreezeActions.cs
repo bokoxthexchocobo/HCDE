@@ -12,7 +12,7 @@ public static class ActorFreezeActions
         actor.Solid = actor.Shootable = actor.IceCorpse = actor.Pushable = true;
         actor.CanSlide = true;
         actor.Height = actor.ResurrectionHeight ?? actor.Height;
-        if (actor is PlayerPawn player) player.DamageCount = 0;
+        if (actor is PlayerPawn player) { player.DamageCount = 0; player.BonusCount = 0; }
         sim.QueueSoundRequest(new SimulationSoundRequest(actor.Id, "misc/freeze", 4, 0, 1, false, 1, false), immediate: true);
         if (actor is not PlayerPawn && actor.IsMonster && actor.Special != 0)
         {

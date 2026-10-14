@@ -37,14 +37,31 @@ public static class PickupCatalog
     public const int SuperShotgun = 82;
     public const int Backpack = 8;
     public const int Megasphere = 83;
+    public const int Berserk = 2023;
 
     public static bool IsPickup(int doomEdNum, bool ravenHealth = false) => TryDescribe(doomEdNum, out _) || ravenHealth && doomEdNum == 32;
+    internal static string DefaultPickupSound(int doomEdNum, bool strifeHealth = false, bool ravenHealth = false)
+    {
+        if (ravenHealth && doomEdNum is 82 or 32) return "misc/p_pkup";
+        if (strifeHealth && doomEdNum is Stimpack or Medikit or Megasphere) return "misc/i_pkup";
+        if (doomEdNum is Soulsphere or Megasphere or Berserk) return "misc/p_pkup";
+        if (!TryDescribe(doomEdNum, out var gift)) return "misc/i_pkup";
+        return gift.Kind switch
+        {
+            GiftKind.Health => "misc/health_pkup",
+            GiftKind.ArmorBonus or GiftKind.GreenArmor or GiftKind.MegaArmor => "misc/armor_pkup",
+            GiftKind.Ammo => "misc/ammo_pkup",
+            GiftKind.Key => "misc/k_pkup",
+            GiftKind.Weapon => "misc/w_pkup",
+            _ => "misc/i_pkup",
+        };
+    }
     internal static WeaponKind PickupWeapon(int doomEdNum) =>
         TryDescribe(doomEdNum, out var gift) && gift.Kind == GiftKind.Weapon ? gift.Weapon : 0;
 
     /// <summary>Native Doom bonus and sphere defaults carry INVENTORY.ALWAYSPICKUP.</summary>
     internal static bool AlwaysPickup(int doomEdNum, bool strifeHealth = false) =>
-        !(strifeHealth && doomEdNum == Megasphere) && doomEdNum is HealthBonus or ArmorBonus or Soulsphere or Megasphere;
+        !(strifeHealth && doomEdNum == Megasphere) && doomEdNum is HealthBonus or ArmorBonus or Soulsphere or Megasphere or Berserk;
 
     /// <summary>Native Actor defaults, with Doom Backpack's height override.</summary>
     internal static Fixed HeightOf(int doomEdNum) => Fixed.FromInt(doomEdNum == Backpack ? 26 : 16);
@@ -99,6 +116,7 @@ public static class PickupCatalog
             "HEALTHBONUS" => HealthBonus,
             "SOULSPHERE" => Soulsphere,
             "MEGASPHERE" => Megasphere,
+            "BERSERK" => Berserk,
             "GREENARMOR" => GreenArmor,
             "BLUEARMOR" => MegaArmor,
             "ARMORBONUS" => ArmorBonus,
@@ -150,14 +168,14 @@ public static class PickupCatalog
         bool ignoreSkill = false,
         bool depleted = false,
         int pickupAmount = 0,
-        bool suppressWeaponAmmo = false)
+        bool suppressWeaponAmmo = false, int? healthOverride = null, int? autoUseOverride = null)
     {
         if (player.Simulation is { RavenHealthPickups: true } && doomEdNum is 82 or 32)
-            return player.Inventory.GiveHealthPickup(doomEdNum == 82 ? "ArtiHealth" : "ArtiSuperHealth", pickupAmount > 0 ? pickupAmount : 1);
+            return player.Inventory.GiveHealthPickup(doomEdNum == 82 ? "ArtiHealth" : "ArtiSuperHealth", pickupAmount > 0 ? pickupAmount : 1, healthOverride, autoUseOverride);
         if (player.Simulation is { StrifeHealthPickups: true })
         {
             var typeName = doomEdNum switch { Stimpack => "MedPatch", Medikit => "MedicalKit", Megasphere => "SurgeryKit", _ => null };
-            if (typeName is not null) return player.Inventory.GiveHealthPickup(typeName, pickupAmount > 0 ? pickupAmount : 1);
+            if (typeName is not null) return player.Inventory.GiveHealthPickup(typeName, pickupAmount > 0 ? pickupAmount : 1, healthOverride, autoUseOverride);
         }
         return TryGiveDoomClass(player, doomEdNum, ignoreSkill, depleted, pickupAmount, suppressWeaponAmmo);
     }
@@ -185,6 +203,7 @@ public static class PickupCatalog
         {
             GiftKind.Health => GiveHealth(player, giftAmount, gift.Maximum),
             GiftKind.Megasphere => GiveMegasphere(player),
+            GiftKind.Berserk => GiveBerserk(player),
             GiftKind.ArmorBonus => GiveArmorBonus(player.Inventory, armor, player.Simulation?.DehackedMaxArmor ?? 200),
             GiftKind.GreenArmor => GiveArmor(player.Inventory, armor, armorClass == 1 ? PlayerInventory.GreenSavePercent : PlayerInventory.MegaSavePercent, "GreenArmor"),
             GiftKind.MegaArmor => GiveArmor(player.Inventory, armor, armorClass == 1 ? PlayerInventory.GreenSavePercent : PlayerInventory.MegaSavePercent, "BlueArmor"),
@@ -272,6 +291,19 @@ public static class PickupCatalog
         return (gift.Amount, gift.Maximum);
     }
 
+    /// <summary>Native MaxHealth.TryPickup with MaxHealthBonus's default maximum.</summary>
+    internal static bool GiveMaxHealthBonus(Actor actor, int amount)
+    {
+        if (actor.Destroyed) return false;
+        var success = false;
+        if (actor is PlayerPawn player && player.BonusHealth < 50)
+        {
+            player.BonusHealth = Math.Min(unchecked(player.BonusHealth + amount), 50);
+            success = true;
+        }
+        return actor.GiveBody(amount, 50) || success;
+    }
+
     internal static bool GiveHealth(Actor actor, int amount)
     {
         if (actor is PlayerPawn player) return GiveHealth(player, amount);
@@ -314,7 +346,7 @@ public static class PickupCatalog
         return true;
     }
 
-    private static bool GiveArmorBonus(PlayerInventory inventory, int amount, int maximum)
+    internal static bool GiveArmorBonus(PlayerInventory inventory, int amount, int maximum)
     {
         // Native bonus Use consumes a nonpositive scaled grant without changing armor.
         amount = Math.Min(amount, maximum);
@@ -332,6 +364,15 @@ public static class PickupCatalog
         }
         inventory.Armor += Math.Min(amount, maximum - inventory.Armor);
         inventory.ArmorMaximum = Math.Max(inventory.ArmorMaximum, maximum);
+        return true;
+    }
+
+    private static bool GiveBerserk(PlayerPawn player)
+    {
+        if (player.IsDead || player.Destroyed) return false;
+        player.GivePowerStrength();
+        player.GiveBody(100);
+        ActorInventoryActions.SelectWeapon(player, "Fist");
         return true;
     }
 
@@ -422,6 +463,7 @@ public static class PickupCatalog
             Bfg => new Gift(GiftKind.Weapon, WeaponKind.Bfg, AmmoKind.Cells, 40),
             Backpack => new Gift(GiftKind.Backpack, 0, 0),
             Megasphere => new Gift(GiftKind.Megasphere, 1, 0),
+            Berserk => new Gift(GiftKind.Berserk, 1, 0),
             _ => default,
         };
         return gift.Kind != GiftKind.None;
@@ -439,6 +481,7 @@ public static class PickupCatalog
         Weapon,
         Backpack,
         Megasphere,
+        Berserk,
     }
 
     public enum KeyColor

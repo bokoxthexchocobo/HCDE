@@ -62,7 +62,7 @@ public class ActorFloatBobPhaseTests
 
     [Theory]
     [InlineData(-1)]
-    [InlineData(64)]
+    [InlineData(256)]
     public void InvalidMemoryRejectsRestoreBeforeMutation(int phase)
     {
         var sim = Room(); var actor = sim.AddBot(0, 0); var state = sim.CaptureState();

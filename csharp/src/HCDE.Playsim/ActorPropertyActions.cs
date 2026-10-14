@@ -6,6 +6,15 @@ public static class ActorPropertyActions
     public static void HideThing(Actor actor) => actor.Invisible = true;
     public static void UnhideThing(Actor actor) => actor.Invisible = false;
 
+    public static void RestoreRenderStyle(Actor actor)
+    {
+        actor.Shadow = actor.DefaultShadow;
+        // Represented Doom classes have no default GHOST flag.
+        actor.Ghost = false;
+        actor.RenderStyle = actor.DefaultRenderStyle;
+        actor.Alpha = actor.DefaultAlpha;
+    }
+
     public static void SetRenderStyle(Actor actor, double alpha, int mode)
     {
         if (!double.IsFinite(alpha)) throw new ArgumentOutOfRangeException(nameof(alpha));
@@ -99,12 +108,17 @@ public static class ActorPropertyActions
         if (source is not null && !source.Destroyed) CopySupportedFriendship(actor, source);
     }
 
-    internal static void CopySupportedFriendship(Actor actor, Actor source)
+    internal static void CopySupportedFriendship(Actor actor, Actor source, bool resetHealth = false)
     {
         actor.Friendly = source.Friendly;
         actor.FriendPlayer = source.FriendPlayer;
         actor.TidToHate = source.TidToHate;
+        actor.LastLookActorId = source.LastLookActorId;
+        actor.LastLookPlayerNumber = source.LastLookPlayerNumber;
         actor.NoHatePlayers = source.NoHatePlayers;
+        actor.NoSightCheck = source.NoSightCheck;
+        actor.HuntPlayers = source.HuntPlayers;
+        if (resetHealth) actor.RestoreHealth(actor.SpawnHealth());
     }
 
     public static void CheckTerrain(Actor actor)
@@ -222,6 +236,7 @@ public static class ActorPropertyActions
     public static void ClearTarget(Actor actor)
     {
         actor.SetTargetPointer(null);
+        actor.StoredTargetId = null;
         actor.Brain?.ClearActionTargets();
         actor.LastHeardTargetId = null;
         actor.HasTargetMemoryOverride = true;

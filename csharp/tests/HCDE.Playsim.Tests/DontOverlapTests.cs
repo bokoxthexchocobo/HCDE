@@ -78,7 +78,7 @@ public class DontOverlapTests
         var baseline = SimSavegame.Write(sim); var hash = sim.Checksum;
         actor.DontOverlap = true; actor.CanPass = false;
         var bytes = SimSavegame.Write(sim);
-        Assert.Equal(195, BinaryPrimitives.ReadUInt16LittleEndian(bytes.AsSpan(4)));
+        Assert.True(ArchiveLayerFixture.TrailerStart(bytes, 195) >= 16);
         SimSavegame.Apply(sim, bytes); Assert.True(actor.DontOverlap); Assert.False(actor.CanPass);
         Assert.Equal(bytes, SimSavegame.Write(sim)); Assert.NotEqual(hash, sim.Checksum);
         sim.Tick(); var next = SimSavegame.Write(sim);
@@ -92,8 +92,8 @@ public class DontOverlapTests
     {
         var sim = Room(); sim.AddBot(0, 0).DontOverlap = true;
         var bytes = SimSavegame.Write(sim);
-        var size = BinaryPrimitives.ReadInt32LittleEndian(bytes.AsSpan(bytes.Length - 4));
-        BinaryPrimitives.WriteInt32LittleEndian(bytes.AsSpan(bytes.Length - size + 8), 2);
+        var start = ArchiveLayerFixture.TrailerStart(bytes, 195);
+        BinaryPrimitives.WriteInt32LittleEndian(bytes.AsSpan(start + 8), 2);
         Assert.False(SimSavegame.TryRead(bytes, out _, out var error));
         Assert.Equal("save-dont-overlap-value", error);
     }

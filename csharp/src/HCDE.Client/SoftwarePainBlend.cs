@@ -10,7 +10,7 @@ public static class SoftwarePainBlend
      209,210,211,212,213,214,215,216,217,218,219,220,221,221,222,223,224,225,226,227,228,229,229,230,231,
      232,233,234,235,235,236,237];
 
-    public static void Apply(SoftwareFrame frame, int damageCount, uint painColor = 0xffff0000u, double fadeScalar = 1,
+    internal static int GetAlpha(int damageCount, uint painColor, double fadeScalar,
         bool smoothPain = false, float smoothStrength = 0.6f)
     {
         if (damageCount is < 0 or > 100) throw new ArgumentOutOfRangeException(nameof(damageCount));
@@ -27,6 +27,13 @@ public static class SoftwarePainBlend
             count = (int)(count * (scaled / linear));
         }
         var alpha = (int)Math.Min(175, count * fadeScalar);
+        return alpha;
+    }
+
+    public static void Apply(SoftwareFrame frame, int damageCount, uint painColor = 0xffff0000u, double fadeScalar = 1,
+        bool smoothPain = false, float smoothStrength = 0.6f)
+    {
+        var alpha = GetAlpha(damageCount, painColor, fadeScalar, smoothPain, smoothStrength);
         if (alpha == 0) return;
         var inverse = 255 - alpha;
         var red = (int)((painColor >> 16) & 255);

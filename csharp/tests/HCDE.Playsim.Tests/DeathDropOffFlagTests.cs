@@ -25,7 +25,7 @@ public class DeathDropOffFlagTests
         ActorDamage.Apply(actor, 1000);
         actor.States.Enter(actor, ActorStateMachine.Corpse);
         var bytes = SimSavegame.Write(sim);
-        Assert.Equal(126, BinaryPrimitives.ReadUInt16LittleEndian(bytes.AsSpan(4)));
+        Assert.Equal(227, BinaryPrimitives.ReadUInt16LittleEndian(bytes.AsSpan(4)));
         actor.AllowDropOff = false;
         SimSavegame.Apply(sim, bytes);
         Assert.True(actor.AllowDropOff);

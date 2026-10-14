@@ -85,6 +85,69 @@ public class ProjectileAutomaticSoundTests
         sim.Tick(); Assert.Equal("custom/impact", Assert.Single(sim.DrainSoundRequests()).Sound);
     }
 
+    [Theory]
+    [InlineData("", 0)]
+    [InlineData("None", 0)]
+    [InlineData("nOnE", 0)]
+    [InlineData("", 1)]
+    [InlineData("None", 1)]
+    [InlineData("nOnE", 1)]
+    [InlineData("", 2)]
+    [InlineData("None", 2)]
+    [InlineData("nOnE", 2)]
+    public void NoSoundSpawnIdentitySuppressesEveryOrigin(string sound, int origin)
+    {
+        var sim = Room(); var owner = sim.AddBot(-200, 0);
+        var missile = sim.SpawnProjectile(owner, ProjectileKind.Plasma); sim.DrainSoundRequests();
+        missile.ActorSounds = new Dictionary<ActorSoundType, string> { [ActorSoundType.See] = sound };
+        ActorSoundActions.PlaySpawnSound(missile, origin == 1 ? owner : null, spawnSoundSource: origin != 0);
+        Assert.Empty(sim.DrainSoundRequests());
+    }
+
+    [Theory]
+    [InlineData("")]
+    [InlineData("None")]
+    [InlineData("nOnE")]
+    public void NoSoundDeathIdentityRemainsSilentAfterSaveReplay(string sound)
+    {
+        var sim = Room(); var owner = sim.AddBot(-200, 0); owner.Brain = null;
+        var missile = sim.SpawnProjectile(owner, ProjectileKind.Plasma); sim.DrainSoundRequests();
+        missile.ActorSounds = new Dictionary<ActorSoundType, string> { [ActorSoundType.Death] = sound };
+        missile.Z = Fixed.FromInt(1); missile.VelocityZ = Fixed.FromInt(-10);
+        var bytes = SimSavegame.Write(sim);
+        for (var pass = 0; pass < 2; pass++)
+        {
+            missile.Tick(); Assert.True(missile.Destroyed); Assert.Empty(sim.DrainSoundRequests());
+            SimSavegame.Apply(sim, bytes);
+            missile = sim.Actors.OfType<ProjectileActor>().Single();
+        }
+    }
+
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public void DeathSoundIsQueuedAfterCleanupBeforeProjectileRemoval(bool fullVolume)
+    {
+        var sim = Room(); var owner = sim.AddBot(-200, 0); owner.Brain = null;
+        var missile = sim.SpawnProjectile(owner, ProjectileKind.Plasma); sim.DrainSoundRequests();
+        missile.FullVolumeDeath = fullVolume; missile.Shootable = true;
+        missile.Z = Fixed.FromInt(1); missile.VelocityZ = Fixed.FromInt(-10);
+        var calls = 0;
+        sim.SoundRequestsReady += () =>
+        {
+            Assert.False(missile.Destroyed); Assert.False(missile.Shootable);
+            Assert.Equal(0, missile.VelocityX.Raw); Assert.Equal(0, missile.VelocityY.Raw); Assert.Equal(0, missile.VelocityZ.Raw);
+            var sound = Assert.Single(sim.PendingSoundRequests);
+            Assert.Equal("weapons/plasmax", sound.Sound); Assert.Equal(fullVolume ? 0 : 1, sound.Attenuation);
+            Assert.NotNull(sound.DetachedOrigin); calls++;
+        };
+        missile.Tick();
+        Assert.Equal(1, calls); Assert.True(missile.Destroyed);
+        var origin = Assert.IsType<SimulationSoundOrigin>(Assert.Single(sim.DrainSoundRequests()).DetachedOrigin);
+        var position = missile.SoundPos();
+        Assert.Equal(position.X, origin.X); Assert.Equal(position.Y, origin.Y); Assert.Equal(position.Z, origin.Z);
+    }
+
     private static AuthoritySimulation Room(DehackedPatchResult? patch = null) => AuthoritySimulation.Start(new PlayLevel
     { Sectors = [new LevelSector { CeilingHeight = 128 }] }, dehacked: patch);
 }

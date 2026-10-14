@@ -85,11 +85,16 @@ public sealed class PlayerInventory
         return true;
     }
 
-    public bool GiveHealthPickup(string typeName, int amount)
+    public bool GiveHealthPickup(string typeName, int amount, int? healthOverride = null, int? autoUseOverride = null)
     {
         ArgumentException.ThrowIfNullOrEmpty(typeName);
         if (amount <= 0 || !HealthPickupCatalog.TryFind(typeName, out var definition, _owner?.Simulation?.DefaultInventoryMaximum ?? 25)) return false;
-        var index = _healthPickups.FindIndex(item => item.Health == definition.Health
+        var health = healthOverride ?? definition.Health;
+        var mode = autoUseOverride ?? definition.AutoUseMode;
+        if (mode is < 0 or > 3) throw new ArgumentOutOfRangeException(nameof(autoUseOverride));
+        if (health == 0 || health < 0 && mode != 0)
+            throw new ArgumentOutOfRangeException(nameof(healthOverride));
+        var index = _healthPickups.FindIndex(item => item.Health == health
             && string.Equals(item.TypeName, definition.TypeName, StringComparison.OrdinalIgnoreCase));
         if (index >= 0)
         {
@@ -99,7 +104,7 @@ public sealed class PlayerInventory
             _healthPickups[index] = item with { Amount = (int)Math.Min(unlimited ? int.MaxValue : definition.Maximum, (long)item.Amount + amount) };
         }
         else
-            _healthPickups.Insert(0, new(definition.Health, Math.Min(amount, definition.Maximum), definition.AutoUseMode, definition.TypeName));
+            _healthPickups.Insert(0, new(health, Math.Min(amount, definition.Maximum), mode, definition.TypeName));
         return true;
     }
 

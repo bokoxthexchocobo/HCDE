@@ -20,10 +20,10 @@ public class RepeatAttackArchiveTests
         sim.RestoreState(active);
         Assert.Equal(attack, sim.Actors.Single(a => a.DoomEdNum == 65).Brain!.CaptureRepeatAttack());
         var bytes = SimSavegame.Write(sim);
-        Assert.Equal(138, BinaryPrimitives.ReadUInt16LittleEndian(bytes.AsSpan(4)));
-        var size = BinaryPrimitives.ReadInt32LittleEndian(bytes.AsSpan(bytes.Length - 4));
+        Assert.True(ArchiveLayerFixture.TrailerStart(bytes, 138) >= 16);
+        var start = ArchiveLayerFixture.TrailerStart(bytes, 138);
         var index = active.Actors.FindIndex(a => a.Id == monster.Id);
-        BinaryPrimitives.WriteInt32LittleEndian(bytes.AsSpan(bytes.Length - size + 8 + index * 24 + 4), -1);
+        BinaryPrimitives.WriteInt32LittleEndian(bytes.AsSpan(start + 8 + index * 24 + 4), -1);
         Assert.False(SimSavegame.TryRead(bytes, out _, out var error));
         Assert.Equal("save-repeatattack-state", error);
         sim.RestoreState(legacy);

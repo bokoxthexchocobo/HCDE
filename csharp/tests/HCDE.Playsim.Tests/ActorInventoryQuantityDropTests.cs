@@ -24,14 +24,14 @@ public class ActorInventoryQuantityDropTests
     }
 
     [Fact]
-    public void HealthStackQuantityDropsWithoutUsingHealth()
+    public void HealthStackOverrideDropsOneWithoutUsingHealth()
     {
         var sim = Room(); var player = sim.Players.Single();
         player.Health = 30; ActorInventoryActions.SetInventory(player, "MedPatch", 5);
         Assert.True(ActorInventoryActions.DropInventory(player, "MedPatch", 3));
-        Assert.Equal(2, player.Inventory.CountHealthPickup("MedPatch"));
+        Assert.Equal(4, player.Inventory.CountHealthPickup("MedPatch"));
         Assert.Equal(30, player.Health);
-        Assert.Equal(3, Assert.Single(sim.Actors, actor => actor.PickupAmount == 3).PickupAmount);
+        Assert.Equal(1, Assert.Single(sim.Actors, actor => actor.DoomEdNum == PickupCatalog.Stimpack).PickupAmount);
     }
 
     [Fact]

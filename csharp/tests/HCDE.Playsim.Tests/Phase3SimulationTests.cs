@@ -206,11 +206,12 @@ public class Phase3SimulationTests
             Things = new[] { new LevelThing { Type = 1, X = 32, Y = 32 } },
         });
         sim.RewindEnabled = true;
+        sim.Rewind.CaptureIntervalSeconds = 0.25f;
         sim.QueueCommand(0, new PlayerCommand { ForwardMove = 8192 });
         sim.Tick();
         var first = sim.Players.Single().X.Raw;
         sim.QueueCommand(0, new PlayerCommand { ForwardMove = 8192 });
-        sim.Tick();
+        for (var i = 0; i < 8; i++) sim.Tick();
         Assert.NotEqual(first, sim.Players.Single().X.Raw);
         Assert.True(sim.Rewind.RestoreOldest(sim));
         Assert.Equal(first, sim.Players.Single().X.Raw);

@@ -167,6 +167,31 @@ public static class DedicatedServerCommandLine
                     options.GameModeName = gameModeName;
                     gameModeNameSpecified = true;
                     break;
+                case "--rewind":
+                    options.EnableRewind = true;
+                    break;
+                case "--lag-compensation":
+                    options.EnableLagCompensation = true;
+                    break;
+                case "--rewind-interval":
+                    if (!TryReadArg(args, ref i, out var intervalText)
+                        || !float.TryParse(intervalText, System.Globalization.NumberStyles.Float,
+                            System.Globalization.CultureInfo.InvariantCulture, out var interval)
+                        || !float.IsFinite(interval) || interval is < 0.25f or > 30f)
+                    { error = "--rewind-interval requires seconds from 0.25 to 30"; return false; }
+                    options.RewindIntervalSeconds = interval;
+                    break;
+                case "--rewind-depth":
+                case "--rewind-max-mb":
+                case "--lag-comp-max-age":
+                    var maximum = arg == "--rewind-depth" ? 64 : arg == "--rewind-max-mb" ? 512 : GameTicClock.TicRate * 2;
+                    if (!TryReadArg(args, ref i, out var rewindValueText)
+                        || !int.TryParse(rewindValueText, out var rewindValue) || rewindValue < 1 || rewindValue > maximum)
+                    { error = $"{arg} requires a value from 1 to {maximum}"; return false; }
+                    if (arg == "--rewind-depth") options.RewindDepth = rewindValue;
+                    else if (arg == "--rewind-max-mb") options.RewindMaxMegabytes = rewindValue;
+                    else options.LagCompensationMaxAgeTics = rewindValue;
+                    break;
                 case "--invasion-waves":
                     if (!TryReadArg(args, ref i, out var wavesText) || !int.TryParse(wavesText, out var waves) || waves is < 1 or > 65535)
                     {
@@ -294,6 +319,8 @@ public static class DedicatedServerCommandLine
         Console.WriteLine("       [--hexen-crush-defaults] (converted crush/stop defaults only; not full Hexen support)");
         Console.WriteLine("       [--file <WAD-or-PK3>] (repeat in load order; later maps override earlier maps)");
         Console.WriteLine("       [--gamemode <id>] [--gamemode-name <label>] [--no-query]");
+        Console.WriteLine("       [--rewind] [--rewind-interval <0.25-30 seconds>] [--rewind-depth <1-64>] [--rewind-max-mb <1-512>]");
+        Console.WriteLine("       [--lag-compensation] [--lag-comp-max-age <1-70 ticks>] (lag compensation also requires --rewind)");
         Console.WriteLine("       [--invasion-waves <1-65535>] [--invasion-countdown <seconds>] [--invasion-intermission <seconds>]");
         Console.WriteLine("       [--master [host[:port]]] [--rcon-password <secret>] [--rcon-port <port>]");
         Console.WriteLine();

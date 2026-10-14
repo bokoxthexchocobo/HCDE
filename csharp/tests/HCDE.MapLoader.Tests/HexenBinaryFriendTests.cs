@@ -5,6 +5,38 @@ namespace HCDE.MapLoader.Tests;
 public class HexenBinaryFriendTests
 {
     [Fact]
+    public void LastReplacementColorTableIsUsedEvenAfterMapinfo()
+    {
+        var wad = WithMapInfo(("X11R6RGB", "invalid earlier table"),
+            ("ZMAPINFO", "GameInfo { PickupColor = \"custom shade\" }"),
+            ("X11R6RGB", "1 2 3 Custom Shade\n4 5 6 CUSTOM SHADE\n"));
+        Assert.True(LevelBuilder.TryFromWad(wad, "MAP01", out var level, out var error), error);
+        Assert.Equal(0x010203u, level.PickupColor);
+    }
+
+    [Theory]
+    [InlineData("invalid table", "custom")]
+    [InlineData("1 2 3 custom", "AliceBlue")]
+    public void InvalidReplacementOrMissingReplacementNameRejects(string table, string color)
+    {
+        var wad = WithMapInfo(("X11R6RGB", table), ("ZMAPINFO", "GameInfo { PickupColor = \"" + color + "\" }"));
+        Assert.False(LevelBuilder.TryFromWad(wad, "MAP01", out _, out var error)); Assert.NotNull(error);
+    }
+
+    [Theory]
+    [InlineData("12 34 56", 0x123456u)]
+    [InlineData("#1aF", 0x11aaffu)]
+    [InlineData("AliceBlue", 0xf0f8ffu)]
+    public void GamePickupColorLoadsWithZmapinfoPrecedenceAndCopies(string color, uint expected)
+    {
+        var wad = WithMapInfo(("MAPINFO", "GameInfo { PickupColor = \"ff 00 00\" }"),
+            ("ZMAPINFO", "GameInfo { PickupColor = \"" + color + "\" }"),
+            ("ZMAPINFO", "GameInfo { titlepage = TITLE }"));
+        Assert.True(LevelBuilder.TryFromWad(wad, "MAP01", out var level, out var error), error);
+        Assert.Equal(expected, level.PickupColor); Assert.Equal(level.PickupColor, level.CopyForSimulation().PickupColor);
+    }
+
+    [Fact]
     public void RolloffDefaultsAndPerSoundSettingsLoadAndCopy()
     {
         var wad = WithMapInfo(("SNDINFO", "$rolloff * linear 10 100 $rolloff sound log 20 2"), ("SNDINFO", "sound RESOURCE"));

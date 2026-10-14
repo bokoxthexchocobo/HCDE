@@ -53,19 +53,19 @@ public class SoftwarePoisonBlendTests
     {
         using var host = ClientHost.DemoRoom(); host.GamePaused = true; host.UseHardware = hardware;
         var player = host.Simulation.Players.Single(); player.NoPain = true;
-        ActorDamage.Apply(player, 20); player.ApplyPoison(32);
         var expected = new SoftwareFrame(host.Frame.Width, host.Frame.Height);
         if (hardware)
         {
             expected.Clear(0, 0, 0); var device = new RecordedHardwareDevice(); device.BeginFrame();
             device.DrawQuad(0, expected.Height / 4, expected.Width, expected.Height / 2, ClientHost.HardwareWall);
-            device.Blit(expected); SoftwarePainBlend.Apply(expected, 20);
+            device.Blit(expected);
         }
         else
         {
-            player.PoisonCount = 0; SoftwareView.Draw(host.Simulation, expected); player.PoisonCount = 32;
+            SoftwareView.Draw(host.Simulation, expected);
         }
-        SoftwarePoisonBlend.Apply(expected, 32);
+        ActorDamage.Apply(player, 20); player.ApplyPoison(32);
+        SoftwarePlayerBlend.Apply(expected, player);
         var saved = SimSavegame.Write(host.Simulation); host.Tick(default);
         Assert.Equal(expected.Pixels, host.Frame.Pixels); Assert.Equal(saved, SimSavegame.Write(host.Simulation));
     }

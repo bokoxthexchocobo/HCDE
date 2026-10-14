@@ -11,7 +11,7 @@ public class SpectralDirectDamageTests
     {
         var target = new Actor { Health = 100, Spectral = true };
         Assert.Equal(expected, ActorDamage.Apply(target, 20,
-            new Actor { Spectral = sourceSpectral }, inflictor: new Actor { Spectral = inflictorSpectral }).HealthLost);
+            new Actor { Spectral = sourceSpectral }, inflictor: new Actor { Spectral = inflictorSpectral, FriendPlayer = 1 }).HealthLost);
     }
 
     [Fact]

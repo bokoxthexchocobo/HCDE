@@ -115,6 +115,13 @@ public sealed class UdmfSector
 
 public sealed class UdmfThing
 {
+    public int Score { get; set; }
+    public int? RenderStyle { get; set; }
+    public double Alpha { get; set; } = -1;
+    public double ScaleX { get; set; }
+    public double ScaleY { get; set; }
+    public int FloatBobPhase { get; set; } = -1;
+    public int FriendlySeeBlocks { get; set; } = -1;
     public double Health { get; set; } = 1;
     public double Gravity { get; set; } = 1;
     public int Pitch { get; set; }
@@ -280,11 +287,15 @@ public static class UdmfTextMapParser
         }
 
         private string? _lastAllegianceKey;
+        private double _thingScaleX, _thingScaleY;
+        private int? _thingRenderStyle;
 
         private bool TryReadBlock(out Dictionary<string, Value> fields, out string? error)
         {
             fields = new Dictionary<string, Value>(StringComparer.OrdinalIgnoreCase);
             _lastAllegianceKey = null;
+            _thingScaleX = _thingScaleY = 0;
+            _thingRenderStyle = null;
             error = null;
             if (!Expect('{'))
             {
@@ -332,6 +343,11 @@ public static class UdmfTextMapParser
                 if (key.Equals("friend", StringComparison.OrdinalIgnoreCase)
                     || key.Equals("strifeally", StringComparison.OrdinalIgnoreCase)) _lastAllegianceKey = key;
                 fields[key] = value;
+                if (key.Equals("scale", StringComparison.OrdinalIgnoreCase)) _thingScaleX = _thingScaleY = (float)value.Number;
+                else if (key.Equals("scalex", StringComparison.OrdinalIgnoreCase)) _thingScaleX = (float)value.Number;
+                else if (key.Equals("scaley", StringComparison.OrdinalIgnoreCase)) _thingScaleY = (float)value.Number;
+                else if (key.Equals("renderstyle", StringComparison.OrdinalIgnoreCase)
+                    && ThingRenderStyle(value.Text) is { } style) _thingRenderStyle = style;
             }
         }
 
@@ -447,6 +463,13 @@ public static class UdmfTextMapParser
 
         private UdmfThing ReadThing(Dictionary<string, Value> fields) => new()
         {
+            Score = Int(fields, "score"),
+            RenderStyle = _thingRenderStyle,
+            Alpha = Number(fields, "alpha", -1),
+            ScaleX = _thingScaleX,
+            ScaleY = _thingScaleY,
+            FloatBobPhase = Int(fields, "floatbobphase", -1),
+            FriendlySeeBlocks = Int(fields, "friendlyseeblocks", -1),
             Pitch = Int(fields, "pitch"),
             Roll = Int(fields, "roll"),
             Gravity = Number(fields, "gravity", 1),
@@ -476,6 +499,15 @@ public static class UdmfTextMapParser
             Arg2 = Int(fields, "arg2"),
             Arg3 = Int(fields, "arg3"),
             Arg4 = Int(fields, "arg4"),
+        };
+
+        private static int? ThingRenderStyle(string? name) => name?.ToLowerInvariant() switch
+        {
+            "none" => 0, "normal" => 1, "fuzzy" => 2, "soultrans" => 3, "optfuzzy" => 4,
+            "stencil" => 5, "translucent" => 6, "add" or "additive" => 7, "shaded" => 8,
+            "translucentstencil" => 9, "shadow" => 10, "subtract" or "subtractive" => 11,
+            "addstencil" => 12, "addshaded" => 13, "multiply" => 14, "colorblend" => 16, "coloradd" => 18,
+            _ => null,
         };
 
         private static double Number(Dictionary<string, Value> fields, string key, double fallback = 0) =>

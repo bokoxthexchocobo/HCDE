@@ -28,12 +28,14 @@ static class Program
         {
             using var host = new DedicatedServerHost(options);
             Console.WriteLine(
-                "hcdeserv listening on {0}:{1} map={2} query={3} master={4}",
+                "hcdeserv listening on {0}:{1} map={2} query={3} master={4} rewind={5} lagcomp={6}",
                 options.BindAddress,
                 host.BoundPort,
                 options.Pregame.Session.MapLoad.MapName,
                 options.EnableServerQuery ? "on" : "off",
-                options.EnableMasterAdvertise ? $"{options.MasterHost}:{options.MasterPort}" : "off");
+                options.EnableMasterAdvertise ? $"{options.MasterHost}:{options.MasterPort}" : "off",
+                options.EnableRewind ? "on" : "off",
+                options.EnableRewind && options.EnableLagCompensation ? "on" : "off");
 
             var scheduler = new ServerTicScheduler((ulong)Environment.TickCount64);
             while (!cts.IsCancellationRequested)

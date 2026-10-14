@@ -36,7 +36,7 @@ public class ActorReviveHookTests
         void Destination(Actor self)
         {
             calls.Add("state"); Assert.True(self.Friendly);
-            Assert.Equal(42, self.Health); Assert.Equal(Fixed.FromInt(5), self.VelocityZ);
+            Assert.Equal(100, self.Health); Assert.Equal(Fixed.FromInt(5), self.VelocityZ);
         }
         actor.States.Configure(actor, [new(-1, 0, Destination), new(4, 0),
             new(6, 3), new(-1, 3), new(7, 0, Destination)], 3);

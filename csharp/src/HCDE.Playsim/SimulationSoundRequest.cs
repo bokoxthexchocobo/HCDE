@@ -22,4 +22,5 @@ public sealed record SimulationSoundRequest(uint ActorId, string Sound, int Chan
     float Volume, bool Loop, float Attenuation, bool Local, bool Stop = false, bool ChangeVolume = false,
     int? StopChannelMax = null, float? Pitch = null, float StartTime = 0, bool ChangePitch = false,
     bool OnlyIfChannelFree = false, SimulationSoundOrigin? DetachedOrigin = null,
-    bool OnlyIfSoundNotPlaying = false, bool NonPositional = false, bool CheckAllSoundChannels = false);
+    bool OnlyIfSoundNotPlaying = false, bool NonPositional = false, bool CheckAllSoundChannels = false,
+    bool PickupSound = false, bool ConsolePlayerOnly = false);

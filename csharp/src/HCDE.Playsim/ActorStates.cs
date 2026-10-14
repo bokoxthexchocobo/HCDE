@@ -102,6 +102,7 @@ public sealed class ActorStateMachine
     {
         if (state < -1 || state >= _frames.Length)
             throw new ArgumentOutOfRangeException(nameof(state));
+        actor.PendingSpawnDeath = false;
         if (_entering)
         {
             _queued = state;

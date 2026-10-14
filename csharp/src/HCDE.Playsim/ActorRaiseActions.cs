@@ -13,12 +13,16 @@ public static class ActorRaiseActions
         var sim = target.Simulation ?? throw new InvalidOperationException("Resurrection requires a simulation.");
         target.VelocityX = target.VelocityY = default;
         if ((flags & 2) == 0 && !ActorRaise.CheckPosition(sim, target)) return false;
+        target.Height = target.ResurrectionHeight ?? target.Height;
+        target.Radius = target.ResurrectionRadius ?? target.Radius;
+        target.Solid = true;
         if (!ActorRaise.CanResurrect(raiser, target)) return false;
-        ActorRaise.ReviveSupported(target);
+        ActorSoundActions.StartSound(target, "vile/raise", channel: 4, attenuation: 1.001f);
+        ActorRaise.ReviveSupported(target, restoreDimensions: false);
         if ((flags & 1) != 0)
         {
             // Copy the friendship fields represented by the managed actor model.
-            ActorPropertyActions.CopySupportedFriendship(target, raiser);
+            ActorPropertyActions.CopySupportedFriendship(target, raiser, resetHealth: true);
         }
         ActorRaise.EnterRaiseState(target, raiseState);
         return true;

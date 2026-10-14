@@ -9,8 +9,11 @@ internal static class ArchvileActions
         67 => 40, _ => 0
     };
 
-    internal static bool TryRaise(AuthoritySimulation sim, Actor archvile, Actor target)
+    internal static bool TryRaise(AuthoritySimulation sim, Actor archvile, Actor target,
+        int? healState = null, string? healSound = null)
     {
+        if (healState is { } state && !archvile.States.HasState(state))
+            throw new ArgumentOutOfRangeException(nameof(healState));
         var direction = Math.Atan2(target.Y.ToDouble() - archvile.Y.ToDouble(), target.X.ToDouble() - archvile.X.ToDouble());
         var speed = Math.Abs(archvile.MovementSpeed.ToDouble());
         var x = archvile.X.ToDouble() + Math.Cos(direction) * speed;
@@ -26,12 +29,22 @@ internal static class ArchvileActions
             if (!ActorRaise.CanResurrect(archvile, corpse)) continue;
             archvile.Angle = BamAngle.FromDegrees(Math.Atan2(corpse.Y.ToDouble() - archvile.Y.ToDouble(),
                 corpse.X.ToDouble() - archvile.X.ToDouble()) * 180 / Math.PI);
-            if (archvile.Friendly) archvile.Brain?.ClearResurrectionEnemy(corpse.Id);
+            if (archvile.Friendly)
+            {
+                archvile.Brain?.ClearResurrectionEnemy(corpse.Id);
+                if (archvile.TargetId == corpse.Id) archvile.SetTargetPointer(null);
+                if (archvile.StoredTargetId == corpse.Id) archvile.StoredTargetId = null;
+            }
+            var selectedHealState = healState ?? (AcsActorStates.TryFindNamedState(archvile, "Heal", true, out var namedHeal)
+                ? namedHeal : (int?)null);
+            if (selectedHealState is { } entryState) archvile.States.Enter(archvile, entryState);
             var ghostCompatibility = sim.Compat.HasFlag(CompatSurface.VileGhosts);
+            ActorSoundActions.StartSound(corpse, string.IsNullOrEmpty(healSound) ? "vile/raise" : healSound,
+                channel: 4, attenuation: 1.001f);
             if (ghostCompatibility)
                 corpse.Height = new Fixed((int)Math.Clamp((long)corpse.Height.Raw * 4, int.MinValue, int.MaxValue));
             ActorRaise.ReviveSupported(corpse, restoreDimensions: !ghostCompatibility);
-            ActorPropertyActions.CopySupportedFriendship(corpse, archvile);
+            ActorPropertyActions.CopySupportedFriendship(corpse, archvile, resetHealth: true);
             ActorRaise.EnterRaiseState(corpse, raiseState);
             return true;
         }

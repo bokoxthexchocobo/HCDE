@@ -52,7 +52,7 @@ public static class ActorSoundActions
     {
         ArgumentNullException.ThrowIfNull(missile);
         if (missile.Destroyed || !missile.ActorSounds.TryGetValue(ActorSoundType.See, out var sound)
-            || string.IsNullOrEmpty(sound)) return;
+            || string.IsNullOrEmpty(sound) || sound.Equals("None", StringComparison.OrdinalIgnoreCase)) return;
         var sim = missile.Simulation ?? throw new InvalidOperationException("Spawn sound requires an attached simulation.");
         if (!(spawnSoundSource ?? missile.SpawnSoundSource))
         {

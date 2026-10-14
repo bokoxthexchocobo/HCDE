@@ -9,8 +9,47 @@ public readonly record struct SimActorSpecial(int Special, int Arg0, int Arg1, i
 
 public sealed class SimActorPose
 {
+    public int PlayerExtraLight { get; internal set; }
+    public int Accuracy { get; internal set; }
+    public int FriendlySeeBlocks { get; internal set; } = 10;
+    public int SeeFriendlyMonstersFlag { get; internal set; }
+    public SimSoundClass? SoundClassOverride { get; internal set; }
+    public int PowerStrengthTics { get; internal set; }
+    public int PlayerBonusCount { get; internal set; }
+    public int PickupPresentationFlags { get; internal set; }
+    public int PickupNoAttenuationFlag { get; internal set; }
+    public int? PickupHealthOverride { get; internal set; }
+    public int? PickupAutoUseOverride { get; internal set; }
+    public SimDroppedPickupIdentity? DroppedPickupIdentity { get; internal set; }
+    public SimPuffIdentity? PuffIdentity { get; internal set; }
+    public int? MapMonsterThingIndex { get; internal set; }
+    public SimMapDecorationIdentity? MapDecorationIdentity { get; internal set; }
+    public SimMapPickupIdentity? MapPickupIdentity { get; internal set; }
+    public SimBotIdentity? BotIdentity { get; internal set; }
+    public SimActorDamageHistory? DamageHistory { get; internal set; }
     public int? AmbushFlag { get; internal set; }
     public int? CantSeekFlag { get; internal set; }
+    public int? GibHealthOverride { get; internal set; }
+    public uint? LastLookActorId { get; internal set; }
+    public int? HateTargetingFlags { get; internal set; }
+    public int? VulnerableFlag { get; internal set; }
+    public int? MonsterClassificationFlag { get; internal set; }
+    public int? NoTargetFlag { get; internal set; }
+    public int? ChaseGoalFlag { get; internal set; }
+    public int? JustAttackedFlag { get; internal set; }
+    public int? InCombatFlag { get; internal set; }
+    public int? NoSplashAlertFlag { get; internal set; }
+    public int? CombatBehaviorFlags { get; internal set; }
+    public int? TargetSwitchFlags { get; internal set; }
+    public int? InfightingFlags { get; internal set; }
+    public int Score { get; internal set; }
+    public bool SeeInvisible { get; internal set; }
+    public int LastLookPlayerNumber { get; internal set; }
+    public int? MVisBlockedFlag { get; internal set; }
+    public int? NoBloodFlag { get; internal set; }
+    public int? IsPuffFlag { get; internal set; }
+    public int? SpawnDeathFlag { get; internal set; }
+    internal bool LegacyImmediateSpawnDeath { get; set; }
     public int? SpawnSoundSourceFlag { get; internal set; }
     public SimActorRenderProperties? RenderProperties { get; internal set; }
     public int? DontThrustFlag { get; internal set; }
@@ -55,6 +94,9 @@ public sealed class SimActorPose
     public int? MoveWithSectorFlag { get; internal set; }
     public int? CanPassFlag { get; internal set; }
     public int? DontOverlapFlag { get; internal set; }
+    public int? ExplodeCountFlag { get; internal set; }
+    public int? SkyExplodeFlag { get; internal set; }
+    public int? MissileHitPointerFlags { get; internal set; }
     public int? FloorCarryFlags { get; internal set; }
     public SimTracerPointer? TracerPointer { get; internal set; }
     public SimMasterPointer? MasterPointer { get; internal set; }
@@ -107,6 +149,8 @@ public sealed class SimActorPose
     public int? FloatBobPhase { get; internal set; }
     public SimSpriteOrientation? SpriteOrientation { get; internal set; }
     public SimTargetMemory? TargetMemory { get; internal set; }
+    public SimBasicAttackState? BasicAttackState { get; internal set; }
+    public SimProfileChaseHistory? ProfileChaseHistory { get; internal set; }
     public string? WornArmorType { get; internal set; }
     public int WornArmorAmount { get; internal set; }
     public SimWornArmor? WornArmor { get; internal set; }
@@ -190,7 +234,15 @@ public sealed class SimActorPose
 
 public sealed class SimSaveState
 {
+    public IReadOnlyList<SimDoorMotion>? DoorMotions { get; internal set; }
+    public IReadOnlyList<SimSectorMotion>? SectorMotions { get; internal set; }
+    public IReadOnlyDictionary<int, uint>? SectorSoundTargets { get; internal set; }
+    public IReadOnlyList<SimThinkerPlacement>? ThinkerOrder { get; internal set; }
+    public bool IncludesBotIdentities { get; internal set; }
+    public uint? NextActorId { get; internal set; }
+    public SimInvasionState? Invasion { get; internal set; }
     public double? AirControlOverride { get; internal set; }
+    public double? GibFactor { get; internal set; }
     public double? LevelGravityOverride { get; internal set; }
     public uint? JumpRandomState { get; internal set; }
     public ulong? StateRandomState { get; internal set; }
@@ -200,11 +252,20 @@ public sealed class SimSaveState
     public ulong? FreezeChunksRandomState { get; internal set; }
     public ulong? FreezeDeathRandomState { get; internal set; }
     public ulong? DropItemRandomState { get; internal set; }
+    public ulong? PlayerSearchRandomState { get; internal set; }
+    public ulong? PlayerLookRandomState { get; internal set; }
+    public bool CompatibilityInvisibility { get; internal set; }
+    public ulong? HateSearchRandomState { get; internal set; }
+    public ulong? ActorDieRandomState { get; internal set; }
+    public ulong? PuffRandomState { get; internal set; }
     public ulong? ChaseRandomState { get; internal set; }
     public ulong? MissileDamageRandomState { get; internal set; }
     public ulong? PoisonDamageRandomState { get; internal set; }
     public ulong? PainChanceRandomState { get; internal set; }
     public ulong? SkelFistRandomState { get; internal set; }
+    public ulong? SawRandomState { get; internal set; }
+    public ulong? PunchRandomState { get; internal set; }
+    public ulong? SkipTargetRandomState { get; internal set; }
     public ulong? CPosRefireRandomState { get; internal set; }
     public ulong? CPosAttackRandomState { get; internal set; }
     public ulong? SPosAttackRandomState { get; internal set; }
@@ -243,9 +304,14 @@ public static class SimSavegame
     public static ReadOnlySpan<byte> Magic => "HCSV"u8;
 
     public static byte[] Write(AuthoritySimulation sim) => Write(sim.CaptureState());
+    public static byte[] Write(AuthoritySimulation sim, bool includeBotIdentities) => Write(sim.CaptureState(includeBotIdentities));
+    public static byte[] Write(AuthoritySimulation sim, bool includeBotIdentities, bool includeThinkerOrder) =>
+        Write(sim.CaptureState(includeBotIdentities, includeThinkerOrder));
 
     public static byte[] Write(SimSaveState state)
     {
+        if (state.SkipTargetRandomState.HasValue && state.GeometryHealth is null)
+            throw new InvalidOperationException("SkipTarget random archives require geometry state.");
         SimActorSoundArchive.Validate(state);
         if (state.Actors.Any(actor => actor.DeathDamageAmount != 0) && state.GeometryHealth is null)
             throw new InvalidOperationException("Saved death-hit amounts require geometry state.");
@@ -259,6 +325,40 @@ public static class SimSavegame
         SimInfiniteAmmoPowerArchive.Validate(state);
         SimAmbushArchive.Validate(state);
         SimCantSeekArchive.Validate(state);
+        SimGibHealthArchive.Validate(state);
+        SimHateSearchArchive.Validate(state);
+        SimHateTargetingArchive.Validate(state);
+        SimVulnerableArchive.Validate(state);
+        SimMVisBlockedArchive.Validate(state);
+        SimPlayerLookArchive.Validate(state);
+        SimPlayerSearchArchive.Validate(state);
+        SimActorScoreArchive.Validate(state);
+        SimInfightingFlagsArchive.Validate(state);
+        SimTargetSwitchFlagsArchive.Validate(state);
+        SimCombatBehaviorArchive.Validate(state);
+        SimNoTargetArchive.Validate(state);
+        SimMonsterClassificationArchive.Validate(state);
+        SimChaseGoalArchive.Validate(state);
+        SimJustAttackedArchive.Validate(state);
+        SimInCombatArchive.Validate(state);
+        SimNoSplashAlertArchive.Validate(state);
+        SimSectorSoundArchive.Validate(state);
+        SimPlayerExtraLightArchive.Validate(state);
+        SimPowerStrengthArchive.Validate(state);
+        SimPlayerBonusArchive.Validate(state);
+        SimPickupPresentationArchive.Validate(state);
+        SimPickupAttenuationArchive.Validate(state);
+        SimPickupHealthArchive.Validate(state);
+        SimPickupAutoUseArchive.Validate(state);
+        SimDoorMotionArchive.Validate(state);
+        SimSectorMotionArchive.Validate(state);
+        SimAccuracyArchive.Validate(state);
+        SimFriendlySeeBlocksArchive.Validate(state);
+        SimSeeFriendlyMonstersArchive.Validate(state);
+        SimSoundClassArchive.Validate(state);
+        SimNoBloodArchive.Validate(state);
+        SimIsPuffArchive.Validate(state);
+        SimSpawnDeathArchive.Validate(state);
         SimSpawnSoundSourceArchive.Validate(state);
         SimActorRenderArchive.Validate(state);
         SimDontThrustArchive.Validate(state);
@@ -273,7 +373,9 @@ public static class SimSavegame
         if (state.AirControlOverride.HasValue && state.GeometryHealth is null) throw new InvalidOperationException("Saved air control requires geometry state.");
         if (SimDamageTypeArchive.HasCustomDefinitions(state) && state.GeometryHealth is null)
             throw new InvalidOperationException("Damage definitions require a current archive.");
-        if ((state.Actors.Any(a => a.LostSoulAttack.HasValue || a.ArchvileAttack.HasValue || a.RevenantAttack.HasValue || a.ProfileAttack.HasValue || a.BrainDisabled || a.RepeatAttack.HasValue) || state.CPosRefireRandomState.HasValue || state.CPosAttackRandomState.HasValue || state.SPosAttackRandomState.HasValue || state.PosAttackRandomState.HasValue || state.BruisAttackRandomState.HasValue || state.HeadAttackRandomState.HasValue || state.TroopAttackRandomState.HasValue || state.SargAttackRandomState.HasValue || state.PainChanceRandomState.HasValue || state.PoisonDamageRandomState.HasValue || state.MissileDamageRandomState.HasValue || state.SkelFistRandomState.HasValue || state.ChaseRandomState.HasValue || state.FreezeDeathRandomState.HasValue || state.DropItemRandomState.HasValue || state.FreezeChunksRandomState.HasValue || state.IceTicsRandomState.HasValue || state.MapSpawnRandomState.HasValue || state.StateRandomState.HasValue || state.JumpRandomState.HasValue || state.Lights is not null || state.LightAnimation is not null) && state.GeometryHealth is null) throw new InvalidOperationException("Sector light archives require geometry state.");
+        SimGibFactorArchive.Validate(state);
+        SimActorDieRandomArchive.Validate(state);
+        if ((state.Actors.Any(a => a.LostSoulAttack.HasValue || a.ArchvileAttack.HasValue || a.RevenantAttack.HasValue || a.ProfileAttack.HasValue || a.BrainDisabled || a.RepeatAttack.HasValue) || state.CPosRefireRandomState.HasValue || state.CPosAttackRandomState.HasValue || state.SPosAttackRandomState.HasValue || state.PosAttackRandomState.HasValue || state.BruisAttackRandomState.HasValue || state.HeadAttackRandomState.HasValue || state.TroopAttackRandomState.HasValue || state.SargAttackRandomState.HasValue || state.PainChanceRandomState.HasValue || state.PoisonDamageRandomState.HasValue || state.MissileDamageRandomState.HasValue || state.PunchRandomState.HasValue || state.SawRandomState.HasValue || state.SkelFistRandomState.HasValue || state.ChaseRandomState.HasValue || state.FreezeDeathRandomState.HasValue || state.DropItemRandomState.HasValue || state.PuffRandomState.HasValue || state.FreezeChunksRandomState.HasValue || state.IceTicsRandomState.HasValue || state.MapSpawnRandomState.HasValue || state.StateRandomState.HasValue || state.JumpRandomState.HasValue || state.Lights is not null || state.LightAnimation is not null) && state.GeometryHealth is null) throw new InvalidOperationException("Sector light archives require geometry state.");
         if (state.Actors.Any(actor => actor.FrictionRaw.HasValue || actor.SlideFlag.HasValue || actor.IceChunkLifecycle.HasValue || actor.SynchronizedFlag.HasValue || actor.HandleNoDelayFlag.HasValue || actor.FastModeFlags.HasValue || actor.FullBrightFlag.HasValue || actor.GoalPointer.HasValue || actor.JustHitFlag.HasValue || actor.ConstantDamage.HasValue || actor.MeleeRangeRaw.HasValue || actor.ReactionTime.HasValue || actor.SkullChargeFlag.HasValue || actor.AllowDropOffFlag.HasValue || actor.DontFallFlag.HasValue || actor.FallingFlag.HasValue || actor.DontCorpseFlag.HasValue || actor.CorpseFlag.HasValue || actor.NoFrictionFlag.HasValue || actor.FlyFlag.HasValue || actor.ClassicFlightFlag.HasValue || actor.JumpTics.HasValue || actor.Crouch.HasValue || actor.MonsterBlockingFlag.HasValue || actor.InvisibleFlag.HasValue || actor.FloorClip.HasValue || actor.BlockmapFlag.HasValue || actor.Friendship.HasValue || actor.TracerPointer.HasValue || actor.MasterPointer.HasValue || actor.UseSpecialFlag.HasValue || actor.UseRange.HasValue || actor.FloatBobPhase.HasValue || actor.SpriteOrientation.HasValue || actor.Scale.HasValue || actor.SpeciesOverride.HasValue || actor.Size.HasValue || actor.TeleFog.HasValue || actor.Tuning.HasValue || actor.DefenseProperties.HasValue || actor.ChaseThreshold.HasValue || actor.GravityRaw.HasValue || actor.TargetMemory.HasValue || actor.MovementActionFlags.HasValue || actor.Killed || actor.ActorArmor.HasValue || actor.SpareArmor is { Count: > 0 } || actor.WornArmor.HasValue || actor.WornArmorType is not null || actor.NoVerticalMeleeRange || actor.ActorSpecial.HasValue || !string.IsNullOrEmpty(actor.DeathType) || !string.IsNullOrEmpty(actor.DamageType) || actor.SpecialFireDamage || actor.FoilInvul || actor.PierceArmor || actor.NoInfightSpecies || actor.StrifeDamage || actor.Rip || actor.DontRip || actor.NoBossRip || actor.Pushable || actor.CannotPush || actor.PushFactor != 0.25 || actor.RipperLevel != 0 || actor.RipLevelMin != 0 || actor.RipLevelMax != 0 || actor.ProjectilePassHeight != 0 || actor.DamageFactor != 65536 || actor.DamageMultiplier != 65536 || actor.DamageFactors is { Count: > 0 } || actor.InfightingGroup != 0 || actor.ProjectileGroup != 0 || actor.SplashGroup != 0 || actor.PowerDamageTics != 0 || actor.PowerProtectionTics != 0 || actor.PowerBuddhaTics != 0) && state.GeometryHealth is null)
             throw new InvalidOperationException("Actor specials require a current archive.");
         ValidateFloatFlags(state);
@@ -286,6 +388,22 @@ public static class SimSavegame
         SimFloorCarryArchive.Validate(state);
         SimCanPassArchive.Validate(state);
         SimDontOverlapArchive.Validate(state);
+        SimExplodeCountArchive.Validate(state);
+        SimSkyExplodeArchive.Validate(state);
+        SimBotIdentityArchive.Validate(state);
+        SimBotAllocatorArchive.Validate(state);
+        SimBotProfileArchive.Validate(state);
+        SimActorDamageHistoryArchive.Validate(state);
+        SimInvasionArchive.Validate(state);
+        SimDroppedPickupArchive.Validate(state);
+        SimMapPickupArchive.Validate(state);
+        SimMapDecorationArchive.Validate(state);
+        SimMapMonsterArchive.Validate(state);
+        SimPuffArchive.Validate(state);
+        SimThinkerOrderArchive.Validate(state);
+        SimBasicAttackArchive.Validate(state);
+        SimProfileChaseArchive.Validate(state);
+        SimMissileHitPointerFlagsArchive.Validate(state);
         SimCeilingHuggerArchive.Validate(state);
         SimFloorHuggerArchive.Validate(state);
         SimBlastedArchive.Validate(state);
@@ -341,7 +459,7 @@ public static class SimSavegame
             BinaryPrimitives.WriteInt32LittleEndian(span[(cursor + 28)..], actor.VelocityY);
             BinaryPrimitives.WriteInt32LittleEndian(span[(cursor + 32)..], actor.VelocityZ);
             BinaryPrimitives.WriteInt32LittleEndian(span[(cursor + 36)..], actor.State);
-            BinaryPrimitives.WriteInt32LittleEndian(span[(cursor + 40)..], actor.StateTics);
+            BinaryPrimitives.WriteInt32LittleEndian(span[(cursor + 40)..], actor.LegacyImmediateSpawnDeath ? 1 : actor.StateTics);
             BinaryPrimitives.WriteInt32LittleEndian(span[(cursor + 44)..], (actor.OnGround ? 1 : 0) | (actor.HasPhysics ? 2 : 0));
             BinaryPrimitives.WriteInt32LittleEndian(span[(cursor + 48)..], actor.WeaponCooldown);
             BinaryPrimitives.WriteInt32LittleEndian(span[(cursor + 52)..], actor.Pitch);
@@ -406,7 +524,11 @@ public static class SimSavegame
             archive = SimReactionTimeArchive.Write(state, SimSkullChargeArchive.Write(state, SimAllowDropOffArchive.Write(state, archive)));
             archive = SimSlideFlagArchive.Write(state, SimFreezeDeathRandomArchive.Write(state, SimDropItemRandomArchive.Write(state, SimFreezeChunksArchive.Write(state, SimIceChunkArchive.Write(state, SimIceTicsArchive.Write(state, SimMapSpawnArchive.Write(state, SimStateRandomArchive.Write(state, SimNoDelayArchive.Write(state, SimFastModeArchive.Write(state, SimFullBrightArchive.Write(state, SimGoalPointerArchive.Write(state, SimJustHitArchive.Write(state, SimActorDamageArchive.Write(state, SimMeleeRangeArchive.Write(state, archive)))))))))))))));
             archive = SimSpawnSoundSourceArchive.Write(state, SimActorRenderArchive.Write(state, SimDontThrustArchive.Write(state, SimSeekVisibilityArchive.Write(state, SimDontSeekInvisibleArchive.Write(state, SimCantSeekArchive.Write(state, SimAmbushArchive.Write(state, SimInfiniteAmmoPowerArchive.Write(state, SimAmmoArchive.Write(state, SimHealthPickupArchive.Write(state, SimPlayerPoisonArchive.Write(state, SimPlayerPoisonCountArchive.Write(state, SimPlayerDamageCountArchive.Write(state, SimPainChanceRandomArchive.Write(state, SimPoisonDamageRandomArchive.Write(state, SimPlayerGodModeArchive.Write(state, SimPlayerBuddha2Archive.Write(state, SimPlayerGodMode2Archive.Write(state, SimPlayerDrainArchive.Write(state, SimLaxTelefragDamageArchive.Write(state, SimSelfDamageFactorArchive.Write(state, SimNoDamageArchive.Write(state, SimAllowPainArchive.Write(state, SimPainTypeArchive.Write(state, SimCausePainArchive.Write(state, SimOnlySlamSolidArchive.Write(state, SimRetargetAfterSlamArchive.Write(state, SimMissileDamageRandomArchive.Write(state, SimLostSoulAttackArchive.Write(state, SimArchvileAttackArchive.Write(state, SimRevenantAttackArchive.Write(state, SimProfileAttackArchive.Write(state, SimBrainDisabledArchive.Write(state, SimRepeatAttackArchive.Write(state, SimCPosRefireRandomArchive.Write(state, SimCPosAttackRandomArchive.Write(state, SimSPosAttackRandomArchive.Write(state, SimPosAttackRandomArchive.Write(state, SimBruisAttackRandomArchive.Write(state, SimHeadAttackRandomArchive.Write(state, SimTroopAttackRandomArchive.Write(state, SimSargAttackRandomArchive.Write(state, SimSkelFistRandomArchive.Write(state, SimChaseRandomArchive.Write(state, SimFullVolumeActiveArchive.Write(state, SimDeathDamageArchive.Write(state, SimPlayerDamageTypeArchive.Write(state, SimFullVolumeSeeArchive.Write(state, SimFullVolumeDeathArchive.Write(state, SimActorSoundArchive.Write(state, SimLevelGravityArchive.Write(state, SimAirControlArchive.Write(state, SimFrictionArchive.Write(state, archive)))))))))))))))))))))))))))))))))))))))))))))))))))));
-            return SimDontOverlapArchive.Write(state, SimCanPassArchive.Write(state, SimFloorCarryArchive.Write(state, SimMoveWithSectorArchive.Write(state, SimSectorLinkArchive.Write(state, SimNullableProjectilePointerArchive.Write(state, SimTracerPointerArchive.Write(state, archive)))))));
+            archive = SimSpawnDeathArchive.Write(state, SimIsPuffArchive.Write(state, SimNoBloodArchive.Write(state, SimPuffRandomArchive.Write(state, SimMapMonsterArchive.Write(state, SimMapDecorationArchive.Write(state, SimPuffArchive.Write(state, SimMapPickupArchive.Write(state, SimDroppedPickupArchive.Write(state, SimThinkerOrderArchive.Write(state, SimInvasionArchive.Write(state, SimActorDamageHistoryArchive.Write(state, SimBotProfileArchive.Write(state, SimProfileChaseArchive.Write(state, SimBasicAttackArchive.Write(state, SimBotAllocatorArchive.Write(state, SimBotIdentityArchive.Write(state, SimSkyExplodeArchive.Write(state, SimMissileHitPointerFlagsArchive.Write(state, SimExplodeCountArchive.Write(state, SimDontOverlapArchive.Write(state, SimCanPassArchive.Write(state, SimFloorCarryArchive.Write(state, SimMoveWithSectorArchive.Write(state, SimSectorLinkArchive.Write(state, SimNullableProjectilePointerArchive.Write(state, SimTracerPointerArchive.Write(state, archive)))))))))))))))))))))))))));
+            archive = SimGibHealthArchive.Write(state, SimGibFactorArchive.Write(state, SimActorDieRandomArchive.Write(state, archive)));
+            archive = SimSectorSoundArchive.Write(state, SimNoSplashAlertArchive.Write(state, SimInCombatArchive.Write(state, SimJustAttackedArchive.Write(state, SimChaseGoalArchive.Write(state, SimMonsterClassificationArchive.Write(state, SimNoTargetArchive.Write(state, SimCombatBehaviorArchive.Write(state, SimTargetSwitchFlagsArchive.Write(state, SimInfightingFlagsArchive.Write(state, SimActorScoreArchive.Write(state, SimSpawnBobPhaseArchive.Write(state, SimPlayerSearchArchive.Write(state, SimPlayerLookArchive.Write(state, SimMVisBlockedArchive.Write(state, SimHateSearchArchive.Write(state, SimHateTargetingArchive.Write(state, SimVulnerableArchive.Write(state, archive))))))))))))))))));
+            archive = SimPlayerBonusArchive.Write(state, SimPowerStrengthArchive.Write(state, SimPunchRandomArchive.Write(state, SimSawRandomArchive.Write(state, SimPlayerExtraLightArchive.Write(state, archive)))));
+            return SimSeeFriendlyMonstersArchive.Write(state, SimSkipTargetRandomArchive.Write(state, SimFriendlySeeBlocksArchive.Write(state, SimSoundClassArchive.Write(state, SimAccuracyArchive.Write(state, SimSectorMotionArchive.Write(state, SimDoorMotionArchive.Write(state, SimPickupAutoUseArchive.Write(state, SimPickupHealthArchive.Write(state, SimPickupAttenuationArchive.Write(state, SimPickupPresentationArchive.Write(state, archive)))))))))));
         }
         return buffer;
     }
@@ -604,6 +726,74 @@ public static class SimSavegame
         if (version == 183) return SimCantSeekArchive.TryRead(bytes, out state, out error);
         if (version == 194) return SimCanPassArchive.TryRead(bytes, out state, out error);
         if (version == 195) return SimDontOverlapArchive.TryRead(bytes, out state, out error);
+        if (version == 196) return SimExplodeCountArchive.TryRead(bytes, out state, out error);
+        if (version == 197) return SimMissileHitPointerFlagsArchive.TryRead(bytes, out state, out error);
+        if (version == 198) return SimSkyExplodeArchive.TryRead(bytes, out state, out error);
+        if (version == 199) return SimBotIdentityArchive.TryRead(bytes, out state, out error);
+        if (version == 200) return SimBotIdentityArchive.TryRead(bytes, out state, out error);
+        if (version == 201) return SimBotIdentityArchive.TryRead(bytes, out state, out error);
+        if (version == 202) return SimBotAllocatorArchive.TryRead(bytes, out state, out error);
+        if (version == 203) return SimBotIdentityArchive.TryRead(bytes, out state, out error);
+        if (version == 204) return SimBasicAttackArchive.TryRead(bytes, out state, out error);
+        if (version == 205) return SimBasicAttackArchive.TryRead(bytes, out state, out error);
+        if (version == 206) return SimProfileChaseArchive.TryRead(bytes, out state, out error);
+        if (version == 207) return SimProfileChaseArchive.TryRead(bytes, out state, out error);
+        if (version == 208) return SimProfileChaseArchive.TryRead(bytes, out state, out error);
+        if (version == 209) return SimBasicAttackArchive.TryRead(bytes, out state, out error);
+        if (version == 210) return SimBotIdentityArchive.TryRead(bytes, out state, out error);
+        if (version == 211) return SimBotProfileArchive.TryRead(bytes, out state, out error);
+        if (version == 212) return SimBotIdentityArchive.TryRead(bytes, out state, out error);
+        if (version == 213) return SimBotIdentityArchive.TryRead(bytes, out state, out error);
+        if (version == 214) return SimActorDamageHistoryArchive.TryRead(bytes, out state, out error);
+        if (version == 215) return SimInvasionArchive.TryRead(bytes, out state, out error);
+        if (version == 216) return SimThinkerOrderArchive.TryRead(bytes, out state, out error);
+        if (version == 217) return SimDroppedPickupArchive.TryRead(bytes, out state, out error);
+        if (version == 260) return SimSoundClassArchive.TryRead(bytes, out state, out error);
+        if (version == 259) return SimAccuracyArchive.TryRead(bytes, out state, out error);
+        if (version == 261) return SimFriendlySeeBlocksArchive.TryRead(bytes, out state, out error);
+        if (version == 262) return SimSkipTargetRandomArchive.TryRead(bytes, out state, out error);
+        if (version == 263) return SimSeeFriendlyMonstersArchive.TryRead(bytes, out state, out error);
+        if (version == 258) return SimSectorMotionArchive.TryRead(bytes, out state, out error);
+        if (version == 257) return SimDoorMotionArchive.TryRead(bytes, out state, out error);
+        if (version == 256) return SimPickupAutoUseArchive.TryRead(bytes, out state, out error);
+        if (version == 255) return SimPickupHealthArchive.TryRead(bytes, out state, out error);
+        if (version == 254) return SimPickupAttenuationArchive.TryRead(bytes, out state, out error);
+        if (version == 253) return SimPickupPresentationArchive.TryRead(bytes, out state, out error);
+        if (version == 252) return SimPlayerBonusArchive.TryRead(bytes, out state, out error);
+        if (version == 251) return SimPowerStrengthArchive.TryRead(bytes, out state, out error);
+        if (version == 250) return SimPunchRandomArchive.TryRead(bytes, out state, out error);
+        if (version == 249) return SimSawRandomArchive.TryRead(bytes, out state, out error);
+        if (version == 248) return SimPlayerExtraLightArchive.TryRead(bytes, out state, out error);
+        if (version == 247) return SimSectorSoundArchive.TryRead(bytes, out state, out error);
+        if (version == 246) return SimNoSplashAlertArchive.TryRead(bytes, out state, out error);
+        if (version == 245) return SimInCombatArchive.TryRead(bytes, out state, out error);
+        if (version == 244) return SimJustAttackedArchive.TryRead(bytes, out state, out error);
+        if (version == 243) return SimChaseGoalArchive.TryRead(bytes, out state, out error);
+        if (version == 242) return SimMonsterClassificationArchive.TryRead(bytes, out state, out error);
+        if (version == 241) return SimNoTargetArchive.TryRead(bytes, out state, out error);
+        if (version == 240) return SimCombatBehaviorArchive.TryRead(bytes, out state, out error);
+        if (version == 239) return SimTargetSwitchFlagsArchive.TryRead(bytes, out state, out error);
+        if (version == 238) return SimInfightingFlagsArchive.TryRead(bytes, out state, out error);
+        if (version == 237) return SimActorScoreArchive.TryRead(bytes, out state, out error);
+        if (version == 236) return SimSpawnBobPhaseArchive.TryRead(bytes, out state, out error);
+        if (version == 235) return SimPlayerSearchArchive.TryRead(bytes, out state, out error);
+        if (version == 234) return SimPlayerLookArchive.TryRead(bytes, out state, out error);
+        if (version == 233) return SimMVisBlockedArchive.TryRead(bytes, out state, out error);
+        if (version == 232) return SimHateSearchArchive.TryRead(bytes, out state, out error);
+        if (version == 231) return SimHateTargetingArchive.TryRead(bytes, out state, out error);
+        if (version == 230) return SimVulnerableArchive.TryRead(bytes, out state, out error);
+        if (version == 229) return SimGibHealthArchive.TryRead(bytes, out state, out error);
+        if (version == 228) return SimGibFactorArchive.TryRead(bytes, out state, out error);
+        if (version == 227) return SimActorDieRandomArchive.TryRead(bytes, out state, out error);
+        if (version == 226) return SimSpawnDeathArchive.TryRead(bytes, out state, out error);
+        if (version == 225) return SimSpawnDeathArchive.TryRead(bytes, out state, out error, legacyImmediate: true);
+        if (version == 224) return SimIsPuffArchive.TryRead(bytes, out state, out error);
+        if (version == 223) return SimNoBloodArchive.TryRead(bytes, out state, out error);
+        if (version == 222) return SimPuffRandomArchive.TryRead(bytes, out state, out error);
+        if (version == 221) return SimMapMonsterArchive.TryRead(bytes, out state, out error);
+        if (version == 220) return SimMapDecorationArchive.TryRead(bytes, out state, out error);
+        if (version == 219) return SimPuffArchive.TryRead(bytes, out state, out error);
+        if (version == 218) return SimMapPickupArchive.TryRead(bytes, out state, out error);
         if (version == 193) return SimFloorCarryArchive.TryRead(bytes, out state, out error);
         if (version == 192) return SimMoveWithSectorArchive.TryRead(bytes, out state, out error);
         if (version == 191) return SimSectorLinkArchive.TryRead(bytes, out state, out error);

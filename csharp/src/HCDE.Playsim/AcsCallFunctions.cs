@@ -405,14 +405,11 @@ internal static class AcsCallFunctions
         var value = stack[start + 2];
         stack.RemoveRange(start, argCount);
 
-        if (property is >= 5 and <= 9)
+        if (AcsActorStringProperties.IsSupported(property))
         {
-            var actor = tid == 0 ? activator : AcsActorTid.SingleFromTid(sim, tid);
-            if (actor is { Destroyed: false })
-            {
-                var name = actor.ActorSounds.GetValueOrDefault((ActorSoundType)(property - 5)) ?? "";
-                result = name.Equals(AcsStringIds.Lookup(value, stringTable, globalStrings), StringComparison.OrdinalIgnoreCase) ? 1 : 0;
-            }
+            var name = AcsActorStringProperties.Get(sim, activator, tid, property);
+            result = name is not null && name.Equals(AcsStringIds.Lookup(value, stringTable, globalStrings),
+                StringComparison.OrdinalIgnoreCase) ? 1 : 0;
         }
         else result = AcsActorProperties.Check(sim, activator, tid, property, value) ? 1 : 0;
         return true;
@@ -1031,7 +1028,7 @@ internal static class AcsCallFunctions
         _ = argCount > 4 ? stack[start + 4] : -1; // puff class name; cosmetic only for now.
         var damageTypeId = argCount > 5 ? stack[start + 5] : -1;
         var rangeFixed = argCount > 6 && stack[start + 6] != 0 ? stack[start + 6] : 2048 << 16;
-        _ = argCount > 7 ? stack[start + 7] : 0; // line-attack flags.
+        var flags = argCount > 7 ? stack[start + 7] : 0;
         var puffTid = argCount > 8 ? stack[start + 8] : 0;
         stack.RemoveRange(start, argCount);
 
@@ -1042,7 +1039,7 @@ internal static class AcsCallFunctions
             : AcsActorTid.AllFromTid(sim, tid).ToArray();
         foreach (var source in sources)
             AcsLineAttack.Attack(sim, source, unchecked(angleRaw << 16), unchecked(pitchRaw << 16),
-                damage, damageType, AcsToDouble(rangeFixed), puffTid, absoluteAngles: true);
+                damage, damageType, AcsToDouble(rangeFixed), puffTid, absoluteAngles: true, noRandomPuffZ: (flags & 1) != 0);
         return true;
     }
 

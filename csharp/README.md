@@ -90,6 +90,27 @@ dotnet run --project csharp/src/HCDE.Server -- --iwad C:/Games/doom2.wad --gamem
 
 This command runs the C# subset; it does not launch a complete graphical client.
 
+Rewind capture and historical ranged hitscan are opt-in. Enable both at startup:
+
+```powershell
+dotnet run --project csharp/src/HCDE.Server -- --iwad C:/Games/doom2.wad --rewind --lag-compensation
+```
+
+Both switches default off. `--lag-compensation` requires `--rewind` for historical
+traces; it does not enable capture implicitly. Startup limits are:
+
+| Option | Default | Accepted range |
+| --- | --- | --- |
+| `--rewind-interval` | 1 second | 0.25-30 seconds |
+| `--rewind-depth` | 10 frames | 1-64 frames |
+| `--rewind-max-mb` | 32 MiB | 1-512 MiB of retained archive payload |
+| `--lag-comp-max-age` | 12 ticks | 1-70 ticks at 35 Hz |
+
+This is a historical-trace subset: damage uses the restored live world's armor
+and modifiers. Full native historical damage replay, melee lag compensation,
+broader actor reconstruction, and live-client resynchronization remain incomplete.
+See the [current status audit](docs/HCDE_CSHARP_PHASE123_STATUS_AUDIT.md).
+
 | Component | C++ location | C# project | Status |
 | --- | --- | --- | --- |
 | Master protocol constants | `protocol/hcde_master_protocol.h` | `HCDE.Protocol` | Done |
