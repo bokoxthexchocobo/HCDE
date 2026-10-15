@@ -524,6 +524,8 @@ public class Actor : Thinker
     public bool OnGround { get; internal set; } = true;
     public bool NoGravity { get; set; }
     public bool Fly { get; set; }
+    public bool FlyCheat { get; set; }
+    public bool NoClip { get; set; }
     public bool NoFriction { get; set; }
     public bool Corpse { get; set; }
     public bool DontCorpse { get; set; }
@@ -623,6 +625,14 @@ public class Actor : Thinker
     /// <summary>Native <c>MF4_NOEXTREMEDEATH</c>. As an inflictor, this hit never uses an extreme death frame, even past the gib line.</summary>
     public bool NoExtremeDeath { get; set; }
     /// <summary>Native <c>RF_FULLBRIGHT</c> from an electric hit that passed the pain roll but missed the pain flicker.</summary>
+    public const double DefaultCameraHeight = int.MinValue;
+    private double _cameraHeight = DefaultCameraHeight;
+    public double CameraHeight
+    {
+        get => _cameraHeight;
+        set => _cameraHeight = double.IsFinite(value) ? value : throw new ArgumentOutOfRangeException(nameof(value));
+    }
+    public double GetCameraHeight() => CameraHeight == DefaultCameraHeight ? Height.ToDouble() / 2 : CameraHeight;
     public bool FullBright { get; set; }
     /// <summary>Native <c>MF_JUSTHIT</c>. Set when a pain flinch lands from the current or no chase target.</summary>
     public bool JustHit { get; set; }
@@ -647,6 +657,48 @@ public class Actor : Thinker
     /// <summary>Native <c>MF7_NEVERTARGET</c>. Wake-up will not chase this actor.</summary>
     public bool NeverTarget { get; set; }
     public bool SeeFriendlyMonsters { get; set; }
+    public bool LookAllAround { get; set; }
+    public bool StandStill { get; set; }
+    public bool InConversation { get; set; }
+    public bool DontFollowPlayers { get; set; }
+    public bool CanJump { get; set; }
+    public bool BlockAsPlayer { get; set; }
+    public bool FloorClipEnabled { get; set; }
+    public bool SpecialFloorClip { get; set; }
+    public bool AvoidHazards { get; set; }
+    public bool StayOnLift { get; set; }
+    public bool AvoidMelee { get; set; }
+    public int StrafeCount { get; set; }
+    public int FastChaseStrafeCount { get; set; }
+    /// <summary>Optional native byte-valued missile probability cap; null uses the built-in class default.</summary>
+    public byte? MinMissileChance { get; set; }
+    private double? _missileChanceMult;
+    private double? _maxTargetRange;
+    public double? MaxTargetRange
+    {
+        get => _maxTargetRange;
+        set => _maxTargetRange = value is { } range && !double.IsFinite(range)
+            ? throw new ArgumentOutOfRangeException(nameof(value)) : value;
+    }
+    private double? _meleeThreshold;
+    public double? MeleeThreshold
+    {
+        get => _meleeThreshold;
+        set => _meleeThreshold = value is { } threshold && !double.IsFinite(threshold)
+            ? throw new ArgumentOutOfRangeException(nameof(value)) : value;
+    }
+    public double? MissileChanceMult
+    {
+        get => _missileChanceMult;
+        set => _missileChanceMult = value is { } multiplier && !double.IsFinite(multiplier)
+            ? throw new ArgumentOutOfRangeException(nameof(value)) : value;
+    }
+    public bool CantLeaveFloorPic { get; set; }
+    public bool NoFear { get; set; }
+    public bool Frightened { get; set; }
+    public bool Frightening { get; set; }
+    public byte MoveDirection { get; set; }
+    public int MoveCount { get; set; }
     /// <summary>Native MF9_NOAUTOOFFSKULLFLY: zero horizontal velocity does not automatically end a skull charge.</summary>
     public bool NoAutoOffSkullFly { get; set; }
     /// <summary>Native MF3_NOEXPLODEFLOOR: a missile stops vertically on the floor without exploding.</summary>
@@ -777,17 +829,24 @@ public class Actor : Thinker
     }
 
     /// <summary>Native <c>OkayToSwitchTarget</c> subset for represented actor classes.</summary>
-    internal bool OkayToSwitchTarget(Actor other, MonsterBrain brain)
+    public bool OkayToSwitchTarget(Actor? other) => OkayToSwitchTargetCore(other, TargetId, ChaseThreshold);
+
+    internal bool OkayToSwitchTarget(Actor? other, MonsterBrain brain) =>
+        other is not PlayerPawn { NoTarget: true, NoTargetCheatOverride: null }
+        && OkayToSwitchTargetCore(other, brain.TargetId, brain.Threshold);
+
+    private bool OkayToSwitchTargetCore(Actor? other, uint? targetId, int threshold)
     {
-        if (!other.Shootable || other.Destroyed || other.Id == Id || other.NeverTarget || other is PlayerPawn { NoTarget: true })
+        if (other is null || !other.Shootable || other.Destroyed || ReferenceEquals(other, this)
+            || other.NeverTarget)
             return false;
-        if (NoTargetSwitch && brain.TargetId != null)
+        if (NoTargetSwitch && targetId != null)
             return false;
         var sim = Simulation;
         var master = sim?.Actors.FirstOrDefault(candidate => candidate.Id == MasterId && !candidate.Destroyed);
         var otherMaster = sim?.Actors.FirstOrDefault(candidate => candidate.Id == other.MasterId && !candidate.Destroyed);
-        var masterClass = master != null && master.ClassDoomEdNum > 0 && other.ClassDoomEdNum == master.ClassDoomEdNum;
-        var minionClass = otherMaster != null && otherMaster.ClassDoomEdNum > 0 && ClassDoomEdNum == otherMaster.ClassDoomEdNum;
+        var masterClass = master != null && MatchesMasterClass(other, master);
+        var minionClass = otherMaster != null && MatchesMasterClass(this, otherMaster);
         if ((masterClass || minionClass) && !IsHostile(other)
             && (other.ThingId != TidToHate || TidToHate == 0) && other.TidToHate == TidToHate)
             return false;
@@ -797,7 +856,7 @@ public class Actor : Thinker
             return false;
         if (other.NoTarget && (other.ThingId != TidToHate || TidToHate == 0) && !IsHostile(other))
             return false;
-        if (brain.Threshold != 0 && !QuickToRetaliate)
+        if (threshold != 0 && !QuickToRetaliate)
             return false;
         if (IsFriend(other))
             return false;
@@ -808,18 +867,20 @@ public class Actor : Thinker
             return false;
         if (other is PlayerPawn && NoHatePlayers)
             return false;
-        if (other is not PlayerPawn && infight == 0 && ProjectileImmune(other) && !IsHostile(other)
-            && (other.TidToHate == 0 || other.TidToHate != ThingId))
-            return false;
-        if (sim != null && brain.TargetId is { } currentId && other.Id != currentId && TidToHate != 0)
+        if (sim != null && targetId is { } currentId && TidToHate != 0)
         {
             var current = sim.Actors.FirstOrDefault(candidate => candidate.Id == currentId);
             if (current != null && !current.IsDead && !current.Destroyed && current.ThingId == TidToHate
-                && sim.NextSwitchTargetRandom() % 256 < 128
-                && CombatTrace.HasLineOfSight(sim, this, current))
+                && sim.NextSwitchTargetByte() < 128
+                && CombatTrace.CheckSight(sim, this, current))
                 return false;
         }
         return true;
+
+        static bool MatchesMasterClass(Actor candidate, Actor master) => master.ClassDoomEdNum > 0
+            && (candidate.ClassDoomEdNum == master.ClassDoomEdNum
+                || DoomActorCatalog.TrySpawnClassName(master.ClassDoomEdNum, out var name)
+                    && DoomActorCatalog.IsKindOfClassName(candidate.ClassDoomEdNum, name));
     }
     /// <summary>Native <c>MF6_NOTELEFRAG</c>. A spawn stomp skips this actor.</summary>
     public bool NoTelefrag { get; set; }
@@ -1280,6 +1341,9 @@ public class Actor : Thinker
     public double Top() => Z.ToDouble() + Height.ToDouble();
     public double CenterOffset() => Height.ToDouble() / 2;
     public double Center() => Z.ToDouble() + CenterOffset();
+    public double AttackOffset(double offset = 0) => this is PlayerPawn player
+        ? (player.AttackZOffset.ToDouble() + offset) * player.CrouchFactor : 8 + offset;
+    public double AttackOriginZ(double offset = 0) => Center() - FloorClip + AttackOffset(offset);
     public void SetZ(double z, bool moving = true) => Z = Fixed.FromDouble(z);
     public void AddZ(double offset, bool moving = true)
     {
@@ -1319,7 +1383,7 @@ public class Actor : Thinker
         {
             if (!PendingSpawnDeath)
             {
-                if (!Dormant) Brain?.Tick(Simulation, this);
+                if (!Dormant) Brain?.Tick(Simulation, this, nativeMovement: Simulation.NativeMonsterMovement);
                 else if (!IsDead) Brain?.AdvanceRaiseFrame();
             }
             TickMovement(Simulation);
@@ -1335,6 +1399,12 @@ public class Actor : Thinker
 
 public class PlayerPawn : Actor
 {
+    public bool NoClip2 { get; set; }
+    public bool Frozen { get; set; }
+    public bool TotallyFrozen { get; set; }
+    /// <summary>Native CF_NOTARGET; unset overrides retain the legacy shared NoTarget policy.</summary>
+    public bool NoTargetCheat { get => NoTargetCheatOverride ?? NoTarget; set => NoTargetCheatOverride = value; }
+    internal bool? NoTargetCheatOverride { get; set; }
     public int ExtraLight { get; set; }
     public int BonusCount { get; internal set; }
     public int PowerStrengthTics { get; internal set; }
@@ -1467,6 +1537,20 @@ public class PlayerPawn : Actor
     public const int DamagePowerDuration = 25 * GameTicClock.TicRate;
     public int PowerDamageTics { get; set; }
     public int PowerProtectionTics { get; set; }
+    public int PowerMaskTics { get; set; }
+    public bool HasIronFeetProtection => PowerIronFeetTics > 0 || PowerMaskTics > 0;
+    internal IronFeetMode SectorProtectionMode => PowerIronFeetTics > 0 && PowerIronFeetMode == IronFeetMode.Full
+        ? IronFeetMode.Full : PowerMaskTics > 0 ? IronFeetMode.Normal : PowerIronFeetMode;
+    public void GivePowerMask(int durationTics = 80 * GameTicClock.TicRate,
+        bool additiveTime = false, bool alwaysPickup = false) =>
+        PowerMaskTics = PowerupDuration.Merge(PowerMaskTics, durationTics, additiveTime, alwaysPickup);
+
+    public int PowerIronFeetTics { get; set; }
+    public IronFeetMode PowerIronFeetMode { get; set; }
+    public void GivePowerIronFeet(int durationTics = 60 * GameTicClock.TicRate,
+        bool additiveTime = false, bool alwaysPickup = false) =>
+        PowerIronFeetTics = PowerupDuration.Merge(PowerIronFeetTics, durationTics, additiveTime, alwaysPickup);
+
     public int PowerInfiniteAmmoTics { get; set; }
     public int PowerDrainTics { get; set; }
     public double PowerDrainStrength { get; internal set; } = 0.5;
@@ -1530,6 +1614,8 @@ public class PlayerPawn : Actor
         PowerBuddhaTics = 0;
         PowerDamageTics = 0;
         PowerProtectionTics = 0;
+        PowerMaskTics = 0;
+        PowerIronFeetTics = 0;
         PowerInfiniteAmmoTics = 0;
         PowerDrainTics = 0;
         PowerDrainStrength = 0.5;
@@ -1555,6 +1641,8 @@ public class PlayerPawn : Actor
         var duration = PowerupDuration.FromDefinition(definitionDuration);
         switch (kind)
         {
+            case ManagedPowerupKind.Mask: GivePowerMask(duration, additiveTime, alwaysPickup); break;
+            case ManagedPowerupKind.IronFeet: GivePowerIronFeet(duration, additiveTime, alwaysPickup); break;
             case ManagedPowerupKind.Damage: GivePowerDamage(duration, additiveTime, alwaysPickup); break;
             case ManagedPowerupKind.Protection: GivePowerProtection(duration, additiveTime, alwaysPickup); break;
             case ManagedPowerupKind.Buddha: GivePowerBuddha(duration, additiveTime, alwaysPickup); break;
@@ -1765,6 +1853,13 @@ public class PlayerPawn : Actor
         HasMovementInput = false;
         Inventory.AbsorbCount = 0;
         if (PowerBuddhaTics > 0) PowerBuddhaTics--;
+        if (PowerMaskTics > 0)
+        {
+            if (--PowerMaskTics > 0 && !IsDead && Simulation is { } maskSim
+                && (maskSim.Thinkers.Clock.Tic & 63) == 0)
+                ActorSoundActions.StartSound(this, "misc/mask", channel: 0);
+        }
+        if (PowerIronFeetTics > 0) PowerIronFeetTics--;
         if (PowerInfiniteAmmoTics > 0) PowerInfiniteAmmoTics--;
         if (PowerDrainTics > 0 && --PowerDrainTics == 0) PowerDrainStrength = 0.5;
         if (PowerRegenerationTics > 0)
@@ -1805,11 +1900,23 @@ public class PlayerPawn : Actor
             return;
         }
         var command = _commands.TryDequeue(out var queued) ? queued : default;
+        if (NoClip2)
+        {
+            if (!NoClip) { NoClip2 = false; if (!Fly) NoGravity = false; }
+            else { NoGravity = true; OnGround = true; }
+        }
         if (JustAttacked)
         {
             command = command with { YawDelta = 0, ForwardMove = 0x6400, SideMove = 0 };
             JustAttacked = false;
         }
+        if (TotallyFrozen)
+        {
+            command = new PlayerCommand { Use = command.Use };
+            TurnTicks = 0;
+        }
+        else if (Frozen)
+            command = command with { ForwardMove = 0, SideMove = 0, UpMove = 0 };
         HasMovementInput = command.ForwardMove != 0 || command.SideMove != 0;
         var freshUse = command.Use && !UseHeld;
         UseHeld = command.Use;
@@ -1884,7 +1991,7 @@ public class PlayerPawn : Actor
             {
                 if (NoGravity) NoGravity = false;
             }
-            else if (command.UpMove != 0 && Fly)
+            else if (command.UpMove != 0 && (Fly || NoClip2))
             {
                 var upMove = Math.Clamp((int)command.UpMove, -768, 768);
                 VelocityZ = Fixed.FromDouble(MovementSpeed.ToDouble() * upMove / 128.0);
@@ -1919,7 +2026,7 @@ public class PlayerPawn : Actor
     public void UpdateViewBob()
     {
         var speed = VelocityX.ToDouble() * VelocityX.ToDouble() + VelocityY.ToDouble() * VelocityY.ToDouble();
-        MovementBob = speed <= 0 ? 0 : Math.Min(MaxBob, speed * MoveBob);
+        MovementBob = NoClip2 || speed <= 0 ? 0 : Math.Min(MaxBob, speed * MoveBob);
         var angle = BobTimer / ViewBobSpeed * 360 * Math.PI / 180;
         ViewBobOffset = MovementBob * Math.Sin(angle) * 0.5;
         UpdateWeaponBob();
@@ -2269,6 +2376,8 @@ public static class ActorSpawner
         actor.SpecialPickup = PickupCatalog.IsPickup(actor.DoomEdNum, spawnOptions?.RavenHealthPickups ?? false);
         ApplyPrimaryFlags(actor, defaults, playerStart);
         DoomDecorationDefaults.Apply(actor, definitionType, defaults);
+        if (actor.DoomEdNum == PickupCatalog.RadSuit && defaults is null)
+            actor.States.SetSpawnFullBright(actor, true);
         PatrolMarkers.Apply(actor, definitionType, defaults);
         actor.SpawnCanPickupItems = actor.CanPickupItems;
         actor.SpawnSpecialPickup = actor.SpecialPickup;
@@ -2474,7 +2583,8 @@ public sealed class AuthoritySimulation
     internal int DehackedMaxSoulsphere => _dehacked?.MaxSoulsphere ?? 200;
     internal int DehackedSoulsphereHealth => _dehacked?.SoulsphereHealth ?? 100;
     internal int DehackedMegasphereHealth => _dehacked?.MegasphereHealth ?? 200;
-    private uint _uniqueTidRandomState;
+    private ulong? _uniqueTidRandomState;
+    internal ulong? UniqueTidRandomState => _uniqueTidRandomState;
     private uint _strobeRandomState;
     private uint _jumpRandomState;
     private bool _hasJumpRandomState;
@@ -2559,6 +2669,35 @@ public sealed class AuthoritySimulation
     private ulong _punchRandomState;
     private readonly ulong _initialPunchRandomState;
     private bool _hasPunchRandomState;
+    private ulong? _newChaseDirRandomState;
+    private ulong? _tryWalkRandomState;
+    private ulong? _stayOnLiftRandomState;
+    private ulong? _scaredyCatRandomState;
+    private ulong? _checkMissileRandomState;
+    private ulong? _defectRandomState;
+    private ulong? _sectorDamageRandomState;
+    internal ulong? SectorDamageRandomState => _sectorDamageRandomState;
+    internal int NextSectorDamageByte() => NextWanderByte(ref _sectorDamageRandomState, 0x953d8868u);
+    private ulong? _nativeSwitchTargetRandomState;
+    internal ulong? NativeSwitchTargetRandomState => _nativeSwitchTargetRandomState;
+    internal int NextSwitchTargetByte() => NextWanderByte(ref _nativeSwitchTargetRandomState, 0x71a89a33u);
+    private ulong? _checkSightRandomState;
+    internal int NextCheckSightByte() => NextWanderByte(ref _checkSightRandomState, 0xbf9374eau);
+    internal int NextDefectByte() => NextWanderByte(ref _defectRandomState, 0x3d303db1u);
+    internal int NextCheckMissileByte() => NextWanderByte(ref _checkMissileRandomState, 0xfbb4b7f2u);
+    internal int NextScaredyCatByte() => NextWanderByte(ref _scaredyCatRandomState, 0x39450eceu);
+    internal int NextStayOnLiftByte() => NextWanderByte(ref _stayOnLiftRandomState, 0x5350ed82u);
+    private ulong? _avoidCrushRandomState;
+    internal int NextAvoidCrushByte() => NextWanderByte(ref _avoidCrushRandomState, 0x5eef6bb0u);
+    private ulong? _enemyStrafeRandomState;
+    internal int NextEnemyStrafeByte() => NextWanderByte(ref _enemyStrafeRandomState, 0x2748785bu);
+    internal int NextNewChaseDirByte() => NextWanderByte(ref _newChaseDirRandomState, 0x5f7b8192u);
+    internal int NextTryWalkByte() => NextWanderByte(ref _tryWalkRandomState, 0xf43936d9u);
+    private int NextWanderByte(ref ulong? saved, uint name)
+    {
+        var state = saved ?? NativeStateRandom.Seed(unchecked((uint)RngSeed), name);
+        var result = (int)(NativeStateRandom.Next(ref state) & 255); saved = state; return result;
+    }
     private ulong _skipTargetRandomState;
     private readonly ulong _initialSkipTargetRandomState;
     private bool _hasSkipTargetRandomState;
@@ -2595,6 +2734,7 @@ public sealed class AuthoritySimulation
     private uint _lightFlashRandomState;
     private uint _fireFlickerRandomState;
     private readonly List<SectorMotion> _motions = new();
+    private readonly SimLineAction[] _initialLineActions;
 
     private AuthoritySimulation(
         PlayLevel level,
@@ -2612,6 +2752,7 @@ public sealed class AuthoritySimulation
         _mapMonsterTypes = actors.Where(actor => actor.MapMonsterThingIndex.HasValue)
             .ToDictionary(actor => actor.MapMonsterThingIndex!.Value, actor => actor.DoomEdNum);
         Level = level;
+        LevelLiftMarkers.Apply(level);
         if (!double.IsFinite(level.LevelGravity))
             throw new ArgumentOutOfRangeException(nameof(level), "Level gravity must be finite.");
         if (level.AirControl is { } airControl && !double.IsFinite(airControl))
@@ -2625,7 +2766,7 @@ public sealed class AuthoritySimulation
         CombatRandomState = unchecked((uint)rngSeed) ^ 0x9e3779b9u;
         SwitchTargetRandomState = unchecked((uint)rngSeed) ^ 0x73776974u;
         DmSpawnRandomState = unchecked((uint)rngSeed) ^ 0x646d7370u;
-        _uniqueTidRandomState = unchecked((uint)rngSeed) ^ 0x756e6974u;
+        _uniqueTidRandomState = null;
         _strobeRandomState = unchecked((uint)rngSeed) ^ 0x7374726fu;
         _jumpRandomState = unchecked((uint)rngSeed) ^ 0x63616a75u;
         _flickerRandomState = unchecked((uint)rngSeed) ^ 0x666c6963u;
@@ -2677,6 +2818,10 @@ public sealed class AuthoritySimulation
         FastMonsters = spawnOptions.FastMonsters ?? Skill == 4;
         SlowMonsters = spawnOptions.SlowMonsters;
         NoMonsterPain = spawnOptions.NoMonsterPain;
+        NativeMonsterMovement = spawnOptions.NativeMonsterMovement;
+        if (!double.IsFinite(spawnOptions.SkillAggressiveness))
+            throw new ArgumentOutOfRangeException(nameof(spawnOptions.SkillAggressiveness));
+        SkillAggressiveness = Math.Clamp(spawnOptions.SkillAggressiveness, 0, 1);
         if (!double.IsFinite(spawnOptions.PlayerDamageFactor) || spawnOptions.PlayerDamageFactor < 0)
             throw new ArgumentOutOfRangeException(nameof(spawnOptions.PlayerDamageFactor));
         PlayerDamageFactor = spawnOptions.PlayerDamageFactor;
@@ -2722,6 +2867,7 @@ public sealed class AuthoritySimulation
                 ? CeilingOf(actor.SectorIndex) - actor.Height.ToDouble() - actor.SpawnZOffset
                 : actor.Z.ToDouble() + actor.SpawnZOffset;
             actor.Z = Fixed.FromDouble(Math.Clamp(spawnZ, short.MinValue, short.MaxValue));
+            if (actor.FloorClipEnabled) ActorPropertyActions.AdjustFloorClip(this, actor);
             actor.OnGround = actor.SpawnCeiling ? actor.Z.ToDouble() <= FloorOf(actor.SectorIndex) : actor.SpawnZOffset <= 0;
             ActorPhysics.FitToSector(this, actor, carryFloor: false);
             actor.RememberPosition();
@@ -2747,6 +2893,7 @@ public sealed class AuthoritySimulation
         Rewind = new RewindBuffer();
         ReverbActive = compat.HasFlag(CompatSurface.Eternity)
             && level.Sectors.Any(sector => sector.Special == CompatSurfaceRules.EternityReverbSpecial);
+        _initialLineActions = level.Lines.Select(SimLineAction.Capture).ToArray();
         RecomputeChecksum();
         PublishStatus();
     }
@@ -2855,6 +3002,10 @@ public sealed class AuthoritySimulation
     public bool SlowMonsters { get; }
     /// <summary>Native skill NoPain. Suppresses non-player damage pain, preserving wakeup.</summary>
     public bool NoMonsterPain { get; }
+    /// <summary>Enables converted chase movement on automatic ticks. Supply the same policy when loading saves.</summary>
+    public bool NativeMonsterMovement { get; }
+    /// <summary>MAPINFO-style aggressiveness, clamped to 0..1. Supply the same policy when loading saves.</summary>
+    public double SkillAggressiveness { get; }
     /// <summary>Native server player damage factor.</summary>
     public double PlayerDamageFactor { get; }
     /// <summary>Native skill DamageFactor, applied to player damage before server scaling.</summary>
@@ -3382,13 +3533,18 @@ public sealed class AuthoritySimulation
         return true;
     }
 
-    private Actor CreateDroppedPickupActor(uint id, int doomEdNum, Fixed x, Fixed y) => new()
+    private Actor CreateDroppedPickupActor(uint id, int doomEdNum, Fixed x, Fixed y)
     {
-        Id = id, DoomEdNum = doomEdNum, X = x, Y = y, Level = Level, Simulation = this,
-        SectorIndex = ActorPhysics.SectorAt(Level, x.ToDouble(), y.ToDouble()),
-        Solid = false, Shootable = false, Dropped = true, SpecialPickup = true,
-        Height = PickupCatalog.HeightOf(doomEdNum), SpawnedDroppedPickup = true
-    };
+        var actor = new Actor
+        {
+            Id = id, DoomEdNum = doomEdNum, X = x, Y = y, Level = Level, Simulation = this,
+            SectorIndex = ActorPhysics.SectorAt(Level, x.ToDouble(), y.ToDouble()),
+            Solid = false, Shootable = false, Dropped = true, SpecialPickup = true,
+            Height = PickupCatalog.HeightOf(doomEdNum), SpawnedDroppedPickup = true
+        };
+        if (doomEdNum == PickupCatalog.RadSuit) actor.States.SetSpawnFullBright(actor, true);
+        return actor;
+    }
 
     /// <summary>
     /// <c>BackpackItem.CreateTossable</c>. The pack leaves the player, the caps fall
@@ -3500,8 +3656,10 @@ public sealed class AuthoritySimulation
 
     internal uint NextUniqueTidRandom()
     {
-        _uniqueTidRandomState = unchecked(1664525u * _uniqueTidRandomState + 1013904223u);
-        return _uniqueTidRandomState;
+        var state = _uniqueTidRandomState ?? NativeStateRandom.Seed(unchecked((uint)RngSeed), 0xc388ea6bu);
+        var value = NativeStateRandom.Next(ref state);
+        _uniqueTidRandomState = state;
+        return value;
     }
 
     private uint NextDmSpawnRandom()
@@ -3794,9 +3952,8 @@ public sealed class AuthoritySimulation
             Id = savedId ?? _nextActorId, Level = Level, Simulation = this,
             SpawnSoundSource = spawnSoundSource,
             X = owner?.X ?? default, Y = owner?.Y ?? default,
-            Z = Fixed.FromDouble((owner?.Z.ToDouble() ?? 0) + (owner is PlayerPawn firingPlayer
-                ? owner.Height.ToDouble() / 2 + (firingPlayer.AttackZOffset.ToDouble() - 4) * firingPlayer.CrouchFactor
-                : kind == ProjectileKind.RevenantTracer ? 48 : 32)),
+            Z = Fixed.FromDouble(owner is PlayerPawn ? owner.AttackOriginZ(-4)
+                : (owner?.Z.ToDouble() ?? 0) + (kind == ProjectileKind.RevenantTracer ? 48 : 32) - (owner?.FloorClip ?? 0)),
             Angle = owner?.Angle ?? default,
         };
         if (owner is PlayerPawn && projectile.Z.ToDouble() < FloorOf(owner.SectorIndex))
@@ -4023,6 +4180,20 @@ public sealed class AuthoritySimulation
             SkelFistRandomState = _hasSkelFistRandomState ? _skelFistRandomState : null,
             SawRandomState = _hasSawRandomState ? _sawRandomState : null,
             PunchRandomState = _hasPunchRandomState ? _punchRandomState : null,
+            NewChaseDirRandomState = _newChaseDirRandomState,
+            TryWalkRandomState = _tryWalkRandomState,
+            AvoidCrushRandomState = _avoidCrushRandomState,
+            StayOnLiftRandomState = _stayOnLiftRandomState,
+            ScaredyCatRandomState = _scaredyCatRandomState,
+            CheckMissileRandomState = _checkMissileRandomState,
+            DefectRandomState = _defectRandomState,
+            CheckSightRandomState = _checkSightRandomState,
+            UniqueTidRandomState = _uniqueTidRandomState,
+            SectorDamageRandomState = _sectorDamageRandomState,
+            NativeSwitchTargetRandomState = _nativeSwitchTargetRandomState,
+            SwitchTargetRandomState = SwitchTargetRandomState == (unchecked((uint)RngSeed) ^ 0x73776974u)
+                ? null : SwitchTargetRandomState,
+            EnemyStrafeRandomState = _enemyStrafeRandomState,
             SkipTargetRandomState = _hasSkipTargetRandomState ? _skipTargetRandomState : null,
             CPosRefireRandomState = _hasCPosRefireRandomState ? _cPosRefireRandomState : null,
             CPosAttackRandomState = _hasCPosAttackRandomState ? _cPosAttackRandomState : null,
@@ -4083,6 +4254,14 @@ public sealed class AuthoritySimulation
                 MonsterClassificationFlag = actor.IsMonster != ((actor.ResurrectionCollisionFlags.GetValueOrDefault() & 32) != 0)
                     ? actor.IsMonster ? 1 : 0 : null,
                 NoTargetFlag = actor.NoTarget ? 1 : null,
+                BuddhaFlag = actor.Buddha ? 1 : 0,
+                FlyCheatFlag = actor.FlyCheat ? 1 : 0,
+                NoClipFlag = actor.NoClip ? 1 : 0,
+                PlayerNoClip2Flag = actor is PlayerPawn noClipPlayer && noClipPlayer.NoClip2 ? 1 : 0,
+                PlayerFrozenFlags = actor is PlayerPawn frozenPlayer
+                    ? (frozenPlayer.Frozen ? 1 : 0) | (frozenPlayer.TotallyFrozen ? 2 : 0) : 0,
+                PlayerNoTargetCheatOverride = actor is PlayerPawn noTargetPlayer
+                    ? noTargetPlayer.NoTargetCheatOverride is { } cheat ? cheat ? 1 : 0 : null : null,
                 ChaseGoalFlag = actor.ChaseGoal ? 1 : null,
                 JustAttackedFlag = actor.JustAttacked ? 1 : null,
                 InCombatFlag = actor.InCombat ? 1 : null,
@@ -4231,6 +4410,10 @@ public sealed class AuthoritySimulation
                 PowerDamageTics = actor is PlayerPawn damagePlayer ? damagePlayer.PowerDamageTics : 0,
                 PowerProtectionTics = actor is PlayerPawn protectionPlayer ? protectionPlayer.PowerProtectionTics : 0,
                 PowerBuddhaTics = actor is PlayerPawn buddhaPlayer ? buddhaPlayer.PowerBuddhaTics : 0,
+                CameraHeight = actor.CameraHeight,
+                PowerIronFeetMode = actor is PlayerPawn modePlayer ? (int)modePlayer.PowerIronFeetMode : 0,
+                PowerMaskTics = actor is PlayerPawn maskPlayer ? maskPlayer.PowerMaskTics : 0,
+                PowerIronFeetTics = actor is PlayerPawn feetPlayer ? feetPlayer.PowerIronFeetTics : 0,
                 PowerInfiniteAmmoTics = actor is PlayerPawn infiniteAmmoPlayer ? infiniteAmmoPlayer.PowerInfiniteAmmoTics : 0,
                 PowerDrainTics = actor is PlayerPawn timedDrainPlayer ? timedDrainPlayer.PowerDrainTics : 0,
                 PowerDrainStrength = actor is PlayerPawn drainStrengthPlayer ? drainStrengthPlayer.PowerDrainStrength : 0.5,
@@ -4255,12 +4438,14 @@ public sealed class AuthoritySimulation
                         || weaponPlayer.Inventory.Selected != WeaponKind.Pistol || weaponPlayer.Inventory.Pending.HasValue
                         || weaponPlayer.WeaponOffsetY != PlayerPawn.WeaponTop || weaponPlayer.WeaponLowering
                         || weaponPlayer.InstantWeaponSwitch || weaponPlayer.AttackPressed
+                        || weaponPlayer.VelocityX.Raw != 0 || weaponPlayer.VelocityY.Raw != 0
                         || weaponPlayer.BobTimer != Thinkers.Clock.Tic || weaponPlayer.ViewBobOffset != 0 || weaponPlayer.MovementBob != 0
                         || weaponPlayer.WeaponBobX != 0 || weaponPlayer.WeaponBobY != 0
                         || weaponPlayer.TurnTicks != 0 || weaponPlayer.TurnHeld)
                     ? new SimWeaponInventory(weaponPlayer.Inventory.Weapons, weaponPlayer.Inventory.Selected, weaponPlayer.Inventory.Pending,
                         weaponPlayer.WeaponOffsetY, weaponPlayer.WeaponLowering, weaponPlayer.InstantWeaponSwitch, weaponPlayer.AttackPressed,
-                        weaponPlayer.BobTimer != Thinkers.Clock.Tic || weaponPlayer.ViewBobOffset != 0 || weaponPlayer.MovementBob != 0
+                        weaponPlayer.VelocityX.Raw != 0 || weaponPlayer.VelocityY.Raw != 0
+                            || weaponPlayer.BobTimer != Thinkers.Clock.Tic || weaponPlayer.ViewBobOffset != 0 || weaponPlayer.MovementBob != 0
                             || weaponPlayer.WeaponBobX != 0 || weaponPlayer.WeaponBobY != 0 ? weaponPlayer.BobTimer : null,
                         weaponPlayer.ViewBobOffset, weaponPlayer.MovementBob, weaponPlayer.WeaponBobX, weaponPlayer.WeaponBobY,
                         weaponPlayer.TurnTicks, weaponPlayer.TurnHeld) : null,
@@ -4339,6 +4524,23 @@ public sealed class AuthoritySimulation
                 Accuracy = actor.Accuracy,
                 FriendlySeeBlocks = actor.FriendlySeeBlocks,
                 SeeFriendlyMonstersFlag = actor.SeeFriendlyMonsters ? 1 : 0,
+                LookBehaviorFlags = (actor.LookAllAround ? 1 : 0) | (actor.StandStill ? 2 : 0),
+                InConversationFlag = actor.InConversation ? 1 : 0,
+                DontFollowPlayersFlag = actor.DontFollowPlayers ? 1 : 0,
+                CanJumpFlag = actor.CanJump ? 1 : 0,
+                BlockAsPlayerFlag = actor.BlockAsPlayer ? 1 : 0,
+                FloorClipFlags = (actor.FloorClipEnabled ? 1 : 0) | (actor.SpecialFloorClip ? 2 : 0),
+                AvoidHazardsFlag = actor.AvoidHazards ? 1 : 0,
+                StayOnLiftFlag = actor.StayOnLift ? 1 : 0,
+                AvoidMeleeFlag = actor.AvoidMelee ? 1 : 0, StrafeCount = actor.StrafeCount,
+                FastChaseStrafeCount = actor.FastChaseStrafeCount,
+                MinMissileChanceOverride = actor.MinMissileChance ?? -1,
+                MissileChanceMultOverride = actor.MissileChanceMult,
+                MaxTargetRangeOverride = actor.MaxTargetRange, MeleeThresholdOverride = actor.MeleeThreshold,
+                CantLeaveFloorPicFlag = actor.CantLeaveFloorPic ? 1 : 0,
+                FearFlags = (actor.NoFear ? 1 : 0) | (actor.Frightened ? 2 : 0) | (actor.Frightening ? 4 : 0),
+                MoveDirection = actor.MoveDirection,
+                MoveCount = actor.MoveCount,
                 SoundClassOverride = actor is PlayerPawn { SoundClass: not null } soundPlayer ? new SimSoundClass(soundPlayer.SoundClass) : null,
                 PickupAutoUseOverride = actor.PickupAutoUseOverride,
                 Dropped = actor.Dropped,
@@ -4360,6 +4562,8 @@ public sealed class AuthoritySimulation
         }
 
         state.SectorMotions = _motions.Select(SimSectorMotionArchive.Capture).ToArray();
+        var lineActions = Level.Lines.Select(SimLineAction.Capture).ToArray();
+        state.LineActions = lineActions.SequenceEqual(_initialLineActions) ? null : lineActions;
         state.DoorMotions = _motions.Where(m => m.Kind == MotionKind.Door).Select(SimDoorMotionArchive.Capture).ToArray();
         for (var i = 0; i < Floors.Length; i++)
             state.Sectors.Add((Floors[i], Ceilings[i]));
@@ -4400,6 +4604,9 @@ public sealed class AuthoritySimulation
 
     public void RestoreState(SimSaveState state)
     {
+        SimLineActionsArchive.Validate(state);
+        if (state.LineActions is { } actions && actions.Count != Level.Lines.Count)
+            throw new InvalidOperationException("Saved line action count does not match the level.");
         SimSectorSoundArchive.Validate(state);
         SimPlayerExtraLightArchive.Validate(state);
         SimPowerStrengthArchive.Validate(state);
@@ -4413,6 +4620,43 @@ public sealed class AuthoritySimulation
         SimAccuracyArchive.Validate(state);
         SimFriendlySeeBlocksArchive.Validate(state);
         SimSeeFriendlyMonstersArchive.Validate(state);
+        SimLookBehaviorArchive.Validate(state);
+        SimConversationArchive.Validate(state);
+        SimDontFollowPlayersArchive.Validate(state);
+        SimCanJumpArchive.Validate(state);
+        SimFastChaseArchive.Validate(state);
+        SimMinMissileChanceArchive.Validate(state);
+        SimMissileChanceMultArchive.Validate(state);
+        SimMaxTargetRangeArchive.Validate(state);
+        SimMeleeThresholdArchive.Validate(state);
+        if (state.CheckSightRandomState.HasValue && state.GeometryHealth is null)
+            throw new InvalidOperationException("CheckSight random state requires geometry state.");
+        if (state.SwitchTargetRandomState.HasValue && state.GeometryHealth is null)
+            throw new InvalidOperationException("SwitchTarget random state requires geometry state.");
+        if (state.UniqueTidRandomState.HasValue && state.GeometryHealth is null)
+            throw new InvalidOperationException("Unique TID random state requires geometry state.");
+        if (state.SectorDamageRandomState.HasValue && state.GeometryHealth is null)
+            throw new InvalidOperationException("Sector damage random state requires geometry state.");
+        if (state.NativeSwitchTargetRandomState.HasValue && state.GeometryHealth is null)
+            throw new InvalidOperationException("Native SwitchTarget random state requires geometry state.");
+        if (state.DefectRandomState.HasValue && state.GeometryHealth is null)
+            throw new InvalidOperationException("Defect random state requires geometry state.");
+        SimBlockAsPlayerArchive.Validate(state);
+        if (state.CheckMissileRandomState.HasValue && state.GeometryHealth is null)
+            throw new InvalidOperationException("CheckMissile random state requires geometry state.");
+        if (state.ScaredyCatRandomState.HasValue && state.GeometryHealth is null)
+            throw new InvalidOperationException("ScaredyCat random state requires geometry state.");
+        SimFloorClipFlagsArchive.Validate(state);
+        SimAvoidHazardsArchive.Validate(state);
+        SimStayOnLiftArchive.Validate(state);
+        if (state.StayOnLiftRandomState.HasValue && state.GeometryHealth is null)
+            throw new InvalidOperationException("StayOnLift random state requires geometry state.");
+        if (state.AvoidCrushRandomState.HasValue && state.GeometryHealth is null)
+            throw new InvalidOperationException("AvoidCrush random state requires geometry state.");
+        SimMeleeAvoidanceArchive.Validate(state);
+        SimCantLeaveFloorPicArchive.Validate(state);
+        SimFearFlagsArchive.Validate(state);
+        SimWanderArchive.Validate(state);
         if (state.SkipTargetRandomState.HasValue && state.GeometryHealth is null)
             throw new InvalidOperationException("SkipTarget random archives require geometry state.");
         SimSoundClassArchive.Validate(state);
@@ -4494,6 +4738,16 @@ public sealed class AuthoritySimulation
         SimTargetSwitchFlagsArchive.Validate(state);
         SimCombatBehaviorArchive.Validate(state);
         SimNoTargetArchive.Validate(state);
+        SimPlayerNoTargetCheatArchive.Validate(state);
+        SimBuddhaArchive.Validate(state);
+        SimFlyCheatArchive.Validate(state);
+        SimPlayerFrozenArchive.Validate(state);
+        SimNoClipArchive.Validate(state);
+        SimPlayerNoClip2Archive.Validate(state);
+        SimIronFeetArchive.Validate(state);
+        SimIronFeetModeArchive.Validate(state);
+        SimPowerMaskArchive.Validate(state);
+        SimCameraHeightArchive.Validate(state);
         SimMonsterClassificationArchive.Validate(state);
         SimNoBloodArchive.Validate(state);
         SimIsPuffArchive.Validate(state);
@@ -4711,6 +4965,19 @@ public sealed class AuthoritySimulation
         _hasSawRandomState = state.SawRandomState.HasValue;
         _punchRandomState = state.PunchRandomState ?? _initialPunchRandomState;
         _hasPunchRandomState = state.PunchRandomState.HasValue;
+        _newChaseDirRandomState = state.NewChaseDirRandomState;
+        _tryWalkRandomState = state.TryWalkRandomState;
+        _avoidCrushRandomState = state.AvoidCrushRandomState;
+        _stayOnLiftRandomState = state.StayOnLiftRandomState;
+        _scaredyCatRandomState = state.ScaredyCatRandomState;
+        _checkMissileRandomState = state.CheckMissileRandomState;
+        _defectRandomState = state.DefectRandomState;
+        _checkSightRandomState = state.CheckSightRandomState;
+        _uniqueTidRandomState = state.UniqueTidRandomState;
+        _sectorDamageRandomState = state.SectorDamageRandomState;
+        _nativeSwitchTargetRandomState = state.NativeSwitchTargetRandomState;
+        SwitchTargetRandomState = state.SwitchTargetRandomState ?? (unchecked((uint)RngSeed) ^ 0x73776974u);
+        _enemyStrafeRandomState = state.EnemyStrafeRandomState;
         _skipTargetRandomState = state.SkipTargetRandomState ?? _initialSkipTargetRandomState;
         _hasSkipTargetRandomState = state.SkipTargetRandomState.HasValue;
         _cPosRefireRandomState = state.CPosRefireRandomState ?? _initialCPosRefireRandomState;
@@ -4733,6 +5000,8 @@ public sealed class AuthoritySimulation
         GibFactor = state.GibFactor ?? 1;
         _levelGravityOverride = state.LevelGravityOverride;
         Thinkers.Clock.Restore(state.Tic);
+        for (var i = 0; i < Level.Lines.Count; i++)
+            (state.LineActions?[i] ?? _initialLineActions[i]).Apply(Level.Lines[i]);
         if (state.GeometryHealth is { } health)
         {
             for (var i = 0; i < Level.Lines.Count; i++) Level.Lines[i].Health = health.Lines[i];
@@ -5074,6 +5343,17 @@ public sealed class AuthoritySimulation
             actor.IsMonster = pose.MonsterClassificationFlag is { } monsterClassification
                 ? monsterClassification == 1 : (actor.ResurrectionCollisionFlags.GetValueOrDefault() & 32) != 0;
             actor.NoTarget = pose.NoTargetFlag == 1;
+            actor.Buddha = pose.BuddhaFlag != 0;
+            actor.FlyCheat = pose.FlyCheatFlag != 0;
+            actor.NoClip = pose.NoClipFlag != 0;
+            if (actor is PlayerPawn noClipPlayer) noClipPlayer.NoClip2 = pose.PlayerNoClip2Flag != 0;
+            if (actor is PlayerPawn frozenPlayer)
+            {
+                frozenPlayer.Frozen = (pose.PlayerFrozenFlags & 1) != 0;
+                frozenPlayer.TotallyFrozen = (pose.PlayerFrozenFlags & 2) != 0;
+            }
+            if (actor is PlayerPawn noTargetPlayer)
+                noTargetPlayer.NoTargetCheatOverride = pose.PlayerNoTargetCheatOverride is { } cheat ? cheat == 1 : null;
             actor.ChaseGoal = pose.ChaseGoalFlag == 1;
             actor.JustAttacked = pose.JustAttackedFlag == 1;
             actor.InCombat = pose.InCombatFlag == 1;
@@ -5245,6 +5525,9 @@ public sealed class AuthoritySimulation
                 powerPlayer.PowerDamageTics = pose.PowerDamageTics;
                 powerPlayer.PowerProtectionTics = pose.PowerProtectionTics;
                 powerPlayer.PowerBuddhaTics = pose.PowerBuddhaTics;
+                powerPlayer.PowerIronFeetMode = (IronFeetMode)pose.PowerIronFeetMode;
+                powerPlayer.PowerMaskTics = pose.PowerMaskTics;
+                powerPlayer.PowerIronFeetTics = pose.PowerIronFeetTics;
                 powerPlayer.PowerInfiniteAmmoTics = pose.PowerInfiniteAmmoTics;
                 powerPlayer.PowerDrainTics = pose.PowerDrainTics;
                 powerPlayer.PowerDrainStrength = pose.PowerDrainStrength;
@@ -5348,6 +5631,26 @@ public sealed class AuthoritySimulation
             actor.Accuracy = pose.Accuracy;
             actor.FriendlySeeBlocks = pose.FriendlySeeBlocks;
             actor.SeeFriendlyMonsters = pose.SeeFriendlyMonstersFlag != 0;
+            actor.LookAllAround = (pose.LookBehaviorFlags & 1) != 0;
+            actor.StandStill = (pose.LookBehaviorFlags & 2) != 0;
+            actor.InConversation = pose.InConversationFlag != 0;
+            actor.DontFollowPlayers = pose.DontFollowPlayersFlag != 0;
+            actor.CanJump = pose.CanJumpFlag != 0;
+            actor.BlockAsPlayer = pose.BlockAsPlayerFlag != 0;
+            actor.FloorClipEnabled = (pose.FloorClipFlags & 1) != 0; actor.SpecialFloorClip = (pose.FloorClipFlags & 2) != 0;
+            actor.AvoidHazards = pose.AvoidHazardsFlag != 0;
+            actor.StayOnLift = pose.StayOnLiftFlag != 0;
+            actor.AvoidMelee = pose.AvoidMeleeFlag != 0; actor.StrafeCount = pose.StrafeCount;
+            actor.FastChaseStrafeCount = pose.FastChaseStrafeCount;
+            actor.MinMissileChance = pose.MinMissileChanceOverride < 0 ? null : (byte)pose.MinMissileChanceOverride;
+            actor.MissileChanceMult = pose.MissileChanceMultOverride;
+            actor.MaxTargetRange = pose.MaxTargetRangeOverride; actor.MeleeThreshold = pose.MeleeThresholdOverride;
+            actor.CantLeaveFloorPic = pose.CantLeaveFloorPicFlag != 0;
+            actor.NoFear = (pose.FearFlags & 1) != 0;
+            actor.Frightened = (pose.FearFlags & 2) != 0;
+            actor.Frightening = (pose.FearFlags & 4) != 0;
+            actor.MoveDirection = (byte)pose.MoveDirection;
+            actor.MoveCount = pose.MoveCount;
             actor.Stamina = pose.ActorSpecial?.Stamina ?? 0;
             actor.PickupAutoUseOverride = pose.PickupAutoUseOverride;
             actor.Dropped = pose.Dropped;
@@ -5364,6 +5667,7 @@ public sealed class AuthoritySimulation
             if (pose.BotIdentity?.BasicAttack is not null) actor.Brain?.RestoreBasicAttackState(pose.BasicAttackState);
             else if (pose.BotIdentity is { BrainPresent: true }) actor.Brain?.RestoreProfileChaseHistory(pose.ProfileChaseHistory);
             if (state.IncludesBotIdentities) actor.RestoreDamageHistory(pose.DamageHistory);
+            actor.CameraHeight = pose.CameraHeight;
             actor.FullBright = pose.FullBrightFlag is { } brightness ? brightness == 1 : actor.States.CurrentFullBright;
             if (actor is PlayerPawn player)
             {
@@ -5512,6 +5816,7 @@ public sealed class AuthoritySimulation
         player.Stamina = 0;
         player.Accuracy = 0;
         player.FriendlySeeBlocks = 10;
+        player.MoveDirection = 0; player.MoveCount = 0;
         player.BonusHealth = 0;
         player.MaxPickupHealth = 0;
         player.LastDamageType = null;
@@ -5772,11 +6077,51 @@ public sealed class AuthoritySimulation
                 foreach (var character in floor.Terrain) hash = Mix(hash, char.ToUpperInvariant(character));
             }
         }
+        foreach (var splash in Level.TerrainSplashDefinitions)
+        {
+            if (splash.SmallSplashSound.Length != 0)
+            {
+                hash = Mix(hash, 0x54535353u);
+                hash = Mix(hash, (uint)splash.Name.Length);
+                foreach (var character in splash.Name) hash = Mix(hash, char.ToUpperInvariant(character));
+                hash = Mix(hash, (uint)splash.SmallSplashSound.Length);
+                foreach (var character in splash.SmallSplashSound) hash = Mix(hash, char.ToUpperInvariant(character));
+            }
+            if (splash.NormalSplashSound.Length == 0) continue;
+            hash = Mix(hash, 0x54534e53u);
+            hash = Mix(hash, (uint)splash.Name.Length);
+            foreach (var character in splash.Name) hash = Mix(hash, char.ToUpperInvariant(character));
+            hash = Mix(hash, (uint)splash.NormalSplashSound.Length);
+            foreach (var character in splash.NormalSplashSound) hash = Mix(hash, char.ToUpperInvariant(character));
+        }
         if (Level.TerrainDefinitions.Count != 0)
         {
             hash = Mix(hash, 0x54455244u);
             foreach (var terrain in Level.TerrainDefinitions)
             {
+                if (terrain.FootClip != 0) { hash = Mix(hash, 0x5446434cu); hash = MixDouble(hash, terrain.FootClip); }
+                if (terrain.AllowProtection) hash = Mix(hash, 0x54415052u);
+                if (terrain.IsLiquid) hash = Mix(hash, 0x544c4951u);
+                if (terrain.StepVolume != 0) { hash = Mix(hash, 0x5453564fu); hash = MixDouble(hash, terrain.StepVolume); }
+                if (terrain.WalkStepTics != 0) { hash = Mix(hash, 0x54575354u); hash = Mix(hash, unchecked((uint)terrain.WalkStepTics)); }
+                if (terrain.RunStepTics != 0) { hash = Mix(hash, 0x54525354u); hash = Mix(hash, unchecked((uint)terrain.RunStepTics)); }
+                if (terrain.StepDistance != 0) { hash = Mix(hash, 0x54534449u); hash = MixDouble(hash, terrain.StepDistance); }
+                if (terrain.StepDistanceMinVel != 0) { hash = Mix(hash, 0x54534d56u); hash = MixDouble(hash, terrain.StepDistanceMinVel); }
+                if (terrain.StepSound.Length != 0)
+                {
+                    hash = Mix(hash, 0x5453534eu); hash = Mix(hash, (uint)terrain.StepSound.Length);
+                    foreach (var character in terrain.StepSound) hash = Mix(hash, char.ToUpperInvariant(character));
+                }
+                if (terrain.LeftStepSound.Length != 0)
+                {
+                    hash = Mix(hash, 0x544c534eu); hash = Mix(hash, (uint)terrain.LeftStepSound.Length);
+                    foreach (var character in terrain.LeftStepSound) hash = Mix(hash, char.ToUpperInvariant(character));
+                }
+                if (terrain.RightStepSound.Length != 0)
+                {
+                    hash = Mix(hash, 0x5452534eu); hash = Mix(hash, (uint)terrain.RightStepSound.Length);
+                    foreach (var character in terrain.RightStepSound) hash = Mix(hash, char.ToUpperInvariant(character));
+                }
                 hash = Mix(hash, (uint)terrain.Name.Length);
                 foreach (var character in terrain.Name) hash = Mix(hash, char.ToUpperInvariant(character));
                 hash = Mix(hash, (uint)terrain.DamageType.Length);
@@ -5852,6 +6197,17 @@ public sealed class AuthoritySimulation
         hash = Mix(hash, DmSpawnRandomState);
         hash = Mix(hash, (uint)Skill);
         if (NoMonsterPain) hash = Mix(hash, 0x4e4d504eu);
+        if (Level.Lines.Any(line => line.Impact))
+        {
+            hash = Mix(hash, 0x4c564e4du);
+            hash = Mix(hash, unchecked((uint)(Level.LevelNumber ?? HCDE.Gamedata.MapInfoParser.DefaultLevelNum(Level.MapName, out _))));
+        }
+        if (NativeMonsterMovement) hash = Mix(hash, 0x4e4d4d56u);
+        if (SkillAggressiveness != 0)
+        {
+            var factorBits = unchecked((ulong)BitConverter.DoubleToInt64Bits(SkillAggressiveness));
+            hash = Mix(hash, 0x534b4147u); hash = Mix(hash, (uint)factorBits); hash = Mix(hash, (uint)(factorBits >> 32));
+        }
         if (PlayerDamageFactor != 1)
         {
             var factorBits = unchecked((ulong)BitConverter.DoubleToInt64Bits(PlayerDamageFactor));
@@ -5947,6 +6303,30 @@ public sealed class AuthoritySimulation
         { hash = Mix(hash, 0x53415752u); hash = Mix(hash, (uint)_sawRandomState); hash = Mix(hash, (uint)(_sawRandomState >> 32)); }
         if (_hasPunchRandomState)
         { hash = Mix(hash, 0x50554e52u); hash = Mix(hash, (uint)_punchRandomState); hash = Mix(hash, (uint)(_punchRandomState >> 32)); }
+        if (_newChaseDirRandomState is { } directionRandom)
+        { hash = Mix(hash, 0x4e434452u); hash = Mix(hash, (uint)directionRandom); hash = Mix(hash, (uint)(directionRandom >> 32)); }
+        if (_tryWalkRandomState is { } walkRandom)
+        { hash = Mix(hash, 0x54574c4bu); hash = Mix(hash, (uint)walkRandom); hash = Mix(hash, (uint)(walkRandom >> 32)); }
+        if (_stayOnLiftRandomState is { } liftRandom)
+        { hash = Mix(hash, 0x53544c52u); hash = Mix(hash, (uint)liftRandom); hash = Mix(hash, (uint)(liftRandom >> 32)); }
+        if (_scaredyCatRandomState is { } scaredRandom)
+        { hash = Mix(hash, 0x53434154u); hash = Mix(hash, (uint)scaredRandom); hash = Mix(hash, (uint)(scaredRandom >> 32)); }
+        if (_checkMissileRandomState is { } missileRandom)
+        { hash = Mix(hash, 0x434d524eu); hash = Mix(hash, (uint)missileRandom); hash = Mix(hash, (uint)(missileRandom >> 32)); }
+        if (_defectRandomState is { } defectRandom)
+        { hash = Mix(hash, 0x44454643u); hash = Mix(hash, (uint)defectRandom); hash = Mix(hash, (uint)(defectRandom >> 32)); }
+        if (_checkSightRandomState is { } sightRandom)
+        { hash = Mix(hash, 0x43534947u); hash = Mix(hash, (uint)sightRandom); hash = Mix(hash, (uint)(sightRandom >> 32)); }
+        if (_uniqueTidRandomState is { } uniqueRandom)
+        { hash = Mix(hash, 0x55544944u); hash = Mix(hash, (uint)uniqueRandom); hash = Mix(hash, (uint)(uniqueRandom >> 32)); }
+        if (_sectorDamageRandomState is { } sectorRandom)
+        { hash = Mix(hash, 0x53444352u); hash = Mix(hash, (uint)sectorRandom); hash = Mix(hash, (uint)(sectorRandom >> 32)); }
+        if (_nativeSwitchTargetRandomState is { } switchRandom)
+        { hash = Mix(hash, 0x53575447u); hash = Mix(hash, (uint)switchRandom); hash = Mix(hash, (uint)(switchRandom >> 32)); }
+        if (_avoidCrushRandomState is { } avoidRandom)
+        { hash = Mix(hash, 0x41564352u); hash = Mix(hash, (uint)avoidRandom); hash = Mix(hash, (uint)(avoidRandom >> 32)); }
+        if (_enemyStrafeRandomState is { } strafeRandom)
+        { hash = Mix(hash, 0x45535452u); hash = Mix(hash, (uint)strafeRandom); hash = Mix(hash, (uint)(strafeRandom >> 32)); }
         if (_hasSkipTargetRandomState)
         { hash = Mix(hash, 0x534b5054u); hash = Mix(hash, (uint)_skipTargetRandomState); hash = Mix(hash, (uint)(_skipTargetRandomState >> 32)); }
         if (_hasCPosRefireRandomState)
@@ -6115,6 +6495,42 @@ public sealed class AuthoritySimulation
             if (actor.Accuracy != 0) { hash = Mix(hash, 0x41434355u); hash = Mix(hash, unchecked((uint)actor.Accuracy)); }
             if (actor.FriendlySeeBlocks != 10) { hash = Mix(hash, 0x4653424cu); hash = Mix(hash, unchecked((uint)actor.FriendlySeeBlocks)); }
             if (actor.SeeFriendlyMonsters) hash = Mix(hash, 0x53464d4fu);
+            if (actor.InConversation) hash = Mix(hash, 0x434f4e56u);
+            if (actor.DontFollowPlayers) hash = Mix(hash, 0x4446504cu);
+            if (actor.CanJump) hash = Mix(hash, 0x434a4d50u);
+            if (actor.BlockAsPlayer) hash = Mix(hash, 0x4241504cu);
+            if (actor.FloorClipEnabled || actor.SpecialFloorClip)
+            { hash = Mix(hash, 0x46434c46u); hash = Mix(hash, (actor.FloorClipEnabled ? 1u : 0u) | (actor.SpecialFloorClip ? 2u : 0u)); }
+            if (actor.AvoidHazards) hash = Mix(hash, 0x4156485au);
+            if (actor.StayOnLift) hash = Mix(hash, 0x53544c46u);
+            if (actor.AvoidMelee || actor.StrafeCount != 0)
+            { hash = Mix(hash, 0x41564d4cu); hash = Mix(hash, actor.AvoidMelee ? 1u : 0u); hash = Mix(hash, unchecked((uint)actor.StrafeCount)); }
+            if (actor.FastChaseStrafeCount != 0)
+            { hash = Mix(hash, 0x46435343u); hash = Mix(hash, unchecked((uint)actor.FastChaseStrafeCount)); }
+            if (actor.MinMissileChance is { } chance)
+            { hash = Mix(hash, 0x4d4d4348u); hash = Mix(hash, chance); }
+            if (actor.MissileChanceMult is { } multiplier)
+            {
+                var multiplierBits = unchecked((ulong)BitConverter.DoubleToInt64Bits(multiplier));
+                hash = Mix(hash, 0x4d434d55u); hash = Mix(hash, (uint)multiplierBits); hash = Mix(hash, (uint)(multiplierBits >> 32));
+            }
+            if (actor.MaxTargetRange is { } maximumRange)
+            {
+                var bits = unchecked((ulong)BitConverter.DoubleToInt64Bits(maximumRange));
+                hash = Mix(hash, 0x4d545247u); hash = Mix(hash, (uint)bits); hash = Mix(hash, (uint)(bits >> 32));
+            }
+            if (actor.MeleeThreshold is { } meleeThreshold)
+            {
+                var bits = unchecked((ulong)BitConverter.DoubleToInt64Bits(meleeThreshold));
+                hash = Mix(hash, 0x4d544852u); hash = Mix(hash, (uint)bits); hash = Mix(hash, (uint)(bits >> 32));
+            }
+            if (actor.CantLeaveFloorPic) hash = Mix(hash, 0x434c4650u);
+            if (actor.NoFear || actor.Frightened || actor.Frightening)
+            { hash = Mix(hash, 0x46454152u); hash = Mix(hash, (actor.NoFear ? 1u : 0u) | (actor.Frightened ? 2u : 0u) | (actor.Frightening ? 4u : 0u)); }
+            if (actor.MoveDirection != 0 || actor.MoveCount != 0)
+            { hash = Mix(hash, 0x4d564452u); hash = Mix(hash, actor.MoveDirection); hash = Mix(hash, unchecked((uint)actor.MoveCount)); }
+            if (actor.LookAllAround || actor.StandStill)
+            { hash = Mix(hash, 0x4c4f4f4bu); hash = Mix(hash, (actor.LookAllAround ? 1u : 0u) | (actor.StandStill ? 2u : 0u)); }
             if (actor is not PlayerPawn && actor.Stamina != 0)
             { hash = Mix(hash, 0x5354414du); hash = Mix(hash, unchecked((uint)actor.Stamina)); }
             if (actor.NoAttenPickupSound) hash = Mix(hash, 0x504b4e41u);
@@ -6205,12 +6621,19 @@ public sealed class AuthoritySimulation
             hash = Mix(hash, unchecked((uint)actor.MaxFullAbsorb));
             hash = Mix(hash, unchecked((uint)actor.AbsorbCount));
             hash = Mix(hash, actor.Buddha ? 1u : 0u);
+            if (actor.FlyCheat) hash = Mix(hash, 0x464c5943u);
+            if (actor.NoClip) hash = Mix(hash, 0x4e434c50u);
+            if (actor is PlayerPawn { NoClip2: true }) hash = Mix(hash, 0x4e434c32u);
+            if (actor is PlayerPawn frozen && (frozen.Frozen || frozen.TotallyFrozen))
+            { hash = Mix(hash, 0x5046525au); hash = Mix(hash, (frozen.Frozen ? 1u : 0u) | (frozen.TotallyFrozen ? 2u : 0u)); }
             hash = Mix(hash, actor.FoilBuddha ? 1u : 0u);
             hash = Mix(hash, actor.ForcePain ? 1u : 0u);
             hash = Mix(hash, actor.NoPain ? 1u : 0u);
             hash = Mix(hash, actor.Painless ? 1u : 0u);
             hash = Mix(hash, actor.ExtremeDeath ? 1u : 0u);
             hash = Mix(hash, actor.NoExtremeDeath ? 1u : 0u);
+            if (actor.CameraHeight != Actor.DefaultCameraHeight)
+            { hash = Mix(hash, 0x43414d48u); hash = MixDouble(hash, actor.CameraHeight); }
             hash = Mix(hash, actor.FullBright ? 1u : 0u);
             if (actor.HandleNoDelay) hash = Mix(hash, 0x4e444c59u);
             if (actor.Synchronized) hash = Mix(hash, 0x53594e43u);
@@ -6274,6 +6697,8 @@ public sealed class AuthoritySimulation
             }
             if (actor.CanSlide != (actor is PlayerPawn)) hash = Mix(hash, 0x534C4944u);
             hash = Mix(hash, actor.NoTarget ? 1u : 0u);
+            if (actor is PlayerPawn { NoTargetCheatOverride: { } cheat })
+            { hash = Mix(hash, 0x504e5443u); hash = Mix(hash, cheat ? 1u : 0u); }
             hash = Mix(hash, actor.OnMobj ? 1u : 0u);
             hash = Mix(hash, actor.IsMonster ? 1u : 0u);
             if (actor.UseSpecial) hash = Mix(hash, 0x55535043u);
@@ -6521,6 +6946,12 @@ public sealed class AuthoritySimulation
                 { hash = Mix(hash, 0x50444D47u); hash = Mix(hash, unchecked((uint)player.PowerDamageTics)); }
                 if (player.PowerProtectionTics != 0)
                 { hash = Mix(hash, 0x50505254u); hash = Mix(hash, unchecked((uint)player.PowerProtectionTics)); }
+                if (player.PowerIronFeetMode != IronFeetMode.Normal)
+                { hash = Mix(hash, 0x5049464du); hash = Mix(hash, (uint)player.PowerIronFeetMode); }
+                if (player.PowerMaskTics != 0)
+                { hash = Mix(hash, 0x504d534bu); hash = Mix(hash, unchecked((uint)player.PowerMaskTics)); }
+                if (player.PowerIronFeetTics != 0)
+                { hash = Mix(hash, 0x50494654u); hash = Mix(hash, unchecked((uint)player.PowerIronFeetTics)); }
                 if (player.PowerInfiniteAmmoTics != 0)
                 { hash = Mix(hash, 0x5049414du); hash = Mix(hash, unchecked((uint)player.PowerInfiniteAmmoTics)); }
                 if (player.PowerDoubleFiringSpeedTics != 0)
@@ -6625,6 +7056,10 @@ public sealed class AuthoritySimulation
             hash = Mix(hash, line.PlayerUse ? 1u : 0u);
             hash = Mix(hash, line.UseThrough ? 1u : 0u);
             hash = Mix(hash, line.PlayerUseBack ? 1u : 0u);
+            if (line.Impact)
+            { hash = Mix(hash, 0x494d5043u); hash = Mix(hash, unchecked((uint)line.Arg1)); }
+            if (line.PlayerCross || line.Repeat)
+            { hash = Mix(hash, 0x4c414354u); hash = Mix(hash, (line.PlayerCross ? 1u : 0u) | (line.Repeat ? 2u : 0u)); }
         }
         foreach (var side in Level.Sides)
         {
@@ -6673,6 +7108,7 @@ public sealed class AuthoritySimulation
             hash = Mix(hash, sector.HurtMonsters ? 1u : 0u);
             hash = Mix(hash, sector.HarmInAir ? 1u : 0u);
             if (sector.NoAttack) hash = Mix(hash, 0x4E4F4154u);
+            if (sector.IsLift) hash = Mix(hash, 0x4c494654u);
             hash = Mix(hash, (uint)sector.DamageType.Length);
             foreach (var character in sector.DamageType) hash = Mix(hash, character);
             hash = Mix(hash, (uint)sector.FloorPic.Length);

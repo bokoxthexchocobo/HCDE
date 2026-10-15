@@ -7,6 +7,12 @@ internal static class AcsActorPowerups
     {
         if (actor is not PlayerPawn { Destroyed: false } player || string.IsNullOrEmpty(powerName))
             return 0;
+        if (powerName.Equals("PowerIronFeet", StringComparison.OrdinalIgnoreCase))
+            return player.PowerIronFeetTics;
+        if (powerName.Equals("PowerMask", StringComparison.OrdinalIgnoreCase))
+            return player.PowerMaskTics;
+        if (powerName.Equals("PowerStrength", StringComparison.OrdinalIgnoreCase))
+            return player.PowerStrengthTics;
         if (powerName.Equals("PowerBuddha", StringComparison.OrdinalIgnoreCase))
             return player.PowerBuddhaTics;
         if (powerName.Equals("PowerDamage", StringComparison.OrdinalIgnoreCase))

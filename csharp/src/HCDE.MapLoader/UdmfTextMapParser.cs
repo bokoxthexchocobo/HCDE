@@ -32,6 +32,7 @@ public sealed class UdmfLinedef
     public bool BlockFloaters { get; set; }
     public bool TwoSided { get; set; }
     public bool PlayerCross { get; set; }
+    public bool Impact { get; set; }
     public bool PlayerUse { get; set; }
     public bool PlayerUseBack { get; set; }
     public bool PassUse { get; set; }
@@ -380,6 +381,7 @@ public static class UdmfTextMapParser
             BlockFloaters = Bool(fields, "blockfloaters"),
             TwoSided = Bool(fields, "twosided"),
             PlayerCross = Bool(fields, "playercross"),
+            Impact = Bool(fields, "impact"),
             PlayerUse = Bool(fields, "playeruse"),
             PlayerUseBack = Bool(fields, "playeruseback"),
             PassUse = Bool(fields, "passuse"),

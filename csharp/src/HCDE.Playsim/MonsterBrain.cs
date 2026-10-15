@@ -7,12 +7,16 @@ public enum MonsterMode { Idle, Chase, Windup, Recovery, Pain, Dead, Heal, Raise
 public enum MonsterChaseFlags
 {
     None = 0,
+    FastChase = 1,
     NoPlayActive = 2,
     NightmareFast = 4,
+    Resurrect = 8,
     DontMove = 16,
+    NoRandomTurn = 32,
     NoDirectionTurn = 64,
     NoPostAttackTurn = 128,
     StopIfBlocked = 256,
+    DontIdle = 512,
     DontLookAllAround = 1024,
 }
 
@@ -36,6 +40,7 @@ public sealed class MonsterBrain(MonsterAttack attack)
     public int RaiseTics => _raiseTics;
     private bool _vileFire;
     private bool _inChase;
+    internal bool IsInChase => _inChase;
     internal SimRepeatAttack? CaptureLostSoulAttack() => _nativeType == 3006 && _attackTic >= 0
         ? new(_nativeType, _attackTic, TargetId, Mode, WindupTics, AttackCooldown) : null;
     internal void RestoreLostSoulAttack(SimRepeatAttack? saved)
@@ -304,10 +309,10 @@ public sealed class MonsterBrain(MonsterAttack attack)
 
     internal void Hear(AuthoritySimulation sim, Actor actor, Actor target)
     {
-        if (!Enabled || actor.TidToHate != 0 || actor.IsDead || actor.Destroyed || TargetId != null) return;
+        if (!Enabled || actor.InConversation || actor.TidToHate != 0 || actor.IsDead || actor.Destroyed || TargetId != null) return;
         var idleFrame = actor.States.Current == actor.SpawnState || actor.States.Current == actor.IdleState;
         if (idleFrame) Threshold = 0;
-        if (!target.IsDead && !target.Destroyed && target is PlayerPawn playerSource && (playerSource.NoTarget || !playerSource.Friendly)) return;
+        if (!target.IsDead && !target.Destroyed && target is PlayerPawn playerSource && (playerSource.NoTargetCheat || !playerSource.Friendly)) return;
         if (!target.Shootable || target.IsDead || target.Destroyed)
         {
             if (!idleFrame) return;
@@ -316,7 +321,10 @@ public sealed class MonsterBrain(MonsterAttack attack)
             target = replacement;
         }
         var friendlyNoise = actor.IsFriend(target);
-        var blockedAmbush = actor.Ambush && !friendlyNoise && !CombatTrace.HasLineOfSight(sim, actor, target);
+        var blockedAmbush = actor.Ambush && !friendlyNoise
+            && !(sim.NativeMonsterMovement
+                ? CombatTrace.CheckSight(sim, actor, target, ActorSightFlags.SeePastBlockEverything)
+                : CombatTrace.HasLineOfSight(sim, actor, target));
         if (friendlyNoise || blockedAmbush)
         {
             if (!idleFrame) return;
@@ -385,19 +393,36 @@ public sealed class MonsterBrain(MonsterAttack attack)
         TargetId = target?.Id;
     }
 
+    /// <summary>Runs chase decisions. Native movement opts into direction/count-based collision walking;
+    /// callers must select the same mode when continuing a saved simulation.</summary>
     public void Tick(AuthoritySimulation sim, Actor actor, MonsterChaseFlags flags = MonsterChaseFlags.None,
-        bool useMelee = true, bool useMissile = true, bool nightmareFast = false)
+        bool useMelee = true, bool useMissile = true, bool nightmareFast = false, bool nativeMovement = false)
     {
-        if ((flags & ~(MonsterChaseFlags.NoPlayActive | MonsterChaseFlags.NightmareFast | MonsterChaseFlags.DontMove | MonsterChaseFlags.NoDirectionTurn | MonsterChaseFlags.NoPostAttackTurn | MonsterChaseFlags.StopIfBlocked | MonsterChaseFlags.DontLookAllAround)) != 0)
+        if ((flags & ~(MonsterChaseFlags.FastChase | MonsterChaseFlags.NoPlayActive | MonsterChaseFlags.NightmareFast | MonsterChaseFlags.Resurrect | MonsterChaseFlags.DontMove | MonsterChaseFlags.NoRandomTurn | MonsterChaseFlags.NoDirectionTurn | MonsterChaseFlags.NoPostAttackTurn | MonsterChaseFlags.StopIfBlocked | MonsterChaseFlags.DontIdle | MonsterChaseFlags.DontLookAllAround)) != 0)
             throw new NotSupportedException("The requested native chase flags are not yet supported.");
+        if (!nativeMovement && (flags & MonsterChaseFlags.NoRandomTurn) != 0)
+            throw new NotSupportedException("NoRandomTurn requires native chase movement.");
+        if (!nativeMovement && (flags & MonsterChaseFlags.DontIdle) != 0)
+            throw new NotSupportedException("DontIdle requires native chase movement.");
+        if (!nativeMovement && (flags & MonsterChaseFlags.Resurrect) != 0)
+            throw new NotSupportedException("Resurrect requires native chase movement.");
+        if (!nativeMovement && (flags & MonsterChaseFlags.FastChase) != 0)
+            throw new NotSupportedException("FastChase requires native chase movement.");
         if (_inChase) return;
         _inChase = true;
-        try { TickCore(sim, actor, flags, useMelee, useMissile,
-            nightmareFast || (flags & MonsterChaseFlags.NightmareFast) != 0); }
+        try
+        {
+            if (Enabled && (flags & MonsterChaseFlags.Resurrect) != 0
+                && ArchvileActions.TryRaise(sim, actor, actor, nativeMovement: true)) return;
+            if (actor.InConversation) return;
+            TickCore(sim, actor, flags, useMelee, useMissile,
+                nightmareFast || (flags & MonsterChaseFlags.NightmareFast) != 0, nativeMovement);
+        }
         finally { _inChase = false; }
     }
 
-    private void TickCore(AuthoritySimulation sim, Actor actor, MonsterChaseFlags flags, bool useMelee, bool useMissile, bool nightmareFast)
+    private void TickCore(AuthoritySimulation sim, Actor actor, MonsterChaseFlags flags, bool useMelee, bool useMissile, bool nightmareFast,
+        bool nativeMovement)
     {
         if (!Enabled) return;
         if (nightmareFast && sim.FastMonsters && actor.States.RemainingTics > 3)
@@ -420,7 +445,7 @@ public sealed class MonsterBrain(MonsterAttack attack)
             }
             Mode = MonsterMode.Dead; TargetId = null; WindupTics = 0; _attackTic = -1; _raiseTics = 0; return;
         }
-        actor.VelocityX = actor.VelocityY = default;
+        if (!nativeMovement) actor.VelocityX = actor.VelocityY = default;
         _deathTics = 0; _deathTargetId = null;
         if (AttackCooldown > 0) AttackCooldown--;
         if (actor.States.Current == actor.PainState)
@@ -449,6 +474,17 @@ public sealed class MonsterBrain(MonsterAttack attack)
         // A_Look treats goal reaction time as a map timestamp; A_Chase decrements it.
         if (ReactionTics != 0 && !attackTimelineActive && !lookingForTarget)
             ReactionTics = unchecked(ReactionTics - 1);
+        var nativeTurned = nativeMovement && !attackTimelineActive;
+        if (nativeTurned)
+        {
+            var facingTarget = sim.Actors.FirstOrDefault(candidate => candidate.Id == TargetId && !candidate.Destroyed);
+            if (actor.StrafeCount != 0)
+            {
+                if (facingTarget is not null) ActorOrientationActions.Face(actor, facingTarget);
+            }
+            else if ((flags & MonsterChaseFlags.NoDirectionTurn) == 0)
+                ActorWanderActions.TurnTowardMoveDirection(actor);
+        }
         if (_healTics > 0) { _healTics--; Mode = MonsterMode.Heal; return; }
         if (_attackTic >= 0 && _profile?.RefireTic is >= 0)
         {
@@ -471,7 +507,7 @@ public sealed class MonsterBrain(MonsterAttack attack)
         var unshootableTarget = _attackTic < 0 && WindupTics == 0
             ? sim.Actors.FirstOrDefault(candidate => candidate.Id == TargetId && candidate.Id != actor.GoalId
                 && !candidate.Destroyed && !candidate.IsDead && !actor.IsFriend(candidate) && !candidate.Shootable
-                && candidate is not PlayerPawn { NoTarget: true })
+                && candidate is not PlayerPawn { NoTargetCheat: true })
             : null;
         if (unshootableTarget is not null)
         {
@@ -484,7 +520,7 @@ public sealed class MonsterBrain(MonsterAttack attack)
         }
         // HCDE rechecks the cheat during pursuit, clearing memory as well as the current target.
         if (sim.Actors.Any(candidate => candidate.Id == TargetId && candidate.Id != actor.GoalId
-            && candidate is PlayerPawn { NoTarget: true }))
+            && candidate is PlayerPawn { NoTargetCheat: true }))
         {
             TargetId = null;
             LastEnemyId = null;
@@ -499,15 +535,17 @@ public sealed class MonsterBrain(MonsterAttack attack)
             ? sim.SectorSoundTargetId(actor.SectorIndex) : actor.LastHeardTargetId;
         if (target is null && lookingForTarget && actor.TidToHate == 0
             && sim.Actors.Any(candidate => candidate.Id == heardTargetId && !candidate.Destroyed && !candidate.IsDead
-                && candidate is PlayerPawn playerNoise && (playerNoise.NoTarget || !playerNoise.Friendly)))
+                && candidate is PlayerPawn playerNoise && (playerNoise.NoTargetCheat || !playerNoise.Friendly)))
         {
             Mode = MonsterMode.Idle; TargetId = null; WindupTics = 0; _attackTic = -1;
             return;
         }
         var heard = target is null && actor.TidToHate == 0
             ? sim.Actors.FirstOrDefault(candidate => candidate.Id == heardTargetId && candidate.Shootable && !candidate.IsDead && !candidate.Destroyed
-                && candidate is not PlayerPawn { NoTarget: true }
-                && (!actor.Ambush || actor.IsFriend(candidate) || CombatTrace.HasLineOfSight(sim, actor, candidate)))
+                && candidate is not PlayerPawn { NoTargetCheat: true }
+                && (!actor.Ambush || actor.IsFriend(candidate) || (nativeMovement
+                    ? CombatTrace.CheckSight(sim, actor, candidate, ActorSightFlags.SeePastBlockEverything)
+                    : CombatTrace.HasLineOfSight(sim, actor, candidate))))
             : null;
         var friendlyNoise = lookingForTarget && heard is not null && actor.IsFriend(heard)
             && (actor.States.Current == actor.SpawnState || actor.States.Current == actor.IdleState);
@@ -528,6 +566,12 @@ public sealed class MonsterBrain(MonsterAttack attack)
         if (target == null)
         {
             Mode = MonsterMode.Idle; TargetId = null; WindupTics = 0; _attackTic = -1;
+            if (nativeMovement && (actor.Friendly || (flags & MonsterChaseFlags.DontIdle) != 0))
+            {
+                // Native A_DoChase calls ordinary A_Wander without forwarding chase flags.
+                if ((flags & MonsterChaseFlags.DontMove) == 0) ActorWanderActions.WanderNative(actor);
+                return;
+            }
             if (friendlyNoise && actor.States.HasState(actor.SeeState)) actor.States.Enter(actor, actor.SeeState);
             else if (!lookingForTarget && !actor.Friendly) actor.SetIdle();
             return;
@@ -548,7 +592,7 @@ public sealed class MonsterBrain(MonsterAttack attack)
             return;
         }
         if ((hiddenTargetCleared || unshootableReplacementFound) && target.Id != actor.GoalId) return;
-        if (_nativeType == 64 && _attackTic < 0 && ArchvileActions.TryRaise(sim, actor, target))
+        if (_nativeType == 64 && _attackTic < 0 && ArchvileActions.TryRaise(sim, actor, target, nativeMovement: nativeMovement))
         {
             _healTics = 29; Mode = MonsterMode.Heal; return;
         }
@@ -557,7 +601,10 @@ public sealed class MonsterBrain(MonsterAttack attack)
             actor.JustAttacked = false;
             if (!actor.IsFast() && (flags & (MonsterChaseFlags.DontMove | MonsterChaseFlags.NoPostAttackTurn | MonsterChaseFlags.StopIfBlocked)) == 0)
                 MoveTowardTarget(sim, actor, target.X.ToDouble() - actor.X.ToDouble(),
-                    target.Y.ToDouble() - actor.Y.ToDouble(), CheckMeleeRange(actor, target, true), flags);
+                    target.Y.ToDouble() - actor.Y.ToDouble(), CheckMeleeRange(actor, target, true), flags,
+                    nativeMovement, forceNewDirection: nativeMovement);
+            if (nativeMovement && (flags & MonsterChaseFlags.StopIfBlocked) != 0)
+                actor.MoveCount = sim.NextTryWalkByte() & 15;
             return;
         }
         var patrolGoal = sim.Actors.FirstOrDefault(candidate => candidate.Id == actor.GoalId && !candidate.Destroyed);
@@ -602,17 +649,48 @@ public sealed class MonsterBrain(MonsterAttack attack)
         if (visible || pursuingGoal) { _lastX = target.X.ToDouble(); _lastY = target.Y.ToDouble(); }
         var dx = _lastX - actor.X.ToDouble();
         var dy = _lastY - actor.Y.ToDouble();
-        if ((flags & MonsterChaseFlags.NoDirectionTurn) == 0)
-            actor.Angle = BamAngle.FromDegrees(Math.Atan2(dy, dx) * 180 / Math.PI);
+        if (!nativeTurned && nativeMovement && actor.StrafeCount != 0) ActorOrientationActions.Face(actor, target);
+        else if (!nativeTurned && (flags & MonsterChaseFlags.NoDirectionTurn) == 0)
+        {
+            if (nativeMovement) ActorWanderActions.TurnTowardMoveDirection(actor);
+            else actor.Angle = BamAngle.FromDegrees(Math.Atan2(dy, dx) * 180 / Math.PI);
+        }
         var melee = CheckMeleeRange(actor, target, visible);
-        var meleeAttack = melee && useMelee && (_profile is null || _profile.MeleeDice > 0);
+        if (nativeMovement && !attackTimelineActive && !pursuingGoal
+            && (flags & (MonsterChaseFlags.FastChase | MonsterChaseFlags.DontMove)) == MonsterChaseFlags.FastChase)
+        {
+            if (actor.FastChaseStrafeCount > 0) actor.FastChaseStrafeCount--;
+            else
+            {
+                actor.FastChaseStrafeCount = 0;
+                actor.VelocityX = actor.VelocityY = default;
+                if (Distance(actor, target) < 640 && sim.NextChaseByte() < 100)
+                {
+                    var radians = Math.Atan2(target.Y.ToDouble() - actor.Y.ToDouble(), target.X.ToDouble() - actor.X.ToDouble())
+                        + (sim.NextChaseByte() < 128 ? Math.PI / 2 : -Math.PI / 2);
+                    actor.VelocityX = Fixed.FromDouble(13 * Math.Cos(radians));
+                    actor.VelocityY = Fixed.FromDouble(13 * Math.Sin(radians));
+                    actor.FastChaseStrafeCount = 3;
+                }
+            }
+        }
         if (pursuingGoal)
         {
             WindupTics = 0;
             _attackTic = -1;
         }
-        var attackVisible = !pursuingGoal && SectorAllowsAttacks(actor) && visible;
-        var missileEnabled = useMissile && Attack != MonsterAttack.Melee;
+        var fearAllowsAttack = !nativeMovement || attackTimelineActive || pursuingGoal
+            || !(actor.Frightened || target is PlayerPawn && target.Frightening)
+            || sim.NextScaredyCatByte() < 43;
+        if (nativeMovement && !attackTimelineActive && !pursuingGoal)
+            melee = fearAllowsAttack && useMelee && (_profile is null || _profile.MeleeDice > 0)
+                && CheckNativeMeleeRange(sim, actor, target);
+        var meleeAttack = melee && useMelee && (_profile is null || _profile.MeleeDice > 0);
+        // Native chase checks the signed walk count before missile-range checks (including JUSTHIT).
+        var missileEnabled = useMissile && Attack != MonsterAttack.Melee
+            && (!nativeMovement || actor.IsFast() || actor.MoveCount == 0 || _attackTic >= 0 || WindupTics > 0);
+        var attackVisible = !pursuingGoal && fearAllowsAttack && SectorAllowsAttacks(actor)
+            && (nativeMovement ? meleeAttack || missileEnabled && CombatTrace.HasMissileLineOfSight(sim, actor, target) : visible);
         var retaliate = false;
         if (attackVisible && !meleeAttack && missileEnabled && AttackCooldown == 0
             && _attackTic < 0 && WindupTics == 0 && actor.JustHit)
@@ -622,8 +700,9 @@ public sealed class MonsterBrain(MonsterAttack attack)
         }
         var canAttack = attackVisible
             && (meleeAttack || missileEnabled && (retaliate || WindupTics > 0 || ReactionTics == 0
-                && InOrdinaryMissileRange(actor, target)
-                && !HitFriend(sim, actor, target)));
+                && InOrdinaryMissileRange(actor, target, nativeMovement)
+                && !HitFriend(sim, actor, target)
+                && (!nativeMovement || CheckNativeMissileProbability(sim, actor, target))));
         if (canAttack && meleeAttack && AttackCooldown == 0 && _attackTic < 0 && WindupTics == 0
             && actor.ActorSounds.TryGetValue(ActorSoundType.Attack, out var attackSound) && !string.IsNullOrEmpty(attackSound))
             ActorSoundActions.PlayWeaponSound(actor, attackSound);
@@ -674,16 +753,38 @@ public sealed class MonsterBrain(MonsterAttack attack)
             if (!meleeAttack) actor.JustAttacked = actor.InCombat = true;
             WindupTics = 8; Mode = MonsterMode.Windup; return;
         }
+        if (nativeMovement && Threshold == 0
+            && (sim.GameMode != SpawnGameMode.Single || sim.Players.Count() > 1 || actor.TidToHate != 0)
+            && !CombatTrace.CheckSight(sim, actor, target))
+        {
+            var noSightCheck = actor.NoSightCheck;
+            Actor? replacement;
+            try
+            {
+                actor.NoSightCheck = false;
+                replacement = FindForLook(sim, actor, new ActorLookParameters { NativeSight = true },
+                    (flags & MonsterChaseFlags.DontLookAllAround) == 0, chaseGoal: true);
+            }
+            finally { actor.NoSightCheck = noSightCheck; }
+            if (replacement is not null && replacement.Id != TargetId)
+            {
+                TargetId = replacement.Id;
+                return;
+            }
+        }
         Mode = MonsterMode.Chase;
-        if ((flags & MonsterChaseFlags.DontMove) == 0)
-            MoveTowardTarget(sim, actor, dx, dy, melee, flags);
+        if (nativeMovement && actor.StrafeCount != 0) actor.StrafeCount = unchecked(actor.StrafeCount - 1);
+        if ((flags & MonsterChaseFlags.DontMove) == 0
+            && ((flags & MonsterChaseFlags.FastChase) == 0 || actor.FastChaseStrafeCount == 0))
+            MoveTowardTarget(sim, actor, dx, dy, melee, flags, nativeMovement);
+        else if (nativeMovement && (flags & MonsterChaseFlags.DontMove) != 0 && actor.MoveCount > 0) actor.MoveCount--;
         if ((flags & MonsterChaseFlags.NoPlayActive) == 0 && sim.NextChaseByte() < 3)
             ActorSoundActions.PlayActiveSound(actor);
     }
 
-    private void MoveTowardTarget(AuthoritySimulation sim, Actor actor, double dx, double dy, bool melee, MonsterChaseFlags flags)
+    private void MoveTowardTarget(AuthoritySimulation sim, Actor actor, double dx, double dy, bool melee, MonsterChaseFlags flags,
+        bool nativeMovement, bool forceNewDirection = false)
     {
-        // Local obstacle steering. This is not a navigation mesh or native P_NewChaseDir.
         if ((flags & MonsterChaseFlags.DontMove) == 0)
         {
             // CHASEGOAL changes the movement destination without replacing the attack target.
@@ -697,17 +798,70 @@ public sealed class MonsterBrain(MonsterAttack attack)
                 dy = movementGoal.Y.ToDouble() - actor.Y.ToDouble();
                 movementMelee = CheckMeleeRange(actor, movementGoal, true);
             }
-            if (actor.X == _previousX && actor.Y == _previousY) _blockedTics++;
-            else _blockedTics = 0;
-            _previousX = actor.X; _previousY = actor.Y;
-            var radians = Math.Atan2(dy, dx);
-            if (_blockedTics > 2 && (flags & MonsterChaseFlags.StopIfBlocked) == 0)
-                radians += (actor.Id % 2 == 0 ? 1 : -1) * Math.PI / 4;
-            if (dx * dx + dy * dy > 1 && !movementMelee)
+            if (!nativeMovement)
             {
-                actor.VelocityX = Fixed.FromDouble(Math.Cos(radians) * actor.ChaseSpeed);
-                actor.VelocityY = Fixed.FromDouble(Math.Sin(radians) * actor.ChaseSpeed);
+                if (actor.X == _previousX && actor.Y == _previousY) _blockedTics++;
+                else _blockedTics = 0;
+                _previousX = actor.X; _previousY = actor.Y;
             }
+            if (nativeMovement || dx * dx + dy * dy > 1 && !movementMelee)
+            {
+                if (nativeMovement)
+                {
+                    var movementTarget = movementGoal ?? sim.Actors.FirstOrDefault(candidate => candidate.Id == actor.TargetId && !candidate.Destroyed);
+                    if (movementTarget is not null)
+                    {
+                        dx = movementTarget.X.ToDouble() - actor.X.ToDouble();
+                        dy = movementTarget.Y.ToDouble() - actor.Y.ToDouble();
+                        if (movementTarget.Id != actor.GoalId && !actor.NoFear && (actor.Frightened || movementTarget.Frightening))
+                        { dx = -dx; dy = -dy; }
+                    }
+                    if (forceNewDirection) ChooseNativeChaseDirection(sim, actor, dx, dy);
+                    else
+                    {
+                        actor.MoveCount = unchecked(actor.MoveCount - 1);
+                        if (actor.MoveCount < 0 && (flags & MonsterChaseFlags.NoRandomTurn) == 0
+                            || !ActorWanderActions.Move(sim, actor) && (flags & MonsterChaseFlags.StopIfBlocked) == 0)
+                            ChooseNativeChaseDirection(sim, actor, dx, dy);
+                    }
+                }
+                else
+                {
+                    var radians = Math.Atan2(dy, dx);
+                    if (_blockedTics > 2 && (flags & MonsterChaseFlags.StopIfBlocked) == 0)
+                        radians += (actor.Id % 2 == 0 ? 1 : -1) * Math.PI / 4;
+                    actor.VelocityX = Fixed.FromDouble(Math.Cos(radians) * actor.ChaseSpeed);
+                    actor.VelocityY = Fixed.FromDouble(Math.Sin(radians) * actor.ChaseSpeed);
+                }
+            }
+        }
+    }
+
+    private static void ChooseNativeChaseDirection(AuthoritySimulation sim, Actor actor, double dx, double dy)
+    {
+        actor.StrafeCount = 0;
+        if (ActorPhysics.TryDropOffEscapeVector(sim, actor, out var escapeX, out var escapeY))
+        {
+            ActorWanderActions.ChooseChaseDirection(actor, escapeX, escapeY, avoidingDropOff: true);
+            actor.MoveCount = 1;
+        }
+        else
+        {
+            var enemy = sim.Actors.FirstOrDefault(candidate => candidate.Id == actor.TargetId && !candidate.Destroyed);
+            if (actor.AvoidMelee && enemy is { Health: > 0 } && enemy.Id != actor.GoalId && !actor.IsFriend(enemy))
+            {
+                var distance = Distance(actor, enemy);
+                var meleeAttacker = enemy is PlayerPawn player
+                    ? player.Inventory.Selected is WeaponKind.Fist or WeaponKind.Chainsaw && distance < 192
+                    : enemy.Brain?.Attack == MonsterAttack.Melee && distance < (enemy.MeleeRange.ToDouble() + enemy.Radius.ToDouble()) * 2;
+                if (meleeAttacker)
+                {
+                    actor.StrafeCount = sim.NextEnemyStrafeByte() & 15;
+                    dx = -dx; dy = -dy;
+                }
+            }
+            ActorWanderActions.ChooseChaseDirection(actor, dx, dy);
+            if (actor.StrafeCount != 0) actor.MoveCount = actor.StrafeCount;
         }
     }
 
@@ -796,8 +950,7 @@ public sealed class MonsterBrain(MonsterAttack attack)
             else sim.SpawnProjectile(actor, kind, target);
             return;
         }
-        var pitch = -Math.Atan2(target.Z.ToDouble() + target.Height.ToDouble() / 2
-            - actor.Z.ToDouble() - actor.Height.ToDouble() / 2 - 8, Math.Max(1, Math.Sqrt(dx * dx + dy * dy))) * 180 / Math.PI;
+        var pitch = -Math.Atan2(target.Center() - actor.AttackOriginZ(), Math.Max(1, Math.Sqrt(dx * dx + dy * dy))) * 180 / Math.PI;
         if (_nativeType == 3004)
         {
             ActorSoundActions.PlayWeaponSound(actor, "grunt/attack");
@@ -838,8 +991,7 @@ public sealed class MonsterBrain(MonsterAttack attack)
         var dx = target.X.ToDouble() - source.X.ToDouble();
         var dy = target.Y.ToDouble() - source.Y.ToDouble();
         var distance = Math.Sqrt(dx * dx + dy * dy);
-        var pitch = -Math.Atan2(target.Z.ToDouble() + target.Height.ToDouble() / 2
-            - source.Z.ToDouble() - source.Height.ToDouble() / 2 - 8, Math.Max(1, distance)) * 180 / Math.PI;
+        var pitch = -Math.Atan2(target.Center() - source.AttackOriginZ(), Math.Max(1, distance)) * 180 / Math.PI;
         var hit = CombatTrace.TraceLineAttack(sim, source, BamAngle.FromDegrees(Math.Atan2(dy, dx) * 180 / Math.PI),
             BamAngle.FromDegrees(pitch), distance, requireDamageable: false).Victim;
         return hit != null && hit != target && source.IsFriend(hit);
@@ -910,22 +1062,27 @@ public sealed class MonsterBrain(MonsterAttack attack)
             && target.Z.ToDouble() + target.Height.ToDouble() >= actor.Z.ToDouble()))
         && !actor.IsFriend(target) && visible);
 
+    internal static bool CheckNativeMeleeRange(AuthoritySimulation sim, Actor actor, Actor target, double range = -1)
+        => CheckMeleeRange(actor, target, visible: true, range)
+            && (actor.GoalId == target.Id || CombatTrace.CheckSight(sim, actor, target));
+
     private static bool SectorAllowsAttacks(Actor actor) => actor.Level is not { } level
         || actor.SectorIndex < 0 || actor.SectorIndex >= level.Sectors.Count
         || !level.Sectors[actor.SectorIndex].NoAttack;
 
-    private static Actor? FindPlayerTarget(AuthoritySimulation sim, Actor actor, MonsterChaseFlags flags)
+    private static Actor? FindPlayerTarget(AuthoritySimulation sim, Actor actor, MonsterChaseFlags flags,
+        ActorLookParameters? parameters = null)
     {
         if (actor.TidToHate != 0 && !actor.HuntPlayers) return null;
         if (actor.TidToHate == 0 && actor.Friendly && sim.Level.Blockmap is not null)
         {
-            var enemy = FriendlyEnemySearch.Find(sim, actor);
+            var enemy = FriendlyEnemySearch.Find(sim, actor, parameters);
             if (enemy is not null) return enemy;
             if (actor.FriendPlayer == 0 || sim.GameMode != SpawnGameMode.Deathmatch) return null;
         }
         else if (actor.TidToHate == 0 && actor.SeeFriendlyMonsters && sim.Level.Blockmap is not null)
         {
-            var enemy = FriendlyEnemySearch.Find(sim, actor);
+            var enemy = FriendlyEnemySearch.Find(sim, actor, parameters);
             if (enemy is not null) return enemy;
         }
         var slot = actor.TidToHate != 0 ? sim.NextPlayerSearchStart() : actor.LastLookPlayerNumber;
@@ -936,14 +1093,36 @@ public sealed class MonsterBrain(MonsterAttack attack)
             var player = players.FirstOrDefault(p => p.PlayerNum == slot);
             if (player is null) continue;
             if (actor.TidToHate == 0) actor.LastLookPlayerNumber = slot;
-            if (IsTargetablePlayer(sim, actor, player, (flags & MonsterChaseFlags.DontLookAllAround) == 0)) return player;
+            if (IsTargetablePlayer(sim, actor, player, (flags & MonsterChaseFlags.DontLookAllAround) == 0, parameters)) return player;
         }
         return null;
     }
 
+    internal Actor? FindForLook(AuthoritySimulation sim, Actor actor, ActorLookParameters parameters, bool allAround, bool chaseGoal)
+    {
+        var flags = allAround ? MonsterChaseFlags.None : MonsterChaseFlags.DontLookAllAround;
+        if (actor.TidToHate != 0)
+        {
+            var hatee = FindLocalHatee(sim, actor, parameters);
+            if (hatee is not null) actor.LastLookActorId = hatee.Id;
+            hatee ??= FindGlobalHatee(sim, actor, flags, parameters);
+            if (hatee is not null)
+            {
+                if (actor.TargetId == actor.GoalId && actor.GoalId is not null) actor.ReactionTime = 0;
+                return hatee;
+            }
+            var fallback = (chaseGoal ? sim.Actors.FirstOrDefault(a => !a.Destroyed && a.Id == actor.GoalId) : null)
+                ?? TryResumeLastEnemy(sim, actor);
+            if (fallback is not null || !actor.HuntPlayers) return fallback;
+        }
+        return FindPlayerTarget(sim, actor, flags, parameters)
+            ?? (chaseGoal ? sim.Actors.FirstOrDefault(a => !a.Destroyed && a.Id == actor.GoalId) : null)
+            ?? TryResumeLastEnemy(sim, actor);
+    }
+
     internal static bool IsTargetablePlayer(AuthoritySimulation sim, Actor actor, PlayerPawn player, bool allAround,
         ActorLookParameters? parameters = null)
-        => !player.Destroyed && player.Shootable && player.Health > 0 && !player.NoTarget
+        => !player.Destroyed && player.Shootable && player.Health > 0 && !player.NoTargetCheat
             && !actor.IsFriend(player) && ActorVisibility.IsVisible(sim, actor, player, allAround, parameters)
             && DetectInvisiblePlayer(sim, actor, player);
 
@@ -955,15 +1134,16 @@ public sealed class MonsterBrain(MonsterAttack attack)
         return sim.NextPlayerLookByte() >= 225;
     }
 
-    private static bool InAcquisitionView(Actor actor, Actor target)
+    private bool InOrdinaryMissileRange(Actor actor, Actor target, bool nativeMovement)
     {
-        if (Distance(actor, target) <= actor.MeleeRange.ToDouble() + actor.Radius.ToDouble()) return true;
-        var angle = Math.Atan2(target.Y.ToDouble() - actor.Y.ToDouble(), target.X.ToDouble() - actor.X.ToDouble()) * 180 / Math.PI;
-        return Math.Abs(Math.IEEERemainder(angle - actor.Angle.ToDegrees(), 360)) <= 90;
-    }
-
-    private bool InOrdinaryMissileRange(Actor actor, Actor target)
-    {
+        if (nativeMovement)
+        {
+            var adjusted = AdjustedMissileDistance(actor, target);
+            var maximum = actor.MaxTargetRange ?? (_nativeType == 64 ? 896 : 0);
+            var minimum = actor.MeleeThreshold ?? (_nativeType == 66 ? 196 : 0);
+            return !(maximum > 0 && adjusted > maximum)
+                && !(_profile is { MeleeDice: > 0 } && adjusted < minimum);
+        }
         var distance = Distance(actor, target);
         // Native range properties apply after the melee-state distance adjustments.
         if (_nativeType == 64) return distance - 64 - 128 <= 896;
@@ -971,7 +1151,43 @@ public sealed class MonsterBrain(MonsterAttack attack)
         return true;
     }
 
-    private static Actor? FindGlobalHatee(AuthoritySimulation sim, Actor actor, MonsterChaseFlags flags)
+    /// <summary>Represented native CheckMissileRange action. Chase-only walk-count and fear gates are separate.</summary>
+    public bool CheckMissileRange(AuthoritySimulation sim, Actor actor)
+    {
+        ArgumentNullException.ThrowIfNull(sim);
+        ArgumentNullException.ThrowIfNull(actor);
+        var target = sim.Actors.FirstOrDefault(candidate => candidate.Id == actor.TargetId && !candidate.Destroyed);
+        if (target is null || !SectorAllowsAttacks(actor) || !CombatTrace.HasMissileLineOfSight(sim, actor, target)) return false;
+        if (actor.JustHit)
+        {
+            actor.JustHit = false;
+            if (!actor.Friendly) return true;
+            if (target.IsDead) return false;
+            if (!actor.IsFriend(target)) return true;
+            return (target is PlayerPawn || !target.JustHit) && sim.NextDefectByte() > 128;
+        }
+        if (actor.ReactionTime != 0 || actor.IsFriend(target) || HitFriend(sim, actor, target)) return false;
+        return InOrdinaryMissileRange(actor, target, nativeMovement: true)
+            && CheckNativeMissileProbability(sim, actor, target, forceProbability: true);
+    }
+
+    private bool CheckNativeMissileProbability(AuthoritySimulation sim, Actor actor, Actor target, bool forceProbability = false)
+    {
+        // Unconfigured generic brains retain their existing deterministic attack selection.
+        if (!forceProbability && _profile is null && actor.MinMissileChance is null && actor.MissileChanceMult is null
+            && actor.MaxTargetRange is null && actor.MeleeThreshold is null) return true;
+        var distance = AdjustedMissileDistance(actor, target);
+        distance *= actor.MissileChanceMult ?? (_nativeType is 7 or 16 or 66 or 3006 ? 0.5 : 1);
+        var cap = (int)((actor.MinMissileChance ?? (_nativeType == 16 ? 160 : 200)) * (1 - sim.SkillAggressiveness));
+        var threshold = Math.Min((int)Math.Clamp(distance, int.MinValue, int.MaxValue), cap);
+        return sim.NextCheckMissileByte() >= threshold;
+    }
+
+    private double AdjustedMissileDistance(Actor actor, Actor target)
+        => Distance(actor, target) - 64 - ((_profile?.MeleeDice ?? 0) == 0 ? 128 : 0);
+
+    private static Actor? FindGlobalHatee(AuthoritySimulation sim, Actor actor, MonsterChaseFlags flags,
+        ActorLookParameters? parameters = null)
     {
         var cursor = actor.LastLookActorId;
         if (cursor is { } id && !sim.Actors.Any(a => !a.Destroyed && a.Id == id && a.ThingId == actor.TidToHate))
@@ -986,14 +1202,14 @@ public sealed class MonsterBrain(MonsterAttack attack)
             if (candidate == actor || !candidate.Shootable || candidate.IsDead || candidate.Dormant) continue;
             actor.LastLookActorId = candidate.Id;
             if (--budget == 0) return null;
-            if (actor.NoSightCheck || (!candidate.MVisBlocked && ((flags & MonsterChaseFlags.DontLookAllAround) == 0 || InAcquisitionView(actor, candidate))
-                && CombatTrace.HasLineOfSight(sim, actor, candidate))) return candidate;
+            if (actor.NoSightCheck || ActorVisibility.IsVisible(sim, actor, candidate,
+                (flags & MonsterChaseFlags.DontLookAllAround) == 0, parameters)) return candidate;
         }
         actor.LastLookActorId = cursor;
         return null;
     }
 
-    private static Actor? FindLocalHatee(AuthoritySimulation sim, Actor actor)
+    private static Actor? FindLocalHatee(AuthoritySimulation sim, Actor actor, ActorLookParameters? parameters = null)
     {
         if (sim.Level.Blockmap is not { } map) return null;
         var header = map.Header;
@@ -1011,7 +1227,7 @@ public sealed class MonsterBrain(MonsterAttack attack)
                 : sim.Actors.FirstOrDefault(candidate => !candidate.Destroyed && candidate.Id == link.TargetId
                     && candidate.ThingId == actor.TidToHate);
             if (other is null || !other.Shootable || other.IsDead || other.Dormant) continue;
-            if (actor.NoSightCheck || !other.MVisBlocked && CombatTrace.HasLineOfSight(sim, actor, other)) return other;
+            if (actor.NoSightCheck || ActorVisibility.IsVisible(sim, actor, other, true, parameters)) return other;
         }
         return null;
     }

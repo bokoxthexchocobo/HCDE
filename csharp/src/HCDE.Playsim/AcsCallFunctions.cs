@@ -201,13 +201,13 @@ internal static class AcsCallFunctions
             case CheckActorProperty:
                 return TryCheckActorProperty(sim, stack, scriptActivator, stringTable, globalStrings, argCount, out result);
             case GetMaxInventory:
-                return TryGetMaxInventory(sim, stack, scriptActivator, stringTable, argCount, out result);
+                return TryGetMaxInventory(sim, stack, scriptActivator, stringTable, globalStrings, argCount, out result);
             case DamageActor:
-                return TryDamageActor(sim, stack, scriptActivator, stringTable, argCount, out result);
+                return TryDamageActor(sim, stack, scriptActivator, stringTable, globalStrings, argCount, out result);
             case CheckClass:
-                return TryCheckClass(stack, stringTable, argCount, out result);
+                return TryCheckClass(stack, stringTable, globalStrings, argCount, out result);
             case CheckActorClass:
-                return TryCheckActorClass(sim, stack, scriptActivator, stringTable, argCount, out result);
+                return TryCheckActorClass(sim, stack, scriptActivator, stringTable, globalStrings, argCount, out result);
             case UniqueTid:
                 return TryUniqueTid(sim, stack, argCount, out result);
             case IsTidUsed:
@@ -257,9 +257,9 @@ internal static class AcsCallFunctions
             case DropItem:
                 return TryDropItem(sim, stack, scriptActivator, stringTable, globalStrings, argCount, out result);
             case CheckFlag:
-                return TryCheckFlag(sim, stack, scriptActivator, stringTable, argCount, out result);
+                return TryCheckFlag(sim, stack, scriptActivator, stringTable, globalStrings, argCount, out result);
             case SetActorFlag:
-                return TrySetActorFlag(sim, stack, scriptActivator, stringTable, argCount, out result);
+                return TrySetActorFlag(sim, stack, scriptActivator, stringTable, globalStrings, argCount, out result);
             case GetActorFloorTexture:
                 return TryGetActorFloorTexture(sim, stack, scriptActivator, globalStrings, argCount, out result);
             case GetActorFloorTerrain:
@@ -273,7 +273,7 @@ internal static class AcsCallFunctions
             case GetArmorInfo:
                 return TryGetArmorInfo(stack, scriptActivator, globalStrings, argCount, out result);
             case DropInventory:
-                return TryDropInventory(sim, stack, scriptActivator, stringTable, argCount, out result);
+                return TryDropInventory(sim, stack, scriptActivator, stringTable, globalStrings, argCount, out result);
             case PickActor:
                 return TryPickActor(sim, stack, scriptActivator, argCount, out result);
             case IsPointerEqual:
@@ -292,7 +292,7 @@ internal static class AcsCallFunctions
             case QuakeEx:
                 return TryQuakeEx(stack, argCount, out result);
             case SetSectorDamage:
-                return TrySetSectorDamage(sim, stack, argCount, out result);
+                return TrySetSectorDamage(sim, stack, stringTable, globalStrings, argCount, out result);
             case SetSectorTerrain:
                 return TrySetSectorTerrain(sim, stack, stringTable, globalStrings, argCount, out result);
             case SpawnParticle:
@@ -336,9 +336,9 @@ internal static class AcsCallFunctions
             return true;
 
         var height = actor is PlayerPawn player
-            ? player.ViewHeight
-            : actor.Height.ToDouble() * 0.5;
-        result = DoubleToAcs(height);
+            ? player.DefaultViewHeight.ToDouble() * player.CrouchFactor
+            : actor.GetCameraHeight();
+        result = AcsFixedPoint.FromDouble(height);
         return true;
     }
 
@@ -358,9 +358,11 @@ internal static class AcsCallFunctions
         var index = stack[start + 1];
         stack.RemoveRange(start, argCount);
 
-        var text = AcsStringIds.Lookup(stringId, stringTable, globalStrings);
-        if (index >= 0 && index < text.Length)
-            result = text[index];
+        var text = AcsStringIds.LookupTerminated(stringId, stringTable, globalStrings);
+        if (index < 0) return true;
+        var bytes = System.Text.Encoding.UTF8.GetBytes(text);
+        if (index < bytes.Length)
+            result = unchecked((sbyte)bytes[index]);
         return true;
     }
 
@@ -487,7 +489,7 @@ internal static class AcsCallFunctions
             1 => actor.VelocityY.ToDouble(),
             _ => actor.VelocityZ.ToDouble(),
         };
-        result = DoubleToAcs(velocity);
+        result = AcsFixedPoint.FromDouble(velocity);
         return true;
     }
 
@@ -496,6 +498,7 @@ internal static class AcsCallFunctions
         List<int> stack,
         Actor? activator,
         string[] stringTable,
+        AcsGlobalStrings globalStrings,
         int argCount,
         out int result)
     {
@@ -510,7 +513,7 @@ internal static class AcsCallFunctions
 
         var actor = ResolveActor(sim, tid, activator);
         result = actor is { Destroyed: false }
-            ? AcsPlayerInventory.Count(actor, stringTable, stringId, max: true)
+            ? AcsPlayerInventory.Count(actor, AcsStringIds.Lookup(stringId, stringTable, globalStrings), max: true)
             : 0;
         return true;
     }
@@ -520,6 +523,7 @@ internal static class AcsCallFunctions
         List<int> stack,
         Actor? activator,
         string[] stringTable,
+        AcsGlobalStrings globalStrings,
         int argCount,
         out int result)
     {
@@ -529,23 +533,20 @@ internal static class AcsCallFunctions
 
         var start = stack.Count - argCount;
         var targetTid = stack[start];
-        _ = stack[start + 1];
+        var targetPointer = stack[start + 1];
         var inflictorTid = stack[start + 2];
-        _ = stack[start + 3];
+        var inflictorPointer = stack[start + 3];
         var amount = stack[start + 4];
         var damageTypeStringId = stack[start + 5];
         stack.RemoveRange(start, argCount);
 
-        var target = ResolveActor(sim, targetTid, activator);
+        var target = AcsActorPointer.Resolve(sim, ResolveActor(sim, targetTid, activator), targetPointer);
         if (target is not { Destroyed: false })
             return true;
 
-        var inflictor = ResolveActor(sim, inflictorTid, activator) ?? activator;
-        var damageType = damageTypeStringId >= 0 && damageTypeStringId < stringTable.Length
-            ? stringTable[damageTypeStringId]
-            : null;
-        var damage = ActorDamage.Apply(target, amount, activator, DamageFlags.None, damageType, inflictor);
-        result = damage.HealthLost > 0 || damage.Killed ? 1 : 0;
+        var inflictor = AcsActorPointer.Resolve(sim, ResolveActor(sim, inflictorTid, activator), inflictorPointer);
+        var damageType = AcsStringIds.Lookup(damageTypeStringId, stringTable, globalStrings);
+        ActorDamage.ApplyWithNativeResult(target, amount, out result, inflictor, DamageFlags.None, damageType, inflictor);
         return true;
     }
 
@@ -554,6 +555,7 @@ internal static class AcsCallFunctions
         List<int> stack,
         Actor? activator,
         string[] stringTable,
+        AcsGlobalStrings globalStrings,
         int argCount,
         out int result)
     {
@@ -567,8 +569,9 @@ internal static class AcsCallFunctions
         stack.RemoveRange(start, argCount);
 
         var actor = ResolveActor(sim, tid, activator);
-        var className = stringId >= 0 && stringId < stringTable.Length ? stringTable[stringId] : null;
-        result = actor is { Destroyed: false } && DoomActorCatalog.MatchesClassName(actor.DoomEdNum, className) ? 1 : 0;
+        var className = AcsStringIds.Lookup(stringId, stringTable, globalStrings);
+        var actualClass = ClassNameOf(actor);
+        result = actualClass != "None" && string.Equals(actualClass, className, StringComparison.OrdinalIgnoreCase) ? 1 : 0;
         return true;
     }
 
@@ -580,7 +583,7 @@ internal static class AcsCallFunctions
 
         var start = stack.Count - argCount;
         var startTid = argCount > 0 ? stack[start] : 0;
-        var searchSpan = argCount > 1 ? stack[start + 1] : 0;
+        var searchSpan = argCount > 1 ? Math.Max(0, stack[start + 1]) : 0;
         stack.RemoveRange(start, argCount);
         result = AcsActorTid.FindUniqueTid(sim, startTid, searchSpan);
         return true;
@@ -623,7 +626,7 @@ internal static class AcsCallFunctions
         stack.RemoveRange(start, argCount);
         if (fixedValue < 0)
             return true;
-        result = DoubleToAcs(Math.Sqrt(AcsToDouble(fixedValue)));
+        result = AcsFixedPoint.FromDouble(Math.Sqrt(AcsToDouble(fixedValue)));
         return true;
     }
 
@@ -638,13 +641,11 @@ internal static class AcsCallFunctions
         var fixedY = stack[start + 1];
         stack.RemoveRange(start, argCount);
         var length = Math.Sqrt(AcsToDouble(fixedX) * AcsToDouble(fixedX) + AcsToDouble(fixedY) * AcsToDouble(fixedY));
-        result = DoubleToAcs(length);
+        result = AcsFixedPoint.FromDouble(length);
         return true;
     }
 
     private static double AcsToDouble(int value) => value / 65536.0;
-
-    private static int DoubleToAcs(double value) => (int)Math.Floor(value * 65536.0);
 
     private static bool TryGetActorClass(
         AuthoritySimulation sim,
@@ -758,7 +759,9 @@ internal static class AcsCallFunctions
             return "None";
         if (actor is PlayerPawn)
             return "DoomPlayer";
-        return DoomActorCatalog.TrySpawnClassName(actor.DoomEdNum, out var className) ? className : "None";
+        if (PickupCatalog.TryClassName(actor.ClassDoomEdNum, out var pickupName,
+            actor.Simulation?.StrifeHealthPickups ?? false, actor.Simulation?.RavenHealthPickups ?? false)) return pickupName;
+        return DoomActorCatalog.TrySpawnClassName(actor.ClassDoomEdNum, out var className) ? className : "None";
     }
 
     private static bool TryStringCompare(
@@ -782,12 +785,9 @@ internal static class AcsCallFunctions
         if (leftId == rightId)
             return true;
 
-        var left = AcsStringIds.Lookup(leftId, stringTable, globalStrings);
-        var right = AcsStringIds.Lookup(rightId, stringTable, globalStrings);
-        var comparison = ignoreCase ? StringComparison.OrdinalIgnoreCase : StringComparison.Ordinal;
-        result = maxLength >= 0
-            ? string.Compare(left, 0, right, 0, maxLength, comparison)
-            : string.Compare(left, right, comparison);
+        var left = AcsStringIds.LookupTerminated(leftId, stringTable, globalStrings);
+        var right = AcsStringIds.LookupTerminated(rightId, stringTable, globalStrings);
+        result = AcsByteStringComparison.Compare(left, right, ignoreCase, maxLength);
         return true;
     }
 
@@ -808,14 +808,14 @@ internal static class AcsCallFunctions
         var length = stack[start + 1];
         stack.RemoveRange(start, argCount);
 
-        var source = AcsStringIds.Lookup(stringId, stringTable, globalStrings);
+        var source = AcsStringIds.LookupTerminated(stringId, stringTable, globalStrings);
         if (string.IsNullOrEmpty(source))
         {
             result = globalStrings.Add(string.Empty);
             return true;
         }
 
-        var take = length < 0 ? 0 : Math.Min(length, source.Length);
+        var take = length < 0 ? source.Length : Math.Min(length, source.Length);
         var slice = take == 0 ? string.Empty : fromRight ? source[^take..] : source[..take];
         result = globalStrings.Add(slice);
         return true;
@@ -838,17 +838,15 @@ internal static class AcsCallFunctions
         var length = stack[start + 2];
         stack.RemoveRange(start, argCount);
 
-        var source = AcsStringIds.Lookup(stringId, stringTable, globalStrings);
-        if (string.IsNullOrEmpty(source) || position >= source.Length)
+        var source = AcsStringIds.LookupTerminated(stringId, stringTable, globalStrings);
+        if (string.IsNullOrEmpty(source) || position < 0 || position >= source.Length)
         {
             result = globalStrings.Add(string.Empty);
             return true;
         }
 
-        if (position < 0)
-            position = 0;
         var maxLength = source.Length - position;
-        if (length < 0 || position + length > source.Length)
+        if (length < 0 || length > maxLength)
             length = maxLength;
         var slice = source.Substring(position, Math.Min(length, maxLength));
         result = globalStrings.Add(slice);
@@ -960,7 +958,7 @@ internal static class AcsCallFunctions
             }
         }
 
-        result = DoubleToAcs(value);
+        result = AcsFixedPoint.FromDouble(value);
         return true;
     }
 
@@ -990,7 +988,7 @@ internal static class AcsCallFunctions
 
     private static bool TrySoundVolume(AuthoritySimulation sim, List<int> stack, Actor? activator, int argCount, out int result)
     {
-        result = 1;
+        result = 0;
         if (argCount < 3 || stack.Count < argCount)
             return false;
 
@@ -1078,22 +1076,25 @@ internal static class AcsCallFunctions
         var start = stack.Count - argCount;
         var sourceTid = stack[start];
         var destTid = stack[start + 1];
-        _ = stack[start + 2]; // SF_IGNOREVISIBILITY and optional water/seepast bits not modeled yet.
+        var flags = ActorSightFlags.IgnoreVisibility;
+        if ((stack[start + 2] & 2) != 0)
+            flags |= ActorSightFlags.SeePastBlockEverything | ActorSightFlags.SeePastShootableLines;
+        // Caller bit 1 ignores native fake-water boundaries, which are not represented yet.
         stack.RemoveRange(start, argCount);
 
         if (sourceTid == 0)
         {
-            if (activator is not { Destroyed: false })
-                return true;
             if (destTid == 0)
             {
                 result = 1;
                 return true;
             }
+            if (activator is not { Destroyed: false })
+                return true;
 
             foreach (var dest in AcsActorTid.AllFromTid(sim, destTid))
             {
-                if (CombatTrace.HasLineOfSight(sim, activator, dest))
+                if (CombatTrace.CheckSight(sim, activator, dest, flags))
                 {
                     result = 1;
                     return true;
@@ -1109,14 +1110,14 @@ internal static class AcsCallFunctions
             {
                 foreach (var dest in AcsActorTid.AllFromTid(sim, destTid))
                 {
-                    if (CombatTrace.HasLineOfSight(sim, source, dest))
+                    if (CombatTrace.CheckSight(sim, source, dest, flags))
                     {
                         result = 1;
                         return true;
                     }
                 }
             }
-            else if (activator is { Destroyed: false } && CombatTrace.HasLineOfSight(sim, source, activator))
+            else if (activator is { Destroyed: false } && CombatTrace.CheckSight(sim, source, activator, flags))
             {
                 result = 1;
                 return true;
@@ -1136,6 +1137,10 @@ internal static class AcsCallFunctions
         stack.RemoveRange(start, argCount);
         return true;
     }
+
+    private static int AcsPlaybackFlags(int channel, bool loop, bool local) =>
+        (channel & ~7) | (loop ? (int)(SimulationSoundFlags.Loop | SimulationSoundFlags.NoStop) : 0)
+        | (local ? (int)SimulationSoundFlags.Local : 0);
 
     private static bool TryPlaySound(
         AuthoritySimulation sim,
@@ -1160,21 +1165,20 @@ internal static class AcsCallFunctions
         var local = argCount > 6 && stack[start + 6] != 0;
         stack.RemoveRange(start, argCount);
 
-        result = CountAcsTidTargets(sim, tid, activator);
-        if (!string.IsNullOrEmpty(sound))
+        if (!string.IsNullOrEmpty(sound) && !sound.Equals("None", StringComparison.OrdinalIgnoreCase))
         {
             IEnumerable<Actor> targets = tid == 0
                 ? activator is { Destroyed: false } ? new[] { activator } : Array.Empty<Actor>()
                 : AcsActorTid.AllFromTid(sim, tid);
             foreach (var target in targets)
-                sim.QueueSoundRequest(new(target.Id, sound, channel & 7, channel & ~7, volume, loop, attenuation, local));
+                sim.QueueSoundRequest(new(target.Id, sound, channel & 7, AcsPlaybackFlags(channel, loop, local), volume, loop, attenuation, local));
         }
         return true;
     }
 
     private static bool TryStopSound(AuthoritySimulation sim, List<int> stack, Actor? activator, int argCount, out int result)
     {
-        result = 1;
+        result = 0;
         if (argCount < 1 || stack.Count < argCount)
             return false;
 
@@ -1190,7 +1194,8 @@ internal static class AcsCallFunctions
         return true;
     }
 
-    private static bool TrySetSectorDamage(AuthoritySimulation sim, List<int> stack, int argCount, out int result)
+    private static bool TrySetSectorDamage(AuthoritySimulation sim, List<int> stack, string[] stringTable,
+        AcsGlobalStrings globalStrings, int argCount, out int result)
     {
         result = 0;
         if (argCount < 2 || stack.Count < argCount)
@@ -1199,12 +1204,18 @@ internal static class AcsCallFunctions
         var start = stack.Count - argCount;
         var tag = stack[start];
         var amount = stack[start + 1];
-        var damageType = argCount > 2 ? stack[start + 2] : 0;
-        var interval = argCount > 3 ? stack[start + 3] : 0;
+        var damageType = argCount > 2 ? AcsStringIds.Lookup(stack[start + 2], stringTable, globalStrings) : "None";
+        var interval = argCount > 3 ? Math.Max(1, stack[start + 3]) : 32;
         var leakiness = argCount > 4 ? stack[start + 4] : 0;
         stack.RemoveRange(start, argCount);
 
-        result = SectorDamage.ApplyTagged(sim, tag, amount, damageType, interval, leakiness);
+        foreach (var sector in sim.Level.Sectors.Where(sector => sector.MatchesTag(tag)))
+        {
+            sector.DamageAmount = amount;
+            sector.DamageType = damageType.Length == 0 ? "None" : damageType;
+            sector.DamageInterval = unchecked((short)interval);
+            sector.Leakiness = unchecked((short)leakiness);
+        }
         return true;
     }
 
@@ -1222,12 +1233,12 @@ internal static class AcsCallFunctions
 
         var start = stack.Count - argCount;
         var tag = stack[start];
-        var terrainId = stack[start + 1];
-        var position = stack[start + 2];
+        var position = stack[start + 1];
+        var terrainId = stack[start + 2];
         stack.RemoveRange(start, argCount);
 
-        var terrainName = AcsStringIds.Lookup(terrainId, stringTable, globalStrings);
-        result = SectorTerrain.ApplyTagged(sim, tag, terrainName, position);
+        var terrainName = AcsStringIds.LookupTerminated(terrainId, stringTable, globalStrings);
+        SectorTerrain.ApplyTagged(sim, tag, terrainName, position);
         return true;
     }
 
@@ -1277,13 +1288,14 @@ internal static class AcsCallFunctions
         var local = argCount > 6 && stack[start + 6] != 0;
         stack.RemoveRange(start, argCount);
 
-        result = CountAcsTidTargets(sim, tid, activator);
+        if (soundType is < ActorSoundType.See or > ActorSoundType.Push) return true;
         IEnumerable<Actor> targets = tid == 0
             ? activator is { Destroyed: false } ? new[] { activator } : Array.Empty<Actor>()
             : AcsActorTid.AllFromTid(sim, tid);
         foreach (var actor in targets)
-            if (actor.ActorSounds.TryGetValue(soundType, out var sound) && !string.IsNullOrEmpty(sound))
-                sim.QueueSoundRequest(new(actor.Id, sound, channel & 7, channel & ~7, volume, loop, attenuation, local));
+            if (actor.ActorSounds.TryGetValue(soundType, out var sound) && !string.IsNullOrEmpty(sound)
+                && !sound.Equals("None", StringComparison.OrdinalIgnoreCase))
+                sim.QueueSoundRequest(new(actor.Id, sound, channel & 7, AcsPlaybackFlags(channel, loop, local), volume, loop, attenuation, local));
         return true;
     }
 
@@ -1367,6 +1379,7 @@ internal static class AcsCallFunctions
         List<int> stack,
         Actor? activator,
         string[] stringTable,
+        AcsGlobalStrings globalStrings,
         int argCount,
         out int result)
     {
@@ -1383,7 +1396,7 @@ internal static class AcsCallFunctions
         if (actor is null)
             return true;
 
-        var flagName = flagStringId >= 0 && flagStringId < stringTable.Length ? stringTable[flagStringId] : null;
+        var flagName = AcsStringIds.Lookup(flagStringId, stringTable, globalStrings);
         result = AcsActorFlags.TryGet(actor, flagName, out var value) && value ? 1 : 0;
         return true;
     }
@@ -1393,6 +1406,7 @@ internal static class AcsCallFunctions
         List<int> stack,
         Actor? activator,
         string[] stringTable,
+        AcsGlobalStrings globalStrings,
         int argCount,
         out int result)
     {
@@ -1406,7 +1420,7 @@ internal static class AcsCallFunctions
         var flagValue = stack[start + 2];
         stack.RemoveRange(start, argCount);
 
-        var flagName = flagStringId >= 0 && flagStringId < stringTable.Length ? stringTable[flagStringId] : null;
+        var flagName = AcsStringIds.Lookup(flagStringId, stringTable, globalStrings);
         var set = flagValue != 0;
         if (tid == 0)
         {
@@ -1509,7 +1523,7 @@ internal static class AcsCallFunctions
 
         var source = AcsStringIds.Lookup(sourceId, stringTable, globalStrings);
         var dest = AcsStringIds.Lookup(destId, stringTable, globalStrings);
-        result = AcsActorTeleFog.Set(sim, tid, activator, source, dest);
+        AcsActorTeleFog.Set(sim, tid, activator, source, dest);
         return true;
     }
 
@@ -1609,6 +1623,7 @@ internal static class AcsCallFunctions
         List<int> stack,
         Actor? activator,
         string[] stringTable,
+        AcsGlobalStrings globalStrings,
         int argCount,
         out int result)
     {
@@ -1621,7 +1636,7 @@ internal static class AcsCallFunctions
         var typeStringId = stack[start + 1];
         stack.RemoveRange(start, argCount);
 
-        var typeName = typeStringId >= 0 && typeStringId < stringTable.Length ? stringTable[typeStringId] : null;
+        var typeName = AcsStringIds.Lookup(typeStringId, stringTable, globalStrings);
         if (string.IsNullOrEmpty(typeName))
             return true;
 
@@ -1653,8 +1668,8 @@ internal static class AcsCallFunctions
         var start = stack.Count - argCount;
         var pointer1 = stack[start];
         var pointer2 = stack[start + 1];
-        var tid1 = argCount > 2 ? stack[start + 2] : 0;
-        var tid2 = argCount > 3 ? stack[start + 3] : 0;
+        var tid1 = argCount is 3 or 4 ? stack[start + 2] : 0;
+        var tid2 = argCount == 4 ? stack[start + 3] : 0;
         stack.RemoveRange(start, argCount);
 
         var actor1 = ResolveActor(sim, tid1, activator);
@@ -1777,7 +1792,8 @@ internal static class AcsCallFunctions
         if (actor is null || actor.SectorIndex < 0 || actor.SectorIndex >= sim.Level.Sectors.Count)
             return true;
 
-        result = globalStrings.Add(sim.Level.Sectors[actor.SectorIndex].FloorTerrain);
+        var terrain = sim.Level.FloorTerrainDefinition(actor.SectorIndex);
+        result = globalStrings.Add(terrain?.Name ?? sim.Level.Sectors[actor.SectorIndex].FloorTerrain);
         return true;
     }
 
@@ -1804,7 +1820,7 @@ internal static class AcsCallFunctions
         return true;
     }
 
-    private static bool TryCheckClass(List<int> stack, string[] stringTable, int argCount, out int result)
+    private static bool TryCheckClass(List<int> stack, string[] stringTable, AcsGlobalStrings globalStrings, int argCount, out int result)
     {
         result = 0;
         if (argCount < 1 || stack.Count < argCount)
@@ -1814,8 +1830,13 @@ internal static class AcsCallFunctions
         var stringId = stack[start];
         stack.RemoveRange(start, argCount);
 
-        var className = stringId >= 0 && stringId < stringTable.Length ? stringTable[stringId] : null;
-        result = DoomActorCatalog.TryEditorNumberForClassName(className, out _) ? 1 : 0;
+        var className = AcsStringIds.Lookup(stringId, stringTable, globalStrings);
+        result = DoomActorCatalog.TryEditorNumberForClassName(className, out _)
+            || className.Equals("DoomPlayer", StringComparison.OrdinalIgnoreCase)
+            || ActorInventoryActions.IsManagedPowerup(className)
+            || PickupCatalog.TryEditorNumberForDropName(className, out _)
+            || PickupCatalog.TryEditorNumberForDropName(className, out _, strifeHealth: true)
+            || PickupCatalog.TryEditorNumberForDropName(className, out _, ravenHealth: true) ? 1 : 0;
         return true;
     }
 
@@ -1848,11 +1869,8 @@ internal static class AcsCallFunctions
         else
             actor = AcsActorTid.SingleFromTid(sim, tid);
 
-        if (actor is { Destroyed: false })
-        {
-            activator.Value = actor;
-            result = 1;
-        }
+        activator.Value = actor is { Destroyed: false } ? actor : null;
+        result = activator.Value is not null ? 1 : 0;
         return true;
     }
 
@@ -1878,7 +1896,7 @@ internal static class AcsCallFunctions
         Actor? target;
         if (actor is PlayerPawn player && !player.IsDead)
             target = CombatTrace.FindTarget(sim, player, HitscanCombat.HitscanRange);
-        else if (actor.Brain?.TargetId is { } targetId)
+        else if (actor.TargetId is { } targetId)
             target = sim.Actors.FirstOrDefault(candidate => candidate.Id == targetId && !candidate.Destroyed);
         else
             target = null;

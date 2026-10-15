@@ -68,6 +68,30 @@ public static class ActorPropertyActions
         return false;
     }
 
+    public static void AdjustFloorClip(Actor actor)
+    {
+        ArgumentNullException.ThrowIfNull(actor);
+        if (actor.SpecialFloorClip) return;
+        var sim = actor.Simulation ?? throw new InvalidOperationException("Floor clipping requires a simulation.");
+        AdjustFloorClip(sim, actor);
+    }
+
+    internal static void AdjustFloorClip(AuthoritySimulation sim, Actor actor)
+    {
+        if (actor.SpecialFloorClip) return;
+        double? shallowest = null;
+        for (var i = 0; i < sim.Level.Sectors.Count; i++)
+        {
+            if (!ActorPhysics.TouchesSector(sim, actor, i) || actor.Z.ToDouble() != sim.FloorOf(i)) continue;
+            var clip = sim.Level.FloorTerrainDefinition(i)?.FootClip ?? 0;
+            if (!double.IsFinite(clip)) throw new InvalidOperationException("Terrain FootClip must be finite.");
+            shallowest = shallowest.HasValue ? Math.Min(shallowest.Value, clip) : clip;
+        }
+        var old = actor.FloorClip;
+        actor.FloorClip = shallowest ?? 0;
+        if (actor is PlayerPawn player) player.ViewHeight += actor.FloorClip - old;
+    }
+
     public static bool RaiseMobj(Actor actor, double speed)
     {
         if (!double.IsFinite(speed)) throw new ArgumentOutOfRangeException(nameof(speed));

@@ -52,17 +52,17 @@ internal static class AcsActorTid
     {
         if (startTid != 0)
         {
-            var limit = searchSpan + (startTid - 1);
-            for (var tid = startTid; tid <= limit; tid++)
+            var limit = Math.Min(int.MaxValue, (long)searchSpan + startTid - 1);
+            for (long tid = startTid; tid <= limit; tid++)
             {
-                if (tid != 0 && !IsTidUsed(sim, tid))
-                    return tid;
+                if (tid != 0 && !IsTidUsed(sim, (int)tid))
+                    return (int)tid;
             }
             return 0;
         }
 
         var probeLimit = searchSpan == 0 ? int.MaxValue : searchSpan;
-        for (var i = 0; i < probeLimit; i += 5)
+        for (long i = 0; i < probeLimit; i += 5)
         {
             var tid = (int)(sim.NextUniqueTidRandom() & int.MaxValue);
             tid = FindUniqueTid(sim, tid == 0 ? 1 : tid, 5);

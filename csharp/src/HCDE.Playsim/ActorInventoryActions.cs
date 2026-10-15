@@ -21,6 +21,7 @@ public static class ActorInventoryActions
     public static bool UseInventory(Actor actor, string? typeName)
     {
         ArgumentNullException.ThrowIfNull(actor);
+        if (actor is PlayerPawn { TotallyFrozen: true }) return false;
         return AcsPlayerInventory.Use(actor, typeName) != 0;
     }
 
@@ -241,6 +242,9 @@ public static class ActorInventoryActions
     private static bool Give(Actor? receiver, string? typeName, int amount, int pointerSelector)
     {
         if (receiver is null || string.IsNullOrEmpty(typeName)) return false;
+        if (typeName.Equals("RadSuit", StringComparison.OrdinalIgnoreCase))
+            return Resolve(receiver, pointerSelector) is PlayerPawn suitPlayer
+                && PickupCatalog.TryGiveDoomClass(suitPlayer, PickupCatalog.RadSuit);
         if (typeName.Equals("Berserk", StringComparison.OrdinalIgnoreCase))
             return Resolve(receiver, pointerSelector) is PlayerPawn berserkPlayer
                 && PickupCatalog.TryGiveDoomClass(berserkPlayer, PickupCatalog.Berserk);
@@ -282,6 +286,8 @@ public static class ActorInventoryActions
             {
                 "POWERDAMAGE" => powerPlayer.PowerDamageTics,
                 "POWERPROTECTION" => powerPlayer.PowerProtectionTics,
+                "POWERMASK" => powerPlayer.PowerMaskTics,
+                "POWERIRONFEET" => powerPlayer.PowerIronFeetTics,
                 "POWERINFINITEAMMO" => powerPlayer.PowerInfiniteAmmoTics,
                 "POWERDRAIN" => powerPlayer.PowerDrainTics,
                 "POWERREGENERATION" => powerPlayer.PowerRegenerationTics,
@@ -468,10 +474,12 @@ public static class ActorInventoryActions
 
     private static bool IsBackpack(string typeName) => typeName.Equals("Backpack", StringComparison.OrdinalIgnoreCase);
 
-    private static bool IsManagedPowerup(string typeName) =>
+    internal static bool IsManagedPowerup(string typeName) =>
         typeName.Equals("PowerStrength", StringComparison.OrdinalIgnoreCase)
         || typeName.Equals("PowerDamage", StringComparison.OrdinalIgnoreCase)
         || typeName.Equals("PowerBuddha", StringComparison.OrdinalIgnoreCase)
+        || typeName.Equals("PowerMask", StringComparison.OrdinalIgnoreCase)
+        || typeName.Equals("PowerIronFeet", StringComparison.OrdinalIgnoreCase)
         || typeName.Equals("PowerInfiniteAmmo", StringComparison.OrdinalIgnoreCase)
         || typeName.Equals("PowerHighJump", StringComparison.OrdinalIgnoreCase)
         || typeName.Equals("PowerDoubleFiringSpeed", StringComparison.OrdinalIgnoreCase)

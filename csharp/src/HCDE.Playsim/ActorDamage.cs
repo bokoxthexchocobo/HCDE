@@ -70,7 +70,12 @@ public static class ActorDamage
     }
 
     public static DamageResult Apply(Actor target, int damage, Actor? source = null, DamageFlags flags = DamageFlags.None, string? damageType = null, Actor? inflictor = null)
+        => ApplyWithNativeResult(target, damage, out _, source, flags, damageType, inflictor);
+
+    internal static DamageResult ApplyWithNativeResult(Actor target, int damage, out int nativeResult,
+        Actor? source = null, DamageFlags flags = DamageFlags.None, string? damageType = null, Actor? inflictor = null)
     {
+        nativeResult = 0;
         var forced = flags.HasFlag(DamageFlags.Forced);
         // God mode and invulnerability stop ordinary hits. A telefrag goes through both.
         var telefrag = damage >= TelefragDamage;
@@ -168,6 +173,12 @@ public static class ActorDamage
         }
         if (target.NoDamage && !forced)
             return ReactToDamage(target, source, inflictor, flags, damageType, 0, 0, 0, originalDamage);
+        // IgnoreArmor is a BasicArmor rule; it does not bypass PowerIronFeet's inventory absorption.
+        if (damage > 0 && !forced && reducible && !flags.HasFlag(DamageFlags.BypassArmor)
+            && target is PlayerPawn suitPlayer
+            && (suitPlayer.HasIronFeetProtection && string.Equals(damageType, "Drowning", StringComparison.OrdinalIgnoreCase)
+                || suitPlayer.PowerMaskTics > 0 && string.Equals(damageType, "Fire", StringComparison.OrdinalIgnoreCase)))
+            return default;
         var absorbed = 0;
         if (!forced && !flags.HasFlag(DamageFlags.BypassArmor) && !IgnoresArmor(damageType, target.Simulation))
         {
@@ -198,6 +209,8 @@ public static class ActorDamage
         if (healthDamage <= 0) return IsFakePain(target, inflictor, originalDamage) || forced
             ? ReactToDamage(target, source, inflictor, flags, damageType, 0, absorbed, 0, originalDamage)
             : new DamageResult(0, absorbed, false);
+        // Native returns damage after armor, independently of healing and survival clamps.
+        nativeResult = healthDamage;
         if (!forced && (!telefrag || target.LaxTelefragDamage) && target is PlayerPawn emergencyPlayer)
             AutoUseEmergencyHealth(emergencyPlayer, healthDamage);
         var before = target.Health;

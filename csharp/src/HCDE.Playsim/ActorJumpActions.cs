@@ -137,7 +137,7 @@ public static class ActorJumpActions
             var top = bottom + actor.Height.ToDouble();
             var dz = twoDimension ? 0 : eyeZ > top ? top - eyeZ : eyeZ < bottom ? bottom - eyeZ : 0;
             if (rangeSquared.HasValue && dx * dx + dy * dy + dz * dz <= rangeSquared.Value) return null;
-            if (checkSight && CombatTrace.HasLineOfSight(sim, player, actor)) return null;
+            if (checkSight && CombatTrace.CheckSight(sim, player, actor, ActorSightFlags.IgnoreVisibility)) return null;
         }
         return destination;
     }
@@ -192,7 +192,7 @@ public static class ActorJumpActions
         }
         var viewport = (flags & targetLos) != 0 ? target : actor;
         var viewed = ReferenceEquals(viewport, actor) ? target : actor;
-        if (checkSight && !CombatTrace.HasLineOfSight(sim, viewport, viewed)) return null;
+        if (checkSight && !CombatTrace.CheckSight(sim, viewport, viewed, ActorSightFlags.IgnoreVisibility)) return null;
         if ((flags & flipFov) != 0) (viewport, viewed) = (viewed, viewport);
         return InFieldOfView(viewport, viewed, fov) ? destination : null;
     }
@@ -221,7 +221,7 @@ public static class ActorJumpActions
             if ((flags & closeNoSight) != 0) checkSight = false;
         }
         if (!InFieldOfView(target, actor, fov)) return null;
-        return !checkSight || CombatTrace.HasLineOfSight(sim, target, actor) ? destination : null;
+        return !checkSight || CombatTrace.CheckSight(sim, target, actor, ActorSightFlags.IgnoreVisibility) ? destination : null;
     }
 
     private static double PositionDistance(Actor actor, Actor target)
@@ -250,8 +250,7 @@ public static class ActorJumpActions
         var sim = actor.Simulation
             ?? throw new InvalidOperationException("Actor target selection requires a simulation.");
         var target = AcsActorPointer.Resolve(sim, actor, AcsActorPointer.Target);
-        return target is not null && MonsterBrain.CheckMeleeRange(actor, target,
-            CombatTrace.HasLineOfSight(sim, actor, target), range);
+        return target is not null && MonsterBrain.CheckNativeMeleeRange(sim, actor, target, range);
     }
 
     public static bool CheckIfCloser(Actor actor, Actor? target, double distance, bool noZ = false)

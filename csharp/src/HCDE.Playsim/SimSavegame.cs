@@ -13,6 +13,25 @@ public sealed class SimActorPose
     public int Accuracy { get; internal set; }
     public int FriendlySeeBlocks { get; internal set; } = 10;
     public int SeeFriendlyMonstersFlag { get; internal set; }
+    public int LookBehaviorFlags { get; internal set; }
+    public int InConversationFlag { get; internal set; }
+    public int DontFollowPlayersFlag { get; internal set; }
+    public int CanJumpFlag { get; internal set; }
+    public int BlockAsPlayerFlag { get; internal set; }
+    public int FloorClipFlags { get; internal set; }
+    public int AvoidHazardsFlag { get; internal set; }
+    public int StayOnLiftFlag { get; internal set; }
+    public int AvoidMeleeFlag { get; internal set; }
+    public int StrafeCount { get; internal set; }
+    public int FastChaseStrafeCount { get; internal set; }
+    public int MinMissileChanceOverride { get; internal set; } = -1;
+    public double? MissileChanceMultOverride { get; internal set; }
+    public double? MaxTargetRangeOverride { get; internal set; }
+    public double? MeleeThresholdOverride { get; internal set; }
+    public int CantLeaveFloorPicFlag { get; internal set; }
+    public int FearFlags { get; internal set; }
+    public int MoveDirection { get; internal set; }
+    public int MoveCount { get; internal set; }
     public SimSoundClass? SoundClassOverride { get; internal set; }
     public int PowerStrengthTics { get; internal set; }
     public int PlayerBonusCount { get; internal set; }
@@ -35,6 +54,12 @@ public sealed class SimActorPose
     public int? VulnerableFlag { get; internal set; }
     public int? MonsterClassificationFlag { get; internal set; }
     public int? NoTargetFlag { get; internal set; }
+    public int? PlayerNoTargetCheatOverride { get; internal set; }
+    public int BuddhaFlag { get; internal set; }
+    public int FlyCheatFlag { get; internal set; }
+    public int PlayerFrozenFlags { get; internal set; }
+    public int NoClipFlag { get; internal set; }
+    public int PlayerNoClip2Flag { get; internal set; }
     public int? ChaseGoalFlag { get; internal set; }
     public int? JustAttackedFlag { get; internal set; }
     public int? InCombatFlag { get; internal set; }
@@ -176,6 +201,10 @@ public sealed class SimActorPose
     public int PowerDamageTics { get; internal set; }
     public int PowerProtectionTics { get; internal set; }
     public int PowerBuddhaTics { get; internal set; }
+    public double CameraHeight { get; internal set; } = Actor.DefaultCameraHeight;
+    public int PowerIronFeetMode { get; internal set; }
+    public int PowerMaskTics { get; internal set; }
+    public int PowerIronFeetTics { get; internal set; }
     public int PowerInfiniteAmmoTics { get; internal set; }
     public int PowerDrainTics { get; internal set; }
     public double PowerDrainStrength { get; internal set; } = 0.5;
@@ -265,6 +294,19 @@ public sealed class SimSaveState
     public ulong? SkelFistRandomState { get; internal set; }
     public ulong? SawRandomState { get; internal set; }
     public ulong? PunchRandomState { get; internal set; }
+    public ulong? NewChaseDirRandomState { get; internal set; }
+    public ulong? TryWalkRandomState { get; internal set; }
+    public ulong? AvoidCrushRandomState { get; internal set; }
+    public ulong? StayOnLiftRandomState { get; internal set; }
+    public ulong? ScaredyCatRandomState { get; internal set; }
+    public ulong? CheckMissileRandomState { get; internal set; }
+    public ulong? DefectRandomState { get; internal set; }
+    public ulong? CheckSightRandomState { get; internal set; }
+    public uint? SwitchTargetRandomState { get; internal set; }
+    public ulong? UniqueTidRandomState { get; internal set; }
+    public ulong? SectorDamageRandomState { get; internal set; }
+    public ulong? NativeSwitchTargetRandomState { get; internal set; }
+    public ulong? EnemyStrafeRandomState { get; internal set; }
     public ulong? SkipTargetRandomState { get; internal set; }
     public ulong? CPosRefireRandomState { get; internal set; }
     public ulong? CPosAttackRandomState { get; internal set; }
@@ -293,6 +335,7 @@ public sealed class SimSaveState
     public bool IncludesWallControls { get; init; }
     public bool IncludesWallParts { get; init; }
     public SimGeometryHealth? GeometryHealth { get; internal set; }
+    public IReadOnlyList<SimLineAction>? LineActions { get; internal set; }
 }
 
 /// <summary>
@@ -310,6 +353,7 @@ public static class SimSavegame
 
     public static byte[] Write(SimSaveState state)
     {
+        SimLineActionsArchive.Validate(state);
         if (state.SkipTargetRandomState.HasValue && state.GeometryHealth is null)
             throw new InvalidOperationException("SkipTarget random archives require geometry state.");
         SimActorSoundArchive.Validate(state);
@@ -337,6 +381,16 @@ public static class SimSavegame
         SimTargetSwitchFlagsArchive.Validate(state);
         SimCombatBehaviorArchive.Validate(state);
         SimNoTargetArchive.Validate(state);
+        SimPlayerNoTargetCheatArchive.Validate(state);
+        SimBuddhaArchive.Validate(state);
+        SimFlyCheatArchive.Validate(state);
+        SimPlayerFrozenArchive.Validate(state);
+        SimNoClipArchive.Validate(state);
+        SimPlayerNoClip2Archive.Validate(state);
+        SimIronFeetArchive.Validate(state);
+        SimIronFeetModeArchive.Validate(state);
+        SimPowerMaskArchive.Validate(state);
+        SimCameraHeightArchive.Validate(state);
         SimMonsterClassificationArchive.Validate(state);
         SimChaseGoalArchive.Validate(state);
         SimJustAttackedArchive.Validate(state);
@@ -355,6 +409,43 @@ public static class SimSavegame
         SimAccuracyArchive.Validate(state);
         SimFriendlySeeBlocksArchive.Validate(state);
         SimSeeFriendlyMonstersArchive.Validate(state);
+        SimLookBehaviorArchive.Validate(state);
+        SimConversationArchive.Validate(state);
+        SimDontFollowPlayersArchive.Validate(state);
+        SimCanJumpArchive.Validate(state);
+        SimFastChaseArchive.Validate(state);
+        SimMinMissileChanceArchive.Validate(state);
+        SimMissileChanceMultArchive.Validate(state);
+        SimMaxTargetRangeArchive.Validate(state);
+        SimMeleeThresholdArchive.Validate(state);
+        if (state.CheckSightRandomState.HasValue && state.GeometryHealth is null)
+            throw new InvalidOperationException("CheckSight random state requires geometry state.");
+        if (state.SwitchTargetRandomState.HasValue && state.GeometryHealth is null)
+            throw new InvalidOperationException("SwitchTarget random state requires geometry state.");
+        if (state.UniqueTidRandomState.HasValue && state.GeometryHealth is null)
+            throw new InvalidOperationException("Unique TID random state requires geometry state.");
+        if (state.SectorDamageRandomState.HasValue && state.GeometryHealth is null)
+            throw new InvalidOperationException("Sector damage random state requires geometry state.");
+        if (state.NativeSwitchTargetRandomState.HasValue && state.GeometryHealth is null)
+            throw new InvalidOperationException("Native SwitchTarget random state requires geometry state.");
+        if (state.DefectRandomState.HasValue && state.GeometryHealth is null)
+            throw new InvalidOperationException("Defect random state requires geometry state.");
+        SimBlockAsPlayerArchive.Validate(state);
+        if (state.CheckMissileRandomState.HasValue && state.GeometryHealth is null)
+            throw new InvalidOperationException("CheckMissile random state requires geometry state.");
+        if (state.ScaredyCatRandomState.HasValue && state.GeometryHealth is null)
+            throw new InvalidOperationException("ScaredyCat random state requires geometry state.");
+        SimFloorClipFlagsArchive.Validate(state);
+        SimAvoidHazardsArchive.Validate(state);
+        SimStayOnLiftArchive.Validate(state);
+        if (state.StayOnLiftRandomState.HasValue && state.GeometryHealth is null)
+            throw new InvalidOperationException("StayOnLift random state requires geometry state.");
+        if (state.AvoidCrushRandomState.HasValue && state.GeometryHealth is null)
+            throw new InvalidOperationException("AvoidCrush random state requires geometry state.");
+        SimMeleeAvoidanceArchive.Validate(state);
+        SimCantLeaveFloorPicArchive.Validate(state);
+        SimFearFlagsArchive.Validate(state);
+        SimWanderArchive.Validate(state);
         SimSoundClassArchive.Validate(state);
         SimNoBloodArchive.Validate(state);
         SimIsPuffArchive.Validate(state);
@@ -528,7 +619,55 @@ public static class SimSavegame
             archive = SimGibHealthArchive.Write(state, SimGibFactorArchive.Write(state, SimActorDieRandomArchive.Write(state, archive)));
             archive = SimSectorSoundArchive.Write(state, SimNoSplashAlertArchive.Write(state, SimInCombatArchive.Write(state, SimJustAttackedArchive.Write(state, SimChaseGoalArchive.Write(state, SimMonsterClassificationArchive.Write(state, SimNoTargetArchive.Write(state, SimCombatBehaviorArchive.Write(state, SimTargetSwitchFlagsArchive.Write(state, SimInfightingFlagsArchive.Write(state, SimActorScoreArchive.Write(state, SimSpawnBobPhaseArchive.Write(state, SimPlayerSearchArchive.Write(state, SimPlayerLookArchive.Write(state, SimMVisBlockedArchive.Write(state, SimHateSearchArchive.Write(state, SimHateTargetingArchive.Write(state, SimVulnerableArchive.Write(state, archive))))))))))))))))));
             archive = SimPlayerBonusArchive.Write(state, SimPowerStrengthArchive.Write(state, SimPunchRandomArchive.Write(state, SimSawRandomArchive.Write(state, SimPlayerExtraLightArchive.Write(state, archive)))));
-            return SimSeeFriendlyMonstersArchive.Write(state, SimSkipTargetRandomArchive.Write(state, SimFriendlySeeBlocksArchive.Write(state, SimSoundClassArchive.Write(state, SimAccuracyArchive.Write(state, SimSectorMotionArchive.Write(state, SimDoorMotionArchive.Write(state, SimPickupAutoUseArchive.Write(state, SimPickupHealthArchive.Write(state, SimPickupAttenuationArchive.Write(state, SimPickupPresentationArchive.Write(state, archive)))))))))));
+            archive = SimPickupPresentationArchive.Write(state, archive);
+            archive = SimPickupAttenuationArchive.Write(state, archive);
+            archive = SimPickupHealthArchive.Write(state, archive);
+            archive = SimPickupAutoUseArchive.Write(state, archive);
+            archive = SimDoorMotionArchive.Write(state, archive);
+            archive = SimSectorMotionArchive.Write(state, archive);
+            archive = SimAccuracyArchive.Write(state, archive);
+            archive = SimSoundClassArchive.Write(state, archive);
+            archive = SimFriendlySeeBlocksArchive.Write(state, archive);
+            archive = SimSkipTargetRandomArchive.Write(state, archive);
+            archive = SimSeeFriendlyMonstersArchive.Write(state, archive);
+            archive = SimLookBehaviorArchive.Write(state, archive);
+            archive = SimConversationArchive.Write(state, archive);
+            archive = SimWanderArchive.Write(state, archive);
+            archive = SimDontFollowPlayersArchive.Write(state, archive);
+            archive = SimCanJumpArchive.Write(state, archive);
+            archive = SimFearFlagsArchive.Write(state, archive);
+            archive = SimCantLeaveFloorPicArchive.Write(state, archive);
+            archive = SimMeleeAvoidanceArchive.Write(state, archive);
+            archive = SimAvoidHazardsArchive.Write(state, archive);
+            archive = SimAvoidCrushRandomArchive.Write(state, archive);
+            archive = SimStayOnLiftArchive.Write(state, archive);
+            archive = SimStayOnLiftRandomArchive.Write(state, archive);
+            archive = SimLineActionsArchive.Write(state, archive);
+            archive = SimFloorClipFlagsArchive.Write(state, archive);
+            archive = SimBlockAsPlayerArchive.Write(state, archive);
+            archive = SimScaredyCatRandomArchive.Write(state, archive);
+            archive = SimCheckMissileRandomArchive.Write(state, archive);
+            archive = SimFastChaseArchive.Write(state, archive);
+            archive = SimMinMissileChanceArchive.Write(state, archive);
+            archive = SimMissileChanceMultArchive.Write(state, archive);
+            archive = SimMaxTargetRangeArchive.Write(state, archive);
+            archive = SimMeleeThresholdArchive.Write(state, archive);
+            archive = SimDefectRandomArchive.Write(state, archive);
+            archive = SimCheckSightRandomArchive.Write(state, archive);
+            archive = SimSwitchTargetRandomArchive.Write(state, archive);
+            archive = SimNativeSwitchTargetRandomArchive.Write(state, archive);
+            archive = SimPlayerNoTargetCheatArchive.Write(state, archive);
+            archive = SimBuddhaArchive.Write(state, archive);
+            archive = SimFlyCheatArchive.Write(state, archive);
+            archive = SimPlayerFrozenArchive.Write(state, archive);
+            archive = SimNoClipArchive.Write(state, archive);
+            archive = SimPlayerNoClip2Archive.Write(state, archive);
+            archive = SimIronFeetArchive.Write(state, archive);
+            archive = SimSectorDamageRandomArchive.Write(state, archive);
+            archive = SimIronFeetModeArchive.Write(state, archive);
+            archive = SimPowerMaskArchive.Write(state, archive);
+            archive = SimUniqueTidRandomArchive.Write(state, archive);
+            return SimCameraHeightArchive.Write(state, archive);
         }
         return buffer;
     }
@@ -753,6 +892,44 @@ public static class SimSavegame
         if (version == 261) return SimFriendlySeeBlocksArchive.TryRead(bytes, out state, out error);
         if (version == 262) return SimSkipTargetRandomArchive.TryRead(bytes, out state, out error);
         if (version == 263) return SimSeeFriendlyMonstersArchive.TryRead(bytes, out state, out error);
+        if (version == 264) return SimLookBehaviorArchive.TryRead(bytes, out state, out error);
+        if (version == 265) return SimConversationArchive.TryRead(bytes, out state, out error);
+        if (version == 266) return SimWanderArchive.TryRead(bytes, out state, out error);
+        if (version == 267) return SimDontFollowPlayersArchive.TryRead(bytes, out state, out error);
+        if (version == 268) return SimCanJumpArchive.TryRead(bytes, out state, out error);
+        if (version == 269) return SimFearFlagsArchive.TryRead(bytes, out state, out error);
+        if (version == 270) return SimCantLeaveFloorPicArchive.TryRead(bytes, out state, out error);
+        if (version == 271) return SimMeleeAvoidanceArchive.TryRead(bytes, out state, out error);
+        if (version == 272) return SimAvoidHazardsArchive.TryRead(bytes, out state, out error);
+        if (version == 273) return SimAvoidCrushRandomArchive.TryRead(bytes, out state, out error);
+        if (version == 274) return SimStayOnLiftArchive.TryRead(bytes, out state, out error);
+        if (version == 275) return SimStayOnLiftRandomArchive.TryRead(bytes, out state, out error);
+        if (version == 276) return SimLineActionsArchive.TryRead(bytes, out state, out error);
+        if (version == 277) return SimFloorClipFlagsArchive.TryRead(bytes, out state, out error);
+        if (version == 278) return SimBlockAsPlayerArchive.TryRead(bytes, out state, out error);
+        if (version == 279) return SimScaredyCatRandomArchive.TryRead(bytes, out state, out error);
+        if (version == 280) return SimCheckMissileRandomArchive.TryRead(bytes, out state, out error);
+        if (version == 281) return SimFastChaseArchive.TryRead(bytes, out state, out error);
+        if (version == 282) return SimMinMissileChanceArchive.TryRead(bytes, out state, out error);
+        if (version == 283) return SimMissileChanceMultArchive.TryRead(bytes, out state, out error);
+        if (version == 284) return SimMaxTargetRangeArchive.TryRead(bytes, out state, out error);
+        if (version == 285) return SimMeleeThresholdArchive.TryRead(bytes, out state, out error);
+        if (version == 286) return SimDefectRandomArchive.TryRead(bytes, out state, out error);
+        if (version == 287) return SimCheckSightRandomArchive.TryRead(bytes, out state, out error);
+        if (version == 288) return SimSwitchTargetRandomArchive.TryRead(bytes, out state, out error);
+        if (version == 289) return SimNativeSwitchTargetRandomArchive.TryRead(bytes, out state, out error);
+        if (version == 290) return SimPlayerNoTargetCheatArchive.TryRead(bytes, out state, out error);
+        if (version == 291) return SimBuddhaArchive.TryRead(bytes, out state, out error);
+        if (version == 292) return SimFlyCheatArchive.TryRead(bytes, out state, out error);
+        if (version == 293) return SimPlayerFrozenArchive.TryRead(bytes, out state, out error);
+        if (version == 294) return SimNoClipArchive.TryRead(bytes, out state, out error);
+        if (version == 301) return SimCameraHeightArchive.TryRead(bytes, out state, out error);
+        if (version == 300) return SimUniqueTidRandomArchive.TryRead(bytes, out state, out error);
+        if (version == 299) return SimPowerMaskArchive.TryRead(bytes, out state, out error);
+        if (version == 298) return SimIronFeetModeArchive.TryRead(bytes, out state, out error);
+        if (version == 297) return SimSectorDamageRandomArchive.TryRead(bytes, out state, out error);
+        if (version == 296) return SimIronFeetArchive.TryRead(bytes, out state, out error);
+        if (version == 295) return SimPlayerNoClip2Archive.TryRead(bytes, out state, out error);
         if (version == 258) return SimSectorMotionArchive.TryRead(bytes, out state, out error);
         if (version == 257) return SimDoorMotionArchive.TryRead(bytes, out state, out error);
         if (version == 256) return SimPickupAutoUseArchive.TryRead(bytes, out state, out error);

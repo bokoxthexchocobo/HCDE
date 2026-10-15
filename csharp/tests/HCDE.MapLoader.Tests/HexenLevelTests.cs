@@ -21,6 +21,7 @@ public class HexenLevelTests
         BinaryPrimitives.WriteUInt16LittleEndian(bytes.AsSpan((int)line.FilePosition + 4), (ushort)(activation << 10));
         Assert.True(LevelBuilder.TryFromWad(bytes, "MAP01", out var level, out var error), error);
         Assert.Equal((cross, use, through), (level.Lines[0].PlayerCross, level.Lines[0].PlayerUse, level.Lines[0].UseThrough));
+        Assert.Equal(activation == 3, level.Lines[0].Impact);
     }
     public static byte[] HexenWad()
     {

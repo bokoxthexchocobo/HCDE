@@ -1,6 +1,6 @@
 namespace HCDE.Playsim;
 
-/// <summary>Native ACS <c>SetSectorTerrain</c> subset (stored names only).</summary>
+/// <summary>Applies native ACS terrain overrides through managed terrain definitions.</summary>
 internal static class SectorTerrain
 {
     public const int Floor = 0;
@@ -8,8 +8,14 @@ internal static class SectorTerrain
 
     public static int ApplyTagged(AuthoritySimulation sim, int tag, string? terrainName, int position)
     {
-        if (string.IsNullOrEmpty(terrainName))
+        if (position != Floor && position != Ceiling)
             return 0;
+
+        var resolvedName = string.IsNullOrEmpty(terrainName)
+            || terrainName.Equals("None", StringComparison.OrdinalIgnoreCase)
+            || terrainName.Equals("Null", StringComparison.OrdinalIgnoreCase)
+            ? string.Empty
+            : sim.Level.FindTerrainDefinition(terrainName)?.Name ?? string.Empty;
 
         var count = 0;
         foreach (var sector in sim.Level.Sectors)
@@ -17,9 +23,9 @@ internal static class SectorTerrain
             if (!sector.MatchesTag(tag))
                 continue;
             if (position == Ceiling)
-                sector.CeilingTerrain = terrainName;
+                sector.CeilingTerrain = resolvedName;
             else
-                sector.FloorTerrain = terrainName;
+                sector.FloorTerrain = resolvedName;
             count++;
         }
 

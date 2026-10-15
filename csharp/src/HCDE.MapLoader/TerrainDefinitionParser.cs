@@ -3,7 +3,7 @@ using System.Text;
 namespace HCDE.MapLoader;
 
 /// <summary>TERRAIN subset for damage-type definitions and floor mappings.
-/// Splash effects, conditionals, and texture validation are not represented.</summary>
+/// Splash actor effects, conditionals, and texture validation are not represented.</summary>
 public static class TerrainDefinitionParser
 {
     public static bool TryParse(string text, out IReadOnlyList<LevelTerrainDefinition> definitions,
@@ -26,6 +26,8 @@ public static class TerrainDefinitionParser
         foreach (var floor in previous?.Floors ?? Array.Empty<LevelFloorTerrain>()) floors[floor.Texture] = floor;
         var defaultTerrain = previous?.DefaultTerrain ?? "";
         var splashes = new HashSet<string>(previous?.Splashes ?? Array.Empty<string>(), StringComparer.OrdinalIgnoreCase);
+        var splashDefinitions = new Dictionary<string, LevelTerrainSplash>(StringComparer.OrdinalIgnoreCase);
+        foreach (var splash in previous?.SplashDefinitions ?? Array.Empty<LevelTerrainSplash>()) splashDefinitions[splash.Name] = splash;
         var index = 0;
         while (index < tokens.Count)
         {
@@ -35,9 +37,28 @@ public static class TerrainDefinitionParser
                 if (index >= tokens.Count || tokens[index] is "{" or "}")
                 { error = "Splash definition is missing a name."; return false; }
                 var splash = tokens[index++];
-                if (index < tokens.Count && tokens[index].Equals("modify", StringComparison.OrdinalIgnoreCase)) index++;
-                if (index + 1 >= tokens.Count || tokens[index++] != "{" || tokens[index++] != "}")
-                { error = "Only empty splash definition blocks are supported."; return false; }
+                var modifySplash = index < tokens.Count && tokens[index].Equals("modify", StringComparison.OrdinalIgnoreCase);
+                if (modifySplash) index++;
+                splashDefinitions.TryGetValue(splash, out var priorSplash);
+                var splashDefinition = modifySplash && priorSplash is not null ? priorSplash : new LevelTerrainSplash(priorSplash?.Name ?? splash);
+                if (index >= tokens.Count || tokens[index++] != "{")
+                { error = "Splash definition is missing a block."; return false; }
+                while (index < tokens.Count && tokens[index] != "}")
+                {
+                    var property = tokens[index++];
+                    if (!property.Equals("sound", StringComparison.OrdinalIgnoreCase)
+                        && !property.Equals("smallsound", StringComparison.OrdinalIgnoreCase))
+                    { error = $"Unsupported splash {splash} property {property}."; return false; }
+                    if (index >= tokens.Count || tokens[index] is "{" or "}")
+                    { error = $"Splash {splash} is missing a normal sound."; return false; }
+                    var sound = tokens[index++];
+                    splashDefinition = property.Equals("sound", StringComparison.OrdinalIgnoreCase)
+                        ? splashDefinition with { NormalSplashSound = sound }
+                        : splashDefinition with { SmallSplashSound = sound };
+                }
+                if (index >= tokens.Count || tokens[index++] != "}")
+                { error = $"Unterminated splash {splash}."; return false; }
+                splashDefinitions[splash] = splashDefinition;
                 splashes.Add(splash);
                 continue;
             }
@@ -47,7 +68,8 @@ public static class TerrainDefinitionParser
                 if (index + 1 >= tokens.Count || tokens[index] is "{" or "}" || tokens[index + 1] is "{" or "}")
                 { error = "Floor mapping is missing texture or terrain."; return false; }
                 var texture = tokens[index++]; var terrain = tokens[index++];
-                if (!entries.ContainsKey(terrain) && !terrain.Equals("None", StringComparison.OrdinalIgnoreCase)
+                if (!entries.ContainsKey(terrain) && !terrain.Equals("Solid", StringComparison.OrdinalIgnoreCase)
+                    && !terrain.Equals("None", StringComparison.OrdinalIgnoreCase)
                     && !terrain.Equals("Null", StringComparison.OrdinalIgnoreCase))
                 {
                     System.Diagnostics.Trace.TraceWarning($"Unknown floor terrain {terrain}; using default terrain.");
@@ -61,7 +83,7 @@ public static class TerrainDefinitionParser
                 if (index >= tokens.Count || tokens[index] is "{" or "}")
                 { error = "DefaultTerrain is missing a name."; return false; }
                 defaultTerrain = tokens[index++];
-                if (!entries.ContainsKey(defaultTerrain))
+                if (!entries.ContainsKey(defaultTerrain) && !defaultTerrain.Equals("Solid", StringComparison.OrdinalIgnoreCase))
                 {
                     System.Diagnostics.Trace.TraceWarning($"Unknown default terrain {defaultTerrain}; using neutral terrain.");
                     defaultTerrain = "";
@@ -77,10 +99,59 @@ public static class TerrainDefinitionParser
             if (modify) index++;
             if (index >= tokens.Count || tokens[index++] != "{")
             { error = $"Terrain {name} is missing a block."; return false; }
-            var definition = modify && entries.TryGetValue(name, out var prior) ? prior : new LevelTerrainDefinition(name);
+            entries.TryGetValue(name, out var prior);
+            var canonicalName = prior?.Name ?? (name.Equals("Solid", StringComparison.OrdinalIgnoreCase) ? "Solid" : name);
+            var definition = modify && prior is not null ? prior : new LevelTerrainDefinition(canonicalName);
             while (index < tokens.Count && tokens[index] != "}")
             {
                 var property = tokens[index++];
+                if (property.Equals("stepsounds", StringComparison.OrdinalIgnoreCase)
+                    || property.Equals("leftstepsounds", StringComparison.OrdinalIgnoreCase)
+                    || property.Equals("rightstepsounds", StringComparison.OrdinalIgnoreCase))
+                {
+                    if (index >= tokens.Count || tokens[index] is "{" or "}")
+                    { error = $"Terrain {name} is missing a {property} name."; return false; }
+                    var sound = tokens[index++];
+                    definition = property.ToLowerInvariant() switch
+                    {
+                        "stepsounds" => definition with { StepSound = sound },
+                        "leftstepsounds" => definition with { LeftStepSound = sound },
+                        _ => definition with { RightStepSound = sound },
+                    };
+                    continue;
+                }
+                if (property.Equals("stepvolume", StringComparison.OrdinalIgnoreCase))
+                {
+                    if (index >= tokens.Count || !float.TryParse(tokens[index++], System.Globalization.NumberStyles.Float,
+                        System.Globalization.CultureInfo.InvariantCulture, out var volume) || !float.IsFinite(volume))
+                    { error = $"Invalid terrain {name} step volume."; return false; }
+                    definition = definition with { StepVolume = volume }; continue;
+                }
+                if (property.Equals("walksteptics", StringComparison.OrdinalIgnoreCase)
+                    || property.Equals("runsteptics", StringComparison.OrdinalIgnoreCase))
+                {
+                    if (index >= tokens.Count || !int.TryParse(tokens[index++], System.Globalization.NumberStyles.Integer,
+                        System.Globalization.CultureInfo.InvariantCulture, out var tics))
+                    { error = $"Invalid terrain {name} {property}."; return false; }
+                    definition = property.Equals("walksteptics", StringComparison.OrdinalIgnoreCase)
+                        ? definition with { WalkStepTics = tics } : definition with { RunStepTics = tics };
+                    continue;
+                }
+                if (property.Equals("footclip", StringComparison.OrdinalIgnoreCase)
+                    || property.Equals("stepdistance", StringComparison.OrdinalIgnoreCase)
+                    || property.Equals("stepdistanceminvel", StringComparison.OrdinalIgnoreCase))
+                {
+                    if (index >= tokens.Count || !double.TryParse(tokens[index++], System.Globalization.NumberStyles.Float,
+                        System.Globalization.CultureInfo.InvariantCulture, out var clip) || !double.IsFinite(clip))
+                    { error = $"Invalid terrain {name} {property}."; return false; }
+                    definition = property.ToLowerInvariant() switch
+                    {
+                        "footclip" => definition with { FootClip = clip },
+                        "stepdistance" => definition with { StepDistance = clip },
+                        _ => definition with { StepDistanceMinVel = clip },
+                    };
+                    continue;
+                }
                 if (property.Equals("friction", StringComparison.OrdinalIgnoreCase))
                 {
                     if (index >= tokens.Count || !double.TryParse(tokens[index++], System.Globalization.NumberStyles.Float,
@@ -95,6 +166,10 @@ public static class TerrainDefinitionParser
                 }
                 if (property.Equals("damageonland", StringComparison.OrdinalIgnoreCase))
                 { definition = definition with { DamageOnLand = true }; continue; }
+                if (property.Equals("liquid", StringComparison.OrdinalIgnoreCase))
+                { definition = definition with { IsLiquid = true }; continue; }
+                if (property.Equals("allowprotection", StringComparison.OrdinalIgnoreCase))
+                { definition = definition with { AllowProtection = true }; continue; }
                 if (property.Equals("splash", StringComparison.OrdinalIgnoreCase))
                 {
                     if (index >= tokens.Count || tokens[index] is "{" or "}")
@@ -134,7 +209,7 @@ public static class TerrainDefinitionParser
             { error = $"Unterminated terrain {name}."; return false; }
             entries[name] = definition;
         }
-        data = new LevelTerrainData(entries.Values.ToArray(), floors.Values.ToArray(), defaultTerrain, splashes.ToArray());
+        data = new LevelTerrainData(entries.Values.ToArray(), floors.Values.ToArray(), defaultTerrain, splashes.ToArray(), splashDefinitions.Values.ToArray());
         return true;
     }
 

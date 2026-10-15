@@ -49,7 +49,8 @@ public static class ActorProximity
                     : DoomActorCatalog.MatchesClassName(other.ClassDoomEdNum, className));
             if (!matches) continue;
             if (!ActorJumpActions.CheckIfCloser(reference, other, distance, (flags & noZ) != 0)) continue;
-            if ((flags & checkSight) != 0 && !CombatTrace.HasLineOfSight(sim, other, reference)) continue;
+            if ((flags & checkSight) != 0
+                && !CombatTrace.CheckSight(sim, other, reference, ActorSightFlags.IgnoreVisibility)) continue;
             if (other.Killed ? (flags & (countDead | deadOnly)) == 0 : (flags & deadOnly) != 0) continue;
             if (changesPointer)
             {

@@ -67,6 +67,10 @@ internal static class AcsPlayerInventory
             return max || player.PowerBuddhaTics > 0 ? 1 : 0;
         if (typeName.Equals("PowerProtection", StringComparison.OrdinalIgnoreCase))
             return max || player.PowerProtectionTics > 0 ? 1 : 0;
+        if (typeName.Equals("PowerMask", StringComparison.OrdinalIgnoreCase))
+            return max || player.PowerMaskTics > 0 ? 1 : 0;
+        if (typeName.Equals("PowerIronFeet", StringComparison.OrdinalIgnoreCase))
+            return max || player.PowerIronFeetTics > 0 ? 1 : 0;
         if (typeName.Equals("PowerInfiniteAmmo", StringComparison.OrdinalIgnoreCase))
             return max || player.PowerInfiniteAmmoTics > 0 ? 1 : 0;
         if (typeName.Equals("PowerDoubleFiringSpeed", StringComparison.OrdinalIgnoreCase))
@@ -342,6 +346,8 @@ internal static class AcsPlayerInventory
             return;
         }
 
+        if (typeName.Equals("RadSuit", StringComparison.OrdinalIgnoreCase))
+        { PickupCatalog.TryGiveDoomClass(player, PickupCatalog.RadSuit); return; }
         if (typeName.Equals("Berserk", StringComparison.OrdinalIgnoreCase))
         { PickupCatalog.TryGiveDoomClass(player, PickupCatalog.Berserk); return; }
         if (typeName.Equals("PowerDamage", StringComparison.OrdinalIgnoreCase))
@@ -352,6 +358,10 @@ internal static class AcsPlayerInventory
         { player.GivePowerProtection(); return; }
         if (typeName.Equals("PowerInfiniteAmmo", StringComparison.OrdinalIgnoreCase))
         { player.GivePowerInfiniteAmmo(); return; }
+        if (typeName.Equals("PowerIronFeet", StringComparison.OrdinalIgnoreCase))
+        { player.GivePowerIronFeet(); return; }
+        if (typeName.Equals("PowerMask", StringComparison.OrdinalIgnoreCase))
+        { player.GivePowerMask(); return; }
         if (typeName.Equals("PowerDoubleFiringSpeed", StringComparison.OrdinalIgnoreCase))
         { player.GivePowerDoubleFiringSpeed(); return; }
         if (typeName.Equals("PowerHighJump", StringComparison.OrdinalIgnoreCase))
@@ -504,6 +514,8 @@ internal static class AcsPlayerInventory
             || typeName.Equals("Fist", StringComparison.OrdinalIgnoreCase)
             || typeName.Equals("PowerDamage", StringComparison.OrdinalIgnoreCase)
             || typeName.Equals("PowerBuddha", StringComparison.OrdinalIgnoreCase)
+            || typeName.Equals("PowerMask", StringComparison.OrdinalIgnoreCase)
+            || typeName.Equals("PowerIronFeet", StringComparison.OrdinalIgnoreCase)
             || typeName.Equals("PowerInfiniteAmmo", StringComparison.OrdinalIgnoreCase)
             || typeName.Equals("PowerDoubleFiringSpeed", StringComparison.OrdinalIgnoreCase)
             || typeName.Equals("PowerHighJump", StringComparison.OrdinalIgnoreCase)
@@ -581,6 +593,10 @@ internal static class AcsPlayerInventory
         { player.PowerProtectionTics = 0; return; }
         if (typeName.Equals("PowerInfiniteAmmo", StringComparison.OrdinalIgnoreCase))
         { player.PowerInfiniteAmmoTics = 0; return; }
+        if (typeName.Equals("PowerIronFeet", StringComparison.OrdinalIgnoreCase))
+        { player.PowerIronFeetTics = 0; return; }
+        if (typeName.Equals("PowerMask", StringComparison.OrdinalIgnoreCase))
+        { player.PowerMaskTics = 0; return; }
         if (typeName.Equals("PowerDoubleFiringSpeed", StringComparison.OrdinalIgnoreCase))
         { player.PowerDoubleFiringSpeedTics = 0; return; }
         if (typeName.Equals("PowerHighJump", StringComparison.OrdinalIgnoreCase))
@@ -734,15 +750,13 @@ internal static class AcsPlayerInventory
         {
             0 => globalStrings.Add(hasArmor ? inventory.ArmorType : "None"),
             1 => hasArmor ? inventory.ArmorMaximum : 0,
-            2 => hasArmor ? DoubleToAcs(PlayerInventory.ArmorSaveFraction(inventory.ArmorSavePercent)) : 0,
+            2 => hasArmor ? AcsFixedPoint.FromDouble(PlayerInventory.ArmorSaveFraction(inventory.ArmorSavePercent)) : 0,
             3 => hasArmor ? inventory.MaxAbsorb : 0,
             4 => hasArmor ? inventory.MaxFullAbsorb : 0,
             5 => hasArmor ? inventory.ArmorActualSaveAmount : 0,
             _ => 0,
         };
     }
-
-    private static int DoubleToAcs(double value) => (int)Math.Floor(value * 65536.0);
 
     /// <summary>Native <c>ACSF_GetWeapon</c> ready-weapon class name.</summary>
     public static string ReadyWeaponClassName(Actor? activator)

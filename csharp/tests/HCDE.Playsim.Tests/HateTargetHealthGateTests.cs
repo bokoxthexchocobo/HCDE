@@ -13,13 +13,13 @@ public class HateTargetHealthGateTests
     {
         var (sim, hunter, current, attacker) = Room();
         var (expected, _, _, _) = Room();
-        var before = sim.SwitchTargetRandomState;
-        var loyal = expected.NextSwitchTargetRandom() % 256 < 128;
+        var before = sim.NativeSwitchTargetRandomState;
+        var loyal = expected.NextSwitchTargetByte() < 128;
         if (dead) current.Health = 0;
         current.Shootable = shootable;
         ActorDamage.Apply(hunter, 1, attacker, DamageFlags.NoPain);
         Assert.Equal(!dead && loyal ? current.Id : attacker.Id, hunter.Brain!.TargetId);
-        Assert.Equal(dead ? before : expected.SwitchTargetRandomState, sim.SwitchTargetRandomState);
+        Assert.Equal(dead ? before : expected.NativeSwitchTargetRandomState, sim.NativeSwitchTargetRandomState);
     }
 
     private static (AuthoritySimulation, Actor, Actor, Actor) Room()

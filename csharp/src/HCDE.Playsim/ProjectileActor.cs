@@ -221,6 +221,20 @@ public sealed class ProjectileActor : Actor
                 dz = sim.CeilingOf(sector) - Height.ToDouble() - z;
                 if (vz > 0) { vz = 0; VelocityZ = default; }
             }
+            if (NoClip && sector >= 0)
+            {
+                var floor = sim.FloorOf(sector); var ceiling = sim.CeilingOf(sector) - Height.ToDouble();
+                if (z + dz <= floor)
+                {
+                    dz = floor - z;
+                    if (vz < 0) { vz = 0; VelocityZ = default; }
+                }
+                if (z + dz > ceiling)
+                {
+                    dz = ceiling - z;
+                    if (vz > 0) { vz = 0; VelocityZ = default; }
+                }
+            }
             var fraction = double.PositiveInfinity;
             Actor? victim = null;
             Actor? hitActor = null;
@@ -229,12 +243,14 @@ public sealed class ProjectileActor : Actor
             var planePart = -1;
             foreach (var line in sim.Level.Lines)
             {
+                if (NoClip) break;
                 var hit = CapsuleFraction(x, y, dx, dy, line, Radius.ToDouble());
-                if (hit <= 1 && (CombatTrace.BlocksShot(sim, line, z + dz * hit, LevelLine.BlockProjectileFlag)
-                    || CombatTrace.BlocksShot(sim, line, z + dz * hit + Height.ToDouble(), LevelLine.BlockProjectileFlag)) && hit < fraction)
+                var blockingMask = LevelLine.BlockProjectileFlag | (BlockAsPlayer ? LevelLine.BlockingFlag | LevelLine.BlockPlayersFlag : 0);
+                if (hit <= 1 && (CombatTrace.BlocksShot(sim, line, z + dz * hit, blockingMask)
+                    || CombatTrace.BlocksShot(sim, line, z + dz * hit + Height.ToDouble(), blockingMask)) && hit < fraction)
                 { fraction = hit; wall = line; }
             }
-            if (sector >= 0)
+            if (!NoClip && sector >= 0)
             {
                 var floor = sim.FloorOf(sector); var ceiling = sim.CeilingOf(sector) - Height.ToDouble();
                 var plane = double.PositiveInfinity;
@@ -251,6 +267,7 @@ public sealed class ProjectileActor : Actor
             var ripContacts = new List<(Actor Actor, double Fraction)>();
             foreach (var actor in sim.Actors.ToArray())
             {
+                if (NoClip) break;
                 if (ReferenceEquals(actor, this) || actor.Destroyed || ThruActors || actor.ThruActors
                     || !actor.IsBlockmapActor || SharesEnabledThruBits(actor)
                     || ThruSpecies && SharesContactSpecies(actor)) continue;
@@ -453,7 +470,7 @@ public sealed class ProjectileActor : Actor
             {
                 if (!actor.IsBlockmapActor || !actor.CanTakeDamage || actor.NoRadiusDamage || actor.SplashImmune(this)) continue;
                 var distance = RadiusDamageGeometry.Distance(this, actor);
-                if (distance >= BlastRadius || !CombatTrace.HasLineOfSight(sim, this, actor)) continue;
+                if (distance >= BlastRadius || !CombatTrace.CheckSight(sim, actor, this, ActorSightFlags.IgnoreVisibility)) continue;
                 var damage = (int)(BlastRadius * (1 - distance / BlastRadius));
                 if (damage > 0) ActorDamage.Apply(actor, damage, Owner, damageType: DamageType, inflictor: this);
             }

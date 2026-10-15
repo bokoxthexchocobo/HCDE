@@ -10,14 +10,17 @@ internal static class ArchvileActions
     };
 
     internal static bool TryRaise(AuthoritySimulation sim, Actor archvile, Actor target,
-        int? healState = null, string? healSound = null)
+        int? healState = null, string? healSound = null, bool nativeMovement = false)
     {
         if (healState is { } state && !archvile.States.HasState(state))
             throw new ArgumentOutOfRangeException(nameof(healState));
+        if (nativeMovement && archvile.MoveDirection >= 8) return false;
         var direction = Math.Atan2(target.Y.ToDouble() - archvile.Y.ToDouble(), target.X.ToDouble() - archvile.X.ToDouble());
+        var vector = nativeMovement ? ActorWanderActions.DirectionVector(archvile.MoveDirection)
+            : (X: Math.Cos(direction), Y: Math.Sin(direction));
         var speed = Math.Abs(archvile.MovementSpeed.ToDouble());
-        var x = archvile.X.ToDouble() + Math.Cos(direction) * speed;
-        var y = archvile.Y.ToDouble() + Math.Sin(direction) * speed;
+        var x = archvile.X.ToDouble() + vector.X * speed;
+        var y = archvile.Y.ToDouble() + vector.Y * speed;
         foreach (var corpse in sim.Actors.OrderBy(actor => actor.Id))
         {
             if (!corpse.IsBlockmapActor || !ActorRaise.HasRaiseState(corpse)) continue;
@@ -59,7 +62,7 @@ internal static class ArchvileActions
         if (!double.IsFinite(thrust)) throw new ArgumentOutOfRangeException(nameof(thrust));
         if (blastRadius <= 0) blastRadius = blastDamage;
         ActorOrientationActions.Face(archvile, target);
-        if (!CombatTrace.HasLineOfSight(sim, archvile, target)) return;
+        if (!CombatTrace.CheckSight(sim, archvile, target)) return;
         if (!archvile.Destroyed && sound.Length > 0)
             sim.QueueSoundRequest(new SimulationSoundRequest(archvile.Id, sound, 1, 0, 1,
                 false, 1, false), immediate: true);
@@ -71,13 +74,13 @@ internal static class ArchvileActions
             var fire = new Actor
             {
                 X = Fixed.FromDouble(position.X), Y = Fixed.FromDouble(position.Y),
-                Z = Fixed.FromDouble(position.Z), Height = default, Solid = false, Shootable = false,
+                Z = Fixed.FromDouble(position.Z), Height = Fixed.FromInt(16), Solid = false, Shootable = false,
             };
             foreach (var victim in sim.Actors.ToArray())
             {
                 if (ReferenceEquals(victim, archvile) || !victim.IsBlockmapActor || !victim.CanTakeDamage || victim.NoRadiusDamage || victim.SplashImmune(fire)) continue;
                 var distance = RadiusDamageGeometry.Distance(fire, victim);
-                if (distance < blastRadius && CombatTrace.HasLineOfSight(sim, fire, victim))
+                if (distance < blastRadius && CombatTrace.CheckSight(sim, victim, fire, ActorSightFlags.IgnoreVisibility))
                     ActorDamage.Apply(victim, (int)(blastDamage * (1 - distance / blastRadius)), archvile, damageType: damageType, inflictor: fire);
             }
         }

@@ -37,6 +37,16 @@ public enum CompatSurface
     NoPassMobj = 65536,
     /// <summary>Native COMPATF_SOUNDTARGET: look reads sector noise rather than per-actor LastHeard.</summary>
     SoundTarget = 131072,
+    /// <summary>Native COMPATF_MBFMONSTERMOVE: terrain friction affects monster walking.</summary>
+    MbfMonsterMove = 262144,
+    /// <summary>Native COMPATF_DROPOFF: disables chase escape-vector generation at drop-offs.</summary>
+    DropOff = 524288,
+    /// <summary>Native COMPATF2_AVOID_HAZARDS: avoid entering damaging sectors and crushers.</summary>
+    AvoidHazards = 1048576,
+    /// <summary>Native COMPATF2_STAYONLIFT: encourage actors to remain on a target's tagged lift.</summary>
+    StayOnLift = 2097152,
+    /// <summary>Native BCOMPATF_LINKFROZENPROPS: all-player freeze actions update both modes.</summary>
+    LinkFrozenProperties = 4194304,
 }
 
 public static class CompatSurfaceRules

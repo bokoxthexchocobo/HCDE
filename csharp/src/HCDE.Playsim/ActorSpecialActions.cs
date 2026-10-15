@@ -41,7 +41,8 @@ public static class ActorSpecialActions
 
     private static bool ExecuteSpecial(AuthoritySimulation sim, Actor? trigger, int special, int[] args)
     {
-        return ThingStop.ExecuteSpecial(sim, special, trigger, args[0])
+        return PlayerPropertyActions.ExecuteSpecial(sim, special, trigger, args[0], args[1], args[2])
+            ?? ThingStop.ExecuteSpecial(sim, special, trigger, args[0])
             ?? ThingHate.ExecuteSpecial(sim, special, trigger, args[0], args[1], args[2])
             ?? NoiseAlertSpecial.ExecuteSpecial(sim, special, trigger, args[0], args[1])
             ?? ThingSetGoal.ExecuteSpecial(sim, special, args[0], args[1], args[2], args[3])

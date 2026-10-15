@@ -3,7 +3,7 @@ namespace HCDE.Playsim;
 /// <summary>Represented flat blockmap subset of P_LookForEnemies.</summary>
 internal static class FriendlyEnemySearch
 {
-    internal static Actor? Find(AuthoritySimulation sim, Actor observer)
+    internal static Actor? Find(AuthoritySimulation sim, Actor observer, ActorLookParameters? parameters = null)
     {
         if (!(observer.Friendly || observer.SeeFriendlyMonsters) || sim.Level.Blockmap is not { } map) return null;
         var header = map.Header;
@@ -20,7 +20,7 @@ internal static class FriendlyEnemySearch
                 var radius = candidate.Radius.ToDouble();
                 if (candidate.X.ToDouble() + radius < left || candidate.X.ToDouble() - radius >= left + 128
                     || candidate.Y.ToDouble() + radius < bottom || candidate.Y.ToDouble() - radius >= bottom + 128) continue;
-                if (IsValid(sim, observer, candidate)) return candidate;
+                if (IsValid(sim, observer, candidate, parameters)) return candidate;
             }
             return null;
         }

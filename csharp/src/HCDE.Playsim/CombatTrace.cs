@@ -2,6 +2,18 @@ using HCDE.MapLoader;
 
 namespace HCDE.Playsim;
 
+[Flags]
+public enum ActorLineTraceFlags
+{
+    AbsolutePosition = 1, AbsoluteOffset = 2, ThroughSpecies = 4, ThroughActors = 8,
+    ThroughBlock = 16, ThroughHitscan = 32, NoSky = 64, AllActors = 128, SolidActors = 256, BlockUse = 512, BlockSelf = 1024,
+}
+
+public enum ActorLineTraceHitType { None = 0, Floor = 1, Ceiling = 2, Wall = 3, Actor = 4 }
+
+[Flags]
+public enum ActorSightFlags { IgnoreVisibility = 1, SeePastShootableLines = 2, SeePastBlockEverything = 4 }
+
 /// <summary>
 /// Actor-box combat tracing with pitch and sector openings.
 /// Slopes, portals and 3D floors remain outside this subset of P_LineAttack.
@@ -11,6 +23,83 @@ public static class CombatTrace
     private const double Epsilon = 1e-9;
 
     private const int MfShootable = 0x00000004;
+
+    /// <summary>Flat-sector P_LineTrace subset with explicit source-relative or absolute offsets.</summary>
+    public static LineAttackHit LineTrace(AuthoritySimulation sim, Actor source, BamAngle angle, double range,
+        BamAngle pitch = default, ActorLineTraceFlags flags = 0, double offsetZ = 0, double offsetForward = 0, double offsetSide = 0)
+    {
+        ArgumentNullException.ThrowIfNull(sim); ArgumentNullException.ThrowIfNull(source);
+        const ActorLineTraceFlags supported = ActorLineTraceFlags.AbsolutePosition | ActorLineTraceFlags.AbsoluteOffset
+            | ActorLineTraceFlags.ThroughSpecies | ActorLineTraceFlags.ThroughActors | ActorLineTraceFlags.ThroughBlock
+            | ActorLineTraceFlags.ThroughHitscan | ActorLineTraceFlags.AllActors | ActorLineTraceFlags.SolidActors | ActorLineTraceFlags.BlockUse
+            | ActorLineTraceFlags.BlockSelf | ActorLineTraceFlags.NoSky;
+        if ((flags & ~supported) != 0) throw new NotSupportedException("The requested native line-trace flags are not yet supported.");
+        if (!double.IsFinite(range) || !double.IsFinite(offsetZ) || !double.IsFinite(offsetForward) || !double.IsFinite(offsetSide))
+            throw new ArgumentOutOfRangeException(nameof(range), "Trace range and offsets must be finite.");
+        var x = source.X.ToDouble(); var y = source.Y.ToDouble(); var z = source.Z.ToDouble() - source.FloorClip + offsetZ;
+        if (flags.HasFlag(ActorLineTraceFlags.AbsolutePosition)) { x = offsetForward; y = offsetSide; z = offsetZ; }
+        else if (flags.HasFlag(ActorLineTraceFlags.AbsoluteOffset)) { x += offsetForward; y += offsetSide; }
+        else
+        {
+            var radians = angle.ToDegrees() * Math.PI / 180;
+            x += offsetForward * Math.Cos(radians) + offsetSide * Math.Sin(radians);
+            y += offsetForward * Math.Sin(radians) - offsetSide * Math.Cos(radians);
+        }
+        var actors = flags.HasFlag(ActorLineTraceFlags.AllActors) ? -1 : MfShootable;
+        if (flags.HasFlag(ActorLineTraceFlags.SolidActors)) actors |= 2;
+        var walls = LevelLine.BlockEverythingFlag | LevelLine.BlockHitscanFlag;
+        if (flags.HasFlag(ActorLineTraceFlags.BlockUse)) walls |= LevelLine.BlockUseFlag;
+        if (flags.HasFlag(ActorLineTraceFlags.BlockSelf))
+        {
+            var projectile = source is ProjectileActor;
+            var notBlocked = source.NoBlockMonsters || source.Friendly && sim.Compat.HasFlag(CompatSurface.NoBlockFriends);
+            if (projectile) walls |= LevelLine.BlockProjectileFlag;
+            if (!projectile || source.BlockAsPlayer) walls |= LevelLine.BlockingFlag;
+            if (!notBlocked) walls |= LevelLine.BlockMonstersFlag;
+            if (source is PlayerPawn || source.BlockAsPlayer) walls |= LevelLine.BlockingFlag | LevelLine.BlockPlayersFlag;
+            if (source.Floating) walls |= LevelLine.BlockFloatersFlag;
+        }
+        if (flags.HasFlag(ActorLineTraceFlags.ThroughBlock)) walls &= ~LevelLine.BlockEverythingFlag;
+        if (flags.HasFlag(ActorLineTraceFlags.ThroughHitscan)) walls &= ~LevelLine.BlockHitscanFlag;
+        var hit = TraceCore(sim, source, angle, pitch, range, actors, walls, false, true, true, x, y, z,
+            flags.HasFlag(ActorLineTraceFlags.ThroughActors), flags.HasFlag(ActorLineTraceFlags.ThroughSpecies),
+            flags.HasFlag(ActorLineTraceFlags.NoSky));
+        return DescribeLineTrace(sim, hit, angle, pitch, x, y, z);
+    }
+
+    private static LineAttackHit DescribeLineTrace(AuthoritySimulation sim, LineAttackHit hit, BamAngle angle, BamAngle pitch,
+        double x, double y, double z)
+    {
+        var yaw = angle.ToDegrees() * Math.PI / 180; var elevation = pitch.ToDegrees() * Math.PI / 180;
+        var horizontal = Math.Cos(elevation); if (Math.Abs(horizontal) < 1e-12) horizontal = 0;
+        var direction = (X: horizontal * Math.Cos(yaw), Y: horizontal * Math.Sin(yaw), Z: -Math.Sin(elevation));
+        var distance = (hit.X - x) * direction.X + (hit.Y - y) * direction.Y + (hit.Z - z) * direction.Z;
+        var type = !hit.Hit ? ActorLineTraceHitType.None : hit.Victim is not null ? ActorLineTraceHitType.Actor
+            : hit.Wall is not null ? ActorLineTraceHitType.Wall
+            : hit.PlanePart == 0 ? ActorLineTraceHitType.Floor : ActorLineTraceHitType.Ceiling;
+        var sector = hit.PlaneSector >= 0 ? hit.PlaneSector : ActorPhysics.SectorAt(sim.Level, hit.X, hit.Y);
+        var part = -1; string? texture = null;
+        if (hit.Wall is { } wall)
+        {
+            var sideIndex = hit.Side == 0 ? wall.SideFront : wall.SideBack;
+            var farSideIndex = hit.Side == 0 ? wall.SideBack : wall.SideFront;
+            part = 1;
+            if ((uint)sideIndex < (uint)sim.Level.Sides.Count)
+            {
+                var side = sim.Level.Sides[sideIndex]; sector = side.Sector;
+                if ((uint)farSideIndex < (uint)sim.Level.Sides.Count)
+                {
+                    var farSector = sim.Level.Sides[farSideIndex].Sector;
+                    if ((uint)farSector < (uint)sim.Level.Sectors.Count)
+                        part = hit.Z <= sim.FloorOf(farSector) ? 2 : hit.Z >= sim.CeilingOf(farSector) ? 0 : 1;
+                }
+                texture = part == 0 ? side.TopTexture : part == 2 ? side.BottomTexture : side.MidTexture;
+            }
+        }
+        else if (hit.PlaneSector >= 0)
+            texture = hit.PlanePart == 0 ? sim.Level.Sectors[hit.PlaneSector].FloorPic : sim.Level.Sectors[hit.PlaneSector].CeilingPic;
+        return hit with { Distance = distance, Direction = direction, HitType = type, HitSector = sector, LinePart = part, HitTexture = texture };
+    }
 
     private static bool ClipAxis(double lower, double upper, double direction, ref double start, ref double end)
     {
@@ -79,9 +168,10 @@ public static class CombatTrace
             || z < sim.Floors[far] || z > sim.Ceilings[far];
     }
 
-    internal static bool BlocksShot(AuthoritySimulation sim, LevelLine line, double z, int flag = LevelLine.BlockHitscanFlag)
+    internal static bool BlocksShot(AuthoritySimulation sim, LevelLine line, double z, int flag = LevelLine.BlockHitscanFlag,
+        bool ignoreBlockEverything = false)
     {
-        if (line.OneSided || (line.Flags & (LevelLine.BlockEverythingFlag | flag)) != 0)
+        if (line.OneSided || (line.Flags & ((ignoreBlockEverything ? 0 : LevelLine.BlockEverythingFlag) | flag)) != 0)
             return true;
         // ML_BLOCKING restricts movement, not gunfire through an open two-sided line.
         var sides = sim.Level.Sides;
@@ -137,6 +227,13 @@ public static class CombatTrace
         public int Side { get; init; }
         public int PlaneSector { get; init; } = -1;
         public int PlanePart { get; init; } = -1;
+        /// <summary>Additional P_LineTrace metadata, populated by LineTrace.</summary>
+        public double Distance { get; init; }
+        public (double X, double Y, double Z) Direction { get; init; }
+        public ActorLineTraceHitType HitType { get; init; }
+        public int HitSector { get; init; } = -1;
+        public int LinePart { get; init; } = -1;
+        public string? HitTexture { get; init; }
     }
 
     /// <summary>Native <c>P_LineAttack</c> subset: first actor, wall or flat sector plane within range.</summary>
@@ -151,6 +248,12 @@ public static class CombatTrace
         bool requireDamageable = true,
         bool allowDestroyedSource = false,
         bool allowDeadSource = false)
+        => TraceCore(sim, source, angle, pitch, range, actorMask, wallMask, requireDamageable, allowDestroyedSource,
+            allowDeadSource, source.X.ToDouble(), source.Y.ToDouble(), source.AttackOriginZ());
+
+    private static LineAttackHit TraceCore(AuthoritySimulation sim, Actor source, BamAngle angle, BamAngle pitch, double range,
+        int actorMask, int wallMask, bool requireDamageable, bool allowDestroyedSource, bool allowDeadSource,
+        double x, double y, double z, bool throughActors = false, bool throughSpecies = false, bool noSky = true)
     {
         if (!double.IsFinite(range) || source.IsDead && !allowDeadSource || source.Destroyed && !allowDestroyedSource)
             return default;
@@ -158,10 +261,6 @@ public static class CombatTrace
         var radians = angle.Raw * (Math.PI / 0x80000000u);
         var dx = Math.Cos(radians);
         var dy = Math.Sin(radians);
-        var x = source.X.ToDouble();
-        var y = source.Y.ToDouble();
-        var z = source.Z.ToDouble() + source.Height.ToDouble() / 2
-            + (source is PlayerPawn firingPlayer ? firingPlayer.AttackZOffset.ToDouble() * firingPlayer.CrouchFactor : 8);
         var pitchDegrees = pitch.ToDegrees();
         while (pitchDegrees > 180)
             pitchDegrees -= 360;
@@ -250,7 +349,8 @@ public static class CombatTrace
         var bestEntryDistance = double.PositiveInfinity;
         foreach (var actor in sim.Actors)
         {
-            if (actor.Destroyed || !actor.IsBlockmapActor || ReferenceEquals(source, actor) || !MatchesActorMask(actor, actorMask)
+            if (throughActors || throughSpecies && source.SharesContactSpecies(actor)
+                || actor.Destroyed || !actor.IsBlockmapActor || ReferenceEquals(source, actor) || !MatchesActorMask(actor, actorMask)
                 || requireDamageable && !actor.CanTakeDamage)
                 continue;
             var rx = actor.X.ToDouble() - x;
@@ -313,7 +413,7 @@ public static class CombatTrace
                 && IsSkyTexture(sim.Level.Sectors[front].CeilingPic)
                 && IsSkyTexture(sim.Level.Sectors[back].CeilingPic);
         }
-        if (sky)
+        if (sky && noSky)
             return new LineAttackHit(false, null, x + dx * wallDistance, y + dy * wallDistance, impactZ);
 
         return new LineAttackHit(
@@ -336,13 +436,65 @@ public static class CombatTrace
         ClearPath(sim, source.X.ToDouble(), source.Y.ToDouble(), source.Z.ToDouble() + source.Height.ToDouble() / 2,
             target.X.ToDouble(), target.Y.ToDouble(), target.Z.ToDouble() + target.Height.ToDouble() / 2);
 
-    internal static bool ClearPath(AuthoritySimulation sim, double x, double y, double z, double tx, double ty, double tz)
+    internal static bool HasMissileLineOfSight(AuthoritySimulation sim, Actor source, Actor target)
+        => CheckSight(sim, source, target, ActorSightFlags.SeePastBlockEverything);
+
+    /// <summary>Represented native P_CheckSight flags, visibility and flat-sector aperture traversal.</summary>
+    public static bool CheckSight(AuthoritySimulation sim, Actor? source, Actor? target, ActorSightFlags flags = 0)
+    {
+        ArgumentNullException.ThrowIfNull(sim);
+        if ((flags & ~(ActorSightFlags)7) != 0) throw new NotSupportedException("The requested sight flags are not yet supported.");
+        if (source is null || target is null) return false;
+        if ((flags & ActorSightFlags.IgnoreVisibility) == 0)
+        {
+            if (target.MVisBlocked) return false;
+            if ((target.Invisible || target.MinVisible || !target.RenderStyle.IsVisible(target.Alpha))
+                && sim.NextCheckSightByte() > 50) return false;
+        }
+        var x = source.X.ToDouble(); var y = source.Y.ToDouble();
+        var dx = target.X.ToDouble() - x; var dy = target.Y.ToDouble() - y;
+        if (Math.Abs(dx) + Math.Abs(dy) < Epsilon) return true;
+        var eye = source.Z.ToDouble() + source.Height.ToDouble() * 0.75;
+        var bottom = target.Z.ToDouble() - eye;
+        var top = bottom + target.Height.ToDouble();
+        var levelNumber = sim.Level.LevelNumber
+            ?? HCDE.Gamedata.MapInfoParser.DefaultLevelNum(sim.Level.MapName, out _);
+        foreach (var line in sim.Level.Lines)
+        {
+            var fraction = RayLine(x, y, dx, dy, line);
+            if (fraction > 1) continue;
+            if (line.OneSided || (line.Flags & LevelLine.BlockSightFlag) != 0
+                || (line.Flags & LevelLine.BlockEverythingFlag) != 0
+                && ((flags & ActorSightFlags.SeePastBlockEverything) == 0
+                    || (flags & ActorSightFlags.SeePastShootableLines) == 0 && !MissileSightPassesLine(line, levelNumber))) return false;
+            if ((uint)line.SideFront >= (uint)sim.Level.Sides.Count || (uint)line.SideBack >= (uint)sim.Level.Sides.Count) return false;
+            var front = sim.Level.Sides[line.SideFront].Sector; var back = sim.Level.Sides[line.SideBack].Sector;
+            if ((uint)front >= (uint)sim.Floors.Length || (uint)back >= (uint)sim.Floors.Length) return false;
+            var floor = Math.Max(sim.Floors[front], sim.Floors[back]);
+            var ceiling = Math.Min(sim.Ceilings[front], sim.Ceilings[back]);
+            if (floor >= ceiling) return false;
+            if (fraction == 0) continue;
+            bottom = Math.Max(bottom, (floor - eye) / fraction);
+            top = Math.Min(top, (ceiling - eye) / fraction);
+            if (top <= bottom) return false;
+        }
+        return true;
+    }
+
+    private static bool MissileSightPassesLine(LevelLine line, int levelNumber)
+        => line.Impact && line.Special is 80 or 226 && (line.Arg1 == 0 || line.Arg1 == levelNumber);
+
+    internal static bool ClearPath(AuthoritySimulation sim, double x, double y, double z, double tx, double ty, double tz,
+        bool missileSight = false)
     {
         if (Math.Abs(tx - x) + Math.Abs(ty - y) < Epsilon) return true;
+        var levelNumber = sim.Level.LevelNumber
+            ?? HCDE.Gamedata.MapInfoParser.DefaultLevelNum(sim.Level.MapName, out _);
         foreach (var line in sim.Level.Lines)
         {
             var fraction = RayLine(x, y, tx - x, ty - y, line);
-            if (fraction <= 1 && BlocksShot(sim, line, z + (tz - z) * fraction, LevelLine.BlockSightFlag)) return false;
+            var seePast = missileSight && MissileSightPassesLine(line, levelNumber);
+            if (fraction <= 1 && BlocksShot(sim, line, z + (tz - z) * fraction, LevelLine.BlockSightFlag, seePast)) return false;
         }
         return true;
     }

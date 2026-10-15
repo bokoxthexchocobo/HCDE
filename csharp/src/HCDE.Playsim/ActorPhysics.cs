@@ -24,9 +24,12 @@ namespace HCDE.Playsim;
 public static class ActorPhysics
 {
     internal static double TerrainMovementScale(AuthoritySimulation sim, Actor actor)
+        => TerrainMovementFactors(sim, actor).Factor / (2048 / 65536.0);
+
+    internal static (double Friction, double Factor) TerrainMovementFactors(AuthoritySimulation sim, Actor actor)
     {
-        var flying = actor.Fly && actor.NoGravity;
-        var terrain = !actor.NoGravity && actor.Z.ToDouble() <= sim.FloorOf(actor.SectorIndex)
+        var flying = actor.Fly && actor.NoGravity && actor is not PlayerPawn { NoClip2: true };
+        var terrain = !actor.NoGravity && !actor.NoClip && actor.Z.ToDouble() <= sim.FloorOf(actor.SectorIndex)
             ? sim.Level.FloorTerrainDefinition(actor.SectorIndex) : null;
         var friction = terrain is { Friction: > 0 } ? terrain.Friction : GroundFriction;
         var factor = terrain is { Friction: > 0 } ? terrain.MoveFactor : 2048 / 65536.0;
@@ -43,7 +46,7 @@ public static class ActorPhysics
             const double threshold = 15000 / 65536.0;
             factor *= speed > threshold * 4 ? 8 : speed > threshold * 2 ? 4 : speed > threshold ? 2 : 1;
         }
-        return factor / (2048 / 65536.0);
+        return (friction, factor);
     }
 
     /// <summary>Native P_GetFriction conversion after an actor friction multiplier.</summary>
@@ -90,7 +93,7 @@ public static class ActorPhysics
     /// <summary>Applies the same crush damage to every actor standing on <paramref name="carrier"/>.</summary>
     public static void CrushStandingRiders(AuthoritySimulation sim, Actor carrier, int damage, int tic, string? damageType = null)
     {
-        if (damage <= 0) return;
+        if (damage <= 0 || carrier.NoClip) return;
         var crushDamage = string.Equals(damageType, "Crush", StringComparison.OrdinalIgnoreCase);
         foreach (var rider in sim.Actors)
         {
@@ -105,7 +108,7 @@ public static class ActorPhysics
     /// <summary>Moves riders that were on <paramref name="carrier"/> before it stepped this tic.</summary>
     public static void CarryStandingRiders(AuthoritySimulation sim, Actor carrier, double dx, double dy, double dz, IReadOnlyList<Actor> riders)
     {
-        if (!carrier.Solid || carrier.Destroyed || carrier.SpecialPickup || riders.Count == 0
+        if (!carrier.Solid || carrier.Destroyed || carrier.NoClip || carrier.SpecialPickup || riders.Count == 0
             || (Math.Abs(dx) < 1e-9 && Math.Abs(dy) < 1e-9 && Math.Abs(dz) < 1e-9))
             return;
         foreach (var rider in riders)
@@ -129,7 +132,7 @@ public static class ActorPhysics
     /// <summary>Native <c>Level-&gt;Scrolls</c> carry subset for grounded actors.</summary>
     internal static void ApplySectorScroll(AuthoritySimulation sim, Actor actor)
     {
-        if (actor.Destroyed || actor.NoSector || actor.Floating || !actor.OnGround || actor is ProjectileActor)
+        if (actor.Destroyed || actor.NoSector || actor.NoClip || actor.Floating || !actor.OnGround || actor is ProjectileActor)
             return;
         if (actor is not PlayerPawn && !actor.InScrollSector)
             return;
@@ -256,6 +259,7 @@ public static class ActorPhysics
         actor.SectorIndex = SectorAt(sim.Level, actor.X.ToDouble(), actor.Y.ToDouble());
         actor.Z = Fixed.FromDouble(sim.FloorOf(actor.SectorIndex));
         actor.OnGround = true;
+        if (actor.FloorClipEnabled) ActorPropertyActions.AdjustFloorClip(sim, actor);
         actor.RememberPosition();
     }
 
@@ -267,7 +271,12 @@ public static class ActorPhysics
             if (Math.Abs(vertical) < 0.25) { actor.VelocityZ = default; actor.VerticalFriction = false; }
             else actor.VelocityZ = Fixed.FromDouble(vertical * GroundFriction);
         }
-        if (actor.Brain?.Charging == true) { StepCharge(sim, actor); return; }
+        if (actor.Brain?.Charging == true)
+        {
+            StepCharge(sim, actor);
+            if (!actor.Destroyed && actor.FloorClipEnabled) ActorPropertyActions.AdjustFloorClip(sim, actor);
+            return;
+        }
         var startX = actor.X.ToDouble();
         var startY = actor.Y.ToDouble();
         var startZ = actor.Z.ToDouble();
@@ -304,10 +313,11 @@ public static class ActorPhysics
                 }
             }
         }
+        var noClip2 = actor is PlayerPawn { NoClip2: true };
         var floor = SupportFloor(sim, actor);
         var z = actor.Z.ToDouble();
         var vz = actor.VelocityZ.ToDouble();
-        var airbornePlayer = actor is PlayerPawn && z > floor && !actor.OnMobj && !(actor.Fly && actor.NoGravity);
+        var airbornePlayer = actor is PlayerPawn && !noClip2 && z > floor && !actor.OnMobj && !(actor.Fly && actor.NoGravity);
         var hitTerrainFloor = !actor.OnGround && floor == sim.FloorOf(actor.SectorIndex)
             && z > floor && vz < 0 && z + vz <= floor;
         if (actor.OnGround && z < floor && floor - z <= actor.MaxStepHeight.ToDouble())
@@ -343,14 +353,15 @@ public static class ActorPhysics
         if (hitTerrainFloor && !blockedOnActor) TerrainDamage.Land(sim, actor);
         if (actor.Brain?.Mode == MonsterMode.Chase && (actor.X.ToDouble() != startX || actor.Y.ToDouble() != startY)) actor.InFloat = false;
         if (!blockedOnActor) FloatTowardTarget(sim, actor);
-        if (!blockedOnActor && actor is PlayerPawn && actor.NoGravity && actor.Z.ToDouble() > floor)
+        if (!blockedOnActor && !actor.NoFriction && actor is PlayerPawn && actor.NoGravity && actor.Z.ToDouble() > floor)
             actor.VelocityZ = Fixed.FromDouble(actor.VelocityZ.ToDouble() * FlyingFriction);
         FitToSector(sim, actor, carryFloor: false);
+        if (noClip2) actor.OnGround = true;
         var groundFriction = GroundFriction;
-        if (!actor.NoGravity && actor.Z.ToDouble() <= sim.FloorOf(actor.SectorIndex)
+        if (!actor.NoGravity && !actor.NoClip && actor.Z.ToDouble() <= sim.FloorOf(actor.SectorIndex)
             && sim.Level.FloorTerrainDefinition(actor.SectorIndex) is { Friction: > 0 } terrain)
             groundFriction = terrain.Friction;
-        var friction = actor.Fly && actor.NoGravity ? Math.Clamp(FlyingFriction * actor.Friction.ToDouble(), 0, 1)
+        var friction = actor.Fly && actor.NoGravity && !noClip2 ? Math.Clamp(FlyingFriction * actor.Friction.ToDouble(), 0, 1)
             : actor.OnGround ? Math.Clamp(groundFriction * actor.Friction.ToDouble(), 0, 1) : 1;
         if (airbornePlayer)
             friction = sim.AirControl is > (1.0 / 256) and { } control ? control * -0.0941 + 1.0004 : 1;
@@ -465,6 +476,31 @@ public static class ActorPhysics
 
     internal static double SectorSupportCeiling(AuthoritySimulation sim, Actor actor) =>
         FlatOpening(sim, actor, actor.SectorIndex, actor.X.ToDouble(), actor.Y.ToDouble()).Ceiling;
+
+    internal static bool TryDropOffEscapeVector(AuthoritySimulation sim, Actor actor, out double dx, out double dy)
+    {
+        dx = dy = 0;
+        var z = actor.Z.ToDouble(); var maximum = actor.MaxDropOffHeight.ToDouble();
+        var opening = FlatOpening(sim, actor, actor.SectorIndex, actor.X.ToDouble(), actor.Y.ToDouble());
+        if (sim.Compat.HasFlag(CompatSurface.DropOff) || actor.AllowDropOff || actor.Floating || actor.OnMobj || z > opening.Floor
+            || opening.Floor - opening.DropOff <= maximum) return false;
+        foreach (var line in sim.Level.Lines)
+        {
+            if (line.OneSided || !BoxCrossesLine(actor.X.ToDouble(), actor.Y.ToDouble(), actor.Radius.ToDouble(), line)) continue;
+            var front = SideSector(sim.Level, line.SideFront); var back = SideSector(sim.Level, line.SideBack);
+            if (front < 0 || back < 0) continue;
+            var frontFloor = sim.FloorOf(front); var backFloor = sim.FloorOf(back);
+            var sign = backFloor == z && frontFloor < z - maximum ? 1
+                : frontFloor == z && backFloor < z - maximum ? -1 : 0;
+            if (sign == 0) continue;
+            var lx = line.X2 - line.X1; var ly = line.Y2 - line.Y1;
+            var length = Math.Sqrt(lx * lx + ly * ly);
+            if (length == 0) continue;
+            dx -= sign * 32 * ly / length;
+            dy += sign * 32 * lx / length;
+        }
+        return dx != 0 || dy != 0;
+    }
 
     internal static bool TouchesSector(AuthoritySimulation sim, Actor actor, int sector)
     {
@@ -584,6 +620,7 @@ public static class ActorPhysics
         actor.Z = Fixed.FromDouble(z);
         actor.OnGround = z <= floor && actor.VelocityZ.Raw <= 0;
         RefreshOnMobj(sim, actor);
+        if (actor.FloorClipEnabled) ActorPropertyActions.AdjustFloorClip(sim, actor);
         if (sectorPinchCrush && actor.IsSectorMoverActor && actor.SectorIndex >= 0 && BlocksSectorGeometry(actor)
             && ceiling - floor < actor.Height.ToDouble() - 1e-4
             && actor.MoverCrushTic != sim.Thinkers.Clock.Tic
@@ -762,6 +799,7 @@ public static class ActorPhysics
 
     internal static bool CanOccupy(AuthoritySimulation sim, Actor actor)
     {
+        if (actor.NoClip) return actor.Brain?.Charging != true || !HasPositionBlocker(sim, actor);
         var x = actor.X.ToDouble(); var y = actor.Y.ToDouble(); var z = actor.Z.ToDouble();
         var radius = actor.Radius.ToDouble(); var height = actor.Height.ToDouble();
         var sector = SectorAt(sim.Level, x, y);
@@ -774,6 +812,7 @@ public static class ActorPhysics
 
     internal static bool FlatMoveProbeFits(AuthoritySimulation sim, Actor actor)
     {
+        if (actor.NoClip) return true;
         var sector = SectorAt(sim.Level, actor.X.ToDouble(), actor.Y.ToDouble());
         var (floor, ceiling, dropOff) = FlatOpening(sim, actor, sector, actor.X.ToDouble(), actor.Y.ToDouble());
         var height = actor.Height.ToDouble(); var z = actor.Z.ToDouble();
@@ -826,7 +865,7 @@ public static class ActorPhysics
     /// <summary>Supported P_TestMobjZ rules; a full scan selects the highest overlapping blocker.</summary>
     public static Actor? FindZBlocker(AuthoritySimulation sim, Actor actor, bool quick = true)
     {
-        if (actor.ThruActors) return null;
+        if (actor.ThruActors || actor.NoClip) return null;
         Actor? blocker = null;
         var x = actor.X.ToDouble(); var y = actor.Y.ToDouble(); var z = actor.Z.ToDouble();
         foreach (var other in sim.Actors)
@@ -860,6 +899,7 @@ public static class ActorPhysics
 
     internal static Actor? FindPositionBlocker(AuthoritySimulation sim, Actor actor, out bool line, bool squareBounds = false)
     {
+        if (actor.NoClip && actor.Brain?.Charging != true) { line = false; return null; }
         var x = actor.X.ToDouble(); var y = actor.Y.ToDouble(); var z = actor.Z.ToDouble();
         var radius = actor.Radius.ToDouble(); var height = actor.Height.ToDouble();
         line = false;
@@ -877,6 +917,7 @@ public static class ActorPhysics
                 : Math.Pow(x - other.X.ToDouble(), 2) + Math.Pow(y - other.Y.ToDouble(), 2)
                     < Math.Pow(radius + other.Radius.ToDouble(), 2)));
         if (blocker is not null) return blocker;
+        if (actor.NoClip) return null;
         line = sim.Level.Lines.Any(wall => Blocks(sim, actor, wall)
             && (squareBounds ? BoxCrossesLine(x, y, radius, wall)
                 : DistanceSquared(x, y, wall.X1, wall.Y1, wall.X2, wall.Y2) < radius * radius));
@@ -941,17 +982,40 @@ public static class ActorPhysics
         return !other.Shootable || !other.Spectral || missile.Spectral;
     }
 
+    private sealed class WanderMoveProbe
+    {
+        public bool FloatOk;
+        public double Floor;
+    }
+
+    internal static bool TryWanderMove(AuthoritySimulation sim, Actor actor, double x, double y,
+        out bool floatOk, out double floor, bool avoidingDropOff = false)
+    {
+        var probe = actor.Floating || actor.CanJump ? new WanderMoveProbe() : null;
+        var moved = TryMove(sim, actor, x, y, out _, out _, wanderProbe: probe, avoidingDropOff: avoidingDropOff);
+        floatOk = probe?.FloatOk ?? false;
+        floor = probe?.Floor ?? 0;
+        return moved;
+    }
+
     private static bool TryMove(AuthoritySimulation sim, Actor actor, double x, double y, out LevelLine? wall, out Actor? blocker,
-        bool invokeSlam = false)
+        bool invokeSlam = false, WanderMoveProbe? wanderProbe = null, bool avoidingDropOff = false)
     {
         wall = null;
         blocker = null;
+        if (actor.NoClip && actor.Brain?.Charging != true)
+        {
+            actor.X = Fixed.FromDouble(x); actor.Y = Fixed.FromDouble(y);
+            actor.SectorIndex = SectorAt(sim.Level, x, y);
+            if (actor.FloorClipEnabled) ActorPropertyActions.AdjustFloorClip(sim, actor);
+            return true;
+        }
         var ox = actor.X.ToDouble();
         var oy = actor.Y.ToDouble();
         var radius = Math.Max(0, actor.Radius.ToDouble());
         foreach (var line in sim.Level.Lines)
         {
-            if (!Blocks(sim, actor, line)) continue;
+            if (actor.NoClip || !Blocks(sim, actor, line, ignoreMoveHeight: wanderProbe is not null)) continue;
             var before = DistanceSquared(ox, oy, line.X1, line.Y1, line.X2, line.Y2);
             var after = DistanceSquared(x, y, line.X1, line.Y1, line.X2, line.Y2);
             var swept = Math.Min(Math.Min(before, after), Math.Min(
@@ -969,31 +1033,42 @@ public static class ActorPhysics
         var sector = SectorAt(sim.Level, x, y);
         // P_TryMove refuses floorz - dropoffz > MaxDropOffHeight unless MF_DROPOFF, MF_FLOAT, or MF_MISSILE.
         var opening = FlatOpening(sim, actor, sector, x, y);
+        var dropOffBlocked = false;
         // Include the lower floor of a line touched by the destination bounding box.
-        if (sector >= 0 && actor.SectorIndex >= 0 &&
+        if (!actor.NoClip && sector >= 0 && actor.SectorIndex >= 0 &&
             (actor.NoDropOff || !actor.AllowDropOff && !actor.Floating && actor is not ProjectileActor))
         {
             var floorz = opening.Floor;
             if (actor.OnMobj)
                 floorz = Math.Max(actor.Z.ToDouble(), floorz);
             var drop = floorz - opening.DropOff;
-            if (drop > actor.MaxDropOffHeight.ToDouble() && !actor.Blasted)
-                return false;
+            var oldOpening = avoidingDropOff ? FlatOpening(sim, actor, actor.SectorIndex, ox, oy) : default;
+            var blocked = avoidingDropOff
+                ? oldOpening.Floor - opening.Floor > actor.MaxDropOffHeight.ToDouble()
+                    || oldOpening.DropOff - opening.DropOff > actor.MaxDropOffHeight.ToDouble()
+                : drop > actor.MaxDropOffHeight.ToDouble() && !actor.Blasted;
+            if (blocked)
+            {
+                if (wanderProbe is null) return false;
+                dropOffBlocked = true;
+            }
         }
         var moveZ = actor.Z.ToDouble();
-        if (sector >= 0 && actor.Fly && actor.NoGravity
-            && moveZ + actor.Height.ToDouble() > opening.Ceiling) return false;
+        var flyBlocked = !actor.NoClip && sector >= 0 && actor.Fly && actor.NoGravity
+            && moveZ + actor.Height.ToDouble() > opening.Ceiling;
+        if (flyBlocked && wanderProbe is null) return false;
         if (sector >= 0)
         {
             if (actor.FloorHugger) moveZ = opening.Floor;
             else if (actor.CeilingHugger) moveZ = opening.Ceiling - actor.Height.ToDouble();
         }
-        if (sector >= 0 && actor is ProjectileActor && !actor.FloorHugger
+        if (!actor.NoClip && sector >= 0 && actor is ProjectileActor && !actor.FloorHugger
             && opening.Floor > moveZ) return false;
         var moveFloor = opening.Floor;
         var z = actor.Brain?.Charging == true ? moveZ : Math.Max(moveZ, moveFloor);
-        if (sector >= 0 && (z < moveFloor || z - moveZ > actor.MaxStepHeight.ToDouble()
-            || z + actor.Height.ToDouble() > opening.Ceiling)) return false;
+        var heightBlocked = !actor.NoClip && (flyBlocked || sector >= 0 && (z < moveFloor || z - moveZ > actor.MaxStepHeight.ToDouble()
+            || z + actor.Height.ToDouble() > opening.Ceiling));
+        if (heightBlocked && wanderProbe is null) return false;
         var solidMover = actor.BlocksActors || IsSolidNonCorpseObstacle(actor);
         if (!actor.ThruActors && (solidMover || actor.Blasted && !actor.IsDead && !actor.Destroyed))
         {
@@ -1008,7 +1083,7 @@ public static class ActorPhysics
                     || actor.SharesEnabledThruBits(other)
                     || actor.ThruSpecies && actor.SharesContactSpecies(other) || !other.IsBlockmapActor
                     || (!chargeContact && !blastTarget && !(solidMover && (other.BlocksActors || IsSolidNonCorpseObstacle(other) || corpse)))
-                    || ClearsActorHeight(sim, actor, other, z)) continue;
+                    || ClearsActorHeight(sim, actor, other, wanderProbe is null ? z : actor.Z.ToDouble())) continue;
                 var reach = radius + other.Radius.ToDouble();
                 var cx = other.X.ToDouble();
                 var cy = other.Y.ToDouble();
@@ -1056,6 +1131,15 @@ public static class ActorPhysics
                 return false;
             }
         }
+        if (wanderProbe is not null)
+        {
+            wanderProbe.FloatOk = opening.Ceiling - opening.Floor >= actor.Height.ToDouble();
+            wanderProbe.Floor = opening.Floor;
+        }
+        if (heightBlocked || dropOffBlocked) return false;
+        if (!actor.NoClip && actor.CantLeaveFloorPic && sector >= 0 && actor.SectorIndex >= 0
+            && (!string.Equals(sim.Level.Sectors[sector].FloorPic, sim.Level.Sectors[actor.SectorIndex].FloorPic,
+                StringComparison.OrdinalIgnoreCase) || opening.Floor != actor.Z.ToDouble())) return false;
         actor.X = Fixed.FromDouble(x);
         actor.Y = Fixed.FromDouble(y);
         actor.Z = Fixed.FromDouble(z);
@@ -1064,6 +1148,7 @@ public static class ActorPhysics
             actor.SectorIndex = sector;
             actor.OnGround = z <= opening.Floor && actor.VelocityZ.Raw <= 0;
         }
+        if (actor.FloorClipEnabled) ActorPropertyActions.AdjustFloorClip(sim, actor);
         return true;
     }
 
@@ -1094,12 +1179,14 @@ public static class ActorPhysics
             ? !LineSpecials.IsBackSide(line, actor.X.ToDouble(), actor.Y.ToDouble())
             : Blocks(sim, actor, line, railingPriority: false);
 
-    private static bool Blocks(AuthoritySimulation sim, Actor actor, LevelLine line, bool railingPriority = true)
+    private static bool Blocks(AuthoritySimulation sim, Actor actor, LevelLine line, bool railingPriority = true,
+        bool ignoreMoveHeight = false)
     {
         var projectile = actor is ProjectileActor;
         if (line.OneSided) return true;
         var railing = railingPriority && UsesRailingOpening(actor, line);
         if (!railing && (line.Flags & LevelLine.BlockEverythingFlag) != 0) return true;
+        if (!railing && actor.BlockAsPlayer && (line.Flags & (LevelLine.BlockingFlag | LevelLine.BlockPlayersFlag)) != 0) return true;
         if (!railing && projectile && (line.Flags & LevelLine.BlockProjectileFlag) != 0) return true;
         if (!railing && !projectile && (line.Flags & LevelLine.BlockingFlag) != 0) return true;
         if (!railing && actor is PlayerPawn && sim.Compat.HasFlag(CompatSurface.Mbf21)
@@ -1118,6 +1205,7 @@ public static class ActorPhysics
         var floor = railingPriority ? LineOpeningFloor(sim, actor, line, front, back)
             : Math.Max(sim.FloorOf(front), sim.FloorOf(back));
         var ceiling = Math.Min(sim.CeilingOf(front), sim.CeilingOf(back));
+        if (ignoreMoveHeight) return ceiling - floor < actor.Height.ToDouble();
         if (!railingPriority)
         {
             var oldZ = actor.Z;
@@ -1152,7 +1240,8 @@ public static class ActorPhysics
 
     private static bool UsesRailingOpening(Actor actor, LevelLine line)
         => (line.Flags & LevelLine.RailingFlag) != 0 && (actor is not ProjectileActor
-            || (line.Flags & (LevelLine.BlockEverythingFlag | LevelLine.BlockProjectileFlag)) != 0);
+            || (line.Flags & (LevelLine.BlockEverythingFlag | LevelLine.BlockProjectileFlag
+                | (actor.BlockAsPlayer ? LevelLine.BlockingFlag | LevelLine.BlockPlayersFlag : 0))) != 0);
 
     private static double DistanceSquared(double x, double y, double ax, double ay, double bx, double by)
     {

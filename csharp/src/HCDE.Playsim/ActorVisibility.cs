@@ -1,6 +1,9 @@
 namespace HCDE.Playsim;
 
-public sealed record ActorLookParameters(double MaxDistance = 0, double MinDistance = 0, double FieldOfView = 180);
+public sealed record ActorLookParameters(double MaxDistance = 0, double MinDistance = 0, double FieldOfView = 180)
+{
+    internal bool NativeSight { get; init; }
+}
 
 /// <summary>Represented flat-sector P_IsVisible range, view cone and sight checks.</summary>
 internal static class ActorVisibility
@@ -24,6 +27,8 @@ internal static class ActorVisibility
             if (Math.Abs(Math.IEEERemainder(angle - observer.Angle.ToDegrees(), 360)) > fieldOfView / 2
                 && (minimum != 0 || distance > observer.MeleeRange.ToDouble() + observer.Radius.ToDouble())) return false;
         }
-        return CombatTrace.HasLineOfSight(sim, observer, target);
+        return sim.NativeMonsterMovement || parameters?.NativeSight == true
+            ? CombatTrace.CheckSight(sim, observer, target, ActorSightFlags.SeePastShootableLines)
+            : CombatTrace.HasLineOfSight(sim, observer, target);
     }
 }

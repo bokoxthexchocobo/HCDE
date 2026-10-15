@@ -75,9 +75,9 @@ public class ActorTeleFogSaveTests
         Assert.Null(actor.TeleFogSource); Assert.Null(actor.TeleFogDest);
         Assert.False(actor.HasTeleFogOverride);
         Assert.Equal(bytes, SimSavegame.Write(sim));
-        Assert.Equal(1, AcsActorTeleFog.Swap(sim, 0, actor));
+        Assert.Equal(0, AcsActorTeleFog.Swap(sim, 0, actor));
         Assert.Null(actor.TeleFogSource); Assert.Null(actor.TeleFogDest);
-        Assert.True(actor.HasTeleFogOverride);
+        Assert.False(actor.HasTeleFogOverride);
     }
 
     [Fact]

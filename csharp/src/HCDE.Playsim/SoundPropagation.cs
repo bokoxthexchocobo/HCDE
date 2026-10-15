@@ -9,7 +9,7 @@ public static class SoundPropagation
 
     public static void Alert(AuthoritySimulation sim, Actor emitter, Actor? target, double maxDistance = 0, bool splash = false)
     {
-        if (target is PlayerPawn { NoTarget: true }) return;
+        if (target is PlayerPawn { NoTargetCheat: true }) return;
         var reached = ReachableSectors(sim, emitter.SectorIndex);
         foreach (var sector in reached) sim.SetSectorSoundTarget(sector, target);
         foreach (var actor in sim.Actors)

@@ -1,5 +1,1219 @@
 # Gameplay phases 1–3: implementation and completion audit
 
+## 2026-10-15 - Native splash syntax correction and landing sound execution
+
+- Audit correction: the preceding conversion incorrectly used normalsound as a TERRAIN splash keyword. Native SplashKeywords in src/gamedata/p_terrain.cpp uses sound for NormalSplashSound. Corrected the parser and prior tests; normalsound is now explicitly rejected. This entry supersedes that earlier syntax claim.
+- Converted smallsound into LevelTerrainSplash.SmallSplashSound with modify/reset preservation and conditional checksum participation.
+- Converted flat-floor landing splash sound selection from P_HitWater in src/playsim/p_mobj.cpp: mass < 10 selects smallsound, otherwise sound; living player/monster vertical velocity >= -6 suppresses playback. Landing damage remains independently gated and occurs before this sound suppression.
+- Landing playback is wired through the existing ActorPhysics impact path, using a detached floor-impact origin, CHAN_ITEM 3, volume 1 and ATTN_IDLE 1.001. This is the native no-spawned-splash-actor sound branch. Periodic terrain damage retains its separate CHAN_AUTO playback.
+- Added nine regression cases covering mass/velocity boundaries, detached sound parameters, actual floor-impact execution, missing smallsound arguments, invalid prior keyword and smallsound modify/reset. Prior parser/WAD/runtime tests now use native sound syntax.
+- Validation: Release solution build passes with zero warnings/errors; all 19,441 tests pass; whitespace validation passes.
+- Remaining: splash actors/chunks, underwater and 3D-floor contact policies, DontSplash gating, forced/small HitWater flags, monster noise alerts, native sound asset resolution and footstep cadence remain incomplete. No full P_HitWater parity is claimed.
+
+## 2026-10-15 - Runtime periodic terrain damage splash sound
+
+- Converted splash normalsound parsing into LevelTerrainSplash, preserving native modify/reset behavior and carrying definitions through accumulated TERRAIN lumps, all three WAD map loading branches and simulation copies. Nonempty normal-sound metadata participates in simulation checksums.
+- Converted the successful-damage sound branch of P_ActorOnSpecialFlat in src/playsim/p_spec.cpp. After periodic terrain damage, the managed simulation queues the splash normal sound only when ApplyWithNativeResult reports positive damage, using victim origin, channel AUTO 0, volume 1 and ATTN_IDLE 1.001. IronFeet protection and invulnerability produce no splash sound.
+- Audited FSplashDef/SplashParser GEN_Sound and ParseSplash in src/gamedata/p_terrain.h and src/gamedata/p_terrain.cpp. Unsupported splash properties and malformed normal-sound blocks fail explicitly.
+- Added nine regression cases covering successful/protected/invulnerable periodic damage, sound request parameters, checksum distinction, fresh save continuation, modify/reset/copy, malformed blocks and WAD multi-lump loading.
+- Validation: Release solution build passes with zero warnings/errors; all 19,432 tests pass after the final loader regression addition; whitespace validation passes.
+- Remaining: symbolic sound names defer native S_FindSound asset/alias validation. Splash actors/chunks, small splash configuration, landing splash sound effects, native contact/3D-floor selection and footstep cadence/state/playback remain incomplete. This adds actual periodic-damage sound requests, not the full P_HitWater subsystem.
+
+## 2026-10-15 - TERRAIN generic and left/right step sound configuration
+
+- Converted TerrainParser properties stepsounds, leftstepsounds and rightstepsounds into LevelTerrainDefinition sound-name fields. Parsing accepts case-insensitive keywords and quoted names, preserves fields through modify and simulation copies, resets them on full redefinition and rejects missing names explicitly.
+- Audited TerrainParser GEN_Sound/FTerrainDef in src/gamedata/p_terrain.cpp and src/gamedata/p_terrain.h, plus DoFootstep/MakeFootsteps in wadsrc/static/zscript/actors/player/player.zs. Native generic sound selection takes precedence over alternating left/right sounds; no playback selection behavior is claimed here.
+- Added conditional, case-normalized checksum contributions for all three sound-name fields, retaining prior contributions when names are empty.
+- Added nine regression cases covering all three fields, quoted/case-insensitive syntax, following property consumption, cross-lump modify/reset/copy, missing arguments and individual repeatable checksum contributions.
+- Validation: Release solution build passes with zero warnings/errors; all 19,423 tests pass; whitespace validation passes.
+- Remaining: managed terrain stores symbolic sound names rather than native S_FindSound IDs; asset validation, alias/unknown-sound normalization, generic-versus-left/right playback selection, surface-alias settings, persistent cadence/foot alternation state and audio/splash execution remain incomplete. This completes represented terrain step-sound configuration, not the runtime footstep subsystem.
+
+## 2026-10-15 - TERRAIN distance-based footstep configuration
+
+- Converted native StepDistance and StepDistanceMinVel double fields into LevelTerrainDefinition, TERRAIN parsing and conditional simulation checksum contributions. Shared finite-double parsing also retains existing footclip behavior.
+- Audited FTerrainDef and TerrainParser GEN_Double in src/gamedata/p_terrain.h and src/gamedata/p_terrain.cpp, plus PlayerPawn.MakeFootsteps in wadsrc/static/zscript/actors/player/player.zs. Native selects distance cadence when StepDistance > 0 and compares movement speed against StepDistanceMinVel; these configuration values are now represented without float truncation.
+- Added twelve regression cases covering signed/default/fractional values, property case handling, cross-lump modify/reset, simulation copies, nonfinite/malformed/missing arguments and independent repeatable checksum contributions.
+- Validation: Release solution build passes with zero warnings/errors; all 19,414 tests pass; whitespace validation passes.
+- Remaining: this converts configuration loading, not MakeFootsteps execution. Terrain step sound lookup, walking/running cadence execution, persistent footstep counters and playback/splash effects remain incomplete.
+
+## 2026-10-15 - TERRAIN step volume, timing and metadata checksums
+
+- Converted FTerrainDef StepVolume (float), WalkStepTics and RunStepTics (signed integers) into LevelTerrainDefinition and TERRAIN parsing. Native zero defaults, case-insensitive property names, modify preservation and full-reset semantics are retained. Nonfinite/unrepresentable floats and malformed or overflowing integers fail explicitly.
+- Audited TerrainKeywords, TerrainParser GEN_Float/GEN_Int and FTerrainDef in src/gamedata/p_terrain.cpp and src/gamedata/p_terrain.h. Step volume is stored at native single precision rather than as double precision input.
+- Audit follow-up: the preceding IsLiquid conversion omitted checksum participation. Added conditional checksum markers for IsLiquid and all three new step fields; default-valued definitions retain the previous checksum contribution.
+- Added twelve regression cases covering parsing, case handling, modify/reset, signed values, simulation copies, malformed values and distinct/repeatable checksums for each converted field.
+- Validation: Release solution build passes with zero warnings/errors; all 19,402 tests pass; whitespace validation passes.
+- Remaining: terrain footstep sound lookup/playback, walk/run cadence consumers, liquid contact and splash behavior remain unconverted. These fields are represented metadata and do not yet produce footstep audio. Terrain definitions remain level input rather than mutable actor save extensions.
+
+## 2026-10-15 - TERRAIN liquid metadata and redefinition identity
+
+- Converted native TerrainParser's unary liquid property into LevelTerrainDefinition.IsLiquid and TERRAIN parsing. Maps using this property are now accepted; ordinary definitions default false, modify preserves the flag, and full redefinition resets it.
+- Audited FTerrainDef.IsLiquid, TerrainKeywords/TerrainParser GEN_Bool and ParseTerrain in src/gamedata/p_terrain.h and src/gamedata/p_terrain.cpp. Corrected redefinition name handling to retain the existing canonical name, including the built-in Solid name, as native ParseTerrain does when resetting fields.
+- Added eight regression cases covering unary/case-insensitive syntax, following property consumption, modify/reset/default rules, cross-lump preservation, simulation copy resolution, explicit boolean rejection and Solid identity.
+- Validation: Release solution build passes with zero warnings/errors; all 19,390 tests pass; whitespace validation passes.
+- Remaining: IsLiquid is represented metadata only at this stage. Native P_HitWater liquid return behavior, contact/3D-floor selection, splash actor/audio effects and liquid-driven gameplay integration remain incomplete; no new swimming or splash behavior is claimed.
+
+## 2026-10-15 - Built-in Solid terrain resolution
+
+- Converted the implicit neutral Solid terrain established by MakeDefaultTerrain in src/gamedata/p_terrain.cpp. An unmapped ordinary floor now resolves Solid without requiring an explicit TERRAIN definition, including through GetActorFloorTerrain.
+- Added shared PlayLevel.FindTerrainDefinition lookup: explicit definitions retain precedence and canonical spelling, while Solid is available as an immutable built-in fallback. SetSectorTerrain now accepts Solid even when it is absent from the explicit definition list.
+- Updated floor/defaultterrain parsing to recognize built-in Solid instead of warning and replacing it as unknown. Explicit definition collections remain unchanged, avoiding synthetic serialized entries.
+- Added seven regression cases covering ordinary floors, Solid mappings under a different level default, defaultterrain Solid, explicit Solid replacement, simulation copies, invalid sector lookup, ACS query and setter integration.
+- Validation: Release solution build passes with zero warnings/errors; all 19,382 tests pass after rebuilding the final test additions; whitespace validation passes.
+- Remaining: native terrain index identity, unregistered raw override normalization, per-actor cached terrain and 3D-floor contact tracking remain incomplete. This entry supersedes the earlier implicit Solid initialization limitation.
+
+## 2026-10-15 - Cleared terrain override fallback precedence
+
+- Converted the shared FloorTerrainDefinition resolver so None/Null sector overrides follow the floor texture mapping before the level default. Previously these sentinels incorrectly bypassed mapped terrain; this affected ACS queries and shared terrain gameplay consumers.
+- Audited P_FindTerrain in src/gamedata/p_terrain.cpp (None/Null -> -1), GetTerrain in src/playsim/p_sectors.cpp (negative override -> texture terrain), and FTerrainTypeArray in src/gamedata/p_terrain.h (unassigned texture -> default).
+- Added seven regression cases covering cleared and empty overrides, case-insensitive sentinels, explicit override precedence, simulation copies and missing texture terrain fallback. Corrected the earlier ACS query tests that had encoded the wrong None/Null precedence.
+- Validation: Release solution build passes with zero warnings/errors; all 19,375 tests pass; whitespace validation passes.
+- Remaining: implicit native Solid initialization, unregistered raw override normalization and native per-actor/3D-floor contact tracking remain incomplete. The preceding setter already normalizes unknown names to a cleared override.
+
+## 2026-10-15 - Native ACS SetSectorTerrain call semantics
+
+- Corrected SetSectorTerrain argument order to (tag, floor-or-ceiling, terrain-string-id), matching ACSF_SetSectorTerrain in src/playsim/p_acs.cpp. The call now returns zero instead of the number of changed sectors.
+- Converted selector validation and terrain registration lookup. Only floor 0 and ceiling 1 mutate sectors; registered names resolve case-insensitively to canonical spelling. Empty, None, Null and unknown names clear the stored override, representing P_FindTerrain's -1 result and allowing normal floor texture resolution.
+- Terrain arguments use terminated module/global string lookup. Added nine regression cases covering floor/ceiling selection, invalid selectors, pooled names, case matching, clearing, embedded NUL, tag filtering, stack consumption and return value. Updated the existing module-string setter/query test to supply a registered terrain and expect zero.
+- Validation: Release solution build passes with zero warnings/errors; all 19,368 tests pass; whitespace validation passes.
+- Compatibility: scripts using the previous reversed argument order or changed-sector return count must use native ACS semantics. Native per-actor cached terrain updates, 3D-floor contact selection and implicit built-in terrain initialization remain incomplete.
+
+## 2026-10-15 - ACS floor terrain query resolution
+
+- Converted GetActorFloorTerrain to use the existing PlayLevel.FloorTerrainDefinition resolver. Texture mappings and the level default now produce the resolved definition name; explicit registered names use canonical spelling. Unregistered explicit overrides retain their existing name fallback.
+- Audited ACSF_GetActorFloorTerrain in src/playsim/p_acs.cpp: native returns the name of the actor's resolved floor terrain, or an empty string for a missing actor, rather than the sector override text alone.
+- Added six regression cases covering case-insensitive texture mapping, explicit override precedence and canonical spelling, None/Null default resolution, unregistered override compatibility, unmapped default terrain, missing actors, and stack consumption.
+- Validation: Release solution build passes with zero warnings/errors; all 19,359 tests pass; whitespace validation passes.
+- Remaining: native per-actor floor-contact terrain caching, 3D-floor terrain selection, implicit built-in Solid initialization and invalid terrain registration policy remain incomplete. This query uses the current managed sector resolver and does not claim full native contact parity.
+
+## 2026-10-15 - ACS global string interning
+
+- Converted AcsGlobalStrings.Add to reuse an existing global id for identical stored contents using an ordinal index, instead of appending duplicates. Existing ids remain stable and case-distinct strings retain distinct ids.
+- Audited both ACSStringPool::AddString overloads in src/playsim/p_acs.cpp: native hashes contents and calls FindString before inserting. The managed pool retains its existing string representation and now shares the same exact-content reuse policy.
+- Added eight regression cases covering empty/ASCII/multibyte/embedded-NUL stored values, independently constructed identical strings, no duplicate index consumption, case sensitivity, stable ids across insertions, and numeric equality of repeated getter results in an executable script.
+- Validation: Release solution build passes with zero warnings/errors; all 19,353 tests pass; whitespace validation passes.
+- Compatibility: duplicate insertion now returns the prior id and does not advance the next index, matching native interning for represented strings. Callers must not rely on a fresh id per query.
+- Remaining: native byte-preserving storage, distinction between raw FString and C-string insertion, pool capacity/garbage collection/locking, serialization and cross-library lifetime remain incomplete. This does not claim full native global-pool parity.
+
+## 2026-10-15 - ACS TagString opcode and loader support
+
+- Converted PCD_TAGSTRING (225) into the shared opcode enum, word/compact bytecode walker tables, and VM execution. It consumes a string id, resolves the represented module/global string, and pushes a global-pool id for its terminated contents.
+- Audited PCD_TAGSTRING in src/playsim/p_acs.cpp: native promotes the current behavior string through GlobalACSStrings.AddString rather than simply retaining a module-local index. Existing VM Pop underflow handling is reused.
+- Added nine regression cases: word/compact loader recognition without operands, executable tagging of empty/ASCII/multibyte/terminated strings, pooled-content verification, use by StrLen and CheckClass, continuation to a following line special, and missing-operand termination.
+- Validation: Release solution build passes with zero warnings/errors; all 19,345 tests pass; whitespace validation passes.
+- Remaining: full loaded-library string tables, native global-pool interning/lifetime/serialization behavior, raw invalid-byte strings and general dynamic library execution remain incomplete. This converts opcode promotion through the current managed pool, not complete native pool parity.
+
+## 2026-10-15 - Native ACS StrLen opcode execution
+
+- Converted the previously missing PCD_STRLEN (253) VM implementation. It consumes a string id, resolves module/global strings through the terminated lookup, and pushes the UTF-8 byte count. Scripts now continue after this opcode rather than ending at an unsupported instruction.
+- Audited PCD_STRLEN in src/playsim/p_acs.cpp: native uses Behaviors.LookupString and strlen, returning zero for invalid ids. Existing managed Pop underflow handling is retained so malformed stacks stop before subsequent actions.
+- Added ten executable-script regression cases covering empty/ASCII/two-byte/four-byte text, embedded/leading NUL, pooled values produced by a preceding CallFunc, invalid module/global ids, missing operands, conditional continuation to a line special, and completion state.
+- Validation: Release solution build passes with zero warnings/errors; all 19,336 tests pass; whitespace validation passes.
+- Remaining: the native once-only invalid-string diagnostic, raw invalid UTF-8 preservation, complete byte-slice pool storage, and loaded-library string dispatch remain incomplete. No save format change is needed; existing VM stack/fiber machinery is reused.
+
+## 2026-10-15 - ACS UTF-8 byte comparisons and limits
+
+- Converted ACS strcmp/stricmp from managed UTF-16 ordinal comparison to UTF-8 byte comparison, including byte-count limits and C-locale ASCII case folding. Unicode case equivalents outside ASCII no longer compare equal solely because .NET folds them.
+- Added AcsByteStringComparison for the represented C-string comparison policy. Existing terminated lookup, equal-string-id shortcut, invalid-string handling and pooled/module dispatch remain in place; negative limits behave as unbounded for representable strings.
+- Audited ACSF_strcmp/stricmp in src/playsim/p_acs.cpp: native invokes strcmp/stricmp or their byte-limited variants on char strings. Tests validate comparison sign, the portable comparison contract; the managed helper returns the differing byte subtraction rather than promising every CRT's exact nonzero magnitude.
+- Added ten regression cases covering supplementary-versus-BMP UTF-8 ordering, limits splitting multibyte characters, ASCII/non-ASCII case behavior, prefix/terminator handling, zero limits, module/pooled inputs and stack preservation.
+- Validation: Release solution build passes with zero warnings/errors; all 19,326 tests pass; whitespace validation passes.
+- Remaining: raw invalid UTF-8 preservation, non-C-locale platform case tables, exact CRT-specific nonzero result magnitudes, and byte-oriented slice storage remain incomplete. The managed global string representation and archives are unchanged.
+
+## 2026-10-15 - ACS GetChar UTF-8 byte indexing
+
+- Converted GetChar from UTF-16 code-unit indexing to UTF-8 byte indexing after the existing terminated-string lookup. Bytes are returned with signed-char promotion, matching the Windows native target's char result; invalid/negative indices and bytes beyond the first terminator return zero.
+- Audited ACSF_GetChar in src/playsim/p_acs.cpp: native bounds against strlen and returns p[index], not a decoded Unicode code point. The managed implementation encodes its string representation to UTF-8 before indexing.
+- Added nine regression cases through module/pooled inputs covering ASCII around a two-byte character, each accented-character byte, a four-byte supplementary character, byte-length boundaries, embedded termination, negative indices and stack preservation. Test source uses ASCII Unicode escapes.
+- Validation: Release solution build passes with zero warnings/errors; all 19,316 tests pass; whitespace validation passes.
+- Remaining: raw invalid UTF-8 preservation, ill-formed UTF-16 inputs, platform variants using unsigned char, and byte-oriented slicing/comparison remain outside this valid-Unicode/Windows-target conversion. The global string pool representation and archive format are unchanged.
+
+## 2026-10-15 - ACS terminated-string operation boundaries
+
+- Added AcsStringIds.LookupTerminated and converted GetChar, strcmp/stricmp, StrLeft/StrRight and StrMid to use the prefix before an embedded NUL. The underlying module/pool storage remains unchanged; consumers see the native C-string boundary.
+- Audited the corresponding branches in src/playsim/p_acs.cpp: GetChar and slice functions use strlen, and comparisons call strcmp/strncmp or case-insensitive variants, all stopping at the first terminator.
+- Added eleven regression cases for character access at/beyond a terminator, module/pooled input, all slice directions, limited/unlimited comparison equality, leading terminators, stack preservation, and unchanged stored pool contents.
+- Validation: Release solution build passes with zero warnings/errors; all 19,307 tests pass; whitespace validation passes.
+- Remaining: UTF-8 byte indexing/slicing and bytewise comparison/case-fold details still differ from managed UTF-16 operations. Other string consumers and loaded-library string dispatch are not fully converted. This closes embedded-NUL boundaries for these represented operations without claiming complete native string parity.
+
+## 2026-10-15 - Native ACS string slice boundary rules
+
+- Converted StrLeft/StrRight negative-length behavior to return the whole available string, matching native signed-to-size_t conversion followed by clamping. Zero and oversized positive lengths keep native bounded behavior.
+- Converted StrMid negative positions to an empty result instead of clamping them to the beginning. Replaced overflow-prone position+length arithmetic with a remaining-length comparison, so large lengths safely clamp to the suffix; negative lengths retain native suffix behavior.
+- Audited ACSF_StrLeft/StrRight/StrMid in src/playsim/p_acs.cpp: native uses size_t position/length, rejects out-of-range positions and clamps excessive/wrapped lengths before constructing the result.
+- Added twelve regression cases through module and pooled inputs covering negative/zero/oversized lengths, negative/end positions, bounded middle slices, the large-length overflow case, pooled result ids, and stack-prefix preservation.
+- Validation: Release solution build passes with zero warnings/errors; all 19,296 tests pass; whitespace validation passes.
+- Remaining: native byte-string/UTF-8 and embedded-NUL semantics differ from the managed UTF-16 string model and are not converted by these ASCII boundary tests. Loaded-library string resolution also remains incomplete. No save format change is required.
+
+## 2026-10-15 - Shared native ACS conversion for armor percentages
+
+- Converted the remaining GetArmorInfo save-percent fixed-point conversion from floor to native nearest-even rounding. Added AcsFixedPoint.FromDouble and reused it across both ACS function and armor-inventory query code, removing the divergent private converters.
+- Audited ARMORINFO_SAVEPERCENT in src/playsim/p_acs.cpp: native passes BasicArmor.SavePercent through DoubleToACS, which uses FloatToFixed<16>/RoundHalfEven in src/common/utility/m_fixed.h. The existing special green-armor fraction remains unchanged.
+- Added eight regression cases covering six armor percentages, depleted armor with retained metadata, ACS stack handling, and saved armor/query restoration. The prior signed midpoint/vector regression tests now exercise the same shared helper through their existing callers.
+- Validation: Release solution build passes with zero warnings/errors; all 19,284 tests pass; whitespace validation passes.
+- Compatibility: fractional armor-percentage query values can change by one fixed unit to match native rounding; armor absorption calculations are unchanged. No save format change is required.
+- Remaining: arbitrary fractional native armor SavePercent storage and exceptional/out-of-range floating conversions remain outside this managed integer-percent inventory model.
+
+## 2026-10-15 - Native ACS fixed-point result rounding
+
+- Converted AcsCallFunctions.DoubleToAcs from floor rounding to nearest-even rounding, matching native DoubleToACS -> FloatToFixed<16> -> RoundHalfEven. This corrects shared fixed-result conversion for represented view-height, velocity, fixed square-root, vector-length and line-coordinate calls.
+- Audited DoubleToACS in src/playsim/p_acs.cpp and FloatToFixed in src/common/utility/m_fixed.h. Explicit integer Sqrt floor behavior remains separate and unchanged.
+- Added eleven regression cases covering positive/negative exact half units, even tie selection, non-half signed fractions, small fixed vectors, and a unit diagonal whose native result rounds to 92682 instead of the prior 92681. Tests exercise public ACS dispatch and preserve stack-prefix checks.
+- Validation: Release solution build passes with zero warnings/errors; all 19,276 tests pass; whitespace validation passes.
+- Compatibility: scripts observing fractional fixed-result low bits may now receive the native nearest-even value rather than the old managed floor. No save format change is required.
+- Remaining: native floating-point exceptional/out-of-range conversion policies and other independent conversion helpers across the port have not been fully audited by this increment. No whole-port numeric parity is claimed.
+
+## 2026-10-15 - Native ACS actor-sound selector boundary
+
+- Converted PlayActorSound selector validation to the native See-through-Push range. Internal Rip/Pickup metadata entries and arbitrary enum values no longer become valid ACS sound selectors merely because the actor dictionary contains them.
+- Added explicit empty/None sound-name suppression to ACS PlaySound and PlayActorSound, consistent with existing managed actor sound actions. Their native zero result and stack semantics remain unchanged.
+- Audited GetActorSound and the shared ACSF_PlaySound/PlayActorSound branch in src/playsim/p_acs.cpp: only the eleven native selectors resolve metadata, other values return NO_SOUND, and playback is gated by a nonzero sound id. The managed subset retains names rather than native sound ids.
+- Added ten regression cases covering valid/range-boundary/unknown selectors with supplied metadata, empty and case-insensitive None names on both play paths, stack/result semantics, and preservation of internal Rip metadata.
+- Validation: Release solution build passes with zero warnings/errors; all 19,265 tests pass; whitespace validation passes.
+- Remaining: complete S_FindSound asset existence and alias resolution, backend playback behavior, and native null-origin sound handling remain incomplete. This enforces the native selector boundary and managed silent-name convention without introducing an asset registry or new save format.
+
+## 2026-10-15 - Native ACS sound results and playback flags
+
+- Converted PlaySound, PlayActorSound, StopSound and SoundVolume ACS results to native zero-returning call semantics. Sound requests still queue normally; script control flow no longer receives invented success/count values.
+- Added shared playback-flag composition for PlaySound/PlayActorSound: channel bits are preserved, optional local adds CHANF_LOCAL, and optional looping adds both LOOP and NOSTOP, alongside the existing request fields.
+- Audited the shared ACSF_PlaySound/PlayActorSound branch plus StopSound and SoundVolume in src/playsim/p_acs.cpp. The play branch restricts the channel to the original eight and merges flag bits before S_PlaySound; all four calls break to the native zero result.
+- Added eight regression cases covering four call results/request preservation and all loop/local combinations with an input channel carrying flag bits. Updated prior script/count and playback-flag assertions that encoded the old behavior.
+- Validation: Release solution build passes with zero warnings/errors; all 19,255 tests pass; whitespace validation passes.
+- Remaining: native sound-asset existence resolution, null-origin sound policies, backend playback/channel behavior and full client-local restrictions remain outside these simulation request tests. No save format change is required.
+
+## 2026-10-15 - Actor CameraHeight and saved query support
+
+- Converted Actor.CameraHeight and GetCameraHeight with the native INT_MIN default sentinel meaning half the current actor height. Explicit zero, negative, and fractional heights are retained. Nonfinite managed assignments are rejected explicitly.
+- Wired the non-player ACS GetActorViewHeight branch to GetCameraHeight; player ACS queries retain their separate default-view-height/crouch policy.
+- Added optional save extension 301 for double camera heights, default omission/old-save reset, capture/restore, conditional checksum tracking, finite-value and geometry validation before mutation, and malformed binary rejection.
+- Audited CameraHeight in src/playsim/actor.h, GetCameraHeight in actorinlines.h, native VM exposure in src/scripting/vmthunks_actors.cpp, and the ACS query branch in p_acs.cpp.
+- Added ten regression cases covering signed/fractional values, sentinel/current-height behavior, player query separation, save/checksum replay and old-save reset, nonfinite runtime/structured/binary values, and missing geometry.
+- Validation: Release solution build passes with zero warnings/errors; all 19,247 tests pass; whitespace validation passes.
+- Remaining: CameraHeight class-definition parsing, custom class-default/revival restoration, and renderer/view-camera consumption beyond the ACS query remain outside this property conversion. Native full camera/interpolation parity is not claimed.
+
+## 2026-10-15 - Native ACS default view-height query
+
+- Converted player GetActorViewHeight to report DefaultViewHeight adjusted by the represented crouch factor, rather than the transient player ViewHeight. Death lowering and terrain footclip adjustments therefore no longer leak into the script's default-height result.
+- Audited ACSF_GetActorViewHeight in src/playsim/p_acs.cpp, crouchviewdelta assignment in wadsrc/static/zscript/actors/player/player.zs, and GetCameraHeight in src/playsim/actorinlines.h. Native player queries use DefaultViewHeight plus crouchviewdelta; default non-player cameras use half height.
+- Added eight regression cases for transient eye heights, custom default heights at two crouch stages, death lowering, actual terrain-footclip adjustment, saved default/crouch restoration, non-player half-height behavior, and stack consumption.
+- Validation: Release solution build passes with zero warnings/errors; all 19,237 tests pass; whitespace validation passes.
+- Remaining: custom non-player CameraHeight overrides and native camera/interpolation policies are not represented. Player query crouch adjustment uses the port's existing crouch model; complete camera simulation parity is not claimed. No save format change was needed.
+
+## 2026-10-15 - ACS timer query integration for suit, mask and strength
+
+- Converted missing GetActorPowerupTics entries for PowerIronFeet, PowerMask and PowerStrength through the shared AcsActorPowerups timer resolver. Active powers previously reported zero despite their existing gameplay/timer support.
+- Audited ACSF_GetActorPowerupTics in src/playsim/p_acs.cpp: it validates a Powerup class, selects the actor, finds the inventory item and reports EffectTics. The managed query now exposes each represented timer while keeping giver names and distinct power types separate.
+- Added nine regression cases covering module/pooled case-insensitive names, native timer directions (finite suit/mask countdown and strength count-up), removal/restoration, TID selection and missing TIDs, exact power-name isolation, expiration, and giver-name rejection.
+- Validation: Release solution build passes with zero warnings/errors; all 19,229 tests pass; whitespace validation passes.
+- Remaining: arbitrary power subclasses/inventory lookup, full native class validation/diagnostics, and unrepresented powers remain incomplete. Existing timers and archives are reused; no new format is required.
+
+## 2026-10-15 - ACS teleport-fog setter and swap policies
+
+- Converted ACS teleport-fog empty-name behavior: empty source/destination arguments preserve that field, and two empty names do not create an override. Direct ActorPropertyActions.SetTeleFog remains an explicit assignment interface.
+- Corrected ACS SetActorTeleFog's result to zero, matching the native void setter call. The internal helper still reports its own changed-actor count for managed callers.
+- Converted SwapActorTeleFog to skip identical represented type names, using case-insensitive class-name comparison, and count only actors whose types differ. A no-op swap no longer creates an override.
+- Audited DLevelScript::SetActorTeleFog, SwapActorTeleFog and their CallFunc dispatch in src/playsim/p_acs.cpp. Native setters preserve empty fields; swaps skip equal class pointers. This managed layer stores names rather than class pointers.
+- Added seven regression cases covering pooled partial updates, no-op setters/swaps, shared-TID swap counts, and save restoration. Updated prior setter-result and default-swap expectations that encoded the old behavior; retained their substantive save checks.
+- Validation: Release solution build passes with zero warnings/errors; all 19,220 tests pass; whitespace validation passes.
+- Remaining: fog class existence/replacement resolution, normalization of invalid names/None to native class-null pointers, actual fog spawning, and full runtime class handling remain outside the existing stored-name subset. No full teleport-effect parity is claimed.
+
+## 2026-10-15 - Native ACS pointer equality semantics
+
+- Converted AcsActorPointer.PointersEqual to object reference identity, matching native actor-pointer comparison rather than numeric Id equality. Distinct actor objects with equal/unassigned ids no longer alias; two null pointers still compare equal.
+- Corrected IsPointerEqual optional TID dispatch to match the native argument-count switch: three arguments supply the first TID, four supply both, and other counts use default activator origins while consuming all arguments.
+- Audited ACSF_IsPointerEqual in src/playsim/p_acs.cpp: it resolves the two origins, applies COPY_AAPTREX, and compares returned pointers with ==. The existing shared-origin optimization when TIDs agree is retained.
+- Added nine regression cases covering shared ids, same/null references, two/three/four/five-argument forms, null pointers from different origins, external-origin identity collision through ACS, and stack-prefix preservation.
+- Validation: Release solution build passes with zero warnings/errors; all 19,213 tests pass; whitespace validation passes.
+- Remaining: native network pointer barriers, conversation selection, complete aiming and dynamic class behavior remain incomplete. No archive format change is required for this comparison conversion.
+
+## 2026-10-15 - Unique TID boundaries and native saved randomness
+
+- Converted linear FindUniqueTid range clamping near INT_MAX using wide arithmetic and safe loop counters, preserving native intended upper-bound behavior without managed wraparound. Random probe loop accounting also uses a wide counter. ACS negative limits now normalize to zero as the native wrapper specifies.
+- The new replay test exposed an unsaved legacy unique-TID generator. Replaced it with the native named UniqueTID stream (CRC32 0xc388ea6b), full 32-bit outputs, lazy seeding, and optional save extension 300. Added capture/restore, conditional checksum tracking, missing-geometry validation, and old-save reset.
+- Audited FLevelLocals::FindUniqueTID and pr_uniquetid in src/playsim/p_mobj.cpp, plus ACSF_UniqueTID in p_acs.cpp. Native random probes use GenRand32 masked to positive TIDs, followed by bounded linear searches.
+- Added 17 regression cases covering boundary clamping and exhausted ranges, ordinary search limits, ACS negative-limit equivalence, named-stream sequence, exact saved continuation, old/zero-state handling, malformed archives and missing geometry.
+- Validation: Release solution build passes with zero warnings/errors; all 19,204 tests pass; whitespace validation passes. The initial new saved replay failure drove the random-state conversion rather than weakening the regression.
+- Compatibility: unique-TID random choices intentionally change from the old managed LCG to the native stream. Older archives lack that stream and restart it from the simulation seed on first use; they cannot reconstruct the previously unsaved LCG position.
+- Remaining: native client/server TID filtering and full network entity policies remain outside this conversion. No full native network parity is claimed.
+
+## 2026-10-15 - Non-player actor line-target pointer selection
+
+- Converted AAPTR_GET_LINETARGET for represented non-player origins by routing the general selector through the shared CombatTrace.FindTarget actor trace. Previously the general selector returned null unless the origin was a player.
+- Audited COPY_AAPTREX in src/playsim/actorptrselect.cpp: GET_LINETARGET is in the general selector group and calls P_BulletSlope on the origin independently of player ownership. PLAYER_GETTARGET remains a distinct player-only selector.
+- Reused managed facing direction, shootable filtering, nearest-hit selection, and flat sector-opening occlusion through the existing trace. ACS SetActivator and other shared pointer callers gain the path without a new archive or random stream.
+- Added six regression cases covering facing direction, nonshootable intermediates, nearest shootable targets, closed openings, ACS activator integration, and saved-state selection restoration.
+- Validation: Release solution build passes with zero warnings/errors; all 19,187 tests pass; whitespace validation passes.
+- Remaining: full native P_BulletSlope autoaim/cone behavior, portal/3D-floor aiming, conversation NPC selection, and client/server pointer barriers remain incomplete. This connects the managed flat straight-ray subset for non-player origins and does not assert complete native aim parity.
+
+## 2026-10-15 - Native actor-pointer selector group dispatch
+
+- Converted AcsActorPointer.Resolve from first-matching-bit selection to exact masked-group dispatch, matching COPY_AAPTREX. Player selectors are considered first for player origins, then general actor selectors, then static selectors; ambiguous values within a group fall through instead of selecting an arbitrary first bit.
+- Added the named PlayerGetConversation selector constant while retaining its current unsupported null result. Valid general selectors still short-circuit even when their resolved pointer is null; static player selectors can resolve without an origin. Static player-plus-null or multiple-player combinations fall back as native does.
+- Audited src/playsim/actorptrselect.cpp and actorptrselect.h, including group masks, switch cases, and the documented one-selector-per-group contract. Existing target/master/tracer/friend resolution is reused by all managed callers.
+- Added nine regression cases for ambiguous general/static/player groups, cross-group priority/fallthrough, null-origin static resolution, and ACS SetActivator integration.
+- Validation: Release solution build passes with zero warnings/errors; all 19,181 tests pass; whitespace validation passes.
+- Remaining: conversation NPC selection, non-player line-target aiming, client/server pointer barriers, and full native portal/aim trace behavior remain incomplete. This closes selector-group dispatch parity for the represented pointer operations without changing archives.
+
+## 2026-10-15 - Native ACS activator failure and stored-target behavior
+
+- Corrected SetActivator to assign the resolved actor even when lookup returns null, clearing the script binding on missing TIDs or null pointer selections. Previously failed selections left the old activator in place.
+- Corrected SetActivatorToTarget's non-live-player branch to use Actor.TargetId rather than only Brain.TargetId, covering represented stored targets and projectile owner-backed target pointers. Failed SetActivatorToTarget still preserves the old binding.
+- Audited ACSF_SetActivator and ACSF_SetActivatorToTarget in src/playsim/p_acs.cpp: SetActivator unconditionally assigns its lookup result and returns its presence; target selection only assigns after successfully resolving the source and its target. Live-player aiming keeps the existing trace path.
+- Added eight regression cases covering zero/missing TIDs, explicit null/missing target pointers, successful TID selection, brainless actor target selection, failure preservation for the distinct target call, and stack-prefix consumption.
+- Validation: Release solution build passes with zero warnings/errors; all 19,172 tests pass; whitespace validation passes.
+- Remaining: unrepresented pointer selectors, complete native player aiming/portal behavior, and broader script/class VM behavior remain incomplete. This increment adds no save format and preserves successful existing selection paths.
+
+## 2026-10-15 - Pooled ACS actor flag names
+
+- Converted CheckFlag and SetActorFlag to resolve flag names through AcsStringIds.Lookup, passing the global pool from the dispatcher. Pooled runtime names now reach the same AcsActorFlags handlers as module literals.
+- Audited ACSF_CheckFlag and ACSF_SetActorFlag in src/playsim/p_acs.cpp: both use Behaviors.LookupString. The native setter handles the activator or all actors sharing a TID and reports successful changes; the checker selects a single actor. Existing managed selection/count semantics are retained.
+- Added seven regression cases covering three supported flags with repeated set/check values and case-insensitive pooled names, shared-TID setter counts, unknown/empty names, stack-prefix preservation, and no-gravity movement with saved restoration.
+- Validation: Release solution build passes with zero warnings/errors; all 19,164 tests pass; whitespace validation passes.
+- Remaining: unrepresented native flags and special flag side effects, general class VM behavior, and loaded-library string dispatch remain incomplete. This change extends name transport for existing flag implementations without adding a new save format.
+
+## 2026-10-15 - ACS DropInventory pooled item names
+
+- Converted DropInventory item-name lookup to AcsStringIds.Lookup and passed the current global string pool through the dispatcher. Dynamic pooled names now use the same inventory removal/toss path as module literals.
+- Audited ACSF_DropInventory in src/playsim/p_acs.cpp: native resolves the name with Behaviors.LookupString, then finds inventory on the activator or each actor sharing the selected TID. Existing managed selection, zero return, and toss policies remain in place.
+- Added seven regression cases covering module/pooled ammo drops, case-insensitive lookup, TID selection without an activator, non-droppable powers and unknown/empty names, exact inventory decrement, dropped actor identity/pickup delay, stack-prefix preservation, and saved replay.
+- Validation: Release solution build passes with zero warnings/errors; all 19,157 tests pass; whitespace validation passes. New test assertions were adjusted to satisfy the strict xUnit analyzer rules.
+- Remaining: arbitrary inventory subclasses, full native toss semantics for unsupported classes, and loaded-library string dispatch remain incomplete. This closes the global-pool lookup gap for represented DropInventory calls without changing the save format.
+
+## 2026-10-15 - ACS GetMaxInventory pooled class names
+
+- Converted GetMaxInventory name resolution to AcsStringIds.Lookup, threading the global ACS string pool through the function dispatcher. Dynamically produced inventory names now work alongside module literals without changing the shared inventory capacity policies.
+- Audited ACSF_GetMaxInventory in src/playsim/p_acs.cpp: native resolves the target with SingleActorFromTID and the inventory name through Behaviors.LookupString before calling CheckInventory with max=true. Existing managed TID/activator and missing-actor behavior is retained.
+- Added nine regression cases covering module/pooled capacities for ammo, health and supported powers, unknown names, targeted backpack capacity, missing TIDs, invalid names, and preservation of unrelated stack values.
+- Validation: Release solution build passes with zero warnings/errors; all 19,150 tests pass; whitespace validation passes.
+- Remaining: full native inventory class/default-capacity support, arbitrary custom inventory, and loaded-library string dispatch remain incomplete. This closes the dynamic-name lookup gap for the represented capacity query; no save format change is needed.
+
+## 2026-10-15 - Native ACS SetSectorDamage call semantics
+
+- Separated ACSF_SetSectorDamage from the existing line-special 214 policy. ACS now resolves module/pooled damage-type strings, retains the full int damage amount, defaults omitted interval/leakiness to 32/0, and clamps an explicitly provided interval to at least one before native short assignment. Leakiness retains native short assignment.
+- Audited ACSF_SetSectorDamage in src/playsim/p_acs.cpp and sector_t field widths in src/gamedata/r_defs.h: damageamount is int while damageinterval/leakydamage are short. The native call falls through to a zero result rather than reporting an affected-sector count.
+- Updated the existing ACS call test, whose numeric damage type and count expectation reflected the old incorrect shared policy. The line-special implementation and its numeric damage-type/default/narrowing regression cases remain unchanged.
+- Added nine regression cases for module/pooled custom types, fixed defaults across damage magnitudes, full-width amount retention, interval clamp/short conversion, leakage narrowing, tagged-sector isolation, stack/result semantics, gameplay and exact save replay.
+- Validation: Release solution build passes with zero warnings/errors; all 19,141 tests pass; whitespace validation passes. The new gameplay fixture was corrected to use bounded sector geometry before final validation.
+- Remaining: unrepresented sector hazard/water/3D-floor behaviors and general library-string dispatch remain outside this increment. This closes the ACS-call-versus-line-special policy mismatch without asserting full sector-system parity.
+
+## 2026-10-15 - ACS native damage amount independent of health loss
+
+- Added an internal ApplyWithNativeResult damage entry point that exposes the nonnegative post-armor damage amount separately from the existing DamageResult.HealthLost contract. Public ActorDamage.Apply continues through the same implementation and keeps existing result/equality behavior.
+- ACS DamageActor now returns that native amount instead of deriving it from final health. Buddha survival clamps and post-damage Strife automatic healing no longer alter the script result. Absorbed/cancelled hits return zero.
+- Audited DamageMobj/DoDamageMobj in src/playsim/p_interaction.cpp: after armor, the damage variable is returned independently of restored health, and DoDamageMobj clamps negative cancellation to zero before exposing P_DamageMobj's result. No actor health, reaction or damage-event ordering was changed by the new output.
+- Added eight regression cases covering player/monster Buddha, zero/partial/full armor, post-hit auto-healing, shared HealthLost compatibility, and invulnerability.
+- Validation: Release solution build passes with zero warnings/errors; all 19,132 tests pass; whitespace validation passes.
+- Remaining: unrepresented native damage hooks/event handlers, voodoo-doll policies, and unsupported pointer/class behaviors remain outside this conversion. The prior HealthLost-based ACS return limitation is closed for the represented damage paths; no full native damage-system parity is claimed.
+
+## 2026-10-15 - ACS DamageActor pointer and attribution conversion
+
+- Converted both ACS DamageActor pointer selector arguments using the existing AcsActorPointer.Resolve path after TID/activator resolution. Explicit null selectors are respected; target/master/tracer selection is no longer discarded.
+- Resolved inflictors now supply both damage source and inflictor, matching the native wrapper. Missing inflictors remain null instead of falling back to the script activator. Source damage modifiers and attribution therefore follow the selected actor.
+- Converted damage-type name lookup to AcsStringIds.Lookup for module and pooled strings. Ordinary call results now report nonnegative health damage instead of a boolean.
+- Audited ACSF_DamageActor in src/playsim/p_acs.cpp: COPY_AAPTREX resolves both pointer arguments, LookupString resolves the damage name, and P_DamageMobj receives inflictor as both source and inflictor and returns its numeric result.
+- Added seven regression cases covering target/master/tracer selectors, selected-source damage multiplier and attribution, missing inflictor behavior, explicit null targets, pooled drowning protection, numeric results, and stack-prefix preservation.
+- Validation: Release solution build passes with zero warnings/errors; all 19,124 tests pass; whitespace validation passes. Initial new-test fixture health assumptions were corrected to the catalog Zombieman default of 20.
+- Remaining: exact P_DamageMobj return parity for negative cancellation, survival clamps/Buddha, auto-health interactions and other special damage paths requires extending the shared DamageResult contract. Current ACS results use HealthLost; ordinary damage and tested absorption paths match. Pointer selectors remain limited to the existing managed pointer resolver.
+
+## 2026-10-15 - ACS CheckClass supported registry and pooled names
+
+- Converted CheckClass recognition for represented DoomPlayer, catalog pickups (including RadSuit), managed powers (including PowerIronFeet/PowerMask), and supported Strife/Raven health classes. Previously only monster spawn names were recognized.
+- Routed CheckClass name lookup through AcsStringIds.Lookup so pooled dynamic names and module names both work. Reused existing pickup-name maps and the actor inventory managed-power predicate instead of introducing a second power-name registry.
+- Audited ACSF_CheckClass in src/playsim/p_acs.cpp: native lookup resolves the ACS string then calls PClass::FindActor. Existence is independent of active map actors and concrete actor checks. The managed implementation remains a supported registry subset.
+- Added 16 regression cases covering twelve represented class names with module/pooled and case-insensitive forms, stack-prefix preservation, empty/None/custom names, and invalid pool indices.
+- Validation: Release solution build passes with zero warnings/errors; all 19,117 tests pass; whitespace validation passes.
+- Remaining: complete built-in class registration, native base-class enumeration, custom/replacement class loading, and loaded-library string dispatch remain incomplete. Returning false for unknown classes reflects the current managed registry, not complete native class availability.
+
+## 2026-10-15 - Pooled ACS strings in CheckActorClass
+
+- Converted CheckActorClass class-name lookup to the shared AcsStringIds.Lookup path, passing the current global string pool through the call dispatcher. Both module strings and pooled dynamic strings now work; GetActorClass output can be passed directly to CheckActorClass.
+- Audited src/playsim/p_acs.cpp: ACSF_CheckActorClass resolves the argument through Level->Behaviors.LookupString, while ACSF_GetActorClass allocates its result in GlobalACSStrings. Restricting the check to module-table indices broke that native composition.
+- Reused the existing concrete-class resolver, case-insensitive equality, invalid-string handling, and stack argument consumption. No archive change is needed.
+- Added nine regression cases covering getter-to-check round trips for players/monsters/pickups, case-insensitive pooled names, mismatches and empty strings, preservation of unrelated stack values, and invalid module/global string IDs.
+- Validation: Release solution build passes with zero warnings/errors; all 19,101 tests pass; whitespace validation passes.
+- Remaining: loaded-library string-table dispatch beyond the existing AcsStringIds implementation, arbitrary runtime class loading/replacements, and complete game-specific actor catalogs remain unconverted. This closes the module-versus-global-pool mismatch for the represented class-check call.
+
+## 2026-10-15 - ACS concrete class consistency and retained identity
+
+- Corrected CheckActorClass for represented player pawns: DoomPlayer now matches, while PlayerPawn and Actor remain nonmatching base-class names. Previously GetActorClass reported DoomPlayer but CheckActorClass consulted only the catalog and returned false.
+- Unified CheckActorClass with the existing ClassNameOf resolver used by GetActorClass. Recognized monster/pickup class queries now use Actor.ClassDoomEdNum, preserving DefinitionDoomEdNum when an editor number is remapped, consistently with existing species/master-class handling. Unknown/missing actors still cannot match None.
+- Audited ACSF_CheckActorClass/GetActorClass in src/playsim/p_acs.cpp: both consult the actor's concrete GetClass, independent of map editor-number aliases. Exact class equality does not imply ancestry.
+- Added nine regression cases covering player concrete/case-insensitive/base-class queries, retained monster/pickup identities, Spectre versus Demon exactness, getter/checker consistency, and missing/unknown actors. Remap cases exercise the retained-definition representation directly rather than claiming a complete class replacement loader.
+- Validation: Release solution build passes with zero warnings/errors; all 19,092 tests pass; whitespace validation passes.
+- Remaining: arbitrary runtime classes/replacements, native dynamic class loading, complete player-class identity and game-specific actor catalogs remain outside this represented-class conversion. Existing players still report the managed DoomPlayer class.
+
+## 2026-10-15 - Game-specific health pickup ACS class queries
+
+- Extended the shared pickup class resolver and ACS GetActorClass / CheckActorClass paths to the represented Strife and Raven health pickups. Strife health mode reports MedPatch, MedicalKit, and SurgeryKit for the managed health mappings; Raven health mode reports ArtiHealth and ArtiSuperHealth.
+- Audited the native class names in wadsrc/static/zscript/actors/strife/strifeitems.zs and actors/raven/ravenartifacts.zs, together with the already-audited p_acs.cpp concrete-class query behavior. The resolver follows the existing managed pickup mode/mapping rather than assuming Doom class names for reused editor numbers.
+- Preserved game-mode collision guards: SuperShotgun does not match Raven ArtiHealth, Doom health names do not match Strife health pickups, and unconverted foreign-game pickups are not assigned Doom class names by fallback.
+- Added seven regression cases covering all five represented health classes via TID and activator queries, case-insensitive equality, incorrect-name rejection, shared drop lookup consistency, and unsupported game-mode mappings.
+- Validation: Release solution build passes with zero warnings/errors; all 19,083 tests pass; whitespace validation passes.
+- Remaining: full Strife/Raven class catalogs, arbitrary runtime class identity and replacements, native class-definition parsing, and unrepresented game-specific items remain outside this increment. This uses the port's existing Strife/Raven health pickup modes rather than adding complete game identification.
+
+## 2026-10-15 - ACS class queries for represented Doom pickups
+
+- Converted ACS GetActorClass and CheckActorClass pickup recognition for catalog Doom pickups, including RadSuit. Previously the query path consulted only the monster catalog, returning None or false for these pickup actors.
+- Replaced the existing Doom pickup drop-name switch with one case-insensitive class-name mapping reused for forward editor-number lookup and reverse canonical class names. Existing game-specific health mappings/rejections remain before the shared lookup.
+- Audited ACSF_CheckActorClass and ACSF_GetActorClass in src/playsim/p_acs.cpp: the native calls resolve a single TID/activator and compare/report its concrete class name. Managed pickup checks use exact class names, case-insensitively, without treating base classes as exact matches.
+- Added six regression cases covering RadSuit, Berserk, ammo, weapon, armor and key actors via TID reporting and activator checks, case-insensitive names, mismatches, stack consumption, and consistency with drop-name mapping.
+- Validation: Release solution build passes with zero warnings/errors; all 19,076 tests pass; whitespace validation passes.
+- Remaining: these new query mappings are scoped to Doom pickup mode, leaving Strife/Raven editor-number collisions unchanged. General runtime class identity, replacement/Dehacked identity, custom subclasses, and full class VM support are not implemented by this increment.
+
+## 2026-10-15 - Dynamic RadSuit spawn-state parity
+
+- Closed a missed RadSuit conversion path: CreateDroppedPickupActor now installs the native bright spawn state for editor-number 2025, matching RadSuit's SUIT A -1 Bright definition in wadsrc/static/zscript/actors/doom/doomartifacts.zs. Ordinary dropped ammo remains unlit.
+- The same constructor rebuilds saved dynamic pickups, so restored suits retain their class spawn brightness while the existing FullBright override archive can still preserve an explicitly dimmed actor. Native height 46 and suit pickup effects continue through shared catalog paths.
+- Added five regression cases covering dynamic brightness/state ticking and geometry, ordinary ammo control, fresh-simulation save reconstruction with default/overridden brightness, byte-exact archives, and collection of a dropped suit.
+- Validation: Release solution build passes with zero warnings/errors; final full suite passes all 19,070 tests; whitespace validation passes. An initial full run failed the existing HCDE.Net.Core.Tests.CrossLanguageSoakEvidenceTests.TryWrite_WritesJsonWhenConfigured test; its isolated rerun and the repeated full suite both passed. No network-test changes were made.
+- Remaining: screen blend, underwater/air-supply behavior, PowerMask hub transfer, pickup localization, and general class-definition/VM support remain outside this increment. This change closes the previously documented dynamic RadSuit spawn-presentation gap.
+
+## 2026-10-15 - Doom RadSuit map pickup and giver integration
+
+- Converted Doom editor-number 2025 RadSuit into the pickup catalog, map contact path, named class/drop mapping, ACS grants, and actor inventory grants. The native pickup grants PowerIronFeet, has height 46, a bright spawn state, and the inherited powerup pickup sound misc/p_pkup.
+- Audited RadSuit in wadsrc/static/zscript/actors/doom/doomartifacts.zs and PowerupGiver.Use / Powerup.HandlePickup in inventory/powerups.zs. RadSuit AUTOACTIVATE and ALWAYSPICKUP consume the giver; the giver transfers AlwaysPickup to the new power, so collecting another suit refreshes to at least 2100 tics even above the blink threshold, while preserving a longer existing duration. Direct PowerIronFeet grants retain their existing merge rules.
+- Reused map pickup identity and timer save support; save/reload can replay the map collection exactly. Dead/destroyed players cannot receive the giver effect.
+- Added seven regression cases covering map height/brightness/contact/sound, duplicate pickups at multiple durations, ACS/actor class grants, class mapping, saved pickup replay, and dead-player rejection.
+- Validation: Release solution build passes with zero warnings/errors; all 19,065 tests pass; whitespace validation passes.
+- Remaining: pickup message/tag localization, screen blend, air supply/underwater behavior, general PowerupGiver class parsing, custom power configuration and subclass replacement remain outside this increment. Runtime-dropped spawn-state presentation beyond the existing drop path is not extended here.
+
+## 2026-10-15 - PowerMask breathing sound requests
+
+- Converted PowerMask's periodic misc/mask sound through ActorSoundActions.StartSound using native CHAN_AUTO (0), default volume/attenuation, and the level-clock mask of 0x3f. A surviving active mask emits at tics divisible by 64, independent of the acquisition time.
+- Audited PowerMask.DoEffect in wadsrc/static/zscript/actors/inventory/powerups.zs, native owner inventory effects in src/playsim/p_mobj.cpp, and CHAN_AUTO in src/common/audio/sound/s_soundinternal.h. Managed effects use the existing player timer tick convention; masks expiring during that tick do not emit.
+- Reused the existing sound request path and saved level clock/timer. No new countdown, random stream, or archive version is needed. Radiation suits without a mask remain silent.
+- Added five regression cases checking cadence, actor/channel/volume/attenuation, absent/expiring masks, ordinary suit silence, and saved continuation without cadence restart.
+- Validation: Release solution build passes with zero warnings/errors; all 19,058 tests pass; whitespace validation passes.
+- Remaining: client asset resolution/playback is supplied by the existing sound pipeline, not verified by these simulation tests. Native inventory thinker ordering on the expiration tic is not fully modeled. HUBPOWER transfer semantics, air-supply reset/underwater simulation, icon presentation, and general class/inventory VM behavior remain unconverted.
+
+## 2026-10-15 - PowerMask damage protection and inherited sector behavior
+
+- Converted the represented player PowerMask with its native 80-second timer, shared duration merging, managed powerup and inventory grants/count/removal, actor inventory handling, expiration, and death clearing.
+- Audited PowerMask : PowerIronFeet in wadsrc/static/zscript/actors/inventory/powerups.zs. Its AbsorbDamage cancels Fire and Drowning at the inventory boundary; forced, armor-bypassing and ordinary telefrag policy follows the existing native-audited suit boundary. Fire matching is damage-type based, not generic environmental immunity.
+- Added shared active IronFeet protection and effective sector-mode selection: a mask provides inherited normal protection; a simultaneous active Full suit wins without consuming leakage randomness; a None-mode suit does not suppress a mask's normal protection. Terrain protection accepts either active represented power.
+- Added optional timer save extension 299, capture/restore, legacy reset, pre-mutation nonnegative/geometry validation, and conditional checksum tracking.
+- Added 13 regression cases covering damage types/flags, inherited terrain and leaky sector behavior, combined powers, inventory independence, expiration/death, save/checksum restoration, and invalid timers.
+- Validation: Release solution build passes with zero warnings/errors; all 19,053 tests pass; whitespace validation passes.
+- Remaining: PowerMask breathing audio, HUBPOWER transfer semantics/icon presentation, air-supply reset/underwater simulation, class-definition parsing and custom subclass modes, non-player powers, and arbitrary native inventory absorption order remain outside this conversion. The mask currently uses its native default Normal sector mode.
+
+## 2026-10-15 - Radiation-suit sector protection modes
+
+- Converted the represented player suit's sector protection modes via IronFeetMode and PlayerPawn.PowerIronFeetMode. Normal preserves the leakage draw; Full blocks all positive sector damage without a draw; None represents native modes other than Normal/Full and provides no sector immunity. Inactive suits provide no protection regardless of configured mode.
+- Audited P_ActorInSpecialSector in src/playsim/p_spec.cpp: native inventory mode scanning produces protection levels zero/one/two, and Full short-circuits before the leakage random call. ENDGODMODE still executes before protection. Terrain protection and PowerIronFeet drowning absorption depend on suit presence rather than mode and remain unchanged.
+- Added optional save extension 298, mode range/geometry validation before mutation, capture/restore, conditional checksum tracking, and default Normal restoration for older saves. Default mode omits the extension.
+- Added 15 regression cases covering all mode/leak combinations, terrain/drowning independence, god-mode ordering, inactive suits, checksum/save round trips, malformed binary/structured modes, and missing geometry.
+- Validation: Release solution build passes with zero warnings/errors; all 19,040 tests pass; whitespace validation passes.
+- Remaining: native class-definition Mode parsing and arbitrary mode-name preservation, simultaneous inventory subclass priority, PowerMask, air supply/underwater simulation, visual blend, non-player powers, and general inventory lifecycle/order remain outside this managed player-mode conversion. Mode is configured through the managed player property; this does not implement the ZScript class loader.
+
+## 2026-10-15 - PowerIronFeet drowning absorption
+
+- Converted active managed player PowerIronFeet absorption of positive Drowning damage at the inventory-absorption boundary. This is separate from BasicArmor's damage-type IgnoreArmor check, so built-in armor-ignoring drowning is still absorbed by the suit.
+- Audited PowerIronFeet.AbsorbDamage in wadsrc/static/zscript/actors/inventory/powerups.zs, BasicArmor.AbsorbDamage in armor.zs, and the player inventory call in src/playsim/p_interaction.cpp. Forced damage and DMG_NO_ARMOR skip inventory absorption; DMG_NO_PROTECT only skips passive damage modifiers. Ordinary telefrag damage ignores the absorbed result; LaxTelefragDamage accepts it.
+- Fully absorbed hits return before health loss, damage flash, source tracking, emergency healing, and pain reactions. The existing timer save extension supplies restored suit ownership without a format change.
+- Added 14 regression cases covering case-insensitive damage names, armor/feedback preservation, damage flags, other damage types, piercing inflictors, telefrag policy, removal, and save restoration.
+- Validation: Release solution build passes with zero warnings/errors; all 19,025 tests pass; whitespace validation passes.
+- Remaining: underwater contact/air-supply simulation and ResetAirSupply, full protection modes, PowerMask/subclasses, visual blend, non-player power inventory, and general inventory absorption ordering remain unconverted. Custom redefinitions allowing BasicArmor to absorb Drowning cannot reproduce arbitrary native inventory-list order with the current flattened inventory model.
+
+## 2026-10-15 - Normal radiation-suit sector protection and leakage
+
+- Converted the normal PowerIronFeet protection gate in flat-sector positive damage. Active managed player suits block damage unless the native random byte is strictly less than sector leakiness; absent suits do not draw. Negative/healing sectors and rejected contact do not draw.
+- Audited P_ActorInSpecialSector in src/playsim/p_spec.cpp: ordinary god mode is cleared before the protection gate; the normal-mode random draw precedes the damage interval and god-mode damage exclusion, including zero-leak and off-interval ticks. The managed path preserves that order and gates ENDLEVEL damage exits with the same protection result.
+- Added the independently seeded ActorInSpecialSector native random stream (name CRC32 0x953d8868), optional save extension 297, pre-mutation geometry validation, old-save reset, and conditional checksum tracking. A saved zero random state remains present.
+- Added 21 regression cases covering named-stream sequences, malformed archives, missing geometry, legacy restoration, zero state, leak bounds/equality, unprotected damage, interval/god-mode ordering, healing/contact exclusions, and byte-exact saved damage continuation.
+- Validation: Release solution build passes with zero warnings/errors; all 19,011 tests pass; whitespace validation passes.
+- Remaining: full/other protection modes and subclass inventory, PowerMask, drowning absorption and air-supply effects, hazard accumulation, splash feedback, water/3D-floor contact, and native sector EXIT1/EXIT2 behavior remain outside this increment. Existing periodic terrain protection remains supported; complete radiation-suit parity is not claimed.
+
+## 2026-10-15 - PowerIronFeet timer and periodic terrain protection
+
+- Converted the player PowerIronFeet timer with its native 60-second default, shared duration merging, tick expiration, death clearing, managed powerup grants, inventory grant/count/take/drop restrictions, and actor inventory integration.
+- Added SetPlayerProperty radiation-suit property 8 through the existing shared action dispatcher, including local/all-player selection and removal.
+- Periodic flat-floor terrain damage now skips players with active PowerIronFeet only when AllowProtection is enabled. Native P_ActorOnSpecialFlat in src/playsim/p_spec.cpp checks inventory after the periodic interval gate; the managed gate follows that order. Landing damage intentionally remains independent.
+- Added optional save extension 296, timer validation before write/restore, capture/restore, legacy reset, and conditional checksum tracking.
+- Twelve regression cases cover the protection matrix, landing damage, inventory lifecycle/death, action values, expiration, old/new saves and checksum restoration, and negative timer rejection.
+- Validation: Release solution build passes with zero warnings/errors; all 18,990 tests pass; whitespace validation passes.
+- Remaining: sector damage protection/leak random stream, drowning absorption and air-supply effects, visual blend, PowerMask/class inheritance, full protection modes, and non-player power inventory are not represented by this increment. This is periodic terrain protection parity for the managed player subset, not complete radiation-suit parity.
+
+## 2026-10-15 - Native terrain AllowProtection metadata
+
+- Converted TERRAIN allowprotection into LevelTerrainDefinition.AllowProtection, with the native false default and unary, case-insensitive parsing. Modify retains the flag; a replacement definition resets it. The immutable metadata survives CopyForSimulation.
+- Audited src/gamedata/p_terrain.cpp: MakeDefaultTerrain zero-initializes the flag, TerrainParser maps allowprotection to GEN_Bool, and GEN_Bool sets true without consuming a value.
+- Added a conditional simulation checksum contribution when enabled, preserving existing checksums for default definitions.
+- Added eight regression cases covering syntax, defaults, replacement, cross-lump modification, copying, invalid boolean arguments, and checksum separation.
+- Validation: Release solution build passes with zero warnings/errors; all 18,978 tests pass; diff whitespace check passes.
+- Remaining: PowerIronFeet inventory, timers, drowning absorption, sector leak random stream, and periodic terrain protection behavior are not converted by this metadata increment. Landing damage remains independent of this flag, matching the audited native branch. No claim of radiation-suit gameplay parity.
+
+## 2026-10-15 - Native healing-sector GiveBody behavior
+
+Converted negative periodic sector damage to the existing Actor.GiveBody helper with explicit maximum 100, audited against src/playsim/p_spec.cpp P_ActorInSpecialSector and src/playsim/p_mobj.cpp P_GiveBody. The previous direct health increment skipped native player skill health scaling, minimum-one healing and real pickup-health maximum resolution.
+
+Players now receive the same HealthFactor, BonusHealth and MaxPickupHealth behavior as other represented GiveBody calls. An explicit 100 limit does not use the player's ordinary MaxHealth/Stamina as its base. Nonplayers continue ignoring that explicit parameter and use spawn/resurrection health, without player health-factor scaling. Existing sector contact/interval/eligibility gates remain in place; existing state archives cover all affected fields.
+
+Twelve regression cases cover four skill health factors including zero, explicit maximum versus player health upgrades and pickup overrides, monster healing/capping/overhealth, and byte-identical saved scaled-healing replay. Release solution rebuild with warnings as errors passes with zero warnings/errors. All 18,970 tests pass; whitespace audit passes.
+
+Limits: player proxy ownership, protection-item leakage, hazard accumulation, water/3D-floor contact and terrain sound effects remain incomplete. No live native differential validation was performed. Changes remain local and uncommitted after ba92aa50.
+
+## 2026-10-15 - Sector-specific god-mode damage guard
+
+Converted the explicit player god-mode guard in periodic sector damage, audited against src/playsim/p_spec.cpp P_ActorInSpecialSector. Native code checks CF_GODMODE/CF_GODMODE2 before calling P_DamageMobj. Relying only on general ActorDamage protection was incorrect for ordinary god mode because the generic path permits telefrag-sized damage. Periodic sector damage now skips both god modes regardless of damage amount.
+
+Preserved native side-effect ordering: ENDGODMODE clears only ordinary GodMode before the damage interval gate; ENDLEVEL evaluation remains outside the damage guard, and healing remains unaffected. Source audit confirmed ordinary noclip/noclip2 do not independently grant immunity to represented contact sector damage. No new state or save format is needed.
+
+Twelve regression cases cover both god modes across ordinary and telefrag-sized amounts, ENDGODMODE with/without GodMode2, damage while noclip/noclip2 are active, healing and exit behavior under god mode, and byte-identical saved sector interaction. Release solution rebuild with warnings as errors passes with zero warnings/errors. All 18,958 tests pass; whitespace audit passes.
+
+Limits: protection inventory/leakiness, hazard accumulation, water/3D-floor contact, native sector-exit flags and terrain sound effects remain incomplete. This guard applies to periodic sector damage, not all damage sources. No live native differential validation was performed. Changes remain local and uncommitted after ba92aa50.
+
+## 2026-10-15 - Noclip conveyor and terrain-friction exclusions
+
+Converted two missing native noclip exclusions, audited against src/playsim/p_mobj.cpp AActor::Tick carrying-sector gate and src/playsim/p_map.cpp P_GetFriction. ApplySectorScroll now skips noclip movers. The final grounded velocity decay now ignores terrain friction under noclip, matching the earlier input-thrust friction helper. Actor friction multipliers still apply to the resulting default friction. Ordinary actors continue receiving terrain friction and conveyor carry.
+
+The save/replay audit exposed a separate omission: a player with nonzero horizontal velocity but explicit zero bob could omit the weapon-bob snapshot. Restore then recalculated bob from velocity and changed state. Capture now includes the existing weapon/bob archive fields when horizontal velocity is nonzero, preserving explicit zero bob instead of relying on that older-save fallback. Existing archive codecs carry this state without a new version; stationary canonical defaults remain omittable.
+
+Thirteen regression cases cover ordinary/noclip player and monster conveyor behavior, muddy/icy friction with and without actor friction multipliers, agreement between movement-factor friction and actual velocity decay, and byte-identical saved conveyor/friction continuation with zero bob. Release solution rebuild with warnings as errors passes with zero warnings/errors. All 18,946 tests pass; whitespace audit passes.
+
+Limits: underwater conveyor rules, native scroll-thinker ordering, every legacy save's omitted visual state, slopes/portals/3D floors and the complete native mover/crusher graph remain incomplete. Older saves that already omitted bob cannot recover the original explicit value. No live native differential validation was performed. Changes remain local and uncommitted after ba92aa50.
+
+## 2026-10-15 - Noclip carrier movement and transmitted crush guards
+
+Converted the noclip carrier early-return rule in the represented rider movement/crush helpers, audited against src/playsim/p_map.cpp P_FindAboveIntersectors and P_FindBelowIntersectors. Those native scans return immediately when the moving actor has MF_NOCLIP. CarryStandingRiders and CrushStandingRiders now skip a noclip carrier, preventing horizontal/vertical rider transport and transmitted crush damage from that helper path.
+
+Kept ordinary IsStandingOn support geometry independent of the carrier movement policy: a solid actor's noclip flag is not treated as nonsolidity for another actor's stationary contact query. This avoids globally removing support relationships to implement an early return that belongs to the moving-carrier scans. Existing NoClip archives preserve the guard state without a new save layer.
+
+Nine regression cases cover ordinary/noclip horizontal and vertical carry, ordinary/noclip transmitted crush, unchanged support relation geometry and byte-identical saved carry/crush suppression. Release solution rebuild with warnings as errors passes with zero warnings/errors. All 18,933 tests pass; whitespace audit passes.
+
+Limits: this converts the carrier helper path, not the complete native ChangeSector intersector graph, mover rollback, direct sector pinch/crush eligibility or every noclip-rider interaction. Slopes, portals and 3D floors remain incomplete. No live native differential validation was performed. Changes remain local and uncommitted after ba92aa50.
+
+## 2026-10-15 - Noclip2 stop-flight gravity and native vertical drag
+
+Corrected the previous noclip2 conversion's blanket vertical-drag/gravity exclusions. Audited wadsrc/static/zscript/actors/player/player.zs CheckMoveUpDown and src/playsim/p_mobj.cpp P_ZMovement: noclip2 skips flying bob, but its player vertical velocity still receives FRICTION_FLY while no-gravity is active, unless NOFRICTION is set. Horizontal ground friction remains separate. Updated the prior noclip2 regression expectation to this native vertical-drag rule.
+
+Stop-flight input (-32768) clears NoGravity for that tick even in noclip2. Gravity now follows the resulting NoGravity flag, allowing that tick's acceleration. The next player tick restores noclip2 no-gravity, after which vertical flight drag applies. Frozen input still masks the command before movement. Also applied the native NOFRICTION exemption to ordinary player flight vertical drag, using the shared path.
+
+Eight new regression cases cover ordinary/noclip2 flight with/without NOFRICTION, stop-flight gravity and next-tick drag with/without Fly, frozen command masking and byte-identical saved stop-flight continuation. Release solution rebuild with warnings as errors passes with zero warnings/errors. All 18,924 tests pass; whitespace audit passes. Existing physics/player archives preserve the changes without a save extension.
+
+Limits: water/submersion, native flight bob amplitudes, all player cheat synchronization and the complete input/weapon lifecycle remain incomplete. No live native differential validation was performed. Changes remain local and uncommitted after ba92aa50.
+
+## 2026-10-15 - Noclip2 player property and flat-world controls
+
+Converted SetPlayerProperty PROP_NOCLIP2 (20), audited against src/playsim/p_lnspec.cpp and wadsrc/static/zscript/actors/player/player.zs CheckCheats, movement and bob handling. The property enables/disables both ordinary noclip and noclip2. Active noclip2 enforces no gravity, permits up/down input without the Fly flag, uses ground friction rather than falling/flying friction, treats the player as grounded for controls and suppresses movement/view/weapon bob. Clearing ordinary noclip removes the dependent mode on the next player tick. Disabling noclip2 retains no gravity when Fly remains enabled.
+
+The source audit corrected a prior assumption about vertical bypass: src/playsim/p_map.cpp P_CheckPosition selects LowestFloorAt/HighestCeilingAt for noclip2, and src/playsim/p_sectors.cpp retains base sector boundaries in the flat case. The implementation therefore keeps base floor/ceiling clipping. Native 3D-floor bypass is not claimed because that geometry is not represented.
+
+Added optional version-295 per-actor player-mode trailer, early boolean/geometry validation, capture/restore and conditional checksum mixing. Existing ordinary noclip, no-gravity and player movement archives are reused. Older saves clear the new mode.
+
+Fourteen regression cases cover zero/positive/negative property values, vertical input in both directions without Fly, retained base-plane clipping, default friction and zero bob with/without Fly, ordinary-noclip dependency cleanup, preserving flight gravity policy, byte-identical saved flight input replay and older-save reset, and invalid structured modes. Release solution rebuild with warnings as errors passes with zero warnings/errors. All 18,916 tests pass; whitespace audit passes.
+
+Limits: full native cheat-bit-to-actor synchronization, every stop-flight/water/crouch interaction, drowning rules, proxy-player ownership, intermediate 3D floors and portals remain incomplete. The new mode is a C# player property/action surface rather than general console cheat support. No live native differential validation was performed. Changes remain local and uncommitted after ba92aa50.
+
+## 2026-10-15 - Projectile noclip collision and plane behavior
+
+Converted the represented ProjectileActor noclip path, audited against src/playsim/p_map.cpp P_CheckPosition's non-skullfly NOCLIP early return and src/playsim/p_mobj.cpp floor/ceiling missile branches guarded by !MF_NOCLIP. Noclip missiles now skip wall and actor collision scans, including hit callbacks, rip contact damage and push transfer. Existing lifetime advancement, steering and velocity updates remain active.
+
+Noclip does not imply noclip2: missiles still clip to the floor or ceiling and stop outward vertical velocity, but do not enter missile plane-impact/explosion handling. Ordinary missiles retain their existing impact path. Existing version-294 NoClip persistence and projectile archives cover the change without a new save layer.
+
+Ten regression cases cover ordinary versus noclip wall/actor passage and damage RNG, floor/ceiling clipping without explosion, skipped rip callbacks/damage/push with lifetime advancement, and byte-identical saved actor-passage replay. Release solution rebuild with warnings as errors passes with zero warnings/errors. All 18,902 tests pass; whitespace audit passes.
+
+Limits: native sector-hit actions, full bounce/splash/Ice landing combinations, portals/3D floors and every dynamic collision callback combination remain outside the represented path. Native cheat-to-actor flag synchronization and noclip2 vertical bypass remain incomplete. No live native differential validation was performed. Changes remain local and uncommitted after ba92aa50.
+
+## 2026-10-15 - Noclip skull-charge collision ordering
+
+Converted the represented noclip charging exception, audited against src/playsim/p_map.cpp P_CheckPosition's early return for NOCLIP without SKULLFLY, subsequent actor scan and NOCLIP return before line checks. Charging noclip actors now retain actor contact/slam handling while bypassing walls and movement height/dropoff restrictions. Non-charging noclip keeps its earlier full horizontal bypass. Ordinary floor/ceiling Z movement is unchanged.
+
+Corrected occupancy/position probes to retain actor blockers during a charge while ignoring line blockers. Shared TryMove also skips flying ceiling and destination projectile-floor restrictions for noclip and does not apply CANTLEAVEFLOORPIC to that path. Existing NoClip/charge/RNG archives preserve the change without a save extension.
+
+Seven regression cases cover wall-blocked ordinary charges versus noclip charges that still slam and consume damage RNG, charging versus ordinary noclip position probes, destination-height rejection versus noclip acceptance and byte-identical saved wall-passage/slam continuation. Release solution rebuild with warnings as errors passes with zero warnings/errors. All 18,892 tests pass; whitespace audit passes.
+
+Limits: generic actor contact/probe semantics still use the represented cylinder model; non-solid charging and every native collision callback combination are not exhaustively modeled. Projectile-specific noclip, mover/crusher interactions, native cheat-to-actor flag synchronization, portals/mirrors/3D floors and noclip2 remain incomplete. No live native differential validation was performed. Changes remain local and uncommitted after ba92aa50.
+
+## 2026-10-15 - Ordinary noclip flat-world movement and property conversion
+
+Converted ordinary NOCLIP actor state and SetPlayerProperty PROP_NOCLIP (19), audited against src/playsim/p_lnspec.cpp, src/playsim/p_map.cpp P_CheckPosition/P_TryMove and the native actor flag table. The represented non-charging flat-world movement path bypasses horizontal wall/actor checks and movement height/dropoff rejection while updating XY, sector and floor clipping. Position/occupancy and vertical actor-blocker probes bypass collision for noclip actors. Ordinary floor and ceiling Z clipping remains active, distinguishing this from noclip2. Terrain friction selection excludes noclip as in the native friction gate.
+
+Crossing-triggered map actions now skip noclip movers, matching native special-line crossing suppression; use actions retain their existing path. Added case-insensitive bare/Actor-prefixed NOCLIP access and resurrection reset to the represented Doom default. Added optional version-294 boolean archive with early value/geometry validation, capture/restore and conditional checksum mixing. Older saves clear noclip.
+
+Thirteen regression cases cover one-sided wall passage, actor passage and position/Z probes, retained floor/ceiling clipping, crossing-special suppression versus ordinary activation, property/flag sharing, byte-identical saved movement replay and older-save clearing, invalid structured saves and resurrection reset. Release solution rebuild with warnings as errors passes with zero warnings/errors. All 18,885 tests pass; whitespace audit passes.
+
+Limits: this is the ordinary represented player/generic-actor flat-world path. Projectile-specific collision, charging/skull-fly edge cases, native player-cheat versus actor-flag synchronization, mover/crusher interactions, portals, mirrors, 3D floors and noclip2 vertical bypass still require separate conversion/audit. Remaining power-grant properties are unsupported. No live native differential validation was performed. Changes remain local and uncommitted after ba92aa50.
+
+## 2026-10-15 - Fly-cheat actor flag integration and resurrection defaults
+
+Converted FLYCHEAT access through the shared ACS CheckActorFlag/ModActorFlag implementation, audited against src/scripting/thingdef_data.cpp DEFINE_FLAG(MF7, FLYCHEAT, AActor, flags7). Bare and Actor-prefixed names support case-insensitive query/set/clear. The marker remains independent of Fly and NoGravity: changing the actor flag alone does not perform a flight toggle. SetPlayerProperty still performs its separately converted marker/flight updates.
+
+Added FlyCheat reset during successful represented resurrection, audited against src/playsim/p_mobj.cpp AActor::Revive restoring flags7 from class defaults. Both Thing_Raise and Archvile paths share the reset. Failed fit checks retain the original marker. Existing version-292 archives preserve scripted marker mutations without a new save layer.
+
+Eleven regression cases cover native flag aliases, independence from movement flags, property/flag state sharing, byte-identical marker restoration, successful/blocked resurrection through both paths and malformed archive marker rejection. Release solution rebuild with warnings as errors passes with zero warnings/errors. All 18,872 tests pass; whitespace audit passes.
+
+Limits: reset uses the represented Doom class default of false; arbitrary scripted class defaults are not modeled. Renderer-specific FLYCHEAT uses, general cheat console/network commands, noclip and remaining power properties remain incomplete. No live native differential validation was performed. Changes remain local and uncommitted after ba92aa50.
+
+## 2026-10-15 - Linked frozen-property compatibility behavior
+
+Converted native BCOMPATF_LINKFROZENPROPS through CompatSurface.LinkFrozenProperties, audited against src/doomdef.h and src/playsim/p_lnspec.cpp LS_SetPlayerProperty. With this option, an all-player FROZEN or TOTALLYFROZEN action updates both flags. The native code links both enable and disable despite its comment describing clearing only; the implementation follows the code. Activator-only calls remain independent, and unrelated player properties do not alter either freeze flag.
+
+The option uses the existing simulation compatibility policy and all existing action dispatch paths. Existing version-293 freeze archives preserve the resulting actor state without a new save extension.
+
+Twenty-one regression cases cover the full matrix of compatibility enabled/disabled, both properties, local/all-player selection and enable/disable; both ACS instruction forms; both map formats with byte-identical saved flag restoration; and unrelated god-mode isolation. Release solution rebuild with warnings as errors passes with zero warnings/errors. All 18,861 tests pass; whitespace audit passes.
+
+Limits: the compatibility option is supplied through the existing C# simulation policy; native compatibility.txt hash-based option loading is not added. As with other compatibility settings, callers must supply the appropriate policy when recreating a simulation. Title-level/time-freeze masking, the full native input/weapon lifecycle, noclip and remaining power properties remain incomplete. No live native differential validation was performed. Changes remain local and uncommitted after ba92aa50.
+
+## 2026-10-15 - Frozen and totally-frozen player properties
+
+Converted SetPlayerProperty FROZEN (0) and TOTALLYFROZEN (4), audited against src/playsim/p_lnspec.cpp and wadsrc/static/zscript/actors/player/player.zs CheckFrozen. Added independent player flags. Frozen mode masks forward/side/up movement input while retaining look and buttons. Totally frozen retains only Use, clears look/movement/weapon-selection/button input and cancels queued 180-degree turning. Masking runs after JUSTATTACKED command substitution and before command processing; existing velocity is not cleared, and ordinary physics continues.
+
+Converted the direct ActorInventoryActions.UseInventory total-freeze rejection against player_inventory.zs. Preserved ACS use as an intentional bypass, matching src/playsim/p_acs.cpp DoUseInv temporarily clearing CF_TOTALLYFROZEN. Added optional version-293 freeze-bit archive, early range/geometry validation, capture/restore and conditional checksum mixing. Older saves clear both modes.
+
+Twelve regression cases cover property set/clear and player selection, frozen movement with retained look/use, totally-frozen input and turn suppression, momentum preservation in both modes, direct inventory rejection versus ACS bypass, all three saved flag combinations with byte-identical round trips and older-save clearing, and invalid structured modes. Release solution rebuild with warnings as errors passes with zero warnings/errors. All 18,840 tests pass; whitespace audit passes.
+
+Limits: BCOMPATF_LINKFROZENPROPS all-player linkage, title-level/time-freeze masking and a complete native player input/weapon lifecycle are not modeled. Existing dead-player respawn handling remains in place. Noclip and other power-grant player properties remain unsupported. No live native differential validation was performed. Changes remain local and uncommitted after ba92aa50.
+
+## 2026-10-15 - SetPlayerProperty fly action and marker persistence
+
+Converted PROP_FLY (3) in action 191, audited against src/playsim/p_lnspec.cpp LS_SetPlayerProperty. Nonzero values set Fly and NoGravity; zero clears both. Activator-only calls also set/clear the represented MF7_FLYCHEAT marker. The native all-player loop does not change that marker, and the conversion preserves this difference.
+
+Preserved the native action's unusual return contract: the fly case leaves mask zero and therefore returns false even after changing flight flags. Map lines consequently retain their special after this action; ACS continues after the handled false result. The existing map, ACS and actor-special dispatch paths all use this implementation.
+
+Added Actor.FlyCheat plus optional version-292 per-actor boolean trailer, capture/restore, early value/geometry validation and conditional checksum mixing. Existing Fly and NoGravity archive state is reused. Older saves clear the new marker. This marker does not introduce a second movement implementation; existing flight physics remains in use.
+
+Thirteen regression cases cover local zero/positive/negative values, all-player marker preservation on enable/disable, both map formats and retained line special, both ACS forms with script continuation, byte-identical save restoration and older-save clearing, invalid structured marker values and missing geometry. Release solution rebuild with warnings as errors passes with zero warnings/errors. All 18,828 tests pass; whitespace audit passes.
+
+Limits: a full native cheat console, flag/VM binding for FLYCHEAT and all native flight interactions remain incomplete. Frozen, totally-frozen, noclip and other power-grant properties remain unsupported. No live native differential validation was performed. Changes remain local and uncommitted after ba92aa50.
+
+## 2026-10-15 - SetPlayerProperty strength power grant and removal
+
+Converted PROP_STRENGTH (6) in action 191, audited against src/playsim/p_lnspec.cpp LS_SetPlayerProperty power lookup and grant/remove paths and wadsrc/static/zscript/actors/inventory/powerups.zs PowerStrength pickup refresh. Nonzero values grant or refresh PowerStrength; zero removes it. Reused AcsPlayerInventory.Give/Take instead of introducing a second power lifecycle implementation. Existing activator/all-player targeting and map/ACS/actor-special dispatch apply.
+
+The shared power implementation retains its upward-counting strength timer, repeat-grant red-flash reset, fist-only damage multiplier and blend removal. Existing strength save archives persist the result without a format extension.
+
+Eleven regression cases cover zero/positive/negative grant values, refresh/removal and inventory presence, local/all-player selection, both ACS forms with script continuation, both map formats, actual tenfold fist damage with matching punch RNG advancement, and byte-identical saved timer continuation followed by blend removal. Release solution rebuild with warnings as errors passes with zero warnings/errors. All 18,815 tests pass; whitespace audit passes.
+
+Limits: other power-grant properties, frozen/fly/noclip branches, general cheat command wiring, advanced geometry and full native state-action timing remain incomplete. No live native differential validation was performed. Changes remain local and uncommitted after ba92aa50.
+
+## 2026-10-15 - Six additional SetPlayerProperty branches and Buddha persistence
+
+Converted SetPlayerProperty branches INSTANTWEAPONSWITCH (2), BUDDHA (16), BUDDHA2 (17), FRIGHTENING (18), GODMODE (21) and GODMODE2 (22), audited against src/playsim/p_lnspec.cpp property enumeration and flag-setting branches. Each uses existing represented PlayerPawn/Actor gameplay state; zero clears and any nonzero value enables. The previous activator/all-player rules and map/ACS/actor-special dispatch apply to all six branches. Unsupported properties continue returning false without mutation.
+
+The persistence audit caught a pre-existing gap: Actor.Buddha was hashed and used by damage logic but never captured/restored. Added optional version-291 per-actor Buddha trailer with early boolean/geometry validation and actor capture/restore. This covers player and monster Buddha state; older saves clear the flag. Other converted branches reuse their existing save layers. No change to native-style damage thresholds or god/Buddha protection levels was required.
+
+Thirty-two new regression cases cover all six branches with zero/positive/negative values, local targeting and unrelated-property isolation, all-player set/clear and byte-identical save restoration, actual lethal-damage protection, player/monster Buddha older-save reset, invalid structured values and missing geometry. Release solution rebuild with warnings as errors passes with zero warnings/errors. All 18,804 tests pass; whitespace audit passes.
+
+Limits: frozen, totally frozen, fly, noclip and power-grant SetPlayerProperty branches remain unsupported. Buddha and frightening use the existing managed gameplay fields rather than a complete native player-cheat bitfield. General cheat console/network command handling and full native state-action timing remain incomplete. No live native differential validation was performed. Changes remain local and uncommitted after ba92aa50.
+
+## 2026-10-15 - SetPlayerProperty no-target script and map conversion
+
+Converted the PROP_NOTARGET (1) branch of native SetPlayerProperty action 191, audited against src/playsim/actionspecials.h and src/playsim/p_lnspec.cpp LS_SetPlayerProperty. who zero requires a live player activator; any nonzero who applies to all represented live player pawns, including dead pawns. Any nonzero value enables the cheat; zero explicitly disables it. The action sets PlayerPawn.NoTargetCheat without changing Actor.NoTarget, selecting separated native semantics rather than the compatibility fallback.
+
+Wired the action through Hexen/UDMF map line activation, ACS immediate and stack line-special instructions, and ActorSpecialActions dispatch. Unrelated action IDs return null for dispatcher continuation; unsupported properties return false without mutation. Existing version-290 persistence covers the resulting explicit cheat state without another archive extension.
+
+Twelve regression cases cover positive/negative/zero values, any-nonzero all-player selection with null activator, dead-player inclusion, invalid local activators and unsupported dispatch, both map formats, both ACS forms with subsequent script execution, actor CallSpecial and byte-identical save restoration. Release solution rebuild with warnings as errors passes with zero warnings/errors. All 18,772 tests pass; whitespace audit passes.
+
+Limits: this converts only PROP_NOTARGET; other SetPlayerProperty branches remain unsupported. A general cheat console/network command path is not yet present in C#. Player-slot ownership and proxy actors are represented by existing PlayerPawn membership. No live native differential validation was performed. Changes remain local and uncommitted after ba92aa50.
+
+## 2026-10-15 - Separate player no-target cheat policy and persistence
+
+Added explicit PlayerPawn.NoTargetCheat for native CF_NOTARGET semantics, separate from Actor.NoTarget (MF3_NOTARGET), audited against src/playsim/p_enemy.cpp player eligibility, hearing and existing-target cheat checks and p_interaction.cpp target-switch/retaliation rules. Player visual eligibility, immediate/stored hearing, LookEx, noise propagation and chase cheat gates now read the effective cheat setting. With an explicit setting, damage wakeup evaluates native actor-flag eligibility instead of applying the old unconditional shared-player-flag rejection; CF_NOTARGET itself does not veto native damage retaliation.
+
+Compatibility is explicit: until the new property is set, the effective cheat follows Actor.NoTarget and the legacy damage-wakeup guard remains active. Existing callers and older saves therefore retain previous behavior. Setting either true or false separates the two policies. Actor ACS NoTarget property/flag access continues to address the actor flag. The explicit cheat setting is currently a C# surface, not a new console or ACS command.
+
+Added optional version-290 per-actor nullable cheat-override trailer, capture/restore, early value/geometry validation and conditional checksum mixing. Explicit false is serialized distinctly from no override; older saves clear overrides and return to the compatibility fallback. No prior archive format is reinterpreted.
+
+Nineteen regression cases cover all four actor-flag/cheat combinations for visual acquisition, noise/hearing and native damage retaliation, true/false save round trips and older-save reset, invalid structured values, malformed header/value rejection and explicit-false geometry validation. Release solution rebuild with warnings as errors passes with zero warnings/errors. All 18,760 tests pass, including existing legacy player NoTarget behavior; whitespace audit passes.
+
+Limits: callers must explicitly set NoTargetCheat to opt into separated native semantics; unset callers retain the shared legacy policy. General cheat command handling, ZScript binding, arbitrary scripted ancestry, advanced geometry and complete native state-action timing remain incomplete. No live native differential validation was performed. Changes remain local and uncommitted after ba92aa50.
+
+## 2026-10-15 - Direct player target predicate and managed cheat policy
+
+Converted the direct public Actor.OkayToSwitchTarget player NoTarget handling to the shared native MF3_NOTARGET eligibility rule, audited against src/playsim/p_interaction.cpp AActor::OkayToSwitchTarget. Direct calls now honor the hated-TID and hostility exceptions for players as for other actors. NEVERTARGET and NOHATEPLAYERS continue to reject them. No new state or archive layer is needed.
+
+The initial full-suite run identified that the managed NoTarget field also represents the player no-target cheat. Preserved the previous unconditional player-cheat rejection in the internal brain-aware damage-wakeup entry, while keeping the public predicate's native actor-flag semantics. Existing visual, hearing and chase acquisition policy remains in place. This is an explicit transitional distinction: native MF3_NOTARGET and CF_NOTARGET are separate values, but the current C# model shares a field.
+
+Twelve new regression cases cover direct hate/hostility exceptions and NOHATEPLAYERS, unchanged damage-wakeup cheat protection under all exception setups, NEVERTARGET priority and byte-identical saved predicate/cheat behavior. The fixture explicitly controls player Friendly because its default can make a monster consider it hostile. Final Release solution rebuild with warnings as errors passes with zero warnings/errors. All 18,741 tests pass, including existing player NoTarget wakeup and next-tick rejection regressions; whitespace audit passes.
+
+Limits: separate actor NoTarget and player cheat storage still needs conversion; public predicate and managed damage wakeup intentionally differ for the shared player flag until then. General ZScript binding, arbitrary scripted ancestry, advanced geometry and complete native state-action timing remain incomplete. No live native differential validation was performed. Changes remain local and uncommitted after ba92aa50.
+
+## 2026-10-15 - Callable target-switch predicate contract
+
+Added the public Actor.OkayToSwitchTarget(Actor?) entry point using actor target and chase threshold state, so represented actors can evaluate the native predicate without a MonsterBrain. The existing internal brain-aware entry delegates to the same implementation. Audited null, identity and retention semantics against src/playsim/p_interaction.cpp AActor::OkayToSwitchTarget and the separate ReactToDamage caller.
+
+Null candidates now return false; self rejection compares object identity instead of equal numeric IDs, allowing distinct detached actors with unassigned zero IDs. Removed the extra current-candidate inequality from the retention stage: direct predicate calls about the current hated target now consume the native retention coin and conditional sight draw. ReactToDamage's existing current-source path remains separate, refreshing threshold without calling the predicate or consuming these streams.
+
+Twelve regression cases cover null/self without draws, distinct detached identities, brainless thresholds and QUICKTORETALIATE, brainless NOTARGETSWITCH pointers, 256 direct-current-target decisions with visible/invisible sight ordering, current-source damage threshold refresh with/without NOTARGETSWITCH, and saved brainless target/threshold behavior. Release solution rebuild with warnings as errors passes with zero warnings/errors. All 18,729 tests pass; whitespace audit passes. Existing actor and random archives cover the change.
+
+Limits: general ZScript method binding is not added; the callable surface is C#. Existing managed player NoTarget-cheat and destroyed-actor filtering remain additional guards; arbitrary scripted class ancestry, other target-policy differences, advanced geometry and complete native state-action timing remain incomplete. No live native differential validation was performed. Changes remain local and uncommitted after ba92aa50.
+
+## 2026-10-15 - Target eligibility versus projectile damage immunity
+
+Removed the additional standard-infighting ProjectileImmune rejection from Actor.OkayToSwitchTarget, audited against src/playsim/p_interaction.cpp AActor::OkayToSwitchTarget and ReactToDamage. Native target eligibility does not repeat projectile damage immunity. The managed ActorDamage path already checks CanAttackHurtFrom for ordinary damage; forced damage bypasses that check and must then use the separate target-eligibility rules. Same-species or matching projectile-group sources can now cause forced-damage retaliation under standard infighting, matching that native separation.
+
+Ordinary damage immunity remains unchanged. Infighting-off, NOINFIGHTSPECIES, matching nonzero infighting groups, NEVERTARGET, friendship, threshold and other explicit target rules still apply. No actor or archive state is added.
+
+Eighteen regression cases cover direct eligibility under all three infighting policies for species/group immunity, forced-damage retaliation under the same policies, ordinary immunity, three explicit target restrictions and byte-identical saved forced-retaliation continuation. Release solution rebuild with warnings as errors passes with zero warnings/errors. All 18,717 tests pass; whitespace audit passes.
+
+Limits: remaining target-switch policy differences, arbitrary scripted class inheritance, advanced geometry and full native state-action timing remain incomplete. No live native differential validation was performed. Changes remain local and uncommitted after ba92aa50.
+
+## 2026-10-15 - Master and minion target-switch class ancestry
+
+Converted the master/minion relationship checks in Actor.OkayToSwitchTarget from exact class identity to the represented native IsA semantics, audited against src/playsim/p_interaction.cpp AActor::OkayToSwitchTarget. Reused DoomActorCatalog.IsKindOfClassName and TrySpawnClassName rather than adding a parallel ancestry table. Spectre derives from Demon in wadsrc/static/zscript/actors/doom/demon.zs, and HellKnight derives from BaronOfHell in bruiser.zs. A master's descendants now receive the same protection; the reverse ancestry direction does not. Positive exact class identities retain their previous protection even outside the catalog.
+
+The native exceptions remain ordered before later eligibility rules: a hostile candidate, a candidate with the hated TID, or different hate information can bypass relationship protection. Both the candidate-is-master-family and hunter-is-candidate-master-family directions use the same helper. No new actor or archive state is needed.
+
+Eighteen regression cases cover both ancestry pairs in both relationship directions and reverse ancestry, all three exceptions in both directions, saved relationship pointers, and forced damage that applies health loss without retargeting to a protected related actor. Early relationship rejection does not initialize the native SwitchTarget or CheckSight streams. Release solution rebuild with warnings as errors passes with zero warnings/errors. All 18,699 tests pass; whitespace audit passes.
+
+Limits: ancestry is limited to the existing catalog's represented Doom class hierarchy; arbitrary scripted class inheritance is not modeled. Remaining target-switch eligibility differences, advanced geometry and full native state-action timing still need conversion. No live native differential validation was performed. Changes remain local and uncommitted after ba92aa50.
+
+## 2026-10-15 - Native SwitchTarget random stream conversion
+
+Converted hated-target retention from the managed SwitchTarget LCG to the native named FRandom stream, audited against src/playsim/p_interaction.cpp pr_switcher("SwitchTarget"), src/common/engine/m_random.cpp initialization and name CRC, and m_random.h byte extraction. The SwitchTarget CRC32 is 71a89a33. The existing shared NativeStateRandom PCG implementation supplies the stream, seeded lazily from the simulation seed and name CRC. The retention decision consumes one byte only after the existing live hated-target gates, and checks sight only for bytes below 128. This supersedes the previous audit's retention RNG parity limitation.
+
+Added optional version-289 native uint64 stream trailer after prior archive layers, early geometry validation, capture/restore, and conditional checksum mixing. The version-288 legacy uint stream remains separately readable/writable; its value is not reinterpreted as native state. Saves without native state begin the named native sequence from the configured seed on the next draw. Historical LCG decision sequences are therefore not preserved across this behavior conversion.
+
+Nine new cases verify 256 named-stream bytes for three seeds, no legacy/sight stream advancement, exact saved continuation and older-save reset, legacy/native stream coexistence, malformed header/size rejection, missing geometry rejection and explicit zero state. Updated retention and health-gate regressions to assert native stream ordering. Release solution rebuild with warnings as errors passes with zero warnings/errors. All 18,681 tests pass; whitespace audit passes.
+
+Limits: native target-switch eligibility still uses the existing represented-class policy and has not been exhaustively converted. Slopes, portals, fake-water boundaries, 3D floors and complete native state-action timing remain incomplete. No live native differential validation was performed. Changes remain local and uncommitted after ba92aa50.
+
+## 2026-10-15 - Hated-target retention sight and random persistence
+
+Converted Actor.OkayToSwitchTarget hated-target retention from a center ray to default native CheckSight, audited against src/playsim/p_interaction.cpp AActor::OkayToSwitchTarget. The existing retention coin remains before sight. Partial-height visibility can retain a hated target; invisible/min-visible/render-style targets use CheckSight probability only after a successful retention coin, and MVISBLOCKED rejects without a sight draw. Existing earlier eligibility gates remain intact.
+
+The save replay audit found that the existing SwitchTargetRandomState was hashed but never captured or restored. Added optional version-288 save trailer carrying its uint state after existing extensions, geometry-required validation before write/restore mutation, and older-save reset to the configured seed. Unchanged initial state omits the extension; explicit zero remains representable. Existing CheckSight state continues through its version-287 extension.
+
+Fourteen regression cases cover visible/blocked apertures, three visibility conditions with exact two-stream ordering over 256 decisions, MVISBLOCKED, dead/unhated target early gates, byte-identical saved retention continuation, older saves, zero state, malformed trailer header/size, and missing geometry rejection. Release solution rebuild with warnings as errors passes with zero warnings/errors. All 18,672 tests pass; whitespace audit passes.
+
+Limits: the retention coin still uses the pre-existing managed SwitchTarget LCG rather than native pr_switcher RNG. This converts the sight gate and fixes persistence, not all target-switch eligibility or native random-stream parity. Slopes, portals, fake-water boundaries, 3D floors and complete native state-action timing remain incomplete. No live native differential validation was performed. Changes remain local and uncommitted after ba92aa50.
+
+## 2026-10-15 - Rocket radius damage native sight
+
+Converted ProjectileActor explosion visibility for rockets and cyber rockets to CombatTrace.CheckSight from each victim toward the missile with IGNOREVISIBILITY, audited against src/playsim/p_map.cpp P_RadiusAttack. The previous missile-to-victim center ray could suppress damage through a partially open height interval. The converted check uses victim eye height and missile target height, and missile invisibility/MVISBLOCKED does not suppress splash or consume CheckSight random draws. Existing damage falloff and immunity rules remain in place.
+
+Seven regression cases cover both rocket kinds through visible and blocked apertures, ignored invisible/min-visible/render-style/MVISBLOCKED missile visibility, and byte-identical saved partial-aperture explosion replay. The initial fixture was corrected to use different source/victim species so existing species damage immunity does not mask sight behavior. Release solution rebuild with warnings as errors passes with zero warnings/errors. All 18,658 tests pass; whitespace audit passes. Existing archives preserve affected state without a save extension.
+
+Limits: this converts the sight gate within the existing managed explosion implementation, not every native radius-damage flag, thrust rule or compatibility branch. Fake-water boundaries, slopes, portals, 3D floors and complete native state-action timing remain incomplete. No live native differential validation was performed. Changes remain local and uncommitted after ba92aa50.
+
+## 2026-10-15 - Archvile direct and radius native sight
+
+Converted ArchvileActions.Attack direct visibility to default native CheckSight after facing, matching wadsrc/static/zscript/actors/doom/archvile.zs A_VileAttack. Partial-height visibility can now permit the attack; MVISBLOCKED and native invisible/min-visible/render-style probability gate damage, sound and thrust with the saved CheckSight stream.
+
+Converted splash sight to check from each victim toward the fire with IGNOREVISIBILITY, matching src/playsim/p_map.cpp P_RadiusAttack. Corrected the temporary fire height from zero to 16, inherited from the Actor defaults in wadsrc/static/zscript/actors/actor.zs because ArchvileFire does not override Height. This matters for the target-height aperture test; radius distance still uses the existing base-position calculation.
+
+Seven regression cases cover partial-height direct visibility, MVISBLOCKED effect suppression after facing, three native visibility conditions with exact random advancement over 256 attacks each, victim-to-fire aperture geometry and byte-identical saved attack replay. Release solution rebuild with warnings as errors passes with zero warnings/errors. All 18,651 tests pass; whitespace audit passes. Existing sight RNG and actor archives cover the change without a save extension.
+
+Limits: fire remains a temporary managed radius origin rather than the full native fire actor lifecycle. Fake-water boundaries, slopes, portals, 3D floors and complete state-action timing remain incomplete. Other ordinary sight consumers still require auditing. No live native differential validation was performed. Changes remain local and uncommitted after ba92aa50.
+
+## 2026-10-15 - Friendly-follow wander native sight ordering
+
+Connected friendly player-follow wandering to default native CheckSight in the opted-in native simulation policy, audited against src/playsim/p_enemy.cpp P_RandomChaseDir. The existing follow coin is evaluated first: an odd direction byte enters the player-directed branch without sight; an even byte checks visibility before deciding whether to follow. Default native visibility and aperture rules now apply only when that sight check is reached. DONTFOLLOWPLAYERS, nonfriendly actors and missing players still skip follow sight. Legacy policy keeps its previous sight behavior.
+
+Added an internal native wander entry point so an explicit native targetless chase fallback uses native follow sight even when the surrounding simulation policy is legacy. Public wander still follows the simulation policy, and chase flags are not forwarded into the native A_Wander fallback.
+
+Eight regression cases cover native/legacy follow-coin short-circuiting with exact sight draw state, disabled follow/nonfriendly behavior, explicit native chase in a legacy-configured simulation, MVISBLOCKED early rejection and byte-identical saved direction/sight continuation. Release solution rebuild with warnings as errors passes with zero warnings/errors. All 18,644 tests pass; whitespace audit passes. Existing direction/sight RNG and actor archives preserve results without a save extension.
+
+Limits: native player-slot/liveness representation still uses existing managed player selection rather than the full engine PlayerInGame/BotInfo model. Other ordinary sight consumers, full state-action timing, slopes, portals, fake-water boundaries, 3D floors and reject tables remain incomplete. Native movement remains opt-in. No live native differential validation was performed. Changes remain local and uncommitted after ba92aa50.
+
+## 2026-10-15 - Native ambush hearing aperture and impact-line sight
+
+Connected immediate MonsterBrain.Hear, stored chase hearing and ActorLookActions.LookEx ambush gates to native-style CheckSight with SEEPASTBLOCKEVERYTHING (4), audited against src/playsim/p_enemy.cpp A_Look/A_LookEx ambush branches. Native ambush actors can now respond to partially visible heard targets or targets across qualifying local impact-script blocking lines. Scripts addressing another map remain opaque. Immediate hearing/LookEx select this path through NativeMonsterMovement policy; explicit native chase calls also select it for their stored-hearing path. Legacy hearing retains its previous center-ray behavior. Non-ambush hearing still bypasses sight, preserving random draw order.
+
+Sixteen regression cases cover all three hearing paths under native/legacy policies, remote-map script rejection, partial-height visibility, no extra visibility draws for non-ambush heard targets and byte-identical saved stored-hearing replay. Release solution rebuild with warnings as errors passes with zero warnings/errors. All 18,636 tests pass; whitespace audit passes. Existing target, hearing, sight RNG and state archives persist results without a new save extension.
+
+Limits: hearing event scheduling remains the existing managed model. Friendly-follow wandering and other ordinary sight consumers still require separate audits. Slopes, portals, fake-water boundaries, 3D floors, reject tables and complete native state-action timing remain incomplete. Native movement remains opt-in. No live native differential validation was performed. Changes remain local and uncommitted after ba92aa50.
+
+## 2026-10-15 - Native acquisition and lost-sight aperture integration
+
+Connected opted-in native acquisition through ActorVisibility.IsVisible to CombatTrace.CheckSight with SEEPASTSHOOTABLELINES (2), matching src/playsim/p_enemy.cpp P_IsVisible. Existing range/view-cone checks still run first. The native simulation policy selects this path for normal acquisition; an internal look-parameter policy also selects it for explicit native replacement searches when the enclosing simulation retains legacy defaults. Legacy acquisition remains unchanged.
+
+Converted the late A_DoChase lost-sight gate to default native CheckSight, evaluated only with zero threshold and multiplayer/TID hate active at the nomissile stage. It no longer relies on the earlier legacy center-ray result. A partially visible enemy is retained rather than incorrectly triggering replacement; disabled attack paths do not gain an early unconditional sight random draw. Replacement still temporarily clears/restores NOSIGHTCHECK and returns before movement counters on a new target.
+
+Six regression cases cover native/legacy partial-height acquisition, visibility randomness after range checks with exact stream advancement, retaining a partially visible hated enemy, positive-threshold suppression of the late sight draw and byte-identical saved native acquisition replay. Release solution rebuild with warnings as errors passes with zero warnings/errors. All 18,620 tests pass; whitespace audit passes. Existing random/target/search archives preserve state without a save extension.
+
+Limits: explicit native chase calls in a legacy-configured simulation use native sight for replacement searches, while ordinary initial acquisition follows the simulation policy. Hearing/ambush paths, friendly-follow wandering, other ordinary sight callers and full state-action timing require separate audits. Slopes, portals, fake-water boundaries, 3D floors and reject tables remain incomplete. No live native differential validation was performed. Changes remain local and uncommitted after ba92aa50.
+
+## 2026-10-15 - Native chase melee aperture and sight draw ordering
+
+Connected fresh native chase melee selection to the ordered native melee helper, audited against src/playsim/p_enemy.cpp A_DoChase/P_CheckMeleeRange. Melee eligibility now uses full target-height sight after range/vertical/friendship/sector gates and after the native fear gate. A successful native melee sight result supplies attack visibility directly. Missile sight is evaluated only when a missile path is enabled, so disabling missiles no longer adds an extra sight draw after a failed melee check or with no attack labels enabled. Legacy movement and existing managed active attack-timeline continuation remain unchanged.
+
+Eight regression cases cover partial-height native melee versus legacy selection, 256-decision sight/fear stream ordering with and without fear, horizontal/vertical early rejection without draws, disabled attack labels without sight draws and byte-identical saved decision replay. Release solution rebuild with warnings as errors passes with zero warnings/errors. All 18,614 tests pass; whitespace audit passes. Existing sight/fear/counter archives persist affected state; no archive extension is needed.
+
+Limits: managed in-progress attack timelines retain their existing visibility policy and per-tick scheduling rather than full native state-action timing. General ordinary chase sight/retarget acquisition still needs separate migration. Slopes, portals, 3D floors and reject tables remain incomplete. Native movement remains opt-in. No live native differential validation was performed. Changes remain local and uncommitted after ba92aa50.
+
+## 2026-10-15 - Proximity and scripted melee sight integration
+
+Connected CPXF_CHECKSIGHT proximity evaluation to native-style aperture sight from each candidate toward the resolved reference actor, with IGNOREVISIBILITY as in src/playsim/p_things.cpp. Reference visibility does not consume random draws or change candidate pointer selection. Proximity without the sight flag retains its geometric/count behavior.
+
+Converted scripted CheckMeleeRange and inside/outside-melee jump sight ordering against src/playsim/p_enemy.cpp P_CheckMeleeRange. A shared native melee helper evaluates strict horizontal distance, goal bypass, no-attack sector, vertical overlap and friendship before calling default native sight. This permits partial-height visibility and uses saved CheckSight probability for invisible targets only after earlier eligibility gates pass. Nearby goals bypass the later sector/vertical/friendship/sight gates as native code does. Existing managed brain scheduling is not globally changed by this helper.
+
+Eleven regression cases cover partial-height scripted melee/jumps, exact invisible-target random advancement, four early melee rejections without draws, goal bypass, strict distance equality, candidate-to-reference proximity direction, ignored reference visibility with selected-target assignment and optional proximity sight. Release solution rebuild with warnings as errors passes with zero warnings/errors. All 18,606 tests pass; whitespace audit passes. Existing random/state archives cover these decisions; no save extension is needed.
+
+Limits: proximity's native IGNOREWATERBOUNDARY behavior is not represented because fake-water geometry is absent. Slopes, portals, 3D floors and reject tables remain incomplete. Native brain melee timing/visibility and other ordinary sight callers still require separate audits. No live native differential validation was performed. Changes remain local and uncommitted after ba92aa50.
+
+## 2026-10-15 - Actor observation and target-LOS aperture integration
+
+Connected actor CheckSight/CheckSightOrRange observation and JumpIfTargetInLOS/JumpIfInTargetLOS sight gates to converted CombatTrace.CheckSight with IGNOREVISIBILITY, matching src/playsim/p_actionfunctions.cpp CheckIfSeen, DoCheckSightOrRange and target-LOS actions. They now evaluate flat-sector apertures from the correct observer eye to the target height interval rather than a center ray. Actor invisibility/MVISBLOCKED does not hide actors from these scripted observation actions and does not draw CheckSight randomness. Existing range, field-of-view, pointer selection, target-LOS reversal and no-sight shortcuts remain in place.
+
+Ten regression cases cover partial lower/upper visibility, blocked observation, ignored actor visibility without draws, observer-direction/height differences, both target-LOS directions, no-sight flags and range short-circuit boundaries. Release solution rebuild with warnings as errors passes with zero warnings/errors. All 18,595 tests pass; whitespace audit passes. No new persistent state or archive version is needed.
+
+Limits: native observation through non-player camera actors is not represented. Slopes, portals, 3D floors, fake-water boundaries and reject tables remain incomplete. Other ordinary sight consumers require separate audits; HasLineOfSight itself retains its previous path. No live native differential validation was performed. Changes remain local and uncommitted after ba92aa50.
+
+## 2026-10-14 - ACS CheckSight native geometry and flag integration
+
+Connected ACSF_CheckSight (35) to the converted CombatTrace.CheckSight path, audited against src/playsim/p_acs.cpp. Native ACS always sets IGNOREVISIBILITY; caller bit 2 enables both SEEPASTBLOCKEVERYTHING and SEEPASTSHOOTABLELINES. Other caller bits are not passed through as raw sight flags. All activator/source-TID/destination-TID paths now use the native-style aperture and line policy, retaining any-pair success across duplicate TIDs. Fixed zero-source/zero-destination to return one before activator validation, matching native behavior even with no activator. Stack prefix and argument consumption remain intact.
+
+Twelve regression cases cover six caller-flag combinations, three actor-selection paths ignoring Invisible/MVISBLOCKED without CheckSight draws, partial-height target visibility, null-activator self behavior and continuing duplicate-TID search after a blocked target. Release solution rebuild with warnings as errors passes with zero warnings/errors. All 18,585 tests pass; whitespace audit passes. No new persistent fields or save extension are needed.
+
+Limits: ACS caller bit 1 ignores native fake-water boundaries, which are not represented yet; it remains accepted without extra geometry effects. Flat-sector sight still lacks slopes, portals, 3D floors and native reject tables. Other ordinary sight callers retain their existing path pending individual audits. No live native differential validation was performed. Changes remain local and uncommitted after ba92aa50.
+
+## 2026-10-14 - Native CheckSight visibility gates and flags
+
+Converted represented P_CheckSight visibility gates from src/playsim/p_sight.cpp and sight flag values from p_local.h through public CombatTrace.CheckSight. MVISBLOCKED rejects before randomness unless IGNOREVISIBILITY (1). Invisible, MINVISIBLE or render-invisible targets draw CheckSight and reject bytes above 50; source SEEINVISIBLE does not bypass this native P_CheckSight gate. Visibility precedes self/same-position acceptance. Null actors return false and unsupported flags reject before mutation. Native missile sight now uses this path with SEEPASTBLOCKEVERYTHING (4).
+
+Converted SEEPASTSHOOTABLELINES (2) interaction: both bits 2 and 4 permit otherwise arbitrary two-sided block-everything lines, while bit 4 alone retains the local impact-script qualification. Neither IGNOREVISIBILITY nor bit 2 alone bypasses geometry. Flat-sector aperture clipping remains shared. Ordinary HasLineOfSight callers retain their established path.
+
+Added lazy named CheckSight PCG stream, CRC32 0xbf9374ea, capture/restore, conditional checksum participation and optional archive version 287. Geometry requirements and random trailer size/prior bounds are validated; older saves clear the stream.
+
+Sixteen regression cases cover four invisible/render/SEEINVISIBLE configurations over 256 decisions with exact draws, visibility bypass, MVISBLOCKED self checks, four blocking-line flag combinations, geometry blocking despite IGNOREVISIBILITY, null/unsupported input, missile retaliation preservation, checksum/save restoration, older-save clearing and malformed random header rejection. Release solution rebuild with warnings as errors passes with zero warnings/errors. All 18,573 tests pass; whitespace audit passes.
+
+Limits: native BotInfo.m_Thinking/BotCheckSight stream selection, reject tables, water-boundary flag 8, slopes, portals and 3D floors remain incomplete. General script binding and complete ordinary sight migration remain separate work. No live native differential validation was performed. Changes remain local and uncommitted after ba92aa50.
+
+## 2026-10-14 - Native flat-sector missile sight aperture
+
+Converted represented vertical aperture clipping from src/playsim/p_sight.cpp P_CheckSight/PTR_SightTraverse. Missile sight now starts at source Z plus 0.75 times height and maintains slopes to the target's bottom/top. Crossed two-sided flat openings progressively intersect that interval; closed openings or an empty interval reject sight. This permits attacks when only a portion of the target is visible, instead of requiring a clear center ray. Existing impact-script blocking-line exceptions remain in effect. Ordinary sight retains its previous behavior. Native chase missile eligibility now requires the aperture result rather than accepting the old center-ray result as an alternative; melee visibility retains its represented existing path.
+
+Nine regression cases cover partial lower/upper target visibility, fully occluded/closed openings, observer-height effects, callable retaliation through a partial opening, unchanged saves after read-only queries and native chase rejecting a center ray that is visible while its taller observer's eye cannot see the target. Release solution rebuild with warnings as errors passes with zero warnings/errors. All 18,557 tests pass; whitespace audit passes. This is transient geometric evaluation and needs no save extension.
+
+Limits: this is flat-sector aperture clipping for missile decisions, not a complete replacement of ordinary sight. Native blockmap/BSP reject shortcuts, slopes, portals, fake-water boundaries, 3D floors and native visibility flags remain incomplete. Full chase state-action timing remains incomplete. Native movement remains opt-in. No live native differential validation was performed. Changes remain local and uncommitted after ba92aa50.
+
+## 2026-10-14 - Missile sight through local impact-script blocking lines
+
+Converted the represented SF_SEEPASTBLOCKEVERYTHING rule from src/playsim/p_sight.cpp LineBlocksSight and used it for native missile eligibility and CheckMissileRange. A block-everything line is transparent to missile sight only when impact-activated, running ACS_Execute (80) or ACS_ExecuteAlways (226), and addressing map zero or the current level number. One-sided walls, BLOCKSIGHT and closed sector openings remain opaque. Ordinary sight and attack collision continue using their existing blocking rules; this change permits selection, not passage of projectiles through the line.
+
+Added immutable LevelLine.Impact metadata from UDMF impact and Hexen activation 3, preserved by simulation copying. PlayLevel.LevelNumber carries selected MAPINFO levelnum through UDMF/Hexen/Doom load paths and copying; absent metadata falls back to the native map-name default. Conditional checksums include impact metadata, destination map argument and effective level number. Existing line-special save restoration changes missile sight immediately. Immutable map metadata requires the same map reconstruction, without adding a save trailer; runtime changes to Impact itself are not supported.
+
+Fifteen new cases cover UDMF/copy metadata, MAPINFO load/copy, script/activation/map qualification, local level-number overrides, sight blocking/closed openings, native chase missile selection and restored line specials. Existing eight Hexen activation cases additionally verify Impact decoding. Release solution rebuild with warnings as errors passes with zero warnings/errors. All 18,548 tests pass; whitespace audit passes.
+
+Limits: missile sight still uses represented flat center-to-center traversal rather than full native vertical sight clipping, portals and 3D floors. General SF_SEEPASTSHOOTABLELINES flags, runtime impact-activation changes, full state-action timing and generic script binding remain incomplete. Native movement remains opt-in. No live native differential validation was performed. Changes remain local and uncommitted after ba92aa50.
+
+## 2026-10-14 - CheckMissileRange callable and friendly Defect stream
+
+Converted the represented native CheckMissileRange callable from src/playsim/p_enemy.cpp as MonsterBrain.CheckMissileRange. The C# API checks the current target, sector attack permission and represented sight before consuming JUSTHIT. Hostile retaliation immediately permits attack; friendly retaliation rejects dead targets, permits enemies and uses Defect bytes greater than 128 against friends. A mutually JUSTHIT friendly non-player suppresses the Defect draw; player targets do not use that mutual guard. Ordinary decisions apply reaction, friendship, friendly-line-of-fire, custom range and native probability checks. The callable intentionally omits chase-only walk-count and fear gates and runs probability for unconfigured generic brains as well.
+
+Added lazy named Defect PCG stream with CRC32 0x3d303db1, capture/restore, conditional checksum participation and optional archive version 286. Geometry requirements, trailer size and prior-version bounds are validated; older saves clear the stream. Existing chase scheduling remains unchanged; this is a directly callable native-style decision entry point, not a replacement for all managed chase handling.
+
+Eleven regression cases cover friendly player/monster Defect decisions over 256 calls each with exact draws, mutual-hit suppression, dead friendly target rejection, hostile retaliation bypass, signed reaction gates, generic probability independent of fear/walk counters, missing-target preservation, saved checksum/stream restoration, older-save clearing and invalid trailer header rejection. Release solution rebuild with warnings as errors passes with zero warnings/errors. All 18,533 tests pass; whitespace audit passes.
+
+Limits: general ZScript binding remains incomplete. Sight uses the shared managed line-of-sight implementation; native SF_SEEPASTBLOCKEVERYTHING, portals and 3D-floor details are not fully represented. Built-in profile-based melee capability and existing managed chase target filtering remain separate limits. No ACS property IDs were invented for the custom missile properties. Full native state-action timing remains incomplete. No live native differential validation was performed. Changes remain local and uncommitted after ba92aa50.
+
+## 2026-10-14 - Custom MaxTargetRange and MeleeThreshold
+
+Converted the represented native double MaxTargetRange and MeleeThreshold properties from actor.zs and src/playsim/p_enemy.cpp P_CheckMissileRange. Native movement range checks now use optional per-actor overrides, retaining Archvile 896 and Revenant 196 defaults when unset. Checks use distance minus 64 and the additional 128 adjustment for profiles without melee, before chance multiplication and probability draws. Positive maximum range rejects strictly greater distances; nonpositive maximum range disables the limit. Melee threshold rejects strictly smaller adjusted distances only for represented melee-capable profiles. Existing retaliation bypass and legacy range policy remain unchanged. Shared adjusted-distance calculation keeps range and probability stages consistent.
+
+Added finite nullable actor/pose fields, conditional double-bit checksums and optional archive versions 284/285. Each distinguishes unset from explicit zero, validates presence/finite values and geometry state, and clears absent fields on older-save restoration. Property setters reject nonfinite input before mutation. Configured generic range properties also opt into native probability, consistent with earlier custom chance properties.
+
+Twenty-two regression cases cover strict/fractional range boundaries, disabled maximum limits, melee-profile eligibility, explicit Archvile/Revenant default replacement, zero/signed saved overrides, older-save clearing, nonfinite property/structured rejection and binary nonfinite rejection for both trailers. Release solution rebuild with warnings as errors passes with zero warnings/errors. All 18,522 tests pass; whitespace audit passes.
+
+Limits: these properties are available through the C# actor API; actor-definition and general ZScript loading remain incomplete. Melee capability uses represented Doom attack profiles rather than arbitrary script-defined Melee states. Full native state-action timing and complex geometry remain incomplete. Native movement remains opt-in. No live native differential validation was performed. Changes remain local and uncommitted after ba92aa50.
+
+## 2026-10-14 - Per-actor MissileChanceMult override
+
+Converted the represented native double MissileChanceMult property used by src/playsim/p_enemy.cpp P_CheckMissileRange. Actor.MissileChanceMult is an optional finite double: unset retains the Doom class multiplier, while an explicit value replaces it after melee-state distance adjustments and before integer truncation and the skill-scaled minimum-missile cap. Zero, fractional and signed finite values are preserved. Explicit generic-brain configuration opts into probability; unconfigured generic brains retain established deterministic selection. Retaliation and earlier eligibility gates retain their existing bypass behavior.
+
+Added nullable actor/pose capture/restore, conditional double-bit checksum participation and optional archive version 283. Its per-actor presence/value trailer distinguishes unset from explicit zero, validates presence and finite values, and requires geometry state. Earlier saves clear the override. Property setters reject nonfinite input before mutation; structured archives validate before restoration.
+
+Thirteen regression cases cover six profile/generic multiplier combinations over 64 decisions each with exact named-stream advancement, property/structured rejection of nonfinite values, explicit-zero save/checksum restoration and older-save clearing, plus malformed binary presence/value rejection. Release solution rebuild with warnings as errors passes with zero warnings/errors. All 18,500 tests pass; whitespace audit passes.
+
+Limits: the override is available through the C# actor API; general ZScript/actor-definition loading remains incomplete. Custom MaxTargetRange and MeleeThreshold properties, full state-action timing and complex geometry remain incomplete. Native movement remains opt-in. No live native differential validation was performed. Changes remain local and uncommitted after ba92aa50.
+
+## 2026-10-14 - Per-actor MinMissileChance override
+
+Converted the represented native uint8 MinMissileChance actor property used by src/playsim/p_enemy.cpp P_CheckMissileRange. Actor.MinMissileChance is an optional byte override: unset retains the built-in class cap (Cyberdemon 160, other Doom profiles 200), while explicit values including zero replace that cap before skill aggressiveness scaling and integer truncation. Explicitly configured generic brains now opt into the same native probability check; unconfigured generic brains retain established deterministic selection. Native actor.zs byte typing/default and Cyberdemon override were checked against source.
+
+Added optional override capture/restore, conditional checksum participation and archive version 282 with per-actor signed sentinel -1 for unset. Structured and binary validation reject values outside -1..255 and require geometry state. Earlier saves clear overrides, and an unused override preserves earlier archive selection. No new random stream is introduced.
+
+Ten regression cases cover zero/one/255 caps, replacing the Cyberdemon default, fractional skill scaling, configured generic brain probability with exact random draws, explicit-zero save/checksum restoration, older-save clearing and structured/binary invalid-value rejection. Release solution rebuild with warnings as errors passes with zero warnings/errors. All 18,487 tests pass; whitespace audit passes.
+
+Limits: the override is available through the C# actor API; general ZScript/actor-definition property loading is not wired yet. MissileChanceMult, MaxTargetRange and MeleeThreshold custom overrides remain incomplete, as do full state-action timing and complex geometry. Native movement remains opt-in. No live native differential validation was performed. Changes remain local and uncommitted after ba92aa50.
+
+## 2026-10-14 - Lost-sight chase replacement search
+
+Converted the A_DoChase nomissile replacement search from src/playsim/p_enemy.cpp. In native movement mode, a monster with zero threshold and an occluded target now searches for a visible replacement when multiplayer or TID hate is active. The shared managed look search runs with NOSIGHTCHECK temporarily cleared and restores the original flag in a finally block. DONTLOOKALLAROUND controls the search cone. A different replacement target returns before movement/strafe counters are updated; failure or the same target continues ordinary chase. Single-player without hate and legacy movement retain established behavior.
+
+Ten regression cases cover hate replacement with either initial NOSIGHTCHECK value, preserved counters on replacement, positive-threshold deferral, failed-search continuation, legacy/single-player gating, saved search replay, forward-only versus all-around searches and cooperative selection of a visible replacement player. Release solution rebuild with warnings as errors passes with zero warnings/errors. All 18,477 tests pass; whitespace audit passes. Existing target/search-counter/RNG archives already preserve the affected state; no save extension is needed.
+
+Limits: multiplayer detection uses represented game mode/player count; full native global multiplayer flags and native blockmap/portal search order are not modeled. Target acquisition reuses the represented look helpers and their existing limits. Complete state-action timing, custom actor missile properties and complex geometry remain incomplete. Native movement remains opt-in. No live native differential validation was performed. Changes remain local and uncommitted after ba92aa50.
+
+## 2026-10-14 - FASTCHASE strafing and saved countdown
+
+Converted CHF_FASTCHASE (1) from src/playsim/p_enemy.cpp A_DoChase. Explicit native chase calls now decrement positive FastChaseStrafeCount, or normalize nonpositive counters and clear horizontal velocity before a new attempt. Below the strict 640-unit range boundary, Chase random bytes select a strafe at less than 100 and its side at less than 128. A successful attempt sets sideways speed 13 and countdown 3. Ordinary walking pauses while the post-update counter is nonzero and resumes on the call that reaches zero; DONTMOVE skips all fast-strafe updates. Goal-as-target and managed active attack timelines skip this stage. Legacy use explicitly rejects FASTCHASE before mutation.
+
+Added signed actor/pose FastChaseStrafeCount, conditional checksums and optional archive version 281. Geometry/count/header checks follow existing scalar actor trailers; all signed counters are preserved and older saves clear the field. Existing Chase random archives preserve the stream, so no new RNG is introduced.
+
+Nine regression cases cover countdown momentum and walking resumption, exact/beyond range boundary with no draw, repeated attempt/side draw order with speed 13, DONTMOVE behavior, signed save/checksum restoration and older-save clearing, plus invalid prior-version rejection. Release solution rebuild with warnings as errors passes with zero warnings/errors. All 18,467 tests pass; whitespace audit passes.
+
+Limits: FASTCHASE is an explicit managed chase flag; automatic native ticks do not infer Hexen class-boss actions. Generic ZScript binding and complete state-action timing remain incomplete, including the existing managed attack-timeline continuation policy. Complex geometry remains incomplete. Native movement remains opt-in. No live native differential validation was performed. Changes remain local and uncommitted after ba92aa50.
+
+## 2026-10-14 - Generic RESURRECT chase flag
+
+Converted CHF_RESURRECT (8) from src/playsim/p_enemy.cpp A_ChaseNative/A_DoChaseNative. Explicit native movement chase calls can now attempt the shared direction-based corpse resurrection before ordinary A_DoChase handling, without requiring an enemy target. Success returns before reaction/count updates or normal chase decisions. Failure falls through normally. The actor's own Heal label is selected by the shared revival helper; with no Heal label the current state is retained, matching usevilestates=false in the generic native wrapper. Conversation prevents ordinary chase but does not prevent this preceding resurrection attempt. Existing managed re-entry protection surrounds the whole call. Legacy policy rejects this new flag before mutations.
+
+Seven regression cases cover targetless revival with and without conversation, preserved chase counters on success, own-Heal state selection, absent-Heal state retention, failed-attempt fallthrough, legacy rejection and byte-identical revival/sound replay after save restoration. Release solution rebuild with warnings as errors passes with zero warnings/errors. All 18,458 tests pass; whitespace audit passes. The flag is transient per call; existing corpse/state archives persist revival results without a save extension.
+
+Limits: the flag is available through the managed chase API, not a general ZScript VM action binding. Native blockmap/portal ordering, 3D-floor revival checks and complete state-driven chase/heal timing remain incomplete. Managed disabled-brain and re-entry protections are retained. Native movement remains opt-in. No live native differential validation was performed. Changes remain local and uncommitted after ba92aa50.
+
+## 2026-10-14 - Native resurrection movement-direction probe
+
+Converted the represented P_CheckForResurrection look-ahead position from src/playsim/p_enemy.cpp. Native Archvile chase now searches for corpses one absolute-speed step along MoveDirection using the shared native cardinal/diagonal vectors, instead of aiming the probe toward its enemy. Direction 8 (no direction), and out-of-range managed direction values, skip the attempt before corpse velocity changes. Legacy callers retain the existing enemy-directed probe. Corpse eligibility, clearance, revival, healing sound and friendship handling continue through the shared resurrection implementation.
+
+Twelve regression cases cover all eight direction vectors, no/invalid direction without corpse velocity mutation, negative speed using absolute magnitude, and native chase integration with an enemy pointing away from the corpse while legacy probing fails. Release solution rebuild with warnings as errors passes with zero warnings/errors. All 18,451 tests pass; whitespace audit passes. Existing movement fields already save this input; no archive extension is needed.
+
+Limits: native blockmap/portal iterator order, 3D-floor resurrection checks, complete VileChase state-action ordering and generic CHF_RESURRECT remain incomplete. This converts probe geometry within the existing managed chase timing. Native movement remains opt-in. No live native differential validation was performed. Changes remain local and uncommitted after ba92aa50.
+
+## 2026-10-14 - Correct retained-enemy attacks during CHASEGOAL
+
+Re-audited the complete src/playsim/p_enemy.cpp A_DoChase goal branch and corrected an earlier conversion error. Native CHASEGOAL temporarily substitutes the goal only for the arrival check, restores the enemy target, and skips attack selection only when the goal itself remains the target (or arrival returns early). A separate valid chase goal does not suppress enemy attacks. Removed the overbroad C# suppression, restoring enemy melee/missile selection and preserving managed windup when a separate chase goal becomes active. Frightened monsters also continue drawing the attack-fear stream against their retained enemy during separate goal pursuit.
+
+Corrected earlier regression expectations rather than preserving the mistaken behavior. Added three cases for goal-as-target suppression with pending retaliation, goal arrival before enemy attack, and fear-stream use against a retained enemy. Existing cases now verify enemy melee/missile selection, retained pointers and continuing windup. Release solution rebuild with warnings as errors passes with zero warnings/errors. All 18,439 tests pass; whitespace audit passes. The historical suppression entry is explicitly marked as superseded.
+
+Limits: there is no existing managed skill-definition loader to wire into SpawnOptions.SkillAggressiveness; that integration remains outstanding. Native chase state timing, custom actor missile properties, generic brain probability and complex geometry also remain incomplete. Native movement remains opt-in. No live native differential validation was performed. Changes remain local and uncommitted after ba92aa50.
+
+## 2026-10-14 - Skill aggressiveness in native missile probability
+
+Converted the configurable skill aggressiveness contribution to represented Doom missile selection. SpawnOptions.SkillAggressiveness accepts MAPINFO-style input: finite values clamp to 0..1, default 0 preserves the existing cap, and the internal threshold multiplier is 1 minus the clamped setting. This follows src/gamedata/g_skill.cpp parsing and src/playsim/p_enemy.cpp P_CheckMissileRange. Native missile cap truncation occurs after multiplying the built-in 200 or Cyberdemon 160 cap by the internal multiplier, before taking the minimum with distance. A read-only simulation property exposes the normalized setting and a conditional checksum marker distinguishes nondefault policies.
+
+Twelve regression cases cover ordinary/Cyberdemon probabilities across settings and fractional caps, out-of-range clamping, NaN/infinity rejection, normalized checksum equivalence and fresh-simulation save continuation with the same policy. Release solution rebuild with warnings as errors passes with zero warnings/errors. All 18,436 tests pass; whitespace audit passes. No archive extension is needed: like other spawn policies, the setting must be supplied again when reconstructing a saved simulation; existing archives preserve the actual random stream.
+
+Limits: skill-definition parsing is not wired into this option automatically; callers supply the setting through SpawnOptions. Loading with a different policy is not rejected. Custom actor missile-property overrides, generic brain probability and full native state-action timing remain incomplete. Native movement remains opt-in. No live native differential validation was performed. Changes remain local and uncommitted after ba92aa50.
+
+## 2026-10-14 - Built-in Doom missile-range probability
+
+Converted the probabilistic tail of P_CheckMissileRange for represented built-in Doom attack profiles in native movement mode. Distance starts at target distance minus 64, subtracts another 128 for profiles without a melee attack, uses 0.5 multipliers for Cyberdemon, Spider Mastermind, Revenant and Lost Soul, truncates toward zero and caps the rejection threshold at 160 for Cyberdemon or 200 otherwise. Dedicated CheckMissileRange bytes must meet or exceed that threshold. Existing range, reaction and friendly-line-of-fire gates run first; JUSTHIT retaliation and ongoing windup bypass probability. Native defaults were checked against src/playsim/p_enemy.cpp, actor.zs and the Doom class definitions. Generic brains without a Doom profile retain existing deterministic selection.
+
+Added lazy named PCG stream with CRC32 CheckMissileRange 0xfbb4b7f2, checksum participation, capture/restore and optional archive version 280. Unused state preserves older archive versions; older saves clear the absent stream. Structured write/restore requires geometry state, and binary decoding validates trailer size and prior version.
+
+Thirteen regression cases cover eight class/distance thresholds over 64 decisions each with exact stream advancement, Archvile/Revenant range rejection before draws, retaliation bypass, checksum/save restoration, older-save clearing and invalid prior-version rejection. Release solution rebuild with warnings as errors passes with zero warnings/errors. All 18,424 tests pass; whitespace audit passes.
+
+Limits: custom MinMissileChance/MissileChanceMult/MaxTargetRange/MeleeThreshold properties and configurable skill aggressiveness are not modeled; the calculation uses built-in Doom defaults and aggressiveness 1. Generic brains retain their established selection. Full native state-action timing, fast-chase strafing and complex geometry remain incomplete. Native movement remains opt-in. No live native differential validation was performed. Changes remain local and uncommitted after ba92aa50.
+
+## 2026-10-14 - Frightened-monster attack probability and Anubis stream
+
+Converted the A_DoChase scared-monster attack gate from src/playsim/p_enemy.cpp. Native movement decisions now draw the dedicated Anubis random stream when the actor is FRIGHTENED or its player target has FRIGHTENING, allowing attack selection only for bytes below 43. NOFEAR does not bypass this attack gate, matching native code; it continues to affect retreat movement separately. Ordinary actors, legacy movement, goal pursuit and active managed attack timelines skip this draw. Suppressed selection preserves pending retaliation.
+
+Added lazily initialized named PCG state using CRC32 Anubis 0x39450ece, checksum participation, capture/restore and optional archive version 279. Earlier saves clear the absent stream; unused streams do not change prior archive versions. Structured write/restore validation requires geometry state, and the binary trailer validates size and prior version before recursive decoding.
+
+Eight regression cases cover four fear/NOFEAR combinations over 256 decisions each with exact named-stream advancement, ordinary/legacy no-draw behavior, goal no-draw behavior, checksum/save restoration and older-save clearing, plus malformed prior-version rejection. Release solution rebuild with warnings as errors passes with zero warnings/errors. All 18,411 tests pass; whitespace audit passes.
+
+Limits: the represented FRIGHTENING actor flag covers player fright behavior; a separate native player cheat field is not modeled here. Managed attack timelines retain existing continuation rather than rerolling fear every tic. Full native state-action timing, missile-range probability, fast-chase strafing and complex geometry remain incomplete. Native movement remains opt-in. No live native differential validation was performed. Changes remain local and uncommitted after ba92aa50.
+
+## 2026-10-14 - Native chase initial-turn ordering
+
+Converted the initial movement-direction/strafe facing order from src/playsim/p_enemy.cpp A_DoChase. For native movement decisions outside an active managed attack/heal timeline, facing now occurs before target resolution, targetless returns and the JUSTATTACKED pause. Previously these early returns skipped native turning. Later ordinary chase processing avoids turning twice. Targetless DONTIDLE/friendly fallback still calls A_Wander, whose own turn is separate: two 45-degree turns can therefore occur in one chase-plus-wander call, matching native control flow. NODIRECTIONTURN suppresses the chase direction turn; conversation still returns before any turn. Legacy steering and existing managed attack-timeline facing remain unchanged.
+
+Six regression cases cover the post-attack early return with and without turn suppression, no-target turning, chase-plus-wander double turning, a single ordinary chase turn and the conversation guard. Release solution rebuild with warnings as errors passes with zero warnings/errors. All 18,403 tests pass; whitespace audit passes. Facing uses existing saved actor angles and requires no save extension.
+
+Limits: this corrects represented chase ordering, not complete state-action scheduling. Managed active attack/heal timelines retain their established facing behavior. Full reaction ordering, native attack probabilities, fast-chase strafing and complex geometry remain incomplete. Native movement remains opt-in. No live native differential validation was performed. Changes remain local and uncommitted after ba92aa50.
+
+## 2026-10-14 - CHASEGOAL enemy attack suppression
+
+Correction: the blanket suppression described in this historical entry was incorrect and has been superseded by the retained-enemy goal pursuit audit. Native CHASEGOAL can retain and attack a separate enemy; only the goal-as-target and goal-arrival paths skip attack selection.
+
+Converted the missing A_DoChase goal-pursuit attack suppression from src/playsim/p_enemy.cpp. Native movement now treats CHASEGOAL with a valid, surviving goal as goal pursuit even when the actor retains an enemy as its target. This suppresses both melee and missile selection and preserves pending JUSTHIT retaliation. Missing or destroyed goals do not suppress attacks. Existing managed goal handling clears pending windup when pursuit becomes active; legacy movement policy remains unchanged.
+
+Six regression cases cover melee/missile suppression, retained enemy and goal pointers, preserved retaliation, absent/destroyed goals, an assigned goal without CHASEGOAL and activation during managed windup. Release solution rebuild with warnings as errors passes with zero warnings/errors. All 18,397 tests pass; whitespace audit passes. Existing goal and brain archives persist the affected state; no save extension is needed.
+
+Limits: cancellation of managed windup follows existing goal handling rather than claiming native state-action equivalence. Full attack timing, fear and missile-range probability, fast-chase strafing and complex geometry remain incomplete. Native movement remains opt-in. No live native differential validation was performed. Changes remain local and uncommitted after ba92aa50.
+
+## 2026-10-14 - Native missile walk-count eligibility
+
+Converted the A_DoChase missile-selection walk-count gate from src/playsim/p_enemy.cpp. In native movement mode, non-fast actors can begin a missile attack only when MoveCount is exactly zero; any signed nonzero value skips missile-range checks. Fast actors bypass this gate. The gate precedes JUSTHIT retaliation handling so a blocked selection preserves the pending retaliation flag. Melee selection bypasses the missile gate. Managed attack sequences already in progress continue without being cancelled by later count changes; legacy movement behavior remains unchanged.
+
+Ten regression cases cover zero, positive, negative and minimum integer counts, fast-monster bypass, preserved and later consumed retaliation, uninterrupted windup, melee bypass and legacy policy. Release solution rebuild with warnings as errors passes with zero warnings/errors. All 18,391 tests pass; whitespace audit passes. No new persistent fields or save extension are needed.
+
+Limits: full native attack-state scheduling, scared-monster attack probability and missile-range probability remain incomplete. Existing managed windup continuation is preserved rather than claiming state-machine equivalence. Native movement remains opt-in. No live native differential validation was performed. Changes remain local and uncommitted after ba92aa50.
+
+## 2026-10-14 - STOPIFBLOCKED post-attack walk-count reset
+
+Converted the missing A_DoChase JUSTATTACKED/CHF_STOPIFBLOCKED branch from src/playsim/p_enemy.cpp. After clearing JUSTATTACKED, native movement now sets MoveCount to the next dedicated TryWalk random byte masked to 15. This reset applies even with fast monsters, DONTMOVE, NOPOSTATTACKTURN or NORANDOMTURN; it does not select a direction or move the actor. The legacy movement policy remains unchanged. Existing walk-counter and random-stream archives already persist all affected state.
+
+Eight regression cases cover the flag combinations, exactly one TryWalk draw, no NewChaseDir draw, no movement or attack windup, no reset for NOPOSTATTACKTURN alone, no reset outside the post-attack guard and byte-identical saved continuation. Release solution rebuild with warnings as errors passes with zero warnings/errors. All 18,381 tests pass; whitespace audit passes.
+
+Limits: full native attack eligibility and state-action timing remain incomplete; this implements the represented post-attack reset without claiming complete native attack cadence. Native movement remains opt-in. No live native differential validation was performed. Changes remain local and uncommitted after ba92aa50.
+
+## 2026-10-14 - DONTIDLE and friendly targetless chase wandering
+
+Converted native CHF_DONTIDLE (512) and the friendly targetless A_DoChase fallback from src/playsim/p_enemy.cpp. In native movement mode, a targetless chase now calls the existing converted A_Wander action for DONTIDLE or friendly actors, unless DONTMOVE is set. The fallback returns without forcing the idle state. Chase turn/random/block flags are intentionally not forwarded: native calls ordinary A_Wander with default flags. Conversation remains guarded at chase entry; stand-still and combat-flag clearing follow the shared wander implementation. Explicit DONTIDLE use without native movement fails before mutation rather than silently doing nothing. Existing default movement remains unchanged.
+
+Ten regression cases cover friendly and DONTIDLE selection, ordinary targetless behavior, DONTMOVE, stand-still, conversation, unforwarded direction flags, unsupported legacy use and automatic friendly ticks. Fresh Release solution build with warnings as errors passes with zero warnings/errors. All 18,373 tests pass; whitespace audit passes. This action reuses existing movement counters and random archives, requiring no new persistent fields or save version.
+
+Limits: full native state-action scheduling and reaction-time ordering remain incomplete; C# still runs brain decisions per actor tick. Native chase movement remains opt-in with caller-supplied load policy. Fast chase strafing, complete native collision geometry and general script action binding remain separate work. No live native differential validation was performed. Changes remain local and uncommitted after ba92aa50.
+
+## 2026-10-14 - Automatic native chase movement integration
+
+Connected the converted direction/count-based chase walker to Actor.Tick through the opt-in SpawnOptions.NativeMonsterMovement policy and a read-only AuthoritySimulation property. Automatic simulation ticks now exercise the existing native direction search, collision walking, fear, drop-off, hazard, lift and movement RNG paths when enabled. Default movement remains unchanged. Enabled policy contributes a distinct checksum marker; no actor state or archive format changes are needed. As with other spawn policies, callers must supply the same policy when reconstructing a saved simulation.
+
+Audited integration against src/playsim/p_enemy.cpp A_Chase/A_ChaseNative and A_DoChase movement dispatch. Four regression tests cover automatic native movement, unchanged default selection, policy checksum separation and byte-identical continuation after loading into a fresh simulation under the same policy. Fresh Release solution build with warnings as errors passes with zero warnings/errors. All 18,363 tests pass; whitespace audit passes.
+
+Limits: this connects the converted movement path; it does not complete native state-action timing. C# brain decisions still run per actor tick rather than exclusively at native chase state actions. The policy remains opt-in, is not serialized, and loading with a different policy is not rejected. Full native chase parity, complex geometry, script bindings and live native differential validation remain outstanding. Changes remain local and uncommitted after ba92aa50.
+
+## 2026-10-14 - Native line-trace hit metadata
+
+Converted represented P_LineTrace output metadata from src/playsim/p_map.cpp and native wall-tier rules from src/playsim/p_trace.cpp. CombatTrace.LineTrace now populates native numeric hit types (none/floor/ceiling/wall/actor), distance measured from the actual trace origin along its ray, ray direction, hit sector, wall texture part and hit texture. Near-side upper/middle/lower textures follow native part numbering (0/1/2); floor/ceiling intersections report their plane texture. Absolute/relative offset traces measure distance from their selected start rather than the source actor.
+
+The extra properties are populated for the LineTrace API; existing attack/pick traversal behavior remains unchanged. No save extension is needed because trace results are transient and read-only.
+
+Eight regression cases cover all three wall tiers, back-side texture/sector selection, vertical plane types/distances/textures, actor entry distance, explicit-origin misses and unchanged saved state. Fresh Release solution build with warnings as errors passes with zero warnings/errors. All 18,359 tests pass; whitespace audit passes.
+
+Limits: portal crossing/count, 3D-floor tiers, full native hit-vector/sector behavior across complex geometry and retained metadata for NOSKY-suppressed intersections remain incomplete. Suppressed sky hits continue to expose the existing cleared intersection fields. General ZScript binding and MBF-bouncer classification remain separate gaps. No live native differential validation was performed. Changes remain local and uncommitted after ba92aa50.
+
+## 2026-10-14 - Native line-trace sky policy and NOSKY
+
+Converted TRF_NOSKY (64) and corrected default P_LineTrace sky handling against src/playsim/p_map.cpp and src/playsim/p_trace.cpp EditTraceResult. The new native-style LineTrace API now reports represented sky-plane and upper-sky-wall intersections unless NOSKY is requested. NOSKY discards sky floors/ceilings and upper walls only when both adjoining ceiling textures are sky. The shared traversal takes an explicit sky policy; ordinary line attacks and PickActor retain their established native sky suppression.
+
+Eleven regression cases cover sky floor/ceiling hits with and without NOSKY, upper-wall two-sector texture requirements, case-insensitive sky names, ordinary planes, separation from attack sky policy and unchanged saved state after read-only tracing. Updated unsupported-bit coverage now that NOSKY is implemented. Fresh Release solution build with warnings as errors passes with zero warnings/errors. All 18,351 tests pass; whitespace audit passes. No new persistent state or save extension is required.
+
+Limits: sky identity uses represented F_SKY1 textures rather than the complete native texture-manager/sky configuration. Portal crossings, 3D-floor tiers, complete trace metadata and general ZScript binding remain incomplete. MBF-bouncer BLOCKSELF classification remains a separate gap. No live native differential validation was performed. Changes remain local and uncommitted after ba92aa50.
+
+## 2026-10-14 - BLOCKSELF tracing and BLOCKASPLAYER collision semantics
+
+Converted native TRF_BLOCKSELF (1024) from src/playsim/p_map.cpp P_LineTrace. The trace wall mask now accounts for represented projectile/player classification, BLOCKASPLAYER, NOBLOCKMONST, friendly NoBlockFriends compatibility and FLOAT. Projectile, ordinary blocking, player-blocking, monster-blocking and floater-blocking flags follow their native per-source conditions. Existing through-mask overrides still apply afterward.
+
+Added shared BLOCKASPLAYER script flag access and optional canonical boolean save extension 278, including capture/restore, checksum participation, old-save clearing and represented-default revival reset. Audited native projectile blocking in PIT_CheckLine and connected the flag to ordinary movement, projectile movement and railing-opening eligibility, so its behavior is not limited to the new trace API.
+
+Twenty-four regression cases cover the actor/wall-mask matrix, monster-blocking exemptions, actual projectile and ordinary movement, script names, revival, checksum/save continuation and malformed structured/binary flags. Updated the prior unsupported-flags test to retain coverage for genuinely unsupported bits. Fresh Release solution build with warnings as errors passes with zero warnings/errors. All 18,340 tests pass; whitespace audit passes.
+
+Limits: MBF-bouncer classification remains unrepresented because managed bounce flags do not expose native BOUNCE_MBF. NOSKY still rejects as unconverted; portals, slopes, 3D floors and general ZScript trace binding remain incomplete. No live native differential validation was performed. Changes remain local and uncommitted after ba92aa50.
+
+## 2026-10-14 - Explicit native-style line tracing
+
+Converted a represented P_LineTrace subset from src/playsim/p_map.cpp as CombatTrace.LineTrace with native numeric ActorLineTraceFlags. It supports yaw-relative forward/side offsets, absolute offsets, absolute positions with native precedence, source-base/FloorClip-relative Z, ThroughSpecies/ThroughActors filtering, AllActors/SolidActors masks, ThroughBlock/ThroughHitscan masks and BlockUse. Invalid numeric inputs and unsupported flag bits reject explicitly before mutation.
+
+Refactored the existing hitscan traversal into a shared private core with explicit origin and actor-filter inputs. Public TraceLineAttack and ACS PickActor continue through their established attack-origin path. The new API returns represented actor/wall/plane hit metadata and requires no persistent state or save extension.
+
+Thirteen regression cases cover origin modes and precedence, rotated lateral offsets, clipped relative Z, actor/species filtering, nonshootable actor masks, individual wall-mask removal, use blocking and rejection without mutation. Fresh Release solution build with warnings as errors passes with zero warnings/errors. All 18,316 tests pass; whitespace audit passes.
+
+Limits: NOSKY and BLOCKSELF flags reject as unconverted. Native sky/portal/3D-floor behavior and complete trace output (texture, portal count and native hit-type structures) remain unrepresented. The shared core uses the managed actor/line traversal subset; this is a C# entry point without general ZScript VM binding. No live native differential validation was performed. Changes remain local and uncommitted after ba92aa50.
+
+## 2026-10-14 - Floorclip-aware attack and missile origins
+
+Converted native Floorclip attack-origin consumers from src/playsim/p_map.cpp P_LineAttack and src/playsim/p_mobj.cpp missile spawning. Added shared Actor.AttackOffset/AttackOriginZ calculations: actor center minus FloorClip plus the normal attack offset, including player crouch scaling. CombatTrace now uses that origin. Monster hitscan aim pitch and friendly-fire interception use the same clipped origin, preventing an origin/pitch mismatch.
+
+Player projectiles use the native four-unit-lower attack offset before the existing sector-floor clamp. Represented monster missile offsets, including RevenantTracer's higher spawn, subtract source FloorClip. Signed clip values apply independently of the enabling flag, matching native consumers of the stored value. Existing depth/pose archives preserve the behavior without a new save extension.
+
+Eleven regression cases cover positive/negative clip depths, player crouch/custom attack offsets, monster/Revenant projectile heights, the player floor clamp, thin target hit selection, matching friend-interception aim and saved attack/projectile continuation. Fresh Release solution build with warnings as errors passes with zero warnings/errors. All 18,303 tests pass; whitespace audit passes.
+
+Limits: this converts represented line attacks and projectile spawning, not every native rail/beam/custom attack action or ONFLOORZ/ONCEILINGZ sentinel path. Complex geometry and player camera smoothing remain incomplete. No live native differential validation was performed. Changes remain local and uncommitted after ba92aa50.
+
+## 2026-10-14 - Direct movement and final teleport floor clipping
+
+Converted the immediate FLOORCLIP completion hooks from native src/playsim/p_map.cpp P_TryMove and P_TeleportMove into the represented movement entry points. A successful TryMove refreshes clipping after committing coordinates and sector membership, so direct callers and substeps no longer wait for a later physics tick. Failed movement preserves the previous clip. Teleport refreshes again after restoring flying-player/projectile height, clearing the temporary destination-floor clip when the actor's final Z is airborne. Disabled and SPECIALFLOORCLIP overrides retain their existing behavior.
+
+Nine regression cases cover immediate terrain transitions, blocked direct movement, disabled/special overrides, grounded versus flying teleport heights, rejected teleports, manual teleport clipping and fresh-map save/checksum continuation. Fresh Release solution build with warnings as errors passes with zero warnings/errors. All 18,292 tests pass; whitespace audit passes. Existing clip/view-height persistence carries the result without a new extension.
+
+Limits: this completes the represented move/teleport hooks, not full native teleport semantics such as telefragging and portals. Deep-water/3D-floor clipping, attack-origin Floorclip consumers and player camera smoothing still require separate audit/conversion. No live native differential validation was performed. Changes remain local and uncommitted after ba92aa50.
+
+## 2026-10-14 - General physics and placement floor-clip integration
+
+Connected the converted AdjustFloorClip action to the represented general movement paths corresponding to native src/playsim/p_mobj.cpp P_ZMovement and actor placement. Flagged actors refresh terrain clipping after final sector fitting, covering normal horizontal/vertical physics, floor changes and fitted actor-top/rider support. The charge early-return path refreshes surviving actors as well. Placement updates clipping at the floor, and map spawn placement refreshes again after its final Z offset/ceiling adjustment. Disabled clipping and SPECIALFLOORCLIP preserve manual clip values.
+
+Added a simulation-explicit internal overload for physics placement so valid callers supplying a simulation do not also need Actor.Simulation prebound. The public action retains its simulation requirement and native special-clip early return. Existing floor-clip flags/depth and view-height archives carry resulting state without a new extension.
+
+Ten regression cases cover landing, airborne ascent, horizontal terrain transitions, placement without prebound actor simulation, raising/lowering support planes, actor-top support, disabled/special overrides, saved landing replay and charging above terrain. Fresh Release solution build with warnings as errors passes with zero warnings/errors. All 18,283 tests pass; whitespace audit passes.
+
+Limits: native deep-water/height-sector exclusions, solid 3D floors, portal-relative contact, rendering and player deltaviewheight smoothing remain incomplete. Direct scripted coordinate changes still require their own placement/action semantics; this does not infer native behavior for every teleport or script entry point. No live native differential validation was performed. Changes remain local and uncommitted after ba92aa50.
+
+## 2026-10-14 - Terrain FootClip and smart-movement floor clipping
+
+Converted the flat-floor subset of native src/playsim/p_mobj.cpp AActor::AdjustFloorClip and the FLOORCLIP completion branch of P_SmartMove. TERRAIN definitions now parse signed finite FootClip depths and preserve them through modify blocks. The action scans contacted sectors at the actor's exact floor height, selects the shallowest terrain clip, clears clipping without floor contact, and respects SPECIALFLOORCLIP. Player view height follows the native old/new clip delta. Successful converted smart movement invokes the adjustment when FLOORCLIP is enabled.
+
+Added shared FLOORCLIP/SPECIALFLOORCLIP script flags, optional two-bit save extension 277 with canonical validation, checksum participation, old-save clearing and represented-default revival reset. Existing floor-clip depth and player view-height archives carry calculated values. Terrain FootClip contributes to map configuration checksums.
+
+Twenty-one regression cases cover signed terrain parsing, modify retention, malformed/nonfinite values, shallowest contact including neutral terrain, airborne clearing, special overrides, enabled/disabled smart movement, shared flag/revival behavior, all save masks, invalid structured/binary flags, terrain checksum differences and player clip/view-height save continuation. Fresh Release solution build with warnings as errors passes with zero warnings/errors. All 18,273 tests pass; whitespace audit passes.
+
+Limits: this does not yet wire every general vertical-physics/spawn caller of AdjustFloorClip. Native height-sector/deep-water exclusions, solid 3D floors, portal-relative contact and player deltaviewheight smoothing remain unrepresented. Terrain rendering and full native movement timing are separate work. No live native differential validation was performed. Changes remain local and uncommitted after ba92aa50.
+
+## 2026-10-14 - Mutable line-action save conversion
+
+Closed the line-action persistence gap found during dormant-lift verification. Audited against native src/p_saveg.cpp line serialization of special, activation and arguments. Added optional save extension 276 for represented mutable LevelLine fields: Special, Arg3, PlayerUse, PlayerUseBack, UseThrough, PlayerCross and Repeat. Capture emits the extension only when runtime line actions differ from post-initialization map defaults. Restoring applies saved actions to matching geometry; archives without the extension restore initial values. Unchanged map actions retain existing archive versions.
+
+Added canonical activation-mask, line-count, trailer-size/prior-version and geometry validation before applying state. Existing Special/Arg3/use flags already participated in checksums; PlayerCross/Repeat now also contribute when enabled. This intentionally extends checksum coverage. The dormant-lift test now restores changed line actions into a genuinely fresh map instead of requiring a runtime geometry copy. Derived lift markers remain initialization metadata and retain their native meaning after an action changes.
+
+Thirteen new regression cases cover signed special/argument values, individual/combined activation flags, checksum and byte-identical fresh-map restoration, consumed one-shot actions remaining inactive, optional-extension/legacy reset behavior, previously omitted flag checksums and malformed structured/binary masks/counts rejected before geometry mutation. Fresh Release solution build with warnings as errors passes with zero warnings/errors. All 18,252 tests pass; whitespace audit passes.
+
+Limits: this converts the mutable action subset exposed by LevelLine; immutable argument/line-flag fields, portals, locking/alpha metadata and other native line serialization are not thereby implemented. Older archives cannot recover mutations they never stored and restore the map's initial action state. Restores require matching map topology and initialization policy. Default native chase integration and full movement timing remain incomplete. No live native differential validation was performed. Changes remain local and uncommitted after ba92aa50.
+
+## 2026-10-14 - Dormant repeatable lift-sector marking
+
+Converted native src/maploader/specials.cpp SECMF_LIFT initialization and connected it to the represented P_IsOnLift subset. LevelLiftMarkers.Apply runs at simulation initialization, marking sectors targeted by repeatable Plat_DownWaitUpStay (62), Plat_UpWaitDownStay (64), Plat_UpNearestWaitDownStay (172), Plat_DownWaitUpStayLip (206), and Generic_Lift (203) with type argument 1. Supported Doom translation covers repeatable specials 62/88/120/123 and Boom generic lifts whose repeat/type bits select the corresponding platform behavior. Nonzero tags include secondary sector tags; tag zero selects the line back sector.
+
+The derived IsLift sector marker is copied with runtime geometry, persists after line-special changes, and participates in the simulation checksum. STAYONLIFT recognizes it even with no active lift motion. Existing saves need no extension for this initialization metadata when restored against matching map/runtime geometry.
+
+Twenty-one regression cases cover native specials and repeat/type gates, Doom/Boom mappings, tag-zero back-sector targeting, secondary tags, level-copy retention, actual dormant-lift movement and saved continuation against copied runtime geometry. Verification found that existing archives do not restore mutated line specials into an untouched fresh map; scoped reconstruction coverage to the supported runtime-geometry copy path and corrected actor lookup to use saved identity rather than a shared class type. Final fresh Release solution build with warnings as errors passes with zero warnings/errors. All 18,239 tests pass; whitespace audit passes.
+
+Limits: generic marking does not add execution support for every native/Boom platform special. Script-created dormant lifts cannot be inferred, matching the native initialization limitation. Runtime line-special mutations are an existing save-geometry gap requiring separate conversion. Default native chase integration, floor clipping, doors, full chase timing, slopes and portals remain incomplete. No live native differential validation was performed. Changes remain local and uncommitted after ba92aa50.
+
+## 2026-10-14 - STAYONLIFT active-lift smart movement
+
+Converted the active-platform branch of P_IsOnLift, primary-sector-tag comparison from P_CheckTags, and the STAYONLIFT branch of P_SmartMove in src/playsim/p_enemy.cpp. The shared converted movement path snapshots whether an enabled actor has a living target in a sector with a matching primary tag while the actor is on an active represented lift. After successful movement it performs the native StayOnLift < 230 draw before testing whether the actor left the lift, marking MoveDirection DI_NODIR when appropriate. Remaining on a lift still consumes that draw. Successful lift avoidance short-circuits subsequent hazard evaluation as in native code; failed movement consumes neither avoidance draw.
+
+Added shared STAYONLIFT script flag access and CompatSurface.StayOnLift. Optional save extension 274 persists the canonical actor flag; extension 275 persists the lazily used StayOnLift named PCG stream (CRC 0x5350ed82), with geometry validation, checksum participation, legacy clearing and represented-default revival reset.
+
+Fourteen regression cases cover actor/compatibility gates, leaving/staying on lifts, absent/dead/differently tagged targets, failed moves, lift/hazard random short-circuit ordering, untagged sector identity, script names, revival, checksum/random continuation, old saves and invalid structured/binary state. Fresh Release solution build with warnings as errors passes with zero warnings/errors. All 18,218 tests pass; whitespace audit passes.
+
+Limits: P_IsOnLift recognizes active represented MotionKind.Lift objects; native SECMF_LIFT marking for dormant repeatable lift sectors remains unconverted. Primary tags use the managed Tag/AdditionalTags representation. Automatic simulation ticks retain earlier steering unless nativeMovement is selected. Floor clipping adjustment, door activation, full A_Chase timing, slopes, portals and 3D supports remain incomplete. No live native differential validation was performed. Changes remain local and uncommitted after ba92aa50.
+
+## 2026-10-14 - Smart-move hazard detection and avoidance
+
+Converted the represented P_IsUnderDamage/P_SmartMove hazard branch from src/playsim/p_enemy.cpp. Contacted damaging floors classify as serious danger when they can harm the actor and satisfy floor-contact/HARMINAIR conditions; NOSECTORDAMAGE excludes sector damage. Active represented crushing ceilings contribute their signed direction. Shared converted Move now snapshots prior danger, performs movement, then marks MoveDirection DI_NODIR after entering serious danger or on the native AvoidCrush < 200 draw for moderate danger. Existing-danger movement does not repeat avoidance. This applies to converted wander, TryWalk and explicit native chase movement.
+
+Added the shared AVOIDHAZARDS actor flag and CompatSurface.AvoidHazards compatibility gate. Optional save extension 272 persists the canonical actor flag; extension 273 persists the lazily used named AvoidCrush PCG stream (CRC 0x5eef6bb0). Both participate in restoration and checksums, require geometry state and reset appropriately on older saves; revival resets the represented actor flag default.
+
+Fourteen regression cases cover actor/compatibility gates, entering versus existing danger, NOSECTORDAMAGE, signed crusher severity, moderate/serious random-draw behavior, shared flag/revival, checksum and random continuation, old-save clearing and malformed state/header rejection. Fresh Release solution build with warnings as errors passes with zero warnings/errors. All 18,204 tests pass; whitespace audit passes.
+
+Limits: sector contact scanning uses managed level order and flat-floor geometry, not native touching-sector list order. Waterlevel and crushing 3D floors are not represented. Ceiling status maps to represented motion state; terrain-defined damage is not included because this native function checks sector damageamount. Staying on lifts remains unconverted. Automatic simulation ticks retain established steering unless nativeMovement is selected; full A_Chase timing, doors and portals remain incomplete. No live native differential validation was performed. Changes remain local and uncommitted after ba92aa50.
+
+## 2026-10-14 - AVOIDMELEE backing and EnemyStrafe continuation
+
+Converted the actor AVOIDMELEE branch from src/playsim/p_enemy.cpp P_NewChaseDir into explicit native chase movement. A live hostile non-goal melee threat inside the native distance threshold reverses the chosen vector and draws StrafeCount from the named EnemyStrafe stream. Direction selection resets prior strafing, preserves drop-off escape precedence and substitutes nonzero StrafeCount for MoveCount after selection. Active native strafing faces its target even when direction turning is suppressed and decrements its count at the movement stage. Player threat selection covers represented Fist/Chainsaw weapons with the strict distance < 192 rule; represented melee monster brains use the target melee-range/radius threshold.
+
+Added shared AVOIDMELEE flag access, signed StrafeCount capture/restore, checksum participation, represented-default revival reset and optional save extension 271. The named PCG stream uses CRC 0x2748785b for EnemyStrafe, remains absent until drawn, and survives save/replay. Archives validate the flag, actor count, random presence and geometry requirement; legacy saves clear new state.
+
+Fifteen regression cases cover player weapon selection and strict range boundaries, enabled/disabled backing, goal exemption, melee/ranged monster classification, active facing/counts, shared flag access, revival, malformed state, old saves and byte-identical continuation. Fresh Release solution build with warnings as errors passes with zero warnings/errors. All 18,190 tests pass; whitespace audit passes.
+
+Limits: native level-wide AVOIDMELEE configuration and arbitrary weapon MELEEWEAPON metadata are not represented. Monster melee-threat classification uses the managed brain attack type rather than native MissileState labels. Generic strafing does not convert specialized FastChase behavior. Automatic ticks retain established steering unless nativeMovement is selected; full native chase timing, AI regroup hints, lift/hazard logic, doors and complex geometry remain incomplete. No live native differential validation was performed. Changes remain local and uncommitted after ba92aa50.
+
+## 2026-10-14 - CANTLEAVEFLOORPIC movement restriction
+
+Converted the MF2_CANTLEAVEFLOORPIC flat-floor restriction from src/playsim/p_map.cpp P_TryMove. Actors with the flag now reject movement to a different floor texture or support elevation before committing coordinates. Texture names use the existing case-insensitive resource identity convention and current mutable sector textures. Added shared script flag access, checksum participation, represented-default revival reset and canonical boolean persistence in optional save extension 270, including old-save clearing.
+
+Thirteen regression cases cover enabled/disabled restrictions, matching/case-varied/different textures, elevation changes, live texture mutation, partial wander progress, actual native chase movement to a blocked boundary, script names, checksum and legacy saves, malformed structured/binary flags and revival. Strengthened the chase integration assertion to require actual partial progress; it exposed a fixture that assigned its target before replacing its brain. Corrected target assignment order. Final fresh Release solution build with warnings as errors passes with zero warnings/errors. All 18,175 tests pass; whitespace audit passes.
+
+Limits: texture identity uses the actor's current and destination center sectors. Native support-floor ownership across overlapping equal-height sectors, slopes, portals and 3D floors remains unrepresented. The outer A_Chase floor-picture rollback for geometry changes during special activation still requires conversion. Native chase remains explicitly selected; default steering integration and native timing remain incomplete. No live native differential validation was performed. Changes remain local and uncommitted after ba92aa50.
+
+## 2026-10-14 - Native chase drop-off escape vectors and collision permission
+
+Converted the flat-floor drop-off escape branch from src/playsim/p_enemy.cpp P_NewChaseDir and its AVOIDINGDROPOFF collision rule from src/playsim/p_map.cpp P_TryMove. Direction reselection in explicit native chase movement now detects actors overlapping a tall ledge, sums standard-speed normals from contacted two-sided edges, selects an avoidance direction and sets MoveCount to one. Added CompatSurface.DropOff for the native compatibility gate; DROPOFF, FLOAT, ONMOBJ and above-floor actors skip escape-vector generation.
+
+Threaded the existing avoidingDropOff argument through direction attempts, TryWalk, Move and the specialized collision entry point. Avoidance compares old/new support and drop-off floors, allowing retreat while the bounding box still overlaps a ledge without permitting a larger fall. The permission is scoped to that attempt rather than a persistent actor mutation. Ordinary movement retains its existing drop-off rule. No new save extension is required.
+
+Twelve regression cases cover both high-floor sides, retreat with continued overlap, rejection of a further fall, all eligibility/compatibility gates, actual chase-brain escape/count/random behavior, saved continuation and cumulative corner normals. Fresh Release solution build with warnings as errors passes with zero warnings/errors. All 18,162 tests pass; whitespace audit passes.
+
+Limits: this uses represented flat floors and scans level lines rather than native blockmap line ordering. Slopes, portals, 3D supports and the general script AVOIDINGDROPOFF flag are not converted. Automatic simulation ticks still use established steering unless nativeMovement is selected; broader A_Chase timing, strafing, lift/hazard logic and door activation remain incomplete. No live native differential validation was performed. Changes remain local and uncommitted after ba92aa50.
+
+## 2026-10-14 - Fear flags and native chase-vector selection
+
+Converted the actor-flag fear branch from src/playsim/p_enemy.cpp P_NewChaseDir into the opt-in native chase movement path. Added NOFEAR, FRIGHTENED and FRIGHTENING actor flags with shared script access. On direction reselection, native movement uses the current target/goal position and reverses the enemy vector when the actor is frightened or the target is frightening, unless NOFEAR applies. A selected patrol goal is exempt. Existing direction-search turnaround rules still apply; fear changes the search vector rather than forcing an immediate reversal of the current step.
+
+Added canonical three-bit FearFlags persistence in optional save extension 269, checksum participation, old-save clearing and represented-default revival reset. Nineteen regression cases cover fear combinations, goal exemption, script access, all eight save masks, malformed structured/binary masks, replay and revival. Fresh Release solution build with warnings as errors passes with zero warnings/errors. All 18,150 tests pass; whitespace audit passes.
+
+Limits: this affects explicit nativeMovement chase calls. Automatic simulation ticks retain established steering. Player cheat CF_FRIGHTENING is not represented by this actor flag conversion; the player's actor FRIGHTENING flag is supported. AVOIDMELEE/strafing, drop-off vector generation, AI director regroup hints, lift/hazard behavior, doors, portals and full native A_Chase timing remain incomplete. No live native differential validation was performed. Changes remain local and uncommitted after ba92aa50.
+
+## 2026-10-14 - Chase-brain integration of converted native walking
+
+Integrated the converted direction search and collision-aware Move into MonsterBrain.Tick through its explicit nativeMovement option. That option uses signed pre-decremented MoveCount, the native NoRandomTurn flag, StopIfBlocked fallback, goal-directed vector selection, direction/count-based walking and post-attack direction selection. DontMove decrements only positive move counts. It preserves horizontal momentum instead of replacing it with local steering velocity, allowing represented ice momentum to carry through. Native movement turns toward MoveDirection in 45-degree steps through a helper shared with A_Wander. NoRandomTurn explicitly requires nativeMovement instead of silently doing nothing under the earlier steering path.
+
+Eight integration cases cover actual brain-driven position changes, preserved momentum, expired counts with NoRandomTurn, positive/zero/negative DontMove counters, goal-directed movement without replacing the attack target, angular stepping and byte-identical saved continuation. A trial default replacement produced 61 failures involving established combat timing, velocity expectations and steering-history archives; kept the established default and made native movement an explicit per-call option while remaining chase integration is audited. The first integration fixture accidentally reentered its see state before movement; corrected it to an isolated hold state without a see-state transition. Final fresh Release solution build with warnings as errors passes with zero warnings/errors. All 18,131 tests pass; whitespace audit passes.
+
+Limits: automatic simulation ticks retain existing steering unless their caller selects nativeMovement. The mode is a caller policy and must be selected consistently after restoring a save; all movement results, counters and named streams use existing persistence. This remains a partial native chase integration: fear/strafing/drop-off vector generation, lift/hazard logic, door activation, CANTLEAVEFLOORPIC, portals and full A_Chase timing still require conversion. No live native differential validation was performed. Changes remain local and uncommitted after ba92aa50.
+
+## 2026-10-14 - Native chase-direction search action
+
+Converted src/playsim/p_enemy.cpp P_DoNewChaseDir as ActorWanderActions.ChooseChaseDirection. The caller supplies the destination/avoidance vector. The action tries a direct diagonal, native strict +/-10 cardinal thresholds, optionally randomizes cardinal ordering, avoids immediate turnaround in ordinary searches, retries the previous direction, searches remaining directions in a randomized ascending/descending order, then tries turnaround before setting DI_NODIR. Attempt tracking avoids duplicate direction attempts. Successful moves share the converted TryWalk path and consume the existing named TryWalk stream; direction ordering uses NewChaseDir. An explicit avoidingDropOff argument represents the native transient branch without introducing persistent actor state.
+
+Thirteen regression cases cover four diagonal quadrants, strict cardinal thresholds, avoidance turnaround/random ordering, exhausted searches, saved byte-identical continuation and invalid vectors rejected before mutation. Fresh Release solution build with warnings as errors passes with zero warnings/errors. All 18,123 tests pass; whitespace audit passes. Existing direction/count and named-stream archives persist this action without a new extension.
+
+Limits: the existing MonsterBrain chase loop still uses its earlier local velocity steering. This exposes the converted native direction-selection action; it does not claim complete P_NewChaseDir/A_Chase integration. Native target/fear/drop-off avoidance vector generation, AVOIDINGDROPOFF actor-flag binding, lift/hazard handling and door activation still require conversion. Movement uses the represented flat-sector TryWalk subset. No live native differential validation was performed. Changes remain local and uncommitted after ba92aa50.
+
+## 2026-10-14 - MBF wander friction and ice momentum
+
+Converted the COMPATF_MBFMONSTERMOVE friction branch from native src/playsim/p_enemy.cpp P_Move. Added CompatSurface.MbfMonsterMove. With compatibility enabled and NOFRICTION absent, represented terrain/actor friction slows muddy walking using the native half-strength move-factor formula, including existing strict momentum thresholds. A successful icy move restores its original horizontal position and sector, keeps the resulting vertical position, and adds quarter-scaled movement momentum. Failed movement retains partial progress and does not add ice momentum. Extracted the existing terrain friction/factor calculation so player acceleration and wander movement share the same calculation without changing the player scale.
+
+Eleven regression cases cover compatibility and NOFRICTION gates, strict mud momentum thresholds, additive ice velocity, blocked ice movement and saved continuation. Fresh Release solution build with warnings as errors passes with zero warnings/errors. All 18,110 tests pass; whitespace audit passes. Existing velocity persistence carries the result without a new save extension. Compatibility remains simulation configuration and must match when continuing a save, as with existing compatibility switches.
+
+Limits: terrain selection uses the existing current-sector flat-floor subset. Native touching-sector friction precedence, water/3D-floor friction, variable-friction configuration, portals and the broader P_SmartMove lift/hazard behavior remain incomplete. The new compatibility behavior is wired to the represented wander path; other monster movement consumers still require separate audit. No live native differential validation was performed. Changes remain local and uncommitted after ba92aa50.
+
+## 2026-10-14 - CANJUMP wander movement eligibility and persistence
+
+Converted the explicit MF6_CANJUMP branch of native actorinlines.h CanJump and its P_Move consumers in src/playsim/p_enemy.cpp. CANJUMP now has shared script flag access, permits above-floor wander movement, bypasses successful-walk floor settlement, and enables blocked-move signed FloatSpeed correction without MF_FLOAT. The flag is captured/restored and checksum-visible, resets to the represented default on revival, and uses optional save extension 268 with canonical boolean validation and legacy-save clearing.
+
+Nine regression cases cover script names, airborne movement with/without eligibility, height correction, saved movement continuation, checksum/old-save behavior, malformed structured/binary state and revival. Initial tests exposed premature drop-off rejection in the specialized wander probe: native P_TryMove establishes floatok before its drop-off test. Deferred that rejection until after obstruction diagnostics for the probe only; ordinary TryMove retains its existing path. Fresh Release solution build with warnings as errors passes with zero warnings/errors. All 18,099 tests pass; whitespace audit passes.
+
+Limits: the implicit BOUNCE_MBF + IsSentient + MF_FLOAT CanJump branch remains unconverted because managed bounce flags do not represent that native flag combination. This adds movement eligibility, not a new jump impulse or jump AI. JUMPDOWN behavior, special-line activation, friction compatibility, portals and 3D geometry remain incomplete. No live native differential validation was performed. Changes remain local and uncommitted after ba92aa50.
+
+## 2026-10-14 - Blocked wander float adjustment
+
+Converted the MF_FLOAT failed-move height correction in native src/playsim/p_enemy.cpp P_Move. A wander-specific collision probe distinguishes hard line/actor obstruction and insufficient opening height from a usable opening that requires vertical adjustment. Failed horizontal movement through a usable opening moves Z toward its floor by signed FloatSpeed, checks represented vertical actor clearance at the retained position, restores Z if blocked, and marks successful correction INFLOAT. Partial horizontal substeps remain intact. Ordinary TryMove callers retain their existing height rejection path.
+
+Seven regression cases cover positive/zero/negative FloatSpeed, low-ceiling descent, closed openings, solid actors, partial movement, random-stream preservation and ordinary movement rejection. Fresh Release solution build with warnings as errors passes with zero warnings/errors. All 18,090 tests pass. Whitespace audit passes. Existing position/INFLOAT persistence carries the result without a new save extension.
+
+Limits: this implements the floating branch only; native CanJump eligibility, special-line activation, doors/lifts/hazards, friction, portals and 3D supports remain incomplete. Collision diagnostics and vertical clearance use the represented flat-sector physics subset. No live native differential validation was performed. Changes remain local and uncommitted after ba92aa50.
+
+## 2026-10-14 - Wander floor settlement and InFloat completion
+
+Continued the successful P_Move path from src/playsim/p_enemy.cpp. After horizontal movement, represented walking actors settle onto the destination support floor when within MaxStepHeight; a vertical actor blocker restores their previous height. NOGRAVITY and ONMOBJ bypass that settlement. Successful movement clears INFLOAT, while the earlier BLASTED return preserves it. Initial walking eligibility now uses actual support floor height and ONMOBJ instead of treating the managed OnGround marker as native support state.
+
+Eight cases cover lower-floor settlement limits, NOGRAVITY/ONMOBJ exclusions, protected space over another actor, successful/blasted float flags, supported movement above a floor and saved settled height/float state. Initial verification found the new above-floor support fixture also encountered the independent drop-off rule; enabled drop-off in that fixture to isolate ONMOBJ eligibility. Fresh Release solution build with warnings as errors passes with zero warnings/errors. All 18,083 tests pass; whitespace audit passes. Existing movement/float/position save records carry this state without a new extension.
+
+Limits: failed-move float adjustment remains unconverted because TryMove does not expose native floatok/floor collision diagnostics. Native jumping eligibility, hit-floor sector actions, 3D supports, doors/lifts/hazards, friction and portals remain incomplete. Vertical blocking uses the represented FindZBlocker subset. No live native differential validation was performed. Changes remain local and uncommitted after commit ba92aa50.
+
+## 2026-10-14 - Wander movement substeps and blasted bypass
+
+Continued native P_Move conversion from src/playsim/p_enemy.cpp. Represented wandering now splits large steps using radius minus one and the largest horizontal movement component, matching the native substep count. Each attempted position is measured from the original start; a later failure retains earlier successful progress. This prevents a fast step from jumping over an intervening registered actor. MF2_BLASTED returns movement success before direction or ground checks, preserving direction/count/random consumption behavior for externally propelled actors.
+
+The audit also found the previous movement gate rejected actors at the floor solely because the managed OnGround flag was false. The gate now checks actual floor height as well; blocked-airborne test fixtures explicitly place actors above the floor. Nine added cases cover intervening/excluded actors, exact axis/diagonal endpoints, floor-height eligibility, blasted ordering and random state, and saved partial-step continuation. Existing blocked-follow fixtures retain their intended airborne setup.
+
+Validation: fresh Release solution build with warnings as errors passes with zero warnings/errors. All 18,075 tests pass; whitespace audit passes. Existing archive layer 266 carries partial position, movement direction/count and random continuation; no new save layer was required.
+
+Limits: flat collision remains the represented P_SmartMove subset. Full native float correction, jumping/on-mobj flags, door opening, lift/hazard decisions, friction/ice and portals remain incomplete. Extreme substep counts exceeding the integer range fail explicitly. No live native differential validation was performed. Changes remain local and uncommitted after commit ba92aa50.
+
+## 2026-10-14 - DontFollowPlayers wandering control
+
+Converted represented MF8_DONTFOLLOWPLAYERS against src/scripting/thingdef_data.cpp and src/playsim/p_enemy.cpp P_RandomChaseDir. Shared script flag access now reads/writes the flag, and friendly wandering bypasses player selection, visibility and player-follow direction attempts when set. The ordinary random-direction path remains active; enemy acquisition is unchanged. This supersedes the preceding Wander entry's missing DONTFOLLOWPLAYERS behavior.
+
+Added optional archive layer 267 with canonical boolean, geometry/count/size/prior-version validation, capture/restoration and conditional checksum hashing. Older snapshots and represented revival restore the supported false default.
+
+Eight cases cover bare/Actor-prefixed flag access, player-follow random consumption versus the ordinary path, unchanged enemy acquisition, saved checksums, older-save reset, malformed flags and revival. Fresh Release solution build with warnings as errors passes with zero warnings/errors. All 18,066 tests pass; whitespace audit passes.
+
+Limits: wandering still uses represented flat collision and lacks complete native P_Move/P_SmartMove lift, door, hazard, friction and portal behavior. Custom actor-default parsing and native multiplayer admission state remain incomplete. No live native differential validation was performed. Changes remain local and uncommitted after commit ba92aa50.
+
+## 2026-10-14 - Represented A_Wander and saved movement continuation
+
+Converted the flat-sector A_Wander path from src/playsim/p_enemy.cpp: clear INCOMBAT before conversation/STANDSTILL returns, signed reaction delay, quantized direction turning, predecremented movement counts, NORANDOMTURN/NODIRECTIONTURN/STOPIFBLOCKED and represented P_RandomChaseDir/P_TryWalk selection. Movement uses actor Speed and the native eight-direction vectors through existing ActorPhysics.TryMove. Friendly direction selection attempts to follow the represented owning/single/multiplayer pawn before ordinary random turning. LookEx's friendly-noise fallback now calls Wander when no see state exists.
+
+Added actor movement direction/count fields and separate named NewChaseDir/TryWalk PCG streams (CRCs 5f7b8192/f43936d9). Optional archive layer 266 stores movement pairs and consumed streams with presence/geometry/size/count/prior-version validation. Capture/restoration, conditional checksums and older-save reset preserve continuation; represented player respawn resets movement fields.
+
+Fourteen new cases cover signed reaction extremes, guards, combat clearing, straight walking/turn suppression, blocked fallback, friendly/ordinary saved movement sequences, checksums/stream restoration, malformed records and the LookEx fallback. Fresh Release solution build with warnings as errors passes with zero warnings/errors. All 18,058 tests pass; whitespace audit passes.
+
+Limits: uses represented flat collision instead of complete native P_Move/P_SmartMove. Door opening, lift/hazard decisions, ice/friction-specific movement, jumping, portals and native multiplayer admission state remain incomplete. DONTFOLLOWPLAYERS actor-flag conversion is still pending, so represented friendly wandering follows its default player-follow behavior. Flags outside the three implemented Wander controls fail explicitly. Default missing see-state behavior outside the friendly wander branch is unchanged. No live native differential validation was performed. Changes remain local and uncommitted after commit ba92aa50.
+
+## 2026-10-14 - Conversation guard for look and chase
+
+Converted represented MF5_INCONVERSATION state and script flag access against src/scripting/thingdef_data.cpp and src/playsim/p_enemy.cpp A_LookEx/A_DoChase. LookEx returns before patrol setup, threshold reset, acquisition, sounds or state transitions. Chase returns before reaction/threshold changes and its movement logic. The represented immediate hearing-wake path also respects the flag, while sound propagation may still record LastHeard for acquisition after conversation ends.
+
+Added optional archive layer 265 with canonical boolean, geometry, count/size and prior-version validation. Capture/restoration and conditional checksums preserve the flag; older saves and represented revival restore false. Expanded the final archive-writer sequence into ordered calls to keep extension ordering reviewable.
+
+Eight cases cover bare/Actor-prefixed script flags, look early-return ordering, chase preservation/resumption, remembered noise without premature wake-up, saved checksum restoration, older-save reset, malformed flags and revival. Fresh Release solution build with warnings as errors passes with zero warnings/errors. All 18,044 tests pass; whitespace audit passes.
+
+Limits: this converts the actor control flag and represented look/chase guards, not the Strife conversation/dialogue system. A_Wander/A_FriendLook special behavior and custom actor-default parsing remain incomplete. The guard does not freeze actor physics or unrelated state actions. No live native differential validation was performed. Changes remain local and uncommitted after commit ba92aa50.
+
+## 2026-10-14 - LookEx TID-hate acquisition and custom visibility
+
+Converted the previously rejected explicit TID-hate path in ActorLookActions.LookEx against src/playsim/p_enemy.cpp A_LookEx, P_LookForPlayers, P_LookForTID and LookForTIDInBlock. Existing targets are used independently of sound checks/hearing range when TidToHate is set. New acquisition performs represented local block search, then the saved-budget/cursor global search. Local candidates use all-around visibility; global candidates honor the requested cone. Both receive custom distances and respect the native NOSIGHTCHECK bypass. Goal/last-enemy fallback and HUNTPLAYERS gating are preserved; leaving an existing goal for a hatee clears its wait reaction time.
+
+Reused the shared visibility helper for ordinary global/local hate searches with unchanged default parameters, removing duplicate cone logic. Replaced the former unsupported-path test with an assertion that absent hatees do not fall back to players without HUNTPLAYERS. Twelve additional cases cover local/global boundaries, rear cones, actor LOOKALLAROUND, NOSIGHTCHECK, HUNTPLAYERS, existing target behavior and saved cursor/budget continuation. Fresh Release solution build with warnings as errors passes with zero warnings/errors. All 18,036 tests pass; whitespace audit passes.
+
+Limits: local block links and global actor iteration retain the represented search approximations; this is not full native ordering parity. Conversation/stealth and friendly wandering without a see state remain incomplete in LookEx. General VM binding, custom actor defaults and portal visibility remain outside this change. No live native differential validation was performed. Changes remain local and uncommitted after commit ba92aa50.
+
+## 2026-10-14 - LookAllAround and StandStill actor flags
+
+Converted represented MF4_LOOKALLAROUND and MF4_STANDSTILL through shared script flag get/set and A_LookEx. Native reference: src/playsim/p_enemy.cpp A_LookEx. LookEx defaults its view direction to the actor's saved LookAllAround flag; the explicit nullable API argument remains an override. StandStill skips the friendly-noise wander transition and its early search, while leaving the final visual search enabled. NOJUMP still does not suppress the native friendly wander branch when StandStill is false.
+
+Added optional archive layer 264 with a validated two-bit actor mask, geometry/count/size/prior-version validation, capture/restoration and conditional checksum hashing. Older saves reset both flags; represented revival restores false defaults.
+
+Thirteen new cases cover bare/Actor-prefixed script access, rear acquisition and explicit overrides, friendly hearing with StandStill/NOJUMP, all saved flag combinations and checksums, old-save reset, malformed flags and revival. Fresh Release solution build with warnings as errors passes with zero warnings/errors. All 18,024 tests pass; whitespace audit passes.
+
+Limits: these flags are wired into the converted LookEx action; complete classic A_Look/A_Wander, movement-specific StandStill consumers and custom actor-default parsing remain incomplete. LookEx still rejects explicit TID-hate searches and does not model conversation/stealth. General VM binding, portals and native moving blocklink order remain outside this change. No live native differential validation was performed. Changes remain local and uncommitted after commit ba92aa50.
+
+## 2026-10-14 - Represented A_LookEx action
+
+Converted a callable C# ActorLookActions.LookEx path against src/playsim/p_enemy.cpp A_LookEx. Supports the six LOF flags, custom sight/hearing distances, the zero-Fov-to-180 default, custom wake states, sound-target compatibility selection, clearing out-of-range LastHeard memory, NOTARGET sound rejection, threshold reset and represented patrol goal initialization/waiting. Hearing and visual checks remain independently controllable. Ambush sound wake uses native strict min/max boundaries, distinct from inclusive visual acquisition boundaries. See sound attenuation follows LOF_FULLVOLSEESOUND instead of the ordinary boss/full-volume-see defaults; NOJUMP preserves acquisition while suppressing the wake-state jump.
+
+Shared player and friendly-enemy acquisition now accept optional look parameters; default chase calls retain their previous arguments. Seventeen new cases cover independent checks, state/no-jump behavior, hearing and ambush boundaries, sound flags, custom wake states, goal exclusion/waiting and explicit TID-hate rejection. Fresh Release solution build with warnings as errors passes with zero warnings/errors. All 18,011 tests pass; whitespace audit passes. Initial verification exposed a new test assuming its synthetic actor had a see state; configured explicit fixture states and reran the fresh build/full suite successfully.
+
+Limits: action requires a represented monster brain and is not a general ZScript VM binding. Explicit TID-hate LookEx searches fail before mutation; custom look parameters are not yet wired through that search path. LOOKALLAROUND is supplied explicitly by the API pending actor-flag conversion. Conversation/stealth/STANDSTILL behavior and the friendly A_Wander fallback without a see state remain incomplete. Existing flat geometry/blocklink approximations still apply. No live native differential validation was performed. Changes remain local and uncommitted after commit ba92aa50.
+
 ## 2026-10-14 - Custom enemy-query visibility parameters
 
 Converted represented P_IsVisible parameters from src/playsim/p_enemy.cpp into ActorLookParameters and a shared visibility helper. LookForEnemiesEx accepts optional maximum/minimum distances and field of view. Range checks include exact boundaries; zero disables an individual distance limit. allAround removes the view cone. A nearby rear target is accepted only when the minimum distance is zero, matching native P_IsVisible. Enemy candidates retain native all-around visibility while custom distance limits apply; player candidates honor the requested view cone. Line-of-sight checking remains last.

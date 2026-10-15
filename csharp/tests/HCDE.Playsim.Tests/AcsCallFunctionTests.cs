@@ -431,7 +431,7 @@ public class AcsCallFunctionTests
             (int)AcsPcode.PushNumber, 0,
             (int)AcsPcode.PushNumber, volumeFixed,
             (int)AcsPcode.CallFunc, 3, 70,
-            (int)AcsPcode.PushNumber, 1,
+            (int)AcsPcode.PushNumber, 0,
             (int)AcsPcode.Eq,
             (int)AcsPcode.IfNotGoto, 56,
             (int)AcsPcode.Lspec2Direct, 112, 7, 35);
@@ -439,7 +439,7 @@ public class AcsCallFunctionTests
     }
 
     [Fact]
-    public void CallFunc_PlayActorSound_ReturnsActivatorCount()
+    public void CallFunc_PlayActorSound_ReturnsNativeZero()
     {
         var sim = Room();
         var player = sim.Players.Single();
@@ -447,7 +447,7 @@ public class AcsCallFunctionTests
             (int)AcsPcode.PushNumber, 0,
             (int)AcsPcode.PushNumber, 0,
             (int)AcsPcode.CallFunc, 2, 71,
-            (int)AcsPcode.PushNumber, 1,
+            (int)AcsPcode.PushNumber, 0,
             (int)AcsPcode.Eq,
             (int)AcsPcode.IfNotGoto, 48,
             (int)AcsPcode.Lspec2Direct, 112, 7, 35);
@@ -485,11 +485,11 @@ public class AcsCallFunctionTests
             Things = [new LevelThing { Type = 1, X = 32, Y = 64 }],
         });
         var player = sim.Players.Single();
-        var stack = new List<int> { 7, 10, 14, 1, 128 };
+        var stack = new List<int> { 7, 10, 0, 1, 128 };
         Assert.True(AcsCallFunctions.TryInvoke(
-            sim, stack, new AcsActivatorBinding { Value = player }, [], new AcsGlobalStrings(),
+            sim, stack, new AcsActivatorBinding { Value = player }, ["Fire"], new AcsGlobalStrings(),
             AcsCallFunctions.SetSectorDamage, 5, out var count));
-        Assert.Equal(1, count);
+        Assert.Equal(0, count);
         Assert.Equal(10, sim.Level.Sectors[0].DamageAmount);
         Assert.Equal("Fire", sim.Level.Sectors[0].DamageType);
         Assert.Equal(0, sim.Level.Sectors[1].DamageAmount);
@@ -518,7 +518,7 @@ public class AcsCallFunctionTests
             (int)AcsPcode.PushNumber, 0,
             (int)AcsPcode.PushNumber, 0,
             (int)AcsPcode.CallFunc, 2, 62,
-            (int)AcsPcode.PushNumber, 1,
+            (int)AcsPcode.PushNumber, 0,
             (int)AcsPcode.Eq,
             (int)AcsPcode.IfNotGoto, 48,
             (int)AcsPcode.Lspec2Direct, 112, 7, 35);
@@ -526,7 +526,7 @@ public class AcsCallFunctionTests
     }
 
     [Fact]
-    public void CallFunc_PlaySound_ReturnsActivatorCount()
+    public void CallFunc_PlaySound_ReturnsNativeZero()
     {
         var sim = Room();
         var player = sim.Players.Single();
@@ -534,7 +534,7 @@ public class AcsCallFunctionTests
             (int)AcsPcode.PushNumber, 0,
             (int)AcsPcode.PushNumber, 0,
             (int)AcsPcode.CallFunc, 2, 61,
-            (int)AcsPcode.PushNumber, 1,
+            (int)AcsPcode.PushNumber, 0,
             (int)AcsPcode.Eq,
             (int)AcsPcode.IfNotGoto, 48,
             (int)AcsPcode.Lspec2Direct, 112, 7, 35);
@@ -559,7 +559,7 @@ public class AcsCallFunctionTests
             (int)AcsPcode.PushNumber, 1,
             (int)AcsPcode.CallFunc, 7, 61);
         var request = Assert.Single(sim.PendingSoundRequests);
-        Assert.Equal(3, request.Channel); Assert.Equal(16, request.Flags);
+        Assert.Equal(3, request.Channel); Assert.Equal(16 | (int)(SimulationSoundFlags.Loop | SimulationSoundFlags.NoStop | SimulationSoundFlags.Local), request.Flags);
         Assert.Equal(0.5f, request.Volume); Assert.Equal(2f, request.Attenuation);
         Assert.True(request.Loop); Assert.True(request.Local);
     }
@@ -725,6 +725,7 @@ public class AcsCallFunctionTests
         {
             Format = MapDataFormat.HexenBinary,
             MapName = "MAP01",
+            TerrainDefinitions = [new("Water")],
             Sectors = [new LevelSector { Index = 0, Tag = 7, CeilingHeight = 128 }],
             Things = [new LevelThing { Type = 1, X = 32, Y = 64 }],
         });
@@ -733,7 +734,7 @@ public class AcsCallFunctionTests
         Assert.True(AcsCallFunctions.TryInvoke(
             sim, setStack, new AcsActivatorBinding { Value = player }, ["Water"], new AcsGlobalStrings(),
             AcsCallFunctions.SetSectorTerrain, 3, out var count));
-        Assert.Equal(1, count);
+        Assert.Equal(0, count);
         var globals = new AcsGlobalStrings();
         var getStack = new List<int> { 0 };
         Assert.True(AcsCallFunctions.TryInvoke(
@@ -750,7 +751,7 @@ public class AcsCallFunctionTests
         Assert.True(AcsCallFunctions.TryInvoke(
             sim, stack, new AcsActivatorBinding { Value = player }, ["SrcFog", "DstFog"], new AcsGlobalStrings(),
             AcsCallFunctions.SetActorTeleFog, 3, out var count));
-        Assert.Equal(1, count);
+        Assert.Equal(0, count);
         Assert.Equal("SrcFog", player.TeleFogSource);
         Assert.Equal("DstFog", player.TeleFogDest);
     }

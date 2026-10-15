@@ -95,7 +95,7 @@ public static class LineSpecials
     {
         foreach (var actor in sim.Actors)
         {
-            if (actor.IsDead || actor.Destroyed || actor.NoTrigger || actor is ProjectileActor)
+            if (actor.IsDead || actor.Destroyed || actor.NoTrigger || actor.NoClip || actor is ProjectileActor)
                 continue;
             if (actor.PreviousX.Raw == actor.X.Raw && actor.PreviousY.Raw == actor.Y.Raw)
                 continue;
@@ -274,6 +274,7 @@ public static class LineSpecials
                 177 => ThingHate.Execute(sim, actor, line.Arg0, line.Arg1, line.Arg2),
                 229 => ThingSetGoal.Execute(sim, line.Arg0, line.Arg1, line.Arg2, line.Arg3),
                 19 => ThingStop.ExecuteSpecial(sim, 19, actor, line.Arg0) == true,
+                191 => PlayerPropertyActions.ExecuteSpecial(sim, 191, actor, line.Arg0, line.Arg1, line.Arg2) == true,
                 127 => ThingSetSpecial.Execute(sim, 127, actor, line.Arg0, line.Arg1, line.Arg2, line.Arg3, line.Arg4) == true,
                 130 or 131 => ThingActivation.Execute(sim, actor, line.Arg0, line.Special == 130),
                 80 or 81 or 82 or 226 => ExecuteScriptControl(sim, line.Special, line.Arg0, line.Arg1, line.Arg2, line.Arg3, line.Arg4, actor, line, backSide ?? IsBackSide(line, actor.X.ToDouble(), actor.Y.ToDouble(), sim.Compat.HasFlag(CompatSurface.PointOnLine))) == true,
@@ -980,6 +981,7 @@ public static class LineSpecials
             activator.VelocityZ = verticalVelocity;
         }
         if (activator is PlayerPawn && !keepVelocity) activator.ReactionTime = 18;
+        if (activator.FloorClipEnabled) ActorPropertyActions.AdjustFloorClip(sim, activator);
         activator.ClearInterpolation();
         return true;
     }

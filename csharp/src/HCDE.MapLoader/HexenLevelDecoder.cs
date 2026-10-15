@@ -48,6 +48,7 @@ public static class HexenLevelDecoder
                 Arg0 = data[7], Arg1 = data[8], Arg2 = data[9], Arg3 = data[10], Arg4 = data[11],
                 // Encoded 7 is projectile touch, not the internal AnyCross value.
                 PlayerCross = activation == 0, PlayerUse = activation is 1 or 6, PassUse = activation == 6,
+                Impact = activation == 3,
                 RepeatSpecial = (flags & 512) != 0,
                 BlockSound = (flags & LevelLine.BlockSoundFlag) != 0,
             });

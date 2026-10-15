@@ -90,20 +90,25 @@ internal static class SectorDamage
         if (sector.DamageInterval <= 0) sector.DamageInterval = 32;
         if (sector.DamageAmount > 0 && sector.DamageEndsGodMode && actor is PlayerPawn player)
             player.GodMode = false;
+        if (sector.DamageAmount > 0 && actor is PlayerPawn { HasIronFeetProtection: true } suitPlayer)
+        {
+            if (suitPlayer.SectorProtectionMode == IronFeetMode.Full) return;
+            // Normal mode draws even on off-interval tics and zero-leak sectors.
+            if (suitPlayer.SectorProtectionMode == IronFeetMode.Normal
+                && simulation.NextSectorDamageByte() >= sector.Leakiness) return;
+        }
         // Called during the actor thinker, before the shared level clock advances.
         if (simulation.Thinkers.Clock.Tic % sector.DamageInterval != 0) return;
         if (sector.DamageAmount > 0)
         {
-            ActorDamage.Apply(actor, sector.DamageAmount, damageType: sector.DamageType);
+            if (actor is not PlayerPawn protectedPlayer || !protectedPlayer.GodMode && !protectedPlayer.GodMode2)
+                ActorDamage.Apply(actor, sector.DamageAmount, damageType: sector.DamageType);
             if (sector.DamageEndsLevel && actor is PlayerPawn && actor.Health <= 10 && simulation.DamageExitAllowed)
                 simulation.MarkExited(secret: false);
         }
         else
         {
-            var maximum = actor is PlayerPawn ? 100 : actor.ResurrectionHealth;
-            var healing = Math.Min(65536L, -(long)sector.DamageAmount);
-            if (actor.Health < maximum)
-                actor.Health = (int)Math.Min(maximum, actor.Health + healing);
+            actor.GiveBody((int)Math.Min(65536L, -(long)sector.DamageAmount), 100);
         }
     }
 }

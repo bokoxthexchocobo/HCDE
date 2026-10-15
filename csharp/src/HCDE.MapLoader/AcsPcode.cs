@@ -223,6 +223,7 @@ public enum AcsPcode : int
     VectorAngle = 222,
     CheckWeapon = 223,
     SetWeapon = 224,
+    TagString = 225,
     PushByte = 167,
     GiveInventory = 143,
     ClearInventory = 142,

@@ -38,13 +38,66 @@ public static class PickupCatalog
     public const int Backpack = 8;
     public const int Megasphere = 83;
     public const int Berserk = 2023;
+    public const int RadSuit = 2025;
+
+    private static readonly Dictionary<string, int> PickupClassNames = new(StringComparer.OrdinalIgnoreCase)
+    {
+        ["Clip"] = Clip,
+        ["ClipBox"] = ClipBox,
+        ["Shell"] = Shells,
+        ["ShellBox"] = ShellBox,
+        ["RocketAmmo"] = Rocket,
+        ["RocketBox"] = RocketBox,
+        ["Cell"] = Cell,
+        ["CellPack"] = CellPack,
+        ["Stimpack"] = Stimpack,
+        ["Medikit"] = Medikit,
+        ["HealthBonus"] = HealthBonus,
+        ["Soulsphere"] = Soulsphere,
+        ["Megasphere"] = Megasphere,
+        ["Berserk"] = Berserk,
+        ["RadSuit"] = RadSuit,
+        ["GreenArmor"] = GreenArmor,
+        ["BlueArmor"] = MegaArmor,
+        ["ArmorBonus"] = ArmorBonus,
+        ["Backpack"] = Backpack,
+        ["BlueCard"] = BlueCard,
+        ["BlueSkull"] = BlueSkull,
+        ["RedCard"] = RedCard,
+        ["RedSkull"] = RedSkull,
+        ["YellowCard"] = YellowCard,
+        ["YellowSkull"] = YellowSkull,
+        ["Chainsaw"] = Chainsaw,
+        ["Pistol"] = Pistol,
+        ["Shotgun"] = Shotgun,
+        ["SuperShotgun"] = SuperShotgun,
+        ["Chaingun"] = Chaingun,
+        ["RocketLauncher"] = RocketLauncher,
+        ["PlasmaRifle"] = PlasmaRifle,
+        ["BFG9000"] = Bfg,
+    };
+
+    internal static bool TryClassName(int editorNumber, out string name, bool strifeHealth = false, bool ravenHealth = false)
+    {
+        if (ravenHealth || strifeHealth)
+        {
+            name = ravenHealth
+                ? editorNumber switch { 82 => "ArtiHealth", 32 => "ArtiSuperHealth", _ => string.Empty }
+                : editorNumber switch { Stimpack => "MedPatch", Medikit => "MedicalKit", Megasphere => "SurgeryKit", _ => string.Empty };
+            return name.Length != 0;
+        }
+        foreach (var entry in PickupClassNames)
+            if (entry.Value == editorNumber) { name = entry.Key; return true; }
+        name = string.Empty;
+        return false;
+    }
 
     public static bool IsPickup(int doomEdNum, bool ravenHealth = false) => TryDescribe(doomEdNum, out _) || ravenHealth && doomEdNum == 32;
     internal static string DefaultPickupSound(int doomEdNum, bool strifeHealth = false, bool ravenHealth = false)
     {
         if (ravenHealth && doomEdNum is 82 or 32) return "misc/p_pkup";
         if (strifeHealth && doomEdNum is Stimpack or Medikit or Megasphere) return "misc/i_pkup";
-        if (doomEdNum is Soulsphere or Megasphere or Berserk) return "misc/p_pkup";
+        if (doomEdNum is Soulsphere or Megasphere or Berserk or RadSuit) return "misc/p_pkup";
         if (!TryDescribe(doomEdNum, out var gift)) return "misc/i_pkup";
         return gift.Kind switch
         {
@@ -61,10 +114,10 @@ public static class PickupCatalog
 
     /// <summary>Native Doom bonus and sphere defaults carry INVENTORY.ALWAYSPICKUP.</summary>
     internal static bool AlwaysPickup(int doomEdNum, bool strifeHealth = false) =>
-        !(strifeHealth && doomEdNum == Megasphere) && doomEdNum is HealthBonus or ArmorBonus or Soulsphere or Megasphere or Berserk;
+        !(strifeHealth && doomEdNum == Megasphere) && doomEdNum is HealthBonus or ArmorBonus or Soulsphere or Megasphere or Berserk or RadSuit;
 
     /// <summary>Native Actor defaults, with Doom Backpack's height override.</summary>
-    internal static Fixed HeightOf(int doomEdNum) => Fixed.FromInt(doomEdNum == Backpack ? 26 : 16);
+    internal static Fixed HeightOf(int doomEdNum) => Fixed.FromInt(doomEdNum == RadSuit ? 46 : doomEdNum == Backpack ? 26 : 16);
 
     /// <summary>Native PIT_CheckThing horizontal pickup contact uses strict axis bounds.</summary>
     internal static bool IsWithinHorizontalReach(Actor toucher, Actor pickup)
@@ -101,42 +154,7 @@ public static class PickupCatalog
         if (strifeHealth && (typeName.Equals("Stimpack", StringComparison.OrdinalIgnoreCase)
             || typeName.Equals("Medikit", StringComparison.OrdinalIgnoreCase)
             || typeName.Equals("Megasphere", StringComparison.OrdinalIgnoreCase))) return false;
-        doomEdNum = typeName.ToUpperInvariant() switch
-        {
-            "CLIP" => Clip,
-            "CLIPBOX" => ClipBox,
-            "SHELL" => Shells,
-            "SHELLBOX" => ShellBox,
-            "ROCKETAMMO" => Rocket,
-            "ROCKETBOX" => RocketBox,
-            "CELL" => Cell,
-            "CELLPACK" => CellPack,
-            "STIMPACK" => Stimpack,
-            "MEDIKIT" => Medikit,
-            "HEALTHBONUS" => HealthBonus,
-            "SOULSPHERE" => Soulsphere,
-            "MEGASPHERE" => Megasphere,
-            "BERSERK" => Berserk,
-            "GREENARMOR" => GreenArmor,
-            "BLUEARMOR" => MegaArmor,
-            "ARMORBONUS" => ArmorBonus,
-            "BACKPACK" => Backpack,
-            "BLUECARD" => BlueCard,
-            "BLUESKULL" => BlueSkull,
-            "REDCARD" => RedCard,
-            "REDSKULL" => RedSkull,
-            "YELLOWCARD" => YellowCard,
-            "YELLOWSKULL" => YellowSkull,
-            "CHAINSAW" => Chainsaw,
-            "PISTOL" => Pistol,
-            "SHOTGUN" => Shotgun,
-            "SUPERSHOTGUN" => SuperShotgun,
-            "CHAINGUN" => Chaingun,
-            "ROCKETLAUNCHER" => RocketLauncher,
-            "PLASMARIFLE" => PlasmaRifle,
-            "BFG9000" => Bfg,
-            _ => 0,
-        };
+        doomEdNum = PickupClassNames.GetValueOrDefault(typeName);
         return doomEdNum != 0 && IsPickup(doomEdNum);
     }
 
@@ -204,6 +222,7 @@ public static class PickupCatalog
             GiftKind.Health => GiveHealth(player, giftAmount, gift.Maximum),
             GiftKind.Megasphere => GiveMegasphere(player),
             GiftKind.Berserk => GiveBerserk(player),
+            GiftKind.RadSuit => GiveRadSuit(player),
             GiftKind.ArmorBonus => GiveArmorBonus(player.Inventory, armor, player.Simulation?.DehackedMaxArmor ?? 200),
             GiftKind.GreenArmor => GiveArmor(player.Inventory, armor, armorClass == 1 ? PlayerInventory.GreenSavePercent : PlayerInventory.MegaSavePercent, "GreenArmor"),
             GiftKind.MegaArmor => GiveArmor(player.Inventory, armor, armorClass == 1 ? PlayerInventory.GreenSavePercent : PlayerInventory.MegaSavePercent, "BlueArmor"),
@@ -464,9 +483,17 @@ public static class PickupCatalog
             Backpack => new Gift(GiftKind.Backpack, 0, 0),
             Megasphere => new Gift(GiftKind.Megasphere, 1, 0),
             Berserk => new Gift(GiftKind.Berserk, 1, 0),
+            RadSuit => new Gift(GiftKind.RadSuit, 1, 0),
             _ => default,
         };
         return gift.Kind != GiftKind.None;
+    }
+
+    private static bool GiveRadSuit(PlayerPawn player)
+    {
+        if (player.IsDead || player.Destroyed) return false;
+        player.GivePowerIronFeet(alwaysPickup: true);
+        return true;
     }
 
     private enum GiftKind
@@ -482,6 +509,7 @@ public static class PickupCatalog
         Backpack,
         Megasphere,
         Berserk,
+        RadSuit,
     }
 
     public enum KeyColor

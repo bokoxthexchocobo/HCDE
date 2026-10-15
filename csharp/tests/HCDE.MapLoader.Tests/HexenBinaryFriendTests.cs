@@ -509,6 +509,16 @@ public class HexenBinaryFriendTests
         Assert.Equal("Fire", level.FloorTerrainDamageType(0));
     }
 
+    [Fact]
+    public void TerrainSplashSoundLoadsAcrossWadLumpsAndSimulationCopy()
+    {
+        var wad = WithMapInfo(("TERRAIN", "splash S { sound water/splash }"),
+            ("TERRAIN", "splash S modify { } terrain Water { splash S } defaultterrain Water"));
+        Assert.True(LevelBuilder.TryFromWad(wad, "MAP01", out var level, out var error), error);
+        Assert.Equal("water/splash", Assert.Single(level.TerrainSplashDefinitions).NormalSplashSound);
+        Assert.Equal(level.TerrainSplashDefinitions, level.CopyForSimulation().TerrainSplashDefinitions);
+    }
+
     [Theory]
     [InlineData("MAPINFO", "GameInfo { DefaultDropStyle = 1 }", 1)]
     [InlineData("MAPINFO", "GameInfo { titlepage = \"TITLEPIC\" }", 2)]

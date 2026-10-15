@@ -375,7 +375,7 @@ public static class MapBehaviorBytecodeWalker
             => 0, // C++ sector/level/input/player-info/negate-pitch/print-bind/thing-damage/actor-texture-light/thing-count-camera/classify-print/savestring/char-range/eternity-stack/morph-classify PCDs (shadow legacy global-var enum aliases)
         (int)AcsPcode.SetMarineSprite
             or (int)AcsPcode.GetScreenWidth or (int)AcsPcode.GetScreenHeight
-            or (int)AcsPcode.StrLen or (int)AcsPcode.SetHudSize
+            or (int)AcsPcode.StrLen or (int)AcsPcode.TagString or (int)AcsPcode.SetHudSize
             or (int)AcsPcode.GetCvar or (int)AcsPcode.SetResultValue
             or (int)AcsPcode.GetLineRowOffset or (int)AcsPcode.ActivatorTid
             or (int)AcsPcode.GetSectorFloorZ or (int)AcsPcode.GetSectorCeilingZ
@@ -568,7 +568,7 @@ public static class MapBehaviorBytecodeWalker
             or (int)AcsPcode.IncGlobalVar or (int)AcsPcode.DecGlobalVar => 1,
         (int)AcsPcode.SetMarineWeapon or (int)AcsPcode.SetMarineSprite or (int)AcsPcode.PlayerNumber
             or (int)AcsPcode.GetScreenWidth or (int)AcsPcode.GetScreenHeight
-            or (int)AcsPcode.StrLen or (int)AcsPcode.SetHudSize
+            or (int)AcsPcode.StrLen or (int)AcsPcode.TagString or (int)AcsPcode.SetHudSize
             or (int)AcsPcode.GetCvar or (int)AcsPcode.SetResultValue
             or (int)AcsPcode.GetLineRowOffset or (int)AcsPcode.ActivatorTid
             or (int)AcsPcode.GetSectorFloorZ or (int)AcsPcode.GetSectorCeilingZ

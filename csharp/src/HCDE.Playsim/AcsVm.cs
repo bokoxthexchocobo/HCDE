@@ -315,6 +315,19 @@ public sealed class AcsVm
                     break;
                 case (int)AcsPcode.Nop:
                     break;
+                case (int)AcsPcode.TagString:
+                    var taggedStringId = Pop(fiber);
+                    if (!fiber.Done)
+                        fiber.Stack.Add(_globalStrings.Add(AcsStringIds.LookupTerminated(taggedStringId, fiber.StringTable, _globalStrings)));
+                    break;
+                case (int)AcsPcode.StrLen:
+                    var lengthStringId = Pop(fiber);
+                    if (!fiber.Done)
+                    {
+                        var lengthText = AcsStringIds.LookupTerminated(lengthStringId, fiber.StringTable, _globalStrings);
+                        fiber.Stack.Add(System.Text.Encoding.UTF8.GetByteCount(lengthText));
+                    }
+                    break;
                 case (int)AcsPcode.PushByte:
                 case (int)AcsPcode.Push2Bytes:
                 case (int)AcsPcode.Push3Bytes:
@@ -522,6 +535,7 @@ public sealed class AcsVm
                         ?? ThingThrustZ.ExecuteSpecial(sim, stackSpecial, fiber.Activator, stackArgs[0], stackArgs[1], stackArgs[2], stackArgs[3])
                         ?? ThingChangeTid.ExecuteSpecial(sim, stackSpecial, fiber.Activator, stackArgs[0], stackArgs[1])
                         ?? ThingStop.ExecuteSpecial(sim, stackSpecial, fiber.Activator, stackArgs[0])
+                        ?? PlayerPropertyActions.ExecuteSpecial(sim, stackSpecial, fiber.Activator, stackArgs[0], stackArgs[1], stackArgs[2])
                         ?? ThingHate.ExecuteSpecial(sim, stackSpecial, fiber.Activator, stackArgs[0], stackArgs[1], stackArgs[2])
                         ?? NoiseAlertSpecial.ExecuteSpecial(sim, stackSpecial, fiber.Activator, stackArgs[0], stackArgs[1])
                         ?? ThingSetGoal.ExecuteSpecial(sim, stackSpecial, stackArgs[0], stackArgs[1], stackArgs[2], stackArgs[3])
@@ -576,6 +590,7 @@ public sealed class AcsVm
                             ?? ThingThrustZ.ExecuteSpecial(sim, special, fiber.Activator, args[0], args[1], args[2], args[3])
                             ?? ThingChangeTid.ExecuteSpecial(sim, special, fiber.Activator, args[0], args[1])
                             ?? ThingStop.ExecuteSpecial(sim, special, fiber.Activator, args[0])
+                            ?? PlayerPropertyActions.ExecuteSpecial(sim, special, fiber.Activator, args[0], args[1], args[2])
                             ?? ThingHate.ExecuteSpecial(sim, special, fiber.Activator, args[0], args[1], args[2])
                             ?? NoiseAlertSpecial.ExecuteSpecial(sim, special, fiber.Activator, args[0], args[1])
                             ?? ThingSetGoal.ExecuteSpecial(sim, special, args[0], args[1], args[2], args[3])

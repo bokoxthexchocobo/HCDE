@@ -15,6 +15,13 @@ internal static class AcsStringIds
 
     public static int FromGlobalIndex(int index) => index | StringPoolMarker;
 
+    public static string LookupTerminated(int stringId, string[] moduleTable, AcsGlobalStrings global)
+    {
+        var text = Lookup(stringId, moduleTable, global);
+        var terminator = text.IndexOf('\0');
+        return terminator < 0 ? text : text[..terminator];
+    }
+
     public static string Lookup(int stringId, string[] moduleTable, AcsGlobalStrings global)
     {
         if (IsGlobalPool(stringId))

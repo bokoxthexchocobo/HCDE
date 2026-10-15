@@ -23,6 +23,8 @@ public sealed class LevelSector
     public bool HurtMonsters { get; init; }
     public bool HarmInAir { get; init; }
     public bool NoAttack { get; init; }
+    /// <summary>Derived native SECMF_LIFT marker for repeatable platform sectors.</summary>
+    public bool IsLift { get; internal set; }
     public bool Silent { get; init; }
     public bool DropActors { get; init; }
     public int Tag { get; init; }
@@ -132,6 +134,7 @@ public sealed class LevelLine
     public int Arg3 { get; set; }
     public int Arg4 { get; init; }
     public bool PlayerCross { get; set; }
+    public bool Impact { get; init; }
     public bool PlayerUse { get; set; }
     /// <summary>Native SPAC_UseBack. A use trace may activate this line from its back side.</summary>
     public bool PlayerUseBack { get; set; }
@@ -189,18 +192,25 @@ public sealed class PlayLevel
     public IReadOnlyList<LevelFloorTerrain> FloorTerrainMappings { get; set; } = Array.Empty<LevelFloorTerrain>();
     public string DefaultTerrain { get; set; } = "";
     public IReadOnlyList<string> TerrainSplashes { get; set; } = Array.Empty<string>();
+    public IReadOnlyList<LevelTerrainSplash> TerrainSplashDefinitions { get; set; } = Array.Empty<LevelTerrainSplash>();
     public string? FloorTerrainDamageType(int sectorIndex)
         => FloorTerrainDefinition(sectorIndex)?.DamageType;
+    private static readonly LevelTerrainDefinition BuiltInSolidTerrain = new("Solid");
+
+    public LevelTerrainDefinition? FindTerrainDefinition(string name)
+        => TerrainDefinitions.LastOrDefault(terrain => terrain.Name.Equals(name, StringComparison.OrdinalIgnoreCase))
+            ?? (name.Equals("Solid", StringComparison.OrdinalIgnoreCase) ? BuiltInSolidTerrain : null);
+
     public LevelTerrainDefinition? FloorTerrainDefinition(int sectorIndex)
     {
         if ((uint)sectorIndex >= (uint)Sectors.Count) return null;
         var sector = Sectors[sectorIndex];
         var name = sector.FloorTerrain;
-        if (string.IsNullOrEmpty(name))
+        if (string.IsNullOrEmpty(name) || name.Equals("None", StringComparison.OrdinalIgnoreCase) || name.Equals("Null", StringComparison.OrdinalIgnoreCase))
             name = FloorTerrainMappings.LastOrDefault(floor => floor.Texture.Equals(sector.FloorPic, StringComparison.OrdinalIgnoreCase))?.Terrain ?? "";
         if (string.IsNullOrEmpty(name) || name.Equals("None", StringComparison.OrdinalIgnoreCase) || name.Equals("Null", StringComparison.OrdinalIgnoreCase))
             name = DefaultTerrain;
-        return TerrainDefinitions.LastOrDefault(terrain => terrain.Name.Equals(name, StringComparison.OrdinalIgnoreCase));
+        return FindTerrainDefinition(string.IsNullOrEmpty(name) ? "Solid" : name);
     }
     public bool HexenHack { get; set; }
     public int? DefaultDropStyle { get; set; }
@@ -232,6 +242,7 @@ public sealed class PlayLevel
     public bool ActivateOwnDeathSpecials { get; set; }
     public IReadOnlyList<HCDE.Gamedata.MapInfoDamageType> DamageTypes { get; set; } = Array.Empty<HCDE.Gamedata.MapInfoDamageType>();
     public string MapName { get; init; } = "";
+    public int? LevelNumber { get; set; }
     public MapDataFormat Format { get; init; }
     public string Namespace { get; init; } = "";
     public bool UsesDoomSectorNumbers => Format == MapDataFormat.DoomBinary
@@ -255,7 +266,7 @@ public sealed class PlayLevel
     /// <summary>Copies runtime lines, sectors and sides while sharing immutable map data.</summary>
     public PlayLevel CopyForSimulation() => new()
     {
-        MapName = MapName, Format = Format, Namespace = Namespace, BehaviorData = BehaviorData, HasBehavior = HasBehavior, HexenHack = HexenHack,
+        MapName = MapName, LevelNumber = LevelNumber, Format = Format, Namespace = Namespace, BehaviorData = BehaviorData, HasBehavior = HasBehavior, HexenHack = HexenHack,
         DefaultDropStyle = DefaultDropStyle,
         PickupColor = PickupColor,
         AirControl = AirControl,
@@ -277,6 +288,7 @@ public sealed class PlayLevel
         TerrainDefinitions = TerrainDefinitions.ToArray(),
         FloorTerrainMappings = FloorTerrainMappings.ToArray(), DefaultTerrain = DefaultTerrain,
         TerrainSplashes = TerrainSplashes.ToArray(),
+        TerrainSplashDefinitions = TerrainSplashDefinitions.ToArray(),
         Vertices = Vertices, Sectors = Sectors.Select(sector => sector.Copy()).ToArray(),
         Sides = Sides.Select(side => side.Copy()).ToArray(), Things = Things, Blockmap = Blockmap,
         Lines = Lines.Select(line => line.Copy()).ToList(),
@@ -335,9 +347,11 @@ public static class LevelBuilder
             level.FloorTerrainMappings = terrains.Floors;
             level.DefaultTerrain = terrains.DefaultTerrain;
             level.TerrainSplashes = terrains.Splashes ?? Array.Empty<string>();
+            level.TerrainSplashDefinitions = terrains.SplashDefinitions ?? Array.Empty<LevelTerrainSplash>();
             level.DefaultDropStyle = defaultDropStyle;
             level.AirControl = airControl;
             level.LevelGravity = levelGravity;
+            level.LevelNumber = selectedMap?.LevelNum;
             ApplyMusicMetadata(level, selectedMap, gameIntermissionMusic);
             level.PickupColor = pickupColor;
             level.SoundDefinitions = soundDefinitions;
@@ -358,9 +372,11 @@ public static class LevelBuilder
             level.FloorTerrainMappings = terrains.Floors;
             level.DefaultTerrain = terrains.DefaultTerrain;
             level.TerrainSplashes = terrains.Splashes ?? Array.Empty<string>();
+            level.TerrainSplashDefinitions = terrains.SplashDefinitions ?? Array.Empty<LevelTerrainSplash>();
             level.DefaultDropStyle = defaultDropStyle;
             level.AirControl = airControl;
             level.LevelGravity = levelGravity;
+            level.LevelNumber = selectedMap?.LevelNum;
             ApplyMusicMetadata(level, selectedMap, gameIntermissionMusic);
             level.PickupColor = pickupColor;
             level.SoundDefinitions = soundDefinitions;
@@ -381,9 +397,11 @@ public static class LevelBuilder
         level.FloorTerrainMappings = terrains.Floors;
         level.DefaultTerrain = terrains.DefaultTerrain;
         level.TerrainSplashes = terrains.Splashes ?? Array.Empty<string>();
+        level.TerrainSplashDefinitions = terrains.SplashDefinitions ?? Array.Empty<LevelTerrainSplash>();
         level.DefaultDropStyle = defaultDropStyle;
         level.AirControl = airControl;
         level.LevelGravity = levelGravity;
+        level.LevelNumber = selectedMap?.LevelNum;
         ApplyMusicMetadata(level, selectedMap, gameIntermissionMusic);
             level.PickupColor = pickupColor;
         level.SoundDefinitions = soundDefinitions;
@@ -714,6 +732,7 @@ public static class LevelBuilder
                 Arg3 = source.Arg3,
                 Arg4 = source.Arg4,
                 PlayerCross = source.PlayerCross,
+                Impact = source.Impact,
                 PlayerUse = source.PlayerUse && !source.PassUse,
                 PlayerUseBack = source.PlayerUseBack,
                 UseThrough = source.PlayerUse && source.PassUse,

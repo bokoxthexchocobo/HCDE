@@ -4,11 +4,16 @@ namespace HCDE.Playsim;
 internal sealed class AcsGlobalStrings
 {
     private readonly List<string> _entries = new();
+    private readonly Dictionary<string, int> _indices = new(StringComparer.Ordinal);
 
     public int Add(string value)
     {
+        value ??= string.Empty;
+        if (_indices.TryGetValue(value, out var existing))
+            return AcsStringIds.FromGlobalIndex(existing);
         var index = _entries.Count;
-        _entries.Add(value ?? string.Empty);
+        _entries.Add(value);
+        _indices.Add(value, index);
         return AcsStringIds.FromGlobalIndex(index);
     }
 

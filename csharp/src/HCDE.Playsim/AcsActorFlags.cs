@@ -39,6 +39,21 @@ internal static class AcsActorFlags
         NoRadiusDamage,
         NeverTarget,
         SeeFriendlyMonsters,
+        LookAllAround,
+        StandStill,
+        InConversation,
+        DontFollowPlayers,
+        CanJump,
+        BlockAsPlayer,
+        SpecialFloorClip,
+        FloorClipEnabled,
+        AvoidHazards,
+        StayOnLift,
+        AvoidMelee,
+        CantLeaveFloorPic,
+        Frightening,
+        Frightened,
+        NoFear,
         NoTargetSwitch,
         QuickToRetaliate,
         NoHatePlayers,
@@ -99,6 +114,8 @@ internal static class AcsActorFlags
         Floating,
         NoGravity,
         Fly,
+        FlyCheat,
+        NoClip,
         NoFriction,
         RetargetAfterSlam,
         OnlySlamSolid,
@@ -288,6 +305,36 @@ internal static class AcsActorFlags
         { kind = Kind.NeverTarget; return true; }
         if (flagName.Equals("SEEFRIENDLYMONSTERS", StringComparison.OrdinalIgnoreCase))
         { kind = Kind.SeeFriendlyMonsters; return true; }
+        if (flagName.Equals("LOOKALLAROUND", StringComparison.OrdinalIgnoreCase))
+        { kind = Kind.LookAllAround; return true; }
+        if (flagName.Equals("STANDSTILL", StringComparison.OrdinalIgnoreCase))
+        { kind = Kind.StandStill; return true; }
+        if (flagName.Equals("INCONVERSATION", StringComparison.OrdinalIgnoreCase))
+        { kind = Kind.InConversation; return true; }
+        if (flagName.Equals("DONTFOLLOWPLAYERS", StringComparison.OrdinalIgnoreCase))
+        { kind = Kind.DontFollowPlayers; return true; }
+        if (flagName.Equals("NOFEAR", StringComparison.OrdinalIgnoreCase))
+        { kind = Kind.NoFear; return true; }
+        if (flagName.Equals("FRIGHTENED", StringComparison.OrdinalIgnoreCase))
+        { kind = Kind.Frightened; return true; }
+        if (flagName.Equals("FRIGHTENING", StringComparison.OrdinalIgnoreCase))
+        { kind = Kind.Frightening; return true; }
+        if (flagName.Equals("CANTLEAVEFLOORPIC", StringComparison.OrdinalIgnoreCase))
+        { kind = Kind.CantLeaveFloorPic; return true; }
+        if (flagName.Equals("AVOIDMELEE", StringComparison.OrdinalIgnoreCase))
+        { kind = Kind.AvoidMelee; return true; }
+        if (flagName.Equals("STAYONLIFT", StringComparison.OrdinalIgnoreCase))
+        { kind = Kind.StayOnLift; return true; }
+        if (flagName.Equals("AVOIDHAZARDS", StringComparison.OrdinalIgnoreCase))
+        { kind = Kind.AvoidHazards; return true; }
+        if (flagName.Equals("FLOORCLIP", StringComparison.OrdinalIgnoreCase))
+        { kind = Kind.FloorClipEnabled; return true; }
+        if (flagName.Equals("SPECIALFLOORCLIP", StringComparison.OrdinalIgnoreCase))
+        { kind = Kind.SpecialFloorClip; return true; }
+        if (flagName.Equals("BLOCKASPLAYER", StringComparison.OrdinalIgnoreCase))
+        { kind = Kind.BlockAsPlayer; return true; }
+        if (flagName.Equals("CANJUMP", StringComparison.OrdinalIgnoreCase))
+        { kind = Kind.CanJump; return true; }
         if (flagName.Equals("NOTARGETSWITCH", StringComparison.OrdinalIgnoreCase))
         { kind = Kind.NoTargetSwitch; return true; }
         if (flagName.Equals("QUICKTORETALIATE", StringComparison.OrdinalIgnoreCase))
@@ -456,6 +503,10 @@ internal static class AcsActorFlags
         { kind = Kind.FullVolumeDeath; return true; }
         if (flagName.Equals("FLY", StringComparison.OrdinalIgnoreCase))
         { kind = Kind.Fly; return true; }
+        if (flagName.Equals("FLYCHEAT", StringComparison.OrdinalIgnoreCase))
+        { kind = Kind.FlyCheat; return true; }
+        if (flagName.Equals("NOCLIP", StringComparison.OrdinalIgnoreCase))
+        { kind = Kind.NoClip; return true; }
         if (flagName.Equals("NOGRAVITY", StringComparison.OrdinalIgnoreCase))
         {
             kind = Kind.NoGravity;
@@ -509,6 +560,21 @@ internal static class AcsActorFlags
         Kind.NoRadiusDamage => actor.NoRadiusDamage,
         Kind.NeverTarget => actor.NeverTarget,
         Kind.SeeFriendlyMonsters => actor.SeeFriendlyMonsters,
+        Kind.LookAllAround => actor.LookAllAround,
+        Kind.StandStill => actor.StandStill,
+        Kind.InConversation => actor.InConversation,
+        Kind.DontFollowPlayers => actor.DontFollowPlayers,
+        Kind.CanJump => actor.CanJump,
+        Kind.BlockAsPlayer => actor.BlockAsPlayer,
+        Kind.SpecialFloorClip => actor.SpecialFloorClip,
+        Kind.FloorClipEnabled => actor.FloorClipEnabled,
+        Kind.AvoidHazards => actor.AvoidHazards,
+        Kind.StayOnLift => actor.StayOnLift,
+        Kind.AvoidMelee => actor.AvoidMelee,
+        Kind.CantLeaveFloorPic => actor.CantLeaveFloorPic,
+        Kind.Frightening => actor.Frightening,
+        Kind.Frightened => actor.Frightened,
+        Kind.NoFear => actor.NoFear,
         Kind.NoTargetSwitch => actor.NoTargetSwitch,
         Kind.QuickToRetaliate => actor.QuickToRetaliate,
         Kind.NoHatePlayers => actor.NoHatePlayers,
@@ -577,6 +643,8 @@ internal static class AcsActorFlags
         Kind.Floating => actor.Floating,
         Kind.NoGravity => actor.NoGravity,
         Kind.Fly => actor.Fly,
+        Kind.FlyCheat => actor.FlyCheat,
+        Kind.NoClip => actor.NoClip,
         Kind.NoFriction => actor.NoFriction,
         Kind.FullVolumeActive => actor.FullVolumeActive,
         Kind.RetargetAfterSlam => actor.RetargetAfterSlam,
@@ -648,6 +716,21 @@ internal static class AcsActorFlags
             case Kind.NoRadiusDamage: actor.NoRadiusDamage = value; break;
             case Kind.NeverTarget: actor.NeverTarget = value; break;
             case Kind.SeeFriendlyMonsters: actor.SeeFriendlyMonsters = value; break;
+            case Kind.LookAllAround: actor.LookAllAround = value; break;
+            case Kind.StandStill: actor.StandStill = value; break;
+            case Kind.InConversation: actor.InConversation = value; break;
+            case Kind.DontFollowPlayers: actor.DontFollowPlayers = value; break;
+            case Kind.CanJump: actor.CanJump = value; break;
+            case Kind.BlockAsPlayer: actor.BlockAsPlayer = value; break;
+            case Kind.SpecialFloorClip: actor.SpecialFloorClip = value; break;
+            case Kind.FloorClipEnabled: actor.FloorClipEnabled = value; break;
+            case Kind.AvoidHazards: actor.AvoidHazards = value; break;
+            case Kind.StayOnLift: actor.StayOnLift = value; break;
+            case Kind.AvoidMelee: actor.AvoidMelee = value; break;
+            case Kind.CantLeaveFloorPic: actor.CantLeaveFloorPic = value; break;
+            case Kind.Frightening: actor.Frightening = value; break;
+            case Kind.Frightened: actor.Frightened = value; break;
+            case Kind.NoFear: actor.NoFear = value; break;
             case Kind.NoTargetSwitch: actor.NoTargetSwitch = value; break;
             case Kind.QuickToRetaliate: actor.QuickToRetaliate = value; break;
             case Kind.NoHatePlayers: actor.NoHatePlayers = value; actor.HasFriendshipOverride = true; break;
@@ -728,6 +811,8 @@ internal static class AcsActorFlags
             case Kind.FullVolumeSee: actor.FullVolumeSee = value; break;
             case Kind.FullVolumeDeath: actor.FullVolumeDeath = value; break;
             case Kind.Fly: actor.Fly = value; break;
+            case Kind.FlyCheat: actor.FlyCheat = value; break;
+            case Kind.NoClip: actor.NoClip = value; break;
             case Kind.NoGravity: actor.NoGravity = value; actor.HasMovementActionOverride = true; break;
             case Kind.NoExplodeFloor: actor.NoExplodeFloor = value; break;
             case Kind.CeilingHugger: actor.CeilingHugger = value; break;

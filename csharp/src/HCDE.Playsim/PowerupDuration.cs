@@ -1,5 +1,8 @@
 namespace HCDE.Playsim;
 
+/// <summary>Native PowerIronFeet sector protection modes; other names use None behavior.</summary>
+public enum IronFeetMode { Normal, Full, None }
+
 public enum ManagedPowerupKind
 {
     Damage,
@@ -12,6 +15,8 @@ public enum ManagedPowerupKind
     HighJump,
     Prosperity,
     Spread,
+    IronFeet,
+    Mask,
 }
 
 /// <summary>Native Powerup.HandlePickup duration rules for finite managed powers.</summary>
