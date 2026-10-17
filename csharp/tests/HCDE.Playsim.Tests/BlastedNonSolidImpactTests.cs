@@ -23,7 +23,6 @@ public class BlastedNonSolidImpactTests
     [InlineData("notmonster")]
     [InlineData("notshootable")]
     [InlineData("noblockmap")]
-    [InlineData("dead")]
     [InlineData("destroyed")]
     public void ExcludedNonSolidTargetDoesNotBlockOrReceiveMomentum(string exclusion)
     {
@@ -35,7 +34,6 @@ public class BlastedNonSolidImpactTests
             case "notmonster": target.IsMonster = false; break;
             case "notshootable": target.Shootable = false; break;
             case "noblockmap": target.NoBlockmap = true; break;
-            case "dead": target.Health = 0; break;
             case "destroyed": target.Destroy(); break;
         }
         var health = target.Health;

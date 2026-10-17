@@ -71,5 +71,7 @@ public class MultiplayerPickupStayTests
         Things = mode == SpawnGameMode.Single
             ? [new LevelThing { Type = 1 }, new LevelThing { Type = type }]
             : [new LevelThing { Type = 1 }, new LevelThing { Type = 2 }, new LevelThing { Type = type }],
-    }, spawnOptions: new SpawnOptions(Mode: mode));
+    }, spawnOptions: new SpawnOptions(Mode: mode),
+        dehacked: mode == SpawnGameMode.Deathmatch && type == PickupCatalog.RedCard
+            ? HCDE.Gamedata.DehackedPatch.Apply("Thing 49\nBits = SPECIAL\n") : null);
 }

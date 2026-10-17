@@ -184,10 +184,12 @@ public static class LineSpecials
     public static bool ActivateMapLine(AuthoritySimulation sim, Actor actor, LevelLine line, bool use, bool? backSide = null)
     {
         if (actor.IsDead || actor.Destroyed || line.Special == 0) return false;
+        var useBackSide = use && (backSide ?? IsBackSide(line, actor.X.ToDouble(), actor.Y.ToDouble(), sim.Compat.HasFlag(CompatSurface.PointOnLine)));
         if (sim.Level.Format == MapDataFormat.Unknown)
         {
             var legacy = Execute(sim, actor, line.Special, line.Tag, line);
             if (legacy && !line.RepeatsSpecial) line.Special = 0;
+            if (legacy && use) NotifySuccessfulUse(sim, actor, line, useBackSide);
             return legacy;
         }
         if (actor is not PlayerPawn) return false;
@@ -264,7 +266,7 @@ public static class LineSpecials
                 20 or 21 or 22 or 23 or 24 or 25 or 28 or 35 or 36 or 37 or 46 or 62 or 66 or 67 or 68 or 99 or 238 or 239 or 242 or 256 or 257 or 258 or 259 or 260 or 275 or 279 or ScrollFloor or ScrollCeiling => ExecuteFloorSpecial(sim, line.Special,
                     line.Arg0, line.Arg1, line.Arg2, line.Arg3, line.Arg4, line) == true,
                 70 or 154 => !(backSide ?? IsBackSide(line, actor.X.ToDouble(), actor.Y.ToDouble(), sim.Compat.HasFlag(CompatSurface.PointOnLine)))
-                    && ExecuteTeleportSpecial(sim, line.Special, line.Arg0, line.Arg1, actor, false) == true,
+                    && ExecuteTeleportSpecial(sim, line.Special, line.Arg0, line.Arg1, actor, false, line.Arg2) == true,
                 216 => SectorGravity.ExecuteSpecial(sim, 216, line.Arg0, line.Arg1, line.Arg2) == true,
                 132 => ThingRemove.ExecuteSpecial(sim, 132, actor, line.Arg0) == true,
                 72 => ThingThrust.ExecuteSpecial(sim, 72, actor, line.Arg0, line.Arg1, line.Arg2, line.Arg3) == true,
@@ -289,7 +291,14 @@ public static class LineSpecials
             };
         }
         if (activated && !repeat) line.Special = 0;
+        if (activated && use) NotifySuccessfulUse(sim, actor, line, useBackSide);
         return activated;
+    }
+
+    private static void NotifySuccessfulUse(AuthoritySimulation sim, Actor actor, LevelLine line, bool backSide)
+    {
+        var levelNumber = sim.Level.LevelNumber ?? HCDE.Gamedata.MapInfoParser.DefaultLevelNum(sim.Level.MapName, out _);
+        actor.PlayerUsedSomethingMakeRumble(backSide ? 1 << 10 : 1 << 1, levelNumber, line.Index, line.Special);
     }
 
     internal static bool? ExecuteSectorRotation(AuthoritySimulation sim, int special, int tag, int floorDegrees, int ceilingDegrees)
@@ -632,6 +641,9 @@ public static class LineSpecials
             else if (floor > target)
                 floor = Math.Max(target, floor - motion.Speed);
             var reachedDestination = floor == target;
+            if (door && motion.Closing)
+                ActorPhysics.GrindActors(sim, motion.SectorIndex,
+                    actor => ActorPhysics.BlocksLoweringCeiling(sim, actor, floor));
             if (door && motion.Closing && sim.Actors.Any(actor => actor.IsSectorMoverActor && ActorPhysics.BlocksSectorGeometry(actor)
                 && ActorPhysics.TouchesSector(sim, actor, motion.SectorIndex) && ActorPhysics.BlocksLoweringCeiling(sim, actor, floor)))
             {
@@ -644,6 +656,10 @@ public static class LineSpecials
             }
             if (!door && floor > sim.Floors[motion.SectorIndex])
             {
+                ActorPhysics.GrindActors(sim, motion.SectorIndex, actor =>
+                    ActorPhysics.RaisedFloorActorZ(actor, ActorPhysics.SectorSupportFloor(sim, actor),
+                        Math.Max(ActorPhysics.SectorSupportFloor(sim, actor), floor))
+                        + actor.Height.ToDouble() > ActorPhysics.SectorSupportCeiling(sim, actor));
                 var blocked = sim.Actors.Where(actor => actor.IsSectorMoverActor && ActorPhysics.BlocksSectorGeometry(actor) && ActorPhysics.TouchesSector(sim, actor, motion.SectorIndex)
                     && (actor.ActsLikeBridge && floor > ActorPhysics.SectorSupportFloor(sim, actor)
                             && actor.Z.ToDouble() <= floor
@@ -935,12 +951,12 @@ public static class LineSpecials
     }
 
     internal static bool? ExecuteTeleportSpecial(AuthoritySimulation sim, int special, int tid, int sectorTag,
-        Actor? activator, bool backSide) => special is 70 or 154
+        Actor? activator, bool backSide, int noSourceFog = 0) => special is 70 or 154
         ? !backSide && (tid != 0 || sectorTag != 0) && activator is { Destroyed: false }
-            && TeleportActivator(sim, activator, tid, byThingId: true, sectorTag: sectorTag, keepVelocity: special == 154)
+            && TeleportActivator(sim, activator, tid, byThingId: true, sectorTag: sectorTag, keepVelocity: special == 154, noSourceFog: noSourceFog != 0)
         : null;
 
-    private static bool TeleportActivator(AuthoritySimulation sim, Actor? activator, int target = 0, bool byThingId = false, int sectorTag = 0, bool keepVelocity = false)
+    private static bool TeleportActivator(AuthoritySimulation sim, Actor? activator, int target = 0, bool byThingId = false, int sectorTag = 0, bool keepVelocity = false, bool noSourceFog = false)
     {
         if (activator == null || activator.NoTeleport)
             return false;
@@ -962,10 +978,18 @@ public static class LineSpecials
         var aboveFloor = activator.Z.ToDouble() - sim.FloorOf(activator.SectorIndex);
         var missileSpeed = activator.VelXYToSpeed();
         var verticalVelocity = activator.VelocityZ;
+        var destinationSector = ActorPhysics.SectorAt(sim.Level, dest.X.ToDouble(), dest.Y.ToDouble());
+        var destinationZ = sim.FloorOf(destinationSector);
+        if (activator is ProjectileActor || activator is PlayerPawn && activator.NoGravity && aboveFloor != 0)
+            destinationZ = Math.Min(destinationZ + aboveFloor, sim.CeilingOf(destinationSector) - activator.Height.ToDouble());
+        var destination = (X: dest.X.ToDouble(), Y: dest.Y.ToDouble(), Z: destinationZ);
+        var destinationAngle = dest.Angle.ToDegrees();
+        var teleportFlags = 1 | (noSourceFog ? 0 : 2) | (keepVelocity ? 8 : 128);
+        if (!activator.PreTeleport(destination, destinationAngle, teleportFlags)) return false;
+        if (!TeleportActorCollision.TryClear(sim, activator, destination.X, destination.Y, destination.Z))
+            return false;
         activator.X = dest.X;
         activator.Y = dest.Y;
-        activator.Angle = dest.Angle;
-        if (!keepVelocity) activator.VelocityX = activator.VelocityY = activator.VelocityZ = default;
         ActorPhysics.PlaceOnFloor(sim, activator);
         if (activator is ProjectileActor || activator is PlayerPawn && activator.NoGravity && aboveFloor != 0)
         {
@@ -975,14 +999,18 @@ public static class LineSpecials
             activator.OnGround = activator.Z.ToDouble() <= floor;
             activator.OnMobj = false;
         }
+        if (activator is PlayerPawn) activator.PlayerTeleportedMakeRumble();
+        activator.Angle = dest.Angle;
+        if (!keepVelocity) activator.VelocityX = activator.VelocityY = activator.VelocityZ = default;
         if (activator is ProjectileActor)
         {
             activator.VelFromAngle(missileSpeed);
             activator.VelocityZ = verticalVelocity;
         }
-        if (activator is PlayerPawn && !keepVelocity) activator.ReactionTime = 18;
+        if (activator is PlayerPawn teleportPlayer && !keepVelocity) activator.ReactionTime = teleportPlayer.GetTeleportFreezeTime();
         if (activator.FloorClipEnabled) ActorPropertyActions.AdjustFloorClip(sim, activator);
         activator.ClearInterpolation();
+        activator.PostTeleport(destination, destinationAngle, teleportFlags);
         return true;
     }
 

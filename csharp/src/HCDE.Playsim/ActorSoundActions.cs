@@ -21,7 +21,7 @@ public static class ActorSoundActions
         if (!float.IsFinite(startTime)) throw new ArgumentOutOfRangeException(nameof(startTime));
         if (startTime < 0 && (flags & SimulationSoundFlags.Loop) != 0)
             throw new NotSupportedException("Negative loop start offsets are not yet supported.");
-        if (sound.Length == 0) return;
+        if (sound.Length == 0 || sound.Equals("None", StringComparison.OrdinalIgnoreCase)) return;
         sim.QueueSoundRequest(new SimulationSoundRequest(0, sound, channel, (int)flags, volume, false,
             attenuation, false, Pitch: pitch > 0 ? pitch : null, StartTime: Math.Max(0, startTime),
             NonPositional: true), immediate: true);
@@ -42,7 +42,7 @@ public static class ActorSoundActions
         if (!float.IsFinite(startTime)) throw new ArgumentOutOfRangeException(nameof(startTime));
         if (startTime < 0 && (flags & SimulationSoundFlags.Loop) != 0)
             throw new NotSupportedException("Negative loop start offsets are not yet supported.");
-        if (sound.Length == 0) return;
+        if (sound.Length == 0 || sound.Equals("None", StringComparison.OrdinalIgnoreCase)) return;
         sim.QueueSoundRequest(new SimulationSoundRequest(0, sound, channel, (int)flags, volume, false,
             attenuation, false, Pitch: pitch > 0 ? pitch : null, StartTime: Math.Max(0, startTime),
             DetachedOrigin: new SimulationSoundOrigin((float)x, (float)z, (float)y, -1)), immediate: true);
@@ -75,7 +75,8 @@ public static class ActorSoundActions
 
     private static bool IsSoundRegistered(HCDE.MapLoader.PlayLevel level, string name) =>
         level.SoundDefinitions.Keys.Concat(level.SoundAliases.Keys).Concat(level.RandomSoundGroups.Keys)
-            .Concat(level.SoundSettings.Keys).Any(key => key.Equals(name, StringComparison.OrdinalIgnoreCase));
+            .Concat(level.SoundSettings.Keys).Concat(level.PlayerSounds.Select(entry => entry.Slot))
+            .Any(key => key.Equals(name, StringComparison.OrdinalIgnoreCase));
     public static void DefaultDeathSound(Actor actor)
     {
         if (actor is PlayerPawn) PlayerScream(actor);
@@ -87,7 +88,7 @@ public static class ActorSoundActions
         if (actor.Destroyed || actor.Simulation is not { } sim) return;
         var channel = 2;
         var sound = actor.ActorSounds.GetValueOrDefault(ActorSoundType.Death);
-        if (string.IsNullOrEmpty(sound))
+        if (string.IsNullOrEmpty(sound) || sound.Equals("None", StringComparison.OrdinalIgnoreCase))
         {
             sound = "*death";
             if (actor is PlayerPawn player)
@@ -102,7 +103,8 @@ public static class ActorSoundActions
                     return Defined(name) ? name : null;
                 }
                 string? selected = null;
-                if (sim.FallingDeathSplatEnabled && actor.VelocityZ.ToDouble() <= -39)
+                if ((sim.FallingDeathSplatEnabled || sim.EffectiveFallingDamage != HCDE.Gamedata.FallingDamageStyle.None)
+                    && actor.VelocityZ.ToDouble() <= -39)
                 {
                     selected = Defined("*splat") ? "*splat" : null;
                     channel = 4;
@@ -175,12 +177,30 @@ public static class ActorSoundActions
         if (sound.Equals(checkAgainst, StringComparison.OrdinalIgnoreCase)) return;
         if (actor.Destroyed) return;
         var sim = actor.Simulation ?? throw new InvalidOperationException("Sound equivalence requires an attached simulation.");
+        bool Registered(string name) => name.Length != 0 && !name.Equals("None", StringComparison.OrdinalIgnoreCase)
+            && IsSoundRegistered(sim.Level, name);
+        var registered = Registered(sound); var checkRegistered = Registered(checkAgainst);
+        if (!registered || !checkRegistered)
+        {
+            if (registered != checkRegistered)
+                StartSoundCore(actor, sound, channel, flags, volume, attenuation, pitch, startTime);
+            return;
+        }
         string? Identity(string name)
         {
             if (name.Length == 0 || name.Equals("None", StringComparison.OrdinalIgnoreCase)) return null;
             var visited = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
             while (visited.Add(name))
             {
+                if (sim.Level.PlayerSounds.Any(entry => entry.Slot.Equals(name, StringComparison.OrdinalIgnoreCase)))
+                {
+                    var soundClass = actor is PlayerPawn { SoundClass: { Length: > 0 } playerClass } ? playerClass : "player";
+                    if (!HCDE.MapLoader.SoundResourceResolver.TryResolvePlayerSound(sim.Level, name, soundClass,
+                        out var resolved, out var error)) throw new InvalidOperationException(error);
+                    if (resolved.Length == 0 || resolved.Equals("None", StringComparison.OrdinalIgnoreCase)) return null;
+                    name = resolved;
+                    continue;
+                }
                 var random = sim.Level.RandomSoundGroups.Keys.FirstOrDefault(key => key.Equals(name, StringComparison.OrdinalIgnoreCase));
                 if (random is not null) return random;
                 var alias = sim.Level.SoundAliases.FirstOrDefault(pair => pair.Key.Equals(name, StringComparison.OrdinalIgnoreCase));
@@ -207,7 +227,7 @@ public static class ActorSoundActions
         if (startTime < 0 && (flags & SimulationSoundFlags.Loop) != 0)
             throw new NotSupportedException("Negative loop start offsets are not yet supported.");
         startTime = Math.Max(0, startTime);
-        if (actor.Destroyed || sound.Length == 0) return;
+        if (actor.Destroyed || sound.Length == 0 || sound.Equals("None", StringComparison.OrdinalIgnoreCase)) return;
         var sim = actor.Simulation ?? throw new InvalidOperationException("Starting actor sounds requires an attached simulation.");
         sim.QueueSoundRequest(new SimulationSoundRequest(actor.Id, sound, channel, (int)flags, volume,
             false, attenuation, false, Pitch: pitch > 0 ? pitch : null, StartTime: startTime,
@@ -331,6 +351,9 @@ public static class ActorSoundActions
                 if (IsDefined(specific)) pain = specific;
                 else if (IsDefined(generic)) pain = generic;
             }
+            var attacker = actor.LastDamageSourceId is { } sourceId
+                ? simulation.Actors.FirstOrDefault(source => source.Id == sourceId && !source.Destroyed) : null;
+            actor.PlayerHurtMakeRumble(attacker);
             simulation.QueueSoundRequest(new SimulationSoundRequest(actor.Id, pain, 2, (int)SimulationSoundFlags.NoRumble,
                 1, false, 1, false), immediate: true);
             return;

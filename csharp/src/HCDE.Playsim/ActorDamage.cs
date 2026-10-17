@@ -111,6 +111,7 @@ public static class ActorDamage
                 ? ReactToDamage(target, source, inflictor, flags, damageType, 0, 0, 0, originalDamage) : default;
         var attacker = source ?? inflictor;
         if (inflictor is { PierceArmor: true }) flags |= DamageFlags.BypassArmor;
+        if (target.Stealth) { target.Alpha = 1; target.VisibilityDirection = -1; }
         if (target.Brain is { Charging: true })
             target.VelocityX = target.VelocityY = target.VelocityZ = default;
         if (target.Dormant && !forced) return default;
@@ -238,7 +239,7 @@ public static class ActorDamage
                     Drain(target, source, healthDamage, damageType);
                     return target.Health <= 0 && target is not PlayerPawn && SurvivesByBuddha(target, damage, flags, inflictor)
                         ? 1 : target.Health;
-                });
+                }, creditSummonedSource: true);
         }
         finally
         {

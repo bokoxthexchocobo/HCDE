@@ -23,6 +23,7 @@ public sealed class LevelSector
     public bool HurtMonsters { get; init; }
     public bool HarmInAir { get; init; }
     public bool NoAttack { get; init; }
+    public bool NoFallingDamage { get; init; }
     /// <summary>Derived native SECMF_LIFT marker for repeatable platform sectors.</summary>
     public bool IsLift { get; internal set; }
     public bool Silent { get; init; }
@@ -213,6 +214,10 @@ public sealed class PlayLevel
         return FindTerrainDefinition(string.IsNullOrEmpty(name) ? "Solid" : name);
     }
     public bool HexenHack { get; set; }
+    public HCDE.Gamedata.FallingDamageStyle FallingDamage { get; set; }
+    public bool MonsterFallingDamage { get; set; }
+    public bool ProperMonsterFallingDamage { get; set; }
+    public bool AllowMonsterTelefrags { get; set; }
     public int? DefaultDropStyle { get; set; }
     public double? AirControl { get; set; }
     public double LevelGravity { get; set; } = 800;
@@ -284,6 +289,10 @@ public sealed class PlayLevel
         GameIntermissionMusic = GameIntermissionMusic,
         MapIntermissionMusic = new(MapIntermissionMusic, StringComparer.OrdinalIgnoreCase),
         ActivateOwnDeathSpecials = ActivateOwnDeathSpecials,
+        MonsterFallingDamage = MonsterFallingDamage,
+        ProperMonsterFallingDamage = ProperMonsterFallingDamage,
+        FallingDamage = FallingDamage,
+        AllowMonsterTelefrags = AllowMonsterTelefrags,
         DamageTypes = DamageTypes.ToArray(),
         TerrainDefinitions = TerrainDefinitions.ToArray(),
         FloorTerrainMappings = FloorTerrainMappings.ToArray(), DefaultTerrain = DefaultTerrain,
@@ -497,6 +506,10 @@ public static class LevelBuilder
     private static void ApplyMusicMetadata(PlayLevel level, HCDE.Gamedata.MapInfoMap? map, HCDE.Gamedata.MapInfoMusic gameIntermissionMusic)
     {
         level.GameIntermissionMusic = gameIntermissionMusic;
+        level.MonsterFallingDamage = map?.MonsterFallingDamage ?? false;
+        level.ProperMonsterFallingDamage = map?.ProperMonsterFallingDamage ?? false;
+        level.FallingDamage = map?.FallingDamage ?? HCDE.Gamedata.FallingDamageStyle.None;
+        level.AllowMonsterTelefrags = map?.AllowMonsterTelefrags ?? false;
         level.Music = map?.Music ?? "";
         level.MusicOrder = map?.MusicOrder ?? 0;
         level.CdTrack = map?.CdTrack ?? 0;
@@ -632,6 +645,7 @@ public static class LevelBuilder
             Leakiness = sector.DamageAmount == 0 ? 0 : unchecked((short)sector.Leakiness),
             HurtMonsters = sector.HurtMonsters,
             NoAttack = sector.NoAttack,
+            NoFallingDamage = planeTransforms && sector.NoFallingDamage,
             Silent = planeTransforms && sector.Silent,
             DropActors = planeTransforms ? sector.DropActors.GetValueOrDefault()
                 : map.Namespace.Equals("Doom", StringComparison.OrdinalIgnoreCase)

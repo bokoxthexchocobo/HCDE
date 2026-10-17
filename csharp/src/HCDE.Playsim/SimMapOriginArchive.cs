@@ -6,6 +6,10 @@ internal static class SimMapOriginArchive
 {
     internal static void Validate(SimSaveState state, bool decoration = false)
     {
+        if (decoration && state.Actors.Any(p => p.MapDecorationIdentity is { DefinitionDoomEdNum: not 0 } item
+            && (!DoomDecorationDefaults.IsDecoration(item.DefinitionDoomEdNum)
+                || item.DoomEdNum is <= 0 or > ushort.MaxValue || item.DoomEdNum == item.DefinitionDoomEdNum)))
+            throw new InvalidOperationException("Invalid saved remapped decoration identity.");
         foreach (var pose in state.Actors.Where(pose => Get(pose, decoration).HasValue))
         {
             var identity = Get(pose, decoration)!.Value;
@@ -85,7 +89,7 @@ internal static class SimMapOriginArchive
 
     private static SimMapPickupIdentity? Get(SimActorPose pose, bool decoration)
         => decoration && pose.MapDecorationIdentity is { } item
-            ? new(item.ThingIndex, item.DoomEdNum, item.ThingId, item.JustSpawned, item.StatNum)
+            ? new(item.ThingIndex, item.DefinitionDoomEdNum != 0 ? item.DefinitionDoomEdNum : item.DoomEdNum, item.ThingId, item.JustSpawned, item.StatNum)
             : decoration ? null : pose.MapPickupIdentity;
 
     private static void Set(SimActorPose pose, bool decoration, SimMapPickupIdentity identity)

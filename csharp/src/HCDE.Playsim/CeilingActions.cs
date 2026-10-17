@@ -112,6 +112,8 @@ internal static class CeilingActions
         var next = direction > 0 ? Math.Min(target, current + speed) : Math.Max(target, current - speed);
         if (next < current)
         {
+            ActorPhysics.GrindActors(sim, motion.SectorIndex,
+                actor => ActorPhysics.BlocksLoweringCeiling(sim, actor, next));
             var blocked = sim.Actors.Where(actor => actor.IsSectorMoverActor && ActorPhysics.BlocksSectorGeometry(actor) && ActorPhysics.TouchesSector(sim, actor, motion.SectorIndex)
                 && ActorPhysics.BlocksLoweringCeiling(sim, actor, next)).ToArray();
             if (blocked.Length > 0)

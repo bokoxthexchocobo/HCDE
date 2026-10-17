@@ -3,6 +3,12 @@ namespace HCDE.Playsim;
 /// <summary>Native inventory state actions for supported managed health, armor, key, ammo, and weapon classes.</summary>
 public static class ActorInventoryActions
 {
+    public static void ClearRefire(Actor actor)
+    {
+        ArgumentNullException.ThrowIfNull(actor);
+        if (actor is PlayerPawn player) player.WeaponRefiring = false;
+    }
+
     /// <summary>Native Actor.ClearInventory for represented player inventory.</summary>
     public static void ClearInventory(Actor actor)
     {

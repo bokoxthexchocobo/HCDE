@@ -18,12 +18,15 @@ public sealed class DehackedActor
     public int Index { get; init; }
     public string Name { get; init; } = "";
     public int Health { get; set; }
+    public bool HealthPatched { get; set; }
     public double Speed { get; set; }
     public bool SpeedPatched { get; set; }
+    public double? FastSpeed { get; set; }
     public double Radius { get; set; }
     public bool WidthPatched { get; set; }
     public double Height { get; set; }
     public bool HeightPatched { get; set; }
+    public int? ProjectilePassHeightRaw { get; set; }
     public int MissileDamage { get; set; }
     public bool MissileDamagePatched { get; set; }
     public int ReactionTime { get; set; }
@@ -37,6 +40,12 @@ public sealed class DehackedActor
     public int Mass { get; set; }
     public bool MassPatched { get; set; }
     public int PainChance { get; set; }
+    public bool PainChancePatched { get; set; }
+    public int? MeleeRangeRaw { get; set; }
+    public double? MeleeThreshold { get; set; }
+    public double? MaxTargetRange { get; set; }
+    public double? MissileChanceMultiplier { get; set; }
+    public byte? MinMissileChance { get; set; }
     public int DoomEdNum { get; set; }
     public int OriginalDoomEdNum { get; init; }
     public DehackedRenderStyle? RenderStyle { get; set; }
@@ -52,11 +61,13 @@ public sealed class DehackedActor
     public double Gravity { get; set; } = 1;
     public bool BitsUseStealth { get; set; }
     public bool NoBlockMonsters { get; set; }
+    public bool Touchy { get; set; }
     public int SeeSound { get; set; }
     public int AttackSound { get; set; }
     public int PainSound { get; set; }
     public int DeathSound { get; set; }
     public int ActiveSound { get; set; }
+    public int RipSound { get; set; }
     public int SpawnState { get; set; }
     public int SeeState { get; set; }
     public int PainState { get; set; }
@@ -110,6 +121,9 @@ public sealed class DehackedPatchResult
     public IReadOnlyList<DehackedActor> Actors { get; init; } = Array.Empty<DehackedActor>();
     public IReadOnlyList<DehackedState> States { get; init; } = Array.Empty<DehackedState>();
     public IReadOnlyList<DehackedSound> Sounds { get; init; } = Array.Empty<DehackedSound>();
+    public IReadOnlyDictionary<string, string> SoundLumpOverrides { get; init; } = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+    public bool DsdhackedSoundMode { get; init; }
+    public IReadOnlyList<string> TentativeSoundNames { get; init; } = Array.Empty<string>();
 }
 
 /// <summary>
@@ -125,6 +139,8 @@ public static class DehackedPatch
         var actors = (baseline?.Actors ?? CreateVanillaActors()).ToDictionary(actor => actor.Index, actor => actor.Copy());
         var states = (baseline?.States ?? CreateVanillaStates(1024)).ToDictionary(state => state.Index, state => state.Copy());
         var sounds = (baseline?.Sounds ?? CreateVanillaSounds()).ToDictionary(sound => sound.Index, sound => sound.Copy());
+        var soundLumps = baseline is null ? new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
+            : new Dictionary<string, string>(baseline.SoundLumpOverrides, StringComparer.OrdinalIgnoreCase);
         var errors = new List<string>();
         var maxHealth = baseline?.MaxHealth ?? 100;
         var initialHealth = baseline?.InitialHealth ?? 100;
@@ -138,6 +154,17 @@ public static class DehackedPatch
         var soulsphereHealth = baseline?.SoulsphereHealth ?? 100;
         var megasphereHealth = baseline?.MegasphereHealth ?? 200;
         var lines = SplitLines(text);
+        var dsdhacked = baseline?.DsdhackedSoundMode ?? false;
+        var tentativeSounds = new HashSet<string>(baseline?.TentativeSoundNames ?? Array.Empty<string>(), StringComparer.OrdinalIgnoreCase);
+        if (lines.Count > 0 && lines[0].StartsWith("Patch File for DeHackEd v", StringComparison.Ordinal))
+        {
+            foreach (var line in lines.Skip(1).TakeWhile(line => line.Contains('=')))
+            {
+                var eq = line.IndexOf('=');
+                if (line[..eq].Trim().Equals("Doom version", StringComparison.OrdinalIgnoreCase)
+                    && ParseDecimalPrefix(line[(eq + 1)..]) == 2021) dsdhacked = true;
+            }
+        }
 
         for (var i = 0; i < lines.Count; i++)
         {
@@ -156,7 +183,7 @@ public static class DehackedPatch
                     continue;
                 }
 
-                ApplyThing(actor, body, errors);
+                ApplyThing(actor, body, errors, dsdhacked, tentativeSounds);
             }
             else if (TryHeader(header, "Frame", out var frameIndex))
             {
@@ -209,7 +236,7 @@ public static class DehackedPatch
             else if (header.Equals("[SOUNDS]", StringComparison.OrdinalIgnoreCase))
             {
                 var body = ReadBody(lines, ref i);
-                ApplySoundNames(sounds, body);
+                ApplySoundNames(sounds, soundLumps, body, dsdhacked);
             }
         }
 
@@ -230,6 +257,9 @@ public static class DehackedPatch
             Actors = actors.Values.OrderBy(actor => actor.Index).ToArray(),
             States = states.Values.OrderBy(state => state.Index).ToArray(),
             Sounds = sounds.Values.OrderBy(sound => sound.Index).ToArray(),
+            SoundLumpOverrides = soundLumps,
+            DsdhackedSoundMode = dsdhacked,
+            TentativeSoundNames = tentativeSounds.OrderBy(name => name, StringComparer.Ordinal).ToArray(),
         };
     }
 
@@ -272,7 +302,76 @@ public static class DehackedPatch
             }
         }
 
-        return actors;
+        // Sparse additions retain native InfoNames indices without inventing intervening classes.
+        (int Index, string Name, int EditorNumber, int Height, int Radius, bool Solid)[] hanging = [
+            (102, "BloodyTwitch", 49, 68, 16, true), (103, "Meat2", 50, 84, 16, true),
+            (104, "Meat3", 51, 84, 16, true), (105, "Meat4", 52, 68, 16, true),
+            (106, "Meat5", 53, 52, 16, true), (107, "NonsolidMeat2", 59, 84, 20, false),
+            (108, "NonsolidMeat4", 60, 68, 20, false), (109, "NonsolidMeat3", 61, 84, 20, false),
+            (110, "NonsolidMeat5", 62, 52, 20, false), (111, "NonsolidTwitch", 63, 68, 20, false),
+            (129, "HangNoGuts", 73, 88, 16, true), (130, "HangBNoBrain", 74, 88, 16, true),
+            (131, "HangTLookingDown", 75, 64, 16, true), (132, "HangTSkull", 76, 64, 16, true),
+            (133, "HangTLookingUp", 77, 64, 16, true), (134, "HangTNoBrain", 78, 64, 16, true),
+        ];
+        (int Index, string Name, int EditorNumber, int Height, int Radius)[] props = [
+            (80, "TechLamp", 85, 80, 16), (81, "TechLamp2", 86, 60, 16), (82, "Column", 2028, 48, 16),
+            (83, "TallGreenColumn", 30, 52, 16), (84, "ShortGreenColumn", 31, 40, 16),
+            (85, "TallRedColumn", 32, 52, 16), (86, "ShortRedColumn", 33, 40, 16),
+            (87, "SkullColumn", 37, 40, 16), (88, "HeartColumn", 36, 40, 16),
+            (89, "EvilEye", 41, 54, 16), (90, "FloatingSkull", 42, 26, 16), (91, "TorchTree", 43, 56, 16),
+            (92, "BlueTorch", 44, 68, 16), (93, "GreenTorch", 45, 68, 16), (94, "RedTorch", 46, 68, 16),
+            (95, "ShortBlueTorch", 55, 37, 16), (96, "ShortGreenTorch", 56, 37, 16), (97, "ShortRedTorch", 57, 37, 16),
+            (98, "Stalagtite", 47, 40, 16), (99, "TechPillar", 48, 128, 16),
+            (100, "Candlestick", 34, 14, 20), (101, "Candelabra", 35, 60, 16),
+            (121, "HeadsOnAStick", 28, 64, 16), (123, "HeadOnAStick", 27, 56, 16),
+            (124, "HeadCandles", 29, 42, 16), (125, "DeadStick", 25, 64, 16),
+            (126, "LiveStick", 26, 64, 16), (127, "BigTree", 54, 108, 32),
+            (128, "BurningBarrel", 70, 32, 16),
+        ];
+        (int Index, string Name, int EditorNumber)[] bodies = [
+            (112, "DeadCacodemon", 22), (113, "DeadMarine", 15), (114, "DeadZombieMan", 18),
+            (115, "DeadDemon", 21), (116, "DeadLostSoul", 23), (117, "DeadDoomImp", 20),
+            (118, "DeadShotgunGuy", 19), (119, "GibbedMarine", 10), (120, "GibbedMarineExtra", 12),
+            (122, "Gibs", 24),
+        ];
+        (int Index, string Name, int EditorNumber, int Height)[] debris = [
+            (135, "ColonGibs", 79, 4), (136, "SmallBloodPool", 80, 1), (137, "BrainStem", 81, 4),
+        ];
+        (int Index, string Name, int EditorNumber, bool CountItem)[] pickups = [
+            (44, "GreenArmor", 2018, false), (45, "BlueArmor", 2019, false),
+            (46, "HealthBonus", 2014, true), (47, "ArmorBonus", 2015, true),
+            (48, "BlueCard", 5, false), (49, "RedCard", 13, false), (50, "YellowCard", 6, false),
+            (51, "YellowSkull", 39, false), (52, "RedSkull", 38, false), (53, "BlueSkull", 40, false),
+            (54, "Stimpack", 2011, false), (55, "Medikit", 2012, false),
+            (56, "Soulsphere", 2013, true), (58, "Berserk", 2023, true),
+            (60, "RadSuit", 2025, false), (63, "Megasphere", 83, true),
+            (64, "Clip", 2007, false), (65, "ClipBox", 2048, false),
+            (66, "RocketAmmo", 2010, false), (67, "RocketBox", 2046, false),
+            (68, "Cell", 2047, false), (69, "CellPack", 17, false),
+            (70, "Shell", 2008, false), (71, "ShellBox", 2049, false), (72, "Backpack", 8, false),
+            (73, "BFG9000", 2006, false), (74, "Chaingun", 2002, false), (75, "Chainsaw", 2005, false),
+            (76, "RocketLauncher", 2003, false), (77, "PlasmaRifle", 2004, false),
+            (78, "Shotgun", 2001, false), (79, "SuperShotgun", 82, false),
+        ];
+        return actors.Concat(hanging.Select(value => new DehackedActor {
+            Index = value.Index, Name = value.Name, DoomEdNum = value.EditorNumber, OriginalDoomEdNum = value.EditorNumber,
+            Health = 1000, Radius = value.Radius, Height = value.Height, Bits = 256u | 512u | (value.Solid ? 2u : 0u),
+        })).Concat(props.Select(value => new DehackedActor {
+            Index = value.Index, Name = value.Name, DoomEdNum = value.EditorNumber, OriginalDoomEdNum = value.EditorNumber,
+            Health = 1000, Radius = value.Radius, Height = value.Height,
+            Bits = value.EditorNumber == 34 ? 0u : 2u, ProjectilePassHeightRaw = -16 * 65536,
+        })).Concat(bodies.Select(value => new DehackedActor {
+            Index = value.Index, Name = value.Name, DoomEdNum = value.EditorNumber, OriginalDoomEdNum = value.EditorNumber,
+            Health = 1000, Radius = 20, Height = 16, ProjectilePassHeightRaw = 0,
+        })).Concat(debris.Select(value => new DehackedActor {
+            Index = value.Index, Name = value.Name, DoomEdNum = value.EditorNumber, OriginalDoomEdNum = value.EditorNumber,
+            Health = 1000, Radius = 20, Height = value.Height, Bits = 16, ProjectilePassHeightRaw = 0,
+        })).Concat(pickups.Select(value => new DehackedActor {
+            Index = value.Index, Name = value.Name, DoomEdNum = value.EditorNumber, OriginalDoomEdNum = value.EditorNumber,
+            Health = 1000, Radius = 20, ReactionTime = 8,
+            Height = value.EditorNumber == 2025 ? 46 : value.EditorNumber == 8 ? 26 : value.EditorNumber == 2006 ? 20 : 16,
+            Bits = 1u | (value.CountItem ? 0x00800000u : 0u) | (value.Index is >= 48 and <= 53 ? 0x02000000u : 0u),
+        })).OrderBy(actor => actor.Index).ToArray();
     }
 
     public static IReadOnlyList<DehackedState> CreateVanillaStates(int count)
@@ -300,12 +399,16 @@ public static class DehackedPatch
     public static IReadOnlyList<DehackedSound> CreateVanillaSounds(int count = 128) =>
         Enumerable.Range(1, count).Select(index => new DehackedSound { Index = index, Name = $"SFX{index}" }).ToArray();
 
-    private static void ApplyThing(DehackedActor actor, IReadOnlyList<(string Key, string Value)> body, List<string> errors)
+    private static void ApplyThing(DehackedActor actor, IReadOnlyList<(string Key, string Value)> body, List<string> errors,
+        bool dsdhacked, HashSet<string> tentativeSounds)
     {
         actor.Patched = true;
         var oldShadow = actor.BitsPatched ? (actor.Bits & 0x40000) != 0 : actor.OriginalDoomEdNum == 58;
         var hadStyle = false;
         var hadTranslucency = false;
+        var hadPhysicalHeight = false;
+        var hadHeight = false;
+        var hadProjectilePassHeight = false;
         foreach (var (key, value) in body)
         {
             if (key.Equals("Render Style", StringComparison.OrdinalIgnoreCase))
@@ -333,14 +436,20 @@ public static class DehackedPatch
                 hadStyle = hadTranslucency = true;
             }
             else if (key.Equals("Hit points", StringComparison.OrdinalIgnoreCase))
+            {
                 actor.Health = unchecked((int)numeric);
+                actor.HealthPatched = true;
+            }
             else if (key.Equals("Reaction time", StringComparison.OrdinalIgnoreCase))
             {
                 actor.ReactionTime = unchecked((int)numeric);
                 actor.ReactionTimePatched = true;
             }
             else if (key.Equals("Pain chance", StringComparison.OrdinalIgnoreCase))
+            {
                 actor.PainChance = unchecked((short)numeric);
+                actor.PainChancePatched = true;
+            }
             else if (key.Equals("Infighting group", StringComparison.OrdinalIgnoreCase))
             {
                 actor.InfightingGroup = numeric < 0 ? 0 : unchecked((int)numeric);
@@ -358,8 +467,31 @@ public static class DehackedPatch
             }
             else if (key.Equals("Height", StringComparison.OrdinalIgnoreCase))
             {
-                actor.Height = (double)numeric / 65536.0;
-                actor.HeightPatched = true;
+                hadHeight = true;
+                if (!hadPhysicalHeight)
+                {
+                    actor.Height = (double)numeric / 65536.0;
+                    actor.HeightPatched = true;
+                }
+                if (!hadProjectilePassHeight) actor.ProjectilePassHeightRaw = 0;
+            }
+            else if (key.Equals("Physical height", StringComparison.OrdinalIgnoreCase))
+            {
+                hadPhysicalHeight = true;
+                if (numeric < int.MinValue || numeric > int.MaxValue)
+                    errors.Add($"Thing {actor.Index}: Physical height {value} exceeds the represented fixed-point range.");
+                else
+                {
+                    actor.Height = numeric / 65536.0;
+                    actor.HeightPatched = true;
+                }
+            }
+            else if (key.Equals("Projectile pass height", StringComparison.OrdinalIgnoreCase))
+            {
+                hadProjectilePassHeight = true;
+                if (numeric < int.MinValue || numeric > int.MaxValue)
+                    errors.Add($"Thing {actor.Index}: Projectile pass height {value} exceeds the represented fixed-point range.");
+                else actor.ProjectilePassHeightRaw = (int)numeric;
             }
             else if (key.Equals("Width", StringComparison.OrdinalIgnoreCase))
             {
@@ -369,8 +501,21 @@ public static class DehackedPatch
             else if (key.Equals("Speed", StringComparison.OrdinalIgnoreCase))
             {
                 var speed = (double)numeric;
-                actor.Speed = Math.Abs(speed) >= 256 ? speed / 65536 : speed;
-                actor.SpeedPatched = true;
+                speed = Math.Abs(speed) >= 256 ? speed / 65536 : speed;
+                if (actor.Index == 1 && (speed < int.MinValue / 65536.0 || speed > int.MaxValue / 65536.0))
+                    errors.Add($"Thing {actor.Index}: Speed {value} exceeds the represented fixed-point range.");
+                else
+                {
+                    actor.Speed = speed;
+                    actor.SpeedPatched = true;
+                }
+            }
+            else if (key.Equals("Fast speed", StringComparison.OrdinalIgnoreCase))
+            {
+                var speed = numeric >= 256 ? numeric / 65536.0 : numeric;
+                if (speed > int.MaxValue / 65536.0)
+                    errors.Add($"Thing {actor.Index}: Fast speed {value} exceeds the represented fixed-point range.");
+                else actor.FastSpeed = speed;
             }
             else if (key.Equals("Missile damage", StringComparison.OrdinalIgnoreCase))
             {
@@ -381,6 +526,26 @@ public static class DehackedPatch
             {
                 actor.Mass = unchecked((int)numeric);
                 actor.MassPatched = true;
+            }
+            else if (key.Equals("Melee threshold", StringComparison.OrdinalIgnoreCase))
+                actor.MeleeThreshold = numeric / 65536.0;
+            else if (key.Equals("Max target range", StringComparison.OrdinalIgnoreCase))
+                actor.MaxTargetRange = numeric / 65536.0;
+            else if (key.Equals("Missile chance multiplier", StringComparison.OrdinalIgnoreCase))
+                actor.MissileChanceMultiplier = numeric / 65536.0;
+            else if (key.Equals("Min missile chance", StringComparison.OrdinalIgnoreCase))
+            {
+                var chance = numeric / 65536;
+                if (chance is < 0 or > 255)
+                    errors.Add($"Thing {actor.Index}: Min missile chance {value} exceeds the represented byte range.");
+                else actor.MinMissileChance = (byte)chance;
+            }
+            else if (key.Equals("Melee range", StringComparison.OrdinalIgnoreCase))
+            {
+                var adjusted = numeric - 20L * 65536;
+                if (adjusted < int.MinValue || adjusted > int.MaxValue)
+                    errors.Add($"Thing {actor.Index}: Melee range {value} exceeds the represented fixed-point range.");
+                else actor.MeleeRangeRaw = (int)adjusted;
             }
             else if (key.Equals("Bits", StringComparison.OrdinalIgnoreCase))
             {
@@ -402,6 +567,11 @@ public static class DehackedPatch
                     }
                     else if (token.Equals("FULLVOLSOUNDS", StringComparison.OrdinalIgnoreCase))
                         actor.FullVolumeSounds = true;
+                    else if (token.Equals("DONTDRAW", StringComparison.OrdinalIgnoreCase))
+                    {
+                        renderBits |= 16;
+                        changedRender = true;
+                    }
                     else if (token.Equals("TRANSLUC25", StringComparison.OrdinalIgnoreCase) ||
                         token.Equals("TRANSLUC50", StringComparison.OrdinalIgnoreCase) ||
                         token.Equals("TRANSLUC75", StringComparison.OrdinalIgnoreCase))
@@ -426,6 +596,11 @@ public static class DehackedPatch
                 }
                 if (changed)
                 {
+                    if ((bits & 0x10000000) != 0)
+                    {
+                        actor.Touchy = true;
+                        bits &= ~0x10000000u;
+                    }
                     if ((bits & 0x80000000u) != 0)
                     {
                         bits &= ~0x80000000u;
@@ -461,9 +636,18 @@ public static class DehackedPatch
             else if (key.Equals("ID #", StringComparison.OrdinalIgnoreCase))
                 actor.DoomEdNum = unchecked((int)numeric);
             else if (key.EndsWith(" sound", StringComparison.OrdinalIgnoreCase))
-                AssignSound(actor, key, unchecked((int)numeric), value);
+                AssignSound(actor, key, unchecked((int)numeric), value, dsdhacked, tentativeSounds);
             else if (key.EndsWith(" frame", StringComparison.OrdinalIgnoreCase))
                 AssignState(actor, key, unchecked((int)numeric), errors);
+        }
+        if (hadPhysicalHeight != hadProjectilePassHeight)
+            errors.Add($"Thing {actor.Index}: Physical height and Projectile pass height must be specified together in the same Thing block.");
+        if ((actor.Bits & 256) != 0 && !hadHeight && !hadPhysicalHeight
+            && DehackedOriginalHeights.Find(actor.Index) is { } originalHeight)
+        {
+            actor.Height = originalHeight;
+            actor.HeightPatched = true;
+            actor.ProjectilePassHeightRaw = 0;
         }
         var shadow = actor.BitsPatched ? (actor.Bits & 0x40000) != 0 : actor.OriginalDoomEdNum == 58;
         if (shadow != oldShadow)
@@ -473,20 +657,29 @@ public static class DehackedPatch
         }
     }
 
-    private static void AssignSound(DehackedActor actor, string key, int id, string value)
+    private static void AssignSound(DehackedActor actor, string key, int id, string value,
+        bool dsdhacked, HashSet<string> tentativeSounds)
     {
         var selector = key.StartsWith("Alert", StringComparison.OrdinalIgnoreCase) ? 0
             : key.StartsWith("Attack", StringComparison.OrdinalIgnoreCase) ? 1
             : key.StartsWith("Pain", StringComparison.OrdinalIgnoreCase) ? 2
             : key.StartsWith("Death", StringComparison.OrdinalIgnoreCase) ? 3
-            : key.StartsWith("Action", StringComparison.OrdinalIgnoreCase) ? 4 : -1;
+            : key.StartsWith("Action", StringComparison.OrdinalIgnoreCase) ? 4
+            : key.StartsWith("Rip", StringComparison.OrdinalIgnoreCase) ? 11 : -1;
         var text = value.Trim();
         var numericStart = text.Length > 0 && (char.IsAsciiDigit(text[0]) ||
             text.Length > 1 && text[0] is '+' or '-' && char.IsAsciiDigit(text[1]));
         if (selector >= 0)
         {
-            if (!numericStart && text.Length != 0) actor.SoundNameOverrides[selector] = text;
-            else actor.SoundNameOverrides.Remove(selector);
+            if (!numericStart && text.Length != 0)
+                actor.SoundNameOverrides[selector] = text.Equals("None", StringComparison.OrdinalIgnoreCase) ? "" : text;
+            else if (numericStart)
+            {
+                var sound = DehackedSoundCatalog.Resolve(id, dsdhacked);
+                actor.SoundNameOverrides[selector] = sound;
+                if (sound.StartsWith("~dsdhacked/#", StringComparison.Ordinal)) tentativeSounds.Add(sound);
+            }
+            else actor.SoundNameOverrides[selector] = "";
         }
         if (key.StartsWith("Alert", StringComparison.OrdinalIgnoreCase))
             actor.SeeSound = id;
@@ -498,6 +691,8 @@ public static class DehackedPatch
             actor.DeathSound = id;
         else if (key.StartsWith("Action", StringComparison.OrdinalIgnoreCase))
             actor.ActiveSound = id;
+        else if (key.StartsWith("Rip", StringComparison.OrdinalIgnoreCase))
+            actor.RipSound = id;
     }
 
     private static void AssignState(DehackedActor actor, string key, int state, List<string> errors)
@@ -569,12 +764,16 @@ public static class DehackedPatch
             state.StateFlags &= ~DehackedState.FullBrightFlag;
     }
 
-    private static void ApplySoundNames(Dictionary<int, DehackedSound> sounds, IReadOnlyList<(string Key, string Value)> body)
+    private static void ApplySoundNames(Dictionary<int, DehackedSound> sounds, Dictionary<string, string> soundLumps,
+        IReadOnlyList<(string Key, string Value)> body, bool dsdhacked)
     {
         foreach (var (key, value) in body)
         {
-            if (!int.TryParse(key, out var index))
-                continue;
+            var index = unchecked((int)ParseDecimalPrefix(key));
+            var logicalName = DehackedSoundCatalog.Resolve(index, dsdhacked);
+            if (logicalName.Length == 0) continue;
+            // Native ReplaceSoundName prefixes the supplied suffix unconditionally.
+            soundLumps[logicalName] = "ds" + value.Trim();
             if (!sounds.TryGetValue(index, out var sound))
             {
                 sound = new DehackedSound { Index = index };
@@ -639,8 +838,15 @@ public static class DehackedPatch
             ["NOSECTOR"] = 8,
             ["SPAWNCEILING"] = 256, ["NOGRAVITY"] = 512, ["DROPOFF"] = 1024,
             ["PICKUP"] = 2048, ["FLOAT"] = 16384, ["DROPPED"] = 131072,
+            ["NOCLIP"] = 4096,
+            ["JUSTHIT"] = 64, ["JUSTATTACKED"] = 128,
+            ["INFLOAT"] = 0x00200000,
+            ["NOTDMATCH"] = 0x02000000,
+            ["CORPSE"] = 0x00100000,
             ["SHADOW"] = 262144, ["TRANSLUCENT"] = 0x80000000u,
+            ["NOBLOOD"] = 524288,
             ["COUNTKILL"] = 4194304,
+            ["TOUCHY"] = 0x10000000,
             ["FRIEND"] = 0x40000000, ["STEALTH"] = 0x40000000,
         };
 
@@ -648,7 +854,20 @@ public static class DehackedPatch
         new Dictionary<string, uint>(StringComparer.OrdinalIgnoreCase)
         {
             ["LOGRAV"] = 1, ["NOTELEPORT"] = 0x80, ["CANSLIDE"] = 0x400, ["INVULNERABLE"] = 0x08000000,
-            ["DORMANT"] = 0x10000000, ["PASSMOBJ"] = 0x1000,
+            ["DORMANT"] = 0x10000000, ["PASSMOBJ"] = 0x1000, ["FLOATBOB"] = 0x00080000,
+            ["SEEKERMISSILE"] = 0x40000000,
+            ["REFLECTIVE"] = 0x80000000u,
+            ["BOSS"] = 0x00008000,
+            ["THRUGHOST"] = 0x00004000,
+            ["NONSHOOTABLE"] = 0x04000000,
+            ["CANTLEAVEFLOORPIC"] = 0x02000000,
+            ["RIP"] = 0x00000100,
+            ["PUSHABLE"] = 0x00000200, ["CANNOTPUSH"] = 0x00002000,
+            ["TELESTOMP"] = 0x00040000,
+            ["FLOORCLIP"] = 0x00000020,
+            ["FLY"] = 0x00000010,
+            ["SPAWNFLOAT"] = 0x00000040,
+            ["BLASTED"] = 0x00000008,
         };
 
     // Thing/Frame use decimal strtoll/atoll: stop at the first non-digit; no digits means zero.

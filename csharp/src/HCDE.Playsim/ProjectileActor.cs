@@ -26,6 +26,21 @@ public sealed class ProjectileActor : Actor
     }
     internal void OwnerFromSave(Actor? owner) => Owner = owner;
     public ProjectileKind Kind { get; }
+    internal string NativeClassName => NativeClassNameOf(Kind);
+    internal static string NativeClassNameOf(ProjectileKind kind) => kind switch
+    {
+        ProjectileKind.Rocket => "Rocket",
+        ProjectileKind.CyberRocket => "CyberRocket",
+        ProjectileKind.Plasma => "PlasmaBall",
+        ProjectileKind.Bfg => "BFGBall",
+        ProjectileKind.ImpBall => "DoomImpBall",
+        ProjectileKind.BaronBall => "BaronBall",
+        ProjectileKind.CacodemonBall => "CacodemonBall",
+        ProjectileKind.ArachnotronPlasma => "ArachnotronPlasma",
+        ProjectileKind.MancubusBall => "FatShot",
+        ProjectileKind.RevenantTracer => "RevenantTracer",
+        _ => throw new InvalidOperationException("Unknown projectile class identity."),
+    };
     internal IReadOnlyDictionary<ActorSoundType, string> DefaultActorSounds { get; set; }
         = new Dictionary<ActorSoundType, string>();
 
@@ -108,6 +123,7 @@ public sealed class ProjectileActor : Actor
         DoomEdNum = kind <= ProjectileKind.ImpBall ? 65530 + (int)kind : 65516 + (int)kind;
         // Managed-only class identities, not native spawn indices; keep every identity within ushort.
         Solid = Shootable = false; NoGravity = true; AllowDropOff = true;
+        DefaultSeeker = SeekerMissile = kind == ProjectileKind.RevenantTracer;
         NoTeleport = true;
         Radius = Fixed.FromInt(kind is ProjectileKind.Plasma or ProjectileKind.ArachnotronPlasma or ProjectileKind.Bfg ? 13
             : kind is ProjectileKind.RevenantTracer or ProjectileKind.Rocket or ProjectileKind.CyberRocket ? 11 : 6);
@@ -132,11 +148,21 @@ public sealed class ProjectileActor : Actor
                 var sourceZ = (Owner?.Z.ToDouble() ?? Z.ToDouble()) + (Kind == ProjectileKind.RevenantTracer ? 16 : 0);
                 vertical = target.Z.ToDouble() - sourceZ;
                 var offset = Z.ToDouble() - sourceZ;
-                if (offset >= target.Height.ToDouble()) vertical += target.Height.ToDouble() - offset;
+                if (FloorHugger || CeilingHugger) vertical = 0;
+                else if (offset >= target.Height.ToDouble()) vertical += target.Height.ToDouble() - offset;
+                var length = Math.Sqrt(dx * dx + dy * dy + vertical * vertical);
+                var scale = length != 0 ? Speed / length : 0;
+                var vx = dx * scale; var vy = dy * scale;
+                VelocityX = Fixed.FromDouble(vx);
+                VelocityY = Fixed.FromDouble(vy);
+                VelocityZ = Fixed.FromDouble(vertical * scale);
+                Angle = BamAngle.FromDegrees(Math.Atan2(vy, vx) * 180 / Math.PI);
+                return;
             }
             dz = vertical / Math.Max(1, Math.Sqrt(dx * dx + dy * dy));
             Angle = BamAngle.FromDegrees(radians * 180 / Math.PI);
         }
+        if (FloorHugger || CeilingHugger) dz = 0;
         var horizontalSpeed = Speed / Math.Sqrt(1 + dz * dz);
         VelocityX = Fixed.FromDouble(Math.Cos(radians) * horizontalSpeed);
         VelocityY = Fixed.FromDouble(Math.Sin(radians) * horizontalSpeed);
@@ -272,14 +298,31 @@ public sealed class ProjectileActor : Actor
                     || !actor.IsBlockmapActor || SharesEnabledThruBits(actor)
                     || ThruSpecies && SharesContactSpecies(actor)) continue;
                 // PIT_CheckThing rejects this overlap before missile passage and damage checks.
-                if ((actor.Solid || actor.Shootable) && ActorPhysics.MissileOverlapBlocks(sim, this, actor))
+                if ((actor.Solid || actor.Shootable || actor.SpecialPickup || actor.Touchy)
+                    && ActorPhysics.MissileOverlapBlocks(sim, this, actor))
                 {
                     var overlapHit = ActorContactFraction(x, y, z, dx, dy, dz, actor, ignoreHeight: true);
                     if (overlapHit < fraction)
                     { fraction = overlapHit; victim = null; hitActor = actor; wall = null; planeSector = planePart = -1; }
                     continue;
                 }
-                if (actor.NonShootable || !(actor.Solid || actor.Shootable)) continue;
+                if ((actor.BumpSpecial || Solid && actor.Touchy && !actor.IsDead)
+                    && (actor.Solid || actor.Shootable || actor.SpecialPickup || actor.Touchy))
+                {
+                    var contact = ActorContactFraction(x, y, z, dx, dy, dz, actor, beforeMissilePassHeight: true);
+                    if (contact <= 1 && contact <= fraction)
+                    {
+                        if (ActorPhysics.TryTouchyContact(this, actor, z + dz * contact))
+                        {
+                            if (Destroyed) return;
+                            continue;
+                        }
+                        if (actor.BumpSpecial) ActorSpecialActions.TryBump(sim, actor, this);
+                        if (Destroyed) return;
+                        if (actor.Destroyed) continue;
+                    }
+                }
+                if (actor.NonShootable || !(actor.Solid || actor.Shootable || actor.SpecialPickup || actor.Touchy)) continue;
                 if (MThruSpecies && Owner?.SharesContactSpecies(actor) == true) continue;
                 if (ThruGhost && actor.Ghost) continue;
                 if (Rip && actor.Corpse && !actor.Shootable) continue;
@@ -321,12 +364,13 @@ public sealed class ProjectileActor : Actor
                 {
                     contact.Actor.VelocityX = Fixed.FromDouble(contact.Actor.VelocityX.ToDouble() + VelocityX.ToDouble() * contact.Actor.PushFactor);
                     contact.Actor.VelocityY = Fixed.FromDouble(contact.Actor.VelocityY.ToDouble() + VelocityY.ToDouble() * contact.Actor.PushFactor);
+                    contact.Actor.LastPushFromMovement = true;
                 }
             }
             if (fraction <= 1)
             {
                 X = Fixed.FromDouble(x + dx * fraction); Y = Fixed.FromDouble(y + dy * fraction); Z = Fixed.FromDouble(z + dz * fraction);
-                Impact(sim, victim, wall, planeSector, planePart, hitActor); return;
+                if (!Impact(sim, victim, wall, planeSector, planePart, hitActor)) return;
             }
             X = Fixed.FromDouble(x + dx); Y = Fixed.FromDouble(y + dy); Z = Fixed.FromDouble(z + dz);
         }
@@ -342,7 +386,7 @@ public sealed class ProjectileActor : Actor
     }
 
     private double ActorContactFraction(double x, double y, double z, double dx, double dy, double dz, Actor target,
-        bool ignoreHeight = false)
+        bool ignoreHeight = false, bool beforeMissilePassHeight = false)
     {
         var reach = Radius.ToDouble() + target.Radius.ToDouble();
         var rx = x - target.X.ToDouble(); var ry = y - target.Y.ToDouble();
@@ -374,6 +418,12 @@ public sealed class ProjectileActor : Actor
                 leave = Math.Min(leave, Math.Max(first, last));
                 if (!target.SpecialPickup && enter >= leave) return double.PositiveInfinity;
             }
+        }
+        if (beforeMissilePassHeight)
+        {
+            if (enter == leave && (Math.Abs(rx + dx * enter) >= reach || Math.Abs(ry + dy * enter) >= reach))
+                return double.PositiveInfinity;
+            return enter <= leave ? enter : double.PositiveInfinity;
         }
         var passHeight = target.ProjectilePassHeight.ToDouble();
         var clipHeight = passHeight > 0 ? passHeight
@@ -422,21 +472,33 @@ public sealed class ProjectileActor : Actor
         return best;
     }
 
-    private void Impact(AuthoritySimulation sim, Actor? victim, LevelLine? wall, int planeSector, int planePart,
+    private bool Impact(AuthoritySimulation sim, Actor? victim, LevelLine? wall, int planeSector, int planePart,
         Actor? hitActor = null)
     {
         // Native geometry damage precedes explosion removal and motion cleanup.
         if (wall is not null) GeometryProjectileImpact.Apply(sim, this, wall);
         else if (planeSector >= 0) GeometryProjectileImpact.ApplyPlane(sim, this, planeSector, planePart);
-        if (Destroyed) return;
-        if (victim is { Shootable: true } && victim.CanAttackHurtFrom(Owner))
+        if (Destroyed) return false;
+        var missileHit = victim is { Shootable: true } && victim.CanAttackHurtFrom(Owner);
+        if (missileHit && victim is not null)
             ActorMissileDamage.Apply(this, victim, Rip,
                 detachRipSound: !ExplodeCount || ChaseThreshold >= DefaultChaseThreshold - 1);
-        if (Destroyed) return;
+        if (Destroyed) return false;
+        if (missileHit && ThruReflect && victim is { Reflective: true, Destroyed: false })
+        {
+            if (SeekerMissile) TracerId = Owner?.Id;
+            ReassignOwner(victim);
+            return true;
+        }
+        if (hitActor is { Destroyed: false } reflector)
+        {
+            var reflected = ActorReflectionActions.ReflectOffActor(this, reflector);
+            if (Destroyed || reflected) return false;
+        }
         if (ExplodeCount)
         {
             SetChaseThreshold(unchecked(ChaseThreshold + 1), setDefault: false);
-            if (ChaseThreshold < DefaultChaseThreshold) return;
+            if (ChaseThreshold < DefaultChaseThreshold) return false;
         }
         ClearImpactMotion();
         var pointerTarget = hitActor ?? victim;
@@ -447,13 +509,13 @@ public sealed class ProjectileActor : Actor
             if (HitTracer) TracerId = pointerTarget.Id;
         }
         // SKYEXPLODE permits death handling on sky and horizon contacts.
-        if (!SkyExplode && wall?.Special == 9) { Destroy(); return; }
+        if (!SkyExplode && wall?.Special == 9) { Destroy(); return false; }
         if ((uint)planeSector < (uint)sim.Level.Sectors.Count && planePart is 0 or 1)
         {
             var sector = sim.Level.Sectors[planeSector];
             var texture = planePart == 0 ? sector.FloorPic : sector.CeilingPic;
             // Native sky contact destroys ordinary missiles before explosion actions.
-            if (!SkyExplode && string.Equals(texture, "F_SKY1", StringComparison.OrdinalIgnoreCase)) { Destroy(); return; }
+            if (!SkyExplode && string.Equals(texture, "F_SKY1", StringComparison.OrdinalIgnoreCase)) { Destroy(); return false; }
         }
         if (ActorSounds.TryGetValue(ActorSoundType.Death, out var deathSound) && !string.IsNullOrEmpty(deathSound)
             && !deathSound.Equals("None", StringComparison.OrdinalIgnoreCase))
@@ -469,6 +531,7 @@ public sealed class ProjectileActor : Actor
             foreach (var actor in sim.Actors.ToArray())
             {
                 if (!actor.IsBlockmapActor || !actor.CanTakeDamage || actor.NoRadiusDamage || actor.SplashImmune(this)) continue;
+                if (actor.RadiusSourceImmune(Owner)) continue;
                 var distance = RadiusDamageGeometry.Distance(this, actor);
                 if (distance >= BlastRadius || !CombatTrace.CheckSight(sim, actor, this, ActorSightFlags.IgnoreVisibility)) continue;
                 var damage = (int)(BlastRadius * (1 - distance / BlastRadius));
@@ -478,6 +541,7 @@ public sealed class ProjectileActor : Actor
         if (Kind == ProjectileKind.Bfg)
             BfgSprayActions.Apply(sim, this, Owner);
         Destroy();
+        return false;
     }
 
     private void ClearImpactMotion()

@@ -18,8 +18,8 @@ public class CombatTraceTests
     }
 
     [Theory]
-    [InlineData(0, 128, 50)]
-    [InlineData(LevelLine.BlockingFlag, 128, 50)]
+    [InlineData(0, 128, 45)]
+    [InlineData(LevelLine.BlockingFlag, 128, 45)]
     [InlineData(LevelLine.BlockEverythingFlag, 128, 60)]
     [InlineData(LevelLine.BlockHitscanFlag, 128, 60)]
     [InlineData(0, 0, 60)]
@@ -47,7 +47,7 @@ public class CombatTraceTests
     [Theory]
     [InlineData(100, 64, 100, 128, 60)]
     [InlineData(100, 128, 100, 64, 60)]
-    [InlineData(100, 64, 150, 64, 50)]
+    [InlineData(100, 64, 150, 64, 45)]
     public void WallCrossingsBlockWhileCollinearTravelDoesNot(double x1, double y1, double x2, double y2, int health)
     {
         var sim = Range(new LevelLine { X1 = x1, Y1 = y1, X2 = x2, Y2 = y2, SideBack = -1 });
@@ -62,7 +62,7 @@ public class CombatTraceTests
     {
         var sim = Range(Wall(x));
         Fire(sim);
-        Assert.Equal(50, Target(sim).Health);
+        Assert.Equal(45, Target(sim).Health);
     }
 
     [Fact]

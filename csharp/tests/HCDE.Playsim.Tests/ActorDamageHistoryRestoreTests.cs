@@ -14,7 +14,7 @@ public class ActorDamageHistoryRestoreTests
         ActorDamage.Apply(player, 1000, killer, inflictor: killer);
         for (var i = 0; i < 3; i++) sim.Tick();
         var bytes = SimSavegame.Write(sim, includeBotIdentities: true);
-        Assert.Equal(227, BinaryPrimitives.ReadUInt16LittleEndian(bytes.AsSpan(4)));
+        Assert.Equal(311, BinaryPrimitives.ReadUInt16LittleEndian(bytes.AsSpan(4)));
         var expected = Enumerable.Range(0, 8).Select(_ => Turn(sim)).ToArray();
         player.LastDamageSourceId = decoy.Id;
         if (reconstructKiller) { killer.Destroy(); sim.Tick(); }

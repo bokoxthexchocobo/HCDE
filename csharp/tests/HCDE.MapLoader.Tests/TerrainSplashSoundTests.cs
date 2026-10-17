@@ -31,4 +31,16 @@ public class TerrainSplashSoundTests
         Assert.True(TerrainDefinitionParser.TryParseData("splash S { }", out var reset, out error, modified), error);
         Assert.Equal("", Assert.Single(reset.SplashDefinitions!).SmallSplashSound);
     }
+
+    [Fact]
+    public void NoAlertIsUnaryAndPreservedOnlyByModify()
+    {
+        Assert.True(TerrainDefinitionParser.TryParseData("splash S { NOALERT sound water/splash }", out var first, out var error), error);
+        Assert.True(Assert.Single(first.SplashDefinitions!).NoAlert);
+        Assert.Equal("water/splash", Assert.Single(first.SplashDefinitions!).NormalSplashSound);
+        Assert.True(TerrainDefinitionParser.TryParseData("splash S modify { }", out var modified, out error, first), error);
+        Assert.True(Assert.Single(modified.SplashDefinitions!).NoAlert);
+        Assert.True(TerrainDefinitionParser.TryParseData("splash S { }", out var reset, out error, modified), error);
+        Assert.False(Assert.Single(reset.SplashDefinitions!).NoAlert);
+    }
 }

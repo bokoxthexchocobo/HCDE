@@ -4,7 +4,87 @@ namespace HCDE.Playsim;
 
 internal static class DoomDecorationDefaults
 {
+    private static readonly Dictionary<int, string> ClassNames = new()
+    {
+        [PatrolMarkers.PointType] = "PatrolPoint",
+        [PatrolMarkers.SpecialType] = "PatrolSpecial",
+        [10] = "GibbedMarine",
+        [12] = "GibbedMarineExtra",
+        [15] = "DeadMarine",
+        [18] = "DeadZombieMan",
+        [19] = "DeadShotgunGuy",
+        [20] = "DeadDoomImp",
+        [21] = "DeadDemon",
+        [22] = "DeadCacodemon",
+        [23] = "DeadLostSoul",
+        [24] = "Gibs",
+        [25] = "DeadStick",
+        [26] = "LiveStick",
+        [27] = "HeadOnAStick",
+        [28] = "HeadsOnAStick",
+        [29] = "HeadCandles",
+        [30] = "TallGreenColumn",
+        [31] = "ShortGreenColumn",
+        [32] = "TallRedColumn",
+        [33] = "ShortRedColumn",
+        [34] = "Candlestick",
+        [35] = "Candelabra",
+        [36] = "HeartColumn",
+        [37] = "SkullColumn",
+        [41] = "EvilEye",
+        [42] = "FloatingSkull",
+        [43] = "TorchTree",
+        [44] = "BlueTorch",
+        [45] = "GreenTorch",
+        [46] = "RedTorch",
+        [47] = "Stalagtite",
+        [48] = "TechPillar",
+        [49] = "BloodyTwitch",
+        [50] = "Meat2",
+        [51] = "Meat3",
+        [52] = "Meat4",
+        [53] = "Meat5",
+        [54] = "BigTree",
+        [55] = "ShortBlueTorch",
+        [56] = "ShortGreenTorch",
+        [57] = "ShortRedTorch",
+        [59] = "NonsolidMeat2",
+        [60] = "NonsolidMeat4",
+        [61] = "NonsolidMeat3",
+        [62] = "NonsolidMeat5",
+        [63] = "NonsolidTwitch",
+        [70] = "BurningBarrel",
+        [73] = "HangNoGuts",
+        [74] = "HangBNoBrain",
+        [75] = "HangTLookingDown",
+        [76] = "HangTSkull",
+        [77] = "HangTLookingUp",
+        [78] = "HangTNoBrain",
+        [79] = "ColonGibs",
+        [80] = "SmallBloodPool",
+        [81] = "BrainStem",
+        [85] = "TechLamp",
+        [86] = "TechLamp2",
+        [2028] = "Column",
+        [5050] = "Stalagmite",
+    };
+    private static readonly HashSet<string> KnownClassNames = ClassNames.Values.ToHashSet(StringComparer.OrdinalIgnoreCase);
+    internal static bool TryClassName(int type, out string name) => ClassNames.TryGetValue(type, out name!);
+    internal static bool IsKnownClassName(string name) => KnownClassNames.Contains(name);
+    internal static bool IsKindOfClassName(int type, string name)
+    {
+        if (TryClassName(type, out var concrete) && concrete.Equals(name, StringComparison.OrdinalIgnoreCase)) return true;
+        var parent = type switch
+        {
+            12 => 10, 18 => 3004, 19 => 9, 20 => 3001, 21 => 3002, 22 => 3005, 23 => 3006,
+            59 => 50, 60 => 52, 61 => 51, 62 => 53, 63 => 49, _ => 0,
+        };
+        return parent != 0 && (TryClassName(parent, out var decoration) && decoration.Equals(name, StringComparison.OrdinalIgnoreCase)
+            || DoomActorCatalog.IsKindOfClassName(parent, name));
+    }
+
     internal static bool IsDecoration(int type) => HeightOf(type) != 0 || PatrolMarkers.IsMarker(type);
+    internal static bool MovesWithSector(int type) => type is 79 or 80 or 81;
 
     private static int HeightOf(int definitionType) => definitionType switch
     {
@@ -47,7 +127,8 @@ internal static class DoomDecorationDefaults
         // Skip_Super resets defaults but retains inherited monster state labels.
         actor.HasOnlySpawnLabel = definitionType is not (18 or 19 or 20 or 21 or 22 or 23);
         var hanging = definitionType is >= 49 and <= 53 or >= 59 and <= 63 or >= 73 and <= 78;
-        var floorDebris = definitionType is 79 or 80 or 81;
+        var floorDebris = MovesWithSector(definitionType);
+        if (floorDebris) actor.MoveWithSector = true;
         var corpseDecoration = definitionType is 10 or 12 or 15 or 18 or 19 or 20 or 21 or 22 or 23 or 24;
         if (patch is not { WidthPatched: true }) actor.Radius = Fixed.FromInt(definitionType switch
         {

@@ -33,6 +33,7 @@ public class Actor : Thinker
     public uint Id { get; init; }
     public IReadOnlyDictionary<ActorSoundType, string> ActorSounds { get; set; }
         = new Dictionary<ActorSoundType, string>();
+    internal IReadOnlyDictionary<ActorSoundType, string>? SpawnActorSounds { get; set; }
     /// <summary>Native <c>GetNetworkID</c>. Assigned by netplay; ACS may query it offline.</summary>
     public uint NetworkId { get; set; }
     public int DoomEdNum { get; init; }
@@ -43,6 +44,12 @@ public class Actor : Thinker
     public int ThingId { get; internal set; }
     /// <summary>Native <c>AActor::IsMapActor</c> for represented non-inventory actors.</summary>
     public virtual bool IsMapActor() => true;
+    public Func<Actor, (double X, double Y, double Z), double, int, bool>? PreTeleportFunction { get; set; }
+    public Action<Actor, (double X, double Y, double Z), double, int>? PostTeleportFunction { get; set; }
+    public virtual bool PreTeleport((double X, double Y, double Z) destination, double angle, int flags)
+        => PreTeleportFunction?.Invoke(this, destination, angle, flags) ?? true;
+    public virtual void PostTeleport((double X, double Y, double Z) destination, double angle, int flags)
+        => PostTeleportFunction?.Invoke(this, destination, angle, flags);
     public bool NoBlockmap { get; set; }
     public bool NoSector { get; set; }
     internal bool HasSectorOverride { get; set; }
@@ -56,6 +63,7 @@ public class Actor : Thinker
     public bool HitTracer { get; set; }
     internal bool DefaultCanPass => this is PlayerPawn || (ResurrectionCollisionFlags.GetValueOrDefault() & 256) != 0;
     public bool MoveWithSector { get; set; }
+    internal bool DefaultMoveWithSector => this is IceChunkActor || DoomDecorationDefaults.MovesWithSector(ClassDoomEdNum);
     public bool NoLiftDrop { get; set; }
     public bool RelativeToFloor { get; set; }
     internal bool IsSectorMoverActor => IsSectorLinked && (!NoBlockmap || MoveWithSector);
@@ -68,6 +76,7 @@ public class Actor : Thinker
     public bool SeeInvisible { get; set; }
     public int LastLookPlayerNumber { get; internal set; }
     public bool NoBlood { get; set; }
+    public bool PuffGetsOwner { get; set; }
     public bool IsPuff { get; internal set; }
     internal bool PendingSpawnDeath { get; set; }
     internal bool DefaultIsPuff { get; set; }
@@ -79,10 +88,46 @@ public class Actor : Thinker
     internal bool DefaultShadow { get; set; }
     public bool MinVisible { get; set; }
     public ActorRenderStyle RenderStyle { get; set; } = ActorRenderStyle.Normal;
+    public int GetRenderStyle() => RenderStyle.ToNative();
     internal ActorRenderStyle DefaultRenderStyle { get; set; } = ActorRenderStyle.Normal;
     internal double DefaultAlpha { get; set; } = 1;
     public void RestoreRenderStyle() => ActorPropertyActions.RestoreRenderStyle(this);
     private double _alpha = 1;
+    public bool VisibilityPulse { get; set; }
+    public bool Stealth { get; set; }
+    internal bool DefaultStealth { get; set; }
+    internal bool DefaultFloatBob { get; set; }
+    internal bool DefaultSeeker { get; set; }
+    internal bool DefaultReflective { get; set; }
+    internal bool DefaultThruGhost { get; set; }
+    internal bool DefaultNonShootable { get; set; }
+    internal bool DefaultFloorPic { get; set; }
+    internal bool DefaultRip { get; set; }
+    internal int DefaultPushFlags { get; set; }
+    internal bool DefaultTeleStomp { get; set; }
+    internal bool DefaultFloorClip { get; set; }
+    internal bool DefaultBlasted { get; set; }
+    internal bool DefaultTouchy { get; set; }
+    internal bool DefaultNoClip { get; set; }
+    internal int DefaultCombatFlags { get; set; }
+    internal bool DefaultInFloat { get; set; }
+    internal bool DefaultCorpse { get; set; }
+    internal bool DefaultFly { get; set; }
+    public bool SpawnFloat { get; set; }
+    internal bool DefaultSpawnFloat { get; set; }
+    private double _stealthAlpha;
+    public double StealthAlpha
+    {
+        get => _stealthAlpha;
+        set => _stealthAlpha = double.IsFinite(value) ? value : throw new ArgumentOutOfRangeException(nameof(value));
+    }
+    private sbyte _visibilityDirection;
+    public int VisibilityDirection
+    {
+        get => _visibilityDirection;
+        set => _visibilityDirection = value is >= sbyte.MinValue and <= sbyte.MaxValue
+            ? (sbyte)value : throw new ArgumentOutOfRangeException(nameof(value));
+    }
     public double Alpha
     {
         get => _alpha;
@@ -92,10 +137,54 @@ public class Actor : Thinker
             _alpha = value;
         }
     }
+    /// <summary>Native CheckFov: fov is the maximum angular deviation, not a full cone width.</summary>
+    public bool CheckFov(Actor target, double fov)
+    {
+        ArgumentNullException.ThrowIfNull(target);
+        if (!double.IsFinite(fov)) throw new ArgumentOutOfRangeException(nameof(fov));
+        return Math.Abs(Normalize180(Angle.ToDegrees() - AngleTo(target))) <= fov;
+    }
+
+    public bool CheckSight(Actor target, ActorSightFlags flags = 0)
+    {
+        ArgumentNullException.ThrowIfNull(target);
+        var sim = Simulation ?? throw new InvalidOperationException("Sight queries require an attached simulation.");
+        return CombatTrace.CheckSight(sim, this, target, flags);
+    }
+
+    public double GetCrouchFactor(int pointerSelector = AcsActorPointer.Player1)
+    {
+        var subject = pointerSelector == AcsActorPointer.Default ? this
+            : pointerSelector == AcsActorPointer.Null ? null
+            : AcsActorPointer.Resolve(Simulation
+                ?? throw new InvalidOperationException("Crouch pointer queries require an attached simulation."), this, pointerSelector);
+        return subject is PlayerPawn player ? player.CrouchFactor : 1;
+    }
+
     public bool CanSeek(Actor target)
     {
         ArgumentNullException.ThrowIfNull(target);
         return !target.CantSeek && !(DontSeekInvisible && (target.Invisible || target.Shadow || target.MinVisible || !target.RenderStyle.IsVisible(target.Alpha)));
+    }
+    /// <summary>Native rough-search attack eligibility for represented actors and projectile ownership.</summary>
+    public bool IsOkayToAttack(Actor candidate)
+    {
+        ArgumentNullException.ThrowIfNull(candidate);
+        if (candidate == this || candidate.Destroyed || candidate is not PlayerPawn && !candidate.IsMonster
+            || !candidate.Shootable || candidate.Dormant || candidate.NeverTarget) return false;
+        var sim = Simulation ?? throw new InvalidOperationException("Attack eligibility requires an attached simulation.");
+        Actor? friend = SummonedMonster ? AcsActorPointer.Resolve(sim, this, AcsActorPointer.Tracer) : this is ProjectileActor
+            ? AcsActorPointer.Resolve(sim, this, AcsActorPointer.Target)
+            : Friendly && FriendPlayer != 0
+                ? sim.Players.FirstOrDefault(player => player.PlayerNum + 1 == FriendPlayer && !player.Destroyed)
+                : this;
+        if (friend is null || candidate == friend || friend.IsFriend(candidate)) return false;
+        if (candidate.SummonedMonster && AcsActorPointer.Resolve(sim, candidate, AcsActorPointer.Tracer) == friend) return false;
+        if (sim.GameMode != SpawnGameMode.Deathmatch && candidate is PlayerPawn && friend is PlayerPawn) return false;
+        if (Friendly && candidate.Friendly && IsFriend(candidate)) return false;
+        if (!CheckSight(candidate)) return false;
+        // Native SCREENSEEKER uses this strict historical angle, after sight.
+        return !ScreenSeeker || Math.Abs(Normalize180(friend.Angle.ToDegrees() - friend.AngleTo(candidate))) < 30 * (256.0 / 360);
     }
     public bool CanSeek(Actor target, ActorRenderStyle targetStyle, double targetAlpha)
     {
@@ -251,6 +340,27 @@ public class Actor : Thinker
     internal virtual bool IsBlockmapActor => !NoBlockmap;
     /// <summary>Native actor gravity multiplier; ACS reads/writes signed 16.16 values.</summary>
     public Fixed Gravity { get; set; } = Fixed.FromInt(1);
+    public double GetGravity()
+    {
+        if (NoGravity) return 0;
+        var sim = Simulation ?? throw new InvalidOperationException("Gravity queries require an attached simulation.");
+        var sectorGravity = (uint)SectorIndex < (uint)sim.Level.Sectors.Count
+            ? sim.Level.Sectors[SectorIndex].Gravity : 1;
+        return sim.LevelGravity * sectorGravity * Gravity.ToDouble() * 0.00125;
+    }
+
+    /// <summary>Resolved terrain for the represented sector floor; contact overrides and 3D floors are not modeled.</summary>
+    public LevelTerrainDefinition? GetFloorTerrain()
+    {
+        var sim = Simulation ?? throw new InvalidOperationException("Terrain queries require an attached simulation.");
+        return sim.Level.FloorTerrainDefinition(SectorIndex);
+    }
+
+    public (double Friction, double MoveFactor) GetFriction()
+    {
+        var sim = Simulation ?? throw new InvalidOperationException("Friction queries require an attached simulation.");
+        return ActorPhysics.TerrainMovementFactors(sim, this);
+    }
     public double DistanceBySpeed(Actor destination, double speed)
     {
         var travel = Distance2D(destination) / speed;
@@ -447,6 +557,11 @@ public class Actor : Thinker
     public Func<Actor, Actor, int>? SpecialMissileHitFunction { get; set; }
     /// <summary>Native callback: 0 blocks, 1 passes, other values use ordinary missile handling.</summary>
     public virtual int SpecialMissileHit(Actor victim) => SpecialMissileHitFunction?.Invoke(this, victim) ?? -1;
+    public ReflectionAngleHandler? AdjustReflectionAngleFunction { get; set; }
+    /// <summary>Native hook: true rejects reflection; false accepts the updated angle.</summary>
+    public virtual bool AdjustReflectionAngle(Actor reflector, ref double angleDegrees) =>
+        AdjustReflectionAngleFunction is { } action ? action(this, reflector, ref angleDegrees)
+            : ActorReflectionActions.AdjustReflectionAngle(this, reflector, ref angleDegrees);
     internal int? SpawnDamage { get; set; }
     /// <summary>Native SetDamage; projectile overrides also clear their damage expression.</summary>
     public virtual void SetDamage(int damage)
@@ -511,6 +626,8 @@ public class Actor : Thinker
     public double SpawnZOffset { get; init; }
     public bool SpawnCeiling { get; set; }
     public bool NoTeleport { get; set; }
+    internal bool DefaultNoTeleport => ResurrectionMovementFlags is { } flags ? (flags & 4) != 0
+        : this is IceChunkActor or ProjectileActor;
     public bool CanSlide { get; set; }
     public bool Dormant { get; set; }
     public Fixed X { get; set; }
@@ -547,6 +664,26 @@ public class Actor : Thinker
     public double ScaleY { get; set; } = 1;
     internal bool HasScaleOverride { get; set; }
     public int FloatBobPhase { get; set; }
+    public bool FloatBob { get; set; }
+    private double _floatBobStrength = 1, _floatBobFactor = 1;
+    public double FloatBobStrength
+    {
+        get => _floatBobStrength;
+        set => _floatBobStrength = double.IsFinite(value) ? value : throw new ArgumentOutOfRangeException(nameof(value));
+    }
+    public double FloatBobFactor
+    {
+        get => _floatBobFactor;
+        set => _floatBobFactor = double.IsFinite(value) ? value : throw new ArgumentOutOfRangeException(nameof(value));
+    }
+    public double GetBobOffset(double ticFraction = 0)
+    {
+        if (!double.IsFinite(ticFraction)) throw new ArgumentOutOfRangeException(nameof(ticFraction));
+        if (!FloatBob) return 0;
+        var tic = Simulation?.Thinkers.Clock.Tic
+            ?? throw new InvalidOperationException("Float bob requires an attached simulation.");
+        return Math.Sin((FloatBobPhase + tic * FloatBobFactor + ticFraction) * Math.PI / 32) * 8 * FloatBobStrength;
+    }
     internal bool HasFloatBobPhaseOverride { get; set; }
     public double SpriteAngle { get; set; }
     public double SpriteRotation { get; set; }
@@ -558,6 +695,7 @@ public class Actor : Thinker
     public bool Ambush { get; set; }
     internal bool DefaultAmbush => SpawnAmbush || (ResurrectionDefenseFlags.GetValueOrDefault() & 16) != 0;
     public int PainChance { get; set; } = 256;
+    internal int? SpawnPainChance { get; set; }
     /// <summary>Native <c>PainThreshold</c>. A surviving hit below this post-armor amount does not flinch. 0 flinches on any loss.</summary>
     public int PainThreshold { get; set; }
     public int ResurrectionHealth { get; internal set; }
@@ -588,6 +726,23 @@ public class Actor : Thinker
     public bool NoBossRip { get; set; }
     public bool Pushable { get; set; }
     public bool CannotPush { get; set; }
+    public bool BlockedBySolidActors { get; set; }
+    public bool BumpSpecial { get; set; }
+    public bool Reflective { get; set; }
+    public bool ThruReflect { get; set; }
+    public bool DontReflect { get; set; }
+    public bool MirrorReflect { get; set; }
+    public bool Deflect { get; set; }
+    public bool ShieldReflect { get; set; }
+    public bool NoShieldReflect { get; set; }
+    public bool AimReflect { get; set; }
+    public bool SeekerMissile { get; set; }
+    public bool SummonedMonster { get; set; }
+    public bool ScreenSeeker { get; set; }
+    internal int LastBumpTic { get; set; }
+    internal HashSet<Actor>? MovementPushContacts { get; set; }
+    internal bool AiPushContext { get; set; }
+    internal bool LastPushFromMovement { get; set; }
     private double _pushFactor = 0.25;
     public double PushFactor
     {
@@ -639,6 +794,19 @@ public class Actor : Thinker
     public bool JustAttacked { get; set; }
     public bool InCombat { get; set; }
     public bool NoSplashAlert { get; set; }
+    public bool DontSplash { get; set; }
+    public bool Touchy { get; set; }
+    public bool Armed { get; set; }
+    public bool DontHarmSpecies { get; set; }
+    public bool DontHarmClass { get; set; }
+    public const double DefaultLandingSpeed = -8;
+    public double LandingSpeed { get; set; } = DefaultLandingSpeed;
+    public bool FallDamage { get; set; }
+    public bool Smashable { get; set; }
+    public bool Crashed { get; set; }
+    public bool DontGib { get; set; }
+    public bool TeleStomp { get; set; }
+    public bool NoTeleStomp { get; set; }
     public Fixed MaxStepHeight { get; set; } = Fixed.FromInt(24);
     /// <summary>Native MaxDropOffHeight. A drop strictly taller than this is refused unless <see cref="AllowDropOff"/> or <see cref="Floating"/>.</summary>
     public Fixed MaxDropOffHeight { get; set; } = Fixed.FromInt(24);
@@ -791,15 +959,25 @@ public class Actor : Thinker
         SharesContactSpecies(other) && this is not PlayerPawn && other is not PlayerPawn;
     public string? Species { get; set; }
     internal bool HasSpeciesOverride { get; set; }
-    internal string SpeciesName => !string.IsNullOrEmpty(Species) && !Species.Equals("None", StringComparison.OrdinalIgnoreCase)
-        ? Species : this is PlayerPawn ? "DoomPlayer"
-        : DoomActorCatalog.TrySpawnClassName(DefaultSpecies, out var name) ? name
-        : "Class:" + DefaultSpecies.ToString(System.Globalization.CultureInfo.InvariantCulture);
+    internal string SpeciesName
+    {
+        get
+        {
+            if (!string.IsNullOrEmpty(Species) && !Species.Equals("None", StringComparison.OrdinalIgnoreCase)) return Species;
+            if (DoomActorCatalog.TrySpawnClassName(DefaultSpecies, out var monster)) return monster;
+            var concrete = AcsCallFunctions.ClassNameOf(this);
+            return concrete != "None" ? concrete : "Class:" + DefaultSpecies.ToString(System.Globalization.CultureInfo.InvariantCulture);
+        }
+    }
     // GetSpecies climbs monster parents: Spectre : Demon and HellKnight : BaronOfHell.
     private int DefaultSpecies => ClassDoomEdNum switch { 58 => 3002, 69 => 3003, _ => ClassDoomEdNum };
     // All supported Doom player starts share DoomPlayer's collision species.
     // Damage species immunity deliberately excludes players; contact filtering does not.
     internal bool SharesContactSpecies(Actor other) => SpeciesName.Equals(other.SpeciesName, StringComparison.OrdinalIgnoreCase);
+    internal bool RadiusSpeciesImmune(Actor? source) => this is not PlayerPawn
+        && source is { DontHarmSpecies: true } && SharesContactSpecies(source);
+    internal bool RadiusSourceImmune(Actor? source) => this is not PlayerPawn && source is not null
+        && (source.DontHarmClass && ClassDoomEdNum == source.ClassDoomEdNum || RadiusSpeciesImmune(source));
     /// <summary>Native <c>P_ProjectileImmune</c> group and default species rules.</summary>
     public bool ProjectileImmune(Actor source) =>
         (ProjectileGroup != -1 || ReferenceEquals(this, source))
@@ -931,11 +1109,13 @@ public class Actor : Thinker
         set => SetHealth(value, null, false);
     }
 
-    internal void SetDamageHealth(int value, Actor? source, Func<int> afterDamage, bool useInflictorDeathType = true)
-        => SetHealth(value, source, true, afterDamage, useInflictorDeathType: useInflictorDeathType);
+    internal void SetDamageHealth(int value, Actor? source, Func<int> afterDamage, bool useInflictorDeathType = true,
+        bool creditSummonedSource = false)
+        => SetHealth(value, source, true, afterDamage, useInflictorDeathType: useInflictorDeathType,
+            creditSummonedSource: creditSummonedSource);
 
     private void SetHealth(int value, Actor? source, bool executeDeathSpecial, Func<int>? afterDamage = null, bool forceDeath = false,
-        bool useInflictorDeathType = true)
+        bool useInflictorDeathType = true, bool creditSummonedSource = false)
     {
         var dead = _health <= 0;
         _health = value;
@@ -950,6 +1130,10 @@ public class Actor : Thinker
         }
         if ((!dead || forceDeath) && IsDead)
         {
+            if (executeDeathSpecial && creditSummonedSource && source is { SummonedMonster: true, Simulation: { } sourceSim }
+                && AcsActorPointer.Resolve(sourceSim, source, AcsActorPointer.Tracer) is PlayerPawn summoner
+                && sourceSim.Players.Contains(summoner))
+                source = summoner;
             // Native Die first queries gib health while living dimensions and flags are intact.
             if (executeDeathSpecial) _ = GetGibHealth();
             if (this is PlayerPawn powerOwner) powerOwner.ClearDamagePowers();
@@ -1002,6 +1186,11 @@ public class Actor : Thinker
                     States.ForceRemainingTics(Math.Max(1, States.RemainingTics - timingSimulation.NextActorDieRandom()));
             }
             else if (this is not PlayerPawn) Destroy();
+            if (executeDeathSpecial && this is PlayerPawn deadRumblePlayer)
+            {
+                PlayerDiedMakeRumble(DeathInflictor);
+                deadRumblePlayer.BonusCount = 0;
+            }
         }
         else if (dead && !IsDead && States.HasState(SpawnState))
         {
@@ -1013,7 +1202,12 @@ public class Actor : Thinker
     public ActorStateMachine States { get; } = new();
     public int SpawnState { get; set; } = ActorStateMachine.Spawn;
     internal bool HasOnlySpawnLabel { get; set; }
+    internal int DieFromSpawnState { get; set; } = -1;
+    internal void DieFromSpawn() => SetHealth(0, null, executeDeathSpecial: true, forceDeath: true);
     internal int GenericCrushState { get; set; } = -1;
+    public int CrushState { get; set; } = -1;
+    public int CrashState { get; set; } = -1;
+    public int ExtremeCrashState { get; set; } = -1;
     internal int NullState { get; set; } = -1;
     public int ActiveState { get; set; } = -1;
     public int InactiveState { get; set; } = -1;
@@ -1054,6 +1248,8 @@ public class Actor : Thinker
     internal Actor? DeathInflictor { get; set; }
     private readonly Dictionary<string, int> _typedDeaths = new(StringComparer.OrdinalIgnoreCase);
     private readonly Dictionary<string, int> _typedExtremeDeaths = new(StringComparer.OrdinalIgnoreCase);
+    private readonly Dictionary<string, int> _typedCrashes = new(StringComparer.OrdinalIgnoreCase);
+    private readonly Dictionary<string, int> _typedExtremeCrashes = new(StringComparer.OrdinalIgnoreCase);
     private readonly Dictionary<string, int> _typedPain = new(StringComparer.OrdinalIgnoreCase);
     private readonly Dictionary<string, int> _typedPainChance = new(StringComparer.OrdinalIgnoreCase);
     private readonly Dictionary<string, int> _typedWounds = new(StringComparer.OrdinalIgnoreCase);
@@ -1123,6 +1319,92 @@ public class Actor : Thinker
     public Fixed Height { get; set; } = Fixed.FromInt(56);
     public PlayLevel? Level { get; init; }
 
+    public virtual void PlayerPushedSomethingMakeRumble(Actor thing)
+    {
+        if (Simulation is { WorldHapticsEnabled: true } sim)
+            sim.RequestRumble(new(Id, "misc/push", LocalPlayerOrCameraOnly: true));
+    }
+
+    public virtual void PlayerWasPushedMakeRumble(Actor source)
+    {
+        if (Simulation is { WorldHapticsEnabled: true } sim)
+            sim.RequestRumble(new(Id, "misc/pushed", LocalPlayerOrCameraOnly: true, SuppressIfLocalActorId: source.Id));
+    }
+
+    public virtual void PlayerUsedSomethingMakeRumble(int activationType, int levelNum, int lineNum, int lineSpecial)
+    {
+        if (Simulation is { ActionHapticsEnabled: true } sim)
+            sim.RequestRumble(new(Id, "*usesuccess", LocalPlayerOrCameraOnly: true));
+    }
+
+    public virtual void PlayerTeleportedMakeRumble()
+    {
+        if (this is PlayerPawn && Simulation is { WorldHapticsEnabled: true } sim)
+            sim.RequestRumble(new(Id, "misc/teleport", LocalPlayerOrCameraOnly: true));
+    }
+
+    public virtual void PlayerHurtMakeRumble(Actor? source = null)
+    {
+        if (this is PlayerPawn && Simulation is { DamageHapticsEnabled: true } sim)
+            sim.RequestRumble(new(Id, "*pain"));
+    }
+
+    public virtual void PlayerDiedMakeRumble(Actor? source = null)
+    {
+        if (this is PlayerPawn && Simulation is { DamageHapticsEnabled: true } sim)
+            sim.RequestRumble(new(Id, "*death"));
+    }
+
+    public virtual void PlayerLandedMakeRumble(Actor? onMobj = null)
+    {
+        if (this is not PlayerPawn player) return;
+        var sim = Simulation ?? throw new InvalidOperationException("Landing rumble requires an attached simulation.");
+        if (!sim.WorldHapticsEnabled) return;
+        var liquid = Z.ToDouble() <= sim.FloorOf(SectorIndex)
+            && sim.Level.FloorTerrainDefinition(SectorIndex) is { IsLiquid: true };
+        if (onMobj is not null || !liquid) sim.RequestRumble(new(Id, "*land"));
+        else if (VelocityZ.ToDouble() < -player.GruntSpeed) sim.RequestRumble(new(Id, "*grunt"));
+    }
+
+    /// <summary>Native landing sound selection for the represented unmorphed player body.</summary>
+    public virtual void PlayerLandedMakeGruntSound(Actor? onMobj = null)
+    {
+        if (Destroyed || Health <= 0 || this is not PlayerPawn player) return;
+        var grunted = VelocityZ.ToDouble() < -player.GruntSpeed;
+        if (grunted) ActorSoundActions.StartSound(this, "*grunt", 2, SimulationSoundFlags.NoRumble);
+        var liquid = Simulation is { } sim && Z.ToDouble() <= sim.FloorOf(SectorIndex)
+            && sim.Level.FloorTerrainDefinition(SectorIndex) is { IsLiquid: true };
+        if (onMobj is not null || !liquid)
+        {
+            if (grunted) ActorSoundActions.StartSoundIfNotSame(this, "*land", "*grunt", 0, SimulationSoundFlags.NoRumble);
+            else ActorSoundActions.StartSound(this, "*land", 0, SimulationSoundFlags.NoRumble);
+        }
+    }
+
+    /// <summary>Native landing view impulse for the represented player's active body.</summary>
+    public virtual void PlayerSquatView(Actor? onMobj = null)
+    {
+        if (this is PlayerPawn player) player.DeltaViewHeight = VelocityZ.ToDouble() / 8;
+    }
+
+    /// <summary>Native corpse landing dispatch for represented ordinary, extreme and damage-typed Crash labels.</summary>
+    public virtual void Crash()
+    {
+        if (Destroyed || DontCorpse || !(Corpse || Killed) || Crashed || IceCorpse) return;
+        var extreme = Health < GetGibHealth();
+        var state = -1;
+        if (!string.IsNullOrEmpty(DamageType) && !DamageType.Equals("None", StringComparison.OrdinalIgnoreCase))
+        {
+            if (extreme && _typedExtremeCrashes.TryGetValue(DamageType, out var typedExtreme)
+                && States.HasState(typedExtreme)) state = typedExtreme;
+            if (state < 0 && _typedCrashes.TryGetValue(DamageType, out var typed)
+                && States.HasState(typed)) state = typed;
+        }
+        if (state < 0) state = extreme && States.HasState(ExtremeCrashState) ? ExtremeCrashState : CrashState;
+        if (States.HasState(state)) States.Enter(this, state);
+        Crashed = true;
+    }
+
     public bool IsDead => Health <= 0;
     /// <summary>Native AActor.Massacre: attempt repeated Massacre damage and report whether the actor died.</summary>
     public bool Massacre() => ThingDamage.Massacre(this);
@@ -1133,12 +1415,10 @@ public class Actor : Thinker
 
     public bool BlocksActors =>
         Solid && !IsDead && !Destroyed && DoomEdNum != LineSpecials.TeleportDestType
-        && DoomEdNum != InvasionDirector.SpawnSpotType
-        && !PickupCatalog.IsPickup(DoomEdNum, Simulation?.RavenHealthPickups ?? false);
+        && DoomEdNum != InvasionDirector.SpawnSpotType;
 
     public bool CanTakeDamage => (Shootable || Vulnerable) && !IsDead && !Destroyed
-        && DoomEdNum != LineSpecials.TeleportDestType && DoomEdNum != InvasionDirector.SpawnSpotType
-        && !PickupCatalog.IsPickup(DoomEdNum, Simulation?.RavenHealthPickups ?? false);
+        && DoomEdNum != LineSpecials.TeleportDestType && DoomEdNum != InvasionDirector.SpawnSpotType;
 
     public static bool IsPlayerStart(int type) => type is >= PlayerStartMin and <= PlayerStartMax;
 
@@ -1159,6 +1439,23 @@ public class Actor : Thinker
         foreach (var entry in _typedDeaths.OrderBy(pair => pair.Key, StringComparer.Ordinal))
             yield return (entry.Key, entry.Value, false);
         foreach (var entry in _typedExtremeDeaths.OrderBy(pair => pair.Key, StringComparer.Ordinal))
+            yield return (entry.Key, entry.Value, true);
+    }
+
+    /// <summary>Configure a Crash.Type or Crash.Extreme.Type label on the managed actor class.</summary>
+    public void SetTypedCrash(string damageType, int state, bool extreme = false)
+    {
+        if (string.IsNullOrEmpty(damageType) || damageType.Equals("None", StringComparison.OrdinalIgnoreCase)
+            || damageType.Equals("Extreme", StringComparison.OrdinalIgnoreCase))
+            throw new ArgumentException("A typed crash needs a damage type other than None or Extreme.", nameof(damageType));
+        (extreme ? _typedExtremeCrashes : _typedCrashes)[damageType] = state;
+    }
+
+    internal IEnumerable<(string Type, int State, bool Extreme)> TypedCrashes()
+    {
+        foreach (var entry in _typedCrashes.OrderBy(pair => pair.Key, StringComparer.OrdinalIgnoreCase))
+            yield return (entry.Key, entry.Value, false);
+        foreach (var entry in _typedExtremeCrashes.OrderBy(pair => pair.Key, StringComparer.OrdinalIgnoreCase))
             yield return (entry.Key, entry.Value, true);
     }
 
@@ -1391,6 +1688,33 @@ public class Actor : Thinker
             SectorDamage.Tick(Simulation, this);
             TerrainDamage.Tick(Simulation, this);
         }
+        if (!Destroyed && VisibilityPulse)
+        {
+            if (VisibilityDirection > 0)
+            {
+                Alpha += 1.0 / 32;
+                if (Alpha >= 1) { Alpha = 1; VisibilityDirection = -1; }
+            }
+            else
+            {
+                Alpha -= 1.0 / 32;
+                if (Alpha <= 0.25) { Alpha = 0.25; VisibilityDirection = 1; }
+            }
+        }
+        else if (!Destroyed && Stealth)
+        {
+            RenderStyle = RenderStyle with { Flags = (byte)(RenderStyle.Flags & ~2) };
+            if (VisibilityDirection > 0)
+            {
+                Alpha += 2.0 / GameTicClock.TicRate;
+                if (Alpha > 1) { Alpha = 1; VisibilityDirection = 0; }
+            }
+            else if (VisibilityDirection < 0)
+            {
+                Alpha -= 1.5 / GameTicClock.TicRate;
+                if (Alpha < StealthAlpha) { Alpha = StealthAlpha; VisibilityDirection = 0; }
+            }
+        }
         base.Tick();
     }
 
@@ -1434,6 +1758,7 @@ public class PlayerPawn : Actor
         Inventory = new PlayerInventory(this);
         CanSlide = true;
         CanPass = true;
+        DefaultTeleStomp = TeleStomp = true;
         MovementSpeed = Fixed.FromInt(1);
         CanPickupItems = true;
         SpawnCanPickupItems = true;
@@ -1441,9 +1766,16 @@ public class PlayerPawn : Actor
         NoBlockMonsters = true;
     }
 
+    public int TeleportFreezeTime { get; set; } = 18;
+    public Func<PlayerPawn, int>? TeleportFreezeTimeFunction { get; set; }
+    public virtual int GetTeleportFreezeTime()
+        => TeleportFreezeTimeFunction?.Invoke(this) ?? Math.Max(0, TeleportFreezeTime);
+
     public const double CrouchSpeed = 1.0 / 12;
     public const double MinimumCrouchFactor = 0.5;
     public const double StandingViewHeight = 41;
+    public const double DefaultGruntSpeed = 12;
+    public double GruntSpeed { get; set; } = DefaultGruntSpeed;
     internal bool HasMovementInput { get; private set; }
     public bool ClassicFlight { get; set; }
     public int JumpTics { get; internal set; }
@@ -1467,6 +1799,8 @@ public class PlayerPawn : Actor
     public double CrouchFactor { get; private set; } = 1;
     /// <summary>Native player.viewheight. Standing view is 41, scaled by <see cref="CrouchFactor"/>.</summary>
     public double ViewHeight { get; internal set; } = StandingViewHeight;
+    public double DeltaViewHeight { get; internal set; }
+    public double GetDeltaViewHeight() => (DefaultViewHeight.ToDouble() * CrouchFactor - ViewHeight) / 8;
     /// <summary>Native PlayerPawn ViewHeight property, separate from the changing eye height.</summary>
     public Fixed DefaultViewHeight { get; set; } = Fixed.FromDouble(StandingViewHeight);
     /// <summary>Native PlayerPawn attack height relative to its center.</summary>
@@ -1481,6 +1815,16 @@ public class PlayerPawn : Actor
     public int BobTimer { get; set; }
     /// <summary>Added to view Z. <see cref="ViewHeight"/> stays the standing or crouched eye height.</summary>
     public double ViewBobOffset { get; internal set; }
+    /// <summary>Represented CalcHeight eye position, without advancing view height or bob.</summary>
+    public double GetViewZ()
+    {
+        var sim = Simulation ?? throw new InvalidOperationException("Player eye height requires an attached simulation.");
+        var floor = sim.FloorOf(SectorIndex);
+        var viewZ = Z.ToDouble() + ViewHeight + ViewBobOffset;
+        if (!IsDead && Z.ToDouble() <= floor) viewZ -= FloorClip;
+        viewZ = Math.Min(viewZ, sim.CeilingOf(SectorIndex) - 4);
+        return Math.Max(viewZ, floor + 4);
+    }
     /// <summary>Native <c>player.bob</c>. Horizontal speed squared times <see cref="MoveBob"/>, capped at <see cref="MaxBob"/>.</summary>
     public double MovementBob { get; internal set; }
     /// <summary>Native weapon <c>BobSpeed</c>. Doom weapons leave this at 1.</summary>
@@ -1769,10 +2113,11 @@ public class PlayerPawn : Actor
     public double UseRange { get => _useRange; set { _useRange = value; HasUseRangeOverride = true; } }
     internal bool HasUseRangeOverride { get; set; }
     public int WeaponCooldown { get; internal set; }
+    public bool WeaponRefiring { get; internal set; }
     /// <summary>First tic on which a press may respawn. <see cref="int.MaxValue"/> until the player dies.</summary>
-    public int RespawnEarliestTic { get; private set; } = int.MaxValue;
+    public int RespawnEarliestTic { get; internal set; } = int.MaxValue;
     /// <summary>Set by a rising use or attack edge while dead. Cleared when the respawn is taken.</summary>
-    public bool RespawnArmed { get; private set; }
+    public bool RespawnArmed { get; internal set; }
     private bool _attackHeld;
     internal bool AttackHeld => _attackHeld;
 
@@ -1809,7 +2154,8 @@ public class PlayerPawn : Actor
         // Leave an externally chosen height alone while the player is not crouching.
         if (Math.Abs(CrouchFactor - before) > 1e-12)
             Height = Fixed.FromDouble(FullHeight * CrouchFactor);
-        ViewHeight = DefaultViewHeight.ToDouble() * CrouchFactor;
+        if (DeltaViewHeight == 0) ViewHeight = DefaultViewHeight.ToDouble() * CrouchFactor;
+        else ViewHeight += DefaultViewHeight.ToDouble() * (CrouchFactor - before);
     }
 
     internal void RestoreCrouch(SimCrouchState? saved, double? savedFullHeight)
@@ -1885,6 +2231,7 @@ public class PlayerPawn : Actor
         if (IsDead)
         {
             JustAttacked = false;
+            WeaponRefiring = false;
             AttackPressed = false;
             ViewBobOffset = 0;
             MovementBob = 0;
@@ -2003,6 +2350,7 @@ public class PlayerPawn : Actor
         if (PowerHighJumpTics > 0) PowerHighJumpTics--;
         if (!HasPowerHighJump) PowerHighJumpStrength = 2;
         base.Tick();
+        AdvanceViewHeight();
         UpdateViewBob();
         if (!IsDead && DamageCount > 0) DamageCount--;
         if (!IsDead && BonusCount > 0) BonusCount--;
@@ -2017,12 +2365,28 @@ public class PlayerPawn : Actor
         ActorDamage.ApplyPoisonDamage(this, 1, source);
     }
 
-    /// <summary>
-    /// <c>CalcHeight</c> movement bob. Horizontal speed squared, times <see cref="MoveBob"/>,
-    /// capped at <see cref="MaxBob"/>. The view term is that amount times
-    /// <c>sin(BobTimer / ViewBobSpeed * 360) * 0.5</c>. Still bob is 0.
-    /// <c>BobWeapon</c> then swings the ready weapon in the normal style.
-    /// </summary>
+    /// <summary>Advance the represented live-player CalcHeight landing impulse once per tic.</summary>
+    internal void AdvanceViewHeight()
+    {
+        if (!IsDead && DeltaViewHeight != 0)
+        {
+            var target = DefaultViewHeight.ToDouble() * CrouchFactor;
+            ViewHeight += DeltaViewHeight;
+            if (ViewHeight > target) { ViewHeight = target; DeltaViewHeight = 0; }
+            else if (ViewHeight < target / 2)
+            {
+                ViewHeight = target / 2;
+                if (DeltaViewHeight <= 0) DeltaViewHeight = 1.0 / 65536;
+            }
+            if (DeltaViewHeight != 0)
+            {
+                DeltaViewHeight += 0.25;
+                if (DeltaViewHeight == 0) DeltaViewHeight = 1.0 / 65536;
+            }
+        }
+    }
+
+    /// <summary>Recalculate movement and weapon bob without advancing the landing impulse.</summary>
     public void UpdateViewBob()
     {
         var speed = VelocityX.ToDouble() * VelocityX.ToDouble() + VelocityY.ToDouble() * VelocityY.ToDouble();
@@ -2101,6 +2465,7 @@ public class PlayerPawn : Actor
     /// </summary>
     internal void BringUpWeapon(WeaponKind weapon)
     {
+        WeaponRefiring = false;
         Inventory.Selected = weapon;
         Inventory.Pending = null;
         WeaponLowering = false;
@@ -2109,6 +2474,7 @@ public class PlayerPawn : Actor
 
     private void AdvanceWeapon()
     {
+        if (WeaponLowering) WeaponRefiring = false;
         if (Inventory.Selected == 0 && Inventory.Pending is { } firstWeapon)
         {
             BringUpWeapon(firstWeapon);
@@ -2276,16 +2642,27 @@ public static class ActorSpawner
 {
     internal static void ApplySoundDefaults(Actor actor, DehackedActor? defaults)
     {
-        if (defaults is null) return;
-        if (defaults.FullVolumeSoundsPatched)
+        if (defaults is not null)
+        {
+            ApplyFullVolumeSoundDefaults(actor, defaults);
+            if (defaults.SoundNameOverrides.Count != 0)
+                actor.ActorSounds = defaults.SoundNameOverrides.ToDictionary(pair => (ActorSoundType)pair.Key, pair => pair.Value);
+        }
+        if (PickupCatalog.IsPickup(actor.ClassDoomEdNum) && !actor.ActorSounds.ContainsKey(ActorSoundType.Rip))
+            actor.ActorSounds = new Dictionary<ActorSoundType, string>(actor.ActorSounds) { [ActorSoundType.Rip] = "misc/ripslop" };
+        if (PickupCatalog.IsPickup(actor.ClassDoomEdNum))
+            actor.SpawnActorSounds = new Dictionary<ActorSoundType, string>(actor.ActorSounds);
+    }
+
+    internal static void ApplyFullVolumeSoundDefaults(Actor actor, DehackedActor? defaults)
+    {
+        if (defaults is { FullVolumeSoundsPatched: true })
         {
             actor.FullVolumeDeath = defaults.FullVolumeSounds;
             actor.FullVolumeSee = defaults.FullVolumeSounds;
             actor.DefaultFullVolumeDeath = defaults.FullVolumeSounds;
             actor.DefaultFullVolumeSee = defaults.FullVolumeSounds;
         }
-        if (defaults.SoundNameOverrides.Count != 0)
-            actor.ActorSounds = defaults.SoundNameOverrides.ToDictionary(pair => (ActorSoundType)pair.Key, pair => pair.Value);
     }
     public static IReadOnlyList<Actor> Spawn(
         PlayLevel level,
@@ -2301,10 +2678,15 @@ public static class ActorSpawner
                 || !(spawnOptions ?? new SpawnOptions()).Includes(thing))
                 continue;
 
+            var defaults = dehacked?.Actors.FirstOrDefault(actor => actor.DoomEdNum == thing.Type && actor.Patched);
+            if (spawnOptions?.Mode == SpawnGameMode.Deathmatch
+                && (defaults is not null ? (defaults.Bits & 0x02000000) != 0 : PickupCatalog.IsKey(thing.Type)))
+                continue;
+
             var actor = CreateMapActor(level, thing, nextId++, dehacked, spawnOptions, mapSpawnRandom, actorSpawnRandom);
             if (actor.Brain is null && actor.SpecialPickup && PickupCatalog.IsPickup(thing.Type, spawnOptions?.RavenHealthPickups ?? false))
                 actor.MapPickupThingIndex = thingIndex;
-            else if (actor.Brain is null && !actor.SpecialPickup && DoomDecorationDefaults.IsDecoration(thing.Type))
+            else if (actor.Brain is null && !actor.SpecialPickup && DoomDecorationDefaults.IsDecoration(actor.ClassDoomEdNum))
                 actor.MapDecorationThingIndex = thingIndex;
             if (actor is not PlayerPawn && actor.Brain is not null) actor.MapMonsterThingIndex = thingIndex;
             thinkers.Add(actor, actor is PlayerPawn ? ThinkerStat.Player : ThinkerStat.Default);
@@ -2328,7 +2710,9 @@ public static class ActorSpawner
     internal static Actor CreateMapActor(PlayLevel level, LevelThing thing, uint id,
         DehackedPatchResult? dehacked, SpawnOptions? spawnOptions, Func<uint>? mapSpawnRandom, Func<uint>? actorSpawnRandom = null)
     {
-        var defaults = dehacked?.Actors.FirstOrDefault(actor => actor.DoomEdNum == thing.Type && actor.Patched);
+        var defaults = Actor.IsPlayerStart(thing.Type)
+            ? dehacked?.Actors.FirstOrDefault(actor => actor.Index == 1 && actor.Patched)
+            : dehacked?.Actors.FirstOrDefault(actor => actor.DoomEdNum == thing.Type && actor.Patched);
         var definitionType = defaults?.OriginalDoomEdNum is > 0 ? defaults.OriginalDoomEdNum : thing.Type;
         var definition = DoomActorCatalog.Find(definitionType);
         var playerStart = Actor.IsPlayerStart(thing.Type);
@@ -2355,7 +2739,8 @@ public static class ActorSpawner
                 Y = Fixed.FromDouble(thing.Y),
                 ThingId = thing.Id, SpawnZOffset = thing.Z,
                 Angle = BamAngle.FromDegrees(thing.Angle),
-                Health = defaults?.Health ?? definition?.Health ?? 30,
+                Health = defaults?.Health ?? definition?.Health
+                    ?? (PickupCatalog.IsPickup(thing.Type, spawnOptions?.RavenHealthPickups ?? false) ? 1000 : 30),
                 Radius = defaults == null && definition != null ? Fixed.FromInt(definition.Radius) : RadiusOf(defaults, player: false),
                 Height = defaults == null && PickupCatalog.IsPickup(thing.Type, spawnOptions?.RavenHealthPickups ?? false) ? PickupCatalog.HeightOf(thing.Type)
                     : defaults == null && definition != null ? Fixed.FromInt(definition.Height) : HeightOf(defaults),
@@ -2374,10 +2759,10 @@ public static class ActorSpawner
         }
         actor.DefinitionDoomEdNum = definitionType;
         actor.SpecialPickup = PickupCatalog.IsPickup(actor.DoomEdNum, spawnOptions?.RavenHealthPickups ?? false);
+        if (actor.SpecialPickup) actor.Solid = actor.Shootable = false;
         ApplyPrimaryFlags(actor, defaults, playerStart);
         DoomDecorationDefaults.Apply(actor, definitionType, defaults);
-        if (actor.DoomEdNum == PickupCatalog.RadSuit && defaults is null)
-            actor.States.SetSpawnFullBright(actor, true);
+        DoomPickupStates.Apply(actor, definitionType);
         PatrolMarkers.Apply(actor, definitionType, defaults);
         actor.SpawnCanPickupItems = actor.CanPickupItems;
         actor.SpawnSpecialPickup = actor.SpecialPickup;
@@ -2387,7 +2772,7 @@ public static class ActorSpawner
         actor.Mass = defaults is { MassPatched: true } ? defaults.Mass : PatrolMarkers.IsMarker(definitionType) ? 10 : DoomActorCatalog.MassOf(definitionType);
         actor.RaiseDuration = ArchvileActions.RaiseDuration(definitionType);
         actor.Boss = definitionType is 7 or 16;
-        ApplyExtendedDefaults(actor, defaults);
+        ApplyExtendedDefaults(actor, defaults, spawnOptions?.FastMonsters ?? spawnOptions?.Skill == 4);
         actor.SpawnDropped = actor.Dropped;
         actor.SpawnFriendly = thing.Friendly;
         actor.SpawnAmbush = thing.Ambush;
@@ -2442,6 +2827,8 @@ public static class ActorSpawner
 
     internal static void ApplyPrimaryFlags(Actor actor, DehackedActor? defaults, bool playerStart)
     {
+        actor.Stealth = defaults is { BitsPatched: true, BitsUseStealth: true } && (defaults.Bits & 0x40000000) != 0;
+        actor.DefaultStealth = actor.Stealth;
         actor.DontFall = actor.ClassDoomEdNum == 3006;
         actor.CanPass = playerStart || DoomActorCatalog.Find(actor.ClassDoomEdNum) is not null;
         actor.Shadow = defaults is { BitsPatched: true } ? (defaults.Bits & 0x00040000) != 0 : actor.ClassDoomEdNum == 58;
@@ -2458,34 +2845,109 @@ public static class ActorSpawner
         actor.DefaultAlpha = actor.Alpha;
         if (defaults is { BitsPatched: true })
         {
-            actor.SpecialPickup = (defaults.Bits & 0x00000001) != 0;
-            actor.CanPickupItems = (defaults.Bits & 0x00000800) != 0;
-            actor.Solid = (defaults.Bits & 0x00000002) != 0;
-            actor.Shootable = (defaults.Bits & 0x00000004) != 0;
-            actor.NoBlockmap = (defaults.Bits & 0x00000010) != 0;
-            actor.NoSector = (defaults.Bits & 0x00000008) != 0;
-            actor.SpawnCeiling = (defaults.Bits & 0x00000100) != 0;
-            actor.NoGravity = (defaults.Bits & 0x00000200) != 0;
-            actor.AllowDropOff = (defaults.Bits & 0x00000400) != 0;
-            actor.Floating = (defaults.Bits & 0x00004000) != 0;
-            actor.Dropped = (defaults.Bits & 0x00020000) != 0;
-            actor.Friendly = playerStart || !defaults.BitsUseStealth && (defaults.Bits & 0x40000000) != 0;
-            actor.NoBlockMonsters = playerStart || defaults.NoBlockMonsters;
+            ApplyContactPrimaryFlags(actor, defaults, playerStart);
+            ApplyPhysicalPrimaryFlags(actor, defaults.Bits);
         }
+        else if (defaults is not null && PickupCatalog.IsPickup(defaults.OriginalDoomEdNum))
+            ApplyPhysicalPrimaryFlags(actor, defaults.Bits);
     }
 
-    internal static void ApplyExtendedDefaults(Actor actor, DehackedActor? defaults)
+    internal static void ApplyPhysicalPrimaryFlags(Actor actor, uint bits)
     {
+        actor.SpawnCeiling = (bits & 0x00000100) != 0;
+        actor.NoClip = (bits & 0x00001000) != 0;
+        actor.JustHit = (bits & 0x40) != 0;
+        actor.JustAttacked = (bits & 0x80) != 0;
+        actor.InFloat = (bits & 0x00200000) != 0;
+        actor.Corpse = (bits & 0x00100000) != 0;
+        actor.Solid = (bits & 0x00000002) != 0;
+        actor.Shootable = (bits & 0x00000004) != 0;
+        actor.NoBlockmap = (bits & 0x00000010) != 0;
+        actor.NoSector = (bits & 0x00000008) != 0;
+        actor.NoGravity = (bits & 0x00000200) != 0;
+        actor.AllowDropOff = (bits & 0x00000400) != 0;
+        actor.Floating = (bits & 0x00004000) != 0;
+    }
+
+    internal static void ApplyContactPrimaryFlags(Actor actor, DehackedActor defaults, bool playerStart)
+    {
+        actor.SpecialPickup = (defaults.Bits & 0x00000001) != 0;
+        actor.CanPickupItems = (defaults.Bits & 0x00000800) != 0;
+        actor.Dropped = (defaults.Bits & 0x00020000) != 0;
+        actor.Friendly = playerStart || !defaults.BitsUseStealth && (defaults.Bits & 0x40000000) != 0;
+        actor.NoBlockMonsters = playerStart || defaults.NoBlockMonsters;
+    }
+
+    internal static void ApplyExtendedDefaults(Actor actor, DehackedActor? defaults, bool fastMonsters = false)
+    {
+        if (PickupCatalog.IsPickup(actor.ClassDoomEdNum))
+        {
+            actor.MovementSpeed = Fixed.FromDouble(defaults?.Speed ?? 0);
+            actor.PainChance = defaults?.PainChance ?? 0;
+            actor.ReactionTime = defaults?.ReactionTime ?? 8;
+            actor.WoundHealth = 6;
+        }
+        if (actor is PlayerPawn && defaults is { SpeedPatched: true })
+            actor.MovementSpeed = Fixed.FromDouble(defaults.Speed);
+        if (fastMonsters && defaults?.FastSpeed is { } fastSpeed && fastSpeed >= 0)
+            actor.MovementSpeed = Fixed.FromDouble(fastSpeed);
+        if (defaults is { PainChancePatched: true }) actor.PainChance = defaults.PainChance;
+        if (defaults?.MeleeRangeRaw is { } meleeRange) actor.MeleeRange = new Fixed(meleeRange);
+        if (defaults?.MeleeThreshold is { } meleeThreshold) actor.MeleeThreshold = meleeThreshold;
+        if (defaults?.MaxTargetRange is { } maxTargetRange) actor.MaxTargetRange = maxTargetRange;
+        if (defaults?.MissileChanceMultiplier is { } missileChanceMultiplier) actor.MissileChanceMult = missileChanceMultiplier;
+        if (defaults?.MinMissileChance is { } minMissileChance) actor.MinMissileChance = minMissileChance;
+        if (defaults?.ProjectilePassHeightRaw is { } projectilePassHeight) actor.ProjectilePassHeight = new Fixed(projectilePassHeight);
+        actor.DefaultTouchy = actor.Touchy = defaults?.Touchy ?? false;
         actor.Ambush = defaults is { BitsPatched: true } && (defaults.Bits & 0x20) != 0;
         if (defaults is { Bits2Patched: true })
         {
             actor.CanPass = (defaults.Bits2 & 0x1000) != 0;
             actor.NoTeleport = (defaults.Bits2 & 0x80) != 0;
+            actor.FloatBob = (defaults.Bits2 & 0x00080000) != 0;
+            actor.SeekerMissile = (defaults.Bits2 & 0x40000000) != 0;
+            actor.Reflective = (defaults.Bits2 & 0x80000000u) != 0;
+            actor.Boss = (defaults.Bits2 & 0x00008000) != 0;
+            actor.ThruGhost = (defaults.Bits2 & 0x00004000) != 0;
+            actor.NonShootable = (defaults.Bits2 & 0x04000000) != 0;
+            actor.CantLeaveFloorPic = (defaults.Bits2 & 0x02000000) != 0;
+            actor.Rip = (defaults.Bits2 & 0x00000100) != 0;
+            actor.Pushable = (defaults.Bits2 & 0x00000200) != 0;
+            actor.CannotPush = (defaults.Bits2 & 0x00002000) != 0;
+            actor.TeleStomp = (defaults.Bits2 & 0x00040000) != 0;
+            actor.FloorClipEnabled = (defaults.Bits2 & 0x00000020) != 0;
+            actor.Fly = (defaults.Bits2 & 0x00000010) != 0;
+            actor.SpawnFloat = (defaults.Bits2 & 0x00000040) != 0;
+            actor.Blasted = (defaults.Bits2 & 0x00000008) != 0;
             actor.CanSlide = (defaults.Bits2 & 0x400) != 0;
             actor.Invulnerable = (defaults.Bits2 & 0x08000000) != 0;
             actor.Dormant = (defaults.Bits2 & 0x10000000) != 0;
         }
         if (defaults is { GravityPatched: true }) actor.Gravity = Fixed.FromDouble(defaults.Gravity);
+        if (actor is not PlayerPawn && defaults is { BitsPatched: true })
+        {
+            actor.IsMonster = (defaults.Bits & 0x00400000) != 0;
+            // Native applies COUNTKILL's standard monster flags after secondary flags.
+            if (actor.IsMonster) actor.CanPass = true;
+        }
+        actor.DefaultFloatBob = actor.FloatBob;
+        actor.DefaultSeeker = actor.SeekerMissile;
+        actor.DefaultReflective = actor.Reflective;
+        actor.DefaultThruGhost = actor.ThruGhost;
+        actor.DefaultNonShootable = actor.NonShootable;
+        actor.DefaultFloorPic = actor.CantLeaveFloorPic;
+        actor.DefaultRip = actor.Rip;
+        actor.DefaultPushFlags = (actor.Pushable ? 1 : 0) | (actor.CannotPush ? 2 : 0);
+        actor.DefaultTeleStomp = actor.TeleStomp;
+        actor.DefaultFloorClip = actor.FloorClipEnabled;
+        actor.DefaultNoClip = actor.NoClip;
+        actor.DefaultCombatFlags = (actor.JustHit ? 1 : 0) | (actor.JustAttacked ? 2 : 0);
+        actor.DefaultInFloat = actor.InFloat;
+        actor.DefaultCorpse = actor.Corpse;
+        actor.DefaultFly = actor.Fly;
+        actor.SpawnPainChance = actor.PainChance;
+        actor.DefaultSpawnFloat = actor.SpawnFloat;
+        actor.DefaultBlasted = actor.Blasted;
         actor.ResurrectionDefenseFlags = DefenseFlagsOf(actor);
         actor.SpawnMass = actor.Mass;
         actor.SpawnTuning = new(actor.MovementSpeed.Raw, actor.FloatSpeed, actor.PainThreshold);
@@ -2603,6 +3065,52 @@ public sealed class AuthoritySimulation
     private ulong _freezeChunksRandomState;
     private readonly ulong _initialFreezeChunksRandomState;
     private bool _hasFreezeChunksRandomState;
+    private ulong _bfgSelfDamageRandomState;
+    private readonly ulong _initialBfgSelfDamageRandomState;
+    private bool _hasBfgSelfDamageRandomState;
+    private ulong _bfgSprayRandomState;
+    private readonly ulong _initialBfgSprayRandomState;
+    private bool _hasBfgSprayRandomState;
+    private ulong _fireSg2RandomState;
+    private readonly ulong _initialFireSg2RandomState;
+    private bool _hasFireSg2RandomState;
+    internal int NextFireSg2Damage()
+    {
+        _hasFireSg2RandomState = true;
+        return 5 * (1 + (int)NativeStateRandom.NextBounded(ref _fireSg2RandomState, 3));
+    }
+    internal double NextFireSg2Spread(double degrees)
+    {
+        _hasFireSg2RandomState = true;
+        var first = (int)(NativeStateRandom.Next(ref _fireSg2RandomState) & 255);
+        var second = (int)(NativeStateRandom.Next(ref _fireSg2RandomState) & 255);
+        return (first - second) * (degrees / 256);
+    }
+    private ulong _gunShotRandomState;
+    private readonly ulong _initialGunShotRandomState;
+    private bool _hasGunShotRandomState;
+    internal int NextGunShotDamage()
+    {
+        _hasGunShotRandomState = true;
+        return 5 * (1 + (int)NativeStateRandom.NextBounded(ref _gunShotRandomState, 3));
+    }
+    internal double NextGunShotSpread(double degrees)
+    {
+        _hasGunShotRandomState = true;
+        var first = (int)(NativeStateRandom.Next(ref _gunShotRandomState) & 255);
+        var second = (int)(NativeStateRandom.Next(ref _gunShotRandomState) & 255);
+        return (first - second) * (degrees / 256);
+    }
+    internal int NextBfgSprayDamageDie()
+    {
+        _hasBfgSprayRandomState = true;
+        return 1 + (int)NativeStateRandom.NextBounded(ref _bfgSprayRandomState, 8);
+    }
+    internal uint NextBfgSelfDamageRandom()
+    {
+        _hasBfgSelfDamageRandomState = true;
+        return NativeStateRandom.Next(ref _bfgSelfDamageRandomState);
+    }
     private ulong _freezeDeathRandomState;
     private readonly ulong _initialFreezeDeathRandomState;
     private bool _hasFreezeDeathRandomState;
@@ -2613,6 +3121,7 @@ public sealed class AuthoritySimulation
     }
 
     public bool CompatibilityInvisibility { get; set; }
+    public bool VerticalWeaponSpread { get; set; }
     internal int NextPlayerSearchStart()
     {
         _hasPlayerSearchRandomState = true;
@@ -2630,6 +3139,19 @@ public sealed class AuthoritySimulation
     private ulong _playerLookRandomState;
     private readonly ulong _initialPlayerLookRandomState;
     private bool _hasPlayerLookRandomState;
+    private ulong _floatSpawnRandomState;
+    private readonly ulong _initialFloatSpawnRandomState;
+    private bool _hasFloatSpawnRandomState;
+
+    internal double RandomFloatSpawnZ(Actor actor)
+    {
+        var floor = FloorOf(actor.SectorIndex);
+        var space = CeilingOf(actor.SectorIndex) - actor.Height.ToDouble() - floor;
+        if (space <= 48) return floor;
+        _hasFloatSpawnRandomState = true;
+        var random = NativeStateRandom.Next(ref _floatSpawnRandomState) & 255;
+        return floor + 40 + (space - 40) * random / 256.0;
+    }
 
     internal int NextHateSearchBudget()
     {
@@ -2657,6 +3179,12 @@ public sealed class AuthoritySimulation
     private ulong _poisonDamageRandomState;
     private readonly ulong _initialPoisonDamageRandomState;
     private bool _hasPoisonDamageRandomState;
+    private ulong _reflectRandomState;
+    private readonly ulong _initialReflectRandomState;
+    private bool _hasReflectRandomState;
+    private ulong _seekerMissileRandomState;
+    private readonly ulong _initialSeekerMissileRandomState;
+    private bool _hasSeekerMissileRandomState;
     private ulong _painChanceRandomState;
     private readonly ulong _initialPainChanceRandomState;
     private bool _hasPainChanceRandomState;
@@ -2735,6 +3263,7 @@ public sealed class AuthoritySimulation
     private uint _fireFlickerRandomState;
     private readonly List<SectorMotion> _motions = new();
     private readonly SimLineAction[] _initialLineActions;
+    private readonly SimSectorTerrain[] _initialSectorTerrains;
 
     private AuthoritySimulation(
         PlayLevel level,
@@ -2752,6 +3281,7 @@ public sealed class AuthoritySimulation
         _mapMonsterTypes = actors.Where(actor => actor.MapMonsterThingIndex.HasValue)
             .ToDictionary(actor => actor.MapMonsterThingIndex!.Value, actor => actor.DoomEdNum);
         Level = level;
+        _initialSectorTerrains = level.Sectors.Select(s => new SimSectorTerrain(s.FloorTerrain, s.CeilingTerrain)).ToArray();
         LevelLiftMarkers.Apply(level);
         if (!double.IsFinite(level.LevelGravity))
             throw new ArgumentOutOfRangeException(nameof(level), "Level gravity must be finite.");
@@ -2764,6 +3294,10 @@ public sealed class AuthoritySimulation
         _nextActorId = actors.Count == 0 ? 1 : checked(actors.Max(actor => actor.Id) + 1);
         RngSeed = rngSeed;
         CombatRandomState = unchecked((uint)rngSeed) ^ 0x9e3779b9u;
+        _gunShotRandomState = _initialGunShotRandomState = NativeStateRandom.Seed(unchecked((uint)rngSeed), 0x4b5c394eu);
+        _fireSg2RandomState = _initialFireSg2RandomState = NativeStateRandom.Seed(unchecked((uint)rngSeed), 0x03b36d9au);
+        _bfgSprayRandomState = _initialBfgSprayRandomState = NativeStateRandom.Seed(unchecked((uint)rngSeed), 0x2dda5aa9u);
+        _bfgSelfDamageRandomState = _initialBfgSelfDamageRandomState = NativeStateRandom.Seed(unchecked((uint)rngSeed), 0x7edbb96cu);
         SwitchTargetRandomState = unchecked((uint)rngSeed) ^ 0x73776974u;
         DmSpawnRandomState = unchecked((uint)rngSeed) ^ 0x646d7370u;
         _uniqueTidRandomState = null;
@@ -2780,6 +3314,7 @@ public sealed class AuthoritySimulation
         _freezeChunksRandomState = _initialFreezeChunksRandomState = NativeStateRandom.Seed(unchecked((uint)rngSeed), 0xd9e163dbu);
         _playerSearchRandomState = _initialPlayerSearchRandomState = NativeStateRandom.Seed(unchecked((uint)rngSeed), 0x5a9c92d8u);
         _playerLookRandomState = _initialPlayerLookRandomState = NativeStateRandom.Seed(unchecked((uint)rngSeed), 0x30d3f84eu);
+        _floatSpawnRandomState = _initialFloatSpawnRandomState = NativeStateRandom.Seed(unchecked((uint)rngSeed), 0x05ec38a2u);
         _hateSearchRandomState = _initialHateSearchRandomState = NativeStateRandom.Seed(unchecked((uint)rngSeed), 0xbdb01ae9u);
         _actorDieRandomState = _initialActorDieRandomState = NativeStateRandom.Seed(unchecked((uint)rngSeed), 0x8ed8ec1bu);
         _puffRandomState = _initialPuffRandomState = NativeStateRandom.Seed(unchecked((uint)rngSeed), 0x1223e6dcu);
@@ -2787,6 +3322,8 @@ public sealed class AuthoritySimulation
         _chaseRandomState = _initialChaseRandomState = NativeStateRandom.Seed(unchecked((uint)rngSeed), 0x573c149du);
         _missileDamageRandomState = _initialMissileDamageRandomState = NativeStateRandom.Seed(unchecked((uint)rngSeed), 0x333cfa17u);
         _poisonDamageRandomState = _initialPoisonDamageRandomState = NativeStateRandom.Seed(unchecked((uint)rngSeed), 0x15ba5b61u);
+        _reflectRandomState = _initialReflectRandomState = NativeStateRandom.Seed(unchecked((uint)rngSeed), 0x4139f7d5u);
+        _seekerMissileRandomState = _initialSeekerMissileRandomState = NativeStateRandom.Seed(unchecked((uint)rngSeed), 0x85890f4bu);
         _painChanceRandomState = _initialPainChanceRandomState = NativeStateRandom.Seed(unchecked((uint)rngSeed), 0xdae49b5au);
         _skelFistRandomState = _initialSkelFistRandomState = NativeStateRandom.Seed(unchecked((uint)rngSeed), 0x99c25fa8u);
         _sawRandomState = _initialSawRandomState = NativeStateRandom.Seed(unchecked((uint)rngSeed), 0x233cf782u);
@@ -2865,10 +3402,11 @@ public sealed class AuthoritySimulation
             ActorPhysics.PlaceOnFloor(this, actor);
             var spawnZ = actor.SpawnCeiling
                 ? CeilingOf(actor.SectorIndex) - actor.Height.ToDouble() - actor.SpawnZOffset
-                : actor.Z.ToDouble() + actor.SpawnZOffset;
+                : actor.SpawnFloat ? RandomFloatSpawnZ(actor) : actor.Z.ToDouble() + actor.SpawnZOffset;
             actor.Z = Fixed.FromDouble(Math.Clamp(spawnZ, short.MinValue, short.MaxValue));
             if (actor.FloorClipEnabled) ActorPropertyActions.AdjustFloorClip(this, actor);
-            actor.OnGround = actor.SpawnCeiling ? actor.Z.ToDouble() <= FloorOf(actor.SectorIndex) : actor.SpawnZOffset <= 0;
+            actor.OnGround = actor.SpawnCeiling || actor.SpawnFloat
+                ? actor.Z.ToDouble() <= FloorOf(actor.SectorIndex) : actor.SpawnZOffset <= 0;
             ActorPhysics.FitToSector(this, actor, carryFloor: false);
             actor.RememberPosition();
         }
@@ -2899,11 +3437,19 @@ public sealed class AuthoritySimulation
     }
 
     public PlayLevel Level { get; }
+    /// <summary>Local haptics_do_world preference; presentation events are not saved or checksummed.</summary>
+    public bool WorldHapticsEnabled { get; set; } = true;
+    public bool DamageHapticsEnabled { get; set; } = true;
+    public bool ActionHapticsEnabled { get; set; } = true;
+    public event Action<SimulationRumbleRequest>? RumbleRequested;
+    internal void RequestRumble(SimulationRumbleRequest request) => RumbleRequested?.Invoke(request);
     private readonly List<SimulationSoundRequest> _soundRequests = new();
     public IReadOnlyList<SimulationSoundRequest> PendingSoundRequests => _soundRequests.AsReadOnly();
     public event Action? SoundRequestsReady;
     internal void QueueSoundRequest(SimulationSoundRequest request, bool immediate = false)
     {
+        if (!request.Stop && !request.ChangeVolume && !request.ChangePitch
+            && string.Equals(request.Sound, "None", StringComparison.OrdinalIgnoreCase)) return;
         _soundRequests.Add(request);
         if (immediate) SoundRequestsReady?.Invoke();
     }
@@ -2960,6 +3506,9 @@ public sealed class AuthoritySimulation
     public bool ForceRespawn { get; set; }
     /// <summary>Combined native level/dmflags ZDoom or Hexen falling-damage gate for death screams.</summary>
     public bool FallingDeathSplatEnabled { get; set; }
+    public HCDE.Gamedata.FallingDamageStyle ForcedFallingDamage { get; set; }
+    public HCDE.Gamedata.FallingDamageStyle EffectiveFallingDamage =>
+        (HCDE.Gamedata.FallingDamageStyle)((int)Level.FallingDamage | (int)ForcedFallingDamage);
     /// <summary>Native <c>sv_norespawn</c>. Off until set. A buffered press is kept and used once this clears.</summary>
     public bool NoRespawn { get; set; }
     /// <summary>Native <c>sv_weapondrop</c>. Off until set. Fist has no pickup.</summary>
@@ -3452,6 +4001,7 @@ public sealed class AuthoritySimulation
         CompatSurface compat = CompatSurface.None, SpawnOptions? spawnOptions = null, bool noExit = false)
     {
         level = level.CopyForSimulation();
+        if (dehacked is not null) SoundResourceResolver.ApplyDehackedSoundNames(level, dehacked);
         spawnOptions ??= new SpawnOptions();
         var thinkers = new ThinkerCollection();
         var mapRandomState = NativeStateRandom.Seed(unchecked((uint)rngSeed), 0x46c478d0u);
@@ -3496,6 +4046,7 @@ public sealed class AuthoritySimulation
         var id = _nextActorId;
         _nextActorId = checked(_nextActorId + 1);
         var drop = CreateDroppedPickupActor(id, doomEdNum, dropper.X, dropper.Y);
+        if (!inventoryToss) drop.NoGravity = false;
         drop.IgnoreAmmoSkill = ignoreAmmoSkill || customDropFactor;
         drop.Depleted = depleted;
         drop.SuppressWeaponPickupAmmo = suppressWeaponAmmo || customDropFactor && adjustedAmount == 0;
@@ -3513,6 +4064,7 @@ public sealed class AuthoritySimulation
             drop.VelocityZ = Fixed.FromDouble(1 + dropper.VelocityZ.ToDouble());
             drop.PickupDelay = 30;
             drop.SpecialPickup = false;
+            drop.Solid = false;
         }
         var toss = !Compat.HasFlag(CompatSurface.NoTossDrops);
         var strifeStyle = EffectiveDropStyle == 2;
@@ -3535,14 +4087,43 @@ public sealed class AuthoritySimulation
 
     private Actor CreateDroppedPickupActor(uint id, int doomEdNum, Fixed x, Fixed y)
     {
+        var defaults = _dehacked?.Actors.FirstOrDefault(candidate => candidate.DoomEdNum == doomEdNum && candidate.Patched);
         var actor = new Actor
         {
             Id = id, DoomEdNum = doomEdNum, X = x, Y = y, Level = Level, Simulation = this,
             SectorIndex = ActorPhysics.SectorAt(Level, x.ToDouble(), y.ToDouble()),
             Solid = false, Shootable = false, Dropped = true, SpecialPickup = true,
-            Height = PickupCatalog.HeightOf(doomEdNum), SpawnedDroppedPickup = true
+            Radius = ActorSpawner.RadiusOf(defaults, player: false),
+            Height = defaults is null ? PickupCatalog.HeightOf(doomEdNum) : ActorSpawner.HeightOf(defaults),
+            Health = defaults?.Health ?? 1000,
+            Mass = defaults is { MassPatched: true } ? defaults.Mass : DoomActorCatalog.MassOf(doomEdNum),
+            SpawnedDroppedPickup = true
         };
-        if (doomEdNum == PickupCatalog.RadSuit) actor.States.SetSpawnFullBright(actor, true);
+        actor.ResurrectionHealth = actor.Health;
+        if (actor.ResurrectionHealth > 0) actor.GibHealth = int.MinValue;
+        actor.DefaultGibHealth = actor.GibHealth;
+        actor.SpawnMass = actor.Mass;
+        actor.ResurrectionRadius = actor.Radius;
+        actor.ResurrectionHeight = actor.Height;
+        ActorSpawner.ApplyPrimaryFlags(actor, defaults, playerStart: false);
+        // Inventory.BeginPlay marks dynamically spawned inventory as dropped.
+        actor.Dropped = actor.SpawnDropped = true;
+        actor.SpawnCanPickupItems = actor.CanPickupItems;
+        actor.SpawnSpecialPickup = actor.SpecialPickup;
+        ActorSpawner.ApplyExtendedDefaults(actor, defaults, FastMonsters);
+        ActorSpawner.ApplySoundDefaults(actor, defaults);
+        if (defaults is { ReactionTimePatched: true }) actor.ReactionTime = defaults.ReactionTime;
+        if (defaults is { MissileDamagePatched: true }) actor.Damage = defaults.MissileDamage;
+        if (defaults is { InfightingGroupPatched: true }) actor.InfightingGroup = defaults.InfightingGroup;
+        if (defaults is { ProjectileGroupPatched: true }) actor.ProjectileGroup = defaults.ProjectileGroup;
+        if (defaults is { SplashGroupPatched: true }) actor.SplashGroup = defaults.SplashGroup;
+        if (actor.IsMonster && Skill == 4) actor.ReactionTime = 0;
+        actor.SpawnReactionTime = actor.ReactionTime;
+        actor.SpawnDamage = actor.Damage;
+        actor.ResurrectionCollisionFlags = (ActorSpawner.CollisionFlagsOf(actor) & ~16)
+            | (defaults is { BitsPatched: true } && (defaults.Bits & 0x00020000) != 0 ? 16 : 0);
+        DoomPickupStates.Apply(actor, doomEdNum);
+        actor.BeginPlay();
         return actor;
     }
 
@@ -3621,7 +4202,7 @@ public sealed class AuthoritySimulation
         bot.SpawnCanPickupItems = bot.CanPickupItems;
         bot.SpawnSpecialPickup = bot.SpecialPickup;
         bot.DefaultGibHealth = bot.GibHealth;
-        ActorSpawner.ApplyExtendedDefaults(bot, defaults);
+        ActorSpawner.ApplyExtendedDefaults(bot, defaults, FastMonsters);
         if (bot.IsMonster && Skill == 4) bot.ReactionTime = 0;
         ThingActivation.InitializeSpawn(bot, false, mapSpawn: false);
         bot.RememberPosition();
@@ -3637,6 +4218,12 @@ public sealed class AuthoritySimulation
             bot.Z = Fixed.FromDouble(CeilingOf(bot.SectorIndex) - bot.Height.ToDouble());
             bot.OnGround = bot.Z.ToDouble() <= FloorOf(bot.SectorIndex);
         }
+        else if (bot.SpawnFloat && restoredId is null)
+        {
+            bot.Z = Fixed.FromDouble(RandomFloatSpawnZ(bot));
+            bot.OnGround = bot.Z.ToDouble() <= FloorOf(bot.SectorIndex);
+        }
+        if (bot.FloorClipEnabled) ActorPropertyActions.AdjustFloorClip(this, bot);
         _actors.Add(bot);
         Thinkers.Add(bot, ThinkerStat.Default);
         return bot;
@@ -3712,9 +4299,9 @@ public sealed class AuthoritySimulation
             chunk.VelocityX = Fixed.FromDouble(spread);
             chunk.VelocityY = Fixed.FromDouble(NextIceChunkVelocity());
             chunk.VelocityZ = Fixed.FromDouble(height > 0 ? zo / height * 4 : 0);
-            ActorPhysics.PlaceOnFloor(this, chunk);
-            chunk.Z = Fixed.FromDouble(baseZ + zo);
+            chunk.SectorIndex = ActorPhysics.SectorAt(Level, chunk.X.ToDouble(), chunk.Y.ToDouble());
             chunk.OnGround = chunk.Z.ToDouble() <= FloorOf(chunk.SectorIndex);
+            if (chunk.FloorClipEnabled) ActorPropertyActions.AdjustFloorClip(this, chunk);
             chunk.RememberPosition();
             _actors.Add(chunk);
             Thinkers.Add(chunk, ThinkerStat.Default);
@@ -3779,6 +4366,16 @@ public sealed class AuthoritySimulation
     {
         _hasPoisonDamageRandomState = true;
         return (byte)(NativeStateRandom.Next(ref _poisonDamageRandomState) & 255);
+    }
+    internal byte NextReflectByte()
+    {
+        _hasReflectRandomState = true;
+        return (byte)(NativeStateRandom.Next(ref _reflectRandomState) & 255);
+    }
+    internal byte NextSeekerMissileByte()
+    {
+        _hasSeekerMissileRandomState = true;
+        return (byte)(NativeStateRandom.Next(ref _seekerMissileRandomState) & 255);
     }
     internal byte NextPainChanceByte()
     {
@@ -3953,7 +4550,8 @@ public sealed class AuthoritySimulation
             SpawnSoundSource = spawnSoundSource,
             X = owner?.X ?? default, Y = owner?.Y ?? default,
             Z = Fixed.FromDouble(owner is PlayerPawn ? owner.AttackOriginZ(-4)
-                : (owner?.Z.ToDouble() ?? 0) + (kind == ProjectileKind.RevenantTracer ? 48 : 32) - (owner?.FloorClip ?? 0)),
+                : (owner?.Z.ToDouble() ?? 0) + (kind == ProjectileKind.RevenantTracer ? 48 : 32)
+                    + (owner?.GetBobOffset() ?? 0) - (owner?.FloorClip ?? 0)),
             Angle = owner?.Angle ?? default,
         };
         if (owner is PlayerPawn && projectile.Z.ToDouble() < FloorOf(owner.SectorIndex))
@@ -3967,6 +4565,7 @@ public sealed class AuthoritySimulation
             _ => 0,
         };
         var defaults = _dehacked?.Actors.FirstOrDefault(actor => actor.Index == patchIndex);
+        ActorSpawner.ApplyFullVolumeSoundDefaults(projectile, defaults);
         if (defaults is not null && defaults.SoundNameOverrides.Count != 0)
         {
             var sounds = new Dictionary<ActorSoundType, string>(projectile.ActorSounds);
@@ -3978,6 +4577,8 @@ public sealed class AuthoritySimulation
         if (defaults?.Alpha is { } alpha) projectile.Alpha = alpha;
         if (defaults?.Invisible is { } invisible) projectile.Invisible = invisible;
         if (defaults is { BitsPatched: true }) projectile.Shadow = (defaults.Bits & 0x40000) != 0;
+        projectile.Stealth = defaults is { BitsPatched: true, BitsUseStealth: true } && (defaults.Bits & 0x40000000) != 0;
+        projectile.DefaultStealth = projectile.Stealth;
         projectile.DefaultShadow = projectile.Shadow;
         projectile.DefaultRenderStyle = projectile.RenderStyle;
         projectile.DefaultAlpha = projectile.Alpha;
@@ -3986,12 +4587,31 @@ public sealed class AuthoritySimulation
         if (defaults is { SplashGroupPatched: true }) projectile.SplashGroup = defaults.SplashGroup;
         if (defaults is { MissileDamagePatched: true }) projectile.Damage = defaults.MissileDamage;
         if (defaults is { SpeedPatched: true }) projectile.MovementSpeed = Fixed.FromDouble(defaults.Speed);
+        if (defaults is { MassPatched: true }) projectile.Mass = defaults.Mass;
+        if (defaults is { ReactionTimePatched: true }) projectile.ReactionTime = defaults.ReactionTime;
+        projectile.SpawnReactionTime = projectile.ReactionTime;
         projectile.SpawnTuning = new(projectile.MovementSpeed.Raw, projectile.FloatSpeed, projectile.PainThreshold);
         if (defaults is { WidthPatched: true }) projectile.Radius = Fixed.FromDouble(defaults.Radius);
         if (defaults is { HeightPatched: true }) projectile.Height = Fixed.FromDouble(defaults.Height);
         projectile.ResurrectionRadius = projectile.Radius;
         projectile.ResurrectionHeight = projectile.Height;
         projectile.SpawnDamage = projectile.Damage;
+        if (defaults is { BitsPatched: true })
+        {
+            ActorSpawner.ApplyPhysicalPrimaryFlags(projectile, defaults.Bits);
+            ActorSpawner.ApplyContactPrimaryFlags(projectile, defaults, playerStart: false);
+            projectile.NoBlood = projectile.DefaultNoBlood = (defaults.Bits & 0x00080000) != 0;
+        }
+        ActorSpawner.ApplyExtendedDefaults(projectile, defaults, FastMonsters);
+        if (defaults is { HealthPatched: true })
+        {
+            var health = projectile.IsMonster && defaults.Health != 0 ? Math.Max(1, defaults.Health) : defaults.Health;
+            projectile.RestoreHealth(health);
+            projectile.ResurrectionHealth = health;
+            if (health > 0) projectile.GibHealth = int.MinValue;
+            projectile.DefaultGibHealth = projectile.GibHealth;
+        }
+        projectile.ResurrectionCollisionFlags = ActorSpawner.CollisionFlagsOf(projectile);
         _nextActorId = checked(_nextActorId + 1);
         projectile.Aim(target);
         _actors.Add(projectile);
@@ -4039,7 +4659,7 @@ public sealed class AuthoritySimulation
         soul.SpawnCanPickupItems = soul.CanPickupItems;
         soul.SpawnSpecialPickup = soul.SpecialPickup;
         soul.DefaultGibHealth = soul.GibHealth;
-        ActorSpawner.ApplyExtendedDefaults(soul, defaults);
+        ActorSpawner.ApplyExtendedDefaults(soul, defaults, FastMonsters);
         if (soul.IsMonster && Skill == 4) soul.ReactionTime = 0;
         ThingActivation.InitializeSpawn(soul, false, mapSpawn: false);
         return soul;
@@ -4159,9 +4779,15 @@ public sealed class AuthoritySimulation
             JumpRandomState = _hasJumpRandomState ? _jumpRandomState : null,
             StateRandomState = _hasStateRandomState ? _stateRandomState : null,
             MapSpawnRandomState = _hasMapSpawnRandomState ? _mapSpawnRandomState : null,
+            FloatSpawnRandomState = _hasFloatSpawnRandomState ? _floatSpawnRandomState : null,
             IceTicsRandomState = _hasIceTicsRandomState ? _iceTicsRandomState : null,
             IncludesIceChunkLifecycle = _hasIceChunkLifecycle,
             FreezeChunksRandomState = _hasFreezeChunksRandomState ? _freezeChunksRandomState : null,
+            BfgSelfDamageRandomState = _hasBfgSelfDamageRandomState ? _bfgSelfDamageRandomState : null,
+            BfgSprayRandomState = _hasBfgSprayRandomState ? _bfgSprayRandomState : null,
+            FireSg2RandomState = _hasFireSg2RandomState ? _fireSg2RandomState : null,
+            GunShotRandomState = _hasGunShotRandomState ? _gunShotRandomState : null,
+            ForcedFallingDamage = ForcedFallingDamage,
             AirControlOverride = _airControlOverride,
             GibFactor = GibFactor != 1 ? GibFactor : null,
             LevelGravityOverride = _levelGravityOverride,
@@ -4169,6 +4795,7 @@ public sealed class AuthoritySimulation
             PlayerSearchRandomState = _hasPlayerSearchRandomState ? _playerSearchRandomState : null,
             PlayerLookRandomState = _hasPlayerLookRandomState ? _playerLookRandomState : null,
             CompatibilityInvisibility = CompatibilityInvisibility,
+            VerticalWeaponSpread = VerticalWeaponSpread,
             HateSearchRandomState = _hasHateSearchRandomState ? _hateSearchRandomState : null,
             ActorDieRandomState = _hasActorDieRandomState ? _actorDieRandomState : null,
             PuffRandomState = _hasPuffRandomState ? _puffRandomState : null,
@@ -4176,6 +4803,8 @@ public sealed class AuthoritySimulation
             ChaseRandomState = _hasChaseRandomState ? _chaseRandomState : null,
             MissileDamageRandomState = _hasMissileDamageRandomState ? _missileDamageRandomState : null,
             PoisonDamageRandomState = _hasPoisonDamageRandomState ? _poisonDamageRandomState : null,
+            ReflectRandomState = _hasReflectRandomState ? _reflectRandomState : null,
+            SeekerMissileRandomState = _hasSeekerMissileRandomState ? _seekerMissileRandomState : null,
             PainChanceRandomState = _hasPainChanceRandomState ? _painChanceRandomState : null,
             SkelFistRandomState = _hasSkelFistRandomState ? _skelFistRandomState : null,
             SawRandomState = _hasSawRandomState ? _sawRandomState : null,
@@ -4217,6 +4846,9 @@ public sealed class AuthoritySimulation
             IncludesWallControls = true,
             IncludesWallParts = true,
             GeometryHealth = CaptureGeometryHealth(),
+            SectorTerrains = Level.Sectors.Select(s => new SimSectorTerrain(s.FloorTerrain, s.CeilingTerrain))
+                .SequenceEqual(_initialSectorTerrains) ? null
+                : Level.Sectors.Select(s => new SimSectorTerrain(s.FloorTerrain, s.CeilingTerrain)).ToArray(),
             SectorSoundTargets = _sectorSoundTargets.Where(pair => Actors.Any(a => a.Id == pair.Value && !a.Destroyed))
                 .ToDictionary(pair => pair.Key, pair => pair.Value),
             TextureScrolls = _textureScrolls.Select(s => new SimTextureScroll(s.SectorIndex, (int)s.Plane, s.Dx, s.Dy))
@@ -4266,6 +4898,75 @@ public sealed class AuthoritySimulation
                 JustAttackedFlag = actor.JustAttacked ? 1 : null,
                 InCombatFlag = actor.InCombat ? 1 : null,
                 NoSplashAlertFlag = actor.NoSplashAlert ? 1 : null,
+                DontSplashFlag = actor.DontSplash ? 1 : null,
+                DontHarmSpeciesFlag = actor.DontHarmSpecies ? 1 : null,
+                DontHarmClassFlag = actor.DontHarmClass ? 1 : null,
+                GruntSpeed = actor is PlayerPawn gruntPlayer ? gruntPlayer.GruntSpeed : PlayerPawn.DefaultGruntSpeed,
+                DeltaViewHeight = actor is PlayerPawn squatPlayer ? squatPlayer.DeltaViewHeight : 0,
+                LandingSpeed = actor.LandingSpeed,
+                PushHistoryFlag = actor.LastPushFromMovement ? 1 : null,
+                BlockedBySolidActorsFlag = actor.BlockedBySolidActors ? 1 : null,
+                BumpSpecialFlag = actor.BumpSpecial ? 1 : null,
+                SeekerMissileFlag = actor.SeekerMissile != (actor is ProjectileActor { Kind: ProjectileKind.RevenantTracer })
+                    ? actor.SeekerMissile ? 1 : 0 : null,
+                SummonedMonsterFlag = actor.SummonedMonster ? 1 : null,
+                ScreenSeekerFlag = actor.ScreenSeeker ? 1 : null,
+                VisibilityPulseFlag = actor.VisibilityPulse ? 1 : null,
+                VisibilityDirection = actor.VisibilityDirection,
+                StealthFlag = actor.Stealth ? 1 : null,
+                StealthDefaultsFlag = actor.DefaultStealth ? 1 : null,
+                FloatBobDefaultsFlag = actor.DefaultFloatBob ? 1 : null,
+                ReflectiveDefaultsFlag = actor.DefaultReflective ? 1 : null,
+                ThruGhostDefaultsFlag = actor.DefaultThruGhost ? 1 : null,
+                NonShootableDefaultsFlag = actor.DefaultNonShootable ? 1 : null,
+                FloorPicDefaultsFlag = actor.DefaultFloorPic ? 1 : null,
+                RipDefaultsFlag = actor.DefaultRip ? 1 : null,
+                FloorClipDefaultsFlag = actor.DefaultFloorClip ? 1 : null,
+                BlastedDefaultsFlag = actor.DefaultBlasted ? 1 : null,
+                TouchyDefaultsFlag = actor.DefaultTouchy ? 1 : null,
+                NoClipDefaultsFlag = actor.DefaultNoClip ? 1 : null,
+                CombatDefaultsFlags = actor.DefaultCombatFlags != 0 ? actor.DefaultCombatFlags : null,
+                InFloatDefaultsFlag = actor.DefaultInFloat ? 1 : null,
+                CorpseDefaultsFlag = actor.DefaultCorpse ? 1 : null,
+                FlyDefaultsFlag = actor.DefaultFly ? 1 : null,
+                PainChanceOverride = actor.PainChance != actor.SpawnPainChance.GetValueOrDefault(256)
+                    ? actor.PainChance : null,
+                SpawnFloatFlags = actor.SpawnFloat || actor.DefaultSpawnFloat
+                    ? (actor.SpawnFloat ? 1 : 0) | (actor.DefaultSpawnFloat ? 2 : 0) : null,
+                SpawnCeilingOverrideFlag = actor.SpawnCeiling != ((actor.ResurrectionCollisionFlags.GetValueOrDefault() & 64) != 0)
+                    ? actor.SpawnCeiling ? 1 : 0 : null,
+                NoTeleportOverrideFlag = actor is not ProjectileActor
+                    && actor.NoTeleport != actor.DefaultNoTeleport
+                    ? actor.NoTeleport ? 1 : 0 : null,
+                PushDefaultsFlags = actor.DefaultPushFlags != 0 ? actor.DefaultPushFlags : null,
+                TeleStompDefaultsFlag = actor.DefaultTeleStomp != (actor is PlayerPawn)
+                    ? actor.DefaultTeleStomp ? 1 : 0 : null,
+                SeekerDefaultsFlag = actor.DefaultSeeker != (actor is ProjectileActor { Kind: ProjectileKind.RevenantTracer })
+                    ? actor.DefaultSeeker ? 1 : 0 : null,
+                ProjectileSecondaryFlags = actor is ProjectileActor && ((actor.NoTeleport ? 1 : 0) | (actor.Dormant ? 2 : 0)) != 1
+                    ? (actor.NoTeleport ? 1 : 0) | (actor.Dormant ? 2 : 0) : null,
+                StealthAlpha = actor.StealthAlpha,
+                FloatBobSettings = actor.FloatBob || actor.FloatBobStrength != 1 || actor.FloatBobFactor != 1
+                    ? new SimFloatBobSettings(actor.FloatBob, actor.FloatBobStrength, actor.FloatBobFactor) : null,
+                ReflectionFlags = actor.Reflective || actor.ThruReflect || actor.DontReflect || actor.MirrorReflect || actor.Deflect
+                    || actor.ShieldReflect || actor.NoShieldReflect || actor.AimReflect
+                    ? (actor.Reflective ? 1 : 0) | (actor.ThruReflect ? 2 : 0) | (actor.DontReflect ? 4 : 0)
+                        | (actor.MirrorReflect ? 8 : 0) | (actor.Deflect ? 16 : 0)
+                        | (actor.ShieldReflect ? 32 : 0) | (actor.NoShieldReflect ? 64 : 0) | (actor.AimReflect ? 128 : 0) : null,
+                BumpCooldownTic = actor.LastBumpTic,
+                FallDamageFlag = actor.FallDamage ? 1 : null,
+                SmashableFlag = actor.Smashable ? 1 : null,
+                CrashedFlag = actor.Crashed ? 1 : null,
+                DontGibFlag = actor.DontGib ? 1 : null,
+                TeleStompFlags = actor.TeleStomp != (actor is PlayerPawn) || actor.NoTeleStomp
+                    ? (actor.TeleStomp ? 1 : 0) | (actor.NoTeleStomp ? 2 : 0) : null,
+                CrashStateOverride = actor.CrashState != -1 ? actor.CrashState : null,
+                ExtremeCrashStateOverride = actor.ExtremeCrashState != -1 ? actor.ExtremeCrashState : null,
+                CrushStateOverride = actor.CrushState != -1 ? actor.CrushState : null,
+                TeleportFreezeTime = actor is PlayerPawn teleportPlayer ? teleportPlayer.TeleportFreezeTime : 18,
+                TouchyImpactFlags = actor.Touchy || actor.Armed ? (actor.Touchy ? 1 : 0) | (actor.Armed ? 2 : 0) : null,
+                RespawnEarliestTic = actor is PlayerPawn respawnPlayer ? respawnPlayer.RespawnEarliestTic : int.MaxValue,
+                RespawnArmed = actor is PlayerPawn armedPlayer && armedPlayer.RespawnArmed,
                 PlayerExtraLight = actor is PlayerPawn lightPlayer ? lightPlayer.ExtraLight : 0,
                 PowerStrengthTics = actor is PlayerPawn strengthPlayer ? strengthPlayer.PowerStrengthTics : 0,
                 PlayerBonusCount = actor is PlayerPawn pickupFlashPlayer ? pickupFlashPlayer.BonusCount : 0,
@@ -4280,6 +4981,7 @@ public sealed class AuthoritySimulation
                 LastLookPlayerNumber = actor.LastLookPlayerNumber,
                 MVisBlockedFlag = actor.MVisBlocked ? 1 : null,
                 NoBloodFlag = actor.NoBlood != actor.DefaultNoBlood ? actor.NoBlood ? 1 : 0 : null,
+                PuffGetsOwnerFlag = actor.PuffGetsOwner ? 1 : null,
                 CantSeekFlag = actor.CantSeek ? 1 : null,
                 SpawnSoundSourceFlag = actor.SpawnSoundSource ? 1 : null,
                 MoveWithSectorFlag = actor.MoveWithSector ? 1 : null,
@@ -4464,7 +5166,8 @@ public sealed class AuthoritySimulation
                     ? new(actor.ThingId, actor.JustSpawned, actor.StatNum, savedPuff.DamageSource is { Destroyed: false } source ? source.Id : 0) : null,
                 MapMonsterThingIndex = includeBotIdentities ? actor.MapMonsterThingIndex : null,
                 MapDecorationIdentity = includeBotIdentities && actor.MapDecorationThingIndex is { } decorationIndex
-                    ? new(decorationIndex, actor.DoomEdNum, actor.ThingId, actor.JustSpawned, actor.StatNum) : null,
+                    ? new(decorationIndex, actor.DoomEdNum, actor.ThingId, actor.JustSpawned, actor.StatNum,
+                        actor.ClassDoomEdNum != actor.DoomEdNum ? actor.ClassDoomEdNum : 0) : null,
                 MapPickupIdentity = includeBotIdentities && actor.MapPickupThingIndex is { } thingIndex
                     ? new(thingIndex, actor.DoomEdNum, actor.ThingId, actor.JustSpawned, actor.StatNum) : null,
                 DroppedPickupIdentity = includeBotIdentities && actor.SpawnedDroppedPickup
@@ -4555,6 +5258,7 @@ public sealed class AuthoritySimulation
                 StateTics = actor.States.RemainingTics,
                 OnGround = actor.OnGround,
                 WeaponCooldown = actor is PlayerPawn pawn ? pawn.WeaponCooldown : 0,
+            WeaponRefiringFlag = actor is PlayerPawn { WeaponRefiring: true } ? 1 : null,
                 Pitch = Fixed.FromDouble(actor.PitchDegrees).Raw,
                 UseHeld = actor is PlayerPawn usingPawn && usingPawn.UseHeld,
                 UseRange = actor is PlayerPawn rangePawn && rangePawn.HasUseRangeOverride ? rangePawn.UseRange : null,
@@ -4662,6 +5366,11 @@ public sealed class AuthoritySimulation
         SimSoundClassArchive.Validate(state);
         SimGibFactorArchive.Validate(state);
         SimActorDieRandomArchive.Validate(state);
+        SimBfgSelfDamageRandomArchive.Validate(state);
+        SimBfgSprayRandomArchive.Validate(state);
+        SimFireSg2RandomArchive.Validate(state);
+        SimGunShotRandomArchive.Validate(state);
+        SimVerticalWeaponSpreadArchive.Validate(state);
         SimPuffRandomArchive.Validate(state);
         SimActorSoundArchive.Validate(state);
         if (state.LevelGravityOverride is { } gravity && !double.IsFinite(gravity))
@@ -4748,8 +5457,67 @@ public sealed class AuthoritySimulation
         SimIronFeetModeArchive.Validate(state);
         SimPowerMaskArchive.Validate(state);
         SimCameraHeightArchive.Validate(state);
+        SimDontSplashArchive.Validate(state);
+        SimPlayerRespawnArchive.Validate(state);
+        SimTouchyImpactArchive.Validate(state);
+        SimDontHarmSpeciesArchive.Validate(state);
+        SimDontHarmClassArchive.Validate(state);
+        SimGruntSpeedArchive.Validate(state);
+        SimDeltaViewHeightArchive.Validate(state);
+        SimLandingSpeedArchive.Validate(state);
+        SimForcedFallingArchive.Validate(state);
+        SimPushHistoryArchive.Validate(state);
+        SimBlockedBySolidActorsArchive.Validate(state);
+        SimBumpSpecialArchive.Validate(state);
+        SimReflectionArchive.Validate(state);
+        SimReflectRandomArchive.Validate(state);
+        SimSeekerRandomArchive.Validate(state);
+        SimSeekerMissileArchive.Validate(state);
+        SimSummonedMonsterArchive.Validate(state);
+        SimScreenSeekerArchive.Validate(state);
+        SimVisibilityPulseArchive.Validate(state);
+        SimStealthArchive.Validate(state);
+        SimStealthDefaultsArchive.Validate(state);
+        SimFloatBobDefaultsArchive.Validate(state);
+        SimSeekerDefaultsArchive.Validate(state);
+        SimReflectiveDefaultsArchive.Validate(state);
+        SimThruGhostDefaultsArchive.Validate(state);
+        SimNonShootableDefaultsArchive.Validate(state);
+        SimFloorPicDefaultsArchive.Validate(state);
+        SimRipDefaultsArchive.Validate(state);
+        SimPushDefaultsArchive.Validate(state);
+        SimTeleStompDefaultsArchive.Validate(state);
+        SimFloorClipDefaultsArchive.Validate(state);
+        SimBlastedDefaultsArchive.Validate(state);
+        SimNoTeleportOverrideArchive.Validate(state);
+        SimTouchyDefaultsArchive.Validate(state);
+        SimNoClipDefaultsArchive.Validate(state);
+        SimCombatDefaultsArchive.Validate(state);
+        SimInFloatDefaultsArchive.Validate(state);
+        SimCorpseDefaultsArchive.Validate(state);
+        SimSpawnCeilingOverrideArchive.Validate(state);
+        SimFlyDefaultsArchive.Validate(state);
+        SimSpawnFloatArchive.Validate(state);
+        SimFloatSpawnRandomArchive.Validate(state);
+        SimPainChanceOverrideArchive.Validate(state);
+        SimProjectileSecondaryArchive.Validate(state);
+        SimFloatBobArchive.Validate(state);
+        SimFallDamageArchive.Validate(state);
+        SimSmashableArchive.Validate(state);
+        SimCrashedArchive.Validate(state);
+        SimDontGibArchive.Validate(state);
+        SimCrashStateArchive.Validate(state);
+        SimExtremeCrashStateArchive.Validate(state);
+        SimCrushStateArchive.Validate(state);
+        SimTeleStompArchive.Validate(state);
+        SimTeleportFreezeArchive.Validate(state);
         SimMonsterClassificationArchive.Validate(state);
         SimNoBloodArchive.Validate(state);
+        SimPuffGetsOwnerArchive.Validate(state);
+        SimWeaponRefiringArchive.Validate(state);
+        SimSectorTerrainArchive.Validate(state);
+        if (state.SectorTerrains is { } terrainState && terrainState.Count != Level.Sectors.Count)
+            throw new InvalidOperationException("Saved sector terrain count does not match the level.");
         SimIsPuffArchive.Validate(state);
         SimSpawnDeathArchive.Validate(state);
         SimSpawnSoundSourceArchive.Validate(state);
@@ -4824,18 +5592,22 @@ public sealed class AuthoritySimulation
                     || actor is not null && (actor.MapDecorationThingIndex != decoration.ThingIndex || actor.DoomEdNum != decorationType))
                     throw new InvalidOperationException("Saved decoration does not match the current map.");
                 var prototype = ActorSpawner.CreateMapActor(Level, Level.Things[decoration.ThingIndex], pose.Id, _dehacked, _spawnOptions, () => 0);
+                var decorationClass = decoration.DefinitionDoomEdNum != 0 ? decoration.DefinitionDoomEdNum : decoration.DoomEdNum;
+                if (prototype.ClassDoomEdNum != decorationClass || actor is not null && actor.ClassDoomEdNum != decorationClass)
+                    throw new InvalidOperationException("Saved decoration class does not match the current patch.");
                 if (!prototype.States.HasState(pose.State))
                     throw new InvalidOperationException("Saved decoration state is not in the current table.");
             }
             if (pose.MapPickupIdentity is { } mapPickup
                 && (!_mapPickupTypes.TryGetValue(mapPickup.ThingIndex, out var type) || type != mapPickup.DoomEdNum
                     || actor is not null && (actor.MapPickupThingIndex != mapPickup.ThingIndex || actor.DoomEdNum != type)
-                    || !new Actor().States.HasState(pose.State)))
+                    || !ActorSpawner.CreateMapActor(Level, Level.Things[mapPickup.ThingIndex], pose.Id,
+                        _dehacked, _spawnOptions, () => 0).States.HasState(pose.State)))
                 throw new InvalidOperationException("Saved map pickup does not match the current map.");
             if (pose.DroppedPickupIdentity is { } dropIdentity
                 && (!PickupCatalog.IsPickup(dropIdentity.DoomEdNum, RavenHealthPickups)
                     || actor is not null && (!actor.SpawnedDroppedPickup || actor.DoomEdNum != dropIdentity.DoomEdNum)
-                    || !new Actor().States.HasState(pose.State)))
+                    || !CreateDroppedPickupActor(pose.Id, dropIdentity.DoomEdNum, default, default).States.HasState(pose.State)))
                 throw new InvalidOperationException("Saved dropped pickup does not match a supported pickup.");
             var reconstructProjectile = pose.ProjectileLifetime.HasValue && (actor == null || actor.Destroyed);
             var restoreBotBrain = pose.BotIdentity is { BrainPresent: true };
@@ -4884,7 +5656,7 @@ public sealed class AuthoritySimulation
                     throw new InvalidOperationException("Saved projectile state is not in the current table.");
             }
             if (pose.IceChunkLifecycle is { } lifecycle && (lifecycle is not (1 or 3)
-                || pose.Id == 0 || pose.Id == uint.MaxValue || pose.State is < 0 or > 3 || !pose.HasPhysics
+                || pose.Id == 0 || pose.Id == uint.MaxValue || !new IceChunkActor(10).States.HasState(pose.State) || !pose.HasPhysics
                 || actor is not null && actor is not IceChunkActor || state.Actors.Count(item => item.Id == pose.Id) != 1))
                 throw new InvalidOperationException("Saved ice chunk does not match a valid chunk identity or state.");
             if (pose.ProjectilePointers is { } pointers &&
@@ -4936,13 +5708,24 @@ public sealed class AuthoritySimulation
         _hasIceChunkLifecycle = state.IncludesIceChunkLifecycle;
         _freezeChunksRandomState = state.FreezeChunksRandomState ?? _initialFreezeChunksRandomState;
         _hasFreezeChunksRandomState = state.FreezeChunksRandomState.HasValue;
+        _bfgSelfDamageRandomState = state.BfgSelfDamageRandomState ?? _initialBfgSelfDamageRandomState;
+        _hasBfgSelfDamageRandomState = state.BfgSelfDamageRandomState.HasValue;
+        _bfgSprayRandomState = state.BfgSprayRandomState ?? _initialBfgSprayRandomState;
+        _hasBfgSprayRandomState = state.BfgSprayRandomState.HasValue;
+        _fireSg2RandomState = state.FireSg2RandomState ?? _initialFireSg2RandomState;
+        _hasFireSg2RandomState = state.FireSg2RandomState.HasValue;
+        _gunShotRandomState = state.GunShotRandomState ?? _initialGunShotRandomState;
+        _hasGunShotRandomState = state.GunShotRandomState.HasValue;
         _freezeDeathRandomState = state.FreezeDeathRandomState ?? _initialFreezeDeathRandomState;
         _hasFreezeDeathRandomState = state.FreezeDeathRandomState.HasValue;
         _playerSearchRandomState = state.PlayerSearchRandomState ?? _initialPlayerSearchRandomState;
         _hasPlayerSearchRandomState = state.PlayerSearchRandomState.HasValue;
         _playerLookRandomState = state.PlayerLookRandomState ?? _initialPlayerLookRandomState;
         _hasPlayerLookRandomState = state.PlayerLookRandomState.HasValue;
+        _floatSpawnRandomState = state.FloatSpawnRandomState ?? _initialFloatSpawnRandomState;
+        _hasFloatSpawnRandomState = state.FloatSpawnRandomState.HasValue;
         CompatibilityInvisibility = state.CompatibilityInvisibility;
+        VerticalWeaponSpread = state.VerticalWeaponSpread;
         _hateSearchRandomState = state.HateSearchRandomState ?? _initialHateSearchRandomState;
         _hasHateSearchRandomState = state.HateSearchRandomState.HasValue;
         _actorDieRandomState = state.ActorDieRandomState ?? _initialActorDieRandomState;
@@ -4957,6 +5740,10 @@ public sealed class AuthoritySimulation
         _hasMissileDamageRandomState = state.MissileDamageRandomState.HasValue;
         _poisonDamageRandomState = state.PoisonDamageRandomState ?? _initialPoisonDamageRandomState;
         _hasPoisonDamageRandomState = state.PoisonDamageRandomState.HasValue;
+        _reflectRandomState = state.ReflectRandomState ?? _initialReflectRandomState;
+        _hasReflectRandomState = state.ReflectRandomState.HasValue;
+        _seekerMissileRandomState = state.SeekerMissileRandomState ?? _initialSeekerMissileRandomState;
+        _hasSeekerMissileRandomState = state.SeekerMissileRandomState.HasValue;
         _painChanceRandomState = state.PainChanceRandomState ?? _initialPainChanceRandomState;
         _hasPainChanceRandomState = state.PainChanceRandomState.HasValue;
         _skelFistRandomState = state.SkelFistRandomState ?? _initialSkelFistRandomState;
@@ -4996,6 +5783,7 @@ public sealed class AuthoritySimulation
         _hasTroopAttackRandomState = state.TroopAttackRandomState.HasValue;
         _sargAttackRandomState = state.SargAttackRandomState ?? _initialSargAttackRandomState;
         _hasSargAttackRandomState = state.SargAttackRandomState.HasValue;
+        ForcedFallingDamage = state.ForcedFallingDamage;
         _airControlOverride = state.AirControlOverride;
         GibFactor = state.GibFactor ?? 1;
         _levelGravityOverride = state.LevelGravityOverride;
@@ -5358,6 +6146,77 @@ public sealed class AuthoritySimulation
             actor.JustAttacked = pose.JustAttackedFlag == 1;
             actor.InCombat = pose.InCombatFlag == 1;
             actor.NoSplashAlert = pose.NoSplashAlertFlag == 1;
+            actor.DontSplash = pose.DontSplashFlag == 1;
+            actor.DontHarmSpecies = pose.DontHarmSpeciesFlag == 1;
+            actor.DontHarmClass = pose.DontHarmClassFlag == 1;
+            actor.LandingSpeed = pose.LandingSpeed;
+            actor.LastPushFromMovement = pose.PushHistoryFlag == 1;
+            actor.BlockedBySolidActors = pose.BlockedBySolidActorsFlag == 1;
+            actor.BumpSpecial = pose.BumpSpecialFlag == 1;
+            actor.Reflective = (pose.ReflectionFlags.GetValueOrDefault() & 1) != 0;
+            actor.ThruReflect = (pose.ReflectionFlags.GetValueOrDefault() & 2) != 0;
+            actor.DontReflect = (pose.ReflectionFlags.GetValueOrDefault() & 4) != 0;
+            actor.MirrorReflect = (pose.ReflectionFlags.GetValueOrDefault() & 8) != 0;
+            actor.Deflect = (pose.ReflectionFlags.GetValueOrDefault() & 16) != 0;
+            actor.ShieldReflect = (pose.ReflectionFlags.GetValueOrDefault() & 32) != 0;
+            actor.NoShieldReflect = (pose.ReflectionFlags.GetValueOrDefault() & 64) != 0;
+            actor.AimReflect = (pose.ReflectionFlags.GetValueOrDefault() & 128) != 0;
+            actor.SeekerMissile = pose.SeekerMissileFlag is { } seekerFlag ? seekerFlag == 1
+                : actor is ProjectileActor { Kind: ProjectileKind.RevenantTracer };
+            actor.LastBumpTic = pose.BumpCooldownTic;
+            actor.SummonedMonster = pose.SummonedMonsterFlag == 1;
+            actor.ScreenSeeker = pose.ScreenSeekerFlag == 1;
+            actor.VisibilityPulse = pose.VisibilityPulseFlag == 1;
+            actor.VisibilityDirection = pose.VisibilityDirection;
+            actor.Stealth = pose.StealthFlag == 1;
+            actor.DefaultStealth = pose.StealthDefaultsFlag == 1;
+            actor.DefaultFloatBob = pose.FloatBobDefaultsFlag == 1;
+            actor.DefaultReflective = pose.ReflectiveDefaultsFlag == 1;
+            actor.DefaultThruGhost = pose.ThruGhostDefaultsFlag == 1;
+            actor.DefaultNonShootable = pose.NonShootableDefaultsFlag == 1;
+            actor.DefaultFloorPic = pose.FloorPicDefaultsFlag == 1;
+            actor.DefaultRip = pose.RipDefaultsFlag == 1;
+            actor.DefaultFloorClip = pose.FloorClipDefaultsFlag == 1;
+            actor.DefaultBlasted = pose.BlastedDefaultsFlag == 1;
+            actor.DefaultTouchy = pose.TouchyDefaultsFlag == 1;
+            actor.DefaultNoClip = pose.NoClipDefaultsFlag == 1;
+            actor.DefaultCombatFlags = pose.CombatDefaultsFlags ?? 0;
+            actor.DefaultInFloat = pose.InFloatDefaultsFlag == 1;
+            actor.DefaultCorpse = pose.CorpseDefaultsFlag == 1;
+            actor.DefaultFly = pose.FlyDefaultsFlag == 1;
+            actor.PainChance = pose.PainChanceOverride ?? actor.SpawnPainChance ?? 256;
+            actor.SpawnFloat = (pose.SpawnFloatFlags.GetValueOrDefault() & 1) != 0;
+            actor.DefaultSpawnFloat = (pose.SpawnFloatFlags.GetValueOrDefault() & 2) != 0;
+            actor.SpawnCeiling = pose.SpawnCeilingOverrideFlag is { } ceilingFlag ? ceilingFlag == 1
+                : (actor.ResurrectionCollisionFlags.GetValueOrDefault() & 64) != 0;
+            actor.DefaultPushFlags = pose.PushDefaultsFlags ?? 0;
+            actor.DefaultTeleStomp = pose.TeleStompDefaultsFlag is { } stompDefault ? stompDefault == 1 : actor is PlayerPawn;
+            actor.DefaultSeeker = pose.SeekerDefaultsFlag is { } seekerDefault ? seekerDefault == 1
+                : actor is ProjectileActor { Kind: ProjectileKind.RevenantTracer };
+            if (actor is ProjectileActor)
+            {
+                var secondary = pose.ProjectileSecondaryFlags ?? 1;
+                actor.NoTeleport = (secondary & 1) != 0;
+                actor.Dormant = (secondary & 2) != 0;
+            }
+            else actor.NoTeleport = pose.NoTeleportOverrideFlag is { } noTeleportFlag ? noTeleportFlag == 1
+                : actor.DefaultNoTeleport;
+            actor.StealthAlpha = pose.StealthAlpha;
+            actor.FloatBob = pose.FloatBobSettings?.Enabled ?? false;
+            actor.FloatBobStrength = pose.FloatBobSettings?.Strength ?? 1;
+            actor.FloatBobFactor = pose.FloatBobSettings?.Factor ?? 1;
+            actor.FallDamage = pose.FallDamageFlag == 1;
+            actor.Smashable = pose.SmashableFlag == 1;
+            actor.Crashed = pose.CrashedFlag == 1;
+            actor.DontGib = pose.DontGibFlag == 1;
+            var teleStompFlags = pose.TeleStompFlags ?? (actor is PlayerPawn ? 1 : 0);
+            actor.TeleStomp = (teleStompFlags & 1) != 0;
+            actor.NoTeleStomp = (teleStompFlags & 2) != 0;
+            actor.CrashState = pose.CrashStateOverride ?? -1;
+            actor.ExtremeCrashState = pose.ExtremeCrashStateOverride ?? -1;
+            actor.CrushState = pose.CrushStateOverride ?? -1;
+            actor.Touchy = (pose.TouchyImpactFlags.GetValueOrDefault() & 1) != 0;
+            actor.Armed = (pose.TouchyImpactFlags.GetValueOrDefault() & 2) != 0;
             var combatBehavior = pose.CombatBehaviorFlags ?? 0;
             actor.HarmFriends = (combatBehavior & 1) != 0;
             actor.DontDrain = (combatBehavior & 2) != 0;
@@ -5375,6 +6234,7 @@ public sealed class AuthoritySimulation
             actor.LastLookPlayerNumber = pose.LastLookPlayerNumber;
             actor.MVisBlocked = pose.MVisBlockedFlag == 1;
             actor.NoBlood = pose.NoBloodFlag is { } noBlood ? noBlood != 0 : actor.DefaultNoBlood;
+            actor.PuffGetsOwner = pose.PuffGetsOwnerFlag == 1;
             actor.SpawnSoundSource = pose.SpawnSoundSourceFlag == 1;
             actor.MoveWithSector = pose.MoveWithSectorFlag == 1;
             actor.CanPass = pose.CanPassFlag is { } canPass ? canPass != 0 : actor.DefaultCanPass;
@@ -5449,6 +6309,8 @@ public sealed class AuthoritySimulation
             if (actor is PlayerPawn crouchPlayer)
             {
                 crouchPlayer.RestoreCrouch(pose.Crouch, pose.Size?.FullHeight);
+                crouchPlayer.GruntSpeed = pose.GruntSpeed;
+                crouchPlayer.DeltaViewHeight = pose.DeltaViewHeight;
                 crouchPlayer.JumpTics = pose.JumpTics ?? 0;
                 crouchPlayer.ClassicFlight = pose.ClassicFlightFlag == 1;
             }
@@ -5461,6 +6323,8 @@ public sealed class AuthoritySimulation
             actor.HasTeleFogOverride = pose.TeleFog.HasValue;
             actor.ActorSounds = actor is ProjectileActor soundMissile && pose.ActorSounds.Count == 0
                 ? new Dictionary<ActorSoundType, string>(soundMissile.DefaultActorSounds)
+                : pose.ActorSounds.Count == 0 && actor.SpawnActorSounds is { } spawnSounds
+                ? new Dictionary<ActorSoundType, string>(spawnSounds)
                 : new Dictionary<ActorSoundType, string>(pose.ActorSounds);
             actor.FullVolumeDeath = pose.FullVolumeDeath;
             actor.FullVolumeSee = pose.FullVolumeSee;
@@ -5684,6 +6548,10 @@ public sealed class AuthoritySimulation
                 player.BonusHealth = pose.ActorSpecial?.BonusHealth ?? 0;
                 player.MaxPickupHealth = pose.ActorSpecial?.MaxPickupHealth ?? 0;
                 player.WeaponCooldown = pose.WeaponCooldown;
+                player.WeaponRefiring = pose.WeaponRefiringFlag == 1;
+                player.TeleportFreezeTime = pose.TeleportFreezeTime;
+                player.RespawnEarliestTic = pose.RespawnEarliestTic;
+                player.RespawnArmed = pose.RespawnArmed;
                 player.UseHeld = pose.UseHeld;
                 if (pose.UseRange is { } useRange) player.UseRange = useRange;
                 player.BobTimer = pose.PlayerWeapons?.BobTimer ?? state.Tic;
@@ -5701,6 +6569,12 @@ public sealed class AuthoritySimulation
         if (state.SectorMotions is { } motions) _motions.AddRange(motions.Select(SimSectorMotionArchive.Restore));
         else if (state.DoorMotions is { } doors) _motions.AddRange(doors.Select(SimDoorMotionArchive.Restore));
         _sectorSoundTargets.Clear();
+        var restoredTerrains = state.SectorTerrains ?? _initialSectorTerrains;
+        for (var i = 0; i < Level.Sectors.Count; i++)
+        {
+            Level.Sectors[i].FloorTerrain = restoredTerrains[i].Floor;
+            Level.Sectors[i].CeilingTerrain = restoredTerrains[i].Ceiling;
+        }
         if (state.SectorSoundTargets is { } soundTargets)
             foreach (var pair in soundTargets) _sectorSoundTargets[pair.Key] = pair.Value;
         var count = Math.Min(Floors.Length, state.Sectors.Count);
@@ -5810,6 +6684,11 @@ public sealed class AuthoritySimulation
         player.VelocityX = default;
         player.VelocityY = default;
         player.VelocityZ = default;
+        var spawnTuning = player.SpawnTuning ?? new SimActorTuning(Fixed.FromInt(1).Raw, 4, 0);
+        player.MovementSpeed = new Fixed(spawnTuning.SpeedRaw);
+        player.FloatSpeed = spawnTuning.FloatSpeed;
+        player.PainThreshold = spawnTuning.PainThreshold;
+        player.HasTuningOverride = false;
         player.CanPickupItems = player.SpawnCanPickupItems;
         player.SpecialPickup = player.SpawnSpecialPickup;
         player.MaxHealth = 0;
@@ -5832,9 +6711,22 @@ public sealed class AuthoritySimulation
         player.PoisonSourceId = null;
         player.PoisonDamageType = null;
         player.PoisonPainType = null;
+        player.Height = player.ResurrectionHeight ?? player.Height;
+        player.Radius = player.ResurrectionRadius ?? player.Radius;
+        player.FullHeight = player.Height.ToDouble();
+        player.HasSizeOverride = false;
+        player.SpawnCeiling = (player.ResurrectionCollisionFlags.GetValueOrDefault() & 64) != 0;
+        player.SpawnFloat = player.DefaultSpawnFloat;
         ActorPhysics.PlaceOnFloor(this, player);
+        if (player.SpawnCeiling)
+            player.Z = Fixed.FromDouble(CeilingOf(player.SectorIndex) - player.Height.ToDouble());
+        else if (player.SpawnFloat)
+            player.Z = Fixed.FromDouble(RandomFloatSpawnZ(player));
+        player.OnGround = player.Z.ToDouble() <= FloorOf(player.SectorIndex);
+        if (player.FloorClipEnabled) ActorPropertyActions.AdjustFloorClip(this, player);
         player.ClearCommands();
         player.AttackPressed = false;
+        player.WeaponRefiring = false;
         player.UsePressed = false;
         if (GameMode == SpawnGameMode.Deathmatch)
         {
@@ -5853,6 +6745,7 @@ public sealed class AuthoritySimulation
         player.ClearTurnHeld();
         player.WeaponOffsetY = PlayerPawn.WeaponTop;
         player.WeaponLowering = false;
+        player.DeltaViewHeight = 0;
         player.ViewHeight = player.DefaultViewHeight.ToDouble();
         player.PitchDegrees = 0;
         StompSpawn(player);
@@ -5965,10 +6858,13 @@ public sealed class AuthoritySimulation
     {
         foreach (var player in Players.ToArray())
         {
+            if (player.IsDead || player.WeaponCooldown == 0 && (!player.AttackHeld || !player.WeaponReady))
+                player.WeaponRefiring = false;
             if (!player.AttackPressed)
                 continue;
             player.AttackPressed = false;
-            HitscanCombat.Fire(this, player);
+            if (HitscanCombat.Fire(this, player)) player.WeaponRefiring = true;
+            else if (player.WeaponCooldown == 0) player.WeaponRefiring = false;
         }
     }
 
@@ -6044,6 +6940,16 @@ public sealed class AuthoritySimulation
     private void RecomputeChecksum()
     {
         var hash = 2166136261u;
+        for (var i = 0; i < Level.Sectors.Count; i++)
+        {
+            var terrain = new SimSectorTerrain(Level.Sectors[i].FloorTerrain, Level.Sectors[i].CeilingTerrain);
+            if (terrain == _initialSectorTerrains[i]) continue;
+            hash = Mix(hash, 0x53544552u); hash = Mix(hash, (uint)i);
+            hash = Mix(hash, (uint)terrain.Floor.Length);
+            foreach (var character in terrain.Floor) hash = Mix(hash, character);
+            hash = Mix(hash, (uint)terrain.Ceiling.Length);
+            foreach (var character in terrain.Ceiling) hash = Mix(hash, character);
+        }
         hash = DamageTypes.MixChecksum(hash);
         if (GibFactor != 1) { hash = Mix(hash, 0x47494246u); hash = MixDouble(hash, GibFactor); }
         if (_levelGravityOverride.HasValue || LevelGravity != 800)
@@ -6079,6 +6985,11 @@ public sealed class AuthoritySimulation
         }
         foreach (var splash in Level.TerrainSplashDefinitions)
         {
+            if (splash.NoAlert)
+            {
+                hash = Mix(hash, 0x54534e41u); hash = Mix(hash, (uint)splash.Name.Length);
+                foreach (var character in splash.Name) hash = Mix(hash, char.ToUpperInvariant(character));
+            }
             if (splash.SmallSplashSound.Length != 0)
             {
                 hash = Mix(hash, 0x54535353u);
@@ -6136,6 +7047,11 @@ public sealed class AuthoritySimulation
             }
         }
         if (Level.HexenHack) hash = Mix(hash, 0x48455848u);
+        if (Level.FallingDamage != HCDE.Gamedata.FallingDamageStyle.None)
+        { hash = Mix(hash, 0x46444d47u); hash = Mix(hash, (uint)Level.FallingDamage); }
+        if (Level.MonsterFallingDamage) hash = Mix(hash, 0x4d46444du);
+        if (Level.ProperMonsterFallingDamage) hash = Mix(hash, 0x504d4644u);
+        if (Level.AllowMonsterTelefrags) hash = Mix(hash, 0x4d544652u);
         if (Level.ActivateOwnDeathSpecials) hash = Mix(hash, 0x414F4453u);
         hash = Mix(hash, unchecked((uint)Compat));
         if (DehackedNoAutofreeze) hash = Mix(hash, 0x44454E46u);
@@ -6173,6 +7089,8 @@ public sealed class AuthoritySimulation
         hash = Mix(hash, ReloadRequested ? 1u : 0u);
         hash = Mix(hash, AllowSinglePlayerRespawn ? 1u : 0u);
         hash = Mix(hash, ForceRespawn ? 1u : 0u);
+        if (ForcedFallingDamage != HCDE.Gamedata.FallingDamageStyle.None)
+        { hash = Mix(hash, 0x4646444du); hash = Mix(hash, (uint)ForcedFallingDamage); }
         if (FallingDeathSplatEnabled) hash = Mix(hash, 0x46445350u);
         hash = Mix(hash, NoRespawn ? 1u : 0u);
         hash = Mix(hash, WeaponDrop ? 1u : 0u);
@@ -6274,6 +7192,14 @@ public sealed class AuthoritySimulation
         { hash = Mix(hash, 0x49434554u); hash = Mix(hash, (uint)_iceTicsRandomState); hash = Mix(hash, (uint)(_iceTicsRandomState >> 32)); }
         if (_hasFreezeDeathRandomState)
         { hash = Mix(hash, 0x46524454u); hash = Mix(hash, (uint)_freezeDeathRandomState); hash = Mix(hash, (uint)(_freezeDeathRandomState >> 32)); }
+        if (_hasGunShotRandomState)
+        { hash = Mix(hash, 0x47554e53u); hash = Mix(hash, (uint)_gunShotRandomState); hash = Mix(hash, (uint)(_gunShotRandomState >> 32)); }
+        if (_hasFireSg2RandomState)
+        { hash = Mix(hash, 0x46534732u); hash = Mix(hash, (uint)_fireSg2RandomState); hash = Mix(hash, (uint)(_fireSg2RandomState >> 32)); }
+        if (_hasBfgSprayRandomState)
+        { hash = Mix(hash, 0x42464750u); hash = Mix(hash, (uint)_bfgSprayRandomState); hash = Mix(hash, (uint)(_bfgSprayRandomState >> 32)); }
+        if (_hasBfgSelfDamageRandomState)
+        { hash = Mix(hash, 0x42464753u); hash = Mix(hash, (uint)_bfgSelfDamageRandomState); hash = Mix(hash, (uint)(_bfgSelfDamageRandomState >> 32)); }
         if (_hasFreezeChunksRandomState)
         { hash = Mix(hash, 0x46525a43u); hash = Mix(hash, (uint)_freezeChunksRandomState); hash = Mix(hash, (uint)(_freezeChunksRandomState >> 32)); }
         if (_hasPlayerSearchRandomState)
@@ -6281,6 +7207,9 @@ public sealed class AuthoritySimulation
         if (_hasPlayerLookRandomState)
         { hash = Mix(hash, 0x504c4f4bu); hash = Mix(hash, (uint)_playerLookRandomState); hash = Mix(hash, (uint)(_playerLookRandomState >> 32)); }
         if (CompatibilityInvisibility) hash = Mix(hash, 0x43494e56u);
+        if (VerticalWeaponSpread) hash = Mix(hash, 0x56535052u);
+        if (_hasFloatSpawnRandomState)
+        { hash = Mix(hash, 0x46535052u); hash = Mix(hash, (uint)_floatSpawnRandomState); hash = Mix(hash, (uint)(_floatSpawnRandomState >> 32)); }
         if (_hasHateSearchRandomState)
         { hash = Mix(hash, 0x48415445u); hash = Mix(hash, (uint)_hateSearchRandomState); hash = Mix(hash, (uint)(_hateSearchRandomState >> 32)); }
         if (_hasActorDieRandomState)
@@ -6295,6 +7224,10 @@ public sealed class AuthoritySimulation
         { hash = Mix(hash, 0x4d53444du); hash = Mix(hash, (uint)_missileDamageRandomState); hash = Mix(hash, (uint)(_missileDamageRandomState >> 32)); }
         if (_hasPoisonDamageRandomState)
         { hash = Mix(hash, 0x50534e44u); hash = Mix(hash, (uint)_poisonDamageRandomState); hash = Mix(hash, (uint)(_poisonDamageRandomState >> 32)); }
+        if (_hasReflectRandomState)
+        { hash = Mix(hash, 0x52454652u); hash = Mix(hash, (uint)_reflectRandomState); hash = Mix(hash, (uint)(_reflectRandomState >> 32)); }
+        if (_hasSeekerMissileRandomState)
+        { hash = Mix(hash, 0x5345454bu); hash = Mix(hash, (uint)_seekerMissileRandomState); hash = Mix(hash, (uint)(_seekerMissileRandomState >> 32)); }
         if (_hasPainChanceRandomState)
         { hash = Mix(hash, 0x5043484eu); hash = Mix(hash, (uint)_painChanceRandomState); hash = Mix(hash, (uint)(_painChanceRandomState >> 32)); }
         if (_hasSkelFistRandomState)
@@ -6475,6 +7408,84 @@ public sealed class AuthoritySimulation
             if (actor.JustAttacked) hash = Mix(hash, 0x4a415454u);
             if (actor.InCombat) hash = Mix(hash, 0x49434f4du);
             if (actor.NoSplashAlert) hash = Mix(hash, 0x4e53504cu);
+            if (actor.DontSplash) hash = Mix(hash, 0x4453504cu);
+            if (actor.DontHarmSpecies) hash = Mix(hash, 0x44485350u);
+            if (actor.DontHarmClass) hash = Mix(hash, 0x4448434cu);
+            if (actor.LandingSpeed != Actor.DefaultLandingSpeed)
+            {
+                hash = Mix(hash, 0x4c535044u);
+                var landingBits = unchecked((ulong)BitConverter.DoubleToInt64Bits(actor.LandingSpeed));
+                hash = Mix(hash, (uint)landingBits); hash = Mix(hash, (uint)(landingBits >> 32));
+            }
+            if (actor.LastPushFromMovement) hash = Mix(hash, 0x50534848u);
+            if (actor.BlockedBySolidActors) hash = Mix(hash, 0x42535341u);
+            if (actor.BumpSpecial) hash = Mix(hash, 0x42554d50u);
+            if (actor.Reflective) hash = Mix(hash, 0x5245464cu);
+            if (actor.ThruReflect) hash = Mix(hash, 0x54524546u);
+            if (actor.DontReflect) hash = Mix(hash, 0x44524546u);
+            if (actor.MirrorReflect) hash = Mix(hash, 0x4d524546u);
+            if (actor.Deflect) hash = Mix(hash, 0x44464c43u);
+            if (actor.ShieldReflect) hash = Mix(hash, 0x53485246u);
+            if (actor.NoShieldReflect) hash = Mix(hash, 0x4e535246u);
+            if (actor.AimReflect) hash = Mix(hash, 0x41495246u);
+            if (actor.SeekerMissile) hash = Mix(hash, 0x53454b52u);
+            if (actor.SummonedMonster) hash = Mix(hash, 0x53554d4du);
+            if (actor.ScreenSeeker) hash = Mix(hash, 0x5343524eu);
+            if (actor.VisibilityPulse || actor.VisibilityDirection != 0)
+            {
+                hash = Mix(hash, 0x5650554cu);
+                hash = Mix(hash, actor.VisibilityPulse ? 1u : 0u);
+                hash = Mix(hash, unchecked((uint)actor.VisibilityDirection));
+            }
+            if (actor.Stealth || actor.StealthAlpha != 0)
+            {
+                hash = Mix(hash, 0x53544c54u);
+                hash = Mix(hash, actor.Stealth ? 1u : 0u);
+                hash = MixDouble(hash, actor.StealthAlpha);
+            }
+            if (actor.DefaultStealth) hash = Mix(hash, 0x4453544cu);
+            if (actor.DefaultFloatBob) hash = Mix(hash, 0x44464242u);
+            if (actor.DefaultReflective) hash = Mix(hash, 0x4452464Cu);
+            if (actor.DefaultThruGhost) hash = Mix(hash, 0x44544748u);
+            if (actor.DefaultNonShootable) hash = Mix(hash, 0x444E5348u);
+            if (actor.DefaultFloorPic) hash = Mix(hash, 0x44464C50u);
+            if (actor.DefaultRip) hash = Mix(hash, 0x44524950u);
+            if (actor.DefaultFloorClip) hash = Mix(hash, 0x4446434Cu);
+            if (actor.DefaultBlasted) hash = Mix(hash, 0x44424C53u);
+            if (actor.DefaultTouchy) hash = Mix(hash, 0x44544348u);
+            if (actor.DefaultNoClip) hash = Mix(hash, 0x444E434Cu);
+            if (actor.DefaultInFloat) hash = Mix(hash, 0x4449464Cu);
+            if (actor.DefaultCorpse) hash = Mix(hash, 0x44435250u);
+            if (actor.DefaultFly) hash = Mix(hash, 0x44464C59u);
+            if (actor.SpawnFloat || actor.DefaultSpawnFloat)
+            { hash = Mix(hash, 0x5350464Cu); hash = Mix(hash, (actor.SpawnFloat ? 1u : 0u) | (actor.DefaultSpawnFloat ? 2u : 0u)); }
+            if (actor.DefaultCombatFlags != 0) { hash = Mix(hash, 0x44434D42u); hash = Mix(hash, (uint)actor.DefaultCombatFlags); }
+            if (actor.DefaultPushFlags != 0) { hash = Mix(hash, 0x44505553u); hash = Mix(hash, (uint)actor.DefaultPushFlags); }
+            if (actor.DefaultTeleStomp != (actor is PlayerPawn))
+                hash = Mix(hash, actor.DefaultTeleStomp ? 0x44545331u : 0x44545330u);
+            if (actor.DefaultSeeker != (actor is ProjectileActor { Kind: ProjectileKind.RevenantTracer }))
+                hash = Mix(hash, actor.DefaultSeeker ? 0x44534B31u : 0x44534B30u);
+            if (actor.FloatBob || actor.FloatBobStrength != 1 || actor.FloatBobFactor != 1)
+            {
+                hash = Mix(hash, 0x46424f42u);
+                hash = Mix(hash, actor.FloatBob ? 1u : 0u);
+                var strength = unchecked((ulong)BitConverter.DoubleToInt64Bits(actor.FloatBobStrength));
+                var factor = unchecked((ulong)BitConverter.DoubleToInt64Bits(actor.FloatBobFactor));
+                hash = Mix(hash, (uint)strength); hash = Mix(hash, (uint)(strength >> 32));
+                hash = Mix(hash, (uint)factor); hash = Mix(hash, (uint)(factor >> 32));
+            }
+            if (actor.LastBumpTic != 0) { hash = Mix(hash, 0x42554d54u); hash = Mix(hash, unchecked((uint)actor.LastBumpTic)); }
+            if (actor.FallDamage) hash = Mix(hash, 0x46414c4cu);
+            if (actor.Smashable) hash = Mix(hash, 0x534d5348u);
+            if (actor.Crashed) hash = Mix(hash, 0x43525344u);
+            if (actor.DontGib) hash = Mix(hash, 0x44474942u);
+            if (actor.TeleStomp != (actor is PlayerPawn)) hash = Mix(hash, actor.TeleStomp ? 0x54535431u : 0x54535430u);
+            if (actor.NoTeleStomp) hash = Mix(hash, 0x4e545354u);
+            if (actor.CrashState != -1) { hash = Mix(hash, 0x43525331u); hash = Mix(hash, unchecked((uint)actor.CrashState)); }
+            if (actor.ExtremeCrashState != -1) { hash = Mix(hash, 0x43525332u); hash = Mix(hash, unchecked((uint)actor.ExtremeCrashState)); }
+            if (actor.CrushState != -1) { hash = Mix(hash, 0x43525348u); hash = Mix(hash, unchecked((uint)actor.CrushState)); }
+            if (actor.Touchy) hash = Mix(hash, 0x544f5543u);
+            if (actor.Armed) hash = Mix(hash, 0x41524d44u);
             if (actor.Vulnerable) hash = Mix(hash, 0x56554c4eu);
             if (actor.LastLookPlayerNumber != 0) { hash = Mix(hash, 0x4c4c504eu); hash = Mix(hash, (uint)actor.LastLookPlayerNumber); }
             if (actor.SeeInvisible) hash = Mix(hash, 0x5345494eu);
@@ -6590,6 +7601,14 @@ public sealed class AuthoritySimulation
                 hash = Mix(hash, 0x44545950u);
                 hash = Mix(hash, (uint)actor.DeathType.Length);
                 foreach (var character in actor.DeathType) hash = Mix(hash, char.ToUpperInvariant(character));
+            }
+            foreach (var typed in actor.TypedCrashes())
+            {
+                hash = Mix(hash, 0x54435253u);
+                hash = Mix(hash, typed.Extreme ? 1u : 0u);
+                hash = Mix(hash, unchecked((uint)typed.State));
+                foreach (var character in typed.Type) hash = Mix(hash, char.ToUpperInvariant(character));
+                hash = Mix(hash, 0);
             }
             foreach (var typed in actor.TypedDeaths())
             {
@@ -6810,6 +7829,7 @@ public sealed class AuthoritySimulation
             hash = Mix(hash, actor.ForceSectorDamage ? 1u : 0u);
             hash = Mix(hash, actor.Ambush ? 1u : 0u);
             if (actor.NoBlood) hash = Mix(hash, 0x4e424c44u);
+            if (actor.PuffGetsOwner) hash = Mix(hash, 0x50474f57u);
             if (actor.PendingSpawnDeath) hash = Mix(hash, 0x53504454u);
             if (actor.IsPuff) hash = Mix(hash, 0x49505546u);
             if (actor.CantSeek) hash = Mix(hash, 0x43534545u);
@@ -6851,6 +7871,7 @@ public sealed class AuthoritySimulation
             if (actor is PlayerPawn player)
             {
                 hash = Mix(hash, (uint)player.WeaponCooldown);
+                if (player.WeaponRefiring) hash = Mix(hash, 0x57524652u);
                 if (player.MaxHealth != 0)
                 {
                     hash = Mix(hash, 0x504d4850u);
@@ -6910,6 +7931,18 @@ public sealed class AuthoritySimulation
                 hash = Mix(hash, unchecked((uint)Fixed.FromDouble(player.WeaponBobX).Raw));
                 hash = Mix(hash, unchecked((uint)Fixed.FromDouble(player.WeaponBobY).Raw));
                 if (player.ClassicFlight) hash = Mix(hash, 0x464C5943u);
+                if (player.GruntSpeed != PlayerPawn.DefaultGruntSpeed)
+                {
+                    hash = Mix(hash, 0x47525350u);
+                    var gruntBits = unchecked((ulong)BitConverter.DoubleToInt64Bits(player.GruntSpeed));
+                    hash = Mix(hash, (uint)gruntBits); hash = Mix(hash, (uint)(gruntBits >> 32));
+                }
+                if (player.DeltaViewHeight != 0)
+                {
+                    hash = Mix(hash, 0x44564854u);
+                    var deltaBits = unchecked((ulong)BitConverter.DoubleToInt64Bits(player.DeltaViewHeight));
+                    hash = Mix(hash, (uint)deltaBits); hash = Mix(hash, (uint)(deltaBits >> 32));
+                }
                 if (player.JumpTics != 0)
                 {
                     hash = Mix(hash, 0x4A554D50u);
@@ -6952,6 +7985,8 @@ public sealed class AuthoritySimulation
                 { hash = Mix(hash, 0x504d534bu); hash = Mix(hash, unchecked((uint)player.PowerMaskTics)); }
                 if (player.PowerIronFeetTics != 0)
                 { hash = Mix(hash, 0x50494654u); hash = Mix(hash, unchecked((uint)player.PowerIronFeetTics)); }
+                if (player.TeleportFreezeTime != 18)
+                { hash = Mix(hash, 0x5446525au); hash = Mix(hash, unchecked((uint)player.TeleportFreezeTime)); }
                 if (player.PowerInfiniteAmmoTics != 0)
                 { hash = Mix(hash, 0x5049414du); hash = Mix(hash, unchecked((uint)player.PowerInfiniteAmmoTics)); }
                 if (player.PowerDoubleFiringSpeedTics != 0)
@@ -7107,6 +8142,7 @@ public sealed class AuthoritySimulation
             hash = Mix(hash, sector.DamageEndsLevel ? 1u : 0u);
             hash = Mix(hash, sector.HurtMonsters ? 1u : 0u);
             hash = Mix(hash, sector.HarmInAir ? 1u : 0u);
+            if (sector.NoFallingDamage) hash = Mix(hash, 0x4e46444du);
             if (sector.NoAttack) hash = Mix(hash, 0x4E4F4154u);
             if (sector.IsLift) hash = Mix(hash, 0x4c494654u);
             hash = Mix(hash, (uint)sector.DamageType.Length);

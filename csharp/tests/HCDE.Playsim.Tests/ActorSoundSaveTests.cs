@@ -135,7 +135,7 @@ public class ActorSoundSaveTests
         var changed = sim.CaptureState(); changed.Actors[0].DeathDamageAmount = amount + 1;
         sim.RestoreState(changed); Assert.NotEqual(checksum, sim.Checksum);
         actor.DeathDamageAmount = amount; sim.RestoreState(sim.CaptureState());
-        var bytes = SimSavegame.Write(sim); Assert.Equal(126, BinaryPrimitives.ReadUInt16LittleEndian(bytes.AsSpan(4)));
+        var bytes = SimSavegame.Write(sim); Assert.Equal(303, BinaryPrimitives.ReadUInt16LittleEndian(bytes.AsSpan(4)));
         Assert.True(SimSavegame.TryRead(bytes, out var saved, out var error), error);
         sim.RestoreState(saved); Assert.Equal(checksum, sim.Checksum);
         actor = sim.Players.Single(); Assert.Equal(amount, actor.DeathDamageAmount);

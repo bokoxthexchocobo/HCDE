@@ -4,6 +4,32 @@ namespace HCDE.MapLoader.Tests;
 
 public class HexenBinaryFriendTests
 {
+    [Theory]
+    [InlineData("monsterfallingdamage", true, false)]
+    [InlineData("monsterfallingdamage propermonsterfallingdamage", true, true)]
+    [InlineData("monsterfallingdamage nomonsterfallingdamage", false, false)]
+    public void MonsterFallingPolicyLoadsAndCopies(string fields, bool enabled, bool proper)
+    {
+        var wad = WithMapInfo(("MAPINFO", "map MAP01 { " + fields + " }"));
+        Assert.True(LevelBuilder.TryFromWad(wad, "MAP01", out var level, out var error), error);
+        var copy = level.CopyForSimulation();
+        Assert.Equal(enabled, level.MonsterFallingDamage); Assert.Equal(proper, level.ProperMonsterFallingDamage);
+        Assert.Equal(enabled, copy.MonsterFallingDamage); Assert.Equal(proper, copy.ProperMonsterFallingDamage);
+    }
+
+    [Theory]
+    [InlineData("fallingdamage", HCDE.Gamedata.FallingDamageStyle.Hexen)]
+    [InlineData("forcefallingdamage", HCDE.Gamedata.FallingDamageStyle.ZDoom)]
+    [InlineData("strifefallingdamage", HCDE.Gamedata.FallingDamageStyle.Strife)]
+    [InlineData("nofallingdamage", HCDE.Gamedata.FallingDamageStyle.None)]
+    public void SelectedMapFallingDamageLoadsAndCopies(string field, HCDE.Gamedata.FallingDamageStyle expected)
+    {
+        var wad = WithMapInfo(("MAPINFO", "defaultmap { fallingdamage } map MAP01 { " + field + " }"));
+        Assert.True(LevelBuilder.TryFromWad(wad, "MAP01", out var level, out var error), error);
+        Assert.Equal(expected, level.FallingDamage);
+        Assert.Equal(expected, level.CopyForSimulation().FallingDamage);
+    }
+
     [Fact]
     public void LastReplacementColorTableIsUsedEvenAfterMapinfo()
     {
@@ -517,6 +543,15 @@ public class HexenBinaryFriendTests
         Assert.True(LevelBuilder.TryFromWad(wad, "MAP01", out var level, out var error), error);
         Assert.Equal("water/splash", Assert.Single(level.TerrainSplashDefinitions).NormalSplashSound);
         Assert.Equal(level.TerrainSplashDefinitions, level.CopyForSimulation().TerrainSplashDefinitions);
+    }
+
+    [Fact]
+    public void MapMonsterTelefragFlagLoadsAndCopies()
+    {
+        var wad = WithMapInfo(("MAPINFO", "map MAP01 { allowmonstertelefrags }"));
+        Assert.True(LevelBuilder.TryFromWad(wad, "MAP01", out var level, out var error), error);
+        Assert.True(level.AllowMonsterTelefrags);
+        Assert.True(level.CopyForSimulation().AllowMonsterTelefrags);
     }
 
     [Theory]

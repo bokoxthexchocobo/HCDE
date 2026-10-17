@@ -93,6 +93,29 @@ public static class PickupCatalog
     }
 
     public static bool IsPickup(int doomEdNum, bool ravenHealth = false) => TryDescribe(doomEdNum, out _) || ravenHealth && doomEdNum == 32;
+    internal static bool IsKindOfClassName(int editorNumber, string className, bool strifeHealth = false, bool ravenHealth = false)
+    {
+        if (!TryClassName(editorNumber, out var concrete, strifeHealth, ravenHealth)) return false;
+        bool Is(string name) => className.Equals(name, StringComparison.OrdinalIgnoreCase);
+        if (Is(concrete) || Is("Inventory")) return true;
+        if (concrete is "MedPatch" or "MedicalKit" or "SurgeryKit" or "ArtiHealth" or "ArtiSuperHealth")
+            return Is("HealthPickup");
+        if (editorNumber is Stimpack or Medikit or HealthBonus or Soulsphere) return Is("Health");
+        if (editorNumber == ArmorBonus) return Is("BasicArmorBonus") || Is("Armor");
+        if (editorNumber is GreenArmor or MegaArmor) return Is("BasicArmorPickup") || Is("Armor");
+        if (IsKey(editorNumber)) return Is("DoomKey") || Is("Key");
+        if (editorNumber == Backpack) return Is("BackpackItem");
+        if (editorNumber is Megasphere or Berserk) return Is("CustomInventory") || Is("StateProvider");
+        if (editorNumber == RadSuit) return Is("PowerupGiver");
+        if (PickupWeapon(editorNumber) != 0 && !(ravenHealth && editorNumber == SuperShotgun))
+            return Is("Weapon") || Is("StateProvider") || editorNumber != Chainsaw && Is("DoomWeapon");
+        if (!TryDescribe(editorNumber, out var gift) || gift.Kind != GiftKind.Ammo) return false;
+        return Is("Ammo") || editorNumber switch
+        {
+            ClipBox => Is("Clip"), ShellBox => Is("Shell"),
+            RocketBox => Is("RocketAmmo"), CellPack => Is("Cell"), _ => false,
+        };
+    }
     internal static string DefaultPickupSound(int doomEdNum, bool strifeHealth = false, bool ravenHealth = false)
     {
         if (ravenHealth && doomEdNum is 82 or 32) return "misc/p_pkup";
@@ -117,7 +140,7 @@ public static class PickupCatalog
         !(strifeHealth && doomEdNum == Megasphere) && doomEdNum is HealthBonus or ArmorBonus or Soulsphere or Megasphere or Berserk or RadSuit;
 
     /// <summary>Native Actor defaults, with Doom Backpack's height override.</summary>
-    internal static Fixed HeightOf(int doomEdNum) => Fixed.FromInt(doomEdNum == RadSuit ? 46 : doomEdNum == Backpack ? 26 : 16);
+    internal static Fixed HeightOf(int doomEdNum) => Fixed.FromInt(doomEdNum == RadSuit ? 46 : doomEdNum == Backpack ? 26 : doomEdNum == Bfg ? 20 : 16);
 
     /// <summary>Native PIT_CheckThing horizontal pickup contact uses strict axis bounds.</summary>
     internal static bool IsWithinHorizontalReach(Actor toucher, Actor pickup)

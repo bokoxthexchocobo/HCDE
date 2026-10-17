@@ -5,6 +5,12 @@ namespace HCDE.Playsim;
 /// <summary>Managed class/count/geometry subset of P_Thing_CheckProximity.</summary>
 public static class ActorProximity
 {
+    private static readonly HashSet<string> ProjectileClasses = Enum.GetValues<ProjectileKind>()
+        .Select(ProjectileActor.NativeClassNameOf).ToHashSet(StringComparer.OrdinalIgnoreCase);
+    private static readonly HashSet<string> PickupParents = new(StringComparer.OrdinalIgnoreCase)
+        { "Inventory", "Ammo", "Weapon", "DoomWeapon", "StateProvider", "Health", "HealthPickup",
+            "Armor", "BasicArmorBonus", "BasicArmorPickup", "Key", "DoomKey", "BackpackItem",
+            "CustomInventory", "PowerupGiver" };
     public static bool Check(Actor actor, string? className, double distance, int count = 1,
         int flags = 0, int pointerSelector = 0)
         => Evaluate(actor, className, distance, count, flags, pointerSelector, counting: false) != 0;
@@ -30,7 +36,13 @@ public static class ActorProximity
         var actorClass = className.Equals("Actor", StringComparison.OrdinalIgnoreCase);
         var playerClass = className.Equals("PlayerPawn", StringComparison.OrdinalIgnoreCase);
         if (!actorClass && !playerClass && !className.Equals("DoomPlayer", StringComparison.OrdinalIgnoreCase)
-            && !DoomActorCatalog.TryEditorNumberForClassName(className, out _)) return 0;
+            && !DoomActorCatalog.TryEditorNumberForClassName(className, out _)
+            && !PickupCatalog.TryEditorNumberForDropName(className, out _, sim.StrifeHealthPickups, sim.RavenHealthPickups)
+            && !DoomDecorationDefaults.IsKnownClassName(className)
+            && !ProjectileClasses.Contains(className)
+            && !PickupParents.Contains(className)
+            && !className.Equals("BulletPuff", StringComparison.OrdinalIgnoreCase)
+            && !className.Equals("IceChunk", StringComparison.OrdinalIgnoreCase)) return 0;
         var changesTarget = (flags & setTarget) != 0;
         var changesPointer = (flags & (setTarget | setMaster | setTracer)) != 0;
         var targetOwner = (flags & setOnPointer) != 0 ? reference : actor;
@@ -42,11 +54,13 @@ public static class ActorProximity
         {
             if (other.Destroyed || ReferenceEquals(other, reference)) continue;
             var inherits = (flags & ancestor) != 0;
-            var matches = inherits && actorClass || other is PlayerPawn
-                && (className.Equals("DoomPlayer", StringComparison.OrdinalIgnoreCase) || inherits && playerClass)
-                || other is not PlayerPawn && (inherits
-                    ? DoomActorCatalog.IsKindOfClassName(other.ClassDoomEdNum, className)
-                    : DoomActorCatalog.MatchesClassName(other.ClassDoomEdNum, className));
+            var matches = AcsCallFunctions.ClassNameOf(other).Equals(className, StringComparison.OrdinalIgnoreCase)
+                || inherits && (actorClass || other is PlayerPawn && playerClass
+                    || DoomActorCatalog.IsKindOfClassName(other.ClassDoomEdNum, className)
+                    || DoomDecorationDefaults.IsKindOfClassName(other.ClassDoomEdNum, className)
+                    || PickupCatalog.IsKindOfClassName(other.ClassDoomEdNum, className, sim.StrifeHealthPickups, sim.RavenHealthPickups)
+                    || other is ProjectileActor { Kind: ProjectileKind.CyberRocket }
+                        && className.Equals("Rocket", StringComparison.OrdinalIgnoreCase));
             if (!matches) continue;
             if (!ActorJumpActions.CheckIfCloser(reference, other, distance, (flags & noZ) != 0)) continue;
             if ((flags & checkSight) != 0

@@ -2,6 +2,8 @@ namespace HCDE.Playsim;
 
 public static class ActorUnblockActions
 {
+    public static void Fall(Actor actor) => NoBlocking(actor);
+
     public static void ScreamAndUnblock(Actor actor)
     {
         ActorSoundActions.Scream(actor);

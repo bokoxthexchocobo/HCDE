@@ -27,6 +27,7 @@ public static class ActorOrientationActions
             || !double.IsFinite(pitchOffset) || !double.IsFinite(zOffset))
             throw new ArgumentOutOfRangeException(nameof(maxTurn), "Facing parameters must be finite.");
         if ((flags & ~15) != 0) throw new NotSupportedException("Unknown facing body-position flags.");
+        if (actor.Stealth) actor.VisibilityDirection = 1;
         actor.Ambush = false;
         var dx = other.X.ToDouble() - actor.X.ToDouble(); var dy = other.Y.ToDouble() - actor.Y.ToDouble();
         var desired = Math.Atan2(dy, dx) * 180 / Math.PI;
@@ -34,19 +35,19 @@ public static class ActorOrientationActions
         actor.Angle = BamAngle.FromDegrees(maxTurn != 0 && maxTurn < Math.Abs(delta)
             ? current + (delta >= 0 ? 1 : -1) * (maxTurn + angleOffset) : desired + angleOffset);
         if (maxPitch > 180) return;
-        var sourceZ = actor.Z.ToDouble() + 32;
-        var targetZ = other.Z.ToDouble() + 32;
+        var sourceZ = actor.Z.ToDouble() + 32 + actor.GetBobOffset();
+        var targetZ = other.Z.ToDouble() + 32 + other.GetBobOffset();
         if (sourceZ >= actor.Z.ToDouble() + actor.Height.ToDouble()) sourceZ = actor.Z.ToDouble() + actor.Height.ToDouble() / 2;
         if (targetZ >= other.Z.ToDouble() + other.Height.ToDouble()) targetZ = other.Z.ToDouble() + other.Height.ToDouble() / 2;
         // Native applies each flag in order, so TOP wins over MIDDLE and BOTTOM.
-        if ((flags & 1) != 0) targetZ = other.Z.ToDouble();
-        if ((flags & 2) != 0) targetZ = other.Z.ToDouble() + other.Height.ToDouble() / 2;
-        if ((flags & 4) != 0) targetZ = other.Z.ToDouble() + other.Height.ToDouble();
-        var desiredPitch = -Math.Atan2(targetZ + zOffset - sourceZ, Math.Sqrt(dx * dx + dy * dy)) * 180 / Math.PI;
+        if ((flags & 1) != 0) targetZ = other.Z.ToDouble() + other.GetBobOffset();
+        if ((flags & 2) != 0) targetZ = other.Z.ToDouble() + other.Height.ToDouble() / 2 + other.GetBobOffset();
+        if ((flags & 4) != 0) targetZ = other.Z.ToDouble() + other.Height.ToDouble() + other.GetBobOffset();
+        var desiredPitch = Actor.Normalize180(-Math.Atan2(targetZ + zOffset - sourceZ, Math.Sqrt(dx * dx + dy * dy)) * 180 / Math.PI);
         if (maxPitch == 0) actor.PitchDegrees = desiredPitch;
         else
         {
-            var pitchDelta = Math.Abs(desiredPitch - actor.PitchDegrees) % 360;
+            var pitchDelta = BamAngle.FromDegrees(Math.Abs(desiredPitch - actor.PitchDegrees)).ToDegrees();
             actor.PitchDegrees += (actor.PitchDegrees > desiredPitch ? -1 : 1) * Math.Min(maxPitch, pitchDelta);
         }
         actor.PitchDegrees += pitchOffset;
@@ -100,10 +101,8 @@ public static class ActorOrientationActions
 
     private static double AngleDelta(double current, double desired)
     {
-        var delta = (desired - current) % 360;
-        if (delta >= 180) delta -= 360;
-        if (delta < -180) delta += 360;
-        return delta;
+        // Native deltaangle normalizes through a BAM, including half-even rounding.
+        return Actor.Normalize180(desired - current);
     }
 
     public static void SetAngle(Actor actor, double degrees = 0, int flags = 0, int pointerSelector = 0)

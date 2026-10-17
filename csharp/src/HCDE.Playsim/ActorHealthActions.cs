@@ -58,7 +58,7 @@ public static class ActorHealthActions
                 missile.ExplodeForAction();
             if ((flags & 4) != 0) continue;
             var damageFlags = DamageFlags.BypassArmor | DamageFlags.NoFactor;
-            if ((flags & 1) != 0) damageFlags |= DamageFlags.BypassInvulnerability;
+            if ((flags & 1) != 0) damageFlags |= DamageFlags.FoilInvulnerability;
             if ((flags & 8) != 0) damageFlags |= DamageFlags.FoilBuddha;
             ActorDamage.Apply(victim, victim.Health, source, damageFlags, damageType, inflictor);
         }
@@ -111,7 +111,7 @@ public static class ActorHealthActions
         if ((flags & ~1023) != 0) throw new ArgumentOutOfRangeException(nameof(flags));
         if (!ActorActionFilters.Matches(actor, classFilter, speciesFilter, (flags & 64) != 0, (flags & 128) != 0, (flags & 256) != 0)) return;
         var damageFlags = DamageFlags.None;
-        if ((flags & 1) != 0) damageFlags |= DamageFlags.BypassInvulnerability;
+        if ((flags & 1) != 0) damageFlags |= DamageFlags.FoilInvulnerability;
         if ((flags & 16) != 0) damageFlags |= DamageFlags.FoilBuddha;
         if ((flags & (4 | 8)) != 0) damageFlags |= DamageFlags.NoFactor;
         if ((flags & 2) == 0 || (flags & 4) != 0) damageFlags |= DamageFlags.BypassArmor;

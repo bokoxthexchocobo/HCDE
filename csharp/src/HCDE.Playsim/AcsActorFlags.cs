@@ -13,6 +13,21 @@ internal static class AcsActorFlags
         NoBossRip,
         Pushable,
         CannotPush,
+        BlockedBySolidActors,
+        BumpSpecial,
+        Reflective,
+        ThruReflect,
+        DontReflect,
+        MirrorReflect,
+        Deflect,
+        ShieldReflect,
+        NoShieldReflect,
+        AimReflect,
+        SeekerMissile,
+        SummonedMonster,
+        ScreenSeeker,
+        Stealth,
+        FloatBob,
         NoVerticalMeleeRange,
         Killed,
         FoilInvul,
@@ -80,6 +95,17 @@ internal static class AcsActorFlags
         JustAttacked,
         InCombat,
         NoSplashAlert,
+        DontSplash,
+        Touchy,
+        Armed,
+        DontHarmSpecies,
+        DontHarmClass,
+        FallDamage,
+        Smashable,
+        Crashed,
+        DontGib,
+        TeleStomp,
+        NoTeleStomp,
         ActsLikeBridge,
         IceCorpse,
         Shattering,
@@ -99,6 +125,7 @@ internal static class AcsActorFlags
         Invisible,
         CantSeek,
         NoBlood,
+        PuffGetsOwner,
         IsPuff,
         SpawnSoundSource,
         DontThrust,
@@ -114,6 +141,7 @@ internal static class AcsActorFlags
         Floating,
         NoGravity,
         Fly,
+        SpawnFloat,
         FlyCheat,
         NoClip,
         NoFriction,
@@ -199,6 +227,36 @@ internal static class AcsActorFlags
         { kind = Kind.Pushable; return true; }
         if (flagName.Equals("CANNOTPUSH", StringComparison.OrdinalIgnoreCase))
         { kind = Kind.CannotPush; return true; }
+        if (flagName.Equals("BLOCKEDBYSOLIDACTORS", StringComparison.OrdinalIgnoreCase))
+        { kind = Kind.BlockedBySolidActors; return true; }
+        if (flagName.Equals("BUMPSPECIAL", StringComparison.OrdinalIgnoreCase))
+        { kind = Kind.BumpSpecial; return true; }
+        if (flagName.Equals("REFLECTIVE", StringComparison.OrdinalIgnoreCase))
+        { kind = Kind.Reflective; return true; }
+        if (flagName.Equals("THRUREFLECT", StringComparison.OrdinalIgnoreCase))
+        { kind = Kind.ThruReflect; return true; }
+        if (flagName.Equals("DONTREFLECT", StringComparison.OrdinalIgnoreCase))
+        { kind = Kind.DontReflect; return true; }
+        if (flagName.Equals("MIRRORREFLECT", StringComparison.OrdinalIgnoreCase))
+        { kind = Kind.MirrorReflect; return true; }
+        if (flagName.Equals("DEFLECT", StringComparison.OrdinalIgnoreCase))
+        { kind = Kind.Deflect; return true; }
+        if (flagName.Equals("SHIELDREFLECT", StringComparison.OrdinalIgnoreCase))
+        { kind = Kind.ShieldReflect; return true; }
+        if (flagName.Equals("NOSHIELDREFLECT", StringComparison.OrdinalIgnoreCase))
+        { kind = Kind.NoShieldReflect; return true; }
+        if (flagName.Equals("AIMREFLECT", StringComparison.OrdinalIgnoreCase))
+        { kind = Kind.AimReflect; return true; }
+        if (flagName.Equals("SEEKERMISSILE", StringComparison.OrdinalIgnoreCase))
+        { kind = Kind.SeekerMissile; return true; }
+        if (flagName.Equals("SUMMONEDMONSTER", StringComparison.OrdinalIgnoreCase))
+        { kind = Kind.SummonedMonster; return true; }
+        if (flagName.Equals("SCREENSEEKER", StringComparison.OrdinalIgnoreCase))
+        { kind = Kind.ScreenSeeker; return true; }
+        if (flagName.Equals("STEALTH", StringComparison.OrdinalIgnoreCase))
+        { kind = Kind.Stealth; return true; }
+        if (flagName.Equals("FLOATBOB", StringComparison.OrdinalIgnoreCase))
+        { kind = Kind.FloatBob; return true; }
         if (flagName.Equals("NOBOSSRIP", StringComparison.OrdinalIgnoreCase))
         { kind = Kind.NoBossRip; return true; }
         if (flagName.Equals("DONTRIP", StringComparison.OrdinalIgnoreCase))
@@ -241,6 +299,8 @@ internal static class AcsActorFlags
         { kind = Kind.DontSeekInvisible; return true; }
         if (flagName.Equals("ISPUFF", StringComparison.OrdinalIgnoreCase))
         { kind = Kind.IsPuff; return true; }
+        if (flagName.Equals("PUFFGETSOWNER", StringComparison.OrdinalIgnoreCase))
+        { kind = Kind.PuffGetsOwner; return true; }
         if (flagName.Equals("NOBLOOD", StringComparison.OrdinalIgnoreCase))
         { kind = Kind.NoBlood; return true; }
         if (flagName.Equals("SHADOW", StringComparison.OrdinalIgnoreCase))
@@ -249,6 +309,28 @@ internal static class AcsActorFlags
         { kind = Kind.MinVisible; return true; }
         if (flagName.Equals("NOSPLASHALERT", StringComparison.OrdinalIgnoreCase))
         { kind = Kind.NoSplashAlert; return true; }
+        if (flagName.Equals("DONTSPLASH", StringComparison.OrdinalIgnoreCase))
+        { kind = Kind.DontSplash; return true; }
+        if (flagName.Equals("TOUCHY", StringComparison.OrdinalIgnoreCase))
+        { kind = Kind.Touchy; return true; }
+        if (flagName.Equals("ARMED", StringComparison.OrdinalIgnoreCase))
+        { kind = Kind.Armed; return true; }
+        if (flagName.Equals("DONTHARMSPECIES", StringComparison.OrdinalIgnoreCase))
+        { kind = Kind.DontHarmSpecies; return true; }
+        if (flagName.Equals("DONTHARMCLASS", StringComparison.OrdinalIgnoreCase))
+        { kind = Kind.DontHarmClass; return true; }
+        if (flagName.Equals("FALLDAMAGE", StringComparison.OrdinalIgnoreCase))
+        { kind = Kind.FallDamage; return true; }
+        if (flagName.Equals("SMASHABLE", StringComparison.OrdinalIgnoreCase))
+        { kind = Kind.Smashable; return true; }
+        if (flagName.Equals("CRASHED", StringComparison.OrdinalIgnoreCase))
+        { kind = Kind.Crashed; return true; }
+        if (flagName.Equals("DONTGIB", StringComparison.OrdinalIgnoreCase))
+        { kind = Kind.DontGib; return true; }
+        if (flagName.Equals("TELESTOMP", StringComparison.OrdinalIgnoreCase))
+        { kind = Kind.TeleStomp; return true; }
+        if (flagName.Equals("NOTELESTOMP", StringComparison.OrdinalIgnoreCase))
+        { kind = Kind.NoTeleStomp; return true; }
         if (flagName.Equals("INCOMBAT", StringComparison.OrdinalIgnoreCase))
         { kind = Kind.InCombat; return true; }
         if (flagName.Equals("JUSTATTACKED", StringComparison.OrdinalIgnoreCase))
@@ -503,6 +585,8 @@ internal static class AcsActorFlags
         { kind = Kind.FullVolumeDeath; return true; }
         if (flagName.Equals("FLY", StringComparison.OrdinalIgnoreCase))
         { kind = Kind.Fly; return true; }
+        if (flagName.Equals("SPAWNFLOAT", StringComparison.OrdinalIgnoreCase))
+        { kind = Kind.SpawnFloat; return true; }
         if (flagName.Equals("FLYCHEAT", StringComparison.OrdinalIgnoreCase))
         { kind = Kind.FlyCheat; return true; }
         if (flagName.Equals("NOCLIP", StringComparison.OrdinalIgnoreCase))
@@ -601,6 +685,17 @@ internal static class AcsActorFlags
         Kind.JustAttacked => actor.JustAttacked,
         Kind.InCombat => actor.InCombat,
         Kind.NoSplashAlert => actor.NoSplashAlert,
+        Kind.DontSplash => actor.DontSplash,
+        Kind.Touchy => actor.Touchy,
+        Kind.Armed => actor.Armed,
+        Kind.DontHarmSpecies => actor.DontHarmSpecies,
+        Kind.DontHarmClass => actor.DontHarmClass,
+        Kind.FallDamage => actor.FallDamage,
+        Kind.Smashable => actor.Smashable,
+        Kind.Crashed => actor.Crashed,
+        Kind.DontGib => actor.DontGib,
+        Kind.TeleStomp => actor.TeleStomp,
+        Kind.NoTeleStomp => actor.NoTeleStomp,
         Kind.ActsLikeBridge => actor.ActsLikeBridge,
         Kind.IceCorpse => actor.IceCorpse,
         Kind.Shattering => actor.Shattering,
@@ -620,6 +715,7 @@ internal static class AcsActorFlags
         Kind.Invisible => actor.Invisible,
         Kind.IsPuff => actor.IsPuff,
         Kind.NoBlood => actor.NoBlood,
+        Kind.PuffGetsOwner => actor.PuffGetsOwner,
         Kind.CantSeek => actor.CantSeek,
         Kind.SpawnSoundSource => actor.SpawnSoundSource,
         Kind.DontThrust => actor.DontThrust,
@@ -633,6 +729,21 @@ internal static class AcsActorFlags
         Kind.NoBossRip => actor.NoBossRip,
         Kind.Pushable => actor.Pushable,
         Kind.CannotPush => actor.CannotPush,
+        Kind.BlockedBySolidActors => actor.BlockedBySolidActors,
+        Kind.BumpSpecial => actor.BumpSpecial,
+        Kind.Reflective => actor.Reflective,
+        Kind.ThruReflect => actor.ThruReflect,
+        Kind.DontReflect => actor.DontReflect,
+        Kind.MirrorReflect => actor.MirrorReflect,
+        Kind.Deflect => actor.Deflect,
+        Kind.ShieldReflect => actor.ShieldReflect,
+        Kind.NoShieldReflect => actor.NoShieldReflect,
+        Kind.AimReflect => actor.AimReflect,
+        Kind.SeekerMissile => actor.SeekerMissile,
+        Kind.SummonedMonster => actor.SummonedMonster,
+        Kind.ScreenSeeker => actor.ScreenSeeker,
+        Kind.Stealth => actor.Stealth,
+        Kind.FloatBob => actor.FloatBob,
         Kind.NoVerticalMeleeRange => actor.NoVerticalMeleeRange,
         Kind.Killed => actor.Killed,
         Kind.NoTarget => actor.NoTarget,
@@ -643,6 +754,7 @@ internal static class AcsActorFlags
         Kind.Floating => actor.Floating,
         Kind.NoGravity => actor.NoGravity,
         Kind.Fly => actor.Fly,
+        Kind.SpawnFloat => actor.SpawnFloat,
         Kind.FlyCheat => actor.FlyCheat,
         Kind.NoClip => actor.NoClip,
         Kind.NoFriction => actor.NoFriction,
@@ -757,6 +869,17 @@ internal static class AcsActorFlags
             case Kind.JustAttacked: actor.JustAttacked = value; break;
             case Kind.InCombat: actor.InCombat = value; break;
             case Kind.NoSplashAlert: actor.NoSplashAlert = value; break;
+            case Kind.DontSplash: actor.DontSplash = value; break;
+            case Kind.Touchy: actor.Touchy = value; break;
+            case Kind.Armed: actor.Armed = value; break;
+            case Kind.DontHarmSpecies: actor.DontHarmSpecies = value; break;
+            case Kind.DontHarmClass: actor.DontHarmClass = value; break;
+            case Kind.FallDamage: actor.FallDamage = value; break;
+            case Kind.Smashable: actor.Smashable = value; break;
+            case Kind.Crashed: actor.Crashed = value; break;
+            case Kind.DontGib: actor.DontGib = value; break;
+            case Kind.TeleStomp: actor.TeleStomp = value; break;
+            case Kind.NoTeleStomp: actor.NoTeleStomp = value; break;
             case Kind.ActsLikeBridge: actor.ActsLikeBridge = value; break;
             case Kind.IceCorpse: actor.IceCorpse = value; break;
             case Kind.Shattering: actor.Shattering = value; break;
@@ -780,6 +903,7 @@ internal static class AcsActorFlags
             case Kind.DontSeekInvisible: actor.DontSeekInvisible = value; break;
             case Kind.IsPuff: actor.IsPuff = value; break;
             case Kind.NoBlood: actor.NoBlood = value; break;
+            case Kind.PuffGetsOwner: actor.PuffGetsOwner = value; break;
             case Kind.Shadow: actor.Shadow = value; break;
             case Kind.MinVisible: actor.MinVisible = value; break;
             case Kind.PierceArmor: actor.PierceArmor = value; break;
@@ -789,6 +913,21 @@ internal static class AcsActorFlags
             case Kind.NoBossRip: actor.NoBossRip = value; break;
             case Kind.Pushable: actor.Pushable = value; break;
             case Kind.CannotPush: actor.CannotPush = value; break;
+            case Kind.BlockedBySolidActors: actor.BlockedBySolidActors = value; break;
+            case Kind.BumpSpecial: actor.BumpSpecial = value; break;
+            case Kind.Reflective: actor.Reflective = value; break;
+            case Kind.ThruReflect: actor.ThruReflect = value; break;
+            case Kind.DontReflect: actor.DontReflect = value; break;
+            case Kind.MirrorReflect: actor.MirrorReflect = value; break;
+            case Kind.Deflect: actor.Deflect = value; break;
+            case Kind.ShieldReflect: actor.ShieldReflect = value; break;
+            case Kind.NoShieldReflect: actor.NoShieldReflect = value; break;
+            case Kind.AimReflect: actor.AimReflect = value; break;
+            case Kind.SeekerMissile: actor.SeekerMissile = value; break;
+            case Kind.SummonedMonster: actor.SummonedMonster = value; break;
+            case Kind.ScreenSeeker: actor.ScreenSeeker = value; break;
+            case Kind.Stealth: actor.Stealth = value; break;
+            case Kind.FloatBob: actor.FloatBob = value; break;
             case Kind.NoVerticalMeleeRange: actor.NoVerticalMeleeRange = value; break;
             case Kind.Killed: actor.Killed = value; break;
             case Kind.NoTarget: actor.NoTarget = value; break;
@@ -811,6 +950,7 @@ internal static class AcsActorFlags
             case Kind.FullVolumeSee: actor.FullVolumeSee = value; break;
             case Kind.FullVolumeDeath: actor.FullVolumeDeath = value; break;
             case Kind.Fly: actor.Fly = value; break;
+            case Kind.SpawnFloat: actor.SpawnFloat = value; break;
             case Kind.FlyCheat: actor.FlyCheat = value; break;
             case Kind.NoClip: actor.NoClip = value; break;
             case Kind.NoGravity: actor.NoGravity = value; actor.HasMovementActionOverride = true; break;

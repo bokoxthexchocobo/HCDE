@@ -8,6 +8,9 @@ internal static class LegacyActorArchiveFixture
 
     internal static byte[] Write(SimSaveState state)
     {
+        foreach (var pose in state.Actors) pose.CrashedFlag = null;
+        foreach (var pose in state.Actors) pose.HandleNoDelayFlag = null;
+        foreach (var pose in state.Actors) pose.ActorSounds = new Dictionary<ActorSoundType, string>();
         state.Lights = null;
         state.JumpRandomState = null;
         state.ActorDieRandomState = null;

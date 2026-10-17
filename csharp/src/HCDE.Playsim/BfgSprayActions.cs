@@ -36,19 +36,21 @@ public static class BfgSprayActions
             var damageType = "BFGSplash";
             if (spray != null)
             {
+                ActorImpactEffectPlacement.AtVictim(sim, spray, target);
                 if (spray.MThruSpecies && owner.SharesContactSpecies(target)
                     || ReferenceEquals(target, owner) && !flags.HasFlag(BfgSprayFlags.HurtSource))
                 {
                     spray.Destroy();
                     continue;
                 }
+                if (spray.PuffGetsOwner) spray.SetTargetPointer(owner);
                 if (spray.FoilBuddha) damageFlags |= DamageFlags.FoilBuddha;
                 if (spray.FoilInvul) damageFlags |= DamageFlags.FoilInvulnerability;
                 damageType = spray.DamageType;
             }
             var damage = fixedDamage;
             if (fixedDamage == 0)
-                for (var die = 0; die < damageCount; die++) damage += 1 + (int)(sim.NextCombatRandom() % 8);
+                for (var die = 0; die < damageCount; die++) damage += sim.NextBfgSprayDamageDie();
             ActorDamage.Apply(target, damage, owner, damageFlags, damageType, originator);
         }
     }

@@ -51,6 +51,15 @@ public class IceChunkReconstructionTests
     {
         var state = Spawn().CaptureState(); state.FreezeChunksRandomState = null;
         var saved = SimSavegame.Write(state);
+        while (BinaryPrimitives.ReadUInt16LittleEndian(saved.AsSpan(4)) != 114)
+        {
+            var outerSize = BinaryPrimitives.ReadInt32LittleEndian(saved.AsSpan(saved.Length - 4));
+            var innerLength = saved.Length - outerSize;
+            var prior = BinaryPrimitives.ReadInt32LittleEndian(saved.AsSpan(innerLength));
+            Assert.InRange(prior, 114, ushort.MaxValue);
+            Array.Resize(ref saved, innerLength);
+            BinaryPrimitives.WriteUInt16LittleEndian(saved.AsSpan(4), (ushort)prior);
+        }
         var size = BinaryPrimitives.ReadInt32LittleEndian(saved.AsSpan(saved.Length - 4));
         var start = saved.Length - size;
         if (mutation == 0) BinaryPrimitives.WriteInt32LittleEndian(saved.AsSpan(saved.Length - 4), 11);

@@ -641,6 +641,7 @@ public class PlayerRespawnTests
 
         var deathmatch = KeyRoom(SpawnGameMode.Deathmatch);
         deathmatch.CoopShareKeys = true;
+        Assert.True(deathmatch.SpawnDroppedPickup(deathmatch.Players.Single(player => player.PlayerNum == 0), PickupCatalog.RedCard));
         deathmatch.Tick();
         Assert.True(deathmatch.Players.Single(player => player.PlayerNum == 0).Inventory.RedKey);
         Assert.False(deathmatch.Players.Single(player => player.PlayerNum == 1).Inventory.RedKey);

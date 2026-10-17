@@ -32,7 +32,8 @@ public class IceTerrainTimingTests
 
     [Theory]
     [InlineData("Fire", -2)]
-    [InlineData("Lava", -2)]
+    [InlineData("Lava", 0)]
+    [InlineData("fIrE", -2)]
     [InlineData("ice", 1)]
     [InlineData("Acid", 0)]
     [InlineData("None", 0)]

@@ -3,6 +3,26 @@ namespace HCDE.MapLoader;
 /// <summary>Resolves represented logical sound mappings without loading or playing audio.</summary>
 public static class SoundResourceResolver
 {
+    public static void ApplyDehackedSoundNames(PlayLevel level, HCDE.Gamedata.DehackedPatchResult patch)
+    {
+        if (patch.SoundLumpOverrides.Count == 0 && patch.TentativeSoundNames.Count == 0) return;
+        var sounds = new Dictionary<string, string>(level.SoundDefinitions, StringComparer.OrdinalIgnoreCase);
+        var groups = new Dictionary<string, IReadOnlyList<string>>(level.RandomSoundGroups, StringComparer.OrdinalIgnoreCase);
+        var settings = new Dictionary<string, HCDE.Gamedata.SndInfoSoundSettings>(level.SoundSettings, StringComparer.OrdinalIgnoreCase);
+        foreach (var name in patch.TentativeSoundNames)
+            if (!sounds.ContainsKey(name) && !groups.ContainsKey(name) && !level.SoundAliases.ContainsKey(name))
+                settings.TryAdd(name, new HCDE.Gamedata.SndInfoSoundSettings(IsTentative: true));
+        foreach (var (name, lump) in patch.SoundLumpOverrides)
+        {
+            sounds[name] = lump;
+            groups.Remove(name);
+            if (settings.TryGetValue(name, out var prior)) settings[name] = prior with { IsTentative = false };
+        }
+        level.SoundDefinitions = sounds;
+        level.RandomSoundGroups = groups;
+        level.SoundSettings = settings;
+    }
+
     public static bool TryResolvePlayerSound(PlayLevel level, string sound, string className,
         out string resolved, out string? error, int gender = 0, Func<string, bool>? isAvailable = null)
     {

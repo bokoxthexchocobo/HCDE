@@ -48,13 +48,14 @@ public static class ChainsawActions
         if (hit.Victim is { } target)
         {
             var facing = BamAngle.FromDegrees(player.AngleTo(target));
-            var result = LineAttackImpact.ApplyActorDamage(sim, player, target, hit, angle, damage, "Melee", false,
+            LineAttackImpact.ApplyActorDamageWithNativeResult(sim, player, target, hit, angle, damage, "Melee", false,
+                out var actualDamage,
                 noRandomPuffZ: noRandomPuffZ);
             if ((flags & ChainsawAttackFlags.RandomLightHit) != 0)
                 ApplyRandomLight(player, sim.NextSawByte(), true);
             if (lifeSteal != 0 && !target.DontDrain)
             {
-                var amount = (int)(result.HealthLost * lifeSteal);
+                var amount = (int)(actualDamage * lifeSteal);
                 if ((flags & ChainsawAttackFlags.StealArmor) != 0)
                     PickupCatalog.GiveArmorBonus(player.Inventory, PickupCatalog.ScaleArmor(amount, player),
                         lifeStealMax > 0 ? lifeStealMax : sim.DehackedMaxArmor);

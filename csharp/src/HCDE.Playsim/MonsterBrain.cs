@@ -425,6 +425,7 @@ public sealed class MonsterBrain(MonsterAttack attack)
         bool nativeMovement)
     {
         if (!Enabled) return;
+        if (actor.Stealth && !actor.IsDead && !actor.Destroyed) actor.VisibilityDirection = -1;
         if (nightmareFast && sim.FastMonsters && actor.States.RemainingTics > 3)
             actor.States.SetTics(Math.Max(3, actor.States.RemainingTics - actor.States.RemainingTics / 2));
         if (Charging && (actor.IsDead || actor.Destroyed || actor.States.Current == actor.PainState))

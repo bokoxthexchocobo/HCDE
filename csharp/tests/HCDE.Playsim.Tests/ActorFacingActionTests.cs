@@ -5,6 +5,36 @@ namespace HCDE.Playsim.Tests;
 public class ActorFacingActionTests
 {
     [Theory]
+    [InlineData(100, 200)]
+    [InlineData(200, 100)]
+    public void TurnLimitComparesNativeBamRoundedDelta(int x, int y)
+    {
+        var sim = Room(); var actor = sim.AddBot(0, 0); var target = sim.AddBot(x, y);
+        var desired = Math.Atan2(y, x) * 180 / Math.PI;
+        var normalized = Actor.Normalize180(desired);
+        var limit = (desired + normalized) / 2;
+        Assert.NotEqual(desired, normalized);
+        ActorOrientationActions.Face(actor, target, maxTurn: limit, angleOffset: 90);
+        var expected = normalized > limit ? limit + 90 : desired + 90;
+        Assert.Equal(BamAngle.FromDegrees(expected), actor.Angle);
+    }
+
+    [Theory]
+    [InlineData(100, 200)]
+    [InlineData(200, 100)]
+    public void MovementTurnLimitUsesNativeBamRoundedDelta(int x, int y)
+    {
+        var sim = Room(); var actor = sim.AddBot(0, 0);
+        actor.VelocityX = Fixed.FromInt(x); actor.VelocityY = Fixed.FromInt(y);
+        var desired = Math.Atan2(y, x) * 180 / Math.PI;
+        var normalized = Actor.Normalize180(desired);
+        var limit = (desired + normalized) / 2;
+        ActorOrientationActions.FaceMovementDirection(actor, offset: 90, angleLimit: limit);
+        var expected = normalized > limit ? limit + 90 : desired + 90;
+        Assert.Equal(BamAngle.FromDegrees(expected), actor.Angle);
+    }
+
+    [Theory]
     [InlineData(0, 0, 90)]
     [InlineData(20, 5, 25)]
     [InlineData(0, 5, 95)]

@@ -42,7 +42,14 @@ internal static class AcsActorStates
     {
         yield return ("Spawn", actor.SpawnState);
         if (actor.GenericCrushState >= 0) yield return ("GenericCrush", actor.GenericCrushState);
+        if (actor.CrushState >= 0) yield return ("Crush", actor.CrushState);
+        if (actor.CrashState >= 0) yield return ("Crash", actor.CrashState);
+        if (actor.ExtremeCrashState >= 0) yield return ("Crash.Extreme", actor.ExtremeCrashState);
+        foreach (var typed in actor.TypedCrashes())
+            yield return (typed.Extreme ? "Crash.Extreme." + typed.Type : "Crash." + typed.Type, typed.State);
         if (actor.NullState >= 0) yield return ("Null", actor.NullState);
+        if (actor.DieFromSpawnState >= 0) yield return ("DieFromSpawn", actor.DieFromSpawnState);
+        if (actor.GenericFreezeDeath >= 0) yield return ("GenericFreezeDeath", actor.GenericFreezeDeath);
         if (actor.HasOnlySpawnLabel) yield break;
         if (actor.ActiveState >= 0) yield return ("Active", actor.ActiveState);
         if (actor.InactiveState >= 0) yield return ("Inactive", actor.InactiveState);

@@ -6,7 +6,7 @@ public sealed record LevelTerrainDefinition(string Name, string DamageType = "No
     double StepDistance = 0, double StepDistanceMinVel = 0,
     string StepSound = "", string LeftStepSound = "", string RightStepSound = "");
 public sealed record LevelFloorTerrain(string Texture, string Terrain);
-public sealed record LevelTerrainSplash(string Name, string NormalSplashSound = "", string SmallSplashSound = "");
+public sealed record LevelTerrainSplash(string Name, string NormalSplashSound = "", string SmallSplashSound = "", bool NoAlert = false);
 public sealed record LevelTerrainData(IReadOnlyList<LevelTerrainDefinition> Definitions,
     IReadOnlyList<LevelFloorTerrain> Floors, string DefaultTerrain = "", IReadOnlyList<string>? Splashes = null,
     IReadOnlyList<LevelTerrainSplash>? SplashDefinitions = null);

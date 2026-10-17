@@ -4,23 +4,34 @@ namespace HCDE.Playsim;
 /// water-level contact, 3D floors, and splash actor effects remain absent.</summary>
 internal static class TerrainDamage
 {
-    internal static void Land(AuthoritySimulation sim, Actor actor)
+    internal static bool Land(AuthoritySimulation sim, Actor actor)
     {
-        if (actor.IsDead || actor.Destroyed) return;
+        if (actor.Destroyed) return false;
+        if (actor.Touchy && (actor.Armed || actor.IsSentient()) && actor.VelocityZ.ToDouble() < -5)
+        {
+            actor.Armed = false;
+            ActorDamage.Apply(actor, actor.Health, flags: DamageFlags.Forced, damageType: "Crush");
+            return false;
+        }
         var terrain = sim.Level.FloorTerrainDefinition(actor.SectorIndex);
-        if (terrain is null || terrain.Splash.Length == 0
-            || !sim.Level.TerrainSplashes.Contains(terrain.Splash, StringComparer.OrdinalIgnoreCase)) return;
+        if (terrain is null) return false;
+        if (terrain.Splash.Length == 0
+            || !sim.Level.TerrainSplashes.Contains(terrain.Splash, StringComparer.OrdinalIgnoreCase)) return terrain.IsLiquid;
         if (actor is PlayerPawn && terrain.DamageOnLand && terrain.DamageAmount != 0
             && (sim.Thinkers.Clock.Tic & terrain.DamageTimeMask) != 0)
             ActorDamage.Apply(actor, terrain.DamageAmount, damageType: terrain.DamageType);
-        if ((actor is PlayerPawn || actor.IsMonster) && actor.VelocityZ.ToDouble() >= -6) return;
+        if (actor.DontSplash) return terrain.IsLiquid;
+        if ((actor is PlayerPawn || actor.IsMonster) && actor.VelocityZ.ToDouble() >= -6) return terrain.IsLiquid;
         var splash = sim.Level.TerrainSplashDefinitions.LastOrDefault(splash =>
             splash.Name.Equals(terrain.Splash, StringComparison.OrdinalIgnoreCase));
+        if (actor is PlayerPawn && splash is not null && !splash.NoAlert)
+            SoundPropagation.Alert(sim, actor, actor, splash: true);
         var sound = actor.Mass < 10 ? splash?.SmallSplashSound : splash?.NormalSplashSound;
-        if (string.IsNullOrEmpty(sound) || sound.Equals("None", StringComparison.OrdinalIgnoreCase)) return;
+        if (string.IsNullOrEmpty(sound) || sound.Equals("None", StringComparison.OrdinalIgnoreCase)) return terrain.IsLiquid;
         var origin = new SimulationSoundOrigin((float)actor.X.ToDouble(), (float)actor.Y.ToDouble(),
             (float)sim.FloorOf(actor.SectorIndex), actor.SectorIndex);
         sim.QueueSoundRequest(new(0, sound, 3, 0, 1, false, 1.001f, false, DetachedOrigin: origin));
+        return terrain.IsLiquid;
     }
 
     internal static void Tick(AuthoritySimulation sim, Actor actor)

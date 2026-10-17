@@ -25,6 +25,7 @@ public sealed class ClientHost : IDisposable
             Simulation.StateRestored -= ResetAudioState;
             Simulation.LevelExited -= ResetAudioState;
             Simulation.SoundRequestsReady -= ConsumeSoundRequests;
+            Simulation.RumbleRequested -= ForwardRumbleRequest;
             ResetAudioState();
             _soundArchive = null;
             _vmColorCatalog = null;
@@ -60,6 +61,7 @@ public sealed class ClientHost : IDisposable
         simulation.StateRestored += ResetAudioState;
         simulation.LevelExited += ResetAudioState;
         simulation.SoundRequestsReady += ConsumeSoundRequests;
+        simulation.RumbleRequested += ForwardRumbleRequest;
         Frame = new SoftwareFrame(width, height);
         Audio = new AudioMixer();
         ZScript = new ZScriptVm();
@@ -68,6 +70,15 @@ public sealed class ClientHost : IDisposable
     }
 
     public AuthoritySimulation Simulation { get; }
+    public event Action<SimulationRumbleRequest>? RumbleRequested;
+    private void ForwardRumbleRequest(SimulationRumbleRequest request)
+    {
+        if (request.LocalPlayerOrCameraOnly && GetAudioConsolePlayer()?.Id != request.ActorId
+            && GetAudioListener()?.Id != request.ActorId) return;
+        if (request.SuppressIfLocalActorId is { } sourceId &&
+            (GetAudioConsolePlayer()?.Id == sourceId || GetAudioListener()?.Id == sourceId)) return;
+        RumbleRequested?.Invoke(request);
+    }
     public IReadOnlyList<VmMusicBank> MusicBanks { get; }
     public VmMusicCallbacks MusicCallbacks { get; }
     public VmMusicVolume MusicVolume { get; } = new();

@@ -25,17 +25,29 @@ public static class HitscanCombat
             sim.SpawnProjectile(player, projectile);
             return true;
         }
+        var fireSound = weapon switch
+        {
+            WeaponKind.Pistol => "weapons/pistol",
+            WeaponKind.Shotgun => "weapons/shotgf",
+            WeaponKind.Chaingun => "weapons/chngun",
+            WeaponKind.SuperShotgun => "weapons/sshotf",
+            _ => null,
+        };
+        if (fireSound is not null) ActorSoundActions.PlayWeaponSound(player, fireSound);
         var melee = weapon == WeaponKind.Fist;
         var range = melee ? player.MeleeRange.ToDouble() + 20 : HitscanRange;
+        var gunSpread = weapon is WeaponKind.Pistol or WeaponKind.Chaingun
+            ? player.WeaponRefiring ? 5.625 : 0 : definition.SpreadDegrees;
         for (var pellet = 0; pellet < definition.Pellets; pellet++)
         {
             // Native weapon actions roll damage before spread.
-            var damage = melee ? sim.NextPunchDamage()
-                : 5 * (1 + (int)(sim.NextCombatRandom() % 3));
+            var damage = melee ? sim.NextPunchDamage() : weapon == WeaponKind.SuperShotgun ? sim.NextFireSg2Damage()
+                : sim.NextGunShotDamage();
             if (melee && player.HasPowerStrength) damage = unchecked(damage * 10);
-            var spread = melee ? sim.NextPunchSpread()
-                : definition.SpreadDegrees == 0 ? 0 : sim.NextCombatSpread() * definition.SpreadDegrees * (255.0 / 256);
-            var pitchSpread = weapon == WeaponKind.SuperShotgun ? sim.NextCombatSpread() * (7.097 * 255 / 256) : 0;
+            var spread = melee ? sim.NextPunchSpread() : weapon == WeaponKind.SuperShotgun ? sim.NextFireSg2Spread(11.25)
+                : gunSpread == 0 ? 0 : sim.NextGunShotSpread(gunSpread);
+            var pitchSpread = weapon == WeaponKind.SuperShotgun ? sim.NextFireSg2Spread(7.097)
+                : !melee && gunSpread != 0 && sim.VerticalWeaponSpread ? sim.NextGunShotSpread(3.549) : 0;
             var angle = BamAngle.FromDegrees(player.Angle.ToDegrees() + spread);
             var pitch = BamAngle.FromDegrees(player.PitchDegrees + pitchSpread);
             var hit = !melee && sim.Rewind.TryTraceHistoricalHitscan(sim, player, angle, pitch, range, out var historicalHit)

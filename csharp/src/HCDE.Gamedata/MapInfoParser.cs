@@ -2,6 +2,8 @@ using System.Globalization;
 
 namespace HCDE.Gamedata;
 
+public enum FallingDamageStyle { None, ZDoom, Hexen, Strife }
+
 public sealed class MapInfoMap
 {
     internal MapInfoMap Copy()
@@ -29,6 +31,10 @@ public sealed class MapInfoMap
     public double? AirControl { get; set; }
     public double? Gravity { get; set; }
     public bool ActivateOwnDeathSpecials { get; set; }
+    public FallingDamageStyle FallingDamage { get; set; }
+    public bool MonsterFallingDamage { get; set; }
+    public bool ProperMonsterFallingDamage { get; set; }
+    public bool AllowMonsterTelefrags { get; set; }
     public bool NoClusterText { get; set; }
     public string Music { get; set; } = "";
     public int MusicOrder { get; set; }
@@ -501,6 +507,26 @@ public static class MapInfoParser
             if (key.Equals("activateowndeathspecials", StringComparison.OrdinalIgnoreCase))
             {
                 map.ActivateOwnDeathSpecials = true;
+                return true;
+            }
+            if (key.Equals("fallingdamage", StringComparison.OrdinalIgnoreCase))
+            { map.FallingDamage = FallingDamageStyle.Hexen; return true; }
+            if (key.Equals("oldfallingdamage", StringComparison.OrdinalIgnoreCase)
+                || key.Equals("forcefallingdamage", StringComparison.OrdinalIgnoreCase))
+            { map.FallingDamage = FallingDamageStyle.ZDoom; return true; }
+            if (key.Equals("strifefallingdamage", StringComparison.OrdinalIgnoreCase))
+            { map.FallingDamage = FallingDamageStyle.Strife; return true; }
+            if (key.Equals("nofallingdamage", StringComparison.OrdinalIgnoreCase))
+            { map.FallingDamage = FallingDamageStyle.None; return true; }
+            if (key.Equals("monsterfallingdamage", StringComparison.OrdinalIgnoreCase))
+            { map.MonsterFallingDamage = true; return true; }
+            if (key.Equals("nomonsterfallingdamage", StringComparison.OrdinalIgnoreCase))
+            { map.MonsterFallingDamage = false; return true; }
+            if (key.Equals("propermonsterfallingdamage", StringComparison.OrdinalIgnoreCase))
+            { map.ProperMonsterFallingDamage = true; return true; }
+            if (key.Equals("allowmonstertelefrags", StringComparison.OrdinalIgnoreCase))
+            {
+                map.AllowMonsterTelefrags = true;
                 return true;
             }
             if (key.Equals("killeractivatesdeathspecials", StringComparison.OrdinalIgnoreCase))

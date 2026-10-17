@@ -6,6 +6,20 @@ public static class ActorPropertyActions
     public static void HideThing(Actor actor) => actor.Invisible = true;
     public static void UnhideThing(Actor actor) => actor.Invisible = false;
 
+    public static void SetFloorClip(Actor actor)
+    {
+        ArgumentNullException.ThrowIfNull(actor);
+        actor.FloorClipEnabled = true;
+        AdjustFloorClip(actor);
+    }
+
+    public static void UnsetFloorClip(Actor actor)
+    {
+        ArgumentNullException.ThrowIfNull(actor);
+        actor.FloorClipEnabled = false;
+        actor.FloorClip = 0;
+    }
+
     public static void RestoreRenderStyle(Actor actor)
     {
         actor.Shadow = actor.DefaultShadow;
@@ -14,6 +28,9 @@ public static class ActorPropertyActions
         actor.RenderStyle = actor.DefaultRenderStyle;
         actor.Alpha = actor.DefaultAlpha;
     }
+
+    public static void SetTranslucent(Actor actor, double alpha, int mode = 0)
+        => SetRenderStyle(actor, alpha, mode == 0 ? 6 : mode == 2 ? 2 : 7);
 
     public static void SetRenderStyle(Actor actor, double alpha, int mode)
     {
@@ -312,6 +329,18 @@ public static class ActorPropertyActions
     public static void SetMass(Actor actor, int mass) { actor.Mass = mass; actor.HasDefensePropertyOverride = true; }
     public static void SetInvulnerable(Actor actor) { actor.Invulnerable = true; actor.HasDefensePropertyOverride = true; }
     public static void UnsetInvulnerable(Actor actor) { actor.Invulnerable = false; actor.HasDefensePropertyOverride = true; }
+    public static void SetReflective(Actor actor) => actor.Reflective = true;
+    public static void UnsetReflective(Actor actor) => actor.Reflective = false;
+    public static void SetReflectiveInvulnerable(Actor actor)
+    {
+        SetInvulnerable(actor);
+        SetReflective(actor);
+    }
+    public static void UnsetReflectiveInvulnerable(Actor actor)
+    {
+        UnsetInvulnerable(actor);
+        UnsetReflective(actor);
+    }
     public static void SetShootable(Actor actor) { actor.Shootable = true; actor.NonShootable = false; actor.HasDefensePropertyOverride = true; }
     public static void UnsetShootable(Actor actor) { actor.Shootable = false; actor.NonShootable = true; actor.HasDefensePropertyOverride = true; }
     public static void NoGravity(Actor actor) { actor.NoGravity = true; actor.HasMovementActionOverride = true; }

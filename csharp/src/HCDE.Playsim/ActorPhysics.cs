@@ -28,12 +28,24 @@ public static class ActorPhysics
 
     internal static (double Friction, double Factor) TerrainMovementFactors(AuthoritySimulation sim, Actor actor)
     {
-        var flying = actor.Fly && actor.NoGravity && actor is not PlayerPawn { NoClip2: true };
-        var terrain = !actor.NoGravity && !actor.NoClip && actor.Z.ToDouble() <= sim.FloorOf(actor.SectorIndex)
-            ? sim.Level.FloorTerrainDefinition(actor.SectorIndex) : null;
-        var friction = terrain is { Friction: > 0 } ? terrain.Friction : GroundFriction;
-        var factor = terrain is { Friction: > 0 } ? terrain.MoveFactor : 2048 / 65536.0;
+        var noClip2 = actor is PlayerPawn { NoClip2: true };
+        var flying = actor.Fly && actor.NoGravity && !noClip2;
+        var friction = GroundFriction;
+        var factor = 2048 / 65536.0;
         if (flying) { friction = FlyingFriction; factor = 2048 / 65536.0; }
+        else if (!noClip2 && !actor.NoGravity && !actor.NoClip)
+        {
+            for (var i = 0; i < sim.Level.Sectors.Count; i++)
+            {
+                if (!TouchesSector(sim, actor, i) || actor.Z.ToDouble() > sim.FloorOf(i)) continue;
+                var terrain = sim.Level.FloorTerrainDefinition(i);
+                if (terrain is not { Friction: > 0 }) continue;
+                if (terrain.Friction < friction || friction == GroundFriction)
+                {
+                    friction = terrain.Friction; factor = terrain.MoveFactor;
+                }
+            }
+        }
         if (actor.Friction.Raw != 65536)
         {
             friction = Math.Clamp(friction * actor.Friction.ToDouble(), 0, 1);
@@ -93,7 +105,7 @@ public static class ActorPhysics
     /// <summary>Applies the same crush damage to every actor standing on <paramref name="carrier"/>.</summary>
     public static void CrushStandingRiders(AuthoritySimulation sim, Actor carrier, int damage, int tic, string? damageType = null)
     {
-        if (damage <= 0 || carrier.NoClip) return;
+        if (damage <= 0 || carrier.NoClip || carrier.Touchy) return;
         var crushDamage = string.Equals(damageType, "Crush", StringComparison.OrdinalIgnoreCase);
         foreach (var rider in sim.Actors)
         {
@@ -108,12 +120,12 @@ public static class ActorPhysics
     /// <summary>Moves riders that were on <paramref name="carrier"/> before it stepped this tic.</summary>
     public static void CarryStandingRiders(AuthoritySimulation sim, Actor carrier, double dx, double dy, double dz, IReadOnlyList<Actor> riders)
     {
-        if (!carrier.Solid || carrier.Destroyed || carrier.NoClip || carrier.SpecialPickup || riders.Count == 0
+        if (!carrier.Solid || carrier.Destroyed || carrier.NoClip || carrier.Touchy || carrier.SpecialPickup || riders.Count == 0
             || (Math.Abs(dx) < 1e-9 && Math.Abs(dy) < 1e-9 && Math.Abs(dz) < 1e-9))
             return;
         foreach (var rider in riders)
         {
-            if (!CanCarryRider(carrier, rider)) continue;
+            if (rider.NoClip || !CanCarryRider(carrier, rider)) continue;
             var x = rider.X.ToDouble() + dx;
             var y = rider.Y.ToDouble() + dy;
             if (!TryMove(sim, rider, x, y, out _))
@@ -265,6 +277,16 @@ public static class ActorPhysics
 
     public static void Step(AuthoritySimulation sim, Actor actor)
     {
+        var previous = actor.MovementPushContacts;
+        var previousAi = actor.AiPushContext;
+        actor.MovementPushContacts = new HashSet<Actor>();
+        actor.AiPushContext = false;
+        try { StepCore(sim, actor); }
+        finally { actor.MovementPushContacts = previous; actor.AiPushContext = previousAi; }
+    }
+
+    private static void StepCore(AuthoritySimulation sim, Actor actor)
+    {
         if (actor.VerticalFriction && !actor.IsDead)
         {
             var vertical = actor.VelocityZ.ToDouble();
@@ -314,10 +336,13 @@ public static class ActorPhysics
             }
         }
         var noClip2 = actor is PlayerPawn { NoClip2: true };
+        ArmRestingTouchyActor(actor, vx, vy);
         var floor = SupportFloor(sim, actor);
         var z = actor.Z.ToDouble();
         var vz = actor.VelocityZ.ToDouble();
         var airbornePlayer = actor is PlayerPawn && !noClip2 && z > floor && !actor.OnMobj && !(actor.Fly && actor.NoGravity);
+        var hitFlatFloor = !noClip2 && floor == sim.FloorOf(actor.SectorIndex)
+            && vz < 0 && z + vz <= floor;
         var hitTerrainFloor = !actor.OnGround && floor == sim.FloorOf(actor.SectorIndex)
             && z > floor && vz < 0 && z + vz <= floor;
         if (actor.OnGround && z < floor && floor - z <= actor.MaxStepHeight.ToDouble())
@@ -332,37 +357,67 @@ public static class ActorPhysics
         var blockedOnActor = support is not null && (actor is not PlayerPawn || support is not PlayerPawn);
         var landedOnActor = blockedOnActor && support is not null
             && support.Z.ToDouble() + support.Height.ToDouble() - z <= actor.MaxStepHeight.ToDouble();
+        if (blockedOnActor && actor is PlayerPawn supportedPlayer)
+        {
+            var sectorGravity = (uint)actor.SectorIndex < (uint)sim.Level.Sectors.Count
+                ? sim.Level.Sectors[actor.SectorIndex].Gravity : 1;
+            if (!actor.NoGravity && vz < sim.LevelGravity * sectorGravity * (-1.0 / 100))
+            {
+                actor.PlayerSquatView(support);
+                FallingDamage.Apply(actor);
+                actor.PlayerLandedMakeRumble(support);
+                actor.PlayerLandedMakeGruntSound(support);
+            }
+            if (actor.Destroyed) return;
+            if (landedOnActor && support is not null)
+            {
+                supportedPlayer.ViewHeight -= support.Z.ToDouble() + support.Height.ToDouble() - z;
+                var delta = supportedPlayer.GetDeltaViewHeight();
+                if (delta > supportedPlayer.DeltaViewHeight) supportedPlayer.DeltaViewHeight = delta;
+            }
+        }
         if (landedOnActor && support is not null)
         {
             // The native on-mobj branch lands before ordinary Z movement applies gravity.
             z = support.Z.ToDouble() + support.Height.ToDouble();
         }
         // Native stops vertical motion on a blocker even when its top exceeds the legal step.
+        if (blockedOnActor && support is not null) ActorSpecialActions.TryBump(sim, support, actor);
         if (blockedOnActor) vz = 0;
         z += vz;
         // P_ZMovement advances with the current velocity before FallAndSink changes it.
         if (!blockedOnActor && !actor.NoGravity && z > floor)
         {
-            var gravity = Gravity * (sim.LevelGravity / 800) * actor.Gravity.ToDouble()
-                * ((uint)actor.SectorIndex < (uint)sim.Level.Sectors.Count ? sim.Level.Sectors[actor.SectorIndex].Gravity : 1);
+            var gravity = actor.GetGravity();
             // FallAndSink doubles only the first acceleration from rest off the previous floor.
             vz -= vz == 0 && oldFloor > floor && z == oldFloor ? gravity + gravity : gravity;
         }
         actor.Z = Fixed.FromDouble(z);
         actor.VelocityZ = Fixed.FromDouble(vz);
+        if (hitFlatFloor && !blockedOnActor && actor.IsMonster && vz < -23)
+        {
+            FallingDamage.ApplyMonster(actor);
+            if (actor.Destroyed) return;
+            vz = actor.VelocityZ.ToDouble();
+        }
         if (hitTerrainFloor && !blockedOnActor) TerrainDamage.Land(sim, actor);
+        if (hitFlatFloor && !blockedOnActor && actor.VelocityZ.ToDouble() < actor.LandingSpeed
+            && string.Equals(actor.DamageType, "Ice", StringComparison.OrdinalIgnoreCase))
+        {
+            actor.Z = Fixed.FromDouble(floor);
+            actor.OnGround = true;
+            actor.States.ForceRemainingTics(1);
+            actor.VelocityX = actor.VelocityY = actor.VelocityZ = default;
+            return;
+        }
         if (actor.Brain?.Mode == MonsterMode.Chase && (actor.X.ToDouble() != startX || actor.Y.ToDouble() != startY)) actor.InFloat = false;
         if (!blockedOnActor) FloatTowardTarget(sim, actor);
         if (!blockedOnActor && !actor.NoFriction && actor is PlayerPawn && actor.NoGravity && actor.Z.ToDouble() > floor)
             actor.VelocityZ = Fixed.FromDouble(actor.VelocityZ.ToDouble() * FlyingFriction);
         FitToSector(sim, actor, carryFloor: false);
         if (noClip2) actor.OnGround = true;
-        var groundFriction = GroundFriction;
-        if (!actor.NoGravity && !actor.NoClip && actor.Z.ToDouble() <= sim.FloorOf(actor.SectorIndex)
-            && sim.Level.FloorTerrainDefinition(actor.SectorIndex) is { Friction: > 0 } terrain)
-            groundFriction = terrain.Friction;
-        var friction = actor.Fly && actor.NoGravity && !noClip2 ? Math.Clamp(FlyingFriction * actor.Friction.ToDouble(), 0, 1)
-            : actor.OnGround ? Math.Clamp(groundFriction * actor.Friction.ToDouble(), 0, 1) : 1;
+        var friction = actor.OnGround || actor.Fly && actor.NoGravity && !noClip2
+            ? TerrainMovementFactors(sim, actor).Friction : 1;
         if (airbornePlayer)
             friction = sim.AirControl is > (1.0 / 256) and { } control ? control * -0.0941 + 1.0004 : 1;
         var ledgeSliding = false;
@@ -378,8 +433,31 @@ public static class ActorPhysics
             && Math.Abs(vx) < 0.0625 && Math.Abs(vy) < 0.0625;
         actor.VelocityX = Fixed.FromDouble(stop ? 0 : skipFriction ? vx : vx * friction);
         actor.VelocityY = Fixed.FromDouble(stop ? 0 : skipFriction ? vy : vy * friction);
+        if (!hitTerrainFloor)
+            ArmRestingTouchyActor(actor, actor.VelocityX.ToDouble(), actor.VelocityY.ToDouble());
         CarryStandingRiders(sim, actor, actor.X.ToDouble() - startX, actor.Y.ToDouble() - startY, actor.Z.ToDouble() - startZ, riders);
         RefreshOnMobj(sim, actor);
+        if (hitFlatFloor && !blockedOnActor && vz < 0 && actor.Z.ToDouble() <= floor)
+        {
+            actor.VelocityZ = Fixed.FromDouble(vz);
+            if (actor.Smashable) ActorDamage.Apply(actor, actor.Health, damageType: "Smash");
+            if (actor.Destroyed) return;
+            if (actor is PlayerPawn landedPlayer)
+            {
+                if (landedPlayer.JumpTics < 0 || actor.VelocityZ.ToDouble() < actor.LandingSpeed)
+                    landedPlayer.JumpTics = 7;
+                if (actor.VelocityZ.ToDouble() < actor.LandingSpeed && !actor.NoGravity)
+                {
+                    actor.PlayerSquatView();
+                    FallingDamage.Apply(actor);
+                    actor.PlayerLandedMakeRumble();
+                    actor.PlayerLandedMakeGruntSound();
+                }
+            }
+            actor.VelocityZ = default;
+        }
+        if (actor.Destroyed) return;
+        if (actor.Z.ToDouble() <= floor || actor.OnMobj || blockedOnActor) actor.Crash();
     }
 
     private static void FloatTowardTarget(AuthoritySimulation sim, Actor actor)
@@ -387,6 +465,12 @@ public static class ActorPhysics
         if (actor.Dormant || actor.Destroyed) return;
         var z = actor.Z.ToDouble();
         actor.Z = Fixed.FromDouble(z + FloatingTargetAdjustment(sim, actor, z));
+    }
+
+    private static void ArmRestingTouchyActor(Actor actor, double velocityX, double velocityY)
+    {
+        if (actor.Touchy && !actor.IsSentient() && velocityX == 0 && velocityY == 0)
+            actor.Armed = true;
     }
 
     private static double FloatingTargetAdjustment(AuthoritySimulation sim, Actor actor, double z)
@@ -414,7 +498,7 @@ public static class ActorPhysics
         var opening = FlatOpening(sim, actor, actor.SectorIndex, actor.X.ToDouble(), actor.Y.ToDouble());
         var floor = opening.Floor;
         if (sim.Compat.HasFlag(CompatSurface.NoPassMobj)
-            || actor.ThruActors || actor is ProjectileActor) return floor;
+            || actor.ThruActors || actor.NoClip || actor is ProjectileActor) return floor;
         var player = actor is PlayerPawn;
         var x = actor.X.ToDouble();
         var y = actor.Y.ToDouble();
@@ -426,7 +510,7 @@ public static class ActorPhysics
             if (ReferenceEquals(actor, other) || other.ThruActors
                 || actor.SharesEnabledThruBits(other)
                 || actor.ThruSpecies && actor.SharesContactSpecies(other) || !other.IsBlockmapActor) continue;
-            if (other.SpecialPickup) continue;
+            if (other.SpecialPickup || other.NoClip || other.Touchy) continue;
             if (other.Corpse && !actor.IceCorpse) continue;
             if (!(actor.CanPass || actor.SpecialPickup)
                 && !(actor is not PlayerPawn && actor.IsMonster && !actor.Floating && !actor.NoGravity
@@ -470,6 +554,51 @@ public static class ActorPhysics
 
     internal static bool BlocksSectorGeometry(Actor actor) =>
         (actor.ActsLikeBridge || actor.Shootable) && (actor.BlocksActors || IsSolidNonCorpseObstacle(actor));
+
+    internal static bool GrindActor(Actor actor, bool items = true)
+    {
+        if (PickupCatalog.IsPickup(actor.ClassDoomEdNum, actor.Simulation?.RavenHealthPickups ?? false))
+        {
+            if (!items) return false;
+            if (actor.Dropped)
+            {
+                if (!actor.DontGib) actor.Destroy();
+                return false;
+            }
+        }
+        var customCrush = actor.States.HasState(actor.CrushState);
+        if (!actor.Destroyed && actor.Corpse && actor.IsDead && !actor.DontGib && actor.IceCorpse && actor.NoBlood)
+        {
+            actor.States.ForceRemainingTics(1);
+            actor.VelocityX = actor.VelocityY = actor.VelocityZ = default;
+            return false;
+        }
+        if (!actor.Destroyed && actor.Corpse && actor.IsDead && !actor.DontGib && !actor.IceCorpse
+            && (customCrush || !actor.NoBlood && actor is not PlayerPawn && actor.States.HasState(actor.GenericCrushState)))
+        {
+            actor.Solid = false;
+            actor.DontGib = true;
+            ActorPropertyActions.SetSize(actor, 0, 0);
+            actor.VelocityX = actor.VelocityY = actor.VelocityZ = default;
+            actor.States.Enter(actor, customCrush ? actor.CrushState : actor.GenericCrushState);
+            if (!customCrush)
+                actor.Simulation?.QueueSoundRequest(new(actor.Id, "misc/fallingsplat", 4, 0, 1, false, 1.001f, false));
+            return false;
+        }
+        if (actor.Destroyed || actor.IsDead || !actor.Touchy || !actor.Armed && !actor.IsSentient()) return false;
+        actor.Armed = false;
+        ActorDamage.Apply(actor, actor.Health, flags: DamageFlags.Forced, damageType: "Crush");
+        return true;
+    }
+
+    internal static void GrindActors(AuthoritySimulation sim, int sector, Func<Actor, bool> blocked)
+    {
+        foreach (var actor in sim.Actors.ToArray())
+            if (actor.IsSectorMoverActor && (actor.Touchy || actor.Corpse
+                    || PickupCatalog.IsPickup(actor.ClassDoomEdNum, sim.RavenHealthPickups))
+                && TouchesSector(sim, actor, sector) && blocked(actor))
+                GrindActor(actor);
+    }
 
     internal static double SectorSupportFloor(AuthoritySimulation sim, Actor actor) =>
         FlatOpening(sim, actor, actor.SectorIndex, actor.X.ToDouble(), actor.Y.ToDouble()).Floor;
@@ -621,6 +750,8 @@ public static class ActorPhysics
         actor.OnGround = z <= floor && actor.VelocityZ.Raw <= 0;
         RefreshOnMobj(sim, actor);
         if (actor.FloorClipEnabled) ActorPropertyActions.AdjustFloorClip(sim, actor);
+        if (sectorPinchCrush && actor.IsSectorMoverActor && ceiling - floor < actor.Height.ToDouble() - 1e-4)
+            GrindActor(actor);
         if (sectorPinchCrush && actor.IsSectorMoverActor && actor.SectorIndex >= 0 && BlocksSectorGeometry(actor)
             && ceiling - floor < actor.Height.ToDouble() - 1e-4
             && actor.MoverCrushTic != sim.Thinkers.Clock.Tic
@@ -871,7 +1002,7 @@ public static class ActorPhysics
         foreach (var other in sim.Actors)
         {
             if (other == actor || other.Destroyed || !other.IsBlockmapActor || !other.Solid || other.ThruActors
-                || other.SpecialPickup || actor.SharesEnabledThruBits(other)
+                || other.SpecialPickup || other.NoClip || other.Touchy || actor.SharesEnabledThruBits(other)
                 || actor.ThruSpecies && actor.SharesContactSpecies(other)
                 || other.Corpse && !actor.IceCorpse || actor.SpecialPickup && !other.ActsLikeBridge) continue;
             var reach = actor.Radius.ToDouble() + other.Radius.ToDouble();
@@ -904,13 +1035,13 @@ public static class ActorPhysics
         var radius = actor.Radius.ToDouble(); var height = actor.Height.ToDouble();
         line = false;
         var probeActors = !squareBounds || actor.Solid || actor is ProjectileActor
-            || actor.Brain?.Charging == true || actor.Blasted;
+            || actor.Brain?.Charging == true || actor.Blasted || actor.BlockedBySolidActors;
         var blocker = actor.ThruActors || !probeActors ? null : sim.Actors.FirstOrDefault(other => !ReferenceEquals(actor, other) && !other.ThruActors && other.IsBlockmapActor
             && !actor.SharesEnabledThruBits(other)
             && !(actor.ThruSpecies && actor.SharesContactSpecies(other))
             && (squareBounds && actor is ProjectileActor missile
                 ? MissileBlocksPosition(sim, missile, other)
-                : (other.BlocksActors || IsSolidNonCorpseObstacle(other)) && !ClearsActorHeight(sim, actor, other, z, stationary: true))
+                : !other.NoClip && (other.BlocksActors || IsSolidNonCorpseObstacle(other)) && !ClearsActorHeight(sim, actor, other, z, stationary: true))
             && (squareBounds
                 ? Math.Abs(x - other.X.ToDouble()) < radius + other.Radius.ToDouble()
                     && Math.Abs(y - other.Y.ToDouble()) < radius + other.Radius.ToDouble()
@@ -992,7 +1123,12 @@ public static class ActorPhysics
         out bool floatOk, out double floor, bool avoidingDropOff = false)
     {
         var probe = actor.Floating || actor.CanJump ? new WanderMoveProbe() : null;
-        var moved = TryMove(sim, actor, x, y, out _, out _, wanderProbe: probe, avoidingDropOff: avoidingDropOff);
+        var previous = actor.MovementPushContacts;
+        var previousAi = actor.AiPushContext;
+        actor.MovementPushContacts = new HashSet<Actor>(); actor.AiPushContext = true;
+        bool moved;
+        try { moved = TryMove(sim, actor, x, y, out _, out _, wanderProbe: probe, avoidingDropOff: avoidingDropOff); }
+        finally { actor.MovementPushContacts = previous; actor.AiPushContext = previousAi; }
         floatOk = probe?.FloatOk ?? false;
         floor = probe?.Floor ?? 0;
         return moved;
@@ -1069,30 +1205,68 @@ public static class ActorPhysics
         var heightBlocked = !actor.NoClip && (flyBlocked || sector >= 0 && (z < moveFloor || z - moveZ > actor.MaxStepHeight.ToDouble()
             || z + actor.Height.ToDouble() > opening.Ceiling));
         if (heightBlocked && wanderProbe is null) return false;
-        var solidMover = actor.BlocksActors || IsSolidNonCorpseObstacle(actor);
-        if (!actor.ThruActors && (solidMover || actor.Blasted && !actor.IsDead && !actor.Destroyed))
+        var solidMover = actor.BlockedBySolidActors || actor.BlocksActors || IsSolidNonCorpseObstacle(actor);
+        if (!actor.ThruActors && (solidMover || actor.MovementPushContacts is not null
+            || actor.Blasted && !actor.IsDead && !actor.Destroyed))
         {
-            IReadOnlyList<Actor> contacts = invokeSlam ? sim.Actors.ToArray() : sim.Actors;
+            IReadOnlyList<Actor> contacts = sim.Actors.ToArray();
             foreach (var other in contacts)
             {
                 var corpse = actor.IceCorpse && IsCorpseObstacle(other);
-                var chargeContact = actor.Brain?.Charging == true && (other.Solid || other.Shootable || other.SpecialPickup);
+                var ordinaryBlocker = solidMover && !other.NoClip
+                    && (other.BlocksActors || IsSolidNonCorpseObstacle(other) || corpse);
+                var heightPassageReturn = (actor is ProjectileActor missile
+                    ? MissileUsesActorHeightPassage(sim, missile, other) : CanPassActorHeight(sim, actor, other))
+                    && actor.DontOverlap && other.DontOverlap
+                    && !other.SpecialPickup && !other.Destroyed && (other.Solid || other.Shootable || other.Touchy);
+                var chargeContact = actor.Brain?.Charging == true && (other.Solid || other.Shootable || other.SpecialPickup || other.Touchy);
                 var blastTarget = actor.Blasted && other.Shootable && other.IsMonster
-                    && !other.Boss && !other.DontBlast && !other.IsDead && !other.Destroyed;
+                    && !other.Boss && !other.DontBlast && !other.Destroyed;
+                var bumpContact = other.BumpSpecial && !other.Destroyed
+                    && (other.Solid || other.Shootable || other.SpecialPickup || other.Touchy);
+                var touchyContact = actor.Solid && other.Touchy && !other.IsDead
+                    && !ClearsActorHeight(sim, actor, other, actor.Z.ToDouble());
+                var pushContact = actor.MovementPushContacts is not null && other.Pushable && !actor.CannotPush
+                    && (other.Solid || other.Shootable || other.SpecialPickup || other.Touchy)
+                    && actor is not ProjectileActor && actor.Brain?.Charging != true && !blastTarget;
                 if (ReferenceEquals(actor, other) || other.ThruActors
                     || actor.SharesEnabledThruBits(other)
                     || actor.ThruSpecies && actor.SharesContactSpecies(other) || !other.IsBlockmapActor
-                    || (!chargeContact && !blastTarget && !(solidMover && (other.BlocksActors || IsSolidNonCorpseObstacle(other) || corpse)))
-                    || ClearsActorHeight(sim, actor, other, wanderProbe is null ? z : actor.Z.ToDouble())) continue;
+                    || (!heightPassageReturn && !pushContact && !touchyContact && !chargeContact && !blastTarget && !bumpContact && !ordinaryBlocker)
+                    || !touchyContact && ClearsActorHeight(sim, actor, other, wanderProbe is null ? z : actor.Z.ToDouble())) continue;
                 var reach = radius + other.Radius.ToDouble();
                 var cx = other.X.ToDouble();
                 var cy = other.Y.ToDouble();
                 var before = (ox - cx) * (ox - cx) + (oy - cy) * (oy - cy);
                 var after = (x - cx) * (x - cx) + (y - cy) * (y - cy);
-                if (!(actor.Brain?.Charging == true && after < reach * reach - 1e-8
-                    || DistanceSquared(cx, cy, ox, oy, x, y) < reach * reach - 1e-8
-                    && (before >= reach * reach || after < before - 1e-8)))
-                    continue;
+                var boxOverlap = Math.Abs(x - cx) < reach && Math.Abs(y - cy) < reach;
+                if (!boxOverlap) continue;
+                var unblocking = (actor is PlayerPawn || actor.AiPushContext) && other.Solid
+                    && (x == ox && y == oy || Math.Abs(ox - cx) < reach && Math.Abs(oy - cy) < reach && after > before
+                        && (actor.Z.ToDouble() + actor.Height.ToDouble() > other.Z.ToDouble()
+                            && actor.Z.ToDouble() < other.Z.ToDouble() + other.Height.ToDouble()
+                            || actor.DontOverlap && other.DontOverlap));
+                if (heightPassageReturn)
+                {
+                    if (unblocking) continue;
+                    blocker = other;
+                    return false;
+                }
+                var pushOverlap = pushContact && (actor.AiPushContext || x != ox || y != oy);
+                if (touchyContact && TryTouchyContact(actor, other)) continue;
+                if (bumpContact) ActorSpecialActions.TryBump(sim, other, actor);
+                if (pushOverlap && !other.Destroyed && (!actor.AiPushContext || other.LastPushFromMovement)
+                    && actor.MovementPushContacts is { } pushContacts && pushContacts.Add(other))
+                {
+                    ActorSoundActions.PlayPushSound(other);
+                    other.VelocityX = Fixed.FromDouble(other.VelocityX.ToDouble() + actor.VelocityX.ToDouble() * other.PushFactor);
+                    other.VelocityY = Fixed.FromDouble(other.VelocityY.ToDouble() + actor.VelocityY.ToDouble() * other.PushFactor);
+                    other.LastPushFromMovement = !actor.AiPushContext;
+                    actor.PlayerPushedSomethingMakeRumble(other);
+                    other.PlayerWasPushedMakeRumble(actor);
+                }
+                if (!chargeContact && !blastTarget && !ordinaryBlocker) continue;
+                if (ClearsActorHeight(sim, actor, other, wanderProbe is null ? z : actor.Z.ToDouble())) continue;
                 if (invokeSlam && actor.Brain?.Charging == true)
                 {
                     var pass = actor.Slam(other);
@@ -1107,11 +1281,12 @@ public static class ActorPhysics
                     other.VelocityY = Fixed.FromDouble(other.VelocityY.ToDouble() + actor.VelocityY.ToDouble());
                     if (Math.Abs(other.VelocityX.ToDouble()) + Math.Abs(other.VelocityY.ToDouble()) > 3)
                     {
-                        ActorDamage.Apply(other, actor.Mass / 100 + 1, actor, inflictor: actor);
-                        ActorDamage.Apply(actor, (other.Mass / 100 + 1) >> 2, other, inflictor: other);
+                        ActorDamage.Apply(other, actor.Mass / 100 + 1, actor, damageType: actor.DamageType, inflictor: actor);
+                        ActorDamage.Apply(actor, (other.Mass / 100 + 1) >> 2, other, damageType: actor.DamageType, inflictor: other);
                     }
                     blocker = other; return false;
                 }
+                if (unblocking) continue;
                 // P_TryMove lets a grounded player onto a non-player when the top is a legal step
                 // and the head still fits. PIT_CheckThing lets a grounded monster onto MF4_ACTLIKEBRIDGE.
                 // P_TestMobjZ lets MF_ICECORPSE land on a corpse.
@@ -1149,6 +1324,21 @@ public static class ActorPhysics
             actor.OnGround = z <= opening.Floor && actor.VelocityZ.Raw <= 0;
         }
         if (actor.FloorClipEnabled) ActorPropertyActions.AdjustFloorClip(sim, actor);
+        return true;
+    }
+
+    internal static bool TryTouchyContact(Actor mover, Actor mine, double? contactZ = null)
+    {
+        var moverZ = contactZ ?? mover.Z.ToDouble();
+        if (!mover.Solid || !mine.Touchy || mine.IsDead || mine.Destroyed
+            || !mine.Armed && !mine.IsSentient()
+            || mine is not PlayerPawn && mine.ClassDoomEdNum == mover.ClassDoomEdNum
+            || mine.DontHarmSpecies && mine.SharesContactSpecies(mover)
+            || mine.MasterId == mover.Id || mover.MasterId == mine.Id
+            || mine.Z.ToDouble() + mine.Height.ToDouble() < moverZ
+            || moverZ + mover.Height.ToDouble() < mine.Z.ToDouble()) return false;
+        mine.Armed = false;
+        ActorDamage.Apply(mine, mine.Health, flags: DamageFlags.Forced, damageType: "None");
         return true;
     }
 

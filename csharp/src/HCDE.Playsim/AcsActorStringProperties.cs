@@ -21,7 +21,7 @@ internal static class AcsActorStringProperties
             else if (property is >= 5 and <= 9)
             {
                 var sounds = new Dictionary<ActorSoundType, string>(actor.ActorSounds);
-                sounds[(ActorSoundType)(property - 5)] = value;
+                sounds[(ActorSoundType)(property - 5)] = NormalizeSoundName(value);
                 actor.ActorSounds = sounds;
             }
             else throw new ArgumentOutOfRangeException(nameof(property));
@@ -36,8 +36,10 @@ internal static class AcsActorStringProperties
             20 => actor.SpeciesName,
             47 => actor is PlayerPawn { SoundClass: { Length: > 0 } soundClass } ? soundClass : "player",
             46 => string.IsNullOrEmpty(actor.DamageType) ? "None" : actor.DamageType,
-            >= 5 and <= 9 => actor.ActorSounds.GetValueOrDefault((ActorSoundType)(property - 5)) ?? "",
+            >= 5 and <= 9 => NormalizeSoundName(actor.ActorSounds.GetValueOrDefault((ActorSoundType)(property - 5)) ?? ""),
             _ => throw new ArgumentOutOfRangeException(nameof(property))
         };
     }
+
+    private static string NormalizeSoundName(string value) => value.Equals("None", StringComparison.OrdinalIgnoreCase) ? "" : value;
 }

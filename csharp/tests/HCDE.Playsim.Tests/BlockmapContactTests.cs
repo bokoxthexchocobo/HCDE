@@ -11,7 +11,7 @@ public class BlockmapContactTests
     {
         var sim = Room(); var target = Assert.Single(sim.Actors); target.NoBlockmap = excluded;
         var mover = new Actor { Health = 100, Solid = true, X = Fixed.FromInt(-64), SectorIndex = 0 };
-        Assert.Equal(moved, ActorPhysics.TryMove(sim, mover, 64, 0, out _));
+        Assert.Equal(moved, ActorPhysics.TryMove(sim, mover, 0, 0, out _));
         mover.X = target.X;
         Assert.Equal(excluded, ActorPhysics.CanOccupy(sim, mover));
     }
@@ -21,7 +21,7 @@ public class BlockmapContactTests
     {
         var sim = Room();
         var mover = new Actor { Health = 100, Solid = true, NoBlockmap = true, X = Fixed.FromInt(-64), SectorIndex = 0 };
-        Assert.False(ActorPhysics.TryMove(sim, mover, 64, 0, out _));
+        Assert.False(ActorPhysics.TryMove(sim, mover, 0, 0, out _));
     }
 
     [Theory]

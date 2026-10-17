@@ -31,10 +31,17 @@ public class ProjectileSkyImpactTests
         if (sky)
         {
             Assert.Equal(10000, target.Health); Assert.Equal(1000, health); Assert.Equal(random, sim.CombatRandomState);
+            Assert.Null(sim.CaptureState().BfgSprayRandomState);
         }
         else
         {
-            Assert.True(target.Health < 10000); Assert.True(health < 1000); if (kind == ProjectileKind.Rocket) Assert.NotNull(sim.CaptureState().PainChanceRandomState); else Assert.NotEqual(random, sim.CombatRandomState);
+            Assert.True(target.Health < 10000); Assert.True(health < 1000);
+            if (kind == ProjectileKind.Rocket) Assert.NotNull(sim.CaptureState().PainChanceRandomState);
+            else
+            {
+                Assert.NotNull(sim.CaptureState().BfgSprayRandomState);
+                Assert.Equal(random, sim.CombatRandomState);
+            }
         }
     }
 }

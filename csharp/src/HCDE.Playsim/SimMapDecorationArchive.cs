@@ -1,6 +1,7 @@
 namespace HCDE.Playsim;
 
-public readonly record struct SimMapDecorationIdentity(int ThingIndex, int DoomEdNum, int ThingId, bool JustSpawned, int StatNum);
+public readonly record struct SimMapDecorationIdentity(int ThingIndex, int DoomEdNum, int ThingId, bool JustSpawned, int StatNum,
+    int DefinitionDoomEdNum = 0);
 
 internal static class SimMapDecorationArchive
 {

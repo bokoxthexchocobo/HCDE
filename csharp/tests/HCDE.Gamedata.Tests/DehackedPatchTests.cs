@@ -23,7 +23,7 @@ public class DehackedPatchTests
         var actor = first.Actors.Single(entry => entry.Index == 2);
         Assert.Equal("monsters/see", actor.SoundNameOverrides[0]); Assert.Equal("monsters/pain", actor.SoundNameOverrides[2]);
         var second = DehackedPatch.Apply("Thing 2\nAlert sound = 12\n", first);
-        Assert.Empty(second.Errors); Assert.False(second.Actors.Single(entry => entry.Index == 2).SoundNameOverrides.ContainsKey(0));
+        Assert.Empty(second.Errors); Assert.Equal("weapons/sawfull", second.Actors.Single(entry => entry.Index == 2).SoundNameOverrides[0]);
         Assert.Equal("monsters/see", actor.SoundNameOverrides[0]);
     }
     [Fact]
@@ -113,8 +113,8 @@ public class DehackedPatchTests
     [Fact]
     public void Apply_ReportsThingOutOfRange()
     {
-        var result = DehackedPatch.Apply("Thing 99\nHit points = 1\n");
-        Assert.Contains(result.Errors, error => error.Contains("Thing 99", StringComparison.Ordinal));
-        Assert.DoesNotContain(result.Actors, actor => actor.Index == 99);
+        var result = DehackedPatch.Apply("Thing 10000\nHit points = 1\n");
+        Assert.Contains(result.Errors, error => error.Contains("Thing 10000", StringComparison.Ordinal));
+        Assert.DoesNotContain(result.Actors, actor => actor.Index == 10000);
     }
 }

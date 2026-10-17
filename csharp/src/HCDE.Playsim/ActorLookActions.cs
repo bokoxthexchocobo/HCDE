@@ -46,6 +46,7 @@ public static class ActorLookActions
             { heard = null; actor.LastHeardTargetId = null; }
             if (heard is PlayerPawn { NoTargetCheat: true }) return;
         }
+        if (actor.Stealth) actor.VisibilityDirection = -1;
         Actor? target = null;
         if (heard is { Shootable: true })
         {

@@ -46,6 +46,8 @@ public static class TerrainDefinitionParser
                 while (index < tokens.Count && tokens[index] != "}")
                 {
                     var property = tokens[index++];
+                    if (property.Equals("noalert", StringComparison.OrdinalIgnoreCase))
+                    { splashDefinition = splashDefinition with { NoAlert = true }; continue; }
                     if (!property.Equals("sound", StringComparison.OrdinalIgnoreCase)
                         && !property.Equals("smallsound", StringComparison.OrdinalIgnoreCase))
                     { error = $"Unsupported splash {splash} property {property}."; return false; }

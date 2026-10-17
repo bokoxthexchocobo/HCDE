@@ -79,6 +79,7 @@ internal static class ArchvileActions
             foreach (var victim in sim.Actors.ToArray())
             {
                 if (ReferenceEquals(victim, archvile) || !victim.IsBlockmapActor || !victim.CanTakeDamage || victim.NoRadiusDamage || victim.SplashImmune(fire)) continue;
+                if (victim.RadiusSourceImmune(archvile)) continue;
                 var distance = RadiusDamageGeometry.Distance(fire, victim);
                 if (distance < blastRadius && CombatTrace.CheckSight(sim, victim, fire, ActorSightFlags.IgnoreVisibility))
                     ActorDamage.Apply(victim, (int)(blastDamage * (1 - distance / blastRadius)), archvile, damageType: damageType, inflictor: fire);

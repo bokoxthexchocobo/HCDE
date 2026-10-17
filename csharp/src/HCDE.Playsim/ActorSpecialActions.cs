@@ -2,6 +2,14 @@ namespace HCDE.Playsim;
 
 public static class ActorSpecialActions
 {
+    internal static void TryBump(AuthoritySimulation sim, Actor thing, Actor trigger)
+    {
+        if (!thing.BumpSpecial || sim.Thinkers.Clock.Tic <= thing.LastBumpTic
+            || !(trigger is PlayerPawn || trigger.IsMonster && (thing.ActivationType & 8) != 0
+                || trigger is ProjectileActor && (thing.ActivationType & 16) != 0)) return;
+        if (ActivateSpecial(sim, thing, trigger)) thing.LastBumpTic = unchecked(sim.Thinkers.Clock.Tic + GameTicClock.TicRate);
+    }
+
     internal static bool OnDeath(AuthoritySimulation sim, Actor thing, Actor? trigger)
     {
         if (thing.Special == 0 || thing.SpecialPickup && !thing.IsMonster || (thing.ActivationType & 64) != 0) return false;
@@ -67,7 +75,7 @@ public static class ActorSpecialActions
             ?? WallScrollActions.Execute(sim, special, args[0], args[1], args[2], args[3], args[4])
             ?? GeometryHealthActions.Execute(sim, special, args[0], args[1], args[2])
             ?? LineSpecials.ExecuteExitSpecial(sim, special, trigger)
-            ?? LineSpecials.ExecuteTeleportSpecial(sim, special, args[0], args[1], trigger, false)
+            ?? LineSpecials.ExecuteTeleportSpecial(sim, special, args[0], args[1], trigger, false, args[2])
             ?? LineSpecials.ExecuteScriptControl(sim, special, args[0], args[1], args[2], args[3], args[4], trigger, null, false)
             ?? LineSpecials.ExecuteDoorSpecial(sim, special, args[0], args[1], args[2], args[3], null)
             ?? LineSpecials.ExecuteFloorSpecial(sim, special, args[0], args[1], args[2], args[3], args[4], null)

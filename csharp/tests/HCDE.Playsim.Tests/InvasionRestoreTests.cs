@@ -17,7 +17,8 @@ public class InvasionRestoreTests
         for (var i = 0; i < 30 && sim.Invasion.Phase != phase; i++) Step(sim);
         Assert.Equal(phase, sim.Invasion.Phase);
         var bytes = SimSavegame.Write(sim, includeBotIdentities: true);
-        Assert.Equal(216, BinaryPrimitives.ReadUInt16LittleEndian(bytes.AsSpan(4)));
+        Assert.Equal(phase is InvasionPhase.Intermission or InvasionPhase.Victory ? 311 : 216,
+            BinaryPrimitives.ReadUInt16LittleEndian(bytes.AsSpan(4)));
         var expected = Enumerable.Range(0, 20).Select(_ => Step(sim)).ToArray();
         SimSavegame.Apply(sim, bytes);
         Assert.Equal(bytes, SimSavegame.Write(sim, includeBotIdentities: true));

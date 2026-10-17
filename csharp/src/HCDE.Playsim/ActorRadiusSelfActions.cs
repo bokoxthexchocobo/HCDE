@@ -21,15 +21,15 @@ public static class ActorRadiusSelfActions
         if ((flags & 1) != 0)
         {
             actualDamage = 0;
-            for (var i = 0; i < steps; i++) actualDamage = checked(actualDamage + 1 + (int)(sim.NextCombatRandom() & 7));
+            for (var i = 0; i < steps; i++) actualDamage = checked(actualDamage + 1 + (int)(sim.NextBfgSelfDamageRandom() & 7));
         }
         var flash = spawnFlash?.Invoke(target);
         var damageFlags = DamageFlags.None;
         var damageType = "BFGSplash";
         if (flash is not null)
         {
-            flash.X = target.X; flash.Y = target.Y;
-            flash.Z = Fixed.FromDouble(target.Z.ToDouble() + target.Height.ToDouble() / 4);
+            ActorImpactEffectPlacement.AtVictim(sim, flash, target);
+            if (flash.PuffGetsOwner) flash.SetTargetPointer(target);
             if (flash.FoilInvul) damageFlags |= DamageFlags.FoilInvulnerability;
             if (flash.FoilBuddha) damageFlags |= DamageFlags.FoilBuddha;
             damageType = flash.DamageType;

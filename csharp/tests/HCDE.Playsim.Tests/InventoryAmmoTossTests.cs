@@ -67,7 +67,10 @@ public class InventoryAmmoTossTests
     public void InvalidSavedDelayIsRejected()
     {
         var sim = Room(); AcsPlayerInventory.Drop(sim.Players.Single(), "Clip");
-        var bytes = SimSavegame.Write(sim);
+        sim.Tick();
+        var state = sim.CaptureState();
+        foreach (var pose in state.Actors) pose.ActorSounds = new Dictionary<ActorSoundType, string>();
+        var bytes = SimSavegame.Write(state);
         var outerSize = BinaryPrimitives.ReadInt32LittleEndian(bytes.AsSpan(bytes.Length - 4));
         var innerEnd = bytes.Length - outerSize;
         var size = BinaryPrimitives.ReadInt32LittleEndian(bytes.AsSpan(innerEnd - 4));

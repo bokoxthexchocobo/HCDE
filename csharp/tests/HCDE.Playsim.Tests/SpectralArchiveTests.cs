@@ -24,11 +24,12 @@ public class SpectralArchiveTests
         target.Spectral = targetSpectral; missile.Spectral = missileSpectral; var state = sim.CaptureState();
         if (serialized)
         {
-            var bytes = SimSavegame.Write(state); Assert.Equal(36, BinaryPrimitives.ReadUInt16LittleEndian(bytes.AsSpan(4)));
+            var bytes = SimSavegame.Write(state); Assert.Equal(355, BinaryPrimitives.ReadUInt16LittleEndian(bytes.AsSpan(4)));
             Assert.True(SimSavegame.TryRead(bytes, out state, out var error), error);
         }
         target.Spectral = !targetSpectral; missile.Spectral = !missileSpectral;
         sim.RestoreState(state); Assert.Equal(targetSpectral, target.Spectral); Assert.Equal(missileSpectral, missile.Spectral);
+        Assert.Equal(0, target.PainChance);
         var health = target.Health; sim.Tick(); var passes = targetSpectral && !missileSpectral;
         Assert.Equal(!passes, missile.Destroyed);
         if (passes || targetSpectral && missileSpectral) Assert.Equal(health, target.Health); else Assert.True(target.Health < health);

@@ -63,6 +63,13 @@ public readonly record struct ActorRenderStyle(ActorBlendOperation Operation, Ac
         };
     }
 
+    public int ToNative()
+    {
+        for (var mode = 0; mode < 19; mode++)
+            if (FromNative(mode) == this) return mode;
+        return -1;
+    }
+
     public static ActorRenderStyle FromDehacked(DehackedRenderStyle style) => style switch
     {
         DehackedRenderStyle.None => new(ActorBlendOperation.None, ActorAlphaFactor.Zero, ActorAlphaFactor.Zero),

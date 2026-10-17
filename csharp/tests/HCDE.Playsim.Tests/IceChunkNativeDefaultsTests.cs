@@ -12,6 +12,8 @@ public class IceChunkNativeDefaultsTests
         Assert.True(cannotPush);
         Assert.True(AcsActorFlags.TryGet(chunk, "NOTELEPORT", out var noTeleport));
         Assert.True(noTeleport);
+        Assert.True(chunk.NoBlockmap); Assert.True(chunk.MoveWithSector); Assert.True(chunk.FloorClipEnabled);
+        Assert.True(chunk.DefaultFloorClip);
     }
 
     [Fact]
@@ -37,8 +39,21 @@ public class IceChunkNativeDefaultsTests
         {
             Assert.True(chunk.NoTeleport);
             Assert.True(chunk.CannotPush);
+            Assert.True(chunk.NoBlockmap); Assert.True(chunk.MoveWithSector); Assert.True(chunk.FloorClipEnabled);
             Assert.False(LineSpecials.Execute(sim, chunk, LineSpecials.Teleport, 0));
         });
+    }
+
+    [Fact]
+    public void SpawnedIceDefaultsSurviveFreshReconstructionAndReplay()
+    {
+        var sim = Room(); sim.SpawnIceChunks(new Actor { Simulation = sim, Level = sim.Level, X = Fixed.FromInt(64) });
+        var saved = SimSavegame.Write(sim, true); var fresh = Room(); SimSavegame.Apply(fresh, saved);
+        Assert.Equal(saved, SimSavegame.Write(fresh, true));
+        Assert.All(fresh.Actors.OfType<IceChunkActor>(), chunk => {
+            Assert.True(chunk.NoBlockmap); Assert.True(chunk.MoveWithSector); Assert.True(chunk.FloorClipEnabled);
+        });
+        for (var i = 0; i < 5; i++) { sim.Tick(); fresh.Tick(); Assert.Equal(sim.Checksum, fresh.Checksum); }
     }
 
     private static AuthoritySimulation Room() => AuthoritySimulation.Start(new PlayLevel

@@ -753,14 +753,21 @@ internal static class AcsCallFunctions
         return true;
     }
 
-    private static string ClassNameOf(Actor? actor)
+    internal static string ClassNameOf(Actor? actor)
     {
         if (actor is null || actor.Destroyed)
             return "None";
         if (actor is PlayerPawn)
             return "DoomPlayer";
+        if (actor is ProjectileActor projectile)
+            return projectile.NativeClassName;
+        if (actor is PuffActor)
+            return "BulletPuff";
+        if (actor is IceChunkActor)
+            return "IceChunk";
         if (PickupCatalog.TryClassName(actor.ClassDoomEdNum, out var pickupName,
             actor.Simulation?.StrifeHealthPickups ?? false, actor.Simulation?.RavenHealthPickups ?? false)) return pickupName;
+        if (DoomDecorationDefaults.TryClassName(actor.ClassDoomEdNum, out var decorationName)) return decorationName;
         return DoomActorCatalog.TrySpawnClassName(actor.ClassDoomEdNum, out var className) ? className : "None";
     }
 
@@ -1792,7 +1799,7 @@ internal static class AcsCallFunctions
         if (actor is null || actor.SectorIndex < 0 || actor.SectorIndex >= sim.Level.Sectors.Count)
             return true;
 
-        var terrain = sim.Level.FloorTerrainDefinition(actor.SectorIndex);
+        var terrain = actor.GetFloorTerrain();
         result = globalStrings.Add(terrain?.Name ?? sim.Level.Sectors[actor.SectorIndex].FloorTerrain);
         return true;
     }

@@ -10,7 +10,7 @@ public class Phase6CombatTests
         var sim = Range(3001, 200);
         sim.QueueCommand(0, new PlayerCommand { Attack = true });
         sim.Tick();
-        Assert.Equal(50, Target(sim).Health);
+        Assert.Equal(45, Target(sim).Health);
         Assert.Equal(49, sim.Players.Single().Inventory.Bullets);
     }
 
@@ -72,8 +72,8 @@ public class Phase6CombatTests
         var before = target.Health;
         sim.QueueCommand(0, new PlayerCommand { Attack = true });
         sim.Tick();
-        Assert.Equal(97, target.Inventory.Armor);
-        Assert.Equal(before - 7, target.Health);
+        Assert.Equal(95, target.Inventory.Armor);
+        Assert.Equal(before - 10, target.Health);
     }
 
     private static AuthoritySimulation Range(int type, int x) =>

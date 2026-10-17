@@ -86,6 +86,7 @@ public sealed class UdmfSector
     public bool HurtMonsters { get; set; }
     public bool HarmInAir { get; set; }
     public bool NoAttack { get; set; }
+    public bool NoFallingDamage { get; set; }
     public bool Silent { get; set; }
     public bool? DropActors { get; set; }
     public double Gravity { get; set; } = 1;
@@ -434,6 +435,7 @@ public static class UdmfTextMapParser
             HurtMonsters = Bool(fields, "hurtmonsters"),
             HarmInAir = Bool(fields, "harminair"),
             NoAttack = Bool(fields, "noattack"),
+            NoFallingDamage = Bool(fields, "nofallingdamage"),
             Silent = Bool(fields, "silent"),
             DropActors = fields.ContainsKey("dropactors") ? Bool(fields, "dropactors") : null,
             Gravity = Number(fields, "gravity", 1),
