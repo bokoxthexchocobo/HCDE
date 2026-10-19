@@ -1,13 +1,13 @@
 {
-  "convertedThisRunNative": 104,
-  "convertedThisRunManaged": 178,
+  "convertedThisRunNative": 201,
+  "convertedThisRunManaged": 240,
   "recognitionThisRunNative": 4648,
   "recognitionThisRunManaged": 0,
-  "remainingNative": 500059,
-  "convertedBehaviorNative": 8027,
+  "remainingNative": 500016,
+  "convertedBehaviorNative": 8070,
   "recognitionBehaviorNative": 4648,
-  "combinedBehaviorNative": 12675,
-  "convertedBehaviorManaged": 5868,
+  "combinedBehaviorNative": 12718,
+  "convertedBehaviorManaged": 5963,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -245,6 +245,16 @@
         { "file": "src/playsim/p_mobj.cpp", "symbol": "P_ZMovement", "start": 2955, "end": 3480, "tests": ["FallingDamageTests", "CanJumpTests"] },
         { "file": "src/playsim/p_mobj.cpp", "symbol": "AActor::Tick", "start": 4521, "end": 5075, "tests": ["WanderSubstepTests", "SpawnedSoulRestoreTests"] },
         { "file": "src/playsim/p_mobj.cpp", "symbol": "missile collide explode", "start": 2680, "end": 2765, "tests": ["ProjectileMovementTests", "CombatAiTests"] }
+      ]
+    },
+    {
+      "name": "p-map-trymove-line-cross-chunk4",
+      "bucket": "conversion",
+      "nativeLoc": 43,
+      "managedLoc": 95,
+      "note": "p_map.cpp P_TryMove spechit cross activation wired into ActorPhysics.TryMove.",
+      "nativeRanges": [
+        { "file": "src/playsim/p_map.cpp", "symbol": "P_TryMove", "start": 2752, "end": 2794, "tests": ["TryMoveLineCrossTests"] }
       ]
     }
   ]

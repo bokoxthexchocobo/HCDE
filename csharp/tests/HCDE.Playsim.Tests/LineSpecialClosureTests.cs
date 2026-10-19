@@ -9,8 +9,9 @@ public class LineSpecialClosureTests
     {
         var sim = Room();
         Assert.True(LineSpecials.ActivateMapLine(sim, sim.Players.Single(),
-            Trigger(219, 7, arg1: 2, arg2: 50), true));
-        Assert.InRange(sim.Level.Sectors[0].Friction, 2.49, 2.51);
+            Trigger(219, 7, arg1: 50), true));
+        Assert.InRange(sim.Level.Sectors[0].Friction, 0.85, 0.87);
+        Assert.NotEqual(0, sim.Level.Sectors[0].RuntimeFlags & SectorEnvironmentLineSpecials.FrictionFlag);
     }
 
     [Fact]

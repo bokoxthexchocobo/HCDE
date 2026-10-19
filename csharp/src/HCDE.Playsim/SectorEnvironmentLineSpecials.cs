@@ -5,6 +5,8 @@ namespace HCDE.Playsim;
 /// <summary>Native sector environment line specials from <c>p_lnspec.cpp</c>.</summary>
 internal static class SectorEnvironmentLineSpecials
 {
+    /// <summary>Native <c>SECF_FRICTION</c>.</summary>
+    internal const int FrictionFlag = 16;
     public static bool? Execute(AuthoritySimulation sim, int special, int tag, int a1, int a2, int a3, int a4)
     {
         return special switch
@@ -12,7 +14,7 @@ internal static class SectorEnvironmentLineSpecials
             98 => SetTranslucent(sim, tag, a1, a2),
             140 => SetSound(sim, tag, a1),
             159 => SetReflection(sim, tag, a1 != 0),
-            219 => SetFriction(sim, tag, a1, a2),
+            219 => SetFriction(sim, tag, a1),
             220 => SetCurrent(sim, tag, a1, a2, a3),
             227 => SetCurrent(sim, tag, a1, a2, a3),
             277 => SetGlow(sim, tag, floor: true, a1, a2, a3),
@@ -53,14 +55,20 @@ internal static class SectorEnvironmentLineSpecials
         return true;
     }
 
-    private static bool SetFriction(AuthoritySimulation sim, int tag, int integer, int fraction)
+    private static bool SetFriction(AuthoritySimulation sim, int tag, int amount)
     {
-        var friction = integer + Math.Min(fraction, 99) * 0.01;
+        var friction = ((0x1EB8 * amount) / 128.0 + 0xD001) / 65536.0;
+        friction = Math.Clamp(friction, 0, 1);
+        var moveFactor = ActorPhysics.FrictionToMoveFactor(friction);
         foreach (var sector in sim.Level.Sectors)
         {
             if (!sector.MatchesTag(tag)) continue;
             sector.Friction = friction;
-            sector.MoveFactor = friction;
+            sector.MoveFactor = moveFactor;
+            if (Math.Abs(friction - ActorPhysics.GroundFriction) < 1e-6)
+                sector.RuntimeFlags &= ~FrictionFlag;
+            else
+                sector.RuntimeFlags |= FrictionFlag;
         }
         return true;
     }
