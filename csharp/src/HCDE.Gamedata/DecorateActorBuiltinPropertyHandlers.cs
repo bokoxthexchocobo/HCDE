@@ -26,6 +26,10 @@ public static class DecorateActorBuiltinPropertyHandlers
             ["poisondamage"] = ApplyPoisonDamage,
             ["painchance"] = ApplyPainChanceTyped,
             ["dropitem"] = ApplyDropItem,
+            ["stencilcolor"] = ApplyStencilColor,
+            ["bloodcolor"] = ApplyBloodColor,
+            ["bloodtype"] = ApplyBloodType,
+            ["spriteangle"] = ApplySpriteAngle,
         };
 
     public static bool TryApply(string propertyName, DecorateActorDefinition definition, IReadOnlyList<DecoratePropertyValue> values, out string? error)
@@ -199,6 +203,36 @@ public static class DecorateActorBuiltinPropertyHandlers
         var painType = values[0].StringValue ?? "Normal";
         var chance = values[1].IntValue;
         d.PainChanceByType[string.Equals(painType, "Normal", StringComparison.OrdinalIgnoreCase) ? "" : painType] = chance;
+        return null;
+    }
+
+    private static string? ApplyStencilColor(DecorateActorDefinition d, IReadOnlyList<DecoratePropertyValue> values)
+    {
+        d.StencilColor = values[0].Kind == DecoratePropertyKind.ColorRgb
+            ? values[0].IntValue
+            : values[0].IntValue;
+        return null;
+    }
+
+    private static string? ApplyBloodColor(DecorateActorDefinition d, IReadOnlyList<DecoratePropertyValue> values)
+    {
+        d.BloodColor = values[0].IntValue;
+        return null;
+    }
+
+    private static string? ApplyBloodType(DecorateActorDefinition d, IReadOnlyList<DecoratePropertyValue> values)
+    {
+        d.BloodType = values[0].StringValue ?? "";
+        if (values.Count > 1)
+            d.BloodType2 = values[1].StringValue ?? "";
+        if (values.Count > 2)
+            d.BloodType3 = values[2].StringValue ?? "";
+        return null;
+    }
+
+    private static string? ApplySpriteAngle(DecorateActorDefinition d, IReadOnlyList<DecoratePropertyValue> values)
+    {
+        d.SpriteAngle = values[0].DoubleValue;
         return null;
     }
 

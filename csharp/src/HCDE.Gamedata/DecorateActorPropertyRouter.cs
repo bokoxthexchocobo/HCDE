@@ -180,6 +180,12 @@ public sealed class DecorateActorDefinition
     public List<string> TranslationCustomRanges { get; } = new();
     public bool DamageUsesExpression { get; set; }
     public string[] DamageExpressionTokens { get; set; } = Array.Empty<string>();
+    public int StencilColor { get; set; }
+    public int BloodColor { get; set; }
+    public string BloodType { get; set; } = "";
+    public string BloodType2 { get; set; } = "";
+    public string BloodType3 { get; set; } = "";
+    public double SpriteAngle { get; set; }
 }
 
 internal static class DecorateActorBuiltinPropertyParamSpecs
@@ -206,6 +212,10 @@ internal static class DecorateActorBuiltinPropertyParamSpecs
         ["poisondamage"] = "Iii",
         ["painchance"] = "ZI",
         ["dropitem"] = "S_i_i",
+        ["stencilcolor"] = "C",
+        ["bloodcolor"] = "C",
+        ["bloodtype"] = "Sss",
+        ["spriteangle"] = "F",
     };
 
     public static bool TryGetSpec(string name, out string spec) => Specs.TryGetValue(name, out spec!);
