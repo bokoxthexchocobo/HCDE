@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": -9502,
+  "convertedThisRunNative": -9458,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 3651,
+  "convertedThisRunManaged": 3758,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -774,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 494395,
+  "remainingNative": 494351,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 9025,
+  "convertedBehaviorNative": 9069,
   "recognitionBehaviorNative": 4666,
-  "combinedBehaviorNative": 13691,
-  "convertedBehaviorManaged": 13322,
+  "combinedBehaviorNative": 13735,
+  "convertedBehaviorManaged": 13429,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -3161,6 +3161,25 @@
           "end": 5396,
           "tests": [
             "NetPresentationEchoResetTests"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "thingdef-translation-chunk32",
+      "bucket": "conversion",
+      "nativeLoc": 44,
+      "managedLoc": 107,
+      "note": "thingdef_properties translation L property and custom range list.",
+      "conversionManagedCommit": "f2c41fcc7b54b3eaf0d6058e7366f85d3288b3fd",
+      "nativeRanges": [
+        {
+          "file": "src/scripting/thingdef_properties.cpp",
+          "symbol": "DEFINE_PROPERTY(translation, L, Actor)",
+          "start": 815,
+          "end": 858,
+          "tests": [
+            "DecorateTranslationPropertyHandlerTests"
           ]
         }
       ]
