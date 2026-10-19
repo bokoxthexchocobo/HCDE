@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": -8591,
+  "convertedThisRunNative": -8531,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 5255,
+  "convertedThisRunManaged": 5290,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -774,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 493484,
+  "remainingNative": 493424,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 9936,
+  "convertedBehaviorNative": 9996,
   "recognitionBehaviorNative": 4666,
-  "combinedBehaviorNative": 14602,
-  "convertedBehaviorManaged": 14926,
+  "combinedBehaviorNative": 14662,
+  "convertedBehaviorManaged": 14961,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -3530,7 +3530,7 @@
       "nativeLoc": 122,
       "managedLoc": 129,
       "note": "ACSF_ScriptCall / DLevelScript::ScriptCall registry dispatch.",
-      "conversionManagedCommit": "9f2999b3a8b2c4e1f0d9e8a7b6c5d4e3f2a1b0c9",
+      "conversionManagedCommit": "b1fe6efd71abc1ecf50559d82fbe051054621f1b",
       "nativeRanges": [
         {
           "file": "src/playsim/p_acs.cpp",
@@ -3544,6 +3544,47 @@
           ]
         }
       ]
+    },
+    {
+      "name": "p-acs-player-input-fade-to-chunk50",
+      "bucket": "conversion",
+      "nativeLoc": 60,
+      "managedLoc": 35,
+      "note": "GetPlayerInput + P_Thing_CheckInputNum selectors; DoFadeTo clamp wrapper.",
+      "nativeRanges": [
+        {
+          "file": "src/playsim/p_acs.cpp",
+          "symbol": "DLevelScript::GetPlayerInput",
+          "start": 4616,
+          "end": 4642,
+          "tests": [
+            "AcsGetPlayerInputNativeParityTests.Query_ReadsOriginalForwardMoveAfterTick",
+            "AcsGetPlayerInputNativeParityTests.Query_ReturnsZeroWhenExplicitPlayerNotInGame"
+          ]
+        },
+        {
+          "file": "src/playsim/p_things.cpp",
+          "symbol": "P_Thing_CheckInputNum",
+          "start": 536,
+          "end": 565,
+          "tests": [
+            "AcsGetPlayerInputNativeParityTests.Query_ReadsModifiedUseButtonMask",
+            "AcsGetPlayerInputNativeParityTests.Query_ReadsOriginalPitchDelta",
+            "AcsGetPlayerInputNativeParityTests.Query_ReturnsZeroForUnknownInputNumber"
+          ]
+        },
+        {
+          "file": "src/playsim/p_acs.cpp",
+          "symbol": "DLevelScript::DoFadeTo",
+          "start": 3916,
+          "end": 3918,
+          "tests": [
+            "AcsFadeToServiceTests.Apply_ClampsAndDelegatesToFadeRange",
+            "AcsFadeToServiceTests.Apply_WithDurationSetsPendingFade"
+          ]
+        }
+      ],
+      "conversionManagedCommit": "03b1e0597cb434b78ee4a79c7030cda0379aaf8a"
     }
   ]
 }
