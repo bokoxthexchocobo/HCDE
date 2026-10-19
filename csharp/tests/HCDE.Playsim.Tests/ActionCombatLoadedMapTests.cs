@@ -86,8 +86,45 @@ public class ActionCombatLoadedMapTests
         Assert.Equal(7, next);
     }
 
+    [Fact]
+    public void CustomBulletAttackFiresWhenTargetSet()
+    {
+        var sim = CombatRoom();
+        var grunt = sim.Actors.Single(a => a.DoomEdNum == 3004);
+        var player = sim.Players.Single();
+        grunt.Brain!.SetSpecialTarget(player);
+        player.Invulnerable = true;
+        grunt.ActorSounds = new Dictionary<ActorSoundType, string> { [ActorSoundType.Attack] = "grunt/attack" };
+        ActorCombatActions.CustomBulletAttack(grunt, 5.625, 0, 1, 3);
+        Assert.Contains(sim.DrainSoundRequests(), s => s.Sound.Contains("grunt/attack", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public void CustomMissileSpawnsImpBall()
+    {
+        var sim = CombatRoom();
+        var imp = sim.Actors.Single(a => a.DoomEdNum == 3001);
+        var player = sim.Players.Single();
+        imp.Brain!.SetSpecialTarget(player);
+        var missile = ActorCombatActions.CustomMissile(imp, "DoomImpBall");
+        Assert.NotNull(missile);
+        Assert.Equal(ProjectileKind.ImpBall, missile!.Kind);
+    }
+
+    [Fact]
+    public void ChaseDispatchRunsWithoutThrowing()
+    {
+        var sim = CombatRoom();
+        var imp = sim.Actors.Single(a => a.DoomEdNum == 3001);
+        imp.Brain!.SetSpecialTarget(sim.Players.Single());
+        Assert.True(ActorActionDispatch.TryInvoke("A_Chase", imp));
+        Assert.True(ActorActionDispatch.TryInvoke("A_Look", imp));
+    }
+
     [Theory]
     [InlineData("A_BulletAttack")]
+    [InlineData("A_CustomBulletAttack")]
+    [InlineData("A_CustomMissile")]
     [InlineData("A_FaceTarget")]
     [InlineData("A_Remove")]
     public void DispatchInvokesWiredCombatActions(string name)

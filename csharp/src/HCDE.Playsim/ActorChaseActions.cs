@@ -2,6 +2,9 @@ namespace HCDE.Playsim;
 
 public static class ActorChaseActions
 {
+    /// <summary>Native <c>A_Chase</c> default (melee and missile).</summary>
+    public static void Chase(Actor actor) => ExtChase(actor, useMelee: true, useMissile: true);
+
     public static void ExtChase(Actor actor, bool useMelee, bool useMissile, bool playActive = true,
         bool nightmareFast = false)
     {

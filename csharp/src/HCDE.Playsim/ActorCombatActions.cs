@@ -62,6 +62,64 @@ public static class ActorCombatActions
             flags: SpawnProjectileFlags.AimModeMask, pitch: default, pointerSelector: AcsActorPointer.Target, reference: target);
     }
 
+    [Flags]
+    public enum CustomBulletFlags
+    {
+        NoRandomPuffZ = 1,
+        AimFacing = 2,
+        NoPitch = 4,
+        ExplicitAngle = 8,
+        NoRandom = 16,
+    }
+
+    /// <summary>Deprecated alias that matches ZScript <c>A_CustomMissile</c> (forces <c>CMF_BADPITCH</c>).</summary>
+    public static ProjectileActor? CustomMissile(Actor actor, string projectileClass, double spawnHeight = 32,
+        double spawnOffsetXy = 0, BamAngle angleOffset = default, SpawnProjectileFlags flags = 0,
+        BamAngle pitch = default, int pointerSelector = AcsActorPointer.Target)
+        => SpawnProjectile(actor, projectileClass, spawnHeight, spawnOffsetXy, angleOffset,
+            flags | SpawnProjectileFlags.BadPitch, pitch, pointerSelector);
+
+    public static void CustomBulletAttack(Actor actor, double spreadXy, double spreadZ, int bullets, int damagePerBullet,
+        double range = 0, CustomBulletFlags flags = 0, int pointerSelector = AcsActorPointer.Target)
+    {
+        var sim = actor.Simulation ?? throw new InvalidOperationException("Bullet attack requires a simulation.");
+        if (range <= 0) range = MissileRange;
+        var reference = AcsActorPointer.Resolve(sim, actor, pointerSelector);
+        if (reference is null && (flags & CustomBulletFlags.AimFacing) == 0) return;
+        if ((flags & CustomBulletFlags.AimFacing) == 0) ActorOrientationActions.Face(actor, reference);
+        var baseYaw = actor.Angle.ToDegrees();
+        var dx = (reference ?? actor).X.ToDouble() - actor.X.ToDouble();
+        var dy = (reference ?? actor).Y.ToDouble() - actor.Y.ToDouble();
+        var pitch = (flags & CustomBulletFlags.NoPitch) != 0
+            ? default
+            : BamAngle.FromDegrees(-Math.Atan2((reference ?? actor).Center() - actor.AttackOriginZ(),
+                Math.Max(1, Math.Sqrt(dx * dx + dy * dy))) * 180 / Math.PI);
+        if (actor.ActorSounds.TryGetValue(ActorSoundType.Attack, out var attackSound)
+            && !string.IsNullOrEmpty(attackSound) && !attackSound.Equals("None", StringComparison.OrdinalIgnoreCase))
+            ActorSoundActions.PlayWeaponSound(actor, attackSound);
+        for (var i = 0; i < bullets; i++)
+        {
+            var yawSpread = (flags & CustomBulletFlags.ExplicitAngle) != 0
+                ? spreadXy : sim.NextCombatSpread() * spreadXy;
+            var pitchSpread = (flags & CustomBulletFlags.ExplicitAngle) != 0
+                ? spreadZ : sim.NextCombatSpread() * spreadZ;
+            var damage = (flags & CustomBulletFlags.NoRandom) != 0
+                ? damagePerBullet : damagePerBullet * (1 + (int)(sim.NextCombatRandom() % 3));
+            var angle = BamAngle.FromDegrees(baseYaw + yawSpread);
+            var aimPitch = BamAngle.FromDegrees(pitch.ToDegrees() + pitchSpread);
+            var hit = CombatTrace.TraceLineAttack(sim, actor, angle, aimPitch, range);
+            if (hit.Victim is { } victim)
+                LineAttackImpact.ApplyActorDamage(sim, actor, victim, hit, angle, damage, "Hitscan", melee: false,
+                    noRandomPuffZ: (flags & CustomBulletFlags.NoRandomPuffZ) != 0);
+            else
+            {
+                GeometryLineAttack.Apply(sim, hit, damage);
+                LineAttackImpact.SpawnGeometryPuff(sim, actor, hit, angle, aimPitch,
+                    noRandomPuffZ: (flags & CustomBulletFlags.NoRandomPuffZ) != 0);
+            }
+        }
+    }
+
     public static void BulletAttack(Actor actor)
     {
         var target = CombatTarget(actor);
@@ -191,6 +249,19 @@ public static class ActorCombatActions
             var tracer = AcsActorPointer.Resolve(actor.Simulation!, actor, AcsActorPointer.Target);
             if (tracer is not null) missile.RestoreTracerTarget(tracer.Id);
         }
+    }
+
+    internal static bool TryClassNameForProjectileType(int spawnType, out string className)
+    {
+        foreach (var candidate in Enum.GetValues<ProjectileKind>())
+        {
+            var editor = new ProjectileActor(new Actor(), candidate).DoomEdNum;
+            if (editor != spawnType) continue;
+            className = ProjectileActor.NativeClassNameOf(candidate);
+            return true;
+        }
+        className = string.Empty;
+        return false;
     }
 
     internal static bool TryResolveProjectileKind(string projectileClass, out ProjectileKind kind)
