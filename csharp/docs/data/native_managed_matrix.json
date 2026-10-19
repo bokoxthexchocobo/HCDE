@@ -2814,7 +2814,7 @@
         "nativeLoc": 69,
         "managedLoc": 82,
         "note": "thingdef_parse.cpp ParseFlagExpressionString, ParseMorphStyle, ParseThingActivation name tables.",
-        "conversionManagedCommit": "478703d53ea262a025a931eec8f3e251990b3b78",
+        "conversionManagedCommit": "eed4bf835fd62295d2285c63646a5bbf322504d2",
         "nativeRanges": [
           {
             "file": "src/scripting/decorate/thingdef_parse.cpp",
