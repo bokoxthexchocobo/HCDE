@@ -802,6 +802,17 @@ public class Actor : Thinker
     public bool Invulnerable { get; set; }
     /// <summary>Native MF3_FOILINVUL on a damage inflictor.</summary>
     public bool FoilInvul { get; set; }
+    /// <summary>Native <c>MF6_POISONALWAYS</c> on a poison inflictor.</summary>
+    public bool PoisonAlways { get; set; }
+    /// <summary>Native <c>MF6_ADDITIVEPOISONDAMAGE</c> on a poison inflictor.</summary>
+    public bool AdditivePoisonDamage { get; set; }
+    /// <summary>Native <c>MF6_ADDITIVEPOISONDURATION</c> on a poison inflictor.</summary>
+    public bool AdditivePoisonDuration { get; set; }
+    public int PoisonDamageReceived { get; set; }
+    public string? PoisonDamageTypeReceived { get; set; }
+    public int PoisonDurationReceived { get; set; }
+    public int PoisonPeriodReceived { get; set; }
+    public Actor? Poisoner { get; set; }
     /// <summary>Native MF5_PIERCEARMOR on a damage inflictor.</summary>
     public bool PierceArmor { get; set; }
     /// <summary>Native MF4_STRIFEDAMAGE missile dice: one through four.</summary>
@@ -1782,6 +1793,11 @@ public class Actor : Thinker
                 else if (!IsDead) Brain?.AdvanceRaiseFrame();
             }
             TickMovement(Simulation);
+            if (Destroyed) return;
+            ActorPoisonReceived.Tick(Simulation, this);
+            if (Destroyed) return;
+            ActorSectorKillMonsters.Tick(Simulation, this);
+            if (Destroyed) return;
             if (VelocityX.Raw == 0 && VelocityY.Raw == 0) Blasted = false;
             SectorDamage.Tick(Simulation, this);
             TerrainDamage.Tick(Simulation, this);

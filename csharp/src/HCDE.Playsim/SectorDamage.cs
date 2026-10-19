@@ -9,6 +9,8 @@ internal static class SectorDamage
         {
             var doom = simulation.Level.UsesDoomSectorNumbers;
             var raw = (ushort)sector.Special;
+            if ((raw & 0x10000) != 0 && simulation.Compat.HasFlag(CompatSurface.Mbf21))
+                sector.RuntimeFlags |= SectorEnvironmentLineSpecials.KillMonstersFlag;
             // Doom's translator shifts its Boom bitfield left three places.
             var flags = doom ? (raw & 0x3fe0) << 3 : raw & ~255;
             if ((flags & 0x8000) != 0 && simulation.Compat.HasFlag(CompatSurface.Mbf21)) continue;

@@ -7,6 +7,8 @@ internal static class SectorEnvironmentLineSpecials
 {
     /// <summary>Native <c>SECF_FRICTION</c>.</summary>
     internal const int FrictionFlag = 16;
+    /// <summary>Native <c>SECF_KILLMONSTERS</c>.</summary>
+    internal const int KillMonstersFlag = 16384;
     public static bool? Execute(AuthoritySimulation sim, int special, int tag, int a1, int a2, int a3, int a4)
     {
         return special switch

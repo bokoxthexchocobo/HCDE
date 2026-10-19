@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": -7849,
+  "convertedThisRunNative": -7774,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 5595,
+  "convertedThisRunManaged": 5683,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -774,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 492742,
+  "remainingNative": 492667,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 10678,
+  "convertedBehaviorNative": 10753,
   "recognitionBehaviorNative": 4666,
-  "combinedBehaviorNative": 15344,
-  "convertedBehaviorManaged": 15266,
+  "combinedBehaviorNative": 15419,
+  "convertedBehaviorManaged": 15354,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -3807,6 +3807,54 @@
         }
       ],
       "conversionManagedCommit": "c66f6d274e6afd79bf7bfdb3f9b48763c542fe36"
+    },
+    {
+      "name": "p-mobj-poison-kill-sector-chunk57",
+      "bucket": "conversion",
+      "nativeLoc": 75,
+      "managedLoc": 88,
+      "note": "P_PoisonMobj, received-poison tick cadence, SECF_KILLMONSTERS floor kill.",
+      "nativeRanges": [
+        {
+          "file": "src/playsim/p_interaction.cpp",
+          "symbol": "P_PoisonMobj",
+          "start": 1660,
+          "end": 1713,
+          "tests": [
+            "ActorPoisonReceivedTests.PoisonMobj_RespectsInvulnerabilityAndFoilInvul",
+            "ActorPoisonReceivedTests.PoisonMobj_AdditiveDamageAndDurationAccumulate"
+          ]
+        },
+        {
+          "file": "src/playsim/p_mobj.cpp",
+          "symbol": "AActor::Tick",
+          "start": 5098,
+          "end": 5108,
+          "tests": [
+            "ActorPoisonReceivedTests.Tick_AppliesDamageOnPeriodAndClearsDamageWhenDurationEnds",
+            "ActorPoisonReceivedTests.Tick_SkipsOffCadenceTics"
+          ]
+        },
+        {
+          "file": "src/playsim/p_mobj.cpp",
+          "symbol": "AActor::Tick",
+          "start": 5111,
+          "end": 5117,
+          "tests": [
+            "ActorSectorKillMonstersTests.Tick_KillsGroundedShootableMonsterOnKillSector",
+            "ActorSectorKillMonstersTests.Tick_SparesPlayersFloatingAndAirborneMonsters"
+          ]
+        },
+        {
+          "file": "src/maploader/specials.cpp",
+          "symbol": "SetSectorSpecial",
+          "start": 456,
+          "end": 458,
+          "tests": [
+            "ActorSectorKillMonstersTests.ChangeFlagsSpecial_SetsKillMonstersRuntimeFlag"
+          ]
+        }
+      ]
     }
   ]
 }
