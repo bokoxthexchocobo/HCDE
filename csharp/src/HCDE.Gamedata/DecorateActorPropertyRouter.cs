@@ -51,6 +51,12 @@ public static class DecorateActorPropertyRouter
             return DecorateTranslationPropertyHandler.TryApply(translationValues, definition, out error);
         }
 
+        if (string.Equals(propertyName, "damage", StringComparison.OrdinalIgnoreCase)
+            && DecoratePropertyParamParser.TryParse("X", tokens, out var damageParsed, out error))
+        {
+            return DecorateActorDamagePropertyHandler.TryApply(damageParsed!.Values, definition, out error);
+        }
+
         if (DecorateActorBuiltinPropertyParamSpecs.TryGetSpec(propertyName, out var extendedSpec)
             && DecoratePropertyParamParser.TryParse(extendedSpec, tokens, out var extendedParsed, out error))
         {
@@ -172,6 +178,8 @@ public sealed class DecorateActorDefinition
     public int TranslationId { get; set; }
     public bool TranslationUsesCustomRanges { get; set; }
     public List<string> TranslationCustomRanges { get; } = new();
+    public bool DamageUsesExpression { get; set; }
+    public string[] DamageExpressionTokens { get; set; } = Array.Empty<string>();
 }
 
 internal static class DecorateActorBuiltinPropertyParamSpecs
