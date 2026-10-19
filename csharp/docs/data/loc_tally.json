@@ -1,13 +1,16 @@
 {
-  "convertedThisRunNative": 2795,
-  "convertedThisRunManaged": 1505,
-  "remainingNative": 503385,
+  "convertedThisRunNative": 1910,
+  "convertedThisRunManaged": 1655,
+  "remainingNative": 502042,
+  "convertedBehaviorNative": 6044,
+  "convertedBehaviorManaged": 4075,
+  "baselineNative": 508086,
   "chunks": [
     {
       "name": "native-managed-matrix",
       "nativeLoc": 0,
       "managedLoc": 312,
-      "note": "Generator, JSON/MD matrix, MigrationMatrix.Tests (inventory only)."
+      "note": "Generator, JSON/MD matrix, MigrationMatrix.Tests (inventory only — not behavior)."
     },
     {
       "name": "acs-random-getcvar-polywait",
@@ -41,9 +44,9 @@
     },
     {
       "name": "acs-callfunc-wire-table",
-      "nativeLoc": 142,
+      "nativeLoc": 0,
       "managedLoc": 149,
-      "note": "p_acs.cpp EACSFunctions wire indices in AcsCallFunctionWireIds.cs + wire table tests."
+      "note": "EACSFunctions wire index table + tests (inventory/dispatch plumbing only)."
     },
     {
       "name": "line-specials-gap-closure",
@@ -59,15 +62,51 @@
     },
     {
       "name": "zscript-vm-matrix-accuracy",
-      "nativeLoc": 45,
+      "nativeLoc": 0,
       "managedLoc": 85,
-      "note": "VM op classifier fixes in generate_native_managed_matrix.py."
+      "note": "VM op classifier fixes in generate_native_managed_matrix.py (inventory only)."
     },
     {
       "name": "action-function-index",
-      "nativeLoc": 380,
+      "nativeLoc": 0,
       "managedLoc": 120,
-      "note": "p_actionfunctions.cpp DEFINE_ACTION_FUNCTION catalog JSON + tests."
+      "note": "p_actionfunctions.cpp DEFINE_ACTION_FUNCTION catalog JSON + tests (inventory only)."
+    },
+    {
+      "name": "tally-behavior-only-correction",
+      "nativeLoc": 0,
+      "managedLoc": 0,
+      "note": "Reclassified inventory chunks (wire table, VM matrix, action index); combat trace retained as behavior."
+    },
+    {
+      "name": "action-combat-port",
+      "nativeLoc": 560,
+      "managedLoc": 720,
+      "note": "p_actionfunctions.cpp A_CustomMeleeAttack, A_CustomComboAttack, A_BulletAttack, A_SpawnProjectile, A_MonsterRefire; ActorActionDispatch; loaded-map tests."
+    },
+    {
+      "name": "acs-hot-callfunc-behavior",
+      "nativeLoc": 420,
+      "managedLoc": 340,
+      "note": "ACSF_SpawnForced, Get/SetUserVariable, GetThingUDMF*, side/sector UDMF completion; wire dispatch tests."
+    },
+    {
+      "name": "sector-changeflags-gap-audit",
+      "nativeLoc": 110,
+      "managedLoc": 95,
+      "note": "LS_Sector_ChangeFlags (54), gap generator ExecuteSpecial detection, gap JSON 19→3."
+    },
+    {
+      "name": "line-special-feasible-gaps",
+      "nativeLoc": 640,
+      "managedLoc": 380,
+      "note": "p_lnspec.cpp floor waggle, spawn facing, wind, communicator, translation storage, fog/skill accept stubs."
+    },
+    {
+      "name": "action-dispatch-damage-wiring",
+      "nativeLoc": 180,
+      "managedLoc": 120,
+      "note": "ActorActionDispatch hooks for damage/melee/combo state names; actor script user-var storage."
     }
   ]
 }
