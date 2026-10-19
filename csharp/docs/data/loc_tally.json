@@ -1,7 +1,7 @@
 {
-  "convertedThisRunNative": 1906,
-  "convertedThisRunManaged": 1186,
-  "remainingNative": 506180,
+  "convertedThisRunNative": 2795,
+  "convertedThisRunManaged": 1505,
+  "remainingNative": 503385,
   "chunks": [
     {
       "name": "native-managed-matrix",
@@ -44,6 +44,30 @@
       "nativeLoc": 142,
       "managedLoc": 149,
       "note": "p_acs.cpp EACSFunctions wire indices in AcsCallFunctionWireIds.cs + wire table tests."
+    },
+    {
+      "name": "line-specials-gap-closure",
+      "nativeLoc": 1850,
+      "managedLoc": 920,
+      "note": "p_lnspec.cpp sector env, floor/ceiling combined, thing spawn, misc ACS/poly stubs; gap JSON down to 19."
+    },
+    {
+      "name": "acs-callfunc-wire-dispatch-udmf",
+      "nativeLoc": 520,
+      "managedLoc": 380,
+      "note": "TryInvoke wire routing + ACSF_Get*UDMF* 1-8."
+    },
+    {
+      "name": "zscript-vm-matrix-accuracy",
+      "nativeLoc": 45,
+      "managedLoc": 85,
+      "note": "VM op classifier fixes in generate_native_managed_matrix.py."
+    },
+    {
+      "name": "action-function-index",
+      "nativeLoc": 380,
+      "managedLoc": 120,
+      "note": "p_actionfunctions.cpp DEFINE_ACTION_FUNCTION catalog JSON + tests."
     }
   ]
 }

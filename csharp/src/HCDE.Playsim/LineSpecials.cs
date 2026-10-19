@@ -271,6 +271,16 @@ public static partial class LineSpecials
                 245 or 246 or 247 => ElevatorLineSpecials.Execute(sim, line.Special, line.Arg0, line.Arg1, line) == true,
                 29 or 30 or 94 => PillarLineSpecials.Execute(sim, line.Special, line.Arg0, line.Arg1, line.Arg2, line.Arg3, line.Arg4, line) == true,
                 71 or 78 => ExecuteTeleportSpecial(sim, line.Special, line.Arg0, line.Arg1, actor, backSide ?? IsBackSide(line, actor.X.ToDouble(), actor.Y.ToDouble(), sim.Compat.HasFlag(CompatSurface.PointOnLine)), line.Arg2) == true,
+                98 or 140 or 159 or 219 or 220 or 227 or 277 or 278 or 109 or 120 =>
+                    SectorEnvironmentLineSpecials.Execute(sim, line.Special, line.Arg0, line.Arg1, line.Arg2, line.Arg3, line.Arg4) == true,
+                95 or 96 or 251 or 250 or 241 or 235 or 236 =>
+                    FloorCombinedLineSpecials.Execute(sim, line.Special, line.Arg0, line.Arg1, line.Arg2, line.Arg3, line.Arg4, line) == true,
+                125 or 129 or 134 or 135 or 136 or 137 =>
+                    ThingSpawnLineSpecials.Execute(sim, line.Special, actor, line.Arg0, line.Arg1, line.Arg2, line.Arg3, line.Arg4) == true,
+                83 or 84 or 85 or 107 or 158 or 208 or 215 or 237 or 274 or 281 or 282 =>
+                    LineSpecialMisc.Execute(sim, line.Special, actor, line, backSide ?? IsBackSide(line, actor.X.ToDouble(), actor.Y.ToDouble(), sim.Compat.HasFlag(CompatSurface.PointOnLine))) == true,
+                87 or 89 or 91 or 93 or 283 =>
+                    PolyLineSpecials.Execute(sim, line.Special, line.Arg0, line.Arg1, line.Arg2, line.Arg3, line.Arg4) == true,
                 20 or 21 or 22 or 23 or 24 or 25 or 28 or 35 or 36 or 37 or 46 or 62 or 66 or 67 or 68 or 99 or 238 or 239 or 242 or 256 or 257 or 258 or 259 or 260 or 275 or 279 or ScrollFloor or ScrollCeiling => ExecuteFloorSpecial(sim, line.Special,
                     line.Arg0, line.Arg1, line.Arg2, line.Arg3, line.Arg4, line) == true,
                 70 or 154 => !(backSide ?? IsBackSide(line, actor.X.ToDouble(), actor.Y.ToDouble(), sim.Compat.HasFlag(CompatSurface.PointOnLine)))

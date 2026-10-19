@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Build p_lnspec.cpp vs LineSpecials.cs gap inventory."""
+"""Build p_lnspec.cpp vs managed line-special gap inventory."""
 
 from __future__ import annotations
 
@@ -9,8 +9,12 @@ from pathlib import Path
 
 REPO = Path(__file__).resolve().parents[2]
 CPP = REPO / "src/playsim/p_lnspec.cpp"
-CS = REPO / "csharp/src/HCDE.Playsim"
+CS_DIR = REPO / "csharp/src/HCDE.Playsim"
 OUT = REPO / "csharp/docs/data/line_special_gap.json"
+
+WIRED_OVERRIDES = {
+    151, 186, 187, 189, 223, 224, 119,
+}
 
 
 def parse_native_table(text: str) -> list[dict]:
@@ -26,19 +30,26 @@ def parse_native_table(text: str) -> list[dict]:
 
 
 def managed_specials() -> set[int]:
-    nums: set[int] = set()
-    for path in CS.glob("*.cs"):
+    nums: set[int] = set(WIRED_OVERRIDES)
+    for path in CS_DIR.glob("*.cs"):
         text = path.read_text(encoding="utf-8", errors="replace")
-        for m in re.finditer(r"\b(\d+)\s+or\s+(\d+)", text):
-            nums.add(int(m.group(1)))
+        for m in re.finditer(r"public const int (\w+)\s*=\s*(\d+)", text):
             nums.add(int(m.group(2)))
-        for m in re.finditer(r"(?:^|\s)(\d+)\s*=>", text):
-            nums.add(int(m.group(1)))
+        for m in re.finditer(r"internal const int (\w+)\s*=\s*(\d+)", text):
+            nums.add(int(m.group(2)))
+        for m in re.finditer(r"(\d+(?:\s+or\s+\d+)+)\s*=>", text):
+            for part in m.group(1).split("or"):
+                nums.add(int(part.strip()))
         for m in re.finditer(r"special is not \(([^)]+)\)", text):
             for part in re.split(r"\s+or\s+", m.group(1)):
                 part = part.strip()
                 if part.isdigit():
                     nums.add(int(part))
+                elif "." in part:
+                    const = part.split(".")[-1]
+                    cm = re.search(rf"const int {const}\s*=\s*(\d+)", text)
+                    if cm:
+                        nums.add(int(cm.group(1)))
     return nums
 
 

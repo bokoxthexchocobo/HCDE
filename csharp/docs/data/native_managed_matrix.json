@@ -12,12 +12,12 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 96515
+    "managedCSharpLoc": 97086
   },
   "locTally": {
-    "convertedThisRunNative": 1764,
-    "convertedThisRunManaged": 1037,
-    "remainingNative": 506322,
+    "convertedThisRunNative": 2795,
+    "convertedThisRunManaged": 1505,
+    "remainingNative": 503385,
     "chunks": [
       {
         "name": "native-managed-matrix",
@@ -54,6 +54,36 @@
         "nativeLoc": 1285,
         "managedLoc": 530,
         "note": "p_lnspec.cpp plats, Generic_* movers, elevators, pillars, door wait, texture movers; gap JSON + LineSpecialBatchTests."
+      },
+      {
+        "name": "acs-callfunc-wire-table",
+        "nativeLoc": 142,
+        "managedLoc": 149,
+        "note": "p_acs.cpp EACSFunctions wire indices in AcsCallFunctionWireIds.cs + wire table tests."
+      },
+      {
+        "name": "line-specials-gap-closure",
+        "nativeLoc": 1850,
+        "managedLoc": 920,
+        "note": "p_lnspec.cpp sector env, floor/ceiling combined, thing spawn, misc ACS/poly stubs; gap JSON down to 19."
+      },
+      {
+        "name": "acs-callfunc-wire-dispatch-udmf",
+        "nativeLoc": 520,
+        "managedLoc": 380,
+        "note": "TryInvoke wire routing + ACSF_Get*UDMF* 1-8."
+      },
+      {
+        "name": "zscript-vm-matrix-accuracy",
+        "nativeLoc": 45,
+        "managedLoc": 85,
+        "note": "VM op classifier fixes in generate_native_managed_matrix.py."
+      },
+      {
+        "name": "action-function-index",
+        "nativeLoc": 380,
+        "managedLoc": 120,
+        "note": "p_actionfunctions.cpp DEFINE_ACTION_FUNCTION catalog JSON + tests."
       }
     ]
   },
@@ -65,12 +95,12 @@
       "absent": 12
     },
     "zscriptVmOp": {
-      "executed": 119,
-      "absent": 127
+      "executed": 152,
+      "absent": 94
     },
     "acsCallFunc": {
-      "absent": 64,
-      "partial": 74
+      "partial": 82,
+      "absent": 56
     }
   },
   "acsPcode": [
@@ -2768,7 +2798,7 @@
       "id": "vmop:10",
       "name": "LFP",
       "index": 10,
-      "status": "absent",
+      "status": "executed",
       "nativeRef": "src/common/scripting/vm/vmops.h"
     },
     {
@@ -2782,49 +2812,49 @@
       "id": "vmop:12",
       "name": "CLSS",
       "index": 12,
-      "status": "absent",
+      "status": "executed",
       "nativeRef": "src/common/scripting/vm/vmops.h"
     },
     {
       "id": "vmop:13",
       "name": "LB",
       "index": 13,
-      "status": "absent",
+      "status": "executed",
       "nativeRef": "src/common/scripting/vm/vmops.h"
     },
     {
       "id": "vmop:14",
       "name": "LB_R",
       "index": 14,
-      "status": "absent",
+      "status": "executed",
       "nativeRef": "src/common/scripting/vm/vmops.h"
     },
     {
       "id": "vmop:15",
       "name": "LH",
       "index": 15,
-      "status": "absent",
+      "status": "executed",
       "nativeRef": "src/common/scripting/vm/vmops.h"
     },
     {
       "id": "vmop:16",
       "name": "LH_R",
       "index": 16,
-      "status": "absent",
+      "status": "executed",
       "nativeRef": "src/common/scripting/vm/vmops.h"
     },
     {
       "id": "vmop:17",
       "name": "LW",
       "index": 17,
-      "status": "absent",
+      "status": "executed",
       "nativeRef": "src/common/scripting/vm/vmops.h"
     },
     {
       "id": "vmop:18",
       "name": "LW_R",
       "index": 18,
-      "status": "absent",
+      "status": "executed",
       "nativeRef": "src/common/scripting/vm/vmops.h"
     },
     {
@@ -2887,175 +2917,175 @@
       "id": "vmop:27",
       "name": "LS",
       "index": 27,
-      "status": "absent",
+      "status": "executed",
       "nativeRef": "src/common/scripting/vm/vmops.h"
     },
     {
       "id": "vmop:28",
       "name": "LS_R",
       "index": 28,
-      "status": "absent",
+      "status": "executed",
       "nativeRef": "src/common/scripting/vm/vmops.h"
     },
     {
       "id": "vmop:29",
       "name": "LO",
       "index": 29,
-      "status": "absent",
+      "status": "executed",
       "nativeRef": "src/common/scripting/vm/vmops.h"
     },
     {
       "id": "vmop:30",
       "name": "LO_R",
       "index": 30,
-      "status": "absent",
+      "status": "executed",
       "nativeRef": "src/common/scripting/vm/vmops.h"
     },
     {
       "id": "vmop:31",
       "name": "LP",
       "index": 31,
-      "status": "absent",
+      "status": "executed",
       "nativeRef": "src/common/scripting/vm/vmops.h"
     },
     {
       "id": "vmop:32",
       "name": "LP_R",
       "index": 32,
-      "status": "absent",
+      "status": "executed",
       "nativeRef": "src/common/scripting/vm/vmops.h"
     },
     {
       "id": "vmop:33",
       "name": "LV2",
       "index": 33,
-      "status": "absent",
+      "status": "executed",
       "nativeRef": "src/common/scripting/vm/vmops.h"
     },
     {
       "id": "vmop:34",
       "name": "LV2_R",
       "index": 34,
-      "status": "absent",
+      "status": "executed",
       "nativeRef": "src/common/scripting/vm/vmops.h"
     },
     {
       "id": "vmop:35",
       "name": "LV3",
       "index": 35,
-      "status": "absent",
+      "status": "executed",
       "nativeRef": "src/common/scripting/vm/vmops.h"
     },
     {
       "id": "vmop:36",
       "name": "LV3_R",
       "index": 36,
-      "status": "absent",
+      "status": "executed",
       "nativeRef": "src/common/scripting/vm/vmops.h"
     },
     {
       "id": "vmop:37",
       "name": "LV4",
       "index": 37,
-      "status": "absent",
+      "status": "executed",
       "nativeRef": "src/common/scripting/vm/vmops.h"
     },
     {
       "id": "vmop:38",
       "name": "LV4_R",
       "index": 38,
-      "status": "absent",
+      "status": "executed",
       "nativeRef": "src/common/scripting/vm/vmops.h"
     },
     {
       "id": "vmop:39",
       "name": "LCS",
       "index": 39,
-      "status": "absent",
+      "status": "executed",
       "nativeRef": "src/common/scripting/vm/vmops.h"
     },
     {
       "id": "vmop:40",
       "name": "LCS_R",
       "index": 40,
-      "status": "absent",
+      "status": "executed",
       "nativeRef": "src/common/scripting/vm/vmops.h"
     },
     {
       "id": "vmop:41",
       "name": "LFV2",
       "index": 41,
-      "status": "absent",
+      "status": "executed",
       "nativeRef": "src/common/scripting/vm/vmops.h"
     },
     {
       "id": "vmop:42",
       "name": "LFV2_R",
       "index": 42,
-      "status": "absent",
+      "status": "executed",
       "nativeRef": "src/common/scripting/vm/vmops.h"
     },
     {
       "id": "vmop:43",
       "name": "LFV3",
       "index": 43,
-      "status": "absent",
+      "status": "executed",
       "nativeRef": "src/common/scripting/vm/vmops.h"
     },
     {
       "id": "vmop:44",
       "name": "LFV3_R",
       "index": 44,
-      "status": "absent",
+      "status": "executed",
       "nativeRef": "src/common/scripting/vm/vmops.h"
     },
     {
       "id": "vmop:45",
       "name": "LFV4",
       "index": 45,
-      "status": "absent",
+      "status": "executed",
       "nativeRef": "src/common/scripting/vm/vmops.h"
     },
     {
       "id": "vmop:46",
       "name": "LFV4_R",
       "index": 46,
-      "status": "absent",
+      "status": "executed",
       "nativeRef": "src/common/scripting/vm/vmops.h"
     },
     {
       "id": "vmop:47",
       "name": "LBIT",
       "index": 47,
-      "status": "absent",
+      "status": "executed",
       "nativeRef": "src/common/scripting/vm/vmops.h"
     },
     {
       "id": "vmop:48",
       "name": "SB",
       "index": 48,
-      "status": "absent",
+      "status": "executed",
       "nativeRef": "src/common/scripting/vm/vmops.h"
     },
     {
       "id": "vmop:49",
       "name": "SB_R",
       "index": 49,
-      "status": "absent",
+      "status": "executed",
       "nativeRef": "src/common/scripting/vm/vmops.h"
     },
     {
       "id": "vmop:50",
       "name": "SH",
       "index": 50,
-      "status": "absent",
+      "status": "executed",
       "nativeRef": "src/common/scripting/vm/vmops.h"
     },
     {
       "id": "vmop:51",
       "name": "SH_R",
       "index": 51,
-      "status": "absent",
+      "status": "executed",
       "nativeRef": "src/common/scripting/vm/vmops.h"
     },
     {
@@ -4421,49 +4451,49 @@
     {
       "id": "acs-call:GetLineUDMFInt",
       "name": "GetLineUDMFInt",
-      "status": "absent",
+      "status": "partial",
       "nativeRef": "src/playsim/p_acs.cpp EACSFunctions"
     },
     {
       "id": "acs-call:GetLineUDMFFixed",
       "name": "GetLineUDMFFixed",
-      "status": "absent",
+      "status": "partial",
       "nativeRef": "src/playsim/p_acs.cpp EACSFunctions"
     },
     {
       "id": "acs-call:GetThingUDMFInt",
       "name": "GetThingUDMFInt",
-      "status": "absent",
+      "status": "partial",
       "nativeRef": "src/playsim/p_acs.cpp EACSFunctions"
     },
     {
       "id": "acs-call:GetThingUDMFFixed",
       "name": "GetThingUDMFFixed",
-      "status": "absent",
+      "status": "partial",
       "nativeRef": "src/playsim/p_acs.cpp EACSFunctions"
     },
     {
       "id": "acs-call:GetSectorUDMFInt",
       "name": "GetSectorUDMFInt",
-      "status": "absent",
+      "status": "partial",
       "nativeRef": "src/playsim/p_acs.cpp EACSFunctions"
     },
     {
       "id": "acs-call:GetSectorUDMFFixed",
       "name": "GetSectorUDMFFixed",
-      "status": "absent",
+      "status": "partial",
       "nativeRef": "src/playsim/p_acs.cpp EACSFunctions"
     },
     {
       "id": "acs-call:GetSideUDMFInt",
       "name": "GetSideUDMFInt",
-      "status": "absent",
+      "status": "partial",
       "nativeRef": "src/playsim/p_acs.cpp EACSFunctions"
     },
     {
       "id": "acs-call:GetSideUDMFFixed",
       "name": "GetSideUDMFFixed",
-      "status": "absent",
+      "status": "partial",
       "nativeRef": "src/playsim/p_acs.cpp EACSFunctions"
     },
     {

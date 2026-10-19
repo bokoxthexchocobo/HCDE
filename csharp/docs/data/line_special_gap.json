@@ -329,7 +329,7 @@
       "special": 54,
       "nativeHandler": "LS_Sector_ChangeFlags",
       "nativeStatus": "implemented",
-      "managedStatus": "wired"
+      "managedStatus": "gap"
     },
     {
       "special": 55,
@@ -503,7 +503,7 @@
       "special": 83,
       "nativeHandler": "LS_ACS_LockedExecute",
       "nativeStatus": "implemented",
-      "managedStatus": "gap"
+      "managedStatus": "wired"
     },
     {
       "special": 84,
@@ -527,7 +527,7 @@
       "special": 87,
       "nativeHandler": "LS_Polyobj_Stop",
       "nativeStatus": "implemented",
-      "managedStatus": "gap"
+      "managedStatus": "wired"
     },
     {
       "special": 88,
@@ -539,7 +539,7 @@
       "special": 89,
       "nativeHandler": "LS_Polyobj_OR_MoveTo",
       "nativeStatus": "implemented",
-      "managedStatus": "gap"
+      "managedStatus": "wired"
     },
     {
       "special": 90,
@@ -551,19 +551,19 @@
       "special": 91,
       "nativeHandler": "LS_Polyobj_OR_RotateRight",
       "nativeStatus": "implemented",
-      "managedStatus": "gap"
+      "managedStatus": "wired"
     },
     {
       "special": 92,
       "nativeHandler": "LS_Polyobj_OR_Move",
       "nativeStatus": "implemented",
-      "managedStatus": "wired"
+      "managedStatus": "gap"
     },
     {
       "special": 93,
       "nativeHandler": "LS_Polyobj_OR_MoveTimes8",
       "nativeStatus": "implemented",
-      "managedStatus": "gap"
+      "managedStatus": "wired"
     },
     {
       "special": 94,
@@ -575,13 +575,13 @@
       "special": 95,
       "nativeHandler": "LS_FloorAndCeiling_LowerByValue",
       "nativeStatus": "implemented",
-      "managedStatus": "gap"
+      "managedStatus": "wired"
     },
     {
       "special": 96,
       "nativeHandler": "LS_FloorAndCeiling_RaiseByValue",
       "nativeStatus": "implemented",
-      "managedStatus": "gap"
+      "managedStatus": "wired"
     },
     {
       "special": 97,
@@ -593,7 +593,7 @@
       "special": 98,
       "nativeHandler": "LS_Sector_SetTranslucent",
       "nativeStatus": "implemented",
-      "managedStatus": "gap"
+      "managedStatus": "wired"
     },
     {
       "special": 99,
@@ -647,7 +647,7 @@
       "special": 107,
       "nativeHandler": "LS_Line_SetPortalTarget",
       "nativeStatus": "implemented",
-      "managedStatus": "gap"
+      "managedStatus": "wired"
     },
     {
       "special": 108,
@@ -659,7 +659,7 @@
       "special": 109,
       "nativeHandler": "LS_Light_ForceLightning",
       "nativeStatus": "implemented",
-      "managedStatus": "gap"
+      "managedStatus": "wired"
     },
     {
       "special": 110,
@@ -719,13 +719,13 @@
       "special": 119,
       "nativeHandler": "LS_Thing_Damage",
       "nativeStatus": "implemented",
-      "managedStatus": "gap"
+      "managedStatus": "wired"
     },
     {
       "special": 120,
       "nativeHandler": "LS_Radius_Quake",
       "nativeStatus": "implemented",
-      "managedStatus": "gap"
+      "managedStatus": "wired"
     },
     {
       "special": 121,
@@ -755,7 +755,7 @@
       "special": 125,
       "nativeHandler": "LS_Thing_Move",
       "nativeStatus": "implemented",
-      "managedStatus": "gap"
+      "managedStatus": "wired"
     },
     {
       "special": 126,
@@ -779,7 +779,7 @@
       "special": 129,
       "nativeHandler": "LS_UsePuzzleItem",
       "nativeStatus": "implemented",
-      "managedStatus": "gap"
+      "managedStatus": "wired"
     },
     {
       "special": 130,
@@ -797,55 +797,55 @@
       "special": 132,
       "nativeHandler": "LS_Thing_Remove",
       "nativeStatus": "implemented",
-      "managedStatus": "wired"
+      "managedStatus": "gap"
     },
     {
       "special": 133,
       "nativeHandler": "LS_Thing_Destroy",
       "nativeStatus": "implemented",
-      "managedStatus": "wired"
+      "managedStatus": "gap"
     },
     {
       "special": 134,
       "nativeHandler": "LS_Thing_Projectile",
       "nativeStatus": "implemented",
-      "managedStatus": "gap"
+      "managedStatus": "wired"
     },
     {
       "special": 135,
       "nativeHandler": "LS_Thing_Spawn",
       "nativeStatus": "implemented",
-      "managedStatus": "gap"
+      "managedStatus": "wired"
     },
     {
       "special": 136,
       "nativeHandler": "LS_Thing_ProjectileGravity",
       "nativeStatus": "implemented",
-      "managedStatus": "gap"
+      "managedStatus": "wired"
     },
     {
       "special": 137,
       "nativeHandler": "LS_Thing_SpawnNoFog",
       "nativeStatus": "implemented",
-      "managedStatus": "gap"
+      "managedStatus": "wired"
     },
     {
       "special": 138,
       "nativeHandler": "LS_Floor_Waggle",
       "nativeStatus": "implemented",
-      "managedStatus": "wired"
+      "managedStatus": "gap"
     },
     {
       "special": 139,
       "nativeHandler": "LS_Thing_SpawnFacing",
       "nativeStatus": "implemented",
-      "managedStatus": "wired"
+      "managedStatus": "gap"
     },
     {
       "special": 140,
       "nativeHandler": "LS_Sector_ChangeSound",
       "nativeStatus": "implemented",
-      "managedStatus": "gap"
+      "managedStatus": "wired"
     },
     {
       "special": 141,
@@ -911,7 +911,7 @@
       "special": 151,
       "nativeHandler": "LS_Sector_SetHealth",
       "nativeStatus": "implemented",
-      "managedStatus": "gap"
+      "managedStatus": "wired"
     },
     {
       "special": 152,
@@ -947,19 +947,19 @@
       "special": 157,
       "nativeHandler": "LS_SetGlobalFogParameter",
       "nativeStatus": "implemented",
-      "managedStatus": "wired"
+      "managedStatus": "gap"
     },
     {
       "special": 158,
       "nativeHandler": "LS_FS_Execute",
       "nativeStatus": "implemented",
-      "managedStatus": "gap"
+      "managedStatus": "wired"
     },
     {
       "special": 159,
       "nativeHandler": "LS_Sector_SetPlaneReflection",
       "nativeStatus": "implemented",
-      "managedStatus": "gap"
+      "managedStatus": "wired"
     },
     {
       "special": 160,
@@ -1043,49 +1043,49 @@
       "special": 173,
       "nativeHandler": "LS_NoiseAlert",
       "nativeStatus": "implemented",
-      "managedStatus": "wired"
+      "managedStatus": "gap"
     },
     {
       "special": 174,
       "nativeHandler": "LS_SendToCommunicator",
       "nativeStatus": "implemented",
-      "managedStatus": "wired"
+      "managedStatus": "gap"
     },
     {
       "special": 175,
       "nativeHandler": "LS_Thing_ProjectileIntercept",
       "nativeStatus": "implemented",
-      "managedStatus": "wired"
+      "managedStatus": "gap"
     },
     {
       "special": 176,
       "nativeHandler": "LS_Thing_ChangeTID",
       "nativeStatus": "implemented",
-      "managedStatus": "wired"
+      "managedStatus": "gap"
     },
     {
       "special": 177,
       "nativeHandler": "LS_Thing_Hate",
       "nativeStatus": "implemented",
-      "managedStatus": "wired"
+      "managedStatus": "gap"
     },
     {
       "special": 178,
       "nativeHandler": "LS_Thing_ProjectileAimed",
       "nativeStatus": "implemented",
-      "managedStatus": "wired"
+      "managedStatus": "gap"
     },
     {
       "special": 179,
       "nativeHandler": "LS_ChangeSkill",
       "nativeStatus": "implemented",
-      "managedStatus": "wired"
+      "managedStatus": "gap"
     },
     {
       "special": 180,
       "nativeHandler": "LS_Thing_SetTranslation",
       "nativeStatus": "implemented",
-      "managedStatus": "wired"
+      "managedStatus": "gap"
     },
     {
       "special": 181,
@@ -1121,7 +1121,7 @@
       "special": 186,
       "nativeHandler": "LS_Sector_SetCeilingPanning",
       "nativeStatus": "implemented",
-      "managedStatus": "gap"
+      "managedStatus": "wired"
     },
     {
       "special": 187,
@@ -1139,7 +1139,7 @@
       "special": 189,
       "nativeHandler": "LS_Sector_SetFloorScale",
       "nativeStatus": "implemented",
-      "managedStatus": "gap"
+      "managedStatus": "wired"
     },
     {
       "special": 190,
@@ -1253,7 +1253,7 @@
       "special": 208,
       "nativeHandler": "LS_TranslucentLine",
       "nativeStatus": "implemented",
-      "managedStatus": "gap"
+      "managedStatus": "wired"
     },
     {
       "special": 209,
@@ -1289,13 +1289,13 @@
       "special": 214,
       "nativeHandler": "LS_Sector_SetDamage",
       "nativeStatus": "implemented",
-      "managedStatus": "wired"
+      "managedStatus": "gap"
     },
     {
       "special": 215,
       "nativeHandler": "LS_Teleport_Line",
       "nativeStatus": "implemented",
-      "managedStatus": "gap"
+      "managedStatus": "wired"
     },
     {
       "special": 216,
@@ -1313,19 +1313,19 @@
       "special": 218,
       "nativeHandler": "LS_Sector_SetWind",
       "nativeStatus": "implemented",
-      "managedStatus": "wired"
+      "managedStatus": "gap"
     },
     {
       "special": 219,
       "nativeHandler": "LS_Sector_SetFriction",
       "nativeStatus": "implemented",
-      "managedStatus": "gap"
+      "managedStatus": "wired"
     },
     {
       "special": 220,
       "nativeHandler": "LS_Sector_SetCurrent",
       "nativeStatus": "implemented",
-      "managedStatus": "gap"
+      "managedStatus": "wired"
     },
     {
       "special": 221,
@@ -1343,13 +1343,13 @@
       "special": 223,
       "nativeHandler": "LS_Scroll_Floor",
       "nativeStatus": "implemented",
-      "managedStatus": "gap"
+      "managedStatus": "wired"
     },
     {
       "special": 224,
       "nativeHandler": "LS_Scroll_Ceiling",
       "nativeStatus": "implemented",
-      "managedStatus": "gap"
+      "managedStatus": "wired"
     },
     {
       "special": 225,
@@ -1367,7 +1367,7 @@
       "special": 227,
       "nativeHandler": "LS_PointPush_SetForce",
       "nativeStatus": "implemented",
-      "managedStatus": "gap"
+      "managedStatus": "wired"
     },
     {
       "special": 228,
@@ -1379,7 +1379,7 @@
       "special": 229,
       "nativeHandler": "LS_Thing_SetGoal",
       "nativeStatus": "implemented",
-      "managedStatus": "wired"
+      "managedStatus": "gap"
     },
     {
       "special": 230,
@@ -1415,19 +1415,19 @@
       "special": 235,
       "nativeHandler": "LS_Floor_TransferTrigger",
       "nativeStatus": "implemented",
-      "managedStatus": "gap"
+      "managedStatus": "wired"
     },
     {
       "special": 236,
       "nativeHandler": "LS_Floor_TransferNumeric",
       "nativeStatus": "implemented",
-      "managedStatus": "gap"
+      "managedStatus": "wired"
     },
     {
       "special": 237,
       "nativeHandler": "LS_ChangeCamera",
       "nativeStatus": "implemented",
-      "managedStatus": "gap"
+      "managedStatus": "wired"
     },
     {
       "special": 238,
@@ -1451,7 +1451,7 @@
       "special": 241,
       "nativeHandler": "LS_Floor_LowerToLowestTxTy",
       "nativeStatus": "implemented",
-      "managedStatus": "gap"
+      "managedStatus": "wired"
     },
     {
       "special": 242,
@@ -1469,7 +1469,7 @@
       "special": 244,
       "nativeHandler": "LS_Exit_Secret",
       "nativeStatus": "implemented",
-      "managedStatus": "wired"
+      "managedStatus": "gap"
     },
     {
       "special": 245,
@@ -1505,13 +1505,13 @@
       "special": 250,
       "nativeHandler": "LS_Floor_Donut",
       "nativeStatus": "implemented",
-      "managedStatus": "gap"
+      "managedStatus": "wired"
     },
     {
       "special": 251,
       "nativeHandler": "LS_FloorAndCeiling_LowerRaise",
       "nativeStatus": "implemented",
-      "managedStatus": "gap"
+      "managedStatus": "wired"
     },
     {
       "special": 252,
@@ -1649,7 +1649,7 @@
       "special": 274,
       "nativeHandler": "LS_Door_AnimatedClose",
       "nativeStatus": "implemented",
-      "managedStatus": "gap"
+      "managedStatus": "wired"
     },
     {
       "special": 275,
@@ -1667,13 +1667,13 @@
       "special": 277,
       "nativeHandler": "LS_Sector_SetFloorGlow",
       "nativeStatus": "implemented",
-      "managedStatus": "gap"
+      "managedStatus": "wired"
     },
     {
       "special": 278,
       "nativeHandler": "LS_Sector_SetCeilingGlow",
       "nativeStatus": "implemented",
-      "managedStatus": "gap"
+      "managedStatus": "wired"
     },
     {
       "special": 279,
@@ -1691,19 +1691,19 @@
       "special": 281,
       "nativeHandler": "LS_Line_SetAutomapFlags",
       "nativeStatus": "implemented",
-      "managedStatus": "gap"
+      "managedStatus": "wired"
     },
     {
       "special": 282,
       "nativeHandler": "LS_Line_SetAutomapStyle",
       "nativeStatus": "implemented",
-      "managedStatus": "gap"
+      "managedStatus": "wired"
     },
     {
       "special": 283,
       "nativeHandler": "LS_Polyobj_StopSound",
       "nativeStatus": "implemented",
-      "managedStatus": "gap"
+      "managedStatus": "wired"
     },
     {
       "special": 284,

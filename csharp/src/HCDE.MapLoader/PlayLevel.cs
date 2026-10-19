@@ -33,6 +33,15 @@ public sealed class LevelSector
     public bool HasTag(int tag) => tag != 0 && (Tag == tag || AdditionalTags.Contains(tag));
     public bool MatchesTag(int tag) => tag == 0 ? Tag == 0 && AdditionalTags.Count == 0 : HasTag(tag);
     public double Gravity { get; set; } = 1;
+    public double Friction { get; set; } = 1;
+    public double MoveFactor { get; set; } = 1;
+    public double PushForceX { get; set; }
+    public double PushForceY { get; set; }
+    public int TranslucentAlpha { get; set; } = 256;
+    public int SoundSequence { get; set; }
+    public bool PlaneReflection { get; set; }
+    public uint FloorGlowColor { get; set; }
+    public uint CeilingGlowColor { get; set; }
     public int HealthFloor { get; set; }
     public int HealthCeiling { get; set; }
     public int Health3D { get; set; }
@@ -143,6 +152,10 @@ public sealed class LevelLine
     public bool Repeat { get; set; }
     public int Health { get; set; }
     public int HealthGroup { get; set; }
+    public double Alpha { get; set; } = 1;
+    public int AutomapFlags { get; set; }
+    public int AutomapStyle { get; set; }
+    public int PortalTarget { get; set; }
 
     public bool OneSided => SideBack < 0;
 

@@ -3103,6 +3103,10 @@ public sealed class AuthoritySimulation
             ? value : throw new ArgumentOutOfRangeException(nameof(value));
     }
 
+    public bool EnvironmentLightningForced { get; set; }
+    public List<(int Intensity, int Duration, int Radius, int Tid)> EnvironmentQuakes { get; } = [];
+    public int CameraThingId { get; set; }
+    public int CameraRevertTics { get; set; }
     /// <summary>Native process cvar map used by Actor.GetCVar. Not part of the save pose.</summary>
     internal ConsoleVariables CVars { get; } = new();
     /// <summary>Native <c>consoleplayer</c> fallback for userinfo queries without a player.</summary>

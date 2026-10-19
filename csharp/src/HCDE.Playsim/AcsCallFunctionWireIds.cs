@@ -1,3 +1,5 @@
+using System.Reflection;
+
 namespace HCDE.Playsim;
 /// <summary>Native <c>EACSFunctions</c> wire indices from <c>p_acs.cpp</c> (1-based).</summary>
 internal static class AcsCallFunctionWireIds
@@ -143,4 +145,21 @@ internal static class AcsCallFunctionWireIds
         ["InvasionGetSpawnFallbackSource"] = 137,
         ["InvasionControlAction"] = 138,
     };
+
+    internal static readonly IReadOnlyDictionary<int, int> WireToManagedSlot = BuildWireToManagedSlot();
+
+    internal static int ResolveDispatchIndex(int function) =>
+        WireToManagedSlot.TryGetValue(function, out var slot) ? slot : function;
+
+    private static Dictionary<int, int> BuildWireToManagedSlot()
+    {
+        var map = new Dictionary<int, int>();
+        foreach (var (name, wire) in NameToWire)
+        {
+            var field = typeof(AcsCallFunctions).GetField(name, BindingFlags.Public | BindingFlags.Static);
+            if (field?.FieldType == typeof(int))
+                map[wire] = (int)field.GetValue(null)!;
+        }
+        return map;
+    }
 }

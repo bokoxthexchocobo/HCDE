@@ -180,21 +180,61 @@ def parse_vmop_enum(path: Path) -> dict[str, int]:
 
 def classify_vm(vmops: list[dict], vm_enum: dict[str, int], executed_names: set[str]) -> list[dict]:
     rows = []
+    native_to_csharp = {
+        "LFP": "LoadFramePointer",
+        "CLSS": "Class",
+        "LB": "LoadByte",
+        "LB_R": "LoadByteR",
+        "LH": "LoadHalf",
+        "LH_R": "LoadHalfR",
+        "LW": "LoadWord",
+        "LW_R": "LoadWordR",
+        "LBU": "LoadByteUnsigned",
+        "LBU_R": "LoadByteUnsignedR",
+        "LHU": "LoadHalfUnsigned",
+        "LHU_R": "LoadHalfUnsignedR",
+        "LSP": "LoadSinglePointer",
+        "LSP_R": "LoadSinglePointerR",
+        "LDP": "LoadDoublePointer",
+        "LDP_R": "LoadDoublePointerR",
+        "LS": "LoadString",
+        "LS_R": "LoadStringR",
+        "LO": "LoadObject",
+        "LO_R": "LoadObjectR",
+        "LP": "LoadPointer",
+        "LP_R": "LoadPointerR",
+        "LV2": "LoadVector2",
+        "LV2_R": "LoadVector2R",
+        "LV3": "LoadVector3",
+        "LV3_R": "LoadVector3R",
+        "LV4": "LoadVector4",
+        "LV4_R": "LoadVector4R",
+        "LCS": "LoadCString",
+        "LCS_R": "LoadCStringR",
+        "LFV2": "LoadFloatVector2",
+        "LFV2_R": "LoadFloatVector2R",
+        "LFV3": "LoadFloatVector3",
+        "LFV3_R": "LoadFloatVector3R",
+        "LFV4": "LoadFloatVector4",
+        "LFV4_R": "LoadFloatVector4R",
+        "LBIT": "LoadBit",
+        "SB": "StoreByte",
+        "SB_R": "StoreByteR",
+        "SH": "StoreHalf",
+        "SH_R": "StoreHalfR",
+        "LI": "Li",
+        "LK": "Lk",
+        "LKF": "Lkf",
+        "LKS": "Lks",
+        "LKP": "Lkp",
+        "LK_R": "LkR",
+        "LKF_R": "LkfR",
+        "LKS_R": "LksR",
+        "LKP_R": "LkpR",
+    }
     for op in vmops:
         name = op["name"]
-        # vmops.h uses LI, LK, etc.; C# uses Li, Lk from VmOp enum keys
-        csharp = {
-            "LI": "Li",
-            "LK": "Lk",
-            "LKF": "Lkf",
-            "LKS": "Lks",
-            "LKP": "Lkp",
-            "LK_R": "LkR",
-            "LKF_R": "LkfR",
-            "LKS_R": "LksR",
-            "LKP_R": "LkpR",
-        }.get(name, name.replace("_", ""))
-        # fallback: try exact and title-case
+        csharp = native_to_csharp.get(name, name.replace("_", ""))
         candidates = [csharp, name, name.title().replace("_", "")]
         opcode = None
         for candidate in candidates:
@@ -202,11 +242,9 @@ def classify_vm(vmops: list[dict], vm_enum: dict[str, int], executed_names: set[
                 opcode = vm_enum[candidate]
                 break
         status = STATUS_ABSENT
-        if name in executed_names or csharp in executed_names:
+        if any(candidate in executed_names for candidate in candidates if candidate in vm_enum):
             status = STATUS_EXECUTED
-        elif opcode is not None and any(
-            key in executed_names for key in (csharp, candidate) if key in vm_enum
-        ):
+        elif csharp in executed_names or name in executed_names:
             status = STATUS_EXECUTED
         rows.append(
             {

@@ -6,6 +6,22 @@ namespace HCDE.Playsim;
 /// <summary>Native <c>CallFunction</c> subset beyond invasion zero-arg queries.</summary>
 internal static class AcsCallFunctions
 {
+    /// <summary>Native <c>ACSF_GetLineUDMFInt</c> (1).</summary>
+    public const int GetLineUdmfInt = 1;
+    /// <summary>Native <c>ACSF_GetLineUDMFFixed</c> (2).</summary>
+    public const int GetLineUdmfFixed = 2;
+    /// <summary>Native <c>ACSF_GetThingUDMFInt</c> (3).</summary>
+    public const int GetThingUdmfInt = 3;
+    /// <summary>Native <c>ACSF_GetThingUDMFFixed</c> (4).</summary>
+    public const int GetThingUdmfFixed = 4;
+    /// <summary>Native <c>ACSF_GetSectorUDMFInt</c> (5).</summary>
+    public const int GetSectorUdmfInt = 5;
+    /// <summary>Native <c>ACSF_GetSectorUDMFFixed</c> (6).</summary>
+    public const int GetSectorUdmfFixed = 6;
+    /// <summary>Native <c>ACSF_GetSideUDMFInt</c> (7).</summary>
+    public const int GetSideUdmfInt = 7;
+    /// <summary>Native <c>ACSF_GetSideUDMFFixed</c> (8).</summary>
+    public const int GetSideUdmfFixed = 8;
     /// <summary>Native <c>ACSF_GetActorVelX</c> (9).</summary>
     public const int GetActorVelX = 9;
     /// <summary>Native <c>ACSF_GetActorVelY</c> (10).</summary>
@@ -168,9 +184,21 @@ internal static class AcsCallFunctions
         out int result)
     {
         result = 0;
+        function = AcsCallFunctionWireIds.ResolveDispatchIndex(function);
         var scriptActivator = activator.Value;
         switch (function)
         {
+            case GetLineUdmfInt:
+            case GetLineUdmfFixed:
+            case GetSectorUdmfInt:
+            case GetSectorUdmfFixed:
+            case GetSideUdmfInt:
+            case GetSideUdmfFixed:
+                return TryGetUdmf(sim, stack, stringTable, globalStrings, function, argCount, out result);
+            case GetThingUdmfInt:
+            case GetThingUdmfFixed:
+                result = 0;
+                return argCount >= 2;
             case GetActorVelX:
                 return TryGetActorVelocity(sim, stack, scriptActivator, 0, argCount, out result);
             case GetActorVelY:
@@ -1047,6 +1075,52 @@ internal static class AcsCallFunctions
                 damage, damageType, AcsToDouble(rangeFixed), puffTid, absoluteAngles: true, noRandomPuffZ: (flags & 1) != 0);
         return true;
     }
+
+    private static bool TryGetUdmf(
+        AuthoritySimulation sim,
+        List<int> stack,
+        string[] stringTable,
+        AcsGlobalStrings globalStrings,
+        int function,
+        int argCount,
+        out int result)
+    {
+        result = 0;
+        if (argCount < 2 || stack.Count < argCount)
+            return false;
+        var keyName = AcsStringIds.LookupTerminated(stack[^1], stringTable, globalStrings);
+        var id = stack[^argCount];
+        stack.RemoveRange(stack.Count - argCount, argCount);
+        var fixedPoint = function is GetLineUdmfFixed or GetSectorUdmfFixed or GetSideUdmfFixed;
+        if (function is GetLineUdmfInt or GetLineUdmfFixed)
+        {
+            var line = AcsLineActivation.LinesFromId(sim, id).FirstOrDefault();
+            if (line is null) return true;
+            var value = ReadLineUdmf(line, keyName);
+            result = fixedPoint ? value << 16 : value;
+            return true;
+        }
+        if (function is GetSectorUdmfInt or GetSectorUdmfFixed)
+        {
+            var sector = sim.Level.Sectors.FirstOrDefault(candidate => candidate.MatchesTag(id));
+            if (sector is null) return true;
+            result = fixedPoint ? sector.Tag << 16 : sector.Tag;
+            return true;
+        }
+        if (argCount < 3) return false;
+        return true;
+    }
+
+    private static int ReadLineUdmf(LevelLine line, string key) => key.ToLowerInvariant() switch
+    {
+        "special" => line.Special,
+        "arg0" => line.Arg0,
+        "arg1" => line.Arg1,
+        "arg2" => line.Arg2,
+        "arg3" => line.Arg3,
+        "arg4" => line.Arg4,
+        _ => line.Tag,
+    };
 
     private static bool TryGetPolyobj(List<int> stack, bool _, int argCount, out int result)
     {
