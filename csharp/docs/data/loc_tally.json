@@ -2966,7 +2966,7 @@
       "nativeLoc": 91,
       "managedLoc": 168,
       "note": "d_net.cpp Net_ResetClientState body and DisconnectClient teardown remainder.",
-      "conversionManagedCommit": "0000000000000000000000000000000000000000",
+      "conversionManagedCommit": "a228c5fb68b84d318847519e27210eefeba081a7",
       "nativeRanges": [
         {
           "file": "src/d_net.cpp",
