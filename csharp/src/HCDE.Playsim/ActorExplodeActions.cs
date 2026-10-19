@@ -33,30 +33,24 @@ public static class ActorExplodeActions
         string damageType, bool damageActors, int thrustForce, bool hurtSource)
     {
         var sim = actor.Simulation ?? throw new InvalidOperationException("Radius effects require a simulation.");
+        if (damageActors)
+            MapRadiusAttack.Apply(sim, actor, actor, damage, distance, damageType, fullDamageDistance, hurtSource,
+                actor.OldRadiusDamage);
+        if (thrustForce == 0) return;
         foreach (var victim in sim.Actors.ToArray())
         {
             if (victim.Destroyed || !victim.IsBlockmapActor) continue;
             if (!hurtSource && ReferenceEquals(victim, actor)) continue;
-            if (victim.NoRadiusDamage && damageActors) continue;
-            if (victim.SplashImmune(actor)) continue;
             var dist = RadiusDamageGeometry.Distance(actor, victim);
             if (dist >= distance || !CombatTrace.CheckSight(sim, victim, actor, ActorSightFlags.IgnoreVisibility)) continue;
             var falloff = distance <= 0 ? 1 : (dist <= fullDamageDistance ? 1 : 1 - (dist - fullDamageDistance) / (distance - fullDamageDistance));
-            if (damageActors && victim.CanTakeDamage)
-            {
-                var applied = (int)(damage * falloff);
-                if (applied > 0)
-                    ActorDamage.Apply(victim, applied, actor, damageType: damageType, inflictor: actor);
-            }
-            if (thrustForce != 0 && victim.Mass > 0)
-            {
-                var dx = victim.X.ToDouble() - actor.X.ToDouble();
-                var dy = victim.Y.ToDouble() - actor.Y.ToDouble();
-                var len = Math.Max(1e-6, Math.Sqrt(dx * dx + dy * dy));
-                var push = thrustForce * falloff / victim.Mass;
-                victim.VelocityX = Fixed.FromDouble(victim.VelocityX.ToDouble() + dx / len * push);
-                victim.VelocityY = Fixed.FromDouble(victim.VelocityY.ToDouble() + dy / len * push);
-            }
+            if (victim.Mass <= 0) continue;
+            var dx = victim.X.ToDouble() - actor.X.ToDouble();
+            var dy = victim.Y.ToDouble() - actor.Y.ToDouble();
+            var len = Math.Max(1e-6, Math.Sqrt(dx * dx + dy * dy));
+            var push = thrustForce * falloff / victim.Mass;
+            victim.VelocityX = Fixed.FromDouble(victim.VelocityX.ToDouble() + dx / len * push);
+            victim.VelocityY = Fixed.FromDouble(victim.VelocityY.ToDouble() + dy / len * push);
         }
     }
 }
