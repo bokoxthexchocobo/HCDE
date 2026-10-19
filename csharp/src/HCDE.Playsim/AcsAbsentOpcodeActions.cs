@@ -157,12 +157,6 @@ internal static class AcsAbsentOpcodeActions
         return changes;
     }
 
-    public static int GetPlayerInput(AuthoritySimulation sim, int playerNum, int inputNum, Actor? activator)
-    {
-        if (!sim.IsPlayerInGame(playerNum)) return 0;
-        return sim.Players.FirstOrDefault(p => p.PlayerNum == playerNum)?.GetPlayerInput(inputNum) ?? 0;
-    }
-
     public static void AppendPrintBinary(AuthoritySimulation sim, int value) =>
         sim.AppendAcsPrint(Convert.ToString(value, 2));
 

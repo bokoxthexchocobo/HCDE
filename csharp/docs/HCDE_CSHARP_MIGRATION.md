@@ -224,6 +224,19 @@ Options to wire C# into the main build:
 
 For now, C# builds independently to avoid disrupting the existing CMake pipeline.
 
+## Native-to-managed support matrix
+
+Authoritative matrix for PR #78 (`cursor/native-managed-matrix-3df6`):
+
+- [`docs/HCDE_CSHARP_NATIVE_MANAGED_MATRIX.md`](HCDE_CSHARP_NATIVE_MANAGED_MATRIX.md) and [`docs/data/native_managed_matrix.json`](data/native_managed_matrix.json)
+- Regenerate: `python3 csharp/tools/generate_native_managed_matrix.py` (updates `loc_tally.json` totals)
+
+Optional cross-check tool from PR #77 consolidation (`HCDE.ConversionInventory`): exploratory inventory across ACS, line specials, VM opcodes, and archives. It writes its own snapshot under `docs/` when run locally; do not treat that output as the PR tally source of truth.
+
+```bash
+dotnet run --project csharp/src/HCDE.ConversionInventory -- /path/to/hcde
+```
+
 ## Contributing
 
 When porting a C++ module:

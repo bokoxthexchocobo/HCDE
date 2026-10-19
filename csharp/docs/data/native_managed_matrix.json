@@ -12,25 +12,25 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 101786
+    "managedCSharpLoc": 102380
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 10643,
     "runStartRecognitionBehaviorNative": 5400,
     "runStartConvertedBehaviorManaged": 7417,
-    "convertedThisRunNative": 7818,
+    "convertedThisRunNative": 7884,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 2205,
+    "convertedThisRunManaged": 2254,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": 40,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 484185,
+    "remainingNative": 484119,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 18461,
+    "convertedBehaviorNative": 18527,
     "recognitionBehaviorNative": 5440,
-    "combinedBehaviorNative": 23901,
-    "convertedBehaviorManaged": 9622,
+    "combinedBehaviorNative": 23967,
+    "convertedBehaviorManaged": 9671,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -1411,14 +1411,41 @@
         "nativeLoc": 20,
         "managedLoc": 0,
         "note": "HGPL room id stale reject already managed in GameplayEnvelopeCodec.Validate."
+      },
+      {
+        "name": "pr77-classify-actor-consolidation",
+        "bucket": "conversion",
+        "nativeLoc": 66,
+        "managedLoc": 49,
+        "note": "PR #77 merge: PCD_CLASSIFYACTOR / DoClassifyActor; GetPlayerInput refactored to AcsPlayerInput (no extra native credit).",
+        "nativeRanges": [
+          {
+            "file": "src/playsim/p_acs.cpp",
+            "symbol": "DLevelScript::DoClassifyActor",
+            "start": 4658,
+            "end": 4723,
+            "tests": [
+              "AcsPlayerInputOpcodeTests.ClassifyActorOpcodeReportsPlayerAlive"
+            ]
+          },
+          {
+            "file": "src/playsim/p_acs.cpp",
+            "symbol": "PCD_CLASSIFYACTOR",
+            "start": 10546,
+            "end": 10548,
+            "tests": [
+              "AcsPlayerInputOpcodeTests.ClassifyActorOpcodeReportsPlayerAlive"
+            ]
+          }
+        ]
       }
     ]
   },
   "summaries": {
     "acsPcode": {
-      "executed": 285,
+      "executed": 286,
       "partial": 10,
-      "decoded-only": 79
+      "decoded-only": 78
     },
     "zscriptVmOp": {
       "executed": 246
@@ -4029,7 +4056,7 @@
       "id": "acs-pcode:430",
       "name": "ClassifyActor",
       "opcode": 430,
-      "status": "decoded-only",
+      "status": "executed",
       "nativeRef": "src/playsim/p_acs.cpp"
     },
     {

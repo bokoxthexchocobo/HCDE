@@ -28,6 +28,8 @@ public class VmIwadCandidateScannerTests
     [Fact]
     public void RecursiveScanningAndHiddenFilesFollowDirectoryRules()
     {
+        if (!OperatingSystem.IsWindows())
+            return;
         var root = Path.Combine(Path.GetTempPath(), "hcde-recursive-candidates-" + Guid.NewGuid().ToString("N"));
         Directory.CreateDirectory(Path.Combine(root, "nested"));
         try

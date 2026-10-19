@@ -1044,6 +1044,23 @@ public sealed partial class AcsVm
                 case (int)AcsPcode.PlayerNumber:
                     fiber.Stack.Add(fiber.Activator is PlayerPawn { Destroyed: false } player ? player.PlayerNum : -1);
                     break;
+                case (int)AcsPcode.GetPlayerInput:
+                {
+                    if (fiber.Stack.Count < 2) { fiber.Done = true; return; }
+                    var inputNum = Pop(fiber);
+                    var playerNum = Pop(fiber);
+                    if (!fiber.Done)
+                        fiber.Stack.Add(AcsPlayerInput.Query(sim, fiber.Activator, playerNum, inputNum));
+                    break;
+                }
+                case (int)AcsPcode.ClassifyActor:
+                {
+                    if (fiber.Stack.Count < 1) { fiber.Done = true; return; }
+                    var classifyTid = Pop(fiber);
+                    if (!fiber.Done)
+                        fiber.Stack.Add(AcsClassifyActor.Classify(sim, fiber.Activator, classifyTid));
+                    break;
+                }
                 case (int)AcsPcode.ActivatorTid:
                     fiber.Stack.Add(fiber.Activator is { Destroyed: false } activator ? activator.ThingId : 0);
                     break;
@@ -1385,17 +1402,6 @@ public sealed partial class AcsVm
                     {
                         var changes = AcsAbsentOpcodeActions.UnmorphActor(sim, unmorphTid, unmorphForce, fiber.Activator);
                         fiber.Stack.Add(changes);
-                    }
-                    break;
-                }
-                case (int)AcsPcode.GetPlayerInput:
-                {
-                    if (fiber.Stack.Count < 2) { fiber.Done = true; return; }
-                    var inputNum = Pop(fiber);
-                    var playerNum = Pop(fiber);
-                    if (!fiber.Done)
-                    {
-                        fiber.Stack.Add(AcsAbsentOpcodeActions.GetPlayerInput(sim, playerNum, inputNum, fiber.Activator));
                     }
                     break;
                 }
