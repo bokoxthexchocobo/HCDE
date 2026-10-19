@@ -14,9 +14,18 @@ public sealed class NetClientDisconnectSession
     private readonly bool[] _playingInGame = new bool[MaxPlayers];
     private readonly LateJoinRuntimeSession _lateJoin = new();
     private readonly LivePeerNetRegistry _registry;
+    private readonly NetClientPresentationEchoRegistry? _presentationEcho;
+    private readonly RemotePlayerInterpRegistry? _remoteInterp;
 
-    public NetClientDisconnectSession(LivePeerNetRegistry registry) =>
+    public NetClientDisconnectSession(
+        LivePeerNetRegistry registry,
+        NetClientPresentationEchoRegistry? presentationEcho = null,
+        RemotePlayerInterpRegistry? remoteInterp = null)
+    {
         _registry = registry ?? throw new ArgumentNullException(nameof(registry));
+        _presentationEcho = presentationEcho;
+        _remoteInterp = remoteInterp;
+    }
 
     public LateJoinRuntimeSession LateJoin => _lateJoin;
 
@@ -46,6 +55,8 @@ public sealed class NetClientDisconnectSession
         _levelStartAck &= mask;
         _playingInGame[clientNum] = false;
         clearPresentationEcho?.Invoke(clientNum);
+        _presentationEcho?.ResetClient(clientNum);
+        _remoteInterp?.ResetClient(clientNum);
         ResetClientState(clientNum);
         return true;
     }
@@ -57,6 +68,8 @@ public sealed class NetClientDisconnectSession
 
         _lateJoin.ClearRuntimeClientJoinState(clientNum);
         _registry.ResetClient(clientNum);
+        _presentationEcho?.ResetClient(clientNum);
+        _remoteInterp?.ResetClient(clientNum);
         ActorDeltaSendCursor[clientNum] = 0;
         InvasionActorDeltaSendCursor[clientNum] = 0;
         CoopRepairCooldownUntilTic[clientNum] = 0;
