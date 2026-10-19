@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": -8806,
+  "convertedThisRunNative": -8775,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 4931,
+  "convertedThisRunManaged": 4969,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -774,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 493699,
+  "remainingNative": 493668,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 9721,
+  "convertedBehaviorNative": 9752,
   "recognitionBehaviorNative": 4666,
-  "combinedBehaviorNative": 14387,
-  "convertedBehaviorManaged": 14602,
+  "combinedBehaviorNative": 14418,
+  "convertedBehaviorManaged": 14640,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -3425,6 +3425,25 @@
           "end": 4581,
           "tests": [
             "AcsCheckActorPropertyServiceTests"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "p-acs-check-actor-texture-chunk44",
+      "bucket": "conversion",
+      "nativeLoc": 31,
+      "managedLoc": 38,
+      "note": "Same-sector flat texture check.",
+      "conversionManagedCommit": "14ccf5e9d629b4934416815aebbd4c3067af154e",
+      "nativeRanges": [
+        {
+          "file": "src/playsim/p_acs.cpp",
+          "symbol": "DLevelScript::DoCheckActorTexture",
+          "start": 4583,
+          "end": 4613,
+          "tests": [
+            "AcsCheckActorTextureServiceTests"
           ]
         }
       ]
