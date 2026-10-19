@@ -298,6 +298,8 @@ public sealed partial class AcsVm
             }
 
             var opcode = ReadI32(fiber);
+            if (TryDispatchCollidingWireOpcodes(sim, fiber, opcode))
+                continue;
             switch (opcode)
             {
                 case (int)AcsPcode.SetGravity:
@@ -931,17 +933,6 @@ public sealed partial class AcsVm
                     if (fiber.Done) break;
                     var actorInvTarget = AcsActorTid.SingleFromTid(sim, actorInvTid);
                     fiber.Stack.Add(AcsPlayerInventory.Count(actorInvTarget, fiber.StringTable, actorInvStringId, max: false));
-                    break;
-                }
-                case 335: // Native PCD_THINGDAMAGE2 wire ID; legacy enum alias is offset.
-                {
-                    if (fiber.Stack.Count < 3) { fiber.Done = true; return; }
-                    var damageString = Pop(fiber);
-                    var damageAmount = Pop(fiber);
-                    var damageTid = Pop(fiber);
-                    var damageName = damageString >= 0 && damageString < fiber.StringTable.Length
-                        ? fiber.StringTable[damageString] : null;
-                    fiber.Stack.Add(ThingDamage.Apply(sim, fiber.Activator, damageTid, damageAmount, damageName));
                     break;
                 }
                 case (int)AcsPcode.UseInventory:
