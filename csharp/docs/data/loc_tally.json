@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": -9458,
+  "convertedThisRunNative": -9405,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 3758,
+  "convertedThisRunManaged": 3890,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -774,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 494351,
+  "remainingNative": 494298,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 9069,
+  "convertedBehaviorNative": 9122,
   "recognitionBehaviorNative": 4666,
-  "combinedBehaviorNative": 13735,
-  "convertedBehaviorManaged": 13429,
+  "combinedBehaviorNative": 13788,
+  "convertedBehaviorManaged": 13561,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -3180,6 +3180,34 @@
           "end": 858,
           "tests": [
             "DecorateTranslationPropertyHandlerTests"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "thingdef-damage-chunk33",
+      "bucket": "conversion",
+      "nativeLoc": 53,
+      "managedLoc": 132,
+      "note": "thingdef damage X property and ParseDamageDefinition block.",
+      "conversionManagedCommit": "418a5687d3537b274e3ee230ea6a075d7de299e9",
+      "nativeRanges": [
+        {
+          "file": "src/scripting/thingdef_properties.cpp",
+          "symbol": "DEFINE_PROPERTY(damage, X, Actor)",
+          "start": 678,
+          "end": 692,
+          "tests": [
+            "DecorateDamagePropertyHandlerTests"
+          ]
+        },
+        {
+          "file": "src/scripting/decorate/thingdef_parse.cpp",
+          "symbol": "ParseDamageDefinition",
+          "start": 1225,
+          "end": 1262,
+          "tests": [
+            "DecorateDamagePropertyHandlerTests"
           ]
         }
       ]
