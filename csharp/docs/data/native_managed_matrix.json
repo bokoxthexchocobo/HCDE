@@ -18,19 +18,19 @@
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": -7902,
+    "convertedThisRunNative": -7849,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 5570,
+    "convertedThisRunManaged": 5595,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -774,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 492795,
+    "remainingNative": 492742,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 10625,
+    "convertedBehaviorNative": 10678,
     "recognitionBehaviorNative": 4666,
-    "combinedBehaviorNative": 15291,
-    "convertedBehaviorManaged": 15241,
+    "combinedBehaviorNative": 15344,
+    "convertedBehaviorManaged": 15266,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -3794,7 +3794,35 @@
             ]
           }
         ],
-        "conversionManagedCommit": "97672d100f4d969fd6827250d563ab601b50d35e"
+        "conversionManagedCommit": "a3048f43c3fe3b61fd558f5a6d485ddae13e19d2"
+      },
+      {
+        "name": "zcc-unary-not-bitwise-chunk56",
+        "bucket": "conversion",
+        "nativeLoc": 53,
+        "managedLoc": 25,
+        "note": "FxUnaryNotBitwise constant fold and VM NOT emit.",
+        "nativeRanges": [
+          {
+            "file": "src/common/scripting/backend/codegen.cpp",
+            "symbol": "FxUnaryNotBitwise::Resolve",
+            "start": 2241,
+            "end": 2276,
+            "tests": [
+              "ZccExpressionUnaryNotTests.TryFoldBitwiseNot_MatchesResolve"
+            ]
+          },
+          {
+            "file": "src/common/scripting/backend/codegen.cpp",
+            "symbol": "FxUnaryNotBitwise::Emit",
+            "start": 2284,
+            "end": 2300,
+            "tests": [
+              "ZccExpressionUnaryNotTests.EmitBitwiseNot_RunsVmOpcode"
+            ]
+          }
+        ],
+        "conversionManagedCommit": "0093a8d50347fa84f6563b858f59131b45aecd64"
       }
     ]
   },
