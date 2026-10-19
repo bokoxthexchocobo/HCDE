@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": -9227,
+  "convertedThisRunNative": -9099,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 4260,
+  "convertedThisRunManaged": 4430,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -774,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 494120,
+  "remainingNative": 493992,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 9300,
+  "convertedBehaviorNative": 9428,
   "recognitionBehaviorNative": 4666,
-  "combinedBehaviorNative": 13966,
-  "convertedBehaviorManaged": 13931,
+  "combinedBehaviorNative": 14094,
+  "convertedBehaviorManaged": 14101,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -3301,6 +3301,25 @@
           "end": 6422,
           "tests": [
             "PlayerSpawnLifecycleTests"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "p-acs-set-actor-property-remainder-chunk37",
+      "bucket": "conversion",
+      "nativeLoc": 128,
+      "managedLoc": 170,
+      "note": "DoSetActorProperty mass score scale stencil and related APROPs.",
+      "conversionManagedCommit": "aff448a906c65eb0f0cc28e9e3fc527819d06ee7",
+      "nativeRanges": [
+        {
+          "file": "src/playsim/p_acs.cpp",
+          "symbol": "DLevelScript::DoSetActorProperty",
+          "start": 4278,
+          "end": 4405,
+          "tests": [
+            "AcsSetActorPropertyServiceTests"
           ]
         }
       ]
