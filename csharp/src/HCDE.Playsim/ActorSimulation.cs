@@ -3864,6 +3864,7 @@ public sealed class AuthoritySimulation
     /// <summary>Native ACS <c>SetMusicVolume</c> scale. Audio playback is absent.</summary>
     public double MusicVolume { get; set; } = 1;
     public AcsVm Acs { get; }
+    public AcsScriptCallRegistry ScriptCalls { get; } = new();
     public InvasionDirector Invasion { get; }
     public RewindBuffer Rewind { get; }
     internal double[] Floors { get; }

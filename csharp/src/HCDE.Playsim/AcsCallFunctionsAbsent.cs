@@ -60,7 +60,7 @@ internal static partial class AcsCallFunctions
             case SetTranslation:
                 return TrySetTranslation(sim, stack, scriptActivator, stringTable, globalStrings, argCount, out result);
             case ScriptCall:
-                return TryScriptCall(stack, argCount, out result);
+                return TryScriptCall(sim, stack, scriptActivator, stringTable, globalStrings, argCount, out result);
             case StartSlideshow:
                 return TryStartSlideshow(sim, stack, stringTable, globalStrings, argCount, out result);
             case SetSubtitleNumber:
@@ -223,13 +223,15 @@ internal static partial class AcsCallFunctions
         return true;
     }
 
-    private static bool TryScriptCall(List<int> stack, int argCount, out int result)
-    {
-        result = 0;
-        if (stack.Count < argCount) return false;
-        stack.RemoveRange(stack.Count - argCount, argCount);
-        return true;
-    }
+    private static bool TryScriptCall(
+        AuthoritySimulation sim,
+        List<int> stack,
+        Actor? activator,
+        string[] stringTable,
+        AcsGlobalStrings globalStrings,
+        int argCount,
+        out int result) =>
+        AcsScriptCallService.TryInvoke(sim, stack, activator, stringTable, globalStrings, argCount, out result);
 
     private static bool TryStartSlideshow(
         AuthoritySimulation sim,

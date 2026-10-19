@@ -12,25 +12,25 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 106561
+    "managedCSharpLoc": 106690
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": -8713,
+    "convertedThisRunNative": -8591,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 5126,
+    "convertedThisRunManaged": 5255,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -774,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 493606,
+    "remainingNative": 493484,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 9814,
+    "convertedBehaviorNative": 9936,
     "recognitionBehaviorNative": 4666,
-    "combinedBehaviorNative": 14480,
-    "convertedBehaviorManaged": 14797,
+    "combinedBehaviorNative": 14602,
+    "convertedBehaviorManaged": 14926,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -3536,6 +3536,27 @@
             "end": 1054,
             "tests": [
               "ZccExpressionIntCastTests"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "p-acs-script-call-chunk49",
+        "bucket": "conversion",
+        "nativeLoc": 122,
+        "managedLoc": 129,
+        "note": "ACSF_ScriptCall / DLevelScript::ScriptCall registry dispatch.",
+        "conversionManagedCommit": "9f2999b3a8b2c4e1f0d9e8a7b6c5d4e3f2a1b0c9",
+        "nativeRanges": [
+          {
+            "file": "src/playsim/p_acs.cpp",
+            "symbol": "DLevelScript::ScriptCall",
+            "start": 5310,
+            "end": 5431,
+            "tests": [
+              "AcsScriptCallServiceTests.CallFunc_ScriptCall_InvokesRegisteredStaticIntFunction",
+              "AcsScriptCallServiceTests.CallFunc_ScriptCall_ReturnsStringThroughGlobalPool",
+              "AcsScriptCallServiceTests.CallFunc_ScriptCall_CoercesBoolAndFixedReturn"
             ]
           }
         ]
