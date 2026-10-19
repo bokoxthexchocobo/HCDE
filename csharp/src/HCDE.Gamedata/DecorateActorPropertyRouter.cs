@@ -45,6 +45,12 @@ public static class DecorateActorPropertyRouter
             return true;
         }
 
+        if (string.Equals(propertyName, "translation", StringComparison.OrdinalIgnoreCase)
+            && DecorateTranslationPropertyHandler.TryParsePropertyTokens(tokens, out var translationValues, out error))
+        {
+            return DecorateTranslationPropertyHandler.TryApply(translationValues, definition, out error);
+        }
+
         if (DecorateActorBuiltinPropertyParamSpecs.TryGetSpec(propertyName, out var extendedSpec)
             && DecoratePropertyParamParser.TryParse(extendedSpec, tokens, out var extendedParsed, out error))
         {
@@ -163,6 +169,9 @@ public sealed class DecorateActorDefinition
     public int PoisonDuration { get; set; }
     public int PoisonPeriod { get; set; }
     public List<DecorateDropItem> DropItems { get; } = new();
+    public int TranslationId { get; set; }
+    public bool TranslationUsesCustomRanges { get; set; }
+    public List<string> TranslationCustomRanges { get; } = new();
 }
 
 internal static class DecorateActorBuiltinPropertyParamSpecs
