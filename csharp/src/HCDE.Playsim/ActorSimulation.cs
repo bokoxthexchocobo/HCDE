@@ -243,6 +243,30 @@ public class Actor : Thinker
     private int _special;
     public int Special { get => _special; set { _special = value; SpecialChanged = true; } }
     public int[] SpecialArgs { get; } = new int[5];
+    internal Dictionary<string, int[]>? ScriptUserVariables { get; set; }
+    internal int GetScriptUserVar(string name, int index = 0)
+    {
+        if (ScriptUserVariables?.TryGetValue(name, out var slots) == true && (uint)index < (uint)slots.Length)
+            return slots[index];
+        return 0;
+    }
+    internal void SetScriptUserVar(string name, int index, int value)
+    {
+        ScriptUserVariables ??= new Dictionary<string, int[]>(StringComparer.OrdinalIgnoreCase);
+        if (!ScriptUserVariables.TryGetValue(name, out var slots))
+        {
+            slots = new int[Math.Max(1, index + 1)];
+            ScriptUserVariables[name] = slots;
+        }
+        else if ((uint)index >= (uint)slots.Length)
+        {
+            var expanded = new int[index + 1];
+            Array.Copy(slots, expanded, slots.Length);
+            slots = expanded;
+            ScriptUserVariables[name] = slots;
+        }
+        slots[index] = value;
+    }
     internal bool SpecialChanged { get; set; }
     private int _activationType;
     public virtual void Activate(Actor? activator) => ThingActivation.Apply(this, true);
@@ -3228,6 +3252,12 @@ public sealed class AuthoritySimulation
         _hasBfgSelfDamageRandomState = true;
         return NativeStateRandom.Next(ref _bfgSelfDamageRandomState);
     }
+    private ulong _monsterRefireRandomState;
+    private readonly ulong _initialMonsterRefireRandomState;
+    internal int NextMonsterRefireByte()
+    {
+        return (int)(NativeStateRandom.Next(ref _monsterRefireRandomState) & 255);
+    }
     private ulong _freezeDeathRandomState;
     private readonly ulong _initialFreezeDeathRandomState;
     private bool _hasFreezeDeathRandomState;
@@ -3415,6 +3445,7 @@ public sealed class AuthoritySimulation
         _fireSg2RandomState = _initialFireSg2RandomState = NativeStateRandom.Seed(unchecked((uint)rngSeed), 0x03b36d9au);
         _bfgSprayRandomState = _initialBfgSprayRandomState = NativeStateRandom.Seed(unchecked((uint)rngSeed), 0x2dda5aa9u);
         _bfgSelfDamageRandomState = _initialBfgSelfDamageRandomState = NativeStateRandom.Seed(unchecked((uint)rngSeed), 0x7edbb96cu);
+        _monsterRefireRandomState = _initialMonsterRefireRandomState = NativeStateRandom.Seed(unchecked((uint)rngSeed), 0x6d8f9a11u);
         SwitchTargetRandomState = unchecked((uint)rngSeed) ^ 0x73776974u;
         DmSpawnRandomState = unchecked((uint)rngSeed) ^ 0x646d7370u;
         _uniqueTidRandomState = null;

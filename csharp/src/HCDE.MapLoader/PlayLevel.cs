@@ -23,6 +23,8 @@ public sealed class LevelSector
     public bool HurtMonsters { get; init; }
     public bool HarmInAir { get; init; }
     public bool NoAttack { get; init; }
+    /// <summary>Mutable <c>SECF_*</c> bits applied by <c>Sector_ChangeFlags</c>.</summary>
+    public int RuntimeFlags { get; set; }
     public bool NoFallingDamage { get; init; }
     /// <summary>Derived native SECMF_LIFT marker for repeatable platform sectors.</summary>
     public bool IsLift { get; internal set; }

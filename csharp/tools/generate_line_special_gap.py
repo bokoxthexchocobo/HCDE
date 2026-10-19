@@ -50,6 +50,12 @@ def managed_specials() -> set[int]:
                     cm = re.search(rf"const int {const}\s*=\s*(\d+)", text)
                     if cm:
                         nums.add(int(cm.group(1)))
+        for m in re.finditer(r"ExecuteSpecial\([^,]+,\s*(\d+)", text):
+            nums.add(int(m.group(1)))
+        for m in re.finditer(r"special\s*==\s*(\d+)", text):
+            nums.add(int(m.group(1)))
+        for m in re.finditer(r"(\d+)\s*=>\s*\w+\.Execute(?:Special)?\(", text):
+            nums.add(int(m.group(1)))
     return nums
 
 

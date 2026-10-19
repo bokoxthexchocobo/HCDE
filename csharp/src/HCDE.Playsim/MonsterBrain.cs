@@ -1069,7 +1069,8 @@ public sealed class MonsterBrain(MonsterAttack attack)
 
     private static bool SectorAllowsAttacks(Actor actor) => actor.Level is not { } level
         || actor.SectorIndex < 0 || actor.SectorIndex >= level.Sectors.Count
-        || !level.Sectors[actor.SectorIndex].NoAttack;
+        || (!level.Sectors[actor.SectorIndex].NoAttack
+            && (level.Sectors[actor.SectorIndex].RuntimeFlags & 2048) == 0);
 
     private static Actor? FindPlayerTarget(AuthoritySimulation sim, Actor actor, MonsterChaseFlags flags,
         ActorLookParameters? parameters = null)
