@@ -3065,7 +3065,7 @@
         "nativeLoc": 83,
         "managedLoc": 168,
         "note": "thingdef_parse DispatchScriptProperty value decoding.",
-        "conversionManagedCommit": "0000000000000000000000000000000000000000",
+        "conversionManagedCommit": "774947d3612ca4bd2687c45e361403669ff63b14",
         "nativeRanges": [
           {
             "file": "src/scripting/decorate/thingdef_parse.cpp",
@@ -3084,7 +3084,7 @@
         "nativeLoc": 427,
         "managedLoc": 312,
         "note": "thingdef_properties.cpp scalar DEFINE_PROPERTY handlers (tag..gravity).",
-        "conversionManagedCommit": "0000000000000000000000000000000000000000",
+        "conversionManagedCommit": "3248e8156f1a103165854b5fa10a5868dc008d1a",
         "nativeRanges": [
           {
             "file": "src/scripting/thingdef_properties.cpp",
@@ -3103,7 +3103,7 @@
         "nativeLoc": 99,
         "managedLoc": 186,
         "note": "p_mobj SpawnMapThing actor placement and SpawnPlayer origin policy.",
-        "conversionManagedCommit": "0000000000000000000000000000000000000000",
+        "conversionManagedCommit": "f20d8c7d7c2f9c0fada6ed7c4d410da29ea18948",
         "nativeRanges": [
           {
             "file": "src/playsim/p_mobj.cpp",
@@ -3131,7 +3131,7 @@
         "nativeLoc": 112,
         "managedLoc": 88,
         "note": "p_acs.cpp DLevelScript::DoSetActorProperty ACS property subset.",
-        "conversionManagedCommit": "0000000000000000000000000000000000000000",
+        "conversionManagedCommit": "398b3139d0c2d6e2e7b75333dcec9ec6a75dea57",
         "nativeRanges": [
           {
             "file": "src/playsim/p_acs.cpp",
@@ -3150,7 +3150,7 @@
         "nativeLoc": 17,
         "managedLoc": 142,
         "note": "d_net_diag presentation echo reset and remote player interp clear on disconnect.",
-        "conversionManagedCommit": "0000000000000000000000000000000000000000",
+        "conversionManagedCommit": "8c326f16e5a271058afbf212ef87163019bd9a1c",
         "nativeRanges": [
           {
             "file": "src/d_net_diag.cpp",
