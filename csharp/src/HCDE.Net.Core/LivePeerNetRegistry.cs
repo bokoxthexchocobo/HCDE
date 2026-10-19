@@ -4,7 +4,11 @@ public sealed class LivePlayerNetState
 {
     public int CurrentSequence { get; set; }
     public int SequenceAck { get; set; }
+    public int AppliedSequence { get; set; }
     public int CurrentNetConsistency { get; set; }
+    public byte ResendId { get; set; }
+    public int ResendSequenceFrom { get; set; } = -1;
+    public int ResendConsistencyFrom { get; set; } = -1;
     public int ConsistencyAck { get; set; }
     public byte StabilityBuffer { get; set; }
     public uint LastAppliedSnapshotGameTic { get; set; }
