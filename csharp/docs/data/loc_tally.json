@@ -1,9 +1,9 @@
 {
-  "convertedThisRunNative": 885,
-  "convertedThisRunManaged": 780,
-  "remainingNative": 501157,
-  "convertedBehaviorNative": 6929,
-  "convertedBehaviorManaged": 4855,
+  "convertedThisRunNative": 970,
+  "convertedThisRunManaged": 515,
+  "remainingNative": 500187,
+  "convertedBehaviorNative": 7899,
+  "convertedBehaviorManaged": 5370,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -131,6 +131,24 @@
       "nativeLoc": 145,
       "managedLoc": 135,
       "note": "ACSF_Get/SetAirSupply, SpawnSpotForced, Get/SetUserArray; PlayerPawn air_finished tic storage."
+    },
+    {
+      "name": "p-enemy-chunk1",
+      "nativeLoc": 485,
+      "managedLoc": 340,
+      "note": "p_enemy.cpp A_Look2, A_ClearLastHeard, A_ChaseNative flags, A_MonsterRail, A_Pain, CheckBossDeath/A_BossDeath exit, A_ClassBossHealth."
+    },
+    {
+      "name": "p-map-radius-chunk1",
+      "nativeLoc": 380,
+      "managedLoc": 125,
+      "note": "p_map.cpp P_GetRadiusDamage/P_RadiusAttack flat subset; rocket splash parity."
+    },
+    {
+      "name": "p-mobj-missile-spawn",
+      "nativeLoc": 105,
+      "managedLoc": 50,
+      "note": "p_mobj.cpp P_CheckMissileSpawn advance/try-move/explode subset."
     }
   ]
 }
