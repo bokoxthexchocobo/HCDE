@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 10643,
   "runStartRecognitionBehaviorNative": 5400,
   "runStartConvertedBehaviorManaged": 7417,
-  "convertedThisRunNative": 52,
+  "convertedThisRunNative": 1640,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 110,
+  "convertedThisRunManaged": 581,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": 20,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 491971,
+  "remainingNative": 490383,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 10695,
+  "convertedBehaviorNative": 12283,
   "recognitionBehaviorNative": 5420,
-  "combinedBehaviorNative": 16115,
-  "convertedBehaviorManaged": 7527,
+  "combinedBehaviorNative": 17703,
+  "convertedBehaviorManaged": 7998,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -924,6 +924,132 @@
           "end": 1365,
           "tests": [
             "VmIntegerArithmeticOpcodeTests.LtRrBranchesOnOrderedIntegers"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "g-level-headless-flow-chunk8",
+      "bucket": "conversion",
+      "nativeLoc": 1588,
+      "managedLoc": 471,
+      "note": "g_level.cpp headless G_InitNew/G_DoLoadLevel/ChangeLevel/Completed/WorldDone/travel/intermission for dedicated authority.",
+      "nativeRanges": [
+        {
+          "file": "src/g_level.cpp",
+          "symbol": "G_InitNew",
+          "start": 583,
+          "end": 713,
+          "tests": [
+            "HeadlessLevelFlowTests.InitNew_LoadsMapAndTicks"
+          ]
+        },
+        {
+          "file": "src/g_level.cpp",
+          "symbol": "FLevelLocals::ShouldDoIntermission",
+          "start": 733,
+          "end": 751,
+          "tests": [
+            "HeadlessLevelFlowTests.ShouldDoIntermission_SkipsHubHubWhenClusterDisallows"
+          ]
+        },
+        {
+          "file": "src/g_level.cpp",
+          "symbol": "FLevelLocals::ChangeLevel",
+          "start": 753,
+          "end": 894,
+          "tests": [
+            "HeadlessLevelFlowTests.ExitWithMapInfo_TransitionsToNextMapAfterIntermission"
+          ]
+        },
+        {
+          "file": "src/g_level.cpp",
+          "symbol": "G_DoCompleted",
+          "start": 1139,
+          "end": 1189,
+          "tests": [
+            "HeadlessLevelFlowTests.ExitWithMapInfo_TransitionsToNextMapAfterIntermission"
+          ]
+        },
+        {
+          "file": "src/g_level.cpp",
+          "symbol": "FLevelLocals::DoCompleted",
+          "start": 1198,
+          "end": 1354,
+          "tests": [
+            "HeadlessLevelFlowTests.ExitWithMapInfo_TransitionsToNextMapAfterIntermission"
+          ]
+        },
+        {
+          "file": "src/g_level.cpp",
+          "symbol": "RunIntermission",
+          "start": 1092,
+          "end": 1152,
+          "tests": [
+            "HeadlessLevelFlowTests.ExitWithMapInfo_TransitionsToNextMapAfterIntermission"
+          ]
+        },
+        {
+          "file": "src/g_level.cpp",
+          "symbol": "G_DoLoadLevel",
+          "start": 1386,
+          "end": 1428,
+          "tests": [
+            "HeadlessLevelFlowTests.InitNew_LoadsMapAndTicks"
+          ]
+        },
+        {
+          "file": "src/g_level.cpp",
+          "symbol": "FLevelLocals::DoLoadLevel",
+          "start": 1431,
+          "end": 1612,
+          "tests": [
+            "HeadlessLevelFlowTests.InitNew_LoadsMapAndTicks"
+          ]
+        },
+        {
+          "file": "src/g_level.cpp",
+          "symbol": "FLevelLocals::WorldDone",
+          "start": 1621,
+          "end": 1631,
+          "tests": [
+            "HeadlessLevelFlowTests.ExitWithMapInfo_TransitionsToNextMapAfterIntermission"
+          ]
+        },
+        {
+          "file": "src/g_level.cpp",
+          "symbol": "G_DoWorldDone",
+          "start": 1660,
+          "end": 1675,
+          "tests": [
+            "HeadlessLevelFlowTests.ExitWithMapInfo_TransitionsToNextMapAfterIntermission"
+          ]
+        },
+        {
+          "file": "src/g_level.cpp",
+          "symbol": "FLevelLocals::StartTravel",
+          "start": 1725,
+          "end": 1751,
+          "tests": [
+            "HeadlessLevelFlowTests.CoopTravel_PreservesPlayerHealthAcrossLoad"
+          ]
+        },
+        {
+          "file": "src/g_level.cpp",
+          "symbol": "FLevelLocals::MoveTravellers",
+          "start": 1755,
+          "end": 1782,
+          "tests": [
+            "HeadlessLevelFlowTests.CoopTravel_PreservesPlayerHealthAcrossLoad"
+          ]
+        },
+        {
+          "file": "src/g_level.cpp",
+          "symbol": "RemoveTravellingObjects",
+          "start": 1805,
+          "end": 1958,
+          "tests": [
+            "HeadlessLevelFlowTests.CoopTravel_PreservesPlayerHealthAcrossLoad"
           ]
         }
       ]

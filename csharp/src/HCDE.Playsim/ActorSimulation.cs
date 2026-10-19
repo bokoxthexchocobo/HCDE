@@ -3693,6 +3693,12 @@ public sealed class AuthoritySimulation
     /// There is no <c>G_InitNew</c> here.
     /// </summary>
     public bool ReloadRequested { get; private set; }
+    internal bool ConsumeReloadRequest()
+    {
+        if (!ReloadRequested) return false;
+        ReloadRequested = false;
+        return true;
+    }
     /// <summary>Native <c>sv_singleplayerrespawn</c>. When set, single-player death revives at the player start.</summary>
     public bool AllowSinglePlayerRespawn { get; set; }
     /// <summary>Native <c>sv_forcerespawn</c>. Deathmatch only: revive after the wait without a button press.</summary>
