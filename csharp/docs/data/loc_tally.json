@@ -1,8 +1,8 @@
 {
-  "convertedThisRunNative": 3285,
+  "convertedThisRunNative": 172,
   "convertedThisRunManaged": 465,
-  "remainingNative": 496007,
-  "convertedBehaviorNative": 11079,
+  "remainingNative": 500120,
+  "convertedBehaviorNative": 7966,
   "convertedBehaviorManaged": 5785,
   "baselineNative": 508086,
   "chunks": [
@@ -146,21 +146,31 @@
     },
     {
       "name": "p-map-radius-thrust-chunk2",
-      "nativeLoc": 1580,
+      "nativeLoc": 69,
       "managedLoc": 210,
-      "note": "p_map.cpp P_RadiusAttack thrust, blasted, circular/Z thrust, RADF thrust-less subset."
+      "note": "p_map.cpp P_RadiusAttack thrust path only (MapRadiusAttack.ApplyExplosionThrust + damage-mask thrustless).",
+      "nativeRanges": [
+        { "file": "src/playsim/p_map.cpp", "symbol": "P_RadiusAttack", "start": 6390, "end": 6458 }
+      ]
     },
     {
       "name": "p-enemy-move-blocked-chunk2",
-      "nativeLoc": 1520,
+      "nativeLoc": 22,
       "managedLoc": 180,
-      "note": "p_enemy.cpp P_Move spechit door/push, P_SmartMove/P_TryWalk blocking line, MF6_JUMPDOWN assist."
+      "note": "p_enemy.cpp P_Move spechit door/push and MF6_JUMPDOWN dropoff assist (MonsterBlockedMoveActions + MoveCore).",
+      "nativeRanges": [
+        { "file": "src/playsim/p_enemy.cpp", "symbol": "P_Move", "start": 518, "end": 524 },
+        { "file": "src/playsim/p_enemy.cpp", "symbol": "P_Move", "start": 697, "end": 710 }
+      ]
     },
     {
       "name": "p-mobj-missile-spawn-live",
-      "nativeLoc": 185,
+      "nativeLoc": 81,
       "managedLoc": 75,
-      "note": "p_mobj.cpp P_CheckMissileSpawn wired into SpawnProjectileCore and A_SpawnProjectile."
+      "note": "p_mobj.cpp P_CheckMissileSpawn wired into SpawnProjectileCore and A_SpawnProjectile.",
+      "nativeRanges": [
+        { "file": "src/playsim/p_mobj.cpp", "symbol": "P_CheckMissileSpawn", "start": 7781, "end": 7861 }
+      ]
     }
   ]
 }
