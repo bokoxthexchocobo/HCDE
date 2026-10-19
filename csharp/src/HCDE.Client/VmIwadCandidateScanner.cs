@@ -17,7 +17,9 @@ public static class VmIwadCandidateScanner
         };
         foreach (var path in Directory.EnumerateFiles(Path.GetFullPath(directory), "*", options))
         {
+            if ((File.GetAttributes(path) & FileAttributes.Hidden) != 0) continue;
             var leaf = Path.GetFileName(path);
+            if (leaf.StartsWith('.')) continue;
             var extension = Path.GetExtension(leaf);
             if (extension.Equals(".iwad", StringComparison.OrdinalIgnoreCase)
                 || extension.Equals(".ipk3", StringComparison.OrdinalIgnoreCase)

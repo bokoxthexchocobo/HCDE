@@ -43,6 +43,6 @@ public sealed class VmMusicPatchPaths
     }
 
     internal static bool IsAbsolute(string path) => path.Length > 0
-        && (path[0] is '/' or '\\' || (OperatingSystem.IsWindows() && path.Length > 1 && path[1] == ':'
-            && path[0] is >= 'A' and <= 'Z' or >= 'a' and <= 'z'));
+        && (path[0] is '/' or '\\' || path.Length > 1 && path[1] == ':'
+            && path[0] is >= 'A' and <= 'Z' or >= 'a' and <= 'z');
 }

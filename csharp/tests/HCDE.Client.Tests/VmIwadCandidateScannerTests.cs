@@ -33,10 +33,9 @@ public class VmIwadCandidateScannerTests
         try
         {
             var nested = Path.Combine(root, "nested", "game.ipk3");
-            var hidden = Path.Combine(root, "hidden.ipk7");
+            var hidden = Path.Combine(root, "nested", ".hidden.ipk7");
             File.WriteAllBytes(nested, []);
             File.WriteAllBytes(hidden, []);
-            File.SetAttributes(hidden, FileAttributes.Hidden);
             Assert.Empty(VmIwadCandidateScanner.Scan(root, []));
             Assert.Equal(nested, Assert.Single(VmIwadCandidateScanner.Scan(root, [], recursive: true)));
         }
