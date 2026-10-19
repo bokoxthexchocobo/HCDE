@@ -12,25 +12,25 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 103452
+    "managedCSharpLoc": 103580
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 4642,
+    "convertedThisRunNative": 360,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 978,
+    "convertedThisRunManaged": 1138,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": 0,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 479477,
+    "remainingNative": 483759,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 23169,
+    "convertedBehaviorNative": 18887,
     "recognitionBehaviorNative": 5440,
-    "combinedBehaviorNative": 28609,
-    "convertedBehaviorManaged": 10649,
+    "combinedBehaviorNative": 24327,
+    "convertedBehaviorManaged": 10809,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -1442,53 +1442,15 @@
       {
         "name": "d-net-cutscene-runtime-chunk13",
         "bucket": "conversion",
-        "nativeLoc": 1562,
+        "nativeLoc": 137,
         "managedLoc": 420,
-        "note": "Cutscene vote/countdown/advance, late-join bootstrap/resync, disconnect + Net_ResetClientState parity.",
+        "note": "Cutscene vote/countdown/advance, late-join bootstrap/resync, disconnect bookkeeping (trimmed native credit; see CHUNKS_13_15_LOC_ADDENDUM).",
         "nativeRanges": [
           {
             "file": "src/d_net.cpp",
-            "symbol": "Net_CutsceneReadyVoteSatisfied",
-            "start": 4720,
-            "end": 4785,
-            "tests": [
-              "CutsceneAdvanceSessionTests.VoteSatisfied_AnyoneMode_RequiresSingleReadyBit",
-              "CutsceneAdvanceSessionTests.LateJoinParticipant_ExcludedFromVote"
-            ]
-          },
-          {
-            "file": "src/d_net.cpp",
-            "symbol": "Net_CheckCutsceneReady",
-            "start": 4793,
-            "end": 4835,
-            "tests": [
-              "CutsceneAdvanceSessionTests.CountdownExpired_AdvancesWhenVoteFails",
-              "CutsceneAdvanceSessionTests.VoteSatisfied_AllHumansReady_AdvancesBeforeCountdown"
-            ]
-          },
-          {
-            "file": "src/d_net.cpp",
-            "symbol": "Net_StartCutscene",
-            "start": 4697,
-            "end": 4713,
-            "tests": [
-              "CutsceneAdvanceSessionTests.StartCutscene_AppliesCountdownForNetGame"
-            ]
-          },
-          {
-            "file": "src/d_net.cpp",
-            "symbol": "Net_AdvanceCutscene",
-            "start": 4837,
-            "end": 4845,
-            "tests": [
-              "CutsceneAdvanceSessionTests.AdvanceCutscene_ClearsReadyAndCountdown"
-            ]
-          },
-          {
-            "file": "src/d_net.cpp",
             "symbol": "Net_SetLateJoinSyncPending",
-            "start": 4492,
-            "end": 4505,
+            "start": 4494,
+            "end": 4501,
             "tests": [
               "LateJoinAndDisconnectSessionTests.LateJoinSync_PendingUntilCleared"
             ]
@@ -1496,17 +1458,64 @@
           {
             "file": "src/d_net.cpp",
             "symbol": "Net_BeginRuntimeBootstrap",
-            "start": 4525,
-            "end": 4547,
+            "start": 4532,
+            "end": 4543,
             "tests": [
               "LateJoinAndDisconnectSessionTests.RuntimeBootstrap_SetsResendWindowAndPending"
             ]
           },
           {
             "file": "src/d_net.cpp",
+            "symbol": "Net_StartCutscene",
+            "start": 4699,
+            "end": 4710,
+            "tests": [
+              "CutsceneAdvanceSessionTests.StartCutscene_AppliesCountdownForNetGame"
+            ]
+          },
+          {
+            "file": "src/d_net.cpp",
+            "symbol": "Net_CutsceneReadyVoteSatisfied",
+            "start": 4720,
+            "end": 4768,
+            "tests": [
+              "CutsceneAdvanceSessionTests.VoteSatisfied_AnyoneMode_RequiresSingleReadyBit",
+              "CutsceneAdvanceSessionTests.LateJoinParticipant_ExcludedFromVote"
+            ]
+          },
+          {
+            "file": "src/d_net.cpp",
+            "symbol": "Net_CutsceneReadyVoteSatisfied",
+            "start": 4777,
+            "end": 4784,
+            "tests": [
+              "CutsceneAdvanceSessionTests.VoteSatisfied_AllHumansReady_AdvancesBeforeCountdown"
+            ]
+          },
+          {
+            "file": "src/d_net.cpp",
+            "symbol": "Net_CheckCutsceneReady",
+            "start": 4805,
+            "end": 4834,
+            "tests": [
+              "CutsceneAdvanceSessionTests.CountdownExpired_AdvancesWhenVoteFails",
+              "CutsceneAdvanceSessionTests.VoteSatisfied_AllHumansReady_AdvancesBeforeCountdown"
+            ]
+          },
+          {
+            "file": "src/d_net.cpp",
+            "symbol": "Net_AdvanceCutscene",
+            "start": 4837,
+            "end": 4840,
+            "tests": [
+              "CutsceneAdvanceSessionTests.AdvanceCutscene_ClearsReadyAndCountdown"
+            ]
+          },
+          {
+            "file": "src/d_net.cpp",
             "symbol": "Net_ResetClientState",
-            "start": 5349,
-            "end": 5401,
+            "start": 5395,
+            "end": 5400,
             "tests": [
               "LateJoinAndDisconnectSessionTests.ResetClientState_ClearsLateJoinAndCursors"
             ]
@@ -1514,8 +1523,26 @@
           {
             "file": "src/d_net.cpp",
             "symbol": "DisconnectClient",
-            "start": 5403,
-            "end": 5454,
+            "start": 5425,
+            "end": 5426,
+            "tests": [
+              "LateJoinAndDisconnectSessionTests.Disconnect_IsIdempotentAndResetsRegistry"
+            ]
+          },
+          {
+            "file": "src/d_net.cpp",
+            "symbol": "DisconnectClient",
+            "start": 5438,
+            "end": 5442,
+            "tests": [
+              "LateJoinAndDisconnectSessionTests.Disconnect_IsIdempotentAndResetsRegistry"
+            ]
+          },
+          {
+            "file": "src/d_net.cpp",
+            "symbol": "DisconnectClient",
+            "start": 5453,
+            "end": 5453,
             "tests": [
               "LateJoinAndDisconnectSessionTests.Disconnect_IsIdempotentAndResetsRegistry"
             ]
@@ -1525,9 +1552,9 @@
       {
         "name": "acs-print-hud-chunk14",
         "bucket": "conversion",
-        "nativeLoc": 1548,
+        "nativeLoc": 56,
         "managedLoc": 380,
-        "note": "ACS string builder print pipeline and HUD message opcode family.",
+        "note": "Tested ACS print builder + default EndHudMessage path only (trimmed native credit; see CHUNKS_13_15_LOC_ADDENDUM).",
         "nativeRanges": [
           {
             "file": "src/playsim/p_acs.cpp",
@@ -1542,27 +1569,63 @@
             "file": "src/playsim/p_acs.cpp",
             "symbol": "PCD_PRINTSTRING",
             "start": 8903,
-            "end": 8915,
+            "end": 8914,
             "tests": [
               "AcsPrintHudOpcodeTests.PrintString_UsesStringTable"
             ]
           },
           {
             "file": "src/playsim/p_acs.cpp",
-            "symbol": "PCD_ENDHUDMESSAGE",
-            "start": 9148,
-            "end": 9235,
+            "symbol": "PCD_PRINTNUMBER",
+            "start": 8917,
+            "end": 8919,
             "tests": [
-              "AcsPrintHudOpcodeTests.EndHudMessage_RecordsHudPayload"
+              "AcsPrintHudOpcodeTests.BeginPrint_EndPrint_FlushesToBuffer"
             ]
           },
           {
             "file": "src/playsim/p_acs.cpp",
             "symbol": "PCD_PRINTBINARY",
             "start": 8922,
+            "end": 8926,
+            "tests": [
+              "AcsPrintHudOpcodeTests.PrintBinaryAndHex_UsePrintBuilder"
+            ]
+          },
+          {
+            "file": "src/playsim/p_acs.cpp",
+            "symbol": "PCD_PRINTHEX",
+            "start": 8929,
             "end": 8932,
             "tests": [
               "AcsPrintHudOpcodeTests.PrintBinaryAndHex_UsePrintBuilder"
+            ]
+          },
+          {
+            "file": "src/playsim/p_acs.cpp",
+            "symbol": "PCD_ENDPRINT",
+            "start": 9119,
+            "end": 9120,
+            "tests": [
+              "AcsPrintHudOpcodeTests.BeginPrint_EndPrint_FlushesToBuffer"
+            ]
+          },
+          {
+            "file": "src/playsim/p_acs.cpp",
+            "symbol": "PCD_ENDPRINT",
+            "start": 9136,
+            "end": 9136,
+            "tests": [
+              "AcsPrintHudOpcodeTests.BeginPrint_EndPrint_FlushesToBuffer"
+            ]
+          },
+          {
+            "file": "src/playsim/p_acs.cpp",
+            "symbol": "PCD_ENDHUDMESSAGE",
+            "start": 9170,
+            "end": 9194,
+            "tests": [
+              "AcsPrintHudOpcodeTests.EndHudMessage_RecordsHudPayload"
             ]
           }
         ]
@@ -1570,10 +1633,19 @@
       {
         "name": "d-net-lag-waiting-chunk15",
         "bucket": "conversion",
-        "nativeLoc": 1512,
+        "nativeLoc": 37,
         "managedLoc": 120,
-        "note": "Lag-state presentation fractions, authority wait watchdog, solo cutscene client recovery.",
+        "note": "Lag fractions, authority wait watchdog core, solo cutscene recovery timeout (trimmed native credit; see CHUNKS_13_15_LOC_ADDENDUM).",
         "nativeRanges": [
+          {
+            "file": "src/d_net.cpp",
+            "symbol": "Net_TickCutsceneClientRecovery",
+            "start": 4675,
+            "end": 4694,
+            "tests": [
+              "NetLagAndCutsceneRecoveryTests.SoloClientRecovery_ForcesEndAfterDelay"
+            ]
+          },
           {
             "file": "src/d_net.cpp",
             "symbol": "Net_IsWaiting",
@@ -1585,29 +1657,29 @@
           },
           {
             "file": "src/d_net.cpp",
-            "symbol": "Net_ModifyFrac",
-            "start": 4875,
-            "end": 4888,
-            "tests": [
-              "NetLagAndCutsceneRecoveryTests.ModifyParticleFrac_WaitingState_ZerosParticles"
-            ]
-          },
-          {
-            "file": "src/d_net.cpp",
             "symbol": "Net_ResetAuthorityWaitWatchdog",
             "start": 4861,
-            "end": 4872,
+            "end": 4865,
             "tests": [
               "NetLagAndCutsceneRecoveryTests.AuthorityWaitWatchdog_ClearsStaleWaitingFlags"
             ]
           },
           {
             "file": "src/d_net.cpp",
-            "symbol": "Net_TickCutsceneClientRecovery",
-            "start": 4662,
-            "end": 4695,
+            "symbol": "Net_ModifyFrac",
+            "start": 4875,
+            "end": 4878,
             "tests": [
-              "NetLagAndCutsceneRecoveryTests.SoloClientRecovery_ForcesEndAfterDelay"
+              "NetLagAndCutsceneRecoveryTests.ModifyFrac_WaitingState_ForcesUnity"
+            ]
+          },
+          {
+            "file": "src/d_net.cpp",
+            "symbol": "Net_ModifyParticleFrac",
+            "start": 4885,
+            "end": 4888,
+            "tests": [
+              "NetLagAndCutsceneRecoveryTests.ModifyParticleFrac_WaitingState_ZerosParticles"
             ]
           }
         ]
@@ -1635,6 +1707,79 @@
             "end": 10480,
             "tests": [
               "AcsThingDamageOpcodeTests.WireOpcodeReturnsShootableActorCount"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "acs-eternity-stack-chunk17",
+        "bucket": "conversion",
+        "nativeLoc": 22,
+        "managedLoc": 52,
+        "note": "SaveString, PushFunction, partial CallStack (invasion + AcsCallFunctions).",
+        "nativeRanges": [
+          {
+            "file": "src/playsim/p_acs.cpp",
+            "symbol": "PCD_SAVESTRING",
+            "start": 10621,
+            "end": 10628,
+            "tests": [
+              "AcsEternityStackOpcodeTests.SaveString_PushesGlobalPoolIdFromPrintWork"
+            ]
+          },
+          {
+            "file": "src/playsim/p_acs.cpp",
+            "symbol": "PCD_PUSHFUNCTION",
+            "start": 7510,
+            "end": 7515,
+            "tests": [
+              "AcsEternityStackOpcodeTests.PushFunction_PushesFunctionIndexByte"
+            ]
+          },
+          {
+            "file": "src/playsim/p_acs.cpp",
+            "symbol": "PCD_CALLSTACK",
+            "start": 7526,
+            "end": 7533,
+            "tests": [
+              "AcsEternityStackOpcodeTests.CallStack_InvokesZeroArgInvasionQueryFromStackTag"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "hcde-edf-thingtype-chunk18",
+        "bucket": "conversion",
+        "nativeLoc": 88,
+        "managedLoc": 108,
+        "note": "hcde_edf.cpp thingtype header and property parse subset.",
+        "nativeRanges": [
+          {
+            "file": "src/gamedata/hcde_edf.cpp",
+            "symbol": "ParseThingPropertyLine",
+            "start": 663,
+            "end": 727,
+            "tests": [
+              "HcdeEdfThingParserTests.ThingType_ParsesDoomednumAndInherits",
+              "HcdeEdfThingParserTests.ThingDelta_MarksUnknownBehaviorProperty"
+            ]
+          },
+          {
+            "file": "src/gamedata/hcde_edf.cpp",
+            "symbol": "ParseThingHeader",
+            "start": 729,
+            "end": 756,
+            "tests": [
+              "HcdeEdfThingParserTests.ThingDelta_MarksUnknownBehaviorProperty"
+            ]
+          },
+          {
+            "file": "src/gamedata/hcde_edf.cpp",
+            "symbol": "ParseThingBlock",
+            "start": 927,
+            "end": 980,
+            "tests": [
+              "HcdeEdfThingParserTests.ThingType_ParsesDoomednumAndInherits"
             ]
           }
         ]
