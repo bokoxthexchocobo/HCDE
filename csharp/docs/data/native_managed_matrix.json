@@ -18,19 +18,19 @@
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": -11167,
+    "convertedThisRunNative": -11098,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 1138,
+    "convertedThisRunManaged": 1220,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -774,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 496060,
+    "remainingNative": 495991,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 7360,
+    "convertedBehaviorNative": 7429,
     "recognitionBehaviorNative": 4666,
-    "combinedBehaviorNative": 12026,
-    "convertedBehaviorManaged": 10809,
+    "combinedBehaviorNative": 12095,
+    "convertedBehaviorManaged": 10891,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -2804,6 +2804,43 @@
               "ProjectileSpawnSoundRoutingTests.ActorRoutingUsesNativeSourceAndChannel",
               "ProjectileSpawnSoundRoutingTests.PositionFallbackSuppressesSilentSectorBeforeQueueing",
               "ProjectileSpawnSoundRoutingTests.MissingSeeSoundAndDestroyedMissileStayQuiet"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "thingdef-flag-expression-chunk20",
+        "bucket": "conversion",
+        "nativeLoc": 69,
+        "managedLoc": 82,
+        "note": "thingdef_parse.cpp ParseFlagExpressionString, ParseMorphStyle, ParseThingActivation name tables.",
+        "conversionManagedCommit": "478703d53ea262a025a931eec8f3e251990b3b78",
+        "nativeRanges": [
+          {
+            "file": "src/scripting/decorate/thingdef_parse.cpp",
+            "symbol": "ParseFlagExpressionString",
+            "start": 512,
+            "end": 537,
+            "tests": [
+              "DecorateFlagExpressionTests"
+            ]
+          },
+          {
+            "file": "src/scripting/decorate/thingdef_parse.cpp",
+            "symbol": "ParseMorphStyle",
+            "start": 542,
+            "end": 563,
+            "tests": [
+              "DecorateFlagExpressionTests.ParsesPipeCombinedMorphFlags"
+            ]
+          },
+          {
+            "file": "src/scripting/decorate/thingdef_parse.cpp",
+            "symbol": "ParseThingActivation",
+            "start": 565,
+            "end": 585,
+            "tests": [
+              "DecorateFlagExpressionTests.ParsesParenthesizedThingActivation"
             ]
           }
         ]
