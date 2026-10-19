@@ -18,19 +18,19 @@
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 3110,
+    "convertedThisRunNative": 4622,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 800,
+    "convertedThisRunManaged": 920,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": 0,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 481009,
+    "remainingNative": 479497,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 21637,
+    "convertedBehaviorNative": 23149,
     "recognitionBehaviorNative": 5440,
-    "combinedBehaviorNative": 27077,
-    "convertedBehaviorManaged": 10471,
+    "combinedBehaviorNative": 28589,
+    "convertedBehaviorManaged": 10591,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -1563,6 +1563,51 @@
             "end": 8932,
             "tests": [
               "AcsPrintHudOpcodeTests.PrintBinaryAndHex_UsePrintBuilder"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "d-net-lag-waiting-chunk15",
+        "bucket": "conversion",
+        "nativeLoc": 1512,
+        "managedLoc": 120,
+        "note": "Lag-state presentation fractions, authority wait watchdog, solo cutscene client recovery.",
+        "nativeRanges": [
+          {
+            "file": "src/d_net.cpp",
+            "symbol": "Net_IsWaiting",
+            "start": 4847,
+            "end": 4850,
+            "tests": [
+              "NetLagAndCutsceneRecoveryTests.ModifyFrac_WaitingState_ForcesUnity"
+            ]
+          },
+          {
+            "file": "src/d_net.cpp",
+            "symbol": "Net_ModifyFrac",
+            "start": 4875,
+            "end": 4888,
+            "tests": [
+              "NetLagAndCutsceneRecoveryTests.ModifyParticleFrac_WaitingState_ZerosParticles"
+            ]
+          },
+          {
+            "file": "src/d_net.cpp",
+            "symbol": "Net_ResetAuthorityWaitWatchdog",
+            "start": 4861,
+            "end": 4872,
+            "tests": [
+              "NetLagAndCutsceneRecoveryTests.AuthorityWaitWatchdog_ClearsStaleWaitingFlags"
+            ]
+          },
+          {
+            "file": "src/d_net.cpp",
+            "symbol": "Net_TickCutsceneClientRecovery",
+            "start": 4662,
+            "end": 4695,
+            "tests": [
+              "NetLagAndCutsceneRecoveryTests.SoloClientRecovery_ForcesEndAfterDelay"
             ]
           }
         ]
