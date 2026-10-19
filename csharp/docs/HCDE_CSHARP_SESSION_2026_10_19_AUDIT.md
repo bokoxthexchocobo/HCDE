@@ -82,7 +82,7 @@ No subagent chunks 10–12 were merged; branch contains only audited commits thr
 | Tests | `AcsAbsentOpcodeChunk10Tests` (11) |
 | Tally chunk | `acs-absent-opcodes-callfunc-chunk10` — **842** native / **278** managed |
 
-### Behavior LOC after chunk 10 (`sync_loc_tally`)
+### Behavior LOC after chunk 10 opcodes/CallFuncs (`sync_loc_tally`)
 
 | Metric | Value |
 | --- | ---: |
@@ -91,4 +91,29 @@ No subagent chunks 10–12 were merged; branch contains only audited commits thr
 | Remaining native | **487,929** |
 | Cumulative conversion (managed) | **8,392** |
 
-Open: remaining **18** CallFuncs; `p_saveg` ACS persistence; `d_net` slice; headless host wiring.
+### Final session state (pushed `2750000e`)
+
+| Item | Detail |
+| --- | --- |
+| Also merged | `p-saveg-acs-archive-chunk10` — `HCDE_CSHARP_P_SAVEG_SERIALIZER_CHUNK10_AUDIT.md`, `PSavegRoundTripTests` |
+| Tally chunk | `p-saveg-acs-archive-chunk10` — **1,512** native / **550** managed (credited) |
+
+### Behavior LOC at session end (`sync_loc_tally`)
+
+| Metric | Value |
+| --- | ---: |
+| Converted this run (native) | **5,606** |
+| Recognition this run (native) | **20** |
+| Added this run (managed) | **1,525** |
+| Cumulative conversion (native) | **16,249** |
+| Cumulative recognition (native) | **5,420** |
+| Remaining native | **486,417** |
+| Cumulative conversion (managed) | **8,942** |
+
+Matrix headline: ACS pcode **285 executed** / 10 partial / 79 decoded-only; CallFunc **120 executed** / **18 absent**.
+
+### Not merged (discarded at session end)
+
+Partial chunk 11 work (remaining **18** CallFuncs, `d_net` reset helpers) was uncommitted WIP and was **not** pushed.
+
+Open next session: finish **18** CallFuncs; `d_net.cpp` slice vs `HCDE.Net.Core`; wire `DedicatedServerHost` to headless session/ticker; deeper `g_level` / `g_game` parity.
