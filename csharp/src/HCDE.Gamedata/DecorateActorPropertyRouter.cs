@@ -45,6 +45,12 @@ public static class DecorateActorPropertyRouter
             return true;
         }
 
+        if (DecorateActorBuiltinPropertyParamSpecs.TryGetSpec(propertyName, out var extendedSpec)
+            && DecoratePropertyParamParser.TryParse(extendedSpec, tokens, out var extendedParsed, out error))
+        {
+            return DecorateActorBuiltinPropertyHandlers.TryApply(propertyName, definition, extendedParsed!.Values, out error);
+        }
+
         if (!Builtin.TryGetValue(propertyName, out var builtin))
         {
             error = $"'{propertyName}' is an unknown actor property.";
@@ -135,4 +141,55 @@ public sealed class DecorateActorDefinition
     public double Gravity { get; set; } = 1;
     public double Alpha { get; set; } = 1;
     public string RenderStyle { get; set; } = "Normal";
+    public string Tag { get; set; } = "";
+    public int DefThreshold { get; set; }
+    public int Threshold { get; set; }
+    public double ScaleY { get; set; } = 1;
+    public int FloatBobPhase { get; set; }
+    public double FloatBobStrength { get; set; }
+    public double FloatBobFactor { get; set; } = 1;
+    public int[] Args { get; } = new int[5];
+    public bool ArgsDefined { get; set; }
+    public string BounceType { get; set; } = "None";
+    public double BounceFactor { get; set; }
+    public double WallBounceFactor { get; set; }
+    public string DamageType { get; set; } = "";
+    public string PainType { get; set; } = "";
+    public string DeathType { get; set; } = "";
+    public double DamageFactor { get; set; } = 1;
+    public Dictionary<string, double> DamageFactorByType { get; } = new(StringComparer.OrdinalIgnoreCase);
+    public Dictionary<string, int> PainChanceByType { get; } = new(StringComparer.OrdinalIgnoreCase);
+    public int PoisonDamage { get; set; }
+    public int PoisonDuration { get; set; }
+    public int PoisonPeriod { get; set; }
+    public List<DecorateDropItem> DropItems { get; } = new();
+}
+
+internal static class DecorateActorBuiltinPropertyParamSpecs
+{
+    private static readonly Dictionary<string, string> Specs = new(StringComparer.OrdinalIgnoreCase)
+    {
+        ["tag"] = "S",
+        ["defthreshold"] = "I",
+        ["threshold"] = "I",
+        ["scale"] = "F",
+        ["floatbobphase"] = "I",
+        ["floatbobstrength"] = "F",
+        ["floatbobfactor"] = "F",
+        ["args"] = "Iiiii",
+        ["renderstyle"] = "S",
+        ["gravity"] = "F",
+        ["bouncetype"] = "S",
+        ["bouncefactor"] = "F",
+        ["wallbouncefactor"] = "F",
+        ["damagetype"] = "S",
+        ["paintype"] = "S",
+        ["deathtype"] = "S",
+        ["damagefactor"] = "ZF",
+        ["poisondamage"] = "Iii",
+        ["painchance"] = "ZI",
+        ["dropitem"] = "S_i_i",
+    };
+
+    public static bool TryGetSpec(string name, out string spec) => Specs.TryGetValue(name, out spec!);
 }
