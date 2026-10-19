@@ -18,19 +18,19 @@
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": -8930,
+    "convertedThisRunNative": -8926,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 4587,
+    "convertedThisRunManaged": 4649,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -774,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 493823,
+    "remainingNative": 493819,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 9597,
+    "convertedBehaviorNative": 9601,
     "recognitionBehaviorNative": 4666,
-    "combinedBehaviorNative": 14263,
-    "convertedBehaviorManaged": 14258,
+    "combinedBehaviorNative": 14267,
+    "convertedBehaviorManaged": 14320,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -3374,6 +3374,25 @@
             "end": 3991,
             "tests": [
               "AcsFadeRangeServiceTests"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "d-net-replication-reset-chunk40",
+        "bucket": "conversion",
+        "nativeLoc": 4,
+        "managedLoc": 62,
+        "note": "Actor delta send cursors and priority queue clear on client reset.",
+        "conversionManagedCommit": "a83598645b2f0ee4cb0e9f992be158f9b429ac04",
+        "nativeRanges": [
+          {
+            "file": "src/d_net.cpp",
+            "symbol": "Net_ResetClientState",
+            "start": 5397,
+            "end": 5400,
+            "tests": [
+              "NetPresentationEchoResetTests"
             ]
           }
         ]
