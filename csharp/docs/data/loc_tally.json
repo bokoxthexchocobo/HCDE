@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": -10696,
+  "convertedThisRunNative": -10563,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 1817,
+  "convertedThisRunManaged": 2271,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -774,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 495589,
+  "remainingNative": 495456,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 7831,
+  "convertedBehaviorNative": 7964,
   "recognitionBehaviorNative": 4666,
-  "combinedBehaviorNative": 12497,
-  "convertedBehaviorManaged": 11488,
+  "combinedBehaviorNative": 12630,
+  "convertedBehaviorManaged": 11942,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -2890,6 +2890,43 @@
           "end": 996,
           "tests": [
             "DecorateActorFlagAndPropertyTests"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "p-mobj-spawn-mapthing-chunk23",
+      "bucket": "conversion",
+      "nativeLoc": 133,
+      "managedLoc": 454,
+      "note": "p_mobj.cpp SpawnMapThing spawn filters and player-start registration.",
+      "conversionManagedCommit": "0000000000000000000000000000000000000000",
+      "nativeRanges": [
+        {
+          "file": "src/playsim/p_mobj.cpp",
+          "symbol": "SpawnMapThing",
+          "start": 6664,
+          "end": 6727,
+          "tests": [
+            "MapThingSpawnFilterTests"
+          ]
+        },
+        {
+          "file": "src/playsim/p_mobj.cpp",
+          "symbol": "SpawnMapThing",
+          "start": 6729,
+          "end": 6760,
+          "tests": [
+            "MapThingPlayerStartRegistrarTests"
+          ]
+        },
+        {
+          "file": "src/playsim/p_mobj.cpp",
+          "symbol": "SpawnMapThing",
+          "start": 6834,
+          "end": 6870,
+          "tests": [
+            "MapThingSpawnFilterTests"
           ]
         }
       ]
