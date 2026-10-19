@@ -18,19 +18,19 @@
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": -9405,
+    "convertedThisRunNative": -9344,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 3890,
+    "convertedThisRunManaged": 4044,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -774,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 494298,
+    "remainingNative": 494237,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 9122,
+    "convertedBehaviorNative": 9183,
     "recognitionBehaviorNative": 4666,
-    "combinedBehaviorNative": 13788,
-    "convertedBehaviorManaged": 13561,
+    "combinedBehaviorNative": 13849,
+    "convertedBehaviorManaged": 13715,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -3224,6 +3224,25 @@
             "end": 1262,
             "tests": [
               "DecorateDamagePropertyHandlerTests"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "thingdef-parse-actor-body-chunk34",
+        "bucket": "conversion",
+        "nativeLoc": 61,
+        "managedLoc": 154,
+        "note": "ParseActor property and flag body loop without VM compile.",
+        "conversionManagedCommit": "4a10016d1c3f1c5a09b2a8c88d6a447503b12a29",
+        "nativeRanges": [
+          {
+            "file": "src/scripting/decorate/thingdef_parse.cpp",
+            "symbol": "ParseActor",
+            "start": 1157,
+            "end": 1217,
+            "tests": [
+              "DecorateActorBodyParserTests"
             ]
           }
         ]
