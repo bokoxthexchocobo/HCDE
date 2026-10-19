@@ -1055,7 +1055,7 @@
       "special": 175,
       "nativeHandler": "LS_Thing_ProjectileIntercept",
       "nativeStatus": "implemented",
-      "managedStatus": "gap"
+      "managedStatus": "wired"
     },
     {
       "special": 176,
@@ -1073,7 +1073,7 @@
       "special": 178,
       "nativeHandler": "LS_Thing_ProjectileAimed",
       "nativeStatus": "implemented",
-      "managedStatus": "gap"
+      "managedStatus": "wired"
     },
     {
       "special": 179,

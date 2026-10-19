@@ -276,6 +276,7 @@ public static partial class LineSpecials
                     SectorEnvironmentLineSpecials.Execute(sim, line.Special, line.Arg0, line.Arg1, line.Arg2, line.Arg3, line.Arg4) == true,
                 95 or 96 or 251 or 250 or 241 or 235 or 236 =>
                     FloorCombinedLineSpecials.Execute(sim, line.Special, line.Arg0, line.Arg1, line.Arg2, line.Arg3, line.Arg4, line) == true,
+                175 or 178 => ThingProjectileLineSpecials.Execute(sim, line.Special, actor, line.Arg0, line.Arg1, line.Arg2, line.Arg3, line.Arg4) == true,
                 125 or 129 or 134 or 135 or 136 or 137 or 138 or 139 or 157 or 174 or 179 or 180 or 218 =>
                     (ThingSpawnLineSpecials.Execute(sim, line.Special, actor, line.Arg0, line.Arg1, line.Arg2, line.Arg3, line.Arg4)
                      ?? LineSpecialFeasibleGaps.Execute(sim, line.Special, actor, line.Arg0, line.Arg1, line.Arg2, line.Arg3, line.Arg4)) == true,
