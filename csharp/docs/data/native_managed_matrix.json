@@ -12,25 +12,25 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 103662
+    "managedCSharpLoc": 103908
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": -11098,
+    "convertedThisRunNative": -10907,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 1220,
+    "convertedThisRunManaged": 1466,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -774,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 495991,
+    "remainingNative": 495800,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 7429,
+    "convertedBehaviorNative": 7620,
     "recognitionBehaviorNative": 4666,
-    "combinedBehaviorNative": 12095,
-    "convertedBehaviorManaged": 10891,
+    "combinedBehaviorNative": 12286,
+    "convertedBehaviorManaged": 11137,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -2841,6 +2841,25 @@
             "end": 585,
             "tests": [
               "DecorateFlagExpressionTests.ParsesParenthesizedThingActivation"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "thingdef-property-params-chunk21",
+        "bucket": "conversion",
+        "nativeLoc": 191,
+        "managedLoc": 246,
+        "note": "thingdef_parse.cpp ParsePropertyParams (DECORATE property parameter decoding).",
+        "conversionManagedCommit": "713180ca0f5482a588dafa516eef4ce5ced05521",
+        "nativeRanges": [
+          {
+            "file": "src/scripting/decorate/thingdef_parse.cpp",
+            "symbol": "ParsePropertyParams",
+            "start": 655,
+            "end": 845,
+            "tests": [
+              "DecoratePropertyParamParserTests"
             ]
           }
         ]
