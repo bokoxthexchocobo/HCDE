@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": -8748,
+  "convertedThisRunNative": -8720,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 4997,
+  "convertedThisRunManaged": 5052,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -774,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 493641,
+  "remainingNative": 493613,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 9779,
+  "convertedBehaviorNative": 9807,
   "recognitionBehaviorNative": 4666,
-  "combinedBehaviorNative": 14445,
-  "convertedBehaviorManaged": 14668,
+  "combinedBehaviorNative": 14473,
+  "convertedBehaviorManaged": 14723,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -3463,6 +3463,25 @@
           "end": 5308,
           "tests": [
             "AcsSwapActorTeleFogServiceTests"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "zcc-constant-fold-chunk46",
+      "bucket": "conversion",
+      "nativeLoc": 28,
+      "managedLoc": 55,
+      "note": "FxAddSub integer constant folding and VM literal emit.",
+      "conversionManagedCommit": "9bb4fbf241cd283586c1ae4a38e417032e9b1a60",
+      "nativeRanges": [
+        {
+          "file": "src/common/scripting/backend/codegen.cpp",
+          "symbol": "FxAddSub::Resolve",
+          "start": 3361,
+          "end": 3388,
+          "tests": [
+            "ZccExpressionConstantFolderTests"
           ]
         }
       ]
