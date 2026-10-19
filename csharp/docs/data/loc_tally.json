@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 1562,
+  "convertedThisRunNative": 3110,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 420,
+  "convertedThisRunManaged": 800,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": 0,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 482557,
+  "remainingNative": 481009,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 20089,
+  "convertedBehaviorNative": 21637,
   "recognitionBehaviorNative": 5440,
-  "combinedBehaviorNative": 25529,
-  "convertedBehaviorManaged": 10091,
+  "combinedBehaviorNative": 27077,
+  "convertedBehaviorManaged": 10471,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -1502,6 +1502,51 @@
           "end": 5454,
           "tests": [
             "LateJoinAndDisconnectSessionTests.Disconnect_IsIdempotentAndResetsRegistry"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "acs-print-hud-chunk14",
+      "bucket": "conversion",
+      "nativeLoc": 1548,
+      "managedLoc": 380,
+      "note": "ACS string builder print pipeline and HUD message opcode family.",
+      "nativeRanges": [
+        {
+          "file": "src/playsim/p_acs.cpp",
+          "symbol": "PCD_BEGINPRINT",
+          "start": 8899,
+          "end": 8901,
+          "tests": [
+            "AcsPrintHudOpcodeTests.BeginPrint_EndPrint_FlushesToBuffer"
+          ]
+        },
+        {
+          "file": "src/playsim/p_acs.cpp",
+          "symbol": "PCD_PRINTSTRING",
+          "start": 8903,
+          "end": 8915,
+          "tests": [
+            "AcsPrintHudOpcodeTests.PrintString_UsesStringTable"
+          ]
+        },
+        {
+          "file": "src/playsim/p_acs.cpp",
+          "symbol": "PCD_ENDHUDMESSAGE",
+          "start": 9148,
+          "end": 9235,
+          "tests": [
+            "AcsPrintHudOpcodeTests.EndHudMessage_RecordsHudPayload"
+          ]
+        },
+        {
+          "file": "src/playsim/p_acs.cpp",
+          "symbol": "PCD_PRINTBINARY",
+          "start": 8922,
+          "end": 8932,
+          "tests": [
+            "AcsPrintHudOpcodeTests.PrintBinaryAndHex_UsePrintBuilder"
           ]
         }
       ]

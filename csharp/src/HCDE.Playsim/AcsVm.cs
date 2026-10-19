@@ -1,4 +1,5 @@
 using System.Buffers.Binary;
+using System.Text;
 using HCDE.Gamedata;
 using HCDE.MapLoader;
 
@@ -1405,20 +1406,136 @@ public sealed partial class AcsVm
                     }
                     break;
                 }
+                case (int)AcsPcode.BeginPrint:
+                    fiber.PrintWork.Clear();
+                    break;
+                case (int)AcsPcode.PrintString:
+                case (int)AcsPcode.PrintLocalized:
+                {
+                    if (fiber.Stack.Count < 1) { fiber.Done = true; return; }
+                    var stringId = Pop(fiber);
+                    if (!fiber.Done)
+                    {
+                        var text = AcsPrintHudOpcodes.ResolveString(stringId, fiber.StringTable, _globalStrings);
+                        AcsPrintHudOpcodes.AppendString(fiber.PrintWork, text);
+                    }
+                    break;
+                }
+                case (int)AcsPcode.PrintNumber:
+                {
+                    if (fiber.Stack.Count < 1) { fiber.Done = true; return; }
+                    var number = Pop(fiber);
+                    if (!fiber.Done) AcsPrintHudOpcodes.AppendNumber(fiber.PrintWork, number);
+                    break;
+                }
+                case (int)AcsPcode.PrintCharacter:
+                {
+                    if (fiber.Stack.Count < 1) { fiber.Done = true; return; }
+                    var ch = Pop(fiber);
+                    if (!fiber.Done) AcsPrintHudOpcodes.AppendCharacter(fiber.PrintWork, ch);
+                    break;
+                }
+                case (int)AcsPcode.PrintFixed:
+                {
+                    if (fiber.Stack.Count < 1) { fiber.Done = true; return; }
+                    var fixedValue = Pop(fiber);
+                    if (!fiber.Done) AcsPrintHudOpcodes.AppendFixed(fiber.PrintWork, fixedValue);
+                    break;
+                }
+                case (int)AcsPcode.PrintName:
+                {
+                    if (fiber.Stack.Count < 1) { fiber.Done = true; return; }
+                    var selector = Pop(fiber);
+                    if (!fiber.Done)
+                        AcsPrintHudOpcodes.AppendPrintName(sim, fiber.PrintWork, selector, fiber.Activator);
+                    break;
+                }
                 case (int)AcsPcode.PrintBinary:
                 {
                     if (fiber.Stack.Count < 1) { fiber.Done = true; return; }
                     var binaryValue = Pop(fiber);
-                    if (!fiber.Done) AcsAbsentOpcodeActions.AppendPrintBinary(sim, binaryValue);
+                    if (!fiber.Done) AcsPrintHudOpcodes.AppendBinary(fiber.PrintWork, binaryValue);
                     break;
                 }
                 case (int)AcsPcode.PrintHex:
                 {
                     if (fiber.Stack.Count < 1) { fiber.Done = true; return; }
                     var hexValue = Pop(fiber);
-                    if (!fiber.Done) AcsAbsentOpcodeActions.AppendPrintHex(sim, hexValue);
+                    if (!fiber.Done) AcsPrintHudOpcodes.AppendHex(fiber.PrintWork, hexValue);
                     break;
                 }
+                case (int)AcsPcode.EndPrint:
+                case (int)AcsPcode.EndPrintBold:
+                    if (!fiber.Done) AcsPrintHudOpcodes.EndPrint(sim, fiber.PrintWork, opcode == (int)AcsPcode.EndPrintBold);
+                    break;
+                case (int)AcsPcode.EndLog:
+                    if (!fiber.Done) AcsPrintHudOpcodes.EndLog(sim, fiber.PrintWork);
+                    break;
+                case (int)AcsPcode.MoreHudMessage:
+                    fiber.HudOptStart = -1;
+                    break;
+                case (int)AcsPcode.OptHudMessage:
+                    fiber.HudOptStart = fiber.Stack.Count;
+                    break;
+                case (int)AcsPcode.EndHudMessage:
+                case (int)AcsPcode.EndHudMessageBold:
+                    if (!fiber.Done)
+                    {
+                        AcsPrintHudOpcodes.EndHudMessage(
+                            sim,
+                            fiber.PrintWork,
+                            opcode == (int)AcsPcode.EndHudMessageBold,
+                            fiber.Stack,
+                            fiber.HudOptStart,
+                            fiber.ActiveFont,
+                            fiber.ActiveStyle);
+                        fiber.HudOptStart = -1;
+                    }
+                    break;
+                case (int)AcsPcode.SetFont:
+                case (int)AcsPcode.SetFontDirect:
+                {
+                    if (fiber.Stack.Count < 1) { fiber.Done = true; return; }
+                    var fontId = Pop(fiber);
+                    if (!fiber.Done)
+                    {
+                        var font = AcsPrintHudOpcodes.ResolveString(fontId, fiber.StringTable, _globalStrings);
+                        if (!string.IsNullOrWhiteSpace(font))
+                            fiber.ActiveFont = font;
+                    }
+                    break;
+                }
+                case (int)AcsPcode.SetStyle:
+                case (int)AcsPcode.SetStyleDirect:
+                {
+                    if (fiber.Stack.Count < 1) { fiber.Done = true; return; }
+                    fiber.ActiveStyle = Pop(fiber);
+                    break;
+                }
+                case (int)AcsPcode.SetHudSize:
+                {
+                    if (fiber.Stack.Count < 2) { fiber.Done = true; return; }
+                    var wrap = Pop(fiber);
+                    var height = Pop(fiber);
+                    if (!fiber.Done)
+                    {
+                        sim.AcsHudWrapWidth = wrap;
+                        sim.AcsHudClipHeight = height;
+                    }
+                    break;
+                }
+                case (int)AcsPcode.PrintMapCharArray:
+                case (int)AcsPcode.PrintMapCharRange:
+                    TryAppendMapCharPrint(fiber, opcode == (int)AcsPcode.PrintMapCharRange);
+                    break;
+                case (int)AcsPcode.PrintWorldCharArray:
+                case (int)AcsPcode.PrintWorldCharRange:
+                    TryAppendWorldCharPrint(fiber, opcode == (int)AcsPcode.PrintWorldCharRange);
+                    break;
+                case (int)AcsPcode.PrintGlobalCharArray:
+                case (int)AcsPcode.PrintGlobalCharRange:
+                    TryAppendGlobalCharPrint(fiber, opcode == (int)AcsPcode.PrintGlobalCharRange);
+                    break;
                 case (int)AcsPcode.Drop:
                     Pop(fiber);
                     break;
@@ -1662,5 +1779,87 @@ public sealed partial class AcsVm
         public int[] Locals { get; }
         public int[] ArraySizes { get; }
         public int[] ArrayOffsets { get; }
+        public StringBuilder PrintWork { get; } = new();
+        public int HudOptStart { get; set; } = -1;
+        public string ActiveFont { get; set; } = "SmallFont";
+        public int ActiveStyle { get; set; }
+    }
+
+    private void TryAppendMapCharPrint(Fiber fiber, bool range)
+    {
+        if (!TryReadCharArrayOperands(fiber, range, out var array, out var offset, out var capacity))
+            return;
+        var cells = ReadMapCharCells(array, offset, capacity);
+        AcsPrintHudOpcodes.AppendCharArray(fiber.PrintWork, cells);
+    }
+
+    private void TryAppendWorldCharPrint(Fiber fiber, bool range)
+    {
+        if (!TryReadCharArrayOperands(fiber, range, out var array, out var offset, out var capacity))
+            return;
+        Span<int> cells = stackalloc int[capacity];
+        for (var i = 0; i < capacity; i++)
+        {
+            var key = (array, offset + i);
+            _worldArrays.TryGetValue(key, out var value);
+            if (value == 0)
+            {
+                cells = cells[..i];
+                break;
+            }
+            cells[i] = value;
+        }
+        AcsPrintHudOpcodes.AppendCharArray(fiber.PrintWork, cells);
+    }
+
+    private void TryAppendGlobalCharPrint(Fiber fiber, bool range)
+    {
+        if (!TryReadCharArrayOperands(fiber, range, out var array, out var offset, out var capacity))
+            return;
+        Span<int> cells = stackalloc int[capacity];
+        for (var i = 0; i < capacity; i++)
+        {
+            var key = (array, offset + i);
+            _globalArrays.TryGetValue(key, out var value);
+            if (value == 0)
+            {
+                cells = cells[..i];
+                break;
+            }
+            cells[i] = value;
+        }
+        AcsPrintHudOpcodes.AppendCharArray(fiber.PrintWork, cells);
+    }
+
+    private bool TryReadCharArrayOperands(Fiber fiber, bool range, out int array, out int offset, out int capacity)
+    {
+        array = offset = capacity = 0;
+        var required = range ? 3 : 2;
+        if (fiber.Stack.Count < required)
+        {
+            fiber.Done = true;
+            return false;
+        }
+        if (range)
+            capacity = Pop(fiber);
+        offset = Pop(fiber);
+        array = Pop(fiber);
+        if (!range)
+            capacity = int.MaxValue;
+        return !fiber.Done;
+    }
+
+    private ReadOnlySpan<int> ReadMapCharCells(int arrayVariable, int offset, int capacity)
+    {
+        if ((uint)arrayVariable >= 128u)
+            return ReadOnlySpan<int>.Empty;
+        var id = _mapVariables[arrayVariable];
+        var array = (uint)id < (uint)_mapArrays.Length ? _mapArrays[id] : null;
+        if (array is null)
+            return ReadOnlySpan<int>.Empty;
+        var length = Math.Min(capacity, array.Length - offset);
+        if (length <= 0)
+            return ReadOnlySpan<int>.Empty;
+        return array.AsSpan(offset, length);
     }
 }

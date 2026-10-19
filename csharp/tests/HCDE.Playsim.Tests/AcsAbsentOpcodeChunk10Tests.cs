@@ -52,7 +52,9 @@ public class AcsAbsentOpcodeChunk10Tests
     public void PrintBinaryAndHex_AppendToBuffer()
     {
         var sim = Room();
-        Run(sim, [3, 5, (int)AcsPcode.PrintBinary, 3, 255, (int)AcsPcode.PrintHex, (int)AcsPcode.Terminate], []);
+        Run(sim,
+            [3, 0, (int)AcsPcode.BeginPrint, 3, 5, (int)AcsPcode.PrintBinary, 3, 255, (int)AcsPcode.PrintHex,
+                (int)AcsPcode.EndPrint, (int)AcsPcode.Terminate], []);
         Assert.Equal("101FF", sim.AcsPrintBuffer);
     }
 

@@ -3661,7 +3661,18 @@ public sealed class AuthoritySimulation
     private readonly List<SimulationSoundRequest> _soundRequests = new();
     public IReadOnlyList<SimulationSoundRequest> PendingSoundRequests => _soundRequests.AsReadOnly();
     public string AcsPrintBuffer { get; private set; } = "";
+    public string? AcsPrintBoldBuffer { get; private set; }
     internal void AppendAcsPrint(string fragment) => AcsPrintBuffer += fragment;
+    internal void AppendAcsPrintBold(string fragment) => AcsPrintBoldBuffer = fragment;
+    private readonly List<AcsHudMessage> _acsHudMessages = new();
+    public IReadOnlyList<AcsHudMessage> AcsHudMessages => _acsHudMessages;
+    internal void RecordAcsHudMessage(AcsHudMessage message) => _acsHudMessages.Add(message);
+    public AcsHudMessage[] DrainAcsHudMessages()
+    {
+        var messages = _acsHudMessages.ToArray();
+        _acsHudMessages.Clear();
+        return messages;
+    }
     internal LevelLine? AcsTriggerLine { get; set; }
     internal bool AcsTriggerBackSide { get; set; }
     internal int AcsHudClipLeft { get; set; }

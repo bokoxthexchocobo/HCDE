@@ -12,25 +12,25 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 102875
+    "managedCSharpLoc": 103346
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 1562,
+    "convertedThisRunNative": 3110,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 420,
+    "convertedThisRunManaged": 800,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": 0,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 482557,
+    "remainingNative": 481009,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 20089,
+    "convertedBehaviorNative": 21637,
     "recognitionBehaviorNative": 5440,
-    "combinedBehaviorNative": 25529,
-    "convertedBehaviorManaged": 10091,
+    "combinedBehaviorNative": 27077,
+    "convertedBehaviorManaged": 10471,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -1521,14 +1521,59 @@
             ]
           }
         ]
+      },
+      {
+        "name": "acs-print-hud-chunk14",
+        "bucket": "conversion",
+        "nativeLoc": 1548,
+        "managedLoc": 380,
+        "note": "ACS string builder print pipeline and HUD message opcode family.",
+        "nativeRanges": [
+          {
+            "file": "src/playsim/p_acs.cpp",
+            "symbol": "PCD_BEGINPRINT",
+            "start": 8899,
+            "end": 8901,
+            "tests": [
+              "AcsPrintHudOpcodeTests.BeginPrint_EndPrint_FlushesToBuffer"
+            ]
+          },
+          {
+            "file": "src/playsim/p_acs.cpp",
+            "symbol": "PCD_PRINTSTRING",
+            "start": 8903,
+            "end": 8915,
+            "tests": [
+              "AcsPrintHudOpcodeTests.PrintString_UsesStringTable"
+            ]
+          },
+          {
+            "file": "src/playsim/p_acs.cpp",
+            "symbol": "PCD_ENDHUDMESSAGE",
+            "start": 9148,
+            "end": 9235,
+            "tests": [
+              "AcsPrintHudOpcodeTests.EndHudMessage_RecordsHudPayload"
+            ]
+          },
+          {
+            "file": "src/playsim/p_acs.cpp",
+            "symbol": "PCD_PRINTBINARY",
+            "start": 8922,
+            "end": 8932,
+            "tests": [
+              "AcsPrintHudOpcodeTests.PrintBinaryAndHex_UsePrintBuilder"
+            ]
+          }
+        ]
       }
     ]
   },
   "summaries": {
     "acsPcode": {
-      "executed": 286,
+      "executed": 311,
       "partial": 10,
-      "decoded-only": 78
+      "decoded-only": 53
     },
     "zscriptVmOp": {
       "executed": 246
@@ -2137,35 +2182,35 @@
       "id": "acs-pcode:85",
       "name": "BeginPrint",
       "opcode": 85,
-      "status": "decoded-only",
+      "status": "executed",
       "nativeRef": "src/playsim/p_acs.cpp"
     },
     {
       "id": "acs-pcode:86",
       "name": "EndPrint",
       "opcode": 86,
-      "status": "decoded-only",
+      "status": "executed",
       "nativeRef": "src/playsim/p_acs.cpp"
     },
     {
       "id": "acs-pcode:87",
       "name": "PrintString",
       "opcode": 87,
-      "status": "decoded-only",
+      "status": "executed",
       "nativeRef": "src/playsim/p_acs.cpp"
     },
     {
       "id": "acs-pcode:88",
       "name": "PrintNumber",
       "opcode": 88,
-      "status": "decoded-only",
+      "status": "executed",
       "nativeRef": "src/playsim/p_acs.cpp"
     },
     {
       "id": "acs-pcode:89",
       "name": "PrintCharacter",
       "opcode": 89,
-      "status": "decoded-only",
+      "status": "executed",
       "nativeRef": "src/playsim/p_acs.cpp"
     },
     {
@@ -2249,7 +2294,7 @@
       "id": "acs-pcode:101",
       "name": "EndPrintBold",
       "opcode": 101,
-      "status": "decoded-only",
+      "status": "executed",
       "nativeRef": "src/playsim/p_acs.cpp"
     },
     {
@@ -2424,7 +2469,7 @@
       "id": "acs-pcode:131",
       "name": "PrintName",
       "opcode": 131,
-      "status": "decoded-only",
+      "status": "executed",
       "nativeRef": "src/playsim/p_acs.cpp"
     },
     {
@@ -2606,70 +2651,70 @@
       "id": "acs-pcode:157",
       "name": "PrintFixed",
       "opcode": 157,
-      "status": "decoded-only",
+      "status": "executed",
       "nativeRef": "src/playsim/p_acs.cpp"
     },
     {
       "id": "acs-pcode:158",
       "name": "PrintLocalized",
       "opcode": 158,
-      "status": "decoded-only",
+      "status": "executed",
       "nativeRef": "src/playsim/p_acs.cpp"
     },
     {
       "id": "acs-pcode:159",
       "name": "MoreHudMessage",
       "opcode": 159,
-      "status": "decoded-only",
+      "status": "executed",
       "nativeRef": "src/playsim/p_acs.cpp"
     },
     {
       "id": "acs-pcode:160",
       "name": "OptHudMessage",
       "opcode": 160,
-      "status": "decoded-only",
+      "status": "executed",
       "nativeRef": "src/playsim/p_acs.cpp"
     },
     {
       "id": "acs-pcode:161",
       "name": "EndHudMessage",
       "opcode": 161,
-      "status": "decoded-only",
+      "status": "executed",
       "nativeRef": "src/playsim/p_acs.cpp"
     },
     {
       "id": "acs-pcode:162",
       "name": "EndHudMessageBold",
       "opcode": 162,
-      "status": "decoded-only",
+      "status": "executed",
       "nativeRef": "src/playsim/p_acs.cpp"
     },
     {
       "id": "acs-pcode:163",
       "name": "SetStyle",
       "opcode": 163,
-      "status": "decoded-only",
+      "status": "executed",
       "nativeRef": "src/playsim/p_acs.cpp"
     },
     {
       "id": "acs-pcode:164",
       "name": "SetStyleDirect",
       "opcode": 164,
-      "status": "decoded-only",
+      "status": "executed",
       "nativeRef": "src/playsim/p_acs.cpp"
     },
     {
       "id": "acs-pcode:165",
       "name": "SetFont",
       "opcode": 165,
-      "status": "decoded-only",
+      "status": "executed",
       "nativeRef": "src/playsim/p_acs.cpp"
     },
     {
       "id": "acs-pcode:166",
       "name": "SetFontDirect",
       "opcode": 166,
-      "status": "decoded-only",
+      "status": "executed",
       "nativeRef": "src/playsim/p_acs.cpp"
     },
     {
@@ -3229,7 +3274,7 @@
       "id": "acs-pcode:254",
       "name": "SetHudSize",
       "opcode": 254,
-      "status": "decoded-only",
+      "status": "executed",
       "nativeRef": "src/playsim/p_acs.cpp"
     },
     {
@@ -3341,7 +3386,7 @@
       "id": "acs-pcode:270",
       "name": "EndLog",
       "opcode": 270,
-      "status": "decoded-only",
+      "status": "executed",
       "nativeRef": "src/playsim/p_acs.cpp"
     },
     {
@@ -3362,21 +3407,21 @@
       "id": "acs-pcode:273",
       "name": "PrintMapCharArray",
       "opcode": 273,
-      "status": "decoded-only",
+      "status": "executed",
       "nativeRef": "src/playsim/p_acs.cpp"
     },
     {
       "id": "acs-pcode:274",
       "name": "PrintWorldCharArray",
       "opcode": 274,
-      "status": "decoded-only",
+      "status": "executed",
       "nativeRef": "src/playsim/p_acs.cpp"
     },
     {
       "id": "acs-pcode:275",
       "name": "PrintGlobalCharArray",
       "opcode": 275,
-      "status": "decoded-only",
+      "status": "executed",
       "nativeRef": "src/playsim/p_acs.cpp"
     },
     {
@@ -3866,21 +3911,21 @@
       "id": "acs-pcode:353",
       "name": "PrintMapCharRange",
       "opcode": 353,
-      "status": "decoded-only",
+      "status": "executed",
       "nativeRef": "src/playsim/p_acs.cpp"
     },
     {
       "id": "acs-pcode:354",
       "name": "PrintWorldCharRange",
       "opcode": 354,
-      "status": "decoded-only",
+      "status": "executed",
       "nativeRef": "src/playsim/p_acs.cpp"
     },
     {
       "id": "acs-pcode:355",
       "name": "PrintGlobalCharRange",
       "opcode": 355,
-      "status": "decoded-only",
+      "status": "executed",
       "nativeRef": "src/playsim/p_acs.cpp"
     },
     {
