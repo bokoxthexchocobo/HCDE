@@ -122,9 +122,7 @@ internal static partial class AcsCallFunctions
         var name = AcsStringIds.Lookup(stack[start], stringTable, globalStrings);
         var value = stack[start + 1];
         stack.RemoveRange(start, argCount);
-        if (string.IsNullOrEmpty(name)) return true;
-        sim.CVars.Set(name, ConsoleVariable.IntValue(value));
-        result = 1;
+        result = AcsModCvarService.TrySetCvar(sim, activator, name, value, asString: false, stringTable, globalStrings);
         return true;
     }
 
@@ -144,9 +142,7 @@ internal static partial class AcsCallFunctions
         var textId = stack[start + 1];
         stack.RemoveRange(start, argCount);
         var text = AcsStringIds.LookupTerminated(textId, stringTable, globalStrings);
-        if (string.IsNullOrEmpty(name)) return true;
-        sim.CVars.Set(name, ConsoleVariable.StringValue(text));
-        result = 1;
+        result = AcsModCvarService.TrySetCvar(sim, activator, name, textId, asString: true, stringTable, globalStrings);
         return true;
     }
 
@@ -191,13 +187,8 @@ internal static partial class AcsCallFunctions
             return true;
         var player = sim.Players.FirstOrDefault(p => p.PlayerNum == playerNum);
         if (player is null) return true;
-        if (asString)
-        {
-            result = globalStrings.Add(player.GetCVarString(name));
-            return true;
-        }
-
-        result = AcsFixedPoint.FromDouble(player.GetCVar(name));
+        var variable = sim.CVars.TryResolve(playerNum, sim.IsPlayerInGame, sim.ConsolePlayer, name);
+        result = AcsModCvarService.ReadAcsValue(variable, globalStrings, asString);
         return true;
     }
 
@@ -217,16 +208,7 @@ internal static partial class AcsCallFunctions
         var name = AcsStringIds.Lookup(stack[start + 1], stringTable, globalStrings);
         var value = stack[start + 2];
         stack.RemoveRange(start, argCount);
-        if (!sim.IsPlayerInGame(playerNum) || string.IsNullOrEmpty(name))
-            return true;
-        if (asString)
-        {
-            var text = AcsStringIds.LookupTerminated(value, stringTable, globalStrings);
-            sim.CVars.SetUser(playerNum, name, ConsoleVariable.StringValue(text));
-        }
-        else sim.CVars.SetUser(playerNum, name, ConsoleVariable.IntValue(value));
-
-        result = 1;
+        result = AcsModCvarService.TrySetUserCvar(sim, playerNum, name, value, asString, stringTable, globalStrings);
         return true;
     }
 

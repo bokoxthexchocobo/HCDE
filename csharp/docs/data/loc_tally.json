@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": -8325,
+  "convertedThisRunNative": -8213,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 5357,
+  "convertedThisRunManaged": 5435,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -774,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 493218,
+  "remainingNative": 493106,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 10202,
+  "convertedBehaviorNative": 10314,
   "recognitionBehaviorNative": 4666,
-  "combinedBehaviorNative": 14868,
-  "convertedBehaviorManaged": 15028,
+  "combinedBehaviorNative": 14980,
+  "convertedBehaviorManaged": 15106,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -3641,6 +3641,52 @@
         }
       ],
       "conversionManagedCommit": "a1e36212de5c05ff6da66e7336846baaeb13367d"
+    },
+    {
+      "name": "p-acs-mod-cvar-chunk53",
+      "bucket": "conversion",
+      "nativeLoc": 112,
+      "managedLoc": 78,
+      "note": "DoSetCVar/DoGetCVar and SetCVar/SetUserCVar ACS encoding.",
+      "nativeRanges": [
+        {
+          "file": "src/playsim/p_acs.cpp",
+          "symbol": "DLevelScript::DoSetCVar",
+          "start": 5043,
+          "end": 5078,
+          "tests": [
+            "AcsModCvarServiceTests.CallFunc_SetCVarString_StoresText"
+          ]
+        },
+        {
+          "file": "src/playsim/p_acs.cpp",
+          "symbol": "DoGetCVar",
+          "start": 5081,
+          "end": 5104,
+          "tests": [
+            "AcsModCvarServiceTests.CallFunc_SetUserCVar_MirrorsConsolePlayerGlobal"
+          ]
+        },
+        {
+          "file": "src/playsim/p_acs.cpp",
+          "symbol": "DLevelScript::SetUserCVar",
+          "start": 5119,
+          "end": 5148,
+          "tests": [
+            "AcsModCvarServiceTests.CallFunc_SetUserCVar_MirrorsConsolePlayerGlobal"
+          ]
+        },
+        {
+          "file": "src/playsim/p_acs.cpp",
+          "symbol": "DLevelScript::SetCVar",
+          "start": 5150,
+          "end": 5171,
+          "tests": [
+            "AcsModCvarServiceTests.CallFunc_SetCVar_WritesIntegerModCvar"
+          ]
+        }
+      ],
+      "conversionManagedCommit": "34503c24b73af48338db4187c8ab8cfb5948141d"
     }
   ]
 }
