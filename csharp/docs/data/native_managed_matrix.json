@@ -12,7 +12,7 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 106428
+    "managedCSharpLoc": 106430
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
@@ -3206,7 +3206,7 @@
         "nativeLoc": 53,
         "managedLoc": 132,
         "note": "thingdef damage X property and ParseDamageDefinition block.",
-        "conversionManagedCommit": "418a5687d3537b274e3ee230ea6a075d7de299e9",
+        "conversionManagedCommit": "0c0005f46b0cbb4f52fa2d94d9c02954d1165485",
         "nativeRanges": [
           {
             "file": "src/scripting/thingdef_properties.cpp",
