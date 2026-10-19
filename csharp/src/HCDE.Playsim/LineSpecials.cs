@@ -124,21 +124,26 @@ public static partial class LineSpecials
             if (!double.IsFinite(player.UseRange)) continue;
             var radians = player.Angle.ToDegrees() * Math.PI / 180;
             var direction = player.UseRange < 0 ? -1 : 1;
+            var dirX = Math.Cos(radians) * direction;
+            var dirY = Math.Sin(radians) * direction;
             var x = player.X.ToDouble();
             var y = player.Y.ToDouble();
+            var consumed = false;
+            var foundLine = false;
             var hits = sim.Level.Lines.Select(line => (Line: (LevelLine?)line, Thing: (Actor?)null, Distance: CombatTrace.RayLine(
-                x, y, Math.Cos(radians) * direction, Math.Sin(radians) * direction, line, range)))
+                x, y, dirX, dirY, line, range)))
                 .Concat(sim.Actors.Where(actor => actor != player && !actor.Destroyed && !actor.NoBlockmap).Select(actor =>
                     (Line: (LevelLine?)null, Thing: (Actor?)actor, Distance: CombatTrace.ActorBoxEntry(
-                        actor.X.ToDouble() - x, actor.Y.ToDouble() - y, actor.Radius.ToDouble(),
-                        Math.Cos(radians) * direction, Math.Sin(radians) * direction, range))))
+                        actor.X.ToDouble() - x, actor.Y.ToDouble() - y, actor.Radius.ToDouble(), dirX, dirY, range))))
                 .Where(hit => double.IsFinite(hit.Distance) && hit.Distance <= range).OrderBy(hit => hit.Distance).ToArray();
             foreach (var hit in hits)
             {
                 if (hit.Thing is { } thing)
                 {
-                    if (!thing.Destroyed && thing.UseSpecial && ActorSpecialActions.ActivateSpecial(sim, thing, player)) break;
-                    if (!thing.Destroyed && thing.Used(player)) break;
+                    if (!thing.Destroyed && thing.UseSpecial && ActorSpecialActions.ActivateSpecial(sim, thing, player))
+                    { consumed = true; break; }
+                    if (!thing.Destroyed && thing.Used(player))
+                    { consumed = true; break; }
                     continue;
                 }
                 if (hit.Line is null) continue;
@@ -149,11 +154,12 @@ public static partial class LineSpecials
                 var usable = back ? hit.Line.PlayerUseBack : !hit.Line.PlayerUseBack || hit.Line.PlayerUse || hit.Line.UseThrough;
                 if (!usable)
                 {
-                    if (BlocksUse(sim, hit.Line)) break;
+                    if (BlocksUse(sim, hit.Line)) { foundLine = true; break; }
                     continue;
                 }
                 if (ActivateMapLine(sim, player, hit.Line, use: true, backSide: back))
                 {
+                    consumed = true;
                     // Back use consumes; front precedence depends on use-blocking compatibility.
                     if (consumes) break;
                     continue;
@@ -161,13 +167,43 @@ public static partial class LineSpecials
                 // A recognized use trigger consumes traversal even when its action fails.
                 if (hit.Line.Special != 0 && (hit.Line.PlayerUseBack || hit.Line.PlayerUse || hit.Line.UseThrough))
                 {
+                    consumed = true;
                     if (consumes) break;
                     continue;
                 }
-                if (BlocksUse(sim, hit.Line)) break;
+                if (BlocksUse(sim, hit.Line)) { foundLine = true; break; }
+                if (hit.Line.Special == 0) foundLine = true;
             }
+            if (!consumed && foundLine && NoWayTraverse(sim, player, x, y, dirX, dirY, range))
+                sim.RequestRumble(new SimulationRumbleRequest(player.Id, "*usefail", LocalPlayerOrCameraOnly: true));
         }
     }
+
+    /// <summary>Native <c>P_NoWayTraverse</c>: impassable non-special geometry blocks the use ray.</summary>
+    private static bool NoWayTraverse(AuthoritySimulation sim, Actor actor, double x, double y, double dirX, double dirY, double range)
+    {
+        foreach (var line in sim.Level.Lines.OrderBy(line => CombatTrace.RayLine(x, y, dirX, dirY, line, range)))
+        {
+            if (line.Special != 0) continue;
+            var hit = CombatTrace.RayLine(x, y, dirX, dirY, line, range);
+            if (!double.IsFinite(hit) || hit > range) continue;
+            if (line.OneSided || (line.Flags & (LevelLine.BlockingFlag | LevelLine.BlockEverythingFlag | LevelLine.BlockPlayersFlag)) != 0)
+                return true;
+            if (BlocksUse(sim, line)) return true;
+            var z = actor.Z.ToDouble();
+            var top = z + actor.Height.ToDouble();
+            var front = SideSector(sim.Level, line.SideFront);
+            var back = SideSector(sim.Level, line.SideBack);
+            if ((uint)front >= (uint)sim.Floors.Length || (uint)back >= (uint)sim.Floors.Length) return true;
+            var floor = Math.Max(sim.Floors[front], sim.Floors[back]);
+            var ceiling = Math.Min(sim.Ceilings[front], sim.Ceilings[back]);
+            if (ceiling - floor <= 0 || floor > z + actor.MaxStepHeight.ToDouble() || ceiling < top) return true;
+        }
+        return false;
+    }
+
+    private static int SideSector(PlayLevel level, int side) =>
+        (uint)side < (uint)level.Sides.Count ? level.Sides[side].Sector : -1;
 
     private static bool BlocksUse(AuthoritySimulation sim, LevelLine line)
     {

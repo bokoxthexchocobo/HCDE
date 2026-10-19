@@ -58,6 +58,29 @@ public class UseRumbleTests
         LineSpecials.ActivateUses(sim); Assert.Equal("*usesuccess", Assert.Single(requests).Pattern);
     }
 
+    [Fact]
+    public void BlockedNonSpecialLineEmitsUseFailPattern()
+    {
+        var wall = new LevelLine { X1 = 16, X2 = 16, Y1 = -64, Y2 = 64, SideFront = 0, SideBack = -1 };
+        var sim = AuthoritySimulation.Start(new PlayLevel
+        {
+            Format = MapDataFormat.DoomBinary,
+            Things = [new LevelThing { Type = 1 }],
+            Sectors =
+            [
+                new LevelSector { LightLevel = 128, CeilingHeight = 128 },
+                new LevelSector { LightLevel = 160, CeilingHeight = 128 },
+            ],
+            Sides = [new LevelSide { Sector = 0 }, new LevelSide { Sector = 1 }],
+            Lines = [wall],
+        });
+        sim.Players.Single().Angle = BamAngle.FromDegrees(0);
+        var requests = Listen(sim);
+        sim.Players.Single().UsePressed = true;
+        LineSpecials.ActivateUses(sim);
+        Assert.Equal("*usefail", Assert.Single(requests).Pattern);
+    }
+
     private sealed class ProbePlayer : PlayerPawn
     {
         public List<(int Activation, int Level, int Line, int Special)> Calls { get; } = new();

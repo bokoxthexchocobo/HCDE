@@ -1,9 +1,9 @@
 {
-  "convertedThisRunNative": 1685,
-  "convertedThisRunManaged": 483,
-  "remainingNative": 498607,
-  "convertedBehaviorNative": 9479,
-  "convertedBehaviorManaged": 5803,
+  "convertedThisRunNative": 3287,
+  "convertedThisRunManaged": 548,
+  "remainingNative": 496805,
+  "convertedBehaviorNative": 11081,
+  "convertedBehaviorManaged": 5868,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -170,6 +170,26 @@
       "note": "p_mobj.cpp P_CheckMissileSpawn wired into SpawnProjectileCore and A_SpawnProjectile.",
       "nativeRanges": [
         { "file": "src/playsim/p_mobj.cpp", "symbol": "P_CheckMissileSpawn", "start": 7781, "end": 7861 }
+      ]
+    },
+    {
+      "name": "p-enemy-chase-core-chunk3",
+      "nativeLoc": 1513,
+      "managedLoc": 18,
+      "note": "p_enemy.cpp A_DoChase, P_NewChaseDir/P_RandomChaseDir, P_Move/P_SmartMove/P_TryWalk, melee/missile range, look/sight; CantLeaveFloorPic chase rollback.",
+      "nativeRanges": [
+        { "file": "src/playsim/p_enemy.cpp", "symbol": "P_CheckMeleeRange", "start": 253, "end": 292 },
+        { "file": "src/playsim/p_enemy.cpp", "symbol": "P_CheckMissileRange", "start": 307, "end": 365 },
+        { "file": "src/playsim/p_enemy.cpp", "symbol": "P_Move", "start": 482, "end": 717 },
+        { "file": "src/playsim/p_enemy.cpp", "symbol": "P_SmartMove", "start": 725, "end": 757 },
+        { "file": "src/playsim/p_enemy.cpp", "symbol": "P_TryWalk", "start": 773, "end": 781 },
+        { "file": "src/playsim/p_enemy.cpp", "symbol": "P_DoNewChaseDir", "start": 794, "end": 912 },
+        { "file": "src/playsim/p_enemy.cpp", "symbol": "P_NewChaseDir", "start": 935, "end": 1098 },
+        { "file": "src/playsim/p_enemy.cpp", "symbol": "P_RandomChaseDir", "start": 1107, "end": 1257 },
+        { "file": "src/playsim/p_enemy.cpp", "symbol": "P_IsVisible", "start": 1268, "end": 1350 },
+        { "file": "src/playsim/p_enemy.cpp", "symbol": "isTargetablePlayer", "start": 1316, "end": 1363 },
+        { "file": "src/playsim/p_enemy.cpp", "symbol": "P_LookForPlayers", "start": 1789, "end": 1933 },
+        { "file": "src/playsim/p_enemy.cpp", "symbol": "A_DoChase", "start": 2397, "end": 2764 }
       ]
     }
   ]
