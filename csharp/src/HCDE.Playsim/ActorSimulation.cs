@@ -891,6 +891,12 @@ public class Actor : Thinker
     public bool SpecialFloorClip { get; set; }
     public bool AvoidHazards { get; set; }
     public bool StayOnLift { get; set; }
+    /// <summary>Native <c>MF4_CANUSEWALLS</c>: blocked <c>P_Move</c> may activate use lines.</summary>
+    public bool CanUseWalls { get; set; }
+    /// <summary>Native <c>MF2_PUSHWALL</c>: blocked <c>P_Move</c> may activate push lines.</summary>
+    public bool PushWall { get; set; }
+    /// <summary>Native <c>MF6_JUMPDOWN</c>: short-range chase drop-off assist.</summary>
+    public bool JumpDown { get; set; }
     public bool AvoidMelee { get; set; }
     public int StrafeCount { get; set; }
     public int FastChaseStrafeCount { get; set; }
@@ -3136,6 +3142,8 @@ public sealed class AuthoritySimulation
 
     /// <summary>Native <c>splashfactor</c> cvar reciprocal for bomb-source radius damage.</summary>
     public double SplashFactor { get; set; } = 1;
+    /// <summary>Native <c>selfthrustscale</c> for radius self-thrust scaling.</summary>
+    public double SelfThrustScale { get; set; } = 1;
 
     public bool EnvironmentLightningForced { get; set; }
     public List<(int Intensity, int Duration, int Radius, int Tid)> EnvironmentQuakes { get; } = [];
@@ -3385,6 +3393,10 @@ public sealed class AuthoritySimulation
     internal int NextEnemyStrafeByte() => NextWanderByte(ref _enemyStrafeRandomState, 0x2748785bu);
     internal int NextNewChaseDirByte() => NextWanderByte(ref _newChaseDirRandomState, 0x5f7b8192u);
     internal int NextTryWalkByte() => NextWanderByte(ref _tryWalkRandomState, 0xf43936d9u);
+    private ulong? _monsterOpenDoorRandomState;
+    internal int NextMonsterOpenDoorByte() => NextWanderByte(ref _monsterOpenDoorRandomState, 0x6f70656eu);
+    private ulong? _dropoffRandomState;
+    internal int NextDropoffByte() => NextWanderByte(ref _dropoffRandomState, 0x64726f70u);
     private int NextWanderByte(ref ulong? saved, uint name)
     {
         var state = saved ?? NativeStateRandom.Seed(unchecked((uint)RngSeed), name);
@@ -4843,7 +4855,11 @@ public sealed class AuthoritySimulation
         projectile.Aim(target);
         _actors.Add(projectile);
         Thinkers.Add(projectile);
-        if (savedId is null) ActorSoundActions.PlaySpawnSound(projectile, owner);
+        if (savedId is null)
+        {
+            ActorSoundActions.PlaySpawnSound(projectile, owner);
+            MissileSpawnCheck.Check(this, projectile, owner, owner?.Radius.ToDouble() ?? 0);
+        }
         return projectile;
     }
 
