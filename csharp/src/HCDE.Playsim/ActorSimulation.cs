@@ -625,6 +625,8 @@ public class Actor : Thinker
     public bool NoTrigger { get; set; }
     /// <summary>Native actor Score property; independent of player frag statistics.</summary>
     public int Score { get; set; }
+    /// <summary>Native actor fillcolor for stencil render styles.</summary>
+    public uint StencilFillColor { get; set; }
     /// <summary>Native DamageVal; projectiles may also supply a damage expression.</summary>
     public int Damage { get; set; }
     public Func<Actor, int>? DamageFunction { get; set; }
