@@ -627,6 +627,8 @@ public class Actor : Thinker
     public int Score { get; set; }
     /// <summary>Native actor fillcolor for stencil render styles.</summary>
     public uint StencilFillColor { get; set; }
+    public int WaterLevel { get; set; }
+    public Fixed WaterDepth { get; set; }
     /// <summary>Native DamageVal; projectiles may also supply a damage expression.</summary>
     public int Damage { get; set; }
     public Func<Actor, int>? DamageFunction { get; set; }

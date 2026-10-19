@@ -12,6 +12,7 @@ internal static class AcsActorProperties
     public const int Invulnerable = 11;
     public const int JumpZ = 12;
     public const int ChaseGoal = 13;
+    public const int Frightened = 14;
     public const int Gravity = 15;
     public const int Friendly = 16;
     public const int SpawnHealth = 17;
@@ -23,6 +24,7 @@ internal static class AcsActorProperties
     public const int MasterTid = 25;
     public const int TargetTid = 26;
     public const int TracerTid = 27;
+    public const int WaterLevel = 28;
     public const int ScaleX = 29;
     public const int ScaleY = 30;
     public const int Dormant = 31;
@@ -35,11 +37,13 @@ internal static class AcsActorProperties
     public const int MeleeRange = 38;
     public const int ViewHeight = 39;
     public const int AttackZOffset = 40;
+    public const int StencilColor = 41;
     public const int Friction = 42;
     public const int DamageMultiplier = 43;
     public const int MaxStepHeight = 44;
     public const int MaxDropOffHeight = 45;
     public const int FriendlySeeBlocks = 48;
+    public const int WaterDepth = 49;
 
     public static void Set(AuthoritySimulation sim, Actor? activator, int tid, int property, int value)
     {
@@ -67,14 +71,15 @@ internal static class AcsActorProperties
             return false;
         // Native CheckActorProperty rejects unknown properties, even when Get returns zero.
         if (property is not (Health or Speed or Damage or Alpha or RenderStyle or Ambush or Invulnerable or JumpZ or Gravity or Friendly
-            or SpawnHealth or NoTarget or MasterTid or TargetTid or TracerTid or ScaleX or ScaleY or Dormant or ChaseGoal or Mass or Accuracy or Stamina or Height or Radius or ViewHeight or AttackZOffset
-            or MaxStepHeight or MaxDropOffHeight or DamageFactor or DamageMultiplier or MeleeRange or Friction or NoTrigger or Score or Dropped or ReactionTime or FriendlySeeBlocks))
+            or SpawnHealth or NoTarget or MasterTid or TargetTid or TracerTid or ScaleX or ScaleY or Dormant or ChaseGoal or Frightened or Mass or Accuracy or Stamina or Height or Radius or ViewHeight or AttackZOffset
+            or MaxStepHeight or MaxDropOffHeight or DamageFactor or DamageMultiplier or MeleeRange or Friction or NoTrigger or Score or Dropped or ReactionTime or FriendlySeeBlocks
+            or WaterLevel or StencilColor or WaterDepth))
             return false;
         var actual = Read(actor, property);
         return IsBoolean(property) ? actual == (value != 0 ? 1 : 0) : actual == value;
     }
 
-    private static bool IsBoolean(int property) => property is Ambush or Invulnerable or Friendly or NoTarget or NoTrigger or Dropped or ChaseGoal or Dormant;
+    private static bool IsBoolean(int property) => property is Ambush or Invulnerable or Friendly or NoTarget or NoTrigger or Dropped or ChaseGoal or Frightened or Dormant;
 
     private static void ApplySet(Actor? actor, int property, int value)
     {
@@ -203,6 +208,7 @@ internal static class AcsActorProperties
         Invulnerable => actor.Invulnerable ? 1 : 0,
         JumpZ => actor is PlayerPawn jumpPlayer ? jumpPlayer.JumpZ.Raw : 0,
         ChaseGoal => actor.ChaseGoal ? 1 : 0,
+        Frightened => actor.Frightened ? 1 : 0,
         Dormant => actor.Dormant ? 1 : 0,
         ScaleX => unchecked((int)Math.Round(actor.ScaleX * 65536, MidpointRounding.ToEven)),
         ScaleY => unchecked((int)Math.Round(actor.ScaleY * 65536, MidpointRounding.ToEven)),
@@ -228,6 +234,9 @@ internal static class AcsActorProperties
         AttackZOffset => actor is PlayerPawn attackPlayer ? attackPlayer.AttackZOffset.Raw : 0,
         MaxStepHeight => actor.MaxStepHeight.Raw,
         MaxDropOffHeight => actor.MaxDropOffHeight.Raw,
+        WaterLevel => actor.WaterLevel,
+        WaterDepth => actor.WaterDepth.Raw,
+        StencilColor => unchecked((int)actor.StencilFillColor),
         TargetTid => TargetThingId(actor),
         MasterTid => MasterThingId(actor),
         TracerTid => ReferencedThingId(actor, actor.TracerId),
