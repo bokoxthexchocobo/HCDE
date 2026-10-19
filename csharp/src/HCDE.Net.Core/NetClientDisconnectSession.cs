@@ -16,15 +16,18 @@ public sealed class NetClientDisconnectSession
     private readonly LivePeerNetRegistry _registry;
     private readonly NetClientPresentationEchoRegistry? _presentationEcho;
     private readonly RemotePlayerInterpRegistry? _remoteInterp;
+    private readonly NetClientActorReplicationQueues? _actorPriorityQueues;
 
     public NetClientDisconnectSession(
         LivePeerNetRegistry registry,
         NetClientPresentationEchoRegistry? presentationEcho = null,
-        RemotePlayerInterpRegistry? remoteInterp = null)
+        RemotePlayerInterpRegistry? remoteInterp = null,
+        NetClientActorReplicationQueues? actorPriorityQueues = null)
     {
         _registry = registry ?? throw new ArgumentNullException(nameof(registry));
         _presentationEcho = presentationEcho;
         _remoteInterp = remoteInterp;
+        _actorPriorityQueues = actorPriorityQueues;
     }
 
     public LateJoinRuntimeSession LateJoin => _lateJoin;
@@ -70,6 +73,7 @@ public sealed class NetClientDisconnectSession
         _registry.ResetClient(clientNum);
         _presentationEcho?.ResetClient(clientNum);
         _remoteInterp?.ResetClient(clientNum);
+        _actorPriorityQueues?.ResetClient(clientNum);
         ActorDeltaSendCursor[clientNum] = 0;
         InvasionActorDeltaSendCursor[clientNum] = 0;
         CoopRepairCooldownUntilTic[clientNum] = 0;

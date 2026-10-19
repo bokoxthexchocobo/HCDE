@@ -27,4 +27,21 @@ public class NetPresentationEchoResetTests
         Assert.False(echo.GetLastState(1).Initialized);
         Assert.Equal(0, interp[1].Count);
     }
+
+    [Fact]
+    public void ResetClientState_ClearsActorDeltaCursorsAndPriorityQueues()
+    {
+        var peers = new LivePeerNetRegistry(4);
+        var queues = new NetClientActorReplicationQueues(4);
+        var session = new NetClientDisconnectSession(peers, actorPriorityQueues: queues);
+        session.ActorDeltaSendCursor[2] = 99;
+        session.InvasionActorDeltaSendCursor[2] = 88;
+        session.CoopRepairCooldownUntilTic[2] = 42;
+        queues[2].Enqueue(7);
+        session.ResetClientState(2);
+        Assert.Equal(0u, session.ActorDeltaSendCursor[2]);
+        Assert.Equal(0u, session.InvasionActorDeltaSendCursor[2]);
+        Assert.Equal(0, session.CoopRepairCooldownUntilTic[2]);
+        Assert.Equal(0, queues[2].Count);
+    }
 }
