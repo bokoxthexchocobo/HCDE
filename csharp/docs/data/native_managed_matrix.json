@@ -12,25 +12,25 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 103908
+    "managedCSharpLoc": 104200
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": -10907,
+    "convertedThisRunNative": -10696,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 1466,
+    "convertedThisRunManaged": 1817,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -774,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 495800,
+    "remainingNative": 495589,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 7620,
+    "convertedBehaviorNative": 7831,
     "recognitionBehaviorNative": 4666,
-    "combinedBehaviorNative": 12286,
-    "convertedBehaviorManaged": 11137,
+    "combinedBehaviorNative": 12497,
+    "convertedBehaviorManaged": 11488,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -2860,6 +2860,52 @@
             "end": 845,
             "tests": [
               "DecoratePropertyParamParserTests"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "thingdef-actor-flags-chunk22",
+        "bucket": "conversion",
+        "nativeLoc": 211,
+        "managedLoc": 351,
+        "note": "thingdef_properties ModActorFlag/CheckActorFlag; thingdef_parse ParseActorProperty routing.",
+        "conversionManagedCommit": "0000000000000000000000000000000000000000",
+        "nativeRanges": [
+          {
+            "file": "src/scripting/thingdef_properties.cpp",
+            "symbol": "ModActorFlag",
+            "start": 76,
+            "end": 122,
+            "tests": [
+              "DecorateActorFlagAndPropertyTests"
+            ]
+          },
+          {
+            "file": "src/scripting/thingdef_properties.cpp",
+            "symbol": "ModActorFlag",
+            "start": 132,
+            "end": 189,
+            "tests": [
+              "DecorateActorFlagAndPropertyTests"
+            ]
+          },
+          {
+            "file": "src/scripting/thingdef_properties.cpp",
+            "symbol": "CheckActorFlag",
+            "start": 197,
+            "end": 248,
+            "tests": [
+              "DecorateActorFlagAndPropertyTests"
+            ]
+          },
+          {
+            "file": "src/scripting/decorate/thingdef_parse.cpp",
+            "symbol": "ParseActorProperty",
+            "start": 943,
+            "end": 996,
+            "tests": [
+              "DecorateActorFlagAndPropertyTests"
             ]
           }
         ]
