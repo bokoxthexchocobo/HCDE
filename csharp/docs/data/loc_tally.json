@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": -9344,
+  "convertedThisRunNative": -9301,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 4044,
+  "convertedThisRunManaged": 4100,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -774,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 494237,
+  "remainingNative": 494194,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 9183,
+  "convertedBehaviorNative": 9226,
   "recognitionBehaviorNative": 4666,
-  "combinedBehaviorNative": 13849,
-  "convertedBehaviorManaged": 13715,
+  "combinedBehaviorNative": 13892,
+  "convertedBehaviorManaged": 13771,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -3227,6 +3227,52 @@
           "end": 1217,
           "tests": [
             "DecorateActorBodyParserTests"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "thingdef-stencil-blood-chunk35",
+      "bucket": "conversion",
+      "nativeLoc": 43,
+      "managedLoc": 56,
+      "note": "DEFINE_PROPERTY stencilcolor bloodcolor bloodtype spriteangle.",
+      "conversionManagedCommit": "3b7c6853255ed65516ceabad90abf4bade7258b8",
+      "nativeRanges": [
+        {
+          "file": "src/scripting/thingdef_properties.cpp",
+          "symbol": "DEFINE_PROPERTY(stencilcolor, C, Actor)",
+          "start": 863,
+          "end": 868,
+          "tests": [
+            "DecorateStencilBloodPropertyTests"
+          ]
+        },
+        {
+          "file": "src/scripting/thingdef_properties.cpp",
+          "symbol": "DEFINE_PROPERTY(bloodcolor, C, Actor)",
+          "start": 873,
+          "end": 880,
+          "tests": [
+            "DecorateStencilBloodPropertyTests"
+          ]
+        },
+        {
+          "file": "src/scripting/thingdef_properties.cpp",
+          "symbol": "DEFINE_PROPERTY(bloodtype, Sss, Actor)",
+          "start": 885,
+          "end": 908,
+          "tests": [
+            "DecorateStencilBloodPropertyTests"
+          ]
+        },
+        {
+          "file": "src/scripting/thingdef_properties.cpp",
+          "symbol": "DEFINE_PROPERTY(spriteangle, F, Actor)",
+          "start": 1048,
+          "end": 1052,
+          "tests": [
+            "DecorateStencilBloodPropertyTests"
           ]
         }
       ]
