@@ -2937,7 +2937,7 @@
       "nativeLoc": 90,
       "managedLoc": 198,
       "note": "p_acs.cpp DLevelScript::ThingCount and CountPlayers extracted for ACS opcodes.",
-      "conversionManagedCommit": "0000000000000000000000000000000000000000",
+      "conversionManagedCommit": "ad001af5f8f3ee074726a2cd92fd80da6d3abec8",
       "nativeRanges": [
         {
           "file": "src/playsim/p_acs.cpp",
