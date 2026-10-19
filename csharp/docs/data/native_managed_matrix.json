@@ -18,19 +18,19 @@
     "runStartConvertedBehaviorNative": 10643,
     "runStartRecognitionBehaviorNative": 5400,
     "runStartConvertedBehaviorManaged": 7417,
-    "convertedThisRunNative": 1640,
+    "convertedThisRunNative": 3252,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 581,
+    "convertedThisRunManaged": 697,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": 20,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 490383,
+    "remainingNative": 488771,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 12283,
+    "convertedBehaviorNative": 13895,
     "recognitionBehaviorNative": 5420,
-    "combinedBehaviorNative": 17703,
-    "convertedBehaviorManaged": 7998,
+    "combinedBehaviorNative": 19315,
+    "convertedBehaviorManaged": 8114,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -1066,6 +1066,88 @@
             "end": 1958,
             "tests": [
               "HeadlessLevelFlowTests.CoopTravel_PreservesPlayerHealthAcrossLoad"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "g-game-headless-ticker-chunk9",
+        "bucket": "conversion",
+        "nativeLoc": 1612,
+        "managedLoc": 116,
+        "note": "g_game.cpp G_Ticker, G_BuildTiccmd/PlayerCommand, G_DoReborn reload, deathmatch respawn for headless authority.",
+        "nativeRanges": [
+          {
+            "file": "src/g_game.cpp",
+            "symbol": "G_TraceSetGameState",
+            "start": 204,
+            "end": 224,
+            "tests": [
+              "HeadlessGameFlowTests.TicCommand_QueuesOnAuthoritySimulation"
+            ]
+          },
+          {
+            "file": "src/g_game.cpp",
+            "symbol": "G_BuildTiccmd",
+            "start": 798,
+            "end": 1100,
+            "tests": [
+              "HeadlessGameFlowTests.TicCommand_QueuesOnAuthoritySimulation"
+            ]
+          },
+          {
+            "file": "src/g_game.cpp",
+            "symbol": "G_PlayerTic",
+            "start": 1285,
+            "end": 1380,
+            "tests": [
+              "HeadlessGameFlowTests.TicCommand_QueuesOnAuthoritySimulation"
+            ]
+          },
+          {
+            "file": "src/g_game.cpp",
+            "symbol": "G_ProcessPendingPlayerLifecycle",
+            "start": 1479,
+            "end": 1505,
+            "tests": [
+              "HeadlessGameFlowTests.ReloadRequest_RestartsMapThroughSession"
+            ]
+          },
+          {
+            "file": "src/g_game.cpp",
+            "symbol": "G_Ticker",
+            "start": 1506,
+            "end": 1870,
+            "tests": [
+              "HeadlessGameFlowTests.ReloadRequest_RestartsMapThroughSession"
+            ]
+          },
+          {
+            "file": "src/g_game.cpp",
+            "symbol": "G_SpawnPlayer",
+            "start": 1932,
+            "end": 2010,
+            "tests": [
+              "HeadlessGameFlowTests.DeathmatchSpawn_UsesDmStartAfterRespawn"
+            ]
+          },
+          {
+            "file": "src/g_game.cpp",
+            "symbol": "FLevelLocals::DeathMatchSpawnPlayer",
+            "start": 2181,
+            "end": 2280,
+            "tests": [
+              "HeadlessGameFlowTests.DeathmatchSpawn_UsesDmStartAfterRespawn"
+            ]
+          },
+          {
+            "file": "src/g_game.cpp",
+            "symbol": "FLevelLocals::DoReborn",
+            "start": 2360,
+            "end": 2448,
+            "tests": [
+              "HeadlessGameFlowTests.ReloadRequest_RestartsMapThroughSession",
+              "HeadlessGameFlowTests.DeathmatchSpawn_UsesDmStartAfterRespawn"
             ]
           }
         ]
