@@ -1,3 +1,4 @@
+using HCDE.Gamedata;
 using HCDE.MapLoader;
 
 namespace HCDE.Playsim;
@@ -12,8 +13,18 @@ internal static class ThingSpawnLineSpecials
             129 => UsePuzzleItem(sim, activator, a0, a1),
             135 or 137 => SpawnThing(sim, a0, a1, a2, a3, a4, fog: special == 135, activator),
             134 or 136 => SpawnProjectile(sim, a0, a1, a2, a3, gravity: special == 136, activator),
+            139 => ExecuteSpawnFacing(sim, a0, a1, a2 != 0, a3),
             _ => null,
         };
+    }
+
+    internal static bool ExecuteSpawnFacing(AuthoritySimulation sim, int spotTid, int type, bool noFog, int newTid)
+    {
+        var spot = AcsActorTid.AllFromTid(sim, spotTid).FirstOrDefault();
+        if (spot is null || !DoomActorCatalog.TrySpawnClassName(type, out var className)) return false;
+        sim.SpawnAcsActor(className, spot.X.ToDouble(), spot.Y.ToDouble(), spot.Z.ToDouble(), newTid,
+            (int)(spot.Angle.Raw / (4294967296.0 / 256.0)), force: true, spot.Angle);
+        return true;
     }
 
     private static bool MoveThing(AuthoritySimulation sim, int tid, int speed, int angleByte, int flags)
