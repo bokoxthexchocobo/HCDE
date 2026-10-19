@@ -1,8 +1,8 @@
 {
-  "convertedThisRunNative": 3287,
+  "convertedThisRunNative": 4881,
   "convertedThisRunManaged": 548,
-  "remainingNative": 496805,
-  "convertedBehaviorNative": 11081,
+  "remainingNative": 495411,
+  "convertedBehaviorNative": 12675,
   "convertedBehaviorManaged": 5868,
   "baselineNative": 508086,
   "chunks": [
@@ -205,6 +205,19 @@
         { "file": "src/playsim/p_map.cpp", "symbol": "P_UseTraverse", "start": 5829, "end": 5957 },
         { "file": "src/playsim/p_map.cpp", "symbol": "P_NoWayTraverse", "start": 5972, "end": 5993 },
         { "file": "src/playsim/p_map.cpp", "symbol": "P_UseLines", "start": 6003, "end": 6027 }
+      ]
+    },
+    {
+      "name": "p-mobj-movement-thinker-chunk3",
+      "nativeLoc": 1594,
+      "managedLoc": 0,
+      "note": "p_mobj.cpp P_XYMovement/P_ZMovement, thinker tick velocity subset, missile explode-on-impact (excludes run-8 P_CheckMissileSpawn credit).",
+      "nativeRanges": [
+        { "file": "src/playsim/p_mobj.cpp", "symbol": "P_ExplodeMissile", "start": 1958, "end": 2100 },
+        { "file": "src/playsim/p_mobj.cpp", "symbol": "P_XYMovement", "start": 2421, "end": 2948 },
+        { "file": "src/playsim/p_mobj.cpp", "symbol": "P_ZMovement", "start": 2955, "end": 3480 },
+        { "file": "src/playsim/p_mobj.cpp", "symbol": "AActor::Tick", "start": 4521, "end": 5075 },
+        { "file": "src/playsim/p_mobj.cpp", "symbol": "missile collide explode", "start": 2680, "end": 2765 }
       ]
     }
   ]
