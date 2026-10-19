@@ -36,6 +36,16 @@ internal static class AcsCallFunctions
     public const int GetActorViewHeight = 14;
     /// <summary>Native <c>ACSF_GetChar</c> (15).</summary>
     public const int GetChar = 15;
+    /// <summary>Native <c>ACSF_GetAirSupply</c> (16).</summary>
+    public const int GetAirSupply = 16;
+    /// <summary>Native <c>ACSF_SetAirSupply</c> (17).</summary>
+    public const int SetAirSupply = 17;
+    /// <summary>Native <c>ACSF_SpawnSpotForced</c> (20).</summary>
+    public const int SpawnSpotForced = 20;
+    /// <summary>Native <c>ACSF_SetUserArray</c> (28).</summary>
+    public const int SetUserArray = 28;
+    /// <summary>Native <c>ACSF_GetUserArray</c> (29).</summary>
+    public const int GetUserArray = 29;
     /// <summary>Native <c>ACSF_GetArmorType</c> (19).</summary>
     public const int GetArmorType = 19;
     /// <summary>Native <c>ACSF_Radius_Quake2</c> (26).</summary>
@@ -209,7 +219,16 @@ internal static class AcsCallFunctions
             case SetUserVariable:
                 return TrySetUserVariable(sim, stack, scriptActivator, stringTable, globalStrings, argCount, out result);
             case GetUserVariable:
+            case GetUserArray:
                 return TryGetUserVariable(sim, stack, scriptActivator, stringTable, globalStrings, argCount, out result);
+            case SetUserArray:
+                return TrySetUserArray(sim, stack, scriptActivator, stringTable, globalStrings, argCount, out result);
+            case GetAirSupply:
+                return TryGetAirSupply(sim, stack, argCount, out result);
+            case SetAirSupply:
+                return TrySetAirSupply(sim, stack, argCount, out result);
+            case SpawnSpotForced:
+                return TrySpawnSpotForced(sim, stack, scriptActivator, stringTable, globalStrings, argCount, out result);
             case GetActorVelX:
                 return TryGetActorVelocity(sim, stack, scriptActivator, 0, argCount, out result);
             case GetActorVelY:
@@ -2059,6 +2078,99 @@ internal static class AcsCallFunctions
             || PickupCatalog.TryEditorNumberForDropName(className, out _)
             || PickupCatalog.TryEditorNumberForDropName(className, out _, strifeHealth: true)
             || PickupCatalog.TryEditorNumberForDropName(className, out _, ravenHealth: true) ? 1 : 0;
+        return true;
+    }
+
+    private static bool TryResolveAcsPlayer(AuthoritySimulation sim, int playerArg, out PlayerPawn? player)
+    {
+        player = null;
+        if (playerArg < 0) return false;
+        player = sim.Players.FirstOrDefault(p => !p.Destroyed && p.PlayerNum == playerArg);
+        return player is not null && sim.IsPlayerInGame(player.PlayerNum);
+    }
+
+    private static bool TryGetAirSupply(AuthoritySimulation sim, List<int> stack, int argCount, out int result)
+    {
+        result = 0;
+        if (argCount < 1 || stack.Count < argCount) return false;
+        var start = stack.Count - argCount;
+        var playerArg = stack[start];
+        stack.RemoveRange(start, argCount);
+        if (!TryResolveAcsPlayer(sim, playerArg, out var player) || player is null) return true;
+        result = player.AirFinishedTic - sim.Thinkers.Clock.Tic;
+        return true;
+    }
+
+    private static bool TrySetAirSupply(AuthoritySimulation sim, List<int> stack, int argCount, out int result)
+    {
+        result = 0;
+        if (argCount < 2 || stack.Count < argCount) return false;
+        var start = stack.Count - argCount;
+        var playerArg = stack[start];
+        var supply = stack[start + 1];
+        stack.RemoveRange(start, argCount);
+        if (!TryResolveAcsPlayer(sim, playerArg, out var player) || player is null) return true;
+        player.AirFinishedTic = supply + sim.Thinkers.Clock.Tic;
+        result = 1;
+        return true;
+    }
+
+    private static bool TrySpawnSpotForced(
+        AuthoritySimulation sim,
+        List<int> stack,
+        Actor? activator,
+        string[] stringTable,
+        AcsGlobalStrings globalStrings,
+        int argCount,
+        out int result)
+    {
+        result = 0;
+        if (argCount < 4 || stack.Count < argCount) return false;
+        var start = stack.Count - argCount;
+        var typeId = stack[start];
+        var spotTid = stack[start + 1];
+        var tid = stack[start + 2];
+        var angleByte = stack[start + 3];
+        stack.RemoveRange(start, argCount);
+        result = AcsMapMutations.SpawnSpot(sim, typeId, spotTid, tid, angleByte, force: true, stringTable, globalStrings, activator);
+        return true;
+    }
+
+    private static bool TrySetUserArray(
+        AuthoritySimulation sim,
+        List<int> stack,
+        Actor? activator,
+        string[] stringTable,
+        AcsGlobalStrings globalStrings,
+        int argCount,
+        out int result)
+    {
+        result = 0;
+        if (argCount < 4 || stack.Count < argCount) return false;
+        var start = stack.Count - argCount;
+        var tid = stack[start];
+        var name = AcsStringIds.LookupTerminated(stack[start + 1], stringTable, globalStrings);
+        var index = stack[start + 2];
+        var value = stack[start + 3];
+        stack.RemoveRange(start, argCount);
+        var updated = 0;
+        if (tid == 0)
+        {
+            if (activator is { Destroyed: false })
+            {
+                activator.SetScriptUserVar(name, index, value);
+                updated = 1;
+            }
+        }
+        else
+        {
+            foreach (var actor in AcsActorTid.AllFromTid(sim, tid))
+            {
+                actor.SetScriptUserVar(name, index, value);
+                updated++;
+            }
+        }
+        result = updated;
         return true;
     }
 

@@ -1917,6 +1917,8 @@ public class PlayerPawn : Actor
     public const int CommandQueueCapacity = 128;
     private readonly Queue<PlayerCommand> _commands = new();
     public byte PlayerNum { get; init; }
+    /// <summary>Native <c>air_finished</c> map tic; ACS supply is <see cref="AirFinishedTic"/> minus current tic.</summary>
+    internal int AirFinishedTic { get; set; }
     /// <summary>
     /// Native <c>CF_BUDDHA2</c>. A killing blow, including a telefrag, leaves health at 1.
     /// <c>DMG_FORCED</c> no longer skips armor or god mode.
