@@ -1,14 +1,14 @@
 {
-  "convertedThisRunNative": 1539,
-  "convertedThisRunManaged": 624,
+  "convertedThisRunNative": 2441,
+  "convertedThisRunManaged": 894,
   "recognitionThisRunNative": 5400,
   "recognitionThisRunManaged": 0,
-  "remainingNative": 493120,
+  "remainingNative": 492218,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 9566,
+  "convertedBehaviorNative": 10468,
   "recognitionBehaviorNative": 5400,
   "combinedBehaviorNative": 15868,
-  "convertedBehaviorManaged": 6615,
+  "convertedBehaviorManaged": 6675,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -328,6 +328,29 @@
         { "file": "src/playsim/mapthinkers/a_floor.cpp", "symbol": "EV_StartWaggle", "start": 1314, "end": 1353, "tests": ["WaggleActionsTests.FloorWaggleOscillatesAfterExpand"] },
         { "file": "src/playsim/mapthinkers/a_floor.cpp", "symbol": "EV_DoDonut", "start": 796, "end": 863, "tests": ["FloorDonutTests.DonutSpecialStartsPillarAndPoolFloors"] },
         { "file": "src/playsim/mapthinkers/a_floor.cpp", "symbol": "DElevator::Tick", "start": 941, "end": 984, "tests": ["LineSpecialBatchTests.ElevatorRaiseToNearestMatchesNeighborFloor"] }
+      ]
+    },
+    {
+      "name": "p-pusher-lighttransfer-chunk6",
+      "bucket": "conversion",
+      "nativeLoc": 524,
+      "managedLoc": 175,
+      "note": "a_pusher.cpp DPusher wind/current; a_lighttransfer.cpp DLightTransfer.",
+      "nativeRanges": [
+        { "file": "src/playsim/mapthinkers/a_pusher.cpp", "symbol": "DPusher::Tick", "start": 149, "end": 299, "tests": ["PusherWindTests.SectorWindThinkerAddsVelocityOnGround"] },
+        { "file": "src/playsim/mapthinkers/a_pusher.cpp", "symbol": "FLevelLocals::AdjustPusher", "start": 307, "end": 351, "tests": ["PusherWindTests.SectorWindThinkerAddsVelocityOnGround"] },
+        { "file": "src/playsim/mapthinkers/a_lighttransfer.cpp", "symbol": "DLightTransfer::Tick", "start": 68, "end": 95, "tests": ["LightTransferActionsTests.TransferFollowsSourceSectorLight"] }
+      ]
+    },
+    {
+      "name": "p-teleport-switch-range-chunk6",
+      "bucket": "conversion",
+      "nativeLoc": 378,
+      "managedLoc": 95,
+      "note": "p_switch.cpp P_CheckSwitchRange; p_teleport.cpp SelectTeleDest random TID choice.",
+      "nativeRanges": [
+        { "file": "src/playsim/p_switch.cpp", "symbol": "P_CheckSwitchRange", "start": 98, "end": 234, "tests": ["SwitchCheckRangeTests.TopSwitchRequiresReachableHeight"] },
+        { "file": "src/playsim/p_teleport.cpp", "symbol": "FLevelLocals::SelectTeleDest", "start": 274, "end": 340, "tests": ["TeleportRandomDestTests.TidTeleportUsesDeterministicIndexAcrossMatchingDests"] }
       ]
     }
   ]

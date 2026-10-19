@@ -119,4 +119,29 @@ internal static class SwitchActions
         sim.QueueSoundRequest(new SimulationSoundRequest(0, sound, 0, (int)SimulationSoundFlags.ListenerZ,
             1, false, 1, false, DetachedOrigin: new SimulationSoundOrigin((float)x, (float)y, 0, sector)));
     }
+
+    internal static bool CheckUseRange(AuthoritySimulation sim, PlayerPawn user, LevelLine line, bool backSide)
+    {
+        var sideIndex = backSide ? line.SideBack : line.SideFront;
+        if (sideIndex < 0) return true;
+        var flags = line.Flags;
+        if ((flags & LevelLine.MidTex3DFlag) == 0 && (flags & LevelLine.CheckSwitchRangeFlag) == 0) return true;
+        var side = sim.Level.Sides[sideIndex];
+        var topZ = user.Z.ToDouble() + user.Height.ToDouble();
+        var floorZ = user.Z.ToDouble();
+        if (line.OneSided || line.SideBack < 0)
+            return topZ >= sim.Floors[side.Sector] && floorZ <= sim.Ceilings[side.Sector];
+        var front = sim.Level.Sides[line.SideFront].Sector;
+        var back = sim.Level.Sides[line.SideBack].Sector;
+        var lowFloor = Math.Max(sim.Floors[front], sim.Floors[back]);
+        var highCeil = Math.Min(sim.Ceilings[front], sim.Ceilings[back]);
+        if (highCeil <= lowFloor) return topZ >= lowFloor && floorZ <= highCeil;
+        if (SwitchCatalog.Find(side.TopTexture) is not null)
+            return topZ >= highCeil - 8;
+        if (SwitchCatalog.Find(side.BottomTexture) is not null)
+            return floorZ <= lowFloor + 8;
+        if ((flags & LevelLine.MidTex3DFlag) != 0 || SwitchCatalog.Find(side.MidTexture) is not null)
+            return floorZ < highCeil - 8 && topZ > lowFloor + 8;
+        return topZ >= highCeil - 8 || floorZ <= lowFloor + 8;
+    }
 }
