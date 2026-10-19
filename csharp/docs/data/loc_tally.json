@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": -7774,
+  "convertedThisRunNative": -7716,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 5683,
+  "convertedThisRunManaged": 5733,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -774,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 492667,
+  "remainingNative": 492609,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 10753,
+  "convertedBehaviorNative": 10811,
   "recognitionBehaviorNative": 4666,
-  "combinedBehaviorNative": 15419,
-  "convertedBehaviorManaged": 15354,
+  "combinedBehaviorNative": 15477,
+  "convertedBehaviorManaged": 15404,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -3856,6 +3856,43 @@
         }
       ],
       "conversionManagedCommit": "b9f97d7e98f387c2de18a0dd768d2cc99098dbff"
+    },
+    {
+      "name": "p-acs-line-side-from-id-chunk58",
+      "bucket": "conversion",
+      "nativeLoc": 58,
+      "managedLoc": 50,
+      "note": "LineFromID/SideFromID and UDMF getter dispatch.",
+      "nativeRanges": [
+        {
+          "file": "src/playsim/p_acs.cpp",
+          "symbol": "DLevelScript::SideFromID",
+          "start": 4920,
+          "end": 4937,
+          "tests": [
+            "AcsLineSideFromIdTests.SideFromId_ResolvesFrontAndBackByLineId"
+          ]
+        },
+        {
+          "file": "src/playsim/p_acs.cpp",
+          "symbol": "DLevelScript::LineFromID",
+          "start": 4939,
+          "end": 4950,
+          "tests": [
+            "AcsLineSideFromIdTests.LineFromId_UsesTriggerLineWhenIdZero"
+          ]
+        },
+        {
+          "file": "src/playsim/p_acs.cpp",
+          "symbol": "DLevelScript::CallFunction",
+          "start": 5448,
+          "end": 5475,
+          "tests": [
+            "AcsLineSideFromIdTests.GetLineUdmfInt_UsesLineFromId",
+            "AcsLineSideFromIdTests.GetSideUdmfInt_UsesLineAndSideIds"
+          ]
+        }
+      ]
     }
   ]
 }

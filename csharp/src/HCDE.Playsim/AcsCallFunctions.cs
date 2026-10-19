@@ -1135,14 +1135,23 @@ internal static partial class AcsCallFunctions
         if (argCount < 2 || stack.Count < argCount)
             return false;
         var keyName = AcsStringIds.LookupTerminated(stack[^1], stringTable, globalStrings);
-        var id = stack[^argCount];
+        var sideSelector = 0;
+        int id;
+        if (function is GetSideUdmfInt or GetSideUdmfFixed)
+        {
+            if (argCount < 3) return false;
+            id = stack[^3];
+            sideSelector = stack[^2];
+        }
+        else
+            id = stack[^argCount];
         stack.RemoveRange(stack.Count - argCount, argCount);
         var fixedPoint = function is GetLineUdmfFixed or GetSectorUdmfFixed or GetSideUdmfFixed;
         if (function is GetLineUdmfInt or GetLineUdmfFixed)
         {
-            var line = AcsLineActivation.LinesFromId(sim, id).FirstOrDefault();
-            if (line is null) return true;
-            var value = ReadLineUdmf(line, keyName);
+            var lineIndex = AcsLineSideFromId.LineFromId(sim, id);
+            if (lineIndex < 0 || lineIndex >= sim.Level.Lines.Count) return true;
+            var value = ReadLineUdmf(sim.Level.Lines[lineIndex], keyName);
             result = fixedPoint ? value << 16 : value;
             return true;
         }
@@ -1156,11 +1165,11 @@ internal static partial class AcsCallFunctions
         }
         if (function is GetSideUdmfInt or GetSideUdmfFixed)
         {
-            if (argCount < 3) return false;
-            var sideIndex = stack[stack.Count - argCount];
-            stack.RemoveRange(stack.Count - argCount, argCount);
-            if ((uint)sideIndex >= (uint)sim.Level.Sides.Count) return true;
-            var value = ReadSideUdmf(sim.Level.Sides[sideIndex], keyName);
+            var udmfSide = AcsLineSideFromId.SideFromId(sim, id, sideSelector);
+            if (udmfSide < 0) return true;
+            var sideDef = sim.Level.Sides.FirstOrDefault(candidate => candidate.Index == udmfSide);
+            if (sideDef is null) return true;
+            var value = ReadSideUdmf(sideDef, keyName);
             result = fixedPoint ? value << 16 : value;
             return true;
         }
