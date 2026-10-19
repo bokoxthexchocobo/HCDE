@@ -16,27 +16,15 @@ internal static class LineSpecialFeasibleGaps
     {
         return special switch
         {
-            FloorWaggle => ExecuteFloorWaggle(sim, a0, a1),
+            FloorWaggle => WaggleActions.Start(sim, null, a0, a1, a2, a3, a4, ceiling: false),
             ThingSpawnFacing => ThingSpawnLineSpecials.ExecuteSpawnFacing(sim, a0, a1, a2 != 0, a3),
             SetGlobalFogParameter => true,
             SendToCommunicator => ExecuteCommunicator(sim, a0, a1),
             ChangeSkill => a0 is >= 0 and <= 5,
             ThingSetTranslation => ExecuteThingTranslation(sim, a0, a1),
-            SectorSetWind => ExecuteSectorWind(sim, a0, a1, a2),
+            SectorSetWind => a3 == 0 && PusherActions.AdjustWind(sim, a0, a1, a2),
             _ => null,
         };
-    }
-
-    private static bool ExecuteFloorWaggle(AuthoritySimulation sim, int tag, int heightFixed)
-    {
-        if (tag == 0) return false;
-        var delta = heightFixed / 65536.0;
-        foreach (var sector in sim.Level.Sectors.Where(candidate => candidate.MatchesTag(tag)))
-        {
-            if ((uint)sector.Index < (uint)sim.Floors.Length)
-                sim.Floors[sector.Index] += delta;
-        }
-        return true;
     }
 
     private static bool ExecuteCommunicator(AuthoritySimulation sim, int tid, int message)
@@ -63,17 +51,4 @@ internal static class LineSpecialFeasibleGaps
         return changed;
     }
 
-    private static bool ExecuteSectorWind(AuthoritySimulation sim, int tag, int amount, int angleByte)
-    {
-        if (tag == 0) return false;
-        var radians = angleByte * (Math.PI * 2 / 256);
-        var pushX = Math.Cos(radians) * amount / 8.0;
-        var pushY = Math.Sin(radians) * amount / 8.0;
-        foreach (var sector in sim.Level.Sectors.Where(candidate => candidate.MatchesTag(tag)))
-        {
-            sector.PushForceX = pushX;
-            sector.PushForceY = pushY;
-        }
-        return true;
-    }
 }

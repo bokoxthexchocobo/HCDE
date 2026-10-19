@@ -1,14 +1,14 @@
 {
-  "convertedThisRunNative": 1070,
-  "convertedThisRunManaged": 429,
+  "convertedThisRunNative": 1539,
+  "convertedThisRunManaged": 624,
   "recognitionThisRunNative": 5400,
   "recognitionThisRunManaged": 0,
-  "remainingNative": 493589,
+  "remainingNative": 493120,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 9097,
+  "convertedBehaviorNative": 9566,
   "recognitionBehaviorNative": 5400,
   "combinedBehaviorNative": 15868,
-  "convertedBehaviorManaged": 6420,
+  "convertedBehaviorManaged": 6615,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -316,6 +316,18 @@
         { "file": "src/playsim/mapthinkers/a_lights.cpp", "symbol": "EV_StartLightFading", "start": 774, "end": 797, "tests": ["AnimatedLightTests.FadeHasNativeFirstTickAndFinalWriteWithoutLockingImmediateChanges"] },
         { "file": "src/playsim/mapthinkers/a_lights.cpp", "symbol": "EV_StartLightFlickering", "start": 552, "end": 560, "tests": ["FlickerTests.RetriggerCreatesAnotherEffectAndStopRemovesEveryEffect"] },
         { "file": "src/playsim/mapthinkers/a_lights.cpp", "symbol": "EV_StopLightEffect", "start": 808, "end": 819, "tests": ["AnimatedLightTests.OverlappingEffectsRunInCreationOrderAndStopRemovesAll"] }
+      ]
+    },
+    {
+      "name": "p-floor-waggle-donut-elevator-chunk6",
+      "bucket": "conversion",
+      "nativeLoc": 469,
+      "managedLoc": 195,
+      "note": "a_floor.cpp EV_StartWaggle, EV_DoDonut, DElevator::Tick crush rollback.",
+      "nativeRanges": [
+        { "file": "src/playsim/mapthinkers/a_floor.cpp", "symbol": "EV_StartWaggle", "start": 1314, "end": 1353, "tests": ["WaggleActionsTests.FloorWaggleOscillatesAfterExpand"] },
+        { "file": "src/playsim/mapthinkers/a_floor.cpp", "symbol": "EV_DoDonut", "start": 796, "end": 863, "tests": ["FloorDonutTests.DonutSpecialStartsPillarAndPoolFloors"] },
+        { "file": "src/playsim/mapthinkers/a_floor.cpp", "symbol": "DElevator::Tick", "start": 941, "end": 984, "tests": ["LineSpecialBatchTests.ElevatorRaiseToNearestMatchesNeighborFloor"] }
       ]
     }
   ]

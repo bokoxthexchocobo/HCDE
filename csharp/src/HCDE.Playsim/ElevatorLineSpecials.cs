@@ -52,17 +52,37 @@ internal static class ElevatorLineSpecials
     {
         var floor = sim.Floors[motion.SectorIndex];
         var ceiling = sim.Ceilings[motion.SectorIndex];
+        var oldFloor = floor;
+        var oldCeiling = ceiling;
         var targetFloor = motion.TargetFloor;
         var targetCeiling = motion.TargetCeiling;
         if (motion.FloorDirection > 0)
         {
-            floor = Math.Min(targetFloor, floor + motion.Speed);
-            ceiling = Math.Min(targetCeiling, ceiling + motion.Speed);
+            var nextCeiling = Math.Min(targetCeiling, ceiling + motion.Speed);
+            var nextFloor = Math.Min(targetFloor, floor + motion.Speed);
+            var blocked = sim.Actors.Any(actor => actor.IsSectorMoverActor && ActorPhysics.BlocksSectorGeometry(actor)
+                && ActorPhysics.TouchesSector(sim, actor, motion.SectorIndex)
+                && (ActorPhysics.BlocksLoweringCeiling(sim, actor, nextCeiling)
+                    || ActorPhysics.RaisedFloorActorZ(actor, ActorPhysics.SectorSupportFloor(sim, actor),
+                        Math.Max(ActorPhysics.SectorSupportFloor(sim, actor), nextFloor))
+                        + actor.Height.ToDouble() > ActorPhysics.SectorSupportCeiling(sim, actor)));
+            if (blocked) { sim.Floors[motion.SectorIndex] = oldFloor; sim.Ceilings[motion.SectorIndex] = oldCeiling; return false; }
+            floor = nextFloor;
+            ceiling = nextCeiling;
         }
         else
         {
-            floor = Math.Max(targetFloor, floor - motion.Speed);
-            ceiling = Math.Max(targetCeiling, ceiling - motion.Speed);
+            var nextFloor = Math.Max(targetFloor, floor - motion.Speed);
+            var nextCeiling = Math.Max(targetCeiling, ceiling - motion.Speed);
+            var blocked = sim.Actors.Any(actor => actor.IsSectorMoverActor && ActorPhysics.BlocksSectorGeometry(actor)
+                && ActorPhysics.TouchesSector(sim, actor, motion.SectorIndex)
+                && (ActorPhysics.RaisedFloorActorZ(actor, ActorPhysics.SectorSupportFloor(sim, actor),
+                        Math.Max(ActorPhysics.SectorSupportFloor(sim, actor), nextFloor))
+                        + actor.Height.ToDouble() > ActorPhysics.SectorSupportCeiling(sim, actor)
+                    || ActorPhysics.BlocksLoweringCeiling(sim, actor, nextCeiling)));
+            if (blocked) { sim.Floors[motion.SectorIndex] = oldFloor; sim.Ceilings[motion.SectorIndex] = oldCeiling; return false; }
+            floor = nextFloor;
+            ceiling = nextCeiling;
         }
         sim.Floors[motion.SectorIndex] = floor;
         sim.Ceilings[motion.SectorIndex] = ceiling;

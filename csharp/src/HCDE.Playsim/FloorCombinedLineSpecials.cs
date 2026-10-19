@@ -32,14 +32,39 @@ internal static class FloorCombinedLineSpecials
 
     private static bool Donut(AuthoritySimulation sim, LevelLine? line, int tag, int pillarSpeed, int surroundSpeed)
     {
-        var started = LineSpecials.ExecuteFloorSpecial(sim, 23, tag, pillarSpeed, 4, 0, 0, line) == true;
-        foreach (var sector in LineSpecials.TargetSectors(sim, line, tag, backSide: true))
+        var started = false;
+        foreach (var pillar in LineSpecials.TargetSectors(sim, line, tag, backSide: true))
         {
-            foreach (var neighbor in LineSpecials.NeighborSectors(sim, sector))
+            if (sim.Motions.Any(m => m.SectorIndex == pillar && !m.MovesCeiling && !m.Completed)) continue;
+            var poolSide = -1;
+            foreach (var edge in sim.Level.Lines)
             {
-                if (sim.Level.Sectors[neighbor].MatchesTag(tag)) continue;
-                started |= LineSpecials.ExecuteFloorSpecial(sim, 21, sim.Level.Sectors[neighbor].Tag, surroundSpeed, 0, 0, 0, line) == true;
+                if (edge.OneSided || (uint)edge.SideFront >= (uint)sim.Level.Sides.Count || (uint)edge.SideBack >= (uint)sim.Level.Sides.Count) continue;
+                var front = sim.Level.Sides[edge.SideFront].Sector;
+                var back = sim.Level.Sides[edge.SideBack].Sector;
+                if (front == pillar) { poolSide = back; break; }
+                if (back == pillar) { poolSide = front; break; }
             }
+            if (poolSide < 0) continue;
+            if (sim.Motions.Any(m => m.SectorIndex == poolSide && !m.MovesCeiling && !m.Completed)) continue;
+            var holeSector = -1;
+            var holeHeight = double.NegativeInfinity;
+            foreach (var boundary in sim.Level.Lines)
+            {
+                if ((uint)boundary.SideFront >= (uint)sim.Level.Sides.Count || (uint)boundary.SideBack >= (uint)sim.Level.Sides.Count) continue;
+                var front = sim.Level.Sides[boundary.SideFront].Sector;
+                var back = sim.Level.Sides[boundary.SideBack].Sector;
+                var other = front == poolSide ? back : back == poolSide ? front : -1;
+                if (other < 0 || other == poolSide || other == pillar) continue;
+                var high = sim.Floors[other];
+                foreach (var neighbor in LineSpecials.NeighborSectors(sim, other))
+                    high = Math.Max(high, sim.Floors[neighbor]);
+                if (high > holeHeight) { holeHeight = high; holeSector = other; }
+                break;
+            }
+            if (holeSector < 0) continue;
+            started |= LineSpecials.ExecuteFloorSpecial(sim, 23, tag, pillarSpeed, 4, 0, 0, line) == true;
+            started |= LineSpecials.ExecuteFloorSpecial(sim, 21, sim.Level.Sectors[poolSide].Tag, surroundSpeed, 0, 0, 0, line) == true;
         }
         return started;
     }

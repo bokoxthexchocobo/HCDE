@@ -246,6 +246,7 @@ public static partial class LineSpecials
             return legacy;
         }
         if (actor is not PlayerPawn) return false;
+        if (use && !SwitchActions.CheckUseRange(sim, (PlayerPawn)actor, line, useBackSide)) return false;
         var activatedSpecial = line.Special;
         var doom = sim.Level.Format == MapDataFormat.DoomBinary
             || sim.Level.Namespace.Equals("Doom", StringComparison.OrdinalIgnoreCase)
@@ -356,7 +357,7 @@ public static partial class LineSpecials
                 80 or 81 or 82 or 226 => ExecuteScriptControl(sim, line.Special, line.Arg0, line.Arg1, line.Arg2, line.Arg3, line.Arg4, actor, line, backSide ?? IsBackSide(line, actor.X.ToDouble(), actor.Y.ToDouble(), sim.Compat.HasFlag(CompatSurface.PointOnLine))) == true,
                 243 => Exit(sim, false, actor),
                 244 => Exit(sim, true, actor),
-                40 or 41 or 42 or 43 or 44 or 45 or 47 or 69 or 97 or 104 or 168 or 192 or 193 or 194 or 195 or 196 or 197 or 198 or 199 or 252 or 253 or 254 or 255 or 262 or 263 or 264 or 265 or 266 or 267 or 276 or 280 => ExecuteCeilingSpecial(sim, line.Special,
+                38 or 40 or 41 or 42 or 43 or 44 or 45 or 47 or 69 or 97 or 104 or 168 or 192 or 193 or 194 or 195 or 196 or 197 or 198 or 199 or 252 or 253 or 254 or 255 or 262 or 263 or 264 or 265 or 266 or 267 or 276 or 280 => ExecuteCeilingSpecial(sim, line.Special,
                     line.Arg0, line.Arg1, line.Arg2, line.Arg3, line.Arg4, line) == true,
                 26 or 27 or 31 or 32 or 204 or 217 or 270 or 271 or 272 or 273 => ExecuteStairSpecial(sim, line.Special,
                     line.Arg0, line.Arg1, line.Arg2, line.Arg3, line.Arg4, line) == true,
@@ -540,7 +541,8 @@ public static partial class LineSpecials
     internal static bool? ExecuteCeilingSpecial(AuthoritySimulation sim, int special, int tag, int speed, int amount,
         int change, int crush, LevelLine? line = null)
     {
-        if (special is not (40 or 41 or 42 or 43 or 44 or 45 or 47 or 69 or 97 or 104 or 168 or 192 or 193 or 194 or 195 or 196 or 197 or 198 or 199 or 252 or 253 or 254 or 255 or 262 or 263 or 264 or 265 or 266 or 267 or 268 or 269 or 276 or 280)) return null;
+        if (special is not (38 or 40 or 41 or 42 or 43 or 44 or 45 or 47 or 69 or 97 or 104 or 168 or 192 or 193 or 194 or 195 or 196 or 197 or 198 or 199 or 252 or 253 or 254 or 255 or 262 or 263 or 264 or 265 or 266 or 267 or 268 or 269 or 276 or 280)) return null;
+        if (special == 38) return WaggleActions.Start(sim, line, tag, speed, amount, change, crush, ceiling: true);
         if (special == 44) return CeilingActions.Stop(sim, line, tag,
             remove: speed == 2 || speed != 1 && sim.Compat.HasFlag(CompatSurface.HexenCrushDefaults));
         if (tag == 0 && line is null) return false;
@@ -1079,9 +1081,11 @@ public static partial class LineSpecials
             if (!byThingId || target == 0)
                 destinations = destinations.OrderBy(actor => actor.SectorIndex);
         }
-        var dest = destinations.FirstOrDefault();
-        if (dest == null)
-            return false;
+        var destList = destinations.ToList();
+        if (destList.Count == 0) return false;
+        var dest = destList.Count == 1 || !byThingId || target == 0
+            ? destList[0]
+            : destList[sim.NextTeleportRandom() % destList.Count];
         var aboveFloor = activator.Z.ToDouble() - sim.FloorOf(activator.SectorIndex);
         var missileSpeed = activator.VelXYToSpeed();
         var verticalVelocity = activator.VelocityZ;

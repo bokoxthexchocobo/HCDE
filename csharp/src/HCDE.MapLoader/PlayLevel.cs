@@ -125,6 +125,7 @@ public sealed class LevelLine
     public const int BlockProjectileFlag = 0x01000000;
     public const int RepeatSpecialFlag = 512;
     public const int MidTex3DFlag = 0x00200000;
+    public const int CheckSwitchRangeFlag = 0x00400000;
     public const int NoSide = -1;
 
     public int Index { get; init; }

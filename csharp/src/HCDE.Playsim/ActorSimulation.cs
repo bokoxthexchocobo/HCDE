@@ -33,6 +33,8 @@ public class Actor : Thinker
     public uint Id { get; init; }
     public IReadOnlyDictionary<ActorSoundType, string> ActorSounds { get; set; }
         = new Dictionary<ActorSoundType, string>();
+    /// <summary>Native <c>SN_StartSequence</c> name from ACS CallFunc.</summary>
+    internal string? AcsSoundSequenceName { get; set; }
     internal IReadOnlyDictionary<ActorSoundType, string>? SpawnActorSounds { get; set; }
     /// <summary>Native <c>GetNetworkID</c>. Assigned by netplay; ACS may query it offline.</summary>
     public uint NetworkId { get; set; }
@@ -3132,6 +3134,15 @@ public sealed class AuthoritySimulation
         else _sectorSoundTargets[sector] = target.Id;
     }
 
+    private readonly Dictionary<int, string> _sectorAcsSoundSequences = new();
+    private readonly Dictionary<int, string> _polyobjAcsSoundSequences = new();
+    public string? SectorAcsSoundSequence(int sector) =>
+        _sectorAcsSoundSequences.GetValueOrDefault(sector);
+    internal void SetSectorAcsSoundSequence(int sector, string name) => _sectorAcsSoundSequences[sector] = name;
+    public string? PolyobjAcsSoundSequence(int polyId) =>
+        _polyobjAcsSoundSequences.GetValueOrDefault(polyId);
+    internal void SetPolyobjAcsSoundSequence(int polyId, string name) => _polyobjAcsSoundSequences[polyId] = name;
+
     private double? _airControlOverride;
     private double? _levelGravityOverride;
     private double _gibFactor = 1;
@@ -3440,6 +3451,7 @@ public sealed class AuthoritySimulation
     private uint _lightFlashRandomState;
     private uint _fireFlickerRandomState;
     private ulong? _switchAnimRandomState;
+    private ulong? _teleportRandomState;
     private readonly List<SectorMotion> _motions = new();
     private readonly SimLineAction[] _initialLineActions;
     private readonly SimSectorTerrain[] _initialSectorTerrains;
@@ -3817,6 +3829,9 @@ public sealed class AuthoritySimulation
     public bool IsNetworkGame => false;
     internal List<LightEffect> LightEffects { get; } = [];
     internal List<ActiveButton> ActiveButtons { get; } = [];
+    internal List<PlaneWaggle> PlaneWaggles { get; } = [];
+    internal List<SectorPusher> SectorPushers { get; } = [];
+    internal List<LightTransfer> LightTransfers { get; } = [];
     internal bool HasLightOverride { get; set; }
     internal bool HasLightAnimationOverride { get; set; }
     public short LightOf(int sector) => (uint)sector < (uint)Lights.Length ? Lights[sector] : (short)0;
@@ -4735,6 +4750,8 @@ public sealed class AuthoritySimulation
     }
 
     internal int NextSwitchAnimByte() => NextWanderByte(ref _switchAnimRandomState, 0x53776974u);
+
+    internal int NextTeleportRandom() => NextWanderByte(ref _teleportRandomState, 0x54656c70u);
 
     internal int NextFireFlickerRandom()
     {
@@ -7081,6 +7098,9 @@ public sealed class AuthoritySimulation
         // Native ACS observes Level->time before the end-of-tic increment.
         var levelTic = Thinkers.Clock.Tic;
         SwitchActions.Tick(this);
+        WaggleActions.Tick(this);
+        PusherActions.Tick(this);
+        LightTransferActions.Tick(this);
         if (LightEffects.Count != 0) HasLightAnimationOverride = true;
         LightEffects.RemoveAll(effect => effect.Tick(this));
         Thinkers.Run();
