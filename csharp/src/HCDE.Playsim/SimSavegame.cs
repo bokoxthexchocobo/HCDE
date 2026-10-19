@@ -128,6 +128,7 @@ public sealed class SimActorPose
     public int? NoBloodFlag { get; internal set; }
     public int? PuffGetsOwnerFlag { get; internal set; }
     public int? WeaponRefiringFlag { get; internal set; }
+    internal SimPlayerInput? PlayerInput { get; set; }
     public int? IsPuffFlag { get; internal set; }
     public int? SpawnDeathFlag { get; internal set; }
     internal bool LegacyImmediateSpawnDeath { get; set; }
@@ -850,7 +851,7 @@ public static class SimSavegame
             archive = SimSpawnFloatArchive.Write(state, archive);
             archive = SimFloatSpawnRandomArchive.Write(state, archive);
             archive = SimWeaponRefiringArchive.Write(state, SimVerticalWeaponSpreadArchive.Write(state, SimGunShotRandomArchive.Write(state, SimFireSg2RandomArchive.Write(state, SimPuffGetsOwnerArchive.Write(state, SimBfgSprayRandomArchive.Write(state, SimBfgSelfDamageRandomArchive.Write(state, SimRemappedDecorationArchive.Write(state, SimPainChanceOverrideArchive.Write(state, archive)))))))));
-            return SimSectorTerrainArchive.Write(state, archive);
+            return SimPlayerInputArchive.Write(state, SimSectorTerrainArchive.Write(state, archive));
         }
         return buffer;
     }
@@ -1200,6 +1201,7 @@ public static class SimSavegame
         if (version == 229) return SimGibHealthArchive.TryRead(bytes, out state, out error);
         if (version == 228) return SimGibFactorArchive.TryRead(bytes, out state, out error);
         if (version == 363) return SimWeaponRefiringArchive.TryRead(bytes, out state, out error);
+        if (version == 365) return SimPlayerInputArchive.TryRead(bytes, out state, out error);
         if (version == 364) return SimSectorTerrainArchive.TryRead(bytes, out state, out error);
         if (version == 362) return SimVerticalWeaponSpreadArchive.TryRead(bytes, out state, out error);
         if (version == 361) return SimGunShotRandomArchive.TryRead(bytes, out state, out error);

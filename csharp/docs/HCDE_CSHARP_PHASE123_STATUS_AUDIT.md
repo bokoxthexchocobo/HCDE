@@ -1,5 +1,27 @@
 # Gameplay phases 1–3: implementation and completion audit
 
+## 2026-10-18 - Actor.GetPlayerInput conversion
+
+- Converted missing Actor.GetPlayerInput from p_actionfunctions.cpp:426-448 and P_Thing_CheckInputNum in p_things.cpp:536-565. The omitted pointer is self. Original values are the queued command; modified values are that command after the represented chainsaw lunge, freeze, total freeze, and jump-clears-crouch mutations. Old buttons are the previous tic's original and modified buttons. Unknown input numbers and non-players return 0.
+- Added archive version 365. Zero input keeps the previous save version. Fresh saves restore both button words and the five represented axes. Crouch, turn, and weapon-refire saves that now carry button state report version 365.
+- Added two regressions covering original versus modified buttons and axes, the following tic's old buttons, chainsaw-plus-freeze, total freeze, player and target pointers, null and detached selectors, exact fresh saves, and unknown input numbers.
+- Validation: the new input cases and the cvar audit cases pass; full Release solution build with warnings as errors passes (0 warnings/errors); Playsim passes 16,950 tests. The other solution projects were unchanged and passed in the same build. Whitespace check passes. Changes remain local and uncommitted.
+- Limits: roll stays 0, and alt-attack, reload, zoom, and script-only buttons are not represented. Dead ticks do not refresh input because the managed queue drops the command before think. Starved-command coasting and client prediction replay remain outside this authoritative tick. Previously documented conversion gaps remain outstanding.
+
+## 2026-10-18 - GetCVar audit
+
+- Rechecked Actor.GetCVar and GetCVarString against p_actionfunctions.cpp:366-412, GetCVar in c_cvars.cpp:1494, and G_GetUserCVar in g_game.cpp:745. Player slot selection, ignore rejection, userinfo redirect, console-player fallback, float narrowing, and leaving session cvars out of the save match those paths. The managed world always has the game user-cvar callback installed.
+- Fixed two strtod mismatches. Only C whitespace is skipped, so a leading non-breaking space no longer becomes a number. Hex floats keep 15 significant nibbles and still scale extra integer digits. Negative zero now prints "-0", matching stb %g. Modern stb sprintf uses two exponent digits below 100, which the existing G6 text already matched.
+- Added one regression for a 16-nibble hex magnitude, a non-breaking space, and negative zero. No archive changes.
+- Validation is included with the player-input run above. Flag and mask cvars, latches, callbacks, config and demo persistence, and ZScript custom cvars remain outstanding.
+
+## 2026-10-18 - Actor.GetCVar and GetCVarString conversion
+
+- Converted missing Actor.GetCVar and GetCVarString from p_actionfunctions.cpp:366-412 and actor.zs:1060-1061. Lookup follows GetCVar in c_cvars.cpp:1494 and G_GetUserCVar in g_game.cpp:745. A player caller uses that slot; other actors use playernum -1, and userinfo then falls back to consoleplayer when that slot is in game. Ignored cvars, missing names, and missing user copies return 0 or empty. Float results use the native generic float representation, including float narrowing of ints and strtod parsing of strings. String results use the native generic string representation, including printf %g for floats and rr gg bb for colors.
+- Added five regressions covering bool, int, float, string, and color reps, case-insensitive names, ignore and missing names, per-player userinfo, console-player fallback, ignored user copies, read-only queries, fresh saves that do not keep session cvars, and detached or null-name failures. No archive changes required.
+- Validation: all 5 new cvar cases pass; full Release solution build with warnings as errors passes (0 warnings/errors); full solution suite passes 22,031 tests; whitespace check passes. Changes remain local and uncommitted.
+- Limits: flag and mask cvars, latches, callbacks, cheat gates, config-file and demo persistence, ZScript custom cvar classes, and arbitrary script dispatch remain outstanding. String true/false and strtoll integer generic reps are not on this float/string read path. Named color assignment remains a setter concern. Previously documented conversion gaps remain outstanding.
+
 ## 2026-10-17 - Actor.GetCrouchFactor conversion
 
 - Converted missing GetCrouchFactor from p_actionfunctions.cpp:336-355 and actor.zs:1059. Its omitted selector defaults to player 1 rather than self; represented actor-pointer selectors return the selected player's current factor, with 1 for missing or non-player actors. Detached self/null queries work; selectors requiring world lookup fail explicitly without a simulation.

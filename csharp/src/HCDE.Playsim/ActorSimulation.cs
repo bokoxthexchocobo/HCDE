@@ -161,6 +161,34 @@ public class Actor : Thinker
         return subject is PlayerPawn player ? player.CrouchFactor : 1;
     }
 
+    /// <summary>Native Actor.GetCVar. Missing, ignored, and unresolved user cvars return 0.</summary>
+    public double GetCVar(string name)
+    {
+        ArgumentNullException.ThrowIfNull(name);
+        var sim = Simulation ?? throw new InvalidOperationException("CVar queries require an attached simulation.");
+        return sim.CVars.ReadFloat(CVarPlayerNumber, sim.IsPlayerInGame, sim.ConsolePlayer, name);
+    }
+
+    /// <summary>Native Actor.GetCVarString. Missing, ignored, and unresolved user cvars return empty.</summary>
+    public string GetCVarString(string name)
+    {
+        ArgumentNullException.ThrowIfNull(name);
+        var sim = Simulation ?? throw new InvalidOperationException("CVar queries require an attached simulation.");
+        return sim.CVars.ReadString(CVarPlayerNumber, sim.IsPlayerInGame, sim.ConsolePlayer, name);
+    }
+
+    /// <summary>Native Actor.GetPlayerInput. Missing players and unknown input numbers return 0.</summary>
+    public int GetPlayerInput(int input, int pointerSelector = AcsActorPointer.Default)
+    {
+        var subject = pointerSelector == AcsActorPointer.Default ? this
+            : pointerSelector == AcsActorPointer.Null ? null
+            : AcsActorPointer.Resolve(Simulation
+                ?? throw new InvalidOperationException("Player input pointer queries require an attached simulation."), this, pointerSelector);
+        return subject is PlayerPawn player ? player.ReadPlayerInput(input) : 0;
+    }
+
+    private int CVarPlayerNumber => this is PlayerPawn player ? player.PlayerNum : -1;
+
     public bool CanSeek(Actor target)
     {
         ArgumentNullException.ThrowIfNull(target);
@@ -2034,6 +2062,83 @@ public class PlayerPawn : Actor
         set { _commands.Clear(); _commands.Enqueue(value); }
     }
     public int BufferedCommandCount => _commands.Count;
+    private int _originalButtons, _modifiedButtons, _originalOldButtons, _modifiedOldButtons;
+    private short _originalPitch, _originalYaw, _originalForward, _originalSide, _originalUp;
+    private short _modifiedPitch, _modifiedYaw, _modifiedForward, _modifiedSide, _modifiedUp;
+
+    internal int ReadPlayerInput(int input) => input switch
+    {
+        0 => _originalOldButtons,
+        1 => _originalButtons,
+        2 => _originalPitch,
+        3 => _originalYaw,
+        4 => 0,
+        5 => _originalForward,
+        6 => _originalSide,
+        7 => _originalUp,
+        8 => _modifiedOldButtons,
+        9 => _modifiedButtons,
+        10 => _modifiedPitch,
+        11 => _modifiedYaw,
+        12 => 0,
+        13 => _modifiedForward,
+        14 => _modifiedSide,
+        15 => _modifiedUp,
+        _ => 0,
+    };
+
+    internal SimPlayerInput CapturePlayerInput() => new(
+        _originalButtons, _modifiedButtons, _originalOldButtons, _modifiedOldButtons,
+        _originalPitch, _originalYaw, _originalForward, _originalSide, _originalUp,
+        _modifiedPitch, _modifiedYaw, _modifiedForward, _modifiedSide, _modifiedUp);
+
+    internal void RestorePlayerInput(SimPlayerInput saved)
+    {
+        _originalButtons = saved.OriginalButtons;
+        _modifiedButtons = saved.ModifiedButtons;
+        _originalOldButtons = saved.OriginalOldButtons;
+        _modifiedOldButtons = saved.ModifiedOldButtons;
+        _originalPitch = saved.OriginalPitch;
+        _originalYaw = saved.OriginalYaw;
+        _originalForward = saved.OriginalForward;
+        _originalSide = saved.OriginalSide;
+        _originalUp = saved.OriginalUp;
+        _modifiedPitch = saved.ModifiedPitch;
+        _modifiedYaw = saved.ModifiedYaw;
+        _modifiedForward = saved.ModifiedForward;
+        _modifiedSide = saved.ModifiedSide;
+        _modifiedUp = saved.ModifiedUp;
+    }
+
+    private void RememberPlayerInput(PlayerCommand incoming, PlayerCommand modified)
+    {
+        _originalOldButtons = _originalButtons;
+        _modifiedOldButtons = _modifiedButtons;
+        _originalButtons = EncodeButtons(incoming);
+        _modifiedButtons = EncodeButtons(modified);
+        if (modified.Jump) _modifiedButtons &= ~(1 << 3);
+        _originalPitch = incoming.PitchDelta;
+        _originalYaw = incoming.YawDelta;
+        _originalForward = incoming.ForwardMove;
+        _originalSide = incoming.SideMove;
+        _originalUp = incoming.UpMove;
+        _modifiedPitch = modified.PitchDelta;
+        _modifiedYaw = modified.YawDelta;
+        _modifiedForward = modified.ForwardMove;
+        _modifiedSide = modified.SideMove;
+        _modifiedUp = modified.UpMove;
+    }
+
+    private static int EncodeButtons(PlayerCommand command)
+    {
+        var buttons = 0;
+        if (command.Attack) buttons |= 1 << 0;
+        if (command.Use) buttons |= 1 << 1;
+        if (command.Jump) buttons |= 1 << 2;
+        if (command.Crouch) buttons |= 1 << 3;
+        if (command.Turn180) buttons |= 1 << 4;
+        return buttons;
+    }
     public bool TryQueueCommand(PlayerCommand command)
     {
         if (Destroyed) return true;
@@ -2246,7 +2351,8 @@ public class PlayerPawn : Actor
             base.Tick();
             return;
         }
-        var command = _commands.TryDequeue(out var queued) ? queued : default;
+        var incoming = _commands.TryDequeue(out var queued) ? queued : default;
+        var command = incoming;
         if (NoClip2)
         {
             if (!NoClip) { NoClip2 = false; if (!Fly) NoGravity = false; }
@@ -2264,6 +2370,7 @@ public class PlayerPawn : Actor
         }
         else if (Frozen)
             command = command with { ForwardMove = 0, SideMove = 0, UpMove = 0 };
+        RememberPlayerInput(incoming, command);
         HasMovementInput = command.ForwardMove != 0 || command.SideMove != 0;
         var freshUse = command.Use && !UseHeld;
         UseHeld = command.Use;
@@ -2995,6 +3102,11 @@ public sealed class AuthoritySimulation
         set => _gibFactor = double.IsFinite(value) && value >= 0
             ? value : throw new ArgumentOutOfRangeException(nameof(value));
     }
+
+    /// <summary>Native process cvar map used by Actor.GetCVar. Not part of the save pose.</summary>
+    internal ConsoleVariables CVars { get; } = new();
+    /// <summary>Native <c>consoleplayer</c> fallback for userinfo queries without a player.</summary>
+    internal int ConsolePlayer { get; set; }
 
     public double LevelGravity => _levelGravityOverride ?? Level.LevelGravity;
     public void SetLevelGravity(int fixedValue) => _levelGravityOverride = fixedValue / 65536.0;
@@ -5259,6 +5371,8 @@ public sealed class AuthoritySimulation
                 OnGround = actor.OnGround,
                 WeaponCooldown = actor is PlayerPawn pawn ? pawn.WeaponCooldown : 0,
             WeaponRefiringFlag = actor is PlayerPawn { WeaponRefiring: true } ? 1 : null,
+                PlayerInput = actor is PlayerPawn inputPlayer && inputPlayer.CapturePlayerInput() is { IsZero: false } capturedInput
+                    ? capturedInput : null,
                 Pitch = Fixed.FromDouble(actor.PitchDegrees).Raw,
                 UseHeld = actor is PlayerPawn usingPawn && usingPawn.UseHeld,
                 UseRange = actor is PlayerPawn rangePawn && rangePawn.HasUseRangeOverride ? rangePawn.UseRange : null,
@@ -6549,6 +6663,7 @@ public sealed class AuthoritySimulation
                 player.MaxPickupHealth = pose.ActorSpecial?.MaxPickupHealth ?? 0;
                 player.WeaponCooldown = pose.WeaponCooldown;
                 player.WeaponRefiring = pose.WeaponRefiringFlag == 1;
+                if (pose.PlayerInput is { } playerInput) player.RestorePlayerInput(playerInput);
                 player.TeleportFreezeTime = pose.TeleportFreezeTime;
                 player.RespawnEarliestTic = pose.RespawnEarliestTic;
                 player.RespawnArmed = pose.RespawnArmed;
@@ -7872,6 +7987,21 @@ public sealed class AuthoritySimulation
             {
                 hash = Mix(hash, (uint)player.WeaponCooldown);
                 if (player.WeaponRefiring) hash = Mix(hash, 0x57524652u);
+                var input = player.CapturePlayerInput();
+                if (!input.IsZero)
+                {
+                    hash = Mix(hash, 0x50494E50u);
+                    hash = Mix(hash, unchecked((uint)input.OriginalButtons));
+                    hash = Mix(hash, unchecked((uint)input.ModifiedButtons));
+                    hash = Mix(hash, unchecked((uint)input.OriginalOldButtons));
+                    hash = Mix(hash, unchecked((uint)input.ModifiedOldButtons));
+                    hash = Mix(hash, unchecked((uint)input.OriginalForward));
+                    hash = Mix(hash, unchecked((uint)input.ModifiedForward));
+                    hash = Mix(hash, unchecked((uint)input.OriginalSide));
+                    hash = Mix(hash, unchecked((uint)input.ModifiedSide));
+                    hash = Mix(hash, unchecked((uint)input.OriginalYaw));
+                    hash = Mix(hash, unchecked((uint)input.ModifiedYaw));
+                }
                 if (player.MaxHealth != 0)
                 {
                     hash = Mix(hash, 0x504d4850u);

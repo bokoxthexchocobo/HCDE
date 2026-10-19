@@ -10,7 +10,7 @@ public class PlayerTurnSaveTests
     {
         var sim = Room(); sim.QueueCommand(0, new PlayerCommand { Turn180 = true }); sim.Tick();
         var player = sim.Players.Single(); var ticks = player.TurnTicks; var angle = player.Angle;
-        var saved = SimSavegame.Write(sim); Assert.Equal(169, BinaryPrimitives.ReadUInt16LittleEndian(saved.AsSpan(4)));
+        var saved = SimSavegame.Write(sim); Assert.Equal(365, BinaryPrimitives.ReadUInt16LittleEndian(saved.AsSpan(4)));
         player.RestoreTurn(0, false); SimSavegame.Apply(sim, saved);
         Assert.Equal(ticks, player.TurnTicks); Assert.True(player.TurnHeld);
         sim.QueueCommand(0, new PlayerCommand { Turn180 = true, YawDelta = 16384 }); sim.Tick();

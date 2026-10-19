@@ -39,7 +39,7 @@ public class WeaponRefireAccuracyTests
     public void FreshSaveContinuesHeldRefireAndLegacySaveResetsTracking()
     {
         var sim = Room(WeaponKind.Pistol); var legacy = SimSavegame.Write(sim, true); Step(sim, true);
-        var saved = SimSavegame.Write(sim, true); Assert.Equal(363, BinaryPrimitives.ReadUInt16LittleEndian(saved.AsSpan(4)));
+        var saved = SimSavegame.Write(sim, true); Assert.Equal(365, BinaryPrimitives.ReadUInt16LittleEndian(saved.AsSpan(4)));
         var fresh = Room(WeaponKind.Pistol); SimSavegame.Apply(fresh, saved);
         Assert.Equal(saved, SimSavegame.Write(fresh, true)); Assert.True(fresh.Players.Single().WeaponRefiring);
         for (var i = 0; i < 19; i++) { Step(sim, true); Step(fresh, true); }

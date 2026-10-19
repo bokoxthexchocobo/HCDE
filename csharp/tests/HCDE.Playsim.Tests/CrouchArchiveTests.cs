@@ -16,7 +16,7 @@ public class CrouchArchiveTests
         if (jump) Step(source, new PlayerCommand { Jump = true });
         var player = source.Players.Single();
         var bytes = SimSavegame.Write(source);
-        Assert.Equal(91, BinaryPrimitives.ReadUInt16LittleEndian(bytes.AsSpan(4)));
+        Assert.Equal(365, BinaryPrimitives.ReadUInt16LittleEndian(bytes.AsSpan(4)));
         Assert.True(SimSavegame.TryRead(bytes, out var state, out var error), error);
         var loaded = Room(); loaded.RestoreState(state);
         var restored = loaded.Players.Single();
@@ -64,8 +64,8 @@ public class CrouchArchiveTests
 
     [Theory]
     [InlineData(8, 2)]
-    [InlineData(40, 2)]
-    [InlineData(0, 91)]
+    [InlineData(48, 2)]
+    [InlineData(0, 400)]
     public void InvalidTrailerIsRejected(int offset, int value)
     {
         var sim = Room(); Step(sim, new PlayerCommand { Crouch = true });
