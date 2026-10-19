@@ -260,6 +260,9 @@ public sealed class PlayLevel
         => MapIntermissionMusic.TryGetValue(nextMap, out var music) ? music
             : IntermissionMusic.Length != 0 ? new(IntermissionMusic, IntermissionMusicOrder) : gameDefault;
     public bool ActivateOwnDeathSpecials { get; set; }
+    public bool ExitOnAllBossesDead { get; set; }
+    public bool ExitOnAllBossesDeadSecret { get; set; }
+    public bool SpeckillMonstersOnBossDeath { get; set; }
     public IReadOnlyList<HCDE.Gamedata.MapInfoDamageType> DamageTypes { get; set; } = Array.Empty<HCDE.Gamedata.MapInfoDamageType>();
     public string MapName { get; init; } = "";
     public int? LevelNumber { get; set; }
@@ -304,6 +307,9 @@ public sealed class PlayLevel
         GameIntermissionMusic = GameIntermissionMusic,
         MapIntermissionMusic = new(MapIntermissionMusic, StringComparer.OrdinalIgnoreCase),
         ActivateOwnDeathSpecials = ActivateOwnDeathSpecials,
+        ExitOnAllBossesDead = ExitOnAllBossesDead,
+        ExitOnAllBossesDeadSecret = ExitOnAllBossesDeadSecret,
+        SpeckillMonstersOnBossDeath = SpeckillMonstersOnBossDeath,
         MonsterFallingDamage = MonsterFallingDamage,
         ProperMonsterFallingDamage = ProperMonsterFallingDamage,
         FallingDamage = FallingDamage,

@@ -742,6 +742,10 @@ public class Actor : Thinker
     internal bool HasSpriteOrientationOverride { get; set; }
     internal bool HasSizeOverride { get; set; }
     public bool NoRadiusDamage { get; set; }
+    /// <summary>Native <c>RadiusDamageFactor</c> applied in <see cref="MapRadiusAttack"/>.</summary>
+    public double RadiusDamageFactor { get; set; } = 1;
+    /// <summary>Native <c>MF3_OLDRADIUSDMG</c> barrel-style XY falloff.</summary>
+    public bool OldRadiusDamage { get; set; }
     public bool NoSectorDamage { get; set; }
     public bool ForceSectorDamage { get; set; }
     public bool Ambush { get; set; }
@@ -932,6 +936,7 @@ public class Actor : Thinker
     /// <summary>Native MF2_BLASTED: bypasses the supported dropoff limit until horizontal motion stops.</summary>
     public bool Blasted { get; set; }
     public bool Boss { get; set; }
+    internal bool BossCoopHealthScaled { get; set; }
     public bool FullVolumeDeath { get; set; }
     internal bool DefaultFullVolumeDeath { get; set; }
     internal bool DefaultFullVolumeSee { get; set; }
@@ -3129,6 +3134,9 @@ public sealed class AuthoritySimulation
             ? value : throw new ArgumentOutOfRangeException(nameof(value));
     }
 
+    /// <summary>Native <c>splashfactor</c> cvar reciprocal for bomb-source radius damage.</summary>
+    public double SplashFactor { get; set; } = 1;
+
     public bool EnvironmentLightningForced { get; set; }
     public List<(int Intensity, int Duration, int Radius, int Tid)> EnvironmentQuakes { get; } = [];
     public int CameraThingId { get; set; }
@@ -3275,6 +3283,13 @@ public sealed class AuthoritySimulation
     {
         _hasPlayerSearchRandomState = true;
         return (int)(NativeStateRandom.Next(ref _playerSearchRandomState) & 63);
+    }
+
+    /// <summary>Native <c>pr_look2</c> / LookyLooky stream used by <c>A_Look2</c>.</summary>
+    internal int NextLook2Byte()
+    {
+        _hasPlayerSearchRandomState = true;
+        return (int)(NativeStateRandom.Next(ref _playerSearchRandomState) & 255);
     }
     private ulong _playerSearchRandomState;
     private readonly ulong _initialPlayerSearchRandomState;
