@@ -473,7 +473,12 @@ public sealed partial class AcsVm
                         fiber.Stack.Add(invasionResult);
                         break;
                     }
-                    if (AcsCallFunctions.TryInvoke(sim, fiber.Stack, fiber.ActivatorBinding, fiber.StringTable, _globalStrings, function, argCount, out var callResult))
+                    sim.AcsTriggerLine = fiber.TriggerLine;
+                    sim.AcsTriggerBackSide = fiber.BackSide;
+                    var invoked = AcsCallFunctions.TryInvoke(sim, fiber.Stack, fiber.ActivatorBinding, fiber.StringTable, _globalStrings, function, argCount, out var callResult);
+                    sim.AcsTriggerLine = null;
+                    sim.AcsTriggerBackSide = false;
+                    if (invoked)
                     {
                         fiber.Stack.Add(callResult);
                         break;

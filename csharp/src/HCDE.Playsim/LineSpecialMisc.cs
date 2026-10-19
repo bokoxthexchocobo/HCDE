@@ -22,6 +22,9 @@ internal static class LineSpecialMisc
         };
     }
 
+    internal static bool ExecuteLockedAcsPublic(AuthoritySimulation sim, int special, LevelLine line, Actor? activator, bool backSide) =>
+        ExecuteLockedAcs(sim, special, line, activator, backSide);
+
     private static bool ExecuteLockedAcs(AuthoritySimulation sim, int special, LevelLine line, Actor? activator, bool backSide)
     {
         if (activator is not PlayerPawn player) return false;

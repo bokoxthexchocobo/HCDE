@@ -43,7 +43,10 @@ public sealed class LevelSector
     public int SoundSequence { get; set; }
     public bool PlaneReflection { get; set; }
     public uint FloorGlowColor { get; set; }
+    public float FloorGlowHeight { get; set; }
     public uint CeilingGlowColor { get; set; }
+    public float CeilingGlowHeight { get; set; }
+    public int FogDensity { get; set; }
     public int HealthFloor { get; set; }
     public int HealthCeiling { get; set; }
     public int Health3D { get; set; }

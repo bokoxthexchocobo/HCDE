@@ -82,7 +82,7 @@ internal static partial class AcsCallFunctions
             case InvasionControlAction:
                 return TryInvasionCall(sim, stack, function, argCount, out result);
             default:
-                return false;
+                return TryAbsentCallFuncs(sim, stack, scriptActivator, stringTable, globalStrings, function, argCount, out result);
         }
     }
 

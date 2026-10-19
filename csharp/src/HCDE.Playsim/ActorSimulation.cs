@@ -310,6 +310,24 @@ public class Actor : Thinker
         else StoredTargetId = target?.Id;
         HasTargetMemoryOverride = true;
     }
+
+    internal bool AssignAcsPointer(int slot, Actor? ptr)
+    {
+        var assigned = false;
+        if ((slot & AcsActorPointer.Target) != 0) { SetTargetPointer(ptr); assigned = ptr != null; }
+        if ((slot & AcsActorPointer.Master) != 0) { MasterId = ptr?.Id; assigned = ptr != null; }
+        if ((slot & AcsActorPointer.Tracer) != 0) { TracerId = ptr?.Id; assigned = ptr != null; }
+        return assigned;
+    }
+
+    internal bool ApplyTranslationName(string translation)
+    {
+        if (string.IsNullOrEmpty(translation)) return false;
+        SpecialArgs[1] = translation.GetHashCode(StringComparison.OrdinalIgnoreCase);
+        SpecialChanged = true;
+        return true;
+    }
+
     private uint? _tracerId;
     public uint? TracerId { get => ReadActorPointer(ref _tracerId); set { _tracerId = value == 0 ? null : value; HasTracerOverride = true; } }
     internal bool HasTracerOverride { get; set; }
@@ -3644,6 +3662,17 @@ public sealed class AuthoritySimulation
     public IReadOnlyList<SimulationSoundRequest> PendingSoundRequests => _soundRequests.AsReadOnly();
     public string AcsPrintBuffer { get; private set; } = "";
     internal void AppendAcsPrint(string fragment) => AcsPrintBuffer += fragment;
+    internal LevelLine? AcsTriggerLine { get; set; }
+    internal bool AcsTriggerBackSide { get; set; }
+    internal int AcsHudClipLeft { get; set; }
+    internal int AcsHudClipTop { get; set; }
+    internal int AcsHudClipWidth { get; set; }
+    internal int AcsHudClipHeight { get; set; }
+    internal int AcsHudWrapWidth { get; set; }
+    internal string? AcsSlideshowName { get; set; }
+    internal int AcsSubtitleNumber { get; set; }
+    internal void QueueAnnouncerSound(string sound) =>
+        QueueSoundRequest(new(0, sound, 7, (int)SimulationSoundFlags.Ui, 1, false, 0, true));
     internal void QueueAmbientAcsSound(string sound, float volume) =>
         QueueSoundRequest(new(0, sound, 0, 0, volume, false, 0, false));
     internal void QueueSectorAcsSound(int sectorIndex, string sound, float volume) =>

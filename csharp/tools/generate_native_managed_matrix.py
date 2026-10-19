@@ -300,9 +300,10 @@ def build_matrix(loc_tally: dict) -> dict:
     vm_rows = classify_vm(vmops, vm_enum, vm_exec_names)
 
     call_src = (CSHARP / "src/HCDE.Playsim/AcsCallFunctions.cs").read_text(encoding="utf-8")
-    extended = CSHARP / "src/HCDE.Playsim/AcsCallFunctionsExtended.cs"
-    if extended.exists():
-        call_src += "\n" + extended.read_text(encoding="utf-8")
+    for partial in ("AcsCallFunctionsExtended.cs", "AcsCallFunctionsAbsent.cs"):
+        path = CSHARP / "src/HCDE.Playsim" / partial
+        if path.exists():
+            call_src += "\n" + path.read_text(encoding="utf-8")
     implemented_dispatch = parse_acs_call_dispatch_slots(call_src)
     native_calls = parse_native_acs_functions(REPO / "src/playsim/p_acs.cpp")
     call_rows = []

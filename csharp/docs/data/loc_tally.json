@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 10643,
   "runStartRecognitionBehaviorNative": 5400,
   "runStartConvertedBehaviorManaged": 7417,
-  "convertedThisRunNative": 5606,
+  "convertedThisRunNative": 7818,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 1525,
+  "convertedThisRunManaged": 2205,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
-  "recognitionThisRunNative": 20,
+  "recognitionThisRunNative": 40,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 486417,
+  "remainingNative": 484185,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 16249,
-  "recognitionBehaviorNative": 5420,
-  "combinedBehaviorNative": 21669,
-  "convertedBehaviorManaged": 8942,
+  "convertedBehaviorNative": 18461,
+  "recognitionBehaviorNative": 5440,
+  "combinedBehaviorNative": 23901,
+  "convertedBehaviorManaged": 9622,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -1316,6 +1316,85 @@
           ]
         }
       ]
+    },
+    {
+      "name": "acs-absent-callfunc-chunk11",
+      "bucket": "conversion",
+      "nativeLoc": 684,
+      "managedLoc": 500,
+      "note": "18 remaining EACSFunctions CallFunc wires (HUD, named ACS, warp, translation, slideshow, glow/fog, announcer).",
+      "nativeRanges": [
+        {
+          "file": "src/playsim/p_acs.cpp",
+          "symbol": "ACSF_SetPointer",
+          "start": 5499,
+          "end": 5512,
+          "tests": [
+            "AcsAbsentCallFuncChunk11Tests.CallFunc_SetPointer_AssignsTarget"
+          ]
+        },
+        {
+          "file": "src/playsim/p_acs.cpp",
+          "symbol": "ACSF_ACS_NamedExecute",
+          "start": 5947,
+          "end": 5964,
+          "tests": [
+            "AcsAbsentCallFuncChunk11Tests.CallFunc_AcsNamedExecute_StartsScriptByName"
+          ]
+        },
+        {
+          "file": "src/playsim/p_acs.cpp",
+          "symbol": "ACSF_Warp",
+          "start": 6562,
+          "end": 6613,
+          "tests": [
+            "AcsAbsentCallFuncChunk11Tests.CallFunc_Warp_MovesActivatorToReference"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "d-net-reset-commands-chunk12",
+      "bucket": "conversion",
+      "nativeLoc": 1528,
+      "managedLoc": 180,
+      "note": "Net_ResetCommands room adopt + client sequence re-anchor; cutscene ready solo latch.",
+      "nativeRanges": [
+        {
+          "file": "src/d_net.cpp",
+          "symbol": "Net_PlayerReadiedUp",
+          "start": 4623,
+          "end": 4660,
+          "tests": [
+            "NetRoomCommandResetTests.CutsceneReady_SoloHuman_LatchesReady"
+          ]
+        },
+        {
+          "file": "src/d_net.cpp",
+          "symbol": "Net_ClearStaleWaitingFlags",
+          "start": 4852,
+          "end": 4859,
+          "tests": [
+            "NetRoomCommandResetTests.ResetCommands_AdoptsPendingRoomAndReanchorsSequences"
+          ]
+        },
+        {
+          "file": "src/d_net.cpp",
+          "symbol": "Net_ResetCommands",
+          "start": 4890,
+          "end": 4991,
+          "tests": [
+            "NetRoomCommandResetTests.ResetCommands_AdoptsPendingRoomAndReanchorsSequences"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "d-net-gameplay-envelope-room-recognition",
+      "bucket": "recognition",
+      "nativeLoc": 20,
+      "managedLoc": 0,
+      "note": "HGPL room id stale reject already managed in GameplayEnvelopeCodec.Validate."
     }
   ]
 }
