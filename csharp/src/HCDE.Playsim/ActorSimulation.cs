@@ -629,6 +629,7 @@ public class Actor : Thinker
     public uint StencilFillColor { get; set; }
     public int WaterLevel { get; set; }
     public Fixed WaterDepth { get; set; }
+    public int FreezeTics { get; set; }
     /// <summary>Native DamageVal; projectiles may also supply a damage expression.</summary>
     public int Damage { get; set; }
     public Func<Actor, int>? DamageFunction { get; set; }
@@ -1748,6 +1749,8 @@ public class Actor : Thinker
     {
         AbsorbCount = 0;
         RememberPosition();
+        if (ActorFreezeTickGate.TryConsumeFreezeTick(this))
+            return;
         if (!CheckNoDelay()) return;
         if (PendingSpawnDeath)
         {
