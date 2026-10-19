@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": -8864,
+  "convertedThisRunNative": -8879,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 4699,
+  "convertedThisRunManaged": 4907,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -774,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 493757,
+  "remainingNative": 493772,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 9663,
+  "convertedBehaviorNative": 9648,
   "recognitionBehaviorNative": 4666,
-  "combinedBehaviorNative": 14329,
-  "convertedBehaviorManaged": 14370,
+  "combinedBehaviorNative": 14314,
+  "convertedBehaviorManaged": 14578,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -3327,18 +3327,28 @@
     {
       "name": "p-acs-get-actor-property-chunk38",
       "bucket": "conversion",
-      "nativeLoc": 98,
-      "managedLoc": 40,
-      "note": "DLevelScript GetActorProperty facade for tests.",
-      "conversionManagedCommit": "86a18041e5535fff695a82fbf3f541c7597c5477",
+      "nativeLoc": 83,
+      "managedLoc": 248,
+      "note": "GetActorProperty scalar and string cases with full coverage tests.",
+      "conversionManagedCommit": "26295d5ba01d89f016e132241621a5142a0af078",
       "nativeRanges": [
         {
           "file": "src/playsim/p_acs.cpp",
           "symbol": "DLevelScript::GetActorProperty",
-          "start": 4408,
-          "end": 4505,
+          "start": 4418,
+          "end": 4485,
           "tests": [
-            "AcsGetActorPropertyServiceTests"
+            "AcsGetActorPropertyCoverageTests"
+          ]
+        },
+        {
+          "file": "src/playsim/p_acs.cpp",
+          "symbol": "DLevelScript::GetActorProperty",
+          "start": 4487,
+          "end": 4501,
+          "tests": [
+            "AcsGetActorPropertyCoverageTests",
+            "AcsActorStringPropertyTests"
           ]
         }
       ]
