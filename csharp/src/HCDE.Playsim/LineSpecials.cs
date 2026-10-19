@@ -9,15 +9,16 @@ public enum MotionKind
     Lift,
     Ceiling,
     Stair,
+    Elevator,
 }
 
 public sealed class SectorMotion
 {
     public int SectorIndex { get; init; }
-    public double ClosedFloor { get; init; }
-    public double TargetFloor { get; init; }
+    public double ClosedFloor { get; set; }
+    public double TargetFloor { get; set; }
     public double ClosedCeiling { get; init; }
-    public double TargetCeiling { get; init; }
+    public double TargetCeiling { get; set; }
     public MotionKind Kind { get; init; }
     public bool CloseAfterOpen { get; init; }
     public bool CloseOnly { get; init; }
@@ -54,7 +55,7 @@ public sealed class SectorMotion
 /// Managed flat-sector doors, floors, lifts, ceilings, crushers, stairs, exits, teleport and ACS dispatch.
 /// MBF21 floor nudge and the ID24 secret exit stay behind <see cref="CompatSurface"/>.
 /// </summary>
-public static class LineSpecials
+public static partial class LineSpecials
 {
     public const int DoorRaise = 1;
     public const int DoorOpen = 11;
@@ -262,7 +263,14 @@ public static class LineSpecials
                 214 => SectorDamage.ExecuteSpecial(sim, line.Special, line.Arg0, line.Arg1, line.Arg2, line.Arg3, line.Arg4) == true,
                 110 or 111 or 112 or 113 or 114 or 115 or 116 or 117 or 232 or 233 or 234 =>
                     LightActions.ExecuteSpecial(sim, line.Special, line.Arg0, line.Arg1, line.Arg2, line.Arg3, line.Arg4) == true,
-                10 or 11 or 12 or 249 => ExecuteDoorSpecial(sim, line.Special, line.Arg0, line.Arg1, line.Arg2, line.Arg3, line) == true,
+                10 or 11 or 12 or 105 or 106 or 249 => ExecuteDoorSpecial(sim, line.Special, line.Arg0, line.Arg1, line.Arg2, line.Arg3, line, line.Arg4) == true,
+                60 or 61 or 63 or 64 or 65 or 172 or 206 or 207 or 228 or 230 or 231 =>
+                    PlatLineSpecials.Execute(sim, line.Special, line.Arg0, line.Arg1, line.Arg2, line.Arg3, line.Arg4, line) == true,
+                200 or 201 or 202 or 203 or 204 or 205 or 169 or 284 =>
+                    GenericLineSpecials.Execute(sim, line.Special, line.Arg0, line.Arg1, line.Arg2, line.Arg3, line.Arg4, line) == true,
+                245 or 246 or 247 => ElevatorLineSpecials.Execute(sim, line.Special, line.Arg0, line.Arg1, line) == true,
+                29 or 30 or 94 => PillarLineSpecials.Execute(sim, line.Special, line.Arg0, line.Arg1, line.Arg2, line.Arg3, line.Arg4, line) == true,
+                71 or 78 => ExecuteTeleportSpecial(sim, line.Special, line.Arg0, line.Arg1, actor, backSide ?? IsBackSide(line, actor.X.ToDouble(), actor.Y.ToDouble(), sim.Compat.HasFlag(CompatSurface.PointOnLine)), line.Arg2) == true,
                 20 or 21 or 22 or 23 or 24 or 25 or 28 or 35 or 36 or 37 or 46 or 62 or 66 or 67 or 68 or 99 or 238 or 239 or 242 or 256 or 257 or 258 or 259 or 260 or 275 or 279 or ScrollFloor or ScrollCeiling => ExecuteFloorSpecial(sim, line.Special,
                     line.Arg0, line.Arg1, line.Arg2, line.Arg3, line.Arg4, line) == true,
                 70 or 154 => !(backSide ?? IsBackSide(line, actor.X.ToDouble(), actor.Y.ToDouble(), sim.Compat.HasFlag(CompatSurface.PointOnLine)))
@@ -330,16 +338,20 @@ public static class LineSpecials
     }
 
     internal static bool? ExecuteDoorSpecial(AuthoritySimulation sim, int special, int tag, int speed, int arg2, int arg3,
-        LevelLine? line = null)
+        LevelLine? line = null, int arg4 = 0)
     {
-        if (special is not (10 or 11 or 12 or 249)) return null;
+        if (special is not (10 or 11 or 12 or 105 or 106 or 249)) return null;
         if (tag == 0 && line is null) return false; // Manual doors need an activation line.
         if (special == 10) return arg2 == 0 && StartClosingDoor(sim, line, tag, speed / 8.0);
         if (special == 11) return arg2 == 0 && StartDoor(sim, line, tag, false, speed / 8.0);
         if (special == 12) return arg3 == 0 && arg2 >= 0 && StartDoor(sim, line, tag, true, speed / 8.0, arg2);
+        if (special == 105) return arg3 >= 0 && StartDoor(sim, line, tag, true, speed / 8.0, Tics(arg2), waitBeforeOpen: Tics(arg3));
+        if (special == 106) return arg2 >= 0 && StartClosingDoor(sim, line, tag, speed / 8.0, waitBeforeClose: Tics(arg2));
         return arg3 == 0 && arg2 > 0 && arg2 <= int.MaxValue / 35
             && StartClosingDoor(sim, line, tag, speed / 8.0, arg2 * 35 / 8);
     }
+
+    private static int Tics(int octics) => octics * 35 / 8;
 
     internal static bool? ExecuteStairSpecial(AuthoritySimulation sim, int special, int tag, int speed, int step,
         int arg3, int arg4, LevelLine? line = null)
@@ -361,7 +373,7 @@ public static class LineSpecials
     internal static bool? ExecuteFloorSpecial(AuthoritySimulation sim, int special, int tag, int speed, int arg2,
         int arg3, int arg4, LevelLine? line = null)
     {
-        if (special is not (20 or 21 or 22 or 23 or 24 or 25 or 28 or 35 or 36 or 37 or 46 or 62 or 66 or 67 or 68 or 99 or 238 or 239 or 242 or 256 or 257 or 258 or 259 or 260 or 275 or 279 or ScrollFloor or ScrollCeiling)) return null;
+        if (special is not (20 or 21 or 22 or 23 or 24 or 25 or 28 or 35 or 36 or 37 or 46 or 62 or 66 or 67 or 68 or 99 or 238 or 239 or 240 or 242 or 256 or 257 or 258 or 259 or 260 or 261 or 275 or 279 or ScrollFloor or ScrollCeiling)) return null;
         if (special is ScrollFloor or ScrollCeiling)
             return ScrollActions.ExecuteSpecial(sim, special, tag, speed, arg2, arg3, line);
         if (tag == 0 && line is null) return false;
@@ -437,6 +449,9 @@ public static class LineSpecials
                     special is 66 or 67 ? arg2 * 8 : speed / 8.0, arg2 * 8,
                     crush: special is 35 or 67 ? Math.Max(0, arg4) : 0,
                     stopOnCrush: special is 35 or 67);
+        if (special is 240 or 261)
+            return StartMapFloor(sim, line, tag, FloorTarget.NextHigher, speed / 8.0, 8,
+                crush: Math.Max(0, arg3), stopOnCrush: true);
         return special switch
         {
             20 => arg3 == 0 && StartMapFloor(sim, line, tag, FloorTarget.LowerBy, speed / 8.0, arg2),
@@ -453,7 +468,7 @@ public static class LineSpecials
     internal static bool? ExecuteCeilingSpecial(AuthoritySimulation sim, int special, int tag, int speed, int amount,
         int change, int crush, LevelLine? line = null)
     {
-        if (special is not (40 or 41 or 42 or 43 or 44 or 45 or 47 or 69 or 97 or 104 or 168 or 192 or 193 or 194 or 195 or 196 or 197 or 198 or 199 or 252 or 253 or 254 or 255 or 262 or 263 or 264 or 265 or 266 or 267 or 276 or 280)) return null;
+        if (special is not (40 or 41 or 42 or 43 or 44 or 45 or 47 or 69 or 97 or 104 or 168 or 192 or 193 or 194 or 195 or 196 or 197 or 198 or 199 or 252 or 253 or 254 or 255 or 262 or 263 or 264 or 265 or 266 or 267 or 268 or 269 or 276 or 280)) return null;
         if (special == 44) return CeilingActions.Stop(sim, line, tag,
             remove: speed == 2 || speed != 1 && sim.Compat.HasFlag(CompatSurface.HexenCrushDefaults));
         if (tag == 0 && line is null) return false;
@@ -517,6 +532,9 @@ public static class LineSpecials
                 speed: speed / 8.0, upSpeed: special == 43 ? speed / 8.0 : speed / 16.0,
                 crush: amount, returnToStart: special != 43, loop: special == 42,
                 slow: special != 45 && CeilingSlowdownMode(sim, change, special == 43 && speed == 8), stop: CeilingHexenMode(sim, change));
+        if (special is 268 or 269)
+            return CeilingActions.Start(sim, line, tag, CeilingTarget.NextHigher, speed: speed / 8.0,
+                crush: crush > 0 ? crush : -1);
         return change == 0 && CeilingActions.Start(sim, line, tag,
             special == 40 ? CeilingTarget.LowerBy : CeilingTarget.RaiseBy,
             speed: speed / 8.0, amount: amount, crush: crush > 0 ? crush : -1);
@@ -613,6 +631,11 @@ public static class LineSpecials
             if (motion.Kind == MotionKind.Ceiling)
             {
                 if (CeilingActions.Tick(sim, motion)) sim.Motions.RemoveAt(i);
+                continue;
+            }
+            if (motion.Kind == MotionKind.Elevator)
+            {
+                if (ElevatorLineSpecials.Tick(sim, motion)) sim.Motions.RemoveAt(i);
                 continue;
             }
             if (motion.Wait > 0)
@@ -749,6 +772,12 @@ public static class LineSpecials
                 if (!motion.Closing && motion.ResetCountdown > 0) { motion.WaitingForReset = true; continue; }
                 motion.Completed = true;
             }
+            else if (motion.Loop && motion.Kind == MotionKind.Lift)
+            {
+                motion.Closing = false;
+                motion.Wait = motion.Delay;
+                (motion.ClosedFloor, motion.TargetFloor) = (sim.Floors[motion.SectorIndex], motion.ClosedFloor);
+            }
             else sim.Motions.RemoveAt(i);
         }
         // Completed records retain only the stair retrigger lock, not floor ownership.
@@ -759,7 +788,7 @@ public static class LineSpecials
         sim.Motions.RemoveAll(motion => motion.Kind == MotionKind.Stair && completedStairs.Contains(motion.StairGroup));
     }
 
-    private static bool StartClosingDoor(AuthoritySimulation sim, LevelLine? line, int tag, double speed, int? reopenDelay = null)
+    private static bool StartClosingDoor(AuthoritySimulation sim, LevelLine? line, int tag, double speed, int? reopenDelay = null, int? waitBeforeClose = null)
     {
         if (speed <= 0) return false;
         var started = false;
@@ -769,7 +798,8 @@ public static class LineSpecials
             sim.Motions.Add(new SectorMotion
             {
                 Kind = MotionKind.Door, SectorIndex = sector, Closing = true, CloseOnly = !reopenDelay.HasValue,
-                OpenAfterClose = reopenDelay.HasValue, Delay = reopenDelay ?? 0,
+                OpenAfterClose = reopenDelay.HasValue, Delay = reopenDelay ?? waitBeforeClose ?? 0,
+                Wait = waitBeforeClose ?? 0,
                 ClosedCeiling = sim.Floors[sector], TargetCeiling = sim.Ceilings[sector], Speed = speed,
             });
             started = true;
@@ -777,7 +807,7 @@ public static class LineSpecials
         return started;
     }
 
-    private static bool StartDoor(AuthoritySimulation sim, LevelLine? line, int tag, bool closeAfterOpen, double? speed = null, int? delay = null)
+    private static bool StartDoor(AuthoritySimulation sim, LevelLine? line, int tag, bool closeAfterOpen, double? speed = null, int? delay = null, int? waitBeforeOpen = null)
     {
         if (speed <= 0) return false;
         var started = false;
@@ -807,6 +837,7 @@ public static class LineSpecials
                 CloseAfterOpen = closeAfterOpen,
                 Speed = speed ?? (sim.Level.Format == MapDataFormat.Unknown ? DoorSpeed : 2),
                 Delay = Math.Max(0, delay ?? (sim.Level.Format == MapDataFormat.Unknown ? DoorWaitTics : 150)),
+                Wait = waitBeforeOpen ?? 0,
             });
             started = true;
         }
@@ -951,7 +982,7 @@ public static class LineSpecials
     }
 
     internal static bool? ExecuteTeleportSpecial(AuthoritySimulation sim, int special, int tid, int sectorTag,
-        Actor? activator, bool backSide, int noSourceFog = 0) => special is 70 or 154
+        Actor? activator, bool backSide, int noSourceFog = 0) => special is 70 or 71 or 78 or 154
         ? !backSide && (tid != 0 || sectorTag != 0) && activator is { Destroyed: false }
             && TeleportActivator(sim, activator, tid, byThingId: true, sectorTag: sectorTag, keepVelocity: special == 154, noSourceFog: noSourceFog != 0)
         : null;

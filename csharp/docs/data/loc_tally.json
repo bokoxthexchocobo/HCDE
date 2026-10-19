@@ -1,7 +1,7 @@
 {
-  "convertedThisRunNative": 479,
-  "convertedThisRunManaged": 507,
-  "remainingNative": 507607,
+  "convertedThisRunNative": 1764,
+  "convertedThisRunManaged": 1037,
+  "remainingNative": 506322,
   "chunks": [
     {
       "name": "native-managed-matrix",
@@ -32,6 +32,12 @@
       "nativeLoc": 161,
       "managedLoc": 280,
       "note": "p_acs.cpp ChangeFlat/SetLineTexture/ClearLineSpecial/DoSpawn*/SetResultValue opcodes 65-68,83,97,149-152,257."
+    },
+    {
+      "name": "line-specials-plat-generic-elevator",
+      "nativeLoc": 1285,
+      "managedLoc": 530,
+      "note": "p_lnspec.cpp plats, Generic_* movers, elevators, pillars, door wait, texture movers; gap JSON + LineSpecialBatchTests."
     }
   ]
 }

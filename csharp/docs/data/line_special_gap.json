@@ -1,0 +1,1715 @@
+{
+  "generatedOn": "2026-10-19",
+  "rows": [
+    {
+      "special": 0,
+      "nativeHandler": "LS_NOP",
+      "nativeStatus": "nop",
+      "managedStatus": "native-nop"
+    },
+    {
+      "special": 1,
+      "nativeHandler": "LS_NOP",
+      "nativeStatus": "nop",
+      "managedStatus": "native-nop"
+    },
+    {
+      "special": 2,
+      "nativeHandler": "LS_Polyobj_RotateLeft",
+      "nativeStatus": "implemented",
+      "managedStatus": "wired"
+    },
+    {
+      "special": 3,
+      "nativeHandler": "LS_Polyobj_RotateRight",
+      "nativeStatus": "implemented",
+      "managedStatus": "wired"
+    },
+    {
+      "special": 4,
+      "nativeHandler": "LS_Polyobj_Move",
+      "nativeStatus": "implemented",
+      "managedStatus": "wired"
+    },
+    {
+      "special": 5,
+      "nativeHandler": "LS_NOP",
+      "nativeStatus": "nop",
+      "managedStatus": "native-nop"
+    },
+    {
+      "special": 6,
+      "nativeHandler": "LS_Polyobj_MoveTimes8",
+      "nativeStatus": "implemented",
+      "managedStatus": "wired"
+    },
+    {
+      "special": 7,
+      "nativeHandler": "LS_Polyobj_DoorSwing",
+      "nativeStatus": "implemented",
+      "managedStatus": "wired"
+    },
+    {
+      "special": 8,
+      "nativeHandler": "LS_Polyobj_DoorSlide",
+      "nativeStatus": "implemented",
+      "managedStatus": "wired"
+    },
+    {
+      "special": 9,
+      "nativeHandler": "LS_NOP",
+      "nativeStatus": "nop",
+      "managedStatus": "native-nop"
+    },
+    {
+      "special": 10,
+      "nativeHandler": "LS_Door_Close",
+      "nativeStatus": "implemented",
+      "managedStatus": "wired"
+    },
+    {
+      "special": 11,
+      "nativeHandler": "LS_Door_Open",
+      "nativeStatus": "implemented",
+      "managedStatus": "wired"
+    },
+    {
+      "special": 12,
+      "nativeHandler": "LS_Door_Raise",
+      "nativeStatus": "implemented",
+      "managedStatus": "wired"
+    },
+    {
+      "special": 13,
+      "nativeHandler": "LS_Door_LockedRaise",
+      "nativeStatus": "implemented",
+      "managedStatus": "wired"
+    },
+    {
+      "special": 14,
+      "nativeHandler": "LS_Door_Animated",
+      "nativeStatus": "implemented",
+      "managedStatus": "wired"
+    },
+    {
+      "special": 15,
+      "nativeHandler": "LS_Autosave",
+      "nativeStatus": "implemented",
+      "managedStatus": "wired"
+    },
+    {
+      "special": 16,
+      "nativeHandler": "LS_NOP",
+      "nativeStatus": "nop",
+      "managedStatus": "native-nop"
+    },
+    {
+      "special": 17,
+      "nativeHandler": "LS_Thing_Raise",
+      "nativeStatus": "implemented",
+      "managedStatus": "wired"
+    },
+    {
+      "special": 18,
+      "nativeHandler": "LS_StartConversation",
+      "nativeStatus": "implemented",
+      "managedStatus": "wired"
+    },
+    {
+      "special": 19,
+      "nativeHandler": "LS_Thing_Stop",
+      "nativeStatus": "implemented",
+      "managedStatus": "wired"
+    },
+    {
+      "special": 20,
+      "nativeHandler": "LS_Floor_LowerByValue",
+      "nativeStatus": "implemented",
+      "managedStatus": "wired"
+    },
+    {
+      "special": 21,
+      "nativeHandler": "LS_Floor_LowerToLowest",
+      "nativeStatus": "implemented",
+      "managedStatus": "wired"
+    },
+    {
+      "special": 22,
+      "nativeHandler": "LS_Floor_LowerToNearest",
+      "nativeStatus": "implemented",
+      "managedStatus": "wired"
+    },
+    {
+      "special": 23,
+      "nativeHandler": "LS_Floor_RaiseByValue",
+      "nativeStatus": "implemented",
+      "managedStatus": "wired"
+    },
+    {
+      "special": 24,
+      "nativeHandler": "LS_Floor_RaiseToHighest",
+      "nativeStatus": "implemented",
+      "managedStatus": "wired"
+    },
+    {
+      "special": 25,
+      "nativeHandler": "LS_Floor_RaiseToNearest",
+      "nativeStatus": "implemented",
+      "managedStatus": "wired"
+    },
+    {
+      "special": 26,
+      "nativeHandler": "LS_Stairs_BuildDown",
+      "nativeStatus": "implemented",
+      "managedStatus": "wired"
+    },
+    {
+      "special": 27,
+      "nativeHandler": "LS_Stairs_BuildUp",
+      "nativeStatus": "implemented",
+      "managedStatus": "wired"
+    },
+    {
+      "special": 28,
+      "nativeHandler": "LS_Floor_RaiseAndCrush",
+      "nativeStatus": "implemented",
+      "managedStatus": "wired"
+    },
+    {
+      "special": 29,
+      "nativeHandler": "LS_Pillar_Build",
+      "nativeStatus": "implemented",
+      "managedStatus": "wired"
+    },
+    {
+      "special": 30,
+      "nativeHandler": "LS_Pillar_Open",
+      "nativeStatus": "implemented",
+      "managedStatus": "wired"
+    },
+    {
+      "special": 31,
+      "nativeHandler": "LS_Stairs_BuildDownSync",
+      "nativeStatus": "implemented",
+      "managedStatus": "wired"
+    },
+    {
+      "special": 32,
+      "nativeHandler": "LS_Stairs_BuildUpSync",
+      "nativeStatus": "implemented",
+      "managedStatus": "wired"
+    },
+    {
+      "special": 33,
+      "nativeHandler": "LS_ForceField",
+      "nativeStatus": "implemented",
+      "managedStatus": "wired"
+    },
+    {
+      "special": 34,
+      "nativeHandler": "LS_ClearForceField",
+      "nativeStatus": "implemented",
+      "managedStatus": "wired"
+    },
+    {
+      "special": 35,
+      "nativeHandler": "LS_Floor_RaiseByValueTimes8",
+      "nativeStatus": "implemented",
+      "managedStatus": "wired"
+    },
+    {
+      "special": 36,
+      "nativeHandler": "LS_Floor_LowerByValueTimes8",
+      "nativeStatus": "implemented",
+      "managedStatus": "wired"
+    },
+    {
+      "special": 37,
+      "nativeHandler": "LS_Floor_MoveToValue",
+      "nativeStatus": "implemented",
+      "managedStatus": "wired"
+    },
+    {
+      "special": 38,
+      "nativeHandler": "LS_Ceiling_Waggle",
+      "nativeStatus": "implemented",
+      "managedStatus": "wired"
+    },
+    {
+      "special": 39,
+      "nativeHandler": "LS_Teleport_ZombieChanger",
+      "nativeStatus": "implemented",
+      "managedStatus": "wired"
+    },
+    {
+      "special": 40,
+      "nativeHandler": "LS_Ceiling_LowerByValue",
+      "nativeStatus": "implemented",
+      "managedStatus": "wired"
+    },
+    {
+      "special": 41,
+      "nativeHandler": "LS_Ceiling_RaiseByValue",
+      "nativeStatus": "implemented",
+      "managedStatus": "wired"
+    },
+    {
+      "special": 42,
+      "nativeHandler": "LS_Ceiling_CrushAndRaise",
+      "nativeStatus": "implemented",
+      "managedStatus": "wired"
+    },
+    {
+      "special": 43,
+      "nativeHandler": "LS_Ceiling_LowerAndCrush",
+      "nativeStatus": "implemented",
+      "managedStatus": "wired"
+    },
+    {
+      "special": 44,
+      "nativeHandler": "LS_Ceiling_CrushStop",
+      "nativeStatus": "implemented",
+      "managedStatus": "wired"
+    },
+    {
+      "special": 45,
+      "nativeHandler": "LS_Ceiling_CrushRaiseAndStay",
+      "nativeStatus": "implemented",
+      "managedStatus": "wired"
+    },
+    {
+      "special": 46,
+      "nativeHandler": "LS_Floor_CrushStop",
+      "nativeStatus": "implemented",
+      "managedStatus": "wired"
+    },
+    {
+      "special": 47,
+      "nativeHandler": "LS_Ceiling_MoveToValue",
+      "nativeStatus": "implemented",
+      "managedStatus": "wired"
+    },
+    {
+      "special": 48,
+      "nativeHandler": "LS_NOP",
+      "nativeStatus": "nop",
+      "managedStatus": "native-nop"
+    },
+    {
+      "special": 49,
+      "nativeHandler": "LS_GlassBreak",
+      "nativeStatus": "implemented",
+      "managedStatus": "wired"
+    },
+    {
+      "special": 50,
+      "nativeHandler": "LS_NOP",
+      "nativeStatus": "nop",
+      "managedStatus": "native-nop"
+    },
+    {
+      "special": 51,
+      "nativeHandler": "LS_Sector_SetLink",
+      "nativeStatus": "implemented",
+      "managedStatus": "wired"
+    },
+    {
+      "special": 52,
+      "nativeHandler": "LS_Scroll_Wall",
+      "nativeStatus": "implemented",
+      "managedStatus": "wired"
+    },
+    {
+      "special": 53,
+      "nativeHandler": "LS_Line_SetTextureOffset",
+      "nativeStatus": "implemented",
+      "managedStatus": "wired"
+    },
+    {
+      "special": 54,
+      "nativeHandler": "LS_Sector_ChangeFlags",
+      "nativeStatus": "implemented",
+      "managedStatus": "wired"
+    },
+    {
+      "special": 55,
+      "nativeHandler": "LS_Line_SetBlocking",
+      "nativeStatus": "implemented",
+      "managedStatus": "wired"
+    },
+    {
+      "special": 56,
+      "nativeHandler": "LS_Line_SetTextureScale",
+      "nativeStatus": "implemented",
+      "managedStatus": "wired"
+    },
+    {
+      "special": 57,
+      "nativeHandler": "LS_NOP",
+      "nativeStatus": "nop",
+      "managedStatus": "native-nop"
+    },
+    {
+      "special": 58,
+      "nativeHandler": "LS_NOP",
+      "nativeStatus": "nop",
+      "managedStatus": "native-nop"
+    },
+    {
+      "special": 59,
+      "nativeHandler": "LS_Polyobj_OR_MoveToSpot",
+      "nativeStatus": "implemented",
+      "managedStatus": "wired"
+    },
+    {
+      "special": 60,
+      "nativeHandler": "LS_Plat_PerpetualRaise",
+      "nativeStatus": "implemented",
+      "managedStatus": "wired"
+    },
+    {
+      "special": 61,
+      "nativeHandler": "LS_Plat_Stop",
+      "nativeStatus": "implemented",
+      "managedStatus": "wired"
+    },
+    {
+      "special": 62,
+      "nativeHandler": "LS_Plat_DownWaitUpStay",
+      "nativeStatus": "implemented",
+      "managedStatus": "wired"
+    },
+    {
+      "special": 63,
+      "nativeHandler": "LS_Plat_DownByValue",
+      "nativeStatus": "implemented",
+      "managedStatus": "wired"
+    },
+    {
+      "special": 64,
+      "nativeHandler": "LS_Plat_UpWaitDownStay",
+      "nativeStatus": "implemented",
+      "managedStatus": "wired"
+    },
+    {
+      "special": 65,
+      "nativeHandler": "LS_Plat_UpByValue",
+      "nativeStatus": "implemented",
+      "managedStatus": "wired"
+    },
+    {
+      "special": 66,
+      "nativeHandler": "LS_Floor_LowerInstant",
+      "nativeStatus": "implemented",
+      "managedStatus": "wired"
+    },
+    {
+      "special": 67,
+      "nativeHandler": "LS_Floor_RaiseInstant",
+      "nativeStatus": "implemented",
+      "managedStatus": "wired"
+    },
+    {
+      "special": 68,
+      "nativeHandler": "LS_Floor_MoveToValueTimes8",
+      "nativeStatus": "implemented",
+      "managedStatus": "wired"
+    },
+    {
+      "special": 69,
+      "nativeHandler": "LS_Ceiling_MoveToValueTimes8",
+      "nativeStatus": "implemented",
+      "managedStatus": "wired"
+    },
+    {
+      "special": 70,
+      "nativeHandler": "LS_Teleport",
+      "nativeStatus": "implemented",
+      "managedStatus": "wired"
+    },
+    {
+      "special": 71,
+      "nativeHandler": "LS_Teleport_NoFog",
+      "nativeStatus": "implemented",
+      "managedStatus": "wired"
+    },
+    {
+      "special": 72,
+      "nativeHandler": "LS_ThrustThing",
+      "nativeStatus": "implemented",
+      "managedStatus": "wired"
+    },
+    {
+      "special": 73,
+      "nativeHandler": "LS_DamageThing",
+      "nativeStatus": "implemented",
+      "managedStatus": "wired"
+    },
+    {
+      "special": 74,
+      "nativeHandler": "LS_Teleport_NewMap",
+      "nativeStatus": "implemented",
+      "managedStatus": "wired"
+    },
+    {
+      "special": 75,
+      "nativeHandler": "LS_Teleport_EndGame",
+      "nativeStatus": "implemented",
+      "managedStatus": "wired"
+    },
+    {
+      "special": 76,
+      "nativeHandler": "LS_TeleportOther",
+      "nativeStatus": "implemented",
+      "managedStatus": "wired"
+    },
+    {
+      "special": 77,
+      "nativeHandler": "LS_TeleportGroup",
+      "nativeStatus": "implemented",
+      "managedStatus": "wired"
+    },
+    {
+      "special": 78,
+      "nativeHandler": "LS_TeleportInSector",
+      "nativeStatus": "implemented",
+      "managedStatus": "wired"
+    },
+    {
+      "special": 79,
+      "nativeHandler": "LS_Thing_SetConversation",
+      "nativeStatus": "implemented",
+      "managedStatus": "wired"
+    },
+    {
+      "special": 80,
+      "nativeHandler": "LS_ACS_Execute",
+      "nativeStatus": "implemented",
+      "managedStatus": "wired"
+    },
+    {
+      "special": 81,
+      "nativeHandler": "LS_ACS_Suspend",
+      "nativeStatus": "implemented",
+      "managedStatus": "wired"
+    },
+    {
+      "special": 82,
+      "nativeHandler": "LS_ACS_Terminate",
+      "nativeStatus": "implemented",
+      "managedStatus": "wired"
+    },
+    {
+      "special": 83,
+      "nativeHandler": "LS_ACS_LockedExecute",
+      "nativeStatus": "implemented",
+      "managedStatus": "gap"
+    },
+    {
+      "special": 84,
+      "nativeHandler": "LS_ACS_ExecuteWithResult",
+      "nativeStatus": "implemented",
+      "managedStatus": "wired"
+    },
+    {
+      "special": 85,
+      "nativeHandler": "LS_ACS_LockedExecuteDoor",
+      "nativeStatus": "implemented",
+      "managedStatus": "wired"
+    },
+    {
+      "special": 86,
+      "nativeHandler": "LS_Polyobj_MoveToSpot",
+      "nativeStatus": "implemented",
+      "managedStatus": "wired"
+    },
+    {
+      "special": 87,
+      "nativeHandler": "LS_Polyobj_Stop",
+      "nativeStatus": "implemented",
+      "managedStatus": "gap"
+    },
+    {
+      "special": 88,
+      "nativeHandler": "LS_Polyobj_MoveTo",
+      "nativeStatus": "implemented",
+      "managedStatus": "wired"
+    },
+    {
+      "special": 89,
+      "nativeHandler": "LS_Polyobj_OR_MoveTo",
+      "nativeStatus": "implemented",
+      "managedStatus": "gap"
+    },
+    {
+      "special": 90,
+      "nativeHandler": "LS_Polyobj_OR_RotateLeft",
+      "nativeStatus": "implemented",
+      "managedStatus": "wired"
+    },
+    {
+      "special": 91,
+      "nativeHandler": "LS_Polyobj_OR_RotateRight",
+      "nativeStatus": "implemented",
+      "managedStatus": "gap"
+    },
+    {
+      "special": 92,
+      "nativeHandler": "LS_Polyobj_OR_Move",
+      "nativeStatus": "implemented",
+      "managedStatus": "wired"
+    },
+    {
+      "special": 93,
+      "nativeHandler": "LS_Polyobj_OR_MoveTimes8",
+      "nativeStatus": "implemented",
+      "managedStatus": "gap"
+    },
+    {
+      "special": 94,
+      "nativeHandler": "LS_Pillar_BuildAndCrush",
+      "nativeStatus": "implemented",
+      "managedStatus": "wired"
+    },
+    {
+      "special": 95,
+      "nativeHandler": "LS_FloorAndCeiling_LowerByValue",
+      "nativeStatus": "implemented",
+      "managedStatus": "gap"
+    },
+    {
+      "special": 96,
+      "nativeHandler": "LS_FloorAndCeiling_RaiseByValue",
+      "nativeStatus": "implemented",
+      "managedStatus": "gap"
+    },
+    {
+      "special": 97,
+      "nativeHandler": "LS_Ceiling_LowerAndCrushDist",
+      "nativeStatus": "implemented",
+      "managedStatus": "wired"
+    },
+    {
+      "special": 98,
+      "nativeHandler": "LS_Sector_SetTranslucent",
+      "nativeStatus": "implemented",
+      "managedStatus": "gap"
+    },
+    {
+      "special": 99,
+      "nativeHandler": "LS_Floor_RaiseAndCrushDoom",
+      "nativeStatus": "implemented",
+      "managedStatus": "wired"
+    },
+    {
+      "special": 100,
+      "nativeHandler": "LS_NOP",
+      "nativeStatus": "nop",
+      "managedStatus": "native-nop"
+    },
+    {
+      "special": 101,
+      "nativeHandler": "LS_NOP",
+      "nativeStatus": "nop",
+      "managedStatus": "native-nop"
+    },
+    {
+      "special": 102,
+      "nativeHandler": "LS_NOP",
+      "nativeStatus": "nop",
+      "managedStatus": "native-nop"
+    },
+    {
+      "special": 103,
+      "nativeHandler": "LS_NOP",
+      "nativeStatus": "nop",
+      "managedStatus": "native-nop"
+    },
+    {
+      "special": 104,
+      "nativeHandler": "LS_Ceiling_CrushAndRaiseSilentDist",
+      "nativeStatus": "implemented",
+      "managedStatus": "wired"
+    },
+    {
+      "special": 105,
+      "nativeHandler": "LS_Door_WaitRaise",
+      "nativeStatus": "implemented",
+      "managedStatus": "wired"
+    },
+    {
+      "special": 106,
+      "nativeHandler": "LS_Door_WaitClose",
+      "nativeStatus": "implemented",
+      "managedStatus": "wired"
+    },
+    {
+      "special": 107,
+      "nativeHandler": "LS_Line_SetPortalTarget",
+      "nativeStatus": "implemented",
+      "managedStatus": "gap"
+    },
+    {
+      "special": 108,
+      "nativeHandler": "LS_NOP",
+      "nativeStatus": "nop",
+      "managedStatus": "native-nop"
+    },
+    {
+      "special": 109,
+      "nativeHandler": "LS_Light_ForceLightning",
+      "nativeStatus": "implemented",
+      "managedStatus": "gap"
+    },
+    {
+      "special": 110,
+      "nativeHandler": "LS_Light_RaiseByValue",
+      "nativeStatus": "implemented",
+      "managedStatus": "wired"
+    },
+    {
+      "special": 111,
+      "nativeHandler": "LS_Light_LowerByValue",
+      "nativeStatus": "implemented",
+      "managedStatus": "wired"
+    },
+    {
+      "special": 112,
+      "nativeHandler": "LS_Light_ChangeToValue",
+      "nativeStatus": "implemented",
+      "managedStatus": "wired"
+    },
+    {
+      "special": 113,
+      "nativeHandler": "LS_Light_Fade",
+      "nativeStatus": "implemented",
+      "managedStatus": "wired"
+    },
+    {
+      "special": 114,
+      "nativeHandler": "LS_Light_Glow",
+      "nativeStatus": "implemented",
+      "managedStatus": "wired"
+    },
+    {
+      "special": 115,
+      "nativeHandler": "LS_Light_Flicker",
+      "nativeStatus": "implemented",
+      "managedStatus": "wired"
+    },
+    {
+      "special": 116,
+      "nativeHandler": "LS_Light_Strobe",
+      "nativeStatus": "implemented",
+      "managedStatus": "wired"
+    },
+    {
+      "special": 117,
+      "nativeHandler": "LS_Light_Stop",
+      "nativeStatus": "implemented",
+      "managedStatus": "wired"
+    },
+    {
+      "special": 118,
+      "nativeHandler": "LS_NOP",
+      "nativeStatus": "nop",
+      "managedStatus": "native-nop"
+    },
+    {
+      "special": 119,
+      "nativeHandler": "LS_Thing_Damage",
+      "nativeStatus": "implemented",
+      "managedStatus": "gap"
+    },
+    {
+      "special": 120,
+      "nativeHandler": "LS_Radius_Quake",
+      "nativeStatus": "implemented",
+      "managedStatus": "gap"
+    },
+    {
+      "special": 121,
+      "nativeHandler": "LS_NOP",
+      "nativeStatus": "nop",
+      "managedStatus": "native-nop"
+    },
+    {
+      "special": 122,
+      "nativeHandler": "LS_NOP",
+      "nativeStatus": "nop",
+      "managedStatus": "native-nop"
+    },
+    {
+      "special": 123,
+      "nativeHandler": "LS_NOP",
+      "nativeStatus": "nop",
+      "managedStatus": "native-nop"
+    },
+    {
+      "special": 124,
+      "nativeHandler": "LS_NOP",
+      "nativeStatus": "nop",
+      "managedStatus": "native-nop"
+    },
+    {
+      "special": 125,
+      "nativeHandler": "LS_Thing_Move",
+      "nativeStatus": "implemented",
+      "managedStatus": "gap"
+    },
+    {
+      "special": 126,
+      "nativeHandler": "LS_NOP",
+      "nativeStatus": "nop",
+      "managedStatus": "native-nop"
+    },
+    {
+      "special": 127,
+      "nativeHandler": "LS_Thing_SetSpecial",
+      "nativeStatus": "implemented",
+      "managedStatus": "wired"
+    },
+    {
+      "special": 128,
+      "nativeHandler": "LS_ThrustThingZ",
+      "nativeStatus": "implemented",
+      "managedStatus": "wired"
+    },
+    {
+      "special": 129,
+      "nativeHandler": "LS_UsePuzzleItem",
+      "nativeStatus": "implemented",
+      "managedStatus": "gap"
+    },
+    {
+      "special": 130,
+      "nativeHandler": "LS_Thing_Activate",
+      "nativeStatus": "implemented",
+      "managedStatus": "wired"
+    },
+    {
+      "special": 131,
+      "nativeHandler": "LS_Thing_Deactivate",
+      "nativeStatus": "implemented",
+      "managedStatus": "wired"
+    },
+    {
+      "special": 132,
+      "nativeHandler": "LS_Thing_Remove",
+      "nativeStatus": "implemented",
+      "managedStatus": "wired"
+    },
+    {
+      "special": 133,
+      "nativeHandler": "LS_Thing_Destroy",
+      "nativeStatus": "implemented",
+      "managedStatus": "wired"
+    },
+    {
+      "special": 134,
+      "nativeHandler": "LS_Thing_Projectile",
+      "nativeStatus": "implemented",
+      "managedStatus": "gap"
+    },
+    {
+      "special": 135,
+      "nativeHandler": "LS_Thing_Spawn",
+      "nativeStatus": "implemented",
+      "managedStatus": "gap"
+    },
+    {
+      "special": 136,
+      "nativeHandler": "LS_Thing_ProjectileGravity",
+      "nativeStatus": "implemented",
+      "managedStatus": "gap"
+    },
+    {
+      "special": 137,
+      "nativeHandler": "LS_Thing_SpawnNoFog",
+      "nativeStatus": "implemented",
+      "managedStatus": "gap"
+    },
+    {
+      "special": 138,
+      "nativeHandler": "LS_Floor_Waggle",
+      "nativeStatus": "implemented",
+      "managedStatus": "wired"
+    },
+    {
+      "special": 139,
+      "nativeHandler": "LS_Thing_SpawnFacing",
+      "nativeStatus": "implemented",
+      "managedStatus": "wired"
+    },
+    {
+      "special": 140,
+      "nativeHandler": "LS_Sector_ChangeSound",
+      "nativeStatus": "implemented",
+      "managedStatus": "gap"
+    },
+    {
+      "special": 141,
+      "nativeHandler": "LS_NOP",
+      "nativeStatus": "nop",
+      "managedStatus": "native-nop"
+    },
+    {
+      "special": 142,
+      "nativeHandler": "LS_NOP",
+      "nativeStatus": "nop",
+      "managedStatus": "native-nop"
+    },
+    {
+      "special": 143,
+      "nativeHandler": "LS_NOP",
+      "nativeStatus": "nop",
+      "managedStatus": "native-nop"
+    },
+    {
+      "special": 144,
+      "nativeHandler": "LS_NOP",
+      "nativeStatus": "nop",
+      "managedStatus": "native-nop"
+    },
+    {
+      "special": 145,
+      "nativeHandler": "LS_NOP",
+      "nativeStatus": "nop",
+      "managedStatus": "native-nop"
+    },
+    {
+      "special": 146,
+      "nativeHandler": "LS_NOP",
+      "nativeStatus": "nop",
+      "managedStatus": "native-nop"
+    },
+    {
+      "special": 147,
+      "nativeHandler": "LS_NOP",
+      "nativeStatus": "nop",
+      "managedStatus": "native-nop"
+    },
+    {
+      "special": 148,
+      "nativeHandler": "LS_NOP",
+      "nativeStatus": "nop",
+      "managedStatus": "native-nop"
+    },
+    {
+      "special": 149,
+      "nativeHandler": "LS_NOP",
+      "nativeStatus": "nop",
+      "managedStatus": "native-nop"
+    },
+    {
+      "special": 150,
+      "nativeHandler": "LS_Line_SetHealth",
+      "nativeStatus": "implemented",
+      "managedStatus": "wired"
+    },
+    {
+      "special": 151,
+      "nativeHandler": "LS_Sector_SetHealth",
+      "nativeStatus": "implemented",
+      "managedStatus": "gap"
+    },
+    {
+      "special": 152,
+      "nativeHandler": "LS_NOP",
+      "nativeStatus": "nop",
+      "managedStatus": "native-nop"
+    },
+    {
+      "special": 153,
+      "nativeHandler": "LS_NOP",
+      "nativeStatus": "nop",
+      "managedStatus": "native-nop"
+    },
+    {
+      "special": 154,
+      "nativeHandler": "LS_Teleport_NoStop",
+      "nativeStatus": "implemented",
+      "managedStatus": "wired"
+    },
+    {
+      "special": 155,
+      "nativeHandler": "LS_NOP",
+      "nativeStatus": "nop",
+      "managedStatus": "native-nop"
+    },
+    {
+      "special": 156,
+      "nativeHandler": "LS_NOP",
+      "nativeStatus": "nop",
+      "managedStatus": "native-nop"
+    },
+    {
+      "special": 157,
+      "nativeHandler": "LS_SetGlobalFogParameter",
+      "nativeStatus": "implemented",
+      "managedStatus": "wired"
+    },
+    {
+      "special": 158,
+      "nativeHandler": "LS_FS_Execute",
+      "nativeStatus": "implemented",
+      "managedStatus": "gap"
+    },
+    {
+      "special": 159,
+      "nativeHandler": "LS_Sector_SetPlaneReflection",
+      "nativeStatus": "implemented",
+      "managedStatus": "gap"
+    },
+    {
+      "special": 160,
+      "nativeHandler": "LS_NOP",
+      "nativeStatus": "nop",
+      "managedStatus": "native-nop"
+    },
+    {
+      "special": 161,
+      "nativeHandler": "LS_NOP",
+      "nativeStatus": "nop",
+      "managedStatus": "native-nop"
+    },
+    {
+      "special": 162,
+      "nativeHandler": "LS_NOP",
+      "nativeStatus": "nop",
+      "managedStatus": "native-nop"
+    },
+    {
+      "special": 163,
+      "nativeHandler": "LS_NOP",
+      "nativeStatus": "nop",
+      "managedStatus": "native-nop"
+    },
+    {
+      "special": 164,
+      "nativeHandler": "LS_NOP",
+      "nativeStatus": "nop",
+      "managedStatus": "native-nop"
+    },
+    {
+      "special": 165,
+      "nativeHandler": "LS_NOP",
+      "nativeStatus": "nop",
+      "managedStatus": "native-nop"
+    },
+    {
+      "special": 166,
+      "nativeHandler": "LS_NOP",
+      "nativeStatus": "nop",
+      "managedStatus": "native-nop"
+    },
+    {
+      "special": 167,
+      "nativeHandler": "LS_NOP",
+      "nativeStatus": "nop",
+      "managedStatus": "native-nop"
+    },
+    {
+      "special": 168,
+      "nativeHandler": "LS_Ceiling_CrushAndRaiseDist",
+      "nativeStatus": "implemented",
+      "managedStatus": "wired"
+    },
+    {
+      "special": 169,
+      "nativeHandler": "LS_Generic_Crusher2",
+      "nativeStatus": "implemented",
+      "managedStatus": "wired"
+    },
+    {
+      "special": 170,
+      "nativeHandler": "LS_Sector_SetCeilingScale2",
+      "nativeStatus": "implemented",
+      "managedStatus": "wired"
+    },
+    {
+      "special": 171,
+      "nativeHandler": "LS_Sector_SetFloorScale2",
+      "nativeStatus": "implemented",
+      "managedStatus": "wired"
+    },
+    {
+      "special": 172,
+      "nativeHandler": "LS_Plat_UpNearestWaitDownStay",
+      "nativeStatus": "implemented",
+      "managedStatus": "wired"
+    },
+    {
+      "special": 173,
+      "nativeHandler": "LS_NoiseAlert",
+      "nativeStatus": "implemented",
+      "managedStatus": "wired"
+    },
+    {
+      "special": 174,
+      "nativeHandler": "LS_SendToCommunicator",
+      "nativeStatus": "implemented",
+      "managedStatus": "wired"
+    },
+    {
+      "special": 175,
+      "nativeHandler": "LS_Thing_ProjectileIntercept",
+      "nativeStatus": "implemented",
+      "managedStatus": "wired"
+    },
+    {
+      "special": 176,
+      "nativeHandler": "LS_Thing_ChangeTID",
+      "nativeStatus": "implemented",
+      "managedStatus": "wired"
+    },
+    {
+      "special": 177,
+      "nativeHandler": "LS_Thing_Hate",
+      "nativeStatus": "implemented",
+      "managedStatus": "wired"
+    },
+    {
+      "special": 178,
+      "nativeHandler": "LS_Thing_ProjectileAimed",
+      "nativeStatus": "implemented",
+      "managedStatus": "wired"
+    },
+    {
+      "special": 179,
+      "nativeHandler": "LS_ChangeSkill",
+      "nativeStatus": "implemented",
+      "managedStatus": "wired"
+    },
+    {
+      "special": 180,
+      "nativeHandler": "LS_Thing_SetTranslation",
+      "nativeStatus": "implemented",
+      "managedStatus": "wired"
+    },
+    {
+      "special": 181,
+      "nativeHandler": "LS_NOP",
+      "nativeStatus": "nop",
+      "managedStatus": "native-nop"
+    },
+    {
+      "special": 182,
+      "nativeHandler": "LS_NOP",
+      "nativeStatus": "nop",
+      "managedStatus": "native-nop"
+    },
+    {
+      "special": 183,
+      "nativeHandler": "LS_Line_AlignCeiling",
+      "nativeStatus": "implemented",
+      "managedStatus": "wired"
+    },
+    {
+      "special": 184,
+      "nativeHandler": "LS_Line_AlignFloor",
+      "nativeStatus": "implemented",
+      "managedStatus": "wired"
+    },
+    {
+      "special": 185,
+      "nativeHandler": "LS_Sector_SetRotation",
+      "nativeStatus": "implemented",
+      "managedStatus": "wired"
+    },
+    {
+      "special": 186,
+      "nativeHandler": "LS_Sector_SetCeilingPanning",
+      "nativeStatus": "implemented",
+      "managedStatus": "gap"
+    },
+    {
+      "special": 187,
+      "nativeHandler": "LS_Sector_SetFloorPanning",
+      "nativeStatus": "implemented",
+      "managedStatus": "wired"
+    },
+    {
+      "special": 188,
+      "nativeHandler": "LS_Sector_SetCeilingScale",
+      "nativeStatus": "implemented",
+      "managedStatus": "wired"
+    },
+    {
+      "special": 189,
+      "nativeHandler": "LS_Sector_SetFloorScale",
+      "nativeStatus": "implemented",
+      "managedStatus": "gap"
+    },
+    {
+      "special": 190,
+      "nativeHandler": "LS_NOP",
+      "nativeStatus": "nop",
+      "managedStatus": "native-nop"
+    },
+    {
+      "special": 191,
+      "nativeHandler": "LS_SetPlayerProperty",
+      "nativeStatus": "implemented",
+      "managedStatus": "wired"
+    },
+    {
+      "special": 192,
+      "nativeHandler": "LS_Ceiling_LowerToHighestFloor",
+      "nativeStatus": "implemented",
+      "managedStatus": "wired"
+    },
+    {
+      "special": 193,
+      "nativeHandler": "LS_Ceiling_LowerInstant",
+      "nativeStatus": "implemented",
+      "managedStatus": "wired"
+    },
+    {
+      "special": 194,
+      "nativeHandler": "LS_Ceiling_RaiseInstant",
+      "nativeStatus": "implemented",
+      "managedStatus": "wired"
+    },
+    {
+      "special": 195,
+      "nativeHandler": "LS_Ceiling_CrushRaiseAndStayA",
+      "nativeStatus": "implemented",
+      "managedStatus": "wired"
+    },
+    {
+      "special": 196,
+      "nativeHandler": "LS_Ceiling_CrushAndRaiseA",
+      "nativeStatus": "implemented",
+      "managedStatus": "wired"
+    },
+    {
+      "special": 197,
+      "nativeHandler": "LS_Ceiling_CrushAndRaiseSilentA",
+      "nativeStatus": "implemented",
+      "managedStatus": "wired"
+    },
+    {
+      "special": 198,
+      "nativeHandler": "LS_Ceiling_RaiseByValueTimes8",
+      "nativeStatus": "implemented",
+      "managedStatus": "wired"
+    },
+    {
+      "special": 199,
+      "nativeHandler": "LS_Ceiling_LowerByValueTimes8",
+      "nativeStatus": "implemented",
+      "managedStatus": "wired"
+    },
+    {
+      "special": 200,
+      "nativeHandler": "LS_Generic_Floor",
+      "nativeStatus": "implemented",
+      "managedStatus": "wired"
+    },
+    {
+      "special": 201,
+      "nativeHandler": "LS_Generic_Ceiling",
+      "nativeStatus": "implemented",
+      "managedStatus": "wired"
+    },
+    {
+      "special": 202,
+      "nativeHandler": "LS_Generic_Door",
+      "nativeStatus": "implemented",
+      "managedStatus": "wired"
+    },
+    {
+      "special": 203,
+      "nativeHandler": "LS_Generic_Lift",
+      "nativeStatus": "implemented",
+      "managedStatus": "wired"
+    },
+    {
+      "special": 204,
+      "nativeHandler": "LS_Generic_Stairs",
+      "nativeStatus": "implemented",
+      "managedStatus": "wired"
+    },
+    {
+      "special": 205,
+      "nativeHandler": "LS_Generic_Crusher",
+      "nativeStatus": "implemented",
+      "managedStatus": "wired"
+    },
+    {
+      "special": 206,
+      "nativeHandler": "LS_Plat_DownWaitUpStayLip",
+      "nativeStatus": "implemented",
+      "managedStatus": "wired"
+    },
+    {
+      "special": 207,
+      "nativeHandler": "LS_Plat_PerpetualRaiseLip",
+      "nativeStatus": "implemented",
+      "managedStatus": "wired"
+    },
+    {
+      "special": 208,
+      "nativeHandler": "LS_TranslucentLine",
+      "nativeStatus": "implemented",
+      "managedStatus": "gap"
+    },
+    {
+      "special": 209,
+      "nativeHandler": "LS_NOP",
+      "nativeStatus": "nop",
+      "managedStatus": "native-nop"
+    },
+    {
+      "special": 210,
+      "nativeHandler": "LS_NOP",
+      "nativeStatus": "nop",
+      "managedStatus": "native-nop"
+    },
+    {
+      "special": 211,
+      "nativeHandler": "LS_NOP",
+      "nativeStatus": "nop",
+      "managedStatus": "native-nop"
+    },
+    {
+      "special": 212,
+      "nativeHandler": "LS_Sector_SetColor",
+      "nativeStatus": "implemented",
+      "managedStatus": "wired"
+    },
+    {
+      "special": 213,
+      "nativeHandler": "LS_Sector_SetFade",
+      "nativeStatus": "implemented",
+      "managedStatus": "wired"
+    },
+    {
+      "special": 214,
+      "nativeHandler": "LS_Sector_SetDamage",
+      "nativeStatus": "implemented",
+      "managedStatus": "wired"
+    },
+    {
+      "special": 215,
+      "nativeHandler": "LS_Teleport_Line",
+      "nativeStatus": "implemented",
+      "managedStatus": "gap"
+    },
+    {
+      "special": 216,
+      "nativeHandler": "LS_Sector_SetGravity",
+      "nativeStatus": "implemented",
+      "managedStatus": "wired"
+    },
+    {
+      "special": 217,
+      "nativeHandler": "LS_Stairs_BuildUpDoom",
+      "nativeStatus": "implemented",
+      "managedStatus": "wired"
+    },
+    {
+      "special": 218,
+      "nativeHandler": "LS_Sector_SetWind",
+      "nativeStatus": "implemented",
+      "managedStatus": "wired"
+    },
+    {
+      "special": 219,
+      "nativeHandler": "LS_Sector_SetFriction",
+      "nativeStatus": "implemented",
+      "managedStatus": "gap"
+    },
+    {
+      "special": 220,
+      "nativeHandler": "LS_Sector_SetCurrent",
+      "nativeStatus": "implemented",
+      "managedStatus": "gap"
+    },
+    {
+      "special": 221,
+      "nativeHandler": "LS_Scroll_Texture_Both",
+      "nativeStatus": "implemented",
+      "managedStatus": "wired"
+    },
+    {
+      "special": 222,
+      "nativeHandler": "LS_NOP",
+      "nativeStatus": "nop",
+      "managedStatus": "native-nop"
+    },
+    {
+      "special": 223,
+      "nativeHandler": "LS_Scroll_Floor",
+      "nativeStatus": "implemented",
+      "managedStatus": "gap"
+    },
+    {
+      "special": 224,
+      "nativeHandler": "LS_Scroll_Ceiling",
+      "nativeStatus": "implemented",
+      "managedStatus": "gap"
+    },
+    {
+      "special": 225,
+      "nativeHandler": "LS_NOP",
+      "nativeStatus": "nop",
+      "managedStatus": "native-nop"
+    },
+    {
+      "special": 226,
+      "nativeHandler": "LS_ACS_ExecuteAlways",
+      "nativeStatus": "implemented",
+      "managedStatus": "wired"
+    },
+    {
+      "special": 227,
+      "nativeHandler": "LS_PointPush_SetForce",
+      "nativeStatus": "implemented",
+      "managedStatus": "gap"
+    },
+    {
+      "special": 228,
+      "nativeHandler": "LS_Plat_RaiseAndStayTx0",
+      "nativeStatus": "implemented",
+      "managedStatus": "wired"
+    },
+    {
+      "special": 229,
+      "nativeHandler": "LS_Thing_SetGoal",
+      "nativeStatus": "implemented",
+      "managedStatus": "wired"
+    },
+    {
+      "special": 230,
+      "nativeHandler": "LS_Plat_UpByValueStayTx",
+      "nativeStatus": "implemented",
+      "managedStatus": "wired"
+    },
+    {
+      "special": 231,
+      "nativeHandler": "LS_Plat_ToggleCeiling",
+      "nativeStatus": "implemented",
+      "managedStatus": "wired"
+    },
+    {
+      "special": 232,
+      "nativeHandler": "LS_Light_StrobeDoom",
+      "nativeStatus": "implemented",
+      "managedStatus": "wired"
+    },
+    {
+      "special": 233,
+      "nativeHandler": "LS_Light_MinNeighbor",
+      "nativeStatus": "implemented",
+      "managedStatus": "wired"
+    },
+    {
+      "special": 234,
+      "nativeHandler": "LS_Light_MaxNeighbor",
+      "nativeStatus": "implemented",
+      "managedStatus": "wired"
+    },
+    {
+      "special": 235,
+      "nativeHandler": "LS_Floor_TransferTrigger",
+      "nativeStatus": "implemented",
+      "managedStatus": "gap"
+    },
+    {
+      "special": 236,
+      "nativeHandler": "LS_Floor_TransferNumeric",
+      "nativeStatus": "implemented",
+      "managedStatus": "gap"
+    },
+    {
+      "special": 237,
+      "nativeHandler": "LS_ChangeCamera",
+      "nativeStatus": "implemented",
+      "managedStatus": "gap"
+    },
+    {
+      "special": 238,
+      "nativeHandler": "LS_Floor_RaiseToLowestCeiling",
+      "nativeStatus": "implemented",
+      "managedStatus": "wired"
+    },
+    {
+      "special": 239,
+      "nativeHandler": "LS_Floor_RaiseByValueTxTy",
+      "nativeStatus": "implemented",
+      "managedStatus": "wired"
+    },
+    {
+      "special": 240,
+      "nativeHandler": "LS_Floor_RaiseByTexture",
+      "nativeStatus": "implemented",
+      "managedStatus": "wired"
+    },
+    {
+      "special": 241,
+      "nativeHandler": "LS_Floor_LowerToLowestTxTy",
+      "nativeStatus": "implemented",
+      "managedStatus": "gap"
+    },
+    {
+      "special": 242,
+      "nativeHandler": "LS_Floor_LowerToHighest",
+      "nativeStatus": "implemented",
+      "managedStatus": "wired"
+    },
+    {
+      "special": 243,
+      "nativeHandler": "LS_Exit_Normal",
+      "nativeStatus": "implemented",
+      "managedStatus": "wired"
+    },
+    {
+      "special": 244,
+      "nativeHandler": "LS_Exit_Secret",
+      "nativeStatus": "implemented",
+      "managedStatus": "wired"
+    },
+    {
+      "special": 245,
+      "nativeHandler": "LS_Elevator_RaiseToNearest",
+      "nativeStatus": "implemented",
+      "managedStatus": "wired"
+    },
+    {
+      "special": 246,
+      "nativeHandler": "LS_Elevator_MoveToFloor",
+      "nativeStatus": "implemented",
+      "managedStatus": "wired"
+    },
+    {
+      "special": 247,
+      "nativeHandler": "LS_Elevator_LowerToNearest",
+      "nativeStatus": "implemented",
+      "managedStatus": "wired"
+    },
+    {
+      "special": 248,
+      "nativeHandler": "LS_HealThing",
+      "nativeStatus": "implemented",
+      "managedStatus": "wired"
+    },
+    {
+      "special": 249,
+      "nativeHandler": "LS_Door_CloseWaitOpen",
+      "nativeStatus": "implemented",
+      "managedStatus": "wired"
+    },
+    {
+      "special": 250,
+      "nativeHandler": "LS_Floor_Donut",
+      "nativeStatus": "implemented",
+      "managedStatus": "gap"
+    },
+    {
+      "special": 251,
+      "nativeHandler": "LS_FloorAndCeiling_LowerRaise",
+      "nativeStatus": "implemented",
+      "managedStatus": "gap"
+    },
+    {
+      "special": 252,
+      "nativeHandler": "LS_Ceiling_RaiseToNearest",
+      "nativeStatus": "implemented",
+      "managedStatus": "wired"
+    },
+    {
+      "special": 253,
+      "nativeHandler": "LS_Ceiling_LowerToLowest",
+      "nativeStatus": "implemented",
+      "managedStatus": "wired"
+    },
+    {
+      "special": 254,
+      "nativeHandler": "LS_Ceiling_LowerToFloor",
+      "nativeStatus": "implemented",
+      "managedStatus": "wired"
+    },
+    {
+      "special": 255,
+      "nativeHandler": "LS_Ceiling_CrushRaiseAndStaySilA",
+      "nativeStatus": "implemented",
+      "managedStatus": "wired"
+    },
+    {
+      "special": 256,
+      "nativeHandler": "LS_Floor_LowerToHighestEE",
+      "nativeStatus": "implemented",
+      "managedStatus": "wired"
+    },
+    {
+      "special": 257,
+      "nativeHandler": "LS_Floor_RaiseToLowest",
+      "nativeStatus": "implemented",
+      "managedStatus": "wired"
+    },
+    {
+      "special": 258,
+      "nativeHandler": "LS_Floor_LowerToLowestCeiling",
+      "nativeStatus": "implemented",
+      "managedStatus": "wired"
+    },
+    {
+      "special": 259,
+      "nativeHandler": "LS_Floor_RaiseToCeiling",
+      "nativeStatus": "implemented",
+      "managedStatus": "wired"
+    },
+    {
+      "special": 260,
+      "nativeHandler": "LS_Floor_ToCeilingInstant",
+      "nativeStatus": "implemented",
+      "managedStatus": "wired"
+    },
+    {
+      "special": 261,
+      "nativeHandler": "LS_Floor_LowerByTexture",
+      "nativeStatus": "implemented",
+      "managedStatus": "wired"
+    },
+    {
+      "special": 262,
+      "nativeHandler": "LS_Ceiling_RaiseToHighest",
+      "nativeStatus": "implemented",
+      "managedStatus": "wired"
+    },
+    {
+      "special": 263,
+      "nativeHandler": "LS_Ceiling_ToHighestInstant",
+      "nativeStatus": "implemented",
+      "managedStatus": "wired"
+    },
+    {
+      "special": 264,
+      "nativeHandler": "LS_Ceiling_LowerToNearest",
+      "nativeStatus": "implemented",
+      "managedStatus": "wired"
+    },
+    {
+      "special": 265,
+      "nativeHandler": "LS_Ceiling_RaiseToLowest",
+      "nativeStatus": "implemented",
+      "managedStatus": "wired"
+    },
+    {
+      "special": 266,
+      "nativeHandler": "LS_Ceiling_RaiseToHighestFloor",
+      "nativeStatus": "implemented",
+      "managedStatus": "wired"
+    },
+    {
+      "special": 267,
+      "nativeHandler": "LS_Ceiling_ToFloorInstant",
+      "nativeStatus": "implemented",
+      "managedStatus": "wired"
+    },
+    {
+      "special": 268,
+      "nativeHandler": "LS_Ceiling_RaiseByTexture",
+      "nativeStatus": "implemented",
+      "managedStatus": "wired"
+    },
+    {
+      "special": 269,
+      "nativeHandler": "LS_Ceiling_LowerByTexture",
+      "nativeStatus": "implemented",
+      "managedStatus": "wired"
+    },
+    {
+      "special": 270,
+      "nativeHandler": "LS_Stairs_BuildDownDoom",
+      "nativeStatus": "implemented",
+      "managedStatus": "wired"
+    },
+    {
+      "special": 271,
+      "nativeHandler": "LS_Stairs_BuildUpDoomSync",
+      "nativeStatus": "implemented",
+      "managedStatus": "wired"
+    },
+    {
+      "special": 272,
+      "nativeHandler": "LS_Stairs_BuildDownDoomSync",
+      "nativeStatus": "implemented",
+      "managedStatus": "wired"
+    },
+    {
+      "special": 273,
+      "nativeHandler": "LS_Stairs_BuildUpDoomCrush",
+      "nativeStatus": "implemented",
+      "managedStatus": "wired"
+    },
+    {
+      "special": 274,
+      "nativeHandler": "LS_Door_AnimatedClose",
+      "nativeStatus": "implemented",
+      "managedStatus": "gap"
+    },
+    {
+      "special": 275,
+      "nativeHandler": "LS_Floor_Stop",
+      "nativeStatus": "implemented",
+      "managedStatus": "wired"
+    },
+    {
+      "special": 276,
+      "nativeHandler": "LS_Ceiling_Stop",
+      "nativeStatus": "implemented",
+      "managedStatus": "wired"
+    },
+    {
+      "special": 277,
+      "nativeHandler": "LS_Sector_SetFloorGlow",
+      "nativeStatus": "implemented",
+      "managedStatus": "gap"
+    },
+    {
+      "special": 278,
+      "nativeHandler": "LS_Sector_SetCeilingGlow",
+      "nativeStatus": "implemented",
+      "managedStatus": "gap"
+    },
+    {
+      "special": 279,
+      "nativeHandler": "LS_Floor_MoveToValueAndCrush",
+      "nativeStatus": "implemented",
+      "managedStatus": "wired"
+    },
+    {
+      "special": 280,
+      "nativeHandler": "LS_Ceiling_MoveToValueAndCrush",
+      "nativeStatus": "implemented",
+      "managedStatus": "wired"
+    },
+    {
+      "special": 281,
+      "nativeHandler": "LS_Line_SetAutomapFlags",
+      "nativeStatus": "implemented",
+      "managedStatus": "gap"
+    },
+    {
+      "special": 282,
+      "nativeHandler": "LS_Line_SetAutomapStyle",
+      "nativeStatus": "implemented",
+      "managedStatus": "gap"
+    },
+    {
+      "special": 283,
+      "nativeHandler": "LS_Polyobj_StopSound",
+      "nativeStatus": "implemented",
+      "managedStatus": "gap"
+    },
+    {
+      "special": 284,
+      "nativeHandler": "LS_Generic_CrusherDist",
+      "nativeStatus": "implemented",
+      "managedStatus": "wired"
+    }
+  ]
+}
