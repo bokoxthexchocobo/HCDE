@@ -13,11 +13,13 @@
 | `EV_StopLightEffect` | 808–819 | `LightActions.Stop` |
 | Thinkers `DFlicker`…`DPhased` | 120–540 | `LightEffect` tick + `LightActions.Initialize` |
 
-**Behavior native LOC credited:** 820 (`mapthinkers/a_lights.cpp` end-to-end with named tests).
+**Behavior native LOC credited (conversion):** 68 (`EV_LightChange`, `EV_LightTurnOnPartway`, `EV_TurnTagLightsOff` only).
+
+**Recognition:** DFlicker/DStrobe/DGlow thinkers and `EV_StartLightFading` / flicker / strobe / glow / stop paths were already covered by `LightEffect` + `LightActions` before this run; those ranges are booked in `p-lights-thinkers-chunk5-recognition` (752 native LOC), not conversion.
 
 ## Tests
 
-`LightEvParityTests.*`, `LightActionsTests`, `FlickerTests`, `AnimatedLightTests`, `LightAnimationSaveTests`, `ActorSpecialLightTests`.
+`LightEvParityTests.*` (conversion). Thinker recognition ranges cite `FlickerTests`, `AnimatedLightTests`, `LightActionsTests`.
 
 ## Verified
 

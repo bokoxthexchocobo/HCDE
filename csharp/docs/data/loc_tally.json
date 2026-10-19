@@ -1,13 +1,14 @@
 {
-  "convertedThisRunNative": 1883,
-  "convertedThisRunManaged": 545,
-  "recognitionThisRunNative": 4648,
+  "convertedThisRunNative": 1070,
+  "convertedThisRunManaged": 429,
+  "recognitionThisRunNative": 5400,
   "recognitionThisRunManaged": 0,
   "remainingNative": 493589,
-  "convertedBehaviorNative": 9849,
-  "recognitionBehaviorNative": 4648,
-  "combinedBehaviorNative": 14497,
-  "convertedBehaviorManaged": 6330,
+  "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
+  "convertedBehaviorNative": 9097,
+  "recognitionBehaviorNative": 5400,
+  "combinedBehaviorNative": 15868,
+  "convertedBehaviorManaged": 6420,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -293,18 +294,30 @@
       ]
     },
     {
-      "name": "p-lights-ev-thinkers-chunk5",
+      "name": "p-lights-ev-neighbor-chunk5",
       "bucket": "conversion",
-      "nativeLoc": 820,
-      "managedLoc": 125,
-      "note": "mapthinkers/a_lights.cpp EV_* neighbor/change/partway specials and lighting thinkers via LightActions/LightEffect.",
+      "nativeLoc": 68,
+      "managedLoc": 54,
+      "note": "mapthinkers/a_lights.cpp EV_LightChange, EV_LightTurnOnPartway, EV_TurnTagLightsOff (new this run).",
       "nativeRanges": [
         { "file": "src/playsim/mapthinkers/a_lights.cpp", "symbol": "EV_LightChange", "start": 724, "end": 738, "tests": ["LightEvParityTests.LightChangeRaisesAndLowersTaggedSectors"] },
         { "file": "src/playsim/mapthinkers/a_lights.cpp", "symbol": "EV_TurnTagLightsOff", "start": 606, "end": 625, "tests": ["LightEvParityTests.TurnTagLightsOffUsesNeighborMinimum"] },
-        { "file": "src/playsim/mapthinkers/a_lights.cpp", "symbol": "EV_LightTurnOnPartway", "start": 685, "end": 717, "tests": ["LightEvParityTests.LightTurnOnPartwayInterpolatesBetweenNeighborBounds"] },
+        { "file": "src/playsim/mapthinkers/a_lights.cpp", "symbol": "EV_LightTurnOnPartway", "start": 685, "end": 717, "tests": ["LightEvParityTests.LightTurnOnPartwayInterpolatesBetweenNeighborBounds"] }
+      ]
+    },
+    {
+      "name": "p-lights-thinkers-chunk5-recognition",
+      "bucket": "recognition",
+      "nativeLoc": 752,
+      "managedLoc": 0,
+      "note": "a_lights.cpp thinkers and animated EV_* already in LightEffect/LightActions before chunk 5 conversion.",
+      "nativeRanges": [
         { "file": "src/playsim/mapthinkers/a_lights.cpp", "symbol": "DFlicker::Tick", "start": 136, "end": 158, "tests": ["FlickerTests.NativeCountdownRangesIncludeTransitionTick"] },
-        { "file": "src/playsim/mapthinkers/a_lights.cpp", "symbol": "EV_StartLightFading", "start": 774, "end": 797, "tests": ["AnimatedLightTests.FadeHasNativeFirstTickAndFinalWriteWithoutLockingImmediateChanges"] }
+        { "file": "src/playsim/mapthinkers/a_lights.cpp", "symbol": "EV_StartLightFading", "start": 774, "end": 797, "tests": ["AnimatedLightTests.FadeHasNativeFirstTickAndFinalWriteWithoutLockingImmediateChanges"] },
+        { "file": "src/playsim/mapthinkers/a_lights.cpp", "symbol": "EV_StartLightFlickering", "start": 552, "end": 560, "tests": ["FlickerTests.RetriggerCreatesAnotherEffectAndStopRemovesEveryEffect"] },
+        { "file": "src/playsim/mapthinkers/a_lights.cpp", "symbol": "EV_StopLightEffect", "start": 808, "end": 819, "tests": ["AnimatedLightTests.OverlappingEffectsRunInCreationOrderAndStopRemovesAll"] }
       ]
     }
   ]
 }
+
