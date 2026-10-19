@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": -8720,
+  "convertedThisRunNative": -8715,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 5052,
+  "convertedThisRunManaged": 5104,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -774,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 493613,
+  "remainingNative": 493608,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 9807,
+  "convertedBehaviorNative": 9812,
   "recognitionBehaviorNative": 4666,
-  "combinedBehaviorNative": 14473,
-  "convertedBehaviorManaged": 14723,
+  "combinedBehaviorNative": 14478,
+  "convertedBehaviorManaged": 14775,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -3482,6 +3482,25 @@
           "end": 3388,
           "tests": [
             "ZccExpressionConstantFolderTests"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "p-mobj-freeze-tick-chunk47",
+      "bucket": "conversion",
+      "nativeLoc": 5,
+      "managedLoc": 52,
+      "note": "AActor Tick freezetics early out.",
+      "conversionManagedCommit": "85dd50d4a1ca31fec34e4ed1a151c78f8f114ac8",
+      "nativeRanges": [
+        {
+          "file": "src/playsim/p_mobj.cpp",
+          "symbol": "AActor::Tick",
+          "start": 4561,
+          "end": 4565,
+          "tests": [
+            "ActorFreezeTickGateTests"
           ]
         }
       ]
