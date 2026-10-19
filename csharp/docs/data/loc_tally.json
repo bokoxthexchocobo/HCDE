@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": -8926,
+  "convertedThisRunNative": -8864,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 4649,
+  "convertedThisRunManaged": 4699,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -774,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 493819,
+  "remainingNative": 493757,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 9601,
+  "convertedBehaviorNative": 9663,
   "recognitionBehaviorNative": 4666,
-  "combinedBehaviorNative": 14267,
-  "convertedBehaviorManaged": 14320,
+  "combinedBehaviorNative": 14329,
+  "convertedBehaviorManaged": 14370,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -3377,6 +3377,25 @@
           "end": 5400,
           "tests": [
             "NetPresentationEchoResetTests"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "p-acs-set-master-chunk41",
+      "bucket": "conversion",
+      "nativeLoc": 62,
+      "managedLoc": 50,
+      "note": "DLevelScript DoSetMaster monster master assignment.",
+      "conversionManagedCommit": "309af532566d466e635b4ecd8f7667c2332e3d9f",
+      "nativeRanges": [
+        {
+          "file": "src/playsim/p_acs.cpp",
+          "symbol": "DLevelScript::DoSetMaster",
+          "start": 3999,
+          "end": 4060,
+          "tests": [
+            "AcsSetMasterServiceTests"
           ]
         }
       ]
