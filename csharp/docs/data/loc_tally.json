@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": -10382,
+  "convertedThisRunNative": -9502,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 2637,
+  "convertedThisRunManaged": 3651,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -774,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 495275,
+  "remainingNative": 494395,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 8145,
+  "convertedBehaviorNative": 9025,
   "recognitionBehaviorNative": 4666,
-  "combinedBehaviorNative": 12811,
-  "convertedBehaviorManaged": 12308,
+  "combinedBehaviorNative": 13691,
+  "convertedBehaviorManaged": 13322,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -3011,6 +3011,156 @@
           "end": 5455,
           "tests": [
             "NetClientFullResetTests"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "thingdef-parse-actor-header-chunk26",
+      "bucket": "conversion",
+      "nativeLoc": 142,
+      "managedLoc": 118,
+      "note": "thingdef_parse CreateNewActor validation and ParseActorHeader name/metadata parsing.",
+      "conversionManagedCommit": "6ff1d867e451e347d49693614311e4acdb09274e",
+      "nativeRanges": [
+        {
+          "file": "src/scripting/decorate/thingdef_parse.cpp",
+          "symbol": "CreateNewActor",
+          "start": 1003,
+          "end": 1041,
+          "tests": [
+            "DecorateActorHeaderParserTests"
+          ]
+        },
+        {
+          "file": "src/scripting/decorate/thingdef_parse.cpp",
+          "symbol": "ParseActorHeader",
+          "start": 1048,
+          "end": 1150,
+          "tests": [
+            "DecorateActorHeaderParserTests"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "thingdef-dispatch-script-property-chunk27",
+      "bucket": "conversion",
+      "nativeLoc": 83,
+      "managedLoc": 168,
+      "note": "thingdef_parse DispatchScriptProperty value decoding.",
+      "conversionManagedCommit": "0000000000000000000000000000000000000000",
+      "nativeRanges": [
+        {
+          "file": "src/scripting/decorate/thingdef_parse.cpp",
+          "symbol": "DispatchScriptProperty",
+          "start": 853,
+          "end": 935,
+          "tests": [
+            "DecorateScriptPropertyDispatcherTests"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "thingdef-builtin-properties-chunk28",
+      "bucket": "conversion",
+      "nativeLoc": 427,
+      "managedLoc": 312,
+      "note": "thingdef_properties.cpp scalar DEFINE_PROPERTY handlers (tag..gravity).",
+      "conversionManagedCommit": "0000000000000000000000000000000000000000",
+      "nativeRanges": [
+        {
+          "file": "src/scripting/thingdef_properties.cpp",
+          "symbol": "DEFINE_PROPERTY",
+          "start": 617,
+          "end": 1043,
+          "tests": [
+            "DecorateBuiltinPropertyHandlersTests"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "p-mobj-spawn-compose-chunk29",
+      "bucket": "conversion",
+      "nativeLoc": 99,
+      "managedLoc": 186,
+      "note": "p_mobj SpawnMapThing actor placement and SpawnPlayer origin policy.",
+      "conversionManagedCommit": "0000000000000000000000000000000000000000",
+      "nativeRanges": [
+        {
+          "file": "src/playsim/p_mobj.cpp",
+          "symbol": "SpawnMapThing",
+          "start": 6882,
+          "end": 6941,
+          "tests": [
+            "MapThingActorSpawnComposerTests"
+          ]
+        },
+        {
+          "file": "src/playsim/p_mobj.cpp",
+          "symbol": "SpawnPlayer",
+          "start": 6340,
+          "end": 6378,
+          "tests": [
+            "PlayerSpawnPlacementPolicyTests"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "p-acs-set-actor-property-chunk30",
+      "bucket": "conversion",
+      "nativeLoc": 112,
+      "managedLoc": 88,
+      "note": "p_acs.cpp DLevelScript::DoSetActorProperty ACS property subset.",
+      "conversionManagedCommit": "0000000000000000000000000000000000000000",
+      "nativeRanges": [
+        {
+          "file": "src/playsim/p_acs.cpp",
+          "symbol": "DLevelScript::DoSetActorProperty",
+          "start": 4166,
+          "end": 4277,
+          "tests": [
+            "AcsSetActorPropertyServiceTests"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "d-net-presentation-echo-chunk31",
+      "bucket": "conversion",
+      "nativeLoc": 17,
+      "managedLoc": 142,
+      "note": "d_net_diag presentation echo reset and remote player interp clear on disconnect.",
+      "conversionManagedCommit": "0000000000000000000000000000000000000000",
+      "nativeRanges": [
+        {
+          "file": "src/d_net_diag.cpp",
+          "symbol": "Net_ResetPresentationEchoStateForClient",
+          "start": 797,
+          "end": 806,
+          "tests": [
+            "NetPresentationEchoResetTests"
+          ]
+        },
+        {
+          "file": "src/d_net_diag.cpp",
+          "symbol": "Net_ResetPresentationEchoState",
+          "start": 808,
+          "end": 812,
+          "tests": [
+            "NetPresentationEchoResetTests"
+          ]
+        },
+        {
+          "file": "src/d_net.cpp",
+          "symbol": "Net_ResetClientState",
+          "start": 5395,
+          "end": 5396,
+          "tests": [
+            "NetPresentationEchoResetTests"
           ]
         }
       ]
