@@ -15,16 +15,22 @@
     "managedCSharpLoc": 99793
   },
   "locTally": {
-    "convertedThisRunNative": 2616,
-    "convertedThisRunManaged": 1004,
-    "recognitionThisRunNative": 5400,
+    "runStartConvertedBehaviorNative": 10643,
+    "runStartRecognitionBehaviorNative": 5400,
+    "runStartConvertedBehaviorManaged": 7417,
+    "convertedThisRunNative": 52,
+    "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
+    "convertedThisRunManaged": 110,
+    "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
+    "recognitionThisRunNative": 20,
+    "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 492043,
+    "remainingNative": 491971,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 10643,
-    "recognitionBehaviorNative": 5400,
-    "combinedBehaviorNative": 16043,
-    "convertedBehaviorManaged": 6785,
+    "convertedBehaviorNative": 10695,
+    "recognitionBehaviorNative": 5420,
+    "combinedBehaviorNative": 16115,
+    "convertedBehaviorManaged": 7527,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -856,6 +862,87 @@
             ]
           }
         ]
+      },
+      {
+        "name": "zscript-vm-pointer-arith-chunk7",
+        "bucket": "conversion",
+        "nativeLoc": 52,
+        "managedLoc": 110,
+        "note": "vmexec.h ADDA_RR/ADDA_RK/SUBA; vmops.h tail opcode reindex for EQA/NULLCHECK.",
+        "nativeRanges": [
+          {
+            "file": "src/common/scripting/vm/vmexec.h",
+            "symbol": "OP(ADDA_RR)",
+            "start": 1910,
+            "end": 1923,
+            "tests": [
+              "VmPointerArithmeticOpcodeTests.AddARrAdvancesBytePointerIntoArray"
+            ]
+          },
+          {
+            "file": "src/common/scripting/vm/vmexec.h",
+            "symbol": "OP(SUBA)",
+            "start": 1925,
+            "end": 1928,
+            "tests": [
+              "VmPointerArithmeticOpcodeTests.SubAReportsByteDistanceBetweenPointers"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "zscript-vm-matrix-recognition-chunk7",
+        "bucket": "recognition",
+        "nativeLoc": 20,
+        "managedLoc": 0,
+        "note": "Integer compare/arithmetic vmexec.h handlers with dedicated opcode-family tests (no credit without a named test).",
+        "nativeRanges": [
+          {
+            "file": "src/common/scripting/vm/vmexec.h",
+            "symbol": "OP(ADD_RR)",
+            "start": 1131,
+            "end": 1134,
+            "tests": [
+              "VmIntegerArithmeticOpcodeTests.IntegerBinaryOpsWriteRegister"
+            ]
+          },
+          {
+            "file": "src/common/scripting/vm/vmexec.h",
+            "symbol": "OP(SUB_RR)",
+            "start": 1144,
+            "end": 1147,
+            "tests": [
+              "VmIntegerArithmeticOpcodeTests.IntegerBinaryOpsWriteRegister"
+            ]
+          },
+          {
+            "file": "src/common/scripting/vm/vmexec.h",
+            "symbol": "OP(MUL_RR)",
+            "start": 1157,
+            "end": 1160,
+            "tests": [
+              "VmIntegerArithmeticOpcodeTests.IntegerBinaryOpsWriteRegister"
+            ]
+          },
+          {
+            "file": "src/common/scripting/vm/vmexec.h",
+            "symbol": "OP(EQ_R)",
+            "start": 1354,
+            "end": 1357,
+            "tests": [
+              "VmIntegerArithmeticOpcodeTests.EqRBranchesWhenRegistersMatch"
+            ]
+          },
+          {
+            "file": "src/common/scripting/vm/vmexec.h",
+            "symbol": "OP(LT_RR)",
+            "start": 1362,
+            "end": 1365,
+            "tests": [
+              "VmIntegerArithmeticOpcodeTests.LtRrBranchesOnOrderedIntegers"
+            ]
+          }
+        ]
       }
     ]
   },
@@ -870,7 +957,7 @@
       "executed": 246
     },
     "acsCallFunc": {
-      "partial": 94,
+      "executed": 94,
       "absent": 44
     }
   },
@@ -5220,830 +5307,968 @@
   ],
   "acsCallFunc": [
     {
-      "id": "acs-call:GetLineUDMFInt",
+      "id": "acs-call:1",
       "name": "GetLineUDMFInt",
-      "status": "partial",
+      "wire": 1,
+      "status": "executed",
       "nativeRef": "src/playsim/p_acs.cpp EACSFunctions"
     },
     {
-      "id": "acs-call:GetLineUDMFFixed",
+      "id": "acs-call:2",
       "name": "GetLineUDMFFixed",
-      "status": "partial",
+      "wire": 2,
+      "status": "executed",
       "nativeRef": "src/playsim/p_acs.cpp EACSFunctions"
     },
     {
-      "id": "acs-call:GetThingUDMFInt",
+      "id": "acs-call:3",
       "name": "GetThingUDMFInt",
-      "status": "partial",
+      "wire": 3,
+      "status": "executed",
       "nativeRef": "src/playsim/p_acs.cpp EACSFunctions"
     },
     {
-      "id": "acs-call:GetThingUDMFFixed",
+      "id": "acs-call:4",
       "name": "GetThingUDMFFixed",
-      "status": "partial",
+      "wire": 4,
+      "status": "executed",
       "nativeRef": "src/playsim/p_acs.cpp EACSFunctions"
     },
     {
-      "id": "acs-call:GetSectorUDMFInt",
+      "id": "acs-call:5",
       "name": "GetSectorUDMFInt",
-      "status": "partial",
+      "wire": 5,
+      "status": "executed",
       "nativeRef": "src/playsim/p_acs.cpp EACSFunctions"
     },
     {
-      "id": "acs-call:GetSectorUDMFFixed",
+      "id": "acs-call:6",
       "name": "GetSectorUDMFFixed",
-      "status": "partial",
+      "wire": 6,
+      "status": "executed",
       "nativeRef": "src/playsim/p_acs.cpp EACSFunctions"
     },
     {
-      "id": "acs-call:GetSideUDMFInt",
+      "id": "acs-call:7",
       "name": "GetSideUDMFInt",
-      "status": "partial",
+      "wire": 7,
+      "status": "executed",
       "nativeRef": "src/playsim/p_acs.cpp EACSFunctions"
     },
     {
-      "id": "acs-call:GetSideUDMFFixed",
+      "id": "acs-call:8",
       "name": "GetSideUDMFFixed",
-      "status": "partial",
+      "wire": 8,
+      "status": "executed",
       "nativeRef": "src/playsim/p_acs.cpp EACSFunctions"
     },
     {
-      "id": "acs-call:GetActorVelX",
+      "id": "acs-call:9",
       "name": "GetActorVelX",
-      "status": "partial",
+      "wire": 9,
+      "status": "executed",
       "nativeRef": "src/playsim/p_acs.cpp EACSFunctions"
     },
     {
-      "id": "acs-call:GetActorVelY",
+      "id": "acs-call:10",
       "name": "GetActorVelY",
-      "status": "partial",
+      "wire": 10,
+      "status": "executed",
       "nativeRef": "src/playsim/p_acs.cpp EACSFunctions"
     },
     {
-      "id": "acs-call:GetActorVelZ",
+      "id": "acs-call:11",
       "name": "GetActorVelZ",
-      "status": "partial",
+      "wire": 11,
+      "status": "executed",
       "nativeRef": "src/playsim/p_acs.cpp EACSFunctions"
     },
     {
-      "id": "acs-call:SetActivator",
+      "id": "acs-call:12",
       "name": "SetActivator",
-      "status": "partial",
+      "wire": 12,
+      "status": "executed",
       "nativeRef": "src/playsim/p_acs.cpp EACSFunctions"
     },
     {
-      "id": "acs-call:SetActivatorToTarget",
+      "id": "acs-call:13",
       "name": "SetActivatorToTarget",
-      "status": "partial",
+      "wire": 13,
+      "status": "executed",
       "nativeRef": "src/playsim/p_acs.cpp EACSFunctions"
     },
     {
-      "id": "acs-call:GetActorViewHeight",
+      "id": "acs-call:14",
       "name": "GetActorViewHeight",
-      "status": "partial",
+      "wire": 14,
+      "status": "executed",
       "nativeRef": "src/playsim/p_acs.cpp EACSFunctions"
     },
     {
-      "id": "acs-call:GetChar",
+      "id": "acs-call:15",
       "name": "GetChar",
-      "status": "partial",
+      "wire": 15,
+      "status": "executed",
       "nativeRef": "src/playsim/p_acs.cpp EACSFunctions"
     },
     {
-      "id": "acs-call:GetAirSupply",
+      "id": "acs-call:16",
       "name": "GetAirSupply",
-      "status": "partial",
+      "wire": 16,
+      "status": "executed",
       "nativeRef": "src/playsim/p_acs.cpp EACSFunctions"
     },
     {
-      "id": "acs-call:SetAirSupply",
+      "id": "acs-call:17",
       "name": "SetAirSupply",
-      "status": "partial",
+      "wire": 17,
+      "status": "executed",
       "nativeRef": "src/playsim/p_acs.cpp EACSFunctions"
     },
     {
-      "id": "acs-call:SetSkyScrollSpeed",
+      "id": "acs-call:18",
       "name": "SetSkyScrollSpeed",
+      "wire": 18,
       "status": "absent",
       "nativeRef": "src/playsim/p_acs.cpp EACSFunctions"
     },
     {
-      "id": "acs-call:GetArmorType",
+      "id": "acs-call:19",
       "name": "GetArmorType",
-      "status": "partial",
+      "wire": 19,
+      "status": "executed",
       "nativeRef": "src/playsim/p_acs.cpp EACSFunctions"
     },
     {
-      "id": "acs-call:SpawnSpotForced",
+      "id": "acs-call:20",
       "name": "SpawnSpotForced",
-      "status": "partial",
+      "wire": 20,
+      "status": "executed",
       "nativeRef": "src/playsim/p_acs.cpp EACSFunctions"
     },
     {
-      "id": "acs-call:SpawnSpotFacingForced",
+      "id": "acs-call:21",
       "name": "SpawnSpotFacingForced",
-      "status": "partial",
+      "wire": 21,
+      "status": "executed",
       "nativeRef": "src/playsim/p_acs.cpp EACSFunctions"
     },
     {
-      "id": "acs-call:CheckActorProperty",
+      "id": "acs-call:22",
       "name": "CheckActorProperty",
-      "status": "partial",
+      "wire": 22,
+      "status": "executed",
       "nativeRef": "src/playsim/p_acs.cpp EACSFunctions"
     },
     {
-      "id": "acs-call:SetActorVelocity",
+      "id": "acs-call:23",
       "name": "SetActorVelocity",
-      "status": "partial",
+      "wire": 23,
+      "status": "executed",
       "nativeRef": "src/playsim/p_acs.cpp EACSFunctions"
     },
     {
-      "id": "acs-call:SetUserVariable",
+      "id": "acs-call:24",
       "name": "SetUserVariable",
-      "status": "partial",
+      "wire": 24,
+      "status": "executed",
       "nativeRef": "src/playsim/p_acs.cpp EACSFunctions"
     },
     {
-      "id": "acs-call:GetUserVariable",
+      "id": "acs-call:25",
       "name": "GetUserVariable",
-      "status": "partial",
+      "wire": 25,
+      "status": "executed",
       "nativeRef": "src/playsim/p_acs.cpp EACSFunctions"
     },
     {
-      "id": "acs-call:Radius_Quake2",
+      "id": "acs-call:26",
       "name": "Radius_Quake2",
-      "status": "partial",
+      "wire": 26,
+      "status": "executed",
       "nativeRef": "src/playsim/p_acs.cpp EACSFunctions"
     },
     {
-      "id": "acs-call:CheckActorClass",
+      "id": "acs-call:27",
       "name": "CheckActorClass",
-      "status": "partial",
+      "wire": 27,
+      "status": "executed",
       "nativeRef": "src/playsim/p_acs.cpp EACSFunctions"
     },
     {
-      "id": "acs-call:SetUserArray",
+      "id": "acs-call:28",
       "name": "SetUserArray",
-      "status": "partial",
+      "wire": 28,
+      "status": "executed",
       "nativeRef": "src/playsim/p_acs.cpp EACSFunctions"
     },
     {
-      "id": "acs-call:GetUserArray",
+      "id": "acs-call:29",
       "name": "GetUserArray",
-      "status": "partial",
+      "wire": 29,
+      "status": "executed",
       "nativeRef": "src/playsim/p_acs.cpp EACSFunctions"
     },
     {
-      "id": "acs-call:SoundSequenceOnActor",
+      "id": "acs-call:30",
       "name": "SoundSequenceOnActor",
-      "status": "partial",
+      "wire": 30,
+      "status": "executed",
       "nativeRef": "src/playsim/p_acs.cpp EACSFunctions"
     },
     {
-      "id": "acs-call:SoundSequenceOnSector",
+      "id": "acs-call:31",
       "name": "SoundSequenceOnSector",
-      "status": "partial",
+      "wire": 31,
+      "status": "executed",
       "nativeRef": "src/playsim/p_acs.cpp EACSFunctions"
     },
     {
-      "id": "acs-call:SoundSequenceOnPolyobj",
+      "id": "acs-call:32",
       "name": "SoundSequenceOnPolyobj",
-      "status": "partial",
+      "wire": 32,
+      "status": "executed",
       "nativeRef": "src/playsim/p_acs.cpp EACSFunctions"
     },
     {
-      "id": "acs-call:GetPolyobjX",
+      "id": "acs-call:33",
       "name": "GetPolyobjX",
-      "status": "partial",
+      "wire": 33,
+      "status": "executed",
       "nativeRef": "src/playsim/p_acs.cpp EACSFunctions"
     },
     {
-      "id": "acs-call:GetPolyobjY",
+      "id": "acs-call:34",
       "name": "GetPolyobjY",
-      "status": "partial",
+      "wire": 34,
+      "status": "executed",
       "nativeRef": "src/playsim/p_acs.cpp EACSFunctions"
     },
     {
-      "id": "acs-call:CheckSight",
+      "id": "acs-call:35",
       "name": "CheckSight",
-      "status": "partial",
+      "wire": 35,
+      "status": "executed",
       "nativeRef": "src/playsim/p_acs.cpp EACSFunctions"
     },
     {
-      "id": "acs-call:SpawnForced",
+      "id": "acs-call:36",
       "name": "SpawnForced",
-      "status": "partial",
+      "wire": 36,
+      "status": "executed",
       "nativeRef": "src/playsim/p_acs.cpp EACSFunctions"
     },
     {
-      "id": "acs-call:AnnouncerSound",
+      "id": "acs-call:37",
       "name": "AnnouncerSound",
+      "wire": 37,
       "status": "absent",
       "nativeRef": "src/playsim/p_acs.cpp EACSFunctions"
     },
     {
-      "id": "acs-call:SetPointer",
+      "id": "acs-call:38",
       "name": "SetPointer",
+      "wire": 38,
       "status": "absent",
       "nativeRef": "src/playsim/p_acs.cpp EACSFunctions"
     },
     {
-      "id": "acs-call:ACS_NamedExecute",
+      "id": "acs-call:39",
       "name": "ACS_NamedExecute",
+      "wire": 39,
       "status": "absent",
       "nativeRef": "src/playsim/p_acs.cpp EACSFunctions"
     },
     {
-      "id": "acs-call:ACS_NamedSuspend",
+      "id": "acs-call:40",
       "name": "ACS_NamedSuspend",
+      "wire": 40,
       "status": "absent",
       "nativeRef": "src/playsim/p_acs.cpp EACSFunctions"
     },
     {
-      "id": "acs-call:ACS_NamedTerminate",
+      "id": "acs-call:41",
       "name": "ACS_NamedTerminate",
+      "wire": 41,
       "status": "absent",
       "nativeRef": "src/playsim/p_acs.cpp EACSFunctions"
     },
     {
-      "id": "acs-call:ACS_NamedLockedExecute",
+      "id": "acs-call:42",
       "name": "ACS_NamedLockedExecute",
+      "wire": 42,
       "status": "absent",
       "nativeRef": "src/playsim/p_acs.cpp EACSFunctions"
     },
     {
-      "id": "acs-call:ACS_NamedLockedExecuteDoor",
+      "id": "acs-call:43",
       "name": "ACS_NamedLockedExecuteDoor",
+      "wire": 43,
       "status": "absent",
       "nativeRef": "src/playsim/p_acs.cpp EACSFunctions"
     },
     {
-      "id": "acs-call:ACS_NamedExecuteWithResult",
+      "id": "acs-call:44",
       "name": "ACS_NamedExecuteWithResult",
+      "wire": 44,
       "status": "absent",
       "nativeRef": "src/playsim/p_acs.cpp EACSFunctions"
     },
     {
-      "id": "acs-call:ACS_NamedExecuteAlways",
+      "id": "acs-call:45",
       "name": "ACS_NamedExecuteAlways",
+      "wire": 45,
       "status": "absent",
       "nativeRef": "src/playsim/p_acs.cpp EACSFunctions"
     },
     {
-      "id": "acs-call:UniqueTID",
+      "id": "acs-call:46",
       "name": "UniqueTID",
-      "status": "partial",
+      "wire": 46,
+      "status": "executed",
       "nativeRef": "src/playsim/p_acs.cpp EACSFunctions"
     },
     {
-      "id": "acs-call:IsTIDUsed",
+      "id": "acs-call:47",
       "name": "IsTIDUsed",
-      "status": "partial",
+      "wire": 47,
+      "status": "executed",
       "nativeRef": "src/playsim/p_acs.cpp EACSFunctions"
     },
     {
-      "id": "acs-call:Sqrt",
+      "id": "acs-call:48",
       "name": "Sqrt",
-      "status": "partial",
+      "wire": 48,
+      "status": "executed",
       "nativeRef": "src/playsim/p_acs.cpp EACSFunctions"
     },
     {
-      "id": "acs-call:FixedSqrt",
+      "id": "acs-call:49",
       "name": "FixedSqrt",
-      "status": "partial",
+      "wire": 49,
+      "status": "executed",
       "nativeRef": "src/playsim/p_acs.cpp EACSFunctions"
     },
     {
-      "id": "acs-call:VectorLength",
+      "id": "acs-call:50",
       "name": "VectorLength",
-      "status": "partial",
+      "wire": 50,
+      "status": "executed",
       "nativeRef": "src/playsim/p_acs.cpp EACSFunctions"
     },
     {
-      "id": "acs-call:SetHUDClipRect",
+      "id": "acs-call:51",
       "name": "SetHUDClipRect",
+      "wire": 51,
       "status": "absent",
       "nativeRef": "src/playsim/p_acs.cpp EACSFunctions"
     },
     {
-      "id": "acs-call:SetHUDWrapWidth",
+      "id": "acs-call:52",
       "name": "SetHUDWrapWidth",
+      "wire": 52,
       "status": "absent",
       "nativeRef": "src/playsim/p_acs.cpp EACSFunctions"
     },
     {
-      "id": "acs-call:SetCVar",
+      "id": "acs-call:53",
       "name": "SetCVar",
+      "wire": 53,
       "status": "absent",
       "nativeRef": "src/playsim/p_acs.cpp EACSFunctions"
     },
     {
-      "id": "acs-call:GetUserCVar",
+      "id": "acs-call:54",
       "name": "GetUserCVar",
+      "wire": 54,
       "status": "absent",
       "nativeRef": "src/playsim/p_acs.cpp EACSFunctions"
     },
     {
-      "id": "acs-call:SetUserCVar",
+      "id": "acs-call:55",
       "name": "SetUserCVar",
+      "wire": 55,
       "status": "absent",
       "nativeRef": "src/playsim/p_acs.cpp EACSFunctions"
     },
     {
-      "id": "acs-call:GetCVarString",
+      "id": "acs-call:56",
       "name": "GetCVarString",
+      "wire": 56,
       "status": "absent",
       "nativeRef": "src/playsim/p_acs.cpp EACSFunctions"
     },
     {
-      "id": "acs-call:SetCVarString",
+      "id": "acs-call:57",
       "name": "SetCVarString",
+      "wire": 57,
       "status": "absent",
       "nativeRef": "src/playsim/p_acs.cpp EACSFunctions"
     },
     {
-      "id": "acs-call:GetUserCVarString",
+      "id": "acs-call:58",
       "name": "GetUserCVarString",
+      "wire": 58,
       "status": "absent",
       "nativeRef": "src/playsim/p_acs.cpp EACSFunctions"
     },
     {
-      "id": "acs-call:SetUserCVarString",
+      "id": "acs-call:59",
       "name": "SetUserCVarString",
+      "wire": 59,
       "status": "absent",
       "nativeRef": "src/playsim/p_acs.cpp EACSFunctions"
     },
     {
-      "id": "acs-call:LineAttack",
+      "id": "acs-call:60",
       "name": "LineAttack",
-      "status": "partial",
+      "wire": 60,
+      "status": "executed",
       "nativeRef": "src/playsim/p_acs.cpp EACSFunctions"
     },
     {
-      "id": "acs-call:PlaySound",
+      "id": "acs-call:61",
       "name": "PlaySound",
-      "status": "partial",
+      "wire": 61,
+      "status": "executed",
       "nativeRef": "src/playsim/p_acs.cpp EACSFunctions"
     },
     {
-      "id": "acs-call:StopSound",
+      "id": "acs-call:62",
       "name": "StopSound",
-      "status": "partial",
+      "wire": 62,
+      "status": "executed",
       "nativeRef": "src/playsim/p_acs.cpp EACSFunctions"
     },
     {
-      "id": "acs-call:strcmp",
+      "id": "acs-call:63",
       "name": "strcmp",
-      "status": "partial",
+      "wire": 63,
+      "status": "executed",
       "nativeRef": "src/playsim/p_acs.cpp EACSFunctions"
     },
     {
-      "id": "acs-call:stricmp",
+      "id": "acs-call:64",
       "name": "stricmp",
-      "status": "partial",
+      "wire": 64,
+      "status": "executed",
       "nativeRef": "src/playsim/p_acs.cpp EACSFunctions"
     },
     {
-      "id": "acs-call:StrLeft",
+      "id": "acs-call:65",
       "name": "StrLeft",
-      "status": "partial",
+      "wire": 65,
+      "status": "executed",
       "nativeRef": "src/playsim/p_acs.cpp EACSFunctions"
     },
     {
-      "id": "acs-call:StrRight",
+      "id": "acs-call:66",
       "name": "StrRight",
-      "status": "partial",
+      "wire": 66,
+      "status": "executed",
       "nativeRef": "src/playsim/p_acs.cpp EACSFunctions"
     },
     {
-      "id": "acs-call:StrMid",
+      "id": "acs-call:67",
       "name": "StrMid",
-      "status": "partial",
+      "wire": 67,
+      "status": "executed",
       "nativeRef": "src/playsim/p_acs.cpp EACSFunctions"
     },
     {
-      "id": "acs-call:GetActorClass",
+      "id": "acs-call:68",
       "name": "GetActorClass",
-      "status": "partial",
+      "wire": 68,
+      "status": "executed",
       "nativeRef": "src/playsim/p_acs.cpp EACSFunctions"
     },
     {
-      "id": "acs-call:GetWeapon",
+      "id": "acs-call:69",
       "name": "GetWeapon",
-      "status": "partial",
+      "wire": 69,
+      "status": "executed",
       "nativeRef": "src/playsim/p_acs.cpp EACSFunctions"
     },
     {
-      "id": "acs-call:SoundVolume",
+      "id": "acs-call:70",
       "name": "SoundVolume",
-      "status": "partial",
+      "wire": 70,
+      "status": "executed",
       "nativeRef": "src/playsim/p_acs.cpp EACSFunctions"
     },
     {
-      "id": "acs-call:PlayActorSound",
+      "id": "acs-call:71",
       "name": "PlayActorSound",
-      "status": "partial",
+      "wire": 71,
+      "status": "executed",
       "nativeRef": "src/playsim/p_acs.cpp EACSFunctions"
     },
     {
-      "id": "acs-call:SpawnDecal",
+      "id": "acs-call:72",
       "name": "SpawnDecal",
-      "status": "partial",
+      "wire": 72,
+      "status": "executed",
       "nativeRef": "src/playsim/p_acs.cpp EACSFunctions"
     },
     {
-      "id": "acs-call:CheckFont",
+      "id": "acs-call:73",
       "name": "CheckFont",
-      "status": "partial",
+      "wire": 73,
+      "status": "executed",
       "nativeRef": "src/playsim/p_acs.cpp EACSFunctions"
     },
     {
-      "id": "acs-call:DropItem",
+      "id": "acs-call:74",
       "name": "DropItem",
-      "status": "partial",
+      "wire": 74,
+      "status": "executed",
       "nativeRef": "src/playsim/p_acs.cpp EACSFunctions"
     },
     {
-      "id": "acs-call:CheckFlag",
+      "id": "acs-call:75",
       "name": "CheckFlag",
-      "status": "partial",
+      "wire": 75,
+      "status": "executed",
       "nativeRef": "src/playsim/p_acs.cpp EACSFunctions"
     },
     {
-      "id": "acs-call:SetLineActivation",
+      "id": "acs-call:76",
       "name": "SetLineActivation",
-      "status": "partial",
+      "wire": 76,
+      "status": "executed",
       "nativeRef": "src/playsim/p_acs.cpp EACSFunctions"
     },
     {
-      "id": "acs-call:GetLineActivation",
+      "id": "acs-call:77",
       "name": "GetLineActivation",
-      "status": "partial",
+      "wire": 77,
+      "status": "executed",
       "nativeRef": "src/playsim/p_acs.cpp EACSFunctions"
     },
     {
-      "id": "acs-call:GetActorPowerupTics",
+      "id": "acs-call:78",
       "name": "GetActorPowerupTics",
-      "status": "partial",
+      "wire": 78,
+      "status": "executed",
       "nativeRef": "src/playsim/p_acs.cpp EACSFunctions"
     },
     {
-      "id": "acs-call:ChangeActorAngle",
+      "id": "acs-call:79",
       "name": "ChangeActorAngle",
-      "status": "partial",
+      "wire": 79,
+      "status": "executed",
       "nativeRef": "src/playsim/p_acs.cpp EACSFunctions"
     },
     {
-      "id": "acs-call:ChangeActorPitch",
+      "id": "acs-call:80",
       "name": "ChangeActorPitch",
-      "status": "partial",
+      "wire": 80,
+      "status": "executed",
       "nativeRef": "src/playsim/p_acs.cpp EACSFunctions"
     },
     {
-      "id": "acs-call:GetArmorInfo",
+      "id": "acs-call:81",
       "name": "GetArmorInfo",
-      "status": "partial",
+      "wire": 81,
+      "status": "executed",
       "nativeRef": "src/playsim/p_acs.cpp EACSFunctions"
     },
     {
-      "id": "acs-call:DropInventory",
+      "id": "acs-call:82",
       "name": "DropInventory",
-      "status": "partial",
+      "wire": 82,
+      "status": "executed",
       "nativeRef": "src/playsim/p_acs.cpp EACSFunctions"
     },
     {
-      "id": "acs-call:PickActor",
+      "id": "acs-call:83",
       "name": "PickActor",
-      "status": "partial",
+      "wire": 83,
+      "status": "executed",
       "nativeRef": "src/playsim/p_acs.cpp EACSFunctions"
     },
     {
-      "id": "acs-call:IsPointerEqual",
+      "id": "acs-call:84",
       "name": "IsPointerEqual",
-      "status": "partial",
+      "wire": 84,
+      "status": "executed",
       "nativeRef": "src/playsim/p_acs.cpp EACSFunctions"
     },
     {
-      "id": "acs-call:CanRaiseActor",
+      "id": "acs-call:85",
       "name": "CanRaiseActor",
-      "status": "partial",
+      "wire": 85,
+      "status": "executed",
       "nativeRef": "src/playsim/p_acs.cpp EACSFunctions"
     },
     {
-      "id": "acs-call:SetActorTeleFog",
+      "id": "acs-call:86",
       "name": "SetActorTeleFog",
-      "status": "partial",
+      "wire": 86,
+      "status": "executed",
       "nativeRef": "src/playsim/p_acs.cpp EACSFunctions"
     },
     {
-      "id": "acs-call:SwapActorTeleFog",
+      "id": "acs-call:87",
       "name": "SwapActorTeleFog",
-      "status": "partial",
+      "wire": 87,
+      "status": "executed",
       "nativeRef": "src/playsim/p_acs.cpp EACSFunctions"
     },
     {
-      "id": "acs-call:SetActorRoll",
+      "id": "acs-call:88",
       "name": "SetActorRoll",
-      "status": "partial",
+      "wire": 88,
+      "status": "executed",
       "nativeRef": "src/playsim/p_acs.cpp EACSFunctions"
     },
     {
-      "id": "acs-call:ChangeActorRoll",
+      "id": "acs-call:89",
       "name": "ChangeActorRoll",
-      "status": "partial",
+      "wire": 89,
+      "status": "executed",
       "nativeRef": "src/playsim/p_acs.cpp EACSFunctions"
     },
     {
-      "id": "acs-call:GetActorRoll",
+      "id": "acs-call:90",
       "name": "GetActorRoll",
-      "status": "partial",
+      "wire": 90,
+      "status": "executed",
       "nativeRef": "src/playsim/p_acs.cpp EACSFunctions"
     },
     {
-      "id": "acs-call:QuakeEx",
+      "id": "acs-call:91",
       "name": "QuakeEx",
-      "status": "partial",
+      "wire": 91,
+      "status": "executed",
       "nativeRef": "src/playsim/p_acs.cpp EACSFunctions"
     },
     {
-      "id": "acs-call:Warp",
+      "id": "acs-call:92",
       "name": "Warp",
+      "wire": 92,
       "status": "absent",
       "nativeRef": "src/playsim/p_acs.cpp EACSFunctions"
     },
     {
-      "id": "acs-call:GetMaxInventory",
+      "id": "acs-call:93",
       "name": "GetMaxInventory",
-      "status": "partial",
+      "wire": 93,
+      "status": "executed",
       "nativeRef": "src/playsim/p_acs.cpp EACSFunctions"
     },
     {
-      "id": "acs-call:SetSectorDamage",
+      "id": "acs-call:94",
       "name": "SetSectorDamage",
-      "status": "partial",
+      "wire": 94,
+      "status": "executed",
       "nativeRef": "src/playsim/p_acs.cpp EACSFunctions"
     },
     {
-      "id": "acs-call:SetSectorTerrain",
+      "id": "acs-call:95",
       "name": "SetSectorTerrain",
-      "status": "partial",
+      "wire": 95,
+      "status": "executed",
       "nativeRef": "src/playsim/p_acs.cpp EACSFunctions"
     },
     {
-      "id": "acs-call:SpawnParticle",
+      "id": "acs-call:96",
       "name": "SpawnParticle",
-      "status": "partial",
+      "wire": 96,
+      "status": "executed",
       "nativeRef": "src/playsim/p_acs.cpp EACSFunctions"
     },
     {
-      "id": "acs-call:SetMusicVolume",
+      "id": "acs-call:97",
       "name": "SetMusicVolume",
-      "status": "partial",
+      "wire": 97,
+      "status": "executed",
       "nativeRef": "src/playsim/p_acs.cpp EACSFunctions"
     },
     {
-      "id": "acs-call:CheckProximity",
+      "id": "acs-call:98",
       "name": "CheckProximity",
-      "status": "partial",
+      "wire": 98,
+      "status": "executed",
       "nativeRef": "src/playsim/p_acs.cpp EACSFunctions"
     },
     {
-      "id": "acs-call:CheckActorState",
+      "id": "acs-call:99",
       "name": "CheckActorState",
-      "status": "partial",
+      "wire": 99,
+      "status": "executed",
       "nativeRef": "src/playsim/p_acs.cpp EACSFunctions"
     },
     {
-      "id": "acs-call:CheckClass",
+      "id": "acs-call:200",
       "name": "CheckClass",
-      "status": "partial",
+      "wire": 200,
+      "status": "executed",
       "nativeRef": "src/playsim/p_acs.cpp EACSFunctions"
     },
     {
-      "id": "acs-call:DamageActor",
+      "id": "acs-call:201",
       "name": "DamageActor",
-      "status": "partial",
+      "wire": 201,
+      "status": "executed",
       "nativeRef": "src/playsim/p_acs.cpp EACSFunctions"
     },
     {
-      "id": "acs-call:SetActorFlag",
+      "id": "acs-call:202",
       "name": "SetActorFlag",
-      "status": "partial",
+      "wire": 202,
+      "status": "executed",
       "nativeRef": "src/playsim/p_acs.cpp EACSFunctions"
     },
     {
-      "id": "acs-call:SetTranslation",
+      "id": "acs-call:203",
       "name": "SetTranslation",
+      "wire": 203,
       "status": "absent",
       "nativeRef": "src/playsim/p_acs.cpp EACSFunctions"
     },
     {
-      "id": "acs-call:GetActorFloorTexture",
+      "id": "acs-call:204",
       "name": "GetActorFloorTexture",
-      "status": "partial",
+      "wire": 204,
+      "status": "executed",
       "nativeRef": "src/playsim/p_acs.cpp EACSFunctions"
     },
     {
-      "id": "acs-call:GetActorFloorTerrain",
+      "id": "acs-call:205",
       "name": "GetActorFloorTerrain",
-      "status": "partial",
+      "wire": 205,
+      "status": "executed",
       "nativeRef": "src/playsim/p_acs.cpp EACSFunctions"
     },
     {
-      "id": "acs-call:StrArg",
+      "id": "acs-call:206",
       "name": "StrArg",
-      "status": "partial",
+      "wire": 206,
+      "status": "executed",
       "nativeRef": "src/playsim/p_acs.cpp EACSFunctions"
     },
     {
-      "id": "acs-call:Floor",
+      "id": "acs-call:207",
       "name": "Floor",
-      "status": "partial",
+      "wire": 207,
+      "status": "executed",
       "nativeRef": "src/playsim/p_acs.cpp EACSFunctions"
     },
     {
-      "id": "acs-call:Round",
+      "id": "acs-call:208",
       "name": "Round",
-      "status": "partial",
+      "wire": 208,
+      "status": "executed",
       "nativeRef": "src/playsim/p_acs.cpp EACSFunctions"
     },
     {
-      "id": "acs-call:Ceil",
+      "id": "acs-call:209",
       "name": "Ceil",
-      "status": "partial",
+      "wire": 209,
+      "status": "executed",
       "nativeRef": "src/playsim/p_acs.cpp EACSFunctions"
     },
     {
-      "id": "acs-call:ScriptCall",
+      "id": "acs-call:210",
       "name": "ScriptCall",
+      "wire": 210,
       "status": "absent",
       "nativeRef": "src/playsim/p_acs.cpp EACSFunctions"
     },
     {
-      "id": "acs-call:StartSlideshow",
+      "id": "acs-call:211",
       "name": "StartSlideshow",
+      "wire": 211,
       "status": "absent",
       "nativeRef": "src/playsim/p_acs.cpp EACSFunctions"
     },
     {
-      "id": "acs-call:GetSectorHealth",
+      "id": "acs-call:212",
       "name": "GetSectorHealth",
-      "status": "partial",
+      "wire": 212,
+      "status": "executed",
       "nativeRef": "src/playsim/p_acs.cpp EACSFunctions"
     },
     {
-      "id": "acs-call:GetLineHealth",
+      "id": "acs-call:213",
       "name": "GetLineHealth",
-      "status": "partial",
+      "wire": 213,
+      "status": "executed",
       "nativeRef": "src/playsim/p_acs.cpp EACSFunctions"
     },
     {
-      "id": "acs-call:SetSubtitleNumber",
+      "id": "acs-call:214",
       "name": "SetSubtitleNumber",
+      "wire": 214,
       "status": "absent",
       "nativeRef": "src/playsim/p_acs.cpp EACSFunctions"
     },
     {
-      "id": "acs-call:GetNetID",
+      "id": "acs-call:215",
       "name": "GetNetID",
-      "status": "partial",
+      "wire": 215,
+      "status": "executed",
       "nativeRef": "src/playsim/p_acs.cpp EACSFunctions"
     },
     {
-      "id": "acs-call:SetActivatorByNetID",
+      "id": "acs-call:216",
       "name": "SetActivatorByNetID",
-      "status": "partial",
+      "wire": 216,
+      "status": "executed",
       "nativeRef": "src/playsim/p_acs.cpp EACSFunctions"
     },
     {
-      "id": "acs-call:GetLineX",
+      "id": "acs-call:300",
       "name": "GetLineX",
-      "status": "partial",
+      "wire": 300,
+      "status": "executed",
       "nativeRef": "src/playsim/p_acs.cpp EACSFunctions"
     },
     {
-      "id": "acs-call:GetLineY",
+      "id": "acs-call:301",
       "name": "GetLineY",
-      "status": "partial",
+      "wire": 301,
+      "status": "executed",
       "nativeRef": "src/playsim/p_acs.cpp EACSFunctions"
     },
     {
-      "id": "acs-call:SetSectorGlow",
+      "id": "acs-call:400",
       "name": "SetSectorGlow",
+      "wire": 400,
       "status": "absent",
       "nativeRef": "src/playsim/p_acs.cpp EACSFunctions"
     },
     {
-      "id": "acs-call:SetFogDensity",
+      "id": "acs-call:401",
       "name": "SetFogDensity",
+      "wire": 401,
       "status": "absent",
       "nativeRef": "src/playsim/p_acs.cpp EACSFunctions"
     },
     {
-      "id": "acs-call:GetTeamScore",
+      "id": "acs-call:19620",
       "name": "GetTeamScore",
+      "wire": 19620,
       "status": "absent",
       "nativeRef": "src/playsim/p_acs.cpp EACSFunctions"
     },
     {
-      "id": "acs-call:SetTeamScore",
+      "id": "acs-call:19621",
       "name": "SetTeamScore",
+      "wire": 19621,
       "status": "absent",
       "nativeRef": "src/playsim/p_acs.cpp EACSFunctions"
     },
     {
-      "id": "acs-call:InvasionGetState",
+      "id": "acs-call:19700",
       "name": "InvasionGetState",
+      "wire": 19700,
       "status": "absent",
       "nativeRef": "src/playsim/p_acs.cpp EACSFunctions"
     },
     {
-      "id": "acs-call:InvasionGetStateTics",
+      "id": "acs-call:19701",
       "name": "InvasionGetStateTics",
+      "wire": 19701,
       "status": "absent",
       "nativeRef": "src/playsim/p_acs.cpp EACSFunctions"
     },
     {
-      "id": "acs-call:InvasionGetWave",
+      "id": "acs-call:19702",
       "name": "InvasionGetWave",
+      "wire": 19702,
       "status": "absent",
       "nativeRef": "src/playsim/p_acs.cpp EACSFunctions"
     },
     {
-      "id": "acs-call:InvasionGetMaxWaves",
+      "id": "acs-call:19703",
       "name": "InvasionGetMaxWaves",
+      "wire": 19703,
       "status": "absent",
       "nativeRef": "src/playsim/p_acs.cpp EACSFunctions"
     },
     {
-      "id": "acs-call:InvasionGetWaveBudget",
+      "id": "acs-call:19704",
       "name": "InvasionGetWaveBudget",
+      "wire": 19704,
       "status": "absent",
       "nativeRef": "src/playsim/p_acs.cpp EACSFunctions"
     },
     {
-      "id": "acs-call:InvasionGetWaveSpawned",
+      "id": "acs-call:19705",
       "name": "InvasionGetWaveSpawned",
+      "wire": 19705,
       "status": "absent",
       "nativeRef": "src/playsim/p_acs.cpp EACSFunctions"
     },
     {
-      "id": "acs-call:InvasionGetWaveCleared",
+      "id": "acs-call:19706",
       "name": "InvasionGetWaveCleared",
+      "wire": 19706,
       "status": "absent",
       "nativeRef": "src/playsim/p_acs.cpp EACSFunctions"
     },
     {
-      "id": "acs-call:InvasionGetActiveMonsterCount",
+      "id": "acs-call:19707",
       "name": "InvasionGetActiveMonsterCount",
+      "wire": 19707,
       "status": "absent",
       "nativeRef": "src/playsim/p_acs.cpp EACSFunctions"
     },
     {
-      "id": "acs-call:InvasionIsBossWave",
+      "id": "acs-call:19708",
       "name": "InvasionIsBossWave",
+      "wire": 19708,
       "status": "absent",
       "nativeRef": "src/playsim/p_acs.cpp EACSFunctions"
     },
     {
-      "id": "acs-call:InvasionGetSpawnSpotCount",
+      "id": "acs-call:19709",
       "name": "InvasionGetSpawnSpotCount",
+      "wire": 19709,
       "status": "absent",
       "nativeRef": "src/playsim/p_acs.cpp EACSFunctions"
     },
     {
-      "id": "acs-call:InvasionGetActiveSpawnSpotCount",
+      "id": "acs-call:19710",
       "name": "InvasionGetActiveSpawnSpotCount",
+      "wire": 19710,
       "status": "absent",
       "nativeRef": "src/playsim/p_acs.cpp EACSFunctions"
     },
     {
-      "id": "acs-call:InvasionGetSpawnPlanBudget",
+      "id": "acs-call:19711",
       "name": "InvasionGetSpawnPlanBudget",
+      "wire": 19711,
       "status": "absent",
       "nativeRef": "src/playsim/p_acs.cpp EACSFunctions"
     },
     {
-      "id": "acs-call:InvasionGetSpawnActiveTag",
+      "id": "acs-call:19712",
       "name": "InvasionGetSpawnActiveTag",
+      "wire": 19712,
       "status": "absent",
       "nativeRef": "src/playsim/p_acs.cpp EACSFunctions"
     },
     {
-      "id": "acs-call:InvasionIsSpawnUsingFallback",
+      "id": "acs-call:19713",
       "name": "InvasionIsSpawnUsingFallback",
+      "wire": 19713,
       "status": "absent",
       "nativeRef": "src/playsim/p_acs.cpp EACSFunctions"
     },
     {
-      "id": "acs-call:InvasionGetSpawnFallbackSource",
+      "id": "acs-call:19714",
       "name": "InvasionGetSpawnFallbackSource",
+      "wire": 19714,
       "status": "absent",
       "nativeRef": "src/playsim/p_acs.cpp EACSFunctions"
     },
     {
-      "id": "acs-call:InvasionControlAction",
+      "id": "acs-call:19715",
       "name": "InvasionControlAction",
+      "wire": 19715,
       "status": "absent",
       "nativeRef": "src/playsim/p_acs.cpp EACSFunctions"
     }

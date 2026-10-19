@@ -1,21 +1,27 @@
 {
-  "convertedThisRunNative": 2668,
-  "convertedThisRunManaged": 1114,
-  "recognitionThisRunNative": 6936,
+  "runStartConvertedBehaviorNative": 10643,
+  "runStartRecognitionBehaviorNative": 5400,
+  "runStartConvertedBehaviorManaged": 7417,
+  "convertedThisRunNative": 52,
+  "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
+  "convertedThisRunManaged": 110,
+  "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
+  "recognitionThisRunNative": 20,
+  "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 490455,
+  "remainingNative": 491971,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
   "convertedBehaviorNative": 10695,
-  "recognitionBehaviorNative": 6936,
-  "combinedBehaviorNative": 17631,
-  "convertedBehaviorManaged": 6895,
+  "recognitionBehaviorNative": 5420,
+  "combinedBehaviorNative": 16115,
+  "convertedBehaviorManaged": 7527,
   "baselineNative": 508086,
   "chunks": [
     {
       "name": "native-managed-matrix",
       "nativeLoc": 0,
       "managedLoc": 312,
-      "note": "Generator, JSON/MD matrix, MigrationMatrix.Tests (inventory only — not behavior)."
+      "note": "Generator, JSON/MD matrix, MigrationMatrix.Tests (inventory only \u2014 not behavior)."
     },
     {
       "name": "acs-random-getcvar-polywait",
@@ -99,7 +105,7 @@
       "name": "sector-changeflags-gap-audit",
       "nativeLoc": 110,
       "managedLoc": 95,
-      "note": "LS_Sector_ChangeFlags (54), gap generator ExecuteSpecial detection, gap JSON 19→3."
+      "note": "LS_Sector_ChangeFlags (54), gap generator ExecuteSpecial detection, gap JSON 19\u21923."
     },
     {
       "name": "line-special-feasible-gaps",
@@ -129,7 +135,7 @@
       "name": "thing-projectile-175-178",
       "nativeLoc": 190,
       "managedLoc": 165,
-      "note": "LS_Thing_ProjectileIntercept/Aimed; EV_Thing_Projectile lead aim; gap JSON 3→1."
+      "note": "LS_Thing_ProjectileIntercept/Aimed; EV_Thing_Projectile lead aim; gap JSON 3\u21921."
     },
     {
       "name": "acs-air-userarray-spawnspot",
@@ -155,7 +161,12 @@
       "managedLoc": 210,
       "note": "p_map.cpp P_RadiusAttack thrust path only (MapRadiusAttack.ApplyExplosionThrust + damage-mask thrustless).",
       "nativeRanges": [
-        { "file": "src/playsim/p_map.cpp", "symbol": "P_RadiusAttack", "start": 6390, "end": 6458 }
+        {
+          "file": "src/playsim/p_map.cpp",
+          "symbol": "P_RadiusAttack",
+          "start": 6390,
+          "end": 6458
+        }
       ]
     },
     {
@@ -164,8 +175,18 @@
       "managedLoc": 180,
       "note": "p_enemy.cpp P_Move spechit door/push and MF6_JUMPDOWN dropoff assist (MonsterBlockedMoveActions + MoveCore).",
       "nativeRanges": [
-        { "file": "src/playsim/p_enemy.cpp", "symbol": "P_Move", "start": 518, "end": 524 },
-        { "file": "src/playsim/p_enemy.cpp", "symbol": "P_Move", "start": 697, "end": 710 }
+        {
+          "file": "src/playsim/p_enemy.cpp",
+          "symbol": "P_Move",
+          "start": 518,
+          "end": 524
+        },
+        {
+          "file": "src/playsim/p_enemy.cpp",
+          "symbol": "P_Move",
+          "start": 697,
+          "end": 710
+        }
       ]
     },
     {
@@ -174,7 +195,12 @@
       "managedLoc": 75,
       "note": "p_mobj.cpp P_CheckMissileSpawn wired into SpawnProjectileCore and A_SpawnProjectile.",
       "nativeRanges": [
-        { "file": "src/playsim/p_mobj.cpp", "symbol": "P_CheckMissileSpawn", "start": 7781, "end": 7861 }
+        {
+          "file": "src/playsim/p_mobj.cpp",
+          "symbol": "P_CheckMissileSpawn",
+          "start": 7781,
+          "end": 7861
+        }
       ]
     },
     {
@@ -182,9 +208,17 @@
       "bucket": "conversion",
       "nativeLoc": 14,
       "managedLoc": 18,
-      "note": "p_enemy.cpp A_DoChase CantLeaveFloorPic illegal-step rollback (2740–2753).",
+      "note": "p_enemy.cpp A_DoChase CantLeaveFloorPic illegal-step rollback (2740\u20132753).",
       "nativeRanges": [
-        { "file": "src/playsim/p_enemy.cpp", "symbol": "A_DoChase", "start": 2740, "end": 2753, "tests": ["CantLeaveFloorPicTests.NativeChaseUsesFloorRestriction"] }
+        {
+          "file": "src/playsim/p_enemy.cpp",
+          "symbol": "A_DoChase",
+          "start": 2740,
+          "end": 2753,
+          "tests": [
+            "CantLeaveFloorPicTests.NativeChaseUsesFloorRestriction"
+          ]
+        }
       ]
     },
     {
@@ -194,8 +228,25 @@
       "managedLoc": 65,
       "note": "p_map.cpp P_NoWayTraverse and P_UseLines use-fail rumble when a wall blocks the use ray.",
       "nativeRanges": [
-        { "file": "src/playsim/p_map.cpp", "symbol": "P_NoWayTraverse", "start": 5972, "end": 5993, "tests": ["UseRumbleTests.BlockedNonSpecialLineEmitsUseFailPattern"] },
-        { "file": "src/playsim/p_map.cpp", "symbol": "P_UseLines", "start": 6003, "end": 6027, "tests": ["UseRumbleTests.BlockedNonSpecialLineEmitsUseFailPattern", "UseTraceTests"] }
+        {
+          "file": "src/playsim/p_map.cpp",
+          "symbol": "P_NoWayTraverse",
+          "start": 5972,
+          "end": 5993,
+          "tests": [
+            "UseRumbleTests.BlockedNonSpecialLineEmitsUseFailPattern"
+          ]
+        },
+        {
+          "file": "src/playsim/p_map.cpp",
+          "symbol": "P_UseLines",
+          "start": 6003,
+          "end": 6027,
+          "tests": [
+            "UseRumbleTests.BlockedNonSpecialLineEmitsUseFailPattern",
+            "UseTraceTests"
+          ]
+        }
       ]
     },
     {
@@ -205,19 +256,135 @@
       "managedLoc": 0,
       "note": "p_enemy.cpp chase stack already in MonsterBrain/ActorWanderActions (run 9 re-audit).",
       "nativeRanges": [
-        { "file": "src/playsim/p_enemy.cpp", "symbol": "P_CheckMeleeRange", "start": 253, "end": 292, "tests": ["NativeChaseMovementTests", "ChaseMeleeAvoidanceTests"] },
-        { "file": "src/playsim/p_enemy.cpp", "symbol": "P_CheckMissileRange", "start": 307, "end": 365, "tests": ["MissileSightTests", "NativeChaseMovementTests"] },
-        { "file": "src/playsim/p_enemy.cpp", "symbol": "P_Move", "start": 482, "end": 717, "tests": ["NativeChaseMovementTests", "MonsterBlockedMoveTests"] },
-        { "file": "src/playsim/p_enemy.cpp", "symbol": "P_SmartMove", "start": 725, "end": 757, "tests": ["NativeChaseMovementTests", "ChaseDirectionTests"] },
-        { "file": "src/playsim/p_enemy.cpp", "symbol": "P_TryWalk", "start": 773, "end": 781, "tests": ["NativeChaseMovementTests", "WanderSubstepTests"] },
-        { "file": "src/playsim/p_enemy.cpp", "symbol": "P_DoNewChaseDir", "start": 794, "end": 912, "tests": ["ChaseDirectionTests", "NativeChaseMovementTests"] },
-        { "file": "src/playsim/p_enemy.cpp", "symbol": "P_NewChaseDir", "start": 935, "end": 1098, "tests": ["ChaseDirectionTests", "ChaseDropOffEscapeTests"] },
-        { "file": "src/playsim/p_enemy.cpp", "symbol": "P_RandomChaseDir", "start": 1107, "end": 1257, "tests": ["ChaseDirectionTests", "WanderFloatAdjustmentTests"] },
-        { "file": "src/playsim/p_enemy.cpp", "symbol": "P_IsVisible", "start": 1268, "end": 1350, "tests": ["StealthVisibilityTests", "MissileSightTests"] },
-        { "file": "src/playsim/p_enemy.cpp", "symbol": "isTargetablePlayer", "start": 1316, "end": 1363, "tests": ["StealthVisibilityTests", "ThingHateTests"] },
-        { "file": "src/playsim/p_enemy.cpp", "symbol": "P_LookForPlayers", "start": 1789, "end": 1933, "tests": ["ThingHateTests", "StealthVisibilityTests"] },
-        { "file": "src/playsim/p_enemy.cpp", "symbol": "A_DoChase", "start": 2397, "end": 2739, "tests": ["NativeChaseMovementTests", "ChasePostAttackCountTests"] },
-        { "file": "src/playsim/p_enemy.cpp", "symbol": "A_DoChase", "start": 2754, "end": 2764, "tests": ["NativeChaseMovementTests"] }
+        {
+          "file": "src/playsim/p_enemy.cpp",
+          "symbol": "P_CheckMeleeRange",
+          "start": 253,
+          "end": 292,
+          "tests": [
+            "NativeChaseMovementTests",
+            "ChaseMeleeAvoidanceTests"
+          ]
+        },
+        {
+          "file": "src/playsim/p_enemy.cpp",
+          "symbol": "P_CheckMissileRange",
+          "start": 307,
+          "end": 365,
+          "tests": [
+            "MissileSightTests",
+            "NativeChaseMovementTests"
+          ]
+        },
+        {
+          "file": "src/playsim/p_enemy.cpp",
+          "symbol": "P_Move",
+          "start": 482,
+          "end": 717,
+          "tests": [
+            "NativeChaseMovementTests",
+            "MonsterBlockedMoveTests"
+          ]
+        },
+        {
+          "file": "src/playsim/p_enemy.cpp",
+          "symbol": "P_SmartMove",
+          "start": 725,
+          "end": 757,
+          "tests": [
+            "NativeChaseMovementTests",
+            "ChaseDirectionTests"
+          ]
+        },
+        {
+          "file": "src/playsim/p_enemy.cpp",
+          "symbol": "P_TryWalk",
+          "start": 773,
+          "end": 781,
+          "tests": [
+            "NativeChaseMovementTests",
+            "WanderSubstepTests"
+          ]
+        },
+        {
+          "file": "src/playsim/p_enemy.cpp",
+          "symbol": "P_DoNewChaseDir",
+          "start": 794,
+          "end": 912,
+          "tests": [
+            "ChaseDirectionTests",
+            "NativeChaseMovementTests"
+          ]
+        },
+        {
+          "file": "src/playsim/p_enemy.cpp",
+          "symbol": "P_NewChaseDir",
+          "start": 935,
+          "end": 1098,
+          "tests": [
+            "ChaseDirectionTests",
+            "ChaseDropOffEscapeTests"
+          ]
+        },
+        {
+          "file": "src/playsim/p_enemy.cpp",
+          "symbol": "P_RandomChaseDir",
+          "start": 1107,
+          "end": 1257,
+          "tests": [
+            "ChaseDirectionTests",
+            "WanderFloatAdjustmentTests"
+          ]
+        },
+        {
+          "file": "src/playsim/p_enemy.cpp",
+          "symbol": "P_IsVisible",
+          "start": 1268,
+          "end": 1350,
+          "tests": [
+            "StealthVisibilityTests",
+            "MissileSightTests"
+          ]
+        },
+        {
+          "file": "src/playsim/p_enemy.cpp",
+          "symbol": "isTargetablePlayer",
+          "start": 1316,
+          "end": 1363,
+          "tests": [
+            "StealthVisibilityTests",
+            "ThingHateTests"
+          ]
+        },
+        {
+          "file": "src/playsim/p_enemy.cpp",
+          "symbol": "P_LookForPlayers",
+          "start": 1789,
+          "end": 1933,
+          "tests": [
+            "ThingHateTests",
+            "StealthVisibilityTests"
+          ]
+        },
+        {
+          "file": "src/playsim/p_enemy.cpp",
+          "symbol": "A_DoChase",
+          "start": 2397,
+          "end": 2739,
+          "tests": [
+            "NativeChaseMovementTests",
+            "ChasePostAttackCountTests"
+          ]
+        },
+        {
+          "file": "src/playsim/p_enemy.cpp",
+          "symbol": "A_DoChase",
+          "start": 2754,
+          "end": 2764,
+          "tests": [
+            "NativeChaseMovementTests"
+          ]
+        }
       ]
     },
     {
@@ -227,11 +394,55 @@
       "managedLoc": 0,
       "note": "p_map.cpp try-move/use/lineattack subsets already in ActorPhysics/LineSpecials/CombatTrace (run 9 re-audit).",
       "nativeRanges": [
-        { "file": "src/playsim/p_map.cpp", "symbol": "P_CheckPosition", "start": 1817, "end": 2036, "tests": ["ThruActorsTests", "MissileSpawnCheckTests"] },
-        { "file": "src/playsim/p_map.cpp", "symbol": "P_TryMove", "start": 2368, "end": 2889, "tests": ["ThruActorsTests", "CantLeaveFloorPicTests"] },
-        { "file": "src/playsim/p_map.cpp", "symbol": "FSlide::SlideMove", "start": 3018, "end": 3371, "tests": ["PlayerSlideTests"] },
-        { "file": "src/playsim/p_map.cpp", "symbol": "P_LineAttack", "start": 4699, "end": 5050, "tests": ["GeometryLineAttackTests", "HitscanPlaneDamageTests"] },
-        { "file": "src/playsim/p_map.cpp", "symbol": "P_UseTraverse", "start": 5829, "end": 5957, "tests": ["UseTraceTests", "UseRumbleTests"] }
+        {
+          "file": "src/playsim/p_map.cpp",
+          "symbol": "P_CheckPosition",
+          "start": 1817,
+          "end": 2036,
+          "tests": [
+            "ThruActorsTests",
+            "MissileSpawnCheckTests"
+          ]
+        },
+        {
+          "file": "src/playsim/p_map.cpp",
+          "symbol": "P_TryMove",
+          "start": 2368,
+          "end": 2889,
+          "tests": [
+            "ThruActorsTests",
+            "CantLeaveFloorPicTests"
+          ]
+        },
+        {
+          "file": "src/playsim/p_map.cpp",
+          "symbol": "FSlide::SlideMove",
+          "start": 3018,
+          "end": 3371,
+          "tests": [
+            "PlayerSlideTests"
+          ]
+        },
+        {
+          "file": "src/playsim/p_map.cpp",
+          "symbol": "P_LineAttack",
+          "start": 4699,
+          "end": 5050,
+          "tests": [
+            "GeometryLineAttackTests",
+            "HitscanPlaneDamageTests"
+          ]
+        },
+        {
+          "file": "src/playsim/p_map.cpp",
+          "symbol": "P_UseTraverse",
+          "start": 5829,
+          "end": 5957,
+          "tests": [
+            "UseTraceTests",
+            "UseRumbleTests"
+          ]
+        }
       ]
     },
     {
@@ -241,11 +452,56 @@
       "managedLoc": 0,
       "note": "p_mobj.cpp movement/thinker paths already in ActorPhysics/ProjectileActor (run 9 re-audit).",
       "nativeRanges": [
-        { "file": "src/playsim/p_mobj.cpp", "symbol": "P_ExplodeMissile", "start": 1958, "end": 2100, "tests": ["ProjectileMovementTests", "MapRadiusAttackTests"] },
-        { "file": "src/playsim/p_mobj.cpp", "symbol": "P_XYMovement", "start": 2421, "end": 2948, "tests": ["ProjectileMovementTests", "WanderSubstepTests"] },
-        { "file": "src/playsim/p_mobj.cpp", "symbol": "P_ZMovement", "start": 2955, "end": 3480, "tests": ["FallingDamageTests", "CanJumpTests"] },
-        { "file": "src/playsim/p_mobj.cpp", "symbol": "AActor::Tick", "start": 4521, "end": 5075, "tests": ["WanderSubstepTests", "SpawnedSoulRestoreTests"] },
-        { "file": "src/playsim/p_mobj.cpp", "symbol": "missile collide explode", "start": 2680, "end": 2765, "tests": ["ProjectileMovementTests", "CombatAiTests"] }
+        {
+          "file": "src/playsim/p_mobj.cpp",
+          "symbol": "P_ExplodeMissile",
+          "start": 1958,
+          "end": 2100,
+          "tests": [
+            "ProjectileMovementTests",
+            "MapRadiusAttackTests"
+          ]
+        },
+        {
+          "file": "src/playsim/p_mobj.cpp",
+          "symbol": "P_XYMovement",
+          "start": 2421,
+          "end": 2948,
+          "tests": [
+            "ProjectileMovementTests",
+            "WanderSubstepTests"
+          ]
+        },
+        {
+          "file": "src/playsim/p_mobj.cpp",
+          "symbol": "P_ZMovement",
+          "start": 2955,
+          "end": 3480,
+          "tests": [
+            "FallingDamageTests",
+            "CanJumpTests"
+          ]
+        },
+        {
+          "file": "src/playsim/p_mobj.cpp",
+          "symbol": "AActor::Tick",
+          "start": 4521,
+          "end": 5075,
+          "tests": [
+            "WanderSubstepTests",
+            "SpawnedSoulRestoreTests"
+          ]
+        },
+        {
+          "file": "src/playsim/p_mobj.cpp",
+          "symbol": "missile collide explode",
+          "start": 2680,
+          "end": 2765,
+          "tests": [
+            "ProjectileMovementTests",
+            "CombatAiTests"
+          ]
+        }
       ]
     },
     {
@@ -255,7 +511,15 @@
       "managedLoc": 95,
       "note": "p_map.cpp P_TryMove spechit cross activation wired into ActorPhysics.TryMove.",
       "nativeRanges": [
-        { "file": "src/playsim/p_map.cpp", "symbol": "P_TryMove", "start": 2752, "end": 2794, "tests": ["TryMoveLineCrossTests"] }
+        {
+          "file": "src/playsim/p_map.cpp",
+          "symbol": "P_TryMove",
+          "start": 2752,
+          "end": 2794,
+          "tests": [
+            "TryMoveLineCrossTests"
+          ]
+        }
       ]
     },
     {
@@ -265,9 +529,34 @@
       "managedLoc": 62,
       "note": "p_spec.cpp P_SetSectorFriction parity, P_GetFriction sector SECF_FRICTION, sector push thrust on step.",
       "nativeRanges": [
-        { "file": "src/playsim/p_spec.cpp", "symbol": "P_SetSectorFriction", "start": 751, "end": 797, "tests": ["LineSpecialClosureTests.SectorFrictionSpecialUpdatesTaggedSector", "SectorFrictionMovementTests"] },
-        { "file": "src/playsim/p_map.cpp", "symbol": "P_GetFriction", "start": 732, "end": 745, "tests": ["SectorFrictionMovementTests"] },
-        { "file": "src/playsim/mapthinkers/a_pusher.cpp", "symbol": "DPusher::Tick", "start": 149, "end": 200, "tests": ["SectorPushMovementTests"] }
+        {
+          "file": "src/playsim/p_spec.cpp",
+          "symbol": "P_SetSectorFriction",
+          "start": 751,
+          "end": 797,
+          "tests": [
+            "LineSpecialClosureTests.SectorFrictionSpecialUpdatesTaggedSector",
+            "SectorFrictionMovementTests"
+          ]
+        },
+        {
+          "file": "src/playsim/p_map.cpp",
+          "symbol": "P_GetFriction",
+          "start": 732,
+          "end": 745,
+          "tests": [
+            "SectorFrictionMovementTests"
+          ]
+        },
+        {
+          "file": "src/playsim/mapthinkers/a_pusher.cpp",
+          "symbol": "DPusher::Tick",
+          "start": 149,
+          "end": 200,
+          "tests": [
+            "SectorPushMovementTests"
+          ]
+        }
       ]
     },
     {
@@ -277,7 +566,15 @@
       "managedLoc": 8,
       "note": "p_enemy.cpp A_DoChase lost-sight retarget preserves MF3_NOSIGHTCHECK toggle.",
       "nativeRanges": [
-        { "file": "src/playsim/p_enemy.cpp", "symbol": "A_DoChase", "start": 2694, "end": 2716, "tests": ["ChaseLostSightNoSightCheckTests"] }
+        {
+          "file": "src/playsim/p_enemy.cpp",
+          "symbol": "A_DoChase",
+          "start": 2694,
+          "end": 2716,
+          "tests": [
+            "ChaseLostSightNoSightCheckTests"
+          ]
+        }
       ]
     },
     {
@@ -287,10 +584,42 @@
       "managedLoc": 210,
       "note": "p_switch.cpp switch textures/button thinker/sounds plus anim_switches.cpp pairs; ActivateMapLine switch hook.",
       "nativeRanges": [
-        { "file": "src/playsim/p_switch.cpp", "symbol": "P_ChangeSwitchTexture", "start": 243, "end": 310, "tests": ["SwitchTextureTests.UseLineChangesSwitchTextureAndPlaysSound"] },
-        { "file": "src/playsim/p_switch.cpp", "symbol": "P_StartButton", "start": 71, "end": 88, "tests": ["SwitchTextureTests.RePressingActiveButtonAdvancesTimer"] },
-        { "file": "src/playsim/p_switch.cpp", "symbol": "DActiveButton::Tick", "start": 380, "end": 452, "tests": ["SwitchTextureTests.ButtonReturnsToOffTextureAfterHoldTime"] },
-        { "file": "src/gamedata/textures/anim_switches.cpp", "symbol": "FTextureAnimator::AddSwitchPair", "start": 305, "end": 330, "tests": ["SwitchTextureTests.UseLineChangesSwitchTextureAndPlaysSound"] }
+        {
+          "file": "src/playsim/p_switch.cpp",
+          "symbol": "P_ChangeSwitchTexture",
+          "start": 243,
+          "end": 310,
+          "tests": [
+            "SwitchTextureTests.UseLineChangesSwitchTextureAndPlaysSound"
+          ]
+        },
+        {
+          "file": "src/playsim/p_switch.cpp",
+          "symbol": "P_StartButton",
+          "start": 71,
+          "end": 88,
+          "tests": [
+            "SwitchTextureTests.RePressingActiveButtonAdvancesTimer"
+          ]
+        },
+        {
+          "file": "src/playsim/p_switch.cpp",
+          "symbol": "DActiveButton::Tick",
+          "start": 380,
+          "end": 452,
+          "tests": [
+            "SwitchTextureTests.ButtonReturnsToOffTextureAfterHoldTime"
+          ]
+        },
+        {
+          "file": "src/gamedata/textures/anim_switches.cpp",
+          "symbol": "FTextureAnimator::AddSwitchPair",
+          "start": 305,
+          "end": 330,
+          "tests": [
+            "SwitchTextureTests.UseLineChangesSwitchTextureAndPlaysSound"
+          ]
+        }
       ]
     },
     {
@@ -300,9 +629,33 @@
       "managedLoc": 54,
       "note": "mapthinkers/a_lights.cpp EV_LightChange, EV_LightTurnOnPartway, EV_TurnTagLightsOff (new this run).",
       "nativeRanges": [
-        { "file": "src/playsim/mapthinkers/a_lights.cpp", "symbol": "EV_LightChange", "start": 724, "end": 738, "tests": ["LightEvParityTests.LightChangeRaisesAndLowersTaggedSectors"] },
-        { "file": "src/playsim/mapthinkers/a_lights.cpp", "symbol": "EV_TurnTagLightsOff", "start": 606, "end": 625, "tests": ["LightEvParityTests.TurnTagLightsOffUsesNeighborMinimum"] },
-        { "file": "src/playsim/mapthinkers/a_lights.cpp", "symbol": "EV_LightTurnOnPartway", "start": 685, "end": 717, "tests": ["LightEvParityTests.LightTurnOnPartwayInterpolatesBetweenNeighborBounds"] }
+        {
+          "file": "src/playsim/mapthinkers/a_lights.cpp",
+          "symbol": "EV_LightChange",
+          "start": 724,
+          "end": 738,
+          "tests": [
+            "LightEvParityTests.LightChangeRaisesAndLowersTaggedSectors"
+          ]
+        },
+        {
+          "file": "src/playsim/mapthinkers/a_lights.cpp",
+          "symbol": "EV_TurnTagLightsOff",
+          "start": 606,
+          "end": 625,
+          "tests": [
+            "LightEvParityTests.TurnTagLightsOffUsesNeighborMinimum"
+          ]
+        },
+        {
+          "file": "src/playsim/mapthinkers/a_lights.cpp",
+          "symbol": "EV_LightTurnOnPartway",
+          "start": 685,
+          "end": 717,
+          "tests": [
+            "LightEvParityTests.LightTurnOnPartwayInterpolatesBetweenNeighborBounds"
+          ]
+        }
       ]
     },
     {
@@ -312,10 +665,42 @@
       "managedLoc": 0,
       "note": "a_lights.cpp thinkers and animated EV_* already in LightEffect/LightActions before chunk 5 conversion.",
       "nativeRanges": [
-        { "file": "src/playsim/mapthinkers/a_lights.cpp", "symbol": "DFlicker::Tick", "start": 136, "end": 158, "tests": ["FlickerTests.NativeCountdownRangesIncludeTransitionTick"] },
-        { "file": "src/playsim/mapthinkers/a_lights.cpp", "symbol": "EV_StartLightFading", "start": 774, "end": 797, "tests": ["AnimatedLightTests.FadeHasNativeFirstTickAndFinalWriteWithoutLockingImmediateChanges"] },
-        { "file": "src/playsim/mapthinkers/a_lights.cpp", "symbol": "EV_StartLightFlickering", "start": 552, "end": 560, "tests": ["FlickerTests.RetriggerCreatesAnotherEffectAndStopRemovesEveryEffect"] },
-        { "file": "src/playsim/mapthinkers/a_lights.cpp", "symbol": "EV_StopLightEffect", "start": 808, "end": 819, "tests": ["AnimatedLightTests.OverlappingEffectsRunInCreationOrderAndStopRemovesAll"] }
+        {
+          "file": "src/playsim/mapthinkers/a_lights.cpp",
+          "symbol": "DFlicker::Tick",
+          "start": 136,
+          "end": 158,
+          "tests": [
+            "FlickerTests.NativeCountdownRangesIncludeTransitionTick"
+          ]
+        },
+        {
+          "file": "src/playsim/mapthinkers/a_lights.cpp",
+          "symbol": "EV_StartLightFading",
+          "start": 774,
+          "end": 797,
+          "tests": [
+            "AnimatedLightTests.FadeHasNativeFirstTickAndFinalWriteWithoutLockingImmediateChanges"
+          ]
+        },
+        {
+          "file": "src/playsim/mapthinkers/a_lights.cpp",
+          "symbol": "EV_StartLightFlickering",
+          "start": 552,
+          "end": 560,
+          "tests": [
+            "FlickerTests.RetriggerCreatesAnotherEffectAndStopRemovesEveryEffect"
+          ]
+        },
+        {
+          "file": "src/playsim/mapthinkers/a_lights.cpp",
+          "symbol": "EV_StopLightEffect",
+          "start": 808,
+          "end": 819,
+          "tests": [
+            "AnimatedLightTests.OverlappingEffectsRunInCreationOrderAndStopRemovesAll"
+          ]
+        }
       ]
     },
     {
@@ -325,9 +710,33 @@
       "managedLoc": 195,
       "note": "a_floor.cpp EV_StartWaggle, EV_DoDonut, DElevator::Tick crush rollback.",
       "nativeRanges": [
-        { "file": "src/playsim/mapthinkers/a_floor.cpp", "symbol": "EV_StartWaggle", "start": 1314, "end": 1353, "tests": ["WaggleActionsTests.FloorWaggleOscillatesAfterExpand"] },
-        { "file": "src/playsim/mapthinkers/a_floor.cpp", "symbol": "EV_DoDonut", "start": 796, "end": 863, "tests": ["FloorDonutTests.DonutSpecialStartsPillarAndPoolFloors"] },
-        { "file": "src/playsim/mapthinkers/a_floor.cpp", "symbol": "DElevator::Tick", "start": 941, "end": 984, "tests": ["LineSpecialBatchTests.ElevatorRaiseToNearestMatchesNeighborFloor"] }
+        {
+          "file": "src/playsim/mapthinkers/a_floor.cpp",
+          "symbol": "EV_StartWaggle",
+          "start": 1314,
+          "end": 1353,
+          "tests": [
+            "WaggleActionsTests.FloorWaggleOscillatesAfterExpand"
+          ]
+        },
+        {
+          "file": "src/playsim/mapthinkers/a_floor.cpp",
+          "symbol": "EV_DoDonut",
+          "start": 796,
+          "end": 863,
+          "tests": [
+            "FloorDonutTests.DonutSpecialStartsPillarAndPoolFloors"
+          ]
+        },
+        {
+          "file": "src/playsim/mapthinkers/a_floor.cpp",
+          "symbol": "DElevator::Tick",
+          "start": 941,
+          "end": 984,
+          "tests": [
+            "LineSpecialBatchTests.ElevatorRaiseToNearestMatchesNeighborFloor"
+          ]
+        }
       ]
     },
     {
@@ -337,9 +746,33 @@
       "managedLoc": 175,
       "note": "a_pusher.cpp DPusher wind/current; a_lighttransfer.cpp DLightTransfer.",
       "nativeRanges": [
-        { "file": "src/playsim/mapthinkers/a_pusher.cpp", "symbol": "DPusher::Tick", "start": 149, "end": 299, "tests": ["PusherWindTests.SectorWindThinkerAddsVelocityOnGround"] },
-        { "file": "src/playsim/mapthinkers/a_pusher.cpp", "symbol": "FLevelLocals::AdjustPusher", "start": 307, "end": 351, "tests": ["PusherWindTests.SectorWindThinkerAddsVelocityOnGround"] },
-        { "file": "src/playsim/mapthinkers/a_lighttransfer.cpp", "symbol": "DLightTransfer::Tick", "start": 68, "end": 95, "tests": ["LightTransferActionsTests.TransferFollowsSourceSectorLight"] }
+        {
+          "file": "src/playsim/mapthinkers/a_pusher.cpp",
+          "symbol": "DPusher::Tick",
+          "start": 149,
+          "end": 299,
+          "tests": [
+            "PusherWindTests.SectorWindThinkerAddsVelocityOnGround"
+          ]
+        },
+        {
+          "file": "src/playsim/mapthinkers/a_pusher.cpp",
+          "symbol": "FLevelLocals::AdjustPusher",
+          "start": 307,
+          "end": 351,
+          "tests": [
+            "PusherWindTests.SectorWindThinkerAddsVelocityOnGround"
+          ]
+        },
+        {
+          "file": "src/playsim/mapthinkers/a_lighttransfer.cpp",
+          "symbol": "DLightTransfer::Tick",
+          "start": 68,
+          "end": 95,
+          "tests": [
+            "LightTransferActionsTests.TransferFollowsSourceSectorLight"
+          ]
+        }
       ]
     },
     {
@@ -349,8 +782,24 @@
       "managedLoc": 95,
       "note": "p_switch.cpp P_CheckSwitchRange; p_teleport.cpp SelectTeleDest random TID choice.",
       "nativeRanges": [
-        { "file": "src/playsim/p_switch.cpp", "symbol": "P_CheckSwitchRange", "start": 98, "end": 234, "tests": ["SwitchCheckRangeTests.TopSwitchRequiresReachableHeight"] },
-        { "file": "src/playsim/p_teleport.cpp", "symbol": "FLevelLocals::SelectTeleDest", "start": 274, "end": 340, "tests": ["TeleportRandomDestTests.TidTeleportUsesDeterministicIndexAcrossMatchingDests"] }
+        {
+          "file": "src/playsim/p_switch.cpp",
+          "symbol": "P_CheckSwitchRange",
+          "start": 98,
+          "end": 234,
+          "tests": [
+            "SwitchCheckRangeTests.TopSwitchRequiresReachableHeight"
+          ]
+        },
+        {
+          "file": "src/playsim/p_teleport.cpp",
+          "symbol": "FLevelLocals::SelectTeleDest",
+          "start": 274,
+          "end": 340,
+          "tests": [
+            "TeleportRandomDestTests.TidTeleportUsesDeterministicIndexAcrossMatchingDests"
+          ]
+        }
       ]
     },
     {
@@ -360,10 +809,42 @@
       "managedLoc": 110,
       "note": "p_acs.cpp DoSpawnSpotFacing, ACSF_SoundSequenceOn*, PCD_SpawnSpotFacing.",
       "nativeRanges": [
-        { "file": "src/playsim/p_acs.cpp", "symbol": "DLevelScript::DoSpawnSpotFacing", "start": 3895, "end": 3914, "tests": ["AcsHotCallFuncBehaviorTests.SpawnSpotFacingForcedUsesActivatorYaw"] },
-        { "file": "src/playsim/p_acs.cpp", "symbol": "ACSF_SoundSequenceOnActor", "start": 5816, "end": 5841, "tests": ["AcsSoundSequenceCallFuncTests.SoundSequenceOnActorSetsActivatorName"] },
-        { "file": "src/playsim/p_acs.cpp", "symbol": "ACSF_SoundSequenceOnSector", "start": 5843, "end": 5858, "tests": ["AcsSoundSequenceCallFuncTests.SoundSequenceOnSectorTagsAllMatchingSectors"] },
-        { "file": "src/playsim/p_acs.cpp", "symbol": "ACSF_SoundSequenceOnPolyobj", "start": 5860, "end": 5873, "tests": ["AcsSoundSequenceCallFuncTests.SoundSequenceOnPolyobjStoresSequenceName"] }
+        {
+          "file": "src/playsim/p_acs.cpp",
+          "symbol": "DLevelScript::DoSpawnSpotFacing",
+          "start": 3895,
+          "end": 3914,
+          "tests": [
+            "AcsHotCallFuncBehaviorTests.SpawnSpotFacingForcedUsesActivatorYaw"
+          ]
+        },
+        {
+          "file": "src/playsim/p_acs.cpp",
+          "symbol": "ACSF_SoundSequenceOnActor",
+          "start": 5816,
+          "end": 5841,
+          "tests": [
+            "AcsSoundSequenceCallFuncTests.SoundSequenceOnActorSetsActivatorName"
+          ]
+        },
+        {
+          "file": "src/playsim/p_acs.cpp",
+          "symbol": "ACSF_SoundSequenceOnSector",
+          "start": 5843,
+          "end": 5858,
+          "tests": [
+            "AcsSoundSequenceCallFuncTests.SoundSequenceOnSectorTagsAllMatchingSectors"
+          ]
+        },
+        {
+          "file": "src/playsim/p_acs.cpp",
+          "symbol": "ACSF_SoundSequenceOnPolyobj",
+          "start": 5860,
+          "end": 5873,
+          "tests": [
+            "AcsSoundSequenceCallFuncTests.SoundSequenceOnPolyobjStoresSequenceName"
+          ]
+        }
       ]
     },
     {
@@ -373,22 +854,79 @@
       "managedLoc": 110,
       "note": "vmexec.h ADDA_RR/ADDA_RK/SUBA; vmops.h tail opcode reindex for EQA/NULLCHECK.",
       "nativeRanges": [
-        { "file": "src/common/scripting/vm/vmexec.h", "symbol": "OP(ADDA_RR)", "start": 1910, "end": 1923, "tests": ["VmPointerArithmeticOpcodeTests.AddARrAdvancesBytePointerIntoArray"] },
-        { "file": "src/common/scripting/vm/vmexec.h", "symbol": "OP(SUBA)", "start": 1925, "end": 1928, "tests": ["VmPointerArithmeticOpcodeTests.SubAReportsByteDistanceBetweenPointers"] }
+        {
+          "file": "src/common/scripting/vm/vmexec.h",
+          "symbol": "OP(ADDA_RR)",
+          "start": 1910,
+          "end": 1923,
+          "tests": [
+            "VmPointerArithmeticOpcodeTests.AddARrAdvancesBytePointerIntoArray"
+          ]
+        },
+        {
+          "file": "src/common/scripting/vm/vmexec.h",
+          "symbol": "OP(SUBA)",
+          "start": 1925,
+          "end": 1928,
+          "tests": [
+            "VmPointerArithmeticOpcodeTests.SubAReportsByteDistanceBetweenPointers"
+          ]
+        }
       ]
     },
     {
       "name": "zscript-vm-matrix-recognition-chunk7",
       "bucket": "recognition",
-      "nativeLoc": 1536,
+      "nativeLoc": 20,
       "managedLoc": 0,
-      "note": "VmExec already implemented 94 vmops.h rows; matrix classifier fixed to index-based parity.",
+      "note": "Integer compare/arithmetic vmexec.h handlers with dedicated opcode-family tests (no credit without a named test).",
       "nativeRanges": [
-        { "file": "src/common/scripting/vm/vmexec.h", "symbol": "OP(ADD_RR)", "start": 1131, "end": 1134, "tests": ["VmIntegerArithmeticOpcodeTests.IntegerBinaryOpsWriteRegister"] },
-        { "file": "src/common/scripting/vm/vmexec.h", "symbol": "OP(EQ_R)", "start": 1351, "end": 1354, "tests": ["VmIntegerArithmeticOpcodeTests.EqRBranchesWhenRegistersMatch"] },
-        { "file": "src/common/scripting/vm/vmexec.h", "symbol": "OP(LT_RR)", "start": 1359, "end": 1362, "tests": ["VmIntegerArithmeticOpcodeTests.LtRrBranchesOnOrderedIntegers"] }
+        {
+          "file": "src/common/scripting/vm/vmexec.h",
+          "symbol": "OP(ADD_RR)",
+          "start": 1131,
+          "end": 1134,
+          "tests": [
+            "VmIntegerArithmeticOpcodeTests.IntegerBinaryOpsWriteRegister"
+          ]
+        },
+        {
+          "file": "src/common/scripting/vm/vmexec.h",
+          "symbol": "OP(SUB_RR)",
+          "start": 1144,
+          "end": 1147,
+          "tests": [
+            "VmIntegerArithmeticOpcodeTests.IntegerBinaryOpsWriteRegister"
+          ]
+        },
+        {
+          "file": "src/common/scripting/vm/vmexec.h",
+          "symbol": "OP(MUL_RR)",
+          "start": 1157,
+          "end": 1160,
+          "tests": [
+            "VmIntegerArithmeticOpcodeTests.IntegerBinaryOpsWriteRegister"
+          ]
+        },
+        {
+          "file": "src/common/scripting/vm/vmexec.h",
+          "symbol": "OP(EQ_R)",
+          "start": 1354,
+          "end": 1357,
+          "tests": [
+            "VmIntegerArithmeticOpcodeTests.EqRBranchesWhenRegistersMatch"
+          ]
+        },
+        {
+          "file": "src/common/scripting/vm/vmexec.h",
+          "symbol": "OP(LT_RR)",
+          "start": 1362,
+          "end": 1365,
+          "tests": [
+            "VmIntegerArithmeticOpcodeTests.LtRrBranchesOnOrderedIntegers"
+          ]
+        }
       ]
     }
   ]
 }
-

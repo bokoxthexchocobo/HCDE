@@ -6,15 +6,15 @@ Generated: 2026-10-19. Machine-readable: [`data/native_managed_matrix.json`](dat
 
 - Native engine scope: `src/` `*.cpp` / `*.c` only → **508,086** lines.
 - Excluded from engine scope: libraries/ (vendored deps), tools/ (build utilities), protocol/ (shared constants; mirrored in HCDE.Protocol).
-- Managed implementation: `csharp/src/**/*.cs` → **98,993** lines.
+- Managed implementation: `csharp/src/**/*.cs` → **99,793** lines.
 
 ### Run tally
 
-- Converted this run (native behavior, tested): **224** native lines.
-- Recognition this run (already ported, tested): **4,648** native lines.
-- Added this run (managed): **248** C# lines.
-- Cumulative conversion (native): **8,167**; recognition: **4,648**; combined: **12,815**.
-- Native engine remaining (scope): **499,919** lines.
+- Converted this run (native behavior, tested): **52** native lines.
+- Recognition this run (already ported, tested): **20** native lines.
+- Added this run (managed): **110** C# lines.
+- Cumulative conversion (native): **10,695**; recognition: **5,420**; combined: **16,115**.
+- Native engine remaining (scope): **491,971** lines.
 
 Native lines count toward conversion only when matching behavior is implemented and covered by regression tests.
 
@@ -22,9 +22,9 @@ Native lines count toward conversion only when matching behavior is implemented 
 
 | Area | Executed | Partial | Decoded-only | Absent |
 | --- | ---: | ---: | ---: | ---: |
-| ACS word opcodes (`AcsPcode`) | 272 | 10 | 80 | 12 |
-| ZScript VM opcodes (`vmops.h` rows) | 152 | 0 | 0 | 94 |
-| ACS `CallFunc` (`EACSFunctions` names) | 0 | 90 | 0 | 48 |
+| ACS word opcodes (`AcsPcode`) | 273 | 10 | 79 | 12 |
+| ZScript VM opcodes (`vmops.h` rows) | 246 | 0 | 0 | 0 |
+| ACS `CallFunc` (`EACSFunctions` names) | 94 | 0 | 0 | 44 |
 
 ## Native `src/` LOC by top-level directory
 
@@ -48,7 +48,8 @@ Native lines count toward conversion only when matching behavior is implemented 
 
 ## Method
 
-- ACS opcode execution is inferred from `HCDE.Playsim/AcsVm.cs` switch cases.
+- ACS opcode execution is inferred from `HCDE.Playsim/AcsVm.cs` switch cases (by `AcsPcode` wire index).
 - ACS decode coverage is inferred from `HCDE.MapLoader/MapBehaviorBytecodeWalker.cs` operand tables.
-- VM opcode names come from `src/common/scripting/vm/vmops.h`; execution from `HCDE.Scripting/VmExec.cs`.
-- Partial ACS rows are listed in `ACS_PARTIAL` inside `csharp/tools/generate_native_managed_matrix.py`.
+- VM opcode names come from `src/common/scripting/vm/vmops.h`; execution from `HCDE.Scripting/VmExec.cs` (by opcode index).
+- ACS `CallFunc` rows use native `EACSFunctions` wire indices vs `AcsCallFunctions.TryInvoke` dispatch slots.
+- Partial ACS pcode rows are listed in `ACS_PARTIAL` inside `csharp/tools/generate_native_managed_matrix.py`.

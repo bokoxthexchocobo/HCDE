@@ -198,22 +198,91 @@ def classify_vm(vmops: list[dict], vm_enum: dict[str, int], executed_names: set[
     return rows
 
 
-def parse_acs_call_functions(source: str) -> tuple[set[int], set[int]]:
-    declared: set[int] = set()
+def parse_acs_call_dispatch_slots(source: str) -> set[int]:
+    """Dispatch indices implemented in TryInvoke (AcsCallFunctions const + switch cases)."""
+    consts: dict[str, int] = {}
     for match in re.finditer(r"public const int (\w+) = (\d+);", source):
-        declared.add(int(match.group(2)))
+        consts[match.group(1)] = int(match.group(2))
     implemented: set[int] = set()
-    for match in re.finditer(r"case (\d+):", source):
-        implemented.add(int(match.group(1)))
-    for a, b in re.findall(r"case (\d+):\s*\n\s*case (\d+):", source):
-        implemented.update({int(a), int(b)})
-    return declared, implemented
+    for name in re.findall(r"case (\w+):", source):
+        if name in consts:
+            implemented.add(consts[name])
+    return implemented
 
 
-def parse_native_acs_functions(path: Path) -> list[str]:
+def parse_native_acs_functions(path: Path) -> list[tuple[str, int]]:
+    """Native EACSFunctions names with ACS wire indices (explicit enum values)."""
     text = path.read_text(encoding="utf-8", errors="replace")
     block = text.split("enum EACSFunctions", 1)[-1].split("};", 1)[0]
-    return re.findall(r"ACSF_([A-Za-z0-9_]+)", block)
+    items: list[tuple[str, int]] = []
+    next_wire: int | None = None
+    for raw in block.splitlines():
+        line = raw.split("//", 1)[0].strip().rstrip(",")
+        if not line or line.startswith("/*") or line.startswith("*"):
+            continue
+        match = re.match(r"ACSF_([A-Za-z0-9_]+)(?:\s*=\s*(\d+))?", line)
+        if not match:
+            continue
+        if match.group(2) is not None:
+            next_wire = int(match.group(2))
+        if next_wire is None:
+            continue
+        items.append((match.group(1), next_wire))
+        next_wire += 1
+    return items
+
+
+def chunk_bucket(chunk: dict) -> str:
+    bucket = chunk.get("bucket")
+    if bucket in {"conversion", "recognition"}:
+        return bucket
+    if "recognition" in chunk.get("name", ""):
+        return "recognition"
+    return "conversion"
+
+
+def sync_loc_tally(loc_tally: dict) -> dict:
+    """Recompute cumulative totals from chunks and this-run deltas from run-start baselines."""
+    chunks = loc_tally.get("chunks", [])
+    converted_native = sum(c.get("nativeLoc", 0) for c in chunks if chunk_bucket(c) == "conversion")
+    recognition_native = sum(c.get("nativeLoc", 0) for c in chunks if chunk_bucket(c) == "recognition")
+    converted_managed = sum(c.get("managedLoc", 0) for c in chunks if chunk_bucket(c) == "conversion")
+
+    baseline = loc_tally.get("baselineNative")
+    if baseline is None:
+        baseline = count_native_loc(SRC)["__total__"]
+
+    loc_tally["convertedBehaviorNative"] = converted_native
+    loc_tally["recognitionBehaviorNative"] = recognition_native
+    loc_tally["combinedBehaviorNative"] = converted_native + recognition_native
+    loc_tally["remainingNative"] = baseline - converted_native - recognition_native
+    loc_tally["remainingNativeFormula"] = (
+        "baselineNative - convertedBehaviorNative - recognitionBehaviorNative"
+    )
+    if "convertedBehaviorManaged" in loc_tally:
+        loc_tally["convertedBehaviorManaged"] = converted_managed
+
+    run_start_conv = loc_tally.get("runStartConvertedBehaviorNative")
+    run_start_rec = loc_tally.get("runStartRecognitionBehaviorNative")
+    run_start_managed = loc_tally.get("runStartConvertedBehaviorManaged")
+
+    if run_start_conv is not None:
+        loc_tally["convertedThisRunNative"] = converted_native - int(run_start_conv)
+        loc_tally["convertedThisRunNativeFormula"] = (
+            "convertedBehaviorNative - runStartConvertedBehaviorNative"
+        )
+    if run_start_rec is not None:
+        loc_tally["recognitionThisRunNative"] = recognition_native - int(run_start_rec)
+        loc_tally["recognitionThisRunNativeFormula"] = (
+            "recognitionBehaviorNative - runStartRecognitionBehaviorNative"
+        )
+    if run_start_managed is not None:
+        loc_tally["convertedThisRunManaged"] = converted_managed - int(run_start_managed)
+        loc_tally["convertedThisRunManagedFormula"] = (
+            "convertedBehaviorManaged - runStartConvertedBehaviorManaged"
+        )
+
+    return loc_tally
 
 
 def build_matrix(loc_tally: dict) -> dict:
@@ -231,20 +300,16 @@ def build_matrix(loc_tally: dict) -> dict:
     vm_rows = classify_vm(vmops, vm_enum, vm_exec_names)
 
     call_src = (CSHARP / "src/HCDE.Playsim/AcsCallFunctions.cs").read_text(encoding="utf-8")
-    declared_calls, implemented_calls = parse_acs_call_functions(call_src)
+    implemented_dispatch = parse_acs_call_dispatch_slots(call_src)
     native_calls = parse_native_acs_functions(REPO / "src/playsim/p_acs.cpp")
     call_rows = []
-    for index, native_name in enumerate(native_calls):
-        # wire id is 1-based in native enum order for inventory (not exact wire); use name only
-        status = STATUS_ABSENT
-        if index + 1 in implemented_calls:
-            status = STATUS_EXECUTED
-        elif native_name in call_src:
-            status = STATUS_PARTIAL
+    for native_name, wire in native_calls:
+        status = STATUS_EXECUTED if wire in implemented_dispatch else STATUS_ABSENT
         call_rows.append(
             {
-                "id": f"acs-call:{native_name}",
+                "id": f"acs-call:{wire}",
                 "name": native_name,
+                "wire": wire,
                 "status": status,
                 "nativeRef": "src/playsim/p_acs.cpp EACSFunctions",
             }
@@ -346,10 +411,11 @@ def render_markdown(matrix: dict) -> str:
             "",
             "## Method",
             "",
-            "- ACS opcode execution is inferred from `HCDE.Playsim/AcsVm.cs` switch cases.",
+            "- ACS opcode execution is inferred from `HCDE.Playsim/AcsVm.cs` switch cases (by `AcsPcode` wire index).",
             "- ACS decode coverage is inferred from `HCDE.MapLoader/MapBehaviorBytecodeWalker.cs` operand tables.",
-            "- VM opcode names come from `src/common/scripting/vm/vmops.h`; execution from `HCDE.Scripting/VmExec.cs`.",
-            "- Partial ACS rows are listed in `ACS_PARTIAL` inside `csharp/tools/generate_native_managed_matrix.py`.",
+            "- VM opcode names come from `src/common/scripting/vm/vmops.h`; execution from `HCDE.Scripting/VmExec.cs` (by opcode index).",
+            "- ACS `CallFunc` rows use native `EACSFunctions` wire indices vs `AcsCallFunctions.TryInvoke` dispatch slots.",
+            "- Partial ACS pcode rows are listed in `ACS_PARTIAL` inside `csharp/tools/generate_native_managed_matrix.py`.",
             "",
         ]
     )
@@ -367,10 +433,12 @@ def main() -> int:
             "convertedThisRunManaged": 0,
             "remainingNative": native_total,
         }
+    loc_tally = sync_loc_tally(loc_tally)
     matrix = build_matrix(loc_tally)
     DATA.mkdir(parents=True, exist_ok=True)
     (DATA / "native_managed_matrix.json").write_text(json.dumps(matrix, indent=2) + "\n", encoding="utf-8")
     (DOCS / "HCDE_CSHARP_NATIVE_MANAGED_MATRIX.md").write_text(render_markdown(matrix), encoding="utf-8")
+    tally_path.write_text(json.dumps(loc_tally, indent=2) + "\n", encoding="utf-8")
     print(f"Wrote matrix with {len(matrix['acsPcode'])} ACS opcodes")
     return 0
 
