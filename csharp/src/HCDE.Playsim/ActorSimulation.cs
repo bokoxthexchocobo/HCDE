@@ -895,6 +895,8 @@ public class Actor : Thinker
     public bool CanUseWalls { get; set; }
     /// <summary>Native <c>MF2_PUSHWALL</c>: blocked <c>P_Move</c> may activate push lines.</summary>
     public bool PushWall { get; set; }
+    /// <summary>Native <c>MF2_MCROSS</c>: movement may activate lines with monster cross.</summary>
+    public bool MonsterCross { get; set; }
     /// <summary>Native <c>MF6_JUMPDOWN</c>: short-range chase drop-off assist.</summary>
     public bool JumpDown { get; set; }
     public bool AvoidMelee { get; set; }

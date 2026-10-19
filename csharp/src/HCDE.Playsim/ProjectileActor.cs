@@ -25,6 +25,8 @@ public sealed class ProjectileActor : Actor
         Owner = owner;
     }
     internal void OwnerFromSave(Actor? owner) => Owner = owner;
+    /// <summary>Native <c>MF2_PCROSS</c>: crossing may activate missile-cross lines.</summary>
+    public bool ProjectileCross { get; set; }
     public ProjectileKind Kind { get; }
     internal string NativeClassName => NativeClassNameOf(Kind);
     internal static string NativeClassNameOf(ProjectileKind kind) => kind switch

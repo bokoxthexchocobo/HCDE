@@ -38,6 +38,15 @@ public static class ActorPhysics
             for (var i = 0; i < sim.Level.Sectors.Count; i++)
             {
                 if (!TouchesSector(sim, actor, i) || actor.Z.ToDouble() > sim.FloorOf(i)) continue;
+                var sector = sim.Level.Sectors[i];
+                if ((sector.RuntimeFlags & SectorEnvironmentLineSpecials.FrictionFlag) != 0)
+                {
+                    if (sector.Friction < friction || friction == GroundFriction)
+                    {
+                        friction = sector.Friction;
+                        factor = sector.MoveFactor;
+                    }
+                }
                 var terrain = sim.Level.FloorTerrainDefinition(i);
                 if (terrain is not { Friction: > 0 }) continue;
                 if (terrain.Friction < friction || friction == GroundFriction)
@@ -304,6 +313,7 @@ public static class ActorPhysics
         var startZ = actor.Z.ToDouble();
         var oldFloor = FlatOpening(sim, actor, actor.SectorIndex, startX, startY).Floor;
         var riders = sim.Actors.Where(candidate => IsStandingOn(actor, candidate)).ToArray();
+        ApplySectorPush(sim, actor);
         var vx = Math.Clamp(actor.VelocityX.ToDouble(), -MaxMove, MaxMove);
         var vy = Math.Clamp(actor.VelocityY.ToDouble(), -MaxMove, MaxMove);
         var steps = Math.Max(1, (int)Math.Ceiling(Math.Max(Math.Abs(vx), Math.Abs(vy)) / 2));
@@ -1138,6 +1148,26 @@ public static class ActorPhysics
         return moved;
     }
 
+    private static void ActivateMoveCrossings(AuthoritySimulation sim, Actor actor, double ox, double oy, double x, double y)
+    {
+        var pending = new HashSet<int>();
+        foreach (var line in sim.Level.Lines)
+            MapMoveLineCrossings.Collect(sim, ox, oy, x, y, line, pending);
+        MapMoveLineCrossings.ActivatePending(sim, actor, ox, oy, x, y, pending);
+    }
+
+    private static void ApplySectorPush(AuthoritySimulation sim, Actor actor)
+    {
+        if (actor.NoClip || actor.Destroyed || actor.IsDead) return;
+        if (actor.SectorIndex < 0 || (uint)actor.SectorIndex >= (uint)sim.Level.Sectors.Count) return;
+        var sector = sim.Level.Sectors[actor.SectorIndex];
+        if (sector.PushForceX == 0 && sector.PushForceY == 0) return;
+        var floor = sim.FloorOf(actor.SectorIndex);
+        if (!actor.OnGround && actor.Z.ToDouble() > floor + actor.MaxStepHeight.ToDouble()) return;
+        actor.VelocityX = Fixed.FromDouble(actor.VelocityX.ToDouble() + sector.PushForceX);
+        actor.VelocityY = Fixed.FromDouble(actor.VelocityY.ToDouble() + sector.PushForceY);
+    }
+
     internal static bool TryMove(AuthoritySimulation sim, Actor actor, double x, double y, out LevelLine? wall, out Actor? blocker) =>
         TryMove(sim, actor, x, y, out wall, out blocker, invokeSlam: false);
 
@@ -1331,6 +1361,8 @@ public static class ActorPhysics
             actor.OnGround = z <= opening.Floor && actor.VelocityZ.Raw <= 0;
         }
         if (actor.FloorClipEnabled) ActorPropertyActions.AdjustFloorClip(sim, actor);
+        if (!actor.NoClip && !actor.NoTrigger && !actor.NoTeleport)
+            ActivateMoveCrossings(sim, actor, ox, oy, x, y);
         return true;
     }
 

@@ -1,13 +1,13 @@
 {
-  "convertedThisRunNative": 61,
-  "convertedThisRunManaged": 83,
+  "convertedThisRunNative": 104,
+  "convertedThisRunManaged": 178,
   "recognitionThisRunNative": 4648,
   "recognitionThisRunManaged": 0,
-  "remainingNative": 499893,
-  "convertedBehaviorNative": 8193,
+  "remainingNative": 500059,
+  "convertedBehaviorNative": 8027,
   "recognitionBehaviorNative": 4648,
-  "combinedBehaviorNative": 12841,
-  "convertedBehaviorManaged": 6033,
+  "combinedBehaviorNative": 12675,
+  "convertedBehaviorManaged": 5868,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -245,38 +245,6 @@
         { "file": "src/playsim/p_mobj.cpp", "symbol": "P_ZMovement", "start": 2955, "end": 3480, "tests": ["FallingDamageTests", "CanJumpTests"] },
         { "file": "src/playsim/p_mobj.cpp", "symbol": "AActor::Tick", "start": 4521, "end": 5075, "tests": ["WanderSubstepTests", "SpawnedSoulRestoreTests"] },
         { "file": "src/playsim/p_mobj.cpp", "symbol": "missile collide explode", "start": 2680, "end": 2765, "tests": ["ProjectileMovementTests", "CombatAiTests"] }
-      ]
-    },
-    {
-      "name": "p-map-trymove-line-cross-chunk4",
-      "bucket": "conversion",
-      "nativeLoc": 43,
-      "managedLoc": 95,
-      "note": "p_map.cpp P_TryMove spechit cross activation wired into ActorPhysics.TryMove.",
-      "nativeRanges": [
-        { "file": "src/playsim/p_map.cpp", "symbol": "P_TryMove", "start": 2752, "end": 2794, "tests": ["TryMoveLineCrossTests"] }
-      ]
-    },
-    {
-      "name": "p-spec-sector-friction-push-chunk4",
-      "bucket": "conversion",
-      "nativeLoc": 97,
-      "managedLoc": 62,
-      "note": "p_spec.cpp P_SetSectorFriction parity, P_GetFriction sector SECF_FRICTION, sector push thrust on step.",
-      "nativeRanges": [
-        { "file": "src/playsim/p_spec.cpp", "symbol": "P_SetSectorFriction", "start": 751, "end": 797, "tests": ["LineSpecialClosureTests.SectorFrictionSpecialUpdatesTaggedSector", "SectorFrictionMovementTests"] },
-        { "file": "src/playsim/p_map.cpp", "symbol": "P_GetFriction", "start": 732, "end": 745, "tests": ["SectorFrictionMovementTests"] },
-        { "file": "src/playsim/mapthinkers/a_pusher.cpp", "symbol": "DPusher::Tick", "start": 149, "end": 200, "tests": ["SectorPushMovementTests"] }
-      ]
-    },
-    {
-      "name": "p-enemy-chase-lost-sight-nosight-chunk4",
-      "bucket": "conversion",
-      "nativeLoc": 23,
-      "managedLoc": 8,
-      "note": "p_enemy.cpp A_DoChase lost-sight retarget preserves MF3_NOSIGHTCHECK toggle.",
-      "nativeRanges": [
-        { "file": "src/playsim/p_enemy.cpp", "symbol": "A_DoChase", "start": 2694, "end": 2716, "tests": ["ChaseLostSightNoSightCheckTests"] }
       ]
     }
   ]

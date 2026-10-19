@@ -146,6 +146,10 @@ public sealed class LevelLine
     public int Arg3 { get; set; }
     public int Arg4 { get; init; }
     public bool PlayerCross { get; set; }
+    /// <summary>Native SPAC_MCross: monsters may activate this line when crossing.</summary>
+    public bool MonsterCross { get; set; }
+    /// <summary>Native SPAC_PCross: missiles may activate this line when crossing.</summary>
+    public bool MissileCross { get; set; }
     public bool Impact { get; init; }
     public bool PlayerUse { get; set; }
     /// <summary>Native SPAC_UseBack. A use trace may activate this line from its back side.</summary>

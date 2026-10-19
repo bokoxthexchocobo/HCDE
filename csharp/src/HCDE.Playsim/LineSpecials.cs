@@ -96,22 +96,36 @@ public static partial class LineSpecials
     {
         foreach (var actor in sim.Actors)
         {
-            if (actor.IsDead || actor.Destroyed || actor.NoTrigger || actor.NoClip || actor is ProjectileActor)
-                continue;
-            if (actor.PreviousX.Raw == actor.X.Raw && actor.PreviousY.Raw == actor.Y.Raw)
-                continue;
-
+            if (actor.IsDead || actor.Destroyed || actor.NoTrigger || actor.NoClip) continue;
+            if (actor.PreviousX.Raw == actor.X.Raw && actor.PreviousY.Raw == actor.Y.Raw) continue;
+            var ox = actor.PreviousX.ToDouble();
+            var oy = actor.PreviousY.ToDouble();
+            var x = actor.X.ToDouble();
+            var y = actor.Y.ToDouble();
+            var pending = new HashSet<int>();
             foreach (var line in sim.Level.Lines)
-            {
-                if (line.Special == 0)
-                    continue;
-                if (!LineSlide.Crosses(actor.PreviousX.ToDouble(), actor.PreviousY.ToDouble(), actor.X.ToDouble(), actor.Y.ToDouble(), line))
-                    continue;
-
-                ActivateMapLine(sim, actor, line, use: false, backSide: IsBackSide(line, actor.PreviousX.ToDouble(), actor.PreviousY.ToDouble(), sim.Compat.HasFlag(CompatSurface.PointOnLine)));
-            }
+                MapMoveLineCrossings.Collect(sim, ox, oy, x, y, line, pending);
+            MapMoveLineCrossings.ActivatePending(sim, actor, ox, oy, x, y, pending);
         }
     }
+
+    /// <summary>Native <c>P_TryMove</c> / <c>P_ActivateLine</c> cross activation for movers.</summary>
+    internal static bool ActivateCrossLine(AuthoritySimulation sim, Actor actor, LevelLine line, bool backSide)
+    {
+        if (actor.IsDead || actor.Destroyed || actor.NoTrigger || line.Special == 0) return false;
+        if (actor is PlayerPawn)
+            return ActivateMapLine(sim, actor, line, use: false, backSide: backSide);
+        if (actor is ProjectileActor projectile)
+        {
+            if (!projectile.ProjectileCross && !line.MissileCross && !IsTeleportCrossSpecial(line.Special)) return false;
+            return Execute(sim, actor, line.Special, line.Tag, line);
+        }
+        if (!actor.MonsterCross && !line.MonsterCross && !line.PlayerCross && !IsTeleportCrossSpecial(line.Special))
+            return false;
+        return Execute(sim, actor, line.Special, line.Tag, line);
+    }
+
+    private static bool IsTeleportCrossSpecial(int special) => special is 39 or 70 or 154 or 323;
 
     public static void ActivateUses(AuthoritySimulation sim)
     {
