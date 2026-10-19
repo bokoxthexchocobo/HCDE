@@ -1,0 +1,25 @@
+{
+  "convertedThisRunNative": 38,
+  "convertedThisRunManaged": 142,
+  "remainingNative": 508048,
+  "chunks": [
+    {
+      "name": "native-managed-matrix",
+      "nativeLoc": 0,
+      "managedLoc": 312,
+      "note": "Generator, JSON/MD matrix, MigrationMatrix.Tests (inventory only)."
+    },
+    {
+      "name": "acs-random-getcvar-polywait",
+      "nativeLoc": 38,
+      "managedLoc": 98,
+      "note": "p_acs.cpp PCD_RANDOM/PCD_RANDOMDIRECT/PCD_RANDOMDIRECTB, PCD_GETCVAR, PCD_POLYWAIT/PCD_POLYWAITDIRECT."
+    },
+    {
+      "name": "client-path-fixes",
+      "nativeLoc": 0,
+      "managedLoc": 6,
+      "note": "VmMusicPatchPaths absolute detection; VmIwadCandidateScanner hidden/dot skip."
+    }
+  ]
+}

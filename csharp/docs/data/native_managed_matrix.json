@@ -1,0 +1,5652 @@
+{
+  "generatedOn": "2026-10-19",
+  "locScope": {
+    "nativeEngineRoot": "src/",
+    "nativeExtensions": [
+      ".cpp",
+      ".c"
+    ],
+    "excluded": [
+      "libraries/ (vendored deps)",
+      "tools/ (build utilities)",
+      "protocol/ (shared constants; mirrored in HCDE.Protocol)"
+    ],
+    "nativeEngineLoc": 508086,
+    "managedCSharpLoc": 95866
+  },
+  "locTally": {
+    "convertedThisRunNative": 38,
+    "convertedThisRunManaged": 142,
+    "remainingNative": 508048,
+    "chunks": [
+      {
+        "name": "native-managed-matrix",
+        "nativeLoc": 0,
+        "managedLoc": 312,
+        "note": "Generator, JSON/MD matrix, MigrationMatrix.Tests (inventory only)."
+      },
+      {
+        "name": "acs-random-getcvar-polywait",
+        "nativeLoc": 38,
+        "managedLoc": 98,
+        "note": "p_acs.cpp PCD_RANDOM/PCD_RANDOMDIRECT/PCD_RANDOMDIRECTB, PCD_GETCVAR, PCD_POLYWAIT/PCD_POLYWAITDIRECT."
+      },
+      {
+        "name": "client-path-fixes",
+        "nativeLoc": 0,
+        "managedLoc": 6,
+        "note": "VmMusicPatchPaths absolute detection; VmIwadCandidateScanner hidden/dot skip."
+      }
+    ]
+  },
+  "summaries": {
+    "acsPcode": {
+      "executed": 262,
+      "partial": 9,
+      "absent": 15,
+      "decoded-only": 86
+    },
+    "zscriptVmOp": {
+      "executed": 119,
+      "absent": 127
+    },
+    "acsCallFunc": {
+      "absent": 64,
+      "partial": 74
+    }
+  },
+  "acsPcode": [
+    {
+      "id": "acs-pcode:0",
+      "name": "Nop",
+      "opcode": 0,
+      "status": "executed",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:1",
+      "name": "Terminate",
+      "opcode": 1,
+      "status": "executed",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:2",
+      "name": "Suspend",
+      "opcode": 2,
+      "status": "executed",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:3",
+      "name": "PushNumber",
+      "opcode": 3,
+      "status": "executed",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:4",
+      "name": "Lspec1",
+      "opcode": 4,
+      "status": "executed",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:5",
+      "name": "Lspec2",
+      "opcode": 5,
+      "status": "executed",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:6",
+      "name": "Lspec3",
+      "opcode": 6,
+      "status": "executed",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:7",
+      "name": "Lspec4",
+      "opcode": 7,
+      "status": "executed",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:8",
+      "name": "Lspec5",
+      "opcode": 8,
+      "status": "executed",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:9",
+      "name": "Lspec1Direct",
+      "opcode": 9,
+      "status": "executed",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:10",
+      "name": "Lspec2Direct",
+      "opcode": 10,
+      "status": "executed",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:11",
+      "name": "Lspec3Direct",
+      "opcode": 11,
+      "status": "executed",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:12",
+      "name": "Lspec4Direct",
+      "opcode": 12,
+      "status": "executed",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:13",
+      "name": "Lspec5Direct",
+      "opcode": 13,
+      "status": "executed",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:14",
+      "name": "Add",
+      "opcode": 14,
+      "status": "executed",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:15",
+      "name": "Subtract",
+      "opcode": 15,
+      "status": "executed",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:16",
+      "name": "Multiply",
+      "opcode": 16,
+      "status": "executed",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:17",
+      "name": "Divide",
+      "opcode": 17,
+      "status": "executed",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:18",
+      "name": "Modulus",
+      "opcode": 18,
+      "status": "executed",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:19",
+      "name": "Eq",
+      "opcode": 19,
+      "status": "executed",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:20",
+      "name": "Ne",
+      "opcode": 20,
+      "status": "executed",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:21",
+      "name": "Lt",
+      "opcode": 21,
+      "status": "executed",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:22",
+      "name": "Gt",
+      "opcode": 22,
+      "status": "executed",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:23",
+      "name": "Le",
+      "opcode": 23,
+      "status": "executed",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:24",
+      "name": "Ge",
+      "opcode": 24,
+      "status": "executed",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:25",
+      "name": "AssignScriptVar",
+      "opcode": 25,
+      "status": "executed",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:26",
+      "name": "AssignMapVar",
+      "opcode": 26,
+      "status": "executed",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:27",
+      "name": "AssignWorldVar",
+      "opcode": 27,
+      "status": "executed",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:28",
+      "name": "PushScriptVar",
+      "opcode": 28,
+      "status": "executed",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:29",
+      "name": "PushMapVar",
+      "opcode": 29,
+      "status": "executed",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:30",
+      "name": "PushWorldVar",
+      "opcode": 30,
+      "status": "executed",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:31",
+      "name": "AddScriptVar",
+      "opcode": 31,
+      "status": "executed",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:32",
+      "name": "AddMapVar",
+      "opcode": 32,
+      "status": "executed",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:33",
+      "name": "AddWorldVar",
+      "opcode": 33,
+      "status": "executed",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:34",
+      "name": "SubScriptVar",
+      "opcode": 34,
+      "status": "executed",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:35",
+      "name": "SubMapVar",
+      "opcode": 35,
+      "status": "executed",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:36",
+      "name": "SubWorldVar",
+      "opcode": 36,
+      "status": "executed",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:37",
+      "name": "MulScriptVar",
+      "opcode": 37,
+      "status": "executed",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:38",
+      "name": "MulMapVar",
+      "opcode": 38,
+      "status": "executed",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:39",
+      "name": "MulWorldVar",
+      "opcode": 39,
+      "status": "executed",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:40",
+      "name": "DivScriptVar",
+      "opcode": 40,
+      "status": "executed",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:41",
+      "name": "DivMapVar",
+      "opcode": 41,
+      "status": "executed",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:42",
+      "name": "DivWorldVar",
+      "opcode": 42,
+      "status": "executed",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:43",
+      "name": "ModScriptVar",
+      "opcode": 43,
+      "status": "executed",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:44",
+      "name": "ModMapVar",
+      "opcode": 44,
+      "status": "executed",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:45",
+      "name": "ModWorldVar",
+      "opcode": 45,
+      "status": "executed",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:46",
+      "name": "IncScriptVar",
+      "opcode": 46,
+      "status": "executed",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:47",
+      "name": "IncMapVar",
+      "opcode": 47,
+      "status": "executed",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:48",
+      "name": "IncWorldVar",
+      "opcode": 48,
+      "status": "executed",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:49",
+      "name": "DecScriptVar",
+      "opcode": 49,
+      "status": "executed",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:50",
+      "name": "DecMapVar",
+      "opcode": 50,
+      "status": "executed",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:51",
+      "name": "DecWorldVar",
+      "opcode": 51,
+      "status": "executed",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:52",
+      "name": "Goto",
+      "opcode": 52,
+      "status": "executed",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:53",
+      "name": "IfGoto",
+      "opcode": 53,
+      "status": "executed",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:54",
+      "name": "Drop",
+      "opcode": 54,
+      "status": "executed",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:55",
+      "name": "Delay",
+      "opcode": 55,
+      "status": "executed",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:56",
+      "name": "DelayDirect",
+      "opcode": 56,
+      "status": "executed",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:57",
+      "name": "Random",
+      "opcode": 57,
+      "status": "executed",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:58",
+      "name": "RandomDirect",
+      "opcode": 58,
+      "status": "executed",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:59",
+      "name": "ThingCount",
+      "opcode": 59,
+      "status": "executed",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:60",
+      "name": "ThingCountDirect",
+      "opcode": 60,
+      "status": "executed",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:61",
+      "name": "TagWait",
+      "opcode": 61,
+      "status": "executed",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:62",
+      "name": "TagWaitDirect",
+      "opcode": 62,
+      "status": "executed",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:63",
+      "name": "PolyWait",
+      "opcode": 63,
+      "status": "partial",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:64",
+      "name": "PolyWaitDirect",
+      "opcode": 64,
+      "status": "partial",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:65",
+      "name": "ChangeFloor",
+      "opcode": 65,
+      "status": "absent",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:66",
+      "name": "ChangeFloorDirect",
+      "opcode": 66,
+      "status": "decoded-only",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:67",
+      "name": "ChangeCeiling",
+      "opcode": 67,
+      "status": "absent",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:68",
+      "name": "ChangeCeilingDirect",
+      "opcode": 68,
+      "status": "decoded-only",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:69",
+      "name": "Restart",
+      "opcode": 69,
+      "status": "executed",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:70",
+      "name": "AndLogical",
+      "opcode": 70,
+      "status": "executed",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:71",
+      "name": "OrLogical",
+      "opcode": 71,
+      "status": "executed",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:72",
+      "name": "AndBitwise",
+      "opcode": 72,
+      "status": "executed",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:73",
+      "name": "OrBitwise",
+      "opcode": 73,
+      "status": "executed",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:74",
+      "name": "EorBitwise",
+      "opcode": 74,
+      "status": "executed",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:75",
+      "name": "NegateLogical",
+      "opcode": 75,
+      "status": "executed",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:76",
+      "name": "Lshift",
+      "opcode": 76,
+      "status": "executed",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:77",
+      "name": "Rshift",
+      "opcode": 77,
+      "status": "executed",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:78",
+      "name": "UnaryMinus",
+      "opcode": 78,
+      "status": "executed",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:79",
+      "name": "IfNotGoto",
+      "opcode": 79,
+      "status": "executed",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:80",
+      "name": "LineSide",
+      "opcode": 80,
+      "status": "executed",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:81",
+      "name": "ScriptWait",
+      "opcode": 81,
+      "status": "executed",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:82",
+      "name": "ScriptWaitDirect",
+      "opcode": 82,
+      "status": "executed",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:83",
+      "name": "ClearLineSpecial",
+      "opcode": 83,
+      "status": "decoded-only",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:84",
+      "name": "CaseGoto",
+      "opcode": 84,
+      "status": "executed",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:85",
+      "name": "BeginPrint",
+      "opcode": 85,
+      "status": "decoded-only",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:86",
+      "name": "EndPrint",
+      "opcode": 86,
+      "status": "decoded-only",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:87",
+      "name": "PrintString",
+      "opcode": 87,
+      "status": "decoded-only",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:88",
+      "name": "PrintNumber",
+      "opcode": 88,
+      "status": "decoded-only",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:89",
+      "name": "PrintCharacter",
+      "opcode": 89,
+      "status": "decoded-only",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:90",
+      "name": "PlayerCount",
+      "opcode": 90,
+      "status": "executed",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:91",
+      "name": "GameType",
+      "opcode": 91,
+      "status": "executed",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:92",
+      "name": "GameSkill",
+      "opcode": 92,
+      "status": "executed",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:93",
+      "name": "Timer",
+      "opcode": 93,
+      "status": "executed",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:94",
+      "name": "SectorSound",
+      "opcode": 94,
+      "status": "absent",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:95",
+      "name": "AmbientSound",
+      "opcode": 95,
+      "status": "absent",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:96",
+      "name": "SoundSequence",
+      "opcode": 96,
+      "status": "absent",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:97",
+      "name": "SetLineTexture",
+      "opcode": 97,
+      "status": "absent",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:98",
+      "name": "SetLineBlocking",
+      "opcode": 98,
+      "status": "absent",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:99",
+      "name": "SetLineSpecial",
+      "opcode": 99,
+      "status": "absent",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:100",
+      "name": "ThingSound",
+      "opcode": 100,
+      "status": "decoded-only",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:101",
+      "name": "EndPrintBold",
+      "opcode": 101,
+      "status": "decoded-only",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:102",
+      "name": "ActivatorSound",
+      "opcode": 102,
+      "status": "decoded-only",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:103",
+      "name": "LocalAmbientSound",
+      "opcode": 103,
+      "status": "decoded-only",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:104",
+      "name": "SetLineMonsterBlocking",
+      "opcode": 104,
+      "status": "executed",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:104",
+      "name": "PlayerBlueSkull",
+      "opcode": 104,
+      "status": "executed",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:105",
+      "name": "PlayerRedSkull",
+      "opcode": 105,
+      "status": "executed",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:106",
+      "name": "PlayerYellowSkull",
+      "opcode": 106,
+      "status": "executed",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:107",
+      "name": "PlayerMasterSkull",
+      "opcode": 107,
+      "status": "executed",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:108",
+      "name": "PlayerBlueCard",
+      "opcode": 108,
+      "status": "executed",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:109",
+      "name": "PlayerRedCard",
+      "opcode": 109,
+      "status": "executed",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:110",
+      "name": "PlayerYellowCard",
+      "opcode": 110,
+      "status": "executed",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:111",
+      "name": "PlayerMasterCard",
+      "opcode": 111,
+      "status": "executed",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:112",
+      "name": "PlayerBlackSkull",
+      "opcode": 112,
+      "status": "partial",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:113",
+      "name": "PlayerSilverSkull",
+      "opcode": 113,
+      "status": "partial",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:114",
+      "name": "PlayerGoldSkull",
+      "opcode": 114,
+      "status": "partial",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:115",
+      "name": "PlayerBlackCard",
+      "opcode": 115,
+      "status": "partial",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:116",
+      "name": "PlayerSilverCard",
+      "opcode": 116,
+      "status": "partial",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:117",
+      "name": "PlayerGoldCard",
+      "opcode": 117,
+      "status": "partial",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:118",
+      "name": "IsNetworkGame",
+      "opcode": 118,
+      "status": "executed",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:119",
+      "name": "PlayerTeam",
+      "opcode": 119,
+      "status": "partial",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:120",
+      "name": "PlayerHealth",
+      "opcode": 120,
+      "status": "executed",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:121",
+      "name": "PlayerArmorPoints",
+      "opcode": 121,
+      "status": "executed",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:122",
+      "name": "PlayerFrags",
+      "opcode": 122,
+      "status": "executed",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:129",
+      "name": "Lspec6",
+      "opcode": 129,
+      "status": "executed",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:130",
+      "name": "Lspec6Direct",
+      "opcode": 130,
+      "status": "executed",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:131",
+      "name": "PrintName",
+      "opcode": 131,
+      "status": "decoded-only",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:132",
+      "name": "MusicChange",
+      "opcode": 132,
+      "status": "decoded-only",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:133",
+      "name": "ConsoleCommandDirect",
+      "opcode": 133,
+      "status": "decoded-only",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:134",
+      "name": "ConsoleCommand",
+      "opcode": 134,
+      "status": "decoded-only",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:135",
+      "name": "SinglePlayer",
+      "opcode": 135,
+      "status": "executed",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:136",
+      "name": "FixedMul",
+      "opcode": 136,
+      "status": "executed",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:137",
+      "name": "FixedDiv",
+      "opcode": 137,
+      "status": "executed",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:138",
+      "name": "SetGravity",
+      "opcode": 138,
+      "status": "executed",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:139",
+      "name": "SetGravityDirect",
+      "opcode": 139,
+      "status": "executed",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:140",
+      "name": "SetAirControl",
+      "opcode": 140,
+      "status": "executed",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:141",
+      "name": "SetAirControlDirect",
+      "opcode": 141,
+      "status": "executed",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:142",
+      "name": "ClearInventory",
+      "opcode": 142,
+      "status": "executed",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:143",
+      "name": "GiveInventory",
+      "opcode": 143,
+      "status": "executed",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:144",
+      "name": "GiveInventoryDirect",
+      "opcode": 144,
+      "status": "executed",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:145",
+      "name": "TakeInventory",
+      "opcode": 145,
+      "status": "executed",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:146",
+      "name": "TakeInventoryDirect",
+      "opcode": 146,
+      "status": "executed",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:147",
+      "name": "CheckInventory",
+      "opcode": 147,
+      "status": "executed",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:148",
+      "name": "CheckInventoryDirect",
+      "opcode": 148,
+      "status": "executed",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:150",
+      "name": "SpawnDirect",
+      "opcode": 150,
+      "status": "decoded-only",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:152",
+      "name": "SpawnSpotDirect",
+      "opcode": 152,
+      "status": "decoded-only",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:153",
+      "name": "SetMusic",
+      "opcode": 153,
+      "status": "decoded-only",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:154",
+      "name": "SetMusicDirect",
+      "opcode": 154,
+      "status": "decoded-only",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:155",
+      "name": "LocalSetMusic",
+      "opcode": 155,
+      "status": "decoded-only",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:156",
+      "name": "LocalSetMusicDirect",
+      "opcode": 156,
+      "status": "decoded-only",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:157",
+      "name": "PrintFixed",
+      "opcode": 157,
+      "status": "decoded-only",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:158",
+      "name": "PrintLocalized",
+      "opcode": 158,
+      "status": "decoded-only",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:159",
+      "name": "MoreHudMessage",
+      "opcode": 159,
+      "status": "decoded-only",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:160",
+      "name": "OptHudMessage",
+      "opcode": 160,
+      "status": "decoded-only",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:161",
+      "name": "EndHudMessage",
+      "opcode": 161,
+      "status": "decoded-only",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:162",
+      "name": "EndHudMessageBold",
+      "opcode": 162,
+      "status": "decoded-only",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:163",
+      "name": "SetStyle",
+      "opcode": 163,
+      "status": "decoded-only",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:164",
+      "name": "SetStyleDirect",
+      "opcode": 164,
+      "status": "decoded-only",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:165",
+      "name": "SetFont",
+      "opcode": 165,
+      "status": "decoded-only",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:166",
+      "name": "SetFontDirect",
+      "opcode": 166,
+      "status": "decoded-only",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:167",
+      "name": "PushByte",
+      "opcode": 167,
+      "status": "executed",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:168",
+      "name": "Lspec1DirectB",
+      "opcode": 168,
+      "status": "executed",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:169",
+      "name": "Lspec2DirectB",
+      "opcode": 169,
+      "status": "executed",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:170",
+      "name": "Lspec3DirectB",
+      "opcode": 170,
+      "status": "executed",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:171",
+      "name": "Lspec4DirectB",
+      "opcode": 171,
+      "status": "executed",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:172",
+      "name": "Lspec5DirectB",
+      "opcode": 172,
+      "status": "executed",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:173",
+      "name": "DelayDirectB",
+      "opcode": 173,
+      "status": "executed",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:174",
+      "name": "RandomDirectB",
+      "opcode": 174,
+      "status": "executed",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:175",
+      "name": "PushBytes",
+      "opcode": 175,
+      "status": "executed",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:176",
+      "name": "Push2Bytes",
+      "opcode": 176,
+      "status": "executed",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:177",
+      "name": "Push3Bytes",
+      "opcode": 177,
+      "status": "executed",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:178",
+      "name": "Push4Bytes",
+      "opcode": 178,
+      "status": "executed",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:179",
+      "name": "Push5Bytes",
+      "opcode": 179,
+      "status": "executed",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:180",
+      "name": "SetThingSpecial",
+      "opcode": 180,
+      "status": "executed",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:181",
+      "name": "AssignGlobalVar",
+      "opcode": 181,
+      "status": "executed",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:182",
+      "name": "PushGlobalVar",
+      "opcode": 182,
+      "status": "executed",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:183",
+      "name": "AddGlobalVar",
+      "opcode": 183,
+      "status": "executed",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:184",
+      "name": "SubGlobalVar",
+      "opcode": 184,
+      "status": "executed",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:185",
+      "name": "MulGlobalVar",
+      "opcode": 185,
+      "status": "executed",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:186",
+      "name": "DivGlobalVar",
+      "opcode": 186,
+      "status": "executed",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:187",
+      "name": "ModGlobalVar",
+      "opcode": 187,
+      "status": "executed",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:188",
+      "name": "IncGlobalVar",
+      "opcode": 188,
+      "status": "executed",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:189",
+      "name": "DecGlobalVar",
+      "opcode": 189,
+      "status": "executed",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:196",
+      "name": "GetActorX",
+      "opcode": 196,
+      "status": "executed",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:197",
+      "name": "GetActorY",
+      "opcode": 197,
+      "status": "executed",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:198",
+      "name": "GetActorZ",
+      "opcode": 198,
+      "status": "executed",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:199",
+      "name": "StartTranslation",
+      "opcode": 199,
+      "status": "decoded-only",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:200",
+      "name": "TranslationRange1",
+      "opcode": 200,
+      "status": "decoded-only",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:201",
+      "name": "TranslationRange2",
+      "opcode": 201,
+      "status": "decoded-only",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:202",
+      "name": "EndTranslation",
+      "opcode": 202,
+      "status": "decoded-only",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:203",
+      "name": "Call",
+      "opcode": 203,
+      "status": "decoded-only",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:204",
+      "name": "CallDiscard",
+      "opcode": 204,
+      "status": "decoded-only",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:205",
+      "name": "ReturnVoid",
+      "opcode": 205,
+      "status": "decoded-only",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:206",
+      "name": "ReturnVal",
+      "opcode": 206,
+      "status": "decoded-only",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:207",
+      "name": "PushMapArray",
+      "opcode": 207,
+      "status": "executed",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:208",
+      "name": "AssignMapArray",
+      "opcode": 208,
+      "status": "executed",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:209",
+      "name": "AddMapArray",
+      "opcode": 209,
+      "status": "executed",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:210",
+      "name": "SubMapArray",
+      "opcode": 210,
+      "status": "executed",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:211",
+      "name": "MulMapArray",
+      "opcode": 211,
+      "status": "executed",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:212",
+      "name": "DivMapArray",
+      "opcode": 212,
+      "status": "executed",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:213",
+      "name": "ModMapArray",
+      "opcode": 213,
+      "status": "executed",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:214",
+      "name": "IncMapArray",
+      "opcode": 214,
+      "status": "executed",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:215",
+      "name": "DecMapArray",
+      "opcode": 215,
+      "status": "executed",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:216",
+      "name": "Dup",
+      "opcode": 216,
+      "status": "executed",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:217",
+      "name": "Swap",
+      "opcode": 217,
+      "status": "executed",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:220",
+      "name": "Sin",
+      "opcode": 220,
+      "status": "executed",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:221",
+      "name": "Cos",
+      "opcode": 221,
+      "status": "executed",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:222",
+      "name": "VectorAngle",
+      "opcode": 222,
+      "status": "executed",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:223",
+      "name": "CheckWeapon",
+      "opcode": 223,
+      "status": "executed",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:224",
+      "name": "SetWeapon",
+      "opcode": 224,
+      "status": "executed",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:225",
+      "name": "TagString",
+      "opcode": 225,
+      "status": "executed",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:226",
+      "name": "PushWorldArray",
+      "opcode": 226,
+      "status": "executed",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:227",
+      "name": "AssignWorldArray",
+      "opcode": 227,
+      "status": "executed",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:228",
+      "name": "AddWorldArray",
+      "opcode": 228,
+      "status": "executed",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:229",
+      "name": "SubWorldArray",
+      "opcode": 229,
+      "status": "executed",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:230",
+      "name": "MulWorldArray",
+      "opcode": 230,
+      "status": "executed",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:231",
+      "name": "DivWorldArray",
+      "opcode": 231,
+      "status": "executed",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:232",
+      "name": "ModWorldArray",
+      "opcode": 232,
+      "status": "executed",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:233",
+      "name": "IncWorldArray",
+      "opcode": 233,
+      "status": "executed",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:234",
+      "name": "DecWorldArray",
+      "opcode": 234,
+      "status": "executed",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:235",
+      "name": "PushGlobalArray",
+      "opcode": 235,
+      "status": "executed",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:236",
+      "name": "AssignGlobalArray",
+      "opcode": 236,
+      "status": "executed",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:237",
+      "name": "AddGlobalArray",
+      "opcode": 237,
+      "status": "executed",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:238",
+      "name": "SubGlobalArray",
+      "opcode": 238,
+      "status": "executed",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:239",
+      "name": "MulGlobalArray",
+      "opcode": 239,
+      "status": "executed",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:240",
+      "name": "DivGlobalArray",
+      "opcode": 240,
+      "status": "executed",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:241",
+      "name": "ModGlobalArray",
+      "opcode": 241,
+      "status": "executed",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:242",
+      "name": "IncGlobalArray",
+      "opcode": 242,
+      "status": "executed",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:243",
+      "name": "DecGlobalArray",
+      "opcode": 243,
+      "status": "executed",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:244",
+      "name": "SetMarineWeapon",
+      "opcode": 244,
+      "status": "decoded-only",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:245",
+      "name": "SetActorProperty",
+      "opcode": 245,
+      "status": "executed",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:246",
+      "name": "GetActorProperty",
+      "opcode": 246,
+      "status": "executed",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:247",
+      "name": "PlayerNumber",
+      "opcode": 247,
+      "status": "executed",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:248",
+      "name": "ActivatorTid",
+      "opcode": 248,
+      "status": "executed",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:249",
+      "name": "SetMarineSprite",
+      "opcode": 249,
+      "status": "decoded-only",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:250",
+      "name": "GetScreenWidth",
+      "opcode": 250,
+      "status": "decoded-only",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:251",
+      "name": "GetScreenHeight",
+      "opcode": 251,
+      "status": "decoded-only",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:252",
+      "name": "ThingProjectile2",
+      "opcode": 252,
+      "status": "decoded-only",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:253",
+      "name": "StrLen",
+      "opcode": 253,
+      "status": "executed",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:254",
+      "name": "SetHudSize",
+      "opcode": 254,
+      "status": "decoded-only",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:255",
+      "name": "GetCvar",
+      "opcode": 255,
+      "status": "executed",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:256",
+      "name": "CaseGotoSorted",
+      "opcode": 256,
+      "status": "executed",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:257",
+      "name": "SetResultValue",
+      "opcode": 257,
+      "status": "decoded-only",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:258",
+      "name": "GetLineRowOffset",
+      "opcode": 258,
+      "status": "executed",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:259",
+      "name": "GetActorFloorZ",
+      "opcode": 259,
+      "status": "executed",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:260",
+      "name": "GetActorAngle",
+      "opcode": 260,
+      "status": "executed",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:261",
+      "name": "GetSectorFloorZ",
+      "opcode": 261,
+      "status": "executed",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:262",
+      "name": "GetSectorCeilingZ",
+      "opcode": 262,
+      "status": "executed",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:263",
+      "name": "Lspec5Result",
+      "opcode": 263,
+      "status": "executed",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:264",
+      "name": "GetSigilPieces",
+      "opcode": 264,
+      "status": "decoded-only",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:265",
+      "name": "GetLevelInfo",
+      "opcode": 265,
+      "status": "decoded-only",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:266",
+      "name": "ChangeSky",
+      "opcode": 266,
+      "status": "decoded-only",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:267",
+      "name": "PlayerInGame",
+      "opcode": 267,
+      "status": "executed",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:268",
+      "name": "PlayerIsBot",
+      "opcode": 268,
+      "status": "executed",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:269",
+      "name": "SetCameraToTexture",
+      "opcode": 269,
+      "status": "decoded-only",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:270",
+      "name": "EndLog",
+      "opcode": 270,
+      "status": "decoded-only",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:271",
+      "name": "GetAmmoCapacity",
+      "opcode": 271,
+      "status": "executed",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:272",
+      "name": "SetAmmoCapacity",
+      "opcode": 272,
+      "status": "executed",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:273",
+      "name": "PrintMapCharArray",
+      "opcode": 273,
+      "status": "decoded-only",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:274",
+      "name": "PrintWorldCharArray",
+      "opcode": 274,
+      "status": "decoded-only",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:275",
+      "name": "PrintGlobalCharArray",
+      "opcode": 275,
+      "status": "decoded-only",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:276",
+      "name": "SetActorAngle",
+      "opcode": 276,
+      "status": "executed",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:277",
+      "name": "GrabInput",
+      "opcode": 277,
+      "status": "decoded-only",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:278",
+      "name": "SetMousePointer",
+      "opcode": 278,
+      "status": "decoded-only",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:279",
+      "name": "MoveMousePointer",
+      "opcode": 279,
+      "status": "decoded-only",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:280",
+      "name": "SpawnProjectile",
+      "opcode": 280,
+      "status": "decoded-only",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:281",
+      "name": "GetSectorLightLevel",
+      "opcode": 281,
+      "status": "executed",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:282",
+      "name": "GetActorCeilingZ",
+      "opcode": 282,
+      "status": "executed",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:283",
+      "name": "SetActorPosition",
+      "opcode": 283,
+      "status": "decoded-only",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:284",
+      "name": "ClearActorInventory",
+      "opcode": 284,
+      "status": "executed",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:285",
+      "name": "GiveActorInventory",
+      "opcode": 285,
+      "status": "executed",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:286",
+      "name": "TakeActorInventory",
+      "opcode": 286,
+      "status": "executed",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:287",
+      "name": "CheckActorInventory",
+      "opcode": 287,
+      "status": "executed",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:288",
+      "name": "ThingCountName",
+      "opcode": 288,
+      "status": "executed",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:289",
+      "name": "SpawnSpotFacing",
+      "opcode": 289,
+      "status": "decoded-only",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:290",
+      "name": "PlayerClass",
+      "opcode": 290,
+      "status": "decoded-only",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:291",
+      "name": "AndScriptVar",
+      "opcode": 291,
+      "status": "executed",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:292",
+      "name": "AndMapVar",
+      "opcode": 292,
+      "status": "executed",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:293",
+      "name": "AndWorldVar",
+      "opcode": 293,
+      "status": "executed",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:294",
+      "name": "AndGlobalVar",
+      "opcode": 294,
+      "status": "executed",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:295",
+      "name": "AndMapArray",
+      "opcode": 295,
+      "status": "executed",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:296",
+      "name": "AndWorldArray",
+      "opcode": 296,
+      "status": "executed",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:297",
+      "name": "AndGlobalArray",
+      "opcode": 297,
+      "status": "executed",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:298",
+      "name": "EorScriptVar",
+      "opcode": 298,
+      "status": "executed",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:299",
+      "name": "EorMapVar",
+      "opcode": 299,
+      "status": "executed",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:300",
+      "name": "EorWorldVar",
+      "opcode": 300,
+      "status": "executed",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:301",
+      "name": "EorGlobalVar",
+      "opcode": 301,
+      "status": "executed",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:302",
+      "name": "EorMapArray",
+      "opcode": 302,
+      "status": "executed",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:303",
+      "name": "EorWorldArray",
+      "opcode": 303,
+      "status": "executed",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:304",
+      "name": "EorGlobalArray",
+      "opcode": 304,
+      "status": "executed",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:305",
+      "name": "OrScriptVar",
+      "opcode": 305,
+      "status": "executed",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:306",
+      "name": "OrMapVar",
+      "opcode": 306,
+      "status": "executed",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:307",
+      "name": "OrWorldVar",
+      "opcode": 307,
+      "status": "executed",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:308",
+      "name": "OrGlobalVar",
+      "opcode": 308,
+      "status": "executed",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:309",
+      "name": "OrMapArray",
+      "opcode": 309,
+      "status": "executed",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:310",
+      "name": "OrWorldArray",
+      "opcode": 310,
+      "status": "executed",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:311",
+      "name": "OrGlobalArray",
+      "opcode": 311,
+      "status": "executed",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:312",
+      "name": "LsScriptVar",
+      "opcode": 312,
+      "status": "executed",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:313",
+      "name": "LsMapVar",
+      "opcode": 313,
+      "status": "executed",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:314",
+      "name": "LsWorldVar",
+      "opcode": 314,
+      "status": "executed",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:315",
+      "name": "LsGlobalVar",
+      "opcode": 315,
+      "status": "executed",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:316",
+      "name": "LsMapArray",
+      "opcode": 316,
+      "status": "executed",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:317",
+      "name": "LsWorldArray",
+      "opcode": 317,
+      "status": "executed",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:318",
+      "name": "LsGlobalArray",
+      "opcode": 318,
+      "status": "executed",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:319",
+      "name": "RsScriptVar",
+      "opcode": 319,
+      "status": "executed",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:320",
+      "name": "RsMapVar",
+      "opcode": 320,
+      "status": "executed",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:321",
+      "name": "RsWorldVar",
+      "opcode": 321,
+      "status": "executed",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:322",
+      "name": "RsGlobalVar",
+      "opcode": 322,
+      "status": "executed",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:323",
+      "name": "RsMapArray",
+      "opcode": 323,
+      "status": "executed",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:324",
+      "name": "RsWorldArray",
+      "opcode": 324,
+      "status": "executed",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:325",
+      "name": "RsGlobalArray",
+      "opcode": 325,
+      "status": "executed",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:327",
+      "name": "SetGravityDirectB",
+      "opcode": 327,
+      "status": "decoded-only",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:328",
+      "name": "SetAirControlDirectB",
+      "opcode": 328,
+      "status": "decoded-only",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:328",
+      "name": "GetPlayerInfo",
+      "opcode": 328,
+      "status": "decoded-only",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:329",
+      "name": "ChangeLevel",
+      "opcode": 329,
+      "status": "decoded-only",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:330",
+      "name": "SectorDamage",
+      "opcode": 330,
+      "status": "executed",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:330",
+      "name": "NegateBinary",
+      "opcode": 330,
+      "status": "executed",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:331",
+      "name": "ReplaceTextures",
+      "opcode": 331,
+      "status": "executed",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:331",
+      "name": "GetActorPitch",
+      "opcode": 331,
+      "status": "executed",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:332",
+      "name": "SetActorPitch",
+      "opcode": 332,
+      "status": "executed",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:335",
+      "name": "PrintBind",
+      "opcode": 335,
+      "status": "executed",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:336",
+      "name": "SetActorState",
+      "opcode": 336,
+      "status": "executed",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:337",
+      "name": "ThingDamage2",
+      "opcode": 337,
+      "status": "decoded-only",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:340",
+      "name": "GetActorLightLevel",
+      "opcode": 340,
+      "status": "executed",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:343",
+      "name": "SetMugshotState",
+      "opcode": 343,
+      "status": "absent",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:344",
+      "name": "ThingCountSector",
+      "opcode": 344,
+      "status": "executed",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:345",
+      "name": "ThingCountNameSector",
+      "opcode": 345,
+      "status": "executed",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:346",
+      "name": "CheckPlayerCamera",
+      "opcode": 346,
+      "status": "decoded-only",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:351",
+      "name": "CallFunc",
+      "opcode": 351,
+      "status": "executed",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:352",
+      "name": "SaveString",
+      "opcode": 352,
+      "status": "decoded-only",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:353",
+      "name": "PrintMapCharRange",
+      "opcode": 353,
+      "status": "decoded-only",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:354",
+      "name": "PrintWorldCharRange",
+      "opcode": 354,
+      "status": "decoded-only",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:355",
+      "name": "PrintGlobalCharRange",
+      "opcode": 355,
+      "status": "decoded-only",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:356",
+      "name": "StrCpyToMapCharRange",
+      "opcode": 356,
+      "status": "decoded-only",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:357",
+      "name": "StrCpyToWorldCharRange",
+      "opcode": 357,
+      "status": "decoded-only",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:358",
+      "name": "StrCpyToGlobalCharRange",
+      "opcode": 358,
+      "status": "decoded-only",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:359",
+      "name": "PushFunction",
+      "opcode": 359,
+      "status": "decoded-only",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:360",
+      "name": "CallStack",
+      "opcode": 360,
+      "status": "decoded-only",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:361",
+      "name": "ScriptWaitNamed",
+      "opcode": 361,
+      "status": "decoded-only",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:362",
+      "name": "TranslationRange3",
+      "opcode": 362,
+      "status": "decoded-only",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:363",
+      "name": "GotoStack",
+      "opcode": 363,
+      "status": "executed",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:364",
+      "name": "AssignScriptArray",
+      "opcode": 364,
+      "status": "executed",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:365",
+      "name": "PushScriptArray",
+      "opcode": 365,
+      "status": "executed",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:366",
+      "name": "AddScriptArray",
+      "opcode": 366,
+      "status": "executed",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:367",
+      "name": "SubScriptArray",
+      "opcode": 367,
+      "status": "executed",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:368",
+      "name": "MulScriptArray",
+      "opcode": 368,
+      "status": "executed",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:369",
+      "name": "DivScriptArray",
+      "opcode": 369,
+      "status": "executed",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:370",
+      "name": "ModScriptArray",
+      "opcode": 370,
+      "status": "executed",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:371",
+      "name": "IncScriptArray",
+      "opcode": 371,
+      "status": "executed",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:372",
+      "name": "DecScriptArray",
+      "opcode": 372,
+      "status": "executed",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:373",
+      "name": "AndScriptArray",
+      "opcode": 373,
+      "status": "executed",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:374",
+      "name": "EorScriptArray",
+      "opcode": 374,
+      "status": "executed",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:375",
+      "name": "OrScriptArray",
+      "opcode": 375,
+      "status": "executed",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:376",
+      "name": "LsScriptArray",
+      "opcode": 376,
+      "status": "executed",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:377",
+      "name": "RsScriptArray",
+      "opcode": 377,
+      "status": "executed",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:378",
+      "name": "PrintScriptCharArray",
+      "opcode": 378,
+      "status": "decoded-only",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:379",
+      "name": "PrintScriptCharRange",
+      "opcode": 379,
+      "status": "decoded-only",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:380",
+      "name": "StrCpyToScriptCharRange",
+      "opcode": 380,
+      "status": "decoded-only",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:381",
+      "name": "Lspec5Ex",
+      "opcode": 381,
+      "status": "executed",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:382",
+      "name": "Lspec5ExResult",
+      "opcode": 382,
+      "status": "executed",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:383",
+      "name": "TranslationRange4",
+      "opcode": 383,
+      "status": "decoded-only",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:384",
+      "name": "TranslationRange5",
+      "opcode": 384,
+      "status": "absent",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:418",
+      "name": "UseInventory",
+      "opcode": 418,
+      "status": "executed",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:419",
+      "name": "UseActorInventory",
+      "opcode": 419,
+      "status": "executed",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:420",
+      "name": "CheckActorCeilingTexture",
+      "opcode": 420,
+      "status": "decoded-only",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:421",
+      "name": "CheckActorFloorTexture",
+      "opcode": 421,
+      "status": "absent",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:427",
+      "name": "MorphActor",
+      "opcode": 427,
+      "status": "decoded-only",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:428",
+      "name": "UnmorphActor",
+      "opcode": 428,
+      "status": "absent",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:429",
+      "name": "GetPlayerInput",
+      "opcode": 429,
+      "status": "absent",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:430",
+      "name": "ClassifyActor",
+      "opcode": 430,
+      "status": "decoded-only",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:431",
+      "name": "PrintBinary",
+      "opcode": 431,
+      "status": "absent",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:432",
+      "name": "PrintHex",
+      "opcode": 432,
+      "status": "absent",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    }
+  ],
+  "zscriptVmOp": [
+    {
+      "id": "vmop:0",
+      "name": "NOP",
+      "index": 0,
+      "status": "executed",
+      "nativeRef": "src/common/scripting/vm/vmops.h"
+    },
+    {
+      "id": "vmop:1",
+      "name": "LI",
+      "index": 1,
+      "status": "executed",
+      "nativeRef": "src/common/scripting/vm/vmops.h"
+    },
+    {
+      "id": "vmop:2",
+      "name": "LK",
+      "index": 2,
+      "status": "executed",
+      "nativeRef": "src/common/scripting/vm/vmops.h"
+    },
+    {
+      "id": "vmop:3",
+      "name": "LKF",
+      "index": 3,
+      "status": "executed",
+      "nativeRef": "src/common/scripting/vm/vmops.h"
+    },
+    {
+      "id": "vmop:4",
+      "name": "LKS",
+      "index": 4,
+      "status": "executed",
+      "nativeRef": "src/common/scripting/vm/vmops.h"
+    },
+    {
+      "id": "vmop:5",
+      "name": "LKP",
+      "index": 5,
+      "status": "executed",
+      "nativeRef": "src/common/scripting/vm/vmops.h"
+    },
+    {
+      "id": "vmop:6",
+      "name": "LK_R",
+      "index": 6,
+      "status": "executed",
+      "nativeRef": "src/common/scripting/vm/vmops.h"
+    },
+    {
+      "id": "vmop:7",
+      "name": "LKF_R",
+      "index": 7,
+      "status": "executed",
+      "nativeRef": "src/common/scripting/vm/vmops.h"
+    },
+    {
+      "id": "vmop:8",
+      "name": "LKS_R",
+      "index": 8,
+      "status": "executed",
+      "nativeRef": "src/common/scripting/vm/vmops.h"
+    },
+    {
+      "id": "vmop:9",
+      "name": "LKP_R",
+      "index": 9,
+      "status": "executed",
+      "nativeRef": "src/common/scripting/vm/vmops.h"
+    },
+    {
+      "id": "vmop:10",
+      "name": "LFP",
+      "index": 10,
+      "status": "absent",
+      "nativeRef": "src/common/scripting/vm/vmops.h"
+    },
+    {
+      "id": "vmop:11",
+      "name": "META",
+      "index": 11,
+      "status": "executed",
+      "nativeRef": "src/common/scripting/vm/vmops.h"
+    },
+    {
+      "id": "vmop:12",
+      "name": "CLSS",
+      "index": 12,
+      "status": "absent",
+      "nativeRef": "src/common/scripting/vm/vmops.h"
+    },
+    {
+      "id": "vmop:13",
+      "name": "LB",
+      "index": 13,
+      "status": "absent",
+      "nativeRef": "src/common/scripting/vm/vmops.h"
+    },
+    {
+      "id": "vmop:14",
+      "name": "LB_R",
+      "index": 14,
+      "status": "absent",
+      "nativeRef": "src/common/scripting/vm/vmops.h"
+    },
+    {
+      "id": "vmop:15",
+      "name": "LH",
+      "index": 15,
+      "status": "absent",
+      "nativeRef": "src/common/scripting/vm/vmops.h"
+    },
+    {
+      "id": "vmop:16",
+      "name": "LH_R",
+      "index": 16,
+      "status": "absent",
+      "nativeRef": "src/common/scripting/vm/vmops.h"
+    },
+    {
+      "id": "vmop:17",
+      "name": "LW",
+      "index": 17,
+      "status": "absent",
+      "nativeRef": "src/common/scripting/vm/vmops.h"
+    },
+    {
+      "id": "vmop:18",
+      "name": "LW_R",
+      "index": 18,
+      "status": "absent",
+      "nativeRef": "src/common/scripting/vm/vmops.h"
+    },
+    {
+      "id": "vmop:19",
+      "name": "LBU",
+      "index": 19,
+      "status": "absent",
+      "nativeRef": "src/common/scripting/vm/vmops.h"
+    },
+    {
+      "id": "vmop:20",
+      "name": "LBU_R",
+      "index": 20,
+      "status": "absent",
+      "nativeRef": "src/common/scripting/vm/vmops.h"
+    },
+    {
+      "id": "vmop:21",
+      "name": "LHU",
+      "index": 21,
+      "status": "absent",
+      "nativeRef": "src/common/scripting/vm/vmops.h"
+    },
+    {
+      "id": "vmop:22",
+      "name": "LHU_R",
+      "index": 22,
+      "status": "absent",
+      "nativeRef": "src/common/scripting/vm/vmops.h"
+    },
+    {
+      "id": "vmop:23",
+      "name": "LSP",
+      "index": 23,
+      "status": "absent",
+      "nativeRef": "src/common/scripting/vm/vmops.h"
+    },
+    {
+      "id": "vmop:24",
+      "name": "LSP_R",
+      "index": 24,
+      "status": "absent",
+      "nativeRef": "src/common/scripting/vm/vmops.h"
+    },
+    {
+      "id": "vmop:25",
+      "name": "LDP",
+      "index": 25,
+      "status": "absent",
+      "nativeRef": "src/common/scripting/vm/vmops.h"
+    },
+    {
+      "id": "vmop:26",
+      "name": "LDP_R",
+      "index": 26,
+      "status": "absent",
+      "nativeRef": "src/common/scripting/vm/vmops.h"
+    },
+    {
+      "id": "vmop:27",
+      "name": "LS",
+      "index": 27,
+      "status": "absent",
+      "nativeRef": "src/common/scripting/vm/vmops.h"
+    },
+    {
+      "id": "vmop:28",
+      "name": "LS_R",
+      "index": 28,
+      "status": "absent",
+      "nativeRef": "src/common/scripting/vm/vmops.h"
+    },
+    {
+      "id": "vmop:29",
+      "name": "LO",
+      "index": 29,
+      "status": "absent",
+      "nativeRef": "src/common/scripting/vm/vmops.h"
+    },
+    {
+      "id": "vmop:30",
+      "name": "LO_R",
+      "index": 30,
+      "status": "absent",
+      "nativeRef": "src/common/scripting/vm/vmops.h"
+    },
+    {
+      "id": "vmop:31",
+      "name": "LP",
+      "index": 31,
+      "status": "absent",
+      "nativeRef": "src/common/scripting/vm/vmops.h"
+    },
+    {
+      "id": "vmop:32",
+      "name": "LP_R",
+      "index": 32,
+      "status": "absent",
+      "nativeRef": "src/common/scripting/vm/vmops.h"
+    },
+    {
+      "id": "vmop:33",
+      "name": "LV2",
+      "index": 33,
+      "status": "absent",
+      "nativeRef": "src/common/scripting/vm/vmops.h"
+    },
+    {
+      "id": "vmop:34",
+      "name": "LV2_R",
+      "index": 34,
+      "status": "absent",
+      "nativeRef": "src/common/scripting/vm/vmops.h"
+    },
+    {
+      "id": "vmop:35",
+      "name": "LV3",
+      "index": 35,
+      "status": "absent",
+      "nativeRef": "src/common/scripting/vm/vmops.h"
+    },
+    {
+      "id": "vmop:36",
+      "name": "LV3_R",
+      "index": 36,
+      "status": "absent",
+      "nativeRef": "src/common/scripting/vm/vmops.h"
+    },
+    {
+      "id": "vmop:37",
+      "name": "LV4",
+      "index": 37,
+      "status": "absent",
+      "nativeRef": "src/common/scripting/vm/vmops.h"
+    },
+    {
+      "id": "vmop:38",
+      "name": "LV4_R",
+      "index": 38,
+      "status": "absent",
+      "nativeRef": "src/common/scripting/vm/vmops.h"
+    },
+    {
+      "id": "vmop:39",
+      "name": "LCS",
+      "index": 39,
+      "status": "absent",
+      "nativeRef": "src/common/scripting/vm/vmops.h"
+    },
+    {
+      "id": "vmop:40",
+      "name": "LCS_R",
+      "index": 40,
+      "status": "absent",
+      "nativeRef": "src/common/scripting/vm/vmops.h"
+    },
+    {
+      "id": "vmop:41",
+      "name": "LFV2",
+      "index": 41,
+      "status": "absent",
+      "nativeRef": "src/common/scripting/vm/vmops.h"
+    },
+    {
+      "id": "vmop:42",
+      "name": "LFV2_R",
+      "index": 42,
+      "status": "absent",
+      "nativeRef": "src/common/scripting/vm/vmops.h"
+    },
+    {
+      "id": "vmop:43",
+      "name": "LFV3",
+      "index": 43,
+      "status": "absent",
+      "nativeRef": "src/common/scripting/vm/vmops.h"
+    },
+    {
+      "id": "vmop:44",
+      "name": "LFV3_R",
+      "index": 44,
+      "status": "absent",
+      "nativeRef": "src/common/scripting/vm/vmops.h"
+    },
+    {
+      "id": "vmop:45",
+      "name": "LFV4",
+      "index": 45,
+      "status": "absent",
+      "nativeRef": "src/common/scripting/vm/vmops.h"
+    },
+    {
+      "id": "vmop:46",
+      "name": "LFV4_R",
+      "index": 46,
+      "status": "absent",
+      "nativeRef": "src/common/scripting/vm/vmops.h"
+    },
+    {
+      "id": "vmop:47",
+      "name": "LBIT",
+      "index": 47,
+      "status": "absent",
+      "nativeRef": "src/common/scripting/vm/vmops.h"
+    },
+    {
+      "id": "vmop:48",
+      "name": "SB",
+      "index": 48,
+      "status": "absent",
+      "nativeRef": "src/common/scripting/vm/vmops.h"
+    },
+    {
+      "id": "vmop:49",
+      "name": "SB_R",
+      "index": 49,
+      "status": "absent",
+      "nativeRef": "src/common/scripting/vm/vmops.h"
+    },
+    {
+      "id": "vmop:50",
+      "name": "SH",
+      "index": 50,
+      "status": "absent",
+      "nativeRef": "src/common/scripting/vm/vmops.h"
+    },
+    {
+      "id": "vmop:51",
+      "name": "SH_R",
+      "index": 51,
+      "status": "absent",
+      "nativeRef": "src/common/scripting/vm/vmops.h"
+    },
+    {
+      "id": "vmop:52",
+      "name": "SW",
+      "index": 52,
+      "status": "absent",
+      "nativeRef": "src/common/scripting/vm/vmops.h"
+    },
+    {
+      "id": "vmop:53",
+      "name": "SW_R",
+      "index": 53,
+      "status": "absent",
+      "nativeRef": "src/common/scripting/vm/vmops.h"
+    },
+    {
+      "id": "vmop:54",
+      "name": "SSP",
+      "index": 54,
+      "status": "absent",
+      "nativeRef": "src/common/scripting/vm/vmops.h"
+    },
+    {
+      "id": "vmop:55",
+      "name": "SSP_R",
+      "index": 55,
+      "status": "absent",
+      "nativeRef": "src/common/scripting/vm/vmops.h"
+    },
+    {
+      "id": "vmop:56",
+      "name": "SDP",
+      "index": 56,
+      "status": "absent",
+      "nativeRef": "src/common/scripting/vm/vmops.h"
+    },
+    {
+      "id": "vmop:57",
+      "name": "SDP_R",
+      "index": 57,
+      "status": "absent",
+      "nativeRef": "src/common/scripting/vm/vmops.h"
+    },
+    {
+      "id": "vmop:58",
+      "name": "SS",
+      "index": 58,
+      "status": "absent",
+      "nativeRef": "src/common/scripting/vm/vmops.h"
+    },
+    {
+      "id": "vmop:59",
+      "name": "SS_R",
+      "index": 59,
+      "status": "absent",
+      "nativeRef": "src/common/scripting/vm/vmops.h"
+    },
+    {
+      "id": "vmop:60",
+      "name": "SP",
+      "index": 60,
+      "status": "absent",
+      "nativeRef": "src/common/scripting/vm/vmops.h"
+    },
+    {
+      "id": "vmop:61",
+      "name": "SP_R",
+      "index": 61,
+      "status": "absent",
+      "nativeRef": "src/common/scripting/vm/vmops.h"
+    },
+    {
+      "id": "vmop:62",
+      "name": "SO",
+      "index": 62,
+      "status": "absent",
+      "nativeRef": "src/common/scripting/vm/vmops.h"
+    },
+    {
+      "id": "vmop:63",
+      "name": "SO_R",
+      "index": 63,
+      "status": "absent",
+      "nativeRef": "src/common/scripting/vm/vmops.h"
+    },
+    {
+      "id": "vmop:64",
+      "name": "SV2",
+      "index": 64,
+      "status": "absent",
+      "nativeRef": "src/common/scripting/vm/vmops.h"
+    },
+    {
+      "id": "vmop:65",
+      "name": "SV2_R",
+      "index": 65,
+      "status": "absent",
+      "nativeRef": "src/common/scripting/vm/vmops.h"
+    },
+    {
+      "id": "vmop:66",
+      "name": "SV3",
+      "index": 66,
+      "status": "absent",
+      "nativeRef": "src/common/scripting/vm/vmops.h"
+    },
+    {
+      "id": "vmop:67",
+      "name": "SV3_R",
+      "index": 67,
+      "status": "absent",
+      "nativeRef": "src/common/scripting/vm/vmops.h"
+    },
+    {
+      "id": "vmop:68",
+      "name": "SV4",
+      "index": 68,
+      "status": "absent",
+      "nativeRef": "src/common/scripting/vm/vmops.h"
+    },
+    {
+      "id": "vmop:69",
+      "name": "SV4_R",
+      "index": 69,
+      "status": "absent",
+      "nativeRef": "src/common/scripting/vm/vmops.h"
+    },
+    {
+      "id": "vmop:70",
+      "name": "SFV2",
+      "index": 70,
+      "status": "absent",
+      "nativeRef": "src/common/scripting/vm/vmops.h"
+    },
+    {
+      "id": "vmop:71",
+      "name": "SFV2_R",
+      "index": 71,
+      "status": "absent",
+      "nativeRef": "src/common/scripting/vm/vmops.h"
+    },
+    {
+      "id": "vmop:72",
+      "name": "SFV3",
+      "index": 72,
+      "status": "absent",
+      "nativeRef": "src/common/scripting/vm/vmops.h"
+    },
+    {
+      "id": "vmop:73",
+      "name": "SFV3_R",
+      "index": 73,
+      "status": "absent",
+      "nativeRef": "src/common/scripting/vm/vmops.h"
+    },
+    {
+      "id": "vmop:74",
+      "name": "SFV4",
+      "index": 74,
+      "status": "absent",
+      "nativeRef": "src/common/scripting/vm/vmops.h"
+    },
+    {
+      "id": "vmop:75",
+      "name": "SFV4_R",
+      "index": 75,
+      "status": "absent",
+      "nativeRef": "src/common/scripting/vm/vmops.h"
+    },
+    {
+      "id": "vmop:76",
+      "name": "SBIT",
+      "index": 76,
+      "status": "absent",
+      "nativeRef": "src/common/scripting/vm/vmops.h"
+    },
+    {
+      "id": "vmop:77",
+      "name": "MOVE",
+      "index": 77,
+      "status": "executed",
+      "nativeRef": "src/common/scripting/vm/vmops.h"
+    },
+    {
+      "id": "vmop:78",
+      "name": "MOVEF",
+      "index": 78,
+      "status": "absent",
+      "nativeRef": "src/common/scripting/vm/vmops.h"
+    },
+    {
+      "id": "vmop:79",
+      "name": "MOVES",
+      "index": 79,
+      "status": "absent",
+      "nativeRef": "src/common/scripting/vm/vmops.h"
+    },
+    {
+      "id": "vmop:80",
+      "name": "MOVEA",
+      "index": 80,
+      "status": "absent",
+      "nativeRef": "src/common/scripting/vm/vmops.h"
+    },
+    {
+      "id": "vmop:81",
+      "name": "MOVEV2",
+      "index": 81,
+      "status": "absent",
+      "nativeRef": "src/common/scripting/vm/vmops.h"
+    },
+    {
+      "id": "vmop:82",
+      "name": "MOVEV3",
+      "index": 82,
+      "status": "absent",
+      "nativeRef": "src/common/scripting/vm/vmops.h"
+    },
+    {
+      "id": "vmop:83",
+      "name": "MOVEV4",
+      "index": 83,
+      "status": "absent",
+      "nativeRef": "src/common/scripting/vm/vmops.h"
+    },
+    {
+      "id": "vmop:84",
+      "name": "CAST",
+      "index": 84,
+      "status": "executed",
+      "nativeRef": "src/common/scripting/vm/vmops.h"
+    },
+    {
+      "id": "vmop:85",
+      "name": "CASTB",
+      "index": 85,
+      "status": "absent",
+      "nativeRef": "src/common/scripting/vm/vmops.h"
+    },
+    {
+      "id": "vmop:86",
+      "name": "DYNCAST_R",
+      "index": 86,
+      "status": "absent",
+      "nativeRef": "src/common/scripting/vm/vmops.h"
+    },
+    {
+      "id": "vmop:87",
+      "name": "DYNCAST_K",
+      "index": 87,
+      "status": "absent",
+      "nativeRef": "src/common/scripting/vm/vmops.h"
+    },
+    {
+      "id": "vmop:88",
+      "name": "DYNCASTC_R",
+      "index": 88,
+      "status": "absent",
+      "nativeRef": "src/common/scripting/vm/vmops.h"
+    },
+    {
+      "id": "vmop:89",
+      "name": "DYNCASTC_K",
+      "index": 89,
+      "status": "absent",
+      "nativeRef": "src/common/scripting/vm/vmops.h"
+    },
+    {
+      "id": "vmop:90",
+      "name": "TEST",
+      "index": 90,
+      "status": "executed",
+      "nativeRef": "src/common/scripting/vm/vmops.h"
+    },
+    {
+      "id": "vmop:91",
+      "name": "TESTN",
+      "index": 91,
+      "status": "absent",
+      "nativeRef": "src/common/scripting/vm/vmops.h"
+    },
+    {
+      "id": "vmop:92",
+      "name": "JMP",
+      "index": 92,
+      "status": "executed",
+      "nativeRef": "src/common/scripting/vm/vmops.h"
+    },
+    {
+      "id": "vmop:93",
+      "name": "IJMP",
+      "index": 93,
+      "status": "absent",
+      "nativeRef": "src/common/scripting/vm/vmops.h"
+    },
+    {
+      "id": "vmop:94",
+      "name": "PARAM",
+      "index": 94,
+      "status": "executed",
+      "nativeRef": "src/common/scripting/vm/vmops.h"
+    },
+    {
+      "id": "vmop:95",
+      "name": "PARAMI",
+      "index": 95,
+      "status": "absent",
+      "nativeRef": "src/common/scripting/vm/vmops.h"
+    },
+    {
+      "id": "vmop:96",
+      "name": "CALL",
+      "index": 96,
+      "status": "executed",
+      "nativeRef": "src/common/scripting/vm/vmops.h"
+    },
+    {
+      "id": "vmop:97",
+      "name": "CALL_K",
+      "index": 97,
+      "status": "executed",
+      "nativeRef": "src/common/scripting/vm/vmops.h"
+    },
+    {
+      "id": "vmop:98",
+      "name": "VTBL",
+      "index": 98,
+      "status": "absent",
+      "nativeRef": "src/common/scripting/vm/vmops.h"
+    },
+    {
+      "id": "vmop:99",
+      "name": "SCOPE",
+      "index": 99,
+      "status": "executed",
+      "nativeRef": "src/common/scripting/vm/vmops.h"
+    },
+    {
+      "id": "vmop:100",
+      "name": "RESULT",
+      "index": 100,
+      "status": "executed",
+      "nativeRef": "src/common/scripting/vm/vmops.h"
+    },
+    {
+      "id": "vmop:101",
+      "name": "RET",
+      "index": 101,
+      "status": "executed",
+      "nativeRef": "src/common/scripting/vm/vmops.h"
+    },
+    {
+      "id": "vmop:102",
+      "name": "RETI",
+      "index": 102,
+      "status": "executed",
+      "nativeRef": "src/common/scripting/vm/vmops.h"
+    },
+    {
+      "id": "vmop:103",
+      "name": "TRY",
+      "index": 103,
+      "status": "absent",
+      "nativeRef": "src/common/scripting/vm/vmops.h"
+    },
+    {
+      "id": "vmop:104",
+      "name": "UNTRY",
+      "index": 104,
+      "status": "absent",
+      "nativeRef": "src/common/scripting/vm/vmops.h"
+    },
+    {
+      "id": "vmop:105",
+      "name": "THROW",
+      "index": 105,
+      "status": "executed",
+      "nativeRef": "src/common/scripting/vm/vmops.h"
+    },
+    {
+      "id": "vmop:106",
+      "name": "CATCH",
+      "index": 106,
+      "status": "absent",
+      "nativeRef": "src/common/scripting/vm/vmops.h"
+    },
+    {
+      "id": "vmop:107",
+      "name": "BOUND",
+      "index": 107,
+      "status": "executed",
+      "nativeRef": "src/common/scripting/vm/vmops.h"
+    },
+    {
+      "id": "vmop:108",
+      "name": "BOUND_K",
+      "index": 108,
+      "status": "executed",
+      "nativeRef": "src/common/scripting/vm/vmops.h"
+    },
+    {
+      "id": "vmop:109",
+      "name": "BOUND_R",
+      "index": 109,
+      "status": "executed",
+      "nativeRef": "src/common/scripting/vm/vmops.h"
+    },
+    {
+      "id": "vmop:110",
+      "name": "CONCAT",
+      "index": 110,
+      "status": "executed",
+      "nativeRef": "src/common/scripting/vm/vmops.h"
+    },
+    {
+      "id": "vmop:111",
+      "name": "LENS",
+      "index": 111,
+      "status": "absent",
+      "nativeRef": "src/common/scripting/vm/vmops.h"
+    },
+    {
+      "id": "vmop:112",
+      "name": "CMPS",
+      "index": 112,
+      "status": "absent",
+      "nativeRef": "src/common/scripting/vm/vmops.h"
+    },
+    {
+      "id": "vmop:113",
+      "name": "SLL_RR",
+      "index": 113,
+      "status": "executed",
+      "nativeRef": "src/common/scripting/vm/vmops.h"
+    },
+    {
+      "id": "vmop:114",
+      "name": "SLL_RI",
+      "index": 114,
+      "status": "executed",
+      "nativeRef": "src/common/scripting/vm/vmops.h"
+    },
+    {
+      "id": "vmop:115",
+      "name": "SLL_KR",
+      "index": 115,
+      "status": "executed",
+      "nativeRef": "src/common/scripting/vm/vmops.h"
+    },
+    {
+      "id": "vmop:116",
+      "name": "SRL_RR",
+      "index": 116,
+      "status": "executed",
+      "nativeRef": "src/common/scripting/vm/vmops.h"
+    },
+    {
+      "id": "vmop:117",
+      "name": "SRL_RI",
+      "index": 117,
+      "status": "executed",
+      "nativeRef": "src/common/scripting/vm/vmops.h"
+    },
+    {
+      "id": "vmop:118",
+      "name": "SRL_KR",
+      "index": 118,
+      "status": "executed",
+      "nativeRef": "src/common/scripting/vm/vmops.h"
+    },
+    {
+      "id": "vmop:119",
+      "name": "SRA_RR",
+      "index": 119,
+      "status": "executed",
+      "nativeRef": "src/common/scripting/vm/vmops.h"
+    },
+    {
+      "id": "vmop:120",
+      "name": "SRA_RI",
+      "index": 120,
+      "status": "executed",
+      "nativeRef": "src/common/scripting/vm/vmops.h"
+    },
+    {
+      "id": "vmop:121",
+      "name": "SRA_KR",
+      "index": 121,
+      "status": "executed",
+      "nativeRef": "src/common/scripting/vm/vmops.h"
+    },
+    {
+      "id": "vmop:122",
+      "name": "ADD_RR",
+      "index": 122,
+      "status": "executed",
+      "nativeRef": "src/common/scripting/vm/vmops.h"
+    },
+    {
+      "id": "vmop:123",
+      "name": "ADD_RK",
+      "index": 123,
+      "status": "executed",
+      "nativeRef": "src/common/scripting/vm/vmops.h"
+    },
+    {
+      "id": "vmop:124",
+      "name": "ADDI",
+      "index": 124,
+      "status": "executed",
+      "nativeRef": "src/common/scripting/vm/vmops.h"
+    },
+    {
+      "id": "vmop:125",
+      "name": "SUB_RR",
+      "index": 125,
+      "status": "executed",
+      "nativeRef": "src/common/scripting/vm/vmops.h"
+    },
+    {
+      "id": "vmop:126",
+      "name": "SUB_RK",
+      "index": 126,
+      "status": "executed",
+      "nativeRef": "src/common/scripting/vm/vmops.h"
+    },
+    {
+      "id": "vmop:127",
+      "name": "SUB_KR",
+      "index": 127,
+      "status": "executed",
+      "nativeRef": "src/common/scripting/vm/vmops.h"
+    },
+    {
+      "id": "vmop:128",
+      "name": "MUL_RR",
+      "index": 128,
+      "status": "executed",
+      "nativeRef": "src/common/scripting/vm/vmops.h"
+    },
+    {
+      "id": "vmop:129",
+      "name": "MUL_RK",
+      "index": 129,
+      "status": "executed",
+      "nativeRef": "src/common/scripting/vm/vmops.h"
+    },
+    {
+      "id": "vmop:130",
+      "name": "DIV_RR",
+      "index": 130,
+      "status": "executed",
+      "nativeRef": "src/common/scripting/vm/vmops.h"
+    },
+    {
+      "id": "vmop:131",
+      "name": "DIV_RK",
+      "index": 131,
+      "status": "executed",
+      "nativeRef": "src/common/scripting/vm/vmops.h"
+    },
+    {
+      "id": "vmop:132",
+      "name": "DIV_KR",
+      "index": 132,
+      "status": "executed",
+      "nativeRef": "src/common/scripting/vm/vmops.h"
+    },
+    {
+      "id": "vmop:133",
+      "name": "DIVU_RR",
+      "index": 133,
+      "status": "executed",
+      "nativeRef": "src/common/scripting/vm/vmops.h"
+    },
+    {
+      "id": "vmop:134",
+      "name": "DIVU_RK",
+      "index": 134,
+      "status": "executed",
+      "nativeRef": "src/common/scripting/vm/vmops.h"
+    },
+    {
+      "id": "vmop:135",
+      "name": "DIVU_KR",
+      "index": 135,
+      "status": "executed",
+      "nativeRef": "src/common/scripting/vm/vmops.h"
+    },
+    {
+      "id": "vmop:136",
+      "name": "MOD_RR",
+      "index": 136,
+      "status": "executed",
+      "nativeRef": "src/common/scripting/vm/vmops.h"
+    },
+    {
+      "id": "vmop:137",
+      "name": "MOD_RK",
+      "index": 137,
+      "status": "executed",
+      "nativeRef": "src/common/scripting/vm/vmops.h"
+    },
+    {
+      "id": "vmop:138",
+      "name": "MOD_KR",
+      "index": 138,
+      "status": "executed",
+      "nativeRef": "src/common/scripting/vm/vmops.h"
+    },
+    {
+      "id": "vmop:139",
+      "name": "MODU_RR",
+      "index": 139,
+      "status": "executed",
+      "nativeRef": "src/common/scripting/vm/vmops.h"
+    },
+    {
+      "id": "vmop:140",
+      "name": "MODU_RK",
+      "index": 140,
+      "status": "executed",
+      "nativeRef": "src/common/scripting/vm/vmops.h"
+    },
+    {
+      "id": "vmop:141",
+      "name": "MODU_KR",
+      "index": 141,
+      "status": "executed",
+      "nativeRef": "src/common/scripting/vm/vmops.h"
+    },
+    {
+      "id": "vmop:142",
+      "name": "AND_RR",
+      "index": 142,
+      "status": "executed",
+      "nativeRef": "src/common/scripting/vm/vmops.h"
+    },
+    {
+      "id": "vmop:143",
+      "name": "AND_RK",
+      "index": 143,
+      "status": "executed",
+      "nativeRef": "src/common/scripting/vm/vmops.h"
+    },
+    {
+      "id": "vmop:144",
+      "name": "OR_RR",
+      "index": 144,
+      "status": "executed",
+      "nativeRef": "src/common/scripting/vm/vmops.h"
+    },
+    {
+      "id": "vmop:145",
+      "name": "OR_RK",
+      "index": 145,
+      "status": "executed",
+      "nativeRef": "src/common/scripting/vm/vmops.h"
+    },
+    {
+      "id": "vmop:146",
+      "name": "XOR_RR",
+      "index": 146,
+      "status": "executed",
+      "nativeRef": "src/common/scripting/vm/vmops.h"
+    },
+    {
+      "id": "vmop:147",
+      "name": "XOR_RK",
+      "index": 147,
+      "status": "executed",
+      "nativeRef": "src/common/scripting/vm/vmops.h"
+    },
+    {
+      "id": "vmop:148",
+      "name": "MIN_RR",
+      "index": 148,
+      "status": "executed",
+      "nativeRef": "src/common/scripting/vm/vmops.h"
+    },
+    {
+      "id": "vmop:149",
+      "name": "MIN_RK",
+      "index": 149,
+      "status": "executed",
+      "nativeRef": "src/common/scripting/vm/vmops.h"
+    },
+    {
+      "id": "vmop:150",
+      "name": "MAX_RR",
+      "index": 150,
+      "status": "executed",
+      "nativeRef": "src/common/scripting/vm/vmops.h"
+    },
+    {
+      "id": "vmop:151",
+      "name": "MAX_RK",
+      "index": 151,
+      "status": "executed",
+      "nativeRef": "src/common/scripting/vm/vmops.h"
+    },
+    {
+      "id": "vmop:152",
+      "name": "MINU_RR",
+      "index": 152,
+      "status": "executed",
+      "nativeRef": "src/common/scripting/vm/vmops.h"
+    },
+    {
+      "id": "vmop:153",
+      "name": "MINU_RK",
+      "index": 153,
+      "status": "executed",
+      "nativeRef": "src/common/scripting/vm/vmops.h"
+    },
+    {
+      "id": "vmop:154",
+      "name": "MAXU_RR",
+      "index": 154,
+      "status": "executed",
+      "nativeRef": "src/common/scripting/vm/vmops.h"
+    },
+    {
+      "id": "vmop:155",
+      "name": "MAXU_RK",
+      "index": 155,
+      "status": "executed",
+      "nativeRef": "src/common/scripting/vm/vmops.h"
+    },
+    {
+      "id": "vmop:156",
+      "name": "ABS",
+      "index": 156,
+      "status": "executed",
+      "nativeRef": "src/common/scripting/vm/vmops.h"
+    },
+    {
+      "id": "vmop:157",
+      "name": "NEG",
+      "index": 157,
+      "status": "executed",
+      "nativeRef": "src/common/scripting/vm/vmops.h"
+    },
+    {
+      "id": "vmop:158",
+      "name": "NOT",
+      "index": 158,
+      "status": "executed",
+      "nativeRef": "src/common/scripting/vm/vmops.h"
+    },
+    {
+      "id": "vmop:159",
+      "name": "EQ_R",
+      "index": 159,
+      "status": "executed",
+      "nativeRef": "src/common/scripting/vm/vmops.h"
+    },
+    {
+      "id": "vmop:160",
+      "name": "EQ_K",
+      "index": 160,
+      "status": "executed",
+      "nativeRef": "src/common/scripting/vm/vmops.h"
+    },
+    {
+      "id": "vmop:161",
+      "name": "LT_RR",
+      "index": 161,
+      "status": "executed",
+      "nativeRef": "src/common/scripting/vm/vmops.h"
+    },
+    {
+      "id": "vmop:162",
+      "name": "LT_RK",
+      "index": 162,
+      "status": "executed",
+      "nativeRef": "src/common/scripting/vm/vmops.h"
+    },
+    {
+      "id": "vmop:163",
+      "name": "LT_KR",
+      "index": 163,
+      "status": "executed",
+      "nativeRef": "src/common/scripting/vm/vmops.h"
+    },
+    {
+      "id": "vmop:164",
+      "name": "LE_RR",
+      "index": 164,
+      "status": "executed",
+      "nativeRef": "src/common/scripting/vm/vmops.h"
+    },
+    {
+      "id": "vmop:165",
+      "name": "LE_RK",
+      "index": 165,
+      "status": "executed",
+      "nativeRef": "src/common/scripting/vm/vmops.h"
+    },
+    {
+      "id": "vmop:166",
+      "name": "LE_KR",
+      "index": 166,
+      "status": "executed",
+      "nativeRef": "src/common/scripting/vm/vmops.h"
+    },
+    {
+      "id": "vmop:167",
+      "name": "LTU_RR",
+      "index": 167,
+      "status": "executed",
+      "nativeRef": "src/common/scripting/vm/vmops.h"
+    },
+    {
+      "id": "vmop:168",
+      "name": "LTU_RK",
+      "index": 168,
+      "status": "executed",
+      "nativeRef": "src/common/scripting/vm/vmops.h"
+    },
+    {
+      "id": "vmop:169",
+      "name": "LTU_KR",
+      "index": 169,
+      "status": "executed",
+      "nativeRef": "src/common/scripting/vm/vmops.h"
+    },
+    {
+      "id": "vmop:170",
+      "name": "LEU_RR",
+      "index": 170,
+      "status": "executed",
+      "nativeRef": "src/common/scripting/vm/vmops.h"
+    },
+    {
+      "id": "vmop:171",
+      "name": "LEU_RK",
+      "index": 171,
+      "status": "executed",
+      "nativeRef": "src/common/scripting/vm/vmops.h"
+    },
+    {
+      "id": "vmop:172",
+      "name": "LEU_KR",
+      "index": 172,
+      "status": "executed",
+      "nativeRef": "src/common/scripting/vm/vmops.h"
+    },
+    {
+      "id": "vmop:173",
+      "name": "ADDF_RR",
+      "index": 173,
+      "status": "executed",
+      "nativeRef": "src/common/scripting/vm/vmops.h"
+    },
+    {
+      "id": "vmop:174",
+      "name": "ADDF_RK",
+      "index": 174,
+      "status": "executed",
+      "nativeRef": "src/common/scripting/vm/vmops.h"
+    },
+    {
+      "id": "vmop:175",
+      "name": "SUBF_RR",
+      "index": 175,
+      "status": "executed",
+      "nativeRef": "src/common/scripting/vm/vmops.h"
+    },
+    {
+      "id": "vmop:176",
+      "name": "SUBF_RK",
+      "index": 176,
+      "status": "executed",
+      "nativeRef": "src/common/scripting/vm/vmops.h"
+    },
+    {
+      "id": "vmop:177",
+      "name": "SUBF_KR",
+      "index": 177,
+      "status": "executed",
+      "nativeRef": "src/common/scripting/vm/vmops.h"
+    },
+    {
+      "id": "vmop:178",
+      "name": "MULF_RR",
+      "index": 178,
+      "status": "executed",
+      "nativeRef": "src/common/scripting/vm/vmops.h"
+    },
+    {
+      "id": "vmop:179",
+      "name": "MULF_RK",
+      "index": 179,
+      "status": "executed",
+      "nativeRef": "src/common/scripting/vm/vmops.h"
+    },
+    {
+      "id": "vmop:180",
+      "name": "DIVF_RR",
+      "index": 180,
+      "status": "executed",
+      "nativeRef": "src/common/scripting/vm/vmops.h"
+    },
+    {
+      "id": "vmop:181",
+      "name": "DIVF_RK",
+      "index": 181,
+      "status": "executed",
+      "nativeRef": "src/common/scripting/vm/vmops.h"
+    },
+    {
+      "id": "vmop:182",
+      "name": "DIVF_KR",
+      "index": 182,
+      "status": "executed",
+      "nativeRef": "src/common/scripting/vm/vmops.h"
+    },
+    {
+      "id": "vmop:183",
+      "name": "MODF_RR",
+      "index": 183,
+      "status": "executed",
+      "nativeRef": "src/common/scripting/vm/vmops.h"
+    },
+    {
+      "id": "vmop:184",
+      "name": "MODF_RK",
+      "index": 184,
+      "status": "executed",
+      "nativeRef": "src/common/scripting/vm/vmops.h"
+    },
+    {
+      "id": "vmop:185",
+      "name": "MODF_KR",
+      "index": 185,
+      "status": "executed",
+      "nativeRef": "src/common/scripting/vm/vmops.h"
+    },
+    {
+      "id": "vmop:186",
+      "name": "POWF_RR",
+      "index": 186,
+      "status": "executed",
+      "nativeRef": "src/common/scripting/vm/vmops.h"
+    },
+    {
+      "id": "vmop:187",
+      "name": "POWF_RK",
+      "index": 187,
+      "status": "executed",
+      "nativeRef": "src/common/scripting/vm/vmops.h"
+    },
+    {
+      "id": "vmop:188",
+      "name": "POWF_KR",
+      "index": 188,
+      "status": "executed",
+      "nativeRef": "src/common/scripting/vm/vmops.h"
+    },
+    {
+      "id": "vmop:189",
+      "name": "MINF_RR",
+      "index": 189,
+      "status": "executed",
+      "nativeRef": "src/common/scripting/vm/vmops.h"
+    },
+    {
+      "id": "vmop:190",
+      "name": "MINF_RK",
+      "index": 190,
+      "status": "executed",
+      "nativeRef": "src/common/scripting/vm/vmops.h"
+    },
+    {
+      "id": "vmop:191",
+      "name": "MAXF_RR",
+      "index": 191,
+      "status": "executed",
+      "nativeRef": "src/common/scripting/vm/vmops.h"
+    },
+    {
+      "id": "vmop:192",
+      "name": "MAXF_RK",
+      "index": 192,
+      "status": "executed",
+      "nativeRef": "src/common/scripting/vm/vmops.h"
+    },
+    {
+      "id": "vmop:193",
+      "name": "ATAN2",
+      "index": 193,
+      "status": "executed",
+      "nativeRef": "src/common/scripting/vm/vmops.h"
+    },
+    {
+      "id": "vmop:194",
+      "name": "FLOP",
+      "index": 194,
+      "status": "executed",
+      "nativeRef": "src/common/scripting/vm/vmops.h"
+    },
+    {
+      "id": "vmop:195",
+      "name": "EQF_R",
+      "index": 195,
+      "status": "executed",
+      "nativeRef": "src/common/scripting/vm/vmops.h"
+    },
+    {
+      "id": "vmop:196",
+      "name": "EQF_K",
+      "index": 196,
+      "status": "executed",
+      "nativeRef": "src/common/scripting/vm/vmops.h"
+    },
+    {
+      "id": "vmop:197",
+      "name": "LTF_RR",
+      "index": 197,
+      "status": "executed",
+      "nativeRef": "src/common/scripting/vm/vmops.h"
+    },
+    {
+      "id": "vmop:198",
+      "name": "LTF_RK",
+      "index": 198,
+      "status": "executed",
+      "nativeRef": "src/common/scripting/vm/vmops.h"
+    },
+    {
+      "id": "vmop:199",
+      "name": "LTF_KR",
+      "index": 199,
+      "status": "executed",
+      "nativeRef": "src/common/scripting/vm/vmops.h"
+    },
+    {
+      "id": "vmop:200",
+      "name": "LEF_RR",
+      "index": 200,
+      "status": "executed",
+      "nativeRef": "src/common/scripting/vm/vmops.h"
+    },
+    {
+      "id": "vmop:201",
+      "name": "LEF_RK",
+      "index": 201,
+      "status": "executed",
+      "nativeRef": "src/common/scripting/vm/vmops.h"
+    },
+    {
+      "id": "vmop:202",
+      "name": "LEF_KR",
+      "index": 202,
+      "status": "executed",
+      "nativeRef": "src/common/scripting/vm/vmops.h"
+    },
+    {
+      "id": "vmop:203",
+      "name": "NEGV2",
+      "index": 203,
+      "status": "absent",
+      "nativeRef": "src/common/scripting/vm/vmops.h"
+    },
+    {
+      "id": "vmop:204",
+      "name": "ADDV2_RR",
+      "index": 204,
+      "status": "absent",
+      "nativeRef": "src/common/scripting/vm/vmops.h"
+    },
+    {
+      "id": "vmop:205",
+      "name": "SUBV2_RR",
+      "index": 205,
+      "status": "absent",
+      "nativeRef": "src/common/scripting/vm/vmops.h"
+    },
+    {
+      "id": "vmop:206",
+      "name": "DOTV2_RR",
+      "index": 206,
+      "status": "absent",
+      "nativeRef": "src/common/scripting/vm/vmops.h"
+    },
+    {
+      "id": "vmop:207",
+      "name": "MULVF2_RR",
+      "index": 207,
+      "status": "absent",
+      "nativeRef": "src/common/scripting/vm/vmops.h"
+    },
+    {
+      "id": "vmop:208",
+      "name": "MULVF2_RK",
+      "index": 208,
+      "status": "absent",
+      "nativeRef": "src/common/scripting/vm/vmops.h"
+    },
+    {
+      "id": "vmop:209",
+      "name": "DIVVF2_RR",
+      "index": 209,
+      "status": "absent",
+      "nativeRef": "src/common/scripting/vm/vmops.h"
+    },
+    {
+      "id": "vmop:210",
+      "name": "DIVVF2_RK",
+      "index": 210,
+      "status": "absent",
+      "nativeRef": "src/common/scripting/vm/vmops.h"
+    },
+    {
+      "id": "vmop:211",
+      "name": "LENV2",
+      "index": 211,
+      "status": "absent",
+      "nativeRef": "src/common/scripting/vm/vmops.h"
+    },
+    {
+      "id": "vmop:212",
+      "name": "EQV2_R",
+      "index": 212,
+      "status": "absent",
+      "nativeRef": "src/common/scripting/vm/vmops.h"
+    },
+    {
+      "id": "vmop:213",
+      "name": "EQV2_K",
+      "index": 213,
+      "status": "absent",
+      "nativeRef": "src/common/scripting/vm/vmops.h"
+    },
+    {
+      "id": "vmop:214",
+      "name": "NEGV3",
+      "index": 214,
+      "status": "absent",
+      "nativeRef": "src/common/scripting/vm/vmops.h"
+    },
+    {
+      "id": "vmop:215",
+      "name": "ADDV3_RR",
+      "index": 215,
+      "status": "absent",
+      "nativeRef": "src/common/scripting/vm/vmops.h"
+    },
+    {
+      "id": "vmop:216",
+      "name": "SUBV3_RR",
+      "index": 216,
+      "status": "absent",
+      "nativeRef": "src/common/scripting/vm/vmops.h"
+    },
+    {
+      "id": "vmop:217",
+      "name": "DOTV3_RR",
+      "index": 217,
+      "status": "absent",
+      "nativeRef": "src/common/scripting/vm/vmops.h"
+    },
+    {
+      "id": "vmop:218",
+      "name": "CROSSV_RR",
+      "index": 218,
+      "status": "absent",
+      "nativeRef": "src/common/scripting/vm/vmops.h"
+    },
+    {
+      "id": "vmop:219",
+      "name": "MULVF3_RR",
+      "index": 219,
+      "status": "absent",
+      "nativeRef": "src/common/scripting/vm/vmops.h"
+    },
+    {
+      "id": "vmop:220",
+      "name": "MULVF3_RK",
+      "index": 220,
+      "status": "absent",
+      "nativeRef": "src/common/scripting/vm/vmops.h"
+    },
+    {
+      "id": "vmop:221",
+      "name": "DIVVF3_RR",
+      "index": 221,
+      "status": "absent",
+      "nativeRef": "src/common/scripting/vm/vmops.h"
+    },
+    {
+      "id": "vmop:222",
+      "name": "DIVVF3_RK",
+      "index": 222,
+      "status": "absent",
+      "nativeRef": "src/common/scripting/vm/vmops.h"
+    },
+    {
+      "id": "vmop:223",
+      "name": "LENV3",
+      "index": 223,
+      "status": "absent",
+      "nativeRef": "src/common/scripting/vm/vmops.h"
+    },
+    {
+      "id": "vmop:224",
+      "name": "EQV3_R",
+      "index": 224,
+      "status": "absent",
+      "nativeRef": "src/common/scripting/vm/vmops.h"
+    },
+    {
+      "id": "vmop:225",
+      "name": "EQV3_K",
+      "index": 225,
+      "status": "absent",
+      "nativeRef": "src/common/scripting/vm/vmops.h"
+    },
+    {
+      "id": "vmop:226",
+      "name": "NEGV4",
+      "index": 226,
+      "status": "absent",
+      "nativeRef": "src/common/scripting/vm/vmops.h"
+    },
+    {
+      "id": "vmop:227",
+      "name": "ADDV4_RR",
+      "index": 227,
+      "status": "absent",
+      "nativeRef": "src/common/scripting/vm/vmops.h"
+    },
+    {
+      "id": "vmop:228",
+      "name": "SUBV4_RR",
+      "index": 228,
+      "status": "absent",
+      "nativeRef": "src/common/scripting/vm/vmops.h"
+    },
+    {
+      "id": "vmop:229",
+      "name": "DOTV4_RR",
+      "index": 229,
+      "status": "absent",
+      "nativeRef": "src/common/scripting/vm/vmops.h"
+    },
+    {
+      "id": "vmop:230",
+      "name": "MULVF4_RR",
+      "index": 230,
+      "status": "absent",
+      "nativeRef": "src/common/scripting/vm/vmops.h"
+    },
+    {
+      "id": "vmop:231",
+      "name": "MULVF4_RK",
+      "index": 231,
+      "status": "absent",
+      "nativeRef": "src/common/scripting/vm/vmops.h"
+    },
+    {
+      "id": "vmop:232",
+      "name": "DIVVF4_RR",
+      "index": 232,
+      "status": "absent",
+      "nativeRef": "src/common/scripting/vm/vmops.h"
+    },
+    {
+      "id": "vmop:233",
+      "name": "DIVVF4_RK",
+      "index": 233,
+      "status": "absent",
+      "nativeRef": "src/common/scripting/vm/vmops.h"
+    },
+    {
+      "id": "vmop:234",
+      "name": "LENV4",
+      "index": 234,
+      "status": "absent",
+      "nativeRef": "src/common/scripting/vm/vmops.h"
+    },
+    {
+      "id": "vmop:235",
+      "name": "EQV4_R",
+      "index": 235,
+      "status": "absent",
+      "nativeRef": "src/common/scripting/vm/vmops.h"
+    },
+    {
+      "id": "vmop:236",
+      "name": "EQV4_K",
+      "index": 236,
+      "status": "absent",
+      "nativeRef": "src/common/scripting/vm/vmops.h"
+    },
+    {
+      "id": "vmop:237",
+      "name": "MULQQ_RR",
+      "index": 237,
+      "status": "absent",
+      "nativeRef": "src/common/scripting/vm/vmops.h"
+    },
+    {
+      "id": "vmop:238",
+      "name": "MULQV3_RR",
+      "index": 238,
+      "status": "absent",
+      "nativeRef": "src/common/scripting/vm/vmops.h"
+    },
+    {
+      "id": "vmop:239",
+      "name": "CONJQ",
+      "index": 239,
+      "status": "absent",
+      "nativeRef": "src/common/scripting/vm/vmops.h"
+    },
+    {
+      "id": "vmop:240",
+      "name": "ADDA_RR",
+      "index": 240,
+      "status": "absent",
+      "nativeRef": "src/common/scripting/vm/vmops.h"
+    },
+    {
+      "id": "vmop:241",
+      "name": "ADDA_RK",
+      "index": 241,
+      "status": "absent",
+      "nativeRef": "src/common/scripting/vm/vmops.h"
+    },
+    {
+      "id": "vmop:242",
+      "name": "SUBA",
+      "index": 242,
+      "status": "absent",
+      "nativeRef": "src/common/scripting/vm/vmops.h"
+    },
+    {
+      "id": "vmop:243",
+      "name": "EQA_R",
+      "index": 243,
+      "status": "executed",
+      "nativeRef": "src/common/scripting/vm/vmops.h"
+    },
+    {
+      "id": "vmop:244",
+      "name": "EQA_K",
+      "index": 244,
+      "status": "executed",
+      "nativeRef": "src/common/scripting/vm/vmops.h"
+    },
+    {
+      "id": "vmop:245",
+      "name": "NULLCHECK",
+      "index": 245,
+      "status": "absent",
+      "nativeRef": "src/common/scripting/vm/vmops.h"
+    }
+  ],
+  "acsCallFunc": [
+    {
+      "id": "acs-call:GetLineUDMFInt",
+      "name": "GetLineUDMFInt",
+      "status": "absent",
+      "nativeRef": "src/playsim/p_acs.cpp EACSFunctions"
+    },
+    {
+      "id": "acs-call:GetLineUDMFFixed",
+      "name": "GetLineUDMFFixed",
+      "status": "absent",
+      "nativeRef": "src/playsim/p_acs.cpp EACSFunctions"
+    },
+    {
+      "id": "acs-call:GetThingUDMFInt",
+      "name": "GetThingUDMFInt",
+      "status": "absent",
+      "nativeRef": "src/playsim/p_acs.cpp EACSFunctions"
+    },
+    {
+      "id": "acs-call:GetThingUDMFFixed",
+      "name": "GetThingUDMFFixed",
+      "status": "absent",
+      "nativeRef": "src/playsim/p_acs.cpp EACSFunctions"
+    },
+    {
+      "id": "acs-call:GetSectorUDMFInt",
+      "name": "GetSectorUDMFInt",
+      "status": "absent",
+      "nativeRef": "src/playsim/p_acs.cpp EACSFunctions"
+    },
+    {
+      "id": "acs-call:GetSectorUDMFFixed",
+      "name": "GetSectorUDMFFixed",
+      "status": "absent",
+      "nativeRef": "src/playsim/p_acs.cpp EACSFunctions"
+    },
+    {
+      "id": "acs-call:GetSideUDMFInt",
+      "name": "GetSideUDMFInt",
+      "status": "absent",
+      "nativeRef": "src/playsim/p_acs.cpp EACSFunctions"
+    },
+    {
+      "id": "acs-call:GetSideUDMFFixed",
+      "name": "GetSideUDMFFixed",
+      "status": "absent",
+      "nativeRef": "src/playsim/p_acs.cpp EACSFunctions"
+    },
+    {
+      "id": "acs-call:GetActorVelX",
+      "name": "GetActorVelX",
+      "status": "partial",
+      "nativeRef": "src/playsim/p_acs.cpp EACSFunctions"
+    },
+    {
+      "id": "acs-call:GetActorVelY",
+      "name": "GetActorVelY",
+      "status": "partial",
+      "nativeRef": "src/playsim/p_acs.cpp EACSFunctions"
+    },
+    {
+      "id": "acs-call:GetActorVelZ",
+      "name": "GetActorVelZ",
+      "status": "partial",
+      "nativeRef": "src/playsim/p_acs.cpp EACSFunctions"
+    },
+    {
+      "id": "acs-call:SetActivator",
+      "name": "SetActivator",
+      "status": "partial",
+      "nativeRef": "src/playsim/p_acs.cpp EACSFunctions"
+    },
+    {
+      "id": "acs-call:SetActivatorToTarget",
+      "name": "SetActivatorToTarget",
+      "status": "partial",
+      "nativeRef": "src/playsim/p_acs.cpp EACSFunctions"
+    },
+    {
+      "id": "acs-call:GetActorViewHeight",
+      "name": "GetActorViewHeight",
+      "status": "partial",
+      "nativeRef": "src/playsim/p_acs.cpp EACSFunctions"
+    },
+    {
+      "id": "acs-call:GetChar",
+      "name": "GetChar",
+      "status": "partial",
+      "nativeRef": "src/playsim/p_acs.cpp EACSFunctions"
+    },
+    {
+      "id": "acs-call:GetAirSupply",
+      "name": "GetAirSupply",
+      "status": "absent",
+      "nativeRef": "src/playsim/p_acs.cpp EACSFunctions"
+    },
+    {
+      "id": "acs-call:SetAirSupply",
+      "name": "SetAirSupply",
+      "status": "absent",
+      "nativeRef": "src/playsim/p_acs.cpp EACSFunctions"
+    },
+    {
+      "id": "acs-call:SetSkyScrollSpeed",
+      "name": "SetSkyScrollSpeed",
+      "status": "absent",
+      "nativeRef": "src/playsim/p_acs.cpp EACSFunctions"
+    },
+    {
+      "id": "acs-call:GetArmorType",
+      "name": "GetArmorType",
+      "status": "partial",
+      "nativeRef": "src/playsim/p_acs.cpp EACSFunctions"
+    },
+    {
+      "id": "acs-call:SpawnSpotForced",
+      "name": "SpawnSpotForced",
+      "status": "absent",
+      "nativeRef": "src/playsim/p_acs.cpp EACSFunctions"
+    },
+    {
+      "id": "acs-call:SpawnSpotFacingForced",
+      "name": "SpawnSpotFacingForced",
+      "status": "absent",
+      "nativeRef": "src/playsim/p_acs.cpp EACSFunctions"
+    },
+    {
+      "id": "acs-call:CheckActorProperty",
+      "name": "CheckActorProperty",
+      "status": "partial",
+      "nativeRef": "src/playsim/p_acs.cpp EACSFunctions"
+    },
+    {
+      "id": "acs-call:SetActorVelocity",
+      "name": "SetActorVelocity",
+      "status": "partial",
+      "nativeRef": "src/playsim/p_acs.cpp EACSFunctions"
+    },
+    {
+      "id": "acs-call:SetUserVariable",
+      "name": "SetUserVariable",
+      "status": "absent",
+      "nativeRef": "src/playsim/p_acs.cpp EACSFunctions"
+    },
+    {
+      "id": "acs-call:GetUserVariable",
+      "name": "GetUserVariable",
+      "status": "absent",
+      "nativeRef": "src/playsim/p_acs.cpp EACSFunctions"
+    },
+    {
+      "id": "acs-call:Radius_Quake2",
+      "name": "Radius_Quake2",
+      "status": "partial",
+      "nativeRef": "src/playsim/p_acs.cpp EACSFunctions"
+    },
+    {
+      "id": "acs-call:CheckActorClass",
+      "name": "CheckActorClass",
+      "status": "partial",
+      "nativeRef": "src/playsim/p_acs.cpp EACSFunctions"
+    },
+    {
+      "id": "acs-call:SetUserArray",
+      "name": "SetUserArray",
+      "status": "absent",
+      "nativeRef": "src/playsim/p_acs.cpp EACSFunctions"
+    },
+    {
+      "id": "acs-call:GetUserArray",
+      "name": "GetUserArray",
+      "status": "absent",
+      "nativeRef": "src/playsim/p_acs.cpp EACSFunctions"
+    },
+    {
+      "id": "acs-call:SoundSequenceOnActor",
+      "name": "SoundSequenceOnActor",
+      "status": "absent",
+      "nativeRef": "src/playsim/p_acs.cpp EACSFunctions"
+    },
+    {
+      "id": "acs-call:SoundSequenceOnSector",
+      "name": "SoundSequenceOnSector",
+      "status": "absent",
+      "nativeRef": "src/playsim/p_acs.cpp EACSFunctions"
+    },
+    {
+      "id": "acs-call:SoundSequenceOnPolyobj",
+      "name": "SoundSequenceOnPolyobj",
+      "status": "absent",
+      "nativeRef": "src/playsim/p_acs.cpp EACSFunctions"
+    },
+    {
+      "id": "acs-call:GetPolyobjX",
+      "name": "GetPolyobjX",
+      "status": "partial",
+      "nativeRef": "src/playsim/p_acs.cpp EACSFunctions"
+    },
+    {
+      "id": "acs-call:GetPolyobjY",
+      "name": "GetPolyobjY",
+      "status": "partial",
+      "nativeRef": "src/playsim/p_acs.cpp EACSFunctions"
+    },
+    {
+      "id": "acs-call:CheckSight",
+      "name": "CheckSight",
+      "status": "partial",
+      "nativeRef": "src/playsim/p_acs.cpp EACSFunctions"
+    },
+    {
+      "id": "acs-call:SpawnForced",
+      "name": "SpawnForced",
+      "status": "absent",
+      "nativeRef": "src/playsim/p_acs.cpp EACSFunctions"
+    },
+    {
+      "id": "acs-call:AnnouncerSound",
+      "name": "AnnouncerSound",
+      "status": "absent",
+      "nativeRef": "src/playsim/p_acs.cpp EACSFunctions"
+    },
+    {
+      "id": "acs-call:SetPointer",
+      "name": "SetPointer",
+      "status": "absent",
+      "nativeRef": "src/playsim/p_acs.cpp EACSFunctions"
+    },
+    {
+      "id": "acs-call:ACS_NamedExecute",
+      "name": "ACS_NamedExecute",
+      "status": "absent",
+      "nativeRef": "src/playsim/p_acs.cpp EACSFunctions"
+    },
+    {
+      "id": "acs-call:ACS_NamedSuspend",
+      "name": "ACS_NamedSuspend",
+      "status": "absent",
+      "nativeRef": "src/playsim/p_acs.cpp EACSFunctions"
+    },
+    {
+      "id": "acs-call:ACS_NamedTerminate",
+      "name": "ACS_NamedTerminate",
+      "status": "absent",
+      "nativeRef": "src/playsim/p_acs.cpp EACSFunctions"
+    },
+    {
+      "id": "acs-call:ACS_NamedLockedExecute",
+      "name": "ACS_NamedLockedExecute",
+      "status": "absent",
+      "nativeRef": "src/playsim/p_acs.cpp EACSFunctions"
+    },
+    {
+      "id": "acs-call:ACS_NamedLockedExecuteDoor",
+      "name": "ACS_NamedLockedExecuteDoor",
+      "status": "absent",
+      "nativeRef": "src/playsim/p_acs.cpp EACSFunctions"
+    },
+    {
+      "id": "acs-call:ACS_NamedExecuteWithResult",
+      "name": "ACS_NamedExecuteWithResult",
+      "status": "absent",
+      "nativeRef": "src/playsim/p_acs.cpp EACSFunctions"
+    },
+    {
+      "id": "acs-call:ACS_NamedExecuteAlways",
+      "name": "ACS_NamedExecuteAlways",
+      "status": "absent",
+      "nativeRef": "src/playsim/p_acs.cpp EACSFunctions"
+    },
+    {
+      "id": "acs-call:UniqueTID",
+      "name": "UniqueTID",
+      "status": "partial",
+      "nativeRef": "src/playsim/p_acs.cpp EACSFunctions"
+    },
+    {
+      "id": "acs-call:IsTIDUsed",
+      "name": "IsTIDUsed",
+      "status": "partial",
+      "nativeRef": "src/playsim/p_acs.cpp EACSFunctions"
+    },
+    {
+      "id": "acs-call:Sqrt",
+      "name": "Sqrt",
+      "status": "partial",
+      "nativeRef": "src/playsim/p_acs.cpp EACSFunctions"
+    },
+    {
+      "id": "acs-call:FixedSqrt",
+      "name": "FixedSqrt",
+      "status": "partial",
+      "nativeRef": "src/playsim/p_acs.cpp EACSFunctions"
+    },
+    {
+      "id": "acs-call:VectorLength",
+      "name": "VectorLength",
+      "status": "partial",
+      "nativeRef": "src/playsim/p_acs.cpp EACSFunctions"
+    },
+    {
+      "id": "acs-call:SetHUDClipRect",
+      "name": "SetHUDClipRect",
+      "status": "absent",
+      "nativeRef": "src/playsim/p_acs.cpp EACSFunctions"
+    },
+    {
+      "id": "acs-call:SetHUDWrapWidth",
+      "name": "SetHUDWrapWidth",
+      "status": "absent",
+      "nativeRef": "src/playsim/p_acs.cpp EACSFunctions"
+    },
+    {
+      "id": "acs-call:SetCVar",
+      "name": "SetCVar",
+      "status": "absent",
+      "nativeRef": "src/playsim/p_acs.cpp EACSFunctions"
+    },
+    {
+      "id": "acs-call:GetUserCVar",
+      "name": "GetUserCVar",
+      "status": "absent",
+      "nativeRef": "src/playsim/p_acs.cpp EACSFunctions"
+    },
+    {
+      "id": "acs-call:SetUserCVar",
+      "name": "SetUserCVar",
+      "status": "absent",
+      "nativeRef": "src/playsim/p_acs.cpp EACSFunctions"
+    },
+    {
+      "id": "acs-call:GetCVarString",
+      "name": "GetCVarString",
+      "status": "absent",
+      "nativeRef": "src/playsim/p_acs.cpp EACSFunctions"
+    },
+    {
+      "id": "acs-call:SetCVarString",
+      "name": "SetCVarString",
+      "status": "absent",
+      "nativeRef": "src/playsim/p_acs.cpp EACSFunctions"
+    },
+    {
+      "id": "acs-call:GetUserCVarString",
+      "name": "GetUserCVarString",
+      "status": "absent",
+      "nativeRef": "src/playsim/p_acs.cpp EACSFunctions"
+    },
+    {
+      "id": "acs-call:SetUserCVarString",
+      "name": "SetUserCVarString",
+      "status": "absent",
+      "nativeRef": "src/playsim/p_acs.cpp EACSFunctions"
+    },
+    {
+      "id": "acs-call:LineAttack",
+      "name": "LineAttack",
+      "status": "partial",
+      "nativeRef": "src/playsim/p_acs.cpp EACSFunctions"
+    },
+    {
+      "id": "acs-call:PlaySound",
+      "name": "PlaySound",
+      "status": "partial",
+      "nativeRef": "src/playsim/p_acs.cpp EACSFunctions"
+    },
+    {
+      "id": "acs-call:StopSound",
+      "name": "StopSound",
+      "status": "partial",
+      "nativeRef": "src/playsim/p_acs.cpp EACSFunctions"
+    },
+    {
+      "id": "acs-call:strcmp",
+      "name": "strcmp",
+      "status": "partial",
+      "nativeRef": "src/playsim/p_acs.cpp EACSFunctions"
+    },
+    {
+      "id": "acs-call:stricmp",
+      "name": "stricmp",
+      "status": "partial",
+      "nativeRef": "src/playsim/p_acs.cpp EACSFunctions"
+    },
+    {
+      "id": "acs-call:StrLeft",
+      "name": "StrLeft",
+      "status": "partial",
+      "nativeRef": "src/playsim/p_acs.cpp EACSFunctions"
+    },
+    {
+      "id": "acs-call:StrRight",
+      "name": "StrRight",
+      "status": "partial",
+      "nativeRef": "src/playsim/p_acs.cpp EACSFunctions"
+    },
+    {
+      "id": "acs-call:StrMid",
+      "name": "StrMid",
+      "status": "partial",
+      "nativeRef": "src/playsim/p_acs.cpp EACSFunctions"
+    },
+    {
+      "id": "acs-call:GetActorClass",
+      "name": "GetActorClass",
+      "status": "partial",
+      "nativeRef": "src/playsim/p_acs.cpp EACSFunctions"
+    },
+    {
+      "id": "acs-call:GetWeapon",
+      "name": "GetWeapon",
+      "status": "partial",
+      "nativeRef": "src/playsim/p_acs.cpp EACSFunctions"
+    },
+    {
+      "id": "acs-call:SoundVolume",
+      "name": "SoundVolume",
+      "status": "partial",
+      "nativeRef": "src/playsim/p_acs.cpp EACSFunctions"
+    },
+    {
+      "id": "acs-call:PlayActorSound",
+      "name": "PlayActorSound",
+      "status": "partial",
+      "nativeRef": "src/playsim/p_acs.cpp EACSFunctions"
+    },
+    {
+      "id": "acs-call:SpawnDecal",
+      "name": "SpawnDecal",
+      "status": "partial",
+      "nativeRef": "src/playsim/p_acs.cpp EACSFunctions"
+    },
+    {
+      "id": "acs-call:CheckFont",
+      "name": "CheckFont",
+      "status": "partial",
+      "nativeRef": "src/playsim/p_acs.cpp EACSFunctions"
+    },
+    {
+      "id": "acs-call:DropItem",
+      "name": "DropItem",
+      "status": "partial",
+      "nativeRef": "src/playsim/p_acs.cpp EACSFunctions"
+    },
+    {
+      "id": "acs-call:CheckFlag",
+      "name": "CheckFlag",
+      "status": "partial",
+      "nativeRef": "src/playsim/p_acs.cpp EACSFunctions"
+    },
+    {
+      "id": "acs-call:SetLineActivation",
+      "name": "SetLineActivation",
+      "status": "partial",
+      "nativeRef": "src/playsim/p_acs.cpp EACSFunctions"
+    },
+    {
+      "id": "acs-call:GetLineActivation",
+      "name": "GetLineActivation",
+      "status": "partial",
+      "nativeRef": "src/playsim/p_acs.cpp EACSFunctions"
+    },
+    {
+      "id": "acs-call:GetActorPowerupTics",
+      "name": "GetActorPowerupTics",
+      "status": "partial",
+      "nativeRef": "src/playsim/p_acs.cpp EACSFunctions"
+    },
+    {
+      "id": "acs-call:ChangeActorAngle",
+      "name": "ChangeActorAngle",
+      "status": "partial",
+      "nativeRef": "src/playsim/p_acs.cpp EACSFunctions"
+    },
+    {
+      "id": "acs-call:ChangeActorPitch",
+      "name": "ChangeActorPitch",
+      "status": "partial",
+      "nativeRef": "src/playsim/p_acs.cpp EACSFunctions"
+    },
+    {
+      "id": "acs-call:GetArmorInfo",
+      "name": "GetArmorInfo",
+      "status": "partial",
+      "nativeRef": "src/playsim/p_acs.cpp EACSFunctions"
+    },
+    {
+      "id": "acs-call:DropInventory",
+      "name": "DropInventory",
+      "status": "partial",
+      "nativeRef": "src/playsim/p_acs.cpp EACSFunctions"
+    },
+    {
+      "id": "acs-call:PickActor",
+      "name": "PickActor",
+      "status": "partial",
+      "nativeRef": "src/playsim/p_acs.cpp EACSFunctions"
+    },
+    {
+      "id": "acs-call:IsPointerEqual",
+      "name": "IsPointerEqual",
+      "status": "partial",
+      "nativeRef": "src/playsim/p_acs.cpp EACSFunctions"
+    },
+    {
+      "id": "acs-call:CanRaiseActor",
+      "name": "CanRaiseActor",
+      "status": "partial",
+      "nativeRef": "src/playsim/p_acs.cpp EACSFunctions"
+    },
+    {
+      "id": "acs-call:SetActorTeleFog",
+      "name": "SetActorTeleFog",
+      "status": "partial",
+      "nativeRef": "src/playsim/p_acs.cpp EACSFunctions"
+    },
+    {
+      "id": "acs-call:SwapActorTeleFog",
+      "name": "SwapActorTeleFog",
+      "status": "partial",
+      "nativeRef": "src/playsim/p_acs.cpp EACSFunctions"
+    },
+    {
+      "id": "acs-call:SetActorRoll",
+      "name": "SetActorRoll",
+      "status": "partial",
+      "nativeRef": "src/playsim/p_acs.cpp EACSFunctions"
+    },
+    {
+      "id": "acs-call:ChangeActorRoll",
+      "name": "ChangeActorRoll",
+      "status": "partial",
+      "nativeRef": "src/playsim/p_acs.cpp EACSFunctions"
+    },
+    {
+      "id": "acs-call:GetActorRoll",
+      "name": "GetActorRoll",
+      "status": "partial",
+      "nativeRef": "src/playsim/p_acs.cpp EACSFunctions"
+    },
+    {
+      "id": "acs-call:QuakeEx",
+      "name": "QuakeEx",
+      "status": "partial",
+      "nativeRef": "src/playsim/p_acs.cpp EACSFunctions"
+    },
+    {
+      "id": "acs-call:Warp",
+      "name": "Warp",
+      "status": "absent",
+      "nativeRef": "src/playsim/p_acs.cpp EACSFunctions"
+    },
+    {
+      "id": "acs-call:GetMaxInventory",
+      "name": "GetMaxInventory",
+      "status": "partial",
+      "nativeRef": "src/playsim/p_acs.cpp EACSFunctions"
+    },
+    {
+      "id": "acs-call:SetSectorDamage",
+      "name": "SetSectorDamage",
+      "status": "partial",
+      "nativeRef": "src/playsim/p_acs.cpp EACSFunctions"
+    },
+    {
+      "id": "acs-call:SetSectorTerrain",
+      "name": "SetSectorTerrain",
+      "status": "partial",
+      "nativeRef": "src/playsim/p_acs.cpp EACSFunctions"
+    },
+    {
+      "id": "acs-call:SpawnParticle",
+      "name": "SpawnParticle",
+      "status": "partial",
+      "nativeRef": "src/playsim/p_acs.cpp EACSFunctions"
+    },
+    {
+      "id": "acs-call:SetMusicVolume",
+      "name": "SetMusicVolume",
+      "status": "partial",
+      "nativeRef": "src/playsim/p_acs.cpp EACSFunctions"
+    },
+    {
+      "id": "acs-call:CheckProximity",
+      "name": "CheckProximity",
+      "status": "partial",
+      "nativeRef": "src/playsim/p_acs.cpp EACSFunctions"
+    },
+    {
+      "id": "acs-call:CheckActorState",
+      "name": "CheckActorState",
+      "status": "partial",
+      "nativeRef": "src/playsim/p_acs.cpp EACSFunctions"
+    },
+    {
+      "id": "acs-call:CheckClass",
+      "name": "CheckClass",
+      "status": "partial",
+      "nativeRef": "src/playsim/p_acs.cpp EACSFunctions"
+    },
+    {
+      "id": "acs-call:DamageActor",
+      "name": "DamageActor",
+      "status": "partial",
+      "nativeRef": "src/playsim/p_acs.cpp EACSFunctions"
+    },
+    {
+      "id": "acs-call:SetActorFlag",
+      "name": "SetActorFlag",
+      "status": "partial",
+      "nativeRef": "src/playsim/p_acs.cpp EACSFunctions"
+    },
+    {
+      "id": "acs-call:SetTranslation",
+      "name": "SetTranslation",
+      "status": "absent",
+      "nativeRef": "src/playsim/p_acs.cpp EACSFunctions"
+    },
+    {
+      "id": "acs-call:GetActorFloorTexture",
+      "name": "GetActorFloorTexture",
+      "status": "partial",
+      "nativeRef": "src/playsim/p_acs.cpp EACSFunctions"
+    },
+    {
+      "id": "acs-call:GetActorFloorTerrain",
+      "name": "GetActorFloorTerrain",
+      "status": "partial",
+      "nativeRef": "src/playsim/p_acs.cpp EACSFunctions"
+    },
+    {
+      "id": "acs-call:StrArg",
+      "name": "StrArg",
+      "status": "partial",
+      "nativeRef": "src/playsim/p_acs.cpp EACSFunctions"
+    },
+    {
+      "id": "acs-call:Floor",
+      "name": "Floor",
+      "status": "partial",
+      "nativeRef": "src/playsim/p_acs.cpp EACSFunctions"
+    },
+    {
+      "id": "acs-call:Round",
+      "name": "Round",
+      "status": "partial",
+      "nativeRef": "src/playsim/p_acs.cpp EACSFunctions"
+    },
+    {
+      "id": "acs-call:Ceil",
+      "name": "Ceil",
+      "status": "partial",
+      "nativeRef": "src/playsim/p_acs.cpp EACSFunctions"
+    },
+    {
+      "id": "acs-call:ScriptCall",
+      "name": "ScriptCall",
+      "status": "absent",
+      "nativeRef": "src/playsim/p_acs.cpp EACSFunctions"
+    },
+    {
+      "id": "acs-call:StartSlideshow",
+      "name": "StartSlideshow",
+      "status": "absent",
+      "nativeRef": "src/playsim/p_acs.cpp EACSFunctions"
+    },
+    {
+      "id": "acs-call:GetSectorHealth",
+      "name": "GetSectorHealth",
+      "status": "partial",
+      "nativeRef": "src/playsim/p_acs.cpp EACSFunctions"
+    },
+    {
+      "id": "acs-call:GetLineHealth",
+      "name": "GetLineHealth",
+      "status": "partial",
+      "nativeRef": "src/playsim/p_acs.cpp EACSFunctions"
+    },
+    {
+      "id": "acs-call:SetSubtitleNumber",
+      "name": "SetSubtitleNumber",
+      "status": "absent",
+      "nativeRef": "src/playsim/p_acs.cpp EACSFunctions"
+    },
+    {
+      "id": "acs-call:GetNetID",
+      "name": "GetNetID",
+      "status": "partial",
+      "nativeRef": "src/playsim/p_acs.cpp EACSFunctions"
+    },
+    {
+      "id": "acs-call:SetActivatorByNetID",
+      "name": "SetActivatorByNetID",
+      "status": "partial",
+      "nativeRef": "src/playsim/p_acs.cpp EACSFunctions"
+    },
+    {
+      "id": "acs-call:GetLineX",
+      "name": "GetLineX",
+      "status": "partial",
+      "nativeRef": "src/playsim/p_acs.cpp EACSFunctions"
+    },
+    {
+      "id": "acs-call:GetLineY",
+      "name": "GetLineY",
+      "status": "partial",
+      "nativeRef": "src/playsim/p_acs.cpp EACSFunctions"
+    },
+    {
+      "id": "acs-call:SetSectorGlow",
+      "name": "SetSectorGlow",
+      "status": "absent",
+      "nativeRef": "src/playsim/p_acs.cpp EACSFunctions"
+    },
+    {
+      "id": "acs-call:SetFogDensity",
+      "name": "SetFogDensity",
+      "status": "absent",
+      "nativeRef": "src/playsim/p_acs.cpp EACSFunctions"
+    },
+    {
+      "id": "acs-call:GetTeamScore",
+      "name": "GetTeamScore",
+      "status": "absent",
+      "nativeRef": "src/playsim/p_acs.cpp EACSFunctions"
+    },
+    {
+      "id": "acs-call:SetTeamScore",
+      "name": "SetTeamScore",
+      "status": "absent",
+      "nativeRef": "src/playsim/p_acs.cpp EACSFunctions"
+    },
+    {
+      "id": "acs-call:InvasionGetState",
+      "name": "InvasionGetState",
+      "status": "absent",
+      "nativeRef": "src/playsim/p_acs.cpp EACSFunctions"
+    },
+    {
+      "id": "acs-call:InvasionGetStateTics",
+      "name": "InvasionGetStateTics",
+      "status": "absent",
+      "nativeRef": "src/playsim/p_acs.cpp EACSFunctions"
+    },
+    {
+      "id": "acs-call:InvasionGetWave",
+      "name": "InvasionGetWave",
+      "status": "absent",
+      "nativeRef": "src/playsim/p_acs.cpp EACSFunctions"
+    },
+    {
+      "id": "acs-call:InvasionGetMaxWaves",
+      "name": "InvasionGetMaxWaves",
+      "status": "absent",
+      "nativeRef": "src/playsim/p_acs.cpp EACSFunctions"
+    },
+    {
+      "id": "acs-call:InvasionGetWaveBudget",
+      "name": "InvasionGetWaveBudget",
+      "status": "absent",
+      "nativeRef": "src/playsim/p_acs.cpp EACSFunctions"
+    },
+    {
+      "id": "acs-call:InvasionGetWaveSpawned",
+      "name": "InvasionGetWaveSpawned",
+      "status": "absent",
+      "nativeRef": "src/playsim/p_acs.cpp EACSFunctions"
+    },
+    {
+      "id": "acs-call:InvasionGetWaveCleared",
+      "name": "InvasionGetWaveCleared",
+      "status": "absent",
+      "nativeRef": "src/playsim/p_acs.cpp EACSFunctions"
+    },
+    {
+      "id": "acs-call:InvasionGetActiveMonsterCount",
+      "name": "InvasionGetActiveMonsterCount",
+      "status": "absent",
+      "nativeRef": "src/playsim/p_acs.cpp EACSFunctions"
+    },
+    {
+      "id": "acs-call:InvasionIsBossWave",
+      "name": "InvasionIsBossWave",
+      "status": "absent",
+      "nativeRef": "src/playsim/p_acs.cpp EACSFunctions"
+    },
+    {
+      "id": "acs-call:InvasionGetSpawnSpotCount",
+      "name": "InvasionGetSpawnSpotCount",
+      "status": "absent",
+      "nativeRef": "src/playsim/p_acs.cpp EACSFunctions"
+    },
+    {
+      "id": "acs-call:InvasionGetActiveSpawnSpotCount",
+      "name": "InvasionGetActiveSpawnSpotCount",
+      "status": "absent",
+      "nativeRef": "src/playsim/p_acs.cpp EACSFunctions"
+    },
+    {
+      "id": "acs-call:InvasionGetSpawnPlanBudget",
+      "name": "InvasionGetSpawnPlanBudget",
+      "status": "absent",
+      "nativeRef": "src/playsim/p_acs.cpp EACSFunctions"
+    },
+    {
+      "id": "acs-call:InvasionGetSpawnActiveTag",
+      "name": "InvasionGetSpawnActiveTag",
+      "status": "absent",
+      "nativeRef": "src/playsim/p_acs.cpp EACSFunctions"
+    },
+    {
+      "id": "acs-call:InvasionIsSpawnUsingFallback",
+      "name": "InvasionIsSpawnUsingFallback",
+      "status": "absent",
+      "nativeRef": "src/playsim/p_acs.cpp EACSFunctions"
+    },
+    {
+      "id": "acs-call:InvasionGetSpawnFallbackSource",
+      "name": "InvasionGetSpawnFallbackSource",
+      "status": "absent",
+      "nativeRef": "src/playsim/p_acs.cpp EACSFunctions"
+    },
+    {
+      "id": "acs-call:InvasionControlAction",
+      "name": "InvasionControlAction",
+      "status": "absent",
+      "nativeRef": "src/playsim/p_acs.cpp EACSFunctions"
+    }
+  ],
+  "nativeSubsystems": [
+    {
+      "directory": "src/common/",
+      "nativeLoc": 228734,
+      "managedEquivalent": "csharp/src/HCDE.* (partial)",
+      "notes": "No full directory port; behavior landed incrementally in managed playsim/scripting."
+    },
+    {
+      "directory": "src/playsim/",
+      "nativeLoc": 88088,
+      "managedEquivalent": "csharp/src/HCDE.* (partial)",
+      "notes": "No full directory port; behavior landed incrementally in managed playsim/scripting."
+    },
+    {
+      "directory": "src/rendering/",
+      "nativeLoc": 37940,
+      "managedEquivalent": "csharp/src/HCDE.* (partial)",
+      "notes": "No full directory port; behavior landed incrementally in managed playsim/scripting."
+    },
+    {
+      "directory": "src/gamedata/",
+      "nativeLoc": 21437,
+      "managedEquivalent": "csharp/src/HCDE.* (partial)",
+      "notes": "No full directory port; behavior landed incrementally in managed playsim/scripting."
+    },
+    {
+      "directory": "src/scripting/",
+      "nativeLoc": 15536,
+      "managedEquivalent": "csharp/src/HCDE.* (partial)",
+      "notes": "No full directory port; behavior landed incrementally in managed playsim/scripting."
+    },
+    {
+      "directory": "src/maploader/",
+      "nativeLoc": 13984,
+      "managedEquivalent": "csharp/src/HCDE.* (partial)",
+      "notes": "No full directory port; behavior landed incrementally in managed playsim/scripting."
+    },
+    {
+      "directory": "src/d_net.cpp/",
+      "nativeLoc": 10667,
+      "managedEquivalent": "csharp/src/HCDE.* (partial)",
+      "notes": "No full directory port; behavior landed incrementally in managed playsim/scripting."
+    },
+    {
+      "directory": "src/r_data/",
+      "nativeLoc": 9334,
+      "managedEquivalent": "csharp/src/HCDE.* (partial)",
+      "notes": "No full directory port; behavior landed incrementally in managed playsim/scripting."
+    },
+    {
+      "directory": "src/g_statusbar/",
+      "nativeLoc": 8324,
+      "managedEquivalent": "csharp/src/HCDE.* (partial)",
+      "notes": "No full directory port; behavior landed incrementally in managed playsim/scripting."
+    },
+    {
+      "directory": "src/zcc-parse.c/",
+      "nativeLoc": 6808,
+      "managedEquivalent": "csharp/src/HCDE.* (partial)",
+      "notes": "No full directory port; behavior landed incrementally in managed playsim/scripting."
+    },
+    {
+      "directory": "src/sound/",
+      "nativeLoc": 5219,
+      "managedEquivalent": "csharp/src/HCDE.* (partial)",
+      "notes": "No full directory port; behavior landed incrementally in managed playsim/scripting."
+    },
+    {
+      "directory": "src/d_main.cpp/",
+      "nativeLoc": 5108,
+      "managedEquivalent": "csharp/src/HCDE.* (partial)",
+      "notes": "No full directory port; behavior landed incrementally in managed playsim/scripting."
+    },
+    {
+      "directory": "src/widgets/",
+      "nativeLoc": 4834,
+      "managedEquivalent": "csharp/src/HCDE.* (partial)",
+      "notes": "No full directory port; behavior landed incrementally in managed playsim/scripting."
+    },
+    {
+      "directory": "src/g_game.cpp/",
+      "nativeLoc": 3813,
+      "managedEquivalent": "csharp/src/HCDE.* (partial)",
+      "notes": "No full directory port; behavior landed incrementally in managed playsim/scripting."
+    },
+    {
+      "directory": "src/utility/",
+      "nativeLoc": 3669,
+      "managedEquivalent": "csharp/src/HCDE.* (partial)",
+      "notes": "No full directory port; behavior landed incrementally in managed playsim/scripting."
+    },
+    {
+      "directory": "src/am_map.cpp/",
+      "nativeLoc": 3594,
+      "managedEquivalent": "csharp/src/HCDE.* (partial)",
+      "notes": "No full directory port; behavior landed incrementally in managed playsim/scripting."
+    },
+    {
+      "directory": "src/g_level.cpp/",
+      "nativeLoc": 2691,
+      "managedEquivalent": "csharp/src/HCDE.* (partial)",
+      "notes": "No full directory port; behavior landed incrementally in managed playsim/scripting."
+    },
+    {
+      "directory": "src/events.cpp/",
+      "nativeLoc": 2460,
+      "managedEquivalent": "csharp/src/HCDE.* (partial)",
+      "notes": "No full directory port; behavior landed incrementally in managed playsim/scripting."
+    },
+    {
+      "directory": "src/menu/",
+      "nativeLoc": 2317,
+      "managedEquivalent": "csharp/src/HCDE.* (partial)",
+      "notes": "No full directory port; behavior landed incrementally in managed playsim/scripting."
+    },
+    {
+      "directory": "src/intermission/",
+      "nativeLoc": 2190,
+      "managedEquivalent": "csharp/src/HCDE.* (partial)",
+      "notes": "No full directory port; behavior landed incrementally in managed playsim/scripting."
+    },
+    {
+      "directory": "src/xlat_parser.c/",
+      "nativeLoc": 1999,
+      "managedEquivalent": "csharp/src/HCDE.* (partial)",
+      "notes": "No full directory port; behavior landed incrementally in managed playsim/scripting."
+    },
+    {
+      "directory": "src/console/",
+      "nativeLoc": 1774,
+      "managedEquivalent": "csharp/src/HCDE.* (partial)",
+      "notes": "No full directory port; behavior landed incrementally in managed playsim/scripting."
+    },
+    {
+      "directory": "src/d_net_diag_commands.cpp/",
+      "nativeLoc": 1746,
+      "managedEquivalent": "csharp/src/HCDE.* (partial)",
+      "notes": "No full directory port; behavior landed incrementally in managed playsim/scripting."
+    },
+    {
+      "directory": "src/k8ti_agent.cpp/",
+      "nativeLoc": 1269,
+      "managedEquivalent": "csharp/src/HCDE.* (partial)",
+      "notes": "No full directory port; behavior landed incrementally in managed playsim/scripting."
+    },
+    {
+      "directory": "src/wi_stuff.cpp/",
+      "nativeLoc": 1247,
+      "managedEquivalent": "csharp/src/HCDE.* (partial)",
+      "notes": "No full directory port; behavior landed incrementally in managed playsim/scripting."
+    },
+    {
+      "directory": "src/gameconfigfile.cpp/",
+      "nativeLoc": 1184,
+      "managedEquivalent": "csharp/src/HCDE.* (partial)",
+      "notes": "No full directory port; behavior landed incrementally in managed playsim/scripting."
+    },
+    {
+      "directory": "src/p_states.cpp/",
+      "nativeLoc": 1174,
+      "managedEquivalent": "csharp/src/HCDE.* (partial)",
+      "notes": "No full directory port; behavior landed incrementally in managed playsim/scripting."
+    },
+    {
+      "directory": "src/p_saveg.cpp/",
+      "nativeLoc": 1144,
+      "managedEquivalent": "csharp/src/HCDE.* (partial)",
+      "notes": "No full directory port; behavior landed incrementally in managed playsim/scripting."
+    },
+    {
+      "directory": "src/d_netinfo.cpp/",
+      "nativeLoc": 1097,
+      "managedEquivalent": "csharp/src/HCDE.* (partial)",
+      "notes": "No full directory port; behavior landed incrementally in managed playsim/scripting."
+    },
+    {
+      "directory": "src/d_net_diag.cpp/",
+      "nativeLoc": 1075,
+      "managedEquivalent": "csharp/src/HCDE.* (partial)",
+      "notes": "No full directory port; behavior landed incrementally in managed playsim/scripting."
+    },
+    {
+      "directory": "src/d_net_rewind.cpp/",
+      "nativeLoc": 1007,
+      "managedEquivalent": "csharp/src/HCDE.* (partial)",
+      "notes": "No full directory port; behavior landed incrementally in managed playsim/scripting."
+    },
+    {
+      "directory": "src/d_iwad.cpp/",
+      "nativeLoc": 977,
+      "managedEquivalent": "csharp/src/HCDE.* (partial)",
+      "notes": "No full directory port; behavior landed incrementally in managed playsim/scripting."
+    },
+    {
+      "directory": "src/d_nanobsp_loader.cpp/",
+      "nativeLoc": 848,
+      "managedEquivalent": "csharp/src/HCDE.* (partial)",
+      "notes": "No full directory port; behavior landed incrementally in managed playsim/scripting."
+    },
+    {
+      "directory": "src/nodebuilders/",
+      "nativeLoc": 804,
+      "managedEquivalent": "csharp/src/HCDE.* (partial)",
+      "notes": "No full directory port; behavior landed incrementally in managed playsim/scripting."
+    },
+    {
+      "directory": "src/m_misc.cpp/",
+      "nativeLoc": 802,
+      "managedEquivalent": "csharp/src/HCDE.* (partial)",
+      "notes": "No full directory port; behavior landed incrementally in managed playsim/scripting."
+    },
+    {
+      "directory": "src/p_setup.cpp/",
+      "nativeLoc": 788,
+      "managedEquivalent": "csharp/src/HCDE.* (partial)",
+      "notes": "No full directory port; behavior landed incrementally in managed playsim/scripting."
+    },
+    {
+      "directory": "src/p_conversation.cpp/",
+      "nativeLoc": 754,
+      "managedEquivalent": "csharp/src/HCDE.* (partial)",
+      "notes": "No full directory port; behavior landed incrementally in managed playsim/scripting."
+    },
+    {
+      "directory": "src/d_net_diagnostics.cpp/",
+      "nativeLoc": 740,
+      "managedEquivalent": "csharp/src/HCDE.* (partial)",
+      "notes": "No full directory port; behavior landed incrementally in managed playsim/scripting."
+    },
+    {
+      "directory": "src/ct_chat.cpp/",
+      "nativeLoc": 687,
+      "managedEquivalent": "csharp/src/HCDE.* (partial)",
+      "notes": "No full directory port; behavior landed incrementally in managed playsim/scripting."
+    },
+    {
+      "directory": "src/serializer_doom.cpp/",
+      "nativeLoc": 687,
+      "managedEquivalent": "csharp/src/HCDE.* (partial)",
+      "notes": "No full directory port; behavior landed incrementally in managed playsim/scripting."
+    },
+    {
+      "directory": "src/d_net_predator.cpp/",
+      "nativeLoc": 672,
+      "managedEquivalent": "csharp/src/HCDE.* (partial)",
+      "notes": "No full directory port; behavior landed incrementally in managed playsim/scripting."
+    },
+    {
+      "directory": "src/m_cheat.cpp/",
+      "nativeLoc": 670,
+      "managedEquivalent": "csharp/src/HCDE.* (partial)",
+      "notes": "No full directory port; behavior landed incrementally in managed playsim/scripting."
+    },
+    {
+      "directory": "src/d_net_movement_diag.cpp/",
+      "nativeLoc": 595,
+      "managedEquivalent": "csharp/src/HCDE.* (partial)",
+      "notes": "No full directory port; behavior landed incrementally in managed playsim/scripting."
+    },
+    {
+      "directory": "src/d_net_rcon.cpp/",
+      "nativeLoc": 571,
+      "managedEquivalent": "csharp/src/HCDE.* (partial)",
+      "notes": "No full directory port; behavior landed incrementally in managed playsim/scripting."
+    },
+    {
+      "directory": "src/d_net_checksum.cpp/",
+      "nativeLoc": 566,
+      "managedEquivalent": "csharp/src/HCDE.* (partial)",
+      "notes": "No full directory port; behavior landed incrementally in managed playsim/scripting."
+    },
+    {
+      "directory": "src/bbannouncer.cpp/",
+      "nativeLoc": 534,
+      "managedEquivalent": "csharp/src/HCDE.* (partial)",
+      "notes": "No full directory port; behavior landed incrementally in managed playsim/scripting."
+    },
+    {
+      "directory": "src/st_stuff.cpp/",
+      "nativeLoc": 522,
+      "managedEquivalent": "csharp/src/HCDE.* (partial)",
+      "notes": "No full directory port; behavior landed incrementally in managed playsim/scripting."
+    },
+    {
+      "directory": "src/d_net_predict_state.cpp/",
+      "nativeLoc": 474,
+      "managedEquivalent": "csharp/src/HCDE.* (partial)",
+      "notes": "No full directory port; behavior landed incrementally in managed playsim/scripting."
+    },
+    {
+      "directory": "src/d_anonstats.cpp/",
+      "nativeLoc": 428,
+      "managedEquivalent": "csharp/src/HCDE.* (partial)",
+      "notes": "No full directory port; behavior landed incrementally in managed playsim/scripting."
+    },
+    {
+      "directory": "src/g_dumpinfo.cpp/",
+      "nativeLoc": 422,
+      "managedEquivalent": "csharp/src/HCDE.* (partial)",
+      "notes": "No full directory port; behavior landed incrementally in managed playsim/scripting."
+    },
+    {
+      "directory": "src/p_openmap.cpp/",
+      "nativeLoc": 404,
+      "managedEquivalent": "csharp/src/HCDE.* (partial)",
+      "notes": "No full directory port; behavior landed incrementally in managed playsim/scripting."
+    },
+    {
+      "directory": "src/d_protocol.cpp/",
+      "nativeLoc": 387,
+      "managedEquivalent": "csharp/src/HCDE.* (partial)",
+      "notes": "No full directory port; behavior landed incrementally in managed playsim/scripting."
+    },
+    {
+      "directory": "src/d_net_predict_impl.cpp/",
+      "nativeLoc": 375,
+      "managedEquivalent": "csharp/src/HCDE.* (partial)",
+      "notes": "No full directory port; behavior landed incrementally in managed playsim/scripting."
+    },
+    {
+      "directory": "src/d_net_blackbox.cpp/",
+      "nativeLoc": 337,
+      "managedEquivalent": "csharp/src/HCDE.* (partial)",
+      "notes": "No full directory port; behavior landed incrementally in managed playsim/scripting."
+    },
+    {
+      "directory": "src/p_tick.cpp/",
+      "nativeLoc": 309,
+      "managedEquivalent": "csharp/src/HCDE.* (partial)",
+      "notes": "No full directory port; behavior landed incrementally in managed playsim/scripting."
+    },
+    {
+      "directory": "src/win32/",
+      "nativeLoc": 289,
+      "managedEquivalent": "csharp/src/HCDE.* (partial)",
+      "notes": "No full directory port; behavior landed incrementally in managed playsim/scripting."
+    },
+    {
+      "directory": "src/d_net_aidirector.cpp/",
+      "nativeLoc": 284,
+      "managedEquivalent": "csharp/src/HCDE.* (partial)",
+      "notes": "No full directory port; behavior landed incrementally in managed playsim/scripting."
+    },
+    {
+      "directory": "src/i_input_gyro.cpp/",
+      "nativeLoc": 246,
+      "managedEquivalent": "csharp/src/HCDE.* (partial)",
+      "notes": "No full directory port; behavior landed incrementally in managed playsim/scripting."
+    },
+    {
+      "directory": "src/g_cvars.cpp/",
+      "nativeLoc": 244,
+      "managedEquivalent": "csharp/src/HCDE.* (partial)",
+      "notes": "No full directory port; behavior landed incrementally in managed playsim/scripting."
+    },
+    {
+      "directory": "src/g_hub.cpp/",
+      "nativeLoc": 183,
+      "managedEquivalent": "csharp/src/HCDE.* (partial)",
+      "notes": "No full directory port; behavior landed incrementally in managed playsim/scripting."
+    },
+    {
+      "directory": "src/d_steam.cpp/",
+      "nativeLoc": 164,
+      "managedEquivalent": "csharp/src/HCDE.* (partial)",
+      "notes": "No full directory port; behavior landed incrementally in managed playsim/scripting."
+    },
+    {
+      "directory": "src/d_defcvars.cpp/",
+      "nativeLoc": 163,
+      "managedEquivalent": "csharp/src/HCDE.* (partial)",
+      "notes": "No full directory port; behavior landed incrementally in managed playsim/scripting."
+    },
+    {
+      "directory": "src/hu_scores.cpp/",
+      "nativeLoc": 156,
+      "managedEquivalent": "csharp/src/HCDE.* (partial)",
+      "notes": "No full directory port; behavior landed incrementally in managed playsim/scripting."
+    },
+    {
+      "directory": "src/g_taunt.cpp/",
+      "nativeLoc": 104,
+      "managedEquivalent": "csharp/src/HCDE.* (partial)",
+      "notes": "No full directory port; behavior landed incrementally in managed playsim/scripting."
+    },
+    {
+      "directory": "src/scriptutil.cpp/",
+      "nativeLoc": 97,
+      "managedEquivalent": "csharp/src/HCDE.* (partial)",
+      "notes": "No full directory port; behavior landed incrementally in managed playsim/scripting."
+    },
+    {
+      "directory": "src/r_view_pain_smooth.cpp/",
+      "nativeLoc": 94,
+      "managedEquivalent": "csharp/src/HCDE.* (partial)",
+      "notes": "No full directory port; behavior landed incrementally in managed playsim/scripting."
+    },
+    {
+      "directory": "src/posix/",
+      "nativeLoc": 56,
+      "managedEquivalent": "csharp/src/HCDE.* (partial)",
+      "notes": "No full directory port; behavior landed incrementally in managed playsim/scripting."
+    },
+    {
+      "directory": "src/r_doomsday_features.cpp/",
+      "nativeLoc": 53,
+      "managedEquivalent": "csharp/src/HCDE.* (partial)",
+      "notes": "No full directory port; behavior landed incrementally in managed playsim/scripting."
+    },
+    {
+      "directory": "src/hcde_killfeed.cpp/",
+      "nativeLoc": 53,
+      "managedEquivalent": "csharp/src/HCDE.* (partial)",
+      "notes": "No full directory port; behavior landed incrementally in managed playsim/scripting."
+    },
+    {
+      "directory": "src/i_input_feel.cpp/",
+      "nativeLoc": 45,
+      "managedEquivalent": "csharp/src/HCDE.* (partial)",
+      "notes": "No full directory port; behavior landed incrementally in managed playsim/scripting."
+    },
+    {
+      "directory": "src/doomstat.cpp/",
+      "nativeLoc": 37,
+      "managedEquivalent": "csharp/src/HCDE.* (partial)",
+      "notes": "No full directory port; behavior landed incrementally in managed playsim/scripting."
+    },
+    {
+      "directory": "src/CMakeFiles/",
+      "nativeLoc": 2,
+      "managedEquivalent": "csharp/src/HCDE.* (partial)",
+      "notes": "No full directory port; behavior landed incrementally in managed playsim/scripting."
+    }
+  ]
+}
