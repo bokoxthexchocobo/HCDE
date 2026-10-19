@@ -4342,6 +4342,57 @@ public sealed class AuthoritySimulation
         return bot;
     }
 
+    /// <summary>Native ACS <c>DoSpawn</c> (non-forced placement; simplified collision).</summary>
+    internal int SpawnAcsActor(string className, double x, double y, double z, int tid, int angleByte, bool force,
+        BamAngle? facing = null)
+    {
+        if (!DoomActorCatalog.TryEditorNumberForClassName(className, out var doomEdNum)) return 0;
+        var definition = DoomActorCatalog.Find(doomEdNum);
+        var id = _nextActorId;
+        _nextActorId = checked(_nextActorId + 1);
+        var defaults = _dehacked?.Actors.FirstOrDefault(actor => actor.DoomEdNum == doomEdNum && actor.Patched);
+        var actor = new Actor
+        {
+            Id = id,
+            DoomEdNum = doomEdNum,
+            DefinitionDoomEdNum = defaults?.OriginalDoomEdNum is > 0 ? defaults.OriginalDoomEdNum : doomEdNum,
+            ThingId = tid,
+            X = Fixed.FromDouble(x),
+            Y = Fixed.FromDouble(y),
+            Z = Fixed.FromDouble(z),
+            Angle = facing ?? new BamAngle((uint)(angleByte * (4294967296.0 / 256.0))),
+            Health = defaults?.Health ?? definition?.Health ?? 30,
+            Radius = definition != null ? Fixed.FromInt(definition.Radius) : Fixed.FromInt(20),
+            Height = definition != null ? Fixed.FromInt(definition.Height) : Fixed.FromInt(56),
+            ChaseSpeed = Math.Clamp((definition?.Speed ?? 4) / 4.0, 0, ActorPhysics.MaxMove),
+            PainChance = definition?.PainChance ?? 256,
+            NoGravity = definition?.Floating ?? false,
+            Floating = definition?.Floating ?? false,
+            Level = Level,
+            Brain = MonsterBrain.ForType(doomEdNum),
+        };
+        actor.IsMonster = actor.Brain is not null;
+        if (defaults != null)
+        {
+            actor.Radius = ActorSpawner.RadiusOf(defaults, player: false);
+            actor.Height = ActorSpawner.HeightOf(defaults);
+            ActorSpawner.ApplyPrimaryFlags(actor, defaults, playerStart: false);
+            ActorSpawner.ApplySoundDefaults(actor, defaults);
+        }
+        actor.Simulation = this;
+        actor.SectorIndex = ActorPhysics.SectorAt(Level, x, y);
+        if (actor.SectorIndex < 0)
+        {
+            actor.Destroy();
+            return 0;
+        }
+        ThingActivation.InitializeSpawn(actor, false, mapSpawn: false);
+        actor.OnGround = actor.Z.ToDouble() <= FloorOf(actor.SectorIndex);
+        _actors.Add(actor);
+        Thinkers.Add(actor, ThinkerStat.Default);
+        return 1;
+    }
+
     public uint NextCombatRandom()
     {
         CombatRandomState = unchecked(1664525u * CombatRandomState + 1013904223u);

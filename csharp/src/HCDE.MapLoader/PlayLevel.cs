@@ -49,7 +49,7 @@ public sealed class LevelSector
     public uint FloorTextureAngle { get; set; }
     public uint FloorTextureBaseAngle { get; set; }
     public double FloorTextureBaseOffsetY { get; set; }
-    public string CeilingPic { get; init; } = "-";
+    public string CeilingPic { get; set; } = "-";
     public double CeilingTextureOffsetX { get; set; }
     public double CeilingTextureOffsetY { get; set; }
     public double CeilingTextureScaleX { get; set; } = 1;
@@ -80,9 +80,9 @@ public sealed class LevelSide
     public double BottomTextureOffsetY { get; set; }
     public int Index { get; init; }
     public int Sector { get; init; }
-    public string TopTexture { get; init; } = "-";
-    public string BottomTexture { get; init; } = "-";
-    public string MidTexture { get; init; } = "-";
+    public string TopTexture { get; set; } = "-";
+    public string BottomTexture { get; set; } = "-";
+    public string MidTexture { get; set; } = "-";
     /// <summary>UDMF map-load wall scroll rates (parts mask matches <c>WallScrollParts</c>).</summary>
     public List<(double Dx, double Dy, int PartsMask)> MapLoadWallScrolls { get; private set; } = [];
 

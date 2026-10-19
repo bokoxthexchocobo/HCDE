@@ -98,6 +98,8 @@ public sealed class AcsVm
     public int ProgramCount => _programs.Count;
     public int RunningCount => _fibers.Count(fiber => !fiber.Done);
     public int SuspendedCount => _fibers.Count(fiber => !fiber.Done && fiber.Suspended);
+    /// <summary>Latest value from <c>PCD_SETRESULTVALUE</c> on any active fiber this tick.</summary>
+    public int ScriptResult { get; private set; }
 
     /// <summary>Replaces one module's map variables and arrays while no scripts are active. Imports and string tags are not supported.</summary>
     public bool TryLoadMapArrays(MapBehaviorMapArrayMetadata metadata, out string? error)
@@ -1157,6 +1159,125 @@ public sealed class AcsVm
                         }
                         if (value < fiber.Stack[^1]) low = mid + 1;
                         else high = mid - 1;
+                    }
+                    break;
+                }
+                case (int)AcsPcode.ChangeFloor:
+                {
+                    var floorName = Pop(fiber);
+                    var floorTag = Pop(fiber);
+                    if (!fiber.Done)
+                        AcsMapMutations.ChangeFlat(sim, floorTag, floorName, ceiling: false, fiber.StringTable, _globalStrings);
+                    break;
+                }
+                case (int)AcsPcode.ChangeFloorDirect:
+                {
+                    var floorTagDirect = ReadI32(fiber);
+                    var floorNameDirect = ReadI32(fiber);
+                    if (!fiber.Done)
+                    {
+                        var resolved = AcsMapMutations.ResolveTaggedTypeStringId(floorNameDirect, fiber.StringTable, _globalStrings);
+                        AcsMapMutations.ChangeFlat(sim, floorTagDirect, resolved, ceiling: false, fiber.StringTable, _globalStrings);
+                    }
+                    break;
+                }
+                case (int)AcsPcode.ChangeCeiling:
+                {
+                    var ceilingName = Pop(fiber);
+                    var ceilingTag = Pop(fiber);
+                    if (!fiber.Done)
+                        AcsMapMutations.ChangeFlat(sim, ceilingTag, ceilingName, ceiling: true, fiber.StringTable, _globalStrings);
+                    break;
+                }
+                case (int)AcsPcode.ChangeCeilingDirect:
+                {
+                    var ceilingTagDirect = ReadI32(fiber);
+                    var ceilingNameDirect = ReadI32(fiber);
+                    if (!fiber.Done)
+                    {
+                        var resolved = AcsMapMutations.ResolveTaggedTypeStringId(ceilingNameDirect, fiber.StringTable, _globalStrings);
+                        AcsMapMutations.ChangeFlat(sim, ceilingTagDirect, resolved, ceiling: true, fiber.StringTable, _globalStrings);
+                    }
+                    break;
+                }
+                case (int)AcsPcode.ClearLineSpecial:
+                    AcsMapMutations.ClearLineSpecial(fiber.TriggerLine);
+                    break;
+                case (int)AcsPcode.SetLineTexture:
+                {
+                    if (fiber.Stack.Count < 4) { fiber.Done = true; return; }
+                    var texName = Pop(fiber);
+                    var texPosition = Pop(fiber);
+                    var texSide = Pop(fiber);
+                    var texLineId = Pop(fiber);
+                    if (!fiber.Done)
+                        AcsMapMutations.SetLineTexture(sim, texLineId, texSide, texPosition, texName, fiber.StringTable, _globalStrings);
+                    break;
+                }
+                case (int)AcsPcode.SetResultValue:
+                    ScriptResult = Pop(fiber);
+                    break;
+                case (int)AcsPcode.Spawn:
+                {
+                    if (fiber.Stack.Count < 6) { fiber.Done = true; return; }
+                    var spawnAngle = Pop(fiber);
+                    var spawnTid = Pop(fiber);
+                    var spawnZ = Pop(fiber);
+                    var spawnY = Pop(fiber);
+                    var spawnX = Pop(fiber);
+                    var spawnType = Pop(fiber);
+                    if (!fiber.Done)
+                    {
+                        var spawned = AcsMapMutations.Spawn(sim, spawnType, spawnX, spawnY, spawnZ, spawnTid, spawnAngle, false,
+                            fiber.StringTable, _globalStrings, fiber.Activator);
+                        fiber.Stack.Add(spawned);
+                    }
+                    break;
+                }
+                case (int)AcsPcode.SpawnDirect:
+                {
+                    var directType = ReadI32(fiber);
+                    var directX = ReadI32(fiber);
+                    var directY = ReadI32(fiber);
+                    var directZ = ReadI32(fiber);
+                    var directTid = ReadI32(fiber);
+                    var directAngle = ReadI32(fiber);
+                    if (!fiber.Done)
+                    {
+                        var resolved = AcsMapMutations.ResolveTaggedTypeStringId(directType, fiber.StringTable, _globalStrings);
+                        var spawned = AcsMapMutations.Spawn(sim, resolved, directX, directY, directZ, directTid, directAngle, false,
+                            fiber.StringTable, _globalStrings, fiber.Activator);
+                        fiber.Stack.Add(spawned);
+                    }
+                    break;
+                }
+                case (int)AcsPcode.SpawnSpot:
+                {
+                    if (fiber.Stack.Count < 4) { fiber.Done = true; return; }
+                    var spotAngle = Pop(fiber);
+                    var spotTid = Pop(fiber);
+                    var spotId = Pop(fiber);
+                    var spotType = Pop(fiber);
+                    if (!fiber.Done)
+                    {
+                        var spawned = AcsMapMutations.SpawnSpot(sim, spotType, spotId, spotTid, spotAngle, false,
+                            fiber.StringTable, _globalStrings, fiber.Activator);
+                        fiber.Stack.Add(spawned);
+                    }
+                    break;
+                }
+                case (int)AcsPcode.SpawnSpotDirect:
+                {
+                    var spotDirectType = ReadI32(fiber);
+                    var spotDirectId = ReadI32(fiber);
+                    var spotDirectTid = ReadI32(fiber);
+                    var spotDirectAngle = ReadI32(fiber);
+                    if (!fiber.Done)
+                    {
+                        var resolved = AcsMapMutations.ResolveTaggedTypeStringId(spotDirectType, fiber.StringTable, _globalStrings);
+                        var spawned = AcsMapMutations.SpawnSpot(sim, resolved, spotDirectId, spotDirectTid, spotDirectAngle, false,
+                            fiber.StringTable, _globalStrings, fiber.Activator);
+                        fiber.Stack.Add(spawned);
                     }
                     break;
                 }
