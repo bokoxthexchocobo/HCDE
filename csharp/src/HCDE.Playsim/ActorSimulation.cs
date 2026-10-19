@@ -55,6 +55,8 @@ public class Actor : Thinker
     public virtual void PostTeleport((double X, double Y, double Z) destination, double angle, int flags)
         => PostTeleportFunction?.Invoke(this, destination, angle, flags);
     public bool NoBlockmap { get; set; }
+    /// <summary>Native <c>MF5_NOINTERACTION</c>: velocity-only tick without full playsim interaction.</summary>
+    public bool NoInteraction { get; set; }
     public bool NoSector { get; set; }
     internal bool HasSectorOverride { get; set; }
     public bool IsSectorLinked => !Destroyed && !NoSector;
@@ -1750,6 +1752,8 @@ public class Actor : Thinker
         AbsorbCount = 0;
         RememberPosition();
         if (ActorFreezeTickGate.TryConsumeFreezeTick(this))
+            return;
+        if (Simulation is not null && ActorNoInteractionTick.TryTickMinimalPhysics(Simulation, this))
             return;
         if (!CheckNoDelay()) return;
         if (PendingSpawnDeath)

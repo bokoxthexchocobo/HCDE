@@ -18,19 +18,19 @@
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": -8376,
+    "convertedThisRunNative": -8325,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 5330,
+    "convertedThisRunManaged": 5357,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -774,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 493269,
+    "remainingNative": 493218,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 10151,
+    "convertedBehaviorNative": 10202,
     "recognitionBehaviorNative": 4666,
-    "combinedBehaviorNative": 14817,
-    "convertedBehaviorManaged": 15001,
+    "combinedBehaviorNative": 14868,
+    "convertedBehaviorManaged": 15028,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -3637,7 +3637,26 @@
             ]
           }
         ],
-        "conversionManagedCommit": "ea10acf56e1cfb386e0c4607d66177037362e227"
+        "conversionManagedCommit": "a46b9a46f8e65d262df96ed0502960faa3404e39"
+      },
+      {
+        "name": "p-mobj-nointeraction-tick-chunk52",
+        "bucket": "conversion",
+        "nativeLoc": 51,
+        "managedLoc": 27,
+        "note": "AActor::Tick MF5_NOINTERACTION velocity-only path.",
+        "nativeRanges": [
+          {
+            "file": "src/playsim/p_mobj.cpp",
+            "symbol": "AActor::Tick",
+            "start": 4587,
+            "end": 4637,
+            "tests": [
+              "ActorNoInteractionTickTests.Tick_AppliesVelocityAndForcesNoBlockmap"
+            ]
+          }
+        ],
+        "conversionManagedCommit": "db4cfdf4835b46cd22a8b78a3b3eae6e7a3d4819"
       }
     ]
   },
