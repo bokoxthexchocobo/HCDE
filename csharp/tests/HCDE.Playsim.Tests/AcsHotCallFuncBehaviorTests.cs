@@ -70,6 +70,21 @@ public class AcsHotCallFuncBehaviorTests
     }
 
     [Fact]
+    public void SpawnSpotFacingForcedUsesActivatorYaw()
+    {
+        var sim = Room();
+        var player = sim.Players.Single();
+        player.Angle = BamAngle.FromDegrees(90);
+        var stack = new List<int> { 0, 0, 11 };
+        var strings = new[] { "DoomImp" };
+        Assert.True(AcsCallFunctions.TryInvoke(sim, stack, new() { Value = player }, strings, new(),
+            AcsCallFunctions.SpawnSpotFacingForced, 3, out var spawned));
+        Assert.Equal(1, spawned);
+        var imp = Assert.Single(sim.Actors, a => a.ThingId == 11);
+        Assert.Equal(BamAngle.FromDegrees(90), imp.Angle);
+    }
+
+    [Fact]
     public void UserArrayIndexRoundTrip()
     {
         var sim = Room();

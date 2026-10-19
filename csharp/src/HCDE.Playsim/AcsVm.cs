@@ -1281,6 +1281,20 @@ public sealed class AcsVm
                     }
                     break;
                 }
+                case (int)AcsPcode.SpawnSpotFacing:
+                {
+                    if (fiber.Stack.Count < 3) { fiber.Done = true; return; }
+                    var facingTid = Pop(fiber);
+                    var facingSpot = Pop(fiber);
+                    var facingType = Pop(fiber);
+                    if (!fiber.Done)
+                    {
+                        var spawned = AcsMapMutations.SpawnSpotFacing(sim, facingType, facingSpot, facingTid, false,
+                            fiber.StringTable, _globalStrings, fiber.Activator);
+                        fiber.Stack.Add(spawned);
+                    }
+                    break;
+                }
                 case (int)AcsPcode.Drop:
                     Pop(fiber);
                     break;

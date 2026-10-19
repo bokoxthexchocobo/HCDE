@@ -42,6 +42,14 @@ internal static class AcsCallFunctions
     public const int SetAirSupply = 17;
     /// <summary>Native <c>ACSF_SpawnSpotForced</c> (20).</summary>
     public const int SpawnSpotForced = 20;
+    /// <summary>Native <c>ACSF_SpawnSpotFacingForced</c> (21).</summary>
+    public const int SpawnSpotFacingForced = 21;
+    /// <summary>Native <c>ACSF_SoundSequenceOnActor</c> (30).</summary>
+    public const int SoundSequenceOnActor = 30;
+    /// <summary>Native <c>ACSF_SoundSequenceOnSector</c> (31).</summary>
+    public const int SoundSequenceOnSector = 31;
+    /// <summary>Native <c>ACSF_SoundSequenceOnPolyobj</c> (32).</summary>
+    public const int SoundSequenceOnPolyobj = 32;
     /// <summary>Native <c>ACSF_SetUserArray</c> (28).</summary>
     public const int SetUserArray = 28;
     /// <summary>Native <c>ACSF_GetUserArray</c> (29).</summary>
@@ -229,6 +237,14 @@ internal static class AcsCallFunctions
                 return TrySetAirSupply(sim, stack, argCount, out result);
             case SpawnSpotForced:
                 return TrySpawnSpotForced(sim, stack, scriptActivator, stringTable, globalStrings, argCount, out result);
+            case SpawnSpotFacingForced:
+                return TrySpawnSpotFacingForced(sim, stack, scriptActivator, stringTable, globalStrings, argCount, out result);
+            case SoundSequenceOnActor:
+                return TrySoundSequenceOnActor(sim, stack, scriptActivator, stringTable, globalStrings, argCount, out result);
+            case SoundSequenceOnSector:
+                return TrySoundSequenceOnSector(sim, stack, stringTable, globalStrings, argCount, out result);
+            case SoundSequenceOnPolyobj:
+                return TrySoundSequenceOnPolyobj(sim, stack, stringTable, globalStrings, argCount, out result);
             case GetActorVelX:
                 return TryGetActorVelocity(sim, stack, scriptActivator, 0, argCount, out result);
             case GetActorVelY:
@@ -2133,6 +2149,81 @@ internal static class AcsCallFunctions
         var angleByte = stack[start + 3];
         stack.RemoveRange(start, argCount);
         result = AcsMapMutations.SpawnSpot(sim, typeId, spotTid, tid, angleByte, force: true, stringTable, globalStrings, activator);
+        return true;
+    }
+
+    private static bool TrySpawnSpotFacingForced(
+        AuthoritySimulation sim,
+        List<int> stack,
+        Actor? activator,
+        string[] stringTable,
+        AcsGlobalStrings globalStrings,
+        int argCount,
+        out int result)
+    {
+        result = 0;
+        if (argCount < 3 || stack.Count < argCount) return false;
+        var start = stack.Count - argCount;
+        var typeId = stack[start];
+        var spotTid = stack[start + 1];
+        var tid = stack[start + 2];
+        stack.RemoveRange(start, argCount);
+        result = AcsMapMutations.SpawnSpotFacing(sim, typeId, spotTid, tid, force: true, stringTable, globalStrings, activator);
+        return true;
+    }
+
+    private static bool TrySoundSequenceOnActor(
+        AuthoritySimulation sim,
+        List<int> stack,
+        Actor? activator,
+        string[] stringTable,
+        AcsGlobalStrings globalStrings,
+        int argCount,
+        out int result)
+    {
+        result = 0;
+        if (argCount < 2 || stack.Count < argCount) return false;
+        var start = stack.Count - argCount;
+        var tid = stack[start];
+        var name = AcsStringIds.LookupTerminated(stack[start + 1], stringTable, globalStrings);
+        stack.RemoveRange(start, argCount);
+        AcsSoundSequenceActions.StartOnActor(sim, tid, name, activator);
+        return true;
+    }
+
+    private static bool TrySoundSequenceOnSector(
+        AuthoritySimulation sim,
+        List<int> stack,
+        string[] stringTable,
+        AcsGlobalStrings globalStrings,
+        int argCount,
+        out int result)
+    {
+        result = 0;
+        if (argCount < 2 || stack.Count < argCount) return false;
+        var start = stack.Count - argCount;
+        var tag = stack[start];
+        var name = AcsStringIds.LookupTerminated(stack[start + 1], stringTable, globalStrings);
+        stack.RemoveRange(start, argCount);
+        AcsSoundSequenceActions.StartOnSectors(sim, tag, name);
+        return true;
+    }
+
+    private static bool TrySoundSequenceOnPolyobj(
+        AuthoritySimulation sim,
+        List<int> stack,
+        string[] stringTable,
+        AcsGlobalStrings globalStrings,
+        int argCount,
+        out int result)
+    {
+        result = 0;
+        if (argCount < 2 || stack.Count < argCount) return false;
+        var start = stack.Count - argCount;
+        var polyId = stack[start];
+        var name = AcsStringIds.LookupTerminated(stack[start + 1], stringTable, globalStrings);
+        stack.RemoveRange(start, argCount);
+        AcsSoundSequenceActions.StartOnPolyobj(sim, polyId, name);
         return true;
     }
 

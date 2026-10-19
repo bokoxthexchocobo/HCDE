@@ -106,6 +106,34 @@ internal static class AcsMapMutations
         return spawned;
     }
 
+    public static int SpawnSpotFacing(
+        AuthoritySimulation sim,
+        int typeStringId,
+        int spotTid,
+        int tid,
+        bool force,
+        string[] stringTable,
+        AcsGlobalStrings globalStrings,
+        Actor? activator)
+    {
+        var className = AcsStringIds.LookupTerminated(typeStringId, stringTable, globalStrings);
+        if (string.IsNullOrEmpty(className)) return 0;
+        var spawned = 0;
+        if (spotTid != 0)
+        {
+            foreach (var actor in sim.Actors.Where(actor => !actor.Destroyed && actor.ThingId == spotTid).ToArray())
+                spawned += sim.SpawnAcsActor(className, actor.X.ToDouble(), actor.Y.ToDouble(), actor.Z.ToDouble(),
+                    tid, 0, force, actor.Angle);
+        }
+        else if (activator is { Destroyed: false })
+        {
+            spawned += sim.SpawnAcsActor(className, activator.X.ToDouble(), activator.Y.ToDouble(), activator.Z.ToDouble(),
+                tid, 0, force, activator.Angle);
+        }
+
+        return spawned;
+    }
+
     public static int ResolveTaggedTypeStringId(int stringId, string[] stringTable, AcsGlobalStrings globalStrings) =>
         globalStrings.Add(AcsStringIds.LookupTerminated(stringId, stringTable, globalStrings));
 }
