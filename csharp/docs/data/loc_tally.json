@@ -1,14 +1,14 @@
 {
-  "convertedThisRunNative": 2441,
-  "convertedThisRunManaged": 894,
+  "convertedThisRunNative": 2616,
+  "convertedThisRunManaged": 1004,
   "recognitionThisRunNative": 5400,
   "recognitionThisRunManaged": 0,
-  "remainingNative": 492218,
+  "remainingNative": 492043,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 10468,
+  "convertedBehaviorNative": 10643,
   "recognitionBehaviorNative": 5400,
-  "combinedBehaviorNative": 15868,
-  "convertedBehaviorManaged": 6675,
+  "combinedBehaviorNative": 16043,
+  "convertedBehaviorManaged": 6785,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -351,6 +351,19 @@
       "nativeRanges": [
         { "file": "src/playsim/p_switch.cpp", "symbol": "P_CheckSwitchRange", "start": 98, "end": 234, "tests": ["SwitchCheckRangeTests.TopSwitchRequiresReachableHeight"] },
         { "file": "src/playsim/p_teleport.cpp", "symbol": "FLevelLocals::SelectTeleDest", "start": 274, "end": 340, "tests": ["TeleportRandomDestTests.TidTeleportUsesDeterministicIndexAcrossMatchingDests"] }
+      ]
+    },
+    {
+      "name": "acs-soundsequence-spawn-facing-chunk6",
+      "bucket": "conversion",
+      "nativeLoc": 175,
+      "managedLoc": 110,
+      "note": "p_acs.cpp DoSpawnSpotFacing, ACSF_SoundSequenceOn*, PCD_SpawnSpotFacing.",
+      "nativeRanges": [
+        { "file": "src/playsim/p_acs.cpp", "symbol": "DLevelScript::DoSpawnSpotFacing", "start": 3895, "end": 3914, "tests": ["AcsHotCallFuncBehaviorTests.SpawnSpotFacingForcedUsesActivatorYaw"] },
+        { "file": "src/playsim/p_acs.cpp", "symbol": "ACSF_SoundSequenceOnActor", "start": 5816, "end": 5841, "tests": ["AcsSoundSequenceCallFuncTests.SoundSequenceOnActorSetsActivatorName"] },
+        { "file": "src/playsim/p_acs.cpp", "symbol": "ACSF_SoundSequenceOnSector", "start": 5843, "end": 5858, "tests": ["AcsSoundSequenceCallFuncTests.SoundSequenceOnSectorTagsAllMatchingSectors"] },
+        { "file": "src/playsim/p_acs.cpp", "symbol": "ACSF_SoundSequenceOnPolyobj", "start": 5860, "end": 5873, "tests": ["AcsSoundSequenceCallFuncTests.SoundSequenceOnPolyobjStoresSequenceName"] }
       ]
     }
   ]
