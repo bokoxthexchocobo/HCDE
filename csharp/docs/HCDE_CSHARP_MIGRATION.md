@@ -214,6 +214,21 @@ Options to wire C# into the main build:
 
 For now, C# builds independently to avoid disrupting the existing CMake pipeline.
 
+## Native-to-managed support matrix
+
+Regenerate after inventory or execution changes:
+
+```bash
+dotnet run --project csharp/src/HCDE.ConversionInventory -- /path/to/hcde
+```
+
+Artifacts:
+
+- [`HCDE_NATIVE_MANAGED_MATRIX.md`](HCDE_NATIVE_MANAGED_MATRIX.md) — headline counts and subsystem LOC estimates
+- [`HCDE_NATIVE_MANAGED_MATRIX.json`](HCDE_NATIVE_MANAGED_MATRIX.json) / [`.csv`](HCDE_NATIVE_MANAGED_MATRIX.csv) — machine-readable rows
+
+Snapshot (2026-10-19): **689 executed**, **317 partial**, **113 decoded-only**, **170 absent** rows across ACS opcodes, ACS callfuncs, line specials, ZScript VM opcodes, catalog actor classes, and persistence archives. Estimated native LOC still without managed parity: playsim ~49k, scripting VM ~54k, rendering ~30k, maploader ~8k, gamedata ~23k (see matrix doc).
+
 ## Contributing
 
 When porting a C++ module:
