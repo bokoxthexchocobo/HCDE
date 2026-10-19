@@ -13,9 +13,10 @@ public class ChaseLostSightNoSightCheckTests
         hunter.TidToHate = hatee.ThingId;
         hunter.NoSightCheck = true;
         hunter.SetTargetPointer(hatee);
-        hunter.Brain.SetChaseThreshold(0, false);
+        var brain = hunter.Brain ?? throw new InvalidOperationException("Hunter requires a brain.");
+        brain.SetChaseThreshold(0, false);
         hatee.X = Fixed.FromInt(512);
-        hunter.Brain.Tick(sim, hunter, MonsterChaseFlags.NoPlayActive);
+        brain.Tick(sim, hunter, MonsterChaseFlags.NoPlayActive);
         Assert.True(hunter.NoSightCheck);
     }
 
