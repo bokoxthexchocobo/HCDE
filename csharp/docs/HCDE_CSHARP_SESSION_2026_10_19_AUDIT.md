@@ -98,22 +98,25 @@ No subagent chunks 10–12 were merged; branch contains only audited commits thr
 | Also merged | `p-saveg-acs-archive-chunk10` — `HCDE_CSHARP_P_SAVEG_SERIALIZER_CHUNK10_AUDIT.md`, `PSavegRoundTripTests` |
 | Tally chunk | `p-saveg-acs-archive-chunk10` — **1,512** native / **550** managed (credited) |
 
-### Behavior LOC at session end (`sync_loc_tally`)
+### Behavior LOC after chunks 11–12 (pushed `7b30b1e9`)
+
+Follow-up from background work ([ACS CallFunc savegame chunks](bc-db2607ce-598f-5084-9fed-6c2963eb57d0)): commits `4e642f5b` (18 CallFuncs), `7b30b1e9` (`Net_ResetCommands` slice).
+
+| Chunk | Audit | Commit |
+| --- | --- | --- |
+| CallFunc gap fill (11) | `HCDE_CSHARP_ACS_ABSENT_OPCODES_CALLFUNC_CHUNK11_AUDIT.md` | `4e642f5b` |
+| `d_net` reset commands (12) | `HCDE_CSHARP_D_NET_RESET_COMMANDS_CHUNK12_AUDIT.md` | `7b30b1e9` |
 
 | Metric | Value |
 | --- | ---: |
-| Converted this run (native) | **5,606** |
-| Recognition this run (native) | **20** |
-| Added this run (managed) | **1,525** |
-| Cumulative conversion (native) | **16,249** |
-| Cumulative recognition (native) | **5,420** |
-| Remaining native | **486,417** |
-| Cumulative conversion (managed) | **8,942** |
+| Converted this run (native) | **7,818** |
+| Recognition this run (native) | **40** |
+| Added this run (managed) | **2,205** |
+| Cumulative conversion (native) | **18,461** |
+| Cumulative recognition (native) | **5,440** |
+| Remaining native | **484,185** |
+| Cumulative conversion (managed) | **9,622** |
 
-Matrix headline: ACS pcode **285 executed** / 10 partial / 79 decoded-only; CallFunc **120 executed** / **18 absent**.
+Matrix headline: ACS pcode **285 executed** / 10 partial / 79 decoded-only; CallFunc **138 executed** / **0 absent**.
 
-### Not merged (discarded at session end)
-
-Partial chunk 11 work (remaining **18** CallFuncs, `d_net` reset helpers) was uncommitted WIP and was **not** pushed.
-
-Open next session: finish **18** CallFuncs; `d_net.cpp` slice vs `HCDE.Net.Core`; wire `DedicatedServerHost` to headless session/ticker; deeper `g_level` / `g_game` parity.
+Open next session: broader `p_saveg` parity beyond HCSV ACS trailer; deeper `d_net.cpp` (ticdup, invasion replay); wire `DedicatedServerHost` to headless session/ticker; `g_level` / `g_game` parity.
