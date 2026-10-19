@@ -493,6 +493,41 @@ public static class VmExec
                     objects[a] = frameMemory;
                     pc++;
                     break;
+                case (int)VmOp.AddARr:
+                case (int)VmOp.AddARk:
+                    if (op == (int)VmOp.AddARk && c >= constants.Length) return Stop(VmFault.ConstantRange);
+                    var byteOffsetDelta = op == (int)VmOp.AddARk ? constants[c] : reg[c];
+                    if (objects[b] is null)
+                        objects[a] = null;
+                    else
+                    {
+                        var rawBase = objects[b];
+                        var allocation = rawBase is VmMemoryPointer rawPointer ? rawPointer.Memory : rawBase;
+                        var rawOffset = rawBase is VmMemoryPointer positioned ? positioned.ByteOffset : 0;
+                        if (allocation is not byte[] && allocation is not VmStringMemory && allocation is not VmObjectMemory)
+                            return Stop(VmFault.InvalidMemory);
+                        if (byteOffsetDelta > 0 && rawOffset > long.MaxValue - byteOffsetDelta
+                            || byteOffsetDelta < 0 && rawOffset < long.MinValue - byteOffsetDelta)
+                            return Stop(VmFault.Overflow);
+                        objects[a] = new VmMemoryPointer(allocation, rawOffset + byteOffsetDelta);
+                    }
+                    pc++;
+                    break;
+                case (int)VmOp.SubA:
+                    if (objects[b] is null || objects[c] is null) return Stop(VmFault.InvalidMemory);
+                    var subLeftRaw = objects[b];
+                    var subRightRaw = objects[c];
+                    var subLeftAllocation = subLeftRaw is VmMemoryPointer subLeftPtr ? subLeftPtr.Memory : subLeftRaw;
+                    var subRightAllocation = subRightRaw is VmMemoryPointer subRightPtr ? subRightPtr.Memory : subRightRaw;
+                    if (!ReferenceEquals(subLeftAllocation, subRightAllocation)) return Stop(VmFault.InvalidMemory);
+                    if (subLeftAllocation is not null && subLeftAllocation is not byte[] && subLeftAllocation is not VmStringMemory
+                        && subLeftAllocation is not VmObjectMemory)
+                        return Stop(VmFault.InvalidMemory);
+                    var subLeftByte = subLeftRaw is VmMemoryPointer subLp ? subLp.ByteOffset : 0;
+                    var subRightByte = subRightRaw is VmMemoryPointer subRp ? subRp.ByteOffset : 0;
+                    reg[a] = unchecked((int)(subLeftByte - subRightByte));
+                    pc++;
+                    break;
                 case (int)VmOp.AddPointerR:
                 case (int)VmOp.AddPointerK:
                     if (op == (int)VmOp.AddPointerK && c >= constants.Length) return Stop(VmFault.ConstantRange);
