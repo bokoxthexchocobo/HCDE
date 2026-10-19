@@ -1,7 +1,7 @@
 {
-  "convertedThisRunNative": 1764,
-  "convertedThisRunManaged": 1037,
-  "remainingNative": 506322,
+  "convertedThisRunNative": 1906,
+  "convertedThisRunManaged": 1186,
+  "remainingNative": 506180,
   "chunks": [
     {
       "name": "native-managed-matrix",
@@ -38,6 +38,12 @@
       "nativeLoc": 1285,
       "managedLoc": 530,
       "note": "p_lnspec.cpp plats, Generic_* movers, elevators, pillars, door wait, texture movers; gap JSON + LineSpecialBatchTests."
+    },
+    {
+      "name": "acs-callfunc-wire-table",
+      "nativeLoc": 142,
+      "managedLoc": 149,
+      "note": "p_acs.cpp EACSFunctions wire indices in AcsCallFunctionWireIds.cs + wire table tests."
     }
   ]
 }
