@@ -1,9 +1,13 @@
 {
-  "convertedThisRunNative": 4881,
-  "convertedThisRunManaged": 548,
-  "remainingNative": 495411,
-  "convertedBehaviorNative": 12675,
-  "convertedBehaviorManaged": 5868,
+  "convertedThisRunNative": 61,
+  "convertedThisRunManaged": 83,
+  "recognitionThisRunNative": 4648,
+  "recognitionThisRunManaged": 0,
+  "remainingNative": 499893,
+  "convertedBehaviorNative": 8193,
+  "recognitionBehaviorNative": 4648,
+  "combinedBehaviorNative": 12841,
+  "convertedBehaviorManaged": 6033,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -173,51 +177,106 @@
       ]
     },
     {
-      "name": "p-enemy-chase-core-chunk3",
-      "nativeLoc": 1513,
+      "name": "p-enemy-cantleave-chase-rollback",
+      "bucket": "conversion",
+      "nativeLoc": 14,
       "managedLoc": 18,
-      "note": "p_enemy.cpp A_DoChase, P_NewChaseDir/P_RandomChaseDir, P_Move/P_SmartMove/P_TryWalk, melee/missile range, look/sight; CantLeaveFloorPic chase rollback.",
+      "note": "p_enemy.cpp A_DoChase CantLeaveFloorPic illegal-step rollback (2740–2753).",
       "nativeRanges": [
-        { "file": "src/playsim/p_enemy.cpp", "symbol": "P_CheckMeleeRange", "start": 253, "end": 292 },
-        { "file": "src/playsim/p_enemy.cpp", "symbol": "P_CheckMissileRange", "start": 307, "end": 365 },
-        { "file": "src/playsim/p_enemy.cpp", "symbol": "P_Move", "start": 482, "end": 717 },
-        { "file": "src/playsim/p_enemy.cpp", "symbol": "P_SmartMove", "start": 725, "end": 757 },
-        { "file": "src/playsim/p_enemy.cpp", "symbol": "P_TryWalk", "start": 773, "end": 781 },
-        { "file": "src/playsim/p_enemy.cpp", "symbol": "P_DoNewChaseDir", "start": 794, "end": 912 },
-        { "file": "src/playsim/p_enemy.cpp", "symbol": "P_NewChaseDir", "start": 935, "end": 1098 },
-        { "file": "src/playsim/p_enemy.cpp", "symbol": "P_RandomChaseDir", "start": 1107, "end": 1257 },
-        { "file": "src/playsim/p_enemy.cpp", "symbol": "P_IsVisible", "start": 1268, "end": 1350 },
-        { "file": "src/playsim/p_enemy.cpp", "symbol": "isTargetablePlayer", "start": 1316, "end": 1363 },
-        { "file": "src/playsim/p_enemy.cpp", "symbol": "P_LookForPlayers", "start": 1789, "end": 1933 },
-        { "file": "src/playsim/p_enemy.cpp", "symbol": "A_DoChase", "start": 2397, "end": 2764 }
+        { "file": "src/playsim/p_enemy.cpp", "symbol": "A_DoChase", "start": 2740, "end": 2753, "tests": ["CantLeaveFloorPicTests.NativeChaseUsesFloorRestriction"] }
       ]
     },
     {
-      "name": "p-map-try-use-lineattack-chunk3",
-      "nativeLoc": 1602,
+      "name": "p-map-use-fail-noway",
+      "bucket": "conversion",
+      "nativeLoc": 47,
       "managedLoc": 65,
-      "note": "p_map.cpp P_CheckPosition/P_TryMove flat subset, slide move, P_UseTraverse/P_NoWayTraverse/P_UseLines use-fail, P_LineAttack trace/impact subset.",
+      "note": "p_map.cpp P_NoWayTraverse and P_UseLines use-fail rumble when a wall blocks the use ray.",
       "nativeRanges": [
-        { "file": "src/playsim/p_map.cpp", "symbol": "P_CheckPosition", "start": 1817, "end": 2036 },
-        { "file": "src/playsim/p_map.cpp", "symbol": "P_TryMove", "start": 2368, "end": 2889 },
-        { "file": "src/playsim/p_map.cpp", "symbol": "FSlide::SlideMove", "start": 3018, "end": 3371 },
-        { "file": "src/playsim/p_map.cpp", "symbol": "P_LineAttack", "start": 4699, "end": 5050 },
-        { "file": "src/playsim/p_map.cpp", "symbol": "P_UseTraverse", "start": 5829, "end": 5957 },
-        { "file": "src/playsim/p_map.cpp", "symbol": "P_NoWayTraverse", "start": 5972, "end": 5993 },
-        { "file": "src/playsim/p_map.cpp", "symbol": "P_UseLines", "start": 6003, "end": 6027 }
+        { "file": "src/playsim/p_map.cpp", "symbol": "P_NoWayTraverse", "start": 5972, "end": 5993, "tests": ["UseRumbleTests.BlockedNonSpecialLineEmitsUseFailPattern"] },
+        { "file": "src/playsim/p_map.cpp", "symbol": "P_UseLines", "start": 6003, "end": 6027, "tests": ["UseRumbleTests.BlockedNonSpecialLineEmitsUseFailPattern", "UseTraceTests"] }
       ]
     },
     {
-      "name": "p-mobj-movement-thinker-chunk3",
+      "name": "p-enemy-chase-core-chunk3-recognition",
+      "bucket": "recognition",
+      "nativeLoc": 1499,
+      "managedLoc": 0,
+      "note": "p_enemy.cpp chase stack already in MonsterBrain/ActorWanderActions (run 9 re-audit).",
+      "nativeRanges": [
+        { "file": "src/playsim/p_enemy.cpp", "symbol": "P_CheckMeleeRange", "start": 253, "end": 292, "tests": ["NativeChaseMovementTests", "ChaseMeleeAvoidanceTests"] },
+        { "file": "src/playsim/p_enemy.cpp", "symbol": "P_CheckMissileRange", "start": 307, "end": 365, "tests": ["MissileSightTests", "NativeChaseMovementTests"] },
+        { "file": "src/playsim/p_enemy.cpp", "symbol": "P_Move", "start": 482, "end": 717, "tests": ["NativeChaseMovementTests", "MonsterBlockedMoveTests"] },
+        { "file": "src/playsim/p_enemy.cpp", "symbol": "P_SmartMove", "start": 725, "end": 757, "tests": ["NativeChaseMovementTests", "ChaseDirectionTests"] },
+        { "file": "src/playsim/p_enemy.cpp", "symbol": "P_TryWalk", "start": 773, "end": 781, "tests": ["NativeChaseMovementTests", "WanderSubstepTests"] },
+        { "file": "src/playsim/p_enemy.cpp", "symbol": "P_DoNewChaseDir", "start": 794, "end": 912, "tests": ["ChaseDirectionTests", "NativeChaseMovementTests"] },
+        { "file": "src/playsim/p_enemy.cpp", "symbol": "P_NewChaseDir", "start": 935, "end": 1098, "tests": ["ChaseDirectionTests", "ChaseDropOffEscapeTests"] },
+        { "file": "src/playsim/p_enemy.cpp", "symbol": "P_RandomChaseDir", "start": 1107, "end": 1257, "tests": ["ChaseDirectionTests", "WanderFloatAdjustmentTests"] },
+        { "file": "src/playsim/p_enemy.cpp", "symbol": "P_IsVisible", "start": 1268, "end": 1350, "tests": ["StealthVisibilityTests", "MissileSightTests"] },
+        { "file": "src/playsim/p_enemy.cpp", "symbol": "isTargetablePlayer", "start": 1316, "end": 1363, "tests": ["StealthVisibilityTests", "ThingHateTests"] },
+        { "file": "src/playsim/p_enemy.cpp", "symbol": "P_LookForPlayers", "start": 1789, "end": 1933, "tests": ["ThingHateTests", "StealthVisibilityTests"] },
+        { "file": "src/playsim/p_enemy.cpp", "symbol": "A_DoChase", "start": 2397, "end": 2739, "tests": ["NativeChaseMovementTests", "ChasePostAttackCountTests"] },
+        { "file": "src/playsim/p_enemy.cpp", "symbol": "A_DoChase", "start": 2754, "end": 2764, "tests": ["NativeChaseMovementTests"] }
+      ]
+    },
+    {
+      "name": "p-map-try-use-lineattack-chunk3-recognition",
+      "bucket": "recognition",
+      "nativeLoc": 1555,
+      "managedLoc": 0,
+      "note": "p_map.cpp try-move/use/lineattack subsets already in ActorPhysics/LineSpecials/CombatTrace (run 9 re-audit).",
+      "nativeRanges": [
+        { "file": "src/playsim/p_map.cpp", "symbol": "P_CheckPosition", "start": 1817, "end": 2036, "tests": ["ThruActorsTests", "MissileSpawnCheckTests"] },
+        { "file": "src/playsim/p_map.cpp", "symbol": "P_TryMove", "start": 2368, "end": 2889, "tests": ["ThruActorsTests", "CantLeaveFloorPicTests"] },
+        { "file": "src/playsim/p_map.cpp", "symbol": "FSlide::SlideMove", "start": 3018, "end": 3371, "tests": ["PlayerSlideTests"] },
+        { "file": "src/playsim/p_map.cpp", "symbol": "P_LineAttack", "start": 4699, "end": 5050, "tests": ["GeometryLineAttackTests", "HitscanPlaneDamageTests"] },
+        { "file": "src/playsim/p_map.cpp", "symbol": "P_UseTraverse", "start": 5829, "end": 5957, "tests": ["UseTraceTests", "UseRumbleTests"] }
+      ]
+    },
+    {
+      "name": "p-mobj-movement-thinker-chunk3-recognition",
+      "bucket": "recognition",
       "nativeLoc": 1594,
       "managedLoc": 0,
-      "note": "p_mobj.cpp P_XYMovement/P_ZMovement, thinker tick velocity subset, missile explode-on-impact (excludes run-8 P_CheckMissileSpawn credit).",
+      "note": "p_mobj.cpp movement/thinker paths already in ActorPhysics/ProjectileActor (run 9 re-audit).",
       "nativeRanges": [
-        { "file": "src/playsim/p_mobj.cpp", "symbol": "P_ExplodeMissile", "start": 1958, "end": 2100 },
-        { "file": "src/playsim/p_mobj.cpp", "symbol": "P_XYMovement", "start": 2421, "end": 2948 },
-        { "file": "src/playsim/p_mobj.cpp", "symbol": "P_ZMovement", "start": 2955, "end": 3480 },
-        { "file": "src/playsim/p_mobj.cpp", "symbol": "AActor::Tick", "start": 4521, "end": 5075 },
-        { "file": "src/playsim/p_mobj.cpp", "symbol": "missile collide explode", "start": 2680, "end": 2765 }
+        { "file": "src/playsim/p_mobj.cpp", "symbol": "P_ExplodeMissile", "start": 1958, "end": 2100, "tests": ["ProjectileMovementTests", "MapRadiusAttackTests"] },
+        { "file": "src/playsim/p_mobj.cpp", "symbol": "P_XYMovement", "start": 2421, "end": 2948, "tests": ["ProjectileMovementTests", "WanderSubstepTests"] },
+        { "file": "src/playsim/p_mobj.cpp", "symbol": "P_ZMovement", "start": 2955, "end": 3480, "tests": ["FallingDamageTests", "CanJumpTests"] },
+        { "file": "src/playsim/p_mobj.cpp", "symbol": "AActor::Tick", "start": 4521, "end": 5075, "tests": ["WanderSubstepTests", "SpawnedSoulRestoreTests"] },
+        { "file": "src/playsim/p_mobj.cpp", "symbol": "missile collide explode", "start": 2680, "end": 2765, "tests": ["ProjectileMovementTests", "CombatAiTests"] }
+      ]
+    },
+    {
+      "name": "p-map-trymove-line-cross-chunk4",
+      "bucket": "conversion",
+      "nativeLoc": 43,
+      "managedLoc": 95,
+      "note": "p_map.cpp P_TryMove spechit cross activation wired into ActorPhysics.TryMove.",
+      "nativeRanges": [
+        { "file": "src/playsim/p_map.cpp", "symbol": "P_TryMove", "start": 2752, "end": 2794, "tests": ["TryMoveLineCrossTests"] }
+      ]
+    },
+    {
+      "name": "p-spec-sector-friction-push-chunk4",
+      "bucket": "conversion",
+      "nativeLoc": 97,
+      "managedLoc": 62,
+      "note": "p_spec.cpp P_SetSectorFriction parity, P_GetFriction sector SECF_FRICTION, sector push thrust on step.",
+      "nativeRanges": [
+        { "file": "src/playsim/p_spec.cpp", "symbol": "P_SetSectorFriction", "start": 751, "end": 797, "tests": ["LineSpecialClosureTests.SectorFrictionSpecialUpdatesTaggedSector", "SectorFrictionMovementTests"] },
+        { "file": "src/playsim/p_map.cpp", "symbol": "P_GetFriction", "start": 732, "end": 745, "tests": ["SectorFrictionMovementTests"] },
+        { "file": "src/playsim/mapthinkers/a_pusher.cpp", "symbol": "DPusher::Tick", "start": 149, "end": 200, "tests": ["SectorPushMovementTests"] }
+      ]
+    },
+    {
+      "name": "p-enemy-chase-lost-sight-nosight-chunk4",
+      "bucket": "conversion",
+      "nativeLoc": 23,
+      "managedLoc": 8,
+      "note": "p_enemy.cpp A_DoChase lost-sight retarget preserves MF3_NOSIGHTCHECK toggle.",
+      "nativeRanges": [
+        { "file": "src/playsim/p_enemy.cpp", "symbol": "A_DoChase", "start": 2694, "end": 2716, "tests": ["ChaseLostSightNoSightCheckTests"] }
       ]
     }
   ]

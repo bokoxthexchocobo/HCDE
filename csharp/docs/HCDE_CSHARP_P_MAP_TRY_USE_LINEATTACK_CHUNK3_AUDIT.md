@@ -22,4 +22,4 @@ Flat-sector subsets of `src/playsim/p_map.cpp` already implemented in `ActorPhys
 
 ## Verified
 
-`dotnet build -warnaserror`, full `HCDE.Playsim.Tests` green.
+`dotnet build -warnaserror`, full `HCDE.Playsim.Tests` green (17,020).

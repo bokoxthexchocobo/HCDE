@@ -12,18 +12,25 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 97086
+    "managedCSharpLoc": 98993
   },
   "locTally": {
-    "convertedThisRunNative": 2795,
-    "convertedThisRunManaged": 1505,
-    "remainingNative": 503385,
+    "convertedThisRunNative": 61,
+    "convertedThisRunManaged": 83,
+    "recognitionThisRunNative": 4648,
+    "recognitionThisRunManaged": 0,
+    "remainingNative": 499893,
+    "convertedBehaviorNative": 8193,
+    "recognitionBehaviorNative": 4648,
+    "combinedBehaviorNative": 12841,
+    "convertedBehaviorManaged": 6033,
+    "baselineNative": 508086,
     "chunks": [
       {
         "name": "native-managed-matrix",
         "nativeLoc": 0,
         "managedLoc": 312,
-        "note": "Generator, JSON/MD matrix, MigrationMatrix.Tests (inventory only)."
+        "note": "Generator, JSON/MD matrix, MigrationMatrix.Tests (inventory only \u2014 not behavior)."
       },
       {
         "name": "acs-random-getcvar-polywait",
@@ -57,9 +64,9 @@
       },
       {
         "name": "acs-callfunc-wire-table",
-        "nativeLoc": 142,
+        "nativeLoc": 0,
         "managedLoc": 149,
-        "note": "p_acs.cpp EACSFunctions wire indices in AcsCallFunctionWireIds.cs + wire table tests."
+        "note": "EACSFunctions wire index table + tests (inventory/dispatch plumbing only)."
       },
       {
         "name": "line-specials-gap-closure",
@@ -75,15 +82,509 @@
       },
       {
         "name": "zscript-vm-matrix-accuracy",
-        "nativeLoc": 45,
+        "nativeLoc": 0,
         "managedLoc": 85,
-        "note": "VM op classifier fixes in generate_native_managed_matrix.py."
+        "note": "VM op classifier fixes in generate_native_managed_matrix.py (inventory only)."
       },
       {
         "name": "action-function-index",
-        "nativeLoc": 380,
+        "nativeLoc": 0,
         "managedLoc": 120,
-        "note": "p_actionfunctions.cpp DEFINE_ACTION_FUNCTION catalog JSON + tests."
+        "note": "p_actionfunctions.cpp DEFINE_ACTION_FUNCTION catalog JSON + tests (inventory only)."
+      },
+      {
+        "name": "tally-behavior-only-correction",
+        "nativeLoc": 0,
+        "managedLoc": 0,
+        "note": "Reclassified inventory chunks (wire table, VM matrix, action index); combat trace retained as behavior."
+      },
+      {
+        "name": "action-combat-port",
+        "nativeLoc": 560,
+        "managedLoc": 720,
+        "note": "p_actionfunctions.cpp A_CustomMeleeAttack, A_CustomComboAttack, A_BulletAttack, A_SpawnProjectile, A_MonsterRefire; ActorActionDispatch; loaded-map tests."
+      },
+      {
+        "name": "acs-hot-callfunc-behavior",
+        "nativeLoc": 420,
+        "managedLoc": 340,
+        "note": "ACSF_SpawnForced, Get/SetUserVariable, GetThingUDMF*, side/sector UDMF completion; wire dispatch tests."
+      },
+      {
+        "name": "sector-changeflags-gap-audit",
+        "nativeLoc": 110,
+        "managedLoc": 95,
+        "note": "LS_Sector_ChangeFlags (54), gap generator ExecuteSpecial detection, gap JSON 19\u21923."
+      },
+      {
+        "name": "line-special-feasible-gaps",
+        "nativeLoc": 640,
+        "managedLoc": 380,
+        "note": "p_lnspec.cpp floor waggle, spawn facing, wind, communicator, translation storage, fog/skill accept stubs."
+      },
+      {
+        "name": "action-dispatch-damage-wiring",
+        "nativeLoc": 180,
+        "managedLoc": 120,
+        "note": "ActorActionDispatch hooks for damage/melee/combo state names; actor script user-var storage."
+      },
+      {
+        "name": "action-combat-dispatch-batch2",
+        "nativeLoc": 310,
+        "managedLoc": 285,
+        "note": "A_CustomMissile, A_CustomBulletAttack, dispatch chase/jump/inventory; TryClassNameForProjectileType."
+      },
+      {
+        "name": "action-explode-radius-give",
+        "nativeLoc": 240,
+        "managedLoc": 195,
+        "note": "A_Explode, A_RadiusThrust, A_RadiusGive; splash-group radius immunity (p_mobj)."
+      },
+      {
+        "name": "thing-projectile-175-178",
+        "nativeLoc": 190,
+        "managedLoc": 165,
+        "note": "LS_Thing_ProjectileIntercept/Aimed; EV_Thing_Projectile lead aim; gap JSON 3\u21921."
+      },
+      {
+        "name": "acs-air-userarray-spawnspot",
+        "nativeLoc": 145,
+        "managedLoc": 135,
+        "note": "ACSF_Get/SetAirSupply, SpawnSpotForced, Get/SetUserArray; PlayerPawn air_finished tic storage."
+      },
+      {
+        "name": "p-enemy-chunk1",
+        "nativeLoc": 485,
+        "managedLoc": 340,
+        "note": "p_enemy.cpp A_Look2, A_ClearLastHeard, A_ChaseNative flags, A_MonsterRail, A_Pain, CheckBossDeath/A_BossDeath exit, A_ClassBossHealth."
+      },
+      {
+        "name": "p-map-radius-chunk1",
+        "nativeLoc": 380,
+        "managedLoc": 125,
+        "note": "p_map.cpp P_GetRadiusDamage/P_RadiusAttack flat subset; rocket splash parity."
+      },
+      {
+        "name": "p-map-radius-thrust-chunk2",
+        "nativeLoc": 69,
+        "managedLoc": 210,
+        "note": "p_map.cpp P_RadiusAttack thrust path only (MapRadiusAttack.ApplyExplosionThrust + damage-mask thrustless).",
+        "nativeRanges": [
+          {
+            "file": "src/playsim/p_map.cpp",
+            "symbol": "P_RadiusAttack",
+            "start": 6390,
+            "end": 6458
+          }
+        ]
+      },
+      {
+        "name": "p-enemy-move-blocked-chunk2",
+        "nativeLoc": 22,
+        "managedLoc": 180,
+        "note": "p_enemy.cpp P_Move spechit door/push and MF6_JUMPDOWN dropoff assist (MonsterBlockedMoveActions + MoveCore).",
+        "nativeRanges": [
+          {
+            "file": "src/playsim/p_enemy.cpp",
+            "symbol": "P_Move",
+            "start": 518,
+            "end": 524
+          },
+          {
+            "file": "src/playsim/p_enemy.cpp",
+            "symbol": "P_Move",
+            "start": 697,
+            "end": 710
+          }
+        ]
+      },
+      {
+        "name": "p-mobj-missile-spawn-live",
+        "nativeLoc": 81,
+        "managedLoc": 75,
+        "note": "p_mobj.cpp P_CheckMissileSpawn wired into SpawnProjectileCore and A_SpawnProjectile.",
+        "nativeRanges": [
+          {
+            "file": "src/playsim/p_mobj.cpp",
+            "symbol": "P_CheckMissileSpawn",
+            "start": 7781,
+            "end": 7861
+          }
+        ]
+      },
+      {
+        "name": "p-enemy-cantleave-chase-rollback",
+        "bucket": "conversion",
+        "nativeLoc": 14,
+        "managedLoc": 18,
+        "note": "p_enemy.cpp A_DoChase CantLeaveFloorPic illegal-step rollback (2740\u20132753).",
+        "nativeRanges": [
+          {
+            "file": "src/playsim/p_enemy.cpp",
+            "symbol": "A_DoChase",
+            "start": 2740,
+            "end": 2753,
+            "tests": [
+              "CantLeaveFloorPicTests.NativeChaseUsesFloorRestriction"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "p-map-use-fail-noway",
+        "bucket": "conversion",
+        "nativeLoc": 47,
+        "managedLoc": 65,
+        "note": "p_map.cpp P_NoWayTraverse and P_UseLines use-fail rumble when a wall blocks the use ray.",
+        "nativeRanges": [
+          {
+            "file": "src/playsim/p_map.cpp",
+            "symbol": "P_NoWayTraverse",
+            "start": 5972,
+            "end": 5993,
+            "tests": [
+              "UseRumbleTests.BlockedNonSpecialLineEmitsUseFailPattern"
+            ]
+          },
+          {
+            "file": "src/playsim/p_map.cpp",
+            "symbol": "P_UseLines",
+            "start": 6003,
+            "end": 6027,
+            "tests": [
+              "UseRumbleTests.BlockedNonSpecialLineEmitsUseFailPattern",
+              "UseTraceTests"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "p-enemy-chase-core-chunk3-recognition",
+        "bucket": "recognition",
+        "nativeLoc": 1499,
+        "managedLoc": 0,
+        "note": "p_enemy.cpp chase stack already in MonsterBrain/ActorWanderActions (run 9 re-audit).",
+        "nativeRanges": [
+          {
+            "file": "src/playsim/p_enemy.cpp",
+            "symbol": "P_CheckMeleeRange",
+            "start": 253,
+            "end": 292,
+            "tests": [
+              "NativeChaseMovementTests",
+              "ChaseMeleeAvoidanceTests"
+            ]
+          },
+          {
+            "file": "src/playsim/p_enemy.cpp",
+            "symbol": "P_CheckMissileRange",
+            "start": 307,
+            "end": 365,
+            "tests": [
+              "MissileSightTests",
+              "NativeChaseMovementTests"
+            ]
+          },
+          {
+            "file": "src/playsim/p_enemy.cpp",
+            "symbol": "P_Move",
+            "start": 482,
+            "end": 717,
+            "tests": [
+              "NativeChaseMovementTests",
+              "MonsterBlockedMoveTests"
+            ]
+          },
+          {
+            "file": "src/playsim/p_enemy.cpp",
+            "symbol": "P_SmartMove",
+            "start": 725,
+            "end": 757,
+            "tests": [
+              "NativeChaseMovementTests",
+              "ChaseDirectionTests"
+            ]
+          },
+          {
+            "file": "src/playsim/p_enemy.cpp",
+            "symbol": "P_TryWalk",
+            "start": 773,
+            "end": 781,
+            "tests": [
+              "NativeChaseMovementTests",
+              "WanderSubstepTests"
+            ]
+          },
+          {
+            "file": "src/playsim/p_enemy.cpp",
+            "symbol": "P_DoNewChaseDir",
+            "start": 794,
+            "end": 912,
+            "tests": [
+              "ChaseDirectionTests",
+              "NativeChaseMovementTests"
+            ]
+          },
+          {
+            "file": "src/playsim/p_enemy.cpp",
+            "symbol": "P_NewChaseDir",
+            "start": 935,
+            "end": 1098,
+            "tests": [
+              "ChaseDirectionTests",
+              "ChaseDropOffEscapeTests"
+            ]
+          },
+          {
+            "file": "src/playsim/p_enemy.cpp",
+            "symbol": "P_RandomChaseDir",
+            "start": 1107,
+            "end": 1257,
+            "tests": [
+              "ChaseDirectionTests",
+              "WanderFloatAdjustmentTests"
+            ]
+          },
+          {
+            "file": "src/playsim/p_enemy.cpp",
+            "symbol": "P_IsVisible",
+            "start": 1268,
+            "end": 1350,
+            "tests": [
+              "StealthVisibilityTests",
+              "MissileSightTests"
+            ]
+          },
+          {
+            "file": "src/playsim/p_enemy.cpp",
+            "symbol": "isTargetablePlayer",
+            "start": 1316,
+            "end": 1363,
+            "tests": [
+              "StealthVisibilityTests",
+              "ThingHateTests"
+            ]
+          },
+          {
+            "file": "src/playsim/p_enemy.cpp",
+            "symbol": "P_LookForPlayers",
+            "start": 1789,
+            "end": 1933,
+            "tests": [
+              "ThingHateTests",
+              "StealthVisibilityTests"
+            ]
+          },
+          {
+            "file": "src/playsim/p_enemy.cpp",
+            "symbol": "A_DoChase",
+            "start": 2397,
+            "end": 2739,
+            "tests": [
+              "NativeChaseMovementTests",
+              "ChasePostAttackCountTests"
+            ]
+          },
+          {
+            "file": "src/playsim/p_enemy.cpp",
+            "symbol": "A_DoChase",
+            "start": 2754,
+            "end": 2764,
+            "tests": [
+              "NativeChaseMovementTests"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "p-map-try-use-lineattack-chunk3-recognition",
+        "bucket": "recognition",
+        "nativeLoc": 1555,
+        "managedLoc": 0,
+        "note": "p_map.cpp try-move/use/lineattack subsets already in ActorPhysics/LineSpecials/CombatTrace (run 9 re-audit).",
+        "nativeRanges": [
+          {
+            "file": "src/playsim/p_map.cpp",
+            "symbol": "P_CheckPosition",
+            "start": 1817,
+            "end": 2036,
+            "tests": [
+              "ThruActorsTests",
+              "MissileSpawnCheckTests"
+            ]
+          },
+          {
+            "file": "src/playsim/p_map.cpp",
+            "symbol": "P_TryMove",
+            "start": 2368,
+            "end": 2889,
+            "tests": [
+              "ThruActorsTests",
+              "CantLeaveFloorPicTests"
+            ]
+          },
+          {
+            "file": "src/playsim/p_map.cpp",
+            "symbol": "FSlide::SlideMove",
+            "start": 3018,
+            "end": 3371,
+            "tests": [
+              "PlayerSlideTests"
+            ]
+          },
+          {
+            "file": "src/playsim/p_map.cpp",
+            "symbol": "P_LineAttack",
+            "start": 4699,
+            "end": 5050,
+            "tests": [
+              "GeometryLineAttackTests",
+              "HitscanPlaneDamageTests"
+            ]
+          },
+          {
+            "file": "src/playsim/p_map.cpp",
+            "symbol": "P_UseTraverse",
+            "start": 5829,
+            "end": 5957,
+            "tests": [
+              "UseTraceTests",
+              "UseRumbleTests"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "p-mobj-movement-thinker-chunk3-recognition",
+        "bucket": "recognition",
+        "nativeLoc": 1594,
+        "managedLoc": 0,
+        "note": "p_mobj.cpp movement/thinker paths already in ActorPhysics/ProjectileActor (run 9 re-audit).",
+        "nativeRanges": [
+          {
+            "file": "src/playsim/p_mobj.cpp",
+            "symbol": "P_ExplodeMissile",
+            "start": 1958,
+            "end": 2100,
+            "tests": [
+              "ProjectileMovementTests",
+              "MapRadiusAttackTests"
+            ]
+          },
+          {
+            "file": "src/playsim/p_mobj.cpp",
+            "symbol": "P_XYMovement",
+            "start": 2421,
+            "end": 2948,
+            "tests": [
+              "ProjectileMovementTests",
+              "WanderSubstepTests"
+            ]
+          },
+          {
+            "file": "src/playsim/p_mobj.cpp",
+            "symbol": "P_ZMovement",
+            "start": 2955,
+            "end": 3480,
+            "tests": [
+              "FallingDamageTests",
+              "CanJumpTests"
+            ]
+          },
+          {
+            "file": "src/playsim/p_mobj.cpp",
+            "symbol": "AActor::Tick",
+            "start": 4521,
+            "end": 5075,
+            "tests": [
+              "WanderSubstepTests",
+              "SpawnedSoulRestoreTests"
+            ]
+          },
+          {
+            "file": "src/playsim/p_mobj.cpp",
+            "symbol": "missile collide explode",
+            "start": 2680,
+            "end": 2765,
+            "tests": [
+              "ProjectileMovementTests",
+              "CombatAiTests"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "p-map-trymove-line-cross-chunk4",
+        "bucket": "conversion",
+        "nativeLoc": 43,
+        "managedLoc": 95,
+        "note": "p_map.cpp P_TryMove spechit cross activation wired into ActorPhysics.TryMove.",
+        "nativeRanges": [
+          {
+            "file": "src/playsim/p_map.cpp",
+            "symbol": "P_TryMove",
+            "start": 2752,
+            "end": 2794,
+            "tests": [
+              "TryMoveLineCrossTests"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "p-spec-sector-friction-push-chunk4",
+        "bucket": "conversion",
+        "nativeLoc": 97,
+        "managedLoc": 62,
+        "note": "p_spec.cpp P_SetSectorFriction parity, P_GetFriction sector SECF_FRICTION, sector push thrust on step.",
+        "nativeRanges": [
+          {
+            "file": "src/playsim/p_spec.cpp",
+            "symbol": "P_SetSectorFriction",
+            "start": 751,
+            "end": 797,
+            "tests": [
+              "LineSpecialClosureTests.SectorFrictionSpecialUpdatesTaggedSector",
+              "SectorFrictionMovementTests"
+            ]
+          },
+          {
+            "file": "src/playsim/p_map.cpp",
+            "symbol": "P_GetFriction",
+            "start": 732,
+            "end": 745,
+            "tests": [
+              "SectorFrictionMovementTests"
+            ]
+          },
+          {
+            "file": "src/playsim/mapthinkers/a_pusher.cpp",
+            "symbol": "DPusher::Tick",
+            "start": 149,
+            "end": 200,
+            "tests": [
+              "SectorPushMovementTests"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "p-enemy-chase-lost-sight-nosight-chunk4",
+        "bucket": "conversion",
+        "nativeLoc": 23,
+        "managedLoc": 8,
+        "note": "p_enemy.cpp A_DoChase lost-sight retarget preserves MF3_NOSIGHTCHECK toggle.",
+        "nativeRanges": [
+          {
+            "file": "src/playsim/p_enemy.cpp",
+            "symbol": "A_DoChase",
+            "start": 2694,
+            "end": 2716,
+            "tests": [
+              "ChaseLostSightNoSightCheckTests"
+            ]
+          }
+        ]
       }
     ]
   },
@@ -99,8 +600,8 @@
       "absent": 94
     },
     "acsCallFunc": {
-      "partial": 82,
-      "absent": 56
+      "partial": 90,
+      "absent": 48
     }
   },
   "acsPcode": [
@@ -4541,13 +5042,13 @@
     {
       "id": "acs-call:GetAirSupply",
       "name": "GetAirSupply",
-      "status": "absent",
+      "status": "partial",
       "nativeRef": "src/playsim/p_acs.cpp EACSFunctions"
     },
     {
       "id": "acs-call:SetAirSupply",
       "name": "SetAirSupply",
-      "status": "absent",
+      "status": "partial",
       "nativeRef": "src/playsim/p_acs.cpp EACSFunctions"
     },
     {
@@ -4565,7 +5066,7 @@
     {
       "id": "acs-call:SpawnSpotForced",
       "name": "SpawnSpotForced",
-      "status": "absent",
+      "status": "partial",
       "nativeRef": "src/playsim/p_acs.cpp EACSFunctions"
     },
     {
@@ -4589,13 +5090,13 @@
     {
       "id": "acs-call:SetUserVariable",
       "name": "SetUserVariable",
-      "status": "absent",
+      "status": "partial",
       "nativeRef": "src/playsim/p_acs.cpp EACSFunctions"
     },
     {
       "id": "acs-call:GetUserVariable",
       "name": "GetUserVariable",
-      "status": "absent",
+      "status": "partial",
       "nativeRef": "src/playsim/p_acs.cpp EACSFunctions"
     },
     {
@@ -4613,13 +5114,13 @@
     {
       "id": "acs-call:SetUserArray",
       "name": "SetUserArray",
-      "status": "absent",
+      "status": "partial",
       "nativeRef": "src/playsim/p_acs.cpp EACSFunctions"
     },
     {
       "id": "acs-call:GetUserArray",
       "name": "GetUserArray",
-      "status": "absent",
+      "status": "partial",
       "nativeRef": "src/playsim/p_acs.cpp EACSFunctions"
     },
     {
@@ -4661,7 +5162,7 @@
     {
       "id": "acs-call:SpawnForced",
       "name": "SpawnForced",
-      "status": "absent",
+      "status": "partial",
       "nativeRef": "src/playsim/p_acs.cpp EACSFunctions"
     },
     {

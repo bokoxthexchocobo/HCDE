@@ -2,7 +2,7 @@
 
 ## Scope
 
-Native `src/playsim/p_mobj.cpp` `P_CheckMissileSpawn`: velocity nudge inside shooter radius, sector update, `P_TryMove`, ripper/dontrip pass-through, owner overlap tolerance, horizon destroy, blocked `P_ExplodeMissile`.
+Native `src/playsim/p_mobj.cpp` `P_CheckMissileSpawn` (**7781–7861**, 81 lines behavior-credited): velocity nudge inside shooter radius, sector update, `P_TryMove`, ripper/dontrip pass-through, owner overlap tolerance, horizon destroy, blocked `P_ExplodeMissile`.
 
 ## Implementation
 

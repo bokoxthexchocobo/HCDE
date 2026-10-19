@@ -2,7 +2,7 @@
 
 ## Scope
 
-Native `src/playsim/p_map.cpp` `P_RadiusAttack` thrust path (lines ~6388–6458): explosion thrust from falloff `points`, self-thrust scale, circular thrust, Z thrust, `MF2_BLASTED`, vulnerable/shootable eligibility, `RADF_*` thrust-less and no-damage thrust branches (flat subset).
+Native `src/playsim/p_map.cpp` `P_RadiusAttack` thrust path (**6390–6458**, 69 lines behavior-credited): explosion thrust from falloff `points`, self-thrust scale, circular thrust, Z thrust, `MF2_BLASTED`, vulnerable/shootable eligibility, `RADF_*` thrust-less and no-damage thrust branches (flat subset).
 
 ## Implementation
 

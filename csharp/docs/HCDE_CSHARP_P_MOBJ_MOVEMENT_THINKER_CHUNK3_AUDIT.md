@@ -21,4 +21,4 @@ Native `src/playsim/p_mobj.cpp` actor tick movement and missile impact paths rep
 
 ## Verified
 
-`dotnet build -warnaserror`, full `HCDE.Playsim.Tests` green.
+`dotnet build -warnaserror`, full `HCDE.Playsim.Tests` green (17,020).

@@ -2,11 +2,12 @@
 
 ## Scope
 
-Native `src/playsim/p_enemy.cpp` / movement stack subset:
+Native `src/playsim/p_enemy.cpp` `P_Move` subset (**22** lines behavior-credited):
 
-- `P_Move` blocked spechit door/push activation (`MF4_CANUSEWALLS`, `MF2_PUSHWALL`, `pr_opendoor` gate)
-- `P_SmartMove` / `P_TryWalk` blocking-line reporting via `TryWanderMove`
-- `MF6_JUMPDOWN` drop-off assist during `P_Move` steps (`LEVEL3_NOJUMPDOWN` on `PlayLevel`)
+- **518–524** `MF6_JUMPDOWN` drop-off assist (`LEVEL3_NOJUMPDOWN` on `PlayLevel`)
+- **697–710** blocked spechit door/push activation (`MF4_CANUSEWALLS`, `MF2_PUSHWALL`, `pr_opendoor`)
+
+`P_SmartMove` / `P_TryWalk` blocking-line reporting lives in `ActorWanderActions` / `ActorPhysics.TryWanderMove` and is credited under `p-enemy-chase-core-chunk3`.
 
 ## Implementation
 
