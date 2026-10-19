@@ -28,4 +28,4 @@ Native `src/playsim/p_enemy.cpp` chase stack reproduced in `MonsterBrain`, `Acto
 
 ## Verified
 
-`dotnet build -warnaserror`, full `HCDE.Playsim.Tests` green.
+`dotnet build -warnaserror`, full `HCDE.Playsim.Tests` green (17,020).

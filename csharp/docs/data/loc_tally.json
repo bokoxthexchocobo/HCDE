@@ -191,6 +191,21 @@
         { "file": "src/playsim/p_enemy.cpp", "symbol": "P_LookForPlayers", "start": 1789, "end": 1933 },
         { "file": "src/playsim/p_enemy.cpp", "symbol": "A_DoChase", "start": 2397, "end": 2764 }
       ]
+    },
+    {
+      "name": "p-map-try-use-lineattack-chunk3",
+      "nativeLoc": 1602,
+      "managedLoc": 65,
+      "note": "p_map.cpp P_CheckPosition/P_TryMove flat subset, slide move, P_UseTraverse/P_NoWayTraverse/P_UseLines use-fail, P_LineAttack trace/impact subset.",
+      "nativeRanges": [
+        { "file": "src/playsim/p_map.cpp", "symbol": "P_CheckPosition", "start": 1817, "end": 2036 },
+        { "file": "src/playsim/p_map.cpp", "symbol": "P_TryMove", "start": 2368, "end": 2889 },
+        { "file": "src/playsim/p_map.cpp", "symbol": "FSlide::SlideMove", "start": 3018, "end": 3371 },
+        { "file": "src/playsim/p_map.cpp", "symbol": "P_LineAttack", "start": 4699, "end": 5050 },
+        { "file": "src/playsim/p_map.cpp", "symbol": "P_UseTraverse", "start": 5829, "end": 5957 },
+        { "file": "src/playsim/p_map.cpp", "symbol": "P_NoWayTraverse", "start": 5972, "end": 5993 },
+        { "file": "src/playsim/p_map.cpp", "symbol": "P_UseLines", "start": 6003, "end": 6027 }
+      ]
     }
   ]
 }
