@@ -12,25 +12,25 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 100947
+    "managedCSharpLoc": 101328
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 10643,
     "runStartRecognitionBehaviorNative": 5400,
     "runStartConvertedBehaviorManaged": 7417,
-    "convertedThisRunNative": 4094,
+    "convertedThisRunNative": 5606,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 975,
+    "convertedThisRunManaged": 1525,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": 20,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 487929,
+    "remainingNative": 486417,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 14737,
+    "convertedBehaviorNative": 16249,
     "recognitionBehaviorNative": 5420,
-    "combinedBehaviorNative": 20157,
-    "convertedBehaviorManaged": 8392,
+    "combinedBehaviorNative": 21669,
+    "convertedBehaviorManaged": 8942,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -1238,6 +1238,97 @@
             "end": 4904,
             "tests": [
               "AcsAbsentOpcodeChunk10Tests.CallFunc_InvasionGetWave_Wire19702"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "p-saveg-acs-archive-chunk10",
+        "bucket": "conversion",
+        "nativeLoc": 1512,
+        "managedLoc": 550,
+        "note": "HCSV v366 ACS trailer: globals/map/world vars, sparse arrays, global strings, suspended fibers; SimSavegame chain + PSaveg round-trip tests.",
+        "nativeRanges": [
+          {
+            "file": "src/p_saveg.cpp",
+            "symbol": "Serialize(line_t)",
+            "start": 65,
+            "end": 83,
+            "tests": [
+              "PSavegRoundTripTests.LineActionsRoundTrip"
+            ]
+          },
+          {
+            "file": "src/p_saveg.cpp",
+            "symbol": "Serialize(sector_t)",
+            "start": 276,
+            "end": 335,
+            "tests": [
+              "PSavegRoundTripTests.SectorPlanesAndTerrainsRoundTrip"
+            ]
+          },
+          {
+            "file": "src/p_saveg.cpp",
+            "symbol": "FLevelLocals::Serialize",
+            "start": 909,
+            "end": 1029,
+            "tests": [
+              "PSavegRoundTripTests.SectorPlanesAndTerrainsRoundTrip",
+              "PSavegRoundTripTests.LineActionsRoundTrip"
+            ]
+          },
+          {
+            "file": "src/p_saveg.cpp",
+            "symbol": "FLevelLocals::SerializePlayers",
+            "start": 593,
+            "end": 738,
+            "tests": [
+              "PSavegRoundTripTests.PlayerAmmoAndThinkerOrderRoundTrip"
+            ]
+          },
+          {
+            "file": "src/playsim/dthinker.cpp",
+            "symbol": "FThinkerCollection::SerializeThinkers",
+            "start": 374,
+            "end": 443,
+            "tests": [
+              "PSavegRoundTripTests.PlayerAmmoAndThinkerOrderRoundTrip"
+            ]
+          },
+          {
+            "file": "src/playsim/p_acs.cpp",
+            "symbol": "WriteVars/ReadVars/WriteArrayVars/ReadArrayVars",
+            "start": 1566,
+            "end": 1680,
+            "tests": [
+              "PSavegRoundTripTests.AcsGlobalsMapWorldAndSuspendedFiberRoundTrip"
+            ]
+          },
+          {
+            "file": "src/playsim/p_acs.cpp",
+            "symbol": "P_ReadACSVars/P_WriteACSVars",
+            "start": 1688,
+            "end": 1710,
+            "tests": [
+              "PSavegRoundTripTests.AcsGlobalsMapWorldAndSuspendedFiberRoundTrip"
+            ]
+          },
+          {
+            "file": "src/playsim/p_acs.cpp",
+            "symbol": "ACSStringPool::ReadStrings/WriteStrings",
+            "start": 1301,
+            "end": 1385,
+            "tests": [
+              "PSavegRoundTripTests.AcsGlobalsMapWorldAndSuspendedFiberRoundTrip"
+            ]
+          },
+          {
+            "file": "src/playsim/p_acs.cpp",
+            "symbol": "DLevelScript::Serialize",
+            "start": 3535,
+            "end": 3582,
+            "tests": [
+              "PSavegRoundTripTests.AcsGlobalsMapWorldAndSuspendedFiberRoundTrip"
             ]
           }
         ]

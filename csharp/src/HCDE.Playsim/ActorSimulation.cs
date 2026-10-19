@@ -5045,6 +5045,12 @@ public sealed class AuthoritySimulation
         return order.Cast<Actor>().Select(actor => new SimThinkerPlacement(actor.Id, actor.StatNum, actor.JustSpawned)).ToArray();
     }
 
+    private SimAcsState? CaptureAcsState()
+    {
+        var captured = Acs.CaptureState(_acsRandomState);
+        return captured.IsDefault ? null : captured;
+    }
+
     public SimSaveState CaptureState(bool includeBotIdentities = false) =>
         CaptureState(includeBotIdentities, includeThinkerOrder: includeBotIdentities);
 
@@ -5137,6 +5143,7 @@ public sealed class AuthoritySimulation
                 : Level.Sectors.Select(s => new SimSectorTerrain(s.FloorTerrain, s.CeilingTerrain)).ToArray(),
             SectorSoundTargets = _sectorSoundTargets.Where(pair => Actors.Any(a => a.Id == pair.Value && !a.Destroyed))
                 .ToDictionary(pair => pair.Key, pair => pair.Value),
+            Acs = CaptureAcsState(),
             TextureScrolls = _textureScrolls.Select(s => new SimTextureScroll(s.SectorIndex, (int)s.Plane, s.Dx, s.Dy))
                 .Concat(_sideTextureScrolls.Select(s => new SimTextureScroll(s.SideIndex, (int)s.Parts + 1, s.Dx, s.Dy)))
                 .Concat(_sectorCarryScrolls.Select(s => new SimTextureScroll(s.SectorIndex, 9, s.Dx, s.Dy, Affect: s.Affect)))
@@ -6884,6 +6891,11 @@ public sealed class AuthoritySimulation
         foreach (var actor in _actors) ActorPhysics.RefreshOnMobj(this, actor);
 
         if (state.IncludesBotIdentities) Invasion.RestoreState(state.Invasion);
+        if (state.Acs is { } acs)
+        {
+            _acsRandomState = acs.RandomState;
+            Acs.RestoreState(acs, this);
+        }
         if (state.ThinkerOrder is { } order)
         {
             var actorsById = _actors.ToDictionary(actor => actor.Id);

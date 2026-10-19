@@ -24,7 +24,7 @@ public sealed class AcsProgram
 /// Word-format ACS subset: push, arithmetic, delay, goto, and selected line specials.
 /// Unknown opcodes stop the fiber. This is not <c>p_acs.cpp</c>.
 /// </summary>
-public sealed class AcsVm
+public sealed partial class AcsVm
 {
     private const int InstructionBudget = 64;
     private readonly Dictionary<int, AcsProgram> _programs = new();
