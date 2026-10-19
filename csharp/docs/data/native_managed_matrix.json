@@ -12,18 +12,19 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 98993
+    "managedCSharpLoc": 99793
   },
   "locTally": {
-    "convertedThisRunNative": 224,
-    "convertedThisRunManaged": 248,
-    "recognitionThisRunNative": 4648,
+    "convertedThisRunNative": 2616,
+    "convertedThisRunManaged": 1004,
+    "recognitionThisRunNative": 5400,
     "recognitionThisRunManaged": 0,
-    "remainingNative": 499919,
-    "convertedBehaviorNative": 8167,
-    "recognitionBehaviorNative": 4648,
-    "combinedBehaviorNative": 12815,
-    "convertedBehaviorManaged": 6025,
+    "remainingNative": 492043,
+    "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
+    "convertedBehaviorNative": 10643,
+    "recognitionBehaviorNative": 5400,
+    "combinedBehaviorNative": 16043,
+    "convertedBehaviorManaged": 6785,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -567,23 +568,310 @@
             ]
           }
         ]
+      },
+      {
+        "name": "p-enemy-chase-lost-sight-nosight-chunk4",
+        "bucket": "conversion",
+        "nativeLoc": 23,
+        "managedLoc": 8,
+        "note": "p_enemy.cpp A_DoChase lost-sight retarget preserves MF3_NOSIGHTCHECK toggle.",
+        "nativeRanges": [
+          {
+            "file": "src/playsim/p_enemy.cpp",
+            "symbol": "A_DoChase",
+            "start": 2694,
+            "end": 2716,
+            "tests": [
+              "ChaseLostSightNoSightCheckTests"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "p-switch-textures-button-chunk5",
+        "bucket": "conversion",
+        "nativeLoc": 839,
+        "managedLoc": 210,
+        "note": "p_switch.cpp switch textures/button thinker/sounds plus anim_switches.cpp pairs; ActivateMapLine switch hook.",
+        "nativeRanges": [
+          {
+            "file": "src/playsim/p_switch.cpp",
+            "symbol": "P_ChangeSwitchTexture",
+            "start": 243,
+            "end": 310,
+            "tests": [
+              "SwitchTextureTests.UseLineChangesSwitchTextureAndPlaysSound"
+            ]
+          },
+          {
+            "file": "src/playsim/p_switch.cpp",
+            "symbol": "P_StartButton",
+            "start": 71,
+            "end": 88,
+            "tests": [
+              "SwitchTextureTests.RePressingActiveButtonAdvancesTimer"
+            ]
+          },
+          {
+            "file": "src/playsim/p_switch.cpp",
+            "symbol": "DActiveButton::Tick",
+            "start": 380,
+            "end": 452,
+            "tests": [
+              "SwitchTextureTests.ButtonReturnsToOffTextureAfterHoldTime"
+            ]
+          },
+          {
+            "file": "src/gamedata/textures/anim_switches.cpp",
+            "symbol": "FTextureAnimator::AddSwitchPair",
+            "start": 305,
+            "end": 330,
+            "tests": [
+              "SwitchTextureTests.UseLineChangesSwitchTextureAndPlaysSound"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "p-lights-ev-neighbor-chunk5",
+        "bucket": "conversion",
+        "nativeLoc": 68,
+        "managedLoc": 54,
+        "note": "mapthinkers/a_lights.cpp EV_LightChange, EV_LightTurnOnPartway, EV_TurnTagLightsOff (new this run).",
+        "nativeRanges": [
+          {
+            "file": "src/playsim/mapthinkers/a_lights.cpp",
+            "symbol": "EV_LightChange",
+            "start": 724,
+            "end": 738,
+            "tests": [
+              "LightEvParityTests.LightChangeRaisesAndLowersTaggedSectors"
+            ]
+          },
+          {
+            "file": "src/playsim/mapthinkers/a_lights.cpp",
+            "symbol": "EV_TurnTagLightsOff",
+            "start": 606,
+            "end": 625,
+            "tests": [
+              "LightEvParityTests.TurnTagLightsOffUsesNeighborMinimum"
+            ]
+          },
+          {
+            "file": "src/playsim/mapthinkers/a_lights.cpp",
+            "symbol": "EV_LightTurnOnPartway",
+            "start": 685,
+            "end": 717,
+            "tests": [
+              "LightEvParityTests.LightTurnOnPartwayInterpolatesBetweenNeighborBounds"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "p-lights-thinkers-chunk5-recognition",
+        "bucket": "recognition",
+        "nativeLoc": 752,
+        "managedLoc": 0,
+        "note": "a_lights.cpp thinkers and animated EV_* already in LightEffect/LightActions before chunk 5 conversion.",
+        "nativeRanges": [
+          {
+            "file": "src/playsim/mapthinkers/a_lights.cpp",
+            "symbol": "DFlicker::Tick",
+            "start": 136,
+            "end": 158,
+            "tests": [
+              "FlickerTests.NativeCountdownRangesIncludeTransitionTick"
+            ]
+          },
+          {
+            "file": "src/playsim/mapthinkers/a_lights.cpp",
+            "symbol": "EV_StartLightFading",
+            "start": 774,
+            "end": 797,
+            "tests": [
+              "AnimatedLightTests.FadeHasNativeFirstTickAndFinalWriteWithoutLockingImmediateChanges"
+            ]
+          },
+          {
+            "file": "src/playsim/mapthinkers/a_lights.cpp",
+            "symbol": "EV_StartLightFlickering",
+            "start": 552,
+            "end": 560,
+            "tests": [
+              "FlickerTests.RetriggerCreatesAnotherEffectAndStopRemovesEveryEffect"
+            ]
+          },
+          {
+            "file": "src/playsim/mapthinkers/a_lights.cpp",
+            "symbol": "EV_StopLightEffect",
+            "start": 808,
+            "end": 819,
+            "tests": [
+              "AnimatedLightTests.OverlappingEffectsRunInCreationOrderAndStopRemovesAll"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "p-floor-waggle-donut-elevator-chunk6",
+        "bucket": "conversion",
+        "nativeLoc": 469,
+        "managedLoc": 195,
+        "note": "a_floor.cpp EV_StartWaggle, EV_DoDonut, DElevator::Tick crush rollback.",
+        "nativeRanges": [
+          {
+            "file": "src/playsim/mapthinkers/a_floor.cpp",
+            "symbol": "EV_StartWaggle",
+            "start": 1314,
+            "end": 1353,
+            "tests": [
+              "WaggleActionsTests.FloorWaggleOscillatesAfterExpand"
+            ]
+          },
+          {
+            "file": "src/playsim/mapthinkers/a_floor.cpp",
+            "symbol": "EV_DoDonut",
+            "start": 796,
+            "end": 863,
+            "tests": [
+              "FloorDonutTests.DonutSpecialStartsPillarAndPoolFloors"
+            ]
+          },
+          {
+            "file": "src/playsim/mapthinkers/a_floor.cpp",
+            "symbol": "DElevator::Tick",
+            "start": 941,
+            "end": 984,
+            "tests": [
+              "LineSpecialBatchTests.ElevatorRaiseToNearestMatchesNeighborFloor"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "p-pusher-lighttransfer-chunk6",
+        "bucket": "conversion",
+        "nativeLoc": 524,
+        "managedLoc": 175,
+        "note": "a_pusher.cpp DPusher wind/current; a_lighttransfer.cpp DLightTransfer.",
+        "nativeRanges": [
+          {
+            "file": "src/playsim/mapthinkers/a_pusher.cpp",
+            "symbol": "DPusher::Tick",
+            "start": 149,
+            "end": 299,
+            "tests": [
+              "PusherWindTests.SectorWindThinkerAddsVelocityOnGround"
+            ]
+          },
+          {
+            "file": "src/playsim/mapthinkers/a_pusher.cpp",
+            "symbol": "FLevelLocals::AdjustPusher",
+            "start": 307,
+            "end": 351,
+            "tests": [
+              "PusherWindTests.SectorWindThinkerAddsVelocityOnGround"
+            ]
+          },
+          {
+            "file": "src/playsim/mapthinkers/a_lighttransfer.cpp",
+            "symbol": "DLightTransfer::Tick",
+            "start": 68,
+            "end": 95,
+            "tests": [
+              "LightTransferActionsTests.TransferFollowsSourceSectorLight"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "p-teleport-switch-range-chunk6",
+        "bucket": "conversion",
+        "nativeLoc": 378,
+        "managedLoc": 95,
+        "note": "p_switch.cpp P_CheckSwitchRange; p_teleport.cpp SelectTeleDest random TID choice.",
+        "nativeRanges": [
+          {
+            "file": "src/playsim/p_switch.cpp",
+            "symbol": "P_CheckSwitchRange",
+            "start": 98,
+            "end": 234,
+            "tests": [
+              "SwitchCheckRangeTests.TopSwitchRequiresReachableHeight"
+            ]
+          },
+          {
+            "file": "src/playsim/p_teleport.cpp",
+            "symbol": "FLevelLocals::SelectTeleDest",
+            "start": 274,
+            "end": 340,
+            "tests": [
+              "TeleportRandomDestTests.TidTeleportUsesDeterministicIndexAcrossMatchingDests"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "acs-soundsequence-spawn-facing-chunk6",
+        "bucket": "conversion",
+        "nativeLoc": 175,
+        "managedLoc": 110,
+        "note": "p_acs.cpp DoSpawnSpotFacing, ACSF_SoundSequenceOn*, PCD_SpawnSpotFacing.",
+        "nativeRanges": [
+          {
+            "file": "src/playsim/p_acs.cpp",
+            "symbol": "DLevelScript::DoSpawnSpotFacing",
+            "start": 3895,
+            "end": 3914,
+            "tests": [
+              "AcsHotCallFuncBehaviorTests.SpawnSpotFacingForcedUsesActivatorYaw"
+            ]
+          },
+          {
+            "file": "src/playsim/p_acs.cpp",
+            "symbol": "ACSF_SoundSequenceOnActor",
+            "start": 5816,
+            "end": 5841,
+            "tests": [
+              "AcsSoundSequenceCallFuncTests.SoundSequenceOnActorSetsActivatorName"
+            ]
+          },
+          {
+            "file": "src/playsim/p_acs.cpp",
+            "symbol": "ACSF_SoundSequenceOnSector",
+            "start": 5843,
+            "end": 5858,
+            "tests": [
+              "AcsSoundSequenceCallFuncTests.SoundSequenceOnSectorTagsAllMatchingSectors"
+            ]
+          },
+          {
+            "file": "src/playsim/p_acs.cpp",
+            "symbol": "ACSF_SoundSequenceOnPolyobj",
+            "start": 5860,
+            "end": 5873,
+            "tests": [
+              "AcsSoundSequenceCallFuncTests.SoundSequenceOnPolyobjStoresSequenceName"
+            ]
+          }
+        ]
       }
     ]
   },
   "summaries": {
     "acsPcode": {
-      "executed": 272,
+      "executed": 273,
       "partial": 10,
-      "decoded-only": 80,
+      "decoded-only": 79,
       "absent": 12
     },
     "zscriptVmOp": {
-      "executed": 152,
-      "absent": 94
+      "executed": 246
     },
     "acsCallFunc": {
-      "partial": 90,
-      "absent": 48
+      "partial": 94,
+      "absent": 44
     }
   },
   "acsPcode": [
@@ -2523,7 +2811,7 @@
       "id": "acs-pcode:289",
       "name": "SpawnSpotFacing",
       "opcode": 289,
-      "status": "decoded-only",
+      "status": "executed",
       "nativeRef": "src/playsim/p_acs.cpp"
     },
     {
@@ -3344,56 +3632,56 @@
       "id": "vmop:19",
       "name": "LBU",
       "index": 19,
-      "status": "absent",
+      "status": "executed",
       "nativeRef": "src/common/scripting/vm/vmops.h"
     },
     {
       "id": "vmop:20",
       "name": "LBU_R",
       "index": 20,
-      "status": "absent",
+      "status": "executed",
       "nativeRef": "src/common/scripting/vm/vmops.h"
     },
     {
       "id": "vmop:21",
       "name": "LHU",
       "index": 21,
-      "status": "absent",
+      "status": "executed",
       "nativeRef": "src/common/scripting/vm/vmops.h"
     },
     {
       "id": "vmop:22",
       "name": "LHU_R",
       "index": 22,
-      "status": "absent",
+      "status": "executed",
       "nativeRef": "src/common/scripting/vm/vmops.h"
     },
     {
       "id": "vmop:23",
       "name": "LSP",
       "index": 23,
-      "status": "absent",
+      "status": "executed",
       "nativeRef": "src/common/scripting/vm/vmops.h"
     },
     {
       "id": "vmop:24",
       "name": "LSP_R",
       "index": 24,
-      "status": "absent",
+      "status": "executed",
       "nativeRef": "src/common/scripting/vm/vmops.h"
     },
     {
       "id": "vmop:25",
       "name": "LDP",
       "index": 25,
-      "status": "absent",
+      "status": "executed",
       "nativeRef": "src/common/scripting/vm/vmops.h"
     },
     {
       "id": "vmop:26",
       "name": "LDP_R",
       "index": 26,
-      "status": "absent",
+      "status": "executed",
       "nativeRef": "src/common/scripting/vm/vmops.h"
     },
     {
@@ -3575,175 +3863,175 @@
       "id": "vmop:52",
       "name": "SW",
       "index": 52,
-      "status": "absent",
+      "status": "executed",
       "nativeRef": "src/common/scripting/vm/vmops.h"
     },
     {
       "id": "vmop:53",
       "name": "SW_R",
       "index": 53,
-      "status": "absent",
+      "status": "executed",
       "nativeRef": "src/common/scripting/vm/vmops.h"
     },
     {
       "id": "vmop:54",
       "name": "SSP",
       "index": 54,
-      "status": "absent",
+      "status": "executed",
       "nativeRef": "src/common/scripting/vm/vmops.h"
     },
     {
       "id": "vmop:55",
       "name": "SSP_R",
       "index": 55,
-      "status": "absent",
+      "status": "executed",
       "nativeRef": "src/common/scripting/vm/vmops.h"
     },
     {
       "id": "vmop:56",
       "name": "SDP",
       "index": 56,
-      "status": "absent",
+      "status": "executed",
       "nativeRef": "src/common/scripting/vm/vmops.h"
     },
     {
       "id": "vmop:57",
       "name": "SDP_R",
       "index": 57,
-      "status": "absent",
+      "status": "executed",
       "nativeRef": "src/common/scripting/vm/vmops.h"
     },
     {
       "id": "vmop:58",
       "name": "SS",
       "index": 58,
-      "status": "absent",
+      "status": "executed",
       "nativeRef": "src/common/scripting/vm/vmops.h"
     },
     {
       "id": "vmop:59",
       "name": "SS_R",
       "index": 59,
-      "status": "absent",
+      "status": "executed",
       "nativeRef": "src/common/scripting/vm/vmops.h"
     },
     {
       "id": "vmop:60",
       "name": "SP",
       "index": 60,
-      "status": "absent",
+      "status": "executed",
       "nativeRef": "src/common/scripting/vm/vmops.h"
     },
     {
       "id": "vmop:61",
       "name": "SP_R",
       "index": 61,
-      "status": "absent",
+      "status": "executed",
       "nativeRef": "src/common/scripting/vm/vmops.h"
     },
     {
       "id": "vmop:62",
       "name": "SO",
       "index": 62,
-      "status": "absent",
+      "status": "executed",
       "nativeRef": "src/common/scripting/vm/vmops.h"
     },
     {
       "id": "vmop:63",
       "name": "SO_R",
       "index": 63,
-      "status": "absent",
+      "status": "executed",
       "nativeRef": "src/common/scripting/vm/vmops.h"
     },
     {
       "id": "vmop:64",
       "name": "SV2",
       "index": 64,
-      "status": "absent",
+      "status": "executed",
       "nativeRef": "src/common/scripting/vm/vmops.h"
     },
     {
       "id": "vmop:65",
       "name": "SV2_R",
       "index": 65,
-      "status": "absent",
+      "status": "executed",
       "nativeRef": "src/common/scripting/vm/vmops.h"
     },
     {
       "id": "vmop:66",
       "name": "SV3",
       "index": 66,
-      "status": "absent",
+      "status": "executed",
       "nativeRef": "src/common/scripting/vm/vmops.h"
     },
     {
       "id": "vmop:67",
       "name": "SV3_R",
       "index": 67,
-      "status": "absent",
+      "status": "executed",
       "nativeRef": "src/common/scripting/vm/vmops.h"
     },
     {
       "id": "vmop:68",
       "name": "SV4",
       "index": 68,
-      "status": "absent",
+      "status": "executed",
       "nativeRef": "src/common/scripting/vm/vmops.h"
     },
     {
       "id": "vmop:69",
       "name": "SV4_R",
       "index": 69,
-      "status": "absent",
+      "status": "executed",
       "nativeRef": "src/common/scripting/vm/vmops.h"
     },
     {
       "id": "vmop:70",
       "name": "SFV2",
       "index": 70,
-      "status": "absent",
+      "status": "executed",
       "nativeRef": "src/common/scripting/vm/vmops.h"
     },
     {
       "id": "vmop:71",
       "name": "SFV2_R",
       "index": 71,
-      "status": "absent",
+      "status": "executed",
       "nativeRef": "src/common/scripting/vm/vmops.h"
     },
     {
       "id": "vmop:72",
       "name": "SFV3",
       "index": 72,
-      "status": "absent",
+      "status": "executed",
       "nativeRef": "src/common/scripting/vm/vmops.h"
     },
     {
       "id": "vmop:73",
       "name": "SFV3_R",
       "index": 73,
-      "status": "absent",
+      "status": "executed",
       "nativeRef": "src/common/scripting/vm/vmops.h"
     },
     {
       "id": "vmop:74",
       "name": "SFV4",
       "index": 74,
-      "status": "absent",
+      "status": "executed",
       "nativeRef": "src/common/scripting/vm/vmops.h"
     },
     {
       "id": "vmop:75",
       "name": "SFV4_R",
       "index": 75,
-      "status": "absent",
+      "status": "executed",
       "nativeRef": "src/common/scripting/vm/vmops.h"
     },
     {
       "id": "vmop:76",
       "name": "SBIT",
       "index": 76,
-      "status": "absent",
+      "status": "executed",
       "nativeRef": "src/common/scripting/vm/vmops.h"
     },
     {
@@ -3757,42 +4045,42 @@
       "id": "vmop:78",
       "name": "MOVEF",
       "index": 78,
-      "status": "absent",
+      "status": "executed",
       "nativeRef": "src/common/scripting/vm/vmops.h"
     },
     {
       "id": "vmop:79",
       "name": "MOVES",
       "index": 79,
-      "status": "absent",
+      "status": "executed",
       "nativeRef": "src/common/scripting/vm/vmops.h"
     },
     {
       "id": "vmop:80",
       "name": "MOVEA",
       "index": 80,
-      "status": "absent",
+      "status": "executed",
       "nativeRef": "src/common/scripting/vm/vmops.h"
     },
     {
       "id": "vmop:81",
       "name": "MOVEV2",
       "index": 81,
-      "status": "absent",
+      "status": "executed",
       "nativeRef": "src/common/scripting/vm/vmops.h"
     },
     {
       "id": "vmop:82",
       "name": "MOVEV3",
       "index": 82,
-      "status": "absent",
+      "status": "executed",
       "nativeRef": "src/common/scripting/vm/vmops.h"
     },
     {
       "id": "vmop:83",
       "name": "MOVEV4",
       "index": 83,
-      "status": "absent",
+      "status": "executed",
       "nativeRef": "src/common/scripting/vm/vmops.h"
     },
     {
@@ -3806,35 +4094,35 @@
       "id": "vmop:85",
       "name": "CASTB",
       "index": 85,
-      "status": "absent",
+      "status": "executed",
       "nativeRef": "src/common/scripting/vm/vmops.h"
     },
     {
       "id": "vmop:86",
       "name": "DYNCAST_R",
       "index": 86,
-      "status": "absent",
+      "status": "executed",
       "nativeRef": "src/common/scripting/vm/vmops.h"
     },
     {
       "id": "vmop:87",
       "name": "DYNCAST_K",
       "index": 87,
-      "status": "absent",
+      "status": "executed",
       "nativeRef": "src/common/scripting/vm/vmops.h"
     },
     {
       "id": "vmop:88",
       "name": "DYNCASTC_R",
       "index": 88,
-      "status": "absent",
+      "status": "executed",
       "nativeRef": "src/common/scripting/vm/vmops.h"
     },
     {
       "id": "vmop:89",
       "name": "DYNCASTC_K",
       "index": 89,
-      "status": "absent",
+      "status": "executed",
       "nativeRef": "src/common/scripting/vm/vmops.h"
     },
     {
@@ -3848,7 +4136,7 @@
       "id": "vmop:91",
       "name": "TESTN",
       "index": 91,
-      "status": "absent",
+      "status": "executed",
       "nativeRef": "src/common/scripting/vm/vmops.h"
     },
     {
@@ -3862,7 +4150,7 @@
       "id": "vmop:93",
       "name": "IJMP",
       "index": 93,
-      "status": "absent",
+      "status": "executed",
       "nativeRef": "src/common/scripting/vm/vmops.h"
     },
     {
@@ -3876,7 +4164,7 @@
       "id": "vmop:95",
       "name": "PARAMI",
       "index": 95,
-      "status": "absent",
+      "status": "executed",
       "nativeRef": "src/common/scripting/vm/vmops.h"
     },
     {
@@ -3897,7 +4185,7 @@
       "id": "vmop:98",
       "name": "VTBL",
       "index": 98,
-      "status": "absent",
+      "status": "executed",
       "nativeRef": "src/common/scripting/vm/vmops.h"
     },
     {
@@ -3932,14 +4220,14 @@
       "id": "vmop:103",
       "name": "TRY",
       "index": 103,
-      "status": "absent",
+      "status": "executed",
       "nativeRef": "src/common/scripting/vm/vmops.h"
     },
     {
       "id": "vmop:104",
       "name": "UNTRY",
       "index": 104,
-      "status": "absent",
+      "status": "executed",
       "nativeRef": "src/common/scripting/vm/vmops.h"
     },
     {
@@ -3953,7 +4241,7 @@
       "id": "vmop:106",
       "name": "CATCH",
       "index": 106,
-      "status": "absent",
+      "status": "executed",
       "nativeRef": "src/common/scripting/vm/vmops.h"
     },
     {
@@ -3988,14 +4276,14 @@
       "id": "vmop:111",
       "name": "LENS",
       "index": 111,
-      "status": "absent",
+      "status": "executed",
       "nativeRef": "src/common/scripting/vm/vmops.h"
     },
     {
       "id": "vmop:112",
       "name": "CMPS",
       "index": 112,
-      "status": "absent",
+      "status": "executed",
       "nativeRef": "src/common/scripting/vm/vmops.h"
     },
     {
@@ -4632,280 +4920,280 @@
       "id": "vmop:203",
       "name": "NEGV2",
       "index": 203,
-      "status": "absent",
+      "status": "executed",
       "nativeRef": "src/common/scripting/vm/vmops.h"
     },
     {
       "id": "vmop:204",
       "name": "ADDV2_RR",
       "index": 204,
-      "status": "absent",
+      "status": "executed",
       "nativeRef": "src/common/scripting/vm/vmops.h"
     },
     {
       "id": "vmop:205",
       "name": "SUBV2_RR",
       "index": 205,
-      "status": "absent",
+      "status": "executed",
       "nativeRef": "src/common/scripting/vm/vmops.h"
     },
     {
       "id": "vmop:206",
       "name": "DOTV2_RR",
       "index": 206,
-      "status": "absent",
+      "status": "executed",
       "nativeRef": "src/common/scripting/vm/vmops.h"
     },
     {
       "id": "vmop:207",
       "name": "MULVF2_RR",
       "index": 207,
-      "status": "absent",
+      "status": "executed",
       "nativeRef": "src/common/scripting/vm/vmops.h"
     },
     {
       "id": "vmop:208",
       "name": "MULVF2_RK",
       "index": 208,
-      "status": "absent",
+      "status": "executed",
       "nativeRef": "src/common/scripting/vm/vmops.h"
     },
     {
       "id": "vmop:209",
       "name": "DIVVF2_RR",
       "index": 209,
-      "status": "absent",
+      "status": "executed",
       "nativeRef": "src/common/scripting/vm/vmops.h"
     },
     {
       "id": "vmop:210",
       "name": "DIVVF2_RK",
       "index": 210,
-      "status": "absent",
+      "status": "executed",
       "nativeRef": "src/common/scripting/vm/vmops.h"
     },
     {
       "id": "vmop:211",
       "name": "LENV2",
       "index": 211,
-      "status": "absent",
+      "status": "executed",
       "nativeRef": "src/common/scripting/vm/vmops.h"
     },
     {
       "id": "vmop:212",
       "name": "EQV2_R",
       "index": 212,
-      "status": "absent",
+      "status": "executed",
       "nativeRef": "src/common/scripting/vm/vmops.h"
     },
     {
       "id": "vmop:213",
       "name": "EQV2_K",
       "index": 213,
-      "status": "absent",
+      "status": "executed",
       "nativeRef": "src/common/scripting/vm/vmops.h"
     },
     {
       "id": "vmop:214",
       "name": "NEGV3",
       "index": 214,
-      "status": "absent",
+      "status": "executed",
       "nativeRef": "src/common/scripting/vm/vmops.h"
     },
     {
       "id": "vmop:215",
       "name": "ADDV3_RR",
       "index": 215,
-      "status": "absent",
+      "status": "executed",
       "nativeRef": "src/common/scripting/vm/vmops.h"
     },
     {
       "id": "vmop:216",
       "name": "SUBV3_RR",
       "index": 216,
-      "status": "absent",
+      "status": "executed",
       "nativeRef": "src/common/scripting/vm/vmops.h"
     },
     {
       "id": "vmop:217",
       "name": "DOTV3_RR",
       "index": 217,
-      "status": "absent",
+      "status": "executed",
       "nativeRef": "src/common/scripting/vm/vmops.h"
     },
     {
       "id": "vmop:218",
       "name": "CROSSV_RR",
       "index": 218,
-      "status": "absent",
+      "status": "executed",
       "nativeRef": "src/common/scripting/vm/vmops.h"
     },
     {
       "id": "vmop:219",
       "name": "MULVF3_RR",
       "index": 219,
-      "status": "absent",
+      "status": "executed",
       "nativeRef": "src/common/scripting/vm/vmops.h"
     },
     {
       "id": "vmop:220",
       "name": "MULVF3_RK",
       "index": 220,
-      "status": "absent",
+      "status": "executed",
       "nativeRef": "src/common/scripting/vm/vmops.h"
     },
     {
       "id": "vmop:221",
       "name": "DIVVF3_RR",
       "index": 221,
-      "status": "absent",
+      "status": "executed",
       "nativeRef": "src/common/scripting/vm/vmops.h"
     },
     {
       "id": "vmop:222",
       "name": "DIVVF3_RK",
       "index": 222,
-      "status": "absent",
+      "status": "executed",
       "nativeRef": "src/common/scripting/vm/vmops.h"
     },
     {
       "id": "vmop:223",
       "name": "LENV3",
       "index": 223,
-      "status": "absent",
+      "status": "executed",
       "nativeRef": "src/common/scripting/vm/vmops.h"
     },
     {
       "id": "vmop:224",
       "name": "EQV3_R",
       "index": 224,
-      "status": "absent",
+      "status": "executed",
       "nativeRef": "src/common/scripting/vm/vmops.h"
     },
     {
       "id": "vmop:225",
       "name": "EQV3_K",
       "index": 225,
-      "status": "absent",
+      "status": "executed",
       "nativeRef": "src/common/scripting/vm/vmops.h"
     },
     {
       "id": "vmop:226",
       "name": "NEGV4",
       "index": 226,
-      "status": "absent",
+      "status": "executed",
       "nativeRef": "src/common/scripting/vm/vmops.h"
     },
     {
       "id": "vmop:227",
       "name": "ADDV4_RR",
       "index": 227,
-      "status": "absent",
+      "status": "executed",
       "nativeRef": "src/common/scripting/vm/vmops.h"
     },
     {
       "id": "vmop:228",
       "name": "SUBV4_RR",
       "index": 228,
-      "status": "absent",
+      "status": "executed",
       "nativeRef": "src/common/scripting/vm/vmops.h"
     },
     {
       "id": "vmop:229",
       "name": "DOTV4_RR",
       "index": 229,
-      "status": "absent",
+      "status": "executed",
       "nativeRef": "src/common/scripting/vm/vmops.h"
     },
     {
       "id": "vmop:230",
       "name": "MULVF4_RR",
       "index": 230,
-      "status": "absent",
+      "status": "executed",
       "nativeRef": "src/common/scripting/vm/vmops.h"
     },
     {
       "id": "vmop:231",
       "name": "MULVF4_RK",
       "index": 231,
-      "status": "absent",
+      "status": "executed",
       "nativeRef": "src/common/scripting/vm/vmops.h"
     },
     {
       "id": "vmop:232",
       "name": "DIVVF4_RR",
       "index": 232,
-      "status": "absent",
+      "status": "executed",
       "nativeRef": "src/common/scripting/vm/vmops.h"
     },
     {
       "id": "vmop:233",
       "name": "DIVVF4_RK",
       "index": 233,
-      "status": "absent",
+      "status": "executed",
       "nativeRef": "src/common/scripting/vm/vmops.h"
     },
     {
       "id": "vmop:234",
       "name": "LENV4",
       "index": 234,
-      "status": "absent",
+      "status": "executed",
       "nativeRef": "src/common/scripting/vm/vmops.h"
     },
     {
       "id": "vmop:235",
       "name": "EQV4_R",
       "index": 235,
-      "status": "absent",
+      "status": "executed",
       "nativeRef": "src/common/scripting/vm/vmops.h"
     },
     {
       "id": "vmop:236",
       "name": "EQV4_K",
       "index": 236,
-      "status": "absent",
+      "status": "executed",
       "nativeRef": "src/common/scripting/vm/vmops.h"
     },
     {
       "id": "vmop:237",
       "name": "MULQQ_RR",
       "index": 237,
-      "status": "absent",
+      "status": "executed",
       "nativeRef": "src/common/scripting/vm/vmops.h"
     },
     {
       "id": "vmop:238",
       "name": "MULQV3_RR",
       "index": 238,
-      "status": "absent",
+      "status": "executed",
       "nativeRef": "src/common/scripting/vm/vmops.h"
     },
     {
       "id": "vmop:239",
       "name": "CONJQ",
       "index": 239,
-      "status": "absent",
+      "status": "executed",
       "nativeRef": "src/common/scripting/vm/vmops.h"
     },
     {
       "id": "vmop:240",
       "name": "ADDA_RR",
       "index": 240,
-      "status": "absent",
+      "status": "executed",
       "nativeRef": "src/common/scripting/vm/vmops.h"
     },
     {
       "id": "vmop:241",
       "name": "ADDA_RK",
       "index": 241,
-      "status": "absent",
+      "status": "executed",
       "nativeRef": "src/common/scripting/vm/vmops.h"
     },
     {
       "id": "vmop:242",
       "name": "SUBA",
       "index": 242,
-      "status": "absent",
+      "status": "executed",
       "nativeRef": "src/common/scripting/vm/vmops.h"
     },
     {
@@ -4926,7 +5214,7 @@
       "id": "vmop:245",
       "name": "NULLCHECK",
       "index": 245,
-      "status": "absent",
+      "status": "executed",
       "nativeRef": "src/common/scripting/vm/vmops.h"
     }
   ],
@@ -5054,7 +5342,7 @@
     {
       "id": "acs-call:SpawnSpotFacingForced",
       "name": "SpawnSpotFacingForced",
-      "status": "absent",
+      "status": "partial",
       "nativeRef": "src/playsim/p_acs.cpp EACSFunctions"
     },
     {
@@ -5108,19 +5396,19 @@
     {
       "id": "acs-call:SoundSequenceOnActor",
       "name": "SoundSequenceOnActor",
-      "status": "absent",
+      "status": "partial",
       "nativeRef": "src/playsim/p_acs.cpp EACSFunctions"
     },
     {
       "id": "acs-call:SoundSequenceOnSector",
       "name": "SoundSequenceOnSector",
-      "status": "absent",
+      "status": "partial",
       "nativeRef": "src/playsim/p_acs.cpp EACSFunctions"
     },
     {
       "id": "acs-call:SoundSequenceOnPolyobj",
       "name": "SoundSequenceOnPolyobj",
-      "status": "absent",
+      "status": "partial",
       "nativeRef": "src/playsim/p_acs.cpp EACSFunctions"
     },
     {

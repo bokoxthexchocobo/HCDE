@@ -1,14 +1,14 @@
 {
-  "convertedThisRunNative": 2616,
-  "convertedThisRunManaged": 1004,
-  "recognitionThisRunNative": 5400,
+  "convertedThisRunNative": 2668,
+  "convertedThisRunManaged": 1114,
+  "recognitionThisRunNative": 6936,
   "recognitionThisRunManaged": 0,
-  "remainingNative": 492043,
+  "remainingNative": 490455,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 10643,
-  "recognitionBehaviorNative": 5400,
-  "combinedBehaviorNative": 16043,
-  "convertedBehaviorManaged": 6785,
+  "convertedBehaviorNative": 10695,
+  "recognitionBehaviorNative": 6936,
+  "combinedBehaviorNative": 17631,
+  "convertedBehaviorManaged": 6895,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -364,6 +364,29 @@
         { "file": "src/playsim/p_acs.cpp", "symbol": "ACSF_SoundSequenceOnActor", "start": 5816, "end": 5841, "tests": ["AcsSoundSequenceCallFuncTests.SoundSequenceOnActorSetsActivatorName"] },
         { "file": "src/playsim/p_acs.cpp", "symbol": "ACSF_SoundSequenceOnSector", "start": 5843, "end": 5858, "tests": ["AcsSoundSequenceCallFuncTests.SoundSequenceOnSectorTagsAllMatchingSectors"] },
         { "file": "src/playsim/p_acs.cpp", "symbol": "ACSF_SoundSequenceOnPolyobj", "start": 5860, "end": 5873, "tests": ["AcsSoundSequenceCallFuncTests.SoundSequenceOnPolyobjStoresSequenceName"] }
+      ]
+    },
+    {
+      "name": "zscript-vm-pointer-arith-chunk7",
+      "bucket": "conversion",
+      "nativeLoc": 52,
+      "managedLoc": 110,
+      "note": "vmexec.h ADDA_RR/ADDA_RK/SUBA; vmops.h tail opcode reindex for EQA/NULLCHECK.",
+      "nativeRanges": [
+        { "file": "src/common/scripting/vm/vmexec.h", "symbol": "OP(ADDA_RR)", "start": 1910, "end": 1923, "tests": ["VmPointerArithmeticOpcodeTests.AddARrAdvancesBytePointerIntoArray"] },
+        { "file": "src/common/scripting/vm/vmexec.h", "symbol": "OP(SUBA)", "start": 1925, "end": 1928, "tests": ["VmPointerArithmeticOpcodeTests.SubAReportsByteDistanceBetweenPointers"] }
+      ]
+    },
+    {
+      "name": "zscript-vm-matrix-recognition-chunk7",
+      "bucket": "recognition",
+      "nativeLoc": 1536,
+      "managedLoc": 0,
+      "note": "VmExec already implemented 94 vmops.h rows; matrix classifier fixed to index-based parity.",
+      "nativeRanges": [
+        { "file": "src/common/scripting/vm/vmexec.h", "symbol": "OP(ADD_RR)", "start": 1131, "end": 1134, "tests": ["VmIntegerArithmeticOpcodeTests.IntegerBinaryOpsWriteRegister"] },
+        { "file": "src/common/scripting/vm/vmexec.h", "symbol": "OP(EQ_R)", "start": 1351, "end": 1354, "tests": ["VmIntegerArithmeticOpcodeTests.EqRBranchesWhenRegistersMatch"] },
+        { "file": "src/common/scripting/vm/vmexec.h", "symbol": "OP(LT_RR)", "start": 1359, "end": 1362, "tests": ["VmIntegerArithmeticOpcodeTests.LtRrBranchesOnOrderedIntegers"] }
       ]
     }
   ]
