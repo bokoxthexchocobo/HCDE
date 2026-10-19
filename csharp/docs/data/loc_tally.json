@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": -8775,
+  "convertedThisRunNative": -8748,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 4969,
+  "convertedThisRunManaged": 4997,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -774,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 493668,
+  "remainingNative": 493641,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 9752,
+  "convertedBehaviorNative": 9779,
   "recognitionBehaviorNative": 4666,
-  "combinedBehaviorNative": 14418,
-  "convertedBehaviorManaged": 14640,
+  "combinedBehaviorNative": 14445,
+  "convertedBehaviorManaged": 14668,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -3444,6 +3444,25 @@
           "end": 4613,
           "tests": [
             "AcsCheckActorTextureServiceTests"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "p-acs-swap-telefog-chunk45",
+      "bucket": "conversion",
+      "nativeLoc": 27,
+      "managedLoc": 28,
+      "note": "SwapActorTeleFog tid walk.",
+      "conversionManagedCommit": "620f952cda4fcced5eaa778bf37f80cb50261180",
+      "nativeRanges": [
+        {
+          "file": "src/playsim/p_acs.cpp",
+          "symbol": "DLevelScript::SwapActorTeleFog",
+          "start": 5282,
+          "end": 5308,
+          "tests": [
+            "AcsSwapActorTeleFogServiceTests"
           ]
         }
       ]
