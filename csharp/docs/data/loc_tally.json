@@ -2900,7 +2900,7 @@
       "nativeLoc": 133,
       "managedLoc": 454,
       "note": "p_mobj.cpp SpawnMapThing spawn filters and player-start registration.",
-      "conversionManagedCommit": "0000000000000000000000000000000000000000",
+      "conversionManagedCommit": "e0255116e36944214e1c702694fa76d586a44e2c",
       "nativeRanges": [
         {
           "file": "src/playsim/p_mobj.cpp",
