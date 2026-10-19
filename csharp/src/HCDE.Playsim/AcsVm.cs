@@ -1295,6 +1295,119 @@ public sealed class AcsVm
                     }
                     break;
                 }
+                case (int)AcsPcode.SectorSound:
+                {
+                    if (fiber.Stack.Count < 2) { fiber.Done = true; return; }
+                    var sectorVolume = Pop(fiber);
+                    var sectorSound = Pop(fiber);
+                    if (!fiber.Done)
+                        AcsAbsentOpcodeActions.SectorSound(sim, sectorVolume, sectorSound, fiber.StringTable, _globalStrings, fiber.TriggerLine, fiber.Activator);
+                    break;
+                }
+                case (int)AcsPcode.AmbientSound:
+                {
+                    if (fiber.Stack.Count < 2) { fiber.Done = true; return; }
+                    var ambientVolume = Pop(fiber);
+                    var ambientSound = Pop(fiber);
+                    if (!fiber.Done)
+                        AcsAbsentOpcodeActions.AmbientSound(ambientVolume, ambientSound, fiber.StringTable, _globalStrings, sim);
+                    break;
+                }
+                case (int)AcsPcode.SoundSequence:
+                {
+                    if (fiber.Stack.Count < 1) { fiber.Done = true; return; }
+                    var sequence = Pop(fiber);
+                    if (!fiber.Done)
+                        AcsAbsentOpcodeActions.SoundSequence(sim, sequence, fiber.StringTable, _globalStrings, fiber.TriggerLine);
+                    break;
+                }
+                case (int)AcsPcode.SetLineBlocking:
+                {
+                    if (fiber.Stack.Count < 2) { fiber.Done = true; return; }
+                    var blockingMode = Pop(fiber);
+                    var blockingLine = Pop(fiber);
+                    if (!fiber.Done) AcsAbsentOpcodeActions.SetLineBlocking(sim, blockingLine, blockingMode);
+                    break;
+                }
+                case (int)AcsPcode.SetLineSpecial:
+                {
+                    if (fiber.Stack.Count < 7) { fiber.Done = true; return; }
+                    var lsArg4 = Pop(fiber);
+                    var lsArg3 = Pop(fiber);
+                    var lsArg2 = Pop(fiber);
+                    var lsArg1 = Pop(fiber);
+                    var lsArg0 = Pop(fiber);
+                    var lsSpecial = Pop(fiber);
+                    var lsLine = Pop(fiber);
+                    if (!fiber.Done)
+                        AcsAbsentOpcodeActions.SetLineSpecial(sim, lsLine, lsSpecial, lsArg0, lsArg1, lsArg2, lsArg3, lsArg4);
+                    break;
+                }
+                case (int)AcsPcode.SetMugshotState:
+                {
+                    if (fiber.Stack.Count < 1) { fiber.Done = true; return; }
+                    var mugshot = Pop(fiber);
+                    if (!fiber.Done)
+                        AcsAbsentOpcodeActions.SetMugshotState(sim, mugshot, fiber.StringTable, _globalStrings, fiber.Activator);
+                    break;
+                }
+                case (int)AcsPcode.TranslationRange5:
+                {
+                    if (fiber.Stack.Count < 6) { fiber.Done = true; return; }
+                    for (var i = 0; i < 6; i++) Pop(fiber);
+                    if (!fiber.Done) AcsAbsentOpcodeActions.TranslationRange5();
+                    break;
+                }
+                case (int)AcsPcode.CheckActorFloorTexture:
+                {
+                    if (fiber.Stack.Count < 2) { fiber.Done = true; return; }
+                    var textureId = Pop(fiber);
+                    var floorTid = Pop(fiber);
+                    if (!fiber.Done)
+                    {
+                        var match = AcsAbsentOpcodeActions.CheckActorFloorTexture(
+                            sim, floorTid, textureId, fiber.StringTable, _globalStrings, fiber.Activator);
+                        fiber.Stack.Add(match);
+                    }
+                    break;
+                }
+                case (int)AcsPcode.UnmorphActor:
+                {
+                    if (fiber.Stack.Count < 2) { fiber.Done = true; return; }
+                    var unmorphForce = Pop(fiber) != 0;
+                    var unmorphTid = Pop(fiber);
+                    if (!fiber.Done)
+                    {
+                        var changes = AcsAbsentOpcodeActions.UnmorphActor(sim, unmorphTid, unmorphForce, fiber.Activator);
+                        fiber.Stack.Add(changes);
+                    }
+                    break;
+                }
+                case (int)AcsPcode.GetPlayerInput:
+                {
+                    if (fiber.Stack.Count < 2) { fiber.Done = true; return; }
+                    var inputNum = Pop(fiber);
+                    var playerNum = Pop(fiber);
+                    if (!fiber.Done)
+                    {
+                        fiber.Stack.Add(AcsAbsentOpcodeActions.GetPlayerInput(sim, playerNum, inputNum, fiber.Activator));
+                    }
+                    break;
+                }
+                case (int)AcsPcode.PrintBinary:
+                {
+                    if (fiber.Stack.Count < 1) { fiber.Done = true; return; }
+                    var binaryValue = Pop(fiber);
+                    if (!fiber.Done) AcsAbsentOpcodeActions.AppendPrintBinary(sim, binaryValue);
+                    break;
+                }
+                case (int)AcsPcode.PrintHex:
+                {
+                    if (fiber.Stack.Count < 1) { fiber.Done = true; return; }
+                    var hexValue = Pop(fiber);
+                    if (!fiber.Done) AcsAbsentOpcodeActions.AppendPrintHex(sim, hexValue);
+                    break;
+                }
                 case (int)AcsPcode.Drop:
                     Pop(fiber);
                     break;

@@ -6,15 +6,15 @@ Generated: 2026-10-19. Machine-readable: [`data/native_managed_matrix.json`](dat
 
 - Native engine scope: `src/` `*.cpp` / `*.c` only → **508,086** lines.
 - Excluded from engine scope: libraries/ (vendored deps), tools/ (build utilities), protocol/ (shared constants; mirrored in HCDE.Protocol).
-- Managed implementation: `csharp/src/**/*.cs` → **100,303** lines.
+- Managed implementation: `csharp/src/**/*.cs` → **100,947** lines.
 
 ### Run tally
 
-- Converted this run (native behavior, tested): **3,252** native lines.
+- Converted this run (native behavior, tested): **4,094** native lines.
 - Recognition this run (already ported, tested): **20** native lines.
-- Added this run (managed): **697** C# lines.
-- Cumulative conversion (native): **13,895**; recognition: **5,420**; combined: **19,315**.
-- Native engine remaining (scope): **488,771** lines.
+- Added this run (managed): **975** C# lines.
+- Cumulative conversion (native): **14,737**; recognition: **5,420**; combined: **20,157**.
+- Native engine remaining (scope): **487,929** lines.
 
 Native lines count toward conversion only when matching behavior is implemented and covered by regression tests.
 
@@ -22,9 +22,9 @@ Native lines count toward conversion only when matching behavior is implemented 
 
 | Area | Executed | Partial | Decoded-only | Absent |
 | --- | ---: | ---: | ---: | ---: |
-| ACS word opcodes (`AcsPcode`) | 273 | 10 | 79 | 12 |
+| ACS word opcodes (`AcsPcode`) | 285 | 10 | 79 | 0 |
 | ZScript VM opcodes (`vmops.h` rows) | 246 | 0 | 0 | 0 |
-| ACS `CallFunc` (`EACSFunctions` names) | 94 | 0 | 0 | 44 |
+| ACS `CallFunc` (`EACSFunctions` names) | 120 | 0 | 0 | 18 |
 
 ## Native `src/` LOC by top-level directory
 

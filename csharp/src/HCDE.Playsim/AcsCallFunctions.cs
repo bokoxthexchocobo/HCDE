@@ -4,7 +4,7 @@ using HCDE.MapLoader;
 namespace HCDE.Playsim;
 
 /// <summary>Native <c>CallFunction</c> subset beyond invasion zero-arg queries.</summary>
-internal static class AcsCallFunctions
+internal static partial class AcsCallFunctions
 {
     /// <summary>Native <c>ACSF_GetLineUDMFInt</c> (1).</summary>
     public const int GetLineUdmfInt = 1;
@@ -386,7 +386,7 @@ internal static class AcsCallFunctions
             case GetNetId:
                 return TryGetNetId(sim, stack, scriptActivator, argCount, out result);
             default:
-                return false;
+                return TryExtendedInvoke(sim, stack, scriptActivator, stringTable, globalStrings, function, argCount, out result);
         }
     }
 

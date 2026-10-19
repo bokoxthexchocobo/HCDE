@@ -135,17 +135,17 @@ public sealed class LevelLine
     public double Y1 { get; init; }
     public double X2 { get; init; }
     public double Y2 { get; init; }
-    public int Flags { get; init; }
+    public int Flags { get; set; }
     public int Flags2 { get; init; }
     public int SideFront { get; init; }
     public int SideBack { get; init; }
     public int Special { get; set; }
     public int Tag { get; init; }
-    public int Arg0 { get; init; }
-    public int Arg1 { get; init; }
-    public int Arg2 { get; init; }
+    public int Arg0 { get; set; }
+    public int Arg1 { get; set; }
+    public int Arg2 { get; set; }
     public int Arg3 { get; set; }
-    public int Arg4 { get; init; }
+    public int Arg4 { get; set; }
     public bool PlayerCross { get; set; }
     /// <summary>Native SPAC_MCross: monsters may activate this line when crossing.</summary>
     public bool MonsterCross { get; set; }
@@ -241,6 +241,9 @@ public sealed class PlayLevel
     public int? DefaultDropStyle { get; set; }
     public double? AirControl { get; set; }
     public double LevelGravity { get; set; } = 800;
+    public double SkySpeed1 { get; set; }
+    public double SkySpeed2 { get; set; }
+    public double SkyMistSpeed { get; set; }
     public IReadOnlyDictionary<string, string> SoundDefinitions { get; set; } = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
     public IReadOnlyList<HCDE.Gamedata.SndInfoPlayerSound> PlayerSounds { get; set; } = Array.Empty<HCDE.Gamedata.SndInfoPlayerSound>();
     public IReadOnlyDictionary<string, string> SoundAliases { get; set; } = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);

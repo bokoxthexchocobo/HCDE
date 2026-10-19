@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 10643,
   "runStartRecognitionBehaviorNative": 5400,
   "runStartConvertedBehaviorManaged": 7417,
-  "convertedThisRunNative": 3252,
+  "convertedThisRunNative": 4094,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 697,
+  "convertedThisRunManaged": 975,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": 20,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 488771,
+  "remainingNative": 487929,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 13895,
+  "convertedBehaviorNative": 14737,
   "recognitionBehaviorNative": 5420,
-  "combinedBehaviorNative": 19315,
-  "convertedBehaviorManaged": 8114,
+  "combinedBehaviorNative": 20157,
+  "convertedBehaviorManaged": 8392,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -1132,6 +1132,96 @@
           "tests": [
             "HeadlessGameFlowTests.ReloadRequest_RestartsMapThroughSession",
             "HeadlessGameFlowTests.DeathmatchSpawn_UsesDmStartAfterRespawn"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "acs-absent-opcodes-callfunc-chunk10",
+      "bucket": "conversion",
+      "nativeLoc": 842,
+      "managedLoc": 278,
+      "note": "12 matrix-absent ACS pcodes (sound, line specials, mugshot, print, input) plus 26 CallFunc wires (cvars, sky scroll, team score, invasion queries).",
+      "nativeRanges": [
+        {
+          "file": "src/playsim/p_acs.cpp",
+          "symbol": "PCD_SECTORSOUND",
+          "start": 9351,
+          "end": 9374,
+          "tests": [
+            "AcsAbsentOpcodeChunk10Tests.SectorSound_QueuesOnTriggerSector"
+          ]
+        },
+        {
+          "file": "src/playsim/p_acs.cpp",
+          "symbol": "PCD_SOUNDSEQUENCE",
+          "start": 9418,
+          "end": 9427,
+          "tests": [
+            "AcsAbsentOpcodeChunk10Tests.SoundSequence_StoresOnFrontSector"
+          ]
+        },
+        {
+          "file": "src/playsim/p_acs.cpp",
+          "symbol": "PCD_SETLINEBLOCKING",
+          "start": 9445,
+          "end": 9479,
+          "tests": [
+            "AcsAbsentOpcodeChunk10Tests.SetLineBlocking_ClearsCreatureBlock"
+          ]
+        },
+        {
+          "file": "src/playsim/p_acs.cpp",
+          "symbol": "PCD_SETLINESPECIAL",
+          "start": 9499,
+          "end": 9524,
+          "tests": [
+            "AcsAbsentOpcodeChunk10Tests.SetLineSpecial_WritesTriggerLineFields"
+          ]
+        },
+        {
+          "file": "src/playsim/p_acs.cpp",
+          "symbol": "PCD_GETPLAYERINPUT",
+          "start": 10189,
+          "end": 10191,
+          "tests": [
+            "AcsAbsentOpcodeChunk10Tests.GetPlayerInputOpcode_ReadsPlayerButtons"
+          ]
+        },
+        {
+          "file": "src/playsim/p_acs.cpp",
+          "symbol": "PCD_PRINTBINARY",
+          "start": 8922,
+          "end": 8926,
+          "tests": [
+            "AcsAbsentOpcodeChunk10Tests.PrintBinaryAndHex_AppendToBuffer"
+          ]
+        },
+        {
+          "file": "src/playsim/p_acs.cpp",
+          "symbol": "ACSF_SetSkyScrollSpeed",
+          "start": 5621,
+          "end": 5628,
+          "tests": [
+            "AcsAbsentOpcodeChunk10Tests.CallFunc_SetSkyScrollSpeed_UpdatesLevel"
+          ]
+        },
+        {
+          "file": "src/playsim/p_acs.cpp",
+          "symbol": "ACSF_GetTeamScore",
+          "start": 4898,
+          "end": 4899,
+          "tests": [
+            "AcsAbsentOpcodeChunk10Tests.CallFunc_SetAndGetTeamScore"
+          ]
+        },
+        {
+          "file": "src/playsim/p_acs.cpp",
+          "symbol": "ACSF_InvasionGetWave",
+          "start": 4904,
+          "end": 4904,
+          "tests": [
+            "AcsAbsentOpcodeChunk10Tests.CallFunc_InvasionGetWave_Wire19702"
           ]
         }
       ]

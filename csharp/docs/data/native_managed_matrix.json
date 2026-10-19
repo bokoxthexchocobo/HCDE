@@ -12,25 +12,25 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 100303
+    "managedCSharpLoc": 100947
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 10643,
     "runStartRecognitionBehaviorNative": 5400,
     "runStartConvertedBehaviorManaged": 7417,
-    "convertedThisRunNative": 3252,
+    "convertedThisRunNative": 4094,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 697,
+    "convertedThisRunManaged": 975,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": 20,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 488771,
+    "remainingNative": 487929,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 13895,
+    "convertedBehaviorNative": 14737,
     "recognitionBehaviorNative": 5420,
-    "combinedBehaviorNative": 19315,
-    "convertedBehaviorManaged": 8114,
+    "combinedBehaviorNative": 20157,
+    "convertedBehaviorManaged": 8392,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -1151,22 +1151,111 @@
             ]
           }
         ]
+      },
+      {
+        "name": "acs-absent-opcodes-callfunc-chunk10",
+        "bucket": "conversion",
+        "nativeLoc": 842,
+        "managedLoc": 278,
+        "note": "12 matrix-absent ACS pcodes (sound, line specials, mugshot, print, input) plus 26 CallFunc wires (cvars, sky scroll, team score, invasion queries).",
+        "nativeRanges": [
+          {
+            "file": "src/playsim/p_acs.cpp",
+            "symbol": "PCD_SECTORSOUND",
+            "start": 9351,
+            "end": 9374,
+            "tests": [
+              "AcsAbsentOpcodeChunk10Tests.SectorSound_QueuesOnTriggerSector"
+            ]
+          },
+          {
+            "file": "src/playsim/p_acs.cpp",
+            "symbol": "PCD_SOUNDSEQUENCE",
+            "start": 9418,
+            "end": 9427,
+            "tests": [
+              "AcsAbsentOpcodeChunk10Tests.SoundSequence_StoresOnFrontSector"
+            ]
+          },
+          {
+            "file": "src/playsim/p_acs.cpp",
+            "symbol": "PCD_SETLINEBLOCKING",
+            "start": 9445,
+            "end": 9479,
+            "tests": [
+              "AcsAbsentOpcodeChunk10Tests.SetLineBlocking_ClearsCreatureBlock"
+            ]
+          },
+          {
+            "file": "src/playsim/p_acs.cpp",
+            "symbol": "PCD_SETLINESPECIAL",
+            "start": 9499,
+            "end": 9524,
+            "tests": [
+              "AcsAbsentOpcodeChunk10Tests.SetLineSpecial_WritesTriggerLineFields"
+            ]
+          },
+          {
+            "file": "src/playsim/p_acs.cpp",
+            "symbol": "PCD_GETPLAYERINPUT",
+            "start": 10189,
+            "end": 10191,
+            "tests": [
+              "AcsAbsentOpcodeChunk10Tests.GetPlayerInputOpcode_ReadsPlayerButtons"
+            ]
+          },
+          {
+            "file": "src/playsim/p_acs.cpp",
+            "symbol": "PCD_PRINTBINARY",
+            "start": 8922,
+            "end": 8926,
+            "tests": [
+              "AcsAbsentOpcodeChunk10Tests.PrintBinaryAndHex_AppendToBuffer"
+            ]
+          },
+          {
+            "file": "src/playsim/p_acs.cpp",
+            "symbol": "ACSF_SetSkyScrollSpeed",
+            "start": 5621,
+            "end": 5628,
+            "tests": [
+              "AcsAbsentOpcodeChunk10Tests.CallFunc_SetSkyScrollSpeed_UpdatesLevel"
+            ]
+          },
+          {
+            "file": "src/playsim/p_acs.cpp",
+            "symbol": "ACSF_GetTeamScore",
+            "start": 4898,
+            "end": 4899,
+            "tests": [
+              "AcsAbsentOpcodeChunk10Tests.CallFunc_SetAndGetTeamScore"
+            ]
+          },
+          {
+            "file": "src/playsim/p_acs.cpp",
+            "symbol": "ACSF_InvasionGetWave",
+            "start": 4904,
+            "end": 4904,
+            "tests": [
+              "AcsAbsentOpcodeChunk10Tests.CallFunc_InvasionGetWave_Wire19702"
+            ]
+          }
+        ]
       }
     ]
   },
   "summaries": {
     "acsPcode": {
-      "executed": 273,
+      "executed": 285,
       "partial": 10,
-      "decoded-only": 79,
-      "absent": 12
+      "decoded-only": 79
     },
     "zscriptVmOp": {
       "executed": 246
     },
     "acsCallFunc": {
-      "executed": 94,
-      "absent": 44
+      "executed": 120,
+      "absent": 18
     }
   },
   "acsPcode": [
@@ -1832,21 +1921,21 @@
       "id": "acs-pcode:94",
       "name": "SectorSound",
       "opcode": 94,
-      "status": "absent",
+      "status": "executed",
       "nativeRef": "src/playsim/p_acs.cpp"
     },
     {
       "id": "acs-pcode:95",
       "name": "AmbientSound",
       "opcode": 95,
-      "status": "absent",
+      "status": "executed",
       "nativeRef": "src/playsim/p_acs.cpp"
     },
     {
       "id": "acs-pcode:96",
       "name": "SoundSequence",
       "opcode": 96,
-      "status": "absent",
+      "status": "executed",
       "nativeRef": "src/playsim/p_acs.cpp"
     },
     {
@@ -1860,14 +1949,14 @@
       "id": "acs-pcode:98",
       "name": "SetLineBlocking",
       "opcode": 98,
-      "status": "absent",
+      "status": "executed",
       "nativeRef": "src/playsim/p_acs.cpp"
     },
     {
       "id": "acs-pcode:99",
       "name": "SetLineSpecial",
       "opcode": 99,
-      "status": "absent",
+      "status": "executed",
       "nativeRef": "src/playsim/p_acs.cpp"
     },
     {
@@ -3456,7 +3545,7 @@
       "id": "acs-pcode:343",
       "name": "SetMugshotState",
       "opcode": 343,
-      "status": "absent",
+      "status": "executed",
       "nativeRef": "src/playsim/p_acs.cpp"
     },
     {
@@ -3715,7 +3804,7 @@
       "id": "acs-pcode:384",
       "name": "TranslationRange5",
       "opcode": 384,
-      "status": "absent",
+      "status": "executed",
       "nativeRef": "src/playsim/p_acs.cpp"
     },
     {
@@ -3743,7 +3832,7 @@
       "id": "acs-pcode:421",
       "name": "CheckActorFloorTexture",
       "opcode": 421,
-      "status": "absent",
+      "status": "executed",
       "nativeRef": "src/playsim/p_acs.cpp"
     },
     {
@@ -3757,14 +3846,14 @@
       "id": "acs-pcode:428",
       "name": "UnmorphActor",
       "opcode": 428,
-      "status": "absent",
+      "status": "executed",
       "nativeRef": "src/playsim/p_acs.cpp"
     },
     {
       "id": "acs-pcode:429",
       "name": "GetPlayerInput",
       "opcode": 429,
-      "status": "absent",
+      "status": "executed",
       "nativeRef": "src/playsim/p_acs.cpp"
     },
     {
@@ -3778,14 +3867,14 @@
       "id": "acs-pcode:431",
       "name": "PrintBinary",
       "opcode": 431,
-      "status": "absent",
+      "status": "executed",
       "nativeRef": "src/playsim/p_acs.cpp"
     },
     {
       "id": "acs-pcode:432",
       "name": "PrintHex",
       "opcode": 432,
-      "status": "absent",
+      "status": "executed",
       "nativeRef": "src/playsim/p_acs.cpp"
     }
   ],
@@ -5637,7 +5726,7 @@
       "id": "acs-call:18",
       "name": "SetSkyScrollSpeed",
       "wire": 18,
-      "status": "absent",
+      "status": "executed",
       "nativeRef": "src/playsim/p_acs.cpp EACSFunctions"
     },
     {
@@ -5882,49 +5971,49 @@
       "id": "acs-call:53",
       "name": "SetCVar",
       "wire": 53,
-      "status": "absent",
+      "status": "executed",
       "nativeRef": "src/playsim/p_acs.cpp EACSFunctions"
     },
     {
       "id": "acs-call:54",
       "name": "GetUserCVar",
       "wire": 54,
-      "status": "absent",
+      "status": "executed",
       "nativeRef": "src/playsim/p_acs.cpp EACSFunctions"
     },
     {
       "id": "acs-call:55",
       "name": "SetUserCVar",
       "wire": 55,
-      "status": "absent",
+      "status": "executed",
       "nativeRef": "src/playsim/p_acs.cpp EACSFunctions"
     },
     {
       "id": "acs-call:56",
       "name": "GetCVarString",
       "wire": 56,
-      "status": "absent",
+      "status": "executed",
       "nativeRef": "src/playsim/p_acs.cpp EACSFunctions"
     },
     {
       "id": "acs-call:57",
       "name": "SetCVarString",
       "wire": 57,
-      "status": "absent",
+      "status": "executed",
       "nativeRef": "src/playsim/p_acs.cpp EACSFunctions"
     },
     {
       "id": "acs-call:58",
       "name": "GetUserCVarString",
       "wire": 58,
-      "status": "absent",
+      "status": "executed",
       "nativeRef": "src/playsim/p_acs.cpp EACSFunctions"
     },
     {
       "id": "acs-call:59",
       "name": "SetUserCVarString",
       "wire": 59,
-      "status": "absent",
+      "status": "executed",
       "nativeRef": "src/playsim/p_acs.cpp EACSFunctions"
     },
     {
@@ -6358,126 +6447,126 @@
       "id": "acs-call:19620",
       "name": "GetTeamScore",
       "wire": 19620,
-      "status": "absent",
+      "status": "executed",
       "nativeRef": "src/playsim/p_acs.cpp EACSFunctions"
     },
     {
       "id": "acs-call:19621",
       "name": "SetTeamScore",
       "wire": 19621,
-      "status": "absent",
+      "status": "executed",
       "nativeRef": "src/playsim/p_acs.cpp EACSFunctions"
     },
     {
       "id": "acs-call:19700",
       "name": "InvasionGetState",
       "wire": 19700,
-      "status": "absent",
+      "status": "executed",
       "nativeRef": "src/playsim/p_acs.cpp EACSFunctions"
     },
     {
       "id": "acs-call:19701",
       "name": "InvasionGetStateTics",
       "wire": 19701,
-      "status": "absent",
+      "status": "executed",
       "nativeRef": "src/playsim/p_acs.cpp EACSFunctions"
     },
     {
       "id": "acs-call:19702",
       "name": "InvasionGetWave",
       "wire": 19702,
-      "status": "absent",
+      "status": "executed",
       "nativeRef": "src/playsim/p_acs.cpp EACSFunctions"
     },
     {
       "id": "acs-call:19703",
       "name": "InvasionGetMaxWaves",
       "wire": 19703,
-      "status": "absent",
+      "status": "executed",
       "nativeRef": "src/playsim/p_acs.cpp EACSFunctions"
     },
     {
       "id": "acs-call:19704",
       "name": "InvasionGetWaveBudget",
       "wire": 19704,
-      "status": "absent",
+      "status": "executed",
       "nativeRef": "src/playsim/p_acs.cpp EACSFunctions"
     },
     {
       "id": "acs-call:19705",
       "name": "InvasionGetWaveSpawned",
       "wire": 19705,
-      "status": "absent",
+      "status": "executed",
       "nativeRef": "src/playsim/p_acs.cpp EACSFunctions"
     },
     {
       "id": "acs-call:19706",
       "name": "InvasionGetWaveCleared",
       "wire": 19706,
-      "status": "absent",
+      "status": "executed",
       "nativeRef": "src/playsim/p_acs.cpp EACSFunctions"
     },
     {
       "id": "acs-call:19707",
       "name": "InvasionGetActiveMonsterCount",
       "wire": 19707,
-      "status": "absent",
+      "status": "executed",
       "nativeRef": "src/playsim/p_acs.cpp EACSFunctions"
     },
     {
       "id": "acs-call:19708",
       "name": "InvasionIsBossWave",
       "wire": 19708,
-      "status": "absent",
+      "status": "executed",
       "nativeRef": "src/playsim/p_acs.cpp EACSFunctions"
     },
     {
       "id": "acs-call:19709",
       "name": "InvasionGetSpawnSpotCount",
       "wire": 19709,
-      "status": "absent",
+      "status": "executed",
       "nativeRef": "src/playsim/p_acs.cpp EACSFunctions"
     },
     {
       "id": "acs-call:19710",
       "name": "InvasionGetActiveSpawnSpotCount",
       "wire": 19710,
-      "status": "absent",
+      "status": "executed",
       "nativeRef": "src/playsim/p_acs.cpp EACSFunctions"
     },
     {
       "id": "acs-call:19711",
       "name": "InvasionGetSpawnPlanBudget",
       "wire": 19711,
-      "status": "absent",
+      "status": "executed",
       "nativeRef": "src/playsim/p_acs.cpp EACSFunctions"
     },
     {
       "id": "acs-call:19712",
       "name": "InvasionGetSpawnActiveTag",
       "wire": 19712,
-      "status": "absent",
+      "status": "executed",
       "nativeRef": "src/playsim/p_acs.cpp EACSFunctions"
     },
     {
       "id": "acs-call:19713",
       "name": "InvasionIsSpawnUsingFallback",
       "wire": 19713,
-      "status": "absent",
+      "status": "executed",
       "nativeRef": "src/playsim/p_acs.cpp EACSFunctions"
     },
     {
       "id": "acs-call:19714",
       "name": "InvasionGetSpawnFallbackSource",
       "wire": 19714,
-      "status": "absent",
+      "status": "executed",
       "nativeRef": "src/playsim/p_acs.cpp EACSFunctions"
     },
     {
       "id": "acs-call:19715",
       "name": "InvasionControlAction",
       "wire": 19715,
-      "status": "absent",
+      "status": "executed",
       "nativeRef": "src/playsim/p_acs.cpp EACSFunctions"
     }
   ],

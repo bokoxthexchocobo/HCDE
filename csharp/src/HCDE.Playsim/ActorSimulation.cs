@@ -44,6 +44,8 @@ public class Actor : Thinker
     internal bool FailedLostSoulSpawn { get; set; }
     internal int ClassDoomEdNum => DefinitionDoomEdNum > 0 ? DefinitionDoomEdNum : DoomEdNum;
     public int ThingId { get; internal set; }
+    /// <summary>Native morph state subset for ACS <c>PCD_UNMORPHACTOR</c>.</summary>
+    public bool IsMorphForm { get; set; }
     /// <summary>Native <c>AActor::IsMapActor</c> for represented non-inventory actors.</summary>
     public virtual bool IsMapActor() => true;
     public Func<Actor, (double X, double Y, double Z), double, int, bool>? PreTeleportFunction { get; set; }
@@ -1811,6 +1813,8 @@ public class PlayerPawn : Actor
     public override int GetMaxHealth(bool withUpgrades) => withUpgrades
         ? checked(EffectiveMaxHealth + Stamina + BonusHealth) : EffectiveMaxHealth;
     public string? SoundClass { get; set; }
+    /// <summary>Native status bar mugshot state from <c>PCD_SETMUGSHOTSTATE</c>.</summary>
+    public string? MugshotState { get; set; }
     public int BonusHealth { get; set; }
     public int MaxPickupHealth { get; set; }
     public override void BeginPlay()
@@ -3638,6 +3642,15 @@ public sealed class AuthoritySimulation
     internal void RequestRumble(SimulationRumbleRequest request) => RumbleRequested?.Invoke(request);
     private readonly List<SimulationSoundRequest> _soundRequests = new();
     public IReadOnlyList<SimulationSoundRequest> PendingSoundRequests => _soundRequests.AsReadOnly();
+    public string AcsPrintBuffer { get; private set; } = "";
+    internal void AppendAcsPrint(string fragment) => AcsPrintBuffer += fragment;
+    internal void QueueAmbientAcsSound(string sound, float volume) =>
+        QueueSoundRequest(new(0, sound, 0, 0, volume, false, 0, false));
+    internal void QueueSectorAcsSound(int sectorIndex, string sound, float volume) =>
+        QueueSoundRequest(new(0, sound, 0, 0, volume, false, 1, false));
+    private readonly Dictionary<int, int> _teamScores = new();
+    public int GetTeamScore(int team) => _teamScores.GetValueOrDefault(team);
+    public void SetTeamScore(int team, int value) => _teamScores[team] = value;
     public event Action? SoundRequestsReady;
     internal void QueueSoundRequest(SimulationSoundRequest request, bool immediate = false)
     {

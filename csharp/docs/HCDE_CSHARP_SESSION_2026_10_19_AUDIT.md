@@ -69,3 +69,26 @@ Headline matrix (unchanged intent): ACS pcode 273 executed / 12 absent; VM **246
 5. **Deeper `g_level` / `g_game` parity** — hub travel doll merge, `FinishTravel` ZScript callbacks, deathmatch start table on multi-map WADs, MAPINFO `next` across distinct maps in tests.
 
 No subagent chunks 10–12 were merged; branch contains only audited commits through chunk 9 plus tally sync.
+
+---
+
+## Addendum — chunk 10 (session close)
+
+| Item | Detail |
+| --- | --- |
+| Audit | `HCDE_CSHARP_ACS_ABSENT_OPCODES_CALLFUNC_CHUNK10_AUDIT.md` |
+| ACS pcode | **12/12** absent opcodes now **executed** (matrix 273/273) |
+| CallFunc | **26** wires implemented; **18** remain absent (named ACS, HUD clip, Warp, OpenGL, etc.) |
+| Tests | `AcsAbsentOpcodeChunk10Tests` (11) |
+| Tally chunk | `acs-absent-opcodes-callfunc-chunk10` — **842** native / **278** managed |
+
+### Behavior LOC after chunk 10 (`sync_loc_tally`)
+
+| Metric | Value |
+| --- | ---: |
+| Converted this run (native) | **4,094** |
+| Cumulative conversion (native) | **14,737** |
+| Remaining native | **487,929** |
+| Cumulative conversion (managed) | **8,392** |
+
+Open: remaining **18** CallFuncs; `p_saveg` ACS persistence; `d_net` slice; headless host wiring.
