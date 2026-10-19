@@ -993,6 +993,23 @@ public sealed class AcsVm
                 case (int)AcsPcode.PlayerNumber:
                     fiber.Stack.Add(fiber.Activator is PlayerPawn { Destroyed: false } player ? player.PlayerNum : -1);
                     break;
+                case (int)AcsPcode.GetPlayerInput:
+                {
+                    if (fiber.Stack.Count < 2) { fiber.Done = true; return; }
+                    var inputNum = Pop(fiber);
+                    var playerNum = Pop(fiber);
+                    if (fiber.Done) break;
+                    fiber.Stack.Add(AcsPlayerInput.Query(sim, fiber.Activator, playerNum, inputNum));
+                    break;
+                }
+                case (int)AcsPcode.ClassifyActor:
+                {
+                    if (fiber.Stack.Count < 1) { fiber.Done = true; return; }
+                    var classifyTid = Pop(fiber);
+                    if (fiber.Done) break;
+                    fiber.Stack.Add(AcsClassifyActor.Classify(sim, fiber.Activator, classifyTid));
+                    break;
+                }
                 case (int)AcsPcode.ActivatorTid:
                     fiber.Stack.Add(fiber.Activator is { Destroyed: false } activator ? activator.ThingId : 0);
                     break;
