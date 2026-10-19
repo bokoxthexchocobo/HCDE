@@ -172,6 +172,12 @@ internal static class AcsCallFunctions
     public const int GetLineX = 300;
     /// <summary>Native <c>ACSF_GetLineY</c> (301).</summary>
     public const int GetLineY = 301;
+    /// <summary>Native <c>ACSF_SpawnForced</c> (36).</summary>
+    public const int SpawnForced = 36;
+    /// <summary>Native <c>ACSF_SetUserVariable</c> (24).</summary>
+    public const int SetUserVariable = 24;
+    /// <summary>Native <c>ACSF_GetUserVariable</c> (25).</summary>
+    public const int GetUserVariable = 25;
 
     public static bool TryInvoke(
         AuthoritySimulation sim,
@@ -197,8 +203,13 @@ internal static class AcsCallFunctions
                 return TryGetUdmf(sim, stack, stringTable, globalStrings, function, argCount, out result);
             case GetThingUdmfInt:
             case GetThingUdmfFixed:
-                result = 0;
-                return argCount >= 2;
+                return TryGetThingUdmf(sim, stack, stringTable, globalStrings, function, argCount, out result);
+            case SpawnForced:
+                return TrySpawnForced(sim, stack, scriptActivator, stringTable, globalStrings, argCount, out result);
+            case SetUserVariable:
+                return TrySetUserVariable(sim, stack, scriptActivator, stringTable, globalStrings, argCount, out result);
+            case GetUserVariable:
+                return TryGetUserVariable(sim, stack, scriptActivator, stringTable, globalStrings, argCount, out result);
             case GetActorVelX:
                 return TryGetActorVelocity(sim, stack, scriptActivator, 0, argCount, out result);
             case GetActorVelY:
@@ -1104,10 +1115,140 @@ internal static class AcsCallFunctions
         {
             var sector = sim.Level.Sectors.FirstOrDefault(candidate => candidate.MatchesTag(id));
             if (sector is null) return true;
-            result = fixedPoint ? sector.Tag << 16 : sector.Tag;
+            var value = ReadSectorUdmf(sector, keyName);
+            result = fixedPoint ? value << 16 : value;
             return true;
         }
-        if (argCount < 3) return false;
+        if (function is GetSideUdmfInt or GetSideUdmfFixed)
+        {
+            if (argCount < 3) return false;
+            var sideIndex = stack[stack.Count - argCount];
+            stack.RemoveRange(stack.Count - argCount, argCount);
+            if ((uint)sideIndex >= (uint)sim.Level.Sides.Count) return true;
+            var value = ReadSideUdmf(sim.Level.Sides[sideIndex], keyName);
+            result = fixedPoint ? value << 16 : value;
+            return true;
+        }
+        return false;
+    }
+
+    private static bool TryGetThingUdmf(
+        AuthoritySimulation sim,
+        List<int> stack,
+        string[] stringTable,
+        AcsGlobalStrings globalStrings,
+        int function,
+        int argCount,
+        out int result)
+    {
+        result = 0;
+        if (argCount < 2 || stack.Count < argCount) return false;
+        var keyName = AcsStringIds.LookupTerminated(stack[^1], stringTable, globalStrings);
+        var tid = stack[^argCount];
+        stack.RemoveRange(stack.Count - argCount, argCount);
+        var actor = ResolveActor(sim, tid, null);
+        if (actor is null) return true;
+        var fixedPoint = function == GetThingUdmfFixed;
+        var value = ReadThingUdmf(actor, keyName);
+        result = fixedPoint ? value << 16 : value;
+        return true;
+    }
+
+    private static int ReadThingUdmf(Actor actor, string key) => key.ToLowerInvariant() switch
+    {
+        "tid" => actor.ThingId,
+        "angle" => (int)(actor.Angle.Raw / (4294967296.0 / 360.0)),
+        "special" => actor.Special,
+        "arg0" => actor.SpecialArgs[0],
+        "arg1" => actor.SpecialArgs[1],
+        "arg2" => actor.SpecialArgs[2],
+        "arg3" => actor.SpecialArgs[3],
+        "arg4" => actor.SpecialArgs[4],
+        _ => actor.DoomEdNum,
+    };
+
+    private static int ReadSectorUdmf(LevelSector sector, string key) => key.ToLowerInvariant() switch
+    {
+        "tag" => sector.Tag,
+        "damageamount" => sector.DamageAmount,
+        "special" => sector.Special,
+        _ => sector.Tag,
+    };
+
+    private static int ReadSideUdmf(LevelSide side, string key) => key.ToLowerInvariant() switch
+    {
+        "offsetx" => (int)side.MidTextureOffsetX,
+        "offsety" => (int)side.MidTextureOffsetY,
+        _ => 0,
+    };
+
+    private static bool TrySpawnForced(
+        AuthoritySimulation sim,
+        List<int> stack,
+        Actor? activator,
+        string[] stringTable,
+        AcsGlobalStrings globalStrings,
+        int argCount,
+        out int result)
+    {
+        result = 0;
+        if (argCount < 6 || stack.Count < argCount) return false;
+        var start = stack.Count - argCount;
+        var typeId = stack[start];
+        var x = stack[start + 1];
+        var y = stack[start + 2];
+        var z = stack[start + 3];
+        var tid = stack[start + 4];
+        var angleByte = stack[start + 5];
+        stack.RemoveRange(start, argCount);
+        result = AcsMapMutations.Spawn(sim, typeId, x, y, z, tid, angleByte, force: true, stringTable, globalStrings, activator);
+        return true;
+    }
+
+    private static bool TrySetUserVariable(
+        AuthoritySimulation sim,
+        List<int> stack,
+        Actor? activator,
+        string[] stringTable,
+        AcsGlobalStrings globalStrings,
+        int argCount,
+        out int result)
+    {
+        result = 0;
+        if (argCount < 3 || stack.Count < argCount) return false;
+        var start = stack.Count - argCount;
+        var tid = stack[start];
+        var name = AcsStringIds.LookupTerminated(stack[start + 1], stringTable, globalStrings);
+        var actor = ResolveActor(sim, tid, activator);
+        if (actor is null) return true;
+        if (argCount == 3)
+        {
+            actor.SetScriptUserVar(name, 0, stack[start + 2]);
+            return true;
+        }
+        if (argCount < 4) return false;
+        actor.SetScriptUserVar(name, stack[start + 2], stack[start + 3]);
+        return true;
+    }
+
+    private static bool TryGetUserVariable(
+        AuthoritySimulation sim,
+        List<int> stack,
+        Actor? activator,
+        string[] stringTable,
+        AcsGlobalStrings globalStrings,
+        int argCount,
+        out int result)
+    {
+        result = 0;
+        if (argCount < 2 || stack.Count < argCount) return false;
+        var start = stack.Count - argCount;
+        var tid = stack[start];
+        var name = AcsStringIds.LookupTerminated(stack[start + 1], stringTable, globalStrings);
+        var actor = ResolveActor(sim, tid, activator);
+        if (actor is null) return true;
+        var index = argCount >= 3 ? stack[start + 2] : 0;
+        result = actor.GetScriptUserVar(name, index);
         return true;
     }
 
