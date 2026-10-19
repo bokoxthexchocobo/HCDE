@@ -1705,31 +1705,19 @@ public sealed partial class AcsVm
         return sim.IsPlayerInGame(sim.ConsolePlayer) ? sim.ConsolePlayer : -1;
     }
 
-    private static int ThingCount(AuthoritySimulation sim, int type, int tid, int tag = -1)
-    {
-        var count = 0;
-        foreach (var actor in sim.Actors)
-        {
-            if (actor.Destroyed || actor.Health <= 0 || !actor.IsMapActor()) continue;
-            if (type > 0 && actor.DoomEdNum != type) continue;
-            if (tid != 0 && actor.ThingId != tid) continue;
-            if (tag >= 0)
-            {
-                if (actor.SectorIndex < 0 || actor.SectorIndex >= sim.Level.Sectors.Count) continue;
-                if (!sim.Level.Sectors[actor.SectorIndex].MatchesTag(tag)) continue;
-            }
-            count++;
-        }
-        return count;
-    }
+    private static int ThingCount(AuthoritySimulation sim, int type, int tid, int tag = -1) =>
+        AcsThingCountService.Count(sim, type, tid, tag, AcsThingCountReplacementPolicy.ResolveEditorNumber);
 
     private static int ThingCountByName(Fiber fiber, AuthoritySimulation sim, int stringId, int tid, int tag)
     {
         if (stringId < 0 || stringId >= fiber.StringTable.Length)
             return 0;
-        if (!DoomActorCatalog.TryEditorNumberForClassName(fiber.StringTable[stringId], out var editorNumber))
-            return 0;
-        return ThingCount(sim, editorNumber, tid, tag);
+        return AcsThingCountService.CountByClassName(
+            sim,
+            fiber.StringTable[stringId],
+            tid,
+            tag,
+            AcsThingCountReplacementPolicy.ResolveEditorNumber);
     }
 
     private static int Pop(Fiber fiber)

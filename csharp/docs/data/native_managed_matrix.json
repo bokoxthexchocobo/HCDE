@@ -12,25 +12,25 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 104476
+    "managedCSharpLoc": 104717
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": -10563,
+    "convertedThisRunNative": -10473,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 2271,
+    "convertedThisRunManaged": 2469,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -774,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 495456,
+    "remainingNative": 495366,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 7964,
+    "convertedBehaviorNative": 8054,
     "recognitionBehaviorNative": 4666,
-    "combinedBehaviorNative": 12630,
-    "convertedBehaviorManaged": 11942,
+    "combinedBehaviorNative": 12720,
+    "convertedBehaviorManaged": 12140,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -2943,6 +2943,35 @@
             "end": 6870,
             "tests": [
               "MapThingSpawnFilterTests"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "p-acs-thing-count-chunk24",
+        "bucket": "conversion",
+        "nativeLoc": 90,
+        "managedLoc": 198,
+        "note": "p_acs.cpp DLevelScript::ThingCount and CountPlayers extracted for ACS opcodes.",
+        "conversionManagedCommit": "0000000000000000000000000000000000000000",
+        "nativeRanges": [
+          {
+            "file": "src/playsim/p_acs.cpp",
+            "symbol": "DLevelScript::ThingCount",
+            "start": 3674,
+            "end": 3753,
+            "tests": [
+              "AcsThingCountServiceTests",
+              "Phase7AcsTests"
+            ]
+          },
+          {
+            "file": "src/playsim/p_acs.cpp",
+            "symbol": "DLevelScript::CountPlayers",
+            "start": 3774,
+            "end": 3783,
+            "tests": [
+              "AcsPlayerPopulationTests"
             ]
           }
         ]
