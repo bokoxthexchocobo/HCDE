@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 360,
+  "convertedThisRunNative": -5816,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 1138,
+  "convertedThisRunManaged": 1162,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
-  "recognitionThisRunNative": 0,
+  "recognitionThisRunNative": -795,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 483759,
+  "remainingNative": 490730,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 18887,
-  "recognitionBehaviorNative": 5440,
-  "combinedBehaviorNative": 24327,
-  "convertedBehaviorManaged": 10809,
+  "convertedBehaviorNative": 12711,
+  "recognitionBehaviorNative": 4645,
+  "combinedBehaviorNative": 17356,
+  "convertedBehaviorManaged": 10833,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -165,13 +165,17 @@
           "file": "src/playsim/p_map.cpp",
           "symbol": "P_RadiusAttack",
           "start": 6390,
-          "end": 6458
+          "end": 6458,
+          "tests": [
+            "MapRadiusThrustTests.ExplosionAppliesHorizontalThrustToNearbyActor",
+            "MapRadiusAttackTests"
+          ]
         }
       ]
     },
     {
       "name": "p-enemy-move-blocked-chunk2",
-      "nativeLoc": 22,
+      "nativeLoc": 21,
       "managedLoc": 180,
       "note": "p_enemy.cpp P_Move spechit door/push and MF6_JUMPDOWN dropoff assist (MonsterBlockedMoveActions + MoveCore).",
       "nativeRanges": [
@@ -179,13 +183,19 @@
           "file": "src/playsim/p_enemy.cpp",
           "symbol": "P_Move",
           "start": 518,
-          "end": 524
+          "end": 524,
+          "tests": [
+            "MonsterBlockedMoveTests"
+          ]
         },
         {
           "file": "src/playsim/p_enemy.cpp",
           "symbol": "P_Move",
           "start": 697,
-          "end": 710
+          "end": 710,
+          "tests": [
+            "MonsterBlockedMoveTests.CanUseWallsOpensDoorWhenBlocked"
+          ]
         }
       ]
     },
@@ -199,7 +209,10 @@
           "file": "src/playsim/p_mobj.cpp",
           "symbol": "P_CheckMissileSpawn",
           "start": 7781,
-          "end": 7861
+          "end": 7861,
+          "tests": [
+            "MissileSpawnCheckTests.CheckAdvancesSpawnPositionInOpenRoom"
+          ]
         }
       ]
     },
@@ -252,7 +265,7 @@
     {
       "name": "p-enemy-chase-core-chunk3-recognition",
       "bucket": "recognition",
-      "nativeLoc": 1499,
+      "nativeLoc": 1406,
       "managedLoc": 0,
       "note": "p_enemy.cpp chase stack already in MonsterBrain/ActorWanderActions (run 9 re-audit).",
       "nativeRanges": [
@@ -340,7 +353,7 @@
           "file": "src/playsim/p_enemy.cpp",
           "symbol": "P_IsVisible",
           "start": 1268,
-          "end": 1350,
+          "end": 1315,
           "tests": [
             "StealthVisibilityTests",
             "MissileSightTests"
@@ -390,7 +403,7 @@
     {
       "name": "p-map-try-use-lineattack-chunk3-recognition",
       "bucket": "recognition",
-      "nativeLoc": 1555,
+      "nativeLoc": 1577,
       "managedLoc": 0,
       "note": "p_map.cpp try-move/use/lineattack subsets already in ActorPhysics/LineSpecials/CombatTrace (run 9 re-audit).",
       "nativeRanges": [
@@ -448,7 +461,7 @@
     {
       "name": "p-mobj-movement-thinker-chunk3-recognition",
       "bucket": "recognition",
-      "nativeLoc": 1594,
+      "nativeLoc": 1569,
       "managedLoc": 0,
       "note": "p_mobj.cpp movement/thinker paths already in ActorPhysics/ProjectileActor (run 9 re-audit).",
       "nativeRanges": [
@@ -466,7 +479,7 @@
           "file": "src/playsim/p_mobj.cpp",
           "symbol": "P_XYMovement",
           "start": 2421,
-          "end": 2948,
+          "end": 2679,
           "tests": [
             "ProjectileMovementTests",
             "WanderSubstepTests"
@@ -525,7 +538,7 @@
     {
       "name": "p-spec-sector-friction-push-chunk4",
       "bucket": "conversion",
-      "nativeLoc": 97,
+      "nativeLoc": 113,
       "managedLoc": 62,
       "note": "p_spec.cpp P_SetSectorFriction parity, P_GetFriction sector SECF_FRICTION, sector push thrust on step.",
       "nativeRanges": [
@@ -580,7 +593,7 @@
     {
       "name": "p-switch-textures-button-chunk5",
       "bucket": "conversion",
-      "nativeLoc": 839,
+      "nativeLoc": 185,
       "managedLoc": 210,
       "note": "p_switch.cpp switch textures/button thinker/sounds plus anim_switches.cpp pairs; ActivateMapLine switch hook.",
       "nativeRanges": [
@@ -661,7 +674,7 @@
     {
       "name": "p-lights-thinkers-chunk5-recognition",
       "bucket": "recognition",
-      "nativeLoc": 752,
+      "nativeLoc": 68,
       "managedLoc": 0,
       "note": "a_lights.cpp thinkers and animated EV_* already in LightEffect/LightActions before chunk 5 conversion.",
       "nativeRanges": [
@@ -706,7 +719,7 @@
     {
       "name": "p-floor-waggle-donut-elevator-chunk6",
       "bucket": "conversion",
-      "nativeLoc": 469,
+      "nativeLoc": 152,
       "managedLoc": 195,
       "note": "a_floor.cpp EV_StartWaggle, EV_DoDonut, DElevator::Tick crush rollback.",
       "nativeRanges": [
@@ -742,7 +755,7 @@
     {
       "name": "p-pusher-lighttransfer-chunk6",
       "bucket": "conversion",
-      "nativeLoc": 524,
+      "nativeLoc": 224,
       "managedLoc": 175,
       "note": "a_pusher.cpp DPusher wind/current; a_lighttransfer.cpp DLightTransfer.",
       "nativeRanges": [
@@ -778,7 +791,7 @@
     {
       "name": "p-teleport-switch-range-chunk6",
       "bucket": "conversion",
-      "nativeLoc": 378,
+      "nativeLoc": 204,
       "managedLoc": 95,
       "note": "p_switch.cpp P_CheckSwitchRange; p_teleport.cpp SelectTeleDest random TID choice.",
       "nativeRanges": [
@@ -805,7 +818,7 @@
     {
       "name": "acs-soundsequence-spawn-facing-chunk6",
       "bucket": "conversion",
-      "nativeLoc": 175,
+      "nativeLoc": 76,
       "managedLoc": 110,
       "note": "p_acs.cpp DoSpawnSpotFacing, ACSF_SoundSequenceOn*, PCD_SpawnSpotFacing.",
       "nativeRanges": [
@@ -850,7 +863,7 @@
     {
       "name": "zscript-vm-pointer-arith-chunk7",
       "bucket": "conversion",
-      "nativeLoc": 52,
+      "nativeLoc": 18,
       "managedLoc": 110,
       "note": "vmexec.h ADDA_RR/ADDA_RK/SUBA; vmops.h tail opcode reindex for EQA/NULLCHECK.",
       "nativeRanges": [
@@ -931,7 +944,7 @@
     {
       "name": "g-level-headless-flow-chunk8",
       "bucket": "conversion",
-      "nativeLoc": 1588,
+      "nativeLoc": 1008,
       "managedLoc": 471,
       "note": "g_level.cpp headless G_InitNew/G_DoLoadLevel/ChangeLevel/Completed/WorldDone/travel/intermission for dedicated authority.",
       "nativeRanges": [
@@ -984,7 +997,7 @@
           "file": "src/g_level.cpp",
           "symbol": "RunIntermission",
           "start": 1092,
-          "end": 1152,
+          "end": 1138,
           "tests": [
             "HeadlessLevelFlowTests.ExitWithMapInfo_TransitionsToNextMapAfterIntermission"
           ]
@@ -1057,7 +1070,7 @@
     {
       "name": "g-game-headless-ticker-chunk9",
       "bucket": "conversion",
-      "nativeLoc": 1612,
+      "nativeLoc": 1080,
       "managedLoc": 116,
       "note": "g_game.cpp G_Ticker, G_BuildTiccmd/PlayerCommand, G_DoReborn reload, deathmatch respawn for headless authority.",
       "nativeRanges": [
@@ -1139,7 +1152,7 @@
     {
       "name": "acs-absent-opcodes-callfunc-chunk10",
       "bucket": "conversion",
-      "nativeLoc": 842,
+      "nativeLoc": 114,
       "managedLoc": 278,
       "note": "12 matrix-absent ACS pcodes (sound, line specials, mugshot, print, input) plus 26 CallFunc wires (cvars, sky scroll, team score, invasion queries).",
       "nativeRanges": [
@@ -1229,7 +1242,7 @@
     {
       "name": "p-saveg-acs-archive-chunk10",
       "bucket": "conversion",
-      "nativeLoc": 1512,
+      "nativeLoc": 687,
       "managedLoc": 550,
       "note": "HCSV v366 ACS trailer: globals/map/world vars, sparse arrays, global strings, suspended fibers; SimSavegame chain + PSaveg round-trip tests.",
       "nativeRanges": [
@@ -1320,7 +1333,7 @@
     {
       "name": "acs-absent-callfunc-chunk11",
       "bucket": "conversion",
-      "nativeLoc": 684,
+      "nativeLoc": 84,
       "managedLoc": 500,
       "note": "18 remaining EACSFunctions CallFunc wires (HUD, named ACS, warp, translation, slideshow, glow/fog, announcer).",
       "nativeRanges": [
@@ -1356,7 +1369,7 @@
     {
       "name": "d-net-reset-commands-chunk12",
       "bucket": "conversion",
-      "nativeLoc": 1528,
+      "nativeLoc": 148,
       "managedLoc": 180,
       "note": "Net_ResetCommands room adopt + client sequence re-anchor; cutscene ready solo latch.",
       "nativeRanges": [
@@ -1392,14 +1405,25 @@
     {
       "name": "d-net-gameplay-envelope-room-recognition",
       "bucket": "recognition",
-      "nativeLoc": 20,
+      "nativeLoc": 5,
       "managedLoc": 0,
-      "note": "HGPL room id stale reject already managed in GameplayEnvelopeCodec.Validate."
+      "note": "HGPL room id stale reject already managed in GameplayEnvelopeCodec.Validate.",
+      "nativeRanges": [
+        {
+          "file": "src/d_net.cpp",
+          "symbol": "HCDE envelope room staleness gate",
+          "start": 2809,
+          "end": 2813,
+          "tests": [
+            "GameplayEnvelopeCodecTests.GameplayEnvelope_Validate_RejectsStaleRoom"
+          ]
+        }
+      ]
     },
     {
       "name": "pr77-classify-actor-consolidation",
       "bucket": "conversion",
-      "nativeLoc": 66,
+      "nativeLoc": 69,
       "managedLoc": 49,
       "note": "PR #77 merge: PCD_CLASSIFYACTOR / DoClassifyActor; GetPlayerInput refactored to AcsPlayerInput (no extra native credit).",
       "nativeRanges": [
@@ -1536,7 +1560,7 @@
     {
       "name": "acs-print-hud-chunk14",
       "bucket": "conversion",
-      "nativeLoc": 56,
+      "nativeLoc": 55,
       "managedLoc": 380,
       "note": "Tested ACS print builder + default EndHudMessage path only (trimmed native credit; see CHUNKS_13_15_LOC_ADDENDUM).",
       "nativeRanges": [
@@ -1734,7 +1758,7 @@
     {
       "name": "hcde-edf-thingtype-chunk18",
       "bucket": "conversion",
-      "nativeLoc": 88,
+      "nativeLoc": 97,
       "managedLoc": 108,
       "note": "hcde_edf.cpp thingtype header and property parse subset.",
       "nativeRanges": [
@@ -1760,10 +1784,30 @@
         {
           "file": "src/gamedata/hcde_edf.cpp",
           "symbol": "ParseThingBlock",
-          "start": 927,
+          "start": 977,
           "end": 980,
           "tests": [
             "HcdeEdfThingParserTests.ThingType_ParsesDoomednumAndInherits"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "p-mobj-play-spawn-sound-chunk19",
+      "bucket": "conversion",
+      "nativeLoc": 21,
+      "managedLoc": 24,
+      "note": "p_mobj.cpp P_PlaySpawnSound MF_SPAWNSOUNDSOURCE routing (see ActorSoundActions.PlaySpawnSound).",
+      "nativeRanges": [
+        {
+          "file": "src/playsim/p_mobj.cpp",
+          "symbol": "P_PlaySpawnSound",
+          "start": 7880,
+          "end": 7900,
+          "tests": [
+            "ProjectileSpawnSoundRoutingTests.ActorRoutingUsesNativeSourceAndChannel",
+            "ProjectileSpawnSoundRoutingTests.PositionFallbackSuppressesSilentSectorBeforeQueueing",
+            "ProjectileSpawnSoundRoutingTests.MissingSeeSoundAndDestroyedMissileStayQuiet"
           ]
         }
       ]

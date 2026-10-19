@@ -241,9 +241,22 @@ def chunk_bucket(chunk: dict) -> str:
     return "conversion"
 
 
+def native_range_line_count(ranges: list[dict]) -> int:
+    """Inclusive line span for one credited native range."""
+    return sum(int(r["end"]) - int(r["start"]) + 1 for r in ranges)
+
+
+def apply_native_loc_from_ranges(chunks: list[dict]) -> None:
+    """Headline nativeLoc is always the sum of nativeRanges when that field is present."""
+    for chunk in chunks:
+        if "nativeRanges" in chunk:
+            chunk["nativeLoc"] = native_range_line_count(chunk.get("nativeRanges") or [])
+
+
 def sync_loc_tally(loc_tally: dict) -> dict:
     """Recompute cumulative totals from chunks and this-run deltas from run-start baselines."""
     chunks = loc_tally.get("chunks", [])
+    apply_native_loc_from_ranges(chunks)
     converted_native = sum(c.get("nativeLoc", 0) for c in chunks if chunk_bucket(c) == "conversion")
     recognition_native = sum(c.get("nativeLoc", 0) for c in chunks if chunk_bucket(c) == "recognition")
     converted_managed = sum(c.get("managedLoc", 0) for c in chunks if chunk_bucket(c) == "conversion")
