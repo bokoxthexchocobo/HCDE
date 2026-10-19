@@ -2854,7 +2854,7 @@
       "nativeLoc": 211,
       "managedLoc": 351,
       "note": "thingdef_properties ModActorFlag/CheckActorFlag; thingdef_parse ParseActorProperty routing.",
-      "conversionManagedCommit": "0000000000000000000000000000000000000000",
+      "conversionManagedCommit": "f6e6f8a84f3dfe57163b2ba460ea94453e20ac2e",
       "nativeRanges": [
         {
           "file": "src/scripting/thingdef_properties.cpp",
