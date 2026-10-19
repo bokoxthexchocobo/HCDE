@@ -12,25 +12,25 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 106866
+    "managedCSharpLoc": 106988
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": -8213,
+    "convertedThisRunNative": -8063,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 5435,
+    "convertedThisRunManaged": 5525,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -774,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 493106,
+    "remainingNative": 492956,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 10314,
+    "convertedBehaviorNative": 10464,
     "recognitionBehaviorNative": 4666,
-    "combinedBehaviorNative": 14980,
-    "convertedBehaviorManaged": 15106,
+    "combinedBehaviorNative": 15130,
+    "convertedBehaviorManaged": 15196,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -3702,7 +3702,71 @@
             ]
           }
         ],
-        "conversionManagedCommit": "34503c24b73af48338db4187c8ab8cfb5948141d"
+        "conversionManagedCommit": "d9a2ebfb7cb434b78ee4a79c7030cda0379aaf8a"
+      },
+      {
+        "name": "p-acs-user-var-orientation-chunk54",
+        "bucket": "conversion",
+        "nativeLoc": 150,
+        "managedLoc": 90,
+        "note": "User variable int slots; SetActorAngle/Pitch/Roll TID iteration.",
+        "nativeRanges": [
+          {
+            "file": "src/playsim/p_acs.cpp",
+            "symbol": "GetVarAddrType",
+            "start": 4952,
+            "end": 4990,
+            "tests": [
+              "AcsScriptUserVariableServiceTests.IsValidIndex_RejectsOutOfRangeWithoutResize"
+            ]
+          },
+          {
+            "file": "src/playsim/p_acs.cpp",
+            "symbol": "DLevelScript::SetUserVariable",
+            "start": 4992,
+            "end": 5013,
+            "tests": [
+              "AcsScriptUserVariableServiceTests.CallFunc_SetAndGetUserVariable_RoundTripsIndexedSlot"
+            ]
+          },
+          {
+            "file": "src/playsim/p_acs.cpp",
+            "symbol": "GetUserVariable",
+            "start": 5015,
+            "end": 5040,
+            "tests": [
+              "AcsScriptUserVariableServiceTests.CallFunc_SetAndGetUserVariable_RoundTripsIndexedSlot"
+            ]
+          },
+          {
+            "file": "src/playsim/p_acs.cpp",
+            "symbol": "DLevelScript::SetActorAngle",
+            "start": 5184,
+            "end": 5204,
+            "tests": [
+              "AcsSetActorAngleTests.ZeroTidChangesOnlyActivatorAndWrapsAcsTurns"
+            ]
+          },
+          {
+            "file": "src/playsim/p_acs.cpp",
+            "symbol": "DLevelScript::SetActorPitch",
+            "start": 5206,
+            "end": 5226,
+            "tests": [
+              "AcsActorOrientationServiceTests.ChangeActorPitch_UpdatesActivatorPitchDegrees"
+            ]
+          },
+          {
+            "file": "src/playsim/p_acs.cpp",
+            "symbol": "DLevelScript::SetActorRoll",
+            "start": 5228,
+            "end": 5248,
+            "tests": [
+              "AcsActorOrientationServiceTests.ChangeActorRoll_UpdatesMatchedTidActors"
+            ]
+          }
+        ],
+        "conversionManagedCommit": "8cc95c02d74ef7b9f0872a86a15b626cd6cb9390"
       }
     ]
   },

@@ -1258,11 +1258,11 @@ internal static partial class AcsCallFunctions
         if (actor is null) return true;
         if (argCount == 3)
         {
-            actor.SetScriptUserVar(name, 0, stack[start + 2]);
+            AcsScriptUserVariableService.Write(actor, name, 0, stack[start + 2]);
             return true;
         }
         if (argCount < 4) return false;
-        actor.SetScriptUserVar(name, stack[start + 2], stack[start + 3]);
+        AcsScriptUserVariableService.Write(actor, name, stack[start + 2], stack[start + 3]);
         return true;
     }
 
@@ -1283,7 +1283,7 @@ internal static partial class AcsCallFunctions
         var actor = ResolveActor(sim, tid, activator);
         if (actor is null) return true;
         var index = argCount >= 3 ? stack[start + 2] : 0;
-        result = actor.GetScriptUserVar(name, index);
+        result = AcsScriptUserVariableService.Read(actor, name, index);
         return true;
     }
 
@@ -1710,17 +1710,7 @@ internal static partial class AcsCallFunctions
         var angleRaw = unchecked((uint)stack[start + 1]);
         stack.RemoveRange(start, argCount);
 
-        var angle = new BamAngle(unchecked(angleRaw << 16));
-        if (tid == 0)
-        {
-            if (activator is { Destroyed: false })
-                activator.Angle = angle;
-        }
-        else
-        {
-            foreach (var actor in AcsActorTid.AllFromTid(sim, tid))
-                actor.Angle = angle;
-        }
+        AcsActorOrientationService.SetAngle(sim, tid, activator, angleRaw);
         return true;
     }
 
@@ -1740,23 +1730,8 @@ internal static partial class AcsCallFunctions
         var pitchRaw = unchecked((uint)stack[start + 1]);
         stack.RemoveRange(start, argCount);
 
-        var pitch = PitchDegreesFromAcs(pitchRaw);
-        if (tid == 0)
-        {
-            if (activator is { Destroyed: false })
-                activator.PitchDegrees = pitch;
-        }
-        else
-        {
-            foreach (var actor in AcsActorTid.AllFromTid(sim, tid))
-                actor.PitchDegrees = pitch;
-        }
+        AcsActorOrientationService.SetPitch(sim, tid, activator, pitchRaw);
         return true;
-    }
-
-    private static double PitchDegreesFromAcs(uint angleRaw)
-    {
-        return unchecked((short)angleRaw) * (360.0 / 65536);
     }
 
     private static bool TrySetActorTeleFog(
@@ -1820,17 +1795,7 @@ internal static partial class AcsCallFunctions
         _ = argCount > 2 ? stack[start + 2] : 0;
         stack.RemoveRange(start, argCount);
 
-        var roll = new BamAngle(unchecked(rollRaw << 16));
-        if (tid == 0)
-        {
-            if (activator is { Destroyed: false })
-                activator.Roll = roll;
-        }
-        else
-        {
-            foreach (var actor in AcsActorTid.AllFromTid(sim, tid))
-                actor.Roll = roll;
-        }
+        AcsActorOrientationService.SetRoll(sim, tid, activator, rollRaw);
         return true;
     }
 
