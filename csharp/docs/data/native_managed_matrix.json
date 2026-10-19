@@ -18,19 +18,19 @@
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": -8063,
+    "convertedThisRunNative": -7902,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 5525,
+    "convertedThisRunManaged": 5570,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -774,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 492956,
+    "remainingNative": 492795,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 10464,
+    "convertedBehaviorNative": 10625,
     "recognitionBehaviorNative": 4666,
-    "combinedBehaviorNative": 15130,
-    "convertedBehaviorManaged": 15196,
+    "combinedBehaviorNative": 15291,
+    "convertedBehaviorManaged": 15241,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -3766,7 +3766,35 @@
             ]
           }
         ],
-        "conversionManagedCommit": "8cc95c02d74ef7b9f0872a86a15b626cd6cb9390"
+        "conversionManagedCommit": "0be0fe94d49614d824aab6b3ac4bd87cd3f5c54f"
+      },
+      {
+        "name": "zcc-compare-rel-chunk55",
+        "bucket": "conversion",
+        "nativeLoc": 161,
+        "managedLoc": 45,
+        "note": "FxCompareRel numeric resolve and integer emit.",
+        "nativeRanges": [
+          {
+            "file": "src/common/scripting/backend/codegen.cpp",
+            "symbol": "FxCompareRel::Resolve",
+            "start": 3934,
+            "end": 4046,
+            "tests": [
+              "ZccExpressionCompareTests.TryFoldEquality_MatchesNativeConstantFold"
+            ]
+          },
+          {
+            "file": "src/common/scripting/backend/codegen.cpp",
+            "symbol": "FxCompareRel::EmitCommon",
+            "start": 4096,
+            "end": 4143,
+            "tests": [
+              "ZccExpressionCompareTests.EmitRelational_RunsVmCompare"
+            ]
+          }
+        ],
+        "conversionManagedCommit": "97672d100f4d969fd6827250d563ab601b50d35e"
       }
     ]
   },
