@@ -34,6 +34,6 @@ public static class ZccExpressionConstantFolder
 
     public static VmScriptFunction EmitFoldedIntegerReturn(int value)
     {
-        return new VmScriptFunction([VmCode.Li(0, (short)value), VmCode.Reti(0)], [], []);
+        return new VmScriptFunction([VmCode.Reti((short)value)], [], []);
     }
 }
