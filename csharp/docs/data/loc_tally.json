@@ -3854,7 +3854,8 @@
             "ActorSectorKillMonstersTests.ChangeFlagsSpecial_SetsKillMonstersRuntimeFlag"
           ]
         }
-      ]
+      ],
+      "conversionManagedCommit": "b9f97d7e98f387c2de18a0dd768d2cc99098dbff"
     }
   ]
 }
