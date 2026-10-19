@@ -3439,6 +3439,7 @@ public sealed class AuthoritySimulation
     private uint _flickerRandomState;
     private uint _lightFlashRandomState;
     private uint _fireFlickerRandomState;
+    private ulong? _switchAnimRandomState;
     private readonly List<SectorMotion> _motions = new();
     private readonly SimLineAction[] _initialLineActions;
     private readonly SimSectorTerrain[] _initialSectorTerrains;
@@ -3564,6 +3565,7 @@ public sealed class AuthoritySimulation
         SectorScrollY = new double[level.Sectors.Count];
         _sectorCarryScrolls = [];
         LightActions.Initialize(this);
+        SwitchActions.Initialize(this);
         SectorDamage.Initialize(this);
         HealthGroups = LevelHealthGroups.Build(Level);
         ScrollCarryInitialize.ApplyUdmfWallScrolls(this);
@@ -3814,6 +3816,7 @@ public sealed class AuthoritySimulation
     /// <summary>Native <c>netgame</c> for ACS. Client-hosted sessions are absent.</summary>
     public bool IsNetworkGame => false;
     internal List<LightEffect> LightEffects { get; } = [];
+    internal List<ActiveButton> ActiveButtons { get; } = [];
     internal bool HasLightOverride { get; set; }
     internal bool HasLightAnimationOverride { get; set; }
     public short LightOf(int sector) => (uint)sector < (uint)Lights.Length ? Lights[sector] : (short)0;
@@ -4730,6 +4733,8 @@ public sealed class AuthoritySimulation
         _lightFlashRandomState = unchecked(1664525u * _lightFlashRandomState + 1013904223u);
         return (int)(_lightFlashRandomState >> 24);
     }
+
+    internal int NextSwitchAnimByte() => NextWanderByte(ref _switchAnimRandomState, 0x53776974u);
 
     internal int NextFireFlickerRandom()
     {
@@ -7075,6 +7080,7 @@ public sealed class AuthoritySimulation
     {
         // Native ACS observes Level->time before the end-of-tic increment.
         var levelTic = Thinkers.Clock.Tic;
+        SwitchActions.Tick(this);
         if (LightEffects.Count != 0) HasLightAnimationOverride = true;
         LightEffects.RemoveAll(effect => effect.Tick(this));
         Thinkers.Run();

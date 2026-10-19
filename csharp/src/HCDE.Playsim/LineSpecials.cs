@@ -238,12 +238,15 @@ public static partial class LineSpecials
         var useBackSide = use && (backSide ?? IsBackSide(line, actor.X.ToDouble(), actor.Y.ToDouble(), sim.Compat.HasFlag(CompatSurface.PointOnLine)));
         if (sim.Level.Format == MapDataFormat.Unknown)
         {
-            var legacy = Execute(sim, actor, line.Special, line.Tag, line);
+            var legacySpecial = line.Special;
+            var legacy = Execute(sim, actor, legacySpecial, line.Tag, line);
             if (legacy && !line.RepeatsSpecial) line.Special = 0;
+            if (legacy && use) SwitchActions.TryChangeLineFront(sim, line, line.RepeatsSpecial, legacySpecial);
             if (legacy && use) NotifySuccessfulUse(sim, actor, line, useBackSide);
             return legacy;
         }
         if (actor is not PlayerPawn) return false;
+        var activatedSpecial = line.Special;
         var doom = sim.Level.Format == MapDataFormat.DoomBinary
             || sim.Level.Namespace.Equals("Doom", StringComparison.OrdinalIgnoreCase)
             || sim.Level.Namespace.Equals("ZDoomTranslated", StringComparison.OrdinalIgnoreCase);
@@ -362,8 +365,14 @@ public static partial class LineSpecials
             };
         }
         if (activated && !repeat) line.Special = 0;
+        if (activated && use) SwitchActions.TryChangeLineFront(sim, line, repeat, activatedSpecial);
         if (activated && use) NotifySuccessfulUse(sim, actor, line, useBackSide);
         return activated;
+    }
+
+    private static void NotifySwitch(AuthoritySimulation sim, LevelLine? line, bool repeat, int special)
+    {
+        if (line is not null) SwitchActions.TryChangeLineFront(sim, line, repeat, special);
     }
 
     private static void NotifySuccessfulUse(AuthoritySimulation sim, Actor actor, LevelLine line, bool backSide)
@@ -640,9 +649,13 @@ public static partial class LineSpecials
             case 131:
                 return ThingActivation.Execute(sim, activator, tag, special == 130);
             case DoorRaise:
-                return StartDoor(sim, line, tag, closeAfterOpen: true);
+                if (!StartDoor(sim, line, tag, closeAfterOpen: true)) return false;
+                NotifySwitch(sim, line, false, special);
+                return true;
             case DoorOpen:
-                return StartDoor(sim, line, tag, closeAfterOpen: false);
+                if (!StartDoor(sim, line, tag, closeAfterOpen: false)) return false;
+                NotifySwitch(sim, line, false, special);
+                return true;
             case FloorRaise:
                 return StartFloor(sim, line, tag, FloorStep, lift: false);
             case FloorLower:
