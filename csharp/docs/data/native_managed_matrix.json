@@ -12,25 +12,25 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 103346
+    "managedCSharpLoc": 103452
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 4622,
+    "convertedThisRunNative": 4642,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 920,
+    "convertedThisRunManaged": 978,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": 0,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 479497,
+    "remainingNative": 479477,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 23149,
+    "convertedBehaviorNative": 23169,
     "recognitionBehaviorNative": 5440,
-    "combinedBehaviorNative": 28589,
-    "convertedBehaviorManaged": 10591,
+    "combinedBehaviorNative": 28609,
+    "convertedBehaviorManaged": 10649,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -1611,14 +1611,41 @@
             ]
           }
         ]
+      },
+      {
+        "name": "acs-wire-printbind-chunk16",
+        "bucket": "conversion",
+        "nativeLoc": 20,
+        "managedLoc": 58,
+        "note": "Dispatch PCD_PRINTBIND (334), PCD_SETACTORSTATE (335), PCD_THINGDAMAGE2 (336) by native wire index.",
+        "nativeRanges": [
+          {
+            "file": "src/playsim/p_acs.cpp",
+            "symbol": "PCD_PRINTBIND",
+            "start": 9092,
+            "end": 9107,
+            "tests": [
+              "AcsPrintBindWireTests.PrintBindWire_AppendsUnknownCommandPlaceholder"
+            ]
+          },
+          {
+            "file": "src/playsim/p_acs.cpp",
+            "symbol": "PCD_THINGDAMAGE2",
+            "start": 10477,
+            "end": 10480,
+            "tests": [
+              "AcsThingDamageOpcodeTests.WireOpcodeReturnsShootableActorCount"
+            ]
+          }
+        ]
       }
     ]
   },
   "summaries": {
     "acsPcode": {
-      "executed": 311,
+      "executed": 313,
       "partial": 10,
-      "decoded-only": 53
+      "decoded-only": 51
     },
     "zscriptVmOp": {
       "executed": 246
@@ -3886,7 +3913,7 @@
       "id": "acs-pcode:335",
       "name": "PrintBind",
       "opcode": 335,
-      "status": "executed",
+      "status": "decoded-only",
       "nativeRef": "src/playsim/p_acs.cpp"
     },
     {
@@ -3949,7 +3976,7 @@
       "id": "acs-pcode:352",
       "name": "SaveString",
       "opcode": 352,
-      "status": "decoded-only",
+      "status": "executed",
       "nativeRef": "src/playsim/p_acs.cpp"
     },
     {
@@ -3998,14 +4025,14 @@
       "id": "acs-pcode:359",
       "name": "PushFunction",
       "opcode": 359,
-      "status": "decoded-only",
+      "status": "executed",
       "nativeRef": "src/playsim/p_acs.cpp"
     },
     {
       "id": "acs-pcode:360",
       "name": "CallStack",
       "opcode": 360,
-      "status": "decoded-only",
+      "status": "executed",
       "nativeRef": "src/playsim/p_acs.cpp"
     },
     {

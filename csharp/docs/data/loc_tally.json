@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 4642,
+  "convertedThisRunNative": 4664,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 978,
+  "convertedThisRunManaged": 1030,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": 0,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 479477,
+  "remainingNative": 479455,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 23169,
+  "convertedBehaviorNative": 23191,
   "recognitionBehaviorNative": 5440,
-  "combinedBehaviorNative": 28589,
-  "convertedBehaviorManaged": 10649,
+  "combinedBehaviorNative": 28609,
+  "convertedBehaviorManaged": 10701,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -1619,6 +1619,42 @@
           "end": 10480,
           "tests": [
             "AcsThingDamageOpcodeTests.WireOpcodeReturnsShootableActorCount"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "acs-eternity-stack-chunk17",
+      "bucket": "conversion",
+      "nativeLoc": 22,
+      "managedLoc": 52,
+      "note": "SaveString, PushFunction, partial CallStack (invasion + AcsCallFunctions).",
+      "nativeRanges": [
+        {
+          "file": "src/playsim/p_acs.cpp",
+          "symbol": "PCD_SAVESTRING",
+          "start": 10621,
+          "end": 10628,
+          "tests": [
+            "AcsEternityStackOpcodeTests.SaveString_PushesGlobalPoolIdFromPrintWork"
+          ]
+        },
+        {
+          "file": "src/playsim/p_acs.cpp",
+          "symbol": "PCD_PUSHFUNCTION",
+          "start": 7510,
+          "end": 7515,
+          "tests": [
+            "AcsEternityStackOpcodeTests.PushFunction_PushesFunctionIndexByte"
+          ]
+        },
+        {
+          "file": "src/playsim/p_acs.cpp",
+          "symbol": "PCD_CALLSTACK",
+          "start": 7526,
+          "end": 7533,
+          "tests": [
+            "AcsEternityStackOpcodeTests.CallStack_InvokesZeroArgInvasionQueryFromStackTag"
           ]
         }
       ]

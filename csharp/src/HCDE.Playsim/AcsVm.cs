@@ -465,6 +465,43 @@ public sealed partial class AcsVm
                 case (int)AcsPcode.Lspec6Direct:
                     fiber.Stack.Add(sim.Invasion.ClassicState);
                     break;
+                case (int)AcsPcode.PushFunction:
+                {
+                    if (fiber.Pc >= fiber.Code.Length) { fiber.Done = true; return; }
+                    var functionIndex = fiber.Code[fiber.Pc++];
+                    fiber.Pc = (fiber.Pc + 3) & ~3;
+                    fiber.Stack.Add(functionIndex);
+                    break;
+                }
+                case (int)AcsPcode.CallStack:
+                {
+                    if (fiber.Stack.Count < 1) { fiber.Done = true; return; }
+                    var taggedFunction = Pop(fiber);
+                    if (fiber.Done) return;
+                    var function = taggedFunction & 0xFFFF;
+                    if (function == taggedFunction && sim.Invasion.QueryAcs(function) is { } invasionResult)
+                    {
+                        fiber.Stack.Add(invasionResult);
+                        break;
+                    }
+                    sim.AcsTriggerLine = fiber.TriggerLine;
+                    sim.AcsTriggerBackSide = fiber.BackSide;
+                    var invoked = false;
+                    for (var argCount = 1; argCount <= 5 && !invoked; argCount++)
+                    {
+                        if (AcsCallFunctions.TryInvoke(
+                                sim, fiber.Stack, fiber.ActivatorBinding, fiber.StringTable, _globalStrings,
+                                function, argCount, out var callResult))
+                        {
+                            fiber.Stack.Add(callResult);
+                            invoked = true;
+                        }
+                    }
+                    sim.AcsTriggerLine = null;
+                    sim.AcsTriggerBackSide = false;
+                    if (!invoked) { fiber.Done = true; return; }
+                    break;
+                }
                 case (int)AcsPcode.CallFunc:
                 {
                     var argCount = ReadI32(fiber);
@@ -1462,6 +1499,13 @@ public sealed partial class AcsVm
                 case (int)AcsPcode.EndLog:
                     if (!fiber.Done) AcsPrintHudOpcodes.EndLog(sim, fiber.PrintWork);
                     break;
+                case (int)AcsPcode.SaveString:
+                {
+                    var saved = _globalStrings.Add(fiber.PrintWork.ToString());
+                    fiber.Stack.Add(AcsStringIds.FromGlobalIndex(saved));
+                    fiber.PrintWork.Clear();
+                    break;
+                }
                 case (int)AcsPcode.MoreHudMessage:
                     fiber.HudOptStart = -1;
                     break;
