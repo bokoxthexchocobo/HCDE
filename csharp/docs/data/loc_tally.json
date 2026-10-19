@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": -8715,
+  "convertedThisRunNative": -8713,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 5104,
+  "convertedThisRunManaged": 5126,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -774,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 493608,
+  "remainingNative": 493606,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 9812,
+  "convertedBehaviorNative": 9814,
   "recognitionBehaviorNative": 4666,
-  "combinedBehaviorNative": 14478,
-  "convertedBehaviorManaged": 14775,
+  "combinedBehaviorNative": 14480,
+  "convertedBehaviorManaged": 14797,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -3501,6 +3501,25 @@
           "end": 4565,
           "tests": [
             "ActorFreezeTickGateTests"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "zcc-int-cast-fold-chunk48",
+      "bucket": "conversion",
+      "nativeLoc": 2,
+      "managedLoc": 22,
+      "note": "FxIntCast constant to FxConstant.",
+      "conversionManagedCommit": "5a285e491f31f6608678b9f8fb346eaeaaebac18",
+      "nativeRanges": [
+        {
+          "file": "src/common/scripting/backend/codegen.cpp",
+          "symbol": "FxIntCast::Resolve",
+          "start": 1053,
+          "end": 1054,
+          "tests": [
+            "ZccExpressionIntCastTests"
           ]
         }
       ]
