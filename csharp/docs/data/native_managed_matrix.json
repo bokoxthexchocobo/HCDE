@@ -12,25 +12,25 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 106727
+    "managedCSharpLoc": 106796
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": -8531,
+    "convertedThisRunNative": -8376,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 5290,
+    "convertedThisRunManaged": 5330,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -774,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 493424,
+    "remainingNative": 493269,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 9996,
+    "convertedBehaviorNative": 10151,
     "recognitionBehaviorNative": 4666,
-    "combinedBehaviorNative": 14662,
-    "convertedBehaviorManaged": 14961,
+    "combinedBehaviorNative": 14817,
+    "convertedBehaviorManaged": 15001,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -3600,7 +3600,44 @@
             ]
           }
         ],
-        "conversionManagedCommit": "027498467c8f8e2b3a4d5e6f7a8b9c0d1e2f3a4b"
+        "conversionManagedCommit": "02749846c3fe3b61fd558f5a6d485ddae13e19d2"
+      },
+      {
+        "name": "zcc-integer-binary-emit-chunk51",
+        "bucket": "conversion",
+        "nativeLoc": 155,
+        "managedLoc": 40,
+        "note": "FxAddSub/FxMulDiv integer VM emit and mul/div resolve fold.",
+        "nativeRanges": [
+          {
+            "file": "src/common/scripting/backend/codegen.cpp",
+            "symbol": "FxAddSub::Emit",
+            "start": 3405,
+            "end": 3463,
+            "tests": [
+              "ZccExpressionIntegerBinaryTests.EmitAddSub_RunsIntegerVmOp"
+            ]
+          },
+          {
+            "file": "src/common/scripting/backend/codegen.cpp",
+            "symbol": "FxMulDiv::Resolve",
+            "start": 3606,
+            "end": 3662,
+            "tests": [
+              "ZccExpressionIntegerBinaryTests.TryFoldMulDiv_MatchesResolveConstantPath"
+            ]
+          },
+          {
+            "file": "src/common/scripting/backend/codegen.cpp",
+            "symbol": "FxMulDiv::Emit",
+            "start": 3739,
+            "end": 3777,
+            "tests": [
+              "ZccExpressionIntegerBinaryTests.EmitMulDiv_RunsIntegerVmOp"
+            ]
+          }
+        ],
+        "conversionManagedCommit": "ea10acf56e1cfb386e0c4607d66177037362e227"
       }
     ]
   },
