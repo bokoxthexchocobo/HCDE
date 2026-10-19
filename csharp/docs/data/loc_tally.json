@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": -9001,
+  "convertedThisRunNative": -8930,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 4470,
+  "convertedThisRunManaged": 4587,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -774,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 493894,
+  "remainingNative": 493823,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 9526,
+  "convertedBehaviorNative": 9597,
   "recognitionBehaviorNative": 4666,
-  "combinedBehaviorNative": 14192,
-  "convertedBehaviorManaged": 14141,
+  "combinedBehaviorNative": 14263,
+  "convertedBehaviorManaged": 14258,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -3339,6 +3339,25 @@
           "end": 4505,
           "tests": [
             "AcsGetActorPropertyServiceTests"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "p-acs-fade-range-chunk39",
+      "bucket": "conversion",
+      "nativeLoc": 71,
+      "managedLoc": 117,
+      "note": "ACS DoFadeRange player blend scheduling.",
+      "conversionManagedCommit": "7eff35ce3344fb43c180e1937b6cd88071eb5348",
+      "nativeRanges": [
+        {
+          "file": "src/playsim/p_acs.cpp",
+          "symbol": "DLevelScript::DoFadeRange",
+          "start": 3921,
+          "end": 3991,
+          "tests": [
+            "AcsFadeRangeServiceTests"
           ]
         }
       ]
