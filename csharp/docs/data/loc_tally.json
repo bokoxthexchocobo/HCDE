@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": -9301,
+  "convertedThisRunNative": -9227,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 4100,
+  "convertedThisRunManaged": 4260,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -774,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 494194,
+  "remainingNative": 494120,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 9226,
+  "convertedBehaviorNative": 9300,
   "recognitionBehaviorNative": 4666,
-  "combinedBehaviorNative": 13892,
-  "convertedBehaviorManaged": 13771,
+  "combinedBehaviorNative": 13966,
+  "convertedBehaviorManaged": 13931,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -3273,6 +3273,34 @@
           "end": 1052,
           "tests": [
             "DecorateStencilBloodPropertyTests"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "p-mobj-spawn-lifecycle-chunk36",
+      "bucket": "conversion",
+      "nativeLoc": 74,
+      "managedLoc": 160,
+      "note": "PlayerSpawnPickClass and SpawnPlayer reborn or inventory policy.",
+      "conversionManagedCommit": "4e80290c0ae600b99ea9c8dd678e2707c9c3dcf3",
+      "nativeRanges": [
+        {
+          "file": "src/playsim/p_mobj.cpp",
+          "symbol": "PlayerSpawnPickClass",
+          "start": 6281,
+          "end": 6312,
+          "tests": [
+            "PlayerSpawnLifecycleTests"
+          ]
+        },
+        {
+          "file": "src/playsim/p_mobj.cpp",
+          "symbol": "SpawnPlayer",
+          "start": 6381,
+          "end": 6422,
+          "tests": [
+            "PlayerSpawnLifecycleTests"
           ]
         }
       ]
