@@ -11,7 +11,7 @@ public class MissileSpawnCheckTests
         var imp = sim.Actors.Single(a => a.DoomEdNum == 3001);
         var startX = imp.X.ToDouble();
         var missile = sim.SpawnProjectile(imp, ProjectileKind.ImpBall, sim.Players.Single());
-        Assert.True(MissileSpawnCheck.Check(sim, missile, imp.Radius.ToDouble()));
+        Assert.True(MissileSpawnCheck.Check(sim, missile, imp, imp.Radius.ToDouble()));
         Assert.True(missile.X.ToDouble() != startX || missile.Y.ToDouble() != imp.Y.ToDouble());
     }
 

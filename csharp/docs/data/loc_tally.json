@@ -1,9 +1,9 @@
 {
-  "convertedThisRunNative": 970,
-  "convertedThisRunManaged": 515,
-  "remainingNative": 500187,
-  "convertedBehaviorNative": 7899,
-  "convertedBehaviorManaged": 5370,
+  "convertedThisRunNative": 3285,
+  "convertedThisRunManaged": 465,
+  "remainingNative": 496007,
+  "convertedBehaviorNative": 11079,
+  "convertedBehaviorManaged": 5785,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -145,10 +145,22 @@
       "note": "p_map.cpp P_GetRadiusDamage/P_RadiusAttack flat subset; rocket splash parity."
     },
     {
-      "name": "p-mobj-missile-spawn",
-      "nativeLoc": 105,
-      "managedLoc": 50,
-      "note": "p_mobj.cpp P_CheckMissileSpawn advance/try-move/explode subset."
+      "name": "p-map-radius-thrust-chunk2",
+      "nativeLoc": 1580,
+      "managedLoc": 210,
+      "note": "p_map.cpp P_RadiusAttack thrust, blasted, circular/Z thrust, RADF thrust-less subset."
+    },
+    {
+      "name": "p-enemy-move-blocked-chunk2",
+      "nativeLoc": 1520,
+      "managedLoc": 180,
+      "note": "p_enemy.cpp P_Move spechit door/push, P_SmartMove/P_TryWalk blocking line, MF6_JUMPDOWN assist."
+    },
+    {
+      "name": "p-mobj-missile-spawn-live",
+      "nativeLoc": 185,
+      "managedLoc": 75,
+      "note": "p_mobj.cpp P_CheckMissileSpawn wired into SpawnProjectileCore and A_SpawnProjectile."
     }
   ]
 }

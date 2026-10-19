@@ -201,7 +201,8 @@ public static class ActorCombatActions
         if (missile is null) return null;
         ApplySpawnProjectileVelocity(actor, missile, flags, pitch, angleOffset);
         AssignSpawnProjectileOwner(actor, missile, (flags & SpawnProjectileFlags.TrackOwner) != 0);
-        return missile;
+        MissileSpawnCheck.Check(sim, missile, actor, actor.Radius.ToDouble());
+        return missile.Destroyed ? null : missile;
     }
 
     private static void ApplySpawnProjectileVelocity(Actor actor, ProjectileActor missile, SpawnProjectileFlags flags,
