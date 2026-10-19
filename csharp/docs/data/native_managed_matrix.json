@@ -18,19 +18,19 @@
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": -10473,
+    "convertedThisRunNative": -10382,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 2469,
+    "convertedThisRunManaged": 2637,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -774,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 495366,
+    "remainingNative": 495275,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 8054,
+    "convertedBehaviorNative": 8145,
     "recognitionBehaviorNative": 4666,
-    "combinedBehaviorNative": 12720,
-    "convertedBehaviorManaged": 12140,
+    "combinedBehaviorNative": 12811,
+    "convertedBehaviorManaged": 12308,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -2972,6 +2972,61 @@
             "end": 3783,
             "tests": [
               "AcsPlayerPopulationTests"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "d-net-full-reset-chunk25",
+        "bucket": "conversion",
+        "nativeLoc": 91,
+        "managedLoc": 168,
+        "note": "d_net.cpp Net_ResetClientState body and DisconnectClient teardown remainder.",
+        "conversionManagedCommit": "0000000000000000000000000000000000000000",
+        "nativeRanges": [
+          {
+            "file": "src/d_net.cpp",
+            "symbol": "Net_ResetClientState",
+            "start": 5349,
+            "end": 5394,
+            "tests": [
+              "NetClientFullResetTests"
+            ]
+          },
+          {
+            "file": "src/d_net.cpp",
+            "symbol": "DisconnectClient",
+            "start": 5403,
+            "end": 5424,
+            "tests": [
+              "NetClientFullResetTests"
+            ]
+          },
+          {
+            "file": "src/d_net.cpp",
+            "symbol": "DisconnectClient",
+            "start": 5427,
+            "end": 5437,
+            "tests": [
+              "NetClientFullResetTests"
+            ]
+          },
+          {
+            "file": "src/d_net.cpp",
+            "symbol": "DisconnectClient",
+            "start": 5443,
+            "end": 5452,
+            "tests": [
+              "NetClientFullResetTests"
+            ]
+          },
+          {
+            "file": "src/d_net.cpp",
+            "symbol": "DisconnectClient",
+            "start": 5454,
+            "end": 5455,
+            "tests": [
+              "NetClientFullResetTests"
             ]
           }
         ]

@@ -43,6 +43,16 @@ public sealed class LateJoinRuntimeSession
         BaselineRepairCompleted?.Invoke(client, reason ?? "late-join-complete");
     }
 
+    public void ClearLateJoinTargets(int clientNum)
+    {
+        if (clientNum < 0 || clientNum >= MaxPlayers)
+            return;
+
+        _targetSequence[clientNum] = -1;
+        _targetConsistency[clientNum] = -1;
+        _startTic[clientNum] = -1;
+    }
+
     public void ClearRuntimeClientJoinState(int clientNum, Action<int, string?>? clearBaselineRepair = null)
     {
         if (clientNum < 0 || clientNum >= MaxPlayers)
