@@ -817,12 +817,24 @@ public sealed class MonsterBrain(MonsterAttack attack)
                         if (movementTarget.Id != actor.GoalId && !actor.NoFear && (actor.Frightened || movementTarget.Frightening))
                         { dx = -dx; dy = -dy; }
                     }
+                    var oldX = actor.X.ToDouble();
+                    var oldY = actor.Y.ToDouble();
+                    string? oldFloorPic = actor.CantLeaveFloorPic && actor.SectorIndex >= 0
+                        && actor.SectorIndex < sim.Level.Sectors.Count
+                        ? sim.Level.Sectors[actor.SectorIndex].FloorPic : null;
                     if (forceNewDirection) ChooseNativeChaseDirection(sim, actor, dx, dy);
                     else
                     {
                         actor.MoveCount = unchecked(actor.MoveCount - 1);
                         if (actor.MoveCount < 0 && (flags & MonsterChaseFlags.NoRandomTurn) == 0
                             || !ActorWanderActions.Move(sim, actor) && (flags & MonsterChaseFlags.StopIfBlocked) == 0)
+                            ChooseNativeChaseDirection(sim, actor, dx, dy);
+                    }
+                    if (oldFloorPic is not null && actor.SectorIndex >= 0 && actor.SectorIndex < sim.Level.Sectors.Count
+                        && !string.Equals(oldFloorPic, sim.Level.Sectors[actor.SectorIndex].FloorPic, StringComparison.OrdinalIgnoreCase))
+                    {
+                        ActorPhysics.TryMove(sim, actor, oldX, oldY, out _);
+                        if ((flags & MonsterChaseFlags.StopIfBlocked) == 0)
                             ChooseNativeChaseDirection(sim, actor, dx, dy);
                     }
                 }

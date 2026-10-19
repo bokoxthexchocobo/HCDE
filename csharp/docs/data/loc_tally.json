@@ -1,9 +1,9 @@
 {
-  "convertedThisRunNative": 172,
-  "convertedThisRunManaged": 465,
-  "remainingNative": 500120,
-  "convertedBehaviorNative": 7966,
-  "convertedBehaviorManaged": 5785,
+  "convertedThisRunNative": 1685,
+  "convertedThisRunManaged": 483,
+  "remainingNative": 498607,
+  "convertedBehaviorNative": 9479,
+  "convertedBehaviorManaged": 5803,
   "baselineNative": 508086,
   "chunks": [
     {
