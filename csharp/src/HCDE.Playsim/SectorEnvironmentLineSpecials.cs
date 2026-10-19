@@ -75,15 +75,9 @@ internal static class SectorEnvironmentLineSpecials
 
     private static bool SetCurrent(AuthoritySimulation sim, int tag, int angleByte, int force, int flags)
     {
-        var radians = angleByte * (Math.PI * 2 / 256);
-        var push = force / 65536.0;
-        foreach (var sector in sim.Level.Sectors)
-        {
-            if (!sector.MatchesTag(tag)) continue;
-            sector.PushForceX = Math.Cos(radians) * push;
-            sector.PushForceY = Math.Sin(radians) * push;
-        }
-        return flags == 0 || true;
+        if (flags != 0) return false;
+        PusherActions.AdjustCurrent(sim, tag, force, angleByte);
+        return true;
     }
 
     private static bool SetGlow(AuthoritySimulation sim, int tag, bool floor, int r, int g, int b)
