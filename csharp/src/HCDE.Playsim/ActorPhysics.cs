@@ -1121,18 +1121,25 @@ public static class ActorPhysics
 
     internal static bool TryWanderMove(AuthoritySimulation sim, Actor actor, double x, double y,
         out bool floatOk, out double floor, bool avoidingDropOff = false)
+        => TryWanderMove(sim, actor, x, y, out floatOk, out floor, out _, avoidingDropOff);
+
+    internal static bool TryWanderMove(AuthoritySimulation sim, Actor actor, double x, double y,
+        out bool floatOk, out double floor, out LevelLine? blockingWall, bool avoidingDropOff = false)
     {
         var probe = actor.Floating || actor.CanJump ? new WanderMoveProbe() : null;
         var previous = actor.MovementPushContacts;
         var previousAi = actor.AiPushContext;
         actor.MovementPushContacts = new HashSet<Actor>(); actor.AiPushContext = true;
         bool moved;
-        try { moved = TryMove(sim, actor, x, y, out _, out _, wanderProbe: probe, avoidingDropOff: avoidingDropOff); }
+        try { moved = TryMove(sim, actor, x, y, out blockingWall, out _, wanderProbe: probe, avoidingDropOff: avoidingDropOff); }
         finally { actor.MovementPushContacts = previous; actor.AiPushContext = previousAi; }
         floatOk = probe?.FloatOk ?? false;
         floor = probe?.Floor ?? 0;
         return moved;
     }
+
+    internal static bool TryMove(AuthoritySimulation sim, Actor actor, double x, double y, out LevelLine? wall, out Actor? blocker) =>
+        TryMove(sim, actor, x, y, out wall, out blocker, invokeSlam: false);
 
     private static bool TryMove(AuthoritySimulation sim, Actor actor, double x, double y, out LevelLine? wall, out Actor? blocker,
         bool invokeSlam = false, WanderMoveProbe? wanderProbe = null, bool avoidingDropOff = false)

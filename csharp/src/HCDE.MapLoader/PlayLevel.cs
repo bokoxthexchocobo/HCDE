@@ -263,6 +263,8 @@ public sealed class PlayLevel
     public bool ExitOnAllBossesDead { get; set; }
     public bool ExitOnAllBossesDeadSecret { get; set; }
     public bool SpeckillMonstersOnBossDeath { get; set; }
+    /// <summary>Native <c>LEVEL3_NOJUMPDOWN</c>: disables monster jump-down drop-off assist.</summary>
+    public bool NoJumpDown { get; set; }
     public IReadOnlyList<HCDE.Gamedata.MapInfoDamageType> DamageTypes { get; set; } = Array.Empty<HCDE.Gamedata.MapInfoDamageType>();
     public string MapName { get; init; } = "";
     public int? LevelNumber { get; set; }
@@ -310,6 +312,7 @@ public sealed class PlayLevel
         ExitOnAllBossesDead = ExitOnAllBossesDead,
         ExitOnAllBossesDeadSecret = ExitOnAllBossesDeadSecret,
         SpeckillMonstersOnBossDeath = SpeckillMonstersOnBossDeath,
+        NoJumpDown = NoJumpDown,
         MonsterFallingDamage = MonsterFallingDamage,
         ProperMonsterFallingDamage = ProperMonsterFallingDamage,
         FallingDamage = FallingDamage,
