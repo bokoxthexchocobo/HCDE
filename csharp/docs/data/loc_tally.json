@@ -1,9 +1,9 @@
 {
-  "convertedThisRunNative": 1910,
-  "convertedThisRunManaged": 1655,
-  "remainingNative": 502042,
-  "convertedBehaviorNative": 6044,
-  "convertedBehaviorManaged": 4075,
+  "convertedThisRunNative": 885,
+  "convertedThisRunManaged": 780,
+  "remainingNative": 501157,
+  "convertedBehaviorNative": 6929,
+  "convertedBehaviorManaged": 4855,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -107,6 +107,30 @@
       "nativeLoc": 180,
       "managedLoc": 120,
       "note": "ActorActionDispatch hooks for damage/melee/combo state names; actor script user-var storage."
+    },
+    {
+      "name": "action-combat-dispatch-batch2",
+      "nativeLoc": 310,
+      "managedLoc": 285,
+      "note": "A_CustomMissile, A_CustomBulletAttack, dispatch chase/jump/inventory; TryClassNameForProjectileType."
+    },
+    {
+      "name": "action-explode-radius-give",
+      "nativeLoc": 240,
+      "managedLoc": 195,
+      "note": "A_Explode, A_RadiusThrust, A_RadiusGive; splash-group radius immunity (p_mobj)."
+    },
+    {
+      "name": "thing-projectile-175-178",
+      "nativeLoc": 190,
+      "managedLoc": 165,
+      "note": "LS_Thing_ProjectileIntercept/Aimed; EV_Thing_Projectile lead aim; gap JSON 3→1."
+    },
+    {
+      "name": "acs-air-userarray-spawnspot",
+      "nativeLoc": 145,
+      "managedLoc": 135,
+      "note": "ACSF_Get/SetAirSupply, SpawnSpotForced, Get/SetUserArray; PlayerPawn air_finished tic storage."
     }
   ]
 }
