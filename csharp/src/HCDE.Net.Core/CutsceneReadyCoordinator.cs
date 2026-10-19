@@ -9,6 +9,10 @@ public sealed class CutsceneReadyCoordinator
     private ulong _readyMask;
     private readonly int[] _lastToggleTic = new int[MaxPlayers];
 
+    public ulong ReadyMask => _readyMask;
+
+    public void ClearReady() => _readyMask = 0;
+
     public bool IsParticipantReady(int player, bool voteMode) =>
         voteMode && player >= 0 && player < MaxPlayers && (_readyMask & (1ul << player)) != 0;
 
