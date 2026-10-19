@@ -1,13 +1,13 @@
 {
-  "convertedThisRunNative": 224,
-  "convertedThisRunManaged": 248,
+  "convertedThisRunNative": 1883,
+  "convertedThisRunManaged": 545,
   "recognitionThisRunNative": 4648,
   "recognitionThisRunManaged": 0,
-  "remainingNative": 499919,
-  "convertedBehaviorNative": 8167,
+  "remainingNative": 493589,
+  "convertedBehaviorNative": 9849,
   "recognitionBehaviorNative": 4648,
-  "combinedBehaviorNative": 12815,
-  "convertedBehaviorManaged": 6025,
+  "combinedBehaviorNative": 14497,
+  "convertedBehaviorManaged": 6330,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -267,6 +267,43 @@
         { "file": "src/playsim/p_spec.cpp", "symbol": "P_SetSectorFriction", "start": 751, "end": 797, "tests": ["LineSpecialClosureTests.SectorFrictionSpecialUpdatesTaggedSector", "SectorFrictionMovementTests"] },
         { "file": "src/playsim/p_map.cpp", "symbol": "P_GetFriction", "start": 732, "end": 745, "tests": ["SectorFrictionMovementTests"] },
         { "file": "src/playsim/mapthinkers/a_pusher.cpp", "symbol": "DPusher::Tick", "start": 149, "end": 200, "tests": ["SectorPushMovementTests"] }
+      ]
+    },
+    {
+      "name": "p-enemy-chase-lost-sight-nosight-chunk4",
+      "bucket": "conversion",
+      "nativeLoc": 23,
+      "managedLoc": 8,
+      "note": "p_enemy.cpp A_DoChase lost-sight retarget preserves MF3_NOSIGHTCHECK toggle.",
+      "nativeRanges": [
+        { "file": "src/playsim/p_enemy.cpp", "symbol": "A_DoChase", "start": 2694, "end": 2716, "tests": ["ChaseLostSightNoSightCheckTests"] }
+      ]
+    },
+    {
+      "name": "p-switch-textures-button-chunk5",
+      "bucket": "conversion",
+      "nativeLoc": 839,
+      "managedLoc": 210,
+      "note": "p_switch.cpp switch textures/button thinker/sounds plus anim_switches.cpp pairs; ActivateMapLine switch hook.",
+      "nativeRanges": [
+        { "file": "src/playsim/p_switch.cpp", "symbol": "P_ChangeSwitchTexture", "start": 243, "end": 310, "tests": ["SwitchTextureTests.UseLineChangesSwitchTextureAndPlaysSound"] },
+        { "file": "src/playsim/p_switch.cpp", "symbol": "P_StartButton", "start": 71, "end": 88, "tests": ["SwitchTextureTests.RePressingActiveButtonAdvancesTimer"] },
+        { "file": "src/playsim/p_switch.cpp", "symbol": "DActiveButton::Tick", "start": 380, "end": 452, "tests": ["SwitchTextureTests.ButtonReturnsToOffTextureAfterHoldTime"] },
+        { "file": "src/gamedata/textures/anim_switches.cpp", "symbol": "FTextureAnimator::AddSwitchPair", "start": 305, "end": 330, "tests": ["SwitchTextureTests.UseLineChangesSwitchTextureAndPlaysSound"] }
+      ]
+    },
+    {
+      "name": "p-lights-ev-thinkers-chunk5",
+      "bucket": "conversion",
+      "nativeLoc": 820,
+      "managedLoc": 125,
+      "note": "mapthinkers/a_lights.cpp EV_* neighbor/change/partway specials and lighting thinkers via LightActions/LightEffect.",
+      "nativeRanges": [
+        { "file": "src/playsim/mapthinkers/a_lights.cpp", "symbol": "EV_LightChange", "start": 724, "end": 738, "tests": ["LightEvParityTests.LightChangeRaisesAndLowersTaggedSectors"] },
+        { "file": "src/playsim/mapthinkers/a_lights.cpp", "symbol": "EV_TurnTagLightsOff", "start": 606, "end": 625, "tests": ["LightEvParityTests.TurnTagLightsOffUsesNeighborMinimum"] },
+        { "file": "src/playsim/mapthinkers/a_lights.cpp", "symbol": "EV_LightTurnOnPartway", "start": 685, "end": 717, "tests": ["LightEvParityTests.LightTurnOnPartwayInterpolatesBetweenNeighborBounds"] },
+        { "file": "src/playsim/mapthinkers/a_lights.cpp", "symbol": "DFlicker::Tick", "start": 136, "end": 158, "tests": ["FlickerTests.NativeCountdownRangesIncludeTransitionTick"] },
+        { "file": "src/playsim/mapthinkers/a_lights.cpp", "symbol": "EV_StartLightFading", "start": 774, "end": 797, "tests": ["AnimatedLightTests.FadeHasNativeFirstTickAndFinalWriteWithoutLockingImmediateChanges"] }
       ]
     }
   ]
