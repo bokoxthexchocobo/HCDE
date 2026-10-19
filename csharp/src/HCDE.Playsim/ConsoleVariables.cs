@@ -111,6 +111,9 @@ public sealed class ConsoleVariables
     public string ReadString(int playerNumber, Func<int, bool> playerInGame, int consolePlayer, string name)
         => Resolve(playerNumber, playerInGame, consolePlayer, name)?.AsString() ?? "";
 
+    internal ConsoleVariable? TryResolve(int playerNumber, Func<int, bool> playerInGame, int consolePlayer, string name)
+        => Resolve(playerNumber, playerInGame, consolePlayer, name);
+
     private ConsoleVariable? Resolve(int playerNumber, Func<int, bool> playerInGame, int consolePlayer, string name)
     {
         if (string.IsNullOrEmpty(name) || !_globals.TryGetValue(name, out var global)

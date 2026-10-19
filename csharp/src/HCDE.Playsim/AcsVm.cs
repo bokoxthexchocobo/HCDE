@@ -668,6 +668,50 @@ public sealed class AcsVm
                 case (int)AcsPcode.Timer:
                     fiber.Stack.Add(levelTic);
                     break;
+                case (int)AcsPcode.Random:
+                {
+                    if (fiber.Stack.Count < 2) { fiber.Done = true; return; }
+                    var randomMin = Pop(fiber);
+                    var randomMax = Pop(fiber);
+                    if (fiber.Done) break;
+                    fiber.Stack.Add(sim.NextAcsRandom(randomMin, randomMax));
+                    break;
+                }
+                case (int)AcsPcode.RandomDirect:
+                {
+                    var directMin = ReadI32(fiber);
+                    var directMax = ReadI32(fiber);
+                    if (fiber.Done) break;
+                    fiber.Stack.Add(sim.NextAcsRandom(directMin, directMax));
+                    break;
+                }
+                case (int)AcsPcode.RandomDirectB:
+                {
+                    if (fiber.Pc + 1 >= fiber.Code.Length) { fiber.Done = true; return; }
+                    var byteMin = fiber.Code[fiber.Pc++];
+                    var byteMax = fiber.Code[fiber.Pc++];
+                    fiber.Stack.Add(sim.NextAcsRandom(byteMin, byteMax));
+                    break;
+                }
+                case (int)AcsPcode.GetCvar:
+                {
+                    if (fiber.Stack.Count < 1) { fiber.Done = true; return; }
+                    var cvarStringId = Pop(fiber);
+                    if (fiber.Done) break;
+                    var cvarName = AcsStringIds.LookupTerminated(cvarStringId, fiber.StringTable, _globalStrings);
+                    var playerNum = ResolveAcsContextPlayerNum(sim, fiber.Activator);
+                    var value = sim.CVars.ReadFloat(playerNum, sim.IsPlayerInGame, sim.ConsolePlayer, cvarName);
+                    var variable = sim.CVars.TryResolve(playerNum, sim.IsPlayerInGame, sim.ConsolePlayer, cvarName);
+                    fiber.Stack.Add(variable?.Kind == ConsoleVariableKind.Float
+                        ? AcsFixedPoint.FromDouble(value) : (int)value);
+                    break;
+                }
+                case (int)AcsPcode.PolyWait:
+                    Pop(fiber);
+                    break;
+                case (int)AcsPcode.PolyWaitDirect:
+                    ReadI32(fiber);
+                    break;
                 case (int)AcsPcode.PlayerCount:
                     fiber.Stack.Add(sim.Players.Count(player => !player.Destroyed));
                     break;
@@ -1242,6 +1286,12 @@ public sealed class AcsVm
         if ((Math.Abs((long)numerator) >> 15) >= Math.Abs((long)denominator))
             return (numerator ^ denominator) < 0 ? int.MinValue : int.MaxValue;
         return (int)(((long)numerator << 16) / denominator);
+    }
+
+    private static int ResolveAcsContextPlayerNum(AuthoritySimulation sim, Actor? activator)
+    {
+        if (activator is PlayerPawn { Destroyed: false } player) return player.PlayerNum;
+        return sim.IsPlayerInGame(sim.ConsolePlayer) ? sim.ConsolePlayer : -1;
     }
 
     private static int ThingCount(AuthoritySimulation sim, int type, int tid, int tag = -1)

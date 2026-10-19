@@ -3159,6 +3159,7 @@ public sealed class AuthoritySimulation
     internal int DehackedMegasphereHealth => _dehacked?.MegasphereHealth ?? 200;
     private ulong? _uniqueTidRandomState;
     internal ulong? UniqueTidRandomState => _uniqueTidRandomState;
+    private ulong? _acsRandomState;
     private uint _strobeRandomState;
     private uint _jumpRandomState;
     private bool _hasJumpRandomState;
@@ -4345,6 +4346,17 @@ public sealed class AuthoritySimulation
     {
         CombatRandomState = unchecked(1664525u * CombatRandomState + 1013904223u);
         return CombatRandomState;
+    }
+
+    /// <summary>Native <c>pr_acs</c> stream used by ACS <c>PCD_RANDOM</c> opcodes.</summary>
+    internal int NextAcsRandom(int min, int max)
+    {
+        if (max < min) (min, max) = (max, min);
+        var state = _acsRandomState ?? NativeStateRandom.Seed(unchecked((uint)RngSeed), 0xa72f226du);
+        var span = (uint)(max - min + 1L);
+        var draw = (int)NativeStateRandom.NextBounded(ref state, span) + min;
+        _acsRandomState = state;
+        return draw;
     }
 
     internal uint NextSwitchTargetRandom()
