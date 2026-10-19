@@ -115,7 +115,7 @@ internal static class AcsActorProperties
                 actor.ChaseGoal = value != 0;
                 break;
             case MasterTid:
-                SetMaster(actor, actor.Simulation is { } simulation ? AcsActorTid.SingleFromTid(simulation, value) : null);
+                ApplySetMaster(actor, actor.Simulation is { } simulation ? AcsActorTid.SingleFromTid(simulation, value) : null);
                 break;
             case FriendlySeeBlocks:
                 actor.FriendlySeeBlocks = value;
@@ -249,7 +249,15 @@ internal static class AcsActorProperties
             && player.PlayerNum == actor.FriendPlayer - 1)?.ThingId ?? 0;
     }
 
-    private static void SetMaster(Actor actor, Actor? master)
+    public static int SetMaster(Actor actor, Actor? master)
+    {
+        if (!actor.IsMonster)
+            return 0;
+        ApplySetMaster(actor, master);
+        return 1;
+    }
+
+    private static void ApplySetMaster(Actor actor, Actor? master)
     {
         if (!actor.IsMonster) return;
         if (master is not null && !master.IsMonster && master is not PlayerPawn) return;
