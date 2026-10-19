@@ -758,15 +758,18 @@ public sealed class MonsterBrain(MonsterAttack attack)
             && (sim.GameMode != SpawnGameMode.Single || sim.Players.Count() > 1 || actor.TidToHate != 0)
             && !CombatTrace.CheckSight(sim, actor, target))
         {
-            var noSightCheck = actor.NoSightCheck;
+            var lookForBetter = actor.NoSightCheck;
             Actor? replacement;
             try
             {
-                actor.NoSightCheck = false;
+                if (lookForBetter) actor.NoSightCheck = false;
                 replacement = FindForLook(sim, actor, new ActorLookParameters { NativeSight = true },
                     (flags & MonsterChaseFlags.DontLookAllAround) == 0, chaseGoal: true);
             }
-            finally { actor.NoSightCheck = noSightCheck; }
+            finally
+            {
+                if (lookForBetter) actor.NoSightCheck = true;
+            }
             if (replacement is not null && replacement.Id != TargetId)
             {
                 TargetId = replacement.Id;

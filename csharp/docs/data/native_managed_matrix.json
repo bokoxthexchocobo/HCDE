@@ -15,15 +15,15 @@
     "managedCSharpLoc": 98993
   },
   "locTally": {
-    "convertedThisRunNative": 201,
-    "convertedThisRunManaged": 240,
+    "convertedThisRunNative": 224,
+    "convertedThisRunManaged": 248,
     "recognitionThisRunNative": 4648,
     "recognitionThisRunManaged": 0,
-    "remainingNative": 500016,
-    "convertedBehaviorNative": 8070,
+    "remainingNative": 499919,
+    "convertedBehaviorNative": 8167,
     "recognitionBehaviorNative": 4648,
-    "combinedBehaviorNative": 12718,
-    "convertedBehaviorManaged": 5963,
+    "combinedBehaviorNative": 12815,
+    "convertedBehaviorManaged": 6025,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -527,6 +527,43 @@
             "end": 2794,
             "tests": [
               "TryMoveLineCrossTests"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "p-spec-sector-friction-push-chunk4",
+        "bucket": "conversion",
+        "nativeLoc": 97,
+        "managedLoc": 62,
+        "note": "p_spec.cpp P_SetSectorFriction parity, P_GetFriction sector SECF_FRICTION, sector push thrust on step.",
+        "nativeRanges": [
+          {
+            "file": "src/playsim/p_spec.cpp",
+            "symbol": "P_SetSectorFriction",
+            "start": 751,
+            "end": 797,
+            "tests": [
+              "LineSpecialClosureTests.SectorFrictionSpecialUpdatesTaggedSector",
+              "SectorFrictionMovementTests"
+            ]
+          },
+          {
+            "file": "src/playsim/p_map.cpp",
+            "symbol": "P_GetFriction",
+            "start": 732,
+            "end": 745,
+            "tests": [
+              "SectorFrictionMovementTests"
+            ]
+          },
+          {
+            "file": "src/playsim/mapthinkers/a_pusher.cpp",
+            "symbol": "DPusher::Tick",
+            "start": 149,
+            "end": 200,
+            "tests": [
+              "SectorPushMovementTests"
             ]
           }
         ]
