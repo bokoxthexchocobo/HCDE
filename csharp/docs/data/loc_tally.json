@@ -1,7 +1,7 @@
 {
-  "convertedThisRunNative": 38,
-  "convertedThisRunManaged": 142,
-  "remainingNative": 508048,
+  "convertedThisRunNative": 479,
+  "convertedThisRunManaged": 507,
+  "remainingNative": 507607,
   "chunks": [
     {
       "name": "native-managed-matrix",
@@ -20,6 +20,18 @@
       "nativeLoc": 0,
       "managedLoc": 6,
       "note": "VmMusicPatchPaths absolute detection; VmIwadCandidateScanner hidden/dot skip."
+    },
+    {
+      "name": "combat-trace-ordering",
+      "nativeLoc": 280,
+      "managedLoc": 85,
+      "note": "p_trace.cpp intercept traversal/BlocksPick parity; CombatTrace.cs merge with regression fixes."
+    },
+    {
+      "name": "acs-map-mutations",
+      "nativeLoc": 161,
+      "managedLoc": 280,
+      "note": "p_acs.cpp ChangeFlat/SetLineTexture/ClearLineSpecial/DoSpawn*/SetResultValue opcodes 65-68,83,97,149-152,257."
     }
   ]
 }

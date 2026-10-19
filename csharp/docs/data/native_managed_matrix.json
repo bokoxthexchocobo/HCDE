@@ -12,12 +12,12 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 95866
+    "managedCSharpLoc": 96163
   },
   "locTally": {
-    "convertedThisRunNative": 38,
-    "convertedThisRunManaged": 142,
-    "remainingNative": 508048,
+    "convertedThisRunNative": 318,
+    "convertedThisRunManaged": 227,
+    "remainingNative": 507768,
     "chunks": [
       {
         "name": "native-managed-matrix",
@@ -36,15 +36,21 @@
         "nativeLoc": 0,
         "managedLoc": 6,
         "note": "VmMusicPatchPaths absolute detection; VmIwadCandidateScanner hidden/dot skip."
+      },
+      {
+        "name": "combat-trace-ordering",
+        "nativeLoc": 280,
+        "managedLoc": 85,
+        "note": "p_trace.cpp intercept traversal/BlocksPick parity; CombatTrace.cs merge with regression fixes."
       }
     ]
   },
   "summaries": {
     "acsPcode": {
-      "executed": 262,
-      "partial": 9,
-      "absent": 15,
-      "decoded-only": 86
+      "executed": 272,
+      "partial": 10,
+      "decoded-only": 80,
+      "absent": 12
     },
     "zscriptVmOp": {
       "executed": 119,
@@ -515,28 +521,28 @@
       "id": "acs-pcode:65",
       "name": "ChangeFloor",
       "opcode": 65,
-      "status": "absent",
+      "status": "executed",
       "nativeRef": "src/playsim/p_acs.cpp"
     },
     {
       "id": "acs-pcode:66",
       "name": "ChangeFloorDirect",
       "opcode": 66,
-      "status": "decoded-only",
+      "status": "executed",
       "nativeRef": "src/playsim/p_acs.cpp"
     },
     {
       "id": "acs-pcode:67",
       "name": "ChangeCeiling",
       "opcode": 67,
-      "status": "absent",
+      "status": "executed",
       "nativeRef": "src/playsim/p_acs.cpp"
     },
     {
       "id": "acs-pcode:68",
       "name": "ChangeCeilingDirect",
       "opcode": 68,
-      "status": "decoded-only",
+      "status": "executed",
       "nativeRef": "src/playsim/p_acs.cpp"
     },
     {
@@ -641,7 +647,7 @@
       "id": "acs-pcode:83",
       "name": "ClearLineSpecial",
       "opcode": 83,
-      "status": "decoded-only",
+      "status": "partial",
       "nativeRef": "src/playsim/p_acs.cpp"
     },
     {
@@ -739,7 +745,7 @@
       "id": "acs-pcode:97",
       "name": "SetLineTexture",
       "opcode": 97,
-      "status": "absent",
+      "status": "executed",
       "nativeRef": "src/playsim/p_acs.cpp"
     },
     {
@@ -1065,17 +1071,31 @@
       "nativeRef": "src/playsim/p_acs.cpp"
     },
     {
+      "id": "acs-pcode:149",
+      "name": "Spawn",
+      "opcode": 149,
+      "status": "executed",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
       "id": "acs-pcode:150",
       "name": "SpawnDirect",
       "opcode": 150,
-      "status": "decoded-only",
+      "status": "executed",
+      "nativeRef": "src/playsim/p_acs.cpp"
+    },
+    {
+      "id": "acs-pcode:151",
+      "name": "SpawnSpot",
+      "opcode": 151,
+      "status": "executed",
       "nativeRef": "src/playsim/p_acs.cpp"
     },
     {
       "id": "acs-pcode:152",
       "name": "SpawnSpotDirect",
       "opcode": 152,
-      "status": "decoded-only",
+      "status": "executed",
       "nativeRef": "src/playsim/p_acs.cpp"
     },
     {
@@ -1754,7 +1774,7 @@
       "id": "acs-pcode:257",
       "name": "SetResultValue",
       "opcode": 257,
-      "status": "decoded-only",
+      "status": "executed",
       "nativeRef": "src/playsim/p_acs.cpp"
     },
     {
