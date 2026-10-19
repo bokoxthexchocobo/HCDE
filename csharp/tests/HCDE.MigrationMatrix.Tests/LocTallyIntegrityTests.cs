@@ -1,30 +1,11 @@
 using System.Text.Json;
+using System.Text.RegularExpressions;
 
 namespace HCDE.MigrationMatrix.Tests;
 
 public class LocTallyIntegrityTests
 {
-    /// <summary>Pre-range headline credits; migrate to <c>nativeRanges</c> instead of extending this set.</summary>
-    private static readonly HashSet<string> LegacyHeadlineChunksWithoutRanges = new(StringComparer.Ordinal)
-    {
-        "acs-random-getcvar-polywait",
-        "combat-trace-ordering",
-        "acs-map-mutations",
-        "line-specials-plat-generic-elevator",
-        "line-specials-gap-closure",
-        "acs-callfunc-wire-dispatch-udmf",
-        "action-combat-port",
-        "acs-hot-callfunc-behavior",
-        "sector-changeflags-gap-audit",
-        "line-special-feasible-gaps",
-        "action-dispatch-damage-wiring",
-        "action-combat-dispatch-batch2",
-        "action-explode-radius-give",
-        "thing-projectile-175-178",
-        "acs-air-userarray-spawnspot",
-        "p-enemy-chunk1",
-        "p-map-radius-chunk1",
-    };
+    private static readonly Regex CommitSha = new("^[0-9a-f]{40}$", RegexOptions.Compiled);
 
     [Fact]
     public void LocTallyChunksHonorNativeRanges()
@@ -38,14 +19,28 @@ public class LocTallyIntegrityTests
         {
             var name = chunk.GetProperty("name").GetString() ?? "";
             var nativeLoc = chunk.GetProperty("nativeLoc").GetInt32();
+            var managedLoc = chunk.GetProperty("managedLoc").GetInt32();
+            var bucket = ChunkBucket(chunk);
             var hasRanges = chunk.TryGetProperty("nativeRanges", out var rangesEl);
+            var hasCommit = chunk.TryGetProperty("conversionManagedCommit", out var commitEl);
 
-            if (nativeLoc > 0 && !hasRanges)
+            if (nativeLoc > 0)
             {
-                Assert.True(
-                    LegacyHeadlineChunksWithoutRanges.Contains(name),
-                    $"Chunk '{name}' credits {nativeLoc} native LOC without nativeRanges.");
-                continue;
+                Assert.True(hasRanges, $"Chunk '{name}' credits {nativeLoc} native LOC without nativeRanges.");
+            }
+
+            if (bucket == "conversion" && nativeLoc > 0)
+            {
+                Assert.True(hasCommit, $"Conversion chunk '{name}' must include conversionManagedCommit.");
+                var sha = commitEl.GetString() ?? "";
+                Assert.True(CommitSha.IsMatch(sha), $"Chunk '{name}' conversionManagedCommit is not a full git SHA.");
+                Assert.True(managedLoc > 0, $"Conversion chunk '{name}' must credit managedLoc > 0.");
+            }
+
+            if (bucket == "recognition" && nativeLoc > 0)
+            {
+                Assert.False(hasCommit, $"Recognition chunk '{name}' must not include conversionManagedCommit.");
+                Assert.Equal(0, managedLoc);
             }
 
             if (!hasRanges)
@@ -67,6 +62,14 @@ public class LocTallyIntegrityTests
                 sum == nativeLoc,
                 $"Chunk '{name}' nativeLoc {nativeLoc} must equal nativeRanges sum {sum}.");
         }
+    }
+
+    private static string ChunkBucket(JsonElement chunk)
+    {
+        if (chunk.TryGetProperty("bucket", out var bucket) && bucket.ValueKind == JsonValueKind.String)
+            return bucket.GetString() ?? "conversion";
+        var name = chunk.GetProperty("name").GetString() ?? "";
+        return name.Contains("recognition", StringComparison.Ordinal) ? "recognition" : "conversion";
     }
 
     private static string FindRepoRoot()

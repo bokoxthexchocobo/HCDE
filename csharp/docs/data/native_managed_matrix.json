@@ -12,25 +12,25 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 103580
+    "managedCSharpLoc": 103662
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": -5816,
+    "convertedThisRunNative": -11167,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 1162,
+    "convertedThisRunManaged": 1138,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
-    "recognitionThisRunNative": -795,
+    "recognitionThisRunNative": -774,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 490730,
+    "remainingNative": 496060,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 12711,
-    "recognitionBehaviorNative": 4645,
-    "combinedBehaviorNative": 17356,
-    "convertedBehaviorManaged": 10833,
+    "convertedBehaviorNative": 7360,
+    "recognitionBehaviorNative": 4666,
+    "combinedBehaviorNative": 12026,
+    "convertedBehaviorManaged": 10809,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -43,7 +43,47 @@
         "name": "acs-random-getcvar-polywait",
         "nativeLoc": 38,
         "managedLoc": 98,
-        "note": "p_acs.cpp PCD_RANDOM/PCD_RANDOMDIRECT/PCD_RANDOMDIRECTB, PCD_GETCVAR, PCD_POLYWAIT/PCD_POLYWAITDIRECT."
+        "note": "p_acs.cpp PCD_RANDOM/PCD_RANDOMDIRECT/PCD_RANDOMDIRECTB, PCD_GETCVAR, PCD_POLYWAIT/PCD_POLYWAITDIRECT.",
+        "bucket": "conversion",
+        "nativeRanges": [
+          {
+            "file": "src/playsim/p_acs.cpp",
+            "symbol": "DLevelScript::Random",
+            "start": 3664,
+            "end": 3672,
+            "tests": [
+              "AcsRandomAndCvarOpcodeTests"
+            ]
+          },
+          {
+            "file": "src/playsim/p_acs.cpp",
+            "symbol": "PCD_RANDOM",
+            "start": 8602,
+            "end": 8615,
+            "tests": [
+              "AcsRandomAndCvarOpcodeTests"
+            ]
+          },
+          {
+            "file": "src/playsim/p_acs.cpp",
+            "symbol": "PCD_POLYWAIT",
+            "start": 8654,
+            "end": 8664,
+            "tests": [
+              "AcsRandomAndCvarOpcodeTests"
+            ]
+          },
+          {
+            "file": "src/playsim/p_acs.cpp",
+            "symbol": "PCD_GETCVAR",
+            "start": 10283,
+            "end": 10286,
+            "tests": [
+              "AcsRandomAndCvarOpcodeTests"
+            ]
+          }
+        ],
+        "conversionManagedCommit": "514cf5cae5d7576e0c3492da1fe4ef0dd0b06979"
       },
       {
         "name": "client-path-fixes",
@@ -55,19 +95,375 @@
         "name": "combat-trace-ordering",
         "nativeLoc": 280,
         "managedLoc": 85,
-        "note": "p_trace.cpp intercept traversal/BlocksPick parity; CombatTrace.cs merge with regression fixes."
+        "note": "p_trace.cpp intercept traversal/BlocksPick parity; CombatTrace.cs merge with regression fixes.",
+        "bucket": "conversion",
+        "nativeRanges": [
+          {
+            "file": "src/playsim/p_trace.cpp",
+            "symbol": "FTraceInfo combat intercept region",
+            "start": 200,
+            "end": 479,
+            "tests": [
+              "ActorPlaneTraversalOrderingTests",
+              "TraceSectorEntryTests",
+              "PlaneWallImpactOrderingTests"
+            ]
+          }
+        ],
+        "conversionManagedCommit": "0a37c839006645024f5a340d6b4a94c96b887f22"
       },
       {
         "name": "acs-map-mutations",
-        "nativeLoc": 161,
+        "nativeLoc": 151,
         "managedLoc": 280,
-        "note": "p_acs.cpp ChangeFlat/SetLineTexture/ClearLineSpecial/DoSpawn*/SetResultValue opcodes 65-68,83,97,149-152,257."
+        "note": "p_acs.cpp ChangeFlat/SetLineTexture/ClearLineSpecial/DoSpawn*/SetResultValue opcodes 65-68,83,97,149-152,257.",
+        "bucket": "conversion",
+        "nativeRanges": [
+          {
+            "file": "src/playsim/p_acs.cpp",
+            "symbol": "DLevelScript::ChangeFlat",
+            "start": 3755,
+            "end": 3783,
+            "tests": [
+              "AcsMapMutationOpcodeTests"
+            ]
+          },
+          {
+            "file": "src/playsim/p_acs.cpp",
+            "symbol": "DLevelScript::SetLineTexture",
+            "start": 3785,
+            "end": 3823,
+            "tests": [
+              "AcsMapMutationOpcodeTests"
+            ]
+          },
+          {
+            "file": "src/playsim/p_acs.cpp",
+            "symbol": "DLevelScript::DoSpawn",
+            "start": 3825,
+            "end": 3872,
+            "tests": [
+              "AcsMapMutationOpcodeTests"
+            ]
+          },
+          {
+            "file": "src/playsim/p_acs.cpp",
+            "symbol": "DLevelScript::DoSpawnSpot",
+            "start": 3874,
+            "end": 3893,
+            "tests": [
+              "AcsMapMutationOpcodeTests"
+            ]
+          },
+          {
+            "file": "src/playsim/p_acs.cpp",
+            "symbol": "PCD_CHANGEFLOOR",
+            "start": 8666,
+            "end": 8674,
+            "tests": [
+              "AcsMapMutationOpcodeTests"
+            ]
+          },
+          {
+            "file": "src/playsim/p_acs.cpp",
+            "symbol": "PCD_SETRESULTVALUE",
+            "start": 8568,
+            "end": 8573,
+            "tests": [
+              "AcsMapMutationOpcodeTests"
+            ]
+          }
+        ],
+        "conversionManagedCommit": "4c350580564509da49cb64ea895781b61315e70c"
       },
       {
         "name": "line-specials-plat-generic-elevator",
-        "nativeLoc": 1285,
+        "nativeLoc": 323,
         "managedLoc": 530,
-        "note": "p_lnspec.cpp plats, Generic_* movers, elevators, pillars, door wait, texture movers; gap JSON + LineSpecialBatchTests."
+        "note": "p_lnspec.cpp plats, Generic_* movers, elevators, pillars, door wait, texture movers; gap JSON + LineSpecialBatchTests.",
+        "bucket": "conversion",
+        "nativeRanges": [
+          {
+            "file": "src/playsim/p_lnspec.cpp",
+            "symbol": "LS_Door_WaitRaise",
+            "start": 278,
+            "end": 283,
+            "tests": [
+              "LineSpecialBatchTests"
+            ]
+          },
+          {
+            "file": "src/playsim/p_lnspec.cpp",
+            "symbol": "LS_Door_WaitClose",
+            "start": 284,
+            "end": 289,
+            "tests": [
+              "LineSpecialBatchTests"
+            ]
+          },
+          {
+            "file": "src/playsim/p_lnspec.cpp",
+            "symbol": "LS_Generic_Door",
+            "start": 305,
+            "end": 335,
+            "tests": [
+              "LineSpecialBatchTests"
+            ]
+          },
+          {
+            "file": "src/playsim/p_lnspec.cpp",
+            "symbol": "LS_Floor_RaiseByTexture",
+            "start": 472,
+            "end": 477,
+            "tests": [
+              "LineSpecialBatchTests"
+            ]
+          },
+          {
+            "file": "src/playsim/p_lnspec.cpp",
+            "symbol": "LS_Floor_LowerByTexture",
+            "start": 478,
+            "end": 483,
+            "tests": [
+              "LineSpecialBatchTests"
+            ]
+          },
+          {
+            "file": "src/playsim/p_lnspec.cpp",
+            "symbol": "LS_Generic_Floor",
+            "start": 532,
+            "end": 568,
+            "tests": [
+              "LineSpecialBatchTests"
+            ]
+          },
+          {
+            "file": "src/playsim/p_lnspec.cpp",
+            "symbol": "LS_Pillar_Build",
+            "start": 652,
+            "end": 657,
+            "tests": [
+              "LineSpecialBatchTests"
+            ]
+          },
+          {
+            "file": "src/playsim/p_lnspec.cpp",
+            "symbol": "LS_Pillar_BuildAndCrush",
+            "start": 658,
+            "end": 663,
+            "tests": [
+              "LineSpecialBatchTests"
+            ]
+          },
+          {
+            "file": "src/playsim/p_lnspec.cpp",
+            "symbol": "LS_Pillar_Open",
+            "start": 664,
+            "end": 669,
+            "tests": [
+              "LineSpecialBatchTests"
+            ]
+          },
+          {
+            "file": "src/playsim/p_lnspec.cpp",
+            "symbol": "LS_Ceiling_RaiseByTexture",
+            "start": 836,
+            "end": 841,
+            "tests": [
+              "LineSpecialBatchTests"
+            ]
+          },
+          {
+            "file": "src/playsim/p_lnspec.cpp",
+            "symbol": "LS_Ceiling_LowerByTexture",
+            "start": 872,
+            "end": 877,
+            "tests": [
+              "LineSpecialBatchTests"
+            ]
+          },
+          {
+            "file": "src/playsim/p_lnspec.cpp",
+            "symbol": "LS_Generic_Ceiling",
+            "start": 884,
+            "end": 914,
+            "tests": [
+              "LineSpecialBatchTests"
+            ]
+          },
+          {
+            "file": "src/playsim/p_lnspec.cpp",
+            "symbol": "LS_Generic_Crusher",
+            "start": 915,
+            "end": 921,
+            "tests": [
+              "LineSpecialBatchTests"
+            ]
+          },
+          {
+            "file": "src/playsim/p_lnspec.cpp",
+            "symbol": "LS_Generic_Crusher2",
+            "start": 922,
+            "end": 929,
+            "tests": [
+              "LineSpecialBatchTests"
+            ]
+          },
+          {
+            "file": "src/playsim/p_lnspec.cpp",
+            "symbol": "LS_Generic_CrusherDist",
+            "start": 930,
+            "end": 936,
+            "tests": [
+              "LineSpecialBatchTests"
+            ]
+          },
+          {
+            "file": "src/playsim/p_lnspec.cpp",
+            "symbol": "LS_Plat_PerpetualRaise",
+            "start": 937,
+            "end": 942,
+            "tests": [
+              "LineSpecialBatchTests"
+            ]
+          },
+          {
+            "file": "src/playsim/p_lnspec.cpp",
+            "symbol": "LS_Plat_PerpetualRaiseLip",
+            "start": 943,
+            "end": 948,
+            "tests": [
+              "LineSpecialBatchTests"
+            ]
+          },
+          {
+            "file": "src/playsim/p_lnspec.cpp",
+            "symbol": "LS_Plat_Stop",
+            "start": 949,
+            "end": 968,
+            "tests": [
+              "LineSpecialBatchTests"
+            ]
+          },
+          {
+            "file": "src/playsim/p_lnspec.cpp",
+            "symbol": "LS_Plat_DownWaitUpStay",
+            "start": 969,
+            "end": 974,
+            "tests": [
+              "LineSpecialBatchTests"
+            ]
+          },
+          {
+            "file": "src/playsim/p_lnspec.cpp",
+            "symbol": "LS_Plat_DownWaitUpStayLip",
+            "start": 975,
+            "end": 982,
+            "tests": [
+              "LineSpecialBatchTests"
+            ]
+          },
+          {
+            "file": "src/playsim/p_lnspec.cpp",
+            "symbol": "LS_Plat_DownByValue",
+            "start": 983,
+            "end": 988,
+            "tests": [
+              "LineSpecialBatchTests"
+            ]
+          },
+          {
+            "file": "src/playsim/p_lnspec.cpp",
+            "symbol": "LS_Plat_UpByValue",
+            "start": 989,
+            "end": 994,
+            "tests": [
+              "LineSpecialBatchTests"
+            ]
+          },
+          {
+            "file": "src/playsim/p_lnspec.cpp",
+            "symbol": "LS_Plat_UpWaitDownStay",
+            "start": 995,
+            "end": 1000,
+            "tests": [
+              "LineSpecialBatchTests"
+            ]
+          },
+          {
+            "file": "src/playsim/p_lnspec.cpp",
+            "symbol": "LS_Plat_UpNearestWaitDownStay",
+            "start": 1001,
+            "end": 1006,
+            "tests": [
+              "LineSpecialBatchTests"
+            ]
+          },
+          {
+            "file": "src/playsim/p_lnspec.cpp",
+            "symbol": "LS_Plat_RaiseAndStayTx0",
+            "start": 1007,
+            "end": 1027,
+            "tests": [
+              "LineSpecialBatchTests"
+            ]
+          },
+          {
+            "file": "src/playsim/p_lnspec.cpp",
+            "symbol": "LS_Plat_UpByValueStayTx",
+            "start": 1028,
+            "end": 1033,
+            "tests": [
+              "LineSpecialBatchTests"
+            ]
+          },
+          {
+            "file": "src/playsim/p_lnspec.cpp",
+            "symbol": "LS_Plat_ToggleCeiling",
+            "start": 1034,
+            "end": 1039,
+            "tests": [
+              "LineSpecialBatchTests"
+            ]
+          },
+          {
+            "file": "src/playsim/p_lnspec.cpp",
+            "symbol": "LS_Generic_Lift",
+            "start": 1040,
+            "end": 1066,
+            "tests": [
+              "LineSpecialBatchTests"
+            ]
+          },
+          {
+            "file": "src/playsim/p_lnspec.cpp",
+            "symbol": "LS_Elevator_MoveToFloor",
+            "start": 2048,
+            "end": 2053,
+            "tests": [
+              "LineSpecialBatchTests"
+            ]
+          },
+          {
+            "file": "src/playsim/p_lnspec.cpp",
+            "symbol": "LS_Elevator_RaiseToNearest",
+            "start": 2054,
+            "end": 2059,
+            "tests": [
+              "LineSpecialBatchTests"
+            ]
+          },
+          {
+            "file": "src/playsim/p_lnspec.cpp",
+            "symbol": "LS_Elevator_LowerToNearest",
+            "start": 2060,
+            "end": 2065,
+            "tests": [
+              "LineSpecialBatchTests"
+            ]
+          }
+        ],
+        "conversionManagedCommit": "514cf5cae5d7576e0c3492da1fe4ef0dd0b06979"
       },
       {
         "name": "acs-callfunc-wire-table",
@@ -77,15 +473,167 @@
       },
       {
         "name": "line-specials-gap-closure",
-        "nativeLoc": 1850,
+        "nativeLoc": 161,
         "managedLoc": 920,
-        "note": "p_lnspec.cpp sector env, floor/ceiling combined, thing spawn, misc ACS/poly stubs; gap JSON down to 19."
+        "note": "p_lnspec.cpp sector env, floor/ceiling combined, thing spawn, misc ACS/poly stubs; gap JSON down to 19.",
+        "bucket": "conversion",
+        "nativeRanges": [
+          {
+            "file": "src/playsim/p_lnspec.cpp",
+            "symbol": "LS_FloorAndCeiling_LowerByValue",
+            "start": 2021,
+            "end": 2026,
+            "tests": [
+              "LineSpecialClosureTests"
+            ]
+          },
+          {
+            "file": "src/playsim/p_lnspec.cpp",
+            "symbol": "LS_FloorAndCeiling_RaiseByValue",
+            "start": 2027,
+            "end": 2032,
+            "tests": [
+              "LineSpecialClosureTests"
+            ]
+          },
+          {
+            "file": "src/playsim/p_lnspec.cpp",
+            "symbol": "LS_Sector_SetFriction",
+            "start": 2245,
+            "end": 2251,
+            "tests": [
+              "LineSpecialClosureTests"
+            ]
+          },
+          {
+            "file": "src/playsim/p_lnspec.cpp",
+            "symbol": "LS_Sector_SetWind",
+            "start": 2225,
+            "end": 2234,
+            "tests": [
+              "LineSpecialClosureTests"
+            ]
+          },
+          {
+            "file": "src/playsim/p_lnspec.cpp",
+            "symbol": "LS_Sector_SetCurrent",
+            "start": 2235,
+            "end": 2244,
+            "tests": [
+              "LineSpecialClosureTests"
+            ]
+          },
+          {
+            "file": "src/playsim/p_lnspec.cpp",
+            "symbol": "LS_Sector_ChangeSound",
+            "start": 2184,
+            "end": 2202,
+            "tests": [
+              "LineSpecialClosureTests"
+            ]
+          },
+          {
+            "file": "src/playsim/p_lnspec.cpp",
+            "symbol": "LS_Sector_ChangeFlags",
+            "start": 2203,
+            "end": 2224,
+            "tests": [
+              "LineSpecialClosureTests"
+            ]
+          },
+          {
+            "file": "src/playsim/p_lnspec.cpp",
+            "symbol": "LS_Sector_SetTranslucent",
+            "start": 2252,
+            "end": 2268,
+            "tests": [
+              "LineSpecialClosureTests"
+            ]
+          },
+          {
+            "file": "src/playsim/p_lnspec.cpp",
+            "symbol": "LS_TranslucentLine",
+            "start": 3130,
+            "end": 3154,
+            "tests": [
+              "LineSpecialClosureTests"
+            ]
+          },
+          {
+            "file": "src/playsim/p_lnspec.cpp",
+            "symbol": "LS_Thing_Spawn",
+            "start": 1741,
+            "end": 1746,
+            "tests": [
+              "LineSpecialClosureTests"
+            ]
+          },
+          {
+            "file": "src/playsim/p_lnspec.cpp",
+            "symbol": "LS_Thing_SpawnFacing",
+            "start": 1753,
+            "end": 1758,
+            "tests": [
+              "LineSpecialClosureTests"
+            ]
+          },
+          {
+            "file": "src/playsim/p_lnspec.cpp",
+            "symbol": "LS_Thing_Projectile",
+            "start": 1551,
+            "end": 1557,
+            "tests": [
+              "LineSpecialClosureTests"
+            ]
+          },
+          {
+            "file": "src/playsim/p_lnspec.cpp",
+            "symbol": "LS_Thing_ProjectileGravity",
+            "start": 1558,
+            "end": 1564,
+            "tests": [
+              "LineSpecialClosureTests"
+            ]
+          },
+          {
+            "file": "src/playsim/p_lnspec.cpp",
+            "symbol": "LS_Thing_ProjectileAimed",
+            "start": 1728,
+            "end": 1733,
+            "tests": [
+              "LineSpecialClosureTests"
+            ]
+          },
+          {
+            "file": "src/playsim/p_lnspec.cpp",
+            "symbol": "LS_Thing_ProjectileIntercept",
+            "start": 1734,
+            "end": 1740,
+            "tests": [
+              "LineSpecialClosureTests"
+            ]
+          }
+        ],
+        "conversionManagedCommit": "8f7a554c9928247f57b5b00a1516bca25711e8f6"
       },
       {
         "name": "acs-callfunc-wire-dispatch-udmf",
-        "nativeLoc": 520,
+        "nativeLoc": 31,
         "managedLoc": 380,
-        "note": "TryInvoke wire routing + ACSF_Get*UDMF* 1-8."
+        "note": "TryInvoke wire routing + ACSF_Get*UDMF* 1-8.",
+        "bucket": "conversion",
+        "nativeRanges": [
+          {
+            "file": "src/playsim/p_acs.cpp",
+            "symbol": "ACSF_GetLineUDMFInt",
+            "start": 5448,
+            "end": 5478,
+            "tests": [
+              "AcsCallFunctionWireDispatchTests"
+            ]
+          }
+        ],
+        "conversionManagedCommit": "9fa6778588d863c4817e778c6b3836733d1b5ed0"
       },
       {
         "name": "zscript-vm-matrix-accuracy",
@@ -107,69 +655,473 @@
       },
       {
         "name": "action-combat-port",
-        "nativeLoc": 560,
+        "nativeLoc": 303,
         "managedLoc": 720,
-        "note": "p_actionfunctions.cpp A_CustomMeleeAttack, A_CustomComboAttack, A_BulletAttack, A_SpawnProjectile, A_MonsterRefire; ActorActionDispatch; loaded-map tests."
+        "note": "p_actionfunctions.cpp A_CustomMeleeAttack, A_CustomComboAttack, A_BulletAttack, A_SpawnProjectile, A_MonsterRefire; ActorActionDispatch; loaded-map tests.",
+        "bucket": "conversion",
+        "nativeRanges": [
+          {
+            "file": "src/playsim/p_actionfunctions.cpp",
+            "symbol": "A_CustomMeleeAttack",
+            "start": 1172,
+            "end": 1208,
+            "tests": [
+              "ActionCombatLoadedMapTests"
+            ]
+          },
+          {
+            "file": "src/playsim/p_actionfunctions.cpp",
+            "symbol": "A_CustomComboAttack",
+            "start": 1209,
+            "end": 1266,
+            "tests": [
+              "ActionCombatLoadedMapTests"
+            ]
+          },
+          {
+            "file": "src/playsim/p_actionfunctions.cpp",
+            "symbol": "A_BulletAttack",
+            "start": 894,
+            "end": 922,
+            "tests": [
+              "ActionCombatLoadedMapTests"
+            ]
+          },
+          {
+            "file": "src/playsim/p_actionfunctions.cpp",
+            "symbol": "A_SpawnProjectile",
+            "start": 1023,
+            "end": 1171,
+            "tests": [
+              "ActionCombatLoadedMapTests"
+            ]
+          },
+          {
+            "file": "src/playsim/p_actionfunctions.cpp",
+            "symbol": "A_MonsterRefire",
+            "start": 2938,
+            "end": 2967,
+            "tests": [
+              "ActionCombatLoadedMapTests"
+            ]
+          }
+        ],
+        "conversionManagedCommit": "2a897b2b5bfd72a38d8df886acebaa8a3c03af4e"
       },
       {
         "name": "acs-hot-callfunc-behavior",
-        "nativeLoc": 420,
+        "nativeLoc": 19,
         "managedLoc": 340,
-        "note": "ACSF_SpawnForced, Get/SetUserVariable, GetThingUDMF*, side/sector UDMF completion; wire dispatch tests."
+        "note": "ACSF_SpawnForced, Get/SetUserVariable, GetThingUDMF*, side/sector UDMF completion; wire dispatch tests.",
+        "bucket": "conversion",
+        "nativeRanges": [
+          {
+            "file": "src/playsim/p_acs.cpp",
+            "symbol": "ACSF_SpawnForced",
+            "start": 5675,
+            "end": 5688,
+            "tests": [
+              "AcsHotCallFuncBehaviorTests"
+            ]
+          },
+          {
+            "file": "src/playsim/p_acs.cpp",
+            "symbol": "ACSF_GetThingUDMFInt",
+            "start": 5456,
+            "end": 5460,
+            "tests": [
+              "AcsHotCallFuncBehaviorTests"
+            ]
+          }
+        ],
+        "conversionManagedCommit": "cf3e444473c25b1b010505e1b08984f301b59be6"
       },
       {
         "name": "sector-changeflags-gap-audit",
-        "nativeLoc": 110,
+        "nativeLoc": 22,
         "managedLoc": 95,
-        "note": "LS_Sector_ChangeFlags (54), gap generator ExecuteSpecial detection, gap JSON 19\u21923."
+        "note": "LS_Sector_ChangeFlags (54), gap generator ExecuteSpecial detection, gap JSON 19\u21923.",
+        "bucket": "conversion",
+        "nativeRanges": [
+          {
+            "file": "src/playsim/p_lnspec.cpp",
+            "symbol": "LS_Sector_ChangeFlags",
+            "start": 2203,
+            "end": 2224,
+            "tests": [
+              "SectorChangeFlagsLoadedMapTests"
+            ]
+          }
+        ],
+        "conversionManagedCommit": "514cf5cae5d7576e0c3492da1fe4ef0dd0b06979"
       },
       {
         "name": "line-special-feasible-gaps",
-        "nativeLoc": 640,
+        "nativeLoc": 67,
         "managedLoc": 380,
-        "note": "p_lnspec.cpp floor waggle, spawn facing, wind, communicator, translation storage, fog/skill accept stubs."
+        "note": "p_lnspec.cpp floor waggle, spawn facing, wind, communicator, translation storage, fog/skill accept stubs.",
+        "bucket": "conversion",
+        "nativeRanges": [
+          {
+            "file": "src/playsim/p_lnspec.cpp",
+            "symbol": "LS_Floor_Waggle",
+            "start": 502,
+            "end": 507,
+            "tests": [
+              "WaggleActionsTests",
+              "PusherWindTests",
+              "ThingProjectileLineSpecialsTests"
+            ]
+          },
+          {
+            "file": "src/playsim/p_lnspec.cpp",
+            "symbol": "LS_Sector_SetWind",
+            "start": 2225,
+            "end": 2234,
+            "tests": [
+              "WaggleActionsTests",
+              "PusherWindTests",
+              "ThingProjectileLineSpecialsTests"
+            ]
+          },
+          {
+            "file": "src/playsim/p_lnspec.cpp",
+            "symbol": "LS_Thing_SetTranslation",
+            "start": 1860,
+            "end": 1904,
+            "tests": [
+              "WaggleActionsTests",
+              "PusherWindTests",
+              "ThingProjectileLineSpecialsTests"
+            ]
+          },
+          {
+            "file": "src/playsim/p_lnspec.cpp",
+            "symbol": "LS_Thing_SpawnFacing",
+            "start": 1753,
+            "end": 1758,
+            "tests": [
+              "WaggleActionsTests",
+              "PusherWindTests",
+              "ThingProjectileLineSpecialsTests"
+            ]
+          }
+        ],
+        "conversionManagedCommit": "4939a2e85046e927a42689b520dabed747dee7a1"
       },
       {
         "name": "action-dispatch-damage-wiring",
-        "nativeLoc": 180,
+        "nativeLoc": 31,
         "managedLoc": 120,
-        "note": "ActorActionDispatch hooks for damage/melee/combo state names; actor script user-var storage."
+        "note": "ActorActionDispatch hooks for damage/melee/combo state names; actor script user-var storage.",
+        "bucket": "conversion",
+        "nativeRanges": [
+          {
+            "file": "src/playsim/p_actionfunctions.cpp",
+            "symbol": "ActorActionDispatch wiring (managed)",
+            "start": 1172,
+            "end": 1202,
+            "tests": [
+              "ActionCombatLoadedMapTests",
+              "ActionExplodeLoadedMapTests"
+            ]
+          }
+        ],
+        "conversionManagedCommit": "2a897b2b5bfd72a38d8df886acebaa8a3c03af4e"
       },
       {
         "name": "action-combat-dispatch-batch2",
-        "nativeLoc": 310,
+        "nativeLoc": 208,
         "managedLoc": 285,
-        "note": "A_CustomMissile, A_CustomBulletAttack, dispatch chase/jump/inventory; TryClassNameForProjectileType."
+        "note": "A_CustomMissile, A_CustomBulletAttack, dispatch chase/jump/inventory; TryClassNameForProjectileType.",
+        "bucket": "conversion",
+        "nativeRanges": [
+          {
+            "file": "src/playsim/p_actionfunctions.cpp",
+            "symbol": "A_SpawnProjectile",
+            "start": 1023,
+            "end": 1171,
+            "tests": [
+              "ActionCombatLoadedMapTests"
+            ]
+          },
+          {
+            "file": "src/playsim/p_actionfunctions.cpp",
+            "symbol": "A_BulletAttack",
+            "start": 894,
+            "end": 922,
+            "tests": [
+              "ActionCombatLoadedMapTests"
+            ]
+          },
+          {
+            "file": "src/playsim/p_actionfunctions.cpp",
+            "symbol": "A_MonsterRefire",
+            "start": 2938,
+            "end": 2967,
+            "tests": [
+              "ActionCombatLoadedMapTests"
+            ]
+          }
+        ],
+        "conversionManagedCommit": "2a897b2b5bfd72a38d8df886acebaa8a3c03af4e"
       },
       {
         "name": "action-explode-radius-give",
-        "nativeLoc": 240,
+        "nativeLoc": 211,
         "managedLoc": 195,
-        "note": "A_Explode, A_RadiusThrust, A_RadiusGive; splash-group radius immunity (p_mobj)."
+        "note": "A_Explode, A_RadiusThrust, A_RadiusGive; splash-group radius immunity (p_mobj).",
+        "bucket": "conversion",
+        "nativeRanges": [
+          {
+            "file": "src/playsim/p_actionfunctions.cpp",
+            "symbol": "DoRadiusGive",
+            "start": 3807,
+            "end": 3939,
+            "tests": [
+              "ActionExplodeLoadedMapTests"
+            ]
+          },
+          {
+            "file": "src/playsim/p_actionfunctions.cpp",
+            "symbol": "A_RadiusGive",
+            "start": 3941,
+            "end": 3985,
+            "tests": [
+              "ActionExplodeLoadedMapTests"
+            ]
+          },
+          {
+            "file": "src/playsim/p_map.cpp",
+            "symbol": "P_RadiusAttack damage loop",
+            "start": 6368,
+            "end": 6400,
+            "tests": [
+              "ActionExplodeLoadedMapTests"
+            ]
+          }
+        ],
+        "conversionManagedCommit": "4ea50d85e05e72fef9691c7649b34295cc04f0e3"
       },
       {
         "name": "thing-projectile-175-178",
-        "nativeLoc": 190,
+        "nativeLoc": 27,
         "managedLoc": 165,
-        "note": "LS_Thing_ProjectileIntercept/Aimed; EV_Thing_Projectile lead aim; gap JSON 3\u21921."
+        "note": "LS_Thing_ProjectileIntercept/Aimed; EV_Thing_Projectile lead aim; gap JSON 3\u21921.",
+        "bucket": "conversion",
+        "nativeRanges": [
+          {
+            "file": "src/playsim/p_lnspec.cpp",
+            "symbol": "LS_Thing_Projectile",
+            "start": 1551,
+            "end": 1557,
+            "tests": [
+              "ThingProjectileLineSpecialsTests"
+            ]
+          },
+          {
+            "file": "src/playsim/p_lnspec.cpp",
+            "symbol": "LS_Thing_ProjectileGravity",
+            "start": 1558,
+            "end": 1564,
+            "tests": [
+              "ThingProjectileLineSpecialsTests"
+            ]
+          },
+          {
+            "file": "src/playsim/p_lnspec.cpp",
+            "symbol": "LS_Thing_ProjectileAimed",
+            "start": 1728,
+            "end": 1733,
+            "tests": [
+              "ThingProjectileLineSpecialsTests"
+            ]
+          },
+          {
+            "file": "src/playsim/p_lnspec.cpp",
+            "symbol": "LS_Thing_ProjectileIntercept",
+            "start": 1734,
+            "end": 1740,
+            "tests": [
+              "ThingProjectileLineSpecialsTests"
+            ]
+          }
+        ],
+        "conversionManagedCommit": "2289e1799fc6be35451967477a406e6f598e9e5d"
       },
       {
         "name": "acs-air-userarray-spawnspot",
-        "nativeLoc": 145,
+        "nativeLoc": 56,
         "managedLoc": 135,
-        "note": "ACSF_Get/SetAirSupply, SpawnSpotForced, Get/SetUserArray; PlayerPawn air_finished tic storage."
+        "note": "ACSF_Get/SetAirSupply, SpawnSpotForced, Get/SetUserArray; PlayerPawn air_finished tic storage.",
+        "bucket": "conversion",
+        "nativeRanges": [
+          {
+            "file": "src/playsim/p_acs.cpp",
+            "symbol": "ACSF_GetAirSupply",
+            "start": 5592,
+            "end": 5605,
+            "tests": [
+              "AcsHotCallFuncBehaviorTests"
+            ]
+          },
+          {
+            "file": "src/playsim/p_acs.cpp",
+            "symbol": "ACSF_SetAirSupply",
+            "start": 5606,
+            "end": 5619,
+            "tests": [
+              "AcsHotCallFuncBehaviorTests"
+            ]
+          },
+          {
+            "file": "src/playsim/p_acs.cpp",
+            "symbol": "ACSF_SpawnSpotForced",
+            "start": 5683,
+            "end": 5690,
+            "tests": [
+              "AcsHotCallFuncBehaviorTests"
+            ]
+          },
+          {
+            "file": "src/playsim/p_acs.cpp",
+            "symbol": "ACSF_SetUserArray",
+            "start": 5756,
+            "end": 5775,
+            "tests": [
+              "AcsHotCallFuncBehaviorTests"
+            ]
+          }
+        ],
+        "conversionManagedCommit": "cf3e444473c25b1b010505e1b08984f301b59be6"
       },
       {
         "name": "p-enemy-chunk1",
-        "nativeLoc": 485,
+        "nativeLoc": 305,
         "managedLoc": 340,
-        "note": "p_enemy.cpp A_Look2, A_ClearLastHeard, A_ChaseNative flags, A_MonsterRail, A_Pain, CheckBossDeath/A_BossDeath exit, A_ClassBossHealth."
+        "note": "p_enemy.cpp A_Look2, A_ClearLastHeard, A_ChaseNative flags, A_MonsterRail, A_Pain, CheckBossDeath/A_BossDeath exit, A_ClassBossHealth.",
+        "bucket": "conversion",
+        "nativeRanges": [
+          {
+            "file": "src/playsim/p_enemy.cpp",
+            "symbol": "A_ClearLastHeard",
+            "start": 2255,
+            "end": 2260,
+            "tests": [
+              "PEnemyActionsLoadedMapTests"
+            ]
+          },
+          {
+            "file": "src/playsim/p_enemy.cpp",
+            "symbol": "A_Look2",
+            "start": 2330,
+            "end": 2381,
+            "tests": [
+              "PEnemyActionsLoadedMapTests"
+            ]
+          },
+          {
+            "file": "src/playsim/p_enemy.cpp",
+            "symbol": "A_ChaseNative",
+            "start": 2980,
+            "end": 2998,
+            "tests": [
+              "PEnemyActionsLoadedMapTests"
+            ]
+          },
+          {
+            "file": "src/playsim/p_enemy.cpp",
+            "symbol": "A_MonsterRail",
+            "start": 3155,
+            "end": 3196,
+            "tests": [
+              "PEnemyActionsLoadedMapTests"
+            ]
+          },
+          {
+            "file": "src/playsim/p_enemy.cpp",
+            "symbol": "A_Pain",
+            "start": 3217,
+            "end": 3269,
+            "tests": [
+              "PEnemyActionsLoadedMapTests"
+            ]
+          },
+          {
+            "file": "src/playsim/p_enemy.cpp",
+            "symbol": "CheckBossDeath",
+            "start": 3271,
+            "end": 3308,
+            "tests": [
+              "PEnemyActionsLoadedMapTests"
+            ]
+          },
+          {
+            "file": "src/playsim/p_enemy.cpp",
+            "symbol": "A_BossDeath",
+            "start": 3314,
+            "end": 3395,
+            "tests": [
+              "PEnemyActionsLoadedMapTests"
+            ]
+          },
+          {
+            "file": "src/playsim/p_enemy.cpp",
+            "symbol": "A_ClassBossHealth",
+            "start": 3476,
+            "end": 3488,
+            "tests": [
+              "PEnemyActionsLoadedMapTests"
+            ]
+          }
+        ],
+        "conversionManagedCommit": "c019552865918ae7dc56b308faf5ebd8ff241408"
       },
       {
         "name": "p-map-radius-chunk1",
-        "nativeLoc": 380,
+        "nativeLoc": 231,
         "managedLoc": 125,
-        "note": "p_map.cpp P_GetRadiusDamage/P_RadiusAttack flat subset; rocket splash parity."
+        "note": "p_map.cpp P_GetRadiusDamage/P_RadiusAttack flat subset; rocket splash parity.",
+        "bucket": "conversion",
+        "nativeRanges": [
+          {
+            "file": "src/playsim/p_map.cpp",
+            "symbol": "GetRadiusDamage",
+            "start": 6130,
+            "end": 6202,
+            "tests": [
+              "MapRadiusAttackTests"
+            ]
+          },
+          {
+            "file": "src/playsim/p_map.cpp",
+            "symbol": "GetOldRadiusDamage",
+            "start": 6215,
+            "end": 6249,
+            "tests": [
+              "MapRadiusAttackTests"
+            ]
+          },
+          {
+            "file": "src/playsim/p_map.cpp",
+            "symbol": "P_GetRadiusDamage",
+            "start": 6259,
+            "end": 6282,
+            "tests": [
+              "MapRadiusAttackTests"
+            ]
+          },
+          {
+            "file": "src/playsim/p_map.cpp",
+            "symbol": "P_RadiusAttack target collection",
+            "start": 6291,
+            "end": 6389,
+            "tests": [
+              "MapRadiusAttackTests"
+            ]
+          }
+        ],
+        "conversionManagedCommit": "5376369124e3b7284de0c4c17ca2ef1c95124e4b"
       },
       {
         "name": "p-map-radius-thrust-chunk2",
@@ -187,7 +1139,8 @@
               "MapRadiusAttackTests"
             ]
           }
-        ]
+        ],
+        "conversionManagedCommit": "5376369124e3b7284de0c4c17ca2ef1c95124e4b"
       },
       {
         "name": "p-enemy-move-blocked-chunk2",
@@ -213,7 +1166,8 @@
               "MonsterBlockedMoveTests.CanUseWallsOpensDoorWhenBlocked"
             ]
           }
-        ]
+        ],
+        "conversionManagedCommit": "d041aa6387365f324544a9ac7272a541c1ef2719"
       },
       {
         "name": "p-mobj-missile-spawn-live",
@@ -230,7 +1184,8 @@
               "MissileSpawnCheckTests.CheckAdvancesSpawnPositionInOpenRoom"
             ]
           }
-        ]
+        ],
+        "conversionManagedCommit": "aadc3ba9721d9affcd5b08b4f02511b42209ceab"
       },
       {
         "name": "p-enemy-cantleave-chase-rollback",
@@ -248,7 +1203,8 @@
               "CantLeaveFloorPicTests.NativeChaseUsesFloorRestriction"
             ]
           }
-        ]
+        ],
+        "conversionManagedCommit": "7a3a03aee4c5d634fea5b21957a1d77a6ee54df4"
       },
       {
         "name": "p-map-use-fail-noway",
@@ -276,7 +1232,8 @@
               "UseTraceTests"
             ]
           }
-        ]
+        ],
+        "conversionManagedCommit": "514cf5cae5d7576e0c3492da1fe4ef0dd0b06979"
       },
       {
         "name": "p-enemy-chase-core-chunk3-recognition",
@@ -549,7 +1506,8 @@
               "TryMoveLineCrossTests"
             ]
           }
-        ]
+        ],
+        "conversionManagedCommit": "0a37c839006645024f5a340d6b4a94c96b887f22"
       },
       {
         "name": "p-spec-sector-friction-push-chunk4",
@@ -586,7 +1544,8 @@
               "SectorPushMovementTests"
             ]
           }
-        ]
+        ],
+        "conversionManagedCommit": "8f7a554c9928247f57b5b00a1516bca25711e8f6"
       },
       {
         "name": "p-enemy-chase-lost-sight-nosight-chunk4",
@@ -604,7 +1563,8 @@
               "ChaseLostSightNoSightCheckTests"
             ]
           }
-        ]
+        ],
+        "conversionManagedCommit": "0a37c839006645024f5a340d6b4a94c96b887f22"
       },
       {
         "name": "p-switch-textures-button-chunk5",
@@ -649,7 +1609,8 @@
               "SwitchTextureTests.UseLineChangesSwitchTextureAndPlaysSound"
             ]
           }
-        ]
+        ],
+        "conversionManagedCommit": "8bfbb76ea10532ee85c0708a81a6eb70fcfdffe5"
       },
       {
         "name": "p-lights-ev-neighbor-chunk5",
@@ -685,7 +1646,8 @@
               "LightEvParityTests.LightTurnOnPartwayInterpolatesBetweenNeighborBounds"
             ]
           }
-        ]
+        ],
+        "conversionManagedCommit": "9d17bdf84c56374622b9416514da62c49515520e"
       },
       {
         "name": "p-lights-thinkers-chunk5-recognition",
@@ -766,7 +1728,8 @@
               "LineSpecialBatchTests.ElevatorRaiseToNearestMatchesNeighborFloor"
             ]
           }
-        ]
+        ],
+        "conversionManagedCommit": "6f96d4d30e1e269244730abacbd6300389cf558c"
       },
       {
         "name": "p-pusher-lighttransfer-chunk6",
@@ -802,7 +1765,8 @@
               "LightTransferActionsTests.TransferFollowsSourceSectorLight"
             ]
           }
-        ]
+        ],
+        "conversionManagedCommit": "49875d0f90f09ed9ff395b56cfe6ce434bcfb7d3"
       },
       {
         "name": "p-teleport-switch-range-chunk6",
@@ -829,7 +1793,8 @@
               "TeleportRandomDestTests.TidTeleportUsesDeterministicIndexAcrossMatchingDests"
             ]
           }
-        ]
+        ],
+        "conversionManagedCommit": "514cf5cae5d7576e0c3492da1fe4ef0dd0b06979"
       },
       {
         "name": "acs-soundsequence-spawn-facing-chunk6",
@@ -874,7 +1839,8 @@
               "AcsSoundSequenceCallFuncTests.SoundSequenceOnPolyobjStoresSequenceName"
             ]
           }
-        ]
+        ],
+        "conversionManagedCommit": "cf3e444473c25b1b010505e1b08984f301b59be6"
       },
       {
         "name": "zscript-vm-pointer-arith-chunk7",
@@ -901,7 +1867,8 @@
               "VmPointerArithmeticOpcodeTests.SubAReportsByteDistanceBetweenPointers"
             ]
           }
-        ]
+        ],
+        "conversionManagedCommit": "cb2b9f16aff2b88f5beb21353b2bfca4ca598e6f"
       },
       {
         "name": "zscript-vm-matrix-recognition-chunk7",
@@ -1081,7 +2048,8 @@
               "HeadlessLevelFlowTests.CoopTravel_PreservesPlayerHealthAcrossLoad"
             ]
           }
-        ]
+        ],
+        "conversionManagedCommit": "d3e0a2a2db38cdf3f4f2a0f71611bd55db768aa0"
       },
       {
         "name": "g-game-headless-ticker-chunk9",
@@ -1163,7 +2131,8 @@
               "HeadlessGameFlowTests.DeathmatchSpawn_UsesDmStartAfterRespawn"
             ]
           }
-        ]
+        ],
+        "conversionManagedCommit": "e4c74bac27ba315b3339f0a8683c3417041e0fa1"
       },
       {
         "name": "acs-absent-opcodes-callfunc-chunk10",
@@ -1253,7 +2222,8 @@
               "AcsAbsentOpcodeChunk10Tests.CallFunc_InvasionGetWave_Wire19702"
             ]
           }
-        ]
+        ],
+        "conversionManagedCommit": "514cf5cae5d7576e0c3492da1fe4ef0dd0b06979"
       },
       {
         "name": "p-saveg-acs-archive-chunk10",
@@ -1344,7 +2314,8 @@
               "PSavegRoundTripTests.AcsGlobalsMapWorldAndSuspendedFiberRoundTrip"
             ]
           }
-        ]
+        ],
+        "conversionManagedCommit": "514cf5cae5d7576e0c3492da1fe4ef0dd0b06979"
       },
       {
         "name": "acs-absent-callfunc-chunk11",
@@ -1380,7 +2351,8 @@
               "AcsAbsentCallFuncChunk11Tests.CallFunc_Warp_MovesActivatorToReference"
             ]
           }
-        ]
+        ],
+        "conversionManagedCommit": "4e642f5bfc42750790f83c614cf11ae96ab8f647"
       },
       {
         "name": "d-net-reset-commands-chunk12",
@@ -1416,7 +2388,8 @@
               "NetRoomCommandResetTests.ResetCommands_AdoptsPendingRoomAndReanchorsSequences"
             ]
           }
-        ]
+        ],
+        "conversionManagedCommit": "7b30b1e99efb6bdb516656931abb63b7501a260e"
       },
       {
         "name": "d-net-gameplay-envelope-room-recognition",
@@ -1461,7 +2434,8 @@
               "AcsPlayerInputOpcodeTests.ClassifyActorOpcodeReportsPlayerAlive"
             ]
           }
-        ]
+        ],
+        "conversionManagedCommit": "ab80696b9fb8db543f020027e221d17854c11177"
       },
       {
         "name": "d-net-cutscene-runtime-chunk13",
@@ -1571,7 +2545,8 @@
               "LateJoinAndDisconnectSessionTests.Disconnect_IsIdempotentAndResetsRegistry"
             ]
           }
-        ]
+        ],
+        "conversionManagedCommit": "c2b2b6f5dec24d61433bf722e6405d7a8ea6add7"
       },
       {
         "name": "acs-print-hud-chunk14",
@@ -1652,7 +2627,8 @@
               "AcsPrintHudOpcodeTests.EndHudMessage_RecordsHudPayload"
             ]
           }
-        ]
+        ],
+        "conversionManagedCommit": "d45218cd973e6c38486bfe39b5d524fd49c13e68"
       },
       {
         "name": "d-net-lag-waiting-chunk15",
@@ -1706,7 +2682,8 @@
               "NetLagAndCutsceneRecoveryTests.ModifyParticleFrac_WaitingState_ZerosParticles"
             ]
           }
-        ]
+        ],
+        "conversionManagedCommit": "69f9b59bdcb19e5e1293c5fae783aec2dafc8166"
       },
       {
         "name": "acs-wire-printbind-chunk16",
@@ -1733,7 +2710,8 @@
               "AcsThingDamageOpcodeTests.WireOpcodeReturnsShootableActorCount"
             ]
           }
-        ]
+        ],
+        "conversionManagedCommit": "bbc5accf9413302ffa3f0d613348e48a8626d467"
       },
       {
         "name": "acs-eternity-stack-chunk17",
@@ -1769,7 +2747,8 @@
               "AcsEternityStackOpcodeTests.CallStack_InvokesZeroArgInvasionQueryFromStackTag"
             ]
           }
-        ]
+        ],
+        "conversionManagedCommit": "514cf5cae5d7576e0c3492da1fe4ef0dd0b06979"
       },
       {
         "name": "hcde-edf-thingtype-chunk18",
@@ -1806,13 +2785,14 @@
               "HcdeEdfThingParserTests.ThingType_ParsesDoomednumAndInherits"
             ]
           }
-        ]
+        ],
+        "conversionManagedCommit": "ae1b7b36779ced698029c3b12383099cdeeb2e90"
       },
       {
         "name": "p-mobj-play-spawn-sound-chunk19",
-        "bucket": "conversion",
+        "bucket": "recognition",
         "nativeLoc": 21,
-        "managedLoc": 24,
+        "managedLoc": 0,
         "note": "p_mobj.cpp P_PlaySpawnSound MF_SPAWNSOUNDSOURCE routing (see ActorSoundActions.PlaySpawnSound).",
         "nativeRanges": [
           {
