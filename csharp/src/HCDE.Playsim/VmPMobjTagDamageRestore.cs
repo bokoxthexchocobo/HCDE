@@ -64,4 +64,87 @@ public static class VmPMobjTagDamageRestore
         ceilingz - height - spawnZ;
 
     public static double FloorSpawnZ(double spawnZ, double floorz) => spawnZ + floorz;
+
+    public static string ResolveGetTag(
+        bool hasTag,
+        string tagText,
+        Func<string, string> stringTable,
+        string? def,
+        string className)
+    {
+        if (hasTag)
+        {
+            if (tagText.Length > 0 && tagText[0] == '$')
+                return stringTable(tagText[1..]);
+            return tagText;
+        }
+
+        if (def is { Length: > 0 })
+            return def;
+        return className;
+    }
+
+    public readonly record struct CounterFlags(int Flags, int Flags5);
+
+    public static CounterFlags ApplyClearCounters(CounterFlags cf, bool countsAsKill, int health)
+    {
+        var flags = cf.Flags;
+        var flags5 = cf.Flags5;
+        if (ClearKillCounter(countsAsKill, health))
+            flags &= ~MfCountkill;
+        if (ClearItemCounter(flags))
+            flags &= ~MfCountitem;
+        if (ClearSecretCounter(flags5))
+            flags5 &= ~Mf5Countsecret;
+        return new CounterFlags(flags, flags5);
+    }
+
+    public static int CountInventoryBeforeEuthanize(ReadOnlySpan<bool> euthanizeMe)
+    {
+        var count = 0;
+        foreach (var euth in euthanizeMe)
+        {
+            if (euth)
+                break;
+            count++;
+        }
+
+        return count;
+    }
+
+    public static int ApplyDamageFactorChain(int damage, double actorFactor, bool positive, int afterMobjFactor) =>
+        positive ? afterMobjFactor : (int)(damage * actorFactor);
+
+    public readonly record struct RestoreZContext(
+        int Flags,
+        int Flags2,
+        double SpawnZ,
+        double FloorZ,
+        double CeilingZ,
+        double Height,
+        int Random256);
+
+    public static double ChooseRestoreZ(RestoreZContext ctx)
+    {
+        if (RestoreUsesSpawnCeiling(ctx.Flags))
+            return CeilingSpawnZ(ctx.CeilingZ, ctx.Height, ctx.SpawnZ);
+        if (RestoreUsesSpawnFloat(ctx.Flags2))
+        {
+            var space = ctx.CeilingZ - ctx.Height - ctx.FloorZ;
+            return SpawnFloatSpace(ctx.CeilingZ, ctx.FloorZ, ctx.Height)
+                ? SpawnFloatZ(space - 40, ctx.Random256, ctx.FloorZ)
+                : ctx.FloorZ;
+        }
+
+        return FloorSpawnZ(ctx.SpawnZ, ctx.FloorZ);
+    }
+
+    public static double FinalRestoreZ(double z, double floorz, double ceilingz, double height, int mfSolid)
+    {
+        if (ClampBelowFloor(z, floorz))
+            z = floorz;
+        if ((mfSolid & MfSolid) != 0 && ClampAboveCeiling(z + height, ceilingz))
+            z = ceilingz - height;
+        return z;
+    }
 }

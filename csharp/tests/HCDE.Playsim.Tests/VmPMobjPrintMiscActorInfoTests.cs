@@ -18,4 +18,12 @@ public class VmPMobjPrintMiscActorInfoTests
     [Fact]
     public void Print_CustomStyleLabel() =>
         Assert.Equal("Custom", VmPMobjPrintMiscActorInfo.RenderStyleLabel(99));
+
+    [Fact]
+    public void Print_LegacyStyleTable() =>
+        Assert.Equal("Fuzzy", VmPMobjPrintMiscActorInfo.RenderStyleLabel(2));
+
+    [Fact]
+    public void Print_ScanLegacyMatch() =>
+        Assert.Equal(1, VmPMobjPrintMiscActorInfo.ScanLegacyRenderStyle([9, 3, 1], 3));
 }

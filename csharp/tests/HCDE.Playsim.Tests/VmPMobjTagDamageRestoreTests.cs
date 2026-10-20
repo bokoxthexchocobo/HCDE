@@ -25,4 +25,21 @@ public class VmPMobjTagDamageRestoreTests
     [Fact]
     public void Restore_ClampFloor() =>
         Assert.True(VmPMobjTagDamageRestore.ClampBelowFloor(5, 10));
+
+    [Fact]
+    public void GetTag_ResolvesDollarString() =>
+        Assert.Equal("Hello", VmPMobjTagDamageRestore.ResolveGetTag(
+            true, "$FOO", _ => "Hello", null, "Class"));
+
+    [Fact]
+    public void ClearCounters_StripsKillFlag() =>
+        Assert.Equal(0, VmPMobjTagDamageRestore.ApplyClearCounters(
+            new VmPMobjTagDamageRestore.CounterFlags(VmPMobjTagDamageRestore.MfCountkill, 0),
+            true, 50).Flags);
+
+    [Fact]
+    public void RestoreZ_CeilingPath() =>
+        Assert.Equal(90, VmPMobjTagDamageRestore.ChooseRestoreZ(
+            new VmPMobjTagDamageRestore.RestoreZContext(
+                VmPMobjTagDamageRestore.MfSpawnceiling, 0, 10, 0, 100, 10, 0)));
 }

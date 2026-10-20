@@ -40,14 +40,26 @@ public static class VmPMobjPrintMiscActorInfo
 
     public static bool ShouldPrint(MiscInfoHeader h) => h.QueryPresent;
 
+    private static readonly string[] LegacyRenderStyleNames =
+    {
+        "None", "Normal", "Fuzzy", "SoulTrans", "OptFuzzy", "Stencil", "Translucent",
+        "Add", "Shaded", "TranslucentStencil", "Shadow", "Subtract", "AddStencil", "AddShaded"
+    };
+
     public static string RenderStyleLabel(int querystyle) =>
-        RenderStyleInTable(querystyle)
-            ? querystyle switch
-            {
-                0 => "None",
-                1 => "Normal",
-                7 => "Add",
-                _ => "Other"
-            }
-            : "Custom";
+        RenderStyleInTable(querystyle) ? LegacyRenderStyleNames[querystyle] : "Custom";
+
+    public static int ScanLegacyRenderStyle(ReadOnlySpan<int> legacyStyles, int renderStyle)
+    {
+        for (var style = StyleNone; style < StyleCount; style++)
+        {
+            if (style < legacyStyles.Length && legacyStyles[style] == renderStyle)
+                return style;
+        }
+
+        return StyleCount;
+    }
+
+    public static bool LineSpecialUsesName(bool specFound, string name) =>
+        specFound && name.Length > 0;
 }
