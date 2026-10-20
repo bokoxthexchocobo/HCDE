@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 6353,
+  "convertedThisRunNative": 6692,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 21350,
+  "convertedThisRunManaged": 21570,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -43,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 477809,
+  "remainingNative": 477470,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 24880,
+  "convertedBehaviorNative": 25219,
   "recognitionBehaviorNative": 5397,
-  "combinedBehaviorNative": 30277,
-  "convertedBehaviorManaged": 31021,
+  "combinedBehaviorNative": 30616,
+  "convertedBehaviorManaged": 31241,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -9454,6 +9454,52 @@
       ],
       "conversionManagedCommit": "3347e3a9e2e1bea4ffc9ef78f4b38d75846fdcf6",
       "nativeLoc": 60
+    },
+    {
+      "name": "umapinfo-parse-commit-chunk221",
+      "bucket": "conversion",
+      "managedLoc": 220,
+      "note": "UMAPINFO extended properties, map lump ingest, CommitUMapinfo.",
+      "nativeRanges": [
+        {
+          "file": "src/gamedata/umapinfo.cpp",
+          "symbol": "ParseStandardProperty intertext through freeaim",
+          "start": 270,
+          "end": 394,
+          "tests": [
+            "VmUMapInfoParserTests.CommitToLevelInfo_AppliesInterText"
+          ]
+        },
+        {
+          "file": "src/gamedata/umapinfo.cpp",
+          "symbol": "ParseMapEntry",
+          "start": 402,
+          "end": 414,
+          "tests": [
+            "VmUMapInfoParserTests.TryParseMapBlock_ReadsBossAction"
+          ]
+        },
+        {
+          "file": "src/gamedata/umapinfo.cpp",
+          "symbol": "ParseUMapInfo",
+          "start": 422,
+          "end": 471,
+          "tests": [
+            "VmUMapInfoParserTests.TryParseMapBlock_ReadsBossAction"
+          ]
+        },
+        {
+          "file": "src/gamedata/umapinfo.cpp",
+          "symbol": "CommitUMapinfo",
+          "start": 475,
+          "end": 625,
+          "tests": [
+            "VmUMapInfoParserTests.CommitToLevelInfo_AppliesInterText"
+          ]
+        }
+      ],
+      "nativeLoc": 339,
+      "conversionManagedCommit": "b299de9f9f6a4002d0a0235eaad04f685337cec4"
     }
   ]
 }
