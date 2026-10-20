@@ -1,0 +1,24 @@
+[
+  {
+    "name": "hcde-emapinfo-property-dispatch-chunk333",
+    "bucket": "conversion",
+    "managedLoc": 75,
+    "note": "ResolveSiblingLump tail and ApplyEMapInfoProperty through gravity",
+    "auditSeams": "`fileSystem` lump checks are reduced to short-name heuristics; `level_info_t` fields map onto `VmEMapInfoLevelDraft` without touching the native parse loop.",
+    "auditRationale": "Credits `hcde_emapinfo.cpp` 539–663: sibling lump short-name fallback, `ResolveExtraDataLump` wiring, and the first `ApplyEMapInfoProperty` keys through `gravity`/`colormap`/`disable-jump` exercised by the dispatch tests.",
+    "nativeRanges": [
+      {
+        "file": "src/gamedata/hcde_emapinfo.cpp",
+        "symbol": "ResolveSiblingLump ApplyEMapInfoProperty head",
+        "start": 539,
+        "end": 663,
+        "tests": [
+          "VmEMapInfoPropertyDispatchTests.ShouldTryShortLumpName_RejectsLongNames",
+          "VmEMapInfoPropertyDispatchTests.TryApplyLevelName_SetsTitle",
+          "VmEMapInfoPropertyDispatchTests.TryApplyGravity_ZeroIsMax",
+          "VmEMapInfoPropertyDispatchTests.TryApplyDisableJump_SetsFlag"
+        ]
+      }
+    ]
+  }
+]
