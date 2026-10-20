@@ -1,0 +1,28 @@
+[
+  {
+    "name": "p-terrain-keywords-init-chunk230",
+    "bucket": "conversion",
+    "managedLoc": 75,
+    "note": "TERRAIN header/enums and keyword tables (gaps not in prior terrain chunks).",
+    "nativeRanges": [
+      {
+        "file": "src/gamedata/p_terrain.cpp",
+        "symbol": "Terrain enums and file header",
+        "start": 1,
+        "end": 78,
+        "tests": [
+          "VmTerrainKeywordSchemaTests.OuterKeywords_MatchesNativeTable"
+        ]
+      },
+      {
+        "file": "src/gamedata/p_terrain.cpp",
+        "symbol": "Terrain prototypes and keyword arrays",
+        "start": 101,
+        "end": 184,
+        "tests": [
+          "VmTerrainKeywordSchemaTests.LoadTerrainDocuments_ParsesSplashBlock"
+        ]
+      }
+    ]
+  }
+]

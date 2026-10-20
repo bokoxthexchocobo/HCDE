@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 8005,
+  "convertedThisRunNative": 8167,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 22400,
+  "convertedThisRunManaged": 22475,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": 111,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 476003,
+  "remainingNative": 475841,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 26532,
+  "convertedBehaviorNative": 26694,
   "recognitionBehaviorNative": 5551,
-  "combinedBehaviorNative": 32083,
-  "convertedBehaviorManaged": 32071,
+  "combinedBehaviorNative": 32245,
+  "convertedBehaviorManaged": 32146,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -9938,6 +9938,34 @@
         }
       ],
       "nativeLoc": 87
+    },
+    {
+      "name": "p-terrain-keywords-init-chunk230",
+      "bucket": "conversion",
+      "managedLoc": 75,
+      "note": "TERRAIN header/enums and keyword tables (gaps not in prior terrain chunks).",
+      "nativeRanges": [
+        {
+          "file": "src/gamedata/p_terrain.cpp",
+          "symbol": "Terrain enums and file header",
+          "start": 1,
+          "end": 78,
+          "tests": [
+            "VmTerrainKeywordSchemaTests.OuterKeywords_MatchesNativeTable"
+          ]
+        },
+        {
+          "file": "src/gamedata/p_terrain.cpp",
+          "symbol": "Terrain prototypes and keyword arrays",
+          "start": 101,
+          "end": 184,
+          "tests": [
+            "VmTerrainKeywordSchemaTests.LoadTerrainDocuments_ParsesSplashBlock"
+          ]
+        }
+      ],
+      "nativeLoc": 162,
+      "conversionManagedCommit": "797d52b69f89e166ce3586d434a59edd79dc13a7"
     }
   ]
 }
