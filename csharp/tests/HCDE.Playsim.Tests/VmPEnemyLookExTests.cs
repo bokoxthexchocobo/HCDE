@@ -45,4 +45,19 @@ public class VmPEnemyLookExTests
     public void SeeYouTail_GoalReactionBlocks() =>
         Assert.False(VmPEnemyLookEx.EvaluateSeeYouTail(
             new VmPEnemyLookEx.LookExSeeYouContext(true, 5, 10, true, 0, 0, true, false)));
+
+    [Fact]
+    public void FriendWander_PicksParamSeeState() =>
+        Assert.True(VmPEnemyLookEx.EvaluateFriendWander(
+            new VmPEnemyLookEx.LookExFriendWanderContext(true, 0, 0, 0, true, false)));
+
+    [Fact]
+    public void EnemyAmbush_DistInRange() =>
+        Assert.True(VmPEnemyLookEx.EvaluateEnemyAmbushSeeYou(
+            new VmPEnemyLookEx.LookExAmbushContext(true, false, true, true, 128, 64, 256)));
+
+    [Fact]
+    public void SeeYouGoal_PicksSeeState() =>
+        Assert.True(VmPEnemyLookEx.EvaluateSeeYouGoalAndState(
+            new VmPEnemyLookEx.LookExSeeYouGoalContext(false, 0, 10, true, 0, true, 0, true, false)));
 }

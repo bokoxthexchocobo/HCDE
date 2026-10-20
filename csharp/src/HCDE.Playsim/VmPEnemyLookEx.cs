@@ -52,6 +52,33 @@ public static class VmPEnemyLookEx
 
     public static bool NoJumpBlocks(int flags) => (flags & LofNojump) != 0;
 
+    public static bool NosightcheckSkipsPlayerScan(int flags) => (flags & LofNosightcheck) != 0;
+
+    public static bool WanderWhenNotInchase(int flags7) => (flags7 & Mf7Inchase) == 0;
+
+    public static bool PickParamSeeState(bool hasParamState) => hasParamState;
+
+    public static bool FallbackActorSeeState(bool hasSeeState) => hasSeeState;
+
+    public static bool WanderWhenNoSeeState(bool paramNull, bool seeNull) => !paramNull && seeNull;
+
+    public static bool AmbushRequiresSight(bool ambush) => ambush;
+
+    public static bool DistInSeedRange(double dist, double min, double max) =>
+        (min == 0 || dist > min) && (max == 0 || dist < max);
+
+    public static bool NonAmbushSeesYou(bool ambush) => !ambush;
+
+    public static bool GoalEqualsTarget(bool same) => same;
+
+    public static bool ReactiontimeBlocksGoal(int reaction, int maptime) => reaction > maptime;
+
+    public static bool SeeSoundPlays(bool valid, int flags) => valid && (flags & LofNoseesound) == 0;
+
+    public static bool PickParamSeeStateOnJump(bool nojump, bool hasParam) => !nojump && hasParam;
+
+    public static bool PickActorSeeStateOnJump(bool nojump, bool paramNull) => !nojump && paramNull;
+
     public readonly record struct LookExGoalContext(int Special, int Arg0, int Arg1, int Arg2, int Arg3, int Maptime);
 
     public static bool EvaluatePatrolGoal(LookExGoalContext ctx) =>
@@ -94,5 +121,62 @@ public static class VmPEnemyLookEx
         }
         if (!ctx.HasTarget || InchaseSkipsSee(ctx.Flags7)) return false;
         return !NoJumpBlocks(ctx.Flags);
+    }
+
+    public readonly record struct LookExFriendWanderContext(
+        bool IsFriend,
+        int Flags4,
+        int Flags,
+        int Flags7,
+        bool HasParamSeeState,
+        bool HasActorSeeState);
+
+    public static bool EvaluateFriendWander(LookExFriendWanderContext ctx)
+    {
+        if (!ctx.IsFriend) return false;
+        if (StandstillBlocksWander(ctx.Flags4)) return false;
+        if (NosightcheckSkipsPlayerScan(ctx.Flags)) return false;
+        if (!WanderWhenNotInchase(ctx.Flags7)) return false;
+        if (PickParamSeeState(ctx.HasParamSeeState)) return true;
+        if (FallbackActorSeeState(ctx.HasActorSeeState)) return true;
+        return WanderWhenNoSeeState(false, !ctx.HasActorSeeState);
+    }
+
+    public readonly record struct LookExAmbushContext(
+        bool HasTarget,
+        bool SelfTarget,
+        bool Ambush,
+        bool SightOk,
+        double Dist,
+        double MinSee,
+        double MaxSee);
+
+    public static bool EvaluateEnemyAmbushSeeYou(LookExAmbushContext ctx)
+    {
+        if (!ctx.HasTarget || ctx.SelfTarget) return false;
+        if (!AmbushRequiresSight(ctx.Ambush)) return NonAmbushSeesYou(ctx.Ambush);
+        return ctx.SightOk && DistInSeedRange(ctx.Dist, ctx.MinSee, ctx.MaxSee);
+    }
+
+    public readonly record struct LookExSeeYouGoalContext(
+        bool TargetIsGoal,
+        int Reactiontime,
+        int Maptime,
+        bool SeeSoundValid,
+        int Flags,
+        bool HasTarget,
+        int Flags7,
+        bool HasParamSeeState,
+        bool HasActorSeeState);
+
+    public static bool EvaluateSeeYouGoalAndState(LookExSeeYouGoalContext ctx)
+    {
+        if (GoalEqualsTarget(ctx.TargetIsGoal) && ReactiontimeBlocksGoal(ctx.Reactiontime, ctx.Maptime))
+            return false;
+        if (SeeSoundPlays(ctx.SeeSoundValid, ctx.Flags)) { }
+        if (!ctx.HasTarget || InchaseSkipsSee(ctx.Flags7)) return false;
+        if (NoJumpBlocks(ctx.Flags)) return false;
+        return PickParamSeeStateOnJump(false, ctx.HasParamSeeState)
+            || PickActorSeeStateOnJump(false, !ctx.HasParamSeeState && ctx.HasActorSeeState);
     }
 }
