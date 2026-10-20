@@ -18,19 +18,19 @@
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 15182,
+    "convertedThisRunNative": 10345,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 24750,
+    "convertedThisRunManaged": 23854,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": 151,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 468786,
+    "remainingNative": 473623,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 33709,
+    "convertedBehaviorNative": 28872,
     "recognitionBehaviorNative": 5591,
-    "combinedBehaviorNative": 39300,
-    "convertedBehaviorManaged": 34421,
+    "combinedBehaviorNative": 34463,
+    "convertedBehaviorManaged": 33525,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -10864,296 +10864,161 @@
       {
         "name": "info-state-sprite-althud-chunk246",
         "bucket": "conversion",
-        "managedLoc": 80,
-        "note": "info.cpp FState and GetSpriteIndex",
+        "managedLoc": 94,
+        "note": "Re-audit: FState::MatchesCallerType, GetSpriteIndex, LoadAltHud default switch only.",
         "nativeRanges": [
           {
             "file": "src/gamedata/info.cpp",
-            "symbol": "info.cpp FState and GetSpriteIndex",
-            "start": 1,
-            "end": 348,
+            "symbol": "FState::MatchesCallerType",
+            "start": 113,
+            "end": 147,
             "tests": [
               "VmActorInfoRuntimeTests.MatchesCallerType_RejectsWrongClass"
             ]
+          },
+          {
+            "file": "src/gamedata/info.cpp",
+            "symbol": "GetSpriteIndex",
+            "start": 271,
+            "end": 306,
+            "tests": [
+              "VmActorInfoRuntimeTests.GetSpriteIndex_CachesLastLookup"
+            ]
+          },
+          {
+            "file": "src/gamedata/info.cpp",
+            "symbol": "LoadAltHudStuff defaults",
+            "start": 319,
+            "end": 335,
+            "tests": [
+              "VmActorInfoRuntimeTests.AltHud_DefaultsForHeretic"
+            ]
           }
         ],
-        "nativeLoc": 348,
-        "conversionManagedCommit": "4b223c80ab9e2de5c7e19c99677b0c774128303b"
+        "conversionManagedCommit": "4b223c80ab9e2de5c7e19c99677b0c774128303b",
+        "nativeLoc": 88
       },
       {
         "name": "info-staticinit-replace-chunk247",
         "bucket": "conversion",
-        "managedLoc": 80,
-        "note": "info.cpp StaticInit and replacements",
+        "managedLoc": 30,
+        "note": "Re-audit: default sprite seeding and SetReplacement guard only.",
         "nativeRanges": [
           {
             "file": "src/gamedata/info.cpp",
-            "symbol": "info.cpp StaticInit and replacements",
-            "start": 349,
-            "end": 696,
+            "symbol": "PClassActor::StaticInit sprite seed",
+            "start": 392,
+            "end": 408,
             "tests": [
-              "VmActorInfoRuntimeTests.GetSpriteIndex_CachesLastLookup"
+              "VmActorClassRegistryTests.EnsureDefaultSprites_SeedsPlaceholderSprites"
+            ]
+          },
+          {
+            "file": "src/gamedata/info.cpp",
+            "symbol": "PClassActor::SetReplacement",
+            "start": 456,
+            "end": 474,
+            "tests": [
+              "VmActorClassRegistryTests.TrySetReplacement_RequiresKnownActor"
             ]
           }
         ],
-        "nativeLoc": 348,
-        "conversionManagedCommit": "4c6ef298cf688f0b1404e158d3af31e6a98a95ab"
+        "conversionManagedCommit": "4c6ef298cf688f0b1404e158d3af31e6a98a95ab",
+        "nativeLoc": 36
       },
       {
         "name": "info-damage-summon-chunk248",
         "bucket": "conversion",
-        "managedLoc": 80,
-        "note": "info.cpp damage types and summon",
+        "managedLoc": 86,
+        "note": "Re-audit: DmgFactors::Apply, SummonActor net payload, ParseDamageDefinition subset (VM export gap 915-920 in chunk 261).",
         "nativeRanges": [
           {
             "file": "src/gamedata/info.cpp",
-            "symbol": "info.cpp damage types and summon",
-            "start": 697,
-            "end": 914,
+            "symbol": "DmgFactors::Apply",
+            "start": 819,
+            "end": 837,
             "tests": [
               "VmActorInfoRuntimeTests.DamageFactor_AppliesSpecificType"
             ]
           },
           {
             "file": "src/gamedata/info.cpp",
-            "symbol": "info.cpp ParseDamageDefinition tail",
-            "start": 921,
-            "end": 1043,
+            "symbol": "SummonActor net write",
+            "start": 857,
+            "end": 864,
             "tests": [
-              "VmActorInfoRuntimeTests.DamageFactor_AppliesSpecificType"
+              "VmActorInfoRuntimeTests.Summon_BuildsExtendedMessage"
+            ]
+          },
+          {
+            "file": "src/gamedata/info.cpp",
+            "symbol": "FMapInfoParser::ParseDamageDefinition",
+            "start": 1005,
+            "end": 1040,
+            "tests": [
+              "VmActorInfoRuntimeTests.TryParseDamageDefinition_AppliesNoArmor"
             ]
           }
         ],
-        "nativeLoc": 341,
-        "conversionManagedCommit": "22adc45abeafe89d468ab96e2445f932e42f67fd"
+        "conversionManagedCommit": "22adc45abeafe89d468ab96e2445f932e42f67fd",
+        "nativeLoc": 63
       },
       {
         "name": "hcde-edf-utils-chunk249",
         "bucket": "conversion",
-        "managedLoc": 80,
-        "note": "hcde_edf parse utilities",
+        "managedLoc": 21,
+        "note": "Re-audit: NormalizeResourceName only (not whole-file EDF header).",
         "nativeRanges": [
           {
             "file": "src/gamedata/hcde_edf.cpp",
-            "symbol": "hcde_edf parse utilities",
-            "start": 1,
-            "end": 350,
+            "symbol": "NormalizeResourceName",
+            "start": 232,
+            "end": 279,
             "tests": [
               "HcdeEdfParseUtilitiesTests.NormalizeResourceName_CollapsesDotDot"
             ]
           }
         ],
-        "nativeLoc": 350,
-        "conversionManagedCommit": "92e45538c946ba9a13641ebcd8d048474852f933"
+        "conversionManagedCommit": "92e45538c946ba9a13641ebcd8d048474852f933",
+        "nativeLoc": 48
       },
       {
         "name": "hcde-edf-issues-chunk250",
         "bucket": "conversion",
-        "managedLoc": 80,
-        "note": "hcde_edf issue tracking and helpers",
+        "managedLoc": 21,
+        "note": "Re-audit: RecordIssue sample cap only.",
         "nativeRanges": [
           {
             "file": "src/gamedata/hcde_edf.cpp",
-            "symbol": "hcde_edf issue tracking and helpers",
-            "start": 351,
-            "end": 662,
+            "symbol": "RecordIssue",
+            "start": 216,
+            "end": 230,
             "tests": [
               "HcdeEdfIssueTrackerTests.TryRecordIssue_CapsAtTwenty"
             ]
           }
         ],
-        "nativeLoc": 312,
-        "conversionManagedCommit": "311d9290ee3938d083b2fffc685eaf9c710f9fd7"
+        "conversionManagedCommit": "311d9290ee3938d083b2fffc685eaf9c710f9fd7",
+        "nativeLoc": 15
       },
       {
         "name": "hcde-edf-reverb-chunk251",
         "bucket": "conversion",
-        "managedLoc": 80,
-        "note": "hcde_edf reverb properties",
+        "managedLoc": 52,
+        "note": "Re-audit: ParseReverbPropertyLine through equalized flags.",
         "nativeRanges": [
           {
             "file": "src/gamedata/hcde_edf.cpp",
-            "symbol": "hcde_edf reverb properties",
-            "start": 757,
-            "end": 976,
+            "symbol": "ParseReverbPropertyLine",
+            "start": 776,
+            "end": 841,
             "tests": [
               "HcdeEdfReverbParserTests.TryApplyPropertyLine_ParsesRoomsize"
             ]
           }
         ],
-        "nativeLoc": 220,
-        "conversionManagedCommit": "8ca7aa91b72b0e6732a51568b621d01182b9c363"
-      },
-      {
-        "name": "hcde-edf-blocks-a-chunk252",
-        "bucket": "conversion",
-        "managedLoc": 80,
-        "note": "hcde_edf document blocks",
-        "nativeRanges": [
-          {
-            "file": "src/gamedata/hcde_edf.cpp",
-            "symbol": "hcde_edf document blocks",
-            "start": 981,
-            "end": 1230,
-            "tests": [
-              "HcdeEdfThingParserTests.ThingType_ParsesDoomednumAndInherits"
-            ]
-          }
-        ],
-        "nativeLoc": 250,
-        "conversionManagedCommit": "d5e744b5ab71bf97ae44df4c58d96e5b18cd0f77"
-      },
-      {
-        "name": "hcde-edf-blocks-b-chunk253",
-        "bucket": "conversion",
-        "managedLoc": 80,
-        "note": "hcde_edf document tail",
-        "nativeRanges": [
-          {
-            "file": "src/gamedata/hcde_edf.cpp",
-            "symbol": "hcde_edf document tail",
-            "start": 1231,
-            "end": 1604,
-            "tests": [
-              "HcdeEdfThingParserTests.ThingDelta_MarksUnknownBehaviorProperty"
-            ]
-          }
-        ],
-        "nativeLoc": 374,
-        "conversionManagedCommit": "e672be2e0d9808e22722630d5383b0509cc68c55"
-      },
-      {
-        "name": "dehacked-bootstrap-chunk254",
-        "bucket": "conversion",
-        "managedLoc": 80,
-        "note": "d_dehacked globals bootstrap",
-        "nativeRanges": [
-          {
-            "file": "src/gamedata/d_dehacked.cpp",
-            "symbol": "d_dehacked globals bootstrap",
-            "start": 1,
-            "end": 350,
-            "tests": [
-              "VmDehackedGlobalsTests.InfightingDefault_IsZero"
-            ]
-          }
-        ],
-        "nativeLoc": 350,
-        "conversionManagedCommit": "a4c1afb0538abf2043c712ea7419f43463b169af"
-      },
-      {
-        "name": "dehacked-core-a-chunk255",
-        "bucket": "conversion",
-        "managedLoc": 80,
-        "note": "d_dehacked core tables",
-        "nativeRanges": [
-          {
-            "file": "src/gamedata/d_dehacked.cpp",
-            "symbol": "d_dehacked core tables",
-            "start": 351,
-            "end": 700,
-            "tests": [
-              "VmDehackedGlobalsTests.InfightingDefault_IsZero"
-            ]
-          }
-        ],
-        "nativeLoc": 350,
-        "conversionManagedCommit": "74675270333553dce59ed7d0f588c16e653142f9"
-      },
-      {
-        "name": "dehacked-core-b-chunk256",
-        "bucket": "conversion",
-        "managedLoc": 80,
-        "note": "d_dehacked patch loader head",
-        "nativeRanges": [
-          {
-            "file": "src/gamedata/d_dehacked.cpp",
-            "symbol": "d_dehacked patch loader head",
-            "start": 701,
-            "end": 1050,
-            "tests": [
-              "VmDehackedGlobalsTests.InfightingDefault_IsZero"
-            ]
-          }
-        ],
-        "nativeLoc": 350,
-        "conversionManagedCommit": "8c91736937088e7f9e8478bf8b42a88becd027d8"
-      },
-      {
-        "name": "g-mapinfo-header-chunk257",
-        "bucket": "conversion",
-        "managedLoc": 80,
-        "note": "g_mapinfo header and keys",
-        "nativeRanges": [
-          {
-            "file": "src/gamedata/g_mapinfo.cpp",
-            "symbol": "g_mapinfo header and keys",
-            "start": 1,
-            "end": 390,
-            "tests": [
-              "VmMapInfoDocumentHeaderTests.MapBlockKeys_IncludesGameinfo"
-            ]
-          }
-        ],
-        "nativeLoc": 390,
-        "conversionManagedCommit": "d1556ae63d2e0853b130cbea78e0e4068cfaeb5b"
-      },
-      {
-        "name": "g-mapinfo-parse-a-chunk258",
-        "bucket": "conversion",
-        "managedLoc": 80,
-        "note": "g_mapinfo parse block A",
-        "nativeRanges": [
-          {
-            "file": "src/gamedata/g_mapinfo.cpp",
-            "symbol": "g_mapinfo parse block A",
-            "start": 391,
-            "end": 780,
-            "tests": [
-              "VmMapInfoDocumentHeaderTests.MapBlockKeys_IncludesGameinfo"
-            ]
-          }
-        ],
-        "nativeLoc": 390,
-        "conversionManagedCommit": "d6242e8b83e48c044d1e4466735e8e39db982555"
-      },
-      {
-        "name": "g-mapinfo-parse-b-chunk259",
-        "bucket": "conversion",
-        "managedLoc": 80,
-        "note": "g_mapinfo parse block B",
-        "nativeRanges": [
-          {
-            "file": "src/gamedata/g_mapinfo.cpp",
-            "symbol": "g_mapinfo parse block B",
-            "start": 781,
-            "end": 1170,
-            "tests": [
-              "VmMapInfoDocumentHeaderTests.MapBlockKeys_IncludesGameinfo"
-            ]
-          }
-        ],
-        "nativeLoc": 390,
-        "conversionManagedCommit": "747beaa79f9f980796a3cedd06cdfb2790fb2003"
-      },
-      {
-        "name": "g-mapinfo-parse-c-chunk260",
-        "bucket": "conversion",
-        "managedLoc": 80,
-        "note": "g_mapinfo parse block C",
-        "nativeRanges": [
-          {
-            "file": "src/gamedata/g_mapinfo.cpp",
-            "symbol": "g_mapinfo parse block C",
-            "start": 1171,
-            "end": 1560,
-            "tests": [
-              "VmMapInfoDocumentHeaderTests.MapBlockKeys_IncludesGameinfo"
-            ]
-          }
-        ],
-        "nativeLoc": 390,
-        "conversionManagedCommit": "7e5e9e7ca380e0e93aeaf50538b06825ed0fdba1"
+        "conversionManagedCommit": "8ca7aa91b72b0e6732a51568b621d01182b9c363",
+        "nativeLoc": 66
       },
       {
         "name": "info-damagetype-vm-export-chunk261",

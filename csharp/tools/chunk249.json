@@ -2,17 +2,15 @@
   {
     "name": "hcde-edf-utils-chunk249",
     "bucket": "conversion",
-    "managedLoc": 80,
-    "note": "hcde_edf parse utilities",
+    "managedLoc": 21,
+    "note": "Re-audit: NormalizeResourceName only.",
     "nativeRanges": [
       {
         "file": "src/gamedata/hcde_edf.cpp",
-        "symbol": "hcde_edf parse utilities",
-        "start": 1,
-        "end": 350,
-        "tests": [
-          "HcdeEdfParseUtilitiesTests.NormalizeResourceName_CollapsesDotDot"
-        ]
+        "symbol": "NormalizeResourceName",
+        "start": 232,
+        "end": 279,
+        "tests": ["HcdeEdfParseUtilitiesTests.NormalizeResourceName_CollapsesDotDot"]
       }
     ]
   }

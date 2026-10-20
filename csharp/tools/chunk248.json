@@ -2,26 +2,29 @@
   {
     "name": "info-damage-summon-chunk248",
     "bucket": "conversion",
-    "managedLoc": 80,
-    "note": "info.cpp damage types and summon",
+    "managedLoc": 86,
+    "note": "Re-audit: DmgFactors::Apply, SummonActor net payload, ParseDamageDefinition subset.",
     "nativeRanges": [
       {
         "file": "src/gamedata/info.cpp",
-        "symbol": "info.cpp damage types and summon",
-        "start": 697,
-        "end": 914,
-        "tests": [
-          "VmActorInfoRuntimeTests.DamageFactor_AppliesSpecificType"
-        ]
+        "symbol": "DmgFactors::Apply",
+        "start": 819,
+        "end": 837,
+        "tests": ["VmActorInfoRuntimeTests.DamageFactor_AppliesSpecificType"]
       },
       {
         "file": "src/gamedata/info.cpp",
-        "symbol": "info.cpp ParseDamageDefinition tail",
-        "start": 921,
-        "end": 1043,
-        "tests": [
-          "VmActorInfoRuntimeTests.DamageFactor_AppliesSpecificType"
-        ]
+        "symbol": "SummonActor net write",
+        "start": 857,
+        "end": 864,
+        "tests": ["VmActorInfoRuntimeTests.Summon_BuildsExtendedMessage"]
+      },
+      {
+        "file": "src/gamedata/info.cpp",
+        "symbol": "FMapInfoParser::ParseDamageDefinition",
+        "start": 1005,
+        "end": 1040,
+        "tests": ["VmActorInfoRuntimeTests.TryParseDamageDefinition_AppliesNoArmor"]
       }
     ]
   }

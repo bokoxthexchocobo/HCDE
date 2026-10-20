@@ -40,4 +40,13 @@ public class VmActorInfoRuntimeTests
         Assert.Equal(0x02, msg![0]);
     }
 
+    [Fact]
+    public void TryParseDamageDefinition_AppliesNoArmor()
+    {
+        var def = new VmDamageTypeDefinition();
+        var tokens = new List<string> { "NOARMOR" };
+        var i = 0;
+        Assert.True(VmDamageTypeDefinitionRuntime.TryParseDamageDefinition(tokens, ref i, def));
+        Assert.True(def.NoArmor);
+    }
 }

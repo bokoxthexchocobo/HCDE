@@ -2,17 +2,29 @@
   {
     "name": "info-state-sprite-althud-chunk246",
     "bucket": "conversion",
-    "managedLoc": 80,
-    "note": "info.cpp FState and GetSpriteIndex",
+    "managedLoc": 94,
+    "note": "Re-audit: FState::MatchesCallerType, GetSpriteIndex, LoadAltHud default switch only.",
     "nativeRanges": [
       {
         "file": "src/gamedata/info.cpp",
-        "symbol": "info.cpp FState and GetSpriteIndex",
-        "start": 1,
-        "end": 348,
-        "tests": [
-          "VmActorInfoRuntimeTests.MatchesCallerType_RejectsWrongClass"
-        ]
+        "symbol": "FState::MatchesCallerType",
+        "start": 113,
+        "end": 147,
+        "tests": ["VmActorInfoRuntimeTests.MatchesCallerType_RejectsWrongClass"]
+      },
+      {
+        "file": "src/gamedata/info.cpp",
+        "symbol": "GetSpriteIndex",
+        "start": 271,
+        "end": 306,
+        "tests": ["VmActorInfoRuntimeTests.GetSpriteIndex_CachesLastLookup"]
+      },
+      {
+        "file": "src/gamedata/info.cpp",
+        "symbol": "LoadAltHudStuff defaults",
+        "start": 319,
+        "end": 335,
+        "tests": ["VmActorInfoRuntimeTests.AltHud_DefaultsForHeretic"]
       }
     ]
   }

@@ -2,17 +2,22 @@
   {
     "name": "info-staticinit-replace-chunk247",
     "bucket": "conversion",
-    "managedLoc": 80,
-    "note": "info.cpp StaticInit and replacements",
+    "managedLoc": 30,
+    "note": "Re-audit: default sprite seeding and SetReplacement guard only.",
     "nativeRanges": [
       {
         "file": "src/gamedata/info.cpp",
-        "symbol": "info.cpp StaticInit and replacements",
-        "start": 349,
-        "end": 696,
-        "tests": [
-          "VmActorInfoRuntimeTests.GetSpriteIndex_CachesLastLookup"
-        ]
+        "symbol": "PClassActor::StaticInit sprite seed",
+        "start": 392,
+        "end": 408,
+        "tests": ["VmActorClassRegistryTests.EnsureDefaultSprites_SeedsPlaceholderSprites"]
+      },
+      {
+        "file": "src/gamedata/info.cpp",
+        "symbol": "PClassActor::SetReplacement",
+        "start": 456,
+        "end": 474,
+        "tests": ["VmActorClassRegistryTests.TrySetReplacement_RequiresKnownActor"]
       }
     ]
   }
