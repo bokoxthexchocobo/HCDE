@@ -1,0 +1,22 @@
+[
+  {
+    "name": "p-interaction-damage-early-chunk468",
+    "bucket": "conversion",
+    "note": "DamageMobj early filters through spectral/special damage",
+    "auditSeams": "`CallDoSpecialDamage`, `P_AutoUseHealth`, and full `P_DamageMobj` tail are not hosted.",
+    "auditRationale": "Credits telefrag/dormant gates, skill scaling branches, and spectral hit rules from `p_interaction.cpp` (1098–1280).",
+    "managedSourceFiles": ["csharp/src/HCDE.Playsim/VmPInteractionDamageEarly.cs"],
+    "nativeRanges": [
+      {
+        "file": "src/playsim/p_interaction.cpp",
+        "symbol": "DamageMobj",
+        "start": 1098,
+        "end": 1280,
+        "tests": [
+          "VmPInteractionDamageEarlyTests.DormantBlocks_ReturnsMinusOne",
+          "VmPInteractionDamageEarlyTests.SpectralPlayerBlock_ReturnsMinusOne"
+        ]
+      }
+    ]
+  }
+]
