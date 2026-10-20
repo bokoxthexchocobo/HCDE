@@ -3,6 +3,7 @@ namespace HCDE.Gamedata;
 public enum VmMapInfoFlagHandlerType
 {
     Ignore,
+    EatNext,
     SetFlag,
     ClearFlag,
     SetScFlags,
