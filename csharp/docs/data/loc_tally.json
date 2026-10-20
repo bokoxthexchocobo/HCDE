@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 30124,
+  "convertedThisRunNative": 30288,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 42402,
+  "convertedThisRunManaged": 42525,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": 151,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 453844,
+  "remainingNative": 453680,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 48651,
+  "convertedBehaviorNative": 48815,
   "recognitionBehaviorNative": 5591,
-  "combinedBehaviorNative": 54242,
-  "convertedBehaviorManaged": 52073,
+  "combinedBehaviorNative": 54406,
+  "convertedBehaviorManaged": 52196,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -19262,6 +19262,96 @@
       "nativeLoc": 180,
       "managedLoc": 196,
       "conversionManagedCommit": "17ba0115dab225bbb7ffcd0f37b9a93914de4724"
+    },
+    {
+      "name": "p-mobj-inventory-portal-chunk472",
+      "bucket": "conversion",
+      "note": "AbsorbDamage/AlterWeaponSprite inventory walks, active/push sounds, GetBloodType, portal transition",
+      "auditSeams": "`VMCall`, `S_Sound`, `S_IsActorPlayingSomething`, sector portal hosting, and `LinkToWorld` are not hosted.",
+      "auditRationale": "Credits inventory reverse walks, active/push sound gates, virtual blood-type lookup, and ceiling/floor portal transition predicates from `p_mobj.cpp` (3904\u20133962, 4203\u20134306).",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Playsim/VmPMobjInventorySoundPortal.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/playsim/p_mobj.cpp",
+          "symbol": "AActor::AbsorbDamage",
+          "start": 3904,
+          "end": 3918,
+          "tests": [
+            "VmPMobjInventorySoundPortalTests.ReverseInventoryOrder_WalksBackwards"
+          ]
+        },
+        {
+          "file": "src/playsim/p_mobj.cpp",
+          "symbol": "AActor::AlterWeaponSprite",
+          "start": 3920,
+          "end": 3937,
+          "tests": [
+            "VmPMobjInventorySoundPortalTests.ReverseInventoryOrder_WalksBackwards"
+          ]
+        },
+        {
+          "file": "src/playsim/p_mobj.cpp",
+          "symbol": "AActor::PlayActiveSound",
+          "start": 3939,
+          "end": 3953,
+          "tests": [
+            "VmPMobjInventorySoundPortalTests.PlayActiveSound_RequiresFreeVoice",
+            "VmPMobjInventorySoundPortalTests.PlayActiveSound_BlocksWhenBusy",
+            "VmPMobjInventorySoundPortalTests.ActiveAttenuation_FullVolumeFlag"
+          ]
+        },
+        {
+          "file": "src/playsim/p_mobj.cpp",
+          "symbol": "AActor::PlayPushSound",
+          "start": 3955,
+          "end": 3969,
+          "tests": [
+            "VmPMobjInventorySoundPortalTests.PlayPushSound_WhenBodyFree"
+          ]
+        },
+        {
+          "file": "src/playsim/p_mobj.cpp",
+          "symbol": "AActor::GetBloodType",
+          "start": 4203,
+          "end": 4214,
+          "tests": [
+            "VmPMobjInventorySoundPortalTests.ModelTimer_ClientUsesLocal"
+          ]
+        },
+        {
+          "file": "src/playsim/p_mobj.cpp",
+          "symbol": "AActor::GetPortalTransition",
+          "start": 4216,
+          "end": 4247,
+          "tests": [
+            "VmPMobjInventorySoundPortalTests.GetPortalTransition_MovesThroughCeiling"
+          ]
+        },
+        {
+          "file": "src/playsim/p_mobj.cpp",
+          "symbol": "AActor::CheckPortalTransition",
+          "start": 4249,
+          "end": 4294,
+          "tests": [
+            "VmPMobjInventorySoundPortalTests.CheckPortal_CeilingStepWhenAtPlane",
+            "VmPMobjInventorySoundPortalTests.CheckPortal_FloorStepWhenBelowPlane"
+          ]
+        },
+        {
+          "file": "src/playsim/p_mobj.cpp",
+          "symbol": "AActor::GetModelTimer",
+          "start": 4296,
+          "end": 4306,
+          "tests": [
+            "VmPMobjInventorySoundPortalTests.ModelTimer_ClientUsesLocal"
+          ]
+        }
+      ],
+      "nativeLoc": 164,
+      "managedLoc": 123,
+      "conversionManagedCommit": "b090291c396d21320b3f349d76716745c02210d8"
     }
   ]
 }
