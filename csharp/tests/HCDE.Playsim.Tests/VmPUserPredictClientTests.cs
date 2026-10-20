@@ -35,4 +35,17 @@ public class VmPUserPredictClientTests
             new VmPUserPredictClient.PredictionWindow(1, 20, 5), 15, out _, out var end, out _));
         Assert.Equal(15, end);
     }
+
+    [Fact]
+    public void PhantomYaw_FoldsLargeDelta()
+    {
+        var phantom = VmPUserPredictClient.PhantomYawDegrees(350, 10);
+        Assert.True(Math.Abs(phantom) < 30);
+    }
+
+    [Fact]
+    public void ReplayAccumulators_SumYaw() =>
+        Assert.Equal(5, VmPUserPredictClient.AccumulateReplayCmd(
+            new VmPUserPredictClient.ReplayDiagAccumulators(0, 0, 0, 0, 0, 0, 0),
+            5, 0, 0, 0, 0, 0).YawBam);
 }

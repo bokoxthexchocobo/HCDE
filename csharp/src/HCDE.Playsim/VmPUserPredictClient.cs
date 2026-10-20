@@ -143,4 +143,115 @@ public static class VmPUserPredictClient
     public static bool PortalDisplacementRequiresSector(bool sectorNull) => sectorNull;
 
     public static bool ApplyPortalOffsetWhenSectorPresent(bool sectorNull) => !sectorNull;
+
+    public static int LocalCmdIndex(int tic, int ringSize) => tic % ringSize;
+
+    public static bool WeaponTickForIndex(int tic, int watermark) => tic >= watermark;
+
+    public static bool RubberbandSnapView(bool hitLimit) => hitLimit;
+
+    public static bool RubberbandLerpPath(bool hitLimit) => !hitLimit;
+
+    public static bool PausedSetsNoInterpolate(bool rubberband, bool paused) =>
+        !rubberband && paused;
+
+    public static double FoldYawDegrees(double degrees)
+    {
+        while (degrees > 180.0)
+            degrees -= 360.0;
+        while (degrees < -180.0)
+            degrees += 360.0;
+        return degrees;
+    }
+
+    public static double ReplayInputDegreesFromBam(long yawBamSum) =>
+        yawBamSum * (360.0 / 65536.0);
+
+    public static double PhantomYawDegrees(double yawChange, double replayInputDeg) =>
+        FoldYawDegrees(yawChange - replayInputDeg);
+
+    public static bool ShouldLogYawDiag(double yawChange, double phantomDeg) =>
+        Math.Abs(yawChange) > 3.0 || Math.Abs(phantomDeg) > 1.0;
+
+    public static bool ShouldLogMoveDiag(
+        double deltaLenSq,
+        long forwardSum,
+        long sideSum,
+        long upSum,
+        bool windowClamped) =>
+        deltaLenSq > 0.01
+        || forwardSum != 0
+        || sideSum != 0
+        || upSum != 0
+        || windowClamped;
+
+    public static bool ShouldLogPitchSummary(
+        int applied,
+        int zeroed,
+        int firstPitch,
+        int lastPitch) =>
+        applied != 0 || zeroed != 0 || firstPitch != 0 || lastPitch != 0;
+
+    public static bool PitchClampHit(bool hitMin, bool hitMax, double deltaDeg) =>
+        hitMin || hitMax || Math.Abs(deltaDeg) > 0.05;
+
+    public static bool NonZeroReplayPitch(int pitch) => pitch != 0;
+
+    public static int CountZeroedPitch(int replayPitch, int appliedPitch) =>
+        replayPitch != 0 && appliedPitch == 0 ? 1 : 0;
+
+    public readonly record struct ReplayDiagAccumulators(
+        long YawBam,
+        long Forward,
+        long Side,
+        long Up,
+        long PitchSum,
+        int PitchApplied,
+        int PitchZeroed);
+
+    public static ReplayDiagAccumulators AccumulateReplayCmd(
+        ReplayDiagAccumulators acc,
+        int yaw,
+        int forward,
+        int side,
+        int up,
+        int pitch,
+        int appliedPitch)
+    {
+        var pitchApplied = acc.PitchApplied;
+        var pitchZeroed = acc.PitchZeroed;
+        var pitchSum = acc.PitchSum;
+        if (pitch != 0)
+        {
+            pitchApplied++;
+            pitchSum += pitch;
+        }
+        else if (appliedPitch != 0)
+            pitchZeroed++;
+
+        return acc with
+        {
+            YawBam = acc.YawBam + yaw,
+            Forward = acc.Forward + forward,
+            Side = acc.Side + side,
+            Up = acc.Up + up,
+            PitchSum = pitchSum,
+            PitchApplied = pitchApplied,
+            PitchZeroed = pitchZeroed,
+        };
+    }
+
+    public static void FinalizePredictionTick(
+        ref int lastPredictedTic,
+        ref bool resetPrediction,
+        int predictEnd,
+        ref int weaponPspriteTic,
+        bool predictWeapon,
+        bool paused)
+    {
+        lastPredictedTic = predictEnd;
+        resetPrediction = false;
+        if (predictWeapon && !paused)
+            weaponPspriteTic = Math.Max(weaponPspriteTic, predictEnd);
+    }
 }
