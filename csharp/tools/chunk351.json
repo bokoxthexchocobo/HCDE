@@ -1,0 +1,22 @@
+[
+  {
+    "name": "d-main-cvar-policy-chunk351",
+    "bucket": "conversion",
+    "managedLoc": 34,
+    "note": "D_Main CVAR clamps and HUD toggle capture",
+    "auditSeams": "Engine CVAR registration and renderer mode switching are not re-hosted; policy functions mirror net-game timescale, wipe bounds, and HUD snapshot behavior.",
+    "auditRationale": "First behavioral slice of untouched `d_main.cpp` 422–620: `i_timescale` net-game guard, `vid_rendermode` clamp/softpoly remap, `wipetype` bounds, fraglimit exit hook policy, and `D_ToggleHud` saved-state capture.",
+    "nativeRanges": [
+      {
+        "file": "src/d_main.cpp",
+        "symbol": "CUSTOM_CVAR policy D_ToggleHud",
+        "start": 422,
+        "end": 620,
+        "tests": [
+          "VmDMainCvarPolicyTests.ClampTimeScaleForNetGame_ForcesOne",
+          "VmDMainCvarPolicyTests.ClampVidRenderMode_RemapsSoftpoly"
+        ]
+      }
+    ]
+  }
+]
