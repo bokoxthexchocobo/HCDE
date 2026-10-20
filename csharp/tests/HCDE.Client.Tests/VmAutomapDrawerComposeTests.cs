@@ -24,4 +24,25 @@ public class VmAutomapDrawerComposeTests
         Assert.Equal(320, cx);
         Assert.Equal(240, cy);
     }
+
+    [Fact]
+    public void TryResolveAuthorMarkerTexture_RejectsInvalidFrame()
+    {
+        Assert.False(VmAutomapDrawerCompose.TryResolveAuthorMarkerTexture(false, 1, 5, 3, out _, out var bad));
+        Assert.True(bad);
+    }
+
+    [Fact]
+    public void ResolveAuthorMarkerScale_AppliesMtofWhenArg2()
+    {
+        var (x, y) = VmAutomapDrawerCompose.ResolveAuthorMarkerScale(2, 3, 1, v => v * 10);
+        Assert.Equal(20, x);
+        Assert.Equal(30, y);
+    }
+
+    [Fact]
+    public void ShouldFlipMarkerForNegativeScale_TogglesFlip()
+    {
+        Assert.True(VmAutomapDrawerCompose.ShouldFlipMarkerForNegativeScale(-1, false));
+    }
 }

@@ -83,4 +83,65 @@ public static class VmAutomapDrawerCompose
     public static bool ShouldScaleMarkerWithZoom(int arg2) => arg2 == 1;
 
     public static IEnumerable<int> EnumerateMarkSlots(int markCount) => Enumerable.Range(0, markCount);
+
+    public static bool TryResolveAuthorMarkerTexture(
+        bool picnumValid,
+        int sprite,
+        int frame,
+        int numFrames,
+        out bool usePicnum,
+        out bool invalidFrame)
+    {
+        usePicnum = picnumValid;
+        invalidFrame = false;
+        if (picnumValid)
+            return true;
+        if (sprite <= 0)
+            return false;
+        if (frame >= numFrames)
+        {
+            invalidFrame = true;
+            return false;
+        }
+
+        return true;
+    }
+
+    public static (double xScale, double yScale) ResolveAuthorMarkerScale(
+        double markScaleX,
+        double markScaleY,
+        int zoomArg,
+        Func<double, double> mtof)
+    {
+        if (zoomArg != 1)
+            return (markScaleX, markScaleY);
+        return (mtof(markScaleX), mtof(markScaleY));
+    }
+
+    public static IEnumerable<int> EnumerateMarkedActorTargets(int tid, bool selfIsTarget) =>
+        tid == 0 && selfIsTarget ? new[] { 0 } : Array.Empty<int>();
+
+    public static bool ShouldIterateTidChain(int tid) => tid != 0;
+
+    public static ushort ResolveSpriteFlip(ushort frameFlip, int rotation) =>
+        (ushort)((frameFlip & (1 << rotation)) != 0 ? 1 : 0);
+
+    public static double NormalizeMarkerXScale(double xscale)
+    {
+        if (xscale < 0)
+            return -xscale;
+        return xscale;
+    }
+
+    public static bool ShouldFlipMarkerForNegativeScale(double xscale, bool flip) =>
+        xscale < 0 ? !flip : flip;
+
+    public static bool DrawerShouldInvokeShowSubsectorDebug(int amShowSubsector) => amShowSubsector >= 0;
+
+    public static double ComputeDrawerDeltaSeconds(ulong frameMs, ulong lastMs) =>
+        (frameMs - lastMs) * 0.001;
+
+    public static bool ShouldResetPanWhenFollowing(bool followPlayer) => followPlayer;
+
+    public static bool ShouldZeroPanIncWhenNotFollowing(bool followPlayer) => !followPlayer;
 }

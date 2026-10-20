@@ -21,7 +21,8 @@
         "start": 3258,
         "end": 3327,
         "tests": [
-          "VmAutomapDrawerComposeTests.ShouldDrawThingsLayer_MatchesCheatGate"
+          "VmAutomapDrawerComposeTests.TryResolveAuthorMarkerTexture_RejectsInvalidFrame",
+          "VmAutomapDrawerComposeTests.ResolveAuthorMarkerScale_AppliesMtofWhenArg2"
         ]
       },
       {
