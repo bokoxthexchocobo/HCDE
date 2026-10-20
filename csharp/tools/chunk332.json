@@ -1,0 +1,23 @@
+[
+  {
+    "name": "g-mapinfo-parse-header-chunk332",
+    "bucket": "conversion",
+    "managedLoc": 48,
+    "note": "GetDefaultLevelNum and ParseMapHeader map title paths",
+    "auditSeams": "`GStrings`, `HexenMusic`, and `wadlevelinfos` storage are injected or reduced to draft fields; Hexen IWAD localization is represented only by the lookup-level-name decision.",
+    "auditRationale": "Fills 2295–2443 in `g_mapinfo.cpp`: the file-local `GetDefaultLevelNum` helper and `ParseMapHeader` map-name token handling, Hexen-hack default flag seeding, `$`/lookup level titles, and default `levelnum` assignment ahead of episode parsing at 2459.",
+    "nativeRanges": [
+      {
+        "file": "src/gamedata/g_mapinfo.cpp",
+        "symbol": "GetDefaultLevelNum ParseMapHeader",
+        "start": 2295,
+        "end": 2443,
+        "tests": [
+          "VmMapInfoParseMapHeaderTests.ResolveMapNameToken_OldHexenNumber",
+          "VmMapInfoParseMapHeaderTests.ApplyLevelTitle_DollarPrefixSetsLookup",
+          "VmMapInfoParseMapHeaderTests.AssignDefaultLevelNum_ParsesMap01"
+        ]
+      }
+    ]
+  }
+]
