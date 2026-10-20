@@ -10843,24 +10843,6 @@
         },
         {
           "file": "src/gamedata/d_dehacked.cpp",
-          "symbol": "PatchThing Render Style",
-          "start": 1366,
-          "end": 1375,
-          "tests": [
-            "VmDehackedRenderStyleLookupTests.FindStyle_ReturnsRegisteredStyle"
-          ]
-        },
-        {
-          "file": "src/gamedata/d_dehacked.cpp",
-          "symbol": "PatchThing group clamps",
-          "start": 1387,
-          "end": 1409,
-          "tests": [
-            "VmDehackedThingGroupLimitsTests.ClampInfightingGroup_RejectsNegative"
-          ]
-        },
-        {
-          "file": "src/gamedata/d_dehacked.cpp",
           "symbol": "RenderStyles DEHSUPP",
           "start": 3708,
           "end": 3724,
