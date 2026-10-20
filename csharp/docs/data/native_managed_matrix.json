@@ -18,19 +18,19 @@
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 3079,
+    "convertedThisRunNative": 3180,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 18717,
+    "convertedThisRunManaged": 18835,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -208,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 481248,
+    "remainingNative": 481147,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 21606,
+    "convertedBehaviorNative": 21707,
     "recognitionBehaviorNative": 5232,
-    "combinedBehaviorNative": 26838,
-    "convertedBehaviorManaged": 28388,
+    "combinedBehaviorNative": 26939,
+    "convertedBehaviorManaged": 28506,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -8247,6 +8247,43 @@
         ],
         "conversionManagedCommit": "2b7b08e7bc03a5783ab7af5114df12961fa38506",
         "nativeLoc": 189
+      },
+      {
+        "name": "sndinfo-ambient-filter-chunk195",
+        "bucket": "conversion",
+        "managedLoc": 118,
+        "note": "SNDINFO ambient directive and game-filter preprocessing.",
+        "nativeRanges": [
+          {
+            "file": "src/sound/s_advsound.cpp",
+            "symbol": "S_AddSNDINFO skipToEndIf",
+            "start": 755,
+            "end": 761,
+            "tests": [
+              "VmSndInfoPreprocessorTests.FilterGameBlocks_SkipsInactiveIfBlocks"
+            ]
+          },
+          {
+            "file": "src/sound/s_advsound.cpp",
+            "symbol": "SI_Ambient",
+            "start": 781,
+            "end": 869,
+            "tests": [
+              "VmSndInfoAmbientParserTests.TryParseData_ReadsAmbientBlock"
+            ]
+          },
+          {
+            "file": "src/sound/s_advsound.cpp",
+            "symbol": "SI_IfDoom/Heretic/Hexen/Strife",
+            "start": 1242,
+            "end": 1246,
+            "tests": [
+              "VmSndInfoPreprocessorTests.FilterGameBlocks_SkipsInactiveIfBlocks"
+            ]
+          }
+        ],
+        "conversionManagedCommit": "5f3758b405a75cc54c47e580ec83b428a7289c0d",
+        "nativeLoc": 101
       }
     ]
   },
