@@ -52,4 +52,53 @@ public static class VmPMobjAdjustFloorClip
 
     public static bool PlayerViewAdjust(bool isPlayer, bool isViewActor, double oldClip, double newClip) =>
         isPlayer && isViewActor && oldClip != newClip;
+
+    public const int MfUnmorphed = 1;
+
+    public static bool PlayerSubValid(bool oldNull, bool newNull, bool same, bool oldPawn, bool newPawn) =>
+        !oldNull && !newNull && !same && oldPawn && newPawn;
+
+    public static bool RewritePlayerMo(bool moMatch) => moMatch;
+
+    public static bool RewriteSectorSoundTarget(bool match) => match;
+
+    public readonly record struct MorphSubContext(
+        bool FromNull,
+        bool ToNull,
+        bool Same,
+        bool ToHasPlayer,
+        int FromFlags,
+        bool FromAltNull,
+        bool ToAltNull,
+        bool FromIsPlayerPawn,
+        bool ToIsPlayerPawn,
+        bool FromPlayerNull,
+        bool FromMoIsFrom);
+
+    public static bool MorphSubstitutionBlocked(MorphSubContext ctx)
+    {
+        if (ctx.FromNull || ctx.ToNull || ctx.Same || ctx.ToHasPlayer) return true;
+        if ((ctx.FromFlags & MfUnmorphed) != 0) return true;
+        if (ctx.FromAltNull && !ctx.ToAltNull) return true;
+        if (!ctx.FromAltNull && ctx.ToAltNull && ctx.FromAltNull != ctx.ToAltNull) return true;
+        return false;
+    }
+
+    public static bool PlayerMorphRequiresValidMo(MorphSubContext ctx) =>
+        ctx.FromIsPlayerPawn && (!ctx.ToIsPlayerPawn || ctx.FromPlayerNull || !ctx.FromMoIsFrom);
+
+    public static bool MorphInventoryOwnedBlocked(
+        bool toIsPlayer,
+        bool fromHasPlayer,
+        bool fromIsInventoryOwned,
+        bool toIsInventoryOwned) =>
+        toIsPlayer
+        || fromHasPlayer
+        || fromIsInventoryOwned
+        || toIsInventoryOwned;
+
+    public static bool MorphNonPlayerPathAllowed(MorphSubContext ctx, bool inventoryBlocked) =>
+        !MorphSubstitutionBlocked(ctx) && !PlayerMorphRequiresValidMo(ctx) && !inventoryBlocked;
+
+    public static bool ShouldRunPreMorph(bool fromHasAlternative) => !fromHasAlternative;
 }
