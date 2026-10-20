@@ -12,25 +12,25 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 135870
+    "managedCSharpLoc": 136265
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 18303,
+    "convertedThisRunNative": 18709,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 33655,
+    "convertedThisRunManaged": 33899,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": 151,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 465665,
+    "remainingNative": 465259,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 36830,
+    "convertedBehaviorNative": 37236,
     "recognitionBehaviorNative": 5591,
-    "combinedBehaviorNative": 42421,
-    "convertedBehaviorManaged": 43326,
+    "combinedBehaviorNative": 42827,
+    "convertedBehaviorManaged": 43570,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -15810,6 +15810,96 @@
         "nativeLoc": 150,
         "managedLoc": 164,
         "conversionManagedCommit": "08f00c0f30e2be23648fe6e3f018e8b10edb8d63"
+      },
+      {
+        "name": "d-main-gameinfo-scan-chunk399",
+        "bucket": "conversion",
+        "note": "ParseGameInfo, GetReserved, CheckGameInfo, SetMapxxFlag",
+        "auditSeams": "`FScanner`, `FileSystem::InitMultipleFiles`, and `gameinfo` mutation are not hosted.",
+        "auditRationale": "Credits static `ParseGameInfo`, `GetReserved`, `CheckGameInfo`, and `SetMapxxFlag` from `d_main.cpp`.",
+        "nativeRanges": [
+          {
+            "file": "src/d_main.cpp",
+            "symbol": "ParseGameInfo",
+            "start": 2311,
+            "end": 2435,
+            "tests": [
+              "VmDMainGameInfoScanTests.TryApplyGameInfoKey_StartupTitle",
+              "VmDMainGameInfoScanTests.ParseStartupType_Doom"
+            ]
+          },
+          {
+            "file": "src/d_main.cpp",
+            "symbol": "GetReserved",
+            "start": 2437,
+            "end": 2443,
+            "tests": [
+              "VmDMainGameInfoScanTests.ReservedFolders_IncludesMaps"
+            ]
+          },
+          {
+            "file": "src/d_main.cpp",
+            "symbol": "CheckGameInfo",
+            "start": 2445,
+            "end": 2465,
+            "tests": [
+              "VmDMainGameInfoScanTests.TryApplyGameInfoKey_StartupTitle"
+            ]
+          },
+          {
+            "file": "src/d_main.cpp",
+            "symbol": "SetMapxxFlag",
+            "start": 2473,
+            "end": 2480,
+            "tests": [
+              "VmDMainGameInfoScanTests.ShouldSetMapxxFlag_WhenAnyMap01Present"
+            ]
+          }
+        ],
+        "nativeLoc": 161,
+        "managedLoc": 132,
+        "conversionManagedCommit": "015376bee1e0b773286acc53bcdf36d27532ed7e"
+      },
+      {
+        "name": "maploader-lightmap-chunk400",
+        "bucket": "conversion",
+        "note": "SetSubsectorLightmap, SetSideLightmap, LoadLightmap ingest",
+        "auditSeams": "`OpenDecompressor`, sidedef/subsector mutation, and texture upload are not hosted.",
+        "auditRationale": "Credits `MapLoader::SetSubsectorLightmap`, `SetSideLightmap`, and `LoadLightmap` from `maploader.cpp`.",
+        "nativeRanges": [
+          {
+            "file": "src/maploader/maploader.cpp",
+            "symbol": "MapLoader::SetSubsectorLightmap",
+            "start": 3343,
+            "end": 3364,
+            "tests": [
+              "VmMapLoaderLightmapTests.ShouldApplySubsectorSurface"
+            ]
+          },
+          {
+            "file": "src/maploader/maploader.cpp",
+            "symbol": "MapLoader::SetSideLightmap",
+            "start": 3366,
+            "end": 3395,
+            "tests": [
+              "VmMapLoaderLightmapTests.ResolveSideLightmapSlot_MiddleDuplicates"
+            ]
+          },
+          {
+            "file": "src/maploader/maploader.cpp",
+            "symbol": "MapLoader::LoadLightmap",
+            "start": 3397,
+            "end": 3589,
+            "tests": [
+              "VmMapLoaderLightmapTests.ShouldSkipLoad_WhenNolightmaps",
+              "VmMapLoaderLightmapTests.ComputeTextureByteCount_MatchesFormula",
+              "VmMapLoaderLightmapTests.CompareLightProbesByCell_SortsYThenX"
+            ]
+          }
+        ],
+        "nativeLoc": 245,
+        "managedLoc": 112,
+        "conversionManagedCommit": "cf4bbe7a8fb6a029c2a82f04464c3539952237bc"
       }
     ]
   },
