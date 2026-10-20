@@ -89,4 +89,43 @@ public static class VmPMapBounceTraverse
         if (ctx.MoveLen < 1) return true;
         return UseBounceState(ctx.BounceFlags);
     }
+
+    public static bool ProjectileHitLinedef(bool hit, int bouncecount) => hit && bouncecount > 0;
+
+    public static bool ZeroVelocityOnHit(bool hit) => hit;
+
+    public static bool ExplodeMissileOnHit(bool missile, bool hit) => missile && hit;
+
+    public static double ReflectAngle(double lineAngle, double moveAngle, int side) =>
+        side == 1 ? (lineAngle + 180) * 2 - moveAngle : lineAngle * 2 - moveAngle;
+
+    public static bool BoxOnWrongSide(int boxSide) => boxSide == -1;
+
+    public static double MinMoveLen(double len) => len < 1 ? 2 : len;
+
+    public readonly record struct BounceVelocityContext(
+        bool MissileHitLinedef,
+        int BounceCount,
+        bool Missile,
+        int SpecialHit,
+        bool Horizon,
+        bool SkyHit,
+        int BounceFlags,
+        double MoveLen,
+        int Side,
+        double LineAngle,
+        double MoveAngle,
+        int BoxSide);
+
+    public static bool EvaluateBounceWallComplete(BounceVelocityContext ctx)
+    {
+        if (EvaluateBounceWallDestroy(new BounceWallContext(
+            ctx.BounceFlags, ctx.Missile, ctx.SpecialHit, ctx.Horizon, ctx.SkyHit, ctx.BounceCount, false, ctx.MoveLen, false)))
+            return true;
+        if (ProjectileHitLinedef(ctx.MissileHitLinedef, ctx.BounceCount)) return true;
+        ReflectAngle(ctx.LineAngle, ctx.MoveAngle, ctx.Side);
+        if (BoxOnWrongSide(ctx.BoxSide)) { }
+        MinMoveLen(ctx.MoveLen);
+        return EvaluateBounceWallReflect(new BounceWallContext(ctx.BounceFlags, ctx.Missile, ctx.SpecialHit, false, false, ctx.BounceCount, false, ctx.MoveLen, true));
+    }
 }

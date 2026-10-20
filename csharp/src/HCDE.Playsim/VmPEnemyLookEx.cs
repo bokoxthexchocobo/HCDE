@@ -81,7 +81,7 @@ public static class VmPEnemyLookEx
         int Reactiontime,
         bool SeeSoundValid,
         int Flags,
-        bool Inchase,
+        int Flags7,
         bool HasTarget,
         bool NoJump);
 
@@ -92,7 +92,7 @@ public static class VmPEnemyLookEx
         {
             if (FullVolumeSee(ctx.Flags)) { }
         }
-        if (!ctx.HasTarget || InchaseSkipsSee(ctx.Inchase)) return false;
+        if (!ctx.HasTarget || InchaseSkipsSee(ctx.Flags7)) return false;
         return !NoJumpBlocks(ctx.Flags);
     }
 }
