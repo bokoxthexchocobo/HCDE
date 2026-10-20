@@ -12,25 +12,25 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 133842
+    "managedCSharpLoc": 133915
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 16115,
+    "convertedThisRunNative": 16105,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 31751,
+    "convertedThisRunManaged": 31877,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": 151,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 467853,
+    "remainingNative": 467863,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 34642,
+    "convertedBehaviorNative": 34632,
     "recognitionBehaviorNative": 5591,
-    "combinedBehaviorNative": 40233,
-    "convertedBehaviorManaged": 41422,
+    "combinedBehaviorNative": 40223,
+    "convertedBehaviorManaged": 41548,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -14920,15 +14920,48 @@
             "file": "src/maploader/maploader.cpp",
             "symbol": "MapLoader::LoadLineDefs2",
             "start": 1787,
-            "end": 1879,
+            "end": 1832,
             "tests": [
-              "VmMapLoaderLoadLineDefsTests.ShouldForceNodeBuildOnSkip_WhenLinesRemoved"
+              "VmMapLoaderLoadLineDefsTests.ShouldForceNodeBuildOnSkip_WhenLinesRemoved",
+              "VmMapLoaderLoadLineDefsTests.CompactZeroLengthDoomLines_RemovesCoincident",
+              "VmMapLoaderLoadLineDefsTests.ResolveActivationFromFlags_ExpandsAnyCross"
             ]
           }
         ],
-        "nativeLoc": 197,
-        "managedLoc": 69,
-        "conversionManagedCommit": "9fff9396e5b4dc03de61f81de6af4f6bd6880a90"
+        "nativeLoc": 150,
+        "managedLoc": 142,
+        "conversionManagedCommit": "ad45cb3015ba6f837c518db73451bd515978323c"
+      },
+      {
+        "name": "d-main-compat-fps-chunk383",
+        "bucket": "conversion",
+        "note": "compatmode presets 8\u20139 and CalcFps frame accounting",
+        "auditSeams": "CVAR callback side effects and `screen->FrameTime` are not hosted.",
+        "auditRationale": "Credits `CUSTOM_CVAR(compatmode)` cases 8\u20139 and `CalcFps` from `d_main.cpp`.",
+        "nativeRanges": [
+          {
+            "file": "src/d_main.cpp",
+            "symbol": "CUSTOM_CVAR(compatmode)",
+            "start": 896,
+            "end": 912,
+            "tests": [
+              "VmDMainRenderDmflagsTests.CompatMode_Mbf21Preset_IncludesReservedLineFlag",
+              "VmDMainRenderDmflagsTests.CompatMode_StricterMbf21_AddsMikoPortals"
+            ]
+          },
+          {
+            "file": "src/d_main.cpp",
+            "symbol": "CalcFps",
+            "start": 1041,
+            "end": 1060,
+            "tests": [
+              "VmDMainCalcFpsTests.Tick_AdvancesFrameCountOncePerFrame"
+            ]
+          }
+        ],
+        "nativeLoc": 37,
+        "managedLoc": 53,
+        "conversionManagedCommit": "dd30871754f13cb23215eb30d2fa62949624261a"
       }
     ]
   },
