@@ -12,25 +12,25 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 148464
+    "managedCSharpLoc": 148564
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 33318,
+    "convertedThisRunNative": 33482,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 44923,
+    "convertedThisRunManaged": 45023,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": 151,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 450650,
+    "remainingNative": 450486,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 51845,
+    "convertedBehaviorNative": 52009,
     "recognitionBehaviorNative": 5591,
-    "combinedBehaviorNative": 57436,
-    "convertedBehaviorManaged": 54594,
+    "combinedBehaviorNative": 57600,
+    "convertedBehaviorManaged": 54694,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -20289,6 +20289,45 @@
         "nativeLoc": 161,
         "managedLoc": 137,
         "conversionManagedCommit": "b96a006da667868a3ab05aae80e99a30a26811e8"
+      },
+      {
+        "name": "p-mobj-spawnmapthing-compose-chunk488",
+        "bucket": "conversion",
+        "note": "SpawnMapThing ShouldSpawn gate and actor placement UDMF tail",
+        "auditSeams": "`VMCall` ShouldSpawn, `StaticSpawn`, `CallBeginPlay`, and `GetConversation` are not hosted.",
+        "auditRationale": "Credits virtual spawn gate, mapthing Z selection, conversation/UDMF/light/health placement policy from `p_mobj.cpp` (6871\u20136881, 6942\u20137094).",
+        "managedSourceFiles": [
+          "csharp/src/HCDE.Playsim/VmPMobjSpawnMapThingCompose.cs"
+        ],
+        "nativeRanges": [
+          {
+            "file": "src/playsim/p_mobj.cpp",
+            "symbol": "FLevelLocals::SpawnMapThing",
+            "start": 6871,
+            "end": 6881,
+            "tests": [
+              "VmPMobjSpawnMapThingComposeTests.Gate_RequiresVirtualTrue",
+              "VmPMobjSpawnMapThingComposeTests.Z_CeilingWinsOverFloat"
+            ]
+          },
+          {
+            "file": "src/playsim/p_mobj.cpp",
+            "symbol": "FLevelLocals::SpawnMapThing",
+            "start": 6942,
+            "end": 7094,
+            "tests": [
+              "VmPMobjSpawnMapThingComposeTests.Conversation_NeedsValidRoot",
+              "VmPMobjSpawnMapThingComposeTests.Udmf_AlphaWhenNonNegative",
+              "VmPMobjSpawnMapThingComposeTests.Light_OverrideClearsFlag",
+              "VmPMobjSpawnMapThingComposeTests.Health_PositiveScales",
+              "VmPMobjSpawnMapThingComposeTests.Health_DieFromSpawnWhenZero",
+              "VmPMobjSpawnMapThingComposeTests.Spawn_FloatbobCompatRecordsSpecial"
+            ]
+          }
+        ],
+        "nativeLoc": 164,
+        "managedLoc": 100,
+        "conversionManagedCommit": "f56f49a695e2a46785f0e82a9d947ae93591e186"
       }
     ]
   },
