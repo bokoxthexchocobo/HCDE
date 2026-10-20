@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 2890,
+  "convertedThisRunNative": 3079,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 18575,
+  "convertedThisRunManaged": 18717,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -208,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 481437,
+  "remainingNative": 481248,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 21417,
+  "convertedBehaviorNative": 21606,
   "recognitionBehaviorNative": 5232,
-  "combinedBehaviorNative": 26649,
-  "convertedBehaviorManaged": 28246,
+  "combinedBehaviorNative": 26838,
+  "convertedBehaviorManaged": 28388,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -8194,6 +8194,43 @@
       ],
       "conversionManagedCommit": "2b7b08e7bc03a5783ab7af5114df12961fa38506",
       "nativeLoc": 252
+    },
+    {
+      "name": "animdef-warp-switch-chunk194",
+      "bucket": "conversion",
+      "managedLoc": 142,
+      "note": "ParseTime, ParseWarp, ProcessSwitchDef.",
+      "nativeRanges": [
+        {
+          "file": "src/gamedata/textures/animations.cpp",
+          "symbol": "FTextureAnimator::ParseTime",
+          "start": 597,
+          "end": 617,
+          "tests": [
+            "VmAnimDefDocumentParserTests.PicAndRange_BuildFrames"
+          ]
+        },
+        {
+          "file": "src/gamedata/textures/animations.cpp",
+          "symbol": "FTextureAnimator::ParseWarp",
+          "start": 627,
+          "end": 687,
+          "tests": [
+            "VmAnimDefDocumentParserTests.FlatOptional_MarksMissingWithoutError"
+          ]
+        },
+        {
+          "file": "src/gamedata/textures/anim_switches.cpp",
+          "symbol": "FTextureAnimator::ProcessSwitchDef",
+          "start": 99,
+          "end": 205,
+          "tests": [
+            "VmAnimDefSwitchParserTests.Switch_OnState_ParsesFrames"
+          ]
+        }
+      ],
+      "conversionManagedCommit": "2b7b08e7bc03a5783ab7af5114df12961fa38506",
+      "nativeLoc": 189
     }
   ]
 }
