@@ -1,0 +1,39 @@
+[
+  {
+    "name": "sprite-frame-install-chunk208",
+    "bucket": "conversion",
+    "managedLoc": 108,
+    "note": "Sprite frame rotation resolve, R_InstallSpriteLump, R_InstallSprite finalize.",
+    "nativeRanges": [
+      {
+        "file": "src/r_data/sprites.cpp",
+        "symbol": "spritedef_t::GetSpriteFrame",
+        "start": 62,
+        "end": 95,
+        "tests": [
+          "VmSpriteFrameInstallTests.TryGetSpriteTextureId_UsesRequestedRotationAndMirror"
+        ]
+      },
+      {
+        "file": "src/r_data/sprites.cpp",
+        "symbol": "R_InstallSpriteLump",
+        "start": 105,
+        "end": 174,
+        "tests": [
+          "VmSpriteFrameInstallTests.InstallSpriteLump_FillsAllRotationsForZeroRotation",
+          "VmSpriteFrameInstallTests.InstallSpriteLump_AssignsSpecificRotation"
+        ]
+      },
+      {
+        "file": "src/r_data/sprites.cpp",
+        "symbol": "R_InstallSprite",
+        "start": 178,
+        "end": 269,
+        "tests": [
+          "VmSpriteFrameInstallTests.FinalizeSpriteFrames_PropagatesSingleRotation"
+        ]
+      }
+    ],
+    "conversionManagedCommit": "3d6420bfddee21fec233f8daada070db07036996"
+  }
+]
