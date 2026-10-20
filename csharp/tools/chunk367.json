@@ -1,0 +1,33 @@
+[
+  {
+    "name": "maploader-sectors-nodes-chunk367",
+    "bucket": "conversion",
+    "note": "LoadSectors defaults/fade policy and LoadNodes BSP child validation",
+    "auditSeams": "Sector allocation, `SetTexture`, and pointer wiring are not hosted; managed code mirrors seq-type defaults, behavior flags, fade selection, and BSP child checks.",
+    "auditRationale": "Credits `MapLoader::LoadSectors` and template `MapLoader::LoadNodes` from `maploader.cpp`.",
+    "nativeRanges": [
+      {
+        "file": "src/maploader/maploader.cpp",
+        "symbol": "MapLoader::LoadSectors",
+        "start": 1056,
+        "end": 1146,
+        "tests": [
+          "VmMapLoaderSectorInitTests.ResolveDefaultSeqType_TotalCtrl_IsZero",
+          "VmMapLoaderSectorInitTests.ShouldSetFloorDropFlag_OnlyWhenNoBehavior",
+          "VmMapLoaderSectorInitTests.ResolveFadeColor_OutsideFog_WhenSkyCeiling"
+        ]
+      },
+      {
+        "file": "src/maploader/maploader.cpp",
+        "symbol": "MapLoader::LoadNodes",
+        "start": 1156,
+        "end": 1230,
+        "tests": [
+          "VmMapLoaderClassicNodesTests.ShouldAttemptLoad_RejectsEmptyNodesWithoutSingleSubsector",
+          "VmMapLoaderClassicNodesTests.ResolveChild_InvalidSubsector_WhenIndexTooLarge",
+          "VmMapLoaderClassicNodesTests.ResolveChild_NodeAlreadyUsed_WhenDuplicate"
+        ]
+      }
+    ]
+  }
+]
