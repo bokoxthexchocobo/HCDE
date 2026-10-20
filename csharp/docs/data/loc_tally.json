@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 8680,
+  "convertedThisRunNative": 8713,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 22835,
+  "convertedThisRunManaged": 22855,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": 111,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 475328,
+  "remainingNative": 475295,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 27207,
+  "convertedBehaviorNative": 27240,
   "recognitionBehaviorNative": 5551,
-  "combinedBehaviorNative": 32758,
-  "convertedBehaviorManaged": 32506,
+  "combinedBehaviorNative": 32791,
+  "convertedBehaviorManaged": 32526,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -10400,6 +10400,61 @@
         }
       ],
       "nativeLoc": 95,
+      "conversionManagedCommit": "20d15060ccd8058244d9e6fca30fb9834482d81c"
+    },
+    {
+      "name": "doomfont-gap-lines-chunk234",
+      "bucket": "conversion",
+      "managedLoc": 20,
+      "note": "Uncredited doomfont gap lines outside HU macro band.",
+      "nativeRanges": [
+        {
+          "file": "src/gamedata/doomfont.cpp",
+          "symbol": "doomfont file header",
+          "start": 1,
+          "end": 29,
+          "tests": [
+            "VmDoomFontConstantsTests.HuFontSize_MatchesNativeRange"
+          ]
+        },
+        {
+          "file": "src/gamedata/doomfont.cpp",
+          "symbol": "HU_FONTSIZE line",
+          "start": 35,
+          "end": 35,
+          "tests": [
+            "VmDoomFontConstantsTests.HuFontSize_MatchesNativeRange"
+          ]
+        },
+        {
+          "file": "src/gamedata/doomfont.cpp",
+          "symbol": "InitDoomFonts gap",
+          "start": 93,
+          "end": 93,
+          "tests": [
+            "VmDoomFontPlannerTests.PlanBigFont_UsesZBigWhenNoFontB"
+          ]
+        },
+        {
+          "file": "src/gamedata/doomfont.cpp",
+          "symbol": "InitDoomFonts gap 2",
+          "start": 119,
+          "end": 119,
+          "tests": [
+            "VmDoomFontPlannerTests.PlanBigFont_UsesZBigWhenNoFontB"
+          ]
+        },
+        {
+          "file": "src/gamedata/doomfont.cpp",
+          "symbol": "InitDoomFonts gap 3",
+          "start": 170,
+          "end": 170,
+          "tests": [
+            "VmDoomFontPlannerTests.PlanBigFont_UsesZBigWhenNoFontB"
+          ]
+        }
+      ],
+      "nativeLoc": 33,
       "conversionManagedCommit": "20d15060ccd8058244d9e6fca30fb9834482d81c"
     }
   ]
