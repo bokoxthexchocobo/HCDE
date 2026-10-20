@@ -6,6 +6,7 @@
     "auditSeams": "`P_DamageMobj` hosted paths, `CallDie`, `P_GiveBody`, `S_Sound`, and event managers are not fully hosted.",
     "auditRationale": "Credits friendly-fire scaling, player invuln/armor/buddha, power-drain selection, monster buddha, and death attribution from `p_interaction.cpp` (1320–1571).",
     "managedSourceFiles": ["csharp/src/HCDE.Playsim/VmPInteractionDamageLate.cs"],
+    "portCommits": ["247523d7da2192c8c423651c310b00c1c8daa2ba"],
     "nativeRanges": [
       {
         "file": "src/playsim/p_interaction.cpp",
@@ -14,7 +15,10 @@
         "end": 1459,
         "tests": [
           "VmPInteractionDamageLateTests.TeamDamage_ScalesTeammateHit",
-          "VmPInteractionDamageLateTests.PlayerInvuln_BlocksNonTelefrag"
+          "VmPInteractionDamageLateTests.PlayerInvuln_BlocksNonTelefrag",
+          "VmPInteractionDamageLateTests.ScaleTeamDamage_AppliesMultiplier",
+          "VmPInteractionDamageLateTests.EndLevelHack_ClampsLethalDamage",
+          "VmPInteractionDamageLateTests.PlayerPhase_StopsOnInvuln"
         ]
       },
       {
@@ -24,7 +28,9 @@
         "end": 1514,
         "tests": [
           "VmPInteractionDamageLateTests.PlayerArmor_UsesInventory",
-          "VmPInteractionDamageLateTests.DrainEligible_SkipsSamePlayer"
+          "VmPInteractionDamageLateTests.DrainEligible_SkipsSamePlayer",
+          "VmPInteractionDamageLateTests.PowerDrain_PicksMaxStrength",
+          "VmPInteractionDamageLateTests.ClampDamageCount_CapsAt100"
         ]
       },
       {
@@ -35,7 +41,8 @@
         "tests": [
           "VmPInteractionDamageLateTests.MonsterBuddha_SavesAtOneHp",
           "VmPInteractionDamageLateTests.DeathProceeds_WhenNoBuddha",
-          "VmPInteractionDamageLateTests.ReturnNonNegative_PreservesCancelSentinel"
+          "VmPInteractionDamageLateTests.ReturnNonNegative_PreservesCancelSentinel",
+          "VmPInteractionDamageLateTests.ResolveDamageType_UsesInflictorDeathType"
         ]
       }
     ]

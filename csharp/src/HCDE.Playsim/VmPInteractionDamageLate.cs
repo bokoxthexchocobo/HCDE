@@ -127,4 +127,113 @@ public static class VmPInteractionDamageLate
 
     public static bool EvaluateDeathProceeds(DeathTailContext ctx) =>
         ctx.Health <= 0 && !EvaluateMonsterBuddha(ctx);
+
+    public static int ScaleTeamDamage(int damage, double teamDamage) =>
+        (int)(damage * teamDamage);
+
+    public static int ClampEndLevelDamage(int damage, int health) =>
+        damage >= health ? health - 1 : damage;
+
+    public static int ClampDamageCount(int count) => count > 100 ? 100 : count;
+
+    public static int TactilePulseDamage(int damage) => damage < 100 ? damage : 100;
+
+    public static bool MonsterArmorEligible(int flags, bool hasInventory, int damage) =>
+        (flags & (DmgNoArmor | DmgForced)) == 0 && hasInventory && damage > 0;
+
+    public static bool ForcedClearsBuddhaOnPlayer(int flags, int cheats, bool nodamage) =>
+        (flags & DmgForced) != 0 && ((cheats & (1 | 2)) != 0 || nodamage);
+
+    public readonly record struct PlayerDamagePhaseContext(
+        bool HasPlayer,
+        int Flags,
+        int Cheats,
+        bool Nodamage,
+        bool EndLevelSector,
+        int Damage,
+        int Health,
+        bool Telefrag,
+        bool Invuln,
+        bool God,
+        bool God2,
+        bool NoArmor,
+        bool HasInventory,
+        bool AutoUse,
+        bool Deathmatch,
+        bool AltNull,
+        bool VoodooCompat,
+        int BuddhaLevel);
+
+    public enum PlayerDamagePhaseOutcome
+    {
+        Continue,
+        StopZero,
+        StopCancel,
+    }
+
+    public static PlayerDamagePhaseOutcome EvaluatePlayerDamagePhase(PlayerDamagePhaseContext ctx)
+    {
+        if (!ctx.HasPlayer) return PlayerDamagePhaseOutcome.Continue;
+        var flags = ctx.Flags;
+        if (ClearsForcedOnGod2(ctx.God2, false, ctx.Nodamage))
+            flags &= ~DmgForced;
+        var damage = EndLevelHellHack(ctx.EndLevelSector, ctx.Damage, ctx.Health)
+            ? ClampEndLevelDamage(ctx.Damage, ctx.Health)
+            : ctx.Damage;
+        if ((flags & DmgForced) == 0)
+        {
+            if (PlayerInvulnBlocks(ctx.Telefrag, ctx.Invuln, ctx.God, ctx.God2, ctx.Nodamage))
+                return PlayerDamagePhaseOutcome.StopZero;
+            if (ArmorAbsorbPath(ctx.NoArmor, ctx.HasInventory, damage) && damage <= 0)
+                return damage < 0 ? PlayerDamagePhaseOutcome.StopCancel : PlayerDamagePhaseOutcome.StopZero;
+        }
+        return PlayerDamagePhaseOutcome.Continue;
+    }
+
+    public readonly record struct PowerDrainContext(
+        bool SourcePlayer,
+        bool DontDrain,
+        bool SamePlayerVictim,
+        double BestStrength,
+        double CandidateStrength,
+        int Damage,
+        bool HasVirtual,
+        bool GaveBody);
+
+    public static int EvaluatePowerDrainDamage(PowerDrainContext ctx)
+    {
+        if (!DrainEligible(ctx.SourcePlayer, ctx.DontDrain, ctx.SamePlayerVictim)) return 0;
+        var strength = ctx.BestStrength;
+        if (PickDrainStrength(ctx.CandidateStrength, strength)) strength = ctx.CandidateStrength;
+        if (!DrainPositive(strength)) return 0;
+        return (int)(strength * ctx.Damage);
+    }
+
+    public static bool ShouldPlayDrainSound(PowerDrainContext ctx, int drainDamage) =>
+        drainDamage > 0 && ctx.GaveBody;
+
+    public readonly record struct DeathTypeContext(
+        int Mod,
+        int FireMod,
+        bool Player,
+        bool AltNull,
+        bool HasInflictor,
+        int Health,
+        int Damage,
+        bool SpecialFireDamage,
+        bool InflictorDeathTypeSet,
+        int InflictorDeathMod);
+
+    public static int ResolveDamageType(DeathTypeContext ctx)
+    {
+        if (DeathUsesInflictorType(ctx.HasInflictor, ctx.InflictorDeathTypeSet))
+            return ctx.InflictorDeathMod;
+        if (ctx.Mod != ctx.FireMod) return ctx.Mod;
+        if (FlameDeathPlayer(true, ctx.Player, ctx.AltNull, ctx.Health, ctx.Damage, ctx.SpecialFireDamage))
+            return ctx.FireMod;
+        return ctx.Player && ctx.AltNull ? ctx.Mod : ctx.FireMod;
+    }
+
+    public static bool RedirectKillCredit(bool summoned, bool tracerPlayer, bool tracerIsMo) =>
+        MinotaurKillCredit(summoned, tracerPlayer, tracerIsMo);
 }
