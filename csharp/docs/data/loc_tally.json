@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 18153,
+  "convertedThisRunNative": 18303,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 33491,
+  "convertedThisRunManaged": 33655,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": 151,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 465815,
+  "remainingNative": 465665,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 36680,
+  "convertedBehaviorNative": 36830,
   "recognitionBehaviorNative": 5591,
-  "combinedBehaviorNative": 42271,
-  "convertedBehaviorManaged": 43162,
+  "combinedBehaviorNative": 42421,
+  "convertedBehaviorManaged": 43326,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -15735,6 +15735,65 @@
       "nativeLoc": 161,
       "managedLoc": 165,
       "conversionManagedCommit": "0fad3758d9658779fa6553283e698ddcef130f0d"
+    },
+    {
+      "name": "maploader-behavior-poly-indices-chunk398",
+      "bucket": "conversion",
+      "note": "LoadBehavior, GetPolySpots, CalcIndices, LoadLevel translator preamble",
+      "auditSeams": "`MapData` IO, `P_LoadTranslator`, and node build orchestration are not hosted.",
+      "auditRationale": "Credits `MapLoader::LoadBehavior`, `GetPolySpots`, `CalcIndices`, and the behavior/translator/maptype preamble of `LoadLevel` from `maploader.cpp`.",
+      "nativeRanges": [
+        {
+          "file": "src/maploader/maploader.cpp",
+          "symbol": "MapLoader::LoadBehavior",
+          "start": 2858,
+          "end": 2869,
+          "tests": [
+            "VmMapLoaderLoadBehaviorTests.ShouldLoadBehaviorModule_WhenLumpPresent",
+            "VmMapLoaderLoadBehaviorTests.ShouldUnloadAcsOnCheckFailure_WhenNotGood"
+          ]
+        },
+        {
+          "file": "src/maploader/maploader.cpp",
+          "symbol": "MapLoader::GetPolySpots",
+          "start": 2877,
+          "end": 2901,
+          "tests": [
+            "VmMapLoaderGetPolySpotsTests.CollectPolyStart_SplitsAnchorAndSpot"
+          ]
+        },
+        {
+          "file": "src/maploader/maploader.cpp",
+          "symbol": "MapLoader::CalcIndices",
+          "start": 2909,
+          "end": 2936,
+          "tests": [
+            "VmMapLoaderCalcIndicesTests.ApplyCalcIndices_FillsSequential"
+          ]
+        },
+        {
+          "file": "src/maploader/maploader.cpp",
+          "symbol": "MapLoader::LoadLevel translator",
+          "start": 2944,
+          "end": 2998,
+          "tests": [
+            "VmMapLoaderLoadLevelPreambleTests.ResolveTranslator_PrefersMapInfo"
+          ]
+        },
+        {
+          "file": "src/maploader/maploader.cpp",
+          "symbol": "MapLoader::LoadLevel geometry dispatch",
+          "start": 3026,
+          "end": 3055,
+          "tests": [
+            "VmMapLoaderLoadLevelPreambleTests.ApplyDummySwitchesFlag_SetsForDoomFormat",
+            "VmMapLoaderLoadLevelPreambleTests.ShouldLoadVertexesForBinaryMap"
+          ]
+        }
+      ],
+      "nativeLoc": 150,
+      "managedLoc": 164,
+      "conversionManagedCommit": "08f00c0f30e2be23648fe6e3f018e8b10edb8d63"
     }
   ]
 }
