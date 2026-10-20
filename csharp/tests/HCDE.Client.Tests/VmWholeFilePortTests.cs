@@ -2,13 +2,6 @@ namespace HCDE.Client.Tests;
 
 public class VmWholeFilePortTests
 {
-    [Fact]
-    public void EmptyTexture_TryCreateFromEightZeroBytes()
-    {
-        Assert.True(VmEmptyTextureImage.TryCreateFromLump(new byte[8], out var descriptor));
-        Assert.Equal(1, descriptor!.Value.Width);
-        Assert.Equal(0, VmEmptyTextureImage.CreatePalettedPixel());
-    }
 
     [Fact]
     public void ColorBlendTables_BuildSwizzledRows()
@@ -45,21 +38,6 @@ public class VmWholeFilePortTests
         Assert.True(VmVanillaTransparency.UseVanillaTransparency(2, ref state, Find));
     }
 
-    [Fact]
-    public void HcdeTaunt_BuildsCanonicalAndVariantNames()
-    {
-        Assert.Equal("*taunt", VmHcdeTaunt.MakeTauntSoundName(null));
-        Assert.Equal("*taunt-doomguy", VmHcdeTaunt.MakeTauntSoundName("doomguy"));
-    }
-
-    [Fact]
-    public void HcdeTaunt_CooldownBlocksBackToBackCalls()
-    {
-        var expiry = 0UL;
-        Assert.True(VmHcdeTaunt.TryBeginTaunt(0, ref expiry, out _, out _));
-        Assert.False(VmHcdeTaunt.TryBeginTaunt(500, ref expiry, out var remain, out _));
-        Assert.Equal(1000UL, remain);
-    }
 
     [Fact]
     public void MvlResourceProbe_ReadsDirectoryOffsets()

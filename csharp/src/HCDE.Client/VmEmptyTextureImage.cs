@@ -5,9 +5,17 @@ public static class VmEmptyTextureImage
 {
     public const int PlaceholderLumpLength = 8;
 
-    public static bool TryCreateFromLump(ReadOnlySpan<byte> lumpData, out VmEmptyTextureImageDescriptor? descriptor)
+    public static VmEmptyTextureImageSource TryCreateFromLump(ReadOnlySpan<byte> lumpData, int lumpNum)
     {
-        descriptor = null;
+        if (!TryValidateLump(lumpData))
+            throw new InvalidDataException("Empty texture lump must be eight zero bytes.");
+        return new VmEmptyTextureImageSource(lumpNum);
+    }
+
+    public static VmEmptyTextureImageSource CreateDefault(int lumpNum = 0) => new(lumpNum);
+
+    public static bool TryValidateLump(ReadOnlySpan<byte> lumpData)
+    {
         if (lumpData.Length != PlaceholderLumpLength)
             return false;
         for (var index = 0; index < PlaceholderLumpLength; index++)
@@ -16,14 +24,30 @@ public static class VmEmptyTextureImage
                 return false;
         }
 
-        descriptor = new VmEmptyTextureImageDescriptor(1, 1, Masked: true, UseGamePalette: true);
         return true;
     }
 
-    public static VmEmptyTextureImageDescriptor CreateDefault() =>
-        new(1, 1, Masked: true, UseGamePalette: true);
-
-    public static byte CreatePalettedPixel() => 0;
+    public static ReadOnlyMemory<byte> CreatePalettedPixels(VmEmptyTextureImageSource source)
+    {
+        _ = source;
+        return new byte[] { 0 };
+    }
 }
 
-public readonly record struct VmEmptyTextureImageDescriptor(int Width, int Height, bool Masked, bool UseGamePalette);
+public sealed class VmEmptyTextureImageSource
+{
+    public VmEmptyTextureImageSource(int sourceLump)
+    {
+        SourceLump = sourceLump;
+        Width = 1;
+        Height = 1;
+        Masked = true;
+        UseGamePalette = true;
+    }
+
+    public int SourceLump { get; }
+    public int Width { get; }
+    public int Height { get; }
+    public bool Masked { get; }
+    public bool UseGamePalette { get; }
+}
