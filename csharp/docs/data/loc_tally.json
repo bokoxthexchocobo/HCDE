@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 20820,
+  "convertedThisRunNative": 20974,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 35532,
+  "convertedThisRunManaged": 35705,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": 151,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 463148,
+  "remainingNative": 462994,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 39347,
+  "convertedBehaviorNative": 39501,
   "recognitionBehaviorNative": 5591,
-  "combinedBehaviorNative": 44938,
-  "convertedBehaviorManaged": 45203,
+  "combinedBehaviorNative": 45092,
+  "convertedBehaviorManaged": 45376,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -16555,6 +16555,37 @@
       "nativeLoc": 162,
       "managedLoc": 156,
       "conversionManagedCommit": "ddc02b34f0da11ccf6ae8b6c73e25c857d5fe84e"
+    },
+    {
+      "name": "p-lnspec-floor-movers-chunk413",
+      "bucket": "conversion",
+      "note": "LS_Floor_* movers and Generic_Floor dispatch",
+      "auditSeams": "`EV_DoFloor` and live sector motion are not hosted in these bands.",
+      "auditRationale": "Credits native `LS_Floor_*` argument wiring and `LS_Generic_Floor` target selection from `p_lnspec.cpp`.",
+      "nativeRanges": [
+        {
+          "file": "src/playsim/p_lnspec.cpp",
+          "symbol": "LS_Floor_* core",
+          "start": 336,
+          "end": 471,
+          "tests": [
+            "VmPLnspecFloorCeilingTests.FloorLowerByValueTimes8_ScalesHeight",
+            "VmPLnspecFloorCeilingTests.GenericFloor_SelectsRaiseToHighest"
+          ]
+        },
+        {
+          "file": "src/playsim/p_lnspec.cpp",
+          "symbol": "LS_Floor_RaiseToCeiling",
+          "start": 484,
+          "end": 501,
+          "tests": [
+            "VmPLnspecFloorCeilingTests.Speed_DividesByEight"
+          ]
+        }
+      ],
+      "nativeLoc": 154,
+      "managedLoc": 173,
+      "conversionManagedCommit": "48ec1a79971be88a3be75aef1eb4c202d4002586"
     }
   ]
 }
