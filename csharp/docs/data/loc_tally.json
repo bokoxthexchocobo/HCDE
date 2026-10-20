@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 376,
+  "convertedThisRunNative": 650,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 13573,
+  "convertedThisRunManaged": 14727,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -87,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 483830,
+  "remainingNative": 483556,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 18903,
+  "convertedBehaviorNative": 19177,
   "recognitionBehaviorNative": 5353,
-  "combinedBehaviorNative": 24256,
-  "convertedBehaviorManaged": 23244,
+  "combinedBehaviorNative": 24530,
+  "convertedBehaviorManaged": 24398,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -7401,6 +7401,33 @@
         }
       ],
       "nativeLoc": 257
+    },
+    {
+      "name": "namedef-static-chunk155",
+      "bucket": "conversion",
+      "managedLoc": 1154,
+      "note": "namedef.h xx() static name list lookup (not constexpr FindDuplicates).",
+      "nativeRanges": [
+        {
+          "file": "src/namedef.h",
+          "symbol": "PredefinedNames xx/xy table",
+          "start": 35,
+          "end": 280,
+          "tests": [
+            "VmPredefinedNamesTests.GetIndex_NoneIsZero"
+          ]
+        },
+        {
+          "file": "src/utility/name.cpp",
+          "symbol": "NameManager predefined names array",
+          "start": 65,
+          "end": 92,
+          "tests": [
+            "VmPredefinedNamesTests.GetIndex_NoneIsZero"
+          ]
+        }
+      ],
+      "nativeLoc": 274
     }
   ]
 }
