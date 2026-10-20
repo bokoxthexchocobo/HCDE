@@ -4,7 +4,7 @@
   "runStartConvertedBehaviorManaged": 9671,
   "convertedThisRunNative": 18153,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 33161,
+  "convertedThisRunManaged": 33491,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": 151,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
@@ -14,7 +14,7 @@
   "convertedBehaviorNative": 36680,
   "recognitionBehaviorNative": 5591,
   "combinedBehaviorNative": 42271,
-  "convertedBehaviorManaged": 42832,
+  "convertedBehaviorManaged": 43162,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -15546,8 +15546,8 @@
         }
       ],
       "nativeLoc": 173,
-      "managedLoc": 86,
-      "conversionManagedCommit": "1a55c44f39854456fb794c7b8cdd04f62cde350a"
+      "managedLoc": 197,
+      "conversionManagedCommit": "2b10d224a1ea0b12865bec7434187c2627aecba6"
     },
     {
       "name": "d-main-debug-ccmds-chunk396",
@@ -15608,7 +15608,7 @@
           "start": 2275,
           "end": 2282,
           "tests": [
-            "VmDMainParseCVarInfoTests.IsPatchExtension_MatchesDeh"
+            "VmDMainDebugCcmdsTests.MultiExecFileList_YieldsAllArgs"
           ]
         },
         {
@@ -15622,8 +15622,8 @@
         }
       ],
       "nativeLoc": 157,
-      "managedLoc": 74,
-      "conversionManagedCommit": "847878b658b261b2d04787e235b5203559525ec7"
+      "managedLoc": 185,
+      "conversionManagedCommit": "63458f80dd5fbc9f5b0ab617d4613a9cc6ed8e65"
     },
     {
       "name": "am-map-custom-cvar-callbacks-chunk397",
@@ -15733,8 +15733,8 @@
         }
       ],
       "nativeLoc": 161,
-      "managedLoc": 57,
-      "conversionManagedCommit": "96a75c8678eee077cf9c8152180562184596435e"
+      "managedLoc": 165,
+      "conversionManagedCommit": "0fad3758d9658779fa6553283e698ddcef130f0d"
     }
   ]
 }

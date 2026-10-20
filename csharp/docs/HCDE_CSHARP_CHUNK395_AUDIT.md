@@ -14,8 +14,8 @@ CVARINFO scanner and deh/bex patch discovery
 ## Managed
 
 `VmDMainParseCVarInfo.cs`, `VmDMainParseCVarInfoTests.cs`
-Managed LOC (tally): 86.
-Conversion commit: `1a55c44f39854456fb794c7b8cdd04f62cde350a`.
+Managed LOC (tally): 197.
+Conversion commit: `2b10d224a1ea0b12865bec7434187c2627aecba6`.
 
 ## Tests
 

@@ -22,9 +22,9 @@ Automap CUSTOM_CVAR callbacks, color tables, colorset helpers
 
 ## Managed
 
-`VmAutomapCustomCvarCallbacks.cs`, `VmDMainParseCVarInfoTests.cs`
-Managed LOC (tally): 57.
-Conversion commit: `96a75c8678eee077cf9c8152180562184596435e`.
+`VmAutomapColorsetTableData.cs`, `VmAutomapCustomCvarCallbacks.cs`, `VmAutomapCustomCvarCallbacksTests.cs`
+Managed LOC (tally): 165.
+Conversion commit: `0fad3758d9658779fa6553283e698ddcef130f0d`.
 
 ## Tests
 

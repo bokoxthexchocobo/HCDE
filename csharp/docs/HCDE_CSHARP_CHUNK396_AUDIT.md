@@ -18,9 +18,9 @@ debug_restart, cleanup warn, window title, fs_dir, type, cmdline files
 
 ## Managed
 
-`VmDMainDebugCcmds.cs`
-Managed LOC (tally): 74.
-Conversion commit: `847878b658b261b2d04787e235b5203559525ec7`.
+`VmDMainCmdlineExec.cs`, `VmDMainDebugCcmds.cs`, `VmDMainDebugRestart.cs`, `VmDMainWindowTitle.cs`
+Managed LOC (tally): 185.
+Conversion commit: `63458f80dd5fbc9f5b0ab617d4613a9cc6ed8e65`.
 
 ## Tests
 
@@ -28,7 +28,7 @@ Conversion commit: `847878b658b261b2d04787e235b5203559525ec7`.
 - `VmDMainDebugCcmdsTests.StripTitleColorEscapes_RemovesBracketSequence`
 - `VmDMainDebugCcmdsTests.FormatBrandedWindowTitle_PrefixesHcde`
 - `VmDMainDebugCcmdsTests.ShouldMarkFsDirEntryHidden_WhenShadowed`
-- `VmDMainParseCVarInfoTests.IsPatchExtension_MatchesDeh`
+- `VmDMainDebugCcmdsTests.MultiExecFileList_YieldsAllArgs`
 
 ## Verified
 
