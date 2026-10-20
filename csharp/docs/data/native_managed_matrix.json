@@ -12,25 +12,25 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 138109
+    "managedCSharpLoc": 138104
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 21140,
+    "convertedThisRunNative": 21297,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 35792,
+    "convertedThisRunManaged": 35889,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": 151,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 462828,
+    "remainingNative": 462671,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 39667,
+    "convertedBehaviorNative": 39824,
     "recognitionBehaviorNative": 5591,
-    "combinedBehaviorNative": 45258,
-    "convertedBehaviorManaged": 45463,
+    "combinedBehaviorNative": 45415,
+    "convertedBehaviorManaged": 45560,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -16624,6 +16624,63 @@
         "nativeLoc": 166,
         "managedLoc": 87,
         "conversionManagedCommit": "2c86343b9c01ce279f79e3f82f1ccb477ed426c2"
+      },
+      {
+        "name": "lights-ev-strife-reborn-chunk415",
+        "bucket": "conversion",
+        "note": "EV strobe/light-on/glow, Strife teaser voices, DoomButtons table",
+        "auditSeams": "Sector iterators, filesystem namespaces, and bind registration are not hosted.",
+        "auditRationale": "Credits `EV_StartLightStrobing`, `EV_LightTurnOn`, `EV_StartLightGlowing`, `FindStrifeTeaserVoices`, and the `DoomButtons` table from `a_lights.cpp` and `d_main.cpp`.",
+        "nativeRanges": [
+          {
+            "file": "src/playsim/mapthinkers/a_lights.cpp",
+            "symbol": "EV_StartLightStrobing",
+            "start": 570,
+            "end": 596,
+            "tests": [
+              "VmALightsEvAndRebornTests.Strobe_SkipsLitSector"
+            ]
+          },
+          {
+            "file": "src/playsim/mapthinkers/a_lights.cpp",
+            "symbol": "EV_LightTurnOn",
+            "start": 635,
+            "end": 669,
+            "tests": [
+              "VmALightsEvAndRebornTests.LightTurnOn_SearchesWhenBrightNegative"
+            ]
+          },
+          {
+            "file": "src/playsim/mapthinkers/a_lights.cpp",
+            "symbol": "EV_StartLightGlowing",
+            "start": 740,
+            "end": 766,
+            "tests": [
+              "VmALightsEvAndRebornTests.LightGlowing_SwapsBounds"
+            ]
+          },
+          {
+            "file": "src/d_main.cpp",
+            "symbol": "FindStrifeTeaserVoices",
+            "start": 3248,
+            "end": 3281,
+            "tests": [
+              "VmDMainStrifeTeaserVoicesTests.ShouldScanVoices_RequiresStrifeShareware"
+            ]
+          },
+          {
+            "file": "src/d_main.cpp",
+            "symbol": "DoomButtons",
+            "start": 3283,
+            "end": 3316,
+            "tests": [
+              "VmDMainDoomButtonsTests.ButtonCount_MatchesNativeTable"
+            ]
+          }
+        ],
+        "nativeLoc": 157,
+        "managedLoc": 97,
+        "conversionManagedCommit": "d6ff4b42ba3a51aa566164a94e2a1e81d445a6dd"
       }
     ]
   },

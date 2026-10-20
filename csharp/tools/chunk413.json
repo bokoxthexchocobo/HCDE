@@ -20,7 +20,7 @@
         "file": "src/playsim/p_lnspec.cpp",
         "symbol": "LS_Floor_RaiseToCeiling",
         "start": 484,
-        "end": 531,
+        "end": 501,
         "tests": [
           "VmPLnspecFloorCeilingTests.Speed_DividesByEight"
         ]
