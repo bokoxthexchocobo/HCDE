@@ -6,6 +6,7 @@
     "auditSeams": "`aim_t::AimTraverse`, `P_TranslatePortalXY`, `Printf`, and `FPathTraverse` are not hosted.",
     "auditRationale": "Credits aim target reset, 3D-floor pitch clipping, sector portal limits, and line portal restriction from `p_map.cpp` (3902–4177; bounce actor band is chunk461).",
     "managedSourceFiles": ["csharp/src/HCDE.Playsim/VmPMapAimTraverse.cs"],
+    "portCommits": ["1ed2d2b53450fd09f848673f839f2edaa0033ca"],
     "nativeRanges": [
       {
         "file": "src/playsim/p_map.cpp",
@@ -21,7 +22,8 @@
         "end": 4109,
         "tests": [
           "VmPMapAimTraverseTests.ThreeDFloor_BlocksWhenPitchRangeClosed",
-          "VmPMapAimTraverseTests.ThreeDFloor_PassesWithout3dSectors"
+          "VmPMapAimTraverseTests.ThreeDFloor_PassesWithout3dSectors",
+          "VmPMapAimTraverseTests.LeavingSectorUpperSlope_RaisesTopPitch"
         ]
       },
       {
@@ -29,14 +31,21 @@
         "symbol": "aim_t::EnterSectorPortal",
         "start": 4117,
         "end": 4140,
-        "tests": ["VmPMapAimTraverseTests.SectorPortal_SkipsHighCeilingPortal"]
+        "tests": [
+          "VmPMapAimTraverseTests.SectorPortal_SkipsHighCeilingPortal",
+          "VmPMapAimTraverseTests.SectorPortalTrace_SetsAimUpOnCeiling",
+          "VmPMapAimTraverseTests.SkipPortalFrac_BiasesPastTransition"
+        ]
       },
       {
         "file": "src/playsim/p_map.cpp",
         "symbol": "aim_t::EnterLinePortal",
         "start": 4148,
         "end": 4177,
-        "tests": ["VmPMapAimTraverseTests.LinePortal_BlocksWhenRestricted"]
+        "tests": [
+          "VmPMapAimTraverseTests.LinePortal_BlocksWhenRestricted",
+          "VmPMapAimTraverseTests.LinePortalTrace_ComputesTranslatedPosition"
+        ]
       }
     ]
   }

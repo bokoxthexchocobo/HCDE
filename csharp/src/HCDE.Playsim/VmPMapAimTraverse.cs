@@ -86,4 +86,87 @@ public static class VmPMapAimTraverse
         !LinePortalRestricted(ctx.Flags, ctx.LinkedPortal);
 
     public static bool MergeAimResults(double fracA, double fracB) => fracB < fracA;
+
+    public static double SkipPortalFracBias(double frac, double attackRange) =>
+        frac + 1.0 / attackRange;
+
+    public static int SectorPortalAimDir(int position, int ceilingConst) =>
+        PortalPositionIsCeiling(position, ceilingConst) ? AimUp : AimDown;
+
+    public static int ClearPlaneCheckFlag(int planestocheck, int aimDir, int aimFlag) =>
+        planestocheck & ~aimFlag;
+
+    public readonly record struct PitchAdjustResult(double TopPitch, double BottomPitch, bool Blocked);
+
+    public static PitchAdjustResult ApplyUpperBlockAdjust(
+        double lowPitch,
+        double topPitch,
+        double bottomPitch,
+        bool frontFlag,
+        int sideIndex,
+        bool adjustPlane) =>
+        lowPitch > topPitch
+            ? new PitchAdjustResult(lowPitch, bottomPitch, false)
+            : new PitchAdjustResult(topPitch, bottomPitch, false);
+
+    public static PitchAdjustResult ApplyLowerBlockAdjust(
+        double highPitch,
+        double topPitch,
+        double bottomPitch,
+        bool frontFlag,
+        int sideIndex,
+        bool adjustPlane) =>
+        highPitch < bottomPitch
+            ? new PitchAdjustResult(topPitch, highPitch, false)
+            : new PitchAdjustResult(topPitch, bottomPitch, false);
+
+    public static bool LeavingSectorUpperSlope(
+        bool frontMatches,
+        bool sameLast,
+        bool bottomIsLastCeiling,
+        double lowPitch,
+        double topPitch) =>
+        frontMatches && sameLast && bottomIsLastCeiling && lowPitch > topPitch;
+
+    public static bool LeavingSectorLowerSlope(
+        bool frontMatches,
+        bool sameLast,
+        bool topIsLastFloor,
+        double highPitch,
+        double bottomPitch) =>
+        frontMatches && sameLast && topIsLastFloor && highPitch < bottomPitch;
+
+    public readonly record struct SectorPortalTraceContext(
+        int Position,
+        double PortalZ,
+        double LimitZ,
+        double Frac,
+        double AttackRange,
+        int CeilingConst);
+
+    public static bool EvaluateSectorPortalTrace(SectorPortalTraceContext ctx) =>
+        EvaluateSectorPortalEntry(new SectorPortalContext(ctx.Position, ctx.PortalZ, ctx.LimitZ, ctx.CeilingConst))
+        && ctx.AttackRange > 0;
+
+    public readonly record struct LinePortalTraceContext(
+        int Flags,
+        bool LinkedPortal,
+        double Frac,
+        double AttackRange,
+        double StartX,
+        double StartY,
+        double TraceX,
+        double TraceY);
+
+    public static bool EvaluateLinePortalTrace(LinePortalTraceContext ctx)
+    {
+        if (!EvaluateLinePortalEntry(new LinePortalContext(ctx.Flags, ctx.LinkedPortal))) return false;
+        var frac = SkipPortalFracBias(ctx.Frac, ctx.AttackRange);
+        var posX = ctx.StartX + ctx.TraceX * frac;
+        var posY = ctx.StartY + ctx.TraceY * frac;
+        return double.IsFinite(posX) && double.IsFinite(posY);
+    }
+
+    public static bool SetResultWhenCloser(double currentFrac, double candidateFrac) =>
+        candidateFrac < currentFrac;
 }

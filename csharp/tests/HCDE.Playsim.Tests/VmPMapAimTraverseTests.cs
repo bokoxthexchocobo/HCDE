@@ -25,6 +25,24 @@ public class VmPMapAimTraverseTests
     public void MergeAimResults_PrefersCloserFrac() =>
         Assert.True(VmPMapAimTraverse.MergeAimResults(0.8, 0.2));
 
+    [Fact]
+    public void SectorPortalTrace_SetsAimUpOnCeiling() =>
+        Assert.Equal(VmPMapAimTraverse.AimUp,
+            VmPMapAimTraverse.SectorPortalAimDir(1, 1));
+
+    [Fact]
+    public void LinePortalTrace_ComputesTranslatedPosition() =>
+        Assert.True(VmPMapAimTraverse.EvaluateLinePortalTrace(
+            new VmPMapAimTraverse.LinePortalTraceContext(0, true, 0.5, 100, 10, 20, 1, 0)));
+
+    [Fact]
+    public void LeavingSectorUpperSlope_RaisesTopPitch() =>
+        Assert.True(VmPMapAimTraverse.LeavingSectorUpperSlope(true, true, true, 0.5, 0.2));
+
+    [Fact]
+    public void SkipPortalFrac_BiasesPastTransition() =>
+        Assert.Equal(0.51, VmPMapAimTraverse.SkipPortalFracBias(0.5, 100));
+
     private static VmPMapAimTraverse.Aim3dFloorContext Sample3d(
         double top = 5,
         double bottom = 10,
