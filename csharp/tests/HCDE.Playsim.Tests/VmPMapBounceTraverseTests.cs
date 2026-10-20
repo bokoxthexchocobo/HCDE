@@ -21,4 +21,14 @@ public class VmPMapBounceTraverseTests
     [Fact]
     public void BounceWallsRequired() =>
         Assert.False(VmPMapBounceTraverse.BounceWallsEnabled(0));
+
+    [Fact]
+    public void BounceWallDestroy_Horizon() =>
+        Assert.True(VmPMapBounceTraverse.EvaluateBounceWallDestroy(
+            new VmPMapBounceTraverse.BounceWallContext(1, true, 2, true, false, 1, false, 0, false)));
+
+    [Fact]
+    public void BounceWallReflect_ShortMove() =>
+        Assert.True(VmPMapBounceTraverse.EvaluateBounceWallReflect(
+            new VmPMapBounceTraverse.BounceWallContext(1, false, 2, false, false, 2, false, 0.5, true)));
 }

@@ -115,7 +115,6 @@ public static class VmPMapPortalMissile
         bool VictimFriend,
         bool ShooterHarmFriends,
         int VictimTidToHate,
-        int ShooterTidToHate,
         bool ProjectileImmune);
 
     /// <summary>Infighting policy for monster/monster damage from <c>CanAttackHurt</c>.</summary>

@@ -62,4 +62,31 @@ public static class VmPMapBounceTraverse
         if (TooLow(ctx.OpenBottom, ctx.ActorZ)) return false;
         return true;
     }
+
+    public readonly record struct BounceWallContext(
+        int BounceFlags,
+        bool Missile,
+        int SpecialHit,
+        bool Horizon,
+        bool HitSky,
+        int BounceCount,
+        bool KeepAngleFlag,
+        double MoveLen,
+        bool UseBounceState);
+
+    public static bool EvaluateBounceWallDestroy(BounceWallContext ctx)
+    {
+        if (!BounceWallsEnabled(ctx.BounceFlags)) return false;
+        if (ctx.Missile && MissileSpecialHitStop(ctx.SpecialHit)) return true;
+        if (ctx.Missile && MissileSpecialHitBlock(ctx.SpecialHit)) return false;
+        if (HorizonDestroys(ctx.Horizon, (ctx.BounceFlags & BounceNotOnSky) != 0, ctx.HitSky)) return true;
+        if (BounceCountDepleted(ctx.BounceCount)) return true;
+        return false;
+    }
+
+    public static bool EvaluateBounceWallReflect(BounceWallContext ctx)
+    {
+        if (ctx.MoveLen < 1) return true;
+        return UseBounceState(ctx.BounceFlags);
+    }
 }

@@ -35,7 +35,7 @@ public static class VmPInteractionDamageEarly
 
     public static bool CoopVisualSkips(bool visual) => visual;
 
-    public static bool InvulnBlocks(bool invuln, bool forced) => invuln && (forced & DmgForced) == 0;
+    public static bool InvulnBlocks(bool invuln, int flags) => invuln && (flags & DmgForced) == 0;
 
     public static bool GodmodeBlocks(bool god) => god;
 

@@ -74,4 +74,25 @@ public static class VmPEnemyLookEx
         if (NotargetCheat(ctx.Notarget)) return false;
         return true;
     }
+
+    public readonly record struct LookExSeeYouContext(
+        bool TargetIsGoal,
+        int Maptime,
+        int Reactiontime,
+        bool SeeSoundValid,
+        int Flags,
+        bool Inchase,
+        bool HasTarget,
+        bool NoJump);
+
+    public static bool EvaluateSeeYouTail(LookExSeeYouContext ctx)
+    {
+        if (GoalReactionBlocks(ctx.TargetIsGoal, ctx.Maptime, ctx.Reactiontime)) return false;
+        if (ctx.SeeSoundValid && (ctx.Flags & LofNoseesound) == 0)
+        {
+            if (FullVolumeSee(ctx.Flags)) { }
+        }
+        if (!ctx.HasTarget || InchaseSkipsSee(ctx.Inchase)) return false;
+        return !NoJumpBlocks(ctx.Flags);
+    }
 }

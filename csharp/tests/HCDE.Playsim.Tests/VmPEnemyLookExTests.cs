@@ -40,4 +40,9 @@ public class VmPEnemyLookExTests
     [Fact]
     public void InchaseSkipsSee() =>
         Assert.True(VmPEnemyLookEx.InchaseSkipsSee(VmPEnemyLookEx.Mf7Inchase));
+
+    [Fact]
+    public void SeeYouTail_GoalReactionBlocks() =>
+        Assert.False(VmPEnemyLookEx.EvaluateSeeYouTail(
+            new VmPEnemyLookEx.LookExSeeYouContext(true, 5, 10, true, 0, false, true, false)));
 }
