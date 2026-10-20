@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 13049,
+  "convertedThisRunNative": 13165,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 28212,
+  "convertedThisRunManaged": 28247,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": 151,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 470919,
+  "remainingNative": 470803,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 31576,
+  "convertedBehaviorNative": 31692,
   "recognitionBehaviorNative": 5591,
-  "combinedBehaviorNative": 37167,
-  "convertedBehaviorManaged": 37883,
+  "combinedBehaviorNative": 37283,
+  "convertedBehaviorManaged": 37918,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -12956,6 +12956,28 @@
       ],
       "nativeLoc": 79,
       "conversionManagedCommit": "9531f1c0f019d32272ee67cc657ad01404522e20"
+    },
+    {
+      "name": "g-mapinfo-flag-table-mid-chunk330",
+      "bucket": "conversion",
+      "managedLoc": 35,
+      "note": "MapFlagHandlers falling damage through compat_nofriendlyspawn rows",
+      "auditSeams": "Handler rows keep placeholder `LEVEL_*`/`COMPATF_*` bit values; only catalog lookup and flag-apply helpers are modeled.",
+      "auditRationale": "Credits the uncredited `MapFlagHandlers[]` continuation 1980\u20132095 between chunk 329's `nojump` row and the CD-track `MITYPE_EATNEXT` rows on chunk 296: falling-damage variants, inventory/teamplay/checkswitch flags, LEVEL3 rendering toggles, and the compat-flag tail through `compat_nofriendlyspawn`.",
+      "nativeRanges": [
+        {
+          "file": "src/gamedata/g_mapinfo.cpp",
+          "symbol": "MapFlagHandlers mid table",
+          "start": 1980,
+          "end": 2095,
+          "tests": [
+            "VmMapInfoFlagHandlersMidTests.TryGetHandler_FindsStrifeFallingDamage",
+            "VmMapInfoFlagHandlersMidTests.TryGetHandler_FindsCompatNoid24"
+          ]
+        }
+      ],
+      "nativeLoc": 116,
+      "conversionManagedCommit": "9cd1c34f4eef953957cb97227a3ea12ea4b27c0b"
     }
   ]
 }
