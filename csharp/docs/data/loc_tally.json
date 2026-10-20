@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 15845,
+  "convertedThisRunNative": 16117,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 29020,
+  "convertedThisRunManaged": 29060,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": 151,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 468123,
+  "remainingNative": 467851,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 34372,
+  "convertedBehaviorNative": 34644,
   "recognitionBehaviorNative": 5591,
-  "combinedBehaviorNative": 39963,
-  "convertedBehaviorManaged": 38691,
+  "combinedBehaviorNative": 40235,
+  "convertedBehaviorManaged": 38731,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -13419,6 +13419,28 @@
       ],
       "nativeLoc": 345,
       "conversionManagedCommit": "102214eeceef2c793fa646aac7c714c205c28a42"
+    },
+    {
+      "name": "dehacked-lump-loader-chunk350",
+      "bucket": "conversion",
+      "managedLoc": 40,
+      "note": "D_LoadDehLumps filtering and patch header sniff",
+      "auditSeams": "Filesystem lump iteration and `DoDehPatch` line loop stay native; managed code encodes IWAD/PWAD filtering and v2.3 header acceptance.",
+      "auditRationale": "Credits `d_dehacked.cpp` 3210\u20133481: include-stack restoration tail, `isDehFile` root-lump detection, `D_LoadDehLumps` source filtering, autoload `dehload` scanning, and `DoDehPatch` header/version gate before section dispatch.",
+      "nativeRanges": [
+        {
+          "file": "src/gamedata/d_dehacked.cpp",
+          "symbol": "D_LoadDehLumps DoDehPatch head",
+          "start": 3210,
+          "end": 3481,
+          "tests": [
+            "VmDehackedLumpLoaderTests.IsRootDehOrBex_RejectsNestedPaths",
+            "VmDehackedLumpLoaderTests.IsSupportedDehackedHeader_AcceptsV3"
+          ]
+        }
+      ],
+      "nativeLoc": 272,
+      "conversionManagedCommit": "225870cb44bd0e0fa754bcccc3189ee35776d68b"
     }
   ]
 }
