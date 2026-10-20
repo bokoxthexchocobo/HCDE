@@ -33,3 +33,42 @@ public class VmDMainDisplayTests
         Assert.False(VmDMainDisplay.ShouldStartWipe(1, 0, 2, 3, 1, 4));
     }
 }
+
+public class VmDMainDrawRateOverlayTests
+{
+    [Fact]
+    public void ClampTicDelta_CapsAtTwenty()
+    {
+        Assert.Equal(20, VmDMainDrawRateOverlay.ClampTicDelta(99));
+    }
+}
+
+public class VmDMainRendererCapsTests
+{
+    [Fact]
+    public void BuildHardwareCaps_AddsVoxelsWhenEnabled()
+    {
+        var caps = VmDMainRendererCaps.BuildHardwareCaps(false, true);
+        Assert.NotEqual(0u, caps & VmDMainRendererCaps.RffVoxels);
+    }
+}
+
+public class VmDMainPaletteTesterTests
+{
+    [Fact]
+    public void ResolveCellCoordinates_MapsLinearIndex()
+    {
+        var (row, col) = VmDMainPaletteTester.ResolveCellCoordinates(17);
+        Assert.Equal(1, row);
+        Assert.Equal(1, col);
+    }
+}
+
+public class VmDMainLagHudOverlayTests
+{
+    [Fact]
+    public void ResolveLagHudColor_StallIsRed()
+    {
+        Assert.Equal(VmDMainLagHudOverlay.CrRed, VmDMainLagHudOverlay.ResolveLagHudColor(true, 0, 35, 2));
+    }
+}

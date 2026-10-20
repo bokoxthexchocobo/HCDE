@@ -1,0 +1,56 @@
+[
+  {
+    "name": "d-main-rate-caps-chunk387",
+    "bucket": "conversion",
+    "note": "GetCaps, DrawPaletteTester, DrawRateStuff, lag HUD overlays",
+    "auditSeams": "`ClearRect`/`DrawText` and hardware renderer detection are not hosted.",
+    "auditRationale": "Credits `GetCaps`, `DrawPaletteTester`, `DrawRateStuff`, `DrawHCDELagHUD`, and `DrawOverlays` from `d_main.cpp`.",
+    "nativeRanges": [
+      {
+        "file": "src/d_main.cpp",
+        "symbol": "GetCaps",
+        "start": 974,
+        "end": 1000,
+        "tests": [
+          "VmDMainRendererCapsTests.BuildHardwareCaps_AddsVoxelsWhenEnabled"
+        ]
+      },
+      {
+        "file": "src/d_main.cpp",
+        "symbol": "DrawPaletteTester",
+        "start": 1008,
+        "end": 1028,
+        "tests": [
+          "VmDMainPaletteTesterTests.ResolveCellCoordinates_MapsLinearIndex"
+        ]
+      },
+      {
+        "file": "src/d_main.cpp",
+        "symbol": "DrawRateStuff",
+        "start": 1068,
+        "end": 1111,
+        "tests": [
+          "VmDMainDrawRateOverlayTests.ClampTicDelta_CapsAtTwenty"
+        ]
+      },
+      {
+        "file": "src/d_main.cpp",
+        "symbol": "DrawHCDELagHUD",
+        "start": 1113,
+        "end": 1164,
+        "tests": [
+          "VmDMainLagHudOverlayTests.ResolveLagHudColor_StallIsRed"
+        ]
+      },
+      {
+        "file": "src/d_main.cpp",
+        "symbol": "DrawOverlays",
+        "start": 1166,
+        "end": 1174,
+        "tests": [
+          "VmDMainLagHudOverlayTests.ResolveLagHudColor_StallIsRed"
+        ]
+      }
+    ]
+  }
+]
