@@ -12,7 +12,7 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 150234
+    "managedCSharpLoc": 150329
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
@@ -20,7 +20,7 @@
     "runStartConvertedBehaviorManaged": 9671,
     "convertedThisRunNative": 35899,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 46679,
+    "convertedThisRunManaged": 46783,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": 151,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
@@ -30,7 +30,7 @@
     "convertedBehaviorNative": 54426,
     "recognitionBehaviorNative": 5591,
     "combinedBehaviorNative": 60017,
-    "convertedBehaviorManaged": 56350,
+    "convertedBehaviorManaged": 56454,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -21273,7 +21273,9 @@
           "csharp/src/HCDE.Playsim/VmPMobjTagDamageRestore.cs",
           "csharp/src/HCDE.Playsim/VmPMobjPrintMiscActorInfo.cs"
         ],
-        "portCommits": [],
+        "portCommits": [
+          "75983e0b294dd9d756685f1feef7ec9de793e9ad"
+        ],
         "nativeRanges": [
           {
             "file": "src/playsim/p_mobj.cpp",
@@ -21370,7 +21372,7 @@
           }
         ],
         "nativeLoc": 229,
-        "managedLoc": 120,
+        "managedLoc": 224,
         "conversionManagedCommit": "8371183403ac2f142a9b1e3261f2418718de3aeb"
       }
     ]

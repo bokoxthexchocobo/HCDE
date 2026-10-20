@@ -4,61 +4,77 @@
     "bucket": "conversion",
     "note": "GetTag, counters, damage factor, translation, RestoreSpecialPosition, PrintMiscActorInfo",
     "auditSeams": "`GStrings`, `mStringPropertyData`, inventory `VMCall`, `R_FindCustomTranslation`, and `Printf` are not hosted.",
-    "auditRationale": "Credits tag/character name resolution, kill/item/secret counter clearing, inventory damage walk, damage factor scaling, translation lookup, item respawn Z policy, and misc actor debug summary from `p_mobj.cpp` (8811–9061).",
+    "auditRationale": "Credits tag/character name resolution, kill/item/secret counter clearing, inventory damage walk, damage factor scaling, translation lookup, item respawn Z policy, and misc actor debug summary from `p_mobj.cpp` (8811\u20139061).",
     "managedSourceFiles": [
       "csharp/src/HCDE.Playsim/VmPMobjTagDamageRestore.cs",
       "csharp/src/HCDE.Playsim/VmPMobjPrintMiscActorInfo.cs"
     ],
-    "portCommits": [],
+    "portCommits": [
+      "75983e0b294dd9d756685f1feef7ec9de793e9ad"
+    ],
     "nativeRanges": [
       {
         "file": "src/playsim/p_mobj.cpp",
         "symbol": "AActor::GetTag",
         "start": 8811,
         "end": 8833,
-        "tests": ["VmPMobjTagDamageRestoreTests.Tag_StringTableWhenDollar"]
+        "tests": [
+          "VmPMobjTagDamageRestoreTests.Tag_StringTableWhenDollar"
+        ]
       },
       {
         "file": "src/playsim/p_mobj.cpp",
         "symbol": "AActor::SetTag",
         "start": 8835,
         "end": 8839,
-        "tests": ["VmPMobjTagDamageRestoreTests.Tag_StringTableWhenDollar"]
+        "tests": [
+          "VmPMobjTagDamageRestoreTests.Tag_StringTableWhenDollar"
+        ]
       },
       {
         "file": "src/playsim/p_mobj.cpp",
         "symbol": "AActor::GetCharacterName",
         "start": 8841,
         "end": 8853,
-        "tests": ["VmPMobjTagDamageRestoreTests.Tag_StringTableWhenDollar"]
+        "tests": [
+          "VmPMobjTagDamageRestoreTests.Tag_StringTableWhenDollar"
+        ]
       },
       {
         "file": "src/playsim/p_mobj.cpp",
         "symbol": "AActor::ClearCounters",
         "start": 8855,
         "end": 8874,
-        "tests": ["VmPMobjTagDamageRestoreTests.ClearCounters_KillWhenAlive"]
+        "tests": [
+          "VmPMobjTagDamageRestoreTests.ClearCounters_KillWhenAlive"
+        ]
       },
       {
         "file": "src/playsim/p_mobj.cpp",
         "symbol": "AActor::GetModifiedDamage",
         "start": 8876,
         "end": 8890,
-        "tests": ["VmPMobjTagDamageRestoreTests.DamageFactor_ScalesPositive"]
+        "tests": [
+          "VmPMobjTagDamageRestoreTests.DamageFactor_ScalesPositive"
+        ]
       },
       {
         "file": "src/playsim/p_mobj.cpp",
         "symbol": "AActor::ApplyDamageFactor",
         "start": 8892,
         "end": 8900,
-        "tests": ["VmPMobjTagDamageRestoreTests.DamageFactor_ScalesPositive"]
+        "tests": [
+          "VmPMobjTagDamageRestoreTests.DamageFactor_ScalesPositive"
+        ]
       },
       {
         "file": "src/playsim/p_mobj.cpp",
         "symbol": "AActor::SetTranslation",
         "start": 8902,
         "end": 8918,
-        "tests": ["VmPMobjTagDamageRestoreTests.Translation_EmptyResets"]
+        "tests": [
+          "VmPMobjTagDamageRestoreTests.Translation_EmptyResets"
+        ]
       },
       {
         "file": "src/playsim/p_mobj.cpp",
@@ -75,7 +91,9 @@
         "symbol": "FDropItem",
         "start": 8982,
         "end": 8985,
-        "tests": ["VmPMobjPrintMiscActorInfoTests.Print_CountsFlagBits"]
+        "tests": [
+          "VmPMobjPrintMiscActorInfoTests.Print_CountsFlagBits"
+        ]
       },
       {
         "file": "src/playsim/p_mobj.cpp",

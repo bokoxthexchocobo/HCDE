@@ -22,7 +22,7 @@ GetTag, counters, damage factor, translation, RestoreSpecialPosition, PrintMiscA
 ## Managed
 
 `VmPMobjPrintMiscActorInfo.cs`, `VmPMobjPrintMiscActorInfoTests.cs`, `VmPMobjTagDamageRestore.cs`, `VmPMobjTagDamageRestoreTests.cs`
-Managed LOC (tally): 120.
+Managed LOC (tally): 224.
 Conversion commit: `8371183403ac2f142a9b1e3261f2418718de3aeb`.
 
 ## Tests

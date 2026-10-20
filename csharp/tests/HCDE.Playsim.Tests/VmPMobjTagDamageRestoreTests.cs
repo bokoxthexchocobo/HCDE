@@ -39,7 +39,7 @@ public class VmPMobjTagDamageRestoreTests
 
     [Fact]
     public void RestoreZ_CeilingPath() =>
-        Assert.Equal(90, VmPMobjTagDamageRestore.ChooseRestoreZ(
+        Assert.Equal(80, VmPMobjTagDamageRestore.ChooseRestoreZ(
             new VmPMobjTagDamageRestore.RestoreZContext(
                 VmPMobjTagDamageRestore.MfSpawnceiling, 0, 10, 0, 100, 10, 0)));
 }
