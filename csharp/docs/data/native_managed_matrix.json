@@ -18,19 +18,19 @@
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 2100,
+    "convertedThisRunNative": 2249,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 16240,
+    "convertedThisRunManaged": 16396,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -87,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 482106,
+    "remainingNative": 481957,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 20627,
+    "convertedBehaviorNative": 20776,
     "recognitionBehaviorNative": 5353,
-    "combinedBehaviorNative": 25980,
-    "convertedBehaviorManaged": 25911,
+    "combinedBehaviorNative": 26129,
+    "convertedBehaviorManaged": 26067,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -7964,6 +7964,52 @@
         ],
         "conversionManagedCommit": "ab66ccc3f495f365bf0a821db6d5d25f3c244aba",
         "nativeLoc": 150
+      },
+      {
+        "name": "linked-sectors-move-chunk174",
+        "bucket": "conversion",
+        "managedLoc": 156,
+        "note": "IsLinked, P_MoveLinkedSectors, P_AddSectorLinks attach.",
+        "nativeRanges": [
+          {
+            "file": "src/playsim/p_linkedsectors.cpp",
+            "symbol": "sector_t::IsLinked",
+            "start": 67,
+            "end": 77,
+            "tests": [
+              "VmLinkedSectorTests.IsLinked_MatchesFloorOrCeilingFlag"
+            ]
+          },
+          {
+            "file": "src/playsim/p_linkedsectors.cpp",
+            "symbol": "P_MoveLinkedSectors",
+            "start": 133,
+            "end": 200,
+            "tests": [
+              "VmLinkedSectorTests.MoveLinkedSectors_AppliesMirrorAndBothOrdering"
+            ]
+          },
+          {
+            "file": "src/playsim/p_linkedsectors.cpp",
+            "symbol": "AddSingleSector",
+            "start": 237,
+            "end": 265,
+            "tests": [
+              "VmLinkedSectorTests.AddSectorLinks_MergesDuplicateSectorTypes"
+            ]
+          },
+          {
+            "file": "src/playsim/p_linkedsectors.cpp",
+            "symbol": "P_AddSectorLinks",
+            "start": 297,
+            "end": 337,
+            "tests": [
+              "VmLinkedSectorTests.TryAddSectorLinks_SkipsSelfPlaneConflict"
+            ]
+          }
+        ],
+        "conversionManagedCommit": "5a82f63359d9b826501fa7df284fec82beae324a",
+        "nativeLoc": 149
       }
     ]
   },
