@@ -5,12 +5,13 @@ set -euo pipefail
 NUM="$1"
 REPO=/workspace
 NL=$(python3 -c "
-import json
+import json, sys
 from pathlib import Path
-chunk=json.loads((Path('$REPO/csharp/tools')/f'chunk{NUM}.json').read_text())
+num=sys.argv[1]
+chunk=json.loads((Path('$REPO/csharp/tools')/f'chunk{num}.json').read_text())
 if isinstance(chunk,list): chunk=chunk[0]
 print(sum(int(r['end'])-int(r['start'])+1 for r in chunk['nativeRanges']))
-")
+" "$NUM")
 ML=$(git -C "$REPO" show HEAD --numstat --format= | awk '/^([0-9]+|-)\t([0-9]+|-)\tcsharp\/src\/.*\.cs$/ { if ($1 ~ /^[0-9]+$/) s+=$1 } END { print s+0 }')
 MIN=$(( (NL + 1) / 2 ))
 echo "chunk $NUM native=$NL managed_src=$ML need>=$MIN"
