@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 32749,
+  "convertedThisRunNative": 32815,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 44510,
+  "convertedThisRunManaged": 44565,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": 151,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 451219,
+  "remainingNative": 451153,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 51276,
+  "convertedBehaviorNative": 51342,
   "recognitionBehaviorNative": 5591,
-  "combinedBehaviorNative": 56867,
-  "convertedBehaviorManaged": 54181,
+  "combinedBehaviorNative": 56933,
+  "convertedBehaviorManaged": 54236,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -20134,6 +20134,34 @@
       "nativeLoc": 177,
       "managedLoc": 92,
       "conversionManagedCommit": "72c9ce6ea9955ab1475e5accb8b8552b05e7ad89"
+    },
+    {
+      "name": "p-mobj-adjust-floorclip-chunk485",
+      "bucket": "conversion",
+      "note": "AActor AdjustFloorClip terrain and 3D-floor foot clip",
+      "auditSeams": "`touching_sectorlist` iteration and `Terrains[]` are not hosted.",
+      "auditRationale": "Credits special-floorclip early out, shallowest terrain foot clip on sector touch, 3D-floor solid top clip, and player viewheight adjust from `p_mobj.cpp` (6006\u20136071).",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Playsim/VmPMobjAdjustFloorClip.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/playsim/p_mobj.cpp",
+          "symbol": "AActor::AdjustFloorClip",
+          "start": 6006,
+          "end": 6071,
+          "tests": [
+            "VmPMobjAdjustFloorClipTests.Skip_SpecialFloorclipFlag",
+            "VmPMobjAdjustFloorClipTests.TerrainClip_PicksShallowest",
+            "VmPMobjAdjustFloorClipTests.Resolve_NoTouchingReturnsZero",
+            "VmPMobjAdjustFloorClipTests.ThreeDFloor_RequiresSolidExists",
+            "VmPMobjAdjustFloorClipTests.PlayerView_AdjustsWhenClipChanges"
+          ]
+        }
+      ],
+      "nativeLoc": 66,
+      "managedLoc": 55,
+      "conversionManagedCommit": "16d6e11b1954cc0c3ff4cf4c8795ce0a4e640fbd"
     }
   ]
 }

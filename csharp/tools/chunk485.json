@@ -1,10 +1,10 @@
 [
   {
-    "name": "p-mobj-adjust-floorclip-chunk485",
+    "name": "p-mobj-floorclip-morph-chunk485",
     "bucket": "conversion",
-    "note": "AActor AdjustFloorClip terrain and 3D-floor foot clip",
-    "auditSeams": "`touching_sectorlist` iteration and `Terrains[]` are not hosted.",
-    "auditRationale": "Credits special-floorclip early out, shallowest terrain foot clip on sector touch, 3D-floor solid top clip, and player viewheight adjust from `p_mobj.cpp` (6006–6071).",
+    "note": "AdjustFloorClip, PlayerPointerSubstitution, MorphPointerSubstitution gates",
+    "auditSeams": "`touching_sectorlist`, `GC::Root` pointer substitution, and `VMCall` PreMorph are not hosted.",
+    "auditRationale": "Credits floorclip terrain/3D-floor selection, player pointer rewiring on pawn swap, and morph substitution eligibility from `p_mobj.cpp` (6006–6190).",
     "managedSourceFiles": ["csharp/src/HCDE.Playsim/VmPMobjAdjustFloorClip.cs"],
     "nativeRanges": [
       {
@@ -15,9 +15,24 @@
         "tests": [
           "VmPMobjAdjustFloorClipTests.Skip_SpecialFloorclipFlag",
           "VmPMobjAdjustFloorClipTests.TerrainClip_PicksShallowest",
-          "VmPMobjAdjustFloorClipTests.Resolve_NoTouchingReturnsZero",
-          "VmPMobjAdjustFloorClipTests.ThreeDFloor_RequiresSolidExists",
           "VmPMobjAdjustFloorClipTests.PlayerView_AdjustsWhenClipChanges"
+        ]
+      },
+      {
+        "file": "src/playsim/p_mobj.cpp",
+        "symbol": "PlayerPointerSubstitution",
+        "start": 6093,
+        "end": 6133,
+        "tests": ["VmPMobjAdjustFloorClipTests.PlayerSub_RejectsInvalidPair"]
+      },
+      {
+        "file": "src/playsim/p_mobj.cpp",
+        "symbol": "MorphPointerSubstitution",
+        "start": 6143,
+        "end": 6190,
+        "tests": [
+          "VmPMobjAdjustFloorClipTests.MorphSub_BlocksUnmorphedDummy",
+          "VmPMobjAdjustFloorClipTests.MorphSub_PlayerRequiresRealMo"
         ]
       }
     ]
