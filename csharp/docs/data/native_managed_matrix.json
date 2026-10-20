@@ -18,19 +18,19 @@
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 39326,
+    "convertedThisRunNative": 39724,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 49159,
+    "convertedThisRunManaged": 49371,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": 151,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 444642,
+    "remainingNative": 444244,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 57853,
+    "convertedBehaviorNative": 58251,
     "recognitionBehaviorNative": 5591,
-    "combinedBehaviorNative": 63444,
-    "convertedBehaviorManaged": 58830,
+    "combinedBehaviorNative": 63842,
+    "convertedBehaviorManaged": 59042,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -22016,6 +22016,32 @@
         "nativeLoc": 217,
         "managedLoc": 167,
         "conversionManagedCommit": "9f74f707f82b10b9f630619c254d9bbe508e6b06"
+      },
+      {
+        "name": "d-dehacked-patchthing-loop-primary-chunk520",
+        "bucket": "conversion",
+        "note": "PatchThing setup and property/frame/sound loop (part 1)",
+        "auditSeams": "`GetLine`, `FindState`, `statedef`, `DecalLibrary`, and actor mutation are not hosted.",
+        "auditRationale": "Credits DeHackEd thing setup, numeric bounds, group clamps, obituaries, frame labels, and sound labels from `PatchThing` in `d_dehacked.cpp` (1234\u20131631).",
+        "managedSourceFiles": [
+          "csharp/src/HCDE.Gamedata/VmDehackedPatchThingLoopPrimary.cs"
+        ],
+        "nativeRanges": [
+          {
+            "file": "src/gamedata/d_dehacked.cpp",
+            "symbol": "PatchThing (primary loop)",
+            "start": 1234,
+            "end": 1631,
+            "tests": [
+              "VmDehackedPatchThingLoopPrimaryTests.MapFrameLabelPrefix_Spawn",
+              "VmDehackedPatchThingLoopPrimaryTests.SkipPlayerMeleeMissile_BlocksPlayer",
+              "VmDehackedPatchThingLoopPrimaryTests.ClampInfightingGroup_NegativeToZero"
+            ]
+          }
+        ],
+        "nativeLoc": 398,
+        "managedLoc": 212,
+        "conversionManagedCommit": "926c72a69dfa236bbcae8f7e5b938d71faeded6a"
       }
     ]
   },
