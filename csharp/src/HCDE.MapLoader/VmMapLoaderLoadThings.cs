@@ -26,7 +26,7 @@ public static class VmMapLoaderLoadThings
     public const int MtfShadow = 1 << 6;
     public const int MtfAltShadow = 1 << 7;
     public const int MtfStandstill = 1 << 8;
-    public const int MtfAmbush = 1 << 9;
+    public const int MtfAmbushFlag = 1 << 9;
     public const int MtfFriendly = 1 << 10;
 
     public const int MtfClassMask = 0x3c00;
@@ -82,7 +82,7 @@ public static class VmMapLoaderLoadThings
             if ((options & StfStandstill) != 0)
                 mtiFlags |= (ushort)MtfStandstill;
             if ((options & StfAmbush) != 0)
-                mtiFlags |= (ushort)MtfAmbush;
+                mtiFlags |= (ushort)MtfAmbushFlag;
             if ((options & StfFriendly) != 0)
                 mtiFlags |= (ushort)MtfFriendly;
         }
