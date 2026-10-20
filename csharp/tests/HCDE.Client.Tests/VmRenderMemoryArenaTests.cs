@@ -19,6 +19,7 @@ public class VmRenderMemoryArenaTests
     public void Clear_RecyclesBlocksForReuse()
     {
         using var arena = new VmRenderMemoryArena();
+        var first = arena.AllocateBytes(16);
         arena.AllocateBytes(VmRenderMemoryArena.BlockSize);
         arena.Clear();
         var recycled = arena.AllocateBytes(16);
