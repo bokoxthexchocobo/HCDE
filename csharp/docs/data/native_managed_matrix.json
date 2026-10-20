@@ -12,25 +12,25 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 141519
+    "managedCSharpLoc": 141545
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 25219,
+    "convertedThisRunNative": 25369,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 38534,
+    "convertedThisRunManaged": 38619,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": 151,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 458749,
+    "remainingNative": 458599,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 43746,
+    "convertedBehaviorNative": 43896,
     "recognitionBehaviorNative": 5591,
-    "combinedBehaviorNative": 49337,
-    "convertedBehaviorManaged": 48205,
+    "combinedBehaviorNative": 49487,
+    "convertedBehaviorManaged": 48290,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -17779,6 +17779,47 @@
         "nativeLoc": 150,
         "managedLoc": 87,
         "conversionManagedCommit": "349061a5a335e2ae8b6fc02f02d3c3d200a8f278"
+      },
+      {
+        "name": "p-spec-friction-sector-chunk439",
+        "bucket": "conversion",
+        "note": "P_ActorInSpecialSector damage header, P_UpdateSpecials timelimit, friction movers",
+        "auditSeams": "`P_DamageMobj`, sector thinkers, and tag iterators are not hosted.",
+        "auditRationale": "Credits exit-sector kills, hazard/iron-feet leak policy, timelimit exit, sector friction amount mapping, and ice/mud move-factor formulas from `p_spec.cpp`.",
+        "nativeRanges": [
+          {
+            "file": "src/playsim/p_spec.cpp",
+            "symbol": "P_ActorInSpecialSector damage and exit",
+            "start": 406,
+            "end": 477,
+            "tests": [
+              "VmPSpecFrictionSectorTests.DefaultDamageInterval_RepairsZero",
+              "VmPSpecFrictionSectorTests.IronFeetProtectionLevel_FullWins"
+            ]
+          },
+          {
+            "file": "src/playsim/p_spec.cpp",
+            "symbol": "P_UpdateSpecials timelimit",
+            "start": 685,
+            "end": 696,
+            "tests": [
+              "VmPSpecFrictionSectorTests.TimelimitExit_WhenTimeExceeded"
+            ]
+          },
+          {
+            "file": "src/playsim/p_spec.cpp",
+            "symbol": "P_SetSectorFriction / FrictionToMoveFactor",
+            "start": 751,
+            "end": 816,
+            "tests": [
+              "VmPSpecFrictionSectorTests.FrictionToMoveFactor_ClampsTiny",
+              "VmPSpecFrictionSectorTests.SectorFrictionFromAmount_Clamped"
+            ]
+          }
+        ],
+        "nativeLoc": 150,
+        "managedLoc": 85,
+        "conversionManagedCommit": "f391af022e0627f27f8dae4998bb3a4ca767a56a"
       }
     ]
   },
