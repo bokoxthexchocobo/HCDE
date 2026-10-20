@@ -2,9 +2,9 @@
   {
     "name": "p-map-portal-missile-chunk454",
     "bucket": "conversion",
-    "note": "PIT_CheckPortal, missile infight gates, and P_DoMissileDamage",
-    "auditSeams": "BlockLinesIterator, `P_LineOpening`, and `P_DamageMobj` are not hosted.",
-    "auditRationale": "Credits portal destination floor/ceiling probe, rip-level and projectile-group immunity, monster infight policy, and ripper/normal missile damage/heal branches from `p_map.cpp`.",
+    "note": "PIT_CheckPortal and missile infight gates",
+    "auditSeams": "BlockLinesIterator, `P_LineOpening`, and live mobj iterators are not hosted.",
+    "auditRationale": "Credits portal destination floor/ceiling probe, rip-level and projectile-group immunity, and monster infight policy from `p_map.cpp` (missile damage on chunk 455).",
     "managedSourceFiles": ["csharp/src/HCDE.Playsim/VmPMapPortalMissile.cs"],
     "nativeRanges": [
       {
@@ -39,16 +39,6 @@
         "tests": [
           "VmPMapPortalMissileTests.FriendsBlockedUnlessHarmFriends",
           "VmPMapPortalMissileTests.MonstersBlockedWhenNoInfight"
-        ]
-      },
-      {
-        "file": "src/playsim/p_map.cpp",
-        "symbol": "P_DoMissileDamage",
-        "start": 1327,
-        "end": 1366,
-        "tests": [
-          "VmPMapPortalMissileTests.ShouldDealDamage_WhenForcePain",
-          "VmPMapPortalMissileTests.HealAmountFromNegativeDamage"
         ]
       }
     ]
