@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 997,
+  "convertedThisRunNative": 1151,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 15074,
+  "convertedThisRunManaged": 15192,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -87,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 483209,
+  "remainingNative": 483055,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 19524,
+  "convertedBehaviorNative": 19678,
   "recognitionBehaviorNative": 5353,
-  "combinedBehaviorNative": 24877,
-  "convertedBehaviorManaged": 24745,
+  "combinedBehaviorNative": 25031,
+  "convertedBehaviorManaged": 24863,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -7584,6 +7584,52 @@
         }
       ],
       "nativeLoc": 32
+    },
+    {
+      "name": "c-cvars-typed-latch-chunk162",
+      "bucket": "conversion",
+      "managedLoc": 118,
+      "note": "FBoolCVar/FIntCVar SetGenericRep latch path and UnlatchCVars.",
+      "nativeRanges": [
+        {
+          "file": "src/common/console/c_cvars.cpp",
+          "symbol": "FBaseCVar::SetGenericRep latch",
+          "start": 293,
+          "end": 320,
+          "tests": [
+            "VmTypedCvarTests.SetGenericRep_LatchesUntilUnlatch"
+          ]
+        },
+        {
+          "file": "src/common/console/c_cvars.cpp",
+          "symbol": "FBoolCVar",
+          "start": 677,
+          "end": 731,
+          "tests": [
+            "VmTypedCvarTests.SetGenericRep_LatchesUntilUnlatch"
+          ]
+        },
+        {
+          "file": "src/common/console/c_cvars.cpp",
+          "symbol": "FIntCVar",
+          "start": 737,
+          "end": 791,
+          "tests": [
+            "VmTypedCvarTests.IntCvar_ParsesIntegerRep"
+          ]
+        },
+        {
+          "file": "src/common/console/c_cvars.cpp",
+          "symbol": "UnlatchCVars",
+          "start": 1552,
+          "end": 1567,
+          "tests": [
+            "VmTypedCvarTests.SetGenericRep_LatchesUntilUnlatch"
+          ]
+        }
+      ],
+      "conversionManagedCommit": "85e39c607159e25254a609aba9f2e194cc0aa559",
+      "nativeLoc": 154
     }
   ]
 }
