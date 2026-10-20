@@ -1,0 +1,43 @@
+[
+  {
+    "name": "p-interaction-damage-late-chunk474",
+    "bucket": "conversion",
+    "note": "DamageMobj team scaling, player armor/health, drain, and death tail",
+    "auditSeams": "`P_DamageMobj` hosted paths, `CallDie`, `P_GiveBody`, `S_Sound`, and event managers are not fully hosted.",
+    "auditRationale": "Credits friendly-fire scaling, player invuln/armor/buddha, power-drain selection, monster buddha, and death attribution from `p_interaction.cpp` (1320–1571).",
+    "managedSourceFiles": ["csharp/src/HCDE.Playsim/VmPInteractionDamageLate.cs"],
+    "nativeRanges": [
+      {
+        "file": "src/playsim/p_interaction.cpp",
+        "symbol": "DamageMobj",
+        "start": 1320,
+        "end": 1459,
+        "tests": [
+          "VmPInteractionDamageLateTests.TeamDamage_ScalesTeammateHit",
+          "VmPInteractionDamageLateTests.PlayerInvuln_BlocksNonTelefrag"
+        ]
+      },
+      {
+        "file": "src/playsim/p_interaction.cpp",
+        "symbol": "DamageMobj",
+        "start": 1460,
+        "end": 1514,
+        "tests": [
+          "VmPInteractionDamageLateTests.PlayerArmor_UsesInventory",
+          "VmPInteractionDamageLateTests.DrainEligible_SkipsSamePlayer"
+        ]
+      },
+      {
+        "file": "src/playsim/p_interaction.cpp",
+        "symbol": "DamageMobj",
+        "start": 1516,
+        "end": 1571,
+        "tests": [
+          "VmPInteractionDamageLateTests.MonsterBuddha_SavesAtOneHp",
+          "VmPInteractionDamageLateTests.DeathProceeds_WhenNoBuddha",
+          "VmPInteractionDamageLateTests.ReturnNonNegative_ClampsNegatives"
+        ]
+      }
+    ]
+  }
+]
