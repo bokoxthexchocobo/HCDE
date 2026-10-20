@@ -1,63 +1,73 @@
 [
   {
-    "name": "p-lnspec-misc-linespec-chunk424",
+    "name": "p-lnspec-env-portal-chunk424",
     "bucket": "conversion",
-    "note": "TranslucentLine, autosave hint, skill change, noise alert, communicator, force fields",
-    "auditSeams": "Line iterators, `Net_WriteInt8`, `P_NoiseAlert`, and voice playback are not hosted.",
-    "auditRationale": "Credits translucency flag policy, autosave gate, skill bounds, noise TID resolution, and communicator front-side check from `p_lnspec.cpp`.",
+    "note": "Autosave/skill, noise/communicator, portal, fog, glow, health",
+    "auditSeams": "Network autosave, `P_NoiseAlert`, portal changes, and health groups are not hosted.",
+    "auditRationale": "Credits autosave gate, noise TID wiring, communicator side check, portal args, fog/glow/health policy from `p_lnspec.cpp` (non-overlapping bands).",
     "nativeRanges": [
-      {
-        "file": "src/playsim/p_lnspec.cpp",
-        "symbol": "LS_TranslucentLine",
-        "start": 3130,
-        "end": 3153,
-        "tests": [
-          "VmPLnspecMiscLineSpecialsTests.TranslucentLine_ClampsAlpha"
-        ]
-      },
       {
         "file": "src/playsim/p_lnspec.cpp",
         "symbol": "LS_Autosave / LS_ChangeSkill",
         "start": 3155,
         "end": 3176,
         "tests": [
-          "VmPLnspecMiscLineSpecialsTests.ChangeSkill_RejectsOutOfRange"
+          "VmPLnspecEnvironmentLineSpecialsTests.ChangeSkill_RejectsOutOfRange"
         ]
       },
       {
         "file": "src/playsim/p_lnspec.cpp",
-        "symbol": "LS_NoiseAlert",
+        "symbol": "LS_NoiseAlert / LS_SendToCommunicator",
         "start": 3178,
-        "end": 3209,
-        "tests": [
-          "VmPLnspecMiscLineSpecialsTests.NoiseAlert_EmitterFallsBackToTarget"
-        ]
-      },
-      {
-        "file": "src/playsim/p_lnspec.cpp",
-        "symbol": "LS_SendToCommunicator",
-        "start": 3211,
         "end": 3247,
         "tests": [
-          "VmPLnspecMiscLineSpecialsTests.Communicator_RejectsBacksideWhenFrontOnly"
+          "VmPLnspecEnvironmentLineSpecialsTests.NoiseAlert_EmitterFallsBackToTarget",
+          "VmPLnspecEnvironmentLineSpecialsTests.Communicator_RejectsBacksideWhenFrontOnly"
         ]
       },
       {
         "file": "src/playsim/p_lnspec.cpp",
-        "symbol": "LS_ForceField / LS_ClearForceField",
-        "start": 3249,
-        "end": 3275,
+        "symbol": "LS_Line_SetPortalTarget",
+        "start": 3414,
+        "end": 3418,
         "tests": [
-          "VmPLnspecMiscLineSpecialsTests.ClearForceField_ReturnsTrueWhenSectorFound"
+          "VmPLnspecEnvironmentLineSpecialsTests.PortalTarget_PacksIds"
         ]
       },
       {
         "file": "src/playsim/p_lnspec.cpp",
-        "symbol": "LS_GlassBreak header",
-        "start": 3277,
-        "end": 3295,
+        "symbol": "LS_Sector_SetPlaneReflection",
+        "start": 3420,
+        "end": 3434,
         "tests": [
-          "VmPLnspecMiscLineSpecialsTests.GlassBreak_ClearsBlockingFlags"
+          "VmPLnspecEnvironmentLineSpecialsTests.PlaneReflection_ScalesArgs"
+        ]
+      },
+      {
+        "file": "src/playsim/p_lnspec.cpp",
+        "symbol": "LS_SetGlobalFogParameter",
+        "start": 3436,
+        "end": 3456,
+        "tests": [
+          "VmPLnspecEnvironmentLineSpecialsTests.GlobalFog_RejectsUnknownType"
+        ]
+      },
+      {
+        "file": "src/playsim/p_lnspec.cpp",
+        "symbol": "LS_Sector_SetFloorGlow / CeilingGlow",
+        "start": 3458,
+        "end": 3490,
+        "tests": [
+          "VmPLnspecEnvironmentLineSpecialsTests.Glow_InvalidatesOnNegativeHeight"
+        ]
+      },
+      {
+        "file": "src/playsim/p_lnspec.cpp",
+        "symbol": "LS_Line_SetHealth / LS_Sector_SetHealth",
+        "start": 3492,
+        "end": 3543,
+        "tests": [
+          "VmPLnspecEnvironmentLineSpecialsTests.LineHealth_ClampsNegativeToZero"
         ]
       }
     ]
