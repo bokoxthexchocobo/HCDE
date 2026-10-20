@@ -21,6 +21,7 @@ public sealed record SndInfoData(IReadOnlyDictionary<int, string> MapMusic, IRea
     public IReadOnlyDictionary<string, SndInfoSoundSettings> Settings { get; init; } = new Dictionary<string, SndInfoSoundSettings>(StringComparer.OrdinalIgnoreCase);
     public IReadOnlyDictionary<string, IReadOnlyList<string>> RandomGroups { get; init; } = new Dictionary<string, IReadOnlyList<string>>(StringComparer.OrdinalIgnoreCase);
     public IReadOnlyDictionary<string, string> Aliases { get; init; } = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+    public IReadOnlyList<SndInfoAmbientSound> Ambients { get; init; } = Array.Empty<SndInfoAmbientSound>();
 }
 
 /// <summary>Reads SNDINFO map music and logical sound mappings; unsupported directives fail explicitly.</summary>
@@ -35,7 +36,8 @@ public static class SndInfoMapMusicParser
         return success;
     }
 
-    public static bool TryParseData(string text, out SndInfoData data, out string? error, SndInfoData? previous = null)
+    public static bool TryParseData(string text, out SndInfoData data, out string? error, SndInfoData? previous = null,
+        ISndInfoGameFilter? games = null)
     {
         var result = previous is null ? new Dictionary<int, string>() : new Dictionary<int, string>(previous.MapMusic);
         var sounds = previous is null ? new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
@@ -65,9 +67,24 @@ public static class SndInfoMapMusicParser
             tokens.Add(token);
         }
         if (position != text.Length) { error = "Invalid SNDINFO token or unterminated comment/string."; return false; }
+        if (games is not null)
+            tokens = VmSndInfoPreprocessor.FilterGameBlocks(tokens, games);
+        var ambients = previous?.Ambients.ToList() ?? new List<SndInfoAmbientSound>();
         bool? assignments = null;
         for (var index = 0; index < tokens.Count;)
         {
+            if (tokens[index].Equals("$ambient", StringComparison.OrdinalIgnoreCase))
+            {
+                index++;
+                var ambientErrors = new List<string>();
+                if (!VmSndInfoAmbientParser.TryParse(tokens, ref index, ambients, ambientErrors))
+                {
+                    error = ambientErrors.Count > 0 ? ambientErrors[0] : "Invalid SNDINFO ambient.";
+                    return false;
+                }
+
+                continue;
+            }
             if (tokens[index].Equals("$registered", StringComparison.OrdinalIgnoreCase)
                 || tokens[index].Equals("$edfoverride", StringComparison.OrdinalIgnoreCase))
             {
@@ -361,7 +378,18 @@ public static class SndInfoMapMusicParser
             if (number != 0) result[number] = resource;
             index += 3;
         }
-        data = new(result, sounds) { PlayerReservedSlots = reserves.ToArray(), PlayerCompatibilityTargets = compatibility, PlayerSounds = playerSounds.ToArray(), Aliases = aliases, RandomGroups = groups, Settings = settings, CurrentPitchMask = currentPitchMask, GlobalRolloff = globalRolloff };
+        data = new(result, sounds)
+        {
+            PlayerReservedSlots = reserves.ToArray(),
+            PlayerCompatibilityTargets = compatibility,
+            PlayerSounds = playerSounds.ToArray(),
+            Aliases = aliases,
+            RandomGroups = groups,
+            Settings = settings,
+            CurrentPitchMask = currentPitchMask,
+            GlobalRolloff = globalRolloff,
+            Ambients = ambients.ToArray(),
+        };
         return true;
     }
 
