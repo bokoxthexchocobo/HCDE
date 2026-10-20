@@ -30,7 +30,7 @@ public class VmMapLoaderLoadLineDefsTests
         };
         var (kept, skipped, sides) = VmMapLoaderLoadLineDefs.CompactZeroLengthDoomLines(
             lines, v => (v, 0), 2);
-        Assert.Equal(1, kept.Count);
+        Assert.Single(kept);
         Assert.Equal(1, skipped);
         Assert.Equal(1, sides);
     }
