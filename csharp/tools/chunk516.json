@@ -4,8 +4,10 @@
     "bucket": "conversion",
     "note": "HCDEApplyInvasionSnapshot",
     "auditSeams": "`HCDEReadBE32Field`, `HCDEApplyAuthorityEvents`, `Net_PrepareInvasionMirrorFromSnapshot`, and live globals are not hosted.",
-    "auditRationale": "Credits invasion snapshot header validation, spawn metadata v2, wave count merge, and embedded authority/actor replay gates from `d_net.cpp` (3351–3510).",
-    "managedSourceFiles": ["csharp/src/HCDE.Client/VmDNetInvasionSnapshotApply.cs"],
+    "auditRationale": "Credits invasion snapshot header validation, spawn metadata v2, wave count merge, and embedded authority/actor replay gates from `d_net.cpp` (3351\u20133510).",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Client/VmDNetInvasionSnapshotApply.cs"
+    ],
     "nativeRanges": [
       {
         "file": "src/d_net.cpp",
@@ -19,6 +21,9 @@
           "VmDNetInvasionSnapshotApplyTests.TraceGametypeOverride_WhenDisabledAndActiveState"
         ]
       }
+    ],
+    "portCommits": [
+      "a57fe1a04c51e20b2953c7143f5a39bf075d3c59"
     ]
   }
 ]
