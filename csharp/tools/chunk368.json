@@ -1,0 +1,49 @@
+[
+  {
+    "name": "maploader-linedef-finish-chunk368",
+    "bucket": "conversion",
+    "note": "Hexen SetLineID, SaveLineSpecial, FinishLoadingLineDef translucent handling",
+    "auditSeams": "`Level->tagManager`, `sidetemp`, and live `line_t` mutation are not hosted; managed code mirrors ID extraction, side-special save rules, texel length, and translucency policy.",
+    "auditRationale": "Credits `MapLoader::SetLineID`, `SaveLineSpecial`, `FinishLoadingLineDef`, and `FinishLoadingLineDefs` from `maploader.cpp`.",
+    "nativeRanges": [
+      {
+        "file": "src/maploader/maploader.cpp",
+        "symbol": "MapLoader::SetLineID",
+        "start": 1472,
+        "end": 1527,
+        "tests": [
+          "VmMapLoaderLineDefFinishTests.ResolveHexenLineId_SetIdentification_UsesArg0WhenHack",
+          "VmMapLoaderLineDefFinishTests.ResolveHexenLineId_PlaneAlign_RespectsNoSlopeCompat"
+        ]
+      },
+      {
+        "file": "src/maploader/maploader.cpp",
+        "symbol": "MapLoader::SaveLineSpecial",
+        "start": 1535,
+        "end": 1552,
+        "tests": [
+          "VmMapLoaderLineDefFinishTests.ShouldSaveLineSpecial_StaticInitColorOnly"
+        ]
+      },
+      {
+        "file": "src/maploader/maploader.cpp",
+        "symbol": "MapLoader::FinishLoadingLineDef",
+        "start": 1560,
+        "end": 1631,
+        "tests": [
+          "VmMapLoaderLineDefFinishTests.ResolveTranslucentLine_NegativeAlpha_IsAdditive",
+          "VmMapLoaderLineDefFinishTests.ComputeTexelLength_RoundsHypotenuse"
+        ]
+      },
+      {
+        "file": "src/maploader/maploader.cpp",
+        "symbol": "MapLoader::FinishLoadingLineDefs",
+        "start": 1639,
+        "end": 1645,
+        "tests": [
+          "VmMapLoaderLineDefFinishTests.ComputeTexelLength_RoundsHypotenuse"
+        ]
+      }
+    ]
+  }
+]
