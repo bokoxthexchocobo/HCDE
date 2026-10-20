@@ -1,0 +1,82 @@
+[
+  {
+    "name": "p-map-offset-talk-puzzle-chunk492",
+    "bucket": "conversion",
+    "note": "R_OffsetView chase camera, P_TalkFacing, P_UsePuzzleItem, splashfactor CVAR",
+    "auditSeams": "`Trace`, `P_AimLineAttack`, `NativeStartConversation`, `FPathTraverse`, and `P_StartScript` are not hosted.",
+    "auditRationale": "Credits chase-camera offset trace/OOB/portal walks, talk-facing aim flags, puzzle line/thing matching, and splash thrust scale from `p_map.cpp` (5692–6118).",
+    "managedSourceFiles": ["csharp/src/HCDE.Playsim/VmPMapOffsetTalkPuzzle.cs"],
+    "nativeRanges": [
+      {
+        "file": "src/playsim/p_map.cpp",
+        "symbol": "R_OffsetView",
+        "start": 5692,
+        "end": 5700,
+        "tests": ["VmPMapOffsetTalkPuzzleTests.OffsetView_OobHardwareSkipsTrace"]
+      },
+      {
+        "file": "src/playsim/p_map.cpp",
+        "symbol": "R_OffsetView",
+        "start": 5702,
+        "end": 5744,
+        "tests": [
+          "VmPMapOffsetTalkPuzzleTests.OffsetView_OobHardwareSkipsTrace",
+          "VmPMapOffsetTalkPuzzleTests.OffsetView_PortalWalkWhenNotOobHw",
+          "VmPMapOffsetTalkPuzzleTests.OffsetView_FloorPortalDown"
+        ]
+      },
+      {
+        "file": "src/playsim/p_map.cpp",
+        "symbol": "P_TalkFacing",
+        "start": 5746,
+        "end": 5753,
+        "tests": ["VmPMapOffsetTalkPuzzleTests.TalkFacing_ThreeAngleOffsets"]
+      },
+      {
+        "file": "src/playsim/p_map.cpp",
+        "symbol": "P_TalkFacing",
+        "start": 5811,
+        "end": 5821,
+        "tests": [
+          "VmPMapOffsetTalkPuzzleTests.TalkFacing_ConversationFlags",
+          "VmPMapOffsetTalkPuzzleTests.TalkFacing_ThreeAngleOffsets"
+        ]
+      },
+      {
+        "file": "src/playsim/p_map.cpp",
+        "symbol": "P_NoWayTraverse",
+        "start": 5959,
+        "end": 5970,
+        "tests": ["VmPMapOffsetTalkPuzzleTests.PuzzleLine_WrongSide"]
+      },
+      {
+        "file": "src/playsim/p_map.cpp",
+        "symbol": "P_TalkFacing",
+        "start": 5823,
+        "end": 5827,
+        "tests": ["VmPMapOffsetTalkPuzzleTests.TalkFacing_ConversationFlags"]
+      },
+      {
+        "file": "src/playsim/p_map.cpp",
+        "symbol": "P_UsePuzzleItem",
+        "start": 6037,
+        "end": 6100,
+        "tests": [
+          "VmPMapOffsetTalkPuzzleTests.PuzzleLine_MatchingType",
+          "VmPMapOffsetTalkPuzzleTests.PuzzleLine_WrongSide",
+          "VmPMapOffsetTalkPuzzleTests.PuzzleThing_MatchingType"
+        ]
+      },
+      {
+        "file": "src/playsim/p_map.cpp",
+        "symbol": "splashfactor",
+        "start": 6112,
+        "end": 6118,
+        "tests": [
+          "VmPMapOffsetTalkPuzzleTests.SplashFactor_ClampNonPositive",
+          "VmPMapOffsetTalkPuzzleTests.SplashFactor_InvertsForThrust"
+        ]
+      }
+    ]
+  }
+]
