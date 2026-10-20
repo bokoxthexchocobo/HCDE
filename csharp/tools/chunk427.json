@@ -1,0 +1,67 @@
+[
+  {
+    "name": "p-lnspec-thing-lifecycle-chunk427",
+    "bucket": "conversion",
+    "note": "Thing_SetSpecial, ChangeTID, Damage/Heal, activation helpers, activate/deactivate/remove/destroy",
+    "auditSeams": "`P_DamageMobj`, `P_GiveBody`, and actor iterators are not hosted.",
+    "auditRationale": "Credits TID/special assignment, damage/heal branches, `THINGSPEC` activation toggles, and destroy/massacre policy from `p_lnspec.cpp`.",
+    "nativeRanges": [
+      {
+        "file": "src/playsim/p_lnspec.cpp",
+        "symbol": "LS_Thing_SetSpecial",
+        "start": 1273,
+        "end": 1302,
+        "tests": [
+          "VmPLnspecThingLifecycleTests.SetSpecial_WritesActivatorArgsWhenTidZero"
+        ]
+      },
+      {
+        "file": "src/playsim/p_lnspec.cpp",
+        "symbol": "LS_Thing_ChangeTID",
+        "start": 1304,
+        "end": 1329,
+        "tests": [
+          "VmPLnspecThingLifecycleTests.ChangeTid_IteratesWhenOldTidNonZero"
+        ]
+      },
+      {
+        "file": "src/playsim/p_lnspec.cpp",
+        "symbol": "LS_DamageThing / LS_HealThing",
+        "start": 1331,
+        "end": 1395,
+        "tests": [
+          "VmPLnspecThingLifecycleTests.DamageThing_NegativeArgHealsPlayer",
+          "VmPLnspecThingLifecycleTests.HealThing_ClampsToMaxSoulsphere"
+        ]
+      },
+      {
+        "file": "src/playsim/p_lnspec.cpp",
+        "symbol": "DoActivateThing / DoDeactivateThing",
+        "start": 1399,
+        "end": 1419,
+        "tests": [
+          "VmPLnspecThingLifecycleTests.Activation_SwapsSwitchBits"
+        ]
+      },
+      {
+        "file": "src/playsim/p_lnspec.cpp",
+        "symbol": "LS_Thing_Activate / Deactivate / Remove",
+        "start": 1421,
+        "end": 1504,
+        "tests": [
+          "VmPLnspecThingLifecycleTests.Activate_CountsIteratorHits",
+          "VmPLnspecThingLifecycleTests.Remove_UsesActivatorWhenTidZero"
+        ]
+      },
+      {
+        "file": "src/playsim/p_lnspec.cpp",
+        "symbol": "LS_Thing_Destroy",
+        "start": 1506,
+        "end": 1542,
+        "tests": [
+          "VmPLnspecThingLifecycleTests.Destroy_MassacreWhenBothArgsZero"
+        ]
+      }
+    ]
+  }
+]
