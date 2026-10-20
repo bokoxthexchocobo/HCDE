@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 4133,
+  "convertedThisRunNative": 4282,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 19663,
+  "convertedThisRunManaged": 19758,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -208,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 480194,
+  "remainingNative": 480045,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 22660,
+  "convertedBehaviorNative": 22809,
   "recognitionBehaviorNative": 5232,
-  "combinedBehaviorNative": 27892,
-  "convertedBehaviorManaged": 29334,
+  "combinedBehaviorNative": 28041,
+  "convertedBehaviorManaged": 29429,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -8603,6 +8603,79 @@
       ],
       "conversionManagedCommit": "bbbfc0da3e8256f0fdfdb0e3d0042169f158e5cb",
       "nativeLoc": 194
+    },
+    {
+      "name": "animdef-runtime-chunk202",
+      "bucket": "conversion",
+      "managedLoc": 95,
+      "note": "FixAnimations, door lookup, standalone/update animation runtime.",
+      "nativeRanges": [
+        {
+          "file": "src/gamedata/textures/animations.cpp",
+          "symbol": "FTextureAnimator::FixAnimations",
+          "start": 885,
+          "end": 908,
+          "tests": [
+            "VmTextureAnimationRuntimeTests.FindAnimatedDoor_MatchesBaseTexture"
+          ]
+        },
+        {
+          "file": "src/gamedata/textures/animations.cpp",
+          "symbol": "FTextureAnimator::FindAnimatedDoor",
+          "start": 992,
+          "end": 1003,
+          "tests": [
+            "VmTextureAnimationRuntimeTests.FindAnimatedDoor_MatchesBaseTexture"
+          ]
+        },
+        {
+          "file": "src/gamedata/textures/animations.cpp",
+          "symbol": "FTextureAnimator::InitStandaloneAnimation",
+          "start": 1074,
+          "end": 1093,
+          "tests": [
+            "VmTextureAnimationRuntimeTests.StandaloneAnimation_AdvancesFrame"
+          ]
+        },
+        {
+          "file": "src/gamedata/textures/animations.cpp",
+          "symbol": "FTextureAnimator::UpdateStandaloneAnimation",
+          "start": 1095,
+          "end": 1120,
+          "tests": [
+            "VmTextureAnimationRuntimeTests.StandaloneAnimation_AdvancesFrame"
+          ]
+        },
+        {
+          "file": "src/gamedata/textures/animations.cpp",
+          "symbol": "FTextureAnimator::UpdateAnimations fire",
+          "start": 1131,
+          "end": 1158,
+          "tests": [
+            "VmTextureAnimationTickerTests.UpdateUntil_AdvancesWhenPastSwitchTime"
+          ]
+        },
+        {
+          "file": "src/gamedata/textures/animations.cpp",
+          "symbol": "FTextureAnimator::UpdateAnimations translations",
+          "start": 1177,
+          "end": 1188,
+          "tests": [
+            "VmTextureAnimationTickerTests.AdvanceFrame_ForwardWraps"
+          ]
+        },
+        {
+          "file": "src/gamedata/textures/animations.cpp",
+          "symbol": "FTextureAnimator::ResetTimers",
+          "start": 1191,
+          "end": 1217,
+          "tests": [
+            "VmTextureAnimationRuntimeTests.StandaloneAnimation_AdvancesFrame"
+          ]
+        }
+      ],
+      "conversionManagedCommit": "b1c886762a2ca15edb2d8d67c128e42d831d3f09",
+      "nativeLoc": 149
     }
   ]
 }
