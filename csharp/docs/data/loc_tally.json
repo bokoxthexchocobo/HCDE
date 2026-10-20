@@ -6932,6 +6932,43 @@
       ],
       "nativeLoc": 50,
       "conversionManagedCommit": "ab0a090f3178bbab10cf3ae664917d7d07b6c3f7"
+    },
+    {
+      "name": "gameconfig-modnet-chunk141",
+      "bucket": "conversion",
+      "managedLoc": 42,
+      "note": "DoModSetup and ReadNetVars dictionary reads.",
+      "nativeRanges": [
+        {
+          "file": "src/gameconfigfile.cpp",
+          "symbol": "FGameConfigFile::DoModSetup",
+          "start": 922,
+          "end": 941,
+          "tests": [
+            "VmGameConfigModArchiveTests.DoModSetup_ReadsModSections"
+          ]
+        },
+        {
+          "file": "src/gameconfigfile.cpp",
+          "symbol": "FGameConfigFile::ReadNetVars",
+          "start": 943,
+          "end": 958,
+          "tests": [
+            "VmGameConfigModArchiveTests.DoModSetup_ReadsModSections"
+          ]
+        },
+        {
+          "file": "src/gameconfigfile.cpp",
+          "symbol": "FGameConfigFile::ReadCVars",
+          "start": 962,
+          "end": 979,
+          "tests": [
+            "VmGameConfigModArchiveTests.DoModSetup_ReadsModSections"
+          ]
+        }
+      ],
+      "nativeLoc": 54,
+      "conversionManagedCommit": "584199b5edfec7fe774ae10a4c1e29da5b1f7efb"
     }
   ]
 }
