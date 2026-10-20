@@ -1,0 +1,62 @@
+[
+  {
+    "name": "p-mobj-hitfloor-spawn-chunk493",
+    "bucket": "conversion",
+    "note": "P_HitFloor liquid probe, net missile registration, GetDefaultSpeed, P_SpawnMissileXYZ aim",
+    "auditSeams": "`P_HitWater`, `P_DamageMobj`, `Spawn`, `P_PlaySpawnSound`, `P_CheckMissileSpawn`, and shadow handling are not hosted.",
+    "auditRationale": "Credits touchy landing crush, sector/3D-floor splash delegation, replicated missile registration, fast-monster speed pick, and spawn/velocity policy from `p_mobj.cpp` (7672–7979).",
+    "managedSourceFiles": ["csharp/src/HCDE.Playsim/VmPMobjHitFloorSpawn.cs"],
+    "nativeRanges": [
+      {
+        "file": "src/playsim/p_mobj.cpp",
+        "symbol": "P_HitFloor",
+        "start": 7672,
+        "end": 7677,
+        "tests": ["VmPMobjHitFloorSpawnTests.HitFloor_TouchyCrush"]
+      },
+      {
+        "file": "src/playsim/p_mobj.cpp",
+        "symbol": "P_HitFloor",
+        "start": 7679,
+        "end": 7760,
+        "tests": [
+          "VmPMobjHitFloorSpawnTests.HitFloor_TouchyCrush",
+          "VmPMobjHitFloorSpawnTests.HitFloor_3dFloorTopSplash"
+        ]
+      },
+      {
+        "file": "src/playsim/p_mobj.cpp",
+        "symbol": "P_CheckMissileSpawn",
+        "start": 7762,
+        "end": 7769,
+        "tests": ["VmPMobjHitFloorSpawnTests.NetRegister_SkipsNull"]
+      },
+      {
+        "file": "src/playsim/p_mobj.cpp",
+        "symbol": "Net_RegisterMonsterReplicatedMissile",
+        "start": 7771,
+        "end": 7777,
+        "tests": ["VmPMobjHitFloorSpawnTests.NetRegister_SkipsNull"]
+      },
+      {
+        "file": "src/playsim/p_mobj.cpp",
+        "symbol": "GetDefaultSpeed",
+        "start": 7910,
+        "end": 7922,
+        "tests": ["VmPMobjHitFloorSpawnTests.DefaultSpeed_FastMonster"]
+      },
+      {
+        "file": "src/playsim/p_mobj.cpp",
+        "symbol": "P_SpawnMissileXYZ",
+        "start": 7933,
+        "end": 7979,
+        "tests": [
+          "VmPMobjHitFloorSpawnTests.SpawnMissile_RejectNullDest",
+          "VmPMobjHitFloorSpawnTests.SpawnMissile_HuggerClearsZ",
+          "VmPMobjHitFloorSpawnTests.SpawnMissile_RaiseOverTallTarget",
+          "VmPMobjHitFloorSpawnTests.SpawnMissile_SpectralSetsFriend"
+        ]
+      }
+    ]
+  }
+]
