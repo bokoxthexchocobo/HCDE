@@ -16,6 +16,22 @@ public class VmTgaTextureImageTests
     }
 
     [Fact]
+    public void CreatePalettedPixels_Grayscale8_UsesRemap()
+    {
+        var lump = new byte[VmTgaTextureImage.HeaderSize + 2];
+        lump[2] = 3;
+        lump[12] = 1;
+        lump[14] = 2;
+        lump[16] = 8;
+        lump[17] = 32;
+        lump[VmTgaTextureImage.HeaderSize] = 4;
+        lump[VmTgaTextureImage.HeaderSize + 1] = 5;
+        Assert.True(VmTgaTextureImage.TryParseHeader(lump, out var header));
+        var pixels = VmTgaTextureImage.CreatePalettedPixels(lump, header);
+        Assert.Equal(new byte[] { 4, 5 }, pixels);
+    }
+
+    [Fact]
     public void DecodePaletted_FlipsUncompressedImage()
     {
         var lump = BuildPaletted2x2();

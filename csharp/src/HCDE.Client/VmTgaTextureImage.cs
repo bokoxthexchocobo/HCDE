@@ -7,6 +7,34 @@ public static class VmTgaTextureImage
 {
     public const int HeaderSize = 18;
 
+    public static bool TryCreate(ReadOnlySpan<byte> lump, out VmTgaHeader header, out bool masked)
+    {
+        masked = false;
+        if (!TryParseHeader(lump, out header))
+            return false;
+        masked = (header.ImageDescriptor & 15) == 8 &&
+                 (header.BitsPerPixel == 32 || (header.ImageType == 1 && header.ColorMapEntrySize == 32));
+        return true;
+    }
+
+    public static byte[] CreatePalettedPixels(ReadOnlySpan<byte> lump, VmTgaHeader header, bool luminanceConversion = false)
+    {
+        var type = header.ImageType & 7;
+        return type switch
+        {
+            1 => DecodePaletted(lump, header, luminanceConversion),
+            2 => header.BitsPerPixel switch
+            {
+                15 or 16 => DecodeRgb16(lump, header, luminanceConversion),
+                24 => DecodeRgb24(lump, header, luminanceConversion),
+                32 => DecodeRgb32(lump, header, luminanceConversion),
+                _ => Array.Empty<byte>(),
+            },
+            3 => DecodeGrayscale(lump, header, luminanceConversion),
+            _ => Array.Empty<byte>(),
+        };
+    }
+
     public static bool TryParseHeader(ReadOnlySpan<byte> lump, out VmTgaHeader header)
     {
         header = default;
@@ -68,7 +96,64 @@ public static class VmTgaTextureImage
         return pixels;
     }
 
+    public static byte[] DecodeRgb16(ReadOnlySpan<byte> lump, VmTgaHeader header, bool luminanceConversion)
+    {
+        var buffer = ReadPixelBuffer(lump, header);
+        var pixels = new byte[header.Width * header.Height];
+        WalkOrientedPixels(header, buffer, 2, (x, y, offset) =>
+        {
+            var word = BinaryPrimitives.ReadUInt16LittleEndian(buffer.AsSpan(offset, 2));
+            pixels[x * header.Height + y] = VmImageHelpers.RgbToPalette(
+                luminanceConversion,
+                (byte)(((word >> 10) & 0x1F) * 8),
+                (byte)(((word >> 5) & 0x1F) * 8),
+                (byte)((word & 0x1F) * 8));
+        });
+        return pixels;
+    }
+
+    public static byte[] DecodeRgb32(ReadOnlySpan<byte> lump, VmTgaHeader header, bool luminanceConversion)
+    {
+        var buffer = ReadPixelBuffer(lump, header);
+        var pixels = new byte[header.Width * header.Height];
+        var hasAlpha = (header.ImageDescriptor & 15) == 8;
+        WalkOrientedPixels(header, buffer, 4, (x, y, offset) =>
+        {
+            pixels[x * header.Height + y] = VmImageHelpers.RgbToPalette(
+                luminanceConversion,
+                buffer[offset + 2],
+                buffer[offset + 1],
+                buffer[offset],
+                hasAlpha ? buffer[offset + 3] : (byte)255);
+        });
+        return pixels;
+    }
+
+    public static byte[] DecodeGrayscale(ReadOnlySpan<byte> lump, VmTgaHeader header, bool luminanceConversion)
+    {
+        var buffer = ReadPixelBuffer(lump, header);
+        var remap = VmImageHelpers.GetRemap(luminanceConversion, srcIsGrayscale: true);
+        var pixels = new byte[header.Width * header.Height];
+        var step = header.BitsPerPixel >> 3;
+        WalkOrientedPixels(header, buffer, step, (x, y, offset) =>
+        {
+            var value = step == 2 ? buffer[offset + 1] : buffer[offset];
+            pixels[x * header.Height + y] = remap[value];
+        });
+        return pixels;
+    }
+
     public static byte[] DecodeRgb24(ReadOnlySpan<byte> lump, VmTgaHeader header, bool luminanceConversion)
+    {
+        var buffer = ReadPixelBuffer(lump, header);
+        var pixels = new byte[header.Width * header.Height];
+        WalkOrientedPixels(header, buffer, 3, (x, y, offset) =>
+            pixels[x * header.Height + y] = VmImageHelpers.RgbToPalette(
+                luminanceConversion, buffer[offset + 2], buffer[offset + 1], buffer[offset]));
+        return pixels;
+    }
+
+    private static byte[] ReadPixelBuffer(ReadOnlySpan<byte> lump, VmTgaHeader header)
     {
         var bytesPerPixel = header.BitsPerPixel >> 3;
         var pixelBytes = header.Width * header.Height * bytesPerPixel;
@@ -78,31 +163,25 @@ public static class VmTgaTextureImage
             source[..Math.Min(pixelBytes, source.Length)].CopyTo(buffer);
         else
             ReadCompressed(source, buffer, bytesPerPixel);
+        return buffer;
+    }
 
-        var pixels = new byte[header.Width * header.Height];
+    private static void WalkOrientedPixels(
+        VmTgaHeader header,
+        byte[] buffer,
+        int bytesPerPixel,
+        Action<int, int, int> visit)
+    {
         var pitch = header.Width * bytesPerPixel;
-        var pointer = 0;
+        var pointer = (header.ImageDescriptor & 32) == 0 ? (header.Height - 1) * pitch : 0;
         if ((header.ImageDescriptor & 32) == 0)
-        {
-            pointer = (header.Height - 1) * pitch;
             pitch = -pitch;
-        }
-
         for (var y = 0; y < header.Height; y++)
         {
             var row = pointer + y * pitch;
             for (var x = 0; x < header.Width; x++)
-            {
-                var offset = row + x * bytesPerPixel;
-                pixels[x * header.Height + y] = VmImageHelpers.RgbToPalette(
-                    luminanceConversion,
-                    buffer[offset + 2],
-                    buffer[offset + 1],
-                    buffer[offset]);
-            }
+                visit(x, y, row + x * bytesPerPixel);
         }
-
-        return pixels;
     }
 
     private static int GetImageDataOffset(VmTgaHeader header)
