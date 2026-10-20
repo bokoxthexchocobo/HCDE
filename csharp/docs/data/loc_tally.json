@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 3442,
+  "convertedThisRunNative": 3490,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 19078,
+  "convertedThisRunManaged": 19130,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -208,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 480885,
+  "remainingNative": 480837,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 21969,
+  "convertedBehaviorNative": 22017,
   "recognitionBehaviorNative": 5232,
-  "combinedBehaviorNative": 27201,
-  "convertedBehaviorManaged": 28749,
+  "combinedBehaviorNative": 27249,
+  "convertedBehaviorManaged": 28801,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -8360,6 +8360,44 @@
       ],
       "conversionManagedCommit": "7c16266000f00abfe638b4465048afaecdf288d7",
       "nativeLoc": 131
+    },
+    {
+      "name": "decallib-apply-clear-chunk197",
+      "bucket": "conversion",
+      "managedLoc": 52,
+      "note": "FDecalLib Clear/DelTree and FDecalTemplate ApplyToDecal.",
+      "nativeRanges": [
+        {
+          "file": "src/gamedata/decallib.cpp",
+          "symbol": "FDecalLib::Clear",
+          "start": 223,
+          "end": 237,
+          "tests": [
+            "VmDecalLibraryTests.Clear_RemovesAllDecals"
+          ]
+        },
+        {
+          "file": "src/gamedata/decallib.cpp",
+          "symbol": "FDecalLib::DelTree",
+          "start": 239,
+          "end": 247,
+          "tests": [
+            "VmDecalLibraryTests.Clear_RemovesAllDecals"
+          ]
+        },
+        {
+          "file": "src/gamedata/decallib.cpp",
+          "symbol": "FDecalTemplate::ApplyToDecal",
+          "start": 965,
+          "end": 988,
+          "tests": [
+            "VmDecalRuntimeApplyTests.ApplyTemplate_CopiesShadeScaleAndPreservesClipFlags",
+            "VmDecalRuntimeApplyTests.ApplyTemplate_RandomFlipUsesInjectedRandom"
+          ]
+        }
+      ],
+      "conversionManagedCommit": "74cd6107f4810fa7883abaa075cbe33c4047dd0c",
+      "nativeLoc": 48
     }
   ]
 }
