@@ -1,0 +1,23 @@
+[
+  {
+    "name": "am-map-parse-amcolors-chunk355",
+    "bucket": "conversion",
+    "note": "FMapInfoParser ParseAMColors MAPINFO automap color blocks",
+    "auditSeams": "Scanner tokens and `V_GetColorFromString` are injected; `AMColorset` storage stays native.",
+    "auditRationale": "Credits the full `ParseAMColors` loop: base preset selection, `showlocks`, and per-slot color name dispatch.",
+    "nativeRanges": [
+      {
+        "file": "src/am_map.cpp",
+        "symbol": "ParseAMColors",
+        "start": 767,
+        "end": 838,
+        "tests": [
+          "VmAutomapMapinfoColorsParserTests.TryParseBasePreset_AcceptsDoom",
+          "VmAutomapMapinfoColorsParserTests.ValidateBaseKeyOrder_RejectsLateBase",
+          "VmAutomapMapinfoColorsParserTests.TryResolveColorNameIndex_FindsWallColor",
+          "VmAutomapMapinfoColorsParserTests.TryParseShowLocks_FalseLiteralHidesLocks"
+        ]
+      }
+    ]
+  }
+]
