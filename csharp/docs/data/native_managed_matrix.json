@@ -18,19 +18,19 @@
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 14925,
+    "convertedThisRunNative": 15162,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 30632,
+    "convertedThisRunManaged": 30697,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": 151,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 469043,
+    "remainingNative": 468806,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 33452,
+    "convertedBehaviorNative": 33689,
     "recognitionBehaviorNative": 5591,
-    "combinedBehaviorNative": 39043,
-    "convertedBehaviorManaged": 40303,
+    "combinedBehaviorNative": 39280,
+    "convertedBehaviorManaged": 40368,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -14573,6 +14573,40 @@
         "nativeLoc": 154,
         "managedLoc": 78,
         "conversionManagedCommit": "d0cd2379a7b1f387ac7d34c58f16dbe2c4d8876b"
+      },
+      {
+        "name": "maploader-load-segs-chunk375",
+        "bucket": "conversion",
+        "note": "LoadSegs vertex validation and LoadSubsectors lump sizing gates",
+        "auditSeams": "Seg/subsector allocation, `badseg` exceptions, and linedef vertex marking loops are not fully hosted.",
+        "auditRationale": "Credits the opening `MapLoader::LoadSegs` validation path and `MapLoader::LoadSubsectors` sizing from `maploader.cpp`.",
+        "nativeRanges": [
+          {
+            "file": "src/maploader/maploader.cpp",
+            "symbol": "MapLoader::LoadSegs",
+            "start": 802,
+            "end": 975,
+            "tests": [
+              "VmMapLoaderLoadSegsTests.ShouldAbortEmptySegs_WhenZero",
+              "VmMapLoaderLoadSegsTests.ValidateVertexIndex_ThrowsWhenOutOfRange",
+              "VmMapLoaderLoadSegsTests.CountSegs_DividesLumpByRecordSize",
+              "VmMapLoaderLoadSegsTests.ShouldSnapSplitVertex_AtOneDegree"
+            ]
+          },
+          {
+            "file": "src/maploader/maploader.cpp",
+            "symbol": "MapLoader::LoadSubsectors",
+            "start": 985,
+            "end": 1047,
+            "tests": [
+              "VmMapLoaderLoadSegsTests.ShouldRejectZeroSubsectors",
+              "VmMapLoaderLoadSegsTests.IsSubsectorSegRangeInvalid_DetectsOverflow"
+            ]
+          }
+        ],
+        "nativeLoc": 237,
+        "managedLoc": 65,
+        "conversionManagedCommit": "7af8d9a4dd1c8d949196fd5b867ffa8ca7cbb2a9"
       }
     ]
   },
