@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 32143,
+  "convertedThisRunNative": 32255,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 44144,
+  "convertedThisRunManaged": 44213,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": 151,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 451825,
+  "remainingNative": 451713,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 50670,
+  "convertedBehaviorNative": 50782,
   "recognitionBehaviorNative": 5591,
-  "combinedBehaviorNative": 56261,
-  "convertedBehaviorManaged": 53815,
+  "combinedBehaviorNative": 56373,
+  "convertedBehaviorManaged": 53884,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -19947,6 +19947,42 @@
       "nativeLoc": 189,
       "managedLoc": 124,
       "conversionManagedCommit": "bb41c30c91add5a4d5ff4e8378f4ac12003c8716"
+    },
+    {
+      "name": "p-map-trace-bleed-chunk482",
+      "bucket": "conversion",
+      "note": "P_TraceBleed wall blood decals and missile aim overload",
+      "auditSeams": "`Trace`, `DImpactDecal::StaticCreate`, and `pr_tracebleed` are not hosted.",
+      "auditRationale": "Credits blood-splat enablement, damage-tier spray plans, jittered trace directions, wall decal color dimming, and missile pitch bleed entry from `p_map.cpp` (5245\u20135357).",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Playsim/VmPMapTraceBleed.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/playsim/p_map.cpp",
+          "symbol": "P_TraceBleed",
+          "start": 5245,
+          "end": 5327,
+          "tests": [
+            "VmPMapTraceBleedTests.SkipBleed_WhenNoBloodFlag",
+            "VmPMapTraceBleedTests.PlanBleed_LowDamageCanSkip",
+            "VmPMapTraceBleedTests.PlanBleed_HighDamageSmearChance",
+            "VmPMapTraceBleedTests.DefaultBleedDistance_Fallback172"
+          ]
+        },
+        {
+          "file": "src/playsim/p_map.cpp",
+          "symbol": "P_TraceBleed",
+          "start": 5329,
+          "end": 5357,
+          "tests": [
+            "VmPMapTraceBleedTests.MissileBleed_SkipsBloodless"
+          ]
+        }
+      ],
+      "nativeLoc": 112,
+      "managedLoc": 69,
+      "conversionManagedCommit": "233e46107a439af4cf1fde7a9d9c2144cbf92a3a"
     }
   ]
 }
