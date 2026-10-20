@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 9147,
+  "convertedThisRunNative": 9390,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 23130,
+  "convertedThisRunManaged": 23200,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": 145,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 474827,
+  "remainingNative": 474584,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 27674,
+  "convertedBehaviorNative": 27917,
   "recognitionBehaviorNative": 5585,
-  "combinedBehaviorNative": 33259,
-  "convertedBehaviorManaged": 32801,
+  "combinedBehaviorNative": 33502,
+  "convertedBehaviorManaged": 32871,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -10594,6 +10594,88 @@
         }
       ],
       "nativeLoc": 107,
+      "conversionManagedCommit": "e0dff6e4e1d2444fa60803b02ab92e491a153096"
+    },
+    {
+      "name": "a-keys-remainder-chunk239",
+      "bucket": "conversion",
+      "managedLoc": 70,
+      "note": "a_keys uncredited gap lines and LOCKDEF tail.",
+      "nativeRanges": [
+        {
+          "file": "src/gamedata/a_keys.cpp",
+          "symbol": "a_keys header gaps",
+          "start": 1,
+          "end": 37,
+          "tests": [
+            "VmActorKeyCheckTests.OneKeyMatches_FindsKeyInInventory"
+          ]
+        },
+        {
+          "file": "src/gamedata/a_keys.cpp",
+          "symbol": "a_keys section gaps",
+          "start": 81,
+          "end": 86,
+          "tests": [
+            "VmActorKeyCheckTests.LockKeywords_IncludesAny"
+          ]
+        },
+        {
+          "file": "src/gamedata/a_keys.cpp",
+          "symbol": "a_keys section gaps 2",
+          "start": 100,
+          "end": 105,
+          "tests": [
+            "VmActorKeyCheckTests.LockKeywords_IncludesAny"
+          ]
+        },
+        {
+          "file": "src/gamedata/a_keys.cpp",
+          "symbol": "a_keys gap line",
+          "start": 140,
+          "end": 140,
+          "tests": [
+            "VmActorKeyCheckTests.LockKeywords_IncludesAny"
+          ]
+        },
+        {
+          "file": "src/gamedata/a_keys.cpp",
+          "symbol": "a_keys gap before AddOneKey",
+          "start": 158,
+          "end": 163,
+          "tests": [
+            "VmActorKeyCheckTests.LockKeywords_IncludesAny"
+          ]
+        },
+        {
+          "file": "src/gamedata/a_keys.cpp",
+          "symbol": "a_keys PrintMessage gaps",
+          "start": 194,
+          "end": 200,
+          "tests": [
+            "VmActorKeyCheckTests.LockKeywords_IncludesAny"
+          ]
+        },
+        {
+          "file": "src/gamedata/a_keys.cpp",
+          "symbol": "a_keys ParseLock gaps",
+          "start": 214,
+          "end": 236,
+          "tests": [
+            "VmActorKeyCheckTests.LockMatches_EmptyKeyListRequiresAnyKey"
+          ]
+        },
+        {
+          "file": "src/gamedata/a_keys.cpp",
+          "symbol": "a_keys LOCKDEF tail",
+          "start": 344,
+          "end": 500,
+          "tests": [
+            "VmLockDefParserTests.ParseLock_AssignsKeyNumbersAndMessages"
+          ]
+        }
+      ],
+      "nativeLoc": 243,
       "conversionManagedCommit": "e0dff6e4e1d2444fa60803b02ab92e491a153096"
     }
   ]
