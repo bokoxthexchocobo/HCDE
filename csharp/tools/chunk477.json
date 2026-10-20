@@ -1,0 +1,56 @@
+[
+  {
+    "name": "p-map-aim-traverse-main-chunk477",
+    "bucket": "conversion",
+    "note": "aim_t AimTraverse intercept loop (lines, things, smart aim)",
+    "auditSeams": "`FPathTraverse`, `P_LineOpening`, `P_CheckSight`, and `SetResult` are not hosted.",
+    "auditRationale": "Credits aim traverse early-out, two-sided line pitch narrowing, thing visibility filters, 3D-floor pitch clamps, sight narrowing, CHECK3D range, and smart-aim friend/barrel deferral from `p_map.cpp` (4294–4565).",
+    "managedSourceFiles": ["csharp/src/HCDE.Playsim/VmPMapAimTraverseMain.cs"],
+    "nativeRanges": [
+      {
+        "file": "src/playsim/p_map.cpp",
+        "symbol": "aim_t::AimTraverse",
+        "start": 4294,
+        "end": 4370,
+        "tests": [
+          "VmPMapAimTraverseMainTests.StopWhenBetterFound_SkipsFartherFrac",
+          "VmPMapAimTraverseMainTests.LinePortalEntry_FrontOnly",
+          "VmPMapAimTraverseMainTests.LineIntercept_StopsOnBlock",
+          "VmPMapAimTraverseMainTests.LineIntercept_EntersPortal"
+        ]
+      },
+      {
+        "file": "src/playsim/p_map.cpp",
+        "symbol": "aim_t::AimTraverse",
+        "start": 4372,
+        "end": 4410,
+        "tests": [
+          "VmPMapAimTraverseMainTests.SkipThingForAim_NonShootable",
+          "VmPMapAimTraverseMainTests.SkipThingForAim_GhostThruWeapon"
+        ]
+      },
+      {
+        "file": "src/playsim/p_map.cpp",
+        "symbol": "aim_t::AimTraverse",
+        "start": 4410,
+        "end": 4492,
+        "tests": [
+          "VmPMapAimTraverseMainTests.ExitPointClearsTopShot",
+          "VmPMapAimTraverseMainTests.FfSightNarrow_StopWhenRangeCloses"
+        ]
+      },
+      {
+        "file": "src/playsim/p_map.cpp",
+        "symbol": "aim_t::AimTraverse",
+        "start": 4494,
+        "end": 4565,
+        "tests": [
+          "VmPMapAimTraverseMainTests.Check3dRangeExceeded_WhenBeyondAttackRange",
+          "VmPMapAimTraverseMainTests.SmartAim_RecordsFriend",
+          "VmPMapAimTraverseMainTests.SmartAim_HitsMonster",
+          "VmPMapAimTraverseMainTests.MidThingPitch_Averages"
+        ]
+      }
+    ]
+  }
+]
