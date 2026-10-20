@@ -12,25 +12,25 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 123059
+    "managedCSharpLoc": 123692
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 5642,
+    "convertedThisRunNative": 5741,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 20659,
+    "convertedThisRunManaged": 20754,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -43,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 478520,
+    "remainingNative": 478421,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 24169,
+    "convertedBehaviorNative": 24268,
     "recognitionBehaviorNative": 5397,
-    "combinedBehaviorNative": 29566,
-    "convertedBehaviorManaged": 30330,
+    "combinedBehaviorNative": 29665,
+    "convertedBehaviorManaged": 30425,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -9172,6 +9172,43 @@
         ],
         "conversionManagedCommit": "2885cdbe470a50fc97e90771ba26b58d6e396a0e",
         "nativeLoc": 178
+      },
+      {
+        "name": "dsda-options-parse-chunk211",
+        "bucket": "conversion",
+        "managedLoc": 95,
+        "note": "DSDA OPTIONS defaults, option_list keys, parseOptions apply.",
+        "nativeRanges": [
+          {
+            "file": "src/gamedata/options.cpp",
+            "symbol": "dsda_options",
+            "start": 23,
+            "end": 46,
+            "tests": [
+              "VmDsdaOptionsApplierTests.ApplyToLevel_SetsNoInfightingFlag"
+            ]
+          },
+          {
+            "file": "src/gamedata/options.cpp",
+            "symbol": "option_list",
+            "start": 56,
+            "end": 78,
+            "tests": [
+              "VmDsdaOptionsParserTests.Parse_ClampedKeyValuePairs"
+            ]
+          },
+          {
+            "file": "src/gamedata/options.cpp",
+            "symbol": "parseOptions",
+            "start": 149,
+            "end": 200,
+            "tests": [
+              "VmDsdaOptionsApplierTests.ApplyToLevel_SetsCompatMask"
+            ]
+          }
+        ],
+        "conversionManagedCommit": "bba9c7500564303331b84ee34f5daf85c999904a",
+        "nativeLoc": 99
       }
     ]
   },
