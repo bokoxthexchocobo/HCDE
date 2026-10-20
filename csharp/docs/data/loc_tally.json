@@ -4,7 +4,7 @@
   "runStartConvertedBehaviorManaged": 9671,
   "convertedThisRunNative": 33318,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 44831,
+  "convertedThisRunManaged": 44870,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": 151,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
@@ -14,7 +14,7 @@
   "convertedBehaviorNative": 51845,
   "recognitionBehaviorNative": 5591,
   "combinedBehaviorNative": 57436,
-  "convertedBehaviorManaged": 54502,
+  "convertedBehaviorManaged": 54541,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -20200,7 +20200,9 @@
           "end": 6279,
           "tests": [
             "VmPMobjMorphSpawnTests.Morph_UnmorphRunsPreUnmorph",
-            "VmPMobjMorphSpawnTests.Morph_LinksDummyOnMorphIn"
+            "VmPMobjMorphSpawnTests.Morph_LinksDummyOnMorphIn",
+            "VmPMobjMorphSpawnTests.Morph_UnmorphClearsDummyFlag",
+            "VmPMobjMorphSpawnTests.Morph_SetsUnmorphedOnMorphIn"
           ]
         },
         {
@@ -20221,13 +20223,15 @@
             "VmPMobjMorphSpawnTests.Spawn_CoopRespawnFilter",
             "VmPMobjMorphSpawnTests.Spawn_RunEnterScriptsOnPstEnter",
             "VmPMobjMorphSpawnTests.Spawn_RebornClearsSoundTargets",
-            "VmPMobjMorphSpawnTests.Spawn_SinkBelowCeiling"
+            "VmPMobjMorphSpawnTests.Spawn_SinkBelowCeiling",
+            "VmPMobjMorphSpawnTests.Spawn_CoopHeldWeaponRequiresLiveWeapon",
+            "VmPMobjMorphSpawnTests.Spawn_RebornMaintenanceBundle"
           ]
         }
       ],
       "nativeLoc": 253,
-      "managedLoc": 133,
-      "conversionManagedCommit": "afa6f269e3fd0aace4c448329a458184b121a2df"
+      "managedLoc": 172,
+      "conversionManagedCommit": "67070a6ea7901e6ee63b222ee6b3c08afbc6aa45"
     },
     {
       "name": "p-mobj-spawnmapthing-bands-chunk487",
