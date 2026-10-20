@@ -95,4 +95,42 @@ public static class VmEMapInfoApplyHelpers
 
     public static ushort PackEnvironmentId(int first, int second) =>
         (ushort)((first << 8) | second);
+
+    public static bool ApplyBossSpecials(ref int flags, ref uint flags3, IEnumerable<string> rawFlags)
+    {
+        var any = false;
+        foreach (var raw in rawFlags)
+        {
+            if (!TryParseBossSpecialFlag(raw, ref flags, ref flags3))
+                return false;
+            any = true;
+        }
+
+        return any;
+    }
+
+    public static bool ApplyDefaultEnvironment(
+        VmEMapInfoStats stats,
+        string mapName,
+        string key,
+        string value,
+        int line,
+        Func<ushort, int?> findReverbId,
+        out ushort packedId,
+        out int? matchedReverbId)
+    {
+        packedId = 0;
+        matchedReverbId = null;
+        if (!TryParseDefaultEnvironmentPair(value, out var first, out var second))
+        {
+            RecordInvalid(stats, mapName, key, line);
+            return false;
+        }
+
+        packedId = PackEnvironmentId(first, second);
+        matchedReverbId = findReverbId(packedId);
+        if (matchedReverbId is null)
+            RecordUnsupported(stats, mapName, key, line);
+        return true;
+    }
 }

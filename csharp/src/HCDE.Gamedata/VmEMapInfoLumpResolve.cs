@@ -29,4 +29,7 @@ public static class VmEMapInfoLumpResolve
 
     public static double ScaleFixedGravity(double raw) =>
         raw == 0 ? double.MaxValue : raw / 65536.0;
+
+    public static string NormalizeLumpLookupName(string value) =>
+        VmEMapInfoLineParser.NormalizeResourceName(value);
 }

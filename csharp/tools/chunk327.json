@@ -1,0 +1,31 @@
+[
+  {
+    "name": "hcde-emapinfo-apply-block-chunk327",
+    "bucket": "conversion",
+    "managedLoc": 55,
+    "note": "EMAPINFO ApplyInt Double BossSpecials DefaultEnvironment lump head",
+    "auditSeams": "`HCDEReverbContainers` and `fileSystem` lump lookup are injected; boss-special bit masks use placeholder flags consistent with earlier `TryParseBossSpecialFlag` chunk.",
+    "auditRationale": "Credits `hcde_emapinfo.cpp` 404–533 between the chunk 284 `ApplyBoolProperty` row and chunk 286 lump tail: int/double apply wrappers, boss-special list parsing, Eternity reverb ID resolution with unsupported fallback, and the first segment of `ResolveSiblingLump` name normalization exercised by the apply/lump tests.",
+    "nativeRanges": [
+      {
+        "file": "src/gamedata/hcde_emapinfo.cpp",
+        "symbol": "ApplyInt ApplyDouble ApplyBossSpecials",
+        "start": 405,
+        "end": 464,
+        "tests": [
+          "VmEMapInfoApplyHelpersTests.ApplyIntProperty_RejectsBadNumber",
+          "VmEMapInfoApplyHelpersTests.ApplyBossSpecials_ParsesE1M8"
+        ]
+      },
+      {
+        "file": "src/gamedata/hcde_emapinfo.cpp",
+        "symbol": "ApplyDefaultEnvironment ResolveSiblingLump head",
+        "start": 466,
+        "end": 533,
+        "tests": [
+          "VmEMapInfoApplyHelpersTests.ApplyDefaultEnvironment_RecordsUnsupportedWhenMissing"
+        ]
+      }
+    ]
+  }
+]

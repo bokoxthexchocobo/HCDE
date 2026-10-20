@@ -20,4 +20,32 @@ public class VmEMapInfoApplyHelpersTests
         Assert.Equal(2, b);
         Assert.Equal(0x0102, VmEMapInfoApplyHelpers.PackEnvironmentId(a, b));
     }
+
+    [Fact]
+    public void ApplyIntProperty_RejectsBadNumber()
+    {
+        var stats = new VmEMapInfoStats();
+        var value = 0;
+        Assert.False(VmEMapInfoApplyHelpers.ApplyIntProperty(stats, "MAP01", "gravity", "x", 1, ref value));
+        Assert.Equal(1, stats.Invalid);
+    }
+
+    [Fact]
+    public void ApplyBossSpecials_ParsesE1M8()
+    {
+        var flags = 0;
+        var flags3 = 0u;
+        Assert.True(VmEMapInfoApplyHelpers.ApplyBossSpecials(ref flags, ref flags3, ["E1M8"]));
+        Assert.NotEqual(0u, flags3);
+    }
+
+    [Fact]
+    public void ApplyDefaultEnvironment_RecordsUnsupportedWhenMissing()
+    {
+        var stats = new VmEMapInfoStats();
+        Assert.True(VmEMapInfoApplyHelpers.ApplyDefaultEnvironment(
+            stats, "MAP01", "defaultenvironment", "1 2", 4, _ => null, out var packed, out _));
+        Assert.Equal(0x0102, packed);
+        Assert.Equal(1, stats.Unsupported);
+    }
 }
