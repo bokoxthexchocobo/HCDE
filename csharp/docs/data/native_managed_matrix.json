@@ -12,25 +12,25 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 139916
+    "managedCSharpLoc": 140499
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 23941,
+    "convertedThisRunNative": 24006,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 37634,
+    "convertedThisRunManaged": 37701,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": 151,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 460027,
+    "remainingNative": 459962,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 42468,
+    "convertedBehaviorNative": 42533,
     "recognitionBehaviorNative": 5591,
-    "combinedBehaviorNative": 48059,
-    "convertedBehaviorManaged": 47305,
+    "combinedBehaviorNative": 48124,
+    "convertedBehaviorManaged": 47372,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -17357,9 +17357,9 @@
       {
         "name": "p-lnspec-exit-teleport-chunk429",
         "bucket": "conversion",
-        "note": "Exit levels, teleport variants, line teleport, poly stop sound",
-        "auditSeams": "`EV_Teleport`, `EV_SilentLineTeleport`, and `SN_StopSequence` are not hosted.",
-        "auditRationale": "Credits exit-good checks, teleport flag masks, orientation cases, and polyobj stop sound from `p_lnspec.cpp`.",
+        "note": "Exit, teleport variants, line teleport, thrust XY/Z, poly stop sound (expanded bands)",
+        "auditSeams": "`EV_Teleport`, `EV_SilentLineTeleport`, `SN_StopSequence`, and live `AActor` velocity are not hosted.",
+        "auditRationale": "Credits exit-good checks, teleport flag/orientation policy, silent line teleport, thrust clamping, and Z-thrust set/add modes from `p_lnspec.cpp`.",
         "nativeRanges": [
           {
             "file": "src/playsim/p_lnspec.cpp",
@@ -17400,18 +17400,45 @@
           },
           {
             "file": "src/playsim/p_lnspec.cpp",
-            "symbol": "LS_Teleport_ZombieChanger through LS_Teleport_Line",
+            "symbol": "LS_Teleport_ZombieChanger through LS_Teleport_EndGame",
             "start": 1157,
-            "end": 1203,
+            "end": 1197,
             "tests": [
               "VmPLnspecExitTeleportTests.ZombieChanger_RequiresActivator",
+              "VmPLnspecExitTeleportTests.TeleportEndGame_RejectsBackside"
+            ]
+          },
+          {
+            "file": "src/playsim/p_lnspec.cpp",
+            "symbol": "LS_Teleport_Line",
+            "start": 1199,
+            "end": 1203,
+            "tests": [
               "VmPLnspecExitTeleportTests.TeleportLine_DelegatesSilentLine"
+            ]
+          },
+          {
+            "file": "src/playsim/p_lnspec.cpp",
+            "symbol": "ThrustThingHelper / LS_ThrustThing",
+            "start": 1205,
+            "end": 1237,
+            "tests": [
+              "VmPLnspecExitTeleportTests.ThrustThing_ClampsVelocityWhenNotNoLimit"
+            ]
+          },
+          {
+            "file": "src/playsim/p_lnspec.cpp",
+            "symbol": "LS_ThrustThingZ",
+            "start": 1239,
+            "end": 1271,
+            "tests": [
+              "VmPLnspecExitTeleportTests.ThrustThingZ_AddModeAccumulates"
             ]
           }
         ],
-        "nativeLoc": 147,
-        "managedLoc": 78,
-        "conversionManagedCommit": "153dbd71c8f2e8b0e8c8e8e8c8e8e8c8e8e8e8c8"
+        "nativeLoc": 212,
+        "managedLoc": 145,
+        "conversionManagedCommit": "cb34b3f79c9caa0cdde3bf87b1108dd4fae568a9"
       }
     ]
   },
