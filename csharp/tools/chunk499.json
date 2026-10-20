@@ -1,0 +1,92 @@
+[
+  {
+    "name": "p-map-crush-tail-decal-activate-chunk499",
+    "bucket": "conversion",
+    "note": "P_DoCrunch blood tail, SpawnShootDecal, SpawnDeepSplash, P_ActivateThingSpecial",
+    "auditSeams": "`Spawn`, `P_DamageMobj`, `DImpactDecal::StaticCreate`, `P_HitWater`, and `P_ExecuteSpecial` are not hosted.",
+    "auditRationale": "Credits crusher blood/splash policy, weapon-vs-actor decal selection, deep splash trace choice, and thing activation/switch/special dispatch from `p_map.cpp` (6679–7391) including EOF tail after `P_ChangeSector`.",
+    "managedSourceFiles": ["csharp/src/HCDE.Playsim/VmPMapCrushTailDecalActivate.cs"],
+    "nativeRanges": [
+      {
+        "file": "src/playsim/p_map.cpp",
+        "symbol": "P_DoCrunch",
+        "start": 6679,
+        "end": 6685,
+        "tests": ["VmPMapCrushTailDecalActivateTests.Crush_DamageCadence"]
+      },
+      {
+        "file": "src/playsim/p_map.cpp",
+        "symbol": "P_DoCrunch",
+        "start": 6701,
+        "end": 6752,
+        "tests": [
+          "VmPMapCrushTailDecalActivateTests.Crush_DamageCadence",
+          "VmPMapCrushTailDecalActivateTests.Crush_SkipInvulnBlood"
+        ]
+      },
+      {
+        "file": "src/playsim/p_map.cpp",
+        "symbol": "P_PushUp",
+        "start": 6822,
+        "end": 6830,
+        "tests": ["VmPMapCrushTailDecalActivateTests.Crush_DamageCadence"]
+      },
+      {
+        "file": "src/playsim/p_map.cpp",
+        "symbol": "P_PushDown",
+        "start": 6886,
+        "end": 6892,
+        "tests": ["VmPMapCrushTailDecalActivateTests.Crush_DamageCadence"]
+      },
+      {
+        "file": "src/playsim/p_map.cpp",
+        "symbol": "P_ChangeSector",
+        "start": 7107,
+        "end": 7115,
+        "tests": ["VmPMapCrushTailDecalActivateTests.Activate_DefaultSwitchAddsActivate"]
+      },
+      {
+        "file": "src/playsim/p_map.cpp",
+        "symbol": "P_ChangeSector",
+        "start": 7238,
+        "end": 7238,
+        "tests": ["VmPMapCrushTailDecalActivateTests.Activate_DefaultSwitchAddsActivate"]
+      },
+      {
+        "file": "src/playsim/p_map.cpp",
+        "symbol": "SpawnShootDecal",
+        "start": 7273,
+        "end": 7296,
+        "tests": [
+          "VmPMapCrushTailDecalActivateTests.Decal_PrefersWeaponGenerator",
+          "VmPMapCrushTailDecalActivateTests.DeepSplash_3dPath"
+        ]
+      },
+      {
+        "file": "src/playsim/p_map.cpp",
+        "symbol": "SpawnDeepSplash",
+        "start": 7304,
+        "end": 7318,
+        "tests": ["VmPMapCrushTailDecalActivateTests.DeepSplash_3dPath"]
+      },
+      {
+        "file": "src/playsim/p_map.cpp",
+        "symbol": "P_ActivateThingSpecial",
+        "start": 7320,
+        "end": 7383,
+        "tests": [
+          "VmPMapCrushTailDecalActivateTests.Activate_DefaultSwitchAddsActivate",
+          "VmPMapCrushTailDecalActivateTests.Activate_SpecialUsesThingOnDeath",
+          "VmPMapCrushTailDecalActivateTests.Activate_ClearOnSuccess"
+        ]
+      },
+      {
+        "file": "src/playsim/p_map.cpp",
+        "symbol": "P_ActivateThingSpecial",
+        "start": 7385,
+        "end": 7391,
+        "tests": ["VmPMapCrushTailDecalActivateTests.Activate_ClearOnSuccess"]
+      }
+    ]
+  }
+]
