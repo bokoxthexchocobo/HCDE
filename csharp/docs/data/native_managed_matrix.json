@@ -18,19 +18,19 @@
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 10506,
+    "convertedThisRunNative": 10661,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 23972,
+    "convertedThisRunManaged": 24067,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": 151,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 473462,
+    "remainingNative": 473307,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 29033,
+    "convertedBehaviorNative": 29188,
     "recognitionBehaviorNative": 5591,
-    "combinedBehaviorNative": 34624,
-    "convertedBehaviorManaged": 33643,
+    "combinedBehaviorNative": 34779,
+    "convertedBehaviorManaged": 33738,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -11084,6 +11084,115 @@
         ],
         "nativeLoc": 161,
         "conversionManagedCommit": "ec45132df27491c72092e912dc1741a0681a0a90"
+      },
+      {
+        "name": "dehacked-mbf21-styles-chunk263",
+        "bucket": "conversion",
+        "managedLoc": 95,
+        "note": "FindStyle, MBF21 flags, SetDehParams guards, PatchThing group clamps, DEHSUPP RenderStyles.",
+        "nativeRanges": [
+          {
+            "file": "src/gamedata/d_dehacked.cpp",
+            "symbol": "Modes table",
+            "start": 463,
+            "end": 487,
+            "tests": [
+              "VmDehackedModeNamesTests.PatchModes_IncludesThing"
+            ]
+          },
+          {
+            "file": "src/gamedata/d_dehacked.cpp",
+            "symbol": "DEHToDouble",
+            "start": 495,
+            "end": 498,
+            "tests": [
+              "VmDehackedNumericConversionTests.DehToDouble_ConvertsFixedPoint"
+            ]
+          },
+          {
+            "file": "src/gamedata/d_dehacked.cpp",
+            "symbol": "HandleKey",
+            "start": 525,
+            "end": 536,
+            "tests": [
+              "VmDehackedStructKeyApplyTests.TryApply_MatchesKey"
+            ]
+          },
+          {
+            "file": "src/gamedata/d_dehacked.cpp",
+            "symbol": "FindStyle",
+            "start": 590,
+            "end": 598,
+            "tests": [
+              "VmDehackedRenderStyleLookupTests.FindStyle_ReturnsRegisteredStyle"
+            ]
+          },
+          {
+            "file": "src/gamedata/d_dehacked.cpp",
+            "symbol": "SetDehParams index guard",
+            "start": 1099,
+            "end": 1109,
+            "tests": [
+              "VmDehackedPatchNamingTests.IsCodePointerIndexInRange_RejectsOutOfBounds"
+            ]
+          },
+          {
+            "file": "src/gamedata/d_dehacked.cpp",
+            "symbol": "SetDehParams printable name",
+            "start": 1162,
+            "end": 1172,
+            "tests": [
+              "VmDehackedPatchNamingTests.SanitizePatchName_ReplacesUnsafeCharacters"
+            ]
+          },
+          {
+            "file": "src/gamedata/d_dehacked.cpp",
+            "symbol": "deh_mobjflags_mbf21",
+            "start": 1198,
+            "end": 1218,
+            "tests": [
+              "VmDehackedMbf21FlagNamesTests.KnownFlags_IncludesBoss"
+            ]
+          },
+          {
+            "file": "src/gamedata/d_dehacked.cpp",
+            "symbol": "ClearBits2Stuff",
+            "start": 1220,
+            "end": 1231,
+            "tests": [
+              "VmDehackedMbf21FlagNamesTests.ClearMbf21Defaults_ResetsGravity"
+            ]
+          },
+          {
+            "file": "src/gamedata/d_dehacked.cpp",
+            "symbol": "PatchThing Render Style",
+            "start": 1366,
+            "end": 1375,
+            "tests": [
+              "VmDehackedRenderStyleLookupTests.FindStyle_ReturnsRegisteredStyle"
+            ]
+          },
+          {
+            "file": "src/gamedata/d_dehacked.cpp",
+            "symbol": "PatchThing group clamps",
+            "start": 1387,
+            "end": 1409,
+            "tests": [
+              "VmDehackedThingGroupLimitsTests.ClampInfightingGroup_RejectsNegative"
+            ]
+          },
+          {
+            "file": "src/gamedata/d_dehacked.cpp",
+            "symbol": "RenderStyles DEHSUPP",
+            "start": 3708,
+            "end": 3724,
+            "tests": [
+              "VmDehackedRenderStyleLookupTests.FindStyle_ReturnsRegisteredStyle"
+            ]
+          }
+        ],
+        "nativeLoc": 155,
+        "conversionManagedCommit": "729a3daed6733f61b5ece219ed475bd0635ca84e"
       }
     ]
   },
