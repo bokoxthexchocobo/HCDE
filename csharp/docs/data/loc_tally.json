@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 12485,
+  "convertedThisRunNative": 12601,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 28420,
+  "convertedThisRunManaged": 28564,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": 151,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 471483,
+  "remainingNative": 471367,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 31012,
+  "convertedBehaviorNative": 31128,
   "recognitionBehaviorNative": 5591,
-  "combinedBehaviorNative": 36603,
-  "convertedBehaviorManaged": 38091,
+  "combinedBehaviorNative": 36719,
+  "convertedBehaviorManaged": 38235,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -13673,6 +13673,56 @@
       ],
       "nativeLoc": 89,
       "conversionManagedCommit": "e5a76186f6ff86258bda665e8a15b6ce5b58e95e"
+    },
+    {
+      "name": "am-map-colorset-init-chunk354",
+      "bucket": "conversion",
+      "managedLoc": 144,
+      "note": "Strife/Raven palettes and AM_initColors preset routing",
+      "auditSeams": "CVAR `initFromCVars` and live `AMColors` globals are not hosted; managed code mirrors preset selection, mod overlay routing, and static palette bytes.",
+      "auditRationale": "Credits `StrifeColors`/`RavenColors` tables, `AM_ClearColorsets`, and the `AM_initColors` overlay/custom/preset switch through Raven/Doom/Strife `initFromColors` arms.",
+      "nativeRanges": [
+        {
+          "file": "src/am_map.cpp",
+          "symbol": "StrifeColors table",
+          "start": 628,
+          "end": 655,
+          "tests": [
+            "VmAutomapColorsetInitTests.StrifePalette_MatchesNativeBackgroundTriplet"
+          ]
+        },
+        {
+          "file": "src/am_map.cpp",
+          "symbol": "RavenColors table",
+          "start": 657,
+          "end": 684,
+          "tests": [
+            "VmAutomapColorsetInitTests.PredefinedUsesRavenGrid_OnlyForSetThree"
+          ]
+        },
+        {
+          "file": "src/am_map.cpp",
+          "symbol": "AM_ClearColorsets",
+          "start": 693,
+          "end": 697,
+          "tests": [
+            "VmAutomapColorsetInitTests.ClearModColorsets_ClearsBothFlags"
+          ]
+        },
+        {
+          "file": "src/am_map.cpp",
+          "symbol": "AM_initColors",
+          "start": 705,
+          "end": 759,
+          "tests": [
+            "VmAutomapColorsetInitTests.PlanInit_PicksStrifePalette",
+            "VmAutomapColorsetInitTests.PlanInit_OverlayUsesCustomModWhenDefined",
+            "VmAutomapColorsetInitTests.ResolvePresetColorset_StrifeWhenAuto"
+          ]
+        }
+      ],
+      "nativeLoc": 116,
+      "conversionManagedCommit": "a47fdff47fb17eefc961283a69d4549b4a049603"
     }
   ]
 }
