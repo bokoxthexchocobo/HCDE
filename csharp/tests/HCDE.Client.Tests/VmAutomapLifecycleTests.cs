@@ -13,14 +13,28 @@ public class VmAutomapLifecycleTests
     {
         Assert.True(VmAutomapLifecycle.ToggleBigState(false));
     }
-}
 
-public class VmAutomapInitColorsTests
-{
     [Fact]
-    public void ResolveAutoColorset_PicksDoomForDoomChex()
+    public void ComputeDrawerDeltaSeconds_UsesMilliseconds()
     {
-        Assert.Equal(VmAutomapInitColors.ColorsetDoom,
-            VmAutomapInitColors.ResolveAutoColorset(VmAutomapInitColors.ColorsetCustom, VmAutomapInitColors.GameDoomChex));
+        Assert.Equal(0.016, VmAutomapLifecycle.ComputeDrawerDeltaSeconds(32, 16));
+    }
+
+    [Fact]
+    public void ShouldApplyPanWhenNotFollowing()
+    {
+        Assert.True(VmAutomapLifecycle.ShouldApplyPanWhenNotFollowing(false));
+    }
+
+    [Fact]
+    public void ResetFollowOldLocationX_IsMaxValue()
+    {
+        Assert.Equal(double.MaxValue, VmAutomapLifecycle.ResetFollowOldLocationX());
+    }
+
+    [Fact]
+    public void ShouldDeactivateAutomapOnStop()
+    {
+        Assert.True(VmAutomapLifecycle.ShouldDeactivateAutomapOnStop());
     }
 }

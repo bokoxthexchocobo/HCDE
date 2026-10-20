@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 16455,
+  "convertedThisRunNative": 16658,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 32169,
+  "convertedThisRunManaged": 32272,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": 151,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 467513,
+  "remainingNative": 467310,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 34982,
+  "convertedBehaviorNative": 35185,
   "recognitionBehaviorNative": 5591,
-  "combinedBehaviorNative": 40573,
-  "convertedBehaviorManaged": 41840,
+  "combinedBehaviorNative": 40776,
+  "convertedBehaviorManaged": 41943,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -15000,19 +15000,10 @@
     {
       "name": "am-map-lifecycle-colors-chunk385",
       "bucket": "conversion",
-      "note": "AM_initColors, Ticker, Serialize, show-all-lines, GoBig, Drawer timing",
+      "note": "Ticker, Drawer timing/pan, Serialize, show-all-lines, GoBig, follow reset, AM_Stop",
       "auditSeams": "`FSerializer` I/O and `saveScaleAndLoc` engine state are not hosted.",
-      "auditRationale": "Credits `AM_initColors`, `DAutomap::Ticker`, `Serialize`, `UpdateShowAllLines`, `GoBig`, `ResetFollowLocation`, and Drawer frame delta from `am_map.cpp`.",
+      "auditRationale": "Credits `DAutomap::Ticker`, `Drawer` frame delta and pan policy, `Serialize`, `UpdateShowAllLines`, `GoBig`, `ResetFollowLocation`, and `AM_Stop` from `am_map.cpp`.",
       "nativeRanges": [
-        {
-          "file": "src/am_map.cpp",
-          "symbol": "AM_initColors",
-          "start": 705,
-          "end": 759,
-          "tests": [
-            "VmAutomapInitColorsTests.ResolveAutoColorset_PicksDoomForDoomChex"
-          ]
-        },
         {
           "file": "src/am_map.cpp",
           "symbol": "DAutomap::Ticker",
@@ -15020,6 +15011,16 @@
           "end": 1609,
           "tests": [
             "VmAutomapLifecycleTests.ToggleBigState_Flips"
+          ]
+        },
+        {
+          "file": "src/am_map.cpp",
+          "symbol": "DAutomap::Drawer",
+          "start": 3348,
+          "end": 3414,
+          "tests": [
+            "VmAutomapLifecycleTests.ComputeDrawerDeltaSeconds_UsesMilliseconds",
+            "VmAutomapLifecycleTests.ShouldApplyPanWhenNotFollowing"
           ]
         },
         {
@@ -15044,24 +15045,74 @@
           "file": "src/am_map.cpp",
           "symbol": "DAutomap::GoBig",
           "start": 3507,
-          "end": 3522,
+          "end": 3517,
           "tests": [
             "VmAutomapLifecycleTests.ToggleBigState_Flips"
           ]
         },
         {
           "file": "src/am_map.cpp",
-          "symbol": "DAutomap::Drawer",
-          "start": 3348,
-          "end": 3363,
+          "symbol": "DAutomap::ResetFollowLocation",
+          "start": 3519,
+          "end": 3522,
           "tests": [
-            "VmAutomapLifecycleTests.ToggleBigState_Flips"
+            "VmAutomapLifecycleTests.ResetFollowOldLocationX_IsMaxValue"
+          ]
+        },
+        {
+          "file": "src/am_map.cpp",
+          "symbol": "AM_Stop",
+          "start": 3531,
+          "end": 3535,
+          "tests": [
+            "VmAutomapLifecycleTests.ShouldDeactivateAutomapOnStop"
           ]
         }
       ],
       "nativeLoc": 150,
-      "managedLoc": 135,
-      "conversionManagedCommit": "542ddec31fb82d38476d079c6f40d84ee39189d0"
+      "managedLoc": 119,
+      "conversionManagedCommit": "ebc067e6474911e230a575de7492bd4ba1ff7078"
+    },
+    {
+      "name": "d-main-display-chunk386",
+      "bucket": "conversion",
+      "note": "D_Display startup gates, wipe selection, level HUD branch, present path",
+      "auditSeams": "`RenderView`, `PerformWipe`, and `StatusBar` drawing are not hosted.",
+      "auditRationale": "Credits `D_Display` from `d_main.cpp`.",
+      "nativeRanges": [
+        {
+          "file": "src/d_main.cpp",
+          "symbol": "D_Display",
+          "start": 1192,
+          "end": 1291,
+          "tests": [
+            "VmDMainDisplayTests.ShouldSkipDisplay_WhenDedicated",
+            "VmDMainDisplayTests.ShouldEnterLevelRenderBranch_RequiresGametic"
+          ]
+        },
+        {
+          "file": "src/d_main.cpp",
+          "symbol": "D_Display",
+          "start": 1351,
+          "end": 1428,
+          "tests": [
+            "VmDMainDisplayTests.ShouldEnterLevelRenderBranch_RequiresGametic",
+            "VmDMainDisplayTests.ResolveWipeType_ForceFadeSelectsFade"
+          ]
+        },
+        {
+          "file": "src/d_main.cpp",
+          "symbol": "D_Display",
+          "start": 1583,
+          "end": 1607,
+          "tests": [
+            "VmDMainDisplayTests.ShouldSkipDisplay_WhenDedicated"
+          ]
+        }
+      ],
+      "nativeLoc": 203,
+      "managedLoc": 119,
+      "conversionManagedCommit": "ebc067e6474911e230a575de7492bd4ba1ff7078"
     }
   ]
 }

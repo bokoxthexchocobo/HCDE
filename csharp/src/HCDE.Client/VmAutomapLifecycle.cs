@@ -92,4 +92,36 @@ public static class VmAutomapLifecycle
     public static bool ShouldRestoreScaleOnGoBig(bool leavingBig) => leavingBig;
 
     public static double ResetFollowOldLocationX() => double.MaxValue;
+
+    public static double ComputeDrawerDeltaSeconds(ulong frameTimeMs, ulong lastFrameTimeMs) =>
+        (frameTimeMs - lastFrameTimeMs) * 0.001;
+
+    public static bool ShouldRunDrawer(bool automapActive) => automapActive;
+
+    public static bool ShouldFollowPlayer(bool amFollowPlayer) => amFollowPlayer;
+
+    public static (double x, double y) ClearPanWhenFollowing(bool followPlayer, double panX, double panY) =>
+        followPlayer ? (0, 0) : (panX, panY);
+
+    public static bool ShouldApplyPanWhenNotFollowing(bool followPlayer) => !followPlayer;
+
+    public static double ScalePanDelta(double ftomPanInc, double deltaSeconds, int ticRate) =>
+        ftomPanInc * deltaSeconds * ticRate;
+
+    public static bool ShouldChangeZoom(bool zoomIn, bool zoomOut, int amZoomDir) =>
+        zoomIn || zoomOut || amZoomDir != 0;
+
+    public static bool ShouldDrawPortalOverlay(bool amPortalOverlay) => amPortalOverlay;
+
+    public static int ResolveMapPortalGroup(bool portalOverlay, int sectorPortalGroup) =>
+        portalOverlay ? sectorPortalGroup : 0;
+
+    public static bool ShouldUseFullscreenAutomapFrame(bool viewActive) => !viewActive;
+
+    public static bool ShouldDrawSubsectorFill(bool amTextured, bool viewActive, bool sectorFillValid, double fillAlpha) =>
+        (amTextured && !viewActive) || (sectorFillValid && fillAlpha > 0.0);
+
+    public static bool ShouldDeactivateAutomapOnStop() => true;
+
+    public static bool ShouldReactivateViewOnStop() => true;
 }

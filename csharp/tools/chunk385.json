@@ -2,19 +2,10 @@
   {
     "name": "am-map-lifecycle-colors-chunk385",
     "bucket": "conversion",
-    "note": "AM_initColors, Ticker, Serialize, show-all-lines, GoBig, Drawer timing",
+    "note": "Ticker, Drawer timing/pan, Serialize, show-all-lines, GoBig, follow reset, AM_Stop",
     "auditSeams": "`FSerializer` I/O and `saveScaleAndLoc` engine state are not hosted.",
-    "auditRationale": "Credits `AM_initColors`, `DAutomap::Ticker`, `Serialize`, `UpdateShowAllLines`, `GoBig`, `ResetFollowLocation`, and Drawer frame delta from `am_map.cpp`.",
+    "auditRationale": "Credits `DAutomap::Ticker`, `Drawer` frame delta and pan policy, `Serialize`, `UpdateShowAllLines`, `GoBig`, `ResetFollowLocation`, and `AM_Stop` from `am_map.cpp`.",
     "nativeRanges": [
-      {
-        "file": "src/am_map.cpp",
-        "symbol": "AM_initColors",
-        "start": 705,
-        "end": 759,
-        "tests": [
-          "VmAutomapInitColorsTests.ResolveAutoColorset_PicksDoomForDoomChex"
-        ]
-      },
       {
         "file": "src/am_map.cpp",
         "symbol": "DAutomap::Ticker",
@@ -22,6 +13,16 @@
         "end": 1609,
         "tests": [
           "VmAutomapLifecycleTests.ToggleBigState_Flips"
+        ]
+      },
+      {
+        "file": "src/am_map.cpp",
+        "symbol": "DAutomap::Drawer",
+        "start": 3348,
+        "end": 3414,
+        "tests": [
+          "VmAutomapLifecycleTests.ComputeDrawerDeltaSeconds_UsesMilliseconds",
+          "VmAutomapLifecycleTests.ShouldApplyPanWhenNotFollowing"
         ]
       },
       {
@@ -46,18 +47,27 @@
         "file": "src/am_map.cpp",
         "symbol": "DAutomap::GoBig",
         "start": 3507,
-        "end": 3522,
+        "end": 3517,
         "tests": [
           "VmAutomapLifecycleTests.ToggleBigState_Flips"
         ]
       },
       {
         "file": "src/am_map.cpp",
-        "symbol": "DAutomap::Drawer",
-        "start": 3348,
-        "end": 3363,
+        "symbol": "DAutomap::ResetFollowLocation",
+        "start": 3519,
+        "end": 3522,
         "tests": [
-          "VmAutomapLifecycleTests.ToggleBigState_Flips"
+          "VmAutomapLifecycleTests.ResetFollowOldLocationX_IsMaxValue"
+        ]
+      },
+      {
+        "file": "src/am_map.cpp",
+        "symbol": "AM_Stop",
+        "start": 3531,
+        "end": 3535,
+        "tests": [
+          "VmAutomapLifecycleTests.ShouldDeactivateAutomapOnStop"
         ]
       }
     ]

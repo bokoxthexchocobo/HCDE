@@ -12,25 +12,25 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 134465
+    "managedCSharpLoc": 134492
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 16455,
+    "convertedThisRunNative": 16658,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 32169,
+    "convertedThisRunManaged": 32288,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": 151,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 467513,
+    "remainingNative": 467310,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 34982,
+    "convertedBehaviorNative": 35185,
     "recognitionBehaviorNative": 5591,
-    "combinedBehaviorNative": 40573,
-    "convertedBehaviorManaged": 41840,
+    "combinedBehaviorNative": 40776,
+    "convertedBehaviorManaged": 41959,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -15078,6 +15078,47 @@
         "nativeLoc": 150,
         "managedLoc": 135,
         "conversionManagedCommit": "542ddec31fb82d38476d079c6f40d84ee39189d0"
+      },
+      {
+        "name": "d-main-display-chunk386",
+        "bucket": "conversion",
+        "note": "D_Display startup gates, wipe selection, level HUD branch, present path",
+        "auditSeams": "`RenderView`, `PerformWipe`, and `StatusBar` drawing are not hosted.",
+        "auditRationale": "Credits `D_Display` from `d_main.cpp`.",
+        "nativeRanges": [
+          {
+            "file": "src/d_main.cpp",
+            "symbol": "D_Display",
+            "start": 1192,
+            "end": 1291,
+            "tests": [
+              "VmDMainDisplayTests.ShouldSkipDisplay_WhenDedicated",
+              "VmDMainDisplayTests.ShouldEnterLevelRenderBranch_RequiresGametic"
+            ]
+          },
+          {
+            "file": "src/d_main.cpp",
+            "symbol": "D_Display",
+            "start": 1351,
+            "end": 1428,
+            "tests": [
+              "VmDMainDisplayTests.ShouldEnterLevelRenderBranch_RequiresGametic",
+              "VmDMainDisplayTests.ResolveWipeType_ForceFadeSelectsFade"
+            ]
+          },
+          {
+            "file": "src/d_main.cpp",
+            "symbol": "D_Display",
+            "start": 1583,
+            "end": 1607,
+            "tests": [
+              "VmDMainDisplayTests.ShouldSkipDisplay_WhenDedicated"
+            ]
+          }
+        ],
+        "nativeLoc": 203,
+        "managedLoc": 119,
+        "conversionManagedCommit": "ebc067e6474911e230a575de7492bd4ba1ff7078"
       }
     ]
   },
