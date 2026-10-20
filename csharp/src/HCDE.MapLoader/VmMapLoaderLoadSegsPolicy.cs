@@ -91,4 +91,103 @@ public static class VmMapLoaderLoadSegsPolicy
 
     public static bool OppositeSideExists(bool[] sidesPresent, int side) =>
         side >= 0 && side < sidesPresent.Length && sidesPresent[side ^ 1];
+
+    public readonly struct SegLoadContext
+    {
+        public SegLoadContext(uint vertexCount, uint lineCount, uint sideCount, int recordSize)
+        {
+            VertexCount = vertexCount;
+            LineCount = lineCount;
+            SideCount = sideCount;
+            RecordSize = recordSize;
+        }
+
+        public uint VertexCount { get; }
+        public uint LineCount { get; }
+        public uint SideCount { get; }
+        public int RecordSize { get; }
+    }
+
+    public static void ValidateSegVertexPair(uint v1, uint v2, in SegLoadContext ctx, int segIndex)
+    {
+        if (v1 >= ctx.VertexCount || v2 >= ctx.VertexCount)
+            throw new InvalidOperationException(
+                VmMapLoaderLoadSegs.FormatBadSegMessage(
+                    VmMapLoaderLoadSegs.BadSegKind.Vertex,
+                    segIndex,
+                    (int)Math.Max(v1, v2),
+                    (int)ctx.VertexCount));
+    }
+
+    public static void ValidateSegLinedef(uint linedef, in SegLoadContext ctx, int segIndex)
+    {
+        if (linedef >= ctx.LineCount)
+            throw new InvalidOperationException(
+                VmMapLoaderLoadSegs.FormatBadSegMessage(
+                    VmMapLoaderLoadSegs.BadSegKind.Linedef,
+                    segIndex,
+                    (int)linedef,
+                    (int)ctx.LineCount));
+    }
+
+    public static void ValidateSegSidedef(uint sidedefIndex, in SegLoadContext ctx, int segIndex)
+    {
+        if (sidedefIndex >= ctx.SideCount)
+            throw new InvalidOperationException(
+                VmMapLoaderLoadSegs.FormatBadSegMessage(
+                    VmMapLoaderLoadSegs.BadSegKind.Sidedef,
+                    segIndex,
+                    (int)sidedefIndex,
+                    (int)ctx.SideCount));
+    }
+
+    public static void ValidateSegSideByte(int side, int segIndex) =>
+        VmMapLoaderLoadSegs.ValidateSideIndex(side, segIndex);
+
+    public static bool TryPlanVertexSnap(
+        double ptpAngle,
+        double segAngle,
+        uint v1,
+        uint v2,
+        byte changed1,
+        byte changed2,
+        out int vertexToMove)
+    {
+        vertexToMove = 0;
+        var delta = AngleDeltaDegrees(ptpAngle, segAngle);
+        if (!ShouldAdjustSplitVertex(delta, 0))
+            return false;
+        vertexToMove = SelectVertexToAdjust(v1, v2, changed1, changed2);
+        return vertexToMove != 0;
+    }
+
+    public static (double x, double y) ApplyVertexSnap(
+        double ax,
+        double ay,
+        double bx,
+        double by,
+        int vertexToMove,
+        double segAngleRadians,
+        double length)
+    {
+        var (dx, dy) = (Math.Cos(segAngleRadians), Math.Sin(segAngleRadians));
+        return vertexToMove == 2
+            ? SnapVertexAlongSeg(ax, ay, dx, dy, length)
+            : SnapVertexAlongSeg(bx, by, -dx, -dy, length);
+    }
+
+    public static bool ShouldContinueSubsectorLoop(uint index, uint count, uint first, uint num, uint maxSeg) =>
+        index < count && !ShouldAbortSubsectorLoad(num, first, maxSeg);
+
+    public static string FormatSubsectorOverflow(int i, uint first, uint num, uint maxSeg) =>
+        VmMapLoaderLoadSegs.FormatInvalidSubsectorSegRange(i, first, num, maxSeg);
+
+    public static int CountSegmentsFromLump(int bytes, int recordSize) =>
+        recordSize > 0 ? bytes / recordSize : 0;
+
+    public static bool RequiresBspRebuildAfterCatch(VmMapLoaderLoadSegs.BadSegKind kind) =>
+        kind is VmMapLoaderLoadSegs.BadSegKind.Vertex
+            or VmMapLoaderLoadSegs.BadSegKind.Linedef
+            or VmMapLoaderLoadSegs.BadSegKind.Sidedef
+            or VmMapLoaderLoadSegs.BadSegKind.SideIndex;
 }
