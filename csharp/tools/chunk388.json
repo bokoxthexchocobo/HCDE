@@ -1,0 +1,38 @@
+[
+  {
+    "name": "maploader-node-orchestration-chunk388",
+    "bucket": "conversion",
+    "note": "Map load format flags, node signature selection, seg sidedef fixups, spawn ordering",
+    "auditSeams": "`LoadExtendedNodes`, `FNodeBuilder`, and `SpawnSlopeMakers` are not hosted.",
+    "auditRationale": "Credits map format activation, node-load orchestration, and post-node seg fixups from `maploader.cpp`.",
+    "nativeRanges": [
+      {
+        "file": "src/maploader/maploader.cpp",
+        "symbol": "MapLoader::LoadMap",
+        "start": 2999,
+        "end": 3048,
+        "tests": [
+          "VmMapLoaderNodeLoadOrchestrationTests.CombineNodeLoadResults_RequiresAllThree"
+        ]
+      },
+      {
+        "file": "src/maploader/maploader.cpp",
+        "symbol": "MapLoader::LoadMap",
+        "start": 3056,
+        "end": 3115,
+        "tests": [
+          "VmMapLoaderNodeLoadOrchestrationTests.CombineNodeLoadResults_RequiresAllThree"
+        ]
+      },
+      {
+        "file": "src/maploader/maploader.cpp",
+        "symbol": "MapLoader::LoadMap",
+        "start": 3189,
+        "end": 3245,
+        "tests": [
+          "VmMapLoaderNodeLoadOrchestrationTests.ResolveHeadGameNodeIndex_PrefersGameNodes"
+        ]
+      }
+    ]
+  }
+]
