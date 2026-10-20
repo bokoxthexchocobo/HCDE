@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": -6079,
+  "convertedThisRunNative": -5912,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 7127,
+  "convertedThisRunManaged": 7452,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -338,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 490536,
+  "remainingNative": 490369,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 12448,
+  "convertedBehaviorNative": 12615,
   "recognitionBehaviorNative": 5102,
-  "combinedBehaviorNative": 17550,
-  "convertedBehaviorManaged": 16798,
+  "combinedBehaviorNative": 17717,
+  "convertedBehaviorManaged": 17123,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -5004,39 +5004,22 @@
     {
       "name": "empty-texture-chunk80",
       "bucket": "conversion",
-      "managedLoc": 24,
-      "note": "Empty placeholder lump try-create + 1x1 metadata (faithful lines only).",
+      "managedLoc": 53,
+      "note": "Complete emptytexture.cpp placeholder image.",
       "nativeRanges": [
         {
           "file": "src/common/textures/formats/emptytexture.cpp",
-          "symbol": "EmptyImage_TryCreate",
+          "symbol": "empty-texture-chunk80",
           "start": 49,
-          "end": 58,
+          "end": 90,
           "tests": [
-            "VmWholeFilePortTests.EmptyTexture_TryCreateFromEightZeroBytes"
-          ]
-        },
-        {
-          "file": "src/common/textures/formats/emptytexture.cpp",
-          "symbol": "FEmptyTexture",
-          "start": 71,
-          "end": 77,
-          "tests": [
-            "VmWholeFilePortTests.EmptyTexture_TryCreateFromEightZeroBytes"
-          ]
-        },
-        {
-          "file": "src/common/textures/formats/emptytexture.cpp",
-          "symbol": "FEmptyTexture::CreatePalettedPixels",
-          "start": 85,
-          "end": 89,
-          "tests": [
-            "VmWholeFilePortTests.EmptyTexture_TryCreateFromEightZeroBytes"
+            "VmEmptyTextureImageTests.TryCreateFromLump_ValidatesEightZeroBytes",
+            "VmEmptyTextureImageTests.CreateDefault_MatchesNativeConstructor"
           ]
         }
       ],
-      "nativeLoc": 22,
-      "conversionManagedCommit": "2440d694c5db13214654f02468e9d5281933376b"
+      "nativeLoc": 42,
+      "conversionManagedCommit": "bd9e5d0518019d727d9312f172546b93411c4b30"
     },
     {
       "name": "v-colortables-chunk81",
@@ -5079,30 +5062,23 @@
     {
       "name": "g-taunt-chunk83",
       "bucket": "conversion",
-      "managedLoc": 18,
-      "note": "Taunt sound naming + cooldown gate (faithful lines only).",
+      "managedLoc": 94,
+      "note": "Complete g_taunt.cpp naming, playback, CCMD, and DEM_TAUNT write.",
       "nativeRanges": [
         {
           "file": "src/g_taunt.cpp",
-          "symbol": "MakeTauntSoundName",
-          "start": 38,
-          "end": 50,
+          "symbol": "g-taunt-chunk83",
+          "start": 35,
+          "end": 104,
           "tests": [
-            "VmWholeFilePortTests.HcdeTaunt_BuildsCanonicalAndVariantNames"
-          ]
-        },
-        {
-          "file": "src/g_taunt.cpp",
-          "symbol": "CCMD(taunt)",
-          "start": 82,
-          "end": 88,
-          "tests": [
-            "VmWholeFilePortTests.HcdeTaunt_CooldownBlocksBackToBackCalls"
+            "VmHcdeTauntTests.EncodeTauntDemoPayload_MatchesNativeWireFormat",
+            "VmHcdeTauntTests.TryRunTauntCommand_WritesDemoCommandWhenInLevel",
+            "VmHcdeTauntTests.PlayOnPawn_InvokesSoundSink"
           ]
         }
       ],
-      "nativeLoc": 20,
-      "conversionManagedCommit": "8e6d93afc34695150ffe3bf2d3b8c9a66c6bd955"
+      "nativeLoc": 70,
+      "conversionManagedCommit": "847b84a6b2be77a047855cd5619b4f7c0e734cdb"
     },
     {
       "name": "zcc-member-function-call-resolve-chunk84",
@@ -5146,12 +5122,12 @@
     {
       "name": "r-memory-chunk85",
       "bucket": "conversion",
-      "managedLoc": 52,
-      "note": "RenderMemory bump allocator and Clear recycle.",
+      "managedLoc": 71,
+      "note": "Complete r_memory.cpp aligned bump allocator.",
       "nativeRanges": [
         {
           "file": "src/common/utility/r_memory.cpp",
-          "symbol": "RenderMemory::AllocBytes",
+          "symbol": "r-memory-chunk85",
           "start": 28,
           "end": 101,
           "tests": [
@@ -5160,36 +5136,29 @@
           ]
         }
       ],
-      "conversionManagedCommit": "abe1ea2b404d4f7ad5e5f69ec6842a5e51c6f0b1",
+      "conversionManagedCommit": "e41ef8f14661fde2eed934302cd021b2aa526cd5",
       "nativeLoc": 74
     },
     {
       "name": "flattexture-chunk86",
       "bucket": "conversion",
-      "managedLoc": 45,
-      "note": "Flat area to dimension bits and paletted read pad.",
+      "managedLoc": 112,
+      "note": "Complete flattexture.cpp and imagehelpers flip/remap.",
       "nativeRanges": [
         {
           "file": "src/common/textures/formats/flattexture.cpp",
-          "symbol": "FFlatTexture",
-          "start": 63,
-          "end": 85,
+          "symbol": "flattexture-chunk86",
+          "start": 52,
+          "end": 104,
           "tests": [
-            "VmFlatTextureLayoutTests.TryGetDimensionsFromArea_MatchesNativeSwitch"
-          ]
-        },
-        {
-          "file": "src/common/textures/formats/flattexture.cpp",
-          "symbol": "FFlatTexture::CreatePalettedPixels",
-          "start": 93,
-          "end": 102,
-          "tests": [
-            "VmFlatTextureLayoutTests.ReadPalettedPixels_PadsShortLumpsWithBb"
+            "VmFlatTextureLayoutTests.TryGetDimensionsFromArea_MatchesNativeSwitch",
+            "VmFlatTextureLayoutTests.CreatePalettedPixels_PadsShortLumpsAndFlipsWithRemap",
+            "VmFlatTextureLayoutTests.FlipSquareBlockRemap_TransposesTwoByTwo"
           ]
         }
       ],
-      "conversionManagedCommit": "31b95363d19b0e03446b1c1d45e70efd05fd0a50",
-      "nativeLoc": 33
+      "conversionManagedCommit": "b832cfc4ab56509b93f7533f280021b28826e078",
+      "nativeLoc": 53
     },
     {
       "name": "a-pickups-chunk87",
@@ -5214,30 +5183,44 @@
     {
       "name": "scriptutil-chunk88",
       "bucket": "conversion",
-      "managedLoc": 50,
-      "note": "ScriptUtil parameter stack build and clamp.",
+      "managedLoc": 115,
+      "note": "Complete scriptutil.cpp parameter stack and VM dispatch.",
       "nativeRanges": [
         {
           "file": "src/scriptutil.cpp",
-          "symbol": "ScriptUtil::BuildParameters",
-          "start": 35,
-          "end": 56,
+          "symbol": "scriptutil-chunk88",
+          "start": 29,
+          "end": 97,
           "tests": [
-            "VmScriptUtilParameterStackTests.AppendFromTypeStream_PushesIntPointerAndFloat"
-          ]
-        },
-        {
-          "file": "src/scriptutil.cpp",
-          "symbol": "ScriptUtil::Exec",
-          "start": 76,
-          "end": 89,
-          "tests": [
-            "VmScriptUtilParameterStackTests.Clamp_RestoresStackToParamStart"
+            "VmScriptUtilParameterStackTests.AppendFromTypeStream_PushesIntPointerAndFloat",
+            "VmScriptUtilParameterStackTests.Clamp_RestoresStackToParamStart",
+            "VmScriptUtilTests.Exec_CachesResolvedFunctionAndReturnsVmResult",
+            "VmScriptUtilTests.Exec_UndefinedFunctionThrowsLikeNative"
           ]
         }
       ],
-      "conversionManagedCommit": "b26007b06052f74fe65ea4f588e9955fc8dac142",
-      "nativeLoc": 36
+      "conversionManagedCommit": "45b3b81f2cff9439452e58b378df42703492c21b",
+      "nativeLoc": 69
+    },
+    {
+      "name": "messagebox-chunk94",
+      "bucket": "conversion",
+      "nativeLoc": 44,
+      "managedLoc": 69,
+      "note": "messagebox.cpp CreateMessageBoxMenu and M_StartMessage wiring.",
+      "nativeRanges": [
+        {
+          "file": "src/common/menu/messagebox.cpp",
+          "symbol": "CreateMessageBoxMenu",
+          "start": 53,
+          "end": 96,
+          "tests": [
+            "VmMessageBoxMenuTests.CreateMessageBoxMenu_FallsBackToDefaultClass",
+            "VmMessageBoxMenuTests.StartMessage_ActivatesChildWithParentLink"
+          ]
+        }
+      ],
+      "conversionManagedCommit": "99cd07fa4e9dffcb51d5fdeacd104b43b45df91f"
     }
   ]
 }
