@@ -45,4 +45,12 @@ public class VmAutomapDrawSubsectorsTests
         Assert.True(VmAutomapDrawSubsectors.ShouldPickRoverTop(64, 100, 0, 128));
         Assert.False(VmAutomapDrawSubsectors.ShouldPickRoverTop(200, 100, 0, 128));
     }
+
+    [Fact]
+    public void PlanPolygonDraw_Textured_SkipsSky()
+    {
+        var plan = VmAutomapDrawSubsectors.PlanPolygonDraw(
+            true, true, false, true, 0, 4, 128, true, 1, 1, 1, 1, 0, 0, false);
+        Assert.False(plan.Draw);
+    }
 }
