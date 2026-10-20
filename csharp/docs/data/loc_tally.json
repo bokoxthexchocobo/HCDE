@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 38456,
+  "convertedThisRunNative": 38654,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 48488,
+  "convertedThisRunManaged": 48623,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": 151,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 445512,
+  "remainingNative": 445314,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 56983,
+  "convertedBehaviorNative": 57181,
   "recognitionBehaviorNative": 5591,
-  "combinedBehaviorNative": 62574,
-  "convertedBehaviorManaged": 58159,
+  "combinedBehaviorNative": 62772,
+  "convertedBehaviorManaged": 58294,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -21969,6 +21969,38 @@
       "nativeLoc": 185,
       "managedLoc": 113,
       "conversionManagedCommit": "f3af28f4d352f63d8c4e2c72f90f958a5b69b899"
+    },
+    {
+      "name": "p-acs-load-scripts-directory-chunk515",
+      "bucket": "conversion",
+      "note": "FBehavior::LoadScriptsDirectory",
+      "auditSeams": "`FindChunk`, `ParseLocalArrayChunk`, `UnescapeStringTable`, and `qsort` are not hosted.",
+      "auditRationale": "Credits ACS script directory parsing for old/enhanced/little-enhanced lumps, duplicate closed-script ordering, and SNAM/SFLG/SVCT/SARY chunks from `p_acs.cpp` (2794\u20132991).",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Playsim/VmAcsLoadScriptsDirectory.cs"
+      ],
+      "portCommits": [
+        "262af623138a33c70529d3e8533b9a620239c029",
+        "63f6cc0c458c0964da55ac7cd57801b864377351"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/playsim/p_acs.cpp",
+          "symbol": "FBehavior::LoadScriptsDirectory",
+          "start": 2794,
+          "end": 2991,
+          "tests": [
+            "VmAcsLoadScriptsDirectoryTests.DecodeOldScriptNumber_SplitsPacked",
+            "VmAcsLoadScriptsDirectoryTests.CountEnhancedScriptsBy12_Divides",
+            "VmAcsLoadScriptsDirectoryTests.TryResolveDuplicateSwap_ClosedWins",
+            "VmAcsLoadScriptsDirectoryTests.SnamIndexToNameTableIndex_Negative",
+            "VmAcsLoadScriptsDirectoryTests.ShouldSkipEnhancedChunks_OldFormat"
+          ]
+        }
+      ],
+      "nativeLoc": 198,
+      "managedLoc": 135,
+      "conversionManagedCommit": "bda7da694da4b3eb9d0f951f1db00a478742d871"
     }
   ]
 }
