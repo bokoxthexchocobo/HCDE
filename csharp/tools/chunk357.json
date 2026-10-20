@@ -1,0 +1,39 @@
+[
+  {
+    "name": "maploader-missing-texture-sector-chunk357",
+    "bucket": "conversion",
+    "note": "Sector SetTexture missing flat warnings and SummarizeMissingTextures",
+    "auditSeams": "`TexMan` and `Printf` are not hosted; messages and warn caps mirror native policy.",
+    "auditRationale": "Credits sector `SetTexture` truncate/warn/default path and the missing-texture summary tail loop.",
+    "nativeRanges": [
+      {
+        "file": "src/maploader/maploader.cpp",
+        "symbol": "SetTexture side linedef scan",
+        "start": 158,
+        "end": 169,
+        "tests": [
+          "VmMapLoaderMissingTexturePolicyTests.FormatWallMissingMessage_IncludesLinedef"
+        ]
+      },
+      {
+        "file": "src/maploader/maploader.cpp",
+        "symbol": "SetTexture sector flat",
+        "start": 197,
+        "end": 209,
+        "tests": [
+          "VmMapLoaderMissingTexturePolicyTests.TruncateFlatName_EightChars",
+          "VmMapLoaderMissingTexturePolicyTests.FormatSectorMissingMessage_IncludesIndex"
+        ]
+      },
+      {
+        "file": "src/maploader/maploader.cpp",
+        "symbol": "SummarizeMissingTextures",
+        "start": 220,
+        "end": 235,
+        "tests": [
+          "VmMapLoaderMissingTexturePolicyTests.ShouldSummarizeExtraUsage_AfterLimit"
+        ]
+      }
+    ]
+  }
+]
