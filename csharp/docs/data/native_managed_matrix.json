@@ -12,25 +12,25 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 132788
+    "managedCSharpLoc": 133094
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 14985,
+    "convertedThisRunNative": 15249,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 30750,
+    "convertedThisRunManaged": 31056,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": 151,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 468983,
+    "remainingNative": 468719,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 33512,
+    "convertedBehaviorNative": 33776,
     "recognitionBehaviorNative": 5591,
-    "combinedBehaviorNative": 39103,
-    "convertedBehaviorManaged": 40421,
+    "combinedBehaviorNative": 39367,
+    "convertedBehaviorManaged": 40727,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -14642,6 +14642,68 @@
         "nativeLoc": 60,
         "managedLoc": 118,
         "conversionManagedCommit": "02b8ffca5d2d5c9097e752921b71fb083e7c8746"
+      },
+      {
+        "name": "am-map-seg-boundaries-chunk376",
+        "bucket": "conversion",
+        "note": "drawSeg/drawPolySeg rotation policy, AM_Check3DFloors, and automap special boundary helpers",
+        "auditSeams": "`drawMline`, polyobject iterators, and `P_GetLineSpecialInfo` tables are not hosted.",
+        "auditRationale": "Credits `DAutomap::drawSeg`, `drawPolySeg`, `showSS` seg path, `AM_Check3DFloors`, and `AM_checkSectorActions` through `AM_isLockBoundary` from `am_map.cpp`.",
+        "nativeRanges": [
+          {
+            "file": "src/am_map.cpp",
+            "symbol": "DAutomap::drawSeg",
+            "start": 2346,
+            "end": 2360,
+            "tests": [
+              "VmAutomapDrawSegTests.ShouldApplyMapRotation_MatchesNativeModes",
+              "VmAutomapDrawSegTests.RotateEndpointsIfNeeded_CallsDelegateWhenEnabled"
+            ]
+          },
+          {
+            "file": "src/am_map.cpp",
+            "symbol": "DAutomap::drawPolySeg",
+            "start": 2362,
+            "end": 2376,
+            "tests": [
+              "VmAutomapDrawSegTests.RotateEndpointsIfNeeded_CallsDelegateWhenEnabled"
+            ]
+          },
+          {
+            "file": "src/am_map.cpp",
+            "symbol": "DAutomap::showSS",
+            "start": 2378,
+            "end": 2410,
+            "tests": [
+              "VmAutomapDrawSegTests.ShouldApplyMapRotation_MatchesNativeModes"
+            ]
+          },
+          {
+            "file": "src/am_map.cpp",
+            "symbol": "AM_Check3DFloors",
+            "start": 2418,
+            "end": 2474,
+            "tests": [
+              "VmAutomapBoundaryHelpersTests.Check3DFloors_ReturnsFalse_WhenBothEmpty",
+              "VmAutomapBoundaryHelpersTests.Check3DFloors_ReturnsTrue_WhenCountsMismatch",
+              "VmAutomapBoundaryHelpersTests.Check3DFloors_ReturnsTrue_WhenFrontFloorUnmatched"
+            ]
+          },
+          {
+            "file": "src/am_map.cpp",
+            "symbol": "AM_checkSectorActions",
+            "start": 2479,
+            "end": 2622,
+            "tests": [
+              "VmAutomapBoundaryHelpersTests.CheckSpecialBoundary_LineActivation_Wins",
+              "VmAutomapBoundaryHelpersTests.IsTeleportSpecial_MatchesNativeSet",
+              "VmAutomapBoundaryHelpersTests.TryResolveLockBoundary_UsesLineLockNumber"
+            ]
+          }
+        ],
+        "nativeLoc": 264,
+        "managedLoc": 306,
+        "conversionManagedCommit": "a7f6d032d240f9bda90b9bff6ef09be6fd967e97"
       }
     ]
   },

@@ -43,7 +43,7 @@ public class VmAutomapBoundaryHelpersTests
             false,
             Array.Empty<VmAutomapBoundaryHelpers.SectorAction>(),
             null,
-            VmAutomapBoundaryHelpers.IsExitSpecial,
+            (special, _) => VmAutomapBoundaryHelpers.IsExitSpecial(special),
             out var special,
             out _);
         Assert.True(ok);
