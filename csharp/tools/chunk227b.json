@@ -1,0 +1,55 @@
+[
+  {
+    "name": "g-skill-vm-export-chunk227b",
+    "bucket": "recognition",
+    "managedLoc": 0,
+    "note": "DEFINE_ACTION_FUNCTION / DEFINE_FIELD exports for skill APIs; managed query layer is conversion chunk 227.",
+    "nativeRanges": [
+      {
+        "file": "src/gamedata/g_skill.cpp",
+        "symbol": "G_SkillPropertyInt export",
+        "start": 417,
+        "end": 422,
+        "tests": [
+          "VmGSkillPropertyQueryTests.QueryInt_FastMonsters_HonorsDmflag"
+        ]
+      },
+      {
+        "file": "src/gamedata/g_skill.cpp",
+        "symbol": "G_SkillPropertyFloat export",
+        "start": 472,
+        "end": 477,
+        "tests": [
+          "VmGSkillPropertyQueryTests.QueryFloat_AmmoFactor_UsesDoubleWhenFlagSet"
+        ]
+      },
+      {
+        "file": "src/gamedata/g_skill.cpp",
+        "symbol": "G_SkillName export",
+        "start": 504,
+        "end": 508,
+        "tests": [
+          "VmGSkillPropertyQueryTests.ResolveSkillMenuName_UsesPlayerClassOverride"
+        ]
+      },
+      {
+        "file": "src/gamedata/g_skill.cpp",
+        "symbol": "DEFINE_GLOBAL and DEFINE_FIELD",
+        "start": 640,
+        "end": 679,
+        "tests": [
+          "VmSkillInfoRuntimeTests.Clone_CopiesReplacementMaps"
+        ]
+      },
+      {
+        "file": "src/gamedata/g_skill.cpp",
+        "symbol": "FSkillInfo GetTextColor export",
+        "start": 681,
+        "end": 690,
+        "tests": [
+          "VmSkillInfoRuntimeTests.GetTextColor_EmptyIsUntranslated"
+        ]
+      }
+    ]
+  }
+]

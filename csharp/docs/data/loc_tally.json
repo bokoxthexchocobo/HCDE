@@ -6,14 +6,14 @@
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
   "convertedThisRunManaged": 22345,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
-  "recognitionThisRunNative": -43,
+  "recognitionThisRunNative": 24,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 476322,
+  "remainingNative": 476255,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
   "convertedBehaviorNative": 26367,
-  "recognitionBehaviorNative": 5397,
-  "combinedBehaviorNative": 31764,
+  "recognitionBehaviorNative": 5464,
+  "combinedBehaviorNative": 31831,
   "convertedBehaviorManaged": 32016,
   "baselineNative": 508086,
   "chunks": [
@@ -9793,6 +9793,60 @@
       ],
       "nativeLoc": 227,
       "conversionManagedCommit": "9a543b4bc1d13e28bd3ff4d700c4bcc49e00b8fe"
+    },
+    {
+      "name": "g-skill-vm-export-chunk227b",
+      "bucket": "recognition",
+      "managedLoc": 0,
+      "note": "DEFINE_ACTION_FUNCTION / DEFINE_FIELD exports for skill APIs; managed query layer is conversion chunk 227.",
+      "nativeRanges": [
+        {
+          "file": "src/gamedata/g_skill.cpp",
+          "symbol": "G_SkillPropertyInt export",
+          "start": 417,
+          "end": 422,
+          "tests": [
+            "VmGSkillPropertyQueryTests.QueryInt_FastMonsters_HonorsDmflag"
+          ]
+        },
+        {
+          "file": "src/gamedata/g_skill.cpp",
+          "symbol": "G_SkillPropertyFloat export",
+          "start": 472,
+          "end": 477,
+          "tests": [
+            "VmGSkillPropertyQueryTests.QueryFloat_AmmoFactor_UsesDoubleWhenFlagSet"
+          ]
+        },
+        {
+          "file": "src/gamedata/g_skill.cpp",
+          "symbol": "G_SkillName export",
+          "start": 504,
+          "end": 508,
+          "tests": [
+            "VmGSkillPropertyQueryTests.ResolveSkillMenuName_UsesPlayerClassOverride"
+          ]
+        },
+        {
+          "file": "src/gamedata/g_skill.cpp",
+          "symbol": "DEFINE_GLOBAL and DEFINE_FIELD",
+          "start": 640,
+          "end": 679,
+          "tests": [
+            "VmSkillInfoRuntimeTests.Clone_CopiesReplacementMaps"
+          ]
+        },
+        {
+          "file": "src/gamedata/g_skill.cpp",
+          "symbol": "FSkillInfo GetTextColor export",
+          "start": 681,
+          "end": 690,
+          "tests": [
+            "VmSkillInfoRuntimeTests.GetTextColor_EmptyIsUntranslated"
+          ]
+        }
+      ],
+      "nativeLoc": 67
     }
   ]
 }

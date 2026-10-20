@@ -1,0 +1,73 @@
+[
+  {
+    "name": "g-skill-runtime-chunk227",
+    "bucket": "conversion",
+    "managedLoc": 195,
+    "note": "G_SkillProperty, G_SkillName, G_VerifySkill, FSkillInfo copy/replacements/text color.",
+    "nativeRanges": [
+      {
+        "file": "src/gamedata/g_skill.cpp",
+        "symbol": "G_SkillProperty int",
+        "start": 347,
+        "end": 415,
+        "tests": [
+          "VmGSkillPropertyQueryTests.QueryInt_FastMonsters_HonorsDmflag"
+        ]
+      },
+      {
+        "file": "src/gamedata/g_skill.cpp",
+        "symbol": "G_SkillProperty float",
+        "start": 430,
+        "end": 469,
+        "tests": [
+          "VmGSkillPropertyQueryTests.QueryFloat_AmmoFactor_UsesDoubleWhenFlagSet"
+        ]
+      },
+      {
+        "file": "src/gamedata/g_skill.cpp",
+        "symbol": "G_SkillName",
+        "start": 487,
+        "end": 502,
+        "tests": [
+          "VmGSkillPropertyQueryTests.ResolveSkillMenuName_UsesPlayerClassOverride"
+        ]
+      },
+      {
+        "file": "src/gamedata/g_skill.cpp",
+        "symbol": "G_VerifySkill",
+        "start": 516,
+        "end": 522,
+        "tests": [
+          "VmGSkillPropertyQueryTests.VerifyGameSkill_ClampsHighIndex"
+        ]
+      },
+      {
+        "file": "src/gamedata/g_skill.cpp",
+        "symbol": "FSkillInfo assignment",
+        "start": 530,
+        "end": 570,
+        "tests": [
+          "VmSkillInfoRuntimeTests.Clone_CopiesReplacementMaps"
+        ]
+      },
+      {
+        "file": "src/gamedata/g_skill.cpp",
+        "symbol": "FSkillInfo GetTextColor",
+        "start": 578,
+        "end": 592,
+        "tests": [
+          "VmSkillInfoRuntimeTests.GetTextColor_EmptyIsUntranslated"
+        ]
+      },
+      {
+        "file": "src/gamedata/g_skill.cpp",
+        "symbol": "FSkillInfo replacement maps",
+        "start": 600,
+        "end": 638,
+        "tests": [
+          "VmSkillInfoRuntimeTests.GetReplacedBy_ReturnsMapping"
+        ]
+      }
+    ]
+  }
+]
