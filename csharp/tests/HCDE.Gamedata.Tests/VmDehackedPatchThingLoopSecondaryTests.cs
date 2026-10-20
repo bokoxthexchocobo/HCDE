@@ -13,4 +13,13 @@ public class VmDehackedPatchThingLoopSecondaryTests
     [Fact]
     public void NormalizeSpeed_ScalesLarge() =>
         Assert.Equal(1.0, VmDehackedPatchThingLoopSecondary.NormalizeSpeed(65536));
+
+    [Fact]
+    public void SelectMissileBounceFlags_MissileVsActor()
+    {
+        Assert.Equal(VmDehackedPatchThingLoopSecondary.BounceClassicDeh,
+            VmDehackedPatchThingLoopSecondary.SelectMissileBounceFlags(true));
+        Assert.Equal(VmDehackedPatchThingLoopSecondary.BounceGrenadeDeh,
+            VmDehackedPatchThingLoopSecondary.SelectMissileBounceFlags(false));
+    }
 }

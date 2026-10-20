@@ -136,4 +136,55 @@ public static class VmDehackedPatchThingLoopSecondary
     public static bool IdKeySetsEdnum(int val) => val >= short.MinValue;
 
     public static bool MassFromVal(int val) => val >= 0;
+
+    public const int Mf6Vulnerable = 0x2000000;
+    public const int Mf3Noblockmonst = 0x200000;
+    public const int Mf4Forceradiusdmg = 0x400000;
+    public const int Mf4Dontharmclass = 0x8000000;
+    public const int BounceClassicDeh = 0x11;
+    public const int BounceGrenadeDeh = 0x12;
+    public const int MfNoblood = 0x8;
+    public const uint MfStealth = 0x80000000u;
+    public const int Mf2Impact = 0x2000000;
+    public const int Mf2Pcross = 0x4000000;
+    public const int Mf2Noteleport = 0x8000000;
+    public const int FxRocket = 0x1;
+    public const int FxGrenade = 0x2;
+
+    public static (int Flags6, int Flags3, int Flags4) ApplyBouncesRemap(int flags6, int flags3, int flags4) =>
+        (flags6 | Mf6Vulnerable, flags3 | Mf3Noblockmonst, flags4 | Mf4Forceradiusdmg | Mf4Dontharmclass);
+
+    public static int SelectMissileBounceFlags(bool isMissile) =>
+        isMissile ? BounceClassicDeh : BounceGrenadeDeh;
+
+    public static int SwapRocketTrailToGrenade(int effects, bool wasMissile, bool isMissile, bool hasRocketFx) =>
+        wasMissile && !isMissile && hasRocketFx ? (effects & ~FxRocket) | FxGrenade : effects;
+
+    public static int ApplyNobloodForNonSentient(int value0, bool sentient) =>
+        sentient ? value0 : value0 | MfNoblood;
+
+    public static bool StealthFriendHack(bool zdoomFlags, uint value0) =>
+        zdoomFlags && (value0 & MfStealth) != 0;
+
+    public static int ApplyFriendRemap(int value0, bool zdoomStealth)
+    {
+        if (zdoomStealth) return value0;
+        var v = (uint)value0;
+        RemapFriend(ref v, false);
+        return (int)v;
+    }
+
+    public static int ApplyMissileNoteleportFlags(int flags2, bool value0Missile) =>
+        value0Missile ? flags2 | Mf2Impact | Mf2Pcross | Mf2Noteleport : flags2;
+
+    public static bool ShouldClearNoteleport(bool infoIsMissile, int flags2, bool newMissile) =>
+        infoIsMissile && (flags2 & Mf2Noteleport) != 0 && !newMissile;
+
+    public static int ClearNoteleportFlag(int flags2) => flags2 & ~Mf2Noteleport;
+
+    public static bool TranslucentSetsVchanged2(uint value0) => (value0 & MfTranslucent) != 0;
+
+    public static uint ClearTranslucentBit(uint value0) => value0 & ~MfTranslucent;
+
+    public static uint MarkTranslucentVchanged2(uint value2) => value2 | 2;
 }
