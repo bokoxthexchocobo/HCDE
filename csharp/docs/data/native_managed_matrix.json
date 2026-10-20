@@ -12,25 +12,25 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 138104
+    "managedCSharpLoc": 138369
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 21297,
+    "convertedThisRunNative": 21468,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 35889,
+    "convertedThisRunManaged": 35993,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": 151,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 462671,
+    "remainingNative": 462500,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 39824,
+    "convertedBehaviorNative": 39995,
     "recognitionBehaviorNative": 5591,
-    "combinedBehaviorNative": 45415,
-    "convertedBehaviorManaged": 45560,
+    "combinedBehaviorNative": 45586,
+    "convertedBehaviorManaged": 45664,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -16681,6 +16681,38 @@
         "nativeLoc": 157,
         "managedLoc": 97,
         "conversionManagedCommit": "d6ff4b42ba3a51aa566164a94e2a1e81d445a6dd"
+      },
+      {
+        "name": "p-lnspec-stairs-thing-chunk416",
+        "bucket": "conversion",
+        "note": "LS_Stairs_* / Generic_Stairs and Thing_Raise/Stop/SetGoal",
+        "auditSeams": "`EV_BuildStairs`, `P_Thing_Raise`, and patrol iterators are not hosted.",
+        "auditRationale": "Credits stair builder and thing raise/stop/goal argument wiring from `p_lnspec.cpp`.",
+        "nativeRanges": [
+          {
+            "file": "src/playsim/p_lnspec.cpp",
+            "symbol": "LS_Floor_Stop / LS_Stairs_*",
+            "start": 569,
+            "end": 650,
+            "tests": [
+              "VmPLnspecStairsThingTests.StairsBuildUp_UsesTicsDelay",
+              "VmPLnspecStairsThingTests.GenericStairs_TogglesDirectionBit"
+            ]
+          },
+          {
+            "file": "src/playsim/p_lnspec.cpp",
+            "symbol": "LS_Thing_Raise",
+            "start": 1759,
+            "end": 1847,
+            "tests": [
+              "VmPLnspecStairsThingTests.ThingStop_ZeroesVelocityWhenActorPresent",
+              "VmPLnspecStairsThingTests.ThingSetGoal_ClearsChaseGoalWhenArgZero"
+            ]
+          }
+        ],
+        "nativeLoc": 171,
+        "managedLoc": 104,
+        "conversionManagedCommit": "22f4102be58edbf4cb7c785a5157f29ec25f7227"
       }
     ]
   },
