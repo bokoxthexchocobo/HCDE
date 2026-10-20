@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 11668,
+  "convertedThisRunNative": 11841,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 25018,
+  "convertedThisRunManaged": 25286,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": 151,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 472300,
+  "remainingNative": 472127,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 30195,
+  "convertedBehaviorNative": 30368,
   "recognitionBehaviorNative": 5591,
-  "combinedBehaviorNative": 35786,
-  "convertedBehaviorManaged": 34689,
+  "combinedBehaviorNative": 35959,
+  "convertedBehaviorManaged": 34957,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -11454,6 +11454,115 @@
       ],
       "nativeLoc": 160,
       "conversionManagedCommit": "43b24d70992c88bc91a0f6548abdc657a4f7c159"
+    },
+    {
+      "name": "g-mapinfo-light-shadow-sky-chunk271",
+      "bucket": "conversion",
+      "managedLoc": 268,
+      "note": "MAPINFO lightblend, HCDE shadow, skyrotate, toggles, edname/acs.",
+      "nativeRanges": [
+        {
+          "file": "src/gamedata/g_mapinfo.cpp",
+          "symbol": "lightblendmode",
+          "start": 1722,
+          "end": 1771,
+          "tests": [
+            "VmMapInfoLightBlendTonemapTests.TryParseLightBlendMode_Unclamped"
+          ]
+        },
+        {
+          "file": "src/gamedata/g_mapinfo.cpp",
+          "symbol": "hcde_shadowprofile",
+          "start": 1773,
+          "end": 1783,
+          "tests": [
+            "VmMapInfoHcdeShadowOptionsTests.ClampShadowProfile_Bounds"
+          ]
+        },
+        {
+          "file": "src/gamedata/g_mapinfo.cpp",
+          "symbol": "hcde_shadowqualitycap",
+          "start": 1785,
+          "end": 1801,
+          "tests": [
+            "VmMapInfoHcdeShadowOptionsTests.NormalizeShadowQualityCap_PicksNearestTier"
+          ]
+        },
+        {
+          "file": "src/gamedata/g_mapinfo.cpp",
+          "symbol": "hcde_shadowmaxlightscap",
+          "start": 1803,
+          "end": 1823,
+          "tests": [
+            "VmMapInfoHcdeShadowOptionsTests.ClampShadowProfile_Bounds"
+          ]
+        },
+        {
+          "file": "src/gamedata/g_mapinfo.cpp",
+          "symbol": "notexturefill",
+          "start": 1825,
+          "end": 1836,
+          "tests": [
+            "VmMapInfoToggleOptionsTests.ParseOptionalBool_FlagWhenOmitted"
+          ]
+        },
+        {
+          "file": "src/gamedata/g_mapinfo.cpp",
+          "symbol": "lightadditivesurfaces",
+          "start": 1838,
+          "end": 1849,
+          "tests": [
+            "VmMapInfoToggleOptionsTests.ParseOptionalBool_FlagWhenOmitted"
+          ]
+        },
+        {
+          "file": "src/gamedata/g_mapinfo.cpp",
+          "symbol": "skyrotate",
+          "start": 1851,
+          "end": 1863,
+          "tests": [
+            "VmMapInfoSkyRotateParserTests.TryParseVector_Normalizes"
+          ]
+        },
+        {
+          "file": "src/gamedata/g_mapinfo.cpp",
+          "symbol": "skyrotate2",
+          "start": 1865,
+          "end": 1877,
+          "tests": [
+            "VmMapInfoSkyRotateParserTests.TryParseVector_Normalizes"
+          ]
+        },
+        {
+          "file": "src/gamedata/g_mapinfo.cpp",
+          "symbol": "fs_nocheckposition",
+          "start": 1879,
+          "end": 1890,
+          "tests": [
+            "VmMapInfoToggleOptionsTests.ParseOptionalBool_FlagWhenOmitted"
+          ]
+        },
+        {
+          "file": "src/gamedata/g_mapinfo.cpp",
+          "symbol": "edata",
+          "start": 1892,
+          "end": 1897,
+          "tests": [
+            "VmMapInfoToggleOptionsTests.ParseOptionalBool_FlagWhenOmitted"
+          ]
+        },
+        {
+          "file": "src/gamedata/g_mapinfo.cpp",
+          "symbol": "loadacs",
+          "start": 1899,
+          "end": 1904,
+          "tests": [
+            "VmMapInfoToggleOptionsTests.ParseOptionalBool_FlagWhenOmitted"
+          ]
+        }
+      ],
+      "nativeLoc": 173,
+      "conversionManagedCommit": "35824186f6e906f477df7cba1eb67aa9a22bc189"
     }
   ]
 }
