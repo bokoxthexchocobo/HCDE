@@ -1,0 +1,77 @@
+[
+  {
+    "name": "p-interaction-virtual-damage-chunk473",
+    "bucket": "conversion",
+    "note": "DamageMobj reflection prelude, DoDamageMobj/P_DamageMobj wrappers, PoisonMobj and CallOkayToSwitchTarget glue",
+    "auditSeams": "`VMCall`, `P_DamageMobj` body, `HCDERewind_LagComp`, and net record hooks are not hosted.",
+    "auditRationale": "Credits power-reflection scan, kickback eligibility, mirror/coop early outs, lag-comp record gates, and virtual OkayToSwitch/Poison action wrappers from `p_interaction.cpp` (1281–1319, 1573–1657, 1715–1726, 1803–1821, 1982–1990).",
+    "managedSourceFiles": ["csharp/src/HCDE.Playsim/VmPInteractionVirtualDamage.cs"],
+    "nativeRanges": [
+      {
+        "file": "src/playsim/p_interaction.cpp",
+        "symbol": "DamageMobj",
+        "start": 1281,
+        "end": 1319,
+        "tests": [
+          "VmPInteractionVirtualDamageTests.ReflectionScan_PicksHigherReflect",
+          "VmPInteractionVirtualDamageTests.Kickback_BlocksThrustlessFlag"
+        ]
+      },
+      {
+        "file": "src/playsim/p_interaction.cpp",
+        "symbol": "DoDamageMobj",
+        "start": 1573,
+        "end": 1603,
+        "tests": [
+          "VmPInteractionVirtualDamageTests.DoDamageMobj_MirrorSkips",
+          "VmPInteractionVirtualDamageTests.ClampDoDamageReturn_NegativeToZero"
+        ]
+      },
+      {
+        "file": "src/playsim/p_interaction.cpp",
+        "symbol": "AActor::DamageMobj",
+        "start": 1605,
+        "end": 1615,
+        "tests": ["VmPInteractionVirtualDamageTests.PDamageMobj_RecordsPositiveDamage"]
+      },
+      {
+        "file": "src/playsim/p_interaction.cpp",
+        "symbol": "P_DamageMobj",
+        "start": 1617,
+        "end": 1657,
+        "tests": ["VmPInteractionVirtualDamageTests.PDamageMobj_RecordsPositiveDamage"]
+      },
+      {
+        "file": "src/playsim/p_interaction.cpp",
+        "symbol": "AActor::PoisonMobj",
+        "start": 1715,
+        "end": 1726,
+        "tests": ["VmPInteractionVirtualDamageTests.PoisonMobjRequiresInflictor"]
+      },
+      {
+        "file": "src/playsim/p_interaction.cpp",
+        "symbol": "AActor::OkayToSwitchTarget",
+        "start": 1803,
+        "end": 1808,
+        "tests": ["VmPInteractionVirtualDamageTests.CallOkaySwitch_FallsBackWhenNoVirtual"]
+      },
+      {
+        "file": "src/playsim/p_interaction.cpp",
+        "symbol": "AActor::CallOkayToSwitchTarget",
+        "start": 1810,
+        "end": 1821,
+        "tests": [
+          "VmPInteractionVirtualDamageTests.CallOkaySwitch_UsesVirtualReturn",
+          "VmPInteractionVirtualDamageTests.CallOkaySwitch_FallsBackWhenNoVirtual"
+        ]
+      },
+      {
+        "file": "src/playsim/p_interaction.cpp",
+        "symbol": "P_PoisonDamage",
+        "start": 1982,
+        "end": 1990,
+        "tests": ["VmPInteractionVirtualDamageTests.PoisonDamagePlaysound"]
+      }
+    ]
+  }
+]
