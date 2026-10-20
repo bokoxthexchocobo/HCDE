@@ -1,0 +1,21 @@
+[
+  {
+    "name": "hcde-emapinfo-stats-model-chunk342",
+    "bucket": "conversion",
+    "managedLoc": 18,
+    "note": "EMAPINFO unsupported sample stats header",
+    "auditSeams": "Anonymous-namespace `TMap` registries are not re-hosted; only the unsupported-sample cap used by `RecordUnsupported` is modeled.",
+    "auditRationale": "Credits the uncredited `hcde_emapinfo.cpp` header band 33–50 defining `EMapInfoUnsupportedSample` and the eight-sample retention policy consumed by stats recording helpers.",
+    "nativeRanges": [
+      {
+        "file": "src/gamedata/hcde_emapinfo.cpp",
+        "symbol": "EMapInfoStats unsupported samples",
+        "start": 33,
+        "end": 50,
+        "tests": [
+          "VmEMapInfoStatsModelTests.ShouldRecordSample_CapsAtEight"
+        ]
+      }
+    ]
+  }
+]
