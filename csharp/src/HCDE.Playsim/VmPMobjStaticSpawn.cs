@@ -26,7 +26,7 @@ public static class VmPMobjStaticSpawn
 
     public static bool RejectNullType(bool isNull) => isNull;
 
-    public static bool RejectAbstractType(bool abstract) => abstract;
+    public static bool RejectAbstractType(bool isAbstract) => isAbstract;
 
     public static bool ApplyReplacement(bool allow) => allow;
 
