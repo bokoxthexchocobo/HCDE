@@ -1,0 +1,19 @@
+[
+  {
+    "name": "g-mapinfo-episode-register-chunk299",
+    "bucket": "conversion",
+    "managedLoc": 35,
+    "note": "ParseEpisodeInfo registration loop",
+    "nativeRanges": [
+      {
+        "file": "src/gamedata/g_mapinfo.cpp",
+        "symbol": "ParseEpisodeInfo registration",
+        "start": 2721,
+        "end": 2870,
+        "tests": [
+          "VmMapInfoEpisodeParserTests.TryResolveTeaserMap_UsesTeaserWhenShareware"
+        ]
+      }
+    ]
+  }
+]

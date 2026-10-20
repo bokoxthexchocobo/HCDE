@@ -63,6 +63,9 @@ public static class VmMapInfoEpisodeParser
         }
     }
 
-    public static bool TryResolveTeaserMap(bool shareware, string teaserToken, string defaultMap, out string map) =>
+    public static bool TryResolveTeaserMap(bool shareware, string teaserToken, string defaultMap, out string map)
+    {
         map = shareware ? teaserToken : defaultMap;
+        return map.Length > 0;
+    }
 }

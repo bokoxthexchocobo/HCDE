@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 15819,
+  "convertedThisRunNative": 16399,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 26681,
+  "convertedThisRunManaged": 26760,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": 151,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 468149,
+  "remainingNative": 467569,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 34346,
+  "convertedBehaviorNative": 34926,
   "recognitionBehaviorNative": 5591,
-  "combinedBehaviorNative": 39937,
-  "convertedBehaviorManaged": 36352,
+  "combinedBehaviorNative": 40517,
+  "convertedBehaviorManaged": 36431,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -12127,6 +12127,82 @@
       ],
       "nativeLoc": 150,
       "conversionManagedCommit": "070890dbcdf190137079dbfba68d2aaaf0023ca8"
+    },
+    {
+      "name": "g-mapinfo-episode-register-chunk299",
+      "bucket": "conversion",
+      "managedLoc": 35,
+      "note": "ParseEpisodeInfo registration loop",
+      "nativeRanges": [
+        {
+          "file": "src/gamedata/g_mapinfo.cpp",
+          "symbol": "ParseEpisodeInfo registration",
+          "start": 2721,
+          "end": 2870,
+          "tests": [
+            "VmMapInfoEpisodeParserTests.NormalizeEpisodeKey_LowersFirstChar"
+          ]
+        }
+      ],
+      "nativeLoc": 150,
+      "conversionManagedCommit": "613a4d4e20a43b41fc9f8b06330eed0f12fd76b8"
+    },
+    {
+      "name": "a-weapons-setslot-chunk300",
+      "bucket": "conversion",
+      "managedLoc": 12,
+      "note": "setslot",
+      "nativeRanges": [
+        {
+          "file": "src/gamedata/a_weapons.cpp",
+          "symbol": "setslot",
+          "start": 516,
+          "end": 665,
+          "tests": [
+            "VmWeaponSlotsSetSlotTests.IsValidSlotNumber_RejectsTen"
+          ]
+        }
+      ],
+      "nativeLoc": 150,
+      "conversionManagedCommit": "a10c1fa0cfb18e9845d6cb30929973f18145406e"
+    },
+    {
+      "name": "a-weapons-print-chunk301",
+      "bucket": "conversion",
+      "managedLoc": 18,
+      "note": "PrintSettings",
+      "nativeRanges": [
+        {
+          "file": "src/gamedata/a_weapons.cpp",
+          "symbol": "PrintSettings",
+          "start": 666,
+          "end": 815,
+          "tests": [
+            "VmWeaponSlotsPrintSettingsTests.EnumerateNonEmptySlots_SkipsEmpty"
+          ]
+        }
+      ],
+      "nativeLoc": 150,
+      "conversionManagedCommit": "578114b1c6593a5e0641f39409b0823dfbaf23e9"
+    },
+    {
+      "name": "a-weapons-addslot-chunk302",
+      "bucket": "conversion",
+      "managedLoc": 14,
+      "note": "addslot",
+      "nativeRanges": [
+        {
+          "file": "src/gamedata/a_weapons.cpp",
+          "symbol": "addslot",
+          "start": 816,
+          "end": 945,
+          "tests": [
+            "VmWeaponSlotsAddSlotTests.TryParseAddSlotArgs_ParsesSlot"
+          ]
+        }
+      ],
+      "nativeLoc": 130,
+      "conversionManagedCommit": "a04301d723b484caea74324eebbff9210994dc7a"
     }
   ]
 }
