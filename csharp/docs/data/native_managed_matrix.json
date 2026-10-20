@@ -12,25 +12,25 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 109177
+    "managedCSharpLoc": 110346
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": -5912,
+    "convertedThisRunNative": -5660,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 7452,
+    "convertedThisRunManaged": 7770,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -338,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 490369,
+    "remainingNative": 490117,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 12615,
+    "convertedBehaviorNative": 12867,
     "recognitionBehaviorNative": 5102,
-    "combinedBehaviorNative": 17717,
-    "convertedBehaviorManaged": 17123,
+    "combinedBehaviorNative": 17969,
+    "convertedBehaviorManaged": 17441,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -5237,6 +5237,53 @@
           }
         ],
         "conversionManagedCommit": "99cd07fa4e9dffcb51d5fdeacd104b43b45df91f"
+      },
+      {
+        "name": "file-wad-chunk95",
+        "bucket": "conversion",
+        "managedLoc": 318,
+        "note": "FWadFile::Open directory/LZSS plus SetNamespace, IsMarker, SkinHack.",
+        "nativeRanges": [
+          {
+            "file": "src/common/filesystem/source/file_wad.cpp",
+            "symbol": "FWadFile::Open",
+            "start": 87,
+            "end": 170,
+            "tests": [
+              "WadArchiveNamespaceTests.TryOpenResource_AssignsNamespacesAndLzssMetadata"
+            ]
+          },
+          {
+            "file": "src/common/filesystem/source/file_wad.cpp",
+            "symbol": "FWadFile::IsMarker",
+            "start": 181,
+            "end": 188,
+            "tests": [
+              "WadArchiveNamespaceTests.IsMarker_MatchesNativeBoomRules"
+            ]
+          },
+          {
+            "file": "src/common/filesystem/source/file_wad.cpp",
+            "symbol": "FWadFile::SetNamespace",
+            "start": 210,
+            "end": 321,
+            "tests": [
+              "WadArchiveNamespaceTests.AssignNamespaces_MarksSpritesBetweenMarkers",
+              "WadArchiveNamespaceTests.FlatHack_Flags4096ByteLumpsBeforeEndMarker"
+            ]
+          },
+          {
+            "file": "src/common/filesystem/source/file_wad.cpp",
+            "symbol": "FWadFile::SkinHack",
+            "start": 338,
+            "end": 385,
+            "tests": [
+              "WadArchiveNamespaceTests.TryOpenResource_AssignsNamespacesAndLzssMetadata"
+            ]
+          }
+        ],
+        "conversionManagedCommit": "1dbc09dcbc94cdc801b4c8badb792baaef88a46b",
+        "nativeLoc": 252
       }
     ]
   },
