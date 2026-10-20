@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 37634,
+  "convertedThisRunNative": 37834,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 47961,
+  "convertedThisRunManaged": 48085,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": 151,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 446334,
+  "remainingNative": 446134,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 56161,
+  "convertedBehaviorNative": 56361,
   "recognitionBehaviorNative": 5591,
-  "combinedBehaviorNative": 61752,
-  "convertedBehaviorManaged": 57632,
+  "combinedBehaviorNative": 61952,
+  "convertedBehaviorManaged": 57756,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -21823,6 +21823,69 @@
       "nativeLoc": 149,
       "managedLoc": 84,
       "conversionManagedCommit": "47552c4022a2cb563b61f68bcc6a232737eb670e"
+    },
+    {
+      "name": "p-user-player-think-cluster-chunk511",
+      "bucket": "conversion",
+      "note": "P_CheckMusicChange, P_CheckEnvironment, P_CheckUse, FSafePosition::Update, P_PlayerThink",
+      "auditSeams": "`P_PlayerMove`, `P_UseLines`, `VMCall`, `P_BobWeapon`, and `NetworkEntityManager` are not hosted.",
+      "auditRationale": "Credits music/environment/use hooks, safe-position tracking, angle-offset/subtitle/bob/presentation gates, and velocity bookkeeping from `p_user.cpp` (1682\u20131912).",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Playsim/VmPUserPlayerThink.cs"
+      ],
+      "portCommits": [],
+      "nativeRanges": [
+        {
+          "file": "src/playsim/p_user.cpp",
+          "symbol": "P_CheckMusicChange",
+          "start": 1682,
+          "end": 1722,
+          "tests": [
+            "VmPUserPlayerThinkTests.PlayerThink_SubtitleDecrements"
+          ]
+        },
+        {
+          "file": "src/playsim/p_user.cpp",
+          "symbol": "P_CheckEnvironment",
+          "start": 1723,
+          "end": 1749,
+          "tests": [
+            "VmPUserPlayerThinkTests.PlayerThink_BotFrozenReturnsEarly"
+          ]
+        },
+        {
+          "file": "src/playsim/p_user.cpp",
+          "symbol": "P_CheckUse",
+          "start": 1750,
+          "end": 1784,
+          "tests": [
+            "VmPUserPlayerThinkTests.PlayerThink_RecordsVelocityOffline"
+          ]
+        },
+        {
+          "file": "src/playsim/p_user.cpp",
+          "symbol": "FSafePosition::Update",
+          "start": 1785,
+          "end": 1798,
+          "tests": [
+            "VmPUserPlayerThinkTests.PlayerThink_AppliesAngleOffset"
+          ]
+        },
+        {
+          "file": "src/playsim/p_user.cpp",
+          "symbol": "P_PlayerThink",
+          "start": 1830,
+          "end": 1912,
+          "tests": [
+            "VmPUserPlayerThinkTests.PlayerThink_SkipsBobWhenPredicting",
+            "VmPUserPlayerThinkTests.PlayerThink_BotFrozenReturnsEarly",
+            "VmPUserPlayerThinkTests.PlayerThink_RecordsVelocityOffline"
+          ]
+        }
+      ],
+      "nativeLoc": 200,
+      "managedLoc": 124,
+      "conversionManagedCommit": "9f64635dab73525389e1fa73ca536786d1b6c226"
     }
   ]
 }
