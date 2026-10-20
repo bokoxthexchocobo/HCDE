@@ -4,8 +4,10 @@
     "bucket": "conversion",
     "note": "P_ChangeSector attached 3D floors, iterator dispatch, fake-floor water refresh",
     "auditSeams": "`P_Recalculate3DFloors`, sector thing lists, pit iterators, and `UpdateWaterLevel` are not hosted.",
-    "auditRationale": "Credits move amount setup, attached-sector iterator inversion, thing visit loops, midtex dual dispatch, portal checks, and fake-floor water updates from `p_map.cpp` (7116–7271).",
-    "managedSourceFiles": ["csharp/src/HCDE.Playsim/VmPMapChangeSector.cs"],
+    "auditRationale": "Credits move amount setup, attached-sector iterator inversion, thing visit loops, midtex dual dispatch, portal checks, and fake-floor water updates from `p_map.cpp` (7116\u20137271).",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Playsim/VmPMapChangeSector.cs"
+    ],
     "nativeRanges": [
       {
         "file": "src/playsim/p_map.cpp",
@@ -37,6 +39,10 @@
           "VmPMapChangeSectorTests.Change_SkipInvalidMode"
         ]
       }
+    ],
+    "portCommits": [
+      "4e0a9a9bf817bf9aaafbd962f3d97673cb8401a7",
+      "5d7b40ac096c545975dcfd7e48f960b775408522"
     ]
   }
 ]
