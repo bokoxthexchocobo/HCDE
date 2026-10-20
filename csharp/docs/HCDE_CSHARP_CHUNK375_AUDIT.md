@@ -1,29 +1,34 @@
-# Chunk 375 — LoadSegs vertex validation and LoadSubsectors lump sizing gates
+# Chunk 375 — LoadSegs empty-lump gate, vertex validation, split-vertex angle threshold, badseg messages; LoadSubsectors BSP sizing gates
 
 ## Scope
 
-LoadSegs vertex validation and LoadSubsectors lump sizing gates
+LoadSegs empty-lump gate, vertex validation, split-vertex angle threshold, badseg messages; LoadSubsectors BSP sizing gates
 
 ## Native ranges
 
-- `src/maploader/maploader.cpp` **MapLoader::LoadSegs** 802–975 (174 lines)
-- `src/maploader/maploader.cpp` **MapLoader::LoadSubsectors** 985–1047 (63 lines)
+- `src/maploader/maploader.cpp` **MapLoader::LoadSegs** 814–822 (9 lines)
+- `src/maploader/maploader.cpp` **MapLoader::LoadSegs** 857–860 (4 lines)
+- `src/maploader/maploader.cpp` **MapLoader::LoadSegs** 897–901 (5 lines)
+- `src/maploader/maploader.cpp` **MapLoader::LoadSegs** 952–968 (17 lines)
+- `src/maploader/maploader.cpp` **MapLoader::LoadSubsectors** 991–996 (6 lines)
+- `src/maploader/maploader.cpp` **MapLoader::LoadSubsectors** 1026–1044 (19 lines)
 
-**Credited native LOC:** 237 (tally `nativeLoc` 237).
+**Credited native LOC:** 60 (tally `nativeLoc` 60).
 
 ## Managed
 
 `VmMapLoaderLoadSegs.cs`
-Managed LOC (tally): 50.
+Managed LOC (tally): 118.
 Conversion commit: `02b8ffca5d2d5c9097e752921b71fb083e7c8746`.
 
 ## Tests
 
 - `VmMapLoaderLoadSegsTests.ShouldAbortEmptySegs_WhenZero`
-- `VmMapLoaderLoadSegsTests.ValidateVertexIndex_ThrowsWhenOutOfRange`
 - `VmMapLoaderLoadSegsTests.CountSegs_DividesLumpByRecordSize`
+- `VmMapLoaderLoadSegsTests.ValidateVertexIndex_ThrowsWhenOutOfRange`
 - `VmMapLoaderLoadSegsTests.ShouldSnapSplitVertex_AtOneDegree`
 - `VmMapLoaderLoadSegsTests.FormatBadSegMessage_Vertex_IncludesIndices`
+- `VmMapLoaderLoadSegsTests.DescribeBspFailure_AppendsRebuildBanner`
 - `VmMapLoaderLoadSegsTests.ShouldRejectZeroSubsectors`
 - `VmMapLoaderLoadSegsTests.IsSubsectorSegRangeInvalid_DetectsOverflow`
 
@@ -33,8 +38,8 @@ Conversion commit: `02b8ffca5d2d5c9097e752921b71fb083e7c8746`.
 
 ## Seams
 
-Seg/subsector allocation, `badseg` exceptions, and linedef vertex marking loops are not fully hosted.
+Seg iteration, vertex snap geometry, linedef/sidedef binding, allocation, and subsector read loops are not hosted.
 
 ## Credit rationale
 
-Credits the opening `MapLoader::LoadSegs` validation path and `MapLoader::LoadSubsectors` sizing from `maploader.cpp`.
+Credits only native bands exercised by named tests — not the full LoadSegs/LoadSubsectors function bodies.

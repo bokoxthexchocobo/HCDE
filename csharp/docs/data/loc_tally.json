@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 15162,
+  "convertedThisRunNative": 14985,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 30812,
+  "convertedThisRunManaged": 30750,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": 151,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 468806,
+  "remainingNative": 468983,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 33689,
+  "convertedBehaviorNative": 33512,
   "recognitionBehaviorNative": 5591,
-  "combinedBehaviorNative": 39280,
-  "convertedBehaviorManaged": 40483,
+  "combinedBehaviorNative": 39103,
+  "convertedBehaviorManaged": 40421,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -14562,20 +14562,44 @@
     {
       "name": "maploader-load-segs-chunk375",
       "bucket": "conversion",
-      "note": "LoadSegs vertex validation and LoadSubsectors lump sizing gates",
-      "auditSeams": "Seg/subsector allocation, `badseg` exceptions, and linedef vertex marking loops are not fully hosted.",
-      "auditRationale": "Credits the opening `MapLoader::LoadSegs` validation path and `MapLoader::LoadSubsectors` sizing from `maploader.cpp`.",
+      "note": "LoadSegs empty-lump gate, vertex validation, split-vertex angle threshold, badseg messages; LoadSubsectors BSP sizing gates",
+      "auditSeams": "Seg iteration, vertex snap geometry, linedef/sidedef binding, allocation, and subsector read loops are not hosted.",
+      "auditRationale": "Credits only native bands exercised by named tests \u2014 not the full LoadSegs/LoadSubsectors function bodies.",
       "nativeRanges": [
         {
           "file": "src/maploader/maploader.cpp",
           "symbol": "MapLoader::LoadSegs",
-          "start": 802,
-          "end": 975,
+          "start": 814,
+          "end": 822,
           "tests": [
             "VmMapLoaderLoadSegsTests.ShouldAbortEmptySegs_WhenZero",
-            "VmMapLoaderLoadSegsTests.ValidateVertexIndex_ThrowsWhenOutOfRange",
-            "VmMapLoaderLoadSegsTests.CountSegs_DividesLumpByRecordSize",
-            "VmMapLoaderLoadSegsTests.ShouldSnapSplitVertex_AtOneDegree",
+            "VmMapLoaderLoadSegsTests.CountSegs_DividesLumpByRecordSize"
+          ]
+        },
+        {
+          "file": "src/maploader/maploader.cpp",
+          "symbol": "MapLoader::LoadSegs",
+          "start": 857,
+          "end": 860,
+          "tests": [
+            "VmMapLoaderLoadSegsTests.ValidateVertexIndex_ThrowsWhenOutOfRange"
+          ]
+        },
+        {
+          "file": "src/maploader/maploader.cpp",
+          "symbol": "MapLoader::LoadSegs",
+          "start": 897,
+          "end": 901,
+          "tests": [
+            "VmMapLoaderLoadSegsTests.ShouldSnapSplitVertex_AtOneDegree"
+          ]
+        },
+        {
+          "file": "src/maploader/maploader.cpp",
+          "symbol": "MapLoader::LoadSegs",
+          "start": 952,
+          "end": 968,
+          "tests": [
             "VmMapLoaderLoadSegsTests.FormatBadSegMessage_Vertex_IncludesIndices",
             "VmMapLoaderLoadSegsTests.DescribeBspFailure_AppendsRebuildBanner"
           ]
@@ -14583,17 +14607,25 @@
         {
           "file": "src/maploader/maploader.cpp",
           "symbol": "MapLoader::LoadSubsectors",
-          "start": 985,
-          "end": 1047,
+          "start": 991,
+          "end": 996,
           "tests": [
-            "VmMapLoaderLoadSegsTests.ShouldRejectZeroSubsectors",
+            "VmMapLoaderLoadSegsTests.ShouldRejectZeroSubsectors"
+          ]
+        },
+        {
+          "file": "src/maploader/maploader.cpp",
+          "symbol": "MapLoader::LoadSubsectors",
+          "start": 1026,
+          "end": 1044,
+          "tests": [
             "VmMapLoaderLoadSegsTests.IsSubsectorSegRangeInvalid_DetectsOverflow"
           ]
         }
       ],
-      "nativeLoc": 237,
-      "managedLoc": 180,
-      "conversionManagedCommit": "ab3731694fc8dc15a55a938767192a68c02063af"
+      "nativeLoc": 60,
+      "managedLoc": 118,
+      "conversionManagedCommit": "02b8ffca5d2d5c9097e752921b71fb083e7c8746"
     }
   ]
 }
