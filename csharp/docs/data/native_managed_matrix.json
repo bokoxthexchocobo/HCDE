@@ -12,25 +12,25 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 141637
+    "managedCSharpLoc": 141639
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 25694,
+    "convertedThisRunNative": 25849,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 38810,
+    "convertedThisRunManaged": 38888,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": 151,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 458274,
+    "remainingNative": 458119,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 44221,
+    "convertedBehaviorNative": 44376,
     "recognitionBehaviorNative": 5591,
-    "combinedBehaviorNative": 49812,
-    "convertedBehaviorManaged": 48481,
+    "combinedBehaviorNative": 49967,
+    "convertedBehaviorManaged": 48559,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -17912,6 +17912,83 @@
         "nativeLoc": 150,
         "managedLoc": 82,
         "conversionManagedCommit": "b226ed590dcfa3da2e19d37f4f026426219b28b4"
+      },
+      {
+        "name": "p-spec-sector-damage-chunk442",
+        "bucket": "conversion",
+        "note": "DoSectorDamage filters and P_SectorDamage 3D-floor loop",
+        "auditSeams": "Sector tag iterators and `P_DamageMobj` are not hosted.",
+        "auditRationale": "Credits shootable/player/air/protection gates, 3D-floor height swap, in-air damage policy, and terrain damage tick masks from `p_spec.cpp`.",
+        "nativeRanges": [
+          {
+            "file": "src/playsim/p_spec.cpp",
+            "symbol": "DoSectorDamage",
+            "start": 509,
+            "end": 531,
+            "tests": [
+              "VmPSpecSectorDamageTests.SkipNonShootable"
+            ]
+          },
+          {
+            "file": "src/playsim/p_spec.cpp",
+            "symbol": "P_SectorDamage",
+            "start": 533,
+            "end": 585,
+            "tests": [
+              "VmPSpecSectorDamageTests.VavoomSwapHeights_Swaps",
+              "VmPSpecSectorDamageTests.DamageInAir3dFloor_WhenFlagSet"
+            ]
+          },
+          {
+            "file": "src/playsim/p_spec.cpp",
+            "symbol": "showsecretsector cvars",
+            "start": 593,
+            "end": 594,
+            "tests": [
+              "VmPSpecSectorDamageTests.PrintSecretSector"
+            ]
+          },
+          {
+            "file": "src/playsim/p_spec.cpp",
+            "symbol": "P_GiveSecret",
+            "start": 596,
+            "end": 627,
+            "tests": [
+              "VmPSpecSectorDamageTests.ShowSecretMessage_WhenLocal"
+            ]
+          },
+          {
+            "file": "src/playsim/p_spec.cpp",
+            "symbol": "P_ActorOnSpecialFlat terrain damage",
+            "start": 645,
+            "end": 675,
+            "tests": [
+              "VmPSpecSectorDamageTests.TerrainDamageTick",
+              "VmPSpecSectorDamageTests.PlaySplashWhenDamagePositive"
+            ]
+          },
+          {
+            "file": "src/playsim/p_spec.cpp",
+            "symbol": "P_ActorInSpecialSector secret",
+            "start": 496,
+            "end": 500,
+            "tests": [
+              "VmPSpecSectorDamageTests.ActorOnSecretSector"
+            ]
+          },
+          {
+            "file": "src/playsim/p_spec.cpp",
+            "symbol": "DEFINE_ACTION_FUNCTION GiveSecret",
+            "start": 629,
+            "end": 637,
+            "tests": [
+              "VmPSpecSectorDamageTests.CountFoundSecret"
+            ]
+          }
+        ],
+        "nativeLoc": 155,
+        "managedLoc": 78,
+        "conversionManagedCommit": "17e494cbdab7d1983356d49349a13972945fc025"
       }
     ]
   },
