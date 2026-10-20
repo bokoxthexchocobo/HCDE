@@ -12,7 +12,7 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 107228
+    "managedCSharpLoc": 107458
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
@@ -22,14 +22,14 @@
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
     "convertedThisRunManaged": 5881,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
-    "recognitionThisRunNative": -774,
+    "recognitionThisRunNative": -656,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 492474,
+    "remainingNative": 492356,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
     "convertedBehaviorNative": 10946,
-    "recognitionBehaviorNative": 4666,
-    "combinedBehaviorNative": 15612,
+    "recognitionBehaviorNative": 4784,
+    "combinedBehaviorNative": 15730,
     "convertedBehaviorManaged": 15552,
     "baselineNative": 508086,
     "chunks": [
@@ -4063,6 +4063,75 @@
           }
         ],
         "conversionManagedCommit": "52b6b54f9db1da96dfaf824c281512d5c91f9621"
+      },
+      {
+        "name": "p-acs-callfunc-pointer-band-chunk65-recognition",
+        "bucket": "recognition",
+        "nativeLoc": 118,
+        "managedLoc": 0,
+        "note": "CallFunction GetNetID, SetActivator*, GetChar, GetArmorType/Info (pre-existing managed).",
+        "nativeRanges": [
+          {
+            "file": "src/playsim/p_acs.cpp",
+            "symbol": "DLevelScript::CallFunction",
+            "start": 5492,
+            "end": 5498,
+            "tests": [
+              "AcsCallFunctionTests.CallFunc_GetNetId_ReturnsActorNetworkId",
+              "AcsActivatorFailureTests.SetActivatorExistingTidSelectsActor",
+              "AcsGetCharByteTests.GetCharReturnsNativeSignedUtf8Byte",
+              "AcsCallFunctionTests.CallFunc_GetArmorInfo_ReturnsMegaSavePercent"
+            ]
+          },
+          {
+            "file": "src/playsim/p_acs.cpp",
+            "symbol": "DLevelScript::CallFunction",
+            "start": 5513,
+            "end": 5561,
+            "tests": [
+              "AcsCallFunctionTests.CallFunc_GetNetId_ReturnsActorNetworkId",
+              "AcsActivatorFailureTests.SetActivatorExistingTidSelectsActor",
+              "AcsGetCharByteTests.GetCharReturnsNativeSignedUtf8Byte",
+              "AcsCallFunctionTests.CallFunc_GetArmorInfo_ReturnsMegaSavePercent"
+            ]
+          },
+          {
+            "file": "src/playsim/p_acs.cpp",
+            "symbol": "DLevelScript::CallFunction",
+            "start": 5577,
+            "end": 5591,
+            "tests": [
+              "AcsCallFunctionTests.CallFunc_GetNetId_ReturnsActorNetworkId",
+              "AcsActivatorFailureTests.SetActivatorExistingTidSelectsActor",
+              "AcsGetCharByteTests.GetCharReturnsNativeSignedUtf8Byte",
+              "AcsCallFunctionTests.CallFunc_GetArmorInfo_ReturnsMegaSavePercent"
+            ]
+          },
+          {
+            "file": "src/playsim/p_acs.cpp",
+            "symbol": "DLevelScript::CallFunction",
+            "start": 5620,
+            "end": 5620,
+            "tests": [
+              "AcsCallFunctionTests.CallFunc_GetNetId_ReturnsActorNetworkId",
+              "AcsActivatorFailureTests.SetActivatorExistingTidSelectsActor",
+              "AcsGetCharByteTests.GetCharReturnsNativeSignedUtf8Byte",
+              "AcsCallFunctionTests.CallFunc_GetArmorInfo_ReturnsMegaSavePercent"
+            ]
+          },
+          {
+            "file": "src/playsim/p_acs.cpp",
+            "symbol": "DLevelScript::CallFunction",
+            "start": 5629,
+            "end": 5674,
+            "tests": [
+              "AcsCallFunctionTests.CallFunc_GetNetId_ReturnsActorNetworkId",
+              "AcsActivatorFailureTests.SetActivatorExistingTidSelectsActor",
+              "AcsGetCharByteTests.GetCharReturnsNativeSignedUtf8Byte",
+              "AcsCallFunctionTests.CallFunc_GetArmorInfo_ReturnsMegaSavePercent"
+            ]
+          }
+        ]
       }
     ]
   },
