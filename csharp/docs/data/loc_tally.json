@@ -7283,7 +7283,8 @@
           ]
         }
       ],
-      "nativeLoc": 26
+      "nativeLoc": 26,
+      "conversionManagedCommit": "9e51e17993c7a651d5457f450c9110343389d11d"
     },
     {
       "name": "stringtable-load-chunk152",
@@ -7301,7 +7302,8 @@
           ]
         }
       ],
-      "nativeLoc": 105
+      "nativeLoc": 105,
+      "conversionManagedCommit": "ea1f16d6f1449063bf9bec05e421dc7a67953450"
     },
     {
       "name": "stringtable-lookup-chunk153",
@@ -7346,7 +7348,8 @@
           ]
         }
       ],
-      "nativeLoc": 105
+      "nativeLoc": 105,
+      "conversionManagedCommit": "ad879acb9447892d1e8cdde49517d87f5719dddf"
     },
     {
       "name": "stringtable-langid-chunk154",
@@ -7400,7 +7403,8 @@
           ]
         }
       ],
-      "nativeLoc": 257
+      "nativeLoc": 257,
+      "conversionManagedCommit": "7f6c9215a9078b2d59f7b206931b72c0eaba435c"
     },
     {
       "name": "namedef-static-chunk155",
@@ -7427,7 +7431,8 @@
           ]
         }
       ],
-      "nativeLoc": 274
+      "nativeLoc": 274,
+      "conversionManagedCommit": "fcdf028fe942ebd3fe7856c65fe64f9dc037bccf"
     },
     {
       "name": "cvar-bind-seam-chunk156",
@@ -7492,7 +7497,8 @@
           ]
         }
       ],
-      "nativeLoc": 39
+      "nativeLoc": 39,
+      "conversionManagedCommit": "25dd6a1d5984530e6244cda8e41a7049a692d343"
     },
     {
       "name": "stringtable-macros-chunk158",
@@ -7519,7 +7525,8 @@
           ]
         }
       ],
-      "nativeLoc": 45
+      "nativeLoc": 45,
+      "conversionManagedCommit": "e63c3841c330d693a1b5e5a00f995dbc2dbce50a"
     },
     {
       "name": "stringtable-csv-chunk159",
@@ -7537,7 +7544,8 @@
           ]
         }
       ],
-      "nativeLoc": 86
+      "nativeLoc": 86,
+      "conversionManagedCommit": "7a03c722af68cd92d5cc2fea92ae48ce8ebfe5ad"
     },
     {
       "name": "stringtable-loadstrings-chunk160",
@@ -7564,7 +7572,8 @@
           ]
         }
       ],
-      "nativeLoc": 51
+      "nativeLoc": 51,
+      "conversionManagedCommit": "45fb0690aafe9598ef0c4c219678865948a317a8"
     },
     {
       "name": "c-bind-performbind-chunk161",
@@ -7583,7 +7592,8 @@
           ]
         }
       ],
-      "nativeLoc": 32
+      "nativeLoc": 32,
+      "conversionManagedCommit": "877eb3442f0b827210f9e0b638cfbf209b216145"
     },
     {
       "name": "c-cvars-typed-latch-chunk162",
