@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 16399,
+  "convertedThisRunNative": 14275,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 26760,
+  "convertedThisRunManaged": 26610,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": 151,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 467569,
+  "remainingNative": 469693,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 34926,
+  "convertedBehaviorNative": 32802,
   "recognitionBehaviorNative": 5591,
-  "combinedBehaviorNative": 40517,
-  "convertedBehaviorManaged": 36431,
+  "combinedBehaviorNative": 38393,
+  "convertedBehaviorManaged": 36281,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -11885,323 +11885,357 @@
     {
       "name": "dehacked-patchtext-chunk287",
       "bucket": "conversion",
-      "managedLoc": 24,
-      "note": "PatchText",
+      "managedLoc": 12,
+      "note": "PatchText Doom\u2192MUSIC_DOOM hack only (sprite replace credited on chunk 285)",
       "nativeRanges": [
         {
           "file": "src/gamedata/d_dehacked.cpp",
-          "symbol": "PatchText",
-          "start": 2987,
-          "end": 3136,
+          "symbol": "PatchText Doom music hack",
+          "start": 3000,
+          "end": 3006,
           "tests": [
             "VmDehackedPatchTextTests.IsDoomMusicHack_MatchesDoom"
           ]
         }
       ],
-      "nativeLoc": 150,
+      "nativeLoc": 7,
       "conversionManagedCommit": "c4d9001f4848d6dafeaf3916fcd6ba84551d924b"
     },
     {
       "name": "dehacked-patchstrings-chunk288",
       "bucket": "conversion",
-      "managedLoc": 38,
-      "note": "PatchStrings",
+      "managedLoc": 25,
+      "note": "PatchStrings line fold and red skull key alias",
       "nativeRanges": [
         {
           "file": "src/gamedata/d_dehacked.cpp",
-          "symbol": "PatchStrings",
-          "start": 3137,
-          "end": 3286,
+          "symbol": "PatchStrings continuation fold",
+          "start": 3043,
+          "end": 3056,
           "tests": [
             "VmDehackedPatchStringsTests.FoldContinuationLines_JoinsBackslash"
           ]
+        },
+        {
+          "file": "src/gamedata/d_dehacked.cpp",
+          "symbol": "PatchStrings GOTREDSKUL alias",
+          "start": 3063,
+          "end": 3064,
+          "tests": [
+            "VmDehackedPatchStringsTests.NormalizeStringTableKey_AliasesRedSkull"
+          ]
         }
       ],
-      "nativeLoc": 150,
+      "nativeLoc": 16,
       "conversionManagedCommit": "cdd4fbae2646ddfd181e263e12fdf9657a5d688e"
     },
     {
       "name": "dehacked-sprites-include-chunk289",
       "bucket": "conversion",
-      "managedLoc": 36,
-      "note": "PatchSpriteNames",
+      "managedLoc": 18,
+      "note": "PatchSpriteNames length check and table grow",
       "nativeRanges": [
         {
           "file": "src/gamedata/d_dehacked.cpp",
-          "symbol": "PatchSpriteNames",
-          "start": 3287,
-          "end": 3436,
+          "symbol": "PatchSpriteNames validation",
+          "start": 3101,
+          "end": 3116,
           "tests": [
-            "VmDehackedPatchSpriteTableTests.IsValidSpriteName_RequiresFourChars"
+            "VmDehackedPatchSpriteTableTests.IsValidSpriteName_RequiresFourChars",
+            "VmDehackedPatchSpriteTableTests.EnsureTableSize_GrowsForIndex"
           ]
         }
       ],
-      "nativeLoc": 150,
+      "nativeLoc": 16,
       "conversionManagedCommit": "ce1401529f60012c504ae7972c4f910280c61062"
     },
     {
       "name": "dehacked-include-paths-chunk290",
       "bucket": "conversion",
-      "managedLoc": 40,
-      "note": "DoInclude paths",
+      "managedLoc": 38,
+      "note": "DoInclude notext, quote, and patch-directory combine",
       "nativeRanges": [
         {
           "file": "src/gamedata/d_dehacked.cpp",
-          "symbol": "DoInclude paths",
-          "start": 3437,
-          "end": 3586,
+          "symbol": "DoInclude notext flag",
+          "start": 3140,
+          "end": 3144,
+          "tests": [
+            "VmDehackedIncludeDirectiveTests.TryParseNotextFlag_StripsPrefix"
+          ]
+        },
+        {
+          "file": "src/gamedata/d_dehacked.cpp",
+          "symbol": "DoInclude quoted path",
+          "start": 3147,
+          "end": 3153,
+          "tests": [
+            "VmDehackedIncludeDirectiveTests.TryCombinePatchDirectory_PrefixesFolder"
+          ]
+        },
+        {
+          "file": "src/gamedata/d_dehacked.cpp",
+          "symbol": "DoInclude directory combine",
+          "start": 3173,
+          "end": 3181,
           "tests": [
             "VmDehackedIncludeDirectiveTests.TryCombinePatchDirectory_PrefixesFolder"
           ]
         }
       ],
-      "nativeLoc": 150,
+      "nativeLoc": 21,
       "conversionManagedCommit": "24224a5ff436e2a5d7ae2df67a8264842a99455a"
-    },
-    {
-      "name": "dehacked-include-tail-chunk291",
-      "bucket": "conversion",
-      "managedLoc": 40,
-      "note": "DoInclude tail",
-      "nativeRanges": [
-        {
-          "file": "src/gamedata/d_dehacked.cpp",
-          "symbol": "DoInclude tail",
-          "start": 3587,
-          "end": 3707,
-          "tests": [
-            "VmDehackedIncludeDirectiveTests.TryCombinePatchDirectory_PrefixesFolder"
-          ]
-        }
-      ],
-      "nativeLoc": 121,
-      "conversionManagedCommit": "36a666762a99992f5540845052b690d11b59b82f"
     },
     {
       "name": "dehacked-mbf-params-chunk292",
       "bucket": "conversion",
-      "managedLoc": 18,
-      "note": "MBF defaults",
+      "managedLoc": 14,
+      "note": "A_Mushroom DEH vrange/hrange defaults",
       "nativeRanges": [
         {
           "file": "src/gamedata/d_dehacked.cpp",
-          "symbol": "MBF param defaults",
-          "start": 786,
-          "end": 935,
+          "symbol": "CreateMushroomFunc defaults",
+          "start": 791,
+          "end": 795,
           "tests": [
             "VmDehackedMbfParamDefaultsTests.MushroomVerticalRange_UsesDefaultWhenZero"
           ]
         }
       ],
-      "nativeLoc": 150,
+      "nativeLoc": 5,
       "conversionManagedCommit": "f5131a9454e792e38fb8d9f6209f0d98e7728ca7"
     },
     {
       "name": "dehacked-mbf-emitters-chunk293",
       "bucket": "conversion",
-      "managedLoc": 16,
-      "note": "MBF emitters",
+      "managedLoc": 12,
+      "note": "MBF scratch sound index offset",
       "nativeRanges": [
         {
           "file": "src/gamedata/d_dehacked.cpp",
-          "symbol": "MBF emitter helpers",
-          "start": 936,
-          "end": 1085,
+          "symbol": "CreateTurnFunc angle",
+          "start": 817,
+          "end": 817,
+          "tests": [
+            "VmDehackedMbfParamEmittersTests.TurnAngleDegrees_PassesThrough"
+          ]
+        },
+        {
+          "file": "src/gamedata/d_dehacked.cpp",
+          "symbol": "CreateScratchFunc sound index",
+          "start": 831,
+          "end": 832,
           "tests": [
             "VmDehackedMbfParamEmittersTests.ScratchSoundIndex_OffsetsByOne"
           ]
         }
       ],
-      "nativeLoc": 150,
+      "nativeLoc": 3,
       "conversionManagedCommit": "d71fc5180bffd0a87b42358d14b2218680c3e033"
     },
     {
       "name": "hcde-emapinfo-property-tail-chunk294",
       "bucket": "conversion",
-      "managedLoc": 20,
-      "note": "EMAPINFO tail",
+      "managedLoc": 21,
+      "note": "EMAPINFO skydelta, unevenlight, SkyPic2 guard",
       "nativeRanges": [
         {
           "file": "src/gamedata/hcde_emapinfo.cpp",
-          "symbol": "ApplyEMapInfoProperty tail",
-          "start": 675,
-          "end": 824,
+          "symbol": "skydelta speed scale",
+          "start": 731,
+          "end": 738,
+          "tests": [
+            "VmEMapInfoPropertyTailTests.SkySpeedFromDelta_ScalesByTicRate"
+          ]
+        },
+        {
+          "file": "src/gamedata/hcde_emapinfo.cpp",
+          "symbol": "unevenlight clear",
+          "start": 756,
+          "end": 759,
+          "tests": [
+            "VmEMapInfoPropertyTailTests.ApplyUnevenLight_ClearsWhenDisabled"
+          ]
+        },
+        {
+          "file": "src/gamedata/hcde_emapinfo.cpp",
+          "symbol": "SkyPic2 -NOFLAT- coalesce",
+          "start": 869,
+          "end": 871,
           "tests": [
             "VmEMapInfoPropertyTailTests.IsNoFlatSky2_DetectsMarker"
           ]
         }
       ],
-      "nativeLoc": 150,
+      "nativeLoc": 15,
       "conversionManagedCommit": "31f66b4267504076eea265623a9dd897c872823e"
     },
     {
       "name": "hcde-emapinfo-document-chunk295",
       "bucket": "conversion",
       "managedLoc": 28,
-      "note": "EMAPINFO scan",
+      "note": "EMAPINFO [map] section header scan",
       "nativeRanges": [
         {
           "file": "src/gamedata/hcde_emapinfo.cpp",
-          "symbol": "HCDE_ParseEMapInfo",
-          "start": 825,
-          "end": 922,
+          "symbol": "HCDE_ParseEMapInfo section header",
+          "start": 833,
+          "end": 846,
           "tests": [
             "VmEMapInfoDocumentScannerTests.TryParseSectionHeader_ReadsMap"
           ]
         }
       ],
-      "nativeLoc": 98,
+      "nativeLoc": 14,
       "conversionManagedCommit": "b095675caf94ecc94dd28aefcd81252826d2996c"
     },
     {
       "name": "g-mapinfo-scalar-prelude-chunk296",
       "bucket": "conversion",
-      "managedLoc": 44,
-      "note": "MAPINFO scalar options, intro/outro, MapFlagHandlers compat tail",
+      "managedLoc": 28,
+      "note": "defaultenvironment ID pack and compat handler tail rows",
       "nativeRanges": [
         {
           "file": "src/gamedata/g_mapinfo.cpp",
-          "symbol": "teamdamage through hazardflash",
-          "start": 1567,
-          "end": 1653,
+          "symbol": "defaultenvironment numeric pack",
+          "start": 1617,
+          "end": 1620,
           "tests": [
             "VmMapInfoScalarOptionsBlockTests.PackDefaultEnvironment_CombinesBytes"
           ]
         },
         {
           "file": "src/gamedata/g_mapinfo.cpp",
-          "symbol": "intro and outro map options",
-          "start": 1905,
-          "end": 1945,
-          "tests": [
-            "VmMapInfoFlagHandlersCompatTests.TryGetCompatHandler_FindsNoId24"
-          ]
-        },
-        {
-          "file": "src/gamedata/g_mapinfo.cpp",
-          "symbol": "MapFlagHandlers compat and CD tracks",
+          "symbol": "MapFlagHandlers CD track EatNext",
           "start": 2096,
-          "end": 2120,
+          "end": 2100,
           "tests": [
             "VmMapInfoFlagHandlersCompatTests.TryGetCompatHandler_FindsNoId24"
           ]
         }
       ],
-      "nativeLoc": 153,
+      "nativeLoc": 9,
       "conversionManagedCommit": "37b0385b15ffc2670453755078d40a2f8f5e0173"
     },
     {
       "name": "g-mapinfo-episode-chunk297",
       "bucket": "conversion",
-      "managedLoc": 30,
-      "note": "ParseEpisodeInfo",
+      "managedLoc": 55,
+      "note": "ParseEpisodeInfo helpers (merged 297-299)",
       "nativeRanges": [
         {
           "file": "src/gamedata/g_mapinfo.cpp",
-          "symbol": "ParseEpisodeInfo",
-          "start": 2421,
-          "end": 2570,
+          "symbol": "ParseEpisodeInfo teaser",
+          "start": 2476,
+          "end": 2482,
+          "tests": [
+            "VmMapInfoEpisodeParserTests.TryResolveTeaserMap_UsesTeaserWhenShareware"
+          ]
+        },
+        {
+          "file": "src/gamedata/g_mapinfo.cpp",
+          "symbol": "ParseEpisodeInfo picname synth",
+          "start": 2511,
+          "end": 2511,
           "tests": [
             "VmMapInfoEpisodeParserTests.ShouldIgnoreExtendedEpisode_WhenNotMenuHack"
           ]
-        }
-      ],
-      "nativeLoc": 150,
-      "conversionManagedCommit": "84ea0afb2166c6af147e43f1c08090551870bd7a"
-    },
-    {
-      "name": "g-mapinfo-episode-tail-chunk298",
-      "bucket": "conversion",
-      "managedLoc": 30,
-      "note": "ParseEpisodeInfo tail",
-      "nativeRanges": [
+        },
         {
           "file": "src/gamedata/g_mapinfo.cpp",
-          "symbol": "ParseEpisodeInfo tail",
-          "start": 2571,
-          "end": 2720,
+          "symbol": "ParseEpisodeInfo extended filter",
+          "start": 2545,
+          "end": 2548,
+          "tests": [
+            "VmMapInfoEpisodeParserTests.ShouldIgnoreExtendedEpisode_WhenNotMenuHack"
+          ]
+        },
+        {
+          "file": "src/gamedata/g_mapinfo.cpp",
+          "symbol": "ParseEpisodeInfo optional skip",
+          "start": 2551,
+          "end": 2558,
+          "tests": [
+            "VmMapInfoEpisodeParserTests.ShouldIgnoreExtendedEpisode_WhenNotMenuHack"
+          ]
+        },
+        {
+          "file": "src/gamedata/g_mapinfo.cpp",
+          "symbol": "ParseEpisodeInfo find map",
+          "start": 2562,
+          "end": 2567,
+          "tests": [
+            "VmMapInfoEpisodeParserTests.ApplyEpisodeDraft_ReplacesExisting"
+          ]
+        },
+        {
+          "file": "src/gamedata/g_mapinfo.cpp",
+          "symbol": "ParseEpisodeInfo apply/remove",
+          "start": 2570,
+          "end": 2591,
           "tests": [
             "VmMapInfoEpisodeParserTests.ApplyEpisodeDraft_ReplacesExisting"
           ]
         }
       ],
-      "nativeLoc": 150,
-      "conversionManagedCommit": "070890dbcdf190137079dbfba68d2aaaf0023ca8"
-    },
-    {
-      "name": "g-mapinfo-episode-register-chunk299",
-      "bucket": "conversion",
-      "managedLoc": 35,
-      "note": "ParseEpisodeInfo registration loop",
-      "nativeRanges": [
-        {
-          "file": "src/gamedata/g_mapinfo.cpp",
-          "symbol": "ParseEpisodeInfo registration",
-          "start": 2721,
-          "end": 2870,
-          "tests": [
-            "VmMapInfoEpisodeParserTests.NormalizeEpisodeKey_LowersFirstChar"
-          ]
-        }
-      ],
-      "nativeLoc": 150,
-      "conversionManagedCommit": "613a4d4e20a43b41fc9f8b06330eed0f12fd76b8"
+      "nativeLoc": 48,
+      "conversionManagedCommit": "84ea0afb2166c6af147e43f1c08090551870bd7a"
     },
     {
       "name": "a-weapons-setslot-chunk300",
       "bucket": "conversion",
       "managedLoc": 12,
-      "note": "setslot",
+      "note": "setslot slot index guard",
       "nativeRanges": [
         {
           "file": "src/gamedata/a_weapons.cpp",
-          "symbol": "setslot",
-          "start": 516,
-          "end": 665,
+          "symbol": "setslot slot bounds",
+          "start": 545,
+          "end": 548,
           "tests": [
             "VmWeaponSlotsSetSlotTests.IsValidSlotNumber_RejectsTen"
           ]
         }
       ],
-      "nativeLoc": 150,
+      "nativeLoc": 4,
       "conversionManagedCommit": "a10c1fa0cfb18e9845d6cb30929973f18145406e"
     },
     {
       "name": "a-weapons-print-chunk301",
       "bucket": "conversion",
-      "managedLoc": 18,
-      "note": "PrintSettings",
+      "managedLoc": 16,
+      "note": "PrintSettings non-empty slot enumeration",
       "nativeRanges": [
         {
           "file": "src/gamedata/a_weapons.cpp",
-          "symbol": "PrintSettings",
-          "start": 666,
-          "end": 815,
+          "symbol": "FWeaponSlots::PrintSettings",
+          "start": 526,
+          "end": 540,
           "tests": [
             "VmWeaponSlotsPrintSettingsTests.EnumerateNonEmptySlots_SkipsEmpty"
           ]
         }
       ],
-      "nativeLoc": 150,
+      "nativeLoc": 15,
       "conversionManagedCommit": "578114b1c6593a5e0641f39409b0823dfbaf23e9"
     },
     {
       "name": "a-weapons-addslot-chunk302",
       "bucket": "conversion",
       "managedLoc": 14,
-      "note": "addslot",
+      "note": "addslot argument validation",
       "nativeRanges": [
         {
           "file": "src/gamedata/a_weapons.cpp",
-          "symbol": "addslot",
-          "start": 816,
-          "end": 945,
+          "symbol": "addslot argc check",
+          "start": 617,
+          "end": 621,
           "tests": [
             "VmWeaponSlotsAddSlotTests.TryParseAddSlotArgs_ParsesSlot"
           ]
         }
       ],
-      "nativeLoc": 130,
+      "nativeLoc": 5,
       "conversionManagedCommit": "a04301d723b484caea74324eebbff9210994dc7a"
     }
   ]
