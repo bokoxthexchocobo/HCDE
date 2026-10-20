@@ -1,0 +1,19 @@
+[
+  {
+    "name": "a-weapons-slot-chunk272",
+    "bucket": "conversion",
+    "managedLoc": 84,
+    "note": "FWeaponSlot add/list/position/sort.",
+    "nativeRanges": [
+      {
+        "file": "src/gamedata/a_weapons.cpp",
+        "symbol": "FWeaponSlot",
+        "start": 66,
+        "end": 215,
+        "tests": [
+          "VmWeaponSlotRuntimeTests.SetInitialPositions_SingleWeaponCentered"
+        ]
+      }
+    ]
+  }
+]
