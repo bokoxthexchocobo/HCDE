@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 13303,
+  "convertedThisRunNative": 13452,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 28302,
+  "convertedThisRunManaged": 28350,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": 151,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 470665,
+  "remainingNative": 470516,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 31830,
+  "convertedBehaviorNative": 31979,
   "recognitionBehaviorNative": 5591,
-  "combinedBehaviorNative": 37421,
-  "convertedBehaviorManaged": 37973,
+  "combinedBehaviorNative": 37570,
+  "convertedBehaviorManaged": 38021,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -13001,6 +13001,29 @@
       ],
       "nativeLoc": 138,
       "conversionManagedCommit": "0465a296c165af1d871e8d49ec2223e87ad58f9f"
+    },
+    {
+      "name": "g-mapinfo-parse-header-chunk332",
+      "bucket": "conversion",
+      "managedLoc": 48,
+      "note": "GetDefaultLevelNum and ParseMapHeader map title paths",
+      "auditSeams": "`GStrings`, `HexenMusic`, and `wadlevelinfos` storage are injected or reduced to draft fields; Hexen IWAD localization is represented only by the lookup-level-name decision.",
+      "auditRationale": "Fills 2295\u20132443 in `g_mapinfo.cpp`: the file-local `GetDefaultLevelNum` helper and `ParseMapHeader` map-name token handling, Hexen-hack default flag seeding, `$`/lookup level titles, and default `levelnum` assignment ahead of episode parsing at 2459.",
+      "nativeRanges": [
+        {
+          "file": "src/gamedata/g_mapinfo.cpp",
+          "symbol": "GetDefaultLevelNum ParseMapHeader",
+          "start": 2295,
+          "end": 2443,
+          "tests": [
+            "VmMapInfoParseMapHeaderTests.ResolveMapNameToken_OldHexenNumber",
+            "VmMapInfoParseMapHeaderTests.ApplyLevelTitle_DollarPrefixSetsLookup",
+            "VmMapInfoParseMapHeaderTests.AssignDefaultLevelNum_ParsesMap01"
+          ]
+        }
+      ],
+      "nativeLoc": 149,
+      "conversionManagedCommit": "ffb09f7b037de026d3b2515afca8e5b2bc045eb0"
     }
   ]
 }
