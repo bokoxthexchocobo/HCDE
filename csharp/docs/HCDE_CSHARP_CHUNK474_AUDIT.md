@@ -14,9 +14,9 @@ DamageMobj team scaling, player armor/health, drain, and death tail
 
 ## Managed
 
-`VmPInteractionDamageLate.cs`
-Managed LOC (tally): 5.
-Conversion commit: `9c694fe544c8b692d65212c855f88ef1f116462c`.
+`VmPInteractionDamageLate.cs`, `VmPInteractionDamageLateTests.cs`
+Managed LOC (tally): 130.
+Conversion commit: `247523d7da2192c8c423651c310b00c1c8daa2ba`.
 
 ## Tests
 
@@ -26,7 +26,7 @@ Conversion commit: `9c694fe544c8b692d65212c855f88ef1f116462c`.
 - `VmPInteractionDamageLateTests.DrainEligible_SkipsSamePlayer`
 - `VmPInteractionDamageLateTests.MonsterBuddha_SavesAtOneHp`
 - `VmPInteractionDamageLateTests.DeathProceeds_WhenNoBuddha`
-- `VmPInteractionDamageLateTests.ReturnNonNegative_ClampsNegatives`
+- `VmPInteractionDamageLateTests.ReturnNonNegative_PreservesCancelSentinel`
 
 ## Verified
 
