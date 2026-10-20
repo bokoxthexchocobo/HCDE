@@ -196,6 +196,200 @@ public static class VmPMapPitCheckThing
     public static bool PushableNotCannot(bool pushable, bool cannot) => pushable && !cannot;
 
     public static bool SpechitClearAfterRip(bool rip) => rip;
+
+    public enum PitTraversalOutcome
+    {
+        KeepGoing,
+        StopPass,
+        StopBlock,
+    }
+
+    public readonly record struct PitEarlyGateContext(
+        bool SkipSelf,
+        bool ThruActors,
+        bool ThruBits,
+        bool IgnoreCorpse,
+        bool MirrorBlocks,
+        bool ThingInteractive,
+        bool InBlockDistance,
+        bool SameSpeciesPass,
+        bool PassThroughPlayer);
+
+    /// <summary>Maps the early <c>PIT_CheckThing</c> filters before overlap handling.</summary>
+    public static PitTraversalOutcome EvaluateEarlyGates(PitEarlyGateContext ctx)
+    {
+        if (ctx.SkipSelf) return PitTraversalOutcome.KeepGoing;
+        if (ctx.ThruActors) return PitTraversalOutcome.KeepGoing;
+        if (ctx.ThruBits) return PitTraversalOutcome.KeepGoing;
+        if (ctx.IgnoreCorpse) return PitTraversalOutcome.KeepGoing;
+        if (!ctx.MirrorBlocks && !ctx.ThingInteractive) return PitTraversalOutcome.KeepGoing;
+        if (!ctx.InBlockDistance) return PitTraversalOutcome.KeepGoing;
+        if (ctx.SameSpeciesPass) return PitTraversalOutcome.KeepGoing;
+        if (ctx.PassThroughPlayer) return PitTraversalOutcome.KeepGoing;
+        return PitTraversalOutcome.StopPass;
+    }
+
+    public readonly record struct PitBridgeUnblockContext(
+        bool RestrictedPortal,
+        bool CompatNoPassobj,
+        bool MonsterBridgeSolid,
+        bool BridgeStepOk,
+        bool FromPmoveOrPlayer,
+        bool ThingSolidOrMirror,
+        bool SamePosition,
+        bool OldOverlap,
+        double NewDist,
+        double OldDist,
+        bool VerticalOverlap,
+        bool DontOverlapBoth);
+
+    public static (bool StepBridge, bool Unblocking) EvaluateBridgeAndUnblock(PitBridgeUnblockContext ctx)
+    {
+        var step = false;
+        var unblocking = false;
+        if (ctx.RestrictedPortal) return (step, unblocking);
+        if (BridgeStepMonster(ctx.CompatNoPassobj, ctx.MonsterBridgeSolid, true, 0, 0, 0, 0) && ctx.BridgeStepOk)
+            step = true;
+        if (ctx.FromPmoveOrPlayer && ctx.ThingSolidOrMirror)
+        {
+            if (ctx.SamePosition) unblocking = true;
+            else if (ctx.OldOverlap && UnblockWhenMovingApart(ctx.NewDist, ctx.OldDist))
+                unblocking = ctx.VerticalOverlap || ctx.DontOverlapBoth;
+        }
+        return (step, unblocking);
+    }
+
+    public readonly record struct PitPassobjContext(
+        bool PassobjOrBridge,
+        bool CompatNoPassobj,
+        bool IsMissile,
+        bool Rip,
+        bool DontRip,
+        bool NoBossRip,
+        bool Boss,
+        bool SpecialPickup,
+        double MoverZ,
+        double TopZ,
+        double ThingZ,
+        double MoverTop,
+        bool DontOverlapPair,
+        bool Unblocking);
+
+    public static PitTraversalOutcome EvaluatePassobjVertical(PitPassobjContext ctx)
+    {
+        if (!PassobjOverlap(ctx.PassobjOrBridge, false, ctx.CompatNoPassobj))
+            return PitTraversalOutcome.KeepGoing;
+        if (ctx.IsMissile && ctx.Rip && !ctx.DontRip && !(ctx.NoBossRip && ctx.Boss))
+        {
+            if (ctx.SpecialPickup && PickupOverUnder(ctx.MoverZ, ctx.TopZ, ctx.ThingZ))
+                return PitTraversalOutcome.KeepGoing;
+        }
+        if (ctx.SpecialPickup && PickupOverUnder(ctx.MoverZ, ctx.TopZ, ctx.ThingZ))
+            return PitTraversalOutcome.KeepGoing;
+        if (!ctx.DontOverlapPair && (ctx.MoverZ >= ctx.TopZ || ctx.MoverTop <= ctx.ThingZ))
+            return PitTraversalOutcome.KeepGoing;
+        if (ctx.DontOverlapPair)
+            return ctx.Unblocking ? PitTraversalOutcome.StopPass : PitTraversalOutcome.StopBlock;
+        return PitTraversalOutcome.StopPass;
+    }
+
+    public readonly record struct PitMissilePathContext(
+        bool IsMissile,
+        int BounceMbf,
+        bool ThingSolid,
+        bool Nonshootable,
+        bool Ghost,
+        bool ThruGhost,
+        bool MthruSpecies,
+        bool SameSpeciesAsTarget,
+        bool CorpseRipSkip,
+        bool TargetPassPlayer,
+        double MoverZ,
+        double ClipHeight,
+        double ThingZ,
+        double MoverTop,
+        int BounceActors,
+        bool ZeroDamage,
+        bool Hitowner,
+        bool SameTarget,
+        int SpecialHit,
+        bool CanAttack,
+        bool Shootable,
+        bool Spectral,
+        bool MissileSpectral,
+        bool DoRip,
+        bool DontRip,
+        bool RipLevelOk,
+        bool Boss,
+        bool NoBossRip,
+        bool FirstRip,
+        bool Pushable,
+        bool CannotPush,
+        bool Reflective,
+        bool ThruReflect,
+        bool Seeker);
+
+    /// <summary>Missile and MBF-bouncer branch through rip, reflect, and infight gates.</summary>
+    public static PitTraversalOutcome EvaluateMissilePath(PitMissilePathContext ctx)
+    {
+        if (!MissileOrMbfBouncer(ctx.IsMissile, ctx.BounceMbf)) return PitTraversalOutcome.KeepGoing;
+        if (ctx.Nonshootable) return PitTraversalOutcome.StopPass;
+        if (GhostPass(ctx.Ghost, ctx.ThruGhost)) return PitTraversalOutcome.StopPass;
+        if (MthruSpecies(true, ctx.SameSpeciesAsTarget)) return PitTraversalOutcome.StopPass;
+        if (ctx.CorpseRipSkip) return PitTraversalOutcome.StopPass;
+        if (ctx.TargetPassPlayer) return PitTraversalOutcome.StopPass;
+        if (OverObject(ctx.MoverZ, ctx.ThingZ + ctx.ClipHeight)) return PitTraversalOutcome.StopPass;
+        if (UnderObject(ctx.MoverTop, ctx.ThingZ)) return PitTraversalOutcome.StopPass;
+        if (BounceActorZeroDamage((ctx.BounceActors & 1) != 0, ctx.ZeroDamage, ctx.IsMissile))
+        {
+            var pass = (ctx.SameTarget && !ctx.Hitowner) || !ctx.ThingSolid;
+            if (pass && SpecialMissileHitOne(ctx.SpecialHit) != 0) return PitTraversalOutcome.StopPass;
+            if (!pass && SpecialMissileHitZero(ctx.SpecialHit) == 0) return PitTraversalOutcome.StopBlock;
+        }
+        switch (ctx.SpecialHit)
+        {
+            case 0: return PitTraversalOutcome.StopBlock;
+            case 1: return PitTraversalOutcome.StopPass;
+        }
+        if (ctx.SameTarget && !ctx.Hitowner) return PitTraversalOutcome.StopPass;
+        if (!ctx.CanAttack) return PitTraversalOutcome.StopBlock;
+        if (!ctx.Shootable) return ctx.ThingSolid ? PitTraversalOutcome.StopBlock : PitTraversalOutcome.StopPass;
+        if (SpectralMismatch(ctx.Spectral, ctx.MissileSpectral)) return PitTraversalOutcome.StopPass;
+        if (DoRipping(ctx.DoRip, ctx.DontRip) && RipperDamageDue(ctx.DoRip, ctx.DontRip, ctx.Boss, ctx.NoBossRip, ctx.RipLevelOk))
+        {
+            if (!BossRipBlocked(ctx.Boss, ctx.NoBossRip) && LastRippedOnce(ctx.FirstRip))
+            {
+                if (PushablePushed(ctx.Pushable, ctx.CannotPush, true)) { }
+                return PitTraversalOutcome.StopPass;
+            }
+        }
+        if (ReflectiveTurnSeeker(ctx.ThruReflect, ctx.Reflective, ctx.IsMissile) && ctx.Seeker) { }
+        return PitTraversalOutcome.StopBlock;
+    }
+
+    public readonly record struct PitSolidPickupContext(
+        bool MirrorBlocks,
+        bool ThingSolid,
+        bool Noclip,
+        bool MoverSolid,
+        bool BlockedBySolidActors,
+        bool Special,
+        bool Pickup,
+        double ThingZ,
+        double TopMinusStep,
+        bool Unblocking);
+
+    /// <summary>Solid blocking, pickup touch, and killough passobj tail.</summary>
+    public static PitTraversalOutcome EvaluateSolidAndPickup(PitSolidPickupContext ctx)
+    {
+        var solid = SolidBlock(ctx.ThingSolid, ctx.MirrorBlocks, ctx.Noclip, ctx.MoverSolid);
+        if (!solid && ctx.BlockedBySolidActors)
+            solid = ctx.MoverSolid;
+        if (PickupTouch(ctx.Special, ctx.Pickup, ctx.ThingZ, ctx.TopMinusStep)) { }
+        return ReturnPassSolid(solid, ctx.Unblocking)
+            ? PitTraversalOutcome.StopPass
+            : PitTraversalOutcome.StopBlock;
+    }
 }
 
 /// <summary>Lightweight stand-in for tests.</summary>
