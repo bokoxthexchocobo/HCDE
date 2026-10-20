@@ -12,25 +12,25 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 129238
+    "managedCSharpLoc": 129263
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 12489,
+    "convertedThisRunNative": 12674,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 27857,
+    "convertedThisRunManaged": 27987,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": 151,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 471479,
+    "remainingNative": 471294,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 31016,
+    "convertedBehaviorNative": 31201,
     "recognitionBehaviorNative": 5591,
-    "combinedBehaviorNative": 36607,
-    "convertedBehaviorManaged": 37528,
+    "combinedBehaviorNative": 36792,
+    "convertedBehaviorManaged": 37658,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -12800,6 +12800,41 @@
         ],
         "nativeLoc": 81,
         "conversionManagedCommit": "a2d5b79c229688cb669590f76d328560cf99477a"
+      },
+      {
+        "name": "hcde-emapinfo-primitives-head-chunk325",
+        "bucket": "conversion",
+        "managedLoc": 130,
+        "note": "EMAPINFO string helpers value list bool int double flags levelnum registry",
+        "auditSeams": "Anonymous-namespace stats tables and `wadlevelinfos` mutation are not hosted; `RememberEMapInfoMap` is a managed set and strict parsers reject trailing junk like `strtol`/`strtod` guards.",
+        "auditRationale": "Credits the uncredited head of `hcde_emapinfo.cpp` before chunk 273's `StripLineComment` row: trim/quote/normalize helpers, map-name registry, `SplitValueList`, strict bool/int/double parsers, signed/unsigned `SetFlag`, and the full `GetDefaultLevelNum` MAP/E#M# heuristic exercised by the new tests. Skips chunk 273's 124\u2013167 rows and chunk 283's 294\u2013301 tail already in tally.",
+        "nativeRanges": [
+          {
+            "file": "src/gamedata/hcde_emapinfo.cpp",
+            "symbol": "Trim through RememberEMapInfoMap",
+            "start": 55,
+            "end": 122,
+            "tests": [
+              "VmEMapInfoLineParserTests.NormalizeResourceName_StripsLeadingSlashes",
+              "VmEMapInfoRegistryTests.RememberMap_TracksNames"
+            ]
+          },
+          {
+            "file": "src/gamedata/hcde_emapinfo.cpp",
+            "symbol": "SplitValueList ParseBool ParseInt ParseDouble SetFlag",
+            "start": 174,
+            "end": 290,
+            "tests": [
+              "VmEMapInfoLineParserTests.SplitValueList_SplitsOnComma",
+              "VmEMapInfoLineParserTests.TryParseBool_TreatsEmptyAsTrue",
+              "VmEMapInfoParsePrimitivesTests.TryParseIntStrict_RejectsTrailingGarbage",
+              "VmEMapInfoParsePrimitivesTests.TryParseDoubleStrict_ParsesDecimal",
+              "VmEMapInfoParsePrimitivesTests.SetFlag_TogglesSignedBits"
+            ]
+          }
+        ],
+        "nativeLoc": 185,
+        "conversionManagedCommit": "b087fb7a7966cafc27943be5e340a1b3bcce65ef"
       }
     ]
   },

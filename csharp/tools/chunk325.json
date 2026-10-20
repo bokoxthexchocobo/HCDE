@@ -5,7 +5,7 @@
     "managedLoc": 130,
     "note": "EMAPINFO string helpers value list bool int double flags levelnum registry",
     "auditSeams": "Anonymous-namespace stats tables and `wadlevelinfos` mutation are not hosted; `RememberEMapInfoMap` is a managed set and strict parsers reject trailing junk like `strtol`/`strtod` guards.",
-    "auditRationale": "Credits the uncredited head of `hcde_emapinfo.cpp` before chunk 273's `StripLineComment` row: trim/quote/normalize helpers, map-name registry, `SplitValueList`, strict bool/int/double parsers, signed/unsigned `SetFlag`, and the full `GetDefaultLevelNum` MAP/E#M# heuristic exercised by the new tests. Skips chunk 273's 124–167 rows and chunk 283's 294–301 tail already in tally.",
+    "auditRationale": "Credits the uncredited head of `hcde_emapinfo.cpp` before chunk 273's `StripLineComment` row: trim/quote/normalize helpers, map-name registry, `SplitValueList`, strict bool/int/double parsers, signed/unsigned `SetFlag`, Skips chunk 273's 124–167 rows; `GetDefaultLevelNum` body rows remain for a later chunk (283 already owns 294–301).",
     "nativeRanges": [
       {
         "file": "src/gamedata/hcde_emapinfo.cpp",
@@ -28,15 +28,6 @@
           "VmEMapInfoParsePrimitivesTests.TryParseIntStrict_RejectsTrailingGarbage",
           "VmEMapInfoParsePrimitivesTests.TryParseDoubleStrict_ParsesDecimal",
           "VmEMapInfoParsePrimitivesTests.SetFlag_TogglesSignedBits"
-        ]
-      },
-      {
-        "file": "src/gamedata/hcde_emapinfo.cpp",
-        "symbol": "GetDefaultLevelNum",
-        "start": 292,
-        "end": 317,
-        "tests": [
-          "VmEMapInfoParsePrimitivesTests.GetDefaultLevelNum_ParsesMap01"
         ]
       }
     ]
