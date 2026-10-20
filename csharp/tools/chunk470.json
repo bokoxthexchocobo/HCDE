@@ -1,0 +1,32 @@
+[
+  {
+    "name": "p-map-bounce-traverse-chunk470",
+    "bucket": "conversion",
+    "note": "FSlide::BounceTraverse and FSlide::BounceWall",
+    "auditSeams": "`FPathTraverse`, `P_ExplodeMissile`, `FloorBounceMissile`, and `SetState` are not hosted.",
+    "auditRationale": "Credits wall bounce trace blocking, opening height checks, horizon/sky destroy, and reflect velocity setup from `p_map.cpp` (3511–3707).",
+    "managedSourceFiles": ["csharp/src/HCDE.Playsim/VmPMapBounceTraverse.cs"],
+    "nativeRanges": [
+      {
+        "file": "src/playsim/p_map.cpp",
+        "symbol": "FSlide::BounceTraverse",
+        "start": 3511,
+        "end": 3564,
+        "tests": [
+          "VmPMapBounceTraverseTests.BlockEverything_Stops",
+          "VmPMapBounceTraverseTests.OpeningTooLow_Blocks"
+        ]
+      },
+      {
+        "file": "src/playsim/p_map.cpp",
+        "symbol": "FSlide::BounceWall",
+        "start": 3572,
+        "end": 3707,
+        "tests": [
+          "VmPMapBounceTraverseTests.HorizonDestroys",
+          "VmPMapBounceTraverseTests.BounceWallsRequired"
+        ]
+      }
+    ]
+  }
+]
