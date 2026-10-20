@@ -7182,6 +7182,43 @@
       ],
       "nativeLoc": 20,
       "conversionManagedCommit": "705a653763aa92a17484f235b600788593160343"
+    },
+    {
+      "name": "c-bind-lookup-chunk148",
+      "bucket": "conversion",
+      "managedLoc": 45,
+      "note": "UnbindKey, GetBind, GetKeysForCommand overloads.",
+      "nativeRanges": [
+        {
+          "file": "src/common/console/c_bind.cpp",
+          "symbol": "FKeyBindings::UnbindKey",
+          "start": 429,
+          "end": 442,
+          "tests": [
+            "VmKeyBindingsExtendedTests.GetKeysForCommand_FindsTwoKeys"
+          ]
+        },
+        {
+          "file": "src/common/console/c_bind.cpp",
+          "symbol": "FKeyBindings::GetKeysForCommand",
+          "start": 535,
+          "end": 591,
+          "tests": [
+            "VmKeyBindingsExtendedTests.GetKeysForCommand_FindsTwoKeys"
+          ]
+        },
+        {
+          "file": "src/common/console/c_bind.cpp",
+          "symbol": "FKeyBindings::GetBind",
+          "start": 566,
+          "end": 569,
+          "tests": [
+            "VmKeyBindingsExtendedTests.GetKeysForCommand_FindsTwoKeys"
+          ]
+        }
+      ],
+      "nativeLoc": 75,
+      "conversionManagedCommit": "1e3bad4774ace195fe89d7cbf2921b2e2337edaa"
     }
   ]
 }

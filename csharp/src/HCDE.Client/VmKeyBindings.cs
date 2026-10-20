@@ -42,6 +42,47 @@ public sealed class VmKeyBindings
 
     public string? GetBind(int key) => binds.TryGetValue(key, out var cmd) ? cmd : null;
 
+    public string? GetBind(string keyName)
+    {
+        var key = VmKeyNames.GetKeyFromName(keyName);
+        return key == 0 ? null : GetBind(key);
+    }
+
+    public void UnbindKey(string key)
+    {
+        var i = VmKeyNames.GetKeyFromName(key);
+        if (i != 0) binds.Remove(i);
+    }
+
+    public int GetKeysForCommand(string cmd, out int first, out int second)
+    {
+        first = second = 0;
+        if (string.IsNullOrEmpty(cmd)) return 0;
+        var count = 0;
+        for (var i = 0; i < VmKeyNames.NumKeys && count < 2; i++)
+        {
+            if (!binds.TryGetValue(i, out var bound) || !string.Equals(bound, cmd, StringComparison.OrdinalIgnoreCase))
+                continue;
+            if (count++ == 0) first = i;
+            else second = i;
+        }
+
+        return count;
+    }
+
+    public IReadOnlyList<int> GetKeysForCommand(string cmd)
+    {
+        var result = new List<int>();
+        if (string.IsNullOrEmpty(cmd)) return result;
+        for (var i = 0; i < VmKeyNames.NumKeys; i++)
+        {
+            if (binds.TryGetValue(i, out var bound) && string.Equals(bound, cmd, StringComparison.OrdinalIgnoreCase))
+                result.Add(i);
+        }
+
+        return result;
+    }
+
     public void LoadFromConfig(VmConfigFile config)
     {
         binds.Clear();
