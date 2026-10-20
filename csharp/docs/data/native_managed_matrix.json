@@ -18,19 +18,19 @@
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 783,
+    "convertedThisRunNative": 828,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 14831,
+    "convertedThisRunManaged": 14903,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -87,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 483423,
+    "remainingNative": 483378,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 19310,
+    "convertedBehaviorNative": 19355,
     "recognitionBehaviorNative": 5353,
-    "combinedBehaviorNative": 24663,
-    "convertedBehaviorManaged": 24502,
+    "combinedBehaviorNative": 24708,
+    "convertedBehaviorManaged": 24574,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -7509,6 +7509,33 @@
           }
         ],
         "nativeLoc": 39
+      },
+      {
+        "name": "stringtable-macros-chunk158",
+        "bucket": "conversion",
+        "managedLoc": 72,
+        "note": "readMacros and InsertString @[macro] expansion.",
+        "nativeRanges": [
+          {
+            "file": "src/common/engine/stringtable.cpp",
+            "symbol": "FStringTable::readMacros",
+            "start": 471,
+            "end": 490,
+            "tests": [
+              "VmStringTableExtendedTests.LoadStrings_ReadsLanguageAndMacros"
+            ]
+          },
+          {
+            "file": "src/common/engine/stringtable.cpp",
+            "symbol": "FStringTable::InsertString macros",
+            "start": 737,
+            "end": 761,
+            "tests": [
+              "VmStringTableExtendedTests.LoadStrings_ReadsLanguageAndMacros"
+            ]
+          }
+        ],
+        "nativeLoc": 45
       }
     ]
   },
