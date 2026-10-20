@@ -54,7 +54,7 @@ public class VmPEnemyResurrectTests
 
     [Fact]
     public void CorpseDimensions_GhostAlphaWhenZeroHeight() =>
-        Assert.Equal(0.25, VmPEnemyResurrect.EvaluateCorpseDimensions(
+        Assert.Equal(0.5, VmPEnemyResurrect.EvaluateCorpseDimensions(
             new VmPEnemyResurrect.CorpseDimensionContext(
                 VmPEnemyResurrect.CompatVileGhosts, 0, 56, 20, 1, 0)).Alpha);
 
