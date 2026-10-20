@@ -1,0 +1,100 @@
+[
+  {
+    "name": "umapinfo-schema-doomed-spawn-chunk222",
+    "bucket": "conversion",
+    "managedLoc": 85,
+    "note": "UMAPINFO schema remainder, InitSpawnablesFromMapinfo and class-map helpers.",
+    "nativeRanges": [
+      {
+        "file": "src/gamedata/umapinfo.cpp",
+        "symbol": "UMapEntry layout and helpers",
+        "start": 29,
+        "end": 83,
+        "tests": [
+          "VmUMapInfoSchemaTests.LumpNameFields_MatchesNativeLayout"
+        ]
+      },
+      {
+        "file": "src/gamedata/umapinfo.cpp",
+        "symbol": "ParseMultiString clear branch",
+        "start": 112,
+        "end": 118,
+        "tests": [
+          "VmUMapInfoTokenParserTests.TryParseMultiString_Clear"
+        ]
+      },
+      {
+        "file": "src/gamedata/umapinfo.cpp",
+        "symbol": "ParseLumpName validation",
+        "start": 130,
+        "end": 136,
+        "tests": [
+          "VmUMapInfoTokenParserTests.TryParseLumpName_RejectsLongName"
+        ]
+      },
+      {
+        "file": "src/gamedata/umapinfo.cpp",
+        "symbol": "ParseStandardProperty header",
+        "start": 156,
+        "end": 164,
+        "tests": [
+          "VmUMapInfoStandardPropertyParserTests.TryApplyProperty_SetsLevelName"
+        ]
+      },
+      {
+        "file": "src/gamedata/umapinfo.cpp",
+        "symbol": "ParseStandardProperty nextsecret sky",
+        "start": 223,
+        "end": 265,
+        "tests": [
+          "VmUMapInfoStandardPropertyParserTests.TryApplyProperty_SetsLevelName"
+        ]
+      },
+      {
+        "file": "src/gamedata/g_doomedmap.cpp",
+        "symbol": "InitSpawnablesFromMapinfo and dump",
+        "start": 1,
+        "end": 32,
+        "tests": [
+          "VmDoomEdSpawnInitTests.InitSpawnablesFromMapinfo_ResolvesClasses"
+        ]
+      },
+      {
+        "file": "src/gamedata/g_doomedmap.cpp",
+        "symbol": "Spawnable class map",
+        "start": 61,
+        "end": 97,
+        "tests": [
+          "VmDoomEdSpawnInitTests.SortClassMapForDump_OrdersByKey"
+        ]
+      },
+      {
+        "file": "src/gamedata/g_doomedmap.cpp",
+        "symbol": "CCMD spawnables",
+        "start": 306,
+        "end": 360,
+        "tests": [
+          "VmDoomEdSpawnInitTests.InitSpawnablesFromMapinfo_ResolvesClasses"
+        ]
+      },
+      {
+        "file": "src/gamedata/g_doomedmap.cpp",
+        "symbol": "Strife type clear",
+        "start": 406,
+        "end": 419,
+        "tests": [
+          "VmDoomEdSpawnInitTests.ClearStrifeTypes_EmptiesMap"
+        ]
+      },
+      {
+        "file": "src/gamedata/g_doomedmap.cpp",
+        "symbol": "Spawn CCMD tail",
+        "start": 452,
+        "end": 457,
+        "tests": [
+          "VmDoomEdSpawnInitTests.InitSpawnablesFromMapinfo_ResolvesClasses"
+        ]
+      }
+    ]
+  }
+]

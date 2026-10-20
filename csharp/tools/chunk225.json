@@ -1,0 +1,24 @@
+[
+  {
+    "name": "doomfont-ffont-seam-chunk225",
+    "bucket": "recognition",
+    "managedLoc": 0,
+    "note": "Uncredited InitDoomFonts FFont constructors (chunk216 credited lump branches 36-92 without splitting FFont lines).",
+    "nativeRanges": [
+      {
+        "file": "src/gamedata/doomfont.cpp",
+        "symbol": "new FFont BigFont FONTB",
+        "start": 101,
+        "end": 101,
+        "tests": []
+      },
+      {
+        "file": "src/gamedata/doomfont.cpp",
+        "symbol": "new FFont OriginalBigFont",
+        "start": 113,
+        "end": 117,
+        "tests": []
+      }
+    ]
+  }
+]

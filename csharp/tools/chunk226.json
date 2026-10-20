@@ -1,0 +1,19 @@
+[
+  {
+    "name": "g-skill-mapinfo-tail-chunk226",
+    "bucket": "conversion",
+    "managedLoc": 120,
+    "note": "MAPINFO ParseSkill extended options through skill block finalize.",
+    "nativeRanges": [
+      {
+        "file": "src/gamedata/g_skill.cpp",
+        "symbol": "FMapInfoParser::ParseSkill flags and options tail",
+        "start": 121,
+        "end": 346,
+        "tests": [
+          "VmSkillMapinfoParserTests.TryApplyBareFlag_SetsNoPain"
+        ]
+      }
+    ]
+  }
+]
