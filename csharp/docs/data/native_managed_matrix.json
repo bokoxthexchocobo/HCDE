@@ -18,19 +18,19 @@
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 11871,
+    "convertedThisRunNative": 11917,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 27361,
+    "convertedThisRunManaged": 27409,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": 151,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 472097,
+    "remainingNative": 472051,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 30398,
+    "convertedBehaviorNative": 30444,
     "recognitionBehaviorNative": 5591,
-    "combinedBehaviorNative": 35989,
-    "convertedBehaviorManaged": 37032,
+    "combinedBehaviorNative": 36035,
+    "convertedBehaviorManaged": 37080,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -12581,6 +12581,37 @@
         ],
         "nativeLoc": 76,
         "conversionManagedCommit": "da50894699b0a25063eaa58684880b56024f0158"
+      },
+      {
+        "name": "g-mapinfo-parse-loop-chunk318",
+        "bucket": "conversion",
+        "managedLoc": 48,
+        "note": "G_ParseMapInfo lump loop and secret marking",
+        "nativeRanges": [
+          {
+            "file": "src/gamedata/g_mapinfo.cpp",
+            "symbol": "G_ParseMapInfo lump dispatch",
+            "start": 3067,
+            "end": 3086,
+            "tests": [
+              "VmMapInfoParseMapInfoLoopTests.ResolveParseAction_UmapinfoBranch",
+              "VmMapInfoParseMapInfoLoopTests.ResolveParseAction_EmapinfoCommitsFirst"
+            ]
+          },
+          {
+            "file": "src/gamedata/g_mapinfo.cpp",
+            "symbol": "G_ParseMapInfo post parse",
+            "start": 3089,
+            "end": 3114,
+            "tests": [
+              "VmMapInfoParseMapInfoLoopTests.ShouldCollectSecretMap_WhenDistinct",
+              "VmMapInfoParseMapInfoLoopTests.ValidateEpisodesAndSkills_ThrowsWhenEmpty",
+              "VmMapInfoParseMapInfoLoopTests.ApplySecretLevelFlag_SetsBit"
+            ]
+          }
+        ],
+        "nativeLoc": 46,
+        "conversionManagedCommit": "d815d739f5147248fc8a1911d332727334b2c85b"
       }
     ]
   },

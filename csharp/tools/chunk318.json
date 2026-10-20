@@ -1,0 +1,31 @@
+[
+  {
+    "name": "g-mapinfo-parse-loop-chunk318",
+    "bucket": "conversion",
+    "managedLoc": 48,
+    "note": "G_ParseMapInfo lump loop and secret marking",
+    "nativeRanges": [
+      {
+        "file": "src/gamedata/g_mapinfo.cpp",
+        "symbol": "G_ParseMapInfo lump dispatch",
+        "start": 3067,
+        "end": 3086,
+        "tests": [
+          "VmMapInfoParseMapInfoLoopTests.ResolveParseAction_UmapinfoBranch",
+          "VmMapInfoParseMapInfoLoopTests.ResolveParseAction_EmapinfoCommitsFirst"
+        ]
+      },
+      {
+        "file": "src/gamedata/g_mapinfo.cpp",
+        "symbol": "G_ParseMapInfo post parse",
+        "start": 3089,
+        "end": 3114,
+        "tests": [
+          "VmMapInfoParseMapInfoLoopTests.ShouldCollectSecretMap_WhenDistinct",
+          "VmMapInfoParseMapInfoLoopTests.ValidateEpisodesAndSkills_ThrowsWhenEmpty",
+          "VmMapInfoParseMapInfoLoopTests.ApplySecretLevelFlag_SetsBit"
+        ]
+      }
+    ]
+  }
+]
