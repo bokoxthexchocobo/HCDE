@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 38814,
+  "convertedThisRunNative": 38984,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 48742,
+  "convertedThisRunManaged": 48853,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": 151,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 445154,
+  "remainingNative": 444984,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 57341,
+  "convertedBehaviorNative": 57511,
   "recognitionBehaviorNative": 5591,
-  "combinedBehaviorNative": 62932,
-  "convertedBehaviorManaged": 58413,
+  "combinedBehaviorNative": 63102,
+  "convertedBehaviorManaged": 58524,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -22031,6 +22031,35 @@
       "nativeLoc": 160,
       "managedLoc": 119,
       "conversionManagedCommit": "dbdfff03bd097109aab106c2f30253291bd22701"
+    },
+    {
+      "name": "p-action-set-animation-internal-chunk517",
+      "bucket": "conversion",
+      "note": "SetAnimationInternal",
+      "auditSeams": "`FindFModel`, `calcFrames`, `ModelAnimFramePrecalculatedIQM`, and `CalcBones` are not hosted.",
+      "auditRationale": "Credits decoupled model animation selection, SAF flags, frame bounds checks, and interpolation tic scheduling from `p_actionfunctions.cpp` (6507\u20136676).",
+      "managedSourceFiles": [
+        "csharp/src/HCDE.Playsim/VmActionSetAnimationInternal.cs"
+      ],
+      "nativeRanges": [
+        {
+          "file": "src/playsim/p_actionfunctions.cpp",
+          "symbol": "SetAnimationInternal",
+          "start": 6507,
+          "end": 6676,
+          "tests": [
+            "VmActionSetAnimationInternalTests.SameAnimationBlocked_WhenNoOverrideAndSameStart",
+            "VmActionSetAnimationInternalTests.ResolveLastFrame_NegativeEndUsesAnimEnd",
+            "VmActionSetAnimationInternalTests.NormalizeInterpolateTics_MinOne"
+          ]
+        }
+      ],
+      "portCommits": [
+        "44ff7dc266016eacdab3a0c34cc0b103620d532f"
+      ],
+      "nativeLoc": 170,
+      "managedLoc": 111,
+      "conversionManagedCommit": "6ce8572c5a15bfeae191b24d133c4c89972582ba"
     }
   ]
 }
