@@ -12,25 +12,25 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 129714
+    "managedCSharpLoc": 129800
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 13818,
+    "convertedThisRunNative": 13859,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 28542,
+    "convertedThisRunManaged": 28554,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": 151,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 470150,
+    "remainingNative": 470109,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 32345,
+    "convertedBehaviorNative": 32386,
     "recognitionBehaviorNative": 5591,
-    "combinedBehaviorNative": 37936,
-    "convertedBehaviorManaged": 38213,
+    "combinedBehaviorNative": 37977,
+    "convertedBehaviorManaged": 38225,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -13079,7 +13079,8 @@
             "start": 665,
             "end": 730,
             "tests": [
-              "VmEMapInfoPropertyDispatchTests.TryApplyDisableJump_SetsFlag"
+              "VmEMapInfoPropertyDispatchTests.TryApplyDisableJump_SetsFlag",
+              "VmEMapInfoPropertyDispatchTests.TryApplyBoolMapFlag_SetsDoubleSky"
             ]
           },
           {
@@ -13151,6 +13152,36 @@
         ],
         "nativeLoc": 86,
         "conversionManagedCommit": "af911e170e4a161a67570a8748e9905b68f6d162"
+      },
+      {
+        "name": "g-mapinfo-episode-head-chunk337",
+        "bucket": "conversion",
+        "managedLoc": 12,
+        "note": "ParseMapDefinition close and ParseEpisodeInfo teaser head",
+        "auditSeams": "Scanner `CheckEndOfFile` and shareware `gameinfo` flags are modeled as pure string helpers on `VmMapInfoEpisodeParser`.",
+        "auditRationale": "Fills the small `g_mapinfo.cpp` gaps 2286\u20132294 (post-`ParseMapDefinition` comment header before file-local `GetDefaultLevelNum`) and 2444\u20132475 (`ParseEpisodeInfo` prologue through shareware teaser map selection).",
+        "nativeRanges": [
+          {
+            "file": "src/gamedata/g_mapinfo.cpp",
+            "symbol": "ParseMapDefinition tail comment",
+            "start": 2286,
+            "end": 2294,
+            "tests": [
+              "VmMapInfoEpisodeParserTests.TryResolveTeaserMap_UsesTeaserWhenShareware"
+            ]
+          },
+          {
+            "file": "src/gamedata/g_mapinfo.cpp",
+            "symbol": "ParseEpisodeInfo map teaser",
+            "start": 2444,
+            "end": 2475,
+            "tests": [
+              "VmMapInfoEpisodeParserTests.TryResolveTeaserMap_UsesTeaserWhenShareware"
+            ]
+          }
+        ],
+        "nativeLoc": 41,
+        "conversionManagedCommit": "348c44a1ba407a6393d5c04f0198c68bd6832e35"
       }
     ]
   },
