@@ -12,25 +12,25 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 134892
+    "managedCSharpLoc": 134902
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 17453,
+    "convertedThisRunNative": 17478,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 32735,
+    "convertedThisRunManaged": 32746,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": 151,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 466515,
+    "remainingNative": 466490,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 35980,
+    "convertedBehaviorNative": 36005,
     "recognitionBehaviorNative": 5591,
-    "combinedBehaviorNative": 41571,
-    "convertedBehaviorManaged": 42406,
+    "combinedBehaviorNative": 41596,
+    "convertedBehaviorManaged": 42417,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -15376,15 +15376,6 @@
           },
           {
             "file": "src/d_main.cpp",
-            "symbol": "D_DoomLoop",
-            "start": 1727,
-            "end": 1759,
-            "tests": [
-              "VmDMainDoomLoopTests.ShouldIgnoreRestartDuringNetgame"
-            ]
-          },
-          {
-            "file": "src/d_main.cpp",
             "symbol": "D_PageTicker",
             "start": 1769,
             "end": 1773,
@@ -15427,20 +15418,87 @@
             "tests": [
               "VmDMainDoomLoopTests.ShouldExitEndgame_OnlyWhenNotNetgame"
             ]
+          }
+        ],
+        "nativeLoc": 102,
+        "managedLoc": 92,
+        "conversionManagedCommit": "7ae4e94ad3f335eea181cc18cd9cbbca475e8379"
+      },
+      {
+        "name": "d-main-compat-callbacks-chunk393",
+        "bucket": "conversion",
+        "note": "dmflags3, compatflags refresh, HCDE rcon poll hook",
+        "auditSeams": "`Level->ApplyCompatibility` and socket IO are not hosted.",
+        "auditRationale": "Credits `CUSTOM_CVAR(dmflags3)`, `compatflags`/`compatflags2`, dmflags3 flag CVARs, and `HCDERconPollListener` from `d_main.cpp` / `d_net_rcon.cpp`.",
+        "nativeRanges": [
+          {
+            "file": "src/d_main.cpp",
+            "symbol": "CUSTOM_CVAR dmflags3",
+            "start": 803,
+            "end": 805,
+            "tests": [
+              "VmDMainCompatCallbacksTests.IsDmflags3FlagSet_DetectsClip"
+            ]
           },
           {
             "file": "src/d_main.cpp",
-            "symbol": "D_DoStrifeAdvanceDemo",
-            "start": 1822,
-            "end": 1879,
+            "symbol": "CVAR dmflags3 flags",
+            "start": 807,
+            "end": 814,
             "tests": [
-              "VmDMainStrifeDemoTests.ResolveTitlePageTicDuration"
+              "VmDMainCompatCallbacksTests.IsDmflags3FlagSet_DetectsClip"
+            ]
+          },
+          {
+            "file": "src/d_main.cpp",
+            "symbol": "CUSTOM_CVAR compatflags",
+            "start": 824,
+            "end": 830,
+            "tests": [
+              "VmDMainCompatCallbacksTests.IsDmflags3FlagSet_DetectsClip"
+            ]
+          },
+          {
+            "file": "src/d_main.cpp",
+            "symbol": "CUSTOM_CVAR compatflags2",
+            "start": 832,
+            "end": 839,
+            "tests": [
+              "VmDMainCompatCallbacksTests.IsDmflags3FlagSet_DetectsClip"
+            ]
+          },
+          {
+            "file": "src/d_net_rcon.cpp",
+            "symbol": "HCDERconPollListener",
+            "start": 423,
+            "end": 436,
+            "tests": [
+              "VmDMainRconPollTests.ShouldRestartListener_WhenPortChanges"
+            ]
+          },
+          {
+            "file": "src/d_net_rcon.cpp",
+            "symbol": "HCDERconDrainIngress",
+            "start": 438,
+            "end": 497,
+            "tests": [
+              "VmDMainRconPollTests.ShouldRejectClient_WhenNoSlots",
+              "VmDMainRconPollTests.ShouldDisconnectOnZeroRead"
+            ]
+          },
+          {
+            "file": "src/am_map.cpp",
+            "symbol": "CCMD am_restorecolors",
+            "start": 578,
+            "end": 593,
+            "tests": [
+              "VmAutomapRestoreColorsTests.ShouldResetStandardSlot_InRange"
             ]
           }
         ],
-        "nativeLoc": 193,
-        "managedLoc": 92,
-        "conversionManagedCommit": "7ae4e94ad3f335eea181cc18cd9cbbca475e8379"
+        "nativeLoc": 116,
+        "managedLoc": 11,
+        "conversionManagedCommit": "eacd3c00bfd1f320aa680f1d121b504013d2d117"
       }
     ]
   },

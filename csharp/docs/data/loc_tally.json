@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 17362,
+  "convertedThisRunNative": 17480,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 32735,
+  "convertedThisRunManaged": 32794,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": 151,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 466606,
+  "remainingNative": 466488,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 35889,
+  "convertedBehaviorNative": 36007,
   "recognitionBehaviorNative": 5591,
-  "combinedBehaviorNative": 41480,
-  "convertedBehaviorManaged": 42406,
+  "combinedBehaviorNative": 41598,
+  "convertedBehaviorManaged": 42465,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -15407,6 +15407,82 @@
       "nativeLoc": 102,
       "managedLoc": 92,
       "conversionManagedCommit": "7ae4e94ad3f335eea181cc18cd9cbbca475e8379"
+    },
+    {
+      "name": "d-main-compat-callbacks-chunk393",
+      "bucket": "conversion",
+      "note": "dmflags3, compatflags refresh, HCDE rcon poll hook",
+      "auditSeams": "`Level->ApplyCompatibility` and socket IO are not hosted.",
+      "auditRationale": "Credits `CUSTOM_CVAR(dmflags3)`, `compatflags`/`compatflags2`, dmflags3 flag CVARs, and `HCDERconPollListener` from `d_main.cpp` / `d_net_rcon.cpp`.",
+      "nativeRanges": [
+        {
+          "file": "src/d_main.cpp",
+          "symbol": "CUSTOM_CVAR dmflags3",
+          "start": 803,
+          "end": 805,
+          "tests": [
+            "VmDMainCompatCallbacksTests.IsDmflags3FlagSet_DetectsClip"
+          ]
+        },
+        {
+          "file": "src/d_main.cpp",
+          "symbol": "CVAR dmflags3 flags",
+          "start": 807,
+          "end": 814,
+          "tests": [
+            "VmDMainCompatCallbacksTests.IsDmflags3FlagSet_DetectsClip"
+          ]
+        },
+        {
+          "file": "src/d_main.cpp",
+          "symbol": "CUSTOM_CVAR compatflags",
+          "start": 824,
+          "end": 830,
+          "tests": [
+            "VmDMainCompatCallbacksTests.IsDmflags3FlagSet_DetectsClip"
+          ]
+        },
+        {
+          "file": "src/d_main.cpp",
+          "symbol": "CUSTOM_CVAR compatflags2",
+          "start": 832,
+          "end": 841,
+          "tests": [
+            "VmDMainCompatCallbacksTests.IsDmflags3FlagSet_DetectsClip"
+          ]
+        },
+        {
+          "file": "src/d_net_rcon.cpp",
+          "symbol": "HCDERconPollListener",
+          "start": 423,
+          "end": 436,
+          "tests": [
+            "VmDMainRconPollTests.ShouldRestartListener_WhenPortChanges"
+          ]
+        },
+        {
+          "file": "src/d_net_rcon.cpp",
+          "symbol": "HCDERconDrainIngress",
+          "start": 438,
+          "end": 497,
+          "tests": [
+            "VmDMainRconPollTests.ShouldRejectClient_WhenNoSlots",
+            "VmDMainRconPollTests.ShouldDisconnectOnZeroRead"
+          ]
+        },
+        {
+          "file": "src/am_map.cpp",
+          "symbol": "CCMD am_restorecolors",
+          "start": 578,
+          "end": 593,
+          "tests": [
+            "VmAutomapRestoreColorsTests.ShouldResetStandardSlot_InRange"
+          ]
+        }
+      ],
+      "nativeLoc": 118,
+      "managedLoc": 59,
+      "conversionManagedCommit": "6799ce33a56e6475f5314b97c72e018e1b7d0bef"
     }
   ]
 }
