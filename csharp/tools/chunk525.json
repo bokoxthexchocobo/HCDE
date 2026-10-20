@@ -1,0 +1,24 @@
+[
+  {
+    "name": "codegen-array-element-emit-chunk525",
+    "bucket": "conversion",
+    "note": "FxArrayElement::Emit",
+    "auditSeams": "`VMFunctionBuilder::Emit`, `FxStructMember` dummy-var fix, and `PArray` layout are not hosted.",
+    "auditRationale": "Credits ZScript array element codegen paths (bounds, meta size, konst tables, shift/mul indexing) from `codegen.cpp` (8052–8315).",
+    "managedSourceFiles": ["csharp/src/HCDE.Scripting/ZccArrayElementEmit.cs"],
+    "nativeRanges": [
+      {
+        "file": "src/common/scripting/backend/codegen.cpp",
+        "symbol": "FxArrayElement::Emit",
+        "start": 8052,
+        "end": 8315,
+        "tests": [
+          "ZccArrayElementEmitTests.ShiftBitsForElementSize_FourBytes",
+          "ZccArrayElementEmitTests.CanUseShiftInsteadOfMul_WhenPowerOfTwo",
+          "ZccArrayElementEmitTests.StaticArrayInBounds_RejectsHighIndex",
+          "ZccArrayElementEmitTests.EmitBoundR_WhenResizable"
+        ]
+      }
+    ]
+  }
+]
