@@ -12,15 +12,18 @@ FxCompareEq::Resolve
 
 ## Managed
 
-(see conversion commit file list)
-Managed LOC (tally): 111.
-Conversion commit: `80d2e62788d5eaaf28ee6d0fcd64542c1e498fe2`.
+`ZccCompareEqResolve.cs`, `ZccCompareEqResolveTests.cs`
+Managed LOC (tally): 167.
+Conversion commit: `9f74f707f82b10b9f630619c254d9bbe508e6b06`.
 
 ## Tests
 
 - `ZccCompareEqResolveTests.FoldStringEqual_ApproxIgnoresCase`
 - `ZccCompareEqResolveTests.FoldFloatEqual_Neq`
 - `ZccCompareEqResolveTests.ShouldUnaryNotRight_EqAndZero`
+- `ZccCompareEqResolveTests.TryGetNullConstant_IntZero`
+- `ZccCompareEqResolveTests.TryFoldConstantCompare_IntEquality`
+- `ZccCompareEqResolveTests.ShouldRewriteEqToUnaryNot_WhenRightNull`
 
 ## Verified
 

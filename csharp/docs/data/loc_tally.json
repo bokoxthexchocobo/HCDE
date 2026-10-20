@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 39444,
+  "convertedThisRunNative": 39326,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 49103,
+  "convertedThisRunManaged": 49159,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": 151,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 444524,
+  "remainingNative": 444642,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 57971,
+  "convertedBehaviorNative": 57853,
   "recognitionBehaviorNative": 5591,
-  "combinedBehaviorNative": 63562,
-  "convertedBehaviorManaged": 58774,
+  "combinedBehaviorNative": 63444,
+  "convertedBehaviorManaged": 58830,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -21987,7 +21987,10 @@
           "tests": [
             "ZccCompareEqResolveTests.FoldStringEqual_ApproxIgnoresCase",
             "ZccCompareEqResolveTests.FoldFloatEqual_Neq",
-            "ZccCompareEqResolveTests.ShouldUnaryNotRight_EqAndZero"
+            "ZccCompareEqResolveTests.ShouldUnaryNotRight_EqAndZero",
+            "ZccCompareEqResolveTests.TryGetNullConstant_IntZero",
+            "ZccCompareEqResolveTests.TryFoldConstantCompare_IntEquality",
+            "ZccCompareEqResolveTests.ShouldRewriteEqToUnaryNot_WhenRightNull"
           ]
         }
       ],
@@ -21995,8 +21998,8 @@
         "146c044cd1cea0095d9a7eac1d056848c0afccba"
       ],
       "nativeLoc": 217,
-      "managedLoc": 111,
-      "conversionManagedCommit": "80d2e62788d5eaaf28ee6d0fcd64542c1e498fe2"
+      "managedLoc": 167,
+      "conversionManagedCommit": "9f74f707f82b10b9f630619c254d9bbe508e6b06"
     }
   ]
 }
