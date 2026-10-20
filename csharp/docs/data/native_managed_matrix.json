@@ -18,19 +18,19 @@
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 5804,
+    "convertedThisRunNative": 5858,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 20809,
+    "convertedThisRunManaged": 20857,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -43,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 478358,
+    "remainingNative": 478304,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 24331,
+    "convertedBehaviorNative": 24385,
     "recognitionBehaviorNative": 5397,
-    "combinedBehaviorNative": 29728,
-    "convertedBehaviorManaged": 30480,
+    "combinedBehaviorNative": 29782,
+    "convertedBehaviorManaged": 30528,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -9237,6 +9237,34 @@
         ],
         "conversionManagedCommit": "1509d90300cfd1ec535a43fd9dff5a3febd3bb9c",
         "nativeLoc": 63
+      },
+      {
+        "name": "doomedmap-resolve-chunk213",
+        "bucket": "conversion",
+        "managedLoc": 48,
+        "note": "InitActorNumsFromMapinfo resolve and P_GetSpawnableType.",
+        "nativeRanges": [
+          {
+            "file": "src/gamedata/g_doomedmap.cpp",
+            "symbol": "InitActorNumsFromMapinfo",
+            "start": 251,
+            "end": 284,
+            "tests": [
+              "VmDoomEdMapinfoResolverTests.TryGetSpawnableClassName_UsesNumberedTable"
+            ]
+          },
+          {
+            "file": "src/gamedata/g_doomedmap.cpp",
+            "symbol": "P_GetSpawnableType",
+            "start": 286,
+            "end": 305,
+            "tests": [
+              "VmDoomEdMapinfoResolverTests.TryGetSpawnableClassName_UsesNumberedTable"
+            ]
+          }
+        ],
+        "conversionManagedCommit": "4d88af30fe50d6fece1418301b8eea64ab86b229",
+        "nativeLoc": 54
       }
     ]
   },
