@@ -15,6 +15,18 @@ public static class VmEMapInfoParsePrimitives
         return true;
     }
 
+    public static bool TryParseDoubleStrict(string value, out double result)
+    {
+        result = 0;
+        if (value.Length == 0) return false;
+        var end = 0;
+        while (end < value.Length && !char.IsWhiteSpace(value[end])) end++;
+        if (!double.TryParse(value.AsSpan(0, end), out result)) return false;
+        for (var i = end; i < value.Length; i++)
+            if (!char.IsWhiteSpace(value[i])) return false;
+        return true;
+    }
+
     public static void SetFlag(ref int flags, int bit, bool enabled)
     {
         if (enabled) flags |= bit;

@@ -15,4 +15,22 @@ public class VmEMapInfoLineParserTests
     {
         Assert.Equal("name \"foo#bar\"", VmEMapInfoLineParser.StripLineComment("name \"foo#bar\" # tail"));
     }
+
+    [Fact]
+    public void NormalizeResourceName_StripsLeadingSlashes()
+    {
+        Assert.Equal("textures/wall.png", VmEMapInfoLineParser.NormalizeResourceName("\\textures/wall.png"));
+    }
+
+    [Fact]
+    public void SplitValueList_SplitsOnComma()
+    {
+        Assert.Equal(["A", "B"], VmEMapInfoLineParser.SplitValueList("A,B"));
+    }
+
+    [Fact]
+    public void TryParseBool_TreatsEmptyAsTrue()
+    {
+        Assert.True(VmEMapInfoLineParser.TryParseBool("", out var v) && v);
+    }
 }
