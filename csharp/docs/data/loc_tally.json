@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": -3976,
+  "convertedThisRunNative": -3636,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 9537,
+  "convertedThisRunManaged": 10275,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
-  "recognitionThisRunNative": -338,
+  "recognitionThisRunNative": -48,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 488433,
+  "remainingNative": 487803,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 14551,
-  "recognitionBehaviorNative": 5102,
-  "combinedBehaviorNative": 19653,
-  "convertedBehaviorManaged": 19208,
+  "convertedBehaviorNative": 14891,
+  "recognitionBehaviorNative": 5392,
+  "combinedBehaviorNative": 20283,
+  "convertedBehaviorManaged": 19946,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -5544,7 +5544,7 @@
       "name": "file-zip-chunk103",
       "bucket": "conversion",
       "managedLoc": 88,
-      "note": "Zip_FindCentralDir and Open compression/encryption filters.",
+      "note": "EOCD scan, multipart rejection, compression/encryption entry filters (not central-directory parse; SharpCompress decodes).",
       "nativeRanges": [
         {
           "file": "src/common/filesystem/source/file_zip.cpp",
@@ -5557,22 +5557,31 @@
         },
         {
           "file": "src/common/filesystem/source/file_zip.cpp",
-          "symbol": "FZipFile::Open",
-          "start": 120,
-          "end": 253,
+          "symbol": "FZipFile::Open (multipart policy)",
+          "start": 140,
+          "end": 165,
           "tests": [
             "VmZipResourcePolicyTests.IsMultipartEndRecord_RejectsSplitArchiveFields"
+          ]
+        },
+        {
+          "file": "src/common/filesystem/source/file_zip.cpp",
+          "symbol": "FZipFile::Open (compression/encryption filters)",
+          "start": 232,
+          "end": 253,
+          "tests": [
+            "VmZipResourcePolicyTests.IsSupportedCompression_MatchesNativeAllowlist"
           ]
         }
       ],
       "conversionManagedCommit": "e6c0ecd19871fe4c1f4841201a0ec35255551aed",
-      "nativeLoc": 179
+      "nativeLoc": 93
     },
     {
       "name": "legacy-archives-chunk104",
-      "bucket": "conversion",
-      "managedLoc": 12,
-      "note": "GRP/HOG/RFF archive readers credited with dedicated tests.",
+      "bucket": "recognition",
+      "managedLoc": 0,
+      "note": "VmGrp/VmHog/VmRff readers in b051701e; chunk 71ea4f56 publicized types and added VmLegacyArchiveReaderTests only.",
       "nativeRanges": [
         {
           "file": "src/common/filesystem/source/file_hog.cpp",
@@ -5602,7 +5611,6 @@
           ]
         }
       ],
-      "conversionManagedCommit": "71ea4f56d7bde3ae294dc2ccee26dc514d9b2b00",
       "nativeLoc": 179
     },
     {
@@ -5632,6 +5640,180 @@
       ],
       "conversionManagedCommit": "91312786a2c69ea74b18a3c4f222bfe5f5b378c0",
       "nativeLoc": 90
+    },
+    {
+      "name": "pngtexture-chunk106",
+      "bucket": "conversion",
+      "managedLoc": 317,
+      "note": "PNG TryCreate IHDR gates; 8-bit paletted/grayscale CreatePalettedPixels; M_ReadIDAT non-interlaced subset.",
+      "nativeRanges": [
+        {
+          "file": "src/common/textures/formats/pngtexture.cpp",
+          "symbol": "PNGImage_TryCreate",
+          "start": 74,
+          "end": 117,
+          "tests": [
+            "VmPngTextureImageTests.TryCreate_ValidatesSignatureAndIhdr"
+          ]
+        },
+        {
+          "file": "src/common/textures/formats/pngtexture.cpp",
+          "symbol": "PNGImage_TryCreate (post-IHDR sanity)",
+          "start": 164,
+          "end": 176,
+          "tests": [
+            "VmPngTextureImageTests.TryCreate_ValidatesSignatureAndIhdr"
+          ]
+        },
+        {
+          "file": "src/common/textures/formats/pngtexture.cpp",
+          "symbol": "FPNGTexture::CreatePalettedPixels (gray/palette)",
+          "start": 424,
+          "end": 465,
+          "tests": [
+            "VmPngTextureImageTests.CreatePalettedPixels_Decodes2x2Paletted"
+          ]
+        },
+        {
+          "file": "src/common/textures/m_png.cpp",
+          "symbol": "M_ReadIDAT (8-bit non-interlaced)",
+          "start": 470,
+          "end": 577,
+          "tests": [
+            "VmPngTextureImageTests.CreatePalettedPixels_Decodes2x2Paletted"
+          ]
+        }
+      ],
+      "conversionManagedCommit": "2a78adc013216464d7768fa332f2909aa3f99063",
+      "nativeLoc": 207
+    },
+    {
+      "name": "ddstexture-chunk107",
+      "bucket": "conversion",
+      "managedLoc": 288,
+      "note": "CheckDDS, DDSImage_TryCreate, ReadRGB and DXT1 CreatePalettedPixels paths.",
+      "nativeRanges": [
+        {
+          "file": "src/common/textures/formats/ddstexture.cpp",
+          "symbol": "CheckDDS",
+          "start": 187,
+          "end": 202,
+          "tests": [
+            "VmDdsTextureImageTests.TryCreate_Accepts32BitRgbDds"
+          ]
+        },
+        {
+          "file": "src/common/textures/formats/ddstexture.cpp",
+          "symbol": "DDSImage_TryCreate",
+          "start": 210,
+          "end": 266,
+          "tests": [
+            "VmDdsTextureImageTests.TryCreate_Accepts32BitRgbDds"
+          ]
+        },
+        {
+          "file": "src/common/textures/formats/ddstexture.cpp",
+          "symbol": "FDDSTexture::CreatePalettedPixels",
+          "start": 364,
+          "end": 390,
+          "tests": [
+            "VmDdsTextureImageTests.CreatePalettedPixels_ReadsRgbColumnMajor"
+          ]
+        },
+        {
+          "file": "src/common/textures/formats/ddstexture.cpp",
+          "symbol": "FDDSTexture::ReadRGB",
+          "start": 398,
+          "end": 460,
+          "tests": [
+            "VmDdsTextureImageTests.CreatePalettedPixels_ReadsRgbColumnMajor"
+          ]
+        },
+        {
+          "file": "src/common/textures/formats/ddstexture.cpp",
+          "symbol": "FDDSTexture::DecompressDXT1",
+          "start": 468,
+          "end": 557,
+          "tests": [
+            "VmDdsTextureImageTests.CalcBitShift_MatchesNativeExample"
+          ]
+        }
+      ],
+      "conversionManagedCommit": "aacc2d92bc7e6ef55fb2052514ef71521aace93d",
+      "nativeLoc": 253
+    },
+    {
+      "name": "file-7z-chunk108",
+      "bucket": "recognition",
+      "managedLoc": 0,
+      "note": "VmSevenZipArchiveReader (SharpCompress) matches native Open directory skip and first-entry extract probe; tests added.",
+      "nativeRanges": [
+        {
+          "file": "src/common/filesystem/source/file_7z.cpp",
+          "symbol": "F7ZFile::Open",
+          "start": 197,
+          "end": 280,
+          "tests": [
+            "VmSevenZipArchiveReaderTests.GetEntries_SkipsDirectoriesAndReadsFile"
+          ]
+        }
+      ],
+      "nativeLoc": 84
+    },
+    {
+      "name": "file-pak-chunk109",
+      "bucket": "recognition",
+      "managedLoc": 0,
+      "note": "VmPakArchiveReader already matched OpenPak; public API and VmPakArchiveReaderTests.",
+      "nativeRanges": [
+        {
+          "file": "src/common/filesystem/source/file_pak.cpp",
+          "symbol": "OpenPak",
+          "start": 55,
+          "end": 81,
+          "tests": [
+            "VmPakArchiveReaderTests.Read_PakDirectory_ReturnsStoredLump"
+          ]
+        }
+      ],
+      "nativeLoc": 27
+    },
+    {
+      "name": "qoitexture-chunk110",
+      "bucket": "conversion",
+      "managedLoc": 145,
+      "note": "QOI TryCreate and CopyPixels opcode decode with column-major CreatePalettedPixels.",
+      "nativeRanges": [
+        {
+          "file": "src/common/textures/formats/qoitexture.cpp",
+          "symbol": "QOIImage_TryCreate",
+          "start": 53,
+          "end": 78,
+          "tests": [
+            "VmQoiTextureImageTests.TryCreate_ValidatesQoiHeader"
+          ]
+        },
+        {
+          "file": "src/common/textures/formats/qoitexture.cpp",
+          "symbol": "FQOITexture::CopyPixels",
+          "start": 125,
+          "end": 210,
+          "tests": [
+            "VmQoiTextureImageTests.CreatePalettedPixels_DecodesSingleOpaquePixel"
+          ]
+        },
+        {
+          "file": "src/common/textures/formats/qoitexture.cpp",
+          "symbol": "FQOITexture::CreatePalettedPixels",
+          "start": 90,
+          "end": 122,
+          "tests": [
+            "VmQoiTextureImageTests.CreatePalettedPixels_DecodesSingleOpaquePixel"
+          ]
+        }
+      ],
+      "conversionManagedCommit": "5be0f2e52b5237de168132c3002b712984a6eff9",
+      "nativeLoc": 145
     }
   ]
 }
