@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": -5660,
+  "convertedThisRunNative": -5261,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 7770,
+  "convertedThisRunManaged": 8165,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -338,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 490117,
+  "remainingNative": 489718,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 12867,
+  "convertedBehaviorNative": 13266,
   "recognitionBehaviorNative": 5102,
-  "combinedBehaviorNative": 17969,
-  "convertedBehaviorManaged": 17441,
+  "combinedBehaviorNative": 18368,
+  "convertedBehaviorManaged": 17836,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -5268,6 +5268,70 @@
       ],
       "conversionManagedCommit": "1dbc09dcbc94cdc801b4c8badb792baaef88a46b",
       "nativeLoc": 252
+    },
+    {
+      "name": "matrix-chunk96",
+      "bucket": "conversion",
+      "managedLoc": 395,
+      "note": "VSMatrix transforms, lookAt, projection, normal matrix, inverse.",
+      "nativeRanges": [
+        {
+          "file": "src/common/utility/matrix.cpp",
+          "symbol": "VSMatrix::loadIdentity",
+          "start": 66,
+          "end": 97,
+          "tests": [
+            "VmVsMatrixTests.Translate_AppendsToColumnMajorTranslationRow"
+          ]
+        },
+        {
+          "file": "src/common/utility/matrix.cpp",
+          "symbol": "VSMatrix::multQuaternion",
+          "start": 122,
+          "end": 152,
+          "tests": [
+            "VmVsMatrixTests.Frustum_MultipliesOntoCurrentMatrix"
+          ]
+        },
+        {
+          "file": "src/common/utility/matrix.cpp",
+          "symbol": "VSMatrix::translate",
+          "start": 177,
+          "end": 261,
+          "tests": [
+            "VmVsMatrixTests.Translate_AppendsToColumnMajorTranslationRow"
+          ]
+        },
+        {
+          "file": "src/common/utility/matrix.cpp",
+          "symbol": "VSMatrix::lookAt",
+          "start": 266,
+          "end": 370,
+          "tests": [
+            "VmVsMatrixTests.Frustum_MultipliesOntoCurrentMatrix"
+          ]
+        },
+        {
+          "file": "src/common/utility/matrix.cpp",
+          "symbol": "VSMatrix::multMatrixPoint",
+          "start": 394,
+          "end": 515,
+          "tests": [
+            "VmVsMatrixTests.Perspective_MatchesKnownFrustumCoefficients"
+          ]
+        },
+        {
+          "file": "src/common/utility/matrix.cpp",
+          "symbol": "VSMatrix::inverseMatrix",
+          "start": 724,
+          "end": 747,
+          "tests": [
+            "VmVsMatrixTests.Perspective_MatchesKnownFrustumCoefficients"
+          ]
+        }
+      ],
+      "conversionManagedCommit": "c8f31a98ec88bf3c338a7461e7619659337dedda",
+      "nativeLoc": 399
     }
   ]
 }
