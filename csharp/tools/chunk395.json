@@ -1,0 +1,30 @@
+[
+  {
+    "name": "d-main-parse-cvarinfo-chunk395",
+    "bucket": "conversion",
+    "note": "CVARINFO scanner and deh/bex patch discovery",
+    "auditSeams": "`FScanner`, `C_CreateCVar`, and `D_LoadDehFile` are not hosted.",
+    "auditRationale": "Credits `ParseCVarInfo` and `ConsiderPatches` from `d_main.cpp`.",
+    "nativeRanges": [
+      {
+        "file": "src/d_main.cpp",
+        "symbol": "ParseCVarInfo",
+        "start": 2086,
+        "end": 2241,
+        "tests": [
+          "VmDMainParseCVarInfoTests.HasValidScopeFlags_RejectsMissingScope",
+          "VmDMainParseCVarInfoTests.NormalizeConfigOnlyFlags_ClearsServerUser"
+        ]
+      },
+      {
+        "file": "src/d_main.cpp",
+        "symbol": "ConsiderPatches",
+        "start": 2251,
+        "end": 2267,
+        "tests": [
+          "VmDMainParseCVarInfoTests.IsPatchExtension_MatchesDeh"
+        ]
+      }
+    ]
+  }
+]
