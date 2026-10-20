@@ -9,7 +9,7 @@ public class VmPMobjSlamReflectTests
     [Fact]
     public void EvaluateSlamPass_WhenOnlySolid() =>
         Assert.True(VmPMobjSlamReflect.EvaluateSlamPass(
-            new VmPMobjSlamReflect.SlamContext(1, 0, 0, 1, false, true, true, false)));
+            new VmPMobjSlamReflect.SlamContext(1, 0, 0, 1, false, true, true, 0)));
 
     [Fact]
     public void ShieldReflect_BlocksWideAngle() =>

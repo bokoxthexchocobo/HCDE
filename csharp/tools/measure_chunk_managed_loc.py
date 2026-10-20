@@ -8,8 +8,6 @@ from pathlib import Path
 REPO = Path(__file__).resolve().parents[1].parent
 CSHARP = REPO / "csharp"
 
-import sys
-
 sys.path.insert(0, str(CSHARP / "tools"))
 from chunk_port_managed import managed_loc_for_chunk  # noqa: E402
 

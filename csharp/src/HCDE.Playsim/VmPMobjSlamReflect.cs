@@ -104,7 +104,7 @@ public static class VmPMobjSlamReflect
         bool Dormant,
         bool HasSlamState,
         bool HasSeeState,
-        bool RetargetAfterSlam);
+        int Flags8RetargetBit);
 
     public static bool EvaluateSlamPass(SlamContext ctx)
     {
@@ -118,7 +118,7 @@ public static class VmPMobjSlamReflect
         if (!SlamDamageWhenAlive(ctx.Health, ctx.Dormant))
             return DormantSlamSetsIdle(ctx.Dormant);
         if (ctx.HasSlamState) return true;
-        if (ctx.HasSeeState && RetargetAfterSlam(ctx.RetargetAfterSlam)) return true;
+        if (ctx.HasSeeState && RetargetAfterSlam(ctx.Flags8RetargetBit)) return true;
         return true;
     }
 
