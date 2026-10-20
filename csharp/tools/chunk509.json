@@ -6,7 +6,9 @@
     "auditSeams": "`P_PlayerThink`, `G_Ticker`, `NetworkEntityManager`, serializer rollback, `HCDESeatLocalPlayerToAuthoritativeBase`, and the per-tic replay loop body are not hosted.",
     "auditRationale": "Credits netgame/level/reserved-slot gates, prediction window clamping, rubberband eligibility, weapon psprite watermarking, and replay skip conditions from `p_user.cpp` (2021–2394).",
     "managedSourceFiles": ["csharp/src/HCDE.Playsim/VmPUserPredictClient.cs"],
-    "portCommits": [],
+    "portCommits": [
+      "a2db518bc082ac776a84b7932ea9ddd406712801"
+    ],
     "nativeRanges": [
       {
         "file": "src/playsim/p_user.cpp",

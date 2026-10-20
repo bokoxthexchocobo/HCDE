@@ -4,7 +4,7 @@ Retroactive verification after adding `check_port_coverage.sh <N> <port-sha>` to
 
 ## Method
 
-For each chunk **N** in range **450–507**:
+For each chunk **N** in range **450–509**:
 
 1. Read `conversionManagedCommit` (+ `portCommits` from `chunkN.json` for measured managed LOC).
 2. `bash csharp/tools/check_port_coverage.sh N <port-sha>` — requires ≥50% `csharp/src` additions on the port SHA(s).

@@ -12,25 +12,25 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 151336
+    "managedCSharpLoc": 151447
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 37111,
+    "convertedThisRunNative": 37485,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 47620,
+    "convertedThisRunManaged": 47731,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": 151,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 446857,
+    "remainingNative": 446483,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 55638,
+    "convertedBehaviorNative": 56012,
     "recognitionBehaviorNative": 5591,
-    "combinedBehaviorNative": 61229,
-    "convertedBehaviorManaged": 57291,
+    "combinedBehaviorNative": 61603,
+    "convertedBehaviorManaged": 57402,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -21758,6 +21758,37 @@
         "nativeLoc": 175,
         "managedLoc": 103,
         "conversionManagedCommit": "9efd183ae6ccf9c1d4760f2ce65bda9508233ed4"
+      },
+      {
+        "name": "p-user-predict-client-chunk509",
+        "bucket": "conversion",
+        "note": "P_PredictClient",
+        "auditSeams": "`P_PlayerThink`, `G_Ticker`, `NetworkEntityManager`, serializer rollback, `HCDESeatLocalPlayerToAuthoritativeBase`, and the per-tic replay loop body are not hosted.",
+        "auditRationale": "Credits netgame/level/reserved-slot gates, prediction window clamping, rubberband eligibility, weapon psprite watermarking, and replay skip conditions from `p_user.cpp` (2021\u20132394).",
+        "managedSourceFiles": [
+          "csharp/src/HCDE.Playsim/VmPUserPredictClient.cs"
+        ],
+        "portCommits": [
+          "a2db518bc082ac776a84b7932ea9ddd406712801"
+        ],
+        "nativeRanges": [
+          {
+            "file": "src/playsim/p_user.cpp",
+            "symbol": "P_PredictClient",
+            "start": 2021,
+            "end": 2394,
+            "tests": [
+              "VmPUserPredictClientTests.SinglePlayer_DisablesPrediction",
+              "VmPUserPredictClientTests.Replay_SkipsWhenCaughtUp",
+              "VmPUserPredictClientTests.Window_ClampReducesStart",
+              "VmPUserPredictClientTests.Rubberband_TriggersOnDistance",
+              "VmPUserPredictClientTests.TryBuildWindow_CapsEnd"
+            ]
+          }
+        ],
+        "nativeLoc": 374,
+        "managedLoc": 111,
+        "conversionManagedCommit": "a2db518bc082ac776a84b7932ea9ddd406712801"
       }
     ]
   },
