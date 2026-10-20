@@ -1,0 +1,68 @@
+[
+  {
+    "name": "g-game-look-spy-chunk405",
+    "bucket": "conversion",
+    "note": "G_BuildTiccmd tail, LookAdjust, view pitch/yaw, ChangeSpy",
+    "auditSeams": "`players`, `StatusBar`, and demo net messages are not hosted.",
+    "auditRationale": "Credits the `G_BuildTiccmd` net tail, `LookAdjust`, `G_AddViewPitch`, `G_AddViewAngle`, and `ChangeSpy` from `g_game.cpp`.",
+    "nativeRanges": [
+      {
+        "file": "src/g_game.cpp",
+        "symbol": "G_BuildTiccmd tail",
+        "start": 1101,
+        "end": 1128,
+        "tests": [
+          "VmGGameLookAdjustTests.ScaleMovementAxis_ShiftsEightBits",
+          "VmGGameLookAdjustTests.FormatInputTrace_IncludesButtonsHex"
+        ]
+      },
+      {
+        "file": "src/g_game.cpp",
+        "symbol": "LookAdjust",
+        "start": 1130,
+        "end": 1148,
+        "tests": [
+          "VmGGameLookAdjustTests.ScaleLook_AppliesFovThenLookScale"
+        ]
+      },
+      {
+        "file": "src/g_game.cpp",
+        "symbol": "G_AddViewPitch",
+        "start": 1150,
+        "end": 1189,
+        "tests": [
+          "VmGGameLookAdjustTests.ClampPitchUp_StopsAtClamp"
+        ]
+      },
+      {
+        "file": "src/g_game.cpp",
+        "symbol": "G_AddViewAngle",
+        "start": 1191,
+        "end": 1204,
+        "tests": [
+          "VmGGameLookAdjustTests.ScaleLook_AppliesFovThenLookScale"
+        ]
+      },
+      {
+        "file": "src/g_game.cpp",
+        "symbol": "ChangeSpy",
+        "start": 1208,
+        "end": 1263,
+        "tests": [
+          "VmGGameLookAdjustTests.IsSpyingDisallowed_WhenDf2Set",
+          "VmGGameLookAdjustTests.StepSpyIndex_WrapsWithinMaxPlayers",
+          "VmGGameLookAdjustTests.IsEligibleSpyTarget_AllowsTeammate"
+        ]
+      },
+      {
+        "file": "src/g_game.cpp",
+        "symbol": "spynext/spyprev/spycancel",
+        "start": 1265,
+        "end": 1281,
+        "tests": [
+          "VmGGameLookAdjustTests.IsEligibleSpyTarget_AllowsTeammate"
+        ]
+      }
+    ]
+  }
+]
