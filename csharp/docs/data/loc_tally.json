@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 14771,
+  "convertedThisRunNative": 14925,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 30554,
+  "convertedThisRunManaged": 30632,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": 151,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 469197,
+  "remainingNative": 469043,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 33298,
+  "convertedBehaviorNative": 33452,
   "recognitionBehaviorNative": 5591,
-  "combinedBehaviorNative": 38889,
-  "convertedBehaviorManaged": 40225,
+  "combinedBehaviorNative": 39043,
+  "convertedBehaviorManaged": 40303,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -14509,6 +14509,54 @@
       "nativeLoc": 156,
       "managedLoc": 164,
       "conversionManagedCommit": "d165e7f4b3d93fab08fad3309644d80594756147"
+    },
+    {
+      "name": "maploader-extended-nodes-chunk374",
+      "bucket": "conversion",
+      "note": "FloodZones sound zones and extended/ZDoom node lump routing",
+      "auditSeams": "Recursive `FloodZone`, decompressors, and `LoadZNodes` IO are not hosted; managed code mirrors zone assignment and node id routing.",
+      "auditRationale": "Credits `FloodZone`, `FloodZones`, `LoadExtendedNodes`, and `P_CheckV4Nodes` from `maploader.cpp`.",
+      "nativeRanges": [
+        {
+          "file": "src/maploader/maploader.cpp",
+          "symbol": "MapLoader::FloodZone",
+          "start": 342,
+          "end": 370,
+          "tests": [
+            "VmMapLoaderExtendedNodesTests.NextZoneIndex_CountsUnassignedSectors"
+          ]
+        },
+        {
+          "file": "src/maploader/maploader.cpp",
+          "symbol": "MapLoader::FloodZones",
+          "start": 372,
+          "end": 395,
+          "tests": [
+            "VmMapLoaderExtendedNodesTests.NextZoneIndex_CountsUnassignedSectors"
+          ]
+        },
+        {
+          "file": "src/maploader/maploader.cpp",
+          "symbol": "MapLoader::LoadExtendedNodes",
+          "start": 672,
+          "end": 760,
+          "tests": [
+            "VmMapLoaderExtendedNodesTests.TryParseExtendedNodeId_Znod_IsCompressedType0"
+          ]
+        },
+        {
+          "file": "src/maploader/maploader.cpp",
+          "symbol": "P_CheckV4Nodes",
+          "start": 771,
+          "end": 782,
+          "tests": [
+            "VmMapLoaderExtendedNodesTests.IsV4NodeHeader_MatchesSignature"
+          ]
+        }
+      ],
+      "nativeLoc": 154,
+      "managedLoc": 78,
+      "conversionManagedCommit": "d0cd2379a7b1f387ac7d34c58f16dbe2c4d8876b"
     }
   ]
 }
