@@ -13,4 +13,16 @@ public class ZccCompareEqResolveTests
     [Fact]
     public void ShouldUnaryNotRight_EqAndZero() =>
         Assert.True(ZccCompareEqResolve.ShouldUnaryNotRight(ZccCompareEqResolve.TkEq, true));
+
+    [Fact]
+    public void TryGetNullConstant_IntZero() =>
+        Assert.True(ZccCompareEqResolve.TryGetNullConstant(ZccCompareEqResolve.RegKind.Int, 0, 1, IntPtr.Zero, out var n) && n);
+
+    [Fact]
+    public void TryFoldConstantCompare_IntEquality() =>
+        Assert.True(ZccCompareEqResolve.TryFoldConstantCompare(ZccCompareEqResolve.TkEq, "int", 3, 3, 0, 0, out var folded) && folded);
+
+    [Fact]
+    public void ShouldRewriteEqToUnaryNot_WhenRightNull() =>
+        Assert.True(ZccCompareEqResolve.ShouldRewriteEqToUnaryNot(ZccCompareEqResolve.TkEq, true));
 }

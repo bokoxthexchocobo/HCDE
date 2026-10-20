@@ -108,4 +108,60 @@ public static class ZccCompareEqResolve
     public static int CmpCheckFlag() => 1;
 
     public static int CmpApproxFlag() => 2;
+
+    public enum RegKind { Int, Float, Pointer, Other }
+
+    public static RegKind ClassifyReg(int regTypeInt, int regTypeFloat, int regTypePointer, int actual) =>
+        actual == regTypeInt ? RegKind.Int :
+        actual == regTypeFloat ? RegKind.Float :
+        actual == regTypePointer ? RegKind.Pointer : RegKind.Other;
+
+    public static bool TryGetNullConstant(RegKind kind, int intVal, double floatVal, IntPtr ptr, out bool isNull)
+    {
+        isNull = kind switch
+        {
+            RegKind.Int => intVal == 0,
+            RegKind.Float => floatVal == 0,
+            RegKind.Pointer => ptr == IntPtr.Zero,
+            _ => false,
+        };
+        return kind != RegKind.Other;
+    }
+
+    public static bool TryFoldConstantCompare(int op, string valueType, int intLeft, int intRight, double floatLeft, double floatRight, out bool folded)
+    {
+        folded = false;
+        if (valueType == "string")
+        {
+            folded = FoldStringEqual(op == TkApproxEq, intLeft.ToString(), intRight.ToString());
+            return true;
+        }
+
+        if (valueType == "float")
+        {
+            folded = FoldFloatEqual(op, floatLeft, floatRight);
+            return true;
+        }
+
+        if (valueType == "int")
+        {
+            folded = FoldIntEqual(op, intLeft, intRight);
+            return true;
+        }
+
+        return false;
+    }
+
+    public static bool ShouldRewriteEqToUnaryNot(int op, bool operandIsNull) =>
+        op == TkEq && operandIsNull;
+
+    public static bool ShouldRewriteNeqToBoolCast(int op, bool operandIsNull) =>
+        op != TkEq && operandIsNull;
+
+    public static bool OperandTypesNeedPromotion(bool sameType, bool leftNumeric, bool rightNumeric) =>
+        !sameType && leftNumeric && rightNumeric;
+
+    public static bool IncompatibleOperands(bool resolved) => !resolved;
+
+    public static string ResultValueTypeBool() => "bool";
 }

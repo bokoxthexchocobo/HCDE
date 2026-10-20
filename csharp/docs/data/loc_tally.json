@@ -10967,148 +10967,36 @@
       "name": "dehacked-patchthing-numeric-chunk265",
       "bucket": "conversion",
       "managedLoc": 157,
-      "note": "PatchThing setup and numeric property dispatch. (re-audit 265-286: tested ranges only)",
-      "nativeRanges": [
-        {
-          "file": "src/gamedata/d_dehacked.cpp",
-          "symbol": "PatchThing actor resolve",
-          "start": 1268,
-          "end": 1278,
-          "tests": [
-            "VmDehackedPatchThingContextTests.TryResolveThingType_RejectsOutOfRange"
-          ]
-        },
-        {
-          "file": "src/gamedata/d_dehacked.cpp",
-          "symbol": "PatchThing numeric bounds",
-          "start": 1290,
-          "end": 1293,
-          "tests": [
-            "VmDehackedPatchThingNumericTests.IsSupportedNumeric_RejectsOutOfRange"
-          ]
-        },
-        {
-          "file": "src/gamedata/d_dehacked.cpp",
-          "symbol": "PatchThing Hit points",
-          "start": 1294,
-          "end": 1297,
-          "tests": [
-            "VmDehackedPatchThingNumericTests.TryApplyNumericProperty_SetsHitPoints"
-          ]
-        },
-        {
-          "file": "src/gamedata/d_dehacked.cpp",
-          "symbol": "PatchThing Translucency",
-          "start": 1306,
-          "end": 1313,
-          "tests": [
-            "VmDehackedPatchThingNumericTests.TryApplyNumericProperty_AppliesTranslucency"
-          ]
-        }
-      ],
-      "nativeLoc": 27,
+      "note": "PatchThing numeric helpers (native superseded by chunk 520; managed inventory).",
+      "nativeRanges": [],
+      "nativeLoc": 0,
       "conversionManagedCommit": "62d10e264c674a87c8ed5e3771e51ef08f6c0bca"
     },
     {
       "name": "dehacked-patchthing-combat-chunk266",
       "bucket": "conversion",
       "managedLoc": 153,
-      "note": "PatchThing blood, drop, crispy, MBF21 through obituaries. (re-audit 265-286: tested ranges only)",
-      "nativeRanges": [
-        {
-          "file": "src/gamedata/d_dehacked.cpp",
-          "symbol": "PatchThing blood color",
-          "start": 1437,
-          "end": 1455,
-          "tests": [
-            "VmDehackedPatchThingCombatExtrasTests.TryApplyLine_SetsBloodColorIndex"
-          ]
-        },
-        {
-          "file": "src/gamedata/d_dehacked.cpp",
-          "symbol": "PatchThing MBF21 Bits tokens",
-          "start": 1456,
-          "end": 1479,
-          "tests": [
-            "VmDehackedPatchThingCombatExtrasTests.ParseMbf21Bits_CombinesMnemonicAndNumeric"
-          ]
-        }
-      ],
-      "nativeLoc": 43,
+      "note": "PatchThing combat extras (native superseded by chunk 520; managed inventory).",
+      "nativeRanges": [],
+      "nativeLoc": 0,
       "conversionManagedCommit": "2e77671ae40d696b30537becf04ffac885d4c72b"
     },
     {
       "name": "dehacked-patchthing-states-bits-a-chunk267",
       "bucket": "conversion",
       "managedLoc": 236,
-      "note": "PatchThing frame/sound labels and Bits parse through translucency tail. (re-audit 265-286: tested ranges only)",
-      "nativeRanges": [
-        {
-          "file": "src/gamedata/d_dehacked.cpp",
-          "symbol": "PatchThing Initial frame",
-          "start": 1576,
-          "end": 1577,
-          "tests": [
-            "VmDehackedPatchThingStateLabelsTests.TryMapFrameLabel_Spawn"
-          ]
-        },
-        {
-          "file": "src/gamedata/d_dehacked.cpp",
-          "symbol": "PatchThing Death sound",
-          "start": 1623,
-          "end": 1624,
-          "tests": [
-            "VmDehackedPatchThingStateLabelsTests.TryMapSoundLabel_Death"
-          ]
-        },
-        {
-          "file": "src/gamedata/d_dehacked.cpp",
-          "symbol": "PatchThing Bits MBF bounce remap",
-          "start": 1692,
-          "end": 1718,
-          "tests": [
-            "VmDehackedPatchThingBitsTests.RemapMbfFlags_SetsGrenadeBounceStyle"
-          ]
-        },
-        {
-          "file": "src/gamedata/d_dehacked.cpp",
-          "symbol": "PatchThing Bits translucent alpha",
-          "start": 1805,
-          "end": 1809,
-          "tests": [
-            "VmDehackedPatchThingBitsTests.ResolveTranslucentAlpha_ReturnsHalf"
-          ]
-        }
-      ],
-      "nativeLoc": 36,
+      "note": "PatchThing state/bits helpers (native superseded by chunks 520/521; managed inventory).",
+      "nativeRanges": [],
+      "nativeLoc": 0,
       "conversionManagedCommit": "4dd14c9f92965d02e45d910cca422e5eac74cb36"
     },
     {
       "name": "dehacked-patchthing-bits-finalize-chunk268",
       "bucket": "conversion",
       "managedLoc": 66,
-      "note": "PatchThing post-loop finalize only (aed28a93 commit). (re-audit 265-286: tested ranges only)",
-      "nativeRanges": [
-        {
-          "file": "src/gamedata/d_dehacked.cpp",
-          "symbol": "PatchThing height pair check",
-          "start": 1833,
-          "end": 1840,
-          "tests": [
-            "VmDehackedPatchThingFinalizeTests.ValidateHeightPair_RequiresBoth"
-          ]
-        },
-        {
-          "file": "src/gamedata/d_dehacked.cpp",
-          "symbol": "PatchThing speed rescale",
-          "start": 1871,
-          "end": 1874,
-          "tests": [
-            "VmDehackedPatchThingFinalizeTests.NormalizeSpeed_ScalesLargeFixed"
-          ]
-        }
-      ],
-      "nativeLoc": 12,
+      "note": "PatchThing finalize helpers (native superseded by chunk 521; managed inventory).",
+      "nativeRanges": [],
+      "nativeLoc": 0,
       "conversionManagedCommit": "aed28a9349028f764dea7c31a8850849f5eb7c08"
     },
     {
