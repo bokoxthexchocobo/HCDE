@@ -12,25 +12,25 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 127728
+    "managedCSharpLoc": 127703
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 13797,
+    "convertedThisRunNative": 13947,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 26235,
+    "convertedThisRunManaged": 26277,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": 151,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 470171,
+    "remainingNative": 470021,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 32324,
+    "convertedBehaviorNative": 32474,
     "recognitionBehaviorNative": 5591,
-    "combinedBehaviorNative": 37915,
-    "convertedBehaviorManaged": 35906,
+    "combinedBehaviorNative": 38065,
+    "convertedBehaviorManaged": 35948,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -11857,6 +11857,26 @@
         ],
         "nativeLoc": 150,
         "conversionManagedCommit": "fd9b8a11f0052856983c6f2d8b2c69990e44fe55"
+      },
+      {
+        "name": "dehacked-patchmusic-sprite-chunk285",
+        "bucket": "conversion",
+        "managedLoc": 42,
+        "note": "PatchMusic and ReplaceSpriteInData",
+        "nativeRanges": [
+          {
+            "file": "src/gamedata/d_dehacked.cpp",
+            "symbol": "PatchPointer tail and PatchMusic",
+            "start": 2837,
+            "end": 2986,
+            "tests": [
+              "VmDehackedPatchMusicTests.TryParseMusicLine_BuildsMusicKey",
+              "VmDehackedReplaceSpriteTests.IsPlayerSpritePrefix_DetectsPlay"
+            ]
+          }
+        ],
+        "nativeLoc": 150,
+        "conversionManagedCommit": "acd0ae62e9f636e65ed7f30f727c97578e7b0bdc"
       }
     ]
   },

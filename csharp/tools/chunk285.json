@@ -1,0 +1,20 @@
+[
+  {
+    "name": "dehacked-patchmusic-sprite-chunk285",
+    "bucket": "conversion",
+    "managedLoc": 55,
+    "note": "PatchMusic and ReplaceSpriteInData",
+    "nativeRanges": [
+      {
+        "file": "src/gamedata/d_dehacked.cpp",
+        "symbol": "PatchPointer tail and PatchMusic",
+        "start": 2837,
+        "end": 2986,
+        "tests": [
+          "VmDehackedPatchMusicTests.TryParseMusicLine_BuildsMusicKey",
+          "VmDehackedReplaceSpriteTests.IsPlayerSpritePrefix_DetectsPlay"
+        ]
+      }
+    ]
+  }
+]
