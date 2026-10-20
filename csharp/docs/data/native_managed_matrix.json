@@ -12,25 +12,25 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 129800
+    "managedCSharpLoc": 129816
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 13915,
+    "convertedThisRunNative": 14078,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 28592,
+    "convertedThisRunManaged": 28620,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": 151,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 470053,
+    "remainingNative": 469890,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 32442,
+    "convertedBehaviorNative": 32605,
     "recognitionBehaviorNative": 5591,
-    "combinedBehaviorNative": 38033,
-    "convertedBehaviorManaged": 38263,
+    "combinedBehaviorNative": 38196,
+    "convertedBehaviorManaged": 38291,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -13214,6 +13214,29 @@
         ],
         "nativeLoc": 56,
         "conversionManagedCommit": "5b5d07df425720b97631c107c2b6efe1f2585e57"
+      },
+      {
+        "name": "dehacked-mbf-pointer-emitters-chunk339",
+        "bucket": "conversion",
+        "managedLoc": 28,
+        "note": "MBF CreateFindTracer through weapon bullet emitters",
+        "auditSeams": "`MBFParamState` and `FunctionCallEmitter` are not re-hosted; managed code mirrors default-argument behavior from the native emitter thunks.",
+        "auditRationale": "Credits uncredited `d_dehacked.cpp` 936\u20131098: tracer/seeker/tracer2/jump/flag-set and weapon attack emitter parameter packing including DEH alias defaults (50/10 seeker angles, 19.6875 tracer2, weapon bullet counts).",
+        "nativeRanges": [
+          {
+            "file": "src/gamedata/d_dehacked.cpp",
+            "symbol": "CreateFindTracer through CreateWeaponMeleeAttack",
+            "start": 936,
+            "end": 1098,
+            "tests": [
+              "VmDehackedMbfPointerEmittersTests.FindTracerArgs_DefaultsRange",
+              "VmDehackedMbfPointerEmittersTests.SeekerMissileArgs_AppliesDefaults",
+              "VmDehackedMbfPointerEmittersTests.Tracer2Angle_UsesDefaultWhenZero"
+            ]
+          }
+        ],
+        "nativeLoc": 163,
+        "conversionManagedCommit": "01ed52cec6f788294d93c451194c49174b1e9c65"
       }
     ]
   },
