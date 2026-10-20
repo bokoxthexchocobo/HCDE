@@ -1,1 +1,1 @@
-[{"name":"a-keys-parselock-chunk240","bucket":"conversion","managedLoc":90,"note":"ParseLock header and lock sound defaults.","nativeRanges":[{"file":"src/gamedata/a_keys.cpp","symbol":"ParseLock","start":237,"end":330,"tests":["VmActorKeyCheckTests.LockMatches_EmptyKeyListRequiresAnyKey"]}]}]
+[{"name":"a-keys-lockdef-tail-chunk240","bucket":"conversion","managedLoc":50,"note":"a_keys LOCKDEF remainder.","nativeRanges":[{"file":"src/gamedata/a_keys.cpp","symbol":"a_keys LOCKDEF end","start":501,"end":585,"tests":["VmLockDefParserTests.ParseLock_IgnoresOtherGameBlock"]}]}]

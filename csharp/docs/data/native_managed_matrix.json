@@ -18,19 +18,19 @@
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 9390,
+    "convertedThisRunNative": 9475,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 23200,
+    "convertedThisRunManaged": 23250,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": 145,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 474584,
+    "remainingNative": 474499,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 27917,
+    "convertedBehaviorNative": 28002,
     "recognitionBehaviorNative": 5585,
-    "combinedBehaviorNative": 33502,
-    "convertedBehaviorManaged": 32871,
+    "combinedBehaviorNative": 33587,
+    "convertedBehaviorManaged": 32921,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -10692,6 +10692,25 @@
           }
         ],
         "nativeLoc": 243,
+        "conversionManagedCommit": "e0dff6e4e1d2444fa60803b02ab92e491a153096"
+      },
+      {
+        "name": "a-keys-lockdef-tail-chunk240",
+        "bucket": "conversion",
+        "managedLoc": 50,
+        "note": "a_keys LOCKDEF remainder.",
+        "nativeRanges": [
+          {
+            "file": "src/gamedata/a_keys.cpp",
+            "symbol": "a_keys LOCKDEF end",
+            "start": 501,
+            "end": 585,
+            "tests": [
+              "VmLockDefParserTests.ParseLock_IgnoresOtherGameBlock"
+            ]
+          }
+        ],
+        "nativeLoc": 85,
         "conversionManagedCommit": "e0dff6e4e1d2444fa60803b02ab92e491a153096"
       }
     ]
