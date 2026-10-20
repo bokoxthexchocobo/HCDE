@@ -1,0 +1,1 @@
+[{"name":"gi-parsegameinfo-macros-chunk236","bucket":"conversion","managedLoc":95,"note":"ParseGameInfo GAMEINFOKEY macro expansion tail.","nativeRanges":[{"file":"src/gamedata/gi.cpp","symbol":"ParseGameInfo GAMEINFOKEY tail","start":363,"end":471,"tests":["VmGameInfoParseGameInfoTests.TryParseBlock_ReadsDialogue"]}]}]

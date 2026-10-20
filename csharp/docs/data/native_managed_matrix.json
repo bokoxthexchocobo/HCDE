@@ -18,19 +18,19 @@
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 8931,
+    "convertedThisRunNative": 9040,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 22940,
+    "convertedThisRunManaged": 23035,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": 111,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 475077,
+    "remainingNative": 474968,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 27458,
+    "convertedBehaviorNative": 27567,
     "recognitionBehaviorNative": 5551,
-    "combinedBehaviorNative": 33009,
-    "convertedBehaviorManaged": 32611,
+    "combinedBehaviorNative": 33118,
+    "convertedBehaviorManaged": 32706,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -10508,6 +10508,25 @@
           }
         ],
         "nativeLoc": 218,
+        "conversionManagedCommit": "20d15060ccd8058244d9e6fca30fb9834482d81c"
+      },
+      {
+        "name": "gi-parsegameinfo-macros-chunk236",
+        "bucket": "conversion",
+        "managedLoc": 95,
+        "note": "ParseGameInfo GAMEINFOKEY macro expansion tail.",
+        "nativeRanges": [
+          {
+            "file": "src/gamedata/gi.cpp",
+            "symbol": "ParseGameInfo GAMEINFOKEY tail",
+            "start": 363,
+            "end": 471,
+            "tests": [
+              "VmGameInfoParseGameInfoTests.TryParseBlock_ReadsDialogue"
+            ]
+          }
+        ],
+        "nativeLoc": 109,
         "conversionManagedCommit": "20d15060ccd8058244d9e6fca30fb9834482d81c"
       }
     ]
