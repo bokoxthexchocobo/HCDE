@@ -18,19 +18,19 @@
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 24006,
+    "convertedThisRunNative": 23978,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 37701,
+    "convertedThisRunManaged": 37761,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": 151,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 459962,
+    "remainingNative": 459990,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 42533,
+    "convertedBehaviorNative": 42505,
     "recognitionBehaviorNative": 5591,
-    "combinedBehaviorNative": 48124,
-    "convertedBehaviorManaged": 47372,
+    "combinedBehaviorNative": 48096,
+    "convertedBehaviorManaged": 47432,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -17275,17 +17275,17 @@
           },
           {
             "file": "src/playsim/p_lnspec.cpp",
-            "symbol": "LS_Thing_Destroy",
+            "symbol": "LS_Thing_Destroy massacre",
             "start": 1506,
-            "end": 1542,
+            "end": 1514,
             "tests": [
               "VmPLnspecThingLifecycleTests.Destroy_MassacreWhenBothArgsZero"
             ]
           }
         ],
-        "nativeLoc": 263,
-        "managedLoc": 133,
-        "conversionManagedCommit": "2d071fa08a94fc2ba82ea704294a11a69c034bc7"
+        "nativeLoc": 235,
+        "managedLoc": 193,
+        "conversionManagedCommit": "9005093f0f0ca04a2037c8d9233c3bb0ab37d10f"
       },
       {
         "name": "d-main-texture-gc-chunk428",
