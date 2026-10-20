@@ -12,25 +12,25 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 130824
+    "managedCSharpLoc": 130831
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 12875,
+    "convertedThisRunNative": 12885,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 28933,
+    "convertedThisRunManaged": 28940,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": 151,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 471093,
+    "remainingNative": 471083,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 31402,
+    "convertedBehaviorNative": 31412,
     "recognitionBehaviorNative": 5591,
-    "combinedBehaviorNative": 36993,
-    "convertedBehaviorManaged": 38604,
+    "combinedBehaviorNative": 37003,
+    "convertedBehaviorManaged": 38611,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -13973,6 +13973,36 @@
         "nativeLoc": 34,
         "managedLoc": 36,
         "conversionManagedCommit": "3f9cc69c6adb9f5b38a5f1b2412b2ecb8a7a530b"
+      },
+      {
+        "name": "am-map-texture-mark-ccmd-chunk363",
+        "bucket": "conversion",
+        "note": "am_toggletexture and am_setmark CCMD guards",
+        "auditSeams": "Engine automap instance methods are not hosted; CCMDs reduce to toggles and null guards.",
+        "auditRationale": "Credits `CCMD(am_toggletexture)` and the `am_setmark` automap presence gate from `am_map.cpp`.",
+        "nativeRanges": [
+          {
+            "file": "src/am_map.cpp",
+            "symbol": "CCMD am_toggletexture",
+            "start": 214,
+            "end": 218,
+            "tests": [
+              "VmAutomapFollowGridCommandsTests.ResolveTexturedMessageKey_UsesOnString"
+            ]
+          },
+          {
+            "file": "src/am_map.cpp",
+            "symbol": "CCMD am_setmark guard",
+            "start": 220,
+            "end": 224,
+            "tests": [
+              "VmAutomapFollowGridCommandsTests.ShouldRunSetMark_RequiresAutomap"
+            ]
+          }
+        ],
+        "nativeLoc": 10,
+        "managedLoc": 7,
+        "conversionManagedCommit": "fcee11d23b5dca7496b751e924d7349c8e3ffa1c"
       }
     ]
   },
