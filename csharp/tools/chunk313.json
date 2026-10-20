@@ -3,7 +3,7 @@
     "name": "dehacked-dehsupp-map-sections-chunk313",
     "bucket": "conversion",
     "managedLoc": 280,
-    "note": "LoadDehSupp StateMap SoundMap InfoNames ThingBits RenderStyles and section errors",
+    "note": "LoadDehSupp StateMap SoundMap InfoNames ThingBits and section errors",
     "nativeRanges": [
       {
         "file": "src/gamedata/d_dehacked.cpp",
@@ -47,16 +47,6 @@
           "VmDehackedDehSuppThingBitsTests.TryParseEntry_ValidatesBitRange",
           "VmDehackedDehSuppThingBitsTests.TryParseEntry_TruncatesLongName",
           "VmDehackedDehSuppThingBitsTests.TryParseThingBitsSection_ParsesRows"
-        ]
-      },
-      {
-        "file": "src/gamedata/d_dehacked.cpp",
-        "symbol": "RenderStyles",
-        "start": 3708,
-        "end": 3724,
-        "tests": [
-          "VmDehackedDehSuppRenderStylesTests.TryParseEntry_TruncatesName",
-          "VmDehackedDehSuppRenderStylesTests.ParseRenderStylesSection_ReadsRows"
         ]
       },
       {

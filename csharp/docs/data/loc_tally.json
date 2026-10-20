@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 11781,
+  "convertedThisRunNative": 11795,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 27266,
+  "convertedThisRunManaged": 27317,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": 151,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 472187,
+  "remainingNative": 472173,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 30308,
+  "convertedBehaviorNative": 30322,
   "recognitionBehaviorNative": 5591,
-  "combinedBehaviorNative": 35899,
-  "convertedBehaviorManaged": 36937,
+  "combinedBehaviorNative": 35913,
+  "convertedBehaviorManaged": 36988,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -12450,10 +12450,10 @@
       "conversionManagedCommit": "d5e576884041eaa35317d3ec558a4e05e4fcb296"
     },
     {
-      "name": "dehacked-dehsupp-statemap-chunk313",
+      "name": "dehacked-dehsupp-map-sections-chunk313",
       "bucket": "conversion",
-      "managedLoc": 122,
-      "note": "LoadDehSupp StateMap section",
+      "managedLoc": 280,
+      "note": "LoadDehSupp StateMap SoundMap InfoNames ThingBits RenderStyles and section errors",
       "nativeRanges": [
         {
           "file": "src/gamedata/d_dehacked.cpp",
@@ -12468,17 +12468,7 @@
             "VmDehackedDehSuppStateMapTests.TryParseStateMapSection_SkipsAppendWhenExisting",
             "VmDehackedDehSuppStateMapTests.TryParseStateMapSection_RejectsInvalidStateSpan"
           ]
-        }
-      ],
-      "nativeLoc": 55,
-      "conversionManagedCommit": "9aee2cc4fa1f01c5907a993ffa54353d9a32f2a4"
-    },
-    {
-      "name": "dehacked-dehsupp-sound-info-chunk314",
-      "bucket": "conversion",
-      "managedLoc": 55,
-      "note": "LoadDehSupp SoundMap and InfoNames",
-      "nativeRanges": [
+        },
         {
           "file": "src/gamedata/d_dehacked.cpp",
           "symbol": "SoundMap",
@@ -12497,17 +12487,7 @@
             "VmDehackedDehSuppSoundInfoTests.TryParseInfoNamesSection_AcceptsKnownActors",
             "VmDehackedDehSuppSoundInfoTests.TryParseInfoNamesSection_RejectsUnknownActor"
           ]
-        }
-      ],
-      "nativeLoc": 27,
-      "conversionManagedCommit": "3decb0f18074294d3afe7f7a307cad0093aa209c"
-    },
-    {
-      "name": "dehacked-dehsupp-thingbits-chunk315",
-      "bucket": "conversion",
-      "managedLoc": 52,
-      "note": "LoadDehSupp ThingBits",
-      "nativeRanges": [
+        },
         {
           "file": "src/gamedata/d_dehacked.cpp",
           "symbol": "ThingBits",
@@ -12518,10 +12498,28 @@
             "VmDehackedDehSuppThingBitsTests.TryParseEntry_TruncatesLongName",
             "VmDehackedDehSuppThingBitsTests.TryParseThingBitsSection_ParsesRows"
           ]
+        },
+        {
+          "file": "src/gamedata/d_dehacked.cpp",
+          "symbol": "LoadDehSupp unknown section",
+          "start": 3781,
+          "end": 3787,
+          "tests": [
+            "VmDehackedDehSuppLumpGateTests.FormatUnknownSectionError_MatchesNativeMessage"
+          ]
+        },
+        {
+          "file": "src/gamedata/d_dehacked.cpp",
+          "symbol": "LoadDehSupp recoverable error",
+          "start": 3790,
+          "end": 3796,
+          "tests": [
+            "VmDehackedDehSuppLumpGateTests.TryHandleRecoverableLoadError_ReturnsFalse"
+          ]
         }
       ],
-      "nativeLoc": 28,
-      "conversionManagedCommit": "a224710cfb4def9f4f3eb1fe609e8707be042835"
+      "nativeLoc": 124,
+      "conversionManagedCommit": "40ede3e2aa1f0990885b9acfc68278aac13df185"
     },
     {
       "name": "dehacked-finish-pickup-chunk316",
