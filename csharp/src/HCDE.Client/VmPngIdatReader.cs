@@ -3,61 +3,118 @@ using System.IO.Compression;
 
 namespace HCDE.Client;
 
-/// <summary>Native <c>m_png.cpp</c> <c>M_ReadIDAT</c> (8-bit, non-interlaced subset).</summary>
+/// <summary>Native <c>m_png.cpp</c> <c>M_ReadIDAT</c> for grayscale and paletted PNGs.</summary>
 internal static class VmPngIdatReader
 {
-    public static bool TryRead8NonInterlaced(
+    private static readonly byte[] PassWidthShift = [3, 3, 2, 2, 1, 1, 0, 0];
+    private static readonly byte[] PassHeightShift = [3, 3, 3, 2, 2, 1, 1, 0];
+    private static readonly byte[] PassRowOffset = [0, 0, 4, 0, 2, 0, 1, 0];
+    private static readonly byte[] PassColOffset = [0, 4, 0, 2, 0, 1, 0, 0];
+
+    public static bool TryReadGrayOrPalette(
         ReadOnlySpan<byte> lump,
         int idatOffset,
         Span<byte> pixels,
         int width,
         int height,
-        int pitch,
-        byte colorType)
+        byte bitDepth,
+        byte colorType,
+        byte interlace)
     {
         if (colorType is not (0 or 3))
             return false;
-        if (!TryCollectIdat(lump, idatOffset, out var compressed))
+        if (!TryInflateIdat(lump, idatOffset, out var inflated))
             return false;
+
+        return interlace == 0
+            ? DecodeNonInterlaced(inflated, pixels, width, height, bitDepth)
+            : DecodeInterlaced(inflated, pixels, width, height, bitDepth);
+    }
+
+    private static bool TryInflateIdat(ReadOnlySpan<byte> lump, int start, out byte[] inflated)
+    {
+        if (!TryCollectIdat(lump, start, out var compressed))
+        {
+            inflated = [];
+            return false;
+        }
+
         using var zlib = new ZLibStream(new MemoryStream(compressed, writable: false), CompressionMode.Decompress);
-        var rowBytes = width;
+        using var output = new MemoryStream();
+        zlib.CopyTo(output);
+        inflated = output.ToArray();
+        return inflated.Length > 0;
+    }
+
+    private static bool DecodeNonInterlaced(ReadOnlySpan<byte> data, Span<byte> pixels, int width, int height, byte bitDepth)
+    {
+        var rowBytes = (width * bitDepth + 7) / 8;
         var previous = new byte[rowBytes];
-        var filtered = new byte[rowBytes];
-        var destRow = 0;
+        var offset = 0;
         for (var y = 0; y < height; y++)
         {
-            var filter = ReadByte(zlib);
-            if (filter < 0)
+            if (offset >= data.Length)
                 return false;
-            if (ReadFully(zlib, filtered) != rowBytes)
+            var filter = data[offset++];
+            if (offset + rowBytes > data.Length)
                 return false;
-            var dest = pixels.Slice(destRow, rowBytes);
-            UnfilterRow(rowBytes, dest, filtered, previous, 1, (byte)filter);
-            previous = dest.ToArray();
-            destRow += pitch;
+            var filtered = data.Slice(offset, rowBytes);
+            offset += rowBytes;
+            var packed = new byte[rowBytes];
+            UnfilterRow(rowBytes, packed, filtered, previous, 1, filter);
+            var expanded = new byte[width];
+            if (bitDepth < 8)
+                UnpackPixels(width, rowBytes, bitDepth, packed, expanded, true);
+            else
+                packed.AsSpan(0, width).CopyTo(expanded);
+            expanded.AsSpan(0, width).CopyTo(pixels.Slice(y * width, width));
+            filtered.CopyTo(previous);
         }
 
-        return destRow == height * pitch;
+        return offset == data.Length;
     }
 
-    private static int ReadByte(Stream stream)
+    private static bool DecodeInterlaced(ReadOnlySpan<byte> data, Span<byte> pixels, int width, int height, byte bitDepth)
     {
-        Span<byte> one = stackalloc byte[1];
-        return stream.Read(one) == 1 ? one[0] : -1;
-    }
-
-    private static int ReadFully(Stream stream, Span<byte> buffer)
-    {
-        var read = 0;
-        while (read < buffer.Length)
+        var offset = 0;
+        for (var pass = 0; pass < 7; pass++)
         {
-            var chunk = stream.Read(buffer[read..]);
-            if (chunk == 0)
-                return read;
-            read += chunk;
+            var rowOffset = PassRowOffset[pass];
+            var colOffset = PassColOffset[pass];
+            var passWidth = (width + (1 << PassWidthShift[pass]) - 1 - colOffset) >> PassWidthShift[pass];
+            var passHeight = (height + (1 << PassHeightShift[pass]) - 1 - rowOffset) >> PassHeightShift[pass];
+            if (passWidth == 0 || passHeight == 0)
+                continue;
+            var rowBytes = (passWidth * bitDepth + 7) / 8;
+            var previous = new byte[rowBytes];
+            for (var py = 0; py < passHeight; py++)
+            {
+                if (offset >= data.Length)
+                    return false;
+                var filter = data[offset++];
+                if (offset + rowBytes > data.Length)
+                    return false;
+                var filtered = data.Slice(offset, rowBytes);
+                offset += rowBytes;
+                var packed = new byte[rowBytes];
+                UnfilterRow(rowBytes, packed, filtered, previous, 1, filter);
+                var expanded = new byte[passWidth];
+                if (bitDepth < 8)
+                    UnpackPixels(passWidth, rowBytes, bitDepth, packed, expanded, true);
+                else
+                    packed.AsSpan(0, passWidth).CopyTo(expanded);
+                filtered.CopyTo(previous);
+                var destY = rowOffset + py * (1 << PassHeightShift[pass]);
+                var destXStep = 1 << PassWidthShift[pass];
+                for (var px = 0; px < passWidth; px++)
+                {
+                    var destX = colOffset + px * destXStep;
+                    pixels[destY * width + destX] = expanded[px];
+                }
+            }
         }
 
-        return read;
+        return offset == data.Length;
     }
 
     private static bool TryCollectIdat(ReadOnlySpan<byte> lump, int start, out byte[] compressed)
@@ -74,6 +131,7 @@ internal static class VmPngIdatReader
                 compressed = [];
                 return false;
             }
+
             if (type == 0x49444154)
                 builder.Write(lump.Slice(offset, length));
             else if (type == 0x49454E44)
@@ -124,6 +182,76 @@ internal static class VmPngIdatReader
                 break;
             default:
                 row[..width].CopyTo(dest);
+                break;
+        }
+    }
+
+    private static void UnpackPixels(int width, int bytesPerRow, int bitDepth, ReadOnlySpan<byte> rowIn, Span<byte> rowOut, bool _)
+    {
+        var outIndex = width;
+        var inIndex = bytesPerRow;
+        switch (bitDepth)
+        {
+            case 1:
+                var lastByte = width & 7;
+                if (lastByte != 0)
+                {
+                    inIndex--;
+                    var pack = rowIn[inIndex];
+                    outIndex -= lastByte;
+                    for (var bit = 0; bit < lastByte; bit++)
+                        rowOut[outIndex + bit] = (byte)((pack >> (7 - bit)) & 1);
+                }
+
+                while (inIndex-- > 0)
+                {
+                    var pack = rowIn[inIndex];
+                    outIndex -= 8;
+                    for (var bit = 0; bit < 8; bit++)
+                        rowOut[outIndex + bit] = (byte)((pack >> (7 - bit)) & 1);
+                }
+
+                break;
+            case 2:
+                lastByte = width & 3;
+                if (lastByte != 0)
+                {
+                    inIndex--;
+                    var pack = rowIn[inIndex];
+                    outIndex -= lastByte;
+                    rowOut[outIndex] = (byte)(pack >> 6);
+                    if (lastByte >= 2) rowOut[outIndex + 1] = (byte)((pack >> 4) & 3);
+                    if (lastByte == 3) rowOut[outIndex + 2] = (byte)((pack >> 2) & 3);
+                }
+
+                while (inIndex-- > 0)
+                {
+                    var pack = rowIn[inIndex];
+                    outIndex -= 4;
+                    rowOut[outIndex] = (byte)(pack >> 6);
+                    rowOut[outIndex + 1] = (byte)((pack >> 4) & 3);
+                    rowOut[outIndex + 2] = (byte)((pack >> 2) & 3);
+                    rowOut[outIndex + 3] = (byte)(pack & 3);
+                }
+
+                break;
+            case 4:
+                lastByte = width & 1;
+                if (lastByte != 0)
+                {
+                    inIndex--;
+                    outIndex--;
+                    rowOut[outIndex] = (byte)(rowIn[inIndex] >> 4);
+                }
+
+                while (inIndex-- > 0)
+                {
+                    var pack = rowIn[inIndex];
+                    outIndex -= 2;
+                    rowOut[outIndex] = (byte)(pack >> 4);
+                    rowOut[outIndex + 1] = (byte)(pack & 15);
+                }
+
                 break;
         }
     }

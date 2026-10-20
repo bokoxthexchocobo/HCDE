@@ -14,6 +14,17 @@ public class VmPngTextureImageTests
     }
 
     [Fact]
+    public void CreatePalettedPixels_DecodesInterlaced2x2()
+    {
+        var png = Convert.FromBase64String(
+            "iVBORw0KGgoAAAANSUhEUgAAAAIAAAACCAMAAAEyb82AAAAADFBMVEUAAAD/AAAA/wAAAP+bwBPcAAAAD0lEQVR4nGNgYGBkYGIGAAASAAe4hQWPAAAAAElFTkSuQmCC");
+        Assert.True(VmPngTextureImage.TryCreate(png, out var info));
+        Assert.Equal((byte)1, info.Interlace);
+        var pixels = VmPngTextureImage.CreatePalettedPixels(png, info);
+        Assert.Equal(4, pixels.Length);
+    }
+
+    [Fact]
     public void CreatePalettedPixels_Decodes2x2Paletted()
     {
         var png = TestPaletted2x2Png();

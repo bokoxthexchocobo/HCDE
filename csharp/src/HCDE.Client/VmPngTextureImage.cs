@@ -99,11 +99,11 @@ public static class VmPngTextureImage
 
     public static byte[] CreatePalettedPixels(ReadOnlySpan<byte> lump, VmPngInfo info, bool luminanceConversion = false)
     {
-        if (info.Interlace != 0 || info.BitDepth != 8 || info.ColorType is not (0 or 3))
-            throw new NotSupportedException("Only 8-bit non-interlaced grayscale or paletted PNGs are ported.");
+        if (info.ColorType is not (0 or 3) || info.BitDepth is not (1 or 2 or 4 or 8))
+            throw new NotSupportedException("Only grayscale or paletted PNG bit depths 1–8 are ported.");
 
         var pixels = new byte[info.Width * info.Height];
-        if (!VmPngIdatReader.TryRead8NonInterlaced(lump, info.IdatOffset, pixels, info.Width, info.Height, info.Width, info.ColorType))
+        if (!VmPngIdatReader.TryReadGrayOrPalette(lump, info.IdatOffset, pixels, info.Width, info.Height, info.BitDepth, info.ColorType, info.Interlace))
             throw new InvalidDataException("Failed to decode PNG IDAT.");
 
         var alphatex = luminanceConversion;
