@@ -18,19 +18,19 @@
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 12204,
+    "convertedThisRunNative": 12578,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 24110,
+    "convertedThisRunManaged": 24190,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": 145,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 471770,
+    "remainingNative": 471396,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 30731,
+    "convertedBehaviorNative": 31105,
     "recognitionBehaviorNative": 5585,
-    "combinedBehaviorNative": 36316,
-    "convertedBehaviorManaged": 33781,
+    "combinedBehaviorNative": 36690,
+    "convertedBehaviorManaged": 33861,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -10993,6 +10993,25 @@
         ],
         "nativeLoc": 250,
         "conversionManagedCommit": "d5e744b5ab71bf97ae44df4c58d96e5b18cd0f77"
+      },
+      {
+        "name": "hcde-edf-blocks-b-chunk253",
+        "bucket": "conversion",
+        "managedLoc": 80,
+        "note": "hcde_edf document tail",
+        "nativeRanges": [
+          {
+            "file": "src/gamedata/hcde_edf.cpp",
+            "symbol": "hcde_edf document tail",
+            "start": 1231,
+            "end": 1604,
+            "tests": [
+              "HcdeEdfThingParserTests.ThingDelta_MarksUnknownBehaviorProperty"
+            ]
+          }
+        ],
+        "nativeLoc": 374,
+        "conversionManagedCommit": "e672be2e0d9808e22722630d5383b0509cc68c55"
       }
     ]
   },
