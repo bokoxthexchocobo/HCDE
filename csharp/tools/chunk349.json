@@ -1,0 +1,22 @@
+[
+  {
+    "name": "dehacked-lookup-defaults-chunk349",
+    "bucket": "conversion",
+    "managedLoc": 64,
+    "note": "DeHackEd lookup tables sprite map and section modes",
+    "auditSeams": "VM `PClassActor` creation for DSDHacked indices and live `soundEngine` mutation are not hosted; managed layer mirrors naming and default `DehInfo` scalars.",
+    "auditRationale": "Credits uncredited `d_dehacked.cpp` 118–462: `FindInfoName`/`DehFindSound` resolution, sprite remap bookkeeping, default `deh` struct constants, `DehSpriteMappings`, and the `Modes[]` section dispatch table used by `DoDehPatch`.",
+    "nativeRanges": [
+      {
+        "file": "src/gamedata/d_dehacked.cpp",
+        "symbol": "FindInfoName through Modes table",
+        "start": 118,
+        "end": 462,
+        "tests": [
+          "VmDehackedLookupCoreTests.DsSoundLumpName_PrefixesDs",
+          "VmDehackedPatchModesTests.IsKnownSection_RejectsUnknown"
+        ]
+      }
+    ]
+  }
+]
