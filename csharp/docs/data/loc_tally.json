@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 29174,
+  "convertedThisRunNative": 29241,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 41657,
+  "convertedThisRunManaged": 41713,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": 151,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 454794,
+  "remainingNative": 454727,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 47701,
+  "convertedBehaviorNative": 47768,
   "recognitionBehaviorNative": 5591,
-  "combinedBehaviorNative": 53292,
-  "convertedBehaviorManaged": 51328,
+  "combinedBehaviorNative": 53359,
+  "convertedBehaviorManaged": 51384,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -18252,7 +18252,7 @@
       "bucket": "conversion",
       "note": "PIT_CheckPortal and missile infight gates",
       "auditSeams": "BlockLinesIterator, `P_LineOpening`, and live mobj iterators are not hosted.",
-      "auditRationale": "Credits portal destination floor/ceiling probe, rip-level and projectile-group immunity from `p_map.cpp` (`CanAttackHurt` remains on chunk 456+).",
+      "auditRationale": "Credits portal probe, rip/projectile immunity, and `CanAttackHurt` infighting policy from `p_map.cpp`.",
       "managedSourceFiles": [
         "csharp/src/HCDE.Playsim/VmPMapPortalMissile.cs"
       ],
@@ -18284,11 +18284,25 @@
           "tests": [
             "VmPMapPortalMissileTests.ProjectileImmuneSameGroup_WhenGrouped"
           ]
+        },
+        {
+          "file": "src/playsim/p_map.cpp",
+          "symbol": "CanAttackHurt",
+          "start": 1250,
+          "end": 1316,
+          "tests": [
+            "VmPMapPortalMissileTests.CanAttackHurt_NoInfightBlocksMonsters",
+            "VmPMapPortalMissileTests.CanAttackHurt_HarmFriendsAllows",
+            "VmPMapPortalMissileTests.FriendsBlockedUnlessHarmFriends"
+          ]
         }
       ],
-      "nativeLoc": 101,
-      "conversionManagedCommit": "7bb82ede1622bc19928d37f6cc29f5b0fd6bbf63",
-      "managedLoc": 84
+      "nativeLoc": 168,
+      "conversionManagedCommit": "533cb7993a8488b45b131caf95ad8212774ec6c9",
+      "managedLoc": 140,
+      "portCommits": [
+        "7bb82ede1622bc19928d37f6cc29f5b0fd6bbf63"
+      ]
     },
     {
       "name": "p-map-pit-check-thing-chunk455",

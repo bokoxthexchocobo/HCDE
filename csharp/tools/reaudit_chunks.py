@@ -81,9 +81,25 @@ def chunk_number(name: str) -> int | None:
     return int(m.group(1)) if m else None
 
 
+def chunk_def_for_tally_row(ch: dict) -> dict:
+    num = chunk_number(ch.get("name", ""))
+    if num is None:
+        return ch
+    path = TOOLS / f"chunk{num}.json"
+    if not path.is_file():
+        return ch
+    data = json.loads(path.read_text())
+    if isinstance(data, list):
+        data = data[0]
+    merged = {**data, **ch}
+    if data.get("portCommits"):
+        merged["portCommits"] = data["portCommits"]
+    return merged
+
+
 def measured_port_managed(ch: dict) -> int:
     sha = ch.get("conversionManagedCommit", "") or ""
-    return managed_loc_for_chunk(ch, sha, chunk_number(ch.get("name", "")))
+    return managed_loc_for_chunk(chunk_def_for_tally_row(ch), sha, chunk_number(ch.get("name", "")))
 
 
 def audit_chunk(ch: dict, tests: set[str]) -> tuple[list[dict], list[dict]]:

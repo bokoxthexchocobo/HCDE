@@ -6,6 +6,7 @@
     "auditSeams": "BlockLinesIterator, `P_LineOpening`, and live mobj iterators are not hosted.",
     "auditRationale": "Credits portal probe, rip/projectile immunity, and `CanAttackHurt` infighting policy from `p_map.cpp`.",
     "managedSourceFiles": ["csharp/src/HCDE.Playsim/VmPMapPortalMissile.cs"],
+    "portCommits": ["7bb82ede1622bc19928d37f6cc29f5b0fd6bbf63"],
     "nativeRanges": [
       {
         "file": "src/playsim/p_map.cpp",

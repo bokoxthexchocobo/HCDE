@@ -67,7 +67,19 @@ def managed_files_for_chunk(num: int | None, chunk_def: dict) -> list[str]:
     ]
 
 
+def port_commits(chunk_def: dict, primary_sha: str) -> list[str]:
+    extra = chunk_def.get("portCommits") or []
+    commits: list[str] = []
+    for sha in [primary_sha, *extra]:
+        if re.fullmatch(r"[0-9a-f]{40}", sha or "") and sha not in commits:
+            commits.append(sha)
+    return commits
+
+
 def managed_loc_for_chunk(chunk_def: dict, sha: str, num: int | None = None) -> int:
     files = managed_files_for_chunk(num, chunk_def)
-    ml = commit_src_additions(sha, files if files else None)
-    return ml
+    commits = port_commits(chunk_def, sha)
+    total = 0
+    for commit in commits:
+        total += commit_src_additions(commit, files if files else None)
+    return total
