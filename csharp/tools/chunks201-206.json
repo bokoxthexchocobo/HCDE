@@ -348,7 +348,8 @@
           "SndInfoMapMusicParserTests.RandomGroupsPreserveDuplicateChoicesAndContinuation"
         ]
       }
-    ]
+    ],
+    "conversionManagedCommit": "d0719376fcaff3a459be3b1c4a3465a0e8137e39"
   },
   {
     "name": "gameinfo-teaminfo-chunk206",

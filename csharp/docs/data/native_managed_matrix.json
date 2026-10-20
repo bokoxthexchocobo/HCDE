@@ -18,19 +18,19 @@
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 4642,
+    "convertedThisRunNative": 4807,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 19918,
+    "convertedThisRunManaged": 19930,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -208,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 479685,
+    "remainingNative": 479520,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 23169,
+    "convertedBehaviorNative": 23334,
     "recognitionBehaviorNative": 5232,
-    "combinedBehaviorNative": 28401,
-    "convertedBehaviorManaged": 29589,
+    "combinedBehaviorNative": 28566,
+    "convertedBehaviorManaged": 29601,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -8820,6 +8820,106 @@
         ],
         "conversionManagedCommit": "fa9ee64f73aecc33e86249569a5c21175c14ce60",
         "nativeLoc": 180
+      },
+      {
+        "name": "sndinfo-directives-chunk205",
+        "bucket": "conversion",
+        "managedLoc": 12,
+        "note": "SNDINFO alias/limit/singular/pitch/rolloff/random directives (managed in SndInfoMapMusicParser).",
+        "nativeRanges": [
+          {
+            "file": "src/sound/s_advsound.cpp",
+            "symbol": "SI_Alias",
+            "start": 955,
+            "end": 969,
+            "tests": [
+              "SndInfoMapMusicParserTests.AliasesReplaceResourcesAndResourcesClearAliases"
+            ]
+          },
+          {
+            "file": "src/sound/s_advsound.cpp",
+            "symbol": "SI_Limit",
+            "start": 972,
+            "end": 985,
+            "tests": [
+              "SndInfoMapMusicParserTests.SoundLimitsClampAndSquareSignedDistances"
+            ]
+          },
+          {
+            "file": "src/sound/s_advsound.cpp",
+            "symbol": "SI_Singular",
+            "start": 988,
+            "end": 996,
+            "tests": [
+              "SndInfoMapMusicParserTests.PitchShiftClampsToNativeMask"
+            ]
+          },
+          {
+            "file": "src/sound/s_advsound.cpp",
+            "symbol": "SI_PitchShift",
+            "start": 999,
+            "end": 1008,
+            "tests": [
+              "SndInfoMapMusicParserTests.PitchShiftClampsToNativeMask"
+            ]
+          },
+          {
+            "file": "src/sound/s_advsound.cpp",
+            "symbol": "SI_PitchSet",
+            "start": 1011,
+            "end": 1028,
+            "tests": [
+              "SndInfoMapMusicParserTests.PitchSetContinuationClearsAbsentMaximumAndPreservesOtherSettings"
+            ]
+          },
+          {
+            "file": "src/sound/s_advsound.cpp",
+            "symbol": "SI_PitchShiftRange",
+            "start": 1031,
+            "end": 1035,
+            "tests": [
+              "SndInfoMapMusicParserTests.GlobalPitchDefaultsClampAndContinueAcrossInputs"
+            ]
+          },
+          {
+            "file": "src/sound/s_advsound.cpp",
+            "symbol": "SI_Volume",
+            "start": 1037,
+            "end": 1046,
+            "tests": [
+              "SndInfoMapMusicParserTests.SoundSettingsPersistAcrossDefinitionsAndContinuation"
+            ]
+          },
+          {
+            "file": "src/sound/s_advsound.cpp",
+            "symbol": "SI_Attenuation",
+            "start": 1049,
+            "end": 1058,
+            "tests": [
+              "SndInfoMapMusicParserTests.SoundSettingsPersistAcrossDefinitionsAndContinuation"
+            ]
+          },
+          {
+            "file": "src/sound/s_advsound.cpp",
+            "symbol": "SI_Rolloff",
+            "start": 1061,
+            "end": 1105,
+            "tests": [
+              "SndInfoMapMusicParserTests.RolloffParsesTypesAndRetainsTypeWhenOmitted"
+            ]
+          },
+          {
+            "file": "src/sound/s_advsound.cpp",
+            "symbol": "SI_Random",
+            "start": 1108,
+            "end": 1136,
+            "tests": [
+              "SndInfoMapMusicParserTests.RandomGroupsPreserveDuplicateChoicesAndContinuation"
+            ]
+          }
+        ],
+        "conversionManagedCommit": "d0719376fcaff3a459be3b1c4a3465a0e8137e39",
+        "nativeLoc": 165
       }
     ]
   },
