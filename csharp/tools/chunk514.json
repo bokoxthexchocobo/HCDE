@@ -1,0 +1,28 @@
+[
+  {
+    "name": "d-dehacked-patch-weapon-full-chunk514",
+    "bucket": "conversion",
+    "note": "PatchWeapon whole function",
+    "auditSeams": "`GetLine`, `FindState`, `statedef.InstallStates`, and `DecalLibrary` are not hosted.",
+    "auditRationale": "Credits DeHackEd weapon frame remapping, ammo/decal/MBF21 dispatch, and chainsaw ready-sound tail from `d_dehacked.cpp` (2253–2437).",
+    "managedSourceFiles": [
+      "csharp/src/HCDE.Gamedata/VmDehackedPatchWeaponDispatch.cs"
+    ],
+    "nativeRanges": [
+      {
+        "file": "src/gamedata/d_dehacked.cpp",
+        "symbol": "PatchWeapon",
+        "start": 2253,
+        "end": 2437,
+        "tests": [
+          "VmDehackedPatchWeaponDispatchTests.IsWeaponSlotValid_AcceptsInRange",
+          "VmDehackedPatchWeaponDispatchTests.FrameLabelForPrefix_SwapsSelectDeselect",
+          "VmDehackedPatchWeaponDispatchTests.NormalizeAmmoTypeIndex_ClampsHigh",
+          "VmDehackedPatchWeaponDispatchTests.ParseMbf21Line_CombinesNumericAndName",
+          "VmDehackedPatchWeaponDispatchTests.ResolveReadySound_ChainsawUsesIdle",
+          "VmDehackedPatchWeaponDispatchTests.TryApplyWeaponFrameLine_RecordsBobbingReady"
+        ]
+      }
+    ]
+  }
+]
