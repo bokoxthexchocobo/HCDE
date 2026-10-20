@@ -12,25 +12,25 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 136910
+    "managedCSharpLoc": 137239
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 19592,
+    "convertedThisRunNative": 19788,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 34695,
+    "convertedThisRunManaged": 34829,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": 151,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 464376,
+    "remainingNative": 464180,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 38119,
+    "convertedBehaviorNative": 38315,
     "recognitionBehaviorNative": 5591,
-    "combinedBehaviorNative": 43710,
-    "convertedBehaviorManaged": 44366,
+    "combinedBehaviorNative": 43906,
+    "convertedBehaviorManaged": 44500,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -16207,6 +16207,47 @@
         "nativeLoc": 174,
         "managedLoc": 150,
         "conversionManagedCommit": "2346f2ea666f291beab2e288ae3f85909df42c2b"
+      },
+      {
+        "name": "maploader-loadlevel-finalize-chunk406",
+        "bucket": "conversion",
+        "note": "Classic node fallback and LoadLevel finalize/subsector bounds",
+        "auditSeams": "`LoadGLNodes`, `CreateVBO`, and `SpawnThings` are not hosted.",
+        "auditRationale": "Credits classic node-load fallback in `LoadLevel` and the post-spawn finalize/subsector bbox loop from `maploader.cpp`.",
+        "nativeRanges": [
+          {
+            "file": "src/maploader/maploader.cpp",
+            "symbol": "MapLoader::LoadLevel classic nodes",
+            "start": 3091,
+            "end": 3114,
+            "tests": [
+              "VmMapLoaderLoadLevelFinalizeTests.CombineClassicNodeLoadResults_RequiresAllThree"
+            ]
+          },
+          {
+            "file": "src/maploader/maploader.cpp",
+            "symbol": "MapLoader::LoadLevel force node build",
+            "start": 3123,
+            "end": 3183,
+            "tests": [
+              "VmMapLoaderLoadLevelFinalizeTests.ShouldFallbackToZdbsp_WhenNanoFails"
+            ]
+          },
+          {
+            "file": "src/maploader/maploader.cpp",
+            "symbol": "MapLoader::LoadLevel finalize",
+            "start": 3225,
+            "end": 3335,
+            "tests": [
+              "VmMapLoaderLoadLevelFinalizeTests.ResolveHeadGameNodeIndex_PrefersGameNodes",
+              "VmMapLoaderLoadLevelFinalizeTests.ShouldLoadLightmapAfterSpawn_WhenNotForceRebuild",
+              "VmMapLoaderLoadLevelFinalizeTests.ComputeNodeLength_UsesHypotenuse"
+            ]
+          }
+        ],
+        "nativeLoc": 196,
+        "managedLoc": 134,
+        "conversionManagedCommit": "1c0f8bbbd2b3ff4eb226038d7b95eda9cdc450c3"
       }
     ]
   },
