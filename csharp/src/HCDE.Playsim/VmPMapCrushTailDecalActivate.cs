@@ -104,4 +104,25 @@ public static class VmPMapCrushTailDecalActivate
 
     public static bool ClearSpecialOnSuccess(int activationType, bool executed) =>
         (activationType & ThingspecClearspecial) != 0 && executed;
+
+    public readonly record struct ActivateBranchContext(int ActivationType, bool Death);
+
+    public static bool ShouldEnterStateMachine(ActivateBranchContext ctx) =>
+        StateChangeWhenAlive(ctx.Death, ctx.ActivationType);
+
+    public static bool AfterActivateSetsDeactivate(int activationType, bool isSwitch) =>
+        isSwitch && RunActivateBranch(activationType);
+
+    public static bool AfterDeactivateSetsActivate(int activationType, bool isSwitch) =>
+        isSwitch && RunDeactivateBranch(activationType);
+
+    public static bool HasThingSpecial(int special) => special != 0;
+
+    public static bool ExecuteReturnsSuccess(bool result) => result;
+
+    public static bool SpawnDecalFromTrace(bool hasLine) => hasLine;
+
+    public static bool CrushContinueChecking() => true;
+
+    public static bool MapTimeQuarter(int mapTime) => (mapTime & 3) == 0;
 }

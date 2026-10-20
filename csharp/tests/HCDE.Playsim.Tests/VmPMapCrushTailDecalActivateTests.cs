@@ -37,4 +37,10 @@ public class VmPMapCrushTailDecalActivateTests
     public void Activate_ClearOnSuccess() =>
         Assert.True(VmPMapCrushTailDecalActivate.ClearSpecialOnSuccess(
             VmPMapCrushTailDecalActivate.ThingspecClearspecial, true));
+
+    [Fact]
+    public void Activate_StateMachineWhenAlive() =>
+        Assert.True(VmPMapCrushTailDecalActivate.ShouldEnterStateMachine(
+            new VmPMapCrushTailDecalActivate.ActivateBranchContext(
+                VmPMapCrushTailDecalActivate.ThingspecSwitch, false)));
 }

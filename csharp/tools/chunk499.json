@@ -55,8 +55,8 @@
       {
         "file": "src/playsim/p_map.cpp",
         "symbol": "SpawnShootDecal",
-        "start": 7273,
-        "end": 7296,
+        "start": 7272,
+        "end": 7303,
         "tests": [
           "VmPMapCrushTailDecalActivateTests.Decal_PrefersWeaponGenerator",
           "VmPMapCrushTailDecalActivateTests.DeepSplash_3dPath"
