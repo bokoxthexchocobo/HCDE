@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 1226,
+  "convertedThisRunNative": 1349,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 15286,
+  "convertedThisRunManaged": 15381,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -87,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 482980,
+  "remainingNative": 482857,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 19753,
+  "convertedBehaviorNative": 19876,
   "recognitionBehaviorNative": 5353,
-  "combinedBehaviorNative": 25106,
-  "convertedBehaviorManaged": 24957,
+  "combinedBehaviorNative": 25229,
+  "convertedBehaviorManaged": 25052,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -7725,6 +7725,34 @@
       ],
       "conversionManagedCommit": "6934300334026bbbda1824ed324b4a48f67d727f",
       "nativeLoc": 28
+    },
+    {
+      "name": "c-bind-queue-chunk166",
+      "bucket": "conversion",
+      "managedLoc": 95,
+      "note": "C_TickQueuedInputs and C_DoKey double-click queue.",
+      "nativeRanges": [
+        {
+          "file": "src/common/console/c_bind.cpp",
+          "symbol": "C_TickQueuedInputs",
+          "start": 183,
+          "end": 225,
+          "tests": [
+            "VmKeyBindQueueTests.DoubleClick_UsesDoubleBinding"
+          ]
+        },
+        {
+          "file": "src/common/console/c_bind.cpp",
+          "symbol": "C_DoKey",
+          "start": 921,
+          "end": 1000,
+          "tests": [
+            "VmKeyBindQueueTests.DoubleClick_UsesDoubleBinding"
+          ]
+        }
+      ],
+      "conversionManagedCommit": "2bcba3309ecf2afce94bd9789d9ab8bbd8efcb40",
+      "nativeLoc": 123
     }
   ]
 }
