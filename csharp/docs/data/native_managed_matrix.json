@@ -18,19 +18,19 @@
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 12673,
+    "convertedThisRunNative": 12730,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 28663,
+    "convertedThisRunManaged": 28760,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": 151,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 471295,
+    "remainingNative": 471238,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 31200,
+    "convertedBehaviorNative": 31257,
     "recognitionBehaviorNative": 5591,
-    "combinedBehaviorNative": 36791,
-    "convertedBehaviorManaged": 38334,
+    "combinedBehaviorNative": 36848,
+    "convertedBehaviorManaged": 38431,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -13763,6 +13763,46 @@
         "nativeLoc": 72,
         "managedLoc": 99,
         "conversionManagedCommit": "c0a30a10c324a343d2acc23dc05d4948993a78c9"
+      },
+      {
+        "name": "am-map-arrow-static-init-chunk356",
+        "bucket": "conversion",
+        "note": "AM_ParseArrow lump parser and AM_StaticInit mark textures",
+        "auditSeams": "`fileSystem` lump IO and `TexMan` lookups are callbacks; vector arrays mirror `mline_t` scaling.",
+        "auditRationale": "Credits default thin triangle, `AM_ParseArrow` coordinate scaling, fatal guard when no arrow, and `AMMNUM` mark lump names.",
+        "nativeRanges": [
+          {
+            "file": "src/am_map.cpp",
+            "symbol": "thintriangle_guy",
+            "start": 853,
+            "end": 857,
+            "tests": [
+              "VmAutomapArrowParserTests.DefaultThinTriangle_HasThreeSegments"
+            ]
+          },
+          {
+            "file": "src/am_map.cpp",
+            "symbol": "AM_ParseArrow",
+            "start": 865,
+            "end": 895,
+            "tests": [
+              "VmAutomapArrowParserTests.ParseArrowLump_ReadsOneSegment"
+            ]
+          },
+          {
+            "file": "src/am_map.cpp",
+            "symbol": "AM_StaticInit arrows and marks",
+            "start": 897,
+            "end": 917,
+            "tests": [
+              "VmAutomapArrowParserTests.ValidatePrimaryArrowDefined_ThrowsWhenEmpty",
+              "VmAutomapArrowParserTests.FormatMarkTextureName_MatchesAmmnumPattern"
+            ]
+          }
+        ],
+        "nativeLoc": 57,
+        "managedLoc": 97,
+        "conversionManagedCommit": "10f56fc601b49cd82c156ee148e48d75b7411ad5"
       }
     ]
   },
