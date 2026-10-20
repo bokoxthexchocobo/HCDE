@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 14942,
+  "convertedThisRunNative": 15193,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 28876,
+  "convertedThisRunManaged": 28918,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": 151,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 469026,
+  "remainingNative": 468775,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 33469,
+  "convertedBehaviorNative": 33720,
   "recognitionBehaviorNative": 5591,
-  "combinedBehaviorNative": 39060,
-  "convertedBehaviorManaged": 38547,
+  "combinedBehaviorNative": 39311,
+  "convertedBehaviorManaged": 38589,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -13353,6 +13353,28 @@
       ],
       "nativeLoc": 182,
       "conversionManagedCommit": "6546c28c2e5aea3dd28576b65080a1aa71c80e65"
+    },
+    {
+      "name": "g-mapinfo-parser-mid-chunk347",
+      "bucket": "conversion",
+      "managedLoc": 42,
+      "note": "MAPINFO SkipToNext CheckEndOfFile ParseLookupName",
+      "auditSeams": "Scanner `sc` token stream is abstracted; HCDE mod-compat trailing-comma tolerance is not re-hosted in full.",
+      "auditRationale": "Credits `g_mapinfo.cpp` 525\u2013775: assign/float helpers, `SkipToNext`, unexpected-EOF checks, and the `ParseLookupName`/`ParseLumpOrTextureName`/`ParseExitText` entry points that populate per-map exit text tables.",
+      "nativeRanges": [
+        {
+          "file": "src/gamedata/g_mapinfo.cpp",
+          "symbol": "Parser helpers through ParseExitText",
+          "start": 525,
+          "end": 775,
+          "tests": [
+            "VmMapInfoParserFormatTests.EnsureNotUnexpectedEof_ThrowsForNewFormat",
+            "VmMapInfoParseLookupNameTests.TryParseLookupToken_StripsDollarPrefix"
+          ]
+        }
+      ],
+      "nativeLoc": 251,
+      "conversionManagedCommit": "2b1afe4047fcd37b58c91efe6f965ede42ff76b0"
     }
   ]
 }
