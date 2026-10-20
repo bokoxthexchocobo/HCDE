@@ -1,0 +1,38 @@
+[
+  {
+    "name": "dehacked-patch-lexer-chunk262",
+    "bucket": "conversion",
+    "managedLoc": 118,
+    "note": "ReadChars, ReplaceSpecialChars, skip/strip white, GetLine key split.",
+    "nativeRanges": [
+      {
+        "file": "src/gamedata/d_dehacked.cpp",
+        "symbol": "ReadChars",
+        "start": 600,
+        "end": 620,
+        "tests": ["VmDehackedPatchLexerTests.ReadChars_SkipsCarriageReturns"]
+      },
+      {
+        "file": "src/gamedata/d_dehacked.cpp",
+        "symbol": "ReplaceSpecialChars",
+        "start": 623,
+        "end": 690,
+        "tests": ["VmDehackedPatchLexerTests.ReplaceSpecialChars_DecodesNewlineAndHex"]
+      },
+      {
+        "file": "src/gamedata/d_dehacked.cpp",
+        "symbol": "skipwhite and stripwhite",
+        "start": 692,
+        "end": 707,
+        "tests": ["VmDehackedPatchLexerTests.TryParsePatchLine_SplitsKeyValue"]
+      },
+      {
+        "file": "src/gamedata/d_dehacked.cpp",
+        "symbol": "GetLine",
+        "start": 730,
+        "end": 785,
+        "tests": ["VmDehackedPatchLexerTests.TryParsePatchLine_SplitsKeyValue"]
+      }
+    ]
+  }
+]
