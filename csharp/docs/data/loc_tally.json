@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": -6812,
+  "convertedThisRunNative": -6612,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 6242,
+  "convertedThisRunManaged": 6254,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -378,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 491309,
+  "remainingNative": 491109,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 11715,
+  "convertedBehaviorNative": 11915,
   "recognitionBehaviorNative": 5062,
-  "combinedBehaviorNative": 16777,
-  "convertedBehaviorManaged": 15913,
+  "combinedBehaviorNative": 16977,
+  "convertedBehaviorManaged": 15925,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -4481,6 +4481,24 @@
       ],
       "nativeLoc": 200,
       "conversionManagedCommit": "7eed8e8c83f4a80a8374d359c6426fc301ddb038"
+    },
+    {
+      "name": "zcc-member-function-call-chunk72",
+      "bucket": "conversion",
+      "managedLoc": 12,
+      "note": "FxMemberFunctionCall::Resolve readonly/sound/texture member builtins.",
+      "nativeRanges": [
+        {
+          "file": "src/common/scripting/backend/codegen.cpp",
+          "symbol": "FxMemberFunctionCall::Resolve",
+          "start": 9063,
+          "end": 9262,
+          "tests": [
+            "ZccMemberFunctionCallResolveTests.TryValidateSoundIsValid_RejectsExtraArgs"
+          ]
+        }
+      ],
+      "nativeLoc": 200
     }
   ]
 }
