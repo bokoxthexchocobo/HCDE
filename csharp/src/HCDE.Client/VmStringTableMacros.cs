@@ -19,22 +19,28 @@ public static class VmStringTableMacros
         }
     }
 
-    public static string ApplyMacros(VmStringTable table, string value)
+    public static string[] ApplyMacrosForGenders(VmStringTable table, string value)
     {
-        var text = value;
-        while (true)
+        var texts = new[] { value, value, value, value };
+        for (var gender = 0; gender < 4; gender++)
         {
-            var index = text.IndexOf("@[", StringComparison.Ordinal);
-            if (index < 0) break;
-            var end = text.IndexOf(']', index + 2);
-            if (end < 0) break;
-            var macroName = text[(index + 2)..end];
-            var replacee = $"@[{macroName}]";
-            if (!table.TryGetMacro(macroName, out var repl))
-                repl = ["", "", "", ""];
-            text = text.Replace(replacee, repl[0], StringComparison.Ordinal);
+            var text = texts[gender];
+            while (true)
+            {
+                var index = text.IndexOf("@[", StringComparison.Ordinal);
+                if (index < 0) break;
+                var end = text.IndexOf(']', index + 2);
+                if (end < 0) break;
+                var macroName = text[(index + 2)..end];
+                var replacee = $"@[{macroName}]";
+                if (!table.TryGetMacro(macroName, out var repl))
+                    repl = ["", "", "", ""];
+                text = text.Replace(replacee, repl[gender], StringComparison.Ordinal);
+            }
+
+            texts[gender] = text;
         }
 
-        return text;
+        return texts;
     }
 }
