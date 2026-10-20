@@ -14574,7 +14574,8 @@
             "VmMapLoaderLoadSegsTests.ShouldAbortEmptySegs_WhenZero",
             "VmMapLoaderLoadSegsTests.ValidateVertexIndex_ThrowsWhenOutOfRange",
             "VmMapLoaderLoadSegsTests.CountSegs_DividesLumpByRecordSize",
-            "VmMapLoaderLoadSegsTests.ShouldSnapSplitVertex_AtOneDegree"
+            "VmMapLoaderLoadSegsTests.ShouldSnapSplitVertex_AtOneDegree",
+            "VmMapLoaderLoadSegsTests.FormatBadSegMessage_Vertex_IncludesIndices"
           ]
         },
         {
@@ -14589,8 +14590,8 @@
         }
       ],
       "nativeLoc": 237,
-      "managedLoc": 65,
-      "conversionManagedCommit": "7af8d9a4dd1c8d949196fd5b867ffa8ca7cbb2a9"
+      "managedLoc": 0,
+      "conversionManagedCommit": "da06b8af5f26d11fadb41a3b51cc5d7c70459d97"
     }
   ]
 }

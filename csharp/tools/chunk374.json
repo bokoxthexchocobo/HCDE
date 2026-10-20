@@ -30,7 +30,8 @@
         "start": 672,
         "end": 760,
         "tests": [
-          "VmMapLoaderExtendedNodesTests.TryParseExtendedNodeId_Znod_IsCompressedType0"
+          "VmMapLoaderExtendedNodesTests.TryParseExtendedNodeId_Znod_IsCompressedType0",
+          "VmMapLoaderExtendedNodesTests.ShouldUseCompressedLoader_RequiresOpenZipWhenCompressed"
         ]
       },
       {
