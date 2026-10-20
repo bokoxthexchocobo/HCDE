@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": -6891,
+  "convertedThisRunNative": -6839,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 6328,
+  "convertedThisRunManaged": 6390,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -378,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 491388,
+  "remainingNative": 491336,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 11636,
+  "convertedBehaviorNative": 11688,
   "recognitionBehaviorNative": 5062,
-  "combinedBehaviorNative": 16698,
-  "convertedBehaviorManaged": 15999,
+  "combinedBehaviorNative": 16750,
+  "convertedBehaviorManaged": 16061,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -4619,6 +4619,69 @@
       ],
       "nativeLoc": 14,
       "conversionManagedCommit": "1d9ac6cf5a7ffae682e3636ee535cb4a5b61b918"
+    },
+    {
+      "name": "zcc-member-vector-sprite-chunk75",
+      "bucket": "conversion",
+      "managedLoc": 62,
+      "note": "FxMemberFunctionCall sprite and vector/quaternion builtin arity and constants.",
+      "nativeRanges": [
+        {
+          "file": "src/common/scripting/backend/codegen.cpp",
+          "symbol": "FxMemberFunctionCall::Resolve",
+          "start": 9062,
+          "end": 9067,
+          "tests": [
+            "ZccSpriteMemberBuiltinValidationTests.TryGetEqualityConstant_MatchesNativeSpriteIds"
+          ]
+        },
+        {
+          "file": "src/common/scripting/backend/codegen.cpp",
+          "symbol": "FxMemberFunctionCall::Resolve",
+          "start": 9073,
+          "end": 9091,
+          "tests": [
+            "ZccSpriteMemberBuiltinValidationTests.UsesGreaterOrEqualCompare_ForIsValid"
+          ]
+        },
+        {
+          "file": "src/common/scripting/backend/codegen.cpp",
+          "symbol": "FxMemberFunctionCall::Resolve",
+          "start": 9122,
+          "end": 9127,
+          "tests": [
+            "ZccMemberVectorBuiltinValidationTests.TryValidateUnaryBuiltin_RejectsLengthArity"
+          ]
+        },
+        {
+          "file": "src/common/scripting/backend/codegen.cpp",
+          "symbol": "FxMemberFunctionCall::Resolve",
+          "start": 9135,
+          "end": 9139,
+          "tests": [
+            "ZccMemberVectorBuiltinValidationTests.TryValidatePlusZ_RequiresSingleArgument"
+          ]
+        },
+        {
+          "file": "src/common/scripting/backend/codegen.cpp",
+          "symbol": "FxMemberFunctionCall::Resolve",
+          "start": 9151,
+          "end": 9158,
+          "tests": [
+            "ZccMemberVectorBuiltinValidationTests.TryValidateUnaryBuiltin_RejectsLengthArity"
+          ]
+        },
+        {
+          "file": "src/common/scripting/backend/codegen.cpp",
+          "symbol": "FxMemberFunctionCall::Resolve",
+          "start": 9181,
+          "end": 9188,
+          "tests": [
+            "ZccDynArraySizeMemberTests.IsSizeMember_DetectsNativeBuiltin"
+          ]
+        }
+      ],
+      "nativeLoc": 52
     }
   ]
 }
