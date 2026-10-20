@@ -18,19 +18,19 @@
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 5858,
+    "convertedThisRunNative": 5935,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 20857,
+    "convertedThisRunManaged": 20934,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -43,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 478304,
+    "remainingNative": 478227,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 24385,
+    "convertedBehaviorNative": 24462,
     "recognitionBehaviorNative": 5397,
-    "combinedBehaviorNative": 29782,
-    "convertedBehaviorManaged": 30528,
+    "combinedBehaviorNative": 29859,
+    "convertedBehaviorManaged": 30605,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -9265,6 +9265,34 @@
         ],
         "conversionManagedCommit": "4d88af30fe50d6fece1418301b8eea64ab86b229",
         "nativeLoc": 54
+      },
+      {
+        "name": "doomedmap-spawnmap-chunk214",
+        "bucket": "conversion",
+        "managedLoc": 77,
+        "note": "ParseSpawnMap and InitClassMap.",
+        "nativeRanges": [
+          {
+            "file": "src/gamedata/g_doomedmap.cpp",
+            "symbol": "ParseSpawnMap",
+            "start": 361,
+            "end": 405,
+            "tests": [
+              "VmDoomEdSpawnMapParserTests.TryParseSpawnMap_ReadsPairs"
+            ]
+          },
+          {
+            "file": "src/gamedata/g_doomedmap.cpp",
+            "symbol": "InitClassMap",
+            "start": 420,
+            "end": 451,
+            "tests": [
+              "VmDoomEdSpawnMapParserTests.TryParseSpawnMap_ReadsPairs"
+            ]
+          }
+        ],
+        "conversionManagedCommit": "769f4fb5c53a9b8838f40dce58efc7ff2bb528ec",
+        "nativeLoc": 77
       }
     ]
   },

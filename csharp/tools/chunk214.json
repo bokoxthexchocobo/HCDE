@@ -1,0 +1,29 @@
+[
+  {
+    "name": "doomedmap-spawnmap-chunk214",
+    "bucket": "conversion",
+    "managedLoc": 77,
+    "note": "ParseSpawnMap and InitClassMap.",
+    "nativeRanges": [
+      {
+        "file": "src/gamedata/g_doomedmap.cpp",
+        "symbol": "ParseSpawnMap",
+        "start": 361,
+        "end": 405,
+        "tests": [
+          "VmDoomEdSpawnMapParserTests.TryParseSpawnMap_ReadsPairs"
+        ]
+      },
+      {
+        "file": "src/gamedata/g_doomedmap.cpp",
+        "symbol": "InitClassMap",
+        "start": 420,
+        "end": 451,
+        "tests": [
+          "VmDoomEdSpawnMapParserTests.TryParseSpawnMap_ReadsPairs"
+        ]
+      }
+    ],
+    "conversionManagedCommit": "769f4fb5c53a9b8838f40dce58efc7ff2bb528ec"
+  }
+]
