@@ -10,24 +10,30 @@
         "symbol": "P_InitTerrainTypes",
         "start": 233,
         "end": 255,
-        "tests": ["VmTerrainDocumentParserTests.ParseDocument_SplashAndIfGame"]
+        "tests": [
+          "VmTerrainDocumentParserTests.ParseDocument_SplashAndIfGame"
+        ]
       },
       {
         "file": "src/gamedata/p_terrain.cpp",
         "symbol": "MakeDefaultTerrain",
         "start": 263,
         "end": 271,
-        "tests": ["VmTerrainDocumentParserTests.ParseDocument_SplashAndIfGame"]
+        "tests": [
+          "VmTerrainDocumentParserTests.ParseDocument_SplashAndIfGame"
+        ]
       },
       {
         "file": "src/gamedata/p_terrain.cpp",
         "symbol": "ParseOuter",
         "start": 279,
         "end": 342,
-        "tests": ["VmTerrainDocumentParserTests.ParseDocument_SplashAndIfGame"]
+        "tests": [
+          "VmTerrainDocumentParserTests.ParseDocument_SplashAndIfGame"
+        ]
       }
     ],
-    "conversionManagedCommit": ""
+    "conversionManagedCommit": "e932d5157523324f43b28a694ece05f9d0d52168"
   },
   {
     "name": "terrain-parse-terrain-chunk182",
@@ -40,14 +46,18 @@
         "symbol": "ParseTerrain",
         "start": 419,
         "end": 460,
-        "tests": ["VmTerrainDefParserTests.ParseTerrain_AppliesDamageAndFriction"]
+        "tests": [
+          "VmTerrainDefParserTests.ParseTerrain_AppliesDamageAndFriction"
+        ]
       },
       {
         "file": "src/gamedata/p_terrain.cpp",
         "symbol": "ParseDamage",
         "start": 468,
         "end": 476,
-        "tests": ["VmTerrainDefParserTests.ParseTerrain_AppliesDamageAndFriction"]
+        "tests": [
+          "VmTerrainDefParserTests.ParseTerrain_AppliesDamageAndFriction"
+        ]
       }
     ],
     "conversionManagedCommit": ""
@@ -63,21 +73,27 @@
         "symbol": "ParseFloor",
         "start": 617,
         "end": 649,
-        "tests": ["VmTerrainFloorParserTests.FloorAndDefaultTerrain_MapFlats"]
+        "tests": [
+          "VmTerrainFloorParserTests.FloorAndDefaultTerrain_MapFlats"
+        ]
       },
       {
         "file": "src/gamedata/p_terrain.cpp",
         "symbol": "ParseDefault",
         "start": 657,
         "end": 669,
-        "tests": ["VmTerrainFloorParserTests.FloorAndDefaultTerrain_MapFlats"]
+        "tests": [
+          "VmTerrainFloorParserTests.FloorAndDefaultTerrain_MapFlats"
+        ]
       },
       {
         "file": "src/gamedata/p_terrain.cpp",
         "symbol": "FindSplash/P_FindTerrain",
         "start": 677,
         "end": 710,
-        "tests": ["VmTerrainFloorParserTests.FloorAndDefaultTerrain_MapFlats"]
+        "tests": [
+          "VmTerrainFloorParserTests.FloorAndDefaultTerrain_MapFlats"
+        ]
       }
     ],
     "conversionManagedCommit": ""
@@ -93,28 +109,36 @@
         "symbol": "DrawFullscreenSubtitle layout",
         "start": 90,
         "end": 132,
-        "tests": ["VmIntermissionScreenRuntimeTests.TickerAndOverlay_MatchNativeGuards"]
+        "tests": [
+          "VmIntermissionScreenRuntimeTests.TickerAndOverlay_MatchNativeGuards"
+        ]
       },
       {
         "file": "src/intermission/intermission.cpp",
         "symbol": "DIntermissionScreen::Ticker/CheckOverlay",
         "start": 208,
         "end": 234,
-        "tests": ["VmIntermissionScreenRuntimeTests.TickerAndOverlay_MatchNativeGuards"]
+        "tests": [
+          "VmIntermissionScreenRuntimeTests.TickerAndOverlay_MatchNativeGuards"
+        ]
       },
       {
         "file": "src/intermission/intermission.cpp",
         "symbol": "DIntermissionScreenText::Init duration",
         "start": 433,
         "end": 437,
-        "tests": ["VmIntermissionScreenRuntimeTests.TextScreenDurationAndFaderAlpha"]
+        "tests": [
+          "VmIntermissionScreenRuntimeTests.TextScreenDurationAndFaderAlpha"
+        ]
       },
       {
         "file": "src/intermission/intermission.cpp",
         "symbol": "DIntermissionScreenFader::Drawer alpha",
         "start": 367,
         "end": 369,
-        "tests": ["VmIntermissionScreenRuntimeTests.TextScreenDurationAndFaderAlpha"]
+        "tests": [
+          "VmIntermissionScreenRuntimeTests.TextScreenDurationAndFaderAlpha"
+        ]
       }
     ],
     "conversionManagedCommit": ""
@@ -130,14 +154,18 @@
         "symbol": "dsda_ReadOption",
         "start": 89,
         "end": 105,
-        "tests": ["VmDsdaOptionsParserTests.Parse_ClampedKeyValuePairs"]
+        "tests": [
+          "VmDsdaOptionsParserTests.Parse_ClampedKeyValuePairs"
+        ]
       },
       {
         "file": "src/gamedata/options.cpp",
         "symbol": "dsda_LumpOptions",
         "start": 107,
         "end": 146,
-        "tests": ["VmDsdaOptionsParserTests.Parse_ClampedKeyValuePairs"]
+        "tests": [
+          "VmDsdaOptionsParserTests.Parse_ClampedKeyValuePairs"
+        ]
       }
     ],
     "conversionManagedCommit": ""

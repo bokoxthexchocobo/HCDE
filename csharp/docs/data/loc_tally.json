@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 2736,
+  "convertedThisRunNative": 2832,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 17196,
+  "convertedThisRunManaged": 17314,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -87,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 481470,
+  "remainingNative": 481374,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 21263,
+  "convertedBehaviorNative": 21359,
   "recognitionBehaviorNative": 5353,
-  "combinedBehaviorNative": 26616,
-  "convertedBehaviorManaged": 26867,
+  "combinedBehaviorNative": 26712,
+  "convertedBehaviorManaged": 26985,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -8163,6 +8163,43 @@
       ],
       "conversionManagedCommit": "0adf43fc03e591e9768cfa954c147a592eb4c6d6",
       "nativeLoc": 79
+    },
+    {
+      "name": "terrain-parse-outer-chunk181",
+      "bucket": "conversion",
+      "managedLoc": 118,
+      "note": "P_InitTerrainTypes reset, MakeDefaultTerrain, ParseOuter.",
+      "nativeRanges": [
+        {
+          "file": "src/gamedata/p_terrain.cpp",
+          "symbol": "P_InitTerrainTypes",
+          "start": 233,
+          "end": 255,
+          "tests": [
+            "VmTerrainDocumentParserTests.ParseDocument_SplashAndIfGame"
+          ]
+        },
+        {
+          "file": "src/gamedata/p_terrain.cpp",
+          "symbol": "MakeDefaultTerrain",
+          "start": 263,
+          "end": 271,
+          "tests": [
+            "VmTerrainDocumentParserTests.ParseDocument_SplashAndIfGame"
+          ]
+        },
+        {
+          "file": "src/gamedata/p_terrain.cpp",
+          "symbol": "ParseOuter",
+          "start": 279,
+          "end": 342,
+          "tests": [
+            "VmTerrainDocumentParserTests.ParseDocument_SplashAndIfGame"
+          ]
+        }
+      ],
+      "conversionManagedCommit": "e932d5157523324f43b28a694ece05f9d0d52168",
+      "nativeLoc": 96
     }
   ]
 }
