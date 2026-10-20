@@ -1,0 +1,63 @@
+[
+  {
+    "name": "p-enemy-lookex-chunk469",
+    "bucket": "conversion",
+    "note": "A_LookEx goal, sound-target, ambush, and seeyou tail (no P_LookForPlayers)",
+    "auditSeams": "`P_LookForPlayers`, `P_CheckSight`, `SetState`, and `S_Sound` are not hosted.",
+    "auditRationale": "Credits parameterized look setup, sound-target distance, stealth, ambush distance, and seestate tail from `p_enemy.cpp` (2063–2245).",
+    "managedSourceFiles": ["csharp/src/HCDE.Playsim/VmPEnemyLookEx.cs"],
+    "nativeRanges": [
+      {
+        "file": "src/playsim/p_enemy.cpp",
+        "symbol": "A_LookEx",
+        "start": 2063,
+        "end": 2094,
+        "tests": [
+          "VmPEnemyLookExTests.PatrolGoal_WhenSetGoal",
+          "VmPEnemyLookExTests.ConversationExit_Blocks"
+        ]
+      },
+      {
+        "file": "src/playsim/p_enemy.cpp",
+        "symbol": "A_LookEx",
+        "start": 2096,
+        "end": 2131,
+        "tests": [
+          "VmPEnemyLookExTests.SoundTarget_DeadClears",
+          "VmPEnemyLookExTests.HearDistance_BlocksFar"
+        ]
+      },
+      {
+        "file": "src/playsim/p_enemy.cpp",
+        "symbol": "A_LookEx",
+        "start": 2133,
+        "end": 2145,
+        "tests": ["VmPEnemyLookExTests.StealthVisdir"]
+      },
+      {
+        "file": "src/playsim/p_enemy.cpp",
+        "symbol": "A_LookEx",
+        "start": 2153,
+        "end": 2171,
+        "tests": ["VmPEnemyLookExTests.StandstillBlocksWander"]
+      },
+      {
+        "file": "src/playsim/p_enemy.cpp",
+        "symbol": "A_LookEx",
+        "start": 2174,
+        "end": 2197,
+        "tests": ["VmPEnemyLookExTests.AmbushSightRequired"]
+      },
+      {
+        "file": "src/playsim/p_enemy.cpp",
+        "symbol": "A_LookEx",
+        "start": 2211,
+        "end": 2244,
+        "tests": [
+          "VmPEnemyLookExTests.FullVolumeSee",
+          "VmPEnemyLookExTests.InchaseSkipsSee"
+        ]
+      }
+    ]
+  }
+]
