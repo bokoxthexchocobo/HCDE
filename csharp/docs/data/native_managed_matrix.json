@@ -12,25 +12,25 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 151914
+    "managedCSharpLoc": 152027
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 38297,
+    "convertedThisRunNative": 38456,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 48375,
+    "convertedThisRunManaged": 48488,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": 151,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 445671,
+    "remainingNative": 445512,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 56824,
+    "convertedBehaviorNative": 56983,
     "recognitionBehaviorNative": 5591,
-    "combinedBehaviorNative": 62415,
-    "convertedBehaviorManaged": 58046,
+    "combinedBehaviorNative": 62574,
+    "convertedBehaviorManaged": 58159,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -11187,18 +11187,9 @@
             "tests": [
               "VmDehackedPatchAmmoTests.ApplyBackpackAmounts_DoublesMax"
             ]
-          },
-          {
-            "file": "src/gamedata/d_dehacked.cpp",
-            "symbol": "PatchWeapon Select/Deselect swap",
-            "start": 2294,
-            "end": 2295,
-            "tests": [
-              "VmDehackedPatchWeaponTests.TryMapWeaponFrameLabel_SwapsSelectDeselect"
-            ]
           }
         ],
-        "nativeLoc": 6,
+        "nativeLoc": 4,
         "conversionManagedCommit": "43b24d70992c88bc91a0f6548abdc657a4f7c159"
       },
       {
@@ -11357,15 +11348,6 @@
         "nativeRanges": [
           {
             "file": "src/gamedata/d_dehacked.cpp",
-            "symbol": "PatchWeapon Ammo type",
-            "start": 2306,
-            "end": 2323,
-            "tests": [
-              "VmDehackedPatchWeaponAmmoTests.ApplyAmmoType_DoublesGiveAmount"
-            ]
-          },
-          {
-            "file": "src/gamedata/d_dehacked.cpp",
             "symbol": "FinishDehPatch clear AmmoUse",
             "start": 3958,
             "end": 3960,
@@ -11374,7 +11356,7 @@
             ]
           }
         ],
-        "nativeLoc": 21,
+        "nativeLoc": 3,
         "conversionManagedCommit": "924256d7ceaef7add06dfa266429841231fb0a9f"
       },
       {
@@ -11409,38 +11391,18 @@
         "name": "dehacked-patchmisc-keys-chunk277",
         "bucket": "conversion",
         "managedLoc": 48,
-        "note": "PatchMisc key table (re-audit 265-286: tested ranges only)",
-        "nativeRanges": [
-          {
-            "file": "src/gamedata/d_dehacked.cpp",
-            "symbol": "PatchMisc Initial Health key",
-            "start": 2540,
-            "end": 2540,
-            "tests": [
-              "VmDehackedPatchMiscTests.TryApplyKnownKey_SetsStartHealth"
-            ]
-          }
-        ],
-        "nativeLoc": 1,
+        "note": "PatchMisc key table (re-audit 265-286: tested ranges only; line 2540 superseded by chunk 513)",
+        "nativeRanges": [],
+        "nativeLoc": 0,
         "conversionManagedCommit": "5c16aed1819608e92dff06c3597b3790b0d2a239"
       },
       {
         "name": "dehacked-patchmisc-tail-chunk278",
         "bucket": "conversion",
         "managedLoc": 72,
-        "note": "PatchMisc powerups and armor defaults (re-audit 265-286: tested ranges only)",
-        "nativeRanges": [
-          {
-            "file": "src/gamedata/d_dehacked.cpp",
-            "symbol": "PatchMisc infighting 0xDD",
-            "start": 2718,
-            "end": 2722,
-            "tests": [
-              "VmDehackedPatchMiscArmorTests.NormalizeInfighting_MapsDd"
-            ]
-          }
-        ],
-        "nativeLoc": 5,
+        "note": "PatchMisc powerups and armor defaults (re-audit 265-286: tested ranges only; tail superseded by chunk 513)",
+        "nativeRanges": [],
+        "nativeLoc": 0,
         "conversionManagedCommit": "d56ab9e965314e10ee7c26a35fc074e1c241c883"
       },
       {
@@ -21994,6 +21956,35 @@
         "nativeLoc": 194,
         "managedLoc": 108,
         "conversionManagedCommit": "93371e41cb09bd927dcc8d20a094fc12f7d40dd7"
+      },
+      {
+        "name": "d-dehacked-patch-weapon-full-chunk514",
+        "bucket": "conversion",
+        "note": "PatchWeapon whole function",
+        "auditSeams": "`GetLine`, `FindState`, `statedef.InstallStates`, and `DecalLibrary` are not hosted.",
+        "auditRationale": "Credits DeHackEd weapon frame remapping, ammo/decal/MBF21 dispatch, and chainsaw ready-sound tail from `d_dehacked.cpp` (2253\u20132437).",
+        "managedSourceFiles": [
+          "csharp/src/HCDE.Gamedata/VmDehackedPatchWeaponDispatch.cs"
+        ],
+        "nativeRanges": [
+          {
+            "file": "src/gamedata/d_dehacked.cpp",
+            "symbol": "PatchWeapon",
+            "start": 2253,
+            "end": 2437,
+            "tests": [
+              "VmDehackedPatchWeaponDispatchTests.IsWeaponSlotValid_AcceptsInRange",
+              "VmDehackedPatchWeaponDispatchTests.FrameLabelForPrefix_SwapsSelectDeselect",
+              "VmDehackedPatchWeaponDispatchTests.NormalizeAmmoTypeIndex_ClampsHigh",
+              "VmDehackedPatchWeaponDispatchTests.ParseMbf21Line_CombinesNumericAndName",
+              "VmDehackedPatchWeaponDispatchTests.ResolveReadySound_ChainsawUsesIdle",
+              "VmDehackedPatchWeaponDispatchTests.TryApplyWeaponFrameLine_RecordsBobbingReady"
+            ]
+          }
+        ],
+        "nativeLoc": 185,
+        "managedLoc": 113,
+        "conversionManagedCommit": "f3af28f4d352f63d8c4e2c72f90f958a5b69b899"
       }
     ]
   },
