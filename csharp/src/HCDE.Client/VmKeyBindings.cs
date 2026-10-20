@@ -90,6 +90,33 @@ public sealed class VmKeyBindings
             DoBind(key, value);
     }
 
+    public void PerformBind(IReadOnlyList<string> argv, Action<string>? writeLine = null)
+    {
+        writeLine ??= _ => { };
+        if (argv.Count > 1)
+        {
+            var key = VmKeyNames.GetKeyFromName(argv[1]);
+            if (key == 0)
+            {
+                writeLine($"Unknown key \"{argv[1]}\"");
+                return;
+            }
+
+            if (argv.Count == 2)
+                writeLine($"\"{argv[1]}\" = \"{GetBind(key) ?? ""}\"");
+            else
+                binds[key] = argv[2];
+            return;
+        }
+
+        writeLine("Current key bindings:");
+        for (var i = 0; i < VmKeyNames.NumKeys; i++)
+        {
+            if (binds.TryGetValue(i, out var cmd) && cmd.Length > 0)
+                writeLine($"{VmKeyNames.KeyName(i)} \"{cmd}\"");
+        }
+    }
+
     public void ArchiveBindings(VmConfigFile config, string? matchCommand = null)
     {
         for (var i = 0; i < VmKeyNames.NumKeys; i++)
