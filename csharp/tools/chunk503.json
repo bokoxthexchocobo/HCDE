@@ -1,0 +1,44 @@
+[
+  {
+    "name": "p-enemy-look-targets-chunk503",
+    "bucket": "conversion",
+    "note": "P_LookForMonsters, LookForTIDInBlock, P_LookForTID, P_LookForEnemies",
+    "auditSeams": "`P_CheckSight`, `P_BlockmapSearch`, `P_IsVisible`, `GetActorIterator`, and `IsFriend` are not hosted.",
+    "auditRationale": "Credits monster look range/limit filters, TID blockmap hate matching, iterator budget and goal/last-enemy fallbacks, and friendly enemy search from `p_enemy.cpp` (1489–1777).",
+    "managedSourceFiles": ["csharp/src/HCDE.Playsim/VmPEnemyLookTargets.cs"],
+    "portCommits": [],
+    "nativeRanges": [
+      {
+        "file": "src/playsim/p_enemy.cpp",
+        "symbol": "P_LookForMonsters",
+        "start": 1489,
+        "end": 1531,
+        "tests": [
+          "VmPEnemyLookTargetsTests.LookMonsters_SkipsOutOfRange",
+          "VmPEnemyLookTargetsTests.LookMonsters_FindsInRange"
+        ]
+      },
+      {
+        "file": "src/playsim/p_enemy.cpp",
+        "symbol": "LookForTIDInBlock",
+        "start": 1543,
+        "end": 1594,
+        "tests": ["VmPEnemyLookTargetsTests.TidBlock_MatchesDirectTid"]
+      },
+      {
+        "file": "src/playsim/p_enemy.cpp",
+        "symbol": "P_LookForTID",
+        "start": 1604,
+        "end": 1703,
+        "tests": ["VmPEnemyLookTargetsTests.LookTid_FallbackGoal"]
+      },
+      {
+        "file": "src/playsim/p_enemy.cpp",
+        "symbol": "P_LookForEnemies",
+        "start": 1737,
+        "end": 1777,
+        "tests": ["VmPEnemyLookTargetsTests.LookEnemies_BlockSearchHit"]
+      }
+    ]
+  }
+]
