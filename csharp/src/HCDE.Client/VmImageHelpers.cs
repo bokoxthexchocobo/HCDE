@@ -12,6 +12,21 @@ public static class VmImageHelpers
         return srcIsGrayscale ? VmPaletteTables.GrayMap : VmPaletteTables.GameRemap;
     }
 
+    public static void FlipSquareBlock(Span<byte> block, int size)
+    {
+        for (var row = 0; row < size; row++)
+        {
+            var corner = row * size + row;
+            var count = size - row;
+            for (var column = 0; column < count; column++)
+            {
+                ref var a = ref block[corner + column];
+                ref var b = ref block[corner + column * size];
+                (a, b) = (b, a);
+            }
+        }
+    }
+
     public static void FlipSquareBlockRemap(Span<byte> block, int size, ReadOnlySpan<byte> remap)
     {
         for (var row = 0; row < size; row++)
