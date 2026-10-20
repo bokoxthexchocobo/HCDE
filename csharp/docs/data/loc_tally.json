@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": -4424,
+  "convertedThisRunNative": -4245,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 9319,
+  "convertedThisRunManaged": 9407,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": -338,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 488881,
+  "remainingNative": 488702,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 14103,
+  "convertedBehaviorNative": 14282,
   "recognitionBehaviorNative": 5102,
-  "combinedBehaviorNative": 19205,
-  "convertedBehaviorManaged": 18990,
+  "combinedBehaviorNative": 19384,
+  "convertedBehaviorManaged": 19078,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -5539,6 +5539,34 @@
       ],
       "conversionManagedCommit": "e7f7e9961f0119f196641f043ae9e2949e82888f",
       "nativeLoc": 88
+    },
+    {
+      "name": "file-zip-chunk103",
+      "bucket": "conversion",
+      "managedLoc": 88,
+      "note": "Zip_FindCentralDir and Open compression/encryption filters.",
+      "nativeRanges": [
+        {
+          "file": "src/common/filesystem/source/file_zip.cpp",
+          "symbol": "Zip_FindCentralDir",
+          "start": 47,
+          "end": 91,
+          "tests": [
+            "VmZipResourcePolicyTests.TryFindEndOfCentralDirectory_LocatesPkEndRecord"
+          ]
+        },
+        {
+          "file": "src/common/filesystem/source/file_zip.cpp",
+          "symbol": "FZipFile::Open",
+          "start": 120,
+          "end": 253,
+          "tests": [
+            "VmZipResourcePolicyTests.IsMultipartEndRecord_RejectsSplitArchiveFields"
+          ]
+        }
+      ],
+      "conversionManagedCommit": "e6c0ecd19871fe4c1f4841201a0ec35255551aed",
+      "nativeLoc": 179
     }
   ]
 }
