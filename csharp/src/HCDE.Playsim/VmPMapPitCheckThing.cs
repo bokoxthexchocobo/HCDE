@@ -15,8 +15,8 @@ public static class VmPMapPitCheckThing
     public const int MfPickup = 1;
     public const int MfCorpse = 1;
     public const int Mf2Rip = 1;
-    public static bool SkipSelf(AActorRef? thing, AActorRef? mover) =>
-        ReferenceEquals(thing, mover);
+    public static bool SkipSelf(AActorRef thing, AActorRef mover) =>
+        thing.Id == mover.Id;
 
     public static bool ThruActorsPass(int flags2Thing, int flags2Mover) =>
         ((flags2Thing | flags2Mover) & Mf6Thruactors) != 0;
