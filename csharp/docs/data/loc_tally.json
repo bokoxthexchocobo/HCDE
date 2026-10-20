@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 13859,
+  "convertedThisRunNative": 13915,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 28554,
+  "convertedThisRunManaged": 28592,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": 151,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 470109,
+  "remainingNative": 470053,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 32386,
+  "convertedBehaviorNative": 32442,
   "recognitionBehaviorNative": 5591,
-  "combinedBehaviorNative": 37977,
-  "convertedBehaviorManaged": 38225,
+  "combinedBehaviorNative": 38033,
+  "convertedBehaviorManaged": 38263,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -13166,6 +13166,38 @@
       ],
       "nativeLoc": 41,
       "conversionManagedCommit": "348c44a1ba407a6393d5c04f0198c68bd6832e35"
+    },
+    {
+      "name": "hcde-emapinfo-document-loop-chunk338",
+      "bucket": "conversion",
+      "managedLoc": 38,
+      "note": "EMAPINFO parse loop section properties and compat API tail",
+      "auditSeams": "`GetOrCreateLevel` and `ApplyEMapInfoProperty` dispatch remain injectable; this chunk models sky2 mirroring, registry lookup, and extradata lump resolution.",
+      "auditRationale": "Credits `hcde_emapinfo.cpp` 847\u2013921: section open property application with `-NOFLAT-` sky2 mirroring, unsupported-property outside map blocks, and `HCDE_EMapInfo_IsEternityMap` / `HCDE_EMapInfo_FindExtraDataLump` compatibility helpers.",
+      "nativeRanges": [
+        {
+          "file": "src/gamedata/hcde_emapinfo.cpp",
+          "symbol": "HCDE_ParseEMapInfo property loop compat API",
+          "start": 847,
+          "end": 868,
+          "tests": [
+            "VmEMapInfoDocumentLoopTests.IsKnownEternityMap_LooksUpRegistry"
+          ]
+        },
+        {
+          "file": "src/gamedata/hcde_emapinfo.cpp",
+          "symbol": "HCDE_ClearEMapInfoCompat API tail",
+          "start": 888,
+          "end": 921,
+          "tests": [
+            "VmEMapInfoDocumentLoopTests.ApplySky2Mirror_CopiesSky1WhenNoFlat",
+            "VmEMapInfoDocumentLoopTests.IsKnownEternityMap_LooksUpRegistry",
+            "VmEMapInfoDocumentLoopTests.ResolveExtraDataLump_PrefersMapLump"
+          ]
+        }
+      ],
+      "nativeLoc": 56,
+      "conversionManagedCommit": "5b5d07df425720b97631c107c2b6efe1f2585e57"
     }
   ]
 }

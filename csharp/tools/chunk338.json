@@ -11,10 +11,17 @@
         "file": "src/gamedata/hcde_emapinfo.cpp",
         "symbol": "HCDE_ParseEMapInfo property loop compat API",
         "start": 847,
+        "end": 868,
+        "tests": [
+          "VmEMapInfoDocumentLoopTests.IsKnownEternityMap_LooksUpRegistry"
+        ]
+      },
+      {
+        "file": "src/gamedata/hcde_emapinfo.cpp",
+        "symbol": "HCDE_ClearEMapInfoCompat API tail",
+        "start": 888,
         "end": 921,
         "tests": [
-          "VmEMapInfoDocumentLoopTests.ApplySky2Mirror_CopiesSky1WhenNoFlat",
-          "VmEMapInfoDocumentLoopTests.IsKnownEternityMap_LooksUpRegistry",
           "VmEMapInfoDocumentLoopTests.ResolveExtraDataLump_PrefersMapLump"
         ]
       }
