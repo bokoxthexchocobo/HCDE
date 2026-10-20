@@ -30,6 +30,10 @@ public static class VmPLnspecArgMacros
 
     public static int Tics(int delay) => delay * TicRate / 8;
 
+    public static int PlatTics(int delay) => delay * TicRate / 35;
+
+    public static int Octics(int delay) => delay * TicRate / 8;
+
     public static int AcsBacksideFlag(bool backSide) => backSide ? 1 : 0;
 
     public static int AcsAlwaysFlag => 2;
