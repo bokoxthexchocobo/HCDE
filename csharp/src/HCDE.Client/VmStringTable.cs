@@ -6,7 +6,10 @@ public sealed class VmStringTable
     private readonly Dictionary<uint, Dictionary<string, VmStringTableEntry>> allStrings = new();
     private readonly List<(uint LangId, Dictionary<string, VmStringTableEntry> Map)> currentLanguageSet = new();
     private readonly VmStringTableLangId langIds = new();
+    private readonly Dictionary<string, string[]> macros = new(StringComparer.OrdinalIgnoreCase);
     private int defaultGender;
+
+    internal VmStringTableLangId LangIds => langIds;
 
     public void SetDefaultGender(int gender) => defaultGender = gender;
 
@@ -22,6 +25,9 @@ public sealed class VmStringTable
     public uint OverrideTableId { get; }
 
     public void Clear() => allStrings.Clear();
+
+    public void LoadStrings(IVmStringTableLumpSource lumps, string? language, Func<string, bool>? checkGame = null) =>
+        VmStringTableLoadStrings.Load(this, lumps, language, checkGame);
 
     public void LoadLanguage(int fileNum, string text, Func<string, bool>? checkGame = null)
     {
@@ -59,6 +65,7 @@ public sealed class VmStringTable
 
     public void InsertString(int fileNum, uint langId, string label, string value)
     {
+        var expanded = VmStringTableMacros.ApplyMacros(this, value);
         var map = GetOrCreateMap(langId);
         if (!map.TryGetValue(label, out var entry))
         {
@@ -66,8 +73,31 @@ public sealed class VmStringTable
             map[label] = entry;
         }
 
-        entry.Set(0, value);
+        for (var g = 0; g < 4; g++)
+            entry.Set(g, expanded);
     }
+
+    public void DeleteString(uint langId, string label)
+    {
+        if (allStrings.TryGetValue(langId, out var map))
+            map.Remove(label);
+    }
+
+    public void DeleteForLabel(int fileNum, string label)
+    {
+        foreach (var map in allStrings.Values)
+        {
+            if (map.TryGetValue(label, out var entry) && entry.FileNum < fileNum)
+                map.Remove(label);
+        }
+    }
+
+    internal void ClearMacros() => macros.Clear();
+
+    internal void RegisterMacro(string name, string[] replacements) => macros[name] = replacements;
+
+    internal bool TryGetMacro(string name, out string[] replacements) =>
+        macros.TryGetValue(name, out replacements!);
 
     public bool Exists(string name)
     {
