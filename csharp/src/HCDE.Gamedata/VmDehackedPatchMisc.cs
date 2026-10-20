@@ -108,6 +108,6 @@ public static class VmDehackedPatchMisc
     public static bool MaxHealthKey(string key) =>
         string.Equals(key, "Max Health", StringComparison.OrdinalIgnoreCase);
 
-    public static bool ParseMiscInt(string line2, int fallback) =>
+    public static int ParseMiscInt(string line2, int fallback) =>
         int.TryParse(line2, out var v) ? v : fallback;
 }
