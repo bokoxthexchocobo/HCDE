@@ -6,6 +6,10 @@
     "auditSeams": "`Trace`, `DImpactDecal::StaticCreate`, `P_RailAttack`, and `pr_tracebleed` are not hosted.",
     "auditRationale": "Credits blood-splat enablement, bleed overload dispatch, and rail trace portal/actor skip and stop rules from `p_map.cpp` (5245–5394, 5426–5487).",
     "managedSourceFiles": ["csharp/src/HCDE.Playsim/VmPMapTraceBleed.cs"],
+    "portCommits": [
+      "233e46107a439af4cf1fde7a9d9c2144cbf92a3a",
+      "cd5944539c297c8afb8e1c06fd458bf4ea696c04"
+    ],
     "nativeRanges": [
       {
         "file": "src/playsim/p_map.cpp",
@@ -41,6 +45,16 @@
         "tests": [
           "VmPMapTraceBleedTests.RailHit_SkipsThruActors",
           "VmPMapTraceBleedTests.RailHit_StopsAtInvuln"
+        ]
+      },
+      {
+        "file": "src/playsim/p_map.cpp",
+        "symbol": "P_RailAttack",
+        "start": 5495,
+        "end": 5567,
+        "tests": [
+          "VmPMapTraceBleedTests.RailShootZ_AddsAttackOffsetWhenNotCenterZ",
+          "VmPMapTraceBleedTests.BuildRailData_ClearsThruWhenNoAllowFlag"
         ]
       }
     ]
