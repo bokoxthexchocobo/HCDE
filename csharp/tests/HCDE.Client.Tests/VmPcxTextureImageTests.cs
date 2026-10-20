@@ -23,6 +23,23 @@ public class VmPcxTextureImageTests
         Assert.Equal(4, pixels.Length);
     }
 
+    [Fact]
+    public void CreatePalettedPixels_1Bit_ProducesFourPixels()
+    {
+        var header = new byte[VmPcxTextureImage.HeaderSize];
+        header[0] = 10;
+        header[2] = 1;
+        header[3] = 1;
+        header[65] = 1;
+        BinaryPrimitives.WriteUInt16LittleEndian(header.AsSpan(8), 1);
+        BinaryPrimitives.WriteUInt16LittleEndian(header.AsSpan(10), 1);
+        BinaryPrimitives.WriteUInt16LittleEndian(header.AsSpan(66), 1);
+        var lump = header.Concat(new byte[] { 0xFF, 0x00 }).ToArray();
+        Assert.True(VmPcxTextureImage.TryParseHeader(lump, out var parsed));
+        var pixels = VmPcxTextureImage.CreatePalettedPixels(lump, parsed);
+        Assert.Equal(4, pixels.Length);
+    }
+
     private static byte[] BuildPaletted2x2()
     {
         var header = new byte[VmPcxTextureImage.HeaderSize];

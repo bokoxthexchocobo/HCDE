@@ -47,60 +47,204 @@ public static class VmPcxTextureImage
         return true;
     }
 
-    public static byte[] DecodePaletted8(ReadOnlySpan<byte> lump, VmPcxHeader header)
+    public static byte[] CreatePalettedPixels(ReadOnlySpan<byte> lump, VmPcxHeader header, bool luminanceConversion = false)
     {
         var width = header.XMax - header.XMin + 1;
         var height = header.YMax - header.YMin + 1;
-        var pixels = new byte[width * height];
-        var palette = ReadPalette256(lump);
-        var source = lump[HeaderSize..];
-        var row = 0;
-        var column = 0;
-        var rleCount = 0;
-        var rleValue = 0;
-        while (row < height)
+        var bitCount = header.BitsPerPixel * header.NumColorPlanes;
+        var alphatex = luminanceConversion;
+        if (bitCount < 24)
         {
-            if (column >= header.BytesPerScanLine)
+            var pixels = new byte[width * height];
+            if (bitCount < 8)
             {
-                row++;
-                column = 0;
-                if (row >= height)
-                    break;
+                if (bitCount == 1)
+                {
+                    ReadPcx1Bit(pixels, lump, header, width, height);
+                    return FlipWithMap(pixels, width, height, [0, 255]);
+                }
+
+                var paletteMap = new byte[16];
+                var embedded = header.EmbeddedPalette.Span;
+                for (var index = 0; index < 16; index++)
+                    paletteMap[index] = VmImageHelpers.RgbToPalettePrecise(
+                        alphatex, embedded[index * 3], embedded[index * 3 + 1], embedded[index * 3 + 2]);
+                ReadPcx4Bits(pixels, lump, header, width, height);
+                return FlipWithMap(pixels, width, height, paletteMap);
             }
 
-            if (rleCount == 0)
+            var palette256 = ReadPalette256(lump, alphatex);
+            ReadPcx8Bits(pixels, lump, header, width, height);
+            return FlipWithMap(pixels, width, height, palette256);
+        }
+
+        var rgb = new byte[width * height * 3];
+        ReadPcx24Bits(rgb, lump, header, width, height, planes: 3);
+        var output = new byte[width * height];
+        var row = 0;
+        for (var y = 0; y < height; y++)
+        for (var x = 0; x < width; x++, row++)
+            output[row] = VmImageHelpers.RgbToPalette(alphatex, rgb[row * 3], rgb[row * 3 + 1], rgb[row * 3 + 2]);
+        return output;
+    }
+
+    public static byte[] DecodePaletted8(ReadOnlySpan<byte> lump, VmPcxHeader header) =>
+        CreatePalettedPixels(lump, header);
+
+    private static byte[] FlipWithMap(byte[] pixels, int width, int height, ReadOnlySpan<byte> paletteMap)
+    {
+        if (width == height)
+        {
+            VmImageHelpers.FlipSquareBlockRemap(pixels, width, paletteMap);
+            return pixels;
+        }
+
+        var flipped = new byte[pixels.Length];
+        VmImageHelpers.FlipNonSquareBlockRemap(flipped, pixels, width, height, width, paletteMap);
+        return flipped;
+    }
+
+    private static ReadOnlySpan<byte> PixelSource(ReadOnlySpan<byte> lump) => lump[HeaderSize..];
+
+    private static void ReadPcx1Bit(byte[] pixels, ReadOnlySpan<byte> lump, VmPcxHeader header, int width, int height)
+    {
+        var source = PixelSource(lump);
+        var rleCount = 0;
+        var rleValue = 0;
+        for (var y = 0; y < height; y++)
+        {
+            var bytes = header.BytesPerScanLine;
+            var column = 0;
+            while (bytes-- > 0)
             {
-                if (source.Length == 0)
-                    break;
-                rleValue = source[0];
-                source = source[1..];
-                rleCount = rleValue < 0xC0 ? 1 : rleValue - 0xC0;
-                if (rleValue >= 0xC0)
+                if (rleCount == 0)
                 {
                     rleValue = source[0];
                     source = source[1..];
+                    rleCount = rleValue < 0xC0 ? 1 : rleValue - 0xC0;
+                    if (rleValue >= 0xC0)
+                    {
+                        rleValue = source[0];
+                        source = source[1..];
+                    }
+                }
+
+                rleCount--;
+                for (var bit = 7; bit >= 0; bit--)
+                {
+                    if (column < width)
+                        pixels[y * width + column++] = (byte)((rleValue & (1 << bit)) > 0 ? 1 : 0);
                 }
             }
-
-            rleCount--;
-            if (column < width)
-                pixels[row * width + column] = palette[rleValue];
-            column++;
         }
-
-        if (width == height)
-            VmImageHelpers.FlipSquareBlockRemap(pixels, width, VmImageHelpers.GetRemap(false));
-        else
-        {
-            var flipped = new byte[pixels.Length];
-            VmImageHelpers.FlipNonSquareBlockRemap(flipped, pixels, width, height, width, VmImageHelpers.GetRemap(false));
-            pixels = flipped;
-        }
-
-        return pixels;
     }
 
-    private static byte[] ReadPalette256(ReadOnlySpan<byte> lump)
+    private static void ReadPcx4Bits(byte[] pixels, ReadOnlySpan<byte> lump, VmPcxHeader header, int width, int height)
+    {
+        var source = PixelSource(lump);
+        var line = new byte[header.BytesPerScanLine];
+        for (var y = 0; y < height; y++)
+        {
+            Array.Clear(pixels, y * width, width);
+            for (var plane = 0; plane < 4; plane++)
+            {
+                var rleCount = 0;
+                var rleValue = 0;
+                var bytes = header.BytesPerScanLine;
+                var lineOffset = 0;
+                while (bytes-- > 0)
+                {
+                    if (rleCount == 0)
+                    {
+                        rleValue = source[0];
+                        source = source[1..];
+                        rleCount = rleValue < 0xC0 ? 1 : rleValue - 0xC0;
+                        if (rleValue >= 0xC0)
+                        {
+                            rleValue = source[0];
+                            source = source[1..];
+                        }
+                    }
+
+                    rleCount--;
+                    line[lineOffset++] = (byte)rleValue;
+                }
+
+                for (var x = 0; x < width; x++)
+                {
+                    if ((line[x / 8] & (128 >> (x % 8))) != 0)
+                        pixels[y * width + x] += (byte)(1 << plane);
+                }
+            }
+        }
+    }
+
+    private static void ReadPcx8Bits(byte[] pixels, ReadOnlySpan<byte> lump, VmPcxHeader header, int width, int height)
+    {
+        var source = PixelSource(lump);
+        for (var y = 0; y < height; y++)
+        {
+            var ptr = y * width;
+            var bytes = header.BytesPerScanLine;
+            var rleCount = 0;
+            var rleValue = 0;
+            var column = 0;
+            while (bytes-- > 0)
+            {
+                if (rleCount == 0)
+                {
+                    rleValue = source[0];
+                    source = source[1..];
+                    rleCount = rleValue < 0xC0 ? 1 : rleValue - 0xC0;
+                    if (rleValue >= 0xC0)
+                    {
+                        rleValue = source[0];
+                        source = source[1..];
+                    }
+                }
+
+                rleCount--;
+                if (column < width)
+                    pixels[ptr + column++] = (byte)rleValue;
+            }
+        }
+    }
+
+    private static void ReadPcx24Bits(byte[] pixels, ReadOnlySpan<byte> lump, VmPcxHeader header, int width, int height, int planes)
+    {
+        var source = PixelSource(lump);
+        for (var y = 0; y < height; y++)
+        {
+            var rowBase = y * width * planes;
+            for (var plane = 0; plane < planes; plane++)
+            {
+                var pointer = rowBase + plane;
+                var bytes = header.BytesPerScanLine;
+                var rleCount = 0;
+                var rleValue = 0;
+                while (bytes-- > 0)
+                {
+                    if (rleCount == 0)
+                    {
+                        rleValue = source[0];
+                        source = source[1..];
+                        rleCount = rleValue < 0xC0 ? 1 : rleValue - 0xC0;
+                        if (rleValue >= 0xC0)
+                        {
+                            rleValue = source[0];
+                            source = source[1..];
+                        }
+                    }
+
+                    rleCount--;
+                    pixels[pointer] = (byte)rleValue;
+                    pointer += planes;
+                }
+            }
+        }
+    }
+
+    private static byte[] ReadPalette256(ReadOnlySpan<byte> lump, bool alphatex)
     {
         var palette = new byte[256];
         if (lump.Length < 769)
@@ -111,7 +255,8 @@ public static class VmPcxTextureImage
         for (var index = 0; index < 256; index++)
         {
             var offset = start + 1 + index * 3;
-            palette[index] = VmImageHelpers.RgbToPalettePrecise(false, lump[offset], lump[offset + 1], lump[offset + 2]);
+            palette[index] = VmImageHelpers.RgbToPalettePrecise(
+                alphatex, lump[offset], lump[offset + 1], lump[offset + 2]);
         }
 
         return palette;
@@ -131,6 +276,7 @@ public readonly struct VmPcxHeader
     public ushort BytesPerScanLine { get; init; }
     public byte NumColorPlanes { get; init; }
     public ReadOnlyMemory<byte> Padding { get; init; }
+    public ReadOnlyMemory<byte> EmbeddedPalette { get; init; }
 
     public static VmPcxHeader Read(ReadOnlySpan<byte> lump)
     {
@@ -147,6 +293,7 @@ public readonly struct VmPcxHeader
             BytesPerScanLine = BinaryPrimitives.ReadUInt16LittleEndian(lump[66..]),
             NumColorPlanes = lump[65],
             Padding = lump[74..128].ToArray(),
+            EmbeddedPalette = lump[16..64].ToArray(),
         };
     }
 }
