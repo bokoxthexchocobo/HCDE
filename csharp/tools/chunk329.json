@@ -2,30 +2,39 @@
   {
     "name": "g-mapinfo-script-flags-head-chunk329",
     "bucket": "conversion",
-    "managedLoc": 45,
-    "note": "MAPINFO edata loadacs intro outro and MapFlagHandlers table head",
+    "managedLoc": 24,
+    "note": "MAPINFO edata/intro and e1m8special row (trimmed)",
     "auditSeams": "`ParseCutscene` is reduced to lump string assignment; `MapFlagHandlers` rows keep placeholder flag constants matching the native table layout without loading `level_info_t` flag words.",
-    "auditRationale": "Credits the uncredited `g_mapinfo.cpp` band before the falling-damage rows: `edata`/`loadacs` string options, intro/outro cutscene lumps, the `EMIType`/`MapInfoFlagHandler` schema, and the first special/boss flag entries through `nojump` that extend the managed handler catalog tested here.",
+    "auditRationale": "Credits `edata`/`intro` string assigns and the `e1m8special` handler catalog row \u2014 not the full `MapFlagHandlers` head.",
     "nativeRanges": [
       {
         "file": "src/gamedata/g_mapinfo.cpp",
-        "symbol": "edata loadacs intro outro",
+        "symbol": "edata assign",
         "start": 1892,
-        "end": 1914,
+        "end": 1897,
         "tests": [
-          "VmMapInfoMapOptionsScriptTests.ApplyEdName_SetsField",
+          "VmMapInfoMapOptionsScriptTests.ApplyEdName_SetsField"
+        ]
+      },
+      {
+        "file": "src/gamedata/g_mapinfo.cpp",
+        "symbol": "intro cutscene",
+        "start": 1906,
+        "end": 1909,
+        "tests": [
           "VmMapInfoMapOptionsScriptTests.ApplyIntroCutscene_SetsLump"
         ]
       },
       {
         "file": "src/gamedata/g_mapinfo.cpp",
-        "symbol": "MapFlagHandlers table head",
-        "start": 1923,
-        "end": 1978,
+        "symbol": "e1m8special handler row",
+        "start": 1960,
+        "end": 1960,
         "tests": [
           "VmMapInfoFlagHandlersTests.TryGetHandler_FindsE1M8Special"
         ]
       }
-    ]
+    ],
+    "conversionManagedCommit": "9531f1c0f019d32272ee67cc657ad01404522e20"
   }
 ]

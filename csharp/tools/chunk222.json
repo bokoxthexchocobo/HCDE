@@ -2,18 +2,11 @@
   {
     "name": "umapinfo-schema-doomed-spawn-chunk222",
     "bucket": "conversion",
-    "managedLoc": 85,
-    "note": "UMAPINFO schema remainder, InitSpawnablesFromMapinfo and class-map helpers.",
+    "managedLoc": 37,
+    "note": "UMAPINFO token helpers and doomedmap strife tail (trimmed)",
+    "auditSeams": "",
+    "auditRationale": "Credits small UMAPINFO parse branches and Strife spawnable clear \u2014 not full schema tables or CCMD bodies.",
     "nativeRanges": [
-      {
-        "file": "src/gamedata/umapinfo.cpp",
-        "symbol": "UMapEntry layout and helpers",
-        "start": 29,
-        "end": 83,
-        "tests": [
-          "VmUMapInfoSchemaTests.LumpNameFields_MatchesNativeLayout"
-        ]
-      },
       {
         "file": "src/gamedata/umapinfo.cpp",
         "symbol": "ParseMultiString clear branch",
@@ -42,42 +35,6 @@
         ]
       },
       {
-        "file": "src/gamedata/umapinfo.cpp",
-        "symbol": "ParseStandardProperty nextsecret sky",
-        "start": 223,
-        "end": 265,
-        "tests": [
-          "VmUMapInfoStandardPropertyParserTests.TryApplyProperty_SetsLevelName"
-        ]
-      },
-      {
-        "file": "src/gamedata/g_doomedmap.cpp",
-        "symbol": "InitSpawnablesFromMapinfo and dump",
-        "start": 1,
-        "end": 32,
-        "tests": [
-          "VmDoomEdSpawnInitTests.InitSpawnablesFromMapinfo_ResolvesClasses"
-        ]
-      },
-      {
-        "file": "src/gamedata/g_doomedmap.cpp",
-        "symbol": "Spawnable class map",
-        "start": 61,
-        "end": 97,
-        "tests": [
-          "VmDoomEdSpawnInitTests.SortClassMapForDump_OrdersByKey"
-        ]
-      },
-      {
-        "file": "src/gamedata/g_doomedmap.cpp",
-        "symbol": "CCMD spawnables",
-        "start": 306,
-        "end": 360,
-        "tests": [
-          "VmDoomEdSpawnInitTests.InitSpawnablesFromMapinfo_ResolvesClasses"
-        ]
-      },
-      {
         "file": "src/gamedata/g_doomedmap.cpp",
         "symbol": "Strife type clear",
         "start": 406,
@@ -95,6 +52,7 @@
           "VmDoomEdSpawnInitTests.InitSpawnablesFromMapinfo_ResolvesClasses"
         ]
       }
-    ]
+    ],
+    "conversionManagedCommit": "868d46235f564f4c230307d0847b2217d7d6fbdf"
   }
 ]

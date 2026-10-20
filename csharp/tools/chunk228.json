@@ -2,8 +2,10 @@
   {
     "name": "g-skill-globals-teaminfo-accessors-chunk228",
     "bucket": "conversion",
-    "managedLoc": 55,
-    "note": "g_skill globals/name assign; FTeam IsValid accessors and teamlist.",
+    "managedLoc": 31,
+    "note": "g_skill globals and TeamInfoOptions table (trimmed)",
+    "auditSeams": "",
+    "auditRationale": "Credits skill list globals, name token assign, and team option table \u2014 not `FTeam` accessor surface or `teamlist` CCMD.",
     "nativeRanges": [
       {
         "file": "src/gamedata/g_skill.cpp",
@@ -31,34 +33,8 @@
         "tests": [
           "VmTeamInfoParserTests.ParseTeam_ReadsOptions"
         ]
-      },
-      {
-        "file": "src/gamedata/teaminfo.cpp",
-        "symbol": "FTeam default constructor",
-        "start": 107,
-        "end": 115,
-        "tests": [
-          "VmTeamInfoParserTests.ParseTeam_ReadsOptions"
-        ]
-      },
-      {
-        "file": "src/gamedata/teaminfo.cpp",
-        "symbol": "FTeam IsValid and accessors",
-        "start": 239,
-        "end": 328,
-        "tests": [
-          "VmTeamInfoParserTests.FormatTeamList_IncludesIndices"
-        ]
-      },
-      {
-        "file": "src/gamedata/teaminfo.cpp",
-        "symbol": "CCMD teamlist",
-        "start": 336,
-        "end": 344,
-        "tests": [
-          "VmTeamInfoParserTests.FormatTeamList_IncludesIndices"
-        ]
       }
-    ]
+    ],
+    "conversionManagedCommit": "524c57aec6a349af74bd68f3efe5d1b4b995530c"
   }
 ]

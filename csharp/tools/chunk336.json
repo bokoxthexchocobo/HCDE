@@ -2,22 +2,48 @@
   {
     "name": "dehacked-mbf-scratch-sound-chunk336",
     "bucket": "conversion",
-    "managedLoc": 22,
-    "note": "MBF CreateScratchFunc and CreatePlaySoundFunc parameter packing",
+    "managedLoc": 17,
+    "note": "MBF scratch/jump/line-effect emitters (trimmed)",
     "auditSeams": "`FunctionCallEmitter` and `DehFindSound` are injected via a sound-index callback; only the misc1/misc2 argument shaping is modeled.",
-    "auditRationale": "Credits uncredited `d_dehacked.cpp` 849–934 between earlier MBF rows and the credited emitter tail: random jump state label packing, Boom line-effect special/tag args, and the spawn/monster projectile emitter parameter lists.",
+    "auditRationale": "Credits `CreateScratchFunc` (avoiding chunk 293 sound-index rows), `CreateRandomJumpFunc`, and `CreateLineEffectFunc` argument packing.",
     "nativeRanges": [
       {
         "file": "src/gamedata/d_dehacked.cpp",
-        "symbol": "CreateRandomJump CreateLineEffect emitters",
-        "start": 849,
-        "end": 934,
+        "symbol": "CreateScratchFunc body",
+        "start": 829,
+        "end": 830,
         "tests": [
-          "VmDehackedMbfScratchSoundTests.RandomJumpArgs_ResolvesStateLabel",
-          "VmDehackedMbfScratchSoundTests.LineEffectArgs_PassesSpecialAndTag",
           "VmDehackedMbfScratchSoundTests.ScratchMeleeArgs_ResolvesHitSound"
         ]
+      },
+      {
+        "file": "src/gamedata/d_dehacked.cpp",
+        "symbol": "CreateScratchFunc sound args",
+        "start": 833,
+        "end": 837,
+        "tests": [
+          "VmDehackedMbfScratchSoundTests.ScratchMeleeArgs_ResolvesHitSound"
+        ]
+      },
+      {
+        "file": "src/gamedata/d_dehacked.cpp",
+        "symbol": "CreateRandomJumpFunc",
+        "start": 851,
+        "end": 858,
+        "tests": [
+          "VmDehackedMbfScratchSoundTests.RandomJumpArgs_ResolvesStateLabel"
+        ]
+      },
+      {
+        "file": "src/gamedata/d_dehacked.cpp",
+        "symbol": "CreateLineEffectFunc",
+        "start": 861,
+        "end": 870,
+        "tests": [
+          "VmDehackedMbfScratchSoundTests.LineEffectArgs_PassesSpecialAndTag"
+        ]
       }
-    ]
+    ],
+    "conversionManagedCommit": "af911e170e4a161a67570a8748e9905b68f6d162"
   }
 ]

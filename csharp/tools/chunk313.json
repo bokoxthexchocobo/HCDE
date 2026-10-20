@@ -2,23 +2,11 @@
   {
     "name": "dehacked-dehsupp-map-sections-chunk313",
     "bucket": "conversion",
-    "managedLoc": 280,
-    "note": "LoadDehSupp StateMap SoundMap InfoNames ThingBits and section errors",
+    "managedLoc": 44,
+    "note": "DehSupp SoundMap InfoNames ThingBits and load errors (trimmed)",
+    "auditSeams": "",
+    "auditRationale": "Credits secondary DehSupp sections and lump error gates \u2014 not the full `StateMap` actor/state expansion loop.",
     "nativeRanges": [
-      {
-        "file": "src/gamedata/d_dehacked.cpp",
-        "symbol": "StateMap",
-        "start": 3598,
-        "end": 3652,
-        "tests": [
-          "VmDehackedDehSuppStateMapTests.ShouldAppendToStateMap_OnlyWhenEmpty",
-          "VmDehackedDehSuppStateMapTests.IsPickupActor_DetectsMfSpecial",
-          "VmDehackedDehSuppStateMapTests.TryValidateActorType_RejectsNonActor",
-          "VmDehackedDehSuppStateMapTests.TryParseStateMapSection_BuildsDehExtStates",
-          "VmDehackedDehSuppStateMapTests.TryParseStateMapSection_SkipsAppendWhenExisting",
-          "VmDehackedDehSuppStateMapTests.TryParseStateMapSection_RejectsInvalidStateSpan"
-        ]
-      },
       {
         "file": "src/gamedata/d_dehacked.cpp",
         "symbol": "SoundMap",
@@ -67,6 +55,7 @@
           "VmDehackedDehSuppLumpGateTests.TryHandleRecoverableLoadError_ReturnsFalse"
         ]
       }
-    ]
+    ],
+    "conversionManagedCommit": "40ede3e2aa1f0990885b9acfc68278aac13df185"
   }
 ]

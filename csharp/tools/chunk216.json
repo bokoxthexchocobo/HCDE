@@ -2,8 +2,10 @@
   {
     "name": "doomfont-planner-chunk216",
     "bucket": "conversion",
-    "managedLoc": 112,
-    "note": "InitDoomFonts lump selection and HU font constants.",
+    "managedLoc": 32,
+    "note": "HU font constants and InitDoomFonts small-font path (trimmed)",
+    "auditSeams": "",
+    "auditRationale": "Credits `HU` font size constants and small-font lump preference \u2014 not the full fallback chain.",
     "nativeRanges": [
       {
         "file": "src/gamedata/doomfont.cpp",
@@ -19,15 +21,6 @@
         "symbol": "InitDoomFonts small font",
         "start": 36,
         "end": 92,
-        "tests": [
-          "VmDoomFontPlannerTests.PlanSmallFont_PrefersFontAWhenPresent"
-        ]
-      },
-      {
-        "file": "src/gamedata/doomfont.cpp",
-        "symbol": "InitDoomFonts fallbacks",
-        "start": 120,
-        "end": 169,
         "tests": [
           "VmDoomFontPlannerTests.PlanSmallFont_PrefersFontAWhenPresent"
         ]

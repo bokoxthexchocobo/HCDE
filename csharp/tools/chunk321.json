@@ -2,32 +2,84 @@
   {
     "name": "g-mapinfo-options-media-env-chunk321",
     "bucket": "conversion",
-    "managedLoc": 120,
-    "note": "MAPINFO skymist through gravity air options",
+    "managedLoc": 54,
+    "note": "MAPINFO scalar/environment option clamps (trimmed)",
+    "auditSeams": "",
+    "auditRationale": "Credits skymist/skymistyscale/wavelimit/music and environment scalars exercised by map-option tests \u2014 not full DEFINE blocks through sucktime.",
     "nativeRanges": [
       {
         "file": "src/gamedata/g_mapinfo.cpp",
-        "symbol": "MAPINFO skymist sucktime",
-        "start": 1180,
-        "end": 1271,
+        "symbol": "skymist speed hexen hack",
+        "start": 1186,
+        "end": 1190,
         "tests": [
-          "VmMapInfoMapOptionsScalarsTests.ClampSkyMistYScale_Bounds",
-          "VmMapInfoMapOptionsScalarsTests.ClampWaveLimit_CapsAt3000",
+          "VmMapInfoMapOptionsScalarsTests.ClampSkyMistYScale_Bounds"
+        ]
+      },
+      {
+        "file": "src/gamedata/g_mapinfo.cpp",
+        "symbol": "skymistyscale clamp",
+        "start": 1197,
+        "end": 1198,
+        "tests": [
+          "VmMapInfoMapOptionsScalarsTests.ClampSkyMistYScale_Bounds"
+        ]
+      },
+      {
+        "file": "src/gamedata/g_mapinfo.cpp",
+        "symbol": "wavelimit clamp",
+        "start": 1254,
+        "end": 1256,
+        "tests": [
+          "VmMapInfoMapOptionsScalarsTests.ClampWaveLimit_CapsAt3000"
+        ]
+      },
+      {
+        "file": "src/gamedata/g_mapinfo.cpp",
+        "symbol": "music pair parse",
+        "start": 1273,
+        "end": 1276,
+        "tests": [
           "VmMapInfoMapOptionsScalarsTests.ParseMusicPair_PreservesOrder"
         ]
       },
       {
         "file": "src/gamedata/g_mapinfo.cpp",
-        "symbol": "MAPINFO fadetable gravity",
-        "start": 1297,
-        "end": 1373,
+        "symbol": "evenlighting",
+        "start": 1310,
+        "end": 1312,
         "tests": [
-          "VmMapInfoMapOptionsEnvironmentTests.ParseCdIdHex_ReadsHex",
-          "VmMapInfoMapOptionsEnvironmentTests.ClampWallShade_DividesByTwo",
-          "VmMapInfoMapOptionsEnvironmentTests.ApplyEvenLighting_ClearsSkySpeeds",
+          "VmMapInfoMapOptionsEnvironmentTests.ApplyEvenLighting_ClearsSkySpeeds"
+        ]
+      },
+      {
+        "file": "src/gamedata/g_mapinfo.cpp",
+        "symbol": "cdid hex parse",
+        "start": 1324,
+        "end": 1325,
+        "tests": [
+          "VmMapInfoMapOptionsEnvironmentTests.ParseCdIdHex_ReadsHex"
+        ]
+      },
+      {
+        "file": "src/gamedata/g_mapinfo.cpp",
+        "symbol": "wallshade halve clamp",
+        "start": 1338,
+        "end": 1339,
+        "tests": [
+          "VmMapInfoMapOptionsEnvironmentTests.ClampWallShade_DividesByTwo"
+        ]
+      },
+      {
+        "file": "src/gamedata/g_mapinfo.cpp",
+        "symbol": "nogravity",
+        "start": 1357,
+        "end": 1358,
+        "tests": [
           "VmMapInfoMapOptionsEnvironmentTests.ApplyNoGravity_ReturnsMax"
         ]
       }
-    ]
+    ],
+    "conversionManagedCommit": "f49971c89ddde51423abdc961c7e9ef0f39bf203"
   }
 ]

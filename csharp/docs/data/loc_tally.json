@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 14612,
+  "convertedThisRunNative": 12485,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 29143,
+  "convertedThisRunManaged": 28420,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": 151,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 469356,
+  "remainingNative": 471483,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 33139,
+  "convertedBehaviorNative": 31012,
   "recognitionBehaviorNative": 5591,
-  "combinedBehaviorNative": 38730,
-  "convertedBehaviorManaged": 38814,
+  "combinedBehaviorNative": 36603,
+  "convertedBehaviorManaged": 38091,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -9200,8 +9200,8 @@
     {
       "name": "sprite-init-hash-chunk212",
       "bucket": "conversion",
-      "managedLoc": 55,
-      "note": "R_InitSpriteDefs texture hash and voxel name spin parse.",
+      "managedLoc": 26,
+      "note": "R_InitSpriteDefs texture hash chain only (trimmed re-audit)",
       "nativeRanges": [
         {
           "file": "src/r_data/sprites.cpp",
@@ -9211,19 +9211,11 @@
           "tests": [
             "VmSpriteTextureHasherTests.BuildSpriteTextureChains_LinksSamePrefix"
           ]
-        },
-        {
-          "file": "src/r_data/sprites.cpp",
-          "symbol": "voxel name parse",
-          "start": 347,
-          "end": 395,
-          "tests": [
-            "VmVoxelSpinNameParserTests.TryParse_ReadsSpinSign"
-          ]
         }
       ],
       "conversionManagedCommit": "1509d90300cfd1ec535a43fd9dff5a3febd3bb9c",
-      "nativeLoc": 63
+      "nativeLoc": 14,
+      "auditRationale": "Credits `SpriteNameId` hash bucket linking in `R_InitSpriteDefs` \u2014 not the full voxel lump name scan loop."
     },
     {
       "name": "doomedmap-resolve-chunk213",
@@ -9321,8 +9313,8 @@
     {
       "name": "doomfont-planner-chunk216",
       "bucket": "conversion",
-      "managedLoc": 112,
-      "note": "InitDoomFonts lump selection and HU font constants.",
+      "managedLoc": 32,
+      "note": "HU font constants and InitDoomFonts small-font path (trimmed)",
       "nativeRanges": [
         {
           "file": "src/gamedata/doomfont.cpp",
@@ -9341,19 +9333,11 @@
           "tests": [
             "VmDoomFontPlannerTests.PlanSmallFont_PrefersFontAWhenPresent"
           ]
-        },
-        {
-          "file": "src/gamedata/doomfont.cpp",
-          "symbol": "InitDoomFonts fallbacks",
-          "start": 120,
-          "end": 169,
-          "tests": [
-            "VmDoomFontPlannerTests.PlanSmallFont_PrefersFontAWhenPresent"
-          ]
         }
       ],
       "conversionManagedCommit": "7a78aca3d301f3bebcdeb22796d9375f033fc1c3",
-      "nativeLoc": 112
+      "nativeLoc": 62,
+      "auditRationale": "Credits `HU` font size constants and small-font lump preference \u2014 not the full fallback chain."
     },
     {
       "name": "p-xlat-flags-chunk217",
@@ -9507,18 +9491,9 @@
     {
       "name": "umapinfo-schema-doomed-spawn-chunk222",
       "bucket": "conversion",
-      "managedLoc": 85,
-      "note": "UMAPINFO schema remainder, InitSpawnablesFromMapinfo and class-map helpers.",
+      "managedLoc": 37,
+      "note": "UMAPINFO token helpers and doomedmap strife tail (trimmed)",
       "nativeRanges": [
-        {
-          "file": "src/gamedata/umapinfo.cpp",
-          "symbol": "UMapEntry layout and helpers",
-          "start": 29,
-          "end": 83,
-          "tests": [
-            "VmUMapInfoSchemaTests.LumpNameFields_MatchesNativeLayout"
-          ]
-        },
         {
           "file": "src/gamedata/umapinfo.cpp",
           "symbol": "ParseMultiString clear branch",
@@ -9547,42 +9522,6 @@
           ]
         },
         {
-          "file": "src/gamedata/umapinfo.cpp",
-          "symbol": "ParseStandardProperty nextsecret sky",
-          "start": 223,
-          "end": 265,
-          "tests": [
-            "VmUMapInfoStandardPropertyParserTests.TryApplyProperty_SetsLevelName"
-          ]
-        },
-        {
-          "file": "src/gamedata/g_doomedmap.cpp",
-          "symbol": "InitSpawnablesFromMapinfo and dump",
-          "start": 1,
-          "end": 32,
-          "tests": [
-            "VmDoomEdSpawnInitTests.InitSpawnablesFromMapinfo_ResolvesClasses"
-          ]
-        },
-        {
-          "file": "src/gamedata/g_doomedmap.cpp",
-          "symbol": "Spawnable class map",
-          "start": 61,
-          "end": 97,
-          "tests": [
-            "VmDoomEdSpawnInitTests.SortClassMapForDump_OrdersByKey"
-          ]
-        },
-        {
-          "file": "src/gamedata/g_doomedmap.cpp",
-          "symbol": "CCMD spawnables",
-          "start": 306,
-          "end": 360,
-          "tests": [
-            "VmDoomEdSpawnInitTests.InitSpawnablesFromMapinfo_ResolvesClasses"
-          ]
-        },
-        {
           "file": "src/gamedata/g_doomedmap.cpp",
           "symbol": "Strife type clear",
           "start": 406,
@@ -9601,8 +9540,9 @@
           ]
         }
       ],
-      "nativeLoc": 265,
-      "conversionManagedCommit": "868d46235f564f4c230307d0847b2217d7d6fbdf"
+      "nativeLoc": 43,
+      "conversionManagedCommit": "868d46235f564f4c230307d0847b2217d7d6fbdf",
+      "auditRationale": "Credits small UMAPINFO parse branches and Strife spawnable clear \u2014 not full schema tables or CCMD bodies."
     },
     {
       "name": "p-xlat-boom-sector-expr-chunk223",
@@ -9854,8 +9794,8 @@
     {
       "name": "g-skill-globals-teaminfo-accessors-chunk228",
       "bucket": "conversion",
-      "managedLoc": 55,
-      "note": "g_skill globals/name assign; FTeam IsValid accessors and teamlist.",
+      "managedLoc": 31,
+      "note": "g_skill globals and TeamInfoOptions table (trimmed)",
       "nativeRanges": [
         {
           "file": "src/gamedata/g_skill.cpp",
@@ -9883,37 +9823,11 @@
           "tests": [
             "VmTeamInfoParserTests.ParseTeam_ReadsOptions"
           ]
-        },
-        {
-          "file": "src/gamedata/teaminfo.cpp",
-          "symbol": "FTeam default constructor",
-          "start": 107,
-          "end": 115,
-          "tests": [
-            "VmTeamInfoParserTests.ParseTeam_ReadsOptions"
-          ]
-        },
-        {
-          "file": "src/gamedata/teaminfo.cpp",
-          "symbol": "FTeam IsValid and accessors",
-          "start": 239,
-          "end": 328,
-          "tests": [
-            "VmTeamInfoParserTests.FormatTeamList_IncludesIndices"
-          ]
-        },
-        {
-          "file": "src/gamedata/teaminfo.cpp",
-          "symbol": "CCMD teamlist",
-          "start": 336,
-          "end": 344,
-          "tests": [
-            "VmTeamInfoParserTests.FormatTeamList_IncludesIndices"
-          ]
         }
       ],
-      "nativeLoc": 165,
-      "conversionManagedCommit": "524c57aec6a349af74bd68f3efe5d1b4b995530c"
+      "nativeLoc": 57,
+      "conversionManagedCommit": "524c57aec6a349af74bd68f3efe5d1b4b995530c",
+      "auditRationale": "Credits skill list globals, name token assign, and team option table \u2014 not `FTeam` accessor surface or `teamlist` CCMD."
     },
     {
       "name": "teaminfo-vm-export-chunk229",
@@ -9945,8 +9859,8 @@
     {
       "name": "p-terrain-keywords-init-chunk230",
       "bucket": "conversion",
-      "managedLoc": 75,
-      "note": "TERRAIN header/enums and keyword tables (gaps not in prior terrain chunks).",
+      "managedLoc": 47,
+      "note": "Terrain outer keyword table (trimmed)",
       "nativeRanges": [
         {
           "file": "src/gamedata/p_terrain.cpp",
@@ -9956,19 +9870,11 @@
           "tests": [
             "VmTerrainKeywordSchemaTests.OuterKeywords_MatchesNativeTable"
           ]
-        },
-        {
-          "file": "src/gamedata/p_terrain.cpp",
-          "symbol": "Terrain prototypes and keyword arrays",
-          "start": 101,
-          "end": 184,
-          "tests": [
-            "VmTerrainKeywordSchemaTests.LoadTerrainDocuments_ParsesSplashBlock"
-          ]
         }
       ],
-      "nativeLoc": 162,
-      "conversionManagedCommit": "797d52b69f89e166ce3586d434a59edd79dc13a7"
+      "nativeLoc": 78,
+      "conversionManagedCommit": "797d52b69f89e166ce3586d434a59edd79dc13a7",
+      "auditRationale": "Credits the `OuterKeywords` catalog mirrored by `VmTerrainKeywordSchema` \u2014 not splash prototype bodies."
     },
     {
       "name": "g-skill-teaminfo-gaps-chunk231",
@@ -10463,39 +10369,23 @@
     {
       "name": "gi-static-schema-chunk235",
       "bucket": "conversion",
-      "managedLoc": 85,
-      "note": "GameNames, border presets, GAMEINFO macro catalog from gi.cpp header.",
+      "managedLoc": 184,
+      "note": "GameNames and border preset tables (trimmed)",
       "nativeRanges": [
-        {
-          "file": "src/gamedata/gi.cpp",
-          "symbol": "gi.cpp file header",
-          "start": 1,
-          "end": 33,
-          "tests": [
-            "VmGameInfoStaticSchemaTests.GameNames_IncludesDoom"
-          ]
-        },
         {
           "file": "src/gamedata/gi.cpp",
           "symbol": "GameNames and border tables",
           "start": 73,
           "end": 111,
           "tests": [
+            "VmGameInfoStaticSchemaTests.GameNames_IncludesDoom",
             "VmGameInfoStaticSchemaTests.ResolveBorderPreset_HereticUsesFourBySixteen"
-          ]
-        },
-        {
-          "file": "src/gamedata/gi.cpp",
-          "symbol": "GAMEINFOKEY macro block",
-          "start": 113,
-          "end": 258,
-          "tests": [
-            "VmGiNativeExportRecognitionTests.GameInfoMacroKeys_IncludesTitleMusic"
           ]
         }
       ],
-      "nativeLoc": 218,
-      "conversionManagedCommit": "20d15060ccd8058244d9e6fca30fb9834482d81c"
+      "nativeLoc": 39,
+      "conversionManagedCommit": "91499df55478b48ada6d426351cae028ebb4920e",
+      "auditRationale": "Credits `GameNames[]` and border preset lookup \u2014 not the `GAMEINFOKEY` macro catalog or file banner."
     },
     {
       "name": "gi-parsegameinfo-macros-chunk236",
@@ -12452,23 +12342,9 @@
     {
       "name": "dehacked-dehsupp-map-sections-chunk313",
       "bucket": "conversion",
-      "managedLoc": 280,
-      "note": "LoadDehSupp StateMap SoundMap InfoNames ThingBits RenderStyles and section errors",
+      "managedLoc": 44,
+      "note": "DehSupp SoundMap InfoNames ThingBits and load errors (trimmed)",
       "nativeRanges": [
-        {
-          "file": "src/gamedata/d_dehacked.cpp",
-          "symbol": "StateMap",
-          "start": 3598,
-          "end": 3652,
-          "tests": [
-            "VmDehackedDehSuppStateMapTests.ShouldAppendToStateMap_OnlyWhenEmpty",
-            "VmDehackedDehSuppStateMapTests.IsPickupActor_DetectsMfSpecial",
-            "VmDehackedDehSuppStateMapTests.TryValidateActorType_RejectsNonActor",
-            "VmDehackedDehSuppStateMapTests.TryParseStateMapSection_BuildsDehExtStates",
-            "VmDehackedDehSuppStateMapTests.TryParseStateMapSection_SkipsAppendWhenExisting",
-            "VmDehackedDehSuppStateMapTests.TryParseStateMapSection_RejectsInvalidStateSpan"
-          ]
-        },
         {
           "file": "src/gamedata/d_dehacked.cpp",
           "symbol": "SoundMap",
@@ -12518,8 +12394,9 @@
           ]
         }
       ],
-      "nativeLoc": 124,
-      "conversionManagedCommit": "40ede3e2aa1f0990885b9acfc68278aac13df185"
+      "nativeLoc": 69,
+      "conversionManagedCommit": "40ede3e2aa1f0990885b9acfc68278aac13df185",
+      "auditRationale": "Credits secondary DehSupp sections and lump error gates \u2014 not the full `StateMap` actor/state expansion loop."
     },
     {
       "name": "dehacked-finish-pickup-chunk316",
@@ -12667,55 +12544,123 @@
     {
       "name": "g-mapinfo-options-media-env-chunk321",
       "bucket": "conversion",
-      "managedLoc": 120,
-      "note": "MAPINFO skymist through gravity air options",
+      "managedLoc": 54,
+      "note": "MAPINFO scalar/environment option clamps (trimmed)",
       "nativeRanges": [
         {
           "file": "src/gamedata/g_mapinfo.cpp",
-          "symbol": "MAPINFO skymist sucktime",
-          "start": 1180,
-          "end": 1271,
+          "symbol": "skymist speed hexen hack",
+          "start": 1186,
+          "end": 1190,
           "tests": [
-            "VmMapInfoMapOptionsScalarsTests.ClampSkyMistYScale_Bounds",
-            "VmMapInfoMapOptionsScalarsTests.ClampWaveLimit_CapsAt3000",
+            "VmMapInfoMapOptionsScalarsTests.ClampSkyMistYScale_Bounds"
+          ]
+        },
+        {
+          "file": "src/gamedata/g_mapinfo.cpp",
+          "symbol": "skymistyscale clamp",
+          "start": 1197,
+          "end": 1198,
+          "tests": [
+            "VmMapInfoMapOptionsScalarsTests.ClampSkyMistYScale_Bounds"
+          ]
+        },
+        {
+          "file": "src/gamedata/g_mapinfo.cpp",
+          "symbol": "wavelimit clamp",
+          "start": 1254,
+          "end": 1256,
+          "tests": [
+            "VmMapInfoMapOptionsScalarsTests.ClampWaveLimit_CapsAt3000"
+          ]
+        },
+        {
+          "file": "src/gamedata/g_mapinfo.cpp",
+          "symbol": "music pair parse",
+          "start": 1273,
+          "end": 1276,
+          "tests": [
             "VmMapInfoMapOptionsScalarsTests.ParseMusicPair_PreservesOrder"
           ]
         },
         {
           "file": "src/gamedata/g_mapinfo.cpp",
-          "symbol": "MAPINFO fadetable gravity",
-          "start": 1297,
-          "end": 1373,
+          "symbol": "evenlighting",
+          "start": 1310,
+          "end": 1312,
           "tests": [
-            "VmMapInfoMapOptionsEnvironmentTests.ParseCdIdHex_ReadsHex",
-            "VmMapInfoMapOptionsEnvironmentTests.ClampWallShade_DividesByTwo",
-            "VmMapInfoMapOptionsEnvironmentTests.ApplyEvenLighting_ClearsSkySpeeds",
+            "VmMapInfoMapOptionsEnvironmentTests.ApplyEvenLighting_ClearsSkySpeeds"
+          ]
+        },
+        {
+          "file": "src/gamedata/g_mapinfo.cpp",
+          "symbol": "cdid hex parse",
+          "start": 1324,
+          "end": 1325,
+          "tests": [
+            "VmMapInfoMapOptionsEnvironmentTests.ParseCdIdHex_ReadsHex"
+          ]
+        },
+        {
+          "file": "src/gamedata/g_mapinfo.cpp",
+          "symbol": "wallshade halve clamp",
+          "start": 1338,
+          "end": 1339,
+          "tests": [
+            "VmMapInfoMapOptionsEnvironmentTests.ClampWallShade_DividesByTwo"
+          ]
+        },
+        {
+          "file": "src/gamedata/g_mapinfo.cpp",
+          "symbol": "nogravity",
+          "start": 1357,
+          "end": 1358,
+          "tests": [
             "VmMapInfoMapOptionsEnvironmentTests.ApplyNoGravity_ReturnsMax"
           ]
         }
       ],
-      "nativeLoc": 169,
-      "conversionManagedCommit": "f49971c89ddde51423abdc961c7e9ef0f39bf203"
+      "nativeLoc": 23,
+      "conversionManagedCommit": "f49971c89ddde51423abdc961c7e9ef0f39bf203",
+      "auditRationale": "Credits skymist/skymistyscale/wavelimit/music and environment scalars exercised by map-option tests \u2014 not full DEFINE blocks through sucktime."
     },
     {
       "name": "g-mapinfo-options-pics-chunk322",
       "bucket": "conversion",
-      "managedLoc": 18,
-      "note": "MAPINFO inter exit enter picture options",
+      "managedLoc": 17,
+      "note": "MAPINFO inter/exit/enter picture assigns (trimmed)",
       "nativeRanges": [
         {
           "file": "src/gamedata/g_mapinfo.cpp",
-          "symbol": "MAPINFO inter exit enter pics",
+          "symbol": "interpic",
           "start": 1375,
-          "end": 1420,
+          "end": 1380,
           "tests": [
-            "VmMapInfoMapOptionsPicsTests.ApplyInterPic_SetsLabel",
+            "VmMapInfoMapOptionsPicsTests.ApplyInterPic_SetsLabel"
+          ]
+        },
+        {
+          "file": "src/gamedata/g_mapinfo.cpp",
+          "symbol": "exitpic",
+          "start": 1382,
+          "end": 1387,
+          "tests": [
             "VmMapInfoMapOptionsPicsTests.ApplyExitPic_SetsNextMap"
+          ]
+        },
+        {
+          "file": "src/gamedata/g_mapinfo.cpp",
+          "symbol": "enterpic",
+          "start": 1389,
+          "end": 1394,
+          "tests": [
+            "VmMapInfoMapOptionsPicsTests.ApplyInterPic_SetsLabel"
           ]
         }
       ],
-      "nativeLoc": 46,
-      "conversionManagedCommit": "7aaf320d20a8c826a93c8f41d3c1b51ed05ba4cd"
+      "nativeLoc": 18,
+      "conversionManagedCommit": "7aaf320d20a8c826a93c8f41d3c1b51ed05ba4cd",
+      "auditRationale": "Credits string assignment for inter/exit/enter pics \u2014 not anim/specialaction tails."
     },
     {
       "name": "g-mapinfo-options-late-chunk323",
@@ -12788,36 +12733,40 @@
     {
       "name": "hcde-emapinfo-primitives-head-chunk325",
       "bucket": "conversion",
-      "managedLoc": 130,
-      "note": "EMAPINFO string helpers value list bool int double flags levelnum registry",
+      "managedLoc": 25,
+      "note": "EMAPINFO normalize and SplitValueList/ParseBool (trimmed)",
       "auditSeams": "Anonymous-namespace stats tables and `wadlevelinfos` mutation are not hosted; `RememberEMapInfoMap` is a managed set and strict parsers reject trailing junk like `strtol`/`strtod` guards.",
-      "auditRationale": "Credits the uncredited head of `hcde_emapinfo.cpp` before chunk 273's `StripLineComment` row: trim/quote/normalize helpers, map-name registry, `SplitValueList`, strict bool/int/double parsers, signed/unsigned `SetFlag`, and the full `GetDefaultLevelNum` MAP/E#M# heuristic exercised by the new tests. Skips chunk 273's 124\u2013167 rows and chunk 283's 294\u2013301 tail already in tally.",
+      "auditRationale": "Credits `NormalizeResourceName`, `SplitValueList`, and empty-true `ParseBool` \u2014 not the full primitive block through `SetFlag`/`ParseDouble`.",
       "nativeRanges": [
         {
           "file": "src/gamedata/hcde_emapinfo.cpp",
-          "symbol": "Trim through RememberEMapInfoMap",
-          "start": 55,
-          "end": 122,
+          "symbol": "NormalizeResourceName",
+          "start": 104,
+          "end": 112,
           "tests": [
-            "VmEMapInfoLineParserTests.NormalizeResourceName_StripsLeadingSlashes",
-            "VmEMapInfoRegistryTests.RememberMap_TracksNames"
+            "VmEMapInfoLineParserTests.NormalizeResourceName_StripsLeadingSlashes"
           ]
         },
         {
           "file": "src/gamedata/hcde_emapinfo.cpp",
-          "symbol": "SplitValueList ParseBool ParseInt ParseDouble SetFlag",
+          "symbol": "SplitValueList",
           "start": 174,
-          "end": 290,
+          "end": 201,
           "tests": [
-            "VmEMapInfoLineParserTests.SplitValueList_SplitsOnComma",
-            "VmEMapInfoLineParserTests.TryParseBool_TreatsEmptyAsTrue",
-            "VmEMapInfoParsePrimitivesTests.TryParseIntStrict_RejectsTrailingGarbage",
-            "VmEMapInfoParsePrimitivesTests.TryParseDoubleStrict_ParsesDecimal",
-            "VmEMapInfoParsePrimitivesTests.SetFlag_TogglesSignedBits"
+            "VmEMapInfoLineParserTests.SplitValueList_SplitsOnComma"
+          ]
+        },
+        {
+          "file": "src/gamedata/hcde_emapinfo.cpp",
+          "symbol": "ParseBool empty true",
+          "start": 205,
+          "end": 209,
+          "tests": [
+            "VmEMapInfoLineParserTests.TryParseBool_TreatsEmptyAsTrue"
           ]
         }
       ],
-      "nativeLoc": 185,
+      "nativeLoc": 42,
       "conversionManagedCommit": "b087fb7a7966cafc27943be5e340a1b3bcce65ef"
     },
     {
@@ -12856,198 +12805,206 @@
     {
       "name": "hcde-emapinfo-apply-block-chunk327",
       "bucket": "conversion",
-      "managedLoc": 55,
-      "note": "EMAPINFO ApplyInt Double BossSpecials DefaultEnvironment lump head",
+      "managedLoc": 41,
+      "note": "EMAPINFO ApplyInt/Double/BossSpecials and lump normalize (trimmed)",
       "auditSeams": "`HCDEReverbContainers` and `fileSystem` lump lookup are injected; boss-special bit masks use placeholder flags consistent with earlier `TryParseBossSpecialFlag` chunk.",
-      "auditRationale": "Credits `hcde_emapinfo.cpp` 404\u2013533 between the chunk 284 `ApplyBoolProperty` row and chunk 286 lump tail: int/double apply wrappers, boss-special list parsing, Eternity reverb ID resolution with unsupported fallback, and the first segment of `ResolveSiblingLump` name normalization exercised by the apply/lump tests.",
+      "auditRationale": "Credits typed apply wrappers, `E1M8` boss-special bit, and `NormalizeResourceName` head used by lump resolve tests.",
       "nativeRanges": [
         {
           "file": "src/gamedata/hcde_emapinfo.cpp",
-          "symbol": "ApplyInt ApplyDouble ApplyBossSpecials",
+          "symbol": "ApplyIntProperty",
           "start": 405,
-          "end": 464,
+          "end": 413,
           "tests": [
-            "VmEMapInfoApplyHelpersTests.ApplyIntProperty_RejectsBadNumber",
+            "VmEMapInfoApplyHelpersTests.ApplyIntProperty_RejectsBadNumber"
+          ]
+        },
+        {
+          "file": "src/gamedata/hcde_emapinfo.cpp",
+          "symbol": "ApplyDoubleProperty",
+          "start": 415,
+          "end": 423,
+          "tests": [
+            "VmEMapInfoApplyHelpersTests.ApplyDoubleProperty_RejectsBadToken"
+          ]
+        },
+        {
+          "file": "src/gamedata/hcde_emapinfo.cpp",
+          "symbol": "ApplyBossSpecials E1M8",
+          "start": 436,
+          "end": 439,
+          "tests": [
             "VmEMapInfoApplyHelpersTests.ApplyBossSpecials_ParsesE1M8"
           ]
         },
         {
           "file": "src/gamedata/hcde_emapinfo.cpp",
-          "symbol": "ApplyDefaultEnvironment ResolveSiblingLump head",
-          "start": 466,
-          "end": 533,
+          "symbol": "ResolveSiblingLump empty name",
+          "start": 519,
+          "end": 523,
           "tests": [
-            "VmEMapInfoApplyHelpersTests.ApplyDefaultEnvironment_RecordsUnsupportedWhenMissing",
-            "VmEMapInfoApplyHelpersTests.ApplyDefaultEnvironment_ResolvesKnownReverb",
-            "VmEMapInfoApplyHelpersTests.ApplyDoubleProperty_RejectsBadToken",
             "VmEMapInfoLumpResolveTests.NormalizeLumpLookupName_NormalizesSlashes"
           ]
         }
       ],
-      "nativeLoc": 128,
+      "nativeLoc": 27,
       "conversionManagedCommit": "5e9cfd300693278354535a2051930dc9fed1da76"
-    },
-    {
-      "name": "g-mapinfo-hcde-shadow-map-chunk328",
-      "bucket": "conversion",
-      "managedLoc": 40,
-      "note": "MAPINFO hcde_shadow profile quality maxlights option bodies",
-      "auditSeams": "Clamping helpers remain in `VmMapInfoHcdeShadowOptions`; this chunk models the DEFINE_MAP_OPTION bodies that assign map-level overrides.",
-      "auditRationale": "Fills uncredited gaps in `g_mapinfo.cpp` 1738\u20131826 around chunk 271's spot rows: full `hcde_shadowprofile`, `hcde_shadowqualitycap`, and `hcde_shadowmaxlightscap` assignment paths including negative clear semantics and tier normalization calls.",
-      "nativeRanges": [
-        {
-          "file": "src/gamedata/g_mapinfo.cpp",
-          "symbol": "hcde_shadowprofile body",
-          "start": 1738,
-          "end": 1778,
-          "tests": [
-            "VmMapInfoHcdeShadowMapOptionsTests.ApplyShadowProfile_ClampsHigh"
-          ]
-        },
-        {
-          "file": "src/gamedata/g_mapinfo.cpp",
-          "symbol": "hcde_shadowqualitycap assign head",
-          "start": 1783,
-          "end": 1791,
-          "tests": [
-            "VmMapInfoHcdeShadowMapOptionsTests.ApplyShadowQualityCap_ClearsWhenNegative"
-          ]
-        },
-        {
-          "file": "src/gamedata/g_mapinfo.cpp",
-          "symbol": "hcde_shadowmaxlightscap body",
-          "start": 1801,
-          "end": 1826,
-          "tests": [
-            "VmMapInfoHcdeShadowMapOptionsTests.ApplyShadowMaxLightsCap_CapsAt1024"
-          ]
-        }
-      ],
-      "nativeLoc": 76,
-      "conversionManagedCommit": "97caf3bcaa63ade7aeeea92ca687a5175bca3afa"
     },
     {
       "name": "g-mapinfo-script-flags-head-chunk329",
       "bucket": "conversion",
-      "managedLoc": 45,
-      "note": "MAPINFO edata loadacs intro outro and MapFlagHandlers table head",
+      "managedLoc": 24,
+      "note": "MAPINFO edata/intro and e1m8special row (trimmed)",
       "auditSeams": "`ParseCutscene` is reduced to lump string assignment; `MapFlagHandlers` rows keep placeholder flag constants matching the native table layout without loading `level_info_t` flag words.",
-      "auditRationale": "Credits the uncredited `g_mapinfo.cpp` band before the falling-damage rows: `edata`/`loadacs` string options, intro/outro cutscene lumps, the `EMIType`/`MapInfoFlagHandler` schema, and the first special/boss flag entries through `nojump` that extend the managed handler catalog tested here.",
+      "auditRationale": "Credits `edata`/`intro` string assigns and the `e1m8special` handler catalog row \u2014 not the full `MapFlagHandlers` head.",
       "nativeRanges": [
         {
           "file": "src/gamedata/g_mapinfo.cpp",
-          "symbol": "edata loadacs intro outro",
+          "symbol": "edata assign",
           "start": 1892,
-          "end": 1914,
+          "end": 1897,
           "tests": [
-            "VmMapInfoMapOptionsScriptTests.ApplyEdName_SetsField",
+            "VmMapInfoMapOptionsScriptTests.ApplyEdName_SetsField"
+          ]
+        },
+        {
+          "file": "src/gamedata/g_mapinfo.cpp",
+          "symbol": "intro cutscene",
+          "start": 1906,
+          "end": 1909,
+          "tests": [
             "VmMapInfoMapOptionsScriptTests.ApplyIntroCutscene_SetsLump"
           ]
         },
         {
           "file": "src/gamedata/g_mapinfo.cpp",
-          "symbol": "MapFlagHandlers table head",
-          "start": 1923,
-          "end": 1978,
+          "symbol": "e1m8special handler row",
+          "start": 1960,
+          "end": 1960,
           "tests": [
             "VmMapInfoFlagHandlersTests.TryGetHandler_FindsE1M8Special"
           ]
         }
       ],
-      "nativeLoc": 79,
+      "nativeLoc": 11,
       "conversionManagedCommit": "9531f1c0f019d32272ee67cc657ad01404522e20"
     },
     {
       "name": "g-mapinfo-flag-table-mid-chunk330",
       "bucket": "conversion",
-      "managedLoc": 35,
-      "note": "MapFlagHandlers falling damage through compat_nofriendlyspawn rows",
+      "managedLoc": 17,
+      "note": "MapFlagHandlers strife/compat rows (trimmed)",
       "auditSeams": "Handler rows keep placeholder `LEVEL_*`/`COMPATF_*` bit values; only catalog lookup and flag-apply helpers are modeled.",
-      "auditRationale": "Credits the uncredited `MapFlagHandlers[]` continuation 1980\u20132095 between chunk 329's `nojump` row and the CD-track `MITYPE_EATNEXT` rows on chunk 296: falling-damage variants, inventory/teamplay/checkswitch flags, LEVEL3 rendering toggles, and the compat-flag tail through `compat_nofriendlyspawn`.",
+      "auditRationale": "Credits only handler rows referenced by mid-table lookup tests.",
       "nativeRanges": [
         {
           "file": "src/gamedata/g_mapinfo.cpp",
-          "symbol": "MapFlagHandlers mid table",
-          "start": 1980,
-          "end": 2095,
+          "symbol": "strifefallingdamage row",
+          "start": 1983,
+          "end": 1983,
           "tests": [
-            "VmMapInfoFlagHandlersMidTests.TryGetHandler_FindsStrifeFallingDamage",
+            "VmMapInfoFlagHandlersMidTests.TryGetHandler_FindsStrifeFallingDamage"
+          ]
+        },
+        {
+          "file": "src/gamedata/g_mapinfo.cpp",
+          "symbol": "compat_noid24 row",
+          "start": 2091,
+          "end": 2091,
+          "tests": [
             "VmMapInfoFlagHandlersMidTests.TryGetHandler_FindsCompatNoid24"
           ]
         }
       ],
-      "nativeLoc": 116,
+      "nativeLoc": 2,
       "conversionManagedCommit": "9cd1c34f4eef953957cb97227a3ea12ea4b27c0b"
     },
     {
       "name": "g-mapinfo-flag-apply-switch-chunk331",
       "bucket": "conversion",
-      "managedLoc": 55,
-      "note": "ParseMapDefinition MapFlagHandlers switch MITYPE apply paths",
+      "managedLoc": 39,
+      "note": "ParseMapDefinition MITYPE flag apply arms (trimmed)",
       "auditSeams": "`FMapInfoParser` scanner, `AutoSegs::MapInfoOptions`, and unknown-property recovery are not hosted; switch arms are pure flag-word mutations on `VmMapInfoLevelFlags`.",
-      "auditRationale": "Covers `g_mapinfo.cpp` 2148\u20132285: the `MITYPE_CLRFLAG` through `MITYPE_COMPATFLAG` arms inside `ParseMapDefinition`, including optional-assignment toggles for new-format compat flags and the early exit into custom `MapInfoOptions` dispatch when no handler matches.",
+      "auditRationale": "Credits `MITYPE_SETFLAG2`, `MITYPE_SCFLAGS2`, and `MITYPE_CLRCOMPATFLAG` switch arms only.",
       "nativeRanges": [
         {
           "file": "src/gamedata/g_mapinfo.cpp",
-          "symbol": "ParseMapDefinition flag switch",
-          "start": 2148,
-          "end": 2285,
+          "symbol": "MITYPE_SETFLAG2",
+          "start": 2159,
+          "end": 2171,
           "tests": [
-            "VmMapInfoFlagApplyTests.ApplyScFlags2_MergesTeamplayOn",
-            "VmMapInfoFlagApplyTests.ApplySetFlag2_TogglesWithAssign",
+            "VmMapInfoFlagApplyTests.ApplySetFlag2_TogglesWithAssign"
+          ]
+        },
+        {
+          "file": "src/gamedata/g_mapinfo.cpp",
+          "symbol": "MITYPE_SCFLAGS2",
+          "start": 2178,
+          "end": 2180,
+          "tests": [
+            "VmMapInfoFlagApplyTests.ApplyScFlags2_MergesTeamplayOn"
+          ]
+        },
+        {
+          "file": "src/gamedata/g_mapinfo.cpp",
+          "symbol": "MITYPE_CLRCOMPATFLAG",
+          "start": 2205,
+          "end": 2210,
+          "tests": [
             "VmMapInfoFlagApplyTests.ApplyClearCompat_SetsMask"
           ]
         }
       ],
-      "nativeLoc": 138,
+      "nativeLoc": 22,
       "conversionManagedCommit": "0465a296c165af1d871e8d49ec2223e87ad58f9f"
     },
     {
       "name": "g-mapinfo-parse-header-chunk332",
       "bucket": "conversion",
-      "managedLoc": 48,
-      "note": "GetDefaultLevelNum and ParseMapHeader map title paths",
+      "managedLoc": 59,
+      "note": "GetDefaultLevelNum and ParseMapHeader title paths (trimmed)",
       "auditSeams": "`GStrings`, `HexenMusic`, and `wadlevelinfos` storage are injected or reduced to draft fields; Hexen IWAD localization is represented only by the lookup-level-name decision.",
-      "auditRationale": "Fills 2295\u20132443 in `g_mapinfo.cpp`: the file-local `GetDefaultLevelNum` helper and `ParseMapHeader` map-name token handling, Hexen-hack default flag seeding, `$`/lookup level titles, and default `levelnum` assignment ahead of episode parsing at 2459.",
+      "auditRationale": "Credits MAP/E#M# default levelnum, Hexen numeric map token, `$` title prefix, and default levelnum assign \u2014 not full `ParseMapHeader` body.",
       "nativeRanges": [
         {
           "file": "src/gamedata/g_mapinfo.cpp",
-          "symbol": "GetDefaultLevelNum ParseMapHeader",
-          "start": 2295,
-          "end": 2443,
+          "symbol": "GetDefaultLevelNum MAP branch",
+          "start": 2297,
+          "end": 2305,
           "tests": [
-            "VmMapInfoParseMapHeaderTests.ResolveMapNameToken_OldHexenNumber",
-            "VmMapInfoParseMapHeaderTests.ApplyLevelTitle_DollarPrefixSetsLookup",
+            "VmMapInfoParseMapHeaderTests.AssignDefaultLevelNum_ParsesMap01"
+          ]
+        },
+        {
+          "file": "src/gamedata/g_mapinfo.cpp",
+          "symbol": "ParseMapHeader Hexen number token",
+          "start": 2341,
+          "end": 2345,
+          "tests": [
+            "VmMapInfoParseMapHeaderTests.ResolveMapNameToken_OldHexenNumber"
+          ]
+        },
+        {
+          "file": "src/gamedata/g_mapinfo.cpp",
+          "symbol": "ParseMapHeader dollar title",
+          "start": 2382,
+          "end": 2387,
+          "tests": [
+            "VmMapInfoParseMapHeaderTests.ApplyLevelTitle_DollarPrefixSetsLookup"
+          ]
+        },
+        {
+          "file": "src/gamedata/g_mapinfo.cpp",
+          "symbol": "default levelnum assign",
+          "start": 2430,
+          "end": 2432,
+          "tests": [
             "VmMapInfoParseMapHeaderTests.AssignDefaultLevelNum_ParsesMap01"
           ]
         }
       ],
-      "nativeLoc": 149,
+      "nativeLoc": 23,
       "conversionManagedCommit": "ffb09f7b037de026d3b2515afca8e5b2bc045eb0"
-    },
-    {
-      "name": "hcde-emapinfo-property-dispatch-chunk333",
-      "bucket": "conversion",
-      "managedLoc": 75,
-      "note": "ResolveSiblingLump tail and ApplyEMapInfoProperty through gravity",
-      "auditSeams": "`fileSystem` lump checks are reduced to short-name heuristics; `level_info_t` fields map onto `VmEMapInfoLevelDraft` without touching the native parse loop.",
-      "auditRationale": "Credits `hcde_emapinfo.cpp` 539\u2013663: sibling lump short-name fallback, `ResolveExtraDataLump` wiring, and the first `ApplyEMapInfoProperty` keys through `gravity`/`colormap`/`disable-jump` exercised by the dispatch tests.",
-      "nativeRanges": [
-        {
-          "file": "src/gamedata/hcde_emapinfo.cpp",
-          "symbol": "ResolveSiblingLump ApplyEMapInfoProperty head",
-          "start": 539,
-          "end": 663,
-          "tests": [
-            "VmEMapInfoPropertyDispatchTests.ShouldTryShortLumpName_RejectsLongNames",
-            "VmEMapInfoPropertyDispatchTests.TryApplyLevelName_SetsTitle",
-            "VmEMapInfoPropertyDispatchTests.TryApplyGravity_ZeroIsMax",
-            "VmEMapInfoPropertyDispatchTests.TryApplyDisableJump_SetsFlag"
-          ]
-        }
-      ],
-      "nativeLoc": 125,
-      "conversionManagedCommit": "73a3a7ffdd335a0394a9191c1d089af278ad7a1f"
     },
     {
       "name": "hcde-emapinfo-property-tail-chunk334",
@@ -13117,55 +13074,50 @@
     {
       "name": "dehacked-mbf-scratch-sound-chunk336",
       "bucket": "conversion",
-      "managedLoc": 22,
-      "note": "MBF CreateScratchFunc and CreatePlaySoundFunc parameter packing",
+      "managedLoc": 17,
+      "note": "MBF scratch/jump/line-effect emitters (trimmed)",
       "auditSeams": "`FunctionCallEmitter` and `DehFindSound` are injected via a sound-index callback; only the misc1/misc2 argument shaping is modeled.",
-      "auditRationale": "Credits uncredited `d_dehacked.cpp` 849\u2013934 between earlier MBF rows and the credited emitter tail: random jump state label packing, Boom line-effect special/tag args, and the spawn/monster projectile emitter parameter lists.",
+      "auditRationale": "Credits `CreateScratchFunc` (avoiding chunk 293 sound-index rows), `CreateRandomJumpFunc`, and `CreateLineEffectFunc` argument packing.",
       "nativeRanges": [
         {
           "file": "src/gamedata/d_dehacked.cpp",
-          "symbol": "CreateRandomJump CreateLineEffect emitters",
-          "start": 849,
-          "end": 934,
+          "symbol": "CreateScratchFunc body",
+          "start": 829,
+          "end": 830,
           "tests": [
-            "VmDehackedMbfScratchSoundTests.RandomJumpArgs_ResolvesStateLabel",
-            "VmDehackedMbfScratchSoundTests.LineEffectArgs_PassesSpecialAndTag",
             "VmDehackedMbfScratchSoundTests.ScratchMeleeArgs_ResolvesHitSound"
-          ]
-        }
-      ],
-      "nativeLoc": 86,
-      "conversionManagedCommit": "af911e170e4a161a67570a8748e9905b68f6d162"
-    },
-    {
-      "name": "g-mapinfo-episode-head-chunk337",
-      "bucket": "conversion",
-      "managedLoc": 12,
-      "note": "ParseMapDefinition close and ParseEpisodeInfo teaser head",
-      "auditSeams": "Scanner `CheckEndOfFile` and shareware `gameinfo` flags are modeled as pure string helpers on `VmMapInfoEpisodeParser`.",
-      "auditRationale": "Fills the small `g_mapinfo.cpp` gaps 2286\u20132294 (post-`ParseMapDefinition` comment header before file-local `GetDefaultLevelNum`) and 2444\u20132475 (`ParseEpisodeInfo` prologue through shareware teaser map selection).",
-      "nativeRanges": [
-        {
-          "file": "src/gamedata/g_mapinfo.cpp",
-          "symbol": "ParseMapDefinition tail comment",
-          "start": 2286,
-          "end": 2294,
-          "tests": [
-            "VmMapInfoEpisodeParserTests.TryResolveTeaserMap_UsesTeaserWhenShareware"
           ]
         },
         {
-          "file": "src/gamedata/g_mapinfo.cpp",
-          "symbol": "ParseEpisodeInfo map teaser",
-          "start": 2444,
-          "end": 2475,
+          "file": "src/gamedata/d_dehacked.cpp",
+          "symbol": "CreateScratchFunc sound args",
+          "start": 833,
+          "end": 837,
           "tests": [
-            "VmMapInfoEpisodeParserTests.TryResolveTeaserMap_UsesTeaserWhenShareware"
+            "VmDehackedMbfScratchSoundTests.ScratchMeleeArgs_ResolvesHitSound"
+          ]
+        },
+        {
+          "file": "src/gamedata/d_dehacked.cpp",
+          "symbol": "CreateRandomJumpFunc",
+          "start": 851,
+          "end": 858,
+          "tests": [
+            "VmDehackedMbfScratchSoundTests.RandomJumpArgs_ResolvesStateLabel"
+          ]
+        },
+        {
+          "file": "src/gamedata/d_dehacked.cpp",
+          "symbol": "CreateLineEffectFunc",
+          "start": 861,
+          "end": 870,
+          "tests": [
+            "VmDehackedMbfScratchSoundTests.LineEffectArgs_PassesSpecialAndTag"
           ]
         }
       ],
-      "nativeLoc": 41,
-      "conversionManagedCommit": "348c44a1ba407a6393d5c04f0198c68bd6832e35"
+      "nativeLoc": 25,
+      "conversionManagedCommit": "af911e170e4a161a67570a8748e9905b68f6d162"
     },
     {
       "name": "hcde-emapinfo-document-loop-chunk338",
@@ -13202,46 +13154,79 @@
     {
       "name": "dehacked-mbf-pointer-emitters-chunk339",
       "bucket": "conversion",
-      "managedLoc": 28,
-      "note": "MBF CreateFindTracer through weapon bullet emitters",
+      "managedLoc": 17,
+      "note": "MBF tracer/seeker/tracer2/bullet defaults (trimmed)",
       "auditSeams": "`MBFParamState` and `FunctionCallEmitter` are not re-hosted; managed code mirrors default-argument behavior from the native emitter thunks.",
-      "auditRationale": "Credits uncredited `d_dehacked.cpp` 936\u20131098: tracer/seeker/tracer2/jump/flag-set and weapon attack emitter parameter packing including DEH alias defaults (50/10 seeker angles, 19.6875 tracer2, weapon bullet counts).",
+      "auditRationale": "Credits default-argument packing for tracer-family emitters and weapon bullet counts \u2014 not the full emitter table through melee attack.",
       "nativeRanges": [
         {
           "file": "src/gamedata/d_dehacked.cpp",
-          "symbol": "CreateFindTracer through CreateWeaponMeleeAttack",
+          "symbol": "CreateFindTracerFunc",
           "start": 936,
-          "end": 1098,
+          "end": 941,
           "tests": [
-            "VmDehackedMbfPointerEmittersTests.FindTracerArgs_DefaultsRange",
-            "VmDehackedMbfPointerEmittersTests.SeekerMissileArgs_AppliesDefaults",
+            "VmDehackedMbfPointerEmittersTests.FindTracerArgs_DefaultsRange"
+          ]
+        },
+        {
+          "file": "src/gamedata/d_dehacked.cpp",
+          "symbol": "CreateSeekerMissileFunc",
+          "start": 943,
+          "end": 952,
+          "tests": [
+            "VmDehackedMbfPointerEmittersTests.SeekerMissileArgs_AppliesDefaults"
+          ]
+        },
+        {
+          "file": "src/gamedata/d_dehacked.cpp",
+          "symbol": "CreateTracer2Func",
+          "start": 954,
+          "end": 959,
+          "tests": [
             "VmDehackedMbfPointerEmittersTests.Tracer2Angle_UsesDefaultWhenZero"
           ]
         }
       ],
-      "nativeLoc": 163,
+      "nativeLoc": 22,
       "conversionManagedCommit": "01ed52cec6f788294d93c451194c49174b1e9c65"
     },
     {
       "name": "am-map-cvar-head-chunk340",
       "bucket": "conversion",
-      "managedLoc": 24,
-      "note": "Automap globals constants and CVAR clamp/cheat gates",
+      "managedLoc": 20,
+      "note": "Automap constants cheat gate and margin clamp (trimmed)",
       "auditSeams": "Engine `CVAR`/`CUSTOM_CVAR` registration and `primaryLevel->automap` callbacks are not re-hosted; only numeric policy from the opening `am_map.cpp` block is modeled.",
-      "auditRationale": "First whole-file port slice for untouched `am_map.cpp`: automap mark-point count, player radius, zoom rates, `am_emptyspacemargin` clamp 0\u201390, and net-game `am_cheat` rejection when `sv_cheats` is off.",
+      "auditRationale": "Credits automap numeric constants, net-game `am_cheat` gate, and `am_emptyspacemargin` clamp \u2014 not CVAR registration blocks.",
       "nativeRanges": [
         {
           "file": "src/am_map.cpp",
-          "symbol": "Automap constants and CVAR head",
+          "symbol": "Automap numeric constants",
           "start": 66,
-          "end": 183,
+          "end": 76,
           "tests": [
-            "VmAutomapCvarModelTests.ClampEmptySpaceMargin_Bounds",
+            "VmAutomapCvarModelTests.ClampEmptySpaceMargin_Bounds"
+          ]
+        },
+        {
+          "file": "src/am_map.cpp",
+          "symbol": "am_cheat net gate",
+          "start": 135,
+          "end": 139,
+          "tests": [
             "VmAutomapCvarModelTests.ShouldBlockAutomapCheat_WhenNetNoCheats"
+          ]
+        },
+        {
+          "file": "src/am_map.cpp",
+          "symbol": "am_emptyspacemargin clamp",
+          "start": 170,
+          "end": 177,
+          "tests": [
+            "VmAutomapCvarModelTests.ClampEmptySpaceMargin_Bounds"
           ]
         }
       ],
-      "nativeLoc": 118,
+      "nativeLoc": 24,
       "conversionManagedCommit": "d567e408bbdc4a5c120cd82526bca36c5c05fe95"
     },
     {

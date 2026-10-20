@@ -2,8 +2,10 @@
   {
     "name": "p-terrain-keywords-init-chunk230",
     "bucket": "conversion",
-    "managedLoc": 75,
-    "note": "TERRAIN header/enums and keyword tables (gaps not in prior terrain chunks).",
+    "managedLoc": 47,
+    "note": "Terrain outer keyword table (trimmed)",
+    "auditSeams": "",
+    "auditRationale": "Credits the `OuterKeywords` catalog mirrored by `VmTerrainKeywordSchema` \u2014 not splash prototype bodies.",
     "nativeRanges": [
       {
         "file": "src/gamedata/p_terrain.cpp",
@@ -13,16 +15,8 @@
         "tests": [
           "VmTerrainKeywordSchemaTests.OuterKeywords_MatchesNativeTable"
         ]
-      },
-      {
-        "file": "src/gamedata/p_terrain.cpp",
-        "symbol": "Terrain prototypes and keyword arrays",
-        "start": 101,
-        "end": 184,
-        "tests": [
-          "VmTerrainKeywordSchemaTests.LoadTerrainDocuments_ParsesSplashBlock"
-        ]
       }
-    ]
+    ],
+    "conversionManagedCommit": "797d52b69f89e166ce3586d434a59edd79dc13a7"
   }
 ]

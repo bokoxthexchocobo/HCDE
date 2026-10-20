@@ -2,22 +2,48 @@
   {
     "name": "g-mapinfo-parse-header-chunk332",
     "bucket": "conversion",
-    "managedLoc": 48,
-    "note": "GetDefaultLevelNum and ParseMapHeader map title paths",
+    "managedLoc": 59,
+    "note": "GetDefaultLevelNum and ParseMapHeader title paths (trimmed)",
     "auditSeams": "`GStrings`, `HexenMusic`, and `wadlevelinfos` storage are injected or reduced to draft fields; Hexen IWAD localization is represented only by the lookup-level-name decision.",
-    "auditRationale": "Fills 2295–2443 in `g_mapinfo.cpp`: the file-local `GetDefaultLevelNum` helper and `ParseMapHeader` map-name token handling, Hexen-hack default flag seeding, `$`/lookup level titles, and default `levelnum` assignment ahead of episode parsing at 2459.",
+    "auditRationale": "Credits MAP/E#M# default levelnum, Hexen numeric map token, `$` title prefix, and default levelnum assign \u2014 not full `ParseMapHeader` body.",
     "nativeRanges": [
       {
         "file": "src/gamedata/g_mapinfo.cpp",
-        "symbol": "GetDefaultLevelNum ParseMapHeader",
-        "start": 2295,
-        "end": 2443,
+        "symbol": "GetDefaultLevelNum MAP branch",
+        "start": 2297,
+        "end": 2305,
         "tests": [
-          "VmMapInfoParseMapHeaderTests.ResolveMapNameToken_OldHexenNumber",
-          "VmMapInfoParseMapHeaderTests.ApplyLevelTitle_DollarPrefixSetsLookup",
+          "VmMapInfoParseMapHeaderTests.AssignDefaultLevelNum_ParsesMap01"
+        ]
+      },
+      {
+        "file": "src/gamedata/g_mapinfo.cpp",
+        "symbol": "ParseMapHeader Hexen number token",
+        "start": 2341,
+        "end": 2345,
+        "tests": [
+          "VmMapInfoParseMapHeaderTests.ResolveMapNameToken_OldHexenNumber"
+        ]
+      },
+      {
+        "file": "src/gamedata/g_mapinfo.cpp",
+        "symbol": "ParseMapHeader dollar title",
+        "start": 2382,
+        "end": 2387,
+        "tests": [
+          "VmMapInfoParseMapHeaderTests.ApplyLevelTitle_DollarPrefixSetsLookup"
+        ]
+      },
+      {
+        "file": "src/gamedata/g_mapinfo.cpp",
+        "symbol": "default levelnum assign",
+        "start": 2430,
+        "end": 2432,
+        "tests": [
           "VmMapInfoParseMapHeaderTests.AssignDefaultLevelNum_ParsesMap01"
         ]
       }
-    ]
+    ],
+    "conversionManagedCommit": "ffb09f7b037de026d3b2515afca8e5b2bc045eb0"
   }
 ]

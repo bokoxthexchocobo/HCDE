@@ -2,21 +2,30 @@
   {
     "name": "g-mapinfo-flag-table-mid-chunk330",
     "bucket": "conversion",
-    "managedLoc": 35,
-    "note": "MapFlagHandlers falling damage through compat_nofriendlyspawn rows",
+    "managedLoc": 17,
+    "note": "MapFlagHandlers strife/compat rows (trimmed)",
     "auditSeams": "Handler rows keep placeholder `LEVEL_*`/`COMPATF_*` bit values; only catalog lookup and flag-apply helpers are modeled.",
-    "auditRationale": "Credits the uncredited `MapFlagHandlers[]` continuation 1980–2095 between chunk 329's `nojump` row and the CD-track `MITYPE_EATNEXT` rows on chunk 296: falling-damage variants, inventory/teamplay/checkswitch flags, LEVEL3 rendering toggles, and the compat-flag tail through `compat_nofriendlyspawn`.",
+    "auditRationale": "Credits only handler rows referenced by mid-table lookup tests.",
     "nativeRanges": [
       {
         "file": "src/gamedata/g_mapinfo.cpp",
-        "symbol": "MapFlagHandlers mid table",
-        "start": 1980,
-        "end": 2095,
+        "symbol": "strifefallingdamage row",
+        "start": 1983,
+        "end": 1983,
         "tests": [
-          "VmMapInfoFlagHandlersMidTests.TryGetHandler_FindsStrifeFallingDamage",
+          "VmMapInfoFlagHandlersMidTests.TryGetHandler_FindsStrifeFallingDamage"
+        ]
+      },
+      {
+        "file": "src/gamedata/g_mapinfo.cpp",
+        "symbol": "compat_noid24 row",
+        "start": 2091,
+        "end": 2091,
+        "tests": [
           "VmMapInfoFlagHandlersMidTests.TryGetHandler_FindsCompatNoid24"
         ]
       }
-    ]
+    ],
+    "conversionManagedCommit": "9cd1c34f4eef953957cb97227a3ea12ea4b27c0b"
   }
 ]
