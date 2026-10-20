@@ -4,7 +4,7 @@
   "runStartConvertedBehaviorManaged": 9671,
   "convertedThisRunNative": 15162,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 30682,
+  "convertedThisRunManaged": 30726,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": 151,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
@@ -14,7 +14,7 @@
   "convertedBehaviorNative": 33689,
   "recognitionBehaviorNative": 5591,
   "combinedBehaviorNative": 39280,
-  "convertedBehaviorManaged": 40353,
+  "convertedBehaviorManaged": 40397,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -14576,7 +14576,8 @@
             "VmMapLoaderLoadSegsTests.ValidateVertexIndex_ThrowsWhenOutOfRange",
             "VmMapLoaderLoadSegsTests.CountSegs_DividesLumpByRecordSize",
             "VmMapLoaderLoadSegsTests.ShouldSnapSplitVertex_AtOneDegree",
-            "VmMapLoaderLoadSegsTests.FormatBadSegMessage_Vertex_IncludesIndices"
+            "VmMapLoaderLoadSegsTests.FormatBadSegMessage_Vertex_IncludesIndices",
+            "VmMapLoaderLoadSegsTests.DescribeBspFailure_AppendsRebuildBanner"
           ]
         },
         {
@@ -14591,8 +14592,8 @@
         }
       ],
       "nativeLoc": 237,
-      "managedLoc": 50,
-      "conversionManagedCommit": "02b8ffca5d2d5c9097e752921b71fb083e7c8746"
+      "managedLoc": 94,
+      "conversionManagedCommit": "9e5b5e2bc146f1007c65fc88ea2e440504d472de"
     }
   ]
 }
