@@ -4,9 +4,12 @@
     "bucket": "conversion",
     "note": "aim_t Clear, AimTraverse3DFloors, EnterSectorPortal, EnterLinePortal",
     "auditSeams": "`aim_t::AimTraverse`, `P_TranslatePortalXY`, `Printf`, and `FPathTraverse` are not hosted.",
-    "auditRationale": "Credits aim target reset, 3D-floor pitch clipping, sector portal limits, and line portal restriction from `p_map.cpp` (3902–4177; bounce actor band is chunk461).",
+    "auditRationale": "Credits aim target reset, 3D-floor pitch clipping, portal trace setup, ExitPoint edges, AimTraverse portal priming from `p_map.cpp` (3902–4286; bounce actor band is chunk461).",
     "managedSourceFiles": ["csharp/src/HCDE.Playsim/VmPMapAimTraverse.cs"],
-    "portCommits": ["1ed2d2b53450fd09f848673f839f2edaa0033ca"],
+    "portCommits": [
+      "1ed2d2b53450fd09f848673f839f2edaa0033ca",
+      "6203d90da831b2e4d2f6614534c75fbeaeea163c"
+    ],
     "nativeRanges": [
       {
         "file": "src/playsim/p_map.cpp",
@@ -45,6 +48,26 @@
         "tests": [
           "VmPMapAimTraverseTests.LinePortal_BlocksWhenRestricted",
           "VmPMapAimTraverseTests.LinePortalTrace_ComputesTranslatedPosition"
+        ]
+      },
+      {
+        "file": "src/playsim/p_map.cpp",
+        "symbol": "aim_t::ExitPoint",
+        "start": 4185,
+        "end": 4242,
+        "tests": [
+          "VmPMapAimTraverseTests.ExitPoint_HitsIntercept",
+          "VmPMapAimTraverseTests.ExitPoint_SkipsWithout3d"
+        ]
+      },
+      {
+        "file": "src/playsim/p_map.cpp",
+        "symbol": "aim_t::AimTraverse",
+        "start": 4251,
+        "end": 4286,
+        "tests": [
+          "VmPMapAimTraverseTests.AimTraverseInit_CeilingPortal",
+          "VmPMapAimTraverseTests.AimTraverseInit_SuppressesCeilingUnder3dFloor"
         ]
       }
     ]

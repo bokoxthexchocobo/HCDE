@@ -43,6 +43,26 @@ public class VmPMapAimTraverseTests
     public void SkipPortalFrac_BiasesPastTransition() =>
         Assert.Equal(0.51, VmPMapAimTraverse.SkipPortalFracBias(0.5, 100));
 
+    [Fact]
+    public void ExitPoint_SkipsWithout3d() =>
+        Assert.Null(VmPMapAimTraverse.EvaluateExitPointEdge(
+            new VmPMapAimTraverse.ExitPointEdgeContext(0, 0, 0, 0, 0, 16, true, false, 0.5)));
+
+    [Fact]
+    public void ExitPoint_HitsIntercept() =>
+        Assert.Equal(0.5, VmPMapAimTraverse.EvaluateExitPointEdge(
+            new VmPMapAimTraverse.ExitPointEdgeContext(1, 0, 0, 0, 0, 16, true, false, 0.5)));
+
+    [Fact]
+    public void AimTraverseInit_CeilingPortal() =>
+        Assert.True(VmPMapAimTraverse.EvaluateInitialCeilingPortal(
+            new VmPMapAimTraverse.AimTraverseInitContext(1, -1, 1, false, true, 32, 40, 0, 0, false, true)));
+
+    [Fact]
+    public void AimTraverseInit_SuppressesCeilingUnder3dFloor() =>
+        Assert.True(VmPMapAimTraverse.SuppressCeilingPortalUnder3dFloor(
+            new VmPMapAimTraverse.AimTraverseInitContext(1, -1, 1, false, true, 32, 40, 100, 0, false, true)));
+
     private static VmPMapAimTraverse.Aim3dFloorContext Sample3d(
         double top = 5,
         double bottom = 10,

@@ -169,4 +169,97 @@ public static class VmPMapAimTraverse
 
     public static bool SetResultWhenCloser(double currentFrac, double candidateFrac) =>
         candidateFrac < currentFrac;
+
+    public const int AlfCheck3d = 1;
+    public const int EdgeTop = 0;
+    public const int EdgeRight = 1;
+    public const int EdgeBottom = 2;
+    public const int EdgeLeft = 3;
+
+    public static bool Requires3dCheck(int flags) => (flags & AlfCheck3d) != 0;
+
+    public static bool TracePastTopEdge(double traceY, double lineY) => traceY > lineY;
+
+    public static bool TracePastRightEdge(double traceX, double lineX) => traceX > lineX;
+
+    public static bool TracePastBottomEdge(double traceY, double lineY) => traceY < lineY;
+
+    public static bool TracePastLeftEdge(double traceX, double lineX) => traceX < lineX;
+
+    public static bool DivlineSidesDiffer(bool sideA, bool sideB) => sideA != sideB;
+
+    public static double ClampInterceptFrac(double frac) => frac > 1.0 ? 1.0 : frac;
+
+    public static bool CeilingPortalState(int aimDir, double topPitch, bool nullAngle, bool blocksMovement) =>
+        (aimDir & AimUp) != 0 && topPitch < 0 && !blocksMovement;
+
+    public static bool FloorPortalState(int aimDir, double bottomPitch, bool nullAngle, bool blocksMovement) =>
+        (aimDir & AimDown) != 0 && bottomPitch > 0 && !blocksMovement;
+
+    public static bool FloorAboveActor(double bottomZ, double startZ, double height) =>
+        bottomZ >= startZ + height;
+
+    public static bool FloorBelowActor(double topZ, double startZ) => topZ <= startZ;
+
+    public static bool ShootthroughFloor(bool shootthrough, bool exists) =>
+        shootthrough || !exists;
+
+    public readonly record struct ExitPointEdgeContext(
+        int Edge,
+        double TraceX,
+        double TraceY,
+        double ThingX,
+        double ThingY,
+        double Radius,
+        bool SideA,
+        bool SideB,
+        double InterceptFrac);
+
+    public static double? EvaluateExitPointEdge(ExitPointEdgeContext ctx)
+    {
+        switch (ctx.Edge)
+        {
+            case EdgeTop:
+                if (TracePastTopEdge(ctx.TraceY, ctx.ThingY + ctx.Radius)) return null;
+                break;
+            case EdgeRight:
+                if (TracePastRightEdge(ctx.TraceX, ctx.ThingX + ctx.Radius)) return null;
+                break;
+            case EdgeBottom:
+                if (TracePastBottomEdge(ctx.TraceY, ctx.ThingY - ctx.Radius)) return null;
+                break;
+            case EdgeLeft:
+                if (TracePastLeftEdge(ctx.TraceX, ctx.ThingX - ctx.Radius)) return null;
+                break;
+        }
+        if (!DivlineSidesDiffer(ctx.SideA, ctx.SideB)) return null;
+        return ClampInterceptFrac(ctx.InterceptFrac);
+    }
+
+    public readonly record struct AimTraverseInitContext(
+        int AimDir,
+        double TopPitch,
+        double BottomPitch,
+        bool CeilingBlocks,
+        bool FloorBlocks,
+        double StartZ,
+        double Height,
+        double FloorBottomZ,
+        double FloorTopZ,
+        bool Shootthrough,
+        bool Exists);
+
+    public static bool EvaluateInitialCeilingPortal(AimTraverseInitContext ctx) =>
+        CeilingPortalState(ctx.AimDir, ctx.TopPitch, false, ctx.CeilingBlocks)
+        && !FloorAboveActor(ctx.FloorBottomZ, ctx.StartZ, ctx.Height);
+
+    public static bool EvaluateInitialFloorPortal(AimTraverseInitContext ctx) =>
+        FloorPortalState(ctx.AimDir, ctx.BottomPitch, false, ctx.FloorBlocks)
+        && !FloorBelowActor(ctx.FloorTopZ, ctx.StartZ);
+
+    public static bool SuppressCeilingPortalUnder3dFloor(AimTraverseInitContext ctx) =>
+        FloorAboveActor(ctx.FloorBottomZ, ctx.StartZ, ctx.Height);
+
+    public static bool SuppressFloorPortalAbove3dFloor(AimTraverseInitContext ctx) =>
+        FloorBelowActor(ctx.FloorTopZ, ctx.StartZ);
 }
