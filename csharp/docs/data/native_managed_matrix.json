@@ -12,25 +12,25 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 149765
+    "managedCSharpLoc": 149998
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 35304,
+    "convertedThisRunNative": 35494,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 46210,
+    "convertedThisRunManaged": 46443,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": 151,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 448664,
+    "remainingNative": 448474,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 53831,
+    "convertedBehaviorNative": 54021,
     "recognitionBehaviorNative": 5591,
-    "combinedBehaviorNative": 59422,
-    "convertedBehaviorManaged": 55881,
+    "combinedBehaviorNative": 59612,
+    "convertedBehaviorManaged": 56114,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -21013,8 +21013,8 @@
           {
             "file": "src/playsim/p_map.cpp",
             "symbol": "SpawnShootDecal",
-            "start": 7273,
-            "end": 7296,
+            "start": 7272,
+            "end": 7303,
             "tests": [
               "VmPMapCrushTailDecalActivateTests.Decal_PrefersWeaponGenerator",
               "VmPMapCrushTailDecalActivateTests.DeepSplash_3dPath"
@@ -21032,27 +21032,137 @@
           {
             "file": "src/playsim/p_map.cpp",
             "symbol": "P_ActivateThingSpecial",
-            "start": 7320,
-            "end": 7383,
+            "start": 7319,
+            "end": 7391,
             "tests": [
               "VmPMapCrushTailDecalActivateTests.Activate_DefaultSwitchAddsActivate",
               "VmPMapCrushTailDecalActivateTests.Activate_SpecialUsesThingOnDeath",
-              "VmPMapCrushTailDecalActivateTests.Activate_ClearOnSuccess"
-            ]
-          },
-          {
-            "file": "src/playsim/p_map.cpp",
-            "symbol": "P_ActivateThingSpecial",
-            "start": 7385,
-            "end": 7391,
-            "tests": [
-              "VmPMapCrushTailDecalActivateTests.Activate_ClearOnSuccess"
+              "VmPMapCrushTailDecalActivateTests.Activate_ClearOnSuccess",
+              "VmPMapCrushTailDecalActivateTests.Activate_StateMachineWhenAlive"
             ]
           }
         ],
-        "nativeLoc": 195,
-        "managedLoc": 107,
-        "conversionManagedCommit": "ff76d11ef723b366907763575653de257e516cb8"
+        "nativeLoc": 205,
+        "managedLoc": 128,
+        "conversionManagedCommit": "5c2d461f354cbb8924c0f91892278570b9245901"
+      },
+      {
+        "name": "p-mobj-team-friend-damage-chunk500",
+        "bucket": "conversion",
+        "note": "GetTeam, IsTeammate, species/groups, IsFriend, IsHostile, Do/TakeSpecialDamage",
+        "auditSeams": "`P_PoisonPlayer`, `FindState`, `VMCall`, and player `mo` teammate chains are not hosted.",
+        "auditRationale": "Credits team resolution, coop/teamplay teammate checks, species and infighting group accessors, friendly/hostile policy, godmode/poison special damage, and typed death gating from `p_mobj.cpp` (8364\u20138606).",
+        "managedSourceFiles": [
+          "csharp/src/HCDE.Playsim/VmPMobjTeamFriendDamage.cs"
+        ],
+        "portCommits": [],
+        "nativeRanges": [
+          {
+            "file": "src/playsim/p_mobj.cpp",
+            "symbol": "AActor::GetTeam",
+            "start": 8364,
+            "end": 8380,
+            "tests": [
+              "VmPMobjTeamFriendDamageTests.GetTeam_UsesFriendPlayerWhenDesignatedNone"
+            ]
+          },
+          {
+            "file": "src/playsim/p_mobj.cpp",
+            "symbol": "AActor::IsTeammate",
+            "start": 8382,
+            "end": 8400,
+            "tests": [
+              "VmPMobjTeamFriendDamageTests.Teammate_CoopFriendlyFlagMatch",
+              "VmPMobjTeamFriendDamageTests.Teammate_TeamplaySameTeam"
+            ]
+          },
+          {
+            "file": "src/playsim/p_mobj.cpp",
+            "symbol": "AActor::GetSpecies",
+            "start": 8413,
+            "end": 8433,
+            "tests": [
+              "VmPMobjTeamFriendDamageTests.GetTeam_UsesFriendPlayerWhenDesignatedNone"
+            ]
+          },
+          {
+            "file": "src/playsim/p_mobj.cpp",
+            "symbol": "AActor::GetInfightingGroup",
+            "start": 8435,
+            "end": 8438,
+            "tests": [
+              "VmPMobjTeamFriendDamageTests.GetTeam_UsesFriendPlayerWhenDesignatedNone"
+            ]
+          },
+          {
+            "file": "src/playsim/p_mobj.cpp",
+            "symbol": "AActor::GetProjectileGroup",
+            "start": 8440,
+            "end": 8443,
+            "tests": [
+              "VmPMobjTeamFriendDamageTests.GetTeam_UsesFriendPlayerWhenDesignatedNone"
+            ]
+          },
+          {
+            "file": "src/playsim/p_mobj.cpp",
+            "symbol": "AActor::GetSplashGroup",
+            "start": 8445,
+            "end": 8448,
+            "tests": [
+              "VmPMobjTeamFriendDamageTests.GetTeam_UsesFriendPlayerWhenDesignatedNone"
+            ]
+          },
+          {
+            "file": "src/playsim/p_mobj.cpp",
+            "symbol": "AActor::IsFriend",
+            "start": 8458,
+            "end": 8477,
+            "tests": [
+              "VmPMobjTeamFriendDamageTests.Friend_DmTeamplayRequiresTeammateOrLinked"
+            ]
+          },
+          {
+            "file": "src/playsim/p_mobj.cpp",
+            "symbol": "AActor::IsHostile",
+            "start": 8487,
+            "end": 8507,
+            "tests": [
+              "VmPMobjTeamFriendDamageTests.Hostile_DmDifferentFriendPlayers"
+            ]
+          },
+          {
+            "file": "src/playsim/p_mobj.cpp",
+            "symbol": "AActor::DoSpecialDamage",
+            "start": 8517,
+            "end": 8538,
+            "tests": [
+              "VmPMobjTeamFriendDamageTests.DoSpecial_GodmodeBlocks",
+              "VmPMobjTeamFriendDamageTests.DoSpecial_PoisonHalves"
+            ]
+          },
+          {
+            "file": "src/playsim/p_mobj.cpp",
+            "symbol": "AActor::CallDoSpecialDamage",
+            "start": 8552,
+            "end": 8566,
+            "tests": [
+              "VmPMobjTeamFriendDamageTests.CallVirtual_Flags"
+            ]
+          },
+          {
+            "file": "src/playsim/p_mobj.cpp",
+            "symbol": "AActor::TakeSpecialDamage",
+            "start": 8574,
+            "end": 8606,
+            "tests": [
+              "VmPMobjTeamFriendDamageTests.TakeSpecial_MassacreAlwaysApplies",
+              "VmPMobjTeamFriendDamageTests.TakeSpecial_IceGenericFreeze"
+            ]
+          }
+        ],
+        "nativeLoc": 180,
+        "managedLoc": 212,
+        "conversionManagedCommit": "65203c4c98b00870aa28715892dad5d63030b544"
       }
     ]
   },
