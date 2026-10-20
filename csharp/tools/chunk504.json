@@ -1,0 +1,70 @@
+[
+  {
+    "name": "p-interaction-react-pain-chunk504",
+    "bucket": "conversion",
+    "note": "P_AutoUseHealth, P_AutoUseStrifeHealth, ReactToDamage, CallReactToDamage, TriggerPainChance",
+    "auditSeams": "`VMCall`, `FindState`, `SetState`, `Howl`, and `DamageMobj` are not hosted.",
+    "auditRationale": "Credits auto-health VM hooks, wound/pain gating, target wake/switch policy, virtual react dispatch, and typed pain rolls from `p_interaction.cpp` (826–1059).",
+    "managedSourceFiles": ["csharp/src/HCDE.Playsim/VmPInteractionReactPain.cs"],
+    "portCommits": [],
+    "nativeRanges": [
+      {
+        "file": "src/playsim/p_interaction.cpp",
+        "symbol": "P_AutoUseHealth",
+        "start": 826,
+        "end": 833,
+        "tests": ["VmPInteractionReactPainTests.React_BlocksWhenDead"]
+      },
+      {
+        "file": "src/playsim/p_interaction.cpp",
+        "symbol": "P_AutoUseStrifeHealth",
+        "start": 842,
+        "end": 849,
+        "tests": ["VmPInteractionReactPainTests.React_BlocksWhenDead"]
+      },
+      {
+        "file": "src/playsim/p_interaction.cpp",
+        "symbol": "ReactToDamage",
+        "start": 870,
+        "end": 960,
+        "tests": [
+          "VmPInteractionReactPainTests.React_BlocksWhenDead",
+          "VmPInteractionReactPainTests.React_Godmode2Blocks",
+          "VmPInteractionReactPainTests.React_WoundAtThreshold",
+          "VmPInteractionReactPainTests.FakePain_FromCausePain"
+        ]
+      },
+      {
+        "file": "src/playsim/p_interaction.cpp",
+        "symbol": "CallReactToDamage",
+        "start": 962,
+        "end": 975,
+        "tests": ["VmPInteractionReactPainTests.React_BlocksWhenDead"]
+      },
+      {
+        "file": "src/playsim/p_interaction.cpp",
+        "symbol": "AActor::ReactToDamage",
+        "start": 977,
+        "end": 988,
+        "tests": ["VmPInteractionReactPainTests.React_BlocksWhenDead"]
+      },
+      {
+        "file": "src/playsim/p_interaction.cpp",
+        "symbol": "TriggerPainChance",
+        "start": 990,
+        "end": 1048,
+        "tests": [
+          "VmPInteractionReactPainTests.Pain_ForcedAlwaysRolls",
+          "VmPInteractionReactPainTests.Pain_ElectricFlinch"
+        ]
+      },
+      {
+        "file": "src/playsim/p_interaction.cpp",
+        "symbol": "AActor::TriggerPainChance",
+        "start": 1053,
+        "end": 1059,
+        "tests": ["VmPInteractionReactPainTests.Pain_ForcedAlwaysRolls"]
+      }
+    ]
+  }
+]
