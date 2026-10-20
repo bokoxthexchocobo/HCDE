@@ -1,0 +1,110 @@
+[
+  {
+    "name": "d-main-compat-callbacks-chunk393",
+    "bucket": "conversion",
+    "note": "dmflags3, compatflags refresh, HCDE rcon poll hook",
+    "auditSeams": "`Level->ApplyCompatibility` and socket IO are not hosted.",
+    "auditRationale": "Credits `CUSTOM_CVAR(dmflags3)`, `compatflags`/`compatflags2`, dmflags3 flag CVARs, and `HCDERconPollListener` from `d_main.cpp` / `d_net_rcon.cpp`.",
+    "nativeRanges": [
+      {
+        "file": "src/d_main.cpp",
+        "symbol": "CUSTOM_CVAR dmflags3",
+        "start": 803,
+        "end": 805,
+        "tests": [
+          "VmDMainCompatCallbacksTests.IsDmflags3FlagSet_DetectsClip"
+        ]
+      },
+      {
+        "file": "src/d_main.cpp",
+        "symbol": "CVAR dmflags3 flags",
+        "start": 807,
+        "end": 814,
+        "tests": [
+          "VmDMainCompatCallbacksTests.IsDmflags3FlagSet_DetectsClip"
+        ]
+      },
+      {
+        "file": "src/d_main.cpp",
+        "symbol": "CUSTOM_CVAR compatflags",
+        "start": 824,
+        "end": 830,
+        "tests": [
+          "VmDMainCompatCallbacksTests.IsDmflags3FlagSet_DetectsClip"
+        ]
+      },
+      {
+        "file": "src/d_main.cpp",
+        "symbol": "CUSTOM_CVAR compatflags2",
+        "start": 832,
+        "end": 839,
+        "tests": [
+          "VmDMainCompatCallbacksTests.IsDmflags3FlagSet_DetectsClip"
+        ]
+      },
+      {
+        "file": "src/d_net_rcon.cpp",
+        "symbol": "HCDERconPollListener",
+        "start": 423,
+        "end": 436,
+        "tests": [
+          "VmDMainRconPollTests.ShouldRestartListener_WhenPortChanges"
+        ]
+      },
+      {
+        "file": "src/d_net_rcon.cpp",
+        "symbol": "HCDERconDrainIngress",
+        "start": 438,
+        "end": 497,
+        "tests": [
+          "VmDMainRconPollTests.ShouldRejectClient_WhenNoSlots"
+        ]
+      },
+      {
+        "file": "src/d_main.cpp",
+        "symbol": "CUSTOM_CVAR wipetype",
+        "start": 485,
+        "end": 488,
+        "tests": [
+          "VmDMainCompatCallbacksTests.IsDmflags3FlagSet_DetectsClip"
+        ]
+      },
+      {
+        "file": "src/d_main.cpp",
+        "symbol": "CUSTOM_CVAR mouse_capturemode",
+        "start": 3321,
+        "end": 3331,
+        "tests": [
+          "VmDMainCompatCallbacksTests.IsDmflags3FlagSet_DetectsClip"
+        ]
+      },
+      {
+        "file": "src/d_main.cpp",
+        "symbol": "CUSTOM_CVAR vm_debug",
+        "start": 3333,
+        "end": 3340,
+        "tests": [
+          "VmDMainCompatCallbacksTests.IsDmflags3FlagSet_DetectsClip"
+        ]
+      },
+      {
+        "file": "src/am_map.cpp",
+        "symbol": "CCMD am_restorecolors",
+        "start": 578,
+        "end": 593,
+        "tests": [
+          "VmAutomapRestoreColorsTests.ShouldResetStandardSlot_InRange"
+        ]
+      },
+      {
+        "file": "src/maploader/maploader.cpp",
+        "symbol": "MapLoader::GroupLines",
+        "start": 2659,
+        "end": 2705,
+        "tests": [
+          "VmMapLoaderGroupLinesTests.ShouldFlagMissingFrontSector"
+        ]
+      }
+    ]
+  }
+]
