@@ -77,6 +77,8 @@ public static class VmCmdLibPaths
         }
     }
 
+    public static bool IsPathSeparator(char character) => character == '/' || character == '\\';
+
     private static bool IsSeparator(char character, bool forceBackslash) =>
-        character == '/' || character == '\\' && (OperatingSystem.IsWindows() || forceBackslash);
+        IsPathSeparator(character) && (character != '\\' || OperatingSystem.IsWindows() || forceBackslash);
 }
