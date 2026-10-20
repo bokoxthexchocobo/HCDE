@@ -1,0 +1,39 @@
+[
+  {
+    "name": "p-interaction-actor-die-states-chunk506",
+    "bucket": "conversion",
+    "note": "AActor::Die part 2 (player death, diestate, CallDie)",
+    "auditSeams": "`ClientObituary`, `SetState`, `FindState`, `Destroy`, and `VMCall` are not hosted.",
+    "auditRationale": "Split **AActor::Die** part 2: player/bot death setup, unmorph destroy, extreme/typed/generic death state selection, tics jitter, and `CallDie` dispatch from `p_interaction.cpp` (622–817). Continues chunk 505 at line 622.",
+    "managedSourceFiles": ["csharp/src/HCDE.Playsim/VmPInteractionActorDieStates.cs"],
+    "portCommits": [],
+    "nativeRanges": [
+      {
+        "file": "src/playsim/p_interaction.cpp",
+        "symbol": "AActor::Die",
+        "start": 622,
+        "end": 796,
+        "tests": [
+          "VmPInteractionActorDieStatesTests.Unmorph_Destroy",
+          "VmPInteractionActorDieStatesTests.Extreme_FromGib",
+          "VmPInteractionActorDieStatesTests.Ice_GenericFreeze",
+          "VmPInteractionActorDieStatesTests.Tics_Randomized"
+        ]
+      },
+      {
+        "file": "src/playsim/p_interaction.cpp",
+        "symbol": "AActor::Die",
+        "start": 798,
+        "end": 807,
+        "tests": ["VmPInteractionActorDieStatesTests.Unmorph_Destroy"]
+      },
+      {
+        "file": "src/playsim/p_interaction.cpp",
+        "symbol": "AActor::CallDie",
+        "start": 809,
+        "end": 817,
+        "tests": ["VmPInteractionActorDieStatesTests.Unmorph_Destroy"]
+      }
+    ]
+  }
+]
