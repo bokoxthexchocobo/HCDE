@@ -13,4 +13,8 @@ public class VmPInteractionPoisonSwitchTests
     [Fact]
     public void PoisonPlayerGodmode_Blocks() =>
         Assert.True(VmPInteractionPoisonSwitch.PoisonPlayerGodmode(1, 0, 0));
+
+    [Fact]
+    public void InvulnBlocksPoisonDamage_WhenNotTelefrag() =>
+        Assert.True(VmPInteractionPoisonSwitch.InvulnBlocksPoisonDamage(false, false, false, true, false));
 }

@@ -27,6 +27,9 @@ from pathlib import Path
 
 REPO = Path(__file__).resolve().parents[1]
 TALLY = REPO / "docs/data/loc_tally.json"
+TOOLS = REPO / "tools"
+sys.path.insert(0, str(TOOLS))
+from chunk_port_managed import managed_loc_for_chunk  # noqa: E402
 
 # Manual trims / fixes — only rows that fail audit or are verified over-credits.
 FIXES: dict[str, list[dict] | str] = {
@@ -73,28 +76,14 @@ def native_loc(ranges: list[dict]) -> int:
     return sum(int(r["end"]) - int(r["start"]) + 1 for r in ranges)
 
 
-def commit_src_cs_additions(sha: str) -> int:
-    if not re.fullmatch(r"[0-9a-f]{40}", sha or ""):
-        return 0
-    root = REPO.parent
-    try:
-        out = subprocess.check_output(
-            ["git", "show", sha, "--numstat", "--format="], cwd=root, text=True
-        )
-    except subprocess.CalledProcessError:
-        return 0
-    total = 0
-    for line in out.splitlines():
-        parts = line.split("\t")
-        if len(parts) != 3:
-            continue
-        add_s, _del, path = parts
-        if not path.endswith(".cs") or not path.startswith("csharp/src/"):
-            continue
-        if ".Tests/" in path:
-            continue
-        total += int(add_s)
-    return total
+def chunk_number(name: str) -> int | None:
+    m = re.search(r"chunk(\d+)(b)?", name)
+    return int(m.group(1)) if m else None
+
+
+def measured_port_managed(ch: dict) -> int:
+    sha = ch.get("conversionManagedCommit", "") or ""
+    return managed_loc_for_chunk(ch, sha, chunk_number(ch.get("name", "")))
 
 
 def audit_chunk(ch: dict, tests: set[str]) -> tuple[list[dict], list[dict]]:
@@ -127,16 +116,23 @@ def audit_chunk(ch: dict, tests: set[str]) -> tuple[list[dict], list[dict]]:
             soft.append({"kind": "thin_test_band", "symbol": r.get("symbol"), "span": span, "tests": test_list})
 
     if bucket == "conversion" and nl > 0:
-        sha = ch.get("conversionManagedCommit", "") or ""
-        commit_ml = commit_src_cs_additions(sha)
+        commit_ml = measured_port_managed(ch)
         tally_ml = int(ch.get("managedLoc", 0))
+        if commit_ml > 0 and tally_ml != commit_ml:
+            hard.append(
+                {
+                    "kind": "managedLoc_mismatch",
+                    "managedLoc_measured": commit_ml,
+                    "managedLoc_tally": tally_ml,
+                }
+            )
         measured = commit_ml if commit_ml > 0 else tally_ml
         if measured > 0 and measured < nl * 0.5:
             soft.append(
                 {
                     "kind": "thin_managed_coverage",
                     "nativeLoc": nl,
-                    "managedLoc_commit": commit_ml,
+                    "managedLoc_measured": commit_ml,
                     "managedLoc_tally": tally_ml,
                     "ratio": round(measured / nl, 3),
                 }

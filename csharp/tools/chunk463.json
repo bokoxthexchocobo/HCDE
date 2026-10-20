@@ -12,7 +12,11 @@
         "symbol": "A_Look",
         "start": 1944,
         "end": 2054,
-        "tests": ["VmPEnemyLookPlayersTests.GoalReactionGate_BlocksEarly"]
+        "tests": [
+          "VmPEnemyLookPlayersTests.GoalReactionGate_BlocksEarly",
+          "VmPEnemyLookPlayersTests.ALookTidBranch_WhenHateSet",
+          "VmPEnemyLookPlayersTests.ALookAmbushSight_WhenNoSight"
+        ]
       },
       {
         "file": "src/playsim/p_enemy.cpp",

@@ -29,7 +29,11 @@
         "symbol": "ClientObituary",
         "start": 186,
         "end": 321,
-        "tests": ["VmPInteractionTouchObituaryTests.ShouldShowObituary_RequiresPlayerMo"]
+        "tests": [
+          "VmPInteractionTouchObituaryTests.ShouldShowObituary_RequiresPlayerMo",
+          "VmPInteractionTouchObituaryTests.UseDamageTypeObituary_WhenAttackerNull",
+          "VmPInteractionTouchObituaryTests.SuicideMessage_MatchesMod"
+        ]
       }
     ]
   }

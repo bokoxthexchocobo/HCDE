@@ -13,4 +13,12 @@ public class VmPEnemyLookPlayersTests
     [Fact]
     public void GoalReactionGate_BlocksEarly() =>
         Assert.True(VmPEnemyLookPlayers.GoalReactionGate(true, 10, 20));
+
+    [Fact]
+    public void ALookTidBranch_WhenHateSet() =>
+        Assert.True(VmPEnemyLookPlayers.ALookTidBranch(true));
+
+    [Fact]
+    public void ALookAmbushSight_WhenNoSight() =>
+        Assert.True(VmPEnemyLookPlayers.ALookAmbushSight(true));
 }

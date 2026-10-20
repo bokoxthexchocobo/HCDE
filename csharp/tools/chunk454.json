@@ -4,7 +4,7 @@
     "bucket": "conversion",
     "note": "PIT_CheckPortal and missile infight gates",
     "auditSeams": "BlockLinesIterator, `P_LineOpening`, and live mobj iterators are not hosted.",
-    "auditRationale": "Credits portal destination floor/ceiling probe, rip-level and projectile-group immunity, and monster infight policy from `p_map.cpp` (missile damage on chunk 455).",
+    "auditRationale": "Credits portal destination floor/ceiling probe, rip-level and projectile-group immunity from `p_map.cpp` (`CanAttackHurt` remains on chunk 456+).",
     "managedSourceFiles": ["csharp/src/HCDE.Playsim/VmPMapPortalMissile.cs"],
     "nativeRanges": [
       {
@@ -30,16 +30,6 @@
         "start": 1227,
         "end": 1248,
         "tests": ["VmPMapPortalMissileTests.ProjectileImmuneSameGroup_WhenGrouped"]
-      },
-      {
-        "file": "src/playsim/p_map.cpp",
-        "symbol": "CanAttackHurt",
-        "start": 1250,
-        "end": 1316,
-        "tests": [
-          "VmPMapPortalMissileTests.FriendsBlockedUnlessHarmFriends",
-          "VmPMapPortalMissileTests.MonstersBlockedWhenNoInfight"
-        ]
       }
     ]
   }

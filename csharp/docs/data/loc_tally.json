@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 29483,
+  "convertedThisRunNative": 29004,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 42119,
+  "convertedThisRunManaged": 41471,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": 151,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 454485,
+  "remainingNative": 454964,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 48010,
+  "convertedBehaviorNative": 47531,
   "recognitionBehaviorNative": 5591,
-  "combinedBehaviorNative": 53601,
-  "convertedBehaviorManaged": 51790,
+  "combinedBehaviorNative": 53122,
+  "convertedBehaviorManaged": 51142,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -18252,7 +18252,7 @@
       "bucket": "conversion",
       "note": "PIT_CheckPortal and missile infight gates",
       "auditSeams": "BlockLinesIterator, `P_LineOpening`, and live mobj iterators are not hosted.",
-      "auditRationale": "Credits portal destination floor/ceiling probe, rip-level and projectile-group immunity, and monster infight policy from `p_map.cpp` (missile damage on chunk 455).",
+      "auditRationale": "Credits portal destination floor/ceiling probe, rip-level and projectile-group immunity from `p_map.cpp` (`CanAttackHurt` remains on chunk 456+).",
       "managedSourceFiles": [
         "csharp/src/HCDE.Playsim/VmPMapPortalMissile.cs"
       ],
@@ -18284,19 +18284,9 @@
           "tests": [
             "VmPMapPortalMissileTests.ProjectileImmuneSameGroup_WhenGrouped"
           ]
-        },
-        {
-          "file": "src/playsim/p_map.cpp",
-          "symbol": "CanAttackHurt",
-          "start": 1250,
-          "end": 1316,
-          "tests": [
-            "VmPMapPortalMissileTests.FriendsBlockedUnlessHarmFriends",
-            "VmPMapPortalMissileTests.MonstersBlockedWhenNoInfight"
-          ]
         }
       ],
-      "nativeLoc": 168,
+      "nativeLoc": 101,
       "conversionManagedCommit": "7bb82ede1622bc19928d37f6cc29f5b0fd6bbf63",
       "managedLoc": 84
     },
@@ -18305,7 +18295,7 @@
       "bucket": "conversion",
       "note": "PIT_CheckThing movement blocking and pickup",
       "auditSeams": "`P_CanCollideWith`, `P_DoMissileDamage`, and VM rumble hooks are not hosted.",
-      "auditRationale": "Credits corpse prediction bypass, bridge stepping, touchy detonation, missile rip/reflect paths, pushables, and pickup gating from `p_map.cpp`.",
+      "auditRationale": "Credits early filters, bridge/unblock, passobj vertical, touchy detonation, prediction solid gate, missile rip/reflect paths, and solid/pickup tail ported in `VmPMapPitCheckThing`.",
       "managedSourceFiles": [
         "csharp/src/HCDE.Playsim/VmPMapPitCheckThing.cs"
       ],
@@ -18314,17 +18304,71 @@
           "file": "src/playsim/p_map.cpp",
           "symbol": "PIT_CheckThing",
           "start": 1393,
-          "end": 1780,
+          "end": 1434,
           "tests": [
-            "VmPMapPitCheckThingTests.TouchyDetonate_WhenAligned",
-            "VmPMapPitCheckThingTests.RipperSkipsCorpse",
+            "VmPMapPitCheckThingTests.EarlyGates_SkipWhenNonInteractive"
+          ]
+        },
+        {
+          "file": "src/playsim/p_map.cpp",
+          "symbol": "PIT_CheckThing",
+          "start": 1443,
+          "end": 1489,
+          "tests": [
+            "VmPMapPitCheckThingTests.BridgeUnblock_WhenMovingApart"
+          ]
+        },
+        {
+          "file": "src/playsim/p_map.cpp",
+          "symbol": "PIT_CheckThing",
+          "start": 1493,
+          "end": 1514,
+          "tests": [
+            "VmPMapPitCheckThingTests.RipperSkipsCorpse"
+          ]
+        },
+        {
+          "file": "src/playsim/p_map.cpp",
+          "symbol": "PIT_CheckThing",
+          "start": 1527,
+          "end": 1545,
+          "tests": [
+            "VmPMapPitCheckThingTests.TouchyDetonate_WhenAligned"
+          ]
+        },
+        {
+          "file": "src/playsim/p_map.cpp",
+          "symbol": "PIT_CheckThing",
+          "start": 1568,
+          "end": 1575,
+          "tests": [
+            "VmPMapPitCheckThingTests.PredictingStopsSolid"
+          ]
+        },
+        {
+          "file": "src/playsim/p_map.cpp",
+          "symbol": "PIT_CheckThing",
+          "start": 1598,
+          "end": 1728,
+          "tests": [
+            "VmPMapPitCheckThingTests.MissilePath_RipCorpsePass",
+            "VmPMapPitCheckThingTests.ProjectileClipHeight_UsesPassHeight"
+          ]
+        },
+        {
+          "file": "src/playsim/p_map.cpp",
+          "symbol": "PIT_CheckThing",
+          "start": 1758,
+          "end": 1777,
+          "tests": [
+            "VmPMapPitCheckThingTests.SolidPickup_UnblockPasses",
             "VmPMapPitCheckThingTests.SolidBlock_MirrorBlocksPlayer"
           ]
         }
       ],
-      "nativeLoc": 388,
+      "nativeLoc": 289,
       "conversionManagedCommit": "f3e324ce384f3aae7a52a2b45fdad6ff4eaa98a2",
-      "managedLoc": 396
+      "managedLoc": 194
     },
     {
       "name": "p-map-missile-slope-chunk456",
@@ -18393,7 +18437,7 @@
           "file": "src/playsim/p_map.cpp",
           "symbol": "P_TestMobjZ",
           "start": 2104,
-          "end": 2247,
+          "end": 2170,
           "tests": [
             "VmPMapTestMobjTests.CorpseNeedsIce",
             "VmPMapTestMobjTests.OverOrUnder"
@@ -18419,7 +18463,7 @@
           ]
         }
       ],
-      "nativeLoc": 258,
+      "nativeLoc": 181,
       "conversionManagedCommit": "2baa42190e93bb8ff06db3b36069c24948af7cb8",
       "managedLoc": 133
     },
@@ -18458,7 +18502,9 @@
           "start": 186,
           "end": 321,
           "tests": [
-            "VmPInteractionTouchObituaryTests.ShouldShowObituary_RequiresPlayerMo"
+            "VmPInteractionTouchObituaryTests.ShouldShowObituary_RequiresPlayerMo",
+            "VmPInteractionTouchObituaryTests.UseDamageTypeObituary_WhenAttackerNull",
+            "VmPInteractionTouchObituaryTests.SuicideMessage_MatchesMod"
           ]
         }
       ],
@@ -18469,9 +18515,9 @@
     {
       "name": "p-enemy-valid-look-chunk459",
       "bucket": "conversion",
-      "note": "ValidEnemyInBlock and P_LookFor* target scans",
+      "note": "ValidEnemyInBlock and P_LookForEnemies",
       "auditSeams": "Blockmap iterators, `P_IsVisible`, and `pr_skiptarget` RNG are not hosted.",
-      "auditRationale": "Credits friendly infight skips, dormant filters, TID/enemy/player look scans from `p_enemy.cpp`.",
+      "auditRationale": "Credits friendly infight skips, dormant filters, and enemy look scan from `p_enemy.cpp` (TID/monster scans not ported in VM).",
       "managedSourceFiles": [
         "csharp/src/HCDE.Playsim/VmPEnemyValidLook.cs"
       ],
@@ -18488,24 +18534,6 @@
         },
         {
           "file": "src/playsim/p_enemy.cpp",
-          "symbol": "P_LookForMonsters",
-          "start": 1489,
-          "end": 1603,
-          "tests": [
-            "VmPEnemyValidLookTests.ValidEnemyPassesAll_RequiresVisible"
-          ]
-        },
-        {
-          "file": "src/playsim/p_enemy.cpp",
-          "symbol": "P_LookForTID",
-          "start": 1604,
-          "end": 1736,
-          "tests": [
-            "VmPEnemyValidLookTests.ValidEnemyPassesAll_RequiresVisible"
-          ]
-        },
-        {
-          "file": "src/playsim/p_enemy.cpp",
           "symbol": "P_LookForEnemies",
           "start": 1737,
           "end": 1764,
@@ -18514,7 +18542,7 @@
           ]
         }
       ],
-      "nativeLoc": 400,
+      "nativeLoc": 152,
       "conversionManagedCommit": "0bea479f8d62b8f5a03541a4bf84111623058f28",
       "managedLoc": 201
     },
@@ -18543,7 +18571,8 @@
           "start": 2139,
           "end": 2274,
           "tests": [
-            "VmPMobjBounceSeekTests.SkyDestroy_WhenNotOnSkyFlag"
+            "VmPMobjBounceSeekTests.SkyDestroy_WhenNotOnSkyFlag",
+            "VmPMobjBounceSeekTests.FloorBounceDestroyed_WhenSky"
           ]
         },
         {
@@ -18570,7 +18599,8 @@
           "start": 2340,
           "end": 2411,
           "tests": [
-            "VmPMobjBounceSeekTests.CanSeekTarget_BlocksCantseek"
+            "VmPMobjBounceSeekTests.CanSeekTarget_BlocksCantseek",
+            "VmPMobjBounceSeekTests.SeekerTracksTarget_WhenTracerSet"
           ]
         }
       ],
@@ -18619,7 +18649,7 @@
       ],
       "nativeLoc": 170,
       "conversionManagedCommit": "17056b38cd40f168d759cee2c0245e775ce650fc",
-      "managedLoc": 221
+      "managedLoc": 107
     },
     {
       "name": "p-interaction-poison-switch-chunk462",
@@ -18656,13 +18686,14 @@
           "start": 1881,
           "end": 1980,
           "tests": [
-            "VmPInteractionPoisonSwitchTests.PoisonPlayerGodmode_Blocks"
+            "VmPInteractionPoisonSwitchTests.PoisonPlayerGodmode_Blocks",
+            "VmPInteractionPoisonSwitchTests.InvulnBlocksPoisonDamage_WhenNotTelefrag"
           ]
         }
       ],
       "nativeLoc": 199,
       "conversionManagedCommit": "f4b7b73256bf9e476c0923b130eecad38f4d9fee",
-      "managedLoc": 198
+      "managedLoc": 104
     },
     {
       "name": "p-enemy-look-wander-chunk463",
@@ -18680,7 +18711,9 @@
           "start": 1944,
           "end": 2054,
           "tests": [
-            "VmPEnemyLookPlayersTests.GoalReactionGate_BlocksEarly"
+            "VmPEnemyLookPlayersTests.GoalReactionGate_BlocksEarly",
+            "VmPEnemyLookPlayersTests.ALookTidBranch_WhenHateSet",
+            "VmPEnemyLookPlayersTests.ALookAmbushSight_WhenNoSight"
           ]
         },
         {
@@ -18695,7 +18728,7 @@
       ],
       "nativeLoc": 151,
       "conversionManagedCommit": "a5543a5137d0b691ce91e77dbd2413a0793bb9a2",
-      "managedLoc": 336
+      "managedLoc": 114
     },
     {
       "name": "p-mobj-hash-missile-chunk464",
@@ -18773,14 +18806,14 @@
       ],
       "nativeLoc": 160,
       "conversionManagedCommit": "ef628f22f2692eb799cbc51beaa22fb4e5cac25d",
-      "managedLoc": 129
+      "managedLoc": 113
     },
     {
       "name": "p-map-aim-lineattack-chunk465",
       "bucket": "conversion",
-      "note": "aim_t result helpers, P_AimLineAttack, CheckForActor",
+      "note": "aim_t result helpers, P_AimLineAttack, CheckForActor (P_LineAttack body stays recognition)",
       "auditSeams": "`aim_t::AimTraverse`, `P_AimLineAttack_ShadowHandling`, and `FPathTraverse` are not hosted.",
-      "auditRationale": "Credits autoaim vrange policy, aim result selection, line-attack trace skip rules from `p_map.cpp`.",
+      "auditRationale": "Credits autoaim vrange policy, aim result selection, line-attack trace skip rules, and hitscan pre-fire suppression from `p_map.cpp`.",
       "managedSourceFiles": [
         "csharp/src/HCDE.Playsim/VmPMapAimLineAttack.cs"
       ],
@@ -18824,15 +18857,25 @@
         },
         {
           "file": "src/playsim/p_map.cpp",
+          "symbol": "Origin",
+          "start": 4646,
+          "end": 4657,
+          "tests": [
+            "VmPMapAimLineAttackTests.ShouldSkipCheckForActor_Spectral"
+          ]
+        },
+        {
+          "file": "src/playsim/p_map.cpp",
           "symbol": "CheckForActor",
           "start": 4659,
           "end": 4689,
           "tests": [
-            "VmPMapAimLineAttackTests.SpectralSkip_WhenPuffNotSpectral"
+            "VmPMapAimLineAttackTests.ShouldSkipCheckForActor_Spectral",
+            "VmPMapAimLineAttackTests.TraceHitActor_StopsOnActor"
           ]
         }
       ],
-      "nativeLoc": 147,
+      "nativeLoc": 159,
       "conversionManagedCommit": "ef628f22f2692eb799cbc51beaa22fb4e5cac25d",
       "managedLoc": 108
     }

@@ -105,4 +105,34 @@ public static class VmPMapAimLineAttack
     public static bool SmartAimLevel(int level, bool cond) => cond;
 
     public static bool DebugAimPrint(bool debug) => debug;
+
+    public readonly record struct CheckForActorSkipContext(
+        bool ThruActors,
+        bool PuffSpectral,
+        bool ActorSpectral,
+        bool MThruSpecies,
+        bool SameSpeciesAsCaller,
+        bool ThruSpecies,
+        bool SameSpeciesAsPuff,
+        bool HitGhosts,
+        bool ActorGhost,
+        bool UseThruBits,
+        bool ThruBitsOverlap,
+        bool CallerIsPlayer,
+        bool PassThroughPlayer);
+
+    public static bool TraceHitActor(int hitType) => HitTypeActor(hitType);
+
+    public static bool ShouldSkipCheckForActor(CheckForActorSkipContext ctx) =>
+        ThruActorsSkip(ctx.ThruActors)
+        || SpectralSkip(ctx.PuffSpectral, ctx.ActorSpectral)
+        || MthruSpeciesSkip(ctx.MThruSpecies, ctx.SameSpeciesAsCaller)
+        || ThruSpeciesSkip(ctx.ThruSpecies, ctx.SameSpeciesAsPuff)
+        || GhostSkip(ctx.HitGhosts, ctx.ActorGhost)
+        || ThruBitsSkip(ctx.UseThruBits, ctx.ThruBitsOverlap)
+        || PlayerPassSkip(ctx.CallerIsPlayer, ctx.PassThroughPlayer);
+
+    public static bool HitscanPreFired(bool fired) => fired;
+
+    public static bool SuppressLocalPlayerHitscan(bool suppress) => suppress;
 }

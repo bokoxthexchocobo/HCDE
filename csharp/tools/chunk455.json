@@ -4,17 +4,61 @@
     "bucket": "conversion",
     "note": "PIT_CheckThing movement blocking and pickup",
     "auditSeams": "`P_CanCollideWith`, `P_DoMissileDamage`, and VM rumble hooks are not hosted.",
-    "auditRationale": "Credits corpse prediction bypass, bridge stepping, touchy detonation, missile rip/reflect paths, pushables, and pickup gating from `p_map.cpp`.",
+    "auditRationale": "Credits early filters, bridge/unblock, passobj vertical, touchy detonation, prediction solid gate, missile rip/reflect paths, and solid/pickup tail ported in `VmPMapPitCheckThing`.",
     "managedSourceFiles": ["csharp/src/HCDE.Playsim/VmPMapPitCheckThing.cs"],
     "nativeRanges": [
       {
         "file": "src/playsim/p_map.cpp",
         "symbol": "PIT_CheckThing",
         "start": 1393,
-        "end": 1780,
+        "end": 1434,
+        "tests": ["VmPMapPitCheckThingTests.EarlyGates_SkipWhenNonInteractive"]
+      },
+      {
+        "file": "src/playsim/p_map.cpp",
+        "symbol": "PIT_CheckThing",
+        "start": 1443,
+        "end": 1489,
+        "tests": ["VmPMapPitCheckThingTests.BridgeUnblock_WhenMovingApart"]
+      },
+      {
+        "file": "src/playsim/p_map.cpp",
+        "symbol": "PIT_CheckThing",
+        "start": 1493,
+        "end": 1514,
+        "tests": ["VmPMapPitCheckThingTests.RipperSkipsCorpse"]
+      },
+      {
+        "file": "src/playsim/p_map.cpp",
+        "symbol": "PIT_CheckThing",
+        "start": 1527,
+        "end": 1545,
+        "tests": ["VmPMapPitCheckThingTests.TouchyDetonate_WhenAligned"]
+      },
+      {
+        "file": "src/playsim/p_map.cpp",
+        "symbol": "PIT_CheckThing",
+        "start": 1568,
+        "end": 1575,
+        "tests": ["VmPMapPitCheckThingTests.PredictingStopsSolid"]
+      },
+      {
+        "file": "src/playsim/p_map.cpp",
+        "symbol": "PIT_CheckThing",
+        "start": 1598,
+        "end": 1728,
         "tests": [
-          "VmPMapPitCheckThingTests.TouchyDetonate_WhenAligned",
-          "VmPMapPitCheckThingTests.RipperSkipsCorpse",
+          "VmPMapPitCheckThingTests.MissilePath_RipCorpsePass",
+          "VmPMapPitCheckThingTests.ProjectileClipHeight_UsesPassHeight"
+        ]
+      },
+      {
+        "file": "src/playsim/p_map.cpp",
+        "symbol": "PIT_CheckThing",
+        "start": 1758,
+        "end": 1777,
+        "tests": [
+          "VmPMapPitCheckThingTests.SolidPickup_UnblockPasses",
           "VmPMapPitCheckThingTests.SolidBlock_MirrorBlocksPlayer"
         ]
       }

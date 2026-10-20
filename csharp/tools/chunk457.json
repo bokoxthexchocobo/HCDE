@@ -18,7 +18,7 @@
         "file": "src/playsim/p_map.cpp",
         "symbol": "P_TestMobjZ",
         "start": 2104,
-        "end": 2247,
+        "end": 2170,
         "tests": [
           "VmPMapTestMobjTests.CorpseNeedsIce",
           "VmPMapTestMobjTests.OverOrUnder"

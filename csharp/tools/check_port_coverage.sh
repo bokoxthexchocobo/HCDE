@@ -1,6 +1,6 @@
 #!/bin/bash
-# Usage: check_port_coverage.sh <chunkNum>
-# Requires HEAD to be the port commit; exits 1 if managed src additions < 50% nativeLoc.
+# Usage: check_port_coverage.sh <chunkNum> [portSha]
+# Exits 1 if per-VM-file managed additions in port commit < 50% of chunk nativeLoc.
 set -euo pipefail
 NUM="$1"
 REPO=/workspace
@@ -13,7 +13,17 @@ chunk=json.loads((Path('$REPO/csharp/tools')/f'chunk{num}.json').read_text())
 if isinstance(chunk,list): chunk=chunk[0]
 print(sum(int(r['end'])-int(r['start'])+1 for r in chunk['nativeRanges']))
 " "$NUM")
-ML=$(git -C "$REPO" show "$SHA" --numstat --format= | awk '/^([0-9]+|-)\t([0-9]+|-)\tcsharp\/src\/.*\.cs$/ { if ($1 ~ /^[0-9]+$/) s+=$1 } END { print s+0 }')
+ML=$(python3 -c "
+import json, sys
+from pathlib import Path
+sys.path.insert(0, '$REPO/csharp/tools')
+from chunk_port_managed import managed_loc_for_chunk
+num=int(sys.argv[1])
+sha=sys.argv[2]
+chunk=json.loads((Path('$REPO/csharp/tools')/f'chunk{num}.json').read_text())
+if isinstance(chunk,list): chunk=chunk[0]
+print(managed_loc_for_chunk(chunk, sha, num))
+" "$NUM" "$SHA")
 MIN=$(( (NL + 1) / 2 ))
 echo "chunk $NUM native=$NL managed_src=$ML need>=$MIN"
 if [ "$ML" -lt "$MIN" ]; then

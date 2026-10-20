@@ -46,6 +46,19 @@ public class VmPMapPitCheckThingTests
     }
 
     [Fact]
+    public void BridgeUnblock_WhenMovingApart()
+    {
+        var ctx = new VmPMapPitCheckThing.PitBridgeUnblockContext(
+            false, false, true, true, true, true, false, true, 2, 1, true, false);
+        var (_, unblocking) = VmPMapPitCheckThing.EvaluateBridgeAndUnblock(ctx);
+        Assert.True(unblocking);
+    }
+
+    [Fact]
+    public void PredictingStopsSolid() =>
+        Assert.True(VmPMapPitCheckThing.PredictingStopsSolid(true));
+
+    [Fact]
     public void SolidPickup_UnblockPasses()
     {
         var ctx = new VmPMapPitCheckThing.PitSolidPickupContext(

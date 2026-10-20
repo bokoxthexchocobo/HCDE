@@ -2,9 +2,9 @@
   {
     "name": "p-map-aim-lineattack-chunk465",
     "bucket": "conversion",
-    "note": "aim_t result helpers, P_AimLineAttack, CheckForActor",
+    "note": "aim_t result helpers, P_AimLineAttack, CheckForActor (P_LineAttack body stays recognition)",
     "auditSeams": "`aim_t::AimTraverse`, `P_AimLineAttack_ShadowHandling`, and `FPathTraverse` are not hosted.",
-    "auditRationale": "Credits autoaim vrange policy, aim result selection, line-attack trace skip rules from `p_map.cpp`.",
+    "auditRationale": "Credits autoaim vrange policy, aim result selection, line-attack trace skip rules, and hitscan pre-fire suppression from `p_map.cpp`.",
     "managedSourceFiles": ["csharp/src/HCDE.Playsim/VmPMapAimLineAttack.cs"],
     "nativeRanges": [
       {
@@ -40,10 +40,20 @@
       },
       {
         "file": "src/playsim/p_map.cpp",
+        "symbol": "Origin",
+        "start": 4646,
+        "end": 4657,
+        "tests": ["VmPMapAimLineAttackTests.ShouldSkipCheckForActor_Spectral"]
+      },
+      {
+        "file": "src/playsim/p_map.cpp",
         "symbol": "CheckForActor",
         "start": 4659,
         "end": 4689,
-        "tests": ["VmPMapAimLineAttackTests.SpectralSkip_WhenPuffNotSpectral"]
+        "tests": [
+          "VmPMapAimLineAttackTests.ShouldSkipCheckForActor_Spectral",
+          "VmPMapAimLineAttackTests.TraceHitActor_StopsOnActor"
+        ]
       }
     ]
   }

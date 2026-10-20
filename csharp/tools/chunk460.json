@@ -19,7 +19,10 @@
         "symbol": "AActor::FloorBounceMissile",
         "start": 2139,
         "end": 2274,
-        "tests": ["VmPMobjBounceSeekTests.SkyDestroy_WhenNotOnSkyFlag"]
+        "tests": [
+          "VmPMobjBounceSeekTests.SkyDestroy_WhenNotOnSkyFlag",
+          "VmPMobjBounceSeekTests.FloorBounceDestroyed_WhenSky"
+        ]
       },
       {
         "file": "src/playsim/p_mobj.cpp",
@@ -40,7 +43,10 @@
         "symbol": "P_SeekerMissile",
         "start": 2340,
         "end": 2411,
-        "tests": ["VmPMobjBounceSeekTests.CanSeekTarget_BlocksCantseek"]
+        "tests": [
+          "VmPMobjBounceSeekTests.CanSeekTarget_BlocksCantseek",
+          "VmPMobjBounceSeekTests.SeekerTracksTarget_WhenTracerSet"
+        ]
       }
     ]
   }

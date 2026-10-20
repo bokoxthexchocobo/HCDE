@@ -8,6 +8,11 @@ from pathlib import Path
 REPO = Path(__file__).resolve().parents[1].parent
 CSHARP = REPO / "csharp"
 
+import sys
+
+sys.path.insert(0, str(CSHARP / "tools"))
+from chunk_port_managed import managed_loc_for_chunk  # noqa: E402
+
 
 def src_lines_in_commit(sha: str) -> int:
     out = subprocess.check_output(
@@ -56,27 +61,9 @@ def main() -> int:
             if not sha:
                 print(f"chunk {num}: no conversionManagedCommit", file=sys.stderr)
                 break
-            listed = chunk_def.get("managedSourceFiles") or []
-            if listed:
-                ml = sum(lines_at_head(p) for p in listed)
-            else:
-                # Prefer total lines in primary new file at commit (whole VM), else sum additions.
-                show = subprocess.check_output(
-                    ["git", "show", sha, "--name-only", "--format="],
-                    cwd=REPO,
-                    text=True,
-                )
-                src_files = [
-                    p
-                    for p in show.splitlines()
-                    if p.startswith("csharp/src/") and p.endswith(".cs")
-                ]
-                if len(src_files) == 1:
-                    ml = file_lines_at_commit(sha, src_files[0])
-                elif len(src_files) > 1:
-                    ml = sum(file_lines_at_commit(sha, p) for p in src_files)
-                else:
-                    ml = src_lines_in_commit(sha)
+            ml = managed_loc_for_chunk(chunk_def, sha, num)
+            if ml <= 0:
+                ml = src_lines_in_commit(sha)
             ch["managedLoc"] = ml
             print(f"{name} managedLoc={ml} sha={sha[:8]}")
             break
