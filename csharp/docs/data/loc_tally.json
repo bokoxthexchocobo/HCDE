@@ -16287,7 +16287,8 @@
           "start": 74,
           "end": 135,
           "tests": [
-            "VmALightsThinkerTests.ResolveLightLevel_ClampsToMin"
+            "VmALightsThinkerTests.ResolveLightLevel_ClampsToMin",
+            "VmALightsThinkerTests.FireFlickerFromSector_UsesMinPlus16"
           ]
         },
         {

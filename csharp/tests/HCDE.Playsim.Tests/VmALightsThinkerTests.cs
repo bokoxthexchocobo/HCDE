@@ -9,6 +9,13 @@ public class VmALightsThinkerTests
     }
 
     [Fact]
+    public void FireFlickerFromSector_UsesMinPlus16()
+    {
+        var (max, min) = VmALightsConstruct.FireFlickerFromSector(100, 20);
+        Assert.Equal((100, 36), (max, min));
+    }
+
+    [Fact]
     public void FlickerInitialCount_UsesPrMask()
     {
         Assert.Equal(65, VmALightsFlicker.InitialCount(64));
