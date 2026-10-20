@@ -12,25 +12,25 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 113990
+    "managedCSharpLoc": 114937
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": -1233,
+    "convertedThisRunNative": -522,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 12432,
+    "convertedThisRunManaged": 12965,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -87,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 485439,
+    "remainingNative": 484728,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 17294,
+    "convertedBehaviorNative": 18005,
     "recognitionBehaviorNative": 5353,
-    "combinedBehaviorNative": 22647,
-    "convertedBehaviorManaged": 22103,
+    "combinedBehaviorNative": 23358,
+    "convertedBehaviorManaged": 22636,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -6856,6 +6856,255 @@
         ],
         "nativeLoc": 16,
         "conversionManagedCommit": "614695bdcf5f1c7b5fe3d990c068feb786fed3be"
+      },
+      {
+        "name": "c-bind-keysetup-chunk139",
+        "bucket": "conversion",
+        "managedLoc": 195,
+        "note": "FKeyBindings config IO + GetKeyFromName/GetConfigKeyFromName/ConfigKeyName + DoKeySetup.",
+        "nativeRanges": [
+          {
+            "file": "src/common/console/c_bind.cpp",
+            "symbol": "GetKeyFromName",
+            "start": 233,
+            "end": 282,
+            "tests": [
+              "VmKeyBindingsTests.DoBindAndArchive_RoundTrip"
+            ]
+          },
+          {
+            "file": "src/common/console/c_bind.cpp",
+            "symbol": "ConfigKeyName",
+            "start": 307,
+            "end": 322,
+            "tests": [
+              "VmKeyBindingsTests.DoBindAndArchive_RoundTrip"
+            ]
+          },
+          {
+            "file": "src/common/console/c_bind.cpp",
+            "symbol": "FKeyBindings::DoBind",
+            "start": 388,
+            "end": 421,
+            "tests": [
+              "VmKeyBindingsTests.DefaultBind_SkipsWhenKeyUsed"
+            ]
+          },
+          {
+            "file": "src/common/console/c_bind.cpp",
+            "symbol": "FKeyBindings::ArchiveBindings",
+            "start": 499,
+            "end": 527,
+            "tests": [
+              "VmKeyBindingsTests.DoBindAndArchive_RoundTrip"
+            ]
+          },
+          {
+            "file": "src/common/console/c_bind.cpp",
+            "symbol": "FKeyBindings::UnbindACommand/DefaultBind",
+            "start": 599,
+            "end": 641,
+            "tests": [
+              "VmKeyBindingsTests.DefaultBind_SkipsWhenKeyUsed"
+            ]
+          },
+          {
+            "file": "src/gameconfigfile.cpp",
+            "symbol": "FGameConfigFile::DoKeySetup (load bindings)",
+            "start": 849,
+            "end": 878,
+            "tests": [
+              "VmGameConfigKeySetupTests.DoKeySetup_LoadsBindingsAndAppliesGammaReset"
+            ]
+          }
+        ],
+        "nativeLoc": 202,
+        "conversionManagedCommit": "d031b904e5990e6bef89646fb334f996f9596699"
+      },
+      {
+        "name": "gameconfig-resetbind-chunk140",
+        "bucket": "conversion",
+        "managedLoc": 28,
+        "note": "ResetBinds queue from DoGlobalSetup and V230 gamma bind swap path.",
+        "nativeRanges": [
+          {
+            "file": "src/gameconfigfile.cpp",
+            "symbol": "ResetBinds / bResetBindFlags queue",
+            "start": 723,
+            "end": 736,
+            "tests": [
+              "VmGameConfigKeySetupTests.DoKeySetup_LoadsBindingsAndAppliesGammaReset"
+            ]
+          },
+          {
+            "file": "src/gameconfigfile.cpp",
+            "symbol": "FGameConfigFile::DoKeySetup (V226/V230)",
+            "start": 880,
+            "end": 915,
+            "tests": [
+              "VmGameConfigKeySetupTests.DoKeySetup_LoadsBindingsAndAppliesGammaReset"
+            ]
+          }
+        ],
+        "nativeLoc": 50,
+        "conversionManagedCommit": "ab0a090f3178bbab10cf3ae664917d7d07b6c3f7"
+      },
+      {
+        "name": "gameconfig-modnet-chunk141",
+        "bucket": "conversion",
+        "managedLoc": 42,
+        "note": "DoModSetup and ReadNetVars dictionary reads.",
+        "nativeRanges": [
+          {
+            "file": "src/gameconfigfile.cpp",
+            "symbol": "FGameConfigFile::DoModSetup",
+            "start": 922,
+            "end": 941,
+            "tests": [
+              "VmGameConfigModArchiveTests.DoModSetup_ReadsModSections"
+            ]
+          },
+          {
+            "file": "src/gameconfigfile.cpp",
+            "symbol": "FGameConfigFile::ReadNetVars",
+            "start": 943,
+            "end": 958,
+            "tests": [
+              "VmGameConfigModArchiveTests.DoModSetup_ReadsModSections"
+            ]
+          },
+          {
+            "file": "src/gameconfigfile.cpp",
+            "symbol": "FGameConfigFile::ReadCVars",
+            "start": 962,
+            "end": 979,
+            "tests": [
+              "VmGameConfigModArchiveTests.DoModSetup_ReadsModSections"
+            ]
+          }
+        ],
+        "nativeLoc": 54,
+        "conversionManagedCommit": "584199b5edfec7fe774ae10a4c1e29da5b1f7efb"
+      },
+      {
+        "name": "gameconfig-archive-chunk142",
+        "bucket": "conversion",
+        "managedLoc": 78,
+        "note": "ArchiveGameData/ArchiveGlobalData via config sections + binding archive.",
+        "nativeRanges": [
+          {
+            "file": "src/gameconfigfile.cpp",
+            "symbol": "FGameConfigFile::ArchiveGameData",
+            "start": 981,
+            "end": 1060,
+            "tests": [
+              "VmGameConfigModArchiveTests.ArchiveGameData_WritesBindings"
+            ]
+          },
+          {
+            "file": "src/gameconfigfile.cpp",
+            "symbol": "FGameConfigFile::ArchiveGlobalData",
+            "start": 1062,
+            "end": 1076,
+            "tests": [
+              "VmGameConfigModArchiveTests.ArchiveGameData_WritesBindings"
+            ]
+          }
+        ],
+        "nativeLoc": 95,
+        "conversionManagedCommit": "cc9e7049e0eea344aeae78ef99c3869c1cf3bebb"
+      },
+      {
+        "name": "i-time-complete-chunk143",
+        "bucket": "conversion",
+        "managedLoc": 118,
+        "note": "VmGameClock: frame/tic/input/delta APIs (chunk 138 static helpers remain separate).",
+        "nativeRanges": [
+          {
+            "file": "src/common/utility/i_time.cpp",
+            "symbol": "I_InitTime",
+            "start": 52,
+            "end": 55,
+            "tests": [
+              "VmGameClockTests.FrameTimeAndTics_AdvancesWithInjectedClock"
+            ]
+          },
+          {
+            "file": "src/common/utility/i_time.cpp",
+            "symbol": "I_SetFrameTime",
+            "start": 84,
+            "end": 98,
+            "tests": [
+              "VmGameClockTests.FrameTimeAndTics_AdvancesWithInjectedClock"
+            ]
+          },
+          {
+            "file": "src/common/utility/i_time.cpp",
+            "symbol": "I_WaitVBL",
+            "start": 100,
+            "end": 108,
+            "tests": [
+              "VmGameClockTests.FrameTimeAndTics_AdvancesWithInjectedClock"
+            ]
+          },
+          {
+            "file": "src/common/utility/i_time.cpp",
+            "symbol": "I_WaitForTic",
+            "start": 110,
+            "end": 138,
+            "tests": [
+              "VmGameClockTests.FrameTimeAndTics_AdvancesWithInjectedClock"
+            ]
+          },
+          {
+            "file": "src/common/utility/i_time.cpp",
+            "symbol": "I_nsTime..I_GetTimeFrac",
+            "start": 140,
+            "end": 177,
+            "tests": [
+              "VmGameClockTests.FrameTimeAndTics_AdvancesWithInjectedClock"
+            ]
+          },
+          {
+            "file": "src/common/utility/i_time.cpp",
+            "symbol": "I_FreezeTime..GetPhysicsTimeStep",
+            "start": 179,
+            "end": 256,
+            "tests": [
+              "VmGameClockTests.DeltaTime_Clamped"
+            ]
+          }
+        ],
+        "nativeLoc": 173,
+        "conversionManagedCommit": "1a8ea2c36b22b5971084886e29679dbbcb190fe7"
+      },
+      {
+        "name": "utf8-mixed-misc-chunk144",
+        "bucket": "conversion",
+        "managedLoc": 72,
+        "note": "GetCharFromString/win1252map/MakeUTF8 subset; m_misc Uncomment.",
+        "nativeRanges": [
+          {
+            "file": "src/common/utility/utf8.cpp",
+            "symbol": "win1252map/GetCharFromString",
+            "start": 142,
+            "end": 215,
+            "tests": [
+              "VmUtf8MixedEncodingTests.GetCharFromString_DecodesWin1252Euro"
+            ]
+          },
+          {
+            "file": "src/m_misc.cpp",
+            "symbol": "Uncomment",
+            "start": 92,
+            "end": 154,
+            "tests": [
+              "VmMiscResponseUncommentTests.Uncomment_StripsCommentsAndWhitespace"
+            ]
+          }
+        ],
+        "nativeLoc": 137,
+        "conversionManagedCommit": "bbc6dc68e8db02724b262d26159ef94f5ea71b59"
       }
     ]
   },
