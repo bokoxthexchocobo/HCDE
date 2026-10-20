@@ -21,4 +21,24 @@ public static class VmTerrainInit
             DamageTimeMask = 31,
         });
     }
+
+    /// <summary><c>P_InitTerrainTypes</c> lump ingest without filesystem seam.</summary>
+    public static void LoadTerrainDocuments(
+        IEnumerable<string> terrainLumpTexts,
+        VmTerrainDatabase db,
+        ITerrainGameFilter games,
+        ITerrainFlatCatalog? flats,
+        List<string> errors)
+    {
+        db.Splashes.Clear();
+        db.Terrains.Clear();
+        db.FloorTerrains.Clear();
+        db.FloorTerrainByTextureIndex.Clear();
+        MakeDefaultTerrain(db);
+        foreach (var text in terrainLumpTexts)
+        {
+            if (!VmTerrainDocumentParser.TryParseDocument(text, db, games, errors, flats))
+                return;
+        }
+    }
 }
