@@ -17,9 +17,9 @@ A_LookEx goal, sound-target, ambush, and seeyou tail (no P_LookForPlayers)
 
 ## Managed
 
-`VmPEnemyLookEx.cs`, `VmPEnemyLookExTests.cs`, `VmPInteractionDamageEarly.cs`, `VmPMapBounceTraverse.cs`, `VmPMapBounceTraverseTests.cs`, `VmPMapPortalMissile.cs`
-Managed LOC (tally): 21.
-Conversion commit: `53421b2029c5785355f2a52a139216e761f78ae5`.
+`VmPEnemyLookEx.cs`, `VmPEnemyLookExTests.cs`
+Managed LOC (tally): 163.
+Conversion commit: `5e5d6d3ce3b43dc6449a4ae85effdbe03c61f7d9`.
 
 ## Tests
 
@@ -29,9 +29,13 @@ Conversion commit: `53421b2029c5785355f2a52a139216e761f78ae5`.
 - `VmPEnemyLookExTests.HearDistance_BlocksFar`
 - `VmPEnemyLookExTests.StealthVisdir`
 - `VmPEnemyLookExTests.StandstillBlocksWander`
+- `VmPEnemyLookExTests.FriendWander_PicksParamSeeState`
 - `VmPEnemyLookExTests.AmbushSightRequired`
+- `VmPEnemyLookExTests.EnemyAmbush_DistInRange`
 - `VmPEnemyLookExTests.FullVolumeSee`
 - `VmPEnemyLookExTests.InchaseSkipsSee`
+- `VmPEnemyLookExTests.SeeYouTail_GoalReactionBlocks`
+- `VmPEnemyLookExTests.SeeYouGoal_PicksSeeState`
 
 ## Verified
 

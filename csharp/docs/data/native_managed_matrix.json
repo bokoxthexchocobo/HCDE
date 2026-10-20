@@ -12,7 +12,7 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 145599
+    "managedCSharpLoc": 145683
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
@@ -20,7 +20,7 @@
     "runStartConvertedBehaviorManaged": 9671,
     "convertedThisRunNative": 29944,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 42122,
+    "convertedThisRunManaged": 42206,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": 151,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
@@ -30,7 +30,7 @@
     "convertedBehaviorNative": 48471,
     "recognitionBehaviorNative": 5591,
     "combinedBehaviorNative": 54062,
-    "convertedBehaviorManaged": 51793,
+    "convertedBehaviorManaged": 51877,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -19149,7 +19149,8 @@
             "start": 2153,
             "end": 2171,
             "tests": [
-              "VmPEnemyLookExTests.StandstillBlocksWander"
+              "VmPEnemyLookExTests.StandstillBlocksWander",
+              "VmPEnemyLookExTests.FriendWander_PicksParamSeeState"
             ]
           },
           {
@@ -19158,7 +19159,8 @@
             "start": 2174,
             "end": 2197,
             "tests": [
-              "VmPEnemyLookExTests.AmbushSightRequired"
+              "VmPEnemyLookExTests.AmbushSightRequired",
+              "VmPEnemyLookExTests.EnemyAmbush_DistInRange"
             ]
           },
           {
@@ -19168,13 +19170,15 @@
             "end": 2244,
             "tests": [
               "VmPEnemyLookExTests.FullVolumeSee",
-              "VmPEnemyLookExTests.InchaseSkipsSee"
+              "VmPEnemyLookExTests.InchaseSkipsSee",
+              "VmPEnemyLookExTests.SeeYouTail_GoalReactionBlocks",
+              "VmPEnemyLookExTests.SeeYouGoal_PicksSeeState"
             ]
           }
         ],
         "nativeLoc": 158,
-        "managedLoc": 79,
-        "conversionManagedCommit": "6229ab63a94a8a61a7376053113ad5f9e4ed7bab",
+        "managedLoc": 163,
+        "conversionManagedCommit": "5e5d6d3ce3b43dc6449a4ae85effdbe03c61f7d9",
         "portCommits": [
           "4d6fead63aeae227fdcfd7c8e0f87d411e66042a"
         ]

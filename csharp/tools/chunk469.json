@@ -6,7 +6,10 @@
     "auditSeams": "`P_LookForPlayers`, `P_CheckSight`, `SetState`, and `S_Sound` are not hosted.",
     "auditRationale": "Credits parameterized look setup, sound-target distance, stealth, ambush distance, and seestate tail from `p_enemy.cpp` (2063–2245).",
     "managedSourceFiles": ["csharp/src/HCDE.Playsim/VmPEnemyLookEx.cs"],
-    "portCommits": ["4d6fead63aeae227fdcfd7c8e0f87d411e66042a"],
+    "portCommits": [
+      "4d6fead63aeae227fdcfd7c8e0f87d411e66042a",
+      "6229ab63a94a8a61a7376053113ad5f9e4ed7bab"
+    ],
     "nativeRanges": [
       {
         "file": "src/playsim/p_enemy.cpp",
@@ -40,14 +43,20 @@
         "symbol": "A_LookEx",
         "start": 2153,
         "end": 2171,
-        "tests": ["VmPEnemyLookExTests.StandstillBlocksWander"]
+        "tests": [
+          "VmPEnemyLookExTests.StandstillBlocksWander",
+          "VmPEnemyLookExTests.FriendWander_PicksParamSeeState"
+        ]
       },
       {
         "file": "src/playsim/p_enemy.cpp",
         "symbol": "A_LookEx",
         "start": 2174,
         "end": 2197,
-        "tests": ["VmPEnemyLookExTests.AmbushSightRequired"]
+        "tests": [
+          "VmPEnemyLookExTests.AmbushSightRequired",
+          "VmPEnemyLookExTests.EnemyAmbush_DistInRange"
+        ]
       },
       {
         "file": "src/playsim/p_enemy.cpp",
@@ -56,7 +65,9 @@
         "end": 2244,
         "tests": [
           "VmPEnemyLookExTests.FullVolumeSee",
-          "VmPEnemyLookExTests.InchaseSkipsSee"
+          "VmPEnemyLookExTests.InchaseSkipsSee",
+          "VmPEnemyLookExTests.SeeYouTail_GoalReactionBlocks",
+          "VmPEnemyLookExTests.SeeYouGoal_PicksSeeState"
         ]
       }
     ]
