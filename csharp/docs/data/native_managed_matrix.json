@@ -22,14 +22,14 @@
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
     "convertedThisRunManaged": 6156,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
-    "recognitionThisRunNative": -409,
+    "recognitionThisRunNative": -378,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 491585,
+    "remainingNative": 491554,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
     "convertedBehaviorNative": 11470,
-    "recognitionBehaviorNative": 5031,
-    "combinedBehaviorNative": 16501,
+    "recognitionBehaviorNative": 5062,
+    "combinedBehaviorNative": 16532,
     "convertedBehaviorManaged": 15827,
     "baselineNative": 508086,
     "chunks": [
@@ -4067,164 +4067,299 @@
       {
         "name": "p-acs-callfunc-pointer-band-chunk65-recognition",
         "bucket": "recognition",
-        "nativeLoc": 118,
         "managedLoc": 0,
-        "note": "CallFunction GetNetID, SetActivator*, GetChar, GetArmorType/Info (pre-existing managed).",
+        "note": "CallFunction pointer/net/activator/char/armor cases with per-case managed handlers.",
         "nativeRanges": [
           {
             "file": "src/playsim/p_acs.cpp",
-            "symbol": "DLevelScript::CallFunction",
+            "symbol": "ACSF_GetNetID",
             "start": 5492,
-            "end": 5498,
+            "end": 5497,
             "tests": [
-              "AcsCallFunctionTests.CallFunc_GetNetId_ReturnsActorNetworkId",
-              "AcsActivatorFailureTests.SetActivatorExistingTidSelectsActor",
-              "AcsGetCharByteTests.GetCharReturnsNativeSignedUtf8Byte",
-              "AcsCallFunctionTests.CallFunc_GetArmorInfo_ReturnsMegaSavePercent"
+              "AcsCallFunctionTests.CallFunc_GetNetId_ReturnsActorNetworkId"
             ]
           },
           {
             "file": "src/playsim/p_acs.cpp",
-            "symbol": "DLevelScript::CallFunction",
-            "start": 5513,
-            "end": 5561,
+            "symbol": "ACSF_SetActivator",
+            "start": 5514,
+            "end": 5524,
             "tests": [
-              "AcsCallFunctionTests.CallFunc_GetNetId_ReturnsActorNetworkId",
-              "AcsActivatorFailureTests.SetActivatorExistingTidSelectsActor",
-              "AcsGetCharByteTests.GetCharReturnsNativeSignedUtf8Byte",
-              "AcsCallFunctionTests.CallFunc_GetArmorInfo_ReturnsMegaSavePercent"
+              "AcsActivatorFailureTests.SetActivatorExistingTidSelectsActor"
             ]
           },
           {
             "file": "src/playsim/p_acs.cpp",
-            "symbol": "DLevelScript::CallFunction",
-            "start": 5577,
-            "end": 5591,
+            "symbol": "ACSF_SetActivatorToTarget",
+            "start": 5526,
+            "end": 5548,
             "tests": [
-              "AcsCallFunctionTests.CallFunc_GetNetId_ReturnsActorNetworkId",
-              "AcsActivatorFailureTests.SetActivatorExistingTidSelectsActor",
-              "AcsGetCharByteTests.GetCharReturnsNativeSignedUtf8Byte",
-              "AcsCallFunctionTests.CallFunc_GetArmorInfo_ReturnsMegaSavePercent"
+              "AcsCallFunctionTests.CallFunc_SetActivatorToTarget_UsesMonsterChaseTarget"
             ]
           },
           {
             "file": "src/playsim/p_acs.cpp",
-            "symbol": "DLevelScript::CallFunction",
-            "start": 5620,
-            "end": 5620,
+            "symbol": "ACSF_SetActivatorByNetID",
+            "start": 5550,
+            "end": 5560,
             "tests": [
-              "AcsCallFunctionTests.CallFunc_GetNetId_ReturnsActorNetworkId",
-              "AcsActivatorFailureTests.SetActivatorExistingTidSelectsActor",
-              "AcsGetCharByteTests.GetCharReturnsNativeSignedUtf8Byte",
-              "AcsCallFunctionTests.CallFunc_GetArmorInfo_ReturnsMegaSavePercent"
+              "AcsCallFunctionTests.CallFunc_SetActivatorByNetId_SwitchesActivator"
             ]
           },
           {
             "file": "src/playsim/p_acs.cpp",
-            "symbol": "DLevelScript::CallFunction",
-            "start": 5629,
-            "end": 5674,
+            "symbol": "ACSF_GetChar",
+            "start": 5578,
+            "end": 5590,
             "tests": [
-              "AcsCallFunctionTests.CallFunc_GetNetId_ReturnsActorNetworkId",
-              "AcsActivatorFailureTests.SetActivatorExistingTidSelectsActor",
-              "AcsGetCharByteTests.GetCharReturnsNativeSignedUtf8Byte",
+              "AcsGetCharByteTests.GetCharReturnsNativeSignedUtf8Byte"
+            ]
+          },
+          {
+            "file": "src/playsim/p_acs.cpp",
+            "symbol": "ACSF_GetArmorType",
+            "start": 5630,
+            "end": 5645,
+            "tests": [
+              "AcsCallFunctionTests.CallFunc_GetArmorType_ReturnsWornAmount"
+            ]
+          },
+          {
+            "file": "src/playsim/p_acs.cpp",
+            "symbol": "ACSF_GetArmorInfo",
+            "start": 5647,
+            "end": 5681,
+            "tests": [
               "AcsCallFunctionTests.CallFunc_GetArmorInfo_ReturnsMegaSavePercent"
             ]
           }
-        ]
+        ],
+        "nativeLoc": 115
       },
       {
         "name": "p-acs-callfunc-gameplay-band-chunk66-recognition",
         "bucket": "recognition",
-        "nativeLoc": 247,
         "managedLoc": 0,
-        "note": "CallFunction velocity, user vars, class identity, UniqueTID, sqrt/HUD/CVar band (pre-existing).",
+        "note": "CallFunction gameplay/math/HUD/CVar cases with evidenced TryInvoke handlers.",
         "nativeRanges": [
           {
             "file": "src/playsim/p_acs.cpp",
-            "symbol": "DLevelScript::CallFunction",
+            "symbol": "ACSF_SetActorVelocity",
             "start": 5695,
-            "end": 5755,
+            "end": 5713,
             "tests": [
-              "AcsCallFunctionTests.CallFunc_SetActorVelocity_ThenGetVelXMatches",
-              "AcsScriptUserVariableServiceTests.CallFunc_SetAndGetUserVariable_RoundTripsIndexedSlot",
-              "AcsCallFunctionTests.CallFunc_GetActorClass_ReturnsDoomImpForTid",
-              "AcsCallFunctionTests.CallFunc_UniqueTid_RandomStartFindsUnusedTid",
-              "AcsFixedRoundingTests.VectorLengthRoundsFractionalFixedResults",
+              "AcsCallFunctionTests.CallFunc_SetActorVelocity_ThenGetVelXMatches"
+            ]
+          },
+          {
+            "file": "src/playsim/p_acs.cpp",
+            "symbol": "ACSF_SetUserVariable",
+            "start": 5715,
+            "end": 5742,
+            "tests": [
+              "AcsScriptUserVariableServiceTests.CallFunc_SetAndGetUserVariable_RoundTripsIndexedSlot"
+            ]
+          },
+          {
+            "file": "src/playsim/p_acs.cpp",
+            "symbol": "ACSF_GetUserVariable",
+            "start": 5744,
+            "end": 5754,
+            "tests": [
+              "AcsScriptUserVariableServiceTests.CallFunc_SetAndGetUserVariable_RoundTripsIndexedSlot"
+            ]
+          },
+          {
+            "file": "src/playsim/p_acs.cpp",
+            "symbol": "ACSF_SetUserArray",
+            "start": 5756,
+            "end": 5783,
+            "tests": [
+              "AcsHotCallFuncBehaviorTests.UserArrayIndexRoundTrip"
+            ]
+          },
+          {
+            "file": "src/playsim/p_acs.cpp",
+            "symbol": "ACSF_GetUserArray",
+            "start": 5785,
+            "end": 5795,
+            "tests": [
+              "AcsHotCallFuncBehaviorTests.UserArrayIndexRoundTrip"
+            ]
+          },
+          {
+            "file": "src/playsim/p_acs.cpp",
+            "symbol": "ACSF_CheckActorClass",
+            "start": 5802,
+            "end": 5807,
+            "tests": [
+              "AcsCallFunctionTests.CallFunc_CheckActorClass_MatchesImpByTid"
+            ]
+          },
+          {
+            "file": "src/playsim/p_acs.cpp",
+            "symbol": "ACSF_GetActorClass",
+            "start": 5809,
+            "end": 5814,
+            "tests": [
+              "AcsCallFunctionTests.CallFunc_GetActorClass_ReturnsDoomImpForTid"
+            ]
+          },
+          {
+            "file": "src/playsim/p_acs.cpp",
+            "symbol": "ACSF_SoundSequenceOnActor",
+            "start": 5816,
+            "end": 5841,
+            "tests": [
+              "AcsSoundSequenceCallFuncTests.SoundSequenceOnActorSetsActivatorName"
+            ]
+          },
+          {
+            "file": "src/playsim/p_acs.cpp",
+            "symbol": "ACSF_SoundSequenceOnSector",
+            "start": 5843,
+            "end": 5858,
+            "tests": [
+              "AcsSoundSequenceCallFuncTests.SoundSequenceOnSectorTagsAllMatchingSectors"
+            ]
+          },
+          {
+            "file": "src/playsim/p_acs.cpp",
+            "symbol": "ACSF_SoundSequenceOnPolyobj",
+            "start": 5860,
+            "end": 5873,
+            "tests": [
+              "AcsSoundSequenceCallFuncTests.SoundSequenceOnPolyobjStoresSequenceName"
+            ]
+          },
+          {
+            "file": "src/playsim/p_acs.cpp",
+            "symbol": "ACSF_GetPolyobjX",
+            "start": 5875,
+            "end": 5884,
+            "tests": [
+              "AcsCallFunctionTests.CallFunc_GetPolyobjX_ReturnsFixedMaxWithoutPolyobjects"
+            ]
+          },
+          {
+            "file": "src/playsim/p_acs.cpp",
+            "symbol": "ACSF_GetPolyobjY",
+            "start": 5886,
+            "end": 5895,
+            "tests": [
+              "AcsCallFunctionTests.CallFunc_GetPolyobjX_ReturnsFixedMaxWithoutPolyobjects"
+            ]
+          },
+          {
+            "file": "src/playsim/p_acs.cpp",
+            "symbol": "ACSF_CheckSight",
+            "start": 5897,
+            "end": 5941,
+            "tests": [
+              "AcsCallFunctionTests.CallFunc_CheckSight_ActivatorSeesSelf"
+            ]
+          },
+          {
+            "file": "src/playsim/p_acs.cpp",
+            "symbol": "ACSF_SpawnForced",
+            "start": 5943,
+            "end": 5945,
+            "tests": [
+              "AcsHotCallFuncBehaviorTests.SpawnForcedCreatesActorAtFixedCoordinates"
+            ]
+          },
+          {
+            "file": "src/playsim/p_acs.cpp",
+            "symbol": "ACSF_ACS_NamedExecute",
+            "start": 5947,
+            "end": 5963,
+            "tests": [
+              "AcsAbsentCallFuncChunk11Tests.CallFunc_AcsNamedExecute_StartsScriptByName"
+            ]
+          },
+          {
+            "file": "src/playsim/p_acs.cpp",
+            "symbol": "ACSF_UniqueTID",
+            "start": 5967,
+            "end": 5968,
+            "tests": [
+              "AcsCallFunctionTests.CallFunc_UniqueTid_RandomStartFindsUnusedTid"
+            ]
+          },
+          {
+            "file": "src/playsim/p_acs.cpp",
+            "symbol": "ACSF_IsTIDUsed",
+            "start": 5970,
+            "end": 5972,
+            "tests": [
+              "AcsCallFunctionTests.CallFunc_IsTidUsed_DetectsCoopPlayerTid"
+            ]
+          },
+          {
+            "file": "src/playsim/p_acs.cpp",
+            "symbol": "ACSF_Sqrt",
+            "start": 5974,
+            "end": 5976,
+            "tests": [
+              "AcsCallFunctionTests.CallFunc_Sqrt_ReturnsIntegerRoot"
+            ]
+          },
+          {
+            "file": "src/playsim/p_acs.cpp",
+            "symbol": "ACSF_FixedSqrt",
+            "start": 5978,
+            "end": 5980,
+            "tests": [
+              "AcsCallFunctionTests.CallFunc_FixedSqrt_ReturnsFixedPointRoot"
+            ]
+          },
+          {
+            "file": "src/playsim/p_acs.cpp",
+            "symbol": "ACSF_VectorLength",
+            "start": 5982,
+            "end": 5984,
+            "tests": [
+              "AcsFixedRoundingTests.VectorLengthRoundsFractionalFixedResults"
+            ]
+          },
+          {
+            "file": "src/playsim/p_acs.cpp",
+            "symbol": "ACSF_SetHUDClipRect",
+            "start": 5986,
+            "end": 5993,
+            "tests": [
               "AcsAbsentCallFuncChunk11Tests.CallFunc_SetHudClipRect_StoresOnSimulation"
             ]
           },
           {
             "file": "src/playsim/p_acs.cpp",
-            "symbol": "DLevelScript::CallFunction",
-            "start": 5776,
-            "end": 5815,
+            "symbol": "ACSF_SetCVar",
+            "start": 6003,
+            "end": 6005,
             "tests": [
-              "AcsCallFunctionTests.CallFunc_SetActorVelocity_ThenGetVelXMatches",
-              "AcsScriptUserVariableServiceTests.CallFunc_SetAndGetUserVariable_RoundTripsIndexedSlot",
-              "AcsCallFunctionTests.CallFunc_GetActorClass_ReturnsDoomImpForTid",
-              "AcsCallFunctionTests.CallFunc_UniqueTid_RandomStartFindsUnusedTid",
-              "AcsFixedRoundingTests.VectorLengthRoundsFractionalFixedResults",
-              "AcsAbsentCallFuncChunk11Tests.CallFunc_SetHudClipRect_StoresOnSimulation"
+              "AcsModCvarServiceTests.CallFunc_SetCVar_WritesIntegerModCvar"
             ]
           },
           {
             "file": "src/playsim/p_acs.cpp",
-            "symbol": "DLevelScript::CallFunction",
-            "start": 5842,
-            "end": 5842,
+            "symbol": "ACSF_SetCVarString",
+            "start": 6007,
+            "end": 6009,
             "tests": [
-              "AcsCallFunctionTests.CallFunc_SetActorVelocity_ThenGetVelXMatches",
-              "AcsScriptUserVariableServiceTests.CallFunc_SetAndGetUserVariable_RoundTripsIndexedSlot",
-              "AcsCallFunctionTests.CallFunc_GetActorClass_ReturnsDoomImpForTid",
-              "AcsCallFunctionTests.CallFunc_UniqueTid_RandomStartFindsUnusedTid",
-              "AcsFixedRoundingTests.VectorLengthRoundsFractionalFixedResults",
-              "AcsAbsentCallFuncChunk11Tests.CallFunc_SetHudClipRect_StoresOnSimulation"
+              "AcsModCvarServiceTests.CallFunc_SetCVarString_StoresText"
             ]
           },
           {
             "file": "src/playsim/p_acs.cpp",
-            "symbol": "DLevelScript::CallFunction",
-            "start": 5859,
-            "end": 5859,
+            "symbol": "ACSF_SetUserCVar",
+            "start": 6029,
+            "end": 6031,
             "tests": [
-              "AcsCallFunctionTests.CallFunc_SetActorVelocity_ThenGetVelXMatches",
-              "AcsScriptUserVariableServiceTests.CallFunc_SetAndGetUserVariable_RoundTripsIndexedSlot",
-              "AcsCallFunctionTests.CallFunc_GetActorClass_ReturnsDoomImpForTid",
-              "AcsCallFunctionTests.CallFunc_UniqueTid_RandomStartFindsUnusedTid",
-              "AcsFixedRoundingTests.VectorLengthRoundsFractionalFixedResults",
-              "AcsAbsentCallFuncChunk11Tests.CallFunc_SetHudClipRect_StoresOnSimulation"
-            ]
-          },
-          {
-            "file": "src/playsim/p_acs.cpp",
-            "symbol": "DLevelScript::CallFunction",
-            "start": 5874,
-            "end": 5946,
-            "tests": [
-              "AcsCallFunctionTests.CallFunc_SetActorVelocity_ThenGetVelXMatches",
-              "AcsScriptUserVariableServiceTests.CallFunc_SetAndGetUserVariable_RoundTripsIndexedSlot",
-              "AcsCallFunctionTests.CallFunc_GetActorClass_ReturnsDoomImpForTid",
-              "AcsCallFunctionTests.CallFunc_UniqueTid_RandomStartFindsUnusedTid",
-              "AcsFixedRoundingTests.VectorLengthRoundsFractionalFixedResults",
-              "AcsAbsentCallFuncChunk11Tests.CallFunc_SetHudClipRect_StoresOnSimulation"
-            ]
-          },
-          {
-            "file": "src/playsim/p_acs.cpp",
-            "symbol": "DLevelScript::CallFunction",
-            "start": 5965,
-            "end": 6035,
-            "tests": [
-              "AcsCallFunctionTests.CallFunc_SetActorVelocity_ThenGetVelXMatches",
-              "AcsScriptUserVariableServiceTests.CallFunc_SetAndGetUserVariable_RoundTripsIndexedSlot",
-              "AcsCallFunctionTests.CallFunc_GetActorClass_ReturnsDoomImpForTid",
-              "AcsCallFunctionTests.CallFunc_UniqueTid_RandomStartFindsUnusedTid",
-              "AcsFixedRoundingTests.VectorLengthRoundsFractionalFixedResults",
-              "AcsAbsentCallFuncChunk11Tests.CallFunc_SetHudClipRect_StoresOnSimulation"
+              "AcsModCvarServiceTests.CallFunc_SetUserCVar_MirrorsConsolePlayerGlobal"
             ]
           }
-        ]
+        ],
+        "nativeLoc": 281
       },
       {
         "name": "zcc-member-identifier-chunk67",
