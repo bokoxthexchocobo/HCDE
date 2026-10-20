@@ -18,19 +18,19 @@
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 12148,
+    "convertedThisRunNative": 12298,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 25485,
+    "convertedThisRunManaged": 25571,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": 151,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 471820,
+    "remainingNative": 471670,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 30675,
+    "convertedBehaviorNative": 30825,
     "recognitionBehaviorNative": 5591,
-    "combinedBehaviorNative": 36266,
-    "convertedBehaviorManaged": 35156,
+    "combinedBehaviorNative": 36416,
+    "convertedBehaviorManaged": 35242,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -11635,6 +11635,25 @@
         ],
         "nativeLoc": 157,
         "conversionManagedCommit": "d388fde494d98a5a82a7d7e0b1b6ce6061355316"
+      },
+      {
+        "name": "g-mapinfo-flag-handlers-chunk274",
+        "bucket": "conversion",
+        "managedLoc": 86,
+        "note": "MAPINFO MapFlagHandlers catalog head.",
+        "nativeRanges": [
+          {
+            "file": "src/gamedata/g_mapinfo.cpp",
+            "symbol": "MapFlagHandlers table",
+            "start": 1946,
+            "end": 2095,
+            "tests": [
+              "VmMapInfoFlagHandlersTests.TryGetHandler_FindsNoJump"
+            ]
+          }
+        ],
+        "nativeLoc": 150,
+        "conversionManagedCommit": "68329244e51a38f8c47177b65f5f464d29f272bc"
       }
     ]
   },

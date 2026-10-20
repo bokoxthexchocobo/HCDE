@@ -1,0 +1,19 @@
+[
+  {
+    "name": "g-mapinfo-flag-handlers-chunk274",
+    "bucket": "conversion",
+    "managedLoc": 86,
+    "note": "MAPINFO MapFlagHandlers catalog head.",
+    "nativeRanges": [
+      {
+        "file": "src/gamedata/g_mapinfo.cpp",
+        "symbol": "MapFlagHandlers table",
+        "start": 1946,
+        "end": 2095,
+        "tests": [
+          "VmMapInfoFlagHandlersTests.TryGetHandler_FindsNoJump"
+        ]
+      }
+    ]
+  }
+]
