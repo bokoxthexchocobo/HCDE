@@ -3,7 +3,7 @@ using System.Text;
 namespace HCDE.Client;
 
 /// <summary>Managed <c>FConfigFile</c> from <c>configfile.cpp</c>.</summary>
-public class VmConfigFile
+public partial class VmConfigFile
 {
     private readonly List<VmConfigSection> sections = new();
     private VmConfigSection? currentSection;
@@ -176,7 +176,7 @@ public class VmConfigFile
 
     private sealed class VmConfigSection(string name)
     {
-        public string Name { get; } = name;
+        public string Name { get; set; } = name;
         public string Note { get; set; } = "";
         public List<VmConfigEntry> Entries { get; } = new();
     }

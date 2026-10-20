@@ -32,6 +32,40 @@ public sealed class VmGameConfigFile : VmConfigFile
         setFixGamma(VmGameConfigLegacyGamma.LegacyGammaToFixGamma(legacyGamma));
     }
 
+    public void DoGlobalSetup(IDictionary<string, string> cvars, string currentVersion)
+    {
+        VmGameConfigCvars.ReadGlobalSettings(this, cvars);
+        var last = GetLastRunVersion();
+        if (SetSection("LastRun") && VmGameConfigGlobalSetup.IsNewRelease(GetValueForKey("Release"), currentVersion))
+            cvars["i_is_new_release"] = "true";
+        VmGameConfigGlobalSetup.PurgeWeaponSlotSections(this, last);
+        VmGameConfigGlobalSetup.ApplyHexenBindingFix(this, last);
+    }
+
+    public void DoAutoloadSetup(IEnumerable<string> iwadAutonames)
+    {
+        var last = GetLastRunVersion();
+        VmGameConfigAutoload.ApplyLegacyRenames(this, last);
+        VmGameConfigAutoload.EnsureAutoloadHierarchy(this, iwadAutonames);
+        VmGameConfigAutoload.CreateStandardAutoExec(this, "Doom.AutoExec", "autoexec.cfg", moveToStart: true);
+        MoveSectionToStart("SoundfontSearch.Directories");
+        MoveSectionToStart("FileSearch.Directories");
+        MoveSectionToStart("IWADSearch.Directories");
+    }
+
+    public IReadOnlyList<string> AddAutoexec(string game, Func<string, bool> fileExists)
+    {
+        VmGameConfigAutoload.CreateStandardAutoExec(this, $"{game}.AutoExec", "autoexec.cfg", moveToStart: false);
+        return VmGameConfigAutoload.CollectAutoexecPaths(this, game, fileExists);
+    }
+
+    private double GetLastRunVersion()
+    {
+        if (!SetSection("LastRun")) return 0;
+        var lastver = GetValueForKey("Version");
+        return double.TryParse(lastver, out var last) ? last : 0;
+    }
+
     private void EnsureDefaultSearchSections(IReadOnlyList<string> defaultSearchPaths)
     {
         if (!SetSection("IWADSearch.Directories"))
