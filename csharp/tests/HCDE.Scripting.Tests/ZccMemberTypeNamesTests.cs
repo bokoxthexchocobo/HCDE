@@ -6,6 +6,8 @@ public class ZccMemberTypeNamesTests
 {
     [Theory]
     [InlineData("Int", VmValueType.Integer)]
+    [InlineData("uint8", VmValueType.Integer)]
+    [InlineData("int16", VmValueType.Integer)]
     [InlineData("float", VmValueType.Float)]
     [InlineData("Double", VmValueType.Float)]
     public void TryResolveBasicTypeName_MapsNativeAliases(string name, VmValueType expected)

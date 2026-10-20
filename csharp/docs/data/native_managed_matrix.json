@@ -18,19 +18,19 @@
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": -7581,
+    "convertedThisRunNative": -7454,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 5881,
+    "convertedThisRunManaged": 5976,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -409,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 492109,
+    "remainingNative": 491982,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 10946,
+    "convertedBehaviorNative": 11073,
     "recognitionBehaviorNative": 5031,
-    "combinedBehaviorNative": 15977,
-    "convertedBehaviorManaged": 15552,
+    "combinedBehaviorNative": 16104,
+    "convertedBehaviorManaged": 15647,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -4222,6 +4222,34 @@
               "AcsCallFunctionTests.CallFunc_UniqueTid_RandomStartFindsUnusedTid",
               "AcsFixedRoundingTests.VectorLengthRoundsFractionalFixedResults",
               "AcsAbsentCallFuncChunk11Tests.CallFunc_SetHudClipRect_StoresOnSimulation"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "zcc-member-identifier-chunk67",
+        "bucket": "conversion",
+        "nativeLoc": 127,
+        "managedLoc": 95,
+        "note": "FxMemberIdentifier::Resolve prologue and member-access tail.",
+        "nativeRanges": [
+          {
+            "file": "src/common/scripting/backend/codegen.cpp",
+            "symbol": "FxMemberIdentifier::Resolve",
+            "start": 7009,
+            "end": 7036,
+            "tests": [
+              "ZccMemberIdentifierResolveTests.TryFindContainerType_ResolvesRegisteredContainer"
+            ]
+          },
+          {
+            "file": "src/common/scripting/backend/codegen.cpp",
+            "symbol": "FxMemberIdentifier::Resolve",
+            "start": 7072,
+            "end": 7170,
+            "tests": [
+              "ZccMemberIdentifierResolveTests.IsValidMemberAccessTarget_MatchesNativeGates",
+              "ZccMemberTypeNamesTests.TryResolveBasicTypeName_MapsNativeAliases"
             ]
           }
         ]

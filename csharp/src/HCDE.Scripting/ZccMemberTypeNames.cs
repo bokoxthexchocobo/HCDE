@@ -7,6 +7,18 @@ public static class ZccMemberTypeNames
     {
         switch (name.ToLowerInvariant())
         {
+            case "byte":
+            case "uint8":
+            case "ushort":
+            case "uint16":
+            case "uint":
+            case "uint32":
+                valueType = VmValueType.Integer;
+                return true;
+            case "sbyte":
+            case "int8":
+            case "short":
+            case "int16":
             case "int":
                 valueType = VmValueType.Integer;
                 return true;
