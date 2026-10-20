@@ -1,0 +1,38 @@
+[
+  {
+    "name": "maploader-sidedefs2-verify-blockmap-chunk391",
+    "bucket": "conversion",
+    "note": "LoadSideDefs2 sector fixups, VerifyBlockMap validation, GroupLines subsector hookup",
+    "auditSeams": "`mapsidedef_t` IO and blockmap lump memory are not hosted.",
+    "auditRationale": "Credits `MapLoader::LoadSideDefs2`, `FBlockmap::VerifyBlockMap`, and the opening of `GroupLines` from `maploader.cpp`.",
+    "nativeRanges": [
+      {
+        "file": "src/maploader/maploader.cpp",
+        "symbol": "MapLoader::LoadSideDefs2",
+        "start": 2169,
+        "end": 2218,
+        "tests": [
+          "VmMapLoaderLoadSideDefs2Tests.ShouldPatchStrifeLaserRow_ForStrifeGame"
+        ]
+      },
+      {
+        "file": "src/maploader/maploader.cpp",
+        "symbol": "FBlockmap::VerifyBlockMap",
+        "start": 2508,
+        "end": 2581,
+        "tests": [
+          "VmMapLoaderLoadBlockMapTests.IsLineIndexOutOfRange_RejectsHighIndex"
+        ]
+      },
+      {
+        "file": "src/maploader/maploader.cpp",
+        "symbol": "MapLoader::GroupLines",
+        "start": 2659,
+        "end": 2705,
+        "tests": [
+          "VmMapLoaderGroupLinesTests.ShouldFlagMissingFrontSector"
+        ]
+      }
+    ]
+  }
+]
