@@ -12,25 +12,25 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 147561
+    "managedCSharpLoc": 147669
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 31954,
+    "convertedThisRunNative": 32143,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 44020,
+    "convertedThisRunManaged": 44128,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": 151,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 452014,
+    "remainingNative": 451825,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 50481,
+    "convertedBehaviorNative": 50670,
     "recognitionBehaviorNative": 5591,
-    "combinedBehaviorNative": 56072,
-    "convertedBehaviorManaged": 53691,
+    "combinedBehaviorNative": 56261,
+    "convertedBehaviorManaged": 53799,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -19892,6 +19892,77 @@
         "nativeLoc": 163,
         "managedLoc": 147,
         "conversionManagedCommit": "996b2d683031bfcd15972efd99154bf77615529e"
+      },
+      {
+        "name": "p-mobj-static-spawn-chunk481",
+        "bucket": "conversion",
+        "note": "StaticSpawn, SpawnClientSide, ClassForSpawn, LevelSpawned, HandleSpawnFlags, BeginPlay",
+        "auditSeams": "`ConstructActor`, `CreateThinker`, `VMCall`, and `CallDeactivate` are not hosted.",
+        "auditRationale": "Credits static spawn validation/replacement, clientside spawn gate, class lookup, mapthing tic jitter, spawn-flag mutations, and BeginPlay dormant handling from `p_mobj.cpp` (5630\u20135823).",
+        "managedSourceFiles": [
+          "csharp/src/HCDE.Playsim/VmPMobjStaticSpawn.cs"
+        ],
+        "nativeRanges": [
+          {
+            "file": "src/playsim/p_mobj.cpp",
+            "symbol": "AActor::StaticSpawn",
+            "start": 5630,
+            "end": 5662,
+            "tests": [
+              "VmPMobjStaticSpawnTests.StaticSpawn_RejectsNullType",
+              "VmPMobjStaticSpawnTests.ClientSideSpawn_RequiresClientClass"
+            ]
+          },
+          {
+            "file": "src/playsim/p_mobj.cpp",
+            "symbol": "AActor::Spawn",
+            "start": 5664,
+            "end": 5695,
+            "tests": [
+              "VmPMobjStaticSpawnTests.ClientSideSpawn_RequiresClientClass"
+            ]
+          },
+          {
+            "file": "src/playsim/p_mobj.cpp",
+            "symbol": "ClassForSpawn",
+            "start": 5697,
+            "end": 5709,
+            "tests": [
+              "VmPMobjStaticSpawnTests.StaticSpawn_RejectsNullType"
+            ]
+          },
+          {
+            "file": "src/playsim/p_mobj.cpp",
+            "symbol": "AActor::LevelSpawned",
+            "start": 5711,
+            "end": 5725,
+            "tests": [
+              "VmPMobjStaticSpawnTests.LevelSpawned_RandomizesUnsyncedTics"
+            ]
+          },
+          {
+            "file": "src/playsim/p_mobj.cpp",
+            "symbol": "AActor::HandleSpawnFlags",
+            "start": 5727,
+            "end": 5794,
+            "tests": [
+              "VmPMobjStaticSpawnTests.HandleSpawnFlags_FriendlyClearsCountKill",
+              "VmPMobjStaticSpawnTests.HandleSpawnFlags_SecretIncrements"
+            ]
+          },
+          {
+            "file": "src/playsim/p_mobj.cpp",
+            "symbol": "AActor::BeginPlay",
+            "start": 5796,
+            "end": 5823,
+            "tests": [
+              "VmPMobjStaticSpawnTests.BeginPlay_ClearsDormantWhenSet"
+            ]
+          }
+        ],
+        "nativeLoc": 189,
+        "managedLoc": 108,
+        "conversionManagedCommit": "afccc52f635d317268bb17733e0e84b0351d33cd"
       }
     ]
   },
