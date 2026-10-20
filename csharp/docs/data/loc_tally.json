@@ -6997,6 +6997,70 @@
       ],
       "nativeLoc": 95,
       "conversionManagedCommit": "cc9e7049e0eea344aeae78ef99c3869c1cf3bebb"
+    },
+    {
+      "name": "i-time-complete-chunk143",
+      "bucket": "conversion",
+      "managedLoc": 118,
+      "note": "VmGameClock: frame/tic/input/delta APIs (chunk 138 static helpers remain separate).",
+      "nativeRanges": [
+        {
+          "file": "src/common/utility/i_time.cpp",
+          "symbol": "I_InitTime",
+          "start": 52,
+          "end": 55,
+          "tests": [
+            "VmGameClockTests.FrameTimeAndTics_AdvancesWithInjectedClock"
+          ]
+        },
+        {
+          "file": "src/common/utility/i_time.cpp",
+          "symbol": "I_SetFrameTime",
+          "start": 84,
+          "end": 98,
+          "tests": [
+            "VmGameClockTests.FrameTimeAndTics_AdvancesWithInjectedClock"
+          ]
+        },
+        {
+          "file": "src/common/utility/i_time.cpp",
+          "symbol": "I_WaitVBL",
+          "start": 100,
+          "end": 108,
+          "tests": [
+            "VmGameClockTests.FrameTimeAndTics_AdvancesWithInjectedClock"
+          ]
+        },
+        {
+          "file": "src/common/utility/i_time.cpp",
+          "symbol": "I_WaitForTic",
+          "start": 110,
+          "end": 138,
+          "tests": [
+            "VmGameClockTests.FrameTimeAndTics_AdvancesWithInjectedClock"
+          ]
+        },
+        {
+          "file": "src/common/utility/i_time.cpp",
+          "symbol": "I_nsTime..I_GetTimeFrac",
+          "start": 140,
+          "end": 177,
+          "tests": [
+            "VmGameClockTests.FrameTimeAndTics_AdvancesWithInjectedClock"
+          ]
+        },
+        {
+          "file": "src/common/utility/i_time.cpp",
+          "symbol": "I_FreezeTime..GetPhysicsTimeStep",
+          "start": 179,
+          "end": 256,
+          "tests": [
+            "VmGameClockTests.DeltaTime_Clamped"
+          ]
+        }
+      ],
+      "nativeLoc": 173,
+      "conversionManagedCommit": "1a8ea2c36b22b5971084886e29679dbbcb190fe7"
     }
   ]
 }
