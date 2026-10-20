@@ -26,7 +26,7 @@ public static class VmMapInfoEpisodeParser
 
     public static string SynthesizePicName(string picToken) => $"${picToken}";
 
-    public static int FindEpisodeIndex(IReadOnlyList<string> episodeMaps, string map)
+    public static int FindEpisodeIndex(IList<string> episodeMaps, string map)
     {
         for (var i = 0; i < episodeMaps.Count; i++)
         {
