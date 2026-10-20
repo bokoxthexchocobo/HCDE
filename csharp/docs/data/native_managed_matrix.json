@@ -18,19 +18,19 @@
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 9475,
+    "convertedThisRunNative": 9631,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 23250,
+    "convertedThisRunManaged": 23360,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": 145,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 474499,
+    "remainingNative": 474343,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 28002,
+    "convertedBehaviorNative": 28158,
     "recognitionBehaviorNative": 5585,
-    "combinedBehaviorNative": 33587,
-    "convertedBehaviorManaged": 32921,
+    "combinedBehaviorNative": 33743,
+    "convertedBehaviorManaged": 33031,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -10711,6 +10711,52 @@
           }
         ],
         "nativeLoc": 85,
+        "conversionManagedCommit": "e0dff6e4e1d2444fa60803b02ab92e491a153096"
+      },
+      {
+        "name": "statistics-parse-chunk241",
+        "bucket": "conversion",
+        "managedLoc": 110,
+        "note": "Statistics structs and ParseStatistics.",
+        "nativeRanges": [
+          {
+            "file": "src/gamedata/statistics.cpp",
+            "symbol": "statistics header and CVARs",
+            "start": 1,
+            "end": 52,
+            "tests": [
+              "VmStatisticsModelsTests.StatFileDefault_MatchesNativeCvar"
+            ]
+          },
+          {
+            "file": "src/gamedata/statistics.cpp",
+            "symbol": "OneLevel and FLevelStatistics structs",
+            "start": 59,
+            "end": 98,
+            "tests": [
+              "VmStatisticsModelsTests.StatFileDefault_MatchesNativeCvar"
+            ]
+          },
+          {
+            "file": "src/gamedata/statistics.cpp",
+            "symbol": "ParseStatistics",
+            "start": 108,
+            "end": 167,
+            "tests": [
+              "VmStatisticsParserTests.ParseTimeToTics_ConvertsHms"
+            ]
+          },
+          {
+            "file": "src/gamedata/statistics.cpp",
+            "symbol": "ReadStatistics",
+            "start": 176,
+            "end": 179,
+            "tests": [
+              "VmStatisticsParserTests.ParseTimeToTics_ConvertsHms"
+            ]
+          }
+        ],
+        "nativeLoc": 156,
         "conversionManagedCommit": "e0dff6e4e1d2444fa60803b02ab92e491a153096"
       }
     ]
