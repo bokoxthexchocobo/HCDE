@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 26310,
+  "convertedThisRunNative": 26264,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 39257,
+  "convertedThisRunManaged": 39238,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": 151,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 457658,
+  "remainingNative": 457704,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 44837,
+  "convertedBehaviorNative": 44791,
   "recognitionBehaviorNative": 5591,
-  "combinedBehaviorNative": 50428,
-  "convertedBehaviorManaged": 48928,
+  "combinedBehaviorNative": 50382,
+  "convertedBehaviorManaged": 48909,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -18003,14 +18003,14 @@
           "file": "src/d_main.cpp",
           "symbol": "logfile batch and iwad manager",
           "start": 4614,
-          "end": 4700,
+          "end": 4654,
           "tests": [
             "VmDDoomMainInternalBootTests.BatchRunFromErrorLog",
             "VmDDoomMainInternalBootTests.ShouldDebug_FromArg"
           ]
         }
       ],
-      "nativeLoc": 191,
+      "nativeLoc": 145,
       "managedLoc": 111,
       "conversionManagedCommit": "f2f941d9673cb0f3005e50599f27bc5c90e86bb0"
     },
@@ -18188,8 +18188,8 @@
         }
       ],
       "nativeLoc": 24,
-      "managedLoc": 19,
-      "conversionManagedCommit": "8eee7ab9bd6127fa76a281a87041e2ec06449e2e"
+      "managedLoc": 0,
+      "conversionManagedCommit": "45a205e1ce644df72917c7f4b8560596f586d051"
     }
   ]
 }

@@ -8,9 +8,9 @@
     "nativeRanges": [
       {
         "file": "src/playsim/p_spec.cpp",
-        "symbol": "P_ActorInSpecialSector heal and secret",
-        "start": 478,
-        "end": 501,
+        "symbol": "P_ActorInSpecialSector negative heal",
+        "start": 488,
+        "end": 495,
         "tests": [
           "VmPSpecActorSpecialFinishTests.NegativeDamageHealTick",
           "VmPSpecActorSpecialFinishTests.PlayerTouchesSecret"

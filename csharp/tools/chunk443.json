@@ -38,7 +38,7 @@
         "file": "src/d_main.cpp",
         "symbol": "logfile batch and iwad manager",
         "start": 4614,
-        "end": 4700,
+        "end": 4654,
         "tests": [
           "VmDDoomMainInternalBootTests.BatchRunFromErrorLog",
           "VmDDoomMainInternalBootTests.ShouldDebug_FromArg"
