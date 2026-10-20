@@ -3994,7 +3994,8 @@
               "ZccExpressionUnaryBooleanTests.EmitLogicalNot_RunsVmXorWithOne"
             ]
           }
-        ]
+        ],
+        "conversionManagedCommit": "6696340cddd0ee8f824ba1b6643ca6eb4a477b18"
       }
     ]
   },
