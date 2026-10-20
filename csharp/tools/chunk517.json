@@ -1,0 +1,23 @@
+[
+  {
+    "name": "p-action-set-animation-internal-chunk517",
+    "bucket": "conversion",
+    "note": "SetAnimationInternal",
+    "auditSeams": "`FindFModel`, `calcFrames`, `ModelAnimFramePrecalculatedIQM`, and `CalcBones` are not hosted.",
+    "auditRationale": "Credits decoupled model animation selection, SAF flags, frame bounds checks, and interpolation tic scheduling from `p_actionfunctions.cpp` (6507–6676).",
+    "managedSourceFiles": ["csharp/src/HCDE.Playsim/VmActionSetAnimationInternal.cs"],
+    "nativeRanges": [
+      {
+        "file": "src/playsim/p_actionfunctions.cpp",
+        "symbol": "SetAnimationInternal",
+        "start": 6507,
+        "end": 6676,
+        "tests": [
+          "VmActionSetAnimationInternalTests.SameAnimationBlocked_WhenNoOverrideAndSameStart",
+          "VmActionSetAnimationInternalTests.ResolveLastFrame_NegativeEndUsesAnimEnd",
+          "VmActionSetAnimationInternalTests.NormalizeInterpolateTics_MinOne"
+        ]
+      }
+    ]
+  }
+]
