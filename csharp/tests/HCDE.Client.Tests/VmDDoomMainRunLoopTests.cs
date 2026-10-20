@@ -7,7 +7,7 @@ public class VmDDoomMainRunLoopTests
         Assert.True(VmDDoomMainRunLoop.DebugPortInRange(8080));
 
     [Fact]
-    public void DebugPortFromArg_OverridesCvar() =>
+    public void DebugPortFromArg_OverridesCvar()
     {
         Assert.True(VmDDoomMainRunLoop.DebugPortFromArg("1234", 9999, out var port));
         Assert.Equal(1234, port);
