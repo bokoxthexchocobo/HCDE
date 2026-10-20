@@ -18,19 +18,19 @@
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 14760,
+    "convertedThisRunNative": 14942,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 28818,
+    "convertedThisRunManaged": 28876,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": 151,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 469208,
+    "remainingNative": 469026,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 33287,
+    "convertedBehaviorNative": 33469,
     "recognitionBehaviorNative": 5591,
-    "combinedBehaviorNative": 38878,
-    "convertedBehaviorManaged": 38489,
+    "combinedBehaviorNative": 39060,
+    "convertedBehaviorManaged": 38547,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -13347,6 +13347,28 @@
         ],
         "nativeLoc": 207,
         "conversionManagedCommit": "7d8fadf33724f5fde5b2221019e24fc6d1c81dad"
+      },
+      {
+        "name": "g-mapinfo-lookup-parser-format-chunk346",
+        "bucket": "conversion",
+        "managedLoc": 58,
+        "note": "LookupLevelName and MAPINFO brace format helpers",
+        "auditSeams": "Inventory-based `CheckLevelRedirect` still depends on engine actors; this chunk ports name stripping and new-vs-old brace parsing only.",
+        "auditRationale": "Credits `g_mapinfo.cpp` 337\u2013518: localized level-name header stripping, validity checks, `cluster_info_t::Reset`, and `FMapInfoParser` open/close brace plus assign/comma/number helpers for new-format MAPINFO.",
+        "nativeRanges": [
+          {
+            "file": "src/gamedata/g_mapinfo.cpp",
+            "symbol": "LookupLevelName parser format",
+            "start": 337,
+            "end": 518,
+            "tests": [
+              "VmMapInfoLookupLevelNameTests.StripLocalizedHeader_RemovesMapPrefix",
+              "VmMapInfoParserFormatTests.ResolveOpenBrace_DetectsNewFormat"
+            ]
+          }
+        ],
+        "nativeLoc": 182,
+        "conversionManagedCommit": "6546c28c2e5aea3dd28576b65080a1aa71c80e65"
       }
     ]
   },
