@@ -32,4 +32,10 @@ public class VmMapLoaderLoadLevelFinalizeTests
     {
         Assert.True(VmMapLoaderForceNodeBuild.ShouldFallbackToZdbsp(false));
     }
+
+    [Fact]
+    public void ShouldEnterForceNodeBuild_WhenFlagSet()
+    {
+        Assert.True(VmMapLoaderForceNodeBuild.ShouldEnterForceNodeBuild(true));
+    }
 }
