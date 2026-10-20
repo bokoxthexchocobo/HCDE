@@ -1,0 +1,41 @@
+[
+  {
+    "name": "d-main-startup-cmdline-chunk402",
+    "bucket": "conversion",
+    "note": "D_DoomInit, AddAutoloadFiles, CheckCmdLine dmflags",
+    "auditSeams": "`Args`, `M_LoadDefaults`, and `Net_TraceSet*` are not hosted.",
+    "auditRationale": "Credits `D_DoomInit`, `AddAutoloadFiles`, and the opening `CheckCmdLine` dmflags/gametype logic from `d_main.cpp`.",
+    "nativeRanges": [
+      {
+        "file": "src/d_main.cpp",
+        "symbol": "D_DoomInit",
+        "start": 2488,
+        "end": 2505,
+        "tests": [
+          "VmDMainStartupCmdlineTests.ShouldLoadLightsPk3_WhenStartupRequests"
+        ]
+      },
+      {
+        "file": "src/d_main.cpp",
+        "symbol": "AddAutoloadFiles",
+        "start": 2513,
+        "end": 2586,
+        "tests": [
+          "VmDMainStartupCmdlineTests.ShouldLoadLightsPk3_WhenStartupRequests"
+        ]
+      },
+      {
+        "file": "src/d_main.cpp",
+        "symbol": "CheckCmdLine",
+        "start": 2594,
+        "end": 2680,
+        "tests": [
+          "VmDMainStartupCmdlineTests.TryParseExplicitGametype_PlusSetForm",
+          "VmDMainStartupCmdlineTests.ShouldResetSoloGametype_WhenLocalSolo",
+          "VmDMainStartupCmdlineTests.ApplyCoopMode_SetsDf3LocalItems_WhenNotHexen",
+          "VmDMainStartupCmdlineTests.ApplyMonsterFlags_SetsNoMonsters"
+        ]
+      }
+    ]
+  }
+]
