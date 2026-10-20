@@ -1,0 +1,31 @@
+[
+  {
+    "name": "p-lnspec-linespecials-table-b-chunk440",
+    "bucket": "conversion",
+    "note": "LineSpecials[] slots 150–284 and LineSpecialTable ctor",
+    "auditSeams": "`actionspecials.h` expansion and live `P_FindLineSpecial` binary search are not hosted.",
+    "auditRationale": "Credits high-index dispatch slots, NOP/reserved bands, name-table resize/qsort wiring, and TeleportSpecial alias policy from `p_lnspec.cpp`.",
+    "nativeRanges": [
+      {
+        "file": "src/playsim/p_lnspec.cpp",
+        "symbol": "LineSpecials[] 150–284",
+        "start": 3695,
+        "end": 3833,
+        "tests": [
+          "VmPLnspecLineSpecialsTableBTests.MapsToCallable_LineSetHealth",
+          "VmPLnspecLineSpecialsTableBTests.IsGenericMoverSlot_CrusherDist"
+        ]
+      },
+      {
+        "file": "src/playsim/p_lnspec.cpp",
+        "symbol": "LineSpecialNames / LineSpecialTable ctor",
+        "start": 3835,
+        "end": 3870,
+        "tests": [
+          "VmPLnspecLineSpecialsTableBTests.BinarySearchStep_Positive",
+          "VmPLnspecLineSpecialsTableBTests.TeleportAlias_Recognized"
+        ]
+      }
+    ]
+  }
+]
