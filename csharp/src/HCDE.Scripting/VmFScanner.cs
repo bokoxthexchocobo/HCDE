@@ -330,6 +330,15 @@ public sealed class VmFScanner
             return true;
         }
 
+        if (cMode && IsCModePunctuator(script[position]))
+        {
+            String = script[position].ToString();
+            position++;
+            TokenType = script[position - 1];
+            lastGotToken = tokens;
+            return true;
+        }
+
         if (cMode && (char.IsDigit(script[position]) || script[position] == '.'))
         {
             ReadNumberToken();
@@ -368,7 +377,7 @@ public sealed class VmFScanner
                 continue;
             }
 
-            if (script[position] == ';')
+            if (!cMode && script[position] == ';')
             {
                 position++;
                 while (position < script.Length && script[position] != '\n') position++;
@@ -422,6 +431,11 @@ public sealed class VmFScanner
         String = script[start..position];
     }
 
+    private static bool IsCModePunctuator(char ch) =>
+        ch is '{' or '}' or '|' or '=' or '/' or '`' or '~' or '!' or '@' or '#' or '$' or '%' or '^'
+            or '&' or '*' or '(' or ')' or '[' or ']' or '\\' or '?' or '-' or '+' or ';' or ':'
+            or '<' or '>' or ',' or '.';
+
     private void ReadGenericToken()
     {
         var start = position;
@@ -429,6 +443,7 @@ public sealed class VmFScanner
         {
             var ch = script[position];
             if (ch is ' ' or '\t' or '\r' or '\n' or '"' or '{' or '}' or '|' or '=') break;
+            if (cMode && IsCModePunctuator(ch)) break;
             if (position + 1 < script.Length && ch == '/' && (script[position + 1] == '/' || script[position + 1] == '*')) break;
             position++;
         }

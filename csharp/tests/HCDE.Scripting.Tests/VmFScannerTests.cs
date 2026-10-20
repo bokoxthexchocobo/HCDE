@@ -64,4 +64,18 @@ public class VmFScannerTests
         Assert.True(scanner.GetString());
         Assert.Equal(1, scanner.MatchString(["miss", "see", "other"]));
     }
+
+    [Fact]
+    public void CMode_TreatsEqualsAndSemicolonAsTokens()
+    {
+        var scanner = new VmFScanner();
+        scanner.OpenString("lang", "LABEL = value ;");
+        scanner.SetCMode(true);
+        Assert.True(scanner.GetString());
+        Assert.Equal("LABEL", scanner.String);
+        scanner.MustGetStringName("=");
+        scanner.MustGetString();
+        Assert.Equal("value", scanner.String);
+        scanner.MustGetStringName(";");
+    }
 }
