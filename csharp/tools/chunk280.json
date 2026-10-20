@@ -1,0 +1,19 @@
+[
+  {
+    "name": "g-mapinfo-option-dispatch-chunk280",
+    "bucket": "conversion",
+    "managedLoc": 42,
+    "note": "MAPINFO registered option dispatch",
+    "nativeRanges": [
+      {
+        "file": "src/gamedata/g_mapinfo.cpp",
+        "symbol": "ParseMapDefinition options",
+        "start": 2271,
+        "end": 2420,
+        "tests": [
+          "VmMapInfoOptionDispatchTests.TryDispatchOption_MatchesName"
+        ]
+      }
+    ]
+  }
+]
