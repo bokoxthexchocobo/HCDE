@@ -1,0 +1,49 @@
+[
+  {
+    "name": "p-map-pit-floor-ceiling-chunk497",
+    "bucket": "conversion",
+    "note": "PIT_FloorRaise, PIT_CeilingLower, PIT_CeilingRaise sector thing moves",
+    "auditSeams": "`P_AdjustFloorCeil`, `P_PushUp`, `P_PushDown`, `P_DoCrunch`, and `P_TestMobjZ` are not hosted.",
+    "auditRationale": "Credits floor-raise snap/relative paths, ceiling-lower clamp/push outcomes, and ceiling-raise DOOM/passobj policy from `p_map.cpp` (6947–7104).",
+    "managedSourceFiles": ["csharp/src/HCDE.Playsim/VmPMapPitFloorCeiling.cs"],
+    "nativeRanges": [
+      {
+        "file": "src/playsim/p_map.cpp",
+        "symbol": "PIT_FloorRaise",
+        "start": 6941,
+        "end": 6945,
+        "tests": ["VmPMapPitFloorCeilingTests.FloorRaise_BridgeNoFit"]
+      },
+      {
+        "file": "src/playsim/p_map.cpp",
+        "symbol": "PIT_FloorRaise",
+        "start": 6947,
+        "end": 7007,
+        "tests": [
+          "VmPMapPitFloorCeilingTests.FloorRaise_BridgeNoFit",
+          "VmPMapPitFloorCeilingTests.FloorRaise_CrunchOnCeiling"
+        ]
+      },
+      {
+        "file": "src/playsim/p_map.cpp",
+        "symbol": "PIT_CeilingLower",
+        "start": 7015,
+        "end": 7061,
+        "tests": [
+          "VmPMapPitFloorCeilingTests.CeilingLower_TargetUsesFloor",
+          "VmPMapPitFloorCeilingTests.CeilingLower_RevertWhenOnFloor"
+        ]
+      },
+      {
+        "file": "src/playsim/p_map.cpp",
+        "symbol": "PIT_CeilingRaise",
+        "start": 7069,
+        "end": 7104,
+        "tests": [
+          "VmPMapPitFloorCeilingTests.CeilingRaise_DoomCompat",
+          "VmPMapPitFloorCeilingTests.CeilingRaise_PassobjStack"
+        ]
+      }
+    ]
+  }
+]
