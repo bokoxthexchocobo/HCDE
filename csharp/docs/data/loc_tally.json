@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 11386,
+  "convertedThisRunNative": 11403,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 26626,
+  "convertedThisRunManaged": 26658,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": 151,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 472582,
+  "remainingNative": 472565,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 29913,
+  "convertedBehaviorNative": 29930,
   "recognitionBehaviorNative": 5591,
-  "combinedBehaviorNative": 35504,
-  "convertedBehaviorManaged": 36297,
+  "combinedBehaviorNative": 35521,
+  "convertedBehaviorManaged": 36329,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -12280,6 +12280,25 @@
       ],
       "nativeLoc": 22,
       "conversionManagedCommit": "3bc60909bddc164448cb40ef18f757f90d5e384d"
+    },
+    {
+      "name": "dehacked-dehsupp-weapon-chunk305",
+      "bucket": "conversion",
+      "managedLoc": 32,
+      "note": "LoadDehSupp WeaponNames brace list",
+      "nativeRanges": [
+        {
+          "file": "src/gamedata/d_dehacked.cpp",
+          "symbol": "LoadDehSupp WeaponNames",
+          "start": 3748,
+          "end": 3764,
+          "tests": [
+            "VmDehackedDehSuppWeaponNamesTests.ParseWeaponNameList_ClearsAndAppendsTypes"
+          ]
+        }
+      ],
+      "nativeLoc": 17,
+      "conversionManagedCommit": "d297ab0ecc3fc5f55a3f7207877674d98af2f3eb"
     }
   ]
 }
