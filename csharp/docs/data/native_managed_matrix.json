@@ -18,19 +18,19 @@
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 1173,
+    "convertedThisRunNative": 1198,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 15230,
+    "convertedThisRunManaged": 15254,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -87,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 483033,
+    "remainingNative": 483008,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 19700,
+    "convertedBehaviorNative": 19725,
     "recognitionBehaviorNative": 5353,
-    "combinedBehaviorNative": 25053,
-    "convertedBehaviorManaged": 24901,
+    "combinedBehaviorNative": 25078,
+    "convertedBehaviorManaged": 24925,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -7685,6 +7685,25 @@
         ],
         "conversionManagedCommit": "eda626e9ef0417054929d0bfa474f632cd7192d7",
         "nativeLoc": 22
+      },
+      {
+        "name": "stringtable-gender-macros-chunk164",
+        "bucket": "conversion",
+        "managedLoc": 24,
+        "note": "InsertString per-gender @[macro] substitution.",
+        "nativeRanges": [
+          {
+            "file": "src/common/engine/stringtable.cpp",
+            "symbol": "FStringTable::InsertString gender macros",
+            "start": 737,
+            "end": 761,
+            "tests": [
+              "VmStringTableFinishTests.InsertString_ExpandsMacrosPerGender"
+            ]
+          }
+        ],
+        "conversionManagedCommit": "5d1c89a70f189b6893f017d47033344ea8fdf0ef",
+        "nativeLoc": 25
       }
     ]
   },
