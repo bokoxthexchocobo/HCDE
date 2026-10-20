@@ -1,0 +1,414 @@
+[
+  {
+    "name": "decallib-animator-runtime-chunk201",
+    "bucket": "conversion",
+    "managedLoc": 175,
+    "note": "Decal translation table, group resolve, animator CreateThinker schedules.",
+    "nativeRanges": [
+      {
+        "file": "src/gamedata/decallib.cpp",
+        "symbol": "FDecalLib::GenerateTranslation",
+        "start": 935,
+        "end": 954,
+        "tests": [
+          "VmDecalAnimatorRuntimeTests.TranslationTable_ReusesMatchingRange"
+        ]
+      },
+      {
+        "file": "src/gamedata/decallib.cpp",
+        "symbol": "FDecalLib::FTranslation ctor",
+        "start": 995,
+        "end": 1036,
+        "tests": [
+          "VmDecalAnimatorRuntimeTests.TranslationTable_ReusesMatchingRange"
+        ]
+      },
+      {
+        "file": "src/gamedata/decallib.cpp",
+        "symbol": "FDecalLib::FTranslation::LocateTranslation",
+        "start": 1038,
+        "end": 1051,
+        "tests": [
+          "VmDecalAnimatorRuntimeTests.TranslationTable_ReusesMatchingRange"
+        ]
+      },
+      {
+        "file": "src/gamedata/decallib.cpp",
+        "symbol": "FDecalGroup::GetDecal",
+        "start": 1053,
+        "end": 1069,
+        "tests": [
+          "VmDecalLibraryTests.AddDecal_InsertsAndFindsByNameAndNum"
+        ]
+      },
+      {
+        "file": "src/gamedata/decallib.cpp",
+        "symbol": "FDecalAnimator CreateThinker/FindAnimator",
+        "start": 1071,
+        "end": 1171,
+        "tests": [
+          "VmDecalAnimatorRuntimeTests.FindAnimator_ReturnsLatestMatch",
+          "VmDecalAnimatorRuntimeTests.BuildThinkerSchedules_CombinerChainsChildren"
+        ]
+      }
+    ],
+    "conversionManagedCommit": "bbbfc0da3e8256f0fdfdb0e3d0042169f158e5cb"
+  },
+  {
+    "name": "animdef-runtime-chunk202",
+    "bucket": "conversion",
+    "managedLoc": 95,
+    "note": "FixAnimations, door lookup, standalone/update animation runtime.",
+    "nativeRanges": [
+      {
+        "file": "src/gamedata/textures/animations.cpp",
+        "symbol": "FTextureAnimator::FixAnimations",
+        "start": 885,
+        "end": 908,
+        "tests": [
+          "VmTextureAnimationRuntimeTests.FindAnimatedDoor_MatchesBaseTexture"
+        ]
+      },
+      {
+        "file": "src/gamedata/textures/animations.cpp",
+        "symbol": "FTextureAnimator::FindAnimatedDoor",
+        "start": 992,
+        "end": 1003,
+        "tests": [
+          "VmTextureAnimationRuntimeTests.FindAnimatedDoor_MatchesBaseTexture"
+        ]
+      },
+      {
+        "file": "src/gamedata/textures/animations.cpp",
+        "symbol": "FTextureAnimator::InitStandaloneAnimation",
+        "start": 1074,
+        "end": 1093,
+        "tests": [
+          "VmTextureAnimationRuntimeTests.StandaloneAnimation_AdvancesFrame"
+        ]
+      },
+      {
+        "file": "src/gamedata/textures/animations.cpp",
+        "symbol": "FTextureAnimator::UpdateStandaloneAnimation",
+        "start": 1095,
+        "end": 1120,
+        "tests": [
+          "VmTextureAnimationRuntimeTests.StandaloneAnimation_AdvancesFrame"
+        ]
+      },
+      {
+        "file": "src/gamedata/textures/animations.cpp",
+        "symbol": "FTextureAnimator::UpdateAnimations fire",
+        "start": 1131,
+        "end": 1158,
+        "tests": [
+          "VmTextureAnimationTickerTests.UpdateUntil_AdvancesWhenPastSwitchTime"
+        ]
+      },
+      {
+        "file": "src/gamedata/textures/animations.cpp",
+        "symbol": "FTextureAnimator::UpdateAnimations translations",
+        "start": 1177,
+        "end": 1188,
+        "tests": [
+          "VmTextureAnimationTickerTests.AdvanceFrame_ForwardWraps"
+        ]
+      },
+      {
+        "file": "src/gamedata/textures/animations.cpp",
+        "symbol": "FTextureAnimator::ResetTimers",
+        "start": 1191,
+        "end": 1217,
+        "tests": [
+          "VmTextureAnimationRuntimeTests.StandaloneAnimation_AdvancesFrame"
+        ]
+      }
+    ],
+    "conversionManagedCommit": "b1c886762a2ca15edb2d8d67c128e42d831d3f09"
+  },
+  {
+    "name": "anim-switch-runtime-chunk203",
+    "bucket": "conversion",
+    "managedLoc": 88,
+    "note": "SWITCHES lump init, ParseSwitchDef, AddSwitchPair, FindSwitch.",
+    "nativeRanges": [
+      {
+        "file": "src/gamedata/textures/anim_switches.cpp",
+        "symbol": "SortSwitchDefs",
+        "start": 36,
+        "end": 39,
+        "tests": [
+          "VmAnimSwitchRuntimeTests.FindSwitch_UsesBinarySearch"
+        ]
+      },
+      {
+        "file": "src/gamedata/textures/anim_switches.cpp",
+        "symbol": "FTextureAnimator::InitSwitchList",
+        "start": 51,
+        "end": 91,
+        "tests": [
+          "VmAnimSwitchRuntimeTests.ParseSwitchLump_ReadsPairs"
+        ]
+      },
+      {
+        "file": "src/gamedata/textures/anim_switches.cpp",
+        "symbol": "FTextureAnimator::ParseSwitchDef",
+        "start": 213,
+        "end": 297,
+        "tests": [
+          "VmAnimDefSwitchParserTests.Switch_OnState_ParsesFrames"
+        ]
+      },
+      {
+        "file": "src/gamedata/textures/anim_switches.cpp",
+        "symbol": "FTextureAnimator::AddSwitchPair tail",
+        "start": 331,
+        "end": 353,
+        "tests": [
+          "VmAnimSwitchRuntimeTests.FindSwitch_UsesBinarySearch"
+        ]
+      },
+      {
+        "file": "src/gamedata/textures/anim_switches.cpp",
+        "symbol": "FTextureAnimator::FindSwitch",
+        "start": 361,
+        "end": 387,
+        "tests": [
+          "VmAnimSwitchRuntimeTests.FindSwitch_UsesBinarySearch"
+        ]
+      }
+    ],
+    "conversionManagedCommit": "456718ba"
+  },
+  {
+    "name": "sndinfo-player-registry-chunk204",
+    "bucket": "conversion",
+    "managedLoc": 72,
+    "note": "SNDINFO include/map hooks and player class registry helpers.",
+    "nativeRanges": [
+      {
+        "file": "src/sound/s_advsound.cpp",
+        "symbol": "SI_Include",
+        "start": 769,
+        "end": 778,
+        "tests": [
+          "SndInfoMapMusicParserTests.MapMusicPreservesNativeNumbersResourcesAndReplacement"
+        ]
+      },
+      {
+        "file": "src/sound/s_advsound.cpp",
+        "symbol": "SI_Map",
+        "start": 872,
+        "end": 883,
+        "tests": [
+          "SndInfoMapMusicParserTests.MapMusicPreservesNativeNumbersResourcesAndReplacement"
+        ]
+      },
+      {
+        "file": "src/sound/s_advsound.cpp",
+        "symbol": "SI_PlayerSound family",
+        "start": 895,
+        "end": 952,
+        "tests": [
+          "SndInfoPlayerSoundTests.DuplicateCapturesResourceMappingWithoutCheckingPhysicalAvailability"
+        ]
+      },
+      {
+        "file": "src/sound/s_advsound.cpp",
+        "symbol": "S_ParsePlayerSoundCommon",
+        "start": 1348,
+        "end": 1374,
+        "tests": [
+          "VmSndInfoPlayerClassRegistryTests.TryParsePlayerSoundCommon_ReadsTriple"
+        ]
+      },
+      {
+        "file": "src/sound/s_advsound.cpp",
+        "symbol": "S_AddPlayerClass",
+        "start": 1384,
+        "end": 1405,
+        "tests": [
+          "VmSndInfoPlayerClassRegistryTests.AddPlayerClass_Deduplicates"
+        ]
+      },
+      {
+        "file": "src/sound/s_advsound.cpp",
+        "symbol": "S_FindPlayerClass",
+        "start": 1414,
+        "end": 1449,
+        "tests": [
+          "VmSndInfoPlayerClassRegistryTests.AddPlayerClass_Deduplicates"
+        ]
+      },
+      {
+        "file": "src/sound/s_advsound.cpp",
+        "symbol": "S_AddSNDINFO logical mapping",
+        "start": 1307,
+        "end": 1321,
+        "tests": [
+          "SndInfoMapMusicParserTests.LogicalSoundsCoexistWithMusicAndReplaceCaseInsensitively"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "sndinfo-directives-chunk205",
+    "bucket": "conversion",
+    "managedLoc": 12,
+    "note": "SNDINFO alias/limit/singular/pitch/rolloff/random directives (managed in SndInfoMapMusicParser).",
+    "nativeRanges": [
+      {
+        "file": "src/sound/s_advsound.cpp",
+        "symbol": "SI_Alias",
+        "start": 955,
+        "end": 969,
+        "tests": [
+          "SndInfoMapMusicParserTests.AliasesReplaceResourcesAndResourcesClearAliases"
+        ]
+      },
+      {
+        "file": "src/sound/s_advsound.cpp",
+        "symbol": "SI_Limit",
+        "start": 972,
+        "end": 985,
+        "tests": [
+          "SndInfoMapMusicParserTests.SoundLimitsClampAndSquareSignedDistances"
+        ]
+      },
+      {
+        "file": "src/sound/s_advsound.cpp",
+        "symbol": "SI_Singular",
+        "start": 988,
+        "end": 996,
+        "tests": [
+          "SndInfoMapMusicParserTests.PitchShiftClampsToNativeMask"
+        ]
+      },
+      {
+        "file": "src/sound/s_advsound.cpp",
+        "symbol": "SI_PitchShift",
+        "start": 999,
+        "end": 1008,
+        "tests": [
+          "SndInfoMapMusicParserTests.PitchShiftClampsToNativeMask"
+        ]
+      },
+      {
+        "file": "src/sound/s_advsound.cpp",
+        "symbol": "SI_PitchSet",
+        "start": 1011,
+        "end": 1028,
+        "tests": [
+          "SndInfoMapMusicParserTests.PitchSetContinuationClearsAbsentMaximumAndPreservesOtherSettings"
+        ]
+      },
+      {
+        "file": "src/sound/s_advsound.cpp",
+        "symbol": "SI_PitchShiftRange",
+        "start": 1031,
+        "end": 1035,
+        "tests": [
+          "SndInfoMapMusicParserTests.GlobalPitchDefaultsClampAndContinueAcrossInputs"
+        ]
+      },
+      {
+        "file": "src/sound/s_advsound.cpp",
+        "symbol": "SI_Volume",
+        "start": 1037,
+        "end": 1046,
+        "tests": [
+          "SndInfoMapMusicParserTests.SoundSettingsPersistAcrossDefinitionsAndContinuation"
+        ]
+      },
+      {
+        "file": "src/sound/s_advsound.cpp",
+        "symbol": "SI_Attenuation",
+        "start": 1049,
+        "end": 1058,
+        "tests": [
+          "SndInfoMapMusicParserTests.SoundSettingsPersistAcrossDefinitionsAndContinuation"
+        ]
+      },
+      {
+        "file": "src/sound/s_advsound.cpp",
+        "symbol": "SI_Rolloff",
+        "start": 1061,
+        "end": 1105,
+        "tests": [
+          "SndInfoMapMusicParserTests.RolloffParsesTypesAndRetainsTypeWhenOmitted"
+        ]
+      },
+      {
+        "file": "src/sound/s_advsound.cpp",
+        "symbol": "SI_Random",
+        "start": 1108,
+        "end": 1136,
+        "tests": [
+          "SndInfoMapMusicParserTests.RandomGroupsPreserveDuplicateChoicesAndContinuation"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "gameinfo-teaminfo-chunk206",
+    "bucket": "conversion",
+    "managedLoc": 165,
+    "note": "GAMEINFO key parsing subset and TEAMINFO team definitions.",
+    "nativeRanges": [
+      {
+        "file": "src/gamedata/gi.cpp",
+        "symbol": "FMapInfoParser::ParseGameInfo",
+        "start": 261,
+        "end": 362,
+        "tests": [
+          "VmGameInfoParserTests.WeaponSlot_ParsesList"
+        ]
+      },
+      {
+        "file": "src/gamedata/gi.cpp",
+        "symbol": "gameinfo_t::GetFinalePage",
+        "start": 472,
+        "end": 477,
+        "tests": [
+          "VmGameInfoParserTests.GetFinalePage_WrapsBounds"
+        ]
+      },
+      {
+        "file": "src/gamedata/gi.cpp",
+        "symbol": "CheckGame",
+        "start": 479,
+        "end": 484,
+        "tests": [
+          "VmGameInfoParserTests.CheckGame_TreatsChexAsDoom"
+        ]
+      },
+      {
+        "file": "src/gamedata/teaminfo.cpp",
+        "symbol": "FTeam::ParseTeamInfo",
+        "start": 123,
+        "end": 141,
+        "tests": [
+          "VmTeamInfoParserTests.ParseTeam_ReadsOptions"
+        ]
+      },
+      {
+        "file": "src/gamedata/teaminfo.cpp",
+        "symbol": "FTeam::ParseTeamDefinition",
+        "start": 155,
+        "end": 220,
+        "tests": [
+          "VmTeamInfoParserTests.ParseTeam_ReadsOptions"
+        ]
+      },
+      {
+        "file": "src/gamedata/teaminfo.cpp",
+        "symbol": "FTeam::ClearTeams",
+        "start": 228,
+        "end": 231,
+        "tests": [
+          "VmTeamInfoParserTests.ParseTeam_RequiresTwoTeams"
+        ]
+      }
+    ]
+  }
+]

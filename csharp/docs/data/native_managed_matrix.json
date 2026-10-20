@@ -18,19 +18,19 @@
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 4282,
+    "convertedThisRunNative": 4462,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 19758,
+    "convertedThisRunManaged": 19846,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": -208,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 480045,
+    "remainingNative": 479865,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 22809,
+    "convertedBehaviorNative": 22989,
     "recognitionBehaviorNative": 5232,
-    "combinedBehaviorNative": 28041,
-    "convertedBehaviorManaged": 29429,
+    "combinedBehaviorNative": 28221,
+    "convertedBehaviorManaged": 29517,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -8692,6 +8692,61 @@
         ],
         "conversionManagedCommit": "b1c886762a2ca15edb2d8d67c128e42d831d3f09",
         "nativeLoc": 149
+      },
+      {
+        "name": "anim-switch-runtime-chunk203",
+        "bucket": "conversion",
+        "managedLoc": 88,
+        "note": "SWITCHES lump init, ParseSwitchDef, AddSwitchPair, FindSwitch.",
+        "nativeRanges": [
+          {
+            "file": "src/gamedata/textures/anim_switches.cpp",
+            "symbol": "SortSwitchDefs",
+            "start": 36,
+            "end": 39,
+            "tests": [
+              "VmAnimSwitchRuntimeTests.FindSwitch_UsesBinarySearch"
+            ]
+          },
+          {
+            "file": "src/gamedata/textures/anim_switches.cpp",
+            "symbol": "FTextureAnimator::InitSwitchList",
+            "start": 51,
+            "end": 91,
+            "tests": [
+              "VmAnimSwitchRuntimeTests.ParseSwitchLump_ReadsPairs"
+            ]
+          },
+          {
+            "file": "src/gamedata/textures/anim_switches.cpp",
+            "symbol": "FTextureAnimator::ParseSwitchDef",
+            "start": 213,
+            "end": 297,
+            "tests": [
+              "VmAnimDefSwitchParserTests.Switch_OnState_ParsesFrames"
+            ]
+          },
+          {
+            "file": "src/gamedata/textures/anim_switches.cpp",
+            "symbol": "FTextureAnimator::AddSwitchPair tail",
+            "start": 331,
+            "end": 353,
+            "tests": [
+              "VmAnimSwitchRuntimeTests.FindSwitch_UsesBinarySearch"
+            ]
+          },
+          {
+            "file": "src/gamedata/textures/anim_switches.cpp",
+            "symbol": "FTextureAnimator::FindSwitch",
+            "start": 361,
+            "end": 387,
+            "tests": [
+              "VmAnimSwitchRuntimeTests.FindSwitch_UsesBinarySearch"
+            ]
+          }
+        ],
+        "conversionManagedCommit": "456718ba",
+        "nativeLoc": 180
       }
     ]
   },
