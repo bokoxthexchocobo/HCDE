@@ -1,0 +1,22 @@
+[
+  {
+    "name": "am-map-cvar-head-chunk340",
+    "bucket": "conversion",
+    "managedLoc": 24,
+    "note": "Automap globals constants and CVAR clamp/cheat gates",
+    "auditSeams": "Engine `CVAR`/`CUSTOM_CVAR` registration and `primaryLevel->automap` callbacks are not re-hosted; only numeric policy from the opening `am_map.cpp` block is modeled.",
+    "auditRationale": "First whole-file port slice for untouched `am_map.cpp`: automap mark-point count, player radius, zoom rates, `am_emptyspacemargin` clamp 0–90, and net-game `am_cheat` rejection when `sv_cheats` is off.",
+    "nativeRanges": [
+      {
+        "file": "src/am_map.cpp",
+        "symbol": "Automap constants and CVAR head",
+        "start": 66,
+        "end": 183,
+        "tests": [
+          "VmAutomapCvarModelTests.ClampEmptySpaceMargin_Bounds",
+          "VmAutomapCvarModelTests.ShouldBlockAutomapCheat_WhenNetNoCheats"
+        ]
+      }
+    ]
+  }
+]
