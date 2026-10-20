@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 12798,
+  "convertedThisRunNative": 12825,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 28823,
+  "convertedThisRunManaged": 28834,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": 151,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 471170,
+  "remainingNative": 471143,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 31325,
+  "convertedBehaviorNative": 31352,
   "recognitionBehaviorNative": 5591,
-  "combinedBehaviorNative": 36916,
-  "convertedBehaviorManaged": 38494,
+  "combinedBehaviorNative": 36943,
+  "convertedBehaviorManaged": 38505,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -13850,6 +13850,37 @@
       "nativeLoc": 27,
       "managedLoc": 41,
       "conversionManagedCommit": "a8fd93b9c452c856825bdacbff133b3df9be8ada"
+    },
+    {
+      "name": "d-main-fraglimit-timescale-chunk359",
+      "bucket": "conversion",
+      "note": "fraglimit deathmatch exit and i_timescale minimum guard",
+      "auditSeams": "`primaryLevel->ExitLevel` and `I_FreezeTime` are not re-hosted; only predicate guards are modeled.",
+      "auditRationale": "Credits `CUSTOM_CVAR(fraglimit)` level-exit scan and the sub-0.05 `i_timescale` rejection branch.",
+      "nativeRanges": [
+        {
+          "file": "src/d_main.cpp",
+          "symbol": "i_timescale minimum",
+          "start": 429,
+          "end": 438,
+          "tests": [
+            "VmDMainCvarPolicyTests.IsTimeScaleAllowed_RejectsTooSmall"
+          ]
+        },
+        {
+          "file": "src/d_main.cpp",
+          "symbol": "CUSTOM_CVAR fraglimit",
+          "start": 466,
+          "end": 482,
+          "tests": [
+            "VmDMainFragLimitPolicyTests.ShouldExitLevel_WhenAtOrAboveLimit",
+            "VmDMainFragLimitPolicyTests.ShouldCheckFragLimit_RequiresDeathmatch"
+          ]
+        }
+      ],
+      "nativeLoc": 27,
+      "managedLoc": 11,
+      "conversionManagedCommit": "268c8ede9028637b6c52c25f2aa90beb7bbb1f75"
     }
   ]
 }
