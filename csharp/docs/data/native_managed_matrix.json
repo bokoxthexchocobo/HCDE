@@ -18,19 +18,19 @@
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 31791,
+    "convertedThisRunNative": 31954,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 43873,
+    "convertedThisRunManaged": 44020,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": 151,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 452177,
+    "remainingNative": 452014,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 50318,
+    "convertedBehaviorNative": 50481,
     "recognitionBehaviorNative": 5591,
-    "combinedBehaviorNative": 55909,
-    "convertedBehaviorManaged": 53544,
+    "combinedBehaviorNative": 56072,
+    "convertedBehaviorManaged": 53691,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -19839,6 +19839,59 @@
         "nativeLoc": 224,
         "managedLoc": 153,
         "conversionManagedCommit": "e797ed16bb6d7f5a4fac69d15e9abab8b3042fed"
+      },
+      {
+        "name": "p-map-line-trace-chunk480",
+        "bucket": "conversion",
+        "note": "P_LineAttack name overload, CheckLineTrace, P_LineTrace, P_LinePickActor",
+        "auditSeams": "`Trace`, `PClass::FindActor`, and live sector queries are not hosted.",
+        "auditRationale": "Credits puff-type lookup wrapper, portal-crossing trace filter, line-trace flag/start/outdata fill, and line-pick actor selection from `p_map.cpp` (5052\u20135237; class `P_LineAttack` body remains recognition).",
+        "managedSourceFiles": [
+          "csharp/src/HCDE.Playsim/VmPMapLineTrace.cs"
+        ],
+        "nativeRanges": [
+          {
+            "file": "src/playsim/p_map.cpp",
+            "symbol": "P_LineAttack",
+            "start": 5052,
+            "end": 5067,
+            "tests": [
+              "VmPMapLineTraceTests.PuffTypeMissing_WhenNotFound"
+            ]
+          },
+          {
+            "file": "src/playsim/p_map.cpp",
+            "symbol": "CheckLineTrace",
+            "start": 5083,
+            "end": 5100,
+            "tests": [
+              "VmPMapLineTraceTests.CheckLineTrace_SkipsPortal",
+              "VmPMapLineTraceTests.CheckLineTrace_SkipsThruSpecies"
+            ]
+          },
+          {
+            "file": "src/playsim/p_map.cpp",
+            "symbol": "P_LineTrace",
+            "start": 5102,
+            "end": 5200,
+            "tests": [
+              "VmPMapLineTraceTests.BuildLineFlags_ClearsBlockOnThrublock",
+              "VmPMapLineTraceTests.PortalCount_SubtractsTwo"
+            ]
+          },
+          {
+            "file": "src/playsim/p_map.cpp",
+            "symbol": "P_LinePickActor",
+            "start": 5208,
+            "end": 5237,
+            "tests": [
+              "VmPMapLineTraceTests.LinePick_ReturnsActorOnHit"
+            ]
+          }
+        ],
+        "nativeLoc": 163,
+        "managedLoc": 147,
+        "conversionManagedCommit": "996b2d683031bfcd15972efd99154bf77615529e"
       }
     ]
   },
