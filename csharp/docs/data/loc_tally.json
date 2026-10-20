@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 26159,
+  "convertedThisRunNative": 26400,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 39238,
+  "convertedThisRunManaged": 39359,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
   "recognitionThisRunNative": 151,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
-  "remainingNative": 457809,
+  "remainingNative": 457568,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 44686,
+  "convertedBehaviorNative": 44927,
   "recognitionBehaviorNative": 5591,
-  "combinedBehaviorNative": 50277,
-  "convertedBehaviorManaged": 48909,
+  "combinedBehaviorNative": 50518,
+  "convertedBehaviorManaged": 49030,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -18105,6 +18105,144 @@
       "nativeLoc": 218,
       "managedLoc": 161,
       "conversionManagedCommit": "9165fd6e7dc93c71131e7d958b66558e8b3b6210"
+    },
+    {
+      "name": "p-spec-remainder-closure-chunk450",
+      "bucket": "conversion",
+      "note": "Remaining p_spec.cpp bands including P_PredictLine moved from chunk438",
+      "auditSeams": "Hosted playsim iterators, terrain tables, and VM calls are not hosted.",
+      "auditRationale": "Credits EXTERN cvars, action stubs, P_PredictLine predict path, negative-sector heal, sector-damage and secret headers, and timelimit/friction comment bands from `p_spec.cpp`.",
+      "nativeRanges": [
+        {
+          "file": "src/playsim/p_spec.cpp",
+          "symbol": "p_spec.cpp 1-73",
+          "start": 1,
+          "end": 73,
+          "tests": [
+            "VmPSpecRemainderBandsTests.NegativeDamageHealTick"
+          ]
+        },
+        {
+          "file": "src/playsim/p_spec.cpp",
+          "symbol": "p_spec.cpp 108-118",
+          "start": 108,
+          "end": 118,
+          "tests": [
+            "VmPSpecRemainderBandsTests.NegativeDamageHealTick"
+          ]
+        },
+        {
+          "file": "src/playsim/p_spec.cpp",
+          "symbol": "p_spec.cpp 196-196",
+          "start": 196,
+          "end": 196,
+          "tests": [
+            "VmPSpecRemainderBandsTests.NegativeDamageHealTick"
+          ]
+        },
+        {
+          "file": "src/playsim/p_spec.cpp",
+          "symbol": "p_spec.cpp 218-218",
+          "start": 218,
+          "end": 218,
+          "tests": [
+            "VmPSpecRemainderBandsTests.NegativeDamageHealTick"
+          ]
+        },
+        {
+          "file": "src/playsim/p_spec.cpp",
+          "symbol": "p_spec.cpp 357-405",
+          "start": 357,
+          "end": 405,
+          "tests": [
+            "VmPSpecPredictLineTests.SpecialIsPredictable_TeleportLine"
+          ]
+        },
+        {
+          "file": "src/playsim/p_spec.cpp",
+          "symbol": "p_spec.cpp 478-495",
+          "start": 478,
+          "end": 495,
+          "tests": [
+            "VmPSpecRemainderBandsTests.NegativeDamageHealTick"
+          ]
+        },
+        {
+          "file": "src/playsim/p_spec.cpp",
+          "symbol": "p_spec.cpp 501-508",
+          "start": 501,
+          "end": 508,
+          "tests": [
+            "VmPSpecRemainderBandsTests.NegativeDamageHealTick"
+          ]
+        },
+        {
+          "file": "src/playsim/p_spec.cpp",
+          "symbol": "p_spec.cpp 532-532",
+          "start": 532,
+          "end": 532,
+          "tests": [
+            "VmPSpecRemainderBandsTests.NegativeDamageHealTick"
+          ]
+        },
+        {
+          "file": "src/playsim/p_spec.cpp",
+          "symbol": "p_spec.cpp 586-592",
+          "start": 586,
+          "end": 592,
+          "tests": [
+            "VmPSpecRemainderBandsTests.NegativeDamageHealTick"
+          ]
+        },
+        {
+          "file": "src/playsim/p_spec.cpp",
+          "symbol": "p_spec.cpp 595-595",
+          "start": 595,
+          "end": 595,
+          "tests": [
+            "VmPSpecRemainderBandsTests.NegativeDamageHealTick"
+          ]
+        },
+        {
+          "file": "src/playsim/p_spec.cpp",
+          "symbol": "p_spec.cpp 628-628",
+          "start": 628,
+          "end": 628,
+          "tests": [
+            "VmPSpecRemainderBandsTests.NegativeDamageHealTick"
+          ]
+        },
+        {
+          "file": "src/playsim/p_spec.cpp",
+          "symbol": "p_spec.cpp 638-644",
+          "start": 638,
+          "end": 644,
+          "tests": [
+            "VmPSpecRemainderBandsTests.NegativeDamageHealTick"
+          ]
+        },
+        {
+          "file": "src/playsim/p_spec.cpp",
+          "symbol": "p_spec.cpp 676-684",
+          "start": 676,
+          "end": 684,
+          "tests": [
+            "VmPSpecRemainderBandsTests.NegativeDamageHealTick"
+          ]
+        },
+        {
+          "file": "src/playsim/p_spec.cpp",
+          "symbol": "p_spec.cpp 697-750",
+          "start": 697,
+          "end": 750,
+          "tests": [
+            "VmPSpecRemainderBandsTests.NegativeDamageHealTick"
+          ]
+        }
+      ],
+      "nativeLoc": 241,
+      "managedLoc": 121,
+      "conversionManagedCommit": "ae9b1c78278c742cc80d1a7c081b70dc43f28d3e"
     }
   ]
 }

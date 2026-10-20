@@ -1,27 +1,36 @@
-# Chunk 445 — D_DoomMain_Internal restart-loop class init and IWAD/mod resolution pass
+# Chunk 445 — D_DoomMain_Internal restart loop: IWAD pass, debug listen, D_DoomLoop, SignalHandler, and GameMain (consolidated chunk445–448).
 
 ## Scope
 
-D_DoomMain_Internal restart-loop class init and IWAD/mod resolution pass
+D_DoomMain_Internal restart loop: IWAD pass, debug listen, D_DoomLoop, SignalHandler, and GameMain (consolidated chunk445–448).
 
 ## Native ranges
 
 - `src/d_main.cpp` **do loop PClass/PType init** 4658–4664 (7 lines)
 - `src/d_main.cpp` **IWAD/mod iteration body** 4666–4761 (96 lines)
+- `src/d_main.cpp` **debug listen and D_DoomLoop cycle** 4763–4792 (30 lines)
+- `src/d_main.cpp` **SignalHandler** 4795–4807 (13 lines)
+- `src/d_main.cpp` **GameMain** 4809–4880 (72 lines)
 
-**Credited native LOC:** 103 (tally `nativeLoc` 103).
+**Credited native LOC:** 218 (tally `nativeLoc` 218).
 
 ## Managed
 
-`VmDDoomMainIwadIteration.cs`, `VmDDoomMainIwadIterationTests.cs`, `VmDDoomMainLoopIter.cs`, `VmDDoomMainLoopIterTests.cs`
-Managed LOC (tally): 69.
-Conversion commit: `6d773cbb1c49882e1370a9025bbb96d095211d44`.
+`VmDMainGameMain.cs`, `VmDMainGameMainTests.cs`
+Managed LOC (tally): 161.
+Conversion commit: `9165fd6e7dc93c71131e7d958b66558e8b3b6210`.
 
 ## Tests
 
 - `VmDDoomMainLoopIterTests.AfterPClassStaticInit`
 - `VmDDoomMainIwadIterationTests.SharewareBlocksPwads_WhenModsPresent`
 - `VmDDoomMainIwadIterationTests.AbortLoopWhenInitGameFailed`
+- `VmDDoomMainRunLoopTests.DebugPortInRange_Valid`
+- `VmDDoomMainRunLoopTests.DebugPortInRange_RejectsHigh`
+- `VmDMainSignalHandlerTests.ExitImmediatelyWhenAlreadyAborting`
+- `VmDMainSignalHandlerTests.RequestShutdownWhenRunning`
+- `VmDMainGameMainTests.CreateDisplayWhenInteractive`
+- `VmDMainGameMainTests.SkipCloseWidgetWhenNorun`
 
 ## Verified
 
@@ -29,8 +38,8 @@ Conversion commit: `6d773cbb1c49882e1370a9025bbb96d095211d44`.
 
 ## Seams
 
-`FIWadManager`, `D_InitGame`, and filesystem iterators are not hosted.
+`FIWadManager`, `D_InitGame`, `DebugServer`, `D_DoomLoop`, `DisplayBackend`, and shutdown I/O are not hosted.
 
 ## Credit rationale
 
-Credits PClass/PType static init, IWAD rediscovery, shareware pwad gate, SteamAppId digit validation, and D_InitGame status handling from `d_main.cpp`.
+Credits contiguous `d_main.cpp` 4658–4880: class/type static init, IWAD/mod resolution, shareware and SteamAppId gates, debug-port policy, doom-loop restart, signal handler, and `GameMain` entry.
