@@ -12,24 +12,24 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 143385
+    "managedCSharpLoc": 143987
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 27777,
+    "convertedThisRunNative": 27996,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
     "convertedThisRunManaged": 40631,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": 151,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 456191,
+    "remainingNative": 455972,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 46304,
+    "convertedBehaviorNative": 46523,
     "recognitionBehaviorNative": 5591,
-    "combinedBehaviorNative": 51895,
+    "combinedBehaviorNative": 52114,
     "convertedBehaviorManaged": 50302,
     "baselineNative": 508086,
     "chunks": [
@@ -18438,6 +18438,48 @@
         "nativeLoc": 258,
         "conversionManagedCommit": "2baa42190e93bb8ff06db3b36069c24948af7cb8",
         "managedLoc": 133
+      },
+      {
+        "name": "p-interaction-touch-obit-chunk458",
+        "bucket": "conversion",
+        "note": "P_TouchSpecialThing, PronounMessage, ClientObituary gates",
+        "auditSeams": "`special->CallTouch`, `GStrings`, `AnnounceKill`, and `Printf` are not hosted.",
+        "auditRationale": "Credits pickup Z reach, bot dest clear, pronoun expansion, and obituary message resolution from `p_interaction.cpp`.",
+        "managedSourceFiles": [
+          "csharp/src/HCDE.Playsim/VmPInteractionTouchObituary.cs"
+        ],
+        "nativeRanges": [
+          {
+            "file": "src/playsim/p_interaction.cpp",
+            "symbol": "P_TouchSpecialThing",
+            "start": 85,
+            "end": 108,
+            "tests": [
+              "VmPInteractionTouchObituaryTests.PickupOutOfReach_WhenAboveFeet"
+            ]
+          },
+          {
+            "file": "src/playsim/p_interaction.cpp",
+            "symbol": "PronounMessage",
+            "start": 123,
+            "end": 181,
+            "tests": [
+              "VmPInteractionTouchObituaryTests.PronounCaseFromMarker_Grammar",
+              "VmPInteractionTouchObituaryTests.ExpandPronoun_They"
+            ]
+          },
+          {
+            "file": "src/playsim/p_interaction.cpp",
+            "symbol": "ClientObituary",
+            "start": 186,
+            "end": 321,
+            "tests": [
+              "VmPInteractionTouchObituaryTests.ShouldShowObituary_RequiresPlayerMo"
+            ]
+          }
+        ],
+        "nativeLoc": 219,
+        "conversionManagedCommit": "a9eaca080f38357bab2c315f9d1c8ecb5b9b01f2"
       }
     ]
   },
