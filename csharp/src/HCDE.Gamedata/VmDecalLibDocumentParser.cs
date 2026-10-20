@@ -24,6 +24,18 @@ public static class VmDecalLibDocumentParser
             return TryParseDecalHeader(tokens, ref i, db, errors);
         if (key.Equals("decalgroup", StringComparison.OrdinalIgnoreCase))
             return TryParseDecalGroup(tokens, ref i, db, errors);
+        if (key.Equals("generator", StringComparison.OrdinalIgnoreCase))
+            return VmDecalAnimatorParser.TryParseGenerator(tokens, ref i, db, errors);
+        if (key.Equals("fader", StringComparison.OrdinalIgnoreCase))
+            return VmDecalAnimatorParser.TryParseFader(tokens, ref i, db, errors);
+        if (key.Equals("stretcher", StringComparison.OrdinalIgnoreCase))
+            return VmDecalAnimatorParser.TryParseStretcher(tokens, ref i, db, errors);
+        if (key.Equals("slider", StringComparison.OrdinalIgnoreCase))
+            return VmDecalAnimatorParser.TryParseSlider(tokens, ref i, db, errors);
+        if (key.Equals("colorchanger", StringComparison.OrdinalIgnoreCase))
+            return VmDecalAnimatorParser.TryParseColorChanger(tokens, ref i, db, errors);
+        if (key.Equals("combiner", StringComparison.OrdinalIgnoreCase))
+            return VmDecalAnimatorParser.TryParseCombiner(tokens, ref i, db, errors);
 
         errors.Add($"Unknown decaldef keyword '{key}'.");
         return false;
