@@ -51,15 +51,26 @@ public static class VmAnimDefDocumentParser
             return VmAnimDefSwitchParser.TryParseSwitch(tokens, ref i, textures, errors);
         if (head.Equals("warp", StringComparison.OrdinalIgnoreCase) || head.Equals("warp2", StringComparison.OrdinalIgnoreCase))
             return TryParseWarp(tokens, ref i, textures, type2: head.Equals("warp2", StringComparison.OrdinalIgnoreCase), errors);
-        if (head.Equals("canvastexture", StringComparison.OrdinalIgnoreCase)
-            || head.Equals("cameratexture", StringComparison.OrdinalIgnoreCase)
-            || head.Equals("animatedDoor", StringComparison.OrdinalIgnoreCase)
-            || head.Equals("skyoffset", StringComparison.OrdinalIgnoreCase)
-            || head.Equals("firetexture", StringComparison.OrdinalIgnoreCase))
+        if (head.Equals("cameratexture", StringComparison.OrdinalIgnoreCase) || head.Equals("canvastexture", StringComparison.OrdinalIgnoreCase))
         {
-            errors.Add($"ANIMDEFS directive '{head}' is not ported in this chunk.");
-            return false;
+            var camera = new VmAnimDefCameraTexture();
+            return VmAnimDefCameraParser.TryParseCamera(tokens, ref i, textures, camera, errors);
         }
+
+        if (head.Equals("animatedDoor", StringComparison.OrdinalIgnoreCase))
+        {
+            var door = new VmAnimDefDoor();
+            return VmAnimDefDoorParser.TryParseDoor(tokens, ref i, textures, door, errors);
+        }
+
+        if (head.Equals("firetexture", StringComparison.OrdinalIgnoreCase))
+        {
+            var fire = new VmAnimDefFireTexture();
+            return VmAnimDefFireParser.TryParseFire(tokens, ref i, fire, errors);
+        }
+
+        if (head.Equals("skyoffset", StringComparison.OrdinalIgnoreCase))
+            return TryParseSkyOffset(tokens, ref i, textures, errors);
 
         errors.Add($"Unknown ANIMDEFS keyword '{head}'.");
         return false;
@@ -237,6 +248,17 @@ public static class VmAnimDefDocumentParser
 
         errors.Add("Must specify a duration for animation frame");
         return false;
+    }
+
+    private static bool TryParseSkyOffset(IReadOnlyList<string> tokens, ref int i, IAnimDefTextureCatalog textures, List<string> errors)
+    {
+        if (i >= tokens.Count) { errors.Add("Expected sky texture name."); return false; }
+        var name = tokens[i++];
+        if (!textures.TextureExists(name, isFlat: false))
+            errors.Add($"ANIMDEFS: Can't find {name}");
+        if (i >= tokens.Count || !int.TryParse(tokens[i++], out _))
+            errors.Add("Expected sky offset.");
+        return errors.Count == 0;
     }
 
     private static bool TryParseWarp(IReadOnlyList<string> tokens, ref int i, IAnimDefTextureCatalog textures, bool type2, List<string> errors)
