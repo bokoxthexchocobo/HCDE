@@ -12,25 +12,25 @@
       "protocol/ (shared constants; mirrored in HCDE.Protocol)"
     ],
     "nativeEngineLoc": 508086,
-    "managedCSharpLoc": 149267
+    "managedCSharpLoc": 149387
   },
   "locTally": {
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 34631,
+    "convertedThisRunNative": 34793,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 45728,
+    "convertedThisRunManaged": 45849,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": 151,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 449337,
+    "remainingNative": 449175,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 53158,
+    "convertedBehaviorNative": 53320,
     "recognitionBehaviorNative": 5591,
-    "combinedBehaviorNative": 58749,
-    "convertedBehaviorManaged": 55399,
+    "combinedBehaviorNative": 58911,
+    "convertedBehaviorManaged": 55520,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -20779,8 +20779,54 @@
           }
         ],
         "nativeLoc": 187,
-        "managedLoc": 73,
-        "conversionManagedCommit": "c2b39e795506a6d9e4ae42385d2e188a2eb12350"
+        "managedLoc": 107,
+        "conversionManagedCommit": "c381772aa64cf1a28a344faa0203bcb983611866"
+      },
+      {
+        "name": "p-map-sector-push-chunk496",
+        "bucket": "conversion",
+        "note": "P_PushUp, P_PushDown, and PIT_FloorDrop sector move policy",
+        "auditSeams": "`P_FindAboveIntersectors`, `P_AdjustFloorCeil`, `P_CanCollideWith`, and `P_CheckFakeFloorTriggers` are not hosted.",
+        "auditRationale": "Credits ceiling/floor push blocks, thru-species/reflective skips, push mass/bridge gates, and floor-drop gravity policy from `p_map.cpp` (6762\u20136939).",
+        "managedSourceFiles": [
+          "csharp/src/HCDE.Playsim/VmPMapSectorPush.cs"
+        ],
+        "nativeRanges": [
+          {
+            "file": "src/playsim/p_map.cpp",
+            "symbol": "P_PushUp",
+            "start": 6762,
+            "end": 6821,
+            "tests": [
+              "VmPMapSectorPushTests.PushUp_CeilingBlock",
+              "VmPMapSectorPushTests.PushUp_ThruActors",
+              "VmPMapSectorPushTests.Push_SkipReflective",
+              "VmPMapSectorPushTests.Push_CannotPushBridge"
+            ]
+          },
+          {
+            "file": "src/playsim/p_map.cpp",
+            "symbol": "P_PushDown",
+            "start": 6831,
+            "end": 6885,
+            "tests": [
+              "VmPMapSectorPushTests.PushDown_FloorBlock",
+              "VmPMapSectorPushTests.Push_CannotPushBridge"
+            ]
+          },
+          {
+            "file": "src/playsim/p_map.cpp",
+            "symbol": "PIT_FloorDrop",
+            "start": 6893,
+            "end": 6939,
+            "tests": [
+              "VmPMapSectorPushTests.FloorDrop_MovesWithSector"
+            ]
+          }
+        ],
+        "nativeLoc": 162,
+        "managedLoc": 87,
+        "conversionManagedCommit": "ddce266daabb1570126396a82843b4ab0d25ce57"
       }
     ]
   },

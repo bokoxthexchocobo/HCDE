@@ -6,7 +6,7 @@
     "auditSeams": "`P_FindAboveIntersectors`, `P_AdjustFloorCeil`, `P_CanCollideWith`, and `P_CheckFakeFloorTriggers` are not hosted.",
     "auditRationale": "Credits ceiling/floor push blocks, thru-species/reflective skips, push mass/bridge gates, and floor-drop gravity policy from `p_map.cpp` (6762–6939).",
     "managedSourceFiles": ["csharp/src/HCDE.Playsim/VmPMapSectorPush.cs"],
-    "portCommits": ["a4f822a8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8"],
+    "portCommits": ["a4f822a883fb229f470462ccdd3ef8218ac62128"],
     "nativeRanges": [
       {
         "file": "src/playsim/p_map.cpp",
