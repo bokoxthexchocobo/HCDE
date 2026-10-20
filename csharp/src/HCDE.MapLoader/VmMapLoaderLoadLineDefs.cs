@@ -139,15 +139,4 @@ public static class VmMapLoaderLoadLineDefs
 
         return (kept, skipped, sideCount);
     }
-
-    public static int ResolveActivationFromFlags(int lineFlags, int spacMask, int spacAnyCross, int spacImpact, int spacPcross)
-    {
-        var spac = (lineFlags & spacMask) >> 10;
-        var activation = 1 << spac;
-        if (activation == spacAnyCross)
-            return spacImpact | spacPcross;
-        if (activation == spacImpact)
-            return spacImpact | spacPcross;
-        return activation;
-    }
 }
