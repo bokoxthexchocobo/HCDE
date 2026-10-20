@@ -18,19 +18,19 @@
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 11917,
+    "convertedThisRunNative": 11959,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 27409,
+    "convertedThisRunManaged": 27471,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": 151,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 472051,
+    "remainingNative": 472009,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 30444,
+    "convertedBehaviorNative": 30486,
     "recognitionBehaviorNative": 5591,
-    "combinedBehaviorNative": 36035,
-    "convertedBehaviorManaged": 37080,
+    "combinedBehaviorNative": 36077,
+    "convertedBehaviorManaged": 37142,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -12612,6 +12612,34 @@
         ],
         "nativeLoc": 46,
         "conversionManagedCommit": "d815d739f5147248fc8a1911d332727334b2c85b"
+      },
+      {
+        "name": "g-mapinfo-level-lookup-chunk319",
+        "bucket": "conversion",
+        "managedLoc": 62,
+        "note": "FindLevelInfo and FindLevelByWarpTrans",
+        "nativeRanges": [
+          {
+            "file": "src/gamedata/g_mapinfo.cpp",
+            "symbol": "FindWadLevelInfo FindLevelInfo",
+            "start": 64,
+            "end": 97,
+            "tests": [
+              "VmMapInfoLevelLookupTests.GetLevelOrDefault_SeedsDefaultSky"
+            ]
+          },
+          {
+            "file": "src/gamedata/g_mapinfo.cpp",
+            "symbol": "FindLevelByWarpTrans",
+            "start": 120,
+            "end": 127,
+            "tests": [
+              "VmMapInfoLevelLookupTests.FindLevelByWarpTrans_ScansBackwards"
+            ]
+          }
+        ],
+        "nativeLoc": 42,
+        "conversionManagedCommit": "1f8e8ffc9fbb2e04d11196c237230c5563ba1530"
       }
     ]
   },
