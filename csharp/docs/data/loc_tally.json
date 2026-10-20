@@ -2,19 +2,19 @@
   "runStartConvertedBehaviorNative": 18527,
   "runStartRecognitionBehaviorNative": 5440,
   "runStartConvertedBehaviorManaged": 9671,
-  "convertedThisRunNative": 5010,
+  "convertedThisRunNative": 4845,
   "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-  "convertedThisRunManaged": 20095,
+  "convertedThisRunManaged": 20083,
   "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
-  "recognitionThisRunNative": -208,
+  "recognitionThisRunNative": -43,
   "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
   "recognitionThisRunManaged": 0,
   "remainingNative": 479317,
   "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-  "convertedBehaviorNative": 23537,
-  "recognitionBehaviorNative": 5232,
+  "convertedBehaviorNative": 23372,
+  "recognitionBehaviorNative": 5397,
   "combinedBehaviorNative": 28769,
-  "convertedBehaviorManaged": 29766,
+  "convertedBehaviorManaged": 29754,
   "baselineNative": 508086,
   "chunks": [
     {
@@ -8806,10 +8806,10 @@
       "nativeLoc": 180
     },
     {
-      "name": "sndinfo-directives-chunk205",
-      "bucket": "conversion",
-      "managedLoc": 12,
-      "note": "SNDINFO alias/limit/singular/pitch/rolloff/random directives (managed in SndInfoMapMusicParser).",
+      "name": "sndinfo-directives-chunk205-recognition",
+      "bucket": "recognition",
+      "managedLoc": 0,
+      "note": "SNDINFO alias/limit/singular/pitch/rolloff/random native coverage; managed logic predates chunk 205 (commits ba92aa50/356fa958).",
       "nativeRanges": [
         {
           "file": "src/sound/s_advsound.cpp",
@@ -8902,7 +8902,7 @@
           ]
         }
       ],
-      "conversionManagedCommit": "d0719376fcaff3a459be3b1c4a3465a0e8137e39",
+      "recognitionManagedCommit": "ba92aa50562d5c1f09c40fd74296a0832837bbac",
       "nativeLoc": 165
     },
     {
