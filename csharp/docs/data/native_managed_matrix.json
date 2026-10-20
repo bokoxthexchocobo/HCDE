@@ -18,19 +18,19 @@
     "runStartConvertedBehaviorNative": 18527,
     "runStartRecognitionBehaviorNative": 5440,
     "runStartConvertedBehaviorManaged": 9671,
-    "convertedThisRunNative": 14380,
+    "convertedThisRunNative": 14553,
     "convertedThisRunNativeFormula": "convertedBehaviorNative - runStartConvertedBehaviorNative",
-    "convertedThisRunManaged": 28710,
+    "convertedThisRunManaged": 28746,
     "convertedThisRunManagedFormula": "convertedBehaviorManaged - runStartConvertedBehaviorManaged",
     "recognitionThisRunNative": 151,
     "recognitionThisRunNativeFormula": "recognitionBehaviorNative - runStartRecognitionBehaviorNative",
     "recognitionThisRunManaged": 0,
-    "remainingNative": 469588,
+    "remainingNative": 469415,
     "remainingNativeFormula": "baselineNative - convertedBehaviorNative - recognitionBehaviorNative",
-    "convertedBehaviorNative": 32907,
+    "convertedBehaviorNative": 33080,
     "recognitionBehaviorNative": 5591,
-    "combinedBehaviorNative": 38498,
-    "convertedBehaviorManaged": 38381,
+    "combinedBehaviorNative": 38671,
+    "convertedBehaviorManaged": 38417,
     "baselineNative": 508086,
     "chunks": [
       {
@@ -13303,6 +13303,28 @@
         ],
         "nativeLoc": 166,
         "conversionManagedCommit": "1b47af0e881d8dcdb0db4e6f22d731eb566dbd9e"
+      },
+      {
+        "name": "maploader-teleport-textures-chunk344",
+        "bucket": "conversion",
+        "managedLoc": 36,
+        "note": "TranslateTeleportThings and SetTexture warn policy",
+        "auditSeams": "Thinker iteration and `TexMan` IO remain outside managed code; TID assignment and missing-texture warn caps mirror loader policy.",
+        "auditRationale": "First whole-function slice of untouched `maploader.cpp`: `TranslateTeleportThings` TID rewrite for untagged teleport sectors and `SetTexture` missing-texture warn limits plus eight-character flat truncation.",
+        "nativeRanges": [
+          {
+            "file": "src/maploader/maploader.cpp",
+            "symbol": "TranslateTeleportThings SetTexture",
+            "start": 78,
+            "end": 250,
+            "tests": [
+              "VmMapLoaderTeleportTranslateTests.ApplyTeleportLineArgs_SetsTidWhenTagZero",
+              "VmMapLoaderMissingTexturePolicyTests.ShouldPrintWarning_UntilLimit"
+            ]
+          }
+        ],
+        "nativeLoc": 173,
+        "conversionManagedCommit": "049dbe1ec1591792621c1dd447ff7818816e8cf2"
       }
     ]
   },
